@@ -1,183 +1,165 @@
-Return-Path: <linux-rdma+bounces-4093-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4094-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EFD69409FD
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 09:37:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15306940AA7
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 10:02:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 411051C23242
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 07:37:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93BFBB24169
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 08:02:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C88218FC6E;
-	Tue, 30 Jul 2024 07:36:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2242B194143;
+	Tue, 30 Jul 2024 08:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="UBDYZ/G2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mQSEr+M7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06BC13B780;
-	Tue, 30 Jul 2024 07:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66491922DD;
+	Tue, 30 Jul 2024 08:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722325017; cv=none; b=nqjBNVSLf2WcTXGDIIBHsijFtNs1xdkvzMgcJ3v3OXHGvO/dQIcfX9BO0/KOdtnYmInat2QXmVR4X7NAtKU491R2jqShpZok/VHxsxwT4rN0rwcw86hVquy9sRXUeXZHVm+98BFaXEjZbHeoQlgTqvuOfjdIFbWZWFGV/LBxclY=
+	t=1722326444; cv=none; b=JQvEcD8tnWZ5Us76vYuF7Ha2UybGhJv8sO4vSBQyq6NfPVvFq62DsG4Eyk4wRMdUyk0kZedwOyAovjN0ogGXfui0hwlif9cL0raxi2Peb/DQq4N1ZKG/S6qzRaJ1VCio07hnCPs5Xn09iC42WvNjPA62f2YnrgqdA5nLSX5MMGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722325017; c=relaxed/simple;
-	bh=oa+Afng6R5K3QmPktSUjt9b3d3Diz8j19/vzUfAKm6k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=R/MNXI8AOqor8DXgajs48qLfCCIdJX19+U7WHDBs2tRAuUMNpKbmJ8okXQnB0mit3f3ynmbsFwFrEPJcwUhE0iAZTMacOe1W4ZHIMiCL9tMEZdp2DaIfA+WksNOkfZ7GywfGqyhmEze7Y/7ZVNajnfMWKerqSGo+9R9lDYBLRxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=UBDYZ/G2; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46TKtV14022219;
-	Tue, 30 Jul 2024 07:36:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type
-	:content-transfer-encoding; s=corp-2023-11-20; bh=vRACKsqsmtS90X
-	/En0V7eGmEXSmI+PyodfcrJK7YG7k=; b=UBDYZ/G2P3SyvjmGHqjQqFn81gocgH
-	B4/34mmMeS4hlggvcPpdRGYp0O4bKt56/T35zEw4DOJe7Dc7wVmsJT4nOC0zy95g
-	tTJCB4RpqH6kIRfH2lVGa+5O8L/y+bMVxCCMBJSHB2w4k1jHaZMO6ceH5zVIVsPb
-	7dkPY2rUZYJy2+t3KyJepZwZ/RfBLjQ/IEjcmvx7aX87WId4NEfJJYm1oLJM4Fnm
-	g35wSAk/O57541KSXZ4RZbyzoyMA4rUKKkfjkSO6Zp26f2BTFYUvM5j/5g2bFQf/
-	S/AdyS4Dpikyy9/7kMFAX2rlmoi1QEfQSdYN65S4zzVtR9CqyZV382jg==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 40mrgs4c6t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 30 Jul 2024 07:36:43 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 46U7UH36037991;
-	Tue, 30 Jul 2024 07:36:42 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 40pm82vv6g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 30 Jul 2024 07:36:42 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 46U7agg4020312;
-	Tue, 30 Jul 2024 07:36:42 GMT
-Received: from aakhoje-ol.in.oracle.com (dhcp-10-191-235-170.vpn.oracle.com [10.191.235.170])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 40pm82vv4k-1;
-	Tue, 30 Jul 2024 07:36:41 +0000
-From: Anand Khoje <anand.a.khoje@oracle.com>
-To: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc: saeedm@mellanox.com, leon@kernel.org, tariqt@nvidia.com,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        davem@davemloft.net, rama.nichanamatlu@oracle.com,
-        manjunath.b.patil@oracle.com
-Subject: [PATCH net-next v7] net/mlx5: Reclaim max 50K pages at once
-Date: Tue, 30 Jul 2024 13:06:33 +0530
-Message-ID: <20240730073634.114407-1-anand.a.khoje@oracle.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1722326444; c=relaxed/simple;
+	bh=me2Vx0Tql7Lk7lB65nstEIzCxKFK2tRL4TMf2lYsypc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tT14eiHUU0rqQE9M9XjtkS8xFO5tG3A7VBCDH7frFgq7pDGlhnmpX5aH0vPCRTMKtbHtnSzGQndp9YJI0k49Nvg3N7ZsL8f00rsWyJTuAnFknig1E8NfK5IF1mgz/wcecFMhSAXij+tKmuI7+CsvNv8Vje7pUnGXpiooWoDcq7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mQSEr+M7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6D53C32782;
+	Tue, 30 Jul 2024 08:00:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722326444;
+	bh=me2Vx0Tql7Lk7lB65nstEIzCxKFK2tRL4TMf2lYsypc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mQSEr+M77vYU0z5icTDzOeeMVIPJ7yXJj/PEjntm162mYSpfECFJ7pr0CfnfmiDIO
+	 REvodpJQ3WRokcYnzFKj7cjEMMUZxRemShSGIDzl9uuGKAYdcjNee/yFZq7uA2yQMd
+	 6t0fH6vUWfhAD6PaEQ+GoMIzulP6yzxzsyAfcu43nPAbzf2rwX93Q6uGL+qP8LdpjX
+	 afsmrdo2vRsIxrZHqJG4wlbGTmYkzBkV3qvckUH++kvhQ5a/dJe53wtFsDJ6GNPFZ6
+	 EnIDgUn8hLUQEuscjYyytRCNcIEg73X2y4gKJHBdxI3OhXdtBiRvEH8CTgZGyilhq7
+	 BaplhWs3YYcBw==
+Date: Tue, 30 Jul 2024 11:00:38 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Itay Avraham <itayavr@nvidia.com>,
+	Jakub Kicinski <kuba@kernel.org>, linux-doc@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	David Ahern <dsahern@kernel.org>,
+	Christoph Hellwig <hch@infradead.org>, Jiri Pirko <jiri@nvidia.com>,
+	Leonid Bloch <lbloch@nvidia.com>, linux-cxl@vger.kernel.org,
+	patches@lists.linux.dev
+Subject: Re: [PATCH v2 5/8] fwctl: FWCTL_RPC to execute a Remote Procedure
+ Call to device firmware
+Message-ID: <20240730080038.GA4209@unreal>
+References: <0-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
+ <5-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-30_07,2024-07-26_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
- suspectscore=0 phishscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
- definitions=main-2407300055
-X-Proofpoint-GUID: GIS15TYoOrrSxeI6sVq7U0GqUhcuXbYh
-X-Proofpoint-ORIG-GUID: GIS15TYoOrrSxeI6sVq7U0GqUhcuXbYh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
 
-In non FLR context, at times CX-5 requests release of ~8 million FW pages.
-This needs humongous number of cmd mailboxes, which to be released once
-the pages are reclaimed. Release of humongous number of cmd mailboxes is
-consuming cpu time running into many seconds. Which with non preemptible
-kernels is leading to critical process starving on that cpu’s RQ.
-On top of it, the FW does not use all the mailbox messages as it has a
-limit of releasing 50K pages at once per MLX5_CMD_OP_MANAGE_PAGES +
-MLX5_PAGES_TAKE device command. Hence, the allocation of these many
-mailboxes is extra and adds unnecessary overhead.
-To alleviate this, this change restricts the total number of pages
-a worker will try to reclaim to maximum 50K pages in one go.
+On Mon, Jun 24, 2024 at 07:47:29PM -0300, Jason Gunthorpe wrote:
+> Add the FWCTL_RPC ioctl which allows a request/response RPC call to device
+> firmware. Drivers implementing this call must follow the security
+> guidelines under Documentation/userspace-api/fwctl.rst
+> 
+> The core code provides some memory management helpers to get the messages
+> copied from and back to userspace. The driver is responsible for
+> allocating the output message memory and delivering the message to the
+> device.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  drivers/fwctl/main.c       | 62 +++++++++++++++++++++++++++++++++++
+>  include/linux/fwctl.h      |  5 +++
+>  include/uapi/fwctl/fwctl.h | 66 ++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 133 insertions(+)
+> 
+> diff --git a/drivers/fwctl/main.c b/drivers/fwctl/main.c
+> index f1dec0b590aee4..9506b993a1a56d 100644
+> --- a/drivers/fwctl/main.c
+> +++ b/drivers/fwctl/main.c
+> @@ -8,16 +8,20 @@
+>  #include <linux/slab.h>
+>  #include <linux/container_of.h>
+>  #include <linux/fs.h>
+> +#include <linux/sizes.h>
+>  
+>  #include <uapi/fwctl/fwctl.h>
+>  
+>  enum {
+>  	FWCTL_MAX_DEVICES = 256,
+> +	MAX_RPC_LEN = SZ_2M,
+>  };
+>  static dev_t fwctl_dev;
+>  static DEFINE_IDA(fwctl_ida);
+> +static unsigned long fwctl_tainted;
+>  
+>  DEFINE_FREE(kfree_errptr, void *, if (!IS_ERR_OR_NULL(_T)) kfree(_T));
+> +DEFINE_FREE(kvfree_errptr, void *, if (!IS_ERR_OR_NULL(_T)) kvfree(_T));
+>  
+>  struct fwctl_ucmd {
+>  	struct fwctl_uctx *uctx;
+> @@ -75,9 +79,66 @@ static int fwctl_cmd_info(struct fwctl_ucmd *ucmd)
+>  	return ucmd_respond(ucmd, sizeof(*cmd));
+>  }
+>  
+> +static int fwctl_cmd_rpc(struct fwctl_ucmd *ucmd)
+> +{
+> +	struct fwctl_device *fwctl = ucmd->uctx->fwctl;
+> +	struct fwctl_rpc *cmd = ucmd->cmd;
+> +	size_t out_len;
+> +
+> +	if (cmd->in_len > MAX_RPC_LEN || cmd->out_len > MAX_RPC_LEN)
+> +		return -EMSGSIZE;
+> +
+> +	switch (cmd->scope) {
+> +	case FWCTL_RPC_CONFIGURATION:
+> +	case FWCTL_RPC_DEBUG_READ_ONLY:
+> +		break;
+> +
+> +	case FWCTL_RPC_DEBUG_WRITE_FULL:
+> +		if (!capable(CAP_SYS_RAWIO))
+> +			return -EPERM;
+> +		fallthrough;
+> +	case FWCTL_RPC_DEBUG_WRITE:
+> +		if (!test_and_set_bit(0, &fwctl_tainted)) {
+> +			dev_warn(
+> +				&fwctl->dev,
+> +				"%s(%d): has requested full access to the physical device device",
+> +				current->comm, task_pid_nr(current));
+> +			add_taint(TAINT_FWCTL, LOCKDEP_STILL_OK);
+> +		}
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	};
+> +
+> +	void *inbuf __free(kvfree) =
+> +		kvzalloc(cmd->in_len, GFP_KERNEL | GFP_KERNEL_ACCOUNT);
 
-Our tests have shown significant benefit of this change in terms of
-time consumed by dma_pool_free().
-During a test where an event was raised by HCA
-to release 1.3 Million pages, following observations were made:
 
-- Without this change:
-Number of mailbox messages allocated was around 20K, to accommodate
-the DMA addresses of 1.3 million pages.
-The average time spent by dma_pool_free() to free the DMA pool is between
-16 usec to 32 usec.
-           value  ------------- Distribution ------------- count
-             256 |                                         0
-             512 |@                                        287
-            1024 |@@@                                      1332
-            2048 |@                                        656
-            4096 |@@@@@                                    2599
-            8192 |@@@@@@@@@@                               4755
-           16384 |@@@@@@@@@@@@@@@                          7545
-           32768 |@@@@@                                    2501
-           65536 |                                         0
+<...>
 
-- With this change:
-Number of mailbox messages allocated was around 800; this was to
-accommodate DMA addresses of only 50K pages.
-The average time spent by dma_pool_free() to free the DMA pool in this case
-lies between 1 usec to 2 usec.
-           value  ------------- Distribution ------------- count
-             256 |                                         0
-             512 |@@@@@@@@@@@@@@@@@@                       346
-            1024 |@@@@@@@@@@@@@@@@@@@@@@                   435
-            2048 |                                         0
-            4096 |                                         0
-            8192 |                                         1
-           16384 |                                         0
+> +	out_len = cmd->out_len;
+> +	void *outbuf __free(kvfree_errptr) = fwctl->ops->fw_rpc(
+> +		ucmd->uctx, cmd->scope, inbuf, cmd->in_len, &out_len);
 
-Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-Acked-by: Saeed Mahameed <saeedm@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+I was under impression that declaration of variables in C should be at the beginning
+of block. Was it changed for the kernel?
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
-index d894a88..972e8e9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
-@@ -608,6 +608,11 @@ enum {
- 	RELEASE_ALL_PAGES_MASK = 0x4000,
- };
- 
-+/* This limit is based on the capability of the firmware as it cannot release
-+ * more than 50000 back to the host in one go.
-+ */
-+#define MAX_RECLAIM_NPAGES (-50000)
-+
- static int req_pages_handler(struct notifier_block *nb,
- 			     unsigned long type, void *data)
- {
-@@ -639,7 +644,16 @@ static int req_pages_handler(struct notifier_block *nb,
- 
- 	req->dev = dev;
- 	req->func_id = func_id;
--	req->npages = npages;
-+
-+	/* npages > 0 means HCA asking host to allocate/give pages,
-+	 * npages < 0 means HCA asking host to reclaim back the pages allocated.
-+	 * Here we are restricting the maximum number of pages that can be
-+	 * reclaimed to be MAX_RECLAIM_NPAGES. Note that MAX_RECLAIM_NPAGES is
-+	 * a negative value.
-+	 * Since MAX_RECLAIM is negative, we are using max() to restrict
-+	 * req->npages (and not min ()).
-+	 */
-+	req->npages = max_t(s32, npages, MAX_RECLAIM_NPAGES);
- 	req->ec_function = ec_function;
- 	req->release_all = release_all;
- 	INIT_WORK(&req->work, pages_work_handler);
--- 
-1.8.3.1
-
+Thanks
 
