@@ -1,77 +1,103 @@
-Return-Path: <linux-rdma+bounces-4098-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4099-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4638940E52
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 11:53:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EFC394112D
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 13:52:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B54D2814A6
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 09:53:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09BBC1F2399F
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 11:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF2EF195FFC;
-	Tue, 30 Jul 2024 09:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E131891DA;
+	Tue, 30 Jul 2024 11:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K81P9S1/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ABB6194C78;
-	Tue, 30 Jul 2024 09:53:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED6119580A
+	for <linux-rdma@vger.kernel.org>; Tue, 30 Jul 2024 11:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722333198; cv=none; b=TRTbpt1X9L//FovYEoHTrgtBqAl8oj4E/jy2QmDrDdEOXvypE0MtTYms8SlwAG4PCcwMsQE+IP/wE3BY0QxTjyRBiVHNSoZcBMOZ901Axbhxn6Dd5s1G9n7mnKL1IjUROr/6izlmVMN+zQpXtRG+FhzLUVLiLWOiDlMqx2C8Hlk=
+	t=1722340337; cv=none; b=J6Yfkf/jEsEbExqG712RpfQkmWiDk/ct5V4YlSp1vq6gHWsMCa7UxDK3EyWjdOygB9yoBw5nWtQbDW3Z4WQvIcIsVxFluI9iROq2/m4BrhFBU/yKdxoZUaIRESUAWdKU6JjAC4kDGKDh02iqrjnbffca/GpGNpPJVvRiy6xXSk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722333198; c=relaxed/simple;
-	bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GmhjAdhLsP2Lwk7lFqBt/+GwEAhjbqS6cwsdFpn05pj6b1QcrHDR+67N6IHGOnPCqj5LNfpyu0cUz/oGT+IJHZvJdls5GdDOyyEX2N4YPf9Tl78/3ShBVuDLW0qf2+R5AJQwVSUOonW2Cpqv6wE8Go9oAMtCDnyUyiIe94kCW2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4280ac10b7cso506685e9.3;
-        Tue, 30 Jul 2024 02:53:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722333195; x=1722937995;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
-        b=FHjpB3uJcUO4mlf+jIsXk/Y7BSkL1HzdZYmawL4lz9LN4euWEbc1YSEWLqLozMNsi9
-         qqsolBuDl9sZoZf6Rrs2q9eYHxv4o1T9T2GozeHTvwoZmaanjWeHcJij8+od6ED9MfgO
-         HsNlGR7oGSC9OpxyL/wi5UBpUapKyn9dwhNNf5rzply48VJB2cnTuPN9Iy81aW2WIpR/
-         kJuww3btEiVMNEGtZup8PwxrObh4+xhaPVaaRGDfgZkcdnS6Nr67XOiAgjtaGSWhQa+h
-         8jvJBCEg1gxeGCDZUTVcMfdtT100yoOhwN7+O8nvssfylq1Dmp8qHs7a+MeI+a14vGVi
-         OGFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVljkHnBbXPiM7pDFVNfaeLCU2D5K4wbPs+tZS88wTgK6RGl9xAI7BYe7pLeQBLrP+jEvFv29CKswQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJDoB2kRnG35aCSrkPXSgyQjr1y4608IRjsFE9zJvkdJE0fr8g
-	ia78mbaNYJ4knlPFSKBhH473YP0wA/0VVD7QcYBO0OxxSvStGNE4hrOH3g==
-X-Google-Smtp-Source: AGHT+IHuGlZeF848OSae2YeQ5EGMts48qZxhNu+xx7PBOp70Uj061GlfcKfdKbZXFMYoOJdYG9WLNg==
-X-Received: by 2002:a05:600c:1c2a:b0:427:f1a9:cb06 with SMTP id 5b1f17b1804b1-428053c9004mr75819685e9.0.1722333195122;
-        Tue, 30 Jul 2024 02:53:15 -0700 (PDT)
-Received: from [10.50.4.202] (bzq-84-110-32-226.static-ip.bezeqint.net. [84.110.32.226])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-428089c28f0sm193299255e9.28.2024.07.30.02.53.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Jul 2024 02:53:14 -0700 (PDT)
-Message-ID: <2ede2b62-cecc-4bcc-8cc3-5e84528e8405@grimberg.me>
-Date: Tue, 30 Jul 2024 12:53:13 +0300
+	s=arc-20240116; t=1722340337; c=relaxed/simple;
+	bh=cvs9cco82JTUFePkIvywRXSdbeVkpid/g+nyXXDbj0k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=JkcZ7Jmh5kGPVZrffiFI1iDktrGPW1AP1SQQg74ll7rj1UIRgMTldTosoVdup8JpdtlJ2wJAowNKYPpVRwtd1hkoaOoLxl9NB/lML0qK2fIMZcWXHsrpoDDoVFVmxPepuPASJflb3W5Y21pG37QcXSkCRGcE6Cb4y0TVblcRKO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K81P9S1/; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <90ece72b-3dc2-470f-b141-141e8263849e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1722340332;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PaH6Kjnj3qg4cCJn8M+gtWJ6h4zRFBUoW9bz1mS8+Yc=;
+	b=K81P9S1/MdZwhviPhe+w02WKJImuBtTH1iiSIBNpJD3zzyJIMahPoQ56BaRqx1cyRGRedk
+	f4fc+GGJ9xUz7SIZ/WIvbSoYx9Vyy0tdQEcrX/jnSCGVxO2cZ219CxK6/4gyVSm8JsALj+
+	Q5Ma+ialRM4ei5Le8S3XouZJOaklK7o=
+Date: Tue, 30 Jul 2024 19:52:02 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] svcrdma: Handle device removal outside of the CM event
- handler
-To: cel@kernel.org, linux-nfs@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>
-References: <20240729205232.54932-1-cel@kernel.org>
-Content-Language: en-US
-From: Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <20240729205232.54932-1-cel@kernel.org>
+Subject: Re: Seeking Guidance: Creating an IBV Multicast Group?
+To: Andrew Sheinberg <as1669@princeton.edu>, linux-rdma@vger.kernel.org
+References: <1FF42574-65B2-493A-A779-D27F853063A7@princeton.edu>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <1FF42574-65B2-493A-A779-D27F853063A7@princeton.edu>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+在 2024/7/30 1:10, Andrew Sheinberg 写道:
+> Hello all,
+> 
+> I’m not sure if this the right place to ask, but I will give it a try.
+> 
+> I have a system with many initialized UD queue pairs (info for address handle creations and qp numbers exchanged out-of-band). I am only using libibverbs for establishment (purposefully not using librdmacm, to allow for more flexible environment configuration) — everything is working smoothly for unicast.  Now I would like to create a multicast group and attach some of these queue pairs (ibv_mcast_attach); however I am struggling to find any details on how to create such a group (and obtain a proper MGID and MLID).
+> 
+> I found a few examples online but am left with questions:
+> 	- There is code within perftest's "multicast_resources.c", but this seems a bit hacky and oddly verbose
+> 	- There is code within Nvidia Docs’  "Programming Examples using IBV” showcasing joining an already created multicast group at a given IP address using rdma_cm, but It is unclear how to create the group in the first place
+> 
+> 
+> Questions (please correct me if these do not make sense):
+> 
+> 1. What is the role of the OpenSM — is there a C API?
+> 	- Are there any examples using opensm programmatically and not with CLI?
+> 	- Does the API differ on InfiniBand vs. RoCEv2 fabric?
+
+I have made tests with Infiniband vs. RoCEv2. From my perspective, I 
+think, there are some differences between the 2 fabrics.
+
+To the basic functionalities, the difference between 2 fabrics is small. 
+But to the extended functionalities, the difference is big.
+
+The difference is based on the different features.
+
+I just made some simple tests. Perhaps some engineers who made a lot of 
+tests can give more suggestions about this.
+
+Zhu Yanjun
+
+> 
+> 2. Is there any high-level documentation to describe the role of libibumad? (Looking at the man pages on a per-function basis is a bit too fine-grained for my understanding as of now).
+> 	- I also see libibmad — what is the responsibility breakdown between these two?
+> 	- How do they relate to OpenSM?
+> 
+> Any guidance is greatly appreciated.
+> 
+> Thanks,
+> Andrew Sheinberg
+
 
