@@ -1,141 +1,221 @@
-Return-Path: <linux-rdma+bounces-4106-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4107-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF2F6941EE2
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 19:35:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1EFF941F9B
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 20:34:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 350F3B24F04
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 17:34:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61FBB1F24C54
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 18:34:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C5C189915;
-	Tue, 30 Jul 2024 17:34:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148CA18A6D4;
+	Tue, 30 Jul 2024 18:34:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vncm3ufa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717EF166315;
-	Tue, 30 Jul 2024 17:34:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 641651482F3;
+	Tue, 30 Jul 2024 18:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722360886; cv=none; b=N42gYNsJ08CR2ACvUWK0QKtuWu5Guc7v/7dZ1yCm/FMfVn7Qga+XtVw4GXmmlHolEEftlua4dkiQvou2+RE4N2aBIVKRIf6QF/L+Tk8vKQZS3/UNeXFG9LQioyF1c8+9r4aCmeZLrh6mlAjSrNPc4SlMbeXVtFtrPNBRhe2LLuU=
+	t=1722364451; cv=none; b=hq5UuDsoyXIRtV/Umbutznjgnptnowi6oZXRWsNVabo3uS8UGHnkF5yBU7K1MXywdDPfKCnEmbN/41EWAgblgdcFboNAdM3ARRHtAo3S5BTKiYehKTTZUEEDW9AIuLP5fcq2u6uVoisqcW3TXYRJxf4ZfIh90z7YHb7UGbxv+0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722360886; c=relaxed/simple;
-	bh=IjT0k+OgZaf4w+AiOVwzunIw2usu0Ze/wZgJAFfEWsk=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jCb/fYdA15row+ZkiH83yP7IseZ5STuzvk7Ezf5qqx/IbmhJNLbAOU6d4iJM2bNt7jF5t4BoWu2dfApg/sUphUceEqa0IRQeeV7wqUPy/+5Hb7nP/bTNKDwU01dJTlTvACCtD96ne6r9DQH9WwyHdVHug5Y17MtwyCUMx4xdbpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4WYMjm4hWdz6K606;
-	Wed, 31 Jul 2024 01:32:12 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5279A140133;
-	Wed, 31 Jul 2024 01:34:42 +0800 (CST)
-Received: from localhost (10.203.177.66) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Tue, 30 Jul
- 2024 18:34:41 +0100
-Date: Tue, 30 Jul 2024 18:34:41 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: Jonathan Corbet <corbet@lwn.net>, Itay Avraham <itayavr@nvidia.com>, Jakub
- Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<netdev@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed
-	<saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Andy Gospodarek
-	<andrew.gospodarek@broadcom.com>, Aron Silverton <aron.silverton@oracle.com>,
-	Dan Williams <dan.j.williams@intel.com>, "David Ahern" <dsahern@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>, "Jiri Pirko" <jiri@nvidia.com>, Leonid
- Bloch <lbloch@nvidia.com>, "Leon Romanovsky" <leonro@nvidia.com>,
-	<linux-cxl@vger.kernel.org>, <patches@lists.linux.dev>
-Subject: Re: [PATCH v2 3/8] fwctl: FWCTL_INFO to return basic information
- about the device
-Message-ID: <20240730183441.00004672@Huawei.com>
-In-Reply-To: <20240729163513.GD3625856@nvidia.com>
-References: <0-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
-	<3-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
-	<20240726161503.00001c85@Huawei.com>
-	<20240729163513.GD3625856@nvidia.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1722364451; c=relaxed/simple;
+	bh=zIzgANHERYWgSlCLvUxdACUEif8zYOTAwucITvoftoo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ViWVIcyNmDXCgb/ZGLaKPaI+I2xTftv6vKbwfcfVbtR78EDlS54Ec+0sb+QJMesYPFs9P5TeYQ/Wzy0VOG3JJYEKxnn8he5/Hfy24Hk/R93oPS/iGwKjbkeU8tgs3VXA3vz/SKJ/KoqMcquq2JKq1WnWew/dtZDlhlms69dEi1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vncm3ufa; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-70d357040dbso3863350b3a.1;
+        Tue, 30 Jul 2024 11:34:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722364450; x=1722969250; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Fp9sY+KsYLEoL++6nfL7qEAWDNCH4f1pH2g10lY6LQ=;
+        b=Vncm3ufa/LazsIFOCCupAOE6Lr/QHug2z0sCsXSxBLqD/Cl3kCHXhKkRMB/8yZAINX
+         MPqLZ7b8WSl0ouP4AI0Ap/X7MrKTJGSK19BBsAxUNW0AICpD5C2V7GIRCn/EeWzpqvQL
+         YyIAGccTwlyyDTf/Swp6AXPpAnSKgtQvR5+N1AKvyqnq65CuXnl5jTlrDBCVQwl/g3xM
+         p1fgsqtxTAc9ZcsvWD6+vOVsRSeU4KLKKUerL0GDaJ6WExEmN4UY94ATcPpJ1qBiN4ms
+         uJwIw7kX0ko1Wyv4IGVDVbV+neKACnupFNpk/EChvysXpFJFEWBprBI9q7nzZ/oT9xmv
+         Y8dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722364450; x=1722969250;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2Fp9sY+KsYLEoL++6nfL7qEAWDNCH4f1pH2g10lY6LQ=;
+        b=nHSZDfenYt25561kzF5Z5p4r3W/1PQNo298PV207iQ7MrAk7rTvo2WhoW1mcLlSSzm
+         d4+tRGrYVwvsBeHedPjb9h+Mi3zqdsI1UKjEwzhF/6FruILL0vzHaaEfHW9MtX8Pe8F1
+         oE3LsZqtI0g//XG54okIoXiDSdQ8X/QhrqAE6AcCW+IhRXv+XNo99l00n8RClJSuXwPv
+         kzvZxIxuQSziRoSsmt7WZr3Hxrh5+uUNsPSlD6y72WYuxbypLiWkQ07YSlSZdQs8nE9d
+         wHYuR9I1D+UJgn7TksCHPmjelBHd0c1DlocPT/5SrnvgGCl3Z7ytKVqFcgPWc61ioBv7
+         M8BQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUvtRvr69/2Po9GKAZfC0jK0YxUoD8uymp/qOQg2nv1v0Eq/QZJVjFLMnQN5biQIRoyt2oD8UyALn4+xHPPPyoH8Df5uxqJ4ICYQG5hhOhnV6Hg764rODRLGbBMBOVZ1pHJ/VXd0Mq5P822q1D3oMeXxXNCQKQFQzWSeFB7esGxLA==
+X-Gm-Message-State: AOJu0YxlbLxp52pgMl46juqr6f6yUzStpetU/ymXlONOAYk5WtsYMXae
+	CyhkUhnu/tavxSESJulB8GXwG5qVjBqOqH93sIIrfHvWOJjiA6fW
+X-Google-Smtp-Source: AGHT+IEwvW3IZW0hcDRfGFY4bnSHj92tWdAy2P6O4KTjmH4xJdoIfxE1/aHVwTk9k0ym5kG1irSowA==
+X-Received: by 2002:a05:6a00:b45:b0:70d:26f3:e5cb with SMTP id d2e1a72fcca58-70ece9fae78mr12592731b3a.3.1722364449528;
+        Tue, 30 Jul 2024 11:34:09 -0700 (PDT)
+Received: from apais-devbox.. ([2001:569:766d:6500:f2df:af9:e1f6:390e])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7a9f817f5a2sm7837763a12.24.2024.07.30.11.34.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jul 2024 11:34:08 -0700 (PDT)
+From: Allen Pais <allen.lkml@gmail.com>
+To: kuba@kernel.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: jes@trained-monkey.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	kda@linux-powerpc.org,
+	cai.huoqing@linux.dev,
+	dougmill@linux.ibm.com,
+	npiggin@gmail.com,
+	christophe.leroy@csgroup.eu,
+	aneesh.kumar@kernel.org,
+	naveen.n.rao@linux.ibm.com,
+	nnac123@linux.ibm.com,
+	tlfalcon@linux.ibm.com,
+	cooldavid@cooldavid.org,
+	marcin.s.wojtas@gmail.com,
+	mlindner@marvell.com,
+	stephen@networkplumber.org,
+	nbd@nbd.name,
+	sean.wang@mediatek.com,
+	Mark-MC.Lee@mediatek.com,
+	lorenzo@kernel.org,
+	borisp@nvidia.com,
+	bryan.whitehead@microchip.com,
+	UNGLinuxDriver@microchip.com,
+	louis.peens@corigine.com,
+	richardcochran@gmail.com,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-acenic@sunsite.dk,
+	linux-net-drivers@amd.com,
+	netdev@vger.kernel.org,
+	Allen Pais <allen.lkml@gmail.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [net-next v3 00/15] ethernet: Convert from tasklet to BH workqueue
+Date: Tue, 30 Jul 2024 11:33:48 -0700
+Message-Id: <20240730183403.4176544-1-allen.lkml@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Transfer-Encoding: 8bit
 
-On Mon, 29 Jul 2024 13:35:13 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+The only generic interface to execute asynchronously in the BH context is
+tasklet; however, it's marked deprecated and has some design flaws. To
+replace tasklets, BH workqueue support was recently added. A BH workqueue
+behaves similarly to regular workqueues except that the queued work items
+are executed in the BH context.
 
-> On Fri, Jul 26, 2024 at 04:15:03PM +0100, Jonathan Cameron wrote:
-> > On Mon, 24 Jun 2024 19:47:27 -0300
-> > Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >   
-> > > Userspace will need to know some details about the fwctl interface being
-> > > used to locate the correct userspace code to communicate with the
-> > > kernel. Provide a simple device_type enum indicating what the kernel
-> > > driver is.  
-> > 
-> > As below - maybe consider a UUID?
-> > Would let you decouple allocating those with upstreaming drivers.
-> > We'll just get annoying races on the enum otherwise as multiple
-> > drivers get upstreamed that use this.  
-> 
-> I view the coupling as a feature - controlling uABI number assignment
-> is one of the subtle motivations the kernel community has typically
-> used to encourage upstream participation.
+This patch converts a few drivers in drivers/ethernet/* from tasklet
+to BH workqueue. The next set will be sent out after the next -rc is
+out.
 
-Hmm. I'm not sure it's worth the possible pain if this becomes
-popular.  Maybe you'll have to run a reservation hotline.
+This series is based on
+1722389b0d86 (Merge tag 'net-6.11-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net)
+
+[v3]:
+  - Include Reviewed-by signature
+  - hinic: can show work_pending() as a partial replacement for the tasklet state.
+  - mvpp2: retain and re-word comment.
+  - fix rxempty_bh_work() which will emit 'RX Queue Full!'
+     message, so the change should be visibile to the user.
 
 
-> 
-> > > +/**
-> > > + * struct fwctl_info - ioctl(FWCTL_INFO)
-> > > + * @size: sizeof(struct fwctl_info)
-> > > + * @flags: Must be 0
-> > > + * @out_device_type: Returns the type of the device from enum fwctl_device_type  
-> > 
-> > Maybe a UUID?  Avoid need to synchronize that list for ever.
-> >   
-> > > + * @device_data_len: On input the length of the out_device_data memory. On
-> > > + *	output the size of the kernel's device_data which may be larger or
-> > > + *	smaller than the input. Maybe 0 on input.
-> > > + * @out_device_data: Pointer to a memory of device_data_len bytes. Kernel will
-> > > + *	fill the entire memory, zeroing as required.  
-> > 
-> > Why do we need device in names of these two?  
-> 
-> I'm not sure I understand this question?
-> 
-> out_device_type returns the "name"
-> 
-> out_device_data returns a struct of data, the layout of the struct is
-> defined by out_device_type
+[v2]:
+https://lore.kernel.org/all/20240621183947.4105278-1-allen.lkml@gmail.com/
 
-What is device in this case?  fwctl struct device, hardware device, something else?
+[v1]:
+First version converting all the drivers can be found at:
+https://lore.kernel.org/all/20240507190111.16710-2-apais@linux.microsoft.com/
 
-I'm not sure what the names give over
-fwctl_type, out_data_len, out_data
 
-The first one can't just be type as likely as not out_data contains a
-type field specific to the fwctl_device_type.
+Allen Pais (15):
+  net: alteon: Convert tasklet API to new bottom half workqueue
+    mechanism
+  net: xgbe: Convert tasklet API to new bottom half workqueue mechanism
+  net: cnic: Convert tasklet API to new bottom half workqueue mechanism
+  net: macb: Convert tasklet API to new bottom half workqueue mechanism
+  net: cavium/liquidio: Convert tasklet API to new bottom half workqueue
+    mechanism
+  net: octeon: Convert tasklet API to new bottom half workqueue
+    mechanism
+  net: thunderx: Convert tasklet API to new bottom half workqueue
+    mechanism
+  net: chelsio: Convert tasklet API to new bottom half workqueue
+    mechanism
+  net: sundance: Convert tasklet API to new bottom half workqueue
+    mechanism
+  net: hinic: Convert tasklet API to new bottom half workqueue mechanism
+  net: ehea: Convert tasklet API to new bottom half workqueue mechanism
+  net: ibmvnic: Convert tasklet API to new bottom half workqueue
+    mechanism
+  net: jme: Convert tasklet API to new bottom half workqueue mechanism
+  net: marvell: Convert tasklet API to new bottom half workqueue
+    mechanism
+  net: mtk-wed: Convert tasklet API to new bottom half workqueue
+    mechanism
 
-I don't feel that strongly about this though, so stick to device
-if you like. I'll get used to it.
+ drivers/net/ethernet/alteon/acenic.c          | 26 +++---
+ drivers/net/ethernet/alteon/acenic.h          |  8 +-
+ drivers/net/ethernet/amd/xgbe/xgbe-drv.c      | 30 +++----
+ drivers/net/ethernet/amd/xgbe/xgbe-i2c.c      | 16 ++--
+ drivers/net/ethernet/amd/xgbe/xgbe-mdio.c     | 16 ++--
+ drivers/net/ethernet/amd/xgbe/xgbe-pci.c      |  4 +-
+ drivers/net/ethernet/amd/xgbe/xgbe.h          | 10 +--
+ drivers/net/ethernet/broadcom/cnic.c          | 19 ++---
+ drivers/net/ethernet/broadcom/cnic.h          |  2 +-
+ drivers/net/ethernet/cadence/macb.h           |  3 +-
+ drivers/net/ethernet/cadence/macb_main.c      | 10 +--
+ .../net/ethernet/cavium/liquidio/lio_core.c   |  4 +-
+ .../net/ethernet/cavium/liquidio/lio_main.c   | 24 +++---
+ .../ethernet/cavium/liquidio/lio_vf_main.c    | 10 +--
+ .../ethernet/cavium/liquidio/octeon_droq.c    |  4 +-
+ .../ethernet/cavium/liquidio/octeon_main.h    |  4 +-
+ .../net/ethernet/cavium/octeon/octeon_mgmt.c  | 13 +--
+ drivers/net/ethernet/cavium/thunder/nic.h     |  5 +-
+ .../net/ethernet/cavium/thunder/nicvf_main.c  | 24 +++---
+ .../ethernet/cavium/thunder/nicvf_queues.c    |  4 +-
+ .../ethernet/cavium/thunder/nicvf_queues.h    |  2 +-
+ drivers/net/ethernet/chelsio/cxgb/sge.c       | 19 ++---
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4.h    |  9 ++-
+ .../net/ethernet/chelsio/cxgb4/cxgb4_main.c   |  2 +-
+ .../ethernet/chelsio/cxgb4/cxgb4_tc_mqprio.c  |  4 +-
+ .../net/ethernet/chelsio/cxgb4/cxgb4_uld.c    |  2 +-
+ drivers/net/ethernet/chelsio/cxgb4/sge.c      | 40 +++++-----
+ drivers/net/ethernet/chelsio/cxgb4vf/sge.c    |  6 +-
+ drivers/net/ethernet/dlink/sundance.c         | 41 +++++-----
+ .../net/ethernet/huawei/hinic/hinic_hw_cmdq.c |  2 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_eqs.c  | 18 ++---
+ .../net/ethernet/huawei/hinic/hinic_hw_eqs.h  |  2 +-
+ drivers/net/ethernet/ibm/ehea/ehea.h          |  3 +-
+ drivers/net/ethernet/ibm/ehea/ehea_main.c     | 14 ++--
+ drivers/net/ethernet/ibm/ibmvnic.c            | 24 +++---
+ drivers/net/ethernet/ibm/ibmvnic.h            |  2 +-
+ drivers/net/ethernet/jme.c                    | 80 ++++++++++---------
+ drivers/net/ethernet/jme.h                    |  9 ++-
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |  9 ++-
+ drivers/net/ethernet/marvell/skge.c           | 12 +--
+ drivers/net/ethernet/marvell/skge.h           |  3 +-
+ drivers/net/ethernet/mediatek/mtk_wed_wo.c    | 12 +--
+ drivers/net/ethernet/mediatek/mtk_wed_wo.h    |  3 +-
+ 43 files changed, 288 insertions(+), 266 deletions(-)
 
-Jonathan
- 
-> 
-> Jason
+-- 
+2.34.1
 
 
