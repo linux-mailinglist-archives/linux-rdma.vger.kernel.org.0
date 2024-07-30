@@ -1,165 +1,183 @@
-Return-Path: <linux-rdma+bounces-4092-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4093-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF7BD940931
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 09:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EFD69409FD
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 09:37:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2EA11C22D01
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 07:13:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 411051C23242
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 07:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB6D2190070;
-	Tue, 30 Jul 2024 07:13:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C88218FC6E;
+	Tue, 30 Jul 2024 07:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="HmW0Tmzs"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="UBDYZ/G2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B444718FC6D
-	for <linux-rdma@vger.kernel.org>; Tue, 30 Jul 2024 07:13:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06BC13B780;
+	Tue, 30 Jul 2024 07:36:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722323586; cv=none; b=EKJLP1ji1HiZfajJmTNVs8yXQH7+bqC9R807zbjaFjiihpW0L8xqvXWLhBNEIk7dQ5XD9A9dpGUqv41r+UhtgeWGKY/Pjs5j5ZMkQWBuLFX64dNsRlTIRw55wk0fSrWNB50B1eDW4aZVlxh1LY6qADRZI54mihKVT0w66PhhXWc=
+	t=1722325017; cv=none; b=nqjBNVSLf2WcTXGDIIBHsijFtNs1xdkvzMgcJ3v3OXHGvO/dQIcfX9BO0/KOdtnYmInat2QXmVR4X7NAtKU491R2jqShpZok/VHxsxwT4rN0rwcw86hVquy9sRXUeXZHVm+98BFaXEjZbHeoQlgTqvuOfjdIFbWZWFGV/LBxclY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722323586; c=relaxed/simple;
-	bh=OKjfLeQQWKG0BSFRsS4/CO9mkoQXn7p3V6TvzeChxSk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M8xYlVjJ6WujdWtq9hH4GZT8JiVPqomkf5BDdtbck/4W02SyhbAJEtmV48fIb7xAmTPlvUoInT39wA1xqXZXSQ2ac/5R9XrhIcNqacE4GXcnvk6smulL26MR11KoBrDGfOz311Yfu+CtPWxl3vScabatYe4b7VOmhZzZfq79Y2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=HmW0Tmzs; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-36874d7f70bso414934f8f.1
-        for <linux-rdma@vger.kernel.org>; Tue, 30 Jul 2024 00:13:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1722323583; x=1722928383; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9KPTLWLekzUxyh9fC8CWnCkt1/pYTgCXaJag08Di2pc=;
-        b=HmW0TmzsZlMPjyRsgef+4IHZaYX8oRj/ZsaqndA+VJyiN3+rsujEjtzzbeRzP0pujP
-         S11mgfWjZZFvEd9bRCwhoWx6aMH8z/HI2i9g0IO2p8h8TaTaBoK3b/TyEmfta8+GIyde
-         6Ufao1jLDFVbfBeuhE+ctEDTUx9e0g4speHfc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722323583; x=1722928383;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9KPTLWLekzUxyh9fC8CWnCkt1/pYTgCXaJag08Di2pc=;
-        b=ujsDlBX7h73Pzyqyqslsf+34Dxp2wpDofBRmrVN/QkIjJqgXpObqYLOtxi1CLtbFo5
-         f/70IvwP7iS9obruW3fB90qwnKhJVRqIl9Jy4bVPX2jOrwH6eZ0bulEb5rHP8Td5cHub
-         6MVWP7EjHWwqZMFKdW5Mb0SlaoZhuyQ31pGqEWVd1Fu3qKBdLNTs7FNkT69MS9oSV1XQ
-         Ba73Qu4Hjh425qc4MAMcc898Y+VGJcEKzD7eO8yF3et4o1AnSY7Jgp/MQMRyKlSZFk9l
-         7Lhu1k9ZPEvlaVkK5zXxleJjrTH4QiFo/fawQWRzfk3tXOy0CnVuk5cP5CqoNYxBGvKx
-         N7Pw==
-X-Forwarded-Encrypted: i=1; AJvYcCVS8bQvDkMY38QHDjUjP1/GAYhivc14Isz+/yLXzfnUkhXqFYsZFN0Zz0PkaY4pWXuuZyuxgjrhGDGW@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5ydL5PwXAhwq4ZTbiruUHEddoZ5Se3UeBbHPu8RZ6tDyLXD5/
-	J1iUA476tCzt195AWh2HQ1diK9kaCwWIVWhVy4U9dboTo/IzYzj/hT/vNgCl458=
-X-Google-Smtp-Source: AGHT+IFxKfMFbNl9HRLCWhOwSr18KHdJhSlm0eAzrgkXYf8GFau+PacOCxcxAX7cEIFXYegZVA+dog==
-X-Received: by 2002:a05:6000:2a4:b0:368:4c5:12ec with SMTP id ffacd0b85a97d-36b34e5ac7dmr6981818f8f.8.1722323582849;
-        Tue, 30 Jul 2024 00:13:02 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36b367e51f0sm13906465f8f.46.2024.07.30.00.13.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jul 2024 00:13:02 -0700 (PDT)
-Date: Tue, 30 Jul 2024 09:13:00 +0200
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	ksummit@lists.linux.dev, linux-cxl@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	shiju.jose@huawei.com, Borislav Petkov <bp@alien8.de>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-Message-ID: <ZqiSfC5--4q2UFGk@phenom.ffwll.local>
-References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
- <20240729134512.0000487f@Huawei.com>
- <20240729154203.GF3371438@nvidia.com>
- <66a81996d4154_2142c29464@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+	s=arc-20240116; t=1722325017; c=relaxed/simple;
+	bh=oa+Afng6R5K3QmPktSUjt9b3d3Diz8j19/vzUfAKm6k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=R/MNXI8AOqor8DXgajs48qLfCCIdJX19+U7WHDBs2tRAuUMNpKbmJ8okXQnB0mit3f3ynmbsFwFrEPJcwUhE0iAZTMacOe1W4ZHIMiCL9tMEZdp2DaIfA+WksNOkfZ7GywfGqyhmEze7Y/7ZVNajnfMWKerqSGo+9R9lDYBLRxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=UBDYZ/G2; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46TKtV14022219;
+	Tue, 30 Jul 2024 07:36:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding; s=corp-2023-11-20; bh=vRACKsqsmtS90X
+	/En0V7eGmEXSmI+PyodfcrJK7YG7k=; b=UBDYZ/G2P3SyvjmGHqjQqFn81gocgH
+	B4/34mmMeS4hlggvcPpdRGYp0O4bKt56/T35zEw4DOJe7Dc7wVmsJT4nOC0zy95g
+	tTJCB4RpqH6kIRfH2lVGa+5O8L/y+bMVxCCMBJSHB2w4k1jHaZMO6ceH5zVIVsPb
+	7dkPY2rUZYJy2+t3KyJepZwZ/RfBLjQ/IEjcmvx7aX87WId4NEfJJYm1oLJM4Fnm
+	g35wSAk/O57541KSXZ4RZbyzoyMA4rUKKkfjkSO6Zp26f2BTFYUvM5j/5g2bFQf/
+	S/AdyS4Dpikyy9/7kMFAX2rlmoi1QEfQSdYN65S4zzVtR9CqyZV382jg==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 40mrgs4c6t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 30 Jul 2024 07:36:43 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 46U7UH36037991;
+	Tue, 30 Jul 2024 07:36:42 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 40pm82vv6g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 30 Jul 2024 07:36:42 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 46U7agg4020312;
+	Tue, 30 Jul 2024 07:36:42 GMT
+Received: from aakhoje-ol.in.oracle.com (dhcp-10-191-235-170.vpn.oracle.com [10.191.235.170])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 40pm82vv4k-1;
+	Tue, 30 Jul 2024 07:36:41 +0000
+From: Anand Khoje <anand.a.khoje@oracle.com>
+To: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc: saeedm@mellanox.com, leon@kernel.org, tariqt@nvidia.com,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        davem@davemloft.net, rama.nichanamatlu@oracle.com,
+        manjunath.b.patil@oracle.com
+Subject: [PATCH net-next v7] net/mlx5: Reclaim max 50K pages at once
+Date: Tue, 30 Jul 2024 13:06:33 +0530
+Message-ID: <20240730073634.114407-1-anand.a.khoje@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <66a81996d4154_2142c29464@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-X-Operating-System: Linux phenom 6.9.7-amd64 
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-30_07,2024-07-26_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 mlxscore=0
+ suspectscore=0 phishscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2407110000
+ definitions=main-2407300055
+X-Proofpoint-GUID: GIS15TYoOrrSxeI6sVq7U0GqUhcuXbYh
+X-Proofpoint-ORIG-GUID: GIS15TYoOrrSxeI6sVq7U0GqUhcuXbYh
 
-On Mon, Jul 29, 2024 at 03:37:10PM -0700, Dan Williams wrote:
-> Jason Gunthorpe wrote:
-> [..]
-> > > We could say it can only be used for features we have 'opted' in +
-> > > vendor defined features, but I'm not sure that helps.  If a vendor
-> > > defines a feature for generation A, and does what we want them to by
-> > > proposing a spec addition they use in generation B, we would want a
-> > > path to single upstream interface for both generations.  So I don't
-> > > think restricting this to particular classes of command helps us.
-> > 
-> > My expectation for fwctl was that it would own things that are
-> > reasonably sharable by the kernel and userspace.
-> > 
-> > As an example, instead of a turning on a feature dynamically at run
-> > time, you'd want to instead tell the FW that on next reboot that
-> > feature will be forced on.
-> > 
-> > Another take would be things that are clearly contained to fwctl
-> > multi-instance features where fwctl gets its own private thing that
-> > cannot disturb the kernel.
-> > 
-> > I'm really not familiar with cxl to give any comment here - but
-> > dynamically control the single global scrubber unit seems like a poor
-> > fit to me.
-> 
-> Right, one of the mistakes from NVDIMM that was corrected for CXL was to
-> explicitly remove the passthrough capability for global state machine
-> controls like scrubbing.
-> 
-> Many of the "Immediate Configuration Change" CXL commands fall into this
-> bucket of things that may want to have a kernel-managed global view
-> rather than let userspace and the kernel get into fights about the
-> configuration. So, I think it is reasonable to say that scrub has a
-> kernel interface that goes through EDAC and not fwctl.
-> 
-> For the "anonymous" "Features" that advertise an "Immediate
-> Configuration Change" effect those need CAP_SYS_RAWIO at a minimum,
-> possibly a kernel taint, and/or compile time option to block them. Maybe
-> that encourages more "Configuration Change after Reset" Set Feature
-> capabilities which carry less risk of confusing a running kernel.
+In non FLR context, at times CX-5 requests release of ~8 million FW pages.
+This needs humongous number of cmd mailboxes, which to be released once
+the pages are reclaimed. Release of humongous number of cmd mailboxes is
+consuming cpu time running into many seconds. Which with non preemptible
+kernels is leading to critical process starving on that cpu’s RQ.
+On top of it, the FW does not use all the mailbox messages as it has a
+limit of releasing 50K pages at once per MLX5_CMD_OP_MANAGE_PAGES +
+MLX5_PAGES_TAKE device command. Hence, the allocation of these many
+mailboxes is extra and adds unnecessary overhead.
+To alleviate this, this change restricts the total number of pages
+a worker will try to reclaim to maximum 50K pages in one go.
 
-I think a solid consensus on the topics above would be really useful for
-gpu/accel too. We're still busy with more pressing community/ecosystem
-building needs, but gpu fw has become rather complex and it's not
-stopping. And there's random other devices attached too nowadays, so fwctl
-makes a ton of sense.
+Our tests have shown significant benefit of this change in terms of
+time consumed by dma_pool_free().
+During a test where an event was raised by HCA
+to release 1.3 Million pages, following observations were made:
 
-But for me the more important stuff would be some clear guidelines like
-what should be in other more across-devices subsystems like edac (or other
-ras features), what should be in functional subsystems like netdev, rdma,
-gpu/accel, ... whatever else, and what should be exposed through some
-special purpose subsystems like hwmon.
+- Without this change:
+Number of mailbox messages allocated was around 20K, to accommodate
+the DMA addresses of 1.3 million pages.
+The average time spent by dma_pool_free() to free the DMA pool is between
+16 usec to 32 usec.
+           value  ------------- Distribution ------------- count
+             256 |                                         0
+             512 |@                                        287
+            1024 |@@@                                      1332
+            2048 |@                                        656
+            4096 |@@@@@                                    2599
+            8192 |@@@@@@@@@@                               4755
+           16384 |@@@@@@@@@@@@@@@                          7545
+           32768 |@@@@@                                    2501
+           65536 |                                         0
 
-And then also what the access control guidelines should be around tainting
-and and premission checks.
+- With this change:
+Number of mailbox messages allocated was around 800; this was to
+accommodate DMA addresses of only 50K pages.
+The average time spent by dma_pool_free() to free the DMA pool in this case
+lies between 1 usec to 2 usec.
+           value  ------------- Distribution ------------- count
+             256 |                                         0
+             512 |@@@@@@@@@@@@@@@@@@                       346
+            1024 |@@@@@@@@@@@@@@@@@@@@@@                   435
+            2048 |                                         0
+            4096 |                                         0
+            8192 |                                         1
+           16384 |                                         0
 
-We've got plenty of experience in enforcing such a community contract with
-vendors, but the hard part is creating a clear and ideally concise
-documentation page I can just point vendors at as the ground truth.
+Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+Acked-by: Saeed Mahameed <saeedm@nvidia.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-I'm also not super worried about the uapi breakage scenarios. We have
-plenty of experience in drm with sometimes horrendous hacks to keep
-existing userspace and real-world use-cases going, while still being able
-to move the subsystem forward and standardize more stuff as it starts to
-make sense. But the "here's the goal" documentation, maybe with the
-occasional update when a new subsystem like edac shows up, is imo the hard
-part and would be really, really useful.
-
-Cheers, Sima
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
+index d894a88..972e8e9 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
+@@ -608,6 +608,11 @@ enum {
+ 	RELEASE_ALL_PAGES_MASK = 0x4000,
+ };
+ 
++/* This limit is based on the capability of the firmware as it cannot release
++ * more than 50000 back to the host in one go.
++ */
++#define MAX_RECLAIM_NPAGES (-50000)
++
+ static int req_pages_handler(struct notifier_block *nb,
+ 			     unsigned long type, void *data)
+ {
+@@ -639,7 +644,16 @@ static int req_pages_handler(struct notifier_block *nb,
+ 
+ 	req->dev = dev;
+ 	req->func_id = func_id;
+-	req->npages = npages;
++
++	/* npages > 0 means HCA asking host to allocate/give pages,
++	 * npages < 0 means HCA asking host to reclaim back the pages allocated.
++	 * Here we are restricting the maximum number of pages that can be
++	 * reclaimed to be MAX_RECLAIM_NPAGES. Note that MAX_RECLAIM_NPAGES is
++	 * a negative value.
++	 * Since MAX_RECLAIM is negative, we are using max() to restrict
++	 * req->npages (and not min ()).
++	 */
++	req->npages = max_t(s32, npages, MAX_RECLAIM_NPAGES);
+ 	req->ec_function = ec_function;
+ 	req->release_all = release_all;
+ 	INIT_WORK(&req->work, pages_work_handler);
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+1.8.3.1
+
 
