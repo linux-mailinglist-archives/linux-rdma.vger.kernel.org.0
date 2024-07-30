@@ -1,165 +1,258 @@
-Return-Path: <linux-rdma+bounces-4094-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4095-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15306940AA7
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 10:02:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6044940D37
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 11:17:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93BFBB24169
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 08:02:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 919202848EB
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Jul 2024 09:17:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2242B194143;
-	Tue, 30 Jul 2024 08:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E3A194ACA;
+	Tue, 30 Jul 2024 09:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mQSEr+M7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DfLArkML"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66491922DD;
-	Tue, 30 Jul 2024 08:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6270C19412E
+	for <linux-rdma@vger.kernel.org>; Tue, 30 Jul 2024 09:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722326444; cv=none; b=JQvEcD8tnWZ5Us76vYuF7Ha2UybGhJv8sO4vSBQyq6NfPVvFq62DsG4Eyk4wRMdUyk0kZedwOyAovjN0ogGXfui0hwlif9cL0raxi2Peb/DQq4N1ZKG/S6qzRaJ1VCio07hnCPs5Xn09iC42WvNjPA62f2YnrgqdA5nLSX5MMGo=
+	t=1722331052; cv=none; b=TI4MAIU8XomP0Ss2xuZSGaw0iZsZR3spduqb6yK559ayO0PjFXPUFkhdKZSU5sjt59Geb25w5Tbbj3irKhF8RqsR/MUkg46yOy6BCwc2zNvgXE3NqmNRlvl9qgiJx7aM1olz9L+CmgO11QK21/kypz3v8ufCJPocH9OvEw+FpV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722326444; c=relaxed/simple;
-	bh=me2Vx0Tql7Lk7lB65nstEIzCxKFK2tRL4TMf2lYsypc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tT14eiHUU0rqQE9M9XjtkS8xFO5tG3A7VBCDH7frFgq7pDGlhnmpX5aH0vPCRTMKtbHtnSzGQndp9YJI0k49Nvg3N7ZsL8f00rsWyJTuAnFknig1E8NfK5IF1mgz/wcecFMhSAXij+tKmuI7+CsvNv8Vje7pUnGXpiooWoDcq7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mQSEr+M7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6D53C32782;
-	Tue, 30 Jul 2024 08:00:43 +0000 (UTC)
+	s=arc-20240116; t=1722331052; c=relaxed/simple;
+	bh=zlipFjWpIIWzpXxM7YXz6M+elXBIvl7jtvyJ32jvfmk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y9FneOUCwD3e8iXQmSAzx1BubLa/UxHnvMmWuKTKECq3/XZtzpecUW48z5pA+WACERU/Cy7cexsGV6xANEJ6tvVwho71wXoPcm+CjUHlAxhEIdsTEsJlaTacyIB1uzvxzEPJ4S3j5YSKuZKYaDLFVN8ROUCCniAX0Xx4R4dN2jY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DfLArkML; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B0B0C32782;
+	Tue, 30 Jul 2024 09:17:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722326444;
-	bh=me2Vx0Tql7Lk7lB65nstEIzCxKFK2tRL4TMf2lYsypc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mQSEr+M77vYU0z5icTDzOeeMVIPJ7yXJj/PEjntm162mYSpfECFJ7pr0CfnfmiDIO
-	 REvodpJQ3WRokcYnzFKj7cjEMMUZxRemShSGIDzl9uuGKAYdcjNee/yFZq7uA2yQMd
-	 6t0fH6vUWfhAD6PaEQ+GoMIzulP6yzxzsyAfcu43nPAbzf2rwX93Q6uGL+qP8LdpjX
-	 afsmrdo2vRsIxrZHqJG4wlbGTmYkzBkV3qvckUH++kvhQ5a/dJe53wtFsDJ6GNPFZ6
-	 EnIDgUn8hLUQEuscjYyytRCNcIEg73X2y4gKJHBdxI3OhXdtBiRvEH8CTgZGyilhq7
-	 BaplhWs3YYcBw==
-Date: Tue, 30 Jul 2024 11:00:38 +0300
+	s=k20201202; t=1722331052;
+	bh=zlipFjWpIIWzpXxM7YXz6M+elXBIvl7jtvyJ32jvfmk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=DfLArkMLyKUECq8CNrOeFIlEw8gcFTzGsdI/CDeWppaegHPKUvby7cxijIfAXsH5f
+	 gjl2rFPfcLs+MiQszG1y9N8yEU3jHoxWkBr4M4ljCNEViPgK67qw2A6zxU+6NOZ5Zn
+	 18pAm8qbjBHAgv+oguQun+o0aP5e349mnrXfUxg+KxcR+H2IQDp6uu3/7/IQxNBzeH
+	 JSr+MTHifE7IIRqDajnRGBZDYibekl0okVl9kHm9/JqBx5+F+nf0YdGHOa1mrcRZWQ
+	 S0cpe2g/8++K8Eh0kSqC3R1Kh5eRYwuNzv+EXDP4ykzxmVY0X4ZK+kEzXxdVAhGj/Z
+	 gx6Em2qaS6i7Q==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Itay Avraham <itayavr@nvidia.com>,
-	Jakub Kicinski <kuba@kernel.org>, linux-doc@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
-	Aron Silverton <aron.silverton@oracle.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	David Ahern <dsahern@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>, Jiri Pirko <jiri@nvidia.com>,
-	Leonid Bloch <lbloch@nvidia.com>, linux-cxl@vger.kernel.org,
-	patches@lists.linux.dev
-Subject: Re: [PATCH v2 5/8] fwctl: FWCTL_RPC to execute a Remote Procedure
- Call to device firmware
-Message-ID: <20240730080038.GA4209@unreal>
-References: <0-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
- <5-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
+Cc: Chiara Meiohas <cmeiohas@nvidia.com>,
+	linux-rdma@vger.kernel.org,
+	Michael Guralnik <michaelgur@nvidia.com>
+Subject: [PATCH rdma-next] RDMA/nldev: Enhance netlink message parsing and validation
+Date: Tue, 30 Jul 2024 12:17:25 +0300
+Message-ID: <f633a979a49db090d05c24a3ba83d30727bb777b.1722331020.git.leon@kernel.org>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jun 24, 2024 at 07:47:29PM -0300, Jason Gunthorpe wrote:
-> Add the FWCTL_RPC ioctl which allows a request/response RPC call to device
-> firmware. Drivers implementing this call must follow the security
-> guidelines under Documentation/userspace-api/fwctl.rst
-> 
-> The core code provides some memory management helpers to get the messages
-> copied from and back to userspace. The driver is responsible for
-> allocating the output message memory and delivering the message to the
-> device.
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  drivers/fwctl/main.c       | 62 +++++++++++++++++++++++++++++++++++
->  include/linux/fwctl.h      |  5 +++
->  include/uapi/fwctl/fwctl.h | 66 ++++++++++++++++++++++++++++++++++++++
->  3 files changed, 133 insertions(+)
-> 
-> diff --git a/drivers/fwctl/main.c b/drivers/fwctl/main.c
-> index f1dec0b590aee4..9506b993a1a56d 100644
-> --- a/drivers/fwctl/main.c
-> +++ b/drivers/fwctl/main.c
-> @@ -8,16 +8,20 @@
->  #include <linux/slab.h>
->  #include <linux/container_of.h>
->  #include <linux/fs.h>
-> +#include <linux/sizes.h>
->  
->  #include <uapi/fwctl/fwctl.h>
->  
->  enum {
->  	FWCTL_MAX_DEVICES = 256,
-> +	MAX_RPC_LEN = SZ_2M,
->  };
->  static dev_t fwctl_dev;
->  static DEFINE_IDA(fwctl_ida);
-> +static unsigned long fwctl_tainted;
->  
->  DEFINE_FREE(kfree_errptr, void *, if (!IS_ERR_OR_NULL(_T)) kfree(_T));
-> +DEFINE_FREE(kvfree_errptr, void *, if (!IS_ERR_OR_NULL(_T)) kvfree(_T));
->  
->  struct fwctl_ucmd {
->  	struct fwctl_uctx *uctx;
-> @@ -75,9 +79,66 @@ static int fwctl_cmd_info(struct fwctl_ucmd *ucmd)
->  	return ucmd_respond(ucmd, sizeof(*cmd));
->  }
->  
-> +static int fwctl_cmd_rpc(struct fwctl_ucmd *ucmd)
-> +{
-> +	struct fwctl_device *fwctl = ucmd->uctx->fwctl;
-> +	struct fwctl_rpc *cmd = ucmd->cmd;
-> +	size_t out_len;
-> +
-> +	if (cmd->in_len > MAX_RPC_LEN || cmd->out_len > MAX_RPC_LEN)
-> +		return -EMSGSIZE;
-> +
-> +	switch (cmd->scope) {
-> +	case FWCTL_RPC_CONFIGURATION:
-> +	case FWCTL_RPC_DEBUG_READ_ONLY:
-> +		break;
-> +
-> +	case FWCTL_RPC_DEBUG_WRITE_FULL:
-> +		if (!capable(CAP_SYS_RAWIO))
-> +			return -EPERM;
-> +		fallthrough;
-> +	case FWCTL_RPC_DEBUG_WRITE:
-> +		if (!test_and_set_bit(0, &fwctl_tainted)) {
-> +			dev_warn(
-> +				&fwctl->dev,
-> +				"%s(%d): has requested full access to the physical device device",
-> +				current->comm, task_pid_nr(current));
-> +			add_taint(TAINT_FWCTL, LOCKDEP_STILL_OK);
-> +		}
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	};
-> +
-> +	void *inbuf __free(kvfree) =
-> +		kvzalloc(cmd->in_len, GFP_KERNEL | GFP_KERNEL_ACCOUNT);
+From: Chiara Meiohas <cmeiohas@nvidia.com>
 
+Use strict parsing validation for set commands, and liberal
+validation for get commands. Additionally, remove all usage of
+nlmsg_parse_depricate().
 
-<...>
+Strict parsing validation fails when encountering unrecognized
+attributes in the Netlink message, while liberal parsing
+validation ignores them.
 
-> +	out_len = cmd->out_len;
-> +	void *outbuf __free(kvfree_errptr) = fwctl->ops->fw_rpc(
-> +		ucmd->uctx, cmd->scope, inbuf, cmd->in_len, &out_len);
+In 57d7a8fd904c ("rdma: Add an option to display driver-specific QPs in the rdma tool")
+in iproute2, the attribute RDMA_NLDEV_ATTR_DRIVER_DETAILS
+was added. This cause backwards compatibility issues when using
+the rdma tool with the new attribute and an older kernel which does
+recognize this attribute.
+In this case, the command "rdma stat show mr" would fail, because the
+new rdma tool would fill the netlink message with the new attribute and
+the older kernel would fail as it used strict parsing and did not
+recognize the new attribute.
 
-I was under impression that declaration of variables in C should be at the beginning
-of block. Was it changed for the kernel?
+In general, strict validation is appropriate for set commands as they
+modify the system, while liberal validation is suitable for get
+commands which only query system information.
 
-Thanks
+Replace all uses of nlmsg_parse_deprecated() with __nlmsg_parse(),
+using the NL_VALIDATE_LIBERAL flag.
+The nlmsg_parse_deprecated() function internally calls
+__nlmsg_parse() with the NL_VALIDATE_LIBERAL flag, but its name
+is confusing.
+
+Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
+Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/core/nldev.c | 56 ++++++++++++++++-----------------
+ 1 file changed, 28 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index a6b80cdc96f7..4d4a1f90e484 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -1074,8 +1074,8 @@ static int nldev_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	u32 index;
+ 	int err;
+ 
+-	err = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-				     nldev_policy, extack);
++	err = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
+ 	if (err || !tb[RDMA_NLDEV_ATTR_DEV_INDEX])
+ 		return -EINVAL;
+ 
+@@ -1123,8 +1123,8 @@ static int nldev_set_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	u32 index;
+ 	int err;
+ 
+-	err = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-				     nldev_policy, extack);
++	err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, extack);
+ 	if (err || !tb[RDMA_NLDEV_ATTR_DEV_INDEX])
+ 		return -EINVAL;
+ 
+@@ -1215,8 +1215,8 @@ static int nldev_port_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	u32 port;
+ 	int err;
+ 
+-	err = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-				     nldev_policy, extack);
++	err = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
+ 	if (err ||
+ 	    !tb[RDMA_NLDEV_ATTR_DEV_INDEX] ||
+ 	    !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
+@@ -1275,8 +1275,8 @@ static int nldev_port_get_dumpit(struct sk_buff *skb,
+ 	int err;
+ 	unsigned int p;
+ 
+-	err = nlmsg_parse_deprecated(cb->nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-				     nldev_policy, NULL);
++	err = __nlmsg_parse(cb->nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, NL_VALIDATE_LIBERAL, NULL);
+ 	if (err || !tb[RDMA_NLDEV_ATTR_DEV_INDEX])
+ 		return -EINVAL;
+ 
+@@ -1331,8 +1331,8 @@ static int nldev_res_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	u32 index;
+ 	int ret;
+ 
+-	ret = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-				     nldev_policy, extack);
++	ret = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
+ 	if (ret || !tb[RDMA_NLDEV_ATTR_DEV_INDEX])
+ 		return -EINVAL;
+ 
+@@ -1481,8 +1481,8 @@ static int res_get_common_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	struct sk_buff *msg;
+ 	int ret;
+ 
+-	ret = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-				     nldev_policy, extack);
++	ret = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
+ 	if (ret || !tb[RDMA_NLDEV_ATTR_DEV_INDEX] || !fe->id || !tb[fe->id])
+ 		return -EINVAL;
+ 
+@@ -1569,8 +1569,8 @@ static int res_get_common_dumpit(struct sk_buff *skb,
+ 	u32 index, port = 0;
+ 	bool filled = false;
+ 
+-	err = nlmsg_parse_deprecated(cb->nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-				     nldev_policy, NULL);
++	err = __nlmsg_parse(cb->nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, NL_VALIDATE_LIBERAL, NULL);
+ 	/*
+ 	 * Right now, we are expecting the device index to get res information,
+ 	 * but it is possible to extend this code to return all devices in
+@@ -1762,8 +1762,8 @@ static int nldev_newlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	char type[IFNAMSIZ];
+ 	int err;
+ 
+-	err = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-				     nldev_policy, extack);
++	err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, extack);
+ 	if (err || !tb[RDMA_NLDEV_ATTR_DEV_NAME] ||
+ 	    !tb[RDMA_NLDEV_ATTR_LINK_TYPE] || !tb[RDMA_NLDEV_ATTR_NDEV_NAME])
+ 		return -EINVAL;
+@@ -1806,8 +1806,8 @@ static int nldev_dellink(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	u32 index;
+ 	int err;
+ 
+-	err = nlmsg_parse_deprecated(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-				     nldev_policy, extack);
++	err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, extack);
+ 	if (err || !tb[RDMA_NLDEV_ATTR_DEV_INDEX])
+ 		return -EINVAL;
+ 
+@@ -1836,8 +1836,8 @@ static int nldev_get_chardev(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	u32 index;
+ 	int err;
+ 
+-	err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1, nldev_policy,
+-			  extack);
++	err = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1, nldev_policy,
++			    NL_VALIDATE_LIBERAL, extack);
+ 	if (err || !tb[RDMA_NLDEV_ATTR_CHARDEV_TYPE])
+ 		return -EINVAL;
+ 
+@@ -1920,8 +1920,8 @@ static int nldev_sys_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	struct sk_buff *msg;
+ 	int err;
+ 
+-	err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-			  nldev_policy, extack);
++	err = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
+ 	if (err)
+ 		return err;
+ 
+@@ -2420,8 +2420,8 @@ static int nldev_stat_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
+ 	int ret;
+ 
+-	ret = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-			  nldev_policy, extack);
++	ret = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
+ 	if (ret)
+ 		return -EINVAL;
+ 
+@@ -2450,8 +2450,8 @@ static int nldev_stat_get_dumpit(struct sk_buff *skb,
+ 	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
+ 	int ret;
+ 
+-	ret = nlmsg_parse(cb->nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-			  nldev_policy, NULL);
++	ret = __nlmsg_parse(cb->nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, NL_VALIDATE_LIBERAL, NULL);
+ 	if (ret || !tb[RDMA_NLDEV_ATTR_STAT_RES])
+ 		return -EINVAL;
+ 
+@@ -2482,8 +2482,8 @@ static int nldev_stat_get_counter_status_doit(struct sk_buff *skb,
+ 	u32 devid, port;
+ 	int ret, i;
+ 
+-	ret = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
+-			  nldev_policy, extack);
++	ret = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1,
++			    nldev_policy, NL_VALIDATE_LIBERAL, extack);
+ 	if (ret || !tb[RDMA_NLDEV_ATTR_DEV_INDEX] ||
+ 	    !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
+ 		return -EINVAL;
+-- 
+2.45.2
+
 
