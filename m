@@ -1,110 +1,103 @@
-Return-Path: <linux-rdma+bounces-4129-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4130-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E4E494298B
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2024 10:49:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D58DA942BC1
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2024 12:13:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38439B2205C
-	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2024 08:49:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97026286CC0
+	for <lists+linux-rdma@lfdr.de>; Wed, 31 Jul 2024 10:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C02E91A8BF3;
-	Wed, 31 Jul 2024 08:49:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="MZPw1gAC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A35D1AC446;
+	Wed, 31 Jul 2024 10:12:53 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391A718CBED;
-	Wed, 31 Jul 2024 08:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25291AC442;
+	Wed, 31 Jul 2024 10:12:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722415785; cv=none; b=NElvX5v5hMXc9wdOQJ3+VE0RV7dNG5baSGZJHwuEzhz4IBdBjngUuyCrodv7AipXpeqClc8lri8NiVQZif6eym6/1UHbe/4TI64bHRL58dT73IP6C/W6AwMIaJhbeAgD0z7SyUm7G6IcLdMzyA3meQvivnc+8rIrmVcBgKi/vYA=
+	t=1722420772; cv=none; b=Q/vTV/ms+S3QZi0A5K8P6Qv5f75l+xSeK4Yxu5nIIB+O6m8jcJa9RFuVx+DxwJKIbgWhptHuVvlxRehDEAjuM9pIp5/V9wEP+n9J68Sk7HKfJ3EWJ4YisJKY4hWJH9K0dPh/1z6KoLhBeInm42fsZ+437FwOC3hse5VqUuhCMZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722415785; c=relaxed/simple;
-	bh=zcTY/GqUfYE3yguTn78cETVE64YCw8EsY/LDEWceEGU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oaZ6ISh2ll32x5F9aF4NAqb1ArWQQX4Mktk53f95QQNDpo4eGAcl98/P8cM+OLpKdP6HoLC+Zmh3ylKvN5To+qM19H18kafvw1OoxxeD0J6GmvAV9aSEW+jRHzb9jELuiVsWFbRDcYIHVWRHJTfrEtcn6z/WClctNZdkUEDo/+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=MZPw1gAC; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.79.192.202] (unknown [4.194.122.170])
-	by linux.microsoft.com (Postfix) with ESMTPSA id A9A4C20B7165;
-	Wed, 31 Jul 2024 01:49:36 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A9A4C20B7165
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1722415781;
-	bh=RDk+WVHxBeUm3xVFN39EW1/JZAEiQ71Gmv+Q/rbsnL4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=MZPw1gACS8IkH89ctCMI5myecTJmMMcsK4MTAYUmAysGgVORi25CgqwXS45wxqvuS
-	 hfNy9DrWgSCIz2Wdh3uEMS80Foo6phzbkBrL4fP3qs6T4CA83aLFUyzweEZfaLq5iV
-	 pms0fjhLBpZT7waSSOnPZJ+muOhaE6PuPwX/hZIE=
-Message-ID: <f9dfaf0e-2f72-4917-be75-78856fb27712@linux.microsoft.com>
-Date: Wed, 31 Jul 2024 14:19:34 +0530
+	s=arc-20240116; t=1722420772; c=relaxed/simple;
+	bh=tA7lkcTHf3wF6dZwmNJz7Wr5e26IC3tmiBiju6SpX+U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=WmA/yLfsLwGkHbEWsKxY/ZhILWAA97+VXLwHGg2Suyex//BkZ/enLeu5O7ncjUzw45SiYQR6NbU0utoUySBZCEdXHFGwCNNN3XunHl6mEbv5CjOqeZ2xI/dP3EN19TFWuhSvo+KcB3SydBAMMzES+nUCkonJDMLlMXVfqmfLq+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WYns30DP4z1HFft;
+	Wed, 31 Jul 2024 18:09:59 +0800 (CST)
+Received: from dggpemf500002.china.huawei.com (unknown [7.185.36.57])
+	by mail.maildlp.com (Postfix) with ESMTPS id EB1AF14037C;
+	Wed, 31 Jul 2024 18:12:47 +0800 (CST)
+Received: from [10.174.179.113] (10.174.179.113) by
+ dggpemf500002.china.huawei.com (7.185.36.57) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 31 Jul 2024 18:12:47 +0800
+Message-ID: <6dcd5f14-cba8-20af-0319-28ff3f94982a@huawei.com>
+Date: Wed, 31 Jul 2024 18:12:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2] net: mana: Implement
- get_ringparam/set_ringparam for mana
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc: "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Long Li <longli@microsoft.com>,
- Ajay Sharma <sharmaajay@microsoft.com>, Simon Horman <horms@kernel.org>,
- Konstantin Taranov <kotaranov@microsoft.com>,
- Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
- Erick Archer <erick.archer@outlook.com>,
- Pavan Chebbi <pavan.chebbi@broadcom.com>, Ahmed Zaki <ahmed.zaki@intel.com>,
- Colin Ian King <colin.i.king@gmail.com>
-References: <1722358895-13430-1-git-send-email-shradhagupta@linux.microsoft.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH net-next] RDS: IB: Remove unused declarations
 Content-Language: en-US
-From: Naman Jain <namjain@linux.microsoft.com>
-In-Reply-To: <1722358895-13430-1-git-send-email-shradhagupta@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: <allison.henderson@oracle.com>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<rds-devel@oss.oracle.com>, <linux-kernel@vger.kernel.org>, Simon Horman
+	<horms@kernel.org>
+References: <20240731063630.3592046-1-yuehaibing@huawei.com>
+From: Yue Haibing <yuehaibing@huawei.com>
+In-Reply-To: <20240731063630.3592046-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemf500002.china.huawei.com (7.185.36.57)
 
++CC Simon Horman <horms@kernel.org>
 
-
-On 7/30/2024 10:31 PM, Shradha Gupta wrote:
-> Currently the values of WQs for RX and TX queues for MANA devices
-> are hardcoded to default sizes.
-> Allow configuring these values for MANA devices as ringparam
-> configuration(get/set) through ethtool_ops.
+On 2024/7/31 14:36, Yue Haibing wrote:
+> Commit f4f943c958a2 ("RDS: IB: ack more receive completions to improve performance")
+> removed rds_ib_recv_tasklet_fn() implementation but not the declaration.
+> And commit ec16227e1414 ("RDS/IB: Infiniband transport") declared but never implemented
+> other functions.
 > 
-> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-> Reviewed-by: Long Li <longli@microsoft.com>
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+> Reviewed-by: Simon Horman <horms@kernel.org>
 > ---
->   Changes in v2:
->   * Removed unnecessary validations in mana_set_ringparam()
->   * Fixed codespell error
->   * Improved error message to indicate issue with the parameter
-> ---
->   drivers/net/ethernet/microsoft/mana/mana_en.c | 20 +++---
->   .../ethernet/microsoft/mana/mana_ethtool.c    | 66 +++++++++++++++++++
->   include/net/mana/mana.h                       | 21 +++++-
->   3 files changed, 96 insertions(+), 11 deletions(-)
+>  net/rds/ib.h | 4 ----
+>  1 file changed, 4 deletions(-)
 > 
-
- From what I understand, we are adding support for "ethtool -G --set-
-ring"  command.
-Please correct me if I am wrong.
-
-Maybe it would be good to capture the benefit/purpose of this patch in
-the commit msg, as in which use-cases/scenarios we are now trying to
-support that previously were not supported. The "why?" part basically.
-
-
-
-Regards,
-Naman Jain
+> diff --git a/net/rds/ib.h b/net/rds/ib.h
+> index 2ba71102b1f1..8ef3178ed4d6 100644
+> --- a/net/rds/ib.h
+> +++ b/net/rds/ib.h
+> @@ -369,9 +369,6 @@ int rds_ib_conn_alloc(struct rds_connection *conn, gfp_t gfp);
+>  void rds_ib_conn_free(void *arg);
+>  int rds_ib_conn_path_connect(struct rds_conn_path *cp);
+>  void rds_ib_conn_path_shutdown(struct rds_conn_path *cp);
+> -void rds_ib_state_change(struct sock *sk);
+> -int rds_ib_listen_init(void);
+> -void rds_ib_listen_stop(void);
+>  __printf(2, 3)
+>  void __rds_ib_conn_error(struct rds_connection *conn, const char *, ...);
+>  int rds_ib_cm_handle_connect(struct rdma_cm_id *cm_id,
+> @@ -402,7 +399,6 @@ void rds_ib_inc_free(struct rds_incoming *inc);
+>  int rds_ib_inc_copy_to_user(struct rds_incoming *inc, struct iov_iter *to);
+>  void rds_ib_recv_cqe_handler(struct rds_ib_connection *ic, struct ib_wc *wc,
+>  			     struct rds_ib_ack_state *state);
+> -void rds_ib_recv_tasklet_fn(unsigned long data);
+>  void rds_ib_recv_init_ring(struct rds_ib_connection *ic);
+>  void rds_ib_recv_clear_ring(struct rds_ib_connection *ic);
+>  void rds_ib_recv_init_ack(struct rds_ib_connection *ic);
 
