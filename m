@@ -1,103 +1,132 @@
-Return-Path: <linux-rdma+bounces-4173-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4174-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 179A694516F
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2024 19:26:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDD86945444
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2024 23:55:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0EAF1F21A00
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2024 17:26:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A1EC1C23101
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2024 21:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC0CC1B4C4D;
-	Thu,  1 Aug 2024 17:26:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3610414B976;
+	Thu,  1 Aug 2024 21:55:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p4oEPrg9"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tvEbr43A"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AFFF13D617;
-	Thu,  1 Aug 2024 17:26:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9599C145A0F
+	for <linux-rdma@vger.kernel.org>; Thu,  1 Aug 2024 21:55:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722533197; cv=none; b=ndXyhzComPK64wK7jPAPUwzUrRr0Ux5DlC1DNAuamhBfBhlciuGmS9NsrXRth93vHKDlvvYR9YNm5iov09skF+mVqzFzTKjhsxtXB9QqZ/gfrYF/mvFeQqi71KaUm0NIdT30+j5ym5TMzxvj/G2XLE/ITQEDftSBjMil2W2OTxI=
+	t=1722549340; cv=none; b=uc6aVpoTu2gNIMV2mHJy1X61yizmbsnVET+Y7SC46kMNwmJSDbSIoiJemWfEe1c3PNcF4AAoeyABonlrZT+z7pr6U7JmWd9nIC+XlChAH9KPvciqBjmksCaR+DTzg6qIMr/EK8309YZ1YfkZ4GZ3EJh8gRRKaOs6JDi6DSCP1eA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722533197; c=relaxed/simple;
-	bh=o7DCCp3FQn1iCJygO3a/7pgwytsbRS5VxIzYzl6e+YA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SA8nOY/qaq0z2MJpV42I133aDWHi6Fwk2efnIUkN9TddLKIJZW4ahAWSm+ZUGDrWvJXdJH6pWIFvTNg6Dgxc/guvUcq4oQ1LIA3xkK5HLOalU+m1dVsES5Unn3ukVnXEPsM+90CKx5S1sikvv77TKYq2IkOCgr4hv5Mf+stB23M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p4oEPrg9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 677D8C32786;
-	Thu,  1 Aug 2024 17:26:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722533197;
-	bh=o7DCCp3FQn1iCJygO3a/7pgwytsbRS5VxIzYzl6e+YA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p4oEPrg9+DVF6yeVY6KBfcL06gLroS6GHruR5IcZJmRbunZnOwEr/LbC/KL03gH7w
-	 6f9lrd4jIvAgEcdGjGzQPPSRPtFQUkhktyRTrRMgKO2+Qtd0nDCQHc51utYmO0zu+Z
-	 Qae7fhZvWWg62LkxMsq+3zTjV1eShdMM8nziIn51y+GMrZGEj2FUT1aohkgiQ9x5Ub
-	 FdIuMBRSx6ll0aCJ1dObQNIy9uhRfnv/i6IM6GL1hyZAqVWefz3FNrP3TCbHoy6btp
-	 o/Es+Po/e5gG/qeQz+Q8EDdQBH3yq2xfMnaJCJRO0+zPmIzKmlqgDZpjBP80kClv0S
-	 Lg29flwmYdHwQ==
-Date: Thu, 1 Aug 2024 20:26:31 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Itay Avraham <itayavr@nvidia.com>,
-	Jakub Kicinski <kuba@kernel.org>, linux-doc@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
-	Aron Silverton <aron.silverton@oracle.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	David Ahern <dsahern@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>, Jiri Pirko <jiri@nvidia.com>,
-	Leonid Bloch <lbloch@nvidia.com>, linux-cxl@vger.kernel.org,
-	patches@lists.linux.dev
-Subject: Re: [PATCH v2 5/8] fwctl: FWCTL_RPC to execute a Remote Procedure
- Call to device firmware
-Message-ID: <20240801172631.GI4209@unreal>
-References: <0-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
- <5-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
- <20240730080038.GA4209@unreal>
- <20240801125829.GA2809814@nvidia.com>
+	s=arc-20240116; t=1722549340; c=relaxed/simple;
+	bh=hpjXuBkpFMgQOYNMrQr8GIa7k5MgBbs6MBxuziGzuqw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YAPzZAMR7ufQ1NN8V0QJ+kfj+cTMQkRk9oy5js0lhBgJEgHPu/PtjhBHS+P93IdV2gkX+8+BdYXz+kRVQaFWuDzzZXx+ERrDm0Y9hALiRb3YXQDnT9zxzOwLtgigRtT9dWWCKIuPlPHAX0+DNBtcTgBCu0mSzmrX9xBHK7p9bJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tvEbr43A; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <02f7cfc8-0495-485d-9849-b5a9514f6110@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1722549335;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=22trdYbMHmtRm4bhtYQlLInAL9M2HQInv3qUMD+3ga8=;
+	b=tvEbr43AKk9tHTYjephznY1RSml5L8OFRCqpWoG5SS6rn8Xw2KDbzjPAVOaD1s1hsXqwhm
+	44fJ8xKYoQqj2FtziuG1JIYRGCg60jPiHuOKL1DqRG0rEa9BRUg8TUZZWjWZPBiWV+JrkD
+	VPqAyCFl7JU6xAr6xbLoCxokQarEpZg=
+Date: Fri, 2 Aug 2024 05:55:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240801125829.GA2809814@nvidia.com>
+Subject: Re: [PATCH for-rc] RDMA/srpt: Fix UAF when srpt_add_one() failed
+To: Junxian Huang <huangjunxian6@hisilicon.com>, jgg@ziepe.ca,
+ leon@kernel.org, bvanassche@acm.org, nab@risingtidesystems.com
+Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+ linux-kernel@vger.kernel.org, target-devel@vger.kernel.org
+References: <20240801074415.1033323-1-huangjunxian6@hisilicon.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20240801074415.1033323-1-huangjunxian6@hisilicon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Aug 01, 2024 at 09:58:29AM -0300, Jason Gunthorpe wrote:
-> On Tue, Jul 30, 2024 at 11:00:38AM +0300, Leon Romanovsky wrote:
-> > > +
-> > > +	void *inbuf __free(kvfree) =
-> > > +		kvzalloc(cmd->in_len, GFP_KERNEL | GFP_KERNEL_ACCOUNT);
-> > 
-> > 
-> > <...>
-> > 
-> > > +	out_len = cmd->out_len;
-> > > +	void *outbuf __free(kvfree_errptr) = fwctl->ops->fw_rpc(
-> > > +		ucmd->uctx, cmd->scope, inbuf, cmd->in_len, &out_len);
-> > 
-> > I was under impression that declaration of variables in C should be at the beginning
-> > of block. Was it changed for the kernel?
+在 2024/8/1 15:44, Junxian Huang 写道:
+> Currently cancel_work_sync() is not called when srpt_refresh_port()
+> failed in srpt_add_one(). There is a probability that sdev has been
+> freed while the previously initiated sport->work is still running,
+> leading to a UAF as the log below:
 > 
-> Yes, the compiler check blocking variables in the body was disabled to
-> allow cleanup.h
+> [  T880] ib_srpt MAD registration failed for hns_1-1.
+> [  T880] ib_srpt srpt_add_one(hns_1) failed.
+> [  T376] Unable to handle kernel paging request at virtual address 0000000000010008
+> ...
+> [  T376] Workqueue: events srpt_refresh_port_work [ib_srpt]
+> ...
+> [  T376] Call trace:
+> [  T376]  srpt_refresh_port+0x94/0x264 [ib_srpt]
+> [  T376]  srpt_refresh_port_work+0x1c/0x2c [ib_srpt]
+> [  T376]  process_one_work+0x1d8/0x4cc
+> [  T376]  worker_thread+0x158/0x410
+> [  T376]  kthread+0x108/0x13c
+> [  T376]  ret_from_fork+0x10/0x18
 > 
-> Jonathan said this is the agreed coding style to use for this
+> Add cancel_work_sync() to the exception branch to fix this UAF.
 
-I'm said to hear that.
+Can you share the method to reproduce this problem?
+I am interested in this problem.
 
-Thanks
+Thanks,
+Zhu Yanjun
 
 > 
-> Jason
+> Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
+> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> ---
+>   drivers/infiniband/ulp/srpt/ib_srpt.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 9632afbd727b..244e5c115bf7 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -3148,8 +3148,8 @@ static int srpt_add_one(struct ib_device *device)
+>   {
+>   	struct srpt_device *sdev;
+>   	struct srpt_port *sport;
+> +	u32 i, j;
+>   	int ret;
+> -	u32 i;
+>   
+>   	pr_debug("device = %p\n", device);
+>   
+> @@ -3226,7 +3226,6 @@ static int srpt_add_one(struct ib_device *device)
+>   		if (ret) {
+>   			pr_err("MAD registration failed for %s-%d.\n",
+>   			       dev_name(&sdev->device->dev), i);
+> -			i--;
+>   			goto err_port;
+>   		}
+>   	}
+> @@ -3241,6 +3240,8 @@ static int srpt_add_one(struct ib_device *device)
+>   	return 0;
+>   
+>   err_port:
+> +	for (j = i, i--; j > 0; j--)
+> +		cancel_work_sync(&sdev->port[j - 1].work);
+>   	srpt_unregister_mad_agent(sdev, i);
+>   err_cm:
+>   	if (sdev->cm_id)
+
 
