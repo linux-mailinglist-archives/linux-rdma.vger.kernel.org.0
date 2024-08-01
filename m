@@ -1,68 +1,53 @@
-Return-Path: <linux-rdma+bounces-4158-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4160-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D28DA944AEA
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2024 14:07:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71D63944B7D
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2024 14:38:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01E311C21ABC
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2024 12:07:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3B011C255A6
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2024 12:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 070F31A2C18;
-	Thu,  1 Aug 2024 12:06:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F8jiYAD+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183431A01D5;
+	Thu,  1 Aug 2024 12:38:33 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3060189B90;
-	Thu,  1 Aug 2024 12:05:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4577415252D;
+	Thu,  1 Aug 2024 12:38:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722513959; cv=none; b=CfBXt7EVCuX6ZYBMgKMY2XyyJ+4OKE6gvIo/fWk2HQsi/ZnrWUZf75b6nfw6gsGy2ol/jdmERF49bQUqOwOgO0x43fZS+4veC7vurRfA8JXTtUmkd4aM/XmcI+AiU/aA0x731Do7dU1z1iVBwuPgmchEnb+PXAvKeqACpwcTMUY=
+	t=1722515912; cv=none; b=FbRpoFvbfe1ceynvVpQ/f4hjosaH1K348VvYck8uGh7uA0Bo+Lkgp6gDR16b5CwHYfuNMW7rCYFALjm8XHGeRpcXk+Izsqdl6yJvXxI6jq4NNEv9/yrLZANB7Sm1wsd2pZHcBMQjrZgtNqEEZwstealBAyDStpsSEdZj8DLC7xE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722513959; c=relaxed/simple;
-	bh=Vz6K0CseR2CvsnyMziB3zHBkOhk2OUVB/Qm9uhyU7F4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eJTQjDrkoC6EQOB2LgXDpXTxrWiHCqWXmY0mWGm+0x60OGh6btcRrwOutKc6PGUdOW+opVWmQMDcJo2v/PT70S77Y5aeuJBUqnKvnMXvXcGRxLg6IFOUDBZfHjx7OWBYaB3seGsCoE2yGX2XLzkOkdWeB2lKrVBYWcYSKoewEYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F8jiYAD+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B57CAC4AF0A;
-	Thu,  1 Aug 2024 12:05:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722513959;
-	bh=Vz6K0CseR2CvsnyMziB3zHBkOhk2OUVB/Qm9uhyU7F4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=F8jiYAD+/8dE1YMWeRzW41azT2Hb3buByI2zt4jSSEsUYzeYaKnzbzOdoMwLYX09i
-	 bV9wu6XZQIvCUyvVvpms63V5cBYtisC11FpT/G+LU2psIw724ofxKru6pj44P4A4Xi
-	 HWLwg3w3bCW6T7ScasgQxzL2f3A3bGihpysPMt4TioDA2gT9g7lSW4wEpopUEDp93m
-	 lsZIzOOw04cTwVr8WJ+qkF2SWcnHL0XnfQwXDjOptvnIT3uG140de3bFQT5ll3YjPP
-	 vwnB7qBqneAWK6h6KjWlvKHgURnZsh76LCF4KRvAhzRFbPKAHsi0+NCswmZE5ou/jU
-	 Xfpc08G1A0tag==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Yishai Hadas <yishaih@nvidia.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org,
-	linux-media@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	Michael Margolin <mrgolin@amazon.com>,
-	Mustafa Ismail <mustafa.ismail@intel.com>,
-	netdev@vger.kernel.org,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-Subject: [PATCH rdma-next 8/8] RDMA/mlx5: Introduce GET_DATA_DIRECT_SYSFS_PATH ioctl
-Date: Thu,  1 Aug 2024 15:05:17 +0300
-Message-ID: <403745463e0ef52adbef681ff09aa6a29a756352.1722512548.git.leon@kernel.org>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <cover.1722512548.git.leon@kernel.org>
-References: <cover.1722512548.git.leon@kernel.org>
+	s=arc-20240116; t=1722515912; c=relaxed/simple;
+	bh=x02eljObgUrujzqWdEVMMHSIGgKeTAl+hcGM7tnLa48=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tSVbfw+/S3GEdpzVWuwPVbeh4GfbqHe0o8PsoZskkhkAblkv633yuS6hvEBr5yy6fOgcae2KPmI59OgdD0VuLiPQCO9F5JLL7k/GV04g8P88hI6aoj36nAOndI1+DYyaPmEyxWMqbO24to751ZSpD9KUUll4z50J5lgxcgvO/9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WZT5d5hNQz1L8rq;
+	Thu,  1 Aug 2024 20:38:13 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 80CDB18006C;
+	Thu,  1 Aug 2024 20:38:26 +0800 (CST)
+Received: from localhost.localdomain (10.90.30.45) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 1 Aug 2024 20:38:25 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>, <bvanassche@acm.org>,
+	<nab@risingtidesystems.com>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
+	<target-devel@vger.kernel.org>
+Subject: [PATCH v2 for-rc] RDMA/srpt: Fix UAF when srpt_add_one() failed
+Date: Thu, 1 Aug 2024 20:32:53 +0800
+Message-ID: <20240801123253.2908831-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -70,123 +55,85 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-From: Yishai Hadas <yishaih@nvidia.com>
+Currently cancel_work_sync() is not called when srpt_refresh_port()
+failed in srpt_add_one(). There is a probability that sdev has been
+freed while the previously initiated sport->work is still running,
+leading to a UAF as the log below:
 
-Introduce the 'GET_DATA_DIRECT_SYSFS_PATH' ioctl to return the sysfs
-path of the affiliated 'data direct' device for a given device.
+[  T880] ib_srpt MAD registration failed for hns_1-1.
+[  T880] ib_srpt srpt_add_one(hns_1) failed.
+[  T376] Unable to handle kernel paging request at virtual address 0000000000010008
+...
+[  T376] Workqueue: events srpt_refresh_port_work [ib_srpt]
+...
+[  T376] Call trace:
+[  T376]  srpt_refresh_port+0x94/0x264 [ib_srpt]
+[  T376]  srpt_refresh_port_work+0x1c/0x2c [ib_srpt]
+[  T376]  process_one_work+0x1d8/0x4cc
+[  T376]  worker_thread+0x158/0x410
+[  T376]  kthread+0x108/0x13c
+[  T376]  ret_from_fork+0x10/0x18
 
-Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Add cancel_work_sync() to the exception branch to fix this UAF.
+Besides, exchange the order of INIT_WORK() and srpt_refresh_port()
+in srpt_add_one(), so that when srpt_refresh_port() failed, there
+is no need to cancel the work in this iteration.
+
+Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/mlx5/std_types.c   | 55 +++++++++++++++++++++++-
- include/uapi/rdma/mlx5_user_ioctl_cmds.h |  5 +++
- 2 files changed, 59 insertions(+), 1 deletion(-)
+ drivers/infiniband/ulp/srpt/ib_srpt.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/std_types.c b/drivers/infiniband/hw/mlx5/std_types.c
-index bbfcce3bdc84..ffeb1e1a1538 100644
---- a/drivers/infiniband/hw/mlx5/std_types.c
-+++ b/drivers/infiniband/hw/mlx5/std_types.c
-@@ -10,6 +10,7 @@
- #include <linux/mlx5/eswitch.h>
- #include <linux/mlx5/vport.h>
- #include "mlx5_ib.h"
-+#include "data_direct.h"
- 
- #define UVERBS_MODULE_NAME mlx5_ib
- #include <rdma/uverbs_named_ioctl.h>
-@@ -183,6 +184,50 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_QUERY_PORT)(
- 					     sizeof(info));
+diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+index 9632afbd727b..7def231da21a 100644
+--- a/drivers/infiniband/ulp/srpt/ib_srpt.c
++++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+@@ -648,6 +648,7 @@ static void srpt_unregister_mad_agent(struct srpt_device *sdev, int port_cnt)
+ 			ib_unregister_mad_agent(sport->mad_agent);
+ 			sport->mad_agent = NULL;
+ 		}
++		cancel_work_sync(&sport->work);
+ 	}
  }
  
-+static int UVERBS_HANDLER(MLX5_IB_METHOD_GET_DATA_DIRECT_SYSFS_PATH)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct mlx5_data_direct_dev *data_direct_dev;
-+	struct mlx5_ib_ucontext *c;
-+	struct mlx5_ib_dev *dev;
-+	int out_len = uverbs_attr_get_len(attrs,
-+			MLX5_IB_ATTR_GET_DATA_DIRECT_SYSFS_PATH);
-+	u32 dev_path_len;
-+	char *dev_path;
-+	int ret;
-+
-+	c = to_mucontext(ib_uverbs_get_ucontext(attrs));
-+	if (IS_ERR(c))
-+		return PTR_ERR(c);
-+	dev = to_mdev(c->ibucontext.device);
-+	mutex_lock(&dev->data_direct_lock);
-+	data_direct_dev = dev->data_direct_dev;
-+	if (!data_direct_dev) {
-+		ret = -ENODEV;
-+		goto end;
-+	}
-+
-+	dev_path = kobject_get_path(&data_direct_dev->device->kobj, GFP_KERNEL);
-+	if (!dev_path) {
-+		ret = -ENOMEM;
-+		goto end;
-+	}
-+
-+	dev_path_len = strlen(dev_path) + 1;
-+	if (dev_path_len > out_len) {
-+		ret = -ENOSPC;
-+		goto end;
-+	}
-+
-+	ret = uverbs_copy_to(attrs, MLX5_IB_ATTR_GET_DATA_DIRECT_SYSFS_PATH, dev_path,
-+			     dev_path_len);
-+	kfree(dev_path);
-+
-+end:
-+	mutex_unlock(&dev->data_direct_lock);
-+	return ret;
-+}
-+
- DECLARE_UVERBS_NAMED_METHOD(
- 	MLX5_IB_METHOD_QUERY_PORT,
- 	UVERBS_ATTR_PTR_IN(MLX5_IB_ATTR_QUERY_PORT_PORT_NUM,
-@@ -193,9 +238,17 @@ DECLARE_UVERBS_NAMED_METHOD(
- 				   reg_c0),
- 		UA_MANDATORY));
+@@ -3220,7 +3221,6 @@ static int srpt_add_one(struct ib_device *device)
+ 		sport->port_attrib.srp_max_rsp_size = DEFAULT_MAX_RSP_SIZE;
+ 		sport->port_attrib.srp_sq_size = DEF_SRPT_SQ_SIZE;
+ 		sport->port_attrib.use_srq = false;
+-		INIT_WORK(&sport->work, srpt_refresh_port_work);
  
-+DECLARE_UVERBS_NAMED_METHOD(
-+	MLX5_IB_METHOD_GET_DATA_DIRECT_SYSFS_PATH,
-+	UVERBS_ATTR_PTR_OUT(
-+		MLX5_IB_ATTR_GET_DATA_DIRECT_SYSFS_PATH,
-+		UVERBS_ATTR_MIN_SIZE(0),
-+		UA_MANDATORY));
+ 		ret = srpt_refresh_port(sport);
+ 		if (ret) {
+@@ -3229,6 +3229,8 @@ static int srpt_add_one(struct ib_device *device)
+ 			i--;
+ 			goto err_port;
+ 		}
 +
- ADD_UVERBS_METHODS(mlx5_ib_device,
- 		   UVERBS_OBJECT_DEVICE,
--		   &UVERBS_METHOD(MLX5_IB_METHOD_QUERY_PORT));
-+		   &UVERBS_METHOD(MLX5_IB_METHOD_QUERY_PORT),
-+		   &UVERBS_METHOD(MLX5_IB_METHOD_GET_DATA_DIRECT_SYSFS_PATH));
++		INIT_WORK(&sport->work, srpt_refresh_port_work);
+ 	}
  
- DECLARE_UVERBS_NAMED_METHOD(
- 	MLX5_IB_METHOD_PD_QUERY,
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-index 106276a4cce7..fd2e4a3a56b3 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-@@ -348,6 +348,7 @@ enum mlx5_ib_pd_methods {
+ 	ib_register_event_handler(&sdev->event_handler);
+@@ -3264,13 +3266,9 @@ static void srpt_remove_one(struct ib_device *device, void *client_data)
+ 	struct srpt_device *sdev = client_data;
+ 	int i;
  
- enum mlx5_ib_device_methods {
- 	MLX5_IB_METHOD_QUERY_PORT = (1U << UVERBS_ID_NS_SHIFT),
-+	MLX5_IB_METHOD_GET_DATA_DIRECT_SYSFS_PATH,
- };
+-	srpt_unregister_mad_agent(sdev, sdev->device->phys_port_cnt);
+-
+ 	ib_unregister_event_handler(&sdev->event_handler);
  
- enum mlx5_ib_query_port_attrs {
-@@ -355,4 +356,8 @@ enum mlx5_ib_query_port_attrs {
- 	MLX5_IB_ATTR_QUERY_PORT,
- };
+-	/* Cancel any work queued by the just unregistered IB event handler. */
+-	for (i = 0; i < sdev->device->phys_port_cnt; i++)
+-		cancel_work_sync(&sdev->port[i].work);
++	srpt_unregister_mad_agent(sdev, sdev->device->phys_port_cnt);
  
-+enum mlx5_ib_get_data_direct_sysfs_path_attrs {
-+	MLX5_IB_ATTR_GET_DATA_DIRECT_SYSFS_PATH = (1U << UVERBS_ID_NS_SHIFT),
-+};
-+
- #endif
+ 	if (sdev->cm_id)
+ 		ib_destroy_cm_id(sdev->cm_id);
 -- 
-2.45.2
+2.33.0
 
 
