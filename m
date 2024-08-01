@@ -1,83 +1,131 @@
-Return-Path: <linux-rdma+bounces-4146-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4147-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC238944905
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2024 12:07:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00B1A944974
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2024 12:37:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D9FE283722
-	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2024 10:07:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF0FF2853D9
+	for <lists+linux-rdma@lfdr.de>; Thu,  1 Aug 2024 10:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41709183CB6;
-	Thu,  1 Aug 2024 10:07:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1950A170A37;
+	Thu,  1 Aug 2024 10:37:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Umyf2JvK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sX5h59JE"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA92D187861
-	for <linux-rdma@vger.kernel.org>; Thu,  1 Aug 2024 10:07:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D553BBE5;
+	Thu,  1 Aug 2024 10:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722506833; cv=none; b=RlBhJkI7f9ZDV94ADhxEL7g/u7uT5Qw1OC5Pw8yX2gDiDUN6ZL1Hu1i8U8e9XlSEhkqfbHSxsaQQJPXZypqU5RV6QVpSA437NLmo8iDqzIWaB81E7+7vI6LX0D6WQCOhyek09f6JvEvDf7zv2iAuInejwYhwkHxYnuM768pgfIs=
+	t=1722508636; cv=none; b=t5Y7GPmpNLWHr6Qohm6H6k0Fhgh+NlUu2tb0xESB1xw6+2znLiBhAq4VnRZzEGXaVvyLT/OhitksL6Hic9d3DWp1Y0gvdzucpCR9yOygm8cwBPEOGX5xMLZ3BHNDDb/Uga4kfuuHHuTpTEg+dWYGGUBv455PQ6Oo757bEWZVDto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722506833; c=relaxed/simple;
-	bh=trsV9Jn80QiRVq4I4tnS9JwvRX+suwV84uFOX4YbHBU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=ONUvbu2pN5YSou4ZZHhRiEoepJdZxrPGgv79fJVhsKFKtS8W3CM+rZh9tgOfiGT7bxo/3jPtxQjZ5U6mPlifW5FJudip7cZhDfOvvXSukuiLAivI0NDRFbgIoy79oyVbltMhjG8WAuW0r567dwHsGauH/JV6oCLIw7ifjFxDS6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Umyf2JvK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9039C4AF0B;
-	Thu,  1 Aug 2024 10:07:11 +0000 (UTC)
+	s=arc-20240116; t=1722508636; c=relaxed/simple;
+	bh=UCt5jpURNEyg0oe9cMK8/kEXK1xMb37OAQuqoadAUrM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mKJpmhIv2mH3Q68FC8ugRhytGIWiWb7q3nXzHH8EQAk3+Xn6/52CZIX7M8QGex8nq2yjzJVT5DFbuz/bvwicvLEXkn4xM0BYqupXK9Wias0cdkOoWVA6W+CU/H4SFrL+D6NLhl0Nmov6r3p5Q03G8jZXo6Wni7SUXbeVZuQBBTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sX5h59JE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA8C3C4AF09;
+	Thu,  1 Aug 2024 10:37:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722506832;
-	bh=trsV9Jn80QiRVq4I4tnS9JwvRX+suwV84uFOX4YbHBU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Umyf2JvK6F/3YMhBc5wcHAdpk3X1nVTC6ZMgso4+WK/ejZtRXi1u7yotA4Xa5GXsm
-	 EQTBms0TYCntPVcqeycjNlc/asWjkBBJvJMxL0pWcd/NsKG4Xpr67BcsrO10JMWYag
-	 VGF47pBirt4mngf/bPBBFaEH8QtsBLtHrcFyT1Z3dQY3drohL1dyI6zvYcdeAfkDeE
-	 CkPeuNHW6fwIY4DrTK1jkk95g06C0xn6/LUQpl3mJuyx7C2xvglPkazTViq9SP78Z6
-	 uTzonq0itctMRz9EZ5YSocCseqvThy+UGzycoPzqwhVnmtrf68qLv8lrw+HoO4Y4HN
-	 FRpF1LrRv9yzQ==
+	s=k20201202; t=1722508636;
+	bh=UCt5jpURNEyg0oe9cMK8/kEXK1xMb37OAQuqoadAUrM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sX5h59JEeqq2okR7Voc6Nr1JArW+mJQD0HbII9OWvj9X7zBNjWJYTs97sHWqdzx5E
+	 JodiY+ggZzJShIq2DVeD2SjAw+B4w9PZIDzTSYg7zsohkVCwf4F2CdLpaRMbfBxiU3
+	 D8Rp8OWfAho4u24WVcW4f2S0OgbM0LjKtDTm5fVnIR7lSfZvRMBQeFJ11Uk6gE1kHe
+	 ZuYgaVAmru1p7Bo5yFPlqnp3vTLriXbzyr6ua7sZtzzMd+zi6XSnwcgxDCyozRTZuV
+	 wW+7IvAefXj8Q9gJQYJHxGNgt0yPK9H5RJTBAkagu73zjLeWwLTY8SC/bh+wipoEJE
+	 5abEzGBqyY6kQ==
+Date: Thu, 1 Aug 2024 13:37:12 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Cc: linux-rdma@vger.kernel.org
-In-Reply-To: <20240722110325.195085-1-saravanan.vajravel@broadcom.com>
-References: <20240722110325.195085-1-saravanan.vajravel@broadcom.com>
-Subject: Re: [PATCH for-rc] rdma-core/mad: Improve handling of timed out
- WRs of mad agent
-Message-Id: <172250682730.748167.2872481023674574020.b4-ty@kernel.org>
-Date: Thu, 01 Aug 2024 13:07:07 +0300
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: jgg@ziepe.ca, bvanassche@acm.org, nab@risingtidesystems.com,
+	linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+	linux-kernel@vger.kernel.org, target-devel@vger.kernel.org
+Subject: Re: [PATCH for-rc] RDMA/srpt: Fix UAF when srpt_add_one() failed
+Message-ID: <20240801103712.GG4209@unreal>
+References: <20240801074415.1033323-1-huangjunxian6@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240801074415.1033323-1-huangjunxian6@hisilicon.com>
 
-
-On Mon, 22 Jul 2024 16:33:25 +0530, Saravanan Vajravel wrote:
-> Current timeout handler of mad agent aquires/releases mad_agent_priv
-> lock for every timed out WRs. This causes heavy locking contention
-> when higher no. of WRs are to be handled inside timeout handler.
+On Thu, Aug 01, 2024 at 03:44:15PM +0800, Junxian Huang wrote:
+> Currently cancel_work_sync() is not called when srpt_refresh_port()
+> failed in srpt_add_one(). There is a probability that sdev has been
+> freed while the previously initiated sport->work is still running,
+> leading to a UAF as the log below:
 > 
-> This leads to softlockup with below trace in some use cases where
-> rdma-cm path is used to establish connection between peer nodes
+> [  T880] ib_srpt MAD registration failed for hns_1-1.
+> [  T880] ib_srpt srpt_add_one(hns_1) failed.
+> [  T376] Unable to handle kernel paging request at virtual address 0000000000010008
+> ...
+> [  T376] Workqueue: events srpt_refresh_port_work [ib_srpt]
+> ...
+> [  T376] Call trace:
+> [  T376]  srpt_refresh_port+0x94/0x264 [ib_srpt]
+> [  T376]  srpt_refresh_port_work+0x1c/0x2c [ib_srpt]
+> [  T376]  process_one_work+0x1d8/0x4cc
+> [  T376]  worker_thread+0x158/0x410
+> [  T376]  kthread+0x108/0x13c
+> [  T376]  ret_from_fork+0x10/0x18
 > 
-> [...]
+> Add cancel_work_sync() to the exception branch to fix this UAF.
+> 
+> Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
+> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> ---
+>  drivers/infiniband/ulp/srpt/ib_srpt.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 9632afbd727b..244e5c115bf7 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -3148,8 +3148,8 @@ static int srpt_add_one(struct ib_device *device)
+>  {
+>  	struct srpt_device *sdev;
+>  	struct srpt_port *sport;
+> +	u32 i, j;
+>  	int ret;
+> -	u32 i;
+>  
+>  	pr_debug("device = %p\n", device);
+>  
+> @@ -3226,7 +3226,6 @@ static int srpt_add_one(struct ib_device *device)
+>  		if (ret) {
+>  			pr_err("MAD registration failed for %s-%d.\n",
+>  			       dev_name(&sdev->device->dev), i);
+> -			i--;
+>  			goto err_port;
+>  		}
+>  	}
+> @@ -3241,6 +3240,8 @@ static int srpt_add_one(struct ib_device *device)
+>  	return 0;
+>  
+>  err_port:
+> +	for (j = i, i--; j > 0; j--)a
+> +		cancel_work_sync(&sdev->port[j - 1].work);
 
-Applied, thanks!
+There is no need in extra variable, the following code will do the same:
 
-[1/1] rdma-core/mad: Improve handling of timed out WRs of mad agent
-      https://git.kernel.org/rdma/rdma/c/b1a72f369973f5
+	while (i--)
+		cancel_work_sync(&sdev->port[i].work);
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+>  	srpt_unregister_mad_agent(sdev, i);
+>  err_cm:
+>  	if (sdev->cm_id)
+> -- 
+> 2.33.0
+> 
 
