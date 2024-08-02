@@ -1,155 +1,161 @@
-Return-Path: <linux-rdma+bounces-4191-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4192-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B6C2946126
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2024 17:59:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95C1E946209
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2024 18:49:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5244E281B1D
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2024 15:59:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B1A32829D9
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2024 16:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 522381A34A0;
-	Fri,  2 Aug 2024 15:57:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D12413635E;
+	Fri,  2 Aug 2024 16:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YV/dypFC"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nbwlj3xP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F09C21A34D2;
-	Fri,  2 Aug 2024 15:57:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC47C16BE3D;
+	Fri,  2 Aug 2024 16:49:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722614260; cv=none; b=rHgbRnEO6hKtVrKjwSx1GGbT/S1+n27DD3dJ9/1SNzYWAQbG8bKX56dmyOKlkRd5zOxNlKCoFlKkMMSUMzzBcixuS8uflxHHwUEm9IzcsWr4ZUVNc0RShPHnELeyWeovreFMc4XIhzBKwO8eCuHZhxIYS+s53aMAQIr/9du78CY=
+	t=1722617391; cv=none; b=EBUE7atETARbOPXX7EHV5uUFvu1oiA8uHfL7eqFn9zledKn3cFOMKegqLgmlsGlYu+7ZEThLAV7hfYVTwIbXvV0hb3ubOrE40LnGUPtRKOBdLEACiqicCrDst85W1epZFhBgHZL2HM+k1EIxYWaU1/bGPtcY5Fxqrhzdgyzsqsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722614260; c=relaxed/simple;
-	bh=SygGhejwtugE49KfkjCbD9EIloYT99XipGcKa/8Qp3w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q8emdCg5Sy8QlvYi8CJ/bMu46XSTdtKMhy0HaEgKMQrajZ2p8Dbmva6m0qfMDDoLS9XyVUEuR6H4Fgi6in+JP+o4rqhcEWwlxvLL4nYtXChimzFXL/xeyP1yd/OW7zcsiC6QESGRsFpe1dpHlCGRH8owSwsFCrTNsoZPwnQG/oE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YV/dypFC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA571C32782;
-	Fri,  2 Aug 2024 15:57:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722614259;
-	bh=SygGhejwtugE49KfkjCbD9EIloYT99XipGcKa/8Qp3w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YV/dypFCvqgZ0QSl5sAYt59iH5qph/Em1mQCDHFp5p1EXgVTccPJze54MVp9Zr+/I
-	 JO8rEQ6tU+2BC7I4+NOVw53jOxNHRZ/LkzvFq8XpQzGw5LpzM6YVwTcKeFxDjjj/oJ
-	 IWwoJYKN4Ms3W2TVg8ro4CdBtyY3mIPUjpt6VFeFLEgDiyUttDt/NpVbFODhzh7l7q
-	 uAF2iOAUUaXBmjHcqwpa+PCo+a9VHO0vqV+xBgLijA/+2dIMbBiHfxE+klmdgCKqVE
-	 z/UKQx7S2bXzi4xvlL8fEnnVdEaVbH+aJoWCwsKAtoAfXYlolgjk/X29WsHcb9vDTK
-	 70B1ZSmRoiV7w==
-Date: Fri, 2 Aug 2024 18:57:34 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>, Jonathan Corbet <corbet@lwn.net>,
-	Itay Avraham <itayavr@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
-	linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
-	Aron Silverton <aron.silverton@oracle.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	David Ahern <dsahern@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>, Jiri Pirko <jiri@nvidia.com>,
-	Leonid Bloch <lbloch@nvidia.com>, linux-cxl@vger.kernel.org,
-	patches@lists.linux.dev
-Subject: Re: [PATCH v2 5/8] fwctl: FWCTL_RPC to execute a Remote Procedure
- Call to device firmware
-Message-ID: <20240802155734.GJ4209@unreal>
-References: <0-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
- <5-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
- <20240730080038.GA4209@unreal>
- <20240801125829.GA2809814@nvidia.com>
- <20240801172631.GI4209@unreal>
- <20240802145946.000002e7@Huawei.com>
+	s=arc-20240116; t=1722617391; c=relaxed/simple;
+	bh=cSNgKJAuE43cxsIbzCafaUQZQjln2GGWeW9rtMq+TCQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=IPpC/bhqRZNAmTEP76MEZR7RIirrJpwZgZD4rRxPVpGaYfLnGugwxYQGLBwtTr2chfulkjPZfLklCD1vy7pqEohSYsTgEfAQnTXIKuc1o/W2llfgwrk5KV9wUs25KKT/wRIK0hvj1rvq3BvXUhZqKeZRvkPqzw6CrGKii64PzLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nbwlj3xP; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 472FTBA7011799;
+	Fri, 2 Aug 2024 16:49:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	message-id:date:subject:to:cc:references:from:in-reply-to
+	:content-type:content-transfer-encoding:mime-version; s=pp1; bh=
+	cg/bndupk50rnRSsxm4uXdUIHZrNSZ5AzvafipUGmz8=; b=nbwlj3xPgqLjq4hn
+	BiMRfwpOq2AnIqP8YUvW+A7E9apEy/G92t3teOEmJ7tok9sCwLwRLaEY8mxlknSA
+	PeWIEjCoKgyx8L2LizMomvysWqlDZbIyz2Cb7nXIYIdeoCJLJJfT/3lqnMQmu1fh
+	4KGUTtA71ymfWwgSFLExdrDtrQJbxcpBLptN/JIkHUt4Mft0NqwGZkDZfVTQCJJS
+	nWbR1nuBIGYB27uucrrRlap9wiHjgs/pP66WoJYUBuZOg/eanxLxijXrUpItt7nK
+	/dtdR1GBDuUx4zXimMChvduXm42l5AyGY3rTrd/Auaqtjq19uDIxOK2fl6t+kxEo
+	8gZN/g==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40s1pf07d3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Aug 2024 16:49:37 +0000 (GMT)
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 472Gnbuk018859;
+	Fri, 2 Aug 2024 16:49:37 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40s1pf07d2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Aug 2024 16:49:37 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 472DmSUY029103;
+	Fri, 2 Aug 2024 16:49:36 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 40nbm18a24-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Aug 2024 16:49:36 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 472GnYmA16974424
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 2 Aug 2024 16:49:36 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 255C758043;
+	Fri,  2 Aug 2024 16:49:34 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8D97758053;
+	Fri,  2 Aug 2024 16:49:31 +0000 (GMT)
+Received: from [9.171.33.192] (unknown [9.171.33.192])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  2 Aug 2024 16:49:31 +0000 (GMT)
+Message-ID: <79a7ec0d-c22d-44cf-a832-13da05a1fcbd@linux.ibm.com>
+Date: Fri, 2 Aug 2024 22:19:29 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: blktests failures with v6.11-rc1 kernel
+To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "nbd@other.debian.org" <nbd@other.debian.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Yi Zhang <yi.zhang@redhat.com>
+References: <5yal5unzvisrvfhhvsqrsqgu4tfbjp2fsrnbuyxioaxjgbojsi@o2arvhebzes3>
+ <ab363932-ab3d-49b1-853d-7313f02cce9e@linux.ibm.com>
+ <ljqlgkvhkojsmehqddmeo4dng6l3yaav6le2uslsumfxivluwu@m7lkx3j4mkkw>
+Content-Language: en-US
+From: Nilay Shroff <nilay@linux.ibm.com>
+In-Reply-To: <ljqlgkvhkojsmehqddmeo4dng6l3yaav6le2uslsumfxivluwu@m7lkx3j4mkkw>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: tkuW1usVc4_L-ZsXnVMafpq53k4_2E6j
+X-Proofpoint-GUID: a115jAe8d2xS4aK9ey4Ffkuh_ApZccBy
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240802145946.000002e7@Huawei.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-02_12,2024-08-02_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 spamscore=0
+ adultscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2408020114
 
-On Fri, Aug 02, 2024 at 02:59:46PM +0100, Jonathan Cameron wrote:
-> On Thu, 1 Aug 2024 20:26:31 +0300
-> Leon Romanovsky <leon@kernel.org> wrote:
-> 
-> > On Thu, Aug 01, 2024 at 09:58:29AM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Jul 30, 2024 at 11:00:38AM +0300, Leon Romanovsky wrote:  
-> > > > > +
-> > > > > +	void *inbuf __free(kvfree) =
-> > > > > +		kvzalloc(cmd->in_len, GFP_KERNEL | GFP_KERNEL_ACCOUNT);  
-> > > > 
-> > > > 
-> > > > <...>
-> > > >   
-> > > > > +	out_len = cmd->out_len;
-> > > > > +	void *outbuf __free(kvfree_errptr) = fwctl->ops->fw_rpc(
-> > > > > +		ucmd->uctx, cmd->scope, inbuf, cmd->in_len, &out_len);  
-> > > > 
-> > > > I was under impression that declaration of variables in C should be at the beginning
-> > > > of block. Was it changed for the kernel?  
-> > > 
-> > > Yes, the compiler check blocking variables in the body was disabled to
-> > > allow cleanup.h
-> > > 
-> > > Jonathan said this is the agreed coding style to use for this  
-> > 
-> > I'm said to hear that.
-> 
-> Was passing on a statement Linus made (not digging it out right now)
-> that he really wanted to be able see constructors and destructors
-> together.
 
-The thing is that we are talking about the same thing. I and Linus want
-to keep locality of variables declaration and initialization. I don't
-know the Linus's stance on it, but I'm sad that to achieve that for
-cleanup.h, very useful feature of GCC (keep variables at the beginning
-of the block) was disabled.
 
-Right now, you can declare variables in any place and it is harder to
-review the code now. It is a matter of time when we will see code like
-this and start to chase bugs introduced by this pattern:
+On 8/2/24 18:04, Shinichiro Kawasaki wrote:
+> CC+: Yi Zhang,
+> 
+> On Aug 02, 2024 / 17:46, Nilay Shroff wrote:
+>>
+>>
+>> On 8/2/24 14:39, Shinichiro Kawasaki wrote:
+>>>
+>>> #3: nvme/052 (CKI failure)
+>>>
+>>>    The CKI project reported that nvme/052 fails occasionally [4].
+>>>    This needs further debug effort.
+>>>
+>>>   nvme/052 (tr=loop) (Test file-ns creation/deletion under one subsystem) [failed]
+>>>       runtime    ...  22.209s
+>>>       --- tests/nvme/052.out	2024-07-30 18:38:29.041716566 -0400
+>>>       +++ /mnt/tests/gitlab.com/redhat/centos-stream/tests/kernel/kernel-tests/-/archive/production/kernel-tests-production.zip/storage/blktests/nvme/nvme-loop/blktests/results/nodev_tr_loop/nvme/052.out.bad	2024-07-30 18:45:35.438067452 -0400
+>>>       @@ -1,2 +1,4 @@
+>>>        Running nvme/052
+>>>       +cat: /sys/block/nvme1n2/uuid: No such file or directory
+>>>       +cat: /sys/block/nvme1n2/uuid: No such file or directory
+>>>        Test complete
+>>>
+>>>    [4] https://datawarehouse.cki-project.org/kcidb/tests/13669275
+>>
+>> I just checked the console logs of the nvme/052 and from the logs it's 
+>> apparent that all namespaces were created successfully and so it's strange
+>> to see that the test couldn't access "/sys/block/nvme1n2/uuid".
+> 
+> I agree that it's strange. I think the "No such file or directory" error
+> happened in _find_nvme_ns(), and it checks existence of the uuid file before
+> the cat command. I have no idea why the error happens.
+> 
+Yes exactly, and these two operations (checking the existence of uuid
+and cat command) are not atomic. So the only plausible theory I have at this 
+time is "if namespace is deleted after checking the existence of uuid but 
+before cat command is executed" then this issue may potentially manifests. 
+Furthermore, as you mentioned, this issue is seen on the test machine 
+occasionally, so I asked if there's a possibility of simultaneous blktest 
+or some other tests running on this system.
 
-int f()
-{
-	<some code>
-	int i;
-	<some code>
-	return something;
-}
-
-Thanks
-
-> 
-> The other part is that in some cases you can end up with non
-> obvious ordering bugs because the cleanup is the reverse of the
-> declarations, not the constructors being called.
-> Whilst it is fairly easy to review for this, future code reorganization
-> may well lead to subtle bugs, typically in error paths etc.
-> 
-> Putting the declaration inline avoids this potential problem
-> 
-> Dan wrote a style guide proposal.
-> https://lore.kernel.org/all/171175585714.2192972.12661675876300167762.stgit@dwillia2-xfh.jf.intel.com/
-> [PATCH v3] cleanup: Add usage and style documentation
-> 
-> seems it died out without anyone applying it.  I've poked.
-> 
-> Jonathan
-> 
-> > 
-> > Thanks
-> > 
-> > > 
-> > > Jason  
-> > 
-> 
-> 
+Thanks,
+--Nilay
 
