@@ -1,155 +1,150 @@
-Return-Path: <linux-rdma+bounces-4184-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4185-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05A8D945ACE
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2024 11:19:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A5D1945D42
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2024 13:28:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3C4F282BC4
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2024 09:19:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58F7DB2217E
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2024 11:28:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABA41DAC61;
-	Fri,  2 Aug 2024 09:19:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F225F1E2865;
+	Fri,  2 Aug 2024 11:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WnVFX79O"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="kTWl68we"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 701A41DAC56
-	for <linux-rdma@vger.kernel.org>; Fri,  2 Aug 2024 09:19:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A58341E2122
+	for <linux-rdma@vger.kernel.org>; Fri,  2 Aug 2024 11:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722590351; cv=none; b=MZ5F8K1BrZcyS69B/hbS54+IOUkzzLgYLeARoe3BBbwiYfBOT9QJ8tM4YrL60+9gcB7NenIlfWD4lxRm1v2MpkgN9wV+5tx9OwQD11pUu8OeD4BCojj21bS7SS5wU+topxoz8zQZVp0vC4sdXf8TdBol4dfXKI3GowNQhVpSYUg=
+	t=1722598074; cv=none; b=exojbVRJJAHLWh4td3iglaEd5PZe5ff8uFCDey1VaRHl1j3uuiCzdn50W7Bi6qI8oxi1s5TKTU/0/Gm412V1ujBDQMODsSh8ADBZSGeuU0dqJ8a+UWRRhULgBDr54+6sqsu9fPMLkWiEWhVCparj0LL82e8xYPPV9DrG41THwsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722590351; c=relaxed/simple;
-	bh=X5oFp9VCl4XeB0aXPbq/h47uASXOek4IptUxVH5jC7w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lco2lHwnueaMewl9rdONQ+NSKVAUNsSoM6/ElQM4Fz7GDkpSgb4xMHWRWWt3c8DQ6yt204vSSbLe0jan+OrI+skex+lCwv0UO27J9h9hQ7A7SAYvLjILr9N4W41+jgjmee4RmD4vD9FZseWWm1WdbUxPDOm2X5T78++uNekjqn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WnVFX79O; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d92cdbe5-b5df-4580-9038-cdc69d667742@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722590345;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wEhbkuTV4BPdEO+PTgIuN/V8VoZo3H5ZfC271gpJXTc=;
-	b=WnVFX79OtSZM3ikK7vYuFmhNFQC+H+dwhpGpfGIAtD8AYZxv8IdtNcyiiQ/12rvZPgJP5s
-	37FmPii4fYm9+D5u4cXEPkawIbxwzSUS0ETI6OgOVEEWvCn2IeoIx4JpuXVhfANkZtCJze
-	UdidzA/ypcu8liGv4bM7ffjR38EnPS4=
-Date: Fri, 2 Aug 2024 17:18:50 +0800
+	s=arc-20240116; t=1722598074; c=relaxed/simple;
+	bh=BE7dpG8W2PpOKUlssqTXhlePO4gl/CQaWw0AeimD9y4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XnEd2sJVAo0OAcZXg/stml8ns1uOIJ3vsYQc93sVuySrfuFeSV7PJ9BrK3RLRUMuw51HRogT6L75jMfelEaneZLWoQSVpFhjE3kwK3hkKBVbNmvD201V6fntHiBf4i7mTbL+Zrf4cSm/3zVIsRz2RDjngxBqDKfDBXiTf98Cyrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=kTWl68we; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-428e0d184b4so12489545e9.2
+        for <linux-rdma@vger.kernel.org>; Fri, 02 Aug 2024 04:27:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1722598070; x=1723202870; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=chN/5IqC5/jQjFOqjkhbCXjZQHoVidazye4I/EM8vkk=;
+        b=kTWl68wedmlpbnpxUW1ltHUuJHXQftgtls2Smo05lXtV3V9+3ayUXxSW9RM+b4GouV
+         PHJ3vc85V6PH8/jND8E535KkIzSXtY1qPUahm4bNZ14uBCZrPBH66XAM9ZPiOBbpAyjh
+         WGcdxFV7GuZu6KMawkBSmtkE8jg2FwScsSGfY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722598070; x=1723202870;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=chN/5IqC5/jQjFOqjkhbCXjZQHoVidazye4I/EM8vkk=;
+        b=Gm+aD9BVqBCsCuEG9hQm1w9c3zrRQ2Mtv0EwsB2QyvLVWdeemc7DuNPOvtYggIn12X
+         AU2KAVAoJQV7lrfYLor0xgQyxE2KN4cqfHYwiHf+yoGB9bZJisXToKuDQA+jO6sbivIK
+         qCHXIHG5kjnMEXpRp4n3Qf+p5GMBlLLgdTceVCRFyFdidkQ5vOThY6BKRcMRg6a25M1t
+         af3rb2QKIA2r0shwsGrkCFo8QyT77xgzzJLvykU0t7+PJDvVkLSM7DuCrzdqGZPn/rML
+         2+1umH5+NPs4yDS+MTm6jrNZ/C9yXEkKG66eBSDbDoQwXIdV6hLirhIF5lmqoYO639dF
+         sSbA==
+X-Forwarded-Encrypted: i=1; AJvYcCW+hK0lhLRFPSeyOPrx655UGNRPyJQYtIl+hDOW1WRjUnmUdLO2v3j272idwJGR62WrNakyKv6OLCXcQ7WnkqYgAlb2A3jIjIct1g==
+X-Gm-Message-State: AOJu0YwbZJU5q2F7XCk1GGB78byTGDQh8qoiL1IkQNYNsKs09GfZdiD3
+	UzHTxhjKiIwHwO4M2anq+pf4gnYiGY2qaMkNTe/rrtJf2Ngz2dDYKERn8RuTM9U=
+X-Google-Smtp-Source: AGHT+IH7hcdVBDXCsRevDN59P0EtrOCoyykAhwY0K0NGMZXYks/7iPTFXtJU/BBOxs8N4RGobZG6mA==
+X-Received: by 2002:a05:600c:5102:b0:428:52a:3580 with SMTP id 5b1f17b1804b1-428e6af4b58mr18796515e9.3.1722598069823;
+        Fri, 02 Aug 2024 04:27:49 -0700 (PDT)
+Received: from LQ3V64L9R2 ([62.30.8.232])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-428e6e3c0b7sm29576275e9.23.2024.08.02.04.27.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Aug 2024 04:27:49 -0700 (PDT)
+Date: Fri, 2 Aug 2024 12:27:46 +0100
+From: Joe Damato <jdamato@fastly.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+	pabeni@redhat.com, dxu@dxuuu.xyz, ecree.xilinx@gmail.com,
+	przemyslaw.kitszel@intel.com, donald.hunter@gmail.com,
+	gal.pressman@linux.dev, tariqt@nvidia.com,
+	willemdebruijn.kernel@gmail.com, saeedm@nvidia.com, leon@kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next 03/12] eth: mlx5: allow disabling queues when
+ RSS contexts exist
+Message-ID: <ZqzCsvm8DW6PeKDQ@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+	netdev@vger.kernel.org, edumazet@google.com, pabeni@redhat.com,
+	dxu@dxuuu.xyz, ecree.xilinx@gmail.com, przemyslaw.kitszel@intel.com,
+	donald.hunter@gmail.com, gal.pressman@linux.dev, tariqt@nvidia.com,
+	willemdebruijn.kernel@gmail.com, saeedm@nvidia.com, leon@kernel.org,
+	linux-rdma@vger.kernel.org
+References: <20240802001801.565176-1-kuba@kernel.org>
+ <20240802001801.565176-4-kuba@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-rc] RDMA/srpt: Fix UAF when srpt_add_one() failed
-To: Junxian Huang <huangjunxian6@hisilicon.com>, jgg@ziepe.ca,
- leon@kernel.org, bvanassche@acm.org, nab@risingtidesystems.com
-Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com,
- linux-kernel@vger.kernel.org, target-devel@vger.kernel.org
-References: <20240801074415.1033323-1-huangjunxian6@hisilicon.com>
- <02f7cfc8-0495-485d-9849-b5a9514f6110@linux.dev>
- <1ddde0db-c18e-7968-185e-1e792854d1b6@hisilicon.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <1ddde0db-c18e-7968-185e-1e792854d1b6@hisilicon.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240802001801.565176-4-kuba@kernel.org>
 
-在 2024/8/2 10:28, Junxian Huang 写道:
+On Thu, Aug 01, 2024 at 05:17:52PM -0700, Jakub Kicinski wrote:
+> Since commit 24ac7e544081 ("ethtool: use the rss context XArray
+> in ring deactivation safety-check") core will prevent queues from
+> being disabled while being used by additional RSS contexts.
+> The safety check is no longer necessary, and core will do a more
+> accurate job of only rejecting changes which can actually break
+> things.
 > 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> CC: saeedm@nvidia.com
+> CC: tariqt@nvidia.com
+> CC: leon@kernel.org
+> CC: linux-rdma@vger.kernel.org
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 12 ------------
+>  1 file changed, 12 deletions(-)
 > 
-> On 2024/8/2 5:55, Zhu Yanjun wrote:
->> 在 2024/8/1 15:44, Junxian Huang 写道:
->>> Currently cancel_work_sync() is not called when srpt_refresh_port()
->>> failed in srpt_add_one(). There is a probability that sdev has been
->>> freed while the previously initiated sport->work is still running,
->>> leading to a UAF as the log below:
->>>
->>> [  T880] ib_srpt MAD registration failed for hns_1-1.
->>> [  T880] ib_srpt srpt_add_one(hns_1) failed.
->>> [  T376] Unable to handle kernel paging request at virtual address 0000000000010008
->>> ...
->>> [  T376] Workqueue: events srpt_refresh_port_work [ib_srpt]
->>> ...
->>> [  T376] Call trace:
->>> [  T376]  srpt_refresh_port+0x94/0x264 [ib_srpt]
->>> [  T376]  srpt_refresh_port_work+0x1c/0x2c [ib_srpt]
->>> [  T376]  process_one_work+0x1d8/0x4cc
->>> [  T376]  worker_thread+0x158/0x410
->>> [  T376]  kthread+0x108/0x13c
->>> [  T376]  ret_from_fork+0x10/0x18
->>>
->>> Add cancel_work_sync() to the exception branch to fix this UAF.
->>
->> Can you share the method to reproduce this problem?
->> I am interested in this problem.
->>
->> Thanks,
->> Zhu Yanjun
->>
-> 
-> I was testing bonding in 5.10 kernel, doing
-> 	ifenslave bond0 eth0 eth1; ifenslave -d bond0 eth0 eth1
-> and
-> 	ethtool --reset eth0 dedicated; ethtool --reset eth1 dedicated
-> concurrently and infinitely.
-> 
-> But I think this problem has been fixed in latest mainline probably.
-> Please look into my reply to Bart in v2.
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> index 36845872ae94..0b941482db30 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> @@ -445,7 +445,6 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
+>  	unsigned int count = ch->combined_count;
+>  	struct mlx5e_params new_params;
+>  	bool arfs_enabled;
+> -	int rss_cnt;
+>  	bool opened;
+>  	int err = 0;
+>  
+> @@ -499,17 +498,6 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
+>  		goto out;
+>  	}
+>  
+> -	/* Don't allow changing the number of channels if non-default RSS contexts exist,
+> -	 * the kernel doesn't protect against set_channels operations that break them.
+> -	 */
+> -	rss_cnt = mlx5e_rx_res_rss_cnt(priv->rx_res) - 1;
+> -	if (rss_cnt) {
+> -		err = -EINVAL;
+> -		netdev_err(priv->netdev, "%s: Non-default RSS contexts exist (%d), cannot change the number of channels\n",
+> -			   __func__, rss_cnt);
+> -		goto out;
+> -	}
+> -
+>  	/* Don't allow changing the number of channels if MQPRIO mode channel offload is active,
+>  	 * because it defines a partition over the channels queues.
+>  	 */
+> -- 
+> 2.45.2
 
-Thanks a lot. I am working on srq. Because ib_srpt also supports srq, I 
-just want to confirm if srq of ib_srpt can also work well on RoCEv2 and 
-IB with this commit.
-
-Zhu Yanjun
-
-> 
-> Junxian
-> 
->>>
->>> Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
->>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
->>> ---
->>>    drivers/infiniband/ulp/srpt/ib_srpt.c | 5 +++--
->>>    1 file changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
->>> index 9632afbd727b..244e5c115bf7 100644
->>> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
->>> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
->>> @@ -3148,8 +3148,8 @@ static int srpt_add_one(struct ib_device *device)
->>>    {
->>>        struct srpt_device *sdev;
->>>        struct srpt_port *sport;
->>> +    u32 i, j;
->>>        int ret;
->>> -    u32 i;
->>>          pr_debug("device = %p\n", device);
->>>    @@ -3226,7 +3226,6 @@ static int srpt_add_one(struct ib_device *device)
->>>            if (ret) {
->>>                pr_err("MAD registration failed for %s-%d.\n",
->>>                       dev_name(&sdev->device->dev), i);
->>> -            i--;
->>>                goto err_port;
->>>            }
->>>        }
->>> @@ -3241,6 +3240,8 @@ static int srpt_add_one(struct ib_device *device)
->>>        return 0;
->>>      err_port:
->>> +    for (j = i, i--; j > 0; j--)
->>> +        cancel_work_sync(&sdev->port[j - 1].work);
->>>        srpt_unregister_mad_agent(sdev, i);
->>>    err_cm:
->>>        if (sdev->cm_id)
->>
-
+Reviewed-by: Joe Damato <jdamato@fastly.com>
 
