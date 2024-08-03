@@ -1,161 +1,126 @@
-Return-Path: <linux-rdma+bounces-4192-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4193-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95C1E946209
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2024 18:49:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBCB5946762
+	for <lists+linux-rdma@lfdr.de>; Sat,  3 Aug 2024 06:27:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B1A32829D9
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 Aug 2024 16:49:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76989B2158F
+	for <lists+linux-rdma@lfdr.de>; Sat,  3 Aug 2024 04:27:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D12413635E;
-	Fri,  2 Aug 2024 16:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B78C132106;
+	Sat,  3 Aug 2024 04:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nbwlj3xP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lfzI7yBB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC47C16BE3D;
-	Fri,  2 Aug 2024 16:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61AF12B17C;
+	Sat,  3 Aug 2024 04:26:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722617391; cv=none; b=EBUE7atETARbOPXX7EHV5uUFvu1oiA8uHfL7eqFn9zledKn3cFOMKegqLgmlsGlYu+7ZEThLAV7hfYVTwIbXvV0hb3ubOrE40LnGUPtRKOBdLEACiqicCrDst85W1epZFhBgHZL2HM+k1EIxYWaU1/bGPtcY5Fxqrhzdgyzsqsg=
+	t=1722659213; cv=none; b=T4zReXtwWQa1YAgsgcQ+8g1+Ttc9Y4Cx27gHkVPItweMfFr8LEIcymyEknOfGCB4IyJZUV010q8fLbTxN16NBjqeWNP2+mWcGGxa2VTri6yIfms9vWNhytT6oOhL7SqTrEB5SrX6l2shOZXmRz4SYNS2NNyLfRJYWZrhrWoSnIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722617391; c=relaxed/simple;
-	bh=cSNgKJAuE43cxsIbzCafaUQZQjln2GGWeW9rtMq+TCQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=IPpC/bhqRZNAmTEP76MEZR7RIirrJpwZgZD4rRxPVpGaYfLnGugwxYQGLBwtTr2chfulkjPZfLklCD1vy7pqEohSYsTgEfAQnTXIKuc1o/W2llfgwrk5KV9wUs25KKT/wRIK0hvj1rvq3BvXUhZqKeZRvkPqzw6CrGKii64PzLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nbwlj3xP; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 472FTBA7011799;
-	Fri, 2 Aug 2024 16:49:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
-	message-id:date:subject:to:cc:references:from:in-reply-to
-	:content-type:content-transfer-encoding:mime-version; s=pp1; bh=
-	cg/bndupk50rnRSsxm4uXdUIHZrNSZ5AzvafipUGmz8=; b=nbwlj3xPgqLjq4hn
-	BiMRfwpOq2AnIqP8YUvW+A7E9apEy/G92t3teOEmJ7tok9sCwLwRLaEY8mxlknSA
-	PeWIEjCoKgyx8L2LizMomvysWqlDZbIyz2Cb7nXIYIdeoCJLJJfT/3lqnMQmu1fh
-	4KGUTtA71ymfWwgSFLExdrDtrQJbxcpBLptN/JIkHUt4Mft0NqwGZkDZfVTQCJJS
-	nWbR1nuBIGYB27uucrrRlap9wiHjgs/pP66WoJYUBuZOg/eanxLxijXrUpItt7nK
-	/dtdR1GBDuUx4zXimMChvduXm42l5AyGY3rTrd/Auaqtjq19uDIxOK2fl6t+kxEo
-	8gZN/g==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40s1pf07d3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Aug 2024 16:49:37 +0000 (GMT)
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 472Gnbuk018859;
-	Fri, 2 Aug 2024 16:49:37 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40s1pf07d2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Aug 2024 16:49:37 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 472DmSUY029103;
-	Fri, 2 Aug 2024 16:49:36 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 40nbm18a24-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Aug 2024 16:49:36 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 472GnYmA16974424
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 2 Aug 2024 16:49:36 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 255C758043;
-	Fri,  2 Aug 2024 16:49:34 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8D97758053;
-	Fri,  2 Aug 2024 16:49:31 +0000 (GMT)
-Received: from [9.171.33.192] (unknown [9.171.33.192])
-	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  2 Aug 2024 16:49:31 +0000 (GMT)
-Message-ID: <79a7ec0d-c22d-44cf-a832-13da05a1fcbd@linux.ibm.com>
-Date: Fri, 2 Aug 2024 22:19:29 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: blktests failures with v6.11-rc1 kernel
-To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "nbd@other.debian.org" <nbd@other.debian.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Yi Zhang <yi.zhang@redhat.com>
-References: <5yal5unzvisrvfhhvsqrsqgu4tfbjp2fsrnbuyxioaxjgbojsi@o2arvhebzes3>
- <ab363932-ab3d-49b1-853d-7313f02cce9e@linux.ibm.com>
- <ljqlgkvhkojsmehqddmeo4dng6l3yaav6le2uslsumfxivluwu@m7lkx3j4mkkw>
-Content-Language: en-US
-From: Nilay Shroff <nilay@linux.ibm.com>
-In-Reply-To: <ljqlgkvhkojsmehqddmeo4dng6l3yaav6le2uslsumfxivluwu@m7lkx3j4mkkw>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: tkuW1usVc4_L-ZsXnVMafpq53k4_2E6j
-X-Proofpoint-GUID: a115jAe8d2xS4aK9ey4Ffkuh_ApZccBy
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1722659213; c=relaxed/simple;
+	bh=87XPti6RVqAiNW3eWPIQm2vFmmfDS6ddZiot77zPsWk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=rMhk+QXvFkF12DG3AyKygWKaNl29eLechvBitwWYpMM+X7yJLZa5Nh7JXY5x21gw4euOMIManmC5IL490TrG/IDQRi48B0vFVJrQCGwa1yuMrnSAqb2Zr10e8dwxtkBhgpXGFLlBABjE+1eV2fpMwEmyU/z6QYtZxdK4SZ91Ku4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lfzI7yBB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB107C4AF12;
+	Sat,  3 Aug 2024 04:26:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722659212;
+	bh=87XPti6RVqAiNW3eWPIQm2vFmmfDS6ddZiot77zPsWk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=lfzI7yBBXFi14uuqoXT2SPOZQKetjPQPCMd4+gd5Q3WC6ez5YSidNSl8yBCsZ51By
+	 PdZn6dY5jJb6x0UZFls96PDCicx5veh2NYHDX8ooZxrGz3uaCQs+UMKL4iMv/R58Ax
+	 BKwVDTQE7RKthSgfhnRNTd0suBqiIVlqNGKu4yV4EYHn36kMjCUfFNG9Q+jPTyVaQb
+	 9TqeBvyj/aAdcmW/l7ON2A7uAEjkGLU09FF11D90jREAzHtmwxhxruZ+NZ1lGNrD5r
+	 p+yUG2LB3CaxmJRSYGzQ20kgmUon1mn1VG5/sqCS6thGN0FGA+BgBXquSEbhdI5SMZ
+	 xuF959SmiNp5g==
+From: Jakub Kicinski <kuba@kernel.org>
+To: davem@davemloft.net
+Cc: netdev@vger.kernel.org,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	dxu@dxuuu.xyz,
+	ecree.xilinx@gmail.com,
+	przemyslaw.kitszel@intel.com,
+	donald.hunter@gmail.com,
+	gal.pressman@linux.dev,
+	tariqt@nvidia.com,
+	willemdebruijn.kernel@gmail.com,
+	jdamato@fastly.com,
+	Jakub Kicinski <kuba@kernel.org>,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH net-next v2 03/12] eth: mlx5: allow disabling queues when RSS contexts exist
+Date: Fri,  2 Aug 2024 21:26:15 -0700
+Message-ID: <20240803042624.970352-4-kuba@kernel.org>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240803042624.970352-1-kuba@kernel.org>
+References: <20240803042624.970352-1-kuba@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-02_12,2024-08-02_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 spamscore=0
- adultscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2407110000 definitions=main-2408020114
+Content-Transfer-Encoding: 8bit
 
+Since commit 24ac7e544081 ("ethtool: use the rss context XArray
+in ring deactivation safety-check") core will prevent queues from
+being disabled while being used by additional RSS contexts.
+The safety check is no longer necessary, and core will do a more
+accurate job of only rejecting changes which can actually break
+things.
 
+Reviewed-by: Joe Damato <jdamato@fastly.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+CC: saeedm@nvidia.com
+CC: tariqt@nvidia.com
+CC: leon@kernel.org
+CC: linux-rdma@vger.kernel.org
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-On 8/2/24 18:04, Shinichiro Kawasaki wrote:
-> CC+: Yi Zhang,
-> 
-> On Aug 02, 2024 / 17:46, Nilay Shroff wrote:
->>
->>
->> On 8/2/24 14:39, Shinichiro Kawasaki wrote:
->>>
->>> #3: nvme/052 (CKI failure)
->>>
->>>    The CKI project reported that nvme/052 fails occasionally [4].
->>>    This needs further debug effort.
->>>
->>>   nvme/052 (tr=loop) (Test file-ns creation/deletion under one subsystem) [failed]
->>>       runtime    ...  22.209s
->>>       --- tests/nvme/052.out	2024-07-30 18:38:29.041716566 -0400
->>>       +++ /mnt/tests/gitlab.com/redhat/centos-stream/tests/kernel/kernel-tests/-/archive/production/kernel-tests-production.zip/storage/blktests/nvme/nvme-loop/blktests/results/nodev_tr_loop/nvme/052.out.bad	2024-07-30 18:45:35.438067452 -0400
->>>       @@ -1,2 +1,4 @@
->>>        Running nvme/052
->>>       +cat: /sys/block/nvme1n2/uuid: No such file or directory
->>>       +cat: /sys/block/nvme1n2/uuid: No such file or directory
->>>        Test complete
->>>
->>>    [4] https://datawarehouse.cki-project.org/kcidb/tests/13669275
->>
->> I just checked the console logs of the nvme/052 and from the logs it's 
->> apparent that all namespaces were created successfully and so it's strange
->> to see that the test couldn't access "/sys/block/nvme1n2/uuid".
-> 
-> I agree that it's strange. I think the "No such file or directory" error
-> happened in _find_nvme_ns(), and it checks existence of the uuid file before
-> the cat command. I have no idea why the error happens.
-> 
-Yes exactly, and these two operations (checking the existence of uuid
-and cat command) are not atomic. So the only plausible theory I have at this 
-time is "if namespace is deleted after checking the existence of uuid but 
-before cat command is executed" then this issue may potentially manifests. 
-Furthermore, as you mentioned, this issue is seen on the test machine 
-occasionally, so I asked if there's a possibility of simultaneous blktest 
-or some other tests running on this system.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index 36845872ae94..0b941482db30 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -445,7 +445,6 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
+ 	unsigned int count = ch->combined_count;
+ 	struct mlx5e_params new_params;
+ 	bool arfs_enabled;
+-	int rss_cnt;
+ 	bool opened;
+ 	int err = 0;
+ 
+@@ -499,17 +498,6 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
+ 		goto out;
+ 	}
+ 
+-	/* Don't allow changing the number of channels if non-default RSS contexts exist,
+-	 * the kernel doesn't protect against set_channels operations that break them.
+-	 */
+-	rss_cnt = mlx5e_rx_res_rss_cnt(priv->rx_res) - 1;
+-	if (rss_cnt) {
+-		err = -EINVAL;
+-		netdev_err(priv->netdev, "%s: Non-default RSS contexts exist (%d), cannot change the number of channels\n",
+-			   __func__, rss_cnt);
+-		goto out;
+-	}
+-
+ 	/* Don't allow changing the number of channels if MQPRIO mode channel offload is active,
+ 	 * because it defines a partition over the channels queues.
+ 	 */
+-- 
+2.45.2
 
-Thanks,
---Nilay
 
