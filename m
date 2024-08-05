@@ -1,56 +1,56 @@
-Return-Path: <linux-rdma+bounces-4201-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4202-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3CDF947A25
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2024 13:00:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D4C3947A28
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2024 13:01:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E7FB1F217B0
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2024 11:00:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85D00B21F97
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Aug 2024 11:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1663B15442A;
-	Mon,  5 Aug 2024 11:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31BD15574F;
+	Mon,  5 Aug 2024 11:00:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vx5WWr4v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XtOgHeGV"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C780B14E2FA;
-	Mon,  5 Aug 2024 11:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E0E155735
+	for <linux-rdma@vger.kernel.org>; Mon,  5 Aug 2024 11:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722855641; cv=none; b=AgGPx9oizinKJbTCUMl/q3D5Pmj8a8Mlq4QLAd28U6cZZhuptJrqr1tgFzVoeoPliV594mGlmfXMJAosPAxr6lXUldzqj7JY/rxPGSQDFixj7Z7Zi1YloXzCM7r8/AdwJFRpPeJfkvwosaEC56FTB1ldo6JMqp8iIuH1ixdHrHc=
+	t=1722855647; cv=none; b=Ih4Z4to5lSpQ5oUWBmKATi/O3Ym+/3cPAQDQyUL19J7B4pzWdmzIUQgilTzGxrsdUeaCifwl2I/IJZEbxU5GTkxWi3aUDdPBctPECgmQ52VZK2aEV9Ikn4M+FflrnmkqPbLhRRvS+NL+i0py6gKo0qKS1wFZWJvCf1dnvWZ6B8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722855641; c=relaxed/simple;
-	bh=b1HhvNY6LExrW0GLKv1PZKW87lNsBkAdCdMjHR1r99w=;
+	s=arc-20240116; t=1722855647; c=relaxed/simple;
+	bh=HykqMY8WvWXHFD1mPF3Xyt04GaEaRr2sq08IxUyDANM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=B3AGFOZzQDczC2TQSoXw1JIHZRl2GkoDvvzgZ0lGLEBVhVNDoJTAn+JH5+8z2FdA3DWkkW/T1qxKLqaWp604DrqcoQIGL1LRPTTd3Ze3VHO+qVHihoSYLhD4MGZUaWH4CxSdiap2b0ijm9mPDMo3zucrq5ZzTpzdJCdJfte+zu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vx5WWr4v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3E0DC32782;
-	Mon,  5 Aug 2024 11:00:40 +0000 (UTC)
+	 MIME-Version:Content-Type; b=q32Ic7CQHYhArDPghhUI+4CM1mXjQoyMD9n38g8T2wUuwLytjdoR9rFCW5diuO4WtpeyF4m2waEiSmNxOQ44lBgJJPlK3C3Q05syW6c54Z/Q7S1OZe7x9i7hc21N7/B2vg5poyp0y3aD6WQDel/PVRIptgtq6Vguo32Y9cL0KSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XtOgHeGV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A454AC4AF0D;
+	Mon,  5 Aug 2024 11:00:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722855641;
-	bh=b1HhvNY6LExrW0GLKv1PZKW87lNsBkAdCdMjHR1r99w=;
+	s=k20201202; t=1722855646;
+	bh=HykqMY8WvWXHFD1mPF3Xyt04GaEaRr2sq08IxUyDANM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Vx5WWr4vvPWj0OgPu+qcYZzljEXeAKB8MG+6Etjg6C4j6kvyhnHolmle7/4fuIxQy
-	 sn5ZWCUyYQaSPLx2cD2A+9dBw2wWGuS0jdW+EULTogjEe3phPCBoW7SyiQ+V/kinjJ
-	 cocm+rNZhjCfLF9ck8t6pdJ34ZM0Pmo6P/SvseqoH0/t8nIU86Bop5j1fqLX0+B+PG
-	 G4HSLIpia4v21T8pL2+4XVm5knZ1OQMWdnuFSnA531h/xfZn0ew3V5AEtJHHW5gtkb
-	 x5E86cz1s38gY70vrQaiza4/m+3RGHVPKHGdd4joC5gwByu+Tep1sIQ+og+lWJrYb3
-	 PtVkV6MFduFbQ==
+	b=XtOgHeGV+cBOv6S0RLLZgeAUQ2OdFa2hPvOBWEDHQB0Q2VfwBbWI3S5AarU8r8xu9
+	 epj5RuY5b8ho0ulnAgoJNniNaJpSwRcOPhqPLhBfeMiS15McXzYlTtP6BvYP8vu+QR
+	 yp2MX0ewYjedc5LxIYx/H7AuUjvCOlljyNgxSlnhl6t5/bXY+NXFPN5Oof8L3iT87T
+	 kai7GeP8ZHQiP74EgAPCokdK4WHYCo3ZNJAZcuhKhAlPVkNISXDD4JeG7/6ajI6+jn
+	 eBGsHuSaifpIYS1dxWNpxfBYOEfkAN21Shrkjl4ROOjnd2jFbDoC93X3Yk1XGXdK8W
+	 JTcYz2tTfxWkg==
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240726071910.626802-1-huangjunxian6@hisilicon.com>
-References: <20240726071910.626802-1-huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH for-next 0/3] RDMA: Provide an API for drivers to
- disassociate mmap pages
-Message-Id: <172285563690.428749.9415541768231694130.b4-ty@kernel.org>
-Date: Mon, 05 Aug 2024 14:00:36 +0300
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc: Chiara Meiohas <cmeiohas@nvidia.com>, linux-rdma@vger.kernel.org, 
+ Michael Guralnik <michaelgur@nvidia.com>
+In-Reply-To: <f633a979a49db090d05c24a3ba83d30727bb777b.1722331020.git.leon@kernel.org>
+References: <f633a979a49db090d05c24a3ba83d30727bb777b.1722331020.git.leon@kernel.org>
+Subject: Re: [PATCH rdma-next] RDMA/nldev: Enhance netlink message parsing
+ and validation
+Message-Id: <172285564183.428749.6683888628240240627.b4-ty@kernel.org>
+Date: Mon, 05 Aug 2024 14:00:41 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,27 +62,21 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
 
 
-On Fri, 26 Jul 2024 15:19:07 +0800, Junxian Huang wrote:
-> Provide an API rdma_user_mmap_disassociate() for drivers to disassociate
-> mmap pages. Use this API in hns to prevent userspace from ringing doorbell
-> when HW is reset.
+On Tue, 30 Jul 2024 12:17:25 +0300, Leon Romanovsky wrote:
+> Use strict parsing validation for set commands, and liberal
+> validation for get commands. Additionally, remove all usage of
+> nlmsg_parse_depricate().
 > 
-> Chengchang Tang (3):
->   RDMA/core: Provide rdma_user_mmap_disassociate() to disassociate mmap
->     pages
->   RDMA/hns: Link all uctx to uctx_list on a device
->   RDMA/hns: Disassociate mmap pages for all uctx when HW is being reset
+> Strict parsing validation fails when encountering unrecognized
+> attributes in the Netlink message, while liberal parsing
+> validation ignores them.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/3] RDMA/core: Provide rdma_user_mmap_disassociate() to disassociate mmap pages
-      https://git.kernel.org/rdma/rdma/c/29df39ce0a64f0
-[2/3] RDMA/hns: Link all uctx to uctx_list on a device
-      https://git.kernel.org/rdma/rdma/c/bb5b2b25624fa9
-[3/3] RDMA/hns: Disassociate mmap pages for all uctx when HW is being reset
-      https://git.kernel.org/rdma/rdma/c/e60457876e3223
+[1/1] RDMA/nldev: Enhance netlink message parsing and validation
+      https://git.kernel.org/rdma/rdma/c/3573826ab50619
 
 Best regards,
 -- 
