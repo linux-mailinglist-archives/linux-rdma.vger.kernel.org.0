@@ -1,121 +1,136 @@
-Return-Path: <linux-rdma+bounces-4209-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4210-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB82D948681
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2024 02:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 429389489D9
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2024 09:14:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E20421F240F5
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2024 00:07:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCAF71F22D9A
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2024 07:14:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAD98A47;
-	Tue,  6 Aug 2024 00:07:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4307166313;
+	Tue,  6 Aug 2024 07:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="gyi6PiAf"
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="Omfr31xh"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE91C2CA6
-	for <linux-rdma@vger.kernel.org>; Tue,  6 Aug 2024 00:07:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4E8B65C
+	for <linux-rdma@vger.kernel.org>; Tue,  6 Aug 2024 07:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722902829; cv=none; b=GbgpNzii7Y9g/iQkGHECk3KJWjuhDIeD0PeTUTYnFJmfWdPEYTzwO4soLp9GsL4/b8ACAZBpI8Q9JhWj+94ft5ko3Bz6jd/QzKa5On3HNGjLVBkd7wWXnP4uDvQdrcGbQtgTGjjwmNkGzaeT/TB3RHtei9YAq8WOZkmVFmjL4jM=
+	t=1722928466; cv=none; b=jjFobl4Z9Qb+h8FkUfl26bRzqaT9WVINrj6t9cUG4RGV69wzxM/3kDURVEbK7EUsbGmAjl3zLnQ3Pr+HWA8Eb43XlcbvfsLCQ78y8BDpaDAIhW9hWrZbesuHACQCqcen88dTWhPjn0Lgbx8LEW0OnSJLH3ekFGWAR0aTBtPYQF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722902829; c=relaxed/simple;
-	bh=NAHTjQgD4+zmcG5S0XfaQDNArJDKgMYBVIZNZ/aJ1Cc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=gzN6P7rQlMlyVD/bLZERN//Hq/PseflYe1p68rq36jz3E8/4bLGN+mkObFmEeNqXImJFp+hZXsUES3Z3e43GVZjYIp8Uebw4o+SjCcx+uNOiPmOZOF7ceZhALdQUvLla7K/wtF5Q3OExbaLupMjniOzSnlGLUAMOOnjnhVj8ESA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=gyi6PiAf; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2cd5e3c27c5so10368a91.3
-        for <linux-rdma@vger.kernel.org>; Mon, 05 Aug 2024 17:07:07 -0700 (PDT)
+	s=arc-20240116; t=1722928466; c=relaxed/simple;
+	bh=3E98Eu1FQ6+6jyk4/YZ+6HHm8hP2V0WB/HfY10KRV2s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kJsurMk/Uu5yjkdgkOMrj8iC+YnfEt9yQHpkSk0UKYofIiU2jG22MvRRcLw7OvukTGxOZCJ4v+PtoHXDOOFQOteyQmMfmsqqbSGy0qQXjNQ/PdDEmvLLLuadlXXjVN8TrmV7ATemoa1hQG7aEtOzZigye3XZyDJIYMa7m8Vm2zM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=Omfr31xh; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a7ac9994b0dso2024866b.2
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Aug 2024 00:14:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1722902827; x=1723507627; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NAHTjQgD4+zmcG5S0XfaQDNArJDKgMYBVIZNZ/aJ1Cc=;
-        b=gyi6PiAfpTtg5/so2yw0etJtg2QCDRm8C0zEyRpp9tdYYZlbvY45jCuW3P89Zpwopt
-         +cnFDTINueWp+L/5E3/qv2aFbrYs17cCr4CqBiQ3e7cvEEIb3Wz5gTxXalBbSiCDpR/w
-         xVl5q/ddOKEqwazgi/HGgdIludwMX34FoTOT1w56qRoF5wtZGPymdkRbiX0RxgTN25vZ
-         B6fQ76RwoD/Qtilp3hdUl2NatvZGRZN1X+g9nr9UQBLuZHFniEp38VK4KEg5STQDVu5x
-         T/6oFOUd3eNN5S09pxYbCFAQMKkwswndM1f2nQzFbdWd8WbKadK5jjnxIBMk69Z4YwZQ
-         t/BA==
+        d=ffwll.ch; s=google; t=1722928463; x=1723533263; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YoILIVGqnvyXue9wibe7yNdf+HXnnRRR2apk4zDrIOU=;
+        b=Omfr31xhZ+9STHQfF8waRi781X/stfs6DNfAYfXoAxD2BEgaGKJ/yu/AnKJlJdwpkA
+         VVag4UFJ+1UYd9x2vGHkG6GZlf3Vy1+zcp6KN5jGosGI8sFfZgLXvX2ReYZgeyxLzJGl
+         MTd5qzW87aJ4a+hPqzbGA4mX+vODIeZ4tKtXE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722902827; x=1723507627;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NAHTjQgD4+zmcG5S0XfaQDNArJDKgMYBVIZNZ/aJ1Cc=;
-        b=QMDkLckws0slOQjkehu3sg1khvB861mBy/WHf3ADlYx0YRS27gJtDf0K9iZbk/9DUH
-         bCY+UfpRTzNTCIrOqca8fM9tRW5nvfR5Fu5Cxe2GG15mfc+gQnEVV8lOdg9qyYhLVHfQ
-         duVMcdaWKvqIdr0t6+LzHbH8PmNM7OjT7O2DW1cG0ACIZL4huctknDIRk79Mv56BNLcg
-         hvxBjlnvYiLsIBBcqp+uPhPs+FjPgbAvw9Mh9PeKe+Rax/Mxt3aH3lUvOKzAMi3OSGn+
-         8ogHX87LqJ7H/ds01Z7A78V6D7otnpJo1ExJS3h97ULVcnPIhH67laLnphFQxwwI6tpJ
-         0rQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUh8Un4pEUHHRj9DU1X2wBcXCZx93Si5wQ4r6Em2dGv4xJGYPEt8IrXf24SYxcoxGkRnRM29AZjpdYyMsmV5/Az7XBGfVbeITKalg==
-X-Gm-Message-State: AOJu0YyXetlX9rGBA68PZmqhafJqG19LUhugc1lTUi4BTuTobRLcFlR8
-	RNh5NNu6TruJYA58Fe3gOSQNUKYNaLrlDpKEHTCAeQrhT4m8a/VoUoInIMMQ/Jc=
-X-Google-Smtp-Source: AGHT+IEQSHScRjfnGvU+Fw05tXfpsc+P5lXsv6/4ahugCBzY43bWRk3MpQCenDGZj1yYOONAG+y5yA==
-X-Received: by 2002:a17:90b:1e04:b0:2c9:8b33:318f with SMTP id 98e67ed59e1d1-2cff94143damr11644050a91.11.1722902826882;
-        Mon, 05 Aug 2024 17:07:06 -0700 (PDT)
-Received: from dev-mattc2.dev.purestorage.com ([208.88.159.129])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-2cffb388ecesm7730694a91.49.2024.08.05.17.07.04
+        d=1e100.net; s=20230601; t=1722928463; x=1723533263;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YoILIVGqnvyXue9wibe7yNdf+HXnnRRR2apk4zDrIOU=;
+        b=TkAQTlSlywVI15d2XWs0EkPUzKHgfZMhv4wQIiC+VpqxN2PfoORJNI/HsJDePKoaXF
+         DTQPWzCk4NUxP8ek8xPNHg3fGA/89s8s3umJqqYun7wm9b6ATnbx0pD7jKoGWopPRKWC
+         AbS8jlIQEJsIYdZmyNXOucmjR9BtIu190001Gun3iemLyjpJHIV7aqAiPV58ycOy360K
+         6jWhvA/giDEDknG6miKbh9ggG6N5tokuGQJOtent4a+grOnIeNduI738705VTxT6TwND
+         0fSfzlVmwC54/PjRcx9OvkcHjr8L78F6UdXrXaBWoX4lfB/L7BFrHz0XqT+VxQY0cs3P
+         gfLw==
+X-Forwarded-Encrypted: i=1; AJvYcCVNpZcqmW/t5QVY8qBg58yzY5PrLiiiMtJW5ULK2bir/WgaG4crqP7UnwVGYy1NM7FVOC3oxPrShrrV@vger.kernel.org
+X-Gm-Message-State: AOJu0YxPWmgU25CjYbkPAF4kCammrnM2C32NkGwrGENdhoDu00/qsQBF
+	h9Xd+neLGGhdBsGURxm+h7fOKvf9MLqPsh3WvuGbXJnntnWo5rt4X8Xg+UzQbM0=
+X-Google-Smtp-Source: AGHT+IFt0UubU9tRXKmN+PsjgMssVL3mvxSBP75ERwo+mokToAjh3r5kkW9RxlPq16mZ3FsLBnNkIQ==
+X-Received: by 2002:a17:906:bc0b:b0:a7a:9a78:4b5e with SMTP id a640c23a62f3a-a7dc50ff341mr496151166b.8.1722928463251;
+        Tue, 06 Aug 2024 00:14:23 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7dc9e80e5fsm519934866b.161.2024.08.06.00.14.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Aug 2024 17:07:06 -0700 (PDT)
-From: Matthew W Carlis <mattc@purestorage.com>
-To: macro@orcam.me.uk
-Cc: alex.williamson@redhat.com,
-	bhelgaas@google.com,
-	davem@davemloft.net,
-	david.abdurachmanov@gmail.com,
-	edumazet@google.com,
-	helgaas@kernel.org,
-	kuba@kernel.org,
-	leon@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	lukas@wunner.de,
-	mahesh@linux.ibm.com,
-	mika.westerberg@linux.intel.com,
-	netdev@vger.kernel.org,
-	npiggin@gmail.com,
-	oohall@gmail.com,
-	pabeni@redhat.com,
-	pali@kernel.org,
-	saeedm@nvidia.com,
-	sr@denx.de,
-	wilson@tuliptree.org
-Subject: PCI: Work around PCIe link training failures
-Date: Mon,  5 Aug 2024 18:06:59 -0600
-Message-Id: <20240806000659.30859-1-mattc@purestorage.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <alpine.DEB.2.21.2306201040200.14084@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2306201040200.14084@angie.orcam.me.uk>
+        Tue, 06 Aug 2024 00:14:22 -0700 (PDT)
+Date: Tue, 6 Aug 2024 09:14:20 +0200
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	ksummit@lists.linux.dev, linux-cxl@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	shiju.jose@huawei.com, Borislav Petkov <bp@alien8.de>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
+Message-ID: <ZrHNTBJV5aybQrum@phenom.ffwll.local>
+References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
+ <20240729134512.0000487f@Huawei.com>
+ <20240729154203.GF3371438@nvidia.com>
+ <66a81996d4154_2142c29464@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <ZqiSfC5--4q2UFGk@phenom.ffwll.local>
+ <20240801142223.GM3371438@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240801142223.GM3371438@nvidia.com>
+X-Operating-System: Linux phenom 6.9.10-amd64 
 
-Hello again. I just realized that my first response to this thread two weeks
-ago was not actually starting from the end of the discussion. I hope I found
-it now... Must say sorry for this I am still figuring out how to follow these
-threads.
-I need to ask if we can either revert this patch or only modify the quirk to
-only run on the device in mention (ASMedia ASM2824). We have now identified
-it as causing devices to get stuck at Gen1 in multiple generations of our
-hardware & across product lines on ports were hot-plug is common. To be a
-little more specific it includes Intel root ports and Broadcomm PCIe switch
-ports and also Microchip PCIe switch ports.
-The most common place where we see our systems getting stuck at Gen1 is with
-device power cycling. If a device is powered on and then off quickly then the
-link will of course fail to train & the consequence here is that the port is
-forced to Gen1 forever. Does anybody know why the patch will only remove the
-forced Gen1 speed from the ASMedia device?
+On Thu, Aug 01, 2024 at 11:22:23AM -0300, Jason Gunthorpe wrote:
+> On Tue, Jul 30, 2024 at 09:13:00AM +0200, Daniel Vetter wrote:
+> > I think a solid consensus on the topics above would be really useful for
+> > gpu/accel too. We're still busy with more pressing community/ecosystem
+> > building needs, but gpu fw has become rather complex and it's not
+> > stopping. And there's random other devices attached too nowadays, so fwctl
+> > makes a ton of sense.
+> 
+> Yeah, I'm pretty sure GPU is going to need fwctl too, the GPU's are
+> going to have the same issues as NIC does. I see people are already
+> struggling with topics like how to get debug traces out of the GPU FW.
+> 
+> > But for me the more important stuff would be some clear guidelines like
+> > what should be in other more across-devices subsystems like edac (or other
+> > ras features), what should be in functional subsystems like netdev, rdma,
+> > gpu/accel, ... whatever else, and what should be exposed through some
+> > special purpose subsystems like hwmon.
+> 
+> In my mind the most important part is that fwctl is not exclusive, the
+> FW interface and things being manipulated must be sharable or blocked
+> from fwctl. We should never get in a situation where a fwctl
+> implementation becomes a reason we cannot have a functional subsystem
+> interface.
 
-- Matt
+Hm still not clear to me how you want to achive that, but I guess best
+I'll jump over to the fwctl thread and ask about those details there.
+
+> > We've got plenty of experience in enforcing such a community contract with
+> > vendors, but the hard part is creating a clear and ideally concise
+> > documentation page I can just point vendors at as the ground truth.
+> 
+> Well, I tried with the documentation in the fwctl patch series..
+> 
+> https://lore.kernel.org/linux-rdma/6-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com/
+
+I'll head over and drop some acks and comments.
+-Sima
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
