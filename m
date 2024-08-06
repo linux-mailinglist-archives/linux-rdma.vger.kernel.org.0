@@ -1,132 +1,92 @@
-Return-Path: <linux-rdma+bounces-4222-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4223-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24AA8949857
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2024 21:33:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D10E794986F
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2024 21:36:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55DBE1C211DE
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2024 19:33:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88AA21F22340
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Aug 2024 19:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816CA14A089;
-	Tue,  6 Aug 2024 19:33:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 341FD14F9CC;
+	Tue,  6 Aug 2024 19:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LCnhfoLY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J6U4GKhQ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BAC614901A;
-	Tue,  6 Aug 2024 19:33:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D7B14B06C;
+	Tue,  6 Aug 2024 19:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722972819; cv=none; b=N5qygm+/EUHGlDypJD8pUl/cQx8/y2ZRgqjoYu4cnahYfov+Q/KYNshWjm6v62fsDV4DIsMLnaIo16tADZm9Jkay+6OI9ROKyVhHZapw4B79CApxgmdSfACLg3Hm3jYh3Gd3d0XKYLgZ7tZiZoHy1Rh+xYfQYoLpeSUhVKeDYNc=
+	t=1722972987; cv=none; b=TWQSlTxuLFDDGlE6JXZZLd4qy45O+chU4dxVEajlRFbN5n3toap5ccd3KtivaBOKFUjH7FZ49GoJBfJmhnX3H3BNL8mQwN5L4DPDNG77D392+liJPQdHFzVGPk60dUFSKQVvc2Ju/OUnrC+v7KEFPVRy5pd2bLrTvy6dPFgcho8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722972819; c=relaxed/simple;
-	bh=Ksaiilzzj7YrsLDz/h9N0t7bhMsZ6HG9XzjE586OUy8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R3j5usLKGCfv4HexhvRk96/Cau0/qIiUTZZh+NMZ51ugk5yZC/NQwXZpHb/K5LCwaKRUQnnKUpbA+dCjGnS/i7dl3KOrJ5kI7cWJdOCIHdMm2wNpArpZknBQd/oytHfYap/csxISR5MkFK2YOaRHox6pj+lUQHofYK83rpD3u+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LCnhfoLY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FD9BC4AF0E;
-	Tue,  6 Aug 2024 19:33:38 +0000 (UTC)
+	s=arc-20240116; t=1722972987; c=relaxed/simple;
+	bh=sc3W7vyVOLMiqCp+8siDA6OhvxTfa07DqrM7vyqqtQg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=CfN0yGqEzCTAtFb/XG/Ql3Ky3sYzbHEArbh+IzARCLXm79tT7qWTb8xajawqt1JIz8fWBtW7BRYM8kh/YT2dQgaFE91Oa1D91m577Aj12DoZIGI+o9t8Ha+kLZ9Zc/qzkodm58O4XMpYWdJ+7OmadU8cvjGDva6sK1r0+ohf+W8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J6U4GKhQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19283C32786;
+	Tue,  6 Aug 2024 19:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722972819;
-	bh=Ksaiilzzj7YrsLDz/h9N0t7bhMsZ6HG9XzjE586OUy8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LCnhfoLYUJjzUbriyA5wG7FYi/WGT7h9GmY6gJY4/J5FrHEENnl3pEWMaX2RAr0KA
-	 SORZ2PaRYBtX2uMNjfBdahsXzncZ8vXxEw66hD2R8SUNqQYr/+BDL+uSVL9tAvudi+
-	 Ya0/COw/Sl/5DLAOLKSagw3JCyrw2lh7V637gQfz3xeiSXT0i/5RNrSrmfVFUuPmV0
-	 TGpWif+nZ0blQU17ihC5k0kMCUY7k9g8N9Nv++ObitCBPS0C7zqCCe05rtIgLMDY1j
-	 JMlbe+lfeB9CsfLI0RlN6BFkbUinaGgN471J1a6tvpcavP8c1Ap7ehXl2pKFGf3vB8
-	 iJ9JVQrBldolw==
-From: Jakub Kicinski <kuba@kernel.org>
-To: davem@davemloft.net
-Cc: netdev@vger.kernel.org,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	michael.chan@broadcom.com,
-	shuah@kernel.org,
-	ecree.xilinx@gmail.com,
-	przemyslaw.kitszel@intel.com,
-	ahmed.zaki@intel.com,
-	andrew@lunn.ch,
-	willemb@google.com,
-	pavan.chebbi@broadcom.com,
-	petrm@nvidia.com,
-	gal@nvidia.com,
-	jdamato@fastly.com,
-	donald.hunter@gmail.com,
-	Jakub Kicinski <kuba@kernel.org>,
-	saeedm@nvidia.com,
-	tariqt@nvidia.com,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v3 03/12] eth: mlx5: allow disabling queues when RSS contexts exist
-Date: Tue,  6 Aug 2024 12:33:08 -0700
-Message-ID: <20240806193317.1491822-4-kuba@kernel.org>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240806193317.1491822-1-kuba@kernel.org>
-References: <20240806193317.1491822-1-kuba@kernel.org>
+	s=k20201202; t=1722972984;
+	bh=sc3W7vyVOLMiqCp+8siDA6OhvxTfa07DqrM7vyqqtQg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=J6U4GKhQHq2r95nPZIN9AKQw9uIc/m8Px1mUUL+OGd4whSuOa5T4JhCQQRm7ykbds
+	 m+dtVS1i8WQG+TsI3DraVl4ByJpQn4qZfG2tdczdw7QF175p2sPq0TL0IG5rtNiLgv
+	 I6A156sj3pWp9tXQ9yH941Y30ueG3eFuVRJqThW5DtwMhrs8uOf9JiJMuGMqZoSkBx
+	 DmaR8SZRW5ioUcan5fjVwDeJM4IwrR8Fw5NGU+JfMQrrpSwVmCvngbvdrD3Wmij3yy
+	 fW1S2QapgzIzfvg5fNgpETIZjQ1erBNGLbPSkFNo18oxxMMk4lyZ5fStAxuMSpGU9C
+	 tjIdDX5I4WsuA==
+Date: Tue, 6 Aug 2024 14:36:22 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Matthew W Carlis <mattc@purestorage.com>
+Cc: macro@orcam.me.uk, alex.williamson@redhat.com, bhelgaas@google.com,
+	davem@davemloft.net, david.abdurachmanov@gmail.com,
+	edumazet@google.com, kuba@kernel.org, leon@kernel.org,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	lukas@wunner.de, mahesh@linux.ibm.com,
+	mika.westerberg@linux.intel.com, netdev@vger.kernel.org,
+	npiggin@gmail.com, oohall@gmail.com, pabeni@redhat.com,
+	pali@kernel.org, saeedm@nvidia.com, sr@denx.de,
+	wilson@tuliptree.org
+Subject: Re: PCI: Work around PCIe link training failures
+Message-ID: <20240806193622.GA74589@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240806000659.30859-1-mattc@purestorage.com>
 
-Since commit 24ac7e544081 ("ethtool: use the rss context XArray
-in ring deactivation safety-check") core will prevent queues from
-being disabled while being used by additional RSS contexts.
-The safety check is no longer necessary, and core will do a more
-accurate job of only rejecting changes which can actually break
-things.
+On Mon, Aug 05, 2024 at 06:06:59PM -0600, Matthew W Carlis wrote:
+> Hello again. I just realized that my first response to this thread two weeks
+> ago was not actually starting from the end of the discussion. I hope I found
+> it now... Must say sorry for this I am still figuring out how to follow these
+> threads.
+> I need to ask if we can either revert this patch or only modify the quirk to
+> only run on the device in mention (ASMedia ASM2824). We have now identified
+> it as causing devices to get stuck at Gen1 in multiple generations of our
+> hardware & across product lines on ports were hot-plug is common. To be a
+> little more specific it includes Intel root ports and Broadcomm PCIe switch
+> ports and also Microchip PCIe switch ports.
+> The most common place where we see our systems getting stuck at Gen1 is with
+> device power cycling. If a device is powered on and then off quickly then the
+> link will of course fail to train & the consequence here is that the port is
+> forced to Gen1 forever. Does anybody know why the patch will only remove the
+> forced Gen1 speed from the ASMedia device?
 
-Reviewed-by: Gal Pressman <gal@nvidia.com>
-Reviewed-by: Joe Damato <jdamato@fastly.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-CC: saeedm@nvidia.com
-CC: tariqt@nvidia.com
-CC: leon@kernel.org
-CC: linux-rdma@vger.kernel.org
----
- drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 12 ------------
- 1 file changed, 12 deletions(-)
+Thanks for keeping this thread alive.  I don't know the fix, but it
+does seem like this series made wASMedia ASM2824 work better but
+caused regressions elsewhere, so maybe we just need to accept that
+ASM2824 is slightly broken and doesn't work as well as it should.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-index 36845872ae94..0b941482db30 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-@@ -445,7 +445,6 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
- 	unsigned int count = ch->combined_count;
- 	struct mlx5e_params new_params;
- 	bool arfs_enabled;
--	int rss_cnt;
- 	bool opened;
- 	int err = 0;
- 
-@@ -499,17 +498,6 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
- 		goto out;
- 	}
- 
--	/* Don't allow changing the number of channels if non-default RSS contexts exist,
--	 * the kernel doesn't protect against set_channels operations that break them.
--	 */
--	rss_cnt = mlx5e_rx_res_rss_cnt(priv->rx_res) - 1;
--	if (rss_cnt) {
--		err = -EINVAL;
--		netdev_err(priv->netdev, "%s: Non-default RSS contexts exist (%d), cannot change the number of channels\n",
--			   __func__, rss_cnt);
--		goto out;
--	}
--
- 	/* Don't allow changing the number of channels if MQPRIO mode channel offload is active,
- 	 * because it defines a partition over the channels queues.
- 	 */
--- 
-2.45.2
-
+Bjorn
 
