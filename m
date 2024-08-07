@@ -1,321 +1,132 @@
-Return-Path: <linux-rdma+bounces-4227-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4228-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A01094A1F3
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2024 09:44:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D553594A31B
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2024 10:44:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3271B23144
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2024 07:44:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 966C72868C5
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2024 08:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 127BC1C7B84;
-	Wed,  7 Aug 2024 07:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D2EC1C9DF0;
+	Wed,  7 Aug 2024 08:43:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mu6zHR4L"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="OQ/7Q8u4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEA2322EE5;
-	Wed,  7 Aug 2024 07:44:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A216D1C9DDA
+	for <linux-rdma@vger.kernel.org>; Wed,  7 Aug 2024 08:43:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723016673; cv=none; b=q058bTgLiIYHhPurnnQL3EBeP+KJd7ThiOpTdmIQvtncXNPJAf+hLdHOO7gKDE7lJqOydoanOMWkdwPm4/edxNtm4xPAzFkXHE3Bq+fqFumnsQqtROIZATTgi94TS9FV5P4bnB6ZkRPzYKv+OxNB/2c24lwygqVBCSfUPW0zuYM=
+	t=1723020239; cv=none; b=sKEWdVFPv8yHHOWP2IfOGnoyNR0m+/vKjrDtzZUjycRtHqcf5iJINvzORCbcmaFeHzFC/c6iMPQ+g0rApLv8XyFe390C69PalUmJlpDC1CCWShAjTda3lm0VD8hNzWDNbur6rxpk7izDKyCNyOlfmNIFRCh/wnpDo4qSXylc1/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723016673; c=relaxed/simple;
-	bh=+pIWFznFFBdtsY4jys5bAc3rIq9i0mVsC5Uci68Jjpo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=snF20xBD4e8AHK2rQ/Xu0TbnvdbPyLJa4MkftXvaQ962yvljbpvPTBguTyNDMpxJQSzxCfsuNQQx9uN+v57/4EmLx+m2z8IY0RaedNGJiZIEQv/55vHROAl3xqsD4LSRQ2mGzBlcQRQJx3ip0x2cAQ+WQoPtQlTUQGIsetfzGSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mu6zHR4L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9BBFC32782;
-	Wed,  7 Aug 2024 07:44:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723016671;
-	bh=+pIWFznFFBdtsY4jys5bAc3rIq9i0mVsC5Uci68Jjpo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mu6zHR4LkxW7exTjoDAKLD8glCoTDeurk8lBsAFNP9psRxCLQmdYOl1lkDLbaF9Fl
-	 2YsjxHJN2xgKY1/HkHi/DtybaZC0k2QNhgm2dYg/3UALnaTi2tVaa1Y8IYR9blYK1d
-	 Bw+TZUPnmRw9P0JkH328vgAuOu4JZDHxaduLF7mrHi/h/NQSNNILvl59V2z4/BVCk1
-	 0VocsdeAm/KEG6b9pLADWzwDetFoLSqHXg5LGnHHib02h9/n+TTHXedOCbYDQtVo37
-	 wVZzbkttn5rF+q6tJq3PxRoD3G8eAy4tH2rKL7iDqqj6iA7xaIS8dVfW+BVv9TYJmc
-	 M2AsBUEcHqFpQ==
-Date: Wed, 7 Aug 2024 10:44:21 +0300
-From: Oded Gabbay <ogabbay@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Itay Avraham <itayavr@nvidia.com>,
-	Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
-	linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
-	Aron Silverton <aron.silverton@oracle.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	David Ahern <dsahern@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>, Jiri Pirko <jiri@nvidia.com>,
-	Leonid Bloch <lbloch@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>, linux-cxl@vger.kernel.org,
-	patches@lists.linux.dev
-Subject: Re: [PATCH v2 5/8] fwctl: FWCTL_RPC to execute a Remote Procedure
- Call to device firmware
-Message-ID: <ZrMl1bkPP-3G9B4N@T14sgabbay.>
-References: <0-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
- <5-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
+	s=arc-20240116; t=1723020239; c=relaxed/simple;
+	bh=4BstarA/azTj0MQhXEHPNbE5+HYWrDilUXJZYFWQ+iw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=WtCmJ7GQlRL8Ki3IobwCjDPgxGlcu45QFf+RLju4TCd3FIgsZRWqvKP3qPzGD/2bpzyVgJKfI2tWisufFFDwn6kAlB5h0SOpTvD+6bt0/5rTp79+ei4QSi4+uZVcn6yn8GU6SoQtv8SkrhNl4BP1UXRG0CcvCAvXrGzSlOH6hpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=OQ/7Q8u4; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-70943713472so642210a34.2
+        for <linux-rdma@vger.kernel.org>; Wed, 07 Aug 2024 01:43:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1723020237; x=1723625037; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Iw7Tv+YETDv5W6d9wVYOGpd/7bHckBYfrgRk1yNks+I=;
+        b=OQ/7Q8u4/rKgMnmfsm92qJn7lrBnkLHDS7V3j1hcMV81mDoVvMWsnxQROcu0pJMJGj
+         EI08rcLDW3Eyfc3NPVQZBrC8vDKHYTY1tWy6Hp7oC1MNfThqO9lHJajnYRIHx55rVXwx
+         zg6xupztTNS25AZY12LDyIRaWcNlBIeVMGs2sfP4hqj7E9PUgypFUBQPatUkQzlNVE5W
+         lNuNBNZAj5dKHPLNoR67BDKudufTdASj2yVN3ShiXyLPuEAxPtWmBgt6Aahj5fsSuY2l
+         j6F0rq+zMhRNHWg46KQmQl2nGVpmMdJ5QGPAg1aRgHR8A9/ihe9zinHGNO/hs7I9Kx6N
+         6TyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723020237; x=1723625037;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Iw7Tv+YETDv5W6d9wVYOGpd/7bHckBYfrgRk1yNks+I=;
+        b=IUunKzwY3V2Tt6v3SErTttPiD28C1HufiCpvwbfZJYFk1Lo/pj9uneAYYt63zPKYn+
+         nV3WL5fujr4KkhO3BbY8V01GSMxnwqDS3/WtfDH9k/UD2vZ6+leCvcmA5k5pdUvmbhe1
+         n/++JjZYAI8M4dDAuSJQ1ZkEqOZzf0fELY0QzSUDeNsDkxvZLviVA2FTJqKHQkEJS1a1
+         Kk9iaE5qk5DZNt4iSWNHh9xmBcfLMg+OxgbbXZcDLBOmgbNdAx1Esp/t9HsGQsdmDL5g
+         nXdIfbECf2yqR3r44x6Yxd8FtcfAvSOlyiuMvLO2rYWiLTXoidegJTVe6flPrCjMh4AA
+         R46g==
+X-Forwarded-Encrypted: i=1; AJvYcCUlUc/qOzdXUZH0M2FCAZQwGFjILMJ2mNDzB7Gzixdj5SXg/N+VEVd5sGlH/WKXxozccXAd0KixcTuKO4drTdWplCYy8ZI9ejMi+g==
+X-Gm-Message-State: AOJu0Yyh+yRqwdVjzqNMCNEwbWeNAy469OB5YbrL8L3kzzcaqCSOLR6R
+	S8FEwgmyexnPOtMwF3Jx+MUa2qKBv+A/QYz/13xuQ3csKUXLow8f1vWIt5zXTPY=
+X-Google-Smtp-Source: AGHT+IHGDJwgvu27ZoxkF/Iz1RMQROmHIKs8TmuQAxLdh09B6CWq3+c9Jjh5o5EFESeTZQUuMmrUsQ==
+X-Received: by 2002:a05:6358:418f:b0:1ac:660a:8a69 with SMTP id e5c5f4694b2df-1af3baf62a6mr2337848555d.18.1723020236454;
+        Wed, 07 Aug 2024 01:43:56 -0700 (PDT)
+Received: from dev-mattc2.dev.purestorage.com ([208.88.159.128])
+        by smtp.googlemail.com with ESMTPSA id 41be03b00d2f7-7b7654bf852sm6742435a12.90.2024.08.07.01.43.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Aug 2024 01:43:55 -0700 (PDT)
+From: Matthew W Carlis <mattc@purestorage.com>
+To: helgaas@kernel.org
+Cc: alex.williamson@redhat.com,
+	bhelgaas@google.com,
+	davem@davemloft.net,
+	david.abdurachmanov@gmail.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	leon@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	lukas@wunner.de,
+	macro@orcam.me.uk,
+	mahesh@linux.ibm.com,
+	mattc@purestorage.com,
+	mika.westerberg@linux.intel.com,
+	netdev@vger.kernel.org,
+	npiggin@gmail.com,
+	oohall@gmail.com,
+	pabeni@redhat.com,
+	pali@kernel.org,
+	saeedm@nvidia.com,
+	sr@denx.de,
+	wilson@tuliptree.org
+Subject: PCI: Work around PCIe link training failures
+Date: Wed,  7 Aug 2024 02:43:48 -0600
+Message-Id: <20240807084348.12304-1-mattc@purestorage.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240806193622.GA74589@bhelgaas>
+References: <20240806193622.GA74589@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com>
 
-On Mon, Jun 24, 2024 at 07:47:29PM -0300, Jason Gunthorpe wrote:
-> Add the FWCTL_RPC ioctl which allows a request/response RPC call to device
-> firmware. Drivers implementing this call must follow the security
-> guidelines under Documentation/userspace-api/fwctl.rst
->
-> The core code provides some memory management helpers to get the messages
-> copied from and back to userspace. The driver is responsible for
-> allocating the output message memory and delivering the message to the
-> device.
->
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  drivers/fwctl/main.c       | 62 +++++++++++++++++++++++++++++++++++
->  include/linux/fwctl.h      |  5 +++
->  include/uapi/fwctl/fwctl.h | 66 ++++++++++++++++++++++++++++++++++++++
->  3 files changed, 133 insertions(+)
->
-> diff --git a/drivers/fwctl/main.c b/drivers/fwctl/main.c
-> index f1dec0b590aee4..9506b993a1a56d 100644
-> --- a/drivers/fwctl/main.c
-> +++ b/drivers/fwctl/main.c
-> @@ -8,16 +8,20 @@
->  #include <linux/slab.h>
->  #include <linux/container_of.h>
->  #include <linux/fs.h>
-> +#include <linux/sizes.h>
->
->  #include <uapi/fwctl/fwctl.h>
->
->  enum {
->  	FWCTL_MAX_DEVICES = 256,
-> +	MAX_RPC_LEN = SZ_2M,
->  };
->  static dev_t fwctl_dev;
->  static DEFINE_IDA(fwctl_ida);
-> +static unsigned long fwctl_tainted;
->
->  DEFINE_FREE(kfree_errptr, void *, if (!IS_ERR_OR_NULL(_T)) kfree(_T));
-> +DEFINE_FREE(kvfree_errptr, void *, if (!IS_ERR_OR_NULL(_T)) kvfree(_T));
->
->  struct fwctl_ucmd {
->  	struct fwctl_uctx *uctx;
-> @@ -75,9 +79,66 @@ static int fwctl_cmd_info(struct fwctl_ucmd *ucmd)
->  	return ucmd_respond(ucmd, sizeof(*cmd));
->  }
->
-> +static int fwctl_cmd_rpc(struct fwctl_ucmd *ucmd)
-> +{
-> +	struct fwctl_device *fwctl = ucmd->uctx->fwctl;
-> +	struct fwctl_rpc *cmd = ucmd->cmd;
-> +	size_t out_len;
-> +
-> +	if (cmd->in_len > MAX_RPC_LEN || cmd->out_len > MAX_RPC_LEN)
-> +		return -EMSGSIZE;
-> +
-> +	switch (cmd->scope) {
-> +	case FWCTL_RPC_CONFIGURATION:
-> +	case FWCTL_RPC_DEBUG_READ_ONLY:
-> +		break;
-> +
-> +	case FWCTL_RPC_DEBUG_WRITE_FULL:
-> +		if (!capable(CAP_SYS_RAWIO))
-> +			return -EPERM;
-> +		fallthrough;
-> +	case FWCTL_RPC_DEBUG_WRITE:
-> +		if (!test_and_set_bit(0, &fwctl_tainted)) {
-> +			dev_warn(
-> +				&fwctl->dev,
-> +				"%s(%d): has requested full access to the physical device device",
-> +				current->comm, task_pid_nr(current));
-> +			add_taint(TAINT_FWCTL, LOCKDEP_STILL_OK);
-> +		}
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	};
-> +
-> +	void *inbuf __free(kvfree) =
-> +		kvzalloc(cmd->in_len, GFP_KERNEL | GFP_KERNEL_ACCOUNT);
-> +	if (!inbuf)
-> +		return -ENOMEM;
-> +	if (copy_from_user(inbuf, u64_to_user_ptr(cmd->in), cmd->in_len))
-> +		return -EFAULT;
-> +
-> +	out_len = cmd->out_len;
-> +	void *outbuf __free(kvfree_errptr) = fwctl->ops->fw_rpc(
-> +		ucmd->uctx, cmd->scope, inbuf, cmd->in_len, &out_len);
-Hi Jason,
-First of all, great work. I fully support this direction. Although I'm not
-working anymore in Habana, I would have definitely moved to this interface
-instead of the custom one we implemented in our driver. I believe this can
-be of use for other accel drivers as well.
+On Tues, 06 Aug 2024 Bjorn Helgaas wrote:
+> it does seem like this series made wASMedia ASM2824 work better but
+> caused regressions elsewhere, so maybe we just need to accept that
+> ASM2824 is slightly broken and doesn't work as well as it should.
 
-Complex devices which contains multiple IPs and FWs, like Habana's Gaudi,
-have some RPCs to the firmware which are not related to the funcationality
-of the IP drivers (the compute and networking drivers in our case).
+One of my colleagues challenged me to provide a more concrete example
+where the change will cause problems. One such configuration would be not
+implementing the Power Controller Control in the Slot Capabilities Register.
+Then, Powering off the slot via out-of-band interfaces would result in the
+kernel forcing the DSP to Gen1 100% of the time as far as I can tell. 
+The aspect of this force to Gen1 that is the most concerning to my team is
+that it isn't cleaned up even if we replaced the EP with some other EP.
 
-Spreading the RPCs between the drivers required to separate it also among
-the different user-spaces libraries, as each subsystem has its own user-space.
+I was curious about the PCIe devices mentioned in the commit because I
+look at crazy malfunctioning devices too often so I pasted the following:
+"Delock Riser Card PCI Expres 41433" into Google. 
+I'm not really a physical layer guy, but is it possible that the reported
+issue be due to signal integrity? I'm not sure if sending PCIe over a USB
+cable is "reliable".
 
-Disconnecting the RPCs from the drivers and providing a generic interface will
-allow to have a single user-space library which will be able to communicate
-with the firmware for all the IPs in the device. In Habana's case, it was
-mainly for monitoring and debugging purposes.
+I've never worked with an ASMedia switch and don't have a reliable way to
+reproduce anything like the interaction between the two device at hand. As
+much as I hate to make the request my thinking is that the patch should be
+reverted until there is a solution that doesn't leave the link forced to
+Gen1 forever for every EP thereafter.
 
-I do have one question about the rpc ioctl. Are you assuming that the rpc
-is synchronous (we send a message to the firmware and block until we get the
-reply)? If so, what happen if we have an async RPC implementation
-inside the driver? How would you recommend to handle it?
-
-Thanks,
-Oded
-
-> +	if (IS_ERR(outbuf))
-> +		return PTR_ERR(outbuf);
-> +	if (outbuf == inbuf) {
-> +		/* The driver can re-use inbuf as outbuf */
-> +		inbuf = NULL;
-> +	}
-> +
-> +	if (copy_to_user(u64_to_user_ptr(cmd->out), outbuf,
-> +			 min(cmd->out_len, out_len)))
-> +		return -EFAULT;
-> +
-> +	cmd->out_len = out_len;
-> +	return ucmd_respond(ucmd, sizeof(*cmd));
-> +}
-> +
->  /* On stack memory for the ioctl structs */
->  union ucmd_buffer {
->  	struct fwctl_info info;
-> +	struct fwctl_rpc rpc;
->  };
->
->  struct fwctl_ioctl_op {
-> @@ -98,6 +159,7 @@ struct fwctl_ioctl_op {
->  	}
->  static const struct fwctl_ioctl_op fwctl_ioctl_ops[] = {
->  	IOCTL_OP(FWCTL_INFO, fwctl_cmd_info, struct fwctl_info, out_device_data),
-> +	IOCTL_OP(FWCTL_RPC, fwctl_cmd_rpc, struct fwctl_rpc, out),
->  };
->
->  static long fwctl_fops_ioctl(struct file *filp, unsigned int cmd,
-> diff --git a/include/linux/fwctl.h b/include/linux/fwctl.h
-> index 9a906b861acf3a..294cfbf63306a2 100644
-> --- a/include/linux/fwctl.h
-> +++ b/include/linux/fwctl.h
-> @@ -26,6 +26,9 @@ struct fwctl_uctx;
->   *	out_device_data. On input length indicates the size of the user buffer
->   *	on output it indicates the size of the memory. The driver can ignore
->   *	length on input, the core code will handle everything.
-> + * @fw_rpc: Implement FWCTL_RPC. Deliver rpc_in/in_len to the FW and return
-> + *	the response and set out_len. rpc_in can be returned as the response
-> + *	pointer. Otherwise the returned pointer is freed with kvfree().
->   */
->  struct fwctl_ops {
->  	enum fwctl_device_type device_type;
-> @@ -33,6 +36,8 @@ struct fwctl_ops {
->  	int (*open_uctx)(struct fwctl_uctx *uctx);
->  	void (*close_uctx)(struct fwctl_uctx *uctx);
->  	void *(*info)(struct fwctl_uctx *uctx, size_t *length);
-> +	void *(*fw_rpc)(struct fwctl_uctx *uctx, enum fwctl_rpc_scope scope,
-> +			void *rpc_in, size_t in_len, size_t *out_len);
->  };
->
->  /**
-> diff --git a/include/uapi/fwctl/fwctl.h b/include/uapi/fwctl/fwctl.h
-> index 39db9f09f8068e..8bde0d4416fd55 100644
-> --- a/include/uapi/fwctl/fwctl.h
-> +++ b/include/uapi/fwctl/fwctl.h
-> @@ -67,4 +67,70 @@ struct fwctl_info {
->  };
->  #define FWCTL_INFO _IO(FWCTL_TYPE, FWCTL_CMD_INFO)
->
-> +/**
-> + * enum fwctl_rpc_scope - Scope of access for the RPC
-> + */
-> +enum fwctl_rpc_scope {
-> +	/**
-> +	 * @FWCTL_RPC_CONFIGURATION: Device configuration access scope
-> +	 *
-> +	 * Read/write access to device configuration. When configuration
-> +	 * is written to the device remains in a fully supported state.
-> +	 */
-> +	FWCTL_RPC_CONFIGURATION = 0,
-> +	/**
-> +	 * @FWCTL_RPC_DEBUG_READ_ONLY: Read only access to debug information
-> +	 *
-> +	 * Readable debug information. Debug information is compatible with
-> +	 * kernel lockdown, and does not disclose any sensitive information. For
-> +	 * instance exposing any encryption secrets from this information is
-> +	 * forbidden.
-> +	 */
-> +	FWCTL_RPC_DEBUG_READ_ONLY = 1,
-> +	/**
-> +	 * @FWCTL_RPC_DEBUG_WRITE: Writable access to lockdown compatible debug information
-> +	 *
-> +	 * Allows write access to data in the device which may leave a fully
-> +	 * supported state. This is intended to permit intensive and possibly
-> +	 * invasive debugging. This scope will taint the kernel.
-> +	 */
-> +	FWCTL_RPC_DEBUG_WRITE = 2,
-> +	/**
-> +	 * @FWCTL_RPC_DEBUG_WRITE_FULL: Writable access to all debug information
-> +	 *
-> +	 * Allows read/write access to everything. Requires CAP_SYS_RAW_IO, so
-> +	 * it is not required to follow lockdown principals. If in doubt
-> +	 * debugging should be placed in this scope. This scope will taint the
-> +	 * kernel.
-> +	 */
-> +	FWCTL_RPC_DEBUG_WRITE_FULL = 3,
-> +};
-> +
-> +/**
-> + * struct fwctl_rpc - ioctl(FWCTL_RPC)
-> + * @size: sizeof(struct fwctl_rpc)
-> + * @scope: One of enum fwctl_rpc_scope, required scope for the RPC
-> + * @in_len: Length of the in memory
-> + * @out_len: Length of the out memory
-> + * @in: Request message in device specific format
-> + * @out: Response message in device specific format
-> + *
-> + * Deliver a Remote Procedure Call to the device FW and return the response. The
-> + * call's parameters and return are marshaled into linear buffers of memory. Any
-> + * errno indicates that delivery of the RPC to the device failed. Return status
-> + * originating in the device during a successful delivery must be encoded into
-> + * out.
-> + *
-> + * The format of the buffers matches the out_device_type from FWCTL_INFO.
-> + */
-> +struct fwctl_rpc {
-> +	__u32 size;
-> +	__u32 scope;
-> +	__u32 in_len;
-> +	__u32 out_len;
-> +	__aligned_u64 in;
-> +	__aligned_u64 out;
-> +};
-> +#define FWCTL_RPC _IO(FWCTL_TYPE, FWCTL_CMD_RPC)
-> +
->  #endif
-> --
-> 2.45.2
->
->
+- Matt
 
