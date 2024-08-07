@@ -1,134 +1,164 @@
-Return-Path: <linux-rdma+bounces-4232-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4233-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3182994A7B5
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2024 14:29:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC1C194A88E
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2024 15:26:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 623031C21AF2
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2024 12:29:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 372121F24318
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2024 13:26:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 375311E672A;
-	Wed,  7 Aug 2024 12:29:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7DDF1EA0D6;
+	Wed,  7 Aug 2024 13:26:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="InALkeYZ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DKwI0Lvf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 971171E2101;
-	Wed,  7 Aug 2024 12:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14B361E7A5F
+	for <linux-rdma@vger.kernel.org>; Wed,  7 Aug 2024 13:26:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723033789; cv=none; b=gmjLz8pHQ69fdjveLvpyhqqoZYTup70wQgIbIkGizTKCYRomFtZyWqrJdUIqAPB3NzqeLipFvCfyeKPxUWzq+5h9AIXmaGwTgjgEh9NEucoP3CHztOnpSSsY+tupYuiZ1cBe8YeHym7EZOP4tnV4q1ED9lARNNczNdbWfi+EtOA=
+	t=1723037175; cv=none; b=I4PaY6P+gDFfLpeAkJZl6qgpfiyp0k9lxWdUijqUbYpud11SZqKlPX8hjhXru7v+HQ28IdNiae3lt4hM/MZxeMvBWYc5P93meD6+F5skAwGA4cPCIXJ0pVARd0H28dlDW/wDzVrxO3CeRGae4yfLErj+V5pgPt7YlWIP21C8PPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723033789; c=relaxed/simple;
-	bh=pgiw/PXddMIrw7PyP7Ctp5k5rWWWnsIDF+Ip6XS+nU4=;
+	s=arc-20240116; t=1723037175; c=relaxed/simple;
+	bh=i08Eu++Bs5ZfYyhmfDLsgMllWxZSyJTGvRtL9wXdWUY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZzoORiD1yz9tT3ci4ojS6G3PoP5o69TTrCXcG82pT891swkeglRd1vt3XIminrliQw3W2VGIluoUm/ZppkMpewdlUIibTlmI+IM+tmjfq5BfBLbSHsj60KcJ+9ZmqajG02lL2AVg0a6PmiJi6LQ7MbTUoNg7kQ5w5bYJuQaEP+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=InALkeYZ; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1ff4568676eso18167975ad.0;
-        Wed, 07 Aug 2024 05:29:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723033787; x=1723638587; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Kx32xTT3Lmjn28QqG28xI58RScq11tK0yTOGRh/oOE4=;
-        b=InALkeYZdPu7jCgUElCeuRW7/X+R2krN6fMJH1gEVVsB4UbInj2c0Ooarc6fN/k8kT
-         ievk/lYeMiUhSnFjtq95iG5YMMJdslV66z1UhXW2s/2zVZ0zOwYpnf3706VEHtyUHWfv
-         kcongexK6KJxH2NXVnLNhRPoPS4Vefe9fGl/Jtxm7RmrISF02ThK9/0U3ciltXsBsv34
-         kQRcC8JrARXadCNmLanmPKcvX5RsBajVkOpjqXSP+nkFBXhqnA21g7NtiR69Uxnvqgfe
-         BszFKuqyaZzbp5H3eaRDeLm1pZR4u1fJltd41WhCyVRM7GeEKbUF4T54smQiVMufSdD8
-         lAJA==
+	 To:Cc:Content-Type; b=HmcF9YyWgitXILuFIZGn0rzn9z15Pc/BhYafgHTiM8Xn19EfzVC/T4k0S1eTf7BaExT7rZNnsLqK/GEJnG/MNtogvuiul8nlAHZ8bYF95lKYZ0dbEixC8iHVAPdcf2r2exvFmADGab1KbanWFwC0nbvDZUK3rnOG/k1KbBQ42PM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DKwI0Lvf; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1723037173;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vloTJ8N6rDB2OVVpi1DvU3M2IhFk9AAWb0s6CTF2pM4=;
+	b=DKwI0LvfHkL4BUq9ow0saOLB9sRuDRr0FrcmOKeZI8LmRR+OzzSE10AIwWxbgvU/0FQ3F/
+	eJHKkGb55Ror4y3uUbwzx3x6InC1xSTe96Dyka3GCeSe02JGoJPiRh9enxEJK89lSm62CB
+	o0Z89Dwg16RGrbwHDuHQeaUemTvRpoA=
+Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
+ [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-322-rT3OzVQuMlCf4ZG6VJqWcg-1; Wed, 07 Aug 2024 09:26:08 -0400
+X-MC-Unique: rT3OzVQuMlCf4ZG6VJqWcg-1
+Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-68fd6ccd4c8so37318127b3.0
+        for <linux-rdma@vger.kernel.org>; Wed, 07 Aug 2024 06:26:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723033787; x=1723638587;
+        d=1e100.net; s=20230601; t=1723037168; x=1723641968;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Kx32xTT3Lmjn28QqG28xI58RScq11tK0yTOGRh/oOE4=;
-        b=dYaYB9tsDZMnUYEr2Zn1rBpLaIUDm3SQcms18AUNb+t4BmtRygAm34TSQ5ADdHIZfv
-         7JbGWDNGqh5fMyUruvdNVwCpADdHW1xkpspC7Sj0wFAbmd0S43J3U+qF6Nfq9IquJ4oJ
-         G9S3AdE1xiGXoI6XabmOoT+oNkLGuj2UI08mi2bY4JFIll1I94uO/pOIH8++KsSPCQvF
-         NAIEzzqhyQNzgSKoSLIwIY7PJfotoVIAE8bimmQLdQNyQfHsCELmTUHWHvicCeOCsSUg
-         ayPwFZLB6heBDkYFfDFhmoVlZdqr/fNSNXZIZO/nkslPllT05OTrKv6x+fSyqoUY/2SL
-         Yw5w==
-X-Forwarded-Encrypted: i=1; AJvYcCW8Pyla9kVCKpvfKinCIe7OwyKSGaKmR2P/BnEI8xXZsDtI/6FPmdzrSq1eu/AvRdutV7OybMtJMf86addMoOGp3dtJscYXwSGnepnQ9EdPiva/OlqCwcooKwmjOxvJBmEiBXuA0sd1b0RLrf1YX4iOjlb4jAffpVz6ZWRD5D5mMXiTRFKjI+0QmnVMPFZ3wbHgo1hJuBn15XeXMg==
-X-Gm-Message-State: AOJu0YxCV01I5As8SLNZieWb0JM8BSnXPIR4YpwQvjSQxQAfDgFxl4vc
-	NIjTLNUYMjJESwKprCWoxWM/bcwCmgl4iaVtUSKRXF8ULiXgAnvweg+Ajf7To1BVChgAefpto2w
-	50daulzASN3fXqoJ/7iJ/+q9a2AA=
-X-Google-Smtp-Source: AGHT+IHX/Io8BGEe/ckylAL2OpQEtD0KNkWtQjYnygkiTok5unepYcDXoXJVkqfRWDMR5n7NAPzxYbxjWVzJl5nWASc=
-X-Received: by 2002:a17:903:41d2:b0:1fd:9d0c:9996 with SMTP id
- d9443c01a7336-1ff572d4738mr263854185ad.35.1723033786674; Wed, 07 Aug 2024
- 05:29:46 -0700 (PDT)
+        bh=vloTJ8N6rDB2OVVpi1DvU3M2IhFk9AAWb0s6CTF2pM4=;
+        b=KvdLWqAzr+J1qvAxE1kSHbZtwE/3M26yPamwcIsZqNINKHrbTXViQJ37PnO07Nuajm
+         iIO58GNGvqN/9QT1RaMShmp/ApaDcxQM3gZQM5lrQwANm7AyKfK9U9p9zYoN10qxCZs2
+         45RhBee1BC8x795ePCk94FGqt1zyMNE14cOO0s0IKiMBmRsvItcjNCCOoHvJkBpc4K53
+         6njFOLwmPxgYaE07NicbtFMr/SZlCJw0zCDZJ8N4mZXdM9/RNxt/lRWy+BQjHpxUTSfj
+         pWqnzt7+DjNRR5736mtIlPoHECgiBiRhuJVaOHfxhzmuVJSan+lX73X6+TvTl0MWWLIJ
+         llQA==
+X-Forwarded-Encrypted: i=1; AJvYcCUvixAED63GSL/fsICO5WSeTJP5HMVVgLtmpT1hyg91lZ+eLiokJ/Z7A6D7yCN/vt0gRAakPcCTEl/GPjTkDa88Wn98i+5cw/7Riw==
+X-Gm-Message-State: AOJu0Yy93hEY6eboADg5kUgIIpmLV4Xh+x8dMuS4yCpuErwQn/t28oVs
+	kABVviz7RvFqB3mZ/5v2OxMmWj7cv+l9ou3wbz/NtITP6zRCtC/zMa6g+iQc3vwjTn6VzvIRBa1
+	j5J2CLNh1wwlVMnu7iqKEYNaUh+CF7XnHu4zwA7WoouEEEgL4UgFsWrDTFshIf0SUIzV5h3Y7yA
+	zaRertEeoyx8oQOF4/U9xOc16r0zxU90jf4Q==
+X-Received: by 2002:a81:8887:0:b0:63b:b3b8:e834 with SMTP id 00721157ae682-68963423819mr222073737b3.32.1723037168332;
+        Wed, 07 Aug 2024 06:26:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHlaQzWaMhaOL8yyUTkscgvdFCW3vr0eHO4IPz4j2TIsmeWnld07fIgPnkUYUvyGyLGq+dpPFUOtl3iXD2ZKEw=
+X-Received: by 2002:a81:8887:0:b0:63b:b3b8:e834 with SMTP id
+ 00721157ae682-68963423819mr222073587b3.32.1723037168001; Wed, 07 Aug 2024
+ 06:26:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240806193622.GA74589@bhelgaas> <20240807084348.12304-1-mattc@purestorage.com>
- <alpine.DEB.2.21.2408070956520.61955@angie.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.21.2408070956520.61955@angie.orcam.me.uk>
-From: "Oliver O'Halloran" <oohall@gmail.com>
-Date: Wed, 7 Aug 2024 22:29:35 +1000
-Message-ID: <CAOSf1CHo66dxmChrx97+tfKSE=JM_NzrgdUF_Y4kFabnu3qotQ@mail.gmail.com>
-Subject: Re: PCI: Work around PCIe link training failures
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc: Matthew W Carlis <mattc@purestorage.com>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	linux-pci@vger.kernel.org, mahesh@linux.ibm.com, edumazet@google.com, 
-	sr@denx.de, leon@kernel.org, linux-rdma@vger.kernel.org, helgaas@kernel.org, 
-	kuba@kernel.org, pabeni@redhat.com, Jim Wilson <wilson@tuliptree.org>, 
-	linuxppc-dev@lists.ozlabs.org, npiggin@gmail.com, alex.williamson@redhat.com, 
-	Bjorn Helgaas <bhelgaas@google.com>, mika.westerberg@linux.intel.com, 
-	david.abdurachmanov@gmail.com, saeedm@nvidia.com, 
-	linux-kernel@vger.kernel.org, lukas@wunner.de, netdev@vger.kernel.org, 
-	pali@kernel.org, "David S. Miller" <davem@davemloft.net>
+References: <20240802072039.267446-1-dtatulea@nvidia.com>
+In-Reply-To: <20240802072039.267446-1-dtatulea@nvidia.com>
+From: Eugenio Perez Martin <eperezma@redhat.com>
+Date: Wed, 7 Aug 2024 15:25:32 +0200
+Message-ID: <CAJaqyWdGNfJ3n-E2-PvkuvCiOMsLkEzYaUi5wi-C_n84-a_LAw@mail.gmail.com>
+Subject: Re: [PATCH vhost 0/7] vdpa/mlx5: Parallelize device suspend/resume
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Si-Wei Liu <si-wei.liu@oracle.com>, 
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 7, 2024 at 9:14=E2=80=AFPM Maciej W. Rozycki <macro@orcam.me.uk=
-> wrote:
+On Fri, Aug 2, 2024 at 9:24=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com>=
+ wrote:
 >
-> On Wed, 7 Aug 2024, Matthew W Carlis wrote:
+> This series parallelizes the mlx5_vdpa device suspend and resume
+> operations through the firmware async API. The purpose is to reduce live
+> migration downtime.
 >
-> > > it does seem like this series made wASMedia ASM2824 work better but
-> > > caused regressions elsewhere, so maybe we just need to accept that
-> > > ASM2824 is slightly broken and doesn't work as well as it should.
-> >
-> > One of my colleagues challenged me to provide a more concrete example
-> > where the change will cause problems. One such configuration would be n=
-ot
-> > implementing the Power Controller Control in the Slot Capabilities Regi=
-ster.
-> > Then, Powering off the slot via out-of-band interfaces would result in =
-the
-> > kernel forcing the DSP to Gen1 100% of the time as far as I can tell.
-> > The aspect of this force to Gen1 that is the most concerning to my team=
- is
-> > that it isn't cleaned up even if we replaced the EP with some other EP.
+> The series starts with changing the VQ suspend and resume commands
+> to the async API. After that, the switch is made to issue multiple
+> commands of the same type in parallel.
 >
->  Why does that happen?
->
->  For the quirk to trigger, the link has to be down and there has to be th=
-e
-> LBMS Link Status bit set from link management events as per the PCIe spec
-> while the link was previously up, and then both of that while rescanning
-> the PCIe device in question, so there's a lot of conditions to meet.  Is
-> it the case that in your setup there is no device at this point, but one
-> gets plugged in later?
 
-My read was that Matt is essentially doing a surprise hot-unplug by
-removing power to the card without notifying the OS. I thought the
-LBMS bit wouldn't be set in that case since the link goes down rather
-than changes speed, but the spec is a little vague and that appears to
-be happening in Matt's testing. It might be worth disabling the
-workaround if the port has the surprise hotplug capability bit set.
-It's fairly common for ports on NVMe drive backplanes to have it set
-and a lot of people would be unhappy about those being forced to Gen 1
-by accident.
+There is a missed opportunity processing the CVQ MQ command here,
+isn't it? It can be applied on top in another series for sure.
+
+> Finally, a bonus improvement is thrown in: keep the notifierd enabled
+> during suspend but make it a NOP. Upon resume make sure that the link
+> state is forwarded. This shaves around 30ms per device constant time.
+>
+> For 1 vDPA device x 32 VQs (16 VQPs), on a large VM (256 GB RAM, 32 CPUs
+> x 2 threads per core), the improvements are:
+>
+> +-------------------+--------+--------+-----------+
+> | operation         | Before | After  | Reduction |
+> |-------------------+--------+--------+-----------|
+> | mlx5_vdpa_suspend | 37 ms  | 2.5 ms |     14x   |
+> | mlx5_vdpa_resume  | 16 ms  | 5 ms   |      3x   |
+> +-------------------+--------+--------+-----------+
+>
+
+Looks great :).
+
+Apart from the nitpick,
+
+Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
+
+For the vhost part.
+
+Thanks!
+
+> Note for the maintainers:
+> The first patch contains changes for mlx5_core. This must be applied
+> into the mlx5-vhost tree [0] first. Once this patch is applied on
+> mlx5-vhost, the change has to be pulled from mlx5-vdpa into the vhost
+> tree and only then the remaining patches can be applied.
+>
+> [0] https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/lo=
+g/?h=3Dmlx5-vhost
+>
+> Dragos Tatulea (7):
+>   net/mlx5: Support throttled commands from async API
+>   vdpa/mlx5: Introduce error logging function
+>   vdpa/mlx5: Use async API for vq query command
+>   vdpa/mlx5: Use async API for vq modify commands
+>   vdpa/mlx5: Parallelize device suspend
+>   vdpa/mlx5: Parallelize device resume
+>   vdpa/mlx5: Keep notifiers during suspend but ignore
+>
+>  drivers/net/ethernet/mellanox/mlx5/core/cmd.c |  21 +-
+>  drivers/vdpa/mlx5/core/mlx5_vdpa.h            |   7 +
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c             | 435 +++++++++++++-----
+>  3 files changed, 333 insertions(+), 130 deletions(-)
+>
+> --
+> 2.45.2
+>
+
 
