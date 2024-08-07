@@ -1,126 +1,147 @@
-Return-Path: <linux-rdma+bounces-4225-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4226-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD2C9949CAE
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2024 02:13:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE236949E34
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2024 05:16:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C0561F2121F
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2024 00:13:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BF30B23913
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Aug 2024 03:16:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055A510E4;
-	Wed,  7 Aug 2024 00:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD0915D5BB;
+	Wed,  7 Aug 2024 03:16:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="pdw2tj/1";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="IquJ2VbS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LRgQXWx+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC40F163;
-	Wed,  7 Aug 2024 00:13:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB80D2119;
+	Wed,  7 Aug 2024 03:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722989608; cv=none; b=UJtLoNooY6/Yn430vbrwWIxeBiv9Oaqvsug30bM3dtFFRe8Rhe8+SREaiFtS2zNuSj6xn3y78F+4mFqfWneRqbhftKg7/zHqeMNtw3Ex3ZexWMXtqEUo2Jm98+kc9mAQolmWl0V/CP3fLcbmXRI9/10FDZ8UrZVDPIOhI3pglw0=
+	t=1723000569; cv=none; b=ZaldYVkeC/3KuLhbie7R7YJ9FzJRCEuZO9lBXjsD7RvjwC2sIzS00ywMHKi0R50iYqXcn++kmyXd1r5B96TGd3zFueX1jFYiJv3i4xhRhRi+RKXzqqd2XxWwy6ASSEPkCVMG4X+M+WDmoOTa4BcL8noKn448BAi7zNvIeSJRn9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722989608; c=relaxed/simple;
-	bh=pWY8kLMzQJ5yjAJwQI9LxYd4wKj8auV2/jFjArIg7Sk=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=MXgdpIWA/sUBqHc+9u+6+u3jGf7XqFU3BEF3GGO9YfOKK18EA3Z5ubbxsKkQiY0rR/sXz3zhtWSxdKsCc4Bk3kIoxQ4pnSaatBCrf9B1mudrPOdABmwU4PFyGcMaa6ylmFOc05Agzn+ZKpA4bTTSkkn1YmMG6sPTVigooYYhgaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=pdw2tj/1; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=IquJ2VbS; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1722989605;
-	bh=pWY8kLMzQJ5yjAJwQI9LxYd4wKj8auV2/jFjArIg7Sk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:From;
-	b=pdw2tj/1Fqd0lo2/wI3FAzaTYDdFobrvoVdwcI1d7IbuClBo1cYy835n3aGr5kreW
-	 RsrXWszgfsLcMbNgc2XxNLTAo3BV8tDkLmEDCy6PouOj6KFKBCCqPsNCYJzvOyFNrf
-	 kOeGoeTCgXq/E7GbBBfB2epRNFdG0u5L/a8m6cPE=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 1D4DA1281E30;
-	Tue, 06 Aug 2024 20:13:25 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id u4ZFp3uHMyH6; Tue,  6 Aug 2024 20:13:25 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1722989604;
-	bh=pWY8kLMzQJ5yjAJwQI9LxYd4wKj8auV2/jFjArIg7Sk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:From;
-	b=IquJ2VbSdCmnoW7UZVKs1NB9r3MqBX1tc+w7wOycpGwFb1VY228YEUOPaasj8uJCT
-	 p3KyuLMt6wMFQ7WUjoQu+J8syo7Q4HJ+AQJRQhfR0p/ee6hxAy9ZpEAw5Os1QQxLEL
-	 iUIApDFpQ8QjjqzlQxQ059GsNBOoT3w1PRnmKjt0=
-Received: from [127.0.0.1] (wsip-70-191-149-15.dc.dc.cox.net [70.191.149.15])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 546B012806C0;
-	Tue, 06 Aug 2024 20:13:24 -0400 (EDT)
-Date: Tue, 06 Aug 2024 20:13:18 -0400
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Dan Williams <dan.j.williams@intel.com>, Jason Gunthorpe <jgg@nvidia.com>
-CC: Greg KH <gregkh@linuxfoundation.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- ksummit@lists.linux.dev, linux-cxl@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-User-Agent: K-9 Mail for Android
-In-Reply-To: <66b2ba7150128_c1448294fe@dwillia2-xfh.jf.intel.com.notmuch>
-References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch> <20240726142731.GG28621@pendragon.ideasonboard.com> <66a43c48cb6cc_200582942d@dwillia2-mobl3.amr.corp.intel.com.notmuch> <20240728111826.GA30973@pendragon.ideasonboard.com> <2024072802-amendable-unwatched-e656@gregkh> <2b4f6ef3fc8e9babf3398ed4a301c2e4964b9e4a.camel@HansenPartnership.com> <2024072909-stopwatch-quartet-b65c@gregkh> <206bf94bb2eb7ca701ffff0d9d45e27a8b8caed3.camel@HansenPartnership.com> <20240801144149.GO3371438@nvidia.com> <66b2ba7150128_c1448294fe@dwillia2-xfh.jf.intel.com.notmuch>
-Message-ID: <328C1186-268E-49E9-A31C-40BFF9554C49@HansenPartnership.com>
+	s=arc-20240116; t=1723000569; c=relaxed/simple;
+	bh=MVVZFAHyYiH3YNyVOjsU+QFdGF4cWfs7Y+jCi6DEun4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DfvilRj+xjUZOf4Uuzyl7JIlXpBuD/lTmQbwvWG/mNLOFwaSz7QvIEVSpH5QwD/eZbKYwzPYEWcmT1bh45AIddZKPusK+kfkJn2ovsn6WbMQbyUpU/bCyeg5+zNXbLzbr21jAkJaxrhg7Nwa9IKm/5yDFDYAEA+CvWZYV40hKO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LRgQXWx+; arc=none smtp.client-ip=209.85.221.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4f89c9a1610so487827e0c.3;
+        Tue, 06 Aug 2024 20:16:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723000562; x=1723605362; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MVVZFAHyYiH3YNyVOjsU+QFdGF4cWfs7Y+jCi6DEun4=;
+        b=LRgQXWx+nvJ6P//CzZEwA2mXyPzidTnIp8aacMb9Djcel4hJEV/Y+MI8GVw1m/QytT
+         /0UFx+avUUE2K50Kg28hucgGtHya3weql7+mPhPEB54Er3e6+RTxa4//h54dwZI9Oq9K
+         G0yT1HltEQFWw2m6Do9IS+V7s8uBRg/9Htg8BWTYQR6bktSYtfW6d/ofO5xDpLhV/Ou3
+         RXPzEopJKj+i3osGfL84p9wapnLB7gtSBtsgqRt4an6/VdNun4C488nOlWlypwj1lQ8p
+         lH1h4MQJLUAQr8O0YoK8kWq1ukEayUzOaHMWDenQkORN5nMdBgJkwK6wphJBMhmu2lUr
+         mo6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723000562; x=1723605362;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MVVZFAHyYiH3YNyVOjsU+QFdGF4cWfs7Y+jCi6DEun4=;
+        b=GmUcC9RoHZzHHZ+Z7q8ySOFEYnZPRifcWxckxaUiwx4mzgp96H4yZKEFcFQPGY+nD9
+         xo8abH/M5ul5sHClzhyWuGIMxKoW8l7PNSOLJTjhEmG4UnIDZhUovuD/NQNKlfNcYrs5
+         dwoYivSwg8Txp7Vtyw4b9oWKfTzmghbNpfjRUWdNKzyc3OBILB4TFgeb4fS46PQdxzTw
+         d15mBMEiFUvE7zz/J9gM/TxboDiXFnsIEa8bMWeqFzp5QEnPYwit4VYILV10df5UwLZc
+         DeDOOq2wJN1+JwJOLYvJ6UHseTWljNBeE762G6ehc9Uv/+EGWGhpamIrXrlrZVMgBhli
+         aI4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVvjWFqw66szxXfXjX/QeUiWLa8+4Uracq9IQM4R6NQCzWTG4LucrdUgs+K2IOFMCeXs/bk0XU7rnAidympwk5k7B3PZLy12qI2afMdK0LcQ/0X8Rnf7sp9GsfuhB0yEXRzuxY9mg+BL/Tacf7r0LeNjFZY6s9jzc+xQm1y3o1Mbw==
+X-Gm-Message-State: AOJu0Yzy9zCkMlx70y79VCxB+ZuuI6i5Yp1y5ghKP3UBmwacPXkCV8jP
+	In8bVzfJw8Wq4kh4m9qsZ4Zrkle2+MiDLOuB6Oln4t9Cc433PY4s40swpkA6OJ90dx1jnKJpuDn
+	ldHC2A6pNK4I26S+9hrvseJcsf5o=
+X-Google-Smtp-Source: AGHT+IG59tVZoDbMVzvzKSAK7l7FJc0CnktNyxiTyYpSu6vNAw//uaeeKNKHAHiW6OEseSSZkrK4J9uetrKiJZNhEyI=
+X-Received: by 2002:a05:6122:3120:b0:4f6:a7f7:164d with SMTP id
+ 71dfb90a1353d-4f89ff4e8c4mr19665545e0c.8.1723000562417; Tue, 06 Aug 2024
+ 20:16:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20240730183403.4176544-1-allen.lkml@gmail.com>
+ <20240730183403.4176544-6-allen.lkml@gmail.com> <20240731190829.50da925d@kernel.org>
+ <CAOMdWS+HJfjDpQX1yE+2O3nb1qAkQJC_GSiCjrrAJVrRB5r_rg@mail.gmail.com>
+ <20240801175756.71753263@kernel.org> <CAOMdWSKRFXFdi4SF20LH528KcXtxD+OL=HzSh9Gzqy9HCqkUGw@mail.gmail.com>
+ <20240805123946.015b383f@kernel.org>
+In-Reply-To: <20240805123946.015b383f@kernel.org>
+From: Allen <allen.lkml@gmail.com>
+Date: Tue, 6 Aug 2024 20:15:50 -0700
+Message-ID: <CAOMdWS+=5OVmtez1NPjHTMbYy9br8ciRy8nmsnaFguTKJQiD9g@mail.gmail.com>
+Subject: Re: [net-next v3 05/15] net: cavium/liquidio: Convert tasklet API to
+ new bottom half workqueue mechanism
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, jes@trained-monkey.org, kda@linux-powerpc.org, 
+	cai.huoqing@linux.dev, dougmill@linux.ibm.com, npiggin@gmail.com, 
+	christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org, 
+	naveen.n.rao@linux.ibm.com, nnac123@linux.ibm.com, tlfalcon@linux.ibm.com, 
+	cooldavid@cooldavid.org, marcin.s.wojtas@gmail.com, mlindner@marvell.com, 
+	stephen@networkplumber.org, nbd@nbd.name, sean.wang@mediatek.com, 
+	Mark-MC.Lee@mediatek.com, lorenzo@kernel.org, matthias.bgg@gmail.com, 
+	angelogioacchino.delregno@collabora.com, borisp@nvidia.com, 
+	bryan.whitehead@microchip.com, UNGLinuxDriver@microchip.com, 
+	louis.peens@corigine.com, richardcochran@gmail.com, 
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-acenic@sunsite.dk, linux-net-drivers@amd.com, netdev@vger.kernel.org, 
+	Sunil Goutham <sgoutham@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On August 6, 2024 8:06:09 PM EDT, Dan Williams <dan=2Ej=2Ewilliams@intel=2E=
-com> wrote:
->Jason Gunthorpe wrote:
->> On Wed, Jul 31, 2024 at 08:33:36AM -0400, James Bottomley wrote:
->>=20
->> > For the specific issue of discussing fwctl, the Plumbers session woul=
-d
->> > be better because it can likely gather all interested parties=2E
->>=20
->> Keep in mind fwctl is already at the end of a long journey of
->> conference discussions and talks spanning 3 years back now=2E It now
->> represents the generalized consensus between multiple driver
->> maintainers for at least one side of the debate=2E
->>=20
->> There was also a fwctl presentation at netdev conf a few weeks ago=2E
->>=20
->> In as far as the cross-subsystem NAK, I don't expect more discussion
->> to result in any change to people's opinions=2E RDMA side will continue
->> to want access to the shared device FW, and netdev side will continue
->> to want to deny access to the shared device FW=2E
+> > Sure, please review the explanation below and let me
+> > know if it is clear enough:
+> >
+> > tasklet_enable() is used to enable a tasklet, which defers
+> > work to be executed in an interrupt context. It relies on the
+> > tasklet mechanism for deferred execution.
+> >
+> > enable_and_queue_work() combines enabling the work with
+> > scheduling it on a workqueue. This approach not only enables
+> > the work but also schedules it for execution by the workqueue
+> > system, which is more flexible and suitable for tasks needing
+> > process context rather than interrupt context.
+> >
+> > enable_and_queue_work() internally calls enable_work() to enable
+> > the work item and then uses queue_work() to add it to the workqueue.
+> > This ensures that the work item is both enabled and explicitly
+> > scheduled for execution within the workqueue system's context.
+> >
+> > As mentioned, "unconditionally scheduling the work item after
+> > enable_work() returns true should work for most users." This
+> > ensures that the work is consistently scheduled for execution,
+> > aligning with the typical workqueue usage pattern. Most users
+> > expect that enabling a work item implies it will be scheduled for
+> > execution without additional conditional logic.
 >
->As I mentioned before, this is what I hoped to mediate=2E The on-list
->discussion has seem to hit a deficit of trust roadblock, not a deficit
->of technical merit=2E
->
->All I can say is the discussion is worth a try=2E With respect to a
->precedent for a stalemate moving forward, I point to the MGLRU example=2E
->That proposal had all of the technical merit on the list, but was not
->making any clear progress to being merged=2E It was interesting to watch
->that all thaw in real time at LSF/MM (2022) where in person
->collaboration yielded strategy concessions, and mutual understanding
->that email was never going to produce=2E
+> This looks good for the explanation of the APIs, but you need to
+> add another paragraph explaining why the conversion is correct
+> for the given user. Basically whether the callback is safe to
+> be called even if there's no work.
 
-Well, plumbers stands ready=2E  We're out of A/V rooms, but if you can do =
-your own A/V with one of the owl cameras we can do a BoF session that can b=
-e open to remote participants as well=2E  I'll be happy to do the setup=2E
+ Okay.
 
-Regards,
+how about the following:
 
-James
+In the context of of the driver, the conversion from tasklet_enable()
+to enable_and_queue_work() is correct because the callback function
+associated with the work item is designed to be safe even if there
+is no immediate work to process. The callback function can handle
+being invoked in such situations without causing errors or undesirable
+behavior. This makes the workqueue approach a suitable and safe
+replacement for the current tasklet mechanism, as it provides the
+necessary flexibility and ensures that the work item is properly
+scheduled and executed.
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+Thanks,
+Allen
 
