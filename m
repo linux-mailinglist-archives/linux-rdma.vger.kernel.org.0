@@ -1,114 +1,111 @@
-Return-Path: <linux-rdma+bounces-4241-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4242-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93B8894B825
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2024 09:46:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 049FD94B861
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2024 09:59:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40DE31F24DB2
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2024 07:46:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61D0D1C23E42
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Aug 2024 07:59:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E32D187FE7;
-	Thu,  8 Aug 2024 07:46:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B12C7188CDE;
+	Thu,  8 Aug 2024 07:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gT9XD+Dt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6018C18757F;
-	Thu,  8 Aug 2024 07:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672F312C475;
+	Thu,  8 Aug 2024 07:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723103166; cv=none; b=RsKcVnbtFMiOe86st4eO5+GiZyDmxXjhYD9AUputvo+bYpZMslMK7Axd+CY/taX+0yM77Mfkq8RM64Mh9BhHCZik09oDwlslSVmauSJKknX1WV2/ilgoyv2EHqAS3fnoOSrpqb2NXNeuCuc7mna4lqBoL2CTl9ypv58ENyC7tqE=
+	t=1723103960; cv=none; b=jUn4DxgRgn5iz4yHOoDuAPf+JXtr+AsGh98dxWs2phY/Cszm8BlZLIbiNelQOuel10nDUR0ZffahpfjN9Y9Pgj3/OfUSArjZCtoqpThHiKfYXRT8/W5mbqIwlEqE7w9QleUQ8Np0OAYFGa9wvXJwW0+9vZ5V+r2tAG+4sJLoffs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723103166; c=relaxed/simple;
-	bh=NJ/f9DdsOmhEH11ue37Swdj4i4LBflgYWEVWp+KJd8w=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YJ/0wI9bAW88qPwATsy91nkxnpzCt06WSbx/PCCFttu2kZBLnZoEYSSDdxQn+Hk51F6E/MVr3x2NoTLndRIxO6oHqCrUyo54WxZwADWnFsYgKr/wMg0So9gcG1V3OsSXMOVprow2CQNgMSYBkAwP6vit9DVlS2RrT23gCHdcoQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WffGp0mCZz1T6rK;
-	Thu,  8 Aug 2024 15:45:38 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id BCDF0140604;
-	Thu,  8 Aug 2024 15:45:59 +0800 (CST)
-Received: from localhost.localdomain (10.90.30.45) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 8 Aug 2024 15:45:59 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-next] RDMA/core: Fix ib_core building error when CONFIG_MMU=n
-Date: Thu, 8 Aug 2024 15:40:26 +0800
-Message-ID: <20240808074026.3535706-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
+	s=arc-20240116; t=1723103960; c=relaxed/simple;
+	bh=gWg/r/1SvXDtl8mHhSTr6bVgnFi9se9px6nxtby4afo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=eaqfv/o9sdFfabChzKnFqHmN9HBdElWDMGTwaB6ctbKtIjA0efSV6sX6HJZZH/qX1nHCDq5h9Xu9vkg+iA9VEsBlctKwhIL1ru+Dk/3XMCyP1h5wuHeOkMu5x0Vse7l5pHW5o4zbOK1HlmJGxQVbSzuqEkZ9Drr9aYCz0d1UBzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gT9XD+Dt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 619B1C32782;
+	Thu,  8 Aug 2024 07:59:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723103959;
+	bh=gWg/r/1SvXDtl8mHhSTr6bVgnFi9se9px6nxtby4afo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=gT9XD+DtkP2sOGMCsCMBMBcBc2edggYdxMyfaVr2HosFjVU+PB2Z7x/+FLZ90NvwW
+	 ZMa1th8LDVyiZiR7PyoYOdB7F3swfuRUlwbCjKo/hW8e8YGlwaE87mV7bwAdleV8Qr
+	 0+yYXVZzA12yJAmlgqMsMg2mmR1UBVI3bMlFLox8ruXSCymBXcYTh1w1h40Tz9Moz9
+	 Pu5H2OmErH1JmiHa3PL9bLSKd6c4goEzlEsYtBtIqVhaQ8L6258Sv+gfNKo/SEFudW
+	 g4SdnfX7HA4EHUG5JIjknF/SD7oNj365o30yZ6PONVw86hVIZZl7f+kHnDMfFyGgCO
+	 hJVMJtMo1jDOw==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc: =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+ linux-rdma@vger.kernel.org, Michael Margolin <mrgolin@amazon.com>, 
+ Mustafa Ismail <mustafa.ismail@intel.com>, netdev@vger.kernel.org, 
+ Saeed Mahameed <saeedm@nvidia.com>, 
+ Selvin Xavier <selvin.xavier@broadcom.com>, 
+ Sumit Semwal <sumit.semwal@linaro.org>, Tariq Toukan <tariqt@nvidia.com>, 
+ Tatyana Nikolova <tatyana.e.nikolova@intel.com>, 
+ Yishai Hadas <yishaih@nvidia.com>, Leon Romanovsky <leon@kernel.org>
+In-Reply-To: <cover.1722512548.git.leon@kernel.org>
+References: <cover.1722512548.git.leon@kernel.org>
+Subject: Re: (subset) [PATCH rdma-next 0/8] Introducing Multi-Path DMA
+ Support for mlx5 RDMA Driver
+Message-Id: <172310395487.1779734.12051360068889087637.b4-ty@kernel.org>
+Date: Thu, 08 Aug 2024 10:59:14 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemf100018.china.huawei.com (7.202.181.17)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-zap_vma_ptes() depends on CONFIG_MMU. When CONFIG_MMU=n,
-a building error occurs due to the zap_vma_ptes() call in
-uverbs_user_mmap_disassociate():
 
-ERROR: modpost: "zap_vma_ptes" [drivers/infiniband/core/ib_core.ko] undefined!
+On Thu, 01 Aug 2024 15:05:09 +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> From Yishai,
+> 
+> Overview
+> --------
+> This patch series aims to enable multi-path DMA support, allowing an
+> mlx5 RDMA device to issue DMA commands through multiple paths. This
+> feature is critical for improving performance and reaching line rate
+> in certain environments where issuing PCI transactions over one path
+> may be significantly faster than over another. These differences can
+> arise from various PCI generations in the system or the specific system
+> topology.
+> 
+> [...]
 
-Add "#ifdef CONFIG_MMU" to fix this error.
+Applied, thanks!
 
-Fixes: 577b3696166a ("RDMA/core: Provide rdma_user_mmap_disassociate() to disassociate mmap pages")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202408072142.mVX227UI-lkp@intel.com/
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/core/ib_core_uverbs.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+[2/8] RDMA/mlx5: Introduce the 'data direct' driver
+      https://git.kernel.org/rdma/rdma/c/281658bd04e7b9
+[3/8] RDMA/mlx5: Add the initialization flow to utilize the 'data direct' device
+      https://git.kernel.org/rdma/rdma/c/302b01afc28b1e
+[4/8] RDMA/umem: Add support for creating pinned DMABUF umem with a given dma device
+      https://git.kernel.org/rdma/rdma/c/b047ecbd7672d2
+[5/8] RDMA/umem: Introduce an option to revoke DMABUF umem
+      https://git.kernel.org/rdma/rdma/c/bc9be75e01373c
+[6/8] RDMA: Pass uverbs_attr_bundle as part of '.reg_user_mr_dmabuf' API
+      https://git.kernel.org/rdma/rdma/c/83f44068da564d
+[7/8] RDMA/mlx5: Add support for DMABUF MR registrations with Data-direct
+      https://git.kernel.org/rdma/rdma/c/19ae08911f8be1
+[8/8] RDMA/mlx5: Introduce GET_DATA_DIRECT_SYSFS_PATH ioctl
+      https://git.kernel.org/rdma/rdma/c/d222b19c595f63
 
-diff --git a/drivers/infiniband/core/ib_core_uverbs.c b/drivers/infiniband/core/ib_core_uverbs.c
-index 4e27389a75ad..911aec0573cb 100644
---- a/drivers/infiniband/core/ib_core_uverbs.c
-+++ b/drivers/infiniband/core/ib_core_uverbs.c
-@@ -367,6 +367,7 @@ int rdma_user_mmap_entry_insert(struct ib_ucontext *ucontext,
- }
- EXPORT_SYMBOL(rdma_user_mmap_entry_insert);
- 
-+#ifdef CONFIG_MMU
- void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile)
- {
- 	struct rdma_umap_priv *priv, *next_priv;
-@@ -428,7 +429,6 @@ void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile)
- 		mmput(mm);
- 	}
- }
--EXPORT_SYMBOL(uverbs_user_mmap_disassociate);
- 
- /**
-  * rdma_user_mmap_disassociate() - disassociate the mmap from the ucontext.
-@@ -449,4 +449,14 @@ void rdma_user_mmap_disassociate(struct ib_ucontext *ucontext)
- 	uverbs_user_mmap_disassociate(ufile);
- 	up_read(&ufile->hw_destroy_rwsem);
- }
-+#else
-+void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile)
-+{
-+}
-+
-+void rdma_user_mmap_disassociate(struct ib_ucontext *ucontext)
-+{
-+}
-+#endif
-+EXPORT_SYMBOL(uverbs_user_mmap_disassociate);
- EXPORT_SYMBOL(rdma_user_mmap_disassociate);
+Best regards,
 -- 
-2.33.0
+Leon Romanovsky <leon@kernel.org>
 
 
