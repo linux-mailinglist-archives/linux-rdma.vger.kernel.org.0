@@ -1,93 +1,94 @@
-Return-Path: <linux-rdma+bounces-4266-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4267-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8FC994CC4B
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 10:34:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4133694CC9C
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 10:47:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAB3C1C21C71
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 08:34:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F02ED288E09
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 08:47:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D7F919049C;
-	Fri,  9 Aug 2024 08:34:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC18118F2F2;
+	Fri,  9 Aug 2024 08:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uxI142bh"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E337161314;
-	Fri,  9 Aug 2024 08:34:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A3744431;
+	Fri,  9 Aug 2024 08:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723192448; cv=none; b=OXSH+HGzQ9M/sVVSFnHyHzHHWEPW82BnCKtv3SgHpO7ntX7Bk3dZmtXSSAbDaEqgkAezjRZpDcjNnHMYLV3yuAKUmhx57GwQe7E0YZazSAd5ywcrjq5WMZZFxCot9V2q/lFNzKQBUSD7AItPcXTL9fax3kX7us/yegWbx1OlC2U=
+	t=1723193242; cv=none; b=FSRobMpJiw+rZe7fUJu3UgWFw8pureAtei/3mo/XN4qYDe4NGqLDQ5Zkyy55IatxwskZyXOPMzWdHrS9k4uSV0qzVqhzTjQ/9F60D7kp9OLqU2uFb042Z174Rx4rVBtxHVKymFNdE5ylbIY5qYGz9EqzBjp8YoyqKPa8mKSlay0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723192448; c=relaxed/simple;
-	bh=EdHOUkQapbsYvW7Pa+mxJXDUYf7diS/nM8cKhTfa670=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=G1JI/1UllCJFNKAevlZC8UTl5hexklUbcmiqzOILax4gKykwmAOvfN4dYda1HhcQOkfwITi4TYUGg9+Frlbtf23E9EGVRoDxMDW9LjNyqdOU/y9QESiPc78x65lFo8krjAA/hIAlXFsgyCKC+9Cu6zu2yygtgI7pIOnlrhvoH74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WgHBj6Yrcz1j6Nb;
-	Fri,  9 Aug 2024 16:29:17 +0800 (CST)
-Received: from kwepemg200003.china.huawei.com (unknown [7.202.181.30])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2DBFC1A0188;
-	Fri,  9 Aug 2024 16:34:03 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by kwepemg200003.china.huawei.com
- (7.202.181.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 9 Aug
- 2024 16:34:01 +0800
-From: Liu Jian <liujian56@huawei.com>
-To: <linux-rdma@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-	<netdev@vger.kernel.org>
-CC: <jgg@ziepe.ca>, <leon@kernel.org>, <zyjzyj2000@gmail.com>,
-	<wenjia@linux.ibm.com>, <jaka@linux.ibm.com>, <alibuda@linux.alibaba.com>,
-	<tonylu@linux.alibaba.com>, <guwen@linux.alibaba.com>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<liujian56@huawei.com>
-Subject: [PATCH net-next 4/4] RDMA/rxe: Set queue pair cur_qp_state when being queried
-Date: Fri, 9 Aug 2024 16:31:48 +0800
-Message-ID: <20240809083148.1989912-5-liujian56@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240809083148.1989912-1-liujian56@huawei.com>
-References: <20240809083148.1989912-1-liujian56@huawei.com>
+	s=arc-20240116; t=1723193242; c=relaxed/simple;
+	bh=iXPqWLhyydEY9YljmfF4VAQ07JaykzvJfToiUIJSK/k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jcAniCX04s7cngtIkjpF3FqNTRDjJ7tjRHkkZRESZXHoUe5VcuERLZjs/MX/b6xQMSfoUj0jOQcsZ0hA6yQzb4tK4WwfaUpOw3ZLijuHXcVsr7bl28ATJN48jeVbapX8TvJgqwjfl5br/Erwtq1iMvUxwBAtYNQvhjCkOgF3dl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uxI142bh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81209C4AF0D;
+	Fri,  9 Aug 2024 08:47:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723193242;
+	bh=iXPqWLhyydEY9YljmfF4VAQ07JaykzvJfToiUIJSK/k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uxI142bhWfRH6jH17f0yElgC5vxURZVOlmL4W1CW3ux0+Fw9MP96S8JlRp87GsJAQ
+	 lvFKA99Q3vDIUUGrFxGA7SA5tcFL9VVjhO4Ud+3PKNhRTpP6X301tnn+BnMBlyik/3
+	 I959FgQzMWefV3DQwKnkCqUtjjbiE4y9DvHIegvzkDz39lyACQXBKgWgZeP8Dy96kL
+	 Mj8Rw6tq/2zmr9fJYjfp0iAHQ3zmKVRrtZw3gVPzxZrCL24cKKvii98GLrGUh+2ivQ
+	 DjsX5QHWUjb52+Gbiey1hG2x7igaivsX67Hy6gPXFoLap4bJqA/qzEMIg3iNUrTIO1
+	 AgC7dhYw1IVlA==
+Date: Fri, 9 Aug 2024 09:47:16 +0100
+From: Simon Horman <horms@kernel.org>
+To: longli@microsoft.com
+Cc: "K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Erick Archer <erick.archer@outlook.com>,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2 net] net: mana: Fix doorbell out of order violation
+ and avoid unnecessary doorbell rings
+Message-ID: <20240809084716.GA3432921@kernel.org>
+References: <1723072626-32221-1-git-send-email-longli@linuxonhyperv.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemg200003.china.huawei.com (7.202.181.30)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1723072626-32221-1-git-send-email-longli@linuxonhyperv.com>
 
-Same with commit e375b9c92985 ("RDMA/cxgb4: Set queue pair state when
- being queried"). The API for ib_query_qp requires the driver to set
-cur_qp_state on return, add the missing set.
+On Wed, Aug 07, 2024 at 04:17:06PM -0700, longli@linuxonhyperv.com wrote:
+> From: Long Li <longli@microsoft.com>
+> 
+> After napi_complete_done() is called when NAPI is polling in the current
+> process context, another NAPI may be scheduled and start running in
+> softirq on another CPU and may ring the doorbell before the current CPU
+> does. When combined with unnecessary rings when there is no need to arm
+> the CQ, it triggers error paths in the hardware.
+> 
+> This patch fixes this by calling napi_complete_done() after doorbell
+> rings. It limits the number of unnecessary rings when there is
+> no need to arm. MANA hardware specifies that there must be one doorbell
+> ring every 8 CQ wraparounds. This driver guarantees one doorbell ring as
+> soon as the number of consumed CQEs exceeds 4 CQ wraparounds. In pratical
 
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Signed-off-by: Liu Jian <liujian56@huawei.com>
----
- drivers/infiniband/sw/rxe/rxe_verbs.c | 2 ++
- 1 file changed, 2 insertions(+)
+nit: practical
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 5c18f7e342f2..699b4b315336 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -634,6 +634,8 @@ static int rxe_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 	rxe_qp_to_init(qp, init);
- 	rxe_qp_to_attr(qp, attr, mask);
- 
-+	attr->cur_qp_state = qp->attr.qp_state;
-+
- 	return 0;
- }
- 
--- 
-2.34.1
+     Flagged by checkpatch.pl --codespell
 
+...
 
