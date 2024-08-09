@@ -1,72 +1,72 @@
-Return-Path: <linux-rdma+bounces-4274-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4275-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A537494D0F0
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 15:16:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C88194D0F1
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 15:16:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F3101F22289
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA9F81C21905
 	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 13:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4845194C6F;
-	Fri,  9 Aug 2024 13:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CC3E194C75;
+	Fri,  9 Aug 2024 13:16:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="aLfLUCaM"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="RciXoIx1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lj1-f194.google.com (mail-lj1-f194.google.com [209.85.208.194])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89DCC195FEC
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83B7194AF4
 	for <linux-rdma@vger.kernel.org>; Fri,  9 Aug 2024 13:15:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.194
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723209359; cv=none; b=UkaLlJZdXgDWbjbgSUQdfumTBEZD+gM3n8/2rrEYuSOUjeFbFy/b7X17OU1Nr2pnGiN32o3LZkCsQNMW4YAwiZiPHywAKit0ZCmrt2rbw6b+JvyVNDxkiCptsXfM/MlU3zgNLwWMQx3RtkEtK5OxjFUnT7HUtZG8KPRifYXit7E=
+	t=1723209359; cv=none; b=LBYDzOHl5BptrvDH4jcURPz3ZiTTJPWtVOyGbJDiQ0zhDAeKzyVhDGFTXCA9hOc0n+K+Ve9rWCPVWSN6KB8ZvyGE4RWpBm/JQxUM3SW1TXGvlvDwW3SZfw8IuFlR4rx4IUC70K2HFmYstV/0t0Q/nxCyKnvU3KD8XA3pdKScYuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1723209359; c=relaxed/simple;
-	bh=UKZdlURp9y8m7Wfiru0pj4BLF+QKyPW96UV/lMHLhqo=;
+	bh=UX6CYtwSpi23VKoZoiBb1839/I25OP7qWo97jVNyyvU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QVAW+wIa+38Hl/MwLLE9gBms2vI9WSkJTlCvtMumkbUmhzBkTCpmg+Lh9DjaDtsCfjcPK74I2yYneMKOeZx6KAvOjt/cXeP6PJl0gOVrAo+vV5LSEsk6aPrHP6JyzzbZsIRaI3mXFt5MVAGquqPuog8eTZVzeHy3QSgH/Mtmb0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=aLfLUCaM; arc=none smtp.client-ip=209.85.208.194
+	 MIME-Version; b=ty02PJvDZd7sXmpJ0u5cOM5bnM+5pbajEBfcn0Jv9yjKn8OdMmMNW5+v42KefNzSg9/usYigWf/i7HSuXnG3fnvCRpZdM2fdj1HyPLni1woQe3M1y8Z5o/437DkcseHGOY22GPj6I4pTuhsripvfxC/gZt7wc49i2L2Dw7IatS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=RciXoIx1; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-lj1-f194.google.com with SMTP id 38308e7fff4ca-2f0dfdc9e16so24145041fa.2
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4280bca3960so15296385e9.3
         for <linux-rdma@vger.kernel.org>; Fri, 09 Aug 2024 06:15:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1723209355; x=1723814155; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1723209356; x=1723814156; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t07LWNbbJ1CWMDPd+GXylKpgK0rHVigw8wrUTpYaBe4=;
-        b=aLfLUCaM3d09BJDZqjGYYzgHusCu67CVjn8RDFcRAQen7FxXxFzHz05T3ojvEgtyKc
-         e2uweTniJdzWMz6yuOHIH73+Mnw9vjUeHtg0OZZB9XGFfmrRG74vMW7ClRoTheGVLUhP
-         CtY+2PSFXFYDv2JcdAXP/Zyqi+X0hfSBLHHj9NrDTCtHNaKjuA558gb+/p0yKudj3Nn4
-         ypp4Y37y6H7M+0Ty2pkpjwVD72jqMQyyyz+QWhCqrb0H45nO9X0Ktg8NxvcTY8XoLukX
-         ovRJvMP/Y65izQsBaeXRjUEfFA6edF/JE5PovhaeFOVmeG/SLFEpTU05gEKMh6dUxCFX
-         +3aw==
+        bh=9VftxWQ8DmE0g8jGp2R6vgB3PyXWNM5bcwEfKFwmO7k=;
+        b=RciXoIx12qr6sz3ANzjqHs3Y5CmAsBSg5I1kkX2CyORd/LyfOJw8l72E7p3FnjrQH9
+         5V7X6X3bVAp3fzjktIHLoflD2qssEMoBlgVvUQXZxvp4yzb4Z0MGwrgmsRlyhSNfRI/6
+         utS3LXopnv99mwpa93EqAjpeVzHj9UnP18wBbHrpyS6+mN0exBrRkM/WLOqkfRN8lois
+         n4uDa5hILGHV+YDREgcPWxkmg5ZS1mfLhkvmnK9t/NBEdi/MmpHkNbAA4ETjJYgVtWXd
+         xTHh+g0WqEkoZ3fhIjkQEx5V4wbwwBEvwggoooGm4udcBim1RcG/sxqQnW4bzVfdksTX
+         gzYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723209355; x=1723814155;
+        d=1e100.net; s=20230601; t=1723209356; x=1723814156;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t07LWNbbJ1CWMDPd+GXylKpgK0rHVigw8wrUTpYaBe4=;
-        b=QCWJjbjEJ82fFhQrUwf0hlpIWlimHB+O4B798dvHHO9feszHPpx4Q8IRuG8I8g9j29
-         tr+VpScjb9pjB84xEB3kNEByOUm2dDd5QWOvz3MmOH5G1LSxRiMcdV17trAVn+em5b1w
-         bqKB8zTMIUvIpeyevEdpld26RcV6kvOjWozp2h/Y6AEgVZXzEEnZk/GplvVyM+McEifl
-         8It0X4AgqLDkfA+xoB33NQHFIjJ/XDGFczQaukOxk5oaSjJn96jM0rxzhgNekM2sBl0I
-         1DiM6SkllvL+w++5F1wClv41X77sNXbgNvKlEthDqRpseK6S5takqFiOINTDA64WHEL4
-         H1kQ==
-X-Gm-Message-State: AOJu0YyGY+iykaI/kytlhCtYA4Ailpoi+O/66JmhcY+Q2NFfwjQ/Q2WF
-	6+1+eamqyz+qlHgfA72bR/qcwP6K3KfygYmHfG1+wPFhQeD9HA/ycujIvGf5N4xsU8ZAQVq5jtM
-	S5I82WA==
-X-Google-Smtp-Source: AGHT+IGTxh2gGuDmuiFwDZ65xgTy1VL3jAe4KYJ+qkdKO/F3mPdd6mY+GN8BC3Sl2JB9+hUFHbCVzw==
-X-Received: by 2002:a2e:9f4f:0:b0:2ef:392e:e45 with SMTP id 38308e7fff4ca-2f1a6d32166mr11382171fa.33.1723209355294;
+        bh=9VftxWQ8DmE0g8jGp2R6vgB3PyXWNM5bcwEfKFwmO7k=;
+        b=dARFpVef+iK4K7m2Xv5KpskrM/ZybxrN0KgOiyhm/mKSxBLzq2ZRDkTPg8wtjPk/GL
+         U+x2LSnow2kwqRT+jQRSOTlfVBaxUu+h3vLVBLjW5+HRPqmLisEzozpEtWrFwj0dHgR9
+         r2Fvn41f7vJtAZUCrmwCO3eDbGivEdWHFG42fnB+ploGir+P3znhp0Bf3FH1MtrKiBVU
+         /kAYv6VzcCGK5IFcZbmmTc3KVf30080ucjbNzDfCb6OmECHH6PlyzonE5m/TFhXfRHPx
+         JHu/o/CHRckJaPbsk9zbL64oyNvkUfXHTCZ1Kp9utJx+cJggCydorbiiMpX9dIxcEsWJ
+         FrmA==
+X-Gm-Message-State: AOJu0YxojgI/Es732aXz/YHTTFYxIGjpB0ml0iByMwTlKwKzA8DK7biZ
+	nZXxhB/67hABwfDkWkYpCGJ+ySQ99HAlNBwgMrd6VzEB8B2eed3gEXl5ptQ05q5sS5WYP2W+I8R
+	LNhE=
+X-Google-Smtp-Source: AGHT+IExrlVjE+lm25xBam+bIIzEuM10jao7kd5SS9wyUlDp9JDkX6MQAnSSrZYLay7IkU7hbKUa8w==
+X-Received: by 2002:a05:600c:4e8a:b0:426:6667:5c42 with SMTP id 5b1f17b1804b1-429c3a17ff5mr11456125e9.4.1723209355950;
         Fri, 09 Aug 2024 06:15:55 -0700 (PDT)
 Received: from lb01533.fkb.profitbricks.net ([212.227.34.98])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4290c77f078sm78280625e9.37.2024.08.09.06.15.54
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4290c77f078sm78280625e9.37.2024.08.09.06.15.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Aug 2024 06:15:54 -0700 (PDT)
+        Fri, 09 Aug 2024 06:15:55 -0700 (PDT)
 From: Md Haris Iqbal <haris.iqbal@ionos.com>
 To: linux-rdma@vger.kernel.org
 Cc: bvanassche@acm.org,
@@ -75,9 +75,9 @@ Cc: bvanassche@acm.org,
 	haris.iqbal@ionos.com,
 	jinpu.wang@ionos.com,
 	Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
-Subject: [PATCH for-next 02/13] RDMA/rtrs-srv: Fix use-after-free during session establishment
-Date: Fri,  9 Aug 2024 15:15:27 +0200
-Message-Id: <20240809131538.944907-3-haris.iqbal@ionos.com>
+Subject: [PATCH for-next 03/13] RDMA/rtrs: For HB error add additional clt/srv specific logging
+Date: Fri,  9 Aug 2024 15:15:28 +0200
+Message-Id: <20240809131538.944907-4-haris.iqbal@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240809131538.944907-1-haris.iqbal@ionos.com>
 References: <20240809131538.944907-1-haris.iqbal@ionos.com>
@@ -89,55 +89,57 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Jack Wang <jinpu.wang@ionos.com>
+In case of HB error, we need to know the specific path on which it
+happened, for better debugging. Since the clt/srv path structures are not
+available in rtrs.c, it needs to be done in the individual HB error
+handler.
 
-In case of error happening during session stablishment, close_work is
-running. A new RDMA CM event may arrive since we don't destroy cm_id
-before destroying qp. To fix this, we first destroy cm_id after drain_qp,
-so no new RDMA CM event will arrive afterwards.
+This commit add those loging. A sample kernel log output after this commit:
 
-Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Signed-off-by: Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
+rtrs_core L357: <blya>: HB missed max reached.
+rtrs_server L717: <blya>: HB err handler for path=ip:x.x.x.x@ip:x.x.x.x
+.
+.
+rtrs_core L357: <blya>: HB missed max reached.
+rtrs_client L1519: <blya>: HB err handler for path=ip:x.x.x.x@ip:x.x.x.x
+
 Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Reviewed-by: Jack Wang <jinpu.wang@ionos.com>
+Signed-off-by: Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
- drivers/infiniband/ulp/rtrs/rtrs.c     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2 ++
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 4 ++++
+ 2 files changed, 6 insertions(+)
 
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 88106cf5ce55..66ac4dba990f 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -1494,7 +1494,9 @@ static bool rtrs_clt_change_state_get_old(struct rtrs_clt_path *clt_path,
+ static void rtrs_clt_hb_err_handler(struct rtrs_con *c)
+ {
+ 	struct rtrs_clt_con *con = container_of(c, typeof(*con), c);
++	struct rtrs_clt_path *clt_path = to_clt_path(con->c.path);
+ 
++	rtrs_err(con->c.path, "HB err handler for path=%s\n", kobject_name(&clt_path->kobj));
+ 	rtrs_rdma_error_recovery(con);
+ }
+ 
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index fb67b58a7f62..90ea25ad6720 100644
+index 90ea25ad6720..e6885c88fa41 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1540,6 +1540,7 @@ static void rtrs_srv_close_work(struct work_struct *work)
- 		con = to_srv_con(srv_path->s.con[i]);
- 		rdma_disconnect(con->c.cm_id);
- 		ib_drain_qp(con->c.qp);
-+		rdma_destroy_id(con->c.cm_id);
- 	}
+@@ -672,6 +672,10 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
  
- 	/*
-@@ -1564,7 +1565,6 @@ static void rtrs_srv_close_work(struct work_struct *work)
- 			continue;
- 		con = to_srv_con(srv_path->s.con[i]);
- 		rtrs_cq_qp_destroy(&con->c);
--		rdma_destroy_id(con->c.cm_id);
- 		kfree(con);
- 	}
- 	rtrs_ib_dev_put(srv_path->s.dev);
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
-index 4e17d546d4cc..44167fd1c958 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs.c
-@@ -318,7 +318,7 @@ EXPORT_SYMBOL_GPL(rtrs_cq_qp_create);
- void rtrs_cq_qp_destroy(struct rtrs_con *con)
+ static void rtrs_srv_hb_err_handler(struct rtrs_con *c)
  {
- 	if (con->qp) {
--		rdma_destroy_qp(con->cm_id);
-+		ib_destroy_qp(con->qp);
- 		con->qp = NULL;
- 	}
- 	destroy_cq(con);
++	struct rtrs_srv_con *con = container_of(c, typeof(*con), c);
++	struct rtrs_srv_path *srv_path = to_srv_path(con->c.path);
++
++	rtrs_err(con->c.path, "HB err handler for path=%s\n", kobject_name(&srv_path->kobj));
+ 	close_path(to_srv_path(c->path));
+ }
+ 
 -- 
 2.25.1
 
