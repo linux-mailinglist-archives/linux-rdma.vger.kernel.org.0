@@ -1,132 +1,98 @@
-Return-Path: <linux-rdma+bounces-4270-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4271-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3936794CF33
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 13:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E22B694D00F
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 14:21:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB7832842AD
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 11:06:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FB322848CE
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 12:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00213192B89;
-	Fri,  9 Aug 2024 11:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91E519408B;
+	Fri,  9 Aug 2024 12:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IpZsukK/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KM7VoSNe"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0EE6192B85
-	for <linux-rdma@vger.kernel.org>; Fri,  9 Aug 2024 11:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE4819309C;
+	Fri,  9 Aug 2024 12:20:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723201608; cv=none; b=AqBKqmP0T30ZFeADOJkmcmwJK5k7wDcQbTBLJZJlVnBrOBFYK5Nd23Ct/sHvUB0+7Ije48KvuHbA/8chhFrD1Y/uyL77CCtWw0pCPVn4z4NqNnN1NTZrKe8IayoJbI9ZI/TnvOVkoLzJcceb/9Ww2ZfPCpJsCQHt1i+dJiwuC6A=
+	t=1723206035; cv=none; b=Fs5kREJBCR7JSCqqDubaxPPvYdVEHWCFAmrSe1wtTKAuxx49ZsQ49+6oNWtNffv+GMAm3cC1TehQHamCtl+R5DeffGU+qVjQfJu2kyivA2Byuh7unQ1ha4xbwPobnXSWN02UZmxPJ+vsIVypnvyqrFkG+C21fLJPuvokWm2ebko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723201608; c=relaxed/simple;
-	bh=FsJH1oPqe3J/n++J6VIPiS1aVwUObinBK31JK09xJKg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ebzsRYnV3zCHMJIewxTJOTlIVoi7l5FsrHKIRk8p4INzpW4F4ol7d54KNcme/3wZxOxFD5TiwNtszIXEdrHrxkRaELb+4l9Jbs7O8QpwQqay0V1SVgvkvqxUJX5Jpj2KPaNEsVya5//nSYLBx8UDqk+4DcJ8vRT8AOOmGdcO29o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IpZsukK/; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <72029ea9-f550-470e-9e5d-42e95ca4592e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723201605;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G7a9Ts4/llGMmUnxlPjxeNlOYr1Ij9hhyDHvMU74sFI=;
-	b=IpZsukK/a5/ex/aAZ/5Zsl+OJ8uXj1Z5S0iKkcYXpb+nLQCE7JXHkikU+TELGULkIpkYOZ
-	ShOFd5D++dDSGBUIs8yK9MYfrttj7n/T2MwYK7gxy/bLx69HdM1CMfuvTNbG6hxFBMEyxy
-	ToxvGFBuyIh7fLeayJocmXHdTTjUKWQ=
-Date: Fri, 9 Aug 2024 19:06:34 +0800
+	s=arc-20240116; t=1723206035; c=relaxed/simple;
+	bh=dfOvVXlaKNfGf0eYSd+F9fO3GVkdWOJRDP7fYXcTKLo=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ElfLfPck7087KPdFza1awK8c7wBWbCFGVqj3O48x87rLN2v3WrOr66RJKOg4207evZRrVtXFZjKb7NsnKlNmtm4ojd2BO33bP73FcOcjLej/wmfQnnDkFNqrbVeJUe323XUpbkKOz4hMzQpjO3QDLLPEFGw2HGclj9aZ0LBizig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KM7VoSNe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 504ECC32782;
+	Fri,  9 Aug 2024 12:20:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723206035;
+	bh=dfOvVXlaKNfGf0eYSd+F9fO3GVkdWOJRDP7fYXcTKLo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=KM7VoSNeGMBgluuaCPcc8tSG6UXyK9Ysg+W7e8eeISg96Uk5DN7a/wlHegW7IrjuY
+	 5M9fVqy5amUOOz1LCwNxoBq8gLuQEIrX3+u416Iq5M1k3xouE+7OwCT4XWvDTr4l5w
+	 ZZ0kEbNzqumpBWaJWCAuWEv2fi5M1dyGhFp/WioVtYXYDgDC9aFR+25O5dqLU9yiTp
+	 pG2Mc9EOge8tE6Zoypb6qb1r6IvbFssT2m144KnykC0sDPbWLReOd9UrNchfPhThzb
+	 2VtHIDLLaUR6r3e3szo1s39y8fh2WhZLMn5nW8qH9fBkwFUQUUyaWgHSIVdAZ5EYQx
+	 Bk2MpdPApnU8g==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E38382333D;
+	Fri,  9 Aug 2024 12:20:35 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next 4/4] RDMA/rxe: Set queue pair cur_qp_state when
- being queried
-To: Liu Jian <liujian56@huawei.com>, linux-rdma@vger.kernel.org,
- linux-s390@vger.kernel.org, netdev@vger.kernel.org
-Cc: jgg@ziepe.ca, leon@kernel.org, zyjzyj2000@gmail.com,
- wenjia@linux.ibm.com, jaka@linux.ibm.com, alibuda@linux.alibaba.com,
- tonylu@linux.alibaba.com, guwen@linux.alibaba.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-References: <20240809083148.1989912-1-liujian56@huawei.com>
- <20240809083148.1989912-5-liujian56@huawei.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240809083148.1989912-5-liujian56@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH net-next v2 0/3] selftests: rds selftest
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172320603426.3771951.12747958365841454041.git-patchwork-notify@kernel.org>
+Date: Fri, 09 Aug 2024 12:20:34 +0000
+References: <20240806153809.282716-1-allison.henderson@oracle.com>
+In-Reply-To: <20240806153809.282716-1-allison.henderson@oracle.com>
+To: Allison Henderson <allison.henderson@oracle.com>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ rds-devel@oss.oracle.com, linux-rdma@vger.kernel.org, oberpar@linux.ibm.com,
+ chuck.lever@oracle.com, vegard.nossum@oracle.com
 
-在 2024/8/9 16:31, Liu Jian 写道:
-> Same with commit e375b9c92985 ("RDMA/cxgb4: Set queue pair state when
->   being queried"). The API for ib_query_qp requires the driver to set
-> cur_qp_state on return, add the missing set.
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Tue,  6 Aug 2024 08:38:06 -0700 you wrote:
+> From: Allison Henderson <allison.henderson@oracle.com>
 > 
-
-Add the following?
-Cc: stable@vger.kernel.org
-
-> Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> Signed-off-by: Liu Jian <liujian56@huawei.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe_verbs.c | 2 ++
->   1 file changed, 2 insertions(+)
+> Hi All,
 > 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> index 5c18f7e342f2..699b4b315336 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> @@ -634,6 +634,8 @@ static int rxe_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
->   	rxe_qp_to_init(qp, init);
->   	rxe_qp_to_attr(qp, attr, mask);
->   
-> +	attr->cur_qp_state = qp->attr.qp_state;
+> This series is a new selftest that Vegard, Chuck and myself have been
+> working on to provide some test coverage for rds.  I've modified the
+> scripts to include the feedback from the last version, but let me know
+> if there's anything missed.  Questions and comments appreciated.
+> 
+> [...]
 
-I am fine with this commit.
+Here is the summary with links:
+  - [net-next,v2,1/3] .gitignore: add .gcda files
+    https://git.kernel.org/netdev/net-next/c/a0f6e5e9f1f8
+  - [net-next,v2,2/3] net: rds: add option for GCOV profiling
+    https://git.kernel.org/netdev/net-next/c/bc75dcc3cea7
+  - [net-next,v2,3/3] selftests: rds: add testing infrastructure
+    https://git.kernel.org/netdev/net-next/c/3ade6ce1255e
 
-But I think this "attr->cur_qp_state = qp->attr.qp_state;" should be put 
-into this function rxe_qp_to_attr.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-And the access to qp->attr.qp_state should be protected by spin lock 
-qp->state_lock.
-
-So the following is better.
-Any way, thanks.
-
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c 
-b/drivers/infiniband/sw/rxe/rxe_qp.c
-index d2f7b5195c19..da723b9690e5 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -782,6 +782,10 @@ int rxe_qp_to_attr(struct rxe_qp *qp, struct 
-ib_qp_attr *attr, int mask)
-                 spin_unlock_irqrestore(&qp->state_lock, flags);
-         }
-
-+       spin_lock_irqsave(&qp->state_lock, flags);
-+       attr->cur_qp_state = qp_state(qp);
-+       spin_unlock_irqrestore(&qp->state_lock, flags);
-+
-         return 0;
-  }
-
-Best Regards,
-Zhu Yanjun
-
-> +
->   	return 0;
->   }
->   
 
 
