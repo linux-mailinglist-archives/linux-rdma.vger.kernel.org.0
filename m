@@ -1,132 +1,97 @@
-Return-Path: <linux-rdma+bounces-4259-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4260-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0975394C8C9
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 05:18:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00D3994C9A9
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 07:38:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7037286DB1
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 03:18:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7457BB22B9A
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Aug 2024 05:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E0891B969;
-	Fri,  9 Aug 2024 03:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A88816C68D;
+	Fri,  9 Aug 2024 05:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="njCmDFFe"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Ja+Tlyoq"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2701B810;
-	Fri,  9 Aug 2024 03:18:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 951FD17BBE;
+	Fri,  9 Aug 2024 05:37:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723173513; cv=none; b=gbZ6YtbKOPBsFiEtxtXe++9xIXRChUBr/VYYf5pMUUil2C9eAEigHVu368CJi0HpCdG9WIfa78gAw+SMwNKHC0ct77QLy66sfBlukRt95RGYoaThWg/eYPriDe2sP3YSDzMIW+db++Mkym3HbtKV19nr0M63TyVRFDLCl7b/ziU=
+	t=1723181874; cv=none; b=jFxxIrKS7c2TqeEpYUCIZlYhkmvdMd7RJauJEqiuFUL3AsHX4IOaOxRsXCvuCydsuE+gUCws3VkJTm9Zdo+OOWNFPP0O9W1tdzEC+2JeP+0vFDgDcVGWxOxysEq5jKJG7klsoev93YLSTjcWhYnx3q1+GuImX2e9WkxoNTXEbvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723173513; c=relaxed/simple;
-	bh=vp5tQFqVNxgN2/iDjMuM1QNnTI3pWFIbDyKW+UM4dng=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MXkOj0qIfqTQhM5D7a00N1gUVHLfR4SeQw3EtLzvu0t7gb2bljswpLJDExJ7pbDiRiqE/FTafPimDD29XI7ZdhxlRHsgy8o3/SFved2sOHa5CId2EBufCVzeYBt4U2obyQjAhEbi43ki2notUgp597PN+kyYNuFki0IDVPEb6jM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=njCmDFFe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64881C32782;
-	Fri,  9 Aug 2024 03:18:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723173513;
-	bh=vp5tQFqVNxgN2/iDjMuM1QNnTI3pWFIbDyKW+UM4dng=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=njCmDFFep036SwrP5dulrA+A2qWCQX8+EGIs+kexvfqxXjKImUg5J/3gZ+ppr4X2a
-	 NKYHr+xl9cw2N3H82JrWwCLturcVqA8DvAiIIl/sC3nSyfTvOqv7XOn7tnX8nBqshS
-	 0UQzwoNFk1ein04AhTtNYzDH6XrDPOh73dWXdDrbXg32dLdD8KZmbi3wqHZu54UgAm
-	 YKhdrARiqzCNQ085VPrNOHSmyP7N2N1cRDnSZpRRjDb5fyXuqxW4VKs6IAgLIDlRYe
-	 I5k33Nr4pk+eH4G+AH9G5T8WBDoVgw0hKQL/Akc882x2l6XelgKxnTCEBtSQMIKwi/
-	 3eekIswdpGs6Q==
-From: Jakub Kicinski <kuba@kernel.org>
-To: davem@davemloft.net
-Cc: netdev@vger.kernel.org,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	michael.chan@broadcom.com,
-	shuah@kernel.org,
-	ecree.xilinx@gmail.com,
-	przemyslaw.kitszel@intel.com,
-	ahmed.zaki@intel.com,
-	andrew@lunn.ch,
-	willemb@google.com,
-	pavan.chebbi@broadcom.com,
-	petrm@nvidia.com,
-	gal@nvidia.com,
-	jdamato@fastly.com,
-	donald.hunter@gmail.com,
-	Jakub Kicinski <kuba@kernel.org>,
-	saeedm@nvidia.com,
-	tariqt@nvidia.com,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v4 03/12] eth: mlx5: allow disabling queues when RSS contexts exist
-Date: Thu,  8 Aug 2024 20:18:18 -0700
-Message-ID: <20240809031827.2373341-4-kuba@kernel.org>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240809031827.2373341-1-kuba@kernel.org>
-References: <20240809031827.2373341-1-kuba@kernel.org>
+	s=arc-20240116; t=1723181874; c=relaxed/simple;
+	bh=lOZtihui0k4mla/fwJ1SNSDDA5JTGeFOJpE/zRPr7lI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Suqifntg7j3mchvTvB+9/eUm931N5XADPkMp/iqX+oz5vYjQVljwP+Ls+bCEEt2HtuloiEcr5fGUVov2Af8g2lUHgVXmk2tBnC/F+7YLTkzIWk/rnA+yNrIYiqWR9G1vgnuPL1qkUJo/8VoABTItfvySL/Uq07qP5t9v0L2itO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Ja+Tlyoq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B4CEC32782;
+	Fri,  9 Aug 2024 05:37:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1723181874;
+	bh=lOZtihui0k4mla/fwJ1SNSDDA5JTGeFOJpE/zRPr7lI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ja+TlyoqL0I/er2EtwIN4JTQMRt46xrIy6SHLUTkaWucveylKEtv6fCgp0QsIIu5S
+	 uW4JUdOXIRUDPwYg4E+zaaRKkDuEvZ5QX7qgMMmCVmTFai624T1WvUNvhtA7Nd6oXm
+	 UqGTQUWNWrx4jf4K3Y5ja+D4LIc6uc/g6u9n6F30=
+Date: Fri, 9 Aug 2024 07:37:49 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Martin Oliveira <martin.oliveira@eideticom.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	Artemy Kovalyov <artemyko@nvidia.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	Mike Marciniszyn <mike.marciniszyn@intel.com>,
+	Shiraz Saleem <shiraz.saleem@intel.com>, Tejun Heo <tj@kernel.org>,
+	John Hubbard <jhubbard@nvidia.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	David Sloan <david.sloan@eideticom.com>
+Subject: Re: [PATCH v5 1/4] kernfs: add a WARN_ON_ONCE if ->close is set
+Message-ID: <2024080933-jazz-supernova-9f3a@gregkh>
+References: <20240808183340.483468-1-martin.oliveira@eideticom.com>
+ <20240808183340.483468-2-martin.oliveira@eideticom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240808183340.483468-2-martin.oliveira@eideticom.com>
 
-Since commit 24ac7e544081 ("ethtool: use the rss context XArray
-in ring deactivation safety-check") core will prevent queues from
-being disabled while being used by additional RSS contexts.
-The safety check is no longer necessary, and core will do a more
-accurate job of only rejecting changes which can actually break
-things.
+On Thu, Aug 08, 2024 at 12:33:37PM -0600, Martin Oliveira wrote:
+> The next patch is going to remove .page_mkwrite from kernfs and will
+> WARN if an mmap implementation sets .page_mkwrite.
+> 
+> In preparation for that change, and to make it consistent, add a WARN to
+> the ->close check.
+> 
+> Co-developed-by: Logan Gunthorpe <logang@deltatee.com>
+> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> Signed-off-by: Martin Oliveira <martin.oliveira@eideticom.com>
+> ---
+>  fs/kernfs/file.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+> index 8502ef68459b..72cc51dcf870 100644
+> --- a/fs/kernfs/file.c
+> +++ b/fs/kernfs/file.c
+> @@ -479,7 +479,7 @@ static int kernfs_fop_mmap(struct file *file, struct vm_area_struct *vma)
+>  	 * It is not possible to successfully wrap close.
+>  	 * So error if someone is trying to use close.
+>  	 */
+> -	if (vma->vm_ops && vma->vm_ops->close)
+> +	if (WARN_ON_ONCE(vma->vm_ops && vma->vm_ops->close))
 
-Reviewed-by: Gal Pressman <gal@nvidia.com>
-Reviewed-by: Joe Damato <jdamato@fastly.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-CC: saeedm@nvidia.com
-CC: tariqt@nvidia.com
-CC: leon@kernel.org
-CC: linux-rdma@vger.kernel.org
----
- drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 12 ------------
- 1 file changed, 12 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-index 36845872ae94..0b941482db30 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-@@ -445,7 +445,6 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
- 	unsigned int count = ch->combined_count;
- 	struct mlx5e_params new_params;
- 	bool arfs_enabled;
--	int rss_cnt;
- 	bool opened;
- 	int err = 0;
- 
-@@ -499,17 +498,6 @@ int mlx5e_ethtool_set_channels(struct mlx5e_priv *priv,
- 		goto out;
- 	}
- 
--	/* Don't allow changing the number of channels if non-default RSS contexts exist,
--	 * the kernel doesn't protect against set_channels operations that break them.
--	 */
--	rss_cnt = mlx5e_rx_res_rss_cnt(priv->rx_res) - 1;
--	if (rss_cnt) {
--		err = -EINVAL;
--		netdev_err(priv->netdev, "%s: Non-default RSS contexts exist (%d), cannot change the number of channels\n",
--			   __func__, rss_cnt);
--		goto out;
--	}
--
- 	/* Don't allow changing the number of channels if MQPRIO mode channel offload is active,
- 	 * because it defines a partition over the channels queues.
- 	 */
--- 
-2.46.0
+So you just rebooted a machine that hits this, loosing data everywhere.
+Not nice :(
 
 
