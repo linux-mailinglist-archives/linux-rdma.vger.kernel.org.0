@@ -1,141 +1,112 @@
-Return-Path: <linux-rdma+bounces-4303-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4304-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9D2194E03C
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Aug 2024 08:05:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D58094E078
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Aug 2024 10:18:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 428001F21416
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Aug 2024 06:05:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 224C728182C
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Aug 2024 08:18:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB991AAC4;
-	Sun, 11 Aug 2024 06:05:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D411C6B4;
+	Sun, 11 Aug 2024 08:18:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OFm3fuJf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tARJ+876"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B6817758;
-	Sun, 11 Aug 2024 06:05:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CC742E3F7;
+	Sun, 11 Aug 2024 08:18:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723356343; cv=none; b=nbbQ7O9TIyypKOobq9YWe6IRuJT85Rvl5kaxI+ISCKnMH8Q36HEE5xAVwbPWMTUe7xlDNjZqVGrMoavpw3g5G5K2XneTAGoIEQSUwOF17Hrsztavt/671+49TazwhLflvxVC/Ncg0HyBWsXEzjup+alNrGSOWvuArTCtiUL1+FE=
+	t=1723364331; cv=none; b=REidEMN9y9JWQlXwaLMY8AjVzS0hFEbGQ1x6IlmYVBCuC+0yFor1F0SeOUTStoHNfHkHJH2/6Al2O8mkCwYCRiCvQFx7JYSnfvrmoBi9UaMCVnFmJvFSIdRHggH2cpxnBJYCZf0gGUo6YQf1VajyPLsAX/7RhRNNqfm6/QYGUQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723356343; c=relaxed/simple;
-	bh=1wDnn82iWsMF3myAk2/GB+fl5fpsudaP3YxBB3CSPio=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k/RxrlrZgFTIdCdJrjky1y+e5aC2yxV0TsKuhCrrhGFmNwFf+6BWfK42YAfoPbjNa1NykVXM5TezseBK2etBefA7IEf+HAnbu3XclivLpvGbsgGV9z5v1R1Ji5846TsIKwvBDDY1fcRT8SdsZ7dlJ4Zfe2CiY+sRPbuix3S11bY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OFm3fuJf; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47B4bP6Q000517;
-	Sun, 11 Aug 2024 06:05:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=pp1; bh=d
-	tSdA7UPCYo5T1a0eiiyRVHahUWRq2EwwuPn2nGp7Zo=; b=OFm3fuJfcH3l26QDS
-	6UTm7RKrWDsCTkY62sqQPrjaX1KWpgBt9ltbXlTCGSXpmvb4Ze5C72sOyt/XvRt7
-	SoNyG9l3gFQN07X0XGN+xt3JpKCa2nmUQEV2T2ZV7eNygoITyFpp3XSi+QvV8iM0
-	f9GywFZ1V8EyViQ//sYofqHS+P0tydKZaxdVa10e3jSUk6SAjIp8fXPOBZFx9bL/
-	jzrWgb2yanyqlMBkkPI/jzdN4iNWt4lOSiC+oEHt3jUXMJi/OXVb4JuaCgQJ4M1g
-	Kynzn4BxHnvuEWrfTZR2Z1eMHckC4wdfegafrGpgIvEE8PPDnjDqD6hDUDcUB1OA
-	O1eaw==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40wyvvt3fd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 11 Aug 2024 06:05:26 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 47B65Pes016055;
-	Sun, 11 Aug 2024 06:05:26 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40wyvvt3f8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 11 Aug 2024 06:05:25 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 47B3FTtQ020902;
-	Sun, 11 Aug 2024 06:05:24 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 40xn82rfss-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 11 Aug 2024 06:05:24 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47B65LVn57344462
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 11 Aug 2024 06:05:23 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4065E20040;
-	Sun, 11 Aug 2024 06:05:21 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 64DCA2004B;
-	Sun, 11 Aug 2024 06:05:20 +0000 (GMT)
-Received: from [9.171.59.108] (unknown [9.171.59.108])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Sun, 11 Aug 2024 06:05:20 +0000 (GMT)
-Message-ID: <0da83fa7-8866-4ba9-803d-c207106c2eb2@linux.ibm.com>
-Date: Sun, 11 Aug 2024 08:05:19 +0200
+	s=arc-20240116; t=1723364331; c=relaxed/simple;
+	bh=6ENBaNzhU1rwlJF1irIBi9hRAI3UkLpjUrOOeyLoqA8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qcUR3wE3+myjsvGjGjuosGB/AkNfdja3XsD5ZI91fwMNyIQVJa8WKSfOQFfqlE687wh49yGNUMr8qCr6PAs5JQmm4GHFJisT2g2GWZMzhHLb6XhMlyejhT7QiMUuzkCXIebZup6oCvH6WUewcPSpmR8yW47zEoHOiVgNFYNDtRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tARJ+876; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8724C4AF09;
+	Sun, 11 Aug 2024 08:18:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723364330;
+	bh=6ENBaNzhU1rwlJF1irIBi9hRAI3UkLpjUrOOeyLoqA8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tARJ+876/DypRG5E4NgYVw8B+6uywL0cqU9BdrdlxH0n6tYZsugYUkSVt8mTMOG47
+	 EWlXmZ4HXtRaPBFafcL2KGu5k2RJcD89eQlmoIr1THAq8ifkViBj/TwW1ZJlmZSf5z
+	 E926Cpups6697ypAlMLzLM0tWYNAQ4g+86Gkt1gbTunko8Xg8G6C7hcLrtK0eUc0wd
+	 /epkQCODchav/m4lu+aV5wCLUNjtUuONeEWoXPA0pomz2OO/srIqAIgOpwj9IUA3Qh
+	 bqoRxfh8eGidLcOAfSRYmyYkI9P5/FLgvpcdMzMpXUJtMoEdZJLgYgBEB3rODnWZKi
+	 3pw6ahGZxKKSw==
+Date: Sun, 11 Aug 2024 11:18:46 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next 0/3] RDMA: Provide an API for drivers to
+ disassociate mmap pages
+Message-ID: <20240811081846.GA448562@unreal>
+References: <20240726071910.626802-1-huangjunxian6@hisilicon.com>
+ <172285563690.428749.9415541768231694130.b4-ty@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 0/4] Make SMC-R can work with rxe devices
-To: Liu Jian <liujian56@huawei.com>, linux-rdma@vger.kernel.org,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org
-Cc: jgg@ziepe.ca, leon@kernel.org, zyjzyj2000@gmail.com, wenjia@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com
-References: <20240809083148.1989912-1-liujian56@huawei.com>
-From: Jan Karcher <jaka@linux.ibm.com>
-Organization: IBM - Network Linux on Z
-In-Reply-To: <20240809083148.1989912-1-liujian56@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: kIDop0nuWcL_ysW-kVwcGhEHBf6C8C-4
-X-Proofpoint-GUID: yog6F8ykDEUDQJludh86tz2oO4eXOsXF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-11_04,2024-08-07_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=779 spamscore=0 lowpriorityscore=0 malwarescore=0
- impostorscore=0 phishscore=0 clxscore=1011 bulkscore=0 mlxscore=0
- suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2407110000 definitions=main-2408110046
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <172285563690.428749.9415541768231694130.b4-ty@kernel.org>
 
+On Mon, Aug 05, 2024 at 02:00:36PM +0300, Leon Romanovsky wrote:
+>=20
+> On Fri, 26 Jul 2024 15:19:07 +0800, Junxian Huang wrote:
+> > Provide an API rdma_user_mmap_disassociate() for drivers to disassociate
+> > mmap pages. Use this API in hns to prevent userspace from ringing doorb=
+ell
+> > when HW is reset.
+> >=20
+> > Chengchang Tang (3):
+> >   RDMA/core: Provide rdma_user_mmap_disassociate() to disassociate mmap
+> >     pages
+> >   RDMA/hns: Link all uctx to uctx_list on a device
+> >   RDMA/hns: Disassociate mmap pages for all uctx when HW is being reset
+> >=20
+> > [...]
+>=20
+> Applied, thanks!
+>=20
+> [1/3] RDMA/core: Provide rdma_user_mmap_disassociate() to disassociate mm=
+ap pages
+>       https://git.kernel.org/rdma/rdma/c/29df39ce0a64f0
 
+Junxian, sorry but I had to drop this series from my wip branch,
 
-On 09/08/2024 10:31, Liu Jian wrote:
-> Make SMC-R can work with rxe devices. This allows us to easily test and
-> learn the SMC-R protocol without relying on a physical RoCE NIC.
+The more kbuilds reports I got the more I realized that this series
+needs more work.
 
-Hi Liu,
+My main concern is that in first patch, you put uverbs_user_mmap_disassocia=
+te() function in
+ib_core_verbs.c, which is not the right place for it. This function should =
+stay in uverbs_main.c
+which is protected by right "depends on" in Kconfig.
 
-thank you for your contribution. Please give me some time to review and 
-test it in the next couple of days.
+Please fix this and resend the series.
 
 Thanks
-- J
 
-> 
-> Liu Jian (4):
->    rdma/device: export ib_device_get_netdev()
->    net/smc: use ib_device_get_netdev() helper to get netdev info
->    net/smc: fix one NULL pointer dereference in smc_ib_is_sg_need_sync()
->    RDMA/rxe: Set queue pair cur_qp_state when being queried
-> 
->   drivers/infiniband/core/core_priv.h   |  3 ---
->   drivers/infiniband/core/device.c      |  1 +
->   drivers/infiniband/sw/rxe/rxe_verbs.c |  2 ++
->   include/rdma/ib_verbs.h               |  2 ++
->   net/smc/smc_ib.c                      | 10 +++++-----
->   net/smc/smc_pnet.c                    |  6 +-----
->   6 files changed, 11 insertions(+), 13 deletions(-)
-> 
+> [2/3] RDMA/hns: Link all uctx to uctx_list on a device
+>       https://git.kernel.org/rdma/rdma/c/bb5b2b25624fa9
+> [3/3] RDMA/hns: Disassociate mmap pages for all uctx when HW is being res=
+et
+>       https://git.kernel.org/rdma/rdma/c/e60457876e3223
+>=20
+> Best regards,
+> --=20
+> Leon Romanovsky <leon@kernel.org>
+>=20
 
