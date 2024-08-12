@@ -1,183 +1,214 @@
-Return-Path: <linux-rdma+bounces-4323-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4324-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C5C394EA7F
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 12:08:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 107EE94EA95
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 12:16:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1EA61F22919
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 10:08:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54122B2092E
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 10:16:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA6616EB5D;
-	Mon, 12 Aug 2024 10:08:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4487C16C440;
+	Mon, 12 Aug 2024 10:16:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e6Mh+PLD"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="MSDAcZqQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0E8F1876
-	for <linux-rdma@vger.kernel.org>; Mon, 12 Aug 2024 10:08:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122FE33C7
+	for <linux-rdma@vger.kernel.org>; Mon, 12 Aug 2024 10:16:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723457303; cv=none; b=M3NBeTh6g3hUB9Rei4Z+KwT0AKIX5ylSkjUAUuREk9MSIaajtpmQXy14+/U6+kNwTLDLetShBTKWBjwhga65zgdHLMNY0gFdJmLRiSOz6VNLqqpzhLcbUctRKuvZX6+tHCtJMap/ARCVoLtlHMczVMMpi6r59MA89FsXaPJ1FpE=
+	t=1723457796; cv=none; b=qG9iQ2bw2+jHsNTICGosIMs7AdWH8wf/kMozF//aU9oyhghAvXJAF/O5g1vEddqwXYYcxsJ4m3Ra7BRmpu8azzxBwOuc1dfUxmn87ZpMnJEFmjTW4jyJPfN6Iwi+HEVVpglspL76ZMbxUOQ5p/s5F7wh04MD/jlCGPRCuy4BZvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723457303; c=relaxed/simple;
-	bh=FMeH+HcGZjJuyHtgdsO9Y9Nm+Gdzw/uvmKVVp7kNXXM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GJvmyJZ8/qnUe0gzXf8vDw2NMsqpFbjcww4ge0huLwCS306pEiU0x9UJEzIFK7V6Tn3gEyGxb0Zh9yC/LiYhgfmidqh00GKNbiNM9UmGsFU7Sv3ahe7UVhzONYDXkeR/EaUwOpMGT4JuXzu66XHBSqTTNB+ty0ZEk3VrCbcaQpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e6Mh+PLD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF8BEC32782;
-	Mon, 12 Aug 2024 10:08:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723457302;
-	bh=FMeH+HcGZjJuyHtgdsO9Y9Nm+Gdzw/uvmKVVp7kNXXM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=e6Mh+PLDrblYx8RqLxC4N3ptXqu9I2RZY9nJ2Tu8QhHTiItB7VOrBdDKWZg3HMOye
-	 daMew92wrfD9YZpVO7AyfTrBV97BRz+RNdzABZ/T7O+7nwaHq5qVMO28FNYPs1I3g5
-	 RGeVlK42gbx5e32IbPXpwHDame9AVSPsskULm5CYrvqSxVyL/HX01NNm7LLE5z/MCe
-	 wSxSbiLmGhxoC7msMoGYaUfRN8lzv+XPaOUxYi0YrBGPNrTRS2F9myJSgn+4hWaB7N
-	 Nc+jUsxbPY5B5uRiUfZkfXUEWW2SO3lbx+QYJGSnZSVwXWuxA8CKkDtZEv17UaiAr7
-	 8xlRkpWCoQgFA==
-Date: Mon, 12 Aug 2024 13:08:18 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: Selvin Xavier <selvin.xavier@broadcom.com>, jgg@ziepe.ca,
-	linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-	Hongguang Gao <hong``guang.gao@broadcom.com>
-Subject: Re: [PATCH for-next 2/4] RDMA/bnxt_re: Get the WQE index from slot
- index while completing the WQEs
-Message-ID: <20240812100818.GB12060@unreal>
-References: <1723317553-13002-1-git-send-email-selvin.xavier@broadcom.com>
- <1723317553-13002-3-git-send-email-selvin.xavier@broadcom.com>
- <bda30518-00cf-43eb-a463-e4b7ce7057d8@linux.dev>
+	s=arc-20240116; t=1723457796; c=relaxed/simple;
+	bh=GiT8RDYEbiUcF7LCI2JwOU+GvoS1HTgDcYWcQQmVMK8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tQODwdBsvlIMfdZ9qiGNBuLSjQIBCA5AXTFuTw4O3oXSAD5vMu/4cCYuIPVObHf0WMIhDSg1ZkVDZ4K3Yk8eelX8xv59kVeWaOU/a/kOon1qDBoUez3NWpjmBZ/rkCtJv4gAUdeiu0Q19/97LZJ8md5ufHQqgHH6iliHNjNquDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=MSDAcZqQ; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2ef2cb7d562so41456561fa.3
+        for <linux-rdma@vger.kernel.org>; Mon, 12 Aug 2024 03:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1723457791; x=1724062591; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mAHQCroOwgrlg78Fht1qN9UEcBxxThURFhs1Vzwg1MM=;
+        b=MSDAcZqQCyz8MIi5pINSjuQuIAH0rZhDRPW3B157YniLFbcWA4ae5llLn+hxwH8SBc
+         FdWtBgZjpPo2Qw62DZZCOPdi4zGYQ2PUw3UEx3ZSC2vOfxY0yXRyKX5JBW1nvjDaexQm
+         F2n153zA577CJt0gQRuU00/GLsb7D0sbbIKESIO9mYlwMLeu6nUfcp93UlBPEgy1x/wf
+         JMUKHq0/Yg0JL4SZLfGra5ySN5QgLuNOdQV5YbQYPpp8khsbtzL0b8wnIIOqmjzEF75+
+         At9xzVYkvaN91nvBEBDX2xvZiAWhGnSMmnzf5mlzpmsWUlxZ/oM74VcBYqyoyzRGkNtT
+         oD7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723457791; x=1724062591;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mAHQCroOwgrlg78Fht1qN9UEcBxxThURFhs1Vzwg1MM=;
+        b=vjY5fyQep/Jgr7B5e0cNYs7Z1Jj2xA7/63S5C3quAHRgFVTRhgFkWSz3iA5plYjqaL
+         lvVskiHF8pnj3/AKaPWQtGWis6nz0l/GIGXc5TLr4iS/cBlCZaQDn9VOz+Olb5FSYonf
+         KklYyoQtdp2IvIO0SPMGzdbtLyRnKSGm44z+2MUfaj7KXQ3sJXYWswrA3i0wW/OB+AMF
+         osddbCfryl1iz+lxYleCbcxdOym3Bp2EPJTch2bJATf6c5YD9GE38kdkA2aNQGCI5Cwe
+         RfmwQVq7b9lGOEZ6lVtx4RFYqA4R56JiMheeyvvS17E/L7uwwXY+T9OISW7U6GaUppYY
+         kJRg==
+X-Gm-Message-State: AOJu0YzMg9tSMcGskEkl2Lw619ncP9D7bDttKNknz+SamDD2DRTExmH4
+	5i7TAFD1Nr0IH4QCxgN/plcDMLkae4hWzdRAMGBqQRwy477eRyKICr3jpps3GA5QpGGVZmHAH6L
+	LLi6Y6+btiuf7nx/U4WdPxqiiTR5gdiAthiUIu1LDrh8s+axs6e30gw==
+X-Google-Smtp-Source: AGHT+IHI+tuAGPGoukf8qAF6Ntz0B0I896dVsa+vZBU7jI2jkNuqRU0TWeG7pNvLETPr/sWWYWUNHyYVfLJJP3r6YFM=
+X-Received: by 2002:a2e:be85:0:b0:2ef:296d:1dd5 with SMTP id
+ 38308e7fff4ca-2f1a6907443mr86438131fa.0.1723457790922; Mon, 12 Aug 2024
+ 03:16:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bda30518-00cf-43eb-a463-e4b7ce7057d8@linux.dev>
+References: <20240809131538.944907-1-haris.iqbal@ionos.com>
+ <20240809131538.944907-2-haris.iqbal@ionos.com> <20240811083830.GB5925@unreal>
+In-Reply-To: <20240811083830.GB5925@unreal>
+From: Haris Iqbal <haris.iqbal@ionos.com>
+Date: Mon, 12 Aug 2024 12:16:19 +0200
+Message-ID: <CAJpMwyjksJakyZVvf_jWwrnvbpV_T=jjAKgXG5k0ZCGyoZx_Rg@mail.gmail.com>
+Subject: Re: [PATCH for-next 01/13] RDMA/rtrs-srv: Make rtrs_srv_open fail if
+ its a second call
+To: Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org, jgg@ziepe.ca, 
+	jinpu.wang@ionos.com, Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 12, 2024 at 04:48:44PM +0800, Zhu Yanjun wrote:
-> 在 2024/8/11 3:19, Selvin Xavier 写道:
-> > While reporting the completions, SQ Work Queue index is required to
-> > identify the WQE that generated the completions. In variable WQE mode,
-> > FW returns the slot index for Error completions. Driver need to walk
-> > through the shadow queue between the consumer index  and producer index
-> > and matches the slot index returned by FW. If a match is found, the next
-> > index of the shadow queue is the WQE index to be considered for remaining
-> > poll_cq loop.
-> > 
-> > Signed-off-by: Hongguang Gao <hong``guang.gao@broadcom.com>
-> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+On Sun, Aug 11, 2024 at 10:38=E2=80=AFAM Leon Romanovsky <leon@kernel.org> =
+wrote:
+>
+> On Fri, Aug 09, 2024 at 03:15:26PM +0200, Md Haris Iqbal wrote:
+> > Do not allow opening RTRS server if it is already in use and print
+> > proper error message.
+>
+> 1. How is it even possible? I see only one call to rtrs_srv_open() and
+> it is happening when the driver is loaded.
+
+rtrs_srv_open() is NOT called during RTRS driver load. It is called
+during RNBD driver load, which is a client which uses RTRS.
+RTRS server currently works with only a single client. Hence if, while
+in use by RNBD, another driver wants to use RTRS and calls
+rtrs_srv_open(), it should fail.
+
+> 2. You already print an error message, why do you need to add another
+> one?
+
+This patch adds only a single error print, in function
+rtrs_srv_open(). And it has not other print message. Am I missing
+something?
+
+>
+> Thanks
+>
+> >
+> > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+> > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> > Signed-off-by: Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
 > > ---
-> >   drivers/infiniband/hw/bnxt_re/qplib_fp.c | 40 ++++++++++++++++++++++++++++++++
-> >   drivers/infiniband/hw/bnxt_re/qplib_fp.h | 10 ++++++++
-> >   2 files changed, 50 insertions(+)
-> > 
-> > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-> > index 0af09e7..b49f49c 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-> > +++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-> > @@ -2471,6 +2471,32 @@ static int do_wa9060(struct bnxt_qplib_qp *qp, struct bnxt_qplib_cq *cq,
-> >   	return rc;
-> >   }
-> > +static int bnxt_qplib_get_cqe_sq_cons(struct bnxt_qplib_q *sq, u32 cqe_slot)
-> > +{
-> > +	struct bnxt_qplib_hwq *sq_hwq;
-> > +	struct bnxt_qplib_swq *swq;
-> > +	int cqe_sq_cons = -1;
-> > +	u32 start, last;
+> >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 27 +++++++++++++++++++++++---
+> >  drivers/infiniband/ulp/rtrs/rtrs-srv.h |  1 +
+> >  2 files changed, 25 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniban=
+d/ulp/rtrs/rtrs-srv.c
+> > index 1d33efb8fb03..fb67b58a7f62 100644
+> > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > @@ -2174,9 +2174,18 @@ struct rtrs_srv_ctx *rtrs_srv_open(struct rtrs_s=
+rv_ops *ops, u16 port)
+> >       struct rtrs_srv_ctx *ctx;
+> >       int err;
+> >
+> > +     mutex_lock(&ib_ctx.rtrs_srv_ib_mutex);
+> > +     if (ib_ctx.srv_ctx) {
+> > +             pr_err("%s: Already in use.\n", __func__);
+> > +             ctx =3D ERR_PTR(-EEXIST);
+> > +             goto out;
+> > +     }
 > > +
-> > +	sq_hwq = &sq->hwq;
+> >       ctx =3D alloc_srv_ctx(ops);
+> > -     if (!ctx)
+> > -             return ERR_PTR(-ENOMEM);
+> > +     if (!ctx) {
+> > +             ctx =3D ERR_PTR(-ENOMEM);
+> > +             goto out;
+> > +     }
+> >
+> >       mutex_init(&ib_ctx.ib_dev_mutex);
+> >       ib_ctx.srv_ctx =3D ctx;
+> > @@ -2185,9 +2194,11 @@ struct rtrs_srv_ctx *rtrs_srv_open(struct rtrs_s=
+rv_ops *ops, u16 port)
+> >       err =3D ib_register_client(&rtrs_srv_client);
+> >       if (err) {
+> >               free_srv_ctx(ctx);
+> > -             return ERR_PTR(err);
+> > +             ctx =3D ERR_PTR(err);
+> >       }
+> >
+> > +out:
+> > +     mutex_unlock(&ib_ctx.rtrs_srv_ib_mutex);
+> >       return ctx;
+> >  }
+> >  EXPORT_SYMBOL(rtrs_srv_open);
+> > @@ -2221,10 +2232,16 @@ static void close_ctx(struct rtrs_srv_ctx *ctx)
+> >   */
+> >  void rtrs_srv_close(struct rtrs_srv_ctx *ctx)
+> >  {
+> > +     mutex_lock(&ib_ctx.rtrs_srv_ib_mutex);
+> > +     WARN_ON(ib_ctx.srv_ctx !=3D ctx);
 > > +
-> > +	start = sq->swq_start;
-> > +	last = sq->swq_last;
+> >       ib_unregister_client(&rtrs_srv_client);
+> >       mutex_destroy(&ib_ctx.ib_dev_mutex);
+> >       close_ctx(ctx);
+> >       free_srv_ctx(ctx);
 > > +
-> > +	while (last != start) {
-> > +		swq = &sq->swq[last];
-> > +		if (swq->slot_idx  == cqe_slot) {
-> > +			cqe_sq_cons = swq->next_idx;
-> > +			dev_err(&sq_hwq->pdev->dev, "%s: Found cons wqe = %d slot = %d\n",
-> > +				__func__, cqe_sq_cons, cqe_slot);
-> > +			break;
-> > +		}
+> > +     ib_ctx.srv_ctx =3D NULL;
+> > +     mutex_unlock(&ib_ctx.rtrs_srv_ib_mutex);
+> >  }
+> >  EXPORT_SYMBOL(rtrs_srv_close);
+> >
+> > @@ -2282,6 +2299,9 @@ static int __init rtrs_server_init(void)
+> >               goto out_dev_class;
+> >       }
+> >
+> > +     mutex_init(&ib_ctx.rtrs_srv_ib_mutex);
+> > +     ib_ctx.srv_ctx =3D NULL;
 > > +
-> > +		last = swq->next_idx;
-> > +	}
-> > +	return cqe_sq_cons;
-> > +}
-> > +
-> >   static int bnxt_qplib_cq_process_req(struct bnxt_qplib_cq *cq,
-> >   				     struct cq_req *hwcqe,
-> >   				     struct bnxt_qplib_cqe **pcqe, int *budget,
-> > @@ -2481,6 +2507,7 @@ static int bnxt_qplib_cq_process_req(struct bnxt_qplib_cq *cq,
-> >   	struct bnxt_qplib_qp *qp;
-> >   	struct bnxt_qplib_q *sq;
-> >   	u32 cqe_sq_cons;
-> > +	int cqe_cons;
-> >   	int rc = 0;
-> >   	qp = (struct bnxt_qplib_qp *)((unsigned long)
-> > @@ -2498,6 +2525,19 @@ static int bnxt_qplib_cq_process_req(struct bnxt_qplib_cq *cq,
-> >   			"%s: QP in Flush QP = %p\n", __func__, qp);
-> >   		goto done;
-> >   	}
-> > +
-> > +	if (__is_err_cqe_for_var_wqe(qp, hwcqe->status)) {
-> > +		cqe_cons = bnxt_qplib_get_cqe_sq_cons(sq, hwcqe->sq_cons_idx);
-> > +		if (cqe_cons < 0) {
-> > +			dev_err(&cq->hwq.pdev->dev, "%s: Wrong SQ cons cqe_slot_indx = %d\n",
-> > +				__func__, hwcqe->sq_cons_idx);
-> > +			goto done;
-> > +		}
-> > +		cqe_sq_cons = cqe_cons;
-> > +		dev_err(&cq->hwq.pdev->dev, "%s: cqe_sq_cons = %d swq_last = %d swq_start = %d\n",
-> > +			__func__, cqe_sq_cons, sq->swq_last, sq->swq_start);
-> > +	}
-> > +
-> >   	/* Require to walk the sq's swq to fabricate CQEs for all previously
-> >   	 * signaled SWQEs due to CQE aggregation from the current sq cons
-> >   	 * to the cqe_sq_cons
-> > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-> > index f54d7a0..2e7a4fd 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-> > +++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-> > @@ -649,4 +649,14 @@ static inline __le64 bnxt_re_update_msn_tbl(u32 st_idx, u32 npsn, u32 start_psn)
-> >   		(((start_psn) << SQ_MSN_SEARCH_START_PSN_SFT) &
-> >   		SQ_MSN_SEARCH_START_PSN_MASK));
-> >   }
-> > +
-> > +static inline bool __is_var_wqe(struct bnxt_qplib_qp *qp)
-> 
-> IIRC, inline is not needed here. The compiler will determine if the function
-> inline is needed or not.
-
-Selvin added inline functions to *.h file and not to *.c file.
-
-Thanks
-
-> 
-> It is a trivial problem.
-> 
-> Zhu Yanjun
-> 
-> > +{
-> > +	return (qp->wqe_mode == BNXT_QPLIB_WQE_MODE_VARIABLE);
-> > +}
-> > +
-> > +static inline bool __is_err_cqe_for_var_wqe(struct bnxt_qplib_qp *qp, u8 status)
-> 
-> ditto.
-> 
-> > +{
-> > +	return (status != CQ_REQ_STATUS_OK) && __is_var_wqe(qp);
-> > +}
-> >   #endif /* __BNXT_QPLIB_FP_H__ */
-> 
+> >       return 0;
+> >
+> >  out_dev_class:
+> > @@ -2292,6 +2312,7 @@ static int __init rtrs_server_init(void)
+> >
+> >  static void __exit rtrs_server_exit(void)
+> >  {
+> > +     mutex_destroy(&ib_ctx.rtrs_srv_ib_mutex);
+> >       destroy_workqueue(rtrs_wq);
+> >       class_unregister(&rtrs_dev_class);
+> >       rtrs_rdma_dev_pd_deinit(&dev_pd);
+> > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.h b/drivers/infiniban=
+d/ulp/rtrs/rtrs-srv.h
+> > index 5e325b82ff33..4924dde0a708 100644
+> > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+> > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
+> > @@ -127,6 +127,7 @@ struct rtrs_srv_ib_ctx {
+> >       u16                     port;
+> >       struct mutex            ib_dev_mutex;
+> >       int                     ib_dev_count;
+> > +     struct mutex            rtrs_srv_ib_mutex;
+> >  };
+> >
+> >  extern const struct class rtrs_dev_class;
+> > --
+> > 2.25.1
+> >
 
