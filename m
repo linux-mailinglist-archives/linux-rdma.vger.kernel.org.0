@@ -1,121 +1,132 @@
-Return-Path: <linux-rdma+bounces-4313-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4314-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C992794E591
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 05:30:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E7F694E5A2
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 06:10:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 883BA1F22227
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 03:30:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 900C31C2145A
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 04:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB92413A3E8;
-	Mon, 12 Aug 2024 03:30:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAE6C13BAE2;
+	Mon, 12 Aug 2024 04:10:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ZyR9zHy5"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="YCqP/TSo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA6D22619;
-	Mon, 12 Aug 2024 03:30:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB92680C
+	for <linux-rdma@vger.kernel.org>; Mon, 12 Aug 2024 04:10:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723433417; cv=none; b=JkvT+YS98INuSFTbI9xwgzg48QG8shr+EL7sd/Aau599i8nWB2Lsbr8SYnwk2mwlkwxE5j20gxhmgw28CVLfIs5ZH1ku0VYos3fOndyFLn3pktc/5w7T1X8Pndj113VXN3GbmNoPPtvWV/6xR57TrubD0Kfrvpjmpav/EBYs1FQ=
+	t=1723435853; cv=none; b=EOvfxYCtIyjLyguLKpiNYR+Lc2Cdz7JT99/M88ADhc8+0FWr0SbIL47UfR72J/e9INHJFgK0nGcPFIX9RA5hDr61/ZAgMjBYFMIbOW3se5Eq7MD7XDrb/nOxcQNeVjl+5vSxnzpDo/TaGGMLiKsBWDqdffawgZbLex98jsJlfjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723433417; c=relaxed/simple;
-	bh=1NvmWuvWulL3lgZ13xqenqBuOevIJpdbCOZC9Oi1TZ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AOQTpE3hw454S9S66s20OFoNaA0MSU3LhLf2Atgrjt5mDnppmgHQTvNTAu5SX3TD1XdqJBUUs+ZXkxVd1lIH2PeN1lqxLBP+pndCZ006DWLhk/CZB3mgGl8f9cwLoCcRzJwE8RYkzuhkfx7kp9N7VDDUQ0d68LIZd0Mmuzsc/L4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ZyR9zHy5; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1723433412; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=O8AxRrJltn6s35naWtnuURaFKdxfIOs5dcReL1ZWDe8=;
-	b=ZyR9zHy5xqgmF4jL8gDKTEoM7ty2EW3AfPubxpsPk4k7xJumDNsqHJKjkuHtLEqZ9TzkUweY84iKIIJfiC14oiUByUW8sFx0+CKi6ycUS1shAor9pf7dJVY5GSao7ujXsmx31Tu9ub85a+X4Y2f2m/si8Ks196U/GK/g6LgNt1s=
-Received: from 30.221.149.129(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WCYCTXU_1723433410)
-          by smtp.aliyun-inc.com;
-          Mon, 12 Aug 2024 11:30:11 +0800
-Message-ID: <37a5e33a-e47a-464e-9505-f88c9aa367b2@linux.alibaba.com>
-Date: Mon, 12 Aug 2024 11:30:09 +0800
+	s=arc-20240116; t=1723435853; c=relaxed/simple;
+	bh=+NW5KWAex/4G/54oPieo7hgWsUfmqcUcWveAdR33m6w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H4uVgQmx4PIh9IpoWBfigoQUkKQsCtMxZ0fVOXOZvNVt6+KSsYwjKCA7Cg4Im0JccGVpLxtl+mVlUoL6nxzgBjvNo9Q2tZyXFo5dN6j0uYqTZ5vNYJvv7H/W4ksi8ufX5kvnrMtFtz47GmTwvqDyO6qH4z93+vKlkpXjHKo1M5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=YCqP/TSo; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5b9d48d1456so2851216a12.1
+        for <linux-rdma@vger.kernel.org>; Sun, 11 Aug 2024 21:10:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1723435849; x=1724040649; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pQ4lbfQp3UCcE85xEmP0sLKN8SdbGpz/cPHmessf0v4=;
+        b=YCqP/TSouOp7Qv+PbsL48ulhUqrOCKTHSulw9gvZGeyq0HyI/hhg++tNK+QkCgC/t3
+         elbXxTJzyL31aqZI10JRy0ymzxR+5QsHx4GXf+wUbEVhD1WH2B6TlcQfLojgDZWzaBcc
+         9ABdnj28vG7IHDJ2p/WPEpg0TNXPRnEN9HgdsXUycJJ9Zy+5Ol/LPIYafnLzG//7t4J7
+         g8j9+kZFiKLigzKNVEqCkR9XEzvhjNFYUly7a9l52Ehszhe/qy3bI50Nug0dPfxCaRJ1
+         yZwcX4eoWXgb8jFeakewoEtMM+TfoO1NsMUs5xM/WitAo6P+BDHqYggWqh4CvlvTdZ4r
+         +Eqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723435849; x=1724040649;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pQ4lbfQp3UCcE85xEmP0sLKN8SdbGpz/cPHmessf0v4=;
+        b=INkeCO2FT8JelLk5I7/C/4XMV52d1f4Eaao1juYckL/GiNwT0ZuRb1e2Q19XP1RF5k
+         ypku9IVuCtx6tE3K9jbaFZoOztmODvkt4aa8ejq1QdCdIljuS9pFAS2WGnoVROQl2TUo
+         qbUhAvEa2u7CbEy1eg1GKq1s7T2gGJfJjyq3BxxBsOzUJ3HDXo+G1cQjdAG5LJE23uA7
+         HPkBiXrvFxT1j78pH1mXlKOAEDnxfsBaVEo7rU1mPD6IJy8vUEqH2JGfYXoQ/P+JFYgo
+         CYvgJD7Xk51tE+XtuWW8M67/RGWVOuBBkCPbDssqqUy12LTozyI9iE0BLzndJTjOOx72
+         scIw==
+X-Forwarded-Encrypted: i=1; AJvYcCU9QUp1gd+7HSPLU81KrBKz8rOwS3PJBszIJ+BJs0ZlcraSIcvOF2PNOdPOzdpEqAb5KJEe8LdE/92DBLt5LLObxlPx6VcutVmU5Q==
+X-Gm-Message-State: AOJu0Yy4RfLj+YKbgSV+ZxttSctStMqx/WhRT6UIDRtvk6/+F5qOOCJ8
+	A6HefwpinC5kf4/+zOp8DN2AOuw6W5/mtKLu49y2R8msGuyURFKBKSpYhALWBpFe6VjmtCw9tEO
+	DOkXcUVFyhHRY9fuuQd1oIAk8165g8Rdt2h1jSw==
+X-Google-Smtp-Source: AGHT+IHNJKimqLy8wg5CKT8Bn1DFOJYuSmd1Euwb6wwr+umToOjwbv1iO5D7uav4blvPTNKm0HupcPUv9bJMaImG2QQ=
+X-Received: by 2002:a05:6402:11c9:b0:5b4:cbba:902a with SMTP id
+ 4fb4d7f45d1cf-5bbb3bafabbmr10923493a12.4.1723435848872; Sun, 11 Aug 2024
+ 21:10:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 3/4] net/smc: fix one NULL pointer dereference in
- smc_ib_is_sg_need_sync()
-To: Liu Jian <liujian56@huawei.com>, linux-rdma@vger.kernel.org,
- linux-s390@vger.kernel.org, netdev@vger.kernel.org
-Cc: jgg@ziepe.ca, leon@kernel.org, zyjzyj2000@gmail.com,
- wenjia@linux.ibm.com, jaka@linux.ibm.com, tonylu@linux.alibaba.com,
- guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com
-References: <20240809083148.1989912-1-liujian56@huawei.com>
- <20240809083148.1989912-4-liujian56@huawei.com>
-Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <20240809083148.1989912-4-liujian56@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240809131538.944907-1-haris.iqbal@ionos.com>
+ <20240809131538.944907-14-haris.iqbal@ionos.com> <20240811084325.GD5925@unreal>
+In-Reply-To: <20240811084325.GD5925@unreal>
+From: Jinpu Wang <jinpu.wang@ionos.com>
+Date: Mon, 12 Aug 2024 06:10:38 +0200
+Message-ID: <CAMGffEk1iuHiDOF5CmPyCXb+_gJWea2hJT7sV05mf27+JftpyA@mail.gmail.com>
+Subject: Re: [PATCH for-next 13/13] RDMA/rtrs-clt: Remove an extra space
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Md Haris Iqbal <haris.iqbal@ionos.com>, linux-rdma@vger.kernel.org, bvanassche@acm.org, 
+	jgg@ziepe.ca, Alexei Pastuchov <alexei.pastuchov@ionos.com>, 
+	Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 8/9/24 4:31 PM, Liu Jian wrote:
-> BUG: kernel NULL pointer dereference, address: 0000000000000238
-> PGD 0 P4D 0
-> Oops: 0000 [#1] PREEMPT SMP PTI
-> CPU: 3 PID: 289 Comm: kworker/3:1 Kdump: loaded Tainted: G           OE
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 04/01/2014
-> Workqueue: smc_hs_wq smc_listen_work [smc]
-> RIP: 0010:dma_need_sync+0x5/0x60
-> ...
-> Call Trace:
->   <TASK>
->   ? dma_need_sync+0x5/0x60
->   ? smc_ib_is_sg_need_sync+0x61/0xf0 [smc]
->   smcr_buf_map_link+0x24a/0x380 [smc]
->   __smc_buf_create+0x483/0xb10 [smc]
->   smc_buf_create+0x21/0xe0 [smc]
->   smc_listen_work+0xf11/0x14f0 [smc]
->   ? smc_tcp_listen_work+0x364/0x520 [smc]
->   process_one_work+0x18d/0x3f0
->   worker_thread+0x304/0x440
->   kthread+0xe4/0x110
->   ret_from_fork+0x47/0x70
->   ret_from_fork_asm+0x1a/0x30
->   </TASK>
+On Sun, Aug 11, 2024 at 10:43=E2=80=AFAM Leon Romanovsky <leon@kernel.org> =
+wrote:
 >
-> If the software RoCE device is used, ibdev->dma_device is a null pointer.
-> As a result, the problem occurs. Null pointer detection is added to
-> prevent problems.
+> On Fri, Aug 09, 2024 at 03:15:38PM +0200, Md Haris Iqbal wrote:
+> > From: Jack Wang <jinpu.wang@ionos.com>
+> >
 >
-> Signed-off-by: Liu Jian <liujian56@huawei.com>
-> ---
->   net/smc/smc_ib.c | 2 ++
->   1 file changed, 2 insertions(+)
+> No empty commit message, please provide a proper description.
+This is really simple change, the subject should explain it clear, but
+ok, I will extend it also in the commit message.
 >
-> diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
-> index 382351ac9434..059822cc3fde 100644
-> --- a/net/smc/smc_ib.c
-> +++ b/net/smc/smc_ib.c
-> @@ -748,6 +748,8 @@ bool smc_ib_is_sg_need_sync(struct smc_link *lnk,
->   		    buf_slot->sgt[lnk->link_idx].nents, i) {
->   		if (!sg_dma_len(sg))
->   			break;
-> +		if (!lnk->smcibdev->ibdev->dma_device)
-> +			break;
->   		if (dma_need_sync(lnk->smcibdev->ibdev->dma_device,
->   				  sg_dma_address(sg))) {
->   			ret = true;
-
-Maybe you need add a fix tag ?
-
-
-
+> Thanks
+Thx & Regards
+>
+>
+> > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> > Signed-off-by: Alexei Pastuchov <alexei.pastuchov@ionos.com>
+> > Signed-off-by: Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
+> > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+> > ---
+> >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniban=
+d/ulp/rtrs/rtrs-clt.c
+> > index fb548d6a0aae..71387811b281 100644
+> > --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> > +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> > @@ -1208,7 +1208,7 @@ static int rtrs_clt_read_req(struct rtrs_clt_io_r=
+eq *req)
+> >               ret =3D rtrs_map_sg_fr(req, count);
+> >               if (ret < 0) {
+> >                       rtrs_err_rl(s,
+> > -                                  "Read request failed, failed to map =
+ fast reg. data, err: %d\n",
+> > +                                  "Read request failed, failed to map =
+fast reg. data, err: %d\n",
+> >                                    ret);
+> >                       ib_dma_unmap_sg(dev->ib_dev, req->sglist, req->sg=
+_cnt,
+> >                                       req->dir);
+> > --
+> > 2.25.1
+> >
 
