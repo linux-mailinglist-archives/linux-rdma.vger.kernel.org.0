@@ -1,50 +1,51 @@
-Return-Path: <linux-rdma+bounces-4333-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4334-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B6C694ED02
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 14:30:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56FB394ED94
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 15:02:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D235D282A87
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 12:30:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 024E51F21155
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 13:02:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9161C17ADEF;
-	Mon, 12 Aug 2024 12:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cBQJV8AK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BDF17BB0F;
+	Mon, 12 Aug 2024 13:02:22 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F3B17A5B5;
-	Mon, 12 Aug 2024 12:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C996A17A92F;
+	Mon, 12 Aug 2024 13:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723465828; cv=none; b=Vsp2Ar+9IBiVjAndNBgOVm76xJY9Qim4mCTnLd2S9+q12UJqRLxgpnV4+lFqejXskNCG4hTsTwG0aetfcaWCTpaYKrcQsun9vNweJYfNN5qN4LUgJ/GNMg7PotkYfqz5wQOrpIT1IbBsclH8SSd1+/OZh0YJEO5wij/kNiZip1k=
+	t=1723467742; cv=none; b=cL5iF4oS5Lt1LUAFaRL5MiXNrfN02ecOE/EpTZempXaxmcaBcH0dtE0QHxoXfLFfG/TE+CnA1cdtXRpthIjd8qw5D+m2n8qhtF0974Xfo1whkWfvFPSJ2LMte2fBWNQ5XdTc+VCA2tR4UfeSv0vDI3vm2x+HOr8FgtKC4tLLmOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723465828; c=relaxed/simple;
-	bh=daslIMI9OAMAvqRfkYqd0A4uF/CVa60AExTLNpeFK9U=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Ub7uX0geD8JwyP9Z/Tvu65YgOHkC1uGgwZAQBRxCz3FPsbHmKRctK+u8APlxTDKUWeIgyqMgILcY+TYSHBOkdkaY87jzUvgrRSj9tyLSRTu2+6Zi1uTx21BS1IENrVwmsp7hVDZkbeeZUjYadYsTAgXoUBsiKpiJqbwNyq/HON0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cBQJV8AK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3D7CC4AF0E;
-	Mon, 12 Aug 2024 12:30:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723465827;
-	bh=daslIMI9OAMAvqRfkYqd0A4uF/CVa60AExTLNpeFK9U=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=cBQJV8AK+rCicBDSwVUri/rjC57zlg2FU2Hx8gttFSiZbrsEfD6tB+v46ULi98a3B
-	 Auq5FZWFhsp3F6szggHozl+fNZoELFMCQshx11bfFB/4Z6UW6zVolneZIUCqASx/ko
-	 BO6NJAwQH+KYkIYx5HaVAiSXuCaEQHJ3zCnaO1Fwl0MLOehK1YsxytUJLy2VEc1Cvd
-	 /oQxRpGpUlYeMbR4oIZQEgF6JHaqms6XbkwXP2eTrSbJmgp/Xux5Jnz2+xYtt1maJq
-	 D2FinY154EiDJjXsVkPjO4oQKB2x+208zpGPye8lOCKgOYxEUmi+Do6RXxe13cT0L5
-	 jnEUbQ+z6E06w==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EC8CC382332D;
-	Mon, 12 Aug 2024 12:30:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1723467742; c=relaxed/simple;
+	bh=ovOTOcrFs5Fq9toEWR2MaGWSwDmtkvG8imSKp9ayon0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=sFwsJviIEwtW2gH64calU9Rq+upB8ACrp9yvrW/1VS0J8odLZ//TOCMuR54z396UiWQNq4CItEmAKXHqUJ3nQEGn2lXbo3fQUvhHFd4cv+d3N5k+FSUcYCZm3Mh+i6bodLciA5KfmQSl4lLe0xkSqM66wY2QxPo3/D/bx4skXqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WjF0l256Dz1j6Yt;
+	Mon, 12 Aug 2024 20:57:27 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id A2A511A016C;
+	Mon, 12 Aug 2024 21:02:16 +0800 (CST)
+Received: from localhost.localdomain (10.90.30.45) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 12 Aug 2024 21:02:16 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH v2 for-next 0/3] RDMA: Provide an API for drivers to disassociate mmap pages
+Date: Mon, 12 Aug 2024 20:56:37 +0800
+Message-ID: <20240812125640.1003948-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -52,48 +53,34 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: mana: Fix RX buf alloc_size alignment and atomic op
- panic
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172346582650.1009420.18122025004130803028.git-patchwork-notify@kernel.org>
-Date: Mon, 12 Aug 2024 12:30:26 +0000
-References: <1723237284-7262-1-git-send-email-haiyangz@microsoft.com>
-In-Reply-To: <1723237284-7262-1-git-send-email-haiyangz@microsoft.com>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, decui@microsoft.com,
- stephen@networkplumber.org, kys@microsoft.com, paulros@microsoft.com,
- olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
- longli@microsoft.com, ssengar@linux.microsoft.com,
- linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- bpf@vger.kernel.org, ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
- shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-Hello:
+Provide an API rdma_user_mmap_disassociate() for drivers to disassociate
+mmap pages. Use this API in hns to prevent userspace from ringing doorbell
+when HW is reset.
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+v1 -> v2:
+* Keep uverbs_user_mmap_disassociate() in uverbs_main.c. The new api
+  rdma_user_mmap_disassociate() is also moved to this file.
+* Add "#if IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)" to hns's
+  rdma_user_mmap_disassociate() call.
 
-On Fri,  9 Aug 2024 14:01:24 -0700 you wrote:
-> The MANA driver's RX buffer alloc_size is passed into napi_build_skb() to
-> create SKB. skb_shinfo(skb) is located at the end of skb, and its alignment
-> is affected by the alloc_size passed into napi_build_skb(). The size needs
-> to be aligned properly for better performance and atomic operations.
-> Otherwise, on ARM64 CPU, for certain MTU settings like 4000, atomic
-> operations may panic on the skb_shinfo(skb)->dataref due to alignment fault.
-> 
-> [...]
+Chengchang Tang (3):
+  RDMA/core: Provide rdma_user_mmap_disassociate() to disassociate mmap
+    pages
+  RDMA/hns: Link all uctx to uctx_list on a device
+  RDMA/hns: Disassociate mmap pages for all uctx when HW is being reset
 
-Here is the summary with links:
-  - [net] net: mana: Fix RX buf alloc_size alignment and atomic op panic
-    https://git.kernel.org/netdev/net/c/32316f676b4e
+ drivers/infiniband/core/uverbs_main.c       | 21 +++++++++++++++++++++
+ drivers/infiniband/hw/hns/hns_roce_device.h |  4 ++++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 17 +++++++++++++++++
+ drivers/infiniband/hw/hns/hns_roce_main.c   | 13 +++++++++++++
+ include/rdma/ib_verbs.h                     |  1 +
+ 5 files changed, 56 insertions(+)
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+--
+2.33.0
 
 
