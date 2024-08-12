@@ -1,39 +1,39 @@
-Return-Path: <linux-rdma+bounces-4335-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4337-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90CBA94ED95
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 15:02:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C848594ED9A
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 15:03:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4842C1F2279C
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 13:02:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62326B23202
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 13:03:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68A617BB34;
-	Mon, 12 Aug 2024 13:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256A517D373;
+	Mon, 12 Aug 2024 13:02:24 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B65D6170A1C;
-	Mon, 12 Aug 2024 13:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A7A4D8D1;
+	Mon, 12 Aug 2024 13:02:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723467742; cv=none; b=eRp1uCPMGRXd851CCU27KLxiy9htLcjGXcigIOHRJjbzs5AJl16VpNoGgc5PGYW9eL0fZzMB1xmFxfmAMa8sOYrDNC4vuja1bBPf424nqGu6u28C9bhtaS0UsJvsmQOetCfUnEITnqtQdX54a8a22zF6/cP0ZX/gG4GRek4JTs0=
+	t=1723467743; cv=none; b=MurS0qfZb4c0g6U2v4Y9G/kriFNWmAsdUNpXOhuo/nCCUlmgZlmFBiyLHKY1z8wbCfWLF3UatbQdJa6mPhHnhis1uVaSV3KaanRgXdYlazRjJ1W/zvI3u4/7oMtWIb19ikgiZjhmgCKfQgSnbSVL4cJj0d8f8Jg6nBWHL9fQxhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723467742; c=relaxed/simple;
-	bh=fi6l+3SXmEBtkczNoivvcmUhubjjU4fln3xRAoQGTIo=;
+	s=arc-20240116; t=1723467743; c=relaxed/simple;
+	bh=JQmFk8P1wPUArmo8G9Bh19XTV93zp5zIYy4AuLYz+4M=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gz8bKF/SfYAarcr4MaGhgeX0IzECkBmRl0QLqcs3Bmkk9yBXl2spV16CgOeC++n8pjh5FgNS21jd6w2l9aMVlysQNZgvLPNNwVl04rO4T6pNIf3vVIWFBJ7lBKLLrJzDJv2dzDmA6sAwbMZ9VDMQo4lx8QtgB+lk4vQdGABdjRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
+	 MIME-Version:Content-Type; b=EMJoC6oswV1UVUxwswS2ebOcBEPE5KTevHxWH9GT3SoyhgP4A6+Pvh12DpFFAzcFlozLF11X/HG8A2rMxmMp67QcWzSfGOjyCnHVTHDD+af6EFqxE9zv3VHMWZQbfIVyEs8mzk4Gs6Bd+nBvddL5NrQL0WANHT/+WxZHH8BDY8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WjF5n3TvgzyPDd;
-	Mon, 12 Aug 2024 21:01:49 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WjF150JgQzQpjM;
+	Mon, 12 Aug 2024 20:57:45 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 02440180101;
+	by mail.maildlp.com (Postfix) with ESMTPS id 54E701402E2;
 	Mon, 12 Aug 2024 21:02:17 +0800 (CST)
 Received: from localhost.localdomain (10.90.30.45) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
@@ -43,9 +43,9 @@ From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH v2 for-next 1/3] RDMA/core: Provide rdma_user_mmap_disassociate() to disassociate mmap pages
-Date: Mon, 12 Aug 2024 20:56:38 +0800
-Message-ID: <20240812125640.1003948-2-huangjunxian6@hisilicon.com>
+Subject: [PATCH v2 for-next 2/3] RDMA/hns: Link all uctx to uctx_list on a device
+Date: Mon, 12 Aug 2024 20:56:39 +0800
+Message-ID: <20240812125640.1003948-3-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240812125640.1003948-1-huangjunxian6@hisilicon.com>
 References: <20240812125640.1003948-1-huangjunxian6@hisilicon.com>
@@ -62,60 +62,89 @@ X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
 
 From: Chengchang Tang <tangchengchang@huawei.com>
 
-Provide a new api rdma_user_mmap_disassociate() for drivers to
-disassociate mmap pages for ucontext.
+Link all uctx to uctx_list on a device.
 
 Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/core/uverbs_main.c | 21 +++++++++++++++++++++
- include/rdma/ib_verbs.h               |  1 +
- 2 files changed, 22 insertions(+)
+ drivers/infiniband/hw/hns/hns_roce_device.h |  4 ++++
+ drivers/infiniband/hw/hns/hns_roce_main.c   | 13 +++++++++++++
+ 2 files changed, 17 insertions(+)
 
-diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index bc099287de9a..00dab5bfb78c 100644
---- a/drivers/infiniband/core/uverbs_main.c
-+++ b/drivers/infiniband/core/uverbs_main.c
-@@ -880,6 +880,27 @@ void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile)
- 	}
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 0b1e21cb6d2d..93768660569d 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -217,6 +217,7 @@ struct hns_roce_ucontext {
+ 	struct mutex		page_mutex;
+ 	struct hns_user_mmap_entry *db_mmap_entry;
+ 	u32			config;
++	struct list_head list; /* link all uctx to uctx_list on hr_dev */
+ };
+ 
+ struct hns_roce_pd {
+@@ -1030,6 +1031,9 @@ struct hns_roce_dev {
+ 	u64 dwqe_page;
+ 	struct hns_roce_dev_debugfs dbgfs;
+ 	atomic64_t *dfx_cnt;
++
++	struct list_head	uctx_list; /* list of all uctx on this dev */
++	struct mutex		uctx_list_mutex; /* protect @uctx_list */
+ };
+ 
+ static inline struct hns_roce_dev *to_hr_dev(struct ib_device *ib_dev)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index 4cb0af733587..e19871ebc315 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -426,6 +426,10 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
+ 	if (ret)
+ 		goto error_fail_copy_to_udata;
+ 
++	mutex_lock(&hr_dev->uctx_list_mutex);
++	list_add(&context->list, &hr_dev->uctx_list);
++	mutex_unlock(&hr_dev->uctx_list_mutex);
++
+ 	return 0;
+ 
+ error_fail_copy_to_udata:
+@@ -448,6 +452,10 @@ static void hns_roce_dealloc_ucontext(struct ib_ucontext *ibcontext)
+ 	struct hns_roce_ucontext *context = to_hr_ucontext(ibcontext);
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibcontext->device);
+ 
++	mutex_lock(&hr_dev->uctx_list_mutex);
++	list_del(&context->list);
++	mutex_unlock(&hr_dev->uctx_list_mutex);
++
+ 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_CQ_RECORD_DB ||
+ 	    hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_RECORD_DB)
+ 		mutex_destroy(&context->page_mutex);
+@@ -943,6 +951,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
+ static void hns_roce_teardown_hca(struct hns_roce_dev *hr_dev)
+ {
+ 	hns_roce_cleanup_bitmap(hr_dev);
++	mutex_destroy(&hr_dev->uctx_list_mutex);
+ 
+ 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_CQ_RECORD_DB ||
+ 	    hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_RECORD_DB)
+@@ -961,6 +970,9 @@ static int hns_roce_setup_hca(struct hns_roce_dev *hr_dev)
+ 
+ 	spin_lock_init(&hr_dev->sm_lock);
+ 
++	INIT_LIST_HEAD(&hr_dev->uctx_list);
++	mutex_init(&hr_dev->uctx_list_mutex);
++
+ 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_CQ_RECORD_DB ||
+ 	    hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_RECORD_DB) {
+ 		INIT_LIST_HEAD(&hr_dev->pgdir_list);
+@@ -1000,6 +1012,7 @@ static int hns_roce_setup_hca(struct hns_roce_dev *hr_dev)
+ 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_CQ_RECORD_DB ||
+ 	    hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_RECORD_DB)
+ 		mutex_destroy(&hr_dev->pgdir_mutex);
++	mutex_destroy(&hr_dev->uctx_list_mutex);
+ 
+ 	return ret;
  }
- 
-+/**
-+ * rdma_user_mmap_disassociate() - disassociate the mmap from the ucontext.
-+ *
-+ * @ucontext: associated user context.
-+ *
-+ * This function should be called by drivers that need to disable mmap for
-+ * some ucontexts.
-+ */
-+void rdma_user_mmap_disassociate(struct ib_ucontext *ucontext)
-+{
-+	struct ib_uverbs_file *ufile = ucontext->ufile;
-+
-+	/* Racing with uverbs_destroy_ufile_hw */
-+	if (!down_read_trylock(&ufile->hw_destroy_rwsem))
-+		return;
-+
-+	uverbs_user_mmap_disassociate(ufile);
-+	up_read(&ufile->hw_destroy_rwsem);
-+}
-+EXPORT_SYMBOL(rdma_user_mmap_disassociate);
-+
- /*
-  * ib_uverbs_open() does not need the BKL:
-  *
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index a1dcf812d787..d6e34ca5c727 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2947,6 +2947,7 @@ int rdma_user_mmap_entry_insert_range(struct ib_ucontext *ucontext,
- 				      struct rdma_user_mmap_entry *entry,
- 				      size_t length, u32 min_pgoff,
- 				      u32 max_pgoff);
-+void rdma_user_mmap_disassociate(struct ib_ucontext *ucontext);
- 
- static inline int
- rdma_user_mmap_entry_insert_exact(struct ib_ucontext *ucontext,
 -- 
 2.33.0
 
