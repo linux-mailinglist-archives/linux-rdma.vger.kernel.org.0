@@ -1,156 +1,99 @@
-Return-Path: <linux-rdma+bounces-4332-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4333-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5BD594EC94
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 14:15:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B6C694ED02
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 14:30:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6632B28206B
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 12:15:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D235D282A87
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 12:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20AF4178CE2;
-	Mon, 12 Aug 2024 12:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9161C17ADEF;
+	Mon, 12 Aug 2024 12:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M5lVR1B6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cBQJV8AK"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D75C9535DC
-	for <linux-rdma@vger.kernel.org>; Mon, 12 Aug 2024 12:15:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F3B17A5B5;
+	Mon, 12 Aug 2024 12:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723464924; cv=none; b=oos5sV+LXlJUE+62Srb+9JnMKCmY1llf3w89GEM+GD2paD1qm0Fg6oEQv9NRS1HpyBzKVO1bnJNUx3w1fsilL915RzvVXCdlFNfFunTULZyC6285Q4cDTp0ZCjIKZexw9038kgmczp+HyyHHq1D8jQl39+EOK3OohqLAkjL+sVo=
+	t=1723465828; cv=none; b=Vsp2Ar+9IBiVjAndNBgOVm76xJY9Qim4mCTnLd2S9+q12UJqRLxgpnV4+lFqejXskNCG4hTsTwG0aetfcaWCTpaYKrcQsun9vNweJYfNN5qN4LUgJ/GNMg7PotkYfqz5wQOrpIT1IbBsclH8SSd1+/OZh0YJEO5wij/kNiZip1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723464924; c=relaxed/simple;
-	bh=Fhm9Jib5yWsNm9DwpInRjt2y3Oa1XVlciq0T6UweSbQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aEIADHE0p8Fhn4QUL7+Zw7P1ya0TqQm4preyDj/bgHUXM09tag5QExtrKq8kOGxlFi0uSZOFdoX9NQVL8sC6NgCBa1GL6WwOhPmhujf+E7dYUSBBjXoxO4D4zrJ1XOMGNRnA6o49FFCLhOl9EvjMZ9FIB0s3qFvcR8yUHT/MMw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M5lVR1B6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DED2C32782;
-	Mon, 12 Aug 2024 12:15:24 +0000 (UTC)
+	s=arc-20240116; t=1723465828; c=relaxed/simple;
+	bh=daslIMI9OAMAvqRfkYqd0A4uF/CVa60AExTLNpeFK9U=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Ub7uX0geD8JwyP9Z/Tvu65YgOHkC1uGgwZAQBRxCz3FPsbHmKRctK+u8APlxTDKUWeIgyqMgILcY+TYSHBOkdkaY87jzUvgrRSj9tyLSRTu2+6Zi1uTx21BS1IENrVwmsp7hVDZkbeeZUjYadYsTAgXoUBsiKpiJqbwNyq/HON0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cBQJV8AK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3D7CC4AF0E;
+	Mon, 12 Aug 2024 12:30:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723464924;
-	bh=Fhm9Jib5yWsNm9DwpInRjt2y3Oa1XVlciq0T6UweSbQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M5lVR1B6dJHGPhYBfOPPsIZjdQXiqVgraLXFW95QwSoc8QVY0letV5YZNtmiUnrIl
-	 sdgGGpnaeFEDWnHIPgeWHTZoqGmKc81c3NWL1Qiq9H4xjIMR+Rz1T3I/O3KUPb038z
-	 ahbTFLU3m3pFyOR1GgA4VdsI620liu+p6uKmxaU2nkm/s81tkEFjZOXxD3SI9faVFc
-	 ownEp4zYTWiV1r50sKfDYix22OSinjZDWq1X/oQX3kQi5qNDuIRj7vYiAHQrqEqX/5
-	 Q/YRIhJtQxy4oOuKDCPibTpJDoOw+gYfKF05HDc0s8GyDIkBtLzPkHViaMTxc2hIZl
-	 gGov3ZP+UhxvQ==
-Date: Mon, 12 Aug 2024 15:15:20 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Haris Iqbal <haris.iqbal@ionos.com>
-Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org, jgg@ziepe.ca,
-	jinpu.wang@ionos.com,
-	Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
-Subject: Re: [PATCH for-next 01/13] RDMA/rtrs-srv: Make rtrs_srv_open fail if
- its a second call
-Message-ID: <20240812121520.GF12060@unreal>
-References: <20240809131538.944907-1-haris.iqbal@ionos.com>
- <20240809131538.944907-2-haris.iqbal@ionos.com>
- <20240811083830.GB5925@unreal>
- <CAJpMwyjksJakyZVvf_jWwrnvbpV_T=jjAKgXG5k0ZCGyoZx_Rg@mail.gmail.com>
- <20240812103433.GC12060@unreal>
- <CAJpMwyjgNnCb4D8D_hHm5sQAzwLurPig=MzLdNtScVU2CzvMQA@mail.gmail.com>
- <20240812105942.GD12060@unreal>
- <CAJpMwyh7ytEawa=Yzg8CM=QZROvoBY70unhFvJdbAW9BU+xoUg@mail.gmail.com>
+	s=k20201202; t=1723465827;
+	bh=daslIMI9OAMAvqRfkYqd0A4uF/CVa60AExTLNpeFK9U=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=cBQJV8AK+rCicBDSwVUri/rjC57zlg2FU2Hx8gttFSiZbrsEfD6tB+v46ULi98a3B
+	 Auq5FZWFhsp3F6szggHozl+fNZoELFMCQshx11bfFB/4Z6UW6zVolneZIUCqASx/ko
+	 BO6NJAwQH+KYkIYx5HaVAiSXuCaEQHJ3zCnaO1Fwl0MLOehK1YsxytUJLy2VEc1Cvd
+	 /oQxRpGpUlYeMbR4oIZQEgF6JHaqms6XbkwXP2eTrSbJmgp/Xux5Jnz2+xYtt1maJq
+	 D2FinY154EiDJjXsVkPjO4oQKB2x+208zpGPye8lOCKgOYxEUmi+Do6RXxe13cT0L5
+	 jnEUbQ+z6E06w==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EC8CC382332D;
+	Mon, 12 Aug 2024 12:30:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJpMwyh7ytEawa=Yzg8CM=QZROvoBY70unhFvJdbAW9BU+xoUg@mail.gmail.com>
+Subject: Re: [PATCH net] net: mana: Fix RX buf alloc_size alignment and atomic op
+ panic
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172346582650.1009420.18122025004130803028.git-patchwork-notify@kernel.org>
+Date: Mon, 12 Aug 2024 12:30:26 +0000
+References: <1723237284-7262-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1723237284-7262-1-git-send-email-haiyangz@microsoft.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, decui@microsoft.com,
+ stephen@networkplumber.org, kys@microsoft.com, paulros@microsoft.com,
+ olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+ longli@microsoft.com, ssengar@linux.microsoft.com,
+ linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
+ shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
 
-On Mon, Aug 12, 2024 at 01:17:11PM +0200, Haris Iqbal wrote:
-> On Mon, Aug 12, 2024 at 12:59 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Mon, Aug 12, 2024 at 12:39:06PM +0200, Haris Iqbal wrote:
-> > > On Mon, Aug 12, 2024 at 12:34 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > >
-> > > > On Mon, Aug 12, 2024 at 12:16:19PM +0200, Haris Iqbal wrote:
-> > > > > On Sun, Aug 11, 2024 at 10:38 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > > > > >
-> > > > > > On Fri, Aug 09, 2024 at 03:15:26PM +0200, Md Haris Iqbal wrote:
-> > > > > > > Do not allow opening RTRS server if it is already in use and print
-> > > > > > > proper error message.
-> > > > > >
-> > > > > > 1. How is it even possible? I see only one call to rtrs_srv_open() and
-> > > > > > it is happening when the driver is loaded.
-> > > > >
-> > > > > rtrs_srv_open() is NOT called during RTRS driver load. It is called
-> > > > > during RNBD driver load, which is a client which uses RTRS.
-> > > > > RTRS server currently works with only a single client. Hence if, while
-> > > > > in use by RNBD, another driver wants to use RTRS and calls
-> > > > > rtrs_srv_open(), it should fail.
-> > > >
-> > > > ➜  kernel git:(rdma-next) ✗ git grep rtrs_srv_open
-> > > > drivers/block/rnbd/rnbd-srv.c:  rtrs_ctx = rtrs_srv_open(&rtrs_ops, port_nr); <---- SINGLE CALL
-> > > > drivers/block/rnbd/rnbd-srv.c:          pr_err("rtrs_srv_open(), err: %pe\n", rtrs_ctx);
-> > > > drivers/infiniband/ulp/rtrs/rtrs-srv.c: * rtrs_srv_open() - open RTRS server context
-> > > > drivers/infiniband/ulp/rtrs/rtrs-srv.c:struct rtrs_srv_ctx *rtrs_srv_open(struct rtrs_srv_ops *ops, u16 port)
-> > > > drivers/infiniband/ulp/rtrs/rtrs-srv.c:EXPORT_SYMBOL(rtrs_srv_open);
-> > > > drivers/infiniband/ulp/rtrs/rtrs.h:struct rtrs_srv_ctx *rtrs_srv_open(struct rtrs_srv_ops *ops, u16 port);
-> > > >
-> > > >   807 static int __init rnbd_srv_init_module(void)
-> > > >   808 {
-> > > >   809         int err = 0;
-> > > >   810
-> > > >   811         BUILD_BUG_ON(sizeof(struct rnbd_msg_hdr) != 4);
-> > > >   812         BUILD_BUG_ON(sizeof(struct rnbd_msg_sess_info) != 36);
-> > > >   813         BUILD_BUG_ON(sizeof(struct rnbd_msg_sess_info_rsp) != 36);
-> > > >   814         BUILD_BUG_ON(sizeof(struct rnbd_msg_open) != 264);
-> > > >   815         BUILD_BUG_ON(sizeof(struct rnbd_msg_close) != 8);
-> > > >   816         BUILD_BUG_ON(sizeof(struct rnbd_msg_open_rsp) != 56);
-> > > >   817         rtrs_ops = (struct rtrs_srv_ops) {
-> > > >   818                 .rdma_ev = rnbd_srv_rdma_ev,
-> > > >   819                 .link_ev = rnbd_srv_link_ev,
-> > > >   820         };
-> > > >   821         rtrs_ctx = rtrs_srv_open(&rtrs_ops, port_nr);
-> > > >   822         if (IS_ERR(rtrs_ctx)) {
-> > > >   823                 pr_err("rtrs_srv_open(), err: %pe\n", rtrs_ctx);   <---- ALREADY PRINTED ERROR
-> > > >   824                 return PTR_ERR(rtrs_ctx);
-> > > >   825         }
-> > > >
-> > > >   ...
-> > > >
-> > > >   843 module_init(rnbd_srv_init_module); <---- SINGLE CALL
-> > > >
-> > > > Upstream code has only on RNBD and one RTRS.
-> > >
-> > > Yes. But they are different drivers. RTRS as a stand-alone ULP does
-> > > not know about RNBD or for that matter any other client driver, which
-> > > may use it, either out of tree or in the future. If RTRS can serve
-> > > only a single client, then it should should have protection for
-> > > multiple calls to *_open().
-> >
-> > For now, there is only one upstream client and server.
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Fri,  9 Aug 2024 14:01:24 -0700 you wrote:
+> The MANA driver's RX buffer alloc_size is passed into napi_build_skb() to
+> create SKB. skb_shinfo(skb) is located at the end of skb, and its alignment
+> is affected by the alloc_size passed into napi_build_skb(). The size needs
+> to be aligned properly for better performance and atomic operations.
+> Otherwise, on ARM64 CPU, for certain MTU settings like 4000, atomic
+> operations may panic on the skb_shinfo(skb)->dataref due to alignment fault.
 > 
-> In my understanding, its the general rule of abstraction that this
-> type of limitation is handled where it exists.
+> [...]
 
-We have such protection and it is called "monolithic kernel".
+Here is the summary with links:
+  - [net] net: mana: Fix RX buf alloc_size alignment and atomic op panic
+    https://git.kernel.org/netdev/net/c/32316f676b4e
 
-> 
-> >
-> > I want to remind you that during initial submission of RTR code, the
-> > feedback was that this ULP shouldn't exist in first place and right
-> > thing to do it is to use NVMe over fabrics.
-> >
-> > So chances that we will have real out-of-tree client are very low.
-> 
-> One reason for us to write this patch is that we are working on
-> another client which uses RTRS. We could have kept this change
-> out-of-tree, but frankly, it felt right to add this protection.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-So once you will have this client upstream, we can discuss this change.
 
-Thanks
 
