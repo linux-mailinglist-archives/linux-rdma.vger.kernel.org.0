@@ -1,166 +1,177 @@
-Return-Path: <linux-rdma+bounces-4348-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4349-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AA9A950285
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2024 12:34:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C654095030D
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2024 12:57:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D2FE1C21989
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2024 10:34:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 471F21F23908
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2024 10:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C701922C0;
-	Tue, 13 Aug 2024 10:34:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E581919D089;
+	Tue, 13 Aug 2024 10:54:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MqBOgdaR"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="ctbSUMBY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20ED718CBEB;
-	Tue, 13 Aug 2024 10:34:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C8D419D899
+	for <linux-rdma@vger.kernel.org>; Tue, 13 Aug 2024 10:54:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723545261; cv=none; b=mKmqXl4phqgxsSUgEY6POwBFq6rU6bsWra9aV9vQc2BARqY/AFX0WRblMHGcwGGsLC+mwwOsxlgab7/pAhbOkXtEZ6GZ86nlWM7ElJ2pZmfyh8DZOef27Xbw3PVSFHIqVRaAeU64h8r9d0U+epRCNYuc2RovYxFBklMwFhus84Y=
+	t=1723546484; cv=none; b=F+MFawr8memNOX1d0GBORxIzTjczrkS87g4yJ6q7+/M6YSfdvhTfJbp61m98B/Hlr5dWL40gjaxx/WA6Btu/13KtVOUz+iIEgP8MxbW0vXth8rTsT6G9vDRquYevVuRRg9IHKKwwzo3SpmCioRl9ExTxh7tETOethUOaJgEssIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723545261; c=relaxed/simple;
-	bh=fzXoe1isBjct/QtD2OM5E7SMpJeuXFjqSDl3SsBrgaE=;
+	s=arc-20240116; t=1723546484; c=relaxed/simple;
+	bh=hG+eHkq3xjY18k7VtiCj4MOwrb3pf3CcrKn/unPhg9w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BQXSoniujqZNxvlTqX3rR4uYWwd9rlyPbUreLCo4aWImk8vxdefW4+xanyBurpzkPg7f5H+a/alAv6t3ygensMsVUK/75l60t7KK89mD9NJjkTtRpauEM+vrNIINOvirtJdvwH8HimPHd0SEU9Ef/e1NYsEJBdog5TmsrdKgIJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MqBOgdaR; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2f16d2f2b68so74344241fa.3;
-        Tue, 13 Aug 2024 03:34:19 -0700 (PDT)
+	 To:Cc:Content-Type; b=V+hyyAY3/NVWEi5vxkzEQYaUnz60McEM4JgV45h/VTb/rpNygZSnKGhvc0FOnuFB+j6il/qRj3s5fEb8WcGJm+dhWb/EHINPEWJ06yRwFfI73pldDxcaPNJ6J9swudz6EqvpPK+U6SaguPHdUW8FtkW4nftHxnbnI9QJIa5G1lE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=ctbSUMBY; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a7d638a1f27so195900966b.2
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Aug 2024 03:54:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723545258; x=1724150058; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1723546480; x=1724151280; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fzXoe1isBjct/QtD2OM5E7SMpJeuXFjqSDl3SsBrgaE=;
-        b=MqBOgdaR+8bt20K1m4Hake7eVGSstG0FonsxGcJEshaceIvNWjq3z03k4IR31oypj1
-         fFN9Hba2/3fvVCoc8gj1Wf6AJwfP6ZZPh0OzGusj02DZN2lxP+8ZqGWsGcdzpsa1GZYV
-         SWe2f3dJkjrVJs3pkR9yRQfO69XgXZU1CsrpKq5uuvXOxIOTGIf3H6lklEimsWu6zkog
-         z4bXJCTOVV9JrshvpC3qH1rebox0fW5aIP5Lhv33+HKuCWo4GrEwaL8L/s/Rd6E91vs5
-         FMJLF+CMVA4CJ/Fr4FwiTqzKRSlYnss/EpJIFK9bPHs3w0/H6U2mtk371GMx2GGOu+FJ
-         N37Q==
+        bh=YUQFtcBnO/CTwrK6iVG51LoX2OVfGISsjbz+lSr1MyY=;
+        b=ctbSUMBYhzykKDR8R9gzBDhs3iv5IwYTtAype0phmeDCmucErhm01vAt0dUaK/Mfyy
+         rDfDy8/y0zXBlTqbSdfs43zPCT1mE/jeV76Q8UE3cxOCdSZEcKWJheEVAQbAFzuObfFV
+         za5rsg3EUyoBGYXlZ+mol3fOLgMKNSisGuDw/87WiJdHHj8NiRGRcjy5jeDOvNmnCNdw
+         bJs6iqB9xsygod/YFBBk9l4C6AxSQ8gi+AeLFvsENBUWPn2ywev9VPX4zeg2WNu5UlPe
+         YEVJJdqcdGmWaCTKXR4ClbL6cJ9QpcqM/awWDds8OP8GAnspeMQZIvVuDZ4ydTor+NeP
+         rbwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723545258; x=1724150058;
+        d=1e100.net; s=20230601; t=1723546480; x=1724151280;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fzXoe1isBjct/QtD2OM5E7SMpJeuXFjqSDl3SsBrgaE=;
-        b=OJDbtiurdojINUr2Gr4knN/RWdaZz5Af0uOFeV9qUmfxRT2VnjW+o+JXfnVW6iRohW
-         H8CpjvfO/9sA2DeuKVuhSUDu+fyJOdtQixA9vgs1CuqJp8eUvU9uHHnJVRsLxSII/4V6
-         N8Vm9CKr9UQpw6LUxyDpJEw26sSiaJguxhie2La1L9nlExvE29/98AuiOyGGT4Yj6PJ9
-         43hdHOMx0GYUf4Bk1sphkjtQsLs9U5LYiTAbqXFLxiyj8FJsHNC+3ykcpsgmE9rF9/bS
-         pxgkA71dMUMENC84et+qRxIEktPzIDHimwzWa4mqOpEazfKVl+xcq07CKiZBGrNhZqkY
-         oRtw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5Xwj57AIXy8ubMC1Yqi6JXDiQhgcq3JYKOhhSmqcgFSIGfcQnOKyhGZw1OaYRdT3fSXA3R5Qy9IJQ1Q==@vger.kernel.org, AJvYcCUtE0zcueduJGJrBlIjUAgIOBlrZL5w637lQlpTBZotReYTz8qAaUmDFasVQVy/Uow28zra+wTPHko=@vger.kernel.org, AJvYcCWbbB9Hlj2n3272RxpewsoxNB1fWCQOK9i4k2ssZdnu5M3Q5QSnFMwLJYaniv0fYGzRFacUrJcL@vger.kernel.org
-X-Gm-Message-State: AOJu0YyB6ITibDAIWyHG1Wvtc59Hui5/S9SF9TzuAToOt9f4EF8aUqk4
-	KnCamk2fOjjNQysqgvzgo4857P5s0zRV5SMRV33JBjbf/OHn+kY8eED22PhcenUU5bb7o4tOlio
-	oErSIQG2z2OAJ5kPnCvpuvp1ORkQ=
-X-Google-Smtp-Source: AGHT+IFQf6uBkibY15otBoNAQq1YHezfZ8+u3cXNIwNpeGJbOjExMfCzxCYaXKDYewH7buD8RCrm5VcdY8XNGaXhT2I=
-X-Received: by 2002:a05:651c:1991:b0:2f1:922f:8751 with SMTP id
- 38308e7fff4ca-2f2b70d3584mr30397801fa.0.1723545257786; Tue, 13 Aug 2024
- 03:34:17 -0700 (PDT)
+        bh=YUQFtcBnO/CTwrK6iVG51LoX2OVfGISsjbz+lSr1MyY=;
+        b=WIsk3xu0ZdnjUUL+mFlhbqc0MyxOdMBPnRRKJ+OiocxFgHEr7MTHhEtLuwHzU1MzDy
+         /qSZMhebrGsencS2nvuSufcj7Yv466ucFl0gDp0DANSxy4PMuAIz/G5vUgp+Xi2CDvpc
+         au6qUGFJMV7oH4RoGT/0TopgHyQ1/bx1IXpSchKRQBXJ3hfdn0lYGWcpGXd6nt0MrHsj
+         EbnMPrZaKdYDi0XPRrZw7noZbsJBBxQOa2020TOB6DjlJpH7aw72EqK9VVJWHPKoNGpA
+         dbocx5go61Pns8f2q96NdXNJADOLw2clbvRGZe81eTowCDQhH8Vglm8XBxBJNGjP46om
+         Hm2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUv8kSeZJ28K2E9F9GNgUsUFtXhkuJ9H+yz0agoqPwf1eolxG5678Pj1jYNoYWNiqJ6keb6oVEMD/cWkxWjHuNTndLzIR6II/b7LQ==
+X-Gm-Message-State: AOJu0YxiTlpTbN5vDLlh9zBHtWCqT8DQ37yEGnV+jnLCsCvsr3Nv6iiv
+	h4t+FI1eIa9vRPRM5TgJ2t5HC/dB3nwkRFB/jFQEY4JLJuMlmpXJj4rt99pjymcAI01ER0sOmuf
+	VpmRKLt3FRZ/IIGSKxLRdYuFhQ6lYYIVA7uU/6zXfd/+D3St2XXU=
+X-Google-Smtp-Source: AGHT+IGjc5r31UySokkCXWgoYQfBHemWPqz97Km34tDDWf0BjEasXAJmbh6EnbeOmUFCZm8Y1llX+cu66ut32g4Zo40=
+X-Received: by 2002:a05:6402:524a:b0:5a0:e303:8f0f with SMTP id
+ 4fb4d7f45d1cf-5bd44c263fcmr2833255a12.10.1723546480288; Tue, 13 Aug 2024
+ 03:54:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAPybu_1SiMmegv=4dys+1tzV6=PumKxfB5p12ST4zasCjwzS9g@mail.gmail.com>
- <20240725200142.GF14252@pendragon.ideasonboard.com> <CAPybu_1hZfAqp2uFttgYgRxm_tYzJJr-U3aoD1WKCWQsHThSLw@mail.gmail.com>
- <20240726105936.GC28621@pendragon.ideasonboard.com> <CAPybu_1y7K940ndLZmy+QdfkJ_D9=F9nTPpp=-j9HYpg4AuqqA@mail.gmail.com>
- <20240728171800.GJ30973@pendragon.ideasonboard.com> <CAPybu_3M9GYNrDiqH1pXEvgzz4Wz_a672MCkNGoiLy9+e67WQw@mail.gmail.com>
- <Zqol_N8qkMI--n-S@valkosipuli.retiisi.eu> <CAKMK7uGx=VjHCo90htuTE6Oi0b8rt_0NrPsfbZwFKA304m7BdA@mail.gmail.com>
- <CA+Ln22E1YXGykjKqVO+tT8d_3-GYSEf-zY0TEHJq3w7HQEhFhA@mail.gmail.com> <20240813102638.GB24634@pendragon.ideasonboard.com>
-In-Reply-To: <20240813102638.GB24634@pendragon.ideasonboard.com>
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Date: Tue, 13 Aug 2024 19:33:59 +0900
-Message-ID: <CA+Ln22EzL7M+BLXS6dFi0n80XXkQu1CuoUad0EtjZ2ZEnNX=Kg@mail.gmail.com>
-Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>, Sakari Ailus <sakari.ailus@iki.fi>, 
-	Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>, Dan Williams <dan.j.williams@intel.com>, 
-	James Bottomley <James.Bottomley@hansenpartnership.com>, ksummit@lists.linux.dev, 
-	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
-	jgg@nvidia.com
+References: <20240809131538.944907-1-haris.iqbal@ionos.com>
+ <20240809131538.944907-3-haris.iqbal@ionos.com> <20240811084110.GC5925@unreal>
+ <CAMGffEmvWLy4-ugYVPBLYAAe43xZ73=bp7sH5ackf6M7w2zdZg@mail.gmail.com> <20240812110059.GE12060@unreal>
+In-Reply-To: <20240812110059.GE12060@unreal>
+From: Jinpu Wang <jinpu.wang@ionos.com>
+Date: Tue, 13 Aug 2024 12:54:29 +0200
+Message-ID: <CAMGffE=VBWTt5k-2mXNXsDnM670up6pV2ERfXHxsQcGKKiHWrQ@mail.gmail.com>
+Subject: Re: [PATCH for-next 02/13] RDMA/rtrs-srv: Fix use-after-free during
+ session establishment
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Md Haris Iqbal <haris.iqbal@ionos.com>, linux-rdma@vger.kernel.org, bvanassche@acm.org, 
+	jgg@ziepe.ca, Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-2024=E5=B9=B48=E6=9C=8813=E6=97=A5(=E7=81=AB) 19:27 Laurent Pinchart <laure=
-nt.pinchart@ideasonboard.com>:
+On Mon, Aug 12, 2024 at 1:01=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
+rote:
 >
-> Hi Tomasz,
->
-> On Tue, Aug 13, 2024 at 07:17:07PM +0900, Tomasz Figa wrote:
-> > 2024=E5=B9=B47=E6=9C=8831=E6=97=A5(=E6=B0=B4) 22:16 Daniel Vetter <dani=
-el.vetter@ffwll.ch>:
+> On Mon, Aug 12, 2024 at 12:52:25PM +0200, Jinpu Wang wrote:
+> > Hi,
+> >
+> > On Sun, Aug 11, 2024 at 10:41=E2=80=AFAM Leon Romanovsky <leon@kernel.o=
+rg> wrote:
 > > >
-> > > On Wed, 31 Jul 2024 at 13:55, Sakari Ailus <sakari.ailus@iki.fi> wrot=
-e:
-> > > > This is also very different from GPUs or accel devices that are bui=
-lt to be
-> > > > user-programmable. If I'd compare ISPs to different devices, then t=
-he
-> > > > closest match would probably be video codecs -- which also use V4L2=
-.
+> > > On Fri, Aug 09, 2024 at 03:15:27PM +0200, Md Haris Iqbal wrote:
+> > > > From: Jack Wang <jinpu.wang@ionos.com>
+> > > >
+> > > > In case of error happening during session stablishment, close_work =
+is
+> > > > running. A new RDMA CM event may arrive since we don't destroy cm_i=
+d
+> > > > before destroying qp. To fix this, we first destroy cm_id after dra=
+in_qp,
+> > > > so no new RDMA CM event will arrive afterwards.
+> > > >
+> > > > Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
+> > > > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> > > > Signed-off-by: Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
+> > > > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+> > > > ---
+> > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
+> > > >  drivers/infiniband/ulp/rtrs/rtrs.c     | 2 +-
+> > > >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infin=
+iband/ulp/rtrs/rtrs-srv.c
+> > > > index fb67b58a7f62..90ea25ad6720 100644
+> > > > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > > @@ -1540,6 +1540,7 @@ static void rtrs_srv_close_work(struct work_s=
+truct *work)
+> > > >               con =3D to_srv_con(srv_path->s.con[i]);
+> > > >               rdma_disconnect(con->c.cm_id);
+> > > >               ib_drain_qp(con->c.qp);
+> > > > +             rdma_destroy_id(con->c.cm_id);
+> > > >       }
+> > > >
+> > > >       /*
+> > > > @@ -1564,7 +1565,6 @@ static void rtrs_srv_close_work(struct work_s=
+truct *work)
+> > > >                       continue;
+> > > >               con =3D to_srv_con(srv_path->s.con[i]);
+> > > >               rtrs_cq_qp_destroy(&con->c);
+> > > > -             rdma_destroy_id(con->c.cm_id);
+> > > >               kfree(con);
+> > > >       }
+> > > >       rtrs_ib_dev_put(srv_path->s.dev);
+> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniban=
+d/ulp/rtrs/rtrs.c
+> > > > index 4e17d546d4cc..44167fd1c958 100644
+> > > > --- a/drivers/infiniband/ulp/rtrs/rtrs.c
+> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+> > > > @@ -318,7 +318,7 @@ EXPORT_SYMBOL_GPL(rtrs_cq_qp_create);
+> > > >  void rtrs_cq_qp_destroy(struct rtrs_con *con)
+> > > >  {
+> > > >       if (con->qp) {
+> > > > -             rdma_destroy_qp(con->cm_id);
+> > > > +             ib_destroy_qp(con->qp);
 > > >
-> > > Really just aside, but I figured I should correct this. DRM supports
-> > > plenty of video codecs. They're all tied to gpus, but the real reason
-> > > really is that the hw has decent command submission support so that
-> > > running the entire codec in userspace except the basic memory and
-> > > batch execution and synchronization handling in the kernel is a
-> > > feasible design.
+> > > You created that QP with rdma_create_qp() and you should destroy it w=
+ith rdma_destroy_qp().
+> > We can't do it, as we move rdma_destroy_id before rtrs_cq_qp_destroy,
+> > if we still call rdma_destroy_qp, which will lead to use after free as
+> > cm_id could already be free-ed.
+>
+> It is a hint that you are doing something wrong.
+will drop it for now, will see if there is other way to fix it.
+>
+> Thanks
+Thx
+>
 > >
-> > FWIW, V4L2 also has an interface for video decoders that require
-> > bitstream processing in software, it's called the V4L2 Stateless
-> > Decoder interface [1]. It defines low level data structures that map
-> > directly to the particular codec specification, so the kernel
-> > interface is generic and the userspace doesn't need to have
-> > hardware-specific components. Hardware that consumes command buffers
-> > can be supported simply by having the kernel driver fill the command
-> > buffers as needed (as opposed to writing the registers directly).
-> > On the other hand, DRM also has the fixed function (i.e. V4L2-alike)
-> > KMS interface for display controllers, rather than a command buffer
-> > passthrough, even though some display controllers actually are driven
-> > by command buffers.
-> > So arguably it's possible and practical to do both command
-> > buffer-based and fixed interfaces for both display controllers and
-> > video codecs. Do you happen to know some background behind why one or
-> > the other was chosen for each of them in DRM?
+> > >
+> > > Thanks
+> > Thx!
+> > >
+> > > >               con->qp =3D NULL;
+> > > >       }
+> > > >       destroy_cq(con);
+> > > > --
+> > > > 2.25.1
+> > > >
 > >
-> > For how it applies to ISPs, there are both types of ISPs out in the
-> > wild, some support command buffers, while some are programmed directly
-> > via registers.
->
-> Could you provide examples of ISPs that use command buffers ? The
-> discussion has remained fairly vague so far, which I think hinders
-> progress.
->
-> > For the former, I can see some loss of flexibility if
-> > the command buffers are hidden behind a fixed function API, because
-> > the userspace would only be able to do what the kernel driver supports
-> > internally, which could make some use case-specific optimizations very
-> > challenging if not impossible.
->
-> Let's try to discuss this with specific examples.
-
-AFAIK Intel IPU6 and newer, Qualcomm and MediaTek ISPs use command
-buffers natively.
-
->
-> > [1] https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/dev-=
-stateless-decoder.html
-> >
-> > > And actually good, because your kernel wont ever blow
-> > > up trying to parse complex media formats because it just doesn't.
->
-> --
-> Regards,
->
-> Laurent Pinchart
 
