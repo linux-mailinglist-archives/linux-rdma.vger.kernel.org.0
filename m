@@ -1,143 +1,99 @@
-Return-Path: <linux-rdma+bounces-4350-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4351-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 947FF95031F
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2024 12:58:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B94F95039F
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2024 13:30:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6D0C1C2268E
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2024 10:58:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50E241F255B1
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2024 11:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2246A19AD70;
-	Tue, 13 Aug 2024 10:58:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1916A1990C0;
+	Tue, 13 Aug 2024 11:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="vRJU9sAN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HOCT/6Ks"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4499619AA5F;
-	Tue, 13 Aug 2024 10:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA85518B480;
+	Tue, 13 Aug 2024 11:30:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723546728; cv=none; b=OY03rrgs+9iPbFUF0gqhguCWUNHhQxpZ//gzMX+DhYPGIMEG3Jc0+a6P//OEfzYzVKKcRHVlxy5VGcWODKmLurjqKve5waCOicfw1WVCUXHraDkZ5pIx0YU+I8/HBbSGWAa6nJkRmoJl0ZEi5E3UWTfP44w4kj78dk3YBERwoNk=
+	t=1723548630; cv=none; b=OJ7feyqhrIAuwkZAB0cVOvAi8VJ+FiFR08CZwRDqYftLJEDAlpICBiDhtKifFfVjp2Qvk5fxdl3f2+M6gohbfjm4SHsLLLM4e9sExrb4dG7S248GvPTIM0QUk40K23bBuKnSRwsbUnOA9r3bLIAbRCPajk0BCdS2bJu/qBzRAwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723546728; c=relaxed/simple;
-	bh=amLSKSyOu/TcfOjB3E3e/dsqli4Esy0qc7vDMfnCbcI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M6dx4lVqfNUyrF0U06AxwPpHSO1UOVswto5PJ1WTH0R8cxJErPEL8XXlJwPLuN7Q+w5gDSg3OCr9Z5zf6pPQl6TOcVnLf0Nei2QYtJjcL0GyyxHqrdzaPKR4QI8DwbIEgsAdZXAqHMs6MlrI4MOFyszn+4phozZKzxHQmIiDt4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=vRJU9sAN; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id A049B2EC;
-	Tue, 13 Aug 2024 12:57:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1723546668;
-	bh=amLSKSyOu/TcfOjB3E3e/dsqli4Esy0qc7vDMfnCbcI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vRJU9sANRKu+3vwmYfX2EQKmkIvXsWKIVnQ/85XypownXWAeXSs+pqSG9YBxgDbFK
-	 rtZ8/4JRyY2GW7khAZAMiTOR0LHnX328e2WVMHsvY/ZHq80EYP+2FrX9k5UaswNaSy
-	 WXDmMpomtpDTxzJChGbXQ+9/16+NxkW1qWXYjPiY=
-Date: Tue, 13 Aug 2024 13:58:22 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>,
-	Sakari Ailus <sakari.ailus@iki.fi>,
-	Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	James Bottomley <James.Bottomley@hansenpartnership.com>,
-	ksummit@lists.linux.dev, linux-cxl@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, jgg@nvidia.com
-Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-Message-ID: <20240813105822.GD24634@pendragon.ideasonboard.com>
-References: <CAPybu_1hZfAqp2uFttgYgRxm_tYzJJr-U3aoD1WKCWQsHThSLw@mail.gmail.com>
- <20240726105936.GC28621@pendragon.ideasonboard.com>
- <CAPybu_1y7K940ndLZmy+QdfkJ_D9=F9nTPpp=-j9HYpg4AuqqA@mail.gmail.com>
- <20240728171800.GJ30973@pendragon.ideasonboard.com>
- <CAPybu_3M9GYNrDiqH1pXEvgzz4Wz_a672MCkNGoiLy9+e67WQw@mail.gmail.com>
- <Zqol_N8qkMI--n-S@valkosipuli.retiisi.eu>
- <CAKMK7uGx=VjHCo90htuTE6Oi0b8rt_0NrPsfbZwFKA304m7BdA@mail.gmail.com>
- <CA+Ln22E1YXGykjKqVO+tT8d_3-GYSEf-zY0TEHJq3w7HQEhFhA@mail.gmail.com>
- <20240813102638.GB24634@pendragon.ideasonboard.com>
- <CA+Ln22EzL7M+BLXS6dFi0n80XXkQu1CuoUad0EtjZ2ZEnNX=Kg@mail.gmail.com>
+	s=arc-20240116; t=1723548630; c=relaxed/simple;
+	bh=kiwXUxfjx4OtcKC14SZI8xUFCU5QGPX4eXEN8CbXRLM=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=sShtepDCZRwFfuBZ0rmg1akSWDaMsw0J9jjFZhJYEB2qTteieBBeu1AP1a/Fg5V/xbAKthCALi1npdWnBa3+McaKs4afDvyKily+28coPyNZUiAk3Vc5/aJa8/FP7VzCkjNLpDcj1TSBwtKrRwOTjOhT6Fbl3L6yJaf/m3ps1t4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HOCT/6Ks; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C097C4AF0B;
+	Tue, 13 Aug 2024 11:30:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723548630;
+	bh=kiwXUxfjx4OtcKC14SZI8xUFCU5QGPX4eXEN8CbXRLM=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=HOCT/6Ks9SESeseIvikOwerpDR78YS4ROZoV5WqO9XHA9EokNr5d3KulKwHsxH9Vm
+	 +lIwOH4EXJkWrf+/cmvX6AX2jhSiOdHyFtxIhtTjGxLxx/CHYhCPLesXAMmh7ucSmg
+	 gAZmQt7mDq6wbgHQDvtGGfhyQS3bXxrouzAsn5uE/G/dKD5EfQIixWoUDsKucnupEp
+	 0JLll8NdhvHt6P+8nyURKE5n9Qc9DbH/xtBpYT5vVjYk8Ys9fakAj1q97Hy8w1MEjO
+	 3gkVR+z+iXhQQBTr9RlOzQcj9ip7YOiAkqP5153xDUJ3Rb+QC/xbOiqgLD7FECOA49
+	 qv3Z8t3nAEMAA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70EB83823327;
+	Tue, 13 Aug 2024 11:30:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+Ln22EzL7M+BLXS6dFi0n80XXkQu1CuoUad0EtjZ2ZEnNX=Kg@mail.gmail.com>
+Subject: Re: [PATCH v3 net] net: mana: Fix doorbell out of order violation and
+ avoid unnecessary doorbell rings
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172354862926.1604273.6519840713233454447.git-patchwork-notify@kernel.org>
+Date: Tue, 13 Aug 2024 11:30:29 +0000
+References: <1723219138-29887-1-git-send-email-longli@linuxonhyperv.com>
+In-Reply-To: <1723219138-29887-1-git-send-email-longli@linuxonhyperv.com>
+To: Long Li <longli@linuxonhyperv.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, shradhagupta@linux.microsoft.com,
+ horms@kernel.org, kotaranov@microsoft.com, schakrabarti@linux.microsoft.com,
+ erick.archer@outlook.com, paulros@microsoft.com,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ longli@microsoft.com, stable@vger.kernel.org
 
-On Tue, Aug 13, 2024 at 07:33:59PM +0900, Tomasz Figa wrote:
-> 2024年8月13日(火) 19:27 Laurent Pinchart <laurent.pinchart@ideasonboard.com>:
-> > On Tue, Aug 13, 2024 at 07:17:07PM +0900, Tomasz Figa wrote:
-> > > 2024年7月31日(水) 22:16 Daniel Vetter <daniel.vetter@ffwll.ch>:
-> > > >
-> > > > On Wed, 31 Jul 2024 at 13:55, Sakari Ailus <sakari.ailus@iki.fi> wrote:
-> > > > > This is also very different from GPUs or accel devices that are built to be
-> > > > > user-programmable. If I'd compare ISPs to different devices, then the
-> > > > > closest match would probably be video codecs -- which also use V4L2.
-> > > >
-> > > > Really just aside, but I figured I should correct this. DRM supports
-> > > > plenty of video codecs. They're all tied to gpus, but the real reason
-> > > > really is that the hw has decent command submission support so that
-> > > > running the entire codec in userspace except the basic memory and
-> > > > batch execution and synchronization handling in the kernel is a
-> > > > feasible design.
-> > >
-> > > FWIW, V4L2 also has an interface for video decoders that require
-> > > bitstream processing in software, it's called the V4L2 Stateless
-> > > Decoder interface [1]. It defines low level data structures that map
-> > > directly to the particular codec specification, so the kernel
-> > > interface is generic and the userspace doesn't need to have
-> > > hardware-specific components. Hardware that consumes command buffers
-> > > can be supported simply by having the kernel driver fill the command
-> > > buffers as needed (as opposed to writing the registers directly).
-> > > On the other hand, DRM also has the fixed function (i.e. V4L2-alike)
-> > > KMS interface for display controllers, rather than a command buffer
-> > > passthrough, even though some display controllers actually are driven
-> > > by command buffers.
-> > > So arguably it's possible and practical to do both command
-> > > buffer-based and fixed interfaces for both display controllers and
-> > > video codecs. Do you happen to know some background behind why one or
-> > > the other was chosen for each of them in DRM?
-> > >
-> > > For how it applies to ISPs, there are both types of ISPs out in the
-> > > wild, some support command buffers, while some are programmed directly
-> > > via registers.
-> >
-> > Could you provide examples of ISPs that use command buffers ? The
-> > discussion has remained fairly vague so far, which I think hinders
-> > progress.
-> >
-> > > For the former, I can see some loss of flexibility if
-> > > the command buffers are hidden behind a fixed function API, because
-> > > the userspace would only be able to do what the kernel driver supports
-> > > internally, which could make some use case-specific optimizations very
-> > > challenging if not impossible.
-> >
-> > Let's try to discuss this with specific examples.
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Fri,  9 Aug 2024 08:58:58 -0700 you wrote:
+> From: Long Li <longli@microsoft.com>
 > 
-> AFAIK Intel IPU6 and newer, Qualcomm and MediaTek ISPs use command
-> buffers natively.
+> After napi_complete_done() is called when NAPI is polling in the current
+> process context, another NAPI may be scheduled and start running in
+> softirq on another CPU and may ring the doorbell before the current CPU
+> does. When combined with unnecessary rings when there is no need to arm
+> the CQ, it triggers error paths in the hardware.
+> 
+> [...]
 
-At the hardware level, firmware level, or both ? Is there a way we can
-get more information about the structure of the command buffer and how
-it is handled by the ISP for any of those three platforms ?
+Here is the summary with links:
+  - [v3,net] net: mana: Fix doorbell out of order violation and avoid unnecessary doorbell rings
+    https://git.kernel.org/netdev/net/c/58a63729c957
 
-> > > [1] https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/dev-stateless-decoder.html
-> > >
-> > > > And actually good, because your kernel wont ever blow
-> > > > up trying to parse complex media formats because it just doesn't.
-
+You are awesome, thank you!
 -- 
-Regards,
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Laurent Pinchart
+
 
