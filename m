@@ -1,79 +1,54 @@
-Return-Path: <linux-rdma+bounces-4342-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4343-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4593694FA27
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2024 01:12:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2CF894FD5A
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2024 07:42:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78A591C22257
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Aug 2024 23:12:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B175B22835
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Aug 2024 05:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DCC018C92D;
-	Mon, 12 Aug 2024 23:12:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC002364A4;
+	Tue, 13 Aug 2024 05:41:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="SmOqffh9"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oXL+ggOr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 492DE17BB35
-	for <linux-rdma@vger.kernel.org>; Mon, 12 Aug 2024 23:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302292C19E;
+	Tue, 13 Aug 2024 05:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723504374; cv=none; b=MJW9YPvMkRfCI4cg253A375JddfTdFUFAdsSnlQ7ptrV1EKDaesmrWT4wlCoVqIYiZBPAm+RoHld4pXOPy7pMe6YZR7SWx/IgksSPFAL5YsmQRlh12gD0ExIwDIagjQPjJpviRv0t8viEcUwvY8SMLBrFAhlL5q7Sx0z8iz4YhM=
+	t=1723527685; cv=none; b=a/ZzaLvyDtvAOUi38302hP3MbFIMH8n11b+TGcVzLfA7F0J6GwulKTcMKfzd1y8zcMNQpuM/7za1QhmhN3zlSUPHg9wlwe/Gv2iFljObWWyo+hXXRDrFVWS10oG93EoCJbdihSoLeC9BDqmECcPtsRWkjjfueAgBuo2tpqRN97c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723504374; c=relaxed/simple;
-	bh=h8P4Uotzl/+p3fOqN0ouVYZU+tVOEs1/jaWkykqyvfo=;
+	s=arc-20240116; t=1723527685; c=relaxed/simple;
+	bh=i49iooVK0nCmN7mBhxTyADBk+5BtpXEZY4WJwPZbSME=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DdVul9AQXypvuFOX2On+qmxodBxD4BZhkgcCs53/JdcxUsL9vhz9FhKC3Q8aCVInTdqTUzlNlhWfWrH/CLjKVuevj4KPbsnGmCazUDjlZZL/Iw+PUuK1rDcZfKwYzUbkPHPSDzonA53bP4esk3VsE8f+Zxw7iYyInJvC7Qy4qHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=SmOqffh9; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-7a1da036d35so312351585a.0
-        for <linux-rdma@vger.kernel.org>; Mon, 12 Aug 2024 16:12:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1723504372; x=1724109172; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PMjC6KhS/DBc58mLY7O4E24ckqj/K1IN+aMXWT+eFAQ=;
-        b=SmOqffh9hSEZUqCcB1VSHYM/ghMbTKidcdvHfLwvR4300Uyqy5lZxk6Yy4xeYGbGFy
-         KakpC4u9I7w9Jv9y2p9wTW/TpCRejV6ntcgu04SQaasJfO4pLb3rfa7RteyoSTUXSGiw
-         yO7weL8YAsZ6rF52XvfAMx3WlTyqkAp4UZfBEVSeiqaudePCrHbfLLAiC0QLLT0DcyVL
-         5tabUmxpaycP3VvC4mSTsPbAMtRsaLWLmQxSXydcG1PsSr/96yoy9e/ZkRDsdMc5nnpJ
-         UbzK78QWEajErL94HnCnBB9oUJcsIEs3S5ELJhJSBe2I7B/KwS99Np5JSVfJTCEJKM2f
-         CBhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723504372; x=1724109172;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PMjC6KhS/DBc58mLY7O4E24ckqj/K1IN+aMXWT+eFAQ=;
-        b=WRuRgwS/bVkWR0IZixMginjHYsoLbDWmf+Z/ygBMRDbUu+wZn7ycXBA2mYvRDgGnTI
-         ic/vK2S8JZ/wHsDQZCRNgNpgG9l83yv7i2zfAgjU7EKvysqCk8DdeD87vA+csGt4kMwt
-         Zs+MaGAcoxxzUj5h0PfiKaDVpAUcmfxFQF0OPiS2ejjFv913v/2IFZx9YHYnP0U2eY+J
-         Lot34acvjlRxXIidaTmZoqPeUmJ4V8LU90hyzbwRK++F58LmkI9S0ALSgB+d90Fbu56G
-         HGDURTSzTxCToVfrqsW1/5dxNZ6dyonhRhHFwC2Hy5LIPP3uPAEMcvukoC7pUaPPvVxw
-         cICQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUBM9JSSxdtZa2TZLcG2uiYcba3NtlGYFubDENO786N+Fyimc5diwxd1/8WzRzQAUJeK7E1s9uDZmWYvxICT5BL93BYDL2n5JAICA==
-X-Gm-Message-State: AOJu0Yzn/O5NLPHd7zs5Apd8NSw0/o9/6faMGge1Wnn5MteqzB+Cr8P5
-	XpBNFEGDz4riE5/X2IYyOi3Vwkwe62F4XlzwKyo9DL8pxDRZ+rlezGAD4bf4bMU=
-X-Google-Smtp-Source: AGHT+IEpwb1c6X4g483ibQty6P9YNt2S2AvdGjI5tc/NjzzDCUGnXhu4CwRzClQuuw6N0eK8ESuT1g==
-X-Received: by 2002:a05:620a:240f:b0:7a1:da5e:c501 with SMTP id af79cd13be357-7a4e160fda9mr193930785a.60.1723504372080;
-        Mon, 12 Aug 2024 16:12:52 -0700 (PDT)
-Received: from ziepe.ca ([128.77.69.90])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a4c7d79076sm286600585a.60.2024.08.12.16.12.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Aug 2024 16:12:51 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1sdeDZ-003VqS-T1;
-	Mon, 12 Aug 2024 20:12:49 -0300
-Date: Mon, 12 Aug 2024 20:12:49 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Martin Oliveira <martin.oliveira@eideticom.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=gjcSv23LAz/CbwOzdsMJy62n6YZFm3h8PxeUTndNBrebMZJTk2zB4qwKIxSurqTiHahgGfOnB2Gxf++g4HswQVyFFK6yzB4BUxRSEh9vU2UL//HnPQivGPgXo6a6qtEqg4xhr0bdT/xBLX+oB8KzxrA4o+BI/3Bb5uamO0JWM6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oXL+ggOr; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=HbO1EYl5czIqfwARjxEt22LiBn82E4H9bfJsvtc+EjY=; b=oXL+ggOrdCjoKtMhmVfXLcx9Ur
+	/Vq6hSt/096cHs0MblkRe7e99WnyXtYK7Kc0kemMw/6+IMIDKFFaIME/N4hZ3IDAYu0UvQ1pI1ny+
+	YjyBdStcBBBKJrRO9evMX1hIwyEX7nbM0r3rHzH6wBzJCkqzMz+JVpiWVDM5gSqefo0CMhsZ8ebMj
+	jWrk3JyxdmBQYyZcawkrlvAZMrMC3cFc7P8y6WXor2f/HVftliBDfsFKqQD5pCLQ9YHW4WzKYkWbX
+	WDkSbaFbszEzLTgdvkhvXIXVKNAHwSnqMFE1qjLNKHGdbFZNTebWBrVBIV2Nn8LSuaWvEcnA/gKFt
+	wBiMbFjA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sdkHY-00000002TJW-3iEA;
+	Tue, 13 Aug 2024 05:41:20 +0000
+Date: Mon, 12 Aug 2024 22:41:20 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Martin Oliveira <martin.oliveira@eideticom.com>,
 	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
 	Artemy Kovalyov <artemyko@nvidia.com>,
@@ -87,10 +62,11 @@ Cc: Martin Oliveira <martin.oliveira@eideticom.com>,
 	Dan Williams <dan.j.williams@intel.com>,
 	David Sloan <david.sloan@eideticom.com>
 Subject: Re: [PATCH v5 3/4] mm/gup: allow FOLL_LONGTERM & FOLL_PCI_P2PDMA
-Message-ID: <20240812231249.GG1985367@ziepe.ca>
+Message-ID: <ZrryAFGBCG1cyfOA@infradead.org>
 References: <20240808183340.483468-1-martin.oliveira@eideticom.com>
  <20240808183340.483468-4-martin.oliveira@eideticom.com>
  <ZrmuGrDaJTZFrKrc@infradead.org>
+ <20240812231249.GG1985367@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -99,28 +75,18 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZrmuGrDaJTZFrKrc@infradead.org>
+In-Reply-To: <20240812231249.GG1985367@ziepe.ca>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Sun, Aug 11, 2024 at 11:39:22PM -0700, Christoph Hellwig wrote:
-> On Thu, Aug 08, 2024 at 12:33:39PM -0600, Martin Oliveira wrote:
-> > This check existed originally due to concerns that P2PDMA needed to copy
-> > fsdax until pgmap refcounts were fixed (see [1]).
-> > 
-> > The P2PDMA infrastructure will only call unmap_mapping_range() when the
-> > underlying device is unbound, and immediately after unmapping it waits
-> > for the reference of all ZONE_DEVICE pages to be released before
-> > continuing. This does not allow for a page to be reused and no user
-> > access fault is therefore possible. It does not have the same problem as
-> > fsdax.
-> > 
-> > The one minor concern with FOLL_LONGTERM pins is they will block device
-> > unbind until userspace releases them all.
+On Mon, Aug 12, 2024 at 08:12:49PM -0300, Jason Gunthorpe wrote:
+> > This is unfortunately not really minor unless we have a well documented
+> > way to force this :(
 > 
-> This is unfortunately not really minor unless we have a well documented
-> way to force this :(
+> It is not that different from blocking driver unbind while FDs are
+> open which a lot of places do in various ways?
 
-It is not that different from blocking driver unbind while FDs are
-open which a lot of places do in various ways?
-
-Jason
+Where do we block driver unbind with an open resource?  The whole
+concept is that open resources will pin the in-memory object (and
+modulo for a modular driver), but never an unbind or hardware
+unplug, of which unbind really just is a simulation.
 
