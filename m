@@ -1,190 +1,124 @@
-Return-Path: <linux-rdma+bounces-4359-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4364-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7F7E9515D2
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2024 09:49:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7074995160E
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2024 10:04:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94E9428A9BA
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2024 07:49:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D705B26169
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2024 08:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1696913D24D;
-	Wed, 14 Aug 2024 07:48:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADE213E04C;
+	Wed, 14 Aug 2024 08:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S9iKN+Q7"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="RTM+sWme"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1941980631;
-	Wed, 14 Aug 2024 07:48:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A497A13C906
+	for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2024 08:03:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723621728; cv=none; b=Im7RlZ32bo49pI06WLBSves522Wjmil7AtrHEHFeWk8UvkLqGHQ5Qb/XSYKsorRJmvA129OmU9VbdYtPTDm/YkTI95uW0ukdWUrK97WzUSnKyzZ7EMgxZgNhjFm1D/NLkkjE0sJW5u3+gs0+OXvckwaIOjsR07iUROCOS+IwOwQ=
+	t=1723622592; cv=none; b=MF2IbX+rRPXrMLaK8VluqeB9z2GgIo+7SkVpv3X9PcJ0tKFjwr4V4CeMzHjR0OeNfvSgfizSL4lcNrDy7mxKaaTv0++Z1c30/hJkfiSZ5bjYVlECoH8DHeYDfVE6kWKb/BqUuzaqa71kYgPCayzJlA4sRX/RZw8ovW8s6L6EfZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723621728; c=relaxed/simple;
-	bh=iJuDt/e7gDTb1RnY7IiC+ni6rH+Nm1TYE3T9Gv+XET8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qbH8GBwrFqov0/hHeM1bB8UlJx5SlpGFVY5zBRY620JM2GfXqLSd+nMj7T9dYX1RTteAfY06r7eTlZUagir33mGMdWwROZykBNxAzwxsS130RO/NLiCeAtprD64zNc6ZD3KSlagev1aKdgenfXjrnlZg+zeJp2FQHDLKZgMmWs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S9iKN+Q7; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-530e2287825so5906819e87.1;
-        Wed, 14 Aug 2024 00:48:46 -0700 (PDT)
+	s=arc-20240116; t=1723622592; c=relaxed/simple;
+	bh=TahX3B1Iuw1jEr2+u0UIDJab1OxyO54LI0+bMBFXKUU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=JaU2pWjZIlLBTVizNARZ6imV/FyJpEtLPPo183AiDh4YH/oiJ4lEI4SNcdm/fvdvBjajyIGBInLScWJb4Z9d5cAliTBkWyH4XIq9HGjeBJj48lgN3t+AOjwsRvvGP3AtWbIPwEMI5O0dpYMD5JUzpf5xztozAYyXVoKnX3YmKik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=RTM+sWme; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-7105043330aso5211063b3a.0
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2024 01:03:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723621725; x=1724226525; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NTBG7pWOTTy/Oj13XKoVBOb8eh5xKMwFm4QHE+CcG2c=;
-        b=S9iKN+Q78IJnjFUbolkyUp/hAiv+bIGt5NKA0KKYwEidUiRt7ULBHXJ59VfS7d7wyv
-         wd31fr0AOjSNecmACGG0d2TK94RzWTf+GLR1wVaYcIr6onCJt+U6gyf4xyMtHFZEeHDf
-         PqHLnItWBojilSKfOwHVTLC5gGEcuef9HYKHYWETM7AsCdfWRWuGAYf61Dg00GKNyD6U
-         U34aPuBoS0fpTVnRrpOhTnCOyn+O18GASsPrg43MVOKt7kjHHGdR978M/1WpjjdS5ku7
-         ikLnc+vUPFQkP3y/77FcmIzBl+QEyFQRlfERK+AuMOZoxolwjyjzqD4IvaUnXlWO57Sd
-         pE5w==
+        d=broadcom.com; s=google; t=1723622589; x=1724227389; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+leSXdUbIYKI7LvY2C7MNiQQxTay47JkFU/iIQbOOFI=;
+        b=RTM+sWmepYgyG4PlX0waSGrbV9UP7wYW4M2qCEe1UKHiO9dORm7umo+Q/Rc64n3XFV
+         Z3tnQT2l6hlublrxsn5UgvIBO1QhvxY+oj4H48+H35YMD5qtwViquqonLMXGYiTiHzyy
+         Kz+4sTLU5DyKRtNVCq0i9+R5RqKKCY8Aq0WU8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723621725; x=1724226525;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1723622589; x=1724227389;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NTBG7pWOTTy/Oj13XKoVBOb8eh5xKMwFm4QHE+CcG2c=;
-        b=G2dggkFb9ysI141/FZJhn8nPy+27yeRNH9RlnwIfn+ob7KkgEtlcc6Cl0MgA4nnL41
-         3v3OIbJwq6b+J+eq4dz0rcR6tYIcNFenabgo/yC0Aki/lGP9mHbkGNTHVl6ecFTDnNcx
-         kvXJiQg6Zk5xmjw94jHQ7+i/DkiciFcb9/VGIL18jNdm5ClJyFlu07rab83FeYCJv1rZ
-         0aHh/jPanJQLOVZYaeFStHd6+Vydao39kABHSTq8rUZoYMibxl2mL/pcb1rmTE/nJBVK
-         3dSyFuNKZjyjbfBOuPfFB+HdiIAR58qCuztSlDzE59Er30flwgd1XGpmv9oKGU8DhWJk
-         ENrw==
-X-Forwarded-Encrypted: i=1; AJvYcCVDuea951fMeko2lNQ6MzzCn4EW+cBWYjnskxbiW77SeHdytOGWWh77O1BTO78qpGRTvaD5Q6uFIyId2w==@vger.kernel.org, AJvYcCVMT6AHSoSrftZifN5NmLp8+WaZq5ckrqEH/wwfwafHXzRNKeG32i4k6pAUH+miTEJtecyGO9cxgCoeJwg=@vger.kernel.org, AJvYcCXjA6qLlIiN91fNj7CX9KoXTH+cpKFuCSAVUxlDMc8Es1Odbq1cuENjzDOwLSsRUoPoNesF7soA@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw54OzsHWTCGRcyXMBFpwpa6zr7kyipw9sCwHTHedRWjG3yjRiy
-	2mCTNGvNIfI8BPPthJ/CwJtEqB0YHwg836AnlXLitvuoYfzhJejgGmQ5iA==
-X-Google-Smtp-Source: AGHT+IEhSt8fr4BCSjgK03Wnbcx/EW5SSSEcfQBJWk/kQFKB8jP+uHpUayMCIn+lgzoF7G4h1xrhsw==
-X-Received: by 2002:a05:6512:ac5:b0:52e:9382:a36 with SMTP id 2adb3069b0e04-532eda83a37mr1065725e87.30.1723621724241;
-        Wed, 14 Aug 2024 00:48:44 -0700 (PDT)
-Received: from [172.27.34.242] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-429ded7c93esm11636355e9.41.2024.08.14.00.48.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Aug 2024 00:48:43 -0700 (PDT)
-Message-ID: <3dcbfb0d-6e54-4450-a266-bf4701e77e08@gmail.com>
-Date: Wed, 14 Aug 2024 10:48:40 +0300
+        bh=+leSXdUbIYKI7LvY2C7MNiQQxTay47JkFU/iIQbOOFI=;
+        b=cCWk4JbEOZWpZPDgOZXzn0jaqVcbDmNJol6Lu0c2JjDYoqzJL/tg4t3WYT9wfNdVJp
+         RICGU/Zc3xtPpWWpXNF0YoRUyZJLQVex3cockjogc1PZRHfIn5WpBRLalbY1pVKWn7J2
+         43WQlm1T10K7Q0Rl298iCMNDU7JytSe/UQyIsLxtbMKzMxC6c0hIzY5HLkflIf/ZnGWR
+         lDu8mL0PFthgmBoA0bODyBFANxOzOHK0cMNYw+lnsL+2q8pyZPhx2X5ZPapOAEBoenDN
+         Vr6jbVFWd+OzCL/q+nwVPP5eglQx2eFx2Jn0j8YUvIeuh518gBflOZVmfPG1KXRyrBo7
+         vm/Q==
+X-Gm-Message-State: AOJu0YyCSdRO6mPYxqWn2UglLKWl8qaNVMGCPIWgcprhsM9LhXoC1jc5
+	Wtv1dpGaFbcY19Sf0ulxR6Pb1AQYBMKy92mYaREJRvhUygizHu34hVIwuDvIxv5kGBCt6XxWU90
+	=
+X-Google-Smtp-Source: AGHT+IFSexejko0IQkIwSgib3iAXK4SrWzkS3lw/GfAxjtC7UjKkrEAIdtzHFd4rHHG4DloJ3tcy/g==
+X-Received: by 2002:a05:6a00:1395:b0:70a:9672:c3a2 with SMTP id d2e1a72fcca58-712673b702emr2317760b3a.24.1723622588961;
+        Wed, 14 Aug 2024 01:03:08 -0700 (PDT)
+Received: from sxavier-dev.dhcp.broadcom.net ([115.110.236.218])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e5ac40e0sm6782479b3a.216.2024.08.14.01.03.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Aug 2024 01:03:08 -0700 (PDT)
+From: Selvin Xavier <selvin.xavier@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	Selvin Xavier <selvin.xavier@broadcom.com>,
+	Hongguang Gao <hongguang.gao@broadcom.com>
+Subject: [PATCH for-next v2 4/4] RDMA/bnxt_re: Enable variable size WQEs for user space applications
+Date: Wed, 14 Aug 2024 00:42:02 -0700
+Message-Id: <1723621322-6920-5-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1723621322-6920-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1723621322-6920-1-git-send-email-selvin.xavier@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net/mlx5: Use cpumask_local_spread() instead of custom
- code
-To: Erwan Velu <erwanaliasr1@gmail.com>, Yury Norov <yury.norov@gmail.com>
-Cc: Erwan Velu <e.velu@criteo.com>, Saeed Mahameed <saeedm@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240812082244.22810-1-e.velu@criteo.com>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20240812082244.22810-1-e.velu@criteo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
+Add backward compatibility code to enable variable size WQEs
+only if the user lib supports it.
 
+Signed-off-by: Hongguang Gao <hongguang.gao@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 5 +++++
+ include/uapi/rdma/bnxt_re-abi.h          | 1 +
+ 2 files changed, 6 insertions(+)
 
-On 12/08/2024 11:22, Erwan Velu wrote:
-> Commit 2acda57736de ("net/mlx5e: Improve remote NUMA preferences used for the IRQ affinity hints")
-> removed the usage of cpumask_local_spread().
-> 
-> The issue explained in this commit was fixed by
-> commit 406d394abfcd ("cpumask: improve on cpumask_local_spread() locality").
-> 
-> Since this commit, mlx5_cpumask_default_spread() is having the same
-> behavior as cpumask_local_spread().
-> 
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 2932db1..82444fd 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -4233,6 +4233,11 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
+ 			resp.comp_mask |= BNXT_RE_UCNTX_CMASK_POW2_DISABLED;
+ 			uctx->cmask |= BNXT_RE_UCNTX_CAP_POW2_DISABLED;
+ 		}
++		if (ureq.comp_mask & BNXT_RE_COMP_MASK_REQ_UCNTX_VAR_WQE_SUPPORT) {
++			resp.comp_mask |= BNXT_RE_UCNTX_CMASK_HAVE_MODE;
++			resp.mode = rdev->chip_ctx->modes.wqe_mode;
++			uctx->cmask |= BNXT_RE_UCNTX_CAP_VAR_WQE_ENABLED;
++		}
+ 	}
+ 
+ 	rc = ib_copy_to_udata(udata, &resp, min(udata->outlen, sizeof(resp)));
+diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
+index 7114061..6821002 100644
+--- a/include/uapi/rdma/bnxt_re-abi.h
++++ b/include/uapi/rdma/bnxt_re-abi.h
+@@ -66,6 +66,7 @@ enum bnxt_re_wqe_mode {
+ 
+ enum {
+ 	BNXT_RE_COMP_MASK_REQ_UCNTX_POW2_SUPPORT = 0x01,
++	BNXT_RE_COMP_MASK_REQ_UCNTX_VAR_WQE_SUPPORT = 0x02,
+ };
+ 
+ struct bnxt_re_uctx_req {
+-- 
+2.5.5
 
-Adding Yuri.
-
-One patch led to the other, finally they were all submitted within the 
-same patchset.
-
-cpumask_local_spread() indeed improved, and AFAIU is functionally 
-equivalent to existing logic.
-According to [1] the current code is faster.
-However, this alone is not a relevant enough argument, as we're talking 
-about slowpath here.
-
-Yuri, is that accurate? Is this the only difference?
-
-If so, I am fine with this change, preferring simplicity.
-
-[1] https://elixir.bootlin.com/linux/v6.11-rc3/source/lib/cpumask.c#L122
-
-> This commit is about :
-> - removing the specific logic and use cpumask_local_spread() instead
-> - passing mlx5_core_dev as argument to more flexibility
-> 
-> mlx5_cpumask_default_spread() is kept as it could be useful for some
-> future specific quirks.
-> 
-> Signed-off-by: Erwan Velu <e.velu@criteo.com>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/eq.c | 27 +++-----------------
->   1 file changed, 4 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> index cb7e7e4104af..f15ecaef1331 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> @@ -835,28 +835,9 @@ static void comp_irq_release_pci(struct mlx5_core_dev *dev, u16 vecidx)
->   	mlx5_irq_release_vector(irq);
->   }
->   
-> -static int mlx5_cpumask_default_spread(int numa_node, int index)
-> +static int mlx5_cpumask_default_spread(struct mlx5_core_dev *dev, int index)
->   {
-> -	const struct cpumask *prev = cpu_none_mask;
-> -	const struct cpumask *mask;
-> -	int found_cpu = 0;
-> -	int i = 0;
-> -	int cpu;
-> -
-> -	rcu_read_lock();
-> -	for_each_numa_hop_mask(mask, numa_node) {
-> -		for_each_cpu_andnot(cpu, mask, prev) {
-> -			if (i++ == index) {
-> -				found_cpu = cpu;
-> -				goto spread_done;
-> -			}
-> -		}
-> -		prev = mask;
-> -	}
-> -
-> -spread_done:
-> -	rcu_read_unlock();
-> -	return found_cpu;
-> +	return cpumask_local_spread(index, dev->priv.numa_node);
->   }
->   
->   static struct cpu_rmap *mlx5_eq_table_get_pci_rmap(struct mlx5_core_dev *dev)
-> @@ -880,7 +861,7 @@ static int comp_irq_request_pci(struct mlx5_core_dev *dev, u16 vecidx)
->   	int cpu;
->   
->   	rmap = mlx5_eq_table_get_pci_rmap(dev);
-> -	cpu = mlx5_cpumask_default_spread(dev->priv.numa_node, vecidx);
-> +	cpu = mlx5_cpumask_default_spread(dev, vecidx);
->   	irq = mlx5_irq_request_vector(dev, cpu, vecidx, &rmap);
->   	if (IS_ERR(irq))
->   		return PTR_ERR(irq);
-> @@ -1145,7 +1126,7 @@ int mlx5_comp_vector_get_cpu(struct mlx5_core_dev *dev, int vector)
->   	if (mask)
->   		cpu = cpumask_first(mask);
->   	else
-> -		cpu = mlx5_cpumask_default_spread(dev->priv.numa_node, vector);
-> +		cpu = mlx5_cpumask_default_spread(dev, vector);
->   
->   	return cpu;
->   }
 
