@@ -1,65 +1,65 @@
-Return-Path: <linux-rdma+bounces-4361-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4362-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E95A95160B
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2024 10:03:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A251395160C
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2024 10:03:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42DA91C21405
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2024 08:03:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24CF01F22E93
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2024 08:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91DFE13D8B1;
-	Wed, 14 Aug 2024 08:03:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBAAA13DDB9;
+	Wed, 14 Aug 2024 08:03:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="b0YvPOdk"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="IRxsBmKw"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFC94D8B8
-	for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2024 08:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C14213DDB8
+	for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2024 08:03:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723622583; cv=none; b=e/1z+BZlI3Chn1lV2d9/8Vop+Q1aan5Rr5ovCeyyKH4XsuKF/tbbJoyQ/gHeLTpd6/geABvFiqsM+UGfJCielzA/qAfto0fBw8Witb2aqphsY3zezjfApq+7fCp71eIt2aZ568Y9UN++U970tEkaGtGD9pvEGy1fOZ8/kOkiXas=
+	t=1723622585; cv=none; b=HXF0YOD77gkPjp80LYOfftkkyBxlrMq2aGwCwpDtiFWZ2nyrgaLwXJRNNIjzNSe5cMmU/LyuDaep8psMFY1at2hL/0r34KHkATRZodPaNEBdf/E/AaPHKm7dLtDdA4LbhXDK4mHufzHj5PhR326DxCNnoUKcLQOt4eQXUSc1ILE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723622583; c=relaxed/simple;
-	bh=R4fkHB8Tvr5/l8b4BhtewZUZo4hZLpZ1TRd53xxg15Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=nT5WVUyGY+RI4PcMf0B5WkPMOLD5cbOccr9jmfONGCawC8/09NfMWJ0J/jyUqjBcCpcbe0alM4OwO5Qjnw5XwkOKS95JWzWcP840fdPpP48rXQ++zpsdBhR+7ehj6V/QpPXaoJl+2AVGaX6iuvitemJPOSfdPwQ+dn3/YYViAcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=b0YvPOdk; arc=none smtp.client-ip=209.85.210.181
+	s=arc-20240116; t=1723622585; c=relaxed/simple;
+	bh=ao/wWhveVu5QBfZT09zaMhBfE8oXztAb+VQzGh51WLE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=V9O1IQPOVnwp6JT7X64ePk0c1ao85bGoT9T7QJzfDHyF0yw89/Jrfy96DtK7kjSIZPZpY/V//gCGuy2k4PxignGUNq61FqTSO6qeS8qSCxO1h4/WFoZpphop0nOL2kqw6ohBdmiODpZntW1KdvTY+v4szvZa/XfDrHbENAbpBYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=IRxsBmKw; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-710ffaf921fso448425b3a.1
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2024 01:03:01 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-70cec4aa1e4so4555980b3a.1
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2024 01:03:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1723622581; x=1724227381; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1723622583; x=1724227383; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=asSOP3AWK79b8AbU9ZiBfPa675PwEVNGQIpGMKJmngI=;
-        b=b0YvPOdk0Qnp0BMUCOLu/ZH8Hxsatv5Ga9sNn5APDDnwasa0rpAg2Q0KzDF6MyNO3H
-         KWbs++iG1y5xW9eRX9/z+32QVzO6lTGNWn8bO8fI+5/p1W9cHMNdTeT/W+0YnadRUt6y
-         cHeb9J3vt4OMGaT79nKS+WUHGMIZ++cUb7n64=
+        bh=HFxMvaJm1XZaJKSDs7e/vMMcPSpSlLubv3x6ytcxlpw=;
+        b=IRxsBmKwg4/zQtkfP9tQ5msb01HkuuNTF+i2VCSDQjeHeTL2tiUG27rEKqzG9fp/ek
+         qEfE+8YQ/3zMmMqpR2uY16dCRsWMnw43bQnecHjofKTVOT/z0Djv/o8nRs4m9S+5klsG
+         WNB6gnTp2BxkkSRvpm4szwfAG5SJ3LiUJR64E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723622581; x=1724227381;
+        d=1e100.net; s=20230601; t=1723622583; x=1724227383;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=asSOP3AWK79b8AbU9ZiBfPa675PwEVNGQIpGMKJmngI=;
-        b=NQsWRSUM961h+CFAHqb75MYh6ZIoG/BGXt/D0B9w1183ZnIbfL/WkzhQQPg/Rkt3W1
-         L2nyO+e9M/knTISIdUozVwwm0hNl6ROuqelf+fBOEirFwyHct+crUTrsRFme6fyG1008
-         5kGjfiK8e+NiOSIl3rY5zfcaP2rIdTXXrPHSi2zS+iNYWLTTV2PEcSOPulCvhke+4jS0
-         xO0JrS17wiI+QipQjJ3UszrimymZ96ShCcCf9BMt9bIYD3ExHGLv/Jg4CmVHFtxR0L5X
-         9nXSByLFI+gi9zVgNq9V8ebGjBniZiRZtDnr5Wd8gXnEJlKa0HTokUkhQlVaklOu3Q4Z
-         4eyQ==
-X-Gm-Message-State: AOJu0Yzhwj4ZWWTFNQRARqFFwZjK+flnv/cxplvWrGZcwmEYT45bDfFo
-	GSepqrrjI8vfPHqks04A7Yf2UWGakh509wSn7NLasPAcSHfVIjzS1xkSuyIM3A==
-X-Google-Smtp-Source: AGHT+IHZ7S6D0eSF1zE9X5zFlswx8omJ/MFns3UgCQJ3ttOKeqDlVKtdthOF1A/H2tC0H1ENic1m6A==
-X-Received: by 2002:aa7:8711:0:b0:706:938a:5d49 with SMTP id d2e1a72fcca58-71257041b95mr6837345b3a.14.1723622580445;
-        Wed, 14 Aug 2024 01:03:00 -0700 (PDT)
+        bh=HFxMvaJm1XZaJKSDs7e/vMMcPSpSlLubv3x6ytcxlpw=;
+        b=aB3CNqE03zzZTxrpEy0oRPvloFUJENsdsS6JBExU+YwdveSv4i8ki2ZLXFF1iYybSB
+         3sXmxf9iKqfLW3Vc9dx2qQIxrTGwPNoIvVIirOHGNuPX2nkaL8SVU7ahMlVpYa32JDan
+         In5x8KdkJEBNsODHrif4FHj6hZHuON7EApwM9rZTynsf8TmxSatihFbSQujjcK/7atn7
+         V6sdWyIttyq2YIuwZyU0CoEhTKFfezab0WzDfuetnZ7+gwQhTuYKFfbEsmGrI8/myiI2
+         Wy7R0XeqbtbFJhVm7emj9a3NGvpBUfhaLiJ8Na65l2iaBg0Y65+UDDnHWFRWJtmdHMKA
+         K3UA==
+X-Gm-Message-State: AOJu0Yz6X46wuLHDfSsVVTHgSTbMAc9TAN+rVIvyF2RjDdgu5Z84nMrn
+	ugFejJy2ESMpxwyL9Lf5GX33wOnQlRbemoH+VBzjnwt3D8HvTpXifkXOE1tEGw==
+X-Google-Smtp-Source: AGHT+IFzqQ+YZ+9VbQxkuVm7SpKW2wD06It/CtSkS5yTm7X95yWWg/HkSuA2jdkO8G2KTYFmAXOajQ==
+X-Received: by 2002:a05:6a00:80f:b0:70a:f576:beeb with SMTP id d2e1a72fcca58-712671207f0mr3075082b3a.15.1723622583190;
+        Wed, 14 Aug 2024 01:03:03 -0700 (PDT)
 Received: from sxavier-dev.dhcp.broadcom.net ([115.110.236.218])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e5ac40e0sm6782479b3a.216.2024.08.14.01.02.58
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e5ac40e0sm6782479b3a.216.2024.08.14.01.03.00
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Aug 2024 01:02:59 -0700 (PDT)
+        Wed, 14 Aug 2024 01:03:02 -0700 (PDT)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -67,9 +67,9 @@ Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	Selvin Xavier <selvin.xavier@broadcom.com>,
 	Hongguang Gao <hongguang.gao@broadcom.com>
-Subject: [PATCH for-next v2 1/4] RDMA/bnxt_re: Add support for Variable WQE in Genp7 adapters
-Date: Wed, 14 Aug 2024 00:41:59 -0700
-Message-Id: <1723621322-6920-2-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v2 2/4] RDMA/bnxt_re: Get the WQE index from slot index while completing the WQEs
+Date: Wed, 14 Aug 2024 00:42:00 -0700
+Message-Id: <1723621322-6920-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1723621322-6920-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1723621322-6920-1-git-send-email-selvin.xavier@broadcom.com>
@@ -79,331 +79,105 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-Variable size WQE  means that each send Work Queue Entry to
-HW can use different WQE sizes as opposed to the static WQE
-size on the current devices. Set variable WQE mode for Gen P7
-devices. Depth of the Queue will be a multiple of slot which
-is 16 bytes. The number of slots should be a multiple of 256
-as per the HW requirement.
-Initialize the Software shadow queue to hold requests equal to
-the number of slots. Also, do not expose the variable size
-WQE capability until the last patch in the series.
+While reporting the completions, SQ Work Queue index is required to
+identify the WQE that generated the completions. In variable WQE mode,
+FW returns the slot index for Error completions. Driver need to walk
+through the shadow queue between the consumer index  and producer index
+and matches the slot index returned by FW. If a match is found, the next
+index of the shadow queue is the WQE index to be considered for remaining
+poll_cq loop.
 
 Signed-off-by: Hongguang Gao <hongguang.gao@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c |  8 +++++---
- drivers/infiniband/hw/bnxt_re/main.c     | 21 +++++++++++----------
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 18 +++++++++---------
- drivers/infiniband/hw/bnxt_re/qplib_fp.h | 14 +++++++++++---
- drivers/infiniband/hw/bnxt_re/qplib_sp.c |  7 +++++--
- drivers/infiniband/hw/bnxt_re/qplib_sp.h |  6 ++++++
- 6 files changed, 47 insertions(+), 27 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c | 40 ++++++++++++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h | 10 ++++++++
+ 2 files changed, 50 insertions(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 7c75735..5073ab1 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -1156,6 +1156,7 @@ static struct bnxt_re_qp *bnxt_re_create_shadow_qp
- 	/* Shadow QP SQ depth should be same as QP1 RQ depth */
- 	qp->qplib_qp.sq.wqe_size = bnxt_re_get_wqe_size(0, 6);
- 	qp->qplib_qp.sq.max_wqe = qp1_qp->rq.max_wqe;
-+	qp->qplib_qp.sq.max_sw_wqe = qp1_qp->rq.max_wqe;
- 	qp->qplib_qp.sq.max_sge = 2;
- 	/* Q full delta can be 1 since it is internal QP */
- 	qp->qplib_qp.sq.q_full_delta = 1;
-@@ -1167,6 +1168,7 @@ static struct bnxt_re_qp *bnxt_re_create_shadow_qp
- 
- 	qp->qplib_qp.rq.wqe_size = bnxt_re_get_rwqe_size(6);
- 	qp->qplib_qp.rq.max_wqe = qp1_qp->rq.max_wqe;
-+	qp->qplib_qp.rq.max_sw_wqe = qp1_qp->rq.max_wqe;
- 	qp->qplib_qp.rq.max_sge = qp1_qp->rq.max_sge;
- 	/* Q full delta can be 1 since it is internal QP */
- 	qp->qplib_qp.rq.q_full_delta = 1;
-@@ -1228,6 +1230,7 @@ static int bnxt_re_init_rq_attr(struct bnxt_re_qp *qp,
- 		 */
- 		entries = bnxt_re_init_depth(init_attr->cap.max_recv_wr + 1, uctx);
- 		rq->max_wqe = min_t(u32, entries, dev_attr->max_qp_wqes + 1);
-+		rq->max_sw_wqe = rq->max_wqe;
- 		rq->q_full_delta = 0;
- 		rq->sg_info.pgsize = PAGE_SIZE;
- 		rq->sg_info.pgshft = PAGE_SHIFT;
-@@ -1287,6 +1290,7 @@ static int bnxt_re_init_sq_attr(struct bnxt_re_qp *qp,
- 		0 : BNXT_QPLIB_RESERVED_QP_WRS;
- 	entries = bnxt_re_init_depth(entries + diff + 1, uctx);
- 	sq->max_wqe = min_t(u32, entries, dev_attr->max_qp_wqes + diff + 1);
-+	sq->max_sw_wqe = bnxt_qplib_get_depth(sq, qplqp->wqe_mode, true);
- 	sq->q_full_delta = diff + 1;
- 	/*
- 	 * Reserving one slot for Phantom WQE. Application can
-@@ -2155,6 +2159,7 @@ int bnxt_re_modify_qp(struct ib_qp *ib_qp, struct ib_qp_attr *qp_attr,
- 			entries = bnxt_re_init_depth(qp_attr->cap.max_recv_wr, uctx);
- 			qp->qplib_qp.rq.max_wqe =
- 				min_t(u32, entries, dev_attr->max_qp_wqes + 1);
-+			qp->qplib_qp.rq.max_sw_wqe = qp->qplib_qp.rq.max_wqe;
- 			qp->qplib_qp.rq.q_full_delta = qp->qplib_qp.rq.max_wqe -
- 						       qp_attr->cap.max_recv_wr;
- 			qp->qplib_qp.rq.max_sge = qp_attr->cap.max_recv_sge;
-@@ -4187,9 +4192,6 @@ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata)
- 	resp.cqe_sz = sizeof(struct cq_base);
- 	resp.max_cqd = dev_attr->max_cq_wqes;
- 
--	resp.comp_mask |= BNXT_RE_UCNTX_CMASK_HAVE_MODE;
--	resp.mode = rdev->chip_ctx->modes.wqe_mode;
--
- 	if (rdev->chip_ctx->modes.db_push)
- 		resp.comp_mask |= BNXT_RE_UCNTX_CMASK_WC_DPI_ENABLED;
- 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 9714b9a..31ba89c 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -129,13 +129,13 @@ static void bnxt_re_set_db_offset(struct bnxt_re_dev *rdev)
- 	}
- }
- 
--static void bnxt_re_set_drv_mode(struct bnxt_re_dev *rdev, u8 mode)
-+static void bnxt_re_set_drv_mode(struct bnxt_re_dev *rdev)
- {
- 	struct bnxt_qplib_chip_ctx *cctx;
- 
- 	cctx = rdev->chip_ctx;
--	cctx->modes.wqe_mode = bnxt_qplib_is_chip_gen_p5_p7(rdev->chip_ctx) ?
--			       mode : BNXT_QPLIB_WQE_MODE_STATIC;
-+	cctx->modes.wqe_mode = bnxt_qplib_is_chip_gen_p7(rdev->chip_ctx) ?
-+			       BNXT_QPLIB_WQE_MODE_VARIABLE : BNXT_QPLIB_WQE_MODE_STATIC;
- 	if (bnxt_re_hwrm_qcaps(rdev))
- 		dev_err(rdev_to_dev(rdev),
- 			"Failed to query hwrm qcaps\n");
-@@ -158,7 +158,7 @@ static void bnxt_re_destroy_chip_ctx(struct bnxt_re_dev *rdev)
- 	kfree(chip_ctx);
- }
- 
--static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
-+static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev)
- {
- 	struct bnxt_qplib_chip_ctx *chip_ctx;
- 	struct bnxt_en_dev *en_dev;
-@@ -180,7 +180,7 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 	rdev->qplib_res.dattr = &rdev->dev_attr;
- 	rdev->qplib_res.is_vf = BNXT_EN_VF(en_dev);
- 
--	bnxt_re_set_drv_mode(rdev, wqe_mode);
-+	bnxt_re_set_drv_mode(rdev);
- 
- 	bnxt_re_set_db_offset(rdev);
- 	rc = bnxt_qplib_map_db_bar(&rdev->qplib_res);
-@@ -1620,7 +1620,7 @@ static void bnxt_re_worker(struct work_struct *work)
- 	schedule_delayed_work(&rdev->worker, msecs_to_jiffies(30000));
- }
- 
--static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
-+static int bnxt_re_dev_init(struct bnxt_re_dev *rdev)
- {
- 	struct bnxt_re_ring_attr rattr = {};
- 	struct bnxt_qplib_creq_ctx *creq;
-@@ -1638,7 +1638,7 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 	}
- 	set_bit(BNXT_RE_FLAG_NETDEV_REGISTERED, &rdev->flags);
- 
--	rc = bnxt_re_setup_chip_ctx(rdev, wqe_mode);
-+	rc = bnxt_re_setup_chip_ctx(rdev);
- 	if (rc) {
- 		bnxt_unregister_dev(rdev->en_dev);
- 		clear_bit(BNXT_RE_FLAG_NETDEV_REGISTERED, &rdev->flags);
-@@ -1790,7 +1790,7 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+index 0af09e7..b49f49c 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+@@ -2471,6 +2471,32 @@ static int do_wa9060(struct bnxt_qplib_qp *qp, struct bnxt_qplib_cq *cq,
  	return rc;
  }
  
--static int bnxt_re_add_device(struct auxiliary_device *adev, u8 wqe_mode)
-+static int bnxt_re_add_device(struct auxiliary_device *adev)
- {
- 	struct bnxt_aux_priv *aux_priv =
- 		container_of(adev, struct bnxt_aux_priv, aux_dev);
-@@ -1807,7 +1807,7 @@ static int bnxt_re_add_device(struct auxiliary_device *adev, u8 wqe_mode)
- 		goto exit;
- 	}
- 
--	rc = bnxt_re_dev_init(rdev, wqe_mode);
-+	rc = bnxt_re_dev_init(rdev);
- 	if (rc)
- 		goto re_dev_dealloc;
- 
-@@ -1937,7 +1937,8 @@ static int bnxt_re_probe(struct auxiliary_device *adev,
- 	int rc;
- 
- 	mutex_lock(&bnxt_re_mutex);
--	rc = bnxt_re_add_device(adev, BNXT_QPLIB_WQE_MODE_STATIC);
++static int bnxt_qplib_get_cqe_sq_cons(struct bnxt_qplib_q *sq, u32 cqe_slot)
++{
++	struct bnxt_qplib_hwq *sq_hwq;
++	struct bnxt_qplib_swq *swq;
++	int cqe_sq_cons = -1;
++	u32 start, last;
 +
-+	rc = bnxt_re_add_device(adev);
- 	if (rc) {
- 		mutex_unlock(&bnxt_re_mutex);
- 		return rc;
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index 49e4a4a..0af09e7 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -809,13 +809,13 @@ static int bnxt_qplib_alloc_init_swq(struct bnxt_qplib_q *que)
- {
- 	int indx;
++	sq_hwq = &sq->hwq;
++
++	start = sq->swq_start;
++	last = sq->swq_last;
++
++	while (last != start) {
++		swq = &sq->swq[last];
++		if (swq->slot_idx  == cqe_slot) {
++			cqe_sq_cons = swq->next_idx;
++			dev_err(&sq_hwq->pdev->dev, "%s: Found cons wqe = %d slot = %d\n",
++				__func__, cqe_sq_cons, cqe_slot);
++			break;
++		}
++
++		last = swq->next_idx;
++	}
++	return cqe_sq_cons;
++}
++
+ static int bnxt_qplib_cq_process_req(struct bnxt_qplib_cq *cq,
+ 				     struct cq_req *hwcqe,
+ 				     struct bnxt_qplib_cqe **pcqe, int *budget,
+@@ -2481,6 +2507,7 @@ static int bnxt_qplib_cq_process_req(struct bnxt_qplib_cq *cq,
+ 	struct bnxt_qplib_qp *qp;
+ 	struct bnxt_qplib_q *sq;
+ 	u32 cqe_sq_cons;
++	int cqe_cons;
+ 	int rc = 0;
  
--	que->swq = kcalloc(que->max_wqe, sizeof(*que->swq), GFP_KERNEL);
-+	que->swq = kcalloc(que->max_sw_wqe, sizeof(*que->swq), GFP_KERNEL);
- 	if (!que->swq)
- 		return -ENOMEM;
- 
- 	que->swq_start = 0;
--	que->swq_last = que->max_wqe - 1;
--	for (indx = 0; indx < que->max_wqe; indx++)
-+	que->swq_last = que->max_sw_wqe - 1;
-+	for (indx = 0; indx < que->max_sw_wqe; indx++)
- 		que->swq[indx].next_idx = indx + 1;
- 	que->swq[que->swq_last].next_idx = 0; /* Make it circular */
- 	que->swq_last = 0;
-@@ -851,7 +851,7 @@ int bnxt_qplib_create_qp1(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	hwq_attr.res = res;
- 	hwq_attr.sginfo = &sq->sg_info;
- 	hwq_attr.stride = sizeof(struct sq_sge);
--	hwq_attr.depth = bnxt_qplib_get_depth(sq);
-+	hwq_attr.depth = bnxt_qplib_get_depth(sq, qp->wqe_mode, false);
- 	hwq_attr.type = HWQ_TYPE_QUEUE;
- 	rc = bnxt_qplib_alloc_init_hwq(&sq->hwq, &hwq_attr);
- 	if (rc)
-@@ -879,7 +879,7 @@ int bnxt_qplib_create_qp1(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 		hwq_attr.res = res;
- 		hwq_attr.sginfo = &rq->sg_info;
- 		hwq_attr.stride = sizeof(struct sq_sge);
--		hwq_attr.depth = bnxt_qplib_get_depth(rq);
-+		hwq_attr.depth = bnxt_qplib_get_depth(rq, qp->wqe_mode, false);
- 		hwq_attr.type = HWQ_TYPE_QUEUE;
- 		rc = bnxt_qplib_alloc_init_hwq(&rq->hwq, &hwq_attr);
- 		if (rc)
-@@ -1011,7 +1011,7 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	hwq_attr.res = res;
- 	hwq_attr.sginfo = &sq->sg_info;
- 	hwq_attr.stride = sizeof(struct sq_sge);
--	hwq_attr.depth = bnxt_qplib_get_depth(sq);
-+	hwq_attr.depth = bnxt_qplib_get_depth(sq, qp->wqe_mode, true);
- 	hwq_attr.aux_stride = psn_sz;
- 	hwq_attr.aux_depth = psn_sz ? bnxt_qplib_set_sq_size(sq, qp->wqe_mode)
- 				    : 0;
-@@ -1052,7 +1052,7 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 		hwq_attr.res = res;
- 		hwq_attr.sginfo = &rq->sg_info;
- 		hwq_attr.stride = sizeof(struct sq_sge);
--		hwq_attr.depth = bnxt_qplib_get_depth(rq);
-+		hwq_attr.depth = bnxt_qplib_get_depth(rq, qp->wqe_mode, false);
- 		hwq_attr.aux_stride = 0;
- 		hwq_attr.aux_depth = 0;
- 		hwq_attr.type = HWQ_TYPE_QUEUE;
-@@ -2492,7 +2492,7 @@ static int bnxt_qplib_cq_process_req(struct bnxt_qplib_cq *cq,
- 	}
- 	sq = &qp->sq;
- 
--	cqe_sq_cons = le16_to_cpu(hwcqe->sq_cons_idx) % sq->max_wqe;
-+	cqe_sq_cons = le16_to_cpu(hwcqe->sq_cons_idx) % sq->max_sw_wqe;
- 	if (qp->sq.flushed) {
- 		dev_dbg(&cq->hwq.pdev->dev,
+ 	qp = (struct bnxt_qplib_qp *)((unsigned long)
+@@ -2498,6 +2525,19 @@ static int bnxt_qplib_cq_process_req(struct bnxt_qplib_cq *cq,
  			"%s: QP in Flush QP = %p\n", __func__, qp);
-@@ -2882,7 +2882,7 @@ static int bnxt_qplib_cq_process_terminal(struct bnxt_qplib_cq *cq,
- 	cqe_cons = le16_to_cpu(hwcqe->sq_cons_idx);
- 	if (cqe_cons == 0xFFFF)
- 		goto do_rq;
--	cqe_cons %= sq->max_wqe;
-+	cqe_cons %= sq->max_sw_wqe;
- 
- 	if (qp->sq.flushed) {
- 		dev_dbg(&cq->hwq.pdev->dev,
+ 		goto done;
+ 	}
++
++	if (__is_err_cqe_for_var_wqe(qp, hwcqe->status)) {
++		cqe_cons = bnxt_qplib_get_cqe_sq_cons(sq, hwcqe->sq_cons_idx);
++		if (cqe_cons < 0) {
++			dev_err(&cq->hwq.pdev->dev, "%s: Wrong SQ cons cqe_slot_indx = %d\n",
++				__func__, hwcqe->sq_cons_idx);
++			goto done;
++		}
++		cqe_sq_cons = cqe_cons;
++		dev_err(&cq->hwq.pdev->dev, "%s: cqe_sq_cons = %d swq_last = %d swq_start = %d\n",
++			__func__, cqe_sq_cons, sq->swq_last, sq->swq_start);
++	}
++
+ 	/* Require to walk the sq's swq to fabricate CQEs for all previously
+ 	 * signaled SWQEs due to CQE aggregation from the current sq cons
+ 	 * to the cqe_sq_cons
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-index 56538b9..f54d7a0 100644
+index f54d7a0..2e7a4fd 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-@@ -251,6 +251,7 @@ struct bnxt_qplib_q {
- 	struct bnxt_qplib_db_info	dbinfo;
- 	struct bnxt_qplib_sg_info	sg_info;
- 	u32				max_wqe;
-+	u32				max_sw_wqe;
- 	u16				wqe_size;
- 	u16				q_full_delta;
- 	u16				max_sge;
-@@ -586,15 +587,22 @@ static inline void bnxt_qplib_swq_mod_start(struct bnxt_qplib_q *que, u32 idx)
- 	que->swq_start = que->swq[idx].next_idx;
+@@ -649,4 +649,14 @@ static inline __le64 bnxt_re_update_msn_tbl(u32 st_idx, u32 npsn, u32 start_psn)
+ 		(((start_psn) << SQ_MSN_SEARCH_START_PSN_SFT) &
+ 		SQ_MSN_SEARCH_START_PSN_MASK));
  }
- 
--static inline u32 bnxt_qplib_get_depth(struct bnxt_qplib_q *que)
-+static inline u32 bnxt_qplib_get_depth(struct bnxt_qplib_q *que, u8 wqe_mode, bool is_sq)
- {
--	return (que->wqe_size * que->max_wqe) / sizeof(struct sq_sge);
-+	u32 slots;
 +
-+	/* Queue depth is the number of slots. */
-+	slots = (que->wqe_size * que->max_wqe) / sizeof(struct sq_sge);
-+	/* For variable WQE mode, need to align the slots to 256 */
-+	if (wqe_mode == BNXT_QPLIB_WQE_MODE_VARIABLE && is_sq)
-+		slots = ALIGN(slots, BNXT_VAR_MAX_SLOT_ALIGN);
-+	return slots;
- }
- 
- static inline u32 bnxt_qplib_set_sq_size(struct bnxt_qplib_q *que, u8 wqe_mode)
- {
- 	return (wqe_mode == BNXT_QPLIB_WQE_MODE_STATIC) ?
--		que->max_wqe : bnxt_qplib_get_depth(que);
-+		que->max_wqe : bnxt_qplib_get_depth(que, wqe_mode, true);
- }
- 
- static inline u32 bnxt_qplib_set_sq_max_slot(u8 wqe_mode)
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-index 9328db9..ca2aa35 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-@@ -95,11 +95,13 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
- 	struct bnxt_qplib_cmdqmsg msg = {};
- 	struct creq_query_func_resp_sb *sb;
- 	struct bnxt_qplib_rcfw_sbuf sbuf;
-+	struct bnxt_qplib_chip_ctx *cctx;
- 	struct cmdq_query_func req = {};
- 	u8 *tqm_alloc;
- 	int i, rc;
- 	u32 temp;
- 
-+	cctx = rcfw->res->cctx;
- 	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
- 				 CMDQ_BASE_OPCODE_QUERY_FUNC,
- 				 sizeof(req));
-@@ -133,8 +135,9 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw,
- 	 * reporting the max number
- 	 */
- 	attr->max_qp_wqes -= BNXT_QPLIB_RESERVED_QP_WRS + 1;
--	attr->max_qp_sges = bnxt_qplib_is_chip_gen_p5_p7(rcfw->res->cctx) ?
--			    6 : sb->max_sge;
++static inline bool __is_var_wqe(struct bnxt_qplib_qp *qp)
++{
++	return (qp->wqe_mode == BNXT_QPLIB_WQE_MODE_VARIABLE);
++}
 +
-+	attr->max_qp_sges = cctx->modes.wqe_mode == BNXT_QPLIB_WQE_MODE_VARIABLE ?
-+			    min_t(u32, sb->max_sge_var_wqe, BNXT_VAR_MAX_SGE) : 6;
- 	attr->max_cq = le32_to_cpu(sb->max_cq);
- 	attr->max_cq_wqes = le32_to_cpu(sb->max_cqe);
- 	attr->max_cq_sges = attr->max_qp_sges;
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-index 16a67d7..a633e2a 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-@@ -40,6 +40,7 @@
- #ifndef __BNXT_QPLIB_SP_H__
- #define __BNXT_QPLIB_SP_H__
- 
-+#include <rdma/bnxt_re-abi.h>
- #define BNXT_QPLIB_RESERVED_QP_WRS	128
- 
- struct bnxt_qplib_dev_attr {
-@@ -351,4 +352,9 @@ int bnxt_qplib_qext_stat(struct bnxt_qplib_rcfw *rcfw, u32 fid,
- int bnxt_qplib_modify_cc(struct bnxt_qplib_res *res,
- 			 struct bnxt_qplib_cc_param *cc_param);
- 
-+#define BNXT_VAR_MAX_WQE       4352
-+#define BNXT_VAR_MAX_SLOT_ALIGN 256
-+#define BNXT_VAR_MAX_SGE        13
-+#define BNXT_RE_MAX_RQ_WQES     65536
-+
- #endif /* __BNXT_QPLIB_SP_H__*/
++static inline bool __is_err_cqe_for_var_wqe(struct bnxt_qplib_qp *qp, u8 status)
++{
++	return (status != CQ_REQ_STATUS_OK) && __is_var_wqe(qp);
++}
+ #endif /* __BNXT_QPLIB_FP_H__ */
 -- 
 2.5.5
 
