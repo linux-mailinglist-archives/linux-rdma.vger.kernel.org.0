@@ -1,159 +1,114 @@
-Return-Path: <linux-rdma+bounces-4358-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4360-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C086951518
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2024 09:15:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C38D951609
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2024 10:03:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68AB4B26FDA
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2024 07:15:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ECD31C212E7
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Aug 2024 08:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7C113BC26;
-	Wed, 14 Aug 2024 07:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6888213AA3F;
+	Wed, 14 Aug 2024 08:03:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="baUNqTM0"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="NvOPi3C1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE2813A418
-	for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2024 07:14:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0EF4D8B8
+	for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2024 08:02:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723619694; cv=none; b=Nmx7HpzA9BZAQOHUGHE0QzKj5tS+bbByxGC8MykqcqeOFRt51cDQ4kSXAt8RuMYszr5ji6yWeL8ofCulTob2KUpTs1xlh6TilrzqpMkG6k1WLXyHNM3pj98zjI8xAR5gFFQYC8Uw7D3T/4dYY0CvbXPSs2wsXxhu/2ptGLh+lOk=
+	t=1723622580; cv=none; b=JC0fTDmmpOkInsA/8vOBbS/xznyUn7k93JxD0NbSs+ukFTwsJLtMRsAWcda09pV6P3rIGtxZYqCdqDweeF1+8J8K8cH2dxL6HGel7V6w6IZs9uMeyMre2wtdjg1pWKVMluY+l3FIGWGC/A28QWMGBZqAG9VPeaVz1r9s3bLTQpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723619694; c=relaxed/simple;
-	bh=6yPA/+naAsZnFRxGSIa3POveZV8QV3kkzHQ6Vv3c3Vw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BfBug89nbrKNTjG18QdnPVFJyLLp1JWbnhPWZG75xBiwGbzSS9xyrRttg5EdnjkYNhnN24dxu39Gl4Wt9mMJ5rpdij6UXB4wQxKjqDF7iTbib4WB6AKw7t/8H9y7s3/npw/KnH4x22kJ4ufHQvab1+y+lEf+CdB95/savPPljTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=baUNqTM0; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3684e8220f9so312466f8f.1
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2024 00:14:51 -0700 (PDT)
+	s=arc-20240116; t=1723622580; c=relaxed/simple;
+	bh=ngU8+9mOa3fXCg2JZ9IGPOa4WZElReWFz1L7oZb+mLw=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=buqrbVav6U1zDLQNQwHi9TAiG9CPs+D7LErF38Liz0xWzD8QdNhuC+n7f8rdsPaK4PvFHsmq7Pf4B/ZlIGSk9PZv56BTKxYbFEw0aOLe+CWWQmEUAdKo8GnKM0x0zp2tZFhSu/Pe/z6wXc0HxPuwV5diVFLTLIAXHD45qMCs9EM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=NvOPi3C1; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-70d28023accso5092239b3a.0
+        for <linux-rdma@vger.kernel.org>; Wed, 14 Aug 2024 01:02:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1723619690; x=1724224490; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=snr1RwI8r35tpJfYm30yYMDnFOSDHF5r97Sqomh+D38=;
-        b=baUNqTM0QpCQ1WAR8+3cqSqou+z5ix0GdCfhOwpKtKf+o+Mmx5a0j2WnYcMY5e5DEV
-         6jNnsoMDRYipCw3fDY5Hf5qeEeorJtEdkMriS2PV8MMlKdKM1XZjgUNVTVlExx0GK2Nu
-         sXZIlAUiNPcL0tMErM9Q08UqmKsjDwnKWv0Qc=
+        d=broadcom.com; s=google; t=1723622578; x=1724227378; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AOr17eOUAukT4ZNV4oRUTa8xjCw7HnYh6wkbvJ/pb8E=;
+        b=NvOPi3C1pkhRY8/KT+qIYS3mRVv8jy6wipk1i1qZCDkeLtkSjYNIDmQqNj5kIEM4wz
+         bZ3HgJ1+FHqAGPwG9O52ZuzRQFJo+u7oMGw45YthgOjhtwC5vUkg3zxeNXTodA3n56uy
+         kJ3NnpZS7yEaeytlfPGwn+/CAURau8xAH2N0c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723619690; x=1724224490;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=snr1RwI8r35tpJfYm30yYMDnFOSDHF5r97Sqomh+D38=;
-        b=oGZZwNLrBKMBDqVZq1dG5E5K79NF+Bzg45Jrq23Vbq+hkclujRChUbzYpBdHWeGwmP
-         H++TFyBe04guq3RMn5+CbzhW+qE+IDJ9xR6/PfzqEH8mfQsRu6tcfytrjh8qzfmVLSih
-         1vVfrZadbhkfh4lGHLJGQXkeO78dpwoQxtxmW4bLnRyanSgfWdTmsovFKFY42nP+4st/
-         wf3cBQHF+zq6QcEJtL4+TtO6yOgMsDcCXmXkUZGTgW+cEleELXmIBODmsHIz4O3gXlIP
-         Nxra6wy00si3VKDWnhOJ4yak+fPuqo+7uqAQOzFe7IUhz4Ggv2P2EztT01N1YKt09mal
-         Rv0A==
-X-Forwarded-Encrypted: i=1; AJvYcCWjd9FwzbKj7PGn3vyth6Uu/y7OQVR179oQ6h8hSIOXQQ5pu1BsyCiS5LXwhSjfjEE+h/m5Rfmyc6QnbLBuWQ/yyaz/JwaXavIRPw==
-X-Gm-Message-State: AOJu0YwEuHoyhGsBwSXhuorlZ/0fEeOipgdaPh8gJXGeBTEegj9ZDJde
-	9Rpiqcq+clo+DixXM9gXm5JKdrJiSzIw0kv9ieHvEumWhPkbK5Q3cxITb1UTZ08=
-X-Google-Smtp-Source: AGHT+IGthAjObIOxhvEgDlsiHPqABWqYE1bIWj6p19KBBIYNbbJG8nCXI6l4Kn6mJsSbPxQNarJNzg==
-X-Received: by 2002:adf:fb4c:0:b0:35f:314a:229c with SMTP id ffacd0b85a97d-371796915bemr790558f8f.28.1723619690346;
-        Wed, 14 Aug 2024 00:14:50 -0700 (PDT)
-Received: from LQ3V64L9R2.home ([2a02:c7c:f016:fc00:7516:6986:2fe8:5b8f])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36e4cfee676sm12111994f8f.49.2024.08.14.00.14.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2024 00:14:50 -0700 (PDT)
-Date: Wed, 14 Aug 2024 08:14:48 +0100
-From: Joe Damato <jdamato@fastly.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Jiri Pirko <jiri@resnulli.us>, Leon Romanovsky <leon@kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:MELLANOX MLX4 core VPI driver" <linux-rdma@vger.kernel.org>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Shailend Chand <shailend@google.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Ziwei Xiao <ziweixiao@google.com>
-Subject: Re: [RFC net-next 0/6] Cleanup IRQ affinity checks in several drivers
-Message-ID: <ZrxZaHGDTO3ohHFH@LQ3V64L9R2.home>
-Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
-	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Jiri Pirko <jiri@resnulli.us>, Leon Romanovsky <leon@kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:MELLANOX MLX4 core VPI driver" <linux-rdma@vger.kernel.org>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Shailend Chand <shailend@google.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Ziwei Xiao <ziweixiao@google.com>
-References: <20240812145633.52911-1-jdamato@fastly.com>
- <20240813171710.599d3f01@kernel.org>
+        d=1e100.net; s=20230601; t=1723622578; x=1724227378;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AOr17eOUAukT4ZNV4oRUTa8xjCw7HnYh6wkbvJ/pb8E=;
+        b=FC5OsRS3jPPwp//0pPtwoIkXdCte4QNiYKtu610GPr8F9ZQLkEP1jELaZ955xCDYPo
+         4auySugBIj+4d26B0aWi5P0Tk3BI7DS4Z2Z/GDELxVMy0K1V1cXXuUnkYN//8wMlapkK
+         G8j9CdTOBznuLuvi5FYlg3nyC3p0A/r66neiD4YHSPRpL3fBgieLftp/cZqsmLJtNfdT
+         ood00YFHCuvDxBHI2lzxUbDg1bhvMXeSuH2t9fVxv/nIW8aHLghaC6HHWZ/o2QMuOxRP
+         qZO3XM0C4NJln3lp3rcV4jLa0TG3N3m53m3yIhPw5YTTrH4eD6QEcOpTxaJ3IZnPe1oj
+         1CCw==
+X-Gm-Message-State: AOJu0YznO+gKUVTKamUjM9Q7bN7GfznbpZcCEvv/V2MzlwDIZXL31SEn
+	FqxMj22xH73L9GkELp8UokgxPdh52gf8fJCbgJYkFPAJlgD9RvVrxJ/TCbzB5+Sqdt0k4w6gIBk
+	=
+X-Google-Smtp-Source: AGHT+IGKcQFhsUeIxp6waTUVrkhRWyd/l35+wuknoZzd+VY8jXCpXJnX5RKf1sHb1jkF8dlPZ+9KrQ==
+X-Received: by 2002:a05:6a00:21c9:b0:706:6bdc:4de5 with SMTP id d2e1a72fcca58-7126710d9f2mr2518843b3a.7.1723622577589;
+        Wed, 14 Aug 2024 01:02:57 -0700 (PDT)
+Received: from sxavier-dev.dhcp.broadcom.net ([115.110.236.218])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e5ac40e0sm6782479b3a.216.2024.08.14.01.02.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Aug 2024 01:02:56 -0700 (PDT)
+From: Selvin Xavier <selvin.xavier@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v2 0/4] RDMA/bnxt_re: Use variable size Work Queue entry for Gen P7 adapters
+Date: Wed, 14 Aug 2024 00:41:58 -0700
+Message-Id: <1723621322-6920-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240813171710.599d3f01@kernel.org>
 
-On Tue, Aug 13, 2024 at 05:17:10PM -0700, Jakub Kicinski wrote:
-> On Mon, 12 Aug 2024 14:56:21 +0000 Joe Damato wrote:
-> > Several drivers make a check in their napi poll functions to determine
-> > if the CPU affinity of the IRQ has changed. If it has, the napi poll
-> > function returns a value less than the budget to force polling mode to
-> > be disabled, so that it can be rescheduled on the correct CPU next time
-> > the softirq is raised.
-> 
-> Any reason not to use the irq number already stored in napi_struct ?
+Enable the Variable size Work Queue entry support for Gen P7 adapters. This would
+help in the better utilization of the queue memory and pci bandwidth due to the
+smaller send queue Work entries.
 
-Thanks for taking a look.
+Please review and apply.
 
-IIUC, that's possible if i40e, iavf, and gve are updated to call
-netif_napi_set_irq first, which I could certainly do.
+Thanks,
+Selvin Xavier
 
-But as Stanislav points out, I would be adding a call to
-irq_get_effective_affinity_mask in the hot path where one did not
-exist before for 4 of 5 drivers.
+v1 -> v2:
+  Fixing the mail id of the signed-off in the commit message.
+  No other functional changes
 
-In that case, it might make more sense to introduce:
 
-  bool napi_affinity_no_change(const struct cpumask *aff_mask)
+Selvin Xavier (4):
+  RDMA/bnxt_re: Add support for Variable WQE in Genp7 adapters
+  RDMA/bnxt_re: Get the WQE index from slot index while completing the
+    WQEs
+  RDMA/bnxt_re: Handle variable WQE support for user applications
+  RDMA/bnxt_re: Enable variable size WQEs for user space applications
 
-instead and the drivers which have a cached mask can pass it in and
-gve can be updated later to cache it.
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 119 +++++++++++++++++++------------
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h |  16 ++++-
+ drivers/infiniband/hw/bnxt_re/main.c     |  21 +++---
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c |  58 ++++++++++++---
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h |  24 ++++++-
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c |   7 +-
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h |   6 ++
+ include/uapi/rdma/bnxt_re-abi.h          |   7 ++
+ 8 files changed, 186 insertions(+), 72 deletions(-)
 
-Not sure how crucial avoiding the irq_get_effective_affinity_mask
-call is; I would guess maybe some driver owners would object to
-adding a new call in the hot path where one didn't exist before.
+-- 
+2.5.5
 
-What do you think?
 
