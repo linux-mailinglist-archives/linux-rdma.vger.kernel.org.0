@@ -1,162 +1,312 @@
-Return-Path: <linux-rdma+bounces-4391-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4392-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DF369547A0
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2024 13:12:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1A07954920
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2024 14:50:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 472B7281FF4
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2024 11:12:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70E051F23552
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2024 12:50:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC7A31990BD;
-	Fri, 16 Aug 2024 11:12:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143CF1B32B9;
+	Fri, 16 Aug 2024 12:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bzSJIscm"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uZSjHWHE"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1D9197A95
-	for <linux-rdma@vger.kernel.org>; Fri, 16 Aug 2024 11:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C20156F34
+	for <linux-rdma@vger.kernel.org>; Fri, 16 Aug 2024 12:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723806749; cv=none; b=u68Smv2GC3JBJUn+TerXu2m9pNofxloeecIexaj7f/DcJHfiquSGQJRzp337B64ZZb1NnoEWkuaoATgv+netpH5rmg5DGkZGmTuFlh/5TbhOoH3qQ6cXF5t5So6oSbnoJJxn9YXV032C+tnTvH8hRlvDQDeN5ltXvlnUdligBdo=
+	t=1723812618; cv=none; b=HJsB9o4vFxppFwnQuF0t4H4AxIuNAMtbyvB4WR3ARrCzI0G/d5Hkm0ZERNk+yucO7tsTrY5T3t1jIPwGYT3Mp5qPMT14L4mD/0go76qOpgLpLMhhGsJ8khOSObiAE1POCw17ccEVs8NrUDmKDpw4Zk+ZPv9eiG2wKozGFp3DkrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723806749; c=relaxed/simple;
-	bh=ev8gItlxT8GfFSSM6MbqNb6Y6y6p896g9CJuhyNyxNM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kY+X5wRTWnAMWj+b34bQHRSaCqcACTqPoWWQ2RmBGXoNnJbRJ8sEQDLk94EVbIJy1Ix+C2IDVdK2QHrGteAIF3S7rB/hqv2+he3ob9zHlPJOpKh6MAv3rQNalEJw8LNNx9esYvCyDApzoHB/yGFupexiWvZOVnXwLmtDV0e7moA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bzSJIscm; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5b8c2a6135eso2933605a12.0
-        for <linux-rdma@vger.kernel.org>; Fri, 16 Aug 2024 04:12:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1723806746; x=1724411546; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vu6p4NVjd5a5X5kDuNbFrcpGswZu1Bkp/8WsnSo57I8=;
-        b=bzSJIscmpaP6twqCKbKIVaLhtDGmWGORz1qMPcmN5aTxNMK/+WnyN0H8KT4FHNl39w
-         Djfj+iuDFg8stp10RdVW7yBVPOTfPH8ul+oC2Z14M9dIGCLZ2goGN8eg7FrWWHRmlSl9
-         JgsThPqSDnUm0xVo/MHBW32m50ae1Lktx5EeY2Rxsgdb4scdB70lBoIbSZCk7Gzim69J
-         nROz4+QTXGmMUYwUK4a/bfslCg54gY5+1ozPZcKI5PIF6hyI9DRKFhjXE36Y0y7aOMof
-         WoJi+NHX4gK03893leh6Y7uGgvJdRQaW22C3ERC8N9t8iOCz70I/uFVIEZidcKjapzRk
-         e/vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723806746; x=1724411546;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vu6p4NVjd5a5X5kDuNbFrcpGswZu1Bkp/8WsnSo57I8=;
-        b=kJPMNMIGm475rXD8v9P42QQe76UrpJXF5+sYtyChunUdSMU7ox+rNI+AQmC3LyNc61
-         1V/QE4+KNdNWcVazddgb1H7oB5VSCka8IXZP+Jy89ar3jPekNyAU+oBtv0DA20a88aMB
-         3HWtPvjyfJSHXI8n3veYMNeXj/tLnBzO2OszvfmT013rYBor8DPeH0nYxSrCjAKsuMr/
-         wZjgP93BfRzEWNmsYds6Bgonup0e/l/ygH3e8t3Acle7yfqd+W/wSFvrY+1YgQ8ireGo
-         qITPqoMWq2ONkNQcoyuKb28CEGajNtzYZUY3P/xyp2K1IQQv2cWPPMN4VO4FaJTqu4cr
-         9B/w==
-X-Forwarded-Encrypted: i=1; AJvYcCXS3VQ/42bhm4foBxGvaqBZe03WixRr1iSGc1F0aRap/0bVAvBk9yPWSmLVO5/kM7zQRTdx/bxWtefpOQgNaOyThMu4fxhv6USJhA==
-X-Gm-Message-State: AOJu0YzFxi53I939twFslJbRlRIx0F+k/ItOyBK6TDximBPvUeK962Xe
-	pIfGabl3Ic8dgveVGrYKZnMEhPdCcoD0ZXlGgoTUmIEczEMSGhDeGQEy70i7cAo=
-X-Google-Smtp-Source: AGHT+IHrZPj0GDl8aLs3V6+bDceZfINTrVKI0dshA6qcSm27LFmTvVpr+cYRN/sN4aTRDpPHirLLag==
-X-Received: by 2002:a05:6402:520d:b0:57d:455:d395 with SMTP id 4fb4d7f45d1cf-5beb3a84f4cmr5719044a12.7.1723806745762;
-        Fri, 16 Aug 2024 04:12:25 -0700 (PDT)
-Received: from ?IPV6:2a07:de40:a101:3:ce70:3e6f:3b9c:9125? (megane.afterburst.com. [2a01:4a0:11::2])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5bebbde7cd4sm2111869a12.39.2024.08.16.04.12.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Aug 2024 04:12:25 -0700 (PDT)
-Message-ID: <2fd48f87-2521-4c34-8589-dbb7e91bb1c8@suse.com>
-Date: Fri, 16 Aug 2024 13:12:24 +0200
+	s=arc-20240116; t=1723812618; c=relaxed/simple;
+	bh=/uS1AuChpbSu/aD9wkwNx4cv2zQQfUXKmx8MBsPEb2g=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ea2JgNG+BRYCQ7UVrO/DHHb2zhGXPAHjAqUqFeCh2uqoM0DCg5hETV1ezV9whTw56IhPVUEbYXSYAEfOMoMnz62fztw2T6h+ovXbCBWwBY63SC6aLrOlOrlxwFZSH/Z+JDW6T2+TQcl42pveq+Ry4a5KwtyeepmORXhH0uV8t0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uZSjHWHE; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <717ccc9e-87e0-49da-a26c-d8a0d3c5d8f8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1723812613;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sdRMTj+bHxpol1B7Cmjnd08Tz8OO/sjoF2A7Xiz6M1w=;
+	b=uZSjHWHEpXHNfcdibQUZ7IHxEeJ0S/3RyMUIxnNgrHS7BCa+vZryyLdOaKZA1M3CzCD3mI
+	0d9+5bTG7F11xYOydizioHkXiTKRj9tdse6jpfFbp2fu3ptsb9ESxUFQrbpmjDHB+uWN3n
+	qAPGUkwlC2unQ+7ZRXtJsPCTmknHqVQ=
+Date: Fri, 16 Aug 2024 20:49:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [MAINTAINERS SUMMIT] Device Passthrough Considered Harmful?
-To: Dan Williams <dan.j.williams@intel.com>, Jason Gunthorpe
- <jgg@nvidia.com>, James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- ksummit@lists.linux.dev, linux-cxl@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org
-References: <668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch>
- <20240726142731.GG28621@pendragon.ideasonboard.com>
- <66a43c48cb6cc_200582942d@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <20240728111826.GA30973@pendragon.ideasonboard.com>
- <2024072802-amendable-unwatched-e656@gregkh>
- <2b4f6ef3fc8e9babf3398ed4a301c2e4964b9e4a.camel@HansenPartnership.com>
- <2024072909-stopwatch-quartet-b65c@gregkh>
- <206bf94bb2eb7ca701ffff0d9d45e27a8b8caed3.camel@HansenPartnership.com>
- <20240801144149.GO3371438@nvidia.com>
- <66b2ba7150128_c1448294fe@dwillia2-xfh.jf.intel.com.notmuch>
-Content-Language: en-US
-From: Hannes Reinecke <hare@suse.com>
-In-Reply-To: <66b2ba7150128_c1448294fe@dwillia2-xfh.jf.intel.com.notmuch>
+Subject: Re: [linus:master] [RDMA/iwcm] aee2424246:
+ WARNING:at_kernel/workqueue.c:#check_flush_dependency
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+To: kernel test robot <oliver.sang@intel.com>,
+ Bart Van Assche <bvanassche@acm.org>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
+ Leon Romanovsky <leon@kernel.org>,
+ Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ linux-rdma@vger.kernel.org
+References: <202408151633.fc01893c-oliver.sang@intel.com>
+ <c64a2f6e-ea18-4e8d-b808-0f1732c6d004@linux.dev>
+ <4254277c-2037-44bc-9756-c32b41c01bdf@linux.dev>
+In-Reply-To: <4254277c-2037-44bc-9756-c32b41c01bdf@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 8/7/24 02:06, Dan Williams wrote:
-> Jason Gunthorpe wrote:
->> On Wed, Jul 31, 2024 at 08:33:36AM -0400, James Bottomley wrote:
+
+在 2024/8/16 13:27, Zhu Yanjun 写道:
+>
+> 在 2024/8/16 12:14, Zhu Yanjun 写道:
 >>
->>> For the specific issue of discussing fwctl, the Plumbers session would
->>> be better because it can likely gather all interested parties.
+>> 在 2024/8/16 9:07, kernel test robot 写道:
+>>>
+>>> Hello,
+>>>
+>>> kernel test robot noticed 
+>>> "WARNING:at_kernel/workqueue.c:#check_flush_dependency" on:
+>>>
+>>> commit: aee2424246f9f1dadc33faa78990c1e2eb7826e4 ("RDMA/iwcm: Fix a 
+>>> use-after-free related to destroying CM IDs")
+>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>>>
+>>> [test failed on linus/master 5189dafa4cf950e675f02ee04b577dfbbad0d9b1]
+>>> [test failed on linux-next/master 
+>>> 61c01d2e181adfba02fe09764f9fca1de2be0dbe]
+>>>
+>>> in testcase: blktests
+>>> version: blktests-x86_64-775a058-1_20240702
+>>> with following parameters:
+>>>
+>>>     disk: 1SSD
+>>>     test: nvme-group-01
+>>>     nvme_trtype: rdma
 >>
->> Keep in mind fwctl is already at the end of a long journey of
->> conference discussions and talks spanning 3 years back now. It now
->> represents the generalized consensus between multiple driver
->> maintainers for at least one side of the debate.
+>> Hi, Bart && Jason && Leon
 >>
->> There was also a fwctl presentation at netdev conf a few weeks ago.
+>> It seems that it is related with WQ_MEM_RECLAIM.
 >>
->> In as far as the cross-subsystem NAK, I don't expect more discussion
->> to result in any change to people's opinions. RDMA side will continue
->> to want access to the shared device FW, and netdev side will continue
->> to want to deny access to the shared device FW.
-> 
-> As I mentioned before, this is what I hoped to mediate. The on-list
-> discussion has seem to hit a deficit of trust roadblock, not a deficit
-> of technical merit.
-> 
-> All I can say is the discussion is worth a try. With respect to a
-> precedent for a stalemate moving forward, I point to the MGLRU example.
-> That proposal had all of the technical merit on the list, but was not
-> making any clear progress to being merged. It was interesting to watch
-> that all thaw in real time at LSF/MM (2022) where in person
-> collaboration yielded strategy concessions, and mutual understanding
-> that email was never going to produce.
-> 
-Well, my experience does not _quite_ match this, but I fully support
-the attempt to resolve it.
+>> Not sure if adding WQ_MEM_RECLAIM to iw_cm_wq can fix this or not.
+>
+> The commit is as below.
 
-FWIW, we (ie 'me' with my SUSE distro hat on) are facing similar issues;
-every now and again vendors come along asking us to take this very 
-important out-of-tree module to allow them to configure their device.
-The SCSI stack is _littered_ with vendor-specific commands allowing them 
-to reprogram their devices (had a fun experiment once reflashing a 
-megaraid HBA to suddenly show up as mpt2sas ... try to code that in 
-command effects ...)
+Hi, kernel test robot
 
-So yes, I'd be in favour having an interface for this kind of stuff.
-Less sure if there is a generic interface to be found; what we should
-try to avoid is having an too generic one (aka: send command with this 
-payload, get this result, and heaven knows what it did to the device).
-That would surely be useful, but security and operational aspects of
-that are a nightmare.
+Please help to make tests with the following commits.
 
-I'd be happy to participate on the discussion at LPC if and when it happens.
+Please let us know the result.
 
-Cheers,
+>
+> diff --git a/drivers/infiniband/core/iwcm.c 
+> b/drivers/infiniband/core/iwcm.c
+> index 1a6339f3a63f..7e3a55349e10 100644
+> --- a/drivers/infiniband/core/iwcm.c
+> +++ b/drivers/infiniband/core/iwcm.c
+> @@ -1182,7 +1182,7 @@ static int __init iw_cm_init(void)
+>         if (ret)
+>                 return ret;
+>
+> -       iwcm_wq = alloc_ordered_workqueue("iw_cm_wq", 0);
+> +       iwcm_wq = alloc_ordered_workqueue("iw_cm_wq", WQ_MEM_RECLAIM);
+>         if (!iwcm_wq)
+>                 goto err_alloc;
 
-Hannes
+Best Regards,
+
+Zhu Yanjun
+
+>
+> Zhu Yanjun
+>
+>>
+>> Best Regards,
+>>
+>> Zhu Yanjun
+>>
+>>>
+>>>
+>>>
+>>> compiler: gcc-12
+>>> test machine: 224 threads 2 sockets Intel(R) Xeon(R) Platinum 8480+ 
+>>> (Sapphire Rapids) with 256G memory
+>>>
+>>> (please refer to attached dmesg/kmsg for entire log/backtrace)
+>>>
+>>>
+>>>
+>>> If you fix the issue in a separate patch/commit (i.e. not just a new 
+>>> version of
+>>> the same patch/commit), kindly add following tags
+>>> | Reported-by: kernel test robot <oliver.sang@intel.com>
+>>> | Closes: 
+>>> https://lore.kernel.org/oe-lkp/202408151633.fc01893c-oliver.sang@intel.com
+>>>
+>>>
+>>> [  125.048981][ T1430] ------------[ cut here ]------------
+>>> [  125.056856][ T1430] workqueue: WQ_MEM_RECLAIM 
+>>> nvme-reset-wq:nvme_rdma_reset_ctrl_work [nvme_rdma] is flushing 
+>>> !WQ_MEM_RECLAIM iw_cm_wq:0x0
+>>> [ 125.056873][ T1430] WARNING: CPU: 2 PID: 1430 at 
+>>> kernel/workqueue.c:3706 check_flush_dependency 
+>>> (kernel/workqueue.c:3706 (discriminator 9))
+>>> [  125.085014][ T1430] Modules linked in: siw ib_uverbs nvmet_rdma 
+>>> nvmet nvme_rdma nvme_fabrics rdma_cm iw_cm ib_cm ib_core dimlib 
+>>> dm_multipath btrfs blake2b_generic intel_rapl_msr xor 
+>>> intel_rapl_common zstd_compress intel_uncore_frequency 
+>>> intel_uncore_frequency_common raid6_pq libcrc32c 
+>>> x86_pkg_temp_thermal intel_powerclamp coretemp nvme nvme_core ast 
+>>> t10_pi kvm_intel qat_4xxx drm_shmem_helper mei_me kvm 
+>>> crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel 
+>>> sha512_ssse3 rapl intel_cstate intel_uncore dax_hmem intel_th_gth 
+>>> intel_qat crc64_rocksoft_generic dh_generic intel_th_pci idxd crc8 
+>>> i2c_i801 crc64_rocksoft mei intel_vsec idxd_bus drm_kms_helper 
+>>> intel_th authenc crc64 i2c_smbus i2c_ismt ipmi_ssif wmi 
+>>> acpi_power_meter ipmi_si acpi_ipmi ipmi_devintf ipmi_msghandler 
+>>> acpi_pad binfmt_misc loop fuse drm dm_mod ip_tables [last unloaded: 
+>>> ib_uverbs]
+>>> [  125.176472][ T1430] CPU: 2 PID: 1430 Comm: kworker/u898:26 Not 
+>>> tainted 6.10.0-rc1-00015-gaee2424246f9 #1
+>>> [  125.188840][ T1430] Workqueue: nvme-reset-wq 
+>>> nvme_rdma_reset_ctrl_work [nvme_rdma]
+>>> [ 125.199152][ T1430] RIP: 0010:check_flush_dependency 
+>>> (kernel/workqueue.c:3706 (discriminator 9))
+>>> [ 125.207527][ T1430] Code: fa 48 c1 ea 03 80 3c 02 00 0f 85 a8 00 
+>>> 00 00 49 8b 54 24 18 49 8d b5 c0 00 00 00 49 89 e8 48 c7 c7 20 46 08 
+>>> 84 e8 ed 8b f9 ff <0f> 0b e9 93 fd ff ff e8 a1 bf 82 00 e9 80 fd ff 
+>>> ff e8 97 bf 82 00
+>>> All code
+>>> ========
+>>>     0:    fa                       cli
+>>>     1:    48 c1 ea 03              shr    $0x3,%rdx
+>>>     5:    80 3c 02 00              cmpb   $0x0,(%rdx,%rax,1)
+>>>     9:    0f 85 a8 00 00 00        jne    0xb7
+>>>     f:    49 8b 54 24 18           mov    0x18(%r12),%rdx
+>>>    14:    49 8d b5 c0 00 00 00     lea    0xc0(%r13),%rsi
+>>>    1b:    49 89 e8                 mov    %rbp,%r8
+>>>    1e:    48 c7 c7 20 46 08 84     mov $0xffffffff84084620,%rdi
+>>>    25:    e8 ed 8b f9 ff           callq  0xfffffffffff98c17
+>>>    2a:*    0f 0b                    ud2            <-- trapping 
+>>> instruction
+>>>    2c:    e9 93 fd ff ff           jmpq   0xfffffffffffffdc4
+>>>    31:    e8 a1 bf 82 00           callq  0x82bfd7
+>>>    36:    e9 80 fd ff ff           jmpq   0xfffffffffffffdbb
+>>>    3b:    e8 97 bf 82 00           callq  0x82bfd7
+>>>
+>>> Code starting with the faulting instruction
+>>> ===========================================
+>>>     0:    0f 0b                    ud2
+>>>     2:    e9 93 fd ff ff           jmpq   0xfffffffffffffd9a
+>>>     7:    e8 a1 bf 82 00           callq  0x82bfad
+>>>     c:    e9 80 fd ff ff           jmpq   0xfffffffffffffd91
+>>>    11:    e8 97 bf 82 00           callq  0x82bfad
+>>> [  125.231266][ T1430] RSP: 0018:ffa000001375fb88 EFLAGS: 00010282
+>>> [  125.239626][ T1430] RAX: 0000000000000000 RBX: ff11000341233c00 
+>>> RCX: 0000000000000027
+>>> [  125.250304][ T1430] RDX: 0000000000000027 RSI: 0000000000000004 
+>>> RDI: ff110017fc930b08
+>>> [  125.260878][ T1430] RBP: 0000000000000000 R08: 0000000000000001 
+>>> R09: ffe21c02ff926161
+>>> [  125.271664][ T1430] R10: ff110017fc930b0b R11: 0000000000000010 
+>>> R12: ff1100208d2a4000
+>>> [  125.282387][ T1430] R13: ff1100020d87a000 R14: 0000000000000000 
+>>> R15: ff11000341233c00
+>>> [  125.292984][ T1430] FS:  0000000000000000(0000) 
+>>> GS:ff110017fc900000(0000) knlGS:0000000000000000
+>>> [  125.304552][ T1430] CS:  0010 DS: 0000 ES: 0000 CR0: 
+>>> 0000000080050033
+>>> [  125.313446][ T1430] CR2: 00007fa84066aa1c CR3: 000000407c85a005 
+>>> CR4: 0000000000f71ef0
+>>> [  125.324080][ T1430] DR0: 0000000000000000 DR1: 0000000000000000 
+>>> DR2: 0000000000000000
+>>> [  125.334584][ T1430] DR3: 0000000000000000 DR6: 00000000fffe07f0 
+>>> DR7: 0000000000000400
+>>> [  125.345252][ T1430] PKRU: 55555554
+>>> [  125.350876][ T1430] Call Trace:
+>>> [  125.356281][ T1430]  <TASK>
+>>> [ 125.361285][ T1430] ? __warn (kernel/panic.c:693)
+>>> [ 125.367640][ T1430] ? check_flush_dependency 
+>>> (kernel/workqueue.c:3706 (discriminator 9))
+>>> [ 125.375689][ T1430] ? report_bug (lib/bug.c:180 lib/bug.c:219)
+>>> [ 125.382505][ T1430] ? handle_bug (arch/x86/kernel/traps.c:239)
+>>> [ 125.388987][ T1430] ? exc_invalid_op (arch/x86/kernel/traps.c:260 
+>>> (discriminator 1))
+>>> [ 125.395831][ T1430] ? asm_exc_invalid_op 
+>>> (arch/x86/include/asm/idtentry.h:621)
+>>> [ 125.403125][ T1430] ? check_flush_dependency 
+>>> (kernel/workqueue.c:3706 (discriminator 9))
+>>> [ 125.410984][ T1430] ? check_flush_dependency 
+>>> (kernel/workqueue.c:3706 (discriminator 9))
+>>> [ 125.418764][ T1430] __flush_workqueue (kernel/workqueue.c:3970)
+>>> [ 125.426021][ T1430] ? __pfx___might_resched 
+>>> (kernel/sched/core.c:10151)
+>>> [ 125.433431][ T1430] ? destroy_cm_id 
+>>> (drivers/infiniband/core/iwcm.c:375) iw_cm
+>>> [  125.440844][ T2411] /usr/bin/wget -q --timeout=3600 --tries=1 
+>>> --local-encoding=UTF-8 
+>>> http://internal-lkp-server:80/~lkp/cgi-bin/lkp-jobfile-append-var?job_file=/lkp/jobs/scheduled/lkp-spr-2sp1/blktests-1SSD-rdma-nvme-group-01-debian-12-x86_64-20240206.cgz-aee2424246f9-20240809-69442-1dktaed-4.yaml&job_state=running 
+>>> -O /dev/null
+>>> [ 125.441209][ T1430] ? __pfx___flush_workqueue 
+>>> (kernel/workqueue.c:3910)
+>>> [  125.441215][ T2411]
+>>> [ 125.473900][ T1430] ? _raw_spin_lock_irqsave 
+>>> (arch/x86/include/asm/atomic.h:107 
+>>> include/linux/atomic/atomic-arch-fallback.h:2170 
+>>> include/linux/atomic/atomic-instrumented.h:1302 
+>>> include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 
+>>> include/linux/spinlock_api_smp.h:111 kernel/locking/spinlock.c:162)
+>>> [ 125.473909][ T1430] ? __pfx__raw_spin_lock_irqsave 
+>>> (kernel/locking/spinlock.c:161)
+>>> [  125.480265][ T2411] target ucode: 0x2b0004b1
+>>> [ 125.482537][ T1430] _destroy_id 
+>>> (drivers/infiniband/core/cma.c:2044) rdma_cm
+>>> [  125.488511][ T2411]
+>>> [ 125.495072][ T1430] nvme_rdma_free_queue 
+>>> (drivers/nvme/host/rdma.c:656 drivers/nvme/host/rdma.c:650) nvme_rdma
+>>> [  125.500747][ T2411] LKP: stdout: 2876: current_version: 2b0004b1, 
+>>> target_version: 2b0004b1
+>>> [ 125.505827][ T1430] nvme_rdma_reset_ctrl_work 
+>>> (drivers/nvme/host/rdma.c:2180) nvme_rdma
+>>> [ 125.505831][ T1430] process_one_work (kernel/workqueue.c:3231)
+>>> [  125.508377][ T2411]
+>>> [ 125.515122][ T1430] worker_thread (kernel/workqueue.c:3306 
+>>> kernel/workqueue.c:3393)
+>>> [ 125.515127][ T1430] ? __pfx_worker_thread (kernel/workqueue.c:3339)
+>>> [  125.524642][ T2411] check_nr_cpu
+>>> [ 125.531837][ T1430] kthread (kernel/kthread.c:389)
+>>> [  125.537327][ T2411]
+>>> [ 125.539864][ T1430] ? __pfx_kthread (kernel/kthread.c:342)
+>>> [  125.545392][ T2411] CPU(s): 224
+>>> [ 125.550628][ T1430] ret_from_fork (arch/x86/kernel/process.c:147)
+>>> [  125.554342][ T2411]
+>>> [ 125.558840][ T1430] ? __pfx_kthread (kernel/kthread.c:342)
+>>> [ 125.558844][ T1430] ret_from_fork_asm (arch/x86/entry/entry_64.S:257)
+>>> [  125.561843][ T2411] On-line CPU(s) list: 0-223
+>>> [  125.566487][ T1430]  </TASK>
+>>> [  125.566488][ T1430] ---[ end trace 0000000000000000 ]---
+>>>
+>>>
+>>>
+>>> The kernel config and materials to reproduce are available at:
+>>> https://download.01.org/0day-ci/archive/20240815/202408151633.fc01893c-oliver.sang@intel.com 
+>>>
+>>>
+>>>
+>>>
 -- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.com                               +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
+Best Regards,
+Yanjun.Zhu
 
 
