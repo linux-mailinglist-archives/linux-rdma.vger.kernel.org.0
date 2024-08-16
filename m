@@ -1,92 +1,71 @@
-Return-Path: <linux-rdma+bounces-4393-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4394-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D22B9954B7F
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2024 15:57:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 153ED954F53
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2024 18:53:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 115DD1C2420C
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2024 13:57:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6996284DC8
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Aug 2024 16:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765F11BBBD2;
-	Fri, 16 Aug 2024 13:57:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B35111BF337;
+	Fri, 16 Aug 2024 16:53:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="idmCG3uk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC161B8E92;
-	Fri, 16 Aug 2024 13:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AAC31BF319;
+	Fri, 16 Aug 2024 16:53:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723816635; cv=none; b=O37inelKE1L1ZiK64/aHy5vYyIzC5Cj15Ptx4pMUl/fNUbT8k5nObZyyKXimWWrT0mjpE6dr0cEAvaFBoiyweCZaFg8jX7KyRw7DusEThh1fhT4mEBgLVmZ+bSd9BvzWDhjFx/RVFTSlo8j2Vlf5vsVqnIlEMI7MJE5+oqNNTRk=
+	t=1723827225; cv=none; b=CqHmwjrOUsKRSXmXS9ippVO67gH7o2pj40hDrQ6vRrYQUTcJahLkQNSix7Lgk5M7ZTBFpyqctG4iVqtEtJ7zxBu2kdIxqsZ3I07qzHf6U9EULFifxNWj0Skckdkwo3ShDRM0zkI+iozIg8oVQ8ForosL0HogI3r8msP9I2mLmAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723816635; c=relaxed/simple;
-	bh=020hZGJIzLJWA99tUJoWCXT0j5vGBw0TAHhBZbKmTPE=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Yu/TQaeZIDA3Wc6uqBUCf4LV1x/JlcKvciDrTUfwVWM8e217wk/fu8Xb9GRUiEXNBZYF1uydSjICYLicbEhJp6hS/MbzoN0ZCmdbOHwvSCNJ4qn2Khbvfqj9g23yHOZ+DMNBtn2/Nss18LQBh4Y8IGlLIcSx5qq52KqRyOt29wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id C985492009D; Fri, 16 Aug 2024 15:57:09 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id C3A4792009C;
-	Fri, 16 Aug 2024 14:57:09 +0100 (BST)
-Date: Fri, 16 Aug 2024 14:57:09 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Matthew W Carlis <mattc@purestorage.com>
-cc: alex.williamson@redhat.com, Bjorn Helgaas <bhelgaas@google.com>, 
-    "David S. Miller" <davem@davemloft.net>, david.abdurachmanov@gmail.com, 
-    edumazet@google.com, helgaas@kernel.org, kuba@kernel.org, leon@kernel.org, 
-    linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, 
-    linux-rdma@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, lukas@wunner.de, 
-    mahesh@linux.ibm.com, mika.westerberg@linux.intel.com, 
-    netdev@vger.kernel.org, npiggin@gmail.com, oohall@gmail.com, 
-    pabeni@redhat.com, pali@kernel.org, saeedm@nvidia.com, sr@denx.de, 
-    Jim Wilson <wilson@tuliptree.org>
-Subject: Re: PCI: Work around PCIe link training failures
-In-Reply-To: <20240815194059.28798-1-mattc@purestorage.com>
-Message-ID: <alpine.DEB.2.21.2408160312180.59022@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2408091356190.61955@angie.orcam.me.uk> <20240815194059.28798-1-mattc@purestorage.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1723827225; c=relaxed/simple;
+	bh=Y/0iQwQH0/Y8YHNCbm6+NQ5Rj4aBjmt2yA+zFtsPW6c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tu+hpZLPuB1QQSJGG6AnNPnqiT0q3igkeUN8RPrIzmk7klK2UHCi123cSMjGtBGGZ+0ylgPnft32LE6/pH5QU+meUcLhB0vDlIwszU/zBZ3XsSyxQ70t0G55IucTOk2Mb9czwZDI3ILVTX9ThfTVXvz3pzjQxzEsOQ2vC1cwZ6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=idmCG3uk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5BA1C32782;
+	Fri, 16 Aug 2024 16:53:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723827225;
+	bh=Y/0iQwQH0/Y8YHNCbm6+NQ5Rj4aBjmt2yA+zFtsPW6c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=idmCG3uktyMu1TOSDjMiedyqw7GU/hdLqj4gNiuzpUWFju9/nYzuf3tEKipEHnwsg
+	 M78y2W7EpF2bex7YJo+wIrQ8+3eWxOISX34fOuVrDzbg4hzPyhQThu8SThZ+xqTagQ
+	 O18RlQbzhr5wnuJKboEdk2d5dVVqaxZy+6++4I62xwlPwWUwtQZBVHR2XXky4psmh9
+	 w/0CqyZgIQ1PFiGXyMU9eHD800rfHwET87hZMI6XajCSCZyCmevP+IO+4kVVdnbniL
+	 XkV7CZHpXLjySKQEYZm6Ets5Se0NSZRN2LZPtqe69fsQCLrnoVnVfiRJpSojtfwmRh
+	 b4+cce2rf0HWw==
+Date: Fri, 16 Aug 2024 17:53:40 +0100
+From: Simon Horman <horms@kernel.org>
+To: Yue Haibing <yuehaibing@huawei.com>
+Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net/mlx5: E-Switch, Remove unused declarations
+Message-ID: <20240816165340.GA632411@kernel.org>
+References: <20240816101550.881844-1-yuehaibing@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240816101550.881844-1-yuehaibing@huawei.com>
 
-On Thu, 15 Aug 2024, Matthew W Carlis wrote:
-
-> > Well, in principle in a setup with reliable links the LBMS bit may never 
-> > be set, e.g. this system of mine has been in 24/7 operation since the last 
-> > reboot 410 days ago and for the devices that support Link Active reporting 
-> > it shows:
-> > ...
-> > so out of 11 devices 6 have the LBMS bit clear.  But then 5 have it set, 
-> > perhaps worryingly, so of course you're right, that it will get set in the 
-> > field, though it's not enough by itself for your problem to trigger.
+On Fri, Aug 16, 2024 at 06:15:50PM +0800, Yue Haibing wrote:
+> These are never implenmented since commit b691b1116e82 ("net/mlx5: Implement
+> devlink port function cmds to control ipsec_packet").
 > 
-> The way I look at it is that its essentially a probability distribution with time,
-> but I try to avoid learning too much about the physical layer because I would find
-> myself debugging more hardware issues lol. I also don't think LBMS/LABS being set
-> by itself is very interesting without knowing the rate at which it is being set.
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
 
- Agreed.  Ilpo's upcoming bandwidth controller will hopefully give us such 
-data.
-
-> FWIW I have seen some devices in the past going into recovery state many times a
-> second & still never downtrain, but at the same time they were setting the
-> LBMS/LABS bits which maybe not quite spec compliant.
-> 
-> I would like to help test these changes, but I would like to avoid having to test
-> each mentioned change individually. Does anyone have any preferences in how I batch
-> the patches for testing? Would it be ok if I just pulled them all together on one go?
-
- Certainly fine with me, especially as 3/4 and 4/4 aren't really related 
-to your failure scenario, and then you need 1/4 and 2/4 both at a time to 
-address both aspects of the issue you have reported.
-
-  Maciej
+Reviewed-by: Simon Horman <horms@kernel.org>
 
