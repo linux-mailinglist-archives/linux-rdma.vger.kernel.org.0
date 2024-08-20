@@ -1,132 +1,189 @@
-Return-Path: <linux-rdma+bounces-4430-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4431-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB89F957E9D
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2024 08:50:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDFEB95810D
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2024 10:33:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DFFE1F24E5D
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2024 06:50:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FA01B233FB
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2024 08:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 400851B813;
-	Tue, 20 Aug 2024 06:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C2F818A6C2;
+	Tue, 20 Aug 2024 08:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="giZ6BvOJ"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="VG8ajf6B"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C317A1849
-	for <linux-rdma@vger.kernel.org>; Tue, 20 Aug 2024 06:50:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB8C18A6B6
+	for <linux-rdma@vger.kernel.org>; Tue, 20 Aug 2024 08:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724136619; cv=none; b=Bnzwub+GPs3cZYs/2sRsIgEYiy7/0mels2Pq8NXz8WYvoD2ggaWKZcdK7KhbDeUpdNhDN4ViQ+4zBpiTtwcOxGAcd8qzDbAu9ACsTsbvwAGmve9oqNU1B8RydkjNUAEGzPUgJWf9udvWLjSG7vdIAyiG7uSSWTNR5zKFTzBtYOI=
+	t=1724142787; cv=none; b=a6SWCqiAJnbdH5zabNqO/lhxzx7FjnlyeQhK4s/VxPv0MuZrI5N5A3k8kbZf4LNXkFL8du5dF10lKGp+ExGF/or+RqkGwLx7u5fKiwFzX3T6HFwd1/ttksgcxbFqffUhPmDOrmw/tdxcQLKbATbt0hskuxq7pbUcfTCHPLzS0UA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724136619; c=relaxed/simple;
-	bh=/dpjJTf8tBHWSnU/+F0fahUfvzQNQ0zSTFsvNKsMPc8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GxBxCMcDitE0IlbR/AkaahCVj0eH/YoieLD4rHdJJBLCKps55tf+Djn9DDZwQrMefAP2G0jslyv6eAzYcYk8BLGfXvlZCteoJBU47x6toH4RtPGKYl72csisENzlxCZvKE0fXDqTzRqEOTKZ/UnksoXmrnbe9FyeH7zBYX8a5G8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=giZ6BvOJ; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d61bcb00-301c-400e-9738-b4ec5463f1b9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724136614;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cddEREqh8r33aqRjZQeizDrZj/6ggFfx+uuliKO6eFk=;
-	b=giZ6BvOJ9Mz2x7pg+Js9ECMc46tCHMGw6iilF2Up1DlTFJecezcXgqNG7EGM5h2/yw0zQb
-	1pc+jJd9tHWgWEs4iPfTxC29/YDjSlEvQ35a1MYL1SMrTf0taK4IAFdN3uj8R5BzjpLVRB
-	uVno7PnYoQhjeY7uvTVbk2aPW54vN0A=
-Date: Tue, 20 Aug 2024 14:50:05 +0800
+	s=arc-20240116; t=1724142787; c=relaxed/simple;
+	bh=sSUYkM8HYmaJN7xqG+tfsAHvEYV5RAq6szVJelU+X+U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k5JRV1hap3wL3btXHOzAKEeC6t+Al7n02haYDVEeJFzB7KzesL3eNWsEoD6Ebth5ezTRoq074vSsBbbKSLYWFn2ZVMwS5nR7IjM1e8CElCnaJvk7d1KfQN8/ZkTlvcnZtP0Gxg3KylyyxcR8LcWpdLbegbRvpEicxPWldCS3DzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=VG8ajf6B; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5bed83488b3so3850815a12.0
+        for <linux-rdma@vger.kernel.org>; Tue, 20 Aug 2024 01:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1724142784; x=1724747584; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XNQ9tyNfl4ljX/BPGLUOjjoGD0Ou+TIYM+qPExssLvc=;
+        b=VG8ajf6BuTNmkSG0citgtyRIslAki+3nxKaQreOE/2Jt+XtQq867Hbt6IZQKqYcZIy
+         Jah6u7gnrTVuJMlWiAlwcqZxMRsbpB8G9sGpIMHVAIwMhDn6Chc2+I4tonuf1y1MhNdL
+         F8BFC3GhlV619NSvDG4KxYAMFyyT5dW/57ES4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724142784; x=1724747584;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XNQ9tyNfl4ljX/BPGLUOjjoGD0Ou+TIYM+qPExssLvc=;
+        b=C7Oyk6lKSsM1YZnWi9W/0+n5GfvOkE3OZuHK8oFL9pa300LuCPtMVzWlY699lqfoXO
+         Dyvk5uaex3WQ3fVjRxAfTDPjIgI1jiSwqD043+v0mr3X8LsKy2B887Jbh9/GPMhgbkmc
+         mLKhtcVXKQgXlKYMQ7gW6ityVVyJ7yaYHCiH2+/EaI5nV35LDy6Jk9faFL4IcRA6JjGL
+         QrMdVr9dYo5lzsZ8DgOOxv6wiwdJpi0hbBp335p1NW7/btKKh1UlK9O1/+2kDr5INoqS
+         EODd92qHgBJwlX9LInN4f295lpYE80N/rLfjNNNCb9YBwn2zOwXnF+DziFIMC1cwPJdi
+         VcTA==
+X-Forwarded-Encrypted: i=1; AJvYcCVbjzSfFlmkMsOmMJRNdjM0XxqDVpLroKug4TmUcP9gHDHoK0cFEsnlMhuTNg/zCRqB+tUX60uDgSDbKtg3GczJgtJjGm2BaSmgvg==
+X-Gm-Message-State: AOJu0YzHVUXFo0mTui0ar7RGGwzRI6vwdqE1u2SZ05bMHp1rQ7hJdvXm
+	qjA+iIKnzU77BUaZUuQgyJnnbgdBeYBmWs8GAYNmveFZxKw+CxS2aWneTSAyE2c=
+X-Google-Smtp-Source: AGHT+IHdCu1gJlayHwi4drLhhfQxyfMUzMC+JYbFPtj9dlU1JF6GxmGI/OuqVO5LTmVnsfb9hkmppA==
+X-Received: by 2002:a17:907:97cf:b0:a6f:59dc:4ece with SMTP id a640c23a62f3a-a83928a4023mr845774466b.2.1724142783295;
+        Tue, 20 Aug 2024 01:33:03 -0700 (PDT)
+Received: from LQ3V64L9R2.home ([2a02:c7c:f016:fc00:3906:31c:255a:bf09])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a83aeb6eb4dsm435559766b.35.2024.08.20.01.33.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Aug 2024 01:33:03 -0700 (PDT)
+Date: Tue, 20 Aug 2024 09:33:01 +0100
+From: Joe Damato <jdamato@fastly.com>
+To: Shay Drori <shayd@nvidia.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Jiri Pirko <jiri@resnulli.us>, Leon Romanovsky <leon@kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:MELLANOX MLX4 core VPI driver" <linux-rdma@vger.kernel.org>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Shailend Chand <shailend@google.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Ziwei Xiao <ziweixiao@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [RFC net-next 0/6] Cleanup IRQ affinity checks in several drivers
+Message-ID: <ZsRUvcOKLnTw16wD@LQ3V64L9R2.home>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Shay Drori <shayd@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+	netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Jiri Pirko <jiri@resnulli.us>, Leon Romanovsky <leon@kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	"open list:MELLANOX MLX4 core VPI driver" <linux-rdma@vger.kernel.org>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Shailend Chand <shailend@google.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Ziwei Xiao <ziweixiao@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>
+References: <20240813171710.599d3f01@kernel.org>
+ <ZrxZaHGDTO3ohHFH@LQ3V64L9R2.home>
+ <ZryfGDU9wHE0IrvZ@LQ3V64L9R2.home>
+ <20240814080915.005cb9ac@kernel.org>
+ <ZrzLEZs01KVkvBjw@LQ3V64L9R2>
+ <701eb84c-8d26-4945-8af3-55a70e05b09c@nvidia.com>
+ <ZrzxBAWwA7EuRB24@LQ3V64L9R2>
+ <20240814172046.7753a62c@kernel.org>
+ <Zr3XA-VIE_pAu_k0@LQ3V64L9R2>
+ <fe5c6b4b-6c78-402b-b454-837e3760c668@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [linus:master] [RDMA/iwcm] aee2424246:
- WARNING:at_kernel/workqueue.c:#check_flush_dependency
-To: Oliver Sang <oliver.sang@intel.com>
-Cc: Bart Van Assche <bvanassche@acm.org>, oe-lkp@lists.linux.dev,
- lkp@intel.com, linux-kernel@vger.kernel.org,
- Leon Romanovsky <leon@kernel.org>,
- Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
- linux-rdma@vger.kernel.org
-References: <202408151633.fc01893c-oliver.sang@intel.com>
- <c64a2f6e-ea18-4e8d-b808-0f1732c6d004@linux.dev>
- <4254277c-2037-44bc-9756-c32b41c01bdf@linux.dev>
- <717ccc9e-87e0-49da-a26c-d8a0d3c5d8f8@linux.dev>
- <3411d2cd-1aa5-4648-9c30-3ea5228f111f@acm.org>
- <5377e3e7-9644-4e71-8d2f-b34b2b5ae676@linux.dev>
- <ZsGTtLzYjawssOs9@xsang-OptiPlex-9020> <ZsP0ae1Y5ztsqFj1@xsang-OptiPlex-9020>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <ZsP0ae1Y5ztsqFj1@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe5c6b4b-6c78-402b-b454-837e3760c668@nvidia.com>
 
+On Tue, Aug 20, 2024 at 09:40:31AM +0300, Shay Drori wrote:
+> 
+> 
+> On 15/08/2024 13:22, Joe Damato wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > On Wed, Aug 14, 2024 at 05:20:46PM -0700, Jakub Kicinski wrote:
+> > > On Wed, 14 Aug 2024 19:01:40 +0100 Joe Damato wrote:
+> > > > If it is, then the only option is to have the drivers pass in their
+> > > > IRQ affinity masks, as Stanislav suggested, to avoid adding that
+> > > > call to the hot path.
+> > > > 
+> > > > If not, then the IRQ from napi_struct can be used and the affinity
+> > > > mask can be generated on every napi poll. i40e/gve/iavf would need
+> > > > calls to netif_napi_set_irq to set the IRQ mapping, which seems to
+> > > > be straightforward.
+> > > 
+> > > It's a bit sad to have the generic solution blocked.
+> > > cpu_rmap_update() is exported. Maybe we can call it from our notifier?
+> > > rmap lives in struct net_device
+> > 
+> > I agree on the sadness. I will take a look today.
+> > 
+> > I guess if we were being really ambitious, we'd try to move ARFS
+> > stuff into the core (as RSS was moved into the core).
+> 
+> 
+> Sorry for the late reply. Maybe we can modify affinity notifier infra to
+> support more than a single notifier per IRQ.
+> @Thomas, do you know why only a single notifier per IRQ is supported?
 
-在 2024/8/20 9:42, Oliver Sang 写道:
-> hi, Zhu Yanjun,
->
-> On Sun, Aug 18, 2024 at 02:24:52PM +0800, Oliver Sang wrote:
->> hi, Yanjun.Zhu,
->>
->> On Sat, Aug 17, 2024 at 04:46:23PM +0800, Zhu Yanjun wrote:
->>> 在 2024/8/17 1:10, Bart Van Assche 写道:
->>>> On 8/16/24 5:49 AM, Zhu Yanjun wrote:
->>>>> Hi, kernel test robot
->>>>>
->>>>> Please help to make tests with the following commits.
->>>>>
->>>>> Please let us know the result.
->>>> I don't think that the kernel test robot understands the above request.
->>> Got it. I do not know how to let test robot make tests with this patch.^_^
->> we can test the patch for you. just cannot test quickly due to resource
->> constraint. will let you know the results in one or two days. thanks
-> the WARNING is random in our tests. for aee2424246, it shows up 6 times in 20
-> runs as below table.
->
-> the "e0cc1e2cd74a66b5252ea674a26" is just your fix patch.
->
-> we run it to 100 times, and the issue doesn't show.
->
-> Tested-by: kernel test robot <oliver.sang@intel.com>
+Sorry for the delayed response as well on my side; I've been in
+between lots of different kernel RFCs :)
 
-Thanks a lot for your tests. I will send out the latest patch very soon.
+Jakub: the issue seems to be that the internals in lib/cpu_rmap.c
+are needed to call cpu_rmap_update. It's probably possible to expose
+them somehow so that a generic IRQ notifier could call
+cpu_rmap_update, as you mentioned, but some rewiring is going to be
+needed, I think.
 
-Zhu Yanjun
+I had a couple ideas for rewiring stuff, but I haven't had time to
+context switch back on to this work as I've been busy with a few
+other things (the IRQ suspension stuff and another mlx5 thing I have
+yet to send upstream).
 
->
-> a1babdb5b615751e aee2424246f9f1dadc33faa7899 e0cc1e2cd74a66b5252ea674a26
-> ---------------- --------------------------- ---------------------------
->         fail:runs  %reproduction    fail:runs  %reproduction    fail:runs
->             |             |             |             |             |
->             :20          30%           6:20           0%            :100   dmesg.RIP:check_flush_dependency
->             :20          30%           6:20           0%            :100   dmesg.WARNING:at_kernel/workqueue.c:#check_flush_dependency
->
->
->>> Follow your advice, I have sent out a patch to rdma maillist. Please review.
->>>
->>> Best Regards,
->>>
->>> Zhu Yanjun
->>>
->>>> Thanks,
->>>>
->>>> Bart.
->>> -- 
->>> Best Regards,
->>> Yanjun.Zhu
->>>
--- 
-Best Regards,
-Yanjun.Zhu
+I hope to take another look at it this week, but I welcome any
+suggestions from Shay/Thomas in the meantime.
 
+- Joe
 
