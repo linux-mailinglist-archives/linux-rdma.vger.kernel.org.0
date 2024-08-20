@@ -1,271 +1,326 @@
-Return-Path: <linux-rdma+bounces-4427-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4428-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BA04957B18
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2024 03:42:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D731957B2C
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2024 03:51:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFD0B1C21BBE
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2024 01:42:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5402284DD6
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Aug 2024 01:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6931B949;
-	Tue, 20 Aug 2024 01:42:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C76364D6;
+	Tue, 20 Aug 2024 01:51:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UXWirl4i"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O+0I7ry3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89FC7364D6;
-	Tue, 20 Aug 2024 01:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724118144; cv=fail; b=IUPGiWll8tV3GluJ/ag4xPoeNcgMWhs+a6ZTgL06I1uU3N0wxI5ogNCYqQDECmqEAUETAyVoG18Z5kb8L3LzFr5yiy0rfhR3JuWHdjv1VGUfegoNrsOSFc3gURdKqd2TbEQHUvKe2e1BQX7b7aILbTUrghIPmfn1tTbRyP1iC8c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724118144; c=relaxed/simple;
-	bh=tdjUAmFiAt7rFX8qH9zVajybaiAn1+lRwJ7Z/FAdPZk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=TRoCIfctik+DqiZBGx5FIRSoIUPeaZzShL3lHFAMxP+OaWhqf24Era+aTNf683Z3+XyUMUcGJCDa4z5cARc8rBZM1AIeJMhpf+CcxuXJ/c/2KDQhZ93TdhylnraU3xiCKAKEeb+X5F8F0goHVm3ZDOlTbjrpHNFBm7UpCy6FO6M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UXWirl4i; arc=fail smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724118143; x=1755654143;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=tdjUAmFiAt7rFX8qH9zVajybaiAn1+lRwJ7Z/FAdPZk=;
-  b=UXWirl4is0lgpxco0PPKFsDkRGLe045c8IpWmDIaOoLV6QYYwDpCjn1L
-   SOHaUGntxAjznGRCOog4uBmHf5hPBrLA8GJntC0+Ext7KJ7JIY1kBXHsh
-   PcOTcaR+sDVGT3ASl+QX3io+FEqOzCjbudNnaOA1Kgv9mkB/N8mVMkYD8
-   4WZpnSyME5zbo17OwllhLFrdmscSdx8fQo6ecPY2Y5HGyif44XIauLGUP
-   f7kbKIxw4fbJXwCkx0gvrD2BNmwJ67S3QirKQG6hAsod1p4ZNLezQB7Tc
-   CiPcF1A/PkpN4a5sbj+TNTpUJNImgR9QSKiW+jC7qL6oNq0MGPP3xpKiR
-   g==;
-X-CSE-ConnectionGUID: hbhxxJzsTGSxH6b+i9UCuw==
-X-CSE-MsgGUID: 4Lr/dkfIQXSRfDqB4T3p2Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11169"; a="21935264"
-X-IronPort-AV: E=Sophos;i="6.10,160,1719903600"; 
-   d="scan'208";a="21935264"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 18:42:22 -0700
-X-CSE-ConnectionGUID: 0Vugn/4jS3WmkxtG+JujZA==
-X-CSE-MsgGUID: FUONVXMWQwmxTZlDpatb6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,160,1719903600"; 
-   d="scan'208";a="65429215"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Aug 2024 18:42:22 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Mon, 19 Aug 2024 18:42:21 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Mon, 19 Aug 2024 18:42:20 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Mon, 19 Aug 2024 18:42:20 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.173)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Mon, 19 Aug 2024 18:42:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=fvccienMNMbLc4I8ThdqwfEPfA3TwpufBTaNMCCMgz8xGJRRGS8yLNWMvedycJ2xH0aFKjSwFwdT50rkeM3BKZE7oS5FInDnjQmkLMxjC9BxshU6o3SI4nZ5O+w9lOvb+Ev7oxAbbjt86Sy1yIaDM1aKz+tSjPjeic6t61ZxDAwgv2gPeuKVecK/yXVNS60ua48pvZFw5Irgpa5k18uAvijJSoPhmXBx1Ouz8RaYfpLnZjcGV9ta8zXsO77Ro3I2sRQWtAbWcdWV1+e1UHh/ON745X2c1HpjcOM/3X3n4hSKAguVvbYqHML6IEIxwLqEVtRjNxWLt2Jgabrr3lZOnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jwdnwFAGzi2YiInuLq6K+2pi55M1uESqEU6qAGsqMpc=;
- b=oBBq8BfNNUXsLhbkgMRtUrQjIFQYvchzZzDZ9KvBdX4GOTuoowgycJTOP3WZsnylIWxFRQPti6frHcyA1iQHWuGmCM6ztAOZaYF0+yNxmI25D0y1zKG9zkxkVALuPZG2zfv2wTMLTeK0K0EYg0CWqbrgVObZMfUwZmoY3dnCuEc4FP4XLvE0M8m0SUpmdyfrXAzaIKJFXYlnOsqykFJQHarReaALNpxEY1vbjK2U3j7keVEv2A1AOQG40N0Rp++JXX/11QlTfw/uvyjzK8y1rblGmaTpEy3Xps2xPNuImphT0rzJ+1ynr8K9jIPAl8BjG+O5yqwZXFpB8wLLULOmLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
- by SA1PR11MB6783.namprd11.prod.outlook.com (2603:10b6:806:25f::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.22; Tue, 20 Aug
- 2024 01:42:11 +0000
-Received: from LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
- ([fe80::4622:29cf:32b:7e5c%5]) with mapi id 15.20.7875.019; Tue, 20 Aug 2024
- 01:42:11 +0000
-Date: Tue, 20 Aug 2024 09:42:01 +0800
-From: Oliver Sang <oliver.sang@intel.com>
-To: Zhu Yanjun <yanjun.zhu@linux.dev>
-CC: Bart Van Assche <bvanassche@acm.org>, <oe-lkp@lists.linux.dev>,
-	<lkp@intel.com>, <linux-kernel@vger.kernel.org>, Leon Romanovsky
-	<leon@kernel.org>, Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-	<linux-rdma@vger.kernel.org>, <oliver.sang@intel.com>
-Subject: Re: [linus:master] [RDMA/iwcm] aee2424246:
- WARNING:at_kernel/workqueue.c:#check_flush_dependency
-Message-ID: <ZsP0ae1Y5ztsqFj1@xsang-OptiPlex-9020>
-References: <202408151633.fc01893c-oliver.sang@intel.com>
- <c64a2f6e-ea18-4e8d-b808-0f1732c6d004@linux.dev>
- <4254277c-2037-44bc-9756-c32b41c01bdf@linux.dev>
- <717ccc9e-87e0-49da-a26c-d8a0d3c5d8f8@linux.dev>
- <3411d2cd-1aa5-4648-9c30-3ea5228f111f@acm.org>
- <5377e3e7-9644-4e71-8d2f-b34b2b5ae676@linux.dev>
- <ZsGTtLzYjawssOs9@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZsGTtLzYjawssOs9@xsang-OptiPlex-9020>
-X-ClientProxiedBy: SI2PR01CA0013.apcprd01.prod.exchangelabs.com
- (2603:1096:4:191::9) To LV3PR11MB8603.namprd11.prod.outlook.com
- (2603:10b6:408:1b6::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E53168DA
+	for <linux-rdma@vger.kernel.org>; Tue, 20 Aug 2024 01:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724118668; cv=none; b=orqZuPcEPw0a5nwhGGNqWo8TSPZb2poOxwIePXFqRhBBa92c34PwT6Vr1HxYeTiOEDCe2eZhq5+JKutcHjxqnJLq23Cc6zfTx5hC/iNtNHTSqMXGBAGKoL/clzDN/yXLpLXLShaqBak7ULslIqv0G9Lj7f6dT93fHyZQZPytqm0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724118668; c=relaxed/simple;
+	bh=X7Tf/2sbMns8bMTKUFg1k31n585aRPKOnD1Dmxtvuwk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jRl1VUvPYXoSu6TvQo31uce90cWV8cXP4CK8Rc9z6z9URD/8xmrKipRjHKLZ/wkvnU1eqEjJvrgfVj6/WY/Hr92vJ0s5wxjxCKvAHUWXdmULTgjVasFFbwGB9P8EhSEk5+xKS7qQ3mywlmLWmHFF/ncjsJDS+FqWtP4IkVgW8UI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O+0I7ry3; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1724118661;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zemSLB7cpZj/xdAoHKekxRhjOKghwOYrL/smZ5zzA84=;
+	b=O+0I7ry3yqRPxi/pEFeAkSx8nZfSkiGMr/L60xDuJDwQNVhOJybcj7JA+33S+UkXf2/9fF
+	E1Azo8P6XIB+RWC4XSz7ZATaIqwulh2ikWfMkpHOmPUGrTaCTVi44dcioyrtw4pFLK2A3+
+	nJx13Jh936UGE1STB/Xhcp0KPn3szTE=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-279-HGCNPFpFN6CyYQZUA1_JHA-1; Mon, 19 Aug 2024 21:51:00 -0400
+X-MC-Unique: HGCNPFpFN6CyYQZUA1_JHA-1
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-2d3bbfcc5dbso4500648a91.0
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Aug 2024 18:51:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724118659; x=1724723459;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zemSLB7cpZj/xdAoHKekxRhjOKghwOYrL/smZ5zzA84=;
+        b=MYkYMLIplElgR0EhGIyBtmsSi6G3MejwQi0+JQeWReHWOfWneXREycG3HCo49KNAYG
+         6l78o4hBcA8LvWhMd95Cied6Gba9fK/CPQKVBjsWglFARmdYFs8BrpE4A9lSTl2dkSER
+         g4/wPOF9RlEqPCYgS7UuEvK+8YS+lzLh55yANEv1dZlmoyfzWfGF/ZftndtoTkkWk6cv
+         q9tu1lllPQ42joT96zBJc4p5BxnDu5gJfsAD1nTQyAAN7iakjEA34FuNEAACYruCAE++
+         IYNuy16uwCxwYF2TcZSB8FA61l33F3gy24TEhuoaMxhAD9RCBHmEYsVkiG2ttHQRkS97
+         m/LA==
+X-Forwarded-Encrypted: i=1; AJvYcCXezsXSFAlxlLCrYraoXM92kgnbRbOcHrxz6048pFJV0YSLWZ+3R3Z4tBpphRqED1pOzDuhYGJ0mQWO@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy//DHlLNPACjKSGGJrXQdIo70UJkxhTp4LwGFkbg1oa7hI/Vfj
+	Ojqg78XZGZjaGnWycQfIYU3RMu3G/0eM7ApyAUNO4FMKnrf1ABtppgy6hm7dWPnsPNqVhY9eewl
+	aCBYoHxsFOr58xPTEVA1dmVjOiAKiVScaixEMKd0DF6Rl3HTLMcotzeIwdf4drawPSMdT/CkFEn
+	eMnrVmqZLYz8ohQ02uKe55ppdq6lmJq6x/sw==
+X-Received: by 2002:a17:90a:8a02:b0:2c8:87e:c2d9 with SMTP id 98e67ed59e1d1-2d3e03e89dcmr12525651a91.39.1724118659444;
+        Mon, 19 Aug 2024 18:50:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF2xNwaA7efDn4iFU7NRQCn5zeIDhK2iOTMbDt+qvGPJ3lKC0GseK99B8PoX4eAcf/7EG7ilcLRq4e0JUPo6TI=
+X-Received: by 2002:a17:90a:8a02:b0:2c8:87e:c2d9 with SMTP id
+ 98e67ed59e1d1-2d3e03e89dcmr12525636a91.39.1724118659021; Mon, 19 Aug 2024
+ 18:50:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|SA1PR11MB6783:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8705542b-2691-4f1c-a448-08dcc0b94f3d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?MGUyOVhVZ09weWpXa2tkSkZWcGpwUkhabFVaSGt2ckxJTFg1TldhWGxDd0Jz?=
- =?utf-8?B?VEFvclB4SlFBK1R6TksyYmdzODR1S2x6UWFCQ1BFcTc3UVFEbTFxMDdLamJ2?=
- =?utf-8?B?Nmxmam9VSHR6citiaXN1bytRYW1QcTNXcDQxbU5QMmI5V25vVzRjdStRZk94?=
- =?utf-8?B?anhEbktLZ2xDWkJxQTJObldUVmhrWkVnbHFBQ1pjOUR5VXVtdWVVU2xIQ0NE?=
- =?utf-8?B?YzRsaGVHZW5LL2JBUWVCM3R5WlBxaW90WDlnVkMxcDNMck1KZDFVVFRpNFdu?=
- =?utf-8?B?UG5ncmNGUXRId2NDdXcxRkVIeEY1bXZBemNMc3ZHS1V3Q2lVbkQwNnNjNmE4?=
- =?utf-8?B?dEhsOEpRcmk5cDJsQk5HREUrNlQrTmZjUWljUHU4amROY3dKbTdpdHp6VjNj?=
- =?utf-8?B?UWNic1BGTmVoSFVTOGtIL0RveXZxdXo0ZnhrVkpJSEhnZElqcnJtZ05rRnlp?=
- =?utf-8?B?Z1I1MnRIbUtNeUZ3b0swRGxQNDlqWmw2eGlJTmJaS0lpNTU1dkl0UVNGT3JF?=
- =?utf-8?B?aVU2d0JSUGtZMEFmZ2FDSWlQZlVYTXNUZnBsNWN1alZLQzFPYlJvZzVRM0xZ?=
- =?utf-8?B?S1lYUU12YituRHk3QjFqVW81bjZSSHcxS0dnN2h0amo0YjU3andJcFcyWDJz?=
- =?utf-8?B?bjBVNUV5Z3J0Q3o2QVN0QWJxa1djNmlIdHBDUXExeS9RRmw5Uk4xdWx3dWRH?=
- =?utf-8?B?dEFoZzBXS0VLKzF6UStSZHRHYXFQNnRJY2F2aHVaUitlT2dCckY2MFg2aUxk?=
- =?utf-8?B?b21SaGFiSjU3eTVpZ2p3RW8zVzlwTlFoWGJib2xGMGJ5aUFTQ3BydFlCRjQz?=
- =?utf-8?B?OXBTNy9adFgrV0xVNm4zUDFjOW5CdHQ2VDJRVUVIWlpMeDJMUzhlSEg2eGpF?=
- =?utf-8?B?dHZrWVZKb21YbmJaSWs3Rlo1dW9DUGZjczFsRTkwUnh2V1NQenBzQVkrUmJw?=
- =?utf-8?B?SjdFcHV1QzNMeDVjUjhVUXJSQnBzdlpETTlzc2xiNU91ZWwvcFBTY0hIVzkv?=
- =?utf-8?B?SDkvaUtjdjhuZVJPOEw3dTVjZVREMWhwdGNpZmFRWUNQbUFhQUlGZ2NvN0xT?=
- =?utf-8?B?MlNmV29lWFgxSVJ2ZGdnYVdwWE1DZjdCeWloYU9EMjk4OVJCblJXMTFrOEZt?=
- =?utf-8?B?bjFhdm5wZW9OSGYzZDJ0ekxvSC90dHhEcUlXT25WNFA2TUtoYVNDbnhZbDFx?=
- =?utf-8?B?TnNpZkhIZ1BzRlByQ0IvRmVxMWNJWllnYnVzdk1mYi81cENKY1BBaFQwQk4y?=
- =?utf-8?B?Um91M2ovQnJwWk9WU2pyMFdzTUFwWmlFemljY0VSaE9uN0p6NHkvWmYwSkFr?=
- =?utf-8?B?Wk9iUHFQY3lBQ3g5OXJRNXJnR2liekhYc04rS0VHcy9Vd0l1Y1ZaQTI4Z1N2?=
- =?utf-8?B?d0Zya2RQWTFjZTlSdWJuT09ZZ1FJd1c0VUZXcy82UHRMOTJGT2lRcSs3ZXhP?=
- =?utf-8?B?bnJ5eXl0d2U2THAwYWtYSk1Vb1paLzc3T2ZteWRkUnVBT2ZKMDh0OGtkMS9i?=
- =?utf-8?B?aHZhNUFzWm5KTEFFK29YRWRERXMrTjVYbjVVbGR5TGZrODRXeVM3dFFqckJC?=
- =?utf-8?B?US9ZcG1GQ1N6U3lKcTI3ZGtua1NlcjBqZnB5SXVlbHZDYmtXNUU2RmlGVkNI?=
- =?utf-8?B?cGE3bEc1QTdTV0lZendHRFhFRGJJS1Urb1RFNExwMTQ4b2hIb0VQTTRsbmdl?=
- =?utf-8?B?d1hRYmE1dys0VlJrSGtVRFpxRXllekVBVDB2VVFRMG5UZlZYcHhwKzRjNGxz?=
- =?utf-8?B?UzNlQmhTM3lVekZDQUVpMTRBY25IRlQ2ZmlTKyswbFpRbkc2SzBWeVJNVEll?=
- =?utf-8?B?ZmEwTnBnL0cycitOa0IyZz09?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WjZYVmJQTGxkcjZ2ZkpuZVFqbU1zU3VieHRPR2crL05BZ2ZXSzlkWjVDV1FP?=
- =?utf-8?B?NW9RcXhGcnV3R0RqNFovVG5aMGllcjlibnk1d2hzeFRTd1NHTnN0cUVoRjhp?=
- =?utf-8?B?Q01TTjBiL1cyd1E2cENDYU9VOHJCZlo0SldhalhkQnRpVzZMUE53RWU5QlpO?=
- =?utf-8?B?ZkdFd1piaTdrelN5T3VKRlM1VTI2RGp2OHpPZyt4bzlESnpnWkN0VVgzRUEv?=
- =?utf-8?B?dHpmZDFvV3FxSThta0dMcmVaQm1tNWVmVnlNR2VkV2sxaEJKY3pxRitSN2N1?=
- =?utf-8?B?S21ydGo4bGpkSlpHOGNqK3lTU082bmVEdlBFYmVyZlJ4bC9Jc3RVNEpQd00r?=
- =?utf-8?B?bG5GYXhpTEVJZmRWOFQ2dWlsRkU3TWlYUDhMVEh4bFRHeXR3M25CQjE4WnAw?=
- =?utf-8?B?NVRoTENZUXpEQU5vUk9wczhDQkNSQ2tjUGovaVVONHV3QVJwOXRyMmNpZU9B?=
- =?utf-8?B?bzNhN2hVeGJ4Rlh4ejU0ZnFpdnBqbFNyc3RZbUVZdTVsM2NNRUxFS3RMcnhj?=
- =?utf-8?B?cUhpNUNmN2pLWnZGUDY1OHhnaVBiRG52VEl0QmUwQ0szakw0aXVGTFNyNDRM?=
- =?utf-8?B?a0pmWU9PY1FiUElLb2YvVnNqU3F1V215UXpWeW5JamdxNHl0cjN2YzUzQW1m?=
- =?utf-8?B?NXNUbUpOVUVJbktHYW9EWEZrQ0RnZ3k0UUt6R2d4T3NtT0IvcUlrY01MbjV0?=
- =?utf-8?B?bm1zR3JDSUtreTloMDM4R3N2M0JuL1VhQU9HZmc4c01HS0h4SVBrMnVwdkNJ?=
- =?utf-8?B?ZjZVYW92VWtseXJJQ0xWWUdjeUNMM2wyY3RCaXFEaE43QW1pZWpzOHRmQVZr?=
- =?utf-8?B?VmwzTjdRY2UyUjdlckx4YVBTRE9SbFlXdGt6aUZzVlpXbmszY3RWNUExUHZJ?=
- =?utf-8?B?NDIvcGhHY3BnU04veW92Y2s1OHlzRlBJZzJyemdGVjYvSHBxRWxSVmdjd1lP?=
- =?utf-8?B?ejFHY0pZbnhaRkZHU0VmSTNLNFdYamhjMDN1TC9mdVErK1k0YWx0QU1Ca2U1?=
- =?utf-8?B?bW14QlZmTjlsV2NpYzRqS1Rsc3FvZHJhckV4SEJPWmt6MU1aR2J6dlJ5cE8w?=
- =?utf-8?B?UDEyZXBqTm1IUWp2eVNvUlJLZWR5bWpmRjZneTlsVXIzajJpZkZlTWx2Yjd0?=
- =?utf-8?B?d1hZTmZYaDE4S0E0OVBCQ2hZcS91WmlPUXhTNGpUczh3c29LV25HNm9IZC9G?=
- =?utf-8?B?RUFETlBMRENsSFRNR2J2WTVkRVQrMTdLRmpObnNkSmY1eVBvMm5DZ2VFY29G?=
- =?utf-8?B?WS9yYU93eGRMbjRQRndmWUQvWjk1Q0dmZ1J0RkllVmc1Z21IMm9ZaFhYazVI?=
- =?utf-8?B?ak9TYkMwMk53SUdRTGt4TnpqRDIwNDdOeW1NWTU1U1Z6S0NQbmFLMmM0TXNK?=
- =?utf-8?B?ci81KzBuV2NyWnJmZDluZm13eXgwTHJBSE1wcXlaNE1neWRuYjhSR2YzVWQ2?=
- =?utf-8?B?anQvUTVFWVV5SGNGU3JyZG9wdWR5TlFZeHQ4QmZZNzJhbXdSUStXRngxRmR0?=
- =?utf-8?B?Rkc2M1pNZ2hic1VQY25YaWdvaHlFMHFXSlV1dWlWQWdncmRLemk1bWgvdDNz?=
- =?utf-8?B?QmNRT002VWhvb2xxRTZvNHVFZmRBZko4TStBa3dtVEsrMU5taXpzakFiNzhr?=
- =?utf-8?B?akNONG8vd2dKY0xzc003WVN0ZEpwM1k3VUtzb0o5eGVPdm1yZGY2b2JGaEor?=
- =?utf-8?B?RnI3clh4RFBSMit3SVZxT0Iva2ZHamNmaHNWSDhtems1c29sSmNXK25JVENn?=
- =?utf-8?B?dkdMaHI2TStKOGVQVzdyM2ZrdDUwSEVrUkFKSXJHWXUxWHcvZUxVWkFJU2I0?=
- =?utf-8?B?dFBqeWZIVTNiaHUwbFQzeExLWHl2MWlFalN3ZHhhcDl3R3Q2ai80bGpodUxI?=
- =?utf-8?B?Q1NFRVk4aW9IMC9xZU52MkpsT0JiWnZqNjl2Zjk1SXE3M0dMUkNkc05mUVZr?=
- =?utf-8?B?cWJjZWR0RnBnbEg1WW5qWnJreS9kQUhZZG5rOEtiQ1JyKzZFcm9QL01HU3Qy?=
- =?utf-8?B?bndVdzRKVzg0aE1OM05IMDVZYVR2d3BCVjkva2xyb1BjdnE4WEQ1c2EyWERU?=
- =?utf-8?B?L3NWQXZsL3laZXM2d0l2ZThCMGNIbGMycG1aMHlQQ3ZTbXZjTno0Ym5lMHBp?=
- =?utf-8?B?K2RpWWhVcG1ibzFFOFlkQ1hzQy9NbGh1Zk5RRXprSTVvK2RJK0U2WURwR3Q1?=
- =?utf-8?B?eFE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8705542b-2691-4f1c-a448-08dcc0b94f3d
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2024 01:42:11.1660
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qsYdH06L7eCXhtCi1uwPZSVUGQEPpDYUordMNhvYZYpCzs3pfz+6PkgohgDKLIy61e7r/FHgMlFPBCgIlYttkQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6783
-X-OriginatorOrg: intel.com
+References: <5yal5unzvisrvfhhvsqrsqgu4tfbjp2fsrnbuyxioaxjgbojsi@o2arvhebzes3>
+ <ab363932-ab3d-49b1-853d-7313f02cce9e@linux.ibm.com> <ljqlgkvhkojsmehqddmeo4dng6l3yaav6le2uslsumfxivluwu@m7lkx3j4mkkw>
+ <79a7ec0d-c22d-44cf-a832-13da05a1fcbd@linux.ibm.com> <CAHj4cs-5DPDFuBzm3aymeAi6UWHhgXSYsgaCACKbjXp=i0SyTA@mail.gmail.com>
+ <1f917bc1-8a6a-4c88-a619-cf8ddc4534a4@linux.ibm.com> <tczctp5tkr34o3k3f4dlyhuutgp2ycex6gdbjuqx4trn6ewm2i@qbkza3yr5wdd>
+ <f2f9d5b4-3c50-41a9-bc53-49706f6f4e12@linux.ibm.com>
+In-Reply-To: <f2f9d5b4-3c50-41a9-bc53-49706f6f4e12@linux.ibm.com>
+From: Yi Zhang <yi.zhang@redhat.com>
+Date: Tue, 20 Aug 2024 09:50:47 +0800
+Message-ID: <CAHj4cs8B-Md_WnPo0Z2o6dZ3n30QqL5D-YbW9wWbCMLjxDSrsg@mail.gmail.com>
+Subject: Re: blktests failures with v6.11-rc1 kernel
+To: Nilay Shroff <nilay@linux.ibm.com>
+Cc: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>, 
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, 
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>, 
+	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, "nbd@other.debian.org" <nbd@other.debian.org>, 
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-hi, Zhu Yanjun,
+On Mon, Aug 19, 2024 at 9:35=E2=80=AFPM Nilay Shroff <nilay@linux.ibm.com> =
+wrote:
+>
+>
+>
+> On 8/19/24 18:04, Shinichiro Kawasaki wrote:
+> > On Aug 14, 2024 / 18:05, Nilay Shroff wrote:
+> >>
+> >>
+> >> On 8/13/24 12:36, Yi Zhang wrote:
+> >>> On Sat, Aug 3, 2024 at 12:49=E2=80=AFAM Nilay Shroff <nilay@linux.ibm=
+.com> wrote:
+> >>>
+> >>> There are no simultaneous tests during the CKI tests running.
+> >>> I reproduced the failure on that server and always can be reproduced
+> >>> within 5 times:
+> >>> # sh a.sh
+> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D0
+> >>> nvme/052 (tr=3Dloop) (Test file-ns creation/deletion under one subsys=
+tem) [passed]
+> >>>     runtime  21.496s  ...  21.398s
+> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D1
+> >>> nvme/052 (tr=3Dloop) (Test file-ns creation/deletion under one subsys=
+tem) [failed]
+> >>>     runtime  21.398s  ...  21.974s
+> >>>     --- tests/nvme/052.out 2024-08-10 00:30:06.989814226 -0400
+> >>>     +++ /root/blktests/results/nodev_tr_loop/nvme/052.out.bad
+> >>> 2024-08-13 02:53:51.635047928 -0400
+> >>>     @@ -1,2 +1,5 @@
+> >>>      Running nvme/052
+> >>>     +cat: /sys/block/nvme1n2/uuid: No such file or directory
+> >>>     +cat: /sys/block/nvme1n2/uuid: No such file or directory
+> >>>     +cat: /sys/block/nvme1n2/uuid: No such file or directory
+> >>>      Test complete
+> >>> # uname -r
+> >>> 6.11.0-rc3
+> >>
+> >> We may need to debug this further. Is it possible to patch blktest and
+> >> collect some details when this issue manifests? If yes then can you pl=
+ease
+> >> apply the below diff and re-run your test? This patch would capture ou=
+tput
+> >> of "nvme list" and "sysfs attribute tree created under namespace head =
+node"
+> >> and store those details in 052.full file.
+> >>
+> >> diff --git a/common/nvme b/common/nvme
+> >> index 9e78f3e..780b5e3 100644
+> >> --- a/common/nvme
+> >> +++ b/common/nvme
+> >> @@ -589,8 +589,23 @@ _find_nvme_ns() {
+> >>                 if ! [[ "${ns}" =3D~ nvme[0-9]+n[0-9]+ ]]; then
+> >>                         continue
+> >>                 fi
+> >> +               echo -e "\nBefore ${ns}/uuid check:\n" >> ${FULL}
+> >> +               echo -e "\n`nvme list -v`\n" >> ${FULL}
+> >> +               echo -e "\n`tree ${ns}`\n" >> ${FULL}
+> >> +
+> >>                 [ -e "${ns}/uuid" ] || continue
+> >>                 uuid=3D$(cat "${ns}/uuid")
+> >> +
+> >> +               if [ "$?" =3D "1" ]; then
+> >> +                       echo -e "\nFailed to read $ns/uuid\n" >> ${FUL=
+L}
+> >> +                       echo "`nvme list -v`" >> ${FULL}
+> >> +                       if [ -d "${ns}" ]; then
+> >> +                               echo -e "\n`tree ${ns}`\n" >> ${FULL}
+> >> +                       else
+> >> +                               echo -e "\n${ns} doesn't exist!\n" >> =
+${FULL}
+> >> +                       fi
+> >> +               fi
+> >> +
+> >>                 if [[ "${subsys_uuid}" =3D=3D "${uuid}" ]]; then
+> >>                         basename "${ns}"
+> >>                 fi
+> >>
+> >>
+> >> After applying the above diff, when this issue occurs on your system c=
+opy this
+> >> file "</path/to/blktests>/results/nodev_tr_loop/nvme/052.full" and sen=
+d it across.
+> >> This may give us some clue about what might be going wrong.
+> >
+> > Nilay, thank you for this suggestion. To follow it, I tried to recreate=
+ the
+> > failure again, and managed to do it :) When I repeat the test case 20 o=
+r 40
+> > times one of my test machines, the failure is observed in stable manner=
+.
+>
+> Shinichiro, I am glad that you were able to recreate this issue.
+>
+> > I applied your debug patch above to blktests, then I repeated the test =
+case.
+> > Unfortunately, the failure disappeared. When I repeat the test case 100=
+ times,
+> > the failure was not observed. I guess the echos for debug changed the t=
+iming to
+> > access the sysfs uuid file, then the failure disappeared.
+>
+> Yes this could be possible. BTW, Yi tried the same patch and with the pat=
+ch applied,
+> this issue could be still reproduced on Yi's testbed!!
+> > This helped me think about the cause. The test case repeats _create_nvm=
+et_ns
+> > and _remove_nvmet_ns. Then, it repeats creating and removing the sysfs =
+uuid
+> > file. I guess when _remove_nvmet_ns echos 0 to ${nvemt_ns_path}/enable =
+to
+> > remove the namespace, it does not wait for the completion of the remova=
+l work.
+> > Then, when _find_nvme_ns() checks existence of the sysfs uuid file, it =
+refers to
+> > the sysfs uuid file that the previous _remove_nvmet_ns left. When it do=
+es cat
+> > to the sysfs uuid file, it fails because the sysfs uuid file has got re=
+moved,
+> > before recreating it for the next _create_nvmet_ns.
+>
+> I agree with your assessment about the plausible cause of this issue. I j=
+ust reviewed
+> the nvme target kernel code and it's now apparent to me that we need to w=
+ait for the
+> removal of the namespace before we re-create the next namespace. I think =
+this is a miss.
+> >
+> > Based on this guess, I created a patch below. It modifies the test case=
+ to wait
+> > for the namespace device disappears after calling _remove_nvmet_ns. (I =
+assume
+> > that the sysfs uuid file disappears when the device file disappears). W=
+ith
+> > this patch, the failure was not observed by repeating it 100 times. I a=
+lso
+> > reverted the kernel commit ff0ffe5b7c3c ("nvme: fix namespace removal l=
+ist")
+> > from v6.11-rc4, then confirmed that the test case with this change stil=
+l can
+> > detect the regression.
+> >
+> I am pretty sure that your patch would solve this issue.
+>
+> > I will do some more confirmation. If it goes well, will post this chang=
+e as
+> > a formal patch.
+> >
+> > diff --git a/tests/nvme/052 b/tests/nvme/052
+> > index cf6061a..469cefd 100755
+> > --- a/tests/nvme/052
+> > +++ b/tests/nvme/052
+> > @@ -39,15 +39,32 @@ nvmf_wait_for_ns() {
+> >               ns=3D$(_find_nvme_ns "${uuid}")
+> >       done
+> >
+> > +     echo "$ns"
+> >       return 0
+> >  }
+> >
+> > +nvmf_wait_for_ns_removal() {
+> > +     local ns=3D$1 i
+> > +
+> > +     for ((i =3D 0; i < 10; i++)); do
+> > +             if [[ ! -e /dev/$ns ]]; then
+> > +                     return
+> > +             fi
+> > +             sleep .1
+> > +             echo "wait removal of $ns" >> "$FULL"
+> > +     done
+> > +
+> > +     if [[ -e /dev/$ns ]]; then
+> > +             echo "Failed to remove the namespace $"
+> > +     fi
+> > +}
+> > +
+> >  test() {
+> >       echo "Running ${TEST_NAME}"
+> >
+> >       _setup_nvmet
+> >
+> > -     local iterations=3D20
+> > +     local iterations=3D20 ns
+> >
+> >       _nvmet_target_setup
+> >
+> > @@ -63,7 +80,7 @@ test() {
+> >               _create_nvmet_ns "${def_subsysnqn}" "${i}" "$(_nvme_def_f=
+ile_path).$i" "${uuid}"
+> >
+> >               # wait until async request is processed and ns is created
+> > -             nvmf_wait_for_ns "${uuid}"
+> > +             ns=3D$(nvmf_wait_for_ns "${uuid}")
+> >               if [ $? -eq 1 ]; then
+> >                       echo "FAIL"
+> >                       rm "$(_nvme_def_file_path).$i"
+> > @@ -71,6 +88,7 @@ test() {
+> >               fi
+> >
+> >               _remove_nvmet_ns "${def_subsysnqn}" "${i}"
+> > +             nvmf_wait_for_ns_removal "$ns"
+> >               rm "$(_nvme_def_file_path).$i"
+> >       }
+> >       done
+>
+> I think there's some formatting issue in the above patch. I see some stra=
+y characters
+> which you may cleanup/fix later when you send the formal patch.
+>
+> Yi, I think you you may also try the above patch on your testbed and conf=
+irm the result.
 
-On Sun, Aug 18, 2024 at 02:24:52PM +0800, Oliver Sang wrote:
-> hi, Yanjun.Zhu,
-> 
-> On Sat, Aug 17, 2024 at 04:46:23PM +0800, Zhu Yanjun wrote:
-> > 
-> > 在 2024/8/17 1:10, Bart Van Assche 写道:
-> > > On 8/16/24 5:49 AM, Zhu Yanjun wrote:
-> > > > Hi, kernel test robot
-> > > > 
-> > > > Please help to make tests with the following commits.
-> > > > 
-> > > > Please let us know the result.
-> > > I don't think that the kernel test robot understands the above request.
-> > 
-> > Got it. I do not know how to let test robot make tests with this patch.^_^
-> 
-> we can test the patch for you. just cannot test quickly due to resource
-> constraint. will let you know the results in one or two days. thanks
+Nilay/Shinichiro
 
-the WARNING is random in our tests. for aee2424246, it shows up 6 times in 20
-runs as below table.
+Confirmed the failure cannot be reproduced with this patch now.
 
-the "e0cc1e2cd74a66b5252ea674a26" is just your fix patch.
-
-we run it to 100 times, and the issue doesn't show.
-
-Tested-by: kernel test robot <oliver.sang@intel.com>
-
-a1babdb5b615751e aee2424246f9f1dadc33faa7899 e0cc1e2cd74a66b5252ea674a26
----------------- --------------------------- ---------------------------
-       fail:runs  %reproduction    fail:runs  %reproduction    fail:runs
-           |             |             |             |             |
-           :20          30%           6:20           0%            :100   dmesg.RIP:check_flush_dependency
-           :20          30%           6:20           0%            :100   dmesg.WARNING:at_kernel/workqueue.c:#check_flush_dependency
+>
+> Thanks,
+> --Nilay
+>
 
 
-> 
-> > 
-> > Follow your advice, I have sent out a patch to rdma maillist. Please review.
-> > 
-> > Best Regards,
-> > 
-> > Zhu Yanjun
-> > 
-> > > 
-> > > Thanks,
-> > > 
-> > > Bart.
-> > 
-> > -- 
-> > Best Regards,
-> > Yanjun.Zhu
-> > 
+--=20
+Best Regards,
+  Yi Zhang
+
 
