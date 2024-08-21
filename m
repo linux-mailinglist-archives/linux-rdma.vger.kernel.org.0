@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-4445-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4447-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61B659593E2
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2024 07:10:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B48729593E3
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2024 07:11:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFDB91F21BF2
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2024 05:10:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B8C12846C2
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Aug 2024 05:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A2415C143;
-	Wed, 21 Aug 2024 05:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A5614B978;
+	Wed, 21 Aug 2024 05:10:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="NDjg6RXL"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="GlZmqq5i"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2053.outbound.protection.outlook.com [40.107.243.53])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2042.outbound.protection.outlook.com [40.107.92.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9BB54D8D1
-	for <linux-rdma@vger.kernel.org>; Wed, 21 Aug 2024 05:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A8A155A32
+	for <linux-rdma@vger.kernel.org>; Wed, 21 Aug 2024 05:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.42
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724217054; cv=fail; b=b75Uz1ROzFf2CrLi/9ohl2XavIL3LYjo2xi6I2PpRC71xR4zGqxm2zIZUmVLa2PQO4Ps+DYaBFcjkZpg92tv1g3oBMDPf0V7/C7CV7mJ/utNRp4Ym95zEeyFjVgj22DsglhC6t/YnBynidIyBuXHaRfg0i4xRUE4d9yzmOS+1eo=
+	t=1724217056; cv=fail; b=P5zdudTUhluQFG6QG886J41cH8jVgJp14uJX815CURlv+7b4jO4PyYPTq8d58VwyJgQrzuzsZY4oJAdzKy7R3zbF6OvT6Vp/b0EpoYqv1/m/94vm2d8jKfeHfhcFYczuq2ngRhY/027f9JEu2lS3WBjvjpXHypXZtqIsnc/3+Co=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724217054; c=relaxed/simple;
-	bh=sJvEjVWr96soQmqJB+pINcTQmezBlixxFYQGq4CPeBg=;
+	s=arc-20240116; t=1724217056; c=relaxed/simple;
+	bh=0WKga267J6OZR5L3arpGAkNxNVESozhB9ujB1dXARIM=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MMv0TjZUWutk+wImpZTee88nKdu2x4l1AFfC3Jx1HR7cR+khI8L2FC2Poz35Ey/02cjvGJkx0CT8mOK7duTu+Bkla5DB5vHSwZFGZb9BFsx2oGKtoDs/JkgtbIFnxpqHRMz7O6LL+kTYmf9OYPWctJWEqkc8M/JJETIqRXDDUsw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=NDjg6RXL; arc=fail smtp.client-ip=40.107.243.53
+	 MIME-Version:Content-Type; b=WjtQY+FOIZLdp71FAGJWyt8ElJxaS+nWUTZ2ew7Bz11KpFcvMjgB0tk8a43ttdsUBShedpQVoDsBPwADZxqLShH4DM2B1N2CIEtyOmUiVfZy5Jn6WFa7e763R6ZN6Loefz4rIBSzSni3CId0s0RBF3jYIhdBG1nWbizYG5W18Dk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=GlZmqq5i; arc=fail smtp.client-ip=40.107.92.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=d25PAv2VWz4uD8p5+IhQEbpcUENo/os+XaH9FiNeW+WubnVowfqFBzSoHxnP0CLLvr9BAd//vPE5980oTX+3wCXI4dvdHb7X9p9pI7lyJDEjCrQoHr0eU14gp4MDFNRdkgF92123I2ytF2ry3tnea0SeXirwHofdtlBrXdsXgSe9k37FZ8jGV+l9/8/AbNc2PN6OWOUEZL5ixgazFMG65ol5oCOkb5otU2Is70ZTL4Xvnc3UXZoIq0Bozy02kQ+VGuVP23zdfKqkjLZXCG/JN2WPKm3Prx05UivASDCM1jIOuQ8a1TQRlXWFGmcHDw0S2RF47BrkbqnC2HfO5YFBsw==
+ b=edrR0irhTXcPtSJ62sZvtgpZ15lVHk6KzvqU2xNXheDptJNHhA9Wds3emAKylArgiNVkLEFhf2wTZG5E9NEhBf8/oU3IICwjR8sTIgPeTWVjjtnaci5rMLcs9V16FY0WwxoXnFgB3gVCqxJFNoh+GORe+zlBVwPs0OimV43J48sQKbtK27RF3dXgFdSuMD2+yj1wxwRM0XJ7INt5LFTVkwITCvOJsJQZ5B6ByO2+OFe9+FAcvPG5/tAPMge8+oqYyYWZMHJpIgEksjLbAiHcDOBgIH0FetrzMSX4fdXwQoHk7G+YYKEtF6TfvnZ1pdDw+6gfgbdgk8S+yAoh1Kypyw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9kxupg9sG3YStzvtgXxg9YfLaC+Gqe5PLx1kPAhSnxo=;
- b=wWT4yy7IyCXxARuwZJTJFGHYRqlpe8gqawc9nhHvt1uIpX8sPQwcmKuYlyEjA+4csxAzv9y8B9rsnuBSTDkbXAK6CqgXkWHRkUlp9KGUrwUHiL3x15b8Ip5RHprmMm3BIa0z7BHpEW5rvahH/BKDtfjZwmloA5Jw0HLGQLe5bcJIr7cjfhQw4iuKnMMRLw7eVC7FlIKMbUjqlRixpXOHFnwG2uMEF0+X/biff5PA+pGT7EUlquppgrY8vOXfh6347MiSURAZq0siOSxftKpwkDSVzXZ5UhjJBy+hNTHiXwh97GGHAK+RwEDwotYIuuoa2+Z/E/6xRwpSLnS09OySfw==
+ bh=0HaH+38pdKn7KLTcvy75vWdVLaB2VYrxafhkF16g/lQ=;
+ b=LMXqnlo0AOs2p9aTSBn7DQsxbh/JSnXVeFhK/x2zC4gPk2H5d1U5uH390rZjeoq1iDcO3x/3W5roO45OWuPSmgomL0E9ThNxDBfNCmz1PKOI6ZZ6GpOGJaXwJVpMCgGDxfLtw9Z0x9NqrH9/EnMnEndKguQX9I9WJ5MNzAhKIvAEfCi+b2rQq7aIemm7PkHbWO90yi++ZkX6LUBwm5unDsk4DY1A6hnMTB2zuzawh9H0FjUpgAG1BeUnsRUVOl/nvl3B2xs/AkC2/sCOBCQ7goI1DnzbT8Xdv1r5NOIuk+a0hcUCxQCRVyGj4p0LiX0jRb4YAeGIifSfEQ26NYiUdw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -45,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9kxupg9sG3YStzvtgXxg9YfLaC+Gqe5PLx1kPAhSnxo=;
- b=NDjg6RXLGUFjLTUQKB3kXgXC/L/Ec7p0JFzcdHD/82okNLFNd1LKwcFV7S9+9ME+AN6ZbPg/S+YInhpydde5W/D7671T7HoSTbPJPH5jk8XeVeP+/opvOFN0QZg3KK2LltmAkSuuhY532VMeLIUUtKHnBEsGNm6UIEeIrXsmHwTD1+oJYINoSGLO5q9JVWYV4ivCPFJFPFoOVwll3Sc91fpNcvkHt5oi4c01LoCt6C2SB4EuHXIIthix14YqEP18X4WB/XBUBRUbm7yKNTyAXalXLy8JSgLU8RwldzZy239y2co4YqXjsZS9xojhKgICXE1rsupZVMifuitboRpujw==
-Received: from SJ0PR03CA0209.namprd03.prod.outlook.com (2603:10b6:a03:2ef::34)
- by MW5PR12MB5682.namprd12.prod.outlook.com (2603:10b6:303:19f::20) with
+ bh=0HaH+38pdKn7KLTcvy75vWdVLaB2VYrxafhkF16g/lQ=;
+ b=GlZmqq5iYNchZ3pl4p7r4RQfMlNQuziCBUx9tGNQd44O5GyUb//BfbaG9j4pwolOc/qyz47HmwutjwHqEVkmSJYPi1yi+wDHoFgB+ENFVySFaIHTbrE7Tvhn2qn9mHg0pVs4jdBJOif+mvhGr4Dn4/IATpG0zS7A0GmCb9jNPoPEtUVR3RSfS8HQfRtZsBbjT5+2fE4ATq02Q5uVEkhVOnCPRMczSC0dvNp/MOUOBOmE5V0ovsRcXAgMCFZK2B/W24TmoQ+Vt9zzx51bZaciVFASoZhqWge0GkOUHtLAbAplRnSPRiariVMAhIEfmP6WtcjMJEU17RSUclqwb/1Nbg==
+Received: from BY5PR20CA0010.namprd20.prod.outlook.com (2603:10b6:a03:1f4::23)
+ by MN6PR12MB8565.namprd12.prod.outlook.com (2603:10b6:208:47d::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.18; Wed, 21 Aug
- 2024 05:10:46 +0000
-Received: from SJ5PEPF000001ED.namprd05.prod.outlook.com
- (2603:10b6:a03:2ef:cafe::e0) by SJ0PR03CA0209.outlook.office365.com
- (2603:10b6:a03:2ef::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.21; Wed, 21 Aug
+ 2024 05:10:51 +0000
+Received: from SJ5PEPF000001EA.namprd05.prod.outlook.com
+ (2603:10b6:a03:1f4:cafe::83) by BY5PR20CA0010.outlook.office365.com
+ (2603:10b6:a03:1f4::23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.21 via Frontend
- Transport; Wed, 21 Aug 2024 05:10:46 +0000
+ Transport; Wed, 21 Aug 2024 05:10:50 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -64,28 +64,28 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.161 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.161) by
- SJ5PEPF000001ED.mail.protection.outlook.com (10.167.242.201) with Microsoft
+ SJ5PEPF000001EA.mail.protection.outlook.com (10.167.242.198) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7897.11 via Frontend Transport; Wed, 21 Aug 2024 05:10:46 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ 15.20.7897.11 via Frontend Transport; Wed, 21 Aug 2024 05:10:50 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
  (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 20 Aug
- 2024 22:10:37 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ 2024 22:10:40 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 20 Aug
- 2024 22:10:37 -0700
+ 2024 22:10:39 -0700
 Received: from vdi.nvidia.com (10.127.8.13) by mail.nvidia.com (10.129.68.10)
  with Microsoft SMTP Server id 15.2.1544.4 via Frontend Transport; Tue, 20 Aug
- 2024 22:10:35 -0700
+ 2024 22:10:37 -0700
 From: Michael Guralnik <michaelgur@nvidia.com>
 To: <jgg@nvidia.com>
 CC: <linux-rdma@vger.kernel.org>, <leonro@nvidia.com>, <mbloch@nvidia.com>,
 	<cmeiohas@nvidia.com>, <msanalla@nvidia.com>, Michael Guralnik
 	<michaelgur@nvidia.com>
-Subject: [PATCH rdma-next 5/7] RDMA/mlx5: Use IB set_netdev and get_netdev functions
-Date: Wed, 21 Aug 2024 08:10:15 +0300
-Message-ID: <20240821051017.7730-6-michaelgur@nvidia.com>
+Subject: [PATCH rdma-next 6/7] RDMA/nldev: Add support for RDMA monitoring
+Date: Wed, 21 Aug 2024 08:10:16 +0300
+Message-ID: <20240821051017.7730-7-michaelgur@nvidia.com>
 X-Mailer: git-send-email 2.17.2
 In-Reply-To: <20240821051017.7730-1-michaelgur@nvidia.com>
 References: <20240821051017.7730-1-michaelgur@nvidia.com>
@@ -99,651 +99,402 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001ED:EE_|MW5PR12MB5682:EE_
-X-MS-Office365-Filtering-Correlation-Id: 326c5a9e-62d0-4f70-64e6-08dcc19f9d99
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001EA:EE_|MN6PR12MB8565:EE_
+X-MS-Office365-Filtering-Correlation-Id: b6e74086-c724-4d49-16a9-08dcc19f9fcf
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|82310400026|376014|36860700013|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?HNhDxcoIhOq1PLKLarnUgHZsT3dRbG0AkTLpJKupd2mnaHyVK3V59M0LR3VQ?=
- =?us-ascii?Q?F5nD1sNLfWXM02H0LlRrj96faz+pxocqYJRw2crtY1JAAwl7JPeIug5AbRWg?=
- =?us-ascii?Q?IMPhbaxsyooWmT1VjCMe6EYOCQDoOii1pqR+SYetLiVQctAtID1Zwbe4tFKo?=
- =?us-ascii?Q?8qc1XHYfyYvqKISR6XDWVD1UhAl8mEkVHSnmgVROZ3CriQV9cHhh3ZME1kOM?=
- =?us-ascii?Q?ZZSL0lEj+hJ1GXBh/NAouXYH//09XrT8/T98gJcopcR3BIgJSN8VH7wy2PIT?=
- =?us-ascii?Q?104L1zrCZJPMHJGczJvIZUESdE1UgRp/eSeOyoItQ1liJClod1NgO0o2F55v?=
- =?us-ascii?Q?lOpWvrgk31DdzLdDUbvOTOIXvm7+V7sfeTsdY+/A0zYasloCJk3kIvtqtxmp?=
- =?us-ascii?Q?AXX/yzv8jeHIzMoonQo79KXRbcUvBiOcbNLTMuw6ih/1fEQHurCguiF8cvYS?=
- =?us-ascii?Q?ei4x5cZfuqHU1Uj9qoMaU8JQOlCoOW0t83dOA+9ZGx4mqi0j46NLKmpLnoPB?=
- =?us-ascii?Q?p2QEdng4d04+1lXd1FGjp1w6xbUuPf5TZ7gR82+btHoN4fDWvGRNRYzmu078?=
- =?us-ascii?Q?caFuU8kt0wamOI8NM3hTSOL3TPE1dXuADRLYSTwXaJmxuN2a1PvEEpClB7Lt?=
- =?us-ascii?Q?YRYdjRiVXd7BtLAv8Pj8L123CG2Ez0eUjKflOoipTVLJYFKVPIztCXTn4dqD?=
- =?us-ascii?Q?Od6JXr37KEW3vUV2M+5mmBtUt33znoMtoHD4i0nrLFeKKr4ELrneBt5LqzDx?=
- =?us-ascii?Q?1BRUYeJxHBUBYgsyNdvWY7oByQeIjAEOkcw7wiTNX6Qk4QWPEz69TipP2Wgj?=
- =?us-ascii?Q?KzdPNuSobG8VIsyQxcrAGxRx/tEuEA/kz+gBHMu4mKwpef34t8Kyrx5ZE1hq?=
- =?us-ascii?Q?jmpmRatxBvl+PeUTr9MuGnLjs8mMcaSic/q2HCr+QWUOJM1CQyMfSP49JCv4?=
- =?us-ascii?Q?xSrsE50bLnzY7I2d1mbT4wHxAkNjy5hlTvaL3VMcEoRFe/01BHnn5NXhLSDN?=
- =?us-ascii?Q?HQFk/dfhfIHeURzPyuZpvpu4dHVd4YKVyIRXzc0YcSVI7L3lQzsGqfCmFPCI?=
- =?us-ascii?Q?TMvlkoUJ7g3hggIhvEA6G2QOMjpR8HwnnonVcyhUolevrwlvLZUkN1a0IOIM?=
- =?us-ascii?Q?bhQsE8DLYbq4aYMd2RlCUzVtcvyVW2Uux9WsAL+Bh11JDPzQeQuvLMwNKRFo?=
- =?us-ascii?Q?TnBrWUeae67jcbgumGok9bwl09QyKML+3qLsjgZIsTUndO6q8bJO8ynS5t0H?=
- =?us-ascii?Q?fJfm718uRK0SCmexzo1PDSXQuOujxLqg3FCbBnCydr53DWVuFVOQ9HW5jQxO?=
- =?us-ascii?Q?5kpd8kPBCdHgpbehEwFg9dIiu2k7QnJ5uw3MaxOjKv2yW8QH0LPle7x+qi0s?=
- =?us-ascii?Q?FFOLmkVqzhTP4p4GSA1iZGiVB5JKsglacRWzNpeh9/ZuT7PexTgTRXXVK8Du?=
- =?us-ascii?Q?InRGoRHThsAdlXCt3krp776BpM4nnnAH?=
+	=?us-ascii?Q?ql4iecuGybHuBO1ioIUPndIVayR93hBojaJZX26hVYGKKt4EEFnFE3rrYAju?=
+ =?us-ascii?Q?NPWptYE6+/KM9ReEnL43IN/wKkv1hKVf7iUixi6K8iEU0GkqfWjzaNqNsngk?=
+ =?us-ascii?Q?Ry1n6WEZdlwi5EJEIInJ6zsvmnV8GlNjaKroOAcQnBlKRAU0cBHpMF1fulK+?=
+ =?us-ascii?Q?4Ccxa8i6m8KqU9N881b3Uy8Ow+B03calQvYAedehRCpR4lQ2g+/lSpNV16cP?=
+ =?us-ascii?Q?+bvGK6R7oUJX60zgTIuSL4fsz8+j0N/oQ5RiUYNgIX0pcdY/S+GtXqZxIxYf?=
+ =?us-ascii?Q?qxUpWNB9VGMlU1nlUXsTxE53AyhKDLxU6d+7AqC9wONtxOSR3urjuaczb+8a?=
+ =?us-ascii?Q?LSHMjPG6MNt48s3WbcWjcMowQCPQXj3jUhDgzYIOCdt6lwlNHYVqvysQazTI?=
+ =?us-ascii?Q?znBnVGtpvXRxS9vZ/xkjm1u7DO3ZCDThoKZYJXAVWQbTEIt8V2kTWI1ii0h6?=
+ =?us-ascii?Q?JKRs97Wyq21WUEDXPabQ0EzAnA2rKYNzLMssrHgQ8fWPZXN+Gfnq45Ej3RNT?=
+ =?us-ascii?Q?reygNEol/8Z/FhWS1YcgKkDx22Bq7YFm9qqj8QJ2L0x76BZtqP59A0HoRhfF?=
+ =?us-ascii?Q?USAtEEfaXnP+p9dDn0szDCF0KctMGhBNeFrshyeMhh2NHhFAk3l1EzzqanOC?=
+ =?us-ascii?Q?ZPpjGaE40EPRP577wJjJJ6jEV/4jJEva+8RZujuFOwiphQM/Fi0DMkkKeye/?=
+ =?us-ascii?Q?h1xPskf/3FWFKD0g8xgAj+C7tMD7WTa3j3e9terb1Cb3eNlLBlXHd9ARP7yp?=
+ =?us-ascii?Q?Nh0gGKvQXDZHxQGsYhD8U0trBvooFrmYn5+mZR6dZkODeIlC/g4sgRNUGUZg?=
+ =?us-ascii?Q?6Gpx4Amo7N2i3s500FwHFfAeSli1iBMxZeIQqDgBeq9E+cZyoRS1IYyTVGJ4?=
+ =?us-ascii?Q?B4UTdUBzSCsTIOElU/jEJTKYyzqu/WHq+ay91YbVcUqGBKHc4pXdMH+bVSaP?=
+ =?us-ascii?Q?CWk5rcBycxuolQdb6t+g0PJ7vZ8UDbG1QQVMGnZbMixn5agB0NtJhDrMtqj5?=
+ =?us-ascii?Q?wM1I1lyF21PLYXiN9ZQDOYMmU5czmDKeMoxaZtgEeeqRc0pO9gysgDvG4IOC?=
+ =?us-ascii?Q?BvIczsy+P4vcIr97N4prFdxYaY1LaGszywDnWQD8/K/x2GqBwHVwL+Wgimd9?=
+ =?us-ascii?Q?BPwL3gS5VcYSrBEJj25VnK3dASSl1o2G14XFcUWONVEWlkD2xwtFGI6M75oR?=
+ =?us-ascii?Q?T+qzWfpra57qqYEFcqOrNl5+Wo04pKLsGS0098eMVc5VR4bZh0BLXRd1Mhwv?=
+ =?us-ascii?Q?YeDpPQryC0RMy8e1ITJAZylYGI3l7S6Uz5f+GDfCmxwgOTjfy8Qk3b9scqh9?=
+ =?us-ascii?Q?xdflAYTU+wFnulpBvlRM9BLWjd/7FHoGSyQSx05HGUu84XyPOP3azqEQ36Ls?=
+ =?us-ascii?Q?MQhz1PkdZvsvRo7pDULxRbY39Y/CccWCP7C5nJE0DNw2q8MCCNSYXC8uBMH7?=
+ =?us-ascii?Q?uxtCxPdlTgTh/G9YW3rI0NUwrqYPNQwu?=
 X-Forefront-Antispam-Report:
 	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(376014)(36860700013)(1800799024);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2024 05:10:46.7491
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2024 05:10:50.4565
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 326c5a9e-62d0-4f70-64e6-08dcc19f9d99
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6e74086-c724-4d49-16a9-08dcc19f9fcf
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SJ5PEPF000001ED.namprd05.prod.outlook.com
+	SJ5PEPF000001EA.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR12MB5682
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8565
 
 From: Chiara Meiohas <cmeiohas@nvidia.com>
 
-The IB layer provides a common interface to store and get net
-devices associated to an IB device port (ib_device_set_netdev()
-and ib_device_get_netdev()).
-Previously, mlx5_ib stored and managed the associated net devices
-internally.
+Introduce a new netlink command to allow rdma event monitoring.
+The rdma events supported now are IB device
+registration/unregistration and net device attachment/detachment.
 
-Replace internal net device management in mlx5_ib with
-ib_device_set_netdev() when attaching/detaching  a net device and
-ib_device_get_netdev() when retrieving the net device.
+Example output of rdma monitor and the commands which trigger
+the events:
 
-Export ib_device_get_netdev().
+$ rdma monitor
+$ rmmod mlx5_ib
+[UNREGISTER]    dev 3
+[UNREGISTER]    dev 0
 
-For mlx5 representors/PFs/VFs and lag creation we replace the netdev
-assignments with the IB set/get netdev functions.
+$modprobe mlx5_ib
+[REGISTER]      dev 4
+[NETDEV_ATTACH] dev 4 port 1 netdev 4
+[REGISTER]      dev 5
+[NETDEV_ATTACH] dev 5 port 1 netdev 5
 
-In active-backup mode lag the active slave net device is stored in the
-lag itself. To assure the net device stored in a lag bond IB device is
-the active slave we implement the following:
-- mlx5_core: when modifying the slave of a bond we send the internal driver event
-  MLX5_DRIVER_EVENT_ACTIVE_BACKUP_LAG_CHANGE_LOWERSTATE.
-- mlx5_ib: when catching the event call ib_device_set_netdev()
+$ devlink dev eswitch set pci/0000:08:00.0 mode switchdev
+[UNREGISTER]    dev 4
+[REGISTER]      dev 6
+[NETDEV_ATTACH] dev 6 port 6 netdev 4
 
-This patch also ensures the correct IB events are sent in switchdev lag.
+$ echo 4 > /sys/class/net/eth2/device/sriov_numvfs
+[NETDEV_ATTACH] dev 6 port 2 netdev 7
+[NETDEV_ATTACH] dev 6 port 3 netdev 8
+[NETDEV_ATTACH] dev 6 port 4 netdev 9
+[NETDEV_ATTACH] dev 6 port 5 netdev 10
+[REGISTER]      dev 7
+[NETDEV_ATTACH] dev 7 port 1 netdev 11
+[REGISTER]      dev 8
+[NETDEV_ATTACH] dev 8 port 1 netdev 12
+[REGISTER]      dev 9
+[NETDEV_ATTACH] dev 9 port 1 netdev 13
+[REGISTER]      dev 10
+[NETDEV_ATTACH] dev 10 port 1 netdev 14
 
-While at it, when in multiport eswitch mode, only a single IB device is
-created for all ports. The said IB device will receive all netdev events
-of its VFs once loaded, thus to avoid overwriting the mapping of PF IB
-device to PF netdev, ignore NETDEV_REGISTER events if the ib device has
-already been mapped to a netdev.
+$ echo 0 > /sys/class/net/eth2/device/sriov_numvfs
+[UNREGISTER]    dev 7
+[UNREGISTER]    dev 8
+[UNREGISTER]    dev 9
+[UNREGISTER]    dev 10
+[NETDEV_DETACH] dev 6 port 2
+[NETDEV_DETACH] dev 6 port 3
+[NETDEV_DETACH] dev 6 port 4
+[NETDEV_DETACH] dev 6 port 5
 
 Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
 Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
 Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/device.c              |   4 +
- drivers/infiniband/hw/mlx5/ib_rep.c           |  23 +--
- drivers/infiniband/hw/mlx5/main.c             | 183 ++++++++++++------
- drivers/infiniband/hw/mlx5/mlx5_ib.h          |   3 +-
- .../net/ethernet/mellanox/mlx5/core/lag/lag.c |  76 ++++----
- include/linux/mlx5/device.h                   |   1 +
- include/linux/mlx5/driver.h                   |   2 +-
- include/rdma/ib_verbs.h                       |   2 +
- 8 files changed, 191 insertions(+), 103 deletions(-)
+ drivers/infiniband/core/device.c  |  38 ++++++++++
+ drivers/infiniband/core/netlink.c |   1 +
+ drivers/infiniband/core/nldev.c   | 117 ++++++++++++++++++++++++++++++
+ include/rdma/rdma_netlink.h       |  10 +++
+ include/uapi/rdma/rdma_netlink.h  |  15 ++++
+ 5 files changed, 181 insertions(+)
 
 diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 583047457de2..b2fc5a13577c 100644
+index b2fc5a13577c..2113eb7c7573 100644
 --- a/drivers/infiniband/core/device.c
 +++ b/drivers/infiniband/core/device.c
-@@ -2236,6 +2236,9 @@ struct net_device *ib_device_get_netdev(struct ib_device *ib_dev,
- 	if (!rdma_is_port_valid(ib_dev, port))
- 		return NULL;
- 
-+	if (!ib_dev->port_data)
-+		return NULL;
-+
- 	pdata = &ib_dev->port_data[port];
- 
- 	/*
-@@ -2264,6 +2267,7 @@ struct net_device *ib_device_get_netdev(struct ib_device *ib_dev,
- 
- 	return res;
- }
-+EXPORT_SYMBOL(ib_device_get_netdev);
- 
- /**
-  * ib_device_get_by_netdev - Find an IB device associated with a netdev
-diff --git a/drivers/infiniband/hw/mlx5/ib_rep.c b/drivers/infiniband/hw/mlx5/ib_rep.c
-index 1ad934685d80..49af1cfbe6d1 100644
---- a/drivers/infiniband/hw/mlx5/ib_rep.c
-+++ b/drivers/infiniband/hw/mlx5/ib_rep.c
-@@ -13,6 +13,7 @@ mlx5_ib_set_vport_rep(struct mlx5_core_dev *dev,
- 		      int vport_index)
+@@ -1351,6 +1351,30 @@ static void prevent_dealloc_device(struct ib_device *ib_dev)
  {
- 	struct mlx5_ib_dev *ibdev;
-+	struct net_device *ndev;
- 
- 	ibdev = mlx5_eswitch_uplink_get_proto_dev(dev->priv.eswitch, REP_IB);
- 	if (!ibdev)
-@@ -20,12 +21,9 @@ mlx5_ib_set_vport_rep(struct mlx5_core_dev *dev,
- 
- 	ibdev->port[vport_index].rep = rep;
- 	rep->rep_data[REP_IB].priv = ibdev;
--	write_lock(&ibdev->port[vport_index].roce.netdev_lock);
--	ibdev->port[vport_index].roce.netdev =
--		mlx5_ib_get_rep_netdev(rep->esw, rep->vport);
--	write_unlock(&ibdev->port[vport_index].roce.netdev_lock);
-+	ndev = mlx5_ib_get_rep_netdev(rep->esw, rep->vport);
- 
--	return 0;
-+	return ib_device_set_netdev(&ibdev->ib_dev, ndev, vport_index + 1);
  }
  
- static void mlx5_ib_register_peer_vport_reps(struct mlx5_core_dev *mdev);
-@@ -104,11 +102,15 @@ mlx5_ib_vport_rep_load(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
- 	ibdev->is_rep = true;
- 	vport_index = rep->vport_index;
- 	ibdev->port[vport_index].rep = rep;
--	ibdev->ib_dev.phys_port_cnt = num_ports;
--	ibdev->port[vport_index].roce.netdev =
--		mlx5_ib_get_rep_netdev(lag_master->priv.eswitch, rep->vport);
- 	ibdev->mdev = lag_master;
- 	ibdev->num_ports = num_ports;
-+	ibdev->ib_dev.phys_port_cnt = num_ports;
-+	ret = ib_device_set_netdev(&ibdev->ib_dev,
-+			mlx5_ib_get_rep_netdev(lag_master->priv.eswitch,
-+					       rep->vport),
-+			vport_index + 1);
++static void ib_device_notify_register(struct ib_device *device)
++{
++	struct net_device *netdev;
++	u32 port;
++	int ret;
++
++	ret = rdma_nl_notify_event(device, 0, RDMA_REGISTER_EVENT);
 +	if (ret)
-+		goto fail_add;
- 
- 	ret = __mlx5_ib_add(ibdev, profile);
- 	if (ret)
-@@ -161,9 +163,8 @@ mlx5_ib_vport_rep_unload(struct mlx5_eswitch_rep *rep)
- 	}
- 
- 	port = &dev->port[vport_index];
--	write_lock(&port->roce.netdev_lock);
--	port->roce.netdev = NULL;
--	write_unlock(&port->roce.netdev_lock);
++		return;
 +
-+	ib_device_set_netdev(&dev->ib_dev, NULL, vport_index + 1);
- 	rep->rep_data[REP_IB].priv = NULL;
- 	port->rep = NULL;
- 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 1046c92212c7..a750f61513d4 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -147,16 +147,52 @@ static struct mlx5_roce *mlx5_get_rep_roce(struct mlx5_ib_dev *dev,
- 
- 		if (upper && port->rep->vport == MLX5_VPORT_UPLINK)
- 			continue;
--
--		read_lock(&port->roce.netdev_lock);
--		rep_ndev = mlx5_ib_get_rep_netdev(port->rep->esw,
--						  port->rep->vport);
--		if (rep_ndev == ndev) {
--			read_unlock(&port->roce.netdev_lock);
-+		rep_ndev = ib_device_get_netdev(&dev->ib_dev, i + 1);
-+		if (rep_ndev && rep_ndev == ndev) {
-+			dev_put(rep_ndev);
- 			*port_num = i + 1;
- 			return &port->roce;
- 		}
--		read_unlock(&port->roce.netdev_lock);
++	rdma_for_each_port(device, port) {
++		netdev = ib_device_get_netdev(device, port);
++		if (!netdev)
++			continue;
 +
-+		dev_put(rep_ndev);
++		ret = rdma_nl_notify_event(device, port,
++					   RDMA_NETDEV_ATTACH_EVENT);
++		dev_put(netdev);
++		if (ret)
++			return;
 +	}
-+
-+	return NULL;
++	return;
 +}
 +
-+static bool mlx5_netdev_send_event(struct mlx5_ib_dev *dev,
-+				   struct net_device *ndev,
-+				   struct net_device *upper,
-+				   struct net_device *ib_ndev)
+ /**
+  * ib_register_device - Register an IB device with IB core
+  * @device: Device to register
+@@ -1449,6 +1473,8 @@ int ib_register_device(struct ib_device *device, const char *name,
+ 	dev_set_uevent_suppress(&device->dev, false);
+ 	/* Mark for userspace that device is ready */
+ 	kobject_uevent(&device->dev.kobj, KOBJ_ADD);
++
++	ib_device_notify_register(device);
+ 	ib_device_put(device);
+ 
+ 	return 0;
+@@ -1491,6 +1517,7 @@ static void __ib_unregister_device(struct ib_device *ib_dev)
+ 		goto out;
+ 
+ 	disable_device(ib_dev);
++	rdma_nl_notify_event(ib_dev, 0, RDMA_UNREGISTER_EVENT);
+ 
+ 	/* Expedite removing unregistered pointers from the hash table */
+ 	free_netdevs(ib_dev);
+@@ -2159,6 +2186,7 @@ static void add_ndev_hash(struct ib_port_data *pdata)
+ int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
+ 			 u32 port)
+ {
++	enum rdma_nl_notify_event_type etype;
+ 	struct net_device *old_ndev;
+ 	struct ib_port_data *pdata;
+ 	unsigned long flags;
+@@ -2190,6 +2218,16 @@ int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
+ 	spin_unlock_irqrestore(&pdata->netdev_lock, flags);
+ 
+ 	add_ndev_hash(pdata);
++
++	down_read(&devices_rwsem);
++	if (xa_get_mark(&devices, ib_dev->index, DEVICE_REGISTERED) &&
++	    xa_load(&devices, ib_dev->index) == ib_dev) {
++		etype = ndev ?
++			RDMA_NETDEV_ATTACH_EVENT : RDMA_NETDEV_DETACH_EVENT;
++		rdma_nl_notify_event(ib_dev, port, etype);
++	}
++	up_read(&devices_rwsem);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(ib_device_set_netdev);
+diff --git a/drivers/infiniband/core/netlink.c b/drivers/infiniband/core/netlink.c
+index ae2db0c70788..def14c54b648 100644
+--- a/drivers/infiniband/core/netlink.c
++++ b/drivers/infiniband/core/netlink.c
+@@ -311,6 +311,7 @@ int rdma_nl_net_init(struct rdma_dev_net *rnet)
+ 	struct net *net = read_pnet(&rnet->net);
+ 	struct netlink_kernel_cfg cfg = {
+ 		.input	= rdma_nl_rcv,
++		.flags = NL_CFG_F_NONROOT_RECV,
+ 	};
+ 	struct sock *nls;
+ 
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index 4d4a1f90e484..5acbde242b97 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -170,6 +170,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
+ 	[RDMA_NLDEV_ATTR_DEV_TYPE]		= { .type = NLA_U8 },
+ 	[RDMA_NLDEV_ATTR_PARENT_NAME]		= { .type = NLA_NUL_STRING },
+ 	[RDMA_NLDEV_ATTR_NAME_ASSIGN_TYPE]	= { .type = NLA_U8 },
++	[RDMA_NLDEV_ATTR_EVENT_TYPE]		= { .type = NLA_U8 },
+ };
+ 
+ static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
+@@ -2722,6 +2723,122 @@ static const struct rdma_nl_cbs nldev_cb_table[RDMA_NLDEV_NUM_OPS] = {
+ 	},
+ };
+ 
++static int fill_mon_netdev_association(struct sk_buff *msg,
++				       struct ib_device *device, u32 port,
++				       const struct net *net)
 +{
-+	if (!dev->ib_active)
-+		return false;
++	struct net_device *netdev = ib_device_get_netdev(device, port);
++	int ret = 0;
 +
-+	/* Event is about our upper device */
-+	if (upper == ndev)
-+		return true;
++	if (netdev && !net_eq(dev_net(netdev), net))
++		goto out;
 +
-+	/* RDMA device is not in lag and not in switchdev */
-+	if (!dev->is_rep && !upper && ndev == ib_ndev)
-+		return true;
++	ret = nla_put_u32(msg, RDMA_NLDEV_ATTR_DEV_INDEX, device->index);
++	if (ret)
++		goto out;
++	ret = nla_put_u32(msg, RDMA_NLDEV_ATTR_PORT_INDEX, port);
++	if (ret)
++		goto out;
++	if (netdev)
++		ret = nla_put_u32(msg, RDMA_NLDEV_ATTR_NDEV_INDEX,
++				  netdev->ifindex);
 +
-+	/* RDMA devie is in switchdev */
-+	if (dev->is_rep && ndev == ib_ndev)
-+		return true;
-+
-+	return false;
++out:
++	dev_put(netdev);
++	return ret;
 +}
 +
-+static struct net_device *mlx5_ib_get_rep_uplink_netdev(struct mlx5_ib_dev *ibdev)
++static int fill_mon_register(struct sk_buff *msg, struct ib_device *device,
++			     const struct net *net)
 +{
-+	struct mlx5_ib_port *port;
-+	int i;
++	return nla_put_u32(msg, RDMA_NLDEV_ATTR_DEV_INDEX, device->index);
++}
 +
-+	for (i = 0; i < ibdev->num_ports; i++) {
-+		port = &ibdev->port[i];
-+		if (port->rep && port->rep->vport == MLX5_VPORT_UPLINK) {
-+			return ib_device_get_netdev(&ibdev->ib_dev, i + 1);
-+		}
- 	}
- 
- 	return NULL;
-@@ -168,6 +204,7 @@ static int mlx5_netdev_event(struct notifier_block *this,
- 	struct mlx5_roce *roce = container_of(this, struct mlx5_roce, nb);
- 	struct net_device *ndev = netdev_notifier_info_to_dev(ptr);
- 	u32 port_num = roce->native_port_num;
-+	struct net_device *ib_ndev = NULL;
- 	struct mlx5_core_dev *mdev;
- 	struct mlx5_ib_dev *ibdev;
- 
-@@ -181,29 +218,38 @@ static int mlx5_netdev_event(struct notifier_block *this,
- 		/* Should already be registered during the load */
- 		if (ibdev->is_rep)
- 			break;
--		write_lock(&roce->netdev_lock);
-+
-+		ib_ndev = ib_device_get_netdev(&ibdev->ib_dev, port_num);
-+		/* Exit if already registered */
-+		if (ib_ndev)
-+			goto put_ndev;
-+
- 		if (ndev->dev.parent == mdev->device)
--			roce->netdev = ndev;
--		write_unlock(&roce->netdev_lock);
-+			ib_device_set_netdev(&ibdev->ib_dev, ndev, port_num);
- 		break;
- 
- 	case NETDEV_UNREGISTER:
- 		/* In case of reps, ib device goes away before the netdevs */
--		write_lock(&roce->netdev_lock);
--		if (roce->netdev == ndev)
--			roce->netdev = NULL;
--		write_unlock(&roce->netdev_lock);
--		break;
-+		if (ibdev->is_rep)
-+			break;
-+		ib_ndev = ib_device_get_netdev(&ibdev->ib_dev, port_num);
-+		if (ib_ndev == ndev)
-+			ib_device_set_netdev(&ibdev->ib_dev, NULL, port_num);
-+		goto put_ndev;
- 
- 	case NETDEV_CHANGE:
- 	case NETDEV_UP:
- 	case NETDEV_DOWN: {
- 		struct net_device *upper = NULL;
- 
--		if (mlx5_lag_is_roce(mdev)) {
-+		if (mlx5_lag_is_roce(mdev) || mlx5_lag_is_sriov(mdev)) {
- 			struct net_device *lag_ndev;
- 
--			lag_ndev = mlx5_lag_get_roce_netdev(mdev);
-+			if(mlx5_lag_is_roce(mdev))
-+				lag_ndev = ib_device_get_netdev(&ibdev->ib_dev, 1);
-+			else /* sriov lag */
-+				lag_ndev = mlx5_ib_get_rep_uplink_netdev(ibdev);
-+
- 			if (lag_ndev) {
- 				upper = netdev_master_upper_dev_get(lag_ndev);
- 				dev_put(lag_ndev);
-@@ -216,18 +262,19 @@ static int mlx5_netdev_event(struct notifier_block *this,
- 			roce = mlx5_get_rep_roce(ibdev, ndev, upper, &port_num);
- 		if (!roce)
- 			return NOTIFY_DONE;
--		if ((upper == ndev ||
--		     ((!upper || ibdev->is_rep) && ndev == roce->netdev)) &&
--		    ibdev->ib_active) {
-+
-+		ib_ndev = ib_device_get_netdev(&ibdev->ib_dev, port_num);
-+
-+		if (mlx5_netdev_send_event(ibdev, ndev, upper, ib_ndev)) {
- 			struct ib_event ibev = { };
- 			enum ib_port_state port_state;
- 
- 			if (get_port_state(&ibdev->ib_dev, port_num,
- 					   &port_state))
--				goto done;
-+				goto put_ndev;
- 
- 			if (roce->last_port_state == port_state)
--				goto done;
-+				goto put_ndev;
- 
- 			roce->last_port_state = port_state;
- 			ibev.device = &ibdev->ib_dev;
-@@ -236,7 +283,7 @@ static int mlx5_netdev_event(struct notifier_block *this,
- 			else if (port_state == IB_PORT_ACTIVE)
- 				ibev.event = IB_EVENT_PORT_ACTIVE;
- 			else
--				goto done;
-+				goto put_ndev;
- 
- 			ibev.element.port_num = port_num;
- 			ib_dispatch_event(&ibev);
-@@ -247,39 +294,13 @@ static int mlx5_netdev_event(struct notifier_block *this,
- 	default:
- 		break;
- 	}
-+put_ndev:
-+	dev_put(ib_ndev);
- done:
- 	mlx5_ib_put_native_port_mdev(ibdev, port_num);
- 	return NOTIFY_DONE;
- }
- 
--static struct net_device *mlx5_ib_get_netdev(struct ib_device *device,
--					     u32 port_num)
--{
--	struct mlx5_ib_dev *ibdev = to_mdev(device);
--	struct net_device *ndev;
--	struct mlx5_core_dev *mdev;
--
--	mdev = mlx5_ib_get_native_port_mdev(ibdev, port_num, NULL);
--	if (!mdev)
--		return NULL;
--
--	if (mlx5_lag_is_roce(mdev)) {
--		ndev = mlx5_lag_get_roce_netdev(mdev);
--		goto out;
--	}
--
--	/* Ensure ndev does not disappear before we invoke dev_hold()
--	 */
--	read_lock(&ibdev->port[port_num - 1].roce.netdev_lock);
--	ndev = ibdev->port[port_num - 1].roce.netdev;
--	dev_hold(ndev);
--	read_unlock(&ibdev->port[port_num - 1].roce.netdev_lock);
--
--out:
--	mlx5_ib_put_native_port_mdev(ibdev, port_num);
--	return ndev;
--}
--
- struct mlx5_core_dev *mlx5_ib_get_native_port_mdev(struct mlx5_ib_dev *ibdev,
- 						   u32 ib_port_num,
- 						   u32 *native_port_num)
-@@ -554,7 +575,7 @@ static int mlx5_query_port_roce(struct ib_device *device, u32 port_num,
- 	if (!put_mdev)
- 		goto out;
- 
--	ndev = mlx5_ib_get_netdev(device, port_num);
-+	ndev = ib_device_get_netdev(device, port_num);
- 	if (!ndev)
- 		goto out;
- 
-@@ -3185,6 +3206,60 @@ static void get_dev_fw_str(struct ib_device *ibdev, char *str)
- 		 fw_rev_sub(dev->mdev));
- }
- 
-+static int lag_event(struct notifier_block *nb, unsigned long event, void *data)
++static void rdma_nl_notify_err_msg(struct ib_device *device, u32 port_num,
++				    enum rdma_nl_notify_event_type type)
 +{
-+	struct mlx5_ib_dev *dev = container_of(nb, struct mlx5_ib_dev,
-+					       lag_events);
-+	struct mlx5_core_dev *mdev = dev->mdev;
-+	struct mlx5_ib_port *port;
-+	struct net_device *ndev;
-+	int  i, err;
-+	int portnum;
++	struct net_device *netdev;
 +
-+	portnum = 0;
-+	switch (event) {
-+	case MLX5_DRIVER_EVENT_ACTIVE_BACKUP_LAG_CHANGE_LOWERSTATE:
-+		ndev = data;
-+		if (ndev) {
-+			if (!mlx5_lag_is_roce(mdev)) {
-+				// sriov lag
-+				for (i = 0; i < dev->num_ports; i++) {
-+					port = &dev->port[i];
-+					if (port->rep && port->rep->vport ==
-+					    MLX5_VPORT_UPLINK) {
-+						portnum = i;
-+						break;
-+					}
-+				}
-+			}
-+			err = ib_device_set_netdev(&dev->ib_dev, ndev,
-+						   portnum + 1);
-+			dev_put(ndev);
-+			if (err)
-+				return err;
-+			/* Rescan gids after new netdev assignment */
-+			rdma_roce_rescan_device(&dev->ib_dev);
-+		}
++	switch (type) {
++	case RDMA_REGISTER_EVENT:
++		dev_warn_ratelimited(&device->dev,
++				     "Failed to send RDMA monitor register device event\n");
++		break;
++	case RDMA_UNREGISTER_EVENT:
++		dev_warn_ratelimited(&device->dev,
++				     "Failed to send RDMA monitor unregister device event\n");
++		break;
++	case RDMA_NETDEV_ATTACH_EVENT:
++		netdev = ib_device_get_netdev(device, port_num);
++		dev_warn_ratelimited(&device->dev,
++				     "Failed to send RDMA monitor netdev attach event: port %d netdev %d\n",
++				     port_num, netdev->ifindex);
++		dev_put(netdev);
++		break;
++	case RDMA_NETDEV_DETACH_EVENT:
++		dev_warn_ratelimited(&device->dev,
++				     "Failed to send RDMA monitor netdev detach event: port %d\n",
++				     port_num);
++	default:
++		break;
++	};
++}
++
++int rdma_nl_notify_event(struct ib_device *device, u32 port_num,
++			  enum rdma_nl_notify_event_type type)
++{
++	struct sk_buff *skb;
++	struct net *net;
++	int ret = 0;
++	void *nlh;
++
++	net = read_pnet(&device->coredev.rdma_net);
++	if (!net)
++		return -EINVAL;
++
++	skb = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
++	if (!skb)
++		return -ENOMEM;
++	nlh = nlmsg_put(skb, 0, 0,
++			RDMA_NL_GET_TYPE(RDMA_NL_NLDEV, RDMA_NLDEV_CMD_MONITOR),
++			0, 0);
++
++	switch (type) {
++	case RDMA_REGISTER_EVENT:
++	case RDMA_UNREGISTER_EVENT:
++		ret = fill_mon_register(skb, device, net);
++		if (ret)
++			goto err_free;
++		break;
++	case RDMA_NETDEV_ATTACH_EVENT:
++	case RDMA_NETDEV_DETACH_EVENT:
++		ret = fill_mon_netdev_association(skb, device,
++						  port_num, net);
++		if (ret)
++			goto err_free;
 +		break;
 +	default:
-+		return NOTIFY_DONE;
++		goto err_free;
 +	}
-+	return NOTIFY_OK;
-+}
 +
-+static void mlx5e_lag_event_register(struct mlx5_ib_dev *dev)
-+{
-+	dev->lag_events.notifier_call = lag_event;
-+	blocking_notifier_chain_register(&dev->mdev->priv.lag_nh,
-+					 &dev->lag_events);
-+}
++	ret = nla_put_u8(skb, RDMA_NLDEV_ATTR_EVENT_TYPE, type);
++	if (ret)
++		goto err_free;
 +
-+static void mlx5e_lag_event_unregister(struct mlx5_ib_dev *dev)
-+{
-+	blocking_notifier_chain_unregister(&dev->mdev->priv.lag_nh,
-+					   &dev->lag_events);
-+}
-+
- static int mlx5_eth_lag_init(struct mlx5_ib_dev *dev)
- {
- 	struct mlx5_core_dev *mdev = dev->mdev;
-@@ -3206,6 +3281,7 @@ static int mlx5_eth_lag_init(struct mlx5_ib_dev *dev)
- 		goto err_destroy_vport_lag;
- 	}
- 
-+	mlx5e_lag_event_register(dev);
- 	dev->flow_db->lag_demux_ft = ft;
- 	dev->lag_ports = mlx5_lag_get_num_ports(mdev);
- 	dev->lag_active = true;
-@@ -3223,6 +3299,7 @@ static void mlx5_eth_lag_cleanup(struct mlx5_ib_dev *dev)
- 	if (dev->lag_active) {
- 		dev->lag_active = false;
- 
-+		mlx5e_lag_event_unregister(dev);
- 		mlx5_destroy_flow_table(dev->flow_db->lag_demux_ft);
- 		dev->flow_db->lag_demux_ft = NULL;
- 
-@@ -3937,7 +4014,6 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
- 
- 	for (i = 0; i < dev->num_ports; i++) {
- 		spin_lock_init(&dev->port[i].mp.mpi_lock);
--		rwlock_init(&dev->port[i].roce.netdev_lock);
- 		dev->port[i].roce.dev = dev;
- 		dev->port[i].roce.native_port_num = i + 1;
- 		dev->port[i].roce.last_port_state = IB_PORT_DOWN;
-@@ -4202,7 +4278,6 @@ static const struct ib_device_ops mlx5_ib_dev_common_roce_ops = {
- 	.create_wq = mlx5_ib_create_wq,
- 	.destroy_rwq_ind_table = mlx5_ib_destroy_rwq_ind_table,
- 	.destroy_wq = mlx5_ib_destroy_wq,
--	.get_netdev = mlx5_ib_get_netdev,
- 	.modify_wq = mlx5_ib_modify_wq,
- 
- 	INIT_RDMA_OBJ_SIZE(ib_rwq_ind_table, mlx5_ib_rwq_ind_table,
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index be83a4d91a34..fd06d0d27a72 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -896,8 +896,6 @@ struct mlx5_roce {
- 	/* Protect mlx5_ib_get_netdev from invoking dev_hold() with a NULL
- 	 * netdev pointer
- 	 */
--	rwlock_t		netdev_lock;
--	struct net_device	*netdev;
- 	struct notifier_block	nb;
- 	struct netdev_net_notifier nn;
- 	struct notifier_block	mdev_nb;
-@@ -1146,6 +1144,7 @@ struct mlx5_ib_dev {
- 	/* protect accessing data_direct_dev */
- 	struct mutex			data_direct_lock;
- 	struct notifier_block		mdev_events;
-+	struct notifier_block           lag_events;
- 	int				num_ports;
- 	/* serialize update of capability mask
- 	 */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-index cf8045b92689..8577db3308cc 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-@@ -445,6 +445,34 @@ static int _mlx5_modify_lag(struct mlx5_lag *ldev, u8 *ports)
- 	return mlx5_cmd_modify_lag(dev0, ldev->ports, ports);
- }
- 
-+static struct net_device *mlx5_lag_active_backup_get_netdev(struct mlx5_core_dev *dev)
-+{
-+	struct net_device *ndev = NULL;
-+	struct mlx5_lag *ldev;
-+	unsigned long flags;
-+	int i;
-+
-+	spin_lock_irqsave(&lag_lock, flags);
-+	ldev = mlx5_lag_dev(dev);
-+
-+	if (!ldev)
-+		goto unlock;
-+
-+	for (i = 0; i < ldev->ports; i++)
-+		if (ldev->tracker.netdev_state[i].tx_enabled)
-+			ndev = ldev->pf[i].netdev;
-+	if (!ndev)
-+		ndev = ldev->pf[ldev->ports - 1].netdev;
-+
-+	if (ndev)
-+		dev_hold(ndev);
-+
-+unlock:
-+	spin_unlock_irqrestore(&lag_lock, flags);
-+
-+	return ndev;
-+}
-+
- void mlx5_modify_lag(struct mlx5_lag *ldev,
- 		     struct lag_tracker *tracker)
- {
-@@ -477,9 +505,18 @@ void mlx5_modify_lag(struct mlx5_lag *ldev,
- 		}
- 	}
- 
--	if (tracker->tx_type == NETDEV_LAG_TX_TYPE_ACTIVEBACKUP &&
--	    !(ldev->mode == MLX5_LAG_MODE_ROCE))
--		mlx5_lag_drop_rule_setup(ldev, tracker);
-+	if (tracker->tx_type == NETDEV_LAG_TX_TYPE_ACTIVEBACKUP) {
-+		struct net_device *ndev = mlx5_lag_active_backup_get_netdev(dev0);
-+
-+		if(!(ldev->mode == MLX5_LAG_MODE_ROCE))
-+			mlx5_lag_drop_rule_setup(ldev, tracker);
-+		/** Only sriov and roce lag should have tracker->tx_type set so
-+		 *  no need to check the mode
-+		 */
-+		blocking_notifier_call_chain(&dev0->priv.lag_nh,
-+					     MLX5_DRIVER_EVENT_ACTIVE_BACKUP_LAG_CHANGE_LOWERSTATE,
-+					     ndev);
++	nlmsg_end(skb, nlh);
++	ret = rdma_nl_multicast(net, skb, RDMA_NL_GROUP_NOTIFY, GFP_KERNEL);
++	if (ret && ret != -ESRCH) {
++		skb = NULL; /* skb is freed in the netlink send-op handling */
++		goto err_free;
 +	}
- }
- 
- static int mlx5_lag_set_port_sel_mode_roce(struct mlx5_lag *ldev,
-@@ -613,6 +650,7 @@ static int mlx5_create_lag(struct mlx5_lag *ldev,
- 			mlx5_core_err(dev0,
- 				      "Failed to deactivate RoCE LAG; driver restart required\n");
- 	}
-+	BLOCKING_INIT_NOTIFIER_HEAD(&dev0->priv.lag_nh);
- 
- 	return err;
- }
-@@ -1492,38 +1530,6 @@ void mlx5_lag_enable_change(struct mlx5_core_dev *dev)
- 	mlx5_queue_bond_work(ldev, 0);
- }
- 
--struct net_device *mlx5_lag_get_roce_netdev(struct mlx5_core_dev *dev)
--{
--	struct net_device *ndev = NULL;
--	struct mlx5_lag *ldev;
--	unsigned long flags;
--	int i;
--
--	spin_lock_irqsave(&lag_lock, flags);
--	ldev = mlx5_lag_dev(dev);
--
--	if (!(ldev && __mlx5_lag_is_roce(ldev)))
--		goto unlock;
--
--	if (ldev->tracker.tx_type == NETDEV_LAG_TX_TYPE_ACTIVEBACKUP) {
--		for (i = 0; i < ldev->ports; i++)
--			if (ldev->tracker.netdev_state[i].tx_enabled)
--				ndev = ldev->pf[i].netdev;
--		if (!ndev)
--			ndev = ldev->pf[ldev->ports - 1].netdev;
--	} else {
--		ndev = ldev->pf[MLX5_LAG_P1].netdev;
--	}
--	if (ndev)
--		dev_hold(ndev);
--
--unlock:
--	spin_unlock_irqrestore(&lag_lock, flags);
--
--	return ndev;
--}
--EXPORT_SYMBOL(mlx5_lag_get_roce_netdev);
--
- u8 mlx5_lag_get_slave_port(struct mlx5_core_dev *dev,
- 			   struct net_device *slave)
++	return 0;
++
++err_free:
++	rdma_nl_notify_err_msg(device, port_num, type);
++	nlmsg_free(skb);
++	return ret;
++}
++
+ void __init nldev_init(void)
  {
-diff --git a/include/linux/mlx5/device.h b/include/linux/mlx5/device.h
-index ba875a619b97..a38a17f8c12c 100644
---- a/include/linux/mlx5/device.h
-+++ b/include/linux/mlx5/device.h
-@@ -370,6 +370,7 @@ enum mlx5_driver_event {
- 	MLX5_DRIVER_EVENT_SF_PEER_DEVLINK,
- 	MLX5_DRIVER_EVENT_AFFILIATION_DONE,
- 	MLX5_DRIVER_EVENT_AFFILIATION_REMOVED,
-+	MLX5_DRIVER_EVENT_ACTIVE_BACKUP_LAG_CHANGE_LOWERSTATE,
- };
+ 	rdma_nl_register(RDMA_NL_NLDEV, nldev_cb_table);
+diff --git a/include/rdma/rdma_netlink.h b/include/rdma/rdma_netlink.h
+index c2a79aeee113..a5b47ca4cd66 100644
+--- a/include/rdma/rdma_netlink.h
++++ b/include/rdma/rdma_netlink.h
+@@ -110,6 +110,16 @@ int rdma_nl_multicast(struct net *net, struct sk_buff *skb,
+  */
+ bool rdma_nl_chk_listeners(unsigned int group);
  
++/**
++ * Prepare and send an event message
++ * @ib: the IB device which triggered the event
++ * @port_num: the port number which triggered the event - 0 if unused
++ * @type: the event type
++ * Returns 0 on success or a negative error code
++ */
++int rdma_nl_notify_event(struct ib_device *ib, u32 port_num,
++			 enum rdma_nl_notify_event_type type);
++
+ struct rdma_link_ops {
+ 	struct list_head list;
+ 	const char *type;
+diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
+index 2f37568f5556..5f9636d26050 100644
+--- a/include/uapi/rdma/rdma_netlink.h
++++ b/include/uapi/rdma/rdma_netlink.h
+@@ -15,6 +15,7 @@ enum {
  enum {
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index a96438ded15f..46a7a3d11048 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -643,6 +643,7 @@ struct mlx5_priv {
- 	struct mlx5_sf_hw_table *sf_hw_table;
- 	struct mlx5_sf_table *sf_table;
- #endif
-+	struct blocking_notifier_head lag_nh;
+ 	RDMA_NL_GROUP_IWPM = 2,
+ 	RDMA_NL_GROUP_LS,
++	RDMA_NL_GROUP_NOTIFY,
+ 	RDMA_NL_NUM_GROUPS
  };
  
- enum mlx5_device_state {
-@@ -1181,7 +1182,6 @@ bool mlx5_lag_mode_is_hash(struct mlx5_core_dev *dev);
- bool mlx5_lag_is_master(struct mlx5_core_dev *dev);
- bool mlx5_lag_is_shared_fdb(struct mlx5_core_dev *dev);
- bool mlx5_lag_is_mpesw(struct mlx5_core_dev *dev);
--struct net_device *mlx5_lag_get_roce_netdev(struct mlx5_core_dev *dev);
- u8 mlx5_lag_get_slave_port(struct mlx5_core_dev *dev,
- 			   struct net_device *slave);
- int mlx5_lag_query_cong_counters(struct mlx5_core_dev *dev,
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index a1dcf812d787..aa8ede439905 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -4453,6 +4453,8 @@ struct net_device *ib_get_net_dev_by_params(struct ib_device *dev, u32 port,
- 					    const struct sockaddr *addr);
- int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
- 			 unsigned int port);
-+struct net_device *ib_device_get_netdev(struct ib_device *ib_dev,
-+					u32 port);
- struct ib_wq *ib_create_wq(struct ib_pd *pd,
- 			   struct ib_wq_init_attr *init_attr);
- int ib_destroy_wq_user(struct ib_wq *wq, struct ib_udata *udata);
+@@ -305,6 +306,8 @@ enum rdma_nldev_command {
+ 
+ 	RDMA_NLDEV_CMD_DELDEV,
+ 
++	RDMA_NLDEV_CMD_MONITOR,
++
+ 	RDMA_NLDEV_NUM_OPS
+ };
+ 
+@@ -574,6 +577,8 @@ enum rdma_nldev_attr {
+ 
+ 	RDMA_NLDEV_ATTR_NAME_ASSIGN_TYPE,	/* u8 */
+ 
++	RDMA_NLDEV_ATTR_EVENT_TYPE,		/* u8 */
++
+ 	/*
+ 	 * Always the end
+ 	 */
+@@ -624,4 +629,14 @@ enum rdma_nl_name_assign_type {
+ 	RDMA_NAME_ASSIGN_TYPE_USER = 1, /* Provided by user-space */
+ };
+ 
++/*
++ * Supported rdma monitoring event types.
++ */
++enum rdma_nl_notify_event_type {
++	RDMA_REGISTER_EVENT,
++	RDMA_UNREGISTER_EVENT,
++	RDMA_NETDEV_ATTACH_EVENT,
++	RDMA_NETDEV_DETACH_EVENT,
++};
++
+ #endif /* _UAPI_RDMA_NETLINK_H */
 -- 
 2.17.2
 
