@@ -1,148 +1,95 @@
-Return-Path: <linux-rdma+bounces-4495-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4496-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B04C95BCE2
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2024 19:12:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8DD695C17E
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2024 01:31:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56EF91C24221
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2024 17:12:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7665B2852E3
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Aug 2024 23:31:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9201CDFBC;
-	Thu, 22 Aug 2024 17:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106011531C7;
+	Thu, 22 Aug 2024 23:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="NnExsCq9"
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="5KcoojEf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
+Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB891CDFAF
-	for <linux-rdma@vger.kernel.org>; Thu, 22 Aug 2024 17:11:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.184.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1E81DA5F
+	for <linux-rdma@vger.kernel.org>; Thu, 22 Aug 2024 23:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724346720; cv=none; b=HtMbzYYYSZdsMEmBSsK6CMJwuym4P9ZX1SWBTGhmlbx8Be/hpFlvTteOEA7K+pOBJpdVX3p+tUIBKnuyvuwG8oxWZPfaSA6gyzmEy20HnoPuhMx2ngq46TB6SmHsfGsq8D144KgAXmQtbYPESWaFE0wqQG65SoacGKPjsOggNfc=
+	t=1724369465; cv=none; b=n35vMEk/GHDLuSAJ4gHKW+YhEhsiMBYyjo4fh1W96AN+GYlwoCGn/rGi4v3b+J9yRFFJSPGJ+Z2Sc1ngQxWIJsYLE+YL1eepm8y/wA4yAgVZ8A4KJ2E99aryVIaF70rtoo9QygYNC7ECaxo5n+V0WmtKnsAO8GkCs4Eujqx/qPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724346720; c=relaxed/simple;
-	bh=/incFH1AHOEaZkEtxtOOXel+pe7ZK83WnJ5bjIh4EL8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Az+M78tGu3T53T8EuqdAOX484QvmJ5jM2lhGwCIZjVZs1j65Dl+mm/KLrM+dpyNj+iTfumqaAxtLff006OOu1LhmPit4ILFY1lw+TEcfNBnOJJHIDe0lf8/0Oe/Zvb4kCPvwTcmqZZahzKEdRnoyUi4UVVUhKKLbyl7e42sRU+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=NnExsCq9; arc=none smtp.client-ip=207.171.184.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1724346716; x=1755882716;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Xc+q0TsNzBaDjVFKR2jARscnkt7RtlhB9NLvHBIBmPM=;
-  b=NnExsCq9CyLpZMEaQRvXlVTDDJN5JFRMt7Q/OgrfJTrsfKdmg6/5ROva
-   fwasdPAzxmubimzICb+1klg2lvxdKVdwEGbCH+dKC8lduabrm14aqijJ8
-   LJ3MCtdutfR5ihzgYwY4O//odiwXoZLIQWqEXeAg/meAqTsqYTfbEFzZo
-   w=;
-X-IronPort-AV: E=Sophos;i="6.10,167,1719878400"; 
-   d="scan'208";a="446516664"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2024 17:11:47 +0000
-Received: from EX19MTAEUB001.ant.amazon.com [10.0.43.254:17020]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.33.204:2525] with esmtp (Farcaster)
- id 873474f3-ec0a-4f14-97c8-905d57ea030b; Thu, 22 Aug 2024 17:11:46 +0000 (UTC)
-X-Farcaster-Flow-ID: 873474f3-ec0a-4f14-97c8-905d57ea030b
-Received: from EX19D045EUC003.ant.amazon.com (10.252.61.236) by
- EX19MTAEUB001.ant.amazon.com (10.252.51.28) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
- Thu, 22 Aug 2024 17:11:45 +0000
-Received: from EX19MTAUEC001.ant.amazon.com (10.252.135.222) by
- EX19D045EUC003.ant.amazon.com (10.252.61.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
- Thu, 22 Aug 2024 17:11:44 +0000
-Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
- (10.253.103.172) by mail-relay.amazon.com (10.252.135.200) with Microsoft
- SMTP Server id 15.2.1258.34 via Frontend Transport; Thu, 22 Aug 2024 17:11:43
- +0000
-From: Michael Margolin <mrgolin@amazon.com>
-To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Yehuda
- Yitschak" <yehuday@amazon.com>, Yonatan Nachum <ynachum@amazon.com>
-Subject: [PATCH for-next] RDMA/efa: Add support for node guid
-Date: Thu, 22 Aug 2024 17:11:43 +0000
-Message-ID: <20240822171143.2800-1-mrgolin@amazon.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1724369465; c=relaxed/simple;
+	bh=wX/jNtFNibdCM4G4NnaXuzanseFblb+5tjabB2fqPIo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=aYusqGNShOakBrKUJXTVCfa2w+hP7poSkfdZ9BsnqoyL6pq65YRQKCUzBHAMJ0u/CFHMGtb0+PBoOHcHuYlzN1X9PjV4icvVuZ3udxScIJh5+sb0NR78rIZuL8DKh57JDPSCrwqvEdDzXzAblriH+4clqlxapkSzJWjkkkYgdS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=5KcoojEf; arc=none smtp.client-ip=199.89.1.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 009.lax.mailroute.net (Postfix) with ESMTP id 4WqfbB1Rc1zlgVnK;
+	Thu, 22 Aug 2024 23:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1724369459; x=1726961460; bh=Kkj6JmC65EKbQy5ms/WbmJy/
+	WVQJUdt2Mt7r9UG1tp0=; b=5KcoojEfXg+Sl3mx05kKWtUTOTCDqZ+3vKLkB0ZZ
+	vTTO6do4YZLz7GMBUbR+5PQBiKQJPBfEpNZryyfBzAAeuyabP7/sVmHkbUsIMfjO
+	wxsx1DpWn3r9J70zU9PKU/jRwfTcPQJHR//vNniFYxmcoGuBLPdaSRl6jVbgu89Q
+	izQSAyoaKD2Z0K//gH6vNKH4DujmtUKCB7Tv3/UWWuNgPyAc2ucTu/keYdcw86GG
+	yvC5EZWJgJJtDaumm5NyZvDAKHW9DRgKbc9QP9ClPyMo48iMIqFF5BsGGPIPT4x6
+	qk6hdlOl1JhlrUUWtPtLwP0cm3789eyhChjYhOx8l829HA==
+X-Virus-Scanned: by MailRoute
+Received: from 009.lax.mailroute.net ([127.0.0.1])
+ by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id p4kQltL9ZI_S; Thu, 22 Aug 2024 23:30:59 +0000 (UTC)
+Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net [73.231.117.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4Wqfb71VNfzlgVnF;
+	Thu, 22 Aug 2024 23:30:58 +0000 (UTC)
+Message-ID: <f97c93c2-6636-4a05-8cfb-073881758821@acm.org>
+Date: Thu, 22 Aug 2024 16:30:58 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] RDMA/iwcm: Fix
+ WARNING:at_kernel/workqueue.c:#check_flush_dependency
+To: Zhu Yanjun <yanjun.zhu@linux.dev>, leon@kernel.org,
+ linux-rdma@vger.kernel.org, shinichiro.kawasaki@wdc.com,
+ oliver.sang@intel.com, jgg@nvidia.com
+References: <20240820113336.19860-1-yanjun.zhu@linux.dev>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240820113336.19860-1-yanjun.zhu@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Yehuda Yitschak <yehuday@amazon.com>
+On 8/20/24 4:33 AM, Zhu Yanjun wrote:
+> diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+> index 1a6339f3a63f..7e3a55349e10 100644
+> --- a/drivers/infiniband/core/iwcm.c
+> +++ b/drivers/infiniband/core/iwcm.c
+> @@ -1182,7 +1182,7 @@ static int __init iw_cm_init(void)
+>   	if (ret)
+>   		return ret;
+>   
+> -	iwcm_wq = alloc_ordered_workqueue("iw_cm_wq", 0);
+> +	iwcm_wq = alloc_ordered_workqueue("iw_cm_wq", WQ_MEM_RECLAIM);
+>   	if (!iwcm_wq)
+>   		goto err_alloc;
 
-Propagate the unique, per device, ID in the device attributes to the
-standard node_guid value in IB device.
-
-Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
-Signed-off-by: Yehuda Yitschak <yehuday@amazon.com>
-Signed-off-by: Michael Margolin <mrgolin@amazon.com>
----
- drivers/infiniband/hw/efa/efa_admin_cmds_defs.h | 3 +++
- drivers/infiniband/hw/efa/efa_com_cmd.c         | 1 +
- drivers/infiniband/hw/efa/efa_com_cmd.h         | 1 +
- drivers/infiniband/hw/efa/efa_main.c            | 1 +
- 4 files changed, 6 insertions(+)
-
-diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-index 4296662e59c3..cd03a5429beb 100644
---- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-+++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-@@ -674,6 +674,9 @@ struct efa_admin_feature_device_attr_desc {
- 
- 	/* Max RDMA transfer size in bytes */
- 	u32 max_rdma_size;
-+
-+	/* Unique global ID for an EFA device */
-+	u64 guid;
- };
- 
- struct efa_admin_feature_queue_attr_desc {
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-index 5b9c2b16df0e..5a774925cdea 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.c
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
-@@ -465,6 +465,7 @@ int efa_com_get_device_attr(struct efa_com_dev *edev,
- 	result->db_bar = resp.u.device_attr.db_bar;
- 	result->max_rdma_size = resp.u.device_attr.max_rdma_size;
- 	result->device_caps = resp.u.device_attr.device_caps;
-+	result->guid = resp.u.device_attr.guid;
- 
- 	if (result->admin_api_version < 1) {
- 		ibdev_err_ratelimited(
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
-index 9714105fcf7e..668d033f7477 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.h
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
-@@ -112,6 +112,7 @@ struct efa_com_get_device_attr_result {
- 	u8 addr[EFA_GID_SIZE];
- 	u64 page_size_cap;
- 	u64 max_mr_pages;
-+	u64 guid;
- 	u32 mtu;
- 	u32 fw_version;
- 	u32 admin_api_version;
-diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-index 1a777791bea3..ad225823e6f2 100644
---- a/drivers/infiniband/hw/efa/efa_main.c
-+++ b/drivers/infiniband/hw/efa/efa_main.c
-@@ -441,6 +441,7 @@ static int efa_ib_device_add(struct efa_dev *dev)
- 	efa_set_host_info(dev);
- 
- 	dev->ibdev.node_type = RDMA_NODE_UNSPECIFIED;
-+	dev->ibdev.node_guid = dev->dev_attr.guid;
- 	dev->ibdev.phys_port_cnt = 1;
- 	dev->ibdev.num_comp_vectors = dev->neqs ?: 1;
- 	dev->ibdev.dev.parent = &pdev->dev;
--- 
-2.40.1
-
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
