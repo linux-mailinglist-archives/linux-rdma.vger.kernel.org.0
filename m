@@ -1,105 +1,113 @@
-Return-Path: <linux-rdma+bounces-4515-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4516-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5904C95CDDF
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2024 15:30:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E0F95CE58
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2024 15:48:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C3F31C24005
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2024 13:30:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF95B286C36
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2024 13:48:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E344430;
-	Fri, 23 Aug 2024 13:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="poN9uNTi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7082F188586;
+	Fri, 23 Aug 2024 13:48:32 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EEEB18661A;
-	Fri, 23 Aug 2024 13:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0B846556;
+	Fri, 23 Aug 2024 13:48:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724419828; cv=none; b=SvT25IbzqBYDRJxSu+03hmIpb7Y0wi6l5KhWqpo06lKI6/aXi+4XVeLWxWjkn9/YwnVXKvquhkZQQI+/sCNEAy/h0CZ0bNamiXT/AZG6o7HMaQzYERz/hdXHbTgs97fuwEfBCPAS0SR4frDsESfzq8bxX5VMao41kybx654MqPc=
+	t=1724420912; cv=none; b=o8zRSlOqT79MI1UN/odZ0IYlrv/8UoMQlJnR5JcQTYiRzwfwxFstdki8yrj6FojwEsiLaqxaA3S5EH6LvdR6BiXkKnmA4dxKBHvhTnp7NXEMMj4S3fRf75kSdD7ZbDJjFhe4m8cvvuOsSOD4ldZ5/sboPM0CSOe34ML3kclSl64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724419828; c=relaxed/simple;
-	bh=bkdymBfFZ9rhDAJVOm/k+8cplSbx+iwX219268UINok=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=res1Tj1+Kx5JM22UJ5zGU5N+Q0BK6UwVARPyfcFrqjPi4HNyeit5pR11ZiwiDdtBj2fcUeOdy9rih21Ea2Z4UKe5uClL5u4O08Hf0znd+yNvNfWvvxQE/nantJrrDIrRPjuW29OU8L5MZt56ZNZmn2cv3i0FhmDqG2JQMtkmOjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=poN9uNTi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06948C32786;
-	Fri, 23 Aug 2024 13:30:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724419828;
-	bh=bkdymBfFZ9rhDAJVOm/k+8cplSbx+iwX219268UINok=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=poN9uNTiF3mTKwIyilRVUOgWSdN9z/xCHEQBkBVHQ2L1LhCHHY9qZ7YwsO177MXVj
-	 A710ywkQA4JjxbCgTAkJ/QSQ5Gsvcc7hYM/mqKPhqAp/a/aWB7XcvrpSL0pz5VZDwe
-	 IDsROTq6aoyAfm/RlSg3UtwklxthSBMLfNY9TR7i6IsTnLa1jZglIbAeNm6H/MyLBA
-	 DXzToauyonVu8C/aE9E35AVPyexsNj3nj6k51N41Hz20o2CMFp1x1uZZZD3kVOjwRr
-	 C0i+1uxi65y3xK0DQBtX79u8l4sLjLOCgze/tq6LqldfXFWyMGuZALgeGJS3R6fdSR
-	 6Bso7zXzqUs+g==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAFAE3804CB0;
-	Fri, 23 Aug 2024 13:30:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1724420912; c=relaxed/simple;
+	bh=eDhsqdRy4fteTRffEMYUrlUYhOaWh/IOOhFrHmlRJ90=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZU03hvimIi0VsyikUQmji+ywvkyooa+/oQjPpB8XuJ9WgrfaEYhu1mo8IScI2HJe6423oNtFDqWT9fBheLLvrHI9WkZWKX898sM4sjuoctTeQdc7LTM1PVYDAeFLR93zXnI24A83+pWhD9QvjTOTsQUWHOtUWyPeqohCUmNt4Yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Wr1Xp1568z6K8yn;
+	Fri, 23 Aug 2024 21:45:14 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id BED031400DD;
+	Fri, 23 Aug 2024 21:48:18 +0800 (CST)
+Received: from localhost (10.203.177.66) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 23 Aug
+ 2024 14:48:18 +0100
+Date: Fri, 23 Aug 2024 14:48:17 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+CC: Andy Gospodarek <andrew.gospodarek@broadcom.com>, Aron Silverton
+	<aron.silverton@oracle.com>, Dan Williams <dan.j.williams@intel.com>, Daniel
+ Vetter <daniel.vetter@ffwll.ch>, Dave Jiang <dave.jiang@intel.com>, David
+ Ahern <dsahern@kernel.org>, "Greg Kroah-Hartman"
+	<gregkh@linuxfoundation.org>, Christoph Hellwig <hch@infradead.org>, Itay
+ Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Jakub Kicinski
+	<kuba@kernel.org>, Leonid Bloch <lbloch@nvidia.com>, Leon Romanovsky
+	<leonro@nvidia.com>, <linux-cxl@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH v3 01/10] fwctl: Add basic structure for a class
+ subsystem with a cdev
+Message-ID: <20240823144817.00007a3c@Huawei.com>
+In-Reply-To: <1-v3-960f17f90f17+516-fwctl_jgg@nvidia.com>
+References: <0-v3-960f17f90f17+516-fwctl_jgg@nvidia.com>
+	<1-v3-960f17f90f17+516-fwctl_jgg@nvidia.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: mana: Fix race of mana_hwc_post_rx_wqe and new hwc
- response
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172441982778.2965533.12833287131080058770.git-patchwork-notify@kernel.org>
-Date: Fri, 23 Aug 2024 13:30:27 +0000
-References: <1724272949-2044-1-git-send-email-haiyangz@microsoft.com>
-In-Reply-To: <1724272949-2044-1-git-send-email-haiyangz@microsoft.com>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, decui@microsoft.com,
- stephen@networkplumber.org, kys@microsoft.com, paulros@microsoft.com,
- olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
- longli@microsoft.com, ssengar@linux.microsoft.com,
- linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- bpf@vger.kernel.org, ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
- shradhagupta@linux.microsoft.com, jesse.brandeburg@intel.com,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hello:
+On Wed, 21 Aug 2024 15:10:53 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Wed, 21 Aug 2024 13:42:29 -0700 you wrote:
-> The mana_hwc_rx_event_handler() / mana_hwc_handle_resp() calls
-> complete(&ctx->comp_event) before posting the wqe back. It's
-> possible that other callers, like mana_create_txq(), start the
-> next round of mana_hwc_send_request() before the posting of wqe.
-> And if the HW is fast enough to respond, it can hit no_wqe error
-> on the HW channel, then the response message is lost. The mana
-> driver may fail to create queues and open, because of waiting for
-> the HW response and timed out.
-> Sample dmesg:
-> [  528.610840] mana 39d4:00:02.0: HWC: Request timed out!
-> [  528.614452] mana 39d4:00:02.0: Failed to send mana message: -110, 0x0
-> [  528.618326] mana 39d4:00:02.0 enP14804s2: Failed to create WQ object: -110
+> Create the class, character device and functions for a fwctl driver to
+> un/register to the subsystem.
 > 
-> [...]
+> A typical fwctl driver has a sysfs presence like:
+> 
+> $ ls -l /dev/fwctl/fwctl0
+> crw------- 1 root root 250, 0 Apr 25 19:16 /dev/fwctl/fwctl0
+> 
+> $ ls /sys/class/fwctl/fwctl0
+> dev  device  power  subsystem  uevent
+> 
+> $ ls /sys/class/fwctl/fwctl0/device/infiniband/
+> ibp0s10f0
+> 
+> $ ls /sys/class/infiniband/ibp0s10f0/device/fwctl/
+> fwctl0/
+> 
+> $ ls /sys/devices/pci0000:00/0000:00:0a.0/fwctl/fwctl0
+> dev  device  power  subsystem  uevent
+> 
+> Which allows userspace to link all the multi-subsystem driver components
+> together and learn the subsystem specific names for the device's
+> components.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Here is the summary with links:
-  - [net] net: mana: Fix race of mana_hwc_post_rx_wqe and new hwc response
-    https://git.kernel.org/netdev/net/c/8af174ea863c
+Hi Jason,
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Tags I'm giving for this are still on a purely technical basis.
+I'm not taking a position (yet anyway) on whether this is is
+a good idea in general. I would like that discussion to not risk
+being distracted by the code state etc though, so FWIW this is
+nice and clean and looks good to me, so that shouldn't be an
+issue!
 
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
 
