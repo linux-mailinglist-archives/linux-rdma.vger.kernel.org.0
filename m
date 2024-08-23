@@ -1,45 +1,45 @@
-Return-Path: <linux-rdma+bounces-4518-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4519-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 005C295CFD9
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2024 16:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0586495D003
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2024 16:35:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF5F5286E79
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2024 14:31:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3E45285F80
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Aug 2024 14:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759E918BBB6;
-	Fri, 23 Aug 2024 14:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F18F51990D2;
+	Fri, 23 Aug 2024 14:23:40 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54977185945;
-	Fri, 23 Aug 2024 14:14:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7391990C4;
+	Fri, 23 Aug 2024 14:23:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724422458; cv=none; b=bL5XO4FV+T9Ze8Y3TxjS5WSTzW7uVN+IBqMo4HkiwXfLQzDgk5QgcskYotNShsRNGwJv5rSKD9uI8ghw8aEzZb6BGfx2ncV0OgRUU3KLQfnspeoaWXoQ5scWA9t+hCoKpFqw9WCUb/W3QCZiCi0+w6dUf99seOSkdkTA24sSwkk=
+	t=1724423020; cv=none; b=Jxy9Rfk9L+cI25dIdOwsNGmj3oh2fotOsyXr/QCZA9yV4kH0UQKBXCUfXPGFuHlgtw+ZQxZyOmhckaP71iaXccJDtJnMhsvenkIgsY/20m49ThnYIejohLaMtLEW9ipC2WwqirriTDA0J0wZgXIWNqW0iMpyQ6xXV4jYUz7o9fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724422458; c=relaxed/simple;
-	bh=iMZNmgoaM+JAvvT971xQl/qlZv1rJVduCW2DtCa+Htc=;
+	s=arc-20240116; t=1724423020; c=relaxed/simple;
+	bh=AK8H0CZqg3gpo1w46A6n9k1lH6deO7+ydmn/GPnW+8Y=;
 	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mcK5ZG9I3MsPkkCIlqlP1q3ncE8n8j78APKltIvBbWZkBxIAWJ4CMfXnu4zHZPqO2++NVztxOzg2QtQaFFc0IHc7UBARwwkkDWkpP4YF1oL5jezmKFcegJVJSjwyUNAjBc5slEqEz3B2LXlj2ZdXlJpfP3CNWE9qWFybjIohStQ=
+	 MIME-Version:Content-Type; b=Nep0LWullTgu8MdzT4lw3cxIBAQeAoNj/8SAtB/9tlo0NEjOBNhL6NfcaV9X2LVqLC4upT53ifes2fQJT3Y/0+1LlQY+Cwy3X+wHw07pgriVhB/OQoxMDmRK9zFIAXAhSiWdSaJI8NWlm18VClXZy7kDAVUgLYntCNMC6eAcF9Y=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Wr26b4lGkz6K93W;
-	Fri, 23 Aug 2024 22:11:03 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Wr2Jk4jDbz6GBl9;
+	Fri, 23 Aug 2024 22:19:50 +0800 (CST)
 Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9B363140B2A;
-	Fri, 23 Aug 2024 22:14:12 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id ECE691400DD;
+	Fri, 23 Aug 2024 22:23:35 +0800 (CST)
 Received: from localhost (10.203.177.66) by lhrpeml500005.china.huawei.com
  (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 23 Aug
- 2024 15:14:12 +0100
-Date: Fri, 23 Aug 2024 15:14:11 +0100
+ 2024 15:23:35 +0100
+Date: Fri, 23 Aug 2024 15:23:34 +0100
 From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
 To: Jason Gunthorpe <jgg@nvidia.com>
 CC: Andy Gospodarek <andrew.gospodarek@broadcom.com>, Aron Silverton
@@ -51,12 +51,12 @@ CC: Andy Gospodarek <andrew.gospodarek@broadcom.com>, Aron Silverton
 	<kuba@kernel.org>, Leonid Bloch <lbloch@nvidia.com>, Leon Romanovsky
 	<leonro@nvidia.com>, <linux-cxl@vger.kernel.org>,
 	<linux-rdma@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH v3 03/10] fwctl: FWCTL_INFO to return basic information
- about the device
-Message-ID: <20240823151411.00004b30@Huawei.com>
-In-Reply-To: <3-v3-960f17f90f17+516-fwctl_jgg@nvidia.com>
+Subject: Re: [PATCH v3 05/10] fwctl: FWCTL_RPC to execute a Remote Procedure
+ Call to device firmware
+Message-ID: <20240823152334.000071af@Huawei.com>
+In-Reply-To: <5-v3-960f17f90f17+516-fwctl_jgg@nvidia.com>
 References: <0-v3-960f17f90f17+516-fwctl_jgg@nvidia.com>
-	<3-v3-960f17f90f17+516-fwctl_jgg@nvidia.com>
+	<5-v3-960f17f90f17+516-fwctl_jgg@nvidia.com>
 Organization: Huawei Technologies Research and Development (UK) Ltd.
 X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
@@ -70,67 +70,20 @@ Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
  lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, 21 Aug 2024 15:10:55 -0300
+On Wed, 21 Aug 2024 15:10:57 -0300
 Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-> Userspace will need to know some details about the fwctl interface being
-> used to locate the correct userspace code to communicate with the
-> kernel. Provide a simple device_type enum indicating what the kernel
-> driver is.
+> Add the FWCTL_RPC ioctl which allows a request/response RPC call to device
+> firmware. Drivers implementing this call must follow the security
+> guidelines under Documentation/userspace-api/fwctl.rst
 > 
-> Allow the device to provide a device specific info struct that contains
-> any additional information that the driver may need to provide to
-> userspace.
+> The core code provides some memory management helpers to get the messages
+> copied from and back to userspace. The driver is responsible for
+> allocating the output message memory and delivering the message to the
+> device.
 > 
 > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Just one minor question: How likely is the data being passed back
-from the driver to be const?  Feels like it might be and should
-be easy enough to support either const or not.
-
-Either way, LGTM
 Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> diff --git a/include/linux/fwctl.h b/include/linux/fwctl.h
-> index ca4245825e91bf..6b596931a55169 100644
-> --- a/include/linux/fwctl.h
-> +++ b/include/linux/fwctl.h
-> @@ -7,6 +7,7 @@
->  #include <linux/device.h>
->  #include <linux/cdev.h>
->  #include <linux/cleanup.h>
-> +#include <uapi/fwctl/fwctl.h>
->  
->  struct fwctl_device;
->  struct fwctl_uctx;
-> @@ -19,6 +20,10 @@ struct fwctl_uctx;
->   * it will block device hot unplug and module unloading.
->   */
->  struct fwctl_ops {
-> +	/**
-> +	 * @device_type: The drivers assigned device_type number. This is uABI.
-> +	 */
-> +	enum fwctl_device_type device_type;
->  	/**
->  	 * @uctx_size: The size of the fwctl_uctx struct to allocate. The first
->  	 * bytes of this memory will be a fwctl_uctx. The driver can use the
-> @@ -35,6 +40,13 @@ struct fwctl_ops {
->  	 * is closed.
->  	 */
->  	void (*close_uctx)(struct fwctl_uctx *uctx);
-> +	/**
-> +	 * @info: Implement FWCTL_INFO. Return a kmalloc() memory that is copied
-> +	 * to out_device_data. On input length indicates the size of the user
-> +	 * buffer on output it indicates the size of the memory. The driver can
-> +	 * ignore length on input, the core code will handle everything.
-> +	 */
-
-Maybe it's worth supporting const data as well?
-
-> +	void *(*info)(struct fwctl_uctx *uctx, size_t *length);
->  };
->  
->  /**
 
 
 
