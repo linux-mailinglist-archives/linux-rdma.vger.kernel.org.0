@@ -1,236 +1,348 @@
-Return-Path: <linux-rdma+bounces-4569-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4570-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A47D95F602
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2024 18:05:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0E1B95F611
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2024 18:07:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAA701F22BB4
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2024 16:05:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8ABE828187E
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2024 16:07:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B6D194131;
-	Mon, 26 Aug 2024 16:05:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 058EF186619;
+	Mon, 26 Aug 2024 16:07:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BLUj69HU"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Yks2BJOD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD0249631
-	for <linux-rdma@vger.kernel.org>; Mon, 26 Aug 2024 16:05:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 128CA4C96;
+	Mon, 26 Aug 2024 16:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724688326; cv=none; b=J6Uw9s8HQcFHgwoSbBccUn7nVCifoaKhnnUZZKf9pdbKjVE650Vr6spbuFmH0qHY+D2d5G3DAYjn1cfPprJijaBVHELuNOIE36/g6vt1bveH86kQj3euKS6l5M0EKR/+ZqWVA2vpLiTWmAEcdHsHuK/wELY94VLzenTo2WqBblg=
+	t=1724688464; cv=none; b=XwdAXroMtO6DOzQ9TVMEEySH0CVCP62O72DBzMRWq/vvD5YePO2eJ1pDZY4viDRx2XVXmL8HP8yP5c9W/0or3cMI+nw0ClPO2Q1jPgauqEETqiwPKWZtsJPV3iI5HrhVcvGE9j2iZ7WZXD6jMOVOMz3qovfhbn74GB/s7haazEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724688326; c=relaxed/simple;
-	bh=/2Do9k3Sze9rh2v7/7p30zOKQMTiSFu60fpAD/a0QrM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pj2DVqE/ynNw2KxV7ETG3+upMvIcVf23AxwlzZtcozgRIIOsOLwobt2ajbDBlOiAMEW8i9Xvh0gGg5mvPng4gGFRf9KFJm7ze78mJXyq4Ijmc7AjyUCNC7JUltpvZakqFUKdDnVdt/1+FwTlH/Q0FMXYi/x4EHgv9v3WSThH5oQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BLUj69HU; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724688324; x=1756224324;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/2Do9k3Sze9rh2v7/7p30zOKQMTiSFu60fpAD/a0QrM=;
-  b=BLUj69HUAe8HuVTOCSnn26e1vOrXo+xkvDBTYRfSW1T7GPv0WRi4Vd/+
-   bu9nC5oRQFQCJ/6Rwhfsine6WQfzkS2fJFUNfOGS9kaEGpO7H+KDJ9XUY
-   hReWVXN8dsfkbHw+nAm27qwvxkk4tiQjJzf+r44e5w1fGPbLnxZYS9bA4
-   nAbxVr3aoywRuRyPDzd06ujGgYwsrElUQ8Bdh/7YDZ6AGlA2YgM70Ypwk
-   vVSr+SBVuK22T+UTDGXE4slLeUHJLgsJZxONHoRJULI09zOIo1IooCk2y
-   QE/UyGhmgPqbQK//91yYG2yw9OemJUSoitgc7NtTD9ZLQjflJDj2QJLu5
-   Q==;
-X-CSE-ConnectionGUID: ZbeMnGg6Twu2zw4uvbwOSQ==
-X-CSE-MsgGUID: JQvoBFi/Q4ecB9T+zJmVpw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11176"; a="23277572"
-X-IronPort-AV: E=Sophos;i="6.10,178,1719903600"; 
-   d="scan'208";a="23277572"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2024 09:05:20 -0700
-X-CSE-ConnectionGUID: s0kwVPpTS0W4sAU9v6JqLQ==
-X-CSE-MsgGUID: FQMP2285QLCrGMnJg8flmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,178,1719903600"; 
-   d="scan'208";a="67248289"
-Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 26 Aug 2024 09:05:13 -0700
-Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sicDP-000HGQ-1G;
-	Mon, 26 Aug 2024 16:05:11 +0000
-Date: Tue, 27 Aug 2024 00:05:07 +0800
-From: kernel test robot <lkp@intel.com>
-To: Cheng Xu <chengyou@linux.alibaba.com>, jgg@ziepe.ca, leon@kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
-Subject: Re: [PATCH for-next 2/4] RDMA/erdma: Refactor the initialization and
- destruction of EQ
-Message-ID: <202408262310.5jeNjXWm-lkp@intel.com>
-References: <20240823075058.89488-3-chengyou@linux.alibaba.com>
+	s=arc-20240116; t=1724688464; c=relaxed/simple;
+	bh=/ozgmyMFiXk7gIRkK63WKNRgXQDEC51LMLNkWQt3iGg=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=eHBSuQhinbhp/9+RRU7pWI8QwTU9RN9M388rod0pVd/5jFIoKLjdcGxowp/+PhzUvGVRtr0AfB7tmPeOUSD2s7TB1v7tia+TLMdJvxm93OE35ctGfFWv0jr/bpslk6666KXD/hbfMGWlcREALNFgRMH3MY+ND7ONH2khQTW8U/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Yks2BJOD; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 6C9E620B7165; Mon, 26 Aug 2024 09:07:42 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6C9E620B7165
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1724688462;
+	bh=VSHTryh0VrlbwAdWAsc99E9Li+yqU5L3CTFRMtcWLdE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Yks2BJODo3EK7wC3lbI2bhjKrtg3hzrBtwXtzorM6zqeAjfNEr19hVJc5/W9Xgq45
+	 B1qtWNI0qEyivuEPOwzNEmq2sYK1VbzVoui/MM/HXbISV5YiNGnNYvWlPE1JYEPkq6
+	 tAQMdhCqnbaN7d0B5nQ9LZ3pkINzi6P27/jGa3y0=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Long Li <longli@microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Erick Archer <erick.archer@outlook.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Ahmed Zaki <ahmed.zaki@intel.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: [PATCH net-next v5] net: mana: Implement get_ringparam/set_ringparam for mana
+Date: Mon, 26 Aug 2024 09:07:41 -0700
+Message-Id: <1724688461-12203-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240823075058.89488-3-chengyou@linux.alibaba.com>
 
-Hi Cheng,
+Currently the values of WQs for RX and TX queues for MANA devices
+are hardcoded to default sizes.
+Allow configuring these values for MANA devices as ringparam
+configuration(get/set) through ethtool_ops.
+Pre-allocate buffers at the beginning of this operation, to
+prevent complete network loss in low-memory conditions.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+---
+Changes in v5:
+ * Explained comment better about not using MANA_PAGE_ALIGN
+ * remove unnecessay MANA_PAGE_ALIGN step for cq_size
+---
+Changes in v4:
+ * if not apower of two, find the nearest power of 2 value and
+   use it as ring parameter
+ * Skip the max value check for parameters
+---
+Changes in v3:
+ * pre-allocate buffers before changing the queue sizes
+ * rebased to latest net-next
+---
+ Changes in v2:
+ * Removed unnecessary validations in mana_set_ringparam()
+ * Fixed codespell error
+ * Improved error message to indicate issue with the parameter
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 27 ++++---
+ .../ethernet/microsoft/mana/mana_ethtool.c    | 74 +++++++++++++++++++
+ include/net/mana/mana.h                       | 23 +++++-
+ 3 files changed, 110 insertions(+), 14 deletions(-)
 
-[auto build test WARNING on rdma/for-next]
-[also build test WARNING on linus/master v6.11-rc5 next-20240826]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Cheng-Xu/RDMA-erdma-Make-the-device-probe-process-more-robust/20240826-123256
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-patch link:    https://lore.kernel.org/r/20240823075058.89488-3-chengyou%40linux.alibaba.com
-patch subject: [PATCH for-next 2/4] RDMA/erdma: Refactor the initialization and destruction of EQ
-config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20240826/202408262310.5jeNjXWm-lkp@intel.com/config)
-compiler: clang version 20.0.0git (https://github.com/llvm/llvm-project 08e5a1de8227512d4774a534b91cb2353cef6284)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240826/202408262310.5jeNjXWm-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202408262310.5jeNjXWm-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/highmem.h:10:
-   In file included from include/linux/mm.h:2228:
-   include/linux/vmstat.h:500:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     500 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     501 |                            item];
-         |                            ~~~~
-   include/linux/vmstat.h:507:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     507 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     508 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:514:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     514 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   include/linux/vmstat.h:519:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     519 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     520 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:528:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     528 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     529 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   In file included from drivers/infiniband/hw/erdma/erdma_eq.c:7:
-   In file included from drivers/infiniband/hw/erdma/erdma_verbs.h:10:
-   In file included from drivers/infiniband/hw/erdma/erdma.h:11:
-   In file included from include/linux/netdevice.h:38:
-   In file included from include/net/net_namespace.h:43:
-   In file included from include/linux/skbuff.h:28:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:93:
-   include/asm-generic/io.h:548:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     548 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:561:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     561 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
-         |                                                           ^
-   include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
-     102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-         |                                                      ^
-   In file included from drivers/infiniband/hw/erdma/erdma_eq.c:7:
-   In file included from drivers/infiniband/hw/erdma/erdma_verbs.h:10:
-   In file included from drivers/infiniband/hw/erdma/erdma.h:11:
-   In file included from include/linux/netdevice.h:38:
-   In file included from include/net/net_namespace.h:43:
-   In file included from include/linux/skbuff.h:28:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:93:
-   include/asm-generic/io.h:574:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     574 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
-         |                                                           ^
-   include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
-     115 | #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
-         |                                                      ^
-   In file included from drivers/infiniband/hw/erdma/erdma_eq.c:7:
-   In file included from drivers/infiniband/hw/erdma/erdma_verbs.h:10:
-   In file included from drivers/infiniband/hw/erdma/erdma.h:11:
-   In file included from include/linux/netdevice.h:38:
-   In file included from include/net/net_namespace.h:43:
-   In file included from include/linux/skbuff.h:28:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:93:
-   include/asm-generic/io.h:585:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     585 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:595:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     595 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:605:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     605 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:693:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     693 |         readsb(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:701:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     701 |         readsw(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:709:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     709 |         readsl(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:718:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     718 |         writesb(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:727:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     727 |         writesw(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:736:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     736 |         writesl(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
->> drivers/infiniband/hw/erdma/erdma_eq.c:141:6: warning: no previous prototype for function 'erdma_aeq_destroy' [-Wmissing-prototypes]
-     141 | void erdma_aeq_destroy(struct erdma_dev *dev)
-         |      ^
-   drivers/infiniband/hw/erdma/erdma_eq.c:141:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     141 | void erdma_aeq_destroy(struct erdma_dev *dev)
-         | ^
-         | static 
-   18 warnings generated.
-
-
-vim +/erdma_aeq_destroy +141 drivers/infiniband/hw/erdma/erdma_eq.c
-
-f2a0a630b953451 Cheng Xu 2022-07-27  140  
-f2a0a630b953451 Cheng Xu 2022-07-27 @141  void erdma_aeq_destroy(struct erdma_dev *dev)
-f2a0a630b953451 Cheng Xu 2022-07-27  142  {
-f2a0a630b953451 Cheng Xu 2022-07-27  143  	struct erdma_eq *eq = &dev->aeq;
-f2a0a630b953451 Cheng Xu 2022-07-27  144  
-f0697bf078368d7 Boshi Yu 2024-03-11  145  	dma_free_coherent(&dev->pdev->dev, eq->depth << EQE_SHIFT, eq->qbuf,
-f2a0a630b953451 Cheng Xu 2022-07-27  146  			  eq->qbuf_dma_addr);
-f0697bf078368d7 Boshi Yu 2024-03-11  147  
-fdb09ed15f272ad Boshi Yu 2024-03-11  148  	dma_pool_free(dev->db_pool, eq->dbrec, eq->dbrec_dma);
-f2a0a630b953451 Cheng Xu 2022-07-27  149  }
-f2a0a630b953451 Cheng Xu 2022-07-27  150  
-
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index d2f07e179e86..0a97bbdd958e 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -511,7 +511,7 @@ static u16 mana_select_queue(struct net_device *ndev, struct sk_buff *skb,
+ }
+ 
+ /* Release pre-allocated RX buffers */
+-static void mana_pre_dealloc_rxbufs(struct mana_port_context *mpc)
++void mana_pre_dealloc_rxbufs(struct mana_port_context *mpc)
+ {
+ 	struct device *dev;
+ 	int i;
+@@ -604,7 +604,7 @@ static void mana_get_rxbuf_cfg(int mtu, u32 *datasize, u32 *alloc_size,
+ 	*datasize = mtu + ETH_HLEN;
+ }
+ 
+-static int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu)
++int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu)
+ {
+ 	struct device *dev;
+ 	struct page *page;
+@@ -618,7 +618,7 @@ static int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu)
+ 
+ 	dev = mpc->ac->gdma_dev->gdma_context->dev;
+ 
+-	num_rxb = mpc->num_queues * RX_BUFFERS_PER_QUEUE;
++	num_rxb = mpc->num_queues * mpc->rx_queue_size;
+ 
+ 	WARN(mpc->rxbufs_pre, "mana rxbufs_pre exists\n");
+ 	mpc->rxbufs_pre = kmalloc_array(num_rxb, sizeof(void *), GFP_KERNEL);
+@@ -1899,15 +1899,17 @@ static int mana_create_txq(struct mana_port_context *apc,
+ 		return -ENOMEM;
+ 
+ 	/*  The minimum size of the WQE is 32 bytes, hence
+-	 *  MAX_SEND_BUFFERS_PER_QUEUE represents the maximum number of WQEs
++	 *  apc->tx_queue_size represents the maximum number of WQEs
+ 	 *  the SQ can store. This value is then used to size other queues
+ 	 *  to prevent overflow.
++	 *  Also note that the txq_size is always going to be MANA_PAGE_ALIGNED,
++	 *  as min val of apc->tx_queue_size is 128 and that would make
++	 *  txq_size 128*32 = 4096 and the other higher values of apc->tx_queue_size
++	 *  are always power of two
+ 	 */
+-	txq_size = MAX_SEND_BUFFERS_PER_QUEUE * 32;
+-	BUILD_BUG_ON(!MANA_PAGE_ALIGNED(txq_size));
++	txq_size = apc->tx_queue_size * 32;
+ 
+-	cq_size = MAX_SEND_BUFFERS_PER_QUEUE * COMP_ENTRY_SIZE;
+-	cq_size = MANA_PAGE_ALIGN(cq_size);
++	cq_size = apc->tx_queue_size * COMP_ENTRY_SIZE;
+ 
+ 	gc = gd->gdma_context;
+ 
+@@ -2145,10 +2147,11 @@ static int mana_push_wqe(struct mana_rxq *rxq)
+ 
+ static int mana_create_page_pool(struct mana_rxq *rxq, struct gdma_context *gc)
+ {
++	struct mana_port_context *mpc = netdev_priv(rxq->ndev);
+ 	struct page_pool_params pprm = {};
+ 	int ret;
+ 
+-	pprm.pool_size = RX_BUFFERS_PER_QUEUE;
++	pprm.pool_size = mpc->rx_queue_size;
+ 	pprm.nid = gc->numa_node;
+ 	pprm.napi = &rxq->rx_cq.napi;
+ 	pprm.netdev = rxq->ndev;
+@@ -2180,13 +2183,13 @@ static struct mana_rxq *mana_create_rxq(struct mana_port_context *apc,
+ 
+ 	gc = gd->gdma_context;
+ 
+-	rxq = kzalloc(struct_size(rxq, rx_oobs, RX_BUFFERS_PER_QUEUE),
++	rxq = kzalloc(struct_size(rxq, rx_oobs, apc->rx_queue_size),
+ 		      GFP_KERNEL);
+ 	if (!rxq)
+ 		return NULL;
+ 
+ 	rxq->ndev = ndev;
+-	rxq->num_rx_buf = RX_BUFFERS_PER_QUEUE;
++	rxq->num_rx_buf = apc->rx_queue_size;
+ 	rxq->rxq_idx = rxq_idx;
+ 	rxq->rxobj = INVALID_MANA_HANDLE;
+ 
+@@ -2734,6 +2737,8 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
+ 	apc->ndev = ndev;
+ 	apc->max_queues = gc->max_num_queues;
+ 	apc->num_queues = gc->max_num_queues;
++	apc->tx_queue_size = DEF_TX_BUFFERS_PER_QUEUE;
++	apc->rx_queue_size = DEF_RX_BUFFERS_PER_QUEUE;
+ 	apc->port_handle = INVALID_MANA_HANDLE;
+ 	apc->pf_filter_handle = INVALID_MANA_HANDLE;
+ 	apc->port_idx = port_idx;
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+index 146d5db1792f..d6a35fbda447 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+@@ -369,6 +369,78 @@ static int mana_set_channels(struct net_device *ndev,
+ 	return err;
+ }
+ 
++static void mana_get_ringparam(struct net_device *ndev,
++			       struct ethtool_ringparam *ring,
++			       struct kernel_ethtool_ringparam *kernel_ring,
++			       struct netlink_ext_ack *extack)
++{
++	struct mana_port_context *apc = netdev_priv(ndev);
++
++	ring->rx_pending = apc->rx_queue_size;
++	ring->tx_pending = apc->tx_queue_size;
++	ring->rx_max_pending = MAX_RX_BUFFERS_PER_QUEUE;
++	ring->tx_max_pending = MAX_TX_BUFFERS_PER_QUEUE;
++}
++
++static int mana_set_ringparam(struct net_device *ndev,
++			      struct ethtool_ringparam *ring,
++			      struct kernel_ethtool_ringparam *kernel_ring,
++			      struct netlink_ext_ack *extack)
++{
++	struct mana_port_context *apc = netdev_priv(ndev);
++	u32 new_tx, new_rx;
++	u32 old_tx, old_rx;
++	int err;
++
++	old_tx = apc->tx_queue_size;
++	old_rx = apc->rx_queue_size;
++
++	if (ring->tx_pending < MIN_TX_BUFFERS_PER_QUEUE) {
++		NL_SET_ERR_MSG_FMT(extack, "tx:%d less than the min:%d", ring->tx_pending,
++				   MIN_TX_BUFFERS_PER_QUEUE);
++		return -EINVAL;
++	}
++
++	if (ring->rx_pending < MIN_RX_BUFFERS_PER_QUEUE) {
++		NL_SET_ERR_MSG_FMT(extack, "rx:%d less than the min:%d", ring->rx_pending,
++				   MIN_RX_BUFFERS_PER_QUEUE);
++		return -EINVAL;
++	}
++
++	new_rx = roundup_pow_of_two(ring->rx_pending);
++	new_tx = roundup_pow_of_two(ring->tx_pending);
++	netdev_info(ndev, "Using nearest power of 2 values for Txq:%d Rxq:%d\n",
++		    new_tx, new_rx);
++
++	/* pre-allocating new buffers to prevent failures in mana_attach() later */
++	apc->rx_queue_size = new_rx;
++	err = mana_pre_alloc_rxbufs(apc, ndev->mtu);
++	apc->rx_queue_size = old_rx;
++	if (err) {
++		netdev_err(ndev, "Insufficient memory for new allocations\n");
++		return err;
++	}
++
++	err = mana_detach(ndev, false);
++	if (err) {
++		netdev_err(ndev, "mana_detach failed: %d\n", err);
++		goto out;
++	}
++
++	apc->tx_queue_size = new_tx;
++	apc->rx_queue_size = new_rx;
++
++	err = mana_attach(ndev);
++	if (err) {
++		netdev_err(ndev, "mana_attach failed: %d\n", err);
++		apc->tx_queue_size = old_tx;
++		apc->rx_queue_size = old_rx;
++	}
++out:
++	mana_pre_dealloc_rxbufs(apc);
++	return err;
++}
++
+ const struct ethtool_ops mana_ethtool_ops = {
+ 	.get_ethtool_stats	= mana_get_ethtool_stats,
+ 	.get_sset_count		= mana_get_sset_count,
+@@ -380,4 +452,6 @@ const struct ethtool_ops mana_ethtool_ops = {
+ 	.set_rxfh		= mana_set_rxfh,
+ 	.get_channels		= mana_get_channels,
+ 	.set_channels		= mana_set_channels,
++	.get_ringparam          = mana_get_ringparam,
++	.set_ringparam          = mana_set_ringparam,
+ };
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 6439fd8b437b..80a1e53471a6 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -38,9 +38,21 @@ enum TRI_STATE {
+ 
+ #define COMP_ENTRY_SIZE 64
+ 
+-#define RX_BUFFERS_PER_QUEUE 512
++/* This Max value for RX buffers is derived from __alloc_page()'s max page
++ * allocation calculation. It allows maximum 2^(MAX_ORDER -1) pages. RX buffer
++ * size beyond this value gets rejected by __alloc_page() call.
++ */
++#define MAX_RX_BUFFERS_PER_QUEUE 8192
++#define DEF_RX_BUFFERS_PER_QUEUE 512
++#define MIN_RX_BUFFERS_PER_QUEUE 128
+ 
+-#define MAX_SEND_BUFFERS_PER_QUEUE 256
++/* This max value for TX buffers is derived as the maximum allocatable
++ * pages supported on host per guest through testing. TX buffer size beyond
++ * this value is rejected by the hardware.
++ */
++#define MAX_TX_BUFFERS_PER_QUEUE 16384
++#define DEF_TX_BUFFERS_PER_QUEUE 256
++#define MIN_TX_BUFFERS_PER_QUEUE 128
+ 
+ #define EQ_SIZE (8 * MANA_PAGE_SIZE)
+ 
+@@ -285,7 +297,7 @@ struct mana_recv_buf_oob {
+ 	void *buf_va;
+ 	bool from_pool; /* allocated from a page pool */
+ 
+-	/* SGL of the buffer going to be sent has part of the work request. */
++	/* SGL of the buffer going to be sent as part of the work request. */
+ 	u32 num_sge;
+ 	struct gdma_sge sgl[MAX_RX_WQE_SGL_ENTRIES];
+ 
+@@ -437,6 +449,9 @@ struct mana_port_context {
+ 	unsigned int max_queues;
+ 	unsigned int num_queues;
+ 
++	unsigned int rx_queue_size;
++	unsigned int tx_queue_size;
++
+ 	mana_handle_t port_handle;
+ 	mana_handle_t pf_filter_handle;
+ 
+@@ -472,6 +487,8 @@ struct bpf_prog *mana_xdp_get(struct mana_port_context *apc);
+ void mana_chn_setxdp(struct mana_port_context *apc, struct bpf_prog *prog);
+ int mana_bpf(struct net_device *ndev, struct netdev_bpf *bpf);
+ void mana_query_gf_stats(struct mana_port_context *apc);
++int mana_pre_alloc_rxbufs(struct mana_port_context *apc, int mtu);
++void mana_pre_dealloc_rxbufs(struct mana_port_context *apc);
+ 
+ extern const struct ethtool_ops mana_ethtool_ops;
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
