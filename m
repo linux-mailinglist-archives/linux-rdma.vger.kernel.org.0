@@ -1,235 +1,124 @@
-Return-Path: <linux-rdma+bounces-4575-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4576-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DD7E95F97C
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2024 21:14:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FA3695FDD9
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Aug 2024 01:45:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 353E7281985
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2024 19:14:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9C181F20F28
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2024 23:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC3E1991CD;
-	Mon, 26 Aug 2024 19:14:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC79719CD17;
+	Mon, 26 Aug 2024 23:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CTH8YCb1"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="HTM0zG1T"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54DB2194138;
-	Mon, 26 Aug 2024 19:14:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3BA13D291
+	for <linux-rdma@vger.kernel.org>; Mon, 26 Aug 2024 23:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724699689; cv=none; b=EJfmZiAy/R09UGwXmDJW5p7ZF9S8dEYpSaah+umHiW0wGUbDfPWvpwQuD1fiK5O/izKyqhd90RkjozZCkprcleWf18DzNkYV52avbi0WytxFyi2GgJ0B24OGTCcaUd9BBegYvLR+xtGwMre19r+I9Rt0AGVeVwxOFhAQqTAE48c=
+	t=1724715934; cv=none; b=REV3s3ODtlRWeipyBGag8AB5n8NftJKl1kAHyPXXuvgk36B4kciSNaQsAcUM2TgNxl198/H+DWChwX5PPEnJftMTZ0UtmkD/JO4VaFfxqdTBRBwUZTpTRYrp0yvmpMUmH1VuvYe3H6ONBb2XQ2CBW9Bdtj333GiJoPAW55J3a3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724699689; c=relaxed/simple;
-	bh=KVRMcmwnX8djX0JysOwFBlfFTwFz8k+1tcH52mTbkJE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=AnHScC76IdIplCCpZT5fygPA/8ckrd0QvJ6lZAXCVA5w16Obfur/jz8jAlI6bWD2ckx207Oprfk3hTBVxDnilby6hcM2UcMnvCXjqn+/eygNKX68TGiKGC4Wm++SgrjVkSR2wM3/b/uH/WRGXuJ9Ls1Y5LqG1Clc0TBJ+7vWG4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CTH8YCb1; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47QGAeJx024068;
-	Mon, 26 Aug 2024 19:14:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
-	message-id:date:subject:to:cc:references:from:in-reply-to
-	:content-type:content-transfer-encoding:mime-version; s=pp1; bh=
-	scGo/ReMtVA2P+UMCPVIplR5e4FSO0emnbV3UVR0J+g=; b=CTH8YCb1o/UqSNkM
-	l8G4Dig8BUKceKdgWD0JLGb1UVpdh+NCjpXniN96JdbZTp9TA2eiiif5os+RCFTk
-	vw8yrHjB6KS8qzcqKev9mYpO5AJFCEKBYirskePDuWkyMFu1ABQOpS6auSRkl4Wd
-	y3RseIacW7bArX6/nX5cfNjQLbRoeLFGBEsfJYJAwwM3z5g/Cxa3yUwl09Pxt5JT
-	Tf4axSz1mLgTy9UkMg4qf/bYcfdNCziEf7oujhwQSLVqeG+fYEn7C1VAkxlTO9PJ
-	hi4TMFPi0eRvTgkHMNzN45snPse6v09pT6UVDFL1QYF3uGO4DOgTLXBIa9K6s6Hg
-	WRuJ3Q==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 417g51gce0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Aug 2024 19:14:41 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 47QJEfXT008862;
-	Mon, 26 Aug 2024 19:14:41 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 417g51gcdu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Aug 2024 19:14:41 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 47QGPK84021761;
-	Mon, 26 Aug 2024 19:14:40 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 417suu7pgv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Aug 2024 19:14:40 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47QJEauk47972820
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 26 Aug 2024 19:14:36 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 91D4520043;
-	Mon, 26 Aug 2024 19:14:36 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E7D7920040;
-	Mon, 26 Aug 2024 19:14:35 +0000 (GMT)
-Received: from [9.171.82.113] (unknown [9.171.82.113])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 26 Aug 2024 19:14:35 +0000 (GMT)
-Message-ID: <8a829adf-2833-4b4d-a690-5fff52967e35@linux.ibm.com>
-Date: Mon, 26 Aug 2024 21:14:34 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2] net/smc: add sysctl for smc_limit_hs
-To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-        wenjia@linux.ibm.com, wintera@linux.ibm.com, guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com
-References: <1724207797-79030-1-git-send-email-alibuda@linux.alibaba.com>
- <abd79f44-aed2-4e01-a7f8-7d806f5bc755@linux.ibm.com>
- <905874a4-c000-4845-8fac-3fc4b79f43fd@linux.alibaba.com>
-From: Jan Karcher <jaka@linux.ibm.com>
-Organization: IBM - Network Linux on Z
-In-Reply-To: <905874a4-c000-4845-8fac-3fc4b79f43fd@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: fjyb7kQaI7tcJxiVYSI0ZImx0Wf_9Ygm
-X-Proofpoint-GUID: TQ_Or8n-UL1faEBG-rlgFh8V9Qmgy8k4
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1724715934; c=relaxed/simple;
+	bh=vqZxLyIYwvOL7VofEWqLnPBg2kNsVlrEwKKqyU22uHI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LBwh3+w0nlxvbOdfH6jq3b7r5+qr+K2UwhMSco/ZujS8h2tS7DP2D9O7zThH+a3ImuRltMBJVfRKOxkowJyoaAh9Efwd7k141opmoOlLbhnTr67snjapyOB5K1hLuIaKNI8kKvjHMkHkB4qEj4NAGkktNH2zttiuRDbfTMBV3io=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=HTM0zG1T; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7a7d7ec7395so82056485a.3
+        for <linux-rdma@vger.kernel.org>; Mon, 26 Aug 2024 16:45:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1724715931; x=1725320731; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lDuuNQ8/bu29BjzK9PteMZCVxgPOE2AxKbk9lTfYggQ=;
+        b=HTM0zG1TAEakjLOil8Py3eNjoG5c6JNo9FFi5bHkUFS0Z0hApXFCTCuFEM5uv/MOZS
+         BIaUfZZXw8AWpq+//8KMCnI1MDj7efhqimRoVjlO13+jaPZP+RonWK+jjvfsBHHqhWA5
+         0XjztpiB6bZsNPqTB9WmB63Qt1YL51+LR0PD4rg81N9bLoDX+ZhJ92tMs16HxPbUjLmC
+         csIUwLy3ApjmUQ0njAetuC24LGe95I8de8UagiBnRzohoB7uTmF7bVc4Ect+JoArz5gF
+         U658thZh/AIXem3YOLb0PmPrTH2YfYrAYKx2LtuQ/dnoMhB9t6r/xE7pOHnICXIoTyEi
+         sz0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724715931; x=1725320731;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lDuuNQ8/bu29BjzK9PteMZCVxgPOE2AxKbk9lTfYggQ=;
+        b=b12YuQZlTDNyWJ0nA7/4aq4g+uvqdiN/LBDT+dSAiGYWdjxveWVB2Ln0GBSc7OtpTB
+         R5NszvhVreUv/87h298/k9UmSJz00xpfkFR8KRflV6rQ+4FLG0nCA5g8dck8Z1LrJ2dm
+         ny7odFJw/De5B2cK8oVC96F5y0joK+8IcT9iCDjMph5YdBhvCiVhjsampQ44liswlfGw
+         iLKRRyJ/ooQz2aHswEa5YlpJePOz0gL8jkNgGqMU1AN+siAcmIN1i8vRh+cpAMRft/nD
+         eC5A+PhzLVNlk7N/GkWJdiIwxuYSeWwk7/6zBLEVs0rhWjFFH3bVRv37mHDvm+10+pAJ
+         Aa4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVKIWQJs3s3WKPDTgya3/wqw4HuB7+RD4gwUho9qRCw5q9dIOQHsGTDdv9NxEklsP0c5gVPHaePCIT2@vger.kernel.org
+X-Gm-Message-State: AOJu0YxG475Sp1ENOe7LHNi0jSp0pLGg/MSS7ulxMpdd3EH8CNb0626F
+	bjOZ5EFC6WApBp97b2vZzGtJ3cIEvqe5/IES3Xl+dvVihawulyxS77I/8lXRp0Y=
+X-Google-Smtp-Source: AGHT+IHzaXl2WmXOTOiigwMW4vAHbvohhbDK0cgaRu+I2GIwQhZXzz+hJUacz877ZzUojnA/oSOOuQ==
+X-Received: by 2002:a05:6214:4381:b0:6c1:6a2e:afc6 with SMTP id 6a1803df08f44-6c16dc36d53mr143333916d6.15.1724715931544;
+        Mon, 26 Aug 2024 16:45:31 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6c162dcd5bfsm50953946d6.110.2024.08.26.16.45.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Aug 2024 16:45:31 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1sijOs-00El7B-CY;
+	Mon, 26 Aug 2024 20:45:30 -0300
+Date: Mon, 26 Aug 2024 20:45:30 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Doug Miller <doug.miller@cornelisnetworks.com>,
+	linux-remoteproc@vger.kernel.org,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	OFED mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: Using RPMSG to communicate between host and guest drivers
+Message-ID: <20240826234530.GK3468552@ziepe.ca>
+References: <133c1301-dd19-4cce-82dc-3e8ee145c594@cornelisnetworks.com>
+ <842aef7f-d6e1-490a-97b9-163287ddfe2d@cornelisnetworks.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-26_14,2024-08-26_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 impostorscore=0 adultscore=0 spamscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 clxscore=1015
- phishscore=0 bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2407110000 definitions=main-2408260145
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <842aef7f-d6e1-490a-97b9-163287ddfe2d@cornelisnetworks.com>
 
+On Mon, Aug 26, 2024 at 12:27:02PM -0400, Dennis Dalessandro wrote:
+> On 7/31/24 4:02 PM, Doug Miller wrote:
+> > I am working on SR-IOV support for a new adapter which has shared 
+> > resources between the PF and VFs and requires an out-of-band (outside 
+> > the adapter) communication mechanism to manage those resources. I have 
+> > been looking at RPMSG as a mechanism to communicate between the driver 
+> > on a guest (VM) and the driver on the host OS (which "owns" the 
+> > resources). It appears to me that virtio is intended for communication 
+> > between guests and host, and RPMSG over virtio is what I want to use.
+> > 
+> > Can anyone confirm that RPMSG is capable of doing what we need? If so, 
+> > I'll need some help figuring out how to use that from kernel device 
+> > drivers (I've not been able to find any examples of doing the 
+> > service/device side). If not, is there some other facility that is 
+> > better suited?
+> 
+> Hi Bjorn and Mathieu, any advice here for Doug? Adding linux-rdma folks as that
+> is where this will eventually target.
 
+Typically in cases like this you'd paravirtualize some of the VF
+before sticking it in the VM so that there is a tidy channel between
+the VF driver and the VMM to do whatever this coordination is. There
+are many examples, but it is hard to see if you don't know the device
+architectures in detail.
 
-On 26/08/2024 05:02, D. Wythe wrote:
-> 
-> 
-> On 8/21/24 4:03 PM, Jan Karcher wrote:
->>
->>
->> On 21/08/2024 04:36, D. Wythe wrote:
->>> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>>
->>> In commit 48b6190a0042 ("net/smc: Limit SMC visits when handshake 
->>> workqueue congested"),
->>> we introduce a mechanism to put constraint on SMC connections visit
->>> according to the pressure of SMC handshake process.
->>>
->>> At that time, we believed that controlling the feature through netlink
->>> was sufficient. However, most people have realized now that netlink is
->>> not convenient in container scenarios, and sysctl is a more suitable
->>> approach.
->>
->> Hi D.
->>
->> thanks for your contribution.
->> What i wonder is should we prefer the use of netlink > sysctl or not?
->> To the upstream maintainers: Is there a prefernce for the net tree?
->>
->> My impression from past discussions is that netlink should be chosen 
->> over sysctl.
->> If so, why is it inconvenient to use netlink in containers?
->> Can this be changed?
->>
->> Other then the general discussion the changhes look good to me.
->>
->> Reviewed-by: Jan Karcher <jaka@linux.ibm.com>
->>
-> 
-> Hi Jan,
-> 
-> I noticed that there have been relevant discussions before, perhaps this 
-> will be helpful to you.
-> 
-> Link: 
-> https://lore.kernel.org/netdev/20220224020253.GF5443@linux.alibaba.com
+If you stick it in seperate virtio PCI device you'll have hard
+problems co-ordinating the two drivers.
 
-Hi D.,
-
-thanks for the pointer! If i understood Jakub correct it should be 
-possible to add a yaml definition for the SMC netlink anbd modify it vie 
-a small program.
-
-That said I'm not to familia with the use of them in containers. So if 
-you say this is the better solution and everyone is fine with yet 
-another sysctl it is fine by me.
-
-Thanks
-- Jan
-
-> 
-> 
-> Best wishes,
-> D. Wythe
-> 
-> 
->>
->>>
->>> In addition, since commit 462791bbfa35 ("net/smc: add sysctl 
->>> interface for SMC")
->>> had introcuded smc_sysctl_net_init(), it is reasonable for us to
->>> initialize limit_smc_hs in it instead of initializing it in
->>> smc_pnet_net_int().
->>>
->>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->>> ---
->>> v1 -> v2:
->>>
->>> Modified the description in the commit and removed the incorrect
->>> spelling.
->>>
->>>   net/smc/smc_pnet.c   |  3 ---
->>>   net/smc/smc_sysctl.c | 11 +++++++++++
->>>   2 files changed, 11 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
->>> index 2adb92b..1dd3623 100644
->>> --- a/net/smc/smc_pnet.c
->>> +++ b/net/smc/smc_pnet.c
->>> @@ -887,9 +887,6 @@ int smc_pnet_net_init(struct net *net)
->>>         smc_pnet_create_pnetids_list(net);
->>>   -    /* disable handshake limitation by default */
->>> -    net->smc.limit_smc_hs = 0;
->>> -
->>>       return 0;
->>>   }
->>>   diff --git a/net/smc/smc_sysctl.c b/net/smc/smc_sysctl.c
->>> index 13f2bc0..2fab645 100644
->>> --- a/net/smc/smc_sysctl.c
->>> +++ b/net/smc/smc_sysctl.c
->>> @@ -90,6 +90,15 @@
->>>           .extra1        = &conns_per_lgr_min,
->>>           .extra2        = &conns_per_lgr_max,
->>>       },
->>> +    {
->>> +        .procname    = "limit_smc_hs",
->>> +        .data        = &init_net.smc.limit_smc_hs,
->>> +        .maxlen        = sizeof(int),
->>> +        .mode        = 0644,
->>> +        .proc_handler    = proc_dointvec_minmax,
->>> +        .extra1        = SYSCTL_ZERO,
->>> +        .extra2        = SYSCTL_ONE,
->>> +    },
->>>   };
->>>     int __net_init smc_sysctl_net_init(struct net *net)
->>> @@ -121,6 +130,8 @@ int __net_init smc_sysctl_net_init(struct net *net)
->>>       WRITE_ONCE(net->smc.sysctl_rmem, net_smc_rmem_init);
->>>       net->smc.sysctl_max_links_per_lgr = SMC_LINKS_PER_LGR_MAX_PREFER;
->>>       net->smc.sysctl_max_conns_per_lgr = SMC_CONN_PER_LGR_PREFER;
->>> +    /* disable handshake limitation by default */
->>> +    net->smc.limit_smc_hs = 0;
->>>         return 0;
-> 
+Jason
 
