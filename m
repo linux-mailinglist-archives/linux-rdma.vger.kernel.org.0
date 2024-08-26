@@ -1,246 +1,217 @@
-Return-Path: <linux-rdma+bounces-4573-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4574-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5044795F7DA
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2024 19:22:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6368195F95F
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2024 21:05:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7489A1C21E4D
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2024 17:22:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A96D283DF5
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 Aug 2024 19:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 666FD194C95;
-	Mon, 26 Aug 2024 17:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52EDF191473;
+	Mon, 26 Aug 2024 19:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="YcFaDhlH"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ZupSfwJu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2092.outbound.protection.outlook.com [40.107.96.92])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A9464A;
-	Mon, 26 Aug 2024 17:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.92
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724692929; cv=fail; b=R4vczMNNMjGS2E96MFhz5W2mYh5V1UhUhgFEcVJkSL3PoijNYWjL+G1YPR/qLLBsEnmeQMpXyP5XBWu8+zk4N7RvEUPhV/7wkPTYvj0wB7MdnC/SmAt3SxvBma56XAmw9mK4qB/PVczv9pxHEXlMag7s3C/+F7nCeWsHWBWRMBU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724692929; c=relaxed/simple;
-	bh=Zk8tGyxaWFmUgTCzngNTii6DCvCDnvvw0OVZk9fiuI8=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89CDC80027;
+	Mon, 26 Aug 2024 19:04:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724699100; cv=none; b=ql3sawwMFz8sx0K9iPQi0HPfkejQzXDUahBms+AGSuZJZxhXuUt1EmKlubiUWjric2SMipQd1jz9dBwJqaq9HVbT+xXU2iA4RJ9oIx7KDc2qYoW5U+QCXxdnO/935K6XSe3xboA1Ej6MRnaPsQXbLGMzbALIdczuM4UVS2sf/2w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724699100; c=relaxed/simple;
+	bh=koiNfTIn4U0/8vi4PdZ2K2+ASxUGNBj5PULefhJADMY=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=h/7yfFZfObjEDWM/glyS1JSEK9Co9LnG7NIo0PjPLbUa9vdtFqNMC5kHySlOmOTFjGOrWWGp41VNOM9dtRLf2Jwlsq5wICKxPiBh9dv2q8LNaIC5KxVxIoBoogY9x69GaVsvDdrBkIH0vuqIXiwY8EaVegyyRCLbNZQh2O10wEc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=YcFaDhlH; arc=fail smtp.client-ip=40.107.96.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=BLUhvwtpzs2cMzf4qc0PMGiYsP1qZijOdi9kMWBr81vxC9NHV3TNLRnjPK288YANeuwq6C4TNjEKzv8cLx2QjgD8Oq1r24u3kAWudH4311sm5SxPaqxuO6ymvMHR1vt1pXmMjV8aOZU6LbIgJ1vrQKc/bPkIlqNfC2ZqZVUbIu6rroYAfFIbnR738F6UDgYTll/knmyixGoHn1euV7/Q9k9BizHViH8FZB6JqQseqrnWYjUevdja7k2bXKxKonT0/bMKkVdBdI6QLc9/v2ZSUzGYVQ4q5PV59eZL12szspamZmMAMrlxLJvNvu7TIhDDqToHHQTrZzTsft/64BJk/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JpN5Ij5XjI9JG0VqIeOlPamp2FkNZSKgOy6NFwlmSBU=;
- b=qqRGuuVib5IOzfOfWjum96JAc4nBzIvT5aaz03PGPebn4c/yNDwqIYHM5+Q9MlZjsJM8aIrt4BSyynKlylrdOrCW5bV5y0xpvdTv/blySFd15fLxVeOKePFhiit2935kyT3FyLA5ShH6HUUYjzR3qJm2mIohYHJ1hfFV+7rzfQvjDHhDt9sdwbR/4ht3wU3mNskfuG0cYhqu2ArUz+hAZbkvdfXbn4t28z0oRGDgJsXamI/q3pskXRPzdu4QXWCxXg0abvWdwKzB2mAra3auRLzR/BHbZ8V+EqnHYnWZX6igGCHsEFQenIL6hWfrjkuZiaKVWVtXPC+h6JrXPxT55A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JpN5Ij5XjI9JG0VqIeOlPamp2FkNZSKgOy6NFwlmSBU=;
- b=YcFaDhlHEcIdnNhp+VfCFGbWLPrbIFQNoV4MtjVfAMfaMS//mUBViB63/fZ6NuBLZFcxrzX1bPY7SDggj3VKkoqOJeBt5V20F7VXAufwUSRHL5xHNYiicy8cvA9t6xWYK5+0DE9qpVx8ABFxJaAV/eMZNIufmFyEX7r7KmNnDiLYmE733/jdp8xsGFd9Op1Vndi2appiRB2+MetFFd2OVkdlyp9DbD7kYhJwEkn0thU2uC3d0SFXf5wexPluT1exuenrmnHvnSBIEUoBHHoMMqY2mAp/BYNsU4zIRzj220F6r6dotk2i5EBJKsuO1MTx3ifoDlojOnr8aDEGrhgMkw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-Received: from SJ2PR01MB8151.prod.exchangelabs.com (2603:10b6:a03:500::12) by
- SA1PR01MB8250.prod.exchangelabs.com (2603:10b6:806:38b::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7897.24; Mon, 26 Aug 2024 17:22:04 +0000
-Received: from SJ2PR01MB8151.prod.exchangelabs.com
- ([fe80::8212:f21e:96f4:82ec]) by SJ2PR01MB8151.prod.exchangelabs.com
- ([fe80::8212:f21e:96f4:82ec%6]) with mapi id 15.20.7897.021; Mon, 26 Aug 2024
- 17:22:03 +0000
-Message-ID: <59cd0c1c-b5a0-471a-810d-65d42b021760@cornelisnetworks.com>
-Date: Mon, 26 Aug 2024 12:22:01 -0500
+	 Content-Type:MIME-Version; b=SRU5EuzWEKObTl2yon2tPOOhFSKVfRpeRUCE/mscORLXCOEFqMQ4XrembeNP6rMWmEGjJ965L/RROKh3T3NhsIYb63dUO7WYxxlWVCDWbVQTssDeWdfyJVtxdYW4dtS6ZLVK+P8gBKXFgcRAe66nfFlOqsZqOOcC7QzOw/NgoEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ZupSfwJu; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47QGAdGR023902;
+	Mon, 26 Aug 2024 19:04:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	message-id:date:subject:to:cc:references:from:in-reply-to
+	:content-type:content-transfer-encoding:mime-version; s=pp1; bh=
+	1QAL+iCibHhle5hn0PIEt3woSyuVhCTJWNv3nZI4aI4=; b=ZupSfwJu0kDZQfeW
+	nM9Nw1yjZYGv2IlJyp3kVUE6Bewy3WzGvM3OOUlNoOh7jlEPioaFZGni3TRH/PVW
+	FAn2pXpq5/hQylibqKAeWa8u7BW8HxMWKOvTOaG8nzgytUqmIfZoa2Zw6NHYHyXq
+	d2WTPXE4+5NEyEc+oft1nkOUwPLtXq83CtSAbG0jINcdyiIediT5K0LRV8R+Qx6i
+	k7akDm0EUAShfBoAqkD6M4YB0gZ7dkjinUj7z4H8k4itjnwbLPvBj0mQRTsdP0ff
+	Yqokrq6OVQ/enkNnC9Jfbt/u4WeRIG7CxlYq6fJRni/2Gjstne/UxcFSxci4jEbE
+	hNx6aw==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 417g9n825a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Aug 2024 19:04:42 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 47QJ4g6C015902;
+	Mon, 26 Aug 2024 19:04:42 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 417g9n8255-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Aug 2024 19:04:42 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 47QHM5AL003137;
+	Mon, 26 Aug 2024 19:04:41 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 417tupqda2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Aug 2024 19:04:41 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47QJ4dnc52625884
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 26 Aug 2024 19:04:39 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3BEE220043;
+	Mon, 26 Aug 2024 19:04:39 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5757A2004B;
+	Mon, 26 Aug 2024 19:04:38 +0000 (GMT)
+Received: from [9.171.82.113] (unknown [9.171.82.113])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 26 Aug 2024 19:04:38 +0000 (GMT)
+Message-ID: <c841a647-6f5e-4bc2-b637-ef08b9a851a6@linux.ibm.com>
+Date: Mon, 26 Aug 2024 21:04:37 +0200
 User-Agent: Mozilla Thunderbird
-Subject: Re: Using RPMSG to communicate between host and guest drivers
-To: Mathieu Poirier <mathieu.poirier@linaro.org>,
- Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: linux-remoteproc@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
- OFED mailing list <linux-rdma@vger.kernel.org>
-References: <133c1301-dd19-4cce-82dc-3e8ee145c594@cornelisnetworks.com>
- <842aef7f-d6e1-490a-97b9-163287ddfe2d@cornelisnetworks.com>
- <CANLsYkx2OThcBjs1Qn_Bgd0LE1+EN7c0Dh7NE=1dEBB4xqS9cQ@mail.gmail.com>
-Content-Language: en-US
-From: Doug Miller <doug.miller@cornelisnetworks.com>
-In-Reply-To: <CANLsYkx2OThcBjs1Qn_Bgd0LE1+EN7c0Dh7NE=1dEBB4xqS9cQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 0/4] Make SMC-R can work with rxe devices
+To: "liujian (CE)" <liujian56@huawei.com>, dust.li@linux.alibaba.com,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc: jgg@ziepe.ca, leon@kernel.org, zyjzyj2000@gmail.com, wenjia@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+References: <20240809083148.1989912-1-liujian56@huawei.com>
+ <0d5e2cec-dd0b-4920-99ff-9299e4df604f@linux.ibm.com>
+ <20240821010324.GK103152@linux.alibaba.com>
+ <ab89629e-75ec-4750-a4e1-58ad287ce1bd@huawei.com>
+From: Jan Karcher <jaka@linux.ibm.com>
+Organization: IBM - Network Linux on Z
+In-Reply-To: <ab89629e-75ec-4750-a4e1-58ad287ce1bd@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: CH0PR04CA0014.namprd04.prod.outlook.com
- (2603:10b6:610:76::19) To SJ2PR01MB8151.prod.exchangelabs.com
- (2603:10b6:a03:500::12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: f0-hDKoi1y0DeC_MgOM7pgDtHQO5n31c
+X-Proofpoint-ORIG-GUID: BZ-xp8NYPaGTVCirMt-T7rKKWNCcI-CQ
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR01MB8151:EE_|SA1PR01MB8250:EE_
-X-MS-Office365-Filtering-Correlation-Id: b03720d6-6c02-4700-f90c-08dcc5f39a3f
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?VHNlYWJrSXZtblJ5MEM1Ti90SWwxcjV4d01sWVNEWEpxaW0xL3dieVQvY3cy?=
- =?utf-8?B?KzFUSVduOTduUVJQOHh6dVkwaU1YWFNaMmx5QUVPMCtBMnNGSnIrK0d4WnhZ?=
- =?utf-8?B?aUVUR25BV25yekpnUXhJaFBYeFNyaXQ5RVZ4eEFXbktuS2tTQ3U2Ni95RlhX?=
- =?utf-8?B?L1dOdDBwNmFncW9hYnd1VVFoU1VsRThSaFpCdUxad1dHVkkvRlZCbW9nZFpH?=
- =?utf-8?B?aTlGNU5QbEZIdk8xMktGZDRST3ZxR3ptQ2E3MlBPL0g1WmFJVW1BZnFiWllK?=
- =?utf-8?B?V0FTQUNHNi9Tcmc1WENSVnRMSmtIdjJsSVpkMlJiT3lmc09SRklHUkIwbmlx?=
- =?utf-8?B?aXJCME5DUlBXblZ0dU83blF6cXEyWmowcXRiN1Q0Y0tOZ2tXMWs2K1VRbEFu?=
- =?utf-8?B?ODRKVlBzY3BlcUpYN2xpb21OMnhVUzdmNVR0NGxOc3hoY3VZRFBiSFU0K2hZ?=
- =?utf-8?B?cndwdG5DQ2tGVDlVWGpRcC9scWRicGxrR2h3MzhGckN5Y2JaKzE2UGFIcHRY?=
- =?utf-8?B?K29KaHlMZFppTkxnQzNXQTdjRkNTOHd2WWptSXcwbjJRT1RZMjlzYmxxTDhV?=
- =?utf-8?B?RVVRQnVHYmo4L2UxUGNYV1ArRi9TQVYxR2tjM3htZGFOcDA4L1h2UnU2QnlF?=
- =?utf-8?B?Z2hmdWRWbGUySE4zYk9VaWJDbjVUZlJpbDdiNVNsNWN6UXNHMTdsQXl1eTNG?=
- =?utf-8?B?ZVhRM1FPRk5IMUhjVFNtNys0eHN0NnF6ckwrR3lHZlVibDZ1Nm8yVVROQTMr?=
- =?utf-8?B?c0V3ME9YVEVnUkdXYzNCTGZSOWVUNzUvUHV0bk1HdFZ2SkxoRTNvRHBVWVpz?=
- =?utf-8?B?aXMvZWRzc0R2bTBxbEhJKzFHV3NLa3FJTTJUd1gvczZBY2tDekVPVVN1eEFZ?=
- =?utf-8?B?cGZJNFMweVlESDJpSEgwS251NFB6SkVGdDVIVjVtTnZDclZ6SXk4TG1rSXZq?=
- =?utf-8?B?WlhHRDBrT1JyaGpoc0tPZnM4QmlEM253TTVnWDVQOUJxRkRidkQzNG5TbGVH?=
- =?utf-8?B?TFZmTU4xSTJ0ZmZWR1pvNW9xazJPNjNMOTRnaldPQTY4Sms0ekN6cmNIcjdE?=
- =?utf-8?B?SjlvNkNBQWROVFNVVHJRNm1QR3FSNDRKTG1LNnNWTVdEUEQ0dU9qSzd0UDVX?=
- =?utf-8?B?SDlHK1IxV0tLS3JEZFhyYWFpLzhIOXFoWWdCZ2FCV2QyY0NIbEEvYzVTTFlJ?=
- =?utf-8?B?SWQ4TmtqVnlXb252bnJBNVUveFpVWEk4S2ZXSTIxV0djMkUreWRkT0ZleFBH?=
- =?utf-8?B?Q1JCQlU4TFFRVWpjc2I2V2h2OWFZenBoNmFuQVFxNWVMR2R1OWdPdjJzSFc5?=
- =?utf-8?B?TWdMUTV0WEI5a3ZNbk9lVEE3Y1ZlSzc1elord1RZOGw1cjh2cHB0RlRwbExh?=
- =?utf-8?B?c1Y4VysrN01ZUnV4R2lxN3hFZ0EwTUQ2L09uT0VoNmRVbFJiRUlJZTZLa05X?=
- =?utf-8?B?RlZEVm52b2JIenZIcFNJdGN3aWZMUTYwMGdBOVozYmJVNmRLVkJ5N3o5MlRK?=
- =?utf-8?B?dklmRXdmNXFoNjhXUHpjSVdaell1N1J5NWx0VzJTQXYyTndnVTdrU01nZEJB?=
- =?utf-8?B?T29NT1MwbnFjdS9ybFFIZThhekJla2t6cDFjVHBXTTZnL3VlZmlMY2l0bUN4?=
- =?utf-8?B?YWk3T29sY04wVUdjV3Ryb1poRkliZUV6UzltU0NJMjByN3BIbkZJNnFXd1JB?=
- =?utf-8?B?Nld4cytNRmhFbElLNjF0MC9UVDI1S0Z0Vkd6bHNYbldZZm85RFdHNHpPbk5W?=
- =?utf-8?B?ZzZLWThFZ3R5RS9vV21aUHBtY3BaWEU0MFZmdzJsSWhSMEduTGo1bVBwMXFY?=
- =?utf-8?B?aEJsU2Y5MGtRVkJpK1pPZz09?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR01MB8151.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Vlo3YjdKRU9GemlHWWp1aDRQNTg0YUpLcXcvb3c3TmpnVXVsUTFzcGhJa2ov?=
- =?utf-8?B?QWdMZXJkb203d2ZOellKNnRLNnVEQmtwNTBNdS8zdmN5Zm11NWxTL1RNaWtC?=
- =?utf-8?B?TUlBd3hzWENDZzRkN1BhcjdlUnF2TjJXa1NSUEI0Y2NxczJsNDhPUXZNWVZX?=
- =?utf-8?B?d0ZMbzdLRWZGL3RxV3prcCt2TlBsWXFOV3NUeUpzMHFTeEpFdUttbWxZblRm?=
- =?utf-8?B?bktnejdFbmV6K1RMOGFmR21YSWw1NEZ4U2hwbDBVU1dDNTVFclphc0lXVWt0?=
- =?utf-8?B?Ny9NdjlzbDh1b25RWFFxNWtxc2ZHNkFhZlNYb2Y4akhwMWFJWUJYWkFLNmlO?=
- =?utf-8?B?MnVCeldmMHAvVFlUbE90VTR0NG5sUWVNQlNaTTY4eDZNQUtFd0lhbjdFRWRn?=
- =?utf-8?B?a3NjSURHMnpUcWxXelgrMjNkakJNd05HdWJYSHJTRTBnaml6b3dFOXNFcFdN?=
- =?utf-8?B?eVdtVy9wbW9DSnhEQjNuYW5lKzFTZnlMenAzbHgzMHRCZFBYak5ZcERWTkZo?=
- =?utf-8?B?LyswQW9xQ2VvS3U5U2hmUVBJaDlhZExNQjBQWTRaSUhVeUxER05IbUFBTmVK?=
- =?utf-8?B?NzBMTGpFSmNUQlIwQi9QUTZLZDFaOUFMaUpmaXFJZ3JmUllGem9nVmtFTFlV?=
- =?utf-8?B?UlZjdnFwbndMMWxoNENRL3ZDQzU2L1dzNWtGeUlSL3EvY29OdWwvVjJqUlQz?=
- =?utf-8?B?OGVPdTgrZzc2Q25jdmdFWldScWFlN0lpbTVSVVQ0cjI5UlRHWmxDY3RkOGlL?=
- =?utf-8?B?QzhCS2kwQWZqOWxVdHN4dVdKOXpKbllFaG10alBkZEpkWHd6ZkxHVUlteWlW?=
- =?utf-8?B?YXJwWmU0VVROUDRDcHloSGt6Z2NJaXFvRFJtOWxuZjk0THFwK2d3UWtjOU1r?=
- =?utf-8?B?MDBoNjhMVGRTaVJHOXJlUEl4YXJLeDIyY2JJczZCMGlSYU5jVlAxOGpPejNW?=
- =?utf-8?B?VDMwSDluUldEUFM3NUY1U3RSZHdZNk1GRi91ZENrY0FRRVJkbFV4R3Nwb29v?=
- =?utf-8?B?VU9uTVUrdy9iVUlrNU1XeEViODBpRWpYZXZyV00vVnpmVWZmRXhqWHcwOXJj?=
- =?utf-8?B?N2JZcmNhbk1veHJ1SUtGcjlDNExCNEtFRVg4M2lmd09qYVA5Y0Jrd25EZVFQ?=
- =?utf-8?B?NHEvNXk2b1Z2M1VNc2V0Uk9JZTh2eGFMSzFCQmZVNU4vMzFFaUwzWk0vRHlF?=
- =?utf-8?B?UEtKVXB5bVNOdE95cTFiRlBPM2hLOWg0R0tGS2JnbGp2Y1lsbGFEREsxV0xU?=
- =?utf-8?B?Z3JOdDVUd2hXT1N2YjI4R1p0VlJpcWMwNTRLSzVOOGw1eCthS2VMbzBpTjh4?=
- =?utf-8?B?QUZMTjZZaDdlMktpNExsVlVLTEwzK05xU29tazQ4c0U5YUxFVzBHWUFOT2ZC?=
- =?utf-8?B?Vzc4eENUVG9Sdnk4S1U1VGZ5LzdwYWNwaTBvMm4xVitmZWtkV29aL1pTcVpa?=
- =?utf-8?B?NTJTeHVBaDVCUHBCRFBtTi9iSWR6ME9hZ3FOMHgzRTlOdFBYRU40a0h5NGpv?=
- =?utf-8?B?Y25GeTdrcWh4YnhabkcyYzJWUEVNS3B0cGxVeGpoZ3ZMV1EwaUNIbXMzdlZr?=
- =?utf-8?B?ZnFGRlhCM2d6SW91dHdJL054SFdVdHIrUG55NTkrRVVJdVJRaXlEVExYaEVx?=
- =?utf-8?B?V0dmcTVLWFhFemwzNGtlMm5CZG9aclpUNUxmbUxtQW9waWtyMzRTcDRDK0d2?=
- =?utf-8?B?TUp6WkhCVldwN3Ridm1nZnQrem01U2c0Sk9CVGFVVDVPZWVLRSsvZE9GL1cr?=
- =?utf-8?B?MTRERDFWWkhPVm5Cb3ZGNm9xbG9QV1pKYktORk5MSGcvUHVqdDhNWFh4ZXJE?=
- =?utf-8?B?Q3A2bFJRbXVvNUdId0J2VHJoOUtaaFFzTnNVUmZpbHB3UWdocVpYbHk5YzZ3?=
- =?utf-8?B?ZW0wa092MFdzaTNFYUtKVjFNQmlaZzB1TDBZVDJXakFoZC9jZHY0dUhHdHdJ?=
- =?utf-8?B?c0pzcG9pTk1sTUVkcmRzREIvRVU1V25SV1RPbHBMSnAranVwNE5RSzdkUjFt?=
- =?utf-8?B?Rm1sZU1YL2w3SWFVN3FFNmNJYzJmL3dDYjJPTTY2V2NzRTBteUF5NDJGMEk2?=
- =?utf-8?B?NEJ0ayttTjRtQnA0SW5zdGhvSWw1aVhEaVMvRmtYUmJxeWU3WmlyM1RDQUdU?=
- =?utf-8?B?RHdRMnBucDFxa0xiZjlEenRmaDZVMG4xeUFCWDRuTERTbFVNVzZqRlB2SkdZ?=
- =?utf-8?Q?TG+LA1zGIbc0+xabc/6dpSQ=3D?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b03720d6-6c02-4700-f90c-08dcc5f39a3f
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR01MB8151.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2024 17:22:03.6717
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: c5opmX9JIaNRQLH+MFMJbS6Uzi15PH2geivMc2dmXIvLV5vMKxEo0w6tIEqSWs1L+pBlhS0+Cn5XPQV/GqyESVvGWZ/c5d31o2kEMZei83ZDamILmNiWgBH0hoSixx0x
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR01MB8250
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-26_14,2024-08-26_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ clxscore=1011 mlxscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ mlxlogscore=815 priorityscore=1501 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2407110000
+ definitions=main-2408260145
 
-On 8/26/2024 11:50 AM, Mathieu Poirier wrote:
-> Apologies for the late reply - this got lost in the vacation email backlo=
-g.
->
-> On Mon, 26 Aug 2024 at 10:27, Dennis Dalessandro
-> <dennis.dalessandro@cornelisnetworks.com> wrote:
->> On 7/31/24 4:02 PM, Doug Miller wrote:
->>> I am working on SR-IOV support for a new adapter which has shared
->>> resources between the PF and VFs and requires an out-of-band (outside
-> It would have been a good idea to let people know what "PF" and "VF"
-> means to avoid confusion.
-"PF" refers to the Physical Function of the PCI adapter - that which
-exists always, regardless of whether SR-IOV is active. The "VF" refers
-to the virtual function(s) that are created when SR-IOV is enabled and
-configured. Typically, the VFs and the PF are assigned to different OS
-instances running in different VMs. So, the OS that owns the PF needs to
-be able to handle resource requests from the OSes that own the VFs (and
-also send notifications).
->
->>> the adapter) communication mechanism to manage those resources. I have
->>> been looking at RPMSG as a mechanism to communicate between the driver
->>> on a guest (VM) and the driver on the host OS (which "owns" the
->>> resources). It appears to me that virtio is intended for communication
->>> between guests and host, and RPMSG over virtio is what I want to use.
+
+
+On 24/08/2024 12:04, liujian (CE) wrote:
+> 
+> 
+> 在 2024/8/21 9:03, Dust Li 写道:
+>> On 2024-08-20 15:16:57, Jan Karcher wrote:
 >>>
-> Virtio is definitely the standard way to convey information between a
-> host and a guest.  You can specify as many virtqueues as needed
-> (in-band and out-of-band) and it is widely supported.  What
-> information is conveyed by the virtqueues and how it gets conveyed is
-> entirely up to the use case.  Have a look at the specification of
-> existing virtio drivers to get a better idea [1].  If the driver you
-> are working with hasn't been standardised, I highly encourage you to
-> submit a draft for it.  If it has then add to the current
-> specification.
->
-> All that said, you could use RPMSG as the protocol that runs on top of
-> the virtqueues - that should be fairly easy to do.
-I had initially started looking at using virtio directly, but it looked
-like I was going to have to get a new device ID defined upstream and it
-would be a significant effort compared to using an existing facility. I
-then saw device ID VIRTIO_ID_RPMSG, which appears to be exactly what
-we'd have to create if we were defining a new virtio device for what we
-need. However, the problem has been understanding how to write code to
-provide the rpmsg "device" side. There does not appear to be any
-documentation and there is no example code to follow. It seems that the
-device side is typically contained in a GPU or accelerator, which was
-not written for a Linux kernel. So I have many questions on how (and
-when) to use the interfaces (rpmsg_register_device,
-rpmsg_create_channel, rpmsg_create_ept, rpmsg_find_device, ...).
->
-> Thanks,
-> Mathieu
->
-> [1]. https://docs.oasis-open.org/virtio/virtio/v1.2/csd01/virtio-v1.2-csd=
-01.html
->
->>> Can anyone confirm that RPMSG is capable of doing what we need? If so,
->>> I'll need some help figuring out how to use that from kernel device
->>> drivers (I've not been able to find any examples of doing the
->>> service/device side). If not, is there some other facility that is
->>> better suited?
->> Hi Bjorn and Mathieu, any advice here for Doug? Adding linux-rdma folks =
-as that
->> is where this will eventually target.
+>>>
+>>> On 09/08/2024 10:31, Liu Jian wrote:
+>>>> Make SMC-R can work with rxe devices. This allows us to easily test and
+>>>> learn the SMC-R protocol without relying on a physical RoCE NIC.
+>>>
+>>> Hi Liu,
+>>>
+>>> sorry for taking quite some time to answer.
+>>>
+>>> Looking into this i cannot accept this series at the given point of 
+>>> time.
+>>>
+>>> FWIU, RXE is mainly for testing and development and i agree that it 
+>>> would be
+>>> a nice thing to have for SMC-R.
+>>> The problem is that there is no clean layer for different RoCE devices
+>>> currently. Adding RXE to it works but isn't clean.
 >>
->> -Denny
+>> Hi jan,
 >>
+>>> Also we have no way to do a "test" build which would have such a device
+>>> supported and a "prod" build which would not support it.
+>>  > I don't quite understand what you mean here, Maybe I missed 
+>> something ?
+>> IIUC, we can control whether to use RXE by simpling insmod or rmmod 
+>> rdma_rxe.ko
 
-External recipient
+Hi,
+
+Yes that enables RXE in general, but not the use of RXE in SMC.
+
+>>
+> Yes, in the "prod" environment, we can completely turn off CONFIG_RDMA_RXE.
+
+Same as above + this is a compile time switch that is enabled for 
+distros like rh. Simply disabling it won't work here.
+
+> 
+>> I believe having RXE support is beneficial for testing, especially in
+>> simple physical networking setups where many corner cases are unlikely
+>> to occur. By using RXE, we can easily configure unusual scenarios with
+>> the existing iptables/netfilter infrastructure to simulate real-world
+>> situations, such as packet dropping or network retransmission. This
+>> approach can be advantageous for finding hidden bugs.
+>>
+> Yes, one of my main original intentions was to make testing smc-r 
+> easier. This change is relatively simple, mainly patch2 and patch4, and 
+> there are no logical changes.
+
+I agree with you. It would be beneficial for testing.
+This is not a never, this is a not right now.
+
+If you want to push this forward as something you need now, feel free to 
+encapsulate it and introduce a vendor specific experimental option as 
+defined in the v2.1 protocol version [1] for it. This would be 
+compromise for me at the current time.
+
+Thanks
+- Jan
+
+[1] 
+https://www.ibm.com/support/pages/system/files/inline-files/IBM%20Shared%20Memory%20Communications%20Version%202.1%20Emulated-ISM_0.pdf
+
+>> Best regards,
+>> Dust
+>>
+>>
+>>>
+>>> Please give us time to investigate how to solve this in a neat way 
+>>> without
+>>> building up to much technical debt.
+>>>
+>>> Thanks for your contribution and making us aware of this area of 
+>>> improvment.
+>>> - Jan
+>>>
+>>>>
+>>>> Liu Jian (4):
+>>>>     rdma/device: export ib_device_get_netdev()
+>>>>     net/smc: use ib_device_get_netdev() helper to get netdev info
+>>>>     net/smc: fix one NULL pointer dereference in 
+>>>> smc_ib_is_sg_need_sync()
+>>>>     RDMA/rxe: Set queue pair cur_qp_state when being queried
+>>>>
+>>>>    drivers/infiniband/core/core_priv.h   |  3 ---
+>>>>    drivers/infiniband/core/device.c      |  1 +
+>>>>    drivers/infiniband/sw/rxe/rxe_verbs.c |  2 ++
+>>>>    include/rdma/ib_verbs.h               |  2 ++
+>>>>    net/smc/smc_ib.c                      | 10 +++++-----
+>>>>    net/smc/smc_pnet.c                    |  6 +-----
+>>>>    6 files changed, 11 insertions(+), 13 deletions(-)
+>>>>
 
