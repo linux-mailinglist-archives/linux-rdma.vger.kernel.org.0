@@ -1,263 +1,232 @@
-Return-Path: <linux-rdma+bounces-4610-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4611-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 461889622FD
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2024 11:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD33896243E
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2024 12:02:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A79F7B233EB
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2024 09:08:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57646B20D45
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2024 10:02:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74BDB15D5C4;
-	Wed, 28 Aug 2024 09:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC8116078B;
+	Wed, 28 Aug 2024 10:02:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="TUllCMC3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PZrWqYLA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B230F158543
-	for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2024 09:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE4321547F2
+	for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2024 10:02:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724836092; cv=none; b=U/44chPqLZ7Z5wlcRVs9kELZTz3WIQrGLUcBGzgZGL81BnTayEJj2zosZzmDzWrz77Xl4RiDbCd91JU4/LBhb9pqQiUcMSYLUXJkyEfECWN5OuxFRScaj/ktecWaCmJ/qilrDTAo08FyHs1Y4mAT+BJHBc0/871EdiofaNvcIVA=
+	t=1724839331; cv=none; b=C+vQQluHNmAzB9OmER4Ot4abcgchP5Z55yjqgFEA6tWP2MVNFxcXGdSW4SsCoJ/t+5tUFAXIFy/UimgjwpLgGH9A0AxLDBPyAoeu5auM6fF1+cNQ1EE5v7aStiKrA9D0feF8U1yZG9OllltSmJf5RAvMU2FiSXU2GKbdZSMX4l8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724836092; c=relaxed/simple;
-	bh=CahLkRkI0YEB76+DqjQuxihiWf0/LB2VTY6KvJ3bhjM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=O+5Fz2at+3qT/r5o7qRuv/Scw5Wh+gQtj0BH3cNOCIhZfc5KnqkKyERd/MjvZHeBfop7DZOlFwH2881QsA/COg756yStsm43PSVKIepSDMEJFIlqivWhUda+JrYIwONedDR5wZtfM+YAx2VJjMHssluud99BOaSOYQ/tb65p3i0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=TUllCMC3; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2021537a8e6so58417125ad.2
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2024 02:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1724836090; x=1725440890; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WAyH0O3kecdWjMfkNU3QcPJXxk4o4Np6gebcGmF2oPM=;
-        b=TUllCMC39OSiVI6MjM8XqziXaPeHNJLHrJ7PTDvt0bpAsfGZZtJR3zYUadepr1zV7i
-         HyjdCyydTIRMH3NAIjw5UsqFvaHARHOF8GRp4ltYKxnqV8p4x+RKIrr3xJwE5nHe7uWC
-         6fw/fnasGnrBc9Z9zzlrEOmLzCWJ/wpfH40mE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724836090; x=1725440890;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WAyH0O3kecdWjMfkNU3QcPJXxk4o4Np6gebcGmF2oPM=;
-        b=Gh+9sjWOCGmFGEAfaEmXpbpfSBKttWFCMuQ2BiVqF6AggZq/syNfkuBskHXrC1sFGq
-         8J4h2372KxgNjkYZ20UkdhIOKCu70NwEXPRqxxGeN8dIRr24IdWkPR/9yPN1C6V81T92
-         4yyVLeH5yPQMf0TsjSF7lTHIgAFtwoeqDrqh6va69iYH6RQ74CIi4ZeJrtgBw2AOvlr9
-         AT0qHM+aiHJ+5j9L6qPxjS6CHoWYLCJbRL+9+rbF4RJOpkewnT7P1e6Opiag9TzWq00e
-         WTPgL3j0QBiZxXWlxnrif70N+Ga3Qh8u0w2bpJIQ1OxA36vmIIBlRVp9uGiir4GeDfZy
-         +5EA==
-X-Gm-Message-State: AOJu0YyWVFSQxN1edt5/Xg7UFsP3JF24jWWU2DnS4mCbRFMcGH0kuwlB
-	0RAOEAI6fyAe+X4QQybyP00coPLaLCczeiHnq7sSst5BVoqWOcL6qibvxS/8xA==
-X-Google-Smtp-Source: AGHT+IEIo4ccwB5oSbTGxY0canEa43uGlTRDYjSulPYdgDvjFmB8WOW9B9So9OcOUy7TChyCELoV1Q==
-X-Received: by 2002:a17:902:d4ce:b0:202:dcd:d44 with SMTP id d9443c01a7336-2039e51b696mr183405975ad.54.1724836089865;
-        Wed, 28 Aug 2024 02:08:09 -0700 (PDT)
-Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20385609dddsm94735955ad.196.2024.08.28.02.08.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Aug 2024 02:08:09 -0700 (PDT)
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-To: leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com,
-	chandramohan.akula@broadcom.com,
-	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 3/3] RDMA/bnxt_re: Share a page to expose per SRQ info with userspace
-Date: Wed, 28 Aug 2024 01:47:12 -0700
-Message-Id: <1724834832-10600-4-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1724834832-10600-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1724834832-10600-1-git-send-email-selvin.xavier@broadcom.com>
+	s=arc-20240116; t=1724839331; c=relaxed/simple;
+	bh=z5WzEyXaCLn929H1k9yqBHhvtikfr9S8+6gtSUSYZm4=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=nbroH24tIWumUY+XlhfRedgoXbzr+9S0Ec/0OfBa3ms8agf+2d3gD6DzkJeyX45v9aWqaJy7CJCoMEzYXDs/zqSdQ7jFbxevoodhyL+7aYQvNdBFm58g4aFojJXREwXUy1n7CjJZ/U4YSwPxIocrJYwv1EumxLGhde6ejcxPSW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PZrWqYLA; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724839329; x=1756375329;
+  h=date:from:to:cc:subject:message-id;
+  bh=z5WzEyXaCLn929H1k9yqBHhvtikfr9S8+6gtSUSYZm4=;
+  b=PZrWqYLAEQMvfnLzY5fQJzMYNxSlBol6D+Y74ffby5jlo/qS29KolWMv
+   VmQVjKI8qoEnS55APRyR7pD1HWrp/W0r3J1KKN0P7WMwuvNSp48zEmnH0
+   ivwcoxf+w04lymnFVQVDDKRWr67YDAvRE5XYmagi8M/c8C612/t52c8YM
+   2y9h8nwl7u0YYCgAtE58OUfrtQBTziOldzUOQacyXg6eWRwsGoQ3j05cl
+   VMaR1KYtipe3CkammDDFRB9xKdijJ7r5pkHPdsoutduRvbvNBzVhk4uq3
+   uDMivfZB5WvQfgWPdeFjPh86cy97k7jyZakZS+i9FxMdmwfJZU1eqQQP8
+   g==;
+X-CSE-ConnectionGUID: 3THT5W02T9KGmSt+Y5zWhg==
+X-CSE-MsgGUID: hUuW9QdOQ+qCDsJVvdtQAw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11177"; a="22882026"
+X-IronPort-AV: E=Sophos;i="6.10,182,1719903600"; 
+   d="scan'208";a="22882026"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2024 03:02:08 -0700
+X-CSE-ConnectionGUID: FQfzAa8mSfCwByb0sPjeVQ==
+X-CSE-MsgGUID: O1+oNj2qQFanQOzg76iqEA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,182,1719903600"; 
+   d="scan'208";a="100681860"
+Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 28 Aug 2024 03:02:07 -0700
+Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sjFV6-000Kmg-2y;
+	Wed, 28 Aug 2024 10:02:04 +0000
+Date: Wed, 28 Aug 2024 18:01:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 67eeaf1da5e73270f2eae4a1becde9dec1bfd543
+Message-ID: <202408281824.rqeyQpck-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-From: Chandramohan Akula <chandramohan.akula@broadcom.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 67eeaf1da5e73270f2eae4a1becde9dec1bfd543  Merge branch 'bnxt_re_variable_wqes' into rdma.git for-next
 
-Gen P7 adapters needs to share a toggle bits information received
-in kernel driver with the user space. User space needs this
-info to arm the SRQ.
+elapsed time: 1152m
 
-User space application can get this page using the
-UAPI routines. Library will mmap this page and get the
-toggle bits to be used in the next ARM Doorbell.
+configs tested: 139
+configs skipped: 4
 
-Uses a hash list to map the SRQ structure from the SRQ ID.
-SRQ structure is retrieved from the hash list while the
-library calls the UAPI routine to get the toggle page
-mapping. Currently the full page is mapped per SRQ. This
-can be optimized to enable multiple SRQs from the same
-application share the same page and different offsets
-in the page
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  2 ++
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 34 +++++++++++++++++++++++++++++++-
- drivers/infiniband/hw/bnxt_re/ib_verbs.h |  1 +
- drivers/infiniband/hw/bnxt_re/main.c     |  6 +++++-
- include/uapi/rdma/bnxt_re-abi.h          |  5 +++++
- 5 files changed, 46 insertions(+), 2 deletions(-)
+tested configs:
+alpha                            alldefconfig   gcc-13.2.0
+alpha                             allnoconfig   gcc-13.2.0
+alpha                            allyesconfig   gcc-13.3.0
+alpha                               defconfig   gcc-13.2.0
+arc                              allmodconfig   gcc-13.2.0
+arc                               allnoconfig   gcc-13.2.0
+arc                              allyesconfig   gcc-13.2.0
+arc                          axs101_defconfig   gcc-13.2.0
+arc                                 defconfig   gcc-13.2.0
+arm                              allmodconfig   gcc-13.2.0
+arm                               allnoconfig   gcc-13.2.0
+arm                              allyesconfig   gcc-13.2.0
+arm                                 defconfig   gcc-13.2.0
+arm                      footbridge_defconfig   gcc-13.2.0
+arm                            mmp2_defconfig   gcc-13.2.0
+arm                         s5pv210_defconfig   gcc-13.2.0
+arm64                            allmodconfig   gcc-13.2.0
+arm64                             allnoconfig   gcc-13.2.0
+arm64                               defconfig   gcc-13.2.0
+csky                              allnoconfig   gcc-13.2.0
+csky                                defconfig   gcc-13.2.0
+hexagon                          allmodconfig   clang-20
+hexagon                          allyesconfig   clang-20
+i386                             allmodconfig   clang-18
+i386                             allmodconfig   gcc-12
+i386                              allnoconfig   clang-18
+i386                              allnoconfig   gcc-12
+i386                             allyesconfig   clang-18
+i386                             allyesconfig   gcc-12
+i386         buildonly-randconfig-001-20240828   gcc-12
+i386         buildonly-randconfig-002-20240828   gcc-12
+i386         buildonly-randconfig-003-20240828   gcc-12
+i386         buildonly-randconfig-004-20240828   gcc-12
+i386         buildonly-randconfig-005-20240828   gcc-12
+i386         buildonly-randconfig-006-20240828   gcc-12
+i386                                defconfig   clang-18
+i386                  randconfig-001-20240828   gcc-12
+i386                  randconfig-002-20240828   gcc-12
+i386                  randconfig-003-20240828   gcc-12
+i386                  randconfig-004-20240828   gcc-12
+i386                  randconfig-005-20240828   gcc-12
+i386                  randconfig-006-20240828   gcc-12
+i386                  randconfig-011-20240828   gcc-12
+i386                  randconfig-012-20240828   gcc-12
+i386                  randconfig-013-20240828   gcc-12
+i386                  randconfig-014-20240828   gcc-12
+i386                  randconfig-015-20240828   gcc-12
+i386                  randconfig-016-20240828   gcc-12
+loongarch                        allmodconfig   gcc-14.1.0
+loongarch                         allnoconfig   gcc-13.2.0
+loongarch                           defconfig   gcc-13.2.0
+m68k                             allmodconfig   gcc-14.1.0
+m68k                              allnoconfig   gcc-13.2.0
+m68k                             allyesconfig   gcc-14.1.0
+m68k                                defconfig   gcc-13.2.0
+microblaze                       allmodconfig   gcc-14.1.0
+microblaze                        allnoconfig   gcc-13.2.0
+microblaze                       allyesconfig   gcc-14.1.0
+microblaze                          defconfig   gcc-13.2.0
+microblaze                      mmu_defconfig   gcc-13.2.0
+mips                              allnoconfig   gcc-13.2.0
+mips                     cu1000-neo_defconfig   gcc-13.2.0
+mips                      malta_kvm_defconfig   gcc-13.2.0
+mips                      maltasmvp_defconfig   gcc-13.2.0
+nios2                             allnoconfig   gcc-13.2.0
+nios2                               defconfig   gcc-13.2.0
+openrisc                          allnoconfig   gcc-14.1.0
+openrisc                         allyesconfig   gcc-14.1.0
+openrisc                            defconfig   gcc-14.1.0
+parisc                           allmodconfig   gcc-14.1.0
+parisc                            allnoconfig   gcc-14.1.0
+parisc                           allyesconfig   gcc-14.1.0
+parisc                              defconfig   gcc-14.1.0
+parisc64                            defconfig   gcc-13.2.0
+powerpc                          allmodconfig   gcc-14.1.0
+powerpc                           allnoconfig   gcc-14.1.0
+powerpc                          allyesconfig   gcc-14.1.0
+powerpc                    socrates_defconfig   gcc-13.2.0
+riscv                            allmodconfig   gcc-14.1.0
+riscv                             allnoconfig   gcc-14.1.0
+riscv                            allyesconfig   gcc-14.1.0
+riscv                               defconfig   gcc-14.1.0
+s390                             allmodconfig   clang-20
+s390                              allnoconfig   clang-20
+s390                              allnoconfig   gcc-14.1.0
+s390                             allyesconfig   clang-20
+s390                             allyesconfig   gcc-14.1.0
+s390                                defconfig   gcc-14.1.0
+sh                               allmodconfig   gcc-14.1.0
+sh                                allnoconfig   gcc-13.2.0
+sh                               allyesconfig   gcc-14.1.0
+sh                                  defconfig   gcc-14.1.0
+sh                         ecovec24_defconfig   gcc-13.2.0
+sh                            migor_defconfig   gcc-13.2.0
+sh                          rsk7203_defconfig   gcc-13.2.0
+sh                           se7712_defconfig   gcc-13.2.0
+sh                   secureedge5410_defconfig   gcc-13.2.0
+sh                             shx3_defconfig   gcc-13.2.0
+sparc                            allmodconfig   gcc-14.1.0
+sparc64                             defconfig   gcc-14.1.0
+um                               allmodconfig   clang-20
+um                               allmodconfig   gcc-13.3.0
+um                                allnoconfig   clang-17
+um                                allnoconfig   gcc-14.1.0
+um                               allyesconfig   gcc-12
+um                               allyesconfig   gcc-13.3.0
+um                                  defconfig   gcc-14.1.0
+um                             i386_defconfig   gcc-14.1.0
+um                           x86_64_defconfig   gcc-14.1.0
+x86_64                            allnoconfig   clang-18
+x86_64                           allyesconfig   clang-18
+x86_64       buildonly-randconfig-001-20240828   clang-18
+x86_64       buildonly-randconfig-002-20240828   clang-18
+x86_64       buildonly-randconfig-003-20240828   clang-18
+x86_64       buildonly-randconfig-004-20240828   clang-18
+x86_64       buildonly-randconfig-005-20240828   clang-18
+x86_64       buildonly-randconfig-006-20240828   clang-18
+x86_64                              defconfig   clang-18
+x86_64                              defconfig   gcc-11
+x86_64                randconfig-001-20240828   clang-18
+x86_64                randconfig-002-20240828   clang-18
+x86_64                randconfig-003-20240828   clang-18
+x86_64                randconfig-004-20240828   clang-18
+x86_64                randconfig-005-20240828   clang-18
+x86_64                randconfig-006-20240828   clang-18
+x86_64                randconfig-011-20240828   clang-18
+x86_64                randconfig-012-20240828   clang-18
+x86_64                randconfig-013-20240828   clang-18
+x86_64                randconfig-014-20240828   clang-18
+x86_64                randconfig-015-20240828   clang-18
+x86_64                randconfig-016-20240828   clang-18
+x86_64                randconfig-071-20240828   clang-18
+x86_64                randconfig-072-20240828   clang-18
+x86_64                randconfig-073-20240828   clang-18
+x86_64                randconfig-074-20240828   clang-18
+x86_64                randconfig-075-20240828   clang-18
+x86_64                randconfig-076-20240828   clang-18
+x86_64                          rhel-8.3-rust   clang-18
+xtensa                            allnoconfig   gcc-13.2.0
 
-diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index 0912d2f..2be9a62 100644
---- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-+++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -141,6 +141,7 @@ struct bnxt_re_pacing {
- #define BNXT_RE_GRC_FIFO_REG_BASE 0x2000
- 
- #define MAX_CQ_HASH_BITS		(16)
-+#define MAX_SRQ_HASH_BITS		(16)
- struct bnxt_re_dev {
- 	struct ib_device		ibdev;
- 	struct list_head		list;
-@@ -196,6 +197,7 @@ struct bnxt_re_dev {
- 	struct work_struct dbq_fifo_check_work;
- 	struct delayed_work dbq_pacing_work;
- 	DECLARE_HASHTABLE(cq_hash, MAX_CQ_HASH_BITS);
-+	DECLARE_HASHTABLE(srq_hash, MAX_SRQ_HASH_BITS);
- };
- 
- #define to_bnxt_re_dev(ptr, member)	\
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 1e76093..0219c8a 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -1685,6 +1685,10 @@ int bnxt_re_destroy_srq(struct ib_srq *ib_srq, struct ib_udata *udata)
- 
- 	if (qplib_srq->cq)
- 		nq = qplib_srq->cq->nq;
-+	if (rdev->chip_ctx->modes.toggle_bits & BNXT_QPLIB_SRQ_TOGGLE_BIT) {
-+		free_page((unsigned long)srq->uctx_srq_page);
-+		hash_del(&srq->hash_entry);
-+	}
- 	bnxt_qplib_destroy_srq(&rdev->qplib_res, qplib_srq);
- 	ib_umem_release(srq->umem);
- 	atomic_dec(&rdev->stats.res.srq_count);
-@@ -1789,9 +1793,18 @@ int bnxt_re_create_srq(struct ib_srq *ib_srq,
- 	}
- 
- 	if (udata) {
--		struct bnxt_re_srq_resp resp;
-+		struct bnxt_re_srq_resp resp = {};
- 
- 		resp.srqid = srq->qplib_srq.id;
-+		if (rdev->chip_ctx->modes.toggle_bits & BNXT_QPLIB_SRQ_TOGGLE_BIT) {
-+			hash_add(rdev->srq_hash, &srq->hash_entry, srq->qplib_srq.id);
-+			srq->uctx_srq_page = (void *)get_zeroed_page(GFP_KERNEL);
-+			if (!srq->uctx_srq_page) {
-+				rc = -ENOMEM;
-+				goto fail;
-+			}
-+			resp.comp_mask |= BNXT_RE_SRQ_TOGGLE_PAGE_SUPPORT;
-+		}
- 		rc = ib_copy_to_udata(udata, &resp, sizeof(resp));
- 		if (rc) {
- 			ibdev_err(&rdev->ibdev, "SRQ copy to udata failed!");
-@@ -4266,6 +4279,19 @@ static struct bnxt_re_cq *bnxt_re_search_for_cq(struct bnxt_re_dev *rdev, u32 cq
- 	return cq;
- }
- 
-+static struct bnxt_re_srq *bnxt_re_search_for_srq(struct bnxt_re_dev *rdev, u32 srq_id)
-+{
-+	struct bnxt_re_srq *srq = NULL, *tmp_srq;
-+
-+	hash_for_each_possible(rdev->srq_hash, tmp_srq, hash_entry, srq_id) {
-+		if (tmp_srq->qplib_srq.id == srq_id) {
-+			srq = tmp_srq;
-+			break;
-+		}
-+	}
-+	return srq;
-+}
-+
- /* Helper function to mmap the virtual memory from user app */
- int bnxt_re_mmap(struct ib_ucontext *ib_uctx, struct vm_area_struct *vma)
- {
-@@ -4494,6 +4520,7 @@ static int UVERBS_HANDLER(BNXT_RE_METHOD_GET_TOGGLE_MEM)(struct uverbs_attr_bund
- 	struct bnxt_re_ucontext *uctx;
- 	struct ib_ucontext *ib_uctx;
- 	struct bnxt_re_dev *rdev;
-+	struct bnxt_re_srq *srq;
- 	u32 length = PAGE_SIZE;
- 	struct bnxt_re_cq *cq;
- 	u64 mem_offset;
-@@ -4525,6 +4552,11 @@ static int UVERBS_HANDLER(BNXT_RE_METHOD_GET_TOGGLE_MEM)(struct uverbs_attr_bund
- 		addr = (u64)cq->uctx_cq_page;
- 		break;
- 	case BNXT_RE_SRQ_TOGGLE_MEM:
-+		srq = bnxt_re_search_for_srq(rdev, res_id);
-+		if (!srq)
-+			return -EINVAL;
-+
-+		addr = (u64)srq->uctx_srq_page;
- 		break;
- 
- 	default:
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-index 4e113b9..9c74dfe 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-@@ -78,6 +78,7 @@ struct bnxt_re_srq {
- 	struct ib_umem		*umem;
- 	spinlock_t		lock;		/* protect srq */
- 	void			*uctx_srq_page;
-+	struct hlist_node       hash_entry;
- };
- 
- struct bnxt_re_qp {
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 9714b9a..1211fe5 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -139,8 +139,10 @@ static void bnxt_re_set_drv_mode(struct bnxt_re_dev *rdev, u8 mode)
- 	if (bnxt_re_hwrm_qcaps(rdev))
- 		dev_err(rdev_to_dev(rdev),
- 			"Failed to query hwrm qcaps\n");
--	if (bnxt_qplib_is_chip_gen_p7(rdev->chip_ctx))
-+	if (bnxt_qplib_is_chip_gen_p7(rdev->chip_ctx)) {
- 		cctx->modes.toggle_bits |= BNXT_QPLIB_CQ_TOGGLE_BIT;
-+		cctx->modes.toggle_bits |= BNXT_QPLIB_SRQ_TOGGLE_BIT;
-+	}
- }
- 
- static void bnxt_re_destroy_chip_ctx(struct bnxt_re_dev *rdev)
-@@ -1771,6 +1773,8 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 wqe_mode)
- 		bnxt_re_vf_res_config(rdev);
- 	}
- 	hash_init(rdev->cq_hash);
-+	if (rdev->chip_ctx->modes.toggle_bits & BNXT_QPLIB_SRQ_TOGGLE_BIT)
-+		hash_init(rdev->srq_hash);
- 
- 	return 0;
- free_sctx:
-diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
-index e61104f..84917a9 100644
---- a/include/uapi/rdma/bnxt_re-abi.h
-+++ b/include/uapi/rdma/bnxt_re-abi.h
-@@ -134,8 +134,13 @@ struct bnxt_re_srq_req {
- 	__aligned_u64 srq_handle;
- };
- 
-+enum bnxt_re_srq_mask {
-+	BNXT_RE_SRQ_TOGGLE_PAGE_SUPPORT = 0x1,
-+};
-+
- struct bnxt_re_srq_resp {
- 	__u32 srqid;
-+	__aligned_u64 comp_mask;
- };
- 
- enum bnxt_re_shpg_offt {
 -- 
-2.5.5
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
