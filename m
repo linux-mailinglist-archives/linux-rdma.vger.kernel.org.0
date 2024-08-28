@@ -1,108 +1,161 @@
-Return-Path: <linux-rdma+bounces-4607-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4608-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E304C9622FA
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2024 11:08:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A76539622FB
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2024 11:08:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20A151C21315
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2024 09:08:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9D171C21F3D
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2024 09:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D7FD15C14F;
-	Wed, 28 Aug 2024 09:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E362C15A87B;
+	Wed, 28 Aug 2024 09:08:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="RFGLbYIu"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Y1MQ5KNC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 519BF15A849
-	for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2024 09:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3851B158543
+	for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2024 09:08:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724836083; cv=none; b=b8iCHdBRGUCrCP8WhNYZQMSJFtXxJnUfCHHGNvkIjtKNtLu6ABNznAXgdLrjmubErx50+nANQXkDKONXVHXQxwKKTFXPZ07T/FFk5fU7Wr68qfkOGstiWh2afZnLddCBLkcI7Yb/uJ5GW7u9C1YbzQRsrhgphHp9FKLtBnHTXak=
+	t=1724836086; cv=none; b=qD8GX6VvHi/bxfhq47k3NZHewCgQzqHSImN/k4hARCR3scTM+wwXBCBqUrDhH/1pUE8OmudTH13usMth7WbSuHzmrW1K12ZfjRGPGH9i8zs/8M1FpABlif70u2ynWYmh//6WsWGqKPTET/W5mx368HwjHvEMOEsRl6i/xYr5z8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724836083; c=relaxed/simple;
-	bh=G1Kth3+3/qudoi3XmHBPycMzYTwuU76hF84xuNdtda4=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=Xeq+gkKZfLymT/HHVGAZaMt9H9OOu42v14Uq9ZghxpnupRp6MHupsLukQSr/mRjmfo+IgiY97FoIujs+5LAaq2ioqlzEwfuD4MkQYKRYfNGLFh5ZlW6VaUtGY+g1Hq4XdZloMLJIksoBdZCZf1Eob4pXdUVJheEBO7AkKyMSznk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=RFGLbYIu; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1724836086; c=relaxed/simple;
+	bh=yQ81tQkbalyIglTbg8R6nyKp/acgwIJeHlAqVCfiubw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=mY+EIVo7hYpjz01HWWHxphY4j886232mhoU1uIRM39L4A8YLgr/28EfPV2hh29zaP1RIEkMeTesa3qJVvswgM5TWLaFlZ4ibnXXbllSiVaNJH/CcFh/Lvb28I+eVTvdNpMG2DK6+s+6HtrIkXKoHeINuL7ioZ7OI8xZ5cqxBSeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Y1MQ5KNC; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2025031eb60so56978615ad.3
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2024 02:08:02 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-201fbd0d7c2so53782205ad.0
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2024 02:08:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1724836081; x=1725440881; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QgVz2rpaZXCPaxkjc3NkTKbuQjeJhlXJXiS6zDIyIeQ=;
-        b=RFGLbYIuGLn6LqB6atKTI8UYMf+gMcqTDBpcd117HKaqrffFeAs8PA6H/v5iDNCbR0
-         hzTzzjmWTLRsnn5CZPomeSB2keSL+wjSvHKpB786BIAcWFsyINQVs2eH0I8Qn6ngenqO
-         pB2NuoP+cXPj5USalMjaxRcexHSPOFvqnfVRU=
+        d=broadcom.com; s=google; t=1724836084; x=1725440884; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=10OHoNG68SXU9rV3TemHjbm/ccgfAAiHoAdx+wtfzAI=;
+        b=Y1MQ5KNCk3OR4nvxHDdCxMrrzVZWqhsejtJ3axGPI9GXpe7FaTsA+a0iP+qrqM478B
+         kMQfikjNNNO9snw498lDJt5KXr4C03ZhL34QrNlw4rX3608J0pZuUj4pmNlJ4oX57qho
+         P0XKjj6TKklVmEE5KfVjW+Bjgai9KklDTPywI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724836081; x=1725440881;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QgVz2rpaZXCPaxkjc3NkTKbuQjeJhlXJXiS6zDIyIeQ=;
-        b=ZIiPzIcfPFJF0tRUwhTCiY2bHz5JG5cP8z0qQnNuofiHVtb+ykCyy8kl2jshxiWUig
-         FIDMDecrXmPHV8Q5T5QTmyNeH8SESWH77d650R7bTE9NTpoJIHs3hG3seCZ6wUOs8NJp
-         G6uSTAGqBgm3TQppmZjKcjeNvaoT7x4TSLVv0JRcqw48ZpkWu/LKhDOLzMMBExqJdRUg
-         jyKGygNba6hymg8x//2EJWMNW0KvDFR2jmhX6tmscYE+A3G/2onGaz8031bPw5qOHMeB
-         X1zLT4XRr8l65KpY38Jh1BYGOtiFetW8AyXlf0k5mSlkLjzWkzysK8fRn/NHas7Kx4f6
-         I9kg==
-X-Gm-Message-State: AOJu0YxNhNLsFrMS4T1cxqWlXLXc+Ee8agH4PKOIhHyl1ZBlYSCTZMt2
-	K9QrJZlOr7E4WN4GqFzVIHA15sBWhyDyEiOREHvsAQE/6FSPjQaU71Mz8xjtMFSq29KRsAxceds
+        d=1e100.net; s=20230601; t=1724836084; x=1725440884;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=10OHoNG68SXU9rV3TemHjbm/ccgfAAiHoAdx+wtfzAI=;
+        b=wh/5Jfsls6CrGl7sK6UCqZxNq7lx/X3tePzMQ2VmbVrlZdK7C6fL7Sm96OK3GASvbn
+         4Cw5yCs1jJRaOa3KtxchmkoIwYjoiUpbLL9UBqkJ0Gz1FqbA4ievnELpFRNcm6dA3yDk
+         6gGFHkcEhT8Yqtub6VqLfeGlumcMK/oAvM6SMwgtBy3jjadXY/pKXjXf91OXLCMRD6Wz
+         22oS2mI+G2wHc1maeAMhDfvupvW2qyaA0SasvhxL6o4/s3O2mLLvX7qFDS9+6KsaLGPM
+         wxUppnKEMAJl0kiTSPqev8/plge6yWrcyQbtvpz52lWWH2eaSRp2GIJMauzYmeXiC1M7
+         KeVg==
+X-Gm-Message-State: AOJu0Yy48YnCcBgT9TfZ+XHPC1Go2nDEzJDLqtFZP2vLL6xluqjOQvZk
+	fJ9UG6DIhk/tWCOSiw5FX9aFWVDvE3czlzl4RleFYhEFGVQ6kTHuHyEQ7AnhllykojUIDpKUkkk
 	=
-X-Google-Smtp-Source: AGHT+IEH2IANrr4c4TdeDruUety/v4paOHAtleuFjhOKpOC0+90fsG++MBvoQ8lbjBwRxAkLppo9YQ==
-X-Received: by 2002:a17:903:40c6:b0:201:f30b:f616 with SMTP id d9443c01a7336-2039e5175c5mr171014535ad.61.1724836081520;
-        Wed, 28 Aug 2024 02:08:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG4wDsUevh5EKGyjLiNLj91aDp5VHLVEAMrSXTtuAwb5tlFd9jFJSTXWOrPyzhIKc/8F9pgmg==
+X-Received: by 2002:a17:902:f541:b0:1fc:6901:9c35 with SMTP id d9443c01a7336-204f9b744d2mr17350695ad.20.1724836084443;
+        Wed, 28 Aug 2024 02:08:04 -0700 (PDT)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20385609dddsm94735955ad.196.2024.08.28.02.07.59
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20385609dddsm94735955ad.196.2024.08.28.02.08.01
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Aug 2024 02:08:00 -0700 (PDT)
+        Wed, 28 Aug 2024 02:08:03 -0700 (PDT)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	chandramohan.akula@broadcom.com,
+	Hongguang Gao <hongguang.gao@broadcom.com>,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 0/3] RDMA/bnxt_re: Toggle bit support for SRQ events
-Date: Wed, 28 Aug 2024 01:47:09 -0700
-Message-Id: <1724834832-10600-1-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 1/3] RDMA/bnxt_re: Get the toggle bits from SRQ events
+Date: Wed, 28 Aug 2024 01:47:10 -0700
+Message-Id: <1724834832-10600-2-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1724834832-10600-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1724834832-10600-1-git-send-email-selvin.xavier@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-SRQ events from HW gives a toggle bit value that needs
-to be used while ringing the SRQ arm doorbells. Adds support
-for this and share the toggle value to user space applications.
+From: Hongguang Gao <hongguang.gao@broadcom.com>
 
-Please review and apply.
+SRQ arming requires the toggle bits received from hardware.
+Get the toggle bits from SRQ notification for the
+gen p7 adapters. This value will be zero for the older adapters.
 
-Thanks,
-Selvin Xavier
-
-Chandramohan Akula (2):
-  RDMA/bnxt_re: Refactor the BNXT_RE_METHOD_GET_TOGGLE_MEM method
-  RDMA/bnxt_re: Share a page to expose per SRQ info with userspace
-
-Hongguang Gao (1):
-  RDMA/bnxt_re: Get the toggle bits from SRQ events
-
- drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  2 ++
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 52 ++++++++++++++++++++++++--------
- drivers/infiniband/hw/bnxt_re/ib_verbs.h |  2 ++
- drivers/infiniband/hw/bnxt_re/main.c     |  6 +++-
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 11 +++++++
+Signed-off-by: Hongguang Gao <hongguang.gao@broadcom.com>
+Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h |  1 +
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c | 11 +++++++++++
  drivers/infiniband/hw/bnxt_re/qplib_fp.h |  1 +
- include/uapi/rdma/bnxt_re-abi.h          |  5 +++
- 7 files changed, 66 insertions(+), 13 deletions(-)
+ 3 files changed, 13 insertions(+)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+index 3ddeda3..4e113b9 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+@@ -77,6 +77,7 @@ struct bnxt_re_srq {
+ 	struct bnxt_qplib_srq	qplib_srq;
+ 	struct ib_umem		*umem;
+ 	spinlock_t		lock;		/* protect srq */
++	void			*uctx_srq_page;
+ };
+ 
+ struct bnxt_re_qp {
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+index 49e4a4a..19bb453 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+@@ -54,6 +54,10 @@
+ #include "qplib_rcfw.h"
+ #include "qplib_sp.h"
+ #include "qplib_fp.h"
++#include <rdma/ib_addr.h>
++#include "bnxt_ulp.h"
++#include "bnxt_re.h"
++#include "ib_verbs.h"
+ 
+ static void __clean_cq(struct bnxt_qplib_cq *cq, u64 qp);
+ 
+@@ -347,6 +351,7 @@ static void bnxt_qplib_service_nq(struct tasklet_struct *t)
+ 		case NQ_BASE_TYPE_SRQ_EVENT:
+ 		{
+ 			struct bnxt_qplib_srq *srq;
++			struct bnxt_re_srq *srq_p;
+ 			struct nq_srq_event *nqsrqe =
+ 						(struct nq_srq_event *)nqe;
+ 
+@@ -354,6 +359,12 @@ static void bnxt_qplib_service_nq(struct tasklet_struct *t)
+ 			q_handle |= (u64)le32_to_cpu(nqsrqe->srq_handle_high)
+ 				     << 32;
+ 			srq = (struct bnxt_qplib_srq *)q_handle;
++			srq->toggle = (le16_to_cpu(nqe->info10_type) & NQ_CN_TOGGLE_MASK)
++				      >> NQ_CN_TOGGLE_SFT;
++			srq->dbinfo.toggle = srq->toggle;
++			srq_p = container_of(srq, struct bnxt_re_srq, qplib_srq);
++			if (srq_p->uctx_srq_page)
++				*((u32 *)srq_p->uctx_srq_page) = srq->toggle;
+ 			bnxt_qplib_armen_db(&srq->dbinfo,
+ 					    DBC_DBC_TYPE_SRQ_ARMENA);
+ 			if (nq->srqn_handler(nq,
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+index 56538b9..e714caa 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+@@ -105,6 +105,7 @@ struct bnxt_qplib_srq {
+ 	struct bnxt_qplib_sg_info	sg_info;
+ 	u16				eventq_hw_ring_id;
+ 	spinlock_t			lock; /* protect SRQE link list */
++	u8				toggle;
+ };
+ 
+ struct bnxt_qplib_sge {
 -- 
 2.5.5
 
