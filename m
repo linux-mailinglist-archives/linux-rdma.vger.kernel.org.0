@@ -1,124 +1,171 @@
-Return-Path: <linux-rdma+bounces-4617-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4618-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16AE3962A02
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2024 16:17:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6135E962A9E
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2024 16:44:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 402211C22A32
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2024 14:17:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ECC928193B
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Aug 2024 14:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BDE1BC20;
-	Wed, 28 Aug 2024 14:17:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDAA719AD4F;
+	Wed, 28 Aug 2024 14:44:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="hNHRkZXZ"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hAa4Y3K5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1385E1459FD
-	for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2024 14:17:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA92118786F
+	for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2024 14:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724854632; cv=none; b=CYdaCsPCPz49PIBQmNxefBS+puU/BBNrmtuR6g9yZtPYUC1xZtqjZ3V4TmY/OXfCQbnaQhi788jq3gnnFN21jCqs1rwG3na4NCUwo8YCJtWnibUU7y+tJfqiyF6ZC/Xr0mdvYLkK1yZWz6+RwTmbDkehH6VkuJ8di6ExzjgToNw=
+	t=1724856277; cv=none; b=j1K/5/nY/Yj1PRyzF/Mge0yiz1KBteIXkHNbm1EB6nilddXeiEzTQiMAHXT+K/E37AlpymxAQfVddjVMzsAYOF8qfzbgVGTojmoEaCZy7siLXj281xvy4SdXajOmS4SwXM5VpHCzpztejsNemRyrv1FgjupC+ALq1TANQCbVsrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724854632; c=relaxed/simple;
-	bh=ABVJBE8zlLuPd7dqkQYpgWIXcxwmIOidv8gNILHmEdU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JB8kU0dgYHKg4b+5v1UuwsxZKw0K/gYwVH3pv1FcAvLZfQZpJfKCjF6uqH6ip0tR5/ipfPaUQ6nIwNezT2vT31jjQUazD0+tT7mCcZaB9YStFU5kP1iyIzq5bF2YbkWCDzigrwXms5jXLCcb7YjJYQubesq8sCtaTbOuhWTz9Pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=hNHRkZXZ; arc=none smtp.client-ip=209.85.160.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4567587224eso2514011cf.0
-        for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2024 07:17:10 -0700 (PDT)
+	s=arc-20240116; t=1724856277; c=relaxed/simple;
+	bh=ZgCnA1wzmUTqIfZB4aA6IVpXt84nvAyujTifgpPipX4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RKEsAb0IGagKV2ARBxCquL4m25WPNXMymoaG/MFPOTGX/nrG94E3MxGLOlLir7bfaLr3ljOhH5qjmh6NLSmvF2xFOG6x4uPrYG0xSyiiHU5jHPfnDJATgGvvCqYa2BB+k4NTRmuMh5amaVxZpo5PwtzmU2QYXROvJokd8ME/cvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hAa4Y3K5; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5bec87ececeso7488993a12.0
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Aug 2024 07:44:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1724854630; x=1725459430; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LBgc6xQ6rnnUOANkYW1zCbTnPsE9MHPciqZzRiqEJfk=;
-        b=hNHRkZXZtZWH6BxgiWxDPMy3FMSEqLwhxPOHvi9VjsRW4EMKm8rizqW6RkTHCb3ym4
-         at17FKM5GWKhZGqVY4yeJKz0NUADp7B6e4nL2hj4QoSVqlodKsFnQr99UftM7ZuYxMJp
-         NeyQ9+gxqHYGE+QsSP0mQ/Q8A3I39vNGV1hM+GtBZ6oZ6LA8dCfnUbtKqvm5gM8MOL0B
-         h5HddpVn/qcrrAPdD9WHnTFqHZTWTch927Aow8KFPm7zP10rSlb9cvmPdWrSNajuQzpy
-         Z1/EIKqA2MKx1SEWhdwSAKUvnjxNeJuwN4CEOHe1pGYGXpdM+T83s1Wk4Cv5VaKPQUgb
-         Ui4A==
+        d=linaro.org; s=google; t=1724856274; x=1725461074; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lMLlBkF+X0UAPxanGoW9c0nX9urIpDu3ChZAc+aocJQ=;
+        b=hAa4Y3K5OlrZ3r8zpig5lk81HpCxzQefP2siva8lxI6JI8SCkoxqFCIYqgYS2y0Ni7
+         JlB+fwywqkBXd+HaFUxo5X8skmy4MyfZvNwt1o9TR1iVG8G9+mYnkJnSnNYa0Dh3cy0X
+         JN5nkO9VhY1Ihyqv2tYHUygkvDFOJdvTelysBH/wBF3F2ssv6MlVOwuKukWgx/sppKd5
+         CxhWjJdZMzRv0rdcWlSJyF+RlTJhhg+HiPoi2GrwacpluKgaS2G3ARTxxxxCGUkCBDAj
+         tgBlQxM7b1uPI6Rp85VpU1/zx++rXEiFw0/lc5OdItMu606wceNpAbtbfmnaAbQ2Qum2
+         D2RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724854630; x=1725459430;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LBgc6xQ6rnnUOANkYW1zCbTnPsE9MHPciqZzRiqEJfk=;
-        b=I1XQeBJEepX9XppNi04CuoAskwAmQdWEvT5bqPIvgXsaetA6FIY84/TqkOp+q2OtiT
-         VQ8GNoZEoaFHWwDF7Uo07Gs9IYDtPLBHQKD0mW8D0A4jrgFcfDsm3LniceT5eoZGUb5y
-         DlxsjgIDQ2ynCeAhndY5DshXjtaLvZZHZXF6yp7mNV/NTUE8FBST8VP2widLN0SMhBuA
-         uv+evL+2iA/ZQ/4SyE9ejHNb9tHDqGBYvKqfQMUNqHEfDDwHjVAGHIfA6aOdsyS8A9u2
-         GSgROkt3jT2mxkxf5JYUMi2L0hZcb2eJH5ugSWSZ+eCqffzi1Smtzu2LJ8diMBvZ+P0C
-         T8hw==
-X-Forwarded-Encrypted: i=1; AJvYcCXueQ3JKqpk4+N/5HnWHff174/LjeQ7PxEYazUA9CW6lkaXd+sqzazYPPNRO661zeXMJaFO/lwnCjr4@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywuc+bsv1RSeXbogEEFViDD0PZN+9IeZuu60YZk2GiP6yBVoLbq
-	rWEoY2mKU038fx3UKIuJbkLWig3C7WBtvQzDWNTwUZuGILQw91/qsS7V+TNcBgq/LhMivGJH5pF
-	d
-X-Google-Smtp-Source: AGHT+IG9SK3M6EsZlpXj41JikrUEAGWuX8yghlRBi9RAPs6vJoNFmmStqQDbVDXsfnQ4pwhwORX8tw==
-X-Received: by 2002:a05:622a:5a94:b0:447:dfe3:9e76 with SMTP id d75a77b69052e-455097e1ff8mr173478921cf.62.1724854629675;
-        Wed, 28 Aug 2024 07:17:09 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-454fe0f54dasm62179621cf.52.2024.08.28.07.17.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Aug 2024 07:17:08 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1sjJTw-005592-5D;
-	Wed, 28 Aug 2024 11:17:08 -0300
-Date: Wed, 28 Aug 2024 11:17:08 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Doug Miller <doug.miller@cornelisnetworks.com>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	linux-remoteproc@vger.kernel.org,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	OFED mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: Using RPMSG to communicate between host and guest drivers
-Message-ID: <20240828141708.GQ3468552@ziepe.ca>
-References: <133c1301-dd19-4cce-82dc-3e8ee145c594@cornelisnetworks.com>
- <842aef7f-d6e1-490a-97b9-163287ddfe2d@cornelisnetworks.com>
- <20240826234530.GK3468552@ziepe.ca>
- <0f6e27d3-8942-492e-86e8-730c00a5aa37@cornelisnetworks.com>
+        d=1e100.net; s=20230601; t=1724856274; x=1725461074;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lMLlBkF+X0UAPxanGoW9c0nX9urIpDu3ChZAc+aocJQ=;
+        b=bkFvlXTxquWEOq7MIU78wye5+yyxI6yre5Gr1F/fr+w1nadyT1xM066Cbo+QU2e1vV
+         R285z2sfUyEuuQ2tGx21iuEcinDNI3tmwg9KkoOPvXV06ERZNANHTzm2zcyOfHs1c7pG
+         bpkzRpGk0sHQmSSlWwFmIVOz8+srxW7Qv99UmOzBimLmPWJ40z+7lXAOxo/HZXhnFOK6
+         i+9Dg5PRChIIwWAQj8B3qZTdT7DSyy1iXCyOHdlu3HzTGw228i2iEf19n5tN/ZLjCokS
+         nPwrZfDK+oJ+7YqVXTfdwE9JMVvCoSFNyYhGEbzss3BFt9iZX026Ix9FDGJcHusJlpfb
+         j4qA==
+X-Forwarded-Encrypted: i=1; AJvYcCX5b/OLdDOkTqetzw6nu7ZtRtiayqxIiBWEbxwwvOPlKmLuXbbXsOWcOlkp3zgT/PLvXgSHFPbDj+JC@vger.kernel.org
+X-Gm-Message-State: AOJu0YwyJg6xhY3j7Tw8LsNc8eEwRquEICF1oVp2ncvG1p+4DdJSNE7q
+	KXLZE0y+PWTnEo/qvVWXf1fVg6v//6gwbnK2SVQWSo+7Iq8w2TLri0uOa7xunVEAQkOQHRal++N
+	Pyr/b7qgajfSt4KBeHDaWtl+3DJtnhoymLXP5Im4WpDs8W69ofYE=
+X-Google-Smtp-Source: AGHT+IFyk+kTCokuzymxTU65XxPFz/vqgoNyY1mR7t2DlQeQBZFZM1TpBaM2aM+FQZ0SjV1YJL3xTSbiwMEn0Dbf5y4=
+X-Received: by 2002:a05:6402:50c9:b0:5be:f2fa:5ee9 with SMTP id
+ 4fb4d7f45d1cf-5c213dc01aemr1718052a12.15.1724856273744; Wed, 28 Aug 2024
+ 07:44:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f6e27d3-8942-492e-86e8-730c00a5aa37@cornelisnetworks.com>
+References: <133c1301-dd19-4cce-82dc-3e8ee145c594@cornelisnetworks.com>
+ <842aef7f-d6e1-490a-97b9-163287ddfe2d@cornelisnetworks.com>
+ <CANLsYkx2OThcBjs1Qn_Bgd0LE1+EN7c0Dh7NE=1dEBB4xqS9cQ@mail.gmail.com> <59cd0c1c-b5a0-471a-810d-65d42b021760@cornelisnetworks.com>
+In-Reply-To: <59cd0c1c-b5a0-471a-810d-65d42b021760@cornelisnetworks.com>
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+Date: Wed, 28 Aug 2024 08:44:22 -0600
+Message-ID: <CANLsYkwPoLsvLgJu+MqfZsVna_nxyx6BnkSFBrmpbxMC0sv_fw@mail.gmail.com>
+Subject: Re: Using RPMSG to communicate between host and guest drivers
+To: Doug Miller <doug.miller@cornelisnetworks.com>
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
+	linux-remoteproc@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>, 
+	OFED mailing list <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Aug 28, 2024 at 06:49:27AM -0500, Doug Miller wrote:
-> > Typically in cases like this you'd paravirtualize some of the VF
-> > before sticking it in the VM so that there is a tidy channel between
-> > the VF driver and the VMM to do whatever this coordination is. There
-> > are many examples, but it is hard to see if you don't know the device
-> > architectures in detail.
+On Mon, 26 Aug 2024 at 11:22, Doug Miller
+<doug.miller@cornelisnetworks.com> wrote:
 >
-> Can you give more detail on how this paravirtualization is accomplished?
-> Or point to an example? 
+> On 8/26/2024 11:50 AM, Mathieu Poirier wrote:
+> > Apologies for the late reply - this got lost in the vacation email backlog.
+> >
+> > On Mon, 26 Aug 2024 at 10:27, Dennis Dalessandro
+> > <dennis.dalessandro@cornelisnetworks.com> wrote:
+> >> On 7/31/24 4:02 PM, Doug Miller wrote:
+> >>> I am working on SR-IOV support for a new adapter which has shared
+> >>> resources between the PF and VFs and requires an out-of-band (outside
+> > It would have been a good idea to let people know what "PF" and "VF"
+> > means to avoid confusion.
+> "PF" refers to the Physical Function of the PCI adapter - that which
+> exists always, regardless of whether SR-IOV is active. The "VF" refers
+> to the virtual function(s) that are created when SR-IOV is enabled and
+> configured. Typically, the VFs and the PF are assigned to different OS
+> instances running in different VMs. So, the OS that owns the PF needs to
+> be able to handle resource requests from the OSes that own the VFs (and
+> also send notifications).
 
-Not sure I have easy examples, several devices I've seen proxy things
-through their FW/HW. I think some of the Intel NICs were working like
-this.
+Thank you for the clarification.
 
-Some have full vfio-mdevs or qemu modules to intercept registers and
-build it.
+> >
+> >>> the adapter) communication mechanism to manage those resources. I have
+> >>> been looking at RPMSG as a mechanism to communicate between the driver
+> >>> on a guest (VM) and the driver on the host OS (which "owns" the
+> >>> resources). It appears to me that virtio is intended for communication
+> >>> between guests and host, and RPMSG over virtio is what I want to use.
+> >>>
+> > Virtio is definitely the standard way to convey information between a
+> > host and a guest.  You can specify as many virtqueues as needed
+> > (in-band and out-of-band) and it is widely supported.  What
+> > information is conveyed by the virtqueues and how it gets conveyed is
+> > entirely up to the use case.  Have a look at the specification of
+> > existing virtio drivers to get a better idea [1].  If the driver you
+> > are working with hasn't been standardised, I highly encourage you to
+> > submit a draft for it.  If it has then add to the current
+> > specification.
+> >
+> > All that said, you could use RPMSG as the protocol that runs on top of
+> > the virtqueues - that should be fairly easy to do.
+> I had initially started looking at using virtio directly, but it looked
+> like I was going to have to get a new device ID defined upstream and it
+> would be a significant effort compared to using an existing facility. I
+> then saw device ID VIRTIO_ID_RPMSG, which appears to be exactly what
+> we'd have to create if we were defining a new virtio device for what we
+> need. However, the problem has been understanding how to write code to
+> provide the rpmsg "device" side. There does not appear to be any
+> documentation and there is no example code to follow. It seems that the
+> device side is typically contained in a GPU or accelerator, which was
+> not written for a Linux kernel. So I have many questions on how (and
+> when) to use the interfaces (rpmsg_register_device,
+> rpmsg_create_channel, rpmsg_create_ept, rpmsg_find_device, ...).
 
-> It seems to me that rpmsg would be a cleaner solution, at least
-> until I can see how paravirtualization is implemented for
-> comparison.
+VIRTIO_ID_RPMSG is a special case - it was defined to establish a
+communication channel between a main processor (typically a cortex-A)
+and a remote processor, something like a M4 or an R5F.  As such it is
+typically used in conjunction with the "remoteproc" subsystem.  The
+device side you are looking for is part of the openAMP library [1].  I
+am not aware of an implementation of a virtio device that would use
+VIRTIO_ID_RPMSG in a MMIO area or a PCI config space to instantiate a
+generic message passing interface.
 
-I think you will find it very hard to connect such a thing up
-throughout all the peices of software. Having two related devices
-across everything is not easy.
+[1]. https://github.com/OpenAMP/open-amp
 
-Jason
+> >
+> > Thanks,
+> > Mathieu
+> >
+> > [1]. https://docs.oasis-open.org/virtio/virtio/v1.2/csd01/virtio-v1.2-csd01.html
+> >
+> >>> Can anyone confirm that RPMSG is capable of doing what we need? If so,
+> >>> I'll need some help figuring out how to use that from kernel device
+> >>> drivers (I've not been able to find any examples of doing the
+> >>> service/device side). If not, is there some other facility that is
+> >>> better suited?
+> >> Hi Bjorn and Mathieu, any advice here for Doug? Adding linux-rdma folks as that
+> >> is where this will eventually target.
+> >>
+> >> -Denny
+> >>
+>
+> External recipient
 
