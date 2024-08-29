@@ -1,55 +1,56 @@
-Return-Path: <linux-rdma+bounces-4628-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4629-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C7789640F9
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 12:10:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65A37964150
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 12:20:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 529791F238CB
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 10:10:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 994F11C20E6E
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 10:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7735418E025;
-	Thu, 29 Aug 2024 10:10:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1081940B0;
+	Thu, 29 Aug 2024 10:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="scTuKq1U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y3j2YPlk"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3813C18DF67
-	for <linux-rdma@vger.kernel.org>; Thu, 29 Aug 2024 10:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37035194081;
+	Thu, 29 Aug 2024 10:17:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724926201; cv=none; b=bu+O+TTpjgC7jgDcK6nDH5fAdaWmSQtBriLs9HfPfuSGBLqT3XmUaVIP/BPIjUyITDnZXFkncv9wqa7MNJ8ehaow3mfqCZHMZGb8K/L6aVft/mSZu6xyHznpdfDFUbNO5rBFHOeHX7/wetptYVcNe2DBhLDyIFOZyQJ2SWBtV+E=
+	t=1724926625; cv=none; b=J0JpMKEQedoZfyvKhbF1LRtf/wq8J6ASXptJkoekyd+64bYUrzVEaSsYE0Cs5W7r6OCFtCRwrG/AmSE6fKXUpDaNaWAVIOfcHc4iNRIE1cF5IrD16xusCvmfPKUjmCKHWPiKxLB5doH5E2hO/MjXAFz5AECKrIt30VM3HGu36zI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724926201; c=relaxed/simple;
-	bh=399al0fbfYLXK9AjgfVXSKaQidRm2FRA4a4jxhwvSu8=;
+	s=arc-20240116; t=1724926625; c=relaxed/simple;
+	bh=OPy596UFuUNgIYpD1Xx8R1sbYfsep1TcTlYPrJFlXNA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S82GvGRnPK0U1emIP6F3/Kv/dzDhlu/g1IE4C8vpWZEO+uRJr6rPwy5FOK8g0UMmOY4oT0P/Wb7hwQE4GR7UvlYWLQrqc5O02F+6G8jXLtCBIWeP+fKGMdUOmwaOiJRN8jMKzEw2PSErXDe85dy/3PshHD1g+ONSF92cLF3qoi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=scTuKq1U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 394D2C4CEC1;
-	Thu, 29 Aug 2024 10:09:59 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=WiVaDM5fFjj41iOyd1HIilvO2r/dABpZkpL88XTRnARLDyCo8Dg3zct1MI8jlBSJtZDA38PPhz1yaXy+nuKZhau6HrZO7gAHNBfPn/XxFGH98yjlNw0B3Jxx5B32sHEnBiaZGTt31jrYcYCQGPbQGi3ek49zZQyLSQZNtA9YfqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y3j2YPlk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25ACAC4CEC3;
+	Thu, 29 Aug 2024 10:17:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724926200;
-	bh=399al0fbfYLXK9AjgfVXSKaQidRm2FRA4a4jxhwvSu8=;
+	s=k20201202; t=1724926624;
+	bh=OPy596UFuUNgIYpD1Xx8R1sbYfsep1TcTlYPrJFlXNA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=scTuKq1UbOPZMJBzPI00jdD2XuyONMOcpYxTzjqsCEaIN7WZZ/6r4DDqZoc1TNbNP
-	 RsdRuVjwFWX3U/xiFflb+msEKqZw1qIAaCXNM0NJr06b5HRPvdCpN2/S0Nrdj1gLnG
-	 tPe4zZElS380b9Fbj3LL1mGwpHZ48rsymbWxfKYzkmleXR+8LHxpnABDLlz86NG6Vu
-	 VPyk+mdicXxAPInEfeUtgE+4sLGkwRno90pdfyszj8jU0UKulHLxRXJ+Y0CMyXfXSS
-	 UqCOfdD25xDSEY+VpoCxLDs6gr0SkaTHi2B+1RRcrLea0DuTpuxZ3qZfVzkj7f8nss
-	 FoHDbrPS8EEHQ==
-Date: Thu, 29 Aug 2024 13:09:55 +0300
+	b=Y3j2YPlkHTFy3hAMbNpM8FV26zWcYsCgzJtam1W9gNjEkikHp8VOTYk4DKEZ7iYez
+	 nkWdGKFi2Kj0XqQruhimKIs5JV6U6wOmHlk1yfr3KcCPSSi0C4krcNQ4iMqHQsNwKx
+	 mKzwkDmcoxmw8jdbvNdoPVjYt9kLQCnEuYBuEitw+SVGj5x047frVxZmwcH6eeO6Yd
+	 9l+Ox4V4YtKrn8kZ7YIXqQoZmWX4yBzrUihqa/LEB1L44qwBZckZWx8q2ag8+j7dUq
+	 GrjhMjMkFUt3Bz+riXaoxpgkNJiW5LK0K8oBzoj/Cn4kcSqKj888KKgdHQMgUt3mpm
+	 ymqQbzIYncmBw==
+Date: Thu, 29 Aug 2024 13:17:01 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Cheng Xu <chengyou@linux.alibaba.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com
-Subject: Re: [PATCH for-next v2 1/4] RDMA/erdma: Make the device probe
- process more robust
-Message-ID: <20240829100955.GB26654@unreal>
-References: <20240828060944.77829-1-chengyou@linux.alibaba.com>
- <20240828060944.77829-2-chengyou@linux.alibaba.com>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Shen Lichuan <shenlichuan@vivo.com>, jgg@ziepe.ca,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	opensource.kernel@vivo.com
+Subject: Re: [PATCH v1] RDMA/sw/rdmavt/mr: Convert to use ERR_CAST()
+Message-ID: <20240829101701.GC26654@unreal>
+References: <20240828082720.33231-1-shenlichuan@vivo.com>
+ <e8cb7488-aea2-4829-9942-dd55b127c25e@cornelisnetworks.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -58,133 +59,56 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240828060944.77829-2-chengyou@linux.alibaba.com>
+In-Reply-To: <e8cb7488-aea2-4829-9942-dd55b127c25e@cornelisnetworks.com>
 
-On Wed, Aug 28, 2024 at 02:09:41PM +0800, Cheng Xu wrote:
-> Driver may probe again while hardware is destroying the internal
-> resources allocated for previous probing
+On Wed, Aug 28, 2024 at 12:06:17PM -0400, Dennis Dalessandro wrote:
+> On 8/28/24 4:27 AM, Shen Lichuan wrote:
+> > As opposed to open-code, using the ERR_CAST macro clearly indicates that 
+> > this is a pointer to an error value and a type conversion was performed.
+> > 
+> > Signed-off-by: Shen Lichuan <shenlichuan@vivo.com>
+> > ---
+> >  drivers/infiniband/sw/rdmavt/mr.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/infiniband/sw/rdmavt/mr.c b/drivers/infiniband/sw/rdmavt/mr.c
+> > index 7a9afd5231d5..5ed5cfc2b280 100644
+> > --- a/drivers/infiniband/sw/rdmavt/mr.c
+> > +++ b/drivers/infiniband/sw/rdmavt/mr.c
+> > @@ -348,13 +348,13 @@ struct ib_mr *rvt_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+> >  
+> >  	umem = ib_umem_get(pd->device, start, length, mr_access_flags);
+> >  	if (IS_ERR(umem))
+> > -		return (void *)umem;
+> > +		return ERR_CAST(umem);
+> >  
+> >  	n = ib_umem_num_pages(umem);
+> >  
+> >  	mr = __rvt_alloc_mr(n, pd);
+> >  	if (IS_ERR(mr)) {
+> > -		ret = (struct ib_mr *)mr;
+> > +		ret = ERR_CAST(mr);
+> >  		goto bail_umem;
+> >  	}
+> >  
+> > @@ -542,7 +542,7 @@ struct ib_mr *rvt_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+> >  
+> >  	mr = __rvt_alloc_mr(max_num_sg, pd);
+> >  	if (IS_ERR(mr))
+> > -		return (struct ib_mr *)mr;
+> > +		return ERR_CAST(mr);
+> >  
+> >  	return &mr->ibmr;
+> >  }
+> 
+> I don't think this is really necessary. You are not making the code more
+> readable. It doesn't simplify things. So I'm not going to Ack it, but I won't
+> Nak either.
 
-How is it possible?
+I will take it because ERR_CAST is slightly better way to return error pointers.
 
+Thanks
 
-> which will fail the device probe. To make it more robust, we always issue a reset at the
-> beginning of the device probe process.
 > 
-> Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
-> ---
->  drivers/infiniband/hw/erdma/erdma.h      |  1 +
->  drivers/infiniband/hw/erdma/erdma_main.c | 44 +++++++++++++++++++-----
->  2 files changed, 36 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/erdma/erdma.h b/drivers/infiniband/hw/erdma/erdma.h
-> index c8bd698e21b0..b5c258f77ca0 100644
-> --- a/drivers/infiniband/hw/erdma/erdma.h
-> +++ b/drivers/infiniband/hw/erdma/erdma.h
-> @@ -94,6 +94,7 @@ enum {
->  
->  #define ERDMA_CMDQ_TIMEOUT_MS 15000
->  #define ERDMA_REG_ACCESS_WAIT_MS 20
-> +#define ERDMA_WAIT_DEV_REST_CNT 50
->  #define ERDMA_WAIT_DEV_DONE_CNT 500
->  
->  struct erdma_cmdq {
-> diff --git a/drivers/infiniband/hw/erdma/erdma_main.c b/drivers/infiniband/hw/erdma/erdma_main.c
-> index 7080f8a71ec4..9199058a0b29 100644
-> --- a/drivers/infiniband/hw/erdma/erdma_main.c
-> +++ b/drivers/infiniband/hw/erdma/erdma_main.c
-> @@ -209,11 +209,30 @@ static void erdma_device_uninit(struct erdma_dev *dev)
->  	dma_pool_destroy(dev->resp_pool);
->  }
->  
-> -static void erdma_hw_reset(struct erdma_dev *dev)
-> +static int erdma_hw_reset(struct erdma_dev *dev, bool wait)
->  {
->  	u32 ctrl = FIELD_PREP(ERDMA_REG_DEV_CTRL_RESET_MASK, 1);
-> +	int i;
->  
->  	erdma_reg_write32(dev, ERDMA_REGS_DEV_CTRL_REG, ctrl);
-> +
-> +	if (!wait)
-> +		return 0;
-> +
-> +	for (i = 0; i < ERDMA_WAIT_DEV_REST_CNT; i++) {
-> +		if (erdma_reg_read32_filed(dev, ERDMA_REGS_DEV_ST_REG,
-> +					   ERDMA_REG_DEV_ST_RESET_DONE_MASK))
-> +			break;
-> +
-> +		msleep(ERDMA_REG_ACCESS_WAIT_MS);
-> +	}
-> +
-> +	if (i == ERDMA_WAIT_DEV_REST_CNT) {
-> +		dev_err(&dev->pdev->dev, "wait reset done timeout.\n");
-> +		return -ETIME;
-> +	}
-> +
-> +	return 0;
->  }
->  
->  static int erdma_wait_hw_init_done(struct erdma_dev *dev)
-> @@ -239,6 +258,17 @@ static int erdma_wait_hw_init_done(struct erdma_dev *dev)
->  	return 0;
->  }
->  
-> +static int erdma_preinit_check(struct erdma_dev *dev)
-> +{
-> +	u32 version = erdma_reg_read32(dev, ERDMA_REGS_VERSION_REG);
-> +
-> +	/* we knows that it is a non-functional function. */
-> +	if (version == 0)
-> +		return -ENODEV;
-> +
-> +	return erdma_hw_reset(dev, true);
-> +}
-> +
->  static const struct pci_device_id erdma_pci_tbl[] = {
->  	{ PCI_DEVICE(PCI_VENDOR_ID_ALIBABA, 0x107f) },
->  	{}
-> @@ -248,7 +278,6 @@ static int erdma_probe_dev(struct pci_dev *pdev)
->  {
->  	struct erdma_dev *dev;
->  	int bars, err;
-> -	u32 version;
->  
->  	err = pci_enable_device(pdev);
->  	if (err) {
-> @@ -287,12 +316,9 @@ static int erdma_probe_dev(struct pci_dev *pdev)
->  		goto err_release_bars;
->  	}
->  
-> -	version = erdma_reg_read32(dev, ERDMA_REGS_VERSION_REG);
-> -	if (version == 0) {
-> -		/* we knows that it is a non-functional function. */
-> -		err = -ENODEV;
-> +	err = erdma_preinit_check(dev);
-> +	if (err)
->  		goto err_iounmap_func_bar;
-> -	}
->  
->  	err = erdma_device_init(dev, pdev);
->  	if (err)
-> @@ -327,7 +353,7 @@ static int erdma_probe_dev(struct pci_dev *pdev)
->  	return 0;
->  
->  err_reset_hw:
-> -	erdma_hw_reset(dev);
-> +	erdma_hw_reset(dev, false);
->  
->  err_uninit_cmdq:
->  	erdma_cmdq_destroy(dev);
-> @@ -364,7 +390,7 @@ static void erdma_remove_dev(struct pci_dev *pdev)
->  	struct erdma_dev *dev = pci_get_drvdata(pdev);
->  
->  	erdma_ceqs_uninit(dev);
-> -	erdma_hw_reset(dev);
-> +	erdma_hw_reset(dev, false);
->  	erdma_cmdq_destroy(dev);
->  	erdma_aeq_destroy(dev);
->  	erdma_comm_irq_uninit(dev);
-> -- 
-> 2.31.1
-> 
-> 
+> -Denny
 
