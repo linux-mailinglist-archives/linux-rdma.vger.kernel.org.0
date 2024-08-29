@@ -1,111 +1,127 @@
-Return-Path: <linux-rdma+bounces-4626-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4627-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3EED963F4D
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 10:58:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C26A2963F85
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 11:08:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A2921C242A2
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 08:58:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 503F9B217FD
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 09:08:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10A2718C925;
-	Thu, 29 Aug 2024 08:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A750A15666A;
+	Thu, 29 Aug 2024 09:08:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nY7gNazz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I/qE+Fij"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C037F18C34D;
-	Thu, 29 Aug 2024 08:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6890118C03F
+	for <linux-rdma@vger.kernel.org>; Thu, 29 Aug 2024 09:08:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724921926; cv=none; b=HrG288sO5uS5LTM8BInvpE5fxzcrUd2Y2UXo2sVLSkKEEd2t+gBFAdLOxK/UZ5G8utwjl53F2jvniQnDEgK19IyPogFqA6NdXFh5l1vuust0zaRnrcAOPJmSrnV86bEqopVrOELPUxmalFTw7Ks5k+NWzzUVm0/LQLpL9OG//Qo=
+	t=1724922528; cv=none; b=FlO2aVRlj0NduQyuARAtPfxEk5ucdoulYezfiTTLuakIEyJNFP0g6jKfZ24NHDpV+s0VTnsG+AN7IRg+inUEAxE4ZXcxtFnQjcFs2EKslYOQwws71S2wx+c+x0eMdkWYRbo1ZwA5HGfVGW+Wo5KR7MSBkUAdOB7xYTCrsZg9jj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724921926; c=relaxed/simple;
-	bh=GprZvx6QsOS5L4srpHfq+udTVm6mZ3q8Rn2G3wMDocE=;
+	s=arc-20240116; t=1724922528; c=relaxed/simple;
+	bh=8DS27ZW58nH7Zyu+fD+XCziCBpLJW6EnfDWKw96qvJE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jaTcJ7ptVdsufOPhStdqaXA3kknkRKvN+NzKpXbwsTclOpXJF3Ow/mcN4muPBkXBs3G6c5l/3+WtRSm8gWwpsXY8KSEssg9CclNnrWAk3X8dpy/J+g7N1DjKzSFvUJmujY2Y7N1cn6g4gLktdBISxpjmIAa9JrukuCZiFjgIy0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nY7gNazz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA77DC4CEC1;
-	Thu, 29 Aug 2024 08:58:45 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=H43PIeX9941rohYO8v3K6ouRXyy3w+PyrB00Jxj2PPEdnQ3ptBEdyGqVIMAfN3TXvaOfuiR25U55os+f4E62RilYNCVTYPCorl2OMWNzZZ65Qy8LMmfPKoZXXGqfrdS8fshl3jieNdvvqTZXikAqD2Hyhsw0jJOyB8G4Ltrytsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I/qE+Fij; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A78BC4CEC1;
+	Thu, 29 Aug 2024 09:08:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724921926;
-	bh=GprZvx6QsOS5L4srpHfq+udTVm6mZ3q8Rn2G3wMDocE=;
+	s=k20201202; t=1724922528;
+	bh=8DS27ZW58nH7Zyu+fD+XCziCBpLJW6EnfDWKw96qvJE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nY7gNazzpoo1mwpZ0dpnTtzob9Xqa/G/JgwSI/u+OjyqGO6ZEOQMNJ1umlY0L13rG
-	 rnp/A1pFi8PUN4I2ev3pSXQBlAhkC0wxNWUOfe7/R3YJ8iDEU8NtabpFqLmFot8zXs
-	 vrIwXG6XbsN3sBBUaDGMvr3s9WZRWyL0kTVgm5i0M8DEgEPusGk4f0QgGsXY8e+kAs
-	 tQKLgtJ5FmXUP0/Jazw0sjuG2t2zUyjwfa5h0U6G5l77i/0V9fmprDib1pi3/1gUfo
-	 9OzYwpfHf6TmRcnYllzu0WZMEcjph9EJN/hJz1kSQ4UUB23UF/0OjUMl9EceuuWEdy
-	 aqK75MdO2lKfg==
-Date: Thu, 29 Aug 2024 11:58:42 +0300
+	b=I/qE+Fij7D8SNPeLboQtGKU7UBXEqt1tuPjuCf9NHk1WVV2hhivxU4sU77U5jGPTW
+	 BBJfptaqaBR4vGaXP6GY1YNSpvB8QBcx7+VTMWVZgGfnkLQkdY3/rtBX0MninxOcGa
+	 DXk4mmkUHx03ZlXy6GSJCJ8WJzT+BMLr9fBV/hLm6aS6Mc1Ty4YfkU49t+5hwLWpML
+	 io8Rc/xbP7jOVfZYGOV3iDdsbUVQIxYJm7rWR7RLc3OYoJ9QEZaRswmpdYKwoLpIuP
+	 T9z758/I4FwIHoQ7Aop65kdfaBoemfJRTBHnn1KsEchUA96HJy38VR9JFbQ188KmrO
+	 sAjLx++0upp1Q==
+Date: Thu, 29 Aug 2024 12:08:44 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Shen Lichuan <shenlichuan@vivo.com>, jgg@ziepe.ca,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	opensource.kernel@vivo.com
-Subject: Re: [PATCH v1] IB/qib: Use max() macro
-Message-ID: <20240829085842.GA24019@unreal>
-References: <20240827082254.72321-1-shenlichuan@vivo.com>
- <8a113fab-d58b-42e2-9c7c-e84dd2f27d99@cornelisnetworks.com>
+To: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+Cc: =?utf-8?B?6Z2z5paH5a6+?= <jinwenbinxue@163.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [bug] =?utf-8?Q?rdma-core=2Flibrdmacm?=
+ =?utf-8?B?L2NtYS5jIHJkbWFfY3JlYXRlX3FwX2V477yaYWRkIGlkLT5jcSByZWZlciB0?=
+ =?utf-8?Q?o?= qp_attr->cq, when qp_attr->cq is not NULL, and id->cq is NULL
+Message-ID: <20240829090844.GA26654@unreal>
+References: <f819f8c.52ce.191927ea67c.Coremail.jinwenbinxue@163.com>
+ <63408cd4-c4a9-4268-84a7-2c7fab9b690e@fujitsu.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8a113fab-d58b-42e2-9c7c-e84dd2f27d99@cornelisnetworks.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <63408cd4-c4a9-4268-84a7-2c7fab9b690e@fujitsu.com>
 
-On Tue, Aug 27, 2024 at 11:00:11AM -0400, Dennis Dalessandro wrote:
-> On 8/27/24 4:22 AM, Shen Lichuan wrote:
-> > Use the max() macro to simplify the function and improve
-> > its readability.
-> > 
-> > Signed-off-by: Shen Lichuan <shenlichuan@vivo.com>
-> > ---
-> >  drivers/infiniband/hw/qib/qib_iba7220.c | 2 +-
-> >  drivers/infiniband/hw/qib/qib_iba7322.c | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/hw/qib/qib_iba7220.c b/drivers/infiniband/hw/qib/qib_iba7220.c
-> > index 78dfe98ebcf7..4c96b66a93b5 100644
-> > --- a/drivers/infiniband/hw/qib/qib_iba7220.c
-> > +++ b/drivers/infiniband/hw/qib/qib_iba7220.c
-> > @@ -4094,7 +4094,7 @@ static int qib_init_7220_variables(struct qib_devdata *dd)
-> >  	updthresh = 8U; /* update threshold */
-> >  	if (dd->flags & QIB_HAS_SEND_DMA) {
-> >  		dd->cspec->sdmabufcnt =  dd->piobcnt4k;
-> > -		sbufs = updthresh > 3 ? updthresh : 3;
-> > +		sbufs = max(updthresh, 3);
-> >  	} else {
-> >  		dd->cspec->sdmabufcnt = 0;
-> >  		sbufs = dd->piobcnt4k;
-> > diff --git a/drivers/infiniband/hw/qib/qib_iba7322.c b/drivers/infiniband/hw/qib/qib_iba7322.c
-> > index 9db29916e35a..5a059ec08780 100644
-> > --- a/drivers/infiniband/hw/qib/qib_iba7322.c
-> > +++ b/drivers/infiniband/hw/qib/qib_iba7322.c
-> > @@ -6633,7 +6633,7 @@ static int qib_init_7322_variables(struct qib_devdata *dd)
-> >  	 */
-> >  	if (dd->flags & QIB_HAS_SEND_DMA) {
-> >  		dd->cspec->sdmabufcnt = dd->piobcnt4k;
-> > -		sbufs = updthresh > 3 ? updthresh : 3;
-> > +		sbufs = max(updthresh, 3);
-> >  	} else {
-> >  		dd->cspec->sdmabufcnt = 0;
-> >  		sbufs = dd->piobcnt4k;
+On Wed, Aug 28, 2024 at 12:51:30AM +0000, Zhijian Li (Fujitsu) wrote:
+> Not related to your modification,
 > 
-> I don't see how this improves readability or makes the function simpler. I'm not
-> opposed to it, just don't see it as an improvement.
+> In general,
+> - Please report a bug with more details, such as how to reproduce, your expectations and what's the impact, etc...
+> - Please follow the patch submit instruction[1] or a PR if you want to submit a patch to the communities.
+> 
+> [1] https://docs.kernel.org/process/submitting-patches.html
 
-He got same comment from Jakub K. (netdev) too, so let's drop this patch.
++1
 
 Thanks
 
 > 
-> -Denny
+> 
+> On 27/08/2024 14:20, 靳文宾 wrote:
+> > 
+> > 
+> > 
+> > 
+> > 
+> > I think the following modification is more correct,
+> > if there have something i dont know, pls tell me, thx
+> > 
+> > 
+> > 
+> > 
+> > 
+> > diff --git a/librdmacm/cma.c b/librdmacm/cma.c
+> > index 7b924bd0d..9e71ba858 100644
+> > --- a/librdmacm/cma.c
+> > +++ b/librdmacm/cma.c
+> > @@ -1654,10 +1654,20 @@ int rdma_create_qp_ex(struct rdma_cm_id *id,
+> >          if (ret)
+> >                  return ret;
+> > 
+> > 
+> > -       if (!attr->send_cq)
+> > +       if (!attr->send_cq) {
+> >                  attr->send_cq = id->send_cq;
+> > -       if (!attr->recv_cq)
+> > +       } else {
+> > +               if (!id->recv_cq)
+> > +                       id->recv_cq = attr->recv_cq;
+> > +       }
+> > +       if (!attr->recv_cq) {
+> >                  attr->recv_cq = id->recv_cq;
+> > +       } else {
+> > +               if (!id->recv_cq)
+> > +                       id->recv_cq = attr->recv_cq;
+> > +       }
+> > +
+> > +
+> >          if (id->srq && !attr->srq)
+> >                  attr->srq = id->srq;
+> >          qp = ibv_create_qp_ex(id->verbs, attr);
+> > 
+> > 
+> > 
+> > 
+> > 
 
