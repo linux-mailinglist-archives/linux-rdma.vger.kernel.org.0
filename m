@@ -1,112 +1,137 @@
-Return-Path: <linux-rdma+bounces-4636-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4637-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5356F96478C
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 16:06:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37F689647C8
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 16:17:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F367B2537B
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 13:54:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E34091F244B8
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 14:17:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C121AD3E4;
-	Thu, 29 Aug 2024 13:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A03361AED4D;
+	Thu, 29 Aug 2024 14:16:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jaVBywgb"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="InKQsAT3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3392D19306A;
-	Thu, 29 Aug 2024 13:54:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5DC19408D;
+	Thu, 29 Aug 2024 14:16:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724939644; cv=none; b=fIkFUUBQuZLoo0ZnjPDTn+aVgas7VxUBEG1BTkmyIsZUDxaaKqhSe6Gy3eRCoYwxh+gqvHy4KCeRR7T8jJ3jWmJCz7TqYwkTMK6+qVQqXCy1MPrUhpQqEuyoF/1XRzdFJp4qYHoKkSjkyhLpu+fB5onrmgPKEUL9s17E+qCpy14=
+	t=1724941010; cv=none; b=CMckM+it4ZyC/OKUU7LtneoumUkrsW1kEfoNOg5Q2zYtnx9HL1K0Vt9+HS8eHXEFVuKeBet2x0jni+NW1GWEIGaojosfGjQoPAp5mh6Z9XkyVktYUoQbBnSLCPY1A3GDBOfORVEfrAhoPQWqYqXMSupEF06BTLwXtDjwzKUYSGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724939644; c=relaxed/simple;
-	bh=BmMRbA2qEwzOz1sUZJsVWPr0HWKMM6RYtc1oRFXePTk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=daye4VqG6DLbRsq3PLFAKIMJBJmGaihD65pf351mnVFdgIzCwGF+Xy0aeNXdZOaS4TAcKG/FkrZg/D1mHINR1xs5hgyVVsBiN1PvnyipDnTPsPN11N/0noCd+cEBez9/jaBOSOFeEkPrYojN6KS4zbKhqlvutc4sGlqp6uCW3e8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jaVBywgb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06A9AC4CEC3;
-	Thu, 29 Aug 2024 13:54:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724939643;
-	bh=BmMRbA2qEwzOz1sUZJsVWPr0HWKMM6RYtc1oRFXePTk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jaVBywgbBNmKGTFi8oYt1lGWqsq4cAZiAXT/EsqdGc5SXMsQQl9to7z+/aBvP/jSb
-	 UAafbTtcm0PhLMBmuHniDyL/dRQuk8cO5KrBQOHS3SUo905du5581wZHArgN0iWSTx
-	 AS0Wy5ulmT8yC8hN474vrlaY79ZNh2/A73toc6uXSFwCOv0zAoAOfVu3Tdy/OjjL32
-	 MmCcmzmjrPgoMyxJ3Qaxg74yxdEjgI56UFzYDwQbn2L7CCNmtNSprde6AsKvmRcK/3
-	 rSlPoxmuBgmq9dYnUbGqCnDiQxWVXRh1FM2yY61XQnGlBz2R4qZWs8ATLECn/yquP3
-	 4mQpYMLQKV0Tw==
-Date: Thu, 29 Aug 2024 14:53:58 +0100
-From: Simon Horman <horms@kernel.org>
-To: longli@linuxonhyperv.com
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
+	s=arc-20240116; t=1724941010; c=relaxed/simple;
+	bh=Kzeqef7Cl73RQWlhJcPtJiNooSid7j+18DeILrIoT3M=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=PeG/j9LbuOx5wysdYECzegNAKqrQ4IIos79OSrIiJaBfiwz/TfgLMsJV6PQ7zSIwGbGDTgAyWLS16Aagg1wP8jT/XkO/Cyc+wBZvwJuH/1KP2HYhIH3PtCLslmoE+xowgfRpC/oPMWLbCNvBODaQT6ylKn+sP4bH2d3gHaFG6lU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=InKQsAT3; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 9BDB620B7165; Thu, 29 Aug 2024 07:16:48 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9BDB620B7165
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1724941008;
+	bh=ioiS0PvcMSwqDFoOxAKdu97AGRROolR0blMaCmo8GUQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=InKQsAT3Pj8Cn/lX+FlwwBMVJjlwYnN6xKlBcuox0a+8d0+M3kWjKfYFz92b+oz4S
+	 +5+7NChDNsL+B4OgBFpSdAR4/AyOcvulP1RW2Aqmm7aWWNTbxTvRtcnpYMiRrEK9O+
+	 Y1PvPtnne9YG/71XVkKGDwZGwM5R5Z9MhdYLfTjc=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Long Li <longli@microsoft.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH net] RDMA/mana_ib: use the correct page size for mapping
- user-mode doorbell page
-Message-ID: <20240829135358.GA2923441@kernel.org>
-References: <1724875569-12912-1-git-send-email-longli@linuxonhyperv.com>
- <1724875569-12912-2-git-send-email-longli@linuxonhyperv.com>
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Long Li <longli@microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Erick Archer <erick.archer@outlook.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Ahmed Zaki <ahmed.zaki@intel.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: [PATCH net-next] net: mana: Improve mana_set_channels() for low mem conditions
+Date: Thu, 29 Aug 2024 07:16:46 -0700
+Message-Id: <1724941006-2500-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1724875569-12912-2-git-send-email-longli@linuxonhyperv.com>
 
-On Wed, Aug 28, 2024 at 01:06:09PM -0700, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
-> 
-> When mapping doorbell page from user-mode, the driver should use the system
-> page size as the doorbell is allocated via mmap() from user-mode.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 0266a177631d ("RDMA/mana_ib: Add a driver for Microsoft Azure Network Adapter")
-> Signed-off-by: Long Li <longli@microsoft.com>
-> ---
->  drivers/infiniband/hw/mana/main.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-> index f68f54aea820..b26c4ebec2e0 100644
-> --- a/drivers/infiniband/hw/mana/main.c
-> +++ b/drivers/infiniband/hw/mana/main.c
-> @@ -511,13 +511,13 @@ int mana_ib_mmap(struct ib_ucontext *ibcontext, struct vm_area_struct *vma)
->  	      PAGE_SHIFT;
->  	prot = pgprot_writecombine(vma->vm_page_prot);
->  
-> -	ret = rdma_user_mmap_io(ibcontext, vma, pfn, gc->db_page_size, prot,
-> +	ret = rdma_user_mmap_io(ibcontext, vma, pfn, PAGE_SIZE, prot,
->  				NULL);
->  	if (ret)
->  		ibdev_dbg(ibdev, "can't rdma_user_mmap_io ret %d\n", ret);
->  	else
->  		ibdev_dbg(ibdev, "mapped I/O pfn 0x%llx page_size %u, ret %d\n",
-> -			  pfn, gc->db_page_size, ret);
-> +			  pfn, PAGE_SIZE, ret);
+The mana_set_channels() function requires detaching the mana
+driver and reattaching it with changed channel values.
+During this operation if the system is low on memory, the reattach
+might fail, causing the network device being down.
+To avoid this we pre-allocate buffers at the beginning of set operation,
+to prevent complete network loss
 
-This is not a full review, but according to both clang-18 and gcc-14,
-this patch should also update the format specifier from %u to %lu.
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+---
+ .../ethernet/microsoft/mana/mana_ethtool.c    | 28 +++++++++++--------
+ 1 file changed, 16 insertions(+), 12 deletions(-)
 
->  
->  	return ret;
->  }
-> -- 
-> 2.17.1
-> 
-> 
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+index d6a35fbda447..5077493fdfde 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+@@ -345,27 +345,31 @@ static int mana_set_channels(struct net_device *ndev,
+ 	struct mana_port_context *apc = netdev_priv(ndev);
+ 	unsigned int new_count = channels->combined_count;
+ 	unsigned int old_count = apc->num_queues;
+-	int err, err2;
++	int err;
++
++	apc->num_queues = new_count;
++	err = mana_pre_alloc_rxbufs(apc, ndev->mtu);
++	apc->num_queues = old_count;
++	if (err) {
++		netdev_err(ndev, "Insufficient memory for new allocations");
++		return err;
++	}
+ 
+ 	err = mana_detach(ndev, false);
+ 	if (err) {
+ 		netdev_err(ndev, "mana_detach failed: %d\n", err);
+-		return err;
++		goto out;
+ 	}
+ 
+ 	apc->num_queues = new_count;
+ 	err = mana_attach(ndev);
+-	if (!err)
+-		return 0;
+-
+-	netdev_err(ndev, "mana_attach failed: %d\n", err);
+-
+-	/* Try to roll it back to the old configuration. */
+-	apc->num_queues = old_count;
+-	err2 = mana_attach(ndev);
+-	if (err2)
+-		netdev_err(ndev, "mana re-attach failed: %d\n", err2);
++	if (err) {
++		apc->num_queues = old_count;
++		netdev_err(ndev, "mana_attach failed: %d\n", err);
++	}
+ 
++out:
++	mana_pre_dealloc_rxbufs(apc);
+ 	return err;
+ }
+ 
+-- 
+2.34.1
+
 
