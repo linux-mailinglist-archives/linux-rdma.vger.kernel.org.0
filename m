@@ -1,129 +1,93 @@
-Return-Path: <linux-rdma+bounces-4633-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4635-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA9DB9643E3
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 14:05:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0577964714
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 15:43:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6783A287B3D
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 12:05:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 772A2B2A214
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2024 13:40:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BEC319413D;
-	Thu, 29 Aug 2024 12:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85BBB1A707F;
+	Thu, 29 Aug 2024 13:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="COJdahzx"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="Xwh8pkiq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2288191F82
-	for <linux-rdma@vger.kernel.org>; Thu, 29 Aug 2024 12:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B27A16D33C
+	for <linux-rdma@vger.kernel.org>; Thu, 29 Aug 2024 13:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724933107; cv=none; b=ZMeqYtHHw9YpSgWv2/1gmSxt9S8HRKD/B+WRHBsU06J9fg3pB6RLGAKBfd4/w77DbHqy7/BcKNluwweJWn3fIueP90/2wESF5pycxZs4woRVsdmPf35lBBzW7T+5FAazM8VJ1UzAuSeTeZx7/yk6Eil+u/mq06YmtDVb1OXA1uk=
+	t=1724938829; cv=none; b=BG5ZmhNXLLGKeQ/vBaKLyiDRDDGXTdRnHNtZjaZAFlF+Rd7P7sTeMpT5kEnc3qNNaYG4j+JlG91HjikVe9O3VvpCioRD80raBgXdJvc3L6ayEjMwp42bOrBkfyRhVdPhZwnGYPe23Wg0caMHkEgEc3dLiS9jnvxEI4OHK4reNeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724933107; c=relaxed/simple;
-	bh=sURMtzuV0ZrU8K7+aftkHR7/JR+cvtBsjFKF3I6Pios=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=QDQodvMypDZbWmy0GVehDPF0q9iRoghu8JquWEPzMTQYBvsUhuJ2uB+oYBKpieE/3BOf36apEhH9Ozseuq0u7mOXAKT5mCFfpjJnjCjRswaVDlLmQcSO3z9KOyKeT+HJX8xmTKewvU9P9PceLFCyZkMHc4N8lrBvS0fP0xDXNOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=COJdahzx; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <34234a57-9553-4193-a855-ee1ebbea3d6e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724933103;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bH9C24zmmgRCb7/6azqdebeQn6ZBHHKKKffowbEd9Dk=;
-	b=COJdahzx6NfKxtXt/DRPcvmCqzVEemh/YsrD96kCx2XyPOPines01uWs6rfis9GYqkFnjt
-	3SGCn8pVXeUP43+H/9+j8e7YKWsuWzJ/MGzpqTA68Ty2BmYVK72EbVayOkv8t9QXNNiug/
-	rnqP0Er+dQiuP/MOyAqlRDtaOZ9L/GU=
-Date: Thu, 29 Aug 2024 20:04:55 +0800
+	s=arc-20240116; t=1724938829; c=relaxed/simple;
+	bh=A6s0/9kefY/d/MF2CPmN5Yt9QOhw+cylljXWxb4hz8A=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=GpkLvBKT7tBDn5nkR8j3vfT0K7DNyM59HwrwgMwThjg/1c6+l/irM4cgelOoN3paEvaPbIMrVIlLHUozPcuGDxbd5FyradvD0oa6OICYqmuzIDdzVW9XKmV2wOkNtZUV7bADrBWhZWtrl+hncEY0Q6C0lGA4XDbGuL2Ink4dY5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=Xwh8pkiq; arc=none smtp.client-ip=185.125.188.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 064043F47A
+	for <linux-rdma@vger.kernel.org>; Thu, 29 Aug 2024 13:33:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1724938396;
+	bh=A6s0/9kefY/d/MF2CPmN5Yt9QOhw+cylljXWxb4hz8A=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=Xwh8pkiquwokfUA43wmr2KVroXN8PBZ42LoHnA7VjcbfblyAVuRETb7AP86YFh4uW
+	 ifBbsiov2bICzPHFxiDkjBh7Ux8C8EJHE4mFxQW9Pcgh/LQvcWwM3VZA8pkqliKaHY
+	 Tew8Ty+JrxzYs8tWsrRgn2mrksaR9IvwVMUXFOf8xBTX7JQ6eGRJcORHjaiBd2s9AJ
+	 aE6PFXeLESbD587F76iVRxqGn3fzQqkU3UBIqLolnn9/txXao+rtKpTUDj2SHebam1
+	 3kDqQ9Uwl6UmJ1LxfdEYGcyFkfpOhsAPRxpxJP9EdUigobqWRl2M1p2uSeiQVWmoWS
+	 LLZp+0Xm/qekQ==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+	by buildd-manager.lp.internal (Postfix) with ESMTP id F22207E24B
+	for <linux-rdma@vger.kernel.org>; Thu, 29 Aug 2024 13:33:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: =?UTF-8?Q?Re=3A_=5Bbug=5D_rdma-core/librdmacm/cma=2Ec_rdma=5Fcreate?=
- =?UTF-8?B?X3FwX2V4w6/CvGFkZCBpZC0+Y3EgcmVmZXIgdG8gcXBfYXR0ci0+Y3EsIHdoZW4g?=
- =?UTF-8?Q?qp=5Fattr-=3Ecq_is_not_NULL=2C_and_id-=3Ecq_is_NULL?=
-To: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>, =?UTF-8?B?6Z2z5paH5a6+?=
- <jinwenbinxue@163.com>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <f819f8c.52ce.191927ea67c.Coremail.jinwenbinxue@163.com>
- <63408cd4-c4a9-4268-84a7-2c7fab9b690e@fujitsu.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <63408cd4-c4a9-4268-84a7-2c7fab9b690e@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: FAILEDTOBUILD
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3778657] of ~linux-rdma rdma-core-daily in xenial: Failed to build
+Message-Id: <172493839598.1779024.9210505566018910381.launchpad@buildd-manager.lp.internal>
+Date: Thu, 29 Aug 2024 13:33:15 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="1b1ed1ad2dbfc71ee62b5c5491c975135a771bf0"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 2d98910fb261d419a052f7405441227555321932
 
-在 2024/8/28 8:51, Zhijian Li (Fujitsu) 写道:
-> Not related to your modification,
-> 
-> In general,
-> - Please report a bug with more details, such as how to reproduce, your expectations and what's the impact, etc...
-> - Please follow the patch submit instruction[1] or a PR if you want to submit a patch to the communities.
-> 
-> [1] https://docs.kernel.org/process/submitting-patches.html
+ * State: Failed to build
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 3 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3778657/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-056
 
-It seems a rdma-core problem. Not sure if it is reasonable to use the 
-above link.
-
-Zhu Yanjun
-
-> 
-> 
-> On 27/08/2024 14:20, 靳文宾 wrote:
->>
->>
->>
->>
->>
->> I think the following modification is more correct,
->> if there have something i dont know, pls tell me, thx
->>
->>
->>
->>
->>
->> diff --git a/librdmacm/cma.c b/librdmacm/cma.c
->> index 7b924bd0d..9e71ba858 100644
->> --- a/librdmacm/cma.c
->> +++ b/librdmacm/cma.c
->> @@ -1654,10 +1654,20 @@ int rdma_create_qp_ex(struct rdma_cm_id *id,
->>           if (ret)
->>                   return ret;
->>
->>
->> -       if (!attr->send_cq)
->> +       if (!attr->send_cq) {
->>                   attr->send_cq = id->send_cq;
->> -       if (!attr->recv_cq)
->> +       } else {
->> +               if (!id->recv_cq)
->> +                       id->recv_cq = attr->recv_cq;
->> +       }
->> +       if (!attr->recv_cq) {
->>                   attr->recv_cq = id->recv_cq;
->> +       } else {
->> +               if (!id->recv_cq)
->> +                       id->recv_cq = attr->recv_cq;
->> +       }
->> +
->> +
->>           if (id->srq && !attr->srq)
->>                   attr->srq = id->srq;
->>           qp = ibv_create_qp_ex(id->verbs, attr);
->>
->>
->>
->>
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3778657
+Your team Linux RDMA is the requester of the build.
 
 
