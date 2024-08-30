@@ -1,206 +1,157 @@
-Return-Path: <linux-rdma+bounces-4654-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4655-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E12C9965644
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2024 06:25:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F18869656C6
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2024 07:13:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11B1A1C21614
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2024 04:25:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AEBB1F24BDE
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2024 05:13:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62DA3149C42;
-	Fri, 30 Aug 2024 04:24:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC4A14C5B0;
+	Fri, 30 Aug 2024 05:13:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LIp5fU1o"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="b1kUcZ0m"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7DA71750
-	for <linux-rdma@vger.kernel.org>; Fri, 30 Aug 2024 04:24:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ACC0481AB;
+	Fri, 30 Aug 2024 05:13:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724991895; cv=none; b=tQk0I5NGXYyRPl4PaF5n0SVyTy7b0FuQVM/GirPobE70fhnjzJ6DBnLsaYqQHADiRHJZaoC3Blt5HhnXAnNixwQRtWmCc2Rojf2T5mA/70OmZdMBt9vsICLnRWX4ER8oj9cnfzg2edeF96vArBEPsHFEmpPyg5O65BGNEirfgo8=
+	t=1724994803; cv=none; b=QdU28DUTuPQKXk58RQru6xTOD2bvD1p/wKIo9RlE8K4dIrxjPWs9an5Mwv3bVswetWau9uoFxA1d6rI1OyRtT933/4oIOgJ5m+RUkpMrlpGMgOEzamqPvKFcpwadoHRQDOexIJiBMKdo3tXbNKr3H1T6vrjvV+cbHswQUKInHYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724991895; c=relaxed/simple;
-	bh=QD1JiiJL8c7LzavdDqSb7ZVbx0cHKugKZ9veDpe5BZo=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=I1FZpvjRtBvFSmLVrwl33028eBQtdVFc4l+Ohq9M4Tym5XSNFBvQwdV/CTG5Kj/EhtIypFT0K4sr+DIEtqo0YPaYOCSjkL56i44NxFec6H1iygrQlCszcIYrSe9URgS3xOsK3jGwzpnlf/6zi+kdnBJVpyISmHmI14qX5O68tmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LIp5fU1o; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724991893; x=1756527893;
-  h=date:from:to:cc:subject:message-id;
-  bh=QD1JiiJL8c7LzavdDqSb7ZVbx0cHKugKZ9veDpe5BZo=;
-  b=LIp5fU1oC28BVqJTkzb41oNNPiGA215ObQsaJMSIzv8C3mYoy8v6eFit
-   dIgUyus/XhWpb8C+qgFbZGOaKWzVG0kQyrfB+9B+qUtc/4ywIF+SXYcif
-   mLUauEfLe1vTzynI1tqsCoBu1K5piAulymL910VihtQYiPrMOq3Of1oUI
-   LiWqEinrsMQI71Fro0m6auvO91JJLWBnLgVA+lDm8Qi46v42zRkP0ZbsG
-   QQgKVJUuTakYSyuf4/7nPHLvGQ8Cjq1kALPYbgIiFidom27KjhzJKv0pl
-   moHaZDnjcYL6acDr1kqDZWGHfGPsItnCfMooLx2dds22EtgSvezL70OwX
-   w==;
-X-CSE-ConnectionGUID: Aqtv4iDhQUey5NB/Mn2j/Q==
-X-CSE-MsgGUID: P029DN70QQye4uyn7U5Txg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11179"; a="27380739"
-X-IronPort-AV: E=Sophos;i="6.10,187,1719903600"; 
-   d="scan'208";a="27380739"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2024 21:24:53 -0700
-X-CSE-ConnectionGUID: Lw4fsnb2Qn67i+APQbQi2A==
-X-CSE-MsgGUID: LjTOjfr8ThO8MXrqXt1lmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,187,1719903600"; 
-   d="scan'208";a="67942573"
-Received: from lkp-server01.sh.intel.com (HELO 9c6b1c7d3b50) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 29 Aug 2024 21:24:51 -0700
-Received: from kbuild by 9c6b1c7d3b50 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sjtBp-00013K-0m;
-	Fri, 30 Aug 2024 04:24:49 +0000
-Date: Fri, 30 Aug 2024 12:24:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 8f1f60b21b96036dede079e29968d6e4f6aab1e0
-Message-ID: <202408301234.YB6BQVpU-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1724994803; c=relaxed/simple;
+	bh=rYuq24tDv4iwGP+294pdnVpKjFZjbqF7wVoyu8pG2R8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MkdkTw7YJtqY+AbbV3Y/t8EV8VHAt9hF/E/34JpzOU3R786STQuYGk0cBw6q+D9C5Ia9BjApq20FPhcIEObSAPRrUXj028c8DakHkr+lLU8Ou0i0LHjL1ftdcY9ZOV4IE9SB4+2LwgiB9VWdOtf9aKOProgOKQPOgrPWAdcVkPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=b1kUcZ0m; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id CBEF720B7165; Thu, 29 Aug 2024 22:13:21 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CBEF720B7165
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1724994801;
+	bh=YupYlTwGydwIzVuxwU1WXxJUQluJb6OWyZQcjr8vBJ4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=b1kUcZ0mU6xjnCTVCqbmIkSwL4Rky4Grfb0dLrjf1WDk9e/Yud+pUBhLOqSUlZQAz
+	 cOzsan9XoXIkuNgMfblIDYVrcXf73FypetUBKbFVyeGHMAlhhqmvYkMFp4NFrjNDYN
+	 WYTvEpn7aaJyBQ1e6ndDUXIGSN/0+IKLlKM4u0Is=
+Date: Thu, 29 Aug 2024 22:13:21 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: Gerhard Engleder <gerhard@engleder-embedded.com>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	KY Srinivasan <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Long Li <longli@microsoft.com>, Simon Horman <horms@kernel.org>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Erick Archer <erick.archer@outlook.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Ahmed Zaki <ahmed.zaki@intel.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH net-next] net: mana: Improve mana_set_channels() for low
+ mem conditions
+Message-ID: <20240830051321.GA27295@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1724941006-2500-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <d73d45af-e76e-4e87-8df1-0ed71e823abc@engleder-embedded.com>
+ <PH7PR21MB32606D2D49A7F0837A29835DCA962@PH7PR21MB3260.namprd21.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH7PR21MB32606D2D49A7F0837A29835DCA962@PH7PR21MB3260.namprd21.prod.outlook.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 8f1f60b21b96036dede079e29968d6e4f6aab1e0  RDMA/sw/rdmavt/mr: Convert to use ERR_CAST()
+On Thu, Aug 29, 2024 at 09:00:05PM +0000, Haiyang Zhang wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Gerhard Engleder <gerhard@engleder-embedded.com>
+> > Sent: Thursday, August 29, 2024 3:54 PM
+> > To: Shradha Gupta <shradhagupta@linux.microsoft.com>; linux-
+> > hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; linux-rdma@vger.kernel.org
+> > Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> > <haiyangz@microsoft.com>; Wei Liu <wei.liu@kernel.org>; Dexuan Cui
+> > <decui@microsoft.com>; David S. Miller <davem@davemloft.net>; Eric
+> > Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo
+> > Abeni <pabeni@redhat.com>; Long Li <longli@microsoft.com>; Simon Horman
+> > <horms@kernel.org>; Konstantin Taranov <kotaranov@microsoft.com>;
+> > Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>; Erick Archer
+> > <erick.archer@outlook.com>; Pavan Chebbi <pavan.chebbi@broadcom.com>;
+> > Ahmed Zaki <ahmed.zaki@intel.com>; Colin Ian King
+> > <colin.i.king@gmail.com>; Shradha Gupta <shradhagupta@microsoft.com>
+> > Subject: Re: [PATCH net-next] net: mana: Improve mana_set_channels() for
+> > low mem conditions
+> > 
+> > [Some people who received this message don't often get email from
+> > gerhard@engleder-embedded.com. Learn why this is important at
+> > https://aka.ms/LearnAboutSenderIdentification ]
+> > 
+> > On 29.08.24 16:16, Shradha Gupta wrote:
+> > > The mana_set_channels() function requires detaching the mana
+> > > driver and reattaching it with changed channel values.
+> > > During this operation if the system is low on memory, the reattach
+> > > might fail, causing the network device being down.
+> > > To avoid this we pre-allocate buffers at the beginning of set
+> > operation,
+> > > to prevent complete network loss
+> > >
+> > > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> > > ---
+> > >   .../ethernet/microsoft/mana/mana_ethtool.c    | 28 +++++++++++-------
+> > -
+> > >   1 file changed, 16 insertions(+), 12 deletions(-)
+> > >
+> > > diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> > b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> > > index d6a35fbda447..5077493fdfde 100644
+> > > --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> > > +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> > > @@ -345,27 +345,31 @@ static int mana_set_channels(struct net_device
+> > *ndev,
+> > >       struct mana_port_context *apc = netdev_priv(ndev);
+> > >       unsigned int new_count = channels->combined_count;
+> > >       unsigned int old_count = apc->num_queues;
+> > > -     int err, err2;
+> > > +     int err;
+> > > +
+> > > +     apc->num_queues = new_count;
+> > > +     err = mana_pre_alloc_rxbufs(apc, ndev->mtu);
+> > > +     apc->num_queues = old_count;
+> > 
+> > Are you sure that temporary changing num_queues has no side effects on
+> > other num_queues users like mana_chn_setxdp()?
+> > 
+> 
+> mana_chn_setxdp() is protected by rtnl_lock, which is OK. But I'm not sure
+> if all other users are protected. mana_get_stats64() seems not.
+> 
+> @Shradha Gupta You can add num_queues as an argument of mana_pre_alloc_rxbufs()
+> to avoid changing apc->num_queues.
+> 
+> Thanks,
+> - Haiyang
 
-elapsed time: 1066m
+Thanks Haiyang and Gerhard. Instead of changing the apc structure value,
+I will pass it to the mana_pre_alloc_rxbufs() function in the next
+version. That should make sure other calls are unaffected.
 
-configs tested: 112
-configs skipped: 5
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc-14.1.0
-alpha                            allyesconfig   clang-20
-alpha                               defconfig   gcc-14.1.0
-arc                              allmodconfig   clang-20
-arc                               allnoconfig   gcc-14.1.0
-arc                              allyesconfig   clang-20
-arc                                 defconfig   gcc-14.1.0
-arm                              allmodconfig   clang-20
-arm                               allnoconfig   gcc-14.1.0
-arm                              allyesconfig   clang-20
-arm                                 defconfig   gcc-14.1.0
-arm                   milbeaut_m10v_defconfig   gcc-14.1.0
-arm                        multi_v7_defconfig   gcc-14.1.0
-arm                           tegra_defconfig   gcc-14.1.0
-arm64                            allmodconfig   clang-20
-arm64                             allnoconfig   gcc-14.1.0
-arm64                               defconfig   gcc-14.1.0
-csky                              allnoconfig   gcc-14.1.0
-csky                                defconfig   gcc-14.1.0
-hexagon                          allmodconfig   clang-20
-hexagon                           allnoconfig   gcc-14.1.0
-hexagon                          allyesconfig   clang-20
-hexagon                             defconfig   gcc-14.1.0
-i386                             allmodconfig   clang-18
-i386                              allnoconfig   clang-18
-i386                             allyesconfig   clang-18
-i386                                defconfig   clang-18
-loongarch                        allmodconfig   gcc-14.1.0
-loongarch                         allnoconfig   gcc-14.1.0
-loongarch                           defconfig   gcc-14.1.0
-m68k                             allmodconfig   gcc-14.1.0
-m68k                              allnoconfig   gcc-14.1.0
-m68k                             allyesconfig   gcc-14.1.0
-m68k                                defconfig   gcc-14.1.0
-m68k                          hp300_defconfig   gcc-14.1.0
-m68k                       m5275evb_defconfig   gcc-14.1.0
-microblaze                       allmodconfig   gcc-14.1.0
-microblaze                        allnoconfig   gcc-14.1.0
-microblaze                       allyesconfig   gcc-14.1.0
-microblaze                          defconfig   gcc-14.1.0
-mips                              allnoconfig   gcc-14.1.0
-mips                      fuloong2e_defconfig   gcc-14.1.0
-nios2                             allnoconfig   gcc-14.1.0
-nios2                               defconfig   gcc-14.1.0
-openrisc                          allnoconfig   clang-20
-openrisc                         allyesconfig   gcc-14.1.0
-openrisc                            defconfig   gcc-12
-parisc                           allmodconfig   gcc-14.1.0
-parisc                            allnoconfig   clang-20
-parisc                           allyesconfig   gcc-14.1.0
-parisc                              defconfig   gcc-12
-parisc64                            defconfig   gcc-14.1.0
-powerpc                          allmodconfig   gcc-14.1.0
-powerpc                           allnoconfig   clang-20
-powerpc                          allyesconfig   gcc-14.1.0
-powerpc                      bamboo_defconfig   gcc-14.1.0
-powerpc                   bluestone_defconfig   gcc-14.1.0
-powerpc                 mpc836x_rdk_defconfig   gcc-14.1.0
-powerpc                      pmac32_defconfig   gcc-14.1.0
-powerpc                       ppc64_defconfig   gcc-14.1.0
-powerpc                     tqm5200_defconfig   gcc-14.1.0
-powerpc64                        alldefconfig   gcc-14.1.0
-riscv                             allnoconfig   clang-20
-riscv                               defconfig   gcc-12
-s390                             allmodconfig   gcc-14.1.0
-s390                              allnoconfig   clang-20
-s390                             allyesconfig   gcc-14.1.0
-s390                                defconfig   gcc-12
-s390                                defconfig   gcc-14.1.0
-sh                               allmodconfig   gcc-14.1.0
-sh                                allnoconfig   gcc-14.1.0
-sh                               allyesconfig   gcc-14.1.0
-sh                                  defconfig   gcc-12
-sh                             shx3_defconfig   gcc-14.1.0
-sparc                            allmodconfig   gcc-14.1.0
-sparc64                             defconfig   gcc-12
-um                               allmodconfig   clang-20
-um                                allnoconfig   clang-20
-um                               allyesconfig   clang-20
-um                                  defconfig   gcc-12
-um                             i386_defconfig   gcc-12
-um                           x86_64_defconfig   gcc-12
-x86_64                            allnoconfig   clang-18
-x86_64                           allyesconfig   clang-18
-x86_64       buildonly-randconfig-001-20240830   clang-18
-x86_64       buildonly-randconfig-002-20240830   clang-18
-x86_64       buildonly-randconfig-003-20240830   clang-18
-x86_64       buildonly-randconfig-004-20240830   clang-18
-x86_64       buildonly-randconfig-005-20240830   clang-18
-x86_64       buildonly-randconfig-006-20240830   clang-18
-x86_64                              defconfig   clang-18
-x86_64                randconfig-001-20240830   clang-18
-x86_64                randconfig-002-20240830   clang-18
-x86_64                randconfig-003-20240830   clang-18
-x86_64                randconfig-004-20240830   clang-18
-x86_64                randconfig-005-20240830   clang-18
-x86_64                randconfig-006-20240830   clang-18
-x86_64                randconfig-011-20240830   clang-18
-x86_64                randconfig-012-20240830   clang-18
-x86_64                randconfig-013-20240830   clang-18
-x86_64                randconfig-014-20240830   clang-18
-x86_64                randconfig-015-20240830   clang-18
-x86_64                randconfig-016-20240830   clang-18
-x86_64                randconfig-071-20240830   clang-18
-x86_64                randconfig-072-20240830   clang-18
-x86_64                randconfig-073-20240830   clang-18
-x86_64                randconfig-074-20240830   clang-18
-x86_64                randconfig-075-20240830   clang-18
-x86_64                randconfig-076-20240830   clang-18
-x86_64                          rhel-8.3-rust   clang-18
-xtensa                            allnoconfig   gcc-14.1.0
-xtensa                          iss_defconfig   gcc-14.1.0
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Shradha.
 
