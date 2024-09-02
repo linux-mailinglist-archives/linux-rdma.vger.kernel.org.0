@@ -1,156 +1,238 @@
-Return-Path: <linux-rdma+bounces-4686-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4687-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96C9C967F32
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2024 08:13:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B341967FCF
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2024 08:58:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C78FA1C2122C
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2024 06:13:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22786284E7B
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2024 06:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241BF1AACA;
-	Mon,  2 Sep 2024 06:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB4716EB76;
+	Mon,  2 Sep 2024 06:57:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="LsdpTg1m"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hw6ZSg9Y"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C009154C00
-	for <linux-rdma@vger.kernel.org>; Mon,  2 Sep 2024 06:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42874165F1E;
+	Mon,  2 Sep 2024 06:57:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725257614; cv=none; b=F9vv2bADjY0eC1qvneQ9L+gTJbhYkdT5Oy3JE292ND75fUrHTHmgNNrEGF0XDHwuXPh725TPeUjqOtuzDjKM0iuGyW6aGe5VyySxEfu7JOEv8kqTxdnL8iRHKp/DS9j3D3VJUiSypwVYJIGcHIsO3w3OwIRMXU3qKw1XX1xzAcY=
+	t=1725260251; cv=none; b=fEMqFY3w8giuCFti/70J3NVdGApAHrge57w1Hdvy6yd8U1VkNPA83mwhOFqX3UI6G3bScZCbf59XsHRwrEjCXZMf2D7Nwxy4X2MOwz/APAIKs3dKhNsdHpzpEP8y3ZgHH4zRTNZjfyjWBho3b0bRE3+lJ5siF33ONuDFgzCdmBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725257614; c=relaxed/simple;
-	bh=cOyciZmrtJ50Kt8IZMalAG2P3Xqu7Fn9kGjUo7vuE4E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=uxMPY3bKUm8EXu0dTKFt1Cf73HnqLuE1wi5UtkobFcq69WU+xbmyIwG1rQ2+bnPnWLlOpO6S9wg/tEphuXd0m+OgRbgniqM/W/hpNx7jpZl15WZ+nB/yX8S6kxkk9fjl7bbf7DkZAaUq0EIeR0aFxdFU7DtbCbeP/7YlgbuBqf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=LsdpTg1m; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2055a3f80a4so6076995ad.2
-        for <linux-rdma@vger.kernel.org>; Sun, 01 Sep 2024 23:13:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1725257611; x=1725862411; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Z2KugG7I1eBzOpFBMSKxsiL2Kwnc/YnNno1Vj2AryAo=;
-        b=LsdpTg1m0OA85BqIldWs1p63A3U50xL2drdq5ZEKAWL8BrxDr+y+/zJLqdoijUKXz/
-         Nq2q5/tyz6Xj8XYwL9kPUZpaggWmWmUb2NfkzEIRLdM2KDurPi3bmmDsTwOE0a1sIeJq
-         wRG3AuykEG0BJwt9DZF41BG3+6NG8Lb6LU93A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725257611; x=1725862411;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z2KugG7I1eBzOpFBMSKxsiL2Kwnc/YnNno1Vj2AryAo=;
-        b=r4F16656Szf7mx8fK3crcOKkcglwaqMi+YaWBFzp0uIyEI1tXKqunLTMVTxZ2AOa8G
-         qzPBvsO7+RSeNUy6+t3lOsaxLNiCAXlLRESgsUhTQjqCgQPv8WyoHbmgU6WX6MvTqK3u
-         uG+RSvfKDzTfSL1lMQfCFek0XvuZSwR+3UKkqplfKcWCUXo3RycSN4D756puOJVq5YTK
-         gW2JJwORRSIvI9fknIlF4FKYCQtho5v0/+i/ZXzxMAknlOsbzBroS3D9XnoMEg+hXdM3
-         bzWSq4vyUtgLM6g+JQTebQFeVecJPogPI5xdEhmuhiiDgbYFRpZIghrvP12D1PpnNkHb
-         xO4Q==
-X-Gm-Message-State: AOJu0YzENb53dvdM7VitAEeVvqJg0LFc/a+s/I3xKZQYsAh7+NtLYNcu
-	jmsi+OHsi2loH2TwPwQhCGDxBLONpzgdPPca9Wq3gcZalY6HxUd2qcRJNMU5Iw==
-X-Google-Smtp-Source: AGHT+IHlsNtE8ZbLvq2OVn4EMi+RPGnoUuig4XLLTt7qsVIiugEJ2StQEk+OOhrFY4/WQCnF975kvQ==
-X-Received: by 2002:a17:903:230c:b0:205:5155:c05 with SMTP id d9443c01a7336-20551550d58mr40109365ad.60.1725257610563;
-        Sun, 01 Sep 2024 23:13:30 -0700 (PDT)
-Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2054a2629c3sm28907955ad.105.2024.09.01.23.13.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 01 Sep 2024 23:13:29 -0700 (PDT)
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-To: leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com,
-	kalesh-anakkur.purayil@broadcom.com,
-	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 4/4] RDMA/bnxt_re: Add support for MR Relaxed Ordering
-Date: Sun,  1 Sep 2024 22:52:31 -0700
-Message-Id: <1725256351-12751-5-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1725256351-12751-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1725256351-12751-1-git-send-email-selvin.xavier@broadcom.com>
+	s=arc-20240116; t=1725260251; c=relaxed/simple;
+	bh=+rxT6nGjBvHpKZJIS+7QqR3ngox5kULSd/HbaUgtzt4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lWQpAXyHD2EjWdg+KlXminUx3n05zKDYGZbbgJzRYSGh9Z7IZV85C4vJ3twzTY9j18i91AKrzMVEzyLiO+7VY2g1lV4Y1ibcAsvxVmZpci/F23zed7jW75HlHocbIvCPn9CXQB2RWgnb3rQmo/2OlrqMYmHFR/iBwZqW63KRzwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hw6ZSg9Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39C0DC4CEC2;
+	Mon,  2 Sep 2024 06:57:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725260250;
+	bh=+rxT6nGjBvHpKZJIS+7QqR3ngox5kULSd/HbaUgtzt4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hw6ZSg9Ynr71Ve0VeVTuCN8WQpV0viX250+/Yk2H0jwDw08lhmFUpqZdEPH/TEujv
+	 9iYYUAHDRS1fpkPX64jph+Wl8nHH75qr0VK8ezAqhgHX/NP4i02znE/aVTe1GFMdGS
+	 A+E/Tg51kH1ijcqs53X5crOKRny1XGWrs+qvsQpKIlfbLghLtmZgotmE+dErwX1EqM
+	 5VoL6691gPsnu0Zm/OLdZuTjHyUN668ZYJ+pts3c1cFe2KhlRkiMUyalrmWiRbTUru
+	 IcAp8XQhIIUt2yFPDKYu1vVicp6zmbzaHKgu1KmAHZWSiarv6APDOhkH6Vx4vhrAWu
+	 BSydjjSodLXgw==
+Date: Mon, 2 Sep 2024 09:57:26 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Junxian Huang <huangjunxian6@hisilicon.com>, jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 for-next 1/2] RDMA/core: Provide
+ rdma_user_mmap_disassociate() to disassociate mmap pages
+Message-ID: <20240902065726.GA4026@unreal>
+References: <20240828064605.887519-1-huangjunxian6@hisilicon.com>
+ <20240828064605.887519-2-huangjunxian6@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240828064605.887519-2-huangjunxian6@hisilicon.com>
 
-From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+On Wed, Aug 28, 2024 at 02:46:04PM +0800, Junxian Huang wrote:
+> From: Chengchang Tang <tangchengchang@huawei.com>
+> 
+> Provide a new api rdma_user_mmap_disassociate() for drivers to
+> disassociate mmap pages for a device.
+> 
+> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> ---
+>  drivers/infiniband/core/uverbs.h      |  3 ++
+>  drivers/infiniband/core/uverbs_main.c | 45 +++++++++++++++++++++++++--
+>  include/rdma/ib_verbs.h               |  8 +++++
+>  3 files changed, 54 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
+> index 821d93c8f712..0999d27cb1c9 100644
+> --- a/drivers/infiniband/core/uverbs.h
+> +++ b/drivers/infiniband/core/uverbs.h
+> @@ -160,6 +160,9 @@ struct ib_uverbs_file {
+>  	struct page *disassociate_page;
+>  
+>  	struct xarray		idr;
+> +
+> +	struct mutex disassociation_lock;
+> +	atomic_t disassociated;
+>  };
+>  
+>  struct ib_uverbs_event {
+> diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+> index bc099287de9a..589f27c09a2e 100644
+> --- a/drivers/infiniband/core/uverbs_main.c
+> +++ b/drivers/infiniband/core/uverbs_main.c
+> @@ -76,6 +76,7 @@ static dev_t dynamic_uverbs_dev;
+>  static DEFINE_IDA(uverbs_ida);
+>  static int ib_uverbs_add_one(struct ib_device *device);
+>  static void ib_uverbs_remove_one(struct ib_device *device, void *client_data);
+> +static struct ib_client uverbs_client;
+>  
+>  static char *uverbs_devnode(const struct device *dev, umode_t *mode)
+>  {
+> @@ -217,6 +218,7 @@ void ib_uverbs_release_file(struct kref *ref)
+>  
+>  	if (file->disassociate_page)
+>  		__free_pages(file->disassociate_page, 0);
+> +	mutex_destroy(&file->disassociation_lock);
+>  	mutex_destroy(&file->umap_lock);
+>  	mutex_destroy(&file->ucontext_lock);
+>  	kfree(file);
+> @@ -700,6 +702,12 @@ static int ib_uverbs_mmap(struct file *filp, struct vm_area_struct *vma)
+>  		ret = PTR_ERR(ucontext);
+>  		goto out;
+>  	}
+> +
+> +	if (atomic_read(&file->disassociated)) {
 
-Some of the adapters support Relaxed Ordering for the MRs.
-Driver queries support for Memory region relax ordering  support from
-firmware and  set relax ordering bit in REGISTER_MR request, if the users
-request for the support. Also, this is supported only if the PCIe device
-has enabled relaxed ordering attribute.
+I don't see any of the newly introduced locks here. If it is
+intentional, it needs to be documented.
 
-Reviewed-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
-Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Reviewed-by: Vijay Kumar Mandadapu <vijaykumar.mandadapu@broadcom.com>
-Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 14 ++++++++++++++
- drivers/infiniband/hw/bnxt_re/qplib_res.h |  5 +++++
- 2 files changed, 19 insertions(+)
+> +		ret = -EPERM;
+> +		goto out;
+> +	}
+> +
+>  	vma->vm_ops = &rdma_umap_ops;
+>  	ret = ucontext->device->ops.mmap(ucontext, vma);
+>  out:
+> @@ -726,7 +734,7 @@ static void rdma_umap_open(struct vm_area_struct *vma)
+>  	/*
+>  	 * Disassociation already completed, the VMA should already be zapped.
+>  	 */
+> -	if (!ufile->ucontext)
+> +	if (!ufile->ucontext || atomic_read(&ufile->disassociated))
+>  		goto out_unlock;
+>  
+>  	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+> @@ -822,6 +830,8 @@ void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile)
+>  	struct rdma_umap_priv *priv, *next_priv;
+>  
+>  	lockdep_assert_held(&ufile->hw_destroy_rwsem);
+> +	mutex_lock(&ufile->disassociation_lock);
+> +	atomic_set(&ufile->disassociated, 1);
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 50cf3ec..a081580 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -115,6 +115,14 @@ static enum ib_access_flags __to_ib_access_flags(int qflags)
- 	return iflags;
- };
- 
-+static void bnxt_re_check_and_set_relaxed_ordering(struct bnxt_re_dev *rdev,
-+						   struct bnxt_qplib_mrw *qplib_mr)
-+{
-+	if (_is_relaxed_ordering_supported(rdev->dev_attr.dev_cap_flags2) &&
-+	    pcie_relaxed_ordering_enabled(rdev->en_dev->pdev))
-+		qplib_mr->flags |= CMDQ_REGISTER_MR_FLAGS_ENABLE_RO;
-+}
-+
- static int bnxt_re_build_sgl(struct ib_sge *ib_sg_list,
- 			     struct bnxt_qplib_sge *sg_list, int num)
- {
-@@ -3875,6 +3883,9 @@ struct ib_mr *bnxt_re_get_dma_mr(struct ib_pd *ib_pd, int mr_access_flags)
- 	mr->qplib_mr.access_flags = __from_ib_access_flags(mr_access_flags);
- 	mr->qplib_mr.type = CMDQ_ALLOCATE_MRW_MRW_FLAGS_PMR;
- 
-+	if (mr_access_flags & IB_ACCESS_RELAXED_ORDERING)
-+		bnxt_re_check_and_set_relaxed_ordering(rdev, &mr->qplib_mr);
-+
- 	/* Allocate and register 0 as the address */
- 	rc = bnxt_qplib_alloc_mrw(&rdev->qplib_res, &mr->qplib_mr);
- 	if (rc)
-@@ -4108,6 +4119,9 @@ static struct ib_mr *__bnxt_re_user_reg_mr(struct ib_pd *ib_pd, u64 length, u64
- 	mr->qplib_mr.va = virt_addr;
- 	mr->qplib_mr.total_size = length;
- 
-+	if (mr_access_flags & IB_ACCESS_RELAXED_ORDERING)
-+		bnxt_re_check_and_set_relaxed_ordering(rdev, &mr->qplib_mr);
-+
- 	umem_pgs = ib_umem_num_dma_blocks(umem, page_size);
- 	rc = bnxt_qplib_reg_mr(&rdev->qplib_res, &mr->qplib_mr, umem,
- 			       umem_pgs, page_size);
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-index b452b2f..049805a 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-@@ -570,4 +570,9 @@ static inline bool _is_alloc_mr_unified(u16 dev_cap_flags)
- 	return dev_cap_flags & CREQ_QUERY_FUNC_RESP_SB_MR_REGISTER_ALLOC;
- }
- 
-+static inline bool _is_relaxed_ordering_supported(u16 dev_cap_ext_flags2)
-+{
-+	return dev_cap_ext_flags2 & CREQ_QUERY_FUNC_RESP_SB_MEMORY_REGION_RO_SUPPORTED;
-+}
-+
- #endif /* __BNXT_QPLIB_RES_H__ */
--- 
-2.5.5
+Why do you use atomic_t and not regular bool?
 
+>  
+>  	while (1) {
+>  		struct mm_struct *mm = NULL;
+> @@ -847,8 +857,10 @@ void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile)
+>  			break;
+>  		}
+>  		mutex_unlock(&ufile->umap_lock);
+> -		if (!mm)
+> +		if (!mm) {
+> +			mutex_unlock(&ufile->disassociation_lock);
+>  			return;
+> +		}
+>  
+>  		/*
+>  		 * The umap_lock is nested under mmap_lock since it used within
+> @@ -878,8 +890,34 @@ void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile)
+>  		mmap_read_unlock(mm);
+>  		mmput(mm);
+>  	}
+> +
+> +	mutex_unlock(&ufile->disassociation_lock);
+>  }
+>  
+> +/**
+> + * rdma_user_mmap_disassociate() - Revoke mmaps for a device
+> + * @device: device to revoke
+> + *
+> + * This function should be called by drivers that need to disable mmaps for the
+> + * device, for instance because it is going to be reset.
+> + */
+> +void rdma_user_mmap_disassociate(struct ib_device *device)
+> +{
+> +	struct ib_uverbs_device *uverbs_dev =
+> +		ib_get_client_data(device, &uverbs_client);
+> +	struct ib_uverbs_file *ufile;
+> +
+> +	mutex_lock(&uverbs_dev->lists_mutex);
+> +	list_for_each_entry(ufile, &uverbs_dev->uverbs_file_list, list) {
+> +		down_read(&ufile->hw_destroy_rwsem);
+
+I personally don't understand this locking scheme at all. I see newly
+introduced locks mixed together some old locks. 
+
+Jason, do you agree with this proposed locking scheme?
+
+Thanks
+
+> +		if (ufile->ucontext && !atomic_read(&ufile->disassociated))
+> +			uverbs_user_mmap_disassociate(ufile);
+> +		up_read(&ufile->hw_destroy_rwsem);
+> +	}
+> +	mutex_unlock(&uverbs_dev->lists_mutex);
+> +}
+> +EXPORT_SYMBOL(rdma_user_mmap_disassociate);
+> +
+>  /*
+>   * ib_uverbs_open() does not need the BKL:
+>   *
+> @@ -949,6 +987,9 @@ static int ib_uverbs_open(struct inode *inode, struct file *filp)
+>  	mutex_init(&file->umap_lock);
+>  	INIT_LIST_HEAD(&file->umaps);
+>  
+> +	mutex_init(&file->disassociation_lock);
+> +	atomic_set(&file->disassociated, 0);
+> +
+>  	filp->private_data = file;
+>  	list_add_tail(&file->list, &dev->uverbs_file_list);
+>  	mutex_unlock(&dev->lists_mutex);
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index a1dcf812d787..09b80c8253e2 100644
+> --- a/include/rdma/ib_verbs.h
+> +++ b/include/rdma/ib_verbs.h
+> @@ -2948,6 +2948,14 @@ int rdma_user_mmap_entry_insert_range(struct ib_ucontext *ucontext,
+>  				      size_t length, u32 min_pgoff,
+>  				      u32 max_pgoff);
+>  
+> +#if IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
+> +void rdma_user_mmap_disassociate(struct ib_device *device);
+> +#else
+> +static inline void rdma_user_mmap_disassociate(struct ib_device *device)
+> +{
+> +}
+> +#endif
+> +
+>  static inline int
+>  rdma_user_mmap_entry_insert_exact(struct ib_ucontext *ucontext,
+>  				  struct rdma_user_mmap_entry *entry,
+> -- 
+> 2.33.0
+> 
+> 
 
