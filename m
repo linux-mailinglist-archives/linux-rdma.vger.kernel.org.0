@@ -1,111 +1,193 @@
-Return-Path: <linux-rdma+bounces-4679-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4680-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E097B967DC4
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2024 04:23:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E598967E3D
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2024 05:45:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64FCCB20F5A
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2024 02:23:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 589081C2172C
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2024 03:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 614B528683;
-	Mon,  2 Sep 2024 02:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7F95FEE4;
+	Mon,  2 Sep 2024 03:45:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jfvhpYjL"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="RQ3gVQr8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5345125DB;
-	Mon,  2 Sep 2024 02:22:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96095A32;
+	Mon,  2 Sep 2024 03:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725243775; cv=none; b=DfXQJNnrlo/HwDtYZFUgDCrRH0twGuaFOUIDGbTW0FXn+S7cD0yLwEPoM8gqD/iUUj8Imyfngp0P+bh73tf20JSaBmCVmIBbGEJjOD9fkqR0jlEcyXommUi77Y5ykDUlyHLDL1SpzxiGWNP1A9RS8GdcVLtS8f+ULJAxWZCaxoI=
+	t=1725248743; cv=none; b=K2iEzPnvuEFUSZyzMICFIhXx9KqVPvxPpj1N+ch5DF1LEz3sgZ/rhxaXMv5+hz1Y6AT+b03c5EttMgumAGo4X/YCSsGZcBkzxCrwLMRwhWhyJ22UBLjpAdzjp6Vt4IIdRdUW9jpWIFPiappHNW8QjU9IbQkzAkVTjBJSVXgmTGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725243775; c=relaxed/simple;
-	bh=VBpOW1rPecjQYRIrpggC1kPwY63fYKTj1DOYJLkKlMQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ex6lbSE7bA85lbelVE0P9YsCnp+P1KY+wIQYxPXPZcdvOJR6AyjZFGPw3UpV1Jpw7NfXKtCKJ0G3hierZuAJ6g2fVwAhfCtS3fFXTpFxn3r4zxm7wwMR8Ige5DjtV67bWmBfYId9KqC5axo8J5dipG8mGK414BqyMSmg4LxGPs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jfvhpYjL; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-82a24dec9cbso96373539f.1;
-        Sun, 01 Sep 2024 19:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725243773; x=1725848573; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=smFEs2rlCqPI6yQiGlZ7Lzo3jx7RVZ+QX/9oeATf2E4=;
-        b=jfvhpYjLs8Mb4yLdu7S0ndINQzguHFMfDGLOaAh3qFX9UyFr208qArNDU2fPt8F9FF
-         JMk948H7zyF8unqR3mwv1yaiJyWAgD2YMDq4vgFaJ+Lc71/xo9zx1/rVqCXERi3y1EQ0
-         4xwxka5erP/o0Z1ijg3hRLOMIk8A4i0d1MJ8OdipMJlgnNnLm/lBDE0DzXFFZd0osRm+
-         HDOXTDmQ2nCNbWersHvOahhQYwD+eC7ZRtNOSUAT5VlymCur2P3zUhRJ1woijUMHkTPL
-         qc2Fr+j5iR/p000ZyKixGO8WN8dBcO4lK8UI287wVogsIDOxrixN7k3HjVZ9z/MedlV0
-         Sc+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725243773; x=1725848573;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=smFEs2rlCqPI6yQiGlZ7Lzo3jx7RVZ+QX/9oeATf2E4=;
-        b=aAbHNuoBMXGoihdwqv9OGdUw24Bw6kQkS08N2J+6mJpUQR+fkjHh9XEfxeYrwAhQe3
-         gKj4YCWkKCitpHIVuORZQBz9VoP8ueXNzEH7b9/U3Qoh9JE9RY+J3FM2A96d/A5rEIoT
-         ydLmkfstX0TMTYukoWCaFicyeeUXmPofnjMLDziqxTXTIoRtvWQCiBgW+13QH7ErbrLt
-         TGKC9cNvWxcyXiBIbrzCJBiC6KeMVcii1SWAwMNob4eC6ARk9P+CnwU98jzZf0zF4o5n
-         HyMgf7ix55BTmUWETe4gv5WVQEek4pHI5pLS7y32NxtrLkGQ+7W/u8N/Wb83UR0XxcCL
-         RAOA==
-X-Forwarded-Encrypted: i=1; AJvYcCVHaOr+20Lo0Hm45N+xv7r2KnQpVEmh6hrkQkNubwy/RR23onxQ3pUYuUmwnDPp8bx2+UZr/S6wwDcD@vger.kernel.org, AJvYcCVSId4/kjl1FGgnyTrtv850ZuBVNNgN98o82OJmm9KzBLDhseXaRZ4kjCMYmcW516bliM4ZYpGc@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx0onBWJDqi59BdCnV+VuD3JNVS77xcAHM8xrf+paus0hObW4F6
-	S8874H5CFS8ewhxRJI5EWpsXBpqwBNyfEVbW94zEPuxnnOzTnj7w
-X-Google-Smtp-Source: AGHT+IEureTSYk1XiTG8IaBESouuGYVQyeHzvBc4GMe4fnEP6FfX0pJ0Z7rjyt+6m+NjYnNHS7zNlQ==
-X-Received: by 2002:a6b:d210:0:b0:7f3:a0aa:164a with SMTP id ca18e2360f4ac-82a13e8eef3mr751075139f.4.1725243772663;
-        Sun, 01 Sep 2024 19:22:52 -0700 (PDT)
-Received: from ?IPV6:2601:282:1e02:1040:1009:3a3e:c395:f649? ([2601:282:1e02:1040:1009:3a3e:c395:f649])
-        by smtp.googlemail.com with ESMTPSA id 8926c6da1cb9f-4ced2eec745sm1925355173.176.2024.09.01.19.22.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Sep 2024 19:22:52 -0700 (PDT)
-Message-ID: <cad1d443-ccfb-4d10-ac2d-26bb10c99d05@gmail.com>
-Date: Sun, 1 Sep 2024 20:22:50 -0600
+	s=arc-20240116; t=1725248743; c=relaxed/simple;
+	bh=+MBIPJtYIoiJf8QT9pP6fMzxLjVl9hSOhEt9z81QUYs=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=iwP2KzxSHrIW5jfWUHRC5yu7jZZAeWzZE79V2KVD2Cb0PEqvRbsCwAoH9L91AAjGJWlZ7pFjkyT4qYUrjehEgPDfURimnpoCew8+LtZusGiOhXbL94AgHEd/9T/WlaH68JeV5p17BMVnCEdjd0xWcThGcx76q/MYXM5X1n4nvUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=RQ3gVQr8; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id F35BA20B7165; Sun,  1 Sep 2024 20:45:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F35BA20B7165
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1725248735;
+	bh=+wnfCgqjbsq5/x6cwBds07gGYWXxjV04gceiknVyHO0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=RQ3gVQr8ew1PBzO1Rn7mXiFsgiG8lNjlgoNs5OKsuV6LmUlqmxpAcCvPncjV46UEH
+	 enGljgeenLsMJEgl4TTnRVDPFJ7V/KtzpfzZDTCnTSjDmz3P4QXK5VvH7Ia14Su8x3
+	 SXZYU/O/pvoUbrfFW3YmjBc8rFICpQf2isd43XbY=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Long Li <longli@microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Erick Archer <erick.archer@outlook.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Ahmed Zaki <ahmed.zaki@intel.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: [PATCH net-next v2] net: mana: Improve mana_set_channels() in low mem conditions
+Date: Sun,  1 Sep 2024 20:45:34 -0700
+Message-Id: <1725248734-21760-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC iproute2-next 2/4] rdma: Add support for rdma monitor
-Content-Language: en-US
-To: Michael Guralnik <michaelgur@nvidia.com>, leonro@nvidia.com
-Cc: jgg@nvidia.com, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
- Chiara Meiohas <cmeiohas@nvidia.com>
-References: <20240901005456.25275-1-michaelgur@nvidia.com>
- <20240901005456.25275-3-michaelgur@nvidia.com>
-From: David Ahern <dsahern@gmail.com>
-In-Reply-To: <20240901005456.25275-3-michaelgur@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 8/31/24 6:54 PM, Michael Guralnik wrote:
-> $ echo 4 > /sys/class/net/eth2/device/sriov_numvfs
-> [NETDEV_ATTACH]	dev 6 port 2 netdev 7
-> [NETDEV_ATTACH]	dev 6 port 3 netdev 8
-> [NETDEV_ATTACH]	dev 6 port 4 netdev 9
-> [NETDEV_ATTACH]	dev 6 port 5 netdev 10
-> [REGISTER]	dev 7
-> [NETDEV_ATTACH]	dev 7 port 1 netdev 11
-> [REGISTER]	dev 8
-> [NETDEV_ATTACH]	dev 8 port 1 netdev 12
-> [REGISTER]	dev 9
-> [NETDEV_ATTACH]	dev 9 port 1 netdev 13
-> [REGISTER]	dev 10
-> [NETDEV_ATTACH]	dev 10 port 1 netdev 14
-> 
+The mana_set_channels() function requires detaching the mana
+driver and reattaching it with changed channel values.
+During this operation if the system is low on memory, the reattach
+might fail, causing the network device being down.
+To avoid this we pre-allocate buffers at the beginning of set operation,
+to prevent complete network loss
 
-at a minimum the netdev output can be device names not indices; I would
-expect the same for IB devices (I think that is the `dev N` in the
-output) though infrastructure might be needed in iproute2.
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+---
+ Changes in v2
+ * Pass num_queues as argument in mana_pre_alloc_rxbufs()
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c |  6 ++--
+ .../ethernet/microsoft/mana/mana_ethtool.c    | 28 ++++++++++---------
+ include/net/mana/mana.h                       |  2 +-
+ 3 files changed, 19 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 3e865985340e..a174ca719aba 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -608,7 +608,7 @@ static void mana_get_rxbuf_cfg(int mtu, u32 *datasize, u32 *alloc_size,
+ 	*datasize = mtu + ETH_HLEN;
+ }
+ 
+-int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu)
++int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu, int num_queues)
+ {
+ 	struct device *dev;
+ 	struct page *page;
+@@ -622,7 +622,7 @@ int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu)
+ 
+ 	dev = mpc->ac->gdma_dev->gdma_context->dev;
+ 
+-	num_rxb = mpc->num_queues * mpc->rx_queue_size;
++	num_rxb = num_queues * mpc->rx_queue_size;
+ 
+ 	WARN(mpc->rxbufs_pre, "mana rxbufs_pre exists\n");
+ 	mpc->rxbufs_pre = kmalloc_array(num_rxb, sizeof(void *), GFP_KERNEL);
+@@ -682,7 +682,7 @@ static int mana_change_mtu(struct net_device *ndev, int new_mtu)
+ 	int err;
+ 
+ 	/* Pre-allocate buffers to prevent failure in mana_attach later */
+-	err = mana_pre_alloc_rxbufs(mpc, new_mtu);
++	err = mana_pre_alloc_rxbufs(mpc, new_mtu, mpc->num_queues);
+ 	if (err) {
+ 		netdev_err(ndev, "Insufficient memory for new MTU\n");
+ 		return err;
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+index d6a35fbda447..dc3864377538 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+@@ -345,27 +345,29 @@ static int mana_set_channels(struct net_device *ndev,
+ 	struct mana_port_context *apc = netdev_priv(ndev);
+ 	unsigned int new_count = channels->combined_count;
+ 	unsigned int old_count = apc->num_queues;
+-	int err, err2;
++	int err;
++
++	err = mana_pre_alloc_rxbufs(apc, ndev->mtu, new_count);
++	if (err) {
++		netdev_err(ndev, "Insufficient memory for new allocations");
++		return err;
++	}
+ 
+ 	err = mana_detach(ndev, false);
+ 	if (err) {
+ 		netdev_err(ndev, "mana_detach failed: %d\n", err);
+-		return err;
++		goto out;
+ 	}
+ 
+ 	apc->num_queues = new_count;
+ 	err = mana_attach(ndev);
+-	if (!err)
+-		return 0;
+-
+-	netdev_err(ndev, "mana_attach failed: %d\n", err);
+-
+-	/* Try to roll it back to the old configuration. */
+-	apc->num_queues = old_count;
+-	err2 = mana_attach(ndev);
+-	if (err2)
+-		netdev_err(ndev, "mana re-attach failed: %d\n", err2);
++	if (err) {
++		apc->num_queues = old_count;
++		netdev_err(ndev, "mana_attach failed: %d\n", err);
++	}
+ 
++out:
++	mana_pre_dealloc_rxbufs(apc);
+ 	return err;
+ }
+ 
+@@ -414,7 +416,7 @@ static int mana_set_ringparam(struct net_device *ndev,
+ 
+ 	/* pre-allocating new buffers to prevent failures in mana_attach() later */
+ 	apc->rx_queue_size = new_rx;
+-	err = mana_pre_alloc_rxbufs(apc, ndev->mtu);
++	err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
+ 	apc->rx_queue_size = old_rx;
+ 	if (err) {
+ 		netdev_err(ndev, "Insufficient memory for new allocations\n");
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 1f869624811d..dfbf78d4e557 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -488,7 +488,7 @@ struct bpf_prog *mana_xdp_get(struct mana_port_context *apc);
+ void mana_chn_setxdp(struct mana_port_context *apc, struct bpf_prog *prog);
+ int mana_bpf(struct net_device *ndev, struct netdev_bpf *bpf);
+ void mana_query_gf_stats(struct mana_port_context *apc);
+-int mana_pre_alloc_rxbufs(struct mana_port_context *apc, int mtu);
++int mana_pre_alloc_rxbufs(struct mana_port_context *apc, int mtu, int num_queues);
+ void mana_pre_dealloc_rxbufs(struct mana_port_context *apc);
+ 
+ extern const struct ethtool_ops mana_ethtool_ops;
+-- 
+2.34.1
 
 
