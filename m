@@ -1,87 +1,96 @@
-Return-Path: <linux-rdma+bounces-4691-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4692-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AAA99680C7
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2024 09:38:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFA84968108
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2024 09:54:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 083B2B20C05
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2024 07:38:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BFF41C220D6
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2024 07:54:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30274178CCA;
-	Mon,  2 Sep 2024 07:38:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C256178388;
+	Mon,  2 Sep 2024 07:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mNN4hcTP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ENzNdgIp"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAF823C00;
-	Mon,  2 Sep 2024 07:38:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1CE3C00;
+	Mon,  2 Sep 2024 07:54:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725262682; cv=none; b=KHFtGS5ba7t1y4YGXmJFCkmh9usETKVcG+6LZAePl4TsXlJ/oFJmhvkJw35I3MoYSJwUwSPycmD5rs5q2xUTi6Dg9BcvtdOWRjZhBvHNv4Kv7Ns0UyQ3CGxJi44CLqS8R74RLc0PY/Vfga36Nrgf77p3wTWcPxwrjIFlvY3dojc=
+	t=1725263671; cv=none; b=bQsmFKs9pXWO/dHTSPepg8ZjiefDdXKpY6+4TIs92EJUyXWrFnr3ra7LAf8zaV5XPS/kjrzLjp+Hr2LSvI1qXknk81HVSimOVkwQY4U/2yxCkSFdfXVm7QrAdloTSAmW8PHu029NMUdojvdK4qz1U3SPdHeUp26/b6MkTwwSwrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725262682; c=relaxed/simple;
-	bh=2fqXB2uqKlFhoNQVceRy621qnr6rZrc7c4Uatrn0b4c=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=DKSYzxvF0OwSm7CQHNcyQf2FEPVb7lEaZmggiBvXd7vXL8JnYpI9JyEyX+6oiw8ox1YL8UFSFTvN9PYSjFC4kFP4EbDMQ05IM/1+OjpBXxFtKBiUweHjIJCCLEZmNKNt4lbdfLv/O2947hwOGRV2I/F3FyZkUzYGXOfQJi7tZ+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mNN4hcTP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9C56C4CEC2;
-	Mon,  2 Sep 2024 07:38:00 +0000 (UTC)
+	s=arc-20240116; t=1725263671; c=relaxed/simple;
+	bh=ir0bV4eWCqfzpJUlzWATHLEghsh+Zq9eBFPUPJ47oNA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GwReGWE/bUzx/g06lEzUEORj6Xq5YZ8sjw53MqQ5+Zi21B5caaujFYI4JM9RNkSj4jffFQJ/oYYUNG6q06MB4Az+MNo2ptrPjT+0do17asDabNSSjZYYgF07PNRFjBwABnt1XmBNTLKGzVFIiBP0ZbLq7CEJUi7VX8NbyZuKJ8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ENzNdgIp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3F33C4CEC2;
+	Mon,  2 Sep 2024 07:54:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725262681;
-	bh=2fqXB2uqKlFhoNQVceRy621qnr6rZrc7c4Uatrn0b4c=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=mNN4hcTPHFfYhNFjW198YuYBH1Ut8jJDepS0ywqv3EACBlcvk/MnMmQZX77nPlY7j
-	 cxK4AI9FF5xLyiwYRCYSeS/vlADOw7oyvjI0H6PRmtJ0w5efhkwHbBS1ulJz53uFFY
-	 RiAS7/pBxD+6vRWgeH8mFy65OHwnng/jCVMDcw3MIqgIrRaARM8i5PvQPoAowf8F1H
-	 oZ7bm5hm72Jmu+tbKn3Bhz8gMpfLe51KeNq2zmx7mRsS22aH+r9cX0KzzqXYmAMS3o
-	 X7L89R9nVxiGKnWu8KCbFdi/b6V55Zb404BgLldP+1Cj96tZG+50DV63su6UXaiFV0
-	 7O4vvgVvip4Ig==
+	s=k20201202; t=1725263670;
+	bh=ir0bV4eWCqfzpJUlzWATHLEghsh+Zq9eBFPUPJ47oNA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ENzNdgIpOVhGUWeCnUtagyLIoYwOKUvIzy8cGvYJeQ5LBP+GTusQFXPzhDSliQfZ6
+	 XPo10nuFx7EXVss9n4ub/iX/KHfTAxMZE/X/wvCZbgUdsknKSdk4s3POAdDInFt/cr
+	 9ULGSkDJXqLYv41i4V/tZsmWEwLSs3N9z1LYFahcTKqEZdE1eVwAa6tPm7fXJi+iOB
+	 Yof0lzY1JU0eVA12Ju9KLlbnc4/sEd1HIdvAGeiSmIA/4JEtjCcj/lGQShZ+sV+lYA
+	 EX+fcK4zoa2aJQsOPQ49oByyoeTx+vUwfFDKIA/9HZEbyp/1fmZnJ+A7fe3P8RNIvo
+	 PWZDn78Qeea/g==
+Date: Mon, 2 Sep 2024 10:54:26 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Ajay Sharma <sharmaajay@microsoft.com>, 
- Konstantin Taranov <kotaranov@microsoft.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- longli@linuxonhyperv.com
-Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Long Li <longli@microsoft.com>, 
- stable@vger.kernel.org
-In-Reply-To: <1725030993-16213-1-git-send-email-longli@linuxonhyperv.com>
-References: <1725030993-16213-1-git-send-email-longli@linuxonhyperv.com>
-Subject: Re: [PATCH rdma-next v2 1/2] RDMA/mana_ib: use the correct page
- table index based on hardware page size
-Message-Id: <172526267715.400537.4084099228794202996.b4-ty@kernel.org>
-Date: Mon, 02 Sep 2024 10:37:57 +0300
+To: David Ahern <dsahern@gmail.com>
+Cc: Michael Guralnik <michaelgur@nvidia.com>, jgg@nvidia.com,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	Chiara Meiohas <cmeiohas@nvidia.com>
+Subject: Re: [RFC iproute2-next 2/4] rdma: Add support for rdma monitor
+Message-ID: <20240902075426.GD4026@unreal>
+References: <20240901005456.25275-1-michaelgur@nvidia.com>
+ <20240901005456.25275-3-michaelgur@nvidia.com>
+ <cad1d443-ccfb-4d10-ac2d-26bb10c99d05@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cad1d443-ccfb-4d10-ac2d-26bb10c99d05@gmail.com>
 
+On Sun, Sep 01, 2024 at 08:22:50PM -0600, David Ahern wrote:
+> On 8/31/24 6:54 PM, Michael Guralnik wrote:
+> > $ echo 4 > /sys/class/net/eth2/device/sriov_numvfs
+> > [NETDEV_ATTACH]	dev 6 port 2 netdev 7
+> > [NETDEV_ATTACH]	dev 6 port 3 netdev 8
+> > [NETDEV_ATTACH]	dev 6 port 4 netdev 9
+> > [NETDEV_ATTACH]	dev 6 port 5 netdev 10
+> > [REGISTER]	dev 7
+> > [NETDEV_ATTACH]	dev 7 port 1 netdev 11
+> > [REGISTER]	dev 8
+> > [NETDEV_ATTACH]	dev 8 port 1 netdev 12
+> > [REGISTER]	dev 9
+> > [NETDEV_ATTACH]	dev 9 port 1 netdev 13
+> > [REGISTER]	dev 10
+> > [NETDEV_ATTACH]	dev 10 port 1 netdev 14
+> > 
+> 
+> at a minimum the netdev output can be device names not indices; I would
+> expect the same for IB devices (I think that is the `dev N` in the
+> output) though infrastructure might be needed in iproute2.
 
-On Fri, 30 Aug 2024 08:16:32 -0700, longli@linuxonhyperv.com wrote:
-> MANA hardware uses 4k page size. When calculating the page table index,
-> it should use the hardware page size, not the system page size.
+I understand the request and it is a good one for the users of the tool.
+
+However, we will need to remember that "real" users of this monitoring
+UAPI (from kernel side) are the orchestration tools and they won't care
+about the names, but about the IDs, which won't be used in rdmatool.
+
+Thanks
+
 > 
 > 
-
-Applied, thanks!
-
-[1/2] RDMA/mana_ib: use the correct page table index based on hardware page size
-      https://git.kernel.org/rdma/rdma/c/9e517a8e9d9a30
-[2/2] RDMA/mana_ib: use the correct page size for mapping user-mode doorbell page
-      https://git.kernel.org/rdma/rdma/c/4a3b99bc04e501
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
 
