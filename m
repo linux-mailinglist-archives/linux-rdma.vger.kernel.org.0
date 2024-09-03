@@ -1,54 +1,54 @@
-Return-Path: <linux-rdma+bounces-4714-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4715-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C680B969BA0
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2024 13:25:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EDAE969BA1
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2024 13:25:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 719EB1F2529B
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2024 11:25:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 820F21C2166E
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2024 11:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24AA1A42C2;
-	Tue,  3 Sep 2024 11:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6EA1A42B3;
+	Tue,  3 Sep 2024 11:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gefml+WH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tzqNnGlg"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816A51A42B3
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Sep 2024 11:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5A81B12E9
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Sep 2024 11:25:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725362705; cv=none; b=pI75h3Rk4uGa6kTz/4sn8pnyP+365Dy8f24/TMcE6pgiD3R/K735ctzdFmpD9udouBJET3Bod13JId/CsYDkujTWeVM87zYpPB6heq49mRuo/KUYt6bW3o2qdE7XNdzRPT95NYyvotpM9ywaCkO9VudOZPlKr0bCd/azZ6TPEZg=
+	t=1725362709; cv=none; b=BlRGgo0WN6sbOkThvGqQAZzEYMnel5ue0SVIdQY2ntXbBQNWOvOQvABxGIU4dL7r6t9lLbjtxpm7tNjpe0dzeifXhzzoqc0uswQVc5RMuEHcvyc924B/o6Lp6HtcGdBimgsdkw4PdIpNc+xCT14thnTRXdKlMEWtced7pIYymXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725362705; c=relaxed/simple;
-	bh=ZG4EFnbDx7TddsG90VDGCNy+1YIKAFuIShpWeP91iU4=;
+	s=arc-20240116; t=1725362709; c=relaxed/simple;
+	bh=XtQpO4Z7zLlEIeRy7PgKvwzhRTEJQpS8dq5ZFRQXJ4E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U6xUOw4ByM0Haz3ZuV48JqHWWo5QLlrHcyaSYjvkTDJZ2JdtRXMbHU6uE06FpKZck8lc/87akTLLMQMUuh/Xz7HlWjjj3aa1Hl1HEAT4yxrq+1b8t0PA+kW+nP/iyUh8sJJW/QplPRKderOGenf3qCz0Vss6ZZutzOM54zRfoKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gefml+WH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FDFAC4CEC4;
-	Tue,  3 Sep 2024 11:25:04 +0000 (UTC)
+	 MIME-Version; b=o5OwGyInYm0JRZTaR8tOii0V6AveLblyOl0TNzQQsDsR3v6QRNwvMQ2JL/N0m4H+1hTgmjkckatKdSpG/1+HCzH0MngtErvzWEMKtURUl9pMLrWhd2pNofsqssNKTLMFtJFoL1vZ8P/aFKLsE/fhX/m1VvSv2qfYF5wssWQ9kGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tzqNnGlg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0858C4CEC4;
+	Tue,  3 Sep 2024 11:25:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725362705;
-	bh=ZG4EFnbDx7TddsG90VDGCNy+1YIKAFuIShpWeP91iU4=;
+	s=k20201202; t=1725362709;
+	bh=XtQpO4Z7zLlEIeRy7PgKvwzhRTEJQpS8dq5ZFRQXJ4E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Gefml+WHFiZshbDXVwG/t1Mbu1VFkmve6FH3Z8lZ/aFxXVGst9/r7cA4RCTFOKFHp
-	 FyMprBRf5GTaXQbGt7RVPvTKHm+rTPO72OWFlGfJbPMsD1JgshVuI/QFNLrd1MShIu
-	 cfBu5GBrJLVRyiaGmyYfjPR58v4ZjAr9f7czSBASHxx2IGyfN5vCQnD46SEZpvw+vu
-	 +XmrUw7/S75nfTUlRQ5g/pyS3O264pYWztjjyGtujkeTw1oKjLDnqOVRD2d9VCwqUh
-	 epiMlNWB2rB4tTzT0VA1oH7x4mRlfAbNwBS84jA6EJ0R+wlVuFc9LJqFH3j/pcTqbu
-	 XRPr4AMyC39Kg==
+	b=tzqNnGlgUrSBSpHAUki1vXb+g5EIPvgZBnTt3f/NholXcb7UvYyPEEKoAngKV/c8I
+	 4C5B9dZUlbTPDI6JN4fRbZuFTA+q6les9vHFlPhmr+MIe2gn9+WupLHtpQxHsbTq1e
+	 0UFRHtYJQxu2BO8I0FIF0a1ecjJsmHOUbkyyYWxJRvj3B6gpumyPSZoaj1K8rlyJxK
+	 STmOsFxPdeUxKcuKGt8Q25kUUYYvMX+lQgdKAdp6tuf2/dYrnxMbu3cPHtsHDsDgLI
+	 3fZHyusPJh4JaulS1Z5ChY/uW9cBPe9gAD65f8+qtmfj4SgcWJRAIfEONnWyIUAV57
+	 DgLjsAQozoeFw==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Michael Guralnik <michaelgur@nvidia.com>,
 	linux-rdma@vger.kernel.org,
 	Shay Drory <shayd@nvidia.com>
-Subject: [PATCH rdma-next 3/4] RDMA/mlx5: Limit usage of over-sized mkeys from the MR cache
-Date: Tue,  3 Sep 2024 14:24:49 +0300
-Message-ID: <8ba3a6e3748aace2026de8b83da03aba084f78f4.1725362530.git.leon@kernel.org>
+Subject: [PATCH rdma-next 4/4] RDMA/mlx5: Fix MR cache temp entries cleanup
+Date: Tue,  3 Sep 2024 14:24:50 +0300
+Message-ID: <e4fa4bb03bebf20dceae320f26816cd2dde23a26.1725362530.git.leon@kernel.org>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <cover.1725362530.git.leon@kernel.org>
 References: <cover.1725362530.git.leon@kernel.org>
@@ -62,89 +62,210 @@ Content-Transfer-Encoding: 8bit
 
 From: Michael Guralnik <michaelgur@nvidia.com>
 
-When searching the MR cache for suitable cache entries, don't use mkeys
-larger than twice the size required for the MR.
-This should ensure the usage of mkeys closer to the minimal required size
-and reduce memory waste.
+Fix the cleanup of the temp cache entries that are dynamically created
+in the MR cache.
 
-On driver init we create entries for mkeys with clear attributes and
-powers of 2 sizes from 4 to the max supported size.
-This solves the issue for anyone using mkeys that fit these
-requirements.
+The cleanup of the temp cache entries is currently scheduled only when a
+new entry is created. Since in the cleanup of the entries only the mkeys
+are destroyed and the cache entry stays in the cache, subsequent
+registrations might reuse the entry and it will eventually be filled with
+new mkeys without cleanup ever getting scheduled again.
 
-In the use case where an MR is registered with different attributes,
-like an access flag we can't UMR, we'll create a new cache entry to store
-it upon dereg.
-Without this fix, any later registration with same attributes and smaller
-size will use the newly created cache entry and it's mkeys, disregarding
-the memory waste of using mkeys larger than required.
+On workloads that register and deregister MRs with a wide range of
+properties we see the cache ends up holding many cache entries, each
+holding the max number of mkeys that were ever used through it.
 
-For example, one worst-case scenario can be when registering and
-deregstering a 1GB mkey with ATS enabled which will cause the creation of
-a new cache entry to hold those type of mkeys. A user registering a 4k MR
-with ATS will end up using the new cache entry and an mkey that can
-support a 1GB MR, thus wasting x250k memory than actually needed in the HW.
+Additionally, as the cleanup work is scheduled to run over the whole
+cache, any mkey that is returned to the cache after the cleanup was
+scheduled will be held for less than the intended 30 seconds timeout.
 
-Additionally, allow all small registration to use the smallest size
-cache entry that is initialized on driver load even if size is larger
-than twice the required size.
+Solve both issues by dropping the existing remove_ent_work and reusing
+the existing per-entry work to also handle the temp entries cleanup.
 
-Fixes: 73d09b2fe833 ("RDMA/mlx5: Introduce mlx5r_cache_rb_key")
+Schedule the work to run with a 30 seconds delay every time we push an
+mkey to a clean temp entry.
+This ensures the cleanup runs on each entry only 30 seconds after the
+first mkey was pushed to an empty entry.
+
+As we have already been distinguishing between persistent and temp entries
+when scheduling the cache_work_func, it is not being scheduled in any
+other flows for the temp entries.
+
+Another benefit from moving to a per-entry cleanup is we now not
+required to hold the rb_tree mutex, thus enabling other flow to run
+concurrently.
+
+Fixes: dd1b913fb0d0 ("RDMA/mlx5: Cache all user cacheable mkeys on dereg MR flow")
 Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/mr.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  2 +-
+ drivers/infiniband/hw/mlx5/mr.c      | 82 +++++++++++-----------------
+ 2 files changed, 32 insertions(+), 52 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 80038e3998af..c17a35014a2b 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -49,6 +49,7 @@ enum {
- 	MAX_PENDING_REG_MR = 8,
- };
- 
-+#define MLX5_MR_CACHE_PERSISTENT_ENTRY_MIN_DESCS 4
- #define MLX5_UMR_ALIGN 2048
- 
- static void
-@@ -662,6 +663,7 @@ mkey_cache_ent_from_rb_key(struct mlx5_ib_dev *dev,
- {
- 	struct rb_node *node = dev->cache.rb_root.rb_node;
- 	struct mlx5_cache_ent *cur, *smallest = NULL;
-+	u64 ndescs_limit;
- 	int cmp;
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index c0b1a9cd752b..5505eb70939b 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -802,6 +802,7 @@ struct mlx5_cache_ent {
+ 	u8 is_tmp:1;
+ 	u8 disabled:1;
+ 	u8 fill_to_high_water:1;
++	u8 tmp_cleanup_scheduled:1;
  
  	/*
-@@ -680,10 +682,18 @@ mkey_cache_ent_from_rb_key(struct mlx5_ib_dev *dev,
- 			return cur;
+ 	 * - limit is the low water mark for stored mkeys, 2* limit is the
+@@ -833,7 +834,6 @@ struct mlx5_mkey_cache {
+ 	struct mutex		rb_lock;
+ 	struct dentry		*fs_root;
+ 	unsigned long		last_add;
+-	struct delayed_work	remove_ent_dwork;
+ };
+ 
+ struct mlx5_ib_port_resources {
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index c17a35014a2b..73962bd0b216 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -531,6 +531,21 @@ static void queue_adjust_cache_locked(struct mlx5_cache_ent *ent)
+ 	}
+ }
+ 
++static void clean_keys(struct mlx5_ib_dev *dev, struct mlx5_cache_ent *ent)
++{
++	u32 mkey;
++
++	spin_lock_irq(&ent->mkeys_queue.lock);
++	while (ent->mkeys_queue.ci) {
++		mkey = pop_mkey_locked(ent);
++		spin_unlock_irq(&ent->mkeys_queue.lock);
++		mlx5_core_destroy_mkey(dev->mdev, mkey);
++		spin_lock_irq(&ent->mkeys_queue.lock);
++	}
++	ent->tmp_cleanup_scheduled = false;
++	spin_unlock_irq(&ent->mkeys_queue.lock);
++}
++
+ static void __cache_work_func(struct mlx5_cache_ent *ent)
+ {
+ 	struct mlx5_ib_dev *dev = ent->dev;
+@@ -602,7 +617,11 @@ static void delayed_cache_work_func(struct work_struct *work)
+ 	struct mlx5_cache_ent *ent;
+ 
+ 	ent = container_of(work, struct mlx5_cache_ent, dwork.work);
+-	__cache_work_func(ent);
++	/* temp entries are never filled, only cleaned */
++	if (ent->is_tmp)
++		clean_keys(ent->dev, ent);
++	else
++		__cache_work_func(ent);
+ }
+ 
+ static int cache_ent_key_cmp(struct mlx5r_cache_rb_key key1,
+@@ -778,20 +797,6 @@ struct mlx5_ib_mr *mlx5_mr_cache_alloc(struct mlx5_ib_dev *dev,
+ 	return _mlx5_mr_cache_alloc(dev, ent, access_flags);
+ }
+ 
+-static void clean_keys(struct mlx5_ib_dev *dev, struct mlx5_cache_ent *ent)
+-{
+-	u32 mkey;
+-
+-	spin_lock_irq(&ent->mkeys_queue.lock);
+-	while (ent->mkeys_queue.ci) {
+-		mkey = pop_mkey_locked(ent);
+-		spin_unlock_irq(&ent->mkeys_queue.lock);
+-		mlx5_core_destroy_mkey(dev->mdev, mkey);
+-		spin_lock_irq(&ent->mkeys_queue.lock);
+-	}
+-	spin_unlock_irq(&ent->mkeys_queue.lock);
+-}
+-
+ static void mlx5_mkey_cache_debugfs_cleanup(struct mlx5_ib_dev *dev)
+ {
+ 	if (!mlx5_debugfs_root || dev->is_rep)
+@@ -904,10 +909,6 @@ mlx5r_cache_create_ent_locked(struct mlx5_ib_dev *dev,
+ 			ent->limit = 0;
+ 
+ 		mlx5_mkey_cache_debugfs_add_ent(dev, ent);
+-	} else {
+-		mod_delayed_work(ent->dev->cache.wq,
+-				 &ent->dev->cache.remove_ent_dwork,
+-				 msecs_to_jiffies(30 * 1000));
  	}
  
-+	/*
-+	 * Limit the usage of mkeys larger than twice the required size while
-+	 * also allowing the usage of smallest cache entry for small MRs.
-+	 */
-+	ndescs_limit = max_t(u64, rb_key.ndescs * 2,
-+			     MLX5_MR_CACHE_PERSISTENT_ENTRY_MIN_DESCS);
-+
- 	return (smallest &&
- 		smallest->rb_key.access_mode == rb_key.access_mode &&
- 		smallest->rb_key.access_flags == rb_key.access_flags &&
--		smallest->rb_key.ats == rb_key.ats) ?
-+		smallest->rb_key.ats == rb_key.ats &&
-+		smallest->rb_key.ndescs <= ndescs_limit) ?
- 		       smallest :
- 		       NULL;
+ 	return ent;
+@@ -918,35 +919,6 @@ mlx5r_cache_create_ent_locked(struct mlx5_ib_dev *dev,
+ 	return ERR_PTR(ret);
  }
-@@ -964,7 +974,7 @@ int mlx5_mkey_cache_init(struct mlx5_ib_dev *dev)
- 	mlx5_mkey_cache_debugfs_init(dev);
- 	mutex_lock(&cache->rb_lock);
- 	for (i = 0; i <= mkey_cache_max_order(dev); i++) {
--		rb_key.ndescs = 1 << (i + 2);
-+		rb_key.ndescs = MLX5_MR_CACHE_PERSISTENT_ENTRY_MIN_DESCS << i;
- 		ent = mlx5r_cache_create_ent_locked(dev, rb_key, true);
- 		if (IS_ERR(ent)) {
- 			ret = PTR_ERR(ent);
+ 
+-static void remove_ent_work_func(struct work_struct *work)
+-{
+-	struct mlx5_mkey_cache *cache;
+-	struct mlx5_cache_ent *ent;
+-	struct rb_node *cur;
+-
+-	cache = container_of(work, struct mlx5_mkey_cache,
+-			     remove_ent_dwork.work);
+-	mutex_lock(&cache->rb_lock);
+-	cur = rb_last(&cache->rb_root);
+-	while (cur) {
+-		ent = rb_entry(cur, struct mlx5_cache_ent, node);
+-		cur = rb_prev(cur);
+-		mutex_unlock(&cache->rb_lock);
+-
+-		spin_lock_irq(&ent->mkeys_queue.lock);
+-		if (!ent->is_tmp) {
+-			spin_unlock_irq(&ent->mkeys_queue.lock);
+-			mutex_lock(&cache->rb_lock);
+-			continue;
+-		}
+-		spin_unlock_irq(&ent->mkeys_queue.lock);
+-
+-		clean_keys(ent->dev, ent);
+-		mutex_lock(&cache->rb_lock);
+-	}
+-	mutex_unlock(&cache->rb_lock);
+-}
+-
+ int mlx5_mkey_cache_init(struct mlx5_ib_dev *dev)
+ {
+ 	struct mlx5_mkey_cache *cache = &dev->cache;
+@@ -962,7 +934,6 @@ int mlx5_mkey_cache_init(struct mlx5_ib_dev *dev)
+ 	mutex_init(&dev->slow_path_mutex);
+ 	mutex_init(&dev->cache.rb_lock);
+ 	dev->cache.rb_root = RB_ROOT;
+-	INIT_DELAYED_WORK(&dev->cache.remove_ent_dwork, remove_ent_work_func);
+ 	cache->wq = alloc_ordered_workqueue("mkey_cache", WQ_MEM_RECLAIM);
+ 	if (!cache->wq) {
+ 		mlx5_ib_warn(dev, "failed to create work queue\n");
+@@ -1013,7 +984,6 @@ void mlx5_mkey_cache_cleanup(struct mlx5_ib_dev *dev)
+ 		return;
+ 
+ 	mutex_lock(&dev->cache.rb_lock);
+-	cancel_delayed_work(&dev->cache.remove_ent_dwork);
+ 	for (node = rb_first(root); node; node = rb_next(node)) {
+ 		ent = rb_entry(node, struct mlx5_cache_ent, node);
+ 		spin_lock_irq(&ent->mkeys_queue.lock);
+@@ -2053,8 +2023,18 @@ static int mlx5_revoke_mr(struct mlx5_ib_mr *mr)
+ 	struct mlx5_ib_dev *dev = to_mdev(mr->ibmr.device);
+ 	struct mlx5_cache_ent *ent = mr->mmkey.cache_ent;
+ 
+-	if (mr->mmkey.cacheable && !mlx5r_umr_revoke_mr(mr) && !cache_ent_find_and_store(dev, mr))
++	if (mr->mmkey.cacheable && !mlx5r_umr_revoke_mr(mr) && !cache_ent_find_and_store(dev, mr)) {
++		ent = mr->mmkey.cache_ent;
++		/* upon storing to a clean temp entry - schedule its cleanup */
++		spin_lock_irq(&ent->mkeys_queue.lock);
++		if (ent->is_tmp && !ent->tmp_cleanup_scheduled) {
++			mod_delayed_work(ent->dev->cache.wq, &ent->dwork,
++					 msecs_to_jiffies(30 * 1000));
++			ent->tmp_cleanup_scheduled = true;
++		}
++		spin_unlock_irq(&ent->mkeys_queue.lock);
+ 		return 0;
++	}
+ 
+ 	if (ent) {
+ 		spin_lock_irq(&ent->mkeys_queue.lock);
 -- 
 2.46.0
 
