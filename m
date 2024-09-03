@@ -1,216 +1,236 @@
-Return-Path: <linux-rdma+bounces-4727-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4728-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF7F996A35B
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2024 17:53:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DEFA96ACEC
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 01:37:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D64D28395D
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2024 15:53:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B24BD1C240F3
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2024 23:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77E8B1885A2;
-	Tue,  3 Sep 2024 15:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="i1RL1pyC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0255D1D7983;
+	Tue,  3 Sep 2024 23:37:29 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2102.outbound.protection.outlook.com [40.107.95.102])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7767D2A1C5;
-	Tue,  3 Sep 2024 15:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.102
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725378787; cv=fail; b=Q834c6XgGo3U/BDx4uYfe32rP3b6FJ7I7vOGsIkjWmULPGvNWIFXZxB5Wyf2tNjDETYEeIPI8o/AD6gl7rf293R2xIjffkyh291cofAFusm6nDv1Mg46HjiPPMORWaYOeY0hPCvj5qEKhusoN85rkyF5Wc3/WJE2LioqNN/3E0s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725378787; c=relaxed/simple;
-	bh=p+TEJ8JW9HnQXklJUuPng1ZK3cBaR3l0+C6FCM7+kFo=;
-	h=Message-ID:Date:To:Cc:From:Subject:Content-Type:MIME-Version; b=qRh8L6ArF5SmBmpPzyHeHe4zMOayxF3jFVSR8F900D2atMDCUtOtMihdPSmM6ZexI+Jgqesnwm70An37gKKX5sjSY0qucMD01s8hyDOUMRNjE5ZzfW24Y3VDwae2l6oHTS+NZtTGmFWOZ4uB/BlHM93EKDaiHOBNX9mxM5mTVjk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=i1RL1pyC; arc=fail smtp.client-ip=40.107.95.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=AUgP12xNRJFppbAVEzPc9UxfMyWSsXFT3UgRFPLcuT5K8sNgMEE0xxu/ntNN1lUrvx2kMaDmR4Vyin3t82zfo6FcZjYXLyhzBK+ODPPC5FFEhl3yRzzQ3Z00MIhj3Ts+/UFdu3ypaaj+BdC7CqpK3cNugCk9T2BjIbMGoB2GxmPBW7r8dALtQ53Bx7Eg6T3rzG4gyf+BsxgvvKMS1om5yg404PoQsXVyssSekhFBwnBI9MuUleUNcCVYqymzj0T+t2EOPHSf+uOE3+iIOzr/upBR94aZogGtDVnBNwmbYXewEBGZ4/8e6UjvNbZCpLTMKr5wU75vWezevdW3sYFB2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p+TEJ8JW9HnQXklJUuPng1ZK3cBaR3l0+C6FCM7+kFo=;
- b=mkipJyFNW6Qs90tAWFNU5lP8vcZdEVerpq5THAScO55fUDNz4KMCyxuCM61eW2IOI2xE9xUgVXtIT3mJPIhKf2vlt6P34iSeWPrSe069Av3wutZcuyB8PDSCdRiw7qmx9n+tJNyZwWSimgobOF5EdaZRE0RpHbKYbE2T8lfx1qlRxrbbyGGB6osGPcwaU88wHGPSb3fM4Kj/ifNxeiMIf5QwgoPODlLIL0qCAXE27pL4AkLwA8XIeVKtNSIUTKyljn0RUChWI+85HwX0G2xmaDazMxYiLCaPT0Wcpf3SQY/oix8kZG6gUlfvgx8/mOAtjBvEgSW18tttpgd0qtwFnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p+TEJ8JW9HnQXklJUuPng1ZK3cBaR3l0+C6FCM7+kFo=;
- b=i1RL1pyCnFQc6s5HDIo8cFVxdnRLInsD8ywkUEeS5Zh5OnktLpWR7rmu45aYZAAZ4cSHfk/xzOZtPh6Ir72oaoXY1Q7EOQN5EFQcvCPxzrItrvion0CIGT6pggAFMvo6n84Akv5RNZxm698OZ0bNzmizbac0TZVTcVYBw4FUq4VFh9Px5d/ucejN0abxctBQepsgxXgH+vEbI3/uWcX7SZ6hxcOE4hJtnmN7yU0iJ+QmKX8vZJtwCdHqEkC+Em/eKQMC2L7vqjXxx0EPf8AT2KAMasq7rT+m1WyYXRvrfMnoLmEMKzoUg8hjht65vfxsWb1zBRpHFezWKRp/VJrRhQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-Received: from PH7PR01MB8146.prod.exchangelabs.com (2603:10b6:510:2bd::18) by
- CH7PR01MB9052.prod.exchangelabs.com (2603:10b6:610:250::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7918.25; Tue, 3 Sep 2024 15:53:02 +0000
-Received: from PH7PR01MB8146.prod.exchangelabs.com
- ([fe80::2972:642:93d1:e9d4]) by PH7PR01MB8146.prod.exchangelabs.com
- ([fe80::2972:642:93d1:e9d4%5]) with mapi id 15.20.7918.024; Tue, 3 Sep 2024
- 15:53:01 +0000
-Message-ID: <cff37523-d400-4a40-8fd1-b041a9b550b5@cornelisnetworks.com>
-Date: Tue, 3 Sep 2024 10:52:59 -0500
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Mathieu Poirier <mathieu.poirier@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, linux-remoteproc@vger.kernel.org,
- OFED mailing list <linux-rdma@vger.kernel.org>
-Cc: "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>
-From: Doug Miller <doug.miller@cornelisnetworks.com>
-Subject: How to create/use RPMSG-over-VIRTIO devices in Linux
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: CH0PR07CA0009.namprd07.prod.outlook.com
- (2603:10b6:610:32::14) To PH7PR01MB8146.prod.exchangelabs.com
- (2603:10b6:510:2bd::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200A8126BFD
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Sep 2024 23:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1725406648; cv=none; b=Rj7P6oY38cKTsfNVpbvvg6pTf/vvbC+TqeoKgOgpj1fbfeLBhduojSe970Ma8Z4FM2zRTaW8p6u3Z3Gyv8i+30SG822hbRUVj76d6CxgoOvmG1RkMRaZvdfp1NwvTSLqUhEYJFxeHqFGf8xtVQPkFglNfVlOiblPjLyx1Hi/xxM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1725406648; c=relaxed/simple;
+	bh=WNrDY2fK2vgJ6fUWzO8EWuXPOWbHA8Tk1UBa62dPJWs=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=YEMy8mLfxcqOdIED0IQhgfZ4SP9qGf6dVwMQwKfZsIkjk6lD2NuyzjLXHz4pXAKv8bHMKepHPVQkImtCm70Vj9ullED87GfXb/pfNchyzSkDIUpBNIGC5a0O62HBoN+zCeeZb/+nKm007mfFL8GVf5fmZ1obtvCWBitwQv/r3/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-39d2044b532so61761515ab.0
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Sep 2024 16:37:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725406646; x=1726011446;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3862slMjoxApvzvkAY3Ev7BhwjDn5qC/kVgySMLD0gE=;
+        b=l2/iSozznFP5qYlMeu4gaXWfe3xTZl3PtJz951SqOCw7/8gpLTZEgPdIqDGbZaFJCR
+         ErqnErdSy64yLAog/QL9iW0upN4UE2W5Q6Zz0K+Z8mP2ABJLf2kV2+eawb5Yh+9onQdD
+         JtlbrnfjUfpniImeUpsmPlDPSzHxLFvtIcwJQsRFesQ4zSVOtkuoNbJqIDyrRREQkfK3
+         Hlj2OnAqowCZn/GG9OLvGdVKkEtnV83HhMx23pReSqFpn/49AesQ4Qctkp4hMFcgaAzh
+         26OJejgK/kPIoXPGBbpx/xAYELbBUj038VOFtwApUCtg3R7ndCM0YwXLgPF1f5sFg2Wi
+         CsHA==
+X-Forwarded-Encrypted: i=1; AJvYcCWVBlnqhwdQJfIm4JSDgicZ4uROAUQdQg2nqhfCc+ptFTWPVroYkpjkSbUyyR9lp0teaQxg05H0Urj0@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVjFtQunXtUV322O1GHmVqCRu36oD7IFX4we59Y1KL1JLRx8Fx
+	2na99c8wEaLBlVNRXsEMxkTzkVtGZMDw2GieK97Sl2P1iZ9WJKQIXNQSiwPqw+xqyk4JiWwnA4a
+	P3zjHm9GO/cpk98B/BFwVpxAcKon8hGRBKH0RnNjs5c5vrLntpfNsruo=
+X-Google-Smtp-Source: AGHT+IFI5m4RaIhbEHsFaezRyVhKy/Gg/BJdLTJcyxZQtdE0ZlCBKfF5pEIiWqWqCx2Ho0LsnLoY2UO4u6RF5GGZvR5gh23DQfB1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR01MB8146:EE_|CH7PR01MB9052:EE_
-X-MS-Office365-Filtering-Correlation-Id: 34ad08a0-5084-4eef-0cc6-08dccc307d87
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?TEJ2ejA4Z1RLZnRCMUVZdVNnVmhMZ1hFVGZ3ckxhenNWWUM1ajAzOWdZU1lw?=
- =?utf-8?B?M0pPL1pXNnhDSUhrbHpTeXZXQ1JEM09ESytvZXB5UzRsRGRyQmNlUWh6ZUJG?=
- =?utf-8?B?bU9Gcll0bm1YdzBkcVUyVkF6NkpTT29MeW1MQmVKM1ROZ2pEU2hCbU5HQnR4?=
- =?utf-8?B?ZXhuUUE2NFFKN2FTSjU5RkxmRGJRMFRtVUR2MG04ZGgxZ245bnpCNURhejRa?=
- =?utf-8?B?UVFMWmM2Q0pIZ1dWa3BYUGl5a0ZEc2tjS0VWVnpsWGtEc3Iybm85QTVOYUYx?=
- =?utf-8?B?cTFtYkp2cDgvSUxNcXphTDdFRGc0YnhiV2doeXB3YXE2aFBUT1ZKVXMvL0VP?=
- =?utf-8?B?Szh2dWlzUk9WRVVOUTNCWGVXbW9PSWszNUNWMmdzc2tjNk1SRVpWUDdkSkVD?=
- =?utf-8?B?dnlHcTdQdGdTVHE5QkNUc2FpdzNNREtxdE9xWktFZ1hxVkNNdVZyQnFjbzJP?=
- =?utf-8?B?R2xNTy9TQ2Jtd1I3NEpWMEFPY1JDNHVKSHh1NG4wMXVUQ1Nkb1h4YVk2S21s?=
- =?utf-8?B?QzNjaXNiU25VU3MwK1puc2pNcWJFbE1LcmdRcVY4eDlnZmZMVzRYOS9nUjZj?=
- =?utf-8?B?aWRIQTBtYjJrTVFiM1c2MnM1OU1BUkU4SHc5SmdhakNKMHdmRDU5VlFtUTBC?=
- =?utf-8?B?R0daeU1mWEJ1QmozSzRqU2pEZG0yRVp6emJONWhZSi83WG92VlpsbTFycDls?=
- =?utf-8?B?UkdZR09KOEtrMVYrQW5zMHNxYktaYVhNTzB3Y3YwbStwV3ZuQ0loK0tWOXB0?=
- =?utf-8?B?Vmo3ZVB5QVo0a29jK1R4UEVyMXBtZnpPS1FxNDRMZHpwWjcwa3dKQWhIR2ox?=
- =?utf-8?B?RFByaTQyeXZTWTFid244Tm51M3V1cHliYUdEbjVkVUFDOTdEdGhnbzJrVk5h?=
- =?utf-8?B?UWhMQ0liSWhXRElUWXB4cm8vR014VndDRE5scXh3dXh2Vk5KVXc3aUxTVFJD?=
- =?utf-8?B?QTN0a3kyQWlOY3I3RUdUS2N4M2VUblRqRzdaTzBLREtnd1VjOC9aZTNOUzgw?=
- =?utf-8?B?c01pMk5VaWZsNWYrVVBPNmtCZFFGRzQycDk1TmZubVY4OFFib05TZHdZbGFY?=
- =?utf-8?B?dDhxN0t4MkJZUlZsQ2FYWWFQdjROOXRNaUFadXBQcTNaQVdsdTR4WnF4L2JV?=
- =?utf-8?B?c1pzRUpvVkhTeDZiUFpxQkhQV3czK3hJa01WYVlOL09idk50dXJBeWdIVnBN?=
- =?utf-8?B?bzNNM0wrQmtqamtTZHdpcXJJU21vR0EwU2QwNWg4MmY4M2JmbjJsSVFhNUl2?=
- =?utf-8?B?ZzUzWGZERzFJWU5WSm9wZ2RUWG12UHVXcDMycWNGNm1NMWYvbC8yc3ZwZGJo?=
- =?utf-8?B?WjJPQjd5TjY1dlE5Vkw3cWZrUTlRU1QzejI5OUFWd1BqQXZWd0N5TlBtU1RI?=
- =?utf-8?B?anpzNzlyOFlKZzVQL2FNRXRkdis3TGtmaEdBYitxZFVoVmV1Rzh3aUJROStm?=
- =?utf-8?B?L0hrVSswYjhaYUVFU1czY1ppSDM1dzU5bmRSN2dMd3NLeUlWd2grOElhMThv?=
- =?utf-8?B?UXZuZjBqR2xHdEtzQXIyWGJMbHczMTBhVi9wZnRrQmF1K0hlSENjWWdtaVgz?=
- =?utf-8?B?R2lSNFl0WG5kSU1sblcyTHhGdTU5ZnI2MkFIZHc2eG1STm9iNGR4S2R0d1RB?=
- =?utf-8?B?UFI3czVjekV4WXAxb0Y1UG80Qm9HSDFYK2s0OWY3TUhKSGw2Y1BjWmU0RmM5?=
- =?utf-8?B?RUJEcGRLdGR3MXYwZHB0SFJZcFF4SWZud0puV0ovK3plbFRDVStJeXREYXdR?=
- =?utf-8?B?dXVmSzI3Y1M3QVNzeVN0L05zYmdzTUdZVDlkbll0TjNZN0orWi9tQ0Q0MFBp?=
- =?utf-8?B?ZmFSMTZra2M2MkJBR3lUZz09?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR01MB8146.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NXg4TWpWeUo3end1cHllUjZudjdnTHZieU9wSEdUNUtzdlIzRmZuTXhCQWNT?=
- =?utf-8?B?R3FFcDBRaTJkbDNuM3dkcVJvSjJMakw5c1h3MmxFUm5hUHdxT3h6NGU2cnN6?=
- =?utf-8?B?RFprT0hBR2ZwWVpGR0ZWV2N5UHFPclpGcDZBanNrUVJaOW95QUo4alZ4Rldk?=
- =?utf-8?B?Z3pFeCtnZHVaU3hKU1c0aThNNUd0alVKcHhUWVk5SFZPT1ZuMytpWlJxS2tE?=
- =?utf-8?B?SzZyREMzclQwTVZzdGE1VEkvSTFKbTc5T1Vrd0ZlYkE4T2pLZk5HRzM5bUpZ?=
- =?utf-8?B?S2RqZTdZVDNlNkFCY2EvZ0hCZ3k0K0lxbW5jOVRVWlJxVFlxZXpTWW40TFlK?=
- =?utf-8?B?RTJldzBOY2d5UjB5RlRRWGthTWpLZzVFS0htd3pwaHcrTmdJQjFDV2VmTUJ1?=
- =?utf-8?B?SDkzN0pnbGg2QTBlcHZST05Ja0RNV05ZRUVJWTMrSkRmRkt4aUhJK1l0UmJr?=
- =?utf-8?B?RjJDUXVKVEk4NUFNeDUvQllnNnpTNmd3TXZFRWRqTXNSU2dqYm5makM1bUtF?=
- =?utf-8?B?b0ZvRjMwZzc5L0dFMWhoczZKN1NjVFA1SnRBNWdqMlVMSDR6RGoxdStYNGF0?=
- =?utf-8?B?Y3NLZkxEeWFPckNJbG9WcWo1SHhKalhnMktaNURaZUxOUDdmdGtpQ3JLbmt6?=
- =?utf-8?B?aXZuS09rMHNIN3pjbDhOdjVoVDhNM3NKcUxRbHArM2VBWXM2dFowRjdNN1hD?=
- =?utf-8?B?VlJnSTdwUlRyU2MrTnVidEQyNDR4U0F2TW5yeVBzYjJMZ2t6VXRBeGZiZVBy?=
- =?utf-8?B?dWZ4U1A5OHlmWkxlYk1SZzRlQmE4NTlTenh1Vlpydk1FdlA4QUx6RnE1Z1Jn?=
- =?utf-8?B?amdMMDJCZGVKeTUzSzlkWi9KMW81eDBYam1wSzVkeTFYU0dZRXFRRmZZYTR5?=
- =?utf-8?B?ZGVhd1VYTTZkenhiSWUxa1VQMzNJNDNyYmk1aWo2SUF3Z25qWGtjQTJOZTZU?=
- =?utf-8?B?cG4zL09BWm01cGZVM1pIeVhUTDA5Q2tmcklZanFvbzEwbFVkMzVYSHhyOE1n?=
- =?utf-8?B?SUFwMWhhVjNZUVZFVTZHZFFjcGd4SUJOcWdKRkdLSDF1Q3hBcjVKOUFxVmRl?=
- =?utf-8?B?NzcrelFHeHBQbzVWbjczRzV3WlRkekNOU2ZHUjNIcXpLNU9wYWg4Q0dGTGt5?=
- =?utf-8?B?bzJ5NmRZNGM2UFVCSjZKQy9veUxoZUVrdmRMZkVvd0FuOHEycTV4QmNwUWpz?=
- =?utf-8?B?anN1UTZ0M0luckRQdWgweDdUQVh4V2VIQkloOGhxMURRcEJVRGdzOVFwbXFX?=
- =?utf-8?B?cWlyVTFmWkNhbnp5V0JxVFh2V2EyendET2h1dTI2aUlVWXUxT0JWUWNNZWx1?=
- =?utf-8?B?Wk8reVIyZHNKMjFpT1VtODZmSkF6Q2NxRVBZTG9mNnhpdkhyTk1WREZwMUF6?=
- =?utf-8?B?MUxaMld1Z3ZnVXY3MFlKS0xvNkh4NUxkaHBQU3lmcE9VU0FTL3lCMit4Z0VQ?=
- =?utf-8?B?NU5UQkZNL25HSDhmSHN3dXBSUWduR1ZXYlpnNjZhVUptRk10dTB6dzN0bVc1?=
- =?utf-8?B?YTlSYnEzZHR3YjFUaE5NcnNpenU3a0tZdGR6aDR3Q0g3RncyUU94SEhPa093?=
- =?utf-8?B?eVY2K1BXNC9CWEUvbHo1L0xIWFp5dlRNQ3J4RklZQVdhcld6dmsrTEkxdzRj?=
- =?utf-8?B?MVdNU1VEa2EyQ2ZRU2duNWJMWmZ5L3VhTmsyN1pFRlVqVDhZbEJXdWk4NTJQ?=
- =?utf-8?B?Rk1xOUdEK1BnN2JmVW5rWWFteEwzT1BaWkcrUGFXblJQK1ZybzVYYVc4VGk4?=
- =?utf-8?B?d1RGcElqdVVLdVMxaGk3S0Z0aHVuKytJTVQxUzRFcmc2ckZlTWdyR0FCV2h1?=
- =?utf-8?B?MFYzZVA1cldGeG5OS0UxcENidHhGSWd1bkh6M2x4M080WEdqT092Sjk5cEpj?=
- =?utf-8?B?WVdlNTNTcHk4WURRTHFMQjd6aXFKWTUwYWpLbXA0cUE3Z1VxRU9ZandOV0tP?=
- =?utf-8?B?T0ZOOE9jZEhuN2xCTWR6MDAzWkducnJsaEVkd3JGZkhUelpvNEg0T1N0anZB?=
- =?utf-8?B?RkRtKzJxY3ovYUZja3VHbjR6emZXMzltZGNxL0NWT2ZFb1A3QW1rTXI0eFFL?=
- =?utf-8?B?czJzNjUyaHByOTczVFgwSVQ3QzMwVmxTb0Z2SjlRQkFQZFNCRWRUb3BZajZu?=
- =?utf-8?B?RWNEWW1ZeXBvTjJZa3hsQ2pqa0hRZ2dYTnk4QTJ5SklLbnB4RzhrdVRPRVVq?=
- =?utf-8?Q?6ukR7+DZiK4u+dzuELUAxhM=3D?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34ad08a0-5084-4eef-0cc6-08dccc307d87
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR01MB8146.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2024 15:53:01.8124
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OxCoPrTz+vbP9BCK6qIdGNZC4T19ngJzBGYlgZNv3J8hIznjz6Q79vIFeJ8Q6+cKydn+s9XHtYsMVoulZ8hGHRiyDDNj3G3tIDkXUW1cS2DhG8ziY3co2QkGL7lhWNLG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH7PR01MB9052
+X-Received: by 2002:a92:cda8:0:b0:39d:300f:e915 with SMTP id
+ e9e14a558f8ab-39f410df0a1mr6346205ab.6.1725406645642; Tue, 03 Sep 2024
+ 16:37:25 -0700 (PDT)
+Date: Tue, 03 Sep 2024 16:37:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000034fa0d06213f8a86@google.com>
+Subject: [syzbot] [rdma?] INFO: task hung in rdma_dev_change_netns
+From: syzbot <syzbot+73c5eab674c7e1e7012e@syzkaller.appspotmail.com>
+To: jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-I am trying to learn how to create an RPMSG-over-VIRTIO device (service)
-in order to perform communication between a host driver and a guest
-driver. The RPMSG-over-VIRTIO driver (client) side is fairly well
-documented and there is a good example (starting point, at least) in
-samples/rpmsg/rpmsg_client_sample.c.
+Hello,
 
-I see that I can create an endpoint (struct rpmsg_endpoint) using
-rpmsg_create_ept(), and from there I can use rpmsg_send() et al. and the
-rpmsg_rx_cb_t cb to perform the communications. However, this requires a
-struct rpmsg_device and it is not clear just how to get one that is
-suitable for this purpose.
+syzbot found the following issue on:
 
-It appears that one or both of rpmsg_create_channel() and
-rpmsg_register_device() are needed in order to obtain a device for the
-specific host-guest communications channel. At some point, a "root"
-device is needed that will use virtio (VIRTIO_ID_RPMSG) such that new
-subdevices can be created for each host-guest pair.
+HEAD commit:    5517ae241919 Merge tag 'for-net-2024-08-30' of git://git.k..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=176685b7980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=996585887acdadb3
+dashboard link: https://syzkaller.appspot.com/bug?extid=73c5eab674c7e1e7012e
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-In addition, building a kernel with CONFIG_RPMSG, CONFIG_RPMSG_VIRTIO,
-and CONFIG_RPMSG_NS set, and doing a modprobe virtio_rpmsg_bus, seems to
-get things setup but that does not result in creation of any "root"
-rpmsg-over-virtio device. Presumably, any such device would have to be
-setup to use a specific range of addresses and also be tied to
-virtio_rpmsg_bus to ensure that virtio is used.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-It is also not clear if/how register_rpmsg_driver() will be required on
-the rpmsg driver side, even though the sample code does not use it.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ddded5c54678/disk-5517ae24.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ce0dfe9dbb55/vmlinux-5517ae24.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ca81d6e3361d/bzImage-5517ae24.xz
 
-So, first questions are:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+73c5eab674c7e1e7012e@syzkaller.appspotmail.com
 
-* Am I looking at the correct interfaces in order to create the host
-rpmsg device side?
-* What needs to be done to get a "root" rpmsg-over-virtio device created
-(if required)?
-* How is a rpmsg-over-virtio device created for each host-guest driver
-pair, for use with rpmsg_create_ept()?
-* Does the guest side (rpmsg driver) require any special handling to
-plug-in to the host driver (rpmsg device) side? Aside from using the
-correct addresses to match device side.
+INFO: task kworker/u8:3:53 blocked for more than 143 seconds.
+      Not tainted 6.11.0-rc5-syzkaller-00178-g5517ae241919 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u8:3    state:D stack:21008 pid:53    tgid:53    ppid:2      flags:0x00004000
+Workqueue: netns cleanup_net
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5188 [inline]
+ __schedule+0x1800/0x4a60 kernel/sched/core.c:6529
+ __schedule_loop kernel/sched/core.c:6606 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6621
+ schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6678
+ __mutex_lock_common kernel/locking/mutex.c:684 [inline]
+ __mutex_lock+0x6a4/0xd70 kernel/locking/mutex.c:752
+ rdma_dev_change_netns+0x3a/0x2f0 drivers/infiniband/core/device.c:1640
+ rdma_dev_exit_net+0x21e/0x350 drivers/infiniband/core/device.c:1151
+ ops_exit_list net/core/net_namespace.c:173 [inline]
+ cleanup_net+0x802/0xcc0 net/core/net_namespace.c:640
+ process_one_work kernel/workqueue.c:3231 [inline]
+ process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3312
+ worker_thread+0x86d/0xd10 kernel/workqueue.c:3389
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+INFO: task syz.3.1124:9442 blocked for more than 143 seconds.
+      Not tainted 6.11.0-rc5-syzkaller-00178-g5517ae241919 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.3.1124      state:D stack:21624 pid:9442  tgid:9440  ppid:6033   flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5188 [inline]
+ __schedule+0x1800/0x4a60 kernel/sched/core.c:6529
+ __schedule_loop kernel/sched/core.c:6606 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6621
+ schedule_timeout+0xb0/0x310 kernel/time/timer.c:2557
+ do_wait_for_common kernel/sched/completion.c:95 [inline]
+ __wait_for_common kernel/sched/completion.c:116 [inline]
+ wait_for_common kernel/sched/completion.c:127 [inline]
+ wait_for_completion+0x355/0x620 kernel/sched/completion.c:148
+ disable_device+0x1c7/0x360 drivers/infiniband/core/device.c:1295
+ __ib_unregister_device+0x2ac/0x3c0 drivers/infiniband/core/device.c:1493
+ ib_unregister_device_and_put+0xb9/0xf0 drivers/infiniband/core/device.c:1557
+ nldev_dellink+0x2d6/0x320 drivers/infiniband/core/nldev.c:1824
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x6dd/0x9e0 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1331 [inline]
+ netlink_unicast+0x7f6/0x990 net/netlink/af_netlink.c:1357
+ netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1901
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:745
+ ____sys_sendmsg+0x525/0x7d0 net/socket.c:2597
+ ___sys_sendmsg net/socket.c:2651 [inline]
+ __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2680
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f4e3f979eb9
+RSP: 002b:00007f4e3f3de038 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f4e3fb16058 RCX: 00007f4e3f979eb9
+RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000006
+RBP: 00007f4e3f9e793e R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f4e3fb16058 R15: 00007ffefbdc0c38
+ </TASK>
 
-Thanks,
-Doug
+Showing all locks held in the system:
+2 locks held by ksoftirqd/1/24:
+ #0: ffff8880b893e9d8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:560
+ #1: ffff8880b8928948 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x441/0x770 kernel/sched/psi.c:989
+1 lock held by khungtaskd/30:
+ #0: ffffffff8e938320 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:326 [inline]
+ #0: ffffffff8e938320 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:838 [inline]
+ #0: ffffffff8e938320 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6626
+4 locks held by kworker/u8:3/53:
+ #0: ffff88801bae5948 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3206 [inline]
+ #0: ffff88801bae5948 ((wq_completion)netns){+.+.}-{0:0}, at: process_scheduled_works+0x90a/0x1830 kernel/workqueue.c:3312
+ #1: ffffc90000bd7d00 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3207 [inline]
+ #1: ffffc90000bd7d00 (net_cleanup_work){+.+.}-{0:0}, at: process_scheduled_works+0x945/0x1830 kernel/workqueue.c:3312
+ #2: ffffffff8fc7ee90 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x16a/0xcc0 net/core/net_namespace.c:594
+ #3: ffff888023e006b0 (&device->unregistration_lock){+.+.}-{3:3}, at: rdma_dev_change_netns+0x3a/0x2f0 drivers/infiniband/core/device.c:1640
+2 locks held by getty/4989:
+ #0: ffff88803098b0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc9000312b2f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6ac/0x1e00 drivers/tty/n_tty.c:2211
+2 locks held by syz.3.1124/9442:
+ #0: ffffffff9a6e1078 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:164 [inline]
+ #0: ffffffff9a6e1078 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ #0: ffffffff9a6e1078 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv+0x32d/0x9e0 drivers/infiniband/core/netlink.c:259
+ #1: ffff888023e006b0 (&device->unregistration_lock){+.+.}-{3:3}, at: __ib_unregister_device+0x264/0x3c0 drivers/infiniband/core/device.c:1489
+3 locks held by kworker/u8:28/12113:
+1 lock held by syz-executor/12207:
+ #0: ffffffff8e93d5c0 (rcu_state.barrier_mutex){+.+.}-{3:3}, at: rcu_barrier+0x4c/0x530 kernel/rcu/tree.c:4486
 
-External recipient
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 UID: 0 PID: 30 Comm: khungtaskd Not tainted 6.11.0-rc5-syzkaller-00178-g5517ae241919 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:93 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:119
+ nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
+ watchdog+0xff4/0x1040 kernel/hung_task.c:379
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 UID: 0 PID: 12587 Comm: syz-executor Not tainted 6.11.0-rc5-syzkaller-00178-g5517ae241919 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+RIP: 0033:0x7f57b85781d6
+Code: ff ff ff c6 44 24 0b 00 45 31 ed 48 8d 1d f2 46 09 00 48 89 04 24 66 0f 1f 44 00 00 4c 89 e9 48 c1 e1 05 49 03 4e 08 83 39 06 <49> 89 cc 0f 87 81 00 00 00 8b 01 48 63 04 83 48 01 d8 ff e0 66 0f
+RSP: 002b:00007f57b928ee80 EFLAGS: 00000297
+RAX: 0000000000000081 RBX: 00007f57b860c8b0 RCX: 00005555578c6d00
+RDX: ffffffffffffffa8 RSI: 0000000000000007 RDI: 0000000000000081
+RBP: 00007ffcf0466140 R08: 00007f57b928ef20 R09: 0000000000000000
+R10: 00007f57b928ee90 R11: 0000000000000203 R12: 00005555578c6ce0
+R13: 0000000000000082 R14: 00007ffcf04660f0 R15: 00007ffcf0465ea0
+FS:  000055555782d500 GS:  0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
