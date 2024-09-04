@@ -1,56 +1,56 @@
-Return-Path: <linux-rdma+bounces-4730-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4731-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A621396B371
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 09:51:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE23B96B373
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 09:51:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CD281F264BC
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 07:51:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0CF31C24598
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 07:51:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A08C91494AB;
-	Wed,  4 Sep 2024 07:50:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2053315B0EE;
+	Wed,  4 Sep 2024 07:50:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hp7i6Qq9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fi9A6PLo"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61AF81FBA
-	for <linux-rdma@vger.kernel.org>; Wed,  4 Sep 2024 07:50:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D51368121F
+	for <linux-rdma@vger.kernel.org>; Wed,  4 Sep 2024 07:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725436240; cv=none; b=gvO3fwnP/B84f515oIjdFsaCruewgHv5H6FBE4xCt+u3pBCyoUe+aLsJ+5vpWuaMURlJGfg84+JHyWFZtfXKz32YqCoucdhtWj4zkeIfITvnk1SYyRnoNyOlQXymAoTuGrsQi8DqBEy1dTWbpD42I7YKpzkdjnl/lQDHnbrVOjM=
+	t=1725436244; cv=none; b=RZX6Vf+12NvOx1gfPT9TdcOqO+ZB5K4L64kg6efQjOIjYqFaNo4l88UNftec4Sjst2cLOJcSVMWsqBPp60UoOfekxdDCtRBAHmrOFOwZr7ee+qpXh+cO+gZWG7XaNt3/KOabR9+IGtgHPtH450B9BBo7GR+K0BNJ6RdRFio1eZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725436240; c=relaxed/simple;
-	bh=9IKIHBvuDepXJTsXJhoqALPgb3F5jr+MHgRIteqf6XE=;
+	s=arc-20240116; t=1725436244; c=relaxed/simple;
+	bh=owrZz2I4LdQ3v+2RJuTXaZ+wZcL+hiE2+XVc2FEbvsc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=dsNpu/FJEdJbomvDtTcIXjdKSCNljT2l5nrlnYzNL1LGG6LpLVSUjlqUe8k2HDxXX/gfrI2p8X1IuYwuRKfoEDXzzQCiZRsjcsCSChhb0B7FttD9fNns6BCZ8owE0/JS88sRlTDjKcB+5pXVGun5rykuG1ifAvqvZAeK5fY22kQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hp7i6Qq9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F955C4CEC2;
-	Wed,  4 Sep 2024 07:50:39 +0000 (UTC)
+	 MIME-Version:Content-Type; b=a6kFTpQRtZViSQ6bjKUh6c97mnleHsMSO7jQfez5FnVS8ZlMicYTuFfqmTU7YOTLus4kTzoeRb/rkggdPRQwsfrNZCNBLOxg9oZOPasWvmIcN/5mgVUtUMLE11RbMJZth1zmyl7Ha2glbOFJvqSvJV0SQcdG6eJI5EZDVix+YHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fi9A6PLo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6762C4CEC2;
+	Wed,  4 Sep 2024 07:50:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725436239;
-	bh=9IKIHBvuDepXJTsXJhoqALPgb3F5jr+MHgRIteqf6XE=;
+	s=k20201202; t=1725436244;
+	bh=owrZz2I4LdQ3v+2RJuTXaZ+wZcL+hiE2+XVc2FEbvsc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=hp7i6Qq9u/UDDnUn0DoQZNh27gGRNWBa4T+1fCXtH25/0t4ZTBJuF72ajTbirwy2G
-	 WbNy5ntOyoxAJdrezAZVJLP96pEyX0oYY5J5korJrkF+Kh52wZhlaa7B3VEjdWALL0
-	 0ECyIo866FPGLBVcf7sWf8bRBAaC1jk8BJOpg1dUawEHcoOMmdQjtdGr741XgHo9Ss
-	 /z1g9zOct/GDnYY+505TryUyM1k7jF+xkaQ1dz2NqydO3iHmnJ0TY7ucug3LFZqIFM
-	 3gCgfGU0ERZw13R6L3usCUYeHOdf5itF3GlR24FjsrJV951epxCq4wAAsRut5CCd4p
-	 2HCnnIiSehZ8A==
+	b=fi9A6PLo11jZKPi+XAXRHLIMRwcpUlI4rtLBlPatsy9oGOTWWlK8MJzca8x2RRpjB
+	 5LYZI3WzuBIXk4NZUMUjs1ZSc8PeiWvXP6g76vJLpYp/obcRi86SFE//1620Ff7M6s
+	 40g4sT1QgcBjoXoGrebXsUC/u++hLZFavKzsXeeWxcOPmDeU6hLsuJ9OMsQSk6TXW6
+	 bw0hpEG5FO57nJsWGTuWli+K1lEZsyZ+lNz3tvdxp4GsvBa/dZODl1H1qadu9+9Djz
+	 vUwbIRJXbGOLqPNE6TzQcc0RiH+OOcggCkowDBoIvP9X6VhvPtE7J1J1NQlRIv0UFS
+	 sLaNFt7gThHsA==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Chris Mi <cmi@nvidia.com>, Jianbo Liu <jianbol@nvidia.com>, 
- linux-rdma@vger.kernel.org
-In-Reply-To: <778c40c60287992da5d6ec92bb07b67f7bb5e6ef.1725273295.git.leon@kernel.org>
-References: <778c40c60287992da5d6ec92bb07b67f7bb5e6ef.1725273295.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next] IB/mlx5: Fix UMR pd cleanup on error flow of
- driver init
-Message-Id: <172543623499.1199574.14625080827258856519.b4-ty@kernel.org>
-Date: Wed, 04 Sep 2024 10:50:34 +0300
+Cc: Patrisious Haddad <phaddad@nvidia.com>, linux-rdma@vger.kernel.org, 
+ Maher Sanalla <msanalla@nvidia.com>
+In-Reply-To: <79137687d829899b0b1c9835fcb4b258004c439a.1725273354.git.leon@kernel.org>
+References: <79137687d829899b0b1c9835fcb4b258004c439a.1725273354.git.leon@kernel.org>
+Subject: Re: [PATCH rdma-next] IB/core: Fix ib_cache_setup_one error flow
+ cleanup
+Message-Id: <172543624040.1199574.14580657397418905376.b4-ty@kernel.org>
+Date: Wed, 04 Sep 2024 10:50:40 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,73 +62,21 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
 
 
-On Mon, 02 Sep 2024 13:35:40 +0300, Leon Romanovsky wrote:
-> The cited commit moves the pd allocation from function
-> mlx5r_umr_resource_cleanup() to a new function mlx5r_umr_cleanup().
-> So the fix in commit [1] is broken. In error flow, will hit panic [2].
+On Mon, 02 Sep 2024 13:36:33 +0300, Leon Romanovsky wrote:
+> When ib_cache_update return an error, we exit ib_cache_setup_one
+> instantly with no proper cleanup, even though before this we had
+> already successfully done gid_table_setup_one, that results in
+> the kernel WARN below.
 > 
-> Fix it by checking pd pointer to avoid panic if it is NULL;
-> 
-> [1] RDMA/mlx5: Fix UMR cleanup on error flow of driver init
-> [2]
->  [  347.567063] infiniband mlx5_0: Couldn't register device with driver model
->  [  347.591382] BUG: kernel NULL pointer dereference, address: 0000000000000020
->  [  347.593438] #PF: supervisor read access in kernel mode
->  [  347.595176] #PF: error_code(0x0000) - not-present page
->  [  347.596962] PGD 0 P4D 0
->  [  347.601361] RIP: 0010:ib_dealloc_pd_user+0x12/0xc0 [ib_core]
->  [  347.604171] RSP: 0018:ffff888106293b10 EFLAGS: 00010282
->  [  347.604834] RAX: 0000000000000000 RBX: 000000000000000e RCX: 0000000000000000
->  [  347.605672] RDX: ffff888106293ad0 RSI: 0000000000000000 RDI: 0000000000000000
->  [  347.606529] RBP: 0000000000000000 R08: ffff888106293ae0 R09: ffff888106293ae0
->  [  347.607379] R10: 0000000000000a06 R11: 0000000000000000 R12: 0000000000000000
->  [  347.608224] R13: ffffffffa0704dc0 R14: 0000000000000001 R15: 0000000000000001
->  [  347.609067] FS:  00007fdc720cd9c0(0000) GS:ffff88852c880000(0000) knlGS:0000000000000000
->  [  347.610094] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  [  347.610727] CR2: 0000000000000020 CR3: 0000000103012003 CR4: 0000000000370eb0
->  [  347.611421] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->  [  347.612113] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->  [  347.612804] Call Trace:
->  [  347.613130]  <TASK>
->  [  347.613417]  ? __die+0x20/0x60
->  [  347.613793]  ? page_fault_oops+0x150/0x3e0
->  [  347.614243]  ? free_msg+0x68/0x80 [mlx5_core]
->  [  347.614840]  ? cmd_exec+0x48f/0x11d0 [mlx5_core]
->  [  347.615359]  ? exc_page_fault+0x74/0x130
->  [  347.615808]  ? asm_exc_page_fault+0x22/0x30
->  [  347.616273]  ? ib_dealloc_pd_user+0x12/0xc0 [ib_core]
->  [  347.616801]  mlx5r_umr_cleanup+0x23/0x90 [mlx5_ib]
->  [  347.617365]  mlx5_ib_stage_pre_ib_reg_umr_cleanup+0x36/0x40 [mlx5_ib]
->  [  347.618025]  __mlx5_ib_add+0x96/0xd0 [mlx5_ib]
->  [  347.618539]  mlx5r_probe+0xe9/0x310 [mlx5_ib]
->  [  347.619032]  ? kernfs_add_one+0x107/0x150
->  [  347.619478]  ? __mlx5_ib_add+0xd0/0xd0 [mlx5_ib]
->  [  347.619984]  auxiliary_bus_probe+0x3e/0x90
->  [  347.620448]  really_probe+0xc5/0x3a0
->  [  347.620857]  __driver_probe_device+0x80/0x160
->  [  347.621325]  driver_probe_device+0x1e/0x90
->  [  347.621770]  __driver_attach+0xec/0x1c0
->  [  347.622213]  ? __device_attach_driver+0x100/0x100
->  [  347.622724]  bus_for_each_dev+0x71/0xc0
->  [  347.623151]  bus_add_driver+0xed/0x240
->  [  347.623570]  driver_register+0x58/0x100
->  [  347.623998]  __auxiliary_driver_register+0x6a/0xc0
->  [  347.624499]  ? driver_register+0xae/0x100
->  [  347.624940]  ? 0xffffffffa0893000
->  [  347.625329]  mlx5_ib_init+0x16a/0x1e0 [mlx5_ib]
->  [  347.625845]  do_one_initcall+0x4a/0x2a0
->  [  347.626273]  ? gcov_event+0x2e2/0x3a0
->  [  347.626706]  do_init_module+0x8a/0x260
->  [  347.627126]  init_module_from_file+0x8b/0xd0
->  [  347.627596]  __x64_sys_finit_module+0x1ca/0x2f0
->  [  347.628089]  do_syscall_64+0x4c/0x100
+> Do proper cleanup using gid_table_cleanup_one before returning
+> the err in order to fix the issue.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] IB/mlx5: Fix UMR pd cleanup on error flow of driver init
-      https://git.kernel.org/rdma/rdma/c/112e6e83a89426
+[1/1] IB/core: Fix ib_cache_setup_one error flow cleanup
+      https://git.kernel.org/rdma/rdma/c/1403c8b14765ea
 
 Best regards,
 -- 
