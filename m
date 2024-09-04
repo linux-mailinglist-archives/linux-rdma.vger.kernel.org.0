@@ -1,148 +1,111 @@
-Return-Path: <linux-rdma+bounces-4739-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4740-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4C6596B862
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 12:25:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 716CF96B989
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 13:00:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CEDB1F22187
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 10:25:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A351B1C20D1A
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 11:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95BAC1CF7AD;
-	Wed,  4 Sep 2024 10:25:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA761CF7AC;
+	Wed,  4 Sep 2024 11:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="UwxGzKvG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UkpuDtZf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D55A61CF5E5
-	for <linux-rdma@vger.kernel.org>; Wed,  4 Sep 2024 10:25:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE62148314;
+	Wed,  4 Sep 2024 11:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725445510; cv=none; b=JS3QG1xjdPl4rPeMBEItEVWISHyEFjqs1csvH5am92jlA5SxQWYnQJ0v6Rc/eWsEK5mgqEGztaxOpNih7tBZTbWE4u+/QcHyk7rlwKGPgJVBPxvn6XmBLqaenfjBGzgVmCbKvEEAvEniv5CQqeskrwXqd2jEZbF+ii6TdOUBHbc=
+	t=1725447628; cv=none; b=ja1B1knO8d6QMU2CxFAMZoZ5sNbPrJ1T+ddKTRQws7j7FgBlSNiFoHvE8yrPk7/6jHdGVZ0C7LrnCO1/wnJhxiW4RZQO6GugjBlNMr8ylpq7tUReuzwfgq+nmAkAwmc7HTE6quWUomrJkav37WzBhWUMgUR1r//So0LgifNbZWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725445510; c=relaxed/simple;
-	bh=wbR3kWCFuyOAXzBr+BVQwezJ+0prMPvggye9qdWYW5M=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=SL62FYfAj39eeqgT93oUvKg+f9feTP8qmkEPV/otElkv8JUVVfbdbSXE0sfGUsCLANtZ1X1/tvmIWfloGdKZ3jDkq4e35NxLBKcMCHVbo4hr3qTBcRP3WWc88JSbU8iMVnszBKGm4BxMlRh80hbw8sTwFb5/Lnp+B1ddEmeUcNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=UwxGzKvG; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20551e2f1f8so33651135ad.2
-        for <linux-rdma@vger.kernel.org>; Wed, 04 Sep 2024 03:25:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1725445508; x=1726050308; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=JHx0eSEPI3EHaxD8Itf7ZDZhU7537hHK2H03Z3YqiUU=;
-        b=UwxGzKvGXS+iqOVSYVYZa2ma+lwRg45Omp0xvd6fCC8F+q31lyCvnLCE31FBr1TCo5
-         WHzi3qDnxUHAdQSf8t5tHsg3nwoVxQc8i+iNRUX/ui39fLIH24sfQ2IbCrZIl7SDZwEr
-         PrmhyynKYArgaX4R8Jnvlo67vg8sJW4F+yW28=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725445508; x=1726050308;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JHx0eSEPI3EHaxD8Itf7ZDZhU7537hHK2H03Z3YqiUU=;
-        b=HHzU9ol+DQbQq/uawqzOQmUmtNjUuQ5GPBk+ci15r75LIU0D6n4FU1zriQ9qQksSqt
-         zKJRPzRB6B8FtrPLr6AcmoXiwI02rK3HGUKCvZ2WyR2E9qQGELc5NKwziSMc4RBGVo/S
-         yO77iDg1e4UMP59AP2a0t/g1nl4wuirA4ZH3UF6nrktvmX5ax00xpft4AMzZvylg6ACJ
-         PNT1CPsGxJGH2yr5gfgrRcyrMduuRjTywypenPwjEMqdoQ9dz3EQuuP6fzZrrqwXxUdr
-         An68s54F9g0xTaxUOfAQZB3SgEUG8fBlO6MjFzGfFK1kobbaTxKCgIfBJIDGxeCsVfby
-         +BYQ==
-X-Gm-Message-State: AOJu0YxtMgt5Icryiu76dUZqlx/bHYXDqmZydWvKs0TqsVo8IGV9HPUa
-	5mxgxN1YCc0yBTcP/dbNVV2nlHU6NoOkRfa37a8VrdSCBLphTLjWGGZXCfJdbg==
-X-Google-Smtp-Source: AGHT+IGQmAMJLNJeUckHR7smayacI/Nf96kTy8b4I3uaOe6Osr/p1wFJJLkeOTtzrDxoHNN1gfDCFQ==
-X-Received: by 2002:a17:902:e80b:b0:202:2d:c87 with SMTP id d9443c01a7336-2058417b35emr102794635ad.12.1725445508164;
-        Wed, 04 Sep 2024 03:25:08 -0700 (PDT)
-Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-206aea383aasm10940265ad.136.2024.09.04.03.25.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Sep 2024 03:25:07 -0700 (PDT)
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-To: leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com,
-	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 2/2] RDMA/bnxt_re: Fix the max WQE size for static WQE support
-Date: Wed,  4 Sep 2024 03:04:13 -0700
-Message-Id: <1725444253-13221-3-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1725444253-13221-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1725444253-13221-1-git-send-email-selvin.xavier@broadcom.com>
+	s=arc-20240116; t=1725447628; c=relaxed/simple;
+	bh=dWIWAa4AHuQnBM6xR0K9/gqAZobICygIJEwT+Qz/vYw=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=lgTLl+WjdRwKkwsGUNi2nnpAp4mgKyDYNxPjBVARkwkjhppOSIiMnsdniwUFHc/hGKWIIyYPUtCvv3oXesQ4NWy/yrY6c9CtjchJgLmkeB4fbtQ5OepN3sHVaoVJ9QYd1IPTzbo7SzsjfOi/YZr2VZp5PbwMjxFwz+zgRPOPaSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UkpuDtZf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDF2DC4CEC2;
+	Wed,  4 Sep 2024 11:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725447628;
+	bh=dWIWAa4AHuQnBM6xR0K9/gqAZobICygIJEwT+Qz/vYw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=UkpuDtZfkWSuqYsDI1LcQEhppzekBXIQwdWoaSQ3NDYepE+G/lNHjTPlV/CzVE8AD
+	 Gq1auhT+9ZH4pZ0FSLhwG2izdpPMvKhpHLvOsH2KPNrG9mxvwq7phyIgQaXo+8aqeQ
+	 IpDTnr22oEiaDQZ5zjBTo4df93JwevBnsT8xSh3zTYkaPwM/MuU27ngvsZfa/8EEGc
+	 APzQ7gh0NjA9mLweSY9tMMYbU5ZHKqweJ7biZwdnunsIY5XzTORue5ghUx/zPAuZ1E
+	 gdcR29Kxabthj8kv4x0Pz40Gf0soXpKKUQXFZOey0u69O/gms6Hxb+XtTLud2ziPuD
+	 ARjm1ZXBS6njA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB13C3806651;
+	Wed,  4 Sep 2024 11:00:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH V4 net] net: mana: Fix error handling in mana_create_txq/rxq's
+ NAPI cleanup
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <172544762877.964331.4773742631498321794.git-patchwork-notify@kernel.org>
+Date: Wed, 04 Sep 2024 11:00:28 +0000
+References: <1725281027-29331-1-git-send-email-schakrabarti@linux.microsoft.com>
+In-Reply-To: <1725281027-29331-1-git-send-email-schakrabarti@linux.microsoft.com>
+To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, davem@davemloft.net, longli@microsoft.com,
+ ssengar@linux.microsoft.com, linux-hyperv@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+ stable@vger.kernel.org
 
-When variable size WQE is supported, max_qp_sges reported
-is more than 6. For devices that supports variable size WQE,
-the Send WQE size calculation is wrong when an an older library
-that doesn't support variable size WQE is used.
+Hello:
 
-Set the WQE size to 128 when static WQE is supported.
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-Fixes: de1d364c3815 ("RDMA/bnxt_re: Add support for Variable WQE in Genp7 adapters")
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 22 +++++++++++-----------
- drivers/infiniband/hw/bnxt_re/qplib_sp.h |  2 ++
- 2 files changed, 13 insertions(+), 11 deletions(-)
+On Mon,  2 Sep 2024 05:43:47 -0700 you wrote:
+> Currently napi_disable() gets called during rxq and txq cleanup,
+> even before napi is enabled and hrtimer is initialized. It causes
+> kernel panic.
+> 
+> ? page_fault_oops+0x136/0x2b0
+>   ? page_counter_cancel+0x2e/0x80
+>   ? do_user_addr_fault+0x2f2/0x640
+>   ? refill_obj_stock+0xc4/0x110
+>   ? exc_page_fault+0x71/0x160
+>   ? asm_exc_page_fault+0x27/0x30
+>   ? __mmdrop+0x10/0x180
+>   ? __mmdrop+0xec/0x180
+>   ? hrtimer_active+0xd/0x50
+>   hrtimer_try_to_cancel+0x2c/0xf0
+>   hrtimer_cancel+0x15/0x30
+>   napi_disable+0x65/0x90
+>   mana_destroy_rxq+0x4c/0x2f0
+>   mana_create_rxq.isra.0+0x56c/0x6d0
+>   ? mana_uncfg_vport+0x50/0x50
+>   mana_alloc_queues+0x21b/0x320
+>   ? skb_dequeue+0x5f/0x80
+> 
+> [...]
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index ecee691..89f6578 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -1006,23 +1006,23 @@ static int bnxt_re_setup_swqe_size(struct bnxt_re_qp *qp,
- 	align = sizeof(struct sq_send_hdr);
- 	ilsize = ALIGN(init_attr->cap.max_inline_data, align);
- 
--	sq->wqe_size = bnxt_re_get_wqe_size(ilsize, sq->max_sge);
--	if (sq->wqe_size > bnxt_re_get_swqe_size(dev_attr->max_qp_sges))
--		return -EINVAL;
--	/* For gen p4 and gen p5 backward compatibility mode
--	 * wqe size is fixed to 128 bytes
-+	/* For gen p4 and gen p5 fixed wqe compatibility mode
-+	 * wqe size is fixed to 128 bytes - ie 6 SGEs
- 	 */
--	if (sq->wqe_size < bnxt_re_get_swqe_size(dev_attr->max_qp_sges) &&
--			qplqp->wqe_mode == BNXT_QPLIB_WQE_MODE_STATIC)
--		sq->wqe_size = bnxt_re_get_swqe_size(dev_attr->max_qp_sges);
-+	if (qplqp->wqe_mode == BNXT_QPLIB_WQE_MODE_STATIC) {
-+		sq->wqe_size = bnxt_re_get_swqe_size(BNXT_STATIC_MAX_SGE);
-+		sq->max_sge = BNXT_STATIC_MAX_SGE;
-+	} else {
-+
-+		sq->wqe_size = bnxt_re_get_wqe_size(ilsize, sq->max_sge);
-+		if (sq->wqe_size > bnxt_re_get_swqe_size(dev_attr->max_qp_sges))
-+			return -EINVAL;
-+	}
- 
- 	if (init_attr->cap.max_inline_data) {
- 		qplqp->max_inline_data = sq->wqe_size -
- 			sizeof(struct sq_send_hdr);
- 		init_attr->cap.max_inline_data = qplqp->max_inline_data;
--		if (qplqp->wqe_mode == BNXT_QPLIB_WQE_MODE_STATIC)
--			sq->max_sge = qplqp->max_inline_data /
--				sizeof(struct sq_sge);
- 	}
- 
- 	return 0;
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-index 4ce44aa..acd9c14 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
-@@ -358,4 +358,6 @@ int bnxt_qplib_modify_cc(struct bnxt_qplib_res *res,
- #define BNXT_VAR_MAX_SGE        13
- #define BNXT_RE_MAX_RQ_WQES     65536
- 
-+#define BNXT_STATIC_MAX_SGE	6
-+
- #endif /* __BNXT_QPLIB_SP_H__*/
+Here is the summary with links:
+  - [V4,net] net: mana: Fix error handling in mana_create_txq/rxq's NAPI cleanup
+    https://git.kernel.org/netdev/net/c/b6ecc6620376
+
+You are awesome, thank you!
 -- 
-2.5.5
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
