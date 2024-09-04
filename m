@@ -1,113 +1,137 @@
-Return-Path: <linux-rdma+bounces-4729-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4730-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60BFF96B0E4
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 08:02:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A621396B371
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 09:51:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A56028784A
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 06:02:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CD281F264BC
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2024 07:51:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2BDD84A22;
-	Wed,  4 Sep 2024 06:02:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A08C91494AB;
+	Wed,  4 Sep 2024 07:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OUterwV8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hp7i6Qq9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A760639B
-	for <linux-rdma@vger.kernel.org>; Wed,  4 Sep 2024 06:02:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61AF81FBA
+	for <linux-rdma@vger.kernel.org>; Wed,  4 Sep 2024 07:50:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725429766; cv=none; b=dWo6SMrVwL3SIVpUoamjIjwk3XcPFH/gvsrazw3O/GYoer8X0gPpQzoGKRH/5Tl8cPKrC2pAKCfHloY67KG7WcpqfoTM7Eoq98UAlpSzgPMF4rrYFLjckKovocYJ/T4S34NZwPEyXRtMbMIxAxphX/GbarvQNSn7m1/h9Dgp05Q=
+	t=1725436240; cv=none; b=gvO3fwnP/B84f515oIjdFsaCruewgHv5H6FBE4xCt+u3pBCyoUe+aLsJ+5vpWuaMURlJGfg84+JHyWFZtfXKz32YqCoucdhtWj4zkeIfITvnk1SYyRnoNyOlQXymAoTuGrsQi8DqBEy1dTWbpD42I7YKpzkdjnl/lQDHnbrVOjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725429766; c=relaxed/simple;
-	bh=HzEvWlKvksN/zPt68FjMHxvx+sIX0Y+awhwXofG4Ipc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bncgGzpT0IFaKRG22+9mSuRcI/mpRJAUlt3nF2uMxwgXmTL/PnypSuAa1SBuxjmL25Qta7qkXywVf0Jct/XhX6Drp89QHmKFTe/YYD+evK+oCXelgXkbL1MIU6o71dsIHcUWq0Qhx4xB1B/ZPN5OP49g85wnJwsWxfFWf/CFX0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OUterwV8; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <829ac3ed-a338-4589-a76d-77bb165f0608@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725429762;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VplJowlwUHkxbOtIka1lBspa4LGEnbwTD6GYsRWVesA=;
-	b=OUterwV8m+D7FoeupQ/cGiky34F5U8VcTLoTJBta+D03U+8EzCGHbFfqq9HxR9cLesstuw
-	akfjXXbzoYPkAWnaEBI7a/PEqDln4UnL/2NV0f7tIyi09Sn8yyRyoKuo9qUs/RDqOY4Xp1
-	fUKN+r/IeoBHBboX4msIHxdmY68qzPQ=
-Date: Wed, 4 Sep 2024 14:02:32 +0800
+	s=arc-20240116; t=1725436240; c=relaxed/simple;
+	bh=9IKIHBvuDepXJTsXJhoqALPgb3F5jr+MHgRIteqf6XE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=dsNpu/FJEdJbomvDtTcIXjdKSCNljT2l5nrlnYzNL1LGG6LpLVSUjlqUe8k2HDxXX/gfrI2p8X1IuYwuRKfoEDXzzQCiZRsjcsCSChhb0B7FttD9fNns6BCZ8owE0/JS88sRlTDjKcB+5pXVGun5rykuG1ifAvqvZAeK5fY22kQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hp7i6Qq9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F955C4CEC2;
+	Wed,  4 Sep 2024 07:50:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725436239;
+	bh=9IKIHBvuDepXJTsXJhoqALPgb3F5jr+MHgRIteqf6XE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=hp7i6Qq9u/UDDnUn0DoQZNh27gGRNWBa4T+1fCXtH25/0t4ZTBJuF72ajTbirwy2G
+	 WbNy5ntOyoxAJdrezAZVJLP96pEyX0oYY5J5korJrkF+Kh52wZhlaa7B3VEjdWALL0
+	 0ECyIo866FPGLBVcf7sWf8bRBAaC1jk8BJOpg1dUawEHcoOMmdQjtdGr741XgHo9Ss
+	 /z1g9zOct/GDnYY+505TryUyM1k7jF+xkaQ1dz2NqydO3iHmnJ0TY7ucug3LFZqIFM
+	 3gCgfGU0ERZw13R6L3usCUYeHOdf5itF3GlR24FjsrJV951epxCq4wAAsRut5CCd4p
+	 2HCnnIiSehZ8A==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc: Chris Mi <cmi@nvidia.com>, Jianbo Liu <jianbol@nvidia.com>, 
+ linux-rdma@vger.kernel.org
+In-Reply-To: <778c40c60287992da5d6ec92bb07b67f7bb5e6ef.1725273295.git.leon@kernel.org>
+References: <778c40c60287992da5d6ec92bb07b67f7bb5e6ef.1725273295.git.leon@kernel.org>
+Subject: Re: [PATCH rdma-next] IB/mlx5: Fix UMR pd cleanup on error flow of
+ driver init
+Message-Id: <172543623499.1199574.14625080827258856519.b4-ty@kernel.org>
+Date: Wed, 04 Sep 2024 10:50:34 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH rdma-next 0/2] Introduce mlx5 data direct placement (DDP)
-To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
-Cc: Leon Romanovsky <leonro@nvidia.com>, Edward Srouji <edwards@nvidia.com>,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
- Tariq Toukan <tariqt@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>
-References: <cover.1725362773.git.leon@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <cover.1725362773.git.leon@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-在 2024/9/3 19:37, Leon Romanovsky 写道:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Hi,
-> 
-> This series from Edward introduces mlx5 data direct placement (DDP)
-> feature.
-> 
-> This feature allows WRs on the receiver side of the QP to be consumed
-> out of order, permitting the sender side to transmit messages without
-> guaranteeing arrival order on the receiver side.
-> 
-> When enabled, the completion ordering of WRs remains in-order,
-> regardless of the Receive WRs consumption order.
-> 
-> RDMA Read and RDMA Atomic operations on the responder side continue to
-> be executed in-order, while the ordering of data placement for RDMA
-> Write and Send operations is not guaranteed.
 
-It is an interesting feature. If I got this feature correctly, this 
-feature permits the user consumes the data out of order when RDMA Write 
-and Send operations. But its completiong ordering is still in order.
-
-Any scenario that this feature can be applied and what benefits will be 
-got from this feature?
-
-I am just curious about this. Normally the users will consume the data 
-in order. In what scenario, the user will consume the data out of order?
-
-Thanks,
-Zhu Yanjun
-
+On Mon, 02 Sep 2024 13:35:40 +0300, Leon Romanovsky wrote:
+> The cited commit moves the pd allocation from function
+> mlx5r_umr_resource_cleanup() to a new function mlx5r_umr_cleanup().
+> So the fix in commit [1] is broken. In error flow, will hit panic [2].
 > 
-> Thanks
+> Fix it by checking pd pointer to avoid panic if it is NULL;
 > 
-> Edward Srouji (2):
->    net/mlx5: Introduce data placement ordering bits
->    RDMA/mlx5: Support OOO RX WQE consumption
+> [1] RDMA/mlx5: Fix UMR cleanup on error flow of driver init
+> [2]
+>  [  347.567063] infiniband mlx5_0: Couldn't register device with driver model
+>  [  347.591382] BUG: kernel NULL pointer dereference, address: 0000000000000020
+>  [  347.593438] #PF: supervisor read access in kernel mode
+>  [  347.595176] #PF: error_code(0x0000) - not-present page
+>  [  347.596962] PGD 0 P4D 0
+>  [  347.601361] RIP: 0010:ib_dealloc_pd_user+0x12/0xc0 [ib_core]
+>  [  347.604171] RSP: 0018:ffff888106293b10 EFLAGS: 00010282
+>  [  347.604834] RAX: 0000000000000000 RBX: 000000000000000e RCX: 0000000000000000
+>  [  347.605672] RDX: ffff888106293ad0 RSI: 0000000000000000 RDI: 0000000000000000
+>  [  347.606529] RBP: 0000000000000000 R08: ffff888106293ae0 R09: ffff888106293ae0
+>  [  347.607379] R10: 0000000000000a06 R11: 0000000000000000 R12: 0000000000000000
+>  [  347.608224] R13: ffffffffa0704dc0 R14: 0000000000000001 R15: 0000000000000001
+>  [  347.609067] FS:  00007fdc720cd9c0(0000) GS:ffff88852c880000(0000) knlGS:0000000000000000
+>  [  347.610094] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  [  347.610727] CR2: 0000000000000020 CR3: 0000000103012003 CR4: 0000000000370eb0
+>  [  347.611421] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>  [  347.612113] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>  [  347.612804] Call Trace:
+>  [  347.613130]  <TASK>
+>  [  347.613417]  ? __die+0x20/0x60
+>  [  347.613793]  ? page_fault_oops+0x150/0x3e0
+>  [  347.614243]  ? free_msg+0x68/0x80 [mlx5_core]
+>  [  347.614840]  ? cmd_exec+0x48f/0x11d0 [mlx5_core]
+>  [  347.615359]  ? exc_page_fault+0x74/0x130
+>  [  347.615808]  ? asm_exc_page_fault+0x22/0x30
+>  [  347.616273]  ? ib_dealloc_pd_user+0x12/0xc0 [ib_core]
+>  [  347.616801]  mlx5r_umr_cleanup+0x23/0x90 [mlx5_ib]
+>  [  347.617365]  mlx5_ib_stage_pre_ib_reg_umr_cleanup+0x36/0x40 [mlx5_ib]
+>  [  347.618025]  __mlx5_ib_add+0x96/0xd0 [mlx5_ib]
+>  [  347.618539]  mlx5r_probe+0xe9/0x310 [mlx5_ib]
+>  [  347.619032]  ? kernfs_add_one+0x107/0x150
+>  [  347.619478]  ? __mlx5_ib_add+0xd0/0xd0 [mlx5_ib]
+>  [  347.619984]  auxiliary_bus_probe+0x3e/0x90
+>  [  347.620448]  really_probe+0xc5/0x3a0
+>  [  347.620857]  __driver_probe_device+0x80/0x160
+>  [  347.621325]  driver_probe_device+0x1e/0x90
+>  [  347.621770]  __driver_attach+0xec/0x1c0
+>  [  347.622213]  ? __device_attach_driver+0x100/0x100
+>  [  347.622724]  bus_for_each_dev+0x71/0xc0
+>  [  347.623151]  bus_add_driver+0xed/0x240
+>  [  347.623570]  driver_register+0x58/0x100
+>  [  347.623998]  __auxiliary_driver_register+0x6a/0xc0
+>  [  347.624499]  ? driver_register+0xae/0x100
+>  [  347.624940]  ? 0xffffffffa0893000
+>  [  347.625329]  mlx5_ib_init+0x16a/0x1e0 [mlx5_ib]
+>  [  347.625845]  do_one_initcall+0x4a/0x2a0
+>  [  347.626273]  ? gcov_event+0x2e2/0x3a0
+>  [  347.626706]  do_init_module+0x8a/0x260
+>  [  347.627126]  init_module_from_file+0x8b/0xd0
+>  [  347.627596]  __x64_sys_finit_module+0x1ca/0x2f0
+>  [  347.628089]  do_syscall_64+0x4c/0x100
 > 
->   drivers/infiniband/hw/mlx5/main.c    |  8 +++++
->   drivers/infiniband/hw/mlx5/mlx5_ib.h |  1 +
->   drivers/infiniband/hw/mlx5/qp.c      | 51 +++++++++++++++++++++++++---
->   include/linux/mlx5/mlx5_ifc.h        | 24 +++++++++----
->   include/uapi/rdma/mlx5-abi.h         |  5 +++
->   5 files changed, 78 insertions(+), 11 deletions(-)
-> 
+> [...]
+
+Applied, thanks!
+
+[1/1] IB/mlx5: Fix UMR pd cleanup on error flow of driver init
+      https://git.kernel.org/rdma/rdma/c/112e6e83a89426
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
 
 
