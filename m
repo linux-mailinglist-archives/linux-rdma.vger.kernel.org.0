@@ -1,138 +1,103 @@
-Return-Path: <linux-rdma+bounces-4762-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4763-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1DD796CD72
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 05:38:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEA8696CD73
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 05:40:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE97D1C247B1
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 03:38:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 662B5B21EDF
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 03:40:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9596514EC71;
-	Thu,  5 Sep 2024 03:38:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6927D13D53F;
+	Thu,  5 Sep 2024 03:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="DMQy8RxO"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="jxA3Dpci"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4EB11442E8
-	for <linux-rdma@vger.kernel.org>; Thu,  5 Sep 2024 03:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33BAE539A
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Sep 2024 03:40:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725507496; cv=none; b=iv+YHe8JjJE+0v5Kt4Gbk23hvxGzft/hWZOnzAamfMPQJNko8a/ILNQuv/QD6CwnF1pJ6ti4IrEoEVVv9AHpNySyXOUSFlEbCpQ+EOmV8xk9Mq2DcaxfGLAm3NBdyYWV+gs2ybqiw5dY/B+II9UKSYaRBfPBsdzGBAASFLrGeJI=
+	t=1725507604; cv=none; b=GjYKEoeqHzmwZazegpOuYFge/Nl7lxVXn+SYhgzz7acWxPDUW54PmOZxBRm+Dk22ygugOwf0e+sLRCfosZePiTPz4ud8RDLiXtAM0xqpokjtaCFZSyDH7cY3PLFh5H/LBytvXjcYgBdP2CWy6CTTDlsuQhYjAbJTLMY4J2Y3pfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725507496; c=relaxed/simple;
-	bh=mmiaJAbhrJN/bNqpFuO9uFl1R/zzhkIVpCzlW51fYOA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UyAYcB/wZENX6zitEYmYYmX/fvwUfzCTfcvWwmr9FkvIEQlPVDRdXlRMKFn54s47rBeGlIsuIY6PuZtqaO/zFlQkVXYoVAH6Ys7WjpbRi/Lefn9e4InG66JtfirB+jGOpOAZLmRvv/EyjwoU+iDrOqKUBsgK5a2aAbDSYBGuOuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=DMQy8RxO; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2053616fa36so3472825ad.0
-        for <linux-rdma@vger.kernel.org>; Wed, 04 Sep 2024 20:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1725507493; x=1726112293; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=08wuXpe7nVswzOQ+7NVFPT0XGolvX7IJ38IQQv3iN0o=;
-        b=DMQy8RxOFlOTY6aka1Zvsnn2KjBFC5XZ37ShZaqY0IRv2U1vp0edmkvA3iW6qRYi6o
-         PIyGYKG6B4WMrPDidbGd/JHwj6boLj6OUBwnOY3uSsPLiU/TgI3g5l36w4Co9PPcXVoa
-         FLjtvtjLHCGa283kgKsFP3ovA/DXCbOcZHzaCI2TbjfvW6oORBtts3PXmRNzmbFJloH/
-         42wOmBNC0PdVowUqu62rPNrPT00uc8Ow8hSnysXpF570Uve/klrSBeTGceKN1pQWo9Oy
-         H9vHq7FL01C1yU7KbdmKUkq5ydLMIfKTVF4dWJ2AaW/zNGJnTI3gM96WYmFKyHiFI/u8
-         Dgzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725507493; x=1726112293;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=08wuXpe7nVswzOQ+7NVFPT0XGolvX7IJ38IQQv3iN0o=;
-        b=c7IzD4BXaIKC4P4DuuBxsGZqY4b8ZIIIaczLP8eoqZUH42UMkWJ/EY4/kYFJA2DgXc
-         6LMsumAKkEz5p4mtvP+7qV+TgkphRN7DPKtU7CkuOuYnbuDHfWAsn/br5/VKaHwDVxR/
-         Za1wjW23qKAVvniVoyWceObkKzRk2SDi4OH9Z0peLmWukYJHLEkLtYv+aPqnHK78Uo76
-         TOR1Rc8LsqvXUSLou3ubLY8DHFBvufqLQAySv0w6dwXWLwnbkmllsBIWrsxsa7gFe6vZ
-         iOEOTCHWyD/u2q6qNGKw0GHir06qQHe5D8sDglwFyf+5mQahCZWBo8NkrG0WcUI+cf7U
-         NGtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXXgNAzM/2U9BJLI9lrMnCZLOltledRvhEX8COHMAlym+x2mOyCRzzrYInx8aEXQ9dwKkgOJfnDRNC6@vger.kernel.org
-X-Gm-Message-State: AOJu0YzHEHhXWUweGE9iLpSVVwHhYJCDfP54u5U/+8dZGjJyKnE4Sx7M
-	goRND4RbwCyLRX2IwIRBnIv28ACiqyW8GG8v/nAg2kfAeFuEsBP8oZZvb5GKdr4=
-X-Google-Smtp-Source: AGHT+IHH3Lqn5on1g4RFU57JfQl06v4zJ/wLxbY8TMC7VJqZlFOf/eV3r5+jBfeS2045uWs4FbawQg==
-X-Received: by 2002:a17:902:ce82:b0:205:4e4a:72d9 with SMTP id d9443c01a7336-2054e4a795emr184195425ad.7.1725507493010;
-        Wed, 04 Sep 2024 20:38:13 -0700 (PDT)
-Received: from medusa.lab.kspace.sh (c-98-207-191-243.hsd1.ca.comcast.net. [98.207.191.243])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-206aea38539sm20130665ad.130.2024.09.04.20.38.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Sep 2024 20:38:12 -0700 (PDT)
-Date: Wed, 4 Sep 2024 20:38:11 -0700
-From: Mohamed Khalfella <mkhalfella@purestorage.com>
-To: Moshe Shemesh <moshe@nvidia.com>
-Cc: Przemek Kitszel <przemyslaw.kitszel@intel.com>, yzhong@purestorage.com,
-	Shay Drori <shayd@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Tariq Toukan <tariqt@nvidia.com>
-Subject: Re: [PATCH v2 0/1] net/mlx5: Added cond_resched() to crdump
- collection
-Message-ID: <ZtknozCovDvK7-bL@ceto>
-References: <20240829213856.77619-1-mkhalfella@purestorage.com>
- <ZtELQ3MjZeFqguxE@apollo.purestorage.com>
- <43e7d936-f3c6-425a-b2ff-487c88905a0f@intel.com>
- <36b5d976-1fcb-45b9-97dd-19f048997588@nvidia.com>
+	s=arc-20240116; t=1725507604; c=relaxed/simple;
+	bh=gLGeCUSaHQ5soqdXdwTlDoA2iG/EDuSAQeO89ocP8KU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=R781oeVkNeGWihg18nsqhnnztt5SvOvW0DxFa7f7eLVYzJAoxmxVnxBywZvWk5XukmfiSzKLaT46AWX3HWw94pIrQjNVXNT1o7/aWsNKh0GYxQ1MIEx/aeLpBe+m0yR6apnkPQEypR8zX5ABOpd0tsnxtemHXw/DpXQUz3PRNyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=jxA3Dpci; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1725507598; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=IwAyTdIFsfBdbu6pCHP6rOYIgFfPion+n0naDFNC3cg=;
+	b=jxA3DpciCOqSVp3VCeyMk3sb4FJZPgwH07nLt7QJVahPysKiN1bcpRecKjhBPes7hEm6KOG6BHkcSKV8ZUhg4nCbFtV+GnQlF+Y5bcQNyUYT6p0frenaiT9ACnDZJHb5xl2VGOwCnX/k6M29a7IZ6HxPEzohfT4PVcUc7LUw79A=
+Received: from 30.221.115.16(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0WEJrPWC_1725507597)
+          by smtp.aliyun-inc.com;
+          Thu, 05 Sep 2024 11:39:58 +0800
+Message-ID: <c1c45940-866c-eebb-8824-d6c73d01bf25@linux.alibaba.com>
+Date: Thu, 5 Sep 2024 11:39:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH for-next v2 1/4] RDMA/erdma: Make the device probe process
+ more robust
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+ KaiShen@linux.alibaba.com
+References: <20240828060944.77829-1-chengyou@linux.alibaba.com>
+ <20240828060944.77829-2-chengyou@linux.alibaba.com>
+ <20240829100955.GB26654@unreal>
+ <e4649d6d-8265-054c-24fb-ca641716856b@linux.alibaba.com>
+ <20240902072133.GC4026@unreal>
+ <9cbb54a2-1929-f3d3-5b4a-3c613e6759a6@linux.alibaba.com>
+ <20240904160609.GC1909087@ziepe.ca>
+From: Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <20240904160609.GC1909087@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <36b5d976-1fcb-45b9-97dd-19f048997588@nvidia.com>
 
-On 2024-08-30 12:51:43 +0300, Moshe Shemesh wrote:
-> 
-> 
-> On 8/30/2024 10:08 AM, Przemek Kitszel wrote:
-> 
-> > 
-> > On 8/30/24 01:58, Mohamed Khalfella wrote:
-> >> On 2024-08-29 15:38:55 -0600, Mohamed Khalfella wrote:
-> >>> Changes in v2:
-> >>> - Removed cond_resched() in mlx5_vsc_wait_on_flag(). The idea is that
-> >>>    usleep_range() should be enough.
-> >>> - Updated cond_resched() in mlx5_vsc_gw_read_block_fast every 128
-> >>>    iterations.
-> >>>
-> >>> v1: 
-> >>> https://lore.kernel.org/all/20240819214259.38259-1-mkhalfella@purestorage.com/
-> >>>
-> >>> Mohamed Khalfella (1):
-> >>>    net/mlx5: Added cond_resched() to crdump collection
-> >>>
-> >>>   drivers/net/ethernet/mellanox/mlx5/core/lib/pci_vsc.c | 4 ++++
-> >>>   1 file changed, 4 insertions(+)
-> >>>
-> >>> -- 
-> >>> 2.45.2
-> >>>
-> >>
-> >> Some how I missed to add reviewers were on v1 of this patch.
-> >>
-> > 
-> > You did it right, there is need to provide explicit tag, just engaging
-> > in the discussion is not enough. v2 is fine, so:
-> > Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-> 
-> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-> And fixes tag should be:
-> Fixes: 8b9d8baae1de ("net/mlx5: Add Crdump support")
 
-Will add the tag in v3.
+
+On 9/5/24 12:06â€¯AM, Jason Gunthorpe wrote:
+> On Mon, Sep 02, 2024 at 05:09:09PM +0800, Cheng Xu wrote:
+> 
+>> The hardware now requires that the former reset (issued in the
+>> remove routine) must be completed before device init (issued in the
+>> probe routine). Waiting the reset completed either in the remove
+>> routine or in the probe routine both can meet the requirement.  This
+>> patch chose to wait in the probe routine because it can speed up the
+>> remove process.
+> 
+> But what happens if you attach VFIO or some other driver while this
+> background reset is occuring? Are you OK with that?
+
+Yes, it's OK.
+
+To simplify the description, We have two relevant components in the
+hardware: The device management engine and the RDMA engine. The PCIe
+device initialization (erdma, vfio and other drivers will perform it)
+is handled by device management engine without any issue. The issue described
+in this patch pertains to the RDMA engine, which is only invoked by erdma
+driver.
+
+In fact, this low-probability issue is not very serious and can be resolved
+by reloading the driver. After internal discussion, we have decided to eliminate
+this constraint through appropriate firmware modifications.
+
+Thanks,
+Cheng Xu
+
+> 
+> Jason
 
