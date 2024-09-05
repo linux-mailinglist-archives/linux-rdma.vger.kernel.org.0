@@ -1,167 +1,127 @@
-Return-Path: <linux-rdma+bounces-4765-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4766-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 576FC96CD90
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 06:03:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF2596CFCD
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 08:54:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F09428056F
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 04:03:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FF891F22686
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 06:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1906E154444;
-	Thu,  5 Sep 2024 04:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064121922C7;
+	Thu,  5 Sep 2024 06:54:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="CR4iKlhQ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="v8/Y0bR5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF84321A3
-	for <linux-rdma@vger.kernel.org>; Thu,  5 Sep 2024 04:03:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13F7B15624C
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Sep 2024 06:54:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725508997; cv=none; b=UHooHHERf1se/6k56B8RGiuxoxf1sbuajhx3spIkmXOzjEcJIgp8fw9oVqO35SMYQDM1fZP/cw9MtfA0ufPNvtdCMu/DLkJPwWxOnhq0RYdWB8vQyXkXewIv9Fc2XREKxmur9CWzIN2pGeKEWcgF4NxI4Sn+LV+V4u53Ygbqhms=
+	t=1725519279; cv=none; b=SP5nTWOLPwWtyxPs7ZdNJdPSVxiHqwgEI23ZfAO8vjwxEhGpxL9Gc93Z1hhzlUqxtsPD/FOsHMslQkgjj3d1AjUBY8MndK1edxgQDT8sewN+i1C1PJbxo/8iZrmigwJAZpvq7UEWBsPm3bZpEWc6vQsgHYb2xoTMFTTrnQ2ZFgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725508997; c=relaxed/simple;
-	bh=auD9fhWsTEWpHoikhl3Mbme+CG3+FT6ZDcgCV2Rw/Lk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=drJRh+boQ9CGSRpXy7oaVWzuAmZybm5ucfZrSm2g9wpUBnXPsoqhrFJ8ovUC/0yvi9azyWJ1YMLd8Hq/H1dE20v6wcWdOkcoXjuMCyRYyyhb6tl/X2gnhr6YQMAqkSXZi568Dm5QgE3fvkn1f08ovPRYBYTEv58f2kH5XgHwZf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=CR4iKlhQ; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-374d29ad870so141803f8f.3
-        for <linux-rdma@vger.kernel.org>; Wed, 04 Sep 2024 21:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1725508994; x=1726113794; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TlfktilC6RVUfIeO6c7ZN8OcJL66O83BhaU1aaD3tgI=;
-        b=CR4iKlhQkzF0cvJNJqPV4PcItnOnUE2Y8BupYw+GbrlPL0ySbxXaU7Tb3qqtzboas7
-         p+OV/EDINe0kmbBg38e4klNctZxx3aueIHUXK7qeN6HGoJvzbO9IdOa5PEM1T40F4wCi
-         4dZvu7hcwpLIM7VGad1XSZqXB/Js87LzL5klInXC5KhsehR4YbrQMdv9HetWBTpGymxD
-         D+MjrP3xo3Q6L+lMqYZswAa7wDRQEAeeWRMAPgxOHpip3hU4t/T+WUfmZYLf+HErQrKg
-         Jj6TT2Zeq3MGS30F0ZvrxWjKpRjVDV1E+ACITcMkzpc3KwCx0qc6dPYYRwaps2nZVxd4
-         Kfyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725508994; x=1726113794;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TlfktilC6RVUfIeO6c7ZN8OcJL66O83BhaU1aaD3tgI=;
-        b=nsBBDHAZba0PSRpz/TPR1XO4Bej8PuuQ9HK/MfSNQ8QhaT9l1+SsoV9HrQwv4UTuec
-         rXlJ/nRl7yWRWIga+4lAYuQkN3c7eYw4uXY78pbMUK+Rq7i0fvr55e4WQJGaFbSo1rjQ
-         ZRysEOYUehnzMF3awOeu974CnDdIoFb9KFKP0kctKuyQ4rCAeys2x4YSpHLCBUlSAnbI
-         r0amzKmAsxUQjJJU4bdBqaPxR6TNtRaT1VUSrYJdKUrte7FbuuzNzPCnXQsg+qoHOpV6
-         S5AQv24cBhzKBOwfMbvdTDT5QM25ADPhQWgfixaE+L3TIi0xNThLRdvXeMhgr6+a7Qbh
-         KXgw==
-X-Forwarded-Encrypted: i=1; AJvYcCX1c+q6fJ4dZSn/icGmL+F2ydFYdHe4SR5UMUCBM/q1uq3xMSZdqP9Jgjj7nu/lLWEJaJL1Kgl41orw@vger.kernel.org
-X-Gm-Message-State: AOJu0YwnpYZyCSgy6nZwundii9GgnpoHLFM4nw7N97X7r+NlWMh+WOVA
-	w55YtoJBnWRUogtFzHvYuyNFIl8TGgc78xN8HpJiPh2LTIWPkkZcVFGRFMoqrMA=
-X-Google-Smtp-Source: AGHT+IFo8+Yg/BiKvI1snoHFNdpPrCm69H0ef0GJQLA/Kjx60/Gv1y9q1gHs8XTAQ03ZcfaLKfUVOQ==
-X-Received: by 2002:a5d:4109:0:b0:374:bad2:6a5e with SMTP id ffacd0b85a97d-374bf168f0emr9713019f8f.28.1725508994209;
-        Wed, 04 Sep 2024 21:03:14 -0700 (PDT)
-Received: from dev-mkhalfella2.dev.purestorage.com ([208.88.159.129])
-        by smtp.googlemail.com with ESMTPSA id a640c23a62f3a-a8a61fbb093sm74170266b.11.2024.09.04.21.03.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Sep 2024 21:03:13 -0700 (PDT)
-From: Mohamed Khalfella <mkhalfella@purestorage.com>
-To: Tariq Toukan <tariqt@nvidia.com>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: yzhong@purestorage.com,
-	Moshe Shemesh <moshe@nvidia.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Shay Drori <shayd@nvidia.com>,
-	Mohamed Khalfella <mkhalfella@purestorage.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/1] net/mlx5: Added cond_resched() to crdump collection
-Date: Wed,  4 Sep 2024 22:02:48 -0600
-Message-Id: <20240905040249.91241-2-mkhalfella@purestorage.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240905040249.91241-1-mkhalfella@purestorage.com>
-References: <20240905040249.91241-1-mkhalfella@purestorage.com>
+	s=arc-20240116; t=1725519279; c=relaxed/simple;
+	bh=E722aN98qoIluMjkBW9ldX1LQnnjFZh+OKguYPNtw1c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DoFO3NIzaz4O5e5oJE0AJ0WYzUomiBH5bE9qEHWt1xRgQYCQPgaU1PXhiSFK3S3nF6duDObNlPmp3iLHBQb9alSCDhYJidNBWRflHB6m1PmWE5Rms+WqsuiJiNLfmUkOq3Yua+DTj3+sBfZynpdLk2y+CzT2XYpm53joCrmF3Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=v8/Y0bR5; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <df0c32a0-87d5-4d87-b994-16a34c584f68@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725519274;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4rah4wDDRJNXpGnG/55+rQgrFLtgH2VsGB24jI882TI=;
+	b=v8/Y0bR5InksC0ifRasyyNEgcvqz8eyi10IcxpbXWqOT3YB2x1+OEAOgJ7Xpt4dowmbdqa
+	V+QiskvKfAvmCuAzrtT6yCNqeG3ijdhSFteg93AH+fuZLhmpeRKOZPEASpjxhfIAuIMRn7
+	6T5koRHmS7trA+6vSrecaWNeiw+7Pz0=
+Date: Thu, 5 Sep 2024 14:54:26 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Subject: Re: [PATCH rdma-next] RDMA/core: Skip initialized but not leaked GID
+ entries
+To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
+Cc: linux-rdma@vger.kernel.org,
+ syzbot+b8b7a6774bf40cf8296b@syzkaller.appspotmail.com
+References: <7cce156160c4da8062e3cc8c5e9d5b7880feaafd.1725284500.git.leonro@nvidia.com>
+ <20240904143113.GG3915968@nvidia.com> <20240904153457.GO4026@unreal>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20240904153457.GO4026@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Collecting crdump involves reading vsc registers from pci config space
-of mlx device, which can take long time to complete. This might result
-in starving other threads waiting to run on the cpu.
+在 2024/9/4 23:34, Leon Romanovsky 写道:
+> On Wed, Sep 04, 2024 at 11:31:13AM -0300, Jason Gunthorpe wrote:
+>> On Mon, Sep 02, 2024 at 04:42:52PM +0300, Leon Romanovsky wrote:
+>>> From: Leon Romanovsky <leonro@nvidia.com>
+>>>
+>>> Failure in driver initialization can lead to a situation where the GID
+>>> entries are set but not used yet. In this case, the kref will be equal to 1,
+>>> which will trigger a false positive leak detection.
+>>
+>> Why does that happen??
+>>
+>>
+>>> For example, these messages are printed during the driver initialization
+>>> and followed by release_gid_table() call:
+>>>
+>>>   infiniband syz1: ib_query_port failed (-19)
+>>>   infiniband syz1: Couldn't set up InfiniBand P_Key/GID cache
+>>
+>> Okay, but who set the ref=1?
+>>
+>>> diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+>>> index b7c078b7f7cf..c6aec2e04d4c 100644
+>>> --- a/drivers/infiniband/core/cache.c
+>>> +++ b/drivers/infiniband/core/cache.c
+>>> @@ -800,13 +800,15 @@ static void release_gid_table(struct ib_device *device,
+>>>   		return;
+>>>   
+>>>   	for (i = 0; i < table->sz; i++) {
+>>> +		int gid_kref;
+>>> +
+>>>   		if (is_gid_entry_free(table->data_vec[i]))
+>>>   			continue;
+>>>   
+>>> -		WARN_ONCE(true,
+>>> +		gid_kref = kref_read(&table->data_vec[i]->kref);
+>>> +		WARN_ONCE(gid_kref > 1,
+>>>   			  "GID entry ref leak for dev %s index %d ref=%u\n",
+>>> -			  dev_name(&device->dev), i,
+>>> -			  kref_read(&table->data_vec[i]->kref));
+>>> +			  dev_name(&device->dev), i, gid_kref);
+>>>   	}
+>>
+>> I'm not convinced, I think the bug here is something wrong on the
+>> refcounting side not the freeing side. Ref should not be 1. Seems like
+>> missing error unwinding in the init side.
+> 
+> I dropped this patch as the real fix is here 1403c8b14765 ("IB/core: Fix ib_cache_setup_one error flow cleanup")
 
-Numbers I got from testing ConnectX-5 Ex MCX516A-CDAT in the lab:
+The commit 1403c8b14765 ("IB/core: Fix ib_cache_setup_one error flow 
+cleanup") is in the link 
+https://patchwork.kernel.org/project/linux-rdma/patch/79137687d829899b0b1c9835fcb4b258004c439a.1725273354.git.leon@kernel.org/
 
-- mlx5_vsc_gw_read_block_fast() was called with length = 1310716.
-- mlx5_vsc_gw_read_fast() reads 4 bytes at a time. It was not used to
-  read the entire 1310716 bytes. It was called 53813 times because
-  there are jumps in read_addr.
-- On average mlx5_vsc_gw_read_fast() took 35284.4ns.
-- In total mlx5_vsc_wait_on_flag() called vsc_read() 54707 times.
-  The average time for each call was 17548.3ns. In some instances
-  vsc_read() was called more than one time when the flag was not set.
-  As expected the thread released the cpu after 16 iterations in
-  mlx5_vsc_wait_on_flag().
-- Total time to read crdump was 35284.4ns * 53813 ~= 1.898s.
+Zhu Yanjun
 
-It was seen in the field that crdump can take more than 5 seconds to
-complete. During that time mlx5_vsc_wait_on_flag() did not release the
-cpu because it did not complete 16 iterations. It is believed that pci
-config reads were slow. Adding cond_resched() every 128 register read
-improves the situation. In the common case the, crdump takes ~1.8989s,
-the thread yields the cpu every ~4.51ms. If crdump takes ~5s, the thread
-yields the cpu every ~18.0ms.
-
-Fixes: 8b9d8baae1de ("net/mlx5: Add Crdump support")
-Reviewed-by: Yuanyuan Zhong <yzhong@purestorage.com>
-Signed-off-by: Mohamed Khalfella <mkhalfella@purestorage.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/lib/pci_vsc.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/pci_vsc.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/pci_vsc.c
-index 6b774e0c2766..c14f9529c25f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/pci_vsc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/pci_vsc.c
-@@ -24,6 +24,11 @@
- 	pci_write_config_dword((dev)->pdev, (dev)->vsc_addr + (offset), (val))
- #define VSC_MAX_RETRIES 2048
- 
-+/* Reading VSC registers can take relatively long time.
-+ * Yield the cpu every 128 registers read.
-+ */
-+#define VSC_GW_READ_BLOCK_COUNT 128
-+
- enum {
- 	VSC_CTRL_OFFSET = 0x4,
- 	VSC_COUNTER_OFFSET = 0x8,
-@@ -269,6 +274,7 @@ int mlx5_vsc_gw_read_block_fast(struct mlx5_core_dev *dev, u32 *data,
- {
- 	unsigned int next_read_addr = 0;
- 	unsigned int read_addr = 0;
-+	unsigned int count = 0;
- 
- 	while (read_addr < length) {
- 		if (mlx5_vsc_gw_read_fast(dev, read_addr, &next_read_addr,
-@@ -276,6 +282,10 @@ int mlx5_vsc_gw_read_block_fast(struct mlx5_core_dev *dev, u32 *data,
- 			return read_addr;
- 
- 		read_addr = next_read_addr;
-+		if (++count == VSC_GW_READ_BLOCK_COUNT) {
-+			cond_resched();
-+			count = 0;
-+		}
- 	}
- 	return length;
- }
--- 
-2.45.2
+> 
+> Thanks
+> 
+>>
+>> Jason
+>>
 
 
