@@ -1,103 +1,112 @@
-Return-Path: <linux-rdma+bounces-4763-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4764-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEA8696CD73
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 05:40:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BA6396CD8D
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 06:03:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 662B5B21EDF
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 03:40:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DA631C2085D
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 04:03:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6927D13D53F;
-	Thu,  5 Sep 2024 03:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 200921482FE;
+	Thu,  5 Sep 2024 04:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="jxA3Dpci"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="XlrfEKuV"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33BAE539A
-	for <linux-rdma@vger.kernel.org>; Thu,  5 Sep 2024 03:40:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B677347B4
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Sep 2024 04:03:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725507604; cv=none; b=GjYKEoeqHzmwZazegpOuYFge/Nl7lxVXn+SYhgzz7acWxPDUW54PmOZxBRm+Dk22ygugOwf0e+sLRCfosZePiTPz4ud8RDLiXtAM0xqpokjtaCFZSyDH7cY3PLFh5H/LBytvXjcYgBdP2CWy6CTTDlsuQhYjAbJTLMY4J2Y3pfE=
+	t=1725508991; cv=none; b=PSfwA1WpDB9nNA9Xj8zOKmY9+RVHfJMQPviX4zbFgSOrBmbKeJbUVd+ylflK+Hve05WgYUGet+skNXJ3g+iP2cz5NSwa0GfotW1gA7tB/Qzlo/MJHDkg11nb2zgqy7+t+A3tt0vxFYYySICeJJUmgppjoVk/cPyKSg8OswfK4GQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725507604; c=relaxed/simple;
-	bh=gLGeCUSaHQ5soqdXdwTlDoA2iG/EDuSAQeO89ocP8KU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R781oeVkNeGWihg18nsqhnnztt5SvOvW0DxFa7f7eLVYzJAoxmxVnxBywZvWk5XukmfiSzKLaT46AWX3HWw94pIrQjNVXNT1o7/aWsNKh0GYxQ1MIEx/aeLpBe+m0yR6apnkPQEypR8zX5ABOpd0tsnxtemHXw/DpXQUz3PRNyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=jxA3Dpci; arc=none smtp.client-ip=115.124.30.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1725507598; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=IwAyTdIFsfBdbu6pCHP6rOYIgFfPion+n0naDFNC3cg=;
-	b=jxA3DpciCOqSVp3VCeyMk3sb4FJZPgwH07nLt7QJVahPysKiN1bcpRecKjhBPes7hEm6KOG6BHkcSKV8ZUhg4nCbFtV+GnQlF+Y5bcQNyUYT6p0frenaiT9ACnDZJHb5xl2VGOwCnX/k6M29a7IZ6HxPEzohfT4PVcUc7LUw79A=
-Received: from 30.221.115.16(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0WEJrPWC_1725507597)
-          by smtp.aliyun-inc.com;
-          Thu, 05 Sep 2024 11:39:58 +0800
-Message-ID: <c1c45940-866c-eebb-8824-d6c73d01bf25@linux.alibaba.com>
-Date: Thu, 5 Sep 2024 11:39:56 +0800
+	s=arc-20240116; t=1725508991; c=relaxed/simple;
+	bh=8pABicp+50IsLqxOyqWE6Sq8aD/+XIjO0scm9/7FURw=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=nypNg5tRgxn/4o5XWo7l7FCY9j4V8dZLyuhPrw6ayCWeTdZeycKe3Y72577muyDcxmzTq0HxOnYUG1UoxVj1wEjWznhFa0xaR7946xAfpvrMLTzpbafO8cXreofDrBA/f+sS0zL2LlPhYqDRLkLokt/Ob4BkOOhr75BuVzZ+3L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=XlrfEKuV; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a8a7596b7dfso6729466b.0
+        for <linux-rdma@vger.kernel.org>; Wed, 04 Sep 2024 21:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1725508988; x=1726113788; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IlIByFDmC8Mahq3GIIzaKXynB+32bEHND/HXQox9Rro=;
+        b=XlrfEKuVSf28QtNtngx6pcM+KmJsNtse8w1b/zkHUkpkakv6kKz0DtMcaHL/MEM9nn
+         xcve+n72KTG0p2zLZOuwt+CN0RFT9Ya6Tm2Az/4VrKmBuJiEihdBxVEi+/V1esH4nhv5
+         V9GiTtPLxJQ3r4L4Ibn7RUFBrNrlvWWBIUXNyLnGC12tOoNHqUWy7P/F5t52pnt4Pgvg
+         DidfxtXchzq4znR1v5a2e+14W9RLdVz1TqsB/auzuGvaAoAo2fCqUYJ/kwxb4Vpc1DmA
+         fVzv3zpPptqw9V2AJ1mqoNvD7BBQrTdvmhvv2sVgDdEep4wOfR3A2rHLSaeNGfqHLhIU
+         lj3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725508988; x=1726113788;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IlIByFDmC8Mahq3GIIzaKXynB+32bEHND/HXQox9Rro=;
+        b=cmST3ZGfVuFWmqoda82nU3A5D0nytdzfWssA8+GBI6bAqix+6aQxT15ePLfKlP+d+m
+         AEPZS905Gfu7jGCGbBJBXZALEkjL+9kDDAGzSioReIlLeMGvP8GReNFCq0mApvHWoxYv
+         QmkVtzV0TySfKHEyM/KCp6x8+twuSD7XY0mKtWes3mOk5Gx932KgMtKGnvfpBJRR2K0H
+         9LLIH0TegPQgqoIhIFfsPmFLdCzehBSVzcpeijqrTeviYm++jPn39yPWnyzhm3rfMZ02
+         P9MePTMNt357KDYFkfJrN+/B66HgcMz1FZRhg9Gil3D9Lx9BAv+jqVWWeHXyd10tLTU5
+         vcgg==
+X-Forwarded-Encrypted: i=1; AJvYcCVWHZsrxLz/+k9KyNWHp6deaK9vonHfurKawREPcYLQLcD9t+wPsgcIXKcv7nn6vaV6L1+2GXdQModk@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4IxVgYjZzb51bcVu8lJg7Vz2wqnKVIlsvw0T0eE4RpPk0WJWV
+	qyhpbqk5T2JB6tY+IIosRJLhc8DuyOPjoppBGs2+K2aRE1tSZB+OZ1xXNQEALSc=
+X-Google-Smtp-Source: AGHT+IFegv6CAdqeljKZjd+tW6xGIxlEnk5sl8GV8u0dq1pS2dAxSFJempXIEh11AlDG1b8kGZ4a8g==
+X-Received: by 2002:a17:906:c146:b0:a80:b016:2525 with SMTP id a640c23a62f3a-a8a4301f534mr382421766b.8.1725508988250;
+        Wed, 04 Sep 2024 21:03:08 -0700 (PDT)
+Received: from dev-mkhalfella2.dev.purestorage.com ([208.88.159.129])
+        by smtp.googlemail.com with ESMTPSA id a640c23a62f3a-a8a61fbb093sm74170266b.11.2024.09.04.21.03.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Sep 2024 21:03:07 -0700 (PDT)
+From: Mohamed Khalfella <mkhalfella@purestorage.com>
+To: Tariq Toukan <tariqt@nvidia.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: yzhong@purestorage.com,
+	Moshe Shemesh <moshe@nvidia.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Shay Drori <shayd@nvidia.com>,
+	Mohamed Khalfella <mkhalfella@purestorage.com>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/1] Added cond_resched() to crdump collection
+Date: Wed,  4 Sep 2024 22:02:47 -0600
+Message-Id: <20240905040249.91241-1-mkhalfella@purestorage.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH for-next v2 1/4] RDMA/erdma: Make the device probe process
- more robust
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
- KaiShen@linux.alibaba.com
-References: <20240828060944.77829-1-chengyou@linux.alibaba.com>
- <20240828060944.77829-2-chengyou@linux.alibaba.com>
- <20240829100955.GB26654@unreal>
- <e4649d6d-8265-054c-24fb-ca641716856b@linux.alibaba.com>
- <20240902072133.GC4026@unreal>
- <9cbb54a2-1929-f3d3-5b4a-3c613e6759a6@linux.alibaba.com>
- <20240904160609.GC1909087@ziepe.ca>
-From: Cheng Xu <chengyou@linux.alibaba.com>
-In-Reply-To: <20240904160609.GC1909087@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
+Changes in v3:
+- Added Fixes: 8b9d8baae1de ("net/mlx5: Add Crdump support").
+- Updated the commit message to mention why cond_resched() every 128
+  registers read.
+- Simplified the check that calls cond_resched().
 
+v1: https://lore.kernel.org/all/20240819214259.38259-1-mkhalfella@purestorage.com/
+v2: https://lore.kernel.org/all/20240829213856.77619-1-mkhalfella@purestorage.com/
 
-On 9/5/24 12:06 AM, Jason Gunthorpe wrote:
-> On Mon, Sep 02, 2024 at 05:09:09PM +0800, Cheng Xu wrote:
-> 
->> The hardware now requires that the former reset (issued in the
->> remove routine) must be completed before device init (issued in the
->> probe routine). Waiting the reset completed either in the remove
->> routine or in the probe routine both can meet the requirement.  This
->> patch chose to wait in the probe routine because it can speed up the
->> remove process.
-> 
-> But what happens if you attach VFIO or some other driver while this
-> background reset is occuring? Are you OK with that?
+Mohamed Khalfella (1):
+  net/mlx5: Added cond_resched() to crdump collection
 
-Yes, it's OK.
+ drivers/net/ethernet/mellanox/mlx5/core/lib/pci_vsc.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-To simplify the description, We have two relevant components in the
-hardware: The device management engine and the RDMA engine. The PCIe
-device initialization (erdma, vfio and other drivers will perform it)
-is handled by device management engine without any issue. The issue described
-in this patch pertains to the RDMA engine, which is only invoked by erdma
-driver.
+-- 
+2.45.2
 
-In fact, this low-probability issue is not very serious and can be resolved
-by reloading the driver. After internal discussion, we have decided to eliminate
-this constraint through appropriate firmware modifications.
-
-Thanks,
-Cheng Xu
-
-> 
-> Jason
 
