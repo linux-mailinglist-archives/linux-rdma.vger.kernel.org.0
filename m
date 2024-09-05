@@ -1,130 +1,89 @@
-Return-Path: <linux-rdma+bounces-4772-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4773-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E01F96D6B5
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 13:06:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19E9096D758
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 13:39:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C084B1C25416
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 11:06:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9792AB2423F
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2024 11:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB4A1991D9;
-	Thu,  5 Sep 2024 11:06:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25273199E93;
+	Thu,  5 Sep 2024 11:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B2mq/qRN"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="aMuExzC2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0A9189913;
-	Thu,  5 Sep 2024 11:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6C4199E80;
+	Thu,  5 Sep 2024 11:39:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725534379; cv=none; b=RPaTO40evzKt1UxHOgKyc6fOv+YlojY/YVY6+n2ty8V41ldtVF0SgDW5uOZHeqWQxn81SBiImj0HfmmkrFvFxaS0ci5qag5Zj6jDBLU849toaTxxU3XHh97otTdijz7K3JfdOzV64Ck06FjP5ZY6vahj4XiQMmJAXuJ37WwXlgc=
+	t=1725536366; cv=none; b=auKz9P7DhGbl0P5KxnoNoy/dazpi2QcjbLMt1HOzaXp985aXj+JaYZOdY/oeYWgWF4M5SutemCqxGwi19oTwHbHQUlgJkpR8vh/HPEnvRCkP4P5FZ9ELDy9D1SXKXK+n4eU3K8cOWAv05M7mGNBChb1sfMloJfngPCfz0iZrTVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725534379; c=relaxed/simple;
-	bh=mXm3vLF7Xuh4dzhKD4FomDaVEt4SbJF7YWiZC5GCATQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oR4j7ze3Jq8U/NizYtqeUUe7DyaGHZMau6cuMJqZjhBD+KhfqX9gv2Rvv3KALSPDOgGFgHydMiCOmVKtf5RVG5GSDxUIiPaxfEb+DVpTaFwExuaeyJ8ZhphRVmW6Oc3gZG1nG/CusBGKUM8QW3A/ncylamFkBeMfx2vazDnhQDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B2mq/qRN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBC8FC4CEC3;
-	Thu,  5 Sep 2024 11:06:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725534379;
-	bh=mXm3vLF7Xuh4dzhKD4FomDaVEt4SbJF7YWiZC5GCATQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B2mq/qRN/Z70OYMD2rx1NZbnBWRU9YUSBkGrmw5L+9WzF8P5jVXuBZPoi9fGb27jW
-	 4sisdrwtT9a+7J9dD+vMDQ4x6saVdjxHeLQKfE9VGGJGz067D5SgB64nTAPTnVYsO+
-	 GOOgZOO0Ot0Vcgj04y0rNPxFfd9n61CcozjrWAO6zG6w27HPOHYNULV82jl04e5A2C
-	 HTawa+Egcti/ins5/wtzxvdYlu6oa8SKBpxuIQSbOh5aS+kg64pmtQPKDY4aoWgLBi
-	 IIvZcuq6DsNNmgtfDn6+bvFvRUUCGAJ7L9Y30o1jL/kJprJyBVatUqRt7r/G3eYbO0
-	 C7AvbliWnugvA==
-Date: Thu, 5 Sep 2024 14:06:15 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Yu Jiaoliang <yujiaoliang@vivo.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Erick Archer <erick.archer@gmx.com>,
-	Akiva Goldberger <agoldberger@nvidia.com>,
-	Patrisious Haddad <phaddad@nvidia.com>,
-	Mark Zhang <markzhang@nvidia.com>, Sagi Grimberg <sagi@grimberg.me>,
-	Max Gurtovoy <mgurtovoy@nvidia.com>,
-	Rohit Chavan <roheetchavan@gmail.com>,
-	Or Har-Toov <ohartoov@nvidia.com>,
-	Shigeru Yoshida <syoshida@redhat.com>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
-Subject: Re: [PATCH v1 rdma-next] RDMA/core: Use ERR_CAST to return an
- error-valued pointer
-Message-ID: <20240905110615.GU4026@unreal>
-References: <20240905093445.1186581-1-yujiaoliang@vivo.com>
+	s=arc-20240116; t=1725536366; c=relaxed/simple;
+	bh=NaZHXiNtSs2ZlpSQWGN+YxPdz+YASnDe7DLJQj8SC7s=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=YHxWXtwWx3fqzsm+hk/XwEMleqRFbJMAL9L17pRgeHN6ZiNDoPz5WPQiFP2WB9kVvxn453M6CCVlZVJS/RweS/14moAeRGLTJ1Ub2sW0l0QBvZw6Iojidyihj0Fr2Awz3AJ3a+Cs5cwqmZLsxFAPsJm8kdEJvlaXiVaFMcTSSpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=aMuExzC2; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1725536360; h=Message-ID:Date:MIME-Version:Subject:From:To:Content-Type;
+	bh=/hhEMKtprsVbArv+yauOmIjjQBRgsz4rpXSeuzHNeQ0=;
+	b=aMuExzC2CtUPOAeBwGr+vrLB0te5yT4S/RtLmO8b6PDfdgaN+505fnroLKPR9kQY6CsGbZ2hzclm/jRB+E8HgKSPuSb/X/AGSTNZFwXJFmRZnAW8v1qVJE6pEO/I/tNnYca+0+UXsfc0FuOo4ZfNnRei+vQlcJi9W6fjDNR/tw8=
+Received: from 30.221.149.174(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WELXxjm_1725536358)
+          by smtp.aliyun-inc.com;
+          Thu, 05 Sep 2024 19:39:19 +0800
+Message-ID: <0ccd6ef0-f642-45c3-a914-a54b50e11544@linux.alibaba.com>
+Date: Thu, 5 Sep 2024 19:39:17 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240905093445.1186581-1-yujiaoliang@vivo.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2] net/smc: add sysctl for smc_limit_hs
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+ wintera@linux.ibm.com, guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+ tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com
+References: <1724207797-79030-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Language: en-US
+In-Reply-To: <1724207797-79030-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Sep 05, 2024 at 05:34:40PM +0800, Yu Jiaoliang wrote:
-> Instead of directly casting and returning (void *) pointer, use ERR_CAST
-> to explicitly return an error-valued pointer. This makes the error handling
-> more explicit and improves code clarity.
-> 
-> Signed-off-by: Yu Jiaoliang <yujiaoliang@vivo.com>
-> ---
->  drivers/infiniband/core/mad_rmpp.c   | 2 +-
->  drivers/infiniband/core/uverbs_cmd.c | 2 +-
->  drivers/infiniband/core/verbs.c      | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
 
-I see other places in the code that could benefit from this change.
-Please do it for whole drivers/infiniband and group the patches.
 
-Thanks
 
-> 
-> diff --git a/drivers/infiniband/core/mad_rmpp.c b/drivers/infiniband/core/mad_rmpp.c
-> index 8af0619a39cd..b4b10e8a6495 100644
-> --- a/drivers/infiniband/core/mad_rmpp.c
-> +++ b/drivers/infiniband/core/mad_rmpp.c
-> @@ -158,7 +158,7 @@ static struct ib_mad_send_buf *alloc_response_msg(struct ib_mad_agent *agent,
->  	ah = ib_create_ah_from_wc(agent->qp->pd, recv_wc->wc,
->  				  recv_wc->recv_buf.grh, agent->port_num);
->  	if (IS_ERR(ah))
-> -		return (void *) ah;
-> +		return ERR_CAST(ah);
->  
->  	hdr_len = ib_get_mad_data_offset(recv_wc->recv_buf.mad->mad_hdr.mgmt_class);
->  	msg = ib_create_send_mad(agent, recv_wc->wc->src_qp,
-> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-> index 1b3ea71f2c33..35a83825f6ba 100644
-> --- a/drivers/infiniband/core/uverbs_cmd.c
-> +++ b/drivers/infiniband/core/uverbs_cmd.c
-> @@ -192,7 +192,7 @@ _ib_uverbs_lookup_comp_file(s32 fd, struct uverbs_attr_bundle *attrs)
->  					       fd, attrs);
->  
->  	if (IS_ERR(uobj))
-> -		return (void *)uobj;
-> +		return ERR_CAST(uobj);
->  
->  	uverbs_uobject_get(uobj);
->  	uobj_put_read(uobj);
-> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-> index 473ee0831307..77268cce4d31 100644
-> --- a/drivers/infiniband/core/verbs.c
-> +++ b/drivers/infiniband/core/verbs.c
-> @@ -572,7 +572,7 @@ struct ib_ah *rdma_create_ah(struct ib_pd *pd, struct rdma_ah_attr *ah_attr,
->  					   GFP_KERNEL : GFP_ATOMIC);
->  	if (IS_ERR(slave)) {
->  		rdma_unfill_sgid_attr(ah_attr, old_sgid_attr);
-> -		return (void *)slave;
-> +		return ERR_CAST(slave);
->  	}
->  	ah = _rdma_create_ah(pd, ah_attr, flags, NULL, slave);
->  	rdma_lag_put_ah_roce_slave(slave);
-> -- 
-> 2.34.1
-> 
+On 8/21/24 10:36 AM, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>
+> In commit 48b6190a0042 ("net/smc: Limit SMC visits when handshake workqueue congested"),
+> we introduce a mechanism to put constraint on SMC connections visit
+> according to the pressure of SMC handshake process.
+>
+> At that time, we believed that controlling the feature through netlink
+> was sufficient. However, most people have realized now that netlink is
+> not convenient in container scenarios, and sysctl is a more suitable
+> approach.
+>
+
+Hi everyone,
+
+Just a quick reminder regarding the patch that seems to have been 
+overlooked, possibly dues to its status was
+mistakenly updated to change request ? It seems that no further 
+modifications are needed.
+
+Best wishes,
+D. Wythe
 
