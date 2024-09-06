@@ -1,40 +1,40 @@
-Return-Path: <linux-rdma+bounces-4794-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4795-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 804E896EFCE
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 11:42:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43C7896EFD0
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 11:42:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A23F1F25A86
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 09:42:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED1441F257C1
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 09:42:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA29F1C9EAA;
-	Fri,  6 Sep 2024 09:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2814B1C9EC2;
+	Fri,  6 Sep 2024 09:40:42 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B6461C8FBC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350621C9DD6;
 	Fri,  6 Sep 2024 09:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725615641; cv=none; b=FDPAm3QFAojpCYVmtXJZ8BxCkva/GY7N9aRL0dDEFiLACUzMT+qZ6LAatuw3o26k85N4PR7gjOCqugQIrcXMlnEE4PYUbJtRpuR/LF/3RwE3SOPKFFOBmuO3zSv+VE0E22+gnMZNxU55VdBa1sshyPu3y/v/DlID/tzjd+Jxplc=
+	t=1725615642; cv=none; b=t9CDu7cH5hGew9W3oPqpE39xXS/7SZSMe79cbfloYbKQV0JIssDTBTecrBarofR5PihunsemaeC1i84ZAncQzywuBTP0nOXLVoBTHz5XUYuzrRq/NHsZpkU4nqFFMzt8ZPTIra1eogRxw5AhKfjHegin29H+BF9f95BUNnj21fA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725615641; c=relaxed/simple;
-	bh=jqNQXMWEqqCVSoQrvPRSx1XxOPx4D97bMv5ObROZ58o=;
+	s=arc-20240116; t=1725615642; c=relaxed/simple;
+	bh=ZjPqaBwu7RvD+3YUl82Ow46SEq2hMngd6puah2z3ik0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MxxKcYsjvi9ETNeERU5FJsKhDuNspqjzpVEHUULg6JBmDZiyP+QzIfQZCPA3M6UNYQinIRIA86zsEGo/OYsFygsZy2omIYdj+Ex7eDNOkpafT3DHiU4dCrggQW6q6P4rztMlwohJSqZ4bYIyE2bQEYurXWtXXJ4gE9KaYfEp/cw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.255
+	 MIME-Version:Content-Type; b=JyF+bX5H+PGFIAUiyxlsETRTggQeTZDro+1B1GdXhlo64W6AzdduNG/wsn96SvSA81GLTteXjn1xbOslGXKDwwQEThJs3TfUR49NAcFRaMDTKpsbZxrY8XHed3/CLcCD4V6FooyFRTPZfgFhLR0+3jGmYvAcJKZLN9lERAwjiDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
 Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4X0WQx012Mz1P99b;
-	Fri,  6 Sep 2024 17:39:36 +0800 (CST)
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4X0WRK0dVJzyRZM;
+	Fri,  6 Sep 2024 17:39:57 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id EDDFD14011A;
-	Fri,  6 Sep 2024 17:40:36 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 4804E14011A;
+	Fri,  6 Sep 2024 17:40:37 +0800 (CST)
 Received: from localhost.localdomain (10.90.30.45) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -43,9 +43,9 @@ From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-next 5/9] RDMA/hns: Fix spin_unlock_irqrestore() called with IRQs enabled
-Date: Fri, 6 Sep 2024 17:34:40 +0800
-Message-ID: <20240906093444.3571619-6-huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next 6/9] RDMA/hns: Fix VF triggering PF reset in abnormal interrupt handler
+Date: Fri, 6 Sep 2024 17:34:41 +0800
+Message-ID: <20240906093444.3571619-7-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
 References: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
@@ -60,89 +60,41 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemf100018.china.huawei.com (7.202.181.17)
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+In abnormal interrupt handler, a PF reset will be triggered even if
+the device is a VF. It should be a VF reset.
 
-Fix missuse of spin_lock_irq()/spin_unlock_irq() when
-spin_lock_irqsave()/spin_lock_irqrestore() was hold.
-
-This was discovered through the lock debugging, and the corresponding
-log is as follows:
-
-raw_local_irq_restore() called with IRQs enabled
-WARNING: CPU: 96 PID: 2074 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x30/0x40
-...
-Call trace:
- warn_bogus_irq_restore+0x30/0x40
- _raw_spin_unlock_irqrestore+0x84/0xc8
- add_qp_to_list+0x11c/0x148 [hns_roce_hw_v2]
- hns_roce_create_qp_common.constprop.0+0x240/0x780 [hns_roce_hw_v2]
- hns_roce_create_qp+0x98/0x160 [hns_roce_hw_v2]
- create_qp+0x138/0x258
- ib_create_qp_kernel+0x50/0xe8
- create_mad_qp+0xa8/0x128
- ib_mad_port_open+0x218/0x448
- ib_mad_init_device+0x70/0x1f8
- add_client_context+0xfc/0x220
- enable_device_and_get+0xd0/0x140
- ib_register_device.part.0+0xf4/0x1c8
- ib_register_device+0x34/0x50
- hns_roce_register_device+0x174/0x3d0 [hns_roce_hw_v2]
- hns_roce_init+0xfc/0x2c0 [hns_roce_hw_v2]
- __hns_roce_hw_v2_init_instance+0x7c/0x1d0 [hns_roce_hw_v2]
- hns_roce_hw_v2_init_instance+0x9c/0x180 [hns_roce_hw_v2]
-
-Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+Fixes: 2b9acb9a97fe ("RDMA/hns: Add the process of AEQ overflow for hip08")
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_qp.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 1de384ce4d0e..6b03ba671ff8 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -1460,19 +1460,19 @@ void hns_roce_lock_cqs(struct hns_roce_cq *send_cq, struct hns_roce_cq *recv_cq)
- 		__acquire(&send_cq->lock);
- 		__acquire(&recv_cq->lock);
- 	} else if (unlikely(send_cq != NULL && recv_cq == NULL)) {
--		spin_lock_irq(&send_cq->lock);
-+		spin_lock(&send_cq->lock);
- 		__acquire(&recv_cq->lock);
- 	} else if (unlikely(send_cq == NULL && recv_cq != NULL)) {
--		spin_lock_irq(&recv_cq->lock);
-+		spin_lock(&recv_cq->lock);
- 		__acquire(&send_cq->lock);
- 	} else if (send_cq == recv_cq) {
--		spin_lock_irq(&send_cq->lock);
-+		spin_lock(&send_cq->lock);
- 		__acquire(&recv_cq->lock);
- 	} else if (send_cq->cqn < recv_cq->cqn) {
--		spin_lock_irq(&send_cq->lock);
-+		spin_lock(&send_cq->lock);
- 		spin_lock_nested(&recv_cq->lock, SINGLE_DEPTH_NESTING);
- 	} else {
--		spin_lock_irq(&recv_cq->lock);
-+		spin_lock(&recv_cq->lock);
- 		spin_lock_nested(&send_cq->lock, SINGLE_DEPTH_NESTING);
- 	}
- }
-@@ -1492,13 +1492,13 @@ void hns_roce_unlock_cqs(struct hns_roce_cq *send_cq,
- 		spin_unlock(&recv_cq->lock);
- 	} else if (send_cq == recv_cq) {
- 		__release(&recv_cq->lock);
--		spin_unlock_irq(&send_cq->lock);
-+		spin_unlock(&send_cq->lock);
- 	} else if (send_cq->cqn < recv_cq->cqn) {
- 		spin_unlock(&recv_cq->lock);
--		spin_unlock_irq(&send_cq->lock);
-+		spin_unlock(&send_cq->lock);
- 	} else {
- 		spin_unlock(&send_cq->lock);
--		spin_unlock_irq(&recv_cq->lock);
-+		spin_unlock(&recv_cq->lock);
- 	}
- }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index adcadd2495ab..74bab07c10e5 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -6201,6 +6201,7 @@ static irqreturn_t abnormal_interrupt_basic(struct hns_roce_dev *hr_dev,
+ 	struct pci_dev *pdev = hr_dev->pci_dev;
+ 	struct hnae3_ae_dev *ae_dev = pci_get_drvdata(pdev);
+ 	const struct hnae3_ae_ops *ops = ae_dev->ops;
++	enum hnae3_reset_type reset_type;
+ 	irqreturn_t int_work = IRQ_NONE;
+ 	u32 int_en;
+ 
+@@ -6212,10 +6213,12 @@ static irqreturn_t abnormal_interrupt_basic(struct hns_roce_dev *hr_dev,
+ 		roce_write(hr_dev, ROCEE_VF_ABN_INT_ST_REG,
+ 			   1 << HNS_ROCE_V2_VF_INT_ST_AEQ_OVERFLOW_S);
+ 
++		reset_type = hr_dev->is_vf ?
++			     HNAE3_VF_FUNC_RESET : HNAE3_FUNC_RESET;
++
+ 		/* Set reset level for reset_event() */
+ 		if (ops->set_default_reset_request)
+-			ops->set_default_reset_request(ae_dev,
+-						       HNAE3_FUNC_RESET);
++			ops->set_default_reset_request(ae_dev, reset_type);
+ 		if (ops->reset_event)
+ 			ops->reset_event(pdev, NULL);
  
 -- 
 2.33.0
