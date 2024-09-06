@@ -1,128 +1,232 @@
-Return-Path: <linux-rdma+bounces-4786-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4787-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C36DC96E95A
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 07:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6595E96E95F
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 07:40:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEE091C23454
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 05:36:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 847451C22DA1
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 05:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F8A85628;
-	Fri,  6 Sep 2024 05:35:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEF3412EBDB;
+	Fri,  6 Sep 2024 05:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jqcT8j6P"
+	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="VlptsF3J"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07AE944C86
-	for <linux-rdma@vger.kernel.org>; Fri,  6 Sep 2024 05:35:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 866CA2628C;
+	Fri,  6 Sep 2024 05:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.204.34.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725600957; cv=none; b=FH3omMvQKrBzgzPN59rzvAFH03g+U6DLy6wy3/T5KY6BGgPhDajg1jArVvYZ1YfyeRwnCq8FmzDcPfFIK4hT0eckmUwGlKrKVKzpHZfooHVfMUvwFP85as1sl7dJU4dkY6+mc0h5pQ4U07UYyiWForwIk63sQTkS7sRux4ETTj4=
+	t=1725601246; cv=none; b=aUgffcdqYMtDA946gIMPORXFiSU2Ze/H2TCScV/5jPHhes7/vmXq/kTHhDY32O5a6e4EkisHkUDo1DXvX2ynW2dq37tOYVEDEU16/vtKjm0NJtyOKmMXDDCcDCKwdEJ9heaA0KZS2X/qT1UwEBjPSCmW2sVbibUYg7GV07LMntw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725600957; c=relaxed/simple;
-	bh=o/2KhL+xfw7eHQQPM1JU/IpkXsdwUCEWEQv7RBG+e4A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YORPVpaMMSByeZeOZoKhNY41FPNRRNezoWgQYmY+gmWEnkNgFviHwTGzEexYw6yPHyAX1hAqJ3UuBwSzWkbHDOq4IC5nq+HyiYPTD7B+JNpHDZP+zU/Pzwq7hlWd2FKJc/WkbxknnPHHR91+QW/1Yd2JlxKhdT2pBW4fdEZosCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jqcT8j6P; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4e8e01d1-359d-4877-ac6c-29f4fc512fb7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725600953;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MFNC0Awc5iTNM0qfW3u9PkW3iUF8QXCExDtW4sqi/qc=;
-	b=jqcT8j6PdqIPZLB5sxW8Csp2n4EuY/HhoDpG72KON/UgB/Q8m8BwoNX4y/NhCwpPgGnqfh
-	3/2Ekhc2av5ldJh8tvk20GxIiVNdJ8w+EIAc3iqA8wBc2hYklixKQ74u45BCCYoWRg7Njd
-	83N/mKIrXe4fD7cvrYJpSJPUkXEiQuI=
-Date: Fri, 6 Sep 2024 13:35:46 +0800
+	s=arc-20240116; t=1725601246; c=relaxed/simple;
+	bh=Cniav45urdpVNzapqVqrBdTz6uLrtoPLIOl7/GG06PM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YdNQcELLMjAVD+HOf2FTOvGhOkyKgkngZYlPE9GFaLfolbB8nG5cNt0ZWn9ZM1fUEx/8GN6Q3w3PM2fE580h4MULDwEC4UZP8LANsB4Hd0F73R1xvv2ztcdW/L8LDmdGyM/P7rCv6UM/x8su/BU0yT9x8WqYe9zqknS2yCV41i0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=VlptsF3J; arc=none smtp.client-ip=54.204.34.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+	s=onoh2408; t=1725601229;
+	bh=Um2fielNufiPq2gPF+cakRDGheYfuE60dnAlgqaba+4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=VlptsF3JjbCh+zw7R23THL+asQr2yCm8+ot2y6+ZS41sf0P2y5MoAz8AjOwZzI33p
+	 Oes0w1cLqgls+dqB5AXMEEpxyQlxswec2/MrgknftN1iYKq04QdMcDUEgWGEq5G3TV
+	 5ev8/Um/EpQiThubn8bN15U11J6jygRMafgdv2k0=
+X-QQ-mid: bizesmtp89t1725601217t86fmi1u
+X-QQ-Originating-IP: pp2HEb8VFRV3OyePs+K/oTB0T0vJNpih3CUIsTHdOR4=
+Received: from localhost.localdomain ( [113.57.152.160])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Fri, 06 Sep 2024 13:40:11 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 3399184416924761505
+From: WangYuli <wangyuli@uniontech.com>
+To: aaro.koskinen@iki.fi,
+	andreas@kemnade.info,
+	khilman@baylibre.com,
+	rogerq@kernel.org,
+	tony@atomide.com,
+	linux@armlinux.org.uk,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	wangyuli@uniontech.com,
+	gustavoars@kernel.org,
+	mitr@volny.cz,
+	dmitry.torokhov@gmail.com,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	anil.gurumurthy@qlogic.com,
+	sudarsana.kalluru@qlogic.com,
+	James.Bottomley@HansenPartnership.com,
+	martin.petersen@oracle.com,
+	obdclark@gmail.com,
+	quic_abhinavk@quicinc.com,
+	dmitry.baryshkov@linaro.org,
+	sean@poorly.run,
+	marijn.suijten@somainline.org,
+	airlied@gmail.com,
+	daniel@ffwll.ch
+Cc: linux-omap@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-scsi@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	freedreno@lists.freedesktop.org,
+	abhinavk@codeaurora.org,
+	architt@codeaurora.org,
+	chandanu@codeaurora.org,
+	jsanka@codeaurora.org,
+	jcrouse@codeaurora.org,
+	ryadav@codeaurora.org,
+	skolluku@codeaurora.org,
+	seanpaul@chromium.org,
+	robdclark@gmail.com,
+	anil_ravindranath@pmc-sierra.com,
+	standby24x7@gmail.com,
+	jkosina@suse.cz,
+	don.hiatt@intel.com,
+	ira.weiny@intel.com,
+	dasaratharaman.chandramouli@intel.com,
+	dledford@redhat.com,
+	eric.piel@tremplin-utc.net,
+	akpm@linux-foundation.org,
+	dtor@mail.ru,
+	vijaykumar@bravegnu.org,
+	dwmw2@infradead.org,
+	kgudipat@brocade.com,
+	James.Bottomley@suse.de,
+	guanwentao@uniontech.com,
+	zhanjun@uniontech.com
+Subject: [PATCH] treewide: Correct the typo 'retun'
+Date: Fri,  6 Sep 2024 13:40:08 +0800
+Message-ID: <63D0F870EE8E87A0+20240906054008.390188-1-wangyuli@uniontech.com>
+X-Mailer: git-send-email 2.43.4
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH rdma-next 0/8] Introduce mlx5 Memory Scheme ODP
-To: Michael Guralnik <michaelgur@nvidia.com>, leonro@nvidia.com,
- jgg@nvidia.com
-Cc: linux-rdma@vger.kernel.org, saeedm@nvidia.com, tariqt@nvidia.com
-References: <20240904153038.23054-1-michaelgur@nvidia.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240904153038.23054-1-michaelgur@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
 
-在 2024/9/4 23:30, Michael Guralnik 写道:
-> This series introduces a new ODP scheme in mlx5 where the FW takes the
-> responsibility of parsing and providing page fault data to the driver
-> to handle the fault.
-> As opposed to the current ODP transport scheme where the driver is
-> responsible for reading and parsing work queues and querying mkeys to
-> acquire needed info to handle the page fault.
-> 
-> The new scheme allows driver to support ODP over Devx QPs where driver
-> is not able to access the QP buffers, owned by the user application,
-> to read the work queue requests.
-> Furthermore, the new scheme allows support for ODP with new indirect
-> MKEY types as the driver doesn't need to query or parse indirect mkeys
-> in this scheme.
-> 
-> The driver will enable the new scheme on devices that have the relevant
-> capabilities. Otherwise, transport scheme ODP will be the default.
-> 
-> The move to memory scheme ODP is transparent to existing ODP
-> applications and no change is needed.
-> New application that want to take advantage of the new functionality
-> should query which scheme is active and it's capabilities using Devx.
+There are some spelling mistakes of 'retun' in comments which
+should be instead of 'return'.
 
-On-Demand-Paging (ODP) is a technique to alleviate much of the 
-shortcomings of memory registration. Applications no longer need to pin 
-down the underlying physical pages of the address space, and track the 
-validity of the mappings. Rather, the HCA requests the latest 
-translations from the OS when pages are not present, and the OS 
-invalidates translations which are no longer valid due to either 
-non-present pages or mapping changes.
+Signed-off-by: WangYuli <wangyuli@uniontech.com>
+---
+ arch/arm/mach-omap2/omap-mpuss-lowpower.c | 2 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h  | 2 +-
+ drivers/infiniband/core/sa_query.c        | 2 +-
+ drivers/input/misc/wistron_btns.c         | 2 +-
+ drivers/mtd/nand/raw/nandsim.c            | 2 +-
+ drivers/scsi/bfa/bfa_fcs.c                | 2 +-
+ drivers/scsi/pmcraid.c                    | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-As such, it seems that it can save memory via not pinning down the 
-underlying physical pages of the address space, and track the validity 
-of the mappings.
-
-What is the difference on the performance with/without ODP enabled? And 
-about memory usage, is there any test result about this?
-
-And ODP can be used mlx5 IB device? Or ODP can only be used in mlx5 
-RoCEv2 device?
-
-Thanks,
-Zhu Yanjun
-
-> 
-> Michael Guralnik (8):
->    net/mlx5: Expand mkey page size to support 6 bits
->    net/mlx5: Expose HW bits for Memory scheme ODP
->    RDMA/mlx5: Add new ODP memory scheme eqe format
->    RDMA/mlx5: Enforce umem boundaries for explicit ODP page faults
->    RDMA/mlx5: Split ODP mkey search logic
->    RDMA/mlx5: Add handling for memory scheme page fault events
->    RDMA/mlx5: Add implicit MR handling to ODP memory scheme
->    net/mlx5: Handle memory scheme ODP capabilities
-> 
->   drivers/infiniband/hw/mlx5/mlx5_ib.h          |  17 +-
->   drivers/infiniband/hw/mlx5/mr.c               |  10 +-
->   drivers/infiniband/hw/mlx5/odp.c              | 400 ++++++++++++++----
->   .../net/ethernet/mellanox/mlx5/core/main.c    |  54 ++-
->   include/linux/mlx5/device.h                   |  30 +-
->   include/linux/mlx5/mlx5_ifc.h                 |  64 ++-
->   6 files changed, 449 insertions(+), 126 deletions(-)
-> 
+diff --git a/arch/arm/mach-omap2/omap-mpuss-lowpower.c b/arch/arm/mach-omap2/omap-mpuss-lowpower.c
+index 7ad74db951f6..f18ef45e2fe1 100644
+--- a/arch/arm/mach-omap2/omap-mpuss-lowpower.c
++++ b/arch/arm/mach-omap2/omap-mpuss-lowpower.c
+@@ -333,7 +333,7 @@ int omap4_hotplug_cpu(unsigned int cpu, unsigned int power_state)
+ 	omap_pm_ops.scu_prepare(cpu, power_state);
+ 
+ 	/*
+-	 * CPU never retuns back if targeted power state is OFF mode.
++	 * CPU never returns back if targeted power state is OFF mode.
+ 	 * CPU ONLINE follows normal CPU ONLINE ptah via
+ 	 * omap4_secondary_startup().
+ 	 */
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h
+index b26d5fe40c72..febc3e764a63 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h
+@@ -231,7 +231,7 @@ struct dpu_crtc_state {
+ 	container_of(x, struct dpu_crtc_state, base)
+ 
+ /**
+- * dpu_crtc_frame_pending - retun the number of pending frames
++ * dpu_crtc_frame_pending - return the number of pending frames
+  * @crtc: Pointer to drm crtc object
+  */
+ static inline int dpu_crtc_frame_pending(struct drm_crtc *crtc)
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index 8175dde60b0a..53571e6b3162 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -1420,7 +1420,7 @@ enum opa_pr_supported {
+ /*
+  * opa_pr_query_possible - Check if current PR query can be an OPA query.
+  *
+- * Retuns PR_NOT_SUPPORTED if a path record query is not
++ * Returns PR_NOT_SUPPORTED if a path record query is not
+  * possible, PR_OPA_SUPPORTED if an OPA path record query
+  * is possible and PR_IB_SUPPORTED if an IB path record
+  * query is possible.
+diff --git a/drivers/input/misc/wistron_btns.c b/drivers/input/misc/wistron_btns.c
+index 5c4956678cd0..39d6f642cd19 100644
+--- a/drivers/input/misc/wistron_btns.c
++++ b/drivers/input/misc/wistron_btns.c
+@@ -1075,7 +1075,7 @@ static void wistron_led_init(struct device *parent)
+ 	}
+ 
+ 	if (leds_present & FE_MAIL_LED) {
+-		/* bios_get_default_setting(MAIL) always retuns 0, so just turn the led off */
++		/* bios_get_default_setting(MAIL) always returns 0, so just turn the led off */
+ 		wistron_mail_led.brightness = LED_OFF;
+ 		if (led_classdev_register(parent, &wistron_mail_led))
+ 			leds_present &= ~FE_MAIL_LED;
+diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
+index 179b28459b4b..df48b7d01d16 100644
+--- a/drivers/mtd/nand/raw/nandsim.c
++++ b/drivers/mtd/nand/raw/nandsim.c
+@@ -1381,7 +1381,7 @@ static inline union ns_mem *NS_GET_PAGE(struct nandsim *ns)
+ }
+ 
+ /*
+- * Retuns a pointer to the current byte, within the current page.
++ * Returns a pointer to the current byte, within the current page.
+  */
+ static inline u_char *NS_PAGE_BYTE_OFF(struct nandsim *ns)
+ {
+diff --git a/drivers/scsi/bfa/bfa_fcs.c b/drivers/scsi/bfa/bfa_fcs.c
+index 5023c0ab4277..e52ce9b01f49 100644
+--- a/drivers/scsi/bfa/bfa_fcs.c
++++ b/drivers/scsi/bfa/bfa_fcs.c
+@@ -1431,7 +1431,7 @@ bfa_cb_lps_flogo_comp(void *bfad, void *uarg)
+  *	param[in]	vf_id - VF_ID
+  *
+  *	return
+- *	If lookup succeeds, retuns fcs vf object, otherwise returns NULL
++ *	If lookup succeeds, returns fcs vf object, otherwise returns NULL
+  */
+ bfa_fcs_vf_t   *
+ bfa_fcs_vf_lookup(struct bfa_fcs_s *fcs, u16 vf_id)
+diff --git a/drivers/scsi/pmcraid.c b/drivers/scsi/pmcraid.c
+index a2a084c8075e..72a4c6e3d0c8 100644
+--- a/drivers/scsi/pmcraid.c
++++ b/drivers/scsi/pmcraid.c
+@@ -4009,7 +4009,7 @@ static void pmcraid_tasklet_function(unsigned long instance)
+  * This routine un-registers registered interrupt handler and
+  * also frees irqs/vectors.
+  *
+- * Retun Value
++ * Return Value
+  *	None
+  */
+ static
+-- 
+2.43.4
 
 
