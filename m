@@ -1,39 +1,39 @@
-Return-Path: <linux-rdma+bounces-4793-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4794-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B8CB96EFCB
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 11:42:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 804E896EFCE
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 11:42:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A43F21C20C0A
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 09:42:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A23F1F25A86
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 09:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6418A1C9DF7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA29F1C9EAA;
 	Fri,  6 Sep 2024 09:40:41 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CF61C8FC7;
-	Fri,  6 Sep 2024 09:40:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B6461C8FBC;
+	Fri,  6 Sep 2024 09:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725615641; cv=none; b=sjZHyr7XETnn4DZRyy7bZiRMWCa78B6BYTLyj3HQHaKWg6E2ArgjnN/X//rFJpf6hU+K1hqSd4+ncKzFA94CX7vtqDHaGAYvkvWx7wl0FEa0FRbmrGDeydYY20X2wlsg3WJ2BPVYnc6mQ6n63IiIGl7apNc8xasCefIuybMXHWk=
+	t=1725615641; cv=none; b=FDPAm3QFAojpCYVmtXJZ8BxCkva/GY7N9aRL0dDEFiLACUzMT+qZ6LAatuw3o26k85N4PR7gjOCqugQIrcXMlnEE4PYUbJtRpuR/LF/3RwE3SOPKFFOBmuO3zSv+VE0E22+gnMZNxU55VdBa1sshyPu3y/v/DlID/tzjd+Jxplc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725615641; c=relaxed/simple;
-	bh=6Q1hxXM9q7udvj+o/M+EawHDJdF/OeNX0tGPnvrJem0=;
+	bh=jqNQXMWEqqCVSoQrvPRSx1XxOPx4D97bMv5ObROZ58o=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UCZT9mhXw23/3DOkj8LCJJCJcJLyIMT+PpONLurnQnuKul4bp0Mz0wUkAWGiJMpa6afVC2r7rIu1NMB6108ReBAIbmBHpI+Hp3G/nfaA6HNOA3gQ1Dd9iWsQz/sTPrmPQOuhOtFFCO2SToRHmfC0oJzN2PdhQsDpRfiRdPi/z8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
+	 MIME-Version:Content-Type; b=MxxKcYsjvi9ETNeERU5FJsKhDuNspqjzpVEHUULg6JBmDZiyP+QzIfQZCPA3M6UNYQinIRIA86zsEGo/OYsFygsZy2omIYdj+Ex7eDNOkpafT3DHiU4dCrggQW6q6P4rztMlwohJSqZ4bYIyE2bQEYurXWtXXJ4gE9KaYfEp/cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.255
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4X0WQw32pRzyR2G;
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4X0WQx012Mz1P99b;
 	Fri,  6 Sep 2024 17:39:36 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id A5FC41800D1;
+	by mail.maildlp.com (Postfix) with ESMTPS id EDDFD14011A;
 	Fri,  6 Sep 2024 17:40:36 +0800 (CST)
 Received: from localhost.localdomain (10.90.30.45) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
@@ -43,9 +43,9 @@ From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-next 4/9] RDMA/hns: Fix the overflow risk of hem_list_calc_ba_range()
-Date: Fri, 6 Sep 2024 17:34:39 +0800
-Message-ID: <20240906093444.3571619-5-huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next 5/9] RDMA/hns: Fix spin_unlock_irqrestore() called with IRQs enabled
+Date: Fri, 6 Sep 2024 17:34:40 +0800
+Message-ID: <20240906093444.3571619-6-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
 References: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
@@ -60,70 +60,90 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemf100018.china.huawei.com (7.202.181.17)
 
-From: wenglianfa <wenglianfa@huawei.com>
+From: Chengchang Tang <tangchengchang@huawei.com>
 
-The max value of 'unit' and 'hop_num' is 2^24 and 2, so the value of
-'step' may exceed the range of u32. Change the type of 'step' to u64.
+Fix missuse of spin_lock_irq()/spin_unlock_irq() when
+spin_lock_irqsave()/spin_lock_irqrestore() was hold.
 
-Fixes: 38389eaa4db1 ("RDMA/hns: Add mtr support for mixed multihop addressing")
-Signed-off-by: wenglianfa <wenglianfa@huawei.com>
+This was discovered through the lock debugging, and the corresponding
+log is as follows:
+
+raw_local_irq_restore() called with IRQs enabled
+WARNING: CPU: 96 PID: 2074 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x30/0x40
+...
+Call trace:
+ warn_bogus_irq_restore+0x30/0x40
+ _raw_spin_unlock_irqrestore+0x84/0xc8
+ add_qp_to_list+0x11c/0x148 [hns_roce_hw_v2]
+ hns_roce_create_qp_common.constprop.0+0x240/0x780 [hns_roce_hw_v2]
+ hns_roce_create_qp+0x98/0x160 [hns_roce_hw_v2]
+ create_qp+0x138/0x258
+ ib_create_qp_kernel+0x50/0xe8
+ create_mad_qp+0xa8/0x128
+ ib_mad_port_open+0x218/0x448
+ ib_mad_init_device+0x70/0x1f8
+ add_client_context+0xfc/0x220
+ enable_device_and_get+0xd0/0x140
+ ib_register_device.part.0+0xf4/0x1c8
+ ib_register_device+0x34/0x50
+ hns_roce_register_device+0x174/0x3d0 [hns_roce_hw_v2]
+ hns_roce_init+0xfc/0x2c0 [hns_roce_hw_v2]
+ __hns_roce_hw_v2_init_instance+0x7c/0x1d0 [hns_roce_hw_v2]
+ hns_roce_hw_v2_init_instance+0x9c/0x180 [hns_roce_hw_v2]
+
+Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
+Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hem.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_qp.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index 496584139240..cade3ca68de1 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -1041,9 +1041,9 @@ static bool hem_list_is_bottom_bt(int hopnum, int bt_level)
-  * @bt_level: base address table level
-  * @unit: ba entries per bt page
-  */
--static u32 hem_list_calc_ba_range(int hopnum, int bt_level, int unit)
-+static u64 hem_list_calc_ba_range(int hopnum, int bt_level, int unit)
- {
--	u32 step;
-+	u64 step;
- 	int max;
- 	int i;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 1de384ce4d0e..6b03ba671ff8 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -1460,19 +1460,19 @@ void hns_roce_lock_cqs(struct hns_roce_cq *send_cq, struct hns_roce_cq *recv_cq)
+ 		__acquire(&send_cq->lock);
+ 		__acquire(&recv_cq->lock);
+ 	} else if (unlikely(send_cq != NULL && recv_cq == NULL)) {
+-		spin_lock_irq(&send_cq->lock);
++		spin_lock(&send_cq->lock);
+ 		__acquire(&recv_cq->lock);
+ 	} else if (unlikely(send_cq == NULL && recv_cq != NULL)) {
+-		spin_lock_irq(&recv_cq->lock);
++		spin_lock(&recv_cq->lock);
+ 		__acquire(&send_cq->lock);
+ 	} else if (send_cq == recv_cq) {
+-		spin_lock_irq(&send_cq->lock);
++		spin_lock(&send_cq->lock);
+ 		__acquire(&recv_cq->lock);
+ 	} else if (send_cq->cqn < recv_cq->cqn) {
+-		spin_lock_irq(&send_cq->lock);
++		spin_lock(&send_cq->lock);
+ 		spin_lock_nested(&recv_cq->lock, SINGLE_DEPTH_NESTING);
+ 	} else {
+-		spin_lock_irq(&recv_cq->lock);
++		spin_lock(&recv_cq->lock);
+ 		spin_lock_nested(&send_cq->lock, SINGLE_DEPTH_NESTING);
+ 	}
+ }
+@@ -1492,13 +1492,13 @@ void hns_roce_unlock_cqs(struct hns_roce_cq *send_cq,
+ 		spin_unlock(&recv_cq->lock);
+ 	} else if (send_cq == recv_cq) {
+ 		__release(&recv_cq->lock);
+-		spin_unlock_irq(&send_cq->lock);
++		spin_unlock(&send_cq->lock);
+ 	} else if (send_cq->cqn < recv_cq->cqn) {
+ 		spin_unlock(&recv_cq->lock);
+-		spin_unlock_irq(&send_cq->lock);
++		spin_unlock(&send_cq->lock);
+ 	} else {
+ 		spin_unlock(&send_cq->lock);
+-		spin_unlock_irq(&recv_cq->lock);
++		spin_unlock(&recv_cq->lock);
+ 	}
+ }
  
-@@ -1079,7 +1079,7 @@ int hns_roce_hem_list_calc_root_ba(const struct hns_roce_buf_region *regions,
- {
- 	struct hns_roce_buf_region *r;
- 	int total = 0;
--	int step;
-+	u64 step;
- 	int i;
- 
- 	for (i = 0; i < region_cnt; i++) {
-@@ -1110,7 +1110,7 @@ static int hem_list_alloc_mid_bt(struct hns_roce_dev *hr_dev,
- 	int ret = 0;
- 	int max_ofs;
- 	int level;
--	u32 step;
-+	u64 step;
- 	int end;
- 
- 	if (hopnum <= 1)
-@@ -1147,7 +1147,7 @@ static int hem_list_alloc_mid_bt(struct hns_roce_dev *hr_dev,
- 		}
- 
- 		start_aligned = (distance / step) * step + r->offset;
--		end = min_t(int, start_aligned + step - 1, max_ofs);
-+		end = min_t(u64, start_aligned + step - 1, max_ofs);
- 		cur = hem_list_alloc_item(hr_dev, start_aligned, end, unit,
- 					  true);
- 		if (!cur) {
-@@ -1235,7 +1235,7 @@ static int setup_middle_bt(struct hns_roce_dev *hr_dev, void *cpu_base,
- 	struct hns_roce_hem_item *hem, *temp_hem;
- 	int total = 0;
- 	int offset;
--	int step;
-+	u64 step;
- 
- 	step = hem_list_calc_ba_range(r->hopnum, 1, unit);
- 	if (step < 1)
 -- 
 2.33.0
 
