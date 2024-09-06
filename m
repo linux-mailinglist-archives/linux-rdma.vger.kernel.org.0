@@ -1,39 +1,39 @@
-Return-Path: <linux-rdma+bounces-4792-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4800-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 498AC96EFCA
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 11:42:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 229F996EFE2
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 11:44:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F36861F25817
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 09:42:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 928ACB243BD
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 09:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D721C9DF6;
-	Fri,  6 Sep 2024 09:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D301CCB31;
+	Fri,  6 Sep 2024 09:40:47 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34FDD14A60F;
-	Fri,  6 Sep 2024 09:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58831CB329;
+	Fri,  6 Sep 2024 09:40:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725615641; cv=none; b=a4PvMWEntk9VH7qH9aVxqzvHFlToASWVP+BUcv2IwbYemZecr6wyNxjuzfkSBgiTD+DV2c8B8FnfAvnzQ7ZEPcG3e/lEKJ2NDzCg6G1AsmIgyRggPBGwoYgWwQ78bKUWV6RVo7QfTRic73yIgbLV5nDH5D2xMjNu138KkwLCRbs=
+	t=1725615647; cv=none; b=trYBXmTV3AGF/TbpiWDWTpFG1ZyzcaroKTm2wCi+uQ8hZwFHuoGZKDY3TgjiUgfeIHYwzs401w01lEBt40DylIlv74NVYAbOXbDeYobV0avcdV8DlwYeLXKljIxa6jKQ+Oc+LirveT8UwaYrp8YZcbm+OD60dM2pXHleVUN01Hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725615641; c=relaxed/simple;
-	bh=88eYLhqhc3IkUrTMeuf8p9h3jjMPgX0Pz9/Q6zNVBJY=;
+	s=arc-20240116; t=1725615647; c=relaxed/simple;
+	bh=Sc1sgE1xxQ6I0G10D9+Y8fwOhv4EVExftI82+tw42aQ=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cXOFYmdqP1uHPEvgXym3Vnnk+7omDmkYagvlLnwr3NYZMGvpaeNbcw5L6IaOIutmXw+Ma/+H37yKUsJTzDTMzSjKIH5bRzbWrs9SvhB4mq95/oIrDeGzIzicsHdzpBcZoIyZzGM0FnaHo6FFIKP8Ar5eeen/4Oe1BrUupZXcZ88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
+	 MIME-Version:Content-Type; b=nBTIuSQLJvbONIE6qKeu8Hom9++Zkp8LOik+TWvEmstuqI3TmI2irCxQT0XO8vxDVLfnQOHghYIeZkbYui2MmJqcSNLWXVrtInywGgqocMNJaMj1sbIpBiORn3dUcVJhyM8AFqZZXBHcvqbAZYT4aE6kWMh6KXMrlEIeztSsigM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4X0WRK2bQwzyRZN;
-	Fri,  6 Sep 2024 17:39:57 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4X0WLL4S3zz20nb7;
+	Fri,  6 Sep 2024 17:35:38 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8934E1800FE;
+	by mail.maildlp.com (Postfix) with ESMTPS id CF9F814040F;
 	Fri,  6 Sep 2024 17:40:37 +0800 (CST)
 Received: from localhost.localdomain (10.90.30.45) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
@@ -43,9 +43,9 @@ From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-next 7/9] RDMA/hns: Fix 1bit-ECC recovery address in non-4K OS
-Date: Fri, 6 Sep 2024 17:34:42 +0800
-Message-ID: <20240906093444.3571619-8-huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next 8/9] RDMA/hns: Optimize hem allocation performance
+Date: Fri, 6 Sep 2024 17:34:43 +0800
+Message-ID: <20240906093444.3571619-9-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
 References: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
@@ -60,34 +60,48 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemf100018.china.huawei.com (7.202.181.17)
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+When allocating MTT hem, for each hop level of each hem that is being
+allocated, the driver iterates the hem list to find out whether the
+bt page has been allocated in this hop level. If not, allocate a new
+one and splice it to the list. The time complexity is O(n^2) in worst
+cases.
 
-The 1bit-ECC recovery address read from HW only contain bits 64:12, so
-it should be fixed left-shifted 12 bits when used.
+Currently the allocation for-loop uses 'unit' as the step size. This
+actually has taken into account the reuse of last-hop-level MTT bt
+pages by multiple buffer pages. Thus pages of last hop level will
+never have been allocated, so there is no need to iterate the hem list
+in last hop level.
 
-Currently, the driver will shift the address left by PAGE_SHIFT when
-used, which is wrong in non-4K OS.
+Removing this unnecessary iteration can reduce the time complexity to
+O(n).
 
-Fixes: 2de949abd6a5 ("RDMA/hns: Recover 1bit-ECC error of RAM on chip")
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+Fixes: 38389eaa4db1 ("RDMA/hns: Add mtr support for mixed multihop addressing")
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hem.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 74bab07c10e5..085461713fa9 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -6288,7 +6288,7 @@ static u64 fmea_get_ram_res_addr(u32 res_type, __le64 *data)
- 	    res_type == ECC_RESOURCE_SCCC)
- 		return le64_to_cpu(*data);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
+index cade3ca68de1..12a875d5b511 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hem.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
+@@ -1134,10 +1134,12 @@ static int hem_list_alloc_mid_bt(struct hns_roce_dev *hr_dev,
  
--	return le64_to_cpu(*data) << PAGE_SHIFT;
-+	return le64_to_cpu(*data) << HNS_HW_PAGE_SHIFT;
- }
+ 	/* config L1 bt to last bt and link them to corresponding parent */
+ 	for (level = 1; level < hopnum; level++) {
+-		cur = hem_list_search_item(&mid_bt[level], offset);
+-		if (cur) {
+-			hem_ptrs[level] = cur;
+-			continue;
++		if (!hem_list_is_bottom_bt(hopnum, level)) {
++			cur = hem_list_search_item(&mid_bt[level], offset);
++			if (cur) {
++				hem_ptrs[level] = cur;
++				continue;
++			}
+ 		}
  
- static int fmea_recover_others(struct hns_roce_dev *hr_dev, u32 res_type,
+ 		step = hem_list_calc_ba_range(hopnum, level, unit);
 -- 
 2.33.0
 
