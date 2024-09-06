@@ -1,66 +1,66 @@
-Return-Path: <linux-rdma+bounces-4783-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4784-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13A6B96E87F
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 06:03:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 383A196E887
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 06:05:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96AA6285568
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 04:03:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAC4A1F24AEC
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2024 04:05:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD85241E7;
-	Fri,  6 Sep 2024 04:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B3B23D551;
+	Fri,  6 Sep 2024 04:05:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="H1FbNG/y"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="TLqpRSk0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6302F4A
-	for <linux-rdma@vger.kernel.org>; Fri,  6 Sep 2024 04:03:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A059241E7
+	for <linux-rdma@vger.kernel.org>; Fri,  6 Sep 2024 04:05:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725595406; cv=none; b=IB1DjxXZNjUnH/hiIwxH8fc0wQdbUzVVRT2KqOm7T1CeYinjiqL6cIeHR7MvERfjHFdZ1lYo+VHC5b/xj/czwMD9gRVUbpyEeql3oX6bIKWoEOApHUr4fpxKpLydMPs0DqSQVNkcmoE5rnAWQPYwKzJoou6m81j6wh91DKnJerw=
+	t=1725595545; cv=none; b=NYF1pF1qxfFYNSEXTosDvG0RkCYEx4Gc1dMtAmQVJFPgOrak5erVMegb2BlpdY8ItvMX2evJgF0oDUSmjX7Y0roepsdJ4Qd+k2LEBBm0Os/hgMnzg8U0ml4Yn9wVJcZ9BIFupF5R/L6bV4EjEyvaUiZP139S1q7F56BEJ2tVK1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725595406; c=relaxed/simple;
-	bh=zNzfzn6U7K/H9nbhV3+e0XShVnKPLOgMtt60ghXwPQI=;
+	s=arc-20240116; t=1725595545; c=relaxed/simple;
+	bh=6T05Gy+4UKE7MzGvbol13Phx3RdTLtG5J0MvLr9Ars0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UphfNXmeljATCUyKiP6rwSwjZg+bB4rTO5+TGm0viOrNOlGlu4A+cXON7UUVxg45h7czvN4kmA3bJKwVYL+rmYtkiEAeGUS1uTWxdfmfBUkYKd0mjzDPqeJE4HSoJknoFj0RuB99T37nHNRa7NXwul4ZjmdVdecU/x0K1ciXa6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=H1FbNG/y; arc=none smtp.client-ip=209.85.219.178
+	 To:Cc:Content-Type; b=YIRHYsnjRRSl+h3lCIJD2Yc2/Hbb/HYdMLBFZx1D2H8ZU9PrhnKT94jVoaiXA8aQGwEOGhp0ZpsqyLiYx9ef6q6EjQpV1GudwQ30TxHOVSy3p+wDydpGuSd8JhnWsvLLXqk2qr0XWVEXVz9FebyBobchzIxTI3dYugLGbInfKaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=TLqpRSk0; arc=none smtp.client-ip=209.85.219.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-e116d2f5f7fso2177723276.1
-        for <linux-rdma@vger.kernel.org>; Thu, 05 Sep 2024 21:03:24 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-e1a9dc3efc1so1946791276.2
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Sep 2024 21:05:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1725595404; x=1726200204; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1725595543; x=1726200343; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3+nQQ3XRSiqnX+Gl79IQZWQG44TA5azeTh4ZjZyJTxY=;
-        b=H1FbNG/yv5h9Qx/8nwQI/eoBtk4g4fz7Y0Qc2oZVa3IYHzFHrkxkN5KAELDd959YD5
-         PoB+OM6LDBEapDD1VVRql9kNkqeSMaqq5b6smgTfhtP1LXnLvD1fXht1147cKDscNO3N
-         Qj0pe9GGHAQPdjF+23kNb1c5gmSMcsypor2qE=
+        bh=+x/xP1sigdnMTG9enAXsp1WIYm4fMcF6dsOrOfw/KAA=;
+        b=TLqpRSk0Sp0BbwHVzZbvhu8F0msv9yLjPa285rUxg4mCC9sXWIWrm0BHIxLzAy+fC/
+         OvDvWXiEaWPZVIh2vogy6h6tLpRdiXzF6/oNcN8ZppgMwXkSpkox5vO8OLaUSqQeC4bC
+         lSyI6VDnDyS4Aan0qVABclZxwx1xOvjQgOP+U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725595404; x=1726200204;
+        d=1e100.net; s=20230601; t=1725595543; x=1726200343;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3+nQQ3XRSiqnX+Gl79IQZWQG44TA5azeTh4ZjZyJTxY=;
-        b=ikW1eUP5ZjDbBY/YoKHLBBHUivyLtprtGPSArRsbT6DbYhkA3jxxdSwMPQLt2ap6Xz
-         GzB4vy4sM8i7LBfdhfulAKCwh0a1yCEe/L6wONAFfqpDWKhodh6SESQBKB+KXXHz8I7U
-         prUYTafS2ZZ9oYolD0YS9LRM5qhrMCSnLX3+7tPhRIGNxucHLWQGZitZw3BvTPysO1Ig
-         xZYjVYDGd9NUDQyck32MHWPNeH98GwEiyDvVpIgqb5agPscM40eS+hYWJsIdQ8v6KqQx
-         y0e+dIL7LQ67eqT5BbWiczUW4TzkzJnIiVKnk0Kb6TdNKx9ZcyiXsuQ/yEeft2AeMny4
-         2HzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUMz+y5EE4k9rxv4dk4b7fDFXiMMBdSbNFDCfafuIM4GogDGTSqC+IILcFSY+4nfSZZe8qQYqrVAkov@vger.kernel.org
-X-Gm-Message-State: AOJu0YxeQo/d+tdjhor5tObSSWzbRERqQmThlQDhx1SLf9iBUdjhIdcg
-	CiBZScuA92J9K7c/g+lPygqYAeHT9y31+GdjUUes3hjuw8dKUpzesECkuUZRBZ8rD0rmr7iVDzT
-	3PlOjNPArUOmPG7p8o7zn+ImMDcAfCaBjf3dA
-X-Google-Smtp-Source: AGHT+IFJdq6FTcZ0qb5vnT3zqEM0KHu6M6lQcO6txI5TRcZkTlr25FcLBl2rwI1bG4UubUh8VwrVQLTRmguQfopzZZk=
-X-Received: by 2002:a05:6902:15c8:b0:e0b:4cb6:ec53 with SMTP id
- 3f1490d57ef6-e1d3425d1d7mr1229560276.3.1725595403604; Thu, 05 Sep 2024
- 21:03:23 -0700 (PDT)
+        bh=+x/xP1sigdnMTG9enAXsp1WIYm4fMcF6dsOrOfw/KAA=;
+        b=mAe56Ih20JorGrLQHyytStnnaMUapTzwXNkZoE2Qo+y4cURFzquNuBoLMcglLKrCd/
+         UGCXT6IJ10ohFLgzUKsxHaaC8i0BtGcqSiKndRTl1NZCfmdsnh/rQ501N83ZGK5I8VgC
+         E2+Ez9YL+5eGYDCnIkAmROsJngYAro+EkZNnV6hiCiWb6DRXcDCmfUZEDhTJSEgCAzsm
+         KSjY2CzNG3o62IJwrjmjWkfvHa/00lCITrwM4yu2431rXKVnnFoQXI/514HAfc4zL5T0
+         /o6S4/NMx2rgs03YQZ3JkcMz6ssCkbgETmIotJvn06ej9GP30o+XaybgGeddGjHFw0J8
+         qPaw==
+X-Forwarded-Encrypted: i=1; AJvYcCUbVho5Arm0+2RfEYWnrTvA0n2CEG/d0gHHP+3fDKFBZlZSLklynSs5kwYQgf1uWty7MJ1fqld17DIL@vger.kernel.org
+X-Gm-Message-State: AOJu0YwAmsHsNMzmxNE8YveuL2RDyPBn7riJTNUsIm5oX6s1ScfmWoQI
+	znzUQes7ZlV09BiN+Yg7AUKJww1a9P/75Mx5levTRTlHMlW4XEz90Dlj9gylmyAfw3JAFUq+xiY
+	wBW4bnehVefLg9lfimYWKRDlCOs9MryGPBBYe
+X-Google-Smtp-Source: AGHT+IFw5yTzs3+Kl5SrvkIf03U/K+UhTjJ72w43dSI2uXxg6oLABoKSy+0JoQE1FLtFH+opmJV5gy35P57NaSl7hOs=
+X-Received: by 2002:a05:6902:118e:b0:e1d:2fce:1630 with SMTP id
+ 3f1490d57ef6-e1d3488fad5mr1874074276.23.1725595543229; Thu, 05 Sep 2024
+ 21:05:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -68,247 +68,66 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <1725363051-19268-1-git-send-email-selvin.xavier@broadcom.com>
- <1725363051-19268-2-git-send-email-selvin.xavier@broadcom.com> <20240905102543.GS4026@unreal>
-In-Reply-To: <20240905102543.GS4026@unreal>
+ <1725363051-19268-4-git-send-email-selvin.xavier@broadcom.com> <20240905102906.GT4026@unreal>
+In-Reply-To: <20240905102906.GT4026@unreal>
 From: Selvin Xavier <selvin.xavier@broadcom.com>
-Date: Fri, 6 Sep 2024 09:33:09 +0530
-Message-ID: <CA+sbYW2fN8bx1Cx6BSxcwXZ26TGYtVk4h=7JAbR2J+w2j82MPw@mail.gmail.com>
-Subject: Re: [PATCH for-next 1/4] RDMA/bnxt_re: Add FW async event support in driver
+Date: Fri, 6 Sep 2024 09:35:31 +0530
+Message-ID: <CA+sbYW1TSHScZ+u8PnTQX6mx_w1N-G4hDhz1oD2Q_zgsgA9dfA@mail.gmail.com>
+Subject: Re: [PATCH for-next 3/4] RDMA/bnxt_re: Add support to handle
+ DCB_CONFIG_CHANGE event
 To: Leon Romanovsky <leon@kernel.org>
 Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
-	kalesh-anakkur.purayil@broadcom.com, Michael Chan <michael.chan@broadcom.com>
+	kalesh-anakkur.purayil@broadcom.com
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000157fa506216b7dc2"
+	boundary="000000000000671e4206216b8540"
 
---000000000000157fa506216b7dc2
+--000000000000671e4206216b8540
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 5, 2024 at 3:55=E2=80=AFPM Leon Romanovsky <leon@kernel.org> wr=
+On Thu, Sep 5, 2024 at 3:59=E2=80=AFPM Leon Romanovsky <leon@kernel.org> wr=
 ote:
 >
-> On Tue, Sep 03, 2024 at 04:30:48AM -0700, Selvin Xavier wrote:
+> On Tue, Sep 03, 2024 at 04:30:50AM -0700, Selvin Xavier wrote:
 > > From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 > >
-> > Using the option provided by L2 driver, register for FW Async
-> > event. Provide the ulp hook 'ulp_async_notifier' for receiving
-> > the events for L2 driver.
+> > QP1 context in HW needs to be updated when there is a
+> > change in the default DSCP values used for RoCE traffic.
+> > Handle the event from FW and modify the dscp value used
+> > by QP1.
 > >
-> > Async events will be handled in follow on patches.
-> >
-> > CC: Michael Chan <michael.chan@broadcom.com>
 > > Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 > > ---
-> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h       |  1 +
-> >  drivers/infiniband/hw/bnxt_re/main.c          | 47 +++++++++++++++++++=
+> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h  |   1 +
+> >  drivers/infiniband/hw/bnxt_re/main.c     | 105 +++++++++++++++++++++++=
 ++++++++
-> >  drivers/net/ethernet/broadcom/bnxt/bnxt.c     |  1 +
-> >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c | 31 ++++++++++++++++++
-> >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |  1 +
-> >  5 files changed, 81 insertions(+)
-> >
-> > diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniba=
-nd/hw/bnxt_re/bnxt_re.h
-> > index 2be9a62..b2ed557 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-> > +++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-> > @@ -198,6 +198,7 @@ struct bnxt_re_dev {
-> >       struct delayed_work dbq_pacing_work;
-> >       DECLARE_HASHTABLE(cq_hash, MAX_CQ_HASH_BITS);
-> >       DECLARE_HASHTABLE(srq_hash, MAX_SRQ_HASH_BITS);
-> > +     unsigned long                   event_bitmap;
-> >  };
-> >
-> >  #define to_bnxt_re_dev(ptr, member)  \
-> > diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/=
-hw/bnxt_re/main.c
-> > index 16a84ca..0f86a34 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/main.c
-> > +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> > @@ -300,6 +300,20 @@ static void bnxt_re_shutdown(struct auxiliary_devi=
-ce *adev)
-> >       bnxt_re_dev_uninit(rdev);
-> >  }
-> >
-> > +static void bnxt_re_async_notifier(void *handle, struct hwrm_async_eve=
-nt_cmpl *cmpl)
-> > +{
-> > +     struct bnxt_re_dev *rdev =3D (struct bnxt_re_dev *)handle;
-> > +     u32 data1, data2;
-> > +     u16 event_id;
-> > +
-> > +     event_id =3D le16_to_cpu(cmpl->event_id);
-> > +     data1 =3D le32_to_cpu(cmpl->event_data1);
-> > +     data2 =3D le32_to_cpu(cmpl->event_data2);
-> > +
-> > +     ibdev_dbg(&rdev->ibdev, "Async event_id =3D %d data1 =3D %d data2=
- =3D %d",
-> > +               event_id, data1, data2);
-> > +}
-> > +
-> >  static void bnxt_re_stop_irq(void *handle)
-> >  {
-> >       struct bnxt_re_dev *rdev =3D (struct bnxt_re_dev *)handle;
-> > @@ -358,6 +372,7 @@ static void bnxt_re_start_irq(void *handle, struct =
-bnxt_msix_entry *ent)
-> >  }
-> >
-> >  static struct bnxt_ulp_ops bnxt_re_ulp_ops =3D {
-> > +     .ulp_async_notifier =3D bnxt_re_async_notifier,
-> >       .ulp_irq_stop =3D bnxt_re_stop_irq,
-> >       .ulp_irq_restart =3D bnxt_re_start_irq
-> >  };
-> > @@ -1518,6 +1533,34 @@ static int bnxt_re_setup_qos(struct bnxt_re_dev =
-*rdev)
-> >       return 0;
-> >  }
-> >
-> > +static void bnxt_re_net_unregister_async_event(struct bnxt_re_dev *rde=
-v)
-> > +{
-> > +     int rc;
-> > +
-> > +     if (rdev->is_virtfn)
-> > +             return;
-> > +
-> > +     memset(&rdev->event_bitmap, 0, sizeof(rdev->event_bitmap));
-> > +     rc =3D bnxt_register_async_events(rdev->en_dev, &rdev->event_bitm=
-ap,
-> > +                                     ASYNC_EVENT_CMPL_EVENT_ID_DCB_CON=
-FIG_CHANGE);
-> > +     if (rc)
-> > +             ibdev_err(&rdev->ibdev, "Failed to unregister async event=
-");
-> > +}
-> > +
-> > +static void bnxt_re_net_register_async_event(struct bnxt_re_dev *rdev)
-> > +{
-> > +     int rc;
-> > +
-> > +     if (rdev->is_virtfn)
-> > +             return;
-> > +
-> > +     rdev->event_bitmap |=3D (1 << ASYNC_EVENT_CMPL_EVENT_ID_DCB_CONFI=
-G_CHANGE);
-> > +     rc =3D bnxt_register_async_events(rdev->en_dev, &rdev->event_bitm=
-ap,
-> > +                                     ASYNC_EVENT_CMPL_EVENT_ID_DCB_CON=
-FIG_CHANGE);
-> > +     if (rc)
-> > +             ibdev_err(&rdev->ibdev, "Failed to unregister async event=
-");
-> > +}
-> > +
-> >  static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
-> >  {
-> >       struct bnxt_en_dev *en_dev =3D rdev->en_dev;
-> > @@ -1580,6 +1623,8 @@ static void bnxt_re_dev_uninit(struct bnxt_re_dev=
- *rdev)
-> >       u8 type;
-> >       int rc;
-> >
-> > +     bnxt_re_net_unregister_async_event(rdev);
-> > +
-> >       if (test_and_clear_bit(BNXT_RE_FLAG_QOS_WORK_REG, &rdev->flags))
-> >               cancel_delayed_work_sync(&rdev->worker);
-> >
-> > @@ -1776,6 +1821,8 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *r=
-dev)
-> >       if (rdev->chip_ctx->modes.toggle_bits & BNXT_QPLIB_SRQ_TOGGLE_BIT=
-)
-> >               hash_init(rdev->srq_hash);
-> >
-> > +     bnxt_re_net_register_async_event(rdev);
-> > +
-> >       return 0;
-> >  free_sctx:
-> >       bnxt_re_net_stats_ctx_free(rdev, rdev->qplib_ctx.stats.fw_id);
-> > diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/et=
-hernet/broadcom/bnxt/bnxt.c
-> > index 04a623b3..2c82a2e 100644
-> > --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> > +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-> > @@ -2787,6 +2787,7 @@ static int bnxt_async_event_process(struct bnxt *=
-bp,
-> >       }
-> >       __bnxt_queue_sp_work(bp);
-> >  async_event_process_exit:
-> > +     bnxt_ulp_async_events(bp, cmpl);
-> >       return 0;
-> >  }
-> >
-> > diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/ne=
-t/ethernet/broadcom/bnxt/bnxt_ulp.c
-> > index b9e7d3e..9a55b06 100644
-> > --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-> > +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-> > @@ -339,6 +339,37 @@ void bnxt_ulp_irq_restart(struct bnxt *bp, int err=
-)
-> >       }
-> >  }
-> >
-> > +void bnxt_ulp_async_events(struct bnxt *bp, struct hwrm_async_event_cm=
-pl *cmpl)
-> > +{
-> > +     u16 event_id =3D le16_to_cpu(cmpl->event_id);
-> > +     struct bnxt_en_dev *edev =3D bp->edev;
-> > +     struct bnxt_ulp_ops *ops;
-> > +     struct bnxt_ulp *ulp;
-> > +
-> > +     if (!bnxt_ulp_registered(edev))
-> > +             return;
-> > +     ulp =3D edev->ulp_tbl;
-> > +
-> > +     rcu_read_lock();
-> > +
-> > +     ops =3D rcu_dereference(ulp->ulp_ops);
-> > +     if (!ops || !ops->ulp_async_notifier)
-> > +             goto exit_unlock_rcu;
-> > +     if (!ulp->async_events_bmap || event_id > ulp->max_async_event_id=
-)
-> > +             goto exit_unlock_rcu;
-> > +
-> > +     /* Read max_async_event_id first before testing the bitmap. */
-> > +     smp_rmb();
-> > +     if (edev->flags & BNXT_EN_FLAG_ULP_STOPPED)
-> > +             goto exit_unlock_rcu;
+> >  drivers/infiniband/hw/bnxt_re/qplib_fp.h |   2 +
+> >  drivers/infiniband/hw/bnxt_re/qplib_sp.h |   1 +
+> >  4 files changed, 109 insertions(+)
 >
-> Isn't this racy with bnxt_ulp_stop()?
-will review this and get back on this.  There is a possibility though
-we haven't seen this in our testing. You can drop this series for now.
-
+> <...>
 >
-> > +
-> > +     if (test_bit(event_id, ulp->async_events_bmap))
-> > +             ops->ulp_async_notifier(ulp->handle, cmpl);
-> > +exit_unlock_rcu:
-> > +     rcu_read_unlock();
-> > +}
-> > +EXPORT_SYMBOL(bnxt_ulp_async_events);
-> > +
-> >  int bnxt_register_async_events(struct bnxt_en_dev *edev,
-> >                              unsigned long *events_bmap,
-> >                              u16 max_id)
-> > diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h b/drivers/ne=
-t/ethernet/broadcom/bnxt/bnxt_ulp.h
-> > index 4eafe6e..5bba0d7 100644
-> > --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-> > +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-> > @@ -28,6 +28,7 @@ struct bnxt_msix_entry {
-> >  };
-> >
-> >  struct bnxt_ulp_ops {
-> > +     void (*ulp_async_notifier)(void *, struct hwrm_async_event_cmpl *=
-);
-> >       void (*ulp_irq_stop)(void *);
-> >       void (*ulp_irq_restart)(void *, struct bnxt_msix_entry *);
-> >  };
-> > --
-> > 2.5.5
-> >
+> > +static void bnxt_re_uninit_dcb_wq(struct bnxt_re_dev *rdev)
+> > +{
+> > +     if (!rdev->dcb_wq)
+> > +             return;
+> > +     flush_workqueue(rdev->dcb_wq);
+> > +     destroy_workqueue(rdev->dcb_wq);
+>
+> There is no need in flush_workqueue() as destroy_workqueue() will do it.
+>
+> > +     rdev->dcb_wq =3D NULL;
+>
+> Is this assignment needed?
 
---000000000000157fa506216b7dc2
+Ack. Will remove this when we post v2.
+>
+> > +}
+>
+> Thanks
+
+--000000000000671e4206216b8540
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -379,15 +198,15 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEICgCjDNWZh71
-dX3Rbs3UU6ieIx01lV6/4Xz4C5N4FfAjMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTI0MDkwNjA0MDMyNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFfPHDGE8MBj
+/RQ0julTCuOkpU29LsbW9VzvFZaADrGiMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTI0MDkwNjA0MDU0M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCwAmtq3G94zYss2t7Bw54yJKqE+mPc
-5baX6tjbqbT/UUaFjys64Si0qfwClVbHBWbEKFJ37xlI4tbcQV12w+gI5kmLPuXXZS379y6mqeoV
-m+4qcf1mWXLv3RC6WnW/A7uzrrZJNTwz0dnjoimxUBVuXG7xNS+5K2CY1qoXCs93WIs77Mjmnd67
-W0erHAXYeZ2Zf8eU6ELFXJWbSya4HnsfDed8sS/rrQYrkXODPu0GyxSW1ikWCotRNQHquvTPWbE0
-Vt/cVhrZN0ksPLKKKuKerTGBDaipDFE1xAxgbsH5UChN6NCRltkP8lW1W3Fo93TN6pdNOslJJ9Fl
-NCKzG+ck
---000000000000157fa506216b7dc2--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAerq4Rzt8xCGsvl1V4o9brceD+XEz5
+Zbv/HZ1yVAOeRlmypziw+Ob1a6z3PpLXhjIdJPt00MezL2Z2XsUrmKg+HAJpV08woNJhCe1Zlrhp
+7Aa/MJMvpY4ZJneBDnqMUHO3s2yypqx51SJvCyb8XtA56DVdL1s8EeZTtUResl9G6PVuSsGHJasu
+EMGVkKTYif83gULHHTPcUhJkdRwutQpTXDc1hoa8smAWUSJP3JP6SawiflrZuXIfqGSitDXL/dpK
+91xKNEfYYZEIWkGSmWWAnqYNX0v1/8p76qjUO2UuTlQOnZFmgSxa8WQdQAZDEjTE/8Bb4kx7XSt7
+Y2eIeST4
+--000000000000671e4206216b8540--
 
