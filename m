@@ -1,111 +1,88 @@
-Return-Path: <linux-rdma+bounces-4817-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4818-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13A00970BB9
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Sep 2024 04:11:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A4B6970EB5
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Sep 2024 08:59:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D18CEB20C48
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Sep 2024 02:11:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A69861C21E2D
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Sep 2024 06:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAE1134AB;
-	Mon,  9 Sep 2024 02:11:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XDbe+uDK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB331AD9E9;
+	Mon,  9 Sep 2024 06:59:29 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70BFFEEB2
-	for <linux-rdma@vger.kernel.org>; Mon,  9 Sep 2024 02:10:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF15D1AD5C1;
+	Mon,  9 Sep 2024 06:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725847859; cv=none; b=obQM62KMVWJpIXXJE144vjaEwQiAbFOfyt+pgsiHOnomfG1SR5XoW5TG8ZBaE7e0LSS1/8amZLlTp5qh3lW235Aeb8ddtFXvq3y6Yb4qCbga8UPlXO56AEPvpOiF0VZjvOXmkZP68gArnRpZkJvKFGUMGppOP0oC0ST03UasZsA=
+	t=1725865168; cv=none; b=BPoTKG6fjFGbbA1oj2y63/3lkMuPL+OgaQfv1M+7MkJHb0W2akNjU/s/iAyQYqRfXlUzjFrOSOtUctLVvHnDLdc81bBNHpIJ5LrizV2fHF/Z3cJCcefRVY/UaGV23zfDcWSoknmq0Z9JfxUUXV7WKj2lZOcu93cjxQdCHZbj48A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725847859; c=relaxed/simple;
-	bh=p1DD+8veqylyDtuChBScGnDyYxHX1oGE6MknuQgfTq0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YqfJEyS4pdJ7rFXvT9qLC7L9SOariYNr2gcapaXqHQGOC2FrtyX67WplHkuT5A0khKGF1+QHFPucFnY69T04tAc/J5qFH4CYc+6EapAsmjkUEc8uCM4M1i6YV8/1013HLYcsW0uDshLmA8iG/+AO4gYGsEhPpRKRA9Mkqnx5cA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XDbe+uDK; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <faac55ee-6bfd-469f-a738-b0141b8d1b1e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725847854;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ls8Izm3ewQfbrXdtT689ilq0EcaBy/irAufdrIOjA4M=;
-	b=XDbe+uDKu5KFDm9W0wsW4mSkRKiqd8YHEnoPlU/xR6a3hImE1n/cZlIUleYWGOtjtBvv/o
-	Z7Qf7QAmlvZiehI1i2PlYJFxc42DWoPGnoxuggh8XrX5MHf8wzw9Y3bNJ3mB+uJT8VrQ4t
-	Nfv61R6NzhLCR5oWZOKWkWlPGuiv8Vo=
-Date: Mon, 9 Sep 2024 10:10:43 +0800
+	s=arc-20240116; t=1725865168; c=relaxed/simple;
+	bh=rD4KS31Xa1Mlk3Os2AhVULhgkeLY5lQSq0L6ElwF6pA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OG9Rx3lL+fHQx/PBTfs9py6QFd9L7dRJ9GeeQbnVqpQJd1srNjas6+BM3mribbuLgwt22RNTwUWEA2k06qAdt/vnjHykR7KOpkjjgZ9IwlUd4zzlwC8WufHvX61hi7hZV/dM788Tnpi+sKq17hIoK07Gs3BpJ7b2UUDm2AG3dxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4X2Hk80fjRz2Dbxx;
+	Mon,  9 Sep 2024 14:58:56 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id A1F38140134;
+	Mon,  9 Sep 2024 14:59:22 +0800 (CST)
+Received: from localhost.localdomain (10.90.30.45) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 9 Sep 2024 14:59:22 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next] RDMA/hns: Fix restricted __le16 degrades to integer issue
+Date: Mon, 9 Sep 2024 14:53:31 +0800
+Message-ID: <20240909065331.3950268-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH rdma-next 0/8] Introduce mlx5 Memory Scheme ODP
-To: Michael Guralnik <michaelgur@nvidia.com>, leonro@nvidia.com,
- jgg@nvidia.com
-Cc: linux-rdma@vger.kernel.org, saeedm@nvidia.com, tariqt@nvidia.com
-References: <20240904153038.23054-1-michaelgur@nvidia.com>
- <4e8e01d1-359d-4877-ac6c-29f4fc512fb7@linux.dev>
- <d0f1e3c2-ac81-4126-bccd-615cd6ed3453@nvidia.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <d0f1e3c2-ac81-4126-bccd-615cd6ed3453@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-在 2024/9/8 14:18, Michael Guralnik 写道:
-> 
-> On 06/09/2024 08:35, Zhu Yanjun wrote:
->>
->> As such, it seems that it can save memory via not pinning down the
->> underlying physical pages of the address space, and track the validity
->> of the mappings.
->>
->> What is the difference on the performance with/without ODP enabled? And
->> about memory usage, is there any test result about this?
->>
->> And ODP can be used mlx5 IB device? Or ODP can only be used in mlx5
->> RoCEv2 device?
->>
-> The performance while using ODP is highly dependent on many factors that 
-> dictate how many page faults the kernel will have to deal with.
-> Each page fault will introduce a latency hit.
-> 
-> Both the examples in rdma_core (e.g ibv_rc_pingpong) and the perftest 
-> (e.g. ib_write_bw) support running with ODP to test this.
+Fix sparse warnings: restricted __le16 degrades to integer.
 
-Thanks a lot. I have developed ODP for other RDMA devices. From my 
-tests, it seems that with ODP, the system memory is needed less than 
-without ODP.
+Fixes: 5a87279591a1 ("RDMA/hns: Support hns HW stats")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202409080508.g4mNSLwy-lkp@intel.com/
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- From your descriptions, it seems that the latency of RDMA will increase 
-if I get you correctly.
-
-If others (for example, bandwidth) remain unchanged, the tradeoff should 
-be between memory and latency.
-
-Best Regards,
-Zhu Yanjun
-
-> 
-> ODP can be used in both IB and RoCE.
-> 
-> 
-> Michael
-> 
-> 
->> Thanks,
->> Zhu Yanjun
->>
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 621b057fb9da..78a18608f4c5 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -1681,8 +1681,8 @@ static int hns_roce_hw_v2_query_counter(struct hns_roce_dev *hr_dev,
+ 
+ 	for (i = 0; i < HNS_ROCE_HW_CNT_TOTAL && i < *num_counters; i++) {
+ 		bd_idx = i / CNT_PER_DESC;
+-		if (!(desc[bd_idx].flag & HNS_ROCE_CMD_FLAG_NEXT) &&
+-		    bd_idx != HNS_ROCE_HW_CNT_TOTAL / CNT_PER_DESC)
++		if (bd_idx != HNS_ROCE_HW_CNT_TOTAL / CNT_PER_DESC &&
++		    !(desc[bd_idx].flag & cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT)))
+ 			break;
+ 
+ 		cnt_data = (__le64 *)&desc[bd_idx].data[0];
+-- 
+2.33.0
 
 
