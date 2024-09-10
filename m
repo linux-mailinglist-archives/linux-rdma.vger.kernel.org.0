@@ -1,56 +1,56 @@
-Return-Path: <linux-rdma+bounces-4861-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4862-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96EF8973860
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 15:14:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E124E9738D2
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 15:41:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 542BD285210
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 13:13:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 998111F25D3D
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 13:41:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520F619259F;
-	Tue, 10 Sep 2024 13:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 409F71922F6;
+	Tue, 10 Sep 2024 13:41:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XV1hdi8z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bVolWiYk"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107AB524B4;
-	Tue, 10 Sep 2024 13:13:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0114414F12C
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Sep 2024 13:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725974028; cv=none; b=sB+eLy40rYsFxj5VDArKG6Y6PPep+231noXFf73MvYheNaqlcxQp/btsA7BNBHX5SdnIUbDGdDNWiBtRdUQxW9ogzY5zj9CHv5L0VkWm7k7oQahX5RspkaQF2eFxCf+XnHR56CzM1y1QeUGehMjDej8CmJRGU4sILNuzzUZORhk=
+	t=1725975696; cv=none; b=ReFxopj0G2fzvqzr9Atfj4BbGlsgdORrXD/PYbxA+/CDdmcwmNGKffcu2fo11p4xGvqbX9SMJ6SBITRxRMIaLqzcipLqDVmTH9pHraLFtOoI1n4Xv72u+K9D7tBQi9LkM3IeMlX6uE7xLxVwyfIdTxPDvUoYbB48gS5J2Ge8hcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725974028; c=relaxed/simple;
-	bh=2k9f2RMw7CBKwpHtxVRTYzoZN8ExXPO0CJoKPxU1U/c=;
+	s=arc-20240116; t=1725975696; c=relaxed/simple;
+	bh=VAvi8ritMA2J0jyT0oZTLRDWsIt1RyYW5hrqcSniR5g=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=AA2Hd5vQOJVw4Ry7ZHU0Q6XQOkR4FMpOqP7Hd+HV7r8t0+C9swPDbOqKlRquzfnbOz4eDQ80k/6Wgl9Rno7OX4XGChEO4X3ITbsHFohAhO3J6UsMG86fQU4fr89VcFkDrUuoFCeEeLYwrObcBppSCsfTe8yUjF/J83Fby06XWe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XV1hdi8z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC721C4CEC3;
-	Tue, 10 Sep 2024 13:13:46 +0000 (UTC)
+	 MIME-Version:Content-Type; b=RQ1FoBzb1OdsJnobboFY9UQSOkH4WhhWZfGX28Ii71lqnQG700RLOzFIyV7P4m1nTLmJUHvHBZCkOLoT7Hu1BK8oH+tsJuENlDc4Jr5F+0s+6mZq/iXzqa8d9iqqf514KGtUwPxX2/dEu5fUVnKYn28g+uOGcIrAlwMxWet2A0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bVolWiYk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2EB6C4CEC3;
+	Tue, 10 Sep 2024 13:41:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725974027;
-	bh=2k9f2RMw7CBKwpHtxVRTYzoZN8ExXPO0CJoKPxU1U/c=;
+	s=k20201202; t=1725975695;
+	bh=VAvi8ritMA2J0jyT0oZTLRDWsIt1RyYW5hrqcSniR5g=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=XV1hdi8zBYffx/W/YzPV6iOTgIahHr0kNgpWOSYO4mw8+kskiF6colSWJVpKTnoxR
-	 colTT1+B9dAqRHuU2TD0cjWdLsCwM4r45Z3C8AtMeBkQNVIcSMlE+5xiYOlfDD/dFf
-	 RzB3o9YtJwSgepIgl6HfIeSKj/rTAc0c7xKEhgXqA/2kTAc03j1HHmMq9kVmtO5RSJ
-	 hyoSiEQHsv/VjaBV/YsrH5I8DTiSYPIsgp2zVmQ+38YRYgMil6LJi59oJyctMBPLTH
-	 eGtS+VXDmEnTEB+iSCSQx+ekOfk09x6WS35WxOPTqeKSTDN24O/HBCgEX78BigaEpB
-	 eokbE4J7f/mdw==
+	b=bVolWiYkyiTgl/yPs3AojxUOHZ9gc5DDaruz4f8PTNCitI8vXXFurZyn5pDd3CZvX
+	 LOX2CpxnPi8ta62KBq3b1oNo+oIOmedvCGXcyTZH/n+LrWPCcjAH5AvB9DULyVtmyF
+	 aXuHNWxjEQ2uEDX3dwEXPhe6QeVsXjGt+O50wAVztRz7B2Gz7c9sI/J9CA4ZEKhzKt
+	 v6E8RdJklKY44yROmaI0jt3GeegC7mXL6qxbLk6Tt3DHhxRFvqmXUwIF6bZJY0GHwp
+	 UewI8LtL0+CiG3SVPvVdRMhNez6Fp5LC8fz4RxxNdjlCtJgBIC0fXcIb6IxwX+xTFc
+	 QzkkzUTgFmuXg==
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
-References: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
-Subject: Re: (subset) [PATCH for-next 0/9] RDMA/hns: Bugfixes and one
- improvement
-Message-Id: <172597402310.3387045.13638568220298079896.b4-ty@kernel.org>
-Date: Tue, 10 Sep 2024 16:13:43 +0300
+To: sagi@grimberg.me, mgurtovoy@nvidia.com, jgg@ziepe.ca, 
+ linux-rdma@vger.kernel.org, dennis.dalessandro@cornelisnetworks.com, 
+ Zhang Zekun <zhangzekun11@huawei.com>
+Cc: chenjun102@huawei.com
+In-Reply-To: <20240909121408.80079-1-zhangzekun11@huawei.com>
+References: <20240909121408.80079-1-zhangzekun11@huawei.com>
+Subject: Re: [PATCH v2 0/2] Remove unused declarations in header files
+Message-Id: <172597569066.3394624.13683501522235760185.b4-ty@kernel.org>
+Date: Tue, 10 Sep 2024 16:41:30 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,32 +62,24 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
 
 
-On Fri, 06 Sep 2024 17:34:35 +0800, Junxian Huang wrote:
-> This is a series of hns patches. Patch #8 is an improvement for
-> hem allocation performance, and the others are some fixes.
+On Mon, 09 Sep 2024 20:14:06 +0800, Zhang Zekun wrote:
+> There are some unused declarations in the header files,
+> let's remove them.
 > 
-> Chengchang Tang (2):
->   RDMA/hns: Fix spin_unlock_irqrestore() called with IRQs enabled
->   RDMA/hns: Fix 1bit-ECC recovery address in non-4K OS
+> v2: Fix the spelling error in patch subject of patch [1/2]
+> 
+> Zhang Zekun (2):
+>   IB/iser: Remove unused declaration in header file
+>   IB/qib: Remove unused declarations in header file
 > 
 > [...]
 
 Applied, thanks!
 
-[1/9] RDMA/hns: Don't modify rq next block addr in HIP09 QPC
-      https://git.kernel.org/rdma/rdma/c/6928d264e328e0
-[2/9] RDMA/hns: Fix Use-After-Free of rsv_qp on HIP08
-      https://git.kernel.org/rdma/rdma/c/fd8489294dd2be
-[4/9] RDMA/hns: Fix the overflow risk of hem_list_calc_ba_range()
-      https://git.kernel.org/rdma/rdma/c/d586628b169d14
-[5/9] RDMA/hns: Fix spin_unlock_irqrestore() called with IRQs enabled
-      https://git.kernel.org/rdma/rdma/c/74d315b5af1802
-[6/9] RDMA/hns: Fix VF triggering PF reset in abnormal interrupt handler
-      https://git.kernel.org/rdma/rdma/c/4321feefa5501a
-[7/9] RDMA/hns: Fix 1bit-ECC recovery address in non-4K OS
-      https://git.kernel.org/rdma/rdma/c/ce196f6297c7f3
-[8/9] RDMA/hns: Optimize hem allocation performance
-      https://git.kernel.org/rdma/rdma/c/fe51f6254d81f5
+[1/2] IB/iser: Remove unused declaration in header file
+      https://git.kernel.org/rdma/rdma/c/e4ed570122544d
+[2/2] IB/qib: Remove unused declarations in header file
+      https://git.kernel.org/rdma/rdma/c/9cd30319bbd497
 
 Best regards,
 -- 
