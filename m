@@ -1,87 +1,87 @@
-Return-Path: <linux-rdma+bounces-4842-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4843-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C17109727BB
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 05:58:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 356569727BE
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 06:00:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22EA41F23E62
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 03:58:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97F572856A0
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 03:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBBD14037D;
-	Tue, 10 Sep 2024 03:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A19414037D;
+	Tue, 10 Sep 2024 03:59:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="H6zcHGhI"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="iF7aDCzo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D5512E48
-	for <linux-rdma@vger.kernel.org>; Tue, 10 Sep 2024 03:58:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1565E12E48
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Sep 2024 03:59:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725940714; cv=none; b=LuBjhJ4dkwQtlCvQTGmSXpa+Heej4NqODZlwnIIWCW5aGmoNK7Ugv7rgfgBciXc4FOlJLGS8K0NJ7w26bc7VVkmgiSYwAu3ZdAJ+nsy0/luDalnWW7Eu2Ahx8dM5suFn5212K331uBj6pmbuZ8hFtsFhD90BGnVq2A6XwQMIwco=
+	t=1725940794; cv=none; b=N+zU35pyoDu648y7HZRjoebKT5sZZF8wzibVkzvpVNl87Z9ghCBhIi4BSVuE4YSy14TzTMv2bKVsxeHNZWYCRvMqJ8K1HBwv7i8VI2aRF3dkP5EOuEqkzMZsLeWv5kQIEZPd/hmlevMw7SwNKNTjMbFxPQ3UbCO3dqdo0Fm1TdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725940714; c=relaxed/simple;
-	bh=IMOUEIIhvIxtySxmyovggt0L83/y0A/ziX0gxvd7Ir8=;
+	s=arc-20240116; t=1725940794; c=relaxed/simple;
+	bh=BPbmZ4CuVuDWLpUN7xzjnI1KiH6H6yiN9s+cjUtr+30=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Aci5rljYzL3MoNpTLI6Jc7Z5fZVlyoNSaOEjMvBfYyGP8hgqA0h81rXb8i78fPu+8Db3USyuxKrpagH/0iaKt3ewrqsQ1baz3Up92EKQ1u6CpwRFSAkTzrlRUFpOfXl8DL/NYfbj/vv0b+SYXih0HqYYTr6mb0tL87Lj7D/4DDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=H6zcHGhI; arc=none smtp.client-ip=209.85.167.41
+	 To:Cc:Content-Type; b=anFu4pqH6otJiZ3ZJz+IX949cDrShSc12cj5v7vhp6+iVNiw6NCfmEJ54ksF9lDa0i6eZ44DrEkg+KdEzGos4glmDKoya+s/WuFI3e8aCkUQ7Ji6jFfhfQm8d4F5Vq/AVphQuzRN++9wFPeApRShNLu8fJShIDSbbh+020Ti+3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=iF7aDCzo; arc=none smtp.client-ip=209.85.208.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-53567b4c3f4so197081e87.2
-        for <linux-rdma@vger.kernel.org>; Mon, 09 Sep 2024 20:58:31 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2f763e9e759so2205691fa.3
+        for <linux-rdma@vger.kernel.org>; Mon, 09 Sep 2024 20:59:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1725940710; x=1726545510; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1725940790; x=1726545590; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=L3/T45OoIftlxuHheS/Mg0SoEVgQH5fgedy6ji0IgYc=;
-        b=H6zcHGhIm1Nx3/RYBPaQx8KYuQ9pVQOZaUMzZJt3OTeYOp2SrSn/e5gfSEfaT4GHk6
-         GkgC0tPLsOOneKbUQqdZrMn//bfGBy/bB7yt0savCzl2q97Qu7YOGVNsnH3UVb2s+5Ch
-         vIsjtnIAoEXuZFdQSR9tM/plXzuyDaL5c9JtE=
+        bh=UGQyBUxRWM4zU7SrggyagKSVCHCYC6uzCZhZieN0gpc=;
+        b=iF7aDCzoFltd9H74kxNbpDfiJyxbBRTvhdM6J0QsthIQmLwX0NGXIPb10C/9qvgbyu
+         ENpEhrQHp/YEAy9GO8mE0Ht1u5RZXETin4hIKLHEFvzdcke7Aw18Jdvn1eeN/knzzinp
+         RnNK8n12XrG5Q99U8SFMzgFoaaB+ONsGKcQZ8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725940710; x=1726545510;
+        d=1e100.net; s=20230601; t=1725940790; x=1726545590;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=L3/T45OoIftlxuHheS/Mg0SoEVgQH5fgedy6ji0IgYc=;
-        b=qaYafHqFqaak7Mpu0o0XaW7EvmC20a7I3iVeu1rSsMaLLWUcBEB4XOpAo+4e3cWGBf
-         Iw6AuKwm+jm0ZU6MvJGsGzW0rUGVx0ih6AiBs9L9awsQMDtB3+T7vC1E5rt4Fp8381yT
-         OhCWjh3GiYmQVYfFA0Zdj2DJkO++5peQjzLDi/nIbimtJUaYKkE/mCbUNmhWPp8lqh6h
-         h2JTvAQmdqgCmq00MbwTJ4XrpHNVh0dxKpW7xHdC8V/MrFECNRJjOSVjSjaQtdgBOl/B
-         CJIJKBuajtqRKh7AmN2+LkuHRk3ZbOAKdCGFkyuMbWwnmpdu8h614Nn5P0E2emdPX7bW
-         cs1g==
-X-Forwarded-Encrypted: i=1; AJvYcCVfUUCZ06XhCwfFGxDvz0yVOjWHCDpEV96j7HA7lAKxvWchmHP0s7dlcEPiutYUtsjXrUQlQVdthcXu@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLA7OYGEgOnqMVNd65oOo/B0UG1BasWsMSzn1RVzT+B1QVf33V
-	9RvS7MW65gdYITC52ojbSKR/2QPH6WRvLa66qoNGN5qSO85w/ACvGnZYJd22yhfWBndxpZOL7bG
-	7oj+dHx3edhexO/r5fyWVwoazAfb048LwTgVt
-X-Google-Smtp-Source: AGHT+IEtY7rV4Upi1WlXggFCbJbDMLFdnQh7iR1MPzuNZJBjJTC2rm6wi0Pt40ttJ+MU0/aJw0cZ/hqgixLYmrPjsFE=
-X-Received: by 2002:a05:6512:15a7:b0:535:d4e9:28cf with SMTP id
- 2adb3069b0e04-536588138fcmr8520915e87.59.1725940708984; Mon, 09 Sep 2024
- 20:58:28 -0700 (PDT)
+        bh=UGQyBUxRWM4zU7SrggyagKSVCHCYC6uzCZhZieN0gpc=;
+        b=UQD+tnGKAZ+x4AzQNZUq5UNdAjl4ctqsrL79+ZzGpUZr91Tbys9Zi3vg/EJKG2+8PJ
+         2aiMMoQLC6lpJQR1MUhyGmI6r1I9Tg465vbz4Mr+l4XsfkpGFFuIiivgRzEuRsP6Rlfx
+         fBwg5zfeCvayCIVDmDpP3d/bH5FXKg3AR2tKRz9lwJLIYscJvn03sFJ/7dfQJdDaAzJI
+         ADBuRPFSf6G8ED0bpF/kvNKkxR3I7bNnCvlUQWxqVpUCLIKYML7YVZe8vtv3AIOKsl1I
+         tc96xH/kpofGygLb/rfAYGvK/nyzxVQDSQMuxIfRHysYtWyYiUcwsp9/adBrtou3HaUn
+         /5qQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVh/w6nlHsx6snGxnxRlm7I7TQCGoh8KndkXNVcQ0P/MoopP8i8nFApmzUwj85SC9wiQn4OKDKJSCbi@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywc9UaFcsA8w82fRz+1I5ltvjlX6jHfCvsru+DKgd9tZaL9Gslb
+	uYn4B8lUkfuTptC2cHoeBck8GJBkubFxhIIP3S26jMLcuF9nEgL0sNpSwgD7SC9nRkSje/6mTgn
+	IZQPGGgBKSoFTJfnooWSLKatPmWz/qOTSixLmNd28CQveObYw+q/C
+X-Google-Smtp-Source: AGHT+IG248lj7U6rWBPgQtvei/ZsM63hwvaoxRhIcYwOEjWrsHqF8Ay1+3s8hYrYvC56EukZRXQqn7oJCWmttwzA3eQ=
+X-Received: by 2002:a05:6512:138c:b0:52c:8aa6:4e9d with SMTP id
+ 2adb3069b0e04-536587b351amr10964021e87.29.1725940789135; Mon, 09 Sep 2024
+ 20:59:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240909173025.30422-1-michaelgur@nvidia.com> <20240909173025.30422-2-michaelgur@nvidia.com>
-In-Reply-To: <20240909173025.30422-2-michaelgur@nvidia.com>
+References: <20240909173025.30422-1-michaelgur@nvidia.com> <20240909173025.30422-3-michaelgur@nvidia.com>
+In-Reply-To: <20240909173025.30422-3-michaelgur@nvidia.com>
 From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Tue, 10 Sep 2024 09:28:16 +0530
-Message-ID: <CAH-L+nMVqug0+4UYFs+nRyTXiYgeRgkQc2ELXOSC-uFR0xaCeA@mail.gmail.com>
-Subject: Re: [PATCH v3 rdma-next 1/7] RDMA/mlx5: Check RoCE LAG status before
- getting netdev
+Date: Tue, 10 Sep 2024 09:29:37 +0530
+Message-ID: <CAH-L+nPTc5Wo1erbGW6uc+bUXgh09qVJRNGtZP2xVdkhLMiNgA@mail.gmail.com>
+Subject: Re: [PATCH v3 rdma-next 2/7] RDMA/mlx5: Obtain upper net device only
+ when needed
 To: Michael Guralnik <michaelgur@nvidia.com>
 Cc: jgg@nvidia.com, linux-rdma@vger.kernel.org, leonro@nvidia.com, 
 	mbloch@nvidia.com, cmeiohas@nvidia.com, msanalla@nvidia.com, 
 	dsahern@gmail.com
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000f30fd60621bbe215"
+	boundary="000000000000b89d2f0621bbe776"
 
---000000000000f30fd60621bbe215
+--000000000000b89d2f0621bbe776
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -90,63 +90,36 @@ On Mon, Sep 9, 2024 at 11:10=E2=80=AFPM Michael Guralnik <michaelgur@nvidia=
 >
 > From: Mark Bloch <mbloch@nvidia.com>
 >
-> Check if RoCE LAG is active before calling the LAG layer for netdev.
-> This clarifies if LAG is active. No behavior changes with this patch.
+> Report the upper device's state as the RDMA port state only in RoCE LAG o=
+r
+> switchdev LAG.
 >
+> Fixes: 27f9e0ccb6da ("net/mlx5: Lag, Add single RDMA device in multiport =
+mode")
 > Signed-off-by: Mark Bloch <mbloch@nvidia.com>
 > Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
 > Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 Looks good to me
 Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 > ---
->  drivers/infiniband/hw/mlx5/main.c | 19 +++++++++++++------
->  1 file changed, 13 insertions(+), 6 deletions(-)
+>  drivers/infiniband/hw/mlx5/main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
 > diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/ml=
 x5/main.c
-> index b85ad3c0bfa1..cdf1ce0f6b34 100644
+> index cdf1ce0f6b34..c75cc3d14e74 100644
 > --- a/drivers/infiniband/hw/mlx5/main.c
 > +++ b/drivers/infiniband/hw/mlx5/main.c
-> @@ -198,12 +198,18 @@ static int mlx5_netdev_event(struct notifier_block =
-*this,
->         case NETDEV_CHANGE:
->         case NETDEV_UP:
->         case NETDEV_DOWN: {
-> -               struct net_device *lag_ndev =3D mlx5_lag_get_roce_netdev(=
-mdev);
->                 struct net_device *upper =3D NULL;
->
-> -               if (lag_ndev) {
-> -                       upper =3D netdev_master_upper_dev_get(lag_ndev);
-> -                       dev_put(lag_ndev);
-> +               if (mlx5_lag_is_roce(mdev)) {
-> +                       struct net_device *lag_ndev;
-> +
-> +                       lag_ndev =3D mlx5_lag_get_roce_netdev(mdev);
-> +                       if (lag_ndev) {
-> +                               upper =3D netdev_master_upper_dev_get(lag=
-_ndev);
-> +                               dev_put(lag_ndev);
-> +                       } else {
-> +                               goto done;
-> +                       }
->                 }
->
->                 if (ibdev->is_rep)
-> @@ -257,9 +263,10 @@ static struct net_device *mlx5_ib_get_netdev(struct =
-ib_device *device,
->         if (!mdev)
->                 return NULL;
->
-> -       ndev =3D mlx5_lag_get_roce_netdev(mdev);
-> -       if (ndev)
-> +       if (mlx5_lag_is_roce(mdev)) {
-> +               ndev =3D mlx5_lag_get_roce_netdev(mdev);
+> @@ -558,7 +558,7 @@ static int mlx5_query_port_roce(struct ib_device *dev=
+ice, u32 port_num,
+>         if (!ndev)
 >                 goto out;
-> +       }
 >
->         /* Ensure ndev does not disappear before we invoke dev_hold()
->          */
+> -       if (dev->lag_active) {
+> +       if (mlx5_lag_is_roce(mdev) || mlx5_lag_is_sriov(mdev)) {
+>                 rcu_read_lock();
+>                 upper =3D netdev_master_upper_dev_get_rcu(ndev);
+>                 if (upper) {
 > --
 > 2.17.2
 >
@@ -157,7 +130,7 @@ ib_device *device,
 Regards,
 Kalesh A P
 
---000000000000f30fd60621bbe215
+--000000000000b89d2f0621bbe776
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -229,14 +202,14 @@ a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
 x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
 VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
 bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEICNSMJXdrFl0GC9x5WWP8CWMhFrN3zZDQlyCHla8rK15MBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDkxMDAzNTgzMFowaQYJKoZIhvcNAQkPMVwwWjAL
+AQkEMSIEIGiAz42ZVDszZQYEkm3SYcu3Foktu49LceIR+g0yDn+JMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDkxMDAzNTk1MFowaQYJKoZIhvcNAQkPMVwwWjAL
 BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBlPubgpDa8
-EuFHAlGnnjH5OM+eemID9kFm2UK5PJf1qVIuafW47ABLeyEOrzlC/pNKbAB8E3AcuGDuSlfRqxtm
-Uzlv2C1Pjazl3KBjay+0iBkfS0qINq7em/7CulBsGTD4eL3c5TthtHZsT16nySw4pAbaOJSPKDbs
-a1HDcz8+XfgO6hvALY8LeiDKADLRn5CTh/YE7qIAzho8rmtEmc16tU6LTUqNZKpwUXGSLwHF5uTV
-a89wUnZ+/vEEdWWwa8Hwuv5YrvrJTFLrfN4avxCa34ydgJ8oWeSYp9zHvuO16AJYefuqy0PtQfzs
-X+ZvVJeYm8naruMeBf1Sx1adW05g
---000000000000f30fd60621bbe215--
+9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC7bd9xfzgT
+zhjr8KQODS3FaC4zlQd1Zz8s7t5J3p7fvm9rl8gSVd1uBfXrfD2OincflTndEC+qdoMXAfn7Wa5N
+5ivDFzqVyYowpcyP13MJP+EqQ8pavcq5GdP0pkh1Eac6UPNiQc143AK/6T/snrfA6h34CvOQAOq+
+09O4eNEH899mseeTICWeXCiANHa7YEdQh5Gtvxqzi0hpBNaOHvrV6Bvk9fkgVtSe2fT4mztO40Ei
+Dh82qAMObQMVtfdwj95DwtfMoI30eevvygOigFrInv7I3K7mC5/g3BPvlxgQp8I0F3uSdWrEJeZD
+MFOdIU1uzZ4Xs+sbapOcUhP8+/M9
+--000000000000b89d2f0621bbe776--
 
