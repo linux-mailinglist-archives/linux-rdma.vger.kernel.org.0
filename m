@@ -1,260 +1,158 @@
-Return-Path: <linux-rdma+bounces-4866-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4867-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57374973D2A
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 18:24:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AFDE9741AD
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 20:07:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 144A8287A14
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 16:24:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E4211C2450D
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 18:07:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC4019E81F;
-	Tue, 10 Sep 2024 16:23:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8E71A2643;
+	Tue, 10 Sep 2024 18:06:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KD8lm8iJ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N2RxjOkF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ED1E192B61
-	for <linux-rdma@vger.kernel.org>; Tue, 10 Sep 2024 16:23:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86A22199389
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Sep 2024 18:06:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725985437; cv=none; b=CgTXNzkNVJ8tglIQsmy6uzvIhHBUpdvr8RE7XfRGEZFE4AHWF02dwNhuXiSKfXG8743hJKpHh+1Ebmu3/PER4Qbsc2qimo4hMwxZxAKHKv63srfTD0azJp4gX88uRWzN3pJMJVHbeO+Mnks/0WBCI18vs2xxt2oXzUdXGj4H1b4=
+	t=1725991563; cv=none; b=ccULu4c8fAJfJ5SoPZ5YRzlpdG+gYvGXl3Qz/lbTw9mWiqRN8qkZXZ6VbvoNgPKfDDs74Y4slRKnODoNn1q6zntzG3ULIjQAiprxBa3YIqyAtJt7AYkzSyxceh6uIYwDsRMPha3//qC+Jic4/uxslv0+17D4bglrdZ64DKcQW7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725985437; c=relaxed/simple;
-	bh=h3SPMQxeJ1YesMYlUkNZAkotSrGRjECkWmhzI5eHoAw=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=C9vWlbSgoCVl9P5EhOcyXiGYDRqvW1z7fYzkZMM/SOM4PfY7/Xg1vaFQnfAT+uMhTW/G55cpDIOOADdJXZMvdLg6fyRrO3NfSiUpjZSL4kpMcnneINfOek5YCWdsOtBp4p7Hx15Cc5rWihlcYYI6MFUUzxMgWGE+5ArRQbBg3RI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KD8lm8iJ; arc=none smtp.client-ip=192.198.163.11
+	s=arc-20240116; t=1725991563; c=relaxed/simple;
+	bh=cYkmWOqYPRP2o+uuGehZ8/35RLKDmvOsEw4WIAINBqU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q6qzxQS7xTMWcodNatNuROxpPfnG2XtWidHPCZIcAC2lODts5cn5GRVtTjEKmkV7672YTEXvGuyaUzzo1TwwqQov3WOAQ4pmBepHftZXhMxxK+Bhq1CpTgrFKpLfz7WQqzhqE9APerNzWW//4w9OYi+lFDcQoKeSqUIsmhrwdkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N2RxjOkF; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725985436; x=1757521436;
-  h=date:from:to:cc:subject:message-id;
-  bh=h3SPMQxeJ1YesMYlUkNZAkotSrGRjECkWmhzI5eHoAw=;
-  b=KD8lm8iJgiMkDso1Er6K9bYOffqb3gDpm0mV5t1j3tuk2oisJXxVooZ2
-   /LLSRs5FmQnD/P9WqB5NWakBWtjKBAHeZAZnZa9CdJj6YPjGnXYFF3YC3
-   ZzSOMKbIYtoDyspjS21XcjDZ/dcOUCnygVW9SNLpFQFKwPGRUOONujX+L
-   PG4UYNmQLi+a5e168KlMWAJgnNVT3n2vIch58aEwnZPEE8qtBvgj4B4d7
-   T9Z1/xUAG+RgGxUZk/siHTAu81kNfqRdolSuFq+4TC3quFsJzQtaY+eCC
-   ONccsU+TuphZY1Q9+KVCfzQkncitJcEIkEprru7acpc4xpE2HX3KhLE4G
-   Q==;
-X-CSE-ConnectionGUID: E0bAf9FVQyitWzBeVG9xog==
-X-CSE-MsgGUID: yKncHgjPR+2ToZJfjDY93Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11191"; a="35340715"
+  t=1725991561; x=1757527561;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cYkmWOqYPRP2o+uuGehZ8/35RLKDmvOsEw4WIAINBqU=;
+  b=N2RxjOkFYOVoHB2UvRQE7UHa5srEMFLechYLjUpD/dTu2dzLPVdSHWaa
+   SZNqiSSuw63DljG+0xVlHV8S2d1/F9O2ZHUOqgEVzP4cv7GAtPO8slgkC
+   6nO1wZ8w48sHqJFnNccVVn4WgNqqZLDl8HAG8zN3G/g/s552hirWLvdd1
+   423WHuS42XpnN86myo9X1gBrLHIUfy73Kni2grMdOeelkT3/SGoJpdQ1v
+   s0ky/j5hpm/cxuTBtfKVHUOtOcGSmLF3oWbR9BPT23ssNBUeJBwc9iHX3
+   sZsFUZRFS8geOd/bUAnpyLCRf/lKXDpb8204MWuWX67M6Hwq1jX4vpZST
+   g==;
+X-CSE-ConnectionGUID: yjnISNycRqaDFfZ4K2V6WA==
+X-CSE-MsgGUID: PCwi8EviQSS2BXaZB5NXcw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11191"; a="42277968"
 X-IronPort-AV: E=Sophos;i="6.10,217,1719903600"; 
-   d="scan'208";a="35340715"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2024 09:23:55 -0700
-X-CSE-ConnectionGUID: L1C4pcvKTemmnZ3jhIiv/Q==
-X-CSE-MsgGUID: LK2HNoXwQZ6m+RK6YUXkYw==
+   d="scan'208";a="42277968"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2024 11:06:01 -0700
+X-CSE-ConnectionGUID: ZRMrzJdEQ+uibFOih6TwCQ==
+X-CSE-MsgGUID: YBYFj/+LQf+CpjDsBIkS5A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,217,1719903600"; 
-   d="scan'208";a="72057127"
+   d="scan'208";a="67123406"
 Received: from lkp-server01.sh.intel.com (HELO 53e96f405c61) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 10 Sep 2024 09:23:53 -0700
+  by fmviesa009.fm.intel.com with ESMTP; 10 Sep 2024 11:05:58 -0700
 Received: from kbuild by 53e96f405c61 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1so3eg-0002MQ-2T;
-	Tue, 10 Sep 2024 16:23:50 +0000
-Date: Wed, 11 Sep 2024 00:23:05 +0800
+	id 1so5FU-0002TE-1b;
+	Tue, 10 Sep 2024 18:05:56 +0000
+Date: Wed, 11 Sep 2024 02:05:34 +0800
 From: kernel test robot <lkp@intel.com>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:for-next] BUILD SUCCESS
- 227f51743b61fe3f6fc481f0fb8086bf8c49b8c9
-Message-ID: <202409110003.8hu0SBy6-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+To: Selvin Xavier <selvin.xavier@broadcom.com>, leon@kernel.org,
+	jgg@ziepe.ca
+Cc: oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, kalesh-anakkur.purayil@broadcom.com,
+	Chandramohan Akula <chandramohan.akula@broadcom.com>,
+	Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: Re: [PATCH for-next 1/4] RDMA/bnxt_re: Change aux driver data to
+ en_info to hold more information
+Message-ID: <202409110129.V1tgNuph-lkp@intel.com>
+References: <1725940862-4821-2-git-send-email-selvin.xavier@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1725940862-4821-2-git-send-email-selvin.xavier@broadcom.com>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: 227f51743b61fe3f6fc481f0fb8086bf8c49b8c9  RDMA/bnxt_re: Fix the max WQE size for static WQE support
+Hi Selvin,
 
-elapsed time: 1295m
+kernel test robot noticed the following build warnings:
 
-configs tested: 168
-configs skipped: 4
+[auto build test WARNING on rdma/for-next]
+[also build test WARNING on next-20240910]
+[cannot apply to linus/master v6.11-rc7]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+url:    https://github.com/intel-lab-lkp/linux/commits/Selvin-Xavier/RDMA-bnxt_re-Change-aux-driver-data-to-en_info-to-hold-more-information/20240910-122414
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+patch link:    https://lore.kernel.org/r/1725940862-4821-2-git-send-email-selvin.xavier%40broadcom.com
+patch subject: [PATCH for-next 1/4] RDMA/bnxt_re: Change aux driver data to en_info to hold more information
+config: s390-allyesconfig (https://download.01.org/0day-ci/archive/20240911/202409110129.V1tgNuph-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 14.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240911/202409110129.V1tgNuph-lkp@intel.com/reproduce)
 
-tested configs:
-alpha                             allnoconfig   gcc-14.1.0
-alpha                            allyesconfig   clang-20
-alpha                               defconfig   gcc-14.1.0
-arc                              allmodconfig   clang-20
-arc                               allnoconfig   gcc-14.1.0
-arc                              allyesconfig   clang-20
-arc                                 defconfig   gcc-14.1.0
-arc                   randconfig-001-20240910   gcc-13.2.0
-arc                   randconfig-002-20240910   gcc-13.2.0
-arm                              allmodconfig   clang-20
-arm                               allnoconfig   gcc-14.1.0
-arm                              allyesconfig   clang-20
-arm                         at91_dt_defconfig   clang-20
-arm                                 defconfig   gcc-14.1.0
-arm                      integrator_defconfig   clang-20
-arm                      jornada720_defconfig   clang-20
-arm                   randconfig-001-20240910   gcc-13.2.0
-arm                   randconfig-002-20240910   gcc-13.2.0
-arm                   randconfig-003-20240910   gcc-13.2.0
-arm                   randconfig-004-20240910   gcc-13.2.0
-arm                           sama7_defconfig   clang-20
-arm64                            allmodconfig   clang-20
-arm64                             allnoconfig   gcc-14.1.0
-arm64                               defconfig   gcc-14.1.0
-arm64                 randconfig-001-20240910   gcc-13.2.0
-arm64                 randconfig-002-20240910   gcc-13.2.0
-arm64                 randconfig-003-20240910   gcc-13.2.0
-arm64                 randconfig-004-20240910   gcc-13.2.0
-csky                              allnoconfig   gcc-14.1.0
-csky                                defconfig   gcc-14.1.0
-csky                  randconfig-001-20240910   gcc-13.2.0
-csky                  randconfig-002-20240910   gcc-13.2.0
-hexagon                          allmodconfig   clang-20
-hexagon                           allnoconfig   gcc-14.1.0
-hexagon                          allyesconfig   clang-20
-hexagon                             defconfig   gcc-14.1.0
-hexagon               randconfig-001-20240910   gcc-13.2.0
-hexagon               randconfig-002-20240910   gcc-13.2.0
-i386                             allmodconfig   clang-18
-i386                              allnoconfig   clang-18
-i386                             allyesconfig   clang-18
-i386         buildonly-randconfig-001-20240910   clang-18
-i386         buildonly-randconfig-002-20240910   clang-18
-i386         buildonly-randconfig-003-20240910   clang-18
-i386         buildonly-randconfig-004-20240910   clang-18
-i386         buildonly-randconfig-005-20240910   clang-18
-i386         buildonly-randconfig-006-20240910   clang-18
-i386                                defconfig   clang-18
-i386                  randconfig-001-20240910   clang-18
-i386                  randconfig-002-20240910   clang-18
-i386                  randconfig-003-20240910   clang-18
-i386                  randconfig-004-20240910   clang-18
-i386                  randconfig-005-20240910   clang-18
-i386                  randconfig-006-20240910   clang-18
-i386                  randconfig-011-20240910   clang-18
-i386                  randconfig-012-20240910   clang-18
-i386                  randconfig-013-20240910   clang-18
-i386                  randconfig-014-20240910   clang-18
-i386                  randconfig-015-20240910   clang-18
-i386                  randconfig-016-20240910   clang-18
-loongarch                        allmodconfig   gcc-14.1.0
-loongarch                         allnoconfig   gcc-14.1.0
-loongarch                           defconfig   gcc-14.1.0
-loongarch             randconfig-001-20240910   gcc-13.2.0
-loongarch             randconfig-002-20240910   gcc-13.2.0
-m68k                             allmodconfig   gcc-14.1.0
-m68k                              allnoconfig   gcc-14.1.0
-m68k                             allyesconfig   gcc-14.1.0
-m68k                          amiga_defconfig   clang-20
-m68k                                defconfig   gcc-14.1.0
-microblaze                       allmodconfig   gcc-14.1.0
-microblaze                        allnoconfig   gcc-14.1.0
-microblaze                       allyesconfig   gcc-14.1.0
-microblaze                          defconfig   gcc-14.1.0
-mips                              allnoconfig   gcc-14.1.0
-mips                     loongson2k_defconfig   clang-20
-mips                      pic32mzda_defconfig   clang-20
-mips                       rbtx49xx_defconfig   clang-20
-mips                           xway_defconfig   clang-20
-nios2                             allnoconfig   gcc-14.1.0
-nios2                               defconfig   gcc-14.1.0
-nios2                 randconfig-001-20240910   gcc-13.2.0
-nios2                 randconfig-002-20240910   gcc-13.2.0
-openrisc                          allnoconfig   clang-20
-openrisc                         allyesconfig   gcc-14.1.0
-openrisc                            defconfig   gcc-12
-parisc                           allmodconfig   gcc-14.1.0
-parisc                            allnoconfig   clang-20
-parisc                           allyesconfig   gcc-14.1.0
-parisc                              defconfig   gcc-12
-parisc                randconfig-001-20240910   gcc-13.2.0
-parisc                randconfig-002-20240910   gcc-13.2.0
-parisc64                            defconfig   gcc-14.1.0
-powerpc                          allmodconfig   gcc-14.1.0
-powerpc                           allnoconfig   clang-20
-powerpc                          allyesconfig   gcc-14.1.0
-powerpc                      bamboo_defconfig   clang-20
-powerpc                       eiger_defconfig   clang-20
-powerpc                  iss476-smp_defconfig   clang-20
-powerpc               randconfig-001-20240910   gcc-13.2.0
-powerpc               randconfig-002-20240910   gcc-13.2.0
-powerpc               randconfig-003-20240910   gcc-13.2.0
-powerpc64             randconfig-001-20240910   gcc-13.2.0
-powerpc64             randconfig-002-20240910   gcc-13.2.0
-powerpc64             randconfig-003-20240910   gcc-13.2.0
-riscv                            allmodconfig   gcc-14.1.0
-riscv                             allnoconfig   clang-20
-riscv                            allyesconfig   gcc-14.1.0
-riscv                               defconfig   gcc-12
-riscv                 randconfig-001-20240910   gcc-13.2.0
-riscv                 randconfig-002-20240910   gcc-13.2.0
-s390                             allmodconfig   gcc-14.1.0
-s390                              allnoconfig   clang-20
-s390                             allyesconfig   gcc-14.1.0
-s390                                defconfig   gcc-12
-s390                  randconfig-001-20240910   gcc-13.2.0
-s390                  randconfig-002-20240910   gcc-13.2.0
-s390                       zfcpdump_defconfig   clang-20
-sh                               allmodconfig   gcc-14.1.0
-sh                                allnoconfig   gcc-14.1.0
-sh                               allyesconfig   gcc-14.1.0
-sh                                  defconfig   gcc-12
-sh                    randconfig-001-20240910   gcc-13.2.0
-sh                    randconfig-002-20240910   gcc-13.2.0
-sh                        sh7785lcr_defconfig   clang-20
-sparc                            allmodconfig   gcc-14.1.0
-sparc64                             defconfig   gcc-12
-sparc64               randconfig-001-20240910   gcc-13.2.0
-sparc64               randconfig-002-20240910   gcc-13.2.0
-um                               allmodconfig   clang-20
-um                                allnoconfig   clang-20
-um                               allyesconfig   clang-20
-um                                  defconfig   gcc-12
-um                             i386_defconfig   gcc-12
-um                    randconfig-001-20240910   gcc-13.2.0
-um                    randconfig-002-20240910   gcc-13.2.0
-um                           x86_64_defconfig   gcc-12
-x86_64                            allnoconfig   clang-18
-x86_64                           allyesconfig   clang-18
-x86_64       buildonly-randconfig-001-20240910   gcc-12
-x86_64       buildonly-randconfig-002-20240910   gcc-12
-x86_64       buildonly-randconfig-003-20240910   gcc-12
-x86_64       buildonly-randconfig-004-20240910   gcc-12
-x86_64       buildonly-randconfig-005-20240910   gcc-12
-x86_64       buildonly-randconfig-006-20240910   gcc-12
-x86_64                              defconfig   clang-18
-x86_64                randconfig-001-20240910   gcc-12
-x86_64                randconfig-002-20240910   gcc-12
-x86_64                randconfig-003-20240910   gcc-12
-x86_64                randconfig-004-20240910   gcc-12
-x86_64                randconfig-005-20240910   gcc-12
-x86_64                randconfig-006-20240910   gcc-12
-x86_64                randconfig-011-20240910   gcc-12
-x86_64                randconfig-012-20240910   gcc-12
-x86_64                randconfig-013-20240910   gcc-12
-x86_64                randconfig-014-20240910   gcc-12
-x86_64                randconfig-015-20240910   gcc-12
-x86_64                randconfig-016-20240910   gcc-12
-x86_64                randconfig-071-20240910   gcc-12
-x86_64                randconfig-072-20240910   gcc-12
-x86_64                randconfig-073-20240910   gcc-12
-x86_64                randconfig-074-20240910   gcc-12
-x86_64                randconfig-075-20240910   gcc-12
-x86_64                randconfig-076-20240910   gcc-12
-x86_64                          rhel-8.3-rust   clang-18
-xtensa                            allnoconfig   gcc-14.1.0
-xtensa                randconfig-001-20240910   gcc-13.2.0
-xtensa                randconfig-002-20240910   gcc-13.2.0
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202409110129.V1tgNuph-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/infiniband/hw/bnxt_re/main.c: In function 'bnxt_re_remove':
+>> drivers/infiniband/hw/bnxt_re/main.c:1939:29: warning: variable 'en_dev' set but not used [-Wunused-but-set-variable]
+    1939 |         struct bnxt_en_dev *en_dev;
+         |                             ^~~~~~
+
+
+vim +/en_dev +1939 drivers/infiniband/hw/bnxt_re/main.c
+
+  1935	
+  1936	static void bnxt_re_remove(struct auxiliary_device *adev)
+  1937	{
+  1938		struct bnxt_re_en_dev_info *en_info = auxiliary_get_drvdata(adev);
+> 1939		struct bnxt_en_dev *en_dev;
+  1940		struct bnxt_re_dev *rdev;
+  1941	
+  1942		mutex_lock(&bnxt_re_mutex);
+  1943		if (!en_info) {
+  1944			mutex_unlock(&bnxt_re_mutex);
+  1945			return;
+  1946		}
+  1947		en_dev = en_info->en_dev;
+  1948		rdev = en_info->rdev;
+  1949		if (!rdev)
+  1950			goto skip_remove;
+  1951	
+  1952		if (rdev->nb.notifier_call) {
+  1953			unregister_netdevice_notifier(&rdev->nb);
+  1954			rdev->nb.notifier_call = NULL;
+  1955		} else {
+  1956			/* If notifier is null, we should have already done a
+  1957			 * clean up before coming here.
+  1958			 */
+  1959			goto skip_remove;
+  1960		}
+  1961		bnxt_re_setup_cc(rdev, false);
+  1962		ib_unregister_device(&rdev->ibdev);
+  1963		bnxt_re_dev_uninit(rdev);
+  1964		ib_dealloc_device(&rdev->ibdev);
+  1965	skip_remove:
+  1966		kfree(en_info);
+  1967		mutex_unlock(&bnxt_re_mutex);
+  1968	}
+  1969	
 
 -- 
 0-DAY CI Kernel Test Service
