@@ -1,82 +1,96 @@
-Return-Path: <linux-rdma+bounces-4860-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4861-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1B7697385D
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 15:13:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96EF8973860
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 15:14:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4133282F70
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 13:13:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 542BD285210
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 13:13:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F076191F9F;
-	Tue, 10 Sep 2024 13:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520F619259F;
+	Tue, 10 Sep 2024 13:13:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nSLyMo1o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XV1hdi8z"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C86A524B4;
-	Tue, 10 Sep 2024 13:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107AB524B4;
+	Tue, 10 Sep 2024 13:13:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725974018; cv=none; b=OIfAFxfezzEeqYSEkEdIdImAe8iIXrk03YhJ0zLDZSoV4KFhn3FjZsb3TAklMrUxSEEAz2yuQS0vZbFAvdq9bADbv6q6Mwxg8VDNbKgMmygTIqHD0M6f3KSofEs1PbLLCQ0ffYi9tDyxCG2iIOXCysk1EAOV6o+5FOeB2ENpFjg=
+	t=1725974028; cv=none; b=sB+eLy40rYsFxj5VDArKG6Y6PPep+231noXFf73MvYheNaqlcxQp/btsA7BNBHX5SdnIUbDGdDNWiBtRdUQxW9ogzY5zj9CHv5L0VkWm7k7oQahX5RspkaQF2eFxCf+XnHR56CzM1y1QeUGehMjDej8CmJRGU4sILNuzzUZORhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725974018; c=relaxed/simple;
-	bh=uGo6k4OAIYTYxKEoxQ9GjKss84Fepmbx9YP42wZQ/iA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QmXUXDCgs20kpH5bl2+Oq8aFgqLZwDwaFdVJRroa5YU3PU/KlIQNUjyCfaOkddKs8pCC8P69oH1voHGCqWvYNBEz4RGHDzFf2PgPi3bt2fiS5kaTjFcgC8NPkGfHwNsnMHR/1mhiipOAAyKS728a9wv6I1ncyS3fRf928qb3NWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nSLyMo1o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 226C0C4CEC3;
-	Tue, 10 Sep 2024 13:13:36 +0000 (UTC)
+	s=arc-20240116; t=1725974028; c=relaxed/simple;
+	bh=2k9f2RMw7CBKwpHtxVRTYzoZN8ExXPO0CJoKPxU1U/c=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=AA2Hd5vQOJVw4Ry7ZHU0Q6XQOkR4FMpOqP7Hd+HV7r8t0+C9swPDbOqKlRquzfnbOz4eDQ80k/6Wgl9Rno7OX4XGChEO4X3ITbsHFohAhO3J6UsMG86fQU4fr89VcFkDrUuoFCeEeLYwrObcBppSCsfTe8yUjF/J83Fby06XWe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XV1hdi8z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC721C4CEC3;
+	Tue, 10 Sep 2024 13:13:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725974017;
-	bh=uGo6k4OAIYTYxKEoxQ9GjKss84Fepmbx9YP42wZQ/iA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nSLyMo1olyHvzG3qBu/mDwA2auj63+ZdRRopp5xKlLKpOXlxYvPN7nTLNjRmz1aRt
-	 iUSoSve5lZzybSpAoL0f0Y8JWyi2GO3a0tyypXmVOvurSo/BAGbJY1gFsMmPROs+wn
-	 92P4qMTqsAogcZKjBkjuSrMRXKi7iGiQyI/7+I/PZMC8PiK+2iwPnuwuQvUJWOiubP
-	 y1Bw+LMEn9DefXfMH7PEMUbr35/JAD+OgaxdoSk6ipNQpqlB5EDVZ6x1oty8CCc4iq
-	 eVTI45Ds1rfZpcoZE22u9vDtfCOs3DmS/foVoTyG2ItsyndYZBhmtfkVVRyUQ+pJUm
-	 g839GAGj9pzng==
-Date: Tue, 10 Sep 2024 16:13:33 +0300
+	s=k20201202; t=1725974027;
+	bh=2k9f2RMw7CBKwpHtxVRTYzoZN8ExXPO0CJoKPxU1U/c=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=XV1hdi8zBYffx/W/YzPV6iOTgIahHr0kNgpWOSYO4mw8+kskiF6colSWJVpKTnoxR
+	 colTT1+B9dAqRHuU2TD0cjWdLsCwM4r45Z3C8AtMeBkQNVIcSMlE+5xiYOlfDD/dFf
+	 RzB3o9YtJwSgepIgl6HfIeSKj/rTAc0c7xKEhgXqA/2kTAc03j1HHmMq9kVmtO5RSJ
+	 hyoSiEQHsv/VjaBV/YsrH5I8DTiSYPIsgp2zVmQ+38YRYgMil6LJi59oJyctMBPLTH
+	 eGtS+VXDmEnTEB+iSCSQx+ekOfk09x6WS35WxOPTqeKSTDN24O/HBCgEX78BigaEpB
+	 eokbE4J7f/mdw==
 From: Leon Romanovsky <leon@kernel.org>
-To: Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next 0/9] RDMA/hns: Bugfixes and one improvement
-Message-ID: <20240910131333.GC4026@unreal>
+To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
 References: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
+Subject: Re: (subset) [PATCH for-next 0/9] RDMA/hns: Bugfixes and one
+ improvement
+Message-Id: <172597402310.3387045.13638568220298079896.b4-ty@kernel.org>
+Date: Tue, 10 Sep 2024 16:13:43 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-On Fri, Sep 06, 2024 at 05:34:35PM +0800, Junxian Huang wrote:
+
+On Fri, 06 Sep 2024 17:34:35 +0800, Junxian Huang wrote:
 > This is a series of hns patches. Patch #8 is an improvement for
 > hem allocation performance, and the others are some fixes.
 > 
+> Chengchang Tang (2):
 >   RDMA/hns: Fix spin_unlock_irqrestore() called with IRQs enabled
 >   RDMA/hns: Fix 1bit-ECC recovery address in non-4K OS
->   RDMA/hns: Don't modify rq next block addr in HIP09 QPC
->   RDMA/hns: Fix VF triggering PF reset in abnormal interrupt handler
->   RDMA/hns: Optimize hem allocation performance
->   RDMA/hns: Fix Use-After-Free of rsv_qp on HIP08
->   RDMA/hns: Fix the overflow risk of hem_list_calc_ba_range()
+> 
+> [...]
 
-Applied
+Applied, thanks!
 
->   RDMA/hns: Fix cpu stuck caused by printings during reset
->   RDMA/hns: Fix different dgids mapping to the same dip_idx
+[1/9] RDMA/hns: Don't modify rq next block addr in HIP09 QPC
+      https://git.kernel.org/rdma/rdma/c/6928d264e328e0
+[2/9] RDMA/hns: Fix Use-After-Free of rsv_qp on HIP08
+      https://git.kernel.org/rdma/rdma/c/fd8489294dd2be
+[4/9] RDMA/hns: Fix the overflow risk of hem_list_calc_ba_range()
+      https://git.kernel.org/rdma/rdma/c/d586628b169d14
+[5/9] RDMA/hns: Fix spin_unlock_irqrestore() called with IRQs enabled
+      https://git.kernel.org/rdma/rdma/c/74d315b5af1802
+[6/9] RDMA/hns: Fix VF triggering PF reset in abnormal interrupt handler
+      https://git.kernel.org/rdma/rdma/c/4321feefa5501a
+[7/9] RDMA/hns: Fix 1bit-ECC recovery address in non-4K OS
+      https://git.kernel.org/rdma/rdma/c/ce196f6297c7f3
+[8/9] RDMA/hns: Optimize hem allocation performance
+      https://git.kernel.org/rdma/rdma/c/fe51f6254d81f5
 
-Need some discussion.
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
 
-Thanks
 
