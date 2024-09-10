@@ -1,79 +1,95 @@
-Return-Path: <linux-rdma+bounces-4855-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4856-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF8549736DE
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 14:11:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BCA2973724
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 14:23:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60E0D1F252D1
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 12:11:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D4BE1C24006
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2024 12:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31E618FC74;
-	Tue, 10 Sep 2024 12:11:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACF9118C34D;
+	Tue, 10 Sep 2024 12:23:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IvlI1qUt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iws9POTR"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D289137932;
-	Tue, 10 Sep 2024 12:11:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684F81E493;
+	Tue, 10 Sep 2024 12:23:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725970279; cv=none; b=qbnxtk6ag7JNb95CcT4IUq8FXwmZwCZPX0qo4WV4BiqsapPEztknrkrGdhupoakLnivurSgMGGDV83LGMpbRC4aIu+VC0P7XMeqWq5RA+gwZF96CiWC6yf76BQztUMAcyxRlY5zerQytKEMXO8qlH7uSvjObeB3teRhYF1a5EKg=
+	t=1725971031; cv=none; b=s+DZcqhvVWdIAMKC4TWM+VsMmaAAXmkQLBIIR+EczLSeRtkJzedvv/PFF791h6qY8Pllwg3xCE5hUXWkJRwTggQhM6hgQvxDaMznH4hzFhU8Vcv9ALV7ZUWxzz1MsJHC8t+zTCdJdiZEFDNGIJ1M/KfnGQgHO1MDD8qag+JdDWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725970279; c=relaxed/simple;
-	bh=vNwwWeq48jt99rRaV5uRYSV38r7jfjdSTYDgTBdNKfE=;
+	s=arc-20240116; t=1725971031; c=relaxed/simple;
+	bh=oErQ0EOlxZmE4HoRmhvWuqG3bduQ0mATRTnoZBsg/1I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MIonSXgNkDIGV6QxChw57wp5vaHOmLKgYTlbd4OPDV/vO2zCFsH0jqDiUGhmbU/MKirIHmfJt1IGpyowwfrruUp0aiBmH/d/i/s7ihFKDtHNvl7DnbDHi1V3xjqYAcFf0WxcH3Lahz8Hag3fbDJXYFq7/JPDiYp01cXMyhx1dnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IvlI1qUt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 737B8C4CEC3;
-	Tue, 10 Sep 2024 12:11:18 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=SnP6VAxfPzzECyopLo1+62oOf6a5C74lQo3UcYzw+aZIgbXf8b+QdbU9SY/POgfr6unMp4QOEuR14a0Wm7htz5Hek5Xo1gCcBE2AJRf6SjWlaty2Abv2W1R615SPxJTXZlsH7cZU0wyNbA2tDyvTvX+AF+44kzRsVdTyubvn1RY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iws9POTR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78E46C4CEC3;
+	Tue, 10 Sep 2024 12:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725970279;
-	bh=vNwwWeq48jt99rRaV5uRYSV38r7jfjdSTYDgTBdNKfE=;
+	s=k20201202; t=1725971031;
+	bh=oErQ0EOlxZmE4HoRmhvWuqG3bduQ0mATRTnoZBsg/1I=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IvlI1qUtw83813btRxLb+OehZDHa7Ur/x32o3Jc9rkLelMyAnILPfHA815+0mFKo1
-	 Sc1/tloQhEtt7Esp9YrZH/WfRBpdybchskWBlLSlDkpAeQgJcz6u3HS33f3qXnCP2X
-	 ecwYeKGe+skXZ40keg8o27FsY6dD3QldjaJQgfx0teQqK5ZM1ihg8ad6mnHVTLzflq
-	 B2ITj3lj4RZSQ7Q5zh/XkJ3eRmwiAETITdKqyiM0IFiCLWoHzsd6+vE5pu3UXdPeW/
-	 pmI19oR4K4EH7mcfmyhB4+BtS+0KvJvvbZtxNGcryVZqmzAgUej8tSvf66cUkKQyE8
-	 mxSlimDepGAAQ==
-Date: Tue, 10 Sep 2024 15:11:13 +0300
+	b=iws9POTR/rqseG8qE9h0MTQx1zFEhWxJBiHOoonYa/bvgCZGF+CQb+TmA/NZo+dRW
+	 wmMqsRTbxi8JpbMDS3kcq8brGh78jI2EUrhpE0NQg91oZKPQ+TkOcxH1yynft+elzz
+	 hxVuDcf6w4Vvkfq+Yb5tcuL39+QnAkaX8pcdOuBjZ+ouR442kjey/rIOrqBIniedV1
+	 bUVVII5qOxjNkemcL2bwjzYa6eFEtn0Wtn2qo4IfdIDgCmN1+JtYYNJ9kMR4VKfCIa
+	 qsjxpuoge2jzrT+mE8IKcKc3TBkpOEQBnYqp4ywQroS/+kpRdjwFHEklfJhA6hbfsH
+	 1lUjaICfdIZTA==
+Date: Tue, 10 Sep 2024 15:23:45 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Adam Li <adamli@os.amperecomputing.com>
-Cc: saeedm@nvidia.com, tariqt@nvidia.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, patches@amperecomputing.com,
-	cl@os.amperecomputing.com, shijie@os.amperecomputing.com,
-	Christoph Lameter <cl@linux.com>
-Subject: Re: [PATCH] net/mlx5: Node-aware allocation for mlx5_buf_list
-Message-ID: <20240910121113.GY4026@unreal>
-References: <20240906061115.522074-1-adamli@os.amperecomputing.com>
+To: Yu Jiaoliang <yujiaoliang@vivo.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>,
+	Mustafa Ismail <mustafa.ismail@intel.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Erick Archer <erick.archer@gmx.com>,
+	Akiva Goldberger <agoldberger@nvidia.com>,
+	Patrisious Haddad <phaddad@nvidia.com>,
+	Max Gurtovoy <mgurtovoy@nvidia.com>,
+	Or Har-Toov <ohartoov@nvidia.com>,
+	Rohit Chavan <roheetchavan@gmail.com>,
+	Shigeru Yoshida <syoshida@redhat.com>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH v2 rdma-next] RDMA: Use ERR_CAST to return an
+ error-valued pointer
+Message-ID: <20240910122345.GZ4026@unreal>
+References: <20240906062141.1845816-1-yujiaoliang@vivo.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240906061115.522074-1-adamli@os.amperecomputing.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240906062141.1845816-1-yujiaoliang@vivo.com>
 
-On Fri, Sep 06, 2024 at 06:11:15AM +0000, Adam Li wrote:
-> Allocation for mlx5_frag_buf.frags[i].buf is node-aware.
-> Make mlx5_frag_buf.frags allocation node-aware too.
+On Fri, Sep 06, 2024 at 02:21:36PM +0800, Yu Jiaoliang wrote:
+> Instead of directly casting and returning an error-valued pointer,
+> use ERR_CAST to make the error handling more explicit and improve
+> code clarity.
 > 
-> Signed-off-by: Adam Li <adamli@os.amperecomputing.com>
-> Reviewed-by: Christoph Lameter (Ampere) <cl@linux.com>
+> Signed-off-by: Yu Jiaoliang <yujiaoliang@vivo.com>
 > ---
->  drivers/net/ethernet/mellanox/mlx5/core/alloc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
+> v2:
+> - Additional modifications in file /drivers/infiniband/hw/irdma/verbs.c
+> v1: https://lore.kernel.org/all/20240905110615.GU4026@unreal/
+> ---
+>  drivers/infiniband/core/mad_rmpp.c   | 2 +-
+>  drivers/infiniband/core/uverbs_cmd.c | 2 +-
+>  drivers/infiniband/core/verbs.c      | 2 +-
+>  drivers/infiniband/hw/irdma/verbs.c  | 4 ++--
+>  4 files changed, 5 insertions(+), 5 deletions(-)
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+It is still incomplete.
+Something like that will give you a better result:
+➜  kernel git:(wip/leon-for-next) git grep "return (" drivers/infiniband/ | grep "\*"
+
+Thanks
 
