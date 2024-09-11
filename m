@@ -1,119 +1,98 @@
-Return-Path: <linux-rdma+bounces-4880-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4881-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A1699752A3
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2024 14:39:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 226789753DC
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2024 15:28:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51D1BB2999B
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2024 12:38:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5544F1C22DCC
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2024 13:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79CE187336;
-	Wed, 11 Sep 2024 12:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 258ED19F118;
+	Wed, 11 Sep 2024 13:25:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CD2mCaFU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C92E185B4C;
-	Wed, 11 Sep 2024 12:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D74190667;
+	Wed, 11 Sep 2024 13:25:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726058323; cv=none; b=qxCdaC0N9QQkx7inXaKFcnmpA3MnS5y7fbBj6hEqLlwZMveNXknBFT4Prpp1/PIaHZDPlw/O2rLym8D79HR1orpZpxkgLZBg/F/hqQG2InHJZpCM/ScqaBOwAoARli1WobDdzLVTrDboTEpPaInHYD8Cavs22iXbzwCthtfsKc4=
+	t=1726061123; cv=none; b=sHlFhzEFyj1/KR8okyzDFOkckoXWtUNWurgTVjodAxvzA0b5KVifxK7nllljSMDsZy3mNblkjaHad4QXu35xL5qIiAijVlcD7XPx1q54poeIEvYA+x9NC5I/Gq95fAHcOm/Yf+Euy+HiQI/2tjzyYh7IS0xKc0CRYwt8WS5wrX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726058323; c=relaxed/simple;
-	bh=hpZscvYNtOfhk9PiPZCJ8VHW132F3mGpgJjhXSuER2I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Fo7w+0rFMFDhmxFCyWfqo+HlC2UdCsLEzZex91MN05keB0HnTnW9vgKxRg0QNBjRmK05/VR4PeVn7Y6H1VNVvi0/4KQrWk4bWcEtgdzZA1J5T6WY0atIPSCBIA053U1qqolJdOPe8CsPKbvgrPZr5T+oSTNKkxlrcsmFFgXkYqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4X3g8b1qwxz1j8SB;
-	Wed, 11 Sep 2024 20:38:07 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7DDCD1401F0;
-	Wed, 11 Sep 2024 20:38:36 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 11 Sep 2024 20:38:35 +0800
-Message-ID: <d8015dc6-c65c-2eed-0ffe-0c35a4cd0b2a@hisilicon.com>
-Date: Wed, 11 Sep 2024 20:38:35 +0800
+	s=arc-20240116; t=1726061123; c=relaxed/simple;
+	bh=k5YPF6kGF8BqiPNEKQ5nlgqmQy5tRXcTGJJ7u+mTjyo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NpsY40KnUOpxDPIzjoASFehkMUtoDi1fmGxxU8xp2Q/yil31u5nDGmqMklArlR6Hb5pQ9csPC3JUC2omQqhRPFU4+iNctCkhwLmAR4b+bydZZqo5m2A+8OKWr+WU5Ukxd0VWpPN/aQrJjRR41YTRNimpY+hkFe49H1ZJ+46ltE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CD2mCaFU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEC21C4CEC5;
+	Wed, 11 Sep 2024 13:25:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726061123;
+	bh=k5YPF6kGF8BqiPNEKQ5nlgqmQy5tRXcTGJJ7u+mTjyo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CD2mCaFUMJ889pUmwOMM5zeXqToz4b5yModnE68iNxNSVWYNTpFDnraC6k6Bc0IuJ
+	 wgTPLW5Z+36yghUzTQVlPUaN0f+YO+caIIiIcs7NNlfzTmRwESQa6i7jZXKEpNgqCn
+	 9Cy9DTq5vZAQPPqn/HyMDdJqP9hlI05sc8sGK4AY0IMonS/97fMJBndyW5TwoYnTQq
+	 fUtgEMaUvonT1tRwtxvdZ1CoS3Yse5Xq41H0X+OW+UpTa2Gr+7kP9V5z85P/FCOJK2
+	 xexOW0l3IJKjiVFR5HQeD4bWgvByU/aRHM7LQf56FDXfJnqWC5NieW0Fh7RN5oqMkX
+	 3msHdyvxilVYw==
+Date: Wed, 11 Sep 2024 16:25:17 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next 3/9] RDMA/hns: Fix cpu stuck caused by printings
+ during reset
+Message-ID: <20240911132517.GH4026@unreal>
+References: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
+ <20240906093444.3571619-4-huangjunxian6@hisilicon.com>
+ <20240910130946.GA4026@unreal>
+ <4c202653-1ad7-d885-55b7-07c77a549b09@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH v4 for-next 1/2] RDMA/core: Provide
- rdma_user_mmap_disassociate() to disassociate mmap pages
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>
-CC: Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
-	<linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-References: <20240905131155.1441478-1-huangjunxian6@hisilicon.com>
- <20240905131155.1441478-2-huangjunxian6@hisilicon.com>
- <ZtxDF7EMY13tYny2@ziepe.ca>
- <d76dd514-aceb-b7cb-705a-298fc905fae3@hisilicon.com>
- <20240911102018.GF4026@unreal>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20240911102018.GF4026@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemf100018.china.huawei.com (7.202.181.17)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c202653-1ad7-d885-55b7-07c77a549b09@hisilicon.com>
 
-
-
-On 2024/9/11 18:20, Leon Romanovsky wrote:
-> On Mon, Sep 09, 2024 at 04:41:00PM +0800, Junxian Huang wrote:
->>
->>
->> On 2024/9/7 20:12, Jason Gunthorpe wrote:
->>> On Thu, Sep 05, 2024 at 09:11:54PM +0800, Junxian Huang wrote:
->>>
->>>> @@ -698,11 +700,20 @@ static int ib_uverbs_mmap(struct file *filp, struct vm_area_struct *vma)
->>>>  	ucontext = ib_uverbs_get_ucontext_file(file);
->>>>  	if (IS_ERR(ucontext)) {
->>>>  		ret = PTR_ERR(ucontext);
->>>> -		goto out;
->>>> +		goto out_srcu;
->>>>  	}
->>>> +
->>>> +	mutex_lock(&file->disassociation_lock);
->>>> +	if (file->disassociated) {
->>>> +		ret = -EPERM;
->>>> +		goto out_mutex;
->>>> +	}
->>>
->>> What sets disassociated back to false once the driver reset is
->>> completed?
->>>
->>> I think you should probably drop this and instead add a lock and test
->>> inside the driver within its mmap op. While reset is ongoing fail all
->>> new mmaps.
->>>
->>
->> disassociated won't be set back to false. This is to stop new mmaps on
->> this ucontext even after reset is completed, because during hns reset,
->> all resources will be destroyed, and the ucontexts will become unavailable.
+On Wed, Sep 11, 2024 at 09:34:19AM +0800, Junxian Huang wrote:
 > 
-> ucontext is SW object and not HW object, why will it become unavailable?
 > 
+> On 2024/9/10 21:09, Leon Romanovsky wrote:
+> > On Fri, Sep 06, 2024 at 05:34:38PM +0800, Junxian Huang wrote:
+> >> From: wenglianfa <wenglianfa@huawei.com>
+> >>
+> >> During reset, cmd to destroy resources such as qp, cq, and mr may
+> >> fail, and error logs will be printed. When a large number of
+> >> resources are destroyed, there will be lots of printings, and it
+> >> may lead to a cpu stuck. Replace the printing functions in these
+> >> paths with the ratelimited version.
+> > 
+> > At lease some of them if not most should be deleted.
+> > 
+> 
+> Hi Leon,I wonder if there is a clear standard about whether printing
+> can be added?
 
-Once hns device is reset, we don't allow any doorbell until driver's
-re-initialization is completed. Not only all existing mmaps on ucontexts
-will be zapped, no more new mmaps are allowed either.
+I don't think so, but there are some guidelines that can help you to do it:
+1. Don't print error messages in the fast path.
+2. Don't print error messages if other function down in the stack already
+   printed it.
+3. Don't print error messages if it is possible to trigger them from
+unprivileged user.
+...
 
-This actually makes ucontexts unavailable since userspace cannot access
-HW with them any more. Users will have to destroy the old ucontext and
-allocate a new one after driver's re-initialization is completed.
-
-Junxian
-
-> Thanks
+> 
+> Thanks,
+> Junxian
+> 
+> > Thanks
 
