@@ -1,57 +1,56 @@
-Return-Path: <linux-rdma+bounces-4882-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4883-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6721B975430
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2024 15:42:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0221D975431
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2024 15:42:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99DD11C228B1
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2024 13:42:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B52772830D4
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2024 13:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C96619FA86;
-	Wed, 11 Sep 2024 13:30:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D3A1A00C5;
+	Wed, 11 Sep 2024 13:30:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IMeMut/1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ul2Q4jlQ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A07187FFF
-	for <linux-rdma@vger.kernel.org>; Wed, 11 Sep 2024 13:30:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01F9F19F136
+	for <linux-rdma@vger.kernel.org>; Wed, 11 Sep 2024 13:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726061446; cv=none; b=Ys+jZgoCtYpQ4/hyWeI+ps3Z+n2paTWkZZD8zp7tDBW53XQTkzTXQN0pNWaTzJAYBh8p1CQA/zVjHWUNVsdCeNAhizI5FH3kOfRh24DgGAOShtbNpYtVW6EIg5Nrht8bY3MyrpkRqhDTenWYOd+g41DWzURb5K16kZpjSvtoArA=
+	t=1726061450; cv=none; b=TTjeJcyuV73cmaIkXOeQov+ATiaI+x442KMfCUl+oLnOJABAEge4wWZwVU4U+L3bdsSFxqWLM5kwm9d1BuAjmFLFR4Mm8ByK37O3sjvcdBnaI612fjY1/DH3sWi2jbIFOhHLD/z+KA8Fg7Or8X0BSwRHMHfkEtAzWX13m9tljbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726061446; c=relaxed/simple;
-	bh=4MuOWfuwfbYm/561Vbwr4JzDrBJOaXJf/nHsR2SpXhk=;
+	s=arc-20240116; t=1726061450; c=relaxed/simple;
+	bh=sI6mmp5Ifc9Xmk8LXa/DjMb9X25nY/QAKPuwZJiz48I=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=GmAZVN+ZaGuF5YGR9HykN77igZ9jUoku7xX2mVZ4kdJ/gCZYngkMbgIgBVZFXuq8nn7Gabl0YupMhJRCb+v+4/bYQ+o+Tf6+g8YJptTrhlTiVs163JYQRfnuYvjHiHe5eMjvyKParNeXU5H4fvwJ8GyycVZqtaAjtoSxmE8+06k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IMeMut/1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1166C4CECE;
-	Wed, 11 Sep 2024 13:30:43 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Wp9L5TCRfE5UJ9Vhdkbn+yCIAVl8IZCJtKDBd+wpz7E5ULTmypszxCHhWM7Fp4VAY9t8TaRqCf23Smi5Mu5cV6gtSBngI0MKQFi5Gg7+ee6spMq5odpkqrynCX0CsG+6+ZSJedE6eCUGr37gggYUQSN2wkhC9/uldZ8X+Hato+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ul2Q4jlQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBBC2C4CEC5;
+	Wed, 11 Sep 2024 13:30:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726061444;
-	bh=4MuOWfuwfbYm/561Vbwr4JzDrBJOaXJf/nHsR2SpXhk=;
+	s=k20201202; t=1726061449;
+	bh=sI6mmp5Ifc9Xmk8LXa/DjMb9X25nY/QAKPuwZJiz48I=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=IMeMut/1up7LjdHqbh+CA1WUNOleidjc6otu4vj8Jbp+d5RPWl6voQ+AArc2Jcgcb
-	 0aaukJ3c+75YLxI2e3CaF/HjNjaTgFCC7x5wKWrx1Hp+YVYZZ6czO3PpniglSubNl0
-	 Hn9SxKLttVYp/Jc8kvlJjfCNPyGwjl5bIAAJHr71zGzQmkvbbsua0bozxp7Pg2n/BI
-	 27YZdFTvXrB2wzmyBa5NcPgMK32hPJTzd2Sx0L4aQ/klN+4IoqwMrzp2DSHGPOO/je
-	 2fC64mNY0f2wV6tRafdIB2pd5rz/RVZ7C5gd+Fa+bEYXMDrZCOxZ2wYrpWVmZaHEa5
-	 7y1nNHIwS3T0w==
+	b=ul2Q4jlQqrK+GxHdHWyg+ywPqV6+N17Gx8yUEBAp9sOSeXp1itBn4B7Wi108aY6Lc
+	 bcDFqdbOyd3PMu72PgsOQIgGcTIHm1kz7/xHiXfl2S8Dn+W5Vo5tzZ+T2TI8IMACHY
+	 ye+yYw2OLWalPgYZMBpjWCOMrTdr8dZ9sIhIWtZVE2UtkYsB/xLY0qkhd+9uKAJGpO
+	 jT5b9D8+8ubB7G0o38ztR5gqCBn6aeUOfuGqT2sWWPfhK4BKUfqyPG0z9zPyNCoyZ/
+	 qCSILX56D1zhQYG5cKcMhHgYR6YnTkt/q3a+aGgjVmRHTW+wwUoeK9oVJwKHQMoOa5
+	 5E3ZDdhg8ejgw==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, 
- Michael Guralnik <michaelgur@nvidia.com>
-Cc: linux-rdma@vger.kernel.org, mbloch@nvidia.com, cmeiohas@nvidia.com, 
- msanalla@nvidia.com, dsahern@gmail.com, Leon Romanovsky <leon@kernel.org>
-In-Reply-To: <20240909173025.30422-1-michaelgur@nvidia.com>
-References: <20240909173025.30422-1-michaelgur@nvidia.com>
-Subject: Re: [PATCH rdma-next v3 0/7] Support RDMA events monitoring
- through
-Message-Id: <172606143899.3705222.15001719681168019853.b4-ty@kernel.org>
-Date: Wed, 11 Sep 2024 16:30:38 +0300
+To: jgg@ziepe.ca, Selvin Xavier <selvin.xavier@broadcom.com>
+Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
+ kalesh-anakkur.purayil@broadcom.com
+In-Reply-To: <1726027710-2292-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1726027710-2292-1-git-send-email-selvin.xavier@broadcom.com>
+Subject: Re: [PATCH for-next v2 0/4] RDMA/bnxt_re: Device re-initialization
+ after Firmware error
+Message-Id: <172606144530.3705222.5969212964119784223.b4-ty@kernel.org>
+Date: Wed, 11 Sep 2024 16:30:45 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -63,34 +62,26 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
 
 
-On Mon, 09 Sep 2024 20:30:18 +0300, Michael Guralnik wrote:
-> This series consists of multiple parts that collectively offer a method
-> to monitor RDMA events from userspace.
-> Using netlink, users will be able to monitor their IB device events and
-> changes such as device register, device unregister and netdev
-> attachment.
-> 
-> The first 2 patches contain fixes in mlx5 lag code that are required for
-> accurate event reporting in case of a lag bond.
+On Tue, 10 Sep 2024 21:08:26 -0700, Selvin Xavier wrote:
+> Add support for complete re-initialization of the device when
+> driver detects a firmware reset. Code reorg that updates the
+> device handles stored with Auxiliary bus and the bnxt_en driver.
+> bnxt_en driver calls suspend and resume hooks upon error recovery.
+> Driver destroys and recreates the roce device instance upon receiving
+> these calls.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/7] RDMA/mlx5: Check RoCE LAG status before getting netdev
-      https://git.kernel.org/rdma/rdma/c/e67266dc429670
-[2/7] RDMA/mlx5: Obtain upper net device only when needed
-      https://git.kernel.org/rdma/rdma/c/eb66fcc43fde8f
-[3/7] RDMA/mlx5: Initialize phys_port_cnt earlier in RDMA device creation
-      https://git.kernel.org/rdma/rdma/c/41068c95b0bf6e
-[4/7] RDMA/device: Remove optimization in ib_device_get_netdev()
-      https://git.kernel.org/rdma/rdma/c/95ae29d023a4ba
-[5/7] RDMA/mlx5: Use IB set_netdev and get_netdev functions
-      https://git.kernel.org/rdma/rdma/c/425b36d3b2cb81
-[6/7] RDMA/nldev: Add support for RDMA monitoring
-      https://git.kernel.org/rdma/rdma/c/9a13c8cffcf6e8
-[7/7] RDMA/nldev: Expose whether RDMA monitoring is supported
-      https://git.kernel.org/rdma/rdma/c/61eb1e03c16f38
+[1/4] RDMA/bnxt_re: Change aux driver data to en_info to hold more information
+      https://git.kernel.org/rdma/rdma/c/6656fda9d744bd
+[2/4] RDMA/bnxt_re: Use the aux device for L2 ULP callbacks
+      https://git.kernel.org/rdma/rdma/c/5b93677f520908
+[3/4] RDMA/bnxt_re: Group all operations under add_device and remove_device
+      https://git.kernel.org/rdma/rdma/c/c1fcf8aff481b6
+[4/4] RDMA/bnxt_re: Recover the device when FW error is detected
+      https://git.kernel.org/rdma/rdma/c/5d13aa44d9aec1
 
 Best regards,
 -- 
