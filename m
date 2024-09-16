@@ -1,291 +1,254 @@
-Return-Path: <linux-rdma+bounces-4959-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4960-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A1D6979C09
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Sep 2024 09:31:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BE66979C50
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Sep 2024 09:54:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC3DC1F234CD
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Sep 2024 07:31:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFDAD1C210B0
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Sep 2024 07:54:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E63C284D34;
-	Mon, 16 Sep 2024 07:31:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B27B13B2A5;
+	Mon, 16 Sep 2024 07:54:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ans.pl header.i=@ans.pl header.b="UCXP/s8y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tRMpgO8r"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.emenem.pl (cmyk.emenem.pl [217.79.154.63])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A55FF3BBF2;
-	Mon, 16 Sep 2024 07:31:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.79.154.63
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F623FE4A;
+	Mon, 16 Sep 2024 07:54:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726471880; cv=none; b=Una7cHeGqZpR2o+3I2710Tyg3u14bu6b+FMxdLdprnsmhCHSYf4y7DMAge2az8KPbVXJrLXhuermrmxarHjwWdIoeJjoJl5hid0YiMH11Fu9DNB+4SBxtLj621SNHJJlZHBBtSpgfPdTx28w2pUeXfxM288+Omn0ZowjoqA/Q2I=
+	t=1726473290; cv=none; b=jbdzMZbelLz0GbmZVoCJjagddgA1Ew+w9a+vUD3YMgAiPZVoq+bjERD8WCArGN/DtY9Z2y8EWd37bSO8xOTVEkXS7LgnKe70Z492HQxIz5u0iTbvju/3Du4S19mff6RUKHMqfkdiVuiQOYRSNYy7ZTaORFNP6+GtIeCqcfqjmzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726471880; c=relaxed/simple;
-	bh=wV66XkjyTpNkoyeZotLMXVvkLUdot/azOFZS/uyvFPs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h5A/1rqhniUFwmSEWlsrQhuzPw+IhZB0NbyjZbP2JCobZS1PwTL83DncD5NoV5xPq/pbM/eZ4XbkSaDf85vfBvZkBGuTt8GTk/9Xg301ESpGPhqNKtkzKZxtlBS3YvZhwSkpuxkFq1HEc6vN/NaDRS9K1NedPO7DeiVk3SBKt8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ans.pl; spf=none smtp.mailfrom=ans.pl; dkim=pass (1024-bit key) header.d=ans.pl header.i=@ans.pl header.b=UCXP/s8y; arc=none smtp.client-ip=217.79.154.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ans.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ans.pl
-X-Virus-Scanned: amavisd-new at emenem.pl
-Received: from [192.168.1.10] (c-98-45-176-131.hsd1.ca.comcast.net [98.45.176.131])
-	(authenticated bits=0)
-	by cmyk.emenem.pl (8.17.1.9/8.17.1.9) with ESMTPSA id 48G7UYZu003300
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Mon, 16 Sep 2024 09:30:35 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ans.pl; s=20190507;
-	t=1726471838; bh=cvEij/gxRFLQnCrhRknoRQ0KgLrD/8wzAdDGvVBA6n8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=UCXP/s8yM49QZEtgFguI9l90H7S1RtqcYtM0wu2fLJwWmmPRrPKV84uEFWW6nf3G2
-	 gLvXQwfA93EahggDJJIQEp8/VET+/bNdjFPWvCtFmlu3W1s82MWusw4LksCqIygLwk
-	 MOkUjRjEPQriy3brBVtVqWG7yyR7QYr3znGUlDps=
-Message-ID: <8a0c724e-d2fb-4ae6-bf5d-74bbd0a7581b@ans.pl>
-Date: Mon, 16 Sep 2024 00:30:32 -0700
+	s=arc-20240116; t=1726473290; c=relaxed/simple;
+	bh=9Uxllx3nCNE5VF0LffW4t0C3QwPY8+2DJST5wYb8ssQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YpRYmoZbgUcj0LQn19fgqcilueEsA3S57BPPiAET2GcDq3D2gi3RIJH03ROC59uAlJhyEm3jVmtNr/X+RiIvudJVkgTudYW0KxyR0Zj0kn01crKrdRy76ImDPmcRqlHCeYzrqdK733NkCZ+9vEinqwft9u+LFPzKsiClFdpMo58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tRMpgO8r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CA17C4CEC4;
+	Mon, 16 Sep 2024 07:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726473289;
+	bh=9Uxllx3nCNE5VF0LffW4t0C3QwPY8+2DJST5wYb8ssQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tRMpgO8rO6nC/yGTsOuq0gh66lk0uIeRAn619x/Ee9ln6d6Mkr9A8MhTxliwZy5fe
+	 pOIsDY/hFfxWjHauDNpS7obzIovcrmLT4OO5r8AGvA3CVd+0//c6LMCrFKlEByW8SW
+	 A71Q98REui3J3koXBvxMarOgjy3nkt0Oi2qVIT9nHTLEYwVL2McR+jQExf4rlUN7+J
+	 rRWuUsNecvzrmSrX4GK01v4wub/NPvHt00RllC6CWdcszSy8F31+zoxklGfuVYyodz
+	 CXquPi6Vwjjbqxcrqv8GufBJfwwx3jsoQjbNDl3s+o84X9wlTpyGUGBQ/iovuwHNIg
+	 P+wBZ1lP8vY/g==
+Date: Mon, 16 Sep 2024 10:54:44 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Dave Jiang <dave.jiang@intel.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Daniel Vetter <daniel.vetter@ffwll.ch>,
+	David Ahern <dsahern@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+	Jakub Kicinski <kuba@kernel.org>, Leonid Bloch <lbloch@nvidia.com>,
+	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
+	Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH v3 00/10] Introduce fwctl subystem
+Message-ID: <20240916075444.GJ4026@unreal>
+References: <0-v3-960f17f90f17+516-fwctl_jgg@nvidia.com>
+ <8029e786-d693-4002-9dba-b45f9bb4acb1@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/4] mlx4/mlx5: {mlx4,mlx5e}_en_get_module_info
- cleanup
-To: Gal Pressman <gal@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>, Yishai Hadas <yishaih@nvidia.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        linux-rdma@vger.kernel.org
-References: <14a24f93-f8d6-4bc7-8b87-86489bcedb28@ans.pl>
- <12092059-4212-44c5-9b13-dc7698933f76@nvidia.com>
-From: =?UTF-8?Q?Krzysztof_Ol=C4=99dzki?= <ole@ans.pl>
-Content-Language: en-US
-In-Reply-To: <12092059-4212-44c5-9b13-dc7698933f76@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8029e786-d693-4002-9dba-b45f9bb4acb1@intel.com>
 
-On 16.09.2024 at 00:16, Gal Pressman wrote:
-> Hi Krzysztof,
-
-Hi Gal,
-
-Thank you so much for your prompt review!
-
-> On 12/09/2024 9:38, Krzysztof Olędzki wrote:
->> Use SFF8024 constants defined in linux/sfp.h instead of private ones.
->>
->> Make mlx4_en_get_module_info() and mlx5e_get_module_info() to look
->> as close as possible to each other.
+On Fri, Sep 13, 2024 at 03:39:57PM -0700, Dave Jiang wrote:
 > 
-> Please split mlx4 and mlx5 changes to two patches.
-
-Sure, will do.
-
->> Simplify the logic for selecting SFF_8436 vs SFF_8636.
->>
->> Signed-off-by: Krzysztof Piotr Oledzki <ole@ans.pl>
->> ---
->>  .../net/ethernet/mellanox/mlx4/en_ethtool.c   | 33 ++++++++++---------
->>  drivers/net/ethernet/mellanox/mlx4/port.c     |  9 ++---
->>  .../ethernet/mellanox/mlx5/core/en_ethtool.c  | 28 +++++++++-------
->>  .../net/ethernet/mellanox/mlx5/core/port.c    |  9 ++---
->>  include/linux/mlx4/device.h                   |  7 ----
->>  include/linux/mlx5/port.h                     |  8 -----
->>  6 files changed, 44 insertions(+), 50 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
->> index cd17a3f4faf8..4c985d62af12 100644
->> --- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
->> +++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
->> @@ -40,6 +40,7 @@
->>  #include <net/ip.h>
->>  #include <linux/bitmap.h>
->>  #include <linux/mii.h>
->> +#include <linux/sfp.h>
->>  
->>  #include "mlx4_en.h"
->>  #include "en_port.h"
->> @@ -2029,33 +2030,35 @@ static int mlx4_en_get_module_info(struct net_device *dev,
->>  
->>  	/* Read first 2 bytes to get Module & REV ID */
->>  	ret = mlx4_get_module_info(mdev->dev, priv->port,
->> -				   0/*offset*/, 2/*size*/, data);
->> +				   0 /*offset*/, 2 /*size*/, data);
 > 
-> Why?
-
-I tried to be consistent with the other places, some examples:
-fw.c:   err = mlx4_cmd(dev, mailbox->dma, 0x01 /* subn mgmt class */,
-en_tx.c:                                                0, 0 /* Non-NAPI caller */);
-
-Would you like me to drop this part of the change?
-
+> On 8/21/24 11:10 AM, Jason Gunthorpe wrote:
+> > fwctl is a new subsystem intended to bring some common rules and order to
+> > the growing pattern of exposing a secure FW interface directly to
+> > userspace. Unlike existing places like RDMA/DRM/VFIO/uacce that are
+> > exposing a device for datapath operations fwctl is focused on debugging,
+> > configuration and provisioning of the device. It will not have the
+> > necessary features like interrupt delivery to support a datapath.
+> > 
+> > This concept is similar to the long standing practice in the "HW" RAID
+> > space of having a device specific misc device to manager the RAID
+> > controller FW. fwctl generalizes this notion of a companion debug and
+> > management interface that goes along with a dataplane implemented in an
+> > appropriate subsystem.
+> > 
+> > The need for this has reached a critical point as many users are moving to
+> > run lockdown enabled kernels. Several existing devices have had long
+> > standing tooling for management that relied on /sys/../resource0 or PCI
+> > config space access which is not permitted in lockdown. A major point of
+> > fwctl is to define and document the rules that a device must follow to
+> > expose a lockdown compatible RPC.
+> > 
+> > Based on some discussion fwctl splits the RPCs into four categories
+> > 
+> > 	FWCTL_RPC_CONFIGURATION
+> > 	FWCTL_RPC_DEBUG_READ_ONLY
+> > 	FWCTL_RPC_DEBUG_WRITE
+> > 	FWCTL_RPC_DEBUG_WRITE_FULL
+> > 
+> > Where the latter two trigger a new TAINT_FWCTL, and the final one requires
+> > CAP_SYS_RAWIO - excluding it from lockdown. The device driver and its FW
+> > would be responsible to restrict RPCs to the requested security scope,
+> > while the core code handles the tainting and CAP checks.
+> > 
+> > For details see the final patch which introduces the documentation.
+> > 
+> > This series incorporates a version of the mlx5ctl interface previously
+> > proposed:
+> >   https://lore.kernel.org/r/20240207072435.14182-1-saeed@kernel.org/
+> > 
+> > For this series the memory registration mechanism was removed, but I
+> > expect it will come back.
+> > 
+> > It also includes the FWCL driver series from David:
+> >   https://lore.kernel.org/all/20240718213446.1750135-1-dave.jiang@intel.com/
+> > 
+> > 
+> > This is still waiting a 3rd fwctl driver and the CXL side to finish some
+> > of its development. The github has the necessary CXL precursor patches.
+> > 
+> > There have been two LWN articles written discussing various aspects of
+> > this proposal:
+> > 
+> >  https://lwn.net/Articles/955001/
+> >  https://lwn.net/Articles/969383/
+> > 
+> > And a really giant ksummit thread:
+> > 
+> >  https://lore.kernel.org/ksummit/668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch/
+> > 
+> > Several have expressed general support for this concept:
+> > 
+> >  Broadcom Networking - https://lore.kernel.org/r/Zf2n02q0GevGdS-Z@C02YVCJELVCG
+> >  Christoph Hellwig - https://lore.kernel.org/r/Zcx53N8lQjkpEu94@infradead.org/
+> >  Daniel Vetter - https://lore.kernel.org/r/ZrHY2Bds7oF7KRGz@phenom.ffwll.local
+> >  Enfabrica - https://lore.kernel.org/r/9cc7127f-8674-43bc-b4d7-b1c4c2d96fed@kernel.org/
+> >  NVIDIA Networking
+> >  Oded Gabbay/Habana - https://lore.kernel.org/r/ZrMl1bkPP-3G9B4N@T14sgabbay.
+> >  Oracle Linux - https://lore.kernel.org/r/6lakj6lxlxhdgrewodvj3xh6sxn3d36t5dab6najzyti2navx3@wrge7cyfk6nq
+> >  SuSE/Hannes - https://lore.kernel.org/r/2fd48f87-2521-4c34-8589-dbb7e91bb1c8@suse.com
+> > 
+> > Work is ongoing for a robust multi-device open source userspace, currently
+> > the mlx5ctl_user that was posted by Saeed has been updated to use fwctl.
+> > 
+> >   https://github.com/saeedtx/mlx5ctl.git
+> >   https://github.com/jgunthorpe/mlx5ctl.git
+> > 
+> > This is on github: https://github.com/jgunthorpe/linux/commits/fwctl
+> > 
+> > v3:
+> >  - Rebase to v6.11-rc4
+> >  - Add a squashed version of David's CXL series as the 2nd driver
+> >  - Add missing includes
+> >  - Improve comments based on feedback
+> >  - Use the kdoc format that puts the member docs inside the struct
+> >  - Rewrite fwctl_alloc_device() to be clearer
+> >  - Incorporate all remarks for the documentation
+> > v2: https://lore.kernel.org/r/0-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com
+> >  - Rebase to v6.10-rc5
+> >  - Minor style changes
+> >  - Follow the style consensus for the guard stuff
+> >  - Documentation grammer/spelling
+> >  - Add missed length output for mlx5 get_info
+> >  - Add two more missed MLX5 CMD's
+> >  - Collect tags
+> > v1: https://lore.kernel.org/r/0-v1-9912f1a11620+2a-fwctl_jgg@nvidia.com
+> > 
+> > Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>
+> > Cc: Aron Silverton <aron.silverton@oracle.com>
+> > Cc: Christoph Hellwig <hch@infradead.org>
+> > Cc: David Ahern <dsahern@kernel.org>
+> > Cc: Itay Avraham <itayavr@nvidia.com>
+> > Cc: Jakub Kicinski <kuba@kernel.org>
+> > Cc: Jiri Pirko <jiri@nvidia.com>
+> > Cc: Leon Romanovsky <leonro@nvidia.com>
+> > Cc: Leonid Bloch <lbloch@nvidia.com>
+> > Cc: Dan Williams <dan.j.williams@intel.com>
+> > Cc: linux-cxl@vger.kernel.org
+> > Cc: linux-rdma@vger.kernel.org
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> > 
+> > Dave Jiang (1):
+> >   fwctl/cxl: Add driver for CXL mailbox for handling CXL features
+> >     commands (RFC)
+> > 
+> > Jason Gunthorpe (7):
+> >   fwctl: Add basic structure for a class subsystem with a cdev
+> >   fwctl: Basic ioctl dispatch for the character device
+> >   fwctl: FWCTL_INFO to return basic information about the device
+> >   taint: Add TAINT_FWCTL
+> >   fwctl: FWCTL_RPC to execute a Remote Procedure Call to device firmware
+> >   fwctl: Add documentation
+> >   cxl: Create an auxiliary device for fwctl_cxl
+> > 
+> > Saeed Mahameed (2):
+> >   fwctl/mlx5: Support for communicating with mlx5 fw
+> >   mlx5: Create an auxiliary device for fwctl_mlx5
+> > 
+> >  Documentation/admin-guide/tainted-kernels.rst |   5 +
+> >  Documentation/userspace-api/fwctl.rst         | 285 ++++++++++++
+> >  Documentation/userspace-api/index.rst         |   1 +
+> >  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+> >  MAINTAINERS                                   |  23 +
+> >  drivers/Kconfig                               |   2 +
+> >  drivers/Makefile                              |   1 +
+> >  drivers/cxl/core/memdev.c                     |  19 +
+> >  drivers/fwctl/Kconfig                         |  32 ++
+> >  drivers/fwctl/Makefile                        |   6 +
+> >  drivers/fwctl/cxl/Makefile                    |   4 +
+> >  drivers/fwctl/cxl/cxl.c                       | 274 ++++++++++++
+> >  drivers/fwctl/main.c                          | 414 ++++++++++++++++++
+> >  drivers/fwctl/mlx5/Makefile                   |   4 +
+> >  drivers/fwctl/mlx5/main.c                     | 337 ++++++++++++++
+> >  drivers/net/ethernet/mellanox/mlx5/core/dev.c |   8 +
+> >  include/linux/cxl/mailbox.h                   | 104 +++++
+> >  include/linux/fwctl.h                         | 135 ++++++
+> >  include/linux/panic.h                         |   3 +-
+> >  include/uapi/fwctl/cxl.h                      |  94 ++++
+> >  include/uapi/fwctl/fwctl.h                    | 140 ++++++
+> >  include/uapi/fwctl/mlx5.h                     |  36 ++
+> >  kernel/panic.c                                |   1 +
+> >  tools/debugging/kernel-chktaint               |   8 +
+> >  24 files changed, 1936 insertions(+), 1 deletion(-)
+> >  create mode 100644 Documentation/userspace-api/fwctl.rst
+> >  create mode 100644 drivers/fwctl/Kconfig
+> >  create mode 100644 drivers/fwctl/Makefile
+> >  create mode 100644 drivers/fwctl/cxl/Makefile
+> >  create mode 100644 drivers/fwctl/cxl/cxl.c
+> >  create mode 100644 drivers/fwctl/main.c
+> >  create mode 100644 drivers/fwctl/mlx5/Makefile
+> >  create mode 100644 drivers/fwctl/mlx5/main.c
+> >  create mode 100644 include/linux/fwctl.h
+> >  create mode 100644 include/uapi/fwctl/cxl.h
+> >  create mode 100644 include/uapi/fwctl/fwctl.h
+> >  create mode 100644 include/uapi/fwctl/mlx5.h
+> > 
+> > 
+> > base-commit: cd0c76bee95e9c2092418523599439d2c8dbff7e
 > 
->>  	if (ret < 2)
->>  		return -EIO;
->>  
->> -	switch (data[0] /* identifier */) {
->> -	case MLX4_MODULE_ID_QSFP:
->> -		modinfo->type = ETH_MODULE_SFF_8436;
->> +	/* data[0] = identifier byte */
->> +	switch (data[0]) {
->> +	case SFF8024_ID_QSFP_8438:
->> +		modinfo->type       = ETH_MODULE_SFF_8436;
->>  		modinfo->eeprom_len = ETH_MODULE_SFF_8436_MAX_LEN;
->>  		break;
->> -	case MLX4_MODULE_ID_QSFP_PLUS:
->> -		if (data[1] >= 0x3) { /* revision id */
->> -			modinfo->type = ETH_MODULE_SFF_8636;
->> -			modinfo->eeprom_len = ETH_MODULE_SFF_8636_MAX_LEN;
->> -		} else {
->> -			modinfo->type = ETH_MODULE_SFF_8436;
->> +	case SFF8024_ID_QSFP_8436_8636:
->> +		/* data[1] = revision id */
->> +		if (data[1] < 0x3) {
->> +			modinfo->type       = ETH_MODULE_SFF_8436;
->>  			modinfo->eeprom_len = ETH_MODULE_SFF_8436_MAX_LEN;
->> +			break;
->>  		}
->> -		break;
->> -	case MLX4_MODULE_ID_QSFP28:
->> -		modinfo->type = ETH_MODULE_SFF_8636;
->> +		fallthrough;
->> +	case SFF8024_ID_QSFP28_8636:
->> +		modinfo->type       = ETH_MODULE_SFF_8636;
->>  		modinfo->eeprom_len = ETH_MODULE_SFF_8636_MAX_LEN;
->>  		break;
->> -	case MLX4_MODULE_ID_SFP:
->> -		modinfo->type = ETH_MODULE_SFF_8472;
->> +	case SFF8024_ID_SFP:
->> +		modinfo->type       = ETH_MODULE_SFF_8472;
->>  		modinfo->eeprom_len = ETH_MODULE_SFF_8472_LEN;
->>  		break;
->>  	default:
->> +		netdev_err(dev, "%s: cable type not recognized: 0x%x\n",
->> +			   __func__, data[0]);
-> 
-> 0x%x -> %#x.
+> Hi Jason,
+> Which base-commit is this? I'm not finding the hash in the upstream tree. I'm having trouble applying the series against 6.10 or 6.11-rc7 via b4. 
 
-Ah, sure.
+This base-commit very depends on there cover letter was generated and
+stored while creating the series. In this specific case, Jason put cover
+letter to be the last commit in the series, so the base-commit points to
+the last patch cd0c76bee95e ("cxl: Infrastructure for fwctl").
 
->>  		return -EINVAL;
->>  	}
->>  
->> diff --git a/drivers/net/ethernet/mellanox/mlx4/port.c b/drivers/net/ethernet/mellanox/mlx4/port.c
->> index 4e43f4a7d246..6dbd505e7f30 100644
->> --- a/drivers/net/ethernet/mellanox/mlx4/port.c
->> +++ b/drivers/net/ethernet/mellanox/mlx4/port.c
->> @@ -34,6 +34,7 @@
->>  #include <linux/if_ether.h>
->>  #include <linux/if_vlan.h>
->>  #include <linux/export.h>
->> +#include <linux/sfp.h>
->>  
->>  #include <linux/mlx4/cmd.h>
->>  
->> @@ -2139,12 +2140,12 @@ int mlx4_get_module_info(struct mlx4_dev *dev, u8 port,
->>  		return ret;
->>  
->>  	switch (module_id) {
->> -	case MLX4_MODULE_ID_SFP:
->> +	case SFF8024_ID_SFP:
->>  		mlx4_sfp_eeprom_params_set(&i2c_addr, &page_num, &offset);
->>  		break;
->> -	case MLX4_MODULE_ID_QSFP:
->> -	case MLX4_MODULE_ID_QSFP_PLUS:
->> -	case MLX4_MODULE_ID_QSFP28:
->> +	case SFF8024_ID_QSFP_8438:
->> +	case SFF8024_ID_QSFP_8436_8636:
->> +	case SFF8024_ID_QSFP28_8636:
->>  		mlx4_qsfp_eeprom_params_set(&i2c_addr, &page_num, &offset);
->>  		break;
->>  	default:
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
->> index 4d123dae912c..12a22e5c60ae 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
->> @@ -32,6 +32,7 @@
->>  
->>  #include <linux/dim.h>
->>  #include <linux/ethtool_netlink.h>
->> +#include <linux/sfp.h>
->>  
->>  #include "en.h"
->>  #include "en/channels.h"
->> @@ -1899,36 +1900,39 @@ static int mlx5e_get_module_info(struct net_device *netdev,
->>  {
->>  	struct mlx5e_priv *priv = netdev_priv(netdev);
->>  	struct mlx5_core_dev *dev = priv->mdev;
->> -	int size_read = 0;
->> +	int ret;
-> 
-> Why did you rename this variable?
-
-To be consistent with the mlx4 variant of this function and because it can be either
-the size or the error code, so just "ret" looked better for me. Would you prefer
-to keep it as size_read here but rename it in mlx4_en_get_module_info()?
- 
->>  	u8 data[4] = {0};
->>  
->> -	size_read = mlx5_query_module_eeprom(dev, 0, 2, data);
->> -	if (size_read < 2)
->> +	/* Read first 2 bytes to get Module & REV ID */
->> +	ret = mlx5_query_module_eeprom(dev,
->> +				       0 /*offset*/, 2 /*size*/, data);
->> +	if (ret < 2)
-> 
-> This whole hunk is not needed.
-
-You mean the rename? Again, I did this for the consistency between mlx4_en_get_module_info()
-and mlx5e_en_get_module_info().
- 
->>  		return -EIO;
->>  
->>  	/* data[0] = identifier byte */
->>  	switch (data[0]) {
->> -	case MLX5_MODULE_ID_QSFP:
->> +	case SFF8024_ID_QSFP_8438:
->>  		modinfo->type       = ETH_MODULE_SFF_8436;
->>  		modinfo->eeprom_len = ETH_MODULE_SFF_8436_MAX_LEN;
->>  		break;
->> -	case MLX5_MODULE_ID_QSFP_PLUS:
->> -	case MLX5_MODULE_ID_QSFP28:
->> +	case SFF8024_ID_QSFP_8436_8636:
->>  		/* data[1] = revision id */
->> -		if (data[0] == MLX5_MODULE_ID_QSFP28 || data[1] >= 0x3) {
->> -			modinfo->type       = ETH_MODULE_SFF_8636;
->> -			modinfo->eeprom_len = ETH_MODULE_SFF_8636_MAX_LEN;
->> -		} else {
->> +		if (data[1] < 0x3) {
->>  			modinfo->type       = ETH_MODULE_SFF_8436;
->>  			modinfo->eeprom_len = ETH_MODULE_SFF_8436_MAX_LEN;
->> +			break;
->>  		}
->> +		fallthrough;
->> +	case SFF8024_ID_QSFP28_8636:
->> +		modinfo->type       = ETH_MODULE_SFF_8636;
->> +		modinfo->eeprom_len = ETH_MODULE_SFF_8636_MAX_LEN;
->>  		break;
->> -	case MLX5_MODULE_ID_SFP:
->> +	case SFF8024_ID_SFP:
->>  		modinfo->type       = ETH_MODULE_SFF_8472;
->>  		modinfo->eeprom_len = ETH_MODULE_SFF_8472_LEN;
->>  		break;
->>  	default:
->> -		netdev_err(priv->netdev, "%s: cable type not recognized:0x%x\n",
->> +		netdev_err(priv->netdev, "%s: cable type not recognized: 0x%x\n",
-> 
-> Unrelated to this patch, but OK.
-
-I assume you also want it to be "%#x"?
-
-Thanks,
- Krzysztof
-
+Thanks
 
