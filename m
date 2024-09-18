@@ -1,211 +1,246 @@
-Return-Path: <linux-rdma+bounces-4983-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4984-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3E7297B970
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2024 10:36:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D938897BA96
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2024 12:10:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F3F91F25144
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2024 08:36:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACA552833AF
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2024 10:10:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C45317ADF6;
-	Wed, 18 Sep 2024 08:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD4B17B425;
+	Wed, 18 Sep 2024 10:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="HoJZhTjy"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ghp2YblM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E93C176FBD;
-	Wed, 18 Sep 2024 08:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90BD5EACD;
+	Wed, 18 Sep 2024 10:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726648574; cv=none; b=rUgjselwXs7HNiPgmVnoVwmts85mGIlPDhHRld3P8XbwwQ/WV+w+1aFXM+40YyQ/bhZ4nm3eH18mFDCVNohpNfvk1Zjw/s+c5G+RfkNOKWyLF5JADfDhfSPXXR1P5dWxgfP9EzK5qWwMEbcPfvWnzq0HCrdFpjuyesW/rYEw0XQ=
+	t=1726654215; cv=none; b=S5g3CH5uGWLhcHxaSiUKgBsjrq9bailW+YN55ccAtLbrC3Ktm1jt2OAaeFjU2WLyJ2Oo0eMu1kwyF8252ij0MruKUWhUvW/fq4BR4g2NFmIG93zXy0CAM9gRPXIKEwozKGITCJB6HlawIutAWD+hqOIg7njQG9q9Ln0q9MKkshk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726648574; c=relaxed/simple;
-	bh=paGxOo8rTLSZFeKKZm/jIgHewVqTk/eu33ao1YKPDTY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tRihUd9crutv2/jtlNSJ8yGmz0m7CHvURhqfB8P+mwK96ARuxEte00vw3cY1G+C66fuCKR852NedpjROURZFwq+vvq9pnAwHG06qKrAfQoVbhlrnRbnq7tVEShG8xMWH5cnOoLbrpJc2A4wpWwGDT7u/eygCrVh2FfvXGOB3OoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=HoJZhTjy; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48I7u7qC022250;
-	Wed, 18 Sep 2024 08:36:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type:content-transfer-encoding; s=
-	corp-2023-11-20; bh=MlawQVvnOFoj7lyUkDcFz2aMZ6uq5jG66mYF94ynjaU=; b=
-	HoJZhTjyVr7tiFRWtTwWa0RwmOUZOUQrqYllLcuL6d2CVfJrWvNInzvwR8e5UCg7
-	xRYZUXUQnI4IvnJ9j1DKjMdCiskHhvNZT+fgc2jmJbH/pMuHORjbbjF+p3A6D4+B
-	GyF+5jA4I3ETaYP+RZaEV8fVCBdHUbe04cqMbivDVYMRAUxVsDHblUdY7vamx8F6
-	6g7bh4VI5cP1pKRwW2+LaNr0diAD5IF0UpX6F8/WwzGQpTTf+fqSITOqGQPuBlX5
-	sGYAhriDP6apJ0/r0tzRdmNHNyNDI8SgrAERSZ7LO8VH7fO+giho+S3jMS5rqVCS
-	i9lurrtWzf0bfFgIbp4Ahw==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 41n3sd0pap-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 18 Sep 2024 08:36:04 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 48I7P6X0010398;
-	Wed, 18 Sep 2024 08:36:03 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 41nyb7yt55-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 18 Sep 2024 08:36:03 +0000
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 48I8Zu4B022467;
-	Wed, 18 Sep 2024 08:36:02 GMT
-Received: from lab61.no.oracle.com (lab61.no.oracle.com [10.172.144.82])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 41nyb7ystx-3;
-	Wed, 18 Sep 2024 08:36:02 +0000
-From: =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: [MAINLINE 2/2] rds: ib: Add Dynamic Interrupt Moderation to CQs
-Date: Wed, 18 Sep 2024 10:35:52 +0200
-Message-ID: <20240918083552.77531-3-haakon.bugge@oracle.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240918083552.77531-1-haakon.bugge@oracle.com>
-References: <20240918083552.77531-1-haakon.bugge@oracle.com>
+	s=arc-20240116; t=1726654215; c=relaxed/simple;
+	bh=j3uHUw8hZJe9e65FGbFo4XsUUmBgZynKAOmtydmKK64=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=AIawzdMLy8+MtLs5kHw2DRVvpAOAiHNQOXSUdQdLDbT8OG9gCv59/XjgcY3SBjob28putybzLaPa7Wvg/KaV7Y4FU8RALgYJw+Ajpj/JeFFVXuPAo6OIJ693ixrQ2SB7nfdttTf/8AWUqYqGApzpV9HY3f5opMMoi6NyGRwDIgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ghp2YblM; arc=none smtp.client-ip=115.124.30.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1726654208; h=From:To:Subject:Date:Message-Id;
+	bh=OIaeQekPFzr0Twj4nwSV1xS3+7dgPbM9J97vdUwshuQ=;
+	b=ghp2YblMswD01z0zeMK+J/AOdYkF7dgd/rHePImRxGMLWb2Rv3J96qajSye53hLjIUdrrTPRphHD2anpo83vDHDuPKpeF3BpEOW520xs+XQpie1FxsWOnwSGRSE5gSz2yjh1zgqnG7AvPJmX5GfIRVsNCyU0Zw7Jy5kZPzX3hww=
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WFDs-zd_1726654204)
+          by smtp.aliyun-inc.com;
+          Wed, 18 Sep 2024 18:10:08 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com,
+	jaka@linux.ibm.com,
+	wintera@linux.ibm.com,
+	guwen@linux.alibaba.com
+Cc: kuba@kernel.org,
+	davem@davemloft.net,
+	netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	tonylu@linux.alibaba.com,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	bpf@vger.kernel.org
+Subject: [RFC PATCH net-next] net/smc: Introduce a hook to modify syn_smc at runtime
+Date: Wed, 18 Sep 2024 18:10:04 +0800
+Message-Id: <1726654204-61655-1-git-send-email-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-18_06,2024-09-16_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- adultscore=0 malwarescore=0 suspectscore=0 phishscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2408220000 definitions=main-2409180053
-X-Proofpoint-ORIG-GUID: Er6aC43qNf_iuriETv9reMtU3vz_rDQJ
-X-Proofpoint-GUID: Er6aC43qNf_iuriETv9reMtU3vz_rDQJ
 
-With the support from ib_core to use Dynamic Interrupt Moderation
-(DIM) from legacy ULPs, which uses ib_create_cq(), we enable that
-feature for the receive and send CQs in RDS.
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-A set of rds-stress runs have been done. bcopy read + write for
-payload 8448 and 16640 bytes and ack/req of 256 bytes. Number of QPs
-varies from 8 to 128, number of threads (i.e. rds-stress processes)
-from one to 16 and a depth of four. A limit has been applied such that
-the number of processes times the number of QPs never exceeds 128. All
-in all, 61 rds-stress runs.
+The introduction of IPPROTO_SMC enables eBPF programs to determine
+whether to use SMC based on the context of socket creation, such as
+network namespaces, PID and comm name, etc.
 
-For brevity, only the rows showing a +/- 3% deviation or larger from
-base is listed. The geometric mean of the ratios (IOPS_test /
-IOPS_base) is calculated for all 61 runs, and that gives the best
-possible "average" impact of the commits.
+As a subsequent enhancement, this patch introduces a new hook for eBPF
+programs that allows decisions on whether to use SMC or not at runtime,
+including but not limited to local/remote IP address or ports. In
+simpler words, this feature allows modifications to syn_smc through eBPF
+programs before the TCP three-way handshake got established.
 
-In the following, "base" is v6.11-rc7. "test" is the same
-kernel with the following two commits:
+Thanks to kfunc for making it easier for us to implement this feature in
+SMC.
 
-       * rds: ib: Add Dynamic Interrupt Moderation to CQs (this commit)
-       * RDMA/core: Enable legacy ULPs to use RDMA DIM
-
-This is executed between two X8-2 with CX-5 using fw 16.35.3502. These
-BM systems were instantiated with one VF, which were used for the
-test:
-
-                                 base     test
-   ACK    REQ  QPS  THR  DEP     IOPS     IOPS  Percent
-   256   8448    8    1    4   634463   658162      3.7
-   256   8448    8    2    4   862648   997358     15.6
-   256   8448    8    4    4   950458  1113991     17.2
-   256   8448    8    8    4   932120  1127024     20.9
-   256   8448    8   16    4   944977  1133885     20.0
-  8448    256    8    2    4   858663   975563     13.6
-  8448    256    8    4    4   934884  1098854     17.5
-  8448    256    8    8    4   928247  1116015     20.2
-  8448    256    8   16    4   938864  1123455     19.7
-   256   8448   64    1    4   965985   918445     -4.9
-  8448    256   64    1    4   963280   918239     -4.7
-   256  16640    8    2    4   544670   582330      6.9
-   256  16640    8    4    4   554873   597553      7.7
-   256  16640    8    8    4   551799   597479      8.3
-   256  16640    8   16    4   553041   597898      8.1
- 16640    256    8    2    4   544644   578331      6.2
- 16640    256    8    4    4   553944   594627      7.3
- 16640    256    8    8    4   551388   594737      7.9
- 16640    256    8   16    4   552986   596581      7.9
-Geometric mean of ratios: 1.03
-
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 ---
- net/rds/ib_cm.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ include/linux/tcp.h  |  4 ++-
+ net/ipv4/tcp_input.c |  4 +--
+ net/smc/af_smc.c     | 69 ++++++++++++++++++++++++++++++++++++++++++++++------
+ 3 files changed, 66 insertions(+), 11 deletions(-)
 
-diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
-index 26b069e1999df..79603d86b6c02 100644
---- a/net/rds/ib_cm.c
-+++ b/net/rds/ib_cm.c
-@@ -259,6 +259,7 @@ static void rds_ib_cq_comp_handler_recv(struct ib_cq *cq, void *context)
- static void poll_scq(struct rds_ib_connection *ic, struct ib_cq *cq,
- 		     struct ib_wc *wcs)
- {
-+	int ncompleted = 0;
- 	int nr, i;
- 	struct ib_wc *wc;
+diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+index 6a5e08b..d028d76 100644
+--- a/include/linux/tcp.h
++++ b/include/linux/tcp.h
+@@ -478,7 +478,9 @@ struct tcp_sock {
+ #endif
+ #if IS_ENABLED(CONFIG_SMC)
+ 	bool	syn_smc;	/* SYN includes SMC */
+-	bool	(*smc_hs_congested)(const struct sock *sk);
++	void	(*smc_openreq_init)(struct request_sock *req,
++			     const struct tcp_options_received *rx_opt,
++			     struct sk_buff *skb, const struct sock *sk);
+ #endif
  
-@@ -276,7 +277,10 @@ static void poll_scq(struct rds_ib_connection *ic, struct ib_cq *cq,
- 				rds_ib_mr_cqe_handler(ic, wc);
- 
- 		}
-+		ncompleted += nr;
- 	}
-+	if (cq->dim)
-+		rdma_dim(cq->dim, ncompleted);
+ #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index e37488d..e33e2a0 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -7029,8 +7029,8 @@ static void tcp_openreq_init(struct request_sock *req,
+ 	ireq->ir_num = ntohs(tcp_hdr(skb)->dest);
+ 	ireq->ir_mark = inet_request_mark(sk, skb);
+ #if IS_ENABLED(CONFIG_SMC)
+-	ireq->smc_ok = rx_opt->smc_ok && !(tcp_sk(sk)->smc_hs_congested &&
+-			tcp_sk(sk)->smc_hs_congested(sk));
++	if (ireq->smc_ok && tcp_sk(sk)->smc_openreq_init)
++		tcp_sk(sk)->smc_openreq_init(req, rx_opt, skb, sk);
+ #endif
  }
  
- static void rds_ib_tasklet_fn_send(unsigned long data)
-@@ -304,6 +308,7 @@ static void poll_rcq(struct rds_ib_connection *ic, struct ib_cq *cq,
- 		     struct ib_wc *wcs,
- 		     struct rds_ib_ack_state *ack_state)
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 0316217..003b2ac 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -70,6 +70,15 @@
+ static void smc_tcp_listen_work(struct work_struct *);
+ static void smc_connect_work(struct work_struct *);
+ 
++__bpf_hook_start();
++
++__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
++{
++	return 1;
++}
++
++__bpf_hook_end();
++
+ int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
  {
-+	int ncompleted = 0;
- 	int nr, i;
- 	struct ib_wc *wc;
- 
-@@ -316,7 +321,10 @@ static void poll_rcq(struct rds_ib_connection *ic, struct ib_cq *cq,
- 
- 			rds_ib_recv_cqe_handler(ic, wc, ack_state);
- 		}
-+		ncompleted += nr;
- 	}
-+	if (cq->dim)
-+		rdma_dim(cq->dim, ncompleted);
+ 	struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
+@@ -156,19 +165,41 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+ 	return NULL;
  }
  
- static void rds_ib_tasklet_fn_recv(unsigned long data)
-@@ -542,6 +550,7 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
- 	ic->i_scq_vector = ibdev_get_unused_vector(rds_ibdev);
- 	cq_attr.cqe = ic->i_send_ring.w_nr + fr_queue_space + 1;
- 	cq_attr.comp_vector = ic->i_scq_vector;
-+	cq_attr.flags |= IB_CQ_MODERATE;
- 	ic->i_send_cq = ib_create_cq(dev, rds_ib_cq_comp_handler_send,
- 				     rds_ib_cq_event_handler, conn,
- 				     &cq_attr);
-@@ -556,6 +565,7 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
- 	ic->i_rcq_vector = ibdev_get_unused_vector(rds_ibdev);
- 	cq_attr.cqe = ic->i_recv_ring.w_nr;
- 	cq_attr.comp_vector = ic->i_rcq_vector;
-+	cq_attr.flags |= IB_CQ_MODERATE;
- 	ic->i_recv_cq = ib_create_cq(dev, rds_ib_cq_comp_handler_recv,
- 				     rds_ib_cq_event_handler, conn,
- 				     &cq_attr);
+-static bool smc_hs_congested(const struct sock *sk)
++static void smc_openreq_init(struct request_sock *req,
++			     const struct tcp_options_received *rx_opt,
++			     struct sk_buff *skb, const struct sock *sk)
+ {
++	struct inet_request_sock *ireq = inet_rsk(req);
++	struct sockaddr_storage rmt_sockaddr = {0};
+ 	const struct smc_sock *smc;
+ 
+ 	smc = smc_clcsock_user_data(sk);
+ 
+ 	if (!smc)
+-		return true;
++		return;
+ 
+-	if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+-		return true;
++	if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
++		goto out_no_smc;
+ 
+-	return false;
++	rmt_sockaddr.ss_family = sk->sk_family;
++
++	if (rmt_sockaddr.ss_family == AF_INET) {
++		struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
++
++		rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
++		rmt4_sockaddr->sin_port	= ireq->ir_rmt_port;
++	} else {
++		struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
++
++		rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
++		rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
++	}
++
++	ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
++	return;
++out_no_smc:
++	ireq->smc_ok = 0;
++	return;
+ }
+ 
+ struct smc_hashinfo smc_v4_hashinfo = {
+@@ -1671,7 +1702,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
+ 	}
+ 
+ 	smc_copy_sock_settings_to_clc(smc);
+-	tcp_sk(smc->clcsock->sk)->syn_smc = 1;
++	tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
+ 	if (smc->connect_nonblock) {
+ 		rc = -EALREADY;
+ 		goto out;
+@@ -2650,8 +2681,7 @@ int smc_listen(struct socket *sock, int backlog)
+ 
+ 	inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
+ 
+-	if (smc->limit_smc_hs)
+-		tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
++	tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
+ 
+ 	rc = kernel_listen(smc->clcsock, backlog);
+ 	if (rc) {
+@@ -3475,6 +3505,20 @@ static void __net_exit smc_net_stat_exit(struct net *net)
+ 	.exit = smc_net_stat_exit,
+ };
+ 
++BTF_SET8_START(bpf_smc_fmodret_ids)
++BTF_ID_FLAGS(func, select_syn_smc)
++BTF_SET8_END(bpf_smc_fmodret_ids)
++
++static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
++	.owner = THIS_MODULE,
++	.set   = &bpf_smc_fmodret_ids,
++};
++
++static int __init bpf_smc_kfunc_init(void)
++{
++	return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
++}
++
+ static int __init smc_init(void)
+ {
+ 	int rc;
+@@ -3574,8 +3618,17 @@ static int __init smc_init(void)
+ 		pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
+ 		goto out_ulp;
+ 	}
++
++	rc = bpf_smc_kfunc_init();
++	if (rc) {
++		pr_err("%s: bpf_smc_kfunc_init fails with %d\n", __func__, rc);
++		goto out_inet;
++	}
++
+ 	static_branch_enable(&tcp_have_smc);
+ 	return 0;
++out_inet:
++	smc_inet_exit();
+ out_ulp:
+ 	tcp_unregister_ulp(&smc_ulp_ops);
+ out_lo:
 -- 
-2.43.5
+1.8.3.1
 
 
