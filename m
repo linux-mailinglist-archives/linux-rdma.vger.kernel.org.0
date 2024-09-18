@@ -1,55 +1,76 @@
-Return-Path: <linux-rdma+bounces-4980-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4982-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82C6297B6BE
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2024 04:17:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9DD397B96D
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2024 10:36:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53038282014
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2024 02:16:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 601421F24038
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2024 08:36:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C9142048;
-	Wed, 18 Sep 2024 02:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A74E1741FD;
+	Wed, 18 Sep 2024 08:36:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="raMoa5ft"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="lH/May/h"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890DC41C79;
-	Wed, 18 Sep 2024 02:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3A9F14D6E6;
+	Wed, 18 Sep 2024 08:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726625815; cv=none; b=MckKmOnAXl3Ju2vZd+SklxG3LBSe6Z7i1VWeUtC8ni4MiFo+t0hrWxWamo5cHwBBmRaIaCdvcVsHggKu6aGfDuQ9eBLeKjyOf7ur1u3jZVgxilB9P49EDg9WMv0mSRzy+5MsetbO4pFpfX9+tQOA56f3XtwPnw++2QlmT1dQj2M=
+	t=1726648571; cv=none; b=Hespwo7uJ4i1JrPcXbTz3c1qOgQlHq9CWxJ4aFdKTGmgTrivhoHXtMkDzc0RJ3ZZGaGFOaiEDpITKc98/DO7NC5czjdzx4EbwLDpCeIY1USp5UVmkCIl2PBf3Qv1pQJmCr+Vv1xOG/nHDXXSI41dZ4COf+vRwAauREpVT22JG7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726625815; c=relaxed/simple;
-	bh=4C9Ht1EBlLpV0cIxDh91gHaRUlOpXC6nq2v9gSS3vY0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=spS4f6hZPr1idJ5BrXFToSS8316LYRdaiERWK0qsOc0n9kaf4kvgBNZQrcJg5WSzg8KFPfcgw0LfjhodOtaJxdQia0qVCb0faGd+0uLXdTcOWzurewHhgsDaNHOqXNVXJJEVaHJkgri2vFYdM4nbAQKyUMUMJvxUIjF9V+Posxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=raMoa5ft; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1726625810; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
-	bh=26lXBlLla4cdOKVAJLtZkE/DW3VbondK5ccXaSRzzHQ=;
-	b=raMoa5ftoR9x9fC36nWiL4bywHQErQrKMEUMLRT9qXVn8XiCFhWJNX7GR1GK4fm3/uYQpVtRy4I3xLbUAqdyCDNxkz+HuuuCwa5K6WKSos3pmBY0WfgWc2cDor/Aa+lldpTHAu2wkw+76GQ1a+/tdv+kAJbVF53pxgaOmLWngQE=
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0WFC8dO._1726625793)
-          by smtp.aliyun-inc.com;
-          Wed, 18 Sep 2024 10:16:49 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: selvin.xavier@broadcom.com
-Cc: jgg@ziepe.ca,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH -next] RDMA/bnxt_re: Remove the unused variable en_dev
-Date: Wed, 18 Sep 2024 10:16:32 +0800
-Message-Id: <20240918021632.36091-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+	s=arc-20240116; t=1726648571; c=relaxed/simple;
+	bh=dfSnH0Yclqt/UhS8gXqBY0B33tPXDhXZ/PpPQRDjFjk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eEon27dvodQX579Y8jIfNLqR0Uc1vNFZtgrLHHe4hGFd1I8o3pYfDRFRllhl0gJp3fKq6sFo5ydGsre+6dgIi39AhTQP6qaOL64cdAyDxAbWhZYnc/EddPVASw/iD15GC/hZuswmv4zkIY6P0/OIkiUYjYqg7pC9cmaEqrV1u6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=lH/May/h; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48I7tfcD012633;
+	Wed, 18 Sep 2024 08:35:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding; s=corp-2023-11-20; bh=txkwLOI4wL6wdg
+	kEojth4TMSyAyDul66S+5Qvppat+4=; b=lH/May/hTkNANBJa/jX/smac6dbQue
+	BsUTDvRFfKUJ/asY5N355r1TKEZgMxseABTNvKJ19MZHs1uO2RGXa/r1Txj13SHj
+	32sCYkEXytM3hyQcCl1Mj5dVCt/yQipSOtasQeGgT2qhd5vq9Q13GQBdgp+MOvmS
+	G3e83DBXOOFKRbyCsemZuFRGoA3CtOyPyZz45E6lEPEyaOKLyWPrwTMyDfcW47D/
+	vKlNEBSzqEftCKKdJp9I4mS6TOkf1+OAKEofG+1qav1zBXLe3ftKBiTxzBG1UToC
+	YjPAKjRenO+ffHV8ZP8cNU//zPTg2zbBoBqkMmhPRwCAi5IoZzZgEVLA==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 41n3pdrdhk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 18 Sep 2024 08:35:57 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 48I8W3xF011242;
+	Wed, 18 Sep 2024 08:35:56 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 41nyb7ysy4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 18 Sep 2024 08:35:56 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 48I8Zu45022467;
+	Wed, 18 Sep 2024 08:35:56 GMT
+Received: from lab61.no.oracle.com (lab61.no.oracle.com [10.172.144.82])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 41nyb7ystx-1;
+	Wed, 18 Sep 2024 08:35:56 +0000
+From: =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com
+Subject: [MAINLINE 0/2] Enable DIM for legacy ULPs and use it in RDS
+Date: Wed, 18 Sep 2024 10:35:50 +0200
+Message-ID: <20240918083552.77531-1-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -58,39 +79,33 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-18_06,2024-09-16_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=513 bulkscore=0
+ adultscore=0 malwarescore=0 suspectscore=0 phishscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2408220000 definitions=main-2409180053
+X-Proofpoint-GUID: muVxEvSj4GGiDQq0Str0D8K6DEwSQLes
+X-Proofpoint-ORIG-GUID: muVxEvSj4GGiDQq0Str0D8K6DEwSQLes
 
-Variable en_dev is not effectively used, so delete it.
+The Dynamic Interrupt Moderation mechanism can only be used by ULPs
+using ib_alloc_cq() and family. We extend DIM to also cover legacy
+ULPs using ib_create_cq(). The last commit takes advantage of this end
+uses DIM in RDS.
 
-drivers/infiniband/hw/bnxt_re/main.c:1980:22: warning: variable ‘en_dev’ set but not used.
+Håkon Bugge (2):
+  RDMA/core: Enable legacy ULPs to use RDMA DIM
+  rds: ib: Add Dynamic Interrupt Moderation to CQs
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=10867
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/infiniband/hw/bnxt_re/main.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/infiniband/core/cq.c    |  7 +++++--
+ drivers/infiniband/core/cq.h    | 16 ++++++++++++++++
+ drivers/infiniband/core/verbs.c |  6 ++++++
+ net/rds/ib_cm.c                 | 10 ++++++++++
+ 4 files changed, 37 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/infiniband/core/cq.h
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index adff9e494c9d..777068de4bbc 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1977,7 +1977,6 @@ static void bnxt_re_remove_device(struct bnxt_re_dev *rdev, u8 op_type,
- static void bnxt_re_remove(struct auxiliary_device *adev)
- {
- 	struct bnxt_re_en_dev_info *en_info = auxiliary_get_drvdata(adev);
--	struct bnxt_en_dev *en_dev;
- 	struct bnxt_re_dev *rdev;
- 
- 	mutex_lock(&bnxt_re_mutex);
-@@ -1985,7 +1984,6 @@ static void bnxt_re_remove(struct auxiliary_device *adev)
- 		mutex_unlock(&bnxt_re_mutex);
- 		return;
- 	}
--	en_dev = en_info->en_dev;
- 	rdev = en_info->rdev;
- 
- 	if (rdev)
--- 
-2.32.0.3.g01195cf9f
+--
+2.43.5
 
 
