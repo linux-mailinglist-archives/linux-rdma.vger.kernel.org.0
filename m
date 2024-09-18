@@ -1,246 +1,200 @@
-Return-Path: <linux-rdma+bounces-4984-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-4985-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D938897BA96
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2024 12:10:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D43C497BAC5
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2024 12:22:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACA552833AF
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2024 10:10:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 052CF1C2146A
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2024 10:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD4B17B425;
-	Wed, 18 Sep 2024 10:10:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EB3179654;
+	Wed, 18 Sep 2024 10:22:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ghp2YblM"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zz32IFLb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90BD5EACD;
-	Wed, 18 Sep 2024 10:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4326B14F121
+	for <linux-rdma@vger.kernel.org>; Wed, 18 Sep 2024 10:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726654215; cv=none; b=S5g3CH5uGWLhcHxaSiUKgBsjrq9bailW+YN55ccAtLbrC3Ktm1jt2OAaeFjU2WLyJ2Oo0eMu1kwyF8252ij0MruKUWhUvW/fq4BR4g2NFmIG93zXy0CAM9gRPXIKEwozKGITCJB6HlawIutAWD+hqOIg7njQG9q9Ln0q9MKkshk=
+	t=1726654938; cv=none; b=Rx7EyDUBlUOTdJLNB6IVXw5vuUPso5DhdFI1e1QCcF7J9yQuzPMEaoiwR6/pcgjpzFdyw7Rgopj7ANYCcKzlFA9Z77t187Ed3X+OI7kxCnU6xIvNe+bNZhuAqJ+GjKycsnO/4DL512Jd/q92Gi1wj+EUwBsHMsL7OPETNVCB6lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726654215; c=relaxed/simple;
-	bh=j3uHUw8hZJe9e65FGbFo4XsUUmBgZynKAOmtydmKK64=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=AIawzdMLy8+MtLs5kHw2DRVvpAOAiHNQOXSUdQdLDbT8OG9gCv59/XjgcY3SBjob28putybzLaPa7Wvg/KaV7Y4FU8RALgYJw+Ajpj/JeFFVXuPAo6OIJ693ixrQ2SB7nfdttTf/8AWUqYqGApzpV9HY3f5opMMoi6NyGRwDIgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ghp2YblM; arc=none smtp.client-ip=115.124.30.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1726654208; h=From:To:Subject:Date:Message-Id;
-	bh=OIaeQekPFzr0Twj4nwSV1xS3+7dgPbM9J97vdUwshuQ=;
-	b=ghp2YblMswD01z0zeMK+J/AOdYkF7dgd/rHePImRxGMLWb2Rv3J96qajSye53hLjIUdrrTPRphHD2anpo83vDHDuPKpeF3BpEOW520xs+XQpie1FxsWOnwSGRSE5gSz2yjh1zgqnG7AvPJmX5GfIRVsNCyU0Zw7Jy5kZPzX3hww=
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WFDs-zd_1726654204)
-          by smtp.aliyun-inc.com;
-          Wed, 18 Sep 2024 18:10:08 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com,
-	jaka@linux.ibm.com,
-	wintera@linux.ibm.com,
-	guwen@linux.alibaba.com
-Cc: kuba@kernel.org,
-	davem@davemloft.net,
-	netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	tonylu@linux.alibaba.com,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	bpf@vger.kernel.org
-Subject: [RFC PATCH net-next] net/smc: Introduce a hook to modify syn_smc at runtime
-Date: Wed, 18 Sep 2024 18:10:04 +0800
-Message-Id: <1726654204-61655-1-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1726654938; c=relaxed/simple;
+	bh=14zNitBuOOHflNWklyyrmTu/SFMITyM2IOPGcCSzmvQ=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=KPJwfkQcD520TEvf5r13b0rkprLkon8IRr4S+khNu9++gJv06t8cE7PNw0Sgn9ARE0ZXvIdtOgCae1F5MRCj8jT10aXFOPZ3Z77iQNnZZ/C2JH+4PzUym8pae+s+IDrxx+bfSpnSL0NBwb+AmMCszrV3Wn2pkCsGnPLQmaayxuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zz32IFLb; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1726654936; x=1758190936;
+  h=date:from:to:cc:subject:message-id;
+  bh=14zNitBuOOHflNWklyyrmTu/SFMITyM2IOPGcCSzmvQ=;
+  b=Zz32IFLbzdq4e/p10zGQf1jOMblb1wAdK5VyMTUlQ+iyzM22xvDwzW32
+   wMvTO5tcARwaNRbV/aKwObiEeMMgw0BXGC3BxiUVmYPhskGLFlr6jFKKD
+   31NXqqCE4h1giod4e7i2M0pbzlLcu9046Df9DgeEcux30ECeCJ6nkUVDI
+   fZl0+JNBQPyBroHzPz0GcVCtu7Ucu2yPIEDpIxgZRJMroEoNm14NbF6ec
+   08Wt/9NiWUhRbpLBEMhAaext2c+S0hqrU7U7Iv2lJt1oobKzULBbYWzTu
+   JbtwWt9Lo93p11ED+GLmqOqw+TyTB/vHlNCQ0BI1ZWFGxs3/wIyfixYvm
+   A==;
+X-CSE-ConnectionGUID: MlrQnydiSC2WNsWbRicqsA==
+X-CSE-MsgGUID: E1q+m1dlQG2UWIjych5m0w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11198"; a="36224271"
+X-IronPort-AV: E=Sophos;i="6.10,238,1719903600"; 
+   d="scan'208";a="36224271"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2024 03:22:15 -0700
+X-CSE-ConnectionGUID: gRRoGK8JR9+KZMsavRVW0A==
+X-CSE-MsgGUID: KvMUcwZdRpWrGObJKZqbQw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,238,1719903600"; 
+   d="scan'208";a="69826577"
+Received: from lkp-server01.sh.intel.com (HELO 53e96f405c61) ([10.239.97.150])
+  by orviesa006.jf.intel.com with ESMTP; 18 Sep 2024 03:22:14 -0700
+Received: from kbuild by 53e96f405c61 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sqrp5-000CAY-03;
+	Wed, 18 Sep 2024 10:22:11 +0000
+Date: Wed, 18 Sep 2024 18:21:18 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:for-next] BUILD SUCCESS
+ 7acad3c442df6d5158c5b732a7a0ccf3a01d9b30
+Message-ID: <202409181810.sJIKbmCq-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: 7acad3c442df6d5158c5b732a7a0ccf3a01d9b30  RDMA/nldev: Add missing break in rdma_nl_notify_err_msg()
 
-The introduction of IPPROTO_SMC enables eBPF programs to determine
-whether to use SMC based on the context of socket creation, such as
-network namespaces, PID and comm name, etc.
+elapsed time: 2446m
 
-As a subsequent enhancement, this patch introduces a new hook for eBPF
-programs that allows decisions on whether to use SMC or not at runtime,
-including but not limited to local/remote IP address or ports. In
-simpler words, this feature allows modifications to syn_smc through eBPF
-programs before the TCP three-way handshake got established.
+configs tested: 106
+configs skipped: 2
 
-Thanks to kfunc for making it easier for us to implement this feature in
-SMC.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- include/linux/tcp.h  |  4 ++-
- net/ipv4/tcp_input.c |  4 +--
- net/smc/af_smc.c     | 69 ++++++++++++++++++++++++++++++++++++++++++++++------
- 3 files changed, 66 insertions(+), 11 deletions(-)
+tested configs:
+alpha                             allnoconfig    gcc-13.3.0
+alpha                            allyesconfig    gcc-13.3.0
+arc                              allmodconfig    gcc-13.2.0
+arc                               allnoconfig    gcc-13.2.0
+arc                              allyesconfig    gcc-13.2.0
+arc                   randconfig-001-20240918    gcc-13.2.0
+arc                   randconfig-002-20240918    gcc-13.2.0
+arm                              allmodconfig    gcc-14.1.0
+arm                               allnoconfig    clang-20
+arm                              allyesconfig    gcc-14.1.0
+arm                   randconfig-001-20240918    clang-14
+arm                   randconfig-002-20240918    clang-20
+arm                   randconfig-003-20240918    gcc-14.1.0
+arm                   randconfig-004-20240918    clang-20
+arm64                            allmodconfig    clang-20
+arm64                             allnoconfig    gcc-14.1.0
+arm64                 randconfig-001-20240918    gcc-14.1.0
+arm64                 randconfig-002-20240918    gcc-14.1.0
+arm64                 randconfig-003-20240918    gcc-14.1.0
+arm64                 randconfig-004-20240918    clang-16
+csky                              allnoconfig    gcc-14.1.0
+csky                  randconfig-001-20240918    gcc-14.1.0
+csky                  randconfig-002-20240918    gcc-14.1.0
+hexagon                          allmodconfig    clang-20
+hexagon                           allnoconfig    clang-20
+hexagon                          allyesconfig    clang-20
+hexagon               randconfig-001-20240918    clang-20
+hexagon               randconfig-002-20240918    clang-20
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20240917    clang-18
+i386        buildonly-randconfig-002-20240917    gcc-12
+i386        buildonly-randconfig-003-20240917    clang-18
+i386        buildonly-randconfig-004-20240917    clang-18
+i386        buildonly-randconfig-005-20240917    clang-18
+i386        buildonly-randconfig-006-20240917    gcc-12
+i386                                defconfig    clang-18
+i386                  randconfig-001-20240917    gcc-12
+i386                  randconfig-002-20240917    gcc-12
+i386                  randconfig-003-20240917    clang-18
+i386                  randconfig-004-20240917    gcc-12
+i386                  randconfig-005-20240917    gcc-12
+i386                  randconfig-006-20240917    clang-18
+i386                  randconfig-011-20240917    gcc-12
+i386                  randconfig-012-20240917    clang-18
+i386                  randconfig-013-20240917    clang-18
+i386                  randconfig-014-20240917    clang-18
+i386                  randconfig-015-20240917    gcc-12
+i386                  randconfig-016-20240917    gcc-12
+loongarch                        allmodconfig    gcc-14.1.0
+loongarch                         allnoconfig    gcc-14.1.0
+loongarch             randconfig-001-20240918    gcc-14.1.0
+loongarch             randconfig-002-20240918    gcc-14.1.0
+m68k                             allmodconfig    gcc-14.1.0
+m68k                              allnoconfig    gcc-14.1.0
+m68k                             allyesconfig    gcc-14.1.0
+microblaze                       allmodconfig    gcc-14.1.0
+microblaze                        allnoconfig    gcc-14.1.0
+microblaze                       allyesconfig    gcc-14.1.0
+mips                              allnoconfig    gcc-14.1.0
+nios2                             allnoconfig    gcc-14.1.0
+nios2                 randconfig-001-20240918    gcc-14.1.0
+nios2                 randconfig-002-20240918    gcc-14.1.0
+openrisc                          allnoconfig    gcc-14.1.0
+parisc                            allnoconfig    gcc-14.1.0
+parisc                randconfig-001-20240918    gcc-14.1.0
+parisc                randconfig-002-20240918    gcc-14.1.0
+powerpc                           allnoconfig    gcc-14.1.0
+powerpc               randconfig-001-20240918    gcc-14.1.0
+powerpc               randconfig-002-20240918    gcc-14.1.0
+powerpc               randconfig-003-20240918    gcc-14.1.0
+powerpc64             randconfig-001-20240918    clang-20
+powerpc64             randconfig-002-20240918    clang-16
+powerpc64             randconfig-003-20240918    gcc-14.1.0
+riscv                             allnoconfig    gcc-14.1.0
+riscv                 randconfig-001-20240918    gcc-14.1.0
+riscv                 randconfig-002-20240918    clang-20
+s390                             allmodconfig    clang-20
+s390                              allnoconfig    clang-20
+s390                             allyesconfig    gcc-14.1.0
+s390                  randconfig-001-20240918    clang-20
+s390                  randconfig-002-20240918    clang-20
+sh                               allmodconfig    gcc-14.1.0
+sh                                allnoconfig    gcc-14.1.0
+sh                               allyesconfig    gcc-14.1.0
+sh                    randconfig-001-20240918    gcc-14.1.0
+sh                    randconfig-002-20240918    gcc-14.1.0
+sparc                            allmodconfig    gcc-14.1.0
+sparc64               randconfig-001-20240918    gcc-14.1.0
+sparc64               randconfig-002-20240918    gcc-14.1.0
+um                               allmodconfig    clang-20
+um                                allnoconfig    clang-17
+um                               allyesconfig    gcc-12
+um                    randconfig-001-20240918    gcc-12
+um                    randconfig-002-20240918    gcc-11
+x86_64                            allnoconfig    clang-18
+x86_64                           allyesconfig    clang-18
+x86_64                              defconfig    gcc-11
+x86_64                           rhel-8.3-bpf    gcc-12
+x86_64                         rhel-8.3-kunit    gcc-12
+x86_64                           rhel-8.3-ltp    gcc-12
+x86_64                          rhel-8.3-rust    clang-18
+xtensa                            allnoconfig    gcc-14.1.0
+xtensa                randconfig-001-20240918    gcc-14.1.0
+xtensa                randconfig-002-20240918    gcc-14.1.0
 
-diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-index 6a5e08b..d028d76 100644
---- a/include/linux/tcp.h
-+++ b/include/linux/tcp.h
-@@ -478,7 +478,9 @@ struct tcp_sock {
- #endif
- #if IS_ENABLED(CONFIG_SMC)
- 	bool	syn_smc;	/* SYN includes SMC */
--	bool	(*smc_hs_congested)(const struct sock *sk);
-+	void	(*smc_openreq_init)(struct request_sock *req,
-+			     const struct tcp_options_received *rx_opt,
-+			     struct sk_buff *skb, const struct sock *sk);
- #endif
- 
- #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index e37488d..e33e2a0 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -7029,8 +7029,8 @@ static void tcp_openreq_init(struct request_sock *req,
- 	ireq->ir_num = ntohs(tcp_hdr(skb)->dest);
- 	ireq->ir_mark = inet_request_mark(sk, skb);
- #if IS_ENABLED(CONFIG_SMC)
--	ireq->smc_ok = rx_opt->smc_ok && !(tcp_sk(sk)->smc_hs_congested &&
--			tcp_sk(sk)->smc_hs_congested(sk));
-+	if (ireq->smc_ok && tcp_sk(sk)->smc_openreq_init)
-+		tcp_sk(sk)->smc_openreq_init(req, rx_opt, skb, sk);
- #endif
- }
- 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 0316217..003b2ac 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -70,6 +70,15 @@
- static void smc_tcp_listen_work(struct work_struct *);
- static void smc_connect_work(struct work_struct *);
- 
-+__bpf_hook_start();
-+
-+__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
-+{
-+	return 1;
-+}
-+
-+__bpf_hook_end();
-+
- int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
- {
- 	struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
-@@ -156,19 +165,41 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
- 	return NULL;
- }
- 
--static bool smc_hs_congested(const struct sock *sk)
-+static void smc_openreq_init(struct request_sock *req,
-+			     const struct tcp_options_received *rx_opt,
-+			     struct sk_buff *skb, const struct sock *sk)
- {
-+	struct inet_request_sock *ireq = inet_rsk(req);
-+	struct sockaddr_storage rmt_sockaddr = {0};
- 	const struct smc_sock *smc;
- 
- 	smc = smc_clcsock_user_data(sk);
- 
- 	if (!smc)
--		return true;
-+		return;
- 
--	if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
--		return true;
-+	if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
-+		goto out_no_smc;
- 
--	return false;
-+	rmt_sockaddr.ss_family = sk->sk_family;
-+
-+	if (rmt_sockaddr.ss_family == AF_INET) {
-+		struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
-+
-+		rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
-+		rmt4_sockaddr->sin_port	= ireq->ir_rmt_port;
-+	} else {
-+		struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
-+
-+		rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
-+		rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
-+	}
-+
-+	ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
-+	return;
-+out_no_smc:
-+	ireq->smc_ok = 0;
-+	return;
- }
- 
- struct smc_hashinfo smc_v4_hashinfo = {
-@@ -1671,7 +1702,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
- 	}
- 
- 	smc_copy_sock_settings_to_clc(smc);
--	tcp_sk(smc->clcsock->sk)->syn_smc = 1;
-+	tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
- 	if (smc->connect_nonblock) {
- 		rc = -EALREADY;
- 		goto out;
-@@ -2650,8 +2681,7 @@ int smc_listen(struct socket *sock, int backlog)
- 
- 	inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
- 
--	if (smc->limit_smc_hs)
--		tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
-+	tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
- 
- 	rc = kernel_listen(smc->clcsock, backlog);
- 	if (rc) {
-@@ -3475,6 +3505,20 @@ static void __net_exit smc_net_stat_exit(struct net *net)
- 	.exit = smc_net_stat_exit,
- };
- 
-+BTF_SET8_START(bpf_smc_fmodret_ids)
-+BTF_ID_FLAGS(func, select_syn_smc)
-+BTF_SET8_END(bpf_smc_fmodret_ids)
-+
-+static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
-+	.owner = THIS_MODULE,
-+	.set   = &bpf_smc_fmodret_ids,
-+};
-+
-+static int __init bpf_smc_kfunc_init(void)
-+{
-+	return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
-+}
-+
- static int __init smc_init(void)
- {
- 	int rc;
-@@ -3574,8 +3618,17 @@ static int __init smc_init(void)
- 		pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
- 		goto out_ulp;
- 	}
-+
-+	rc = bpf_smc_kfunc_init();
-+	if (rc) {
-+		pr_err("%s: bpf_smc_kfunc_init fails with %d\n", __func__, rc);
-+		goto out_inet;
-+	}
-+
- 	static_branch_enable(&tcp_have_smc);
- 	return 0;
-+out_inet:
-+	smc_inet_exit();
- out_ulp:
- 	tcp_unregister_ulp(&smc_ulp_ops);
- out_lo:
--- 
-1.8.3.1
-
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
