@@ -1,81 +1,71 @@
-Return-Path: <linux-rdma+bounces-5005-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5006-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 719AD97CAD8
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Sep 2024 16:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6410997CB18
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Sep 2024 16:40:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1AF01C2251C
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Sep 2024 14:17:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F0FB1C21E69
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Sep 2024 14:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFDE19E83E;
-	Thu, 19 Sep 2024 14:17:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="3fa7bGMC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C6A919E82C;
+	Thu, 19 Sep 2024 14:40:34 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E7E420B04;
-	Thu, 19 Sep 2024 14:17:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6031E517;
+	Thu, 19 Sep 2024 14:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726755461; cv=none; b=EOWRuhC3WuVru2YlNYTcsduXzB6M7QSIOM7xt1NF2SyFRxn6BXxd8cgjr8xszfZlfZhbpoQozK+HzjZKEEtGftXqAuTH2092AbPNpXiNRPpjo80kPOTBE0xhYtdosxkMcPB6L+IZQuJRnPAhpirYHviiGHtE4/lGIzXtcq5eHC8=
+	t=1726756834; cv=none; b=RtPqCGnMPOqY+l9bBf/3ON4DeyS0O77+9sTJUNVE7OHnAsCCJ9FhC3BhPbumvDl4/3qxw7Fv82tcpaTKIa+Zaq0qK8gnvu718/c4T2tP5VEeAEQX2ACn2gq6Le8hrNGbuppXGv6pPoT3j3mHOaRcoeCP7z1BCvyOZ+rPZI9nI1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726755461; c=relaxed/simple;
-	bh=vRsq37cyFsnMCRJWk08SutfAhz42ipMp2Yw5nEOlxaw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BF8Cq5S3KxbIHOe3ldjHhW5quBh0gOIBFw8WisIZV23ui8qayxE910gMuwtsEcazsry175lOFAkGdAB7d3F/VqwuFw2O1S6O/1zhaV9mKbk/uaFNQCbGMR7fNMWQjq1HNLk3EW4RxXFOExFJq6I94QCSvBFyqMheW0IJXusOShU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=3fa7bGMC; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
-	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=vRsq37cyFsnMCRJWk08SutfAhz42ipMp2Yw5nEOlxaw=; b=3fa7bGMC4PvUTU5hEXpH7tFiZ/
-	F003lTIjZNWpChSRjQZ07bBk54UxrKOMGMeXEGDpRg/QOOakXjryc703OYvHMeC36AISjSLzfpqD+
-	cm9vKilNvw4IErn56QRmet9iMyDphEan4n2dWEMmL/JNBRhm+Gt8uTZQFAswHuXEwPP4G18wlCqu3
-	RHCOAYygRsTwGG0zGICHpJwA3Vi4f2dlKOB61JAIaKF4XyEnh5i511BncKWgr9QPW9WXv2h9URw+t
-	gnU/uMFQTYTDhwJHRqa1xr2Sqp/qGs9VmSJ0ajUnjhLcbC7WdviMT0MfeMhpZDMQdxCWQGXPRIdN6
-	dryUqQJQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1srHyR-0000000AQfa-3oDX;
-	Thu, 19 Sep 2024 14:17:35 +0000
-Date: Thu, 19 Sep 2024 07:17:35 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: Re: [MAINLINE 0/2] Enable DIM for legacy ULPs and use it in RDS
-Message-ID: <Zuwyf0N_6E6Alx-H@infradead.org>
-References: <20240918083552.77531-1-haakon.bugge@oracle.com>
+	s=arc-20240116; t=1726756834; c=relaxed/simple;
+	bh=Ah31ROm2SeMIok5Nb3SoHt/vsBHCWwdadjwrzpUsRTo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cqjJyQYUxqKnJ1gjJpNvIrwKOLxgHoiQTwg+Orgm1IsqYKfnYwideVBsytG7LPX5/yBVtZmDjaX8Cgft3cccKzNwCTKcBer9HuLyCYvB8hmOiZ9c0Z2BORA8KM3mTqSEbwJ2dqD3Nu5Wdimkw9M76Y61XcNrAtmYYDhhKB2icHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 19 Sep
+ 2024 17:40:29 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 19 Sep
+ 2024 17:40:29 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: <stable@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Steve Wise
+	<swise@chelsio.com>, Doug Ledford <dledford@redhat.com>, Jason Gunthorpe
+	<jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<lvc-patches@linuxtesting.org>, <lvc-project@linuxtesting.org>
+Subject: [PATCH v2 4.19/5.4/5.10 0/1] RDMA/cxgb4: Fix potential null-ptr-deref in pass_establish()
+Date: Thu, 19 Sep 2024 07:40:21 -0700
+Message-ID: <20240919144022.14291-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240918083552.77531-1-haakon.bugge@oracle.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-On Wed, Sep 18, 2024 at 10:35:50AM +0200, Håkon Bugge wrote:
-> The Dynamic Interrupt Moderation mechanism can only be used by ULPs
-> using ib_alloc_cq() and family. We extend DIM to also cover legacy
-> ULPs using ib_create_cq(). The last commit takes advantage of this end
-> uses DIM in RDS.
+The following patch aims to fix a possible NULL-ptr-dereference that
+occurs if a call to get_ep_from_tid() fails to assign nonzero
+value.
 
-I would much prefer if you could move RDS off that horrible API finally
-instead of investing more effort into it and making it more complicated.
+Upstream commit 283861a4c52c1ea4df3dd1b6fc75a50796ce3524 has been
+backported up to version 5.15. For some reason, older stable branches
+have been ignored.
 
+This backport can be cleanly applied to 4.19, 5.4 and 5.10 versions.
+
+v2: Add stable maintainers as patch recepients.
 
