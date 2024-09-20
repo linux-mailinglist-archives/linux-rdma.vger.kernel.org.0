@@ -1,178 +1,196 @@
-Return-Path: <linux-rdma+bounces-5014-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5015-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF3297D12E
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Sep 2024 08:31:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B395297D1FC
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Sep 2024 09:48:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 748A6B21820
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Sep 2024 06:31:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1311EB223B7
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Sep 2024 07:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7963B192;
-	Fri, 20 Sep 2024 06:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB945475C;
+	Fri, 20 Sep 2024 07:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KYGodaCf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8A91C683;
-	Fri, 20 Sep 2024 06:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2872AF0E
+	for <linux-rdma@vger.kernel.org>; Fri, 20 Sep 2024 07:47:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726813854; cv=none; b=cnAZ3rRZtfA8jSChjAm2tAFDU2nhxeqN4oWGL2jYxElUJtsQsEotmZU5O50/g94iMA4TitPWL0IeaQEYFLYN7xIetbqTXLDDVC3Rj70S9x1eJGhd9h8AO03dJMgAgyyKxqQDBQ4dHeBsbbNRuczwgtDlHAAWEPzeSdsYO02cT9E=
+	t=1726818479; cv=none; b=QEd75aaNBG6rQ5vp+w5hdcrsqEkMNZUgVcQNaOK1859DfUf182Mlq95TlOPWtw4yKkFH9IUJibSAj8iLAQTLD6SY+chQQoXQRHc3xCCDajQTTp6+jxmyNxPnrgKYWK2h5VzzdQMbzdgmK7XWIoIZfli1E37MCSTP57SYWGiUCco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726813854; c=relaxed/simple;
-	bh=pUsj6zi6XSx6GhIlGdt1Hl9sG+23RLjq3jnloPOfGSA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=rxDIsaTHi3kWq43/mRml/2YUdB9q/6XVJyZcbfYOnOEMi1uTbtpezOSHa3YNGc6CcCZyVewtNvSv5//QyWFnKLfJDN3h10xzcg5k4JcqMR5i+r+6fvsULmxIW4EO156J0uVbl2awpoEm+AurSY7y6NuNUYqBNzrEVDMBFLfNbtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4X92BV2t0Fz2DcJj;
-	Fri, 20 Sep 2024 14:13:22 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 140801401DC;
-	Fri, 20 Sep 2024 14:14:03 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 20 Sep 2024 14:14:02 +0800
-Message-ID: <2c5ccfff-6ab4-4aea-bff6-3679ff72cc9a@huawei.com>
-Date: Fri, 20 Sep 2024 14:14:02 +0800
+	s=arc-20240116; t=1726818479; c=relaxed/simple;
+	bh=CLcNs5kqxdJgt6qP0MB0cAqrax1hjoWqC8oMfdnbPjI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SS5vj8qNXX7C3d0fw4knuChV3wh2erOzbCaHSFFKW8ZQDmQ1F6EL4DdeoH2oqnBFHS6YMohWrprQ50d1+J1sYpu9QmdWovtJbpCutLtWLtGdGw3Gf6CgJDkrrmhoGBQRSKmbua1wg8qefvpmMWJfi65CcPVq5ekc0JsrpKlHWUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KYGodaCf; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6971720d-3639-4a80-a17b-48489bfadb0a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1726818473;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uC/xou3pHrirAtgbyCjJ2O1AHcinEj0qAI+WR7A8lTc=;
+	b=KYGodaCffMFwqwLEfA4IqIH3uk/AnNk6I2VQtOvd++oA2wUT3KPdcVbDa6mY4Qk/lPSzJC
+	86DpiFjAfgoyIdJK0xIV2AEBLy3SGxJ8xBeFl6vjg+wCUCMomZv1TZmO95cOIuyhWL33YP
+	x3S890mP2ZKOQQfmFYc5+Nq2htVhZS0=
+Date: Fri, 20 Sep 2024 15:47:19 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 2/2] page_pool: fix IOMMU crash when driver has
- already unbound
-To: Ilias Apalodimas <ilias.apalodimas@linaro.org>, Jesper Dangaard Brouer
-	<hawk@kernel.org>
-CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<liuyonglong@huawei.com>, <fanghaiqing@huawei.com>, <zhangkun09@huawei.com>,
-	Robin Murphy <robin.murphy@arm.com>, Alexander Duyck
-	<alexander.duyck@gmail.com>, IOMMU <iommu@lists.linux.dev>, Wei Fang
-	<wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
-	<xiaoning.wang@nxp.com>, Eric Dumazet <edumazet@google.com>, Tony Nguyen
-	<anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
-	<john.fastabend@gmail.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon
- Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau
-	<nbd@nbd.name>, Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee
-	<ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, Sean Wang
-	<sean.wang@mediatek.com>, Kalle Valo <kvalo@kernel.org>, Matthias Brugger
-	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, Andrew Morton
-	<akpm@linux-foundation.org>, <imx@lists.linux.dev>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
-	<bpf@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-wireless@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-mm@kvack.org>
-References: <20240918111826.863596-1-linyunsheng@huawei.com>
- <20240918111826.863596-3-linyunsheng@huawei.com>
- <CAC_iWjK=G7Oo5=pN2QunhasgDC6NyC1L+96jigX7u9ad+PbYng@mail.gmail.com>
- <894a3c2c-22f9-45b9-a82b-de7320066b42@kernel.org>
- <cdfecd37-31d7-42d2-a8d8-92008285b42e@huawei.com>
- <0e8c7a7a-0e2a-42ec-adbc-b29f6a514517@kernel.org>
- <CAC_iWj+3JvPY2oqVOdu0T1Wt6-ukoy=dLc72u1f55yY23uOTbA@mail.gmail.com>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <CAC_iWj+3JvPY2oqVOdu0T1Wt6-ukoy=dLc72u1f55yY23uOTbA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Subject: Re: [MAINLINE 2/2] rds: ib: Add Dynamic Interrupt Moderation to CQs
+To: =?UTF-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ Allison Henderson <allison.henderson@oracle.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, rds-devel@oss.oracle.com
+References: <20240918083552.77531-1-haakon.bugge@oracle.com>
+ <20240918083552.77531-3-haakon.bugge@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20240918083552.77531-3-haakon.bugge@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2024/9/20 13:29, Ilias Apalodimas wrote:
-> Hi Jesper,
-> 
-> On Fri, 20 Sept 2024 at 00:04, Jesper Dangaard Brouer <hawk@kernel.org> wrote:
->>
->>
->>
->> On 19/09/2024 13.15, Yunsheng Lin wrote:
->>> On 2024/9/19 17:42, Jesper Dangaard Brouer wrote:
->>>>
->>>> On 18/09/2024 19.06, Ilias Apalodimas wrote:
->>>>>> In order not to do the dma unmmapping after driver has already
->>>>>> unbound and stall the unloading of the networking driver, add
->>>>>> the pool->items array to record all the pages including the ones
->>>>>> which are handed over to network stack, so the page_pool can
->>>>>> do the dma unmmapping for those pages when page_pool_destroy()
->>>>>> is called.
->>>>>
->>>>> So, I was thinking of a very similar idea. But what do you mean by
->>>>> "all"? The pages that are still in caches (slow or fast) of the pool
->>>>> will be unmapped during page_pool_destroy().
->>>>
->>>> I really dislike this idea of having to keep track of all outstanding pages.
->>>>
->>>> I liked Jakub's idea of keeping the netdev around for longer.
->>>>
->>>> This is all related to destroying the struct device that have points to
->>>> the DMA engine, right?
->>>
->>> Yes, the problem seems to be that when device_del() is called, there is
->>> no guarantee hw behind the 'struct device ' will be usable even if we
->>> call get_device() on it.
->>>
->>>>
->>>> Why don't we add an API that allow netdev to "give" struct device to
->>>> page_pool.  And then the page_poll will take over when we can safely
->>>> free the stuct device?
->>>
->>> By 'allow netdev to "give" struct device to page_pool', does it mean
->>> page_pool become the driver for the device?
->>> If yes, it seems that is similar to jakub's idea, as both seems to stall
->>> the calling of device_del() by not returning when the driver unloading.
->>
->> Yes, this is what I mean. (That is why I mentioned Jakub's idea).
+在 2024/9/18 16:35, Håkon Bugge 写道:
+> With the support from ib_core to use Dynamic Interrupt Moderation
+> (DIM) from legacy ULPs, which uses ib_create_cq(), we enable that
+> feature for the receive and send CQs in RDS.
 
-I am not sure what dose the API that allows netdev to "give" struct device
-to page_pool look like or how to implement the API yet, but the obvious way
-to stall the calling of device_del() is to wait for the inflight page to
-come back in page_pool_destroy(), which seems the same as the jakub's
-way from the viewpoint of user, and jakub's way seems more elegant than
-waiting in page_pool_destroy().
+Hi, Haakon
+
+I am interested in this patch series. I just wonder if the performance 
+of rds is increased after DIM is used in legacy ULPs?
+That is, is there any benefit to legacy ULPs after DIM is used?
+
+Do you have any test results about this DIM?
+
+Thanks,
+Zhu Yanjun
 
 > 
-> Keeping track of inflight packets that need to be unmapped is
-> certainly more complex. Delaying the netdevice destruction certainly
-> solves the problem but there's a huge cost IMHO. Those devices might
-> stay there forever and we have zero guarantees that the network stack
-> will eventually release (and unmap) those packets. What happens in
-> that case? The user basically has to reboot the entire machine, just
-> because he tries to bring an interface down and up again.
-
-Yes.
-The problem seems to be how long page_pool is allowed to stall the driver
-unloading? Does the driver unload stalling affect some feature like device
-hotplug?
-As the problem in [1], the stall might be forever due to caching in the
-network stack as discussed in [2], and there might be some other caching
-we don't know yet.
-
-The stalling log in [1] is caused by the caching in skb_attempt_defer_free(),
-we may argue that a timeout is needed for those kind of caching, but Eric
-seemed to think otherwise in commit log of [3]:
-"As Eric pointed out/predicted there's no guarantee that
-applications will read / close their sockets so a page pool page
-may be stuck in a socket (but not leaked) forever."
-
-1. https://lore.kernel.org/netdev/20240814075603.05f8b0f5@kernel.org/T/#me2f2c89fbeb7f92a27d54a85aab5527efedfe260
-2. https://lore.kernel.org/netdev/20240814075603.05f8b0f5@kernel.org/T/#m2687f25537395401cd6a810ac14e0e0d9addf97e
-3. https://lore.kernel.org/netdev/ZWfuyc13oEkp583C@makrotopia.org/T/
-
+> A set of rds-stress runs have been done. bcopy read + write for
+> payload 8448 and 16640 bytes and ack/req of 256 bytes. Number of QPs
+> varies from 8 to 128, number of threads (i.e. rds-stress processes)
+> from one to 16 and a depth of four. A limit has been applied such that
+> the number of processes times the number of QPs never exceeds 128. All
+> in all, 61 rds-stress runs.
 > 
-> Thanks
-> /Ilias
->>
->>
->>> If no, it seems that the problem is still existed when the driver for
->>> the device has unbound after device_del() is called.
+> For brevity, only the rows showing a +/- 3% deviation or larger from
+> base is listed. The geometric mean of the ratios (IOPS_test /
+> IOPS_base) is calculated for all 61 runs, and that gives the best
+> possible "average" impact of the commits.
+> 
+> In the following, "base" is v6.11-rc7. "test" is the same
+> kernel with the following two commits:
+> 
+>         * rds: ib: Add Dynamic Interrupt Moderation to CQs (this commit)
+>         * RDMA/core: Enable legacy ULPs to use RDMA DIM
+> 
+> This is executed between two X8-2 with CX-5 using fw 16.35.3502. These
+> BM systems were instantiated with one VF, which were used for the
+> test:
+> 
+>                                   base     test
+>     ACK    REQ  QPS  THR  DEP     IOPS     IOPS  Percent
+>     256   8448    8    1    4   634463   658162      3.7
+>     256   8448    8    2    4   862648   997358     15.6
+>     256   8448    8    4    4   950458  1113991     17.2
+>     256   8448    8    8    4   932120  1127024     20.9
+>     256   8448    8   16    4   944977  1133885     20.0
+>    8448    256    8    2    4   858663   975563     13.6
+>    8448    256    8    4    4   934884  1098854     17.5
+>    8448    256    8    8    4   928247  1116015     20.2
+>    8448    256    8   16    4   938864  1123455     19.7
+>     256   8448   64    1    4   965985   918445     -4.9
+>    8448    256   64    1    4   963280   918239     -4.7
+>     256  16640    8    2    4   544670   582330      6.9
+>     256  16640    8    4    4   554873   597553      7.7
+>     256  16640    8    8    4   551799   597479      8.3
+>     256  16640    8   16    4   553041   597898      8.1
+>   16640    256    8    2    4   544644   578331      6.2
+>   16640    256    8    4    4   553944   594627      7.3
+>   16640    256    8    8    4   551388   594737      7.9
+>   16640    256    8   16    4   552986   596581      7.9
+> Geometric mean of ratios: 1.03
+> 
+> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+> ---
+>   net/rds/ib_cm.c | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+> 
+> diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
+> index 26b069e1999df..79603d86b6c02 100644
+> --- a/net/rds/ib_cm.c
+> +++ b/net/rds/ib_cm.c
+> @@ -259,6 +259,7 @@ static void rds_ib_cq_comp_handler_recv(struct ib_cq *cq, void *context)
+>   static void poll_scq(struct rds_ib_connection *ic, struct ib_cq *cq,
+>   		     struct ib_wc *wcs)
+>   {
+> +	int ncompleted = 0;
+>   	int nr, i;
+>   	struct ib_wc *wc;
+>   
+> @@ -276,7 +277,10 @@ static void poll_scq(struct rds_ib_connection *ic, struct ib_cq *cq,
+>   				rds_ib_mr_cqe_handler(ic, wc);
+>   
+>   		}
+> +		ncompleted += nr;
+>   	}
+> +	if (cq->dim)
+> +		rdma_dim(cq->dim, ncompleted);
+>   }
+>   
+>   static void rds_ib_tasklet_fn_send(unsigned long data)
+> @@ -304,6 +308,7 @@ static void poll_rcq(struct rds_ib_connection *ic, struct ib_cq *cq,
+>   		     struct ib_wc *wcs,
+>   		     struct rds_ib_ack_state *ack_state)
+>   {
+> +	int ncompleted = 0;
+>   	int nr, i;
+>   	struct ib_wc *wc;
+>   
+> @@ -316,7 +321,10 @@ static void poll_rcq(struct rds_ib_connection *ic, struct ib_cq *cq,
+>   
+>   			rds_ib_recv_cqe_handler(ic, wc, ack_state);
+>   		}
+> +		ncompleted += nr;
+>   	}
+> +	if (cq->dim)
+> +		rdma_dim(cq->dim, ncompleted);
+>   }
+>   
+>   static void rds_ib_tasklet_fn_recv(unsigned long data)
+> @@ -542,6 +550,7 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
+>   	ic->i_scq_vector = ibdev_get_unused_vector(rds_ibdev);
+>   	cq_attr.cqe = ic->i_send_ring.w_nr + fr_queue_space + 1;
+>   	cq_attr.comp_vector = ic->i_scq_vector;
+> +	cq_attr.flags |= IB_CQ_MODERATE;
+>   	ic->i_send_cq = ib_create_cq(dev, rds_ib_cq_comp_handler_send,
+>   				     rds_ib_cq_event_handler, conn,
+>   				     &cq_attr);
+> @@ -556,6 +565,7 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
+>   	ic->i_rcq_vector = ibdev_get_unused_vector(rds_ibdev);
+>   	cq_attr.cqe = ic->i_recv_ring.w_nr;
+>   	cq_attr.comp_vector = ic->i_rcq_vector;
+> +	cq_attr.flags |= IB_CQ_MODERATE;
+>   	ic->i_recv_cq = ib_create_cq(dev, rds_ib_cq_comp_handler_recv,
+>   				     rds_ib_cq_event_handler, conn,
+>   				     &cq_attr);
+
 
