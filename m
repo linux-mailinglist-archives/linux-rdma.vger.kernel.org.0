@@ -1,196 +1,119 @@
-Return-Path: <linux-rdma+bounces-5015-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5016-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B395297D1FC
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Sep 2024 09:48:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61D0197D2E1
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Sep 2024 10:39:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1311EB223B7
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Sep 2024 07:48:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 938AF1C2127D
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Sep 2024 08:39:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB945475C;
-	Fri, 20 Sep 2024 07:48:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B2047DA76;
+	Fri, 20 Sep 2024 08:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KYGodaCf"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="KFAIcEyz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2872AF0E
-	for <linux-rdma@vger.kernel.org>; Fri, 20 Sep 2024 07:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2FBD2209D;
+	Fri, 20 Sep 2024 08:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726818479; cv=none; b=QEd75aaNBG6rQ5vp+w5hdcrsqEkMNZUgVcQNaOK1859DfUf182Mlq95TlOPWtw4yKkFH9IUJibSAj8iLAQTLD6SY+chQQoXQRHc3xCCDajQTTp6+jxmyNxPnrgKYWK2h5VzzdQMbzdgmK7XWIoIZfli1E37MCSTP57SYWGiUCco=
+	t=1726821581; cv=none; b=LaROp3EcN4fq+yUlvthI/UU9QkD2GYpNFxW02aQ+9J6ABYfX6EeieupAF5xjf4vhQLnnSUHYz16Ty+Lq+FwV6cNQg2XGQLc7uQ7XyglGsFkphwBYnnA/+3XcKF8pPWKZNxaLnRvOR2pT5dZYYVBH6HAX2stvESdupIQNlnDr3AA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726818479; c=relaxed/simple;
-	bh=CLcNs5kqxdJgt6qP0MB0cAqrax1hjoWqC8oMfdnbPjI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SS5vj8qNXX7C3d0fw4knuChV3wh2erOzbCaHSFFKW8ZQDmQ1F6EL4DdeoH2oqnBFHS6YMohWrprQ50d1+J1sYpu9QmdWovtJbpCutLtWLtGdGw3Gf6CgJDkrrmhoGBQRSKmbua1wg8qefvpmMWJfi65CcPVq5ekc0JsrpKlHWUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KYGodaCf; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6971720d-3639-4a80-a17b-48489bfadb0a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1726818473;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uC/xou3pHrirAtgbyCjJ2O1AHcinEj0qAI+WR7A8lTc=;
-	b=KYGodaCffMFwqwLEfA4IqIH3uk/AnNk6I2VQtOvd++oA2wUT3KPdcVbDa6mY4Qk/lPSzJC
-	86DpiFjAfgoyIdJK0xIV2AEBLy3SGxJ8xBeFl6vjg+wCUCMomZv1TZmO95cOIuyhWL33YP
-	x3S890mP2ZKOQQfmFYc5+Nq2htVhZS0=
-Date: Fri, 20 Sep 2024 15:47:19 +0800
+	s=arc-20240116; t=1726821581; c=relaxed/simple;
+	bh=qSFC0CPXsAs0/QR/Ub6gPzLAUS0VertXsdiCQtyDBXM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VtvyS9Ub8+QcntiZyTLoTvhUQMeiNwgZtZatzRAl5sjEbaIOGT9daUPsDCOQvVnnmkJMmDYm8z2NAzLOiXiCwUDtw8ItZMFuMpVcGjll4AgG6ftqImNoxgP6TytQ8KoNUsiNn+I7B6dHelIi3TgdW4Oh8+PoSGvbra29gGU5Zkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=KFAIcEyz; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 6CD9020C0B12; Fri, 20 Sep 2024 01:39:33 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6CD9020C0B12
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1726821573;
+	bh=y9iGzqI1llZBex/f3DgwQ0iyDZreXOsN5uFJeLWLC0k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KFAIcEyzo3N44wnyUjHX+yIfCxoZ1f7IibIH4VM1q7HchqKc+rvjqtldgg1EMPqoq
+	 XyQSIijTzQDrLGMFPrvgN5Qn6S5A3m0bgeZXbtEszQXcQGS4FY1Xu75D3S4Z6G+sOj
+	 vIyMyOKk+656L1YCg7aggu7p7T9BS/aLgtM6okP4=
+Date: Fri, 20 Sep 2024 01:39:33 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Simon Horman <horms@kernel.org>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Long Li <longli@microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Erick Archer <erick.archer@outlook.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Ahmed Zaki <ahmed.zaki@intel.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH net-next] net: mana: Increase the
+ DEF_RX_BUFFERS_PER_QUEUE to 1024
+Message-ID: <20240920083933.GA15696@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1726376184-14874-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20240915180835.GA167971@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [MAINLINE 2/2] rds: ib: Add Dynamic Interrupt Moderation to CQs
-To: =?UTF-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Allison Henderson <allison.henderson@oracle.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, rds-devel@oss.oracle.com
-References: <20240918083552.77531-1-haakon.bugge@oracle.com>
- <20240918083552.77531-3-haakon.bugge@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240918083552.77531-3-haakon.bugge@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240915180835.GA167971@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-在 2024/9/18 16:35, Håkon Bugge 写道:
-> With the support from ib_core to use Dynamic Interrupt Moderation
-> (DIM) from legacy ULPs, which uses ib_create_cq(), we enable that
-> feature for the receive and send CQs in RDS.
-
-Hi, Haakon
-
-I am interested in this patch series. I just wonder if the performance 
-of rds is increased after DIM is used in legacy ULPs?
-That is, is there any benefit to legacy ULPs after DIM is used?
-
-Do you have any test results about this DIM?
-
-Thanks,
-Zhu Yanjun
-
+On Sun, Sep 15, 2024 at 07:08:35PM +0100, Simon Horman wrote:
+> On Sat, Sep 14, 2024 at 09:56:24PM -0700, Shradha Gupta wrote:
+> > Through some experiments, we found out that increasing the default
+> > RX buffers count from 512 to 1024, gives slightly better throughput
+> > and significantly reduces the no_wqe_rx errs on the receiver side.
+> > Along with these, other parameters like cpu usage, retrans seg etc
+> > also show some improvement with 1024 value.
+> > 
+> > Following are some snippets from the experiments
+> > 
+> > ntttcp tests with 512 Rx buffers
+> > ---------------------------------------
+> > connections|  throughput|  no_wqe errs|
+> > ---------------------------------------
+> > 1          |  40.93Gbps | 123,211     |
+> > 16         | 180.15Gbps | 190,120
+> > 128        | 180.20Gbps | 173,508     |
+> > 256        | 180.27Gbps | 189,884     |
+> > 
+> > ntttcp tests with 1024 Rx buffers
+> > ---------------------------------------
+> > connections|  throughput|  no_wqe errs|
+> > ---------------------------------------
+> > 1          |  44.22Gbps | 19,864      |
+> > 16         | 180.19Gbps | 4,430       |
+> > 128        | 180.21Gbps | 2,560       |
+> > 256        | 180.29Gbps | 1,529       |
+> > 
+> > So, increasing the default RX buffers per queue count to 1024
+> > 
+> > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> > Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
 > 
-> A set of rds-stress runs have been done. bcopy read + write for
-> payload 8448 and 16640 bytes and ack/req of 256 bytes. Number of QPs
-> varies from 8 to 128, number of threads (i.e. rds-stress processes)
-> from one to 16 and a depth of four. A limit has been applied such that
-> the number of processes times the number of QPs never exceeds 128. All
-> in all, 61 rds-stress runs.
+> Hi Shradha,
 > 
-> For brevity, only the rows showing a +/- 3% deviation or larger from
-> base is listed. The geometric mean of the ratios (IOPS_test /
-> IOPS_base) is calculated for all 61 runs, and that gives the best
-> possible "average" impact of the commits.
+> net-next is currently closed other than for bug fixes.
+> Please consider reposting once it re-opens, after v6.12-rc1
+> has been released.
+Noted, thanks Simon
 > 
-> In the following, "base" is v6.11-rc7. "test" is the same
-> kernel with the following two commits:
-> 
->         * rds: ib: Add Dynamic Interrupt Moderation to CQs (this commit)
->         * RDMA/core: Enable legacy ULPs to use RDMA DIM
-> 
-> This is executed between two X8-2 with CX-5 using fw 16.35.3502. These
-> BM systems were instantiated with one VF, which were used for the
-> test:
-> 
->                                   base     test
->     ACK    REQ  QPS  THR  DEP     IOPS     IOPS  Percent
->     256   8448    8    1    4   634463   658162      3.7
->     256   8448    8    2    4   862648   997358     15.6
->     256   8448    8    4    4   950458  1113991     17.2
->     256   8448    8    8    4   932120  1127024     20.9
->     256   8448    8   16    4   944977  1133885     20.0
->    8448    256    8    2    4   858663   975563     13.6
->    8448    256    8    4    4   934884  1098854     17.5
->    8448    256    8    8    4   928247  1116015     20.2
->    8448    256    8   16    4   938864  1123455     19.7
->     256   8448   64    1    4   965985   918445     -4.9
->    8448    256   64    1    4   963280   918239     -4.7
->     256  16640    8    2    4   544670   582330      6.9
->     256  16640    8    4    4   554873   597553      7.7
->     256  16640    8    8    4   551799   597479      8.3
->     256  16640    8   16    4   553041   597898      8.1
->   16640    256    8    2    4   544644   578331      6.2
->   16640    256    8    4    4   553944   594627      7.3
->   16640    256    8    8    4   551388   594737      7.9
->   16640    256    8   16    4   552986   596581      7.9
-> Geometric mean of ratios: 1.03
-> 
-> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-> ---
->   net/rds/ib_cm.c | 10 ++++++++++
->   1 file changed, 10 insertions(+)
-> 
-> diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
-> index 26b069e1999df..79603d86b6c02 100644
-> --- a/net/rds/ib_cm.c
-> +++ b/net/rds/ib_cm.c
-> @@ -259,6 +259,7 @@ static void rds_ib_cq_comp_handler_recv(struct ib_cq *cq, void *context)
->   static void poll_scq(struct rds_ib_connection *ic, struct ib_cq *cq,
->   		     struct ib_wc *wcs)
->   {
-> +	int ncompleted = 0;
->   	int nr, i;
->   	struct ib_wc *wc;
->   
-> @@ -276,7 +277,10 @@ static void poll_scq(struct rds_ib_connection *ic, struct ib_cq *cq,
->   				rds_ib_mr_cqe_handler(ic, wc);
->   
->   		}
-> +		ncompleted += nr;
->   	}
-> +	if (cq->dim)
-> +		rdma_dim(cq->dim, ncompleted);
->   }
->   
->   static void rds_ib_tasklet_fn_send(unsigned long data)
-> @@ -304,6 +308,7 @@ static void poll_rcq(struct rds_ib_connection *ic, struct ib_cq *cq,
->   		     struct ib_wc *wcs,
->   		     struct rds_ib_ack_state *ack_state)
->   {
-> +	int ncompleted = 0;
->   	int nr, i;
->   	struct ib_wc *wc;
->   
-> @@ -316,7 +321,10 @@ static void poll_rcq(struct rds_ib_connection *ic, struct ib_cq *cq,
->   
->   			rds_ib_recv_cqe_handler(ic, wc, ack_state);
->   		}
-> +		ncompleted += nr;
->   	}
-> +	if (cq->dim)
-> +		rdma_dim(cq->dim, ncompleted);
->   }
->   
->   static void rds_ib_tasklet_fn_recv(unsigned long data)
-> @@ -542,6 +550,7 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
->   	ic->i_scq_vector = ibdev_get_unused_vector(rds_ibdev);
->   	cq_attr.cqe = ic->i_send_ring.w_nr + fr_queue_space + 1;
->   	cq_attr.comp_vector = ic->i_scq_vector;
-> +	cq_attr.flags |= IB_CQ_MODERATE;
->   	ic->i_send_cq = ib_create_cq(dev, rds_ib_cq_comp_handler_send,
->   				     rds_ib_cq_event_handler, conn,
->   				     &cq_attr);
-> @@ -556,6 +565,7 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
->   	ic->i_rcq_vector = ibdev_get_unused_vector(rds_ibdev);
->   	cq_attr.cqe = ic->i_recv_ring.w_nr;
->   	cq_attr.comp_vector = ic->i_rcq_vector;
-> +	cq_attr.flags |= IB_CQ_MODERATE;
->   	ic->i_recv_cq = ib_create_cq(dev, rds_ib_cq_comp_handler_recv,
->   				     rds_ib_cq_event_handler, conn,
->   				     &cq_attr);
-
+> -- 
+> pw-bot: defer
 
