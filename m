@@ -1,193 +1,180 @@
-Return-Path: <linux-rdma+bounces-5034-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5035-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA9DF97DD60
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Sep 2024 15:43:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B62C97E079
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Sep 2024 09:53:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC3A8B21569
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Sep 2024 13:43:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C1AE281540
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Sep 2024 07:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27BC170A3E;
-	Sat, 21 Sep 2024 13:43:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90CC19308E;
+	Sun, 22 Sep 2024 07:53:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="v1sh366T"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="WTg4SCK7";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ck9fR1vA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from fout3-smtp.messagingengine.com (fout3-smtp.messagingengine.com [103.168.172.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC5315383E
-	for <linux-rdma@vger.kernel.org>; Sat, 21 Sep 2024 13:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 384E71714DF;
+	Sun, 22 Sep 2024 07:53:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726926211; cv=none; b=C+IBP8nylCCgq7GxQgCMk4gM9faHorEcXfHPXmn2ql57MY0bXKvf+0N3DUL8zPKCp8fFASkmLLwvUUs/Slpj8UMdOYC3P9d/RLrwp6W7m/mLbNl08EFjR8kV2Eo3bybEUa9/WvIw/2Gb5BKdU0zuIVYLvlSG002Anxa5/TDELXg=
+	t=1726991608; cv=none; b=BXB/2dtCLHKOP0x9RBh4xCPipG0QFV2JRVfcklxlxuBYN+rCyfnKr10ORsPo8N4J9RRvz7BNUrmORINtrQoPokKQVbjU0dfd22Qz13YbN8MYGIFHoZmpC9gfeFH/Ovobk78jC0L8pDpQSlEvtvtbYHr79c9kP6amFJp3wCc5huk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726926211; c=relaxed/simple;
-	bh=f/S5tqYDkgNy2de/Gqhu6aFRQaTs2wnU8McFvHuusW0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uOY5xGAFEUDWsKXCCsusflxN4x39HoI7aoLiLMn69CmilcJ8rCVyzRgv4svl5EI4bJEnCG3x5vbnsRebvY03gMwdhkpw8GKfHs053l8Ehh+ZHLF0Vaierir8vdj5NKGamnrp8vxTMAiHpyXDSgd0Pjud43MuHIpOM0FTmzjgSW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=v1sh366T; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d0912e0a-4aaf-43e0-96d8-9ba2e5b620d5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1726926206;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KeEPkbs5lYn6h5yvboGSznL9u6javel9buGKcJFljDQ=;
-	b=v1sh366TvPIJdxhk22HMSSWbLvfxjUtKa6Qx+1tlWNhuQ5AXbLs0s22lcEbQIvXg5wisVX
-	/i2ZLqlDvhSy1CyOq7F2B+sLaP0eIo5JZquwqyLZLMDHJ4h7b7VZ7YuilS1ZvpFZUvIX1G
-	Vd7MFNEjLuuoXFr2CKyz116QNpWV2YY=
-Date: Sat, 21 Sep 2024 21:43:12 +0800
+	s=arc-20240116; t=1726991608; c=relaxed/simple;
+	bh=RnxEDmqYi58xxblh/2elLK2On8jjWvn31+HcyDQs2Tw=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=sWpfrrwW48KzwRe55/oMopc0+s90iT2FaV141Xp7U4XczDIKHUR5eKLVP6MkI7UopQwBMnOueHdnXHTP5WysAGpiekxvmG5dkOREFHbCJAg9RkMoh8jj0MNg5aDEtViIOzIUa99OhxOPLV/tSM4p2ph2L/kZBSVJpIrmfvgLjT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=WTg4SCK7; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ck9fR1vA; arc=none smtp.client-ip=103.168.172.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
+	by mailfout.phl.internal (Postfix) with ESMTP id 23371138025D;
+	Sun, 22 Sep 2024 03:53:25 -0400 (EDT)
+Received: from phl-imap-11 ([10.202.2.101])
+  by phl-compute-10.internal (MEProxy); Sun, 22 Sep 2024 03:53:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1726991605;
+	 x=1727078005; bh=QtaWawvvQ39ZGWhwZAM+wk43O+xWu43ctkOGufDANlo=; b=
+	WTg4SCK7ZKahfqfM7lYYiEhNtnIT0IibS25Lmi3UMz0l+2y2dAGGeMnlK2t8QiVy
+	EybR2vMJHg3SLiTlUlx5zTE2wE+pEwvVsOFZFVFiy5wZXRmZ9en7886qHfvcRYyE
+	NccWP3g7D/QTiGby+/yywFDH77VWh3CgdGH2qF/G9I0LseT9xxPGDWqRRZPcLaKM
+	z9kw4rOWEH+knInCrC/Tw65c4VNVgY/knK/v7RR4CDZ8dkqv6DwuA/MsEyDAwXfv
+	ub+ysd6CjEJPvpwgiSAYEXoQy4yfwd14kdAeSJcfWw8Cg69AuddDnVU0qH5N6aGy
+	TtiPUOyQ5LzlBKcePhlyyA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1726991605; x=
+	1727078005; bh=QtaWawvvQ39ZGWhwZAM+wk43O+xWu43ctkOGufDANlo=; b=c
+	k9fR1vAujL8EsBM/M/jMAiGA9sgre59FmPS2yUud9KMxJV23y55+sL/YArc+CPIL
+	nCZqYm++XJU+1WkpjRRCAYBiGDxI0DZh7dZl4MpGrakzyjP3RZ8G+uDvtlcumbZx
+	nUyIc202eBe7enpc5rwLr8ZojRcEcnSl36yN0hkWpye+rxCdhG0yLtJMmdRmDDvx
+	/F7WxqY5UlxgxFezlCIKYqSaGQPNmR5Cri/O67MMID88jgouh76zjhT+D96adPBK
+	+zgg9yYiRk4jiAES0Mh4nYAbVYBzCjYHDVP447gh9Gqm/bj5TQx9U94u+XoDryDs
+	yVIy4weu5Sm0D/3/fpgQA==
+X-ME-Sender: <xms:88zvZswUEe2sIgNs0yt2yBoqQvSu0HGeqvenebB_of12vDntz6exHw>
+    <xme:88zvZgQ_-6QUgvc1UjCL9PHzCytuckCD-jcSE1PsvhtFdRBakC7ckCPfm0qk4h-jq
+    Vj5qL9dY2rRSNdO7KQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudeliedguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvvefkjghfufgtgfesthejredtredt
+    tdenucfhrhhomhepfdetrhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusg
+    druggvqeenucggtffrrghtthgvrhhnpeefhfehteffuddvgfeigefhjeetvdekteekjeef
+    keekleffjeetvedvgefhhfeihfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegr
+    rhhnuggsrdguvgdpnhgspghrtghpthhtohepvdekpdhmohguvgepshhmthhpohhuthdprh
+    gtphhtthhopegrrhhvvgesrghnughrohhiugdrtghomhdprhgtphhtthhopehmrggtohes
+    rghnughrohhiugdrtghomhdprhgtphhtthhopehtkhhjohhssegrnhgurhhoihgurdgtoh
+    hmpdhrtghpthhtohepkhgvvghstghoohhksegthhhrohhmihhumhdrohhrghdprhgtphht
+    thhopehgrghrhiesghgrrhihghhuohdrnhgvthdprhgtphhtthhopegrlhgvgidrghgrhi
+    hnohhrsehgmhgrihhlrdgtohhmpdhrtghpthhtohepsghoqhhunhdrfhgvnhhgsehgmhgr
+    ihhlrdgtohhmpdhrtghpthhtohepfigvughsohhnrghfsehgmhgrihhlrdgtohhmpdhrtg
+    hpthhtoheprghlihgtvghrhihhlhesghhoohhglhgvrdgtohhm
+X-ME-Proxy: <xmx:88zvZuXEp4Bhxe9GDs-ul9i_Z0tkpoiWXCY1dW3JxLluX97LKT9sdw>
+    <xmx:88zvZqj_U-D4jl8Oj5nzSUNgzrUl4UTFUqMpDEn91ANnRScnkzGoCQ>
+    <xmx:88zvZuCOmJbNoqqAo7D2V4q9w6INEpLlqhr-FAMWy-IMiNYx9KbuyA>
+    <xmx:88zvZrKxuKaU8JX0j-NMpJeAVmsN5JaKtJbiAYljYofS5Jy9bJHPyg>
+    <xmx:9czvZniffzmKKfYuyl9bawBoSXrPdUytsChDbU5Vu3BO6S47wQ4ODYSL>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 867632220071; Sun, 22 Sep 2024 03:53:23 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [MAINLINE 2/2] rds: ib: Add Dynamic Interrupt Moderation to CQs
-To: =?UTF-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Allison Henderson <allison.henderson@oracle.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, rds-devel@oss.oracle.com
-References: <20240918083552.77531-1-haakon.bugge@oracle.com>
- <20240918083552.77531-3-haakon.bugge@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240918083552.77531-3-haakon.bugge@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Date: Sun, 22 Sep 2024 07:52:34 +0000
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Sasha Levin" <sashal@kernel.org>, "Alice Ryhl" <aliceryhl@google.com>,
+ "Tariq Toukan" <tariqt@nvidia.com>, linux-rdma@vger.kernel.org
+Cc: "Miguel Ojeda" <ojeda@kernel.org>, "Matthew Wilcox" <willy@infradead.org>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Kees Cook" <keescook@chromium.org>, "Alex Gaynor" <alex.gaynor@gmail.com>,
+ "Wedson Almeida Filho" <wedsonaf@gmail.com>,
+ "Boqun Feng" <boqun.feng@gmail.com>, "Gary Guo" <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ "Benno Lossin" <benno.lossin@proton.me>,
+ "Andreas Hindborg" <a.hindborg@samsung.com>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ =?UTF-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+ "Todd Kjos" <tkjos@android.com>, "Martijn Coenen" <maco@android.com>,
+ "Joel Fernandes" <joel@joelfernandes.org>,
+ "Carlos Llamas" <cmllamas@google.com>,
+ "Suren Baghdasaryan" <surenb@google.com>, "Trevor Gross" <tmgross@umich.edu>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ rust-for-linux@vger.kernel.org, "Christian Brauner" <brauner@kernel.org>
+Message-Id: <de6cb179-b21f-4e2d-a329-da5c4a138878@app.fastmail.com>
+In-Reply-To: <Zu_CeRfMKyyt4E5O@sashalap>
+References: <20240528-alice-mm-v7-0-78222c31b8f4@google.com>
+ <20240528-alice-mm-v7-2-78222c31b8f4@google.com> <Zu_CeRfMKyyt4E5O@sashalap>
+Subject: Re: [PATCH v7 2/4] uaccess: always export _copy_[from|to]_user with
+ CONFIG_RUST
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-在 2024/9/18 16:35, Håkon Bugge 写道:
-> With the support from ib_core to use Dynamic Interrupt Moderation
-> (DIM) from legacy ULPs, which uses ib_create_cq(), we enable that
-> feature for the receive and send CQs in RDS.
-> 
-> A set of rds-stress runs have been done. bcopy read + write for
-> payload 8448 and 16640 bytes and ack/req of 256 bytes. Number of QPs
-> varies from 8 to 128, number of threads (i.e. rds-stress processes)
-> from one to 16 and a depth of four. A limit has been applied such that
-> the number of processes times the number of QPs never exceeds 128. All
-> in all, 61 rds-stress runs.
-> 
-> For brevity, only the rows showing a +/- 3% deviation or larger from
-> base is listed. The geometric mean of the ratios (IOPS_test /
-> IOPS_base) is calculated for all 61 runs, and that gives the best
-> possible "average" impact of the commits.
-> 
-> In the following, "base" is v6.11-rc7. "test" is the same
-> kernel with the following two commits:
-> 
->         * rds: ib: Add Dynamic Interrupt Moderation to CQs (this commit)
->         * RDMA/core: Enable legacy ULPs to use RDMA DIM
-> 
-> This is executed between two X8-2 with CX-5 using fw 16.35.3502. These
-> BM systems were instantiated with one VF, which were used for the
-> test:
-> 
->                                   base     test
->     ACK    REQ  QPS  THR  DEP     IOPS     IOPS  Percent
->     256   8448    8    1    4   634463   658162      3.7
->     256   8448    8    2    4   862648   997358     15.6
->     256   8448    8    4    4   950458  1113991     17.2
->     256   8448    8    8    4   932120  1127024     20.9
->     256   8448    8   16    4   944977  1133885     20.0
->    8448    256    8    2    4   858663   975563     13.6
->    8448    256    8    4    4   934884  1098854     17.5
->    8448    256    8    8    4   928247  1116015     20.2
->    8448    256    8   16    4   938864  1123455     19.7
->     256   8448   64    1    4   965985   918445     -4.9
->    8448    256   64    1    4   963280   918239     -4.7
->     256  16640    8    2    4   544670   582330      6.9
->     256  16640    8    4    4   554873   597553      7.7
->     256  16640    8    8    4   551799   597479      8.3
->     256  16640    8   16    4   553041   597898      8.1
->   16640    256    8    2    4   544644   578331      6.2
->   16640    256    8    4    4   553944   594627      7.3
->   16640    256    8    8    4   551388   594737      7.9
->   16640    256    8   16    4   552986   596581      7.9
-> Geometric mean of ratios: 1.03
-> 
-> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-> ---
->   net/rds/ib_cm.c | 10 ++++++++++
->   1 file changed, 10 insertions(+)
-> 
-> diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
-> index 26b069e1999df..79603d86b6c02 100644
-> --- a/net/rds/ib_cm.c
-> +++ b/net/rds/ib_cm.c
-> @@ -259,6 +259,7 @@ static void rds_ib_cq_comp_handler_recv(struct ib_cq *cq, void *context)
->   static void poll_scq(struct rds_ib_connection *ic, struct ib_cq *cq,
->   		     struct ib_wc *wcs)
->   {
-> +	int ncompleted = 0;
->   	int nr, i;
->   	struct ib_wc *wc;
->   
-> @@ -276,7 +277,10 @@ static void poll_scq(struct rds_ib_connection *ic, struct ib_cq *cq,
->   				rds_ib_mr_cqe_handler(ic, wc);
->   
->   		}
-> +		ncompleted += nr;
->   	}
-> +	if (cq->dim)
-> +		rdma_dim(cq->dim, ncompleted);
->   }
->   
->   static void rds_ib_tasklet_fn_send(unsigned long data)
-> @@ -304,6 +308,7 @@ static void poll_rcq(struct rds_ib_connection *ic, struct ib_cq *cq,
->   		     struct ib_wc *wcs,
->   		     struct rds_ib_ack_state *ack_state)
->   {
-> +	int ncompleted = 0;
->   	int nr, i;
->   	struct ib_wc *wc;
->   
-> @@ -316,7 +321,10 @@ static void poll_rcq(struct rds_ib_connection *ic, struct ib_cq *cq,
->   
->   			rds_ib_recv_cqe_handler(ic, wc, ack_state);
->   		}
-> +		ncompleted += nr;
->   	}
-> +	if (cq->dim)
-> +		rdma_dim(cq->dim, ncompleted);
->   }
->   
->   static void rds_ib_tasklet_fn_recv(unsigned long data)
-> @@ -542,6 +550,7 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
->   	ic->i_scq_vector = ibdev_get_unused_vector(rds_ibdev);
->   	cq_attr.cqe = ic->i_send_ring.w_nr + fr_queue_space + 1;
->   	cq_attr.comp_vector = ic->i_scq_vector;
-> +	cq_attr.flags |= IB_CQ_MODERATE;
+On Sun, Sep 22, 2024, at 07:08, Sasha Levin wrote:
+> On Tue, May 28, 2024 at 02:58:03PM +0000, Alice Ryhl wrote:
+>>From: Arnd Bergmann <arnd@arndb.de>
+>>
+>>Rust code needs to be able to access _copy_from_user and _copy_to_user
+>>so that it can skip the check_copy_size check in cases where the length
+>>is known at compile-time, mirroring the logic for when C code will skip
+>>check_copy_size. To do this, we ensure that exported versions of these
+>>methods are available when CONFIG_RUST is enabled.
+>>
+>>Alice has verified that this patch passes the CONFIG_TEST_USER_COPY test
+>>on x86 using the Android cuttlefish emulator.
+>
+> Hi folks,
+>
+> I've noticed a build failure using GCC 9.5.0 on arm64 allmodconfig
+> builds:
+>
+> In file included from ./arch/arm64/include/asm/preempt.h:6,
+>                   from ./include/linux/preempt.h:79,
+>                   from ./include/linux/alloc_tag.h:11,
+>                   from ./include/linux/percpu.h:5,
+>                   from ./include/linux/context_tracking_state.h:5,
+>                   from ./include/linux/hardirq.h:5,
+>                   from drivers/net/ethernet/mellanox/mlx4/cq.c:37:
+> In function 'check_copy_size',
+>      inlined from 'mlx4_init_user_cqes' at 
+> ./include/linux/uaccess.h:203:7:
+> ./include/linux/thread_info.h:244:4: error: call to '__bad_copy_from' 
+> declared with attribute error: copy source size is too small
+>    244 |    __bad_copy_from();
+>        |    ^~~~~~~~~~~~~~~~~
+> make[7]: *** [scripts/Makefile.build:244: 
+> drivers/net/ethernet/mellanox/mlx4/cq.o] Error 1
+>
+> I do not have CONFIG_RUST enabled in those builds.
+>
+> I've bisected the issue (twice!) and bisection points to this patch
+> which landed upstream as 1f9a8286bc0c ("uaccess: always export
+> _copy_[from|to]_user with CONFIG_RUST").
+>
+> Reverting said commit on top of Linus's tree fixes the build breakage.
 
-cq_attr.flags is added IB_CQ_MODERATE here.
+Right, it seems we still need the fix I posted in
 
->   	ic->i_send_cq = ib_create_cq(dev, rds_ib_cq_comp_handler_send,
->   				     rds_ib_cq_event_handler, conn,
->   				     &cq_attr);
-> @@ -556,6 +565,7 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
->   	ic->i_rcq_vector = ibdev_get_unused_vector(rds_ibdev);
->   	cq_attr.cqe = ic->i_recv_ring.w_nr;
->   	cq_attr.comp_vector = ic->i_rcq_vector;
-> +	cq_attr.flags |= IB_CQ_MODERATE;
+https://lore.kernel.org/lkml/20230418114730.3674657-1-arnd@kernel.org/
 
-Why is cq_attr.flags add IB_CQ_MODERATE again?
-Is this cq_attr.flags changed before this line?
+Tariq, should I resend this with your Reviewed-by, or can you
+apply it from the old version and make sure it finds its way
+into mainline and 6.11?
 
-Zhu Yanjun
-
->   	ic->i_recv_cq = ib_create_cq(dev, rds_ib_cq_comp_handler_recv,
->   				     rds_ib_cq_event_handler, conn,
->   				     &cq_attr);
-
+     Arnd
 
