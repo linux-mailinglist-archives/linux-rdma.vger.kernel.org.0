@@ -1,142 +1,102 @@
-Return-Path: <linux-rdma+bounces-5036-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5037-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 020B697E1CB
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Sep 2024 15:16:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B436D97E1E7
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Sep 2024 15:53:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AC53B20C44
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Sep 2024 13:16:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4D571C20B95
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Sep 2024 13:53:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A9E0139D;
-	Sun, 22 Sep 2024 13:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DDB91FBA;
+	Sun, 22 Sep 2024 13:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Irk/UfnB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cjxq3suH"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5537637;
-	Sun, 22 Sep 2024 13:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47CD3A23;
+	Sun, 22 Sep 2024 13:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727010999; cv=none; b=pmhPUazS9Zt7J+MvT/IjzjG607Kr0LjwX5cRqXhRs0O39hYCAk4pHQjytWaBgCMTwLm4J1bHs0GjXwa3dCt3Y6ClxpMSad1OOCSNFiFxaRMttRFNtkolc1Rw3s1Qfew5srqPNfSQi0Q/0fV9RdJre2XuHZfL1dntG0uw0hIhcR0=
+	t=1727013181; cv=none; b=NiGPZcHTYQtlDjReXX4dRsvMJqezXs58VvpM5thU/doELj5r75IlM0s8eWA1XrsgCy/H0qfWdalKRSR/qlDkR3al3pqcKLH5HaAkdwqMndH19bBcSSZB1PlSh7N1su1dn8A6I2NzOcu+Vy63HkL6v2gkUOBYfnmE0JL6rEaAEMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727010999; c=relaxed/simple;
-	bh=3rRxgBShBqpcovq3vY/cbRQuMcbMgN8wYzfCKoUgETc=;
+	s=arc-20240116; t=1727013181; c=relaxed/simple;
+	bh=vFpfm6cUZrok1HULVCGdKB193zCuxSr1bD0uzFnfb5U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tUeG8QPJ9GeSYsAAWRevUhypyU4ivffRyPA9nX6nFxavTRG9HKaKTU+eOtVxMtzMuHQXSWcgaqHlh7iXYENxzPGZduswyvFaARNPyWkwnH9aq/x7KtvJJWw0OroEOruN5E/3WZyZr+PAqcdtT8Uvryywv8Bcm+lO6LbHxi9Cjrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Irk/UfnB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23012C4CEC3;
-	Sun, 22 Sep 2024 13:16:38 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=M2LS/6q6DzJI3xWZtFg0WINsmTBIXM/tWxyeHUjlDYXA7MwVgRvqHVZ8QeqrudB/iKl3YAf7TWbYhXw27PJxMVlDsk2ddVX8ln0IgMSKY9RTDgtMAwEGKN/kz1XGzHAp0AK62Kkuvtz4BNIlVCgTdpw7tZC38u82Lw76CbYoiBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cjxq3suH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74AC4C4CEC3;
+	Sun, 22 Sep 2024 13:53:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727010998;
-	bh=3rRxgBShBqpcovq3vY/cbRQuMcbMgN8wYzfCKoUgETc=;
+	s=k20201202; t=1727013181;
+	bh=vFpfm6cUZrok1HULVCGdKB193zCuxSr1bD0uzFnfb5U=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Irk/UfnBn6jTTFmkWa1K7ZeS+4/YWB2bCmxuN1B7ZVJjaodHUx5aFeM2ehw4DuxzX
-	 b66W57SuuU7jqJa8j5lZiqkwHxV6rQrPUxovtTUFwA8cGYLkaPmtqtc1RzOa1sXNe2
-	 tfMXAghm/WeLXreLVI59kwqR3Wj0xO/kfP35KdhSVKK/BsioPfZFm6SLhwKQKS4j8j
-	 oHewziQjOaM/JwLiDQjfw9MVNft6DoB21oX7ltnQ/rVSi4zGoBODdHKuTMCpmTNip8
-	 6hQAqjYOnKo8GZCFWZ7WBtEWoxOXDQKqvnCGjGVmdCNW3V/loH39rSJoGii63rnXW1
-	 LKPS7udjAsubA==
-Date: Sun, 22 Sep 2024 09:16:36 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Alice Ryhl <aliceryhl@google.com>, Tariq Toukan <tariqt@nvidia.com>,
-	linux-rdma@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Trevor Gross <tmgross@umich.edu>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v7 2/4] uaccess: always export _copy_[from|to]_user with
- CONFIG_RUST
-Message-ID: <ZvAYtImQujuiHIVe@sashalap>
-References: <20240528-alice-mm-v7-0-78222c31b8f4@google.com>
- <20240528-alice-mm-v7-2-78222c31b8f4@google.com>
- <Zu_CeRfMKyyt4E5O@sashalap>
- <de6cb179-b21f-4e2d-a329-da5c4a138878@app.fastmail.com>
+	b=cjxq3suHjMQZIZf/jxNbo9NjCl75/fyoDGveKXTkjcG8GguYInUpvozI8PcXDAsKq
+	 Aor9TBUebqbrf4yjRdL6TUOuIsYAzA0kVpAsovqpHI8Bfwz+nbvapDyqcVj/FWKhSJ
+	 TWAwxghh07HkvuPN4zppi7Tpw7In3lcCWtFDzP5XYuqLb+nfxeu+Fbh2BASRiXbPuR
+	 Vxh9Pch45jglChVDuoc9D25iY333SGvvaBywyfBHJ4GspVUdvf+gsbjNehkt04AGe2
+	 uXQ61G5urfGjIHG130FJL5LlVF2D80zGbE1Rf4iAIi08sE9hYufmFFHdgrwZLEb7Jm
+	 wKH5hZkMePBMg==
+Date: Sun, 22 Sep 2024 16:52:43 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Selvin Xavier <selvin.xavier@broadcom.com>
+Cc: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, jgg@ziepe.ca,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH -next] RDMA/bnxt_re: Remove the unused variable en_dev
+Message-ID: <20240922135243.GB11337@unreal>
+References: <20240918021632.36091-1-jiapeng.chong@linux.alibaba.com>
+ <CA+sbYW0zy=kD1JyYbG--keYAv146+SXvuxdQh6dHnvbVCHd9kw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <de6cb179-b21f-4e2d-a329-da5c4a138878@app.fastmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+sbYW0zy=kD1JyYbG--keYAv146+SXvuxdQh6dHnvbVCHd9kw@mail.gmail.com>
 
-On Sun, Sep 22, 2024 at 07:52:34AM +0000, Arnd Bergmann wrote:
->On Sun, Sep 22, 2024, at 07:08, Sasha Levin wrote:
->> On Tue, May 28, 2024 at 02:58:03PM +0000, Alice Ryhl wrote:
->>>From: Arnd Bergmann <arnd@arndb.de>
->>>
->>>Rust code needs to be able to access _copy_from_user and _copy_to_user
->>>so that it can skip the check_copy_size check in cases where the length
->>>is known at compile-time, mirroring the logic for when C code will skip
->>>check_copy_size. To do this, we ensure that exported versions of these
->>>methods are available when CONFIG_RUST is enabled.
->>>
->>>Alice has verified that this patch passes the CONFIG_TEST_USER_COPY test
->>>on x86 using the Android cuttlefish emulator.
->>
->> Hi folks,
->>
->> I've noticed a build failure using GCC 9.5.0 on arm64 allmodconfig
->> builds:
->>
->> In file included from ./arch/arm64/include/asm/preempt.h:6,
->>                   from ./include/linux/preempt.h:79,
->>                   from ./include/linux/alloc_tag.h:11,
->>                   from ./include/linux/percpu.h:5,
->>                   from ./include/linux/context_tracking_state.h:5,
->>                   from ./include/linux/hardirq.h:5,
->>                   from drivers/net/ethernet/mellanox/mlx4/cq.c:37:
->> In function 'check_copy_size',
->>      inlined from 'mlx4_init_user_cqes' at
->> ./include/linux/uaccess.h:203:7:
->> ./include/linux/thread_info.h:244:4: error: call to '__bad_copy_from'
->> declared with attribute error: copy source size is too small
->>    244 |    __bad_copy_from();
->>        |    ^~~~~~~~~~~~~~~~~
->> make[7]: *** [scripts/Makefile.build:244:
->> drivers/net/ethernet/mellanox/mlx4/cq.o] Error 1
->>
->> I do not have CONFIG_RUST enabled in those builds.
->>
->> I've bisected the issue (twice!) and bisection points to this patch
->> which landed upstream as 1f9a8286bc0c ("uaccess: always export
->> _copy_[from|to]_user with CONFIG_RUST").
->>
->> Reverting said commit on top of Linus's tree fixes the build breakage.
->
->Right, it seems we still need the fix I posted in
->
->https://lore.kernel.org/lkml/20230418114730.3674657-1-arnd@kernel.org/
->
->Tariq, should I resend this with your Reviewed-by, or can you
->apply it from the old version and make sure it finds its way
->into mainline and 6.11?
+On Thu, Sep 19, 2024 at 02:16:11PM +0530, Selvin Xavier wrote:
+> On Wed, Sep 18, 2024 at 7:46 AM Jiapeng Chong
+> <jiapeng.chong@linux.alibaba.com> wrote:
+> >
+> > Variable en_dev is not effectively used, so delete it.
+> >
+> > drivers/infiniband/hw/bnxt_re/main.c:1980:22: warning: variable ‘en_dev’ set but not used.
+> 
+> Not sure if you are applying v1 of a previous patch series. A similar
+> issue was reported by kernel test robot and i fixed in v2. I dont see
+> this code in the latest driver code.
 
-The patch above fixes the build issue for me, thanks!
+Similar but not the same, I applied your v2 series, but Jiapeng's patch
+is valid:
 
--- 
-Thanks,
-Sasha
+  1977 static void bnxt_re_remove(struct auxiliary_device *adev)
+  1978 {
+  1979         struct bnxt_re_en_dev_info *en_info = auxiliary_get_drvdata(adev);
+  1980         struct bnxt_en_dev *en_dev;
+  1981         struct bnxt_re_dev *rdev;
+  1982
+  1983         mutex_lock(&bnxt_re_mutex);
+  1984         if (!en_info) {
+  1985                 mutex_unlock(&bnxt_re_mutex);
+  1986                 return;
+  1987         }
+  1988         en_dev = en_info->en_dev;
+  1989         rdev = en_info->rdev;
+  1990
+  1991         if (rdev)
+  1992                 bnxt_re_remove_device(rdev, BNXT_RE_COMPLETE_REMOVE, adev);
+  1993         kfree(en_info);
+  1994         mutex_unlock(&bnxt_re_mutex);
+  1995 }
+
+
+Thanks
 
