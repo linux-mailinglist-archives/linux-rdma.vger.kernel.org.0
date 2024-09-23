@@ -1,204 +1,194 @@
-Return-Path: <linux-rdma+bounces-5040-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5041-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79D1B97E315
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Sep 2024 21:53:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1210497E47B
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Sep 2024 03:04:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C90DB1C20D24
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Sep 2024 19:53:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28F0D1C20E46
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Sep 2024 01:04:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1247446AF;
-	Sun, 22 Sep 2024 19:53:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=akamai.com header.i=@akamai.com header.b="mUDf5rnl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96086624;
+	Mon, 23 Sep 2024 01:04:30 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [67.231.149.131])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2928B64A
-	for <linux-rdma@vger.kernel.org>; Sun, 22 Sep 2024 19:53:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CB85184
+	for <linux-rdma@vger.kernel.org>; Mon, 23 Sep 2024 01:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727034815; cv=none; b=QpWlPzhTRq5H1NPynyK8zXyMb3E49rybosUPmeKVSvPQbOo9T0ICGUKb292cB6KKEFU7zJgr/enX+ciy+lvOQegfyfvFDBq//hDwfnkAZ6Cgm+q8DMv4xNTXiR+q7SLf9Z2PQYZcGfDc1oLODr+M+QecpGxsZo3TEvay9W35DfQ=
+	t=1727053470; cv=none; b=uSfEMw/mXxdeQI2N69nIBFiNonB1IR3kRDAw9vfiGlUS34YL1OgH/MIB6ljaKgSSHcvMkMgYcXFnWcYEKL7knyoXtx9iThgoJjmr3mRw5ao6P5MBEfUeaRvD2Nxvt5lPSV6XmdcPWcVfZc4aS2Df5oNQoS6+aY/VE7aPmk3hRYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727034815; c=relaxed/simple;
-	bh=WTOZ2eEwNW4Lvtd/Y+JnrAxqoCtciVoq4LFsR92+jvc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ApbkpPix+ih57JfF8JOaIiWCa+QbnyNnQVsZ0jWVqe3tSsnsiw6vRsS6xgRuO/uPRh5n8ejaIZvgVWgsOCG9aJwAT6XQAiurfpOSkpVjkiAVEiNzRFVlxcN96vVm0GNfv9J5QlibV8QXsTgQCzJXQYTE96UVCyyjaWy24OBSyp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=akamai.com; spf=pass smtp.mailfrom=akamai.com; dkim=pass (2048-bit key) header.d=akamai.com header.i=@akamai.com header.b=mUDf5rnl; arc=none smtp.client-ip=67.231.149.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=akamai.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=akamai.com
-Received: from pps.filterd (m0409409.ppops.net [127.0.0.1])
-	by m0409409.ppops.net-00190b01. (8.18.1.2/8.18.1.2) with ESMTP id 48MHo0RC016258;
-	Sun, 22 Sep 2024 20:29:39 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=jan2016.eng;
-	 bh=ZksYdjXX6xnlBu3k0eV8lP8yi+W69pQVELSsLsJaNTo=; b=mUDf5rnl9G6K
-	G8IUCUwej4puZFIxA6tJyC+VscVrOcmzjHp68s6Z+AdDsOFlpXWz9QMHNawCOAa3
-	Ope9WLe7S/3DJJV0NDYzTH97ceHN4+EuVwqyjoXSbbRRHvwaAbHH/DyTc3lpOzCp
-	Rlrr0MbieOTQH5Z8uSwUkTomli14sB86sDLddob7lYunZDvlcapdUnIPCEOR1QUT
-	3qRphylJhitzlpgMZcCQ2SZqxjUSkDOFr49exTCfhiSEAgs1CTKXXZJp/AIsMwoh
-	rvPWUItnXIqhSA/e7g6DTQyPyB1+3iVZJHqh5WmQK8xvhpkdveiOPRLdPnvYxCLT
-	KLpD/+f0Mw==
-Received: from prod-mail-ppoint8 (a72-247-45-34.deploy.static.akamaitechnologies.com [72.247.45.34] (may be forged))
-	by m0409409.ppops.net-00190b01. (PPS) with ESMTPS id 41t7ft9mu2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 22 Sep 2024 20:29:39 +0100 (BST)
-Received: from pps.filterd (prod-mail-ppoint8.akamai.com [127.0.0.1])
-	by prod-mail-ppoint8.akamai.com (8.18.1.2/8.18.1.2) with ESMTP id 48MD2nv9012780;
-	Sun, 22 Sep 2024 15:29:38 -0400
-Received: from prod-mail-relay19.dfw02.corp.akamai.com ([172.27.165.173])
-	by prod-mail-ppoint8.akamai.com (PPS) with ESMTP id 41ssfxrn93-1;
-	Sun, 22 Sep 2024 15:29:37 -0400
-Received: from [100.64.0.1] (prod-aoa-dallas2clt14.dfw02.corp.akamai.com [172.27.166.123])
-	by prod-mail-relay19.dfw02.corp.akamai.com (Postfix) with ESMTP id 9089163691;
-	Sun, 22 Sep 2024 19:29:34 +0000 (GMT)
-Message-ID: <027c4f24-f515-4fdb-8770-6bf2433e0f43@akamai.com>
-Date: Sun, 22 Sep 2024 14:29:27 -0500
+	s=arc-20240116; t=1727053470; c=relaxed/simple;
+	bh=ib2nhD0hu07vDhGRLD1KsH+8JluFJcv7dNl/02Z6CaY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=mD1KmqaucldS/2cVqIqxYeY90oqXa1BF/BHaIupk63TDBnZ16W1q1sPdygH9bCUZRRq175NkAqJp86Ee5YMH6G8rId2sot5+omU+NJMPdvWlbrsnhBOKJum2CjxNlt45UVVTiqZBfI1bpGrcEYz1ImuVAqnOoQtBt4P1xxvvyIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4XBlBW0q9Kz1ymDV;
+	Mon, 23 Sep 2024 09:04:19 +0800 (CST)
+Received: from dggpeml100006.china.huawei.com (unknown [7.185.36.169])
+	by mail.maildlp.com (Postfix) with ESMTPS id F34DD140259;
+	Mon, 23 Sep 2024 09:04:17 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (7.185.36.61) by
+ dggpeml100006.china.huawei.com (7.185.36.169) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Mon, 23 Sep 2024 09:04:17 +0800
+Received: from dggpemf200006.china.huawei.com ([7.185.36.61]) by
+ dggpemf200006.china.huawei.com ([7.185.36.61]) with mapi id 15.02.1544.011;
+ Mon, 23 Sep 2024 09:04:17 +0800
+From: "Gonglei (Arei)" <arei.gonglei@huawei.com>
+To: Michael Galaxy <mgalaxy@akamai.com>, "Michael S. Tsirkin"
+	<mst@redhat.com>, Peter Xu <peterx@redhat.com>
+CC: "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>, "yu.zhang@ionos.com"
+	<yu.zhang@ionos.com>, "elmar.gerdes@ionos.com" <elmar.gerdes@ionos.com>,
+	zhengchuan <zhengchuan@huawei.com>, "berrange@redhat.com"
+	<berrange@redhat.com>, "armbru@redhat.com" <armbru@redhat.com>,
+	"lizhijian@fujitsu.com" <lizhijian@fujitsu.com>, "pbonzini@redhat.com"
+	<pbonzini@redhat.com>, Xiexiangyou <xiexiangyou@huawei.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "lixiao (H)"
+	<lixiao91@huawei.com>, "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
+	Wangjialin <wangjialin23@huawei.com>
+Subject: RE: [PATCH 0/6] refactor RDMA live migration based on rsocket API
+Thread-Topic: [PATCH 0/6] refactor RDMA live migration based on rsocket API
+Thread-Index: AQHatni5B+Psi4bf8k2CmAL8rvKhtrI7iLoAgAALpYCAKMQMgIAA4w2Q
+Date: Mon, 23 Sep 2024 01:04:17 +0000
+Message-ID: <84c74f1a95a648b18c9d41b8c5ef2f60@huawei.com>
+References: <1717503252-51884-1-git-send-email-arei.gonglei@huawei.com>
+	<Zs4z7tKWif6K4EbT@x1n> <20240827165643-mutt-send-email-mst@kernel.org>
+ <027c4f24-f515-4fdb-8770-6bf2433e0f43@akamai.com>
+In-Reply-To: <027c4f24-f515-4fdb-8770-6bf2433e0f43@akamai.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/6] refactor RDMA live migration based on rsocket API
-To: "Michael S. Tsirkin" <mst@redhat.com>, Peter Xu <peterx@redhat.com>
-Cc: Gonglei <arei.gonglei@huawei.com>, qemu-devel@nongnu.org,
-        yu.zhang@ionos.com, elmar.gerdes@ionos.com, zhengchuan@huawei.com,
-        berrange@redhat.com, armbru@redhat.com, lizhijian@fujitsu.com,
-        pbonzini@redhat.com, xiexiangyou@huawei.com,
-        linux-rdma@vger.kernel.org, lixiao91@huawei.com, jinpu.wang@ionos.com,
-        Jialin Wang <wangjialin23@huawei.com>
-References: <1717503252-51884-1-git-send-email-arei.gonglei@huawei.com>
- <Zs4z7tKWif6K4EbT@x1n> <20240827165643-mutt-send-email-mst@kernel.org>
-Content-Language: en-US
-From: Michael Galaxy <mgalaxy@akamai.com>
-In-Reply-To: <20240827165643-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-22_19,2024-09-19_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 spamscore=0
- mlxscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2408220000
- definitions=main-2409220150
-X-Proofpoint-GUID: GyWlgh7Tvyv0VqHMkvHLJyxugqdrXxJP
-X-Proofpoint-ORIG-GUID: GyWlgh7Tvyv0VqHMkvHLJyxugqdrXxJP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 priorityscore=1501
- mlxscore=0 bulkscore=0 suspectscore=0 impostorscore=0 spamscore=0
- clxscore=1011 malwarescore=0 adultscore=0 lowpriorityscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2408220000
- definitions=main-2409220151
 
-Hi All,
-
-I have met with the team from IONOS about their testing on actual IB 
-hardware here at KVM Forum today and the requirements are starting to 
-make more sense to me. I didn't say much in our previous thread because 
-I misunderstood the requirements, so let me try to explain and see if 
-we're all on the same page. There appears to be a fundamental limitation 
-here with rsocket, for which I don't see how it is possible to overcome.
-
-The basic problem is that rsocket is trying to present a stream 
-abstraction, a concept that is fundamentally incompatible with RDMA. The 
-whole point of using RDMA in the first place is to avoid using the CPU, 
-and to do that, all of the memory (potentially hundreds of gigabytes) 
-need to be registered with the hardware *in advance* (this is how the 
-original implementation works).
-
-The need to fake a socket/bytestream abstraction eventually breaks down 
-=> There is a limit (a few GB) in rsocket (which the IONOS team previous 
-reported in testing.... see that email), it appears that means that 
-rsocket is only going to be able to map a certain limited amount of 
-memory with the hardware until its internal "buffer" runs out before it 
-can then unmap and remap the next batch of memory with the hardware to 
-continue along with the fake bytestream. This is very much sticking a 
-square peg in a round hole. If you were to "relax" the rsocket 
-implementation to register the entire VM memory space (as my original 
-implementation does), then there wouldn't be any need for rsocket in the 
-first place.
-
-I think there is just some misunderstanding here in the group in the way 
-infiniband is intended to work. Does that make sense so far? I do 
-understand the need for testing, but rsocket is simply not intended to 
-be used for kind of massive bulk data transfer purposes that we're 
-proposing using it here for, simply for the purposes of making our lives 
-better in testing.
-
-Regarding testing: During our previous thread earlier this summer, why 
-did we not consider making a better integration test to solve the test 
-burden problem? To explain better: If a new integration test were 
-written for QEMU and submitted and reviewed (a reasonably complex test 
-that was in line with a traditional live migration integration test that 
-actually spins up QEMU) which used softRoCE in a localhost configuration 
-that has full libibverbs supports and still allowed for compatibility 
-testing with QEMU, would such an integration not be sufficient to handle 
-the testing burden?
-
-Comments welcome,
-- Michael
-
-On 8/27/24 15:57, Michael S. Tsirkin wrote:
-> !-------------------------------------------------------------------|
->    This Message Is From an External Sender
->    This message came from outside your organization.
-> |-------------------------------------------------------------------!
->
-> On Tue, Aug 27, 2024 at 04:15:42PM -0400, Peter Xu wrote:
->> On Tue, Jun 04, 2024 at 08:14:06PM +0800, Gonglei wrote:
->>> From: Jialin Wang <wangjialin23@huawei.com>
->>>
->>> Hi,
->>>
->>> This patch series attempts to refactor RDMA live migration by
->>> introducing a new QIOChannelRDMA class based on the rsocket API.
->>>
->>> The /usr/include/rdma/rsocket.h provides a higher level rsocket API
->>> that is a 1-1 match of the normal kernel 'sockets' API, which hides the
->>> detail of rdma protocol into rsocket and allows us to add support for
->>> some modern features like multifd more easily.
->>>
->>> Here is the previous discussion on refactoring RDMA live migration using
->>> the rsocket API:
->>>
->>> https://urldefense.com/v3/__https://lore.kernel.org/qemu-devel/20240328130255.52257-1-philmd@linaro.org/__;!!GjvTz_vk!TuRaotO-yMj82o2kQo3x743jLoDElYgrXmp2wOfMTuCS1Y4k2Son1WGsRnZG_YYS9ZgBZ8uRHQ$
->>>
->>> We have encountered some bugs when using rsocket and plan to submit them to
->>> the rdma-core community.
->>>
->>> In addition, the use of rsocket makes our programming more convenient,
->>> but it must be noted that this method introduces multiple memory copies,
->>> which can be imagined that there will be a certain performance degradation,
->>> hoping that friends with RDMA network cards can help verify, thank you!
->>>
->>> Jialin Wang (6):
->>>    migration: remove RDMA live migration temporarily
->>>    io: add QIOChannelRDMA class
->>>    io/channel-rdma: support working in coroutine
->>>    tests/unit: add test-io-channel-rdma.c
->>>    migration: introduce new RDMA live migration
->>>    migration/rdma: support multifd for RDMA migration
->> This series has been idle for a while; we still need to know how to move
->> forward.
->
-> What exactly is the question? This got a bunch of comments,
-> the first thing to do would be to address them.
->
->
->>   I guess I lost the latest status quo..
->>
->> Any update (from anyone..) on what stage are we in?
->>
->> Thanks,
->> -- 
->> Peter Xu
+SGksDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWljaGFlbCBHYWxh
+eHkgW21haWx0bzptZ2FsYXh5QGFrYW1haS5jb21dDQo+IFNlbnQ6IE1vbmRheSwgU2VwdGVtYmVy
+IDIzLCAyMDI0IDM6MjkgQU0NCj4gVG86IE1pY2hhZWwgUy4gVHNpcmtpbiA8bXN0QHJlZGhhdC5j
+b20+OyBQZXRlciBYdSA8cGV0ZXJ4QHJlZGhhdC5jb20+DQo+IENjOiBHb25nbGVpIChBcmVpKSA8
+YXJlaS5nb25nbGVpQGh1YXdlaS5jb20+OyBxZW11LWRldmVsQG5vbmdudS5vcmc7DQo+IHl1Lnpo
+YW5nQGlvbm9zLmNvbTsgZWxtYXIuZ2VyZGVzQGlvbm9zLmNvbTsgemhlbmdjaHVhbg0KPiA8emhl
+bmdjaHVhbkBodWF3ZWkuY29tPjsgYmVycmFuZ2VAcmVkaGF0LmNvbTsgYXJtYnJ1QHJlZGhhdC5j
+b207DQo+IGxpemhpamlhbkBmdWppdHN1LmNvbTsgcGJvbnppbmlAcmVkaGF0LmNvbTsgWGlleGlh
+bmd5b3UNCj4gPHhpZXhpYW5neW91QGh1YXdlaS5jb20+OyBsaW51eC1yZG1hQHZnZXIua2VybmVs
+Lm9yZzsgbGl4aWFvIChIKQ0KPiA8bGl4aWFvOTFAaHVhd2VpLmNvbT47IGppbnB1LndhbmdAaW9u
+b3MuY29tOyBXYW5namlhbGluDQo+IDx3YW5namlhbGluMjNAaHVhd2VpLmNvbT4NCj4gU3ViamVj
+dDogUmU6IFtQQVRDSCAwLzZdIHJlZmFjdG9yIFJETUEgbGl2ZSBtaWdyYXRpb24gYmFzZWQgb24g
+cnNvY2tldCBBUEkNCj4gDQo+IEhpIEFsbCwNCj4gDQo+IEkgaGF2ZSBtZXQgd2l0aCB0aGUgdGVh
+bSBmcm9tIElPTk9TIGFib3V0IHRoZWlyIHRlc3Rpbmcgb24gYWN0dWFsIElCDQo+IGhhcmR3YXJl
+IGhlcmUgYXQgS1ZNIEZvcnVtIHRvZGF5IGFuZCB0aGUgcmVxdWlyZW1lbnRzIGFyZSBzdGFydGlu
+ZyB0byBtYWtlDQo+IG1vcmUgc2Vuc2UgdG8gbWUuIEkgZGlkbid0IHNheSBtdWNoIGluIG91ciBw
+cmV2aW91cyB0aHJlYWQgYmVjYXVzZSBJDQo+IG1pc3VuZGVyc3Rvb2QgdGhlIHJlcXVpcmVtZW50
+cywgc28gbGV0IG1lIHRyeSB0byBleHBsYWluIGFuZCBzZWUgaWYgd2UncmUgYWxsIG9uDQo+IHRo
+ZSBzYW1lIHBhZ2UuIFRoZXJlIGFwcGVhcnMgdG8gYmUgYSBmdW5kYW1lbnRhbCBsaW1pdGF0aW9u
+IGhlcmUgd2l0aCByc29ja2V0LA0KPiBmb3Igd2hpY2ggSSBkb24ndCBzZWUgaG93IGl0IGlzIHBv
+c3NpYmxlIHRvIG92ZXJjb21lLg0KPiANCj4gVGhlIGJhc2ljIHByb2JsZW0gaXMgdGhhdCByc29j
+a2V0IGlzIHRyeWluZyB0byBwcmVzZW50IGEgc3RyZWFtIGFic3RyYWN0aW9uLCBhDQo+IGNvbmNl
+cHQgdGhhdCBpcyBmdW5kYW1lbnRhbGx5IGluY29tcGF0aWJsZSB3aXRoIFJETUEuIFRoZSB3aG9s
+ZSBwb2ludCBvZg0KPiB1c2luZyBSRE1BIGluIHRoZSBmaXJzdCBwbGFjZSBpcyB0byBhdm9pZCB1
+c2luZyB0aGUgQ1BVLCBhbmQgdG8gZG8gdGhhdCwgYWxsIG9mIHRoZQ0KPiBtZW1vcnkgKHBvdGVu
+dGlhbGx5IGh1bmRyZWRzIG9mIGdpZ2FieXRlcykgbmVlZCB0byBiZSByZWdpc3RlcmVkIHdpdGgg
+dGhlDQo+IGhhcmR3YXJlICppbiBhZHZhbmNlKiAodGhpcyBpcyBob3cgdGhlIG9yaWdpbmFsIGlt
+cGxlbWVudGF0aW9uIHdvcmtzKS4NCj4gDQo+IFRoZSBuZWVkIHRvIGZha2UgYSBzb2NrZXQvYnl0
+ZXN0cmVhbSBhYnN0cmFjdGlvbiBldmVudHVhbGx5IGJyZWFrcyBkb3duID0+DQo+IFRoZXJlIGlz
+IGEgbGltaXQgKGEgZmV3IEdCKSBpbiByc29ja2V0ICh3aGljaCB0aGUgSU9OT1MgdGVhbSBwcmV2
+aW91cyByZXBvcnRlZA0KPiBpbiB0ZXN0aW5nLi4uLiBzZWUgdGhhdCBlbWFpbCksIGl0IGFwcGVh
+cnMgdGhhdCBtZWFucyB0aGF0IHJzb2NrZXQgaXMgb25seSBnb2luZyB0bw0KPiBiZSBhYmxlIHRv
+IG1hcCBhIGNlcnRhaW4gbGltaXRlZCBhbW91bnQgb2YgbWVtb3J5IHdpdGggdGhlIGhhcmR3YXJl
+IHVudGlsIGl0cw0KPiBpbnRlcm5hbCAiYnVmZmVyIiBydW5zIG91dCBiZWZvcmUgaXQgY2FuIHRo
+ZW4gdW5tYXAgYW5kIHJlbWFwIHRoZSBuZXh0IGJhdGNoDQo+IG9mIG1lbW9yeSB3aXRoIHRoZSBo
+YXJkd2FyZSB0byBjb250aW51ZSBhbG9uZyB3aXRoIHRoZSBmYWtlIGJ5dGVzdHJlYW0uIFRoaXMN
+Cj4gaXMgdmVyeSBtdWNoIHN0aWNraW5nIGEgc3F1YXJlIHBlZyBpbiBhIHJvdW5kIGhvbGUuIElm
+IHlvdSB3ZXJlIHRvICJyZWxheCIgdGhlDQo+IHJzb2NrZXQgaW1wbGVtZW50YXRpb24gdG8gcmVn
+aXN0ZXIgdGhlIGVudGlyZSBWTSBtZW1vcnkgc3BhY2UgKGFzIG15DQo+IG9yaWdpbmFsIGltcGxl
+bWVudGF0aW9uIGRvZXMpLCB0aGVuIHRoZXJlIHdvdWxkbid0IGJlIGFueSBuZWVkIGZvciByc29j
+a2V0IGluDQo+IHRoZSBmaXJzdCBwbGFjZS4NCj4gDQoNClRoYW5rIHlvdSBmb3IgeW91ciBvcGlu
+aW9uLiBZb3UncmUgcmlnaHQuIFJTb2NrZXQgaGFzIGVuY291bnRlcmVkIGRpZmZpY3VsdGllcyBp
+biANCnRyYW5zZmVycmluZyBsYXJnZSBhbW91bnRzIG9mIGRhdGEuIFdlIGhhdmVuJ3QgZXZlbiBm
+aWd1cmVkIGl0IG91dCB5ZXQuIEFsdGhvdWdoDQppbiB0aGlzIHByYWN0aWNlLCB3ZSBzb2x2ZWQg
+c2V2ZXJhbCBwcm9ibGVtcyB3aXRoIHJzb2NrZXQuDQoNCkluIG91ciBwcmFjdGljZSwgd2UgbmVl
+ZCB0byBxdWlja2x5IGNvbXBsZXRlIFZNIGxpdmUgbWlncmF0aW9uIGFuZCB0aGUgZG93bnRpbWUg
+DQpvZiBsaXZlIG1pZ3JhdGlvbiBtdXN0IGJlIHdpdGhpbiA1MCBtcyBvciBsZXNzLiBUaGVyZWZv
+cmUsIHdlIHVzZSBSRE1BLCB3aGljaCBpcyANCmFuIGVzc2VudGlhbCByZXF1aXJlbWVudC4gTmV4
+dCwgSSB0aGluayB3ZSdsbCBkbyBpdCBiYXNlZCBvbiBRZW11J3MgbmF0aXZlIFJETUEgDQpsaXZl
+IG1pZ3JhdGlvbiBzb2x1dGlvbi4gRHVyaW5nIHRoaXMgcGVyaW9kLCB3ZSByZWFsbHkgZG91YnRl
+ZCB3aGV0aGVyIFJETUEgbGl2ZSANCm1pZ3JhdGlvbiB3YXMgcmVhbGx5IGZlYXNpYmxlIHRocm91
+Z2ggcnNvY2tldCByZWZhY3RvcmluZywgc28gdGhlIHJlZmFjdG9yaW5nIHBsYW4gDQp3YXMgc2hl
+bHZlZC4NCg0KDQpSZWdhcmRzLA0KLUdvbmdsZWkNCg0KPiBJIHRoaW5rIHRoZXJlIGlzIGp1c3Qg
+c29tZSBtaXN1bmRlcnN0YW5kaW5nIGhlcmUgaW4gdGhlIGdyb3VwIGluIHRoZSB3YXkNCj4gaW5m
+aW5pYmFuZCBpcyBpbnRlbmRlZCB0byB3b3JrLiBEb2VzIHRoYXQgbWFrZSBzZW5zZSBzbyBmYXI/
+IEkgZG8gdW5kZXJzdGFuZA0KPiB0aGUgbmVlZCBmb3IgdGVzdGluZywgYnV0IHJzb2NrZXQgaXMg
+c2ltcGx5IG5vdCBpbnRlbmRlZCB0byBiZSB1c2VkIGZvciBraW5kIG9mDQo+IG1hc3NpdmUgYnVs
+ayBkYXRhIHRyYW5zZmVyIHB1cnBvc2VzIHRoYXQgd2UncmUgcHJvcG9zaW5nIHVzaW5nIGl0IGhl
+cmUgZm9yLA0KPiBzaW1wbHkgZm9yIHRoZSBwdXJwb3NlcyBvZiBtYWtpbmcgb3VyIGxpdmVzIGJl
+dHRlciBpbiB0ZXN0aW5nLg0KPiANCj4gUmVnYXJkaW5nIHRlc3Rpbmc6IER1cmluZyBvdXIgcHJl
+dmlvdXMgdGhyZWFkIGVhcmxpZXIgdGhpcyBzdW1tZXIsIHdoeSBkaWQgd2UNCj4gbm90IGNvbnNp
+ZGVyIG1ha2luZyBhIGJldHRlciBpbnRlZ3JhdGlvbiB0ZXN0IHRvIHNvbHZlIHRoZSB0ZXN0IGJ1
+cmRlbiBwcm9ibGVtPw0KPiBUbyBleHBsYWluIGJldHRlcjogSWYgYSBuZXcgaW50ZWdyYXRpb24g
+dGVzdCB3ZXJlIHdyaXR0ZW4gZm9yIFFFTVUgYW5kDQo+IHN1Ym1pdHRlZCBhbmQgcmV2aWV3ZWQg
+KGEgcmVhc29uYWJseSBjb21wbGV4IHRlc3QgdGhhdCB3YXMgaW4gbGluZSB3aXRoIGENCj4gdHJh
+ZGl0aW9uYWwgbGl2ZSBtaWdyYXRpb24gaW50ZWdyYXRpb24gdGVzdCB0aGF0IGFjdHVhbGx5IHNw
+aW5zIHVwIFFFTVUpIHdoaWNoDQo+IHVzZWQgc29mdFJvQ0UgaW4gYSBsb2NhbGhvc3QgY29uZmln
+dXJhdGlvbiB0aGF0IGhhcyBmdWxsIGxpYmlidmVyYnMgc3VwcG9ydHMgYW5kDQo+IHN0aWxsIGFs
+bG93ZWQgZm9yIGNvbXBhdGliaWxpdHkgdGVzdGluZyB3aXRoIFFFTVUsIHdvdWxkIHN1Y2ggYW4g
+aW50ZWdyYXRpb24gbm90DQo+IGJlIHN1ZmZpY2llbnQgdG8gaGFuZGxlIHRoZSB0ZXN0aW5nIGJ1
+cmRlbj8NCj4gDQo+IENvbW1lbnRzIHdlbGNvbWUsDQo+IC0gTWljaGFlbA0KPiANCj4gT24gOC8y
+Ny8yNCAxNTo1NywgTWljaGFlbCBTLiBUc2lya2luIHdyb3RlOg0KPiA+ICEtLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfA0K
+PiA+ICAgIFRoaXMgTWVzc2FnZSBJcyBGcm9tIGFuIEV4dGVybmFsIFNlbmRlcg0KPiA+ICAgIFRo
+aXMgbWVzc2FnZSBjYW1lIGZyb20gb3V0c2lkZSB5b3VyIG9yZ2FuaXphdGlvbi4NCj4gPiB8LS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLSENCj4gPg0KPiA+IE9uIFR1ZSwgQXVnIDI3LCAyMDI0IGF0IDA0OjE1OjQyUE0gLTA0
+MDAsIFBldGVyIFh1IHdyb3RlOg0KPiA+PiBPbiBUdWUsIEp1biAwNCwgMjAyNCBhdCAwODoxNDow
+NlBNICswODAwLCBHb25nbGVpIHdyb3RlOg0KPiA+Pj4gRnJvbTogSmlhbGluIFdhbmcgPHdhbmdq
+aWFsaW4yM0BodWF3ZWkuY29tPg0KPiA+Pj4NCj4gPj4+IEhpLA0KPiA+Pj4NCj4gPj4+IFRoaXMg
+cGF0Y2ggc2VyaWVzIGF0dGVtcHRzIHRvIHJlZmFjdG9yIFJETUEgbGl2ZSBtaWdyYXRpb24gYnkN
+Cj4gPj4+IGludHJvZHVjaW5nIGEgbmV3IFFJT0NoYW5uZWxSRE1BIGNsYXNzIGJhc2VkIG9uIHRo
+ZSByc29ja2V0IEFQSS4NCj4gPj4+DQo+ID4+PiBUaGUgL3Vzci9pbmNsdWRlL3JkbWEvcnNvY2tl
+dC5oIHByb3ZpZGVzIGEgaGlnaGVyIGxldmVsIHJzb2NrZXQgQVBJDQo+ID4+PiB0aGF0IGlzIGEg
+MS0xIG1hdGNoIG9mIHRoZSBub3JtYWwga2VybmVsICdzb2NrZXRzJyBBUEksIHdoaWNoIGhpZGVz
+DQo+ID4+PiB0aGUgZGV0YWlsIG9mIHJkbWEgcHJvdG9jb2wgaW50byByc29ja2V0IGFuZCBhbGxv
+d3MgdXMgdG8gYWRkDQo+ID4+PiBzdXBwb3J0IGZvciBzb21lIG1vZGVybiBmZWF0dXJlcyBsaWtl
+IG11bHRpZmQgbW9yZSBlYXNpbHkuDQo+ID4+Pg0KPiA+Pj4gSGVyZSBpcyB0aGUgcHJldmlvdXMg
+ZGlzY3Vzc2lvbiBvbiByZWZhY3RvcmluZyBSRE1BIGxpdmUgbWlncmF0aW9uDQo+ID4+PiB1c2lu
+ZyB0aGUgcnNvY2tldCBBUEk6DQo+ID4+Pg0KPiA+Pj4gaHR0cHM6Ly91cmxkZWZlbnNlLmNvbS92
+My9fX2h0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3FlbXUtZGV2ZWwvMjAyNDANCj4gPj4+DQo+IDMy
+ODEzMDI1NS41MjI1Ny0xLXBoaWxtZEBsaW5hcm8ub3JnL19fOyEhR2p2VHpfdmshVHVSYW90Ty15
+TWo4Mm8ya1FvDQo+ID4+PiAzeDc0M2pMb0RFbFlnclhtcDJ3T2ZNVHVDUzFZNGsyU29uMVdHc1Ju
+WkdfWVlTOVpnQlo4dVJIUSQNCj4gPj4+DQo+ID4+PiBXZSBoYXZlIGVuY291bnRlcmVkIHNvbWUg
+YnVncyB3aGVuIHVzaW5nIHJzb2NrZXQgYW5kIHBsYW4gdG8gc3VibWl0DQo+ID4+PiB0aGVtIHRv
+IHRoZSByZG1hLWNvcmUgY29tbXVuaXR5Lg0KPiA+Pj4NCj4gPj4+IEluIGFkZGl0aW9uLCB0aGUg
+dXNlIG9mIHJzb2NrZXQgbWFrZXMgb3VyIHByb2dyYW1taW5nIG1vcmUNCj4gPj4+IGNvbnZlbmll
+bnQsIGJ1dCBpdCBtdXN0IGJlIG5vdGVkIHRoYXQgdGhpcyBtZXRob2QgaW50cm9kdWNlcw0KPiA+
+Pj4gbXVsdGlwbGUgbWVtb3J5IGNvcGllcywgd2hpY2ggY2FuIGJlIGltYWdpbmVkIHRoYXQgdGhl
+cmUgd2lsbCBiZSBhDQo+ID4+PiBjZXJ0YWluIHBlcmZvcm1hbmNlIGRlZ3JhZGF0aW9uLCBob3Bp
+bmcgdGhhdCBmcmllbmRzIHdpdGggUkRNQSBuZXR3b3JrDQo+IGNhcmRzIGNhbiBoZWxwIHZlcmlm
+eSwgdGhhbmsgeW91IQ0KPiA+Pj4NCj4gPj4+IEppYWxpbiBXYW5nICg2KToNCj4gPj4+ICAgIG1p
+Z3JhdGlvbjogcmVtb3ZlIFJETUEgbGl2ZSBtaWdyYXRpb24gdGVtcG9yYXJpbHkNCj4gPj4+ICAg
+IGlvOiBhZGQgUUlPQ2hhbm5lbFJETUEgY2xhc3MNCj4gPj4+ICAgIGlvL2NoYW5uZWwtcmRtYTog
+c3VwcG9ydCB3b3JraW5nIGluIGNvcm91dGluZQ0KPiA+Pj4gICAgdGVzdHMvdW5pdDogYWRkIHRl
+c3QtaW8tY2hhbm5lbC1yZG1hLmMNCj4gPj4+ICAgIG1pZ3JhdGlvbjogaW50cm9kdWNlIG5ldyBS
+RE1BIGxpdmUgbWlncmF0aW9uDQo+ID4+PiAgICBtaWdyYXRpb24vcmRtYTogc3VwcG9ydCBtdWx0
+aWZkIGZvciBSRE1BIG1pZ3JhdGlvbg0KPiA+PiBUaGlzIHNlcmllcyBoYXMgYmVlbiBpZGxlIGZv
+ciBhIHdoaWxlOyB3ZSBzdGlsbCBuZWVkIHRvIGtub3cgaG93IHRvDQo+ID4+IG1vdmUgZm9yd2Fy
+ZC4NCj4gPg0KPiA+IFdoYXQgZXhhY3RseSBpcyB0aGUgcXVlc3Rpb24/IFRoaXMgZ290IGEgYnVu
+Y2ggb2YgY29tbWVudHMsIHRoZSBmaXJzdA0KPiA+IHRoaW5nIHRvIGRvIHdvdWxkIGJlIHRvIGFk
+ZHJlc3MgdGhlbS4NCj4gPg0KPiA+DQo+ID4+ICAgSSBndWVzcyBJIGxvc3QgdGhlIGxhdGVzdCBz
+dGF0dXMgcXVvLi4NCj4gPj4NCj4gPj4gQW55IHVwZGF0ZSAoZnJvbSBhbnlvbmUuLikgb24gd2hh
+dCBzdGFnZSBhcmUgd2UgaW4/DQo+ID4+DQo+ID4+IFRoYW5rcywNCj4gPj4gLS0NCj4gPj4gUGV0
+ZXIgWHUNCg0K
 
