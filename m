@@ -1,134 +1,86 @@
-Return-Path: <linux-rdma+bounces-5056-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5057-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45B66983D52
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 08:47:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B65D7983D68
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 08:54:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9D2A1F23E78
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 06:47:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E250C1C2283E
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 06:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B63B6F2F2;
-	Tue, 24 Sep 2024 06:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D3F823C3;
+	Tue, 24 Sep 2024 06:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aZojnje2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 938E31E515;
-	Tue, 24 Sep 2024 06:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416996E614;
+	Tue, 24 Sep 2024 06:54:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727160433; cv=none; b=DsB2a/y0X/A6CZWjkpjVXN62FWJCVbx5kA0n5tkQXJwzDuzgqkfXKWjCcVF9DQ6S9K9cT8ZXSBP0DeFbpT/HqA2WrNpXIMrlDtB15yCJ67sga4vIbhN7fGa67OCfpvIo9Ao6Yhz+L5zXAVGcju6j6LM9yj0FeGuEQSog9ScnSvY=
+	t=1727160877; cv=none; b=dZz3uJuyMprNEVpZ9QS9np+ZGn5Fgs9UYgCMmhTvvy/dG6Olf+8aRcdGrj2TK7KD0+F5ZNUsuW/qoulO1aQ3jab4Za+DiFxszV11wrXvvcf7dbAxxKy9q/SZoDvZHfjUajL0LONLR1OTAn6oDMlWPI58g+Lz+iJFMeETE2z22vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727160433; c=relaxed/simple;
-	bh=eU2hnVzQrG1TIFcdYq+7+iCa3lWVqm+QQXfhMDdsbic=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ChoScf/QaVCTZnrdx2GOBx5BW+xwnmZr79TVqMK7uZKlMI4715B5vTItr9dT8CzDTnwlur8AaJjdiARMHMZcoUQfwzPLQI6QkTmawcpURpUxWg7IXzUxJgknHN2wyYfpdMRPAhNZVrFYi5TvsGBOLTJQZYo+3tqX0MfRCBbAoJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4XCVl40H3fz6J6DN;
-	Tue, 24 Sep 2024 14:46:40 +0800 (CST)
-Received: from frapeml500005.china.huawei.com (unknown [7.182.85.13])
-	by mail.maildlp.com (Postfix) with ESMTPS id EE8BB140B63;
-	Tue, 24 Sep 2024 14:47:07 +0800 (CST)
-Received: from china (10.200.201.82) by frapeml500005.china.huawei.com
- (7.182.85.13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Tue, 24 Sep
- 2024 08:46:45 +0200
-From: Gur Stavi <gur.stavi@huawei.com>
-To: <linyunsheng@huawei.com>
-CC: <akpm@linux-foundation.org>, <aleksander.lobakin@intel.com>,
-	<alexander.duyck@gmail.com>, <angelogioacchino.delregno@collabora.com>,
-	<anthony.l.nguyen@intel.com>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <edumazet@google.com>,
-	<fanghaiqing@huawei.com>, <hawk@kernel.org>, <ilias.apalodimas@linaro.org>,
-	<imx@lists.linux.dev>, <intel-wired-lan@lists.osuosl.org>,
-	<iommu@lists.linux.dev>, <john.fastabend@gmail.com>, <kuba@kernel.org>,
-	<kvalo@kernel.org>, <leon@kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-mm@kvack.org>,
-	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<liuyonglong@huawei.com>, <lorenzo@kernel.org>, <matthias.bgg@gmail.com>,
-	<nbd@nbd.name>, <netdev@vger.kernel.org>, <pabeni@redhat.com>,
-	<przemyslaw.kitszel@intel.com>, <robin.murphy@arm.com>,
-	<ryder.lee@mediatek.com>, <saeedm@nvidia.com>, <sean.wang@mediatek.com>,
-	<shayne.chen@mediatek.com>, <shenwei.wang@nxp.com>, <tariqt@nvidia.com>,
-	<wei.fang@nxp.com>, <xiaoning.wang@nxp.com>, <zhangkun09@huawei.com>
-Subject: Re: [PATCH net 2/2] page_pool: fix IOMMU crash when driver has already unbound
-Date: Tue, 24 Sep 2024 09:45:59 +0300
-Message-ID: <20240924064559.1681488-1-gur.stavi@huawei.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <2fb8d278-62e0-4a81-a537-8f601f61e81d@huawei.com>
-References: <2fb8d278-62e0-4a81-a537-8f601f61e81d@huawei.com>
+	s=arc-20240116; t=1727160877; c=relaxed/simple;
+	bh=EeC7cXplTg/3qKtPs0mpDW07TR8Y7qOGbalWkLlihi8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lMflCQcQG8Q2rgPelHz3x3uxPlO8B0Jm0F3a2GS5mE/vgp/d6j2n5vZ75hKdyJKj9gsG9Zwf4i8v9hsJLf+wj/EDKt3mjU8JZ60HLm/BpvnkR63WrWvgCAJ6oHtNJaqWta9b7YWwCTR5WOWlD1CTkcPGD3nJ5jq/T0QQwcgDRk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aZojnje2; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=EeC7cXplTg/3qKtPs0mpDW07TR8Y7qOGbalWkLlihi8=; b=aZojnje2op7H+OOywcj/GuoPmi
+	RFj+rTe+HyzlGgHyxvGS6xRKW82pxAzW1lQBWD6AhWDqvhfI5DcndFrTDWlC75Ded8lNFRTi2BRJ/
+	NvtYWBn6VrXeDhF+w16MO/yscA2S7R4/lHEWevBCSAdkUy0AEGQKUy60uBhLb/T6YempADzGJee50
+	3BbgcPWjIR8HkBD5Kp6UgiG4DEcH6Zj82+Buh6659BbI7QhEXww1gF771bHwhYITvEP2jAH3X03Ee
+	8ZbrUox3dPULt9dHG8LOjDFqaZgJgNaeqM7OCi8EDo7+AdYU1ttkxfOdWNnOhUTLXFiUKHlCSkw0l
+	cm8IzW6g==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1sszRQ-00000001KIZ-24Tu;
+	Tue, 24 Sep 2024 06:54:32 +0000
+Date: Mon, 23 Sep 2024 23:54:32 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Haakon Bugge <haakon.bugge@oracle.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	Allison Henderson <allison.henderson@oracle.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	OFED mailing list <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>
+Subject: Re: [MAINLINE 0/2] Enable DIM for legacy ULPs and use it in RDS
+Message-ID: <ZvJiKGtuX62jkIwY@infradead.org>
+References: <20240918083552.77531-1-haakon.bugge@oracle.com>
+ <Zuwyf0N_6E6Alx-H@infradead.org>
+ <C00EA178-ED20-4D56-B6F2-200AC72F3A39@oracle.com>
+ <Zu191hsvJmvBlJ4J@infradead.org>
+ <525e9a31-31ee-4acf-a25c-8bf3a617283f@linux.dev>
+ <ZvFY_4mCGq2upmFl@infradead.org>
+ <aea6b986-2d25-4ebc-93e8-05da9c6f3ba2@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- frapeml500005.china.huawei.com (7.182.85.13)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aea6b986-2d25-4ebc-93e8-05da9c6f3ba2@linux.dev>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
->>>> With all the caching in the network stack, some pages may be
->>>> held in the network stack without returning to the page_pool
->>>> soon enough, and with VF disable causing the driver unbound,
->>>> the page_pool does not stop the driver from doing it's
->>>> unbounding work, instead page_pool uses workqueue to check
->>>> if there is some pages coming back from the network stack
->>>> periodically, if there is any, it will do the dma unmmapping
->>>> related cleanup work.
->>>>
->>>> As mentioned in [1], attempting DMA unmaps after the driver
->>>> has already unbound may leak resources or at worst corrupt
->>>> memory. Fundamentally, the page pool code cannot allow DMA
->>>> mappings to outlive the driver they belong to.
->>>>
->>>> Currently it seems there are at least two cases that the page
->>>> is not released fast enough causing dma unmmapping done after
->>>> driver has already unbound:
->>>> 1. ipv4 packet defragmentation timeout: this seems to cause
->>>>    delay up to 30 secs:
->>>>
->>>> 2. skb_defer_free_flush(): this may cause infinite delay if
->>>>    there is no triggering for net_rx_action().
->>>>
->>>> In order not to do the dma unmmapping after driver has already
->>>> unbound and stall the unloading of the networking driver, add
->>>> the pool->items array to record all the pages including the ones
->>>> which are handed over to network stack, so the page_pool can
->>>> do the dma unmmapping for those pages when page_pool_destroy()
->>>> is called.
->>>
->>> So, I was thinking of a very similar idea. But what do you mean by
->>> "all"? The pages that are still in caches (slow or fast) of the pool
->>> will be unmapped during page_pool_destroy().
->>
->> Yes, it includes the one in pool->alloc and pool->ring.
->
-> It worths mentioning that there is a semantics changing here:
-> Before this patch, there can be almost unlimited inflight pages used by
-> driver and network stack, as page_pool doesn't really track those pages.
-> After this patch, as we use a fixed-size pool->items array to track the
-> inflight pages, the inflight pages is limited by the pool->items, currently
-> the size of pool->items array is calculated as below in this patch:
->
-> +#define PAGE_POOL_MIN_ITEM_CNT	512
-> +	unsigned int item_cnt = (params->pool_size ? : 1024) +
-> +				PP_ALLOC_CACHE_SIZE + PAGE_POOL_MIN_ITEM_CNT;
->
-> Personally I would consider it is an advantage to limit how many pages which
-> are used by the driver and network stack, the problem seems to how to decide
-> the limited number of page used by network stack so that performance is not
-> impacted.
+On Tue, Sep 24, 2024 at 09:58:24AM +0800, Zhu Yanjun wrote:
+> The users that I mentioned is not in the kernel tree.
 
-In theory, with respect to the specific problem at hand, you only have
-a limit on the number of mapped pages inflight. Once you reach this
-limit you can unmap these old pages, forget about them and remember
-new ones.
+And why do you think that would matter the slightest?
+
 
