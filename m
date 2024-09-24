@@ -1,124 +1,79 @@
-Return-Path: <linux-rdma+bounces-5076-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5077-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80B63984B4D
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 20:47:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7964F984BA7
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 21:36:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26B691F24192
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 18:47:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3CD1B219EF
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 19:36:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8918D1AC892;
-	Tue, 24 Sep 2024 18:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F5F137903;
+	Tue, 24 Sep 2024 19:36:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AP5SaqOb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="btPQyLbX"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39EAC80BF8;
-	Tue, 24 Sep 2024 18:47:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646F513C690;
+	Tue, 24 Sep 2024 19:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727203643; cv=none; b=g7TKsleAg3EqmDxEJkKDdEGvzZdyL6+48xOBLPGqpITfU/tjENQ2Dt1eV3HKgwVdD/sDKy5YT7yfpAhpHWTZJRij+LJnakWQylwDiIfda2FG2mVtXrQPZcXb2b5J+SJObUiFZdfr+VDHhaPXCecXT2t72qXmOoNN9j1q0Qzne8E=
+	t=1727206577; cv=none; b=HtGI2qF6l1gl3WlrYDiA+OlbYKnukxsfhfZDhcT1xf1EZQYAT8uv4k2CSbJBbKbtpMv6ANywzBTQWNy0hH7tPLSfJsN++GuXP8Y5SBB0GQzb3UKzS6TdZNxKCsIkY7Aar2JSb7OaWpW297Ts4DkUzpxYEJE5BJs+Qwwx18PtdDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727203643; c=relaxed/simple;
-	bh=I3xlCxCgRrlgcGeWrdThprr/PtPPIOpTGHY52oR0aX0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=odNYixOGBkhedTyUOawA7X2uaWotw3wiLhRgaAf9AR0E76qit9EIpVLlEDj0wSNti4oDGR6fJ5NJw7Xb7U+xjHWbDvSstsLvyVC/Yzh2PoN307PhrHAR3W+rYsCcMvc9hk2/0Apwf/mTSvywFz4yiL4jptZKevNxLDGxJXBbo+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AP5SaqOb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4541C4CEC4;
-	Tue, 24 Sep 2024 18:47:21 +0000 (UTC)
+	s=arc-20240116; t=1727206577; c=relaxed/simple;
+	bh=D8kxFaLU4GmvlRFhWdkfQ1CIqeaOtuNfFwcWa7qFym8=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=NEkd9V99BJ8pTGd0AKQY2F8kqL9YmTaUe8ltlOE73VvpYgMrSt9XU8LNZzAmjwQL02J68CzgEoQC7PKjffsrHSG4oWttzCefq9hBtpQGM2We9+INVZiZabN5xremSRKdAnaEzGBSaazhW0vzhrO183YLT8XSGoYUTWXsl6P79og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=btPQyLbX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC633C4CED1;
+	Tue, 24 Sep 2024 19:36:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727203642;
-	bh=I3xlCxCgRrlgcGeWrdThprr/PtPPIOpTGHY52oR0aX0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AP5SaqObdxk8329qse9ot1zeEYmDkYzoBbJyY9H75XKFBlGv9Q3soJarnbacBkcql
-	 XgG32wn4OlQY0qF2n3nLWJiGJLbv1TQc8K2Nwv8MLNkaKbWL7r7C3jBXiXtzFR8pSf
-	 j7UcKDzV38fkCnCK+GswlS9yomcg14zXG9dHbAz6N4S00ujDBP5dgeLd0f+ly3c6p/
-	 VZ5siPNXjmpV8yBZd3yi3zVp8Z4vxnwAez+m8T3mT47e8gRnyGZmxVF+7MYYzuoLN9
-	 iR4m+zd1xf2GoyoZu1Q3uhbFtBf8jzW7ccnWz14lj+/IECv2jbf8FUoE1GqYOBGirO
-	 h+71i/2/oDCpQ==
-From: SeongJae Park <sj@kernel.org>
-To: David Hunter <david.hunter.linux@gmail.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com,
-	javier.carrasco.cruz@gmail.com
-Subject: Re: [PATCH v1 1/1] selftests: set executable bit
-Date: Tue, 24 Sep 2024 11:47:18 -0700
-Message-ID: <20240924184719.686727-1-sj@kernel.org>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20240924175500.17212-1-david.hunter.linux@gmail.com>
-References: 
+	s=k20201202; t=1727206576;
+	bh=D8kxFaLU4GmvlRFhWdkfQ1CIqeaOtuNfFwcWa7qFym8=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=btPQyLbXYzjgj80GwEv+wkpXBtZmuRg9W3GwD+PzawfhrlVhe33EpLQxbuN+kve97
+	 RSrt1237nirlgPWPgDIDVnbbK1MyiwNSOBAf0wdzazVgTHHe+DHCwDW6XrLpUczNOi
+	 eFPw5xDZaLlMWjkhFpq4kkEcC/kO0VIc7v6Q0jtVV4BcPY7GIPnhU9sgqpdMet8w8W
+	 USgajbRvLr1UAVOE06UdiiaQn31K7hYOXX6Hx1GnEwc4mwxZ9VvU4Zk5TBz0A/QgME
+	 /IgQ2i/nj9R4jWxJzMFkegZSLa873xH3lvLUgBikRjU39bGajTe+fwjaEck8ry91cP
+	 IKA03gD8mBIdw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70C533806656;
+	Tue, 24 Sep 2024 19:36:20 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240923171614.GA53576@nvidia.com>
+References: <20240923171614.GA53576@nvidia.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240923171614.GA53576@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 70920941923316b760bc7a804eb3d49a126d8712
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 54d7e8190ecfe72ff0dab96545e782f7298cb69a
+Message-Id: <172720657893.4172315.8302928404758688271.pr-tracker-bot@kernel.org>
+Date: Tue, 24 Sep 2024 19:36:18 +0000
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Hi David,
+The pull request you sent on Mon, 23 Sep 2024 14:16:14 -0300:
 
-On Tue, 24 Sep 2024 13:54:57 -0400 David Hunter <david.hunter.linux@gmail.com> wrote:
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-> Turn on the executable bit for the following script files. These scripts
-> are set to TEST_PROGS in their respective Makefiles, but currently, when
-> these tests are run, a warning occurs:
-> 
->   # Warning: <file> is not executable
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/54d7e8190ecfe72ff0dab96545e782f7298cb69a
 
-Thank you so much for finding this issue and sending this nice fix!
+Thank you!
 
-> 
-> Signed-off-by: David Hunter <david.hunter.linux@gmail.com>
-> ---
->  tools/testing/selftests/damon/damon_nr_regions.py                 | 0
->  tools/testing/selftests/damon/damos_apply_interval.py             | 0
->  tools/testing/selftests/damon/damos_quota.py                      | 0
->  tools/testing/selftests/damon/damos_quota_goal.py                 | 0
->  tools/testing/selftests/damon/damos_tried_regions.py              | 0
->  tools/testing/selftests/damon/debugfs_target_ids_pid_leak.sh      | 0
->  .../damon/debugfs_target_ids_read_before_terminate_race.sh        | 0
->  .../selftests/damon/sysfs_update_schemes_tried_regions_hang.py    | 0
->  .../damon/sysfs_update_schemes_tried_regions_wss_estimation.py    | 0
->  tools/testing/selftests/net/rds/test.py                           | 0
->  10 files changed, 0 insertions(+), 0 deletions(-)
->  mode change 100644 => 100755 tools/testing/selftests/damon/damon_nr_regions.py
->  mode change 100644 => 100755 tools/testing/selftests/damon/damos_apply_interval.py
->  mode change 100644 => 100755 tools/testing/selftests/damon/damos_quota.py
->  mode change 100644 => 100755 tools/testing/selftests/damon/damos_quota_goal.py
->  mode change 100644 => 100755 tools/testing/selftests/damon/damos_tried_regions.py
->  mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_target_ids_pid_leak.sh
->  mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_target_ids_read_before_terminate_race.sh
->  mode change 100644 => 100755 tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_hang.py
->  mode change 100644 => 100755 tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py
->  mode change 100644 => 100755 tools/testing/selftests/net/rds/test.py
-
-However, a very similar fix has already posted [1] and merged [2] into the
-mainline.  So, apparently there was a trivial race.  I'm looking forward to
-your next patches for DAMON, though!
-
-[1] https://lore.kernel.org/20240827030336.7930-4-sj@kernel.org
-[2] https://github.com/torvalds/linux/commit/8c211412c5dffd090eaea5ee033cd729f8e5f873
-
-
-Thanks,
-SJ
-
-[...]
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
