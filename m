@@ -1,65 +1,91 @@
-Return-Path: <linux-rdma+bounces-5072-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5073-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64F419848FF
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 18:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5287984A80
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 19:55:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29CC428194D
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 16:01:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62F8E28512E
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 17:55:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF281AB53E;
-	Tue, 24 Sep 2024 16:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B687C1AC8A5;
+	Tue, 24 Sep 2024 17:55:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="OLUyMW7o"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W/5t8i/3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C5C1B85D5;
-	Tue, 24 Sep 2024 16:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29002F855;
+	Tue, 24 Sep 2024 17:55:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727193683; cv=none; b=pQQsmwv4m7n5PysbGgp5lKi6S7bnyLQ/F+kcbA1lHOEsp1ej3J4xcVZkV6qVbhz0DLcsDQOSShX0kcrkJig8qWPRQ5ARgOc6zEy9wX7h5oYRrpVEOy0Dlboa4gKcGxhUCTyZwwAzha5m8Wsr0Ot44GsGo+z9RyXtp+/IDdWg9kg=
+	t=1727200523; cv=none; b=ZApVpMD3RZo1uW97T1JZYBMF44SFuf8q2q1vD3+5nSqrPTb7v90tzt6Pqi0xOoiQGdT5hvPgSbSEeWGn2KVyZvC0CpAHcfwQ4nrL9icrKCxOe8bwVkXc7SfPFEUnXcluIxSgjhpfwtF/QgQU/xn57NkwutOLYhqtcHU8MYO14tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727193683; c=relaxed/simple;
-	bh=hD77i1qmsqCOqCdwoO9P7aWucJQShux9Q1rT0/FLwz8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dMUcePcmUtLUxftnFlVsudSePYQRQUBnlPD5PpdT/mKhkI7uRbmIMMBgYdNbiIrSNtQ9UcldoMQcSlhnZVBnbzqpw78bBPpAuxE1jlyJMfxE3tZXbhj5vCwdD+xYwzjpZOxDeEbWrgiJs/jx/2RAzhLYWWhajAjOhV+zV9MjRrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=OLUyMW7o; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from localhost.localdomain (unknown [195.9.103.206])
-	by mail.ispras.ru (Postfix) with ESMTPSA id A9A5A40B1E7C;
-	Tue, 24 Sep 2024 16:01:10 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru A9A5A40B1E7C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1727193670;
-	bh=wYtq+9qAKmUShueTvigCc5x0uxAhM9J8lX3RiU38r4k=;
-	h=From:To:Cc:Subject:Date:From;
-	b=OLUyMW7oMCvy1K2pqgtwwnKMSdjj30yE3qhj6yO4HvRfMPkBoeV6BLkS+St6/XPFG
-	 rSS1IY0ruTZc44BLaeOa66WDrMvWLxHSP8t0t/wjful/AQ78BYJOvwj2CzsZG8DUkT
-	 uOWT4yQ04UYceMVdmfp4HUzGZVNASDImjfr2A85Q=
-From: Elena Salomatkina <esalomatkina@ispras.ru>
-To: "Сc:lvc-project"@linuxtesting.org,
-	Saeed Mahameed <saeedm@nvidia.com>
-Cc: Elena Salomatkina <esalomatkina@ispras.ru>,
-	Leon Romanovsky <leon@kernel.org>,
+	s=arc-20240116; t=1727200523; c=relaxed/simple;
+	bh=QxT914bDA0RfhWDMhfLmy+RtduzqQ8elqZ2JNEBwLdw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=miXYLIujX1vGQ6xJLTKCaXplxebRjXa/NWtb93nQKBIlNX5T7zcmet3+xdAtQdKn1U3jZ6LHtogV9ZtM17UbBqNFDMzp5a8NUGbl1UAPdZ/ilGIZB7NqwoQYDpnzjXpr/4dmRqLHm5ts6aaZH8Fkwme24aHlgwMfSF+VoSUUfzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W/5t8i/3; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6de15eefdd3so43262227b3.0;
+        Tue, 24 Sep 2024 10:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727200521; x=1727805321; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LhO9HuyHJw2V+eJWsbkCc/m6qGmvadaQTKFPjTTqDRs=;
+        b=W/5t8i/35sj5mGGY/hR68HPK7T1S4xOKjI3yv4kaGU17VrsPuy76Oaomht2iQCFmHs
+         vPHgcwrBbvx6WZcz/QIBgVBMgbxib7UZ9rxRQg6jFZ6tiyEi0xF7IFoXGUuAR2a1EU/9
+         1I/E7IznHdR4iMnHDZgCy76vGh+e2cGE9ywo467QT/7wSSkdrIunLx7HM+SDbx5Cctmt
+         D+Q8m0gHTwjkzqnmnnYcsl5JoWQTenhZH/EJd3na8NBcVF73R1LGR+peinCRcqhE11P6
+         nUAjTnUL0lZf0rQs97yQYqeG3LEK1cDIdHK4yiLf8ApvmU/ZZhwP7glwWTVcfQ8VSH+q
+         SY2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727200521; x=1727805321;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LhO9HuyHJw2V+eJWsbkCc/m6qGmvadaQTKFPjTTqDRs=;
+        b=p2RcorfMEZxA74PWZLMW2HRX8LYFhedU1AnnG/q0qAyfcXZH0WI40IPI3zU7NjjMRs
+         S2pULx7GZ09HGf0/U1RW1sUherpaz+Bvkb3G703bwYmoxyVpEnu3pQkTF+XKjIafkg89
+         6Am6U3IOULmBqgfLoaEcOTGSo9J4r/q7QMNGdP5Qy4ZlMm4gJRBHVAYAHSv72/w0cpHy
+         86GqiHYn3upR0zpEkLSQJwaKX/ovjgRx4EKdoYtJR1eIohJZtFeZmIwSBGWmAERIzVTk
+         pJvpwwbTZE/bz6162xrrlZNa+wYTpgY/ZgZFgLk9C5OsXzV1aN4jn/NwMiBLDnRiluyx
+         ZU2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUFKLucMcfFbScufO9gnwwzZjIefMLXB7LkPYbNK1mzpSFA4wjCEnZLDcDYfW/L1Tlz8l2ayKgs@vger.kernel.org, AJvYcCUkszacWUJlR2fiu/bdPVpADVI/jDx3Ypcsjtl3g1YnsbNSwfEHKBjXKARyhBvLSwLRn8UFRkze3OSVx+M=@vger.kernel.org, AJvYcCV1Kmf51gg/AvKSUXaatgSviouGQRs5WSnv7+OOnjaxvKTSfo7/+gzHXY/CVb2jsdEJGGXmjkQUOTHCJUCiBwps@vger.kernel.org, AJvYcCVE/4X7aH3Pv8gVHe7LhWp7KxKgpM/bdcLA73YQTXXr8jF35Bm1klbAdmHbemT7OhhyrhK9sm5L8S5cuQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyHi+SlWQU88w4EIdituOVzdErTYQ4TDn6rrqae3/mbHxxIjZL6
+	3+k0ORdoSuRz77bJ6CSSxsuiVneFLJSTI2jzVC0O1MI1yWk08VpQhdLcmQ==
+X-Google-Smtp-Source: AGHT+IGoGHDLRqSqcbdYZpBp/Ik1TaSCEKbTqZMOHeO0TcNrA4v/Gon8yURePwJaL0JDdo0Gddcv6w==
+X-Received: by 2002:a05:690c:6d88:b0:6dd:ba68:4bd1 with SMTP id 00721157ae682-6e21d84a573mr3032407b3.21.1727200520967;
+        Tue, 24 Sep 2024 10:55:20 -0700 (PDT)
+Received: from localhost (57-135-107-183.static4.bluestreamfiber.net. [57.135.107.183])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6e21a2224bcsm1077837b3.53.2024.09.24.10.55.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Sep 2024 10:55:20 -0700 (PDT)
+From: David Hunter <david.hunter.linux@gmail.com>
+To: SeongJae Park <sj@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Allison Henderson <allison.henderson@oracle.com>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
-	Maxim Mikityanskiy <maximmi@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Maor Dickman <maord@nvidia.com>,
+	damon@lists.linux.dev
+Cc: David Hunter <david.hunter.linux@gmail.com>,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net v2] net/mlx5e: Fix NULL deref in mlx5e_tir_builder_alloc()
-Date: Tue, 24 Sep 2024 19:00:18 +0300
-Message-Id: <20240924160018.29049-1-esalomatkina@ispras.ru>
-X-Mailer: git-send-email 2.33.0
+	rds-devel@oss.oracle.com,
+	javier.carrasco.cruz@gmail.com
+Subject: [PATCH v1 1/1] selftests: set executable bit
+Date: Tue, 24 Sep 2024 13:54:57 -0400
+Message-ID: <20240924175500.17212-1-david.hunter.linux@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -68,35 +94,67 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In mlx5e_tir_builder_alloc() kvzalloc() may return NULL
-which is dereferenced on the next line in a reference
-to the modify field.
+Turn on the executable bit for the following script files. These scripts
+are set to TEST_PROGS in their respective Makefiles, but currently, when
+these tests are run, a warning occurs:
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+  # Warning: <file> is not executable
 
-Fixes: a6696735d694 ("net/mlx5e: Convert TIR to a dedicated object")
-Signed-off-by: Elena Salomatkina <esalomatkina@ispras.ru>
+Signed-off-by: David Hunter <david.hunter.linux@gmail.com>
 ---
-v2: Fix tab, add blank line
+ tools/testing/selftests/damon/damon_nr_regions.py                 | 0
+ tools/testing/selftests/damon/damos_apply_interval.py             | 0
+ tools/testing/selftests/damon/damos_quota.py                      | 0
+ tools/testing/selftests/damon/damos_quota_goal.py                 | 0
+ tools/testing/selftests/damon/damos_tried_regions.py              | 0
+ tools/testing/selftests/damon/debugfs_target_ids_pid_leak.sh      | 0
+ .../damon/debugfs_target_ids_read_before_terminate_race.sh        | 0
+ .../selftests/damon/sysfs_update_schemes_tried_regions_hang.py    | 0
+ .../damon/sysfs_update_schemes_tried_regions_wss_estimation.py    | 0
+ tools/testing/selftests/net/rds/test.py                           | 0
+ 10 files changed, 0 insertions(+), 0 deletions(-)
+ mode change 100644 => 100755 tools/testing/selftests/damon/damon_nr_regions.py
+ mode change 100644 => 100755 tools/testing/selftests/damon/damos_apply_interval.py
+ mode change 100644 => 100755 tools/testing/selftests/damon/damos_quota.py
+ mode change 100644 => 100755 tools/testing/selftests/damon/damos_quota_goal.py
+ mode change 100644 => 100755 tools/testing/selftests/damon/damos_tried_regions.py
+ mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_target_ids_pid_leak.sh
+ mode change 100644 => 100755 tools/testing/selftests/damon/debugfs_target_ids_read_before_terminate_race.sh
+ mode change 100644 => 100755 tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_hang.py
+ mode change 100644 => 100755 tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py
+ mode change 100644 => 100755 tools/testing/selftests/net/rds/test.py
 
- drivers/net/ethernet/mellanox/mlx5/core/en/tir.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tir.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tir.c
-index d4239e3b3c88..11f724ad90db 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tir.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tir.c
-@@ -23,6 +23,9 @@ struct mlx5e_tir_builder *mlx5e_tir_builder_alloc(bool modify)
- 	struct mlx5e_tir_builder *builder;
- 
- 	builder = kvzalloc(sizeof(*builder), GFP_KERNEL);
-+	if (!builder)
-+		return NULL;
-+
- 	builder->modify = modify;
- 
- 	return builder;
+diff --git a/tools/testing/selftests/damon/damon_nr_regions.py b/tools/testing/selftests/damon/damon_nr_regions.py
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/damos_apply_interval.py b/tools/testing/selftests/damon/damos_apply_interval.py
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/damos_quota.py b/tools/testing/selftests/damon/damos_quota.py
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/damos_quota_goal.py b/tools/testing/selftests/damon/damos_quota_goal.py
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/damos_tried_regions.py b/tools/testing/selftests/damon/damos_tried_regions.py
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/debugfs_target_ids_pid_leak.sh b/tools/testing/selftests/damon/debugfs_target_ids_pid_leak.sh
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/debugfs_target_ids_read_before_terminate_race.sh b/tools/testing/selftests/damon/debugfs_target_ids_read_before_terminate_race.sh
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_hang.py b/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_hang.py
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py b/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py
+old mode 100644
+new mode 100755
+diff --git a/tools/testing/selftests/net/rds/test.py b/tools/testing/selftests/net/rds/test.py
+old mode 100644
+new mode 100755
 -- 
-2.33.0
+2.43.0
 
 
