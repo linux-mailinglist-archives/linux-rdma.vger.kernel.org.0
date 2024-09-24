@@ -1,130 +1,93 @@
-Return-Path: <linux-rdma+bounces-5066-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5067-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE8C198462E
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 14:50:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D7A9984727
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 16:00:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DFB7281C2D
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 12:50:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46ED31F23CA4
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 14:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 733071AB531;
-	Tue, 24 Sep 2024 12:49:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA261A7265;
+	Tue, 24 Sep 2024 14:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D5uGi3Qr"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gFwUkwRt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC8A1AB504;
-	Tue, 24 Sep 2024 12:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A2714F124
+	for <linux-rdma@vger.kernel.org>; Tue, 24 Sep 2024 14:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727182163; cv=none; b=njXqWY2VJK93l83z52X7HsetRkjG3EbWVuugr8NFYTT2jM2uCVa6QiD970jYRioy+cftO6UbLsCnnO2HygQbkywWKLDITtc7O3/rb818+x8bUjJ/5dqIjlWpyiAI5NasBq8SyE8fvCiuHfkVM7tz4Rb/6t4UjElUdWqX9WULqg8=
+	t=1727186431; cv=none; b=FjpB0tODsPeNNJ55otdYT3U5PXjF+RkSetWBkgWzteKpRUx5OJAke6v09Fz80wrx1W7Cvp8rwJ3FVOki2TUCunWm+OgmzhPeWfh218iAUOI5PpBFhdV8ehLLGtR+WT2WKGJTjVG3oVnzk2QV+MV6RKtJ+hGTyvQ7KKjjPSnuz/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727182163; c=relaxed/simple;
-	bh=LO5Ym51W/lCnuuYgauXLYWJ18Q2yPGpmI6+acNF2LEU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=rdjneHTP5GFwlEuGvcK+U605pDk31FtmZQTSLEHlEqR0ZUx9GGWdMZNuFKZmXc5TUgq1Ryfl5cloXv21s1aZh+JTYkA6sYSK3F9fHa7kG3rXfKgINgSiEe9uOKGCafd3K52WoQ1FPlpSr30hHy0PLEvCkd5JPZkbdF6nf8Ew/f8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D5uGi3Qr; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5c40aea5c40so8486445a12.0;
-        Tue, 24 Sep 2024 05:49:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727182160; x=1727786960; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ATLND/ulVBImOJZTRJjgPvVJmcSH41Oohznm0kzcbok=;
-        b=D5uGi3QrwWWzSZsmpcN8nRZXEEURTVG7qJr1uMfHTBTBX1m9/0ySTuDCYQpOe4giwA
-         IsBL4xRUhrfRZqaIT/6IdNV5Fkex4uChOCpYXQI8wdNB0loDrrWgKtupFZ8hfg76+GUs
-         3Ub0HnKOX+t7J4ITwINJ5YLKE9PfmPfWhRq4hCMOyE+PEnVUH8YQ9CjVAfGTiTRg1oUa
-         23ZFWJowRaHB3Sfkmc7lPIrNDnmYxSfVJQCwoy5cpKWLfzDzHLPbh0eeHwwaBI64XWh1
-         +bEte0Wlr907LX7pVvRgiB9nz48ei+05rOot0r+oxRIcidE97fN5Z7dxuh5n2/Cxq9Fn
-         Tr8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727182160; x=1727786960;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ATLND/ulVBImOJZTRJjgPvVJmcSH41Oohznm0kzcbok=;
-        b=cK+DQx0+AAM5ntTjXKjrYWT+WJFK9F/UXN53KtLlanlTEckXSwT5thTTvjZWfxzWBv
-         /ZU7CczwfvbBUYrMBsNb5ljPdSayV+PgDrUla1QlNwLGu3yizEMG84K0ZeCd80kaDyW3
-         A4c66rrmLsuKtxGQYvBVYTv27Y17/c3ML8lmVJNTfUszSFjtM/XLnOigNfuAZBST5/oY
-         zwBpes300NuNcjuO/ZZwLEdWHCg5rrJ+iZ1cnMPrtFhIi7jFl91DqczJF9w8KoxM4sFe
-         eS3JEVnHS0kE6PwmAhAjeoWEH5BykiRrN4pq8WaZYgtAUeANqrEjDqFTtXlcChIZtN11
-         8cQw==
-X-Forwarded-Encrypted: i=1; AJvYcCU3eamxsEHK9+VzN4bHIJmEuPGvDdFQjkLFaStGLwN/p8zEiDXWFWk9jDHWf+wLPuI/E0LL0gLET0n4a6U=@vger.kernel.org, AJvYcCUIOkvaO/HANj5/M8g9Xm+htu+cUuBKhGxFJ9RWAaAjF/IrJfiEh/Y+uKjmbBk1rpM/768Al5Sa@vger.kernel.org, AJvYcCVEO6w+fI2DuckoGg1zN3+IAPOWpAwAM0PbC6xY5ANTS21OPyCzK6dUwV50fO4SuJBZPv6rOaZh2Pvabg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYnrm18w0DzvGP1S4cRnE9wi0Q2OEMQM8Vq4cXRtmT53SYekYe
-	HiK2wKIi994YtvJ2alJ9aKCdPkeP0CbguwCtJOVm1VVrDecEJTM9
-X-Google-Smtp-Source: AGHT+IHamjTFjQYq1vldIPMubyb9QkSRWS2ewigU+YzaRt6cjVj54GmmaARVLhVKcpK+0v115j7RLg==
-X-Received: by 2002:a05:6402:27c7:b0:5be:e9f8:9ba4 with SMTP id 4fb4d7f45d1cf-5c5cdfa92famr3483435a12.4.1727182159802;
-        Tue, 24 Sep 2024 05:49:19 -0700 (PDT)
-Received: from [127.0.1.1] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c5cf4c500dsm704932a12.61.2024.09.24.05.49.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Sep 2024 05:49:18 -0700 (PDT)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Tue, 24 Sep 2024 14:49:10 +0200
-Subject: [PATCH 4/4] selftests: exec: update gitignore for load_address
+	s=arc-20240116; t=1727186431; c=relaxed/simple;
+	bh=fixrlPHEgUA0vFgbRgg4LkKH0q/ZNvRtE7c3tbD2k8w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h36GEmP0pT9UDevy7HnXKSJqOjpMhgfVdket4RmPmcMDrR4wLKytHtSBLxGpXk2ngx4cVO7daYDAiGwKUNvsCi4sVEK1j93Wsqzqx9QOZMGUsyFlsiRCFsLTDiSk7oQIVQOBhsLOJeVgJxMkujK4YBosbH//rgZYBONcPYuCQwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gFwUkwRt; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <1ad540cb-bf1b-456b-be2d-6c35999bdaa8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727186426;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fLj2Ln7J0S/EN+yRyPUamFxxGpjK5Shh/dBbx2aJWZ8=;
+	b=gFwUkwRt6LD+M2xlJMJa6SEVpw/h5u7spymcDMrY3Pgnnh0rS0Z9XL2aUQGzZweaecdKcg
+	5SAghNMdDQ4DIcEZx8ypqsqGG2PD3IvHg7VDP0/3nBnAVRzn69cBoB8Y/aI6SaG5gJewm0
+	3We5NcDuvdzFwzx5Wt+W7REpfr4sGQc=
+Date: Tue, 24 Sep 2024 21:59:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240924-selftests-gitignore-v1-4-9755ac883388@gmail.com>
-References: <20240924-selftests-gitignore-v1-0-9755ac883388@gmail.com>
-In-Reply-To: <20240924-selftests-gitignore-v1-0-9755ac883388@gmail.com>
-To: Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Allison Henderson <allison.henderson@oracle.com>, 
- Eric Biederman <ebiederm@xmission.com>, Kees Cook <kees@kernel.org>
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
- rds-devel@oss.oracle.com, linux-mm@kvack.org, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1727182152; l=787;
- i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=LO5Ym51W/lCnuuYgauXLYWJ18Q2yPGpmI6+acNF2LEU=;
- b=4lT98Ddiwcm581PsZpKvMmrifpf2qtf19A4uwmebrnAAQY8KnFZ6AVUchH88aHOF0UEVdv9ZN
- fpgSpAQjBvbAAutqUqnMMflIT0n6wJq4bblytG719m51YGgisKqyt3S
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
+Subject: Re: [MAINLINE 0/2] Enable DIM for legacy ULPs and use it in RDS
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Haakon Bugge <haakon.bugge@oracle.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>,
+ Allison Henderson <allison.henderson@oracle.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ OFED mailing list <linux-rdma@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>
+References: <20240918083552.77531-1-haakon.bugge@oracle.com>
+ <Zuwyf0N_6E6Alx-H@infradead.org>
+ <C00EA178-ED20-4D56-B6F2-200AC72F3A39@oracle.com>
+ <Zu191hsvJmvBlJ4J@infradead.org>
+ <525e9a31-31ee-4acf-a25c-8bf3a617283f@linux.dev>
+ <ZvFY_4mCGq2upmFl@infradead.org>
+ <aea6b986-2d25-4ebc-93e8-05da9c6f3ba2@linux.dev>
+ <ZvJiKGtuX62jkIwY@infradead.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <ZvJiKGtuX62jkIwY@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-The name of the "load_address" objects has been modified, but the
-corresponding entry in the gitignore file must be updated.
+在 2024/9/24 14:54, Christoph Hellwig 写道:
+> On Tue, Sep 24, 2024 at 09:58:24AM +0800, Zhu Yanjun wrote:
+>> The users that I mentioned is not in the kernel tree.
+> 
+> And why do you think that would matter the slightest?
 
-Update the load_address entry in the gitignore file to account for
-the new names.
+I noticed that the same cq functions are used. And I also made tests 
+with this patch series. Without this patch series, dim mechanism will 
+not be invoked.
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- tools/testing/selftests/exec/.gitignore | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Zhu Yanjun
 
-diff --git a/tools/testing/selftests/exec/.gitignore b/tools/testing/selftests/exec/.gitignore
-index 90c238ba6a4b..4d9fb7b20ea7 100644
---- a/tools/testing/selftests/exec/.gitignore
-+++ b/tools/testing/selftests/exec/.gitignore
-@@ -9,7 +9,7 @@ execveat.ephemeral
- execveat.denatured
- non-regular
- null-argv
--/load_address_*
-+/load_address.*
- /recursion-depth
- xxxxxxxx*
- pipe
-
--- 
-2.43.0
+> 
 
 
