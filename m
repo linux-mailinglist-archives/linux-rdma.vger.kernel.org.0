@@ -1,93 +1,148 @@
-Return-Path: <linux-rdma+bounces-5058-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5059-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7ABD983D81
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 09:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3204E983FA5
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 09:48:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81C892815D2
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 07:02:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECE1028494D
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2024 07:48:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A3112C7FB;
-	Tue, 24 Sep 2024 07:01:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="yoSMyK7G"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 189A21494A6;
+	Tue, 24 Sep 2024 07:48:30 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BEE412C478;
-	Tue, 24 Sep 2024 07:01:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8A6811CBD;
+	Tue, 24 Sep 2024 07:48:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727161313; cv=none; b=Hhl6qL53+Ls/ZNVt28bEDgIHAMuJzROBBrPJEPWIdQ7oATIyYDD1xy9NOrsaScIOA8Uz5OXrM3Cx6TSMVdYeH3iKyxzIeUHwjA9GRPHy3pLI04VtHjZgbYdhpx+FFh3VXZ2XbvbkOjv4Z2pbMxqJWfyQ6L9nyKDezZNdH9vrryY=
+	t=1727164109; cv=none; b=iSPjxuqId/yNI5J2ayP1+OXMh6eH63oxTUK8y/DShyVHcjSJtqbQIgkGRVWLPpQhl/nzqRyypMAefVmFZh6Y8BP2t9TqU2dC2wrIZZROqFmgJ+clZhuNaFM7TtURAUddsia+LZKal7U6XMU9VULdffOKWo7VJGtMRJB56Qsz2j8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727161313; c=relaxed/simple;
-	bh=xjfVoT1K47D5H3BF1Ou6jrbA/4vWt3yST4Y5x3T8Yzk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BiOLJWQujlZnIbHy9UgOFyidrvl0fEp2g4mhcRDFEmMqZLuHq4HeJRjqVbCPz2ZypmThYd/dXgeN6h3P5lpdJnUezhnAjrq8xGzJdHspI8qVFK2ftkk2t7ZS71RBv/YJ7AGBcH+eKBYgAqjE96frfgtfrsnJiS185Xv/lmgAkGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=yoSMyK7G; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Kn4ZLvNCtsllKYX+Hz4MqbgHZ402+n6+2o1HiK+jZJ4=; b=yoSMyK7GkhluVuS9WeBHe/xFQ4
-	AI9YWUKBleThMUyzBAsUiytsDzb21PJniFGq5XR9h234P18XuihECYhDc8zN5U1n0fRt4vbETtSCd
-	qwWarZwnfBFvFA1noLrVtW/CBvQsZ5qPR6cERpKX8/oIb/pzyy5nIRD+cAet0DwIgXkfGOeDCSA1g
-	9WA+IoUsvGXWCSWt9P0j+M6N3Qj6bThTdVUeyUxwPVpxRkBDPcQAzb1MjkEjKL+mQLWrG/VD7ybVr
-	130uNUfCuNnlesx7GQ5O7gj5F4+NgItL577xTVoKl2U8g6iMC30PePOWSjB5/PaO8kEQGv6t0rShm
-	8PzG66oA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1sszYT-00000001L53-1NM0;
-	Tue, 24 Sep 2024 07:01:49 +0000
-Date: Tue, 24 Sep 2024 00:01:49 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Haakon Bugge <haakon.bugge@oracle.com>
-Cc: Christoph Hellwig <hch@infradead.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	OFED mailing list <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>
-Subject: Re: [MAINLINE 0/2] Enable DIM for legacy ULPs and use it in RDS
-Message-ID: <ZvJj3butL8FYeXpi@infradead.org>
-References: <20240918083552.77531-1-haakon.bugge@oracle.com>
- <Zuwyf0N_6E6Alx-H@infradead.org>
- <C00EA178-ED20-4D56-B6F2-200AC72F3A39@oracle.com>
- <Zu191hsvJmvBlJ4J@infradead.org>
+	s=arc-20240116; t=1727164109; c=relaxed/simple;
+	bh=CSwaPVNkAQ30B+hlvci2uTj9rmPm9lc0sX+C9imgF5s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=QG76Hmq18YpOZ3DUm33gs9RQKSzsAzckRxzbGrgd9NrU4ok1vdMABzXN3L7yERz4OmE7p2eWZqm6lcd4CulqvPuihmU1Db9ev7jh3wMwkAESau9MoEE1tXDb+p7i3graAc9DfHDFeY51HkklPU400PKy54GDbOdpfJ13eap7ARA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XCX5H6pvcz2QTxJ;
+	Tue, 24 Sep 2024 15:47:31 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id A6BD31A016C;
+	Tue, 24 Sep 2024 15:48:17 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 24 Sep 2024 15:48:17 +0800
+Message-ID: <64730d70-e5b7-4117-9ee8-43f23543eafd@huawei.com>
+Date: Tue, 24 Sep 2024 15:48:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zu191hsvJmvBlJ4J@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 2/2] page_pool: fix IOMMU crash when driver has
+ already unbound
+To: Gur Stavi <gur.stavi@huawei.com>
+CC: <akpm@linux-foundation.org>, <aleksander.lobakin@intel.com>,
+	<alexander.duyck@gmail.com>, <angelogioacchino.delregno@collabora.com>,
+	<anthony.l.nguyen@intel.com>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <davem@davemloft.net>, <edumazet@google.com>,
+	<fanghaiqing@huawei.com>, <hawk@kernel.org>, <ilias.apalodimas@linaro.org>,
+	<imx@lists.linux.dev>, <intel-wired-lan@lists.osuosl.org>,
+	<iommu@lists.linux.dev>, <john.fastabend@gmail.com>, <kuba@kernel.org>,
+	<kvalo@kernel.org>, <leon@kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-mm@kvack.org>,
+	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<liuyonglong@huawei.com>, <lorenzo@kernel.org>, <matthias.bgg@gmail.com>,
+	<nbd@nbd.name>, <netdev@vger.kernel.org>, <pabeni@redhat.com>,
+	<przemyslaw.kitszel@intel.com>, <robin.murphy@arm.com>,
+	<ryder.lee@mediatek.com>, <saeedm@nvidia.com>, <sean.wang@mediatek.com>,
+	<shayne.chen@mediatek.com>, <shenwei.wang@nxp.com>, <tariqt@nvidia.com>,
+	<wei.fang@nxp.com>, <xiaoning.wang@nxp.com>, <zhangkun09@huawei.com>
+References: <2fb8d278-62e0-4a81-a537-8f601f61e81d@huawei.com>
+ <20240924064559.1681488-1-gur.stavi@huawei.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <20240924064559.1681488-1-gur.stavi@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-On Fri, Sep 20, 2024 at 06:51:18AM -0700, Christoph Hellwig wrote:
-> On Fri, Sep 20, 2024 at 09:46:06AM +0000, Haakon Bugge wrote:
-> > > I would much prefer if you could move RDS off that horrible API finally
-> > > instead of investing more effort into it and making it more complicated.
-> > 
-> > ib_alloc_cq() and family does not support arming the CQ with the IB_CQ_SOLICITED flag, which RDS uses.
+On 2024/9/24 14:45, Gur Stavi wrote:
+>>>>> With all the caching in the network stack, some pages may be
+>>>>> held in the network stack without returning to the page_pool
+>>>>> soon enough, and with VF disable causing the driver unbound,
+>>>>> the page_pool does not stop the driver from doing it's
+>>>>> unbounding work, instead page_pool uses workqueue to check
+>>>>> if there is some pages coming back from the network stack
+>>>>> periodically, if there is any, it will do the dma unmmapping
+>>>>> related cleanup work.
+>>>>>
+>>>>> As mentioned in [1], attempting DMA unmaps after the driver
+>>>>> has already unbound may leak resources or at worst corrupt
+>>>>> memory. Fundamentally, the page pool code cannot allow DMA
+>>>>> mappings to outlive the driver they belong to.
+>>>>>
+>>>>> Currently it seems there are at least two cases that the page
+>>>>> is not released fast enough causing dma unmmapping done after
+>>>>> driver has already unbound:
+>>>>> 1. ipv4 packet defragmentation timeout: this seems to cause
+>>>>>    delay up to 30 secs:
+>>>>>
+>>>>> 2. skb_defer_free_flush(): this may cause infinite delay if
+>>>>>    there is no triggering for net_rx_action().
+>>>>>
+>>>>> In order not to do the dma unmmapping after driver has already
+>>>>> unbound and stall the unloading of the networking driver, add
+>>>>> the pool->items array to record all the pages including the ones
+>>>>> which are handed over to network stack, so the page_pool can
+>>>>> do the dma unmmapping for those pages when page_pool_destroy()
+>>>>> is called.
+>>>>
+>>>> So, I was thinking of a very similar idea. But what do you mean by
+>>>> "all"? The pages that are still in caches (slow or fast) of the pool
+>>>> will be unmapped during page_pool_destroy().
+>>>
+>>> Yes, it includes the one in pool->alloc and pool->ring.
+>>
+>> It worths mentioning that there is a semantics changing here:
+>> Before this patch, there can be almost unlimited inflight pages used by
+>> driver and network stack, as page_pool doesn't really track those pages.
+>> After this patch, as we use a fixed-size pool->items array to track the
+>> inflight pages, the inflight pages is limited by the pool->items, currently
+>> the size of pool->items array is calculated as below in this patch:
+>>
+>> +#define PAGE_POOL_MIN_ITEM_CNT	512
+>> +	unsigned int item_cnt = (params->pool_size ? : 1024) +
+>> +				PP_ALLOC_CACHE_SIZE + PAGE_POOL_MIN_ITEM_CNT;
+>>
+>> Personally I would consider it is an advantage to limit how many pages which
+>> are used by the driver and network stack, the problem seems to how to decide
+>> the limited number of page used by network stack so that performance is not
+>> impacted.
 > 
-> Then work on supporting it.  RDS and SMC are the only users, so one
-> of the maintainers needs to drive it.
+> In theory, with respect to the specific problem at hand, you only have
+> a limit on the number of mapped pages inflight. Once you reach this
+> limit you can unmap these old pages, forget about them and remember
+> new ones.
 
-I took a quick look at what it would take, and adding IB_CQ_SOLICITED
-support to the cq API looks pretty trivial, you'll just need to pass
-it to ib_cq_pool_get by adding a new argument and the pass it
-down to __ib_alloc_cq.  So yes, please get started at moving RDS out
-of the stone age.
+Yes, it can be done theoretically.
+The tricky part seems to be how to handle the concurrency problem when
+we evict the old pages and the old pages are also returned back to the
+page_pool concurrently without any locking or lockless operation.
 
+For now each item has only one producer and one consumer, so we don't
+really have to worry about the concurrency problem before calling
+page_pool_item_uninit() in page_pool_destroy() to do the unmapping
+for the inflight pages by using a newly added 'destroy_lock' lock.
 
