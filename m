@@ -1,114 +1,131 @@
-Return-Path: <linux-rdma+bounces-5079-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5080-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8DE19850D4
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Sep 2024 04:04:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 465E998529A
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Sep 2024 07:49:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9837F2852AB
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Sep 2024 02:04:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EA071C20ED6
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Sep 2024 05:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5F614831D;
-	Wed, 25 Sep 2024 02:04:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D7ED14F9E9;
+	Wed, 25 Sep 2024 05:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CPBfgyjY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZHTD8rSN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16EA4126F0A
-	for <linux-rdma@vger.kernel.org>; Wed, 25 Sep 2024 02:04:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C1E41C94;
+	Wed, 25 Sep 2024 05:49:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727229892; cv=none; b=MO4xnNqlnogf0b3YN4oJ+6uWkCfFf2BzzpSDnGxSrGzKdB60KrUQOt03hqW5ZSUxuG+svgghcxQfud0bdWkmWWoUINZV0POqtAFUjH8OdMxaklBXVkDfmNyBJfvbQ3//KDpqlXDG6deXjV28BqWa8AA2GMoJYQUlmga9sGhFuH4=
+	t=1727243356; cv=none; b=l3Fwq2HHqqUtGGcDd6jJrnWkJhhm939rlJdWYEvJvwngggchWD34Yk4mP+F9PkCHgQe+4VYGeFgyWsbOjQYVZom/S+2zhejIMl39s1G5R6jj63Tvf7ywG733V8dtXBWyNPYMtlm3AWL1HUMbS9NWu0qXaMYOzb9Qfgtukwxq3RQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727229892; c=relaxed/simple;
-	bh=OyJbYtQuzpkGp8l3UUy4EU1UEqjMBaXysPhoEQJv3Q8=;
+	s=arc-20240116; t=1727243356; c=relaxed/simple;
+	bh=EaiuHR4nXAoTitp1GKRwPzR0M+jcOIeQkOdjb3HGMMg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mktnJgmITk2EPl+zRE3RnnlsQLybwSuIiqEngMPoL9TJkCCDOuCOQ1Jisjw2cbF558D5PcFAi7wGvv8+0uX8rXXqbHZE/FX4YJr9/NuoPqGAGpHuxYQsOph4ndCZHWyD4EwuweXoYpXEUNe9I4oy7xr4WZO6LsEG45E4QKnkccQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CPBfgyjY; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5b86861b-60f7-4c90-bc0e-d863b422850f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727229889;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xvrOmFpqgHeJjVfW0WRu/b1Bim7C3zrcjnNBL44ieqM=;
-	b=CPBfgyjYf4724Xojqchvv9GpTuWN/znBUdzcJbZAZZg4iKu30zV02itpLE5hfWqOPUBj+s
-	akunaWblvi06iRGsOIRVWs7wp+EzyKNUc2k5ViUGA+stuF7TYq5SBARwB9Cb6WYgQcv29e
-	l2FJ2MMnRE9M0+G800m469JSzISMqCU=
-Date: Wed, 25 Sep 2024 10:04:21 +0800
+	 In-Reply-To:Content-Type; b=hcNuR0I7NewH636d5KNbbt6qA0C1xF7sWXjDWAH0DAMhqLnDlzBtMR/gyX0B7GhYamQWWRfikR2RmYgcahXhfQMZ9OGLKucUgNuKwdxYL6YxHe8Bt1/v028uOsCu2r1THOuwSpK07SAcBm1DPDMAV52JP5rEaMBjVib3WvqjWes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZHTD8rSN; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a90188ae58eso791288266b.1;
+        Tue, 24 Sep 2024 22:49:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727243352; x=1727848152; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gEgBm9IAsXl7nLB/B+Ejmtp5pyqjG0bV7kGihLC4Ko0=;
+        b=ZHTD8rSNLtlwXNCsF6j66DkkrWI5DYygSGdcV0e6OXkpH+9IDUe1IpVeC4ZwNQujlx
+         gOZW9Uu7Ao15mwjTa25XlKNaVEPhE6l4YRsnYkJ2ih+Elz++XWeeQNus0KNSexUFiqtQ
+         vsL9RSFl0R0NAw77MHrQiE5QLqqCkPbML2Rm0kvCmC+13XVwJIlLNWU21oR1tlW53taz
+         My3hL61Rng9rMKw+jQbT4KNYsF6hGOOqTNDPwoHqUh/zQd4dZAcjEDn9wiLXz722rDhY
+         rHxnYe+qICaL00cTjp/rdL+NID217ST3bBgpu2iKDxOii9aE6cmfbXtZry4Ul60iXewH
+         N2hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727243352; x=1727848152;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gEgBm9IAsXl7nLB/B+Ejmtp5pyqjG0bV7kGihLC4Ko0=;
+        b=R1/ZPyYKOUR3hBffSk69EZz7NTNjQWNd/z3BxpgDqaaSqomGEKY5hMzIfvA8AMJpIp
+         U4ur9Et6ug1J8d3K5Q5JEPvs7VAo/ATBOjLxqdkRVN9EsZO3U8M04WNlzRy5ADKjuVTV
+         OLA2QFbWPjY3OuR2B6ajiCPFB025eg0/khoUcalVrrWkr5ftavrqjD5jaPKdGP+zoF7Q
+         icoxVU6+o6t/J4d6CWKOFsRms4ZD9OpvFhN7SzZlvcBK2Gt2gi+8bhZxG0b7W1XRAj5h
+         CY+mT4aOh/f5rWUpvjYdKbwkYOObxlKf0koZPfCgMeSogYoGSb2uoxJzg0ZgFqjqKKrA
+         wMyA==
+X-Forwarded-Encrypted: i=1; AJvYcCU18rBoCXsbOGx5/i9vK0XJMwxt2+woLLXnYhyzCMx02mBX7PlCqYNGKZjbIB8rDCJhBj1ISK6043DPtQ==@vger.kernel.org, AJvYcCUEVORMQpHR3njRtU/Z8f1sgnG9cTHlopaEk4i9hVTxOiSQR5IyopQ1SqunYO8Nkzn7WYgXroWXNt7sy7U=@vger.kernel.org, AJvYcCVsQ540EZo2hkkKERc1w0VPhmoCsnHseFHHKiQ/GqLqNX6JpFqkdo66Bge08nfa/AXy8UhbcO7P@vger.kernel.org
+X-Gm-Message-State: AOJu0YzjGd4kkg/bUb/TJ3IL2VGlgqXxlDRtcnHKciMu46OxQqnV9j8W
+	p87/gZ8Hn7EM6+jnajRkdayIcqrDezQCIq+9GTUcurnXuCY8Vc0l
+X-Google-Smtp-Source: AGHT+IGo5B6L2X40o/cBhBGBxGr8K8zvPiaZOe+WSV+8oaJgevY4q0tCbZHrE3QDGUXrGI7h8K66cA==
+X-Received: by 2002:a17:907:e210:b0:a8e:a578:29df with SMTP id a640c23a62f3a-a93a03200admr111699166b.6.1727243352030;
+        Tue, 24 Sep 2024 22:49:12 -0700 (PDT)
+Received: from [172.27.51.115] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93930f8440sm170081166b.182.2024.09.24.22.49.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Sep 2024 22:49:11 -0700 (PDT)
+Message-ID: <17f3baee-c654-4e6f-a5d4-ba0899fe2385@gmail.com>
+Date: Wed, 25 Sep 2024 08:49:11 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [MAINLINE 0/2] Enable DIM for legacy ULPs and use it in RDS
-To: Haakon Bugge <haakon.bugge@oracle.com>
-Cc: Christoph Hellwig <hch@infradead.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>,
- Allison Henderson <allison.henderson@oracle.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- OFED mailing list <linux-rdma@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>
-References: <20240918083552.77531-1-haakon.bugge@oracle.com>
- <Zuwyf0N_6E6Alx-H@infradead.org>
- <C00EA178-ED20-4D56-B6F2-200AC72F3A39@oracle.com>
- <Zu191hsvJmvBlJ4J@infradead.org>
- <525e9a31-31ee-4acf-a25c-8bf3a617283f@linux.dev>
- <ZvFY_4mCGq2upmFl@infradead.org>
- <aea6b986-2d25-4ebc-93e8-05da9c6f3ba2@linux.dev>
- <ZvJiKGtuX62jkIwY@infradead.org>
- <1ad540cb-bf1b-456b-be2d-6c35999bdaa8@linux.dev>
- <66A7418F-4989-4765-AC0F-1D23342C6950@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <66A7418F-4989-4765-AC0F-1D23342C6950@oracle.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v2] net/mlx5e: Fix NULL deref in
+ mlx5e_tir_builder_alloc()
+To: Elena Salomatkina <esalomatkina@ispras.ru>,
+ Saeed Mahameed <saeedm@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Maxim Mikityanskiy <maximmi@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+ Maor Dickman <maord@nvidia.com>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240924160018.29049-1-esalomatkina@ispras.ru>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20240924160018.29049-1-esalomatkina@ispras.ru>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 7bit
 
-在 2024/9/24 23:16, Haakon Bugge 写道:
+
+
+On 24/09/2024 19:00, Elena Salomatkina wrote:
+> In mlx5e_tir_builder_alloc() kvzalloc() may return NULL
+> which is dereferenced on the next line in a reference
+> to the modify field.
 > 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
 > 
->> On 24 Sep 2024, at 15:59, Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
->>
->> 在 2024/9/24 14:54, Christoph Hellwig 写道:
->>> On Tue, Sep 24, 2024 at 09:58:24AM +0800, Zhu Yanjun wrote:
->>>> The users that I mentioned is not in the kernel tree.
->>> And why do you think that would matter the slightest?
->>
->> I noticed that the same cq functions are used. And I also made tests with this patch series. Without this patch series, dim mechanism will not be invoked.
+> Fixes: a6696735d694 ("net/mlx5e: Convert TIR to a dedicated object")
+> Signed-off-by: Elena Salomatkina <esalomatkina@ispras.ru>
+> ---
+> v2: Fix tab, add blank line
 > 
-> Christoph alluded to say: Do not modify the old cq_create_cq() code in order to support DIM, it is better to change the ULP to use ib_alloc_cq(), and get DIM enabled that way.
-
-Hi, Haakon
-
-To be honest, I like your original commit that enable DIM for legacy 
-ULPs because this can fix this problem once for all and improve the old 
-ib_create_cq function.
-
-The idea from Christoph will cause a lot of changes in ULPs. I am not 
-very sure if these changes cause risks or not.
-
-Thus, I prefer to your original commit. But I will follow the advice 
-from Leon and Jason.
-
-Zhu Yanjun
-
+>   drivers/net/ethernet/mellanox/mlx5/core/en/tir.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> 
-> Thxs, Håkon
-> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tir.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tir.c
+> index d4239e3b3c88..11f724ad90db 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tir.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tir.c
+> @@ -23,6 +23,9 @@ struct mlx5e_tir_builder *mlx5e_tir_builder_alloc(bool modify)
+>   	struct mlx5e_tir_builder *builder;
+>   
+>   	builder = kvzalloc(sizeof(*builder), GFP_KERNEL);
+> +	if (!builder)
+> +		return NULL;
+> +
+>   	builder->modify = modify;
+>   
+>   	return builder;
 
+Thanks for your patch.
+
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
