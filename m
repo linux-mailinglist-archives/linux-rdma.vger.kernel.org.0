@@ -1,79 +1,80 @@
-Return-Path: <linux-rdma+bounces-5107-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5106-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DCE8986C3E
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 08:05:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85B2D986C37
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 08:04:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8EF61C22369
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 06:05:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1685E1F2215C
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 06:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F3B84A2F;
-	Thu, 26 Sep 2024 06:05:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lnZ+mago"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10D2B16B38B;
+	Thu, 26 Sep 2024 06:04:24 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from stargate.chelsio.com (stargate.chelsio.com [12.32.117.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE24D1171C
-	for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2024 06:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4408C33C9
+	for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2024 06:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=12.32.117.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727330726; cv=none; b=qH3Km9B7jUFdp/Uu+316zULx6/Xq7Cl7+jQRo4cQeZeUtrfxK9NDFYRCl/tqN4hbJZMULlTr1sSP/n1Q3vIGGNTkXaOugiXwfEoGQQUESAoZq4r9Khu5EwQ4VaKLATVV6IL+rwMszN3oDto6/n+peCvZ+7zgx/IgGikD9OnG7qg=
+	t=1727330663; cv=none; b=qC7JjqWEu2BUgA76EXuWbe+CNcqNy78nf0FXfoTLUpdaZ8x25CXd9ZIQTwcFN7STp+OxKonxaYzC9pYxnmAnnIwf+6NIxLUVdbN9pfZWt5MqoTnSms48LDiqdwJDQ/VqZZ//5q1Yeic93XTgBL196QOYUPKDOOWXuiZdI+0JEKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727330726; c=relaxed/simple;
-	bh=L4B7GUMTcAOaC37vrRv7FHfKm1CAydT6EJkocQXC6+4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HslfwFjaEstf5eE+/LHOtvUI0yCCeS7tRaQajIXT9Cn0I6AamvIgiGcx5B8u5WHv5apg+pNJccz2tCU8TM3TzssBA0yDn4b7r34wpj/3Ha9zvSPz03q5Z8CR0MtaM+aLGzBTcznPA1QirKng+I3wyv9Ge6pzztjyS3cSwYynWNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lnZ+mago; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEC7BC4CEC5;
-	Thu, 26 Sep 2024 06:05:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727330725;
-	bh=L4B7GUMTcAOaC37vrRv7FHfKm1CAydT6EJkocQXC6+4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lnZ+magooz+emKwdS58PpUoPQEOj4ineck06+RHd2YEeh1qMAjwXphzj4EYCxIDjA
-	 FjhEjlJg+rjnDZsf8gRyaZDuLbuR38wcm2D/zXJrrGfqMJcxpcaR4R7GFgfp2opWO5
-	 4GGnZF0NV1Z0Cw3YSHMJcQt81oUACN0sVIPTH8QYuWMSITSdMuOHnx0MplI12QKsII
-	 UDntaFufRE9QY9dI/A8Fw+jVckbXjjS02Xko9wfvlDlysIb+3Ccs6hbUdm7pjsvcIZ
-	 x/GfGtRxubrs5HWU0JTUW5rI+bAwJL70Qn9pAP7IZcv1ln+aRAWRfMxq3BSW8Oedbl
-	 Ih663GEF+hAzA==
-Date: Thu, 26 Sep 2024 09:05:20 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Anumula Murali Mohan Reddy <anumula@chelsio.com>
-Cc: jgg@nvidia.com, linux-rdma@vger.kernel.org,
-	Potnuri Bharat Teja <bharat@chelsio.com>
-Subject: Re: [PATCH for-next] RDMA/cxgb4: fix kernel panic for RDMA loopback
- test over VLAN
-Message-ID: <20240926060520.GF967758@unreal>
-References: <20240926055705.77998-1-anumula@chelsio.com>
+	s=arc-20240116; t=1727330663; c=relaxed/simple;
+	bh=DS8GnTRaRSIfUazxAGfUcF7uUvZdb8vIxl2EL63Udy4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=i+H0+XKaicOZVGg9vi5svtnPtL+F6ZMTIKmDJGKd+EwYe5V1cW6IIutiQGQKaM7D/m22EyJpLVlwzHY+Ze4B5eFN82ptwKplrr/ySB9KG9iPBiJaWwwXHKXDKxAYRE3uk74p5QEwphTjGkLZcnfrcmZXcKzzLc6sTUi5hSLIPTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chelsio.com; spf=pass smtp.mailfrom=chelsio.com; arc=none smtp.client-ip=12.32.117.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chelsio.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chelsio.com
+Received: from beagle5.blr.asicdesigners.com (beagle5.blr.asicdesigners.com [10.193.80.119])
+	by stargate.chelsio.com (8.14.7/8.14.7) with ESMTP id 48Q64FTq025845;
+	Wed, 25 Sep 2024 23:04:16 -0700
+From: Anumula Murali Mohan Reddy <anumula@chelsio.com>
+To: jgg@nvidia.com, leonro@nvidia.com
+Cc: linux-rdma@vger.kernel.org,
+        Anumula Murali Mohan Reddy <anumula@chelsio.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>
+Subject: [PATCH for-next] RDMA/core: fix ENODEV error for iwarp test over vlan
+Date: Thu, 26 Sep 2024 11:37:08 +0530
+Message-Id: <20240926060708.82018-1-anumula@chelsio.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240926055705.77998-1-anumula@chelsio.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 26, 2024 at 11:27:05AM +0530, Anumula Murali Mohan Reddy wrote:
-> ip_dev_find() always returns real net_device address, whether traffic is
-> running on a vlan or real device, if traffic is over vlan, further
-> derefencing real net_device address leads to kernel panic.
-> This patch fixes the issue by using vlan_dev_real_dev().
+If traffic is over vlan, cma_validate_port() fails to match vlan
+net_device ifindex with bound_if_index and results in ENODEV error.
+It is because rdma_copy_src_l2_addr() always assigns bound_if_index with
+real net_device ifindex.
+This patch fixes the issue by assigning bound_if_index with vlan
+net_device index if traffic is over vlan.
 
-Please add kernel panic message and Fixes tag to the commit message.
+Signed-off-by: Anumula Murali Mohan Reddy <anumula@chelsio.com>
+Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+---
+ drivers/infiniband/core/addr.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks
+diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+index be0743dac3ff..4e02d5a2b35f 100644
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -269,6 +269,8 @@ rdma_find_ndev_for_src_ip_rcu(struct net *net, const struct sockaddr *src_in)
+ 		break;
+ #endif
+ 	}
++	if (is_vlan_dev(dev))
++		dev = vlan_dev_real_dev(dev);
+ 	return ret ? ERR_PTR(ret) : dev;
+ }
+ 
+-- 
+2.39.3
 
-> 
-> Signed-off-by: Anumula Murali Mohan Reddy <anumula@chelsio.com>
-> Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
-> ---
->  drivers/infiniband/hw/cxgb4/cm.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
 
