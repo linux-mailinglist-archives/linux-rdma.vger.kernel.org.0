@@ -1,169 +1,140 @@
-Return-Path: <linux-rdma+bounces-5115-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5116-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A136987606
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 16:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C4E1987675
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 17:26:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51F6F1F23423
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 14:54:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C55531F26F59
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 15:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142B5149E16;
-	Thu, 26 Sep 2024 14:54:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8213B14D70B;
+	Thu, 26 Sep 2024 15:26:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="qyRAbiDa"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KY4U4I7h"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2078.outbound.protection.outlook.com [40.107.223.78])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF101494AC
-	for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2024 14:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.78
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727362469; cv=fail; b=F4HFuIgdW8WjLqLuNinnnMGRxGpSz8NcovK5/3mvqIA50mhJdU3EMacLo9T2ra8GCi08ipiXJNaz5dsgvkfB2jDzIGQhqtJw3CKzaIzicEVyfvGYaC8l9CGLJq/MZZ/oDyI81ckGUvjFCq7EzJRthGvMMV9/1FCE7d6cbJsw2cs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727362469; c=relaxed/simple;
-	bh=MmGgCwFt+SX82coJm6e9f3hzLaJs3plosUgO45zPN7Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=dWuDme5ZildsJo//wqi2zhSBhn5N7acdfSnFgvyjeiXaWHMpt2JdwUpY96SlgcczwvcC/ChTKd/6ttyPS5BkDLYDC3XAvfuvuBdzzlbldGjZ0Tdpt0SVk2Txmw9wqp+nPgSReh8bPOFuJ1xo6iq/GiznmlRLOJad8IJ5dI0u50Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=qyRAbiDa; arc=fail smtp.client-ip=40.107.223.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=lqUaF9jTt7R2hNtV/meOOTC0f22vxBe1RI9UMAC07c2ZMjWuTPADVXBlfN4IvDFh1LYgzqz0k+7gQQUYMGEys0jpuZu3ACX55aO0RLSi5/sskhrcNqFROR2KHMxzc68pRxKsyXqsMtS79p6CBNP9YDpBqONPtLaK/K/3FKhPKH2Ij0Df6+A8hHv6Gj//bob/6BEjBAXTwVioRItndHp4TnPgIWNKZ+N9h30r8F4ESrrmBasBCnYwPhWUn1zcmT62VQdykUGV8ETFf5Dm4h0aCR4NkvUcBEE8tUV4Minn3A4xmld7DTqkNuw9u+EdlncIKOdQ/RBWzXNi8xcrSN3puA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MmGgCwFt+SX82coJm6e9f3hzLaJs3plosUgO45zPN7Y=;
- b=rxMenYFCYRmbBSfP2SILLwuRYJCPDXvnzEIFy50Zya8N4VY8LmSd06EsqRY7vio9zJ6L6zeMh/UyUViBx8TpVR4VML4Xb1qb9ohrPYmeQqi19G9V0fAg6evVYaAsLGaRdKmn93OWRKGl+J3M3yIFQgHLSpHiJIt8sjhQao8phAJcE22re8BAm48sLGbEbaCp8dIN3AgcIMN7rbxpDun7eUdNnEA9SQRqKfv0A+z+pDOyJT1sS6EAZd75t0/iKMkgomm+XHd2ShaHSituKc6A6AE3hY8oBDb91f+4W3oiprctGRAhRSV2RTP1J52S32MBhn30DQmUvxQxlJF2toQXwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MmGgCwFt+SX82coJm6e9f3hzLaJs3plosUgO45zPN7Y=;
- b=qyRAbiDaYwnsLUSedXqkjZmuxvu1kDmGleh3RQ8fXt7UfsOW20AOpONDu1kHvfTV8ko6hzDsMhaB73e6Fqda2vL0e6LrjsUuUkHZPP9Wge09Uf9xkgpLOA+4K0hAcb0gMz5Ln+r4BklKSB8AWcHSSM4IxpBtxnDCmx4yGScYgRdwDAcMDVER7VoVh275jkuDlgidetQBcnCdj/2Ov/fCjGHIfiNrcKxKbp+CJcr/ET51xw8hTRUThWgDq+K61zGfT0VRGPhTyqQUn6Y4T9SGfOiew0dtYxzvSXP9wWlfUaTHG/gsVV8zj4B86Mxnrdl3laPuOD0huXGinWuE0b8dqw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
- by SJ2PR12MB9139.namprd12.prod.outlook.com (2603:10b6:a03:564::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8005.22; Thu, 26 Sep
- 2024 14:54:24 +0000
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.7982.022; Thu, 26 Sep 2024
- 14:54:24 +0000
-Date: Thu, 26 Sep 2024 11:54:23 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: "Margolin, Michael" <mrgolin@amazon.com>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org, sleybo@amazon.com,
-	matua@amazon.com, gal.pressman@linux.dev,
-	kernel test robot <lkp@intel.com>,
-	Yehuda Yitschak <yehuday@amazon.com>,
-	Yonatan Nachum <ynachum@amazon.com>
-Subject: Re: [PATCH] RDMA/efa: Fix node guid compiler warning
-Message-ID: <20240926145423.GB9417@nvidia.com>
-References: <20240924121603.16006-1-mrgolin@amazon.com>
- <20240924180030.GM9417@nvidia.com>
- <7aa4bf5b-17aa-474a-b6c5-c4b0600f30a3@amazon.com>
- <0aa53dd7-7650-4d53-b942-00903e41dd9e@amazon.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0aa53dd7-7650-4d53-b942-00903e41dd9e@amazon.com>
-X-ClientProxiedBy: BN1PR10CA0022.namprd10.prod.outlook.com
- (2603:10b6:408:e0::27) To CH3PR12MB8659.namprd12.prod.outlook.com
- (2603:10b6:610:17c::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9479C14BF8B
+	for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2024 15:26:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1727364363; cv=none; b=UIFOIsGxbgJoOD8UsCw7rmT8wHnMAJZr//hDpUUNZEWBxtpCcpqh+A5GS+4JkYH91cnVVbGd+j4Zh+ISCrxYPCxTuf6TbCGbFQP7rHQdWYBZNQiIm4/nSwYLfm/gRNZLYiGeXYevck9WV3DjkvHJNI3ZqN0hlB5ebG6XcszvvYg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1727364363; c=relaxed/simple;
+	bh=8O97gAQSQMSTIA1LZZJBwR/Vypo4UoHG527XvQ/bhCI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UvJlVe/tY75wmemBRWRBgc/nVGU39UR9s3dvpxVpFFqQbWQXXVCRbsoKYEhAHnN+Zfjh573LAGh0Nq8IUeSNY9sriwAOhqQBj1irBVFjLmuOUs0JETRAp/nqo0m00m9AnhyFJsB5XLUof4+uHTLiNyCa80K0hlzD6xIteWGBjo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KY4U4I7h; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8d19d735-c2a8-456a-ac97-7f8d86cd7ed1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727364359;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z4ZlEW2hvu2WiB0zyG9qp5Yw8aOdRlroBQryAcoNJJ4=;
+	b=KY4U4I7hrDGJSp6YKullSWSD5lP2OkyMVPJoqQhWbnI4jzplUfAvFTcH639OiAiefibyig
+	EzCYgm91vBGkKuRpLuN/KhwHYK/O42gr6CaSUJTQEZAxRtOSKYdnq+NwFp6FmlTkJW++Bd
+	m/OHo6S1IFun6CIEdK6Zrm2+S87b158=
+Date: Thu, 26 Sep 2024 23:25:33 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|SJ2PR12MB9139:EE_
-X-MS-Office365-Filtering-Correlation-Id: 31355e9c-3b4a-4f24-8649-08dcde3b1c67
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?e9Cjv4gh6TVc5NJquvdndzVExFZ1ZHVr0w1PxGau73zQ8Jb/GromSHC1iUor?=
- =?us-ascii?Q?HCyGpSmbZhSA4+7cgzBbkZcvC+kpoDncrac9MxbmtXDCoZ1LVzmocd4O+ufg?=
- =?us-ascii?Q?Ocxs+3AX4bdOEjM4bFLJc5mm+0ANsPPRNRruCJLd8SYCkYfxZqTv8ZN0VhUr?=
- =?us-ascii?Q?E+8IjYl9T8l8yU8rWBrStz86+ZS4LvQQchpXwF3FD/Qg1xAqkUoFSgae6vC+?=
- =?us-ascii?Q?ynY/8L0iMi2zfwT2NldE+5L/7Z4XOLePFqy3WE/2y1qwpz/mc71BH6ZpfZua?=
- =?us-ascii?Q?wyan9+lM/iNulQrwXNKPFKo36T4SxwC7DRGP42yGgFZRmpE1MaHYTNzyKIxn?=
- =?us-ascii?Q?mbvfpA8UsKnvMXXkBwTZTyih00Q3Fab1IxTRUsKj0X4Nizhxuu2HmuHAzA5B?=
- =?us-ascii?Q?OAM84EQf9XUk8I6lab7W/dKcrJfRUO5HkNK6k8S6rU7ISxb80ECbDQkcAtpd?=
- =?us-ascii?Q?4CpIyZstPImyYSrS5nCEHhW8XpnUom/fWtwLu2haJWpJyLRnp7Uhp6sEjyNi?=
- =?us-ascii?Q?e/5PTqzFvrrrctVSWy0GC4RiUsTV9I/UPihP4qPAlSdaVF3JjuhyC1CXhEda?=
- =?us-ascii?Q?Mbr7ziC3MJicVES7CHuX/kmRbd/ndXpdDhG9BzL9q6rtEpnsfdMyIeagJPIW?=
- =?us-ascii?Q?GoVqZeC8YqGGYdzllKAVAoR8BwBRGtghbLrmm3hX9YkSgJF8dDRTUPfhuN62?=
- =?us-ascii?Q?DXcnuCD+01IBkY7DHzq9BHMdidjOpBa/FeEnZXclIp+L4AVQb5e1P0+JzA5K?=
- =?us-ascii?Q?dFhvd0Y5Q4pzha3mwT4bcdHsc35INPHimbObeqcbqirt3ymL6MotWiyI1Fco?=
- =?us-ascii?Q?FLtRBaSo2QpdBtVCa9Wdd5Fex0Z/SxEkPqcPxPZuOUmHk5sH1FCdD6vbt8+i?=
- =?us-ascii?Q?zD3nuxjtE41fdqTkijJO2El3ym7jXRuT3rq6GCBJ//kHyPeO1klpusXAiV2h?=
- =?us-ascii?Q?dPOtxIMo70iFNPbjRc8DfIbS0uOC5u2Ng4BPzVyRhcUlgj3NuWFfWIVN2hOp?=
- =?us-ascii?Q?vRRqeJeVO8Q+UzqokxC22lGP3vMb3+tYz3FYYI3cJCMJbXjVcY7+LJ8V0s7J?=
- =?us-ascii?Q?y7ffoIeGUyS4B0XTXrCAhffxReJZPBa83d4WpYLX02Ie4tt2DS1bYt7ii8EJ?=
- =?us-ascii?Q?CJnq9XMGJTQiBmudhZTg7xVIE5vfuEudcbyFQq7L8nxU5OpOBL1VHHLNcFkL?=
- =?us-ascii?Q?ryyBNZbfQh9QRANYy/SzqaIu65Fqb/PpqBCTdTk0uQaa8rDlKuN/kaJ8q8pG?=
- =?us-ascii?Q?ahdNs/Xj6uNJzt/102ENchBHUQ+J+7w6XoZd2/yg3AF8Tww/LRtT5cOIluVY?=
- =?us-ascii?Q?vBKmZLqYSxfqsaJXgXoghESF9t34b24aR94c6bsMfs4h+g=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?RcnWHtB3cSyGB7Nte+xALFPxhhe1mwMBU5P8HiPfh5GCF8XTn4F2qjtmUQaZ?=
- =?us-ascii?Q?8IlcN1usZD0e2EKGlZ+LUK0WhCan67Fs20dL8uutlp2pk4Doe7ASwxq6QuXb?=
- =?us-ascii?Q?ImcN4KP4q7NbQC49XAxamAgDbChb4w2erHPc7od/oFoIl6l8bJ88bqhoyuUs?=
- =?us-ascii?Q?Cy4HHBS8FDrMs4ASkVWGbSOXv8GxgYeS1TCSRSVIOpBPLO842vM5hcT/p5uh?=
- =?us-ascii?Q?FWOkKgo0ngPEkErYSaQRn0CfaL8jhkQpgGdtwxf4h3FUewcytPWsRQRlNVdx?=
- =?us-ascii?Q?vqlqK0TJOHxDlBwTbRdkmBhs/6qxa6NNwaFueIXw49wGYsuvg4cFirAOcAZz?=
- =?us-ascii?Q?fHgvqS4NSAawn9Dkg/eXCB+pfGv/pFD5DsFt1SBb0CKQwCUvA83j4K68WTKi?=
- =?us-ascii?Q?izecxccqO7vziNbTMWvmK37+fAOjasgzEMXO4DDeCKXtVeL4MYUb9DZut4Hj?=
- =?us-ascii?Q?JNrgYrzj+TDmLlT0oG/8Nf7P7/+ditn8qbgracKnB2t+XhmY82LYoyekQesI?=
- =?us-ascii?Q?ofq6LnqMGWxPFlVk8qkKOMX+YvJRkhdbU2bnbU99x5cCUYm9tv4czmZlxJ51?=
- =?us-ascii?Q?7HICU5II50Y6lDAoc2liAWjVeluF0m6TdytZFOhG08IKPr1AKlE7W5zsWtEz?=
- =?us-ascii?Q?BH3y6NI3Dle9UenPnTZUMeIUBvhk8aqKbeC1kFsRb8wwnbkJgB9c+8XhvPqG?=
- =?us-ascii?Q?32mITiO/oOxAJNdT8zutlBa2cIcew/4z6Xcg7my7+LXrkQ25PrtMn+FktT0+?=
- =?us-ascii?Q?cs4M9zhzLEaFwWgpytzhUg7mG6D/Al7zo+WQ6p71XN8Lk4M99C+WXNTej1at?=
- =?us-ascii?Q?cljkQ3dK4Eg2te8eLEO2YlQOEJQbus8IBrDR3u/M7LELAc3tt6Zqk3/vtVDw?=
- =?us-ascii?Q?gcV2oSKBv7XjO28bi7GZAq65DR5sn2EPWfDjTp24DRhOtFAfRIeXotybx6u2?=
- =?us-ascii?Q?YI+FFjm84RhdFAUgvJBuYJMBpfEbkGmCzfpQX5YyOVet/vxOjXQBy7WfetuO?=
- =?us-ascii?Q?5r+3AtPgacQyKy4wsPBZ2zOrJ9BshE87e14hZZPHMrSbfz883zhXfL0gjHLJ?=
- =?us-ascii?Q?6mLbHUv8E0Qid1T6Mj7esPZxPxhxRtp3/cqK+E8PcUxNr+LMSnh0M1zfooLS?=
- =?us-ascii?Q?db206aVBEAy2DrUIgyw9mvmL0261hJ5s08t5e3Y6Y+iWjjlq8WnilWp1k1Tw?=
- =?us-ascii?Q?PgoLJHsFWLmkVEZTbS2MKN2TTeJ9Tx/BO8VbyjoOubCe4ZhfWGCouD44Kp9W?=
- =?us-ascii?Q?K1H9JAKcGrjkR/VqT5LECjj1ivAUdst8g6Fl5+0tSGYIKHoWwwSfGw+jeFrK?=
- =?us-ascii?Q?zkkiOcvxdgMsJmxkAUcJyWiFLkSrPN1s4RKGuOiWPR/xljkr1A1leJXzmT3N?=
- =?us-ascii?Q?aflpzNztV49cY8T+SDbaio4zxo1cXhTo6G6xV4VHBqdiWP3IHSPm7rUxjqSX?=
- =?us-ascii?Q?+qRNIM4Dqrclw1/0skBbq7+B5hyNVjggSyRIV2Mza0ZSko2gjntlRzsft1xl?=
- =?us-ascii?Q?hTHf4N122YVdwb+cDRBM/vHb/iAbiEcUgCSVfk8J91YA9DWniZOjy9CjTlPx?=
- =?us-ascii?Q?bmpTo8kOg1Xg0Eh3zNc=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31355e9c-3b4a-4f24-8649-08dcde3b1c67
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2024 14:54:24.2085
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CBiTNOOyGakxnz4an1Zst0DeRmOq/Mn14Plv/k+9KONh3DjpZrNjB7UEKT2y/tEw
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9139
+Subject: Re: [MAINLINE 0/2] Enable DIM for legacy ULPs and use it in RDS
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Haakon Bugge <haakon.bugge@oracle.com>,
+ Christoph Hellwig <hch@infradead.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Allison Henderson <allison.henderson@oracle.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ OFED mailing list <linux-rdma@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>
+References: <Zuwyf0N_6E6Alx-H@infradead.org>
+ <C00EA178-ED20-4D56-B6F2-200AC72F3A39@oracle.com>
+ <Zu191hsvJmvBlJ4J@infradead.org>
+ <525e9a31-31ee-4acf-a25c-8bf3a617283f@linux.dev>
+ <ZvFY_4mCGq2upmFl@infradead.org>
+ <aea6b986-2d25-4ebc-93e8-05da9c6f3ba2@linux.dev>
+ <ZvJiKGtuX62jkIwY@infradead.org>
+ <1ad540cb-bf1b-456b-be2d-6c35999bdaa8@linux.dev>
+ <66A7418F-4989-4765-AC0F-1D23342C6950@oracle.com>
+ <5b86861b-60f7-4c90-bc0e-d863b422850f@linux.dev>
+ <20240925092645.GD967758@unreal>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20240925092645.GD967758@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Sep 26, 2024 at 04:25:19PM +0300, Margolin, Michael wrote:
+在 2024/9/25 17:26, Leon Romanovsky 写道:
+> On Wed, Sep 25, 2024 at 10:04:21AM +0800, Zhu Yanjun wrote:
+>> 在 2024/9/24 23:16, Haakon Bugge 写道:
+>>>
+>>>
+>>>> On 24 Sep 2024, at 15:59, Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+>>>>
+>>>> 在 2024/9/24 14:54, Christoph Hellwig 写道:
+>>>>> On Tue, Sep 24, 2024 at 09:58:24AM +0800, Zhu Yanjun wrote:
+>>>>>> The users that I mentioned is not in the kernel tree.
+>>>>> And why do you think that would matter the slightest?
+>>>>
+>>>> I noticed that the same cq functions are used. And I also made tests with this patch series. Without this patch series, dim mechanism will not be invoked.
+>>>
+>>> Christoph alluded to say: Do not modify the old cq_create_cq() code in order to support DIM, it is better to change the ULP to use ib_alloc_cq(), and get DIM enabled that way.
+>>
+>> Hi, Haakon
+>>
+>> To be honest, I like your original commit that enable DIM for legacy ULPs
+>> because this can fix this problem once for all and improve the old
+>> ib_create_cq function.
+>>
+>> The idea from Christoph will cause a lot of changes in ULPs. I am not very
+>> sure if these changes cause risks or not.
+>>
+>> Thus, I prefer to your original commit. But I will follow the advice from
+>> Leon and Jason.
+> 
+> Christoph was very clear and he summarized our position very well. We
+> said similar thing to SMC folks in 2022 [1] and RDS is no different here.
 
-> Actually that's wrong, the device always sets guid in BE order so no
-> swap is needed in the driver in any case.
+Thanks, Leon. I will read this link carefully.
 
-They you just mark it as _be64 in the struct and there is no reason
-for the __force ?
+> 
+> So no, "old ib_create_cq" shouldn't be used by ULPs.
 
-Jason
+Got it. I have replaced ib_create_cq with ib cq pool APIs. Perhaps 
+drivers/infiniband/ulp/srpt/ib_srpt.c is a good example to use ib cq 
+pool APIs.
+
+Best Regards,
+Zhu Yanjun
+
+> 
+> Thanks
+> 
+> [1] https://lore.kernel.org/netdev/YePesYRnrKCh1vFy@unreal/
+> 
+>>
+>> Zhu Yanjun
+>>
+>>>
+>>>
+>>> Thxs, Håkon
+>>>
+>>
+>>
 
 
