@@ -1,183 +1,108 @@
-Return-Path: <linux-rdma+bounces-5117-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5118-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9AEA9878F9
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 20:15:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F55A9879F9
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 22:04:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D9121F22D7F
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 18:15:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6C37B24AE2
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 20:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8EFA16191E;
-	Thu, 26 Sep 2024 18:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E78117C233;
+	Thu, 26 Sep 2024 20:04:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CgTZPr0M"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="G8dPWBgY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1183A13E028
-	for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2024 18:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3ADC17BB33
+	for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2024 20:04:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727374534; cv=none; b=kSksY40midK0JMllBbXtq5bQTsgBwbiQy3hUtjtAgCEUnV1wNOqd30zdkwMeFbqBgCYAxkAESOCJ9IIQj+ZgiphneVZP269KKo6N8S2sKAkwD5MfaY2lte3j/yiBM0uCWswCXHasL3RcHyvj1cAw84Pg7ckmweE13Z7GSaDRlpQ=
+	t=1727381052; cv=none; b=tmgOz7yHCVwjyU9/07Lldrogbcey3nkc09huA6fE+7qeyvk+dK1p/KQHLHkNCRtw/jBlGKENoKpS5+BYE1Cniec52YM8lZSqQs+YlowbC1MLzUWeD3Htw7gZDSP02GgvrybS1DUMEXz/QsK0hlOJIYw/t91kiMEIyjYvYoCL9m8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727374534; c=relaxed/simple;
-	bh=0iaW9ayASK4sYOEg7AV+wgw2JHuSB/rDBFbxxHYK+kg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IOS76qr544W86YC97+DIiy3QxxicKJcZQiTpxHzMmQRwXiUMk5w1f/agz8Yqwsx1LF3r0arnL7OPffoShjjNgK8F93QGxFPnaBW0m6S/9qL5HQ3TbV6Ok+isL+6I7Hq+f+0AYaH47H/XoOBjxNogYdQaKsciyPJ6Jl48JJULkoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CgTZPr0M; arc=none smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4582a5b495cso35661cf.1
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2024 11:15:32 -0700 (PDT)
+	s=arc-20240116; t=1727381052; c=relaxed/simple;
+	bh=RlXNggeuRvIx7uKsn+nCjTpTHr+U3dx/RtOxLHcDckE=;
+	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=dq1j24ohECzuNOEtaBINHn9jjI1tZFimjxPlHaFm2QoAaPuutpyfsFjD+cN7cyYHUhqCV93/GCPHubBhiwuTa2Aa9YEwFCDrp4m+7RHHAA/aHkrBF4cWXJmeZXPAxSOzf80dmyeDCTHQBJ86vNEC164xAzkJnFVtLCaiYa/6Yok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=G8dPWBgY; arc=none smtp.client-ip=99.78.197.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1727374532; x=1727979332; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ghI5wl9Rodk/qOTN/GXzEVkvMG0ZFbywRGFDuKaTQGk=;
-        b=CgTZPr0MikyVbQY57XDnogDR/NKIDNiItW+63Y2Lu1QT7M3RieLLvc12enuYOhTtqf
-         kb9ZwoCUTiL+DBvNgOuABJD735GzbDMesX8ONorz05oiheyP1uX8wxTA7+5RsF87UKZa
-         Q5Ooy5ggpT+bTS1iqm1+mBTwvrzxOT+98CtrHSWU01ibKXm7Y9COKJk2o2Q5NfVNTQE+
-         UQT5tgF+f4UZnfeeDgd9mi2hIWumnZlpsPvotzvKLbeLm7hViEWuqGMgpalp6e5CVJfw
-         3IY6m8l2nYE6QxbKARUa9BSrtKIh9ny7/amYDLdRQvmSX0SOR2z8r8DHPrymVfdkiU5H
-         BO8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727374532; x=1727979332;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ghI5wl9Rodk/qOTN/GXzEVkvMG0ZFbywRGFDuKaTQGk=;
-        b=lmcutDm8238Ewm8anxm4K80yFOugGhoFdXmyH12tI74L+IPrXIukd93Xny4hIqr9kK
-         34JHExd32OjF2VkEmmxvJ8bDuxSIdqv+nOKZ8uzkUXrh9p762NNB1BhWV8HDPstTAfZp
-         z1Y6COFmUeH+9CX6NLAszl9skCmLcJ6pgUyCs/nkQN/kGFJ20X7kIEyFPWxKxDftCPLQ
-         DGulIwK5ko8lPNgNq31l27ZHB4d7s7n22eyxjWAk2DDL3tjVUNcCbTacS6oXpmPt/6cf
-         RKc6QwgllBTwpQPB3DeUtHiFvQ9279RDS4sCV56XQM/sfv8eO68C9dmi+yqV/8pT37CE
-         CvhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUE3+3G3woOkx9RQ5Ew8llR/daIuG0kvxyC2lhXCjIOO2+kltP3Hxts19Ojq51LWvSEjvSnBIySkIvf@vger.kernel.org
-X-Gm-Message-State: AOJu0YyqjoD1pHYWgEYvWpkV2BQSee6IrITcU7BtaHEEjyZ9zNOz5uQz
-	MowGHS7u4ufxYWDH9G1GhLQfPILz12um7h9n8Ekd0CPpYhuFiLSeDudDneCICQxZ1jS6N6I84ap
-	ZYGG/s/JEy5OFrdcjdY+/TnT93IYSs6eg8478
-X-Google-Smtp-Source: AGHT+IEKskNfWv42/OYoUzFnd0ZbE37pwmmbLc0UUgMIXvnGdU5BvAly31C36TplRHtvwCbfAj6CwKAwWZwa5Zx659M=
-X-Received: by 2002:a05:622a:24a:b0:453:62ee:3fe with SMTP id
- d75a77b69052e-45ca03e60f6mr134981cf.17.1727374531410; Thu, 26 Sep 2024
- 11:15:31 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1727381050; x=1758917050;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=UOEYipGuXHHE/dCJ1ShgS5XNI5ffr1hxT6VP7H2atM8=;
+  b=G8dPWBgYy/4b3nbhqheSD2p4LwkaEYKUYhysNsWzWpjgeBbDjw+756lw
+   8/sAQQPmIO9wgP6pcf5tS4DdvUKHY3sv9CrmadMgJUXYzOYPTIR3Np/55
+   1s5X0iStXyn0QBQP6x5UCpnpgS2p9ujHcDFzbDsUyN1zC7gE9UWKd1YLi
+   U=;
+X-IronPort-AV: E=Sophos;i="6.11,156,1725321600"; 
+   d="scan'208";a="130557086"
+Subject: Re: [PATCH] RDMA/efa: Fix node guid compiler warning
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2024 20:04:08 +0000
+Received: from EX19MTAEUB001.ant.amazon.com [10.0.10.100:17160]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.41.159:2525] with esmtp (Farcaster)
+ id e8b10e3e-09f7-47cf-8d72-acbe6dd18a05; Thu, 26 Sep 2024 20:04:07 +0000 (UTC)
+X-Farcaster-Flow-ID: e8b10e3e-09f7-47cf-8d72-acbe6dd18a05
+Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
+ EX19MTAEUB001.ant.amazon.com (10.252.51.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
+ Thu, 26 Sep 2024 20:04:07 +0000
+Received: from [192.168.146.133] (10.85.143.177) by
+ EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
+ Thu, 26 Sep 2024 20:04:03 +0000
+Message-ID: <08cf6d96-02f0-4974-ac69-b9a5184bfb20@amazon.com>
+Date: Thu, 26 Sep 2024 23:03:57 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240925075707.3970187-1-linyunsheng@huawei.com> <20240925075707.3970187-3-linyunsheng@huawei.com>
-In-Reply-To: <20240925075707.3970187-3-linyunsheng@huawei.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 26 Sep 2024 11:15:15 -0700
-Message-ID: <CAHS8izOxugzWJDTc-4CWqaKABTj=J4OHs=Lcb=SE9r8gX0J+yg@mail.gmail.com>
-Subject: Re: [PATCH net v2 2/2] page_pool: fix IOMMU crash when driver has
- already unbound
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	liuyonglong@huawei.com, fanghaiqing@huawei.com, zhangkun09@huawei.com, 
-	Robin Murphy <robin.murphy@arm.com>, Alexander Duyck <alexander.duyck@gmail.com>, 
-	IOMMU <iommu@lists.linux.dev>, Wei Fang <wei.fang@nxp.com>, 
-	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
-	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, 
-	Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, 
-	Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
-	imx@lists.linux.dev, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+To: Jason Gunthorpe <jgg@nvidia.com>
+CC: <leon@kernel.org>, <linux-rdma@vger.kernel.org>, <sleybo@amazon.com>,
+	<matua@amazon.com>, <gal.pressman@linux.dev>, kernel test robot
+	<lkp@intel.com>, Yehuda Yitschak <yehuday@amazon.com>, Yonatan Nachum
+	<ynachum@amazon.com>
+References: <20240924121603.16006-1-mrgolin@amazon.com>
+ <20240924180030.GM9417@nvidia.com>
+ <7aa4bf5b-17aa-474a-b6c5-c4b0600f30a3@amazon.com>
+ <0aa53dd7-7650-4d53-b942-00903e41dd9e@amazon.com>
+ <20240926145423.GB9417@nvidia.com>
+Content-Language: en-US
+From: "Margolin, Michael" <mrgolin@amazon.com>
+In-Reply-To: <20240926145423.GB9417@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D040UWA001.ant.amazon.com (10.13.139.22) To
+ EX19D031EUB003.ant.amazon.com (10.252.61.88)
 
-On Wed, Sep 25, 2024 at 1:03=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
+
+On 9/26/2024 5:54 PM, Jason Gunthorpe wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
 >
-> Networking driver with page_pool support may hand over page
-> still with dma mapping to network stack and try to reuse that
-> page after network stack is done with it and passes it back
-> to page_pool to avoid the penalty of dma mapping/unmapping.
-> With all the caching in the network stack, some pages may be
-> held in the network stack without returning to the page_pool
-> soon enough, and with VF disable causing the driver unbound,
-> the page_pool does not stop the driver from doing it's
-> unbounding work, instead page_pool uses workqueue to check
-> if there is some pages coming back from the network stack
-> periodically, if there is any, it will do the dma unmmapping
-> related cleanup work.
 >
-> As mentioned in [1], attempting DMA unmaps after the driver
-> has already unbound may leak resources or at worst corrupt
-> memory. Fundamentally, the page pool code cannot allow DMA
-> mappings to outlive the driver they belong to.
 >
-> Currently it seems there are at least two cases that the page
-> is not released fast enough causing dma unmmapping done after
-> driver has already unbound:
-> 1. ipv4 packet defragmentation timeout: this seems to cause
->    delay up to 30 secs.
-> 2. skb_defer_free_flush(): this may cause infinite delay if
->    there is no triggering for net_rx_action().
+> On Thu, Sep 26, 2024 at 04:25:19PM +0300, Margolin, Michael wrote:
 >
-
-I think additionally this is dependent on user behavior, right? AFAIU,
-frags allocated by the page_pool will remain in the socket receive
-queue until the user calls recvmsg(), and AFAIU they are stuck there
-arbitrarily long.
-
-> In order not to do the dma unmmapping after driver has already
-> unbound and stall the unloading of the networking driver, add
-> the pool->items array to record all the pages including the ones
-> which are handed over to network stack, so the page_pool can
-> do the dma unmmapping for those pages when page_pool_destroy()
-> is called.
-
-One thing I could not understand from looking at the code: if the
-items array is in the struct page_pool, why do you need to modify the
-page_pool entry in the struct page and in the struct net_iov? I think
-the code could be made much simpler if you can remove these changes,
-and you wouldn't need to modify the public api of the page_pool.
-
-> As the pool->items need to be large enough to avoid
-> performance degradation, add a 'item_full' stat to indicate the
-> allocation failure due to unavailability of pool->items.
+>> Actually that's wrong, the device always sets guid in BE order so no
+>> swap is needed in the driver in any case.
+> They you just mark it as _be64 in the struct and there is no reason
+> for the __force ?
 >
+> Jason
 
-I'm not sure there is any way to size the pool->items array correctly.
-Can you use a data structure here that can grow? Linked list or
-xarray?
+That's probably the most correct way but I prefer to avoid introducing 
+kernel specific types in a shared interface file.
 
-AFAIU what we want is when the page pool allocates a netmem it will
-add the netmem to the items array, and when the pp releases a netmem
-it will remove it from the array. Both of these operations are slow
-paths, right? So the performance of a data structure more complicated
-than an array may be ok. bench_page_pool_simple will tell for sure.
+Michael
 
-> Note, the devmem patchset seems to make the bug harder to fix,
-> and may make backporting harder too. As there is no actual user
-> for the devmem and the fixing for devmem is unclear for now,
-> this patch does not consider fixing the case for devmem yet.
->
-
-net_iovs don't hit this bug, dma_unmap_page_attrs() is never called on
-them, so no special handling is needed really. However for code
-quality reasons lets try to minimize the number of devmem or memory
-provider checks in the code, if possible.
-
---=20
-Thanks,
-Mina
 
