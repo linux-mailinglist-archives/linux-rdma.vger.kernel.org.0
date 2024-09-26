@@ -1,140 +1,183 @@
-Return-Path: <linux-rdma+bounces-5116-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5117-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C4E1987675
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 17:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D9AEA9878F9
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 20:15:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C55531F26F59
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 15:26:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D9121F22D7F
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 18:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8213B14D70B;
-	Thu, 26 Sep 2024 15:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8EFA16191E;
+	Thu, 26 Sep 2024 18:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KY4U4I7h"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CgTZPr0M"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9479C14BF8B
-	for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2024 15:26:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1183A13E028
+	for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2024 18:15:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727364363; cv=none; b=UIFOIsGxbgJoOD8UsCw7rmT8wHnMAJZr//hDpUUNZEWBxtpCcpqh+A5GS+4JkYH91cnVVbGd+j4Zh+ISCrxYPCxTuf6TbCGbFQP7rHQdWYBZNQiIm4/nSwYLfm/gRNZLYiGeXYevck9WV3DjkvHJNI3ZqN0hlB5ebG6XcszvvYg=
+	t=1727374534; cv=none; b=kSksY40midK0JMllBbXtq5bQTsgBwbiQy3hUtjtAgCEUnV1wNOqd30zdkwMeFbqBgCYAxkAESOCJ9IIQj+ZgiphneVZP269KKo6N8S2sKAkwD5MfaY2lte3j/yiBM0uCWswCXHasL3RcHyvj1cAw84Pg7ckmweE13Z7GSaDRlpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727364363; c=relaxed/simple;
-	bh=8O97gAQSQMSTIA1LZZJBwR/Vypo4UoHG527XvQ/bhCI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UvJlVe/tY75wmemBRWRBgc/nVGU39UR9s3dvpxVpFFqQbWQXXVCRbsoKYEhAHnN+Zfjh573LAGh0Nq8IUeSNY9sriwAOhqQBj1irBVFjLmuOUs0JETRAp/nqo0m00m9AnhyFJsB5XLUof4+uHTLiNyCa80K0hlzD6xIteWGBjo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KY4U4I7h; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <8d19d735-c2a8-456a-ac97-7f8d86cd7ed1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727364359;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z4ZlEW2hvu2WiB0zyG9qp5Yw8aOdRlroBQryAcoNJJ4=;
-	b=KY4U4I7hrDGJSp6YKullSWSD5lP2OkyMVPJoqQhWbnI4jzplUfAvFTcH639OiAiefibyig
-	EzCYgm91vBGkKuRpLuN/KhwHYK/O42gr6CaSUJTQEZAxRtOSKYdnq+NwFp6FmlTkJW++Bd
-	m/OHo6S1IFun6CIEdK6Zrm2+S87b158=
-Date: Thu, 26 Sep 2024 23:25:33 +0800
+	s=arc-20240116; t=1727374534; c=relaxed/simple;
+	bh=0iaW9ayASK4sYOEg7AV+wgw2JHuSB/rDBFbxxHYK+kg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IOS76qr544W86YC97+DIiy3QxxicKJcZQiTpxHzMmQRwXiUMk5w1f/agz8Yqwsx1LF3r0arnL7OPffoShjjNgK8F93QGxFPnaBW0m6S/9qL5HQ3TbV6Ok+isL+6I7Hq+f+0AYaH47H/XoOBjxNogYdQaKsciyPJ6Jl48JJULkoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CgTZPr0M; arc=none smtp.client-ip=209.85.160.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4582a5b495cso35661cf.1
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2024 11:15:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1727374532; x=1727979332; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ghI5wl9Rodk/qOTN/GXzEVkvMG0ZFbywRGFDuKaTQGk=;
+        b=CgTZPr0MikyVbQY57XDnogDR/NKIDNiItW+63Y2Lu1QT7M3RieLLvc12enuYOhTtqf
+         kb9ZwoCUTiL+DBvNgOuABJD735GzbDMesX8ONorz05oiheyP1uX8wxTA7+5RsF87UKZa
+         Q5Ooy5ggpT+bTS1iqm1+mBTwvrzxOT+98CtrHSWU01ibKXm7Y9COKJk2o2Q5NfVNTQE+
+         UQT5tgF+f4UZnfeeDgd9mi2hIWumnZlpsPvotzvKLbeLm7hViEWuqGMgpalp6e5CVJfw
+         3IY6m8l2nYE6QxbKARUa9BSrtKIh9ny7/amYDLdRQvmSX0SOR2z8r8DHPrymVfdkiU5H
+         BO8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727374532; x=1727979332;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ghI5wl9Rodk/qOTN/GXzEVkvMG0ZFbywRGFDuKaTQGk=;
+        b=lmcutDm8238Ewm8anxm4K80yFOugGhoFdXmyH12tI74L+IPrXIukd93Xny4hIqr9kK
+         34JHExd32OjF2VkEmmxvJ8bDuxSIdqv+nOKZ8uzkUXrh9p762NNB1BhWV8HDPstTAfZp
+         z1Y6COFmUeH+9CX6NLAszl9skCmLcJ6pgUyCs/nkQN/kGFJ20X7kIEyFPWxKxDftCPLQ
+         DGulIwK5ko8lPNgNq31l27ZHB4d7s7n22eyxjWAk2DDL3tjVUNcCbTacS6oXpmPt/6cf
+         RKc6QwgllBTwpQPB3DeUtHiFvQ9279RDS4sCV56XQM/sfv8eO68C9dmi+yqV/8pT37CE
+         CvhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUE3+3G3woOkx9RQ5Ew8llR/daIuG0kvxyC2lhXCjIOO2+kltP3Hxts19Ojq51LWvSEjvSnBIySkIvf@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqjoD1pHYWgEYvWpkV2BQSee6IrITcU7BtaHEEjyZ9zNOz5uQz
+	MowGHS7u4ufxYWDH9G1GhLQfPILz12um7h9n8Ekd0CPpYhuFiLSeDudDneCICQxZ1jS6N6I84ap
+	ZYGG/s/JEy5OFrdcjdY+/TnT93IYSs6eg8478
+X-Google-Smtp-Source: AGHT+IEKskNfWv42/OYoUzFnd0ZbE37pwmmbLc0UUgMIXvnGdU5BvAly31C36TplRHtvwCbfAj6CwKAwWZwa5Zx659M=
+X-Received: by 2002:a05:622a:24a:b0:453:62ee:3fe with SMTP id
+ d75a77b69052e-45ca03e60f6mr134981cf.17.1727374531410; Thu, 26 Sep 2024
+ 11:15:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [MAINLINE 0/2] Enable DIM for legacy ULPs and use it in RDS
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Haakon Bugge <haakon.bugge@oracle.com>,
- Christoph Hellwig <hch@infradead.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Allison Henderson <allison.henderson@oracle.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- OFED mailing list <linux-rdma@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>
-References: <Zuwyf0N_6E6Alx-H@infradead.org>
- <C00EA178-ED20-4D56-B6F2-200AC72F3A39@oracle.com>
- <Zu191hsvJmvBlJ4J@infradead.org>
- <525e9a31-31ee-4acf-a25c-8bf3a617283f@linux.dev>
- <ZvFY_4mCGq2upmFl@infradead.org>
- <aea6b986-2d25-4ebc-93e8-05da9c6f3ba2@linux.dev>
- <ZvJiKGtuX62jkIwY@infradead.org>
- <1ad540cb-bf1b-456b-be2d-6c35999bdaa8@linux.dev>
- <66A7418F-4989-4765-AC0F-1D23342C6950@oracle.com>
- <5b86861b-60f7-4c90-bc0e-d863b422850f@linux.dev>
- <20240925092645.GD967758@unreal>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240925092645.GD967758@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240925075707.3970187-1-linyunsheng@huawei.com> <20240925075707.3970187-3-linyunsheng@huawei.com>
+In-Reply-To: <20240925075707.3970187-3-linyunsheng@huawei.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Thu, 26 Sep 2024 11:15:15 -0700
+Message-ID: <CAHS8izOxugzWJDTc-4CWqaKABTj=J4OHs=Lcb=SE9r8gX0J+yg@mail.gmail.com>
+Subject: Re: [PATCH net v2 2/2] page_pool: fix IOMMU crash when driver has
+ already unbound
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
+	liuyonglong@huawei.com, fanghaiqing@huawei.com, zhangkun09@huawei.com, 
+	Robin Murphy <robin.murphy@arm.com>, Alexander Duyck <alexander.duyck@gmail.com>, 
+	IOMMU <iommu@lists.linux.dev>, Wei Fang <wei.fang@nxp.com>, 
+	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
+	Eric Dumazet <edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, 
+	Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, 
+	Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+	imx@lists.linux.dev, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-在 2024/9/25 17:26, Leon Romanovsky 写道:
-> On Wed, Sep 25, 2024 at 10:04:21AM +0800, Zhu Yanjun wrote:
->> 在 2024/9/24 23:16, Haakon Bugge 写道:
->>>
->>>
->>>> On 24 Sep 2024, at 15:59, Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
->>>>
->>>> 在 2024/9/24 14:54, Christoph Hellwig 写道:
->>>>> On Tue, Sep 24, 2024 at 09:58:24AM +0800, Zhu Yanjun wrote:
->>>>>> The users that I mentioned is not in the kernel tree.
->>>>> And why do you think that would matter the slightest?
->>>>
->>>> I noticed that the same cq functions are used. And I also made tests with this patch series. Without this patch series, dim mechanism will not be invoked.
->>>
->>> Christoph alluded to say: Do not modify the old cq_create_cq() code in order to support DIM, it is better to change the ULP to use ib_alloc_cq(), and get DIM enabled that way.
->>
->> Hi, Haakon
->>
->> To be honest, I like your original commit that enable DIM for legacy ULPs
->> because this can fix this problem once for all and improve the old
->> ib_create_cq function.
->>
->> The idea from Christoph will cause a lot of changes in ULPs. I am not very
->> sure if these changes cause risks or not.
->>
->> Thus, I prefer to your original commit. But I will follow the advice from
->> Leon and Jason.
-> 
-> Christoph was very clear and he summarized our position very well. We
-> said similar thing to SMC folks in 2022 [1] and RDS is no different here.
+On Wed, Sep 25, 2024 at 1:03=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
+m> wrote:
+>
+> Networking driver with page_pool support may hand over page
+> still with dma mapping to network stack and try to reuse that
+> page after network stack is done with it and passes it back
+> to page_pool to avoid the penalty of dma mapping/unmapping.
+> With all the caching in the network stack, some pages may be
+> held in the network stack without returning to the page_pool
+> soon enough, and with VF disable causing the driver unbound,
+> the page_pool does not stop the driver from doing it's
+> unbounding work, instead page_pool uses workqueue to check
+> if there is some pages coming back from the network stack
+> periodically, if there is any, it will do the dma unmmapping
+> related cleanup work.
+>
+> As mentioned in [1], attempting DMA unmaps after the driver
+> has already unbound may leak resources or at worst corrupt
+> memory. Fundamentally, the page pool code cannot allow DMA
+> mappings to outlive the driver they belong to.
+>
+> Currently it seems there are at least two cases that the page
+> is not released fast enough causing dma unmmapping done after
+> driver has already unbound:
+> 1. ipv4 packet defragmentation timeout: this seems to cause
+>    delay up to 30 secs.
+> 2. skb_defer_free_flush(): this may cause infinite delay if
+>    there is no triggering for net_rx_action().
+>
 
-Thanks, Leon. I will read this link carefully.
+I think additionally this is dependent on user behavior, right? AFAIU,
+frags allocated by the page_pool will remain in the socket receive
+queue until the user calls recvmsg(), and AFAIU they are stuck there
+arbitrarily long.
 
-> 
-> So no, "old ib_create_cq" shouldn't be used by ULPs.
+> In order not to do the dma unmmapping after driver has already
+> unbound and stall the unloading of the networking driver, add
+> the pool->items array to record all the pages including the ones
+> which are handed over to network stack, so the page_pool can
+> do the dma unmmapping for those pages when page_pool_destroy()
+> is called.
 
-Got it. I have replaced ib_create_cq with ib cq pool APIs. Perhaps 
-drivers/infiniband/ulp/srpt/ib_srpt.c is a good example to use ib cq 
-pool APIs.
+One thing I could not understand from looking at the code: if the
+items array is in the struct page_pool, why do you need to modify the
+page_pool entry in the struct page and in the struct net_iov? I think
+the code could be made much simpler if you can remove these changes,
+and you wouldn't need to modify the public api of the page_pool.
 
-Best Regards,
-Zhu Yanjun
+> As the pool->items need to be large enough to avoid
+> performance degradation, add a 'item_full' stat to indicate the
+> allocation failure due to unavailability of pool->items.
+>
 
-> 
-> Thanks
-> 
-> [1] https://lore.kernel.org/netdev/YePesYRnrKCh1vFy@unreal/
-> 
->>
->> Zhu Yanjun
->>
->>>
->>>
->>> Thxs, Håkon
->>>
->>
->>
+I'm not sure there is any way to size the pool->items array correctly.
+Can you use a data structure here that can grow? Linked list or
+xarray?
 
+AFAIU what we want is when the page pool allocates a netmem it will
+add the netmem to the items array, and when the pp releases a netmem
+it will remove it from the array. Both of these operations are slow
+paths, right? So the performance of a data structure more complicated
+than an array may be ok. bench_page_pool_simple will tell for sure.
+
+> Note, the devmem patchset seems to make the bug harder to fix,
+> and may make backporting harder too. As there is no actual user
+> for the devmem and the fixing for devmem is unclear for now,
+> this patch does not consider fixing the case for devmem yet.
+>
+
+net_iovs don't hit this bug, dma_unmap_page_attrs() is never called on
+them, so no special handling is needed really. However for code
+quality reasons lets try to minimize the number of devmem or memory
+provider checks in the code, if possible.
+
+--=20
+Thanks,
+Mina
 
