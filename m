@@ -1,80 +1,74 @@
-Return-Path: <linux-rdma+bounces-5108-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5109-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7258198704B
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 11:33:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE6B49870BC
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 11:52:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D968286B73
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 09:33:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EAFFB29DE7
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 09:52:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48331ABED1;
-	Thu, 26 Sep 2024 09:32:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F5CA1ABED0;
+	Thu, 26 Sep 2024 09:52:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FbR9OIMT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jfdoMWOO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D625A156257
-	for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2024 09:32:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B95D4189509;
+	Thu, 26 Sep 2024 09:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727343177; cv=none; b=o98Igcm2wFjUNSw11DPdKHhXh7bGmP+5d4mkotHcH48kSoXtb+HJPMEtxG47Q8Xp3C+A4JP1/FAbGzk0qGGKWtmBg1lNGRecbJll7O4IIGAUrgdZxmwQ2Z1yxO2ufuSxrsS3YMsM0cbDNu2FQAo+lCqH2156NkS4wu63dWTI7Ho=
+	t=1727344345; cv=none; b=JWsS7dWbdcWcYzQDbboY/CpA6HNv88lAm83/Iw4S9hBoVs/23j3cTISscMeLPBjM5EUewUyyj776QHeAfXMOS4zu3equscym+jrd/8iiG2Iavrlv4gncJa0Bcj4dokNRjQK7jR4/dG+xoFoPSn81fr0LBvaw0vDCe3uthwOlrls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727343177; c=relaxed/simple;
-	bh=9KLITEozZMuMw31UlUJPPVtzDHJ+Iw2+blshL/EsAUg=;
+	s=arc-20240116; t=1727344345; c=relaxed/simple;
+	bh=yZFc2DYfsGluZTXNOiYfeHuR6VWhgbRBOI4olWxsvis=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RFm3pA3KnblXzt94EQuVJOKu8l4UFt6L271G9r6f5gFCqjiTZhj20QDnOPIcza0hNr0Hk/Uze4sKg4SjwLPbLjj1sCug+64bsYGsf1vcaKaatn6eRdUqCHxxQnI176ilFiBlNt1YJU03I6iRLUOzc6qeREibz0Wk/Gj9BsYBKMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FbR9OIMT; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1727343174;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=viiv1R7Qk2EGD2osRa2/tRj2PEh5xjR8v8WEQ+l48h8=;
-	b=FbR9OIMTnjGkRdQIq+gRA/nfxTIjNbfmQ2WcR252ywiji+V1qCh7vOe0LkDYK31kP4kSMO
-	y7CSfy4NtjDCReDiH7MvKke3CzhyItGkiAT7i7eYyQInrlrxdZOvUa1nftDMlZ3af43iO1
-	adTV1zEY31fsxYWrMJL6x8g50RCn4h0=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-9-HgVsdldZMsG3YGAnPB_Xkg-1; Thu, 26 Sep 2024 05:32:53 -0400
-X-MC-Unique: HgVsdldZMsG3YGAnPB_Xkg-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-42cc4345561so4388445e9.1
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2024 02:32:52 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=Di94c1qSELPpGqtaSfaCKJVmV1d+1CwcwWiyscW8S1Hf0udHv6tdHKDnDBfq3YMeolDlwmJ+j+X+McLnoC2GzXVTUO5oCjG7edkqbuMgSTYDyjglkZwZZEPX3efIfNUcd4xFLUpGVTSwFkrBs6DZyFQax199nySwYHEpD77iX/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jfdoMWOO; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5c40aea5c40so1447101a12.0;
+        Thu, 26 Sep 2024 02:52:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727344342; x=1727949142; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZEypOx7pACJ1pldoAKbaM/8U6Ia3BeCPrlCZA3BPX2U=;
+        b=jfdoMWOOOCYbjGMso5uZbd6IOutRwb5LS9J1iUKzEjyq8NIMC2hCX1AQ7Hv3RGevyP
+         u4Ono83r8p19BPt81bCcuoBS+dY4bEp0eQEortozqCB2PFYdOVHg1LX4mkIeRkAKIc21
+         oMuocZlq465M1DXoe3x79WsvcAc9xpvfU+Pu5AGIUoRqCA1oGgfhcg51E6Wv1koXZtm0
+         D6U331vBKCnS7XLjxAV2Ul4pFP5BhVf0qoo2QPpcrDknLYAbr8XFwZDfsJvbFFz4LYBm
+         S9lrthvuudaaputP2eHX3vvLbl4OePBi9SwCSHJfCLIIF6y9qTqsGUdfAEsduCbjaqMn
+         PDkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727343172; x=1727947972;
+        d=1e100.net; s=20230601; t=1727344342; x=1727949142;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=viiv1R7Qk2EGD2osRa2/tRj2PEh5xjR8v8WEQ+l48h8=;
-        b=ONndqXPDFt4xaS7Q1e3cpra4rms/YQzGF1UBQ6ZXXm3yoQxbTdSvNKXgedbwP4ADgZ
-         1mdHYCJ2eikVOdqCfvzQ1vnV6jIUTLpFPX6XXAHf0q6QgireTb/WDSN38FDAKZjajy1t
-         fL1bc8yvhkfkcFSoPJsmsvWKPx5B5IPB7e0vJvTyRWzzgdwFVqBBaC9v8CaYAuQBqv6f
-         1eQ72TsRVIDyd54kI8TKouPiZDR8yW5pOxPsAAEhv4Fck0MKeMzumJs12KzUrV+e7Pa7
-         FtZ8qQskkDKvW4aabFZEcZe2vRsVZ0glqRcpla5wtlYpWpAguXPdGHUtgrOvRWeoBcO6
-         BZGA==
-X-Forwarded-Encrypted: i=1; AJvYcCXkALGRrVLW9FDk5WAnqBxnnbODuUxzly29yUC6BDTT4epISLBxC4AXJxuaLhlRlAcZplEtTQJEHBEO@vger.kernel.org
-X-Gm-Message-State: AOJu0YxN5aae3BbtW9Z5buEfv+jYtQnsBM/NNFgByyA2frdkHIoYhtxR
-	89tXAmhockcwwReKiugubLVOEL7i2tzjYyE9PEIYpIXfXOyVUTCe8z809lWdnvep+H5bWM6A27M
-	7dg1fkrhkzNCRIAn93EApCJOoYLEp5uLZTSX1P1vhqd0qxaNzvBR8aJ7jNpA=
-X-Received: by 2002:a05:600c:190e:b0:428:ec2a:8c94 with SMTP id 5b1f17b1804b1-42e9610c1bamr38128415e9.10.1727343171714;
-        Thu, 26 Sep 2024 02:32:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IENw/jaKF0ZTS+WW9dNaP+bfiB9Y+GVOoQJHXRbTb9+ASAmfl4wzmxgU8LlvJ332t4eckoI7A==
-X-Received: by 2002:a05:600c:190e:b0:428:ec2a:8c94 with SMTP id 5b1f17b1804b1-42e9610c1bamr38128215e9.10.1727343171327;
-        Thu, 26 Sep 2024 02:32:51 -0700 (PDT)
-Received: from ?IPV6:2a0d:3341:b089:3810:f39e:a72d:6cbc:c72b? ([2a0d:3341:b089:3810:f39e:a72d:6cbc:c72b])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e96a168bdsm41800565e9.37.2024.09.26.02.32.49
+        bh=ZEypOx7pACJ1pldoAKbaM/8U6Ia3BeCPrlCZA3BPX2U=;
+        b=KUlGm1dyiCrvMjcBC3umueyDsPaUZxIT0fWPFmJPwpvKKpschnpG66kcPIHPLon5Q0
+         3yF4IPVr5T07wSJ+9TDwsP+i2Eu3qlRGOu6+qlCd76EsgZ8vlarfwsNEaoNVC3CTSdh1
+         fx0xG1bI2jTJ3Nn9+abxqHJa9S/wTMXxSPsfZJkvfJFs28TBngWo9oEfhSyelL7+vksj
+         VRYpR9HlBfDG7HUZxHBSCkmUzNMOQYdBN3ZyiO/igrVvMNWynq5+efQPysQfa8LqHcu8
+         v28SYZvf5H7dIzDCIZHqZXqcWbgp3EfYZMWRxARidQOuUb5yLHWBCgdmLZXWB2IVKdVW
+         TtTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUF1BCFa9wUw/RGgWVuHAV13nOdDMnZSxVd6+078ZFxnGAsPzVlLag2k+0iQbrs5Xuftw9ccLr05+KOWQ==@vger.kernel.org, AJvYcCXa8Rp//D84ar3cM0xgKtSq0T5yH5y9a8txanfaEH54aZmgp/vm0QNSmaRLdSKY19QmQPoC0XosaEHHeV8=@vger.kernel.org, AJvYcCXmaE5fcSEIW/rD0J0x9lTZm5l0cRVG8W7Fd+SJZRIWlb6mi94D3qYq7mVIslSjZg755F2ybwLJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YzkBFU2+ZsqBVF0PgKZb87NheTW2vEoWlQPPAIww05PYSk3qBWi
+	lQ2uKvUOy50wogJejpqRADuwp8ymAgRo/7C4RVKTeeJTA654Gn7B
+X-Google-Smtp-Source: AGHT+IFBa8H7U+B09fxkkx/DjtN54sGUPrDgiy0rQT/q65a9PuxkPQXWu9PINaowt/5DqsNbXKkzfQ==
+X-Received: by 2002:a05:6402:230e:b0:5c3:cc1c:4d9c with SMTP id 4fb4d7f45d1cf-5c8777eae4amr2213065a12.18.1727344341797;
+        Thu, 26 Sep 2024 02:52:21 -0700 (PDT)
+Received: from ?IPV6:2a02:8389:41cf:e200:4e5f:6907:8e4:4ed? (2a02-8389-41cf-e200-4e5f-6907-08e4-04ed.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:4e5f:6907:8e4:4ed])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c5cf49d23asm2956451a12.41.2024.09.26.02.52.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Sep 2024 02:32:50 -0700 (PDT)
-Message-ID: <327e2020-4cb6-469d-87a4-dddc0bcf7ecb@redhat.com>
-Date: Thu, 26 Sep 2024 11:32:48 +0200
+        Thu, 26 Sep 2024 02:52:20 -0700 (PDT)
+Message-ID: <f54a53f9-e2e7-488d-b69d-250251719c7e@gmail.com>
+Date: Thu, 26 Sep 2024 11:52:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -84,8 +78,7 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2 1/4] selftests: add unshare_test and msg_oob to
  gitignore
-To: Shuah Khan <skhan@linuxfoundation.org>,
- Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+To: Paolo Abeni <pabeni@redhat.com>, Shuah Khan <skhan@linuxfoundation.org>,
  Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>,
  Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
  Allison Henderson <allison.henderson@oracle.com>,
@@ -96,34 +89,48 @@ Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
 References: <20240925-selftests-gitignore-v2-0-bbbbdef21959@gmail.com>
  <20240925-selftests-gitignore-v2-1-bbbbdef21959@gmail.com>
  <62f52cb9-1173-46aa-96a0-d48de011fdc2@linuxfoundation.org>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <62f52cb9-1173-46aa-96a0-d48de011fdc2@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ <327e2020-4cb6-469d-87a4-dddc0bcf7ecb@redhat.com>
+Content-Language: en-US, de-AT
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <327e2020-4cb6-469d-87a4-dddc0bcf7ecb@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 9/25/24 18:41, Shuah Khan wrote:
-> On 9/25/24 06:23, Javier Carrasco wrote:
->> These executables are missing from their corresponding gitignore files.
->> Add them to the lists.
+On 26/09/2024 11:32, Paolo Abeni wrote:
+> On 9/25/24 18:41, Shuah Khan wrote:
+>> On 9/25/24 06:23, Javier Carrasco wrote:
+>>> These executables are missing from their corresponding gitignore files.
+>>> Add them to the lists.
+>>>
+>>> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+>>> ---
+>>>    tools/testing/selftests/core/.gitignore | 1 +
+>>>    tools/testing/selftests/net/.gitignore  | 1 +
+>>>    2 files changed, 2 insertions(+)
+>>>
 >>
->> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
->> ---
->>    tools/testing/selftests/core/.gitignore | 1 +
->>    tools/testing/selftests/net/.gitignore  | 1 +
->>    2 files changed, 2 insertions(+)
+>> Can you split these into two patches. It will be easier
+>> for the net patch to go through the net tree.
 >>
+>> I take the core changes through my tree. net changes go
+>> through net tree.
 > 
-> Can you split these into two patches. It will be easier
-> for the net patch to go through the net tree.
+> @Javier, while at the above, please split the changes in two separate
+> series: one for core and one for net. It will additionally simplify the
+> patch handling, thanks!
 > 
-> I take the core changes through my tree. net changes go
-> through net tree.
+> Paolo
+> 
 
-@Javier, while at the above, please split the changes in two separate 
-series: one for core and one for net. It will additionally simplify the 
-patch handling, thanks!
+Hi Paolo,
 
-Paolo
+as I have already sent a v3 where I split this patch, I will send a new
+series with the patches under selftests/net from that v3:
 
+selftests: net: add msg_oob to gitignore
+selftests: net: rds: add include.sh to EXTRA_CLEAN
+selftests: net: rds: add gitignore file for include.sh
+
+Best regards,
+Javier Carrasco
 
