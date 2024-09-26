@@ -1,131 +1,292 @@
-Return-Path: <linux-rdma+bounces-5103-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5104-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8243B9868C6
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Sep 2024 23:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B4AD986B03
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 04:39:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A8121F2255C
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Sep 2024 21:56:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD3751F22C5C
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2024 02:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DABE6184538;
-	Wed, 25 Sep 2024 21:55:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AE9A173346;
+	Thu, 26 Sep 2024 02:39:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dtByoH3a"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="KtSnF5Ka"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C0417DFFC;
-	Wed, 25 Sep 2024 21:55:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663671D5AAD;
+	Thu, 26 Sep 2024 02:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727301333; cv=none; b=XPC5FWK/FjODTejY4kX9jYC58BF20a8g9q4wqmI8c58pfJNb4qhQ3DMgfoAcs+kbfmBsg8AqwO7dv9h68qAz5jaL9L+Mn8cVZZfysci3uaVfJx+0Uaj3rA4PvYWIi6JxmXgj77W5cDIrJEraOVj1JZG8hzr3/ijpx0PjETKa7/o=
+	t=1727318354; cv=none; b=R74PApsc5ZkB2BXFiN7qJAI2PhtCOvHFoDbwZSn3UR2RYdInePzqUPCX9Vj2R/+qrbGNs9jX4/TIwG9/SmwSbhm3OdiAqgXVFJvFp5mQVUawL5rNq131cAXX03d7N7bJhkPzgo4XbyJcL47YF8yInpt8u2oPoVVYQS0Csr8dZ2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727301333; c=relaxed/simple;
-	bh=7IW7RTcLpOgxZZP501qb1vVbPlEm3RjQ1ux8c067MVg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=U9CILG6kT+HJb+3b19T6G2YiaCtkc2Qu78RU5Ct8yepp0dhG+J3UOQEQHYg/P3Q7pmNgKcqqXmipvK6yN4WyLolMQoNI4Drsf9hxHw2bCn+UAhwzhB4cDpKoROeV+vscJ3BD61T+KDhb0p9VcP/9BKTJL1m+2VchE873dP65G9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dtByoH3a; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-42cae4eb026so2678735e9.0;
-        Wed, 25 Sep 2024 14:55:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727301330; x=1727906130; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7lsxEOCwsoXbFkn1yMDzhagn4UCZ4K4wi9PS2Tk4cfw=;
-        b=dtByoH3aTMkROufvYDRMPmRqCDtKlQkltGZTEiHV1qERrfDFo6CrGECy9T91IkzT+E
-         tLh7vaM0ii6N+xJWqKUEf98alKcvmo7EuEKOQGOsUhD01SEV/fveDjUs0sUjdjRV7a7k
-         rgaBHIOrc6aohfydp+AMGdN3vzixJrffWirMXLTHQpHOdoa/c5+boa+ICJAk8g6ppbFX
-         NEPlQx36/gQFi9ClvoMma4pDSc7U0RXpoj2OslqmYfTzvG+AHuvOFTNA9fM47uwj0Fqy
-         OoWABsUcXzGE8Rkv0Py5z3PTNBdGJ5wSbyK24Kh5CKcli41r11FAZANsQYMdIpqrQpvT
-         jCrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727301330; x=1727906130;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7lsxEOCwsoXbFkn1yMDzhagn4UCZ4K4wi9PS2Tk4cfw=;
-        b=E0JcKhqG2VLjjXGLMG2v2NZOudEiFWhagPABV0zHksWRF7KDiMC8aKSOl65/j2z1fJ
-         jQVRU1v1JpKD5cbGJpPQLo7p78skyWIzeHSEKcLv+OpzALGM4nG/YoM9n32HNA9Ds4Yr
-         rbXZ0hUVi4y0CU4RJ0dhcF2/zczlDEzchgj+NhGWpwJXnDSCcPXI++M+Z0W//blus+wn
-         a1ys6Ay8u8gPr5XhgTdxKT19cRiSTWQZ4xA4IffnfdS82VNCT5WI7Soj+Btfvb9TCdSa
-         noelCeezWw3IO858u15SXPhXEScCW/ZLLSFsjl+7iJPDIRE39Ev8IlMlFsMYx6mTsnQ0
-         vHew==
-X-Forwarded-Encrypted: i=1; AJvYcCUW7B9nh6tYpm7nheMtjDAt6tauE1HcINZGvZo36KIlQm5+mLxo3WnxMpouF/FQZOyS58ZRnpzD@vger.kernel.org, AJvYcCVV4xAtJq5F4sFIsApW5BdEsxmCCeaMe9hIwiD+0QkFN63YyGeJy/6BvDwotL251eeKaCs/YfLuksUdlg==@vger.kernel.org, AJvYcCWWLJVnhx4A4pKdItmSq3ahfyCuQ//pSE2G4Do5ddaXOlmEA9AnaGDZB7nNYKke7KpfyICDlHCS4Mk4880=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLST5TkZ2mX5waRCrrWdZdJdUBAkDuRGYzsv8rpMdpkbvCfpV7
-	MOoSkIxoTk7Lp+F91BEa7vJ3PkepKlg0K8OlX4fktUWNyKyfJeuphJqQk+wq
-X-Google-Smtp-Source: AGHT+IGFQ4MmWyqAfjWrEI1rjvVqY2tB3bR3hAOHcc/V4KmU3OJf507LaJsJ9K1hmAgn0cYE5Pffvw==
-X-Received: by 2002:a05:600c:4447:b0:428:f0c2:ef4a with SMTP id 5b1f17b1804b1-42e9610d4famr26735415e9.13.1727301329607;
-        Wed, 25 Sep 2024 14:55:29 -0700 (PDT)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-370b-ca26-d622-f1c3.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:370b:ca26:d622:f1c3])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e96a165fdsm29129385e9.34.2024.09.25.14.55.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Sep 2024 14:55:28 -0700 (PDT)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Wed, 25 Sep 2024 23:55:15 +0200
-Subject: [PATCH v3 5/5] selftests: exec: update gitignore for load_address
+	s=arc-20240116; t=1727318354; c=relaxed/simple;
+	bh=+qDywtrhHFNxNDbnP6zxi7WccfDa+KzBy7TgRf/rD+E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Pcno9sl6uVSgMfcvKo7UpFObV5fI1xF/RhV03JG3jYMb2oF60zKfmbzsLnmaigs+PAwdVgmr4g6KHFAB93b9d4x8VtWeu6BOgnE1JoxmTkmDnGw1oBHdx0bIwdNt//CFoJyqW8LPo3AIf8hGYCT1o96KVigZM3elPOo1fRl0n30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=KtSnF5Ka; arc=none smtp.client-ip=115.124.30.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1727318342; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=Z0R1U7Wy6M0jsshNG1rfYhoETdMbxREBR+pyD+pe4Ac=;
+	b=KtSnF5KarozFdaivNvURalwgPKZckVwmlYz9DDt/C+4zrphDD+st2mb999XxUeB874R7ZuYy3TFLZUkuqYz2mHaWR7nCzVWnMeW+QHsf8IX3MoUBLA4gSxxxuZ7Ql/Bz3vdURgFn6mC+XkRQYITV54h4cV3dVg0fv0WrELyrV9Y=
+Received: from 30.221.147.236(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WFlm112_1727318341)
+          by smtp.aliyun-inc.com;
+          Thu, 26 Sep 2024 10:39:02 +0800
+Message-ID: <b6c6581a-f787-4417-a365-0ba97d71c4ac@linux.alibaba.com>
+Date: Thu, 26 Sep 2024 10:39:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next] net/smc: Introduce a hook to modify syn_smc
+ at runtime
+To: Guangguan Wang <guangguan.wang@linux.alibaba.com>, kgraul@linux.ibm.com,
+ wenjia@linux.ibm.com, jaka@linux.ibm.com, wintera@linux.ibm.com,
+ guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+ tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com,
+ bpf@vger.kernel.org
+References: <1726654204-61655-1-git-send-email-alibuda@linux.alibaba.com>
+ <f9db0ec5-c779-4627-9e1f-0f6af98d2de5@linux.alibaba.com>
+Content-Language: en-US
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <f9db0ec5-c779-4627-9e1f-0f6af98d2de5@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240925-selftests-gitignore-v3-5-9db896474170@gmail.com>
-References: <20240925-selftests-gitignore-v3-0-9db896474170@gmail.com>
-In-Reply-To: <20240925-selftests-gitignore-v3-0-9db896474170@gmail.com>
-To: Shuah Khan <shuah@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Allison Henderson <allison.henderson@oracle.com>, 
- Eric Biederman <ebiederm@xmission.com>, Kees Cook <kees@kernel.org>
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
- rds-devel@oss.oracle.com, linux-mm@kvack.org, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1727301314; l=863;
- i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=7IW7RTcLpOgxZZP501qb1vVbPlEm3RjQ1ux8c067MVg=;
- b=Q8EBY9TuoJ+RJFrfKdvGQwxnNe7qFkXDAOZLpLfhaTWfVIq9NWgNnXRqga/0GXQemSOfZcvWn
- QSsC2tB/7BGCciQzNNepQjHas8bvtW1izvO6asFGNoGinEtOFX/3Xst
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
-The name of the "load_address" objects has been modified, but the
-corresponding entry in the gitignore file must be updated.
 
-Update the load_address entry in the gitignore file to account for
-the new names, adding an exception to keep on tracking load_address.c.
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- tools/testing/selftests/exec/.gitignore | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On 9/19/24 8:36 PM, Guangguan Wang wrote:
+> 
+> 
+> On 2024/9/18 18:10, D. Wythe wrote:
+>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>
+>> The introduction of IPPROTO_SMC enables eBPF programs to determine
+>> whether to use SMC based on the context of socket creation, such as
+>> network namespaces, PID and comm name, etc.
+>>
+>> As a subsequent enhancement, this patch introduces a new hook for eBPF
+>> programs that allows decisions on whether to use SMC or not at runtime,
+>> including but not limited to local/remote IP address or ports. In
+>> simpler words, this feature allows modifications to syn_smc through eBPF
+>> programs before the TCP three-way handshake got established.
+>>
+>> Thanks to kfunc for making it easier for us to implement this feature in
+>> SMC.
+>>
+>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> 
+> Hi D. Wythe,
+> 
+> I think it is a good feature to have for more flexible using of SMC.
+> 
+> It is also a good solution for the problem we met before:
+> Some services are not correctly handled TCP syn packet with SMC experimental option in head.
+> The TCP connections to such services can not be successfully established through SMC. Thus, a
+> program can not using SMC and accessing the services mentioned above in the same time.
+> With this feature, by filter the port to the services metioned above, it is possible for
+> programes both using SMC and accessing the services metioned above.
+> 
+>> ---
+>>   include/linux/tcp.h  |  4 ++-
+>>   net/ipv4/tcp_input.c |  4 +--
+>>   net/smc/af_smc.c     | 69 ++++++++++++++++++++++++++++++++++++++++++++++------
+>>   3 files changed, 66 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+>> index 6a5e08b..d028d76 100644
+>> --- a/include/linux/tcp.h
+>> +++ b/include/linux/tcp.h
+>> @@ -478,7 +478,9 @@ struct tcp_sock {
+>>   #endif
+>>   #if IS_ENABLED(CONFIG_SMC)
+>>   	bool	syn_smc;	/* SYN includes SMC */
+>> -	bool	(*smc_hs_congested)(const struct sock *sk);
+>> +	void	(*smc_openreq_init)(struct request_sock *req,
+>> +			     const struct tcp_options_received *rx_opt,
+>> +			     struct sk_buff *skb, const struct sock *sk);
+>>   #endif
+>>   
+>>   #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
+>> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+>> index e37488d..e33e2a0 100644
+>> --- a/net/ipv4/tcp_input.c
+>> +++ b/net/ipv4/tcp_input.c
+>> @@ -7029,8 +7029,8 @@ static void tcp_openreq_init(struct request_sock *req,
+>>   	ireq->ir_num = ntohs(tcp_hdr(skb)->dest);
+>>   	ireq->ir_mark = inet_request_mark(sk, skb);
+>>   #if IS_ENABLED(CONFIG_SMC)
+>> -	ireq->smc_ok = rx_opt->smc_ok && !(tcp_sk(sk)->smc_hs_congested &&
+>> -			tcp_sk(sk)->smc_hs_congested(sk));
+>> +	if (ireq->smc_ok && tcp_sk(sk)->smc_openreq_init)Should be rx_opt->smc_ok?
 
-diff --git a/tools/testing/selftests/exec/.gitignore b/tools/testing/selftests/exec/.gitignore
-index 90c238ba6a4b..a0dc5d4bf733 100644
---- a/tools/testing/selftests/exec/.gitignore
-+++ b/tools/testing/selftests/exec/.gitignore
-@@ -9,7 +9,8 @@ execveat.ephemeral
- execveat.denatured
- non-regular
- null-argv
--/load_address_*
-+/load_address.*
-+!load_address.c
- /recursion-depth
- xxxxxxxx*
- pipe
 
--- 
-2.43.0
+Yes, that's a bug here, i will fix it in next RFC.
 
+
+> 
+>> +		tcp_sk(sk)->smc_openreq_init(req, rx_opt, skb, sk);
+>>   #endif
+>>   }
+>>   
+>> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>> index 0316217..003b2ac 100644
+>> --- a/net/smc/af_smc.c
+>> +++ b/net/smc/af_smc.c
+>> @@ -70,6 +70,15 @@
+>>   static void smc_tcp_listen_work(struct work_struct *);
+>>   static void smc_connect_work(struct work_struct *);
+>>   
+>> +__bpf_hook_start();
+>> +
+>> +__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
+>> +{
+>> +	return 1;
+>> +}
+>> +
+>> +__bpf_hook_end();
+>> +
+>>   int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
+>>   {
+>>   	struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
+>> @@ -156,19 +165,41 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+>>   	return NULL;
+>>   }
+>>   
+>> -static bool smc_hs_congested(const struct sock *sk)
+>> +static void smc_openreq_init(struct request_sock *req,
+>> +			     const struct tcp_options_received *rx_opt,
+>> +			     struct sk_buff *skb, const struct sock *sk)
+>>   {
+>> +	struct inet_request_sock *ireq = inet_rsk(req);
+>> +	struct sockaddr_storage rmt_sockaddr = {0};
+>>   	const struct smc_sock *smc;
+>>   
+>>   	smc = smc_clcsock_user_data(sk);
+>>   
+>>   	if (!smc)
+>> -		return true;
+>> +		return;
+> It is better goto out_no_smc rather than return to explicitly set ireq->smc_ok to 0.
+> 
+
+
+I'm a little bit unsure, returning directly can make consistent with
+the previous code.
+
+
+In fact, once sk->sk_user_data goes NULL, the incoming sock will be dropped
+anyway whether it's a fallback or not.
+
+
+>>   
+>> -	if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+>> -		return true;
+>> +	if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+>> +		goto out_no_smc;
+>>   
+>> -	return false;
+>> +	rmt_sockaddr.ss_family = sk->sk_family;
+>> +
+>> +	if (rmt_sockaddr.ss_family == AF_INET) {
+>> +		struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
+>> +
+>> +		rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
+>> +		rmt4_sockaddr->sin_port	= ireq->ir_rmt_port;
+>> +	} else {
+>> +		struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
+>> +
+>> +		rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
+>> +		rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
+>> +	}
+>> +
+>> +	ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
+>> +	return;
+>> +out_no_smc:
+>> +	ireq->smc_ok = 0;
+>> +	return;
+>>   }
+>>   
+>>   struct smc_hashinfo smc_v4_hashinfo = {
+>> @@ -1671,7 +1702,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
+>>   	}
+>>   
+>>   	smc_copy_sock_settings_to_clc(smc);
+>> -	tcp_sk(smc->clcsock->sk)->syn_smc = 1;
+>> +	tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
+>>   	if (smc->connect_nonblock) {
+>>   		rc = -EALREADY;
+>>   		goto out;
+>> @@ -2650,8 +2681,7 @@ int smc_listen(struct socket *sock, int backlog)
+>>   
+>>   	inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
+>>   
+>> -	if (smc->limit_smc_hs)
+>> -		tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
+>> +	tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
+>>   
+>>   	rc = kernel_listen(smc->clcsock, backlog);
+>>   	if (rc) {
+>> @@ -3475,6 +3505,20 @@ static void __net_exit smc_net_stat_exit(struct net *net)
+>>   	.exit = smc_net_stat_exit,
+>>   };
+>>   
+>> +BTF_SET8_START(bpf_smc_fmodret_ids)
+>> +BTF_ID_FLAGS(func, select_syn_smc)
+>> +BTF_SET8_END(bpf_smc_fmodret_ids)
+>> +
+>> +static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
+>> +	.owner = THIS_MODULE,
+>> +	.set   = &bpf_smc_fmodret_ids,
+>> +};
+>> +
+>> +static int __init bpf_smc_kfunc_init(void)
+>> +{
+>> +	return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
+>> +}
+> Does it have unregister function? Is it OK for repeate register when reload the smc module?
+> 
+
+Based on my current understanding, no such action was required.
+
+
+Thanks,
+D. Wythe
+
+> Thanks,
+> Guangguan Wang
+>> +
+>>   static int __init smc_init(void)
+>>   {
+>>   	int rc;
+>> @@ -3574,8 +3618,17 @@ static int __init smc_init(void)
+>>   		pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
+>>   		goto out_ulp;
+>>   	}
+>> +
+>> +	rc = bpf_smc_kfunc_init();
+>> +	if (rc) {
+>> +		pr_err("%s: bpf_smc_kfunc_init fails with %d\n", __func__, rc);
+>> +		goto out_inet;
+>> +	}
+>> +
+>>   	static_branch_enable(&tcp_have_smc);
+>>   	return 0;
+>> +out_inet:
+>> +	smc_inet_exit();
+>>   out_ulp:
+>>   	tcp_unregister_ulp(&smc_ulp_ops);
+>>   out_lo:
 
