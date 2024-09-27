@@ -1,144 +1,99 @@
-Return-Path: <linux-rdma+bounces-5133-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5134-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F04F988355
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2024 13:29:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F629988643
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2024 15:28:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D0931F22949
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2024 11:29:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C053A1C22D8B
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2024 13:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7387518A6A9;
-	Fri, 27 Sep 2024 11:29:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F19189903;
+	Fri, 27 Sep 2024 13:28:30 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661A5189F30;
-	Fri, 27 Sep 2024 11:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1430D6AAD
+	for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2024 13:28:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727436569; cv=none; b=FytpElvM2GLVLzkFeUt1Bdj1J9rJ0U4D0x76RRx06e5+K4IL5jX+tSIJEnFIS8p9770YCSnoiFQXqj0JSk0yk3k5NsSKKohowVP6fRvQ5Gm8rxrkNMsunU65qjecfgKUXN5EGr2kqA6POEsBubViGIsXJiVy1HFJibRX3Pfaecc=
+	t=1727443710; cv=none; b=kj7txkEFN9aBDKH8dZbiA9dBQc4v52ROjrQTnVQxKBtUGfPIA+0TJaZRSnao1acVL68kULfhdEbVWFGY5x9Qrm0OEa+NXHp5CEB0W6F4vX+QyBd5tAan4FHtbZkQWhBJezC6aWvHUotO0igIdWsM2bCWOGcukTRaqhg7AwYlFaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727436569; c=relaxed/simple;
-	bh=twZds9HQiXC8rqIENp9Zeg9QsE2L5YC73SAywwLcVws=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=WE5n6KGW9tGrzI3neFRk5mclPWLi3fNSnMfy1zooTpj/bKxdJRMLTwnUqldLlkpWHHvnbnfvwghdW/S9VaycUSwqY65XhetPhgbe460dJV5TpMCJJMyDzrQ+uv99kzP/nSc5oxlz3GDKVuZ836v3uxY11pPmntjF1dVtUbRxGlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XFSrx2nMcz2QTtc;
-	Fri, 27 Sep 2024 19:28:33 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2ACA31A016C;
-	Fri, 27 Sep 2024 19:29:23 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 27 Sep 2024 19:29:22 +0800
-Message-ID: <934d601f-be43-4e04-b126-dc86890a4bfa@huawei.com>
-Date: Fri, 27 Sep 2024 19:29:22 +0800
+	s=arc-20240116; t=1727443710; c=relaxed/simple;
+	bh=0E3niAAD+G6Dw2wZipJtWeSFOTc8oYKzVvOCAU88kD0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=csYZWOPSih1nOAskpRZzKQRJv15qYrUMvfvHryXpenXIpv5vH/SECoT49Q+oiqKjWRCxD5I3hnAveYqyB1eLUp1TKBBR24TIbuW4j7PKdK7eQlRl33venU2mBPG81nw3B6NmKjhUf45j8pT0fuNAEI38mHVMp7rBm/gY7BRDrbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a342e7e49cso20162875ab.0
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2024 06:28:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727443708; x=1728048508;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=et3EJGS/ZhbG/lI88ALbK4RuafRSN9jb2K6pRh2BmS8=;
+        b=Z7/yrq5XcqsiFl9e3rbHrMnyA6hsI8iLOoYy3O+fQOHeXdsOaB5o3dXXl8ETIU1WWQ
+         3DLrnSGU6OAzGBQzN2LlnvpltLY/lqNyDmnrTrwLnDezjA0bYtqXf9mXdjtTZ6KNfZ3q
+         6XKSkCArzxi38qoU6Q2dNZdV2CLBcLXEvOlR0B3Oee6SCSuPYrxuB8runCH57MhyjOgo
+         i5up3EeZlJWQ3pWsQqOcqhFPUPea8aqJBU0Q4kOfLKv/Opia4nukR7uGslnlRY84K79E
+         22GRUtf1pirQlPYMzeniOzDxIjBagNh2nUgMCkmsGz8g6GurSt1Q/rFZYF/Jhfj4N68X
+         5W8w==
+X-Forwarded-Encrypted: i=1; AJvYcCVGUCssNma8UDlvJymlRJMYHrNal9rftSOLbtWC17dd+DDOTgw5V6NMwii8Pe9k0kNXGyFcOsAouj+m@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxa+KIDf1QVl43XMgoop8/IulCPnr7tNYzebBtmZdbuXIH2Q0vK
+	ZiVr27/tymRGj9AS61r35GcY2Ztdpq0bbeReA4sP0he+JvPw+fpaM9ut1OyCE5+SdfNd0ZU7JFR
+	NzOLPvUxiK/Tt7+NQ87oyrUt8B7xWrBHp7cr1R+p369Kvp20ClDsvkrE=
+X-Google-Smtp-Source: AGHT+IGbAy1zQGCXJ8P9FxZGs/Bk5j8b4JyoiAHF4y/M7LM/1pm90J9RVbpSJypvRrLgcIFQE61mi6q1oqHqwWy35OxkvgbNl7YX
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 2/2] page_pool: fix IOMMU crash when driver has
- already unbound
-To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC: Mina Almasry <almasrymina@google.com>, <davem@davemloft.net>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <liuyonglong@huawei.com>,
-	<fanghaiqing@huawei.com>, <zhangkun09@huawei.com>, Robin Murphy
-	<robin.murphy@arm.com>, Alexander Duyck <alexander.duyck@gmail.com>, IOMMU
-	<iommu@lists.linux.dev>, Wei Fang <wei.fang@nxp.com>, Shenwei Wang
-	<shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, Eric Dumazet
-	<edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek
- Kitszel <przemyslaw.kitszel@intel.com>, Alexander Lobakin
-	<aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
-	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
-	<tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi
-	<lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
-	<shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle Valo
-	<kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Andrew
- Morton <akpm@linux-foundation.org>, <imx@lists.linux.dev>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<intel-wired-lan@lists.osuosl.org>, <bpf@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-mm@kvack.org>
-References: <20240925075707.3970187-1-linyunsheng@huawei.com>
- <20240925075707.3970187-3-linyunsheng@huawei.com>
- <CAHS8izOxugzWJDTc-4CWqaKABTj=J4OHs=Lcb=SE9r8gX0J+yg@mail.gmail.com>
- <842c8cc6-f716-437a-bc98-70bc26d6fd38@huawei.com>
- <CAC_iWjLgNOtsbhqrhvvEz2C3S668qB8KatL_W+tPHMSkDrNS=w@mail.gmail.com>
- <0ef315df-e8e9-41e8-9ba8-dcb69492c616@huawei.com>
- <CAC_iWjKeajwn3otjdEekE6VDLHGEvqmnQRwpN5R3yHj8UpEiDw@mail.gmail.com>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <CAC_iWjKeajwn3otjdEekE6VDLHGEvqmnQRwpN5R3yHj8UpEiDw@mail.gmail.com>
+X-Received: by 2002:a05:6e02:1686:b0:3a0:b471:9651 with SMTP id
+ e9e14a558f8ab-3a3451c3a08mr32873305ab.24.1727443708274; Fri, 27 Sep 2024
+ 06:28:28 -0700 (PDT)
+Date: Fri, 27 Sep 2024 06:28:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <66f6b2fc.050a0220.38ace9.0013.GAE@google.com>
+Subject: [syzbot] Monthly rdma report (Sep 2024)
+From: syzbot <syzbot+listae4a64541abfe3a7a043@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemf200006.china.huawei.com (7.185.36.61)
 
-On 2024/9/27 17:58, Ilias Apalodimas wrote:
+Hello rdma maintainers/developers,
 
-...
+This is a 31-day syzbot report for the rdma subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/rdma
 
->>
->>> importantly, though, why does struct page need to know about this?
->>> Can't we have the same information in page pool?
->>> When the driver allocates pages it does via page_pool_dev_alloc_XXXXX
->>> or something similar. Cant we do what you suggest here ? IOW when we
->>> allocate a page we put it in a list, and when that page returns to
->>> page_pool (and it's mapped) we remove it.
->>
->> Yes, that is the basic idea, but the important part is how to do that
->> with less performance impact.
-> 
-> Yes, but do you think that keeping that list of allocated pages in
-> struct page_pool will end up being more costly somehow compared to
-> struct page?
+During the period, 1 new issues were detected and 1 were fixed.
+In total, 6 issues are still open and 61 have been fixed so far.
 
-I am not sure if I understand your above question here.
-I am supposing the question is about what's the cost between using
-single/doubly linked list for the inflight pages or using a array
-for the inflight pages like this patch does using pool->items?
-If I understand question correctly, the single/doubly linked list
-is more costly than array as the page_pool case as my understanding.
+Some of the still happening issues:
 
-For single linked list, it doesn't allow deleting a specific entry but
-only support deleting the first entry and all the entries. It does support
-lockless operation using llist, but have limitation as below:
-https://elixir.bootlin.com/linux/v6.7-rc8/source/include/linux/llist.h#L13
+Ref Crashes Repro Title
+<1> 135     No    INFO: task hung in disable_device
+                  https://syzkaller.appspot.com/bug?extid=4d0c396361b5dc5d610f
+<2> 111     No    INFO: task hung in rdma_dev_change_netns
+                  https://syzkaller.appspot.com/bug?extid=73c5eab674c7e1e7012e
+<3> 26      No    WARNING in rxe_pool_cleanup
+                  https://syzkaller.appspot.com/bug?extid=221e213bf17f17e0d6cd
 
-For doubly linked list, it needs two pointer to support deleting a specific
-entry and it does not support lockless operation.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-For pool->items, as the alloc side is protected by NAPI context, and the
-free side use item->pp_idx to ensure there is only one producer for each
-item, which means for each item in pool->items, there is only one consumer
-and one producer, which seems much like the case when the page is not
-recyclable in __page_pool_put_page, we don't need a lock protection when
-calling page_pool_return_page(), the 'struct page' is also one consumer
-and one producer as the pool->items[item->pp_idx] does:
-https://elixir.bootlin.com/linux/v6.7-rc8/source/net/core/page_pool.c#L645
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-We only need a lock protection when page_pool_destroy() is called to
-check if there is inflight page to be unmapped as a consumer, and the
-__page_pool_put_page() may also called to unmapped the inflight page as
-another consumer, there is why the 'destroy_lock' is added for protection
-when pool->destroy_cnt > 0.
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
-> 
-> Thanks
-> /Ilias
+You may send multiple commands in a single email message.
 
