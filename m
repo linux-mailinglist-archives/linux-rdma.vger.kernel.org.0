@@ -1,99 +1,93 @@
-Return-Path: <linux-rdma+bounces-5134-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5135-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F629988643
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2024 15:28:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 113F99886A9
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2024 16:06:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C053A1C22D8B
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2024 13:28:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CD63B20B11
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2024 14:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F19189903;
-	Fri, 27 Sep 2024 13:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C883358210;
+	Fri, 27 Sep 2024 14:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="VG+MnshA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1430D6AAD
-	for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2024 13:28:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3DE21C6A5;
+	Fri, 27 Sep 2024 14:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727443710; cv=none; b=kj7txkEFN9aBDKH8dZbiA9dBQc4v52ROjrQTnVQxKBtUGfPIA+0TJaZRSnao1acVL68kULfhdEbVWFGY5x9Qrm0OEa+NXHp5CEB0W6F4vX+QyBd5tAan4FHtbZkQWhBJezC6aWvHUotO0igIdWsM2bCWOGcukTRaqhg7AwYlFaU=
+	t=1727445996; cv=none; b=dInvQRp7mdSO2v3+19GU7dOoTkoCWcaWzsr//hqWLl7oqYcXllwCBlrha4UtLzQapOmEml8WcKLbz5d9mYUTrqo4F6+BfC1YMit6/OvYbWQyx4FoWvC70PV49E2ki5dfX0NyTle3s/pZRCjrcbCjneDL2GwzGgUgit8V+B12VIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727443710; c=relaxed/simple;
-	bh=0E3niAAD+G6Dw2wZipJtWeSFOTc8oYKzVvOCAU88kD0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=csYZWOPSih1nOAskpRZzKQRJv15qYrUMvfvHryXpenXIpv5vH/SECoT49Q+oiqKjWRCxD5I3hnAveYqyB1eLUp1TKBBR24TIbuW4j7PKdK7eQlRl33venU2mBPG81nw3B6NmKjhUf45j8pT0fuNAEI38mHVMp7rBm/gY7BRDrbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a342e7e49cso20162875ab.0
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2024 06:28:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727443708; x=1728048508;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=et3EJGS/ZhbG/lI88ALbK4RuafRSN9jb2K6pRh2BmS8=;
-        b=Z7/yrq5XcqsiFl9e3rbHrMnyA6hsI8iLOoYy3O+fQOHeXdsOaB5o3dXXl8ETIU1WWQ
-         3DLrnSGU6OAzGBQzN2LlnvpltLY/lqNyDmnrTrwLnDezjA0bYtqXf9mXdjtTZ6KNfZ3q
-         6XKSkCArzxi38qoU6Q2dNZdV2CLBcLXEvOlR0B3Oee6SCSuPYrxuB8runCH57MhyjOgo
-         i5up3EeZlJWQ3pWsQqOcqhFPUPea8aqJBU0Q4kOfLKv/Opia4nukR7uGslnlRY84K79E
-         22GRUtf1pirQlPYMzeniOzDxIjBagNh2nUgMCkmsGz8g6GurSt1Q/rFZYF/Jhfj4N68X
-         5W8w==
-X-Forwarded-Encrypted: i=1; AJvYcCVGUCssNma8UDlvJymlRJMYHrNal9rftSOLbtWC17dd+DDOTgw5V6NMwii8Pe9k0kNXGyFcOsAouj+m@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxa+KIDf1QVl43XMgoop8/IulCPnr7tNYzebBtmZdbuXIH2Q0vK
-	ZiVr27/tymRGj9AS61r35GcY2Ztdpq0bbeReA4sP0he+JvPw+fpaM9ut1OyCE5+SdfNd0ZU7JFR
-	NzOLPvUxiK/Tt7+NQ87oyrUt8B7xWrBHp7cr1R+p369Kvp20ClDsvkrE=
-X-Google-Smtp-Source: AGHT+IGbAy1zQGCXJ8P9FxZGs/Bk5j8b4JyoiAHF4y/M7LM/1pm90J9RVbpSJypvRrLgcIFQE61mi6q1oqHqwWy35OxkvgbNl7YX
+	s=arc-20240116; t=1727445996; c=relaxed/simple;
+	bh=aC0TxgrhZHUTChxkXc9EvwUvF8VBrHt5psIyCgaIAqs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nJh/BafbdZn+NJWJZAzCqltV33b6ppl5srvDakuwhG2JOgRghQ/j3FyS2xZPaBnded78JmSXY73Hz54U65JCtCwf69Lm+Ui1nNJBlh/M8ZA5YnQnZQU+aE41MtTY/48ZVyxu4LruOesBjv+wPQzf+a965DmSQTurZlETUiTHQ78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=VG+MnshA; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=XouRcwFqOZE9bIJUqu6gKwF2et2ukORfgR4iVk6tkbM=;
+	b=VG+MnshADyC57I5ak/1y4dpkDWqCTiPXWux0pCmaLlRf3MwIZiM+WVnECJVkwT
+	VvGUCE2O4sHofnV0Vdg1dGYYyxAcmpR+hZxWtsP6B970zO3UWkYbThrSv6tVEBxA
+	pv6nFVRiRVnQirnumMiHDTmxsL35+UveIPFr1YSuuffSs=
+Received: from localhost (unknown [120.26.85.94])
+	by gzsmtp1 (Coremail) with SMTP id sCgvCgBHr6LVu_Zm3nNSAQ--.3767S2;
+	Fri, 27 Sep 2024 22:06:14 +0800 (CST)
+Date: Fri, 27 Sep 2024 22:06:13 +0800
+From: Qianqiang Liu <qianqiang.liu@163.com>
+To: leon@kernel.org
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] RDMA/nldev: Fix NULL pointer dereferences issue in
+ rdma_nl_notify_event
+Message-ID: <Zva71Yf3F94uxi5A@iZbp1asjb3cy8ks0srf007Z>
+References: <20240926143402.70354-1-qianqiang.liu@163.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1686:b0:3a0:b471:9651 with SMTP id
- e9e14a558f8ab-3a3451c3a08mr32873305ab.24.1727443708274; Fri, 27 Sep 2024
- 06:28:28 -0700 (PDT)
-Date: Fri, 27 Sep 2024 06:28:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66f6b2fc.050a0220.38ace9.0013.GAE@google.com>
-Subject: [syzbot] Monthly rdma report (Sep 2024)
-From: syzbot <syzbot+listae4a64541abfe3a7a043@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240926143402.70354-1-qianqiang.liu@163.com>
+X-CM-TRANSID:sCgvCgBHr6LVu_Zm3nNSAQ--.3767S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZrW8WrWDtr4DXr4xCw4UArb_yoWfJFcEgr
+	y0qFykJr1jkF1Skwn5Ar1fXFyvqw1Fv3Z5uanFgr95Jryava90qwn2vrWDZ348KF4kKFy7
+	J3y3uw4ru3y8GjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUezpB3UUUUU==
+X-CM-SenderInfo: xtld01pldqwhxolxqiywtou0bp/1tbiLx5namb2tM1sSwAAsy
 
-Hello rdma maintainers/developers,
+nlmsg_put() may return a NULL pointer assigned to nlh, which will later
+be dereferenced in nlmsg_end().
 
-This is a 31-day syzbot report for the rdma subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/rdma
-
-During the period, 1 new issues were detected and 1 were fixed.
-In total, 6 issues are still open and 61 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 135     No    INFO: task hung in disable_device
-                  https://syzkaller.appspot.com/bug?extid=4d0c396361b5dc5d610f
-<2> 111     No    INFO: task hung in rdma_dev_change_netns
-                  https://syzkaller.appspot.com/bug?extid=73c5eab674c7e1e7012e
-<3> 26      No    WARNING in rxe_pool_cleanup
-                  https://syzkaller.appspot.com/bug?extid=221e213bf17f17e0d6cd
-
+Fixes: 9cbed5aab5ae ("RDMA/nldev: Add support for RDMA monitoring")
+Signed-off-by: Qianqiang Liu <qianqiang.liu@163.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ Changes since v1:
+ - Add Fixes tag
+---
+ drivers/infiniband/core/nldev.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index 39f89a4b86498..7dc8e2ec62cc8 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -2816,6 +2816,8 @@ int rdma_nl_notify_event(struct ib_device *device, u32 port_num,
+ 	nlh = nlmsg_put(skb, 0, 0,
+ 			RDMA_NL_GET_TYPE(RDMA_NL_NLDEV, RDMA_NLDEV_CMD_MONITOR),
+ 			0, 0);
++	if (!nlh)
++		goto err_free;
+ 
+ 	switch (type) {
+ 	case RDMA_REGISTER_EVENT:
+-- 
+2.39.5
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
 
