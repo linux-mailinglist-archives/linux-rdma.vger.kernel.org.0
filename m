@@ -1,328 +1,256 @@
-Return-Path: <linux-rdma+bounces-5136-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5137-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40EE29887A5
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2024 16:57:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C147F988A13
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2024 20:26:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1619281B7C
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2024 14:57:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2F8DB2124E
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2024 18:26:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCA21C0DED;
-	Fri, 27 Sep 2024 14:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qBxWuXFT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54A691C1AC7;
+	Fri, 27 Sep 2024 18:26:30 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85DE51C0DDC
-	for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2024 14:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB79136E37
+	for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2024 18:26:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727449027; cv=none; b=BPex4D7xLZWmmG+QeXTA7DM0QEH+sdLsgXCbZ3HLOVkte0H8cdKlM0N5RpFR/+yMdezHdkSySrXi8YmaqkRc60A7oM7D8QcXnJ7xm1skDL1IVO5rN17ORcg1MjwaFi9jpCZbuVKttIYDGqrxAhRyQ+rhj49Yt6Pj+Ce42XGbwow=
+	t=1727461590; cv=none; b=dozq3W0AeqFy4b5PtbjiJRrgcAfFhuBgacaLJusRnT+AMrcZ0/jZffF6cL5jqRZyVTMOJdN4KcfrlaJ6mkuG8Obqk1/QGEIHOES6ebQ+bO1rdleUEllreKutC0vGCctK7oPojZ5AsUQ9PALaVkKrYf4YF33c9V44mvPxZ+PIt/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727449027; c=relaxed/simple;
-	bh=KpFQjUYNoqorgSZR3P1u7MaHQxHtQSx0hYrOTa71UnQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VpDmKW4a7t8DwvFwt4IWYLklH3Y4l1MFm3z6jd6O2dL1T7/Iyt8MU8o+pEQf2pagBim0S2+bnKz9Ip8x029KuY0CSCvewuwv2BZZseG7W1b/mDukJQ7PJl4wC08qbRT65K8RUqpvJfRhesE5LiogqjAOgAl2egRP9mjcW3xCce4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qBxWuXFT; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2f753375394so21537101fa.0
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2024 07:57:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1727449024; x=1728053824; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/18GyfMUmFmiPlGch6tCsiK6n05dByaKqzKUBTX5A9A=;
-        b=qBxWuXFTyNYy6D2xy5AbSYJNSWBDvFC08SrDvq+vJiLtqZIeKbBFhgHsKdZeWWdzIz
-         7NWXpeiSrfacXvRUO3OElk/+G7KzGmNGxbwcrl0De/T1pqkCnmXtqVmeipL7HX8/hy30
-         2KmwflU9OTI6OUbMzYo+oG54gVZDDbYECRggNDb2Rb104P5cnV+1QyQp+5EId+RHwrP0
-         5QUXO6M/oiYDrRKM5MD1XsTj8/z0MGOFQoJTcp7apDPh6Ds/5rQ7kH09JwadqPNEXzBn
-         RjYnYgdFA6h4mfyLXYmpzQ0QlawmrAuQ5rVBf1KBDPAM6VF3b6ioGicUVgFSBPVUhHBJ
-         h+AQ==
+	s=arc-20240116; t=1727461590; c=relaxed/simple;
+	bh=e5hQak0chZwvl7v7RwAx6op/faaKi4je81NKY6u5Hvs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=YfsKJASpUwn2DmmgosvF+68bL050H5eM+9Gl4Idx3CK6Rs5ymFvjl8W8Ssq0u7NUJ8Sa+I5Sv9sQ514w8JjhxHDv+yI/gbJ/AiUva15zMrKa5S2WIRC2ckuUJABND5dkN818BXGBTPSfIB6tG4/OBrFo7bU/zSVhynORh6futZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a342620d49so19187285ab.3
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2024 11:26:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727449024; x=1728053824;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/18GyfMUmFmiPlGch6tCsiK6n05dByaKqzKUBTX5A9A=;
-        b=Cr0qT7f+cB+8192EmuTDhgw2LjMF6Bwlprfxvi21ayeBH8oh0n2noU7+xNysWwBcjO
-         190KiHOPkoCGXq3gaTIQ21A32C+Kp9YG/7T2fAtdt8nRvYkZnnEIAY0u8dtdbtdjozQY
-         JesPC2vyHgOWaPQeIW8Vj0TRuHd8ZAEo7veYsGlL828wQ01c59QS2sYBk341CLWxli/a
-         BSu4n6m+AizBdIfujnQ5q+Qxc44uAUOL6zlOrHV5xGzZtke4XKaMJNKqsQA5uuIuBDLP
-         aeEeHj/rmVrh7vRbUNz5TBTKCboS1FHkZJ5H/a2EW6dDcfumVqnVWd3G8QISuLL9zc1G
-         AM4g==
-X-Forwarded-Encrypted: i=1; AJvYcCWBeCk6nBCiTZJT3D3boVbksDSWwMwGdAJ2eZrlp3ewH0d6bp8EiuOGr5NUtkv/fF1IRVcDhVtkwTuO@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyc2JYqr537SvFynvrsTTDW2bUBwjx8liVdjDKFYLKLT8dOmM9X
-	qcHvVdHp6lvdNitCI7zSqNua9Weni/7qMh3SpJVmaAXErF1VVLuAqJCLUTTFyFi3Z9g+zvl/zxy
-	1lgM/Yg8GgXUi0V0TgtB1XeZOjZrS96LkAaBm
-X-Google-Smtp-Source: AGHT+IFRKkE0mGNhaH8ET6VLDg6TqeqTkqG/VObziBwEk4Ht7UIK/LQVwwPoMAoSz6jIyTC8gnOtwPvtsKVzIeRIZEg=
-X-Received: by 2002:a05:6512:b0b:b0:52c:e11e:d493 with SMTP id
- 2adb3069b0e04-5389fc46d3dmr2530689e87.26.1727449023277; Fri, 27 Sep 2024
- 07:57:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1727461587; x=1728066387;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/WOm9hat/ybPpbjB2jJkY1uRAxZ82q+VbX+LaSZoKxM=;
+        b=emwdDZsvXbEwMSBwQDGc868npAaeMovq2f5lgUu3XfqrJ+wst3sn2NH0awCoo1Plxd
+         XqG31fJa6N4VjUZdy6GoUi/7qHRZycoN+/B+PP+SkMgCZf582duTuDEHKxeoOFuqgk+4
+         FM3P0AAcW/rOUYnrNqpSqtCpsOxbxAGk02S0e+d0ddN7i7LuYjiXOnFNTJnNxy/bSX4Q
+         9CAdJPyRntqgffntXNBg8W5AG9f9JKWHfCF2pA6CReVT2NbtfF8wqU+YpJTFDsWdUMda
+         wNlL4S7ubOBdcnO2E4H4kQGx1u2ax7c1cF/sVZvwjaXedqhY7QoUE/AkgkZpjsRcpK9H
+         MEUg==
+X-Forwarded-Encrypted: i=1; AJvYcCVn5D/ZCp0YSXpI0U7hkD71vdhk9AizME23feqzkHwGSEOE88KCmMUP8KCu40yjAEfLhqLUTdx+Oy5E@vger.kernel.org
+X-Gm-Message-State: AOJu0YzIefDzFOJgxOf/fL8e61+4J6IxP0VPNqiCET/8cjt8i8bc3O60
+	PWV4aWN1RFUhSGzCWgBG5C+CvjbJfNdecSEn4fu1CvmY8qLdGumOK9fpgH1b9trufwrBHGKmU1G
+	qJgd5BxyvGt6SyM47mvARXLB94VR5pYEa1pPFfXg887m127IRaDzJk74=
+X-Google-Smtp-Source: AGHT+IGUEtKqG6MsRCREZAJlpbrzHNUtHJMpcG2iqyaDAenG3wLPcyUSSEj/ctp07O8llgi3Xm5znffae62yTUQObPrw3HO/q4El
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1718301630-63692-1-git-send-email-alibuda@linux.alibaba.com> <1718301630-63692-4-git-send-email-alibuda@linux.alibaba.com>
-In-Reply-To: <1718301630-63692-4-git-send-email-alibuda@linux.alibaba.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 27 Sep 2024 16:56:52 +0200
-Message-ID: <CANn89i+cKR+hBpXuKxO=dRX448qA3tzEkiOvC4PshWH0OVAD0w@mail.gmail.com>
-Subject: Re: [PATCH net-next v8 3/3] net/smc: Introduce IPPROTO_SMC
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com, 
-	wintera@linux.ibm.com, guwen@linux.alibaba.com, kuba@kernel.org, 
-	davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, tonylu@linux.alibaba.com, pabeni@redhat.com
+X-Received: by 2002:a05:6e02:1a0c:b0:3a0:a385:911d with SMTP id
+ e9e14a558f8ab-3a344fcc3e1mr43356875ab.0.1727461587643; Fri, 27 Sep 2024
+ 11:26:27 -0700 (PDT)
+Date: Fri, 27 Sep 2024 11:26:27 -0700
+In-Reply-To: <000000000000657ecd0614456af8@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <66f6f8d3.050a0220.38ace9.002e.GAE@google.com>
+Subject: Re: [syzbot] [net?] KASAN: slab-use-after-free Read in __ethtool_get_link_ksettings
+From: syzbot <syzbot+5fe14f2ff4ccbace9a26@syzkaller.appspotmail.com>
+To: davem@davemloft.net, dkirjanov@suse.de, edumazet@google.com, jgg@ziepe.ca, 
+	kirjanov@gmail.com, kuba@kernel.org, leon@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, naveenm@marvell.com, 
+	netdev@vger.kernel.org, pabeni@redhat.com, rkannoth@marvell.com, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 13, 2024 at 8:00=E2=80=AFPM D. Wythe <alibuda@linux.alibaba.com=
-> wrote:
->
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
->
-> This patch allows to create smc socket via AF_INET,
-> similar to the following code,
->
-> /* create v4 smc sock */
-> v4 =3D socket(AF_INET, SOCK_STREAM, IPPROTO_SMC);
->
-> /* create v6 smc sock */
-> v6 =3D socket(AF_INET6, SOCK_STREAM, IPPROTO_SMC);
->
-> There are several reasons why we believe it is appropriate here:
->
-> 1. For smc sockets, it actually use IPv4 (AF-INET) or IPv6 (AF-INET6)
-> address. There is no AF_SMC address at all.
->
-> 2. Create smc socket in the AF_INET(6) path, which allows us to reuse
-> the infrastructure of AF_INET(6) path, such as common ebpf hooks.
-> Otherwise, smc have to implement it again in AF_SMC path.
->
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
-> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-> Tested-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> Tested-by: Wenjia Zhang <wenjia@linux.ibm.com>
-> ---
->  include/uapi/linux/in.h |   2 +
->  net/smc/Makefile        |   2 +-
->  net/smc/af_smc.c        |  16 ++++-
->  net/smc/smc_inet.c      | 159 ++++++++++++++++++++++++++++++++++++++++++=
-++++++
->  net/smc/smc_inet.h      |  22 +++++++
->  5 files changed, 198 insertions(+), 3 deletions(-)
->  create mode 100644 net/smc/smc_inet.c
->  create mode 100644 net/smc/smc_inet.h
->
-> diff --git a/include/uapi/linux/in.h b/include/uapi/linux/in.h
-> index e682ab6..d358add 100644
-> --- a/include/uapi/linux/in.h
-> +++ b/include/uapi/linux/in.h
-> @@ -81,6 +81,8 @@ enum {
->  #define IPPROTO_ETHERNET       IPPROTO_ETHERNET
->    IPPROTO_RAW =3D 255,           /* Raw IP packets                      =
- */
->  #define IPPROTO_RAW            IPPROTO_RAW
-> +  IPPROTO_SMC =3D 256,           /* Shared Memory Communications        =
- */
-> +#define IPPROTO_SMC            IPPROTO_SMC
->    IPPROTO_MPTCP =3D 262,         /* Multipath TCP connection            =
- */
->  #define IPPROTO_MPTCP          IPPROTO_MPTCP
->    IPPROTO_MAX
-> diff --git a/net/smc/Makefile b/net/smc/Makefile
-> index 2c510d54..60f1c87 100644
-> --- a/net/smc/Makefile
-> +++ b/net/smc/Makefile
-> @@ -4,6 +4,6 @@ obj-$(CONFIG_SMC)       +=3D smc.o
->  obj-$(CONFIG_SMC_DIAG) +=3D smc_diag.o
->  smc-y :=3D af_smc.o smc_pnet.o smc_ib.o smc_clc.o smc_core.o smc_wr.o sm=
-c_llc.o
->  smc-y +=3D smc_cdc.o smc_tx.o smc_rx.o smc_close.o smc_ism.o smc_netlink=
-.o smc_stats.o
-> -smc-y +=3D smc_tracepoint.o
-> +smc-y +=3D smc_tracepoint.o smc_inet.o
->  smc-$(CONFIG_SYSCTL) +=3D smc_sysctl.o
->  smc-$(CONFIG_SMC_LO) +=3D smc_loopback.o
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index 8e3ce76..435f38b 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -54,6 +54,7 @@
->  #include "smc_tracepoint.h"
->  #include "smc_sysctl.h"
->  #include "smc_loopback.h"
-> +#include "smc_inet.h"
->
->  static DEFINE_MUTEX(smc_server_lgr_pending);   /* serialize link group
->                                                  * creation on server
-> @@ -3593,10 +3594,15 @@ static int __init smc_init(void)
->                 pr_err("%s: tcp_ulp_register fails with %d\n", __func__, =
-rc);
->                 goto out_lo;
->         }
-> -
-> +       rc =3D smc_inet_init();
-> +       if (rc) {
-> +               pr_err("%s: smc_inet_init fails with %d\n", __func__, rc)=
-;
-> +               goto out_ulp;
-> +       }
->         static_branch_enable(&tcp_have_smc);
->         return 0;
-> -
-> +out_ulp:
-> +       tcp_unregister_ulp(&smc_ulp_ops);
->  out_lo:
->         smc_loopback_exit();
->  out_ib:
-> @@ -3633,6 +3639,7 @@ static int __init smc_init(void)
->  static void __exit smc_exit(void)
->  {
->         static_branch_disable(&tcp_have_smc);
-> +       smc_inet_exit();
->         tcp_unregister_ulp(&smc_ulp_ops);
->         sock_unregister(PF_SMC);
->         smc_core_exit();
-> @@ -3660,4 +3667,9 @@ static void __exit smc_exit(void)
->  MODULE_LICENSE("GPL");
->  MODULE_ALIAS_NETPROTO(PF_SMC);
->  MODULE_ALIAS_TCP_ULP("smc");
-> +/* 256 for IPPROTO_SMC and 1 for SOCK_STREAM */
-> +MODULE_ALIAS_NET_PF_PROTO_TYPE(PF_INET, 256, 1);
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +MODULE_ALIAS_NET_PF_PROTO_TYPE(PF_INET6, 256, 1);
-> +#endif /* CONFIG_IPV6 */
->  MODULE_ALIAS_GENL_FAMILY(SMC_GENL_FAMILY_NAME);
-> diff --git a/net/smc/smc_inet.c b/net/smc/smc_inet.c
-> new file mode 100644
-> index 00000000..bece346
-> --- /dev/null
-> +++ b/net/smc/smc_inet.c
-> @@ -0,0 +1,159 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + *  Shared Memory Communications over RDMA (SMC-R) and RoCE
-> + *
-> + *  Definitions for the IPPROTO_SMC (socket related)
-> + *
-> + *  Copyright IBM Corp. 2016, 2018
-> + *  Copyright (c) 2024, Alibaba Inc.
-> + *
-> + *  Author: D. Wythe <alibuda@linux.alibaba.com>
-> + */
-> +
-> +#include <net/protocol.h>
-> +#include <net/sock.h>
-> +
-> +#include "smc_inet.h"
-> +#include "smc.h"
-> +
-> +static int smc_inet_init_sock(struct sock *sk);
-> +
-> +static struct proto smc_inet_prot =3D {
-> +       .name           =3D "INET_SMC",
-> +       .owner          =3D THIS_MODULE,
-> +       .init           =3D smc_inet_init_sock,
-> +       .hash           =3D smc_hash_sk,
-> +       .unhash         =3D smc_unhash_sk,
-> +       .release_cb     =3D smc_release_cb,
-> +       .obj_size       =3D sizeof(struct smc_sock),
-> +       .h.smc_hash     =3D &smc_v4_hashinfo,
-> +       .slab_flags     =3D SLAB_TYPESAFE_BY_RCU,
-> +};
-> +
-> +static const struct proto_ops smc_inet_stream_ops =3D {
-> +       .family         =3D PF_INET,
-> +       .owner          =3D THIS_MODULE,
-> +       .release        =3D smc_release,
-> +       .bind           =3D smc_bind,
-> +       .connect        =3D smc_connect,
-> +       .socketpair     =3D sock_no_socketpair,
-> +       .accept         =3D smc_accept,
-> +       .getname        =3D smc_getname,
-> +       .poll           =3D smc_poll,
-> +       .ioctl          =3D smc_ioctl,
-> +       .listen         =3D smc_listen,
-> +       .shutdown       =3D smc_shutdown,
-> +       .setsockopt     =3D smc_setsockopt,
-> +       .getsockopt     =3D smc_getsockopt,
-> +       .sendmsg        =3D smc_sendmsg,
-> +       .recvmsg        =3D smc_recvmsg,
-> +       .mmap           =3D sock_no_mmap,
-> +       .splice_read    =3D smc_splice_read,
-> +};
-> +
-> +static struct inet_protosw smc_inet_protosw =3D {
-> +       .type           =3D SOCK_STREAM,
-> +       .protocol       =3D IPPROTO_SMC,
-> +       .prot           =3D &smc_inet_prot,
-> +       .ops            =3D &smc_inet_stream_ops,
-> +       .flags          =3D INET_PROTOSW_ICSK,
+syzbot has found a reproducer for the following issue on:
 
-When this flag is set, icsk->icsk_sync_mss must be set.
+HEAD commit:    d505d3593b52 net: wwan: qcom_bam_dmux: Fix missing pm_runt..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=105286a9980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b2d4fdf18a83ec0b
+dashboard link: https://syzkaller.appspot.com/bug?extid=5fe14f2ff4ccbace9a26
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=150d959f980000
 
-Unable to handle kernel NULL pointer dereference at virtual address
-0000000000000000
-Mem abort info:
-ESR =3D 0x0000000086000005
-EC =3D 0x21: IABT (current EL), IL =3D 32 bits
-SET =3D 0, FnV =3D 0
-EA =3D 0, S1PTW =3D 0
-FSC =3D 0x05: level 1 translation fault
-user pgtable: 4k pages, 48-bit VAs, pgdp=3D00000001195d1000
-[0000000000000000] pgd=3D0800000109c46003, p4d=3D0800000109c46003,
-pud=3D0000000000000000
-Internal error: Oops: 0000000086000005 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 UID: 0 PID: 8037 Comm: syz.3.265 Not tainted
-6.11.0-rc7-syzkaller-g5f5673607153 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine,
-BIOS Google 08/06/2024
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
-pc : 0x0
-lr : cipso_v4_sock_setattr+0x2a8/0x3c0 net/ipv4/cipso_ipv4.c:1910
-sp : ffff80009b887a90
-x29: ffff80009b887aa0 x28: ffff80008db94050 x27: 0000000000000000
-x26: 1fffe0001aa6f5b3 x25: dfff800000000000 x24: ffff0000db75da00
-x23: 0000000000000000 x22: ffff0000d8b78518 x21: 0000000000000000
-x20: ffff0000d537ad80 x19: ffff0000d8b78000 x18: 1fffe000366d79ee
-x17: ffff8000800614a8 x16: ffff800080569b84 x15: 0000000000000001
-x14: 000000008b336894 x13: 00000000cd96feaa x12: 0000000000000003
-x11: 0000000000040000 x10: 00000000000020a3 x9 : 1fffe0001b16f0f1
-x8 : 0000000000000000 x7 : 0000000000000000 x6 : 000000000000003f
-x5 : 0000000000000040 x4 : 0000000000000001 x3 : 0000000000000000
-x2 : 0000000000000002 x1 : 0000000000000000 x0 : ffff0000d8b78000
-Call trace:
-0x0
-netlbl_sock_setattr+0x2e4/0x338 net/netlabel/netlabel_kapi.c:1000
-smack_netlbl_add+0xa4/0x154 security/smack/smack_lsm.c:2593
-smack_socket_post_create+0xa8/0x14c security/smack/smack_lsm.c:2973
-security_socket_post_create+0x94/0xd4 security/security.c:4425
-__sock_create+0x4c8/0x884 net/socket.c:1587
-sock_create net/socket.c:1622 [inline]
-__sys_socket_create net/socket.c:1659 [inline]
-__sys_socket+0x134/0x340 net/socket.c:1706
-__do_sys_socket net/socket.c:1720 [inline]
-__se_sys_socket net/socket.c:1718 [inline]
-__arm64_sys_socket+0x7c/0x94 net/socket.c:1718
-__invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
-el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
-do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
-el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
-el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-Code: ???????? ???????? ???????? ???????? (????????)
----[ end trace 0000000000000000 ]---
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0286a1cf90df/disk-d505d359.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b573fa96ab33/vmlinux-d505d359.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/cdd9993102ed/bzImage-d505d359.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5fe14f2ff4ccbace9a26@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-use-after-free in __ethtool_get_link_ksettings+0x6e/0x190 net/ethtool/ioctl.c:442
+Read of size 8 at addr ffff88806ea3a308 by task kworker/1:1/60
+
+CPU: 1 UID: 0 PID: 60 Comm: kworker/1:1 Not tainted 6.11.0-syzkaller-11503-gd505d3593b52 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+Workqueue: events smc_ib_port_event_work
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0x169/0x550 mm/kasan/report.c:488
+ kasan_report+0x143/0x180 mm/kasan/report.c:601
+ __ethtool_get_link_ksettings+0x6e/0x190 net/ethtool/ioctl.c:442
+ ib_get_eth_speed+0x160/0x800 drivers/infiniband/core/verbs.c:1996
+ rxe_query_port+0x76/0x260 drivers/infiniband/sw/rxe/rxe_verbs.c:55
+ __ib_query_port drivers/infiniband/core/device.c:2111 [inline]
+ ib_query_port+0x166/0x7d0 drivers/infiniband/core/device.c:2143
+ smc_ib_remember_port_attr net/smc/smc_ib.c:364 [inline]
+ smc_ib_port_event_work+0x14e/0xa50 net/smc/smc_ib.c:388
+ process_one_work kernel/workqueue.c:3229 [inline]
+ process_scheduled_works+0xa63/0x1850 kernel/workqueue.c:3310
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+
+Allocated by task 5335:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:394
+ kasan_kmalloc include/linux/kasan.h:257 [inline]
+ __do_kmalloc_node mm/slub.c:4265 [inline]
+ __kmalloc_node_noprof+0x22a/0x440 mm/slub.c:4271
+ __kvmalloc_node_noprof+0x72/0x190 mm/util.c:658
+ alloc_netdev_mqs+0x9b/0x1000 net/core/dev.c:11093
+ rtnl_create_link+0x2f9/0xc20 net/core/rtnetlink.c:3374
+ rtnl_newlink_create net/core/rtnetlink.c:3500 [inline]
+ __rtnl_newlink net/core/rtnetlink.c:3730 [inline]
+ rtnl_newlink+0x1423/0x20a0 net/core/rtnetlink.c:3743
+ rtnetlink_rcv_msg+0x73f/0xcf0 net/core/rtnetlink.c:6646
+ netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2550
+ netlink_unicast_kernel net/netlink/af_netlink.c:1331 [inline]
+ netlink_unicast+0x7f6/0x990 net/netlink/af_netlink.c:1357
+ netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1901
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:745
+ __sys_sendto+0x39b/0x4f0 net/socket.c:2210
+ __do_sys_sendto net/socket.c:2222 [inline]
+ __se_sys_sendto net/socket.c:2218 [inline]
+ __x64_sys_sendto+0xde/0x100 net/socket.c:2218
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Freed by task 1583:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:579
+ poison_slab_object mm/kasan/common.c:247 [inline]
+ __kasan_slab_free+0x59/0x70 mm/kasan/common.c:264
+ kasan_slab_free include/linux/kasan.h:230 [inline]
+ slab_free_hook mm/slub.c:2343 [inline]
+ slab_free mm/slub.c:4580 [inline]
+ kfree+0x1a0/0x440 mm/slub.c:4728
+ device_release+0x99/0x1c0
+ kobject_cleanup lib/kobject.c:689 [inline]
+ kobject_release lib/kobject.c:720 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x22f/0x480 lib/kobject.c:737
+ netdev_run_todo+0xe79/0x1000 net/core/dev.c:10812
+ default_device_exit_batch+0xa24/0xaa0 net/core/dev.c:11945
+ ops_exit_list net/core/net_namespace.c:178 [inline]
+ cleanup_net+0x89d/0xcc0 net/core/net_namespace.c:626
+ process_one_work kernel/workqueue.c:3229 [inline]
+ process_scheduled_works+0xa63/0x1850 kernel/workqueue.c:3310
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+The buggy address belongs to the object at ffff88806ea3a000
+ which belongs to the cache kmalloc-cg-4k of size 4096
+The buggy address is located 776 bytes inside of
+ freed 4096-byte region [ffff88806ea3a000, ffff88806ea3b000)
+
+The buggy address belongs to the physical page:
+page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x6ea38
+head: order:3 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+memcg:ffff88802c1c9001
+flags: 0xfff00000000040(head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 00fff00000000040 ffff88801ac4f500 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000000040004 00000001f5000000 ffff88802c1c9001
+head: 00fff00000000040 ffff88801ac4f500 dead000000000122 0000000000000000
+head: 0000000000000000 0000000000040004 00000001f5000000 ffff88802c1c9001
+head: 00fff00000000003 ffffea0001ba8e01 ffffffffffffffff 0000000000000000
+head: 0000000700000008 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5335, tgid 5335 (syz-executor), ts 184149259579, free_ts 182141357499
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x1f3/0x230 mm/page_alloc.c:1537
+ prep_new_page mm/page_alloc.c:1545 [inline]
+ get_page_from_freelist+0x3045/0x3190 mm/page_alloc.c:3457
+ __alloc_pages_noprof+0x256/0x6c0 mm/page_alloc.c:4733
+ alloc_pages_mpol_noprof+0x3e8/0x680 mm/mempolicy.c:2265
+ alloc_slab_page+0x6a/0x120 mm/slub.c:2413
+ allocate_slab+0x5a/0x2f0 mm/slub.c:2579
+ new_slab mm/slub.c:2632 [inline]
+ ___slab_alloc+0xcd1/0x14b0 mm/slub.c:3819
+ __slab_alloc+0x58/0xa0 mm/slub.c:3909
+ __slab_alloc_node mm/slub.c:3962 [inline]
+ slab_alloc_node mm/slub.c:4123 [inline]
+ __do_kmalloc_node mm/slub.c:4264 [inline]
+ __kmalloc_noprof+0x25a/0x400 mm/slub.c:4277
+ kmalloc_noprof include/linux/slab.h:882 [inline]
+ kzalloc_noprof include/linux/slab.h:1014 [inline]
+ __register_sysctl_table+0x65/0x1550 fs/proc/proc_sysctl.c:1368
+ __addrconf_sysctl_register+0x234/0x3a0 net/ipv6/addrconf.c:7224
+ addrconf_sysctl_register+0x167/0x1c0 net/ipv6/addrconf.c:7272
+ ipv6_add_dev+0xcf6/0x1220 net/ipv6/addrconf.c:456
+ addrconf_notify+0x6a7/0x1020 net/ipv6/addrconf.c:3655
+ notifier_call_chain+0x19f/0x3e0 kernel/notifier.c:93
+ call_netdevice_notifiers_extack net/core/dev.c:2034 [inline]
+ call_netdevice_notifiers net/core/dev.c:2048 [inline]
+ register_netdevice+0x167f/0x1b00 net/core/dev.c:10520
+page last free pid 5308 tgid 5308 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1108 [inline]
+ free_unref_page+0xcfb/0xf20 mm/page_alloc.c:2638
+ vfree+0x186/0x2e0 mm/vmalloc.c:3361
+ kcov_put kernel/kcov.c:439 [inline]
+ kcov_close+0x28/0x50 kernel/kcov.c:535
+ __fput+0x23f/0x880 fs/file_table.c:431
+ task_work_run+0x24f/0x310 kernel/task_work.c:228
+ exit_task_work include/linux/task_work.h:40 [inline]
+ do_exit+0xa2f/0x28e0 kernel/exit.c:939
+ do_group_exit+0x207/0x2c0 kernel/exit.c:1088
+ get_signal+0x176f/0x1810 kernel/signal.c:2936
+ arch_do_signal_or_restart+0x96/0x860 arch/x86/kernel/signal.c:337
+ exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0xc9/0x370 kernel/entry/common.c:218
+ do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Memory state around the buggy address:
+ ffff88806ea3a200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88806ea3a280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88806ea3a300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                      ^
+ ffff88806ea3a380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88806ea3a400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
