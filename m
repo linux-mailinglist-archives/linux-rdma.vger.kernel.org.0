@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-5143-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5144-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57CFE989275
-	for <lists+linux-rdma@lfdr.de>; Sun, 29 Sep 2024 03:30:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C40869892C4
+	for <lists+linux-rdma@lfdr.de>; Sun, 29 Sep 2024 04:45:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 117DE285A4D
-	for <lists+linux-rdma@lfdr.de>; Sun, 29 Sep 2024 01:30:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5FEC1C22878
+	for <lists+linux-rdma@lfdr.de>; Sun, 29 Sep 2024 02:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE021B665;
-	Sun, 29 Sep 2024 01:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Xz0FMyZD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 375AC1F94D;
+	Sun, 29 Sep 2024 02:45:05 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1525CB8;
-	Sun, 29 Sep 2024 01:30:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D16D21CAA4;
+	Sun, 29 Sep 2024 02:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727573438; cv=none; b=FKJA2kVs34H33ZIgUGE6Xps8EdgIkSwfhdl0gZs75MhGOTqMkSH9MSxeU9fi4I55DXxAayW2Z+q/oqk4uKfYatLu9gnkBwFt2s/rzs70i7Yyaz7tGK0gfJ57qdD/wSnuZGpV35nom0weBAGhyhhE5yP6cUtYIUG7mi25v+ewxgA=
+	t=1727577905; cv=none; b=m9Q1B8smutbJHruLhOY21nIvSV0qTfsGFZhbKvBd65bybPTW0GuSL0FPowuuSts7C0J/LJ/x80lQ7ZJLvW4sJX2ILXrAiofXSyQsUdEPxKWJiu5yLk7n1jv4Olm0beMHa5riHNxBYdj5qKgZKf0yfxWBVr6MdQ4mXqI/FPunhc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727573438; c=relaxed/simple;
-	bh=X9DpYzFyZ+HLsY7DUKOBX2i782WYFgCwYhEKFYEJ/XI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Et1yk7HNvM95l4ohwMZuVqq18ZVLDyD5dViOlBPASCjwYSn9y849g0RbAkKujSd7aqQCDWPTZ6d/pCttOi+V7KHZg4Q+Rmo1hERRwoInqtn+Ch1x4qZ9XGflmAktWlacm7MZDhFSY9M79oLUVwdLmxuNuTCYEOyYHxSLWZ5+YY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Xz0FMyZD; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1727573427; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=5vIw3q4yZsnbjXo6TWEyTvQdsGYhhZ745aM1K7o5WUY=;
-	b=Xz0FMyZDPcxA/77I53OUP6zLiqQ+6OB93V+Sn0NM3dvgFrtSONZh5aonYglMe30hQUvahW0QT30XYmao5fdZJB7BW9lp0Xu23yq9P2CO2u3LNSRH5L9kikB8NaG+uC3natVUjVRTd0NeKhejiWF0A26G9iY/k6ogyUfy3oz3zaI=
-Received: from 30.221.144.152(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WFuY-il_1727573425)
-          by smtp.aliyun-inc.com;
-          Sun, 29 Sep 2024 09:30:26 +0800
-Message-ID: <af2320a1-86be-4a95-bb9c-6f7f46b357e5@linux.alibaba.com>
-Date: Sun, 29 Sep 2024 09:30:25 +0800
+	s=arc-20240116; t=1727577905; c=relaxed/simple;
+	bh=FiYG/fkLGxsbz6lmYbBjKleWZNMsSfiS+c65d3bFVCU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=dx1aYe5ieB6KYuk3IQUcNfqZq/tJ6fFH8HiqladNaqSs6A0E2GvZi4AzQTtCx3ARcieDEuxKmncZeCUPUbjPw58wHCVoUKZm4NkWQYoxSge6h9nI1F34+jwQ3unxLazAjsOm2WP1Um2Fbnj83GhMnXCaquQTvge+j1bxdPMTAWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4XGT571jzCzfbjm;
+	Sun, 29 Sep 2024 10:42:35 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 219E918007C;
+	Sun, 29 Sep 2024 10:44:54 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Sun, 29 Sep 2024 10:44:53 +0800
+Message-ID: <ac2eec69-8f44-4adb-8182-02c78625851d@huawei.com>
+Date: Sun, 29 Sep 2024 10:44:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -48,262 +48,111 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v8 3/3] net/smc: Introduce IPPROTO_SMC
-To: Eric Dumazet <edumazet@google.com>
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
- wintera@linux.ibm.com, guwen@linux.alibaba.com, kuba@kernel.org,
- davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-rdma@vger.kernel.org, tonylu@linux.alibaba.com, pabeni@redhat.com
-References: <1718301630-63692-1-git-send-email-alibuda@linux.alibaba.com>
- <1718301630-63692-4-git-send-email-alibuda@linux.alibaba.com>
- <CANn89i+cKR+hBpXuKxO=dRX448qA3tzEkiOvC4PshWH0OVAD0w@mail.gmail.com>
+Subject: Re: [PATCH net v2 2/2] page_pool: fix IOMMU crash when driver has
+ already unbound
+To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC: Mina Almasry <almasrymina@google.com>, <davem@davemloft.net>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <liuyonglong@huawei.com>,
+	<fanghaiqing@huawei.com>, <zhangkun09@huawei.com>, Robin Murphy
+	<robin.murphy@arm.com>, Alexander Duyck <alexander.duyck@gmail.com>, IOMMU
+	<iommu@lists.linux.dev>, Wei Fang <wei.fang@nxp.com>, Shenwei Wang
+	<shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, Eric Dumazet
+	<edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek
+ Kitszel <przemyslaw.kitszel@intel.com>, Alexander Lobakin
+	<aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
+	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
+	<tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi
+	<lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
+	<shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle Valo
+	<kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Andrew
+ Morton <akpm@linux-foundation.org>, <imx@lists.linux.dev>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <bpf@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<linux-mm@kvack.org>
+References: <20240925075707.3970187-1-linyunsheng@huawei.com>
+ <20240925075707.3970187-3-linyunsheng@huawei.com>
+ <CAHS8izOxugzWJDTc-4CWqaKABTj=J4OHs=Lcb=SE9r8gX0J+yg@mail.gmail.com>
+ <842c8cc6-f716-437a-bc98-70bc26d6fd38@huawei.com>
+ <CAC_iWjLgNOtsbhqrhvvEz2C3S668qB8KatL_W+tPHMSkDrNS=w@mail.gmail.com>
+ <0ef315df-e8e9-41e8-9ba8-dcb69492c616@huawei.com>
+ <CAC_iWjKeajwn3otjdEekE6VDLHGEvqmnQRwpN5R3yHj8UpEiDw@mail.gmail.com>
+ <934d601f-be43-4e04-b126-dc86890a4bfa@huawei.com>
+ <CAC_iWjL7m4ZL2W2OZM5F22dLvZhxU6fyCXV_xjyGf+W7UP43EQ@mail.gmail.com>
 Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <CANn89i+cKR+hBpXuKxO=dRX448qA3tzEkiOvC4PshWH0OVAD0w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <CAC_iWjL7m4ZL2W2OZM5F22dLvZhxU6fyCXV_xjyGf+W7UP43EQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
+On 2024/9/28 15:34, Ilias Apalodimas wrote:
 
+...
 
-On 9/27/24 10:56 PM, Eric Dumazet wrote:
-> On Thu, Jun 13, 2024 at 8:00 PM D. Wythe <alibuda@linux.alibaba.com> wrote:
->>
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>
->> This patch allows to create smc socket via AF_INET,
->> similar to the following code,
->>
->> /* create v4 smc sock */
->> v4 = socket(AF_INET, SOCK_STREAM, IPPROTO_SMC);
->>
->> /* create v6 smc sock */
->> v6 = socket(AF_INET6, SOCK_STREAM, IPPROTO_SMC);
->>
->> There are several reasons why we believe it is appropriate here:
->>
->> 1. For smc sockets, it actually use IPv4 (AF-INET) or IPv6 (AF-INET6)
->> address. There is no AF_SMC address at all.
->>
->> 2. Create smc socket in the AF_INET(6) path, which allows us to reuse
->> the infrastructure of AF_INET(6) path, such as common ebpf hooks.
->> Otherwise, smc have to implement it again in AF_SMC path.
->>
->> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->> Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
->> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
->> Tested-by: Niklas Schnelle <schnelle@linux.ibm.com>
->> Tested-by: Wenjia Zhang <wenjia@linux.ibm.com>
->> ---
->>   include/uapi/linux/in.h |   2 +
->>   net/smc/Makefile        |   2 +-
->>   net/smc/af_smc.c        |  16 ++++-
->>   net/smc/smc_inet.c      | 159 ++++++++++++++++++++++++++++++++++++++++++++++++
->>   net/smc/smc_inet.h      |  22 +++++++
->>   5 files changed, 198 insertions(+), 3 deletions(-)
->>   create mode 100644 net/smc/smc_inet.c
->>   create mode 100644 net/smc/smc_inet.h
->>
->> diff --git a/include/uapi/linux/in.h b/include/uapi/linux/in.h
->> index e682ab6..d358add 100644
->> --- a/include/uapi/linux/in.h
->> +++ b/include/uapi/linux/in.h
->> @@ -81,6 +81,8 @@ enum {
->>   #define IPPROTO_ETHERNET       IPPROTO_ETHERNET
->>     IPPROTO_RAW = 255,           /* Raw IP packets                       */
->>   #define IPPROTO_RAW            IPPROTO_RAW
->> +  IPPROTO_SMC = 256,           /* Shared Memory Communications         */
->> +#define IPPROTO_SMC            IPPROTO_SMC
->>     IPPROTO_MPTCP = 262,         /* Multipath TCP connection             */
->>   #define IPPROTO_MPTCP          IPPROTO_MPTCP
->>     IPPROTO_MAX
->> diff --git a/net/smc/Makefile b/net/smc/Makefile
->> index 2c510d54..60f1c87 100644
->> --- a/net/smc/Makefile
->> +++ b/net/smc/Makefile
->> @@ -4,6 +4,6 @@ obj-$(CONFIG_SMC)       += smc.o
->>   obj-$(CONFIG_SMC_DIAG) += smc_diag.o
->>   smc-y := af_smc.o smc_pnet.o smc_ib.o smc_clc.o smc_core.o smc_wr.o smc_llc.o
->>   smc-y += smc_cdc.o smc_tx.o smc_rx.o smc_close.o smc_ism.o smc_netlink.o smc_stats.o
->> -smc-y += smc_tracepoint.o
->> +smc-y += smc_tracepoint.o smc_inet.o
->>   smc-$(CONFIG_SYSCTL) += smc_sysctl.o
->>   smc-$(CONFIG_SMC_LO) += smc_loopback.o
->> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->> index 8e3ce76..435f38b 100644
->> --- a/net/smc/af_smc.c
->> +++ b/net/smc/af_smc.c
->> @@ -54,6 +54,7 @@
->>   #include "smc_tracepoint.h"
->>   #include "smc_sysctl.h"
->>   #include "smc_loopback.h"
->> +#include "smc_inet.h"
->>
->>   static DEFINE_MUTEX(smc_server_lgr_pending);   /* serialize link group
->>                                                   * creation on server
->> @@ -3593,10 +3594,15 @@ static int __init smc_init(void)
->>                  pr_err("%s: tcp_ulp_register fails with %d\n", __func__, rc);
->>                  goto out_lo;
->>          }
->> -
->> +       rc = smc_inet_init();
->> +       if (rc) {
->> +               pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
->> +               goto out_ulp;
->> +       }
->>          static_branch_enable(&tcp_have_smc);
->>          return 0;
->> -
->> +out_ulp:
->> +       tcp_unregister_ulp(&smc_ulp_ops);
->>   out_lo:
->>          smc_loopback_exit();
->>   out_ib:
->> @@ -3633,6 +3639,7 @@ static int __init smc_init(void)
->>   static void __exit smc_exit(void)
->>   {
->>          static_branch_disable(&tcp_have_smc);
->> +       smc_inet_exit();
->>          tcp_unregister_ulp(&smc_ulp_ops);
->>          sock_unregister(PF_SMC);
->>          smc_core_exit();
->> @@ -3660,4 +3667,9 @@ static void __exit smc_exit(void)
->>   MODULE_LICENSE("GPL");
->>   MODULE_ALIAS_NETPROTO(PF_SMC);
->>   MODULE_ALIAS_TCP_ULP("smc");
->> +/* 256 for IPPROTO_SMC and 1 for SOCK_STREAM */
->> +MODULE_ALIAS_NET_PF_PROTO_TYPE(PF_INET, 256, 1);
->> +#if IS_ENABLED(CONFIG_IPV6)
->> +MODULE_ALIAS_NET_PF_PROTO_TYPE(PF_INET6, 256, 1);
->> +#endif /* CONFIG_IPV6 */
->>   MODULE_ALIAS_GENL_FAMILY(SMC_GENL_FAMILY_NAME);
->> diff --git a/net/smc/smc_inet.c b/net/smc/smc_inet.c
->> new file mode 100644
->> index 00000000..bece346
->> --- /dev/null
->> +++ b/net/smc/smc_inet.c
->> @@ -0,0 +1,159 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + *  Shared Memory Communications over RDMA (SMC-R) and RoCE
->> + *
->> + *  Definitions for the IPPROTO_SMC (socket related)
->> + *
->> + *  Copyright IBM Corp. 2016, 2018
->> + *  Copyright (c) 2024, Alibaba Inc.
->> + *
->> + *  Author: D. Wythe <alibuda@linux.alibaba.com>
->> + */
->> +
->> +#include <net/protocol.h>
->> +#include <net/sock.h>
->> +
->> +#include "smc_inet.h"
->> +#include "smc.h"
->> +
->> +static int smc_inet_init_sock(struct sock *sk);
->> +
->> +static struct proto smc_inet_prot = {
->> +       .name           = "INET_SMC",
->> +       .owner          = THIS_MODULE,
->> +       .init           = smc_inet_init_sock,
->> +       .hash           = smc_hash_sk,
->> +       .unhash         = smc_unhash_sk,
->> +       .release_cb     = smc_release_cb,
->> +       .obj_size       = sizeof(struct smc_sock),
->> +       .h.smc_hash     = &smc_v4_hashinfo,
->> +       .slab_flags     = SLAB_TYPESAFE_BY_RCU,
->> +};
->> +
->> +static const struct proto_ops smc_inet_stream_ops = {
->> +       .family         = PF_INET,
->> +       .owner          = THIS_MODULE,
->> +       .release        = smc_release,
->> +       .bind           = smc_bind,
->> +       .connect        = smc_connect,
->> +       .socketpair     = sock_no_socketpair,
->> +       .accept         = smc_accept,
->> +       .getname        = smc_getname,
->> +       .poll           = smc_poll,
->> +       .ioctl          = smc_ioctl,
->> +       .listen         = smc_listen,
->> +       .shutdown       = smc_shutdown,
->> +       .setsockopt     = smc_setsockopt,
->> +       .getsockopt     = smc_getsockopt,
->> +       .sendmsg        = smc_sendmsg,
->> +       .recvmsg        = smc_recvmsg,
->> +       .mmap           = sock_no_mmap,
->> +       .splice_read    = smc_splice_read,
->> +};
->> +
->> +static struct inet_protosw smc_inet_protosw = {
->> +       .type           = SOCK_STREAM,
->> +       .protocol       = IPPROTO_SMC,
->> +       .prot           = &smc_inet_prot,
->> +       .ops            = &smc_inet_stream_ops,
->> +       .flags          = INET_PROTOSW_ICSK,
 > 
-> When this flag is set, icsk->icsk_sync_mss must be set.
+> Yes, that wasn't very clear indeed, apologies for any confusion. I was
+> trying to ask on a linked list that only lives in struct page_pool.
+> But I now realize this was a bad idea since the lookup would be way
+> slower.
 > 
+>> If I understand question correctly, the single/doubly linked list
+>> is more costly than array as the page_pool case as my understanding.
+>>
+>> For single linked list, it doesn't allow deleting a specific entry but
+>> only support deleting the first entry and all the entries. It does support
+>> lockless operation using llist, but have limitation as below:
+>> https://elixir.bootlin.com/linux/v6.7-rc8/source/include/linux/llist.h#L13
+>>
+>> For doubly linked list, it needs two pointer to support deleting a specific
+>> entry and it does not support lockless operation.
+> 
+> I didn't look at the patch too carefully at first. Looking a bit
+> closer now, the array is indeed better, since the lookup is faster.
+> You just need the stored index in struct page to find the page we need
+> to unmap. Do you remember if we can reduce the atomic pp_ref_count to
+> 32bits? If so we can reuse that space for the index. Looking at it
 
-Hi Eric,
+For 64 bits system, yes, we can reuse that.
+But for 32 bits system, we may have only 16 bits for each of them, and it
+seems that there is no atomic operation for variable that is less than 32
+bits.
 
-Thanks for your report. I will fix this issue ASAP.
+> requires a bit more work in netmem, but that's mostly swapping all the
+> atomic64 calls to atomic ones.
+> 
+>>
+>> For pool->items, as the alloc side is protected by NAPI context, and the
+>> free side use item->pp_idx to ensure there is only one producer for each
+>> item, which means for each item in pool->items, there is only one consumer
+>> and one producer, which seems much like the case when the page is not
+>> recyclable in __page_pool_put_page, we don't need a lock protection when
+>> calling page_pool_return_page(), the 'struct page' is also one consumer
+>> and one producer as the pool->items[item->pp_idx] does:
+>> https://elixir.bootlin.com/linux/v6.7-rc8/source/net/core/page_pool.c#L645
+>>
+>> We only need a lock protection when page_pool_destroy() is called to
+>> check if there is inflight page to be unmapped as a consumer, and the
+>> __page_pool_put_page() may also called to unmapped the inflight page as
+>> another consumer,
+> 
+> Thanks for the explanation. On the locking side, page_pool_destroy is
+> called once from the driver and then it's either the workqueue for
+> inflight packets or an SKB that got freed and tried to recycle right?
+> But do we still need to do all the unmapping etc from the delayed
+> work? Since the new function will unmap all packets in
+> page_pool_destroy, we can just skip unmapping when the delayed work
+> runs
 
-Best wishes,
-D. Wythe
+Yes, the pool->dma_map is clear in page_pool_item_uninit() after it does
+the unmapping for all inflight pages with the protection of pool->destroy_lock,
+so that the unmapping is skipped in page_pool_return_page() when those inflight
+pages are returned back to page_pool.
 
-
-> Unable to handle kernel NULL pointer dereference at virtual address
-> 0000000000000000
-> Mem abort info:
-> ESR = 0x0000000086000005
-> EC = 0x21: IABT (current EL), IL = 32 bits
-> SET = 0, FnV = 0
-> EA = 0, S1PTW = 0
-> FSC = 0x05: level 1 translation fault
-> user pgtable: 4k pages, 48-bit VAs, pgdp=00000001195d1000
-> [0000000000000000] pgd=0800000109c46003, p4d=0800000109c46003,
-> pud=0000000000000000
-> Internal error: Oops: 0000000086000005 [#1] PREEMPT SMP
-> Modules linked in:
-> CPU: 1 UID: 0 PID: 8037 Comm: syz.3.265 Not tainted
-> 6.11.0-rc7-syzkaller-g5f5673607153 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine,
-> BIOS Google 08/06/2024
-> pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : 0x0
-> lr : cipso_v4_sock_setattr+0x2a8/0x3c0 net/ipv4/cipso_ipv4.c:1910
-> sp : ffff80009b887a90
-> x29: ffff80009b887aa0 x28: ffff80008db94050 x27: 0000000000000000
-> x26: 1fffe0001aa6f5b3 x25: dfff800000000000 x24: ffff0000db75da00
-> x23: 0000000000000000 x22: ffff0000d8b78518 x21: 0000000000000000
-> x20: ffff0000d537ad80 x19: ffff0000d8b78000 x18: 1fffe000366d79ee
-> x17: ffff8000800614a8 x16: ffff800080569b84 x15: 0000000000000001
-> x14: 000000008b336894 x13: 00000000cd96feaa x12: 0000000000000003
-> x11: 0000000000040000 x10: 00000000000020a3 x9 : 1fffe0001b16f0f1
-> x8 : 0000000000000000 x7 : 0000000000000000 x6 : 000000000000003f
-> x5 : 0000000000000040 x4 : 0000000000000001 x3 : 0000000000000000
-> x2 : 0000000000000002 x1 : 0000000000000000 x0 : ffff0000d8b78000
-> Call trace:
-> 0x0
-> netlbl_sock_setattr+0x2e4/0x338 net/netlabel/netlabel_kapi.c:1000
-> smack_netlbl_add+0xa4/0x154 security/smack/smack_lsm.c:2593
-> smack_socket_post_create+0xa8/0x14c security/smack/smack_lsm.c:2973
-> security_socket_post_create+0x94/0xd4 security/security.c:4425
-> __sock_create+0x4c8/0x884 net/socket.c:1587
-> sock_create net/socket.c:1622 [inline]
-> __sys_socket_create net/socket.c:1659 [inline]
-> __sys_socket+0x134/0x340 net/socket.c:1706
-> __do_sys_socket net/socket.c:1720 [inline]
-> __se_sys_socket net/socket.c:1718 [inline]
-> __arm64_sys_socket+0x7c/0x94 net/socket.c:1718
-> __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-> invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
-> el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
-> do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-> el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
-> el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
-> el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-> Code: ???????? ???????? ???????? ???????? (????????)
-> ---[ end trace 0000000000000000 ]---
+> 
 
