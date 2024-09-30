@@ -1,266 +1,184 @@
-Return-Path: <linux-rdma+bounces-5151-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5152-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD4E989B31
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2024 09:16:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03334989C3D
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2024 10:11:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A19F11F2288C
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2024 07:16:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F9BBB249EC
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2024 08:11:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC99156653;
-	Mon, 30 Sep 2024 07:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C62D917E472;
+	Mon, 30 Sep 2024 08:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="PsX4i5iU"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FppoJLcG"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E37E45027;
-	Mon, 30 Sep 2024 07:15:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1AE517C9F1
+	for <linux-rdma@vger.kernel.org>; Mon, 30 Sep 2024 08:09:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727680561; cv=none; b=RaioUj5LImg7GdwMmLFTpjkfwnuOtV1SJkguLxXop9t07MiCewc/uaRZwu6rxgiZbTQLkw5m/SOhKfheuufLHPzz/25KW9ffOW4NebnTysly6FHbsePIpTncdPHaUY/ae6z7UrhhuArjvgMRLPwdh/UMErFX/aOSnEs3VD4oeDo=
+	t=1727683790; cv=none; b=JiUz2cRTKAc9u9mKHTlFd32iaEqGVJu+VXmZ1tSo9gq6WS2aRORCEOcf4k8Di6Q69sm8VgTQ9uF7UKkoP91VTGsEO/rzxXppReJ+7QnMxlvF1YR1NPQfEEt2dFDFxb7pmCoJx43AuP4u7MLexTVV16nSvxKxFAptx99yNgizka8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727680561; c=relaxed/simple;
-	bh=woMxg/j4NP6XZd49rIGatAG25hIrZzeXyxPnCn/FYPg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VFbSWjLYUCl6ol1doOjYgP31EQCDvHC2s226vqW4obA5AXxTH50ApodZCQCygD65DId/1WqLEIpBgbvXTaLUS214DIRtyBBHScd2aovon0XVqGC5iprWqRVI6KlhMkUU5MnHWWKO1yHOErPHSiBcWN5b8VWv2R/98EU4ucvuDYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=PsX4i5iU; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1727680550; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=JZL/ku9aK9zw7vcczmtqa5/1hHelV84Np4wXlJZ7rek=;
-	b=PsX4i5iUM0+n2ProvPT6uiNcHZEsP6TcKgCZwiaE298gfOrJbmrO7UYLAGx3fCYNGcUKNxurI3jD8IZ0PJOuFXDJKfIlwmfobBxoR/d8u1eIO+6OqZwQr1tXorquIXg8iMzqTsggn9YSX3/+vRmpDaJkmJND8EsDf5Y/TkxDYGk=
-Received: from 30.221.144.234(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WG-IUOL_1727680548)
-          by smtp.aliyun-inc.com;
-          Mon, 30 Sep 2024 15:15:49 +0800
-Message-ID: <be2685ab-272a-4f10-9322-a0bb0a35e3d4@linux.alibaba.com>
-Date: Mon, 30 Sep 2024 15:15:47 +0800
+	s=arc-20240116; t=1727683790; c=relaxed/simple;
+	bh=Xx414iMLuxALXKs+wO5vcFTmabes1w6H5Py+TNbMyPA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qJ9Vd96RjmotMqvvimNO9Y8zyHmUpGmKGtB3l3SN7eIkw/fQNWE/aUVca+DBFbdeAq5Yv/utWUI10ZB2Ev3hgh0XgbD2g6TMwv5PCY0sPuGqTHCr6gdlya3AqgCYKnjz/33vZbrAYWh00n9XCUirVw8S/g2l7CGb5djkzi7RUT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FppoJLcG; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-20b4a0940e3so24321945ad.0
+        for <linux-rdma@vger.kernel.org>; Mon, 30 Sep 2024 01:09:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1727683788; x=1728288588; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xx414iMLuxALXKs+wO5vcFTmabes1w6H5Py+TNbMyPA=;
+        b=FppoJLcGOoI00AZ8pk9Ew/JK7dacaHMNbFXsnQuvxKaTWAS4DWz6DYUvNIajVaMwkT
+         BwuQZ72IQytY6qRdTdi7DkcUAKE00W2hO3p9egE6Nro5PVyblOOngJpJEYgDH45549ne
+         FpqUzX3K08jJsk5rCS+BYKSujmu0Q8R2aANZjHQip3L+M3QzflD7YbogkinBLZwIiAo4
+         7KygE21g69FoDG4l2C6CANX0u4jMyu+A4pKRM1SXDWJXjgZJPjR2TOklOhnrImObQf+/
+         UBKKkiFPxagJJC/IFUIExb2wel5xY7CvRmaBH2+d0LxJ2hJf8qsTl3oS7ED70GQNCiF2
+         Ql/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727683788; x=1728288588;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xx414iMLuxALXKs+wO5vcFTmabes1w6H5Py+TNbMyPA=;
+        b=i34JKj9qzqnwICoXbZvIgTVh+8fp4NKhkaJ+MGHn6uWPWUeO0Ct3WHJhUOeo11Mmhu
+         CHOK6wI7URv5HNSLoPj23uSjhgj9KC8mbcVsmvbvu2x5Vx2zKD7rPJzCuHsxKsRa44kT
+         DGWa8Sv+H4WjCwy8IeBv6mPH6jSIK9QrTX4lvXJg21/bm2wyfocjLZwCRLSbIh0gsTpr
+         wpzie5unvqgcPgYfJS6JcTJPfFay5shm66hZ/gMVpYBRG0OHBp35oGP21eACCNQpWDVL
+         vofKzphS8RvCHPRwmcf/nJX8aM8ClKxzPaedDCl6qAeRSqYCDzMWMhX7EUGmnnD3BNDj
+         5YKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXi7DlhOWacR961lCOYvsgYRJmfUxN9Rjtuwde086Hdp/m+9wTYg8o3QgjjkrAlaU8tYYA7mdwD5Wta@vger.kernel.org
+X-Gm-Message-State: AOJu0YxC8y9XtoQlBMe/BgzIcTnQ0mR5Y5IyhGwXcBCiwsDFncPE0weN
+	F99kRnX72bRvbJvzJ0VAwagyrZVfvqJhUH9eyqsnp2x729xZNHqke6A7r5V08gx9mhVIhnoCcTV
+	+U2WJm9hzM/86WZbPSuCYdPG28DPcZ5Zz+1E+bg==
+X-Google-Smtp-Source: AGHT+IHL79vWrV1UbQW2i+UC3FcnuUEn4RoHxDXgrgsEhFXFX4vbKat3GD+mMJkdcENWj5dVp6Y7ppyyQzgjgk1yEE8=
+X-Received: by 2002:a17:902:ce91:b0:20b:6d8c:461 with SMTP id
+ d9443c01a7336-20b6d8c0791mr75062715ad.5.1727683788157; Mon, 30 Sep 2024
+ 01:09:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v2] net/smc: Introduce a hook to modify
- syn_smc at runtime
-To: Zhu Yanjun <yanjun.zhu@linux.dev>, kgraul@linux.ibm.com,
- wenjia@linux.ibm.com, jaka@linux.ibm.com, wintera@linux.ibm.com,
- guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
- tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com,
- bpf@vger.kernel.org
-References: <1727408549-106551-1-git-send-email-alibuda@linux.alibaba.com>
- <f60061bb-109a-4fa8-b419-07585cbb79e3@linux.dev>
-Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <f60061bb-109a-4fa8-b419-07585cbb79e3@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240925075707.3970187-1-linyunsheng@huawei.com>
+ <20240925075707.3970187-3-linyunsheng@huawei.com> <CAHS8izOxugzWJDTc-4CWqaKABTj=J4OHs=Lcb=SE9r8gX0J+yg@mail.gmail.com>
+ <842c8cc6-f716-437a-bc98-70bc26d6fd38@huawei.com> <CAC_iWjLgNOtsbhqrhvvEz2C3S668qB8KatL_W+tPHMSkDrNS=w@mail.gmail.com>
+ <0ef315df-e8e9-41e8-9ba8-dcb69492c616@huawei.com> <CAC_iWjKeajwn3otjdEekE6VDLHGEvqmnQRwpN5R3yHj8UpEiDw@mail.gmail.com>
+ <934d601f-be43-4e04-b126-dc86890a4bfa@huawei.com> <CAC_iWjL7m4ZL2W2OZM5F22dLvZhxU6fyCXV_xjyGf+W7UP43EQ@mail.gmail.com>
+ <ac2eec69-8f44-4adb-8182-02c78625851d@huawei.com>
+In-Reply-To: <ac2eec69-8f44-4adb-8182-02c78625851d@huawei.com>
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date: Mon, 30 Sep 2024 11:09:11 +0300
+Message-ID: <CAC_iWj+Shb6buVf+wZaWe-NZ+UVxmW9DYqsTiL27U+V_Ko_65w@mail.gmail.com>
+Subject: Re: [PATCH net v2 2/2] page_pool: fix IOMMU crash when driver has
+ already unbound
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Mina Almasry <almasrymina@google.com>, davem@davemloft.net, kuba@kernel.org, 
+	pabeni@redhat.com, liuyonglong@huawei.com, fanghaiqing@huawei.com, 
+	zhangkun09@huawei.com, Robin Murphy <robin.murphy@arm.com>, 
+	Alexander Duyck <alexander.duyck@gmail.com>, IOMMU <iommu@lists.linux.dev>, 
+	Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, 
+	Clark Wang <xiaoning.wang@nxp.com>, Eric Dumazet <edumazet@google.com>, 
+	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, 
+	Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, 
+	Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, imx@lists.linux.dev, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+
+On Sun, 29 Sept 2024 at 05:44, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> On 2024/9/28 15:34, Ilias Apalodimas wrote:
+>
+> ...
+>
+> >
+> > Yes, that wasn't very clear indeed, apologies for any confusion. I was
+> > trying to ask on a linked list that only lives in struct page_pool.
+> > But I now realize this was a bad idea since the lookup would be way
+> > slower.
+> >
+> >> If I understand question correctly, the single/doubly linked list
+> >> is more costly than array as the page_pool case as my understanding.
+> >>
+> >> For single linked list, it doesn't allow deleting a specific entry but
+> >> only support deleting the first entry and all the entries. It does support
+> >> lockless operation using llist, but have limitation as below:
+> >> https://elixir.bootlin.com/linux/v6.7-rc8/source/include/linux/llist.h#L13
+> >>
+> >> For doubly linked list, it needs two pointer to support deleting a specific
+> >> entry and it does not support lockless operation.
+> >
+> > I didn't look at the patch too carefully at first. Looking a bit
+> > closer now, the array is indeed better, since the lookup is faster.
+> > You just need the stored index in struct page to find the page we need
+> > to unmap. Do you remember if we can reduce the atomic pp_ref_count to
+> > 32bits? If so we can reuse that space for the index. Looking at it
+>
+> For 64 bits system, yes, we can reuse that.
+> But for 32 bits system, we may have only 16 bits for each of them, and it
+> seems that there is no atomic operation for variable that is less than 32
+> bits.
+>
+> > requires a bit more work in netmem, but that's mostly swapping all the
+> > atomic64 calls to atomic ones.
+> >
+> >>
+> >> For pool->items, as the alloc side is protected by NAPI context, and the
+> >> free side use item->pp_idx to ensure there is only one producer for each
+> >> item, which means for each item in pool->items, there is only one consumer
+> >> and one producer, which seems much like the case when the page is not
+> >> recyclable in __page_pool_put_page, we don't need a lock protection when
+> >> calling page_pool_return_page(), the 'struct page' is also one consumer
+> >> and one producer as the pool->items[item->pp_idx] does:
+> >> https://elixir.bootlin.com/linux/v6.7-rc8/source/net/core/page_pool.c#L645
+> >>
+> >> We only need a lock protection when page_pool_destroy() is called to
+> >> check if there is inflight page to be unmapped as a consumer, and the
+> >> __page_pool_put_page() may also called to unmapped the inflight page as
+> >> another consumer,
+> >
+> > Thanks for the explanation. On the locking side, page_pool_destroy is
+> > called once from the driver and then it's either the workqueue for
+> > inflight packets or an SKB that got freed and tried to recycle right?
+> > But do we still need to do all the unmapping etc from the delayed
+> > work? Since the new function will unmap all packets in
+> > page_pool_destroy, we can just skip unmapping when the delayed work
+> > runs
+>
+> Yes, the pool->dma_map is clear in page_pool_item_uninit() after it does
+> the unmapping for all inflight pages with the protection of pool->destroy_lock,
+> so that the unmapping is skipped in page_pool_return_page() when those inflight
+> pages are returned back to page_pool.
+
+Ah yes, the entire destruction path is protected which seems correct.
+Instead of that WARN_ONCE in page_pool_item_uninit() can we instead
+check the number of inflight packets vs what we just unmapped? IOW
+check 'mask' against what page_pool_inflight() gives you and warn if
+those aren't equal.
 
 
-
-On 9/29/24 7:56 PM, Zhu Yanjun wrote:
-> 在 2024/9/27 11:42, D. Wythe 写道:
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>
->> The introduction of IPPROTO_SMC enables eBPF programs to determine
->> whether to use SMC based on the context of socket creation, such as
->> network namespaces, PID and comm name, etc.
->>
->> As a subsequent enhancement, this patch introduces a new hook for eBPF
->> programs that allows decisions on whether to use SMC or not at runtime,
->> including but not limited to local/remote IP address or ports. In
->> simpler words, this feature allows modifications to syn_smc through eBPF
->> programs before the TCP three-way handshake got established.
->>
->> Thanks to kfunc for making it easier for us to implement this feature in
->> SMC.
->>
->> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->>
->> ---
->> v1 -> v2:
->> 1. Fix wrong use of ireq->smc_ok, should be rx_opt->smc_ok.
->> 2. Fix compile error when CONFIG_IPV6 or CONFIG_BPF_SYSCALL was not set.
->>
->> ---
->>   include/linux/tcp.h  |  4 ++-
->>   net/ipv4/tcp_input.c |  4 +--
->>   net/smc/af_smc.c     | 75 ++++++++++++++++++++++++++++++++++++++++++++++------
->>   3 files changed, 72 insertions(+), 11 deletions(-)
->>
->> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
->> index 6a5e08b..d028d76 100644
->> --- a/include/linux/tcp.h
->> +++ b/include/linux/tcp.h
->> @@ -478,7 +478,9 @@ struct tcp_sock {
->>   #endif
->>   #if IS_ENABLED(CONFIG_SMC)
->>       bool    syn_smc;    /* SYN includes SMC */
->> -    bool    (*smc_hs_congested)(const struct sock *sk);
->> +    void    (*smc_openreq_init)(struct request_sock *req,
->> +                 const struct tcp_options_received *rx_opt,
->> +                 struct sk_buff *skb, const struct sock *sk);
->>   #endif
->>   #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
->> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
->> index 9f314df..99f34f5 100644
->> --- a/net/ipv4/tcp_input.c
->> +++ b/net/ipv4/tcp_input.c
->> @@ -7036,8 +7036,8 @@ static void tcp_openreq_init(struct request_sock *req,
->>       ireq->ir_num = ntohs(tcp_hdr(skb)->dest);
->>       ireq->ir_mark = inet_request_mark(sk, skb);
->>   #if IS_ENABLED(CONFIG_SMC)
->> -    ireq->smc_ok = rx_opt->smc_ok && !(tcp_sk(sk)->smc_hs_congested &&
->> -            tcp_sk(sk)->smc_hs_congested(sk));
->> +    if (rx_opt->smc_ok && tcp_sk(sk)->smc_openreq_init)
->> +        tcp_sk(sk)->smc_openreq_init(req, rx_opt, skb, sk);
->>   #endif
->>   }
->> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->> index 0316217..fdac7e2b 100644
->> --- a/net/smc/af_smc.c
->> +++ b/net/smc/af_smc.c
->> @@ -70,6 +70,15 @@
->>   static void smc_tcp_listen_work(struct work_struct *);
->>   static void smc_connect_work(struct work_struct *);
->> +__bpf_hook_start();
->> +
->> +__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
->> +{
->> +    return 1;
->> +}
->> +
->> +__bpf_hook_end();
->> +
->>   int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
->>   {
->>       struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
->> @@ -156,19 +165,43 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
->>       return NULL;
->>   }
->> -static bool smc_hs_congested(const struct sock *sk)
->> +static void smc_openreq_init(struct request_sock *req,
->> +                 const struct tcp_options_received *rx_opt,
->> +                 struct sk_buff *skb, const struct sock *sk)
->>   {
->> +    struct inet_request_sock *ireq = inet_rsk(req);
->> +    struct sockaddr_storage rmt_sockaddr = {0};
-> 
-> A trivial problem.
-> 
-> The following should be better?
-> 
-> struct sockaddr_storage rmt_sockaddr = {};
-> 
-> I think, we have discussed this problem in RDMA maillist for several times.
-> 
-> Zhu Yanjun
-
-
-This is truly new information to me. Can you provide me with some discussion links?
-Thanks.
-
-D. Wythe
-
-
-> 
->>       const struct smc_sock *smc;
->>       smc = smc_clcsock_user_data(sk);
->>       if (!smc)
->> -        return true;
->> +        return;
->> -    if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
->> -        return true;
->> +    if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
->> +        goto out_no_smc;
->> -    return false;
->> +    rmt_sockaddr.ss_family = sk->sk_family;
->> +
->> +    if (rmt_sockaddr.ss_family == AF_INET) {
->> +        struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
->> +
->> +        rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
->> +        rmt4_sockaddr->sin_port    = ireq->ir_rmt_port;
->> +#if IS_ENABLED(CONFIG_IPV6)
->> +    } else {
->> +        struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
->> +
->> +        rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
->> +        rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
->> +#endif /* CONFIG_IPV6 */
->> +    }
->> +
->> +    ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
->> +    return;
->> +out_no_smc:
->> +    ireq->smc_ok = 0;
->> +    return;
->>   }
->>   struct smc_hashinfo smc_v4_hashinfo = {
->> @@ -1671,7 +1704,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
->>       }
->>       smc_copy_sock_settings_to_clc(smc);
->> -    tcp_sk(smc->clcsock->sk)->syn_smc = 1;
->> +    tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
->>       if (smc->connect_nonblock) {
->>           rc = -EALREADY;
->>           goto out;
->> @@ -2650,8 +2683,7 @@ int smc_listen(struct socket *sock, int backlog)
->>       inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
->> -    if (smc->limit_smc_hs)
->> -        tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
->> +    tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
->>       rc = kernel_listen(smc->clcsock, backlog);
->>       if (rc) {
->> @@ -3475,6 +3507,24 @@ static void __net_exit smc_net_stat_exit(struct net *net)
->>       .exit = smc_net_stat_exit,
->>   };
->> +#if IS_ENABLED(CONFIG_BPF_SYSCALL)
->> +BTF_SET8_START(bpf_smc_fmodret_ids)
->> +BTF_ID_FLAGS(func, select_syn_smc)
->> +BTF_SET8_END(bpf_smc_fmodret_ids)
->> +
->> +static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
->> +    .owner = THIS_MODULE,
->> +    .set   = &bpf_smc_fmodret_ids,
->> +};
->> +
->> +static int bpf_smc_kfunc_init(void)
->> +{
->> +    return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
->> +}
->> +#else
->> +static inline int bpf_smc_kfunc_init(void) { return 0; }
->> +#endif /* CONFIG_BPF_SYSCALL */
->> +
->>   static int __init smc_init(void)
->>   {
->>       int rc;
->> @@ -3574,8 +3624,17 @@ static int __init smc_init(void)
->>           pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
->>           goto out_ulp;
->>       }
->> +
->> +    rc = bpf_smc_kfunc_init();
->> +    if (rc) {
->> +        pr_err("%s: bpf_smc_kfunc_init fails with %d\n", __func__, rc);
->> +        goto out_inet;
->> +    }
->> +
->>       static_branch_enable(&tcp_have_smc);
->>       return 0;
->> +out_inet:
->> +    smc_inet_exit();
->>   out_ulp:
->>       tcp_unregister_ulp(&smc_ulp_ops);
->>   out_lo:
+Thanks
+/Ilias
+>
+> >
 
