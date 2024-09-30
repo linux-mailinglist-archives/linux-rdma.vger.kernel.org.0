@@ -1,177 +1,290 @@
-Return-Path: <linux-rdma+bounces-5154-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5155-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C9D2989CED
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2024 10:39:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19091989FB5
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2024 12:48:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E4EB284A19
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2024 08:39:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87C2EB24F93
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2024 10:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A69D17C7C4;
-	Mon, 30 Sep 2024 08:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD3018DF9B;
+	Mon, 30 Sep 2024 10:47:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T6bJ6jns"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF21517BB38;
-	Mon, 30 Sep 2024 08:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E955B65C
+	for <linux-rdma@vger.kernel.org>; Mon, 30 Sep 2024 10:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727685534; cv=none; b=kjBYO881+W7w9eNuLwB65y+Ax11HmRPVdZZspiA5npN+1HEjmtbbD4dJSZng5tbrU9iXP/hZ15u609zXLSAlQCJO9J1yAElFGCZ9QCTZUVOyAiX+wE5sFWUKbJJhV9djz7l/kAjt1NkaEPMRnw6g5tEi5aYbzZo8ldk+HiJh9cc=
+	t=1727693246; cv=none; b=gsr4vvHvD0F0pWwulmN17rfKIwnW9i2vmycKxPLluDUsCwk+aSInwwDpMpZR5N6a+N9ive0siZzlr49GLxobcVfDl/gHD78cqCOsnfLZuGVODUlYq1SW46hIDGCEiDmT1Ppx9s1SEaTy3X85qPZSo2snEge0RqHJpe6F352hU2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727685534; c=relaxed/simple;
-	bh=TCAu0YxfZ7XwQ7EJrXWX7h4UBhonVS5YLNk5f81Jut0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=SkVGwNHbuTvR9HfE605siK6KROIfMAu82adSJXYK9HUnwqU/Ty87y/0wU447tuanAQDxELrrtrOndptauj5k1SPS8FqA6aFj3nc1lfmWx/aWYvA6uCp+jmBEFTCdI4+XXxtVx61whifJfuvCFLUHftDR2eP4A+AwRHiMexHJWg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4XHDwY3YV3z1SC0g;
-	Mon, 30 Sep 2024 16:37:49 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id B68231400CB;
-	Mon, 30 Sep 2024 16:38:43 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 30 Sep 2024 16:38:43 +0800
-Message-ID: <ed399e31-cfe5-4504-9537-88879afac53d@huawei.com>
-Date: Mon, 30 Sep 2024 16:38:42 +0800
+	s=arc-20240116; t=1727693246; c=relaxed/simple;
+	bh=IlvOQtnXuq3xZ8kUhJ9RstN8JRxm/RPKmIg6stNPLXU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LrRFzSDHprDPXiiDFkI7+m7KqWJztAJasVCHrvV56pUTwzDubvYePgkqgHEO+AE2X6URiuOjFOUjvMdAI2GOsZN4yKWya0GPFY5so/MPQ7aDAlwny0etJk5JSQmMzcv1u4edcucGwXkIlNs3HMvpgBTX86c51Xs9eX8cM+H2R6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=T6bJ6jns; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2cb8660b-d582-4cef-9c44-80fd6f5c1d6c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1727693241;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MvsrZvXNV+xHyTyAw9XvrzBOm3pa/0kyhjZhwvo6qCg=;
+	b=T6bJ6jnsDzd/JJzjtHEcXFklth5pEO36upIoRK9QbErB3jnmFURh5Myx1tICjOlapNLjbI
+	xnpMX5gtvG2K8c56TbzDQXCLH5aa6z7SgzkxyA6BtkAjseWnveefcmZlEcDkJzEgLjVnB3
+	A/kjffKXqcB7o7j+Ho+CTtNNev589C8=
+Date: Mon, 30 Sep 2024 18:46:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 2/2] page_pool: fix IOMMU crash when driver has
- already unbound
-To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC: Mina Almasry <almasrymina@google.com>, <davem@davemloft.net>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <liuyonglong@huawei.com>,
-	<fanghaiqing@huawei.com>, <zhangkun09@huawei.com>, Robin Murphy
-	<robin.murphy@arm.com>, Alexander Duyck <alexander.duyck@gmail.com>, IOMMU
-	<iommu@lists.linux.dev>, Wei Fang <wei.fang@nxp.com>, Shenwei Wang
-	<shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, Eric Dumazet
-	<edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek
- Kitszel <przemyslaw.kitszel@intel.com>, Alexander Lobakin
-	<aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
-	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
-	<tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi
-	<lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
-	<shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle Valo
-	<kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Andrew
- Morton <akpm@linux-foundation.org>, <imx@lists.linux.dev>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<intel-wired-lan@lists.osuosl.org>, <bpf@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-mm@kvack.org>
-References: <20240925075707.3970187-1-linyunsheng@huawei.com>
- <20240925075707.3970187-3-linyunsheng@huawei.com>
- <CAHS8izOxugzWJDTc-4CWqaKABTj=J4OHs=Lcb=SE9r8gX0J+yg@mail.gmail.com>
- <842c8cc6-f716-437a-bc98-70bc26d6fd38@huawei.com>
- <CAC_iWjLgNOtsbhqrhvvEz2C3S668qB8KatL_W+tPHMSkDrNS=w@mail.gmail.com>
- <0ef315df-e8e9-41e8-9ba8-dcb69492c616@huawei.com>
- <CAC_iWjKeajwn3otjdEekE6VDLHGEvqmnQRwpN5R3yHj8UpEiDw@mail.gmail.com>
- <934d601f-be43-4e04-b126-dc86890a4bfa@huawei.com>
- <CAC_iWjL7m4ZL2W2OZM5F22dLvZhxU6fyCXV_xjyGf+W7UP43EQ@mail.gmail.com>
- <ac2eec69-8f44-4adb-8182-02c78625851d@huawei.com>
- <CAC_iWj+Shb6buVf+wZaWe-NZ+UVxmW9DYqsTiL27U+V_Ko_65w@mail.gmail.com>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <CAC_iWj+Shb6buVf+wZaWe-NZ+UVxmW9DYqsTiL27U+V_Ko_65w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Subject: Re: [RFC PATCH net-next v2] net/smc: Introduce a hook to modify
+ syn_smc at runtime
+To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+ wenjia@linux.ibm.com, jaka@linux.ibm.com, wintera@linux.ibm.com,
+ guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+ tonylu@linux.alibaba.com, pabeni@redhat.com, edumazet@google.com,
+ bpf@vger.kernel.org
+References: <1727408549-106551-1-git-send-email-alibuda@linux.alibaba.com>
+ <f60061bb-109a-4fa8-b419-07585cbb79e3@linux.dev>
+ <be2685ab-272a-4f10-9322-a0bb0a35e3d4@linux.alibaba.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <be2685ab-272a-4f10-9322-a0bb0a35e3d4@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2024/9/30 16:09, Ilias Apalodimas wrote:
-> On Sun, 29 Sept 2024 at 05:44, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2024/9/28 15:34, Ilias Apalodimas wrote:
->>
->> ...
->>
->>>
->>> Yes, that wasn't very clear indeed, apologies for any confusion. I was
->>> trying to ask on a linked list that only lives in struct page_pool.
->>> But I now realize this was a bad idea since the lookup would be way
->>> slower.
->>>
->>>> If I understand question correctly, the single/doubly linked list
->>>> is more costly than array as the page_pool case as my understanding.
->>>>
->>>> For single linked list, it doesn't allow deleting a specific entry but
->>>> only support deleting the first entry and all the entries. It does support
->>>> lockless operation using llist, but have limitation as below:
->>>> https://elixir.bootlin.com/linux/v6.7-rc8/source/include/linux/llist.h#L13
->>>>
->>>> For doubly linked list, it needs two pointer to support deleting a specific
->>>> entry and it does not support lockless operation.
->>>
->>> I didn't look at the patch too carefully at first. Looking a bit
->>> closer now, the array is indeed better, since the lookup is faster.
->>> You just need the stored index in struct page to find the page we need
->>> to unmap. Do you remember if we can reduce the atomic pp_ref_count to
->>> 32bits? If so we can reuse that space for the index. Looking at it
->>
->> For 64 bits system, yes, we can reuse that.
->> But for 32 bits system, we may have only 16 bits for each of them, and it
->> seems that there is no atomic operation for variable that is less than 32
->> bits.
->>
->>> requires a bit more work in netmem, but that's mostly swapping all the
->>> atomic64 calls to atomic ones.
->>>
->>>>
->>>> For pool->items, as the alloc side is protected by NAPI context, and the
->>>> free side use item->pp_idx to ensure there is only one producer for each
->>>> item, which means for each item in pool->items, there is only one consumer
->>>> and one producer, which seems much like the case when the page is not
->>>> recyclable in __page_pool_put_page, we don't need a lock protection when
->>>> calling page_pool_return_page(), the 'struct page' is also one consumer
->>>> and one producer as the pool->items[item->pp_idx] does:
->>>> https://elixir.bootlin.com/linux/v6.7-rc8/source/net/core/page_pool.c#L645
->>>>
->>>> We only need a lock protection when page_pool_destroy() is called to
->>>> check if there is inflight page to be unmapped as a consumer, and the
->>>> __page_pool_put_page() may also called to unmapped the inflight page as
->>>> another consumer,
->>>
->>> Thanks for the explanation. On the locking side, page_pool_destroy is
->>> called once from the driver and then it's either the workqueue for
->>> inflight packets or an SKB that got freed and tried to recycle right?
->>> But do we still need to do all the unmapping etc from the delayed
->>> work? Since the new function will unmap all packets in
->>> page_pool_destroy, we can just skip unmapping when the delayed work
->>> runs
->>
->> Yes, the pool->dma_map is clear in page_pool_item_uninit() after it does
->> the unmapping for all inflight pages with the protection of pool->destroy_lock,
->> so that the unmapping is skipped in page_pool_return_page() when those inflight
->> pages are returned back to page_pool.
+在 2024/9/30 15:15, D. Wythe 写道:
 > 
-> Ah yes, the entire destruction path is protected which seems correct.
-> Instead of that WARN_ONCE in page_pool_item_uninit() can we instead
-> check the number of inflight packets vs what we just unmapped? IOW
-> check 'mask' against what page_pool_inflight() gives you and warn if
-> those aren't equal.
-Yes, it seems it is quite normal to trigger the warning from testing,
-it makes sense to check it against page_pool_inflight() to catch some
-bug of tracking/calculating inflight pages.
+> 
+> On 9/29/24 7:56 PM, Zhu Yanjun wrote:
+>> 在 2024/9/27 11:42, D. Wythe 写道:
+>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>>
+>>> The introduction of IPPROTO_SMC enables eBPF programs to determine
+>>> whether to use SMC based on the context of socket creation, such as
+>>> network namespaces, PID and comm name, etc.
+>>>
+>>> As a subsequent enhancement, this patch introduces a new hook for eBPF
+>>> programs that allows decisions on whether to use SMC or not at runtime,
+>>> including but not limited to local/remote IP address or ports. In
+>>> simpler words, this feature allows modifications to syn_smc through eBPF
+>>> programs before the TCP three-way handshake got established.
+>>>
+>>> Thanks to kfunc for making it easier for us to implement this feature in
+>>> SMC.
+>>>
+>>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+>>>
+>>> ---
+>>> v1 -> v2:
+>>> 1. Fix wrong use of ireq->smc_ok, should be rx_opt->smc_ok.
+>>> 2. Fix compile error when CONFIG_IPV6 or CONFIG_BPF_SYSCALL was not set.
+>>>
+>>> ---
+>>>   include/linux/tcp.h  |  4 ++-
+>>>   net/ipv4/tcp_input.c |  4 +--
+>>>   net/smc/af_smc.c     | 75 +++++++++++++++++++++++++++++++++++++++++ 
+>>> +++++------
+>>>   3 files changed, 72 insertions(+), 11 deletions(-)
+>>>
+>>> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+>>> index 6a5e08b..d028d76 100644
+>>> --- a/include/linux/tcp.h
+>>> +++ b/include/linux/tcp.h
+>>> @@ -478,7 +478,9 @@ struct tcp_sock {
+>>>   #endif
+>>>   #if IS_ENABLED(CONFIG_SMC)
+>>>       bool    syn_smc;    /* SYN includes SMC */
+>>> -    bool    (*smc_hs_congested)(const struct sock *sk);
+>>> +    void    (*smc_openreq_init)(struct request_sock *req,
+>>> +                 const struct tcp_options_received *rx_opt,
+>>> +                 struct sk_buff *skb, const struct sock *sk);
+>>>   #endif
+>>>   #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
+>>> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+>>> index 9f314df..99f34f5 100644
+>>> --- a/net/ipv4/tcp_input.c
+>>> +++ b/net/ipv4/tcp_input.c
+>>> @@ -7036,8 +7036,8 @@ static void tcp_openreq_init(struct 
+>>> request_sock *req,
+>>>       ireq->ir_num = ntohs(tcp_hdr(skb)->dest);
+>>>       ireq->ir_mark = inet_request_mark(sk, skb);
+>>>   #if IS_ENABLED(CONFIG_SMC)
+>>> -    ireq->smc_ok = rx_opt->smc_ok && !(tcp_sk(sk)->smc_hs_congested &&
+>>> -            tcp_sk(sk)->smc_hs_congested(sk));
+>>> +    if (rx_opt->smc_ok && tcp_sk(sk)->smc_openreq_init)
+>>> +        tcp_sk(sk)->smc_openreq_init(req, rx_opt, skb, sk);
+>>>   #endif
+>>>   }
+>>> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>>> index 0316217..fdac7e2b 100644
+>>> --- a/net/smc/af_smc.c
+>>> +++ b/net/smc/af_smc.c
+>>> @@ -70,6 +70,15 @@
+>>>   static void smc_tcp_listen_work(struct work_struct *);
+>>>   static void smc_connect_work(struct work_struct *);
+>>> +__bpf_hook_start();
+>>> +
+>>> +__weak noinline int select_syn_smc(const struct sock *sk, struct 
+>>> sockaddr *peer)
+>>> +{
+>>> +    return 1;
+>>> +}
+>>> +
+>>> +__bpf_hook_end();
+>>> +
+>>>   int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct 
+>>> netlink_callback *cb)
+>>>   {
+>>>       struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
+>>> @@ -156,19 +165,43 @@ static struct sock *smc_tcp_syn_recv_sock(const 
+>>> struct sock *sk,
+>>>       return NULL;
+>>>   }
+>>> -static bool smc_hs_congested(const struct sock *sk)
+>>> +static void smc_openreq_init(struct request_sock *req,
+>>> +                 const struct tcp_options_received *rx_opt,
+>>> +                 struct sk_buff *skb, const struct sock *sk)
+>>>   {
+>>> +    struct inet_request_sock *ireq = inet_rsk(req);
+>>> +    struct sockaddr_storage rmt_sockaddr = {0};
+>>
+>> A trivial problem.
+>>
+>> The following should be better?
+>>
+>> struct sockaddr_storage rmt_sockaddr = {};
+>>
+>> I think, we have discussed this problem in RDMA maillist for several 
+>> times.
+>>
+>> Zhu Yanjun
+> 
+> 
+> This is truly new information to me. Can you provide me with some 
+> discussion links?
+> Thanks.
+
+It is a trivial problem. This is the link
+https://www.spinics.net/lists/linux-rdma/msg119815.html
+
+Zhu Yanjun
 
 > 
+> D. Wythe
 > 
-> Thanks
-> /Ilias
+> 
 >>
->>>
+>>>       const struct smc_sock *smc;
+>>>       smc = smc_clcsock_user_data(sk);
+>>>       if (!smc)
+>>> -        return true;
+>>> +        return;
+>>> -    if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+>>> -        return true;
+>>> +    if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, 
+>>> smc_hs_wq))
+>>> +        goto out_no_smc;
+>>> -    return false;
+>>> +    rmt_sockaddr.ss_family = sk->sk_family;
+>>> +
+>>> +    if (rmt_sockaddr.ss_family == AF_INET) {
+>>> +        struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in 
+>>> *)&rmt_sockaddr;
+>>> +
+>>> +        rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
+>>> +        rmt4_sockaddr->sin_port    = ireq->ir_rmt_port;
+>>> +#if IS_ENABLED(CONFIG_IPV6)
+>>> +    } else {
+>>> +        struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 
+>>> *)&rmt_sockaddr;
+>>> +
+>>> +        rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
+>>> +        rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
+>>> +#endif /* CONFIG_IPV6 */
+>>> +    }
+>>> +
+>>> +    ireq->smc_ok = select_syn_smc(sk, (struct sockaddr 
+>>> *)&rmt_sockaddr);
+>>> +    return;
+>>> +out_no_smc:
+>>> +    ireq->smc_ok = 0;
+>>> +    return;
+>>>   }
+>>>   struct smc_hashinfo smc_v4_hashinfo = {
+>>> @@ -1671,7 +1704,7 @@ int smc_connect(struct socket *sock, struct 
+>>> sockaddr *addr,
+>>>       }
+>>>       smc_copy_sock_settings_to_clc(smc);
+>>> -    tcp_sk(smc->clcsock->sk)->syn_smc = 1;
+>>> +    tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
+>>>       if (smc->connect_nonblock) {
+>>>           rc = -EALREADY;
+>>>           goto out;
+>>> @@ -2650,8 +2683,7 @@ int smc_listen(struct socket *sock, int backlog)
+>>>       inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
+>>> -    if (smc->limit_smc_hs)
+>>> -        tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
+>>> +    tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
+>>>       rc = kernel_listen(smc->clcsock, backlog);
+>>>       if (rc) {
+>>> @@ -3475,6 +3507,24 @@ static void __net_exit 
+>>> smc_net_stat_exit(struct net *net)
+>>>       .exit = smc_net_stat_exit,
+>>>   };
+>>> +#if IS_ENABLED(CONFIG_BPF_SYSCALL)
+>>> +BTF_SET8_START(bpf_smc_fmodret_ids)
+>>> +BTF_ID_FLAGS(func, select_syn_smc)
+>>> +BTF_SET8_END(bpf_smc_fmodret_ids)
+>>> +
+>>> +static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
+>>> +    .owner = THIS_MODULE,
+>>> +    .set   = &bpf_smc_fmodret_ids,
+>>> +};
+>>> +
+>>> +static int bpf_smc_kfunc_init(void)
+>>> +{
+>>> +    return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
+>>> +}
+>>> +#else
+>>> +static inline int bpf_smc_kfunc_init(void) { return 0; }
+>>> +#endif /* CONFIG_BPF_SYSCALL */
+>>> +
+>>>   static int __init smc_init(void)
+>>>   {
+>>>       int rc;
+>>> @@ -3574,8 +3624,17 @@ static int __init smc_init(void)
+>>>           pr_err("%s: smc_inet_init fails with %d\n", __func__, rc);
+>>>           goto out_ulp;
+>>>       }
+>>> +
+>>> +    rc = bpf_smc_kfunc_init();
+>>> +    if (rc) {
+>>> +        pr_err("%s: bpf_smc_kfunc_init fails with %d\n", __func__, rc);
+>>> +        goto out_inet;
+>>> +    }
+>>> +
+>>>       static_branch_enable(&tcp_have_smc);
+>>>       return 0;
+>>> +out_inet:
+>>> +    smc_inet_exit();
+>>>   out_ulp:
+>>>       tcp_unregister_ulp(&smc_ulp_ops);
+>>>   out_lo:
+
 
