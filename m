@@ -1,217 +1,177 @@
-Return-Path: <linux-rdma+bounces-5153-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5154-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A012989C6E
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2024 10:17:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C9D2989CED
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2024 10:39:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD32C1F2207C
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2024 08:17:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E4EB284A19
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2024 08:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4D815885E;
-	Mon, 30 Sep 2024 08:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="NHe2CXSg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A69D17C7C4;
+	Mon, 30 Sep 2024 08:38:54 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 968F921105
-	for <linux-rdma@vger.kernel.org>; Mon, 30 Sep 2024 08:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF21517BB38;
+	Mon, 30 Sep 2024 08:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727684219; cv=none; b=n6Cc5WzhXOihzuIyLs1cA7Vyq45800TWQDh4mxeizoYX3h5CGP9+XyJE1Ts0vdZJB+dvt6M2wz5JMcWAxgV2hA563ndr9r4eu7h8P/10WYurXeQq4Gdnz/MeknQMwUxEeGj+96v1KzVakW0+LKCy92W8fGAzXQ6moyYdF/sLpNE=
+	t=1727685534; cv=none; b=kjBYO881+W7w9eNuLwB65y+Ax11HmRPVdZZspiA5npN+1HEjmtbbD4dJSZng5tbrU9iXP/hZ15u609zXLSAlQCJO9J1yAElFGCZ9QCTZUVOyAiX+wE5sFWUKbJJhV9djz7l/kAjt1NkaEPMRnw6g5tEi5aYbzZo8ldk+HiJh9cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727684219; c=relaxed/simple;
-	bh=CY4gSfzoET8zviAJvgDkFjD/UiiycjGj3MtBM/MQgWM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VMOJBi48uXCggU6uSlIZMuobQpY2Y9wg+wGyPSfnW9gkGOBwjapK5vHVWphI5KUaN2nBUi3/c2vDYunbMdB3XH1WAlp1T5r/3CXnHKFxLRwL+//QBPYfxG3iwR/dpVtChLDpS3q/W8VSL/klSeW7oEv5tpYhuAS9gdqbtKYJoPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=NHe2CXSg; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2e07ad50a03so3035325a91.3
-        for <linux-rdma@vger.kernel.org>; Mon, 30 Sep 2024 01:16:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1727684217; x=1728289017; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VH9R0fmJPYKb34ruNNTn0yudmKdz5m4X1ZwwozeDYSg=;
-        b=NHe2CXSgifpmJVL8HdW957E8icbX26LvxFhM79Y8BKjbfTl725TvFuse4JGxP1XHyt
-         6Wwsyo7Xp/VQ9TUKdojhTz5MBBpwPfgVgyXYFU4BBhDVj2Btoj6mRJmz7RHEW6/jv+px
-         6jRuOIwZoCnY2hF5ZYApIch7S0nixHjZFWpXk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727684217; x=1728289017;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VH9R0fmJPYKb34ruNNTn0yudmKdz5m4X1ZwwozeDYSg=;
-        b=idMShUEH7z8V3jHuQ/EDE0lygNj8vNJwCv9ft3kln80s9et48zjRm1VOOa4PED0fjo
-         61kR3UaTduWoXRzs4hQ1nIpMhKupv0WSlD8e71UN62RIBHeykWwWY2RAfXqOwA73MFkJ
-         vgeybwaBwMj4gy77qy8+q8oFRfXvnQnXP1cNOIUdXp0G37azZ60PRt8qiLYBdy7RyQJz
-         M5kUX2dyBOgNfwTg0YsiKvp55AgQZp6UOuH7jp9T/ykFpAlBe/GRInR2V67cYqkRMemc
-         T5Nc+41BJ0hLXZbnb4O+vG8kQBHxDInJMqzbQsm2rp9CqvTWZ9zjG+a+U9qakymjYoH5
-         eLQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVHqi0szNfFY18/tY4QbuxdwQ4DIgOqKIW6qkU5iRss9nv7H9BSf9GrQob5HqNnhW1YY2qV+0NvGbkM@vger.kernel.org
-X-Gm-Message-State: AOJu0YyIOiEa/5qpJOpmRTlUkSpBsA3a/vLnmPOc9KTfxAH1exKTwMU5
-	aSpjozrh4lIKEKS91H/f7Naql8BSCHaOEk8Brd9sA/Yp1K8QpauKXLzKB9clR/UVJy9Tzxd8lDX
-	MtjGuPWlM0Hzy5TAP7pR9ITCW2nc83McVWVHp34uowDRdrEAjSsCHX0Q=
-X-Google-Smtp-Source: AGHT+IHNMzSmCdD3VPOdcz482zoFVww7dbes5TEsCEi5MWLVMwG2b9u7aU4e3LYYRwfdytM1ljogLnNL3Z/Tqj9v+iw=
-X-Received: by 2002:a17:90a:ad8e:b0:2e0:944b:9524 with SMTP id
- 98e67ed59e1d1-2e0b8b19d3amr13282945a91.22.1727684216710; Mon, 30 Sep 2024
- 01:16:56 -0700 (PDT)
+	s=arc-20240116; t=1727685534; c=relaxed/simple;
+	bh=TCAu0YxfZ7XwQ7EJrXWX7h4UBhonVS5YLNk5f81Jut0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=SkVGwNHbuTvR9HfE605siK6KROIfMAu82adSJXYK9HUnwqU/Ty87y/0wU447tuanAQDxELrrtrOndptauj5k1SPS8FqA6aFj3nc1lfmWx/aWYvA6uCp+jmBEFTCdI4+XXxtVx61whifJfuvCFLUHftDR2eP4A+AwRHiMexHJWg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4XHDwY3YV3z1SC0g;
+	Mon, 30 Sep 2024 16:37:49 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id B68231400CB;
+	Mon, 30 Sep 2024 16:38:43 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 30 Sep 2024 16:38:43 +0800
+Message-ID: <ed399e31-cfe5-4504-9537-88879afac53d@huawei.com>
+Date: Mon, 30 Sep 2024 16:38:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1727667875-29908-1-git-send-email-shradhagupta@linux.microsoft.com>
-In-Reply-To: <1727667875-29908-1-git-send-email-shradhagupta@linux.microsoft.com>
-From: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Date: Mon, 30 Sep 2024 13:46:44 +0530
-Message-ID: <CALs4sv31-ZT1j5y+f=SaCrW54w2UYZ1RzEm1ncAeSRjZFdnUsQ@mail.gmail.com>
-Subject: Re: [PATCH net-next RESEND] net: mana: Increase the
- DEF_RX_BUFFERS_PER_QUEUE to 1024
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
-	Dexuan Cui <decui@microsoft.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Long Li <longli@microsoft.com>, Simon Horman <horms@kernel.org>, 
-	Konstantin Taranov <kotaranov@microsoft.com>, 
-	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>, Erick Archer <erick.archer@outlook.com>, 
-	Ahmed Zaki <ahmed.zaki@intel.com>, Colin Ian King <colin.i.king@gmail.com>, 
-	Shradha Gupta <shradhagupta@microsoft.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000000dc815062351d474"
-
---0000000000000dc815062351d474
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v2 2/2] page_pool: fix IOMMU crash when driver has
+ already unbound
+To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC: Mina Almasry <almasrymina@google.com>, <davem@davemloft.net>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <liuyonglong@huawei.com>,
+	<fanghaiqing@huawei.com>, <zhangkun09@huawei.com>, Robin Murphy
+	<robin.murphy@arm.com>, Alexander Duyck <alexander.duyck@gmail.com>, IOMMU
+	<iommu@lists.linux.dev>, Wei Fang <wei.fang@nxp.com>, Shenwei Wang
+	<shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, Eric Dumazet
+	<edumazet@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek
+ Kitszel <przemyslaw.kitszel@intel.com>, Alexander Lobakin
+	<aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
+	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
+	<tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi
+	<lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
+	<shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle Valo
+	<kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Andrew
+ Morton <akpm@linux-foundation.org>, <imx@lists.linux.dev>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <bpf@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<linux-mm@kvack.org>
+References: <20240925075707.3970187-1-linyunsheng@huawei.com>
+ <20240925075707.3970187-3-linyunsheng@huawei.com>
+ <CAHS8izOxugzWJDTc-4CWqaKABTj=J4OHs=Lcb=SE9r8gX0J+yg@mail.gmail.com>
+ <842c8cc6-f716-437a-bc98-70bc26d6fd38@huawei.com>
+ <CAC_iWjLgNOtsbhqrhvvEz2C3S668qB8KatL_W+tPHMSkDrNS=w@mail.gmail.com>
+ <0ef315df-e8e9-41e8-9ba8-dcb69492c616@huawei.com>
+ <CAC_iWjKeajwn3otjdEekE6VDLHGEvqmnQRwpN5R3yHj8UpEiDw@mail.gmail.com>
+ <934d601f-be43-4e04-b126-dc86890a4bfa@huawei.com>
+ <CAC_iWjL7m4ZL2W2OZM5F22dLvZhxU6fyCXV_xjyGf+W7UP43EQ@mail.gmail.com>
+ <ac2eec69-8f44-4adb-8182-02c78625851d@huawei.com>
+ <CAC_iWj+Shb6buVf+wZaWe-NZ+UVxmW9DYqsTiL27U+V_Ko_65w@mail.gmail.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <CAC_iWj+Shb6buVf+wZaWe-NZ+UVxmW9DYqsTiL27U+V_Ko_65w@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-On Mon, Sep 30, 2024 at 9:14=E2=80=AFAM Shradha Gupta
-<shradhagupta@linux.microsoft.com> wrote:
->
-> Through some experiments, we found out that increasing the default
-> RX buffers count from 512 to 1024, gives slightly better throughput
-> and significantly reduces the no_wqe_rx errs on the receiver side.
-> Along with these, other parameters like cpu usage, retrans seg etc
-> also show some improvement with 1024 value.
->
-> Following are some snippets from the experiments
->
-> ntttcp tests with 512 Rx buffers
-> ---------------------------------------
-> connections|  throughput|  no_wqe errs|
-> ---------------------------------------
-> 1          |  40.93Gbps | 123,211     |
-> 16         | 180.15Gbps | 190,120     |
-> 128        | 180.20Gbps | 173,508     |
-> 256        | 180.27Gbps | 189,884     |
->
-> ntttcp tests with 1024 Rx buffers
-> ---------------------------------------
-> connections|  throughput|  no_wqe errs|
-> ---------------------------------------
-> 1          |  44.22Gbps | 19,864      |
-> 16         | 180.19Gbps | 4,430       |
-> 128        | 180.21Gbps | 2,560       |
-> 256        | 180.29Gbps | 1,529       |
->
-> So, increasing the default RX buffers per queue count to 1024
->
-> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-> ---
->  include/net/mana/mana.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
+On 2024/9/30 16:09, Ilias Apalodimas wrote:
+> On Sun, 29 Sept 2024 at 05:44, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2024/9/28 15:34, Ilias Apalodimas wrote:
+>>
+>> ...
+>>
+>>>
+>>> Yes, that wasn't very clear indeed, apologies for any confusion. I was
+>>> trying to ask on a linked list that only lives in struct page_pool.
+>>> But I now realize this was a bad idea since the lookup would be way
+>>> slower.
+>>>
+>>>> If I understand question correctly, the single/doubly linked list
+>>>> is more costly than array as the page_pool case as my understanding.
+>>>>
+>>>> For single linked list, it doesn't allow deleting a specific entry but
+>>>> only support deleting the first entry and all the entries. It does support
+>>>> lockless operation using llist, but have limitation as below:
+>>>> https://elixir.bootlin.com/linux/v6.7-rc8/source/include/linux/llist.h#L13
+>>>>
+>>>> For doubly linked list, it needs two pointer to support deleting a specific
+>>>> entry and it does not support lockless operation.
+>>>
+>>> I didn't look at the patch too carefully at first. Looking a bit
+>>> closer now, the array is indeed better, since the lookup is faster.
+>>> You just need the stored index in struct page to find the page we need
+>>> to unmap. Do you remember if we can reduce the atomic pp_ref_count to
+>>> 32bits? If so we can reuse that space for the index. Looking at it
+>>
+>> For 64 bits system, yes, we can reuse that.
+>> But for 32 bits system, we may have only 16 bits for each of them, and it
+>> seems that there is no atomic operation for variable that is less than 32
+>> bits.
+>>
+>>> requires a bit more work in netmem, but that's mostly swapping all the
+>>> atomic64 calls to atomic ones.
+>>>
+>>>>
+>>>> For pool->items, as the alloc side is protected by NAPI context, and the
+>>>> free side use item->pp_idx to ensure there is only one producer for each
+>>>> item, which means for each item in pool->items, there is only one consumer
+>>>> and one producer, which seems much like the case when the page is not
+>>>> recyclable in __page_pool_put_page, we don't need a lock protection when
+>>>> calling page_pool_return_page(), the 'struct page' is also one consumer
+>>>> and one producer as the pool->items[item->pp_idx] does:
+>>>> https://elixir.bootlin.com/linux/v6.7-rc8/source/net/core/page_pool.c#L645
+>>>>
+>>>> We only need a lock protection when page_pool_destroy() is called to
+>>>> check if there is inflight page to be unmapped as a consumer, and the
+>>>> __page_pool_put_page() may also called to unmapped the inflight page as
+>>>> another consumer,
+>>>
+>>> Thanks for the explanation. On the locking side, page_pool_destroy is
+>>> called once from the driver and then it's either the workqueue for
+>>> inflight packets or an SKB that got freed and tried to recycle right?
+>>> But do we still need to do all the unmapping etc from the delayed
+>>> work? Since the new function will unmap all packets in
+>>> page_pool_destroy, we can just skip unmapping when the delayed work
+>>> runs
+>>
+>> Yes, the pool->dma_map is clear in page_pool_item_uninit() after it does
+>> the unmapping for all inflight pages with the protection of pool->destroy_lock,
+>> so that the unmapping is skipped in page_pool_return_page() when those inflight
+>> pages are returned back to page_pool.
+> 
+> Ah yes, the entire destruction path is protected which seems correct.
+> Instead of that WARN_ONCE in page_pool_item_uninit() can we instead
+> check the number of inflight packets vs what we just unmapped? IOW
+> check 'mask' against what page_pool_inflight() gives you and warn if
+> those aren't equal.
+Yes, it seems it is quite normal to trigger the warning from testing,
+it makes sense to check it against page_pool_inflight() to catch some
+bug of tracking/calculating inflight pages.
 
-Looks good to me.
-Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-
---0000000000000dc815062351d474
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-OltyqaGBuzv+bJTUL+bmV7E4QBLIqGt4jVr1R9hJdH6KxXwJdyfHZ9C6qXmoe2NQhiFUyBOJ0wgk
-dB9Z1IU7nCwvNKYg2JMoJs93tIgbhPJg/D7pqW8gabkCAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZcGF2YW4uY2hlYmJpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEV6y/89alKPoFbKUaJXsvWu5
-fdowDQYJKoZIhvcNAQELBQADggEBAEHSIB6g652wVb+r2YCmfHW47Jo+5TuCBD99Hla8PYhaWGkd
-9HIyD3NPhb6Vb6vtMWJW4MFGQF42xYRrAS4LZj072DuMotr79rI09pbOiWg0FlRRFt6R9vgUgebu
-pWSH7kmwVXcPtY94XSMMak4b7RSKig2mKbHDpD4bC7eGlwl5RxzYkgrHtMNRmHmQor5Nvqe52cFJ
-25Azqtwvjt5nbrEd81iBmboNTEnLaKuxbbCtLaMEP8xKeDjAKnNOqHUMps0AsQT8c0EGq39YHpjp
-Wn1l67VU0rMShbEFsiUf9WYgE677oinpdm0t2mdCjxr35tryxptoTZXKHDxr/Yy6l6ExggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwV/XkICjVscn4SNZMw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOV4rNVZKWTzkJrDhqy5ooCInaN7w/c7
-NTdFg+cFW7WvMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDkz
-MDA4MTY1N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQAXgCHdHAYQfr4n2g6L7gIelGZykGoziYXWFx0TUKQCV4Sb4gb+
-dsOAeZZ47B8gMhDfnbnJ+JzynE7UV2McxMouMq5vYqoxd3Y7ndW9RoVsLFp4xJJNRXPz/LzKrOcm
-NK3QCsk0lKuDQF/cB0aMquXstf7lEAM+qPYdmyzugF1pMP+qGn/hPKQ6PPCyqyBPFNRYKjTrZ/Vi
-/PSittF1InqBOlGDHi72qz7zCvdgCHFXGpz9vG0X8ioqrq+7VDiZsTlmvaClMk1IRKSoDFlxu7yJ
-jt4WFZR6OY8EyQ6ExzOZmV1CXhBUYpElkEkHJbPET71rQBqHYyoZhtKljs3iFG+R
---0000000000000dc815062351d474--
+> 
+> 
+> Thanks
+> /Ilias
+>>
+>>>
 
