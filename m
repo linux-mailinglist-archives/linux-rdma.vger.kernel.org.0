@@ -1,63 +1,64 @@
-Return-Path: <linux-rdma+bounces-5197-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5198-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B4AE98F850
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2024 22:56:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8CE098F8E6
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2024 23:27:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49AF91C21574
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2024 20:56:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EF67B20BB5
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2024 21:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6DC1AC884;
-	Thu,  3 Oct 2024 20:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FB431B85EB;
+	Thu,  3 Oct 2024 21:27:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="xk/+/6N6"
+	dkim=pass (2048-bit key) header.d=akamai.com header.i=@akamai.com header.b="iAcqHzDy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [67.231.157.127])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EAFE224D1;
-	Thu,  3 Oct 2024 20:56:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2A91A4F2A
+	for <linux-rdma@vger.kernel.org>; Thu,  3 Oct 2024 21:27:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.157.127
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727989005; cv=none; b=D2ypLaBG6rQplNvgvs3g2rvzsdNwlmNhVkOPdkyWuAyrWrhAv6pOMajyAz28kD7LIEg/lO2cupQAcUyoPbnUySmx9uTvVdFzDP5gEWU04EKJtfayZl7Qkre8w4rN3RziFvIMn3BaC/vxSPI8boCE72ySKh+5ABSLxoe++vat65Y=
+	t=1727990833; cv=none; b=sJ2+Jc1shccCzV6ea0zlnKiJpdCRpB4aE1PsZ3tYodZDXjFPvBu/S/OrwDpNWQabPVYj2s2CD22YkAiXMKdyIUnfSjSKeWiPz8MraDfZO52ed3q35UxwprSGbxIidEFH5I1QppY3HMLRwqrRE+ZKvt3soyzKYPN/YHCcOowC15s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727989005; c=relaxed/simple;
-	bh=8cFxwG+dqzF652zgqIDsS6aXOxw1y9pY53x2OgkRKsc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=f+ZJQ72qzG7C9keq89Q4OhMFKs6zsgYLVrDSh6sIQ0twMYgW4lTczrFzjBVm61JX/7haLU6UGCWqDiEoWP41Rvi70S/jBVz9kcBQuIyPgP/jeOZ+6tp0tyR0PvNuZ7Fom8oen3SsAVQ8kpo9ACoBq4jZmKWgPqOjHi/zXS28uxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=xk/+/6N6; arc=none smtp.client-ip=199.89.1.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 009.lax.mailroute.net (Postfix) with ESMTP id 4XKP9d3r9lzlgVnY;
-	Thu,  3 Oct 2024 20:56:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1727988995; x=1730580996; bh=FTm9+Fd9U/H4haC16sHTR1bT
-	ESO2Tnj8MtorXX9dHs8=; b=xk/+/6N6QppPaTwrc2/ZXsj7P0XkCx6/abEpvUij
-	7rnzdtFkmXCvnGQ4WT4/ROVVqQIWjE1GhpClMCwptIEXn9w3ODdu2lepfN1d555H
-	yXw15gb0ui1kT/tG1PKxhSX09JjcUVSPhdD0JVgteokPrfxlxKnJtAxSdnjVWXP2
-	xJNDOpzJOoxivlrpxMLynthyTW/4UykYwKxUyTxnvelDN2Oqtwh/cFGCGxGEi1GG
-	VLg50OPsv6B1vbWzD0Sdz6VDL1iTfbimrklp8ua2U2UDeIKdhXGUGHBmPgudS9Dk
-	3sQevp889vWwxaYwUCvuG+kD/tb5ChPjxaP81gsLcc2foQ==
-X-Virus-Scanned: by MailRoute
-Received: from 009.lax.mailroute.net ([127.0.0.1])
- by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id xiJGC-xD0fY5; Thu,  3 Oct 2024 20:56:35 +0000 (UTC)
-Received: from [100.66.154.22] (unknown [104.135.204.82])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4XKP9Y5388zlgVnN;
-	Thu,  3 Oct 2024 20:56:33 +0000 (UTC)
-Message-ID: <e6e6f77b-f5c6-4b1e-8ab2-b492755857f0@acm.org>
-Date: Thu, 3 Oct 2024 13:56:31 -0700
+	s=arc-20240116; t=1727990833; c=relaxed/simple;
+	bh=vzQAKZOvSZRC6Jz6+yhF+50zSuQfzilxkyJquD9Nu/E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KVsUNdSQb1O/TXugRp8HfhaQv/u8AWziEmnXTwFr1V1gBy6OZYStRF5Bs4t1ltEfVd7/FfQo3RnE649R2TZcaN4SZOyL2VOZhhTl6qGVICO8zpK0nfHkdfe1+dRowFIyHlx46KVbmTtKa6znrKcm8nmpjHQ9jBtGTmY6NtjMxLw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=akamai.com; spf=pass smtp.mailfrom=akamai.com; dkim=pass (2048-bit key) header.d=akamai.com header.i=@akamai.com header.b=iAcqHzDy; arc=none smtp.client-ip=67.231.157.127
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=akamai.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=akamai.com
+Received: from pps.filterd (m0050096.ppops.net [127.0.0.1])
+	by m0050096.ppops.net-00190b01. (8.18.1.2/8.18.1.2) with ESMTP id 493IsfeA006942;
+	Thu, 3 Oct 2024 22:26:31 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=jan2016.eng;
+	 bh=rQeQW/YJOjgrqFlWCUOxK7q/Axyh5lTXu7jXvif9Yc8=; b=iAcqHzDybB5b
+	urcg8FKRAvbFDLzKAuLyFVjvpQGO7BnhiW4kLZDlu74yb6lYqgeuQmAGB0dryTQT
+	1o+oZmTuWteFmddZV+zZctDv4pX4F/IQnT+JkTTJOfAjUvyVw2cyk/XqHzPA4I7w
+	7e4qoIU2bISVf4YYKQGqna31a8hTJwq7aJx3GKplXUk5tZQsg4oEY3H/qUKh07nj
+	+6VOR12zlDVWpRKGjQEYIOD5/bJyai3v7/t/+gg7pEdYHlwWrOTmdKjS6V+zKaHt
+	hsPhLIqDERrL2e+io6IJpXXxMOqabIosKN94r8Ti6lBk1uVnLLWDZX3cwDwsnzLj
+	vOeLzOUMsg==
+Received: from prod-mail-ppoint7 (a72-247-45-33.deploy.static.akamaitechnologies.com [72.247.45.33] (may be forged))
+	by m0050096.ppops.net-00190b01. (PPS) with ESMTPS id 42205f1gqp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 03 Oct 2024 22:26:31 +0100 (BST)
+Received: from pps.filterd (prod-mail-ppoint7.akamai.com [127.0.0.1])
+	by prod-mail-ppoint7.akamai.com (8.18.1.2/8.18.1.2) with ESMTP id 493I2lN6020619;
+	Thu, 3 Oct 2024 17:26:30 -0400
+Received: from prod-mail-relay18.dfw02.corp.akamai.com ([172.27.165.172])
+	by prod-mail-ppoint7.akamai.com (PPS) with ESMTP id 42206y948e-1;
+	Thu, 03 Oct 2024 17:26:30 -0400
+Received: from [100.64.0.1] (unknown [172.27.166.123])
+	by prod-mail-relay18.dfw02.corp.akamai.com (Postfix) with ESMTP id 4E9411A89;
+	Thu,  3 Oct 2024 21:26:28 +0000 (GMT)
+Message-ID: <c24fa344-0add-477d-8ed3-bf2e91550e0b@akamai.com>
+Date: Thu, 3 Oct 2024 16:26:27 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -65,77 +66,93 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: blktests failures with v6.12-rc1 kernel
-To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
- "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
- "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
- "nbd@other.debian.org" <nbd@other.debian.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <xpe6bea7rakpyoyfvspvin2dsozjmjtjktpph7rep3h25tv7fb@ooz4cu5z6bq6>
+Subject: Re: [PATCH 0/6] refactor RDMA live migration based on rsocket API
+To: Peter Xu <peterx@redhat.com>, Sean Hefty <shefty@nvidia.com>
+Cc: "Gonglei (Arei)" <arei.gonglei@huawei.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "yu.zhang@ionos.com" <yu.zhang@ionos.com>,
+        "elmar.gerdes@ionos.com" <elmar.gerdes@ionos.com>,
+        zhengchuan <zhengchuan@huawei.com>,
+        "berrange@redhat.com"
+ <berrange@redhat.com>,
+        "armbru@redhat.com" <armbru@redhat.com>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "lixiao (H)" <lixiao91@huawei.com>,
+        "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
+        Wangjialin <wangjialin23@huawei.com>
+References: <1717503252-51884-1-git-send-email-arei.gonglei@huawei.com>
+ <Zs4z7tKWif6K4EbT@x1n> <20240827165643-mutt-send-email-mst@kernel.org>
+ <027c4f24-f515-4fdb-8770-6bf2433e0f43@akamai.com>
+ <84c74f1a95a648b18c9d41b8c5ef2f60@huawei.com> <ZvQnbzV9SlXKlarV@x1n>
+ <DM6PR12MB431364C7A2D94609B4AAF9A8BD6B2@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <0730fa9b-49cd-46e4-9264-afabe2486154@akamai.com> <Zvrq7nSbiLfPQoIY@x1n>
+ <DM6PR12MB4313D6BA256740DE1ACA29E9BD762@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <ZvsAV0MugV85HuZf@x1n>
 Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <xpe6bea7rakpyoyfvspvin2dsozjmjtjktpph7rep3h25tv7fb@ooz4cu5z6bq6>
+From: Michael Galaxy <mgalaxy@akamai.com>
+In-Reply-To: <ZvsAV0MugV85HuZf@x1n>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-03_19,2024-10-03_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 phishscore=0
+ suspectscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
+ definitions=main-2410030151
+X-Proofpoint-GUID: Yae164KpiBxdFpe-97G0EH2x424S4Y7y
+X-Proofpoint-ORIG-GUID: Yae164KpiBxdFpe-97G0EH2x424S4Y7y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 malwarescore=0
+ phishscore=0 adultscore=0 mlxscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=894 lowpriorityscore=0 bulkscore=0 priorityscore=1501
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2410030151
 
-On 10/3/24 1:02 AM, Shinichiro Kawasaki wrote:
-> #3: srp/001,002,011,012,013,014,016
-> 
->     The seven test cases in srp test group failed due to the WARN
->     "kmem_cache of name 'srpt-rsp-buf' already exists" [4]. The failures are
->     recreated in stable manner. They need further debug effort.
+On 9/30/24 14:47, Peter Xu wrote:
+> !-------------------------------------------------------------------|
+>    This Message Is From an External Sender
+>    This message came from outside your organization.
+> |-------------------------------------------------------------------!
+>
+> On Mon, Sep 30, 2024 at 07:20:56PM +0000, Sean Hefty wrote:
+>>>> I'm sure rsocket has its place with much smaller transfer sizes, but
+>>>> this is very different.
+>>> Is it possible to make rsocket be friendly with large buffers (>4GB) like the VM
+>>> use case?
+>> If you can perform large VM migrations using streaming sockets, rsockets is likely usable, but it will involve data copies.  The problem is the socket API semantics.
+>>
+>> There are rsocket API extensions (riowrite, riomap) to support RDMA write operations.  This avoids the data copy at the target, but not the sender.   (riowrite follows the socket send semantics on buffer ownership.)
+>>
+>> It may be possible to enhance rsockets with MSG_ZEROCOPY or io_uring extensions to enable zero-copy for large transfers, but that's not something I've looked at.  True zero copy may require combining MSG_ZEROCOPY with riowrite, but then that moves further away from using traditional socket calls.
+> Thanks, Sean.
+>
+> One thing to mention is that QEMU has QIO_CHANNEL_WRITE_FLAG_ZERO_COPY,
+> which already supports MSG_ZEROCOPY but only on sender side, and only if
+> when multifd is enabled, because it requires page pinning and alignments,
+> while it's more challenging to pin a random buffer than a guest page.
+>
+> Nobody moved on yet with zerocopy recv for TCP; there might be similar
+> challenges that normal socket APIs may not work easily on top of current
+> iochannel design, but I don't know well to say..
+>
+> Not sure whether it means there can be a shared goal with QEMU ultimately
+> supporting better zerocopy via either TCP or RDMA.  If that's true, maybe
+> there's chance we can move towards rsocket with all the above facilities,
+> meanwhile RDMA can, ideally, run similiarly like TCP with the same (to be
+> enhanced..) iochannel API, so that it can do zerocopy on both sides with
+> either transport.
+>
+What about the testing solution that I mentioned?
 
-Does the patch below help?
+Does that satisfy your concerns? Or is there still a gap here that needs 
+to be met?
 
-Thanks,
-
-Bart.
-
-
-Subject: [PATCH] RDMA/srpt: Make kmem cache names unique
-
-Make sure that the "srpt-rsp-buf" cache names are unique. An example of
-a unique name generated by this patch:
-
-srpt-rsp-buf-fe80:0000:0000:0000:5054:00ff:fe5e:4708-enp1s0_siw-1
-
-Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Fixes: 5dabcd0456d7 ("RDMA/srpt: Add support for immediate data")
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
----
-  drivers/infiniband/ulp/srpt/ib_srpt.c | 8 +++++++-
-  1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c 
-b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index 9632afbd727b..c4feb39b3106 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -2164,6 +2164,7 @@ static int srpt_cm_req_recv(struct srpt_device 
-*const sdev,
-  	u32 it_iu_len;
-  	int i, tag_num, tag_size, ret;
-  	struct srpt_tpg *stpg;
-+	char *cache_name;
-
-  	WARN_ON_ONCE(irqs_disabled());
-
-@@ -2245,8 +2246,13 @@ static int srpt_cm_req_recv(struct srpt_device 
-*const sdev,
-  	INIT_LIST_HEAD(&ch->cmd_wait_list);
-  	ch->max_rsp_size = ch->sport->port_attrib.srp_max_rsp_size;
-
--	ch->rsp_buf_cache = kmem_cache_create("srpt-rsp-buf", ch->max_rsp_size,
-+	cache_name = kasprintf(GFP_KERNEL, "srpt-rsp-buf-%s-%s-%d", src_addr,
-+			       dev_name(&sport->sdev->device->dev), port_num);
-+	if (!cache_name)
-+		goto free_ch;
-+	ch->rsp_buf_cache = kmem_cache_create(cache_name, ch->max_rsp_size,
-  					      512, 0, NULL);
-+	kfree(cache_name);
-  	if (!ch->rsp_buf_cache)
-  		goto free_ch;
-
-
+- Michael
 
