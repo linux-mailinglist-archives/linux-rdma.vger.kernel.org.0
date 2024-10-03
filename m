@@ -1,158 +1,134 @@
-Return-Path: <linux-rdma+bounces-5198-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5199-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8CE098F8E6
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2024 23:27:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C204298F91D
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2024 23:43:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EF67B20BB5
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2024 21:27:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F38C81C21837
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2024 21:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FB431B85EB;
-	Thu,  3 Oct 2024 21:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADA6F1BDAB9;
+	Thu,  3 Oct 2024 21:43:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=akamai.com header.i=@akamai.com header.b="iAcqHzDy"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HoPNPpaK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [67.231.157.127])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2A91A4F2A
-	for <linux-rdma@vger.kernel.org>; Thu,  3 Oct 2024 21:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.157.127
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC1A1BFE01
+	for <linux-rdma@vger.kernel.org>; Thu,  3 Oct 2024 21:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727990833; cv=none; b=sJ2+Jc1shccCzV6ea0zlnKiJpdCRpB4aE1PsZ3tYodZDXjFPvBu/S/OrwDpNWQabPVYj2s2CD22YkAiXMKdyIUnfSjSKeWiPz8MraDfZO52ed3q35UxwprSGbxIidEFH5I1QppY3HMLRwqrRE+ZKvt3soyzKYPN/YHCcOowC15s=
+	t=1727991804; cv=none; b=kR9JSPu7eL14atH8Le32GDSs3/NPdw+gkyrdDhkfHgbaSoyToWU5z9PAS0kmPhKQBntnNJJpcNXJgdpeciFPNLAN1oDJBBtr9qeurJrdfHtZFWDjXFwDj/nSPC75A6iqlcRA7IiH7Znvajyc7oWuxsph5FdaUPgmAk0Llh5nuPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727990833; c=relaxed/simple;
-	bh=vzQAKZOvSZRC6Jz6+yhF+50zSuQfzilxkyJquD9Nu/E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KVsUNdSQb1O/TXugRp8HfhaQv/u8AWziEmnXTwFr1V1gBy6OZYStRF5Bs4t1ltEfVd7/FfQo3RnE649R2TZcaN4SZOyL2VOZhhTl6qGVICO8zpK0nfHkdfe1+dRowFIyHlx46KVbmTtKa6znrKcm8nmpjHQ9jBtGTmY6NtjMxLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=akamai.com; spf=pass smtp.mailfrom=akamai.com; dkim=pass (2048-bit key) header.d=akamai.com header.i=@akamai.com header.b=iAcqHzDy; arc=none smtp.client-ip=67.231.157.127
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=akamai.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=akamai.com
-Received: from pps.filterd (m0050096.ppops.net [127.0.0.1])
-	by m0050096.ppops.net-00190b01. (8.18.1.2/8.18.1.2) with ESMTP id 493IsfeA006942;
-	Thu, 3 Oct 2024 22:26:31 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=jan2016.eng;
-	 bh=rQeQW/YJOjgrqFlWCUOxK7q/Axyh5lTXu7jXvif9Yc8=; b=iAcqHzDybB5b
-	urcg8FKRAvbFDLzKAuLyFVjvpQGO7BnhiW4kLZDlu74yb6lYqgeuQmAGB0dryTQT
-	1o+oZmTuWteFmddZV+zZctDv4pX4F/IQnT+JkTTJOfAjUvyVw2cyk/XqHzPA4I7w
-	7e4qoIU2bISVf4YYKQGqna31a8hTJwq7aJx3GKplXUk5tZQsg4oEY3H/qUKh07nj
-	+6VOR12zlDVWpRKGjQEYIOD5/bJyai3v7/t/+gg7pEdYHlwWrOTmdKjS6V+zKaHt
-	hsPhLIqDERrL2e+io6IJpXXxMOqabIosKN94r8Ti6lBk1uVnLLWDZX3cwDwsnzLj
-	vOeLzOUMsg==
-Received: from prod-mail-ppoint7 (a72-247-45-33.deploy.static.akamaitechnologies.com [72.247.45.33] (may be forged))
-	by m0050096.ppops.net-00190b01. (PPS) with ESMTPS id 42205f1gqp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 03 Oct 2024 22:26:31 +0100 (BST)
-Received: from pps.filterd (prod-mail-ppoint7.akamai.com [127.0.0.1])
-	by prod-mail-ppoint7.akamai.com (8.18.1.2/8.18.1.2) with ESMTP id 493I2lN6020619;
-	Thu, 3 Oct 2024 17:26:30 -0400
-Received: from prod-mail-relay18.dfw02.corp.akamai.com ([172.27.165.172])
-	by prod-mail-ppoint7.akamai.com (PPS) with ESMTP id 42206y948e-1;
-	Thu, 03 Oct 2024 17:26:30 -0400
-Received: from [100.64.0.1] (unknown [172.27.166.123])
-	by prod-mail-relay18.dfw02.corp.akamai.com (Postfix) with ESMTP id 4E9411A89;
-	Thu,  3 Oct 2024 21:26:28 +0000 (GMT)
-Message-ID: <c24fa344-0add-477d-8ed3-bf2e91550e0b@akamai.com>
-Date: Thu, 3 Oct 2024 16:26:27 -0500
+	s=arc-20240116; t=1727991804; c=relaxed/simple;
+	bh=uW5hvuoP3XB0THpD3pnYsA7Eon9I7B0E/UGjgxrbqew=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ush8noSKbCP8TPoHfJZvUw05n6h/GoFnRXTuZHIud55oxuvmBvBxUarwLBKiiCjpmUmnD9usJ2pDhE+XNd0QlYYTdL0Uja5zNbKpjfqdOb53hUrglVLVFXFaP3ATiTvRAmJCvpR+zE03V6ufRWKTgp2evpnt8t54bC7gluKwWDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HoPNPpaK; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1727991801;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nR3gvsTeUeSK+aIRUGB28gwBzBHYFQhEYR+AW9GuXQQ=;
+	b=HoPNPpaKyLcfFr8gcIBb/I/S0QuX1HfCyJBCAfnIMI4eHNm7dfxHdGBEONPtjhRhKFACLw
+	tGBaB/RF6iAsjwpS0rIWMuC8O98erfnayW0P7NVXVXWA1nHsZLYNUMkUWR73hvuDq9Xseh
+	hP5SHTEMRZpg5nkPbfbLEvUIIko6q9A=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-110-5flGjd06PbKaSfdjAkNsPQ-1; Thu, 03 Oct 2024 17:43:20 -0400
+X-MC-Unique: 5flGjd06PbKaSfdjAkNsPQ-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7ae5c5ba98bso231420885a.0
+        for <linux-rdma@vger.kernel.org>; Thu, 03 Oct 2024 14:43:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727991800; x=1728596600;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nR3gvsTeUeSK+aIRUGB28gwBzBHYFQhEYR+AW9GuXQQ=;
+        b=gHfhw4McpHauTRc5AWbmcRNImwKrNPrJrgPgmtsi4eGj6G3sZl0VreKbSi1zwn2yq8
+         kicQq9BnlJ8bzgz4u/tar1nnPyLiQt1WiCiu4GYnxQGnLPjct/EWQW4Gweieq0hXMnNk
+         UnEgjLujbztHDTMh3gDi8xow2+9m1DYcflSwQ0qo6ytwHEJZ/PbBNYQ1/dZClQbaR7JP
+         1g86zsKE34tIS22IuhguL4wLE5BKh+vQODEjRBNWDKvOV3Qijdg8YUEEmajw1zEZzeMv
+         RWE9caCK4OsvgG6Xx6jhwgTW5fdrWwtPJfPtXbOAy+J+3c6xeWXNNrJHwSDnC67/cJo3
+         TB8g==
+X-Forwarded-Encrypted: i=1; AJvYcCW61QQFZrlH5RQq7bzC9NQskZW9BcAfvLSPyMy5ngkwOKtE1AuXlTVuk4z8uQ0R1c7LXSnvneezvAph@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+frurm7g0cyGBeVAWzXH4EN5dKnTaGa1poIQqhvJa0D7Sueyw
+	dKKigYdDy0AGiE9zMvwJ4XGiokzk9e4+4TynOAqUYz0rvLf3cCaLYMBVjMwjRg+bsNfBYIMxx6C
+	fdw+6F9WyD7qbVqNZYA5hhlM+bOm4JgdDBfigkzzW60crzzJn9+8unb2ph28=
+X-Received: by 2002:a05:620a:2697:b0:7a1:e2d4:4ff3 with SMTP id af79cd13be357-7ae6f4219b9mr96791985a.3.1727991800166;
+        Thu, 03 Oct 2024 14:43:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG/53UMHwmSM1e7BOlwpHt+KhS5OF0e43lF0H85i9xfKHdWbLE/c2fnEfAVmGp683vIAUKDlA==
+X-Received: by 2002:a05:620a:2697:b0:7a1:e2d4:4ff3 with SMTP id af79cd13be357-7ae6f4219b9mr96787885a.3.1727991799857;
+        Thu, 03 Oct 2024 14:43:19 -0700 (PDT)
+Received: from x1n (pool-99-254-114-190.cpe.net.cable.rogers.com. [99.254.114.190])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7ae6b3dae76sm80824085a.113.2024.10.03.14.43.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Oct 2024 14:43:17 -0700 (PDT)
+Date: Thu, 3 Oct 2024 17:43:14 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Michael Galaxy <mgalaxy@akamai.com>
+Cc: Sean Hefty <shefty@nvidia.com>,
+	"Gonglei (Arei)" <arei.gonglei@huawei.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	"qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+	"yu.zhang@ionos.com" <yu.zhang@ionos.com>,
+	"elmar.gerdes@ionos.com" <elmar.gerdes@ionos.com>,
+	zhengchuan <zhengchuan@huawei.com>,
+	"berrange@redhat.com" <berrange@redhat.com>,
+	"armbru@redhat.com" <armbru@redhat.com>,
+	"lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	Xiexiangyou <xiexiangyou@huawei.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"lixiao (H)" <lixiao91@huawei.com>,
+	"jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
+	Wangjialin <wangjialin23@huawei.com>
+Subject: Re: [PATCH 0/6] refactor RDMA live migration based on rsocket API
+Message-ID: <Zv8P8uQmSowF8sGl@x1n>
+References: <20240827165643-mutt-send-email-mst@kernel.org>
+ <027c4f24-f515-4fdb-8770-6bf2433e0f43@akamai.com>
+ <84c74f1a95a648b18c9d41b8c5ef2f60@huawei.com>
+ <ZvQnbzV9SlXKlarV@x1n>
+ <DM6PR12MB431364C7A2D94609B4AAF9A8BD6B2@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <0730fa9b-49cd-46e4-9264-afabe2486154@akamai.com>
+ <Zvrq7nSbiLfPQoIY@x1n>
+ <DM6PR12MB4313D6BA256740DE1ACA29E9BD762@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <ZvsAV0MugV85HuZf@x1n>
+ <c24fa344-0add-477d-8ed3-bf2e91550e0b@akamai.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/6] refactor RDMA live migration based on rsocket API
-To: Peter Xu <peterx@redhat.com>, Sean Hefty <shefty@nvidia.com>
-Cc: "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "yu.zhang@ionos.com" <yu.zhang@ionos.com>,
-        "elmar.gerdes@ionos.com" <elmar.gerdes@ionos.com>,
-        zhengchuan <zhengchuan@huawei.com>,
-        "berrange@redhat.com"
- <berrange@redhat.com>,
-        "armbru@redhat.com" <armbru@redhat.com>,
-        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        Xiexiangyou <xiexiangyou@huawei.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "lixiao (H)" <lixiao91@huawei.com>,
-        "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
-        Wangjialin <wangjialin23@huawei.com>
-References: <1717503252-51884-1-git-send-email-arei.gonglei@huawei.com>
- <Zs4z7tKWif6K4EbT@x1n> <20240827165643-mutt-send-email-mst@kernel.org>
- <027c4f24-f515-4fdb-8770-6bf2433e0f43@akamai.com>
- <84c74f1a95a648b18c9d41b8c5ef2f60@huawei.com> <ZvQnbzV9SlXKlarV@x1n>
- <DM6PR12MB431364C7A2D94609B4AAF9A8BD6B2@DM6PR12MB4313.namprd12.prod.outlook.com>
- <0730fa9b-49cd-46e4-9264-afabe2486154@akamai.com> <Zvrq7nSbiLfPQoIY@x1n>
- <DM6PR12MB4313D6BA256740DE1ACA29E9BD762@DM6PR12MB4313.namprd12.prod.outlook.com>
- <ZvsAV0MugV85HuZf@x1n>
-Content-Language: en-US
-From: Michael Galaxy <mgalaxy@akamai.com>
-In-Reply-To: <ZvsAV0MugV85HuZf@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-03_19,2024-10-03_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 phishscore=0
- suspectscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
- definitions=main-2410030151
-X-Proofpoint-GUID: Yae164KpiBxdFpe-97G0EH2x424S4Y7y
-X-Proofpoint-ORIG-GUID: Yae164KpiBxdFpe-97G0EH2x424S4Y7y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 malwarescore=0
- phishscore=0 adultscore=0 mlxscore=0 spamscore=0 suspectscore=0
- mlxlogscore=894 lowpriorityscore=0 bulkscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410030151
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c24fa344-0add-477d-8ed3-bf2e91550e0b@akamai.com>
 
-On 9/30/24 14:47, Peter Xu wrote:
-> !-------------------------------------------------------------------|
->    This Message Is From an External Sender
->    This message came from outside your organization.
-> |-------------------------------------------------------------------!
->
-> On Mon, Sep 30, 2024 at 07:20:56PM +0000, Sean Hefty wrote:
->>>> I'm sure rsocket has its place with much smaller transfer sizes, but
->>>> this is very different.
->>> Is it possible to make rsocket be friendly with large buffers (>4GB) like the VM
->>> use case?
->> If you can perform large VM migrations using streaming sockets, rsockets is likely usable, but it will involve data copies.  The problem is the socket API semantics.
->>
->> There are rsocket API extensions (riowrite, riomap) to support RDMA write operations.  This avoids the data copy at the target, but not the sender.   (riowrite follows the socket send semantics on buffer ownership.)
->>
->> It may be possible to enhance rsockets with MSG_ZEROCOPY or io_uring extensions to enable zero-copy for large transfers, but that's not something I've looked at.  True zero copy may require combining MSG_ZEROCOPY with riowrite, but then that moves further away from using traditional socket calls.
-> Thanks, Sean.
->
-> One thing to mention is that QEMU has QIO_CHANNEL_WRITE_FLAG_ZERO_COPY,
-> which already supports MSG_ZEROCOPY but only on sender side, and only if
-> when multifd is enabled, because it requires page pinning and alignments,
-> while it's more challenging to pin a random buffer than a guest page.
->
-> Nobody moved on yet with zerocopy recv for TCP; there might be similar
-> challenges that normal socket APIs may not work easily on top of current
-> iochannel design, but I don't know well to say..
->
-> Not sure whether it means there can be a shared goal with QEMU ultimately
-> supporting better zerocopy via either TCP or RDMA.  If that's true, maybe
-> there's chance we can move towards rsocket with all the above facilities,
-> meanwhile RDMA can, ideally, run similiarly like TCP with the same (to be
-> enhanced..) iochannel API, so that it can do zerocopy on both sides with
-> either transport.
->
-What about the testing solution that I mentioned?
+On Thu, Oct 03, 2024 at 04:26:27PM -0500, Michael Galaxy wrote:
+> What about the testing solution that I mentioned?
+> 
+> Does that satisfy your concerns? Or is there still a gap here that needs to
+> be met?
 
-Does that satisfy your concerns? Or is there still a gap here that needs 
-to be met?
+I think such testing framework would be helpful, especially if we can kick
+it off in CI when preparing pull requests, then we can make sure nothing
+will break RDMA easily.
 
-- Michael
+Meanwhile, we still need people committed to this and actively maintain it,
+who knows the rdma code well.
+
+Thanks,
+
+-- 
+Peter Xu
+
 
