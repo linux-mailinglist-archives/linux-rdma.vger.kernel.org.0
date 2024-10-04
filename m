@@ -1,72 +1,66 @@
-Return-Path: <linux-rdma+bounces-5210-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5211-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 391E199018D
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 12:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D5092990211
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 13:30:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D37E21F21EE2
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 10:47:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 829F81F246DF
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 11:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B648148FF2;
-	Fri,  4 Oct 2024 10:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE5D156220;
+	Fri,  4 Oct 2024 11:30:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="iCKV5yLS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A409130ADA;
-	Fri,  4 Oct 2024 10:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B30D2AD18;
+	Fri,  4 Oct 2024 11:30:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728038837; cv=none; b=W9MmPuaoIv7MutAEj2uFMKTT4Gt0Eyym6dXQoBeRFJ3M8IVFF32yTNLMyjPUKO6jODbr8ITl8t3CbdZpIYaGwEqn8XIfrgf1UUDuXeuMojOtnX8X8bHEip4j5sEa1M2xfQexfAehdm2nWXZML+lTh7a6ZJeifSUVc3sOnWUZ4gg=
+	t=1728041439; cv=none; b=njQEuc7FldZXwQCm/ABclTT8XaBB48XZq3JfgxG9wmYZSSndcdLPXCDrPZiHW5av8X9UoCN6Oi/ALxx2b0c5l5zAjn/7uDNJpqIPwAcFURMyGifUiBZmbbm7P24ptdVsbeRj6oCS+ZRfOmNFdrjkZ6mZAiTJy6c6+umuxufawDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728038837; c=relaxed/simple;
-	bh=Yr92QAqtFQjX24F3Nmar2Xi4Q7kz9A7xdfp3Tev7xLI=;
+	s=arc-20240116; t=1728041439; c=relaxed/simple;
+	bh=X4Qp5mtEyhaiPFth6wO6wY8La16ABC5rN6ihpdlqSXQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tz6AeR6UQQKJ2EkmrwzOuffZa9+gJqZL+/lE0iz+SEoREvN+2ZuC9ZonnlYaqRLaVhzHiFibbBhSHGe5M+Qu50qC2cIa/Ou+VYIxXfkXLkKd1iYIeZ8U1exPB8va5KeFUIRGUCrqtNpchRCDfLc8QAe4V7D0JxRhMTt6QIbqThA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a83562f9be9so200385366b.0;
-        Fri, 04 Oct 2024 03:47:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728038834; x=1728643634;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aCZDomfCahU5hpsWOQxWLSSyRP5Ob2MzW/jgTVQY7PI=;
-        b=qC5SXVQuNO/9CNM0RQxicjQcVGUnh2tOF+MQrXE5sbQO8hYUHDhgMC35s6BwMWFcge
-         ZCUTERKBNFeEWABRiffA7+vNgU+rXPT5pXkbHOXaeXV6p/0kyeINv7h2q2DFZz5c0NOb
-         sEh3QaqA71MPcGmb0nh4CJpYTIDmWsW5ROrrqe3NpUMiLnK3GMhyapvaPv0h28GFsCXJ
-         E8xJcmRFe2MeUpEshZc/kNkMCWYnor1Qcdj9uNH0w4cy8cwuLAWjOrso+cjORfAx1eVk
-         XxIyDkBolufQ3OZkOaizZtiWU71DeHvYziyWBbBBkx+oR8onPsogtXgZ6HHHDaSD6o1U
-         MAVg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwCVNry3L0KOkHzmE9FJYtrSRGGywtKg0g2un2w4+GGdkfv/lxjzUdwzJb+YJl8SI/xt6n8QJO6OnR/w==@vger.kernel.org, AJvYcCXoCRhZVq20Do3dl9+5N7MfwPeIQbyoIEbgBQ34q4ydtSAHWVw5GPdOfqhHhCk+qSJzSVVm3l9etGN4P40=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZLmChJfp2PR1ECtR91J7AyfmXuPDEX/gWYNuIUOHNzlQ4yl7c
-	CaXegTOtlt2XdXfLfdJcQWfXxHPZDBy+felpRPVtudNFK7IYZ28E
-X-Google-Smtp-Source: AGHT+IFyNyH5lWzcqbpFIeml22OlNRc7lCoV4L5iTVaw6ATOV2jHG/hZxtWobt8qJfh3eGHe4Oib2w==
-X-Received: by 2002:a17:907:ea2:b0:a93:d181:b7fc with SMTP id a640c23a62f3a-a991bfec2f1mr205120566b.51.1728038834141;
-        Fri, 04 Oct 2024 03:47:14 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-115.fbsv.net. [2a03:2880:30ff:73::face:b00c])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a99103b313fsm206372566b.127.2024.10.04.03.47.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Oct 2024 03:47:13 -0700 (PDT)
-Date: Fri, 4 Oct 2024 03:47:10 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Sebastian Ott <sebott@redhat.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Parav Pandit <parav@nvidia.com>
-Subject: Re: [PATCH v2] net/mlx5: unique names for per device caches
-Message-ID: <20241004-degu-of-fascinating-attraction-136410@leitao>
-References: <IA0PR12MB8713EC167DC79275451864BADC6C2@IA0PR12MB8713.namprd12.prod.outlook.com>
- <20240920181129.37156-1-sebott@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VZbRrnxBhqhZkjPLOX/c9aHpUntMZEiTzG2iQvicddaQvo+jvSAApOScSKveazocwcDjeOVwvQoBqgYzdGKLzdDi2ekS/GVaETPOlL86yrivjM0xTbNwg5DwAhLWCAv8YVMswRWJ3vx9JbbQ0D7qN7UoW+iLcJDMoUQisFdupjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=iCKV5yLS; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id EF2CC20C6494; Fri,  4 Oct 2024 04:30:37 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EF2CC20C6494
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1728041437;
+	bh=tG6C+FIVgM7dhsze/chEuSWLVSm53oBFmsuBI5COF2w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iCKV5yLSBap00xcS/CQybhJEZg3Vo18tEqBn3VldQp0Pvt/78aNPKdUTKVksXLW/R
+	 Ctm5iYf+RUlWiRmKPa5fc6ggp7dDhLhq/KS9/Lchyuq7tTA9DN2h+p+KFwGSLc12Wa
+	 CaMzKAdVM4vcYqKih743AvRCNrrqebbOZ3PlvzBU=
+Date: Fri, 4 Oct 2024 04:30:37 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Long Li <longli@microsoft.com>, Simon Horman <horms@kernel.org>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Erick Archer <erick.archer@outlook.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Ahmed Zaki <ahmed.zaki@intel.com>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH net-next] net: mana: Enable debugfs files for MANA device
+Message-ID: <20241004113037.GA8416@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1727754041-26291-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20241003170518.11cd9e20@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -75,19 +69,72 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240920181129.37156-1-sebott@redhat.com>
+In-Reply-To: <20241003170518.11cd9e20@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Fri, Sep 20, 2024 at 08:11:29PM +0200, Sebastian Ott wrote:
-> Add the device name to the per device kmem_cache names to
-> ensure their uniqueness. This fixes warnings like this:
-> "kmem_cache of name 'mlx5_fs_fgs' already exists".
-
-Thanks for fixing it. I am hitting the same problem on my side as well:
-
-	kmem_cache of name 'mlx5_fs_fgs' already exists
-	WARNING: CPU: 0 PID: 10 at mm/slab_common.c:108 __kmem_cache_create_args+0xb8/0x320
+On Thu, Oct 03, 2024 at 05:05:18PM -0700, Jakub Kicinski wrote:
+> On Mon, 30 Sep 2024 20:40:41 -0700 Shradha Gupta wrote:
+> > @@ -1516,6 +1519,13 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >  	gc->bar0_va = bar0_va;
+> >  	gc->dev = &pdev->dev;
+> >  
+> > +	if (gc->is_pf) {
+> > +		gc->mana_pci_debugfs = debugfs_create_dir("0", mana_debugfs_root);
+> > +	} else {
+> > +		gc->mana_pci_debugfs = debugfs_create_dir(pci_slot_name(pdev->slot),
+> > +							  mana_debugfs_root);
+> > +	}
 > 
-> Signed-off-by: Sebastian Ott <sebott@redhat.com>
+> no need for brackets around single statements
+> 
+> 
+> > @@ -1619,7 +1640,29 @@ static struct pci_driver mana_driver = {
+> >  	.shutdown	= mana_gd_shutdown,
+> >  };
+> >  
+> > -module_pci_driver(mana_driver);
+> > +static int __init mana_driver_init(void)
+> > +{
+> > +	int err;
+> > +
+> > +	mana_debugfs_root = debugfs_create_dir("mana", NULL);
+> > +
+> > +	err = pci_register_driver(&mana_driver);
+> > +
+> 
+> no need for empty lines between function call and its error check
+> 
+> > +	if (err)
+> > +		debugfs_remove(mana_debugfs_root);
+> > +
+> > +	return err;
+> > +}
+> > +
+> > +static void __exit mana_driver_exit(void)
+> > +{
+> > +	debugfs_remove(mana_debugfs_root);
+> > +
+> > +	pci_unregister_driver(&mana_driver);
+> > +}
+> > +
+> > +module_init(mana_driver_init);
+> > +module_exit(mana_driver_exit);
+> >  
+> >  MODULE_DEVICE_TABLE(pci, mana_id_table);
+> >  
+> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > index c47266d1c7c2..255f3189f6fa 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/filter.h>
+> >  #include <linux/mm.h>
+> >  #include <linux/pci.h>
+> > +#include <linux/debugfs.h>
+> 
+> looks like the headers were previously alphabetically sorted.
+> -- 
+> pw-bot: cr
 
-Reviwed-by: Breno Leitao <leitao@debian.org>
+Thanks Jakub. I will get these in a newer version
 
