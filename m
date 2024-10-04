@@ -1,199 +1,145 @@
-Return-Path: <linux-rdma+bounces-5205-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5206-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CE7B98FC5B
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 04:33:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D93698FC61
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 04:36:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF7C91C22174
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 02:33:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 223D6283D28
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 02:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875DA11C92;
-	Fri,  4 Oct 2024 02:33:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30AD321340;
+	Fri,  4 Oct 2024 02:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="ZgPUkvRf"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iApDyG15"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62961F943
-	for <linux-rdma@vger.kernel.org>; Fri,  4 Oct 2024 02:33:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9843E33FD
+	for <linux-rdma@vger.kernel.org>; Fri,  4 Oct 2024 02:35:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728009226; cv=none; b=K7Q7RQ+8ZsdbQhoeK9cDa0mZAhTDNKxaz6aDz4qKJRnUKcJLHD6v6jAY7qOYHcHljpFLoo6AOo82AwkyLha1ZO/UuqKt6fEWqwZmQCfe1XEgzwB7GLwD/mtmzD592XLmwhabIAbK57xpiStasenzNROW7RRLnJJZhGHvL8O16dw=
+	t=1728009356; cv=none; b=dQKzf3eGsAL1ZrY3hvw2zoHQ3qu4zNgELLvtoMoEpdNuKJjvbfNND3JmXBeeMf/NP0gzYeS2C46C2lUxTfS+kmb/IePpKJ9FbxSZWzCZjASWydOGgbVjAUhrTGD0qwpst/LELvL6cjel9Hvc0vaBldhdwXBkl9pvwHK+YI4zCbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728009226; c=relaxed/simple;
-	bh=1iJnEbdsiNl3GTWvx5w9tGzoQRxZUIi7Ftyexx/+bg0=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j7Qqupe2FaGBXXNutxHFK730TkB3jVyFRCyrFYwbyyFv+EzO8hthwUSA6EsHK0OZ5PaBR53Z87jnI+4EXOSDcJx1yT7v4/qdpRA+E1e8FGHDI/xC59KnMNCsTVDnlx3dBGhlUFwLxn8ykMPCLWw346VnahCFT/qKkuVG0Qexyzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=ZgPUkvRf; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-20ba8d92af9so12332325ad.3
-        for <linux-rdma@vger.kernel.org>; Thu, 03 Oct 2024 19:33:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1728009224; x=1728614024; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=9H4D+WZl8jML+ibwIYSpYRCghKODZjSTjCYZIURMulA=;
-        b=ZgPUkvRf8SZFa7XHwC32up2IYzkcAB8nrf/JjF5oX6Gk2jRzxagvtgl0NSPnUJp/wV
-         1s/AFsGAUsja6BBzDZc12fzGSGW1buPEQhOLu3ajpmtzvF4dOr08AjpC2uakXz4zEwEY
-         YbxmM4qImziu+ynaSzSePJHjPlC1SfKEZG03c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728009224; x=1728614024;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9H4D+WZl8jML+ibwIYSpYRCghKODZjSTjCYZIURMulA=;
-        b=OBMY7GI5C7ZVakyIFxoV3nDdGWGDlSaFmNMjoact5zUOOSEZlivRj/YJJmOHMdWwZH
-         HghTSYW37do4vj39sB4LnZErj7RIsoJ3uTJ+wm6Hw2tOm9/Jg7ZsUzHa2VNY8GddbkRR
-         RCgyuexL3nb5E9MC0OYWxtXOnVV/WJNaKLkbYU1BIwW41sM5vqNPdzFszw4G3JhQycqH
-         tW6zoOvkomtbtyn8H9jC5j8wiq1xWK01Yu2xBBkIyz8QTE+Z0x8WdSlYuxiyEEqnLPv0
-         y8q/vqOl39Wl2cHr0CGLCVF4iYZW0MSHvG/c/qo6V/grD999BBNud3O9Y51cO/ApiV3g
-         Yb+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU3MnWQiIGJ6Bc6cU98CmdSfAKonbHK7o6K8lPy/OQTjd+r+xdkLETfWYjHupADL+j1oIOtaliFdFHw@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywd5DtN7VjhEnIGSF3W70ka16S5jp/91oCoG3j1IPpgLsVyeKm2
-	QuW/768jVWyvtBq6JlR2esYCEq9/3yBpiWTFUtewma6EOsBBnDTzJUSPfeT2wDw=
-X-Google-Smtp-Source: AGHT+IEda9b9DeMXqjPne8SvGPfaIWpvZM2WaGMC+2rBD3ZG/loQ372RspkJp/s9zdDN5H7i2x/5ng==
-X-Received: by 2002:a17:902:e849:b0:20b:a10c:9be3 with SMTP id d9443c01a7336-20bfdfe4834mr17933695ad.21.1728009224150;
-        Thu, 03 Oct 2024 19:33:44 -0700 (PDT)
-Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20beef8eb0csm15268325ad.165.2024.10.03.19.33.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Oct 2024 19:33:43 -0700 (PDT)
-Date: Thu, 3 Oct 2024 19:33:39 -0700
-From: Joe Damato <jdamato@fastly.com>
-To: Stanislav Fomichev <stfomichev@gmail.com>, netdev@vger.kernel.org,
-	mkarsten@uwaterloo.ca, skhawaja@google.com, sdf@fomichev.me,
-	bjorn@rivosinc.com, amritha.nambiar@intel.com,
-	sridhar.samudrala@intel.com, willemdebruijn.kernel@gmail.com,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Breno Leitao <leitao@debian.org>,
-	Daniel Jurgens <danielj@nvidia.com>,
-	David Ahern <dsahern@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Kory Maincent <kory.maincent@bootlin.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:MELLANOX MLX4 core VPI driver" <linux-rdma@vger.kernel.org>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Mina Almasry <almasrymina@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: Re: [RFC net-next v4 0/9] Add support for per-NAPI config via netlink
-Message-ID: <Zv9UA1DkmJQkW_sG@LQ3V64L9R2>
-Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
-	Stanislav Fomichev <stfomichev@gmail.com>, netdev@vger.kernel.org,
-	mkarsten@uwaterloo.ca, skhawaja@google.com, sdf@fomichev.me,
-	bjorn@rivosinc.com, amritha.nambiar@intel.com,
-	sridhar.samudrala@intel.com, willemdebruijn.kernel@gmail.com,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Breno Leitao <leitao@debian.org>,
-	Daniel Jurgens <danielj@nvidia.com>,
-	David Ahern <dsahern@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Kory Maincent <kory.maincent@bootlin.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:MELLANOX MLX4 core VPI driver" <linux-rdma@vger.kernel.org>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Mina Almasry <almasrymina@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-References: <20241001235302.57609-1-jdamato@fastly.com>
- <Zv8o4eliTO60odQe@mini-arch>
- <Zv8uaQ4WIprQCBzv@LQ3V64L9R2>
+	s=arc-20240116; t=1728009356; c=relaxed/simple;
+	bh=Q+/mUUWKiNG2+IsDs3j9++TToCvr4rKhVypFi77aAjA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=TIN9u+b4nMcYYdonc+zaxNc40WA9ikM0N6OkFmYfb/EaJikuayQPyWh++C+6YJkV3RrFChGODgrWJqYcDAIiANxby4pCm3r/vqoQAshhoBtTW/mmSkk+9W3WlnmZW5+v0HwjAsRuNm+taGqbc2qhpinK5rvb8lyI1SWQNw69QYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iApDyG15; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <734623a7-c8c3-46f9-a564-c2265fb79ff1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728009352;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ymFwru73XfTHz1sVaFBcyx39mulsMFBjrH0H1o5NdvA=;
+	b=iApDyG15i7FbLMDIaZ0ZF8bgQoeL5WtU9qypE2SWWluHBERlWAX1PAeLeixqM3x2/vlLXz
+	JmdkYvjWUHZ52QioGrHtACKhxMKA09aiMLw/gFN8fLM7S39gAXE/20uuPsb7b7dBYnauqq
+	p/ll/LjrmZPnOGg1ZkIWU4d3hlYja9k=
+Date: Fri, 4 Oct 2024 10:35:33 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zv8uaQ4WIprQCBzv@LQ3V64L9R2>
+Subject: Re: blktests failures with v6.12-rc1 kernel
+To: Bart Van Assche <bvanassche@acm.org>,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+ "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+ "nbd@other.debian.org" <nbd@other.debian.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <xpe6bea7rakpyoyfvspvin2dsozjmjtjktpph7rep3h25tv7fb@ooz4cu5z6bq6>
+ <e6e6f77b-f5c6-4b1e-8ab2-b492755857f0@acm.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <e6e6f77b-f5c6-4b1e-8ab2-b492755857f0@acm.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Oct 03, 2024 at 04:53:13PM -0700, Joe Damato wrote:
-> On Thu, Oct 03, 2024 at 04:29:37PM -0700, Stanislav Fomichev wrote:
-> > On 10/01, Joe Damato wrote:
+在 2024/10/4 4:56, Bart Van Assche 写道:
+> On 10/3/24 1:02 AM, Shinichiro Kawasaki wrote:
+>> #3: srp/001,002,011,012,013,014,016
+>>
+>>     The seven test cases in srp test group failed due to the WARN
+>>     "kmem_cache of name 'srpt-rsp-buf' already exists" [4]. The 
+>> failures are
+>>     recreated in stable manner. They need further debug effort.
 > 
-> [...]
->  
-> > >   2. This revision seems to work (see below for a full walk through). Is
-> > >      this the behavior we want? Am I missing some use case or some
-> > >      behavioral thing other folks need?
-> > 
-> > The walk through looks good!
+> Does the patch below help?
+
+Hi, Bart
+
+What is the root cause of this problem?
+
+The following patch just allocates a new memory with a unique name. Can 
+we make sure that the allocated memory is freed?
+
+Does this will cause memory leak?
+
+Thanks,
+Zhu Yanjun
+
 > 
-> Thanks for taking a look.
+> Thanks,
 > 
-> > >   3. Re a previous point made by Stanislav regarding "taking over a NAPI
-> > >      ID" when the channel count changes: mlx5 seems to call napi_disable
-> > >      followed by netif_napi_del for the old queues and then calls
-> > >      napi_enable for the new ones. In this RFC, the NAPI ID generation
-> > >      is deferred to napi_enable. This means we won't end up with two of
-> > >      the same NAPI IDs added to the hash at the same time (I am pretty
-> > >      sure).
-> > 
-> > 
-> > [..]
-> > 
-> > >      Can we assume all drivers will napi_disable the old queues before
-> > >      napi_enable the new ones? If yes, we might not need to worry about
-> > >      a NAPI ID takeover function.
-> > 
-> > With the explicit driver opt-in via netif_napi_add_config, this
-> > shouldn't matter? When somebody gets to converting the drivers that
-> > don't follow this common pattern they'll have to solve the takeover
-> > part :-)
+> Bart.
 > 
-> That is true; that's a good point.
+> 
+> Subject: [PATCH] RDMA/srpt: Make kmem cache names unique
+> 
+> Make sure that the "srpt-rsp-buf" cache names are unique. An example of
+> a unique name generated by this patch:
+> 
+> srpt-rsp-buf-fe80:0000:0000:0000:5054:00ff:fe5e:4708-enp1s0_siw-1
+> 
+> Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+> Fixes: 5dabcd0456d7 ("RDMA/srpt: Add support for immediate data")
+> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+> ---
+>   drivers/infiniband/ulp/srpt/ib_srpt.c | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ 
+> ulp/srpt/ib_srpt.c
+> index 9632afbd727b..c4feb39b3106 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -2164,6 +2164,7 @@ static int srpt_cm_req_recv(struct srpt_device 
+> *const sdev,
+>       u32 it_iu_len;
+>       int i, tag_num, tag_size, ret;
+>       struct srpt_tpg *stpg;
+> +    char *cache_name;
+> 
+>       WARN_ON_ONCE(irqs_disabled());
+> 
+> @@ -2245,8 +2246,13 @@ static int srpt_cm_req_recv(struct srpt_device 
+> *const sdev,
+>       INIT_LIST_HEAD(&ch->cmd_wait_list);
+>       ch->max_rsp_size = ch->sport->port_attrib.srp_max_rsp_size;
+> 
+> -    ch->rsp_buf_cache = kmem_cache_create("srpt-rsp-buf", ch- 
+>  >max_rsp_size,
+> +    cache_name = kasprintf(GFP_KERNEL, "srpt-rsp-buf-%s-%s-%d", src_addr,
+> +                   dev_name(&sport->sdev->device->dev), port_num);
+> +    if (!cache_name)
+> +        goto free_ch;
+> +    ch->rsp_buf_cache = kmem_cache_create(cache_name, ch->max_rsp_size,
+>                             512, 0, NULL);
+> +    kfree(cache_name);
+>       if (!ch->rsp_buf_cache)
+>           goto free_ch;
+> 
+> 
 
-Actually, sorry, that isn't strictly true. NAPI ID generation is
-moved for everything to napi_enable; they just are (or are not)
-persisted depending on whether the driver opted in to add_config or
-not.
-
-So, the change does affect all drivers. NAPI IDs won't be generated
-and added to the hash until napi_enable and they will be removed
-from the hash in napi_disable... even if you didn't opt-in to having
-storage.
-
-Opt-ing in to storage via netif_napi_add_config just means that your
-NAPI IDs (and other settings) will be persistent.
-
-Sorry about my confusion when replying earlier.
 
