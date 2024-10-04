@@ -1,57 +1,58 @@
-Return-Path: <linux-rdma+bounces-5233-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5234-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8330A990E28
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 21:28:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFCA3990E2D
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 21:28:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 065EB1F22E63
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 19:28:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A69851F22ED0
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 19:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4ED51DE3AA;
-	Fri,  4 Oct 2024 18:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C1A21E97B;
+	Fri,  4 Oct 2024 18:29:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nXqvVdvf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j4GYZs39"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A020E1DE4F7;
-	Fri,  4 Oct 2024 18:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9535321E970;
+	Fri,  4 Oct 2024 18:29:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728066558; cv=none; b=nypNFavsUxAlzyhuykzlrDZw5YHp5tYsfvPGqhbqZAuIdv3dV2C2D2csrIwkOwyToGwKh1CaBfpVFXnvuT4QnpBzGkJqPKmx2Nf8AE9EbrPOFED4O/536fv9Z15Axq9i0RmjznYRxtw2aBB6N8c4uMmxkrXFsAluexQsM4w0o3U=
+	t=1728066563; cv=none; b=ESTVyPfzN1OQjBhrrg26PzlWiDU52OIIipq2Vh12paNf9VB4xddhvKs529yLJWQzgo1jcS4BfykYmVmfS3RYNurEvMMgN1t8JfG5uejhkMCvfveJzHTVpUd0ZOzT8WWTktsF707YgbS4dkJzXy+ESTyUIPG+td4pHpknayC/fg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728066558; c=relaxed/simple;
-	bh=UcQhd3ogPCXBqWGuWQXCUKJzrAxN8OUEvXNKwaGzHgo=;
+	s=arc-20240116; t=1728066563; c=relaxed/simple;
+	bh=fiQfPRLckoTZqtWRmX1EN7fdcgk4kBXpg1No5QtMhDg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YrSGeGgOdqoOwzCuBm2yg1dnXViGUe6KKOM+Uk3Q3sXCwtMHwfkFqtcYTBGlKLma1QZMV7L21SXhUFz1aueX2ccx1A6kCHw5wVsyBX0WrpHBpBsjfXY3lbZx26qZ+eESfMAAk4UYieYWCJGSdSmPEkoFm7S/hk2j3WGolpNzAos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nXqvVdvf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEC26C4CECD;
-	Fri,  4 Oct 2024 18:29:17 +0000 (UTC)
+	 MIME-Version; b=VEv6R4wRlTWnfVpdTb6eI3wzSbgNUXMkfQo+fEDPIDYmXhqTRbF3XPiOH9Uj138EUNu7gzFZhaPwSzDuq2D5uLdwNUSxkRlyfksLDDCtfw1OGq5wind+0QU6NeT7+2haHtw896q+sEQ1/1SLLFThCtDFZ+NEwlOg3vqbG5pZ1+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j4GYZs39; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33BB3C4CECD;
+	Fri,  4 Oct 2024 18:29:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728066558;
-	bh=UcQhd3ogPCXBqWGuWQXCUKJzrAxN8OUEvXNKwaGzHgo=;
+	s=k20201202; t=1728066563;
+	bh=fiQfPRLckoTZqtWRmX1EN7fdcgk4kBXpg1No5QtMhDg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nXqvVdvfI3hJmD8it5Cp/8v/HITUtOzEAUpE311zWdrQL0VLsvrTd1AoC3Rso+q1O
-	 Nm2nQKhBsbpHWWY2mxmwcP4tdT4dOiSlGBC/PkTw1NPUjnf/iM0Yk75lWz8vk0vzW+
-	 HPlFgu73g4cdXnlpTa1Pl4jZMcXMoC6H/XJ1+NNl5N3dl+icg6gXWIQmCCnSRNvXF6
-	 d4+6utwLws6xNtluIIS7wjmo9J2H4D2GqUBJzHrML3Ey8zlqFGF9s974a2BqP1feY2
-	 7zVheBeozIv8mG3Q9I9fxCOMQ/jfiuYbsAmcnkFtNhB6RX3RDBMc9pMWiQZ3aRNxi0
-	 /tLF3ZSg3M8rQ==
+	b=j4GYZs39f95LXiYjJtKddFNZur+ttNKWl6GkZ5eGEgehsFZLtzf1Zlq+tBQLL5Viw
+	 J/I23LMi7oGeGKiH/Gr3xiLwf4REZqTqhTxjZn/DfgyXrzG/CSrg2atoNnpmjz2sie
+	 piy3QQs9L7DOE7NIgnnZRZ6hv0wbk0RyeBGU4XkZyGO4QVjASE+Pe8W/taait8Kp91
+	 gvRTGa2pMnoC1zmhkqxSGz+p7ZKbjZ0cfyhbne1C8i+1q306/CA9H5MI2Qve2ksxq/
+	 9+FXbOkBxo6F6JiD8zULDvK3tQ5Qp/HQFPizyUPl0aPJ/JqBzShFW6y3pGwwhNhZFT
+	 2bnklZGOF+H0w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Saravanan Vajravel <saravanan.vajravel@broadcom.com>,
+Cc: Md Haris Iqbal <haris.iqbal@ionos.com>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Grzegorz Prajsner <grzegorz.prajsner@ionos.com>,
 	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	markzhang@nvidia.com,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 13/31] RDMA/mad: Improve handling of timed out WRs of mad agent
-Date: Fri,  4 Oct 2024 14:28:21 -0400
-Message-ID: <20241004182854.3674661-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 15/31] RDMA/rtrs-srv: Avoid null pointer deref during path establishment
+Date: Fri,  4 Oct 2024 14:28:23 -0400
+Message-ID: <20241004182854.3674661-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241004182854.3674661-1-sashal@kernel.org>
 References: <20241004182854.3674661-1-sashal@kernel.org>
@@ -66,140 +67,64 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.167
 Content-Transfer-Encoding: 8bit
 
-From: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+From: Md Haris Iqbal <haris.iqbal@ionos.com>
 
-[ Upstream commit 2a777679b8ccd09a9a65ea0716ef10365179caac ]
+[ Upstream commit d0e62bf7b575fbfe591f6f570e7595dd60a2f5eb ]
 
-Current timeout handler of mad agent acquires/releases mad_agent_priv
-lock for every timed out WRs. This causes heavy locking contention
-when higher no. of WRs are to be handled inside timeout handler.
+For RTRS path establishment, RTRS client initiates and completes con_num
+of connections. After establishing all its connections, the information
+is exchanged between the client and server through the info_req message.
+During this exchange, it is essential that all connections have been
+established, and the state of the RTRS srv path is CONNECTED.
 
-This leads to softlockup with below trace in some use cases where
-rdma-cm path is used to establish connection between peer nodes
+So add these sanity checks, to make sure we detect and abort process in
+error scenarios to avoid null pointer deref.
 
-Trace:
------
- BUG: soft lockup - CPU#4 stuck for 26s! [kworker/u128:3:19767]
- CPU: 4 PID: 19767 Comm: kworker/u128:3 Kdump: loaded Tainted: G OE
-     -------  ---  5.14.0-427.13.1.el9_4.x86_64 #1
- Hardware name: Dell Inc. PowerEdge R740/01YM03, BIOS 2.4.8 11/26/2019
- Workqueue: ib_mad1 timeout_sends [ib_core]
- RIP: 0010:__do_softirq+0x78/0x2ac
- RSP: 0018:ffffb253449e4f98 EFLAGS: 00000246
- RAX: 00000000ffffffff RBX: 0000000000000000 RCX: 000000000000001f
- RDX: 000000000000001d RSI: 000000003d1879ab RDI: fff363b66fd3a86b
- RBP: ffffb253604cbcd8 R08: 0000009065635f3b R09: 0000000000000000
- R10: 0000000000000040 R11: ffffb253449e4ff8 R12: 0000000000000000
- R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000040
- FS:  0000000000000000(0000) GS:ffff8caa1fc80000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 00007fd9ec9db900 CR3: 0000000891934006 CR4: 00000000007706e0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- PKRU: 55555554
- Call Trace:
-  <IRQ>
-  ? show_trace_log_lvl+0x1c4/0x2df
-  ? show_trace_log_lvl+0x1c4/0x2df
-  ? __irq_exit_rcu+0xa1/0xc0
-  ? watchdog_timer_fn+0x1b2/0x210
-  ? __pfx_watchdog_timer_fn+0x10/0x10
-  ? __hrtimer_run_queues+0x127/0x2c0
-  ? hrtimer_interrupt+0xfc/0x210
-  ? __sysvec_apic_timer_interrupt+0x5c/0x110
-  ? sysvec_apic_timer_interrupt+0x37/0x90
-  ? asm_sysvec_apic_timer_interrupt+0x16/0x20
-  ? __do_softirq+0x78/0x2ac
-  ? __do_softirq+0x60/0x2ac
-  __irq_exit_rcu+0xa1/0xc0
-  sysvec_call_function_single+0x72/0x90
-  </IRQ>
-  <TASK>
-  asm_sysvec_call_function_single+0x16/0x20
- RIP: 0010:_raw_spin_unlock_irq+0x14/0x30
- RSP: 0018:ffffb253604cbd88 EFLAGS: 00000247
- RAX: 000000000001960d RBX: 0000000000000002 RCX: ffff8cad2a064800
- RDX: 000000008020001b RSI: 0000000000000001 RDI: ffff8cad5d39f66c
- RBP: ffff8cad5d39f600 R08: 0000000000000001 R09: 0000000000000000
- R10: ffff8caa443e0c00 R11: ffffb253604cbcd8 R12: ffff8cacb8682538
- R13: 0000000000000005 R14: ffffb253604cbd90 R15: ffff8cad5d39f66c
-  cm_process_send_error+0x122/0x1d0 [ib_cm]
-  timeout_sends+0x1dd/0x270 [ib_core]
-  process_one_work+0x1e2/0x3b0
-  ? __pfx_worker_thread+0x10/0x10
-  worker_thread+0x50/0x3a0
-  ? __pfx_worker_thread+0x10/0x10
-  kthread+0xdd/0x100
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork+0x29/0x50
-  </TASK>
-
-Simplified timeout handler by creating local list of timed out WRs
-and invoke send handler post creating the list. The new method acquires/
-releases lock once to fetch the list and hence helps to reduce locking
-contetiong when processing higher no. of WRs
-
-Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Link: https://lore.kernel.org/r/20240722110325.195085-1-saravanan.vajravel@broadcom.com
+Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Signed-off-by: Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
+Link: https://patch.msgid.link/20240821112217.41827-9-haris.iqbal@ionos.com
 Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/mad.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/mad.c b/drivers/infiniband/core/mad.c
-index 674344eb8e2f4..58befbaaf0ad5 100644
---- a/drivers/infiniband/core/mad.c
-+++ b/drivers/infiniband/core/mad.c
-@@ -2616,14 +2616,16 @@ static int retry_send(struct ib_mad_send_wr_private *mad_send_wr)
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index 27bf2b2da9fd6..7e3b2906758b2 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -943,12 +943,11 @@ static void rtrs_srv_info_req_done(struct ib_cq *cq, struct ib_wc *wc)
+ 	if (err)
+ 		goto close;
  
- static void timeout_sends(struct work_struct *work)
- {
-+	struct ib_mad_send_wr_private *mad_send_wr, *n;
- 	struct ib_mad_agent_private *mad_agent_priv;
--	struct ib_mad_send_wr_private *mad_send_wr;
- 	struct ib_mad_send_wc mad_send_wc;
-+	struct list_head local_list;
- 	unsigned long flags, delay;
- 
- 	mad_agent_priv = container_of(work, struct ib_mad_agent_private,
- 				      timed_work.work);
- 	mad_send_wc.vendor_err = 0;
-+	INIT_LIST_HEAD(&local_list);
- 
- 	spin_lock_irqsave(&mad_agent_priv->lock, flags);
- 	while (!list_empty(&mad_agent_priv->wait_list)) {
-@@ -2641,13 +2643,16 @@ static void timeout_sends(struct work_struct *work)
- 			break;
- 		}
- 
--		list_del(&mad_send_wr->agent_list);
-+		list_del_init(&mad_send_wr->agent_list);
- 		if (mad_send_wr->status == IB_WC_SUCCESS &&
- 		    !retry_send(mad_send_wr))
- 			continue;
- 
--		spin_unlock_irqrestore(&mad_agent_priv->lock, flags);
-+		list_add_tail(&mad_send_wr->agent_list, &local_list);
-+	}
-+	spin_unlock_irqrestore(&mad_agent_priv->lock, flags);
- 
-+	list_for_each_entry_safe(mad_send_wr, n, &local_list, agent_list) {
- 		if (mad_send_wr->status == IB_WC_SUCCESS)
- 			mad_send_wc.status = IB_WC_RESP_TIMEOUT_ERR;
- 		else
-@@ -2655,11 +2660,8 @@ static void timeout_sends(struct work_struct *work)
- 		mad_send_wc.send_buf = &mad_send_wr->send_buf;
- 		mad_agent_priv->agent.send_handler(&mad_agent_priv->agent,
- 						   &mad_send_wc);
--
- 		deref_mad_agent(mad_agent_priv);
--		spin_lock_irqsave(&mad_agent_priv->lock, flags);
- 	}
--	spin_unlock_irqrestore(&mad_agent_priv->lock, flags);
+-out:
+ 	rtrs_iu_free(iu, srv_path->s.dev->ib_dev, 1);
+ 	return;
+ close:
++	rtrs_iu_free(iu, srv_path->s.dev->ib_dev, 1);
+ 	close_path(srv_path);
+-	goto out;
  }
  
- /*
+ static int post_recv_info_req(struct rtrs_srv_con *con)
+@@ -999,6 +998,16 @@ static int post_recv_path(struct rtrs_srv_path *srv_path)
+ 			q_size = SERVICE_CON_QUEUE_DEPTH;
+ 		else
+ 			q_size = srv->queue_depth;
++		if (srv_path->state != RTRS_SRV_CONNECTING) {
++			rtrs_err(s, "Path state invalid. state %s\n",
++				 rtrs_srv_state_str(srv_path->state));
++			return -EIO;
++		}
++
++		if (!srv_path->s.con[cid]) {
++			rtrs_err(s, "Conn not set for %d\n", cid);
++			return -EIO;
++		}
+ 
+ 		err = post_recv_io(to_srv_con(srv_path->s.con[cid]), q_size);
+ 		if (err) {
 -- 
 2.43.0
 
