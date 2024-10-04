@@ -1,94 +1,134 @@
-Return-Path: <linux-rdma+bounces-5203-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5204-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ECA698FB56
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 02:02:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7930C98FB64
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 02:05:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1C5428224A
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 00:02:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A99EA1C22CFA
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 00:05:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF6581D1F56;
-	Fri,  4 Oct 2024 00:00:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E86CA55;
+	Fri,  4 Oct 2024 00:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ASYwYzhW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CY893EPW"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 844971D14F8;
-	Fri,  4 Oct 2024 00:00:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22D09360;
+	Fri,  4 Oct 2024 00:05:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728000034; cv=none; b=Dr6M+TT1tHRO7hl3W/n793pxrLm8d6b2X2K6c0S4s8BX1xm0LILp/2pVygdcBOTq19w0RjnSk7dzCjlzKFRx1ow6lwc6wABziSeFweqoAIKn6EY4Qmt5gkhYrXPPEK7AZWl10Enxsnljwsazna1FECh4+6WGBBat/UmaS8JpsOs=
+	t=1728000321; cv=none; b=Vu/ePtfKAtKCOhDJaEmuVpTjR02AiJ4x3xoPXbWR2MQ7wYYi3260GvHk5r72PfEKT77tCD5anlR9fgvNjebNrWtJfH8kqN/bAbxI750dz6jZFyzbYV7VoJIJGOUBzqjvCyp2Fxesov8CySWIOsNfW8T8JUMGYg/LAUesuffTKd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728000034; c=relaxed/simple;
-	bh=FJgSz8Q0Gg2vj8ui2TV2ie76jXIudkVW9NQHhbjtFk0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=GWvG7YvpOMcwJPjxv22z4kyT3h8cm39Eet96mPG4AYd1WapV5BCBnSvdu4dLTsVz3DrFT0R14xEAJypugPeFd3rx1UjRj0f8olYSfFf4t+dcxjdPvD0KyI1SjdsdIcfCGZcD/XbI9fj/HY7QRVGbaxBlHrSTb7YKUiDinAR8j48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ASYwYzhW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 069D9C4CEC5;
-	Fri,  4 Oct 2024 00:00:34 +0000 (UTC)
+	s=arc-20240116; t=1728000321; c=relaxed/simple;
+	bh=+yEM14FSzR8BArfH6Kuafdug5D83cp/1opspSQcsrX4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rZrJ33M64g4q1d+ehMBeLY83NNx/yPpzOoWmc+7+K/CV9d5ZyISR8ABesb9DsRWqVH3VtrYLHkTkOSFtmBIGaC9JjU9saOW47mar3qoWzeInpr9w7/Ma9fWNSZHlH8d23sNVbKqH4BwZt3S+DSiY7PezvYJn/0D0Nu1aCdkUs64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CY893EPW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC0EAC4CEC5;
+	Fri,  4 Oct 2024 00:05:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728000034;
-	bh=FJgSz8Q0Gg2vj8ui2TV2ie76jXIudkVW9NQHhbjtFk0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ASYwYzhWxsWyZ5AuV17YmHdN2AB0fId1HuYaH+TKwYOgccZHq1NpmRLkJJWrHVH4o
-	 Y+2ZnMIDGvSVKfH5VJvsAeaOSRdGwOfVXHdCH/6tXC01K9hLIDbpK3lgGHgeZK8lZw
-	 xHkuQG9Lg1jGhApC3ZZxPP5UIkt8yocjGI7YHHuOVWDOZ0f6jd/SyXAkKwzgqDjXm1
-	 hpdI7iArQdfKqowuJ89dHz7823OHZ99StVosgdO09F6x5g2PYfnoJNVvA4v5qGUz8P
-	 xw7DuJiHJg11sBk/jhUqH9HsSzKJqrrosEf3RPSCJ/Npvj+qavWtP/5ITPVQKuJQTv
-	 Hw0IkFdYa2N9Q==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE0193803263;
-	Fri,  4 Oct 2024 00:00:38 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1728000320;
+	bh=+yEM14FSzR8BArfH6Kuafdug5D83cp/1opspSQcsrX4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CY893EPWDDJFX7gRRCgurlWrALdvA4Mtc4eJfpJ5HyEH6GGX2DXzES2LtveQ3r6rC
+	 EOQxewztjNAXN5EkEi7iQfyGtUVYbSny/KkPX2xBJFtRZ1PtCQMa9+lGJB9v04tYb3
+	 PAHiZw3Utu7RYDpYhwFGmVXDgVOrNAX1rzQ/oA/6nRTdaHoyDRkfsYgi117bIPRNk6
+	 pHvlvfDwJy4FOon9+qg08wZv8Qw3Osu5PvcH++KFV6cTMwvw16xtXSxpys5v/DeDgL
+	 8HrsfCHclLw5lZOGcBRLNOlpuzDtR06W1Y/XaAg3CO663vkhlalvDU2yDgCFV5+Bbo
+	 d08K5fcsjntRQ==
+Date: Thu, 3 Oct 2024 17:05:18 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, "K. Y.
+ Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+ Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Long Li <longli@microsoft.com>, Simon Horman
+ <horms@kernel.org>, Konstantin Taranov <kotaranov@microsoft.com>, Souradeep
+ Chakrabarti <schakrabarti@linux.microsoft.com>, Erick Archer
+ <erick.archer@outlook.com>, Pavan Chebbi <pavan.chebbi@broadcom.com>, Ahmed
+ Zaki <ahmed.zaki@intel.com>, Colin Ian King <colin.i.king@gmail.com>,
+ Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH net-next] net: mana: Enable debugfs files for MANA
+ device
+Message-ID: <20241003170518.11cd9e20@kernel.org>
+In-Reply-To: <1727754041-26291-1-git-send-email-shradhagupta@linux.microsoft.com>
+References: <1727754041-26291-1-git-send-email-shradhagupta@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net/rds: remove unused struct 'rds_ib_dereg_odp_mr'
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172800003749.2035955.1490460545040983997.git-patchwork-notify@kernel.org>
-Date: Fri, 04 Oct 2024 00:00:37 +0000
-References: <20240930134358.48647-1-linux@treblig.org>
-In-Reply-To: <20240930134358.48647-1-linux@treblig.org>
-To: Dr. David Alan Gilbert <linux@treblig.org>
-Cc: allison.henderson@oracle.com, edumazet@google.com, kuba@kernel.org,
- linux-rdma@vger.kernel.org, davem@davemloft.net, pabeni@redhat.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, horms@kernel.org,
- yanjun.zhu@linux.dev
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On Mon, 30 Sep 2024 20:40:41 -0700 Shradha Gupta wrote:
+> @@ -1516,6 +1519,13 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  	gc->bar0_va = bar0_va;
+>  	gc->dev = &pdev->dev;
+>  
+> +	if (gc->is_pf) {
+> +		gc->mana_pci_debugfs = debugfs_create_dir("0", mana_debugfs_root);
+> +	} else {
+> +		gc->mana_pci_debugfs = debugfs_create_dir(pci_slot_name(pdev->slot),
+> +							  mana_debugfs_root);
+> +	}
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+no need for brackets around single statements
 
-On Mon, 30 Sep 2024 14:43:58 +0100 you wrote:
-> From: "Dr. David Alan Gilbert" <linux@treblig.org>
-> 
-> 'rds_ib_dereg_odp_mr' has been unused since the original
-> commit 2eafa1746f17 ("net/rds: Handle ODP mr
-> registration/unregistration").
-> 
-> Remove it.
-> 
-> [...]
 
-Here is the summary with links:
-  - [net-next] net/rds: remove unused struct 'rds_ib_dereg_odp_mr'
-    https://git.kernel.org/netdev/net-next/c/25ba2a5adab2
+> @@ -1619,7 +1640,29 @@ static struct pci_driver mana_driver = {
+>  	.shutdown	= mana_gd_shutdown,
+>  };
+>  
+> -module_pci_driver(mana_driver);
+> +static int __init mana_driver_init(void)
+> +{
+> +	int err;
+> +
+> +	mana_debugfs_root = debugfs_create_dir("mana", NULL);
+> +
+> +	err = pci_register_driver(&mana_driver);
+> +
 
-You are awesome, thank you!
+no need for empty lines between function call and its error check
+
+> +	if (err)
+> +		debugfs_remove(mana_debugfs_root);
+> +
+> +	return err;
+> +}
+> +
+> +static void __exit mana_driver_exit(void)
+> +{
+> +	debugfs_remove(mana_debugfs_root);
+> +
+> +	pci_unregister_driver(&mana_driver);
+> +}
+> +
+> +module_init(mana_driver_init);
+> +module_exit(mana_driver_exit);
+>  
+>  MODULE_DEVICE_TABLE(pci, mana_id_table);
+>  
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index c47266d1c7c2..255f3189f6fa 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/filter.h>
+>  #include <linux/mm.h>
+>  #include <linux/pci.h>
+> +#include <linux/debugfs.h>
+
+looks like the headers were previously alphabetically sorted.
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+pw-bot: cr
 
