@@ -1,90 +1,84 @@
-Return-Path: <linux-rdma+bounces-5215-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5216-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15DB99905C3
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 16:16:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61C1B990660
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 16:40:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C025E1F221E3
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 14:16:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B947283055
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2024 14:40:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA899212F15;
-	Fri,  4 Oct 2024 14:16:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54458219497;
+	Fri,  4 Oct 2024 14:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="C86sRQfG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WVNYMI4r"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB371BC23;
-	Fri,  4 Oct 2024 14:16:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 094E9219486;
+	Fri,  4 Oct 2024 14:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728051376; cv=none; b=MZ0qeIpEIW6/KLKxDkAOWu01+1B960XLEE9ad/OQikF6cYnAN7TAk/VBRMShPxvwml29B5Rv4Xf7sWf30L5Tot+9KvwFdR0h8sXSyv2/jxFBoxaEjevpROmmc3NbGsko9WUDkDCA12cO2hhsiIWZXpWsdiQ0hhnSptgjy4xe0mE=
+	t=1728052815; cv=none; b=QYoH0hUWemUZpA0+R9mPxrTONg9S/quroZQHUKhStvnumSQ+j5JtcrVbI3CbqikfWPB+fxFKzzLNiGIbG2kEEqRIeeuTKTgAs0VmW0AVtIVGG0gx6U3HImJ3sWKMARwscfD/SD0FPxnPbM3EVuJIWixxUaA0Rslq8dQF2b9fydM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728051376; c=relaxed/simple;
-	bh=es7DQpcICKhSauRHiYxbkz1Bv1jKuLVCA8L+zF1GC2M=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=eHd8IxEVoe7HtE7K+V7U5I9/Wm2N9ydMkDl4WtSQ3jrlJ1wk7ehgHOl4yPNPWIMoU7apzCeH5paAKFMlKo0Q75mZc6bGVUKFmTGxfYRh+6IL0D+M3QDi6HZK9EQi1zObI2oG0C9N1r2kAOvY8y01zxTm6if99P/IhoxsYWf50dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=C86sRQfG; arc=none smtp.client-ip=46.235.229.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-	; s=bytemarkmx; h=Content-Type:MIME-Version:Message-ID:Subject:From:Date:From
-	:Subject; bh=dLzfh73W+9ci6UkmDEBS2G6WMepVrbkF6pKwKfsZehQ=; b=C86sRQfG64KhRrKu
-	lyFRoYoOgcs47Izu0Q6Ji+D1vSD5iGaTXtH5ZK0TtAtGdphY4Zd2lUUthhu/okXKAhneT3OUJBc40
-	H7+ZWsoJBHKZHaRK8yt5pJdk0QWoy2LyGFJT1B+oeivkWK8LcMfxF3TKxN4EXsJ8o/AdeZC7ZUKtz
-	vyS85TApffKhVUj8xwO3e1RYX8IraJ+Qmp6avdYTpMAFqesr7QmBqRGEcgCXRC1ongX+DOe6+s25I
-	sb2xAKBgWpqGZfXYfE6v/PjfzkVPmq9glMT0A33lgvEkK7i94OrHfhiAjSu48p70rQJO+iQag9/7i
-	8/UEz/Wdq6GzUyXBag==;
-Received: from dg by mx.treblig.org with local (Exim 4.96)
-	(envelope-from <dg@treblig.org>)
-	id 1swj6G-008s3o-2C;
-	Fri, 04 Oct 2024 14:16:08 +0000
-Date: Fri, 4 Oct 2024 14:16:08 +0000
-From: "Dr. David Alan Gilbert" <linux@treblig.org>
-To: maorg@nvidia.com, bharat@chelsio.com, jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: of c4iw_fill_res_qp_entry
-Message-ID: <Zv_4qAxuC0dLmgXP@gallifrey>
+	s=arc-20240116; t=1728052815; c=relaxed/simple;
+	bh=OOqrp/aX74R3fbutRk9h9Snzzbk6EufuV+Xu9xvdAxE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qpynIyIzJKwEmnmJSfOIkw7euw4yJRmlZVlPQpLszE8xCtw4kvf1mBDHvSftz7u1B1UEcDOr1qbEPLIQssF3tHKtBCCHmjF30OdtVEW3g1fl9BF4CCtaAILHVd2UrjtYav9ygD09KAGFgDXZWLK8BHoNkDjRztZbs/kF4FuK5j8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WVNYMI4r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CABCC4CECF;
+	Fri,  4 Oct 2024 14:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728052813;
+	bh=OOqrp/aX74R3fbutRk9h9Snzzbk6EufuV+Xu9xvdAxE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=WVNYMI4rT+Xl8aWQpo6GKoHlFwk61kcHMDPXWU2aGBXfBsOLew36cAfOszZi7Y6G+
+	 X6iLIAM/GXTGMRqrDSTLPnmtB8qQhaIizUb2+pEj5vzK+KCqzIFaAyjfVQaA95cGvX
+	 9uosCMhXM4xYiTP9LSM1Ea5aiyhruJYLOwV/dxwVW3EvC9QWWftIvk65KIZsbg0lIi
+	 aPWn3sxHLY090lBlGENIJSaFCgSnTvVAJ3QKPdt8nOWIA4WRfGj4i9hjXVsSZplFDn
+	 IEkTndcqNdrSKiqOUrKeKdyAfhUbBywQuBvT3suPGWkJJHa1l9HTqp6klEKSWA+Quf
+	 s+jd+rl8hUItw==
+Date: Fri, 4 Oct 2024 07:40:12 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Shuah Khan
+ <shuah@kernel.org>, Allison Henderson <allison.henderson@oracle.com>,
+ netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ rds-devel@oss.oracle.com
+Subject: Re: [PATCH 0/3] selftests: net: add missing gitignore and
+ EXTRA_CLEAN entries.
+Message-ID: <20241004074012.68b153c7@kernel.org>
+In-Reply-To: <20240930-net-selftests-gitignore-v1-0-65225a855946@gmail.com>
+References: <20240930-net-selftests-gitignore-v1-0-65225a855946@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/6.1.0-21-amd64 (x86_64)
-X-Uptime: 14:01:54 up 149 days,  1:15,  1 user,  load average: 0.02, 0.03,
- 0.00
-User-Agent: Mutt/2.2.12 (2023-09-09)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi,
-  One of my scripts noticed that c4iw_fill_res_qp_entry is not called
-anywhere; It came from:
+On Mon, 30 Sep 2024 19:34:09 +0200 Javier Carrasco wrote:
+> This series is a cherry-pick on top of v6.12-rc1 from the one I sent
+> for selftests with other patches that were not net-related:
+> 
+> https://lore.kernel.org/all/20240925-selftests-gitignore-v3-0-9db896474170@gmail.com/
+> 
+> The patches have not been modified, and the Reviewed-by tags have
+> been kept.
 
-commit 5cc34116ccec60032dbaa92768f41e95ce2d8ec7
-Author: Maor Gottlieb <maorg@mellanox.com>
-Date:   Tue Jun 23 14:30:38 2020 +0300
+We merged commit 8ed7cf66f484 ("selftests: rds: move include.sh to
+TEST_FILES") in meantime, now we have a slight conflict on patch 2.
+Could you rebase and repost?
 
-    RDMA: Add dedicated QP resource tracker function
-    
-I was going to send a patch to deadcode it, but is it really a bug and
-it should be assigned in c4iw_dev_ops in cxgb4/provider.c ?
-
-(Note I know nothing about the innards of your driver, I'm just spotting
-the unused function).
-
-Thoughts?
-
-Dave
+I'd designate the repost as "PATCH net v2", indicating that we probably
+want to send these to Linus before 6.12
 -- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+pw-bot: cr
 
