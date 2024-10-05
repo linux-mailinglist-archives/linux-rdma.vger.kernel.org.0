@@ -1,121 +1,107 @@
-Return-Path: <linux-rdma+bounces-5245-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5246-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2F68991485
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Oct 2024 07:30:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91D5799153E
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Oct 2024 10:18:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E55FA1C21E7B
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Oct 2024 05:30:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 083281F23A65
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Oct 2024 08:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9747913AD2B;
-	Sat,  5 Oct 2024 05:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE8013BC11;
+	Sat,  5 Oct 2024 08:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YF5RZ/35"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZUetfGHl"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3EB782D91;
-	Sat,  5 Oct 2024 05:29:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B611369BB
+	for <linux-rdma@vger.kernel.org>; Sat,  5 Oct 2024 08:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728106194; cv=none; b=KqI9FMjpSO3RBaTmpDMlHT7pZeaM9bFGmQZYy63UCRRmpQc14nKt6Mr9Dgjn0QFufCGPaibhoVn8D7LJM+nZ87icauSY9aDABpacu5vB2nNgYIXJouS4xCYclcmzcQ41n5fM5V5Mc8ZgFMbm5doK0EHJfr93du1HoupwCbHGDzY=
+	t=1728116322; cv=none; b=K6H0HYpVl2AQawA87osqYS4fB46ylDyhmm3C0BiodNzge3ndfaJtyk1c38V3N6EVEwILzfEBk49WosSST6M6Cn7hTPL8f2rqqgkN0ytspeVYrn0tmFfpRO/TOxH49xhpIEuhzrRyUPBkW4N3brd/9/DP3He2Dg1zdecuvuHEaHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728106194; c=relaxed/simple;
-	bh=hI2BPsKn6Fb7xDapPbHxt54KAin5kF1lKUkbh087EgQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=n9bk0c8DdKgVjCM1qc2k1dNFZ8N7vHNu3wlmyZKz04ctUijiBdbzzPIa5COKZvDZ1H9vBfUUUkY7ZKALImakaMPUCMWFEwtG+vnvZCOEGNoWqTA9S3ZXBioYy2IQrXY/0i+FQfDLMhes3To8V4SWq5XeNcJQMwN7Xqlf9a+RjBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YF5RZ/35; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-42cb7a2e4d6so28326345e9.0;
-        Fri, 04 Oct 2024 22:29:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728106191; x=1728710991; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0kNhACyHju1qZ/sENCdrWjPN9bm5n5NCjJOZx++DT6c=;
-        b=YF5RZ/35aZ2BtHafx70/DXl7Lx9IfseXr29AHE4X/OUnEzJM2RNgxz2OCkWHIq1m6A
-         v4ofAONRmvViWiNep0tHlJspDmygY4zZcYgi5iovTQWguCe90dsgPVj1nPHe9QuPMHoQ
-         HatpvIVRw8KVbJ+4NnXlJRc62Wu38a8x4TJtkHCXsmUdIJGGbE6nNsJ/OeKg0csx4vAp
-         ND0abJrS+oj5XFZ5GM6G22BXlF3FO+JMcAkIYZenp8X5ZuxsHFzTOnQmFP2TvrA23loF
-         Bf7fvXrMbjJ+gXybK9yTcTWAyrAkY/MwXuAVspNqcvcOYyDuVchpGZ+rh9jpfVWQKOSX
-         oZkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728106191; x=1728710991;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0kNhACyHju1qZ/sENCdrWjPN9bm5n5NCjJOZx++DT6c=;
-        b=HL5VztSq/BErtmACn1TuaVKd/G6MROddVy/ELZ2UyT3WteMASh4Tmj666YBw6X3ku7
-         +EOlynNKdBl4cLLwnOlSy0b+jdGvC1/AVo4yPlCSY8HHY0FKspx7NdGTVwiHzbGElSLp
-         8W6FDvn1P7aniqjCjC6Qjnd/glpHebbYfIQuJIs8AV7q+qSwqUZ6gwWIRHASCcDvqmEu
-         LaRuxOz1Bnjpvfpi++tH9Q3zDSmy4NHH0iJEaSevStXNlZ4BPTC4ECO+FWL+xHFZqGXS
-         8Vvc7W3jtMi08HW7iEFO37KDXkTXeovWIVdabQ9POORQ0y/6WBPVKLq0WkIFPtrGt+8c
-         TT8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVGSCyc5QlUyOu+XxLnRYqip3dXTVpyexEM5k/RStYwy8u9g8b0wB54H7HVtE7nZCsO8UT/CN21JnEURqU4oiFt@vger.kernel.org, AJvYcCWJyyHEednwb6no2ecObbgBRsGba60yMe78OCH8bzuSv10sxegYXQk1lVE2blOugpU3MRBi+9Zd7rvpkuU=@vger.kernel.org, AJvYcCWz8SmyxAGydtJGT6GbdcqL1/ONnDcjnQbvVQIShHx0yWwaJdPEOfTnFC9ovu3Tz3T9hiJSJCI9XFH9Dg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzxLpzrsCsMA0rgdHsHrvA2gPKVKjA0TLrwLyIdVp26Q2zofhag
-	3DJPcLbNZMv3MtDPGhc9W5XqVtcf8yC/iWKC+sopVrk/ipKrN+WF
-X-Google-Smtp-Source: AGHT+IFbHEahtJM/4oQLiQWsE0/yXl9jJTCY/tUAnYEbQXtKGctZkwnf9pKoj9zbsCmehWVFi23MXw==
-X-Received: by 2002:a05:600c:350c:b0:42c:ac9f:b505 with SMTP id 5b1f17b1804b1-42f85af0486mr40560545e9.31.1728106190858;
-        Fri, 04 Oct 2024 22:29:50 -0700 (PDT)
-Received: from [127.0.1.1] (ip5f5ac341.dynamic.kabel-deutschland.de. [95.90.195.65])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42f89ed952asm13103105e9.45.2024.10.04.22.29.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Oct 2024 22:29:50 -0700 (PDT)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Sat, 05 Oct 2024 07:29:42 +0200
-Subject: [PATCH net v2 3/3] selftests: net: rds: add gitignore file for
- include.sh
+	s=arc-20240116; t=1728116322; c=relaxed/simple;
+	bh=ERneIrgLPRtWwRr7jfiUOeI59b33GahU8R7kfdUHHaU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AiUnp3LeG5nt/J4iVcoaL4t9KF+mHHJylre3LezezMW/cCngEvxJs24kkjgsBNenL2kKAU2eSdmqhw+9l7KeV1D3qQ1gllJjbjdXtUeoiFRIUTSsmUO96Brj8P73PXcVMabqoNK2Kcrw8Gu10gtNSahBZzoQOzP7WYdouWGkzbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZUetfGHl; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <21e1b842-7662-46cb-9da7-fe37a3b3119b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728116318;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NMmkCzSXIAM+PLZxbf+a1AidtWBAPGqD1VWOkXNMcPo=;
+	b=ZUetfGHlSxiTqLvxg1v3AM+K64bVN20czslKjjbF5TywuBJdYVWyEu54jBenAtlpBhHE+F
+	AKa18sJR8W0TwofNKhn89ulvAHbmynuArQ+cJgPHcLIlug7bjNHXXq5xQWfGNqYWCa7fxq
+	zonkQB3gbpcaKde/TTazAA8GwkMpP3Y=
+Date: Sat, 5 Oct 2024 16:18:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241005-net-selftests-gitignore-v2-3-3a0b2876394a@gmail.com>
-References: <20241005-net-selftests-gitignore-v2-0-3a0b2876394a@gmail.com>
-In-Reply-To: <20241005-net-selftests-gitignore-v2-0-3a0b2876394a@gmail.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>, 
- Allison Henderson <allison.henderson@oracle.com>
-Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
- rds-devel@oss.oracle.com, Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1728106184; l=593;
- i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=hI2BPsKn6Fb7xDapPbHxt54KAin5kF1lKUkbh087EgQ=;
- b=pT+6E328HKIjUdbdkDAosTr3J+V7wFYwJi5z2eGK/67vVTaV605PDzzxzT1dA/BPxh5lFR3JA
- 8dQJ+dvVQLIDeoOJ7OKMijmF70kazaCgZzSYvmf3K020dp4Ho7G7EKn
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
+Subject: Re: blktests failures with v6.12-rc1 kernel
+To: Jens Axboe <axboe@kernel.dk>, Bart Van Assche <bvanassche@acm.org>,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+ "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+ "nbd@other.debian.org" <nbd@other.debian.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <xpe6bea7rakpyoyfvspvin2dsozjmjtjktpph7rep3h25tv7fb@ooz4cu5z6bq6>
+ <e6e6f77b-f5c6-4b1e-8ab2-b492755857f0@acm.org>
+ <dvpmtffxeydtpid3gigfmmc2jtp2dws6tx4bc27hqo4dp2adhv@x4oqoa2qzl2l>
+ <5cff6598-21f3-4e85-9a06-f3a28380585b@linux.dev>
+ <9fe72efb-46b8-4a72-b29c-c60a8c64f88c@acm.org>
+ <b60fa0ab-591b-41e8-9fca-399b6a25b6d9@linux.dev>
+ <c5c3c7d7-2db9-44fe-a316-b0b5bab30f1e@kernel.dk>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <c5c3c7d7-2db9-44fe-a316-b0b5bab30f1e@kernel.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-The generated include.sh should be ignored by git. Create a new
-gitignore and add the file to the list.
 
-Reviewed-by: Allison Henderson <allison.henderson@oracle.com>
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- tools/testing/selftests/net/rds/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
+在 2024/10/5 9:41, Jens Axboe 写道:
+> On 10/4/24 7:26 PM, Zhu Yanjun wrote:
+>> ? 2024/10/5 0:31, Bart Van Assche ??:
+>>> On 10/4/24 5:40 AM, Zhu Yanjun wrote:
+>>>> So I add a jiffies (u64) value into the name.
+>>> I don't think that embedding the value of the jiffies counter in the kmem cache names is sufficient to make cache names unique. That sounds like a fragile approach to me.
+>> Sorry. I can not get you. Why jiffies counter is not sufficient to
+>> make cache names unique? And why is it a fragile approach?
+> 1 jiffy is an eternity, what happens if someone calls
+> kmem_cache_create() twice in that window?
 
-diff --git a/tools/testing/selftests/net/rds/.gitignore b/tools/testing/selftests/net/rds/.gitignore
-new file mode 100644
-index 000000000000..1c6f04e2aa11
---- /dev/null
-+++ b/tools/testing/selftests/net/rds/.gitignore
-@@ -0,0 +1 @@
-+include.sh
+Got it. Thanks a lot.
 
+Zhu Yanjun
+
+>
+>> I read your latest commit. In your commit, the ida is used to make
+>> cache names unique. It is a good approach if it can fix this problem.
+> That seems over-engineered. Seems to me that either these things should
+> share a slab cache (why do they need one each, if they are the same
+> sized object?!). And if they really do need one, surely something ala:
+>
+> static atomic_long_t slab_index;
+>
+> sprintf(slab_name, "foo-%ld", atomic_inc_return(&slab_index));
+>
+> would be all you need.
+>
 -- 
-2.43.0
+Best Regards,
+Yanjun.Zhu
 
 
