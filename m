@@ -1,93 +1,87 @@
-Return-Path: <linux-rdma+bounces-5252-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5253-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40CE2991E20
-	for <lists+linux-rdma@lfdr.de>; Sun,  6 Oct 2024 13:32:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C978991E33
+	for <lists+linux-rdma@lfdr.de>; Sun,  6 Oct 2024 13:49:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D42352825FF
-	for <lists+linux-rdma@lfdr.de>; Sun,  6 Oct 2024 11:32:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C82CAB216F1
+	for <lists+linux-rdma@lfdr.de>; Sun,  6 Oct 2024 11:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195E916132F;
-	Sun,  6 Oct 2024 11:32:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20419170A3F;
+	Sun,  6 Oct 2024 11:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="LQqYltH3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AF/d+U82"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B304C7F6
-	for <linux-rdma@vger.kernel.org>; Sun,  6 Oct 2024 11:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D16D0EC5;
+	Sun,  6 Oct 2024 11:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728214327; cv=none; b=a5qBmUA0QI0yAXmqZwRKYqskQ2yrLaGtJjJw/U48AsF86EzIFWcB3Qx+4chcsUJXC0OiuTyW1dLLQW2SH2/ZTv/WAI2LpVnylpgyFIRRAjc/Vx04duB90BYJyafoOZLK2JQiW60Ku8mryRhJK+RlLH3hKMFsEUSzup0hFaNzCp8=
+	t=1728215355; cv=none; b=as5rvGP1XTCksUmolCZleKOLTJ3m4GmuXC3+TevSF9llG6uedMG9Zyd1Oe+DHU+MKBfgsM5461QVwRg+IAxTH8/jSRBCDQE5TdZ7h5YiKDJfkXVVkzjKxL2xN+S1udZ3JcLvvf5MfFI6dVBXZQKKaQXc48zIZHr7eS0P+ykl9QQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728214327; c=relaxed/simple;
-	bh=ZkeDI/3e6v8oFGjx/TlCAOecbL1KmnN+vlDFecrnKKs=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=Le3+UlbTezMjnZmTxEiAqdJKJlAlhRxIZjM8jcJDuXdS7EJKscnk9RXnzc5gXpEZLQ3FCqsYeqe8kyq0JjpY4NCeLUwaM3XVm/A+kKOxCCF7Dwc4joGS0nfvx/DaRWu0lvCQgFcXRlX14hFC3wXPADROace84mnmbC9dQ4Oy4g0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=LQqYltH3; arc=none smtp.client-ip=185.125.188.250
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id CC06A44F95
-	for <linux-rdma@vger.kernel.org>; Sun,  6 Oct 2024 11:31:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1728214317;
-	bh=ZkeDI/3e6v8oFGjx/TlCAOecbL1KmnN+vlDFecrnKKs=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=LQqYltH3MBm9+DcA9hdfzGxQ1wEVNBPP+FIVUvblQvLs3YzM3drRwYBnKQ4+dGo7N
-	 FylylUUF7YeUJyEyEE/5IPOFnWGFa3aKEIDaa5fGZWGS3Zoz/QuSfOhhkD4PAcWwOy
-	 HK4ji39HAPumgl+2ZfDmTcQfOkCfC+xpKQ3EkJ22RPZhkOaq70wjKmYFPA60IniKip
-	 qtyAnBr96zPddq8juPceGiEQulvdAjqkTLefyHEPMDlC8ZX7/Je2KQC4NWE4B0yYni
-	 Ff6xUZd//OJoO79TxoyaVzMcdwccUoPbR79N0zf2V3v88xeeO3Hv4Cnp9rS5wb1pSw
-	 rnEZ69Wbj8/zw==
-Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
-	by buildd-manager.lp.internal (Postfix) with ESMTP id BD3407ECBC
-	for <linux-rdma@vger.kernel.org>; Sun,  6 Oct 2024 11:31:57 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1728215355; c=relaxed/simple;
+	bh=v6SW59OPf4bvpxmuyWCE2we6FDjoWhx+L3PQNr/qC3s=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=smjd8fmJL2Nq0YO7YzdtHn1TyGg2tJiacpjn0MEOpC5M2hzOlU7t0IZML9/2igSl1kvs38BUsD+AJeXz2qdLkRtAh4cazYPo8Yid4Z+FlX96UXC64homUjW3QWsdFRP7Ob/G8UoowGTZKuyJlaSlB2qRB5lGEC6Ru4GhrZYUJmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AF/d+U82; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFD6AC4CEC5;
+	Sun,  6 Oct 2024 11:49:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728215355;
+	bh=v6SW59OPf4bvpxmuyWCE2we6FDjoWhx+L3PQNr/qC3s=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=AF/d+U82gx76P42/xScTP5Kj1FchPiuIZRGnb6k4xqM/RR4zd39A4/JxwxL365deq
+	 3zncpYwZnM9aKlwdd3Pdnxrf5GnpS37xW8vBREN6KsZl3CpXw1qSFRtNkH5L9tZ6G4
+	 Hmh5/eG1+X8+WHtUjySwqT6Ug9kiALHH/qrl4W07Cz7/VF5U8RfPBWLGIwm5LYiHmR
+	 8134d0QS+UuSe5fui8ENNIDxWU2cX8Do749rRXwWpYUZezjtFp7o3ZB1okftz6+cj6
+	 adh19JujgepnciJbEkYKsjCQh4Ym8D/w5hkxSzgd7yEh73FDQBWoQ0A9DaRItMS352
+	 wkPZm4JE5i7Jw==
+From: Leon Romanovsky <leon@kernel.org>
+To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
+ linux-kernel@vger.kernel.org, tangchengchang@huawei.com
+In-Reply-To: <20240927103323.1897094-1-huangjunxian6@hisilicon.com>
+References: <20240927103323.1897094-1-huangjunxian6@hisilicon.com>
+Subject: Re: [PATCH v6 for-next 0/2] RDMA: Provide an API for drivers to
+ disassociate mmap pages
+Message-Id: <172821535029.66120.2694855650347768865.b4-ty@kernel.org>
+Date: Sun, 06 Oct 2024 14:49:10 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: MANUALDEPWAIT
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: noreply@launchpad.net
-Subject: [recipe build #3796814] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <172821431774.742876.550532478756979840.launchpad@buildd-manager.lp.internal>
-Date: Sun, 06 Oct 2024 11:31:57 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="6341c735b243a0768c3cb66edf85737937cab327"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: e6fdd627c5270204a2a86e0a19f2c0c970565618
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 2 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/3796814/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-099
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/3796814
-Your team Linux RDMA is the requester of the build.
+On Fri, 27 Sep 2024 18:33:21 +0800, Junxian Huang wrote:
+> Provide an API rdma_user_mmap_disassociate() for drivers to disassociate
+> mmap pages. Use this API in hns to prevent userspace from ringing doorbell
+> when HW is reset.
+> 
+> v5 -> v6:
+> * Fix build warning of unused label in patch #1
+> * inline the call to rdma_user_mmap_disassociate() in patch #2
+> 
+> [...]
+
+Applied, thanks!
+
+[1/2] RDMA/core: Provide rdma_user_mmap_disassociate() to disassociate mmap pages
+      https://git.kernel.org/rdma/rdma/c/4fea8bfc11b2fc
+[2/2] RDMA/hns: Disassociate mmap pages for all uctx when HW is being reset
+      https://git.kernel.org/rdma/rdma/c/23ab1cdca331e1
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
 
 
