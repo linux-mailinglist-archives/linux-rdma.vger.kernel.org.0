@@ -1,275 +1,210 @@
-Return-Path: <linux-rdma+bounces-5286-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5287-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE3F2993866
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 22:38:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11B699938E7
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 23:17:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 613F71F22D22
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 20:38:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2228C1C23DD1
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 21:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE70F1DE4FD;
-	Mon,  7 Oct 2024 20:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F18E11DE4DD;
+	Mon,  7 Oct 2024 21:17:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="0sQ/x+2F"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MMXK+nZL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFECC1DE88C
-	for <linux-rdma@vger.kernel.org>; Mon,  7 Oct 2024 20:37:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17144184551
+	for <linux-rdma@vger.kernel.org>; Mon,  7 Oct 2024 21:17:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728333477; cv=none; b=eW2HHK1FoRLb2iDPnPBwnRyQ1p885R4rncze2ot78WbOYbBmAKnd0D19py06umwh3p41cpWxKHBf7Eb4LX5rWXTTyvO96t2IbQFNWOT3BgRhXqKaqHKYPp7nZx125zq2xkKelVG/aie4ALIwo8b77dTcDf4VmdudNRJ9RbZ0Aho=
+	t=1728335838; cv=none; b=qZbcHegd5Mi238jlnu+C08JV9/yHqhTP8SLIyKelo/+hU7fhyOqYVIHkVLesiBo59kKHNRiMmbE+HVxYvDxthKMCXi4FJ9+P3SloRmrVTyE5fFknzzLx/w2N0vxUUIBaofZ1qLEjnxht51YdzGz6KRjcTEXrl/ezMb6XveAeCJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728333477; c=relaxed/simple;
-	bh=weGsx732vc0vmXDwh+xaxGjpKmrCF0cMopDVJPROwhA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aLct3Pv03zdpu74dC3+loSzDsJJIIck//a13VRSQYJFeXf99noYZukfktMGqi3Oo5/rlI64//xJC9VZ92vClC7JlyCWOjyTmW2jQQ9uLlLn1DAuO5qJIt+1IUVgRz656boEY2NuO01HX7t9LMdf3PH/4IHIz39ERBbpUAf8m484=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=0sQ/x+2F; arc=none smtp.client-ip=199.89.1.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 009.lax.mailroute.net (Postfix) with ESMTP id 4XMrZC09CdzlgTWP;
-	Mon,  7 Oct 2024 20:37:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:mime-version:x-mailer:message-id:date
-	:date:subject:subject:from:from:received:received; s=mr01; t=
-	1728333470; x=1730925471; bh=vJWIWXoyY7Kii01ntszmCpMosxsq97U4o64
-	PFF99Dx0=; b=0sQ/x+2FrifOiJJHGuwmTPdqdy8H4LaygpkcG1JJe8/E2zRUPEs
-	c/3DnpxmKveFZql7YGONDVd1I8CbrjeMbUlKvY8n/P3o9Zr4qJ/zzIngmiIDDp6t
-	sVelgnmGu2mDuTqPi0snS0nnTw8t/+uMCCfZHY1d5qK3rilnwR/CU++0WKu8l9es
-	sUBndMTL1AQLDrOG8YOw7CURWg0HZmGIBd0PVwct/owW4j8AFNGCgRwm9FcaT8vv
-	/Pap4aPokW7sLgEXWU6uOkjaIfqQhBvBvSjg18zUFaOADtsQfQr31aL7j6Vtpc6Q
-	L71Yjw6zVIq1+UsiuMsdxZnfxwWimbhxzmw==
-X-Virus-Scanned: by MailRoute
-Received: from 009.lax.mailroute.net ([127.0.0.1])
- by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id Xdg9v8Ub3R8n; Mon,  7 Oct 2024 20:37:50 +0000 (UTC)
-Received: from bvanassche.mtv.corp.google.com (unknown [104.135.204.82])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4XMrZ560qczlgTWM;
-	Mon,  7 Oct 2024 20:37:49 +0000 (UTC)
-From: Bart Van Assche <bvanassche@acm.org>
-To: Jason Gunthorpe <jgg@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>
-Cc: linux-rdma@vger.kernel.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-	Zhu Yanjun <yanjun.zhu@linux.dev>
-Subject: [PATCH v2] RDMA/srpt: Make slab cache names unique
-Date: Mon,  7 Oct 2024 13:37:26 -0700
-Message-ID: <20241007203726.3076222-1-bvanassche@acm.org>
-X-Mailer: git-send-email 2.47.0.rc0.187.ge670bccf7e-goog
+	s=arc-20240116; t=1728335838; c=relaxed/simple;
+	bh=/FgEQNrhClRcqFODHwS84z15AtK3PJnnfGAc0TBOeWA=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=G0o8bsj02ikkPI/Y3yBKtmwfyc2Unrun/ke2R+En6LqXcy8fcE7jTu76jyqT45/D0M5BvsPVv6XjZA7mep7389zIS/9IioBZJX549JpmVryrn77DQQoZ22rCEJXe5HU+sqnkNi4dvUoHrx1PlcAmd+z30nw5Ms1u2wcgUAy8LbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MMXK+nZL; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1728335838; x=1759871838;
+  h=date:from:to:cc:subject:message-id;
+  bh=/FgEQNrhClRcqFODHwS84z15AtK3PJnnfGAc0TBOeWA=;
+  b=MMXK+nZLwiihdyPJCZhkyc86053ZGUdW0jErd3H50rxAWSGsiNQBAn/a
+   EMHeSfIMxKqCef5tOdl+Zx0EVkyG7qrE3kJPrPVwuBgjIJjEu5zD8vsVl
+   CgF7XZf8SeAc6X/PsScEkX0Io+eWQa9DQXIxMWdJrDZJ7Tc7Hs1vAbaci
+   +s/opVHw0NCMt3EloZN7to84kzukS1+auBBIl2MPmGTP2WdKb0qWLR5Cu
+   u9wZMDby3uwptGlg89CtNprJnyzpTlzXRim0xFTb9VqabfuN7PkxlMRgt
+   F8oz1dfrndNZM37s1q1KkHdjF/W3karzlzI4K0x/1svFZupWFwYBSLbyQ
+   A==;
+X-CSE-ConnectionGUID: hhtDjaaqR+6khtI5c5nUUw==
+X-CSE-MsgGUID: T0venNQMQQSPWMf91R+vLw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11218"; a="27315389"
+X-IronPort-AV: E=Sophos;i="6.11,184,1725346800"; 
+   d="scan'208";a="27315389"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2024 14:17:17 -0700
+X-CSE-ConnectionGUID: 6cHlcHfkTh6SvP0zpDf5Ug==
+X-CSE-MsgGUID: DJEzJQLbTIWQSVyYFPC1Rw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,184,1725346800"; 
+   d="scan'208";a="106455618"
+Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 07 Oct 2024 14:17:15 -0700
+Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sxv6P-0005X6-0T;
+	Mon, 07 Oct 2024 21:17:13 +0000
+Date: Tue, 08 Oct 2024 05:17:09 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:for-next] BUILD SUCCESS
+ 615b94746a54702af923b28bd8a629f4ac0ff0d8
+Message-ID: <202410080554.51FqFAzy-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 
-Since commit 4c39529663b9 ("slab: Warn on duplicate cache names when
-DEBUG_VM=3Dy"), slab complains about duplicate cache names. Hence this
-patch. The approach is as follows:
-- Maintain an xarray with the slab size as index and a reference count
-  and a kmem_cache pointer as contents. Use srpt-${slab_size} as kmem
-  cache name.
-- Use 512-byte alignment for all slabs instead of only for some of the
-  slabs.
-- Increment the reference count instead of calling kmem_cache_create().
-- Decrement the reference count instead of calling kmem_cache_destroy().
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: 615b94746a54702af923b28bd8a629f4ac0ff0d8  RDMA/hns: Disassociate mmap pages for all uctx when HW is being reset
 
-Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Closes: https://lore.kernel.org/linux-block/xpe6bea7rakpyoyfvspvin2dsozjm=
-jtjktpph7rep3h25tv7fb@ooz4cu5z6bq6/
-Cc: Zhu Yanjun <yanjun.zhu@linux.dev>
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Fixes: 5dabcd0456d7 ("RDMA/srpt: Add support for immediate data")
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
----
- drivers/infiniband/ulp/srpt/ib_srpt.c | 79 +++++++++++++++++++++++----
- 1 file changed, 67 insertions(+), 12 deletions(-)
+elapsed time: 892m
 
-Changes compared to v1:
- - Instead of using an ida to make slab names unique, maintain an xarray
-   with the slab size as index and the slab pointer and a reference count=
- as
-   contents.
+configs tested: 116
+configs skipped: 4
 
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/u=
-lp/srpt/ib_srpt.c
-index 9632afbd727b..cc18179693bf 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -68,6 +68,8 @@ MODULE_LICENSE("Dual BSD/GPL");
- static u64 srpt_service_guid;
- static DEFINE_SPINLOCK(srpt_dev_lock);	/* Protects srpt_dev_list. */
- static LIST_HEAD(srpt_dev_list);	/* List of srpt_device structures. */
-+static DEFINE_MUTEX(srpt_mc_mutex);	/* Protects srpt_memory_caches. */
-+static DEFINE_XARRAY(srpt_memory_caches); /* See also srpt_memory_cache_=
-entry */
-=20
- static unsigned srp_max_req_size =3D DEFAULT_MAX_REQ_SIZE;
- module_param(srp_max_req_size, int, 0444);
-@@ -105,6 +107,62 @@ static void srpt_recv_done(struct ib_cq *cq, struct =
-ib_wc *wc);
- static void srpt_send_done(struct ib_cq *cq, struct ib_wc *wc);
- static void srpt_process_wait_list(struct srpt_rdma_ch *ch);
-=20
-+/* Type of the entries in srpt_memory_caches. */
-+struct srpt_memory_cache_entry {
-+	refcount_t ref;
-+	struct kmem_cache *c;
-+};
-+
-+static struct kmem_cache *srpt_cache_get(unsigned int object_size)
-+{
-+	struct srpt_memory_cache_entry *e;
-+	char name[32];
-+
-+	guard(mutex)(&srpt_mc_mutex);
-+	e =3D xa_load(&srpt_memory_caches, object_size);
-+	if (e) {
-+		refcount_inc(&e->ref);
-+		return e->c;
-+	}
-+	snprintf(name, sizeof(name), "srpt-%u", object_size);
-+	e =3D kmalloc(sizeof(*e), GFP_KERNEL);
-+	if (!e)
-+		return NULL;
-+	refcount_set(&e->ref, 1);
-+	e->c =3D kmem_cache_create(name, object_size, /*align=3D*/512, 0, NULL)=
-;
-+	if (!e->c)
-+		goto free_entry;
-+	if (IS_ERR(xa_store(&srpt_memory_caches, object_size, e, GFP_KERNEL)))
-+		goto destroy_cache;
-+	return e->c;
-+
-+destroy_cache:
-+	kmem_cache_destroy(e->c);
-+
-+free_entry:
-+	kfree(e);
-+	return NULL;
-+}
-+
-+static void srpt_cache_put(struct kmem_cache *c)
-+{
-+	struct srpt_memory_cache_entry *e =3D NULL;
-+	unsigned long object_size;
-+
-+	guard(mutex)(&srpt_mc_mutex);
-+	xa_for_each(&srpt_memory_caches, object_size, e)
-+		if (e->c =3D=3D c)
-+			break;
-+	if (WARN_ON_ONCE(!e))
-+		return;
-+	WARN_ON_ONCE(e->c !=3D c);
-+	if (!refcount_dec_and_test(&e->ref))
-+		return;
-+	WARN_ON_ONCE(xa_erase(&srpt_memory_caches, object_size) !=3D e);
-+	kmem_cache_destroy(e->c);
-+	kfree(e);
-+}
-+
- /*
-  * The only allowed channel state changes are those that change the chan=
-nel
-  * state into a state with a higher numerical value. Hence the new > pre=
-v test.
-@@ -2119,13 +2177,13 @@ static void srpt_release_channel_work(struct work=
-_struct *w)
- 			     ch->sport->sdev, ch->rq_size,
- 			     ch->rsp_buf_cache, DMA_TO_DEVICE);
-=20
--	kmem_cache_destroy(ch->rsp_buf_cache);
-+	srpt_cache_put(ch->rsp_buf_cache);
-=20
- 	srpt_free_ioctx_ring((struct srpt_ioctx **)ch->ioctx_recv_ring,
- 			     sdev, ch->rq_size,
- 			     ch->req_buf_cache, DMA_FROM_DEVICE);
-=20
--	kmem_cache_destroy(ch->req_buf_cache);
-+	srpt_cache_put(ch->req_buf_cache);
-=20
- 	kref_put(&ch->kref, srpt_free_ch);
- }
-@@ -2245,8 +2303,7 @@ static int srpt_cm_req_recv(struct srpt_device *con=
-st sdev,
- 	INIT_LIST_HEAD(&ch->cmd_wait_list);
- 	ch->max_rsp_size =3D ch->sport->port_attrib.srp_max_rsp_size;
-=20
--	ch->rsp_buf_cache =3D kmem_cache_create("srpt-rsp-buf", ch->max_rsp_siz=
-e,
--					      512, 0, NULL);
-+	ch->rsp_buf_cache =3D srpt_cache_get(ch->max_rsp_size);
- 	if (!ch->rsp_buf_cache)
- 		goto free_ch;
-=20
-@@ -2280,8 +2337,7 @@ static int srpt_cm_req_recv(struct srpt_device *con=
-st sdev,
- 		alignment_offset =3D round_up(imm_data_offset, 512) -
- 			imm_data_offset;
- 		req_sz =3D alignment_offset + imm_data_offset + srp_max_req_size;
--		ch->req_buf_cache =3D kmem_cache_create("srpt-req-buf", req_sz,
--						      512, 0, NULL);
-+		ch->req_buf_cache =3D srpt_cache_get(req_sz);
- 		if (!ch->req_buf_cache)
- 			goto free_rsp_ring;
-=20
-@@ -2478,7 +2534,7 @@ static int srpt_cm_req_recv(struct srpt_device *con=
-st sdev,
- 			     ch->req_buf_cache, DMA_FROM_DEVICE);
-=20
- free_recv_cache:
--	kmem_cache_destroy(ch->req_buf_cache);
-+	srpt_cache_put(ch->req_buf_cache);
-=20
- free_rsp_ring:
- 	srpt_free_ioctx_ring((struct srpt_ioctx **)ch->ioctx_ring,
-@@ -2486,7 +2542,7 @@ static int srpt_cm_req_recv(struct srpt_device *con=
-st sdev,
- 			     ch->rsp_buf_cache, DMA_TO_DEVICE);
-=20
- free_rsp_cache:
--	kmem_cache_destroy(ch->rsp_buf_cache);
-+	srpt_cache_put(ch->rsp_buf_cache);
-=20
- free_ch:
- 	if (rdma_cm_id)
-@@ -3055,7 +3111,7 @@ static void srpt_free_srq(struct srpt_device *sdev)
- 	srpt_free_ioctx_ring((struct srpt_ioctx **)sdev->ioctx_ring, sdev,
- 			     sdev->srq_size, sdev->req_buf_cache,
- 			     DMA_FROM_DEVICE);
--	kmem_cache_destroy(sdev->req_buf_cache);
-+	srpt_cache_put(sdev->req_buf_cache);
- 	sdev->srq =3D NULL;
- }
-=20
-@@ -3082,8 +3138,7 @@ static int srpt_alloc_srq(struct srpt_device *sdev)
- 	pr_debug("create SRQ #wr=3D %d max_allow=3D%d dev=3D %s\n", sdev->srq_s=
-ize,
- 		 sdev->device->attrs.max_srq_wr, dev_name(&device->dev));
-=20
--	sdev->req_buf_cache =3D kmem_cache_create("srpt-srq-req-buf",
--						srp_max_req_size, 0, 0, NULL);
-+	sdev->req_buf_cache =3D srpt_cache_get(srp_max_req_size);
- 	if (!sdev->req_buf_cache)
- 		goto free_srq;
-=20
-@@ -3105,7 +3160,7 @@ static int srpt_alloc_srq(struct srpt_device *sdev)
- 	return 0;
-=20
- free_cache:
--	kmem_cache_destroy(sdev->req_buf_cache);
-+	srpt_cache_put(sdev->req_buf_cache);
-=20
- free_srq:
- 	ib_destroy_srq(srq);
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig    gcc-14.1.0
+alpha                            allyesconfig    clang-20
+alpha                               defconfig    gcc-14.1.0
+arc                              allmodconfig    clang-20
+arc                               allnoconfig    gcc-14.1.0
+arc                              allyesconfig    clang-20
+arc                                 defconfig    gcc-14.1.0
+arc                     nsimosci_hs_defconfig    gcc-13.2.0
+arc                    vdk_hs38_smp_defconfig    gcc-13.2.0
+arm                              allmodconfig    clang-20
+arm                               allnoconfig    gcc-14.1.0
+arm                              allyesconfig    clang-20
+arm                       aspeed_g4_defconfig    gcc-13.2.0
+arm                                 defconfig    gcc-14.1.0
+arm                          ixp4xx_defconfig    gcc-13.2.0
+arm64                            allmodconfig    clang-20
+arm64                             allnoconfig    gcc-14.1.0
+arm64                               defconfig    gcc-14.1.0
+csky                              allnoconfig    gcc-14.1.0
+csky                                defconfig    gcc-14.1.0
+hexagon                          alldefconfig    gcc-13.2.0
+hexagon                          allmodconfig    clang-20
+hexagon                           allnoconfig    gcc-14.1.0
+hexagon                          allyesconfig    clang-20
+hexagon                             defconfig    gcc-14.1.0
+i386                             allmodconfig    clang-18
+i386                              allnoconfig    clang-18
+i386                             allyesconfig    clang-18
+i386        buildonly-randconfig-001-20241008    clang-18
+i386        buildonly-randconfig-002-20241008    clang-18
+i386        buildonly-randconfig-003-20241008    clang-18
+i386        buildonly-randconfig-004-20241008    clang-18
+i386        buildonly-randconfig-005-20241008    clang-18
+i386        buildonly-randconfig-006-20241008    clang-18
+i386                                defconfig    clang-18
+i386                  randconfig-001-20241008    clang-18
+i386                  randconfig-002-20241008    clang-18
+i386                  randconfig-003-20241008    clang-18
+i386                  randconfig-004-20241008    clang-18
+i386                  randconfig-005-20241008    clang-18
+i386                  randconfig-006-20241008    clang-18
+i386                  randconfig-011-20241008    clang-18
+i386                  randconfig-012-20241008    clang-18
+i386                  randconfig-013-20241008    clang-18
+i386                  randconfig-014-20241008    clang-18
+i386                  randconfig-015-20241008    clang-18
+i386                  randconfig-016-20241008    clang-18
+loongarch                        allmodconfig    gcc-14.1.0
+loongarch                         allnoconfig    gcc-14.1.0
+loongarch                           defconfig    gcc-14.1.0
+m68k                             allmodconfig    gcc-14.1.0
+m68k                              allnoconfig    gcc-14.1.0
+m68k                             allyesconfig    gcc-14.1.0
+m68k                          atari_defconfig    gcc-13.2.0
+m68k                                defconfig    gcc-14.1.0
+microblaze                       allmodconfig    gcc-14.1.0
+microblaze                        allnoconfig    gcc-14.1.0
+microblaze                       allyesconfig    gcc-14.1.0
+microblaze                          defconfig    gcc-14.1.0
+mips                              allnoconfig    gcc-14.1.0
+mips                           xway_defconfig    gcc-13.2.0
+nios2                         10m50_defconfig    gcc-13.2.0
+nios2                             allnoconfig    gcc-14.1.0
+nios2                               defconfig    gcc-14.1.0
+openrisc                          allnoconfig    clang-20
+openrisc                          allnoconfig    gcc-14.1.0
+openrisc                         allyesconfig    gcc-14.1.0
+openrisc                            defconfig    gcc-12
+parisc                           allmodconfig    gcc-14.1.0
+parisc                            allnoconfig    clang-20
+parisc                            allnoconfig    gcc-14.1.0
+parisc                           allyesconfig    gcc-14.1.0
+parisc                              defconfig    gcc-12
+parisc                generic-32bit_defconfig    gcc-13.2.0
+parisc64                            defconfig    gcc-14.1.0
+powerpc                          allmodconfig    gcc-14.1.0
+powerpc                           allnoconfig    clang-20
+powerpc                           allnoconfig    gcc-14.1.0
+powerpc                          allyesconfig    gcc-14.1.0
+powerpc                      cm5200_defconfig    gcc-13.2.0
+powerpc                         ps3_defconfig    gcc-13.2.0
+riscv                            allmodconfig    gcc-14.1.0
+riscv                             allnoconfig    clang-20
+riscv                             allnoconfig    gcc-14.1.0
+riscv                            allyesconfig    gcc-14.1.0
+riscv                               defconfig    gcc-12
+s390                             allmodconfig    gcc-14.1.0
+s390                              allnoconfig    clang-20
+s390                             allyesconfig    gcc-14.1.0
+s390                                defconfig    gcc-12
+sh                               allmodconfig    gcc-14.1.0
+sh                                allnoconfig    gcc-14.1.0
+sh                               allyesconfig    gcc-14.1.0
+sh                                  defconfig    gcc-12
+sh                 kfr2r09-romimage_defconfig    gcc-13.2.0
+sh                          rsk7203_defconfig    gcc-13.2.0
+sh                           se7722_defconfig    gcc-13.2.0
+sh                          urquell_defconfig    gcc-13.2.0
+sparc                            allmodconfig    gcc-14.1.0
+sparc                       sparc32_defconfig    gcc-13.2.0
+sparc64                             defconfig    gcc-12
+um                               allmodconfig    clang-20
+um                                allnoconfig    clang-17
+um                                allnoconfig    clang-20
+um                               allyesconfig    clang-20
+um                                  defconfig    gcc-12
+um                             i386_defconfig    gcc-12
+um                           x86_64_defconfig    gcc-12
+x86_64                            allnoconfig    clang-18
+x86_64                           allyesconfig    clang-18
+x86_64                              defconfig    clang-18
+x86_64                                  kexec    clang-18
+x86_64                                  kexec    gcc-12
+x86_64                               rhel-8.3    gcc-12
+x86_64                          rhel-8.3-rust    clang-18
+xtensa                            allnoconfig    gcc-14.1.0
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
