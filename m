@@ -1,44 +1,45 @@
-Return-Path: <linux-rdma+bounces-5266-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5267-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 739BE992C47
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 14:46:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 721A0992CA2
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 15:07:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5B591C22895
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 12:46:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09991B24645
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 13:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B05431D2F50;
-	Mon,  7 Oct 2024 12:43:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604201D271F;
+	Mon,  7 Oct 2024 13:07:14 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from stargate.chelsio.com (stargate.chelsio.com [12.32.117.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A46411D2B23
-	for <linux-rdma@vger.kernel.org>; Mon,  7 Oct 2024 12:43:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69D81E519
+	for <linux-rdma@vger.kernel.org>; Mon,  7 Oct 2024 13:07:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=12.32.117.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728304997; cv=none; b=TU0cMnV4s3naBW9N+LlKqvm6nVGIVXpg/4HTZWnGpBEvSIvqB7jpcsflVwZfQmswN4dufqGtDowcYJuCMSDWNDIOFgdsCl5gLOy8wt+Q6RoxttU25S82X/jdhVxvkEUxovE2MO2j37pWka431gkzs2a0D0hhknSHhFdOBbyhFHk=
+	t=1728306434; cv=none; b=R8PHw6M4E+Rl9JcKDkUweMZHX71dzQWXrifpon6CbXTj9lqYa1N8XjdXS/+qGBpHbSaf7bKdHDjvMl3aYuQGt4o/cN16lY/IyIPsh+J0E8vQYgXL1Zz1rmWuuTjryFZrpMu/Pg+rri8e3uQDJpcRTKvbbwLFsuR8f7DW8ov4PH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728304997; c=relaxed/simple;
-	bh=kWldtGJSoE5QUvPthKeteaLglsDaq76tx0cFBv4XW8M=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AUMcFgRJ4/JbRcrpLI/QRhwdSgarZI9/fphs9vFRa4hlGShOfiUf0n6Xn3vi0zLK/HIaYaNiP3pBotdj+8cbMfwWwU1+OSL8t1AlrKIRsdjr0Ejp3Cwer/Rx8srNI0IPWpv2t+4t/JaiB6ojc3/Bp5BuanYv5ttKOP+2j9JwQKI=
+	s=arc-20240116; t=1728306434; c=relaxed/simple;
+	bh=Ke4CdwLRCsnG1d7oi0sD22JYw2AFaVd9Wehu/WSwkxw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gKjkwm7EQlJJKGnijcx2SX8Fvke9a7z8JxRdo9xaPtBdL35b4PKxsZoJ5TrakXQ1BzXMFd+a+DW0zgdviYQ46KsK+Zl66GgLGhkaMyVO3hvS20QNZUKdZ/b2MAiIeUyGNigtLfQI6ChK+MlCIod9BjFkqC7ldtC2Fp/o/V3ovkU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chelsio.com; spf=pass smtp.mailfrom=chelsio.com; arc=none smtp.client-ip=12.32.117.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chelsio.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chelsio.com
-Received: from sonada.blr.asicdesigners.com (sonada.blr.asicdesigners.com [10.193.186.190])
-	by stargate.chelsio.com (8.14.7/8.14.7) with ESMTP id 497Ch1If004660;
-	Mon, 7 Oct 2024 05:43:02 -0700
-From: Showrya M N <showrya@chelsio.com>
-To: jgg@nvidia.com, leonro@nvidia.com, bmt@zurich.ibm.com
-Cc: linux-rdma@vger.kernel.org, Showrya M N <showrya@chelsio.com>,
+Received: from beagle5.blr.asicdesigners.com (beagle5.blr.asicdesigners.com [10.193.80.119])
+	by stargate.chelsio.com (8.14.7/8.14.7) with ESMTP id 497D76rM004691;
+	Mon, 7 Oct 2024 06:07:07 -0700
+From: Anumula Murali Mohan Reddy <anumula@chelsio.com>
+To: jgg@nvidia.com, leonro@nvidia.com
+Cc: linux-rdma@vger.kernel.org,
+        Anumula Murali Mohan Reddy <anumula@chelsio.com>,
         Potnuri Bharat Teja <bharat@chelsio.com>
-Subject: [PATCH for-rc v2] RDMA/siw: add sendpage_ok() check to disable MSG_SPLICE_PAGES
-Date: Mon,  7 Oct 2024 18:28:36 +0530
-Message-Id: <20241007125835.89942-1-showrya@chelsio.com>
-X-Mailer: git-send-email 2.39.1
+Subject: [PATCH for-rc v2] RDMA/core: Fix ENODEV error for iWARP test over vlan
+Date: Mon,  7 Oct 2024 18:39:41 +0530
+Message-Id: <20241007130941.62709-1-anumula@chelsio.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -47,79 +48,39 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-While running ISER over SIW, the initiator machine encounters a warning
-from skb_splice_from_iter() indicating that a slab page is being used
-in send_page. To address this, it is better to add a sendpage_ok() check
-within the driver itself, and if it returns 0, then MSG_SPLICE_PAGES flag
-should be disabled before entering the network stack.
+If traffic is over vlan, cma_validate_port() fails to match vlan
+net_device ifindex with bound_if_index and results in ENODEV error.
+It is because rdma_copy_src_l2_addr() always assigns bound_if_index with
+real net_device ifindex.
+This patch fixes the issue by assigning bound_if_index with vlan
+net_device index if traffic is over vlan.
 
-A similar issue has been discussed for NVMe in this thread:
-https://lore.kernel.org/all/20240530142417.146696-1-ofir.gal@volumez.com/
-
-stack trace:
-...
-[ 2157.532917] WARNING: CPU: 0 PID: 5342 at net/core/skbuff.c:7140 skb_splice_from_iter+0x173/0x320
-Call Trace:
-[ 2157.533064] Call Trace:
-[ 2157.533069]  ? __warn+0x84/0x130
-[ 2157.533073]  ? skb_splice_from_iter+0x173/0x320
-[ 2157.533075]  ? report_bug+0xfc/0x1e0
-[ 2157.533081]  ? handle_bug+0x3f/0x70
-[ 2157.533085]  ? exc_invalid_op+0x17/0x70
-[ 2157.533088]  ? asm_exc_invalid_op+0x1a/0x20
-[ 2157.533096]  ? skb_splice_from_iter+0x173/0x320
-[ 2157.533101]  tcp_sendmsg_locked+0x368/0xe40
-[ 2157.533111]  siw_tx_hdt+0x695/0xa40 [siw]
-[ 2157.533134]  ? sched_balance_find_src_group+0x44/0x4f0
-[ 2157.533143]  ? __update_load_avg_cfs_rq+0x272/0x300
-[ 2157.533152]  ? place_entity+0x19/0xf0
-[ 2157.533157]  ? enqueue_entity+0xdb/0x3d0
-[ 2157.533162]  ? pick_eevdf+0xe2/0x120
-[ 2157.533169]  ? check_preempt_wakeup_fair+0x161/0x1f0
-[ 2157.533174]  ? wakeup_preempt+0x61/0x70
-[ 2157.533177]  ? ttwu_do_activate+0x5d/0x1e0
-[ 2157.533183]  ? try_to_wake_up+0x78/0x610
-[ 2157.533188]  ? xas_load+0xd/0xb0
-[ 2157.533193]  ? xa_load+0x80/0xb0
-[ 2157.533200]  siw_qp_sq_process+0x102/0xb00 [siw]
-[ 2157.533213]  ? __pfx_siw_run_sq+0x10/0x10 [siw]
-[ 2157.533224]  siw_sq_resume+0x39/0x110 [siw]
-[ 2157.533236]  siw_run_sq+0x74/0x160 [siw]
-[ 2157.533246]  ? __pfx_autoremove_wake_function+0x10/0x10
-[ 2157.533252]  kthread+0xd2/0x100
-[ 2157.533257]  ? __pfx_kthread+0x10/0x10
-[ 2157.533261]  ret_from_fork+0x34/0x40
-[ 2157.533266]  ? __pfx_kthread+0x10/0x10
-[ 2157.533269]  ret_from_fork_asm+0x1a/0x30
-.
-[ 2157.533301] iser: iser_qp_event_callback: qp event QP request error (2)
-[ 2157.533307] iser: iser_qp_event_callback: qp event send queue drained (5)
-[ 2157.533348]  connection26:0: detected conn error (1011)
-
-Signed-off-by: Showrya M N <showrya@chelsio.com>
+Fixes: f8ef1be816bf ("RDMA/cma: Avoid GID lookups on iWARP devices")
+Signed-off-by: Anumula Murali Mohan Reddy <anumula@chelsio.com>
 Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
 ---
-V1 -> V2: addressed review comment
-https://lore.kernel.org/all/BN8PR15MB2513C8CC78CBEADA83117A5599712@BN8PR15MB2513.namprd15.prod.outlook.com/
+Changes since v1:
+Added fixes line
+Addressed static checker warnings
+Targeting to rc since this is a bug fix
 ---
-
- drivers/infiniband/sw/siw/siw_qp_tx.c | 2 ++
+ drivers/infiniband/core/addr.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index 64ad9e0895bd..a034264c5669 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -331,6 +331,8 @@ static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
- 			msg.msg_flags &= ~MSG_MORE;
- 
- 		tcp_rate_check_app_limited(sk);
-+		if (!sendpage_ok(page[i]))
-+			msg.msg_flags &= ~MSG_SPLICE_PAGES;
- 		bvec_set_page(&bvec, page[i], bytes, offset);
- 		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
+diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+index be0743dac3ff..8962fc0fe4c4 100644
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -269,6 +269,8 @@ rdma_find_ndev_for_src_ip_rcu(struct net *net, const struct sockaddr *src_in)
+ 		break;
+ #endif
+ 	}
++	if (dev && is_vlan_dev(dev))
++		dev = vlan_dev_real_dev(dev);
+ 	return ret ? ERR_PTR(ret) : dev;
+ }
  
 -- 
-2.39.1
+2.39.3
 
 
