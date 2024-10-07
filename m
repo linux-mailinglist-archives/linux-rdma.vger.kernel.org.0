@@ -1,209 +1,274 @@
-Return-Path: <linux-rdma+bounces-5263-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5264-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE2219927FA
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 11:20:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6DA69928A4
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 12:02:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65344282ED3
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 09:20:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6277B1F23F8D
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 10:02:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D73F18B464;
-	Mon,  7 Oct 2024 09:20:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF9D1DD88A;
+	Mon,  7 Oct 2024 09:52:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="QOf/+K73"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PVO1xA7v"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from EUR03-VI1-obe.outbound.protection.outlook.com (mail-vi1eur03on2136.outbound.protection.outlook.com [40.107.103.136])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D73231CA9
-	for <linux-rdma@vger.kernel.org>; Mon,  7 Oct 2024 09:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.103.136
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728292834; cv=fail; b=WVI4p7Q+BQuEApJNy/ENHADZtAQb5dzbczEhjA3uhHM0N+raFJMYLaW21WTIqTwMkgDgaw1w7nA9tuaiOYTIyW1dRA4JaZKWE1sHtLMS3tsdXyg7Ztm4/BSgE0mfDg4cmCOfF3goPUCUon3p5LwRtZ+SgcP8bA/4XnGEb+ibp+Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728292834; c=relaxed/simple;
-	bh=cq4sHZF6EuZ2TjPhinmubS7MwTJUJJ+hDzNmnY6LGOs=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ku6UBkURc4GAJq9dMo1TqGfetqkb0wZJq9jZpTJM+c/PcgsjMaXJ3xZ81rJGe33sJNj49NNZfh4PmBXR1QYs2/j+NrTZsfsZ1BT9m5Z5D0YbQrP1lJmGb4NbV4UdrPeb5dAeLIU0qQjNKl/J4sM76RY2qBFDBm/2HMxVg7n6ZoU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=QOf/+K73; arc=fail smtp.client-ip=40.107.103.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Bj1cA59ycGnEF+6AF1D0d3Ln/YeLowcRLGBC1iK9urgjqTL1ftc2gcw8NGpPxMuN/t6HqO8TWCkCGV0C4KnufJ6bZECDKK3GM96Pcu/qpHZzCCpXL3YttyjlaxS/NoeZ9cln3ArJ3WfUdxeqqhkWsbP0MV/yuKgDrwMlRFjBYqeP0txFHjDBD8OqxVfCEdpdCSliQRycJeBAq264yje5cWMgy9uDIGMyoac0DxE1eN4uEtcN1ndQcmuYw46MdADRRS0Snm8KzUh0V67LNuTmR+h07Ur1LVyUpos2EfcK+oSZClQpdxUgbkrJCiwlVZPLiKDOgFV/rsiTLnZo/fj7zA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cq4sHZF6EuZ2TjPhinmubS7MwTJUJJ+hDzNmnY6LGOs=;
- b=uWOzd50c6yUJ85RZkKKbE8BQ6agJPDkVd0MD/KdMIGhzcn5paXqX5BWg881ZuzJwCQNkmJkq9ck/FtpUzDSMTJgQjKC9OuV+uODgKSgW8oWOe0zQKnZrCyLWfCjsG/RY5khBwik6CO8wCR/LRlj1LURNwdJppGxqtQWjMSocMliPDpM2XByXyxlXfVuRYwiQaLIkFR7IwvpXgGxGQkxhP0UPmisH3U+3ktUa+UywrY5m954NnTfMGSJDK0bEDSV5Y9gU6g1N4d+CbPrTcG3BmcSOyy93NyYxHyWbCjtBPu8Nitz20FP79p34E1gLisfxfPVB9IaF+Nh6OBxqFJpzZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cq4sHZF6EuZ2TjPhinmubS7MwTJUJJ+hDzNmnY6LGOs=;
- b=QOf/+K73kUzqMmJXivoU+1SsMOU1f2tTJ/rIke6XGEXMC/8dK2GSHfxp/R7xXBzeFUr03hMgMijCnOul1YE2WJCLN+527sPpkR/wADq9N2T9znnpVF0lsYERVr4JH1hN9uNOH9q5L8snwNcHylyUI03HZOP2dA/4ATucmQnkxoI=
-Received: from PAXPR83MB0559.EURPRD83.prod.outlook.com (2603:10a6:102:246::15)
- by VI0PR83MB0696.EURPRD83.prod.outlook.com (2603:10a6:800:238::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.2; Mon, 7 Oct
- 2024 09:20:29 +0000
-Received: from PAXPR83MB0559.EURPRD83.prod.outlook.com
- ([fe80::c3a:b7f9:46e1:aca6]) by PAXPR83MB0559.EURPRD83.prod.outlook.com
- ([fe80::c3a:b7f9:46e1:aca6%7]) with mapi id 15.20.8069.000; Mon, 7 Oct 2024
- 09:20:29 +0000
-From: Konstantin Taranov <kotaranov@microsoft.com>
-To: IVANE ADAM <ivane.adam@univ-grenoble-alpes.fr>, linux-rdma
-	<linux-rdma@vger.kernel.org>
-Subject: RE: Performance issue for a simple RDMA PingPong
-Thread-Topic: Performance issue for a simple RDMA PingPong
-Thread-Index: 7V4j/ibp8zPuE0UrjnmckwbJB/ACJPnpN/3g
-Date: Mon, 7 Oct 2024 09:20:29 +0000
-Message-ID:
- <PAXPR83MB055997D73EFC57599EB67E84B47D2@PAXPR83MB0559.EURPRD83.prod.outlook.com>
-References:
- <1837235494.9324983.1727941451114.JavaMail.zimbra@univ-grenoble-alpes.fr>
-In-Reply-To:
- <1837235494.9324983.1727941451114.JavaMail.zimbra@univ-grenoble-alpes.fr>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=f5f9f8a9-e404-4448-b69d-d97f16da1ce1;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-10-07T09:17:59Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAXPR83MB0559:EE_|VI0PR83MB0696:EE_
-x-ms-office365-filtering-correlation-id: e2c828bb-ffa0-4791-e130-08dce6b14942
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|376014|366016|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?RTZMUHdVSzZyTVNXL3NSY01DMjJpdG95U3FNQzdnd3B0b3NTbVcwWmR5OFQz?=
- =?utf-8?B?U1hmc3BsZTJBQmcwTXpiTFVmMnp1QytXaFJiWmtDNjlzS2tKbGJNSFVqeTVv?=
- =?utf-8?B?VlR1bitEZjUvTXczL2h6VEI4cXJsWnNWVEZ2TEcxMHFwQ1BMa2xSdkNycnR3?=
- =?utf-8?B?SnlOa244cjNRV052RkVhUWZsTmo5V1NDZzUrYjZsTnB2MmRjcEVoaFpMTEE1?=
- =?utf-8?B?WlJBd0hSbFB4NzJmZkgveDBPTTcyVFFIOFBGdWFsRUFaUG9ubWlVRkllTW9X?=
- =?utf-8?B?U0VGenZSTTdzZGxNZ2x2Ynk5YXBOUzlQbUF3UUpkY2ZyQnhiRXVWV1U4RkVj?=
- =?utf-8?B?bHZjQ2tSOS9GTHFKVldxbWczUjJQeFprdUY2WkR4cGJ1M2N5cFMzelQ4RXhV?=
- =?utf-8?B?M2JVcVY1bTU3c3ZLeTFMRW9kdWVvVWdtM2ppSW41VEhVNkFKK1ErdXRXVWZu?=
- =?utf-8?B?cHdCZCtvaDVYMS9saE1hMDA4VWRRUzJuL0xKZDhnOGlPVytxeHpIRE5aTVlG?=
- =?utf-8?B?amtWWXFRRHF2SnNPUlRMRkNsTVNFeVFtWi9YaVk0cWwwMEc3bXI5alZBNUxY?=
- =?utf-8?B?UmdMRGlZU0l5L0VldVYwQVAvUitNRS9adVpDNTdhV0M1YWRhNElYTHYvRXdr?=
- =?utf-8?B?UldLMmZId0RDQnQrL1pLR0Z0cUNsbHppcEFrS1UzZ1FZbmYwY0JSc21IcHBQ?=
- =?utf-8?B?dmVWSUY0dGJwa0dZdGZXQ1p2ckVlNXB2eTRuUW5YZEVVckpVcW1LODRDTW0w?=
- =?utf-8?B?dkRsaE5TeEFCTmV3L2dzdmkycktKNjc0YzF3MWpCNzJUUjZ6SnZvYyt4RTJT?=
- =?utf-8?B?RnhhOUxIZG5oTUhVUmo1bHNkbDRyM1B3S1RmakIvbmpHWmJVTVU1Tlg3UmZi?=
- =?utf-8?B?djdPc3FLZm14aWtpNHF0dVExMHFsRG9LdlkrcEdCVCtObUZhcVlyRi9Wekxp?=
- =?utf-8?B?V284R3hLaGVDNUtHaW9qeXlRWTRuNkQyNWFrUTJOSVVqMVlYTUh2QkJ0TWFM?=
- =?utf-8?B?KzlQejA3M0NBcGQ3dzZPa3Q1b3VSNkVlanIzUUhHZGFZSWlxN1dDaEFKMHln?=
- =?utf-8?B?VnVOb29IalJqWGsyUFp0RFpVa3YrMlpnUGxxQ2lxNElTeENtdHpCbUZGWnpS?=
- =?utf-8?B?WWFjWk9vbmFyNnBJcE1vRWl2a3dHd1VVOWpadVFqNHduQzdCbUZ4TmJ4cThS?=
- =?utf-8?B?WnBGWVJlVHBzWGk2a09FWTdidkJFTnEvelVhRFNqbmV5d01MVHUzdjQ1UThN?=
- =?utf-8?B?M3NqRnZCZ3ZUeFRNemVGQ05uK0JEZHR3Tzg0R1NiT29yeXNJdmlOVUdDcUsy?=
- =?utf-8?B?UkhoTDByaG41bWhuVW42RlZ1ZjRuR0RTQWJOTFduMnJNK0Z3ZHo1aG5UbXNu?=
- =?utf-8?B?dVMycUt2cWQxU0FiajJiKzNEYUxkWUtBUEFGVFFuT3N5S3h4QW9ZNzM4bXR4?=
- =?utf-8?B?ZTBXL3EwbVpWeHhDbS8vQlhQYUpUVkNySHlZbW9FUFlSbmVqNSttSGVxb09C?=
- =?utf-8?B?Ry8xbVA1MHVlSWZqK1B1SjdXU2o2bEpTRWJ1SEFlc2h0UURDNy92eDlQRnRa?=
- =?utf-8?B?ZnVta3FKUTB1dncxVlJTdlFlNmoyeDRTZlhJQ2k1MlhtTldERHdPRi9LWmdP?=
- =?utf-8?B?WnBmTDQwMXlLaHdJR0UydXlBQ3p1WGN2M016R01EOGdnY2xHUU9RTFNnQ3pm?=
- =?utf-8?B?Z0dJdVdnaTEzTkZBcVVhSFlOdVFJeDdLTUZuTmhYUWFjbTVEc1l2RERSZ1RP?=
- =?utf-8?B?WTg5Q24vYXFZWDVxSlc1VG1jVWtQcmw1YXhEU2l0Mlo5Y0dXT1EwZjc4WXAr?=
- =?utf-8?B?Z05qS0NWb3VBbGt4b2dwdz09?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR83MB0559.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(38070700018);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?K1F2SzNEeERNL3U1a2FGZ1FyNWZ6aHlKaVgxRHpUZGlUVmJCcExIRjlvRllu?=
- =?utf-8?B?THpDRzNGSVp1RmxXVDhLUDNBeHE4a3lTTVNFNGhEU1RyQ0NVQktqeXJDcGEw?=
- =?utf-8?B?ZzNCNkY4eno1UTZTTTdwbmhDaTNKeVdHRTB6NHREeTVrb2RZRVM2dVE1cjdX?=
- =?utf-8?B?WmZPQ1hsU1dWZ0NaRklGQVZLcmE3SXpRc2NJM01SQ1pIRmFGMU9BVWJjNEJo?=
- =?utf-8?B?UFRsVEdVQWdvbUJnQ21VOWVZbmdxQUdWZURMOFEzaG5zMnBMS09nVWNES2R5?=
- =?utf-8?B?MHNjbkMyTlRwT05CUytHcVdCc3R5L1ZjeGZDRE83WVY2bGgwQXIvRWJaWFo0?=
- =?utf-8?B?YjNDdXozcU54RlVETEw2MHRvVVEwS0VyRUxSZkVzZmE5cTNlMDFiNTZYKzV1?=
- =?utf-8?B?SC9RbGVLaEREbFVlbHhOUENEUVFJUy9HT0c1emk5WnFxOGFaclpGZkQzRjlk?=
- =?utf-8?B?Q0VJTUg2dFhvQUhuUGJWKzdNTjQ3dkVaVFV2VXFiS0lVZTBBMk0wZGw3YWtM?=
- =?utf-8?B?a3F2WTBaSGlEblpEcWxkODZ0bDg2RTdyMVE5QTBrVklKNTV6M05CL0ZIb0NZ?=
- =?utf-8?B?VGlZVWxweW1JUXBjU21LMmdmWmNEWk1EY2EySWFERGxMYng4cGEybVg4TWp6?=
- =?utf-8?B?SEljWmkxOXF3SEVoSndHMVdESjFtSlI3bGN3UGsxVkZLM0hMQlpjMmwxSDho?=
- =?utf-8?B?Q2dNS0xtU0ljUU54UTg2aVlYbldUVU9SWDRzWk04bDMwSWZkZVFGZ3RyOXh6?=
- =?utf-8?B?NHlxRHVtRTI4UnFPTGRSYkRJSjh5bEpHZjgvS21NbTREbzBsQU5lMkNOcjlI?=
- =?utf-8?B?RVAvVzRxclV0NFUzdTVRd1h5OGJ6RFpSbW40S3NjbzVhaDZSYWVwaGxXUDBV?=
- =?utf-8?B?eFEyNEYvc1lhakRacmhvWnU0V2E0clQ1dHdVaVB5cjdVWHBSTDBRTFRYeTFQ?=
- =?utf-8?B?ZGR1TlpLYU1zcTdZd3RkYXduWGlrS2tFK20vYXB5VS9abXNSaFlDMkhPS3kv?=
- =?utf-8?B?V2h5VCtvN1JGYmVKdTE2azBNZXBaWnBTY0k4WHEyaVVrQWRTRWVqYjAzVTdF?=
- =?utf-8?B?VmZoYkRydk1keWQxREpCWFZsYU5tU2JJdjg5bHZxQmtoOVNLckRjOFl5VVcv?=
- =?utf-8?B?Qnh1YVF4ODJKaEdXa2ZON1ZZWlZMclpuQ2NsQUlvMVZNMTUxaUJYdHZTR1dY?=
- =?utf-8?B?MzhmSXFURjNhOGxVdVFnbXdOdVhWTCtMK1EzWjhVNWhxZXdla0tyV2lEQ0JO?=
- =?utf-8?B?V1JMR3Vva040OVpWVkVBRkR0MjFkL0ZMaHNRUjVNd1RxNHJMUFh3YVgvbmNP?=
- =?utf-8?B?cmVseUkvRXBYVVR1eVFrZDdjQ1A1aHZZNk94amhuY0x6SVVzVGVpY2lZRWcw?=
- =?utf-8?B?dDhoMFgxZGZoZEJFczhKYjE1Snd5WVJMK3Fvc3dTZEF1Ui9OaWNRNTRpK05P?=
- =?utf-8?B?REJZdWdqVWgvZTRkZUFXYnZBbEdMSkNVQ3V5cVZ3cWZHOWJXQnUyMVZUTEZB?=
- =?utf-8?B?SVdMSWN4NndOUjU0bkxhd0o2eGtnNktWR0pUTENFWnhxNTFjVVdiYndDZlh1?=
- =?utf-8?B?NXcrYU9Fb1dKbEdFaHQ4UzJWNHAvK0swWmlzS3B0VXEyVU96OTVrbzEraHk0?=
- =?utf-8?B?M3JCeVFqRi80TEQ1RTkwVFhMZzlpUTVGWUtRWHpyaG5PRXg3RkdOS3BEZndC?=
- =?utf-8?B?QzZseXpIdVg5ZitySzhhMThaRmlFWmJlM1h2SnhDKzd3NkdoTHVFMmhaTDl0?=
- =?utf-8?B?QWd3T1htZEh4NThmZllNUFJJZ1dmNDVrTVpkdFFqcjJPb0RsOHBBUjVDYU1u?=
- =?utf-8?B?YisxUjZrOVBXOTRCSERmWE1JSmVFUzArYkZCZ01wMkRyNFZjaCtEYy9ZbzBk?=
- =?utf-8?B?emc3U0lPY1dxb0wwUm9PcEdQcEN5V3JmMTBNNFNwZHIzTkVaOElLOGplS1Zq?=
- =?utf-8?B?NVFZOTdlNzd1YlVvTTNOQXovUzY0dndrOTZRUDRMT0o3Z2NVRlhkdU1Qaitp?=
- =?utf-8?B?Z3drcW1GcUF1UFJybUdZVFZsOUxqSVN6UmM4TU5MblNLVWRrcHpXZmE3Q3ZR?=
- =?utf-8?Q?NUbloP?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1DB11DD86C
+	for <linux-rdma@vger.kernel.org>; Mon,  7 Oct 2024 09:51:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1728294721; cv=none; b=MXfDXS1Z3saoi3x2iSLh36jxN6brcQotbf7Oq3L7USc2vzgp6u8H0cH99xxv1wcnKMDoTOY5kCfv/zvvAN76E3BtkoLwcLgKOGqWbY90Dlis4d2Mhf9Prm+T5EL82djJ4kF6YasFrxkqN6EHC7ro0zJcSTmKAqBHSm4PKPENryI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1728294721; c=relaxed/simple;
+	bh=28fEFY/hXxLCXhmVadIh9LyjLJaQY6Kwc8LMdw3jzXc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=W3GdQvu9yLM2qT72xfRhbh85ps118GHsrXrhoBg3GxmRR/61lctzhe3qlKsLCChxgOEbnJHEAXqSaXHNDqg7nvbAZs0iKIUHIgtWmhFysjVtr7tyJeQH/IPSpNV7TWsF0goYIpUn3/ZxrQV3CSsyMxmrgCcCrNbyLzsJsiJCPGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PVO1xA7v; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <3108a1da-3eb3-4b9d-8063-eab25c7c2f29@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728294716;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gcSzrW1BnujUdglpblDDDF1lftH52B5+5zWrzMqP+B0=;
+	b=PVO1xA7vijKPtuXOjS6KwYYbkZFK/RqX3iR8e8Mokkan4S6LepxdfwkaWNdPTUR6J9FVol
+	JcW4a+4ydTim55sCtFQgZloAPOR+o3sZDQ027mufpCcgjOQEw+l4Q/du2JW/LIsQZB34Xa
+	3LcuEwKp/2utzRN+a+8/md1eBovEBwk=
+Date: Mon, 7 Oct 2024 17:51:45 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR83MB0559.EURPRD83.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2c828bb-ffa0-4791-e130-08dce6b14942
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Oct 2024 09:20:29.1877
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n0v2ZjUOQyLhAPNwILUYEfAhkLkNCtSmdBKjghv68jpNAnHrIXYNSafdthw4wz/Pjn014Td0hobnNvBsKL1Uyw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI0PR83MB0696
+Subject: Re: [PATCH] RDMA/srpt: Make slab cache names unique
+To: Bart Van Assche <bvanassche@acm.org>, Jason Gunthorpe <jgg@nvidia.com>,
+ Leon Romanovsky <leonro@nvidia.com>
+Cc: linux-rdma@vger.kernel.org,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+References: <20241004173730.1932859-1-bvanassche@acm.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20241004173730.1932859-1-bvanassche@acm.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-PiBIZWxsbyBldmVyeW9uZSwNCj4gDQo+IEknbSBjdXJyZW50bHkgaGF2aW5nIGEgcGVyZm9ybWFu
-Y2UgaXNzdWUgdG8gc3luY2hyb25pemUgdHdvIGRpZmZlcmVudCBub2Rlcw0KPiB3aXRoIGEgc2lt
-cGxlIHBpbmcvcG9uZyBhbGdvcml0aG0uDQo+IEkgY3VycmVudGx5IGhhdmUgdHdvIGRpZmZlcmVu
-dCBzaW1wbGUgY29kZSB0byByZXN1bWUgbXkgaXNzdWUgOg0KPiANCj4gVGhlIGZpcnN0IG9uZSB3
-b3JrIGFzIGludGVuZGVkLCBhbmQgbG9vcCBhcyBmb2xsb3cgb24gYm90aCBjbGllbnQgYW5kIHNl
-cnZlcg0KPiBzaWRlcyA6DQo+IC0gcG9zdCBhIHNlbmQgd29yayByZXF1ZXN0DQo+IC0gcG9zdCBh
-IHJlY2VpdmUgd29yayByZXF1ZXN0DQo+IC0gd2FpdCBib3RoIGNvbXBsZXRpb24sIGFja25vd2xl
-ZGdlIHRoZW0gYW5kIGNvbnRpbnVlLg0KPiBUaGlzIGxpdHRsZSBwaWVjZSBvZiBwcm9ncmFtIHdv
-cmsgYXMgaW50ZW5kZWQsIGFuZCBJJ20gYWJsZSB0byBjb21wbGV0ZSAxMDBrDQo+IHJlcXVlc3Qg
-aW4gMuKAkzMgc2Vjb25kcy4NCj4gDQo+IEhvd2V2ZXIsIHRoZSBzZWNvbmQgY29kZSBpcyBhcyBm
-b2xsb3dzIDoNCj4gVGhlIGNsaWVudCBpcyBpZGVudGljYWwgYXMgdGhlIGZpcnN0IGNvZGUuDQo+
-IFRoZSBzZXJ2ZXIgZG8gOg0KPiAtIHBvc3QgYSByZWNlaXZlIHdvcmsgcmVxdWVzdA0KPiAtIHdh
-aXQgaXRzIGNvbXBsZXRpb24gYW5kIGFja25vd2xlZGdlIGl0DQo+IC0gcG9zdCBhIHNlbmQgd29y
-ayByZXF1ZXN0DQo+IC0gd2FpdCBpdHMgY29tcGxldGlvbiBhbmQgYWNrbm93bGVkZ2UgaXQgV2hl
-biBJIGRvIHRoaXMsIGl0IGhhcHBlbnMgdGhhdCB0aGUNCj4gdGltZSB0byBjb21wbGV0ZSBhIHJl
-cXVlc3QgY2FuIHRha2UgdXAgdG8gMiBzZWNvbmRzIChtb3N0IG9mIGl0IGluc2lkZSB0aGUNCj4g
-Imlidl9nZXRfY3FfZXZlbnQoKSIpIEZ1cnRoZXJtb3JlLCB3ZSBvYnNlcnZlZCB0aGF0LCB0aGlz
-IGhhcHBlbnMgbW9yZQ0KPiBvZnRlbiB3aGVuIG11bHRpcGxlIHRocmVhZHMgdHJ5IHRvIGRvIHRo
-aXMgaW4gc3luY2ggKHVubGlrZSBmaXJzdCBjb2RlKS4NCg0KSGV5LA0KDQpUaGUgcHJvYmxlbSB5
-b3UgZXhwZXJpZW5jZSBpcyB0aGF0IHRoZSByZXNwb25kZXIgZG9lcyBub3QgaGF2ZSByZWNlaXZl
-IGJ1ZmZlcnMgd2hlbiBpbmNvbWluZyBzZW5kIHBhY2tldCBhcnJpdmVzLg0KVGhhdCBpcyB3aHkg
-eW91IGRvIG5vdCBzZWUgaXQgZm9yIFdyaXRlcyBhbmQgUmVhZHMuDQpUbyBjaGVjayB0aGF0IHlv
-dSBjYW4gY29uZmlndXJlIHlvdXIgUkMgUVAgd2l0aCB6ZXJvIFJOUiBOQUsgcmV0cmFuc21pdC4g
-KHJucl9yZXRyeSA9IDApLg0KDQpZb3UgbWF5IHdvbmRlciB3aHkgeW91IGV4cGVyaWVuY2UgaXQs
-IGFuZCB0aGUga2V5IGlzIHRoYXQgU2VuZCBXQyBpcyBnZW5lcmF0ZWQgYWZ0ZXIgYW4gUlRUIChh
-cyBXQyBpbmRpY2F0ZXMgcmVsaWFibGUgcmVjZXB0aW9uIG9mIGRhdGEpIGFuZCBSZWNlaXZlIFdD
-IG9uY2UgZGF0YSBhcnJpdmVzIChhcyBSZWNlaXZlIFdSIGlzIGNvbnN1bWVkKS4gWW91IGhhdmUg
-dGhlIGZvbGxvd2luZyBwcm9ibGVtIHdpdGggYSBuZXcgY2xpZW50Og0KDQpUaGUgbmV3IGNsaWVu
-dCB3YWl0cyBmb3IgYSBTZW5kIFdDIGJlZm9yZSBwb3N0aW5nIGEgbmV3IFJlY2VpdmUgV1IsIGJ1
-dCB0aGUgc2VydmVyIHNlbmRzIGEgV1Igb25jZSBpdCBzZWVzIGEgUmVjZWl2ZSBXUi4NCkFzIGEg
-cmVzdWx0LCB0aGUgY2xpZW50IGhhcyBub3QgcG9zdGVkIG9uIHRpbWUgYSByZWNlaXZlIFdSIChh
-cyBpdCBzYXcgYSBTZW5kIFdDIHJpZ2h0IGJlZm9yZSBhbiBpbmNvbWluZyBTZW5kIG1lc3NhZ2Up
-LCB3aGljaCBpbmN1cnMgUk5SIE5BSyByZXRyYW5zbWl0Lg0KDQotIEtvbnN0YW50aW4NCg==
+在 2024/10/5 1:37, Bart Van Assche 写道:
+> Since commit 4c39529663b9 ("slab: Warn on duplicate cache names when
+> DEBUG_VM=y"), slab complains about duplicate cache names. Hence this
+> patch that makes cache names unique.
+> 
+> Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+> Closes: https://lore.kernel.org/linux-block/xpe6bea7rakpyoyfvspvin2dsozjmjtjktpph7rep3h25tv7fb@ooz4cu5z6bq6/
+> Fixes: 5dabcd0456d7 ("RDMA/srpt: Add support for immediate data")
+> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+> ---
+>   drivers/infiniband/ulp/srpt/ib_srpt.c | 32 ++++++++++++++++++++++-----
+>   drivers/infiniband/ulp/srpt/ib_srpt.h |  6 +++++
+>   2 files changed, 32 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 9632afbd727b..4cb462074f00 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -41,6 +41,7 @@
+>   #include <linux/string.h>
+>   #include <linux/delay.h>
+>   #include <linux/atomic.h>
+> +#include <linux/idr.h>
+>   #include <linux/inet.h>
+>   #include <rdma/ib_cache.h>
+>   #include <scsi/scsi_proto.h>
+> @@ -68,6 +69,7 @@ MODULE_LICENSE("Dual BSD/GPL");
+>   static u64 srpt_service_guid;
+>   static DEFINE_SPINLOCK(srpt_dev_lock);	/* Protects srpt_dev_list. */
+>   static LIST_HEAD(srpt_dev_list);	/* List of srpt_device structures. */
+> +static DEFINE_IDA(cache_ida);
+>   
+>   static unsigned srp_max_req_size = DEFAULT_MAX_REQ_SIZE;
+>   module_param(srp_max_req_size, int, 0444);
+> @@ -2120,12 +2122,14 @@ static void srpt_release_channel_work(struct work_struct *w)
+>   			     ch->rsp_buf_cache, DMA_TO_DEVICE);
+>   
+>   	kmem_cache_destroy(ch->rsp_buf_cache);
+> +	ida_free(&cache_ida, ch->rsp_buf_cache_idx);
+>   
+>   	srpt_free_ioctx_ring((struct srpt_ioctx **)ch->ioctx_recv_ring,
+>   			     sdev, ch->rq_size,
+>   			     ch->req_buf_cache, DMA_FROM_DEVICE);
+>   
+>   	kmem_cache_destroy(ch->req_buf_cache);
+> +	ida_free(&cache_ida, ch->req_buf_cache_idx);
+>   
+>   	kref_put(&ch->kref, srpt_free_ch);
+>   }
+> @@ -2164,6 +2168,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>   	u32 it_iu_len;
+>   	int i, tag_num, tag_size, ret;
+>   	struct srpt_tpg *stpg;
+> +	char cache_name[32];
+
+The local variable cache_name is not zeroed.
+
+>   
+>   	WARN_ON_ONCE(irqs_disabled());
+>   
+> @@ -2245,8 +2250,11 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>   	INIT_LIST_HEAD(&ch->cmd_wait_list);
+>   	ch->max_rsp_size = ch->sport->port_attrib.srp_max_rsp_size;
+>   
+> -	ch->rsp_buf_cache = kmem_cache_create("srpt-rsp-buf", ch->max_rsp_size,
+> -					      512, 0, NULL);
+> +	ch->rsp_buf_cache_idx = ida_alloc(&cache_ida, GFP_KERNEL);
+> +	snprintf(cache_name, sizeof(cache_name), "srpt-rsp-buf-%u",
+> +		 ch->rsp_buf_cache_idx);
+
+IIRC, snprintf will append a '\0' to the string "cache_name". So this 
+string "cache_name" will be used correctly even though this string 
+"cache_name" is not zeroed before it is used.
+
+> +	ch->rsp_buf_cache =
+> +		kmem_cache_create(cache_name, ch->max_rsp_size, 512, 0, NULL);
+>   	if (!ch->rsp_buf_cache)
+>   		goto free_ch;
+>   
+> @@ -2280,8 +2288,11 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>   		alignment_offset = round_up(imm_data_offset, 512) -
+>   			imm_data_offset;
+>   		req_sz = alignment_offset + imm_data_offset + srp_max_req_size;
+> -		ch->req_buf_cache = kmem_cache_create("srpt-req-buf", req_sz,
+> -						      512, 0, NULL);
+> +		ch->req_buf_cache_idx = ida_alloc(&cache_ida, GFP_KERNEL);
+> +		snprintf(cache_name, sizeof(cache_name), "srpt-req-buf-%u",
+> +			 ch->req_buf_cache_idx);
+
+Ditto
+
+> +		ch->req_buf_cache =
+> +			kmem_cache_create(cache_name, req_sz, 512, 0, NULL);
+>   		if (!ch->req_buf_cache)
+>   			goto free_rsp_ring;
+>   
+> @@ -2479,6 +2490,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>   
+>   free_recv_cache:
+>   	kmem_cache_destroy(ch->req_buf_cache);
+> +	ida_free(&cache_ida, ch->req_buf_cache_idx);
+>   
+>   free_rsp_ring:
+>   	srpt_free_ioctx_ring((struct srpt_ioctx **)ch->ioctx_ring,
+> @@ -2487,6 +2499,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+>   
+>   free_rsp_cache:
+>   	kmem_cache_destroy(ch->rsp_buf_cache);
+> +	ida_free(&cache_ida, ch->rsp_buf_cache_idx);
+>   
+>   free_ch:
+>   	if (rdma_cm_id)
+> @@ -3056,6 +3069,7 @@ static void srpt_free_srq(struct srpt_device *sdev)
+>   			     sdev->srq_size, sdev->req_buf_cache,
+>   			     DMA_FROM_DEVICE);
+>   	kmem_cache_destroy(sdev->req_buf_cache);
+> +	ida_free(&cache_ida, sdev->req_buf_cache_idx);
+>   	sdev->srq = NULL;
+>   }
+>   
+> @@ -3070,6 +3084,7 @@ static int srpt_alloc_srq(struct srpt_device *sdev)
+>   	};
+>   	struct ib_device *device = sdev->device;
+>   	struct ib_srq *srq;
+> +	char cache_name[32];
+
+Ditto
+
+>   	int i;
+>   
+>   	WARN_ON_ONCE(sdev->srq);
+> @@ -3082,8 +3097,11 @@ static int srpt_alloc_srq(struct srpt_device *sdev)
+>   	pr_debug("create SRQ #wr= %d max_allow=%d dev= %s\n", sdev->srq_size,
+>   		 sdev->device->attrs.max_srq_wr, dev_name(&device->dev));
+>   
+> -	sdev->req_buf_cache = kmem_cache_create("srpt-srq-req-buf",
+> -						srp_max_req_size, 0, 0, NULL);
+> +	sdev->req_buf_cache_idx = ida_alloc(&cache_ida, GFP_KERNEL);
+> +	snprintf(cache_name, sizeof(cache_name), "srpt-srq-req-buf-%u",
+> +		 sdev->req_buf_cache_idx);
+
+Ditto
+
+> +	sdev->req_buf_cache =
+> +		kmem_cache_create(cache_name, srp_max_req_size, 0, 0, NULL);
+>   	if (!sdev->req_buf_cache)
+>   		goto free_srq;
+>   
+> @@ -3106,6 +3124,7 @@ static int srpt_alloc_srq(struct srpt_device *sdev)
+>   
+>   free_cache:
+>   	kmem_cache_destroy(sdev->req_buf_cache);
+> +	ida_free(&cache_ida, sdev->req_buf_cache_idx);
+>   
+>   free_srq:
+>   	ib_destroy_srq(srq);
+> @@ -3926,6 +3945,7 @@ static void __exit srpt_cleanup_module(void)
+>   		rdma_destroy_id(rdma_cm_id);
+>   	ib_unregister_client(&srpt_client);
+>   	target_unregister_template(&srpt_template);
+> +	ida_destroy(&cache_ida);
+>   }
+>   
+>   module_init(srpt_init_module);
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/ulp/srpt/ib_srpt.h
+> index 4c46b301eea1..6d10cd7c9f21 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.h
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
+> @@ -276,6 +276,8 @@ enum rdma_ch_state {
+>    * @state:         channel state. See also enum rdma_ch_state.
+>    * @using_rdma_cm: Whether the RDMA/CM or IB/CM is used for this channel.
+>    * @processing_wait_list: Whether or not cmd_wait_list is being processed.
+> + * @rsp_buf_cache_idx: @rsp_buf_cache index for slab.
+> + * @req_buf_cache_idx: @req_buf_cache index for slab.
+>    * @rsp_buf_cache: kmem_cache for @ioctx_ring.
+>    * @ioctx_ring:    Send ring.
+>    * @req_buf_cache: kmem_cache for @ioctx_recv_ring.
+> @@ -316,6 +318,8 @@ struct srpt_rdma_ch {
+>   	u16			imm_data_offset;
+>   	spinlock_t		spinlock;
+>   	enum rdma_ch_state	state;
+> +	int			rsp_buf_cache_idx;
+> +	int			req_buf_cache_idx;
+
+Thanks.
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+
+Zhu Yanjun
+>   	struct kmem_cache	*rsp_buf_cache;
+>   	struct srpt_send_ioctx	**ioctx_ring;
+>   	struct kmem_cache	*req_buf_cache;
+> @@ -443,6 +447,7 @@ struct srpt_port {
+>    * @srq_size:      SRQ size.
+>    * @sdev_mutex:	   Serializes use_srq changes.
+>    * @use_srq:       Whether or not to use SRQ.
+> + * @req_buf_cache_idx: @req_buf_cache index for slab.
+>    * @req_buf_cache: kmem_cache for @ioctx_ring buffers.
+>    * @ioctx_ring:    Per-HCA SRQ.
+>    * @event_handler: Per-HCA asynchronous IB event handler.
+> @@ -459,6 +464,7 @@ struct srpt_device {
+>   	int			srq_size;
+>   	struct mutex		sdev_mutex;
+>   	bool			use_srq;
+> +	int			req_buf_cache_idx;
+>   	struct kmem_cache	*req_buf_cache;
+>   	struct srpt_recv_ioctx	**ioctx_ring;
+>   	struct ib_event_handler	event_handler;
+
 
