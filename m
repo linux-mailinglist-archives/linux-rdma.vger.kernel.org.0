@@ -1,90 +1,108 @@
-Return-Path: <linux-rdma+bounces-5282-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5283-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80056993571
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 19:55:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E121A9935BB
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 20:10:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49A00283AD6
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 17:55:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9577281DB2
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 18:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F3F1DDA34;
-	Mon,  7 Oct 2024 17:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE87C1DD553;
+	Mon,  7 Oct 2024 18:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PR9RfyVC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ifm+2Xsa"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B791DDA2B
-	for <linux-rdma@vger.kernel.org>; Mon,  7 Oct 2024 17:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFE32187342
+	for <linux-rdma@vger.kernel.org>; Mon,  7 Oct 2024 18:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728323734; cv=none; b=gkjaqhf7Nw10dfFNiMzo3gVSZA7JvpUY/gewC/ffGJg9S4QG7gaTjtKQlYOLQspJfuUbEEoJKxpKb0PfPs4PZ46fDwruEVnYB+KPLBQo5HzV+09zlpqii61r3Wgl2vNK94c7CCVMVen7anuPQ415BC4L1BRMwY3m28YLR0N6wKI=
+	t=1728324618; cv=none; b=BoBCRtLYfNfuCxWfaAeTl7XUoMeTgS/4SGgkwgg7GugQqw4+vfuKKUyZZT0Wlimev8z4ri+fXY3dYyaBmMonE9i8Jct58c9zjc9nnfJdLSjg4J3sh5AA1lmsOTs3R2DxyH7JE+iVv1bYJN1dXKxiSilWle5p3umBLPMCzAoaiLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728323734; c=relaxed/simple;
-	bh=fE8gYYX+WSxPMLNor+/5YaWbqPJrY7tjT8JnD4sQkiI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ux2dop0KD1mG8PZu/Y2BCFKwE7ewoxZbTkK/imClLQtV7bhkBUJj+A290FtqnAL89qcjG5/uCrUkRategDr0Sn1ILxCo0/YNM6YU+abaL200cZdQqOVZEPUzFaM7tjxUYh1kB2Dr2gqmiLk7eMIXtunRmB0Ezw90UPrvTXQW0zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PR9RfyVC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43D63C4CEC6;
-	Mon,  7 Oct 2024 17:55:32 +0000 (UTC)
+	s=arc-20240116; t=1728324618; c=relaxed/simple;
+	bh=5gYL3LX3/QyJ08683JVeXtcHeV6ecKEDNQ4Bevu1kcw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HWw+1JtypHOhhPY/FEoy2d49DydETeAe8UPXdWmVvq/sxflDkgoVPLNAViS1qT85jSg6BdYg+Cd6REBjFaFprnvG4MVbmhSMCWqmv/KbohS8f+vE0TZ2QJY0fdXANSURz80aKdKbXlwZ7i0rYd3buB2Q+JZAkjxJE4bPDLwx8NU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ifm+2Xsa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 429BDC4CEC6;
+	Mon,  7 Oct 2024 18:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728323734;
-	bh=fE8gYYX+WSxPMLNor+/5YaWbqPJrY7tjT8JnD4sQkiI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=PR9RfyVCxwZueNfhhl5boVqTfoH9WZMEiaEMUD+xYB3+5d8XvD4/+bBWOlC6nYHJe
-	 zdSWm5sXY8t81XxEx1Jy800dSes6iYyIcgWeqJRvEEWeVrqvdHirXBieJ4CDDml24L
-	 HxFL6OBZhEZJAb6iZrErQXInNoiZVZieynt7Q/pQgHik5IgMWAxJwzzyNwLES++MRR
-	 W3mOVML1PkDA0PLHdnbt/m0oi0z5FhG3hEQeMLDlOXMKnCo5jAkebH4tEy2ZO/ACeK
-	 I2hn0yghyNGk3vExRPGIvqU6/3gQUUTF64zJ2kbUJV5zWgkBTcWyk49ohYcAPJj6hN
-	 upfUpv0wK8DXA==
+	s=k20201202; t=1728324618;
+	bh=5gYL3LX3/QyJ08683JVeXtcHeV6ecKEDNQ4Bevu1kcw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ifm+2XsaVWtuE/lDsMV1FXOTuvEJAJFHJG9GiWn9qWCnrR9QUvnq3EUis42YwQgES
+	 cxz5qB0s6AASzcAK6k1JD/LwXTnmsws98ZVcHGz8zDP/B1d8uzzKRtrIzsRE3E7PJH
+	 XqzLaupGbpX4Peh4yfWCrM1lwLe1nnpHo30LM+QlrXmprSsiB96oEuNm9lzkV/aFea
+	 ybbsNkGmmb14K3hHU2LBZGTXQcFukByBvkSDMshFiLmWKbtYgYAl3aJa4WJeo4a9wt
+	 XqrDDpCFJy1p8tpQtOv7GnwfHmMT1Gi092anD7q2+RRs5zo2ggZt3eUSet/TPc8rjo
+	 GRhenFSXmnGRA==
+Date: Mon, 7 Oct 2024 21:10:10 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Leon Romanovsky <leonro@nvidia.com>,
-	"Dr . David Alan Gilbert" <linux@treblig.org>,
-	linux-rdma@vger.kernel.org,
-	Maor Gottlieb <maorg@mellanox.com>,
+To: Anumula Murali Mohan Reddy <anumula@chelsio.com>
+Cc: jgg@nvidia.com, linux-rdma@vger.kernel.org,
 	Potnuri Bharat Teja <bharat@chelsio.com>
-Subject: [PATCH rdma-next] RDMA/cxgb4: Dump vendor specific QP details
-Date: Mon,  7 Oct 2024 20:55:17 +0300
-Message-ID: <ed9844829135cfdcac7d64285688195a5cd43f82.1728323026.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.46.2
+Subject: Re: [PATCH for-rc v2] RDMA/core: Fix ENODEV error for iWARP test
+ over vlan
+Message-ID: <20241007181010.GB25819@unreal>
+References: <20241007130941.62709-1-anumula@chelsio.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241007130941.62709-1-anumula@chelsio.com>
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Mon, Oct 07, 2024 at 06:39:41PM +0530, Anumula Murali Mohan Reddy wrote:
+> If traffic is over vlan, cma_validate_port() fails to match vlan
+> net_device ifindex with bound_if_index and results in ENODEV error.
+> It is because rdma_copy_src_l2_addr() always assigns bound_if_index with
+> real net_device ifindex.
+> This patch fixes the issue by assigning bound_if_index with vlan
+> net_device index if traffic is over vlan.
+> 
+> Fixes: f8ef1be816bf ("RDMA/cma: Avoid GID lookups on iWARP devices")
+> Signed-off-by: Anumula Murali Mohan Reddy <anumula@chelsio.com>
+> Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+> ---
+> Changes since v1:
+> Added fixes line
+> Addressed static checker warnings
+> Targeting to rc since this is a bug fix
+> ---
+>  drivers/infiniband/core/addr.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+> index be0743dac3ff..8962fc0fe4c4 100644
+> --- a/drivers/infiniband/core/addr.c
+> +++ b/drivers/infiniband/core/addr.c
+> @@ -269,6 +269,8 @@ rdma_find_ndev_for_src_ip_rcu(struct net *net, const struct sockaddr *src_in)
+>  		break;
+>  #endif
+>  	}
+> +	if (dev && is_vlan_dev(dev))
 
-Restore the missing functionality to dump vendor specific QP details,
-which was mistakenly removed in the commit mentioned in Fixes line.
+You should take "ret" into consideration here, and probably the right
+way is to check is "if (!ret && dev && is_vlan_dev(dev))". The "&& dev
+&&" is not really needed, but it is a good thing to have it for static
+checkers.
 
-Fixes: 5cc34116ccec ("RDMA: Add dedicated QP resource tracker function")
-Reported-by: Dr. David Alan Gilbert <linux@treblig.org>
-Closes: https://lore.kernel.org/all/Zv_4qAxuC0dLmgXP@gallifrey
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/cxgb4/provider.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks
 
-diff --git a/drivers/infiniband/hw/cxgb4/provider.c b/drivers/infiniband/hw/cxgb4/provider.c
-index 10a4c738b59f..e059f92d90fd 100644
---- a/drivers/infiniband/hw/cxgb4/provider.c
-+++ b/drivers/infiniband/hw/cxgb4/provider.c
-@@ -473,6 +473,7 @@ static const struct ib_device_ops c4iw_dev_ops = {
- 	.fill_res_cq_entry = c4iw_fill_res_cq_entry,
- 	.fill_res_cm_id_entry = c4iw_fill_res_cm_id_entry,
- 	.fill_res_mr_entry = c4iw_fill_res_mr_entry,
-+	.fill_res_qp_entry = c4iw_fill_res_qp_entry,
- 	.get_dev_fw_str = get_dev_fw_str,
- 	.get_dma_mr = c4iw_get_dma_mr,
- 	.get_hw_stats = c4iw_get_mib,
--- 
-2.46.2
-
+> +		dev = vlan_dev_real_dev(dev);
+>  	return ret ? ERR_PTR(ret) : dev;
+>  }
+>  
+> -- 
+> 2.39.3
+> 
+> 
 
