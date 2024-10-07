@@ -1,97 +1,131 @@
-Return-Path: <linux-rdma+bounces-5270-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5271-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11033992E4C
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 16:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FD88993274
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 18:05:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B78751F23AA6
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 14:06:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0606F1F23A01
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 16:05:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A58D1D45FF;
-	Mon,  7 Oct 2024 14:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F4F11D9673;
+	Mon,  7 Oct 2024 16:05:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="bU+lCWed"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XAnzfgRA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88A91D45FE
-	for <linux-rdma@vger.kernel.org>; Mon,  7 Oct 2024 14:06:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D21B1D4159;
+	Mon,  7 Oct 2024 16:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728310003; cv=none; b=q+O/2SCtu8NFWjeYSfcObTybJ+SeKbpMMvSEUlBIP66yKSF2Il8K7VQh8MJg+Z89aAaA6SOGWuJan11mpjDoJdOCgK6ZCQnM781OWpSYIwoUrT7FNLicG782oGi68d+W9pKDZC1pKeBqaodxcxyIrseeuVT6mTouC7d6UcYoqVA=
+	t=1728317142; cv=none; b=dTciAgkiQdrYXaPLD3wwI69wZS7Mc2LxIlPa4rYULvIsSPpZ4ribqxF59p97K/GV+7Cx/AgjvDjzC/VCJ/C3f3gO5G1D12EBAklOaswT0IHK04TPWZOAeiVsvLCr4AJNgJ92NV6qXoImIQUOcm5vCqdv0POPFUPJa/PpXTfXHW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728310003; c=relaxed/simple;
-	bh=Zw+St1S3HaAxdhlWUH+h4rGhg6ZNujDpbcI/dBOFtWI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DL9OyUEt0tzJQ3CUAMkmqKHzo1uy2Ze/ZDFHITyauz4xD5NNdkuxhzUNbzdr9J1ew/MJRXHl3ROgrT4CVkIijcTYCBtLQYel0yt5onp+E01ONifbijIbMJj6sfBVPeQXxXbVVn5sTimUKhZk8Fo6RRVhGUyo2tQl1Glxlipsjeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=bU+lCWed; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3a34802247eso26302695ab.0
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Oct 2024 07:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1728309999; x=1728914799; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=arIAYxZz47K33aPWOj97XFx8obpL/OetnzHlDezlYuA=;
-        b=bU+lCWedMDwdj5QCP1ObpqtB/1XD7PA+l/PG6szXfoZrvwagAp+qKSnGWFhCOhIXIQ
-         LCdX2+LVZCT398zbZjF8KNJ8yNZqWoh8Egms7pRzP4QuYk59e/NltUDIwWy0Xa54+j8K
-         JyJspPq3B3j6xD45gvnyoBs6/9q9Enpe7pn005EPEWkM6YTYFkCQ+e8muoYV9O+Nomg/
-         S8TZoKenWuKVXv+TM3QLdcxqPVEpBRJXpBqEwUnOzzIIrItEr/cT00WVjfrv6xPbwrAx
-         iJmVQjjIvhx6Xd3OpH3ZtlVY7Z0HXlr7DMU4+24O2UAuiswoi7xcA8u8wybV4nOg5vnK
-         qzKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728309999; x=1728914799;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=arIAYxZz47K33aPWOj97XFx8obpL/OetnzHlDezlYuA=;
-        b=gsFiMwlxtn7fSHK6YkIdFe1Gm1rOLH1Eq+CEdoB7AgDbsPJoBrz/V8xkxQWmR/PyHY
-         lpErwjxPc+MANBbCY8Uepf2iNqyJuJYU44jxa6K+s1PA5UbClt1bMXLZyGNKmXhzP6ui
-         lYD0zY4MzHbAVstwftYdh7tHWA16Hqa/n/Uf+fgezVSE50bl6M5ZOttJjKDr0f8PoHQj
-         wxpYbVy/eQU+ENp1W6vCazF0rZatLWzeAMrs9sEEEqfUnIevlBrso6glDu+FR2eQ8Kud
-         IQ1Pq6JL5F5FZZ9GUMkEUEpOZKJuJsmJdJ+i9Az5e9xL7yYamzFG2yUk2GnEk2ojBycr
-         +lAQ==
-X-Gm-Message-State: AOJu0YxFePCkiu+wlG98kIMWxVNtxOzt0P+AN6D/Ygq9Y+8LBSpgx4Ac
-	lSzxX9NM0xV0PIjSAGH8/PO2uKzZivuKIAtOq70ZG7t5IAVgQn+1yyKzymynsI4=
-X-Google-Smtp-Source: AGHT+IE0SDKK/K6oarl51Emql91aqyRs3ALNWJUsBG62flnxNKu2kKU6oH0gk5qHRo8SHwY8bFz2Iw==
-X-Received: by 2002:a05:6e02:12c4:b0:3a0:98ab:793e with SMTP id e9e14a558f8ab-3a375bd2bacmr92249655ab.23.1728309998917;
-        Mon, 07 Oct 2024 07:06:38 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4db8544f2d4sm529400173.6.2024.10.07.07.06.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Oct 2024 07:06:38 -0700 (PDT)
-Message-ID: <e9778971-9041-4383-8633-c3c8b137e92e@kernel.dk>
-Date: Mon, 7 Oct 2024 08:06:37 -0600
+	s=arc-20240116; t=1728317142; c=relaxed/simple;
+	bh=Wik2ZNckPsF3bment4+YQxfrCjOk2EqgG9bLXnQpZp0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CcrF+E6ZzY56WQA2oq8n6BIDarkzBzOZI3ruoeplqTeGzXzQUson0MlX2Bv/LQ8cl8KNR3TpY3xig77GJ226aNV8mJkSJLCluEovTkWZMCL+g5HW5d9IIJhKlQ2CYOGnQngWyO99PAID8qCw7nRilSLQude3nkUhwBXQkO4gIIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XAnzfgRA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23545C4CEC6;
+	Mon,  7 Oct 2024 16:05:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728317142;
+	bh=Wik2ZNckPsF3bment4+YQxfrCjOk2EqgG9bLXnQpZp0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XAnzfgRA40dAcCSLxtt5xrFfF+8+8a6jRCyBwnogoHgazr/dLvckNs5p/I+it6em7
+	 E0GlHz0M2mQSICLhvYMmLo1FxvqfyWMp+gqpvW8+pk3hfA24INtHl/u+nTTBf0KoTi
+	 GOdqszfe5xlY5YDB9IOtT4lmCPN/jIVPBGjp3WD/BsYp64pK0S89s3OHlIQkmwKqrE
+	 8Axz5Eb3SKCeUr1NnkJESZLX8WAQ6bmpAFGxntYE9duU/NpH5G+5ozqkDv9AIPO4mD
+	 8zAuZFdmqoS8p5lYnW7InFHi8UtLYdhJft6gHix1okDvIulyVUzEh2aV0jm/erVBDH
+	 UqTsp0yMR5wGw==
+Date: Mon, 7 Oct 2024 19:05:34 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: "Dr. David Alan Gilbert" <linux@treblig.org>
+Cc: maorg@nvidia.com, bharat@chelsio.com, jgg@ziepe.ca,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: of c4iw_fill_res_qp_entry
+Message-ID: <20241007160534.GA25819@unreal>
+References: <Zv_4qAxuC0dLmgXP@gallifrey>
+ <20241006140558.GF4116@unreal>
+ <ZwKehJ34PzNN6FQx@gallifrey>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] RDMA/srpt: Make slab cache names unique
-To: Zhu Yanjun <yanjun.zhu@linux.dev>, Bart Van Assche <bvanassche@acm.org>,
- Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>
-Cc: linux-rdma@vger.kernel.org,
- Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-References: <20241004173730.1932859-1-bvanassche@acm.org>
- <3108a1da-3eb3-4b9d-8063-eab25c7c2f29@linux.dev>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <3108a1da-3eb3-4b9d-8063-eab25c7c2f29@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZwKehJ34PzNN6FQx@gallifrey>
 
-Still seems way over engineered, just use an atomic_long_t for a
-continually increasing index number.
+On Sun, Oct 06, 2024 at 02:28:20PM +0000, Dr. David Alan Gilbert wrote:
+> * Leon Romanovsky (leon@kernel.org) wrote:
+> > On Fri, Oct 04, 2024 at 02:16:08PM +0000, Dr. David Alan Gilbert wrote:
+> > > Hi,
+> > >   One of my scripts noticed that c4iw_fill_res_qp_entry is not called
+> > > anywhere; It came from:
+> > > 
+> > > commit 5cc34116ccec60032dbaa92768f41e95ce2d8ec7
+> > > Author: Maor Gottlieb <maorg@mellanox.com>
+> > > Date:   Tue Jun 23 14:30:38 2020 +0300
+> > > 
+> > >     RDMA: Add dedicated QP resource tracker function
+> > >     
+> > > I was going to send a patch to deadcode it, but is it really a bug and
+> > > it should be assigned in c4iw_dev_ops in cxgb4/provider.c ?
+> > > 
+> > > (Note I know nothing about the innards of your driver, I'm just spotting
+> > > the unused function).
+> 
+> Thanks for the reply,
+> 
+> > It is a bug, something like that should be done.
+> 
+> Ah good I spotted; out of curiosity, what would be the symptom?
 
--- 
-Jens Axboe
+User will run "rdma resource show qp -d" and won't get any vendor
+specific information.
+
+> 
+> I don't have the hardware to test this, can I suggest that you send that patch?
+
+Sure, will do.
+
+> 
+> Dave
+> 
+> > diff --git a/drivers/infiniband/hw/cxgb4/provider.c b/drivers/infiniband/hw/cxgb4/provider.c
+> > index 10a4c738b59f..e059f92d90fd 100644
+> > --- a/drivers/infiniband/hw/cxgb4/provider.c
+> > +++ b/drivers/infiniband/hw/cxgb4/provider.c
+> > @@ -473,6 +473,7 @@ static const struct ib_device_ops c4iw_dev_ops = {
+> >         .fill_res_cq_entry = c4iw_fill_res_cq_entry,
+> >         .fill_res_cm_id_entry = c4iw_fill_res_cm_id_entry,
+> >         .fill_res_mr_entry = c4iw_fill_res_mr_entry,
+> > +       .fill_res_qp_entry = c4iw_fill_res_qp_entry,
+> >         .get_dev_fw_str = get_dev_fw_str,
+> >         .get_dma_mr = c4iw_get_dma_mr,
+> >         .get_hw_stats = c4iw_get_mib,
+> > (END)
+> > 
+> > 
+> > > 
+> > > Thoughts?
+> > > 
+> > > Dave
+> > > -- 
+> > >  -----Open up your eyes, open up your mind, open up your code -------   
+> > > / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+> > > \        dave @ treblig.org |                               | In Hex /
+> > >  \ _________________________|_____ http://www.treblig.org   |_______/
+> > > 
+> > 
+> -- 
+>  -----Open up your eyes, open up your mind, open up your code -------   
+> / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+> \        dave @ treblig.org |                               | In Hex /
+>  \ _________________________|_____ http://www.treblig.org   |_______/
 
