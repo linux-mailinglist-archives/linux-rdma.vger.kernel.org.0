@@ -1,77 +1,77 @@
-Return-Path: <linux-rdma+bounces-5302-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5303-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6977799421B
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2024 10:37:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 362F499421E
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2024 10:37:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31444290DDC
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2024 08:37:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 667D91C246AD
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2024 08:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5635D1EB9F4;
-	Tue,  8 Oct 2024 08:03:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0689F1EB9F7;
+	Tue,  8 Oct 2024 08:03:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="NHSwYeQl"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="NS9z3awv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3FAA1EB9F3
-	for <linux-rdma@vger.kernel.org>; Tue,  8 Oct 2024 08:03:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7096F1EB9F3
+	for <linux-rdma@vger.kernel.org>; Tue,  8 Oct 2024 08:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728374583; cv=none; b=EDJz7OvAqgjst0O7gUXbmqh6H3vxo8CA/FRr39M3JMiPHg0jQtTEjystDEvFI2sPDH4tDPGN/N9M2SysltQGI7/AMzo6MBemO5IdZQyPTRKQWds12uWLPrk4OfMcw1Yh0wN2GFY+r3m2zTjIENeDks+katJh5GYiYBIPcKruplQ=
+	t=1728374585; cv=none; b=aqt1a8bx/Ii7abmzjeTaQ3I7k1gnrvKP6HZxaBKEyaea4D6PS0PAgW9aKHS72bNHSGbweq7+Ea6uKHL4AQiTBrNxx/C4Uy3sSZhjgSvctXVWOasMjnLRA/F00b2RIdKJwgfcxh8SbPfaU9fdZ7vUnJLkQwyOgnDEVYBxw2Y+q+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728374583; c=relaxed/simple;
-	bh=I3TaePbqxQNesaz6t+eE88EC6Qx3LYvYIFaBxvvDvz8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=okRNGXhzk03t3VAOVSCZepGoqDnLN8xaqU2SVbAGNihr3T3e4rzmsIbzX/1KIu1iipMeKnA6wTz9JWyCLpYFk5lxIEpBdFVRMxZWpTKsRvzARkTT98endBaIdnnlYcLDIDVO4XMPBgahTrryUeS2tOegamzrtOmvoQu26NEWrOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=NHSwYeQl; arc=none smtp.client-ip=209.85.216.49
+	s=arc-20240116; t=1728374585; c=relaxed/simple;
+	bh=OCT11lcjA21jVWmrFYmXJ+ncbdW0sKC+AZk9S/UkfUY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=MeB3gANLpvFL1YIw/pLwOJLPXg35A3JXK4cI4nztMCUvue6HTujk/h2Mc6/4zGTfBt1SRAlmdcTUaBihsQ+buoKEiHigIN8Nxe8Bj8MqsgVYP9uDr5fmbbPlJaPrYH2YD4B7D33Xot3CM/UOpugL/o5s4AggLHk5kxIV+Y0i62s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=NS9z3awv; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2e078d28fe9so3641537a91.2
-        for <linux-rdma@vger.kernel.org>; Tue, 08 Oct 2024 01:03:01 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2e0a74ce880so4472816a91.2
+        for <linux-rdma@vger.kernel.org>; Tue, 08 Oct 2024 01:03:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1728374581; x=1728979381; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1728374584; x=1728979384; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=+eL3fAkO5BkMvSeaU80mRU0m+i55ekGLKZTjD3DOAnw=;
-        b=NHSwYeQl5ekF9HVj3F19/jvRyoKXLSA68Y5a6HmbYBpotqEuGAvdSAIHJPn9AfgSJS
-         AIwsa+wGIC7uOfhUozSuNk6sOi6dpJPCoLFovxWDfElu/F1UyVUnj8OuI0DIuNeV1VLm
-         4UAHVL7IJZotUi1JcwmvXAxeUGDZoU/QlyAoU=
+        bh=JgySFIZselsz4WY2/sAXKF7ImiI6hJAWKQh+nzp8Izw=;
+        b=NS9z3awv4Ow9bcdDiIG7a1c8xS7e6R1h/4Z7w/T+DG5gMbayZp+NYVTizqaQ/jVd40
+         QwiyBwLCfFAYuXe+dKny9kSpX2Zwt/H8mVzp3wkyaeZ9Fmdz/Va3r1ESNOtVVWCNdoa5
+         YOD3Uo+y7qdMQpafhTx2zKUZ7ZJ3Wvr+maZfo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728374581; x=1728979381;
+        d=1e100.net; s=20230601; t=1728374584; x=1728979384;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+eL3fAkO5BkMvSeaU80mRU0m+i55ekGLKZTjD3DOAnw=;
-        b=cuX/k7wbbaI5VrilOPFAmNT7P2BFBX0h/cDZ9CTAJ4lomJbMop69cbHmeGHhcXXMSK
-         AbJc3csCnAK6FKZqB0oxZK4taH4Kt5lpEm/TIPuLwTmf2tc4sTg77QIWPB45M3bDLzHS
-         SqHdv4tVQcvf0TSW0Ns7Q2wsDsZjGxcerdw5KXobfzKQO6jn8/TTzhRpzG6F5eN09Upl
-         XDGjpQ11nNwjv3BmwfNVv0YmKoGSwZ2zC1CVdLhpVjuCI04W6y1jwKbDdyZULH5z8jtt
-         94ypS6TiAMH0fN4B1jtGzkBJSSoqdZKeUKh+i5LLn955uTfP7LPP00bLOZ2uTTziTuRF
-         icCQ==
-X-Gm-Message-State: AOJu0YzalRrTCQ7xx7yq+wy6KM3bcqOLcPgM2HCRTNyuwT97DDgXi+/N
-	CrdqYrmWp8Nf4yp2AjaR2qtocYxdzHuyNFZ2AMeLvijhi9ZL2S5ZjctTj+Uob0I6zBRxSGee6US
-	1lQ==
-X-Google-Smtp-Source: AGHT+IEyEjSggeNHsCxSPLXhovr/PA63mcSCCTeGLjHSKzOIq57rExwlCwKKQ7lxP9xox45D0tqPSw==
-X-Received: by 2002:a17:90b:1058:b0:2e2:9132:4c58 with SMTP id 98e67ed59e1d1-2e291324d7emr55424a91.34.1728374580788;
-        Tue, 08 Oct 2024 01:03:00 -0700 (PDT)
+        bh=JgySFIZselsz4WY2/sAXKF7ImiI6hJAWKQh+nzp8Izw=;
+        b=PmEaVCS4/178fElyTFlyFbEmw6ljVgPQj4uQBjU9cRDOKeJhXIfNlGIqAsHzt7k7FE
+         nxDNfk80iaHaNo8hsPuWsOjzey4tOkjzm2ub//Log1xobp6IsJ+E0c/KIRiPA2Ah0Az5
+         n1niR+LLMAVopyinc85NpzeqqfcGf7VOsyf1LaAY6v11Iu4EbZv/MVsUokkBLlZ2CLRd
+         YC6V+u00mWcar9ogSkNEHyifm9cvHgHA9e0wPfvvguKcarRiBfueRnjhbFvM/Eima7B5
+         Ph34BLA3tdMoX2k1dsziqfdMxpkMafsSSlu1LCjhj3IP0NIJH5usyXx3gPvSmoVi63fr
+         zX1Q==
+X-Gm-Message-State: AOJu0Yz5rqpQK9b1nPl2D2kQPH5cvVzMKUigR69yAyD4tx38tRJKAEA6
+	Szxbhk0opwLegcK2FmEjiXiEJ9MmFsKQrJ/fCUFBFQL01yET4xZVR2D1wyp/saxXX1+8LMj5ebo
+	uDw==
+X-Google-Smtp-Source: AGHT+IEGP2Sup5wP29t/vJsgzXqECp21sCEb55VZqnx9uOV2JtVSpI4bdPxKxB7JdlJbOrwxZle08Q==
+X-Received: by 2002:a17:90b:364f:b0:2e0:d8cd:195a with SMTP id 98e67ed59e1d1-2e1e6367761mr19135787a91.39.1728374583672;
+        Tue, 08 Oct 2024 01:03:03 -0700 (PDT)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c1396d547sm50339915ad.223.2024.10.08.01.02.58
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c1396d547sm50339915ad.223.2024.10.08.01.03.01
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 08 Oct 2024 01:03:00 -0700 (PDT)
+        Tue, 08 Oct 2024 01:03:03 -0700 (PDT)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
-	Chandramohan Akula <chandramohan.akula@broadcom.com>,
+	Bhargava Chenna Marreddy <bhargava.marreddy@broadcom.com>,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-rc 08/10] RDMA/bnxt_re: Change the sequence of updating the CQ toggle value
-Date: Tue,  8 Oct 2024 00:41:40 -0700
-Message-Id: <1728373302-19530-9-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-rc 09/10] RDMA/bnxt_re: Fix a bug while setting up Level-2 PBL pages
+Date: Tue,  8 Oct 2024 00:41:41 -0700
+Message-Id: <1728373302-19530-10-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1728373302-19530-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1728373302-19530-1-git-send-email-selvin.xavier@broadcom.com>
@@ -81,71 +81,53 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-From: Chandramohan Akula <chandramohan.akula@broadcom.com>
+From: Bhargava Chenna Marreddy <bhargava.marreddy@broadcom.com>
 
-Currently the CQ toggle value in the shared page (read by
-the userlib) is updated as part of the cqn_handler. There
-is a potential race of application calling the CQ ARM
-doorbell immediately and using the old toggle value.
+Avoid memory corruption while setting up Level-2 PBL
+pages for the non MR resources when num_pages > 256K.
 
-Change the sequence of updating CQ toggle value to update
-in the bnxt_qplib_service_nq function immediately after
-reading the toggle value to be in sync with the HW updated
-value.
+There will be a single PDE page address (contiguous
+pages in the case of > PAGE_SIZE), but, current logic
+assumes multiple pages, leading to invalid memory
+access after 256K PBL entries in the PDE.
 
-Fixes: e275919d9669 ("RDMA/bnxt_re: Share a page to expose per CQ info with userspace")
-Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
-Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Fixes: 0c4dcd602817 ("RDMA/bnxt_re: Refactor hardware queue memory allocation")
+Signed-off-by: Bhargava Chenna Marreddy <bhargava.marreddy@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c     | 8 +-------
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 5 +++++
- 2 files changed, 6 insertions(+), 7 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_res.c | 19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 63ca600..6715c96 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1274,15 +1274,9 @@ static int bnxt_re_cqn_handler(struct bnxt_qplib_nq *nq,
- {
- 	struct bnxt_re_cq *cq = container_of(handle, struct bnxt_re_cq,
- 					     qplib_cq);
--	u32 *cq_ptr;
- 
--	if (cq->ib_cq.comp_handler) {
--		if (cq->uctx_cq_page) {
--			cq_ptr = (u32 *)cq->uctx_cq_page;
--			*cq_ptr = cq->qplib_cq.toggle;
--		}
-+	if (cq->ib_cq.comp_handler)
- 		(*cq->ib_cq.comp_handler)(&cq->ib_cq, cq->ib_cq.cq_context);
--	}
- 
- 	return 0;
- }
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index 42e98e5..2ebcb2d 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -327,6 +327,7 @@ static void bnxt_qplib_service_nq(struct tasklet_struct *t)
- 		case NQ_BASE_TYPE_CQ_NOTIFICATION:
- 		{
- 			struct nq_cn *nqcne = (struct nq_cn *)nqe;
-+			struct bnxt_re_cq *cq_p;
- 
- 			q_handle = le32_to_cpu(nqcne->cq_handle_low);
- 			q_handle |= (u64)le32_to_cpu(nqcne->cq_handle_high)
-@@ -337,6 +338,10 @@ static void bnxt_qplib_service_nq(struct tasklet_struct *t)
- 			cq->toggle = (le16_to_cpu(nqe->info10_type) &
- 					NQ_CN_TOGGLE_MASK) >> NQ_CN_TOGGLE_SFT;
- 			cq->dbinfo.toggle = cq->toggle;
-+			cq_p = container_of(cq, struct bnxt_re_cq, qplib_cq);
-+			if (cq_p->uctx_cq_page)
-+				*((u32 *)cq_p->uctx_cq_page) = cq->toggle;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+index 1fdffd6..96ceec1 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+@@ -257,22 +257,9 @@ int bnxt_qplib_alloc_init_hwq(struct bnxt_qplib_hwq *hwq,
+ 			dst_virt_ptr =
+ 				(dma_addr_t **)hwq->pbl[PBL_LVL_0].pg_arr;
+ 			src_phys_ptr = hwq->pbl[PBL_LVL_1].pg_map_arr;
+-			if (hwq_attr->type == HWQ_TYPE_MR) {
+-			/* For MR it is expected that we supply only 1 contigous
+-			 * page i.e only 1 entry in the PDL that will contain
+-			 * all the PBLs for the user supplied memory region
+-			 */
+-				for (i = 0; i < hwq->pbl[PBL_LVL_1].pg_count;
+-				     i++)
+-					dst_virt_ptr[0][i] = src_phys_ptr[i] |
+-						flag;
+-			} else {
+-				for (i = 0; i < hwq->pbl[PBL_LVL_1].pg_count;
+-				     i++)
+-					dst_virt_ptr[PTR_PG(i)][PTR_IDX(i)] =
+-						src_phys_ptr[i] |
+-						PTU_PDE_VALID;
+-			}
++			for (i = 0; i < hwq->pbl[PBL_LVL_1].pg_count; i++)
++				dst_virt_ptr[0][i] = src_phys_ptr[i] | flag;
 +
- 			bnxt_qplib_armen_db(&cq->dbinfo,
- 					    DBC_DBC_TYPE_CQ_ARMENA);
- 			spin_lock_bh(&cq->compl_lock);
+ 			/* Alloc or init PTEs */
+ 			rc = __alloc_pbl(res, &hwq->pbl[PBL_LVL_2],
+ 					 hwq_attr->sginfo);
 -- 
 2.5.5
 
