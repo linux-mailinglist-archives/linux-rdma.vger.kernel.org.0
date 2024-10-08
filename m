@@ -1,109 +1,98 @@
-Return-Path: <linux-rdma+bounces-5289-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5290-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05EA8993B71
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2024 01:53:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04F63993C6D
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2024 03:44:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5763283A87
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2024 23:53:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0E5FB21F3A
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2024 01:44:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF26819069B;
-	Mon,  7 Oct 2024 23:53:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="bOOFjsYN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0451418654;
+	Tue,  8 Oct 2024 01:44:05 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7198318C00D;
-	Mon,  7 Oct 2024 23:53:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A9A414A82
+	for <linux-rdma@vger.kernel.org>; Tue,  8 Oct 2024 01:44:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728345215; cv=none; b=JfT1e1o4a2R4T/r0Ut4OjFtimmYKv+YZr1dy+2NGQCqJMHxxv/Nh1jUDy8cbk+SSaPKRO5idyX1c8xXmQG5RFWcaAvE0T9y3SfobuuKfy6331qb7enuUeyIZv2cSJG0pDuMzYJIOJ2uEUrb2+Q2VmvIdwCkNvDkWBOEyA3DpeNk=
+	t=1728351844; cv=none; b=TITryhrSq2ghz9ISB4jQy0ZibYqhjnfh6fd6H0uDYFhRnY1nh5WINNTPxB0/jzToQwXclJrlYg23kic3mACxFRY2lnppqLtl2gSR4K2LCQ4bAgvoWvpyjotQwSnAKi8NMLgoXJE3+OuwH8NLRe//i+0BuE5KjDcFUxCZyiRq1fE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728345215; c=relaxed/simple;
-	bh=Wsr0H1CYpJtmTInG+9Qw6s4j9i9noobUlHgs7WKH3dQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LYR/cs/yoF/ZVjudR9pgOcU2Yb+F2ySKjRJ8/nnZfrBdSvR/6eWYSxLkmNhdJywPduSRjpbGXtQthZ7VgYpT8y4adaaVoJWhY4RQlaxRe6w52c4HGch9oTiwtlE7iFct8e8FDJomNcfdf0rmZ0sSP6qEvepfP3pUtg18DsoV3yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=bOOFjsYN; arc=none smtp.client-ip=46.235.229.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-	; s=bytemarkmx; h=MIME-Version:Message-ID:Date:Subject:From:Content-Type:From
-	:Subject; bh=kyp9XIhblqRm/Nv1X0TqQEnGfq2MESv4xLxTpYLtz+w=; b=bOOFjsYNZV1MgWVI
-	iBle+9MYz4xsWWUxkuDgaSq3jfGDspQyUYs98y1I/uza8HfGOWS1pMnWgiJvZbQOAY202TWa5aWnJ
-	vgIgNdIriVYx36VPKqd/6B/gnEhrIno1Uk+YpnQk5gNbxXWAnM9BjowXHxBmFKPhGawR2NiwTadgj
-	TjG9TXZBLsTUisVM7SlS25lpzcfVxIVyTCCsZT+djPB5tLsiDqSvByK6d4EHgLX+UZOv2vMj0v5g/
-	KSGP4G0M9zHXd7BXnDyXWRLg20MtTiyc0NS3pXnodCHDYloplWyLKkVq8TKLtwRcxy2chc/oQ8E7F
-	axK6+P1ka7LreLs+wg==;
-Received: from localhost ([127.0.0.1] helo=dalek.home.treblig.org)
-	by mx.treblig.org with esmtp (Exim 4.96)
-	(envelope-from <linux@treblig.org>)
-	id 1sxxXc-009aUF-1f;
-	Mon, 07 Oct 2024 23:53:28 +0000
-From: linux@treblig.org
-To: dennis.dalessandro@cornelisnetworks.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Dr. David Alan Gilbert" <linux@treblig.org>
-Subject: [PATCH] IB/hfi1: make clear_all_interrupts static
-Date: Tue,  8 Oct 2024 00:53:26 +0100
-Message-ID: <20241007235327.128613-1-linux@treblig.org>
-X-Mailer: git-send-email 2.46.2
+	s=arc-20240116; t=1728351844; c=relaxed/simple;
+	bh=zEiGXPNNi+qV0aR54ss4qOfQqs8mEO+IEjrR6uv8Tx8=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=MI+RSrmge8EfJg9ioLG2MFQehFytf5yUh1jw7II0zw9Z7rfMpclLdLrWIiLLLmQsJkwsSWdOc43irkOSTNC49t7+Z7xAxMNBSOv/WwaEclScg5JzBzWLp6n6yY6q70okNL9fK/7g+KYBdzKfTAXtH4/H2mR0SMmXWjeFhi9aJLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a19534ac2fso57656825ab.2
+        for <linux-rdma@vger.kernel.org>; Mon, 07 Oct 2024 18:44:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728351842; x=1728956642;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=G1J06SoFiK32YSSK7pd1LagUMG6E/yMnS5Pg/4wxUAM=;
+        b=S5bIcDC+dOWZOCR3CAHPBWocoFpGBki/W6wvxcEDRyLFsLmTE0bef9WCeGdFf6WauR
+         GDI8+R1xVZhjyJbkFVnzjwK/CH4cNy1USTwVOF411Wgt6ruzCiW46AHwEWZTVab2/fap
+         NVpmQuw88byHsjEqNEQzaW1Id2aKuMGFW+afEp5VqDDqli1owAwqRJQH0f363tTTT53S
+         YTEoSDJL5urgNft2zYHz59ft7ZqfAfYi+uUkSCuBbRttUfkWfVpv3BAJXia/5i/sHCib
+         a34o4iCGRRQjx/3W/WjRyuhpB1YiQVMKgSP7Rm6q29Z9DyVzBOPBxgnghPu3B8lLAuNd
+         /JPg==
+X-Forwarded-Encrypted: i=1; AJvYcCWZX/QAHopctX1RQRElzwn8yFHpGBmG5UFpjRfuCnuuuH/ixKgYC5Pvp1OqeG7nPY8STCKX7KGn8c3a@vger.kernel.org
+X-Gm-Message-State: AOJu0YxqtTA9/wTcwNND02mCMuTVRxRTVf2BtIUuzyiHV3Btbq0ALB/t
+	eRF6xOAiv0aj1+n6QfOAFCoyAfGKbkHYt5bZ6b88qDAArOCl7LkZhVPAwO9QdXvA/xrnoZVk1sc
+	1ilguCJ0xVZNT085oIrZGcX0avSTfqGC+F8RNCsVU+AM/tmlrXw0vcdI=
+X-Google-Smtp-Source: AGHT+IEtrMwclXwLk1T+D4m61HcZKuVnKmJ+oYAzW76+X+uCSIGFo56jfuhfh3UacTn3YPpAjTVxw5WCYw2XQx4rootXFgdHencz
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1541:b0:3a2:f7b1:2f89 with SMTP id
+ e9e14a558f8ab-3a375bb2c30mr134150875ab.18.1728351842553; Mon, 07 Oct 2024
+ 18:44:02 -0700 (PDT)
+Date: Mon, 07 Oct 2024 18:44:02 -0700
+In-Reply-To: <000000000000657ecd0614456af8@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67048e62.050a0220.49194.051e.GAE@google.com>
+Subject: Re: [syzbot] [net?] KASAN: slab-use-after-free Read in __ethtool_get_link_ksettings
+From: syzbot <syzbot+5fe14f2ff4ccbace9a26@syzkaller.appspotmail.com>
+To: ahmed.zaki@intel.com, andrew@lunn.ch, boqun.feng@gmail.com, 
+	cmeiohas@nvidia.com, davem@davemloft.net, dkirjanov@suse.de, 
+	ecree.xilinx@gmail.com, edumazet@google.com, hdanton@sina.com, jgg@ziepe.ca, 
+	kalesh-anakkur.purayil@broadcom.com, kirjanov@gmail.com, kuba@kernel.org, 
+	leon@kernel.org, linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	michaelgur@nvidia.com, msanalla@nvidia.com, naveenm@marvell.com, 
+	netdev@vger.kernel.org, pabeni@redhat.com, penguin-kernel@i-love.sakura.ne.jp, 
+	przemyslaw.kitszel@intel.com, rkannoth@marvell.com, 
+	syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: "Dr. David Alan Gilbert" <linux@treblig.org>
+syzbot has bisected this issue to:
 
-clear_all_interrupts() in hw/hfi1/chip.c is currently global
-but only used in the same file, so make it static.
+commit 5f8ca04fdd3c66a322ea318b5f1cb684dd56e5b2
+Author: Chiara Meiohas <cmeiohas@nvidia.com>
+Date:   Mon Sep 9 17:30:22 2024 +0000
 
-There are also 'clear_all_interrupts' functions in i2c-nomadik and
-emif.c but fortunately they're already static.
+    RDMA/device: Remove optimization in ib_device_get_netdev()
 
-(Build and boot tested only, I don't have this hardware)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16db2327980000
+start commit:   c4a14f6d9d17 ipv4: ip_gre: Fix drops of small packets in i..
+git tree:       net
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15db2327980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11db2327980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b2d4fdf18a83ec0b
+dashboard link: https://syzkaller.appspot.com/bug?extid=5fe14f2ff4ccbace9a26
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11eca3d0580000
 
-Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
----
- drivers/infiniband/hw/hfi1/chip.c | 2 +-
- drivers/infiniband/hw/hfi1/chip.h | 1 -
- 2 files changed, 1 insertion(+), 2 deletions(-)
+Reported-by: syzbot+5fe14f2ff4ccbace9a26@syzkaller.appspotmail.com
+Fixes: 5f8ca04fdd3c ("RDMA/device: Remove optimization in ib_device_get_netdev()")
 
-diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index c52e6b2c9914..a442eca498b8 100644
---- a/drivers/infiniband/hw/hfi1/chip.c
-+++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -13235,7 +13235,7 @@ int set_intr_bits(struct hfi1_devdata *dd, u16 first, u16 last, bool set)
- /*
-  * Clear all interrupt sources on the chip.
-  */
--void clear_all_interrupts(struct hfi1_devdata *dd)
-+static void clear_all_interrupts(struct hfi1_devdata *dd)
- {
- 	int i;
- 
-diff --git a/drivers/infiniband/hw/hfi1/chip.h b/drivers/infiniband/hw/hfi1/chip.h
-index d861aa8fc640..8841db16bde7 100644
---- a/drivers/infiniband/hw/hfi1/chip.h
-+++ b/drivers/infiniband/hw/hfi1/chip.h
-@@ -1404,7 +1404,6 @@ irqreturn_t receive_context_interrupt_napi(int irq, void *data);
- 
- int set_intr_bits(struct hfi1_devdata *dd, u16 first, u16 last, bool set);
- void init_qsfp_int(struct hfi1_devdata *dd);
--void clear_all_interrupts(struct hfi1_devdata *dd);
- void remap_intr(struct hfi1_devdata *dd, int isrc, int msix_intr);
- void remap_sdma_interrupts(struct hfi1_devdata *dd, int engine, int msix_intr);
- void reset_interrupts(struct hfi1_devdata *dd);
--- 
-2.46.2
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
