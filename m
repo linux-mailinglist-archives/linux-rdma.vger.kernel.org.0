@@ -1,65 +1,65 @@
-Return-Path: <linux-rdma+bounces-5325-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5326-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE2C6995D8F
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2024 04:00:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C569C995D92
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2024 04:01:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ADA8284F47
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2024 02:00:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36A5DB240F4
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2024 02:01:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B3646F307;
-	Wed,  9 Oct 2024 02:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D74FC131E2D;
+	Wed,  9 Oct 2024 02:00:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="CL5XCxuZ"
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="IAVksPCX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from esa9.hc1455-7.c3s2.iphmx.com (esa9.hc1455-7.c3s2.iphmx.com [139.138.36.223])
+Received: from esa2.hc1455-7.c3s2.iphmx.com (esa2.hc1455-7.c3s2.iphmx.com [207.54.90.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5786844C76;
-	Wed,  9 Oct 2024 02:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.138.36.223
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6D5F55887;
+	Wed,  9 Oct 2024 02:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.54.90.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728439230; cv=none; b=OZJ4fJMI+NNGAuECXqs2rImXL+7Yy5rdXDdE43VSJMS4FYoTN9WnluEQvBlRaTxpi1YUWNl4YAwWbeCdpjf1E3FCU56buvxTj3zoGXS+AQTaIGxj5Cz4a4iJX8pUZ0KmzYuzB6vJ4q07nw449AOXnYMWpAQDiXwoUJCF/ErFosQ=
+	t=1728439239; cv=none; b=t/HFCk3XTxIKhg5y9EK0AQHz6p6mUGe+iO2mNGauFsiYVEKOg9pYAwcyOdL/12GjcQWJrviYrYxCn1eVRODspxjZHhQYrse29A1HUtqhz17Gz64AtS1rF3M2nf4MWd0N6dBEwmicGBWig8ojaZmqWCNmoRjUmfBMTrLptVubU+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728439230; c=relaxed/simple;
-	bh=DCN06ZCZ0OXI4HvhqoRJXSb6/HyodGvvvDu/w3aueTk=;
+	s=arc-20240116; t=1728439239; c=relaxed/simple;
+	bh=8rfGaGGiVz9TS52mA6uudohmzNLbJ1QmcssVA8YlEHg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ly3yuDmtbu1IaPdB7oDQHm6x63EKfzpm1Wa8oV1PLSrsNGOneyN1IlQPnX60MV5erWJR95o3TORP9RDKbyOSw1N1J2PPdDVzEuBdTvWlcAJJjsIV/qISPaGhUwj/k5NugSdFAQOqBc1RwCG/SOY9qpGT3r9Od1FWb39yVo0VcVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=CL5XCxuZ; arc=none smtp.client-ip=139.138.36.223
+	 MIME-Version; b=KBh01f2fd84uSxxK45ibI40Wq10UkJ/X090my8Doy0UhD0mSEm/lYXOz9/1spdu/h3CH/TpKg4kj2Cq6F4vWMo8TBDXvLcXEzGdS0MsbC/p76uGpV2NrahmF49ZbTypcpRBT3eoGmwIvGzEZtq4VFe1toxfQJ5jMtFuy8wuNFSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=IAVksPCX; arc=none smtp.client-ip=207.54.90.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1728439228; x=1759975228;
+  t=1728439239; x=1759975239;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=DCN06ZCZ0OXI4HvhqoRJXSb6/HyodGvvvDu/w3aueTk=;
-  b=CL5XCxuZVT9tmEfOn8gBIZEoIPwmtkOLk/+My3Y4gTNkGCfGzZM1WvyE
-   /2LJCpBt58u+9ODf3jl3WRu7m0NMlCHHJXQaG8K5ETYOS2df8udGVwRIl
-   m/XIc5dQII/L1i2OxMhd0usAUeydQXlb6ZpDJ4hAyD4EoWTAkBbiWQgy1
-   nONmp5eMbakhnqGPDA/zm2YvdHUrGfDpV6IolIG/2RMx226g9NU+5ldsU
-   NPJkYRf4H99APcSan7RsCD4/Dht5no1i4RfNKR1br+OjH800BYxjekHTD
-   GC7jjcbW8lmGl7jdE9fp2PkPP19rPw6hKgUz1c8791QG1miJ69/2ysUpE
-   Q==;
-X-CSE-ConnectionGUID: Zr8jA1exRCKCtCAFLc71fw==
-X-CSE-MsgGUID: rlJm++mIQ7uI210WAhbV5Q==
-X-IronPort-AV: E=McAfee;i="6700,10204,11219"; a="164552987"
+  bh=8rfGaGGiVz9TS52mA6uudohmzNLbJ1QmcssVA8YlEHg=;
+  b=IAVksPCXRtqEHCSrMAz47CvWHYWfHJwlsaEvTK6Z0rP+RYd+EXETQUGs
+   kRF3gtZRxZKbJIQeIg7n4UcTmxmZFUKiFYEMMpr7QE3agMSEiX+QUc622
+   RJ+7DMutlML7kpXDTTE8IRvHkLfme+1JIXNCUZuWvcDwPeRbwQXmBBBt3
+   RG8j9h5PzUG4fvEmqKKNzlgtFTLSxnqr2WvyLT7TzGlNwMvcdU0cGWECB
+   gpxYxlPIdvQvoxRlyq1f0blNoaJKiOsoqpI7G0AFFqzHpKJ2ctRZlYUPO
+   Zne3Jv3QYVieMTcI/cYop4SXNcjRJU5RZ3Ss9OPhDb6um9IA2dFGSmive
+   g==;
+X-CSE-ConnectionGUID: 62DxmlrCRkqQ6E54fsn0rg==
+X-CSE-MsgGUID: F+fGgGIyRZ6pit+btmpXNw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11219"; a="176266738"
 X-IronPort-AV: E=Sophos;i="6.11,188,1725289200"; 
-   d="scan'208";a="164552987"
+   d="scan'208";a="176266738"
 Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
-  by esa9.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2024 10:59:22 +0900
-Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
-	by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 19ADFC68E2;
-	Wed,  9 Oct 2024 10:59:20 +0900 (JST)
+  by esa2.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2024 10:59:27 +0900
+Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com [192.168.83.64])
+	by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 30B0BC68E2;
+	Wed,  9 Oct 2024 10:59:24 +0900 (JST)
 Received: from m3004.s.css.fujitsu.com (m3004.s.css.fujitsu.com [10.128.233.124])
-	by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 64BA6F75C;
-	Wed,  9 Oct 2024 10:59:19 +0900 (JST)
+	by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 833DBCFA5B;
+	Wed,  9 Oct 2024 10:59:23 +0900 (JST)
 Received: from sm-x86-stp01.ssoft.mng.com (unknown [10.124.178.20])
-	by m3004.s.css.fujitsu.com (Postfix) with ESMTP id 398802005356;
-	Wed,  9 Oct 2024 10:59:19 +0900 (JST)
+	by m3004.s.css.fujitsu.com (Postfix) with ESMTP id 57ACC2005356;
+	Wed,  9 Oct 2024 10:59:23 +0900 (JST)
 From: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
 To: linux-rdma@vger.kernel.org,
 	leon@kernel.org,
@@ -69,9 +69,9 @@ Cc: linux-kernel@vger.kernel.org,
 	rpearsonhpe@gmail.com,
 	lizhijian@fujitsu.com,
 	Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Subject: [PATCH for-next v8 1/6] RDMA/rxe: Make MR functions accessible from other rxe source code
-Date: Wed,  9 Oct 2024 10:58:58 +0900
-Message-Id: <20241009015903.801987-2-matsuda-daisuke@fujitsu.com>
+Subject: [PATCH for-next v8 2/6] RDMA/rxe: Move resp_states definition to rxe_verbs.h
+Date: Wed,  9 Oct 2024 10:58:59 +0900
+Message-Id: <20241009015903.801987-3-matsuda-daisuke@fujitsu.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20241009015903.801987-1-matsuda-daisuke@fujitsu.com>
 References: <20241009015903.801987-1-matsuda-daisuke@fujitsu.com>
@@ -84,85 +84,112 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 
-Some functions in rxe_mr.c are going to be used in rxe_odp.c, which is to
-be created in the subsequent patch. List the declarations of the functions
-in rxe_loc.h.
+To use the resp_states values in rxe_loc.h, it is necessary to move the
+definition to rxe_verbs.h, where other internal states of this driver are
+defined.
 
 Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
 ---
- drivers/infiniband/sw/rxe/rxe_loc.h |  8 ++++++++
- drivers/infiniband/sw/rxe/rxe_mr.c  | 11 +++--------
- 2 files changed, 11 insertions(+), 8 deletions(-)
+ drivers/infiniband/sw/rxe/rxe.h       | 37 ---------------------------
+ drivers/infiniband/sw/rxe/rxe_verbs.h | 37 +++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index ded46119151b..866c36533b53 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -58,6 +58,7 @@ int rxe_mmap(struct ib_ucontext *context, struct vm_area_struct *vma);
+diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
+index d8fb2c7af30a..193f7caffaf2 100644
+--- a/drivers/infiniband/sw/rxe/rxe.h
++++ b/drivers/infiniband/sw/rxe/rxe.h
+@@ -100,43 +100,6 @@
+ #define rxe_info_mw(mw, fmt, ...) ibdev_info_ratelimited((mw)->ibmw.device, \
+ 		"mw#%d %s:  " fmt, (mw)->elem.index, __func__, ##__VA_ARGS__)
  
- /* rxe_mr.c */
- u8 rxe_get_next_key(u32 last_key);
-+void rxe_mr_init(int access, struct rxe_mr *mr);
- void rxe_mr_init_dma(int access, struct rxe_mr *mr);
- int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
- 		     int access, struct rxe_mr *mr);
-@@ -69,6 +70,8 @@ int copy_data(struct rxe_pd *pd, int access, struct rxe_dma_info *dma,
- 	      void *addr, int length, enum rxe_mr_copy_dir dir);
- int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
- 		  int sg_nents, unsigned int *sg_offset);
-+int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
-+		       unsigned int length, enum rxe_mr_copy_dir dir);
- int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- 			u64 compare, u64 swap_add, u64 *orig_val);
- int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value);
-@@ -80,6 +83,11 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 key);
- int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
- void rxe_mr_cleanup(struct rxe_pool_elem *elem);
- 
-+static inline unsigned long rxe_mr_iova_to_index(struct rxe_mr *mr, u64 iova)
-+{
-+	return (iova >> mr->page_shift) - (mr->ibmr.iova >> mr->page_shift);
-+}
-+
- /* rxe_mw.c */
- int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata);
- int rxe_dealloc_mw(struct ib_mw *ibmw);
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index da3dee520876..1f7b8cf93adc 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -45,7 +45,7 @@ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
- 	}
- }
- 
--static void rxe_mr_init(int access, struct rxe_mr *mr)
-+void rxe_mr_init(int access, struct rxe_mr *mr)
- {
- 	u32 key = mr->elem.index << 8 | rxe_get_next_key(-1);
- 
-@@ -72,11 +72,6 @@ void rxe_mr_init_dma(int access, struct rxe_mr *mr)
- 	mr->ibmr.type = IB_MR_TYPE_DMA;
- }
- 
--static unsigned long rxe_mr_iova_to_index(struct rxe_mr *mr, u64 iova)
--{
--	return (iova >> mr->page_shift) - (mr->ibmr.iova >> mr->page_shift);
--}
+-/* responder states */
+-enum resp_states {
+-	RESPST_NONE,
+-	RESPST_GET_REQ,
+-	RESPST_CHK_PSN,
+-	RESPST_CHK_OP_SEQ,
+-	RESPST_CHK_OP_VALID,
+-	RESPST_CHK_RESOURCE,
+-	RESPST_CHK_LENGTH,
+-	RESPST_CHK_RKEY,
+-	RESPST_EXECUTE,
+-	RESPST_READ_REPLY,
+-	RESPST_ATOMIC_REPLY,
+-	RESPST_ATOMIC_WRITE_REPLY,
+-	RESPST_PROCESS_FLUSH,
+-	RESPST_COMPLETE,
+-	RESPST_ACKNOWLEDGE,
+-	RESPST_CLEANUP,
+-	RESPST_DUPLICATE_REQUEST,
+-	RESPST_ERR_MALFORMED_WQE,
+-	RESPST_ERR_UNSUPPORTED_OPCODE,
+-	RESPST_ERR_MISALIGNED_ATOMIC,
+-	RESPST_ERR_PSN_OUT_OF_SEQ,
+-	RESPST_ERR_MISSING_OPCODE_FIRST,
+-	RESPST_ERR_MISSING_OPCODE_LAST_C,
+-	RESPST_ERR_MISSING_OPCODE_LAST_D1E,
+-	RESPST_ERR_TOO_MANY_RDMA_ATM_REQ,
+-	RESPST_ERR_RNR,
+-	RESPST_ERR_RKEY_VIOLATION,
+-	RESPST_ERR_INVALIDATE_RKEY,
+-	RESPST_ERR_LENGTH,
+-	RESPST_ERR_CQ_OVERFLOW,
+-	RESPST_ERROR,
+-	RESPST_DONE,
+-	RESPST_EXIT,
+-};
 -
- static unsigned long rxe_mr_iova_to_page_offset(struct rxe_mr *mr, u64 iova)
- {
- 	return iova & (mr_page_size(mr) - 1);
-@@ -242,8 +237,8 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
- 	return ib_sg_to_pages(ibmr, sgl, sg_nents, sg_offset, rxe_set_page);
- }
+ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int dev_mtu);
  
--static int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
--			      unsigned int length, enum rxe_mr_copy_dir dir)
-+int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
-+		       unsigned int length, enum rxe_mr_copy_dir dir)
- {
- 	unsigned int page_offset = rxe_mr_iova_to_page_offset(mr, iova);
- 	unsigned long index = rxe_mr_iova_to_index(mr, iova);
+ int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name);
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index 3c1354f82283..e4656c7640f0 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -126,6 +126,43 @@ struct rxe_comp_info {
+ 	u32			rnr_retry;
+ };
+ 
++/* responder states */
++enum resp_states {
++	RESPST_NONE,
++	RESPST_GET_REQ,
++	RESPST_CHK_PSN,
++	RESPST_CHK_OP_SEQ,
++	RESPST_CHK_OP_VALID,
++	RESPST_CHK_RESOURCE,
++	RESPST_CHK_LENGTH,
++	RESPST_CHK_RKEY,
++	RESPST_EXECUTE,
++	RESPST_READ_REPLY,
++	RESPST_ATOMIC_REPLY,
++	RESPST_ATOMIC_WRITE_REPLY,
++	RESPST_PROCESS_FLUSH,
++	RESPST_COMPLETE,
++	RESPST_ACKNOWLEDGE,
++	RESPST_CLEANUP,
++	RESPST_DUPLICATE_REQUEST,
++	RESPST_ERR_MALFORMED_WQE,
++	RESPST_ERR_UNSUPPORTED_OPCODE,
++	RESPST_ERR_MISALIGNED_ATOMIC,
++	RESPST_ERR_PSN_OUT_OF_SEQ,
++	RESPST_ERR_MISSING_OPCODE_FIRST,
++	RESPST_ERR_MISSING_OPCODE_LAST_C,
++	RESPST_ERR_MISSING_OPCODE_LAST_D1E,
++	RESPST_ERR_TOO_MANY_RDMA_ATM_REQ,
++	RESPST_ERR_RNR,
++	RESPST_ERR_RKEY_VIOLATION,
++	RESPST_ERR_INVALIDATE_RKEY,
++	RESPST_ERR_LENGTH,
++	RESPST_ERR_CQ_OVERFLOW,
++	RESPST_ERROR,
++	RESPST_DONE,
++	RESPST_EXIT,
++};
++
+ enum rdatm_res_state {
+ 	rdatm_res_state_next,
+ 	rdatm_res_state_new,
 -- 
 2.43.0
 
