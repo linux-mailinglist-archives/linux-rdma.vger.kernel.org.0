@@ -1,160 +1,113 @@
-Return-Path: <linux-rdma+bounces-5336-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5337-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 958A5996D5F
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2024 16:13:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3152D996DCD
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2024 16:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55CD9283879
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2024 14:13:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6316B1C2292B
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2024 14:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F1D199FB0;
-	Wed,  9 Oct 2024 14:13:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEAE126BF1;
+	Wed,  9 Oct 2024 14:30:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="I635BCsR"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IRQR2Fhb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 053DA198A32;
-	Wed,  9 Oct 2024 14:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEFF818EAD
+	for <linux-rdma@vger.kernel.org>; Wed,  9 Oct 2024 14:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728483221; cv=none; b=aa/m54TS32m2FJdZnchvD0vee6nR7uz26sNlltRl+I4ZG0shQipoqAn1dRKS9v2sjFRw7MD+82kJwj6FedyEpoXDkmSIGYIWdgZPSSOqqefjW1tbBaHWigqjDKX3x7WVaFXmReOmA6TIYjXoE/Db5qXoimnD7iomq4gDi2pO49o=
+	t=1728484209; cv=none; b=VAK58DfCKqS+Bfm2x6XB4+Maz9cSEuJIDD6nDap8i+5cXKEq2ddqqUHpfPkRb0VE6rugbqPKAlwtRhZVi0bJE2A0U/NTxVNx2KPNFqHYTMO6OkeUpegBVawE3fLTZC6TwOHI3K9pgtM1cVsxNPhsDmh/BR02fILKTTGN3X/3jAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728483221; c=relaxed/simple;
-	bh=ZGV4OkMYzwMYUiMF1vIbqfSwx1Sle7VLdz9HhEdj/BE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=okV+K3hJhx2CPDvQR3qDyw9qoalQitUjn7NytzWFWehnoqHyXlTqNABlwjejGVznQaCZ+v4ILevRuH5CsturleHcBE76mfFzXcHm03aIhVdLVyHwIwoSyIrqhPR8Pai0GtwhVATi7/yGnAtW+OFDusgkiK1htRpzQ9vqr/mxWpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=I635BCsR; arc=none smtp.client-ip=220.197.31.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
-	Content-Type; bh=a1Wwn7npiqzFsNRpMJ+6JXVmBOnB+HGGdwRrmxJ/sSY=;
-	b=I635BCsRTmWDExrNajMHEJ3psS4NiQA4ENHv2ueGw567psgb/+8E6KkuCSSl23
-	rUTuWxvyCuHdz3j7q4e5bEBaQm1ozb6bq+8kIarJP5c8oLegVHSBngsw7MPQk2tG
-	14WaIClUxcq+FQsMpJZnNjDsQku23Kq5GW+wt0byewcS4=
-Received: from [192.168.3.4] (unknown [123.121.183.169])
-	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wD3X195jwZnNM1gAA--.10119S2;
-	Wed, 09 Oct 2024 22:13:14 +0800 (CST)
-Message-ID: <67b556bc-2d48-4e7b-a00a-6b38512c8e8f@163.com>
-Date: Wed, 9 Oct 2024 22:13:12 +0800
+	s=arc-20240116; t=1728484209; c=relaxed/simple;
+	bh=6DUxtqFeYCk0yVNMLdhvhgUM+KP6wb51Y9BDmTKikvc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IRiMESzKLeM6jcsWvXgYEqILf30YalI7CcAo39hOG3V5NC8fF0OpD0gKQAkU4vG9ZvvtnhLanJ8I8ZeoGCpwdUXkUGyR/ik5fK2GjkMRTpuaC+A/GXotRHuXIG7PJEvi725qCu3j2j9C4HcEqBwL9pYn0iHBcZmsu0Gz0lT8nEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IRQR2Fhb; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-430f6bc9ca6so7139015e9.2
+        for <linux-rdma@vger.kernel.org>; Wed, 09 Oct 2024 07:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1728484206; x=1729089006; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VYe0UDJwZywf5zVofsmCoLxxt4WBBMPiUob9KTaisSA=;
+        b=IRQR2FhbuT2JRHCcfVHueSiaLI35s7TST7fzhbTXTnrt4DfIw/41rvrWR5pVfzqqu9
+         4bgfmiqgbbS4UWBvk35I52/Su5IOwKyd5FpsXZlb83ZkW0GO1mQuGjc6Yq5yx0RrA3eb
+         UzqU9RvUNL48/UEg7SCVuPB8gz3i+5rX3DNx9mjKo4zGNjNAAKt3ceMbjgvRJD3fTA4U
+         3l0Bm0wALwpeTVFUiIz52AxPpRglIm8DW4rBBvDjc46aWyPkNZJh90r1btF0rjCOe1nu
+         hG1MLb4j0b7XPKWCssuZlakanunrfZbnoP9djcJHJvRTSYZVBY3lYMYd7jwvojb91G0U
+         I+ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728484206; x=1729089006;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VYe0UDJwZywf5zVofsmCoLxxt4WBBMPiUob9KTaisSA=;
+        b=BVI1q24CdZ+UM+6cMabm2Xb/NZ//HMRlTMoc2pPUunH34SF6AZihXbmF+w2UGq4+Bw
+         Og8TDidQjb3aEOkh7p3fh+r5+244JLBMBP/Ard5fiW6oImWrXW3wQocPJe31zmAiO9Qy
+         dWzMt2iy44JoQuWfj5pROU349yUMiLppED2EWBZCZvFoG5FYXGoTGA6QZXkXGBUkxq+A
+         A902UAMjJbNDWGW8m4ZdgTNjIhQALYaaEFuqvCPeRiLaZ+bkNwPEf9Z91j7F1yMqaX5b
+         cv6Td4+beohmnKNCrpJv1NcGbf36EcYwpA97N3RBsYNvVWxcGS7gLDdf+B+2YoDpYwhp
+         i+sw==
+X-Forwarded-Encrypted: i=1; AJvYcCWnOLTzP6xvT2O2ONx63ZE6bOa+tybS6LzyFDPx6RCoKW2C6Ns5LFT1JD8YFpDzonC/JPG8aObeY9G9@vger.kernel.org
+X-Gm-Message-State: AOJu0YyyW0kkv6ZWk3BI7v8l9k8aSXPNlgirOSOGOlH5Yml6Ddfnoyl4
+	glM2ZsQCwuGJv9LbOl4C4SoPn/N5/os+n+KQ0Gq3wQ4oHNJ0qNFx/CllcKWvFXc=
+X-Google-Smtp-Source: AGHT+IGlS2o4g/GZdl5D/67AlFAU0IALKSNCiQ5PhERwo+PloE/WKbeKZuNI0nFK8YJ1ev0hhpW/4A==
+X-Received: by 2002:a05:600c:1d09:b0:42f:68e8:d874 with SMTP id 5b1f17b1804b1-430d70b3e15mr19146415e9.31.1728484206301;
+        Wed, 09 Oct 2024 07:30:06 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-430ccf4f7aesm22176065e9.12.2024.10.09.07.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Oct 2024 07:30:05 -0700 (PDT)
+Date: Wed, 9 Oct 2024 17:30:00 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Qianqiang Liu <qianqiang.liu@163.com>
+Cc: jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/nldev: Fix NULL pointer dereferences issue in
+ rdma_nl_notify_event
+Message-ID: <a84a2fc3-33b6-46da-a1bd-3343fa07eaf9@stanley.mountain>
+References: <20240926143402.70354-1-qianqiang.liu@163.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH for-next v8 1/6] RDMA/rxe: Make MR functions accessible
- from other rxe source code
-To: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
- linux-rdma@vger.kernel.org, leon@kernel.org, jgg@ziepe.ca,
- zyjzyj2000@gmail.com
-Cc: linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com, lizhijian@fujitsu.com
-References: <20241009015903.801987-1-matsuda-daisuke@fujitsu.com>
- <20241009015903.801987-2-matsuda-daisuke@fujitsu.com>
-From: Zhu Yanjun <mounter625@163.com>
-In-Reply-To: <20241009015903.801987-2-matsuda-daisuke@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3X195jwZnNM1gAA--.10119S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCry5Cw48KrWrtr45tFy8AFb_yoWrGF4fpF
-	18tw15Ars3Xr4UuF4IyFWDZF4akwsxK3srG3sxt34YvFya9w43XFs29Fy2vas5AFWDua1f
-	KF1xJrnrCw45GFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UsvttUUUUU=
-X-CM-SenderInfo: hprx03thuwjki6rwjhhfrp/1tbiLxJzOGcGgtzZ8QABsg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240926143402.70354-1-qianqiang.liu@163.com>
 
-
-在 2024/10/9 9:58, Daisuke Matsuda 写道:
-> Some functions in rxe_mr.c are going to be used in rxe_odp.c, which is to
-> be created in the subsequent patch. List the declarations of the functions
-> in rxe_loc.h.
->
-> Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+On Thu, Sep 26, 2024 at 10:34:03PM +0800, Qianqiang Liu wrote:
+> nlmsg_put() may return a NULL pointer assigned to nlh, which will later
+> be dereferenced in nlmsg_end().
+> 
+> Signed-off-by: Qianqiang Liu <qianqiang.liu@163.com>
 > ---
->   drivers/infiniband/sw/rxe/rxe_loc.h |  8 ++++++++
->   drivers/infiniband/sw/rxe/rxe_mr.c  | 11 +++--------
->   2 files changed, 11 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-> index ded46119151b..866c36533b53 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-> @@ -58,6 +58,7 @@ int rxe_mmap(struct ib_ucontext *context, struct vm_area_struct *vma);
->   
->   /* rxe_mr.c */
->   u8 rxe_get_next_key(u32 last_key);
-> +void rxe_mr_init(int access, struct rxe_mr *mr);
->   void rxe_mr_init_dma(int access, struct rxe_mr *mr);
->   int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
->   		     int access, struct rxe_mr *mr);
-> @@ -69,6 +70,8 @@ int copy_data(struct rxe_pd *pd, int access, struct rxe_dma_info *dma,
->   	      void *addr, int length, enum rxe_mr_copy_dir dir);
->   int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
->   		  int sg_nents, unsigned int *sg_offset);
-> +int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
-> +		       unsigned int length, enum rxe_mr_copy_dir dir);
->   int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
->   			u64 compare, u64 swap_add, u64 *orig_val);
->   int rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value);
-> @@ -80,6 +83,11 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 key);
->   int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
->   void rxe_mr_cleanup(struct rxe_pool_elem *elem);
->   
-> +static inline unsigned long rxe_mr_iova_to_index(struct rxe_mr *mr, u64 iova)
-> +{
-> +	return (iova >> mr->page_shift) - (mr->ibmr.iova >> mr->page_shift);
-> +}
+>  drivers/infiniband/core/nldev.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+> index 39f89a4b8649..7dc8e2ec62cc 100644
+> --- a/drivers/infiniband/core/nldev.c
+> +++ b/drivers/infiniband/core/nldev.c
+> @@ -2816,6 +2816,8 @@ int rdma_nl_notify_event(struct ib_device *device, u32 port_num,
+>  	nlh = nlmsg_put(skb, 0, 0,
+>  			RDMA_NL_GET_TYPE(RDMA_NL_NLDEV, RDMA_NLDEV_CMD_MONITOR),
+>  			0, 0);
+> +	if (!nlh)
+> +		goto err_free;
 
-The type of the function rxe_mr_iova_to_index is "unsigned long". In 
-some 32 architecture, unsigned long is 32 bit.
+Need to set the error code before the goto.  "ret = -EMSGSIZE;"
 
-The type of iova is u64. So it had better use u64 instead of "unsigned 
-long".
-
-Zhu Yanjun
-
-> +
->   /* rxe_mw.c */
->   int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata);
->   int rxe_dealloc_mw(struct ib_mw *ibmw);
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index da3dee520876..1f7b8cf93adc 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -45,7 +45,7 @@ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length)
->   	}
->   }
->   
-> -static void rxe_mr_init(int access, struct rxe_mr *mr)
-> +void rxe_mr_init(int access, struct rxe_mr *mr)
->   {
->   	u32 key = mr->elem.index << 8 | rxe_get_next_key(-1);
->   
-> @@ -72,11 +72,6 @@ void rxe_mr_init_dma(int access, struct rxe_mr *mr)
->   	mr->ibmr.type = IB_MR_TYPE_DMA;
->   }
->   
-> -static unsigned long rxe_mr_iova_to_index(struct rxe_mr *mr, u64 iova)
-> -{
-> -	return (iova >> mr->page_shift) - (mr->ibmr.iova >> mr->page_shift);
-> -}
-> -
->   static unsigned long rxe_mr_iova_to_page_offset(struct rxe_mr *mr, u64 iova)
->   {
->   	return iova & (mr_page_size(mr) - 1);
-> @@ -242,8 +237,8 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
->   	return ib_sg_to_pages(ibmr, sgl, sg_nents, sg_offset, rxe_set_page);
->   }
->   
-> -static int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
-> -			      unsigned int length, enum rxe_mr_copy_dir dir)
-> +int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
-> +		       unsigned int length, enum rxe_mr_copy_dir dir)
->   {
->   	unsigned int page_offset = rxe_mr_iova_to_page_offset(mr, iova);
->   	unsigned long index = rxe_mr_iova_to_index(mr, iova);
+regards,
+dan carpenter
 
 
