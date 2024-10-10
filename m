@@ -1,131 +1,160 @@
-Return-Path: <linux-rdma+bounces-5366-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5367-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 330EA998CCD
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 18:07:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A96BE998DBD
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 18:44:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FA311C23380
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 16:07:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB79DB3044A
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 16:09:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383411CDA36;
-	Thu, 10 Oct 2024 16:07:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 662E11CDFA4;
+	Thu, 10 Oct 2024 16:09:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="GsTrJMkU"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="IBux6Cgd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76FD1CBE80
-	for <linux-rdma@vger.kernel.org>; Thu, 10 Oct 2024 16:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61DAC1CCB26;
+	Thu, 10 Oct 2024 16:09:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728576464; cv=none; b=qQLEihEwHKl+84DpNCVwnDz/SeiYGhQ006Nhp8IzxV9JjRpN88KtuOsYskEO3iUbqghEx7Gfa6KO/mTR4Hzwz7xfCX9ARHxbuoQhWw/+HS7VBRlrin2Jv7IxRZCpBAOKFpZPWd0+l2610M0CLpGqmsRFCNoA8lQuqE5iL3yhHH0=
+	t=1728576555; cv=none; b=Z3rTWqzkUkznvngdF+0ksmdzzlLA1qwIhYD7FvlhdqTN9gcnRSVP532qrdOwArW1HHfNzo1exo1jCH342TqJk5k66DihpFvQ1m6cYOR92FNdj8Z2Keb/V4KZNXsM3yLqgoy9KF/JDDuIL5Oo36QuqyFu1pe3iLqkJXTrpBzrrZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728576464; c=relaxed/simple;
-	bh=gMJJQSlsn8Yh8reIJdg3CtduncAlSvBM+SH5wCCRMpg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k7kPFYYHpTNERWTGcsSCAMRaQn4S/03YAUMQ7MdvGfa3TzA2jczI41J5cH2liNIZROV0VOYG1/0Wv4BN6X0ds69dBhdUPND4CyzxAQ0b1nWV1w/Dbd7kIdvk46OK/aEUqdgjShHX93ZCzNdnnI5RY6w7HEvIhrooii/f9hOeVJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=GsTrJMkU; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-20b9b35c7c7so7185025ad.1
-        for <linux-rdma@vger.kernel.org>; Thu, 10 Oct 2024 09:07:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1728576461; x=1729181261; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lLDmBuPbqdFWywlMJb7s5WtOj7TP+t2aXk4dAI9ZYPM=;
-        b=GsTrJMkU25PTamlCMwj87VBDSg08a9TYsWC/cOPWfuVOfRvnrParif5IpeDbCg4MKw
-         wHJ/vAKC1dIdXOs1HCvL9FNUt+WJhcZnLPmPOdzXcizhVnHsxxDZcOn2FrwYYfbJa/X2
-         3aNilAGkKW3DcnVXRiG8wt/fKZJLJDwx9hdW8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728576461; x=1729181261;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lLDmBuPbqdFWywlMJb7s5WtOj7TP+t2aXk4dAI9ZYPM=;
-        b=OOWdS0D7oTNp541Sb2oCV9EJoR1MhRkWubYJjULxB4w6AiIICBsjbeNH0BKAwxpCTQ
-         2LpC4mUaf32pU6pZ+vXXvKYCtfQUaNnquK0ttrIprir7TWZ7YHIwHWkKb6OCqeoLHCUv
-         6xzfzLNdfXvJYx7Bx+qLxU7SKsudq5+YMJMdmw17GwmmfiX5OXQZy7IYzdxV7WIeKZB0
-         AKF5+ga60OpCdb8Xcirw4CwWWAMD3ejRitPvIMghqU3G8BWVfhdLn8Jdhb3ORpaHliiM
-         Vl6dSaJd5fWL1u654v+765Vvm+ZM2eNqebW4uo3Dd2II2KnBrAFlPb+bg8hX37h9rjN6
-         OZ6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUPb1/YweYflTICj4tJw/0kIN3b7MYQJegY3hYaa93cBwyv/nTfG8ABaEuBvL5sCXDULuUeOPcPi/Et@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3ZjJL/9OTLkhGWd/kKvF1E3CvzeX+XYRPieB7cQxSOytRacDe
-	s0hY8c21mUf2tFJhSXJ0itaVViZPypI59rEGL9IAz9FWL5WBAENYEKUJPcOFK5Q=
-X-Google-Smtp-Source: AGHT+IG0fUbGFEzJUGz4lr95LVIQt209ymVKDCNv+HN/QpGQnTewWumSlw9CcDSQqGqrSbXg5wKhWw==
-X-Received: by 2002:a17:903:32c9:b0:20b:43f8:d764 with SMTP id d9443c01a7336-20c6375c6e4mr98324265ad.8.1728576461240;
-        Thu, 10 Oct 2024 09:07:41 -0700 (PDT)
-Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c8c33ce22sm10984635ad.256.2024.10.10.09.07.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2024 09:07:40 -0700 (PDT)
-Date: Thu, 10 Oct 2024 09:07:37 -0700
-From: Joe Damato <jdamato@fastly.com>
-To: Eric Dumazet <edumazet@google.com>
-Cc: netdev@vger.kernel.org, mkarsten@uwaterloo.ca, skhawaja@google.com,
-	sdf@fomichev.me, bjorn@rivosinc.com, amritha.nambiar@intel.com,
-	sridhar.samudrala@intel.com, willemdebruijn.kernel@gmail.com,
-	Tariq Toukan <tariqt@nvidia.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"open list:MELLANOX MLX4 core VPI driver" <linux-rdma@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [net-next v5 9/9] mlx4: Add support for persistent NAPI config
- to RX CQs
-Message-ID: <Zwf7ydIettFJ6p2K@LQ3V64L9R2>
-Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
-	Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-	mkarsten@uwaterloo.ca, skhawaja@google.com, sdf@fomichev.me,
-	bjorn@rivosinc.com, amritha.nambiar@intel.com,
-	sridhar.samudrala@intel.com, willemdebruijn.kernel@gmail.com,
-	Tariq Toukan <tariqt@nvidia.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"open list:MELLANOX MLX4 core VPI driver" <linux-rdma@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-References: <20241009005525.13651-1-jdamato@fastly.com>
- <20241009005525.13651-10-jdamato@fastly.com>
- <CANn89i+187Yht9K-Vkg6j_qj9sFiK0jaGSxMDdYCAUZUtBgMOw@mail.gmail.com>
+	s=arc-20240116; t=1728576555; c=relaxed/simple;
+	bh=MCuPH8xpaKC8KRwyBbb6RnRX8I2bzEkR57xNS3ocq8E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p0ypwnjLa7V/WYjpEcm56h+wLH1Ztzx1AOvV/gSL4DR86lYxckk3etH5ze2hbbirmgqYIIeK4aEMbbLrUTPRuT3ALJ1pVw8JDklOhnXvqMMDLwTSLaJ6QbAAUGW3mcA5SdjjIYd1YJ2x7euC36/JGRiacd7hXGjRahCgUWLNgEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=IBux6Cgd; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49AFuJcP028520;
+	Thu, 10 Oct 2024 16:09:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=pp1; bh=u
+	sdQ7OwttGgqNiri5YP1Yx9Pjq5rfa7V54jNcOvROmo=; b=IBux6CgdXJ3fJqipA
+	V5hSOSLqamARIAqrSSUHMgyq/pEyp4hdcdXmM1cmRNW3OR0GFBjBBu6j9P+45ASB
+	+PSR28PtqlYnh0aqlgvlcc3GzBnGJtHe2MJbx4nQ+uBH6qnN+CzcgmisFotsmFwj
+	Me8wS5ZQQrXzX6mgm8GKr8WLXMAqr2nEtdKSI8zJzV6NuMmiIuMWNU5/4jGhlk17
+	OZoKlW0lBu8+5pwsHlBgxvyg5nDTNgMv8BfXssPpITotJ64v000OGS6u62uBo7Zv
+	oo39ekGRk/oc86X+BsbGbpbDCb+3eRelVRX/seO110TcyPx33MG/XqwAx2CtiJgf
+	LBhSA==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 426j0qr2a7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Oct 2024 16:09:08 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 49AG97WW027758;
+	Thu, 10 Oct 2024 16:09:08 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 426j0qr2a0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Oct 2024 16:09:07 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49AFUDBf013838;
+	Thu, 10 Oct 2024 16:09:07 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 423fssgvqx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 10 Oct 2024 16:09:07 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 49AG96wP32637430
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 10 Oct 2024 16:09:06 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0B34858071;
+	Thu, 10 Oct 2024 16:09:06 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2F6D958069;
+	Thu, 10 Oct 2024 16:09:04 +0000 (GMT)
+Received: from [9.179.5.163] (unknown [9.179.5.163])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 10 Oct 2024 16:09:03 +0000 (GMT)
+Message-ID: <e5a3f5a9-34e1-4575-a1a3-1205afe5ab17@linux.ibm.com>
+Date: Thu, 10 Oct 2024 18:09:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANn89i+187Yht9K-Vkg6j_qj9sFiK0jaGSxMDdYCAUZUtBgMOw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net/smc: Fix memory leak when using percpu refs
+To: Kai Shen <KaiShen@linux.alibaba.com>, kgraul@linux.ibm.com,
+        jaka@linux.ibm.com, guwen@linux.alibaba.com, kuba@kernel.org
+Cc: davem@davemloft.net, tonylu@linux.alibaba.com, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20241010115624.7769-1-KaiShen@linux.alibaba.com>
+Content-Language: en-US
+From: Wenjia Zhang <wenjia@linux.ibm.com>
+In-Reply-To: <20241010115624.7769-1-KaiShen@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ng1D360P5HDybVhCZ33_WUjBc_bYdOzK
+X-Proofpoint-ORIG-GUID: XtgRetAZz8neMJpcXMMjj3bSfxFWhK9F
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-10_11,2024-10-10_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 mlxscore=0 impostorscore=0 malwarescore=0 phishscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=972 spamscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2410100106
 
-On Thu, Oct 10, 2024 at 06:28:59AM +0200, Eric Dumazet wrote:
-> On Wed, Oct 9, 2024 at 2:56 AM Joe Damato <jdamato@fastly.com> wrote:
-> >
-> > Use netif_napi_add_config to assign persistent per-NAPI config when
-> > initializing RX CQ NAPIs.
-> >
-> > Presently, struct napi_config only has support for two fields used for
-> > RX, so there is no need to support them with TX CQs, yet.
-> >
-> > Signed-off-by: Joe Damato <jdamato@fastly.com>
-> > ---
+
+
+On 10.10.24 13:56, Kai Shen wrote:
+> This patch adds missing percpu_ref_exit when releasing percpu refs.
+> When releasing percpu refs, percpu_ref_exit should be called.
+> Otherwise, memory leak happens.
 > 
-> nit: technically, the napi_defer_hard_irqs could benefit TX completions as well.
+> Fixes: 79a22238b4f2 ("net/smc: Use percpu ref for wr tx reference")
+> Signed-off-by: Kai Shen <KaiShen@linux.alibaba.com>
+> ---
+>   net/smc/smc_wr.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
+> index 0021065a600a..994c0cd4fddb 100644
+> --- a/net/smc/smc_wr.c
+> +++ b/net/smc/smc_wr.c
+> @@ -648,8 +648,10 @@ void smc_wr_free_link(struct smc_link *lnk)
+>   	smc_wr_tx_wait_no_pending_sends(lnk);
+>   	percpu_ref_kill(&lnk->wr_reg_refs);
+>   	wait_for_completion(&lnk->reg_ref_comp);
+> +	percpu_ref_exit(&lnk->wr_reg_refs);
+>   	percpu_ref_kill(&lnk->wr_tx_refs);
+>   	wait_for_completion(&lnk->tx_ref_comp);
+> +	percpu_ref_exit(&lnk->wr_tx_refs);
+>   
+>   	if (lnk->wr_rx_dma_addr) {
+>   		ib_dma_unmap_single(ibdev, lnk->wr_rx_dma_addr,
+> @@ -912,11 +914,13 @@ int smc_wr_create_link(struct smc_link *lnk)
+>   	init_waitqueue_head(&lnk->wr_reg_wait);
+>   	rc = percpu_ref_init(&lnk->wr_reg_refs, smcr_wr_reg_refs_free, 0, GFP_KERNEL);
+>   	if (rc)
+> -		goto dma_unmap;
+> +		goto cancel_ref;
+>   	init_completion(&lnk->reg_ref_comp);
+>   	init_waitqueue_head(&lnk->wr_rx_empty_wait);
+>   	return rc;
+>   
+> +cancel_ref:
+> +	percpu_ref_exit(&lnk->wr_tx_refs);
+>   dma_unmap:
+>   	if (lnk->wr_rx_v2_dma_addr) {
+>   		ib_dma_unmap_single(ibdev, lnk->wr_rx_v2_dma_addr,
 
-That's true - I think I missed updating this commit message when I
-realized it. I can correct the commit message while retaining your
-Reviewed-by for the v6.
+It looks reasonable to me. Thanks for the fix!
+Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
 
-Note: This adds to the confusion I have around the support for
-allocating max(rxqs, txqs) config structs; it would seem we'll be
-missing config structure for some queues if the system is configured
-to use the maximum number of each? Perhaps that configuration is
-uncommon enough that it doesn't matter?
- 
-> Reviewed-by: Eric Dumazet <edumazet@google.com>
+Thanks,
+Wenjia
+
 
