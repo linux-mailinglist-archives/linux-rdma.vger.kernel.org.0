@@ -1,89 +1,90 @@
-Return-Path: <linux-rdma+bounces-5347-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5348-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DD45997BC7
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 06:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EEA4997BCE
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 06:29:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 985E0281A70
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 04:26:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53FA0281E87
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 04:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 861E419D897;
-	Thu, 10 Oct 2024 04:26:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36FDB19D8B4;
+	Thu, 10 Oct 2024 04:29:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mB+SIOp6"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IlYkh6oO"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1977139D07
-	for <linux-rdma@vger.kernel.org>; Thu, 10 Oct 2024 04:26:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA291922D5
+	for <linux-rdma@vger.kernel.org>; Thu, 10 Oct 2024 04:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728534391; cv=none; b=VPwXtjMRimDTTtzPtPJldPUSbYKLoWGVr2Nlx6pR3zsVP99hk9C1YB5SMgzA3WqcqtqE4mON7fZUpL2TMAc6jhZPwuWObN67bv7L7eTAyk5MfNm35fM67OQM8Y8BFLnODp90N7/LfArwRS+4rNp9pJNbCEn42lfiBIRWunt+9sg=
+	t=1728534555; cv=none; b=DiL5hQH6qoViN1dPkS+KJmEvH/HNIdOQCE5rVqKYjFciliQ+Pi64HxMuR0D2tSlxgqL7TAZ0EziZG6w3rYrWLq5EFD80l3M+J/htk/0kBxz6sgjISczZQam9/knFYzCvqbMq0t7+onRo6RFrifY0fPSzKHlUJztQUWBR211VVmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728534391; c=relaxed/simple;
-	bh=oQtJBgXZ49fqlcGAOWec6TJbRw9q9uhx1efghBS5KrM=;
+	s=arc-20240116; t=1728534555; c=relaxed/simple;
+	bh=odgOio4giR3EY7zg7Wmr9RINTnp5bPztcZmC7W2NupA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V1kx4hpiD06XBQZC9X3qUAlJyJ+ChGbOVCYXn1ARtwyiC2Q51KeUu/HQ7zvnSquD6BalMrCeQH0kFtwyJpvKQfrNwA5ZVwPFJzm3NIc28oTV0YYhv4sRcT4qefdwL+udTqmyWM8/wyepCA64JEdb7SgvPJEttMHNrSWMdSsRv9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mB+SIOp6; arc=none smtp.client-ip=209.85.208.46
+	 To:Cc:Content-Type; b=b4pJncPpXTTKNiQp5TKo1If6unHdk8eqSTmfHto/3yBolSPJ2hmIGWDdsex/RMrOd4ACfrMsgPK/Nvpld+CTDDzqiC+J/ab87uacS1LBhqz3PeX6nGtTekdjSr6tDwhwDVGXpNaNbLzmttnFwpMBqFVS2x5nCyNskmdNorl/qAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IlYkh6oO; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5c9150f9ed4so533730a12.0
-        for <linux-rdma@vger.kernel.org>; Wed, 09 Oct 2024 21:26:29 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5c918c067a1so485225a12.3
+        for <linux-rdma@vger.kernel.org>; Wed, 09 Oct 2024 21:29:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1728534388; x=1729139188; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1728534552; x=1729139352; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oQtJBgXZ49fqlcGAOWec6TJbRw9q9uhx1efghBS5KrM=;
-        b=mB+SIOp6S39zL02iNF05wi5izoaaIALmBI2NLp4GgKbrVkg2zVf2CC8dRLLTh8rMGN
-         1MmGo0bDuqGLQU1bC/Peub2ylbJzV4fwHIVYftphbkZGWepLUkEXanaOE3ZlJCK5mmlU
-         1+Ia92x+tk1tsIvYqhuDZWZlpzs/164gx8gmroj3TSx2nFZWWWmYM5LayIalJP+UPVlC
-         nL62U9/UdCE+22Q7SgDxtb4l2CTlFE7c8q6J6PWtdpuJINuZfvNvmEc1/3kDaia/n4W8
-         ruow9vjhW2KS0AusRSmZj4xR6ivLk8b0TG8pSlnezBsjuxwUL1KS3kebXv6MZvXSaoy7
-         KDew==
+        bh=odgOio4giR3EY7zg7Wmr9RINTnp5bPztcZmC7W2NupA=;
+        b=IlYkh6oOJawcEov4UK7OfrO/996Zpyf1C8f5uyC3up/wPtW9iE+Y0h4Zm1l3E6SPWW
+         ql9VCtnDbVY1qlMzRlo3OJxyqvhx0zArb0kCwNpOQyfLFQLetMTbjXAOXrZOWtE3guZw
+         GDB/m/HL8zaQcPPZp9kaWldbTk3DtPbDnyMkmxg6w2YViPqQ8mi4+ZoN1m6MUti9j1dM
+         xt9U31mWjV5I+LO/0ppZ7sLVDg5Om3t46Q73uKZgTeLU/bC2l2C762ZHC5+PVOozysEe
+         Z1d8OcIKFst+teivN/LqlURw63k8956a5COQY05mFb3BzGh59Miut1Jhj8HY56vsZgWd
+         wmJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728534388; x=1729139188;
+        d=1e100.net; s=20230601; t=1728534552; x=1729139352;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oQtJBgXZ49fqlcGAOWec6TJbRw9q9uhx1efghBS5KrM=;
-        b=QtiCx1wJ8V8HaM8rMiIPOPBwKXABTQPhj6ZpMZVolabKMhr1lseSWet/A430GPtM70
-         6qAtfLdRRPRcyIPZcXbCLh4NAv/F3L0P+H4/kN5NmxlmfWynizIgMmgo7U9XI0cMfdp4
-         dQmWgqne2A6XILiyXgHbCfWBYNFbFTaso+YlpFNDCXr7u13G3e4ae0PWjp3nJHhuXAG5
-         l1/yITR5ZLnTEUo9kSqbSq3lEBQjiGpbG+4lRfIkD3KwjswDgwgwZGnpjCcBk24BDV+n
-         dGi4mJEN+xlYq0X9MoMsJHcLQo4tWyfIkWEo3DhAKXBl3rXg7WnoahC85jm7D36Ehdju
-         7u3g==
-X-Forwarded-Encrypted: i=1; AJvYcCX8+sYR6xUTNjZUTKyiJeLWuWDIa1r9dF8Ku1k0Atj1fUOjgB/b3PQheu79E/A/E8JTQ9HhTIviXAEc@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8JToAfBX3c/Rhhc97+1mvwpc/0E/s3s9tRFsghoNWvDuFOIwa
-	EKx+jKZFaXNzMJ74V5QTfCYbSDS4czQZxjIJSBfrjkHuKayoaUQsfUDw5q7cbP4KiGHwRCorWde
-	9Uz+KZHuCwTtb2QJAzIJ8z/Cfj/Eu/QvALN8m
-X-Google-Smtp-Source: AGHT+IH3aOD+TQFzDcwLMz/etoxPu2lwsdb1UztvG+BDjyzY3bVpB/b+2U96a18G2jKJ4ZWK65RuI6uboYZeWwjSVZE=
-X-Received: by 2002:a05:6402:248c:b0:5c5:b8bd:c873 with SMTP id
- 4fb4d7f45d1cf-5c91d5a5531mr4672487a12.16.1728534388007; Wed, 09 Oct 2024
- 21:26:28 -0700 (PDT)
+        bh=odgOio4giR3EY7zg7Wmr9RINTnp5bPztcZmC7W2NupA=;
+        b=s8c73hxcmGwZn5i82ZcoQYtmj59QfZCi912JXIJakFGktdddrh2bV08i+NrGdLt9pD
+         8KFRP3WddvHEkrYS4Kw/EMf67LrLopn62qhJMh3+AJ8dYSZrYYxorKZor+/lRDVd6oib
+         sJVfT6fu0lTfU55DJ9N64IZtJb1tEGSbqb27zI0nIVjAsuX1v6SzL9xRw0HO5NlLx66d
+         KlJfKNyqHSIHawymPmNbEC1iCkIgm6H2A5ZW8OJbroXuG4nvtHVjNNcClsuQ0N2QPdzK
+         nbCndYDb7twcIeJ/RoTzOjo3qDSEHRbFEIk0hgabtE9OD2DsCwg+f4BME8LZbrjN6l2W
+         UjTw==
+X-Forwarded-Encrypted: i=1; AJvYcCV7mDxOkJgbRrlSBMQhyKH8EPn1YtT/zPsYknEs1SvMh3e0FjxUXjPn75xqzcuYwEyx0JFjpSRRjRls@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy8LROUylvQhjBHEQGIM/13ykgz1BOZLcvII92exr0e0KgH1cPN
+	64thgfqvmJgTdlyzDryDEjzsEjrw69uRNLbcXN1G7nAoJRVV9L/qb6GDMgk/Bmhttu5Zu9jgg6X
+	+TqGws7obrQXyXE6A8RkPWCgHCIj87emEnCwf
+X-Google-Smtp-Source: AGHT+IFHyMvsNEd/Vl9KXbFL9gbkKLFmwJsleqsVpThERipnXbNoTRKd9J7elFWVniswaR8hxHZc4V8Knk2hwIpqE3s=
+X-Received: by 2002:a05:6402:50d4:b0:5c8:7c58:6588 with SMTP id
+ 4fb4d7f45d1cf-5c91d685530mr2921952a12.32.1728534551523; Wed, 09 Oct 2024
+ 21:29:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241009005525.13651-1-jdamato@fastly.com> <20241009005525.13651-9-jdamato@fastly.com>
-In-Reply-To: <20241009005525.13651-9-jdamato@fastly.com>
+References: <20241009005525.13651-1-jdamato@fastly.com> <20241009005525.13651-10-jdamato@fastly.com>
+In-Reply-To: <20241009005525.13651-10-jdamato@fastly.com>
 From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 10 Oct 2024 06:26:17 +0200
-Message-ID: <CANn89iKWPxBtDm=9+gUuMAnvQ6KF2RaXSyNHin5579AvcGKgYg@mail.gmail.com>
-Subject: Re: [net-next v5 8/9] mlx5: Add support for persistent NAPI config
+Date: Thu, 10 Oct 2024 06:28:59 +0200
+Message-ID: <CANn89i+187Yht9K-Vkg6j_qj9sFiK0jaGSxMDdYCAUZUtBgMOw@mail.gmail.com>
+Subject: Re: [net-next v5 9/9] mlx4: Add support for persistent NAPI config to
+ RX CQs
 To: Joe Damato <jdamato@fastly.com>
 Cc: netdev@vger.kernel.org, mkarsten@uwaterloo.ca, skhawaja@google.com, 
 	sdf@fomichev.me, bjorn@rivosinc.com, amritha.nambiar@intel.com, 
 	sridhar.samudrala@intel.com, willemdebruijn.kernel@gmail.com, 
-	Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"open list:MELLANOX MLX5 core VPI driver" <linux-rdma@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+	Tariq Toukan <tariqt@nvidia.com>, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"open list:MELLANOX MLX4 core VPI driver" <linux-rdma@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -91,10 +92,16 @@ On Wed, Oct 9, 2024 at 2:56=E2=80=AFAM Joe Damato <jdamato@fastly.com> wrot=
 e:
 >
 > Use netif_napi_add_config to assign persistent per-NAPI config when
-> initializing NAPIs.
+> initializing RX CQ NAPIs.
+>
+> Presently, struct napi_config only has support for two fields used for
+> RX, so there is no need to support them with TX CQs, yet.
 >
 > Signed-off-by: Joe Damato <jdamato@fastly.com>
 > ---
+
+nit: technically, the napi_defer_hard_irqs could benefit TX completions as =
+well.
 
 Reviewed-by: Eric Dumazet <edumazet@google.com>
 
