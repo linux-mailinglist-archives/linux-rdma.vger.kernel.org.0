@@ -1,58 +1,70 @@
-Return-Path: <linux-rdma+bounces-5343-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5344-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5757D997AA2
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 04:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DD3C0997B2A
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 05:17:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 190C228496F
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 02:40:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82F19284178
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 03:17:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC049187849;
-	Thu, 10 Oct 2024 02:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3C318F2FF;
+	Thu, 10 Oct 2024 03:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P7G3O8OP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aNBTouai"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF08BE57;
-	Thu, 10 Oct 2024 02:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE868F6A;
+	Thu, 10 Oct 2024 03:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728528033; cv=none; b=LMgxAIEFYeKbKs3sr9EwGhDaQETCerHIFaCkg0KXXqpiVzqZOeUo0KYIpy9vqPzD1SWCmA281mE0lVlbQAeqL56L3C4iwRghM8KKVtAqF2i2qkBLYSbG13sNSvtadY7HAn/WqRg2fqUnLRia/v8PKnUU7hEqzyzgDimEBGgHBbs=
+	t=1728530273; cv=none; b=VMau+UDAlSqmLyf1fN523euI33iXsia1sPnmzDlIIlCyS+XMIbeE/t80ndgpHqMoYN04hQM3MKgfkXwrhrof+L2ljSlT/SPt8UKL9Jw/boerBSRemm3qJxmRf8hjYOXXJto4ZGD5+fZGgxAWeoAsATW28pYDnUE+WpXTbcIKNew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728528033; c=relaxed/simple;
-	bh=2OZq6cpy8ZQUZf9IibgWFE6hXVjrnlfNuH6FOPCnKtU=;
+	s=arc-20240116; t=1728530273; c=relaxed/simple;
+	bh=AjLHVrEVVrVsEb7N4x+s+AExpp1a7t6vZOUU+9aw58E=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=vDjWyWO6SfcB8PnSd8AZLrERW5yPNNlRdZAWn4kbN9yym7C/TK6tXry9jUPhxscLQI1aK6CPW907GsC1HSJNt+H17BO48gfWa+0aIr1WEC9gFLqopVCwo8fYrYBLE6r4Tsg9rJ1eVdryISB9jZGg4T1lWyYuoV6h/UbZm5IKve4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P7G3O8OP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80670C4CEC3;
-	Thu, 10 Oct 2024 02:40:32 +0000 (UTC)
+	 MIME-Version:Content-Type; b=mauMLxKxi8+j+3pTaDqffDg9Y44Pc+Hf03arEDgbLXBYindhGAV15WI7R3jQXPUlyPDaoVEgs02Tfq4jx8Jbh1sZeZIhuG/U5W9ktc0dSTQdaCmX9iHiYguYqbQS1tFuMP3HEAAsEC8vwIxlY4Gk+i2aYy/EozyGzJzTTJCXTvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aNBTouai; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FC76C4CEC3;
+	Thu, 10 Oct 2024 03:17:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728528033;
-	bh=2OZq6cpy8ZQUZf9IibgWFE6hXVjrnlfNuH6FOPCnKtU=;
+	s=k20201202; t=1728530272;
+	bh=AjLHVrEVVrVsEb7N4x+s+AExpp1a7t6vZOUU+9aw58E=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=P7G3O8OP/vmv27cxXvRhREJ3m7ZxiUUEdneNFmcMMJEoD6Ywraa8WWtYvedjRO/e9
-	 6EK4zomuGqfiWE5N8ZtziNOTw8LlC0HVUbnXi2oe8xEsbgB5TmG5xhDf+KFY5L7nZT
-	 wIu5t25mXDw2KnHYM+d9Afj6GqgQ57Bm3XaIQG6zMTSy4rwMXAlnqSQ/7Hv4yp4eh+
-	 ofwDQIx7GZ56dYEfEtPpuVM5vXrQSEVMSfUbqgPYfTlDV8qrJ9g2F4g1/P+ZUKOYhQ
-	 /zxb9BBsE0kPRg4dH8zXysyIxrDhPJpL7RkqolR1Kows9vcWlPDcNSMe9nSdDZs6NQ
-	 FGIPtd/pwfoqA==
-Date: Wed, 9 Oct 2024 19:40:31 -0700
+	b=aNBTouai6ON6V2/sK5bbjlRvY/0Ln2tV9ugfBHEwMmK5L4PJ5xxvcyWBco95i4W+9
+	 3DWqfRqHrzVj13yAxw7ToQvmg1ZqXXUNFh9SMPcEZlPp9cU8CZnuuBLW0Q2B4Tsc//
+	 mfRoGsIBlFZtwr1Vm7RLvF95FxF49g7Ox5c20aywJGcjtLi2AbGruI6tmaGaf0EN+f
+	 GfD9O4HYAmHATN6oT73L5yRwwXc9n3tIpjvu6a2fRnl5124+/0kpL5u8UdW3JIzw56
+	 UZpfGICVKooX1X5pNsPqqVCHKeiZ1w/ybghfqNskLBslUwWcYfUrRyD3ogZtbxS9AV
+	 fCNuMkbWlnCDA==
+Date: Wed, 9 Oct 2024 20:17:50 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Alessandro Zanni <alessandro.zanni87@gmail.com>
-Cc: allison.henderson@oracle.com, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
- anupnewsmail@gmail.com
-Subject: Re: [PATCH] selftests: net: rds: fix module not found
-Message-ID: <20241009194031.269a1251@kernel.org>
-In-Reply-To: <20241008082259.243476-1-alessandro.zanni87@gmail.com>
-References: <20241008082259.243476-1-alessandro.zanni87@gmail.com>
+To: Joe Damato <jdamato@fastly.com>
+Cc: netdev@vger.kernel.org, mkarsten@uwaterloo.ca, skhawaja@google.com,
+ sdf@fomichev.me, bjorn@rivosinc.com, amritha.nambiar@intel.com,
+ sridhar.samudrala@intel.com, willemdebruijn.kernel@gmail.com, Alexander
+ Lobakin <aleksander.lobakin@intel.com>, Breno Leitao <leitao@debian.org>,
+ Daniel Jurgens <danielj@nvidia.com>, David Ahern <dsahern@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Donald Hunter
+ <donald.hunter@gmail.com>, Eric Dumazet <edumazet@google.com>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, Jiri Pirko <jiri@resnulli.us>, Johannes
+ Berg <johannes.berg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Kory
+ Maincent <kory.maincent@bootlin.com>, Leon Romanovsky <leon@kernel.org>,
+ linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+ linux-kernel@vger.kernel.org (open list), linux-rdma@vger.kernel.org (open
+ list:MELLANOX MLX4 core VPI driver), Lorenzo Bianconi <lorenzo@kernel.org>,
+ Michael Chan <michael.chan@broadcom.com>, Mina Almasry
+ <almasrymina@google.com>, Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed
+ <saeedm@nvidia.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Tariq Toukan <tariqt@nvidia.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: Re: [net-next v5 0/9] Add support for per-NAPI config via netlink
+Message-ID: <20241009201750.2cf56a6f@kernel.org>
+In-Reply-To: <20241009005525.13651-1-jdamato@fastly.com>
+References: <20241009005525.13651-1-jdamato@fastly.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,41 +74,13 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue,  8 Oct 2024 10:22:53 +0200 Alessandro Zanni wrote:
-> This fix solves this error, when calling kselftest with targets "net/rds":
-> 
-> selftests: net/rds: test.py
-> Traceback (most recent call last):
->   File "tools/testing/selftests/net/rds/./test.py", line 17, in <module>
->     from lib.py import ip
-> ModuleNotFoundError: No module named 'lib'
-> 
-> Signed-off-by: Alessandro Zanni <alessandro.zanni87@gmail.com>
-> ---
->  tools/testing/selftests/net/rds/test.py | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/net/rds/test.py b/tools/testing/selftests/net/rds/test.py
-> index e6bb109bcead..112a8059c030 100755
-> --- a/tools/testing/selftests/net/rds/test.py
-> +++ b/tools/testing/selftests/net/rds/test.py
-> @@ -14,8 +14,9 @@ import sys
->  import atexit
->  from pwd import getpwuid
->  from os import stat
-> -from lib.py import ip
->  
-> +sys.path.append("..")
-> +from lib.py.utils import ip
->  
->  libc = ctypes.cdll.LoadLibrary('libc.so.6')
->  setns = libc.setns
+On Wed,  9 Oct 2024 00:54:54 +0000 Joe Damato wrote:
+> Welcome to v5, the first non-RFC version of this code! See the changelog
+> below for more details on changes between revisions.
 
-Does this work regardless of where we try to run the script from?
-In other cross-imports we try to build the path based on __file__,
-see: tools/testing/selftests/drivers/net/lib/py/__init__.py
+I'm probably going to end up applying this but just in case:
 
-Would be good to keep consistency.
--- 
-pw-bot: cr
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+
+Very neat work !
 
