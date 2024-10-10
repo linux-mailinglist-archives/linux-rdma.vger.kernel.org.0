@@ -1,46 +1,53 @@
-Return-Path: <linux-rdma+bounces-5352-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5351-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54B3E998033
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 10:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD44899802D
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 10:38:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05E93281586
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 08:39:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 780D72826F8
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 08:38:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC481BB6B5;
-	Thu, 10 Oct 2024 08:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A2381BDAB1;
+	Thu, 10 Oct 2024 08:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yunsilicon.com header.i=@yunsilicon.com header.b="MAOtXbeJ"
+	dkim=pass (2048-bit key) header.d=yunsilicon.com header.i=@yunsilicon.com header.b="ThTF73BW"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from va-2-31.ptr.blmpb.com (va-2-31.ptr.blmpb.com [209.127.231.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104F029A2
-	for <linux-rdma@vger.kernel.org>; Thu, 10 Oct 2024 08:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB79C1B86CF
+	for <linux-rdma@vger.kernel.org>; Thu, 10 Oct 2024 08:11:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.127.231.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728548003; cv=none; b=d8lrFy+G/r1HSoDx3m6ZrYxReKA9wQZqWkDobWjKLclWLmqtYE1TBTEnftD7qx/EIzwv5eqc1XUS3Nsu3R6xZ2fujQVx9T2/MB3O1KbwcO5ElzDbiCtovDnnr4DP0/7BlUNpLNTOhEx7B4XXFLQxhM63Ge3gZ4L8qXbjLZV3WQQ=
+	t=1728547875; cv=none; b=RkOzBTCDXocxKQPczZN9LgGKWnh8GIoQd/99/bvnI6nJ7+RMdtUCiNw6J/oNm6OkRFjEl8y8+mzobQb7P95MH+V5YMbjMoTvxEYUxc2DWe91NRdOAUYc9APQDpILgfHlA0l7S+PBZvFsT7C0DeHjsy1PO+6SB7b8NsTaStYn2MA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728548003; c=relaxed/simple;
-	bh=RsGnTCFU6dbUYzQfq7dL3LBi6JPLR54bTcqDBCdmX+8=;
-	h=To:Mime-Version:Content-Type:Subject:Message-Id:Date:Cc:From; b=h4XRsq1dNA+kF54+maI0DjIe4mQ35oYH5iN4F/hmK4aNmuV7gdekMYC6a/83eZUlFi4JaQ4bpAnL5JRnNolf7ISdkDUOt6FJyS3lKa/9DyeT9zAUcUDs3OXlA2ksTFCZrNSMzxALKtm+dT2VWp0554zJrC8HIJP5h1CPfqAFiMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yunsilicon.com; spf=pass smtp.mailfrom=yunsilicon.com; dkim=pass (2048-bit key) header.d=yunsilicon.com header.i=@yunsilicon.com header.b=MAOtXbeJ; arc=none smtp.client-ip=209.127.231.31
+	s=arc-20240116; t=1728547875; c=relaxed/simple;
+	bh=E7rfEHt7/RQDV9mX/zYDY0i/Hh10RNOHLYNJ7SeSv5Y=;
+	h=To:Content-Type:Date:Message-Id:Mime-Version:Cc:From:Subject; b=uQDX3FMUn3hfTNObdkUAkJkdUNZEuqtmUzclsbJHNEveocdMMGR03Gh9WsYzS9lvIAEvMwwxPHJBAqKXlADYbbQcoQXbDNhiJWaGA63X9g2SpXEnASCynrI0/s5nHqSQ9fxSpMAaH2EF8ikSRzeM2qBJq2NR1f6u/k22Zk8apXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yunsilicon.com; spf=pass smtp.mailfrom=yunsilicon.com; dkim=pass (2048-bit key) header.d=yunsilicon.com header.i=@yunsilicon.com header.b=ThTF73BW; arc=none smtp.client-ip=209.127.231.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yunsilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yunsilicon.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=feishu2403070942; d=yunsilicon.com; t=1728547859; h=from:subject:
+ s=feishu2403070942; d=yunsilicon.com; t=1728547861; h=from:subject:
  mime-version:from:date:message-id:subject:to:cc:reply-to:content-type:
  mime-version:in-reply-to:message-id;
- bh=snkrJfmPXWwKIW1ZuM5Efcz9w1DZL/Y/k4rNDTlugeE=;
- b=MAOtXbeJOlTWaVrm7vJCV4m9QRp2Mm19kNHQkllP/fudnMnu8tTi/VJDMQA6dCOCmcMsWz
- C7UN1a4tBuE6M872oOmr54CFT6QRpOq/bOPa0fb12uOo9Uazo2CsJ5qzOF8lNJF3gGkfkH
- t6qJs8vfRDxXPVXayfAagKO8lzPIBQBaxj4TT4gBPQA5i+8FMr2/we4aYB6szJGWs+8L2v
- iT7vznvCPFRlsmA5F2TRkg8sMAddasn6JFKF4iUYEP10I/0/6r8QOIVmEABH3Jle9CZN+d
- SN/O8HFrqnmXHSTm+XW3r7Pe581VF5FVdL+W0rmURs1uKBnyzUYEPIiD9I9qng==
+ bh=xciZMQ8Ml7dAz52J+dCsKjXzHMhDHqWv6pFvfn5P2ak=;
+ b=ThTF73BWeq3WY0SVRKSy6IN3wRUyc1vojjZuW8D2YhMz7X5PQCWrSwMdt61Z4M0t45bHkT
+ 5GPBW0QzYUpaFvlLFoGkAWVBorfVUGDRQzK/Dplr27kV7kirKhLMcAK0xRtGDEahGC+VgS
+ KYZMEqY/bmHi86d/8Dsc3FPyWuRur2dgj7Ow5F9qHME9CC6gV3xm5s/gLCQ1zGiVolWzLM
+ EGOSmoCbk6hVEj7mncK110DyRzCZPYj9wk8h6ID9j1iJPbQ2jX/oLLAU0LlS1ObNsDdbi4
+ LDhsN/98aignvz9bFsK0FyHQX3regidT5jr8GHG76BcANSugJU1SXOAaz9MvXA==
+Received: from ubuntu-liun.yunsilicon.com ([58.34.192.114]) by smtp.feishu.cn with ESMTPS; Thu, 10 Oct 2024 16:10:59 +0800
+X-Mailer: git-send-email 2.25.1
 To: <leonro@nvidia.com>, <jgg@nvidia.com>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+X-Lms-Return-Path: <lba+267078c14+4808e0+vger.kernel.org+tianx@yunsilicon.com>
+Date: Thu, 10 Oct 2024 16:10:48 +0800
+Message-Id: <20241010081049.1448826-6-tianx@yunsilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -48,22 +55,11 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 X-Original-From: Tian Xin <tianx@yunsilicon.com>
-Content-Type: text/plain; charset=UTF-8
-Subject: [PATCH 4/6] libxscale: Add support for qp management
-Message-Id: <20241010081049.1448826-5-tianx@yunsilicon.com>
-X-Lms-Return-Path: <lba+267078c12+e3ffa8+vger.kernel.org+tianx@yunsilicon.com>
-Date: Thu, 10 Oct 2024 16:10:47 +0800
-Received: from ubuntu-liun.yunsilicon.com ([58.34.192.114]) by smtp.feishu.cn with ESMTPS; Thu, 10 Oct 2024 16:10:57 +0800
-Content-Transfer-Encoding: 7bit
 Cc: <linux-rdma@vger.kernel.org>, "Tian Xin" <tianx@yunsilicon.com>
 From: "Tian Xin" <tianx@yunsilicon.com>
-X-Mailer: git-send-email 2.25.1
+Subject: [PATCH 5/6] libxscale: Add support for posting verbs
 
-This patch adds support for following qp management verbs:
-1. create_qp
-2. query_qp
-3. modify_qp
-4. destroy_qp
+This patch adds support for post_send and post_recv routines.
 
 Signed-off-by: Tian Xin <tianx@yunsilicon.com>
 Signed-off-by: Wei Honggang <weihg@yunsilicon.com>
@@ -71,942 +67,590 @@ Signed-off-by: Zhao Qianwei <zhaoqw@yunsilicon.com>
 Signed-off-by: Li Qiang <liq@yunsilicon.com>
 Signed-off-by: Yan Lei <jacky@yunsilicon.com>
 ---
- providers/xscale/CMakeLists.txt |   1 +
- providers/xscale/cq.c           |  71 +++-
- providers/xscale/qp.c           | 110 ++++++
- providers/xscale/verbs.c        | 576 ++++++++++++++++++++++++++++++++
- providers/xscale/xscale.c       |   5 +
- providers/xscale/xscale.h       |  76 +++++
- 6 files changed, 829 insertions(+), 10 deletions(-)
- create mode 100644 providers/xscale/qp.c
+ providers/xscale/cq.c     |   5 -
+ providers/xscale/qp.c     | 522 ++++++++++++++++++++++++++++++++++++++
+ providers/xscale/xscale.c |   3 +
+ providers/xscale/xscale.h |   4 +
+ 4 files changed, 529 insertions(+), 5 deletions(-)
 
-diff --git a/providers/xscale/CMakeLists.txt b/providers/xscale/CMakeLists.txt
-index f9f17493..63de71cf 100644
---- a/providers/xscale/CMakeLists.txt
-+++ b/providers/xscale/CMakeLists.txt
-@@ -2,6 +2,7 @@ rdma_provider(xscale
-   xscale.c
-   verbs.c
-   cq.c
-+  qp.c
-   xsc_hsi.c
-   buf.c
- )
 diff --git a/providers/xscale/cq.c b/providers/xscale/cq.c
-index 1aeb7d33..7c528425 100644
+index 7c528425..db1598ad 100644
 --- a/providers/xscale/cq.c
 +++ b/providers/xscale/cq.c
-@@ -79,16 +79,6 @@ static inline u8 xsc_get_cqe_opcode(struct xsc_context *ctx,
- 	return xsc_msg_opcode[msg_opcode][type][with_immdt];
+@@ -115,11 +115,6 @@ static void *get_sw_cqe(struct xsc_cq *cq, int n)
+ 		return NULL;
  }
  
--struct xsc_qp *xsc_find_qp(struct xsc_context *ctx, u32 qpn)
+-void *xsc_get_send_wqe(struct xsc_qp *qp, int n)
 -{
--	int tind = qpn >> XSC_QP_TABLE_SHIFT;
--
--	if (ctx->qp_table[tind].refcnt)
--		return ctx->qp_table[tind].table[qpn & XSC_QP_TABLE_MASK];
--	else
--		return NULL;
+-	return qp->sq_start + (n << qp->sq.wqe_shift);
 -}
 -
- static inline int get_qp_ctx(struct xsc_context *xctx,
- 			     struct xsc_resource **cur_rsc,
- 			     u32 qpn) ALWAYS_INLINE;
-@@ -520,3 +510,64 @@ void xsc_free_cq_buf(struct xsc_context *ctx, struct xsc_buf *buf)
+ static void update_cons_index(struct xsc_cq *cq)
  {
- 	return xsc_free_buf(buf);
- }
-+
-+void __xsc_cq_clean(struct xsc_cq *cq, u32 qpn)
-+{
-+	u32 prod_index;
-+	int nfreed = 0;
-+	void *cqe, *dest;
-+
-+	if (!cq)
-+		return;
-+	xsc_dbg(to_xctx(cq->verbs_cq.cq_ex.context)->dbg_fp, XSC_DBG_CQ, "\n");
-+
-+	/*
-+	 * First we need to find the current producer index, so we
-+	 * know where to start cleaning from.  It doesn't matter if HW
-+	 * adds new entries after this loop -- the QP we're worried
-+	 * about is already in RESET, so the new entries won't come
-+	 * from our QP and therefore don't need to be checked.
-+	 */
-+	for (prod_index = cq->cons_index; get_sw_cqe(cq, prod_index);
-+	     ++prod_index)
-+		if (prod_index == cq->cons_index + cq->verbs_cq.cq_ex.cqe)
-+			break;
-+
-+	/*
-+	 * Now sweep backwards through the CQ, removing CQ entries
-+	 * that match our QP by copying older entries on top of them.
-+	 */
-+	while ((int)(--prod_index) - (int)cq->cons_index >= 0) {
-+		u32 qp_id;
-+
-+		cqe = get_cqe(cq, prod_index & (cq->verbs_cq.cq_ex.cqe - 1));
-+		qp_id = FIELD_GET(CQE_DATA0_QP_ID_MASK,
-+				  le32toh(((struct xsc_cqe *)cqe)->data0));
-+		if (qpn == qp_id) {
-+			++nfreed;
-+		} else if (nfreed) {
-+			dest = get_cqe(cq,
-+				       (prod_index + nfreed) &
-+					       (cq->verbs_cq.cq_ex.cqe - 1));
-+			memcpy(dest, cqe, cq->cqe_sz);
-+		}
-+	}
-+
-+	if (nfreed) {
-+		cq->cons_index += nfreed;
-+		/*
-+		 * Make sure update of buffer contents is done before
-+		 * updating consumer index.
-+		 */
-+		udma_to_device_barrier();
-+		update_cons_index(cq);
-+	}
-+}
-+
-+void xsc_cq_clean(struct xsc_cq *cq, uint32_t qpn)
-+{
-+	xsc_spin_lock(&cq->lock);
-+	__xsc_cq_clean(cq, qpn);
-+	xsc_spin_unlock(&cq->lock);
-+}
-+
+ 	struct xsc_context *ctx =
 diff --git a/providers/xscale/qp.c b/providers/xscale/qp.c
-new file mode 100644
-index 00000000..7fa715c4
---- /dev/null
+index 7fa715c4..551cf4dc 100644
+--- a/providers/xscale/qp.c
 +++ b/providers/xscale/qp.c
-@@ -0,0 +1,110 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2021 - 2022, Shanghai Yunsilicon Technology Co., Ltd.
-+ * All rights reserved.
-+ */
-+
-+#include <config.h>
-+
-+#include <stdlib.h>
-+#include <pthread.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <stdio.h>
-+#include <util/compiler.h>
-+
-+#include "xscale.h"
-+#include "xsc_hsi.h"
-+
-+struct xsc_qp *xsc_find_qp(struct xsc_context *ctx, uint32_t qpn)
-+{
-+	int tind = qpn >> XSC_QP_TABLE_SHIFT;
-+
-+	if (ctx->qp_table[tind].refcnt)
-+		return ctx->qp_table[tind].table[qpn & XSC_QP_TABLE_MASK];
-+	else
-+		return NULL;
-+}
-+
-+int xsc_store_qp(struct xsc_context *ctx, uint32_t qpn, struct xsc_qp *qp)
-+{
-+	int tind = qpn >> XSC_QP_TABLE_SHIFT;
-+
-+	if (!ctx->qp_table[tind].refcnt) {
-+		ctx->qp_table[tind].table =
-+			calloc(XSC_QP_TABLE_MASK + 1, sizeof(struct xsc_qp *));
-+		if (!ctx->qp_table[tind].table)
-+			return -1;
-+	}
-+
-+	++ctx->qp_table[tind].refcnt;
-+	ctx->qp_table[tind].table[qpn & XSC_QP_TABLE_MASK] = qp;
-+	return 0;
-+}
-+
-+void xsc_clear_qp(struct xsc_context *ctx, uint32_t qpn)
-+{
-+	int tind = qpn >> XSC_QP_TABLE_SHIFT;
-+
-+	if (!--ctx->qp_table[tind].refcnt)
-+		free(ctx->qp_table[tind].table);
-+	else
-+		ctx->qp_table[tind].table[qpn & XSC_QP_TABLE_MASK] = NULL;
-+}
-+
-+int xsc_err_state_qp(struct ibv_qp *qp, enum ibv_qp_state cur_state,
-+		     enum ibv_qp_state state)
-+{
-+	struct xsc_err_state_qp_node *tmp, *err_rq_node, *err_sq_node;
-+	struct xsc_qp *xqp = to_xqp(qp);
-+	int ret = 0;
-+
-+	xsc_dbg(to_xctx(qp->context)->dbg_fp, XSC_DBG_QP,
-+		"modify qp: qpid %d, cur_qp_state %d, qp_state %d\n",
-+		xqp->rsc.rsn, cur_state, state);
-+	if (cur_state == IBV_QPS_ERR && state != IBV_QPS_ERR) {
-+		if (qp->recv_cq) {
-+			list_for_each_safe(&to_xcq(qp->recv_cq)->err_state_qp_list,
-+					   err_rq_node, tmp, entry) {
-+				if (err_rq_node->qp_id == xqp->rsc.rsn) {
-+					list_del(&err_rq_node->entry);
-+					free(err_rq_node);
-+				}
-+			}
-+		}
-+
-+		if (qp->send_cq) {
-+			list_for_each_safe(&to_xcq(qp->send_cq)->err_state_qp_list,
-+					   err_sq_node, tmp, entry) {
-+				if (err_sq_node->qp_id == xqp->rsc.rsn) {
-+					list_del(&err_sq_node->entry);
-+					free(err_sq_node);
-+				}
-+			}
-+		}
-+		return ret;
-+	}
-+
-+	if (cur_state != IBV_QPS_ERR && state == IBV_QPS_ERR) {
-+		if (qp->recv_cq) {
-+			err_rq_node = calloc(1, sizeof(*err_rq_node));
-+			if (!err_rq_node)
-+				return ENOMEM;
-+			err_rq_node->qp_id = xqp->rsc.rsn;
-+			err_rq_node->is_sq = false;
-+			list_add_tail(&to_xcq(qp->recv_cq)->err_state_qp_list,
-+				      &err_rq_node->entry);
-+		}
-+
-+		if (qp->send_cq) {
-+			err_sq_node = calloc(1, sizeof(*err_sq_node));
-+			if (!err_sq_node)
-+				return ENOMEM;
-+			err_sq_node->qp_id = xqp->rsc.rsn;
-+			err_sq_node->is_sq = true;
-+			list_add_tail(&to_xcq(qp->send_cq)->err_state_qp_list,
-+				      &err_sq_node->entry);
-+		}
-+	}
-+	return ret;
-+}
-diff --git a/providers/xscale/verbs.c b/providers/xscale/verbs.c
-index 29de7311..a72244db 100644
---- a/providers/xscale/verbs.c
-+++ b/providers/xscale/verbs.c
-@@ -441,3 +441,579 @@ int xsc_query_device_ex(struct ibv_context *context,
+@@ -16,6 +16,528 @@
+ #include "xscale.h"
+ #include "xsc_hsi.h"
  
- 	return 0;
- }
++static const u32 xsc_ib_opcode[] = {
++	[IBV_WR_SEND] = XSC_MSG_OPCODE_SEND,
++	[IBV_WR_SEND_WITH_IMM] = XSC_MSG_OPCODE_SEND,
++	[IBV_WR_RDMA_WRITE] = XSC_MSG_OPCODE_RDMA_WRITE,
++	[IBV_WR_RDMA_WRITE_WITH_IMM] = XSC_MSG_OPCODE_RDMA_WRITE,
++	[IBV_WR_RDMA_READ] = XSC_MSG_OPCODE_RDMA_READ,
++	[IBV_WR_SEND_WITH_INV] = XSC_MSG_OPCODE_SEND,
++};
 +
-+static int xsc_calc_sq_size(struct xsc_context *ctx,
-+			    struct ibv_qp_init_attr_ex *attr, struct xsc_qp *qp)
++static void *get_recv_wqe(struct xsc_qp *qp, int n)
 +{
-+	int wqe_size;
-+	int wq_size;
-+	int wq_size_min = 0;
++	return qp->rq_start + (n << qp->rq.wqe_shift);
++}
 +
-+	if (!attr->cap.max_send_wr)
++static void *get_seg_wqe(void *first, int n)
++{
++	return first + (n << XSC_BASE_WQE_SHIFT);
++}
++
++void *xsc_get_send_wqe(struct xsc_qp *qp, int n)
++{
++	return qp->sq_start + (n << qp->sq.wqe_shift);
++}
++
++static int xsc_wq_overflow(struct xsc_wq *wq, int nreq, struct xsc_cq *cq)
++{
++	unsigned int cur;
++
++	cur = wq->head - wq->tail;
++	if (cur + nreq < wq->max_post)
 +		return 0;
 +
-+	wqe_size = 1 << (XSC_BASE_WQE_SHIFT + ctx->send_ds_shift);
++	xsc_spin_lock(&cq->lock);
++	cur = wq->head - wq->tail;
++	xsc_spin_unlock(&cq->lock);
 +
-+	wq_size = xsc_round_up_power_of_two(attr->cap.max_send_wr);
-+
-+	if (attr->qp_type != IBV_QPT_RAW_PACKET)
-+		wq_size_min = XSC_SEND_WQE_RING_DEPTH_MIN;
-+	if (wq_size < wq_size_min) {
-+		xsc_dbg(ctx->dbg_fp, XSC_DBG_QP,
-+			"WQE size %u is not enough, set it as %u\n", wq_size,
-+			wq_size_min);
-+		wq_size = wq_size_min;
-+	}
-+
-+	if (wq_size > ctx->max_send_wr) {
-+		xsc_dbg(ctx->dbg_fp, XSC_DBG_QP,
-+			"WQE size %u exceeds WQE ring depth, set it as %u\n",
-+			wq_size, ctx->max_send_wr);
-+		wq_size = ctx->max_send_wr;
-+	}
-+
-+	qp->max_inline_data = attr->cap.max_inline_data;
-+	qp->sq.wqe_cnt = wq_size;
-+	qp->sq.ds_cnt = wq_size << ctx->send_ds_shift;
-+	qp->sq.seg_cnt = 1 << ctx->send_ds_shift;
-+	qp->sq.wqe_shift = XSC_BASE_WQE_SHIFT + ctx->send_ds_shift;
-+	qp->sq.max_gs = attr->cap.max_send_sge;
-+	qp->sq.max_post = qp->sq.wqe_cnt;
-+	if (attr->cap.max_inline_data >
-+	    (qp->sq.seg_cnt - 2) * sizeof(struct xsc_wqe_data_seg))
-+		return -EINVAL;
-+
-+	xsc_dbg(ctx->dbg_fp, XSC_DBG_QP,
-+		"Send WQE count:%u, max post:%u wqe shift:%u\n", qp->sq.wqe_cnt,
-+		qp->sq.max_post, qp->sq.wqe_shift);
-+
-+	return wqe_size * qp->sq.wqe_cnt;
++	return cur + nreq >= wq->max_post;
 +}
 +
-+static int xsc_calc_rq_size(struct xsc_context *ctx,
-+			    struct ibv_qp_init_attr_ex *attr, struct xsc_qp *qp)
++static inline void set_remote_addr_seg(struct xsc_wqe_data_seg *remote_seg,
++				       u32 msg_len, u64 remote_addr,
++				       u32 rkey)
 +{
-+	int wqe_size;
-+	int wq_size;
-+	int wq_size_min = 0;
++	u32 ds_data0 = 0;
 +
-+	if (!attr->cap.max_recv_wr)
++	ds_data0 |= FIELD_PREP(DATA_SEG_DATA0_SEG_LEN_MASK, msg_len);
++	remote_seg->data0 = htole32(ds_data0);
++	remote_seg->mkey = htole32(rkey);
++	remote_seg->va = htole64(remote_addr);
++}
++
++static void set_local_data_seg(struct xsc_wqe_data_seg *data_seg,
++			       const struct ibv_sge *sg)
++{
++	u32 ds_data0 = 0;
++
++	ds_data0 |= FIELD_PREP(DATA_SEG_DATA0_SEG_LEN_MASK, sg->length);
++	data_seg->data0 = htole32(ds_data0);
++	data_seg->mkey = htole32(sg->lkey);
++	data_seg->va = htole64(sg->addr);
++}
++
++static __be32 send_ieth(struct ibv_send_wr *wr)
++{
++	switch (wr->opcode) {
++	case IBV_WR_SEND_WITH_IMM:
++	case IBV_WR_RDMA_WRITE_WITH_IMM:
++		return wr->imm_data;
++	default:
 +		return 0;
-+
-+	wqe_size = 1 << (XSC_BASE_WQE_SHIFT + ctx->recv_ds_shift);
-+
-+	wq_size = xsc_round_up_power_of_two(attr->cap.max_recv_wr);
-+	/* due to hardware limit, rdma rq depth should be
-+	 * one send wqe ds num at least
-+	 */
-+	if (attr->qp_type != IBV_QPT_RAW_PACKET)
-+		wq_size_min = ctx->send_ds_num;
-+	if (wq_size < wq_size_min) {
-+		xsc_dbg(ctx->dbg_fp, XSC_DBG_QP,
-+			"WQE size %u is not enough, set it as %u\n", wq_size,
-+			wq_size_min);
-+		wq_size = wq_size_min;
 +	}
-+
-+	if (wq_size > ctx->max_recv_wr) {
-+		xsc_dbg(ctx->dbg_fp, XSC_DBG_QP,
-+			"WQE size %u exceeds WQE ring depth, set it as %u\n",
-+			wq_size, ctx->max_recv_wr);
-+		wq_size = ctx->max_recv_wr;
-+	}
-+
-+	qp->rq.wqe_cnt = wq_size;
-+	qp->rq.ds_cnt = qp->rq.wqe_cnt << ctx->recv_ds_shift;
-+	qp->rq.seg_cnt = 1 << ctx->recv_ds_shift;
-+	qp->rq.wqe_shift = XSC_BASE_WQE_SHIFT + ctx->recv_ds_shift;
-+	qp->rq.max_post = qp->rq.wqe_cnt;
-+	qp->rq.max_gs = attr->cap.max_recv_sge;
-+
-+	xsc_dbg(ctx->dbg_fp, XSC_DBG_QP,
-+		"Recv WQE count:%u, max post:%u wqe shift:%u\n", qp->rq.wqe_cnt,
-+		qp->rq.max_post, qp->rq.wqe_shift);
-+	return wqe_size * qp->rq.wqe_cnt;
 +}
 +
-+static int xsc_calc_wq_size(struct xsc_context *ctx,
-+			    struct ibv_qp_init_attr_ex *attr, struct xsc_qp *qp)
++static void *get_addr_from_wr(const void *list, int idx)
 +{
-+	int ret;
-+	int result;
++	const struct ibv_send_wr *wr = list;
 +
-+	ret = xsc_calc_sq_size(ctx, attr, qp);
-+	if (ret < 0)
-+		return ret;
-+
-+	result = ret;
-+
-+	ret = xsc_calc_rq_size(ctx, attr, qp);
-+	if (ret < 0)
-+		return ret;
-+
-+	result += ret;
-+
-+	qp->sq.offset = ret;
-+	qp->rq.offset = 0;
-+
-+	return result;
++	return (void *)(uintptr_t)wr->sg_list[idx].addr;
 +}
 +
-+static int xsc_alloc_qp_buf(struct ibv_context *context,
-+			    struct ibv_qp_init_attr_ex *attr, struct xsc_qp *qp,
-+			    int size)
++static int get_len_from_wr(const void *list, int idx)
 +{
-+	int err;
++	const struct ibv_send_wr *wr = list;
 +
-+	if (qp->sq.wqe_cnt) {
-+		qp->sq.wrid = malloc(qp->sq.wqe_cnt * sizeof(*qp->sq.wrid));
-+		if (!qp->sq.wrid) {
-+			errno = ENOMEM;
-+			err = -1;
-+			return err;
-+		}
++	return wr->sg_list[idx].length;
++}
 +
-+		qp->sq.wqe_head =
-+			malloc(qp->sq.wqe_cnt * sizeof(*qp->sq.wqe_head));
-+		if (!qp->sq.wqe_head) {
-+			errno = ENOMEM;
-+			err = -1;
-+			goto ex_wrid;
-+		}
++static int _set_wqe_inline(void *data_seg, size_t num_buf, const void *list,
++			   void *(*get_addr)(const void *, int),
++			   int (*get_len)(const void *, int))
++{
++	int i;
++	int ds_left_len = 0;
++	int len = 0;
++	void *addr;
++	void *data_seg_base = data_seg;
++	int seg_index = 0;
++	const int ds_len = sizeof(struct xsc_wqe_data_seg);
 +
-+		qp->sq.need_flush =
-+			malloc(qp->sq.wqe_cnt * sizeof(*qp->sq.need_flush));
-+		if (!qp->sq.need_flush) {
-+			errno = ENOMEM;
-+			err = -1;
-+			goto ex_wrid;
-+		}
-+		memset(qp->sq.need_flush, 0, qp->sq.wqe_cnt);
++	for (i = 0; i < num_buf; i++) {
++		addr = get_addr(list, i);
++		len = get_len(list, i);
++		if (likely(len)) {
++			if (ds_left_len > 0) {
++				int copy_len = min_t(int, len, ds_left_len);
 +
-+		qp->sq.wr_opcode =
-+			malloc(qp->sq.wqe_cnt * sizeof(*qp->sq.wr_opcode));
-+		if (!qp->sq.wr_opcode) {
-+			errno = ENOMEM;
-+			err = -1;
-+			goto ex_wrid;
++				memcpy(data_seg, addr, copy_len);
++				addr += copy_len;
++				len -= copy_len;
++			}
++
++			while (len >= ds_len) {
++				data_seg =
++					get_seg_wqe(data_seg_base, seg_index);
++				seg_index++;
++				memcpy(data_seg, addr, ds_len);
++				addr += ds_len;
++				len -= ds_len;
++			}
++
++			if (len > 0) {
++				data_seg =
++					get_seg_wqe(data_seg_base, seg_index);
++				seg_index++;
++				memcpy(data_seg, addr, len);
++				data_seg += len;
++				ds_left_len = ds_len - len;
++			} else {
++				ds_left_len = 0;
++			}
 +		}
 +	}
++	return seg_index;
++}
 +
-+	if (qp->rq.wqe_cnt) {
-+		qp->rq.wrid = malloc(qp->rq.wqe_cnt * sizeof(uint64_t));
-+		if (!qp->rq.wrid) {
-+			errno = ENOMEM;
-+			err = -1;
-+			goto ex_wrid;
-+		}
-+	}
++static int set_wqe_inline_from_wr(struct xsc_qp *qp, struct ibv_send_wr *wr,
++				  struct xsc_send_wqe_ctrl_seg *ctrl)
++{
++	void *data_seg;
++	unsigned int seg_index;
++	int msg_len = le32toh(ctrl->msg_len);
++	int filled_ds_num;
++	u32 tmp_ctrl_wqe_hdr = le32toh(ctrl->wqe_hdr);
 +
-+	err = xsc_alloc_buf(&qp->buf,
-+			    align(qp->buf_size,
-+				  to_xdev(context->device)->page_size),
-+			    to_xdev(context->device)->page_size);
-+	if (err) {
-+		err = -ENOMEM;
-+		goto ex_wrid;
-+	}
++	if (wr->opcode == IBV_WR_SEND || wr->opcode == IBV_WR_SEND_WITH_IMM)
++		seg_index = 1;
++	else
++		seg_index = 2;
++	data_seg = get_seg_wqe(ctrl, seg_index);
 +
-+	memset(qp->buf.buf, 0, qp->buf_size);
++	if (unlikely(msg_len > qp->max_inline_data))
++		return -ENOMEM;
 +
-+	if (attr->qp_type == IBV_QPT_RAW_PACKET) {
-+		size_t aligned_sq_buf_size = align(qp->sq_buf_size,
-+						   to_xdev(context->device)->page_size);
-+		/* For Raw Packet QP, allocate a separate buffer for the SQ */
-+		err = xsc_alloc_buf(&qp->sq_buf,
-+				    aligned_sq_buf_size,
-+				    to_xdev(context->device)->page_size);
-+		if (err) {
-+			err = -ENOMEM;
-+			goto rq_buf;
-+		}
-+
-+		memset(qp->sq_buf.buf, 0, aligned_sq_buf_size);
-+	}
++	filled_ds_num = _set_wqe_inline(data_seg, wr->num_sge, wr,
++					get_addr_from_wr, get_len_from_wr);
++	tmp_ctrl_wqe_hdr |= FIELD_PREP(CTRL_SEG_WQE_HDR_DS_NUM_MASK,
++				       seg_index - 1 + filled_ds_num);
++	ctrl->wqe_hdr = htole32(tmp_ctrl_wqe_hdr);
 +
 +	return 0;
-+rq_buf:
-+	xsc_free_buf(&qp->buf);
-+ex_wrid:
-+	if (qp->rq.wrid)
-+		free(qp->rq.wrid);
++}
 +
-+	if (qp->sq.wqe_head)
-+		free(qp->sq.wqe_head);
++static void _zero_send_ds(int idx, struct xsc_qp *qp, int keep_ctrl)
++{
++	u64 *p;
++	void *seg;
++	int i;
 +
-+	if (qp->sq.wrid)
-+		free(qp->sq.wrid);
++	seg = (void *)xsc_get_send_wqe(qp, idx);
++	for (i = keep_ctrl; i < qp->sq.seg_cnt; i++) {
++		p = get_seg_wqe(seg, i);
++		p[0] = 0;
++		p[1] = 0;
++	}
++}
 +
-+	if (qp->sq.need_flush)
-+		free(qp->sq.need_flush);
++static void clear_send_wqe(int idx, struct xsc_qp *qp)
++{
++	_zero_send_ds(idx, qp, 0);
++}
 +
-+	if (qp->sq.wr_opcode)
-+		free(qp->sq.wr_opcode);
++static void clear_send_wqe_except_ctrl(int idx, struct xsc_qp *qp)
++{
++	_zero_send_ds(idx, qp, 1);
++}
++
++static void clear_recv_wqe(int idx, struct xsc_qp *qp)
++{
++	u64 *p;
++	void *seg;
++	int i;
++
++	seg = (void *)get_recv_wqe(qp, idx);
++	for (i = 0; i < qp->rq.seg_cnt; i++) {
++		p = get_seg_wqe(seg, i);
++		p[0] = 0;
++		p[1] = 0;
++	}
++}
++
++static void dump_wqe(int type, int idx, struct xsc_qp *qp)
++{
++	u32 *p;
++	int i;
++	void *seg;
++
++	/* type0 for send, type1 for recv */
++	if (type == 0) {
++		seg = (void *)xsc_get_send_wqe(qp, idx);
++		xsc_dbg(to_xctx(qp->ibv_qp->context)->dbg_fp, XSC_DBG_QP,
++			"dump send wqe at %p\n", seg);
++		for (i = 0; i < qp->sq.seg_cnt; i++) {
++			p = get_seg_wqe(seg, i);
++			xsc_dbg(to_xctx(qp->ibv_qp->context)->dbg_fp,
++				XSC_DBG_QP, "0x%08x 0x%08x 0x%08x 0x%08x\n",
++				p[0], p[1], p[2], p[3]);
++		}
++	} else if (type == 1) {
++		seg = (void *)get_recv_wqe(qp, idx);
++		xsc_dbg(to_xctx(qp->ibv_qp->context)->dbg_fp, XSC_DBG_QP,
++			"dump recv wqe at %p\n", seg);
++		for (i = 0; i < qp->rq.seg_cnt; i++) {
++			p = get_seg_wqe(seg, i);
++			xsc_dbg(to_xctx(qp->ibv_qp->context)->dbg_fp,
++				XSC_DBG_QP, "0x%08x 0x%08x 0x%08x 0x%08x\n",
++				p[0], p[1], p[2], p[3]);
++		}
++	} else {
++		xsc_dbg(to_xctx(qp->ibv_qp->context)->dbg_fp, XSC_DBG_QP,
++			"unknown type %d\n", type);
++	}
++}
++
++static inline void xsc_post_send_db(struct xsc_qp *qp, int nreq)
++{
++	struct xsc_context *ctx = to_xctx(qp->ibv_qp->context);
++	u32 next_pid;
++
++	if (unlikely(!nreq))
++		return;
++
++	qp->sq.head += nreq;
++	next_pid = qp->sq.head << (qp->sq.wqe_shift - XSC_BASE_WQE_SHIFT);
++	xsc_dbg(to_xctx(qp->ibv_qp->context)->dbg_fp, XSC_DBG_QP_SEND,
++		"nreq:%d\n", nreq);
++	ctx->hw_ops->ring_tx_doorbell(qp->sq.db, qp->sqn, next_pid);
++}
++
++static inline int _xsc_post_send(struct ibv_qp *ibqp, struct ibv_send_wr *wr,
++				 struct ibv_send_wr **bad_wr)
++{
++	struct xsc_qp *qp = to_xqp(ibqp);
++	void *seg;
++	struct xsc_send_wqe_ctrl_seg *ctrl;
++	struct xsc_wqe_data_seg *data_seg;
++
++	int nreq;
++	int err = 0;
++	int i;
++	unsigned int idx;
++	unsigned int seg_index = 1;
++	unsigned int msg_len = 0;
++
++	if (unlikely(ibqp->state < IBV_QPS_RTS)) {
++		xsc_dbg(to_xctx(ibqp->context)->dbg_fp, XSC_DBG_QP_SEND,
++			"qp state is %u, should not post send\n", ibqp->state);
++		err = EINVAL;
++		*bad_wr = wr;
++		return err;
++	}
++
++	xsc_spin_lock(&qp->sq.lock);
++
++	for (nreq = 0; wr; ++nreq, wr = wr->next) {
++		u8 ds_num;
++		u8 with_immdt;
++		u32 wqe_id;
++		u8 ce;
++		u32 wqe_hdr;
++		u32 ctrl_data0;
++
++		seg_index = 1;
++		msg_len = 0;
++		if (unlikely(wr->opcode < 0 ||
++			     wr->opcode >= sizeof(xsc_ib_opcode) /
++						   sizeof(xsc_ib_opcode[0]))) {
++			xsc_dbg(to_xctx(ibqp->context)->dbg_fp, XSC_DBG_QP_SEND,
++				"bad opcode %d\n", wr->opcode);
++			err = EINVAL;
++			*bad_wr = wr;
++			goto out;
++		}
++
++		if (unlikely(xsc_wq_overflow(&qp->sq, nreq,
++					     to_xcq(qp->ibv_qp->send_cq)))) {
++			xsc_dbg(to_xctx(ibqp->context)->dbg_fp, XSC_DBG_QP_SEND,
++				"send work queue overflow\n");
++			err = ENOMEM;
++			*bad_wr = wr;
++			goto out;
++		}
++
++		if (unlikely(wr->num_sge > qp->sq.max_gs)) {
++			xsc_dbg(to_xctx(ibqp->context)->dbg_fp, XSC_DBG_QP_SEND,
++				"max gs exceeded %d (max = %d)\n", wr->num_sge,
++				qp->sq.max_gs);
++			err = ENOMEM;
++			*bad_wr = wr;
++			goto out;
++		}
++
++		if (unlikely(wr->opcode == IBV_WR_RDMA_READ &&
++			     wr->num_sge > 1)) {
++			xsc_dbg(to_xctx(ibqp->context)->dbg_fp, XSC_DBG_QP_SEND,
++				"rdma read, max gs exceeded %d (max = 1)\n",
++				wr->num_sge);
++			err = ENOMEM;
++			*bad_wr = wr;
++			goto out;
++		}
++
++		idx = qp->sq.cur_post & (qp->sq.wqe_cnt - 1);
++		clear_send_wqe(idx, qp);
++		seg = xsc_get_send_wqe(qp, idx);
++		ctrl = seg;
++		ds_num = 0;
++		wqe_id = qp->sq.cur_post << (qp->sq.wqe_shift - XSC_BASE_WQE_SHIFT);
++		ce = qp->sq_signal_bits ? 1 :
++		     (wr->send_flags & IBV_SEND_SIGNALED ? 1 : 0);
++		for (i = 0; i < wr->num_sge; ++i) {
++			if (likely(wr->sg_list[i].length))
++				msg_len += wr->sg_list[i].length;
++		}
++		with_immdt = 0;
++
++		if (unlikely(wr->opcode == IBV_WR_RDMA_READ && msg_len == 0)) {
++			xsc_dbg(to_xctx(ibqp->context)->dbg_fp, XSC_DBG_QP_SEND,
++				"rdma read, msg len should not be 0\n");
++			err = ENOMEM;
++			*bad_wr = wr;
++			goto out;
++		}
++
++		switch (ibqp->qp_type) {
++		case IBV_QPT_RC:
++			switch (wr->opcode) {
++			case IBV_WR_SEND_WITH_INV:
++			case IBV_WR_SEND:
++				break;
++			case IBV_WR_SEND_WITH_IMM:
++				with_immdt = 1;
++				ctrl->opcode_data = htole32(be32toh(send_ieth(wr)));
++				break;
++			case IBV_WR_RDMA_WRITE_WITH_IMM:
++				with_immdt = 1;
++				ctrl->opcode_data = htole32(be32toh(send_ieth(wr)));
++				SWITCH_FALLTHROUGH;
++			case IBV_WR_RDMA_READ:
++			case IBV_WR_RDMA_WRITE:
++				if (ctrl->msg_len == 0)
++					break;
++				ds_num++;
++				data_seg = get_seg_wqe(ctrl, seg_index);
++				set_remote_addr_seg(data_seg, msg_len,
++						    wr->wr.rdma.remote_addr,
++						    wr->wr.rdma.rkey);
++				seg_index++;
++				break;
++			default:
++				printf("debug: opcode:%u NOT supported\n",
++				       wr->opcode);
++				err = EPERM;
++				*bad_wr = wr;
++				goto out;
++			}
++			break;
++		default:
++			xsc_dbg(to_xctx(ibqp->context)->dbg_fp, XSC_DBG_QP_SEND,
++				"qp type:%u NOT supported\n", ibqp->qp_type);
++			err = EPERM;
++			*bad_wr = wr;
++			goto out;
++		}
++
++		if (wr->send_flags & IBV_SEND_INLINE && wr->num_sge) {
++			err = set_wqe_inline_from_wr(qp, wr, ctrl);
++			if (unlikely(err)) {
++				*bad_wr = wr;
++				xsc_dbg(to_xctx(ibqp->context)->dbg_fp,
++					XSC_DBG_QP_SEND,
++					"inline layout failed, err %d\n", err);
++				goto out;
++			}
++		} else {
++			for (i = 0; i < wr->num_sge; ++i, ++seg_index) {
++				if (likely(wr->sg_list[i].length)) {
++					data_seg = get_seg_wqe(ctrl, seg_index);
++					set_local_data_seg(data_seg,
++							   &wr->sg_list[i]);
++					ds_num++;
++				}
++			}
++		}
++
++		wqe_hdr = FIELD_PREP(CTRL_SEG_WQE_HDR_MSG_OPCODE_MASK,
++				     xsc_ib_opcode[wr->opcode]) |
++			  FIELD_PREP(CTRL_SEG_WQE_HDR_WITH_IMMDT_MASK,
++				     with_immdt) |
++			  FIELD_PREP(CTRL_SEG_WQE_HDR_DS_NUM_MASK,
++				     ds_num) |
++			  FIELD_PREP(CTRL_SEG_WQE_HDR_WQE_ID_MASK,
++				     wqe_id);
++		ctrl_data0 = FIELD_PREP(CTRL_SEG_DATA0_SE_MASK,
++					wr->send_flags & IBV_SEND_SOLICITED ? 1 : 0) |
++			     FIELD_PREP(CTRL_SEG_DATA0_CE_MASK, ce) |
++			     FIELD_PREP(CTRL_SEG_DATA0_IN_LINE_MASK,
++					wr->send_flags & IBV_SEND_INLINE ? 1 : 0);
++		ctrl->wqe_hdr = htole32(wqe_hdr);
++		ctrl->msg_len = htole32(msg_len);
++		ctrl->data0 = htole32(ctrl_data0);
++
++		if (msg_len == 0) {
++			ds_num = 0;
++			clear_send_wqe_except_ctrl(idx, qp);
++		}
++		qp->sq.wrid[idx] = wr->wr_id;
++		qp->sq.wqe_head[idx] = qp->sq.head + nreq;
++		qp->sq.cur_post += 1;
++		if (ce) {
++			qp->sq.flush_wqe_cnt++;
++			qp->sq.need_flush[idx] = 1;
++		}
++		qp->sq.wr_opcode[idx] = wr->opcode;
++
++		if (xsc_debug_mask & XSC_DBG_QP_SEND)
++			dump_wqe(0, idx, qp);
++	}
++
++out:
++	xsc_post_send_db(qp, nreq);
++	xsc_spin_unlock(&qp->sq.lock);
 +
 +	return err;
 +}
 +
-+static void xsc_free_qp_buf(struct xsc_context *ctx, struct xsc_qp *qp)
++int xsc_post_send(struct ibv_qp *ibqp, struct ibv_send_wr *wr,
++		  struct ibv_send_wr **bad_wr)
 +{
-+	xsc_free_buf(&qp->buf);
-+
-+	if (qp->sq_buf.buf)
-+		xsc_free_buf(&qp->sq_buf);
-+
-+	if (qp->rq.wrid)
-+		free(qp->rq.wrid);
-+
-+	if (qp->sq.wqe_head)
-+		free(qp->sq.wqe_head);
-+
-+	if (qp->sq.wrid)
-+		free(qp->sq.wrid);
-+
-+	if (qp->sq.need_flush)
-+		free(qp->sq.need_flush);
-+
-+	if (qp->sq.wr_opcode)
-+		free(qp->sq.wr_opcode);
++	return _xsc_post_send(ibqp, wr, bad_wr);
 +}
 +
-+enum { XSC_CREATE_QP_SUP_COMP_MASK =
-+	       (IBV_QP_INIT_ATTR_PD | IBV_QP_INIT_ATTR_CREATE_FLAGS),
-+};
-+
-+void xsc_init_qp_indices(struct xsc_qp *qp)
-+{
-+	qp->sq.head = 0;
-+	qp->sq.tail = 0;
-+	qp->rq.head = 0;
-+	qp->rq.tail = 0;
-+	qp->sq.cur_post = 0;
-+}
-+
-+static struct ibv_qp *create_qp(struct ibv_context *context,
-+				struct ibv_qp_init_attr_ex *attr)
-+{
-+	struct xsc_create_qp cmd;
-+	struct xsc_create_qp_resp resp;
-+	struct xsc_create_qp_ex_resp resp_ex;
-+	struct xsc_qp *qp;
-+	int ret;
-+	struct xsc_context *ctx = to_xctx(context);
-+	struct ibv_qp *ibqp;
-+	struct xsc_device *xdev = to_xdev(context->device);
-+
-+	xsc_dbg(ctx->dbg_fp, XSC_DBG_QP, "comp_mask=0x%x.\n", attr->comp_mask);
-+
-+	if (attr->comp_mask & ~XSC_CREATE_QP_SUP_COMP_MASK) {
-+		xsc_err("Not supported comp_mask:0x%x\n", attr->comp_mask);
-+		return NULL;
-+	}
-+
-+	/*check qp_type*/
-+	if (attr->qp_type != IBV_QPT_RC &&
-+	    attr->qp_type != IBV_QPT_RAW_PACKET) {
-+		xsc_err("Not supported qp_type:0x%x\n", attr->qp_type);
-+		return NULL;
-+	}
-+
-+	qp = calloc(1, sizeof(*qp));
-+	if (!qp) {
-+		xsc_err("QP calloc failed\n");
-+		return NULL;
-+	}
-+
-+	ibqp = &qp->verbs_qp.qp;
-+	qp->ibv_qp = ibqp;
-+
-+	memset(&cmd, 0, sizeof(cmd));
-+	memset(&resp, 0, sizeof(resp));
-+	memset(&resp_ex, 0, sizeof(resp_ex));
-+
-+	ret = xsc_calc_wq_size(ctx, attr, qp);
-+	if (ret < 0) {
-+		xsc_err("Calculate WQ size failed\n");
-+		errno = EINVAL;
-+		goto err;
-+	}
-+
-+	qp->buf_size = ret;
-+	qp->sq_buf_size = 0;
-+
-+	if (xsc_alloc_qp_buf(context, attr, qp, ret)) {
-+		xsc_err("Alloc QP buffer failed\n");
-+		errno = ENOMEM;
-+		goto err;
-+	}
-+
-+	qp->sq_start = qp->buf.buf + qp->sq.offset;
-+	qp->rq_start = qp->buf.buf + qp->rq.offset;
-+	qp->sq.qend = qp->buf.buf + qp->sq.offset +
-+		      (qp->sq.wqe_cnt << qp->sq.wqe_shift);
-+
-+	xsc_dbg(ctx->dbg_fp, XSC_DBG_QP,
-+		"sq start:%p, sq qend:%p, buffer size:%u\n", qp->sq_start,
-+		qp->sq.qend, qp->buf_size);
-+
-+	xsc_init_qp_indices(qp);
-+
-+	if (xsc_spinlock_init(&qp->sq.lock) ||
-+	    xsc_spinlock_init(&qp->rq.lock))
-+		goto err_free_qp_buf;
-+
-+	cmd.buf_addr = (uintptr_t)qp->buf.buf;
-+	cmd.sq_wqe_count = qp->sq.ds_cnt;
-+	cmd.rq_wqe_count = qp->rq.ds_cnt;
-+	cmd.rq_wqe_shift = qp->rq.wqe_shift;
-+
-+	if (attr->qp_type == IBV_QPT_RAW_PACKET) {
-+		if (attr->comp_mask & IBV_QP_INIT_ATTR_CREATE_FLAGS) {
-+			if (attr->create_flags & XSC_QP_CREATE_RAWPACKET_TSO) {
-+				cmd.flags |= XSC_QP_FLAG_RAWPACKET_TSO;
-+				xsc_dbg(ctx->dbg_fp, XSC_DBG_QP,
-+					"revert create_flags(0x%x) to cmd_flags(0x%x)\n",
-+					attr->create_flags, cmd.flags);
-+			}
-+
-+			if (attr->create_flags & XSC_QP_CREATE_RAWPACKET_TX) {
-+				cmd.flags |= XSC_QP_FLAG_RAWPACKET_TX;
-+				xsc_dbg(ctx->dbg_fp, XSC_DBG_QP,
-+					"revert create_flags(0x%x) to cmd_flags(0x%x)\n",
-+					attr->create_flags, cmd.flags);
-+			}
-+			attr->comp_mask &= ~IBV_QP_INIT_ATTR_CREATE_FLAGS;
-+		}
-+	}
-+
-+	pthread_mutex_lock(&ctx->qp_table_mutex);
-+
-+	ret = ibv_cmd_create_qp_ex(context, &qp->verbs_qp, attr, &cmd.ibv_cmd,
-+				   sizeof(cmd), &resp.ibv_resp, sizeof(resp));
-+	if (ret) {
-+		xsc_err("ibv_cmd_create_qp_ex failed,ret %d\n", ret);
-+		errno = ret;
-+		goto err_free_qp_buf;
-+	}
-+
-+	if (qp->sq.wqe_cnt || qp->rq.wqe_cnt) {
-+		ret = xsc_store_qp(ctx, ibqp->qp_num, qp);
-+		if (ret) {
-+			xsc_err("xsc_store_qp failed,ret %d\n", ret);
-+			errno = EINVAL;
-+			goto err_destroy;
-+		}
-+	}
-+
-+	pthread_mutex_unlock(&ctx->qp_table_mutex);
-+
-+	qp->rq.max_post = qp->rq.wqe_cnt;
-+
-+	if (attr->sq_sig_all)
-+		qp->sq_signal_bits = 1;
-+	else
-+		qp->sq_signal_bits = 0;
-+
-+	attr->cap.max_send_wr = qp->sq.max_post;
-+	attr->cap.max_recv_wr = qp->rq.max_post;
-+	attr->cap.max_recv_sge = qp->rq.max_gs;
-+
-+	qp->rsc.rsn = ibqp->qp_num;
-+
-+	qp->rqn = ibqp->qp_num;
-+	qp->sqn = ibqp->qp_num;
-+
-+	xsc_dbg(ctx->dbg_fp, XSC_DBG_QP, "qp rqn:%u, sqn:%u\n", qp->rqn,
-+		qp->sqn);
-+	qp->sq.db = ctx->sqm_reg_va + (ctx->qpm_tx_db & (xdev->page_size - 1));
-+	qp->rq.db = ctx->rqm_reg_va + (ctx->qpm_rx_db & (xdev->page_size - 1));
-+
-+	if (attr->comp_mask & IBV_QP_INIT_ATTR_SEND_OPS_FLAGS)
-+		qp->verbs_qp.comp_mask |= VERBS_QP_EX;
-+
-+	return ibqp;
-+
-+err_destroy:
-+	ibv_cmd_destroy_qp(ibqp);
-+
-+err_free_qp_buf:
-+	pthread_mutex_unlock(&to_xctx(context)->qp_table_mutex);
-+	xsc_free_qp_buf(ctx, qp);
-+
-+err:
-+	free(qp);
-+
-+	return NULL;
-+}
-+
-+struct ibv_qp *xsc_create_qp(struct ibv_pd *pd, struct ibv_qp_init_attr *attr)
-+{
-+	struct ibv_qp *qp;
-+	struct ibv_qp_init_attr_ex attrx;
-+
-+	memset(&attrx, 0, sizeof(attrx));
-+	memcpy(&attrx, attr, sizeof(*attr));
-+	attrx.comp_mask = IBV_QP_INIT_ATTR_PD;
-+	attrx.pd = pd;
-+	qp = create_qp(pd->context, &attrx);
-+	if (qp)
-+		memcpy(attr, &attrx, sizeof(*attr));
-+
-+	return qp;
-+}
-+
-+static void xsc_lock_cqs(struct ibv_qp *qp)
-+{
-+	struct xsc_cq *send_cq = to_xcq(qp->send_cq);
-+	struct xsc_cq *recv_cq = to_xcq(qp->recv_cq);
-+
-+	if (send_cq && recv_cq) {
-+		if (send_cq == recv_cq) {
-+			xsc_spin_lock(&send_cq->lock);
-+		} else if (send_cq->cqn < recv_cq->cqn) {
-+			xsc_spin_lock(&send_cq->lock);
-+			xsc_spin_lock(&recv_cq->lock);
-+		} else {
-+			xsc_spin_lock(&recv_cq->lock);
-+			xsc_spin_lock(&send_cq->lock);
-+		}
-+	} else if (send_cq) {
-+		xsc_spin_lock(&send_cq->lock);
-+	} else if (recv_cq) {
-+		xsc_spin_lock(&recv_cq->lock);
-+	}
-+}
-+
-+static void xsc_unlock_cqs(struct ibv_qp *qp)
-+{
-+	struct xsc_cq *send_cq = to_xcq(qp->send_cq);
-+	struct xsc_cq *recv_cq = to_xcq(qp->recv_cq);
-+
-+	if (send_cq && recv_cq) {
-+		if (send_cq == recv_cq) {
-+			xsc_spin_unlock(&send_cq->lock);
-+		} else if (send_cq->cqn < recv_cq->cqn) {
-+			xsc_spin_unlock(&recv_cq->lock);
-+			xsc_spin_unlock(&send_cq->lock);
-+		} else {
-+			xsc_spin_unlock(&send_cq->lock);
-+			xsc_spin_unlock(&recv_cq->lock);
-+		}
-+	} else if (send_cq) {
-+		xsc_spin_unlock(&send_cq->lock);
-+	} else if (recv_cq) {
-+		xsc_spin_unlock(&recv_cq->lock);
-+	}
-+}
-+
-+int xsc_destroy_qp(struct ibv_qp *ibqp)
++int xsc_post_recv(struct ibv_qp *ibqp, struct ibv_recv_wr *wr,
++		  struct ibv_recv_wr **bad_wr)
 +{
 +	struct xsc_qp *qp = to_xqp(ibqp);
-+	struct xsc_context *ctx = to_xctx(ibqp->context);
-+	int ret;
-+	struct xsc_err_state_qp_node *tmp, *err_rq_node, *err_sq_node;
++	struct xsc_wqe_data_seg *recv_head;
++	struct xsc_wqe_data_seg *data_seg;
++	int err = 0;
++	u32 next_pid = 0;
++	int nreq;
++	u16 idx;
++	int i;
 +
-+	xsc_dbg(ctx->dbg_fp, XSC_DBG_QP, "\n");
++	xsc_spin_lock(&qp->rq.lock);
 +
-+	pthread_mutex_lock(&ctx->qp_table_mutex);
++	idx = qp->rq.head & (qp->rq.wqe_cnt - 1);
 +
-+	ret = ibv_cmd_destroy_qp(ibqp);
-+	if (ret) {
-+		pthread_mutex_unlock(&ctx->qp_table_mutex);
-+		return ret;
-+	}
-+
-+	xsc_lock_cqs(ibqp);
-+
-+	list_for_each_safe(&to_xcq(ibqp->recv_cq)->err_state_qp_list,
-+			   err_rq_node, tmp, entry) {
-+		if (err_rq_node->qp_id == qp->rsc.rsn) {
-+			list_del(&err_rq_node->entry);
-+			free(err_rq_node);
++	clear_recv_wqe(idx, qp);
++	for (nreq = 0; wr; ++nreq, wr = wr->next) {
++		if (unlikely(xsc_wq_overflow(&qp->rq, nreq,
++					     to_xcq(qp->ibv_qp->recv_cq)))) {
++			printf("recv work queue overflow\n");
++			err = ENOMEM;
++			*bad_wr = wr;
++			goto out;
 +		}
-+	}
 +
-+	list_for_each_safe(&to_xcq(ibqp->send_cq)->err_state_qp_list,
-+			   err_sq_node, tmp, entry) {
-+		if (err_sq_node->qp_id == qp->rsc.rsn) {
-+			list_del(&err_sq_node->entry);
-+			free(err_sq_node);
++		if (unlikely(wr->num_sge > qp->rq.max_gs)) {
++			printf("max gs exceeded %d (max = %d)\n", wr->num_sge,
++			       qp->rq.max_gs);
++			err = EINVAL;
++			*bad_wr = wr;
++			goto out;
 +		}
++
++		recv_head = get_recv_wqe(qp, idx);
++
++		for (i = 0; i < wr->num_sge; ++i) {
++			u32 ds_data0 = 0;
++
++			if (unlikely(!wr->sg_list[i].length))
++				continue;
++			data_seg = get_seg_wqe(recv_head, i);
++			ds_data0 = FIELD_PREP(DATA_SEG_DATA0_SEG_LEN_MASK,
++					      wr->sg_list[i].length);
++			data_seg->data0 = htole32(ds_data0);
++			data_seg->mkey = htole32(wr->sg_list[i].lkey);
++			data_seg->va = htole64(wr->sg_list[i].addr);
++		}
++
++		qp->rq.wrid[idx] = wr->wr_id;
++
++		dump_wqe(1, idx, qp);
++		idx = (idx + 1) & (qp->rq.wqe_cnt - 1);
++		qp->rq.flush_wqe_cnt++;
 +	}
 +
-+	__xsc_cq_clean(to_xcq(ibqp->recv_cq), qp->rsc.rsn);
-+	if (ibqp->send_cq != ibqp->recv_cq)
-+		__xsc_cq_clean(to_xcq(ibqp->send_cq), qp->rsc.rsn);
++out:
++	if (likely(nreq)) {
++		struct xsc_context *ctx = to_xctx(ibqp->context);
 +
-+	if (qp->sq.wqe_cnt || qp->rq.wqe_cnt)
-+		xsc_clear_qp(ctx, ibqp->qp_num);
-+
-+	xsc_unlock_cqs(ibqp);
-+	pthread_mutex_unlock(&ctx->qp_table_mutex);
-+
-+	xsc_free_qp_buf(ctx, qp);
-+
-+	free(qp);
-+
-+	return 0;
-+}
-+
-+int xsc_query_qp(struct ibv_qp *ibqp, struct ibv_qp_attr *attr, int attr_mask,
-+		 struct ibv_qp_init_attr *init_attr)
-+{
-+	struct ibv_query_qp cmd;
-+	struct xsc_qp *qp = to_xqp(ibqp);
-+	int ret;
-+
-+	xsc_dbg(to_xctx(ibqp->context)->dbg_fp, XSC_DBG_QP, "\n");
-+
-+	if (qp->rss_qp)
-+		return EOPNOTSUPP;
-+
-+	ret = ibv_cmd_query_qp(ibqp, attr, attr_mask, init_attr, &cmd,
-+			       sizeof(cmd));
-+	if (ret)
-+		return ret;
-+
-+	init_attr->cap.max_send_wr = qp->sq.max_post;
-+	init_attr->cap.max_send_sge = qp->sq.max_gs;
-+	init_attr->cap.max_inline_data = qp->max_inline_data;
-+
-+	attr->cap = init_attr->cap;
-+	attr->qp_state = qp->ibv_qp->state;
-+
-+	return 0;
-+}
-+
-+enum { XSC_MODIFY_QP_EX_ATTR_MASK = IBV_QP_RATE_LIMIT,
-+};
-+
-+int xsc_modify_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr, int attr_mask)
-+{
-+	struct ibv_modify_qp cmd = {};
-+	struct xsc_qp *xqp = to_xqp(qp);
-+	int ret;
-+
-+	xsc_dbg(to_xctx(qp->context)->dbg_fp, XSC_DBG_QP, "\n");
-+	ret = ibv_cmd_modify_qp(qp, attr, attr_mask, &cmd, sizeof(cmd));
-+
-+	if (!ret && (attr_mask & IBV_QP_STATE) &&
-+	    attr->qp_state == IBV_QPS_RESET) {
-+		if (qp->recv_cq)
-+			xsc_cq_clean(to_xcq(qp->recv_cq), xqp->rsc.rsn);
-+
-+		if (qp->send_cq != qp->recv_cq && qp->send_cq)
-+			xsc_cq_clean(to_xcq(qp->send_cq), to_xqp(qp)->rsc.rsn);
-+
-+		xsc_init_qp_indices(xqp);
++		qp->rq.head += nreq;
++		next_pid = qp->rq.head
++			   << (qp->rq.wqe_shift - XSC_BASE_WQE_SHIFT);
++		ctx->hw_ops->ring_rx_doorbell(qp->rq.db, qp->rqn, next_pid);
 +	}
 +
-+	if (!ret && (attr_mask & IBV_QP_STATE))
-+		qp->state = attr->qp_state;
++	xsc_spin_unlock(&qp->rq.lock);
 +
-+	/*workaround: generate flush err cqe if qp status turns to ERR*/
-+	if (!ret && (attr_mask & IBV_QP_STATE))
-+		ret = xsc_err_state_qp(qp, attr->cur_qp_state, attr->qp_state);
-+
-+	return ret;
++	return err;
 +}
++
+ struct xsc_qp *xsc_find_qp(struct xsc_context *ctx, uint32_t qpn)
+ {
+ 	int tind = qpn >> XSC_QP_TABLE_SHIFT;
 diff --git a/providers/xscale/xscale.c b/providers/xscale/xscale.c
-index 7b439f78..4d048629 100644
+index 4d048629..a1c7779f 100644
 --- a/providers/xscale/xscale.c
 +++ b/providers/xscale/xscale.c
-@@ -47,6 +47,11 @@ static const struct verbs_context_ops xsc_ctx_common_ops = {
- 	.req_notify_cq = xsc_arm_cq,
- 	.resize_cq = xsc_resize_cq,
- 	.destroy_cq = xsc_destroy_cq,
+@@ -52,6 +52,9 @@ static const struct verbs_context_ops xsc_ctx_common_ops = {
+ 	.query_qp = xsc_query_qp,
+ 	.modify_qp = xsc_modify_qp,
+ 	.destroy_qp = xsc_destroy_qp,
 +
-+	.create_qp = xsc_create_qp,
-+	.query_qp = xsc_query_qp,
-+	.modify_qp = xsc_modify_qp,
-+	.destroy_qp = xsc_destroy_qp,
++	.post_send = xsc_post_send,
++	.post_recv = xsc_post_recv,
  };
  
  static void open_debug_file(struct xsc_context *ctx)
 diff --git a/providers/xscale/xscale.h b/providers/xscale/xscale.h
-index 1955f98d..7088e5f4 100644
+index 7088e5f4..1d1184ca 100644
 --- a/providers/xscale/xscale.h
 +++ b/providers/xscale/xscale.h
-@@ -27,6 +27,16 @@ typedef uint16_t  u16;
- typedef uint32_t  u32;
- typedef uint64_t  u64;
- 
-+enum {
-+	XSC_QP_FLAG_RAWPACKET_TSO = 1 << 9,
-+	XSC_QP_FLAG_RAWPACKET_TX = 1 << 10,
-+};
-+
-+enum xsc_qp_create_flags {
-+	XSC_QP_CREATE_RAWPACKET_TSO = 1 << 0,
-+	XSC_QP_CREATE_RAWPACKET_TX = 1 << 1,
-+};
-+
- enum {
- 	XSC_DBG_QP = 1 << 0,
- 	XSC_DBG_CQ = 1 << 1,
-@@ -169,11 +179,56 @@ struct xsc_cq {
- 	struct list_head err_state_qp_list;
- };
- 
-+struct xsc_wq {
-+	u64 *wrid;
-+	unsigned int *wqe_head;
-+	struct xsc_spinlock lock;
-+	unsigned int wqe_cnt;
-+	unsigned int max_post;
-+	unsigned int head;
-+	unsigned int tail;
-+	unsigned int cur_post;
-+	int max_gs;
-+	int wqe_shift;
-+	int offset;
-+	void *qend;
-+	__le32 *db;
-+	unsigned int ds_cnt;
-+	unsigned int seg_cnt;
-+	unsigned int *wr_opcode;
-+	unsigned int *need_flush;
-+	unsigned int flush_wqe_cnt;
-+};
-+
- struct xsc_mr {
- 	struct verbs_mr vmr;
- 	u32 alloc_flags;
- };
- 
-+struct xsc_qp {
-+	struct xsc_resource rsc; /* This struct must be first */
-+	struct verbs_qp verbs_qp;
-+	struct ibv_qp *ibv_qp;
-+	struct xsc_buf buf;
-+	void *sq_start;
-+	void *rq_start;
-+	int max_inline_data;
-+	int buf_size;
-+	/* For Raw Packet QP, use different buffers for the SQ and RQ */
-+	struct xsc_buf sq_buf;
-+	int sq_buf_size;
-+
-+	u8 sq_signal_bits;
-+	struct xsc_wq sq;
-+	struct xsc_wq rq;
-+	u32 max_tso;
-+	u16 max_tso_header;
-+	int rss_qp;
-+	u32 flags; /* Use enum xsc_qp_flags */
-+	u32 rqn;
-+	u32 sqn;
-+};
-+
- union xsc_ib_fw_ver {
- 	u64 data;
- 	struct {
-@@ -220,6 +275,13 @@ static inline struct xsc_cq *to_xcq(struct ibv_cq *ibcq)
- 			    verbs_cq.cq_ex);
- }
- 
-+static inline struct xsc_qp *to_xqp(struct ibv_qp *ibqp)
-+{
-+	struct verbs_qp *vqp = (struct verbs_qp *)ibqp;
-+
-+	return container_of(vqp, struct xsc_qp, verbs_qp);
-+}
-+
- static inline struct xsc_mr *to_xmr(struct ibv_mr *ibmr)
- {
- 	return container_of(ibmr, struct xsc_mr, vmr.ibv_mr);
-@@ -259,6 +321,20 @@ int xsc_poll_cq(struct ibv_cq *cq, int ne, struct ibv_wc *wc);
- int xsc_arm_cq(struct ibv_cq *cq, int solicited);
- void __xsc_cq_clean(struct xsc_cq *cq, u32 qpn);
- void xsc_cq_clean(struct xsc_cq *cq, u32 qpn);
-+
-+struct ibv_qp *xsc_create_qp_ex(struct ibv_context *context,
-+				struct ibv_qp_init_attr_ex *attr);
-+struct ibv_qp *xsc_create_qp(struct ibv_pd *pd, struct ibv_qp_init_attr *attr);
-+int xsc_query_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr, int attr_mask,
-+		 struct ibv_qp_init_attr *init_attr);
-+int xsc_modify_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr, int attr_mask);
-+int xsc_destroy_qp(struct ibv_qp *qp);
-+void xsc_init_qp_indices(struct xsc_qp *qp);
-+struct xsc_qp *xsc_find_qp(struct xsc_context *ctx, u32 qpn);
-+int xsc_store_qp(struct xsc_context *ctx, u32 qpn, struct xsc_qp *qp);
-+void xsc_clear_qp(struct xsc_context *ctx, u32 qpn);
-+int xsc_err_state_qp(struct ibv_qp *qp, enum ibv_qp_state cur_state,
-+		     enum ibv_qp_state state);
- int xsc_round_up_power_of_two(long long sz);
- void *xsc_get_send_wqe(struct xsc_qp *qp, int n);
- 
+@@ -330,6 +330,10 @@ int xsc_query_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr, int attr_mask,
+ int xsc_modify_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr, int attr_mask);
+ int xsc_destroy_qp(struct ibv_qp *qp);
+ void xsc_init_qp_indices(struct xsc_qp *qp);
++int xsc_post_send(struct ibv_qp *ibqp, struct ibv_send_wr *wr,
++		  struct ibv_send_wr **bad_wr);
++int xsc_post_recv(struct ibv_qp *ibqp, struct ibv_recv_wr *wr,
++		  struct ibv_recv_wr **bad_wr);
+ struct xsc_qp *xsc_find_qp(struct xsc_context *ctx, u32 qpn);
+ int xsc_store_qp(struct xsc_context *ctx, u32 qpn, struct xsc_qp *qp);
+ void xsc_clear_qp(struct xsc_context *ctx, u32 qpn);
 -- 
 2.25.1
 
