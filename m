@@ -1,135 +1,132 @@
-Return-Path: <linux-rdma+bounces-5370-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5371-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D10D39991F2
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 21:12:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FB5B9992F3
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 21:46:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D1491C2645B
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 19:12:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E37D288E3F
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 19:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A6991CEE8D;
-	Thu, 10 Oct 2024 19:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256E91E282B;
+	Thu, 10 Oct 2024 19:44:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NXYRDCBC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j0YIk2pu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90B8A19ABA3;
-	Thu, 10 Oct 2024 19:11:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5264B1A01B9;
+	Thu, 10 Oct 2024 19:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728587514; cv=none; b=FhhMiRY+5M1c/86yc2ZmgcUEaI0ExhfWUXj8HWoFY6u50mBbHV1nins5DgBWNF9C2FsUQJfJ6G2WUzwlJ8bXp5gYKJf6aTnTQDTTPb2W2lJkMIHLJF5Bs0m8LK1ZhFg/v1qzOOEfNoCmEKlrwCkBussqTXcFMu02YpJc+RfDc5c=
+	t=1728589472; cv=none; b=FKEiHr0xWctS73Ind9cGWnsDA6QNnt7oqScpij0jiVEvwx6dc2jVhLN1NK/8SScY52ddS0qnFMQCslI67YgfGDo/KldwM7B2g1HSxineyhSujnXnkWGRamv+qesI9pYzthOcpilwF2tvRphdT3HmXiHPjK9SFt2KIuAoI8T2FnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728587514; c=relaxed/simple;
-	bh=mavLUvPe/Z33R+r7s6f0yQ/Y1XkbhHeqDb+k+2j+8Fg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UtqAt0SYtK07kKtT3Wg7zMIU8cf8lnCFdju2LKnn6DZjd3WP4sYWOGtFTqj9mwfxc1+gcGHH+LZFLu/otEoR9DFiAfmJLqmaHHXmW8hbR63zVu/+65AUqhR9uQ9Dti9JnNX5DPdoEd3CgmkXyYCrxb99RCtpHau4qwgsovp+QPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NXYRDCBC; arc=none smtp.client-ip=209.85.208.181
+	s=arc-20240116; t=1728589472; c=relaxed/simple;
+	bh=NdGNkIoSStkgmXNBmjjjU1d+RDwgTpul9rpG9JKnhFI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kbc9UgFcvMxDo8Zzr8Q7TC3tF8/9x5sqR7rUFFjN3VcsDKzyLhAViuKx9DUO4NcdWBFMnM0vneSTa7hYDrhhq1blnvJUY1qAwYuUHURvKaXg6/4CXdCIxLHAqAy4GS9dSeb2U85DRV0OKdSBZEbbha13y0o3CB5oxXDWWWb1xW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j0YIk2pu; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2fb2f4b282cso2034371fa.2;
-        Thu, 10 Oct 2024 12:11:52 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a995f56ea2dso207904366b.1;
+        Thu, 10 Oct 2024 12:44:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728587511; x=1729192311; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dV4Y8wvjEvYr9420WvUI+5b6+iJt6Y/8cuJ/hdjAW7A=;
-        b=NXYRDCBCFVNvH9SGiRDWscuNIGuN55vGXbNQJshIdwXt4kp/frb+9zrcLO0SmKX3//
-         8iy9eTQldmZlXmOBVITPscI0e39RqwaIU1sIKElyLU8TSo8OC4sWq/AcQ2AdVsFINWzG
-         fsv3wq4pzPBeNEUjuCwgsIuwm4sLF4H+T/IuryCL/C1+bnx19vNrV7Fey39LRuyvcEaN
-         jppGWaIRqA/TnYkr4pjc9erdFFE03594iceVjnRUJrAtqv3yN4DnXdNYDeBrw7jEneuF
-         RezfeF5oAjc1jhqs23M8QQX0LT5wFAmaFDmk/VjM0rJmS0yNUylgRBfLu5iKdtwhxbNM
-         88KQ==
+        d=gmail.com; s=20230601; t=1728589470; x=1729194270; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ubquMLAJt+nLGUbrU981XCa16YybjzKFmmAmbJx/lHU=;
+        b=j0YIk2punNW7XkddxHS2EkwGYa0XtLj26zTW2ewLcJSdZ8wR7YOW7qq6VxvL+7kEjL
+         Upp0YokRiJQSKfTslb/dtirGICo4APGEUsmP6oBEPdf5FTv9vzPajU0H9qSY47GDOeZE
+         nB2SZ+QrJGJiiNfD2fMGATjDROtQ7GlTaYWpUyPiUOYN0BQULXR6yrjiD3LQKyz/er5t
+         s9hhGYPAPNWt8zggLWjJz4H8irsG89o3RzXOt3FKdwtGDUMBvL+TNgXrkIvndaPgl30Q
+         ykC4RfGbe7W8EZZD9OOhkgkdqc/5bcaYtd1fBBUiEhSM4vNXeZ/yPC/biQuQls/49WZf
+         u57w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728587511; x=1729192311;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dV4Y8wvjEvYr9420WvUI+5b6+iJt6Y/8cuJ/hdjAW7A=;
-        b=ejmTffBtxHSzRCCJHeTNEINassP3UV/k/oqz/Xo+wo7SA6rmTH71jhHScHXqpKykn8
-         cN2JlYWN9OZM7xakLG1tj+xO9WN8gceLXuxUpRQtSnLyvplyJGV0w2z86kgsvrWkKHf+
-         pUhJOVZtu9XTUziAqHauvKLHBoIL6DNH+DjHn62G4SaQBjp9+9amUDf1E8I7rrO8EEer
-         SgTdMqI8nAYabw4S5Is+0gMC8kcNCyRBKImc8quchnLASALnlbpK5JGYXDFIrmf5X3Te
-         Kx9gPMc7EkTx2lfQ02yueuxCaGr4b4S88c5Xgtbuawt2e8W4XQdKoCCDMm/hT9FAKicI
-         e43Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV1hYf5cTzBJfsYNPT2c6A8L3Iox8O1f3GD+jPrALCVOxD1MCP4IWDbDh+WfKCEmOiaXZpT+dJBg0E4ZQ==@vger.kernel.org, AJvYcCWBjw2cAPNqldK9P/HL+GfY9GdIhAaeCTZNXKreoC+UY/8uagTrnSvDkJVXl3OyOBmO30+qVZFeGDF8THreuruX@vger.kernel.org, AJvYcCWknM1lJTSuY87lubECfkWK9RDW6YgylCLEzEwQmR12QujM8fOeNxCZxjBI4P8TQkWHPOY/7N0D@vger.kernel.org, AJvYcCXvhHgC+AHEJFT3AkMHMUK60qRYXqI0OzbnsitDHQq4hTaXV1j3v7u8RXUJRStEyPCib3qtMLXMVXBMiT4=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSMujcfjfddXQi4aPMZzSaFbpsK0ejXX2pHOFg4NHcUwtu4/ca
-	jBybSZnv3kjy8G7CoVO3usIT/xVlSd+5OfvLPC22T7k0JPR1+GSZ
-X-Google-Smtp-Source: AGHT+IEuKfVs3iRf0Hz2+U1nsMKSApblmz+h7J4ac6CBD50ItYNEHj2D6C3yPD9lZXHenfR0Ve6hZQ==
-X-Received: by 2002:a05:6512:2342:b0:539:8d46:4746 with SMTP id 2adb3069b0e04-539c4980d63mr4709005e87.60.1728587510361;
-        Thu, 10 Oct 2024 12:11:50 -0700 (PDT)
-Received: from localhost (net-2-44-97-22.cust.vodafonedsl.it. [2.44.97.22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a99a7ede92bsm127899866b.28.2024.10.10.12.11.49
+        d=1e100.net; s=20230601; t=1728589470; x=1729194270;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ubquMLAJt+nLGUbrU981XCa16YybjzKFmmAmbJx/lHU=;
+        b=ixbHRgpYt92x4pBBhazAyRxr38ixYLdFnixm2RVNbTLF35zqUAc/uT3grj2c4H6LL2
+         6CPsQ5q0cj+YnGgwcJz5rfuGCftGgQmINChosAKnmufEraNWYpEQp7aK+dk3pfqkby9Q
+         i7UC3UKagUnJujGnPuKL80+eZ2pujA84rLtBrKSy9QrhWoxdF9hii7p/sVoEa2un8prE
+         tAK/rMP7OH4sv0ftAhqTvYtYrWSpZ8mNxHdc36BDTpAu/g4JrIEEX5kuDJvza6PAOqJe
+         FDWhuU+mGMxHOUt3RD8G8Ye+hD6iBUxs8WD6GA7HrVp5iuhW+G0hzx+5kYh27o51lb9g
+         o0NA==
+X-Forwarded-Encrypted: i=1; AJvYcCUOjWglFFNzosrVMQKXZwQusVnC2jmmQMX+iSzDKVOQqfVCSov+zUQ83KCGD35t8vd81X8PKfnb@vger.kernel.org, AJvYcCUZ5UC5aPtNXSDGOPg0REIH5l9gktLC1qRGYiW3nwlb8dyeULzgrZEUUb/IcYKLsTlX0ohqWRU68sraFA==@vger.kernel.org, AJvYcCWfANvHqMz468p1FQ/6H4uQY4DoIww0lvyZinCBmVyimXrkTjmwpTAvggiIWLtmJ9t45QpUUqYOO91ULIPqDwY1@vger.kernel.org, AJvYcCXLCHsjBLi/7w7jYa+ojXE1Rw+TtIOgTwfhWlrQbMML/xmp1QTv6af0ofQqif4Mj3RUfo7z8VDlg5dgXrA=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yws+fAfhzh2X6Xy50i74WTVY1A6H/w2uHuofL6ZY1Tz0QsmMow7
+	ug54WWlXgUU0uySR8gm01vkwksuNjxVdWlM6xeBA+E1Xhw3YSSWM
+X-Google-Smtp-Source: AGHT+IFYT7OWZQwU8wuEgJYG4ePF/G1FfA7jL5EwvVJTeV1IEWCh4xp//kNWotpik91Hw8i548ITfg==
+X-Received: by 2002:a17:907:f79b:b0:a7d:c148:ec85 with SMTP id a640c23a62f3a-a99b95a7dacmr10496466b.62.1728589469405;
+        Thu, 10 Oct 2024 12:44:29 -0700 (PDT)
+Received: from alessandro-pc.station (net-2-44-97-22.cust.vodafonedsl.it. [2.44.97.22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a99a7f25ddbsm129641566b.59.2024.10.10.12.44.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2024 12:11:49 -0700 (PDT)
-Date: Thu, 10 Oct 2024 21:11:48 +0200
+        Thu, 10 Oct 2024 12:44:28 -0700 (PDT)
 From: Alessandro Zanni <alessandro.zanni87@gmail.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: allison.henderson@oracle.com, davem@davemloft.net, edumazet@google.com, 
-	pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	skhan@linuxfoundation.org, anupnewsmail@gmail.com
-Subject: Re: [PATCH] selftests: net: rds: fix module not found
-Message-ID: <wldy6xafdjem7nni2bnaq7gvozkwqpdtsmed5aopdcedsegmzd@faw3xb76qqgd>
-References: <20241008082259.243476-1-alessandro.zanni87@gmail.com>
- <20241009194031.269a1251@kernel.org>
+To: allison.henderson@oracle.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	shuah@kernel.org
+Cc: Alessandro Zanni <alessandro.zanni87@gmail.com>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	anupnewsmail@gmail.com
+Subject: [PATCH v2] selftests: net/rds: add module not found
+Date: Thu, 10 Oct 2024 21:44:17 +0200
+Message-ID: <20241010194421.48198-1-alessandro.zanni87@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241009194031.269a1251@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On 24/10/09 07:40, Jakub Kicinski wrote:
-> On Tue,  8 Oct 2024 10:22:53 +0200 Alessandro Zanni wrote:
-> > This fix solves this error, when calling kselftest with targets "net/rds":
-> > 
-> > selftests: net/rds: test.py
-> > Traceback (most recent call last):
-> >   File "tools/testing/selftests/net/rds/./test.py", line 17, in <module>
-> >     from lib.py import ip
-> > ModuleNotFoundError: No module named 'lib'
-> > 
-> > Signed-off-by: Alessandro Zanni <alessandro.zanni87@gmail.com>
-> > ---
-> >  tools/testing/selftests/net/rds/test.py | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/testing/selftests/net/rds/test.py b/tools/testing/selftests/net/rds/test.py
-> > index e6bb109bcead..112a8059c030 100755
-> > --- a/tools/testing/selftests/net/rds/test.py
-> > +++ b/tools/testing/selftests/net/rds/test.py
-> > @@ -14,8 +14,9 @@ import sys
-> >  import atexit
-> >  from pwd import getpwuid
-> >  from os import stat
-> > -from lib.py import ip
-> >  
-> > +sys.path.append("..")
-> > +from lib.py.utils import ip
-> >  
-> >  libc = ctypes.cdll.LoadLibrary('libc.so.6')
-> >  setns = libc.setns
-> 
-> Does this work regardless of where we try to run the script from?
-> In other cross-imports we try to build the path based on __file__,
-> see: tools/testing/selftests/drivers/net/lib/py/__init__.py
+This fix solves this error, when calling kselftest with targets "net/rds":
 
-Yes, it works regardeless where we run the script from but I agree
-with you to keep the same style used in other files.
-Thanks for pointing out.
+The error was found by running tests manually with the command:
+make kselftest TARGETS="net/rds"
 
-> Would be good to keep consistency.
+The patch also specifies to import ip() function from the utils module.
 
-Definitely. I'm sending a v2 patch with this in mind.
+Signed-off-by: Alessandro Zanni <alessandro.zanni87@gmail.com>
+---
 
-> -- 
-> pw-bot: cr
+Notes:
+    v2:
+      modified the way the parent path is added
+      added test to reproduce the error
+
+ tools/testing/selftests/net/rds/test.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/net/rds/test.py b/tools/testing/selftests/net/rds/test.py
+index e6bb109bcead..4a7178d11193 100755
+--- a/tools/testing/selftests/net/rds/test.py
++++ b/tools/testing/selftests/net/rds/test.py
+@@ -14,8 +14,11 @@ import sys
+ import atexit
+ from pwd import getpwuid
+ from os import stat
+-from lib.py import ip
+ 
++# Allow utils module to be imported from different directory
++this_dir = os.path.dirname(os.path.realpath(__file__))
++sys.path.append(os.path.join(this_dir, "../"))
++from lib.py.utils import ip
+ 
+ libc = ctypes.cdll.LoadLibrary('libc.so.6')
+ setns = libc.setns
+-- 
+2.43.0
+
 
