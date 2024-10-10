@@ -1,145 +1,218 @@
-Return-Path: <linux-rdma+bounces-5368-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5369-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85030998D78
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 18:32:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94288998D2A
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 18:22:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39027B2635E
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 16:10:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23C53288603
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2024 16:22:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3AAD1CDA30;
-	Thu, 10 Oct 2024 16:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1758A1CDFCE;
+	Thu, 10 Oct 2024 16:22:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hFFvSx5B"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yl6B3a+t"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B35E1CC15B;
-	Thu, 10 Oct 2024 16:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151A5188CAD;
+	Thu, 10 Oct 2024 16:22:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728576630; cv=none; b=jzWI5ueDqpRvc1drF51B6FWOWrwacOjeBJtIdTw37jPKYP7fFMSBdtSpxq/Hx9VYiuB8fGYBKb+lFBiOJN15lYEJWF/ht/Gkq3xT759IWxdTT19IDIApF8cEJ0G7JqQKb8LsGoEsjXcu729TSTzHJO4m2XSKV0u9Y0WG3M702aA=
+	t=1728577325; cv=none; b=uvZb5bDk7+fLH+XTRYJXcsjGPbqZ6xaMvn9cFC0hGbyzXtx8ne0pbbHo/SqU/QDlGCxx4VVIP7RYzi4cRGp3CDGfTKE6/MSQk79bRF3gS2NupMogLU8zdi1khrO/mo0acB1R/AbcLfnIPwS02jMl2oAjz4Rl93OcDXQS/Jc01ZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728576630; c=relaxed/simple;
-	bh=rlF1oA0bq8FwlMfxzBRflJpjdnVEJmqoV2so6rXk3HY=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Etj7teUSrdhvTX33qDuqVJMzLOASaetl6oTgiJvgyzunc71xoZtNXh2uoDgncfcJuIt5YqmjJpgatXd9mmedF8tD/atik3R3aLfqZCtKbZWdBn0VPRMLo7j1ssIn06BWCoyRKAhEyWPMQ/pPkPCFee7B1uLKRqwsoCEvnS8cf3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hFFvSx5B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1524AC4CEC5;
-	Thu, 10 Oct 2024 16:10:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728576630;
-	bh=rlF1oA0bq8FwlMfxzBRflJpjdnVEJmqoV2so6rXk3HY=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=hFFvSx5BY4KcxW1FB6+Pyb6QtaCfhQCtmiXRIMCwsfxcgqUWdmBmMr9KqU6kb1M1+
-	 6s1Fflstt9WCjpZmxIrIvVH3ZwT5lgDnVzi4nHbfJA/H1gJV+HsKOgHPndErTsdb36
-	 7CualFXNfb9YN4/F3iyShNPJXZRZvzHLKB1L9un3Ek/VXOr24VfqzU8O0z0zGYMAQ3
-	 7M88MVjUQpJnMEjth1balBwXdsXL4Xhtpr6R0oxxEff+iK1lm4kBY/KLzBVRj4ujBo
-	 HEHss/tOVO1wyGHsWpodqds2jY2Oh8D/D+dRRgluLCS4uJ04DO3IZ2C+yPfke+klLd
-	 bdqiGSg5+aSTg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE0273803263;
-	Thu, 10 Oct 2024 16:10:35 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1728577325; c=relaxed/simple;
+	bh=d+hpXxVmb3aKK0eK1VnP6oDaMBBez0l9ePrIgRqAaT8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SVQRiX5HIUyt0fcBkTlblmsq0R8MHK6MA8KT+9jokF4F3YdwkWMepmUte1cZFpAfjGb0eKgovdeteZep5pw0Y/rhrTCq8S/kdXTJTD8UVcGa7v618eS5+XE8FfMw+UMsjbI2KMA/39p06RziHZz2PK7+IoIAA3vvf+yk3taFimw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yl6B3a+t; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2fac187eef2so12497311fa.3;
+        Thu, 10 Oct 2024 09:22:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728577322; x=1729182122; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xqwuCLIl2tcdpTx23gArz5Y7uzenJ20sh5dnqev10Io=;
+        b=Yl6B3a+tSELC+tktAG0v7tNKvgUzBXMxOfieVqoPiQ9fkqx7ZBagwVWN6tvdaCdH0w
+         cUdgfFYhw4ebH+ujaJz90nJJSlzs6jo+0gkr5rSFlGxmhFQo6to+X5Lu/TWVwkcAuzeJ
+         v9rxF0m3GXWFevRf18YU4oPh0gRnFPU7qek7vWqel7902qhXaa/P6A5eDdblvQM2KaUf
+         295Ttqtb1cCOWfo5e+09jC5Yg4uNxafT7bauz7kBmBFI8ghiA/od1tPz2tx52z159lhf
+         xCmUTtV8TbjEu+bDjFoAhfaitZ5fnP/0JlZnzKL1E0qpamxcR8dKWmbOHIkzQaNLjXKq
+         edrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728577322; x=1729182122;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xqwuCLIl2tcdpTx23gArz5Y7uzenJ20sh5dnqev10Io=;
+        b=Zp8lqecNE0jJls1vYsJC5taON/RB+amXnhp02rqHAxXVcyBGDmXr4Pk++Zwgz7hKwx
+         SNXNvWQqe3638nCnV0osTF+ZPWelDYamayEo1Bl3OK5GWH8fkcMpmkDVTLE7moNK2fyO
+         HWtTsO/mD92J2wdpGd2nwX9hF6u+dQtV4PEPYdW3EouW9HVSILkhQd5xxJLwyRi0Sua4
+         pr5UfZd5Q1vvJveOq0k97dEgG76WuBJ3uGV/a4n+pzTZVs6P7CJof6Xez9TLaOiPJagx
+         flsWaZBQ3cI3fC44hIGJA0cCinyoggr7YR6a1wSiGEaZkfUSarLi/LDkxuH/rmKbL5AI
+         UpKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+D0QKd9aydWoOSN0ioaOEilCDS2nzJBML+7JGPAqFRaFFsWJeSYm/EXUZJUlkVBu8rgg=@vger.kernel.org, AJvYcCUkij5fHZFUhAfvxWGKk50HLPJJzwIZ3304Or71JYmRlxUb5RjqtgCUhDgJsNdzMWVqbN/9UA9g@vger.kernel.org, AJvYcCWDPB1zCAKUaN/YTPPpp37v1H4sCcj+vPSlpi5FtfuPgUXVw+Qus3DMIc/i06WOnM392oQesf4pFWr8pg==@vger.kernel.org, AJvYcCWysSJVe0dmQl1k0fF53vOyhoUYQOwL+BPAp6uABNoA6+51AowiZy6EJE3pzhspvFPCNU7SMUsIvB1BDw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzH3uJz16LHdc/X5rXG0IWw7TrP2kJBoQ0BhWNjeIsG92Bhz9Hk
+	XtlpjQPxq9bCln5TfjP6KpHJYuEl/mzB6tt5kGrP0EH+4Al8491Vl684w/Ipnt5ODM9FpXoJ2Sd
+	24DYO3fJepIYvTn6fYIqDFc47pko=
+X-Google-Smtp-Source: AGHT+IF5+dS/6FsJ+SrmgXbsnuLEPcs2Vh3K1NCSefdOc5WV+GSJPIwUNmypdX7oXd5shkIR1QFarjlZq5AtiocXbVU=
+X-Received: by 2002:a2e:b8d6:0:b0:2fa:bd30:1928 with SMTP id
+ 38308e7fff4ca-2fb187cd74emr41734561fa.32.1728577320569; Thu, 10 Oct 2024
+ 09:22:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net/smc: fix lacks of icsk_syn_mss with IPPROTO_SMC
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <172857663448.2081951.14132205441929515766.git-patchwork-notify@kernel.org>
-Date: Thu, 10 Oct 2024 16:10:34 +0000
-References: <1728456916-67035-1-git-send-email-alibuda@linux.alibaba.com>
-In-Reply-To: <1728456916-67035-1-git-send-email-alibuda@linux.alibaba.com>
-To: D. Wythe <alibuda@linux.alibaba.com>
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
- wintera@linux.ibm.com, guwen@linux.alibaba.com, kuba@kernel.org,
- davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-rdma@vger.kernel.org, tonylu@linux.alibaba.com, pabeni@redhat.com,
- edumazet@google.com
+References: <1728532691-20044-1-git-send-email-alibuda@linux.alibaba.com>
+In-Reply-To: <1728532691-20044-1-git-send-email-alibuda@linux.alibaba.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 10 Oct 2024 09:21:48 -0700
+Message-ID: <CAADnVQLXyA__zdDSiTdhaw=dXyfgmkr--cH068JvNK=JAYvRDA@mail.gmail.com>
+Subject: Re: [PATCH net-next] net/smc: Introduce a hook to modify syn_smc at runtime
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com, 
+	wintera@linux.ibm.com, guwen@linux.alibaba.com, 
+	Alexei Starovoitov <ast@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Network Development <netdev@vger.kernel.org>, 
+	linux-s390 <linux-s390@vger.kernel.org>, linux-rdma@vger.kernel.org, 
+	Tony Lu <tonylu@linux.alibaba.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Eric Dumazet <edumazet@google.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Wed, Oct 9, 2024 at 8:58=E2=80=AFPM D. Wythe <alibuda@linux.alibaba.com>=
+ wrote:
+>
+>
+> +__bpf_hook_start();
+> +
+> +__weak noinline int select_syn_smc(const struct sock *sk, struct sockadd=
+r *peer)
+> +{
+> +       return 1;
+> +}
+> +
+> +__bpf_hook_end();
+> +
+>  int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callba=
+ck *cb)
+>  {
+>         struct smc_nl_dmp_ctx *cb_ctx =3D smc_nl_dmp_ctx(cb);
+> @@ -156,19 +165,43 @@ static struct sock *smc_tcp_syn_recv_sock(const str=
+uct sock *sk,
+>         return NULL;
+>  }
+>
+> -static bool smc_hs_congested(const struct sock *sk)
+> +static void smc_openreq_init(struct request_sock *req,
+> +                            const struct tcp_options_received *rx_opt,
+> +                            struct sk_buff *skb, const struct sock *sk)
+>  {
+> +       struct inet_request_sock *ireq =3D inet_rsk(req);
+> +       struct sockaddr_storage rmt_sockaddr =3D {};
+>         const struct smc_sock *smc;
+>
+>         smc =3D smc_clcsock_user_data(sk);
+>
+>         if (!smc)
+> -               return true;
+> +               return;
+>
+> -       if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+> -               return true;
+> +       if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, sm=
+c_hs_wq))
+> +               goto out_no_smc;
+>
+> -       return false;
+> +       rmt_sockaddr.ss_family =3D sk->sk_family;
+> +
+> +       if (rmt_sockaddr.ss_family =3D=3D AF_INET) {
+> +               struct sockaddr_in *rmt4_sockaddr =3D  (struct sockaddr_i=
+n *)&rmt_sockaddr;
+> +
+> +               rmt4_sockaddr->sin_addr.s_addr =3D ireq->ir_rmt_addr;
+> +               rmt4_sockaddr->sin_port =3D ireq->ir_rmt_port;
+> +#if IS_ENABLED(CONFIG_IPV6)
+> +       } else {
+> +               struct sockaddr_in6 *rmt6_sockaddr =3D  (struct sockaddr_=
+in6 *)&rmt_sockaddr;
+> +
+> +               rmt6_sockaddr->sin6_addr =3D ireq->ir_v6_rmt_addr;
+> +               rmt6_sockaddr->sin6_port =3D ireq->ir_rmt_port;
+> +#endif /* CONFIG_IPV6 */
+> +       }
+> +
+> +       ireq->smc_ok =3D select_syn_smc(sk, (struct sockaddr *)&rmt_socka=
+ddr);
+> +       return;
+> +out_no_smc:
+> +       ireq->smc_ok =3D 0;
+> +       return;
+>  }
+>
+>  struct smc_hashinfo smc_v4_hashinfo =3D {
+> @@ -1671,7 +1704,7 @@ int smc_connect(struct socket *sock, struct sockadd=
+r *addr,
+>         }
+>
+>         smc_copy_sock_settings_to_clc(smc);
+> -       tcp_sk(smc->clcsock->sk)->syn_smc =3D 1;
+> +       tcp_sk(smc->clcsock->sk)->syn_smc =3D select_syn_smc(sk, addr);
+>         if (smc->connect_nonblock) {
+>                 rc =3D -EALREADY;
+>                 goto out;
+> @@ -2650,8 +2683,7 @@ int smc_listen(struct socket *sock, int backlog)
+>
+>         inet_csk(smc->clcsock->sk)->icsk_af_ops =3D &smc->af_ops;
+>
+> -       if (smc->limit_smc_hs)
+> -               tcp_sk(smc->clcsock->sk)->smc_hs_congested =3D smc_hs_con=
+gested;
+> +       tcp_sk(smc->clcsock->sk)->smc_openreq_init =3D smc_openreq_init;
+>
+>         rc =3D kernel_listen(smc->clcsock, backlog);
+>         if (rc) {
+> @@ -3475,6 +3507,24 @@ static void __net_exit smc_net_stat_exit(struct ne=
+t *net)
+>         .exit =3D smc_net_stat_exit,
+>  };
+>
+> +#if IS_ENABLED(CONFIG_BPF_SYSCALL)
+> +BTF_SET8_START(bpf_smc_fmodret_ids)
+> +BTF_ID_FLAGS(func, select_syn_smc)
+> +BTF_SET8_END(bpf_smc_fmodret_ids)
+> +
+> +static const struct btf_kfunc_id_set bpf_smc_fmodret_set =3D {
+> +       .owner =3D THIS_MODULE,
+> +       .set   =3D &bpf_smc_fmodret_ids,
+> +};
+> +
+> +static int bpf_smc_kfunc_init(void)
+> +{
+> +       return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
+> +}
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+fmodret was an approach that hid-bpf took initially,
+but eventually they removed it all and switched to struct-ops approach.
+Please learn that lesson.
+Use struct_ops from the beginning.
 
-On Wed,  9 Oct 2024 14:55:16 +0800 you wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> Eric report a panic on IPPROTO_SMC, and give the facts
-> that when INET_PROTOSW_ICSK was set, icsk->icsk_sync_mss must be set too.
-> 
-> Bug: Unable to handle kernel NULL pointer dereference at virtual address
-> 0000000000000000
-> Mem abort info:
-> ESR = 0x0000000086000005
-> EC = 0x21: IABT (current EL), IL = 32 bits
-> SET = 0, FnV = 0
-> EA = 0, S1PTW = 0
-> FSC = 0x05: level 1 translation fault
-> user pgtable: 4k pages, 48-bit VAs, pgdp=00000001195d1000
-> [0000000000000000] pgd=0800000109c46003, p4d=0800000109c46003,
-> pud=0000000000000000
-> Internal error: Oops: 0000000086000005 [#1] PREEMPT SMP
-> Modules linked in:
-> CPU: 1 UID: 0 PID: 8037 Comm: syz.3.265 Not tainted
-> 6.11.0-rc7-syzkaller-g5f5673607153 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine,
-> BIOS Google 08/06/2024
-> pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : 0x0
-> lr : cipso_v4_sock_setattr+0x2a8/0x3c0 net/ipv4/cipso_ipv4.c:1910
-> sp : ffff80009b887a90
-> x29: ffff80009b887aa0 x28: ffff80008db94050 x27: 0000000000000000
-> x26: 1fffe0001aa6f5b3 x25: dfff800000000000 x24: ffff0000db75da00
-> x23: 0000000000000000 x22: ffff0000d8b78518 x21: 0000000000000000
-> x20: ffff0000d537ad80 x19: ffff0000d8b78000 x18: 1fffe000366d79ee
-> x17: ffff8000800614a8 x16: ffff800080569b84 x15: 0000000000000001
-> x14: 000000008b336894 x13: 00000000cd96feaa x12: 0000000000000003
-> x11: 0000000000040000 x10: 00000000000020a3 x9 : 1fffe0001b16f0f1
-> x8 : 0000000000000000 x7 : 0000000000000000 x6 : 000000000000003f
-> x5 : 0000000000000040 x4 : 0000000000000001 x3 : 0000000000000000
-> x2 : 0000000000000002 x1 : 0000000000000000 x0 : ffff0000d8b78000
-> Call trace:
-> 0x0
-> netlbl_sock_setattr+0x2e4/0x338 net/netlabel/netlabel_kapi.c:1000
-> smack_netlbl_add+0xa4/0x154 security/smack/smack_lsm.c:2593
-> smack_socket_post_create+0xa8/0x14c security/smack/smack_lsm.c:2973
-> security_socket_post_create+0x94/0xd4 security/security.c:4425
-> __sock_create+0x4c8/0x884 net/socket.c:1587
-> sock_create net/socket.c:1622 [inline]
-> __sys_socket_create net/socket.c:1659 [inline]
-> __sys_socket+0x134/0x340 net/socket.c:1706
-> __do_sys_socket net/socket.c:1720 [inline]
-> __se_sys_socket net/socket.c:1718 [inline]
-> __arm64_sys_socket+0x7c/0x94 net/socket.c:1718
-> __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-> invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
-> el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
-> do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-> el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
-> el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
-> el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-> Code: ???????? ???????? ???????? ???????? (????????)
-> 
-> [...]
+I did a presentation recently explaining the motivation behind
+struct_ops and tips on how to extend the kernel.
+TLDR: the step one is to design the extension _without_ bpf.
+The interface should be usable for kernel modules.
+And then when you have *_ops style api in place
+the bpf progs will plug-in without extra work.
 
-Here is the summary with links:
-  - [net] net/smc: fix lacks of icsk_syn_mss with IPPROTO_SMC
-    https://git.kernel.org/netdev/net/c/6fd27ea183c2
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Slides:
+https://github.com/4ast/docs/blob/main/BPF%20struct-ops.pdf
 
