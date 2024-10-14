@@ -1,153 +1,218 @@
-Return-Path: <linux-rdma+bounces-5393-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5394-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3227699BF07
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Oct 2024 06:13:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FF8199BF71
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Oct 2024 07:49:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB1D61F250B9
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Oct 2024 04:13:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 067B128262D
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Oct 2024 05:49:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10D1B136E3B;
-	Mon, 14 Oct 2024 04:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33BDB13BC18;
+	Mon, 14 Oct 2024 05:49:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RA4p7dzH"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="cWTYpbQ0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C137231CB2
-	for <linux-rdma@vger.kernel.org>; Mon, 14 Oct 2024 04:00:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A08284A2F;
+	Mon, 14 Oct 2024 05:49:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728878435; cv=none; b=YkXZqhFdj2yDJRzoZ//ihG/ej1D9csiWlafanUXWSUcER6rWgyQ7v9ePhJc0uc72ACryjQhTFnNvb1TVS4jpb2sR/jYpAJq3tCnuWpaTvdtN8d2BEX9jCRPSNFBYqfM/Dm/L3zXa5ocX18K6NrHydCiBau6zInxjgApwxDQpJCo=
+	t=1728884961; cv=none; b=Xes1LXCsZFd2L+2EIRHeeJLdA6F3sKc9F22dkksJ26wZqX1aS0a6SV0552mjBmzYbQH7+TSACVlZDMORduDFF0HVckPDQ0m4MueG7fvXca1fSNHjswyv8tGj8xjG3ZK6VvYYYKbUQIcTUJNmLEVH8tJVgDPhhk79DG7ldvYD6Qo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728878435; c=relaxed/simple;
-	bh=0iKo+EC/e2thr3spqOvswgEhD22a3K4kD1Fyn363QNo=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=cCpGSzXoQM8JwENFMMBHwJH0Aqxap/vSeYEnccdVguAOqKnzucR36UVouRkOx/4bBHOfGpGtUEqPqTC0HCRaYQHWC/Rte0cx+ezDKTdQ+9A/dp4p+xiHCI2RVVi0UHJt0D5cwzuWXHvGu51T4Xq6jBvtRwtosU67t0vB7P4286o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RA4p7dzH; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1728878434; x=1760414434;
-  h=date:from:to:cc:subject:message-id;
-  bh=0iKo+EC/e2thr3spqOvswgEhD22a3K4kD1Fyn363QNo=;
-  b=RA4p7dzHYGRWKvpkSR9W8o9xdySjlZZpWWoqbJEoNmT4o+nCroTOOH2V
-   edRW5Lh3Ifmgw8F8lmPnLqm4VkJjNN3AbqrBzDK+vRmnP362Ljjajrpz3
-   qr4qDWQl0He7SpTn0HDu3OIlZksPO1N9rUmsQRetw46i81wglyc3tYgSY
-   TRmuvlzy9/aYGiAkr8D9zOtwVOmBpetCp7CgXQ80WzB1hHZwEqQtVJd/g
-   DjgyzBDkbvLSS8XojMX4Q4ZDOCQ2Nv3dER7R+SuwECSHCrbK2NIHvRXm9
-   saU4mZOpvZRMtclcsl1q3dCz9+gME8LZzrRVKLoJAtdTYbLXag4XJO+e1
-   A==;
-X-CSE-ConnectionGUID: qgrB9dU3T2y0MjaXBs8cYw==
-X-CSE-MsgGUID: 3e+dI5msRrKC9WM5SnrImA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11224"; a="53632762"
-X-IronPort-AV: E=Sophos;i="6.11,202,1725346800"; 
-   d="scan'208";a="53632762"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2024 21:00:33 -0700
-X-CSE-ConnectionGUID: vz00FLGOTL2dfgWIUkwfbw==
-X-CSE-MsgGUID: 4sIGAsU1QwqC8JZ3jMmUoQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,202,1725346800"; 
-   d="scan'208";a="77079995"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 13 Oct 2024 21:00:32 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t0CFx-000EtV-1Y;
-	Mon, 14 Oct 2024 04:00:29 +0000
-Date: Mon, 14 Oct 2024 11:59:52 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- dc5006cfcf62bea88076a587344ba5e00e66d1c6
-Message-ID: <202410141146.ByagLj2v-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1728884961; c=relaxed/simple;
+	bh=GZPQGeuVLly80GBQ5LNdOoFSVtvCh6X+j4fAOpNl+fw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oNbKFNLg9sHhCyd2xE6AjT9HTxhuPRAXMr7X8o5YaNJ84FC6RpRRLxXrLpcJBtU7NwAUx4Jlx6D/Zo9dWw9edLs1ho3BB+hxKZO+JxisXaJgAbKAeDry7+gLzOYLNJhoAuUR3btj2aSPw5RSgLNvBeuSTsSaD+mZWdIdBymOVOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=cWTYpbQ0; arc=none smtp.client-ip=115.124.30.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1728884954; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=tgmBE+YRai5Mg3O+pgz5N0iZD5sYwVXA22b3yvk3T5U=;
+	b=cWTYpbQ0TwLtcWFAeba0C+QZuwlfbJdHWzQJIXaauchjNC8CNazF68dyAKRILQr/Vw19XEsHIokrw1h/fIhyCgt/m2tFjCYQWBSPBbbXjfkHFFGPhyz27FiPiPpAgrx64ATAG8o5DQBdeGDoqpMa1ViLvjeUw3fxppSbTvZxQi0=
+Received: from 30.32.80.190(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WH0jDKk_1728884953 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Mon, 14 Oct 2024 13:49:14 +0800
+Message-ID: <523f99d8-8b21-48a7-827c-01491994db6f@linux.alibaba.com>
+Date: Mon, 14 Oct 2024 13:49:11 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net/smc: Introduce a hook to modify syn_smc at
+ runtime
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+ wintera@linux.ibm.com, guwen@linux.alibaba.com,
+ Alexei Starovoitov <ast@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Network Development <netdev@vger.kernel.org>,
+ linux-s390 <linux-s390@vger.kernel.org>, linux-rdma@vger.kernel.org,
+ Tony Lu <tonylu@linux.alibaba.com>, Paolo Abeni <pabeni@redhat.com>,
+ Eric Dumazet <edumazet@google.com>, bpf <bpf@vger.kernel.org>
+References: <1728532691-20044-1-git-send-email-alibuda@linux.alibaba.com>
+ <CAADnVQLXyA__zdDSiTdhaw=dXyfgmkr--cH068JvNK=JAYvRDA@mail.gmail.com>
+ <b5aa477d-a4b1-45cb-af44-bd737504734e@linux.alibaba.com>
+ <CAADnVQLS69MVZwTrek=ixP+1T7=+Fq0_kuOKgqBS+o4UoXMxFw@mail.gmail.com>
+Content-Language: en-US
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <CAADnVQLS69MVZwTrek=ixP+1T7=+Fq0_kuOKgqBS+o4UoXMxFw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
-branch HEAD: dc5006cfcf62bea88076a587344ba5e00e66d1c6  RDMA/bnxt_re: Fix the GID table length
 
-elapsed time: 3075m
 
-configs tested: 60
-configs skipped: 7
+On 10/11/24 11:37 PM, Alexei Starovoitov wrote:
+> On Thu, Oct 10, 2024 at 11:44 PM D. Wythe <alibuda@linux.alibaba.com> wrote:
+>>
+>>
+>>
+>> On 10/11/24 12:21 AM, Alexei Starovoitov wrote:
+>>> On Wed, Oct 9, 2024 at 8:58 PM D. Wythe <alibuda@linux.alibaba.com> wrote:
+>>>>
+>>>>
+>>>> +__bpf_hook_start();
+>>>> +
+>>>> +__weak noinline int select_syn_smc(const struct sock *sk, struct sockaddr *peer)
+>>>> +{
+>>>> +       return 1;
+>>>> +}
+>>>> +
+>>>> +__bpf_hook_end();
+>>>> +
+>>>>    int smc_nl_dump_hs_limitation(struct sk_buff *skb, struct netlink_callback *cb)
+>>>>    {
+>>>>           struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
+>>>> @@ -156,19 +165,43 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+>>>>           return NULL;
+>>>>    }
+>>>>
+>>>> -static bool smc_hs_congested(const struct sock *sk)
+>>>> +static void smc_openreq_init(struct request_sock *req,
+>>>> +                            const struct tcp_options_received *rx_opt,
+>>>> +                            struct sk_buff *skb, const struct sock *sk)
+>>>>    {
+>>>> +       struct inet_request_sock *ireq = inet_rsk(req);
+>>>> +       struct sockaddr_storage rmt_sockaddr = {};
+>>>>           const struct smc_sock *smc;
+>>>>
+>>>>           smc = smc_clcsock_user_data(sk);
+>>>>
+>>>>           if (!smc)
+>>>> -               return true;
+>>>> +               return;
+>>>>
+>>>> -       if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+>>>> -               return true;
+>>>> +       if (smc->limit_smc_hs && workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+>>>> +               goto out_no_smc;
+>>>>
+>>>> -       return false;
+>>>> +       rmt_sockaddr.ss_family = sk->sk_family;
+>>>> +
+>>>> +       if (rmt_sockaddr.ss_family == AF_INET) {
+>>>> +               struct sockaddr_in *rmt4_sockaddr =  (struct sockaddr_in *)&rmt_sockaddr;
+>>>> +
+>>>> +               rmt4_sockaddr->sin_addr.s_addr = ireq->ir_rmt_addr;
+>>>> +               rmt4_sockaddr->sin_port = ireq->ir_rmt_port;
+>>>> +#if IS_ENABLED(CONFIG_IPV6)
+>>>> +       } else {
+>>>> +               struct sockaddr_in6 *rmt6_sockaddr =  (struct sockaddr_in6 *)&rmt_sockaddr;
+>>>> +
+>>>> +               rmt6_sockaddr->sin6_addr = ireq->ir_v6_rmt_addr;
+>>>> +               rmt6_sockaddr->sin6_port = ireq->ir_rmt_port;
+>>>> +#endif /* CONFIG_IPV6 */
+>>>> +       }
+>>>> +
+>>>> +       ireq->smc_ok = select_syn_smc(sk, (struct sockaddr *)&rmt_sockaddr);
+>>>> +       return;
+>>>> +out_no_smc:
+>>>> +       ireq->smc_ok = 0;
+>>>> +       return;
+>>>>    }
+>>>>
+>>>>    struct smc_hashinfo smc_v4_hashinfo = {
+>>>> @@ -1671,7 +1704,7 @@ int smc_connect(struct socket *sock, struct sockaddr *addr,
+>>>>           }
+>>>>
+>>>>           smc_copy_sock_settings_to_clc(smc);
+>>>> -       tcp_sk(smc->clcsock->sk)->syn_smc = 1;
+>>>> +       tcp_sk(smc->clcsock->sk)->syn_smc = select_syn_smc(sk, addr);
+>>>>           if (smc->connect_nonblock) {
+>>>>                   rc = -EALREADY;
+>>>>                   goto out;
+>>>> @@ -2650,8 +2683,7 @@ int smc_listen(struct socket *sock, int backlog)
+>>>>
+>>>>           inet_csk(smc->clcsock->sk)->icsk_af_ops = &smc->af_ops;
+>>>>
+>>>> -       if (smc->limit_smc_hs)
+>>>> -               tcp_sk(smc->clcsock->sk)->smc_hs_congested = smc_hs_congested;
+>>>> +       tcp_sk(smc->clcsock->sk)->smc_openreq_init = smc_openreq_init;
+>>>>
+>>>>           rc = kernel_listen(smc->clcsock, backlog);
+>>>>           if (rc) {
+>>>> @@ -3475,6 +3507,24 @@ static void __net_exit smc_net_stat_exit(struct net *net)
+>>>>           .exit = smc_net_stat_exit,
+>>>>    };
+>>>>
+>>>> +#if IS_ENABLED(CONFIG_BPF_SYSCALL)
+>>>> +BTF_SET8_START(bpf_smc_fmodret_ids)
+>>>> +BTF_ID_FLAGS(func, select_syn_smc)
+>>>> +BTF_SET8_END(bpf_smc_fmodret_ids)
+>>>> +
+>>>> +static const struct btf_kfunc_id_set bpf_smc_fmodret_set = {
+>>>> +       .owner = THIS_MODULE,
+>>>> +       .set   = &bpf_smc_fmodret_ids,
+>>>> +};
+>>>> +
+>>>> +static int bpf_smc_kfunc_init(void)
+>>>> +{
+>>>> +       return register_btf_fmodret_id_set(&bpf_smc_fmodret_set);
+>>>> +}
+>>>
+>>> fmodret was an approach that hid-bpf took initially,
+>>> but eventually they removed it all and switched to struct-ops approach.
+>>> Please learn that lesson.
+>>> Use struct_ops from the beginning.
+>>>
+>>> I did a presentation recently explaining the motivation behind
+>>> struct_ops and tips on how to extend the kernel.
+>>> TLDR: the step one is to design the extension _without_ bpf.
+>>> The interface should be usable for kernel modules.
+>>> And then when you have *_ops style api in place
+>>> the bpf progs will plug-in without extra work.
+>>>
+>>> Slides:
+>>> https://github.com/4ast/docs/blob/main/BPF%20struct-ops.pdf
+>>
+>>
+>> Hi Alexei,
+>>
+>> Thanks very much for your suggestion.
+>>
+>> In fact, I tried struct_ops in SMC about a year ago. Unfortunately, at that time struct_ops did not
+>> support registration from modules, and I had to move some smc dependencies into bpf, which met with
+>> community opposition. However, I noticed that this feature is now supported, so perhaps this is an
+>> opportunity.
+>>
+>> But on the other hand, given the current functionality, I wonder if struct_ops might be an overkill.
+>> I haven't been able to come up with a suitable abstraction to define this ops, and in the future,
+>> this ops might only contain the very one callback (select_syn_smc).
+>>
+>> Looking forward for your advises.
+> 
+> I guess I wasn't clear. It's a Nack to the current fmodret approach.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-tested configs:
-alpha                             allnoconfig    gcc-13.3.0
-arc                               allnoconfig    gcc-13.2.0
-arc                   randconfig-001-20241014    gcc-13.2.0
-arc                   randconfig-002-20241014    gcc-13.2.0
-arm                               allnoconfig    clang-20
-arm                   randconfig-001-20241014    clang-20
-arm                   randconfig-002-20241014    gcc-14.1.0
-arm64                             allnoconfig    gcc-14.1.0
-csky                              allnoconfig    gcc-14.1.0
-hexagon                           allnoconfig    clang-20
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20241013    clang-18
-i386        buildonly-randconfig-002-20241013    gcc-12
-i386        buildonly-randconfig-003-20241013    clang-18
-i386        buildonly-randconfig-004-20241013    gcc-12
-i386        buildonly-randconfig-005-20241013    clang-18
-i386        buildonly-randconfig-006-20241013    clang-18
-i386                                defconfig    clang-18
-i386                  randconfig-001-20241013    clang-18
-i386                  randconfig-002-20241013    gcc-12
-i386                  randconfig-003-20241013    gcc-12
-i386                  randconfig-004-20241013    gcc-11
-i386                  randconfig-012-20241013    gcc-12
-i386                  randconfig-014-20241013    gcc-12
-i386                  randconfig-016-20241013    clang-18
-loongarch                         allnoconfig    gcc-14.1.0
-m68k                             allmodconfig    gcc-14.1.0
-m68k                              allnoconfig    gcc-14.1.0
-microblaze                       allmodconfig    gcc-14.1.0
-microblaze                        allnoconfig    gcc-14.1.0
-microblaze                       allyesconfig    gcc-14.1.0
-mips                              allnoconfig    gcc-14.1.0
-nios2                             allnoconfig    gcc-14.1.0
-openrisc                          allnoconfig    gcc-14.1.0
-openrisc                         allyesconfig    gcc-14.1.0
-openrisc                            defconfig    gcc-14.1.0
-parisc                           allmodconfig    gcc-14.1.0
-parisc                            allnoconfig    gcc-14.1.0
-parisc                              defconfig    gcc-14.1.0
-powerpc                          allmodconfig    gcc-14.1.0
-powerpc                           allnoconfig    gcc-14.1.0
-powerpc                          allyesconfig    clang-20
-riscv                             allnoconfig    gcc-14.1.0
-s390                             allmodconfig    clang-20
-s390                              allnoconfig    clang-20
-s390                             allyesconfig    gcc-14.1.0
-sh                               allmodconfig    gcc-14.1.0
-sh                                allnoconfig    gcc-14.1.0
-sh                               allyesconfig    gcc-14.1.0
-sh                                  defconfig    gcc-14.1.0
-um                                allnoconfig    clang-17
-x86_64                            allnoconfig    clang-18
-x86_64                           allyesconfig    clang-18
-x86_64                              defconfig    gcc-11
-x86_64                                  kexec    clang-18
-x86_64                               rhel-8.3    gcc-12
-x86_64                          rhel-8.3-rust    clang-18
-xtensa                            allnoconfig    gcc-14.1.0
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Understood, we do not oppose the use of struct_ops, especially when modules registration
+was already supported.
 
