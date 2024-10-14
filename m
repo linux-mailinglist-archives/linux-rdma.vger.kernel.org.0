@@ -1,312 +1,115 @@
-Return-Path: <linux-rdma+bounces-5395-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5396-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6508199CB5E
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Oct 2024 15:17:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D65899CC08
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Oct 2024 15:57:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 888E41C2317C
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Oct 2024 13:17:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC58A281DA8
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Oct 2024 13:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AE321AAE38;
-	Mon, 14 Oct 2024 13:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D36FD1AA790;
+	Mon, 14 Oct 2024 13:57:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="M/lX4d1T"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35BFB1A76C4;
-	Mon, 14 Oct 2024 13:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2297D1A76DE
+	for <linux-rdma@vger.kernel.org>; Mon, 14 Oct 2024 13:57:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728911626; cv=none; b=CDnhq7TVIZ6BfZ+9eaEqqFQnDU2m39lznDbGTKhiIkbLvZugtePg54gTGhyC4C6RO1EB9+I5Ec2A1+sNoxx/yItyslytGJKTXQEDtKQuS+ZcNM79V8t14ecV6z17qwaZmLeRrEX91f8rDCfmtIkiK5+PYlk8AI8VLj7bcPkw2Vg=
+	t=1728914228; cv=none; b=CEWIQPvb5UzMNkqIw2s3O97pL2SOdHjYQ6B9YwuBKKcBrDUtAaoFaBp9BNkHZWg4lZrIfKW/T8J//GDmdYRUwJ5DPTP+bV1URyrenKanVs6PoFk4rMN4qNLts9t6EmRWFNLjKvu8PhDQsi7P6CgT6tpZB6MCTI82vBXCdkVXmfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728911626; c=relaxed/simple;
-	bh=+oJalaAbPZRiIIEyTO9KVXvOfjokhAysff5NgUe9vmY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Yp+sFM8no8I8WVlY+mtk+MKedojOP9UWGWUdJAj5H7UBFe37hmOjqeWxiR9HF8RGx2+3v9kCUUqqti7w+Fk7wAh9wx1NNpPTtmtWwwDA01q/PsXdG60NJZuNjJxSThUPdByMANg8vQXgzGRaeFY0jFJcFaIcr9KN7P4sEHyz7aY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4XRyL50J7pzpSsj;
-	Mon, 14 Oct 2024 21:11:41 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id C55DA1800DE;
-	Mon, 14 Oct 2024 21:13:39 +0800 (CST)
-Received: from localhost.localdomain (10.90.30.45) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 14 Oct 2024 21:13:39 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <tangchengchang@huawei.com>,
-	<huangjunxian6@hisilicon.com>
-Subject: [PATCH for-next] RDMA/hns: Support mmapping reset state to userspace
-Date: Mon, 14 Oct 2024 21:07:31 +0800
-Message-ID: <20241014130731.1650279-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
+	s=arc-20240116; t=1728914228; c=relaxed/simple;
+	bh=eztfrw0N7Lkc4CcWSsk05JQ/s0AaiF6PceRMSpt9ThM=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=JGqmOz8KbeMQqCDf+dznjZnoPj5XrxN3Wss1vXWQ5ylt2wLH6hGAex0RCClxDJoOh9Wo1bLBxY4L9cix2r+QlazBytiypqPri1qPRAPNY+B79zFGO6VjgII+f9f1t9c3fLnYEgQ8LBf2MIwiGnYvRR1kWUBBoD/wKh7o+oz7PDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=M/lX4d1T; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-20c7ee8fe6bso30287795ad.2
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Oct 2024 06:57:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1728914226; x=1729519026; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AooOOvFG2HMm91J6cvEGxzfwagaRtw8HMA2OdNTInzI=;
+        b=M/lX4d1TqxiWlWnubGHIDnLRs7qBwsno+X/ZtKy0l4u0E1GWnnVcb5mPJmWYOOlNy/
+         lcIsh0nBBcJguDHw6vR5M21rWuP6O0vchRlGUbnXqTqYrRFZLTBArVekNtj3t+Ft2oNA
+         sL/rxCnwj56nR6aYcoxAhYJDjhDiQ1lwnbGMw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728914226; x=1729519026;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AooOOvFG2HMm91J6cvEGxzfwagaRtw8HMA2OdNTInzI=;
+        b=fX8Fn+6ZtW6ptv4o1+A9DpVK2OcZmeBzu1EVhbf9iJ+aGiY1722Hpau9k5Yiu/PKY3
+         LhcISrFmdgKokP58eCCQ5wExGxh+wBgI2Oy+QOeonmDNq57E3BYkHtFeZrkaojqBinmk
+         t/rko6HZZml+qDxYWgnCnxG47TWmREXBCQhTx2CSWhIRyrTaCzvelhQHBz5sMsY09Vxm
+         xdCXT7N3dIPUiLeg3/f9dHnvVKWzxmXY1tLgU7ogvPtM9JE1oas1Hfxu/GTlMP6T9iFv
+         P/S+jhQ6CplxqyMMWK9DMVfCINnGreAvE0en9qJTkxzjCjuapYKmQw2fWW7Qz8xaegLp
+         9GGA==
+X-Gm-Message-State: AOJu0Ywcu7Ppglc8d3Dzq2MLqaGNs9tBqJy92C5Nm/eharaF2tyHVQ00
+	aOI6Dsc5uU3KRc9bScPp1QE8ktFFqaBwgLKnDcxKET7Rvj1F9LqaajxuevjeKA==
+X-Google-Smtp-Source: AGHT+IEsrTMUtaQnLTMEuRXNLUZBRObsAnZAxbyylR7SdwxqQ6uZPZgwfOVGl6UvmF7pw6apYFofnQ==
+X-Received: by 2002:a17:903:22ca:b0:20c:dbff:b9d8 with SMTP id d9443c01a7336-20cdbffc480mr64178765ad.37.1728914226374;
+        Mon, 14 Oct 2024 06:57:06 -0700 (PDT)
+Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c8c35697dsm66129525ad.297.2024.10.14.06.57.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 14 Oct 2024 06:57:05 -0700 (PDT)
+From: Selvin Xavier <selvin.xavier@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com,
+	Zhu Yanjun <yanjun.zhu@linux.dev>,
+	Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-rc v3 0/2] RDMA/bnxt_re: Bug fixes for 6.12 kernel
+Date: Mon, 14 Oct 2024 06:36:13 -0700
+Message-Id: <1728912975-19346-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemf100018.china.huawei.com (7.202.181.17)
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+Hi,
+ Posting the v3 series for the 2 patches that was not merged from
+ the series. Please review and apply if it is okay to be merged.
 
-Mmap reset state to notify userspace about HW reset. The mmaped flag
-hw_ready will be initiated to a non-zero value. When HW is reset,
-the mmap page will be zapped and userspace will get a zero value of
-hw_ready.
+Thanks,
+Selvin Xavier
 
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  4 ++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 47 ++++++++++++++++++++-
- drivers/infiniband/hw/hns/hns_roce_main.c   | 36 ++++++++++++++++
- include/uapi/rdma/hns-abi.h                 |  6 +++
- 4 files changed, 91 insertions(+), 2 deletions(-)
+v2 - v3:
+	- Only the patches that got deferred from the previous posting of
+	  this series
+	- Addressing Jason's comment to avoid using the lockdep
+	  annotation for the new spin_lock, as this is not a nested
+	  lock.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 0b1e21cb6d2d..59bca8067a7f 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -202,6 +202,7 @@ struct hns_roce_uar {
- enum hns_roce_mmap_type {
- 	HNS_ROCE_MMAP_TYPE_DB = 1,
- 	HNS_ROCE_MMAP_TYPE_DWQE,
-+	HNS_ROCE_MMAP_TYPE_RESET,
- };
- 
- struct hns_user_mmap_entry {
-@@ -216,6 +217,7 @@ struct hns_roce_ucontext {
- 	struct list_head	page_list;
- 	struct mutex		page_mutex;
- 	struct hns_user_mmap_entry *db_mmap_entry;
-+	struct hns_user_mmap_entry *reset_mmap_entry;
- 	u32			config;
- };
- 
-@@ -1020,6 +1022,8 @@ struct hns_roce_dev {
- 	int			loop_idc;
- 	u32			sdb_offset;
- 	u32			odb_offset;
-+	struct page		*reset_page; /* store reset state */
-+	void			*reset_kaddr; /* addr of reset page */
- 	const struct hns_roce_hw *hw;
- 	void			*priv;
- 	struct workqueue_struct *irq_workq;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index f1feaa79f78e..2f72074b7cf9 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -37,6 +37,7 @@
- #include <linux/kernel.h>
- #include <linux/types.h>
- #include <linux/workqueue.h>
-+#include <linux/vmalloc.h>
- #include <net/addrconf.h>
- #include <rdma/ib_addr.h>
- #include <rdma/ib_cache.h>
-@@ -2865,6 +2866,36 @@ static int free_mr_init(struct hns_roce_dev *hr_dev)
- 	return ret;
- }
- 
-+static int hns_roce_v2_get_reset_page(struct hns_roce_dev *hr_dev)
-+{
-+	struct hns_roce_reset_state *state;
-+
-+	hr_dev->reset_page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-+	if (!hr_dev->reset_page)
-+		return -ENOMEM;
-+
-+	hr_dev->reset_kaddr = vmap(&hr_dev->reset_page, 1, VM_MAP, PAGE_KERNEL);
-+	if (!hr_dev->reset_kaddr)
-+		goto err_with_vmap;
-+
-+	state = hr_dev->reset_kaddr;
-+	state->hw_ready = 1;
-+
-+	return 0;
-+
-+err_with_vmap:
-+	put_page(hr_dev->reset_page);
-+	return -ENOMEM;
-+}
-+
-+static void hns_roce_v2_put_reset_page(struct hns_roce_dev *hr_dev)
-+{
-+	vunmap(hr_dev->reset_kaddr);
-+	hr_dev->reset_kaddr = NULL;
-+	put_page(hr_dev->reset_page);
-+	hr_dev->reset_page = NULL;
-+}
-+
- static int get_hem_table(struct hns_roce_dev *hr_dev)
- {
- 	unsigned int qpc_count;
-@@ -2944,14 +2975,21 @@ static int hns_roce_v2_init(struct hns_roce_dev *hr_dev)
- {
- 	int ret;
- 
-+	ret = hns_roce_v2_get_reset_page(hr_dev);
-+	if (ret) {
-+		dev_err(hr_dev->dev,
-+			"reset state init failed, ret = %d.\n", ret);
-+		return ret;
-+	}
-+
- 	/* The hns ROCEE requires the extdb info to be cleared before using */
- 	ret = hns_roce_clear_extdb_list_info(hr_dev);
- 	if (ret)
--		return ret;
-+		goto err_clear_extdb_failed;
- 
- 	ret = get_hem_table(hr_dev);
- 	if (ret)
--		return ret;
-+		goto err_clear_extdb_failed;
- 
- 	if (hr_dev->is_vf)
- 		return 0;
-@@ -2967,6 +3005,9 @@ static int hns_roce_v2_init(struct hns_roce_dev *hr_dev)
- err_llm_init_failed:
- 	put_hem_table(hr_dev);
- 
-+err_clear_extdb_failed:
-+	hns_roce_v2_put_reset_page(hr_dev);
-+
- 	return ret;
- }
- 
-@@ -2980,6 +3021,8 @@ static void hns_roce_v2_exit(struct hns_roce_dev *hr_dev)
- 	if (!hr_dev->is_vf)
- 		hns_roce_free_link_table(hr_dev);
- 
-+	hns_roce_v2_put_reset_page(hr_dev);
-+
- 	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP09)
- 		free_dip_list(hr_dev);
- }
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 49315f39361d..1620d4318480 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -324,6 +324,7 @@ hns_roce_user_mmap_entry_insert(struct ib_ucontext *ucontext, u64 address,
- 				ucontext, &entry->rdma_entry, length, 0);
- 		break;
- 	case HNS_ROCE_MMAP_TYPE_DWQE:
-+	case HNS_ROCE_MMAP_TYPE_RESET:
- 		ret = rdma_user_mmap_entry_insert_range(
- 				ucontext, &entry->rdma_entry, length, 1,
- 				U32_MAX);
-@@ -341,6 +342,20 @@ hns_roce_user_mmap_entry_insert(struct ib_ucontext *ucontext, u64 address,
- 	return entry;
- }
- 
-+static int hns_roce_alloc_reset_entry(struct ib_ucontext *uctx)
-+{
-+	struct hns_roce_ucontext *context = to_hr_ucontext(uctx);
-+	struct hns_roce_dev *hr_dev = to_hr_dev(uctx->device);
-+
-+	context->reset_mmap_entry = hns_roce_user_mmap_entry_insert(
-+		uctx, (u64)page_to_phys(hr_dev->reset_page), PAGE_SIZE,
-+		HNS_ROCE_MMAP_TYPE_RESET);
-+	if (!context->reset_mmap_entry)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
- static void hns_roce_dealloc_uar_entry(struct hns_roce_ucontext *context)
- {
- 	if (context->db_mmap_entry)
-@@ -369,6 +384,7 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 	struct hns_roce_dev *hr_dev = to_hr_dev(uctx->device);
- 	struct hns_roce_ib_alloc_ucontext_resp resp = {};
- 	struct hns_roce_ib_alloc_ucontext ucmd = {};
-+	struct rdma_user_mmap_entry *rdma_entry;
- 	int ret = -EAGAIN;
- 
- 	if (!hr_dev->active)
-@@ -421,6 +437,13 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 
- 	resp.cqe_size = hr_dev->caps.cqe_sz;
- 
-+	ret = hns_roce_alloc_reset_entry(uctx);
-+	if (ret)
-+		goto error_fail_reset_entry;
-+
-+	rdma_entry = &context->reset_mmap_entry->rdma_entry;
-+	resp.reset_mmap_key = rdma_user_mmap_get_offset(rdma_entry);
-+
- 	ret = ib_copy_to_udata(udata, &resp,
- 			       min(udata->outlen, sizeof(resp)));
- 	if (ret)
-@@ -429,6 +452,9 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 	return 0;
- 
- error_fail_copy_to_udata:
-+	rdma_user_mmap_entry_remove(&context->reset_mmap_entry->rdma_entry);
-+
-+error_fail_reset_entry:
- 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_CQ_RECORD_DB ||
- 	    hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_RECORD_DB)
- 		mutex_destroy(&context->page_mutex);
-@@ -448,6 +474,8 @@ static void hns_roce_dealloc_ucontext(struct ib_ucontext *ibcontext)
- 	struct hns_roce_ucontext *context = to_hr_ucontext(ibcontext);
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibcontext->device);
- 
-+	rdma_user_mmap_entry_remove(&context->reset_mmap_entry->rdma_entry);
-+
- 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_CQ_RECORD_DB ||
- 	    hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_RECORD_DB)
- 		mutex_destroy(&context->page_mutex);
-@@ -485,6 +513,14 @@ static int hns_roce_mmap(struct ib_ucontext *uctx, struct vm_area_struct *vma)
- 	case HNS_ROCE_MMAP_TYPE_DWQE:
- 		prot = pgprot_device(vma->vm_page_prot);
- 		break;
-+	case HNS_ROCE_MMAP_TYPE_RESET:
-+		if (vma->vm_flags & (VM_WRITE | VM_EXEC)) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+		vm_flags_set(vma, VM_DONTEXPAND);
-+		prot = vma->vm_page_prot;
-+		break;
- 	default:
- 		ret = -EINVAL;
- 		goto out;
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index 94e861870e27..065eb2e0a690 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -136,6 +136,7 @@ struct hns_roce_ib_alloc_ucontext_resp {
- 	__u32	max_inline_data;
- 	__u8	congest_type;
- 	__u8	reserved0[7];
-+	__aligned_u64 reset_mmap_key;
- };
- 
- struct hns_roce_ib_alloc_ucontext {
-@@ -153,4 +154,9 @@ struct hns_roce_ib_create_ah_resp {
- 	__u8 tc_mode;
- };
- 
-+struct hns_roce_reset_state {
-+	__u32 hw_ready;
-+	__u32 reserved;
-+};
-+
- #endif /* HNS_ABI_USER_H */
+v1 - v2:
+        - Add a patch that removes irq variant of spinlock and use
+          spin_lock_bh as the control path processing happens from
+          tasklet context
+        - Address the comments from Zhu Yanjun by initializing the
+          newly added spin lock.
+        - One more fix included in the series
+
+Selvin Xavier (2):
+  RDMA/bnxt_re: Fix the usage of control path spin locks
+  RDMA/bnxt_re: synchronize the qp-handle table array
+
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c   |  4 ++++
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 38 +++++++++++++++---------------
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  2 ++
+ 3 files changed, 25 insertions(+), 19 deletions(-)
+
 -- 
-2.33.0
+2.5.5
 
 
