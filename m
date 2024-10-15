@@ -1,76 +1,76 @@
-Return-Path: <linux-rdma+bounces-5413-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5414-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75B4899F448
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Oct 2024 19:42:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12DA299F449
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Oct 2024 19:42:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0610D1F24785
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Oct 2024 17:42:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B03131F243EC
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Oct 2024 17:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C921FAEE9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1331FAEE8;
 	Tue, 15 Oct 2024 17:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="e9lO2atp"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="JWkQdSOj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEAD01F9EAC
-	for <linux-rdma@vger.kernel.org>; Tue, 15 Oct 2024 17:42:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.95.48.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD971FAEE0
+	for <linux-rdma@vger.kernel.org>; Tue, 15 Oct 2024 17:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729014171; cv=none; b=tS+XfpW54+TE28l+u0frVfHGk6W0CtZRLoyVhZ2zGvpHXoCZBB6IG60dq6C6mgEByOdmjpw11y4lxa8KWekoT12ZovKSSxVjBlKcgrRBuFTyOrp3zsFwWS2yE5b7hOeoWuzgns5bETMNWASRBh0HaxFEgsNwKts/zJkZ4sfKMEs=
+	t=1729014172; cv=none; b=mtjpmh6uKGfZSZAxiasWhga4P/8ONSAXTgCmRaCvNhmjaPotMRnXbC1o6rpiHK7EEfXznFQZYMnHx8DQCgZRsz2EkSrsbuOrrg2SlB+X6fhVWrmwLfG6ZPZIiGv6xQhUl2TnOrfB5xHqPEyIFCvxgxdkzFtgIQb6Ah+HPrLSRTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729014171; c=relaxed/simple;
-	bh=b1lHXEUMzcq5osG6B40pvJW6sR93zUTioT2Q8Wi6FXs=;
+	s=arc-20240116; t=1729014172; c=relaxed/simple;
+	bh=s36pmfuMBLSuf8JmH10WDpryQVwThU6vbN7HzEvH4cs=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nYcw35wxDj8IE0WSNRtNG8H+Lbdq8AQg8ARuk3hrUH77NG1Tegj+aR6yKsM/yGpPiU1UjIfJ3N+9iDhsLn83dSMAXBZGJLRVzit8JPYbO/IF/uOxupFGFWznxPh9t1nUjHWcgnS8h4cYM3K3/GgzYhwP7AW63R0Z/J4/enW96Cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=e9lO2atp; arc=none smtp.client-ip=52.95.48.154
+	 MIME-Version:Content-Type; b=l4SmXdQei5rWbn0b7UE042+bcqHinDTz9r0FU8KmhGtDHWc/1FHAKbBaYaVyTSFfFhDWaBIIRos5tv1And6NdN3fAgc04sNgHrsxQQYfQ2zt8RHZONPs0VuC7wEltUEQ9sC+GGHvOF1N3lF8onrmSHZG1wh5T1iOB3xzKZFuvKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=JWkQdSOj; arc=none smtp.client-ip=99.78.197.218
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1729014170; x=1760550170;
+  t=1729014171; x=1760550171;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=XF/PcFKzlXgx3c+6OWMRHCwTRpyp2/Z0/LXyvYjCQaI=;
-  b=e9lO2atpCGVZpfOYm6l/2kcEeVYNh/kE1tXHEVjWQzCirDWsmVWEarnu
-   eL8IIwJSPTUDBZGIPxGlQ+1vxk0xXpbjwwP0Q0cZMsIzNSVzDyhpP2ieP
-   LdK0dLpABmxs67hfwpJJNrakPlPQdQtGeFEiDe7kffgnU66x2v+VMxXUX
-   4=;
+  bh=HMqB2SqFKo5r14rj88GmTetNlPhlTumgTsRtFhJGnhk=;
+  b=JWkQdSOj48qKP7WVrwtvnowXjffI2Q+JMg0vpKR19X6e6yiK0i7cagkw
+   Em9iqtBLTMI1675uDmcJAwfTMsTriAo6Tq6jZAtARJrat0ShkNTZA0u54
+   c5BWOgF7kQRGRq3358Irc9/i83Mc5t+cW7YcygdBQ7Z2zfQKP+bD0ONl4
+   M=;
 X-IronPort-AV: E=Sophos;i="6.11,205,1725321600"; 
-   d="scan'208";a="431671151"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.2])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2024 17:42:47 +0000
+   d="scan'208";a="343342810"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2024 17:42:48 +0000
 Received: from EX19MTAEUA002.ant.amazon.com [10.0.43.254:36884]
  by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.34.166:2525] with esmtp (Farcaster)
- id eef45957-2267-4962-a926-8eb59a717b21; Tue, 15 Oct 2024 17:42:45 +0000 (UTC)
-X-Farcaster-Flow-ID: eef45957-2267-4962-a926-8eb59a717b21
-Received: from EX19D022EUC002.ant.amazon.com (10.252.51.137) by
+ id 6d20397b-5686-4069-87dd-f88cfe7cc7d2; Tue, 15 Oct 2024 17:42:46 +0000 (UTC)
+X-Farcaster-Flow-ID: 6d20397b-5686-4069-87dd-f88cfe7cc7d2
+Received: from EX19D011EUA001.ant.amazon.com (10.252.50.114) by
  EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
- Tue, 15 Oct 2024 17:42:45 +0000
-Received: from EX19MTAUEC001.ant.amazon.com (10.252.135.222) by
- EX19D022EUC002.ant.amazon.com (10.252.51.137) with Microsoft SMTP Server
+ Tue, 15 Oct 2024 17:42:46 +0000
+Received: from EX19MTAUEA001.ant.amazon.com (10.252.134.203) by
+ EX19D011EUA001.ant.amazon.com (10.252.50.114) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
- Tue, 15 Oct 2024 17:42:44 +0000
+ Tue, 15 Oct 2024 17:42:45 +0000
 Received: from email-imr-corp-prod-iad-1box-1a-6851662a.us-east-1.amazon.com
- (10.43.8.6) by mail-relay.amazon.com (10.252.135.200) with Microsoft SMTP
+ (10.43.8.2) by mail-relay.amazon.com (10.252.134.102) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id
- 15.2.1258.34 via Frontend Transport; Tue, 15 Oct 2024 17:42:44 +0000
+ 15.2.1258.34 via Frontend Transport; Tue, 15 Oct 2024 17:42:45 +0000
 Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com (dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com [10.253.103.172])
-	by email-imr-corp-prod-iad-1box-1a-6851662a.us-east-1.amazon.com (Postfix) with ESMTP id E91CF4060C;
-	Tue, 15 Oct 2024 17:42:43 +0000 (UTC)
+	by email-imr-corp-prod-iad-1box-1a-6851662a.us-east-1.amazon.com (Postfix) with ESMTP id C75D940660;
+	Tue, 15 Oct 2024 17:42:44 +0000 (UTC)
 From: Michael Margolin <mrgolin@amazon.com>
 To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Daniel
- Kranzdorf" <dkkranzd@amazon.com>, Yonatan Nachum <ynachum@amazon.com>
-Subject: [PATCH for-next 1/2] RDMA/efa: Update device interface
-Date: Tue, 15 Oct 2024 17:42:41 +0000
-Message-ID: <20241015174242.3490-2-mrgolin@amazon.com>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Firas
+ Jahjah" <firasj@amazon.com>, Yonatan Nachum <ynachum@amazon.com>
+Subject: [PATCH for-next 2/2] RDMA/efa: Add option to set QP service level on create
+Date: Tue, 15 Oct 2024 17:42:42 +0000
+Message-ID: <20241015174242.3490-3-mrgolin@amazon.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20241015174242.3490-1-mrgolin@amazon.com>
 References: <20241015174242.3490-1-mrgolin@amazon.com>
@@ -83,400 +83,80 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 
-Update device interface header files.
+Using modify QP with AH attributes and IB_QP_AV flag set doesn't make
+much sense for connectionless QP types like SRD. Add SL parameter to EFA
+create QP user ABI and pass it to the device.
 
-Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
+Reviewed-by: Firas Jahjah <firasj@amazon.com>
 Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
 Signed-off-by: Michael Margolin <mrgolin@amazon.com>
 ---
- .../infiniband/hw/efa/efa_admin_cmds_defs.h   |  54 +++++++--
- drivers/infiniband/hw/efa/efa_admin_defs.h    |   4 +-
- drivers/infiniband/hw/efa/efa_com_cmd.c       |   4 +-
- drivers/infiniband/hw/efa/efa_com_cmd.h       |   2 +-
- drivers/infiniband/hw/efa/efa_io_defs.h       | 106 ++++++++++++++++--
- drivers/infiniband/hw/efa/efa_verbs.c         |   2 +-
- 6 files changed, 149 insertions(+), 23 deletions(-)
+ drivers/infiniband/hw/efa/efa_com_cmd.c | 1 +
+ drivers/infiniband/hw/efa/efa_com_cmd.h | 1 +
+ drivers/infiniband/hw/efa/efa_verbs.c   | 4 +++-
+ include/uapi/rdma/efa-abi.h             | 3 ++-
+ 4 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-index cd03a5429beb..88a9aee7e743 100644
---- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-+++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-@@ -30,7 +30,8 @@ enum efa_admin_aq_opcode {
- 	EFA_ADMIN_DEALLOC_UAR                       = 17,
- 	EFA_ADMIN_CREATE_EQ                         = 18,
- 	EFA_ADMIN_DESTROY_EQ                        = 19,
--	EFA_ADMIN_MAX_OPCODE                        = 19,
-+	EFA_ADMIN_ALLOC_MR                          = 20,
-+	EFA_ADMIN_MAX_OPCODE                        = 20,
- };
- 
- enum efa_admin_aq_feature_id {
-@@ -150,8 +151,11 @@ struct efa_admin_create_qp_cmd {
- 	/* UAR number */
- 	u16 uar;
- 
-+	/* Requested service level for the QP, 0 is the default SL */
-+	u8 sl;
-+
- 	/* MBZ */
--	u16 reserved;
-+	u8 reserved;
- 
- 	/* MBZ */
- 	u32 reserved2;
-@@ -459,6 +463,41 @@ struct efa_admin_dereg_mr_resp {
- 	struct efa_admin_acq_common_desc acq_common_desc;
- };
- 
-+/*
-+ * Allocation of MemoryRegion, required for QP working with Virtual
-+ * Addresses in kernel verbs semantics, ready for fast registration use.
-+ */
-+struct efa_admin_alloc_mr_cmd {
-+	/* Common Admin Queue descriptor */
-+	struct efa_admin_aq_common_desc aq_common_desc;
-+
-+	/* Protection Domain */
-+	u16 pd;
-+
-+	/* MBZ */
-+	u16 reserved1;
-+
-+	/* Maximum number of pages this MR supports. */
-+	u32 max_pages;
-+};
-+
-+struct efa_admin_alloc_mr_resp {
-+	/* Common Admin Queue completion descriptor */
-+	struct efa_admin_acq_common_desc acq_common_desc;
-+
-+	/*
-+	 * L_Key, to be used in conjunction with local buffer references in
-+	 * SQ and RQ WQE, or with virtual RQ/CQ rings
-+	 */
-+	u32 l_key;
-+
-+	/*
-+	 * R_Key, to be used in RDMA messages to refer to remotely accessed
-+	 * memory region
-+	 */
-+	u32 r_key;
-+};
-+
- struct efa_admin_create_cq_cmd {
- 	struct efa_admin_aq_common_desc aq_common_desc;
- 
-@@ -483,8 +522,8 @@ struct efa_admin_create_cq_cmd {
- 	 */
- 	u8 cq_caps_2;
- 
--	/* completion queue depth in # of entries. must be power of 2 */
--	u16 cq_depth;
-+	/* Sub completion queue depth in # of entries. must be power of 2 */
-+	u16 sub_cq_depth;
- 
- 	/* EQ number assigned to this cq */
- 	u16 eqn;
-@@ -519,8 +558,8 @@ struct efa_admin_create_cq_resp {
- 
- 	u16 cq_idx;
- 
--	/* actual cq depth in number of entries */
--	u16 cq_actual_depth;
-+	/* actual sub cq depth in number of entries */
-+	u16 sub_cq_actual_depth;
- 
- 	/* CQ doorbell address, as offset to PCIe DB BAR */
- 	u32 db_offset;
-@@ -578,6 +617,8 @@ struct efa_admin_basic_stats {
- 	u64 rx_pkts;
- 
- 	u64 rx_drops;
-+
-+	u64 qkey_viol;
- };
- 
- struct efa_admin_messages_stats {
-@@ -1057,7 +1098,6 @@ struct efa_admin_host_info {
- 
- /* create_eq_cmd */
- #define EFA_ADMIN_CREATE_EQ_CMD_ENTRY_SIZE_WORDS_MASK       GENMASK(4, 0)
--#define EFA_ADMIN_CREATE_EQ_CMD_VIRT_MASK                   BIT(6)
- #define EFA_ADMIN_CREATE_EQ_CMD_COMPLETION_EVENTS_MASK      BIT(0)
- 
- /* host_info */
-diff --git a/drivers/infiniband/hw/efa/efa_admin_defs.h b/drivers/infiniband/hw/efa/efa_admin_defs.h
-index 83f20c38a840..35700c93e639 100644
---- a/drivers/infiniband/hw/efa/efa_admin_defs.h
-+++ b/drivers/infiniband/hw/efa/efa_admin_defs.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
- /*
-- * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
-  */
- 
- #ifndef _EFA_ADMIN_H_
-@@ -96,7 +96,7 @@ struct efa_admin_acq_entry {
- struct efa_admin_aenq_common_desc {
- 	u16 group;
- 
--	u16 syndrom;
-+	u16 syndrome;
- 
- 	/*
- 	 * 0 : phase
 diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-index 5a774925cdea..206f377db27e 100644
+index 206f377db27e..9e04edb9dbda 100644
 --- a/drivers/infiniband/hw/efa/efa_com_cmd.c
 +++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
-@@ -163,7 +163,7 @@ int efa_com_create_cq(struct efa_com_dev *edev,
- 	EFA_SET(&create_cmd.cq_caps_2,
- 		EFA_ADMIN_CREATE_CQ_CMD_CQ_ENTRY_SIZE_WORDS,
- 		params->entry_size_in_bytes / 4);
--	create_cmd.cq_depth = params->cq_depth;
-+	create_cmd.sub_cq_depth = params->sub_cq_depth;
- 	create_cmd.num_sub_cqs = params->num_sub_cqs;
- 	create_cmd.uar = params->uarn;
- 	if (params->interrupt_mode_enabled) {
-@@ -191,7 +191,7 @@ int efa_com_create_cq(struct efa_com_dev *edev,
- 	}
+@@ -31,6 +31,7 @@ int efa_com_create_qp(struct efa_com_dev *edev,
+ 	create_qp_cmd.qp_alloc_size.recv_queue_depth =
+ 			params->rq_depth;
+ 	create_qp_cmd.uar = params->uarn;
++	create_qp_cmd.sl = params->sl;
  
- 	result->cq_idx = cmd_completion.cq_idx;
--	result->actual_depth = params->cq_depth;
-+	result->actual_depth = params->sub_cq_depth;
- 	result->db_off = cmd_completion.db_offset;
- 	result->db_valid = EFA_GET(&cmd_completion.flags,
- 				   EFA_ADMIN_CREATE_CQ_RESP_DB_VALID);
+ 	if (params->unsolicited_write_recv)
+ 		EFA_SET(&create_qp_cmd.flags, EFA_ADMIN_CREATE_QP_CMD_UNSOLICITED_WRITE_RECV, 1);
 diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
-index 668d033f7477..2599f8e58cc4 100644
+index 2599f8e58cc4..25f02c0d9698 100644
 --- a/drivers/infiniband/hw/efa/efa_com_cmd.h
 +++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
-@@ -71,7 +71,7 @@ struct efa_com_create_cq_params {
- 	/* cq physical base address in OS memory */
- 	dma_addr_t dma_addr;
- 	/* completion queue depth in # of entries */
--	u16 cq_depth;
-+	u16 sub_cq_depth;
- 	u16 num_sub_cqs;
+@@ -27,6 +27,7 @@ struct efa_com_create_qp_params {
+ 	u16 pd;
  	u16 uarn;
- 	u16 eqn;
-diff --git a/drivers/infiniband/hw/efa/efa_io_defs.h b/drivers/infiniband/hw/efa/efa_io_defs.h
-index 2d8eb96eaa81..a4c9fd33da38 100644
---- a/drivers/infiniband/hw/efa/efa_io_defs.h
-+++ b/drivers/infiniband/hw/efa/efa_io_defs.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
- /*
-- * Copyright 2018-2023 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
-  */
- 
- #ifndef _EFA_IO_H_
-@@ -10,6 +10,7 @@
- #define EFA_IO_TX_DESC_NUM_RDMA_BUFS         1
- #define EFA_IO_TX_DESC_INLINE_MAX_SIZE       32
- #define EFA_IO_TX_DESC_IMM_DATA_SIZE         4
-+#define EFA_IO_TX_DESC_INLINE_PBL_SIZE       1
- 
- enum efa_io_queue_type {
- 	/* send queue (of a QP) */
-@@ -25,6 +26,10 @@ enum efa_io_send_op_type {
- 	EFA_IO_RDMA_READ                            = 1,
- 	/* RDMA write */
- 	EFA_IO_RDMA_WRITE                           = 2,
-+	/* Fast MR registration */
-+	EFA_IO_FAST_REG                             = 3,
-+	/* Fast MR invalidation */
-+	EFA_IO_FAST_INV                             = 4,
+ 	u8 qp_type;
++	u8 sl;
+ 	u8 unsolicited_write_recv : 1;
  };
  
- enum efa_io_comp_status {
-@@ -34,15 +39,15 @@ enum efa_io_comp_status {
- 	EFA_IO_COMP_STATUS_FLUSHED                  = 1,
- 	/* Internal QP error */
- 	EFA_IO_COMP_STATUS_LOCAL_ERROR_QP_INTERNAL_ERROR = 2,
--	/* Bad operation type */
--	EFA_IO_COMP_STATUS_LOCAL_ERROR_INVALID_OP_TYPE = 3,
-+	/* Unsupported operation */
-+	EFA_IO_COMP_STATUS_LOCAL_ERROR_UNSUPPORTED_OP = 3,
- 	/* Bad AH */
- 	EFA_IO_COMP_STATUS_LOCAL_ERROR_INVALID_AH   = 4,
- 	/* LKEY not registered or does not match IOVA */
- 	EFA_IO_COMP_STATUS_LOCAL_ERROR_INVALID_LKEY = 5,
- 	/* Message too long */
- 	EFA_IO_COMP_STATUS_LOCAL_ERROR_BAD_LENGTH   = 6,
--	/* Destination ENI is down or does not run EFA */
-+	/* RKEY not registered or does not match remote IOVA */
- 	EFA_IO_COMP_STATUS_REMOTE_ERROR_BAD_ADDRESS = 7,
- 	/* Connection was reset by remote side */
- 	EFA_IO_COMP_STATUS_REMOTE_ERROR_ABORT       = 8,
-@@ -54,8 +59,17 @@ enum efa_io_comp_status {
- 	EFA_IO_COMP_STATUS_REMOTE_ERROR_BAD_LENGTH  = 11,
- 	/* Unexpected status returned by responder */
- 	EFA_IO_COMP_STATUS_REMOTE_ERROR_BAD_STATUS  = 12,
--	/* Unresponsive remote - detected locally */
-+	/* Unresponsive remote - was previously responsive */
- 	EFA_IO_COMP_STATUS_LOCAL_ERROR_UNRESP_REMOTE = 13,
-+	/* No valid AH at remote side (required for RDMA operations) */
-+	EFA_IO_COMP_STATUS_REMOTE_ERROR_UNKNOWN_PEER = 14,
-+	/* Unreachable remote - never received a response */
-+	EFA_IO_COMP_STATUS_LOCAL_ERROR_UNREACH_REMOTE = 15,
-+};
-+
-+enum efa_io_frwr_pbl_mode {
-+	EFA_IO_FRWR_INLINE_PBL                      = 0,
-+	EFA_IO_FRWR_DIRECT_PBL                      = 1,
- };
- 
- struct efa_io_tx_meta_desc {
-@@ -95,13 +109,13 @@ struct efa_io_tx_meta_desc {
- 
- 	/*
- 	 * If inline_msg bit is set, length of inline message in bytes,
--	 *    otherwise length of SGL (number of buffers).
-+	 * otherwise length of SGL (number of buffers).
- 	 */
- 	u16 length;
- 
- 	/*
--	 * immediate data: if has_imm is set, then this field is included
--	 *    within Tx message and reported in remote Rx completion.
-+	 * immediate data: if has_imm is set, then this field is included within
-+	 * Tx message and reported in remote Rx completion.
- 	 */
- 	u32 immediate_data;
- 
-@@ -158,6 +172,63 @@ struct efa_io_rdma_req {
- 	struct efa_io_tx_buf_desc local_mem[1];
- };
- 
-+struct efa_io_fast_mr_reg_req {
-+	/* Updated local key of the MR after lkey/rkey increment */
-+	u32 lkey;
-+
-+	/*
-+	 * permissions
-+	 * 0 : local_write_enable - Local write permissions:
-+	 *    must be set for RQ buffers and buffers posted for
-+	 *    RDMA Read requests
-+	 * 1 : remote_write_enable - Remote write
-+	 *    permissions: must be set to enable RDMA write to
-+	 *    the region
-+	 * 2 : remote_read_enable - Remote read permissions:
-+	 *    must be set to enable RDMA read from the region
-+	 * 7:3 : reserved2 - MBZ
-+	 */
-+	u8 permissions;
-+
-+	/*
-+	 * control flags
-+	 * 4:0 : phys_page_size_shift - page size is (1 <<
-+	 *    phys_page_size_shift)
-+	 * 6:5 : pbl_mode - enum efa_io_frwr_pbl_mode
-+	 * 7 : reserved - MBZ
-+	 */
-+	u8 flags;
-+
-+	/* MBZ */
-+	u8 reserved[2];
-+
-+	/* IO Virtual Address associated with this MR */
-+	u64 iova;
-+
-+	/* Memory region length, in bytes */
-+	u64 mr_length;
-+
-+	/* Physical Buffer List, each element is page-aligned. */
-+	union {
-+		/*
-+		 * Inline array of physical page addresses (optimization
-+		 * for short region activation).
-+		 */
-+		u64 inline_array[1];
-+
-+		/* points to PBL (Currently only direct) */
-+		u64 dma_addr;
-+	} pbl;
-+};
-+
-+struct efa_io_fast_mr_inv_req {
-+	/* Local key of the MR to invalidate */
-+	u32 lkey;
-+
-+	/* MBZ */
-+	u8 reserved[28];
-+};
-+
- /*
-  * Tx WQE, composed of tx meta descriptors followed by either tx buffer
-  * descriptors or inline data
-@@ -174,6 +245,12 @@ struct efa_io_tx_wqe {
- 
- 		/* RDMA local and remote memory addresses */
- 		struct efa_io_rdma_req rdma_req;
-+
-+		/* Fast registration */
-+		struct efa_io_fast_mr_reg_req reg_mr_req;
-+
-+		/* Fast invalidation */
-+		struct efa_io_fast_mr_inv_req inv_mr_req;
- 	} data;
- };
- 
-@@ -208,7 +285,7 @@ struct efa_io_rx_desc {
- struct efa_io_cdesc_common {
- 	/*
- 	 * verbs-generated request ID, as provided in the completed tx or rx
--	 *    descriptor.
-+	 * descriptor.
- 	 */
- 	u16 req_id;
- 
-@@ -221,7 +298,8 @@ struct efa_io_cdesc_common {
- 	 * 3 : has_imm - indicates that immediate data is
- 	 *    present - for RX completions only
- 	 * 6:4 : op_type - enum efa_io_send_op_type
--	 * 7 : reserved31 - MBZ
-+	 * 7 : unsolicited - indicates that there is no
-+	 *    matching request - for RDMA with imm. RX only
- 	 */
- 	u8 flags;
- 
-@@ -291,6 +369,13 @@ struct efa_io_rx_cdesc_ex {
- /* tx_buf_desc */
- #define EFA_IO_TX_BUF_DESC_LKEY_MASK                        GENMASK(23, 0)
- 
-+/* fast_mr_reg_req */
-+#define EFA_IO_FAST_MR_REG_REQ_LOCAL_WRITE_ENABLE_MASK      BIT(0)
-+#define EFA_IO_FAST_MR_REG_REQ_REMOTE_WRITE_ENABLE_MASK     BIT(1)
-+#define EFA_IO_FAST_MR_REG_REQ_REMOTE_READ_ENABLE_MASK      BIT(2)
-+#define EFA_IO_FAST_MR_REG_REQ_PHYS_PAGE_SIZE_SHIFT_MASK    GENMASK(4, 0)
-+#define EFA_IO_FAST_MR_REG_REQ_PBL_MODE_MASK                GENMASK(6, 5)
-+
- /* rx_desc */
- #define EFA_IO_RX_DESC_LKEY_MASK                            GENMASK(23, 0)
- #define EFA_IO_RX_DESC_FIRST_MASK                           BIT(30)
-@@ -301,5 +386,6 @@ struct efa_io_rx_cdesc_ex {
- #define EFA_IO_CDESC_COMMON_Q_TYPE_MASK                     GENMASK(2, 1)
- #define EFA_IO_CDESC_COMMON_HAS_IMM_MASK                    BIT(3)
- #define EFA_IO_CDESC_COMMON_OP_TYPE_MASK                    GENMASK(6, 4)
-+#define EFA_IO_CDESC_COMMON_UNSOLICITED_MASK                BIT(7)
- 
- #endif /* _EFA_IO_H_ */
 diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index cc13415ff7e7..feb04cfdb8da 100644
+index feb04cfdb8da..ca3af866a5df 100644
 --- a/drivers/infiniband/hw/efa/efa_verbs.c
 +++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -1167,7 +1167,7 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+@@ -676,7 +676,7 @@ int efa_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
+ 		goto err_out;
  	}
  
- 	params.uarn = cq->ucontext->uarn;
--	params.cq_depth = entries;
-+	params.sub_cq_depth = entries;
- 	params.dma_addr = cq->dma_addr;
- 	params.entry_size_in_bytes = cmd.cq_entry_size;
- 	params.num_sub_cqs = cmd.num_sub_cqs;
+-	if (cmd.comp_mask || !is_reserved_cleared(cmd.reserved_90)) {
++	if (cmd.comp_mask || !is_reserved_cleared(cmd.reserved_98)) {
+ 		ibdev_dbg(&dev->ibdev,
+ 			  "Incompatible ABI params, unknown fields in udata\n");
+ 		err = -EINVAL;
+@@ -732,6 +732,8 @@ int efa_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
+ 		create_qp_params.rq_base_addr = qp->rq_dma_addr;
+ 	}
+ 
++	create_qp_params.sl = cmd.sl;
++
+ 	if (cmd.flags & EFA_CREATE_QP_WITH_UNSOLICITED_WRITE_RECV)
+ 		create_qp_params.unsolicited_write_recv = true;
+ 
+diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
+index d689b8b34189..11b94b0b035b 100644
+--- a/include/uapi/rdma/efa-abi.h
++++ b/include/uapi/rdma/efa-abi.h
+@@ -95,7 +95,8 @@ struct efa_ibv_create_qp {
+ 	__u32 sq_ring_size; /* bytes */
+ 	__u32 driver_qp_type;
+ 	__u16 flags;
+-	__u8 reserved_90[6];
++	__u8 sl;
++	__u8 reserved_98[5];
+ };
+ 
+ struct efa_ibv_create_qp_resp {
 -- 
 2.40.1
 
