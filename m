@@ -1,93 +1,197 @@
-Return-Path: <linux-rdma+bounces-5407-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5408-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0F2299F0A2
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Oct 2024 17:06:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5732499F107
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Oct 2024 17:24:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33F2C282891
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Oct 2024 15:06:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D65981F23978
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Oct 2024 15:24:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6801CB9F3;
-	Tue, 15 Oct 2024 15:06:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4521CB9F0;
+	Tue, 15 Oct 2024 15:24:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iy9+0eb2"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="hyqXcJmb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2080.outbound.protection.outlook.com [40.107.93.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A92B41CB9E8;
-	Tue, 15 Oct 2024 15:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729004779; cv=none; b=Tl7TeI8TcJgeNudQIa2AypIUJrrnulmL496NS7m2+b8E1gfqVe0D7aCDVMuY4iRtN+hwQrpSYf2UhxxuE+dTkR9GeeYTfqvolaiGFgAK1Ih8qSpf4Es9Uc46dAs5jGcfmIwy/LZWSzBsa9brZjnmzCnIyyRiDJ7GxgmB8dJbRXU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729004779; c=relaxed/simple;
-	bh=uImCSNdhund+igqcoD5WUxcSCGxZ7vv+ZRfMpMpSSKw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D5vRBKzqgMZnpm+tRlqRewY6U2ZylghB5n6Gs6eRii1vPbzZMw0RJK+L5VbwbBb250wvX1UOT7MznBePfB4neNOaNb7z/8drEpBQxJde/B9Afx4bCRWEzvQhCJZVjQI/T28LSX29SQb/O0FUiaE3f/RajTMShQxhBz5gS86xFoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iy9+0eb2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4993C4CEC6;
-	Tue, 15 Oct 2024 15:06:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729004779;
-	bh=uImCSNdhund+igqcoD5WUxcSCGxZ7vv+ZRfMpMpSSKw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=iy9+0eb2EGhIYLXh4Wwo5xYVbvAgsLAm+AVgN4q65m/vsHV/2gAY8fGwseG2D+K1O
-	 8cVYMdKMaRCjljjIfAqdxyylhKGQIMAxZc7iIlx2Hw3Rrhk0RrZEuRMz/xdkeuT+oE
-	 MTEWDvYUqYZ1/1TB+4xs0F0EI6VGggvz3in1TJ3Y4NUkUQpYelr7YNyWS1Z3TBBJql
-	 w6vsmPk/8fkI+fvkZp85zvExEQCJeuzVdXUEz0FvgZ9QMLFixguWjmjcZrBld6lmCX
-	 Ih70egbs7yXmSkfQayyeBR+tC+ThJaSYmKYa9tHipWaPUAWkVu1LDuFtqK2s69hEeR
-	 FoIA8Kqwp/OLA==
-Date: Tue, 15 Oct 2024 08:06:17 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: saeedm@nvidia.com, tariqt@nvidia.com
-Cc: Til Kaiser <mail@tk154.de>, leonro@nvidia.com, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org
-Subject: Re: [BUG] net/mlx5: missing sysfs hwmon entry for ConnectX-4 cards
-Message-ID: <20241015080617.79e90a06@kernel.org>
-In-Reply-To: <bc8ba1b7-e4ad-40b5-b69d-9ea1e7a18a40@tk154.de>
-References: <bc8ba1b7-e4ad-40b5-b69d-9ea1e7a18a40@tk154.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 173CD1B3921;
+	Tue, 15 Oct 2024 15:24:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.80
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729005853; cv=fail; b=LL08Gk2QlVjfBFkArGTzhWjtNTHB2n4KYv4DS3v9oby+x9Pn3DiM6/ufRXVfcftvbb/E+KXZRijZtoiJi1tkCBnWDLSc06RSy/Zz91tspNF3hyhykqHCwtcIKaCRhDuiTRxkuogtQz/gA0ZTt4+b24FTy1Sn9Cr/Vftk4tsDPyo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729005853; c=relaxed/simple;
+	bh=JkEP7WmBB8TB0tYN54nt9zv0OvHh13ReXzcwg3zXAlQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Be6eC+hOpuyV9EhNhDobyR/JNGKRkk4l3uJS0a6cDR7DP1GZxCKgDR0R8KyGtJoOOvGSgU1o7dQHHHX6nZidg/8ehDYNjqrtHrS7poS7Ra8uovMQtbdVAYZWH+mMDsxfJgMpBkm+O3tp2QG8G4gE5U92HTl8mEXEbdrUtC09lYI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=hyqXcJmb; arc=fail smtp.client-ip=40.107.93.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=K2evHHOJ26ThGW8sUtyaCQegNc1PJd6s/dYQ/w+XwPV6GZKYGrcApa+QfgLzVUiZrEKzBoOqUbiAuAePOrH2rXkw5L3L1YioNNL+TH1EhynHkchXUS7p0w7/LYfGZfrNBzRJcDpaP+cp49kVeJx9bh1hpEZ0gNAorLAVfzasolkuV3uiWx+BbeuTel1mpJW63+dVK+INFczqDCJijxiuN9EcjiKnntZqUMv4R5/e+X5TuvwF0fh8MoQ0Rx6gH+Ou7k9R1o7hn3F4T2lN8RvEe+WTzJfhQAi5UhekPqjwJh1t8TKNmQNrx+UxHTenWbdK0qLcvWHp4ae92BYa7o2rlg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wE5tQ0PgpoSdnn+RUVbHJmE1TQA5QsSTlbYjB79bN/4=;
+ b=QtddrZIwFCcRt0e/Bfp8KgmP5cDjCq3Ph+6C4NGukTkJxFuRq1+qe22OQcI4kPvP2M7YbxSenolOPWZnhSSZiujKrdXYS0LL4r/2hcQ7JXViKcBD07NyX8M7HI4SLbqNzybLobZkO33jqFEfsOiyMVzgbpNHAUPkdf9tHMsKY1CTbA2FQjLC+vqZ+fzNaUI0POM4V4mpKMyrQxYQGaOg8g8uHmBU9aUsbIsqVP4/7FQ1Sb/0IFa7VxNqXWgCydBRxay5mXWTdMjfiDIRNdhQBa3Lh1f7J4rvbFK2d2hQxra3g6MC8EvnwhSeUKnmW4Sw1ml3u+v8o23ZUri2ulN7Mg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=lists.freedesktop.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wE5tQ0PgpoSdnn+RUVbHJmE1TQA5QsSTlbYjB79bN/4=;
+ b=hyqXcJmbMfvgLNAaVqlQ4p50SxUNqZzgpcPTFh3xidmRQUx7BdoUnfT/GQuk0/oqWxvh3yYu+3iaKh15FcYAmrhLi5rFFl5XWwcEFTrIKw/xKARQhkF9xEmpyWX6NKljSWCQmTz7QepwC+9Yu/YayOhiQH4waNb2sLQi6bBGAbtRZstoYNpO2AWUAjkn+2fVnbKNS16kb6jZsCqF9Iz196V0XmGUn9Pwn2XWOP/jp6XjD1Jno+Y4i4NG2/C+fa6/n9dE5pj0wfCb4uKkXkd5k7hxf384LltRN529+jcwtlGRXDQ/A+FKm8ZSRYYYSiCJuzL7BhBJQxegNYIJ/FQfWQ==
+Received: from CH0P220CA0028.NAMP220.PROD.OUTLOOK.COM (2603:10b6:610:ef::7) by
+ CH2PR12MB4294.namprd12.prod.outlook.com (2603:10b6:610:a9::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8048.27; Tue, 15 Oct 2024 15:24:07 +0000
+Received: from CH2PEPF0000013F.namprd02.prod.outlook.com
+ (2603:10b6:610:ef:cafe::be) by CH0P220CA0028.outlook.office365.com
+ (2603:10b6:610:ef::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.27 via Frontend
+ Transport; Tue, 15 Oct 2024 15:24:07 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ CH2PEPF0000013F.mail.protection.outlook.com (10.167.244.71) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8069.17 via Frontend Transport; Tue, 15 Oct 2024 15:24:07 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 15 Oct
+ 2024 08:23:56 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Tue, 15 Oct 2024 08:23:56 -0700
+Received: from vdi.nvidia.com (10.127.8.9) by mail.nvidia.com (10.126.190.181)
+ with Microsoft SMTP Server id 15.2.1544.4 via Frontend Transport; Tue, 15 Oct
+ 2024 08:23:52 -0700
+From: Yonatan Maman <ymaman@nvidia.com>
+To: <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>, <herbst@redhat.com>,
+	<lyude@redhat.com>, <dakr@redhat.com>, <airlied@gmail.com>,
+	<simona@ffwll.ch>, <jgg@ziepe.ca>, <leon@kernel.org>, <jglisse@redhat.com>,
+	<akpm@linux-foundation.org>, <dri-devel@lists.freedesktop.org>,
+	<apopple@nvidia.com>, <bskeggs@nvidia.com>
+CC: Yonatan Maman <Ymaman@Nvidia.com>
+Subject: [PATCH v1 0/4] GPU Direct RDMA (P2P DMA) for Device Private Pages
+Date: Tue, 15 Oct 2024 18:23:44 +0300
+Message-ID: <20241015152348.3055360-1-ymaman@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH2PEPF0000013F:EE_|CH2PR12MB4294:EE_
+X-MS-Office365-Filtering-Correlation-Id: 02c3d9b1-ad89-47dd-abb5-08dced2d694b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|7416014|1800799024|376014|36860700013|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?H1voHeiAKH2orGQxiONk1KWZ2YdElyHQMkT1nfw3A1sz5iGZNh8E4f9YIyB3?=
+ =?us-ascii?Q?C/Wu+CfxKn8GUbR/TgmqFXG2wS4yT1t+iAyw9WJMVPJ9IouTs8DmPKgcVB90?=
+ =?us-ascii?Q?m4PsbLV1QkAKjXFRL1Mm1Ak4PMA2FKoXc3Mx5hqh44HuqfprMHsQF7LaeSkb?=
+ =?us-ascii?Q?hG5s7zZbuCn/niMC19dbzCkBt7zv43MdJFcCrN21ww9rWEmO7eT72mFX2XEm?=
+ =?us-ascii?Q?ATcv6R4wh2/wVZ61jzJ5J63ju/ZCbfefzOjJTc7uitYy3xEIwW/4PF4ljgY4?=
+ =?us-ascii?Q?M2mtApRKXtQJsLNaSXjanX6/NAxKnx5DycDFD2zOOHkLEDcb/pIKRpZjsoaz?=
+ =?us-ascii?Q?j893fNM4lDrJ68KEsa6H6GbgfBRwZ8hy33IVImFJx1QWBG3iAiZpoHyq24kZ?=
+ =?us-ascii?Q?Hr0ickaXnp8k2VzhkczoWArwFLI2ZbGxSn7GKmnqD4BN+Jgk7rKszrBcjcv6?=
+ =?us-ascii?Q?ku8czYLwu1q8HgcNQ5Z/eyXobelSSXhGXMQdYAbsR1W4/GThKRyUVYsPpxzr?=
+ =?us-ascii?Q?TPkF55FKzp3xCe6SVjvOTfDU2BXEmRrFDuZiWtefDg0Up8xK6Aeb44ouys63?=
+ =?us-ascii?Q?gpPaFSLVPo+zjKc1fPQj7kTp15uAzlFlO/ejC+vu4zXjzi1nn0ztYn7XPF+e?=
+ =?us-ascii?Q?2QE6erKaTMw11TrG6WQobBHMyD60zAeILRmehCXGoTrWaRWwXfPahXIgZmvb?=
+ =?us-ascii?Q?8alGG21fSvbv7f5E+MYKVLevXuJmxRF04Mq2EnoR2YwY/X7nsjHpoOhDnELv?=
+ =?us-ascii?Q?okiDmW89t9KSHULLW//ayTdhA/whA9mcPhgn0k7aLmYGuVLGUwSJHz9RcNdA?=
+ =?us-ascii?Q?GZtZ0VGnSdLnZU6+BgBn1i8EGkETI2SzO0IpAnmZJDy4SDzRmuoyiTHoZ6Ot?=
+ =?us-ascii?Q?mnEDPuRLRkJBQ0+NggOAhTS6Ffe0r/48ObEyNy4XGVfMcYtE6ypqWK40ENjl?=
+ =?us-ascii?Q?SfnpRyqK5kKS4dkNGzbzV2BH14FWaRmZ1tBLlL787Bmfjy2+9MH2HwgXgpn3?=
+ =?us-ascii?Q?Jfwupw0nX2Jmh1Opjpo3QOLmPNhOZ/89Fuujyj1oDM7Lbgd/XRnApO2NeX16?=
+ =?us-ascii?Q?r/aEQVlCmzbrvGtmxK0pVFTFrncWJeLFtXnFDT6CsfjUkqridhNPLP69mF2p?=
+ =?us-ascii?Q?H5pf1H2GzEWxX5tT7mGcnD2aYrYh5geara0C5rKBdKJPAcjTC4AB/Q+M5u5m?=
+ =?us-ascii?Q?xb5URZtMpYHdvLRJhXBTlDdnuJ7m8yCwsN2CRdMM6J2rlV9c1heS5vm/3Lfc?=
+ =?us-ascii?Q?WiN8voIH+0JSp+H/XG0nnL8xI5zViUbbQmqvLM4jvP17UnrHDjqqOSBWzWKm?=
+ =?us-ascii?Q?CdNsbyzrvOL9u9WOm1fJqv487TOqSkttgKIRiyjC6JatCg6+an9d7nNqmLao?=
+ =?us-ascii?Q?hOdKJhR7LgYB6oYkBu+R+5pwd3iG?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(7416014)(1800799024)(376014)(36860700013)(921020);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2024 15:24:07.4239
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02c3d9b1-ad89-47dd-abb5-08dced2d694b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH2PEPF0000013F.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4294
 
-On Thu, 10 Oct 2024 17:11:21 +0200 Til Kaiser wrote:
-> I noticed on our dual-port 100G ConnectX-4 cards (MT27700 Family)=20
-> running Linux Kernel version 6.6.56 and the latest ConnectX-4 firmware=20
-> version 12.28.2302 that we do not have a sysfs hwmon entry for reading=20
-> temperature values.
-> When running Kernel version 6.6.32, the hwmon entry is there again, and=20
-> I can read the temperature values of those cards.
-> Strangely, this problem doesn't occur on our ConnectX-4 Lx cards=20
-> (MT27710 Family), regardless of which Kernel version I use.
->=20
-> I looked into the mlx5 core driver and noticed that it is checking the=20
-> MCAM register here:=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/dri=
-vers/net/ethernet/mellanox/mlx5/core/hwmon.c?h=3Dv6.6.56#n380.
-> When I removed that check, the hwmon entry reappeared again.
->=20
-> Looking into recent mlx5 commits regarding this MCAM register, I found=20
-> this commit:=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?=
-h=3Dv6.6.56&id=3Dfb035aa9a3f8fd327ab83b15a94929d2b9045995.
-> When I reverted this commit, the hwmon entry also reappeared again.
->=20
-> I also found a firmware bug fix regarding that register inside the=20
-> ConnectX-4 Lx bug fix history=C2=A0here (Ref. 2339971):=20
-> https://docs.nvidia.com/networking/display/connectx4lxfirmwarev14321900/b=
-ug+fixes+history.
-> I couldn't find such a firmware fix for the non-Lx ConnectX-4 cards. So,=
-=20
-> I'm unsure whether this might be a mlx5 driver or firmware issue.
+From: Yonatan Maman <Ymaman@Nvidia.com>
 
-Hi, any word on this? Sounds like a fairly straightforward problem.
+This patch series aims to enable Peer-to-Peer (P2P) DMA access in
+GPU-centric applications that utilize RDMA and private device pages. This
+enhancement is crucial for minimizing data transfer overhead by allowing
+the GPU to directly expose device private page data to devices such as
+NICs, eliminating the need to traverse system RAM, which is the native
+method for exposing device private page data.
+
+To fully support Peer-to-Peer for device private pages, the following
+changes are proposed:
+
+`Memory Management (MM)`
+ * Leverage struct pagemap_ops to support P2P page operations: This
+modification ensures that the GPU can directly map device private pages
+for P2P DMA.
+ * Utilize hmm_range_fault to support P2P connections for device private
+pages (instead of Page fault)
+
+`IB Drivers`
+Add TRY_P2P_REQ flag for the hmm_range_fault call: This flag indicates the
+need for P2P mapping, enabling IB drivers to efficiently handle P2P DMA
+requests.
+
+`Nouveau driver`
+Add support for the Nouveau p2p_page callback function: This update
+integrates P2P DMA support into the Nouveau driver, allowing it to handle
+P2P page operations seamlessly.
+
+`MLX5 Driver`
+Optimize PCI Peer-to-Peer for private device pages, by enabling Address
+Translation service(ATS) for ODP memory.
+
+Yonatan Maman (4):
+  mm/hmm: HMM API for P2P DMA to device zone pages
+  nouveau/dmem: HMM P2P DMA for private dev pages
+  IB/core: P2P DMA for device private pages
+  RDMA/mlx5: Enabling ATS for ODP memory
+
+ drivers/gpu/drm/nouveau/nouveau_dmem.c | 117 ++++++++++++++++++++++++-
+ drivers/infiniband/core/umem_odp.c     |   2 +-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h   |   6 +-
+ include/linux/hmm.h                    |   2 +
+ include/linux/memremap.h               |   7 ++
+ mm/hmm.c                               |  28 ++++++
+ 6 files changed, 156 insertions(+), 6 deletions(-)
+
+-- 
+2.34.1
+
 
