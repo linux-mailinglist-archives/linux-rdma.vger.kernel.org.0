@@ -1,428 +1,128 @@
-Return-Path: <linux-rdma+bounces-5431-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5432-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 962A49A0DF1
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Oct 2024 17:19:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A909E9A0EC6
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Oct 2024 17:44:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDDEEB24EEE
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Oct 2024 15:19:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EC1EB248EC
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Oct 2024 15:44:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14CEB207A3E;
-	Wed, 16 Oct 2024 15:19:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5F620F5AD;
+	Wed, 16 Oct 2024 15:44:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="O21IE6bp"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Zqip9kRY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2067.outbound.protection.outlook.com [40.107.243.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0122220C006;
-	Wed, 16 Oct 2024 15:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.67
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729091952; cv=fail; b=L8e3v9NKBHn2epGi3liv9M/H8aIzzi6BGquy4YmMhBxODqurmXwwc3Ih1b37tzrdqL0FouLuoq1meCTMnegJYUug5iZPZS2JR/ahNVxf5pwuYz+v/wcvzk+aZROwwxQ5KaFRsryUveB812qEi0Nh3efuFo68aw1yChtSfYQmi4s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729091952; c=relaxed/simple;
-	bh=htNh2BfRpHLITxxVsgWUciU38JzFU4LyO+B12GaNCCg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ITVByXki/3oIjCfkXzn3WrEkkHp0dMgSm18firsv9OwRgMGja/1y+VlfrE6JYRKTd4HNpSakbZQGPk+O2Slcs5tOsbw/ADRzVDi4v7qJFec+2SvflhE5TTKuAb4u9dMQesymseYaTKSWVICeF+4QQpZb6rvw68GfVjJ1C+9gjHU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=O21IE6bp; arc=fail smtp.client-ip=40.107.243.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KJ3bJ46WuWynOht9P/clB3K5wTMom/Gbg4b4Cjdn/40tkUxxu3RABq23zvJ3PVnVmhm0pOqIEAiF1UtehbdTKYU3IApI8BL/dDF5wRuW5KgPTXtYL/K1p9JPtM+pFZ9wRZYNZG2Tnf9Q2mgq/mW/y7ty4S5jjIfs2+ZCOaXoswij/eAf6LKANwYqg6Q1FtTdS7tEmf0iyvm4XCTVU4er/K+WwvjXJu6ruekD4wRpYcxesXUUUyztiouabD1Mp4WkbuK7hzY6F6g4sJMgXO1ysU1TDTvZYAQ2Wk5bJyS2RNcpWEhZ73rbGj0qQovcpQ5RLKRB8sgzWnBgE5fX72htQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GmjGnmG8fdUQ1yjg4JFwvYBu+dMaUszUBb9u9gcFbYU=;
- b=zNDzUXV6rGXCqRipTzkzAxlVTz92ANrp1UoIvQ29xsubCiZdmtMQW9tJIqdEHqwO91aaEKDgLEvgUOB1X+bJSg2KZ4H7qT9YpnunqBPJsCpQ3Ivo61AwmARFc9OOLid5pREhRw5k9KbJciXAhNYzkaD1sMBf6K89o511BIm3SY5q86nC55sykpN5HZwnQimJjh4WRo8fxXmaaw8gU+BXvQNNTgJUZkRL15unJid5FepQCkGoF45Ir5Q1UstPDpO15N1n5n2z8bOQw+3dxHJmivTFenl6+VQ775+OWvfG5T5B2ElEsSTNdQ0ET22xSTwt22KcU9WrlFm8GPnZW18Q8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GmjGnmG8fdUQ1yjg4JFwvYBu+dMaUszUBb9u9gcFbYU=;
- b=O21IE6bpDUkqKCCVFe72J5gJFxZbQn8cf+3+KN83WI4ipAo5Fw/+0ssmn90ouDSex74S7jrJRSZw6bDdlTM49ZIeKG9HWO3Dc5QLS1R53JoWmlDCqutrK/SulxQ/kJ3oLrDoGj+igvaay0fFLWiwbI/HhzebJnonUvn/8kI3Da6HU+C6Y9RWo2BSqCE64LlvZOiiyAvKI5ugfQYZV8RY5m4mslNPeeA53d+LbhUQYql7JRnmA6XiTnlDZdjjq5KOBfPUCzzCqKo0HhpuX9cnOet443/1ZZQ3k0e8R5DFEyliSYcxDgjEFBlmYhuNHHPC5+Z9znRlqp6RxoPn2HsY6Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BL1PR12MB5851.namprd12.prod.outlook.com (2603:10b6:208:396::13)
- by SJ2PR12MB7943.namprd12.prod.outlook.com (2603:10b6:a03:4c8::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.19; Wed, 16 Oct
- 2024 15:19:05 +0000
-Received: from BL1PR12MB5851.namprd12.prod.outlook.com
- ([fe80::d4a:9ce3:c92e:e938]) by BL1PR12MB5851.namprd12.prod.outlook.com
- ([fe80::d4a:9ce3:c92e:e938%6]) with mapi id 15.20.8048.020; Wed, 16 Oct 2024
- 15:19:05 +0000
-Message-ID: <7f09fb43-8e0e-4746-b93d-2d09efe52d88@nvidia.com>
-Date: Wed, 16 Oct 2024 18:18:58 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/4] nouveau/dmem: HMM P2P DMA for private dev pages
-To: Alistair Popple <apopple@nvidia.com>
-Cc: nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-mm@kvack.org, herbst@redhat.com,
- lyude@redhat.com, dakr@redhat.com, airlied@gmail.com, simona@ffwll.ch,
- jgg@ziepe.ca, leon@kernel.org, jglisse@redhat.com,
- akpm@linux-foundation.org, dri-devel@lists.freedesktop.org,
- bskeggs@nvidia.com, Gal Shalom <GalShalom@Nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9246F18C920
+	for <linux-rdma@vger.kernel.org>; Wed, 16 Oct 2024 15:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729093474; cv=none; b=s8pBifC4O2N+rlNxc/GEXhIne3WRoTRBP+VJLg5IVeFe0HGAg/NIQIWb1oM8xs7CZMTunwN8EDpURHjt6YC+/a4BhaTLrG38eNUWBFK5d3xRhln7rXMW4fE++IMosIdcJlcK5Or5MRco+t3gXy3cAN7+z6h2ky8AK8j0IvRTyAc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729093474; c=relaxed/simple;
+	bh=Wt8M3OtL2Uo77t8ctBBB63Tcked/Ps5DjEWBtq0fbIQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uUESt5vQFLlQomrwsOhQ4v3++BiYjzO+Liw390MrxxDvg/U6OPlnEBjhSt9SQaC2HuxSnOuMO53ogJdChF58NCnjhUDlWNuGLjV0gsi6xavG4y+Owt3BwVgdYpWytZkYkcoE393wBOmyY1g1ELrCQnvYr2oujeMA7irL4zvrC8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Zqip9kRY; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-46098928354so2053861cf.1
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Oct 2024 08:44:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1729093470; x=1729698270; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WQGH0HVIW9SU96PYTPyuC1ydSkg4GgQM+hqbTFWgoGo=;
+        b=Zqip9kRYKVSvXHp7HRlWSobILUazYDJWn3S70BRDHKzzygMj7RjJyWRY/u4gkwDb7i
+         zu99uQr/LaryTvQSI9sTOtd8Fz71S94VlHQlj1d70D+Zy/HK+eVx0Sc0Nt7PcLE06RFi
+         9ilY988OiafcKdIng2VAYMBThg6B3coZ9hRyH7w4HIETGQfchV5tQrdpIBVHyuJ43KyX
+         N8zOm968B+oxmznksC+cJoDNDahEjIjPzY7HXHMmpM2fpydyER9XGTyN8Jxl/fCgVHYy
+         BPsPOwaDm6pgmMlxaxBIQdy0OpxyWe3meCmoabvtZXUXbLTmnqsdA0cTRqXt+tkxf3J5
+         +tyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729093470; x=1729698270;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WQGH0HVIW9SU96PYTPyuC1ydSkg4GgQM+hqbTFWgoGo=;
+        b=hzXrgI+7Pms61wXIB8Gvjk/mGjRHFJjIQYB2d9i4wfpthF0KLf4fNrfvLkzqkPtB1/
+         3EpdympA3dO9qr7s4nagOYlCtDu2M+CDuZFZzPHBbdulz4hkE/SvGBKUfzp4TmC6fQC/
+         jEDu/SpOSeaidlV4Z388o4tADDdAykyIV7FnbNjNoF1EIz6Ul8rz6F1EQWryIJUCVCzd
+         WOisuAz8VyVnxVDcyMUumDG9+J/wUFoBghkvd4UsD6F9SKoAEb8EaWw9P2paev0bQDVo
+         T3BG12MgRH3n1z/8Dtv3VRR+VgWuFvh6MtuwL8W1MLUGQSE5E4UTA/ADHZj2T3OxjbvP
+         2pDg==
+X-Forwarded-Encrypted: i=1; AJvYcCU7VfWzSk6bEQB2bRnawDgGBfnpjQffN8NtFMS4Le9YvkIEQlOXNA/+vbyXF1lh6K8BR+Gc95ZK2Xw5@vger.kernel.org
+X-Gm-Message-State: AOJu0YzeckFNzBA48oR3G0blOTvVjj1M/w85d2f/lDFscbsIbCUw3AkR
+	wRl1/4BRqilHQbdjqCHqQoxLi/ismsqjn0pPL46fdD/CQ5Z1VGhBjCiyIeVeP2o=
+X-Google-Smtp-Source: AGHT+IHphNZzLqFYrOFx7/ySDq7sBcTOs9Dks5qU/HFioLD65ljv8EK1dQjanMksDh9hLfIE6iUrIw==
+X-Received: by 2002:a05:622a:2608:b0:458:4bc9:e949 with SMTP id d75a77b69052e-46058424bc2mr231836401cf.22.1729093470391;
+        Wed, 16 Oct 2024 08:44:30 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4607b0a6760sm18990161cf.6.2024.10.16.08.44.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Oct 2024 08:44:29 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1t16CK-000COv-F5;
+	Wed, 16 Oct 2024 12:44:28 -0300
+Date: Wed, 16 Oct 2024 12:44:28 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Yonatan Maman <ymaman@nvidia.com>, nouveau@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-mm@kvack.org, herbst@redhat.com, lyude@redhat.com,
+	dakr@redhat.com, airlied@gmail.com, simona@ffwll.ch,
+	leon@kernel.org, jglisse@redhat.com, akpm@linux-foundation.org,
+	dri-devel@lists.freedesktop.org, apopple@nvidia.com,
+	bskeggs@nvidia.com, Gal Shalom <GalShalom@nvidia.com>
+Subject: Re: [PATCH v1 1/4] mm/hmm: HMM API for P2P DMA to device zone pages
+Message-ID: <20241016154428.GD4020792@ziepe.ca>
 References: <20241015152348.3055360-1-ymaman@nvidia.com>
- <20241015152348.3055360-3-ymaman@nvidia.com>
- <87bjzk8viu.fsf@nvdebian.thelocal>
-Content-Language: en-US
-From: Yonatan Maman <ymaman@nvidia.com>
-In-Reply-To: <87bjzk8viu.fsf@nvdebian.thelocal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0190.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a4::8) To BL1PR12MB5851.namprd12.prod.outlook.com
- (2603:10b6:208:396::13)
+ <20241015152348.3055360-2-ymaman@nvidia.com>
+ <Zw9F2uiq6-znYmTk@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5851:EE_|SJ2PR12MB7943:EE_
-X-MS-Office365-Filtering-Correlation-Id: 96fdd360-ebfa-410d-e4b3-08dcedf5df85
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?OU1DTWdOcVlsL2VRVm9aZXZlQWtTNWlma1FvVFJGaG5SN3RKMHRvMFgvalhF?=
- =?utf-8?B?dGRLWVpvT2JXOEpMeDVBMUJidlRoL3QxeWdYc3M1cUMzMzF5elN6ZjFkM24z?=
- =?utf-8?B?b29IbERPRTRRcitBVjF1VHhWYmxKQm1wd0Q3OXpQeEVBbGZkVk1WNVZxSU5M?=
- =?utf-8?B?aW5zR01XVkhlMW8vNyt4Z0VpUUs5NjlVblZTL04vZmUrdjJjdFUxQVBzVVoy?=
- =?utf-8?B?Ymt6endBaFFpYWRaSHF5eGdVWit4bnJScHNHdkFpdUgvYWE3aFRoUUNMa3VW?=
- =?utf-8?B?M1Buc3kwL0FqTy9DOXJxYk9PUjFkdjBvcDRkY0p0Y1JKaVZ5aU9jbFduTzBX?=
- =?utf-8?B?d3FlZFB2U2pZeTRYSmRldkFIaE9CSElwY2VSd0dJTmJnUkpmNGdDUlNYU28y?=
- =?utf-8?B?ditXRCtTdUdNNHVvNllobWprYWhaWGNHQVNEbUxqRU03UUtxeGxaR1l3Sk9R?=
- =?utf-8?B?SXpOaytaKzltcThobDZhU2pENEFMeEt0eEpSOG9hL0V3UjdQUFd1ZUV6aGY0?=
- =?utf-8?B?QVlaN0VTMHA0by9wTTZlNGJYQzFzZURhblFKQnVSZ3B5U1NaQUs2R3h2YjVk?=
- =?utf-8?B?NkhqcWZJTWtsSTM2R1R2WTk4OHY3Zml1UjlPZzVRbnZWK3ZPQzJodW9ycEMr?=
- =?utf-8?B?U0FMVG4vaG1PRkxqbjdxc3kwZkJJOU9QQ3NieTNpVXF5UWRvU3lCNisxQ1Zu?=
- =?utf-8?B?Y3J0Mnh2bjR4QzlrWDNCVlowdjF0d3VIMTI1a2I1YXVNbGFCQ2JveWxTc2ZX?=
- =?utf-8?B?RTB3WDJBZWw4bnBjQlplZm80SXZNWlZmV0lQZ3MzQnlIbyttcFdDdFhvRDY5?=
- =?utf-8?B?QXVCNm9BNWJKWW1jR2FDMUVZMFI4ZTZMSEQwSW1VdGJvS1RKYU1mczFWREV1?=
- =?utf-8?B?NnZOWStWV2tnZGd1L3dhK2cvRk9Rc1dVTXlTcWJWZFJKUzJhOGJ4SWxCeXdF?=
- =?utf-8?B?SGlhbGRwSTFQYWcyQjFGbjNTS0h6bFZ3UjM3ZGM4Skkrcy9qR3FISDRKdDhv?=
- =?utf-8?B?VUxzWUNXdXlUWUZIb0tXYkU2QjlOYlVGaFJYUCtQN1RtQm1naEpCQ3Nnekhp?=
- =?utf-8?B?amUvUlF5bkVZZWplcDQzeDRiUklHbVowa24vNndzd08vNWtPS3VkSFQ3eUhh?=
- =?utf-8?B?dnQ0WDR1dWZYVDR5WjFJT1YrRnBhVW05THovQk85R0V6ODNBdHoxbEg3Z2Nt?=
- =?utf-8?B?Qk42RllIUDZLNVlMUWFvcG9hVGJRWFJzblR5cFFvL2paSHMzL2RJbFFPZm5L?=
- =?utf-8?B?U3JQazN0NjB2YU1hSDRIK2pOZDZJQUhFTXgvdFRSejdRREFCQzFKU1FNUW8x?=
- =?utf-8?B?VjdpdHV5RHpDelM3ZEcxZWdxOWpINjRsZTh4SUkrNHhiY2UzcUEvbjBNOUZY?=
- =?utf-8?B?NTdJM01VVXBab1dRUlZmWW9SOGplZkVSV0NkNXptMHExNGI2b21aQjFDcUZH?=
- =?utf-8?B?ZHRqVHErSzEzaGtKZCt6ZjVoRGd3bTY2M2N5WjFsZ2xxUkVORUsrSlZHZjBs?=
- =?utf-8?B?b3lIU05pdnZ6Wngwc1F2UWw3dDJIS3pManZ1U3l3eGQwaFQxcE9PcHNyMU4v?=
- =?utf-8?B?dmVoT3F1QzZzWi8wanV0VG1ZbXhlVkFmUXdPNFBFcWxtOTVNdDBvUUhwdXNW?=
- =?utf-8?B?d0tlZURhOEc4Nm5iSHdKcUtpK1kxNEEzTDNwODVRT1NMOTJ3UC9WaXlQWXA5?=
- =?utf-8?B?Z3FOZDdOTEFFRzlERlJqMzRNSzFETFpDa2dCaFAxU3lWejk4VDNYWm93PT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5851.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(7416014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?eGdwVzlGZ054NFBEZDJPaFoybW42NXBtcy9uU1U2d3dEUldPekhLT0FDcVZZ?=
- =?utf-8?B?TUVrNUgvQVFnaE5aenZBbktMYXcweWppUHNCazZPV01FWnhJa01LK2hSSnRu?=
- =?utf-8?B?cFNhbVRhdkgxQXJhT0ZsbVR4MHBKbTNmOXRNOG5hczhPTWtld3RLMXFOUnVT?=
- =?utf-8?B?M3hPYTVaR3N2NHBsZHFVNFN3aXFTTHdoUUZmcVlpd0E0TGJPL0h5MHdHcDVi?=
- =?utf-8?B?RGhMVlF4WVEzU1RnZm9pSFJsbkNJbGE1V2dIcVF0UC9hZHNzUHlIdCtjTWZD?=
- =?utf-8?B?QXZzU1FQOWJpR3JTbFU2UTZsTEpxTmN0ZWxnSUE4TkhJOWROMWYvOVNhZEtN?=
- =?utf-8?B?Z09pK2ZOQXVWaXdlRzM2SktKMnhaZllvUFQwa3AvRjhWWlZOTk1NcmJtQ01N?=
- =?utf-8?B?emIxb3Fyb2xWM05wclVUSWlabEtWUmRTMm5ZYUd1WjkreTc2a0hrbkVqb2tw?=
- =?utf-8?B?end5cm1uUm03US9aSWhrSGVoQ2dLK0VjTVQ4ZVpma2YrQWlpMjI3c3MzV2pU?=
- =?utf-8?B?eHBnSGVTNDd4OTYvVmtXRENTRUZ3OVNQeUcyYWVFUzVGcmlFSVB3LzZ6aXox?=
- =?utf-8?B?dlg0b1drTUlFa2lOQnRjSkVYZHNnbFovVkY0UXg3SzBEL1JpTTF5WHk5RzhE?=
- =?utf-8?B?eWJtV1dYZEQ5dTU3NEN0K09QeUhCU2VmQXI0Ulo3SG1oeHQ5TXpRcWZJaVFu?=
- =?utf-8?B?WHducGxBazRxbkdzTEZFdENBK1JHMGtkS3l5cXRGai80NmZZSS9kOXR5ODht?=
- =?utf-8?B?SmwyREhITGFhSGpaU1laRGx0TUQxNCswQnIyQVZreGhoZFV0aTdjRk1VQmtE?=
- =?utf-8?B?M3BOVzFrdzVDQVZRc0Qza0pDa2c1VU11QXFlQ2pnQXlpVG9JZ1RMUWpiVnlL?=
- =?utf-8?B?b0xrNFdXU3pzWW5HbmNXWEVWNWhqVCtIZXV4eDZmVm5WVktFRmk0SDkzUndq?=
- =?utf-8?B?ZlJMQTI3VGxHQ0xvb1FBc01aSDZody9lNmUyS3JVVElyVHg4emxYc3BGSEc5?=
- =?utf-8?B?U0JhWXVuT1MwYVZrV1diQ2JYRW5TeG82Qy9KendCblVEQkpLRVJGNGxLY2E4?=
- =?utf-8?B?VktBc0pxOWozRHVSd0NNeTNCcGFJM3FlR0hVdGRDYW15UFBjOHVCMlFObksv?=
- =?utf-8?B?cU5mckdZQmhxeFhHTFNxUkljOHZKQkxQU3NKM0o2N3A3Sk85WHlMT1ovcjAy?=
- =?utf-8?B?U2FGQVF2Q25DVDVVczJDVExwbE1DRDczNlFEZ1hMT2FqNkgxeTZ5ZjhpcWZM?=
- =?utf-8?B?OCsrMWE4ejhPSm9zckRMTnVpNWFMQVpNMjFUZWF1Zy8yRWlZU2s4OWF0cWpj?=
- =?utf-8?B?UmFlQ3JJdGxlSXEzaTB3bnJpcXp2SlNJT0lldU1PdmZ6RVBNNklPbm9KREFR?=
- =?utf-8?B?Mjlnd3dwNE00d1Z0NUZPTnBsclM0cEJjTEZEN0ltUjR5QW42eWpxdVYxMmxD?=
- =?utf-8?B?VXBxWW5aWEFVWk9PNmpzNS9NS1ZKWjlRSVJCNkxyMmloVUJ6WTJ0RnJzSkVW?=
- =?utf-8?B?bkM3SldrR3I5dmlkeEdiVGNlMVRzYzA0WVU3a0NMQmgrZ3RaZFNBQUREVzM2?=
- =?utf-8?B?R0VuK0VIcTJwSk4wMW5ZKzl3aC9Eay9zM09OMDFIaXAzS01WYndtai9LSSto?=
- =?utf-8?B?M28reDBOQ0NtR0crVGlFM1l5QTcvV1VybDhoSkhrTUJLSm1UaVZ1MVRkdFdM?=
- =?utf-8?B?YlZYRWY0R3RNdHN5QlRVb1c2Rlo1NG0reExGdm8wRFdvM0d2R0VTc1lXREk5?=
- =?utf-8?B?NVo4TWoxRkl0NFlRRXFNUVNJRGVVZHYyZ1VNUVc0NGRkS3IveDlBOUx4MHNr?=
- =?utf-8?B?Z1haTW5TTC9LM2ZQUjZRRXFyUDZxODNsQk5uSVVQeUE3OW9wYzZaWWR0aEVs?=
- =?utf-8?B?SzRWOHRnRWRRcVQrVjNHcXlpZjZwdjZGM0x5RWtEQ000MjlnVldhRngrZFpp?=
- =?utf-8?B?MGdxbXNoMllSQmZWeHRIRWJZaGtZeDM4RnBpVU1tUFZ6Q3l6S2xaMGl2N2ww?=
- =?utf-8?B?amNzOFhEOHhQeXdNVUhNdndMRkJ0Sk0rbFRncjY2Vnp2Z3hkaUJQM1FzVU1K?=
- =?utf-8?B?andoNU9Qb1hyaGpNUFVjZUFJWndIb29ibzFlSzZPUE9ZNnJ3UytBOHRzVnlE?=
- =?utf-8?Q?gmqlt8mP1I/AXnHUtD7IDRIQZ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96fdd360-ebfa-410d-e4b3-08dcedf5df85
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5851.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2024 15:19:05.3992
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: B7AXmx/x0RzcOGbJ43Fu/1EsId16FQNwRBMS8WaO86JqkYre+Y519wPeiBgStV0oOX8qZQ/9s2iEii1N2JVoYQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7943
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zw9F2uiq6-znYmTk@infradead.org>
 
+On Tue, Oct 15, 2024 at 09:49:30PM -0700, Christoph Hellwig wrote:
 
-
-On 16/10/2024 8:12, Alistair Popple wrote:
+> > +	/*
+> > +	 * Used for private (un-addressable) device memory only. Return a
+> > +	 * corresponding struct page, that can be mapped to device
+> > +	 * (e.g using dma_map_page)
+> > +	 */
+> > +	struct page *(*get_dma_page_for_device)(struct page *private_page);
 > 
-> Yonatan Maman <ymaman@nvidia.com> writes:
-> 
->> From: Yonatan Maman <Ymaman@Nvidia.com>
->>
->> Enabling Peer-to-Peer DMA (P2P DMA) access in GPU-centric applications
->> is crucial for minimizing data transfer overhead (e.g., for RDMA use-
->> case).
->>
->> This change aims to enable that capability for Nouveau over HMM device
->> private pages. P2P DMA for private device pages allows the GPU to
->> directly exchange data with other devices (e.g., NICs) without needing
->> to traverse system RAM.
->>
->> To fully support Peer-to-Peer for device private pages, the following
->> changes are made:
->>
->>   - Introduce struct nouveau_dmem_hmm_p2p within struct nouveau_dmem
->>     to manage BAR1 PCI P2P memory. p2p_start_addr holds the virtual
->>     address allocated with pci_alloc_p2pmem(), and p2p_size represents
->>     the allocated size of the PCI P2P memory.
->>
->>   - nouveau_dmem_init - Ensure BAR1 accessibility and assign struct
->>     pages (PCI_P2P_PAGE) for all BAR1 pages. Introduce
->>     nouveau_alloc_bar1_pci_p2p_mem in nouveau_dmem to expose BAR1 for
->>     use as P2P memory via pci_p2pdma_add_resource and implement static
->>     allocation and assignment of struct pages using pci_alloc_p2pmem.
->>     This function will be called from nouveau_dmem_init, and failure
->>     triggers a warning message instead of driver failure.
->>
->>   - nouveau_dmem_fini - Ensure BAR1 PCI P2P memory is properly
->>     destroyed during driver cleanup. Introduce
->>     nouveau_destroy_bar1_pci_p2p_mem to handle freeing of PCI P2P
->>     memory associated with Nouveau BAR1. Modify nouveau_dmem_fini to
->>     call nouveau_destroy_bar1_pci_p2p_mem.
->>
->>   - Implement Nouveau `p2p_page` callback function - Implement BAR1
->>     mapping for the chunk using `io_mem_reserve` if no mapping exists.
->>     Retrieve the pre-allocated P2P virtual address and size from
->>     `hmm_p2p`. Calculate the page offset within BAR1 and return the
->>     corresponding P2P page.
->>
->> Signed-off-by: Yonatan Maman <Ymaman@Nvidia.com>
->> Reviewed-by: Gal Shalom <GalShalom@Nvidia.com>
->> ---
->>   drivers/gpu/drm/nouveau/nouveau_dmem.c | 117 ++++++++++++++++++++++++-
->>   1 file changed, 115 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
->> index 1a072568cef6..13fb8671f212 100644
->> --- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
->> +++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
->> @@ -40,6 +40,9 @@
->>   #include <linux/hmm.h>
->>   #include <linux/memremap.h>
->>   #include <linux/migrate.h>
->> +#include <linux/pci-p2pdma.h>
->> +#include <nvkm/core/pci.h>
->> +
->>   
->>   /*
->>    * FIXME: this is ugly right now we are using TTM to allocate vram and we pin
->> @@ -77,9 +80,15 @@ struct nouveau_dmem_migrate {
->>   	struct nouveau_channel *chan;
->>   };
->>   
->> +struct nouveau_dmem_hmm_p2p {
->> +	size_t p2p_size;
->> +	void *p2p_start_addr;
->> +};
->> +
->>   struct nouveau_dmem {
->>   	struct nouveau_drm *drm;
->>   	struct nouveau_dmem_migrate migrate;
->> +	struct nouveau_dmem_hmm_p2p hmm_p2p;
->>   	struct list_head chunks;
->>   	struct mutex mutex;
->>   	struct page *free_pages;
->> @@ -158,6 +167,61 @@ static int nouveau_dmem_copy_one(struct nouveau_drm *drm, struct page *spage,
->>   	return 0;
->>   }
->>   
->> +static int nouveau_dmem_bar1_mapping(struct nouveau_bo *nvbo,
->> +				     unsigned long long *bus_addr)
->> +{
->> +	int ret;
->> +	struct ttm_resource *mem = nvbo->bo.resource;
->> +
->> +	if (mem->bus.offset) {
->> +		*bus_addr = mem->bus.offset;
->> +		return 0;
->> +	}
->> +
->> +	if (PFN_UP(nvbo->bo.base.size) > PFN_UP(nvbo->bo.resource->size))
->> +		return -EINVAL;
->> +
->> +	ret = ttm_bo_reserve(&nvbo->bo, false, false, NULL);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = nvbo->bo.bdev->funcs->io_mem_reserve(nvbo->bo.bdev, mem);
->> +	*bus_addr = mem->bus.offset;
->> +
->> +	ttm_bo_unreserve(&nvbo->bo);
->> +	return ret;
->> +}
->> +
->> +static struct page *nouveau_dmem_get_dma_page(struct page *private_page)
->> +{
->> +	int ret;
->> +	unsigned long long offset_in_chunk, offset_in_bar1;
->> +	unsigned long long chunk_bus_addr, page_bus_addr;
->> +	unsigned long long bar1_base_addr;
->> +	struct nouveau_drm *drm = page_to_drm(private_page);
->> +	struct nouveau_bo *nvbo = nouveau_page_to_chunk(private_page)->bo;
->> +	struct nvkm_device *nv_device = nvxx_device(drm);
->> +	void *p2p_start_addr = drm->dmem->hmm_p2p.p2p_start_addr;
->> +	size_t p2p_size = drm->dmem->hmm_p2p.p2p_size;
->> +
->> +	bar1_base_addr = nv_device->func->resource_addr(nv_device, 1);
->> +	offset_in_chunk =
->> +		(page_to_pfn(private_page) << PAGE_SHIFT) -
->> +		nouveau_page_to_chunk(private_page)->pagemap.range.start;
->> +
->> +	ret = nouveau_dmem_bar1_mapping(nvbo, &chunk_bus_addr);
->> +	if (ret)
->> +		return ERR_PTR(ret);
->> +
->> +	page_bus_addr = chunk_bus_addr + offset_in_chunk;
->> +	if (!p2p_size || page_bus_addr > bar1_base_addr + p2p_size ||
->> +	    page_bus_addr < bar1_base_addr)
->> +		return ERR_PTR(-ENOMEM);
->> +
->> +	offset_in_bar1 = page_bus_addr - bar1_base_addr;
->> +	return virt_to_page(p2p_start_addr + offset_in_bar1);
-> 
-> This conversion looks a bit complicated. Once you have page_bus_addr I
-> think you can just return pfn_to_page(page_bus_addr >> PAGE_SHIFT)
-> 
+> We are talking about P2P memory here.  How do you manage to get a page
+> that dma_map_page can be used on?  All P2P memory needs to use the P2P
+> aware dma_map_sg as the pages for P2P memory are just fake zone device
+> pages.
 
-Agree, I will fix that (v2)
+FWIW, I've been expecting this series to be rebased on top of Leon's
+new DMA API series so it doesn't have this issue.. I think this series
+is at RFC quality, but shows more of the next steps.
 
->> +}
->> +
->>   static vm_fault_t nouveau_dmem_migrate_to_ram(struct vm_fault *vmf)
->>   {
->>   	struct nouveau_drm *drm = page_to_drm(vmf->page);
->> @@ -219,8 +283,9 @@ static vm_fault_t nouveau_dmem_migrate_to_ram(struct vm_fault *vmf)
->>   }
->>   
->>   static const struct dev_pagemap_ops nouveau_dmem_pagemap_ops = {
->> -	.page_free		= nouveau_dmem_page_free,
->> -	.migrate_to_ram		= nouveau_dmem_migrate_to_ram,
->> +	.page_free		 = nouveau_dmem_page_free,
->> +	.migrate_to_ram		 = nouveau_dmem_migrate_to_ram,
->> +	.get_dma_page_for_device = nouveau_dmem_get_dma_page,
->>   };
->>   
->>   static int
->> @@ -413,14 +478,31 @@ nouveau_dmem_evict_chunk(struct nouveau_dmem_chunk *chunk)
->>   	kvfree(dma_addrs);
->>   }
->>   
->> +static void nouveau_destroy_bar1_pci_p2p_mem(struct nouveau_drm *drm,
->> +					     struct pci_dev *pdev,
->> +					     void *p2p_start_addr,
->> +					     size_t p2p_size)
->> +{
->> +	if (p2p_size)
->> +		pci_free_p2pmem(pdev, p2p_start_addr, p2p_size);
->> +
->> +	NV_INFO(drm, "PCI P2P memory freed(%p)\n", p2p_start_addr);
->> +}
->> +
->>   void
->>   nouveau_dmem_fini(struct nouveau_drm *drm)
->>   {
->>   	struct nouveau_dmem_chunk *chunk, *tmp;
->> +	struct nvkm_device *nv_device = nvxx_device(drm);
->>   
->>   	if (drm->dmem == NULL)
->>   		return;
->>   
->> +	nouveau_destroy_bar1_pci_p2p_mem(drm,
->> +					 nv_device->func->pci(nv_device)->pdev,
->> +					 drm->dmem->hmm_p2p.p2p_start_addr,
->> +					 drm->dmem->hmm_p2p.p2p_size);
->> +
->>   	mutex_lock(&drm->dmem->mutex);
->>   
->>   	list_for_each_entry_safe(chunk, tmp, &drm->dmem->chunks, list) {
->> @@ -586,10 +668,30 @@ nouveau_dmem_migrate_init(struct nouveau_drm *drm)
->>   	return -ENODEV;
->>   }
->>   
->> +static int nouveau_alloc_bar1_pci_p2p_mem(struct nouveau_drm *drm,
->> +					  struct pci_dev *pdev, size_t size,
->> +					  void **pp2p_start_addr,
->> +					  size_t *pp2p_size)
->> +{
->> +	int ret;
->> +
->> +	ret = pci_p2pdma_add_resource(pdev, 1, size, 0);
->> +	if (ret)
->> +		return ret;
->> +
->> +	*pp2p_start_addr = pci_alloc_p2pmem(pdev, size);
->> +	*pp2p_size = (*pp2p_start_addr) ? size : 0;
+I'm guessing they got their testing done so far on a system without an
+iommu translation?
+
+> which also makes it clear that returning a page from the method is
+> not that great, a PFN might work a lot better, e.g.
 > 
-> Why return the size here? Personally I think it would be clearer to have
-> the caller directly initialise/clear whatever struct values it needs.
-> 
+> 	unsigned long (*device_private_dma_pfn)(struct page *page);
 
-Agree, I will fix that (v2)
+Ideally I think we should not have the struct page * at all through
+these APIs if we can avoid it..
 
->> +
->> +	NV_INFO(drm, "PCI P2P memory allocated(%p)\n", *pp2p_start_addr);
->> +	return 0;
->> +}
->> +
->>   void
->>   nouveau_dmem_init(struct nouveau_drm *drm)
->>   {
->>   	int ret;
->> +	struct nvkm_device *nv_device = nvxx_device(drm);
->> +	size_t bar1_size;
->>   
->>   	/* This only make sense on PASCAL or newer */
->>   	if (drm->client.device.info.family < NV_DEVICE_INFO_V0_PASCAL)
->> @@ -610,6 +712,17 @@ nouveau_dmem_init(struct nouveau_drm *drm)
->>   		kfree(drm->dmem);
->>   		drm->dmem = NULL;
->>   	}
->> +
->> +	/* Expose BAR1 for HMM P2P Memory */
->> +	bar1_size = nv_device->func->resource_size(nv_device, 1);
->> +	ret = nouveau_alloc_bar1_pci_p2p_mem(drm,
->> +					     nv_device->func->pci(nv_device)->pdev,
->> +					     bar1_size,
->> +					     &drm->dmem->hmm_p2p.p2p_start_addr,
->> +					     &drm->dmem->hmm_p2p.p2p_size);
->> +	if (ret)
->> +		NV_WARN(drm,
->> +			"PCI P2P memory allocation failed, HMM P2P won't be supported\n");
->>   }
->>   
->>   static unsigned long nouveau_dmem_migrate_copy_one(struct nouveau_drm *drm,
-> 
-
+Jason
 
