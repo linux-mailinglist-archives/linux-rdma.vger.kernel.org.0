@@ -1,76 +1,76 @@
-Return-Path: <linux-rdma+bounces-5423-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5424-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE4BA9A03F6
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Oct 2024 10:17:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 477FF9A03F8
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Oct 2024 10:17:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED471C2A893
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Oct 2024 08:17:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 008A9284DDA
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Oct 2024 08:17:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD4581D2211;
-	Wed, 16 Oct 2024 08:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04BA01D1F7F;
+	Wed, 16 Oct 2024 08:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="O1sQz+/Z"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="LpwJH948"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BE0A1D1E89
-	for <linux-rdma@vger.kernel.org>; Wed, 16 Oct 2024 08:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 310301D1F7B
+	for <linux-rdma@vger.kernel.org>; Wed, 16 Oct 2024 08:16:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729066605; cv=none; b=IaXlHZw6p/P+34Jcr2Pye6xqpOa/Z+67oAIObPn4/pUA1V2exxSWADJfsQjIm+53SE60KrW6xoy2uFy6NtQ5xE7eZ09RjlanndGHIeQIshonHrdwYLvER1HZGhJgnaaiMzzKYdlQX0NeQAF28ViQJiXCj28/0HRYRnHqdA+NF88=
+	t=1729066608; cv=none; b=V9C5f0m6TLd/DHvAqkEHmFmAdszi15e+AbKNZVFyaPcLJ+Zh27eB0iHD/Mn+cLSNffBU6s280gepDwFVASxewti5Thu+qQkMVb9N+L33Vch85Bt1G58E82NEFcBsEGMhIQAr4Xo6kRIatyYL38QWv2xwtYtJAGFEOXig0YARsuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729066605; c=relaxed/simple;
-	bh=V58i4FmvFs4evebdN+YJRsMVUZWUp0uztxzriLTInr8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=n/cyp3nT0juefkf3M5mlLfci6hKdl1wZrZZeWM8DK3+Q/d2U0MnL+WriCkQnqNgJeoPrKYTRo6qyiB4q4GgZehleNvfQFpUpV0hccJFdT4iJq/zMD7Xho1YcYaz9FqjI4Ln6X9Tq9lR+jlWjXXotnKXeTcmXENsgfiPygrU0qJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=O1sQz+/Z; arc=none smtp.client-ip=209.85.215.175
+	s=arc-20240116; t=1729066608; c=relaxed/simple;
+	bh=wA+FjWd/Jg4uGv9NrtaDmbO5RZbGelYng6d/oKlQphg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=GV9yZQsi0jSNwa4aUWYusEgFUR4EWHuEY+EWwVhFSRpxDxkSNW167799699mlbzf8y8sg1tIYlnqOMgk3JzAZE1XPfvZNuHj7NvKEm2yIcYun7h/zwGDRUtvu9Bx8G4DWz+o2gblkxF+kPwUBdsHeT4xlaMVCzUzZUKtfapehhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=LpwJH948; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-7ea6a4f287bso2548849a12.3
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Oct 2024 01:16:43 -0700 (PDT)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-7ea7e2ff5ceso2370644a12.2
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Oct 2024 01:16:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1729066603; x=1729671403; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1729066606; x=1729671406; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=UF85Z9xOg9gfInIBQdEmoWXg0ECKsJ5B5973kWAy5AY=;
-        b=O1sQz+/Z8yxnrpeB1gcu3ikiOMYNnKcuwQBKKB/9dITP4yc3xyhUcqpfS0skWS6Zjp
-         acvVC0LzHo54jLwVWqr9wI7Pv5USMoEnrKpyOC1ISFHAHRZhBhwaG83usJSai7ogioXP
-         e4vkWI2/7otZPpz9q3W/9qIAH1Kmreih7y10Y=
+        bh=3H9gIt1oG/hIkkrt7AkaIiqG5kInDjyrX8VCzkmFMiY=;
+        b=LpwJH948d4XQP8ZPIvG/Myo282vxcNRbXU7X14gSkWEKRpwFFtG7R2OvSROv9Rxe44
+         qL37q/Y9Udf0bUcwTczfCxtcp7CjucTvmMj3GUMrcDR96mhnmTj1hnuA1xqvpUgXBJZp
+         grri9fLtYxNiEpPcq/gcYDULYHTkxCniRR4Ho=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729066603; x=1729671403;
+        d=1e100.net; s=20230601; t=1729066606; x=1729671406;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UF85Z9xOg9gfInIBQdEmoWXg0ECKsJ5B5973kWAy5AY=;
-        b=JOhhf3nfap+VqjvlEMyga0KWwhspBC10FwvKFYfUVLqz9h3YlVZiLRoxOVPTmAc4Wx
-         6JeV1RMRHgO/TB+MOQdyeg9xJfRZOMqKMwqOHBOQzPOfNSJT93h1NKph81a3Qct5ZGCM
-         fXKBgIfwPrnZWvn/z5EMFEYk9ZIgeePY3rIwqJDjP4famAL2hKCBTsZOnx8fK57IVSsK
-         doRwrMatwH+/+cxXFGFhk8n2gERSXta23gTjL36z8DPSvdIgP/OQ006+0PX3dAHcvpob
-         cVKVcB1JlqA58xIvgBxyGUkYYlWWqUA5CVMX3alpoBzRI1e07b9Rg9tpzASnMd2iANOZ
-         KH0Q==
-X-Gm-Message-State: AOJu0YzG/JEbbueL9oh7KDTGZ/jl32qQEV6AYB9HzJbEyEAi9+PtVJNr
-	nWkzVi8cxS2sxzXwcyQ7rvTLyADnATZ3CqKk9c7zt2r47gBF67eTZFhIA7UI1Q==
-X-Google-Smtp-Source: AGHT+IHJDH5Bl5QuUA5MTH+8To92BGUtzA1XWD2GyzXoUbQh0wB1NjDxBZkx2NdPPdB83rmdTcXKRg==
-X-Received: by 2002:a05:6a21:1519:b0:1d0:56b1:1aec with SMTP id adf61e73a8af0-1d8c9699ad7mr23413055637.35.1729066603375;
-        Wed, 16 Oct 2024 01:16:43 -0700 (PDT)
+        bh=3H9gIt1oG/hIkkrt7AkaIiqG5kInDjyrX8VCzkmFMiY=;
+        b=Uw67j5PxihRED+G0EES9wxKyJm8xIGhCN2bQAtwmHhUjcGhiAVX7k9CKPP0l8k0hPb
+         mnwRB4Ez3xF1eJ+LXL6PSqxHjQPvNy+mz+JQM31HxgYIW3Z8qjwT+7ABO5wRzoSEcZ8H
+         6Kl0GB6uf2YiWDau605dUvd3rCbn6eIWklxl6HijV7I+cQIwy9ICWa8ShGyVY9pcQnII
+         DhrWyfR/uXPfmDTmTa0KP0uPOOpuIcIdixrlVB+nfHXwhCxSVOzaHuUc+hw6VF4HNN1v
+         AGbHkkg/qbZRpd7+811y12HLkLo4rnhhz1W3EoJPRT/BzG3ieFzIa1BKtYq0aVU4MXHg
+         7Oyg==
+X-Gm-Message-State: AOJu0YzvLymxm4k4Sxw98aiSQSSxpvzbn804NAcw8oWEZJO7kfYNhB0D
+	SVEAVllZlUMmKj1Xga0cOYykU8Ny1Ms98U/Q7ANEBa+8gvpxTRdbuSUrJfH67A==
+X-Google-Smtp-Source: AGHT+IH9L2rV9LLcoWBPbXrXz4Xq41pRF005vY+XFuXkpP41fR8wNh1MMLAt39RRld1jVuCfyxNJXQ==
+X-Received: by 2002:a05:6a21:3998:b0:1d7:1277:8d12 with SMTP id adf61e73a8af0-1d8bcf5c061mr23649179637.29.1729066606365;
+        Wed, 16 Oct 2024 01:16:46 -0700 (PDT)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71e77371099sm2632667b3a.15.2024.10.16.01.16.40
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71e77371099sm2632667b3a.15.2024.10.16.01.16.43
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Oct 2024 01:16:42 -0700 (PDT)
+        Wed, 16 Oct 2024 01:16:45 -0700 (PDT)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
-	Hongguang Gao <hongguang.gao@broadcom.com>,
+	Chandramohan Akula <chandramohan.akula@broadcom.com>,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH] RDMA/bnxt_re: Fix access flags for MR and QP modify
-Date: Wed, 16 Oct 2024 00:55:43 -0700
-Message-Id: <1729065346-1364-3-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v3 2/4] RDMA/bnxt_re: Add support for CQ rx coalescing
+Date: Wed, 16 Oct 2024 00:55:44 -0700
+Message-Id: <1729065346-1364-4-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1729065346-1364-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1729065346-1364-1-git-send-email-selvin.xavier@broadcom.com>
@@ -80,114 +80,210 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-From: Hongguang Gao <hongguang.gao@broadcom.com>
+From: Chandramohan Akula <chandramohan.akula@broadcom.com>
 
-Access flag definition in MR and QP is different
-in FW. Currently both reg/bind MR and modify/query QP uses
-the same flags. Add a different function to map
-the QP access flags for newer adapters.
+RoCE message rate performance is heavily degraded
+without the use of cq coalescing. With proper coalescing,
+message rates get better. Furthermore, coalescing
+significantly reduces contention on the PCIe Root
+Complex/Memory subsystems.
 
+Add the changes to configure CQ rx colascing parameters
+based on adapter revision when CQ is created.
+
+Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Signed-off-by: Hongguang Gao <hongguang.gao@broadcom.com>
-Reviewed-by: Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 59 +++++++++++++++++++++++++++-----
- 1 file changed, 50 insertions(+), 9 deletions(-)
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h   |  8 ++++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  1 +
+ drivers/infiniband/hw/bnxt_re/main.c      |  9 +++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 20 ++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h  | 20 ++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_res.h |  5 +++++
+ drivers/infiniband/hw/bnxt_re/roce_hsi.h  | 14 +++++++++++++-
+ 7 files changed, 76 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+index e94518b..bb28a1f 100644
+--- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
++++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+@@ -156,6 +156,13 @@ struct bnxt_re_pacing {
+ 
+ #define MAX_CQ_HASH_BITS		(16)
+ #define MAX_SRQ_HASH_BITS		(16)
++
++static inline bool bnxt_re_chip_gen_p7(u16 chip_num)
++{
++	return (chip_num == CHIP_NUM_58818 ||
++		chip_num == CHIP_NUM_57608);
++}
++
+ struct bnxt_re_dev {
+ 	struct ib_device		ibdev;
+ 	struct list_head		list;
+@@ -195,6 +202,7 @@ struct bnxt_re_dev {
+ 	struct bnxt_qplib_ctx		qplib_ctx;
+ 	struct bnxt_qplib_res		qplib_res;
+ 	struct bnxt_qplib_dpi		dpi_privileged;
++	struct bnxt_qplib_cq_coal_param	cq_coalescing;
+ 
+ 	struct mutex			qp_lock;	/* protect qp list */
+ 	struct list_head		qp_list;
 diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 2a21a90..e610807 100644
+index 460f339..55a3cc8 100644
 --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
 +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -94,9 +94,9 @@ static int __from_ib_access_flags(int iflags)
- 	return qflags;
+@@ -3065,6 +3065,7 @@ int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	cq->qplib_cq.max_wqe = entries;
+ 	cq->qplib_cq.cnq_hw_ring_id = nq->ring_id;
+ 	cq->qplib_cq.nq	= nq;
++	cq->qplib_cq.coalescing = &rdev->cq_coalescing;
+ 
+ 	rc = bnxt_qplib_create_cq(&rdev->qplib_res, &cq->qplib_cq);
+ 	if (rc) {
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 777068d..3a01818 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -986,6 +986,15 @@ static struct bnxt_re_dev *bnxt_re_dev_add(struct bnxt_aux_priv *aux_priv,
+ 	atomic_set(&rdev->stats.res.pd_count, 0);
+ 	rdev->cosq[0] = 0xFFFF;
+ 	rdev->cosq[1] = 0xFFFF;
++	rdev->cq_coalescing.buf_maxtime = BNXT_QPLIB_CQ_COAL_DEF_BUF_MAXTIME;
++	if (bnxt_re_chip_gen_p7(en_dev->chip_num)) {
++		rdev->cq_coalescing.normal_maxbuf = BNXT_QPLIB_CQ_COAL_DEF_NORMAL_MAXBUF_P7;
++		rdev->cq_coalescing.during_maxbuf = BNXT_QPLIB_CQ_COAL_DEF_DURING_MAXBUF_P7;
++	} else {
++		rdev->cq_coalescing.normal_maxbuf = BNXT_QPLIB_CQ_COAL_DEF_NORMAL_MAXBUF_P5;
++		rdev->cq_coalescing.during_maxbuf = BNXT_QPLIB_CQ_COAL_DEF_DURING_MAXBUF_P5;
++	}
++	rdev->cq_coalescing.en_ring_idle_mode = BNXT_QPLIB_CQ_COAL_DEF_EN_RING_IDLE_MODE;
+ 
+ 	return rdev;
+ }
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+index ff2340c..e2eea71 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+@@ -2182,6 +2182,7 @@ int bnxt_qplib_create_cq(struct bnxt_qplib_res *res, struct bnxt_qplib_cq *cq)
+ 	struct bnxt_qplib_cmdqmsg msg = {};
+ 	struct cmdq_create_cq req = {};
+ 	struct bnxt_qplib_pbl *pbl;
++	u32 coalescing = 0;
+ 	u32 pg_sz_lvl;
+ 	int rc;
+ 
+@@ -2208,6 +2209,25 @@ int bnxt_qplib_create_cq(struct bnxt_qplib_res *res, struct bnxt_qplib_cq *cq)
+ 	req.dpi = cpu_to_le32(cq->dpi->dpi);
+ 	req.cq_handle = cpu_to_le64(cq->cq_handle);
+ 	req.cq_size = cpu_to_le32(cq->max_wqe);
++
++	if (_is_cq_coalescing_supported(res->dattr->dev_cap_flags2)) {
++		req.flags |= cpu_to_le16(CMDQ_CREATE_CQ_FLAGS_COALESCING_VALID);
++		coalescing |= ((cq->coalescing->buf_maxtime <<
++				CMDQ_CREATE_CQ_BUF_MAXTIME_SFT) &
++			       CMDQ_CREATE_CQ_BUF_MAXTIME_MASK);
++		coalescing |= ((cq->coalescing->normal_maxbuf <<
++				CMDQ_CREATE_CQ_NORMAL_MAXBUF_SFT) &
++			       CMDQ_CREATE_CQ_NORMAL_MAXBUF_MASK);
++		coalescing |= ((cq->coalescing->during_maxbuf <<
++				CMDQ_CREATE_CQ_DURING_MAXBUF_SFT) &
++			       CMDQ_CREATE_CQ_DURING_MAXBUF_MASK);
++		if (cq->coalescing->en_ring_idle_mode)
++			coalescing |= CMDQ_CREATE_CQ_ENABLE_RING_IDLE_MODE;
++		else
++			coalescing &= ~CMDQ_CREATE_CQ_ENABLE_RING_IDLE_MODE;
++		req.coalescing = cpu_to_le32(coalescing);
++	}
++
+ 	pbl = &cq->hwq.pbl[PBL_LVL_0];
+ 	pg_sz_lvl = (bnxt_qplib_base_pg_size(&cq->hwq) <<
+ 		     CMDQ_CREATE_CQ_PG_SIZE_SFT);
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+index b62df87..fb01576 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+@@ -383,6 +383,25 @@ static inline bool bnxt_qplib_queue_full(struct bnxt_qplib_q *que,
+ 	return avail <= slots;
+ }
+ 
++/* CQ coalescing parameters */
++struct bnxt_qplib_cq_coal_param {
++	u16 buf_maxtime;
++	u8 normal_maxbuf;
++	u8 during_maxbuf;
++	u8 en_ring_idle_mode;
++};
++
++#define BNXT_QPLIB_CQ_COAL_DEF_BUF_MAXTIME		0x1
++#define BNXT_QPLIB_CQ_COAL_DEF_NORMAL_MAXBUF_P7		0x8
++#define BNXT_QPLIB_CQ_COAL_DEF_DURING_MAXBUF_P7		0x8
++#define BNXT_QPLIB_CQ_COAL_DEF_NORMAL_MAXBUF_P5		0x1
++#define BNXT_QPLIB_CQ_COAL_DEF_DURING_MAXBUF_P5		0x1
++#define BNXT_QPLIB_CQ_COAL_DEF_EN_RING_IDLE_MODE	0x1
++#define BNXT_QPLIB_CQ_COAL_MAX_BUF_MAXTIME		0x1bf
++#define BNXT_QPLIB_CQ_COAL_MAX_NORMAL_MAXBUF		0x1f
++#define BNXT_QPLIB_CQ_COAL_MAX_DURING_MAXBUF		0x1f
++#define BNXT_QPLIB_CQ_COAL_MAX_EN_RING_IDLE_MODE	0x1
++
+ struct bnxt_qplib_cqe {
+ 	u8				status;
+ 	u8				type;
+@@ -445,6 +464,7 @@ struct bnxt_qplib_cq {
+  */
+ 	spinlock_t			flush_lock; /* QP flush management */
+ 	u16				cnq_events;
++	struct bnxt_qplib_cq_coal_param	*coalescing;
  };
  
--static enum ib_access_flags __to_ib_access_flags(int qflags)
-+static int __to_ib_access_flags(int qflags)
- {
--	enum ib_access_flags iflags = 0;
-+	int iflags = 0;
+ #define BNXT_QPLIB_MAX_IRRQE_ENTRY_SIZE	sizeof(struct xrrq_irrq)
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+index ef198a6..115910c 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+@@ -581,4 +581,9 @@ static inline bool _is_optimize_modify_qp_supported(u16 dev_cap_ext_flags2)
+ 	return dev_cap_ext_flags2 & CREQ_QUERY_FUNC_RESP_SB_OPTIMIZE_MODIFY_QP_SUPPORTED;
+ }
  
- 	if (qflags & BNXT_QPLIB_ACCESS_LOCAL_WRITE)
- 		iflags |= IB_ACCESS_LOCAL_WRITE;
-@@ -113,7 +113,49 @@ static enum ib_access_flags __to_ib_access_flags(int qflags)
- 	if (qflags & BNXT_QPLIB_ACCESS_ON_DEMAND)
- 		iflags |= IB_ACCESS_ON_DEMAND;
- 	return iflags;
--};
-+}
-+
-+static u8 __qp_access_flags_from_ib(struct bnxt_qplib_chip_ctx *cctx, int iflags)
++static inline bool _is_cq_coalescing_supported(u16 dev_cap_ext_flags2)
 +{
-+	u8 qflags = 0;
-+
-+	if (!bnxt_qplib_is_chip_gen_p5_p7(cctx))
-+		/* For Wh+ */
-+		return (u8)__from_ib_access_flags(iflags);
-+
-+	/* For P5, P7 and later chips */
-+	if (iflags & IB_ACCESS_LOCAL_WRITE)
-+		qflags |= CMDQ_MODIFY_QP_ACCESS_LOCAL_WRITE;
-+	if (iflags & IB_ACCESS_REMOTE_WRITE)
-+		qflags |= CMDQ_MODIFY_QP_ACCESS_REMOTE_WRITE;
-+	if (iflags & IB_ACCESS_REMOTE_READ)
-+		qflags |= CMDQ_MODIFY_QP_ACCESS_REMOTE_READ;
-+	if (iflags & IB_ACCESS_REMOTE_ATOMIC)
-+		qflags |= CMDQ_MODIFY_QP_ACCESS_REMOTE_ATOMIC;
-+
-+	return qflags;
++	return dev_cap_ext_flags2 & CREQ_QUERY_FUNC_RESP_SB_CQ_COALESCING_SUPPORTED;
 +}
 +
-+static int __qp_access_flags_to_ib(struct bnxt_qplib_chip_ctx *cctx, u8 qflags)
-+{
-+	int iflags = 0;
-+
-+	if (!bnxt_qplib_is_chip_gen_p5_p7(cctx))
-+		/* For Wh+ */
-+		return __to_ib_access_flags(qflags);
-+
-+	/* For P5, P7 and later chips */
-+	if (qflags & CMDQ_MODIFY_QP_ACCESS_LOCAL_WRITE)
-+		iflags |= IB_ACCESS_LOCAL_WRITE;
-+	if (qflags & CMDQ_MODIFY_QP_ACCESS_REMOTE_WRITE)
-+		iflags |= IB_ACCESS_REMOTE_WRITE;
-+	if (qflags & CMDQ_MODIFY_QP_ACCESS_REMOTE_READ)
-+		iflags |= IB_ACCESS_REMOTE_READ;
-+	if (qflags & CMDQ_MODIFY_QP_ACCESS_REMOTE_ATOMIC)
-+		iflags |= IB_ACCESS_REMOTE_ATOMIC;
-+
-+	return iflags;
-+}
+ #endif /* __BNXT_QPLIB_RES_H__ */
+diff --git a/drivers/infiniband/hw/bnxt_re/roce_hsi.h b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
+index 69d50d7..58df876 100644
+--- a/drivers/infiniband/hw/bnxt_re/roce_hsi.h
++++ b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
+@@ -1140,6 +1140,7 @@ struct cmdq_create_cq {
+ 	#define CMDQ_CREATE_CQ_FLAGS_DISABLE_CQ_OVERFLOW_DETECTION     0x1UL
+ 	#define CMDQ_CREATE_CQ_FLAGS_STEERING_TAG_VALID                0x2UL
+ 	#define CMDQ_CREATE_CQ_FLAGS_INFINITE_CQ_MODE                  0x4UL
++	#define CMDQ_CREATE_CQ_FLAGS_COALESCING_VALID                  0x8UL
+ 	__le16	cookie;
+ 	u8	resp_size;
+ 	u8	reserved8;
+@@ -1172,7 +1173,18 @@ struct cmdq_create_cq {
+ 	__le32	cq_size;
+ 	__le64	pbl;
+ 	__le16	steering_tag;
+-	u8	reserved48[6];
++	u8	reserved48[2];
++	__le32  coalescing;
++	#define CMDQ_CREATE_CQ_BUF_MAXTIME_MASK          0x1ffUL
++	#define CMDQ_CREATE_CQ_BUF_MAXTIME_SFT           0
++	#define CMDQ_CREATE_CQ_NORMAL_MAXBUF_MASK        0x3e00UL
++	#define CMDQ_CREATE_CQ_NORMAL_MAXBUF_SFT         9
++	#define CMDQ_CREATE_CQ_DURING_MAXBUF_MASK        0x7c000UL
++	#define CMDQ_CREATE_CQ_DURING_MAXBUF_SFT         14
++	#define CMDQ_CREATE_CQ_ENABLE_RING_IDLE_MODE     0x80000UL
++	#define CMDQ_CREATE_CQ_UNUSED12_MASK             0xfff00000UL
++	#define CMDQ_CREATE_CQ_UNUSED12_SFT              20
++	__le64  reserved64;
+ };
  
- static void bnxt_re_check_and_set_relaxed_ordering(struct bnxt_re_dev *rdev,
- 						   struct bnxt_qplib_mrw *qplib_mr)
-@@ -2053,12 +2095,10 @@ int bnxt_re_modify_qp(struct ib_qp *ib_qp, struct ib_qp_attr *qp_attr,
- 	if (qp_attr_mask & IB_QP_ACCESS_FLAGS) {
- 		qp->qplib_qp.modify_flags |= CMDQ_MODIFY_QP_MODIFY_MASK_ACCESS;
- 		qp->qplib_qp.access =
--			__from_ib_access_flags(qp_attr->qp_access_flags);
-+			__qp_access_flags_from_ib(qp->qplib_qp.cctx,
-+						  qp_attr->qp_access_flags);
- 		/* LOCAL_WRITE access must be set to allow RC receive */
--		qp->qplib_qp.access |= BNXT_QPLIB_ACCESS_LOCAL_WRITE;
--		/* Temp: Set all params on QP as of now */
--		qp->qplib_qp.access |= CMDQ_MODIFY_QP_ACCESS_REMOTE_WRITE;
--		qp->qplib_qp.access |= CMDQ_MODIFY_QP_ACCESS_REMOTE_READ;
-+		qp->qplib_qp.access |= CMDQ_MODIFY_QP_ACCESS_LOCAL_WRITE;
- 	}
- 	if (qp_attr_mask & IB_QP_PKEY_INDEX) {
- 		qp->qplib_qp.modify_flags |= CMDQ_MODIFY_QP_MODIFY_MASK_PKEY;
-@@ -2263,7 +2303,8 @@ int bnxt_re_query_qp(struct ib_qp *ib_qp, struct ib_qp_attr *qp_attr,
- 	qp_attr->qp_state = __to_ib_qp_state(qplib_qp->state);
- 	qp_attr->cur_qp_state = __to_ib_qp_state(qplib_qp->cur_qp_state);
- 	qp_attr->en_sqd_async_notify = qplib_qp->en_sqd_async_notify ? 1 : 0;
--	qp_attr->qp_access_flags = __to_ib_access_flags(qplib_qp->access);
-+	qp_attr->qp_access_flags = __qp_access_flags_to_ib(qp->qplib_qp.cctx,
-+							   qplib_qp->access);
- 	qp_attr->pkey_index = qplib_qp->pkey_index;
- 	qp_attr->qkey = qplib_qp->qkey;
- 	qp_attr->ah_attr.type = RDMA_AH_ATTR_TYPE_ROCE;
+ /* creq_create_cq_resp (size:128b/16B) */
 -- 
 2.5.5
 
