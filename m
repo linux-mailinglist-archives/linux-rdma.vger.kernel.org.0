@@ -1,85 +1,118 @@
-Return-Path: <linux-rdma+bounces-5443-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5444-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A681A9A2341
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Oct 2024 15:14:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE46D9A23B2
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Oct 2024 15:22:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D79F81C289EB
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Oct 2024 13:14:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 229141C22F4D
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Oct 2024 13:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF33E1DE4E9;
-	Thu, 17 Oct 2024 13:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="f9E1BCSU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A111DDC0F;
+	Thu, 17 Oct 2024 13:21:53 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D6411DDC3C;
-	Thu, 17 Oct 2024 13:12:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 627641D435F;
+	Thu, 17 Oct 2024 13:21:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729170779; cv=none; b=s5a3kRGQiwsFktgWG+p+EG3NV1zT0wdQVg8LcLtMqhu2aM6CqQto3r7RyOI8xlIrIXazw7SDSqFFeRgFarJWNTaYHz4457DFatzyZdTLviKMQRwpHMGv1w5ryB1E0g5WgyGBFtyQ9gGAhuSE23avjYWfy5+bwcwb2incno7Rnq0=
+	t=1729171313; cv=none; b=g7J7eqxg2nUu4a40QACEpz7gNENquoQDDsC+jDVZbr4hEQc4gUmIMau07R2ZLomEdh9QKwyQIfk677saO53rR7JNB7zmmdBs26f01mlF7waZoDoMYEFpXp+bd5B7dvQEUtI43mG6wbnOveycO/VxosaWaNyeotBZmQyDiq560Ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729170779; c=relaxed/simple;
-	bh=YmPKHblmykCYSpTXM4GbHkuG2YVDdbnNCpiO2NiFhRY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=plKf46HW3m6pWRIyAGxnDKq6fZG2AGYzojcwBZCQuPOAoX9P82JDJElHZ5MlJBfrazks/S0hNQ21dgD8WcdOjFaQPSDqVMc5SP++XfbYqIGuUwuyCfxF4Ufjwe/ESUZZAzD9AFBNBxr2O/OH7kZ/r62itqfxr6wtRe8/XC3mGyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=f9E1BCSU; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=YmPKHblmykCYSpTXM4GbHkuG2YVDdbnNCpiO2NiFhRY=; b=f9E1BCSULnSugS1EghEBwHw0l6
-	zQ3Gk6pTRx0UFUwvhS7/QVjlX0Hf2PrR3WtDAuc0WJtV5BrIMKHFQ6poJj068iXE5HPhablrFUo67
-	MGkkhQ8qf0FJ6PLrTdLSBf5j2R3pEgurLlaVeDox3ljUsYGxbDYygYPWcLv+25D+sELMvGtdjquA0
-	bZd/APhOUz3Pby05vHrYJODgTtxhpASNztVy/ApfHKosY+NMBHrlC6cx7rXcM7lZToV3hgRBrTs+I
-	TZ95IZLqPyXabFZg1Oq+H1xdllas7yBhvJ92uhWJBHxdyeUyBYfn1Q69UDb+LevK1JuB1EX6oSp9t
-	Mzge6k3Q==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1t1QJD-0000000EtT8-3yia;
-	Thu, 17 Oct 2024 13:12:55 +0000
-Date: Thu, 17 Oct 2024 06:12:55 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Yonatan Maman <ymaman@nvidia.com>, nouveau@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-mm@kvack.org, herbst@redhat.com, lyude@redhat.com,
-	dakr@redhat.com, airlied@gmail.com, simona@ffwll.ch,
-	leon@kernel.org, jglisse@redhat.com, akpm@linux-foundation.org,
-	dri-devel@lists.freedesktop.org, apopple@nvidia.com,
-	bskeggs@nvidia.com, Gal Shalom <GalShalom@nvidia.com>
-Subject: Re: [PATCH v1 1/4] mm/hmm: HMM API for P2P DMA to device zone pages
-Message-ID: <ZxENV_EppCYIXfOW@infradead.org>
-References: <20241015152348.3055360-1-ymaman@nvidia.com>
- <20241015152348.3055360-2-ymaman@nvidia.com>
- <Zw9F2uiq6-znYmTk@infradead.org>
- <20241016154428.GD4020792@ziepe.ca>
- <Zw_sn_DdZRUw5oxq@infradead.org>
- <20241016174445.GF4020792@ziepe.ca>
- <ZxD71D66qLI0qHpW@infradead.org>
- <20241017130539.GA897978@ziepe.ca>
+	s=arc-20240116; t=1729171313; c=relaxed/simple;
+	bh=HO7VO/l6vJF2WWghEaMrdSEc1Pa6WBo/pIGgw3SVUHs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=c1bDbzNk+/bKC9lk775VQhQr+fuZaUmpu5VlQ+zye/GDJ4mBDHUZp/9I71LY0sJVrZS+MeyJfxj0BaX0RwgBWtwLDCT6COZIgFddBwXUzqH/8PBbWP90N/pFB1sEmVFaM5EUDLsRATQpApPYwW9vvMMKGqKpfNpyJhZmHEgqgcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4XTpN83clLz10N2f;
+	Thu, 17 Oct 2024 21:19:52 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id B50281800F2;
+	Thu, 17 Oct 2024 21:21:46 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 17 Oct 2024 21:21:46 +0800
+Message-ID: <cd7ae683-c9b9-cb1c-c5fc-739d66c303ec@hisilicon.com>
+Date: Thu, 17 Oct 2024 21:21:45 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241017130539.GA897978@ziepe.ca>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: [PATCH for-next 9/9] RDMA/hns: Fix different dgids mapping to the
+ same dip_idx
+To: Leon Romanovsky <leon@kernel.org>
+CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>
+References: <20240906093444.3571619-1-huangjunxian6@hisilicon.com>
+ <20240906093444.3571619-10-huangjunxian6@hisilicon.com>
+ <20240910131205.GB4026@unreal>
+Content-Language: en-US
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20240910131205.GB4026@unreal>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-On Thu, Oct 17, 2024 at 10:05:39AM -0300, Jason Gunthorpe wrote:
-> Broadly I think whatever flow NVMe uses for P2P will apply to ODP as
-> well.
 
-ODP is a lot simpler than NVMe for P2P actually :(
 
+On 2024/9/10 21:12, Leon Romanovsky wrote:
+> On Fri, Sep 06, 2024 at 05:34:44PM +0800, Junxian Huang wrote:
+>> From: Feng Fang <fangfeng4@huawei.com>
+>>
+>> DIP algorithm requires a one-to-one mapping between dgid and dip_idx.
+>> Currently a queue 'spare_idx' is used to store QPN of QPs that use
+>> DIP algorithm. For a new dgid, use a QPN from spare_idx as dip_idx.
+>> This method lacks a mechanism for deduplicating QPN, which may result
+>> in different dgids sharing the same dip_idx and break the one-to-one
+>> mapping requirement.
+>>
+>> This patch replaces spare_idx with two new bitmaps: qpn_bitmap to record
+>> QPN that is not being used as dip_idx, and dip_idx_map to record QPN
+>> that is being used. Besides, introduce a reference count of a dip_idx
+>> to indicate the number of QPs that using this dip_idx. When creating
+>> a DIP QP, if it has a new dgid, set the corresponding bit in dip_idx_map,
+>> otherwise add 1 to the reference count of the reused dip_idx and set bit
+>> in qpn_bitmap. When destroying a DIP QP, decrement the reference count
+>> by 1. If it becomes 0, set bit in qpn_bitmap and clear bit in dip_idx_map.
+>>
+>> Fixes: eb653eda1e91 ("RDMA/hns: Bugfix for incorrect association between dip_idx and dgid")
+>> Fixes: f91696f2f053 ("RDMA/hns: Support congestion control type selection according to the FW")
+>> Signed-off-by: Feng Fang <fangfeng4@huawei.com>
+>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  6 +--
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 58 ++++++++++++++++++---
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  1 +
+>>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 16 ++++--
+>>  4 files changed, 67 insertions(+), 14 deletions(-)
+> 
+> It is strange implementation, double bitmap and refcount looks like
+> open-coding of some basic coding patterns. Let's wait with applying it
+> for now.
+> 
+
+Hi Leon, it's been a while since this patch was sent. Is it okay to be applied?
+
+Regarding your question about the double bitmaps, that's because we have 3 states
+to track:
+1) the context hasn't been created
+2) the context has been created but not used as dip_ctx
+3) the context is being used as dip_ctx.
+
+Junxian
+
+> Thanks
+> 
 
