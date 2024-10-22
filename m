@@ -1,165 +1,345 @@
-Return-Path: <linux-rdma+bounces-5463-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5464-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 154499A70C2
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2024 19:14:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 429FD9A9714
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2024 05:29:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F4FA1C22A10
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2024 17:14:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0D451F21A54
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2024 03:29:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCB11EB9FD;
-	Mon, 21 Oct 2024 17:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dKqBujcm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A061487E9;
+	Tue, 22 Oct 2024 03:28:45 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2050.outbound.protection.outlook.com [40.107.243.50])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27BA61C330C
-	for <linux-rdma@vger.kernel.org>; Mon, 21 Oct 2024 17:14:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729530878; cv=fail; b=XAGXjYl83WroqfQ3KzJ9AkE8ZZQ0XU9c5thy46qWE+GpjqD54cFuL2uKxxoId3wtOnILs17z8pOUEG7KOqiJt859kp03lxZaoCyeLzLpeNIjL2mMCd6AxzSagTEb6+KmQr85AhsESFl2fDZdSRI/hq6PEmiFMiPtK1bMv18o3pM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729530878; c=relaxed/simple;
-	bh=+g2Xg+9XeS7YGsI8Ox2xT8V1CU5iISLyEMLnK856O/g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=dP0F7Pd5JxxAFMx2z34jnLzSRf/taAJozDYc6TPLUdCGzl/MKSOEtyPRxyxNtVxARvZHcL1JJP99O7Ed82vbszfQjbNwX65a9j+Xfo/kYJLiSY/sAJWn3JMBswGNiYsglE9DlTqdHV/pW16QPwWfjbrc+m6Ta3nV6sG3XVAJ1N0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=dKqBujcm; arc=fail smtp.client-ip=40.107.243.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Z50yEu18Vd/sDWsO2N98yJkzNKp95nY2I9rXb9m7NcmhY/HhfIx59187vnP9wIjXaN45/yckvgSXDKHTK9gqZXbhpQg1N+DAkE403sJgEdKzllSEQjCjgNnqjKZz5jLOQBdWHNXbGli8Rtod0PGePH1gea3n7dAiU+8vtcCj64MEGGImy8aKSYP6pUjVYByVaFGE3TF6U/m/Th+/exPYS8qUa1f1GvcvBwuuOTsouh8uXXeIrkDeAmg9vTCgXNsETsdnapYv6BOS2sNrdP4yZMuvfGWACtiKtcQGTVjIToJWXazFee/dwk0BzTadQF+A2pM0r8RGvfvQQZYroN9lyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TPy/0phujc/PpxRUygBDwqJfWiSrLGz1I0hWNuVIGP4=;
- b=YviBhJC/deuNRBQ5pVcoi2OiUbfhF8fIiIJjakylaiAPdH+JIMJlvR2amIMo0aOQ1dxZee+Gs1tMweiSt8uVJc0kkNCR7dE0wA7UOkAFGVY04jPJ7GXjcX1ZUpynbcGzfuh+Yn8VjTl9x2g5GVRQHXTGcsXkex/llrxu6km9ziYtREeWhc2vWjboaE6yMJ9qrL2AAYHwuITJvasBS7330S0uZyRYTT8/o0yem/e7dtG/btjsxznTqDXlcRVzg9lLPmQyyuXYKqkOVm7eeDGGBiq6arbThltbMZ5DasHaHoYFt2chnwVCDGz3cS1PkmMHqq4YLOxV5YY0E29uOtGZLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TPy/0phujc/PpxRUygBDwqJfWiSrLGz1I0hWNuVIGP4=;
- b=dKqBujcm0asKK2u0FnGAI4lmLlbBRGspu0rPONpC9dwgLddRKnV04yt+xGU7NIIwk/JmybdxIUDcXHK9VG1iHLK8p0XcacTA301lfiuYyn+KJOEupjppo5wbnMHUfbGBVmx0iOl7lgG/kXUYVxswxhFogWcuRzA1o74q7ZBsVZDmqtMNuBWXufor+2wBH4uYXYwCzvQDQ5YSmv/vmemcaW+3ptIB0VhPqqwvmLH5zM0ZYvtil/AJPqFGIAyOQMe6NGQZH7iiJhteLSRuggSwj2Ub7x7h94VoCmOQfmgqO6av00cnEyoUZVgoz1eMHM5qnIKpN6WRS6MMN3b6aDjj3w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
- by PH7PR12MB6935.namprd12.prod.outlook.com (2603:10b6:510:1b9::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8069.29; Mon, 21 Oct
- 2024 17:14:31 +0000
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8069.027; Mon, 21 Oct 2024
- 17:14:31 +0000
-Date: Mon, 21 Oct 2024 14:14:30 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Michael Margolin <mrgolin@amazon.com>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org, sleybo@amazon.com,
-	matua@amazon.com, gal.pressman@linux.dev
-Subject: Re: [PATCH for-next 0/2] RDMA/efa: Support QP service level
-Message-ID: <20241021171430.GA61359@nvidia.com>
-References: <20241015174242.3490-1-mrgolin@amazon.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241015174242.3490-1-mrgolin@amazon.com>
-X-ClientProxiedBy: BL1PR13CA0140.namprd13.prod.outlook.com
- (2603:10b6:208:2bb::25) To CH3PR12MB8659.namprd12.prod.outlook.com
- (2603:10b6:610:17c::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B31DF146D5A;
+	Tue, 22 Oct 2024 03:28:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729567725; cv=none; b=aUNg1wlPuBjTf06wos/p7mwqbTXhQfzUe/Hh1pwYOjaUZxViNLNvMk+xP+HZ1kDbLfUfp5cB/M+Xg7Fd2h+LtBzX6h/tf1fi02wQT9ZiFseOmLVQIka0uMcSEovkFUFsxZrCixGDnXE7igUodeppHVE/jJ7QNGFf2/x8a/pBIYE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729567725; c=relaxed/simple;
+	bh=4KIp5dZBQ2vgj/5gMVtIqMo/bCJmLB+PJo5m2qX6YdY=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BJUV+2PG+Tr0jxTlNY/OQWG5HBoIMXjAbFGNuoiE+h5AttgraXQd5PBlyclZOz2YNStFODwQ4QDj+1rMaCKUrcIsmMoT6ab+EPbtPKEP9xy9pkGUXjeMnHNmfSLnucU9HzmsgUQ+A4Pm0O1HH8r/wngoLhqE7MtjKF6GxD+6LtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XXcwZ50T1z1HLCp;
+	Tue, 22 Oct 2024 11:24:14 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 38F861A0188;
+	Tue, 22 Oct 2024 11:28:34 +0800 (CST)
+Received: from localhost.localdomain (10.90.30.45) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 22 Oct 2024 11:28:33 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <zhangkun09@huawei.com>, <fanghaiqing@huawei.com>,
+	<liuyonglong@huawei.com>, Yunsheng Lin <linyunsheng@huawei.com>, Wei Fang
+	<wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
+	<xiaoning.wang@nxp.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet
+	<edumazet@google.com>, Jeroen de Borst <jeroendb@google.com>, Praveen
+ Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
+	<przemyslaw.kitszel@intel.com>, Alexander Lobakin
+	<aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
+	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
+	<tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi
+	<lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
+	<shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle Valo
+	<kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Ilias
+ Apalodimas <ilias.apalodimas@linaro.org>, <imx@lists.linux.dev>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <bpf@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH net-next v3 1/3] page_pool: introduce page_pool_to_pp() API
+Date: Tue, 22 Oct 2024 11:22:11 +0800
+Message-ID: <20241022032214.3915232-2-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20241022032214.3915232-1-linyunsheng@huawei.com>
+References: <20241022032214.3915232-1-linyunsheng@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|PH7PR12MB6935:EE_
-X-MS-Office365-Filtering-Correlation-Id: 45a60326-c525-444b-4291-08dcf1f3d3ce
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?7cpRh6f9h7HHG/V7KH6B83uirSWHq2eOLdmbIACRRfSeKrCQVnsWLdUe9tpR?=
- =?us-ascii?Q?YH/2lv+NrO+3n/oPDm+RHxG2e/1e4boMm//CGOvCxqOU17D/+NhCdRUzI7f8?=
- =?us-ascii?Q?R9y12iupTBadMeo9UkUFn7d8fnmKtsv8GY5z4YChzUhHLZjTMsvVqesonVbw?=
- =?us-ascii?Q?/w8o0T/n5657N292ANIBY7j+ImLq3S1SthZHpWZ/AWKSiLiC+9owL7KHt437?=
- =?us-ascii?Q?1NHrtiuXd1eSx/tTOrbEHlB+qkAHmvFLKdP3fP1cU3dz6/Sh6CvncskhdB21?=
- =?us-ascii?Q?jKzEP93P97kOMRLvK6vX72LzqOg6/0bv9aSocLHHrUtDzrpmzGxYry4vT7gK?=
- =?us-ascii?Q?4fdz11uMTip1Ut9lMdHS5YykMpSnZ6PJvg1cVlEKbQXsXaFsz3Z8So8DypPr?=
- =?us-ascii?Q?5mMp1OW5l9n1v41phFCQ779whXJgYYZE2AKUL/561Jw4T7Nmwr5jryAHEA3N?=
- =?us-ascii?Q?FtO9gM9ajivova/XulMi4jvU8pVIkknPt8MiAa/WCqdGGlkmJ83xMRUNpDTH?=
- =?us-ascii?Q?MvnilsS7PN1e6gynwKeuDcMLDIXdH7iEexpMTcWdVweBg1fWOy00PuvG3np2?=
- =?us-ascii?Q?mqbtcFCj3fg8vbRQeRO6kQfHrsxpjZpHd/Ift1ar4aLWE3NOyeGnixjcxp4J?=
- =?us-ascii?Q?WS2x2NUeuIBAaa8STlaf7nG4ygWMfypE89gpq35N72OrdLsvUv1Oosow+sQ9?=
- =?us-ascii?Q?qWytfszhq3xShCnyBoYVAgzT+1X5U/yaI4Q3WVfKW7uIUSFN/FDYru0U5Q8k?=
- =?us-ascii?Q?UZ0rPgClPnMYPCUpqJz+wOLm/H4HUKeYz5BHu9SkRfFgpg3WV0g0VBJfCyjO?=
- =?us-ascii?Q?BMgplk/J9hnXx0B/lA7lT39nrIel6angkj9RnL6XKpgUr77i2kRaKRHZVSQY?=
- =?us-ascii?Q?Ufb7tt9PVsdYrRJJgwuQAQmlhKV8g2rsLLwMx4y7DbIJSDzh4Nte1LryBTLG?=
- =?us-ascii?Q?M7jyG4lC8M9UlD80duBeIf/NZ3Mp4WP38yGq6nWEVj8p0c0M3Wof1tTGFBT+?=
- =?us-ascii?Q?V3fnShwfa1dfsArrN5EWM5hGdbKNQURUW1n2B/QRFIkvd08sZ1430A8HwQmh?=
- =?us-ascii?Q?DHnCkRWFwK4kT3Ty4s1yyT9aAoA8JcyBDkS0P4/1Lld6T5m1nnjIwZlHJrne?=
- =?us-ascii?Q?LW5DWD7JnDx0joaG1hCMM410/qeIXPkKGKHjpM3PJabEjx+Yue6bDEZ5VaIt?=
- =?us-ascii?Q?LZc/v5W8e/8WS1bkLIV9+dkav5yBzsYpa8CuueqG8j2UepvlEHG4kDgWXQXI?=
- =?us-ascii?Q?GT7xEW8Oouce6ZrYAtClskoeBQUzC6rry5u8gJipat/zShRgnFXQOw0t9vFg?=
- =?us-ascii?Q?+MnrTi7hqq4XMiEJyGbpCgU2?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?i+qcBrXzCwRCG1psm3JZv4OucVEivtj+twe1y8Z9vHxvaAeCLQUbcOc6PkDG?=
- =?us-ascii?Q?OH3/HLLt7qcEs5xpL2d6R/1GknVH56CnLJt5TLg9i5/r2K/Z9WQOo8WtMdl2?=
- =?us-ascii?Q?b8GEOBY7hhi+DEDhceUZkgsPCUzcYFQpVmjRgnPvZXIFhfw1kt0yRTlLkt9d?=
- =?us-ascii?Q?Fyx8DsjvN9ZOwqSi0DKilI4jWw7YuRxjwTZYvYj1Z4AgEH0W1R2JuB+M2aW7?=
- =?us-ascii?Q?R+2/HZCzBVYlDH/FKj1KMTAqT0YzoGCwLOkIa5ULPK2hojXUTQ1dCgo8rNYy?=
- =?us-ascii?Q?vyumTv9j4WU6wKeiffFYK8G1F1aYm/Cr6tLu4o56eZ8E2xKmOhsDMPZnq8gM?=
- =?us-ascii?Q?EkBeov8/1XuMgTkylbCjxxaRhjVb8ZToCeuCsbTNjB+3OtN++KwVNjdgoOIK?=
- =?us-ascii?Q?waT+/F3XiiLTMahLwhoeEBlKMl7qaXIa5g/hGM+XYuxOvyg/8JFaLu221rV1?=
- =?us-ascii?Q?1oj9VhlL9cwfIYU5Ypa90hHXXSBZbVce3Ghf5pP1n5DZvqRQwFXVeY4LIvkK?=
- =?us-ascii?Q?AtDSCpJ2bqf+1WjUF0YA3CMJiq8/Mw7sH4kYLVxlTAvZ7D3pQMHGCZ+XstCF?=
- =?us-ascii?Q?7kQgMXF16YFl0+XTS+ku0XsdQC4Ee8Qv2i5FHtc+IK8usJJ8780KOnEyUTAO?=
- =?us-ascii?Q?4b6QjAHqEPgezkrs791sszHpv9jwHYYhjYLWrIcjFwJCv6wIh/qUTlqiBqD2?=
- =?us-ascii?Q?TbtFd6O1lQbwbXBjilGbJXlIBfM+01mswS1N3nunq09uJyzTGClxuzFir9Gg?=
- =?us-ascii?Q?ikBKedO4UeaIGfbAAWRXjp7DA/wr+g9dj/QBHFLoS8Qt1sB8M8BbJ9HPtkMs?=
- =?us-ascii?Q?jF7BYKYGvGA/Kp1ti5q0fGwMi+KeF+onwCA0cW0IFiZnvqpzPMLYWH7X8zPf?=
- =?us-ascii?Q?FAy9WW3wSMSaBcjlkcwTkDyRTS9ddl4J1ajGeuzKg5wCdZfztMaAQlvlLqPC?=
- =?us-ascii?Q?FaGIz6jRvJB860Y9XGkrhCfW3yCVBbVBJ5GTSqZK0t6diKPUNmkaJwYCI2EZ?=
- =?us-ascii?Q?mMHvRfKgHUJ3krv19/QW6egWgKAiIl4V3iHkp9ZNM5E0p4EX7QlPB8h1Fkw5?=
- =?us-ascii?Q?grRsj+rtS4nyqXbl3krMkNlbAnBy3//9l5753LCEFjYJFWU05X8y5WqN3awo?=
- =?us-ascii?Q?m4miboEDrJTD+hmaHUSq+DEUv8jfEm1BIVpqEkctVV+JQ7AvomRbCke95q6W?=
- =?us-ascii?Q?t16bm+8jZMAnX79GSOBlg34k6oZ0JA11mDKSu+XzwLFsXEHhDyHjHm0BrrFs?=
- =?us-ascii?Q?GqFHjeS6MoW7LVughs4uXakkPMnDATn4o9vAta+lkBp09bxbjKTW1m+OpeKI?=
- =?us-ascii?Q?Wd2YUrSkfk74n8Z5hPKqr/djhsuxVCQWribHL+XjxV1EL+vKKBmYwXbuWqdK?=
- =?us-ascii?Q?6HD12FleW1lJC7Mmsmhz4tmd5t58Fj/AJ3ilKf74AaRx+7IHgUaO4a/Nc8RJ?=
- =?us-ascii?Q?LJ6vBRTVyEBkwYt79Vpvovt28eo3/fmsQXsc01AjSgHgP6O4vOvbsyDmLfzN?=
- =?us-ascii?Q?NAJFmER6cOJ6wOkRLKX+FfJoc3zXKvy9oEjMfnpu+iYwRc8DJMoxQ4QTgMWF?=
- =?us-ascii?Q?MJs76yjibvU65oemSqLoscQf7WOUjiQivUj2IV6a?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45a60326-c525-444b-4291-08dcf1f3d3ce
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2024 17:14:31.4682
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4uez68TRoWpdNZXI5pDD6EVPGAiC8vu78QPgJOoPMB0P0qcqArleBH/7ch/ku+/A
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6935
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-On Tue, Oct 15, 2024 at 05:42:40PM +0000, Michael Margolin wrote:
-> Align the device interface and add an option to pass QP service level
-> from user to the device.
-> 
-> Michael Margolin (2):
->   RDMA/efa: Update device interface
->   RDMA/efa: Add option to set QP service level on create
+introduce page_pool_to_pp() API to avoid caller accessing
+page->pp directly.
 
-Applied to for-next
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+---
+ drivers/net/ethernet/freescale/fec_main.c          |  8 +++++---
+ .../net/ethernet/google/gve/gve_buffer_mgmt_dqo.c  |  4 ++--
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c        |  6 ++++--
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c        | 14 +++++++++-----
+ drivers/net/ethernet/intel/libeth/rx.c             |  2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c   |  3 ++-
+ drivers/net/netdevsim/netdev.c                     |  6 ++++--
+ drivers/net/wireless/mediatek/mt76/mt76.h          |  2 +-
+ include/net/libeth/rx.h                            |  3 ++-
+ include/net/page_pool/helpers.h                    |  5 +++++
+ net/core/skbuff.c                                  |  3 ++-
+ net/core/xdp.c                                     |  3 ++-
+ 12 files changed, 39 insertions(+), 20 deletions(-)
 
-Thanks,
-Jason
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index 1b55047c0237..98fce41d088c 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -1009,7 +1009,8 @@ static void fec_enet_bd_init(struct net_device *dev)
+ 				struct page *page = txq->tx_buf[i].buf_p;
+ 
+ 				if (page)
+-					page_pool_put_page(page->pp, page, 0, false);
++					page_pool_put_page(page_pool_to_pp(page),
++							   page, 0, false);
+ 			}
+ 
+ 			txq->tx_buf[i].buf_p = NULL;
+@@ -1549,7 +1550,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
+ 			xdp_return_frame_rx_napi(xdpf);
+ 		} else { /* recycle pages of XDP_TX frames */
+ 			/* The dma_sync_size = 0 as XDP_TX has already synced DMA for_device */
+-			page_pool_put_page(page->pp, page, 0, true);
++			page_pool_put_page(page_pool_to_pp(page), page, 0, true);
+ 		}
+ 
+ 		txq->tx_buf[index].buf_p = NULL;
+@@ -3311,7 +3312,8 @@ static void fec_enet_free_buffers(struct net_device *ndev)
+ 			} else {
+ 				struct page *page = txq->tx_buf[i].buf_p;
+ 
+-				page_pool_put_page(page->pp, page, 0, false);
++				page_pool_put_page(page_pool_to_pp(page),
++						   page, 0, false);
+ 			}
+ 
+ 			txq->tx_buf[i].buf_p = NULL;
+diff --git a/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c b/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
+index 05bf1f80a79c..dd5b45adf5cc 100644
+--- a/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
++++ b/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
+@@ -210,8 +210,8 @@ void gve_free_to_page_pool(struct gve_rx_ring *rx,
+ 	if (!page)
+ 		return;
+ 
+-	page_pool_put_page(page->pp, page, buf_state->page_info.buf_size,
+-			   allow_direct);
++	page_pool_put_page(page_pool_to_pp(page), page,
++			   buf_state->page_info.buf_size, allow_direct);
+ 	buf_state->page_info.page = NULL;
+ }
+ 
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_txrx.c b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
+index 26b424fd6718..658d8f9a6abb 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_txrx.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
+@@ -1050,7 +1050,8 @@ static void iavf_add_rx_frag(struct sk_buff *skb,
+ 			     const struct libeth_fqe *rx_buffer,
+ 			     unsigned int size)
+ {
+-	u32 hr = rx_buffer->page->pp->p.offset;
++	struct page_pool *pool = page_pool_to_pp(rx_buffer->page);
++	u32 hr = pool->p.offset;
+ 
+ 	skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buffer->page,
+ 			rx_buffer->offset + hr, size, rx_buffer->truesize);
+@@ -1067,7 +1068,8 @@ static void iavf_add_rx_frag(struct sk_buff *skb,
+ static struct sk_buff *iavf_build_skb(const struct libeth_fqe *rx_buffer,
+ 				      unsigned int size)
+ {
+-	u32 hr = rx_buffer->page->pp->p.offset;
++	struct page_pool *pool = page_pool_to_pp(rx_buffer->page);
++	u32 hr = pool->p.offset;
+ 	struct sk_buff *skb;
+ 	void *va;
+ 
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+index d4e6f0e10487..e3389f1a215f 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+@@ -385,7 +385,8 @@ static void idpf_rx_page_rel(struct libeth_fqe *rx_buf)
+ 	if (unlikely(!rx_buf->page))
+ 		return;
+ 
+-	page_pool_put_full_page(rx_buf->page->pp, rx_buf->page, false);
++	page_pool_put_full_page(page_pool_to_pp(rx_buf->page), rx_buf->page,
++				false);
+ 
+ 	rx_buf->page = NULL;
+ 	rx_buf->offset = 0;
+@@ -3097,7 +3098,8 @@ idpf_rx_process_skb_fields(struct idpf_rx_queue *rxq, struct sk_buff *skb,
+ void idpf_rx_add_frag(struct idpf_rx_buf *rx_buf, struct sk_buff *skb,
+ 		      unsigned int size)
+ {
+-	u32 hr = rx_buf->page->pp->p.offset;
++	struct page_pool *pool = page_pool_to_pp(rx_buf->page);
++	u32 hr = pool->p.offset;
+ 
+ 	skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buf->page,
+ 			rx_buf->offset + hr, size, rx_buf->truesize);
+@@ -3129,8 +3131,10 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
+ 	if (!libeth_rx_sync_for_cpu(buf, copy))
+ 		return 0;
+ 
+-	dst = page_address(hdr->page) + hdr->offset + hdr->page->pp->p.offset;
+-	src = page_address(buf->page) + buf->offset + buf->page->pp->p.offset;
++	dst = page_address(hdr->page) + hdr->offset +
++		page_pool_to_pp(hdr->page)->p.offset;
++	src = page_address(buf->page) + buf->offset +
++		page_pool_to_pp(buf->page)->p.offset;
+ 	memcpy(dst, src, LARGEST_ALIGN(copy));
+ 
+ 	buf->offset += copy;
+@@ -3148,7 +3152,7 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
+  */
+ struct sk_buff *idpf_rx_build_skb(const struct libeth_fqe *buf, u32 size)
+ {
+-	u32 hr = buf->page->pp->p.offset;
++	u32 hr = page_pool_to_pp(buf->page)->p.offset;
+ 	struct sk_buff *skb;
+ 	void *va;
+ 
+diff --git a/drivers/net/ethernet/intel/libeth/rx.c b/drivers/net/ethernet/intel/libeth/rx.c
+index f20926669318..385afca0e61d 100644
+--- a/drivers/net/ethernet/intel/libeth/rx.c
++++ b/drivers/net/ethernet/intel/libeth/rx.c
+@@ -207,7 +207,7 @@ EXPORT_SYMBOL_NS_GPL(libeth_rx_fq_destroy, LIBETH);
+  */
+ void libeth_rx_recycle_slow(struct page *page)
+ {
+-	page_pool_recycle_direct(page->pp, page);
++	page_pool_recycle_direct(page_pool_to_pp(page), page);
+ }
+ EXPORT_SYMBOL_NS_GPL(libeth_rx_recycle_slow, LIBETH);
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+index 4610621a340e..83511a45a6dc 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+@@ -716,7 +716,8 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
+ 				/* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
+ 				 * as we know this is a page_pool page.
+ 				 */
+-				page_pool_recycle_direct(page->pp, page);
++				page_pool_recycle_direct(page_pool_to_pp(page),
++							 page);
+ 			} while (++n < num);
+ 
+ 			break;
+diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netdev.c
+index cad85bb0cf54..7590ddd14dda 100644
+--- a/drivers/net/netdevsim/netdev.c
++++ b/drivers/net/netdevsim/netdev.c
+@@ -632,7 +632,8 @@ nsim_pp_hold_write(struct file *file, const char __user *data,
+ 		if (!ns->page)
+ 			ret = -ENOMEM;
+ 	} else {
+-		page_pool_put_full_page(ns->page->pp, ns->page, false);
++		page_pool_put_full_page(page_pool_to_pp(ns->page), ns->page,
++					false);
+ 		ns->page = NULL;
+ 	}
+ 	rtnl_unlock();
+@@ -827,7 +828,8 @@ void nsim_destroy(struct netdevsim *ns)
+ 
+ 	/* Put this intentionally late to exercise the orphaning path */
+ 	if (ns->page) {
+-		page_pool_put_full_page(ns->page->pp, ns->page, false);
++		page_pool_put_full_page(page_pool_to_pp(ns->page), ns->page,
++					false);
+ 		ns->page = NULL;
+ 	}
+ 
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76.h b/drivers/net/wireless/mediatek/mt76/mt76.h
+index 0b75a45ad2e8..94a277290909 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76.h
++++ b/drivers/net/wireless/mediatek/mt76/mt76.h
+@@ -1688,7 +1688,7 @@ static inline void mt76_put_page_pool_buf(void *buf, bool allow_direct)
+ {
+ 	struct page *page = virt_to_head_page(buf);
+ 
+-	page_pool_put_full_page(page->pp, page, allow_direct);
++	page_pool_put_full_page(page_pool_to_pp(page), page, allow_direct);
+ }
+ 
+ static inline void *
+diff --git a/include/net/libeth/rx.h b/include/net/libeth/rx.h
+index 43574bd6612f..beee7ddd77a5 100644
+--- a/include/net/libeth/rx.h
++++ b/include/net/libeth/rx.h
+@@ -137,7 +137,8 @@ static inline bool libeth_rx_sync_for_cpu(const struct libeth_fqe *fqe,
+ 		return false;
+ 	}
+ 
+-	page_pool_dma_sync_for_cpu(page->pp, page, fqe->offset, len);
++	page_pool_dma_sync_for_cpu(page_pool_to_pp(page), page, fqe->offset,
++				   len);
+ 
+ 	return true;
+ }
+diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
+index 793e6fd78bc5..1659f1995985 100644
+--- a/include/net/page_pool/helpers.h
++++ b/include/net/page_pool/helpers.h
+@@ -83,6 +83,11 @@ static inline u64 *page_pool_ethtool_stats_get(u64 *data, const void *stats)
+ }
+ #endif
+ 
++static inline struct page_pool *page_pool_to_pp(struct page *page)
++{
++	return page->pp;
++}
++
+ /**
+  * page_pool_dev_alloc_pages() - allocate a page.
+  * @pool:	pool from which to allocate
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 00afeb90c23a..649e02e2cbc8 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -1033,7 +1033,8 @@ bool napi_pp_put_page(netmem_ref netmem)
+ 	if (unlikely(!is_pp_netmem(netmem)))
+ 		return false;
+ 
+-	page_pool_put_full_netmem(netmem_get_pp(netmem), netmem, false);
++	page_pool_put_full_netmem(page_pool_to_pp(netmem_to_page(netmem)),
++				  netmem, false);
+ 
+ 	return true;
+ }
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index bcc5551c6424..e8582036b411 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -384,7 +384,8 @@ void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+ 		/* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
+ 		 * as mem->type knows this a page_pool page
+ 		 */
+-		page_pool_put_full_page(page->pp, page, napi_direct);
++		page_pool_put_full_page(page_pool_to_pp(page), page,
++					napi_direct);
+ 		break;
+ 	case MEM_TYPE_PAGE_SHARED:
+ 		page_frag_free(data);
+-- 
+2.33.0
+
 
