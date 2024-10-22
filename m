@@ -1,328 +1,114 @@
-Return-Path: <linux-rdma+bounces-5475-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5479-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FB629AA0FA
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2024 13:16:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C53A59AB0D3
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2024 16:29:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76753B21684
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2024 11:16:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AA7E1F23F62
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2024 14:29:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CB219C576;
-	Tue, 22 Oct 2024 11:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B4D1A08DC;
+	Tue, 22 Oct 2024 14:29:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Oxurvs7y"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FAF199FB5;
-	Tue, 22 Oct 2024 11:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C8419DF5F
+	for <linux-rdma@vger.kernel.org>; Tue, 22 Oct 2024 14:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729595798; cv=none; b=iBJFK5ejtUQg4/j3htYUYXASjXGdzEfrEeeEOofkBJsCGxMmRK9JQFl7re1oNqKtOktMtrx4L9hXVFyJ8x96DqvToed1mFAvG3YVYkis2nIha2N6ZDpmIfrEYNY1eVWJMQNRsTGN/h9JQuqWGJowFBW5/9D6GybNmCyDU9HhWoA=
+	t=1729607345; cv=none; b=qmzdSSO3QIeJ4n/wLvLABxPyd8MeIfcuLRU4VdwOppxWIun3+RnpDFb+cJtuk54xWpTTMpFPcQcICXd91/o4HlxI2lbOq39KIUc8WxJLmw0duqcQESdJNIPUKGEWYQGQXKOXnH6elzASGGP8dBuA6uIiatuwVnJoLGMtqxfu4Kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729595798; c=relaxed/simple;
-	bh=KCSF3pqS1j1j3qpR6oOvsDHmOE/iiaihE4/0TDGLTjE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Xm+KmfaHR3bMIvZcAtjM6uMXhPODeX2S7wpGIM5aI6/0hSLFNg0bUPMvuMULviA0CIH+g4ds35TDvjlA1SfliyyMISpsj+TnKYoJHsek64DTakvSNs8FAos0EwhW6eZsWZc5u/h67r0FRA3BkZR+9tLcRZNjytAR8YUv3s1TWB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4XXqPg50Jqz1ynKK;
-	Tue, 22 Oct 2024 19:16:39 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 994821A0188;
-	Tue, 22 Oct 2024 19:16:32 +0800 (CST)
-Received: from localhost.localdomain (10.90.30.45) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 22 Oct 2024 19:16:32 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
-	<tangchengchang@huawei.com>
-Subject: [PATCH for-rc 5/5] RDMA/hns: Fix cpu stuck caused by printings during reset
-Date: Tue, 22 Oct 2024 19:10:17 +0800
-Message-ID: <20241022111017.946170-6-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20241022111017.946170-1-huangjunxian6@hisilicon.com>
-References: <20241022111017.946170-1-huangjunxian6@hisilicon.com>
+	s=arc-20240116; t=1729607345; c=relaxed/simple;
+	bh=FWIUzDJsMLIU8LmwxOdULgE14BEiPOqKtaJ7NvsJTKY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gdp8jekCof/ts5yjH3l2Q0T1K6umSQGS2QvFsZALHEiPYLUj7T/s7CsKCHtQaLhzoqNvNKYH8z3NPKxbnY/++6lL4ZpUSLrTYigSGMs88+eLVtagbmZwJaa0IajKhH07fZfnB5VGhUvvV80RkWwEg60VLE+ivACLG18yIVj44gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Oxurvs7y; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7b161fa1c7bso228981385a.0
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Oct 2024 07:29:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1729607343; x=1730212143; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QBQs0VktZnZLMvhoI85WO8zPMaVfIDxzSx1BsoDRynk=;
+        b=Oxurvs7yXvalAKMsBc/nP+/D+5la6Rkxlhdm9Ddkq8teH7t+oHpH7ZPJ+mVwHFfk5W
+         wxpWq5N/4aRo4KVxiOisV/uySj5b8oJ3ynZNKVOd3clM1EmoUaX7yHLk8CnFODVP13eb
+         N7fht01EuJdQr+AIuw6NEB71zGLc/POVDDPOZHy4hK2fMwM9nr4wlySNrWHEkgUi9jlN
+         feWU3ztMlmnHFVnIRphfcFybCCaMbczHzYOoWoeL8mg9ryltTKNVU1a7VqZqb735OtLo
+         axITeO/szettRnvohX4iLo+FINW4Bm7Db00hnc4vdqlOpcuwYfRYjpIs1QFXXye7dlsC
+         /Qqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729607343; x=1730212143;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QBQs0VktZnZLMvhoI85WO8zPMaVfIDxzSx1BsoDRynk=;
+        b=bXCWNUaOGXwLWe46VDi4SuvftjZ7ekgfNzZRwdZrbb3uqNEEA+n+9rqSTtCuIuswOd
+         9y1u9fl6O7HeYzjfRHzuxUIQOdxP/zQ/igwpuCk8zhZdjsFmyCHhisYzQ0auEY15sw/A
+         UwpDHnXpvt4JvYTt1iZVV6i8TigYWexrxd0VE9BRiATGuXd6yk8jJDwWqXCxv7GzJ8EY
+         O+PR62OsDIYGKJNAdzdnvSheoGjolcIi92sMuoorPESFJRtS6asGXfC2W3CtKt3lJYuI
+         A1wRqbWEqLelknubE67QRq5wes5+r7U+8/lS89X/2Rzh1N7bZ3pQUIWbQ0NeQf2Wey9I
+         N6QQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+VkzLGvOak/0/2CgZjU1DIOFa9El7UjNqOaAkAXxeEBdNJ5KXM0tRXUVuCEklMIkCFiGh/3TpGPPS@vger.kernel.org
+X-Gm-Message-State: AOJu0YxG6CqW8d+K8CY86A2i6vWHrYQz57W17PSzsCXwUxvIuhUdoCl6
+	13vWZ7HVf5IJ+NFrUuctMRH5BCJqoJdZSEFrUK626JAG8kv8mLgLHv1NOQe3ztE=
+X-Google-Smtp-Source: AGHT+IH8N2eHg9nw+vHszANEXOFWLyJrLXfEthKl81Z7ZBHmwyuw+1iu3EyqKAdTOb/FJU0+FqZosQ==
+X-Received: by 2002:a05:620a:40c2:b0:7b1:47bb:5334 with SMTP id af79cd13be357-7b157be0c1fmr1774276585a.40.1729607342834;
+        Tue, 22 Oct 2024 07:29:02 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b165a037fbsm285619185a.60.2024.10.22.07.29.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Oct 2024 07:29:01 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1t3Fsb-003rIb-1c;
+	Tue, 22 Oct 2024 11:29:01 -0300
+Date: Tue, 22 Oct 2024 11:29:01 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: syzbot <syzbot+6dee15fdb0606ef7b6ba@syzkaller.appspotmail.com>
+Cc: leon@kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [rdma?] INFO: task hung in add_one_compat_dev (3)
+Message-ID: <20241022142901.GA13306@ziepe.ca>
+References: <671756af.050a0220.10f4f4.010f.GAE@google.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemf100018.china.huawei.com (7.202.181.17)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <671756af.050a0220.10f4f4.010f.GAE@google.com>
 
-From: wenglianfa <wenglianfa@huawei.com>
+On Tue, Oct 22, 2024 at 12:39:27AM -0700, syzbot wrote:
 
-During reset, cmd to destroy resources such as qp, cq, and mr may fail,
-and error logs will be printed. When a large number of resources are
-destroyed, there will be lots of printings, and it may lead to a cpu
-stuck.
+> 1 lock held by syz-executor/27959:
+>  #0: ffffffff8fcbffc8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
+>  #0: ffffffff8fcbffc8 (rtnl_mutex){+.+.}-{3:3}, at: __rtnl_newlink net/core/rtnetlink.c:3749 [inline]
+>  #0: ffffffff8fcbffc8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_newlink+0xab7/0x20a0 net/core/rtnetlink.c:3772
 
-Delete some unnecessary printings and replace other printing functions
-in these paths with the ratelimited version.
+There is really something wrong with the new sykzaller reporting, can
+someone fix it?
 
-Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
-Fixes: c7bcb13442e1 ("RDMA/hns: Add SRQ support for hip08 kernel mode")
-Fixes: 70f92521584f ("RDMA/hns: Use the reserved loopback QPs to free MR before destroying MPT")
-Fixes: 926a01dc000d ("RDMA/hns: Add QP operations support for hip08 SoC")
-Signed-off-by: wenglianfa <wenglianfa@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_cq.c    |  4 +-
- drivers/infiniband/hw/hns/hns_roce_hem.c   |  4 +-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 73 ++++++++++------------
- drivers/infiniband/hw/hns/hns_roce_mr.c    |  4 +-
- drivers/infiniband/hw/hns/hns_roce_srq.c   |  4 +-
- 5 files changed, 41 insertions(+), 48 deletions(-)
+The kernel log that shows the programs:
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index 4ec66611a143..4106423a1b39 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -179,8 +179,8 @@ static void free_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 	ret = hns_roce_destroy_hw_ctx(hr_dev, HNS_ROCE_CMD_DESTROY_CQC,
- 				      hr_cq->cqn);
- 	if (ret)
--		dev_err(dev, "DESTROY_CQ failed (%d) for CQN %06lx\n", ret,
--			hr_cq->cqn);
-+		dev_err_ratelimited(dev, "DESTROY_CQ failed (%d) for CQN %06lx\n",
-+				    ret, hr_cq->cqn);
- 
- 	xa_erase_irq(&cq_table->array, hr_cq->cqn);
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index ee5d2c1bb5ca..f84521be3bea 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -672,8 +672,8 @@ void hns_roce_table_put(struct hns_roce_dev *hr_dev,
- 
- 	ret = hr_dev->hw->clear_hem(hr_dev, table, obj, HEM_HOP_STEP_DIRECT);
- 	if (ret)
--		dev_warn(dev, "failed to clear HEM base address, ret = %d.\n",
--			 ret);
-+		dev_warn_ratelimited(dev, "failed to clear HEM base address, ret = %d.\n",
-+				     ret);
- 
- 	hns_roce_free_hem(hr_dev, table->hem[i]);
- 	table->hem[i] = NULL;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index aa42c5a9b254..b6a0498a7b03 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -373,19 +373,12 @@ static int set_rwqe_data_seg(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- static int check_send_valid(struct hns_roce_dev *hr_dev,
- 			    struct hns_roce_qp *hr_qp)
- {
--	struct ib_device *ibdev = &hr_dev->ib_dev;
--
- 	if (unlikely(hr_qp->state == IB_QPS_RESET ||
- 		     hr_qp->state == IB_QPS_INIT ||
--		     hr_qp->state == IB_QPS_RTR)) {
--		ibdev_err(ibdev, "failed to post WQE, QP state %u!\n",
--			  hr_qp->state);
-+		     hr_qp->state == IB_QPS_RTR))
- 		return -EINVAL;
--	} else if (unlikely(hr_dev->state >= HNS_ROCE_DEVICE_STATE_RST_DOWN)) {
--		ibdev_err(ibdev, "failed to post WQE, dev state %d!\n",
--			  hr_dev->state);
-+	else if (unlikely(hr_dev->state >= HNS_ROCE_DEVICE_STATE_RST_DOWN))
- 		return -EIO;
--	}
- 
- 	return 0;
- }
-@@ -2775,8 +2768,8 @@ static int free_mr_modify_rsv_qp(struct hns_roce_dev *hr_dev,
- 	ret = hr_dev->hw->modify_qp(&hr_qp->ibqp, attr, mask, IB_QPS_INIT,
- 				    IB_QPS_INIT, NULL);
- 	if (ret) {
--		ibdev_err(ibdev, "failed to modify qp to init, ret = %d.\n",
--			  ret);
-+		ibdev_err_ratelimited(ibdev, "failed to modify qp to init, ret = %d.\n",
-+				      ret);
- 		return ret;
- 	}
- 
-@@ -3421,8 +3414,8 @@ static int free_mr_post_send_lp_wqe(struct hns_roce_qp *hr_qp)
- 
- 	ret = hns_roce_v2_post_send(&hr_qp->ibqp, send_wr, &bad_wr);
- 	if (ret) {
--		ibdev_err(ibdev, "failed to post wqe for free mr, ret = %d.\n",
--			  ret);
-+		ibdev_err_ratelimited(ibdev, "failed to post wqe for free mr, ret = %d.\n",
-+				      ret);
- 		return ret;
- 	}
- 
-@@ -3461,9 +3454,9 @@ static void free_mr_send_cmd_to_hw(struct hns_roce_dev *hr_dev)
- 
- 		ret = free_mr_post_send_lp_wqe(hr_qp);
- 		if (ret) {
--			ibdev_err(ibdev,
--				  "failed to send wqe (qp:0x%lx) for free mr, ret = %d.\n",
--				  hr_qp->qpn, ret);
-+			ibdev_err_ratelimited(ibdev,
-+					      "failed to send wqe (qp:0x%lx) for free mr, ret = %d.\n",
-+					      hr_qp->qpn, ret);
- 			break;
- 		}
- 
-@@ -3474,16 +3467,16 @@ static void free_mr_send_cmd_to_hw(struct hns_roce_dev *hr_dev)
- 	while (cqe_cnt) {
- 		npolled = hns_roce_v2_poll_cq(&free_mr->rsv_cq->ib_cq, cqe_cnt, wc);
- 		if (npolled < 0) {
--			ibdev_err(ibdev,
--				  "failed to poll cqe for free mr, remain %d cqe.\n",
--				  cqe_cnt);
-+			ibdev_err_ratelimited(ibdev,
-+					      "failed to poll cqe for free mr, remain %d cqe.\n",
-+					      cqe_cnt);
- 			goto out;
- 		}
- 
- 		if (time_after(jiffies, end)) {
--			ibdev_err(ibdev,
--				  "failed to poll cqe for free mr and timeout, remain %d cqe.\n",
--				  cqe_cnt);
-+			ibdev_err_ratelimited(ibdev,
-+					      "failed to poll cqe for free mr and timeout, remain %d cqe.\n",
-+					      cqe_cnt);
- 			goto out;
- 		}
- 		cqe_cnt -= npolled;
-@@ -5061,10 +5054,8 @@ static int hns_roce_v2_set_abs_fields(struct ib_qp *ibqp,
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
- 	int ret = 0;
- 
--	if (!check_qp_state(cur_state, new_state)) {
--		ibdev_err(&hr_dev->ib_dev, "Illegal state for QP!\n");
-+	if (!check_qp_state(cur_state, new_state))
- 		return -EINVAL;
--	}
- 
- 	if (cur_state == IB_QPS_RESET && new_state == IB_QPS_INIT) {
- 		memset(qpc_mask, 0, hr_dev->caps.qpc_sz);
-@@ -5325,7 +5316,7 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 	/* SW pass context to HW */
- 	ret = hns_roce_v2_qp_modify(hr_dev, context, qpc_mask, hr_qp);
- 	if (ret) {
--		ibdev_err(ibdev, "failed to modify QP, ret = %d.\n", ret);
-+		ibdev_err_ratelimited(ibdev, "failed to modify QP, ret = %d.\n", ret);
- 		goto out;
- 	}
- 
-@@ -5463,7 +5454,9 @@ static int hns_roce_v2_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 
- 	ret = hns_roce_v2_query_qpc(hr_dev, hr_qp->qpn, &context);
- 	if (ret) {
--		ibdev_err(ibdev, "failed to query QPC, ret = %d.\n", ret);
-+		ibdev_err_ratelimited(ibdev,
-+				      "failed to query QPC, ret = %d.\n",
-+				      ret);
- 		ret = -EINVAL;
- 		goto out;
- 	}
-@@ -5471,7 +5464,7 @@ static int hns_roce_v2_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
- 	state = hr_reg_read(&context, QPC_QP_ST);
- 	tmp_qp_state = to_ib_qp_st((enum hns_roce_v2_qp_state)state);
- 	if (tmp_qp_state == -1) {
--		ibdev_err(ibdev, "Illegal ib_qp_state\n");
-+		ibdev_err_ratelimited(ibdev, "Illegal ib_qp_state\n");
- 		ret = -EINVAL;
- 		goto out;
- 	}
-@@ -5564,9 +5557,9 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
- 		ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, NULL, 0,
- 					    hr_qp->state, IB_QPS_RESET, udata);
- 		if (ret)
--			ibdev_err(ibdev,
--				  "failed to modify QP to RST, ret = %d.\n",
--				  ret);
-+			ibdev_err_ratelimited(ibdev,
-+					      "failed to modify QP to RST, ret = %d.\n",
-+					      ret);
- 	}
- 
- 	send_cq = hr_qp->ibqp.send_cq ? to_hr_cq(hr_qp->ibqp.send_cq) : NULL;
-@@ -5609,9 +5602,9 @@ int hns_roce_v2_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 
- 	ret = hns_roce_v2_destroy_qp_common(hr_dev, hr_qp, udata);
- 	if (ret)
--		ibdev_err(&hr_dev->ib_dev,
--			  "failed to destroy QP, QPN = 0x%06lx, ret = %d.\n",
--			  hr_qp->qpn, ret);
-+		ibdev_err_ratelimited(&hr_dev->ib_dev,
-+				      "failed to destroy QP, QPN = 0x%06lx, ret = %d.\n",
-+				      hr_qp->qpn, ret);
- 
- 	hns_roce_qp_destroy(hr_dev, hr_qp, udata);
- 
-@@ -5905,9 +5898,9 @@ static int hns_roce_v2_modify_cq(struct ib_cq *cq, u16 cq_count, u16 cq_period)
- 				HNS_ROCE_CMD_MODIFY_CQC, hr_cq->cqn);
- 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
- 	if (ret)
--		ibdev_err(&hr_dev->ib_dev,
--			  "failed to process cmd when modifying CQ, ret = %d.\n",
--			  ret);
-+		ibdev_err_ratelimited(&hr_dev->ib_dev,
-+				      "failed to process cmd when modifying CQ, ret = %d.\n",
-+				      ret);
- 
- err_out:
- 	if (ret)
-@@ -5931,9 +5924,9 @@ static int hns_roce_v2_query_cqc(struct hns_roce_dev *hr_dev, u32 cqn,
- 	ret = hns_roce_cmd_mbox(hr_dev, 0, mailbox->dma,
- 				HNS_ROCE_CMD_QUERY_CQC, cqn);
- 	if (ret) {
--		ibdev_err(&hr_dev->ib_dev,
--			  "failed to process cmd when querying CQ, ret = %d.\n",
--			  ret);
-+		ibdev_err_ratelimited(&hr_dev->ib_dev,
-+				      "failed to process cmd when querying CQ, ret = %d.\n",
-+				      ret);
- 		goto err_mailbox;
- 	}
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index 846da8c78b8b..b3f4327d0e64 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -138,8 +138,8 @@ static void hns_roce_mr_free(struct hns_roce_dev *hr_dev, struct hns_roce_mr *mr
- 					      key_to_hw_index(mr->key) &
- 					      (hr_dev->caps.num_mtpts - 1));
- 		if (ret)
--			ibdev_warn(ibdev, "failed to destroy mpt, ret = %d.\n",
--				   ret);
-+			ibdev_warn_ratelimited(ibdev, "failed to destroy mpt, ret = %d.\n",
-+					       ret);
- 	}
- 
- 	free_mr_pbl(hr_dev, mr);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index c9b8233f4b05..70c06ef65603 100644
---- a/drivers/infiniband/hw/hns/hns_roce_srq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -151,8 +151,8 @@ static void free_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
- 	ret = hns_roce_destroy_hw_ctx(hr_dev, HNS_ROCE_CMD_DESTROY_SRQ,
- 				      srq->srqn);
- 	if (ret)
--		dev_err(hr_dev->dev, "DESTROY_SRQ failed (%d) for SRQN %06lx\n",
--			ret, srq->srqn);
-+		dev_err_ratelimited(hr_dev->dev, "DESTROY_SRQ failed (%d) for SRQN %06lx\n",
-+				    ret, srq->srqn);
- 
- 	xa_erase_irq(&srq_table->xa, srq->srqn);
- 
--- 
-2.33.0
+https://syzkaller.appspot.com/x/log.txt?x=10d72727980000
 
+Doesn't have the word "newlink"/"new"/"link" etc, and yet there is an
+executor clearly sitting in a newlink netlink callback when we
+crashed.
+
+We need to see the syzkaller programs that are triggering these issues
+to get ideas, and for some reason they are missing now.
+
+Jason
 
