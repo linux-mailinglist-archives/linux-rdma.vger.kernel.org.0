@@ -1,114 +1,143 @@
-Return-Path: <linux-rdma+bounces-5479-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5480-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C53A59AB0D3
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2024 16:29:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF20D9ACB78
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2024 15:42:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AA7E1F23F62
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2024 14:29:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80CDA286B6C
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2024 13:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B4D1A08DC;
-	Tue, 22 Oct 2024 14:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C91441B9B50;
+	Wed, 23 Oct 2024 13:41:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Oxurvs7y"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="byqFQa1x"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C8419DF5F
-	for <linux-rdma@vger.kernel.org>; Tue, 22 Oct 2024 14:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2C51AD9C3
+	for <linux-rdma@vger.kernel.org>; Wed, 23 Oct 2024 13:41:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729607345; cv=none; b=qmzdSSO3QIeJ4n/wLvLABxPyd8MeIfcuLRU4VdwOppxWIun3+RnpDFb+cJtuk54xWpTTMpFPcQcICXd91/o4HlxI2lbOq39KIUc8WxJLmw0duqcQESdJNIPUKGEWYQGQXKOXnH6elzASGGP8dBuA6uIiatuwVnJoLGMtqxfu4Kg=
+	t=1729690914; cv=none; b=qCcaCekSoazBl4rkvNSpSjL3EAzMx/CsAsboPS0XpduHegk48o2X+2o/fUAhOsLOIUwdY1uFtr/AkeGxLd0KBwrNl12chCI7hT3H79Vmv6SZgsplngbbzljjZMTA4PPym+mUmAqFJoJo+itUuK1PnTzrKWcnG+FDwW6xIMGjmRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729607345; c=relaxed/simple;
-	bh=FWIUzDJsMLIU8LmwxOdULgE14BEiPOqKtaJ7NvsJTKY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gdp8jekCof/ts5yjH3l2Q0T1K6umSQGS2QvFsZALHEiPYLUj7T/s7CsKCHtQaLhzoqNvNKYH8z3NPKxbnY/++6lL4ZpUSLrTYigSGMs88+eLVtagbmZwJaa0IajKhH07fZfnB5VGhUvvV80RkWwEg60VLE+ivACLG18yIVj44gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Oxurvs7y; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7b161fa1c7bso228981385a.0
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Oct 2024 07:29:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1729607343; x=1730212143; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QBQs0VktZnZLMvhoI85WO8zPMaVfIDxzSx1BsoDRynk=;
-        b=Oxurvs7yXvalAKMsBc/nP+/D+5la6Rkxlhdm9Ddkq8teH7t+oHpH7ZPJ+mVwHFfk5W
-         wxpWq5N/4aRo4KVxiOisV/uySj5b8oJ3ynZNKVOd3clM1EmoUaX7yHLk8CnFODVP13eb
-         N7fht01EuJdQr+AIuw6NEB71zGLc/POVDDPOZHy4hK2fMwM9nr4wlySNrWHEkgUi9jlN
-         feWU3ztMlmnHFVnIRphfcFybCCaMbczHzYOoWoeL8mg9ryltTKNVU1a7VqZqb735OtLo
-         axITeO/szettRnvohX4iLo+FINW4Bm7Db00hnc4vdqlOpcuwYfRYjpIs1QFXXye7dlsC
-         /Qqg==
+	s=arc-20240116; t=1729690914; c=relaxed/simple;
+	bh=u9FF3WzzoqNp4eLryQOSowGgpuAPFK0vwL3y9Yg8ZNc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ZBtNS2CJTq8ZZEWV5pYEgvTfVcui+ANxbTkasLFcb7TOTCzb5NN44Uz9m9RunLUaKM7+DWZzYJCE+abdyGzF76zd8Sithgqt68tiI1iqfKoocj5PKpXl53zxwNcKrgY7Te/5LbmEtcN4/fc+Y+lyb2/jOYylPaZA/EbLRR+HUUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=byqFQa1x; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1729690910;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZAM8ZRvTda+LEs/8ya4sgurWTTiohnnijyfOuyfhNxo=;
+	b=byqFQa1xCXkohw8TyvRP+gAxZP/5RsF4oFm0kNWCjid1TdI3ejVAQQxM84xpj8LCpy5qdG
+	nBU5XTmb5CDT+xFH94/PlidHizcPYeN5CEf0UIhSPVLjs/Wgrt+9+TOK3oQD/wvjefQH9J
+	XEztHF7dGSDH+kMMz29+6eUfUFIiOHc=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-318-DDKab02tOJeOQizm4_Drag-1; Wed, 23 Oct 2024 09:41:49 -0400
+X-MC-Unique: DDKab02tOJeOQizm4_Drag-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-37d4854fa0eso4028555f8f.2
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Oct 2024 06:41:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729607343; x=1730212143;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QBQs0VktZnZLMvhoI85WO8zPMaVfIDxzSx1BsoDRynk=;
-        b=bXCWNUaOGXwLWe46VDi4SuvftjZ7ekgfNzZRwdZrbb3uqNEEA+n+9rqSTtCuIuswOd
-         9y1u9fl6O7HeYzjfRHzuxUIQOdxP/zQ/igwpuCk8zhZdjsFmyCHhisYzQ0auEY15sw/A
-         UwpDHnXpvt4JvYTt1iZVV6i8TigYWexrxd0VE9BRiATGuXd6yk8jJDwWqXCxv7GzJ8EY
-         O+PR62OsDIYGKJNAdzdnvSheoGjolcIi92sMuoorPESFJRtS6asGXfC2W3CtKt3lJYuI
-         A1wRqbWEqLelknubE67QRq5wes5+r7U+8/lS89X/2Rzh1N7bZ3pQUIWbQ0NeQf2Wey9I
-         N6QQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU+VkzLGvOak/0/2CgZjU1DIOFa9El7UjNqOaAkAXxeEBdNJ5KXM0tRXUVuCEklMIkCFiGh/3TpGPPS@vger.kernel.org
-X-Gm-Message-State: AOJu0YxG6CqW8d+K8CY86A2i6vWHrYQz57W17PSzsCXwUxvIuhUdoCl6
-	13vWZ7HVf5IJ+NFrUuctMRH5BCJqoJdZSEFrUK626JAG8kv8mLgLHv1NOQe3ztE=
-X-Google-Smtp-Source: AGHT+IH8N2eHg9nw+vHszANEXOFWLyJrLXfEthKl81Z7ZBHmwyuw+1iu3EyqKAdTOb/FJU0+FqZosQ==
-X-Received: by 2002:a05:620a:40c2:b0:7b1:47bb:5334 with SMTP id af79cd13be357-7b157be0c1fmr1774276585a.40.1729607342834;
-        Tue, 22 Oct 2024 07:29:02 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b165a037fbsm285619185a.60.2024.10.22.07.29.01
+        d=1e100.net; s=20230601; t=1729690908; x=1730295708;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZAM8ZRvTda+LEs/8ya4sgurWTTiohnnijyfOuyfhNxo=;
+        b=mTNz0vWpryzFRcVjwsYDZ/MC6XeeoZCM//kZA3Pqm3dAshTbNtxdBCm6JPV3IthDmZ
+         MzJfCutEXyfivLYRl+ZTJ01r33WlH3qPQKinoPCE4av0Iq5jqcEi6hxPG9Q71ZGbq6u9
+         iloHuAKxky/jhXbHlYYLgvHXXUBLhH0nxu4QkJcUAB0x7LT+yRGnFtA52ejRIp1ne8dh
+         UEVDRKZxYUcH91btqgO3J1sLwmmPZKgGCuLWAC3cSQ1dvfJ92Cy4+ZajaH3JcxaVrGWa
+         P+RfJ83OcLij7pVpYyncAvfEz7/R6hLvMhHE+iTtv7OCc6QGsdyBF87QpqN7zwt9zFOP
+         F1Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCV08IaHkROAP+zMW5/6wInwqIPv/WFmxcdoDM/arb9heq67pQAWwgVs5miFlB8hgrRC91iT5J77zaHX@vger.kernel.org
+X-Gm-Message-State: AOJu0YxKmfsB49ErfpVWVYiOj6Uhr5s1ryeu8c1Wh5WQUpBp/cfecuFr
+	LlxtuEQvOf5/B7IPKZwQvxkXXokEGlFer50SlKXvRnxjpX485AiFBT9S4st9dhwR7yMEHzXXBTD
+	R9hVG78rkHFiaLztAMhyzf0qdSvPE0AUkQ9jQuTtwUSlk7hibo05StMY79UA=
+X-Received: by 2002:a5d:44c2:0:b0:374:cd3e:7d98 with SMTP id ffacd0b85a97d-37efcf106ddmr2013598f8f.19.1729690908045;
+        Wed, 23 Oct 2024 06:41:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFXPXXPAYcibfIzDBRMTHs9hPWdPNDz3Eha+UK8URGkuRSuFekIz7fNUsSwd5AIqn2zOU7BLQ==
+X-Received: by 2002:a5d:44c2:0:b0:374:cd3e:7d98 with SMTP id ffacd0b85a97d-37efcf106ddmr2013576f8f.19.1729690907619;
+        Wed, 23 Oct 2024 06:41:47 -0700 (PDT)
+Received: from rh.fritz.box (p200300f6af01c000f92aec4042337510.dip0.t-ipconnect.de. [2003:f6:af01:c000:f92a:ec40:4233:7510])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37ee0a5882dsm8898858f8f.50.2024.10.23.06.41.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Oct 2024 07:29:01 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1t3Fsb-003rIb-1c;
-	Tue, 22 Oct 2024 11:29:01 -0300
-Date: Tue, 22 Oct 2024 11:29:01 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: syzbot <syzbot+6dee15fdb0606ef7b6ba@syzkaller.appspotmail.com>
-Cc: leon@kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [rdma?] INFO: task hung in add_one_compat_dev (3)
-Message-ID: <20241022142901.GA13306@ziepe.ca>
-References: <671756af.050a0220.10f4f4.010f.GAE@google.com>
+        Wed, 23 Oct 2024 06:41:47 -0700 (PDT)
+From: Sebastian Ott <sebott@redhat.com>
+To: netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Parav Pandit <parav@nvidia.com>,
+	Breno Leitao <leitao@debian.org>
+Subject: [PATCH v2 RESEND] net/mlx5: unique names for per device caches
+Date: Wed, 23 Oct 2024 15:41:46 +0200
+Message-ID: <20241023134146.28448-1-sebott@redhat.com>
+X-Mailer: git-send-email 2.47.0
+In-Reply-To: <20240920181129.37156-1-sebott@redhat.com>
+References: <20240920181129.37156-1-sebott@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <671756af.050a0220.10f4f4.010f.GAE@google.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Oct 22, 2024 at 12:39:27AM -0700, syzbot wrote:
+Add the device name to the per device kmem_cache names to
+ensure their uniqueness. This fixes warnings like this:
+"kmem_cache of name 'mlx5_fs_fgs' already exists".
 
-> 1 lock held by syz-executor/27959:
->  #0: ffffffff8fcbffc8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
->  #0: ffffffff8fcbffc8 (rtnl_mutex){+.+.}-{3:3}, at: __rtnl_newlink net/core/rtnetlink.c:3749 [inline]
->  #0: ffffffff8fcbffc8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_newlink+0xab7/0x20a0 net/core/rtnetlink.c:3772
+Reviwed-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Sebastian Ott <sebott@redhat.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-There is really something wrong with the new sykzaller reporting, can
-someone fix it?
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
+index 8505d5e241e1..c2db0a1c132b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
+@@ -3689,6 +3689,7 @@ void mlx5_fs_core_free(struct mlx5_core_dev *dev)
+ int mlx5_fs_core_alloc(struct mlx5_core_dev *dev)
+ {
+ 	struct mlx5_flow_steering *steering;
++	char name[80];
+ 	int err = 0;
+ 
+ 	err = mlx5_init_fc_stats(dev);
+@@ -3713,10 +3714,12 @@ int mlx5_fs_core_alloc(struct mlx5_core_dev *dev)
+ 	else
+ 		steering->mode = MLX5_FLOW_STEERING_MODE_DMFS;
+ 
+-	steering->fgs_cache = kmem_cache_create("mlx5_fs_fgs",
++	snprintf(name, sizeof(name), "%s-mlx5_fs_fgs", dev_name(dev->device));
++	steering->fgs_cache = kmem_cache_create(name,
+ 						sizeof(struct mlx5_flow_group), 0,
+ 						0, NULL);
+-	steering->ftes_cache = kmem_cache_create("mlx5_fs_ftes", sizeof(struct fs_fte), 0,
++	snprintf(name, sizeof(name), "%s-mlx5_fs_ftes", dev_name(dev->device));
++	steering->ftes_cache = kmem_cache_create(name, sizeof(struct fs_fte), 0,
+ 						 0, NULL);
+ 	if (!steering->ftes_cache || !steering->fgs_cache) {
+ 		err = -ENOMEM;
+-- 
+2.42.0
 
-The kernel log that shows the programs:
-
-https://syzkaller.appspot.com/x/log.txt?x=10d72727980000
-
-Doesn't have the word "newlink"/"new"/"link" etc, and yet there is an
-executor clearly sitting in a newlink netlink callback when we
-crashed.
-
-We need to see the syzkaller programs that are triggering these issues
-to get ideas, and for some reason they are missing now.
-
-Jason
 
