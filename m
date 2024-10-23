@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-5482-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5483-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BF519ACC96
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2024 16:34:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1AE89ACCD9
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2024 16:40:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CF812851D9
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2024 14:34:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B34A8281CFE
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2024 14:40:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9781C1ADE;
-	Wed, 23 Oct 2024 14:30:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3F0202F6F;
+	Wed, 23 Oct 2024 14:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nkd+Yead"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="la2gk8mx"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A241D07B5;
-	Wed, 23 Oct 2024 14:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44BCA20263A;
+	Wed, 23 Oct 2024 14:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729693848; cv=none; b=r4XJILgHO//0Z4eYbgJ8x32ULB+qgyjp1Nxm/fZeKv2cNDNS++uZRW+Y+hG+/RqubeIMb3AvLsBkUup9wffslGxbG0O9BKnFCiQokKCl8cmwiK2IbMLP1y/vLBO8hVtBsgN345IZI6egzV9Y3i7AidrAZ256jAvghlC+mq69mSg=
+	t=1729693903; cv=none; b=cKUV7gF9fXf/EenXgeWcbVp6Qfp1ehjpOAC2bSNFZoEZ9vpKMK6V3pvfCdrjtBz118jwBU2KlSKoAoDj0OE+HH2ap0EYmAqB6vQDPfQNqEE+rnP+C6ZcY+jMho+jpvKiQQkjGiaMDxeJNMvf88zOZyfqzAR1nOQLVLEOqIMY51I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729693848; c=relaxed/simple;
-	bh=+AgzRitTrPavLHm2h/DGn6E26S0hzz8IHgAWQEz2QMU=;
+	s=arc-20240116; t=1729693903; c=relaxed/simple;
+	bh=s4++R1mlGf5iuA+qO5foJSvwbg1b8NPDNgpsztDq5vo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=maNo0WID46BWBRnszBgIb9NXQhSlP2d2gGGBUctMI/RY21q851eQVeuFmCyW9EM4rOM4thWOrSTm6aapVW3vC2zzyfF7ae49J/mWVc2ZUm0bm0ibJrbjGmif5fANAyocX/ftPQYrALkzu4Qra5wwAxdUiR4aL+efi6SGsxcHuhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nkd+Yead; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85021C4CEE9;
-	Wed, 23 Oct 2024 14:30:47 +0000 (UTC)
+	 MIME-Version; b=H0OXJACa2+WafgW2Z9FS6jmtFYaFngeHfovMKbH6ZEv3gxjSG8glnbaeWlKFo7BtFJNXewRUTtFe70KFfELx+PFYmhtzJHvv485dJa2InO2oezX7l+TuVw2p06zt+F44VA8AbrNO7bvvRDn1oQoXzvwR3TeiyPnf3hqUQNVog+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=la2gk8mx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00CD7C4CEE5;
+	Wed, 23 Oct 2024 14:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729693848;
-	bh=+AgzRitTrPavLHm2h/DGn6E26S0hzz8IHgAWQEz2QMU=;
+	s=k20201202; t=1729693902;
+	bh=s4++R1mlGf5iuA+qO5foJSvwbg1b8NPDNgpsztDq5vo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nkd+YeadgHrT5fqE7GVix2L4D7atEfTzKlxJfQH4Fv1tT2TjLGdSa7l0uKAd0LiZT
-	 HYKtx8PuKcZi2Q6i7cnAgA65lfDkZC3FuyEUNIlAp4wb6y2lKltUZytVOgNNqWzsUc
-	 faivZQN+y8nWF9w7u+GfN+6Z2pLLQ/G0W7fUvfWkXDtt9mpODt48SwXpr3fNhNaJJ1
-	 dURSluaOIifv9LMT2VMEJEndyabC5UFm9PHaWomzkX34OXDPTvjameUBOotzuonSQg
-	 jtX5fXZyZCN3i5nScM4yJ1cNnD0JajXlsJfK8GfDhoxc5szXQi2I1TQ8woih2OTfVV
-	 rR4ArsswlMA5g==
+	b=la2gk8mxbvLECVpHfpS6HjS5qhyI2V0HUjURfC39sjDVoRvSGt1p8KDa+7w9NJhKS
+	 b7KNZ6jojZbIrhptWMmI6WlICs/J4kfYYDCfbLqoDal5ROhvRDLlYldjynjQlswr+5
+	 MVktQg51TSSKPNRPZM3jKFhj4qV7kJmdW42shL8u6GietoAYTxFJbmm5qE2cUNhQpx
+	 WE4RpRDPVttqXgNwUd3zcBt4MUbVdTSHIB8ekPFlwbuL+whybuDDOHzoRKCsLyYm0x
+	 syq0NDTkR7PwbwKkEIr7Z9UeooU9VCbQkJFa+uzZUGU1KVNBaJWcrbea8RBfUOu3LN
+	 Mxva3MvNnecig==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,12 +50,12 @@ Cc: Showrya M N <showrya@chelsio.com>,
 	Sasha Levin <sashal@kernel.org>,
 	bmt@zurich.ibm.com,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.11 21/30] RDMA/siw: Add sendpage_ok() check to disable MSG_SPLICE_PAGES
-Date: Wed, 23 Oct 2024 10:29:46 -0400
-Message-ID: <20241023143012.2980728-21-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 16/23] RDMA/siw: Add sendpage_ok() check to disable MSG_SPLICE_PAGES
+Date: Wed, 23 Oct 2024 10:31:00 -0400
+Message-ID: <20241023143116.2981369-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241023143012.2980728-1-sashal@kernel.org>
-References: <20241023143012.2980728-1-sashal@kernel.org>
+In-Reply-To: <20241023143116.2981369-1-sashal@kernel.org>
+References: <20241023143116.2981369-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -64,7 +64,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.11.5
+X-stable-base: Linux 6.6.58
 Content-Transfer-Encoding: 8bit
 
 From: Showrya M N <showrya@chelsio.com>
@@ -101,10 +101,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index 64ad9e0895bd0..a034264c56698 100644
+index 60b6a41359611..feae920784be8 100644
 --- a/drivers/infiniband/sw/siw/siw_qp_tx.c
 +++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -331,6 +331,8 @@ static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
+@@ -337,6 +337,8 @@ static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
  			msg.msg_flags &= ~MSG_MORE;
  
  		tcp_rate_check_app_limited(sk);
