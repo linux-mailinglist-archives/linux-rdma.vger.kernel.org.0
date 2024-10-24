@@ -1,74 +1,74 @@
-Return-Path: <linux-rdma+bounces-5508-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5509-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C69A29AEC83
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2024 18:48:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 113419AECA2
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2024 18:51:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 731C01F2474B
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2024 16:48:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C871A281EBE
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2024 16:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82EC41F709C;
-	Thu, 24 Oct 2024 16:48:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F57B1F819E;
+	Thu, 24 Oct 2024 16:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T3Cal0Ap"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jHWw6Tyr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2184E1F4724;
-	Thu, 24 Oct 2024 16:48:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55AAC167DAC;
+	Thu, 24 Oct 2024 16:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729788487; cv=none; b=L2fWDzn4p2ZuGOb6PmfaoWJ0AEuic2c8QkqWnLMNFd5CiFuf2MtmcA8xw0c0O0HT7Ddb13LbX2I91qbImJMGfH2IV48FSmUZ7K8aZv3E+j12fGBK+7ZpW2zgWbhcd8svX9YuaF8ZLrzQkdcsPhIjIDEbuWT51FPNkpM+dax0Hb8=
+	t=1729788690; cv=none; b=BHHb30onB3GZqK87huJmPq3rDDdJ/QAvmAJGYfjRfoWdy4/nraE76+iOyMKG6B91eD6TPyMcawxjpCH/lmE0929/y+W3VUOzNCkb29k4zdkk36wzRO4KVwIwt6doNhwDgfshw8WYRYidGxHI9tNq7YewG8Xr4pLPtbJCMLGo+UQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729788487; c=relaxed/simple;
-	bh=Xd3zCQJSFluPLr68+g0FTOhdgAUJKcVEhtol9bIe3uM=;
+	s=arc-20240116; t=1729788690; c=relaxed/simple;
+	bh=4A786CPjDvqACnuzx/J9DqOF5YWtyQ0b8FJojeoO3S0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f27gWP0Et7AgKikZLrvY7LxDGvxjZ3XUUasaql/m9n3+Uhcm7j09TSxdBeeoz3cuKODEiQphNfuomKu29fT4uHdMBc9nyiicSzSDHhBgT1NaV5TF4DAlvlu0uMo3x3k13Ao00CyeZVaIR2K7eqCkujRW0lUn8DVK0oD+2iqHgKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T3Cal0Ap; arc=none smtp.client-ip=209.85.221.42
+	 In-Reply-To:Content-Type; b=vCbb6cMzV8Fym3S5mFWX0Y9e85RzHrhZueffogE+FgG8XK1MuMvufVrtFCf+/2cNc2TX0mt494eQqQl5yuk71jLoFdNh8YGUJHJHgsXHM0zJgWnrPbwQGNGvn4cAtbEj6EaUMrishH+1yBHbTj5awi6dCVmcTJEkY4kjhbNGNhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jHWw6Tyr; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-37d3ecad390so1671890f8f.1;
-        Thu, 24 Oct 2024 09:48:04 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-37d55f0cf85so896955f8f.3;
+        Thu, 24 Oct 2024 09:51:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729788483; x=1730393283; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729788686; x=1730393486; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=b/QXTPupZszyGbqY5pviify12KAi6ghznoufyE83p4g=;
-        b=T3Cal0ApOWP0WVDJWjOfA4loW0BPedT2DilTFqkVH0/XkQWRb/0XEwosiIe5DMf2ZK
-         ifvGGaWPJlEJuJKQvl7J9VHAwvjs7du4OxFnwCluRvPiyNHavIIJsrrlLsuCte6swCrL
-         nZy+mB/WViSgqZklLNh2d+FMGKP/Jl9hcP/zzDCN2ej+0SEuASAIPxoccXg1XIbPcWu6
-         rb/fvm0I66Ho5iD7mYmms3A+OFBVSBEGwr1q6X5qrUZiXlibGHI0YStkqDdAvRaRApps
-         D0BBVMa7Zwria8cnX0mmqIkLW8tx2n/La+dOA7PxZhrNbZIa2GPJSYDRYR9EwvmUbLwv
-         2PWQ==
+        bh=g0S65iBcIJZZEOd9D4XzJaH7aFYD4CGJUi+zHz0Iw5Y=;
+        b=jHWw6Tyrm97G4A0W9uqN2XwCle4izECZcIxTPRjVAZsnku8EYzMiD8trRWNEzK2/hy
+         6clWJb3HEfdpaABr7E/YAyBshq4ktEdx9ZeagH7SyUiuzviKj8ktG9yqg8fOBu2qSyJB
+         8uMFhj4CdqglLYJUX9xapyvhJ1zXPd4FXmLIlBo7oUs0gxKvjpZXMWEkXU/dvAeanZeZ
+         phl5P8lw7lmRkxVJ7KUwgik5Vfpx+57tu7eQtb+bxtcYblNczvNLt7smPukRYsznk4jV
+         nuFxSdgAw1cBe1B5dbcrx6y1aLE8pbXxIQfDEF8GcZ/fZvzupGjrqeRKq8zAfXKan/vD
+         NSyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729788483; x=1730393283;
+        d=1e100.net; s=20230601; t=1729788686; x=1730393486;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b/QXTPupZszyGbqY5pviify12KAi6ghznoufyE83p4g=;
-        b=NxnR2f20tm8c1+KoTL8x6+yMc8+SY5I38vQzZGYK1EeNGmG1CeZrT+enuG/J4Ihika
-         OS3wPj5tqO64sSS9jWblV4Lo3LqgCzZYtDhe10Xh3PnKoRJwP1pRS9JZP7shWa6gxOmv
-         782eQNAR0DGdPkNYCpvr2h9LMvpKgiHM+xl6+GXvbR83N83EYqd7y5xKVhJQYXRQ05kr
-         6MYfZh9Cz5JjqizwztYmnfl9C1tO34viG/3SWkyzVmTO+QWBK3n3KjSu7wQC0SitzWnO
-         jqSOvWTbZ6sPEJF58nKpbDQhYexkl7n8pqFA7Ckn3xF8zzmcWl/zQ5rLHMAS6NTMiB1B
-         EQCw==
-X-Forwarded-Encrypted: i=1; AJvYcCUpsyb88MhnrH2wA81pkyp2436rpd5QCwGHpPhHPKT6MTLGD6cMHr3l7u+7mNt/flIhzFpW+sf8@vger.kernel.org, AJvYcCV/TfMy5kmllHKbvkUtaZmYH3drFcZZfaZmq2RxE4a3fjum1s0xhtdyrRt4nqNHpqIxgMQbbdeRAR6TTzI=@vger.kernel.org, AJvYcCVmjRyfOSlAVf/3b/HUSmQmMrEY6mwS/mrOCjAo+EtJZXyQ/qYgxu/zbBuLqZNCnKsY/d94KThql2TWKw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyqDYWB7fDiv+3kV8DWZv03ngu8nUw26TDQtk6j6ZWlTCg8eUMC
-	HLetGIZkHJiURjVpREFbWRa+LEyDOXim8Mel47/WlZ+pzftBzWY/HuP6lQ==
-X-Google-Smtp-Source: AGHT+IECqRZ6Q/nyl6/XwIc1sJkxWZUlLZwLcHVdEwkx/anPOckDX+XnYpJxIl0h+hzyf4SZFMPUfg==
-X-Received: by 2002:a5d:4248:0:b0:374:c1ea:2d40 with SMTP id ffacd0b85a97d-3803abc523bmr2013545f8f.1.1729788482907;
-        Thu, 24 Oct 2024 09:48:02 -0700 (PDT)
+        bh=g0S65iBcIJZZEOd9D4XzJaH7aFYD4CGJUi+zHz0Iw5Y=;
+        b=vShGpMksW+YnYn8HRYI+rOnNbKv4kfzbXwj6xLYSYbZdaP1ONhFFRMzMefTtMgSzrA
+         MdxEbevzbYF61Uw5MbM6kTdBq4A/TdJuaPCbfdOEjxXjS81r8c0dm2LVrukIHu3xD+Dq
+         C0zfb3mS0hlhoul/wpE+AbPbg96Um47FOSFm3aDOderWbbvf/eH13hpO3/P/fjYhliKL
+         DLFETeb4nYO3ZZyWv4n+WA61FPgBViGvBktLY/xQxeAUc59oh17GFxQUBSxi0u9CXc0i
+         txMVw8ICkShWO7Fz/meJlnttKdauKq89uXvhd0Qc/xrtqjmTDwsf/QyUNjEd8PYmfSMI
+         IDNg==
+X-Forwarded-Encrypted: i=1; AJvYcCW4vzVND/Y9NWFkL3ipIccaQbZi4SpAlfaZ1LjmXMlhHff3ZiwFMnM8TsTgjuZeandHwAlfW1bZI11t0NY=@vger.kernel.org, AJvYcCW6JAahmDdpMGClQeghc55/oNxHivahrWg+RJkqG88Lct+q6cX7nz8JhgdNGdprEDT0mb8yua5V73BcjQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6pQtZJll/ijsAybNgR+kPE6eaGYxqM6WjBeZZCkVvD32E/Zw3
+	0EHw1yEnxRmfqdjBZ2zFrYnQQd0hmKO+PVCWjVnjWIkDCTxiG3cC
+X-Google-Smtp-Source: AGHT+IHwrCxLSJOjJMV5Ts1Ngu/tZbfdEooa8kHhZMTgRc2L6Jfblh8rgsO24jf2Bsh8xTQO7V5z2w==
+X-Received: by 2002:a5d:5609:0:b0:37d:4e74:67c with SMTP id ffacd0b85a97d-37efcf73d4emr4234806f8f.39.1729788686111;
+        Thu, 24 Oct 2024 09:51:26 -0700 (PDT)
 Received: from [172.27.21.144] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4318b55f39fsm23045525e9.12.2024.10.24.09.48.00
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37ee0b9405asm11751487f8f.87.2024.10.24.09.51.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Oct 2024 09:48:02 -0700 (PDT)
-Message-ID: <4e3fbf05-3a88-43be-826c-a16a6718217f@gmail.com>
-Date: Thu, 24 Oct 2024 19:47:54 +0300
+        Thu, 24 Oct 2024 09:51:25 -0700 (PDT)
+Message-ID: <5db365eb-2da3-4b5b-9ff7-58cd4af6d20e@gmail.com>
+Date: Thu, 24 Oct 2024 19:51:22 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -76,64 +76,37 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 RESEND] net/mlx5: unique names for per device caches
-To: Sebastian Ott <sebott@redhat.com>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Parav Pandit <parav@nvidia.com>,
- Breno Leitao <leitao@debian.org>
-References: <20240920181129.37156-1-sebott@redhat.com>
- <20241023134146.28448-1-sebott@redhat.com>
+Subject: Re: [PATCH] mlx5: fix typo in "mlx5_cqwq_get_cqe_enahnced_comp"
+To: Caleb Sander Mateos <csander@purestorage.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+ Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20241023164840.140535-1-csander@purestorage.com>
 Content-Language: en-US
 From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20241023134146.28448-1-sebott@redhat.com>
+In-Reply-To: <20241023164840.140535-1-csander@purestorage.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 23/10/2024 16:41, Sebastian Ott wrote:
-> Add the device name to the per device kmem_cache names to
-> ensure their uniqueness. This fixes warnings like this:
-> "kmem_cache of name 'mlx5_fs_fgs' already exists".
+On 23/10/2024 19:48, Caleb Sander Mateos wrote:
+> "enahnced" looks to be a misspelling of "enhanced".
+
+Indeed.
+
+> Rename "mlx5_cqwq_get_cqe_enahnced_comp" to
+> "mlx5_cqwq_get_cqe_enhanced_comp".
 > 
-> Reviwed-by: Breno Leitao <leitao@debian.org>
-> Signed-off-by: Sebastian Ott <sebott@redhat.com>
+> Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
 > ---
->   drivers/net/ethernet/mellanox/mlx5/core/fs_core.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-> index 8505d5e241e1..c2db0a1c132b 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-> @@ -3689,6 +3689,7 @@ void mlx5_fs_core_free(struct mlx5_core_dev *dev)
->   int mlx5_fs_core_alloc(struct mlx5_core_dev *dev)
->   {
->   	struct mlx5_flow_steering *steering;
-> +	char name[80];
->   	int err = 0;
->   
->   	err = mlx5_init_fc_stats(dev);
-> @@ -3713,10 +3714,12 @@ int mlx5_fs_core_alloc(struct mlx5_core_dev *dev)
->   	else
->   		steering->mode = MLX5_FLOW_STEERING_MODE_DMFS;
->   
-> -	steering->fgs_cache = kmem_cache_create("mlx5_fs_fgs",
-> +	snprintf(name, sizeof(name), "%s-mlx5_fs_fgs", dev_name(dev->device));
-> +	steering->fgs_cache = kmem_cache_create(name,
->   						sizeof(struct mlx5_flow_group), 0,
->   						0, NULL);
-> -	steering->ftes_cache = kmem_cache_create("mlx5_fs_ftes", sizeof(struct fs_fte), 0,
-> +	snprintf(name, sizeof(name), "%s-mlx5_fs_ftes", dev_name(dev->device));
-> +	steering->ftes_cache = kmem_cache_create(name, sizeof(struct fs_fte), 0,
->   						 0, NULL);
->   	if (!steering->ftes_cache || !steering->fgs_cache) {
->   		err = -ENOMEM;
 
 Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
 Thanks.
+
+
 
