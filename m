@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-5498-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5499-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EFA89ADAC6
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2024 06:04:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AF159ADB21
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2024 06:49:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4D4D1C21B7B
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2024 04:04:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F015528361C
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2024 04:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24C3165F16;
-	Thu, 24 Oct 2024 04:04:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E258170826;
+	Thu, 24 Oct 2024 04:49:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="eC+RghMl"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ka96vJ8A"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2CD72C9A;
-	Thu, 24 Oct 2024 04:04:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22AFB9474;
+	Thu, 24 Oct 2024 04:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729742688; cv=none; b=LbyVseByIMJOaxTUAfIVpt+PfmHxcVtWDPwoUeyBeaUfLGX4lDrfxrt/lMg4BsMRIEoqTlUQHNcvzYdmudX+f9oDhekUuUfijUs2YCCLH1DwS3wY2Hv0Zy3J/FB91km6KDcO0UNpb3pWuV1ymiL5IOUKsQPW6klAnTunMxDq6ew=
+	t=1729745371; cv=none; b=KLEHW2scrBpX4dHTrJa/Uc4cojr3qjuYxzQg6/kFZJrZt9fGFpOxpu0otd32ropdHp8vgGsJHMV28H7zXRtto+idc1nV0RBlWtnCHOrLYG8cx7/huRi4Z8Vm0D2oLUzWQEGVJAMrT/oPFdRJzTSixBE2naB33xwiqK2MREXbo4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729742688; c=relaxed/simple;
-	bh=BN4KxyJeSbI9lrleBa12C+6OpbPXEGBtF1/wBfL+vzc=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Xv1IC3GFV0j4AEiFaNjUCF3KrC2XjZq49cU2D+UGqZurpYPoWKGH8z1sUZdeosvB2vau15eLj8KhIv+IujO5C6rhdqzaIAnKggdKZFjLq6EcQucCMWePn0b24ok4D+dObc6gQL72FvsYhNR3juttd521Fw+Ao/cCRkFjCCjFzck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=eC+RghMl; arc=none smtp.client-ip=115.124.30.112
+	s=arc-20240116; t=1729745371; c=relaxed/simple;
+	bh=A2PjJARB/fw8n8qTNn2259+mELoQ3NLH5OdpTAW5aek=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jWinroVmu7l598FiMHQWxeDM93J/nPbJKFPkyVs1Xy5pcC4PpOw2JcdGTMyUCpU9md9FcNojQMZNIJf+HR7ivi4PoiejfiYEXsh4V11yTZ8ToQ8fho6+SYrBpkMFJlmV4XcQmdqBslzWYPi4WhvR8ebQrq09SEnNRuK0pS5TyM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ka96vJ8A; arc=none smtp.client-ip=115.124.30.118
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1729742676; h=Message-ID:Date:MIME-Version:Subject:From:To:Content-Type;
-	bh=mRJXIoF9p2pnVpRbIFNfNZ8xFxJdIE7RijO56fWUVqo=;
-	b=eC+RghMlTskUNq2zNSFRSaazk9gde8FgNhJaB/hXgQ2h4GXr8s9YZiIIebRZyNGJaZ3ad+rVfPzrmXsRakVR8rfnSpcsHWFXrM/bXA5iUxo+DcFHfpKwftRhzt9QtjJr4ILT4RzLVJ1NC4nJNb76m3StVS4SynCr/74pQJsVKQs=
-Received: from 30.221.147.97(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WHne6jJ_1729742673 cluster:ay36)
+	t=1729745358; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=iwmxYZ0CXYfXJAMg2rSfDvfc82uItayVWx9BloNjOyo=;
+	b=ka96vJ8A6Zas8/5Zelf4ToH+lT+NeuK+3sVJEIs/4JYR4LsjnKeLLpS1Jc2DF2wdojFa+rQIUsqOly2Lo3LQxlhyxOcxLhnClxssIo6ZtotyZJ3J+De8WgMWiePW8G+jR8NIVU2omDKmAyDe91gzHtYJ2Ux2F61/sIsBcoqVC3E=
+Received: from 30.74.129.183(mailfrom:dtcccc@linux.alibaba.com fp:SMTPD_---0WHnso7r_1729745355 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Thu, 24 Oct 2024 12:04:34 +0800
-Message-ID: <2006b84c-e83a-431b-ac35-bb357459fa96@linux.alibaba.com>
-Date: Thu, 24 Oct 2024 12:04:33 +0800
+          Thu, 24 Oct 2024 12:49:16 +0800
+Message-ID: <284e3cb9-9f27-413c-9c05-f017171fa40e@linux.alibaba.com>
+Date: Thu, 24 Oct 2024 12:49:15 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -50,43 +50,49 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH bpf-next 4/4] bpf/selftests: add simple selftest for
  bpf_smc_ops
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+Content-Language: en-US
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+ kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
  ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
  martin.lau@linux.dev, pabeni@redhat.com, song@kernel.org, sdf@google.com,
  haoluo@google.com, yhs@fb.com, edumazet@google.com,
  john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
  guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- dtcccc@linux.alibaba.com
 References: <1729737768-124596-1-git-send-email-alibuda@linux.alibaba.com>
  <1729737768-124596-5-git-send-email-alibuda@linux.alibaba.com>
-Content-Language: en-US
-In-Reply-To: <1729737768-124596-5-git-send-email-alibuda@linux.alibaba.com>
+ <2006b84c-e83a-431b-ac35-bb357459fa96@linux.alibaba.com>
+From: Tianchen Ding <dtcccc@linux.alibaba.com>
+In-Reply-To: <2006b84c-e83a-431b-ac35-bb357459fa96@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-
-
-On 10/24/24 10:42 AM, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
+On 2024/10/24 12:04, D. Wythe wrote:
 > 
-> This PATCH adds a tiny selftest for bpf_smc_ops, to verify the ability
-> to attach and write access.
 > 
-> Follow the steps below to run this test.
+> On 10/24/24 10:42 AM, D. Wythe wrote:
+>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>
+>> This PATCH adds a tiny selftest for bpf_smc_ops, to verify the ability
+>> to attach and write access.
+>>
+>> Follow the steps below to run this test.
+>>
+>> make -C tools/testing/selftests/bpf
+>> cd tools/testing/selftests/bpf
+>> sudo ./test_progs -t smc
+>>
+>> Results shows:
+>> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
 > 
-> make -C tools/testing/selftests/bpf
-> cd tools/testing/selftests/bpf
-> sudo ./test_progs -t smc
 > 
-> Results shows:
-> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+> Sorry for just found an issue with vary config. I will fix this issues
+> in the next version.
+> 
+> D. Wythe
 
+This doesn't build with !CONFIG_SMC.
 
-Sorry for just found an issue with vary config. I will fix this issues
-in the next version.
-
-D. Wythe
+Maybe you should create an individual dir. (like what sched_ext does)
 
