@@ -1,185 +1,122 @@
-Return-Path: <linux-rdma+bounces-5490-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5491-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3801F9AD5CC
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2024 22:51:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 962679AD915
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2024 03:02:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E880C282B60
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2024 20:51:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BC3CB21C71
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2024 01:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 522EE1D3624;
-	Wed, 23 Oct 2024 20:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A755EF9FE;
+	Thu, 24 Oct 2024 01:02:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="Z66+ohz6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="koOjW7ki"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f100.google.com (mail-pj1-f100.google.com [209.85.216.100])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC321AB6F8
-	for <linux-rdma@vger.kernel.org>; Wed, 23 Oct 2024 20:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC90E4C66;
+	Thu, 24 Oct 2024 01:02:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729716704; cv=none; b=LToURZ9q1Oj+BLsXu2GZxzQOpqT4SYeuAQSo0WPQ8aPC3eZ2VHtHePsKYT7nMZhmU5MkWcqtiqgkga+H1u9nTpQmx6erdxNT3dITkgVIifXEKHQdKiA2tsnjR4Sp21/o6kzuOze6NBxYICN+G9svQfbalfR12u4adEPcPlwPJqY=
+	t=1729731727; cv=none; b=eQOSBD3Ulftth1aZz6GGpLwJm+0KE4sg5+cXofLBsVa+rZPW9X5gGF1OSZDP/UnCHbeeKwncsdXb1vEO+UfwdYFNhwaqQUHmFM5MDLwFm5FsldPDb4TbcvDm5kJCPNyHN9NwsiRD4JFA2uP9g/jsW7nGKICfaT/REmsFRzvrP4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729716704; c=relaxed/simple;
-	bh=K44ATCiMDHxMTMJcyBAwfGkIfgGnFaUTSMZ5dOBioco=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tSmHk4a9lQnlN5I9T7iLxnnLxn0np5so/pWnRh2X+e1PCBSbBs27JSt55aEngTjZ9SYYv8EIAbrf4hOLxopW8bd9veYCqLe5BolCQojK82WBBt32BZ7idOFGskolOUDt6F23RBJwfH44lNcGm8WXV1qxLTXEt+3Ns2GU15xDruo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=Z66+ohz6; arc=none smtp.client-ip=209.85.216.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-pj1-f100.google.com with SMTP id 98e67ed59e1d1-2e56750bb13so39302a91.2
-        for <linux-rdma@vger.kernel.org>; Wed, 23 Oct 2024 13:51:42 -0700 (PDT)
+	s=arc-20240116; t=1729731727; c=relaxed/simple;
+	bh=N9E3dQrK2oNBJbnVuj4SmkpyBa1i3K9UH1L9aIExYrU=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=pzTlZ2VSF1CWOL1n4lovV+OpRlb97dC9qoUha87C1UFH5odtfTUMJRX5+LOZLeZb6KfeS95jPDmEJd1Hmn9pacDGXizDTIe7rvGh0pXm9YehKRpzJW5f41Qlc8J/+vIsfin2OOOMITcryZuMqNnP3D2/cMeZPaLtPq25a/nSDSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=koOjW7ki; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-71e93d551a3so294114b3a.1;
+        Wed, 23 Oct 2024 18:02:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1729716702; x=1730321502; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vCyXfoKZLYIrM6bHNOmey4+JbsNLY/BGPRNE02WxQwo=;
-        b=Z66+ohz6/PuKBA4Cw1XCx8sMFctDfz66PzgpeffsEO3CzcUL9ZkvouWpft+AHyiX7F
-         WuLVkaGqWI+opb2qABPmJHWUwqIYam3XtOhZha+E9Bky+c89a+l7+ePXIW0iZx5sJ9hL
-         /LLEDDA5D5td8ppzDr4XLaJJeAq0P67HS/dJazSTASsQH6KN2Dp042ctaXgsHXGN1ioP
-         EMKrsZvzlPLwSmjqNA/aGtTFD0Z5mIfX6N5mmfJiwb9RCZyak4N5teZ5kOI6hj67hCb+
-         /oZEtVUV3kqej9ga7M5jki2LzyaSe1ai22s5PskBd0KmuXEjb8tt5lL+Za5m1eclkT3G
-         oL+g==
+        d=gmail.com; s=20230601; t=1729731725; x=1730336525; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:content-language:to:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=moRdslhIcfQFZ6VJ3Ktj0BaLtFKEuFkVkJRmlDTgxhE=;
+        b=koOjW7ki1WQl6F2S8uR/ik8o/G7vD+mLcn7WtQJS/FFq9gEhOsfWeYHYQcC7oYFqLv
+         vX1mN0a9wDJdX5bdmGGEWUif2/sDjap1qrF7YWl+ceCWI5TudS2Dgu4AjA0rcmxEocFm
+         hT0WPwXl/eq4xwEcqoq0HzYTRHzRw124xOO/hO5sbjakF108v6LrGYIsHeL3ckshAar9
+         gZcVLrc7uXhiu+ob7NYAoKyV3qRS8ZbCSyZkdTzDyunxIYCwxC9R/6jPwnq/yxhu2VNl
+         bst5u+uXAo88oyOlqVSJOqnXH65wixtXiWd17OiI7SEMzRS4K0mlajdtWYASfhzh24a6
+         +LnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729716702; x=1730321502;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vCyXfoKZLYIrM6bHNOmey4+JbsNLY/BGPRNE02WxQwo=;
-        b=OE0MbWU1WZnzlMHrrMvABSndaWJdfrddPvlXKFCCYv5WypbJ1FEk8q81SDCr+hB3yh
-         KkX9QTTaHPNOW3hMJQo5aaM/HB513cxbYx6AkIDkfi7ATANS+t2xHrhIYvEr7z62LAG9
-         nKEbhQDB+B5Zk8cMG7+eLUaOAn2iDlCsJXXI0QscvQChNdlzp7121A6jfK+2gOY9xeZK
-         D/8H9rWlJHSjjwxLAn3g3QodO7AlsGVN+DTLmH2tkYhOkTsCdktoQil8gWP+zrlPdzjs
-         Y9ci2qgpQnEvzzp58B5VAPRNUWrmPFya4L0iYMQxt4JGjadLKiZgwm8j1pcFieyW9VLc
-         Gm2g==
-X-Forwarded-Encrypted: i=1; AJvYcCXIjgTG8C1V062ONUvL7YF7vT+mPVpbSS9+yiFo33pZ1ivP3wmEeZNsplO97ZkCSkY1TZeJaPvmeWPC@vger.kernel.org
-X-Gm-Message-State: AOJu0YyK3kmK+nCMPqyiEnQLag2Wp+X0j58J/bQsODLdVGpq+0J+0BAB
-	d+y8AWg1SFn4RZBba3oTe5CEw8mrwa1DjxofKsA+SpwCK26NDcWWps0TX3ZYjbJoGK5NEKyUnRM
-	GH6d5CYX0eFLRlyoPANN/acMGWaRtIlN6WcbQqJ7LTgXmpqzQ
-X-Google-Smtp-Source: AGHT+IG35rzOCpF6xzICIlXnd2xKWIdeRqdxmgfplqytKRI7gARk7EO/TkF1EVCs0mtdYwpJbkfTYQSa4jYI
-X-Received: by 2002:a17:903:32cc:b0:20c:85dc:6630 with SMTP id d9443c01a7336-20fa9deb651mr23890985ad.1.1729716701633;
-        Wed, 23 Oct 2024 13:51:41 -0700 (PDT)
-Received: from c7-smtp-2023.dev.purestorage.com ([2620:125:9017:12:36:3:5:0])
-        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-20e7f0dd5c7sm2620325ad.54.2024.10.23.13.51.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2024 13:51:41 -0700 (PDT)
-X-Relaying-Domain: purestorage.com
-Received: from dev-csander.dev.purestorage.com (dev-csander.dev.purestorage.com [10.7.70.37])
-	by c7-smtp-2023.dev.purestorage.com (Postfix) with ESMTP id 3B88D3400B6;
-	Wed, 23 Oct 2024 14:51:40 -0600 (MDT)
-Received: by dev-csander.dev.purestorage.com (Postfix, from userid 1557716354)
-	id 2D9E7E40BE0; Wed, 23 Oct 2024 14:51:40 -0600 (MDT)
-From: Caleb Sander Mateos <csander@purestorage.com>
-To: Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Caleb Sander Mateos <csander@purestorage.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mlx5: simplify EQ interrupt polling logic
-Date: Wed, 23 Oct 2024 14:51:12 -0600
-Message-ID: <20241023205113.255866-1-csander@purestorage.com>
-X-Mailer: git-send-email 2.45.2
+        d=1e100.net; s=20230601; t=1729731725; x=1730336525;
+        h=content-transfer-encoding:cc:content-language:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=moRdslhIcfQFZ6VJ3Ktj0BaLtFKEuFkVkJRmlDTgxhE=;
+        b=dGeUPpKkzwmUOU5fLitBjJHqUK97QDUfeCSss4kowsZBCenaA7Jivx/DdNxZB1VWdk
+         R+jN1ZWU8j0LsiSiJDPa/TwhxBBL+Pg8vlIGdVkc9l7EwN2mFgvSRwHxXQuKKUi80xEU
+         9L2pQqo8lhFu+vZkOd+ogobwmbVKDRCeLyc1Bf6eExAatmkFLegM0bIAXiJMnp7jhsWY
+         bfK/osyKrjp/lRaPxu5H9t02cnoyRLt65qwUQImz0DhoEoLbgChYzqg6juXMznnQVa0k
+         Y5C6syQhHedTpO8m62MQMfPYnKsrdVy/KCu9DxJLuqOcx+CiGPqaMy+uZtldgFs/tE1h
+         yMeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWjdGmkR5LQN7WM4cpRSwJlKm7wwGazPh2nIGDHieE5sYi0z3qK64Zogo/Tg7Be3rvbaDwjDR8+FWpe0mo=@vger.kernel.org, AJvYcCX37QgDbjiFwvgwA3LbkZsSZnz/QQ6xXTi2lr/Dot+s+v/i5z0CZlfTP2mzLgWGS41Ma6D5SHG55prWSsab@vger.kernel.org
+X-Gm-Message-State: AOJu0YwKxU2askyzN1qRErRLohSONJ7iG7S5PW7eevwPcZ8Ml6OWTpxK
+	17vei+tZgk2Ftrop5Yy0B4o0apUoDKes0J8XW+05sFAqy/8kBDxm
+X-Google-Smtp-Source: AGHT+IGJqfilXWarx/ZGLExIGO0dz7Zhrtmh314lBbFCPtvirF6mBhnuLMrv5oztkVLBKOLtYTDQzQ==
+X-Received: by 2002:a62:e416:0:b0:720:36c5:b548 with SMTP id d2e1a72fcca58-72036c5b8c4mr3837076b3a.16.1729731724798;
+        Wed, 23 Oct 2024 18:02:04 -0700 (PDT)
+Received: from [10.4.153.125] ([129.94.128.29])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71ec1312d53sm6932499b3a.2.2024.10.23.18.02.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Oct 2024 18:02:04 -0700 (PDT)
+Message-ID: <57cb0385-209e-4cb0-b34c-281e5f99a3d9@gmail.com>
+Date: Thu, 24 Oct 2024 09:02:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: Tuo Li <islituo@gmail.com>
+Subject: [BUG] IB/isert: Possible null-pointer dereference related
+To: sagi@grimberg.me, jgg@ziepe.ca, leon@kernel.org
+Content-Language: en-US
+Cc: linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, baijiaju1990@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Use a while loop in mlx5_eq_comp_int() and mlx5_eq_async_int() to
-clarify the EQE polling logic. This consolidates the next_eqe_sw() calls
-for the first and subequent iterations. It also avoids a goto. Turn the
-num_eqes < MLX5_EQ_POLLING_BUDGET check into a break condition.
+Hello,
 
-Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/eq.c | 22 +++++++-------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+Our static analysis tool has identified a potential null-pointer
+dereference related to the wait-completion synchronization mechanism in
+ibsert.c.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-index 68cb86b37e56..859dcf09b770 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-@@ -114,15 +114,11 @@ static int mlx5_eq_comp_int(struct notifier_block *nb,
- 	struct mlx5_eq *eq = &eq_comp->core;
- 	struct mlx5_eqe *eqe;
- 	int num_eqes = 0;
- 	u32 cqn = -1;
- 
--	eqe = next_eqe_sw(eq);
--	if (!eqe)
--		goto out;
--
--	do {
-+	while ((eqe = next_eqe_sw(eq))) {
- 		struct mlx5_core_cq *cq;
- 
- 		/* Make sure we read EQ entry contents after we've
- 		 * checked the ownership bit.
- 		 */
-@@ -140,13 +136,14 @@ static int mlx5_eq_comp_int(struct notifier_block *nb,
- 					    "Completion event for bogus CQ 0x%x\n", cqn);
- 		}
- 
- 		++eq->cons_index;
- 
--	} while ((++num_eqes < MLX5_EQ_POLLING_BUDGET) && (eqe = next_eqe_sw(eq)));
-+		if (++num_eqes >= MLX5_EQ_POLLING_BUDGET)
-+			break;
-+	}
- 
--out:
- 	eq_update_ci(eq, 1);
- 
- 	if (cqn != -1)
- 		tasklet_schedule(&eq_comp->tasklet_ctx.task);
- 
-@@ -213,15 +210,11 @@ static int mlx5_eq_async_int(struct notifier_block *nb,
- 	eqt = dev->priv.eq_table;
- 
- 	recovery = action == ASYNC_EQ_RECOVER;
- 	mlx5_eq_async_int_lock(eq_async, recovery, &flags);
- 
--	eqe = next_eqe_sw(eq);
--	if (!eqe)
--		goto out;
--
--	do {
-+	while ((eqe = next_eqe_sw(eq))) {
- 		/*
- 		 * Make sure we read EQ entry contents after we've
- 		 * checked the ownership bit.
- 		 */
- 		dma_rmb();
-@@ -229,13 +222,14 @@ static int mlx5_eq_async_int(struct notifier_block *nb,
- 		atomic_notifier_call_chain(&eqt->nh[eqe->type], eqe->type, eqe);
- 		atomic_notifier_call_chain(&eqt->nh[MLX5_EVENT_TYPE_NOTIFY_ANY], eqe->type, eqe);
- 
- 		++eq->cons_index;
- 
--	} while ((++num_eqes < MLX5_EQ_POLLING_BUDGET) && (eqe = next_eqe_sw(eq)));
-+		if (++num_eqes >= MLX5_EQ_POLLING_BUDGET)
-+			break;
-+	}
- 
--out:
- 	eq_update_ci(eq, 1);
- 	mlx5_eq_async_int_unlock(eq_async, recovery, &flags);
- 
- 	return unlikely(recovery) ? num_eqes : 0;
- }
--- 
-2.45.2
+Consider the following execution scenario:
 
+  isert_login_recv_done()  //1375
+    if (isert_conn->conn)  //1390
+    complete(&isert_conn->login_req_comp);  //1398
+
+The variable isert_conn->conn is checked by an if statement at Line 1390,
+which indicates that isert_conn->conn can be NULL. Then, complete() is
+called at Line 1398 which will wake up the wait_for_completion_xxx().
+
+Consider the following wait_for_completion_interruptible().
+
+  isert_get_login_rx()  //2336
+    wait_for_completion_interruptible(&isert_conn->login_req_comp); //2342
+    isert_rx_login_req(isert_conn);  //2359
+      conn = isert_conn->conn;       //981
+      login = conn->conn_login;      //982
+
+The value of isert_conn->conn is assigned to conn at Line 981, and then
+dereferenced through conn->conn_login at Line 982. However, the variable
+isert_conn->conn is checked at Line 1390, which means it can be NULL. If
+so, a null-pointer dereference can occur at Line 982.
+
+I am not quite sure whether this possible null-pointer dereference is real
+and how to fix it if it is real.
+Any feedback would be appreciated, thanks!
+
+Best wishes,
+Tuo Li
 
