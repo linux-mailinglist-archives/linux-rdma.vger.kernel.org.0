@@ -1,84 +1,69 @@
-Return-Path: <linux-rdma+bounces-5521-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5522-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1423A9B0217
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 14:21:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF9459B04E5
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 16:02:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4630A1C224A0
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 12:21:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A76DE1F242C8
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 14:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DC1A202F9D;
-	Fri, 25 Oct 2024 12:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9009A70820;
+	Fri, 25 Oct 2024 14:02:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DwO5w2i1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W0DPp3w/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1451FF7B9;
-	Fri, 25 Oct 2024 12:21:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48AC629A0;
+	Fri, 25 Oct 2024 14:01:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729858872; cv=none; b=KvKSWDMEQsiQkEsr7xlcWxHeUKmSIHvN7uqNNMHyNzvFIlX2/e9PA9p0JLt0YAaLKX+Skk6fmrU8qYKBXa+jLxhbPGCEg4gT1mWhm1wwADY0obfp9oK2Rnm1fCukdOAYtqAWW7dssOWzm0iGB8kqrBEQ0ZbKeAAjGSHRsnJH5wE=
+	t=1729864920; cv=none; b=R5areYm/JJZsdH+9ZEmXvMFtwO6hreSoD58KK35aq96gOtiyZvIVaeD3ifqPkW+cp+6zS7ulr+LNXujzBkQ3ffD63KQq33hE3IxCBMJzHf3v0QxcgFHq2oJ909EOHpw0ut37d9FfLkoLJZyrqnh7ER15sWj80tQwDNjyGKIk72o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729858872; c=relaxed/simple;
-	bh=ECh8L1JTwvTvPl5/biMTYEKVaK8Uk1kPpsq2nQQkP8k=;
+	s=arc-20240116; t=1729864920; c=relaxed/simple;
+	bh=dJ/ktQ6IcnDZAarHCaBXoLtVOYprBnc4JXxiUhttUSI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p02SPD/fZXvmEjLqBr7/RPWenPKpWjiG4Lu/Kstd7xdix9BOHe67KJU+KbnKwKI6dhmnt9xKR4wV7TFXzCMc71y0APYG6Jjo8lrmxYEJ+8C/sMe4XSoeKtCMDtcrm9xeT5hUaeUd4Cg/R/rFJdyIVkmC1csqraXStTHXYNs3oZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DwO5w2i1; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729858870; x=1761394870;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ECh8L1JTwvTvPl5/biMTYEKVaK8Uk1kPpsq2nQQkP8k=;
-  b=DwO5w2i13kVgMC91tTYT2D944GPIo2ffqmep9hPCcXnmfAUGSoH+6sc5
-   0O+N7DGRePhQLawEP70ri1ZktBUbD2PC/nSqyBX4IoR1XpmpWZNXimMme
-   PnVml31q29MrcwHeuXvUraIlp/Uy9FVxxV2WeYNGEo2Eqx8Mvu5Z/O0H6
-   n6beju7Gsu7PnZW0/uIjaJ7EH+zOWPT4/ZgvZmh73yHU1EP1XpmFh61dS
-   L1wWV9QgciouF5R4veU/bI6G89hi0EMhEGlyrnnJHzCe+IIlNDiCyYgCy
-   kToP55dySR9xDWNM2Jwktq1moylnfX4QosaG4QOsY3rwqJZIWr+Le/1cI
-   w==;
-X-CSE-ConnectionGUID: AG8+m1dNTHCgRGC2wwO8pw==
-X-CSE-MsgGUID: vyac1KxeQhyDKhf9KYmMow==
-X-IronPort-AV: E=McAfee;i="6700,10204,11236"; a="33330273"
-X-IronPort-AV: E=Sophos;i="6.11,231,1725346800"; 
-   d="scan'208";a="33330273"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2024 05:21:09 -0700
-X-CSE-ConnectionGUID: uVsKt88ES6+e2Sc5uTEPdg==
-X-CSE-MsgGUID: xECAlVmiRhikNljeEW7g6Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,231,1725346800"; 
-   d="scan'208";a="85460860"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 25 Oct 2024 05:21:03 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t4JJN-000YDR-1U;
-	Fri, 25 Oct 2024 12:21:01 +0000
-Date: Fri, 25 Oct 2024 20:20:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	pabeni@redhat.com, song@kernel.org, sdf@google.com,
-	haoluo@google.com, yhs@fb.com, edumazet@google.com,
-	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-	guwen@linux.alibaba.com
-Cc: oe-kbuild-all@lists.linux.dev, kuba@kernel.org, davem@davemloft.net,
-	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	dtcccc@linux.alibaba.com
-Subject: Re: [PATCH bpf-next 2/4] bpf: allow to access bpf_prog during
- bpf_struct_access
-Message-ID: <202410251955.HSEjo06V-lkp@intel.com>
-References: <1729737768-124596-3-git-send-email-alibuda@linux.alibaba.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YMfJ8lDtXdlRyzu81zYqnvWQ665JXQrWV6P+r2urLEV+qqgY5CZ2fpXkJFHziUj0y2v0Bfb2qeZABWe77c3c3+QcnomdB/sxsH7JJeucv/AafZCXFypSzzmvM/5SZIVx+NKW0H9gpKkO3olQq8GYJN3IR8qgnKOVKrYleykmM9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W0DPp3w/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCEEEC4CEC3;
+	Fri, 25 Oct 2024 14:01:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729864919;
+	bh=dJ/ktQ6IcnDZAarHCaBXoLtVOYprBnc4JXxiUhttUSI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=W0DPp3w/Dg3sj7hCNTeRkYkj9oeQ4aGCHxb9EBoIKjxb8fDTM4ZC+TOg+vdoNRsBL
+	 NcszjfdyD/qUOulwTi657h7nXIgWm04b8s8129nnnl7X48R6EDsgJqKkf6HSB7cuTJ
+	 6GZ6ApDfCkkmjG3Zqh9JQJ/tTaZX15/9tZnGbZ7cSvqrZx0AHlbRpRGF2yZquwXctd
+	 xalm5aktHxnBt2/qnClTKKySzW/ojZRYuiVLCLEl7LB9i7FZhLZIbJy7EJiRjyRfMu
+	 RCKQ06OiToh+gRJDdT2DAe9pj3QZ2/EWqMepVekjwDNhEq6QEKNu0BtpicniAgzvRm
+	 ybWYVzE5009ug==
+Date: Fri, 25 Oct 2024 15:01:53 +0100
+From: Simon Horman <horms@kernel.org>
+To: Wenjia Zhang <wenjia@linux.ibm.com>
+Cc: Wen Gu <guwen@linux.alibaba.com>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	David Miller <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+	Jan Karcher <jaka@linux.ibm.com>, Gerd Bayer <gbayer@linux.ibm.com>,
+	Alexandra Winter <wintera@linux.ibm.com>,
+	Halil Pasic <pasic@linux.ibm.com>,
+	Nils Hoppmann <niho@linux.ibm.com>,
+	Niklas Schnell <schnelle@linux.ibm.com>,
+	Thorsten Winkler <twinkler@linux.ibm.com>,
+	Karsten Graul <kgraul@linux.ibm.com>,
+	Stefan Raspl <raspl@linux.ibm.com>, Aswin K <aswin@linux.ibm.com>
+Subject: Re: [PATCH net] net/smc: Fix lookup of netdev by using
+ ib_device_get_netdev()
+Message-ID: <20241025140153.GB1507976@kernel.org>
+References: <20241025072356.56093-1-wenjia@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -87,46 +72,26 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1729737768-124596-3-git-send-email-alibuda@linux.alibaba.com>
+In-Reply-To: <20241025072356.56093-1-wenjia@linux.ibm.com>
 
-Hi Wythe,
+On Fri, Oct 25, 2024 at 09:23:55AM +0200, Wenjia Zhang wrote:
+> Commit c2261dd76b54 ("RDMA/device: Add ib_device_set_netdev() as an
+> alternative to get_netdev") introduced an API ib_device_get_netdev.
+> The SMC-R variant of the SMC protocol continued to use the old API
+> ib_device_ops.get_netdev() to lookup netdev. As this commit 8d159eb2117b
+> ("RDMA/mlx5: Use IB set_netdev and get_netdev functions") removed the
+> get_netdev callback from mlx5_ib_dev_common_roce_ops, calling
+> ib_device_ops.get_netdev didn't work any more at least by using a mlx5
+> device driver. Thus, using ib_device_set_netdev() now became mandatory.
+> 
+> Replace ib_device_ops.get_netdev() with ib_device_get_netdev().
+> 
+> Fixes: 54903572c23c ("net/smc: allow pnetid-less configuration")
+> Fixes: 8d159eb2117b ("RDMA/mlx5: Use IB set_netdev and get_netdev functions")
+> Reported-by: Aswin K <aswin@linux.ibm.com>
+> Reviewed-by: Gerd Bayer <gbayer@linux.ibm.com>
+> Signed-off-by: Wenjia Zhang <wenjia@linux.ibm.com>
 
-kernel test robot noticed the following build errors:
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-[auto build test ERROR on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/D-Wythe/bpf-export-necessary-sympols-for-modules/20241024-104903
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/1729737768-124596-3-git-send-email-alibuda%40linux.alibaba.com
-patch subject: [PATCH bpf-next 2/4] bpf: allow to access bpf_prog during bpf_struct_access
-config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20241025/202410251955.HSEjo06V-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 14.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241025/202410251955.HSEjo06V-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410251955.HSEjo06V-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/hid/bpf/hid_bpf_struct_ops.c:146:30: error: initialization of 'int (*)(struct bpf_verifier_log *, const struct bpf_reg_state *, const struct bpf_prog *, int,  int)' from incompatible pointer type 'int (*)(struct bpf_verifier_log *, const struct bpf_reg_state *, int,  int)' [-Wincompatible-pointer-types]
-     146 |         .btf_struct_access = hid_bpf_ops_btf_struct_access,
-         |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/hid/bpf/hid_bpf_struct_ops.c:146:30: note: (near initialization for 'hid_bpf_verifier_ops.btf_struct_access')
-
-
-vim +146 drivers/hid/bpf/hid_bpf_struct_ops.c
-
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  142  
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  143  static const struct bpf_verifier_ops hid_bpf_verifier_ops = {
-bd0747543b3d97 Benjamin Tissoires 2024-06-08  144  	.get_func_proto = bpf_base_func_proto,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  145  	.is_valid_access = hid_bpf_ops_is_valid_access,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08 @146  	.btf_struct_access = hid_bpf_ops_btf_struct_access,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  147  };
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  148  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
