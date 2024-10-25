@@ -1,100 +1,99 @@
-Return-Path: <linux-rdma+bounces-5514-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5515-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3B939AF8BB
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 06:04:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CF4C9AF8D2
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 06:12:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA4F41C22107
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 04:04:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F01FA282FD2
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 04:12:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C856618C356;
-	Fri, 25 Oct 2024 04:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE54618C92B;
+	Fri, 25 Oct 2024 04:12:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Ec2preNP"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="BP0HC9So"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38B03611B
-	for <linux-rdma@vger.kernel.org>; Fri, 25 Oct 2024 04:03:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794CB18C320
+	for <linux-rdma@vger.kernel.org>; Fri, 25 Oct 2024 04:12:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729829032; cv=none; b=AqWFmorPhtjVL5GJhTntLMsQQc1fIXwZlxC7+TX1gvQuGCZsRwaIL+IuayDj5//EZ8fMHSLgNxUGwPHtOTvOWcxpSlo4ilYGgPPqFiWMmELzo0cWMQeWpYPTE7Z48PAKdPv2ekPMSkjEQgtBhRnIdvE5Bddk0IFCgB3HPrQMmRo=
+	t=1729829543; cv=none; b=ckfZfBxYuvcw3F39YdhaUrdpbX4pEz3b0/oIjfRZcNQR6abTVIaFK+JmMNXb6n8eKXmSPn+NHFUbCFLkTMaBNAodHO9R/VzhVo67HbUR+xxGqQRTLMpl0et7tPXYpMU5OdMEPIrooJ5Tt/Nc8IDny0w7u9eMR8rkDQodMSoT+Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729829032; c=relaxed/simple;
-	bh=uj1WgBYFyWD1xpEOOPUD8O2ZJyr+jKHWV5OJsljyLWY=;
+	s=arc-20240116; t=1729829543; c=relaxed/simple;
+	bh=Wf35VzXxY4UnIeGDh0Cp+EcvdOk5KQ1y0rWrtB0Is60=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eqgVRyPJZp1jW3YSO49woO1VM6nVesBi+otmrfVI2D+z8+2c8BgbfrOXsJzQz3bU0O3OwuqKEgWRPSZ936KwSDnLMHut4o4gK8b5IrBnwFa2JiU1WJBUDS9WmYl8nNlj9dP+Kr0sqwO7n7Mplze1q1VyD5lV+y+AM7kNEUDzo5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Ec2preNP; arc=none smtp.client-ip=209.85.167.41
+	 To:Cc:Content-Type; b=TLwKdFXinaPh3j9x9zCrq+PMLvR5Z0GRuOt+QoDadAJf66kKmSUwWV1z8J8vAHSLUInYT6evcGYMjLRvLDPZJRiJ1yWCx5tzNMSlNKN+Oa95vQMZtTZj/WtT6ntsRzsUp33U1ZugOY+wKAFzgiTzVhtZIaROfwF4ih3NAWssIj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=BP0HC9So; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-539fe76e802so2014509e87.1
-        for <linux-rdma@vger.kernel.org>; Thu, 24 Oct 2024 21:03:49 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-539f76a6f0dso1517304e87.1
+        for <linux-rdma@vger.kernel.org>; Thu, 24 Oct 2024 21:12:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1729829028; x=1730433828; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1729829539; x=1730434339; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uj1WgBYFyWD1xpEOOPUD8O2ZJyr+jKHWV5OJsljyLWY=;
-        b=Ec2preNPzR7FrsXQN57GG7TqHmbPx2p0k6YycJDb2I/MznCp8l6Cbl6GiQtA31QnO0
-         aMOIMLTz972Wk/+53j9hQzFQgdNBwbVKl7Lpj9/sNbzhAWYLIX7QU1Lf7EZE0CEyeJe1
-         3NUYMzovT/YS/tvJZKwA1PrMwpGsZcWDy0icU=
+        bh=Wf35VzXxY4UnIeGDh0Cp+EcvdOk5KQ1y0rWrtB0Is60=;
+        b=BP0HC9Sojp8bTO1lH4vXk8jvpt4CM9a5mtEknzzoc7LSG5a+NspivtlLvEEEYCZWOO
+         kKzpHjzAiUYnzszBde7f7vg3pLh8dBD0iywwnqoDSNwhBlpDf9ugN7h6HWC104KnkSxA
+         dTvMcAj+C/rRperoE+2cVs5VGeMRq9Ci55fM0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729829028; x=1730433828;
+        d=1e100.net; s=20230601; t=1729829539; x=1730434339;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=uj1WgBYFyWD1xpEOOPUD8O2ZJyr+jKHWV5OJsljyLWY=;
-        b=pvPulCMYw/RhpJZsHKEyS8gNTfAJfMmicsvlY8GiUv8pt6mqslIn383z0CXKuA133R
-         o1aFIJLlJ91im9mYFV6TbFXTqE9KTc889DH/Ot3X2NbtjbtQxjW4D/ZUUJfW6Hnvv6q/
-         VsKyr6umyTrCY5JHM5wkCLQTMx7FLYjsPbWqOhP6prahlRPm5rt8/Yc3kFGUsa0HAtUp
-         zxgPkAFxZ/hOSwYOEZNmGx8drTaSsb767BaQjM3QpOkqxpy/vh5sETCNKGcGEcpVKcBA
-         YO0uKwO8Za+9HDTutoyZ/HmfjGJfVTVrlco/Hrh087e1hCGEeU/sAiq4Cihtwcaj3efR
-         0UCA==
-X-Forwarded-Encrypted: i=1; AJvYcCWoC0Fo13AIkZeK++stBDL9DvSJTw14Y11Ezi/ODXqnk92r5T8KZF9JXa1Fgo33HAdaXNU63j1D4DKC@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxl9RnZsLOSam4WoRM1UxQ7eGtNgN9Ygswod3nI+BZ6O/T7rhdW
-	qqtB8n3Egt1vFM5JiswuM1oFmjk/Hyz8xCVIi6JwTPaSKMYrdPtn+R6WlREhWj3SFSmwoV236Xi
-	csXh3ioIRNzukIWFfXfvKz1ryosmU+BMtbrMe
-X-Google-Smtp-Source: AGHT+IEVYWeM4jxS2v0jAsOYeL77hWveoGm58FAhocT4euIlXb+1+TUvFiTAqzFAxSIKwfrev1VpbZq0zG9bgQVRTZM=
-X-Received: by 2002:a05:6512:3da6:b0:539:d0ef:b3f9 with SMTP id
- 2adb3069b0e04-53b1a36b7eemr4830438e87.40.1729829027856; Thu, 24 Oct 2024
- 21:03:47 -0700 (PDT)
+        bh=Wf35VzXxY4UnIeGDh0Cp+EcvdOk5KQ1y0rWrtB0Is60=;
+        b=KsH0xwRanKcXaFIU45Vt5HUL8sd/XUrQSlLzPswT60kySEZI4wDlDrEF+BTtwwEyx+
+         vzJyHbtxp5FEghTbwsG1m7o69Z7qZmR31Cr2JaOvG7YglVhfDhKXgpxBQHUJ1AFQBv6S
+         +aNzuXJd7Thr28VQO/5r27wkqlTgnKnfR0dwgaXisNy9jiEHZ70y1aCG7M0N8bFd2La0
+         7R7g2beUtll6/Mhng6Kd++vi96mvAW+gVixrVW1hwAQjXtwH/7XsqPRI7fv8BupinxCB
+         LK2Jk3TDE2sHFpOHb/FcbwYBGKlBfpZsirpd8/jdHn2q/dI1Dsju8IQpHIcz6nOjC2Fw
+         0tPg==
+X-Forwarded-Encrypted: i=1; AJvYcCX8htOQCI2cGYvq18fFuHSJTBtmFNmi8hcbfzi27W/k9hfYG7mFTCZewoIlMm6W2pQofuFgAoKrPoiI@vger.kernel.org
+X-Gm-Message-State: AOJu0YyduReDDyjdXEhJk1OnQVhhDqtLZGFhBrySe8Zkp3h4meotzCWs
+	4dC/vPZBxPzFUFQw8CFFiUqG/sB+NSxNOEcAp+TnKGNu6f7D52Wt0w0tNg3vc1u02CmzdHDwfbm
+	HDzDK4BEMqoV8xKqwKz17WF3pITTindJbPbZE
+X-Google-Smtp-Source: AGHT+IFybXXxumbD6dZER0vBj+DKzacLg+00M7MAG5hdxS6jmvpJWA2tQJM3wfuZzfGmR2Klgc1yImvuY5JieR3uc5s=
+X-Received: by 2002:a05:6512:e9a:b0:539:e8b5:f296 with SMTP id
+ 2adb3069b0e04-53b1a33e4d0mr4563767e87.33.1729829539548; Thu, 24 Oct 2024
+ 21:12:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <IA0PR12MB8713EC167DC79275451864BADC6C2@IA0PR12MB8713.namprd12.prod.outlook.com>
- <20240920181129.37156-1-sebott@redhat.com>
-In-Reply-To: <20240920181129.37156-1-sebott@redhat.com>
+References: <20241023164840.140535-1-csander@purestorage.com>
+In-Reply-To: <20241023164840.140535-1-csander@purestorage.com>
 From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Fri, 25 Oct 2024 09:33:35 +0530
-Message-ID: <CAH-L+nPJzAzKDoBioOE8pSOYA0PQUAtAUVnUDw3Zo3vzwonmSw@mail.gmail.com>
-Subject: Re: [PATCH v2] net/mlx5: unique names for per device caches
-To: Sebastian Ott <sebott@redhat.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Parav Pandit <parav@nvidia.com>
+Date: Fri, 25 Oct 2024 09:42:09 +0530
+Message-ID: <CAH-L+nO=_soL-1spjXk+BNrfqf4iKGeAP_=FwZCEWhVh64R68g@mail.gmail.com>
+Subject: Re: [PATCH] mlx5: fix typo in "mlx5_cqwq_get_cqe_enahnced_comp"
+To: Caleb Sander Mateos <csander@purestorage.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000c0143e0625453467"
+	boundary="000000000000407a05062545534d"
 
---000000000000c0143e0625453467
+--000000000000407a05062545534d
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 20, 2024 at 11:41=E2=80=AFPM Sebastian Ott <sebott@redhat.com> =
-wrote:
+On Wed, Oct 23, 2024 at 10:19=E2=80=AFPM Caleb Sander Mateos
+<csander@purestorage.com> wrote:
 >
-> Add the device name to the per device kmem_cache names to
-> ensure their uniqueness. This fixes warnings like this:
-> "kmem_cache of name 'mlx5_fs_fgs' already exists".
+> "enahnced" looks to be a misspelling of "enhanced".
+> Rename "mlx5_cqwq_get_cqe_enahnced_comp" to
+> "mlx5_cqwq_get_cqe_enhanced_comp".
 >
-> Signed-off-by: Sebastian Ott <sebott@redhat.com>
+> Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
 LGTM,
 Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
@@ -103,7 +102,7 @@ Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Regards,
 Kalesh A P
 
---000000000000c0143e0625453467
+--000000000000407a05062545534d
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -175,14 +174,14 @@ a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
 x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
 VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
 bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEIIRYphod+MmcVcnGO2RqxQzmvODDXz4qYYKqgwro9kluMBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MTAyNTA0MDM0OFowaQYJKoZIhvcNAQkPMVwwWjAL
+AQkEMSIEIAoHkq1dJl7P1nz5eObbwyMoJAAiPf9blvsY7X9fp8vaMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MTAyNTA0MTIxOVowaQYJKoZIhvcNAQkPMVwwWjAL
 BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAM+wTrNXA2
-qqnogfREj6K0i8oe6mm5dvW/0thxmcdVqcnd3Ny6M7RZ6nu2IIt465vCw1N2Hc0btBjxkT/tTV02
-cEqfiDQr5QOhpMTRlVFST/S1HybJ9fpzBhrbelFbeG1GFce+MNDMVj/xqRgh0cPaV5MiUXihnzLH
-63kviH5blHosTb+FOr1wLMENR0Go9Wxjrbc/M+CFpE1a95NVE2+18qgdC7fPrOv14udlbTRFZffs
-9nQhMYsOQW2X0RhlsLWUF2WcAzMk4/F6rR5jNEYD2wIh/lY2mravJJg39tGxr/RKh+EjQ0g36Y3f
-DahlWeqBrOiCwgm1gY04DXL9Kjto
---000000000000c0143e0625453467--
+9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDBGJZbaMNP
++Y2NiRZpmZHKa6MjB3IebxLRErr1A4fMzcCMMW7j5G+u18NyM9DB70MU7wKl/7HV7D3jqwx8XYED
+FvCbKa0r89ZLXZQU9NWxIGrxW3ymLGW6grjBN7Mw6s/6qxvuwAt/xAFHHLkqivy3I3jBB+getGGY
+Chc4UErT9qgSHRba+LtITxKhCB6/C+DtGSO59YT0Nj7oNU3FjDJCjPJ2LuBnLDxYHBxif0WzfT22
+n6Ghj1R+7MIaS+FFvSskOC/kC/PoOrgNIaqHnu39gnXrqqSIAO2fSw32keNPUk5tcIZ0pBWuFT+a
+Zh8M7cJBEmO4SKsvBY5uRXTejPPh
+--000000000000407a05062545534d--
 
