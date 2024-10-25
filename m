@@ -1,234 +1,346 @@
-Return-Path: <linux-rdma+bounces-5519-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5520-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40F8D9AFDD4
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 11:16:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60DBD9B00DD
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 13:05:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63CF81C22209
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 09:16:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB7581F23497
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 11:05:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E12951EF931;
-	Fri, 25 Oct 2024 09:15:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C291DD54B;
+	Fri, 25 Oct 2024 11:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EMX2wLbv"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Zh80ygba"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1742D1DACB6;
-	Fri, 25 Oct 2024 09:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58DC41CFEB5;
+	Fri, 25 Oct 2024 11:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729847708; cv=none; b=NYQ8G+kNhxwFprT3xeOA4ziU6y+mmJBWY6YOeEKYfP6alQsyTTySf2VlKDCg5k4YGkLtB+egAE9hXu7E9P0P0xUTB3xBBa7G/c/ZdwP7msMpyDnjqf/NA8yKIKFAupVmtMQfnz8L72yDepfpGGJ973mvu5Z1ujy/fXCLhs/R0EQ=
+	t=1729854325; cv=none; b=L4j1dLrQI9jwRUNOhOoTre0rD2fUaAelncbPNF56NA1IT0BmqNlTxl8iYdgfkSTGHrq/yDJSPpL/gF6o37OHCobJY+FhzidcauED/q8TxvVip7ME5ZtmUIwaqaofZXb926iLwll4FIz96FkvtdBVyMp8GoehrcdUYP2Jqe7u25I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729847708; c=relaxed/simple;
-	bh=4XMDoD+OeLfbg1UVKD38t5UItaObkTJ3EMHjIj5Uj94=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PDy3az4Rdp0KQgpSbg2rgGy0ktF06lKxeM//FG/aqIxqL3as9+PcUayKUK/kxz7GVdh945MnvEjulgZ5/8+/ZzAlxJTggSa2l+AQe3UVfr/9rKXLvlZsP3AZVEdRAJ8RNX1wPjV/mIacXpL6ECCd2kv69enWiB33zcE38v7hOio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EMX2wLbv; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1729847706; x=1761383706;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4XMDoD+OeLfbg1UVKD38t5UItaObkTJ3EMHjIj5Uj94=;
-  b=EMX2wLbvBL+z++EU8aXIWmakBrS2W6+gSnZQAcAFZhn1cchMcslEfDJM
-   0gs8jStoRqSzyz+tYMTXqBFY1UvzjZrP/kmkKnR9GUrFStk+P7QAVnsY7
-   53+WNxBpJiVXjl9oq1TO5ndG0iX8uToUjaFCrn0qL8n/0HzhO8wVdfejP
-   yga/DJ2GACQqzrUkE6PFJPdZKcLaoty0HQkclhxHY0215mTs9bnh23noK
-   /2IgkSCgLIDozP8JrIQ3nKP4fsbQdsCCbP3UmWFKcpjso6oT5vOq8Vm2S
-   xUgR6ZeJ4NuLcm/e0Tlov9RV+2bs0feDui7W7Xd+jAz0/+PAslb+Xs+5E
-   g==;
-X-CSE-ConnectionGUID: +H4Tfs8MS+m8Kq+JUvJ+Ng==
-X-CSE-MsgGUID: iqwsR7vBRr6Otv3herqZuw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="52066589"
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="52066589"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2024 02:15:01 -0700
-X-CSE-ConnectionGUID: UyiVqf9YRASFXPSsA9mn2Q==
-X-CSE-MsgGUID: HLEMjEXGRF62b6hBGS5IGA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,231,1725346800"; 
-   d="scan'208";a="85653620"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 25 Oct 2024 02:14:54 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1t4GPD-000XyP-17;
-	Fri, 25 Oct 2024 09:14:51 +0000
-Date: Fri, 25 Oct 2024 17:14:26 +0800
-From: kernel test robot <lkp@intel.com>
-To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	pabeni@redhat.com, song@kernel.org, sdf@google.com,
-	haoluo@google.com, yhs@fb.com, edumazet@google.com,
-	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-	guwen@linux.alibaba.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, kuba@kernel.org,
-	davem@davemloft.net, netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org, dtcccc@linux.alibaba.com
-Subject: Re: [PATCH bpf-next 2/4] bpf: allow to access bpf_prog during
- bpf_struct_access
-Message-ID: <202410251600.4VOzw93J-lkp@intel.com>
-References: <1729737768-124596-3-git-send-email-alibuda@linux.alibaba.com>
+	s=arc-20240116; t=1729854325; c=relaxed/simple;
+	bh=OP+n9Lo5uVkyQ7KeuPyqUB9xxC4Afjg2YnkSGz18hQk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YH6tnBMZtIE36RfOdAHE/fQmB2grYC52e2udBBZweHekdvrtwJlGiwKcqJAhK//0v9/A/+7/netIa6LcRdM4uxXzMPVKvY++vkjf7JRcP9NpsmNUqQ5R9G2tAP9V3avYASbZE7evcpYDIvLkmqeBysV+VezgDpSI+f/6WOT6lwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Zh80ygba; arc=none smtp.client-ip=115.124.30.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1729854312; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=e0wxpLKhPBNVP2EQdPTAgZRzESsbupoxr0lzsi/G1MQ=;
+	b=Zh80ygbakZ7j31wdWsOIENN6uv31RoPA+afgz1mOqkA7EAlCIDZGV0/J5R0UIKFnRtCW8deeF1vwmfz8Jtf1cUip8qDWlO8Dho1hj5ZWb8BhBsQWmdibZuCdhaVLO6ej5QhEsYK5djEGJqF5xmkZ9g+zblQhE3GV+phgL+l1Om0=
+Received: from 30.221.147.209(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WHsEbQx_1729854309 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Fri, 25 Oct 2024 19:05:10 +0800
+Message-ID: <e398770a-1ab5-478b-820d-16c6060e0008@linux.alibaba.com>
+Date: Fri, 25 Oct 2024 19:05:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1729737768-124596-3-git-send-email-alibuda@linux.alibaba.com>
-
-Hi Wythe,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/D-Wythe/bpf-export-necessary-sympols-for-modules/20241024-104903
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/1729737768-124596-3-git-send-email-alibuda%40linux.alibaba.com
-patch subject: [PATCH bpf-next 2/4] bpf: allow to access bpf_prog during bpf_struct_access
-config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20241025/202410251600.4VOzw93J-lkp@intel.com/config)
-compiler: clang version 20.0.0git (https://github.com/llvm/llvm-project 5886454669c3c9026f7f27eab13509dd0241f2d6)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241025/202410251600.4VOzw93J-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410251600.4VOzw93J-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/hid/bpf/hid_bpf_struct_ops.c:10:
-   In file included from include/linux/bpf_verifier.h:7:
-   In file included from include/linux/bpf.h:20:
-   In file included from include/linux/module.h:19:
-   In file included from include/linux/elf.h:6:
-   In file included from arch/s390/include/asm/elf.h:181:
-   In file included from arch/s390/include/asm/mmu_context.h:11:
-   In file included from arch/s390/include/asm/pgalloc.h:18:
-   In file included from include/linux/mm.h:2213:
-   include/linux/vmstat.h:504:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     504 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     505 |                            item];
-         |                            ~~~~
-   include/linux/vmstat.h:511:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     511 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     512 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:518:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     518 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   include/linux/vmstat.h:524:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     524 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     525 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   In file included from drivers/hid/bpf/hid_bpf_struct_ops.c:10:
-   In file included from include/linux/bpf_verifier.h:9:
-   In file included from include/linux/filter.h:12:
-   In file included from include/linux/skbuff.h:28:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:93:
-   include/asm-generic/io.h:548:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     548 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:561:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     561 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
-         |                                                           ^
-   include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
-     102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-         |                                                      ^
-   In file included from drivers/hid/bpf/hid_bpf_struct_ops.c:10:
-   In file included from include/linux/bpf_verifier.h:9:
-   In file included from include/linux/filter.h:12:
-   In file included from include/linux/skbuff.h:28:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:93:
-   include/asm-generic/io.h:574:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     574 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
-         |                                                           ^
-   include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
-     115 | #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
-         |                                                      ^
-   In file included from drivers/hid/bpf/hid_bpf_struct_ops.c:10:
-   In file included from include/linux/bpf_verifier.h:9:
-   In file included from include/linux/filter.h:12:
-   In file included from include/linux/skbuff.h:28:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:93:
-   include/asm-generic/io.h:585:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     585 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:595:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     595 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:605:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     605 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:693:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     693 |         readsb(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:701:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     701 |         readsw(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:709:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     709 |         readsl(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:718:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     718 |         writesb(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:727:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     727 |         writesw(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:736:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     736 |         writesl(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
->> drivers/hid/bpf/hid_bpf_struct_ops.c:146:23: error: incompatible function pointer types initializing 'int (*)(struct bpf_verifier_log *, const struct bpf_reg_state *, const struct bpf_prog *, int, int)' with an expression of type 'int (struct bpf_verifier_log *, const struct bpf_reg_state *, int, int)' [-Wincompatible-function-pointer-types]
-     146 |         .btf_struct_access = hid_bpf_ops_btf_struct_access,
-         |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   16 warnings and 1 error generated.
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for MODVERSIONS
-   Depends on [n]: MODULES [=y] && !COMPILE_TEST [=y]
-   Selected by [y]:
-   - RANDSTRUCT_FULL [=y] && (CC_HAS_RANDSTRUCT [=y] || GCC_PLUGINS [=n]) && MODULES [=y]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 3/4] net/smc: Introduce smc_bpf_ops
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
+ song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
+ edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+ jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org,
+ davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org, dtcccc@linux.alibaba.com
+References: <1729737768-124596-1-git-send-email-alibuda@linux.alibaba.com>
+ <1729737768-124596-4-git-send-email-alibuda@linux.alibaba.com>
+ <74c06b43-095f-414a-b4aa-2addbe610336@linux.dev>
+Content-Language: en-US
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <74c06b43-095f-414a-b4aa-2addbe610336@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-vim +146 drivers/hid/bpf/hid_bpf_struct_ops.c
 
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  142  
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  143  static const struct bpf_verifier_ops hid_bpf_verifier_ops = {
-bd0747543b3d97 Benjamin Tissoires 2024-06-08  144  	.get_func_proto = bpf_base_func_proto,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  145  	.is_valid_access = hid_bpf_ops_is_valid_access,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08 @146  	.btf_struct_access = hid_bpf_ops_btf_struct_access,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  147  };
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  148  
+On 10/25/24 8:26 AM, Martin KaFai Lau wrote:
+> On 10/23/24 7:42 PM, D. Wythe wrote:
+>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>
+>> The introduction of IPPROTO_SMC enables eBPF programs to determine
+>> whether to use SMC based on the context of socket creation, such as
+>> network namespaces, PID and comm name, etc.
+>>
+>> As a subsequent enhancement, this patch introduces a new hook for eBPF
+>> programs that allows decisions on whether to use SMC or not at runtime,
+>> including but not limited to local/remote IP address or ports. In
+>> simpler words, this feature allows modifications to syn_smc through eBPF
+>> programs before the TCP three-way handshake got established.
+>>
+>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+>> ---
+>>   include/linux/tcp.h   |   2 +-
+>>   include/net/smc.h     |  47 +++++++++++
+>>   include/net/tcp.h     |   6 ++
+>>   net/ipv4/tcp_input.c  |   3 +-
+>>   net/ipv4/tcp_output.c |  14 +++-
+>>   net/smc/Kconfig       |  12 +++
+>>   net/smc/Makefile      |   1 +
+>>   net/smc/af_smc.c      |  38 ++++++---
+>>   net/smc/smc.h         |   4 +
+>>   net/smc/smc_bpf.c     | 212 ++++++++++++++++++++++++++++++++++++++++++++++++++
+>>   net/smc/smc_bpf.h     |  34 ++++++++
+>>   11 files changed, 357 insertions(+), 16 deletions(-)
+>>   create mode 100644 net/smc/smc_bpf.c
+>>   create mode 100644 net/smc/smc_bpf.h
+>>
+>> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+>> index 6a5e08b..4ef160a 100644
+>> --- a/include/linux/tcp.h
+>> +++ b/include/linux/tcp.h
+>> @@ -478,7 +478,7 @@ struct tcp_sock {
+>>   #endif
+>>   #if IS_ENABLED(CONFIG_SMC)
+>>       bool    syn_smc;    /* SYN includes SMC */
+>> -    bool    (*smc_hs_congested)(const struct sock *sk);
+>> +    struct tcpsmc_ctx *smc;
+>>   #endif
+>>   #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
+>> diff --git a/include/net/smc.h b/include/net/smc.h
+>> index db84e4e..34ab2c6 100644
+>> --- a/include/net/smc.h
+>> +++ b/include/net/smc.h
+>> @@ -18,6 +18,8 @@
+>>   #include "linux/ism.h"
+>>   struct sock;
+>> +struct tcp_sock;
+>> +struct inet_request_sock;
+>>   #define SMC_MAX_PNETID_LEN    16    /* Max. length of PNET id */
+>> @@ -97,4 +99,49 @@ struct smcd_dev {
+>>       u8 going_away : 1;
+>>   };
+>> +/*
+>> + * This structure is used to store the parameters passed to the member of struct_ops.
+>> + * Due to the BPF verifier cannot restrict the writing of bit fields, such as limiting
+>> + * it to only write ireq->smc_ok. Using kfunc can solve this issue, but we don't want
+>> + * to introduce a kfunc with such a narrow function.
+> 
+> imo, adding kfunc is fine.
+> 
+>> + *
+>> + * Moreover, using this structure for unified parameters also addresses another
+>> + * potential issue. Currently, kfunc cannot recognize the calling context
+>> + * through BPF's existing structure. In the future, we can solve this problem
+>> + * by passing this ctx to kfunc.
+> 
+> This part I don't understand. How is it different from the "tcp_cubic_kfunc_set" allowed in 
+> tcp_congestion_ops?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Hi Martin,
+
+Yes, creating an independent kfunc for each callback and filtering via expected_attach_type can 
+indeed solve the problem.
+
+Our main concern is to avoid introducing kfuncs as much as possible. For our subsystem, we might 
+need to maintain it in a way that maintains a uapi, as we certainly have user applications depending 
+on it.
+
+This is also why we need to create a separate ctx, as there’s no way to restrict bit writes, so we 
+created a ctx->smc_ok that is allowed to write.
+
+This is also why we had to create a separate structure, tcpsmc_ctx ...
+
+However, I now realize that compromising to avoid introducing kfuncs has gone too far, affecting the 
+readability of the code. I will try to use kfuncs in the next version to solve those issues.
+
+
+> 
+>> + */
+>> +struct smc_bpf_ops_ctx {
+>> +    struct {
+>> +        struct tcp_sock *tp;
+>> +    } set_option;
+>> +    struct {
+>> +        const struct tcp_sock *tp;
+>> +        struct inet_request_sock *ireq;
+>> +        int smc_ok;
+>> +    } set_option_cond;
+>> +};
+> 
+> There is no need to create one single ctx for struct_ops prog. struct_ops prog can take >1 args and 
+> different ops can take different args.
+> 
+
+Same reason with concern on kfunc. I'll change it in next version.
+
+
+>> +
+>> +struct smc_bpf_ops {
+>> +    /* priavte */
+>> +
+>> +    struct list_head    list;
+>> +
+>> +    /* public */
+>> +
+>> +    /* Invoked before computing SMC option for SYN packets.
+>> +     * We can control whether to set SMC options by modifying
+>> +     * ctx->set_option->tp->syn_smc.
+>> +     * This's also the only member that can be modified now.
+>> +     * Only member in ctx->set_option is valid for this callback.
+>> +     */
+>> +    void (*set_option)(struct smc_bpf_ops_ctx *ctx);
+>> +
+>> +    /* Invoked before Set up SMC options for SYN-ACK packets
+>> +     * We can control whether to respond SMC options by modifying
+>> +     * ctx->set_option_cond.smc_ok.
+>> +     * Only member in ctx->set_option_cond is valid for this callback.
+>> +     */
+>> +    void (*set_option_cond)(struct smc_bpf_ops_ctx *ctx);
+> 
+> The struct smc_bpf_ops already has set_option and set_option_cnd, but...
+> 
+>> +};
+>> +
+>>   #endif    /* _SMC_H */
+>> diff --git a/include/net/tcp.h b/include/net/tcp.h
+>> index 739a9fb..c322443 100644
+>> --- a/include/net/tcp.h
+>> +++ b/include/net/tcp.h
+>> @@ -2730,6 +2730,12 @@ static inline void tcp_bpf_rtt(struct sock *sk, long mrtt, u32 srtt)
+>>   #if IS_ENABLED(CONFIG_SMC)
+>>   extern struct static_key_false tcp_have_smc;
+>> +struct tcpsmc_ctx {
+>> +    /* Invoked before computing SMC option for SYN packets. */
+>> +    void (*set_option)(struct tcp_sock *tp);
+>> +    /* Invoked before Set up SMC options for SYN-ACK packets */
+>> +    void (*set_option_cond)(const struct tcp_sock *tp, struct inet_request_sock *ireq);
+>> +};
+> 
+> another new struct tcpsmc_ctx has exactly the same functions (at least the same name) but different 
+> arguments. I don't understand why this duplicate, is it because the need to prepare the "struct 
+> smc_bpf_ops_ctx"?
+
+Yes, same reason with concern on kfunc. I'll change it in next version.
+
+> 
+> The "struct tcpsmc_ctx" should be the "struct smc_bpf_ops" itself.
+> 
+> [ ... ]
+> 
+>> +static int smc_bpf_ops_btf_struct_access(struct bpf_verifier_log *log,
+>> +                     const struct bpf_reg_state *reg,
+>> +                     const struct bpf_prog *prog,
+>> +                     int off, int size)
+>> +{
+>> +    const struct btf_member *member;
+>> +    const char *mname;
+>> +    int member_idx;
+>> +
+>> +    member_idx = prog->expected_attach_type;
+>> +    if (member_idx >= btf_type_vlen(smc_bpf_ops_type))
+>> +        goto out_err;
+>> +
+>> +    member = &btf_type_member(smc_bpf_ops_type)[member_idx];
+>> +    mname = btf_str_by_offset(saved_btf, member->name_off);
+>> +
+>> +    if (!strcmp(mname, "set_option")) {
+> 
+> btf_member_bit_offset can be used instead of strcmp. Take a look at bpf_tcp_ca.c and kernel/sched/ext.c
+> 
+
+Got it, thanks for that.
+
+Besides, it seems that we don't need the export btf_str_by_offset anymore in that way.
+I'll remove it in the next version.
+
+
+>> +        /* only support to modify tcp_sock->syn_smc */
+>> +        if (reg->btf_id == tcp_sock_id &&
+>> +            off == offsetof(struct tcp_sock, syn_smc) &&
+>> +            off + size == offsetofend(struct tcp_sock, syn_smc))
+>> +            return 0;
+>> +    } else if (!strcmp(mname, "set_option_cond")) {
+>> +        /* only support to modify smc_bpf_ops_ctx->smc_ok */
+>> +        if (reg->btf_id == smc_bpf_ops_ctx_id &&
+>> +            off == offsetof(struct smc_bpf_ops_ctx, set_option_cond.smc_ok) &&
+>> +            off + size == offsetofend(struct smc_bpf_ops_ctx, set_option_cond.smc_ok))
+>> +            return 0;
+>> +    }
+>> +
+>> +out_err:
+>> +    return -EACCES;
+>> +}
+>> +
+>> +static const struct bpf_verifier_ops smc_bpf_verifier_ops = {
+>> +    .get_func_proto = bpf_base_func_proto,
+>> +    .is_valid_access = bpf_tracing_btf_ctx_access,
+>> +    .btf_struct_access = smc_bpf_ops_btf_struct_access,
+>> +};
+>> +
+>> +static struct bpf_struct_ops bpf_smc_bpf_ops = {
+>> +    .init = smc_bpf_ops_init,
+>> +    .name = "smc_bpf_ops",
+>> +    .reg = smc_bpf_ops_reg,
+>> +    .unreg = smc_bpf_ops_unreg,
+>> +    .cfi_stubs = &__bpf_smc_bpf_ops,
+>> +    .verifier_ops = &smc_bpf_verifier_ops,
+>> +    .init_member = smc_bpf_ops_init_member,
+>> +    .check_member = smc_bpf_ops_check_member,
+>> +    .owner = THIS_MODULE,
+>> +};
+>> +
+>> +int smc_bpf_struct_ops_init(void)
+>> +{
+>> +    return register_bpf_struct_ops(&bpf_smc_bpf_ops, smc_bpf_ops);
+>> +}
+>> +
+>> +void bpf_smc_set_tcp_option(struct tcp_sock *tp)
+>> +{
+>> +    struct smc_bpf_ops_ctx ops_ctx = {};
+>> +    struct smc_bpf_ops *ops;
+>> +
+>> +    ops_ctx.set_option.tp = tp;
+> 
+> All this initialization should be unnecessary. Directly pass tp instead.
+> 
+
+Same reason with kfunc concern. I'll change it in next version.
+
+>> +
+>> +    rcu_read_lock();
+>> +    list_for_each_entry_rcu(ops, &smc_bpf_ops_list, list) {
+> 
+> Does it need to have a list (meaning >1) of smc_bpf_ops to act on a sock? The ordering expectation 
+> is hard to manage.
+> 
+
+Considering that the SMC modules also has its own ops that needs to be registered on it (the logic 
+of smc_limit_fs), and need to be all executed, perhaps a list is a more suitable choice.
+
+
+>> +        ops->set_option(&ops_ctx);
+> 
+> A dumb question. This will only affect AF_SMC (or AF_INET[6]/IPPROTO_SMC) socket but not the 
+> AF_INET[6]/IPPROTO_{TCP,UDP} socket?
+> 
+
+Yes, it only affects AF_SMC, AF_SMC6, or IPPROTO_SMC sockets. Due to only SMC sockets will set 
+tp->syn_smc, and we will check it before calling the very ops.
+
+Best wishes,
+D.
+
+> pw-bot: cr
+> 
+>> +    }
+>> +    rcu_read_unlock();
+>> +}
+
+
+
 
