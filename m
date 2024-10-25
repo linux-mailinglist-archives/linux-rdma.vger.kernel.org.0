@@ -1,301 +1,188 @@
-Return-Path: <linux-rdma+bounces-5513-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5514-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD25D9AF62E
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 02:27:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3B939AF8BB
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 06:04:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 402011F22A59
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 00:27:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA4F41C22107
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2024 04:04:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 824025221;
-	Fri, 25 Oct 2024 00:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C856618C356;
+	Fri, 25 Oct 2024 04:03:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="POSimtOW"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Ec2preNP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50A534C6D
-	for <linux-rdma@vger.kernel.org>; Fri, 25 Oct 2024 00:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38B03611B
+	for <linux-rdma@vger.kernel.org>; Fri, 25 Oct 2024 04:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729816027; cv=none; b=V1Nyi++IwK5OHNItTXTjF7a/vbC5WuRQ+dYCBrDtuuQJ3HgiLL2iXLDVrRmMpnXH68e37PIGAhvC1EVo/fdGiPY+xNAhWAdrnfgNO+abmDlpImX53M2T5Jr+336Uega2cv/Hsc5m+qBK7VlLLUxBo/TFvkgMSz3jAa29mB3Wg+M=
+	t=1729829032; cv=none; b=AqWFmorPhtjVL5GJhTntLMsQQc1fIXwZlxC7+TX1gvQuGCZsRwaIL+IuayDj5//EZ8fMHSLgNxUGwPHtOTvOWcxpSlo4ilYGgPPqFiWMmELzo0cWMQeWpYPTE7Z48PAKdPv2ekPMSkjEQgtBhRnIdvE5Bddk0IFCgB3HPrQMmRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729816027; c=relaxed/simple;
-	bh=sUlonnYzk09GLqAwS2WJKo0KBHCiiNG2So7rABxdhfI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fkyXuE9/Tp1gZk8wB3Y4wkeykrOlVqo6XdtwNipUlnUO9FHzokf6eNPFeZqBc6xRgjp1tPDcjvqM9ku+DTySzXrYci3GIHM/oN2j7T7wrhV/+3Fekmuq3cV7kOwIRcsUsFqnE7A+Au9BwdklsHEDNEnqQwEBv+wHcSpzkOs9/E4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=POSimtOW; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <74c06b43-095f-414a-b4aa-2addbe610336@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729816021;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cO+P2/BVH76BUnj+FBfjAkcsAssXYM+8F1HEYhrXDuw=;
-	b=POSimtOWIPEl0SvDBCtD8jra2jpxRO7BUt2vYNMqbYd76zb+19gQUvWCz4MdfsZpcmMt2/
-	5c5pNRki6wj9VVbwf9zR5o0qSw3gEiU4nN2QjQMwzo2SwgEJokA5P/ax4c3u+SqtmS00rZ
-	867z4ejQUEU79LgL2qiVjW9JvRV2V9M=
-Date: Thu, 24 Oct 2024 17:26:49 -0700
+	s=arc-20240116; t=1729829032; c=relaxed/simple;
+	bh=uj1WgBYFyWD1xpEOOPUD8O2ZJyr+jKHWV5OJsljyLWY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eqgVRyPJZp1jW3YSO49woO1VM6nVesBi+otmrfVI2D+z8+2c8BgbfrOXsJzQz3bU0O3OwuqKEgWRPSZ936KwSDnLMHut4o4gK8b5IrBnwFa2JiU1WJBUDS9WmYl8nNlj9dP+Kr0sqwO7n7Mplze1q1VyD5lV+y+AM7kNEUDzo5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Ec2preNP; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-539fe76e802so2014509e87.1
+        for <linux-rdma@vger.kernel.org>; Thu, 24 Oct 2024 21:03:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1729829028; x=1730433828; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uj1WgBYFyWD1xpEOOPUD8O2ZJyr+jKHWV5OJsljyLWY=;
+        b=Ec2preNPzR7FrsXQN57GG7TqHmbPx2p0k6YycJDb2I/MznCp8l6Cbl6GiQtA31QnO0
+         aMOIMLTz972Wk/+53j9hQzFQgdNBwbVKl7Lpj9/sNbzhAWYLIX7QU1Lf7EZE0CEyeJe1
+         3NUYMzovT/YS/tvJZKwA1PrMwpGsZcWDy0icU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729829028; x=1730433828;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uj1WgBYFyWD1xpEOOPUD8O2ZJyr+jKHWV5OJsljyLWY=;
+        b=pvPulCMYw/RhpJZsHKEyS8gNTfAJfMmicsvlY8GiUv8pt6mqslIn383z0CXKuA133R
+         o1aFIJLlJ91im9mYFV6TbFXTqE9KTc889DH/Ot3X2NbtjbtQxjW4D/ZUUJfW6Hnvv6q/
+         VsKyr6umyTrCY5JHM5wkCLQTMx7FLYjsPbWqOhP6prahlRPm5rt8/Yc3kFGUsa0HAtUp
+         zxgPkAFxZ/hOSwYOEZNmGx8drTaSsb767BaQjM3QpOkqxpy/vh5sETCNKGcGEcpVKcBA
+         YO0uKwO8Za+9HDTutoyZ/HmfjGJfVTVrlco/Hrh087e1hCGEeU/sAiq4Cihtwcaj3efR
+         0UCA==
+X-Forwarded-Encrypted: i=1; AJvYcCWoC0Fo13AIkZeK++stBDL9DvSJTw14Y11Ezi/ODXqnk92r5T8KZF9JXa1Fgo33HAdaXNU63j1D4DKC@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxl9RnZsLOSam4WoRM1UxQ7eGtNgN9Ygswod3nI+BZ6O/T7rhdW
+	qqtB8n3Egt1vFM5JiswuM1oFmjk/Hyz8xCVIi6JwTPaSKMYrdPtn+R6WlREhWj3SFSmwoV236Xi
+	csXh3ioIRNzukIWFfXfvKz1ryosmU+BMtbrMe
+X-Google-Smtp-Source: AGHT+IEVYWeM4jxS2v0jAsOYeL77hWveoGm58FAhocT4euIlXb+1+TUvFiTAqzFAxSIKwfrev1VpbZq0zG9bgQVRTZM=
+X-Received: by 2002:a05:6512:3da6:b0:539:d0ef:b3f9 with SMTP id
+ 2adb3069b0e04-53b1a36b7eemr4830438e87.40.1729829027856; Thu, 24 Oct 2024
+ 21:03:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next 3/4] net/smc: Introduce smc_bpf_ops
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
- song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
- edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
- jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org,
- davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org, dtcccc@linux.alibaba.com
-References: <1729737768-124596-1-git-send-email-alibuda@linux.alibaba.com>
- <1729737768-124596-4-git-send-email-alibuda@linux.alibaba.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <1729737768-124596-4-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <IA0PR12MB8713EC167DC79275451864BADC6C2@IA0PR12MB8713.namprd12.prod.outlook.com>
+ <20240920181129.37156-1-sebott@redhat.com>
+In-Reply-To: <20240920181129.37156-1-sebott@redhat.com>
+From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
+Date: Fri, 25 Oct 2024 09:33:35 +0530
+Message-ID: <CAH-L+nPJzAzKDoBioOE8pSOYA0PQUAtAUVnUDw3Zo3vzwonmSw@mail.gmail.com>
+Subject: Re: [PATCH v2] net/mlx5: unique names for per device caches
+To: Sebastian Ott <sebott@redhat.com>
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Parav Pandit <parav@nvidia.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000c0143e0625453467"
 
-On 10/23/24 7:42 PM, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> The introduction of IPPROTO_SMC enables eBPF programs to determine
-> whether to use SMC based on the context of socket creation, such as
-> network namespaces, PID and comm name, etc.
-> 
-> As a subsequent enhancement, this patch introduces a new hook for eBPF
-> programs that allows decisions on whether to use SMC or not at runtime,
-> including but not limited to local/remote IP address or ports. In
-> simpler words, this feature allows modifications to syn_smc through eBPF
-> programs before the TCP three-way handshake got established.
-> 
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
->   include/linux/tcp.h   |   2 +-
->   include/net/smc.h     |  47 +++++++++++
->   include/net/tcp.h     |   6 ++
->   net/ipv4/tcp_input.c  |   3 +-
->   net/ipv4/tcp_output.c |  14 +++-
->   net/smc/Kconfig       |  12 +++
->   net/smc/Makefile      |   1 +
->   net/smc/af_smc.c      |  38 ++++++---
->   net/smc/smc.h         |   4 +
->   net/smc/smc_bpf.c     | 212 ++++++++++++++++++++++++++++++++++++++++++++++++++
->   net/smc/smc_bpf.h     |  34 ++++++++
->   11 files changed, 357 insertions(+), 16 deletions(-)
->   create mode 100644 net/smc/smc_bpf.c
->   create mode 100644 net/smc/smc_bpf.h
-> 
-> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-> index 6a5e08b..4ef160a 100644
-> --- a/include/linux/tcp.h
-> +++ b/include/linux/tcp.h
-> @@ -478,7 +478,7 @@ struct tcp_sock {
->   #endif
->   #if IS_ENABLED(CONFIG_SMC)
->   	bool	syn_smc;	/* SYN includes SMC */
-> -	bool	(*smc_hs_congested)(const struct sock *sk);
-> +	struct tcpsmc_ctx *smc;
->   #endif
->   
->   #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
-> diff --git a/include/net/smc.h b/include/net/smc.h
-> index db84e4e..34ab2c6 100644
-> --- a/include/net/smc.h
-> +++ b/include/net/smc.h
-> @@ -18,6 +18,8 @@
->   #include "linux/ism.h"
->   
->   struct sock;
-> +struct tcp_sock;
-> +struct inet_request_sock;
->   
->   #define SMC_MAX_PNETID_LEN	16	/* Max. length of PNET id */
->   
-> @@ -97,4 +99,49 @@ struct smcd_dev {
->   	u8 going_away : 1;
->   };
->   
-> +/*
-> + * This structure is used to store the parameters passed to the member of struct_ops.
-> + * Due to the BPF verifier cannot restrict the writing of bit fields, such as limiting
-> + * it to only write ireq->smc_ok. Using kfunc can solve this issue, but we don't want
-> + * to introduce a kfunc with such a narrow function.
+--000000000000c0143e0625453467
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-imo, adding kfunc is fine.
+On Fri, Sep 20, 2024 at 11:41=E2=80=AFPM Sebastian Ott <sebott@redhat.com> =
+wrote:
+>
+> Add the device name to the per device kmem_cache names to
+> ensure their uniqueness. This fixes warnings like this:
+> "kmem_cache of name 'mlx5_fs_fgs' already exists".
+>
+> Signed-off-by: Sebastian Ott <sebott@redhat.com>
+LGTM,
+Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-> + *
-> + * Moreover, using this structure for unified parameters also addresses another
-> + * potential issue. Currently, kfunc cannot recognize the calling context
-> + * through BPF's existing structure. In the future, we can solve this problem
-> + * by passing this ctx to kfunc.
 
-This part I don't understand. How is it different from the "tcp_cubic_kfunc_set" 
-allowed in tcp_congestion_ops?
+--=20
+Regards,
+Kalesh A P
 
-> + */
-> +struct smc_bpf_ops_ctx {
-> +	struct {
-> +		struct tcp_sock *tp;
-> +	} set_option;
-> +	struct {
-> +		const struct tcp_sock *tp;
-> +		struct inet_request_sock *ireq;
-> +		int smc_ok;
-> +	} set_option_cond;
-> +};
+--000000000000c0143e0625453467
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-There is no need to create one single ctx for struct_ops prog. struct_ops prog 
-can take >1 args and different ops can take different args.
-
-> +
-> +struct smc_bpf_ops {
-> +	/* priavte */
-> +
-> +	struct list_head	list;
-> +
-> +	/* public */
-> +
-> +	/* Invoked before computing SMC option for SYN packets.
-> +	 * We can control whether to set SMC options by modifying
-> +	 * ctx->set_option->tp->syn_smc.
-> +	 * This's also the only member that can be modified now.
-> +	 * Only member in ctx->set_option is valid for this callback.
-> +	 */
-> +	void (*set_option)(struct smc_bpf_ops_ctx *ctx);
-> +
-> +	/* Invoked before Set up SMC options for SYN-ACK packets
-> +	 * We can control whether to respond SMC options by modifying
-> +	 * ctx->set_option_cond.smc_ok.
-> +	 * Only member in ctx->set_option_cond is valid for this callback.
-> +	 */
-> +	void (*set_option_cond)(struct smc_bpf_ops_ctx *ctx);
-
-The struct smc_bpf_ops already has set_option and set_option_cnd, but...
-
-> +};
-> +
->   #endif	/* _SMC_H */
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index 739a9fb..c322443 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -2730,6 +2730,12 @@ static inline void tcp_bpf_rtt(struct sock *sk, long mrtt, u32 srtt)
->   
->   #if IS_ENABLED(CONFIG_SMC)
->   extern struct static_key_false tcp_have_smc;
-> +struct tcpsmc_ctx {
-> +	/* Invoked before computing SMC option for SYN packets. */
-> +	void (*set_option)(struct tcp_sock *tp);
-> +	/* Invoked before Set up SMC options for SYN-ACK packets */
-> +	void (*set_option_cond)(const struct tcp_sock *tp, struct inet_request_sock *ireq);
-> +};
-
-another new struct tcpsmc_ctx has exactly the same functions (at least the same 
-name) but different arguments. I don't understand why this duplicate, is it 
-because the need to prepare the "struct smc_bpf_ops_ctx"?
-
-The "struct tcpsmc_ctx" should be the "struct smc_bpf_ops" itself.
-
-[ ... ]
-
-> +static int smc_bpf_ops_btf_struct_access(struct bpf_verifier_log *log,
-> +					 const struct bpf_reg_state *reg,
-> +					 const struct bpf_prog *prog,
-> +					 int off, int size)
-> +{
-> +	const struct btf_member *member;
-> +	const char *mname;
-> +	int member_idx;
-> +
-> +	member_idx = prog->expected_attach_type;
-> +	if (member_idx >= btf_type_vlen(smc_bpf_ops_type))
-> +		goto out_err;
-> +
-> +	member = &btf_type_member(smc_bpf_ops_type)[member_idx];
-> +	mname = btf_str_by_offset(saved_btf, member->name_off);
-> +
-> +	if (!strcmp(mname, "set_option")) {
-
-btf_member_bit_offset can be used instead of strcmp. Take a look at bpf_tcp_ca.c 
-and kernel/sched/ext.c
-
-> +		/* only support to modify tcp_sock->syn_smc */
-> +		if (reg->btf_id == tcp_sock_id &&
-> +		    off == offsetof(struct tcp_sock, syn_smc) &&
-> +		    off + size == offsetofend(struct tcp_sock, syn_smc))
-> +			return 0;
-> +	} else if (!strcmp(mname, "set_option_cond")) {
-> +		/* only support to modify smc_bpf_ops_ctx->smc_ok */
-> +		if (reg->btf_id == smc_bpf_ops_ctx_id &&
-> +		    off == offsetof(struct smc_bpf_ops_ctx, set_option_cond.smc_ok) &&
-> +		    off + size == offsetofend(struct smc_bpf_ops_ctx, set_option_cond.smc_ok))
-> +			return 0;
-> +	}
-> +
-> +out_err:
-> +	return -EACCES;
-> +}
-> +
-> +static const struct bpf_verifier_ops smc_bpf_verifier_ops = {
-> +	.get_func_proto = bpf_base_func_proto,
-> +	.is_valid_access = bpf_tracing_btf_ctx_access,
-> +	.btf_struct_access = smc_bpf_ops_btf_struct_access,
-> +};
-> +
-> +static struct bpf_struct_ops bpf_smc_bpf_ops = {
-> +	.init = smc_bpf_ops_init,
-> +	.name = "smc_bpf_ops",
-> +	.reg = smc_bpf_ops_reg,
-> +	.unreg = smc_bpf_ops_unreg,
-> +	.cfi_stubs = &__bpf_smc_bpf_ops,
-> +	.verifier_ops = &smc_bpf_verifier_ops,
-> +	.init_member = smc_bpf_ops_init_member,
-> +	.check_member = smc_bpf_ops_check_member,
-> +	.owner = THIS_MODULE,
-> +};
-> +
-> +int smc_bpf_struct_ops_init(void)
-> +{
-> +	return register_bpf_struct_ops(&bpf_smc_bpf_ops, smc_bpf_ops);
-> +}
-> +
-> +void bpf_smc_set_tcp_option(struct tcp_sock *tp)
-> +{
-> +	struct smc_bpf_ops_ctx ops_ctx = {};
-> +	struct smc_bpf_ops *ops;
-> +
-> +	ops_ctx.set_option.tp = tp;
-
-All this initialization should be unnecessary. Directly pass tp instead.
-
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(ops, &smc_bpf_ops_list, list) {
-
-Does it need to have a list (meaning >1) of smc_bpf_ops to act on a sock? The 
-ordering expectation is hard to manage.
-
-> +		ops->set_option(&ops_ctx);
-
-A dumb question. This will only affect AF_SMC (or AF_INET[6]/IPPROTO_SMC) 
-socket but not the AF_INET[6]/IPPROTO_{TCP,UDP} socket?
-
-pw-bot: cr
-
-> +	}
-> +	rcu_read_unlock();
-> +}
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBWowggRSoAMCAQICDDfBRQmwNSI92mit0zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODI5NTZaFw0yNTA5MTAwODI5NTZaMIGi
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xHzAdBgNVBAMTFkthbGVzaCBBbmFra3VyIFB1cmF5aWwxMjAw
+BgkqhkiG9w0BCQEWI2thbGVzaC1hbmFra3VyLnB1cmF5aWxAYnJvYWRjb20uY29tMIIBIjANBgkq
+hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxnv1Reaeezfr6NEmg3xZlh4cz9m7QCN13+j4z1scrX+b
+JfnV8xITT5yvwdQv3R3p7nzD/t29lTRWK3wjodUd2nImo6vBaH3JbDwleIjIWhDXLNZ4u7WIXYwx
+aQ8lYCdKXRsHXgGPY0+zSx9ddpqHZJlHwcvas3oKnQN9WgzZtsM7A8SJefWkNvkcOtef6bL8Ew+3
+FBfXmtsPL9I2vita8gkYzunj9Nu2IM+MnsP7V/+Coy/yZDtFJHp30hDnYGzuOhJchDF9/eASvE8T
+T1xqJODKM9xn5xXB1qezadfdgUs8k8QAYyP/oVBafF9uqDudL6otcBnziyDBQdFCuAQN7wIDAQAB
+o4IB5DCCAeAwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZC
+aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJj
+YTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3Iz
+cGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcC
+ARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNV
+HR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNp
+Z24yY2EyMDIwLmNybDAuBgNVHREEJzAlgSNrYWxlc2gtYW5ha2t1ci5wdXJheWlsQGJyb2FkY29t
+LmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGP
+zzAdBgNVHQ4EFgQUI3+tdStI+ABRGSqksMsiCmO9uDAwDQYJKoZIhvcNAQELBQADggEBAGfe1o9b
+4wUud0FMjb/FNdc433meL15npjdYWUeioHdlCGB5UvEaMGu71QysfoDOfUNeyO9YKp0h0fm7clvo
+cBqeWe4CPv9TQbmLEtXKdEpj5kFZBGmav69mGTlu1A9KDQW3y0CDzCPG2Fdm4s73PnkwvemRk9E2
+u9/kcZ8KWVeS+xq+XZ78kGTKQ6Wii3dMK/EHQhnDfidadoN/n+x2ySC8yyDNvy81BocnblQzvbuB
+a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
+x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
+VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
+bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
+AQkEMSIEIIRYphod+MmcVcnGO2RqxQzmvODDXz4qYYKqgwro9kluMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MTAyNTA0MDM0OFowaQYJKoZIhvcNAQkPMVwwWjAL
+BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
+9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAM+wTrNXA2
+qqnogfREj6K0i8oe6mm5dvW/0thxmcdVqcnd3Ny6M7RZ6nu2IIt465vCw1N2Hc0btBjxkT/tTV02
+cEqfiDQr5QOhpMTRlVFST/S1HybJ9fpzBhrbelFbeG1GFce+MNDMVj/xqRgh0cPaV5MiUXihnzLH
+63kviH5blHosTb+FOr1wLMENR0Go9Wxjrbc/M+CFpE1a95NVE2+18qgdC7fPrOv14udlbTRFZffs
+9nQhMYsOQW2X0RhlsLWUF2WcAzMk4/F6rR5jNEYD2wIh/lY2mravJJg39tGxr/RKh+EjQ0g36Y3f
+DahlWeqBrOiCwgm1gY04DXL9Kjto
+--000000000000c0143e0625453467--
 
