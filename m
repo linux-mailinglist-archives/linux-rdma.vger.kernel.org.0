@@ -1,141 +1,188 @@
-Return-Path: <linux-rdma+bounces-5532-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5533-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C0339B1D5A
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2024 12:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 165F89B1E1A
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2024 15:21:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3B3AB211CB
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2024 11:18:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 678FFB21086
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2024 14:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D1C1422AB;
-	Sun, 27 Oct 2024 11:18:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEFBF16A956;
+	Sun, 27 Oct 2024 14:21:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="YJffDRJL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZJXLcikU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA278161;
-	Sun, 27 Oct 2024 11:18:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F7013B58D;
+	Sun, 27 Oct 2024 14:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730027897; cv=none; b=cEnDxyGHDwRuXQHDACKLqP5RjMtpDvWHLXs27u5F5ZTiJv6zwE1p9kBog9t8UWGUOeP6GSa8onG9QoL8hNie0lnBxQCDAZhXJcy3PFq9C5kgf3x6XtoHehY/spXbWP244ePnDd5n8I5+B/5sVe7m2r5ueTCap6gUvQLuSlG+h78=
+	t=1730038891; cv=none; b=G4FKm/zlDYhdM90Acv8426o+ReBQ2JYG7HckRkAC76gALUnI4rhD1KrIqXDWT18Avf0iBHm7W+4SkH2hs0K11vrBQ/TadLW6RqY4/x8a3mZImLhokd/jmneo7jgpjedbyE/KteEyTueZM73p+XrPWuJMA3zLKNjH7lY84ICmMc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730027897; c=relaxed/simple;
-	bh=1t0hPj5j/GoJWCB+D9JDiK6Ur3FebwDE732vMCkQfas=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jGeFpVRzE56z7MwWPpQVd8RwktPSxquCGcKh5PxmhEIzFCuTiX7V7sm6Ydzxaw3r+p53U/Iv5MMf1dsrpl3APrUAdcDg9KMxJiE8aTqRITQnN+o4d2vFPZq8W8PvYMe92QHJ8BZZ01MKMgJ0ALPIWG0+6u8fAzvEE/HyuBV01/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=YJffDRJL; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1730027883; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=SMAOEmNZAtuLgKjy34T7btJXdrvMUuoF7jRJ7UBb9Zg=;
-	b=YJffDRJLNzncT9zQNakw9VLtciuvTQcZ+vwEoqYpv91SgNkz0m8BAEwCpmWDOYEYbZIwUggEngXiKbta2skKrxNxlyeeh6NeJcyxzi4cWJ64lotCCex4kR9MIdBo0vyYRav2a4JeFd9sJekxtGteURedN4NzaB6nQeE38l4uHx8=
-Received: from 30.212.186.15(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0WHxbQlB_1730027880 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Sun, 27 Oct 2024 19:18:03 +0800
-Message-ID: <456e2ab1-d137-45e0-a130-eef1ffb582a4@linux.alibaba.com>
-Date: Sun, 27 Oct 2024 19:18:00 +0800
+	s=arc-20240116; t=1730038891; c=relaxed/simple;
+	bh=yiDPGTeRo6kkrCL424ml+10YMw3MQYm4nZaRw+o9Rl8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pnjduLAIMiy/gtAFhEOOjC7mKfktvWY+YKSaXJIsMskBI1PxW33S2rnj3/Z7aYq79ep8pU/lSNGQ8Ux13gSCD8zElirRCVWwDbUjOg3oiKW3EUnAd28kHKHVjeMTxOmChT5uGmv2Tn+UgDE5xESCEX8HtxQ/CWG7DzwBhVypwpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZJXLcikU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F722C4CEC3;
+	Sun, 27 Oct 2024 14:21:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730038890;
+	bh=yiDPGTeRo6kkrCL424ml+10YMw3MQYm4nZaRw+o9Rl8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ZJXLcikUOitybN0hao1J9Vd9spDMODBJQHEviT465Ah4u+MoxB1mFmOHyANGxw5ia
+	 30Bf6ThOTtlNMLBOOP2eKx/OtxsF4ACyy/E63V76kw9Srz48Q+zMmvzZyawo1/qkIF
+	 ddiJk3UvCTr8eaD8xPC0CphXPMhx/Whg8Z0IO0OafvVuzrewN0MLYdQN+RBLSAbr8z
+	 VMS/1jV+I/kno/tx99UhrFjJNGeo0dYa7Y+hdSQM6izl1RSW9fc5m7kTTZj0mvvo7r
+	 fzojmNtZXvaZxwQaqY0r08vfE+KjCx3P8dfFhVwisgJsul2XoWFiwIpfHubMYxtPPG
+	 kk7H9CbqENKHA==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>
+Cc: Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org,
+	linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH 00/18] Provide a new two step DMA mapping API
+Date: Sun, 27 Oct 2024 16:21:00 +0200
+Message-ID: <cover.1730037276.git.leon@kernel.org>
+X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net/smc: Fix lookup of netdev by using
- ib_device_get_netdev()
-To: Wenjia Zhang <wenjia@linux.ibm.com>, "D. Wythe"
- <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
- David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
- Jan Karcher <jaka@linux.ibm.com>, Gerd Bayer <gbayer@linux.ibm.com>,
- Alexandra Winter <wintera@linux.ibm.com>, Halil Pasic <pasic@linux.ibm.com>,
- Nils Hoppmann <niho@linux.ibm.com>, Niklas Schnell <schnelle@linux.ibm.com>,
- Thorsten Winkler <twinkler@linux.ibm.com>,
- Karsten Graul <kgraul@linux.ibm.com>, Stefan Raspl <raspl@linux.ibm.com>,
- Aswin K <aswin@linux.ibm.com>
-References: <20241025072356.56093-1-wenjia@linux.ibm.com>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <20241025072356.56093-1-wenjia@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Currently the only efficient way to map a complex memory description through
+the DMA API is by using the scatterlist APIs. The SG APIs are unique in that
+they efficiently combine the two fundamental operations of sizing and allocating
+a large IOVA window from the IOMMU and processing all the per-address
+swiotlb/flushing/p2p/map details.
 
+This uniqueness has been a long standing pain point as the scatterlist API
+is mandatory, but expensive to use. It prevents any kind of optimization or
+feature improvement (such as avoiding struct page for P2P) due to the impossibility
+of improving the scatterlist.
 
-On 2024/10/25 15:23, Wenjia Zhang wrote:
-> Commit c2261dd76b54 ("RDMA/device: Add ib_device_set_netdev() as an
-> alternative to get_netdev") introduced an API ib_device_get_netdev.
-> The SMC-R variant of the SMC protocol continued to use the old API
-> ib_device_ops.get_netdev() to lookup netdev. As this commit 8d159eb2117b
-> ("RDMA/mlx5: Use IB set_netdev and get_netdev functions") removed the
-> get_netdev callback from mlx5_ib_dev_common_roce_ops, calling
-> ib_device_ops.get_netdev didn't work any more at least by using a mlx5
-> device driver. Thus, using ib_device_set_netdev() now became mandatory.
-> 
-> Replace ib_device_ops.get_netdev() with ib_device_get_netdev().
-> 
-> Fixes: 54903572c23c ("net/smc: allow pnetid-less configuration")
-> Fixes: 8d159eb2117b ("RDMA/mlx5: Use IB set_netdev and get_netdev functions")
-> Reported-by: Aswin K <aswin@linux.ibm.com>
-> Reviewed-by: Gerd Bayer <gbayer@linux.ibm.com>
-> Signed-off-by: Wenjia Zhang <wenjia@linux.ibm.com>
+Several approaches have been explored to expand the DMA API with additional
+scatterlist-like structures (BIO[1], rlist[2]), instead split up the DMA API
+to allow callers to bring their own data structure.
 
-LGTM!
+The API is split up into parts:
+ - Allocate IOVA space:
+    To do any pre-allocation required. This is done based on the caller
+    supplying some details about how much IOMMU address space it would need
+    in worst case.
+ - Map and unmap relevant structures to pre-allocated IOVA space:
+    Perform the actual mapping into the pre-allocated IOVA. This is very
+    similar to dma_map_page().
 
-Reviewed-by: Wen Gu <guwen@linux.alibaba.com>
+In this and the next series [1], examples of three different users are converted
+to the new API to show the benefits and its versatility. Each user has a unique
+flow:
+ 1. RDMA ODP is an example of "SVA mirroring" using HMM that needs to
+    dynamically map/unmap large numbers of single pages. This becomes
+    significantly faster in the IOMMU case as the map/unmap is now just
+    a page table walk, the IOVA allocation is pre-computed once. Significant
+    amounts of memory are saved as there is no longer a need to store the
+    dma_addr_t of each page.
+ 2. VFIO PCI live migration code is building a very large "page list"
+    for the device. Instead of allocating a scatter list entry per allocated
+    page it can just allocate an array of 'struct page *', saving a large
+    amount of memory.
+ 3. NVMe PCI demonstrates how a BIO can be converted to a HW scatter
+    list without having to allocate then populate an intermediate SG table.
 
-> ---
->   net/smc/smc_ib.c   | 8 ++------
->   net/smc/smc_pnet.c | 4 +---
->   2 files changed, 3 insertions(+), 9 deletions(-)
-> 
-> diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
-> index 9297dc20bfe2..9c563cdbea90 100644
-> --- a/net/smc/smc_ib.c
-> +++ b/net/smc/smc_ib.c
-> @@ -899,9 +899,7 @@ static void smc_copy_netdev_ifindex(struct smc_ib_device *smcibdev, int port)
->   	struct ib_device *ibdev = smcibdev->ibdev;
->   	struct net_device *ndev;
->   
-> -	if (!ibdev->ops.get_netdev)
-> -		return;
-> -	ndev = ibdev->ops.get_netdev(ibdev, port + 1);
-> +	ndev = ib_device_get_netdev(ibdev, port + 1);
->   	if (ndev) {
->   		smcibdev->ndev_ifidx[port] = ndev->ifindex;
->   		dev_put(ndev);
-> @@ -921,9 +919,7 @@ void smc_ib_ndev_change(struct net_device *ndev, unsigned long event)
->   		port_cnt = smcibdev->ibdev->phys_port_cnt;
->   		for (i = 0; i < min_t(size_t, port_cnt, SMC_MAX_PORTS); i++) {
->   			libdev = smcibdev->ibdev;
-> -			if (!libdev->ops.get_netdev)
-> -				continue;
-> -			lndev = libdev->ops.get_netdev(libdev, i + 1);
-> +			lndev = ib_device_get_netdev(libdev, i + 1);
->   			dev_put(lndev);
->   			if (lndev != ndev)
->   				continue;
-> diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
-> index 1dd362326c0a..8566937c8903 100644
-> --- a/net/smc/smc_pnet.c
-> +++ b/net/smc/smc_pnet.c
-> @@ -1054,9 +1054,7 @@ static void smc_pnet_find_rdma_dev(struct net_device *netdev,
->   		for (i = 1; i <= SMC_MAX_PORTS; i++) {
->   			if (!rdma_is_port_valid(ibdev->ibdev, i))
->   				continue;
-> -			if (!ibdev->ibdev->ops.get_netdev)
-> -				continue;
-> -			ndev = ibdev->ibdev->ops.get_netdev(ibdev->ibdev, i);
-> +			ndev = ib_device_get_netdev(ibdev->ibdev, i);
->   			if (!ndev)
->   				continue;
->   			dev_put(ndev);
+To make the use of the new API easier, HMM and block subsystems are extended
+to hide the optimization details from the caller. Among these optimizations:
+ * Memory reduction as in most real use cases there is no need to store mapped
+   DMA addresses and unmap them.
+ * Reducing the function call overhead by removing the need to call function
+   pointers and use direct calls instead.
+
+This step is first along a path to provide alternatives to scatterlist and
+solve some of the abuses and design mistakes, for instance in DMABUF's P2P
+support.
+
+Thanks
+
+[1] https://lore.kernel.org/all/cover.1730037261.git.leon@kernel.org
+
+Christoph Hellwig (6):
+  PCI/P2PDMA: refactor the p2pdma mapping helpers
+  dma-mapping: move the PCI P2PDMA mapping helpers to pci-p2pdma.h
+  iommu: generalize the batched sync after map interface
+  iommu/dma: Factor out a iommu_dma_map_swiotlb helper
+  dma-mapping: add a dma_need_unmap helper
+  docs: core-api: document the IOVA-based API
+
+Leon Romanovsky (12):
+  dma-mapping: Add check if IOVA can be used
+  dma: Provide an interface to allow allocate IOVA
+  dma-mapping: Implement link/unlink ranges API
+  mm/hmm: let users to tag specific PFN with DMA mapped bit
+  mm/hmm: provide generic DMA managing logic
+  RDMA/umem: Store ODP access mask information in PFN
+  RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page
+    linkage
+  RDMA/umem: Separate implicit ODP initialization from explicit ODP
+  vfio/mlx5: Explicitly use number of pages instead of allocated length
+  vfio/mlx5: Rewrite create mkey flow to allow better code reuse
+  vfio/mlx5: Explicitly store page list
+  vfio/mlx5: Convert vfio to use DMA link API
+
+ Documentation/core-api/dma-api.rst   |  70 +++++
+ drivers/infiniband/core/umem_odp.c   | 250 +++++----------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  12 +-
+ drivers/infiniband/hw/mlx5/odp.c     |  65 ++--
+ drivers/infiniband/hw/mlx5/umr.c     |  12 +-
+ drivers/iommu/dma-iommu.c            | 455 +++++++++++++++++++++++----
+ drivers/iommu/iommu.c                |  65 ++--
+ drivers/pci/p2pdma.c                 |  38 +--
+ drivers/vfio/pci/mlx5/cmd.c          | 312 +++++++++---------
+ drivers/vfio/pci/mlx5/cmd.h          |  24 +-
+ drivers/vfio/pci/mlx5/main.c         |  87 +++--
+ include/linux/dma-map-ops.h          |  54 ----
+ include/linux/dma-mapping.h          |  84 +++++
+ include/linux/hmm-dma.h              |  32 ++
+ include/linux/hmm.h                  |  16 +
+ include/linux/iommu.h                |   4 +
+ include/linux/pci-p2pdma.h           |  84 +++++
+ include/rdma/ib_umem_odp.h           |  25 +-
+ kernel/dma/direct.c                  |  43 ++-
+ kernel/dma/mapping.c                 |  20 ++
+ mm/hmm.c                             | 229 +++++++++++++-
+ 21 files changed, 1345 insertions(+), 636 deletions(-)
+ create mode 100644 include/linux/hmm-dma.h
+
+-- 
+2.46.2
+
 
