@@ -1,198 +1,141 @@
-Return-Path: <linux-rdma+bounces-5531-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5532-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46DB69B1C1D
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2024 05:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C0339B1D5A
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2024 12:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C861AB2138E
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2024 04:07:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3B3AB211CB
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2024 11:18:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C37E1CFA9;
-	Sun, 27 Oct 2024 04:07:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D1C1422AB;
+	Sun, 27 Oct 2024 11:18:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="C7qVNel0"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="YJffDRJL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f228.google.com (mail-qt1-f228.google.com [209.85.160.228])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B3041BC49
-	for <linux-rdma@vger.kernel.org>; Sun, 27 Oct 2024 04:07:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.228
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA278161;
+	Sun, 27 Oct 2024 11:18:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730002042; cv=none; b=k6MEZCirMafMKoW4h/xF8bOKe+yPJ0NLCYm7zKZJOVB2QmRIo7VC9di8/a8jqjFgQH7kNS8grMVd7/kvHSgXlfOKDh1AlHuZjjo4rnIkqiFvhew3fWdVtnPwv/8vvsHcp6QOs6q2iuhZ3huzQzNshMpcJ3im+/wbU+SHsvZZupE=
+	t=1730027897; cv=none; b=cEnDxyGHDwRuXQHDACKLqP5RjMtpDvWHLXs27u5F5ZTiJv6zwE1p9kBog9t8UWGUOeP6GSa8onG9QoL8hNie0lnBxQCDAZhXJcy3PFq9C5kgf3x6XtoHehY/spXbWP244ePnDd5n8I5+B/5sVe7m2r5ueTCap6gUvQLuSlG+h78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730002042; c=relaxed/simple;
-	bh=K40sm6a5rnZnDviFoC5gXMAnEzE/x92f8YKdKML+Okg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Dtvt/Sn+P3SeEwI79mrIB18FwrnAszHBRBFr+85jknurTHEGs6r+lqSWYtcPH8S26Y4lSpcrhSy1AjrLQCRI7qgboVPnuO0ioQMAzXCHVpocpAs1Gb5tx8tRwhWrb0hNeq/l4Pxu7cLlRAdStDv/Uoij4O6DGSdmJu3ondAdSGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=C7qVNel0; arc=none smtp.client-ip=209.85.160.228
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-qt1-f228.google.com with SMTP id d75a77b69052e-460e3b596fcso1138691cf.2
-        for <linux-rdma@vger.kernel.org>; Sat, 26 Oct 2024 21:07:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1730002038; x=1730606838; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yFPBOawvNAC40LRH3vsqWPQVymUE1kR2pFs5OkfXjZc=;
-        b=C7qVNel0KuEN8AXD5Kh9lOPOqHCR/e8KbpEspG5b2wcsvI9X6hHUTMhVuIuqN66ttR
-         OKSSCy+54NjI/LJH9z6fjRyI/g2zK3MSW33hfWC54JK6zamJWiZcTWJn0k902qcKf1k8
-         16sf359118BwJHcq1ggUzuMSLaubuVGNIknuI7+/1WrxuLEiNP8bHz5UFvnjdFe13Yhe
-         073W4Rvcy1AR+7elNcBG2I3z6xrYkUs+GPuZAb7JS18zCJBrBZ0zUV44G45/+Z3cnxK+
-         4rIl/EG7Q+ZxcPfVobo2MT/0pvqITRyIs0lbO6KxMVWiMOPJHejKFbpao5HLPQEbgcwp
-         fIDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730002038; x=1730606838;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yFPBOawvNAC40LRH3vsqWPQVymUE1kR2pFs5OkfXjZc=;
-        b=oy5QNgY9zW6mdusOBwtlTGNZv6Xa+EwlrpZz90AC4tejdwst6B1p1fkpzbWdW7Bt16
-         /Yl8oX+tk1W8etJkOYgIt4LKd0rpBe0E2p21o0I6+tj/sCNdsHXAITqEX81HfDMX1R4c
-         VZ/IomRKnDHMhFNdhsCl85979YFaIJ/iQ9h/Vgp5irHQ1PA1Q2kl2+cY5YLjEyJl5MN4
-         yiZlcMzxWyol0oEDbS4ug3BAqhFDKSxd5TfyTfC0MsOaoHz1lsPL/KmV+EzObe79bKQv
-         ma/VK07mOQm1kbC3mZAOlsRsukVW6FSgc6odoMARhQrxA8Wme1b3HgDUD5WbZ6T7F/OZ
-         9z/A==
-X-Forwarded-Encrypted: i=1; AJvYcCXLrhJbMkW4UTeqjZ3FC6ueIjQiMhovUIya6j6GmyI7fKhC6MNroXoaKHwYfE+O6tvay40nMOePm9xP@vger.kernel.org
-X-Gm-Message-State: AOJu0YwENBwlMrwV1frGTRblQCzOADJ67hziMKSiv3o6sC7o2+uEzAXq
-	BGY4vxYBLFTfdb6a0/wSXnxtI/alz+dcm51gDDUZOz2pwoBTOOdfTR8X8bXBrGHqWC9qfoTsO2c
-	YBIElcROfLdf6+zIs3HAvWS2lPD8D0JSfK2xyCjoDf/Gzh+Rt
-X-Google-Smtp-Source: AGHT+IFLVMIJviFB7oFNyQyjEM3uN/bEshHi0Ww68pbsDPdz+G/261P3Itvj7Q1GDkCFDmN+vqTdp3NEj8vT
-X-Received: by 2002:a05:622a:89:b0:460:9acd:68be with SMTP id d75a77b69052e-4613c005fbcmr32681281cf.5.1730002038304;
-        Sat, 26 Oct 2024 21:07:18 -0700 (PDT)
-Received: from c7-smtp-2023.dev.purestorage.com ([2620:125:9017:12:36:3:5:0])
-        by smtp-relay.gmail.com with ESMTPS id d75a77b69052e-46132179ceesm1643211cf.11.2024.10.26.21.07.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Oct 2024 21:07:18 -0700 (PDT)
-X-Relaying-Domain: purestorage.com
-Received: from dev-csander.dev.purestorage.com (dev-csander.dev.purestorage.com [10.7.70.37])
-	by c7-smtp-2023.dev.purestorage.com (Postfix) with ESMTP id D2313340278;
-	Sat, 26 Oct 2024 22:07:16 -0600 (MDT)
-Received: by dev-csander.dev.purestorage.com (Postfix, from userid 1557716354)
-	id CD2F9E40D12; Sat, 26 Oct 2024 22:07:16 -0600 (MDT)
-From: Caleb Sander Mateos <csander@purestorage.com>
-To: Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Caleb Sander Mateos <csander@purestorage.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mlx5: only schedule EQ comp tasklet if necessary
-Date: Sat, 26 Oct 2024 22:06:55 -0600
-Message-ID: <20241027040700.1616307-1-csander@purestorage.com>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1730027897; c=relaxed/simple;
+	bh=1t0hPj5j/GoJWCB+D9JDiK6Ur3FebwDE732vMCkQfas=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jGeFpVRzE56z7MwWPpQVd8RwktPSxquCGcKh5PxmhEIzFCuTiX7V7sm6Ydzxaw3r+p53U/Iv5MMf1dsrpl3APrUAdcDg9KMxJiE8aTqRITQnN+o4d2vFPZq8W8PvYMe92QHJ8BZZ01MKMgJ0ALPIWG0+6u8fAzvEE/HyuBV01/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=YJffDRJL; arc=none smtp.client-ip=115.124.30.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1730027883; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=SMAOEmNZAtuLgKjy34T7btJXdrvMUuoF7jRJ7UBb9Zg=;
+	b=YJffDRJLNzncT9zQNakw9VLtciuvTQcZ+vwEoqYpv91SgNkz0m8BAEwCpmWDOYEYbZIwUggEngXiKbta2skKrxNxlyeeh6NeJcyxzi4cWJ64lotCCex4kR9MIdBo0vyYRav2a4JeFd9sJekxtGteURedN4NzaB6nQeE38l4uHx8=
+Received: from 30.212.186.15(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0WHxbQlB_1730027880 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Sun, 27 Oct 2024 19:18:03 +0800
+Message-ID: <456e2ab1-d137-45e0-a130-eef1ffb582a4@linux.alibaba.com>
+Date: Sun, 27 Oct 2024 19:18:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net/smc: Fix lookup of netdev by using
+ ib_device_get_netdev()
+To: Wenjia Zhang <wenjia@linux.ibm.com>, "D. Wythe"
+ <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
+ David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+ Jan Karcher <jaka@linux.ibm.com>, Gerd Bayer <gbayer@linux.ibm.com>,
+ Alexandra Winter <wintera@linux.ibm.com>, Halil Pasic <pasic@linux.ibm.com>,
+ Nils Hoppmann <niho@linux.ibm.com>, Niklas Schnell <schnelle@linux.ibm.com>,
+ Thorsten Winkler <twinkler@linux.ibm.com>,
+ Karsten Graul <kgraul@linux.ibm.com>, Stefan Raspl <raspl@linux.ibm.com>,
+ Aswin K <aswin@linux.ibm.com>
+References: <20241025072356.56093-1-wenjia@linux.ibm.com>
+From: Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <20241025072356.56093-1-wenjia@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Currently, the mlx5_eq_comp_int() interrupt handler schedules a tasklet
-to call mlx5_cq_tasklet_cb() if it processes any completions. For CQs
-whose completions don't need to be processed in tasklet context, this
-overhead is unnecessary. Atomic operations are needed to schedule, lock,
-and clear the tasklet. And when mlx5_cq_tasklet_cb() runs, it acquires a
-spin lock to access the list of CQs enqueued for processing.
 
-Schedule the tasklet in mlx5_add_cq_to_tasklet() instead to avoid this
-overhead. mlx5_add_cq_to_tasklet() is responsible for enqueuing the CQs
-to be processed in tasklet context, so it can schedule the tasklet. CQs
-that need tasklet processing have their interrupt comp handler set to
-mlx5_add_cq_to_tasklet(), so they will schedule the tasklet. CQs that
-don't need tasklet processing won't schedule the tasklet. To avoid
-scheduling the tasklet multiple times during the same interrupt, only
-schedule the tasklet in mlx5_add_cq_to_tasklet() if the tasklet work
-queue was empty before the new CQ was pushed to it.
 
-Note that the mlx4 driver works the same way: it schedules the tasklet
-in mlx4_add_cq_to_tasklet() and only if the work queue was empty before.
+On 2024/10/25 15:23, Wenjia Zhang wrote:
+> Commit c2261dd76b54 ("RDMA/device: Add ib_device_set_netdev() as an
+> alternative to get_netdev") introduced an API ib_device_get_netdev.
+> The SMC-R variant of the SMC protocol continued to use the old API
+> ib_device_ops.get_netdev() to lookup netdev. As this commit 8d159eb2117b
+> ("RDMA/mlx5: Use IB set_netdev and get_netdev functions") removed the
+> get_netdev callback from mlx5_ib_dev_common_roce_ops, calling
+> ib_device_ops.get_netdev didn't work any more at least by using a mlx5
+> device driver. Thus, using ib_device_set_netdev() now became mandatory.
+> 
+> Replace ib_device_ops.get_netdev() with ib_device_get_netdev().
+> 
+> Fixes: 54903572c23c ("net/smc: allow pnetid-less configuration")
+> Fixes: 8d159eb2117b ("RDMA/mlx5: Use IB set_netdev and get_netdev functions")
+> Reported-by: Aswin K <aswin@linux.ibm.com>
+> Reviewed-by: Gerd Bayer <gbayer@linux.ibm.com>
+> Signed-off-by: Wenjia Zhang <wenjia@linux.ibm.com>
 
-Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/cq.c | 5 +++++
- drivers/net/ethernet/mellanox/mlx5/core/eq.c | 5 +----
- 2 files changed, 6 insertions(+), 4 deletions(-)
+LGTM!
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cq.c b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
-index 4caa1b6f40ba..25f3b26db729 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
-@@ -69,22 +69,27 @@ void mlx5_cq_tasklet_cb(struct tasklet_struct *t)
- static void mlx5_add_cq_to_tasklet(struct mlx5_core_cq *cq,
- 				   struct mlx5_eqe *eqe)
- {
- 	unsigned long flags;
- 	struct mlx5_eq_tasklet *tasklet_ctx = cq->tasklet_ctx.priv;
-+	bool schedule_tasklet = false;
- 
- 	spin_lock_irqsave(&tasklet_ctx->lock, flags);
- 	/* When migrating CQs between EQs will be implemented, please note
- 	 * that you need to sync this point. It is possible that
- 	 * while migrating a CQ, completions on the old EQs could
- 	 * still arrive.
- 	 */
- 	if (list_empty_careful(&cq->tasklet_ctx.list)) {
- 		mlx5_cq_hold(cq);
-+		schedule_tasklet = list_empty(&tasklet_ctx->list);
- 		list_add_tail(&cq->tasklet_ctx.list, &tasklet_ctx->list);
- 	}
- 	spin_unlock_irqrestore(&tasklet_ctx->lock, flags);
-+
-+	if (schedule_tasklet)
-+		tasklet_schedule(&tasklet_ctx->task);
- }
- 
- /* Callers must verify outbox status in case of err */
- int mlx5_create_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
- 		   u32 *in, int inlen, u32 *out, int outlen)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-index 68cb86b37e56..66fc17d9c949 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-@@ -112,17 +112,17 @@ static int mlx5_eq_comp_int(struct notifier_block *nb,
- 	struct mlx5_eq_comp *eq_comp =
- 		container_of(nb, struct mlx5_eq_comp, irq_nb);
- 	struct mlx5_eq *eq = &eq_comp->core;
- 	struct mlx5_eqe *eqe;
- 	int num_eqes = 0;
--	u32 cqn = -1;
- 
- 	eqe = next_eqe_sw(eq);
- 	if (!eqe)
- 		goto out;
- 
- 	do {
-+		u32 cqn;
- 		struct mlx5_core_cq *cq;
- 
- 		/* Make sure we read EQ entry contents after we've
- 		 * checked the ownership bit.
- 		 */
-@@ -145,13 +145,10 @@ static int mlx5_eq_comp_int(struct notifier_block *nb,
- 	} while ((++num_eqes < MLX5_EQ_POLLING_BUDGET) && (eqe = next_eqe_sw(eq)));
- 
- out:
- 	eq_update_ci(eq, 1);
- 
--	if (cqn != -1)
--		tasklet_schedule(&eq_comp->tasklet_ctx.task);
--
- 	return 0;
- }
- 
- /* Some architectures don't latch interrupts when they are disabled, so using
-  * mlx5_eq_poll_irq_disabled could end up losing interrupts while trying to
--- 
-2.45.2
+Reviewed-by: Wen Gu <guwen@linux.alibaba.com>
 
+> ---
+>   net/smc/smc_ib.c   | 8 ++------
+>   net/smc/smc_pnet.c | 4 +---
+>   2 files changed, 3 insertions(+), 9 deletions(-)
+> 
+> diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
+> index 9297dc20bfe2..9c563cdbea90 100644
+> --- a/net/smc/smc_ib.c
+> +++ b/net/smc/smc_ib.c
+> @@ -899,9 +899,7 @@ static void smc_copy_netdev_ifindex(struct smc_ib_device *smcibdev, int port)
+>   	struct ib_device *ibdev = smcibdev->ibdev;
+>   	struct net_device *ndev;
+>   
+> -	if (!ibdev->ops.get_netdev)
+> -		return;
+> -	ndev = ibdev->ops.get_netdev(ibdev, port + 1);
+> +	ndev = ib_device_get_netdev(ibdev, port + 1);
+>   	if (ndev) {
+>   		smcibdev->ndev_ifidx[port] = ndev->ifindex;
+>   		dev_put(ndev);
+> @@ -921,9 +919,7 @@ void smc_ib_ndev_change(struct net_device *ndev, unsigned long event)
+>   		port_cnt = smcibdev->ibdev->phys_port_cnt;
+>   		for (i = 0; i < min_t(size_t, port_cnt, SMC_MAX_PORTS); i++) {
+>   			libdev = smcibdev->ibdev;
+> -			if (!libdev->ops.get_netdev)
+> -				continue;
+> -			lndev = libdev->ops.get_netdev(libdev, i + 1);
+> +			lndev = ib_device_get_netdev(libdev, i + 1);
+>   			dev_put(lndev);
+>   			if (lndev != ndev)
+>   				continue;
+> diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
+> index 1dd362326c0a..8566937c8903 100644
+> --- a/net/smc/smc_pnet.c
+> +++ b/net/smc/smc_pnet.c
+> @@ -1054,9 +1054,7 @@ static void smc_pnet_find_rdma_dev(struct net_device *netdev,
+>   		for (i = 1; i <= SMC_MAX_PORTS; i++) {
+>   			if (!rdma_is_port_valid(ibdev->ibdev, i))
+>   				continue;
+> -			if (!ibdev->ibdev->ops.get_netdev)
+> -				continue;
+> -			ndev = ibdev->ibdev->ops.get_netdev(ibdev->ibdev, i);
+> +			ndev = ib_device_get_netdev(ibdev->ibdev, i);
+>   			if (!ndev)
+>   				continue;
+>   			dev_put(ndev);
 
