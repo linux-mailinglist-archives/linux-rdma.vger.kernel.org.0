@@ -1,67 +1,94 @@
-Return-Path: <linux-rdma+bounces-5530-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5531-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EB389B1643
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Oct 2024 10:10:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46DB69B1C1D
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2024 05:07:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 521F21C21267
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Oct 2024 08:10:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C861AB2138E
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2024 04:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 830F01C8FD4;
-	Sat, 26 Oct 2024 08:10:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C37E1CFA9;
+	Sun, 27 Oct 2024 04:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="rCAyjCqT"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="C7qVNel0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from msa.smtpout.orange.fr (smtp-83.smtpout.orange.fr [80.12.242.83])
+Received: from mail-qt1-f228.google.com (mail-qt1-f228.google.com [209.85.160.228])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888741632D3;
-	Sat, 26 Oct 2024 08:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.83
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B3041BC49
+	for <linux-rdma@vger.kernel.org>; Sun, 27 Oct 2024 04:07:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.228
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729930213; cv=none; b=WiWNDZIK04zr/uVEQANILzhLb0fIjCmpMRlV52pIL2pqRi/mLcAHlj6DLmQlrg0suhsLvtQFdE617Sgcqsv0lnqXpuBdZDVGt+Zw3ms0GUv1u9m2fUnnLcDivorgA6XsguZeSHZ9hq/m9iydukiIIppIAAzVcUR6Lqpu70S46Bs=
+	t=1730002042; cv=none; b=k6MEZCirMafMKoW4h/xF8bOKe+yPJ0NLCYm7zKZJOVB2QmRIo7VC9di8/a8jqjFgQH7kNS8grMVd7/kvHSgXlfOKDh1AlHuZjjo4rnIkqiFvhew3fWdVtnPwv/8vvsHcp6QOs6q2iuhZ3huzQzNshMpcJ3im+/wbU+SHsvZZupE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729930213; c=relaxed/simple;
-	bh=eXezoRSGEJgqkLw+eS7eu6iiVu4G2376j5oOa6lRMIM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TmJtX6BmJVPTjCtRZa/P8Sq/sJpkXKtvNG8Ics1PV4Lqnhz3KMoHTzjSiemf+oOFOrJJkKC8PTYSwlEKvVTSJKoETYRGmT+AmHRa2jxQChxaP05QsInAT5xp/0ziDeLH8CSbNUDUYFVaUl212c6WNrtUfMbPchtqP+nvGXYJ1eA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=rCAyjCqT; arc=none smtp.client-ip=80.12.242.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from localhost.localdomain ([90.11.132.44])
-	by smtp.orange.fr with ESMTPA
-	id 4brttJTpvLmOL4bs2tUbsE; Sat, 26 Oct 2024 10:10:03 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1729930203;
-	bh=jwyVolGT/MuttDEEvCVVvrLh3Bzx6w8Pcg5EguUcACM=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=rCAyjCqToG4VITQW0xko/5scReyi0PVS3BGi6S+V77YCZI5oTsan8o+iV3MQ4NykU
-	 vCX3Tdod7dR1t+0qo4GWd9sQcj+qW4apYzhQ+0bc3LYfN6m5eDdtdhmvRPFUWTXShE
-	 GJ8AaepmzuDYImDTdtyUGfdPCjr5dKQdhlk/Sgvv0SgYTDrXajiBNJSxqh60lyKnCV
-	 oR6nhPHZX1S0wpTlc8Bzm6zWiEALsJvxUrL6EHcQdAWX6qNv8gduG5ayIRLafrQEE9
-	 LN47dBRm7e1kc13fpDn6yLwgunlVQnvOY2MQ8LWkBki6Jw50oEIuEvAz1cyFbLG4lq
-	 0BPkz1JVUSDbw==
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 26 Oct 2024 10:10:03 +0200
-X-ME-IP: 90.11.132.44
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Selvin Xavier <selvin.xavier@broadcom.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH 2/2] RDMA/bnxt_re: Remove some dead code
-Date: Sat, 26 Oct 2024 10:09:43 +0200
-Message-ID: <bc1135dc297ed2c6f3ca9446a2747b0c89102e61.1729930153.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <580de136ad9b85b0d70709e912cfddd21b7e3f6f.1729930153.git.christophe.jaillet@wanadoo.fr>
-References: <580de136ad9b85b0d70709e912cfddd21b7e3f6f.1729930153.git.christophe.jaillet@wanadoo.fr>
+	s=arc-20240116; t=1730002042; c=relaxed/simple;
+	bh=K40sm6a5rnZnDviFoC5gXMAnEzE/x92f8YKdKML+Okg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Dtvt/Sn+P3SeEwI79mrIB18FwrnAszHBRBFr+85jknurTHEGs6r+lqSWYtcPH8S26Y4lSpcrhSy1AjrLQCRI7qgboVPnuO0ioQMAzXCHVpocpAs1Gb5tx8tRwhWrb0hNeq/l4Pxu7cLlRAdStDv/Uoij4O6DGSdmJu3ondAdSGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=C7qVNel0; arc=none smtp.client-ip=209.85.160.228
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-qt1-f228.google.com with SMTP id d75a77b69052e-460e3b596fcso1138691cf.2
+        for <linux-rdma@vger.kernel.org>; Sat, 26 Oct 2024 21:07:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1730002038; x=1730606838; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yFPBOawvNAC40LRH3vsqWPQVymUE1kR2pFs5OkfXjZc=;
+        b=C7qVNel0KuEN8AXD5Kh9lOPOqHCR/e8KbpEspG5b2wcsvI9X6hHUTMhVuIuqN66ttR
+         OKSSCy+54NjI/LJH9z6fjRyI/g2zK3MSW33hfWC54JK6zamJWiZcTWJn0k902qcKf1k8
+         16sf359118BwJHcq1ggUzuMSLaubuVGNIknuI7+/1WrxuLEiNP8bHz5UFvnjdFe13Yhe
+         073W4Rvcy1AR+7elNcBG2I3z6xrYkUs+GPuZAb7JS18zCJBrBZ0zUV44G45/+Z3cnxK+
+         4rIl/EG7Q+ZxcPfVobo2MT/0pvqITRyIs0lbO6KxMVWiMOPJHejKFbpao5HLPQEbgcwp
+         fIDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730002038; x=1730606838;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yFPBOawvNAC40LRH3vsqWPQVymUE1kR2pFs5OkfXjZc=;
+        b=oy5QNgY9zW6mdusOBwtlTGNZv6Xa+EwlrpZz90AC4tejdwst6B1p1fkpzbWdW7Bt16
+         /Yl8oX+tk1W8etJkOYgIt4LKd0rpBe0E2p21o0I6+tj/sCNdsHXAITqEX81HfDMX1R4c
+         VZ/IomRKnDHMhFNdhsCl85979YFaIJ/iQ9h/Vgp5irHQ1PA1Q2kl2+cY5YLjEyJl5MN4
+         yiZlcMzxWyol0oEDbS4ug3BAqhFDKSxd5TfyTfC0MsOaoHz1lsPL/KmV+EzObe79bKQv
+         ma/VK07mOQm1kbC3mZAOlsRsukVW6FSgc6odoMARhQrxA8Wme1b3HgDUD5WbZ6T7F/OZ
+         9z/A==
+X-Forwarded-Encrypted: i=1; AJvYcCXLrhJbMkW4UTeqjZ3FC6ueIjQiMhovUIya6j6GmyI7fKhC6MNroXoaKHwYfE+O6tvay40nMOePm9xP@vger.kernel.org
+X-Gm-Message-State: AOJu0YwENBwlMrwV1frGTRblQCzOADJ67hziMKSiv3o6sC7o2+uEzAXq
+	BGY4vxYBLFTfdb6a0/wSXnxtI/alz+dcm51gDDUZOz2pwoBTOOdfTR8X8bXBrGHqWC9qfoTsO2c
+	YBIElcROfLdf6+zIs3HAvWS2lPD8D0JSfK2xyCjoDf/Gzh+Rt
+X-Google-Smtp-Source: AGHT+IFLVMIJviFB7oFNyQyjEM3uN/bEshHi0Ww68pbsDPdz+G/261P3Itvj7Q1GDkCFDmN+vqTdp3NEj8vT
+X-Received: by 2002:a05:622a:89:b0:460:9acd:68be with SMTP id d75a77b69052e-4613c005fbcmr32681281cf.5.1730002038304;
+        Sat, 26 Oct 2024 21:07:18 -0700 (PDT)
+Received: from c7-smtp-2023.dev.purestorage.com ([2620:125:9017:12:36:3:5:0])
+        by smtp-relay.gmail.com with ESMTPS id d75a77b69052e-46132179ceesm1643211cf.11.2024.10.26.21.07.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Oct 2024 21:07:18 -0700 (PDT)
+X-Relaying-Domain: purestorage.com
+Received: from dev-csander.dev.purestorage.com (dev-csander.dev.purestorage.com [10.7.70.37])
+	by c7-smtp-2023.dev.purestorage.com (Postfix) with ESMTP id D2313340278;
+	Sat, 26 Oct 2024 22:07:16 -0600 (MDT)
+Received: by dev-csander.dev.purestorage.com (Postfix, from userid 1557716354)
+	id CD2F9E40D12; Sat, 26 Oct 2024 22:07:16 -0600 (MDT)
+From: Caleb Sander Mateos <csander@purestorage.com>
+To: Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Caleb Sander Mateos <csander@purestorage.com>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mlx5: only schedule EQ comp tasklet if necessary
+Date: Sat, 26 Oct 2024 22:06:55 -0600
+Message-ID: <20241027040700.1616307-1-csander@purestorage.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -70,84 +97,102 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If the probe succeeds, then auxiliary_get_drvdata() can't return a NULL
-pointer.
+Currently, the mlx5_eq_comp_int() interrupt handler schedules a tasklet
+to call mlx5_cq_tasklet_cb() if it processes any completions. For CQs
+whose completions don't need to be processed in tasklet context, this
+overhead is unnecessary. Atomic operations are needed to schedule, lock,
+and clear the tasklet. And when mlx5_cq_tasklet_cb() runs, it acquires a
+spin lock to access the list of CQs enqueued for processing.
 
-So several NULL checks can be removed to simplify code.
+Schedule the tasklet in mlx5_add_cq_to_tasklet() instead to avoid this
+overhead. mlx5_add_cq_to_tasklet() is responsible for enqueuing the CQs
+to be processed in tasklet context, so it can schedule the tasklet. CQs
+that need tasklet processing have their interrupt comp handler set to
+mlx5_add_cq_to_tasklet(), so they will schedule the tasklet. CQs that
+don't need tasklet processing won't schedule the tasklet. To avoid
+scheduling the tasklet multiple times during the same interrupt, only
+schedule the tasklet in mlx5_add_cq_to_tasklet() if the tasklet work
+queue was empty before the new CQ was pushed to it.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Note that the mlx4 driver works the same way: it schedules the tasklet
+in mlx4_add_cq_to_tasklet() and only if the work queue was empty before.
+
+Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
 ---
-Compile tested only
----
- drivers/infiniband/hw/bnxt_re/main.c | 19 -------------------
- 1 file changed, 19 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/cq.c | 5 +++++
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c | 5 +----
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index d183e293ec96..e510ffe91de3 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -300,9 +300,6 @@ static void bnxt_re_shutdown(struct auxiliary_device *adev)
- 	struct bnxt_re_en_dev_info *en_info = auxiliary_get_drvdata(adev);
- 	struct bnxt_re_dev *rdev;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cq.c b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+index 4caa1b6f40ba..25f3b26db729 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+@@ -69,22 +69,27 @@ void mlx5_cq_tasklet_cb(struct tasklet_struct *t)
+ static void mlx5_add_cq_to_tasklet(struct mlx5_core_cq *cq,
+ 				   struct mlx5_eqe *eqe)
+ {
+ 	unsigned long flags;
+ 	struct mlx5_eq_tasklet *tasklet_ctx = cq->tasklet_ctx.priv;
++	bool schedule_tasklet = false;
  
--	if (!en_info)
--		return;
+ 	spin_lock_irqsave(&tasklet_ctx->lock, flags);
+ 	/* When migrating CQs between EQs will be implemented, please note
+ 	 * that you need to sync this point. It is possible that
+ 	 * while migrating a CQ, completions on the old EQs could
+ 	 * still arrive.
+ 	 */
+ 	if (list_empty_careful(&cq->tasklet_ctx.list)) {
+ 		mlx5_cq_hold(cq);
++		schedule_tasklet = list_empty(&tasklet_ctx->list);
+ 		list_add_tail(&cq->tasklet_ctx.list, &tasklet_ctx->list);
+ 	}
+ 	spin_unlock_irqrestore(&tasklet_ctx->lock, flags);
++
++	if (schedule_tasklet)
++		tasklet_schedule(&tasklet_ctx->task);
+ }
+ 
+ /* Callers must verify outbox status in case of err */
+ int mlx5_create_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
+ 		   u32 *in, int inlen, u32 *out, int outlen)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index 68cb86b37e56..66fc17d9c949 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -112,17 +112,17 @@ static int mlx5_eq_comp_int(struct notifier_block *nb,
+ 	struct mlx5_eq_comp *eq_comp =
+ 		container_of(nb, struct mlx5_eq_comp, irq_nb);
+ 	struct mlx5_eq *eq = &eq_comp->core;
+ 	struct mlx5_eqe *eqe;
+ 	int num_eqes = 0;
+-	u32 cqn = -1;
+ 
+ 	eqe = next_eqe_sw(eq);
+ 	if (!eqe)
+ 		goto out;
+ 
+ 	do {
++		u32 cqn;
+ 		struct mlx5_core_cq *cq;
+ 
+ 		/* Make sure we read EQ entry contents after we've
+ 		 * checked the ownership bit.
+ 		 */
+@@ -145,13 +145,10 @@ static int mlx5_eq_comp_int(struct notifier_block *nb,
+ 	} while ((++num_eqes < MLX5_EQ_POLLING_BUDGET) && (eqe = next_eqe_sw(eq)));
+ 
+ out:
+ 	eq_update_ci(eq, 1);
+ 
+-	if (cqn != -1)
+-		tasklet_schedule(&eq_comp->tasklet_ctx.task);
 -
- 	rdev = en_info->rdev;
- 	ib_unregister_device(&rdev->ibdev);
- 	bnxt_re_dev_uninit(rdev, BNXT_RE_COMPLETE_REMOVE);
-@@ -316,9 +313,6 @@ static void bnxt_re_stop_irq(void *handle)
- 	struct bnxt_qplib_nq *nq;
- 	int indx;
+ 	return 0;
+ }
  
--	if (!en_info)
--		return;
--
- 	rdev = en_info->rdev;
- 	rcfw = &rdev->rcfw;
- 
-@@ -339,9 +333,6 @@ static void bnxt_re_start_irq(void *handle, struct bnxt_msix_entry *ent)
- 	struct bnxt_qplib_nq *nq;
- 	int indx, rc;
- 
--	if (!en_info)
--		return;
--
- 	rdev = en_info->rdev;
- 	msix_ent = rdev->en_dev->msix_entries;
- 	rcfw = &rdev->rcfw;
-@@ -1991,10 +1982,6 @@ static void bnxt_re_remove(struct auxiliary_device *adev)
- 	struct bnxt_re_dev *rdev;
- 
- 	mutex_lock(&bnxt_re_mutex);
--	if (!en_info) {
--		mutex_unlock(&bnxt_re_mutex);
--		return;
--	}
- 	rdev = en_info->rdev;
- 
- 	if (rdev)
-@@ -2043,9 +2030,6 @@ static int bnxt_re_suspend(struct auxiliary_device *adev, pm_message_t state)
- 	struct bnxt_en_dev *en_dev;
- 	struct bnxt_re_dev *rdev;
- 
--	if (!en_info)
--		return 0;
--
- 	rdev = en_info->rdev;
- 	en_dev = en_info->en_dev;
- 	mutex_lock(&bnxt_re_mutex);
-@@ -2090,9 +2074,6 @@ static int bnxt_re_resume(struct auxiliary_device *adev)
- 	struct bnxt_re_en_dev_info *en_info = auxiliary_get_drvdata(adev);
- 	struct bnxt_re_dev *rdev;
- 
--	if (!en_info)
--		return 0;
--
- 	mutex_lock(&bnxt_re_mutex);
- 	/* L2 driver may invoke this callback during device recovery, resume.
- 	 * reset. Current RoCE driver doesn't recover the device in case of
+ /* Some architectures don't latch interrupts when they are disabled, so using
+  * mlx5_eq_poll_irq_disabled could end up losing interrupts while trying to
 -- 
-2.47.0
+2.45.2
 
 
