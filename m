@@ -1,101 +1,192 @@
-Return-Path: <linux-rdma+bounces-5589-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5590-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 570529B3C24
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 21:45:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54DF19B3C6C
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 21:59:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6F901F209B7
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 20:45:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA671B21A3C
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 20:59:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594DF1E103C;
-	Mon, 28 Oct 2024 20:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B8F1E0DEF;
+	Mon, 28 Oct 2024 20:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YHWCjZnS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D686190472
-	for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2024 20:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE311DFE1C;
+	Mon, 28 Oct 2024 20:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730148337; cv=none; b=GlFFGsArjoMA1MatONkvXCwrJrcXFr4yKDONyBUMdgrtXTXiVJbgNl1sosQ6hom7ETDhyHmqID9LtC0vjfNpmO6OuY29qW6qfJQP1d97QMNwE7iWN8/+DGlXspTWhTPX8Ihx9T8qg5VZWfrRToSvrqW0XLZMz6qQuewmNQ4RiHc=
+	t=1730149145; cv=none; b=IwWKSDkJkiHsCLPQpDeOGR5tFABIVQ2O7tZHohbWqIKczY8nI/uFVF7bryeYno2+Z9uGY+UwUPcA1Pf7Kz5icTs+Y/TrpmyTJxloHYiEO+cE0f1v7US7CiIHeXxo2wzh8gSrfGjwlCgRxtelk5y7BUbRrjg8oUr4wU/MZp5B8Dg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730148337; c=relaxed/simple;
-	bh=JlSTUzkhOJrT5VFcvOPsjv667t7ku0zyTga+DMVjXaM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=a/5KKoGlqiFOttmdTUBqGLHxF2n0nLSC5swUC4nXV4UF4U9p4da1AAPr+h3zWMTkPpk86HrzDqdoBxG9C6ifuZhM6rm4f7kjmRGx5vKQG9OUlfDnLKaT8wqZw32hTyn+fisPygJL3Gle6aKEqhUVcu73L37mmK3jrSwxDiZ0tgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a4e5c68f6bso39495885ab.1
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2024 13:45:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730148333; x=1730753133;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Gm9HIUjtIgm+D7gqVN7uBVlVAbtiOD76ZVg8RQFmbeg=;
-        b=MvGVpOvCFfxZcPDd2dd9A6SKyOhlByvk4+PEN3RhcCbRVh9TkWTWmgfK0BHyrzaawF
-         tWnlSfjlUVR66vBqAHMobeiUoc7zsIgHbFkhzKlKb7dNjLBO1KQvy7adjUljfelXaZml
-         FjrnW4WxzMXGvTRilGhJiFOFDDmx+NnoINahFrucAlHf0xrkrZzuqq+MJoDzJ0Uww+Ea
-         biTXWgb1vEb5qjlG4B8LfLjctEW0um7AIiRIxcGW/iV6icg6JXsANrV8Fsu6paoLqRVl
-         jyFiCERaY1NOj6z8ABq7s1AJXC1npi8kw9FfQzigePPR9IriiqfKDJTgHkyf6jB1NnlS
-         ib4w==
-X-Forwarded-Encrypted: i=1; AJvYcCXsjqhEbwHPMVcYZpIihRaP7TicxETV51rRcB7zSyPZ468VYGTN7kxVxiAX30diXGtbvCI0ZustLttE@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhLGfQQIWLYF5A85d9n6PDVNLF8StwKoRSy8onO2Tb7kYCBxrs
-	KkoVcJNvif1XAwx2DYUW2cXFwfCnVE7BE42F4pu8QJA17rzewdQdV//nSuDoA1lhccpPWv1mWSH
-	JKPmV/7+5FshyeozwC0RkoLfY79VU+ZFl7rbiSbXWNS7XR4MXGYSSqWA=
-X-Google-Smtp-Source: AGHT+IGZzVyntIeyX/gZ5yaDPioEdLlL7du5r6uZZi31yylONzfTAyJa0yATwAh/BOFzUE7mZXZlsTnS5exUluxtxolLDOBU84EI
+	s=arc-20240116; t=1730149145; c=relaxed/simple;
+	bh=XDchRQtmy6pHQo4VldmyUQn5KpIMSBE9FuRx/IQ/fLc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=ba/i5GJSzfWbnG6cDm5hqDqK02WJ9aIR73MA4UJvgfoayCXD69BlugrdoOGNP71ujMbWyTRPGgFsT3/+TlQAjK9+7cwoQl8Dss5CEmS5T7fVf7F4vg9td8FxKUHSSqYzblQd/LHdaVFTOUCColqZ78UojIU0LzkvuaaByoNlj+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YHWCjZnS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8324C4CEC3;
+	Mon, 28 Oct 2024 20:59:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730149144;
+	bh=XDchRQtmy6pHQo4VldmyUQn5KpIMSBE9FuRx/IQ/fLc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=YHWCjZnSvGD0FLXm38frIZRba2sQQ98rHEmaoqo7+IGWHJUxibwDnNsBZgESkMQf2
+	 TsIZgg66kDAZi3cQ/raC0xLCHxFt/n+Q+GfpSPikoPYWogMwVVkT2YGGo6r+mvlpQs
+	 LYcYZiWraEirilGEQRB7r1dSqxIlLl6PnIyzBEG69k5H5ZL/4V51yCX9ue/AQ9hoao
+	 YtQPx9n4wU6TLKUu3BMoGWW4nbSLG6WcdHPvYzg+727B9k+tQFNcmm7b2B+OIclaEr
+	 WoCdB/gjnaxlHYJSzABbNThj3fTHRWtRg5gmc802RNwzAtTGyuBAMLTzhdJzsWVOka
+	 YksEeTIOFMwbA==
+Date: Mon, 28 Oct 2024 15:59:02 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 01/18] PCI/P2PDMA: refactor the p2pdma mapping helpers
+Message-ID: <20241028205902.GA1114413@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:16cf:b0:3a0:9cd5:931c with SMTP id
- e9e14a558f8ab-3a4ed33225bmr96405405ab.20.1730148333472; Mon, 28 Oct 2024
- 13:45:33 -0700 (PDT)
-Date: Mon, 28 Oct 2024 13:45:33 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <671ff7ed.050a0220.4735a.0251.GAE@google.com>
-Subject: [syzbot] Monthly rdma report (Oct 2024)
-From: syzbot <syzbot+list1a9e20eb3cc9c246ba85@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a4d93ca45f7ad09105a1cf347e6b6d6b6fb7e303.1730037276.git.leon@kernel.org>
 
-Hello rdma maintainers/developers,
+Prefer subject capitalization in drivers/pci:
 
-This is a 31-day syzbot report for the rdma subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/rdma
+  PCI/P2PDMA: Refactor ...
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 7 issues are still open and 61 have been fixed so far.
+On Sun, Oct 27, 2024 at 04:21:01PM +0200, Leon Romanovsky wrote:
+> From: Christoph Hellwig <hch@lst.de>
+> 
+> The current scheme with a single helper to determine the P2P status
+> and map a scatterlist segment force users to always use the map_sg
+> helper to DMA map, which we're trying to get away from because they
+> are very cache inefficient.
+> ...
 
-Some of the still happening issues:
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Ref Crashes Repro Title
-<1> 295     No    INFO: task hung in disable_device
-                  https://syzkaller.appspot.com/bug?extid=4d0c396361b5dc5d610f
-<2> 186     No    INFO: task hung in rdma_dev_change_netns
-                  https://syzkaller.appspot.com/bug?extid=73c5eab674c7e1e7012e
-<3> 33      No    WARNING in rxe_pool_cleanup
-                  https://syzkaller.appspot.com/bug?extid=221e213bf17f17e0d6cd
-<4> 5       No    possible deadlock in sock_set_reuseaddr
-                  https://syzkaller.appspot.com/bug?extid=af5682e4f50cd6bce838
+A couple minor nits below.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> @@ -1412,28 +1411,29 @@ int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+>  		size_t s_length = s->length;
+>  		size_t pad_len = (mask - iova_len + 1) & mask;
+>  
+> -		if (is_pci_p2pdma_page(sg_page(s))) {
+> -			map = pci_p2pdma_map_segment(&p2pdma_state, dev, s);
+> -			switch (map) {
+> -			case PCI_P2PDMA_MAP_BUS_ADDR:
+> -				/*
+> -				 * iommu_map_sg() will skip this segment as
+> -				 * it is marked as a bus address,
+> -				 * __finalise_sg() will copy the dma address
+> -				 * into the output segment.
+> -				 */
+> -				continue;
+> -			case PCI_P2PDMA_MAP_THRU_HOST_BRIDGE:
+> -				/*
+> -				 * Mapping through host bridge should be
+> -				 * mapped with regular IOVAs, thus we
+> -				 * do nothing here and continue below.
+> -				 */
+> -				break;
+> -			default:
+> -				ret = -EREMOTEIO;
+> -				goto out_restore_sg;
+> -			}
+> +		switch (pci_p2pdma_state(&p2pdma_state, dev, sg_page(s))) {
+> +		case PCI_P2PDMA_MAP_THRU_HOST_BRIDGE:
+> +			/*
+> +			 * Mapping through host bridge should be mapped with
+> +			 * regular IOVAs, thus we do nothing here and continue
+> +			 * below.
+> +			 */
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+I guess this is technically not a fall-through to the next case
+because there's no executable code here, but since the comment
+separates these two cases, I would find it easier to read if you
+included the break here explicitly.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+> +		case PCI_P2PDMA_MAP_NONE:
+> +			break;
 
-You may send multiple commands in a single email message.
+> +void __pci_p2pdma_update_state(struct pci_p2pdma_map_state *state,
+> +		struct device *dev, struct page *page);
+> +
+> +/**
+> + * pci_p2pdma_state - check the P2P transfer state of a page
+> + * @state: 	P2P state structure
+
+Checkpatch complains about space before tab here.
+
+> + * pci_p2pdma_bus_addr_map - map a PCI_P2PDMA_MAP_BUS_ADDR P2P transfer
+> + * @state: 	P2P state structure
+
+And here.
+
+> @@ -462,34 +462,32 @@ int dma_direct_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
+>  		enum dma_data_direction dir, unsigned long attrs)
+>  {
+>  	struct pci_p2pdma_map_state p2pdma_state = {};
+> -	enum pci_p2pdma_map_type map;
+>  	struct scatterlist *sg;
+>  	int i, ret;
+>  
+>  	for_each_sg(sgl, sg, nents, i) {
+> -		if (is_pci_p2pdma_page(sg_page(sg))) {
+> -			map = pci_p2pdma_map_segment(&p2pdma_state, dev, sg);
+> -			switch (map) {
+> -			case PCI_P2PDMA_MAP_BUS_ADDR:
+> -				continue;
+> -			case PCI_P2PDMA_MAP_THRU_HOST_BRIDGE:
+> -				/*
+> -				 * Any P2P mapping that traverses the PCI
+> -				 * host bridge must be mapped with CPU physical
+> -				 * address and not PCI bus addresses. This is
+> -				 * done with dma_direct_map_page() below.
+> -				 */
+> -				break;
+> -			default:
+> -				ret = -EREMOTEIO;
+> +		switch (pci_p2pdma_state(&p2pdma_state, dev, sg_page(sg))) {
+> +		case PCI_P2PDMA_MAP_THRU_HOST_BRIDGE:
+> +			/*
+> +			 * Any P2P mapping that traverses the PCI host bridge
+> +			 * must be mapped with CPU physical address and not PCI
+> +			 * bus addresses.
+> +			 */
+
+Same fall-through comment.
+
+> +		case PCI_P2PDMA_MAP_NONE:
+> +			sg->dma_address = dma_direct_map_page(dev, sg_page(sg),
+> +					sg->offset, sg->length, dir, attrs);
+> +			if (sg->dma_address == DMA_MAPPING_ERROR) {
+> +				ret = -EIO;
+>  				goto out_unmap;
+>  			}
+> -		}
 
