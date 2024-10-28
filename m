@@ -1,282 +1,186 @@
-Return-Path: <linux-rdma+bounces-5565-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5569-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25EE69B23D6
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 05:25:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA1CD9B2847
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 07:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A826B21B93
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 04:25:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C29051F2200E
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 06:57:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C531618B476;
-	Mon, 28 Oct 2024 04:25:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HZW/6JVa"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E9118D649;
+	Mon, 28 Oct 2024 06:57:37 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from stargate.chelsio.com (stargate.chelsio.com [12.32.117.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 627B62C697;
-	Mon, 28 Oct 2024 04:25:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BED1DFFD
+	for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2024 06:57:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=12.32.117.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730089504; cv=none; b=N7Xw+G6Yc0b4cozjSyZRp6u5AtWbKabQPZEftEXljq8wKqx6p5azMuZkZq0miNFB8uMPqrZJkgZk9uej3BS9xAqId0RfQ1xi8Wev2kn7KmK5QZPbYh22P1QYDigL6AOV9MNGr48kIcoX2eXUP+kEyzNw/spcPrdldCVqb67drBw=
+	t=1730098656; cv=none; b=dAW8+xkaSvfhbovEdqh2184qQ96qPtTk2KZiDDBkPP5k6QS8gukuGO9Xx4Md6wZNL/EOPpdYRT1bQsStwmrpoiuWvK1FkU9C6/1qmWXrQdlST26zSb2NDj05How7UTjiW5ST6nMxv6d1SWfSQhEafvAmSINqAa4Qwflk1flb3ys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730089504; c=relaxed/simple;
-	bh=Y9iGHqOHKOxRX/YuktGKzJY8/m4TQ2gtHKBpbGPfu08=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nsxjt8Or9NRNvtg8Bu7HJM1tmuHER9TVkgdIwn/7EGsR1m1VADKLO1jERxQKSPWAnpCdkObjMONR7eo4kfpS2X3FHUvyRCPbhB/yc74ZEC3qPIeMC8SGMBIYEL+jeZRz6LcOzvxyWQsHC+MFpdzA8PYvDuj7WAixNdwF1jt6DrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HZW/6JVa; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-20ce65c8e13so32672865ad.1;
-        Sun, 27 Oct 2024 21:25:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730089501; x=1730694301; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m3x7sfjCk6an/jee3PqRBielnEix2rcYMcqqI8sdlR0=;
-        b=HZW/6JVawHAxzFNSlstne4v8ZLwIBzZ/hFR4VCaHpgqJ8GSDFTDnc4YWgofsbQufKN
-         HIx315PLpMQQfwqZj+xbmrPlcZe+UaBlXV4zLxjGmEwAVCf9PithW+DZbtv7o6qyV1/u
-         /OZY1U6KBJWar/a4DhEuT5gkVeInBjSZ0viUzvdzcPbTzKSNEfOvIrL0Uwheu8JBdpCP
-         BB48abAunqpjx19gpEpmUUQtHuHcHYnLcO49oymLxLxPfLzE0w6uUQDbWmqz1+DZTPeZ
-         Vlq0tb6DnQPCaSw279VPyk8CJ5xLnn7K0tXomR0pphg1o+w+gnkJQNMj+g+Ct8MpQ9RS
-         pVMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730089501; x=1730694301;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m3x7sfjCk6an/jee3PqRBielnEix2rcYMcqqI8sdlR0=;
-        b=TomX+xKwUT5OjQeQOwK3ChVXn6TtIAhIS4+GHzNsuSXCXg+TJrj1VzLtKkwprpeJ+k
-         0jzMz6ezqVlcoAFsI6/B28EMuYWOPt7KfqduFDmyHH1xc4K9bwFF5pcsX8b+KXg696UA
-         9Cg+UMRDQbZgYG5/edaNGm0CJxfKoLQsv//LpMZ/SqU5Tf+MKX2pZWRzmGNpIFsuxhez
-         th5WRDnAS2wz2Qp4iujyik5ErWW6zFx3YR4vkuNidUl8rxmNw3NZMYZgCTauVsZ2ETJl
-         M3bjP4K2ycrw6YdrgsV73XXjWvN4SRkqXpYYb/5Hqrnj5mXTApwb+cuh4JWOmTjeSZ8O
-         /2pQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUdF+Aywr1Gzc3skSLsQ6z6ZvcO91EdEdJTJnD+toMZGwUaoDRqC8orfaSW7OjmKrME11vVSkLYEkxl6xxc@vger.kernel.org, AJvYcCUk735xtfOppH/TGfChX3BAtCvGG/DAuT1r+EwHZfcVC1ExE+lQPQmvnGonJPVTEiyPZes=@vger.kernel.org, AJvYcCVKY2l5TG20ypDiYFn2SK27Zn7yBsGRSzvcEhuN8ngIE1lxMbrIUBtIQjavQh8ZQ+iNIKS6QWHrOTFHTwc=@vger.kernel.org, AJvYcCVqOk8UMTNz2Y+C7D8Z0Wcglscrrf676kbL7h+eaYZJXAnMyzHqCTU+mpUS6yr6yIstM0KdHAwh3ckC@vger.kernel.org, AJvYcCXHmQRg+iICohAmSgKnUhW0J1A1KSPlLpQaTrQoSa67YM/Ugm/y2B2gWjfHCd9cLSsnBUlxx+2XG+mW@vger.kernel.org, AJvYcCXPHW2+dNz3SfTRwwyirSu3t7LLYRbbSzEaNeQYBumriat8e7Y/4YGKk8gIQoQVuO5lEPrNL6JEOuYnXA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzUCErQq57Jw3Y2C7ug1Bi33oHYx0USUQcZ79Cd7+2fzTwUivIK
-	Gz8pCpEq9wx5ltLQa35VI9exP4kf+HKReYXQR6NH5S/kg8YCRzxORcLkIIAF2n4px8XqEaGf/lV
-	tM13yBqTwXMGXtab0NwMGFaDdurU=
-X-Google-Smtp-Source: AGHT+IF/XbpZuxphQQOGSTKqE4rMFhTi6L+p1iG+0wHvbb3b0Zmpl46tdIWRMT6RjNj1jqQyIDmtIwt2bzj/qL3GX/U=
-X-Received: by 2002:a17:902:db02:b0:20c:b700:6e10 with SMTP id
- d9443c01a7336-210c6c8856cmr116967905ad.34.1730089501376; Sun, 27 Oct 2024
- 21:25:01 -0700 (PDT)
+	s=arc-20240116; t=1730098656; c=relaxed/simple;
+	bh=ko9khx49sEALYM24cGzFv+sOAFa7K2lCW3ZtNNnEn4U=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kYx2lg23wvvxSvIkkLaZj/0LHb3Gau1OXHpzbrxtzcjgehz5Qnq9U6puPJ2yYh2yXn03RWFbAI/11tfje6RYB4ZBNiFq70+dxHIy3PYNUtShkyzrBLkDU7hipO33yy3HG5pFiCAM7Uo3AKZfm4AB/zciDI+53gMzGwtUrHQTKrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chelsio.com; spf=pass smtp.mailfrom=chelsio.com; arc=none smtp.client-ip=12.32.117.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chelsio.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chelsio.com
+Received: from sonada.blr.asicdesigners.com (sonada.blr.asicdesigners.com [10.193.186.190])
+	by stargate.chelsio.com (8.14.7/8.14.7) with ESMTP id 49S65jdj025149;
+	Sun, 27 Oct 2024 23:05:46 -0700
+From: Showrya M N <showrya@chelsio.com>
+To: bvanassche@acm.org
+Cc: linux-rdma@vger.kernel.org, showrya@chelsio.com, bharat@chelsio.com
+Subject: Iser target machine hits kernel panic while running iozone traffic with link toggle on initiator
+Date: Mon, 28 Oct 2024 11:52:46 +0530
+Message-Id: <20241028062246.10997-1-showrya@chelsio.com>
+X-Mailer: git-send-email 2.39.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1730037276.git.leon@kernel.org> <844f3dcf9c341b8178bfbc90909ef13d11dd2193.1730037276.git.leon@kernel.org>
-In-Reply-To: <844f3dcf9c341b8178bfbc90909ef13d11dd2193.1730037276.git.leon@kernel.org>
-From: Srinivasulu Thanneeru <dev.srinivasulu@gmail.com>
-Date: Mon, 28 Oct 2024 09:54:49 +0530
-Message-ID: <CAMtOeKJeVrELCp5JpYTC64KdfKpbnW9a8QrnL6ziCYL48nc=qQ@mail.gmail.com>
-Subject: Re: [PATCH 05/18] dma: Provide an interface to allow allocate IOVA
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>, Robin Murphy <robin.murphy@arm.com>, 
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>, 
-	Sagi Grimberg <sagi@grimberg.me>, Leon Romanovsky <leonro@nvidia.com>, Keith Busch <kbusch@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Logan Gunthorpe <logang@deltatee.com>, 
-	Yishai Hadas <yishaih@nvidia.com>, 
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>, Kevin Tian <kevin.tian@intel.com>, 
-	Alex Williamson <alex.williamson@redhat.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
-	=?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org, 
-	kvm@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Oct 27, 2024 at 10:23=E2=80=AFPM Leon Romanovsky <leon@kernel.org> =
-wrote:
->
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> The existing .map_page() callback provides both allocating of IOVA
-> and linking DMA pages. That combination works great for most of the
-> callers who use it in control paths, but is less effective in fast
-> paths where there may be multiple calls to map_page().
+Hi all,
 
-Can you please share perf stats with this patch in fast path, if available?
+I was testing iSER with the latest kernel v6.12-rc4, and within 15 minutes, the target machine encounters a kernel panic.
+Git bisect points to these two commits:
+a1babdb5b615 ("RDMA/iwcm: Simplify cm_work_handler()") and e1168f09b331 ("RDMA/iwcm: Simplify cm_event_handler()")
 
-> These advanced callers already manage their data in some sort of
-> database and can perform IOVA allocation in advance, leaving range
-> linkage operation to be in fast path.
->
-> Provide an interface to allocate/deallocate IOVA and next patch
-> link/unlink DMA ranges to that specific IOVA.
->
-> The API is exported from dma-iommu as it is the only implementation
-> supported, the namespace is clearly different from iommu_* functions
-> which are not allowed to be used. This code layout allows us to save
-> function call per API call used in datapath as well as a lot of boilerpla=
-te
-> code.
->
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/iommu/dma-iommu.c   | 79 +++++++++++++++++++++++++++++++++++++
->  include/linux/dma-mapping.h | 15 +++++++
->  2 files changed, 94 insertions(+)
->
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index c422e36c0d66..0644152c5aad 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -1745,6 +1745,85 @@ size_t iommu_dma_max_mapping_size(struct device *d=
-ev)
->         return SIZE_MAX;
->  }
->
-> +static bool iommu_dma_iova_alloc(struct device *dev,
-> +               struct dma_iova_state *state, phys_addr_t phys, size_t si=
-ze)
-> +{
-> +       struct iommu_domain *domain =3D iommu_get_dma_domain(dev);
-> +       struct iommu_dma_cookie *cookie =3D domain->iova_cookie;
-> +       struct iova_domain *iovad =3D &cookie->iovad;
-> +       size_t iova_off =3D iova_offset(iovad, phys);
-> +       dma_addr_t addr;
-> +
-> +       if (WARN_ON_ONCE(!size))
-> +               return false;
-> +       if (WARN_ON_ONCE(size & DMA_IOVA_USE_SWIOTLB))
-> +               return false;
-> +
-> +       addr =3D iommu_dma_alloc_iova(domain,
-> +                       iova_align(iovad, size + iova_off),
-> +                       dma_get_mask(dev), dev);
-> +       if (!addr)
-> +               return false;
-> +
-> +       state->addr =3D addr + iova_off;
-> +       state->__size =3D size;
-> +       return true;
-> +}
-> +
-> +/**
-> + * dma_iova_try_alloc - Try to allocate an IOVA space
-> + * @dev: Device to allocate the IOVA space for
-> + * @state: IOVA state
-> + * @phys: physical address
-> + * @size: IOVA size
-> + *
-> + * Check if @dev supports the IOVA-based DMA API, and if yes allocate IO=
-VA space
-> + * for the given base address and size.
-> + *
-> + * Note: @phys is only used to calculate the IOVA alignment. Callers tha=
-t always
-> + * do PAGE_SIZE aligned transfers can safely pass 0 here.
-> + *
-> + * Returns %true if the IOVA-based DMA API can be used and IOVA space ha=
-s been
-> + * allocated, or %false if the regular DMA API should be used.
-> + */
-> +bool dma_iova_try_alloc(struct device *dev, struct dma_iova_state *state=
-,
-> +               phys_addr_t phys, size_t size)
-> +{
-> +       memset(state, 0, sizeof(*state));
-> +       if (!use_dma_iommu(dev))
-> +               return false;
-> +       if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
-> +           iommu_deferred_attach(dev, iommu_get_domain_for_dev(dev)))
-> +               return false;
-> +       return iommu_dma_iova_alloc(dev, state, phys, size);
-> +}
-> +EXPORT_SYMBOL_GPL(dma_iova_try_alloc);
-> +
-> +/**
-> + * dma_iova_free - Free an IOVA space
-> + * @dev: Device to free the IOVA space for
-> + * @state: IOVA state
-> + *
-> + * Undoes a successful dma_try_iova_alloc().
-> + *
-> + * Note that all dma_iova_link() calls need to be undone first.  For cal=
-lers
-> + * that never call dma_iova_unlink(), dma_iova_destroy() can be used ins=
-tead
-> + * which unlinks all ranges and frees the IOVA space in a single efficie=
-nt
-> + * operation.
-> + */
-> +void dma_iova_free(struct device *dev, struct dma_iova_state *state)
-> +{
-> +       struct iommu_domain *domain =3D iommu_get_dma_domain(dev);
-> +       struct iommu_dma_cookie *cookie =3D domain->iova_cookie;
-> +       struct iova_domain *iovad =3D &cookie->iovad;
-> +       size_t iova_start_pad =3D iova_offset(iovad, state->addr);
-> +       size_t size =3D dma_iova_size(state);
-> +
-> +       iommu_dma_free_iova(cookie, state->addr - iova_start_pad,
-> +                       iova_align(iovad, size + iova_start_pad), NULL);
-> +}
-> +EXPORT_SYMBOL_GPL(dma_iova_free);
-> +
->  void iommu_setup_dma_ops(struct device *dev)
->  {
->         struct iommu_domain *domain =3D iommu_get_domain_for_dev(dev);
-> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-> index 6075e0708deb..817f11bce7bc 100644
-> --- a/include/linux/dma-mapping.h
-> +++ b/include/linux/dma-mapping.h
-> @@ -11,6 +11,7 @@
->  #include <linux/scatterlist.h>
->  #include <linux/bug.h>
->  #include <linux/mem_encrypt.h>
-> +#include <linux/iommu.h>
->
->  /**
->   * List of possible attributes associated with a DMA mapping. The semant=
-ics
-> @@ -77,6 +78,7 @@
->  #define DMA_BIT_MASK(n)        (((n) =3D=3D 64) ? ~0ULL : ((1ULL<<(n))-1=
-))
->
->  struct dma_iova_state {
-> +       dma_addr_t addr;
->         size_t __size;
->  };
->
-> @@ -307,11 +309,24 @@ static inline bool dma_use_iova(struct dma_iova_sta=
-te *state)
->  {
->         return state->__size !=3D 0;
->  }
-> +
-> +bool dma_iova_try_alloc(struct device *dev, struct dma_iova_state *state=
-,
-> +               phys_addr_t phys, size_t size);
-> +void dma_iova_free(struct device *dev, struct dma_iova_state *state);
->  #else /* CONFIG_IOMMU_DMA */
->  static inline bool dma_use_iova(struct dma_iova_state *state)
->  {
->         return false;
->  }
-> +static inline bool dma_iova_try_alloc(struct device *dev,
-> +               struct dma_iova_state *state, phys_addr_t phys, size_t si=
-ze)
-> +{
-> +       return false;
-> +}
-> +static inline void dma_iova_free(struct device *dev,
-> +               struct dma_iova_state *state)
-> +{
-> +}
->  #endif /* CONFIG_IOMMU_DMA */
->
->  #if defined(CONFIG_HAS_DMA) && defined(CONFIG_DMA_NEED_SYNC)
-> --
-> 2.46.2
->
->
+below are the findings on how both commits causing same error:
+
+case 1: Reverted commit e1168f09b331 ("RDMA/iwcm: Simplify cm_event_handler()") and kept a1babdb5b615 ("RDMA/iwcm: Simplify cm_work_handler()")
+
+        Before 'commit a1babdb5b615 ("RDMA/iwcm: Simplify cm_work_handler()"), cm_work_handler() takes single lock to delete the work and checks for
+        list_empty. After the commit, cm_work_handler() now takes separate locks for each operation.
+        However, there is a scenario where cm_work_handler() processed all the work in the worklist and is waiting to acquire the lock to check if the
+        worklist is empty. Meanwhile, cm_event_handler() may take the lock, check the same condition, add new work to the same worklist,
+        and queue this work, assuming the worklist is free. Since cm_work_handler() is still processing the same worklist, it will continue
+        to process the newly added work as well, since cm_event_handler() queues the same work, this can lead to reprocessing of the same work, resulting in below error.
+
+
+case 2: Reverted commit a1babdb5b615 ("RDMA/iwcm: Simplify cm_work_handler()") and kept e1168f09b331 ("RDMA/iwcm: Simplify cm_event_handler()")
+
+        After 'commit e1168f09b331 ("RDMA/iwcm: Simplify cm_event_handler()")', cm_event_handler() calls queue_work() whenever work is added to the worklist.
+        if the work is added while cm_work_handler() is processing the same worklist, cm_work_handler() may process the newly added work as well.
+        Since cm_event_handler() unconditionally calls queue_work(), the same work can be reprocessed, leading to below error.
+
+
+I am in favor of reverting above commits and restoring the previous code, since these commits are about code rearrange. Please let me know your views on it.
+
+
+Steps to reproduce the issue:
+-> Create 24 targets (12 on each interface), having LUN of 600MB (using ramdisk)
+-> Enable iser for the target 
+-> Discover and logged into the targets then started iozone traffic.
+-> Start link toggling[interface up for 100sec and down for 10 sec] on initiator on the loop.
+
+
+Here are the logs from crash file:
+
+[21088.907704] ------------[ cut here ]------------
+[21088.907710] WARNING: CPU: 8 PID: 134019 at kernel/workqueue.c:1680 __pwq_activate_work+0x90/0xa0
+[21088.907721] Modules linked in: ib_isert rdma_ucm iw_cxgb4 cxgb4 target_core_user uio target_core_pscsi target_core_file target_core_iblock rpcrdma ib_srpt libiscsi scsi_transport_iscsi iscsi_target_mod target_core_mod snd_seq_dummy snd_hrtimer snd_seq snd_timer snd_seq_device snd soundcore qrtr rfkill sunrpc intel_powerclamp ib_uverbs coretemp kvm_intel libcxgb rdma_cm kvm iw_cm ib_cm ib_core ipmi_si intel_cstate iTCO_wdt gpio_ich ioatdma intel_uncore iTCO_vendor_support ipmi_devintf i2c_i801 lpc_ich ipmi_msghandler pcspkr acpi_cpufreq dca i2c_smbus i7core_edac i5500_temp dm_mod ext4 mbcache jbd2 mgag200 i2c_algo_bit drm_shmem_helper drm_kms_helper sd_mod sg ata_generic drm crct10dif_pclmul crc32_pclmul ata_piix crc32c_intel e1000e libata ghash_clmulni_intel serio_raw tls nvme_core scsi_transport_fc fuse [last unloaded: cxgb4]
+[21088.907781] CPU: 8 UID: 0 PID: 134019 Comm: kworker/u96:2 Kdump: loaded Not tainted 6.11.0-rc3 #1
+[21088.907784] Hardware name: Supermicro X8DT6/X8DT6, BIOS 2.0c    05/15/2012
+[21088.907786] Workqueue:  0x0 (iw_cm_wq)
+[21088.907791] RIP: 0010:__pwq_activate_work+0x90/0xa0
+[21088.907795] Code: e8 d5 e2 ff ff 65 ff 0d 06 37 13 6b 75 a0 0f 1f 44 00 00 eb 99 48 8b 15 ee a6 70 01 48 89 50 18 48 8b 75 00 48 83 c6 28 eb 95 <0f> 0b e9 7b ff ff ff 66 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90
+[21088.907798] RSP: 0018:ffffb62388597e58 EFLAGS: 00010046
+[21088.907801] RAX: 0000000000000000 RBX: ffff956f03ce8200 RCX: 0000000000000001
+[21088.907802] RDX: ffff95720d89b268 RSI: ffff956f03ce8200 RDI: ffff95720d89b200
+[21088.907804] RBP: ffff95720d89b200 R08: ffff95720d89b200 R09: ffff9572051f1c24
+[21088.907805] R10: 0000000000000001 R11: 0000000000000009 R12: ffff9572051f1c30
+[21088.907807] R13: ffff956ec0059c00 R14: ffff9572051f1c20 R15: ffff95720d89b200
+[21088.907808] FS:  0000000000000000(0000) GS:ffff9571efb00000(0000) knlGS:0000000000000000
+[21088.907810] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[21088.907812] CR2: 00007ffadc487df8 CR3: 000000020aa20003 CR4: 00000000000206f0
+[21088.907814] Call Trace:
+[21088.907816]  <TASK>
+[21088.907818]  ? __warn+0x7f/0x120
+[21088.907823]  ? __pwq_activate_work+0x90/0xa0
+[21088.907826]  ? report_bug+0x18a/0x1a0
+[21088.907831]  ? handle_bug+0x3c/0x70
+[21088.907834]  ? exc_invalid_op+0x14/0x70
+[21088.907837]  ? asm_exc_invalid_op+0x16/0x20
+[21088.907844]  ? __pwq_activate_work+0x90/0xa0
+[21088.907848]  pwq_dec_nr_in_flight+0x28f/0x330
+[21088.907852]  worker_thread+0x23d/0x350
+[21088.907855]  ? __pfx_worker_thread+0x10/0x10
+[21088.907857]  kthread+0xcf/0x100
+[21088.907861]  ? __pfx_kthread+0x10/0x10
+[21088.907864]  ret_from_fork+0x30/0x50
+[21088.907869]  ? __pfx_kthread+0x10/0x10
+[21088.907871]  ret_from_fork_asm+0x1a/0x30
+[21088.907878]  </TASK>
+[21088.907879] ---[ end trace 0000000000000000 ]---
+[21088.907888] BUG: kernel NULL pointer dereference, address: 0000000000000008
+[21088.907897] #PF: supervisor read access in kernel mode
+[21088.907900] #PF: error_code(0x0000) - not-present page
+[21088.907902] PGD 0 P4D 0
+[21088.907906] Oops: Oops: 0000 [#1] PREEMPT SMP PTI
+[21088.907910] CPU: 5 UID: 0 PID: 134156 Comm: kworker/u96:1 Kdump: loaded Tainted: G        W          6.11.0-rc3 #1
+[21088.907915] Tainted: [W]=WARN
+[21088.907917] Hardware name: Supermicro X8DT6/X8DT6, BIOS 2.0c    05/15/2012
+[21088.907919] Workqueue:  cm_work_handler [iw_cm] (iw_cxgb4)
+[21088.907930] RIP: 0010:process_one_work+0xbf/0x390
+[21088.907936] Code: 74 0b 48 8b 80 d8 00 00 00 48 89 43 28 49 8b 06 be 20 00 00 00 4c 8d bb 80 00 00 00 48 89 04 24 48 c1 e8 04 83 e0 0f 89 43 30 <48> 8b 45 08 4c 8d a8 c0 00 00 00 4c 89 ef e8 de 96 bd 00 48 89 c2
+[21088.907939] RSP: 0018:ffffb62388867e88 EFLAGS: 00010046
+[21088.907942] RAX: 0000000000000000 RBX: ffff9572101e63c0 RCX: ffff956ec0059c00
+[21088.907945] RDX: ffff956ec0059e08 RSI: 0000000000000020 RDI: ffff9572101e63c0
+[21088.907947] RBP: 0000000000000000 R08: ffff9572101e6400 R09: ffff9572101e6400
+[21088.907949] R10: 0000000000000000 R11: 0000000002ef1c5e R12: ffff956ec0059c00
+[21088.907951] R13: ffff956ec0059c28 R14: ffff956f03ce8200 R15: ffff9572101e6440
+[21088.907953] FS:  0000000000000000(0000) GS:ffff9575efa40000(0000) knlGS:0000000000000000
+[21088.907956] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[21088.907958] CR2: 0000000000000008 CR3: 000000020aa20004 CR4: 00000000000206f0
+[21088.907960] Call Trace:
+[21088.907962]  <TASK>
+[21088.907964]  ? __die+0x20/0x70
+[21088.907970]  ? page_fault_oops+0x75/0x170
+[21088.907977]  ? exc_page_fault+0x64/0x140
+[21088.907983]  ? asm_exc_page_fault+0x22/0x30
+[21088.907991]  ? process_one_work+0xbf/0x390
+[21088.907994]  worker_thread+0x23d/0x350
+[21088.907998]  ? __pfx_worker_thread+0x10/0x10
+[21088.908001]  kthread+0xcf/0x100
+[21088.908006]  ? __pfx_kthread+0x10/0x10
+[21088.908010]  ret_from_fork+0x30/0x50
+[21088.908015]  ? __pfx_kthread+0x10/0x10
+[21088.908018]  ret_from_fork_asm+0x1a/0x30
+[21088.908025]  </TASK>
+[21088.908027] Modules linked in: ib_isert rdma_ucm iw_cxgb4 cxgb4 target_core_user uio target_core_pscsi target_core_file target_core_iblock rpcrdma ib_srpt libiscsi scsi_transport_iscsi iscsi_target_mod target_core_mod snd_seq_dummy snd_hrtimer snd_seq snd_timer snd_seq_device snd soundcore qrtr rfkill sunrpc intel_powerclamp ib_uverbs coretemp kvm_intel libcxgb rdma_cm kvm iw_cm ib_cm ib_core ipmi_si intel_cstate iTCO_wdt gpio_ich ioatdma intel_uncore iTCO_vendor_support ipmi_devintf i2c_i801 lpc_ich ipmi_msghandler pcspkr acpi_cpufreq dca i2c_smbus i7core_edac i5500_temp dm_mod ext4 mbcache jbd2 mgag200 i2c_algo_bit drm_shmem_helper drm_kms_helper sd_mod sg ata_generic drm crct10dif_pclmul crc32_pclmul ata_piix crc32c_intel e1000e libata ghash_clmulni_intel serio_raw tls nvme_core scsi_transport_fc fuse [last unloaded: cxgb4]
+[21088.908084] CR2: 0000000000000008
+
+Here are some debug logs:
+[ 2608.281933] cm_event_handler: &work->work 000000004183c37b if
+[ 2608.281939] process_one_work: work 000000004183c37b pwq 000000006c3c00e4
+[ 2608.281945] cm_work_handler: begin _work 000000004183c37b no. of works 1
+[ 2608.281947] cm_work_handler: empty 1 _work 000000004183c37b
+[ 2608.282517] cm_event_handler: &work->work 000000004183c37b if
+[ 2608.283159] cm_work_handler: count 1 before lock _work 000000004183c37b
+[ 2608.283161] cm_work_handler: empty 0 _work 000000004183c37b
+[ 2608.283451] cm_event_handler: &work->work 000000004183c37b else
+[ 2608.284200] cm_work_handler: count 2 before lock _work 000000004183c37b
+[ 2608.284204] cm_work_handler: empty 0 _work 000000004183c37b
+[ 2608.285225] cm_work_handler: count 3 before lock _work 000000004183c37b
+[ 2608.285229] cm_work_handler: empty 0 _work 000000004183c37b
+[ 2608.285486] cm_event_handler: &work->work 000000004183c37b else
+[ 2608.286210] cm_work_handler: count 4 before lock _work 000000004183c37b
+[ 2608.286213] cm_work_handler: empty 0 _work 000000004183c37b
+[ 2608.287149] cm_work_handler: count 5 before lock _work 000000004183c37b
+[ 2608.287151] cm_work_handler: empty 1 _work 000000004183c37b
+[ 2608.288161] cm_work_handler: count 6 before lock _work 000000004183c37b
+[ 2608.288164] __pwq_activate_work: work 000000004183c37b
+[ 2608.288170] ------------[ cut here ]------------
+[ 2608.288172] WARNING: CPU: 1 PID: 69 at kernel/workqueue.c:1681 __pwq_activate_work+0xa6/0xb0
+
+
+Thanks,
+Showrya M N
 
