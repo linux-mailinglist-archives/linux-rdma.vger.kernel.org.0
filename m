@@ -1,63 +1,53 @@
-Return-Path: <linux-rdma+bounces-5578-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5579-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B2149B37B0
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 18:32:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0338D9B38C8
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 19:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E0A61C219FD
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 17:32:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2AA51F22F3B
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 18:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5C71DED46;
-	Mon, 28 Oct 2024 17:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A241DF75C;
+	Mon, 28 Oct 2024 18:11:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="nuw7oGQo"
+	dkim=pass (2048-bit key) header.d=deltatee.com header.i=@deltatee.com header.b="ZgpvCfWo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+Received: from ale.deltatee.com (ale.deltatee.com [204.191.154.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27EA918BC3D
-	for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2024 17:32:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FEA155A52;
+	Mon, 28 Oct 2024 18:11:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=204.191.154.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730136751; cv=none; b=hFwmu/uwagZ8/8ITNJTxMDI/W4GktqzFmMwU0LF7lfw9KJ9dylsZUHfHAU9Z2wCmWQew+mWj09g3K3oSElfa48ZoDVAErEFfWzt/sgs9Tr62TAgGoT8MwerQS/W+6YqxkYHACozEo/9KDeGaRdzDM0Wf7s5RdmB30+BV8VbVxIM=
+	t=1730139099; cv=none; b=Zk1/4jQGQiVFQ+4Wtb1CLgJ+dcDrp+grUrYR4XfiuGGyVbeq9quUK4V+3Y2DqGZ6qIjyUeEyBTOiuFlwwtwOhpxqRjWhqp/gNK4rde5L5BLwIpCAlmmBRhJR9gdT8Uy6EG38ZKvllMGVjKqVLyynFFUfOBTgfdwYxgTvW246jAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730136751; c=relaxed/simple;
-	bh=jyijJcs2qxU2htOc75n6okVi8HxiWO16YN3gdjhhS0U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W1An8Gz96BuMwZkSTs+3AirzvNRmYM4Rd9FsXEG5q9RmDbClx1DWB4WVHXetP6s8ChmBuc8udRYUM2lusbLWH56+n1COnk/WI+KMr1a4ef9k7dpkfifweuvWNp1jqKFdjV3/JWtKMSB0YlAZsc6oPL8JipUcnLcyeEL0yYCQ7fE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=nuw7oGQo; arc=none smtp.client-ip=199.89.1.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4XcgSQ0pwDz6Cnk9V;
-	Mon, 28 Oct 2024 17:32:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1730136738; x=1732728739; bh=190It0XzcCPDLi0JUhUNNBE+
-	/u5r3jlUdylTLxr5zCA=; b=nuw7oGQoWDVlf8Z7RQSkR7mnQz7ddFvkbxKJH9N1
-	sbn9/ZvvAG0zZMwosFREjn4a0XWthHIO6/e++7gB4EAHOyEorW/OLbCujllLZy7C
-	llBfMt9Q+OCXD9LfrlEGETOg8ydqwH8kTkg894xAJkUAL7Cw6JyYLaws/C5gpkE9
-	nC6U5fhEmTUIELqkhJeH0FPPunsOA/QsyRyjyOXkyFKXzxx/pbYmaIKRzblEipvl
-	p4Xg0Nkv5ndV8SEhRfWssteoCZFWlmZC7NokDl4k7DDo4+0+bbGUTl2XmklwXvbC
-	4jlxO5urbJAbf5RL/Z+E+EsA07q+fi1TMdmSZlpBbJmMHw==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id VfuTzQsswdsj; Mon, 28 Oct 2024 17:32:18 +0000 (UTC)
-Received: from [100.66.154.22] (unknown [104.135.204.82])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4XcgSL3ky4z6Cnk9T;
-	Mon, 28 Oct 2024 17:32:18 +0000 (UTC)
-Message-ID: <2108afcb-1bfa-48b4-b1bc-42dac83b6229@acm.org>
-Date: Mon, 28 Oct 2024 10:32:17 -0700
+	s=arc-20240116; t=1730139099; c=relaxed/simple;
+	bh=SIxSdBe+RXcsbzx/Ctvx/wGBM6KxLLfq6vguV1usP0o=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:In-Reply-To:
+	 Content-Type:Subject; b=gEcXvCLpnrvNfmqCzTlxiBaxDf/RDoueBap//aNvkVAmK2zFwX4G/aWiaI4FYilhJ/L2+7iCe+yFS0BjslikbIgTH135LfdX7HZYKZewObC7+2c2ssdfNsMTKGW/yf3rJjC5Wc9BNRJWHd1I+J0GlPchVK7n+w51QOKL2eJ6GBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=deltatee.com; spf=pass smtp.mailfrom=deltatee.com; dkim=pass (2048-bit key) header.d=deltatee.com header.i=@deltatee.com header.b=ZgpvCfWo; arc=none smtp.client-ip=204.191.154.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=deltatee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=deltatee.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=deltatee.com; s=20200525; h=Subject:In-Reply-To:From:References:Cc:To:
+	MIME-Version:Date:Message-ID:content-disposition;
+	bh=8p+XeF371FBdizlYdFFfI+9cvX4PxDYJkCjxcGvOnbA=; b=ZgpvCfWocWsIQTbiuMoGgvu81j
+	S/fCHcyzInt5f0gPKd+LIK7OJ5mxEaoNwY3if96O+eQaCdejZ8p5V3sgl/v9nalWlDJO5DRXi/kIn
+	wvHhSbq4aAwqMIMsOMusADIniYrFBNpOPovhNcwteIj9k4BUkv8XY28rtPNRm9woscrRzWxlXqEZb
+	x/tnpblDzlq9tceUkjNsArDEQcZsmuRZZSVXzOBFycNxqU3EB7/U9E1zPZg62v7QNAB9eXmVwn9dD
+	fGPW5l7LzLYo6jMaIh+Joy5PZ/qKbf8+LukxoA/IHSVyQYhrFtbPf9diRx5yqeRINUUkSejoMIZIj
+	4p2sRADA==;
+Received: from d104-157-31-28.abhsia.telus.net ([104.157.31.28] helo=[192.168.1.250])
+	by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <logang@deltatee.com>)
+	id 1t5UCo-002ZVS-20;
+	Mon, 28 Oct 2024 12:11:07 -0600
+Message-ID: <31cae8da-74fa-4a45-a88f-ad76572246d4@deltatee.com>
+Date: Mon, 28 Oct 2024 12:10:38 -0600
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -65,157 +55,57 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Iser target machine hits kernel panic while running iozone
- traffic with link toggle on initiator
-To: Showrya M N <showrya@chelsio.com>
-Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com
-References: <20241028062246.10997-1-showrya@chelsio.com>
-Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20241028062246.10997-1-showrya@chelsio.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Leon Romanovsky <leon@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Robin Murphy <robin.murphy@arm.com>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>
+Cc: Keith Busch <kbusch@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Yishai Hadas <yishaih@nvidia.com>,
+ Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+ Kevin Tian <kevin.tian@intel.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Jonathan Corbet <corbet@lwn.net>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+ iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+ linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
+References: <cover.1730037276.git.leon@kernel.org>
+ <a4d93ca45f7ad09105a1cf347e6b6d6b6fb7e303.1730037276.git.leon@kernel.org>
+Content-Language: en-CA
+From: Logan Gunthorpe <logang@deltatee.com>
+In-Reply-To: <a4d93ca45f7ad09105a1cf347e6b6d6b6fb7e303.1730037276.git.leon@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 104.157.31.28
+X-SA-Exim-Rcpt-To: leon@kernel.org, axboe@kernel.dk, jgg@ziepe.ca, robin.murphy@arm.com, joro@8bytes.org, will@kernel.org, hch@lst.de, sagi@grimberg.me, kbusch@kernel.org, bhelgaas@google.com, yishaih@nvidia.com, shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com, alex.williamson@redhat.com, m.szyprowski@samsung.com, jglisse@redhat.com, akpm@linux-foundation.org, corbet@lwn.net, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, linux-rdma@vger.kernel.org, iommu@lists.linux.dev, linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Level: 
+Subject: Re: [PATCH 01/18] PCI/P2PDMA: refactor the p2pdma mapping helpers
+X-SA-Exim-Version: 4.2.1 (built Wed, 06 Jul 2022 17:57:39 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 
-On 10/27/24 11:22 PM, Showrya M N wrote:
-> case 1: Reverted commit e1168f09b331 ("RDMA/iwcm: Simplify cm_event_handler()") and kept a1babdb5b615 ("RDMA/iwcm: Simplify cm_work_handler()")
+
+
+On 2024-10-27 08:21, Leon Romanovsky wrote:
+> From: Christoph Hellwig <hch@lst.de>
 > 
->          Before 'commit a1babdb5b615 ("RDMA/iwcm: Simplify cm_work_handler()"), cm_work_handler() takes single lock to delete the work and checks for
->          list_empty. After the commit, cm_work_handler() now takes separate locks for each operation.
->          However, there is a scenario where cm_work_handler() processed all the work in the worklist and is waiting to acquire the lock to check if the
->          worklist is empty. Meanwhile, cm_event_handler() may take the lock, check the same condition, add new work to the same worklist,
->          and queue this work, assuming the worklist is free. Since cm_work_handler() is still processing the same worklist, it will continue
->          to process the newly added work as well, since cm_event_handler() queues the same work, this can lead to reprocessing of the same work, resulting in below error.
-
-I do not agree that commit e1168f09b331 can lead to processing a single
-work item twice.
-
-> case 2: Reverted commit a1babdb5b615 ("RDMA/iwcm: Simplify cm_work_handler()") and kept e1168f09b331 ("RDMA/iwcm: Simplify cm_event_handler()")
+> The current scheme with a single helper to determine the P2P status
+> and map a scatterlist segment force users to always use the map_sg
+> helper to DMA map, which we're trying to get away from because they
+> are very cache inefficient.
 > 
->          After 'commit e1168f09b331 ("RDMA/iwcm: Simplify cm_event_handler()")', cm_event_handler() calls queue_work() whenever work is added to the worklist.
->          if the work is added while cm_work_handler() is processing the same worklist, cm_work_handler() may process the newly added work as well.
->          Since cm_event_handler() unconditionally calls queue_work(), the same work can be reprocessed, leading to below error.
-
-The above doesn't sound correct to me either. cm_event_handler() calls
-list_add_tail() and queue_work() while holding cm_id_priv->lock.
-cm_work_handler() obtains cm_id_priv->lock before it checks the list
-with pending work items. Hence, the order in which cm_event_handler()
-calls list_add_tail() and queue_work() doesn't matter.
-
-> I am in favor of reverting above commits and restoring the previous
-> code, since these commits are about code rearrange. Please let me
-> know your views on it.
-If anyone can point out anything that's wrong with these commits I'm
-totally fine with reverting these commits. However, I haven't seen any
-evidence so far that there is anything wrong with either commit.
-
-> Here are the logs from crash file:
+> Refactor the code so that there is a single helper that checks the P2P
+> state for a page, including the result that it is not a P2P page to
+> simplify the callers, and a second one to perform the address translation
+> for a bus mapped P2P transfer that does not depend on the scatterlist
+> structure.
 > 
-> [21088.907704] ------------[ cut here ]------------
-> [21088.907710] WARNING: CPU: 8 PID: 134019 at kernel/workqueue.c:1680 __pwq_activate_work+0x90/0xa0
-> [21088.907814] Call Trace:
-> [21088.907816]  <TASK>
-> [21088.907818]  ? __warn+0x7f/0x120
-> [21088.907823]  ? __pwq_activate_work+0x90/0xa0
-> [21088.907826]  ? report_bug+0x18a/0x1a0
-> [21088.907831]  ? handle_bug+0x3c/0x70
-> [21088.907834]  ? exc_invalid_op+0x14/0x70
-> [21088.907837]  ? asm_exc_invalid_op+0x16/0x20
-> [21088.907844]  ? __pwq_activate_work+0x90/0xa0
-> [21088.907848]  pwq_dec_nr_in_flight+0x28f/0x330
-> [21088.907852]  worker_thread+0x23d/0x350
-> [21088.907855]  ? __pfx_worker_thread+0x10/0x10
-> [21088.907857]  kthread+0xcf/0x100
-> [21088.907861]  ? __pfx_kthread+0x10/0x10
-> [21088.907864]  ret_from_fork+0x30/0x50
-> [21088.907869]  ? __pfx_kthread+0x10/0x10
-> [21088.907871]  ret_from_fork_asm+0x1a/0x30
-> [21088.907878]  </TASK>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 
-> [21088.907888] BUG: kernel NULL pointer dereference, address: 0000000000000008
-> [21088.907960] Call Trace:
-> [21088.907962]  <TASK>
-> [21088.907964]  ? __die+0x20/0x70
-> [21088.907970]  ? page_fault_oops+0x75/0x170
-> [21088.907977]  ? exc_page_fault+0x64/0x140
-> [21088.907983]  ? asm_exc_page_fault+0x22/0x30
-> [21088.907991]  ? process_one_work+0xbf/0x390
-> [21088.907994]  worker_thread+0x23d/0x350
-> [21088.907998]  ? __pfx_worker_thread+0x10/0x10
-> [21088.908001]  kthread+0xcf/0x100
-> [21088.908006]  ? __pfx_kthread+0x10/0x10
-> [21088.908010]  ret_from_fork+0x30/0x50
-> [21088.908015]  ? __pfx_kthread+0x10/0x10
-> [21088.908018]  ret_from_fork_asm+0x1a/0x30
-> [21088.908025]  </TASK>
+Looks good to me. Thanks!
 
-The above may indicate a use-after-free of struct iwcm_work. Does the
-untested patch below help?
-
-Thanks,
-
-Bart.
-
-
-diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
-index 7e3a55349e10..700e60bac909 100644
---- a/drivers/infiniband/core/iwcm.c
-+++ b/drivers/infiniband/core/iwcm.c
-@@ -141,6 +141,8 @@ static struct iwcm_work *get_work(struct 
-iwcm_id_private *cm_id_priv)
-  {
-  	struct iwcm_work *work;
-
-+	lockdep_assert_held(&cm_id_priv->lock);
-+
-  	if (list_empty(&cm_id_priv->work_free_list))
-  		return NULL;
-  	work = list_first_entry(&cm_id_priv->work_free_list, struct iwcm_work,
-@@ -151,6 +153,8 @@ static struct iwcm_work *get_work(struct 
-iwcm_id_private *cm_id_priv)
-
-  static void put_work(struct iwcm_work *work)
-  {
-+	lockdep_assert_held(&work->cm_id->lock);
-+
-  	list_add(&work->free_list, &work->cm_id->work_free_list);
-  }
-
-@@ -158,6 +162,8 @@ static void dealloc_work_entries(struct 
-iwcm_id_private *cm_id_priv)
-  {
-  	struct list_head *e, *tmp;
-
-+	lockdep_assert_held(&cm_id_priv->lock);
-+
-  	list_for_each_safe(e, tmp, &cm_id_priv->work_free_list) {
-  		list_del(e);
-  		kfree(list_entry(e, struct iwcm_work, free_list));
-@@ -172,11 +178,14 @@ static int alloc_work_entries(struct 
-iwcm_id_private *cm_id_priv, int count)
-  	while (count--) {
-  		work = kmalloc(sizeof(struct iwcm_work), GFP_KERNEL);
-  		if (!work) {
-+			guard(spinlock_irqsave)(&cm_id_priv->lock);
-  			dealloc_work_entries(cm_id_priv);
-  			return -ENOMEM;
-  		}
-  		work->cm_id = cm_id_priv;
-  		INIT_LIST_HEAD(&work->list);
-+
-+		guard(spinlock_irqsave)(&cm_id_priv->lock);
-  		put_work(work);
-  	}
-  	return 0;
-@@ -200,7 +209,9 @@ static int copy_private_data(struct iw_cm_event *event)
-
-  static void free_cm_id(struct iwcm_id_private *cm_id_priv)
-  {
--	dealloc_work_entries(cm_id_priv);
-+	scoped_guard(spinlock_irqsave, &cm_id_priv->lock) {
-+		dealloc_work_entries(cm_id_priv);
-+	}
-  	kfree(cm_id_priv);
-  }
-
-
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 
