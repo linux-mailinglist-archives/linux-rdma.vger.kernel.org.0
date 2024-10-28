@@ -1,111 +1,109 @@
-Return-Path: <linux-rdma+bounces-5582-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5583-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15F409B391D
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 19:28:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B40E9B3923
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 19:28:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFEE12819F9
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 18:28:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40D3D1C2134A
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2024 18:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1582E1DFD91;
-	Mon, 28 Oct 2024 18:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B27D31DFE05;
+	Mon, 28 Oct 2024 18:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=deltatee.com header.i=@deltatee.com header.b="WMjqOgKe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EtaFK3pd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from ale.deltatee.com (ale.deltatee.com [204.191.154.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF3F1DF266;
-	Mon, 28 Oct 2024 18:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=204.191.154.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512481DF996;
+	Mon, 28 Oct 2024 18:28:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730140092; cv=none; b=pW6dssa28rzocVKYJMtPEFLytAYmmchKPdzaDDcP1cOo+td2rvpY86CPmcCgf5Z5iyZdQK6JVuE/lPydKhgSlazu5iVoNJoJFvxB4SreznZcGJ6XILji2Ry8u7QhKtV2KPxfHWXbRTxp9qHTQ5uOBVvH6ms4POXVBY4E86/tNIk=
+	t=1730140102; cv=none; b=qY1B6Nni08/odBmHs5MtilT9J2GDrWvQ6o7FL5pX0y25oAu/f0yVQwmWTtwD+2+QxV9LCLZAxtjIYisleTkF4Z4xRv2JVOTxP/v6p6Pp5MBBeHv/uWo9ReWA6cCWJEOiT+NpguNZOxUDvsx75A951K8eQdt/aJFGek0b22GfeuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730140092; c=relaxed/simple;
-	bh=jysc9seah1CkGTogQocmaGVdqs178PC3SgenoTMtVGU=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:From:In-Reply-To:
-	 Content-Type:Subject; b=YIZH5js2bZpjzPlV2WDCLlUBbZ54xciUVZXz7tbkF9DoWhuqu2uYf9kfrHOX4aLVLAT4bcMLIWEFMuDKxrZBM3e7/UBIQ6LxRNVFU95l0ZhMICiq4GZy083F0qSRl82+xOAe/sScdR68GOwW3DURXbtV8pBCpllYIZYIvNwDukY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=deltatee.com; spf=pass smtp.mailfrom=deltatee.com; dkim=pass (2048-bit key) header.d=deltatee.com header.i=@deltatee.com header.b=WMjqOgKe; arc=none smtp.client-ip=204.191.154.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=deltatee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=deltatee.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=deltatee.com; s=20200525; h=Subject:In-Reply-To:From:References:Cc:To:
-	MIME-Version:Date:Message-ID:content-disposition;
-	bh=xfwaAlX8xBNBzzQd8cWtPopo9omhZXUl1zo673gmZPU=; b=WMjqOgKeRu8KLmj0e+FfaKQ5nw
-	SgLTeMPtlxn7YvNSwEXm9WRVO6V3OfUYWzBkFxex8g5DhluJnjtGZAOP88y+oEYbhTswl001wqbjC
-	VAMp0KBM1cV3pxfWiT9t7GEpH6PP3iHvzxFOSltTDDGP1nFT4qfRwTkyuhh+Ij31rgOzU9qZSzueN
-	FXFsu3EvxwXrCsD6Ddkf3+5bHEPJculCmwf5FKruYO+4w5MEugAU88AXgFQlK1emwFsWfp6VAnMOR
-	XgGvOU7wsYcyzcO9LPQQNiLmuWtrD8A0tY2Ryo4R36g1lHw3F9kJrwi9exvBKqXcTantt6HmE9C2I
-	NC3mHOlg==;
-Received: from d104-157-31-28.abhsia.telus.net ([104.157.31.28] helo=[192.168.1.250])
-	by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <logang@deltatee.com>)
-	id 1t5UT4-002Zeg-0P;
-	Mon, 28 Oct 2024 12:27:54 -0600
-Message-ID: <9db04bd9-81e1-4e60-a590-0882cd86052f@deltatee.com>
-Date: Mon, 28 Oct 2024 12:27:51 -0600
+	s=arc-20240116; t=1730140102; c=relaxed/simple;
+	bh=9iGMLbwbu5+Y6xL5FtHUey8KkpvIorHUri9eopVp1bE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C+19Cn1VHp9Z0UvKoqiIl+c43zPOQgeLd7x8lkHcUe5dJWaaTkSGBikolAdYq9HerCwtdNP7wjIbOTW+DSNVAVSmb4w1xSsowCMIXyf2ZbeCWYBna6VwIoXtrzKWf4TepCCrrKD1Z0BhceLfkqme8yKxieDF1jt9hmTqIfr3LgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EtaFK3pd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D46CDC4CEE4;
+	Mon, 28 Oct 2024 18:28:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730140101;
+	bh=9iGMLbwbu5+Y6xL5FtHUey8KkpvIorHUri9eopVp1bE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EtaFK3pduFuYsNn4Y7vW1E2l8VducP0vst+UuBVEbClW4TWipnGHfz233fzJPLCp+
+	 A8MRUIYC0+zA/CM3TbtJ1baS+UV1GvKGP0/Xu+HTYmzt6DJJI4akRbyQlZuKLR1PxK
+	 spZ+zcbKZqLolf9P5ku2y3lq4gNNZA+Af5r7z2cpagVx7I8KvRjidzMAXhV0m6tffA
+	 S7Z0oPNwV6kv0xsSjIkq0tLfhpRA7b0nVQDSdTWRXEimMGWEhNnHTy/txVooweHpWM
+	 wtikULfejvKP5embybCWsN/6Rll2WIBurWpHWzaokEHX3ZC+tVhEJuljI7i+MtbL1d
+	 A/quvdDcUEdvA==
+Date: Mon, 28 Oct 2024 20:28:15 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Logan Gunthorpe <logang@deltatee.com>
+Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 09/18] docs: core-api: document the IOVA-based API
+Message-ID: <20241028182815.GH1615717@unreal>
+References: <cover.1730037276.git.leon@kernel.org>
+ <f7ee023a7497ad3d8a7a31b12f492339d155ac39.1730037276.git.leon@kernel.org>
+ <30e87c78-1021-4fa4-8aa6-e81245e77379@deltatee.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Leon Romanovsky <leon@kernel.org>, Jens Axboe <axboe@kernel.dk>,
- Jason Gunthorpe <jgg@ziepe.ca>, Robin Murphy <robin.murphy@arm.com>,
- Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>
-Cc: Keith Busch <kbusch@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Yishai Hadas <yishaih@nvidia.com>,
- Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
- Kevin Tian <kevin.tian@intel.com>,
- Alex Williamson <alex.williamson@redhat.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, Jonathan Corbet <corbet@lwn.net>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
- iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
- linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
-References: <cover.1730037261.git.leon@kernel.org>
- <34d44537a65aba6ede215a8ad882aeee028b423a.1730037261.git.leon@kernel.org>
-Content-Language: en-CA
-From: Logan Gunthorpe <logang@deltatee.com>
-In-Reply-To: <34d44537a65aba6ede215a8ad882aeee028b423a.1730037261.git.leon@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 104.157.31.28
-X-SA-Exim-Rcpt-To: leon@kernel.org, axboe@kernel.dk, jgg@ziepe.ca, robin.murphy@arm.com, joro@8bytes.org, will@kernel.org, hch@lst.de, sagi@grimberg.me, kbusch@kernel.org, bhelgaas@google.com, yishaih@nvidia.com, shameerali.kolothum.thodi@huawei.com, kevin.tian@intel.com, alex.williamson@redhat.com, m.szyprowski@samsung.com, jglisse@redhat.com, akpm@linux-foundation.org, corbet@lwn.net, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, linux-rdma@vger.kernel.org, iommu@lists.linux.dev, linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Level: 
-Subject: Re: [RFC PATCH 2/7] block: don't merge different kinds of P2P
- transfers in a single bio
-X-SA-Exim-Version: 4.2.1 (built Wed, 06 Jul 2022 17:57:39 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <30e87c78-1021-4fa4-8aa6-e81245e77379@deltatee.com>
 
-
-
-On 2024-10-27 08:21, Leon Romanovsky wrote:
-> From: Christoph Hellwig <hch@lst.de>
+On Mon, Oct 28, 2024 at 12:12:34PM -0600, Logan Gunthorpe wrote:
 > 
-> To get out of the dma mapping helpers having to check every segment for
-> it's P2P status, ensure that bios either contain P2P transfers or non-P2P
-> transfers, and that a P2P bio only contains ranges from a single device.
+> I noticed a couple of typos below:
 > 
-> This means we do the page zone access in the bio add path where it should
-> be still page hot, and will only have do the fairly expensive P2P topology
-> lookup once per bio down in the dma mapping path, and only for already
-> marked bios.
+> On 2024-10-27 08:21, Leon Romanovsky wrote:
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > +Part Ie - IOVA-based DMA mappings
+> > +---------------------------------
+> > +
+> > +These APIs allow a very efficient mapping when using an IOMMU.  They are an
+> > +optional path that requires extra code and are only recommended for drivers
+> > +where DMA mapping performance, or the space usage for storing the dma addresses
+> 
+> The second 'dma' should be capitalized as it is in other uses.
+> 
+> 
+> > +    int dma_iova_sync(struct device *dev, struct dma_iova_state *state,
+> > +		size_t offset, size_t size, int ret);
+> > +
+> > +Must called to sync the IOMMU page tables for IOVA-range mapped by one or
+> > +more calls to ``dma_iova_link()``.
+> 
+> "Must be called" instead of "Must called"
 
-Looks good to me.
+Thanks, will fix.
 
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-
+> 
+> Thanks,
+> 
+> Logan
 
