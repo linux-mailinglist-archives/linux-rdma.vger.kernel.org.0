@@ -1,218 +1,396 @@
-Return-Path: <linux-rdma+bounces-5608-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5609-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 436E49B5ED7
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2024 10:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A1CFC9B5FBC
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2024 11:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C8141C210CD
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2024 09:30:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C577C1C21450
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2024 10:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D57FC1D356C;
-	Wed, 30 Oct 2024 09:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="cSQwSCZM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1B01E2312;
+	Wed, 30 Oct 2024 10:10:28 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7632654BD4
-	for <linux-rdma@vger.kernel.org>; Wed, 30 Oct 2024 09:30:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D4CF194151
+	for <linux-rdma@vger.kernel.org>; Wed, 30 Oct 2024 10:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730280615; cv=none; b=G7TX/BSLAmIHpaBw3U3cDMl9Hjq1VJ1NSBnn52RkAsnqVnZfxaJm6akilb0vh9bQWSbHsiWsAMl880guGoz9OmP3mZJzKc8Zbqeu8W+Fcg+QxxXZV8q7F4rWezQshONQx0LfzXfMwJTWbZKrXDBtYY0dzanLbBKQnVu231+fE1A=
+	t=1730283028; cv=none; b=eAgHiLLKEJZJe/odttt/j1et21Frnof6yd9H7zhv/nXQ4HrumP7vDNJDeAurd1P91FalX4QKIXlJ6sq+sxtmH3GNIRge4LKNFaUGulTlQv7jDDAMtirMJccelttN9RQDwHCPmKrJa9dXFK1aL3amhwSsJ5mRKv0SQkUWjhrFo9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730280615; c=relaxed/simple;
-	bh=NXIsnsTo/TMz0NoEFJO7wfu0fiKftYfpMrzFuEGbwFI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J8OmqT+9XrAk56OiRr8FcFREcZVCZgv/e+5deCSIzNRbjcFUbgX249eVeQ1cNpPHlIgpO3i7s5EGHWBkHZlnVlWxSaRtVKXVrTjVaTP7HTWAKvLMWgs+tgkc5/Q/DCZh974Hrve/sA1kICyhL31Gvk0gWBOl7QHaGjdwMRkhmUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=cSQwSCZM; arc=none smtp.client-ip=52.119.213.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1730280613; x=1761816613;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ElWfAj6aESMLSaLBkYVxPy0Ox/hHP86OM4iPb7SzFj4=;
-  b=cSQwSCZMn6itsi9aPd3td9XufwFdA0ztzzmFGM14LOXERplGSXWPXZv/
-   i2e/5QaOxOJxlcB8LqHuwkGJM3kD/bAPsYt8pkHif0EkLYh3BfqtHOqrn
-   pm4KMVALOEAt+T9VJ0oHYdQV8OdNidi//5QwZ5iOSsJiwr5KyZNGM5Sf9
-   I=;
-X-IronPort-AV: E=Sophos;i="6.11,244,1725321600"; 
-   d="scan'208";a="243450417"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.43.8.2])
-  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Oct 2024 09:30:11 +0000
-Received: from EX19MTAEUA002.ant.amazon.com [10.0.17.79:20665]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.37.115:2525] with esmtp (Farcaster)
- id 62563341-c710-4662-9d6d-1ac014772e97; Wed, 30 Oct 2024 09:30:10 +0000 (UTC)
-X-Farcaster-Flow-ID: 62563341-c710-4662-9d6d-1ac014772e97
-Received: from EX19D013EUA001.ant.amazon.com (10.252.50.140) by
- EX19MTAEUA002.ant.amazon.com (10.252.50.124) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
- Wed, 30 Oct 2024 09:30:09 +0000
-Received: from EX19MTAUEB002.ant.amazon.com (10.252.135.47) by
- EX19D013EUA001.ant.amazon.com (10.252.50.140) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.34;
- Wed, 30 Oct 2024 09:30:09 +0000
-Received: from email-imr-corp-prod-pdx-all-2b-5ec155c2.us-west-2.amazon.com
- (10.43.8.2) by mail-relay.amazon.com (10.252.135.97) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id
- 15.2.1258.34 via Frontend Transport; Wed, 30 Oct 2024 09:30:09 +0000
-Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com (dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com [10.253.103.172])
-	by email-imr-corp-prod-pdx-all-2b-5ec155c2.us-west-2.amazon.com (Postfix) with ESMTP id 768FF42133;
-	Wed, 30 Oct 2024 09:30:07 +0000 (UTC)
-From: Michael Margolin <mrgolin@amazon.com>
-To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Daniel
- Kranzdorf" <dkkranzd@amazon.com>, Firas Jahjah <firasj@amazon.com>
-Subject: [PATCH for-next] RDMA/efa: Report link speed according to device attributes
-Date: Wed, 30 Oct 2024 09:30:06 +0000
-Message-ID: <20241030093006.21352-1-mrgolin@amazon.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1730283028; c=relaxed/simple;
+	bh=5eQ4aPI/dKTq01ai+EQP1W7ho9fZB6pzQA+y6i7HRiQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=XrhTCpGur1w8Jro1//ZuG54cUm6JqvGnVJ9auFYXisi4HeBPyIIYFrTwAH/6E+I+XZKEhLGIlV1F8Vw/FJeuIT5Rmuiup0pUWHFxbWyHNW7Q6lrrnwjLYiRow483iRgPHmwl4TER8CH9Si2kAxjiRQjaDzNWB9FvhcCn7giwC04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XdjXJ66Vzz20ql0;
+	Wed, 30 Oct 2024 18:09:20 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2AA4E1402CE;
+	Wed, 30 Oct 2024 18:10:20 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 30 Oct 2024 18:10:19 +0800
+Message-ID: <4766a9e3-205a-4979-33c8-703e1148675c@hisilicon.com>
+Date: Wed, 30 Oct 2024 18:10:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: [PATCH for-next 4/4] RDMA/bnxt_re: Add debugfs hook in the driver
+To: Selvin Xavier <selvin.xavier@broadcom.com>, <leon@kernel.org>,
+	<jgg@ziepe.ca>
+CC: <linux-rdma@vger.kernel.org>, <andrew.gospodarek@broadcom.com>,
+	<kalesh-anakkur.purayil@broadcom.com>, <kashyap.desai@broadcom.com>,
+	Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+References: <1729591916-29134-1-git-send-email-selvin.xavier@broadcom.com>
+ <1729591916-29134-5-git-send-email-selvin.xavier@broadcom.com>
+Content-Language: en-US
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <1729591916-29134-5-git-send-email-selvin.xavier@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-Set port link speed and width based on max bandwidth acquired from the
-device instead of using constant 100 Gbps. Use a default value in case
-the device didn't set the field.
 
-Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
-Reviewed-by: Firas Jahjah <firasj@amazon.com>
-Signed-off-by: Michael Margolin <mrgolin@amazon.com>
----
- .../infiniband/hw/efa/efa_admin_cmds_defs.h   |  9 ++++
- drivers/infiniband/hw/efa/efa_com_cmd.c       |  1 +
- drivers/infiniband/hw/efa/efa_com_cmd.h       |  1 +
- drivers/infiniband/hw/efa/efa_verbs.c         | 45 ++++++++++++++++++-
- 4 files changed, 54 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-index 88a9aee7e743..fe0b6aec7839 100644
---- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-+++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-@@ -718,6 +718,15 @@ struct efa_admin_feature_device_attr_desc {
- 
- 	/* Unique global ID for an EFA device */
- 	u64 guid;
-+
-+	/* The device maximum link speed in Gbit/sec */
-+	u16 max_link_speed_gbps;
-+
-+	/* MBZ */
-+	u16 reserved0;
-+
-+	/* MBZ */
-+	u32 reserved1;
- };
- 
- struct efa_admin_feature_queue_attr_desc {
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-index 9e04edb9dbda..c6b89c45fdc9 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.c
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
-@@ -467,6 +467,7 @@ int efa_com_get_device_attr(struct efa_com_dev *edev,
- 	result->max_rdma_size = resp.u.device_attr.max_rdma_size;
- 	result->device_caps = resp.u.device_attr.device_caps;
- 	result->guid = resp.u.device_attr.guid;
-+	result->max_link_speed_gbps = resp.u.device_attr.max_link_speed_gbps;
- 
- 	if (result->admin_api_version < 1) {
- 		ibdev_err_ratelimited(
-diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
-index 25f02c0d9698..5511355b700d 100644
---- a/drivers/infiniband/hw/efa/efa_com_cmd.h
-+++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
-@@ -142,6 +142,7 @@ struct efa_com_get_device_attr_result {
- 	u16 max_wr_rdma_sge;
- 	u16 max_tx_batch;
- 	u16 min_sq_depth;
-+	u16 max_link_speed_gbps;
- 	u8 db_bar;
- };
- 
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index ca3af866a5df..a8645a40730f 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -85,6 +85,8 @@ static const struct rdma_stat_desc efa_port_stats_descs[] = {
- 	EFA_DEFINE_PORT_STATS(EFA_STATS_STR)
- };
- 
-+#define EFA_DEFAULT_LINK_SPEED_GBPS   100
-+
- #define EFA_CHUNK_PAYLOAD_SHIFT       12
- #define EFA_CHUNK_PAYLOAD_SIZE        BIT(EFA_CHUNK_PAYLOAD_SHIFT)
- #define EFA_CHUNK_PAYLOAD_PTR_SIZE    8
-@@ -277,10 +279,47 @@ int efa_query_device(struct ib_device *ibdev,
- 	return 0;
- }
- 
-+static void efa_link_gbps_to_speed_and_width(u16 gbps,
-+					     enum ib_port_speed *speed,
-+					     enum ib_port_width *width)
-+{
-+	if (gbps >= 400) {
-+		*width = IB_WIDTH_8X;
-+		*speed = IB_SPEED_HDR;
-+	} else if (gbps >= 200) {
-+		*width = IB_WIDTH_4X;
-+		*speed = IB_SPEED_HDR;
-+	} else if (gbps >= 120) {
-+		*width = IB_WIDTH_12X;
-+		*speed = IB_SPEED_FDR10;
-+	} else if (gbps >= 100) {
-+		*width = IB_WIDTH_4X;
-+		*speed = IB_SPEED_EDR;
-+	} else if (gbps >= 60) {
-+		*width = IB_WIDTH_12X;
-+		*speed = IB_SPEED_DDR;
-+	} else if (gbps >= 50) {
-+		*width = IB_WIDTH_1X;
-+		*speed = IB_SPEED_HDR;
-+	} else if (gbps >= 40) {
-+		*width = IB_WIDTH_4X;
-+		*speed = IB_SPEED_FDR10;
-+	} else if (gbps >= 30) {
-+		*width = IB_WIDTH_12X;
-+		*speed = IB_SPEED_SDR;
-+	} else {
-+		*width = IB_WIDTH_1X;
-+		*speed = IB_SPEED_EDR;
-+	}
-+}
-+
- int efa_query_port(struct ib_device *ibdev, u32 port,
- 		   struct ib_port_attr *props)
- {
- 	struct efa_dev *dev = to_edev(ibdev);
-+	enum ib_port_speed link_speed;
-+	enum ib_port_width link_width;
-+	u16 link_gbps;
- 
- 	props->lmc = 1;
- 
-@@ -288,8 +327,10 @@ int efa_query_port(struct ib_device *ibdev, u32 port,
- 	props->phys_state = IB_PORT_PHYS_STATE_LINK_UP;
- 	props->gid_tbl_len = 1;
- 	props->pkey_tbl_len = 1;
--	props->active_speed = IB_SPEED_EDR;
--	props->active_width = IB_WIDTH_4X;
-+	link_gbps = dev->dev_attr.max_link_speed_gbps ?: EFA_DEFAULT_LINK_SPEED_GBPS;
-+	efa_link_gbps_to_speed_and_width(link_gbps, &link_speed, &link_width);
-+	props->active_speed = link_speed;
-+	props->active_width = link_width;
- 	props->max_mtu = ib_mtu_int_to_enum(dev->dev_attr.mtu);
- 	props->active_mtu = ib_mtu_int_to_enum(dev->dev_attr.mtu);
- 	props->max_msg_sz = dev->dev_attr.mtu;
--- 
-2.40.1
+On 2024/10/22 18:11, Selvin Xavier wrote:
+> From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> 
+> Adding support for a per device debugfs folder for exporting
+> some of the device specific debug information.
+> Added support to get QP info for now. The same folder can be
+> used to export other debug features in future.
+> 
+> Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+> Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/Makefile   |   3 +-
+>  drivers/infiniband/hw/bnxt_re/bnxt_re.h  |   2 +
+>  drivers/infiniband/hw/bnxt_re/debugfs.c  | 141 +++++++++++++++++++++++++++++++
+>  drivers/infiniband/hw/bnxt_re/debugfs.h  |  21 +++++
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c |   4 +
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.h |   1 +
+>  drivers/infiniband/hw/bnxt_re/main.c     |  13 ++-
+>  7 files changed, 183 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/infiniband/hw/bnxt_re/debugfs.c
+>  create mode 100644 drivers/infiniband/hw/bnxt_re/debugfs.h
+> 
+> diff --git a/drivers/infiniband/hw/bnxt_re/Makefile b/drivers/infiniband/hw/bnxt_re/Makefile
+> index ee9bb1b..f63417d 100644
+> --- a/drivers/infiniband/hw/bnxt_re/Makefile
+> +++ b/drivers/infiniband/hw/bnxt_re/Makefile
+> @@ -4,4 +4,5 @@ ccflags-y := -I $(srctree)/drivers/net/ethernet/broadcom/bnxt
+>  obj-$(CONFIG_INFINIBAND_BNXT_RE) += bnxt_re.o
+>  bnxt_re-y := main.o ib_verbs.o \
+>  	     qplib_res.o qplib_rcfw.o	\
+> -	     qplib_sp.o qplib_fp.o  hw_counters.o
+> +	     qplib_sp.o qplib_fp.o  hw_counters.o	\
+> +	     debugfs.o
+> diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+> index 311bb7c..7f931c7 100644
+> --- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+> +++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+> @@ -213,6 +213,8 @@ struct bnxt_re_dev {
+>  	struct delayed_work dbq_pacing_work;
+>  	DECLARE_HASHTABLE(cq_hash, MAX_CQ_HASH_BITS);
+>  	DECLARE_HASHTABLE(srq_hash, MAX_SRQ_HASH_BITS);
+> +	struct dentry			*dbg_root;
+> +	struct dentry			*qp_debugfs;
+>  };
+>  
+>  #define to_bnxt_re_dev(ptr, member)	\
+> diff --git a/drivers/infiniband/hw/bnxt_re/debugfs.c b/drivers/infiniband/hw/bnxt_re/debugfs.c
+> new file mode 100644
+> index 0000000..dd38dd6c
+> --- /dev/null
+> +++ b/drivers/infiniband/hw/bnxt_re/debugfs.c
+> @@ -0,0 +1,141 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+> +/*
+> + * Copyright (c) 2024, Broadcom. All rights reserved.  The term
+> + * Broadcom refers to Broadcom Limited and/or its subsidiaries.
+> + *
+> + * Description: Debugfs component of the bnxt_re driver
+> + */
+> +
+> +#include <linux/debugfs.h>
+> +#include <linux/pci.h>
+> +#include <rdma/ib_addr.h>
+> +
+> +#include "bnxt_ulp.h"
+> +#include "roce_hsi.h"
+> +#include "qplib_res.h"
+> +#include "qplib_sp.h"
+> +#include "qplib_fp.h"
+> +#include "qplib_rcfw.h"
+> +#include "bnxt_re.h"
+> +#include "ib_verbs.h"
+> +#include "debugfs.h"
+> +
+> +static struct dentry *bnxt_re_debugfs_root;
+> +
+> +static inline const char *bnxt_re_qp_state_str(u8 state)
+> +{
+> +	switch (state) {
+> +	case CMDQ_MODIFY_QP_NEW_STATE_RESET:
+> +		return "RST";
+> +	case CMDQ_MODIFY_QP_NEW_STATE_INIT:
+> +		return "INIT";
+> +	case CMDQ_MODIFY_QP_NEW_STATE_RTR:
+> +		return "RTR";
+> +	case CMDQ_MODIFY_QP_NEW_STATE_RTS:
+> +		return "RTS";
+> +	case CMDQ_MODIFY_QP_NEW_STATE_SQE:
+> +		return "SQER";
+> +	case CMDQ_MODIFY_QP_NEW_STATE_SQD:
+> +		return "SQD";
+> +	case CMDQ_MODIFY_QP_NEW_STATE_ERR:
+> +		return "ERR";
+> +	default:
+> +		return "Invalid QP state";
+> +	}
+> +}
+> +
+> +static inline const char *bnxt_re_qp_type_str(u8 type)
+> +{
+> +	switch (type) {
+> +	case CMDQ_CREATE_QP1_TYPE_GSI: return "QP1";
+> +	case CMDQ_CREATE_QP_TYPE_GSI: return "QP1";
+> +	case CMDQ_CREATE_QP_TYPE_RC: return "RC";
+> +	case CMDQ_CREATE_QP_TYPE_UD: return "UD";
+> +	case CMDQ_CREATE_QP_TYPE_RAW_ETHERTYPE: return "RAW_ETHERTYPE";
+> +	default: return "Invalid transport type";
+> +	}
+> +}
+> +
 
+Would it be better to use table-driven approach for these two functions?
+
+> +static ssize_t qp_info_read(struct file *filep,
+> +			    char __user *buffer,
+> +			    size_t count, loff_t *ppos)
+> +{
+> +	struct bnxt_re_qp *qp = filep->private_data;
+> +	char *buf;
+> +	int len;
+> +
+> +	if (*ppos)
+> +		return 0;
+> +
+> +	buf = kasprintf(GFP_KERNEL,
+> +			"QPN\t\t: %d\n"
+> +			"transport\t: %s\n"
+> +			"state\t\t: %s\n"
+> +			"mtu\t\t: %d\n"
+> +			"timeout\t\t: %d\n"
+> +			"remote QPN\t: %d\n",
+> +			qp->qplib_qp.id,
+> +			bnxt_re_qp_type_str(qp->qplib_qp.type),
+> +			bnxt_re_qp_state_str(qp->qplib_qp.state),
+> +			qp->qplib_qp.mtu,
+> +			qp->qplib_qp.timeout,
+> +			qp->qplib_qp.dest_qpn);
+> +	if (!buf)
+> +		return -ENOMEM;
+> +	if (count < strlen(buf)) {
+> +		kfree(buf);
+> +		return -ENOSPC;
+> +	}
+> +	len = simple_read_from_buffer(buffer, count, ppos, buf, strlen(buf));
+> +	kfree(buf);
+> +	return len;
+> +}
+> +
+> +static const struct file_operations debugfs_qp_fops = {
+> +	.owner = THIS_MODULE,
+> +	.open = simple_open,
+> +	.read = qp_info_read,
+> +};
+> +
+> +void bnxt_re_debug_add_qpinfo(struct bnxt_re_dev *rdev, struct bnxt_re_qp *qp)
+> +{
+> +	char resn[32];
+> +
+> +	sprintf(resn, "0x%x", qp->qplib_qp.id);
+> +	qp->dentry = debugfs_create_file(resn, 0400, rdev->qp_debugfs, qp, &debugfs_qp_fops);
+> +}
+> +
+> +void bnxt_re_debug_rem_qpinfo(struct bnxt_re_dev *rdev, struct bnxt_re_qp *qp)
+> +{
+> +	if (!bnxt_re_debugfs_root || !rdev->qp_debugfs)
+> +		return;
+
+debugfs functions can handle cases where the input dentry is an error,
+so this checking is unnecessary.
+
+Junxian
+
+> +
+> +	debugfs_remove(qp->dentry);> +}
+> +
+> +void bnxt_re_debugfs_add_pdev(struct bnxt_re_dev *rdev)
+> +{
+> +	struct pci_dev *pdev = rdev->en_dev->pdev;
+> +
+> +	rdev->dbg_root = debugfs_create_dir(dev_name(&pdev->dev), bnxt_re_debugfs_root);
+> +
+> +	rdev->qp_debugfs = debugfs_create_dir("QPs", rdev->dbg_root);
+> +}
+> +
+> +void bnxt_re_debugfs_rem_pdev(struct bnxt_re_dev *rdev)
+> +{
+> +	debugfs_remove_recursive(rdev->qp_debugfs);
+> +
+> +	debugfs_remove_recursive(rdev->dbg_root);
+> +	rdev->dbg_root = NULL;
+> +}
+> +
+> +void bnxt_re_register_debugfs(void)
+> +{
+> +	bnxt_re_debugfs_root = debugfs_create_dir("bnxt_re", NULL);
+> +}
+> +
+> +void bnxt_re_unregister_debugfs(void)
+> +{
+> +	debugfs_remove(bnxt_re_debugfs_root);
+> +}
+> diff --git a/drivers/infiniband/hw/bnxt_re/debugfs.h b/drivers/infiniband/hw/bnxt_re/debugfs.h
+> new file mode 100644
+> index 0000000..cd3be0a9
+> --- /dev/null
+> +++ b/drivers/infiniband/hw/bnxt_re/debugfs.h
+> @@ -0,0 +1,21 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+> +/*
+> + * Copyright (c) 2024, Broadcom. All rights reserved.  The term
+> + * Broadcom refers to Broadcom Limited and/or its subsidiaries.
+> + *
+> + * Description: Debugfs header
+> + */
+> +
+> +#ifndef __BNXT_RE_DEBUGFS__
+> +#define __BNXT_RE_DEBUGFS__
+> +
+> +void bnxt_re_debug_add_qpinfo(struct bnxt_re_dev *rdev, struct bnxt_re_qp *qp);
+> +void bnxt_re_debug_rem_qpinfo(struct bnxt_re_dev *rdev, struct bnxt_re_qp *qp);
+> +
+> +void bnxt_re_debugfs_add_pdev(struct bnxt_re_dev *rdev);
+> +void bnxt_re_debugfs_rem_pdev(struct bnxt_re_dev *rdev);
+> +
+> +void bnxt_re_register_debugfs(void);
+> +void bnxt_re_unregister_debugfs(void);
+> +
+> +#endif
+> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> index e66ae9f..10e96f1 100644
+> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> @@ -62,6 +62,7 @@
+>  
+>  #include "bnxt_re.h"
+>  #include "ib_verbs.h"
+> +#include "debugfs.h"
+>  
+>  #include <rdma/uverbs_types.h>
+>  #include <rdma/uverbs_std_types.h>
+> @@ -939,6 +940,8 @@ int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
+>  	else if (qp->qplib_qp.type == CMDQ_CREATE_QP_TYPE_UD)
+>  		atomic_dec(&rdev->stats.res.ud_qp_count);
+>  
+> +	bnxt_re_debug_rem_qpinfo(rdev, qp);
+> +
+>  	ib_umem_release(qp->rumem);
+>  	ib_umem_release(qp->sumem);
+>  
+> @@ -1622,6 +1625,7 @@ int bnxt_re_create_qp(struct ib_qp *ib_qp, struct ib_qp_init_attr *qp_init_attr,
+>  		if (active_qps > rdev->stats.res.ud_qp_watermark)
+>  			rdev->stats.res.ud_qp_watermark = active_qps;
+>  	}
+> +	bnxt_re_debug_add_qpinfo(rdev, qp);
+>  
+>  	return 0;
+>  qp_destroy:
+> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+> index b789e47..e02a5e7 100644
+> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+> @@ -95,6 +95,7 @@ struct bnxt_re_qp {
+>  	struct ib_ud_header	qp1_hdr;
+>  	struct bnxt_re_cq	*scq;
+>  	struct bnxt_re_cq	*rcq;
+> +	struct dentry		*dentry;
+>  };
+>  
+>  struct bnxt_re_cq {
+> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+> index 0a18d24..04fa81e 100644
+> --- a/drivers/infiniband/hw/bnxt_re/main.c
+> +++ b/drivers/infiniband/hw/bnxt_re/main.c
+> @@ -67,6 +67,7 @@
+>  #include <rdma/bnxt_re-abi.h>
+>  #include "bnxt.h"
+>  #include "hw_counters.h"
+> +#include "debugfs.h"
+>  
+>  static char version[] =
+>  		BNXT_RE_DESC "\n";
+> @@ -1870,6 +1871,8 @@ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev, u8 op_type)
+>  	u8 type;
+>  	int rc;
+>  
+> +	bnxt_re_debugfs_rem_pdev(rdev);
+> +
+>  	if (test_and_clear_bit(BNXT_RE_FLAG_QOS_WORK_REG, &rdev->flags))
+>  		cancel_delayed_work_sync(&rdev->worker);
+>  
+> @@ -2070,6 +2073,8 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
+>  	if (rdev->chip_ctx->modes.toggle_bits & BNXT_QPLIB_SRQ_TOGGLE_BIT)
+>  		hash_init(rdev->srq_hash);
+>  
+> +	bnxt_re_debugfs_add_pdev(rdev);
+> +
+>  	return 0;
+>  free_sctx:
+>  	bnxt_re_net_stats_ctx_free(rdev, rdev->qplib_ctx.stats.fw_id);
+> @@ -2389,18 +2394,24 @@ static int __init bnxt_re_mod_init(void)
+>  	int rc;
+>  
+>  	pr_info("%s: %s", ROCE_DRV_MODULE_NAME, version);
+> +	bnxt_re_register_debugfs();
+> +
+>  	rc = auxiliary_driver_register(&bnxt_re_driver);
+>  	if (rc) {
+>  		pr_err("%s: Failed to register auxiliary driver\n",
+>  			ROCE_DRV_MODULE_NAME);
+> -		return rc;
+> +		goto err_debug;
+>  	}
+>  	return 0;
+> +err_debug:
+> +	bnxt_re_unregister_debugfs();
+> +	return rc;
+>  }
+>  
+>  static void __exit bnxt_re_mod_exit(void)
+>  {
+>  	auxiliary_driver_unregister(&bnxt_re_driver);
+> +	bnxt_re_unregister_debugfs();
+>  }
+>  
+>  module_init(bnxt_re_mod_init);
 
