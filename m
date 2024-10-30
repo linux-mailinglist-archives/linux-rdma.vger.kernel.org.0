@@ -1,82 +1,113 @@
-Return-Path: <linux-rdma+bounces-5614-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5615-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63C1B9B6456
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2024 14:39:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CEC79B646C
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2024 14:43:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BA5D1F22119
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2024 13:39:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 610BE2811D1
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2024 13:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47B01E9092;
-	Wed, 30 Oct 2024 13:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ED731EABC8;
+	Wed, 30 Oct 2024 13:43:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ms3Y+joO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XPGpAaTH"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E758185B62
-	for <linux-rdma@vger.kernel.org>; Wed, 30 Oct 2024 13:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6281E570E
+	for <linux-rdma@vger.kernel.org>; Wed, 30 Oct 2024 13:43:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730295582; cv=none; b=B3P3JIVE8qSPnDDchHcRs1AdBCZNc8x3/4l4rUZy99qKDuR+pikvCPysTpc3ysK+hZTZ85MiDG1jeJ+8TCmvnyI1fqy2nMCzJ5HNBcHV+NXyDtOHOFqUjHGtRtNwNpHPyiGMUcyupfKI9cLJbO0lUpiCp3mygyZIjk5RSZG/fBM=
+	t=1730295790; cv=none; b=IHw3wEbrNW1IytW8L4SMw8KQ/NJ55ERnu3supqX8dFt9wF638GC6GsuBWrUrD7J5j2TsrkPeG4ZA5egktO/nuZs4KSdSMZiwxN+XCndGuPOVGvmwRPjIeoJqsytfNvlA5BunjNd8/gE6vAJzuECikBa7Ley0Re3KNKty4HpmZao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730295582; c=relaxed/simple;
-	bh=7UMPoTjFKOs+qlTqky4/X65RCe1O4wsGyo+1R0kHTAc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=TY8UIsxmYzooUniKendd08NbQNMxCo6ZZonR2tNN4+4KirF+t8fm/T2cQTwi/CPEov84nfprtEcbihdeA3uM93VTToln8cayUJPYcEF7qhXvv02pEB080MJJKS4056o9Th8fwr0ynO6z1DHVW9kVTZzffq8wgGUy7UIimZ1yrrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ms3Y+joO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD278C4CEE3;
-	Wed, 30 Oct 2024 13:39:41 +0000 (UTC)
+	s=arc-20240116; t=1730295790; c=relaxed/simple;
+	bh=p7qbzv6ebfGtMCWqe5GWu3RVrBq+V2Nm1fnO71Fa60k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=moRerAkPrkLZ4TY2GkQXydtUOJtVfdtVGp/l3+nL4Kj9DocJf1zn6V8vpFADw7BMxROkQSCnr4fBE4VoZYPgd/R7ROKeZ7kdy6fgAcW2tUPG7v4J193fT/8ZdHFmqX92sbe0Ud1Lg8eJCcbbxYBrKEZAllOTSMcCj52ENYHDqQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XPGpAaTH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 122B2C4CEE3;
+	Wed, 30 Oct 2024 13:43:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730295582;
-	bh=7UMPoTjFKOs+qlTqky4/X65RCe1O4wsGyo+1R0kHTAc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ms3Y+joOVZtyWru9SSoMYOswo1F7pG045q9B0iCvBn/G1v777DxtKZ0bYhsPgGqIy
-	 jLpaG3LfWpF8rsRs01fY7F52AsZ7OBxeWpctqiDa7H7RH+HNnytT7CWCGqi7HzsqAT
-	 EHJZEQVajTFW3VU4DgKncNWnQKbdQx2CmcGndjWocHrGbcciVpym8gFHJSm4RukZDN
-	 UtU+OWj37vg9TRP9MAPo7OnC1TYwez29LB+/TA+M5fhqpUDumEUTUPENxKViuNhA2n
-	 VNIBt0tkZOA3yBNt1+deK2N729/SNi09+cks+AbuacIRLy/XwPPicW3Jqqyuql/4A+
-	 K/jNY4gmwAXHQ==
+	s=k20201202; t=1730295789;
+	bh=p7qbzv6ebfGtMCWqe5GWu3RVrBq+V2Nm1fnO71Fa60k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XPGpAaTHdRyF+3wtzbuytaqAtyo/a8SVgLGxi9ynBL9t51SPOaW97HDNIIjpAzD4+
+	 pEweAPbh5kSAn+Tf5nnoe6Tp8JXxPrDjzeDka2Glem+ukyMaJ0k6kzjIWE8jjMA61E
+	 69ydiCRjJqFvNk5PjauT7kG+iT6tkYGzRZM7PtmZri3H1aWSbEnG6syLX5yZxANHY5
+	 I5RstAm5pi5e/gQ6LW9XIvelUfDB58CtXcwH64NlMap1KtjHs+3xYxQad5QN9gwe4e
+	 lWCkH1GYqqnCrbMNPw3ytpGKRxXDOU0djO74NRe9945Eot0z4CzAeHVEvOVjoSQNEo
+	 5x2lTIms0Cb3g==
+Date: Wed, 30 Oct 2024 15:43:06 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>, 
- Michael Margolin <mrgolin@amazon.com>
-Cc: sleybo@amazon.com, matua@amazon.com, gal.pressman@linux.dev, 
- Daniel Kranzdorf <dkkranzd@amazon.com>, Firas Jahjah <firasj@amazon.com>
-In-Reply-To: <20241030093006.21352-1-mrgolin@amazon.com>
-References: <20241030093006.21352-1-mrgolin@amazon.com>
-Subject: Re: [PATCH for-next] RDMA/efa: Report link speed according to
- device attributes
-Message-Id: <173029557797.8417.8723614756162842759.b4-ty@kernel.org>
-Date: Wed, 30 Oct 2024 15:39:37 +0200
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: Selvin Xavier <selvin.xavier@broadcom.com>, jgg@ziepe.ca,
+	linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com, kashyap.desai@broadcom.com,
+	Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+Subject: Re: [PATCH for-next 4/4] RDMA/bnxt_re: Add debugfs hook in the driver
+Message-ID: <20241030134306.GA5988@unreal>
+References: <1729591916-29134-1-git-send-email-selvin.xavier@broadcom.com>
+ <1729591916-29134-5-git-send-email-selvin.xavier@broadcom.com>
+ <4766a9e3-205a-4979-33c8-703e1148675c@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4766a9e3-205a-4979-33c8-703e1148675c@hisilicon.com>
 
-
-On Wed, 30 Oct 2024 09:30:06 +0000, Michael Margolin wrote:
-> Set port link speed and width based on max bandwidth acquired from the
-> device instead of using constant 100 Gbps. Use a default value in case
-> the device didn't set the field.
+On Wed, Oct 30, 2024 at 06:10:18PM +0800, Junxian Huang wrote:
 > 
 > 
+> On 2024/10/22 18:11, Selvin Xavier wrote:
+> > From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> > 
+> > Adding support for a per device debugfs folder for exporting
+> > some of the device specific debug information.
+> > Added support to get QP info for now. The same folder can be
+> > used to export other debug features in future.
+> > 
+> > Signed-off-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
+> > Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> > ---
+> >  drivers/infiniband/hw/bnxt_re/Makefile   |   3 +-
+> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h  |   2 +
+> >  drivers/infiniband/hw/bnxt_re/debugfs.c  | 141 +++++++++++++++++++++++++++++++
+> >  drivers/infiniband/hw/bnxt_re/debugfs.h  |  21 +++++
+> >  drivers/infiniband/hw/bnxt_re/ib_verbs.c |   4 +
+> >  drivers/infiniband/hw/bnxt_re/ib_verbs.h |   1 +
+> >  drivers/infiniband/hw/bnxt_re/main.c     |  13 ++-
+> >  7 files changed, 183 insertions(+), 2 deletions(-)
+> >  create mode 100644 drivers/infiniband/hw/bnxt_re/debugfs.c
+> >  create mode 100644 drivers/infiniband/hw/bnxt_re/debugfs.h
 
-Applied, thanks!
+<...>
 
-[1/1] RDMA/efa: Report link speed according to device attributes
-      https://git.kernel.org/rdma/rdma/c/1103579d6e32a9
+> > +static inline const char *bnxt_re_qp_type_str(u8 type)
+> > +{
+> > +	switch (type) {
+> > +	case CMDQ_CREATE_QP1_TYPE_GSI: return "QP1";
+> > +	case CMDQ_CREATE_QP_TYPE_GSI: return "QP1";
+> > +	case CMDQ_CREATE_QP_TYPE_RC: return "RC";
+> > +	case CMDQ_CREATE_QP_TYPE_UD: return "UD";
+> > +	case CMDQ_CREATE_QP_TYPE_RAW_ETHERTYPE: return "RAW_ETHERTYPE";
+> > +	default: return "Invalid transport type";
+> > +	}
+> > +}
+> > +
+> 
+> Would it be better to use table-driven approach for these two functions?
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+No, proposed variant is better as it can be consumed very easily by tools.
+Table are good for humans but bad for tooling.
 
+Thanks
 
