@@ -1,105 +1,94 @@
-Return-Path: <linux-rdma+bounces-5654-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5655-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F5B89B77B0
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2024 10:38:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E4D19B77DB
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2024 10:48:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 377E91F21132
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2024 09:38:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78A6E1F24FA6
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2024 09:48:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC7F2196450;
-	Thu, 31 Oct 2024 09:37:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65DA5193439;
+	Thu, 31 Oct 2024 09:48:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dTQP7PS+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gbqi/JKa"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54A7D18DF6B;
-	Thu, 31 Oct 2024 09:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24807881E
+	for <linux-rdma@vger.kernel.org>; Thu, 31 Oct 2024 09:48:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730367471; cv=none; b=gnx3mAItE3349SQP3Nbx1fRxBv1HoyZZGYcG9npJiiHawN/o0qrNGeKQvxJ9rAXkGwt2WzzTO9Ng5wD15yaMTyq0sx0sbHMiI5ptaPAKV/LMysD+g48kXBGD9XFbmzi1lyAEmBPGI3nbfgj1DFvxIfiTrqHkZ3mV74UaC2TQJpc=
+	t=1730368104; cv=none; b=OADFWb9znP+g0kZEbuzQZoyhTtTooBeo6T5V6xJ2RVpXilFIRPM1xu97cDFrRvBMoUjDeypuYuXMZvmVEJ7Qe9z0L9ppjFQiYZKgy2+Gl1oyB1bdfBO2ftRf4ehlN2TLf6BPEC2fCCMmWk1+QnnoLTAEoHKBv+eLPLrb7/J1YFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730367471; c=relaxed/simple;
-	bh=tqzJLh5GYRL2KEmKB06uhDKvLABRYtBWXtB3Y8bMEKA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=COhqTqf8iZbulguVzzjipvG112iSLyNCP7lYG/JfS/7MRWKU/0UTMrG94RvabryQB35LcklOkAPHfyhh93N5qV9Zi2SUdYT+a/cyf5QCGW4PFDaZ2vAK5t47+NsiG6Y6+485Fh/79wbseMnto1my9VEsHMGxDVQATasWRJ9H2bU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dTQP7PS+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04050C4CEC3;
-	Thu, 31 Oct 2024 09:37:49 +0000 (UTC)
+	s=arc-20240116; t=1730368104; c=relaxed/simple;
+	bh=aNOZ2CmuiHNyjBwqFvEgOgXepLs9RrAJDma4LVAmKz4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SWJv5mm69SiUZkUEu9ragWOi2JQ3TGTmvjM3sEHoKHFkDtc7rwpmZIxxDHT7tYOvtAOnl9vClWRJRUhbvfV/oxmVjbTgnKoVxKibRt/WelZj0CWPHzL3d3t+S+C2OvpkyFC2vSrpgni2piiCr2DPGRMG+uV53SHFjkWz4baDUOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gbqi/JKa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25801C4CEC3;
+	Thu, 31 Oct 2024 09:48:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730367470;
-	bh=tqzJLh5GYRL2KEmKB06uhDKvLABRYtBWXtB3Y8bMEKA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dTQP7PS+/MTyTtUMPwFCdUdEd1qWr3BPPQ8pvyYPVrtbourx/L8sdNPTr9lPj1QPB
-	 g933lrXQqvAJxMV1kQiG2xyG7NF8LnS9wKQBA9lsBXrn5RHD1+siwDoEBnl+zfB8NV
-	 DrhOyVxwnAVdg5G2IeaEo3cxX9HtNdkNEj0b51HcYMeCY5S9sSDgNsPLzN1l7uwEAl
-	 8UAGh7dlC4XLOOvyRno1rlDrgXdZkQFymJIkdmkKL/RzKkO8mH98WS4qTpitL+TrzB
-	 j4UfpaLbeZXfuUbC0SIp4WAe0T7KDxaEbIsTC03s3SAkoAGz9+Sya4ZfdJPQPVNS6T
-	 b1awtly2cL7Qw==
-Date: Thu, 31 Oct 2024 11:37:46 +0200
+	s=k20201202; t=1730368103;
+	bh=aNOZ2CmuiHNyjBwqFvEgOgXepLs9RrAJDma4LVAmKz4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Gbqi/JKamB69s5Zp8uitcAFv2PjdDFSUScG4X0QWo6tOa5DmWUl5Wm94MamFV7d08
+	 4A3+YMv8pV/fsNnowPtKpeqht6ZiHiGE7ya2ijXwftxsBGtrUQO4sqhuWS/EtPJsgx
+	 5C/pWj1+Z7e3HA5Ex6SVH+yUez/3MhBZDKdumuEHHrGwvnn4Z3nYX+0WWFlgaNIWxE
+	 xb/sA1EzN6CKu1L7kJcrtHuME0PCFtjZEX9jmOi0RE9Yv7sByaZhwbHXHtCP1ioIgN
+	 yomubVPy1PGdB2WzSlDcXDdX7NPUele7wBcy4c+KcyAgj9N3UJYc1G6Ag/XKOty8f4
+	 Hagrw/6Zbgj2g==
 From: Leon Romanovsky <leon@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Keith Busch <kbusch@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 00/17] Provide a new two step DMA mapping API
-Message-ID: <20241031093746.GA88858@unreal>
-References: <cover.1730298502.git.leon@kernel.org>
- <3144b6e7-5c80-46d2-8ddc-a71af3c23072@kernel.dk>
- <20241031083450.GA30625@lst.de>
- <20241031090530.GC7473@unreal>
- <20241031092113.GA1791@lst.de>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Mark Zhang <markzhang@nvidia.com>,
+	linux-rdma@vger.kernel.org,
+	Maher Sanalla <msanalla@nvidia.com>
+Subject: [PATCH rdma-next] RDMA/mlx5: Support querying per-plane IB PortCounters
+Date: Thu, 31 Oct 2024 11:48:14 +0200
+Message-ID: <828d57444a0a41042556bb0a4394ecf2fcaed639.1730368052.git.leon@kernel.org>
+X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241031092113.GA1791@lst.de>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Oct 31, 2024 at 10:21:13AM +0100, Christoph Hellwig wrote:
-> On Thu, Oct 31, 2024 at 11:05:30AM +0200, Leon Romanovsky wrote:
-> > This series is a subset of the series you tested and doesn't include the
-> > block layer changes which most likely were the cause of the performance
-> > regression.
-> > 
-> > This is why I separated the block layer changes from the rest of the series
-> > and marked them as RFC.
-> > 
-> > The current patch set is viable for HMM and VFIO. Can you please retest
-> > only this series and leave the block layer changes for later till Christoph
-> > finds the answer for the performance regression?
-> 
-> As the subset doesn't touch block code or code called by block I don't
-> think we need Jens to benchmark it, unless he really wants to.
+From: Mark Zhang <markzhang@nvidia.com>
 
-He wrote this sentence in his email, while responding on subset which doesn't change
-anything in block layer: "just want to make sure something like this doesn't get merged
-until that is both fully understood and sorted out."
+On a SMI device, set requested plane_num when querying PPCNT register
+with the PortCounters Attribute group.
 
-This series works like a charm for RDMA (HMM) and VFIO.
+Signed-off-by: Mark Zhang <markzhang@nvidia.com>
+Reviewed-by: Maher Sanalla <msanalla@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/mad.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Thanks
+diff --git a/drivers/infiniband/hw/mlx5/mad.c b/drivers/infiniband/hw/mlx5/mad.c
+index 1b6c5e37d169..2453ae4384a7 100644
+--- a/drivers/infiniband/hw/mlx5/mad.c
++++ b/drivers/infiniband/hw/mlx5/mad.c
+@@ -278,7 +278,13 @@ static int process_pma_cmd(struct mlx5_ib_dev *dev, u32 port_num,
+ 			goto done;
+ 		}
+ 
+-		err = query_ib_ppcnt(mdev, mdev_port_num, 0, out_cnt, sz, 0);
++		if (dev->ib_dev.type == RDMA_DEVICE_TYPE_SMI)
++			err = query_ib_ppcnt(mdev, mdev_port_num, port_num,
++					     out_cnt, sz, 0);
++		else
++			err = query_ib_ppcnt(mdev, mdev_port_num, 0,
++					     out_cnt, sz, 0);
++
+ 		if (!err)
+ 			pma_cnt_assign(pma_cnt, out_cnt);
+ 	}
+-- 
+2.46.2
+
 
