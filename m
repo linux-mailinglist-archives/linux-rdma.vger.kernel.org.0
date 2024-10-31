@@ -1,53 +1,53 @@
-Return-Path: <linux-rdma+bounces-5658-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5660-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BEF19B799F
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDD829B79A0
 	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2024 12:23:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9378BB26D52
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2024 11:23:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 898521F231F0
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2024 11:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 963E019939E;
-	Thu, 31 Oct 2024 11:23:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F99919AD73;
+	Thu, 31 Oct 2024 11:23:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fSaOeVWe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ellnV45T"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D6A155322
-	for <linux-rdma@vger.kernel.org>; Thu, 31 Oct 2024 11:23:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C8B155322
+	for <linux-rdma@vger.kernel.org>; Thu, 31 Oct 2024 11:23:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730373784; cv=none; b=oLpv1wF3IgA/N1yu2A5pyA8rkvDqXrDtCTlRrl9bm5wE7D1uj9NYHs5OHhQ3kPc+zJpJYTCCV8COwLg2KHhUna1rlv+5PAwZp3xEn0R8cuBBplNlEgIXCCcinSuVfR6TFd0uc1k1PkjHzbHPWXun796sVgbmCYEy5Wji2f9xItE=
+	t=1730373792; cv=none; b=cdhTsrOnah5zR1UTpDwwDzhjogkVrrDKy9YAzdaXLLqly4lK8an6L8k0UX538ebUPglWbFt+dmeTTUuZ1NmXEBsU9yBKn1wJPZuUoFg+X1Y90F5+5rBB46108/ITw+fok5WElqr8MAG0K67Vgx9TmK0ai1UQCNse/IfyXlFzbyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730373784; c=relaxed/simple;
-	bh=ofeNdvndLsDQ0uUhENLq8lnmans71PeCPGxg8dYoEts=;
+	s=arc-20240116; t=1730373792; c=relaxed/simple;
+	bh=RhgzhRqQWis2f7l6rYOqDN0u2dyhSVIr67XQcJUZbas=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qTGzYcdork6kgzF5K1ecax+OrOcJzedRU3kOXCcU8kVUJ9AAZD22t9LZtfqmos0DzOZS3MxbiIfxpANpZ5mSsxdz13NurLyCkbwkJ8jqY6oJvoWd1aTpnsY0VBz1DEes4fIom64xg267kcGd17BrWeWIJjvKzQMSTlwtXT4OYIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fSaOeVWe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAE1CC4CEDC;
-	Thu, 31 Oct 2024 11:23:03 +0000 (UTC)
+	 MIME-Version; b=cEP0RKAD/ZizuhmHF/8FNma6OwbGzfPS24InLzdipLCboMZ79GnmahXG/ylwswMuMD3klkO+w1jbt5R3Alr4FoK4tLwS+oSjR8OUTDp8muL5Wm8yY934NK/XLWk083sCbP1bxABt2wCmwlTrB9ixnWa+m+OZcJFe4HSRxjOZUjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ellnV45T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3447C4CEF0;
+	Thu, 31 Oct 2024 11:23:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730373784;
-	bh=ofeNdvndLsDQ0uUhENLq8lnmans71PeCPGxg8dYoEts=;
+	s=k20201202; t=1730373792;
+	bh=RhgzhRqQWis2f7l6rYOqDN0u2dyhSVIr67XQcJUZbas=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fSaOeVWe+SdzTvNEONrUw+JMNUkNMuJvIT6rELqwixVV2Oi6agkQXMzSABknA6bGl
-	 Ozp09uTHHwu+B33oXyOeXQQhjFTDRYC4gQQkL1SRRvHm2jDtQFv9nK0coyYfjW9nA6
-	 5sigoJOlsgbu9nWWcZqJKuxZsaDDpUD8DInVFepTwtdJgfSNZytA67j7DnyewuYt3v
-	 Kz93MvVK841LL5IzB6ZyC747WXKOMR1h2xtqdO2wd6RtS3xUJWp0JLnq6ouVXRO8J0
-	 bhvkfebyu0HFJiIcxaOcB7/i6fCETm1VOaUxPHU/MIBF7qDfqv3ySbdADQyU9axerk
-	 ZN+9R4AW5UwQg==
+	b=ellnV45TzSQRRARpyT+gMaN+jpjkiYVicYjCheR+RGL+ueRlJVI3IkPnC4Y9hGHlY
+	 0JHjFoFauaCJvdwd2JSD770nUtXX5OHm+zQQIvYueU2b27w79AF2LtkdUspBayaDUg
+	 C0h9RVKaGa/kH3Vy0AUzqmBzXH3ZrkxI9f9l1Z5IYBsq8d+LAelDuVWcZBXe8yxpZN
+	 On0dEY3OVGVHdAnlE8sQDNl54wQoDcB5/5Y9rg3qK0eizJg6Wsq86c4O1hXnluqJYh
+	 oVxpNCHxNwxRGWXm0VAOtFZ3ybYlIoARZNDJPsnWXjsdrZXRFIdl4XtxzZPpBG6ZT5
+	 qlQIgUW1KVs/Q==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Patrisious Haddad <phaddad@nvidia.com>,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 1/3] RDMA/core: Add device ufile cleanup operation
-Date: Thu, 31 Oct 2024 13:22:51 +0200
-Message-ID: <cabe00d75132b5732cb515944e3c500a01fb0b4a.1730373303.git.leon@kernel.org>
+Subject: [PATCH rdma-next 2/3] RDMA/core: Move ib_uverbs_file struct to uverbs_types.h
+Date: Thu, 31 Oct 2024 13:22:52 +0200
+Message-ID: <29b718e0dca35daa5f496320a39284fc1f5a1722.1730373303.git.leon@kernel.org>
 X-Mailer: git-send-email 2.46.2
 In-Reply-To: <cover.1730373303.git.leon@kernel.org>
 References: <cover.1730373303.git.leon@kernel.org>
@@ -61,70 +61,137 @@ Content-Transfer-Encoding: 8bit
 
 From: Patrisious Haddad <phaddad@nvidia.com>
 
-Add a driver operation to allow preemptive cleanup of ufile HW resources
-before the standard ufile cleanup flow begins. Thus, expediting the
-final cleanup phase which leads to fast teardown overall.
+In light of the previous commit, make the ib_uverbs_file accessible to
+drivers by moving its definition to uverbs_types.h, to allow drivers to
+freely access the struct argument and create a personalized cleanup flow.
 
-This allows the use of driver specific clean up procedures to make the
-cleanup process more efficient.
+For the same reason expose uverbs_try_lock_object function to allow driver
+to safely access the uverbs objects.
 
 Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/device.c    | 1 +
- drivers/infiniband/core/rdma_core.c | 7 ++++++-
- include/rdma/ib_verbs.h             | 6 ++++++
- 3 files changed, 13 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/rdma_core.c |  5 +++--
+ drivers/infiniband/core/uverbs.h    | 31 ---------------------------
+ include/rdma/uverbs_types.h         | 33 +++++++++++++++++++++++++++++
+ 3 files changed, 36 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 93c6d27b5d8f..ca9b956c034d 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2760,6 +2760,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, resize_cq);
- 	SET_DEVICE_OP(dev_ops, set_vf_guid);
- 	SET_DEVICE_OP(dev_ops, set_vf_link_state);
-+	SET_DEVICE_OP(dev_ops, ufile_hw_cleanup);
- 
- 	SET_OBJ_SIZE(dev_ops, ib_ah);
- 	SET_OBJ_SIZE(dev_ops, ib_counters);
 diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-index 29b1ab1d5f93..02ef09e77bf8 100644
+index 02ef09e77bf8..90c177edf9b0 100644
 --- a/drivers/infiniband/core/rdma_core.c
 +++ b/drivers/infiniband/core/rdma_core.c
-@@ -880,9 +880,14 @@ static void ufile_destroy_ucontext(struct ib_uverbs_file *ufile,
- static int __uverbs_cleanup_ufile(struct ib_uverbs_file *ufile,
- 				  enum rdma_remove_reason reason)
+@@ -58,8 +58,8 @@ void uverbs_uobject_put(struct ib_uobject *uobject)
+ }
+ EXPORT_SYMBOL(uverbs_uobject_put);
+ 
+-static int uverbs_try_lock_object(struct ib_uobject *uobj,
+-				  enum rdma_lookup_mode mode)
++int uverbs_try_lock_object(struct ib_uobject *uobj,
++			   enum rdma_lookup_mode mode)
  {
-+	struct uverbs_attr_bundle attrs = { .ufile = ufile };
-+	struct ib_ucontext *ucontext = ufile->ucontext;
-+	struct ib_device *ib_dev = ucontext->device;
- 	struct ib_uobject *obj, *next_obj;
- 	int ret = -EINVAL;
--	struct uverbs_attr_bundle attrs = { .ufile = ufile };
-+
-+	if (ib_dev->ops.ufile_hw_cleanup)
-+		ib_dev->ops.ufile_hw_cleanup(ufile);
- 
  	/*
- 	 * This shouldn't run while executing other commands on this
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 67551133b522..3417636da960 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2675,6 +2675,12 @@ struct ib_device_ops {
- 	 */
- 	void (*del_sub_dev)(struct ib_device *sub_dev);
+ 	 * When a shared access is required, we use a positive counter. Each
+@@ -84,6 +84,7 @@ static int uverbs_try_lock_object(struct ib_uobject *uobj,
+ 	}
+ 	return 0;
+ }
++EXPORT_SYMBOL(uverbs_try_lock_object);
  
-+	/**
-+	 * ufile_cleanup - Attempt to cleanup ubojects HW resources inside
-+	 * the ufile.
-+	 */
-+	void (*ufile_hw_cleanup)(struct ib_uverbs_file *ufile);
+ static void assert_uverbs_usecnt(struct ib_uobject *uobj,
+ 				 enum rdma_lookup_mode mode)
+diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
+index dfd2e5a86e6f..797e2fcc8072 100644
+--- a/drivers/infiniband/core/uverbs.h
++++ b/drivers/infiniband/core/uverbs.h
+@@ -133,37 +133,6 @@ struct ib_uverbs_completion_event_file {
+ 	struct ib_uverbs_event_queue		ev_queue;
+ };
+ 
+-struct ib_uverbs_file {
+-	struct kref				ref;
+-	struct ib_uverbs_device		       *device;
+-	struct mutex				ucontext_lock;
+-	/*
+-	 * ucontext must be accessed via ib_uverbs_get_ucontext() or with
+-	 * ucontext_lock held
+-	 */
+-	struct ib_ucontext		       *ucontext;
+-	struct ib_uverbs_async_event_file      *default_async_file;
+-	struct list_head			list;
+-
+-	/*
+-	 * To access the uobjects list hw_destroy_rwsem must be held for write
+-	 * OR hw_destroy_rwsem held for read AND uobjects_lock held.
+-	 * hw_destroy_rwsem should be called across any destruction of the HW
+-	 * object of an associated uobject.
+-	 */
+-	struct rw_semaphore	hw_destroy_rwsem;
+-	spinlock_t		uobjects_lock;
+-	struct list_head	uobjects;
+-
+-	struct mutex umap_lock;
+-	struct list_head umaps;
+-	struct page *disassociate_page;
+-
+-	struct xarray		idr;
+-
+-	struct mutex disassociation_lock;
+-};
+-
+ struct ib_uverbs_event {
+ 	union {
+ 		struct ib_uverbs_async_event_desc	async;
+diff --git a/include/rdma/uverbs_types.h b/include/rdma/uverbs_types.h
+index ccd11631c167..26ba919ac245 100644
+--- a/include/rdma/uverbs_types.h
++++ b/include/rdma/uverbs_types.h
+@@ -134,6 +134,8 @@ static inline void uverbs_uobject_get(struct ib_uobject *uobject)
+ }
+ void uverbs_uobject_put(struct ib_uobject *uobject);
+ 
++int uverbs_try_lock_object(struct ib_uobject *uobj, enum rdma_lookup_mode mode);
 +
- 	DECLARE_RDMA_OBJ_SIZE(ib_ah);
- 	DECLARE_RDMA_OBJ_SIZE(ib_counters);
- 	DECLARE_RDMA_OBJ_SIZE(ib_cq);
+ struct uverbs_obj_fd_type {
+ 	/*
+ 	 * In fd based objects, uverbs_obj_type_ops points to generic
+@@ -150,6 +152,37 @@ struct uverbs_obj_fd_type {
+ 	int				flags;
+ };
+ 
++struct ib_uverbs_file {
++	struct kref				ref;
++	struct ib_uverbs_device		       *device;
++	struct mutex				ucontext_lock;
++	/*
++	 * ucontext must be accessed via ib_uverbs_get_ucontext() or with
++	 * ucontext_lock held
++	 */
++	struct ib_ucontext		       *ucontext;
++	struct ib_uverbs_async_event_file      *default_async_file;
++	struct list_head			list;
++
++	/*
++	 * To access the uobjects list hw_destroy_rwsem must be held for write
++	 * OR hw_destroy_rwsem held for read AND uobjects_lock held.
++	 * hw_destroy_rwsem should be called across any destruction of the HW
++	 * object of an associated uobject.
++	 */
++	struct rw_semaphore	hw_destroy_rwsem;
++	spinlock_t		uobjects_lock;
++	struct list_head	uobjects;
++
++	struct mutex umap_lock;
++	struct list_head umaps;
++	struct page *disassociate_page;
++
++	struct xarray		idr;
++
++	struct mutex disassociation_lock;
++};
++
+ extern const struct uverbs_obj_type_class uverbs_idr_class;
+ extern const struct uverbs_obj_type_class uverbs_fd_class;
+ int uverbs_uobject_fd_release(struct inode *inode, struct file *filp);
 -- 
 2.46.2
 
