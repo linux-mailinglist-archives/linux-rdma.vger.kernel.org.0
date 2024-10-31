@@ -1,53 +1,60 @@
-Return-Path: <linux-rdma+bounces-5663-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5664-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B6599B7BC9
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2024 14:37:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0318E9B7BCB
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2024 14:37:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49F8E2823E6
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2024 13:37:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7ADB71F2198E
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2024 13:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F50D19F105;
-	Thu, 31 Oct 2024 13:37:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6119719DF8D;
+	Thu, 31 Oct 2024 13:37:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t58CNjN+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gJEZk603"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3A66195FF1
-	for <linux-rdma@vger.kernel.org>; Thu, 31 Oct 2024 13:37:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE1619D89D;
+	Thu, 31 Oct 2024 13:37:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730381824; cv=none; b=V8CSklnlByKp0hJZexdOqiGZAMxwjV9YT8J3fkGhnVPtM8/ZRoj3xuxlpyRG40b60biu/ota/+GOax061+NRnZW715QZEOlCRuyEKrUnoGLEd+QJ6fGD26Olx+Hj0AsGtJmscMZ+4mLNlGp602RKP3vudA+r9RRzNDJe9KmwSEM=
+	t=1730381828; cv=none; b=s7cPBdwTc9W0Y9GT33lpIwaJdEpPNHPr/VXgWVNSNihYjQlbaRjfaLof8y5qGRV5tuRTbqyXwWUB0gIoHubZBWFKxjkoMjpdkSXKTHbegKTE5ILfB9y+Xky1K7IjAbm5pmhSWcC5I7hWxg6DRMjBvSy75cWudoUbURixMzWitJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730381824; c=relaxed/simple;
-	bh=M20uYfjD5RpOG3/msJXy6kaC8H7QrZLAx4mhCiTehIQ=;
+	s=arc-20240116; t=1730381828; c=relaxed/simple;
+	bh=d3l6x6GlVstePoqlh0W6O0rvKV+qLzRLN0Cu1vRZdTQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YLnmsB9vrJNh7EwIrv7dEIWl1k+yFy70XoQTPjwJ8fS96qXw1DSCq4jA5b/37dRcKZLQuUrt7utLKOCPVf6EvzpGTMb5MRtkqf6cyOmCGBJWofMDw+loaAos6dF8zd79JrY+rQsC5iMzo+L1m+ziqHaLi4rTm3JvUnUnvxq7JXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t58CNjN+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D94C0C4E698;
-	Thu, 31 Oct 2024 13:37:02 +0000 (UTC)
+	 MIME-Version; b=tBPQyHHzMjtwhsfqzEdrSzIRKoR+6CMr9jvskicaooiNLrePOxFvSIJe4dlo8+eDRXp6Gv7OdGp8nWs0v5LM3tUHjcipMXWUbfHOR79gbmPN9TFPy7m3CC4oxfu2Kmv8+bZ0PQ+/qg5yOiQ64l56SHKCSs4hTTKlHgDNNFBo3Zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gJEZk603; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24B0CC4E697;
+	Thu, 31 Oct 2024 13:37:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730381823;
-	bh=M20uYfjD5RpOG3/msJXy6kaC8H7QrZLAx4mhCiTehIQ=;
+	s=k20201202; t=1730381827;
+	bh=d3l6x6GlVstePoqlh0W6O0rvKV+qLzRLN0Cu1vRZdTQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=t58CNjN+rXF7+de0MUk7eUZ1CxfMQOaRc10XXU28MWbDsdz6jUsi6XQuWX8rW9uDK
-	 +zywEvQVCtafRS1udIr2jf99fYAgmUnWNC51SfBRdRN9n4yrW0ffRkdg/bO/Y3Z/Ob
-	 s8ozzSlxKZCGfXkxYD62JzVZh9ChgK5ux+61HuloRanOzqK7aRZke9y0CAQx8EXEzk
-	 b8bpl/jJj9bYxEVKHOaorV/yEO9FlCc0FMxRkvYg6bJR51b1fv+PjPHTnWoBBuWNhm
-	 2A4tqsEbv0044uoVAxqkrCbvVT7E7ockFICGfK3BhHvLjzSz2UTDhQ/UyCBNHwV1FQ
-	 W/tgLgZhMeqrA==
+	b=gJEZk6036fb3tjMGeAC3ko4srrJMgHalT9n/gVY1QeXiyqQ5sK6TRlR3IPHb7SDtd
+	 3Cm9AtlhbGwpfEERpE6UtZY4fCz1d5yYfiRUWJV/ukTKWL78beQxw4iD3DSvrEUL4+
+	 e2ZXusinxiFBNrjuH2fHyxU/MO/fyzZUmpF6We5yp/RbB7qiPGY8QYkKbgXlzn9jRx
+	 4OCcicpMZFQbsia1xuWZBfHofa0eWlFp9jk1HitiV64mgspomKymBXkQeIFB+J04sP
+	 D+kdCU2gKorwmYCqMGX3Ke3GwIx7st6A4FIArWC+5zCdv69B6FpNfRp4dqhDuldPhf
+	 ZpknZPiXtYB4A==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Chiara Meiohas <cmeiohas@nvidia.com>,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 2/3] RDMA/core: Implement RoCE GID port rescan and export delete function
-Date: Thu, 31 Oct 2024 15:36:51 +0200
-Message-ID: <674d498da4637a1503ff1367e28bd09ff942fd5e.1730381292.git.leon@kernel.org>
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	linux-rdma@vger.kernel.org,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>
+Subject: [PATCH mlx5-next 3/3] RDMA/mlx5: Ensure active slave attachment to the bond IB device
+Date: Thu, 31 Oct 2024 15:36:52 +0200
+Message-ID: <91fc2cb24f63add266a528c1c702668a80416d9f.1730381292.git.leon@kernel.org>
 X-Mailer: git-send-email 2.46.2
 In-Reply-To: <cover.1730381292.git.leon@kernel.org>
 References: <cover.1730381292.git.leon@kernel.org>
@@ -61,91 +68,118 @@ Content-Transfer-Encoding: 8bit
 
 From: Chiara Meiohas <cmeiohas@nvidia.com>
 
-rdma_roce_rescan_port() scans all network devices in
-the system and adds the gids if relevant to the RoCE device
-port. When not in bonding mode it adds the GIDs of the
-netdevice in this port. When in bonding mode it adds the
-GIDs of both the port's netdevice and the bond master
-netdevice.
+Fix a race condition when creating a lag bond in active backup
+mode where after the bond creation the backup slave was
+attached to the IB device, instead of the active slave.
+This caused stale entries in the GID table, as the gid updating
+mechanism relies on ib_device_get_netdev(), which would return
+the backup slave.
 
-Export roce_del_all_netdev_gids(), which  removes all GIDs
-associated with a specific netdevice for a given port.
+Send an MLX5_DRIVER_EVENT_ACTIVE_BACKUP_LAG_CHANGE_LOWERSTATE
+event when activating the lag, additionally to when modifying
+the lag. This ensures that eventually the active netdevice is
+stored in the bond IB device.
+When handling this event remove the GIDs of the previously
+attached netdevice in this port and rescan the GIDs of the
+newly attached netdevice.
 
+This ensures that eventually the active slave netdevice is
+correctly stored in the IB device port. While there might be
+a brief moment where the backup slave GIDs appear in the GID
+table, it will eventually stabilize with the correct GIDs
+(of the bond and the active slave).
+
+Fixes: 8d159eb2117b ("RDMA/mlx5: Use IB set_netdev and get_netdev functions")
 Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/roce_gid_mgmt.c | 30 +++++++++++++++++++++----
- include/rdma/ib_verbs.h                 |  3 +++
- 2 files changed, 29 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/mlx5/main.c             | 28 ++++++++++++-------
+ .../net/ethernet/mellanox/mlx5/core/lag/lag.c | 11 ++++++++
+ 2 files changed, 29 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
-index d5131b3ba8ab..a9f2c6b1b29e 100644
---- a/drivers/infiniband/core/roce_gid_mgmt.c
-+++ b/drivers/infiniband/core/roce_gid_mgmt.c
-@@ -515,6 +515,27 @@ void rdma_roce_rescan_device(struct ib_device *ib_dev)
- }
- EXPORT_SYMBOL(rdma_roce_rescan_device);
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 5f7fe32b9051..5038c52b79aa 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -3219,12 +3219,14 @@ static int lag_event(struct notifier_block *nb, unsigned long event, void *data)
+ 	struct mlx5_ib_dev *dev = container_of(nb, struct mlx5_ib_dev,
+ 					       lag_events);
+ 	struct mlx5_core_dev *mdev = dev->mdev;
++	struct ib_device *ibdev = &dev->ib_dev;
++	struct net_device *old_ndev = NULL;
+ 	struct mlx5_ib_port *port;
+ 	struct net_device *ndev;
+-	int  i, err;
+-	int portnum;
++	u32 portnum = 0;
++	int ret = 0;
++	int i;
  
-+/**
-+ * rdma_roce_rescan_port - Rescan all of the network devices in the system
-+ * and add their gids if relevant to the port of the RoCE device.
-+ *
-+ * @ib_dev: IB device
-+ * @port: Port number
-+ */
-+void rdma_roce_rescan_port(struct ib_device *ib_dev, u32 port)
-+{
-+	struct net_device *ndev = NULL;
+-	portnum = 0;
+ 	switch (event) {
+ 	case MLX5_DRIVER_EVENT_ACTIVE_BACKUP_LAG_CHANGE_LOWERSTATE:
+ 		ndev = data;
+@@ -3240,18 +3242,24 @@ static int lag_event(struct notifier_block *nb, unsigned long event, void *data)
+ 					}
+ 				}
+ 			}
+-			err = ib_device_set_netdev(&dev->ib_dev, ndev,
+-						   portnum + 1);
+-			if (err)
+-				return err;
+-			/* Rescan gids after new netdev assignment */
+-			rdma_roce_rescan_device(&dev->ib_dev);
++			old_ndev = ib_device_get_netdev(ibdev, portnum + 1);
++			ret = ib_device_set_netdev(ibdev, ndev, portnum + 1);
++			if (ret)
++				goto out;
 +
-+	if (rdma_protocol_roce(ib_dev, port)) {
-+		ndev = ib_device_get_netdev(ib_dev, port);
-+		if (!ndev)
-+			return;
-+		enum_all_gids_of_dev_cb(ib_dev, port, ndev, ndev);
-+		dev_put(ndev);
-+	}
-+}
-+EXPORT_SYMBOL(rdma_roce_rescan_port);
-+
- static void callback_for_addr_gid_device_scan(struct ib_device *device,
- 					      u32 port,
- 					      struct net_device *rdma_ndev,
-@@ -575,16 +596,17 @@ static void handle_netdev_upper(struct ib_device *ib_dev, u32 port,
++			if (old_ndev)
++				roce_del_all_netdev_gids(ibdev, portnum + 1,
++							 old_ndev);
++			rdma_roce_rescan_port(ibdev, portnum + 1);
+ 		}
+ 		break;
+ 	default:
+ 		return NOTIFY_DONE;
  	}
+-	return NOTIFY_OK;
++
++out:
++	dev_put(old_ndev);
++	return notifier_from_errno(ret);
  }
  
--static void _roce_del_all_netdev_gids(struct ib_device *ib_dev, u32 port,
--				      struct net_device *event_ndev)
-+void roce_del_all_netdev_gids(struct ib_device *ib_dev,
-+			      u32 port, struct net_device *ndev)
+ static void mlx5e_lag_event_register(struct mlx5_ib_dev *dev)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
+index d661267d98ff..7f68468c2e75 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
+@@ -919,6 +919,7 @@ static void mlx5_do_bond(struct mlx5_lag *ldev)
  {
--	ib_cache_gid_del_all_netdev_gids(ib_dev, port, event_ndev);
-+	ib_cache_gid_del_all_netdev_gids(ib_dev, port, ndev);
- }
-+EXPORT_SYMBOL(roce_del_all_netdev_gids);
- 
- static void del_netdev_upper_ips(struct ib_device *ib_dev, u32 port,
- 				 struct net_device *rdma_ndev, void *cookie)
- {
--	handle_netdev_upper(ib_dev, port, cookie, _roce_del_all_netdev_gids);
-+	handle_netdev_upper(ib_dev, port, cookie, roce_del_all_netdev_gids);
- }
- 
- static void add_netdev_upper_ips(struct ib_device *ib_dev, u32 port,
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 9cb8b5fe7eee..67551133b522 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -4734,6 +4734,9 @@ ib_get_vector_affinity(struct ib_device *device, int comp_vector)
-  * @device:         the rdma device
-  */
- void rdma_roce_rescan_device(struct ib_device *ibdev);
-+void rdma_roce_rescan_port(struct ib_device *ib_dev, u32 port);
-+void roce_del_all_netdev_gids(struct ib_device *ib_dev,
-+			      u32 port, struct net_device *ndev);
- 
- struct ib_ucontext *ib_uverbs_get_ucontext_file(struct ib_uverbs_file *ufile);
- 
+ 	struct mlx5_core_dev *dev0 = ldev->pf[MLX5_LAG_P1].dev;
+ 	struct lag_tracker tracker = { };
++	struct net_device *ndev;
+ 	bool do_bond, roce_lag;
+ 	int err;
+ 	int i;
+@@ -982,6 +983,16 @@ static void mlx5_do_bond(struct mlx5_lag *ldev)
+ 				return;
+ 			}
+ 		}
++		if (tracker.tx_type == NETDEV_LAG_TX_TYPE_ACTIVEBACKUP) {
++			ndev = mlx5_lag_active_backup_get_netdev(dev0);
++			/** Only sriov and roce lag should have tracker->TX_type
++			 *  set so no need to check the mode
++			 */
++			blocking_notifier_call_chain(&dev0->priv.lag_nh,
++						     MLX5_DRIVER_EVENT_ACTIVE_BACKUP_LAG_CHANGE_LOWERSTATE,
++						     ndev);
++			dev_put(ndev);
++		}
+ 	} else if (mlx5_lag_should_modify_lag(ldev, do_bond)) {
+ 		mlx5_modify_lag(ldev, &tracker);
+ 	} else if (mlx5_lag_should_disable_lag(ldev, do_bond)) {
 -- 
 2.46.2
 
