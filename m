@@ -1,65 +1,65 @@
-Return-Path: <linux-rdma+bounces-5686-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5687-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B13709B897F
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Nov 2024 03:55:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D3A9B8980
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Nov 2024 03:55:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D47511C209C8
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Nov 2024 02:55:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDAD01F2281D
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Nov 2024 02:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4F013A416;
-	Fri,  1 Nov 2024 02:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4830413A261;
+	Fri,  1 Nov 2024 02:55:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Oq+4R1/t"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="bjKZZgL7"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE18E5D8F0
-	for <linux-rdma@vger.kernel.org>; Fri,  1 Nov 2024 02:55:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDF313BC0D
+	for <linux-rdma@vger.kernel.org>; Fri,  1 Nov 2024 02:55:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730429745; cv=none; b=qptgx05zYkJEo4VGvgOiQqUC06klQd6nHeX7j2dnFs+OibTwKHWGVTHN6q3GUGnyt4pTplZZGY+smbwNnUHSYCJxRhRCfqGnrIHwLka38ZmqVe7+/3ZBXeSEcIhSEKi8Lcvr2xCN4TRRz9iuGTAJhS0yniX4vusbL1aymcWpX7U=
+	t=1730429751; cv=none; b=KtBxvvVzpUl/tWCWrZpeFhpFbqekRs+9e1I1k2M6T4C6m06PauVqbcXMnanVgiDj1AenZid0Hk6OjfFIFa/oqrttNMO3rxI9Ypk0IxpiEflhQPlVwasbOjuaExzbmjuwVzdYb9AiEu9OKZL9BsGqWagqDU3ief8iuZHcc8TO4Ok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730429745; c=relaxed/simple;
-	bh=+nEGVLypFOA+tV79l+RRx1Z2yCGLIpVpRLqaMLLOsrI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=RCyOsJZm/m4OnszZ5eUKGsu0wyqfKHWbkAV3F2CSNmvRm8VFgvPAcMS5azUGrDqba18LxgP7M3JLjWfo52nQCJmypuS8blXBDqlmH8YRX7Y/68eW3ZQUiacJ4BJxAbHJl1qGzJQp3volP3NQ8qY6+mn2ckr4R0V/P2caOCaHifc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Oq+4R1/t; arc=none smtp.client-ip=209.85.214.178
+	s=arc-20240116; t=1730429751; c=relaxed/simple;
+	bh=PHMDSF3KiD7pKc7kTJ5ZbiWw+y4abP45wJQbFM6Vl30=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=OQreCoxzuSVKJHs7XCe5SGqAwdtBMurthZHiTL3Zvg4Sn3/TmbfAxmBcV7I7TXkYExnpS9Ei2qU1MecYj8755wGEapJ+7wuPnqS3xWhGR4BHJEhEHmVoE0AxVBuZ9RPnw9UzpCyxrBbcTzm9cBvmkP67SI7joFcY2OSeK/fjtM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=bjKZZgL7; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-20c803787abso12508395ad.0
-        for <linux-rdma@vger.kernel.org>; Thu, 31 Oct 2024 19:55:42 -0700 (PDT)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2110a622d76so9561245ad.3
+        for <linux-rdma@vger.kernel.org>; Thu, 31 Oct 2024 19:55:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1730429742; x=1731034542; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1730429745; x=1731034545; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=9+j42xfiCbwQYMme/yv6J3XnO7iBC56CT7KzgmPTIH4=;
-        b=Oq+4R1/tTA5T2uK7upSmrNatJV0ro1XbZROnkcTR+zWwIO66n8U3bKY0Z1iAoq/F1L
-         RclyqDGr+CVaZfihoRdvC4YG4vmRB4J3/G6uLf/F76iKPlRWbkmzMuHhl1kjhFNnyrcx
-         JsowUyJwWpCLMl2CUMIJ6+ovV8YXMVP5G624A=
+        bh=9KDXtDtuqIsvelg4MNDey7jtAriRPY9+zIR3Vm9THs4=;
+        b=bjKZZgL7WL3nJLg4fCXjZ/b1NSCFQTogqcZERHqcsSyzTfvexQZuZ21NUgBbQvBte0
+         05aTJyacaFe10LGJUwUCIjJfFl6C6eeX6L4qua+YxYHwMP+G3vygS/r25bixzwef9CVB
+         F+3aRo0W40cvWizqzUFj1TQXmRHLBMTXRkyg0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730429742; x=1731034542;
+        d=1e100.net; s=20230601; t=1730429745; x=1731034545;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9+j42xfiCbwQYMme/yv6J3XnO7iBC56CT7KzgmPTIH4=;
-        b=Jv6//jpKE0QPAs5rp6viIfByXsMFTv32Ca/ETqCUs+fpb4lqlaqdHuAAenMe3ejT1L
-         Njlzz/AE1myqJTQW762jXu1wJaTQAsspTar0oV+v1L9i73khODcOZR0NNOzuolFU5/id
-         VQUilmTOh6GcK2vcXtUxx0pnX8vUlYXFE20hs1HMRWqnjYGAnKYJ2cxloZG+mMtAG2TA
-         cTP6lRiBIOKsLROv8m5bskK9FTfAaxpjx0m1IY6oWm+TMC+QowKpqlO6VaCo1LLRT9yh
-         ZvJua5B3Ei3tel1q+iD6xVwc+kDirOYCWomldEwKsrgZugl5P4LhgbhoKwJE7AUtk41X
-         BHSw==
-X-Gm-Message-State: AOJu0YzHdT+la/+Q9M3ut29Se78wOgr1odcTIwvb84/zApswYV9sb+z6
-	wKRBnW4N8MizjiQXbv+7eWJW0dAtRWnkkrEbRudbPTZml8IWvyKG0BgjyE4CIw==
-X-Google-Smtp-Source: AGHT+IEHYQM0g8yKi/VDD/iIKZyQE4GF383tMCjdEXVscytUaDtyNZqBa3peHVSzIPEsZxO3G3fEHg==
-X-Received: by 2002:a17:903:230a:b0:205:8a8b:bd2a with SMTP id d9443c01a7336-211194691a8mr31175955ad.22.1730429742110;
-        Thu, 31 Oct 2024 19:55:42 -0700 (PDT)
+        bh=9KDXtDtuqIsvelg4MNDey7jtAriRPY9+zIR3Vm9THs4=;
+        b=MEh9Q6usZFramFkIJO9zLZd12XMkflC6nm2Sn1uh+/WHN81zmSnD0J7O3tBk9Pbwul
+         W+7/9Id/yRVKjJze/nNTS6S6HR29VN+gTWTqDDf4O7AZt3DjF10f2WCUZa6I3e7/CxGP
+         4TMuSGXpRGhZA2L1yNU8FEctpKrqsIVbrKBpDU5z6qPBFmrYbc45UxhjLQiOZdFsSD/s
+         2VCmRW7VxTQiNZmRZMoWrDsgYuteEQ2/v4C32rPimAFe5tUVD1dPOTAWpdbdOg/pykSS
+         vpjjZPbbNor28N3ygBXabnN5HAkl8FakAIqO0wH1jy5Ic9g0evGIE92TtFbriHNtrN1u
+         cjZg==
+X-Gm-Message-State: AOJu0YzNDgb+4tQufuaxyz+Din70w2VaYweX+qEiMZMPnCg649Gu5A2C
+	8RGLwnyl1MYAszCUi1yr+yOAMlqZCdkktuZoQTb3MyBthJcaJ86dOU4PRSRLVA==
+X-Google-Smtp-Source: AGHT+IEQz0qHC9Hdt1/1gBDK0gJK35ulrtV6YBnjTDQ9jSRU+bwk9r+6ITzJXbxxI8TElMhexwjGDw==
+X-Received: by 2002:a17:902:d501:b0:20c:a7d8:e428 with SMTP id d9443c01a7336-210c68aa356mr309055135ad.7.1730429745188;
+        Thu, 31 Oct 2024 19:55:45 -0700 (PDT)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211056edc1asm14961005ad.57.2024.10.31.19.55.39
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211056edc1asm14961005ad.57.2024.10.31.19.55.42
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 31 Oct 2024 19:55:41 -0700 (PDT)
+        Thu, 31 Oct 2024 19:55:44 -0700 (PDT)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -68,9 +68,9 @@ Cc: linux-rdma@vger.kernel.org,
 	kalesh-anakkur.purayil@broadcom.com,
 	kashyap.desai@broadcom.com,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next v2 1/4] RDMA/bnxt_re: Support driver specific data collection using rdma tool
-Date: Thu, 31 Oct 2024 19:34:40 -0700
-Message-Id: <1730428483-17841-2-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v2 2/4] RDMA/bnxt_re: Add support for querying HW contexts
+Date: Thu, 31 Oct 2024 19:34:41 -0700
+Message-Id: <1730428483-17841-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1730428483-17841-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1730428483-17841-1-git-send-email-selvin.xavier@broadcom.com>
@@ -82,186 +82,168 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
 From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-Allow users to dump driver specific resource details when
-queried through rdma tool. This supports the driver data
-for QP, CQ, MR and SRQ.
+Implements support for querying the hardware resource
+contexts. This raw data can be used for the debugging
+of the field issues.
 
-Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
-v1 - v2 :
-	- Remove the unnecessary user/kernel text
-	  displayed in dump output
- drivers/infiniband/hw/bnxt_re/main.c | 141 +++++++++++++++++++++++++++++++++++
- 1 file changed, 141 insertions(+)
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h    | 19 ++++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  2 ++
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c   | 35 ++++++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h   |  2 ++
+ drivers/infiniband/hw/bnxt_re/roce_hsi.h   | 40 ++++++++++++++++++++++++++++++
+ 5 files changed, 98 insertions(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index d825eda..24124c2 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -870,6 +870,139 @@ static const struct attribute_group bnxt_re_dev_attr_group = {
- 	.attrs = bnxt_re_attributes,
+diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+index bb28a1f..49186a1 100644
+--- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
++++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+@@ -247,4 +247,23 @@ static inline void bnxt_re_set_pacing_dev_state(struct bnxt_re_dev *rdev)
+ 	rdev->qplib_res.pacing_data->dev_err_state =
+ 		test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags);
+ }
++
++static inline int bnxt_re_read_context_allowed(struct bnxt_re_dev *rdev)
++{
++	if (!bnxt_qplib_is_chip_gen_p5_p7(rdev->chip_ctx) ||
++	    rdev->rcfw.res->cctx->hwrm_intf_ver < HWRM_VERSION_READ_CTX)
++		return -EOPNOTSUPP;
++	return 0;
++}
++
++#define BNXT_RE_CONTEXT_TYPE_QPC_SIZE_P5	1088
++#define BNXT_RE_CONTEXT_TYPE_CQ_SIZE_P5		128
++#define BNXT_RE_CONTEXT_TYPE_MRW_SIZE_P5	128
++#define BNXT_RE_CONTEXT_TYPE_SRQ_SIZE_P5	192
++
++#define BNXT_RE_CONTEXT_TYPE_QPC_SIZE_P7	1088
++#define BNXT_RE_CONTEXT_TYPE_CQ_SIZE_P7		192
++#define BNXT_RE_CONTEXT_TYPE_MRW_SIZE_P7	192
++#define BNXT_RE_CONTEXT_TYPE_SRQ_SIZE_P7	192
++
+ #endif
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
+index 45996e6..3e723d7 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
+@@ -131,6 +131,8 @@ static inline u32 bnxt_qplib_set_cmd_slots(struct cmdq_base *req)
+ #define RCFW_CMD_IS_BLOCKING		0x8000
+ 
+ #define HWRM_VERSION_DEV_ATTR_MAX_DPI  0x1000A0000000DULL
++/* HWRM version 1.10.3.18 */
++#define HWRM_VERSION_READ_CTX           0x1000A00030012
+ 
+ /* Crsq buf is 1024-Byte */
+ struct bnxt_qplib_crsbe {
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+index 4f75e7e..ad636d7 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+@@ -972,3 +972,38 @@ int bnxt_qplib_modify_cc(struct bnxt_qplib_res *res,
+ 	rc = bnxt_qplib_rcfw_send_message(res->rcfw, &msg);
+ 	return rc;
+ }
++
++int bnxt_qplib_read_context(struct bnxt_qplib_rcfw *rcfw, u8 res_type,
++			    u32 xid, u32 resp_size, void *resp_va)
++{
++	struct creq_read_context resp = {};
++	struct bnxt_qplib_cmdqmsg msg = {};
++	struct cmdq_read_context req = {};
++	struct bnxt_qplib_rcfw_sbuf sbuf;
++	int rc;
++
++	sbuf.size = resp_size;
++	sbuf.sb = dma_alloc_coherent(&rcfw->pdev->dev, sbuf.size,
++				     &sbuf.dma_addr, GFP_KERNEL);
++	if (!sbuf.sb)
++		return -ENOMEM;
++
++	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
++				 CMDQ_BASE_OPCODE_READ_CONTEXT, sizeof(req));
++	req.resp_addr = cpu_to_le64(sbuf.dma_addr);
++	req.resp_size = resp_size / BNXT_QPLIB_CMDQE_UNITS;
++
++	req.xid = cpu_to_le32(xid);
++	req.type = res_type;
++
++	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, &sbuf, sizeof(req),
++				sizeof(resp), 0);
++	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
++	if (rc)
++		goto free_mem;
++
++	memcpy(resp_va, sbuf.sb, resp_size);
++free_mem:
++	dma_free_coherent(&rcfw->pdev->dev, sbuf.size, sbuf.sb, sbuf.dma_addr);
++	return rc;
++}
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+index acd9c14..29b841a 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+@@ -352,6 +352,8 @@ int bnxt_qplib_qext_stat(struct bnxt_qplib_rcfw *rcfw, u32 fid,
+ 			 struct bnxt_qplib_ext_stat *estat);
+ int bnxt_qplib_modify_cc(struct bnxt_qplib_res *res,
+ 			 struct bnxt_qplib_cc_param *cc_param);
++int bnxt_qplib_read_context(struct bnxt_qplib_rcfw *rcfw, u8 type, u32 xid,
++			    u32 resp_size, void *resp_va);
+ 
+ #define BNXT_VAR_MAX_WQE       4352
+ #define BNXT_VAR_MAX_SLOT_ALIGN 256
+diff --git a/drivers/infiniband/hw/bnxt_re/roce_hsi.h b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
+index a7679ee..d9c5373 100644
+--- a/drivers/infiniband/hw/bnxt_re/roce_hsi.h
++++ b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
+@@ -2265,6 +2265,46 @@ struct creq_set_func_resources_resp {
+ 	u8	reserved48[6];
  };
  
-+static int bnxt_re_fill_res_mr_entry(struct sk_buff *msg, struct ib_mr *ib_mr)
-+{
-+	struct bnxt_qplib_hwq *mr_hwq;
-+	struct nlattr *table_attr;
-+	struct bnxt_re_mr *mr;
-+
-+	table_attr = nla_nest_start(msg, RDMA_NLDEV_ATTR_DRIVER);
-+	if (!table_attr)
-+		return -EMSGSIZE;
-+
-+	mr = container_of(ib_mr, struct bnxt_re_mr, ib_mr);
-+	mr_hwq = &mr->qplib_mr.hwq;
-+
-+	if (rdma_nl_put_driver_u32(msg, "page_size",
-+				   mr_hwq->qe_ppg * mr_hwq->element_size))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "max_elements", mr_hwq->max_elements))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "element_size", mr_hwq->element_size))
-+		goto err;
-+	if (rdma_nl_put_driver_u64_hex(msg, "hwq", (unsigned long)mr_hwq))
-+		goto err;
-+	if (rdma_nl_put_driver_u64_hex(msg, "va", mr->qplib_mr.va))
-+		goto err;
-+
-+	nla_nest_end(msg, table_attr);
-+	return 0;
-+
-+err:
-+	nla_nest_cancel(msg, table_attr);
-+	return -EMSGSIZE;
-+}
-+
-+static int bnxt_re_fill_res_cq_entry(struct sk_buff *msg, struct ib_cq *ib_cq)
-+{
-+	struct bnxt_qplib_hwq *cq_hwq;
-+	struct nlattr *table_attr;
-+	struct bnxt_re_cq *cq;
-+
-+	cq = container_of(ib_cq, struct bnxt_re_cq, ib_cq);
-+	cq_hwq = &cq->qplib_cq.hwq;
-+
-+	table_attr = nla_nest_start(msg, RDMA_NLDEV_ATTR_DRIVER);
-+	if (!table_attr)
-+		return -EMSGSIZE;
-+
-+	if (rdma_nl_put_driver_u32(msg, "cq_depth", cq_hwq->depth))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "max_elements", cq_hwq->max_elements))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "element_size", cq_hwq->element_size))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "max_wqe", cq->qplib_cq.max_wqe))
-+		goto err;
-+
-+	nla_nest_end(msg, table_attr);
-+	return 0;
-+
-+err:
-+	nla_nest_cancel(msg, table_attr);
-+	return -EMSGSIZE;
-+}
-+
-+static int bnxt_re_fill_res_qp_entry(struct sk_buff *msg, struct ib_qp *ib_qp)
-+{
-+	struct bnxt_qplib_qp *qplib_qp;
-+	struct nlattr *table_attr;
-+	struct bnxt_re_qp *qp;
-+
-+	table_attr = nla_nest_start(msg, RDMA_NLDEV_ATTR_DRIVER);
-+	if (!table_attr)
-+		return -EMSGSIZE;
-+
-+	qp = container_of(ib_qp, struct bnxt_re_qp, ib_qp);
-+	qplib_qp = &qp->qplib_qp;
-+
-+	if (rdma_nl_put_driver_u32(msg, "sq_max_wqe", qplib_qp->sq.max_wqe))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "sq_max_sge", qplib_qp->sq.max_sge))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "sq_wqe_size", qplib_qp->sq.wqe_size))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "sq_swq_start", qplib_qp->sq.swq_start))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "sq_swq_last", qplib_qp->sq.swq_last))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "rq_max_wqe", qplib_qp->rq.max_wqe))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "rq_max_sge", qplib_qp->rq.max_sge))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "rq_wqe_size", qplib_qp->rq.wqe_size))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "rq_swq_start", qplib_qp->rq.swq_start))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "rq_swq_last", qplib_qp->rq.swq_last))
-+		goto err;
-+	if (rdma_nl_put_driver_u32(msg, "timeout", qplib_qp->timeout))
-+		goto err;
-+
-+	nla_nest_end(msg, table_attr);
-+	return 0;
-+
-+err:
-+	nla_nest_cancel(msg, table_attr);
-+	return -EMSGSIZE;
-+}
-+
-+static int bnxt_re_fill_res_srq_entry(struct sk_buff *msg, struct ib_srq *ib_srq)
-+{
-+	struct nlattr *table_attr;
-+	struct bnxt_re_srq *srq;
-+
-+	table_attr = nla_nest_start(msg, RDMA_NLDEV_ATTR_DRIVER);
-+	if (!table_attr)
-+		return -EMSGSIZE;
-+
-+	srq = container_of(ib_srq, struct bnxt_re_srq, ib_srq);
-+
-+	if (rdma_nl_put_driver_u32_hex(msg, "wqe_size", srq->qplib_srq.wqe_size))
-+		goto err;
-+	if (rdma_nl_put_driver_u32_hex(msg, "max_wqe", srq->qplib_srq.max_wqe))
-+		goto err;
-+	if (rdma_nl_put_driver_u32_hex(msg, "max_sge", srq->qplib_srq.max_sge))
-+		goto err;
-+
-+	nla_nest_end(msg, table_attr);
-+	return 0;
-+
-+err:
-+	nla_nest_cancel(msg, table_attr);
-+	return -EMSGSIZE;
-+}
-+
- static const struct ib_device_ops bnxt_re_dev_ops = {
- 	.owner = THIS_MODULE,
- 	.driver_id = RDMA_DRIVER_BNXT_RE,
-@@ -928,6 +1061,13 @@ static const struct ib_device_ops bnxt_re_dev_ops = {
- 	INIT_RDMA_OBJ_SIZE(ib_ucontext, bnxt_re_ucontext, ib_uctx),
- };
- 
-+static const struct ib_device_ops restrack_ops = {
-+	.fill_res_cq_entry = bnxt_re_fill_res_cq_entry,
-+	.fill_res_qp_entry = bnxt_re_fill_res_qp_entry,
-+	.fill_res_mr_entry = bnxt_re_fill_res_mr_entry,
-+	.fill_res_srq_entry = bnxt_re_fill_res_srq_entry,
++/* cmdq_read_context (size:192b/24B) */
++struct cmdq_read_context {
++	u8	opcode;
++	#define CMDQ_READ_CONTEXT_OPCODE_READ_CONTEXT 0x85UL
++	#define CMDQ_READ_CONTEXT_OPCODE_LAST        CMDQ_READ_CONTEXT_OPCODE_READ_CONTEXT
++	u8	cmd_size;
++	__le16	flags;
++	__le16	cookie;
++	u8	resp_size;
++	u8	reserved8;
++	__le64	resp_addr;
++	__le32	xid;
++	u8	type;
++	#define CMDQ_READ_CONTEXT_TYPE_QPC 0x0UL
++	#define CMDQ_READ_CONTEXT_TYPE_CQ  0x1UL
++	#define CMDQ_READ_CONTEXT_TYPE_MRW 0x2UL
++	#define CMDQ_READ_CONTEXT_TYPE_SRQ 0x3UL
++	#define CMDQ_READ_CONTEXT_TYPE_LAST CMDQ_READ_CONTEXT_TYPE_SRQ
++	u8	unused_0[3];
 +};
 +
- static int bnxt_re_register_ib(struct bnxt_re_dev *rdev)
- {
- 	struct ib_device *ibdev = &rdev->ibdev;
-@@ -949,6 +1089,7 @@ static int bnxt_re_register_ib(struct bnxt_re_dev *rdev)
- 		ibdev->driver_def = bnxt_re_uapi_defs;
- 
- 	ib_set_device_ops(ibdev, &bnxt_re_dev_ops);
-+	ib_set_device_ops(ibdev, &restrack_ops);
- 	ret = ib_device_set_netdev(&rdev->ibdev, rdev->netdev, 1);
- 	if (ret)
- 		return ret;
++/* creq_read_context (size:128b/16B) */
++struct creq_read_context {
++	u8	type;
++	#define CREQ_READ_CONTEXT_TYPE_MASK    0x3fUL
++	#define CREQ_READ_CONTEXT_TYPE_SFT     0
++	#define CREQ_READ_CONTEXT_TYPE_QP_EVENT  0x38UL
++	#define CREQ_READ_CONTEXT_TYPE_LAST     CREQ_READ_CONTEXT_TYPE_QP_EVENT
++	u8	status;
++	__le16	cookie;
++	__le32	reserved32;
++	u8	v;
++	#define CREQ_READ_CONTEXT_V     0x1UL
++	u8	event;
++	#define CREQ_READ_CONTEXT_EVENT_READ_CONTEXT 0x85UL
++	#define CREQ_READ_CONTEXT_EVENT_LAST        CREQ_READ_CONTEXT_EVENT_READ_CONTEXT
++	__le16	reserved16;
++	__le32	reserved_32;
++};
++
+ /* cmdq_map_tc_to_cos (size:192b/24B) */
+ struct cmdq_map_tc_to_cos {
+ 	u8	opcode;
 -- 
 2.5.5
 
