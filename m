@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-5715-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5716-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 846499BA703
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Nov 2024 18:06:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD51E9BA706
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Nov 2024 18:06:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7B101C210CC
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Nov 2024 17:06:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8481A1F2388B
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Nov 2024 17:06:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E6918C33F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F46AD2D;
 	Sun,  3 Nov 2024 17:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="EM7F+ukH"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="je9uI76l"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F4618BBB3;
-	Sun,  3 Nov 2024 17:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5505218BC05;
+	Sun,  3 Nov 2024 17:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730653486; cv=none; b=Y8pyxGPFyKDVRFlIvQVLlzgvX3IBA/p/D7w2dUa+1OGaVaxnWzPm5y/BVPbKQ02615WYmFPMJrzaTi5GI0tzQOog5DL7SYqHqZOxu0hncvlA/VePrqRHOm0BMIb2fmvexzvrTYxmlZ6nvx4JhAATwk21GSbFeSsxT9qUWp82LLQ=
+	t=1730653486; cv=none; b=Zz+WPkP96qVS3AaJZPnF+1gB8qjmO6WM+tdgsF6geIOZxT0H8LF4FMEZT90nNVH5S1XptV0r1MC9mjA5FNhxcjd4Q/3Nioh2M9meX+FwXnQ/IBpG6jtq00h5dmEmicKD0/OWwDlFkRxz+WfhRvpssT46d0rUadlh4YYwnJ9nww4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1730653486; c=relaxed/simple;
-	bh=i1lGRcvBSYaAkRCU3PsefBTXEi2eEGtd/RNZhauMerg=;
+	bh=vzqsMVfnVQ7g+xXQgYvHKh8WFOGMi08tymfd1lvAle8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=kPXNmUnKdw+u92G9SyQwSLpyamNDtlw75+5bYw6nWke1FtJuaeHzaYoFCiFh14TRBz2LWicBjp3syP8QMs7HOgxyKMADYr9haoxbkVkTgE6jqd4SE1AlhsotFmIJkvzzcmUUq6I7eB0CM9oTlJFCoUtDxI4N2lhEsWY13f9SbmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=EM7F+ukH; arc=none smtp.client-ip=159.69.126.157
+	 In-Reply-To:To:Cc; b=tVs+qYp/nmA3OGaq9vd0mrAFPhuj89u6vrpQYzqzg2+S1z/OMLfW+z17ddvn/kTQkWGQXKtM46DZtnHZbRQAqo6Utl9bGOghgXDUGjzk/VLTXZJBe3vFXBXNpMsMaXN6H63WUy+B3sM4fxw61dHROMUCgNEvdqBmjL3nYKqaj38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=je9uI76l; arc=none smtp.client-ip=159.69.126.157
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
 	s=mail; t=1730653482;
-	bh=i1lGRcvBSYaAkRCU3PsefBTXEi2eEGtd/RNZhauMerg=;
+	bh=vzqsMVfnVQ7g+xXQgYvHKh8WFOGMi08tymfd1lvAle8=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=EM7F+ukHWaKuiEB29hQ+7phHHhsz/BJbMlrgdettJj9WGcUGv0v3iPxNVogNiJjoq
-	 vcsMlaO5j0xXKHGTsKj9Uz+7RKXbNXf3NumpUmVhz/FDM5899V8zcDLzETVL2nf/eJ
-	 stDuTk3uXiev7Lr6wHaszQGdn90xnrATN6qv4tN8=
+	b=je9uI76lLR4y9OXxsJTuqI38lHi8HkhGJIFV6ZCs4146zr8UDcocsdPRPe5LeFYf8
+	 /nzEaxpdd3g714OGoLTEVmDBSxSym4/0fJdP/ILanUgGd1lsKi+YxvHlrL3KGnTUxy
+	 25OKvRhJ/iyvI2r1fL0kAV2rjeU/P1lDltJe/xCQ=
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Sun, 03 Nov 2024 17:03:39 +0000
-Subject: [PATCH v2 10/10] driver core: Constify attribute arguments of
- binary attributes
+Date: Sun, 03 Nov 2024 17:03:31 +0000
+Subject: [PATCH v2 02/10] sysfs: introduce callback
+ attribute_group::bin_size
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -50,7 +50,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20241103-sysfs-const-bin_attr-v2-10-71110628844c@weissschuh.net>
+Message-Id: <20241103-sysfs-const-bin_attr-v2-2-71110628844c@weissschuh.net>
 References: <20241103-sysfs-const-bin_attr-v2-0-71110628844c@weissschuh.net>
 In-Reply-To: <20241103-sysfs-const-bin_attr-v2-0-71110628844c@weissschuh.net>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
@@ -95,67 +95,72 @@ Cc: Dan Williams <dan.j.williams@intel.com>, linux-kernel@vger.kernel.org,
  linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1730653468; l=2330;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1730653468; l=2296;
  i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=i1lGRcvBSYaAkRCU3PsefBTXEi2eEGtd/RNZhauMerg=;
- b=wjQlo57jq0Wj7AlLBOYWjC3NLTcXdQ4S/vHvyo3etlKonEvBK3xDMeXVEI2nFeo1fRBiMSJWq
- 8Dy1FhYi+4pDACqaxOlIcEPw5eL4UaDS9rJJgllbu0x7Wp3mt9dGtys
+ bh=vzqsMVfnVQ7g+xXQgYvHKh8WFOGMi08tymfd1lvAle8=;
+ b=+c8c3AK6YNFtR/f5MlFDxfac5E4AdcTfe/LYH8cKiLv+aN2C4MrR8vpsa2SsTXy5NHtfEpdBh
+ t4Y6vgc31e8BINAGXwLU2VEDayYxRmKzGs5LRvtEfi4Ux875Z1qlOu8
 X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
  pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-As preparation for the constification of struct bin_attribute,
-constify the arguments of the read and write callbacks.
+Several drivers need to dynamically calculate the size of an binary
+attribute. Currently this is done by assigning attr->size from the
+is_bin_visible() callback.
+
+This has drawbacks:
+* It is not documented.
+* A single attribute can be instantiated multiple times, overwriting the
+  shared size field.
+* It prevents the structure to be moved to read-only memory.
+
+Introduce a new dedicated callback to calculate the size of the
+attribute.
 
 Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- drivers/base/node.c     | 4 ++--
- drivers/base/topology.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ fs/sysfs/group.c      | 2 ++
+ include/linux/sysfs.h | 8 ++++++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index eb72580288e62727e5b2198a6451cf9c2533225a..3e761633ac75826bedb5dd30b879f7cc1af95ec3 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -27,7 +27,7 @@ static const struct bus_type node_subsys = {
+diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
+index 45b2e92941da1f49dcc71af3781317c61480c956..8b01a7eda5fb3239e138372417d01967c7a3f122 100644
+--- a/fs/sysfs/group.c
++++ b/fs/sysfs/group.c
+@@ -98,6 +98,8 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
+ 				if (!mode)
+ 					continue;
+ 			}
++			if (grp->bin_size)
++				size = grp->bin_size(kobj, *bin_attr, i);
+ 
+ 			WARN(mode & ~(SYSFS_PREALLOC | 0664),
+ 			     "Attribute %s: Invalid permissions 0%o\n",
+diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
+index c4e64dc112063f7cb89bf66059d0338716089e87..4746cccb95898b24df6f53de9421ea7649b5568f 100644
+--- a/include/linux/sysfs.h
++++ b/include/linux/sysfs.h
+@@ -87,6 +87,11 @@ do {							\
+  *		SYSFS_GROUP_VISIBLE() when assigning this callback to
+  *		specify separate _group_visible() and _attr_visible()
+  *		handlers.
++ * @bin_size:
++ *		Optional: Function to return the size of a binary attribute
++ *		of the group. Will be called repeatedly for each binary
++ *		attribute in the group. Overwrites the size field embedded
++ *		inside the attribute itself.
+  * @attrs:	Pointer to NULL terminated list of attributes.
+  * @bin_attrs:	Pointer to NULL terminated list of binary attributes.
+  *		Either attrs or bin_attrs or both must be provided.
+@@ -97,6 +102,9 @@ struct attribute_group {
+ 					      struct attribute *, int);
+ 	umode_t			(*is_bin_visible)(struct kobject *,
+ 						  struct bin_attribute *, int);
++	size_t			(*bin_size)(struct kobject *,
++					    const struct bin_attribute *,
++					    int);
+ 	struct attribute	**attrs;
+ 	struct bin_attribute	**bin_attrs;
  };
- 
- static inline ssize_t cpumap_read(struct file *file, struct kobject *kobj,
--				  struct bin_attribute *attr, char *buf,
-+				  const struct bin_attribute *attr, char *buf,
- 				  loff_t off, size_t count)
- {
- 	struct device *dev = kobj_to_dev(kobj);
-@@ -48,7 +48,7 @@ static inline ssize_t cpumap_read(struct file *file, struct kobject *kobj,
- static BIN_ATTR_RO(cpumap, CPUMAP_FILE_MAX_BYTES);
- 
- static inline ssize_t cpulist_read(struct file *file, struct kobject *kobj,
--				   struct bin_attribute *attr, char *buf,
-+				   const struct bin_attribute *attr, char *buf,
- 				   loff_t off, size_t count)
- {
- 	struct device *dev = kobj_to_dev(kobj);
-diff --git a/drivers/base/topology.c b/drivers/base/topology.c
-index 89f98be5c5b9915b2974e184bf89c4c25c183095..1090751d7f458ce8d2a50e82d65b8ce31e938f15 100644
---- a/drivers/base/topology.c
-+++ b/drivers/base/topology.c
-@@ -23,7 +23,7 @@ static ssize_t name##_show(struct device *dev,				\
- 
- #define define_siblings_read_func(name, mask)					\
- static ssize_t name##_read(struct file *file, struct kobject *kobj,		\
--			   struct bin_attribute *attr, char *buf,		\
-+			   const struct bin_attribute *attr, char *buf,		\
- 			   loff_t off, size_t count)				\
- {										\
- 	struct device *dev = kobj_to_dev(kobj);                                 \
-@@ -33,7 +33,7 @@ static ssize_t name##_read(struct file *file, struct kobject *kobj,		\
- }										\
- 										\
- static ssize_t name##_list_read(struct file *file, struct kobject *kobj,	\
--				struct bin_attribute *attr, char *buf,		\
-+				const struct bin_attribute *attr, char *buf,	\
- 				loff_t off, size_t count)			\
- {										\
- 	struct device *dev = kobj_to_dev(kobj);					\
 
 -- 
 2.47.0
