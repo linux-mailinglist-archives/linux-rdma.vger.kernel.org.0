@@ -1,83 +1,125 @@
-Return-Path: <linux-rdma+bounces-5704-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5705-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70CAE9BA628
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Nov 2024 16:01:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C846E9BA65B
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Nov 2024 16:20:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06D13B21631
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Nov 2024 15:01:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33C51B21597
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Nov 2024 15:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B1317DFE9;
-	Sun,  3 Nov 2024 15:01:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B01E18595E;
+	Sun,  3 Nov 2024 15:19:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bfzhIWCl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j5cWNoE8"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD4217BB16
-	for <linux-rdma@vger.kernel.org>; Sun,  3 Nov 2024 15:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE70D2628C;
+	Sun,  3 Nov 2024 15:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730646071; cv=none; b=c8U30x0Ig2RzCXtpr4CBE6XUrB1uA6z2K8lJ6yP1NCZd3ZhIxDzgJIy55zVd4043Tu/weFWMhQCQPGH7VhPXFrzdKZVl89pjDs5k5zcbtrY6/zTAqvYKfflhXC/zwb1k0kLrOKq3UcFY3tRwoftHqwXeSp1/Kb+ZmZO3txtHVXA=
+	t=1730647196; cv=none; b=rcbtKQaV/6iv/P5TABUG7MOFuim+8DbFEk6VSB8KpqQyLkRAbg+nBVAlNUOAP+h1/PNEyCSpoujolKXfn+JL+LMxyjiMdNHCFAFVy9N8Su1qyPYG4TUloRdDeWw/jbvCAAvgKDJM1/jyKLbA/nxEqbev7UGgue9HgVBjMSodU0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730646071; c=relaxed/simple;
-	bh=1Qj/w7D8U2QdpEtFUY+Tt5/5pvOZi/Ov04eBfg3XLyY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=o5nUvptYziN8DkIT6tBPwMGtt3oNfIG670xvSPeLhnq8kAT82FdAje19F2Ec5SKtCHct78TYCdwMLuyWZo9pR8FWc+75LHD6vigbcFXG3v3icTQXX4V7VJU7AL+SktFxv8hguH+630zG3O0hpqp3JglBe2wTGot5D02b0Yi6KRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bfzhIWCl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9825AC4CECF;
-	Sun,  3 Nov 2024 15:01:10 +0000 (UTC)
+	s=arc-20240116; t=1730647196; c=relaxed/simple;
+	bh=SfCXMZbNHN7ZBHtRMXT8dYyPlDizsgfBlczM/Izb1OA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IeYkaGo2GHw/aPhPye38XuY3lCcRm80pT4R75Ul6PR0Qir1oJ5eTqenLCUjxzfh1qRv7Xlpaiwg3Mny1/MlLSQVCVv0xuOtz/jDJs9iJHh8pu97KHenXtpCcRCy0YLRw1jqABdLE78DyX0a5ACycRansuMIbUiiQ3dGsfXzZyA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j5cWNoE8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D95DC4CECD;
+	Sun,  3 Nov 2024 15:19:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730646071;
-	bh=1Qj/w7D8U2QdpEtFUY+Tt5/5pvOZi/Ov04eBfg3XLyY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=bfzhIWClN8T6cGXkuGXPGxOJISPvELvEnSxwRmnVrHK833IOsv+mhlYLm77rmqFvk
-	 jr7Cbe/aSAP8JL6tooTVqAHtSsW1r3PFgPmbrJ08m9n5ZwTpfWhHtX9ghOsZR6aih5
-	 6MMcXGgUE3GpXRiTwRuIfARf2zhhSlaSK85j5Qem2jA7WVYpN9Y8br+yQA+D+cv3Ya
-	 LUu1TdxsT7o0L37172DIHogYQT7gDrejeEs8gNkT9J5SHgkUZGc58C8SEkyVzTd52E
-	 jYxxxMgE8QsSqXKJ2xDOZeA2HjMeD4hXm3prqYgpaSP2dBKgzkg/0FiLG07RpWUoNx
-	 Q+shz4xLnb5nw==
+	s=k20201202; t=1730647195;
+	bh=SfCXMZbNHN7ZBHtRMXT8dYyPlDizsgfBlczM/Izb1OA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=j5cWNoE8etENxU7IbfrBszJT10f6EWlfJqpPGvOpaZLTiWI1AidHTPWSL24msep+k
+	 At1fyHSehamOum/Kpf4tDMLVsWjyCbFVB1L3+uJPROcdL+JtfpRWtGbmTmmXws4+mU
+	 6Tax5d+Pem6waJZPuDXZsKSMbCUFxwDHGiatqmjanHAiNyMOnFy3GO/14wUoY9qDlK
+	 mafUcrdLGbf/qNYnEXemxmwc/kgO13ERQSBD0Q59NhZKcEgGCMs/Jsfq3Fei7V6xWc
+	 KS0Si/iP8Vl1pnx/fUh5aIOdBMiN7U2MYN4bxu2bUCfSI0yrbv2ocwZ0+G5O8IPgHi
+	 San3mdWHVOs/A==
+Date: Sun, 3 Nov 2024 17:19:46 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: zyjzyj2000@gmail.com, yanjun.zhu@linux.dev, jgg@ziepe.ca, 
- rpearsonhpe@gmail.com, kamalh@mellanox.com, haggaie@mellanox.com, 
- dledford@redhat.com, monis@mellanox.com, amirv@mellanox.com, 
- Liu Jian <liujian56@huawei.com>
-Cc: linux-rdma@vger.kernel.org
-In-Reply-To: <20241031092019.2138467-1-liujian56@huawei.com>
-References: <20241031092019.2138467-1-liujian56@huawei.com>
-Subject: Re: [PATCH rdma v2] RDMA/rxe: Set queue pair cur_qp_state when
- being queried
-Message-Id: <173064599658.108118.6878315756302780832.b4-ty@kernel.org>
-Date: Sun, 03 Nov 2024 09:59:56 -0500
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH 2/7] block: don't merge different kinds of P2P
+ transfers in a single bio
+Message-ID: <20241103151946.GA99170@unreal>
+References: <cover.1730037261.git.leon@kernel.org>
+ <34d44537a65aba6ede215a8ad882aeee028b423a.1730037261.git.leon@kernel.org>
+ <f80e7b54-b897-4df2-a49d-bc6012640a8a@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f80e7b54-b897-4df2-a49d-bc6012640a8a@linux.dev>
 
+On Sat, Nov 02, 2024 at 08:39:35AM +0100, Zhu Yanjun wrote:
+> 在 2024/10/27 15:21, Leon Romanovsky 写道:
+> > From: Christoph Hellwig <hch@lst.de>
+> > 
+> > To get out of the dma mapping helpers having to check every segment for
+> > it's P2P status, ensure that bios either contain P2P transfers or non-P2P
+> > transfers, and that a P2P bio only contains ranges from a single device.
+> > 
+> > This means we do the page zone access in the bio add path where it should
+> > be still page hot, and will only have do the fairly expensive P2P topology
+> > lookup once per bio down in the dma mapping path, and only for already
+> > marked bios.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >   block/bio.c               | 36 +++++++++++++++++++++++++++++-------
+> >   block/blk-map.c           | 32 ++++++++++++++++++++++++--------
+> >   include/linux/blk_types.h |  2 ++
+> >   3 files changed, 55 insertions(+), 15 deletions(-)
 
-On Thu, 31 Oct 2024 17:20:19 +0800, Liu Jian wrote:
-> Same with commit e375b9c92985 ("RDMA/cxgb4: Set queue pair state when
->  being queried"). The API for ib_query_qp requires the driver to set
-> cur_qp_state on return, add the missing set.
+<...>
+
+> > @@ -410,6 +411,7 @@ enum req_flag_bits {
+> >   #define REQ_DRV		(__force blk_opf_t)(1ULL << __REQ_DRV)
+> >   #define REQ_FS_PRIVATE	(__force blk_opf_t)(1ULL << __REQ_FS_PRIVATE)
+> >   #define REQ_ATOMIC	(__force blk_opf_t)(1ULL << __REQ_ATOMIC)
+> > +#define REQ_P2PDMA	(__force blk_opf_t)(1ULL << __REQ_P2PDMA)
 > 
+> #define REQ_P2PDMA	(__force blk_opf_t)BIT_ULL(__REQ_P2PDMA)
 > 
+> Use BIT_ULL instead of direct left shit.
 
-Applied, thanks!
+We keep coding style consistent and all defines above aren't implemented
+with BIT_ULL().
 
-[1/1] RDMA/rxe: Set queue pair cur_qp_state when being queried
-      https://git.kernel.org/rdma/rdma/c/28f8c1ef36536a
+Thanks
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+> 
+> Zhu Yanjun
+> 
+> >   #define REQ_NOUNMAP	(__force blk_opf_t)(1ULL << __REQ_NOUNMAP)
+> 
 
