@@ -1,56 +1,58 @@
-Return-Path: <linux-rdma+bounces-5731-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5732-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1F399BAE4A
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2024 09:39:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 884419BAE5A
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2024 09:43:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95E34283252
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2024 08:39:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B13481C218A1
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2024 08:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 808E918BB93;
-	Mon,  4 Nov 2024 08:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6364B1AAE01;
+	Mon,  4 Nov 2024 08:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bA+bIeoG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cYMkSKxN"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B3A18B488
-	for <linux-rdma@vger.kernel.org>; Mon,  4 Nov 2024 08:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163F819F42F;
+	Mon,  4 Nov 2024 08:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730709553; cv=none; b=odVZwCEMXXHMBn77pM7kYX8zDUiue17KxcrgbIFRIDaaxrajK1wFLaM/44C0EWcGz8nLuv2PB+K0AIVLNelK9ZhnyTTD9tcoLohyV0ZW12JnR45iVO+zDIqyhSTZWbiIbw6QKPEpbDfwSPoBcipSjTv8C9ESvQuYdtf/ppeFXe4=
+	t=1730709786; cv=none; b=MvgvUugvltt5fsSPeCNp6nHivT4KxXRWw/+QkAJAASroewLsS6O+oyY4LLf9GLQ/FVEiEFZuu5J1utOW2oMNBZTDq7OUe3On7kkBacDuJzksIVQCN0rbtIml7nByxTe91VuncjCUG+9601tFXZMSz4KMjxmFHvPJPuts6wHzr44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730709553; c=relaxed/simple;
-	bh=5vj/smWy9ezJQO/o0NP+cBUMABFhHtn2os2i688/u5A=;
+	s=arc-20240116; t=1730709786; c=relaxed/simple;
+	bh=h/ImhdPwBZUTlfrTk8YxD0imoe+rMtZCMzB31TKraWA=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=qdhvUTIwAu3yyulN5TzQJuH1P0eainP8Htqktwh98DUPiBo6po+yY/Gz/vTRkSrkMP4FhM/62pAKpG/a+hVPjjrMC3dQQARep0YRETAbBuO5p5Kj61v9bNmH/Y1aIy8JGxUt2w3fzTXWGriC0eNjOJNb5X2si4QytyB4LMqzR2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bA+bIeoG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28559C4CECE;
-	Mon,  4 Nov 2024 08:39:11 +0000 (UTC)
+	 MIME-Version:Content-Type; b=at3OcbsrQEOHG2kNVNftNUMr2yFvfsG9vvKanDUw0wl5zCTLrNZ3gjoqUDz69Rbe4EdwR38VgpUkK286lCt1PJdQfb/zpj89AYO0eZxWPHZVIX3LX/qitWHeT5Bf6xjNbkz7IPnBNplG8mcLG8WGjF0Mq1lCExhxHRLULwMhjh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cYMkSKxN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B6ABC4CECE;
+	Mon,  4 Nov 2024 08:43:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730709552;
-	bh=5vj/smWy9ezJQO/o0NP+cBUMABFhHtn2os2i688/u5A=;
+	s=k20201202; t=1730709785;
+	bh=h/ImhdPwBZUTlfrTk8YxD0imoe+rMtZCMzB31TKraWA=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=bA+bIeoGPyo5lRURhJdtx+GncbwyzSmWowzuy1bxwsPBmBlICTrAzCEH7a0NOwM2Z
-	 eQLAdVQ9GBFcqWx/JbiMRuPhwTp9MrCLPWOp2+7yA1AbreHCLGNXPy+tV5uL1SIFK0
-	 JGRpTlf1C2nZyogo+kmZoCw79A4bVJn7qYpVJ8bmw6MlyM5AMhEQT/dS7U9upzj2fO
-	 GzLx6gbGEpp81oLsToybNMjcHMcY4g1iITujT52pZ5Z4qGZG/8+5t7EabMDHaQo5IB
-	 S3+vbx8S8qxmrBdUTlvQYmMW7JEPZQo7oyk+/NIDfTxsLbTIHgt06QXvD1MLaKHZv1
-	 XQuPOMfLC82cA==
+	b=cYMkSKxNRrwJlJx4U/W0m2iOvx6ewjM6X/pbbMJSwlURK0pWqlFowFsz2SF6PjP2H
+	 Qzj7gZpvfTCGyEg55nquRZmrgi/qCBpZksNyJfnnKHY4MoPTzWiuigX9jITvf97QVu
+	 oEKo42m2BGGwYddCpVgOs8K9WMo+T6HtA0QUDvlmAwrFd5YRwSWYlR1OspsxbRYn1s
+	 ujIiubnpyCGRjv2EUUgFURT6JeZJq/h2owkF3iLJq0GaKNFpf7feyqQY+MuXf3ztxo
+	 e1m/tlwQiA4OihzPcPJ0JsZfurLgpf8OGq2KTsxJDuhL33NUT/PMLOshpP0R8VcQP5
+	 4SLY+OA/QBKiQ==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Mark Zhang <markzhang@nvidia.com>, linux-rdma@vger.kernel.org, 
- Maher Sanalla <msanalla@nvidia.com>
-In-Reply-To: <828d57444a0a41042556bb0a4394ecf2fcaed639.1730368052.git.leon@kernel.org>
-References: <828d57444a0a41042556bb0a4394ecf2fcaed639.1730368052.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: Support querying per-plane IB
- PortCounters
-Message-Id: <173070954875.155146.17895904661598131177.b4-ty@kernel.org>
-Date: Mon, 04 Nov 2024 03:39:08 -0500
+Cc: Chiara Meiohas <cmeiohas@nvidia.com>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ linux-rdma@vger.kernel.org, Michael Guralnik <michaelgur@nvidia.com>, 
+ netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>, 
+ Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
+In-Reply-To: <cover.1730381292.git.leon@kernel.org>
+References: <cover.1730381292.git.leon@kernel.org>
+Subject: Re: [PATCH rdma-next 0/3] Fixes to set_netdev/get_netdev flow
+Message-Id: <173070978219.155717.5536968664084032189.b4-ty@kernel.org>
+Date: Mon, 04 Nov 2024 03:43:02 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,16 +64,26 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
 
 
-On Thu, 31 Oct 2024 11:48:14 +0200, Leon Romanovsky wrote:
-> On a SMI device, set requested plane_num when querying PPCNT register
-> with the PortCounters Attribute group.
+On Thu, 31 Oct 2024 15:36:49 +0200, Leon Romanovsky wrote:
+> This series fixes the set_netdev/get_netdev flow in mlx5 drive around LAG.
 > 
+> Thanks
 > 
+> Chiara Meiohas (3):
+>   RDMA/mlx5: Call dev_put() after the blocking notifier
+>   RDMA/core: Implement RoCE GID port rescan and export delete function
+>   RDMA/mlx5: Ensure active slave attachment to the bond IB device
+> 
+> [...]
 
 Applied, thanks!
 
-[1/1] RDMA/mlx5: Support querying per-plane IB PortCounters
-      https://git.kernel.org/rdma/rdma/c/af58db354865a4
+[1/3] RDMA/mlx5: Call dev_put() after the blocking notifier
+      https://git.kernel.org/rdma/rdma/c/c4967b6dc20ab1
+[2/3] RDMA/core: Implement RoCE GID port rescan and export delete function
+      https://git.kernel.org/rdma/rdma/c/ffe3c55b16ddee
+[3/3] RDMA/mlx5: Ensure active slave attachment to the bond IB device
+      https://git.kernel.org/rdma/rdma/c/bf15c4dc0fbb16
 
 Best regards,
 -- 
