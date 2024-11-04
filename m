@@ -1,39 +1,39 @@
-Return-Path: <linux-rdma+bounces-5736-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5737-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 611D99BAEB3
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2024 09:56:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CCB29BAEC0
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2024 09:57:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 926C11C210E2
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2024 08:56:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01F13B2240C
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2024 08:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A215F1ABEBD;
-	Mon,  4 Nov 2024 08:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 632C91ADFFB;
+	Mon,  4 Nov 2024 08:56:48 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7ED9189F47;
-	Mon,  4 Nov 2024 08:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD5991AC8AE;
+	Mon,  4 Nov 2024 08:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730710550; cv=none; b=CMO6HO8SH5/XZ2GMruc4lnGWlgsoY64KOW6Svn6/tNrph84WsIhICk56z7Si2p+TA6RQVhroRAJF6R92X+KQAUfdOBcymv99jSozwPpS2pbkhldU1oWcIc0Ar/Z7D/y8RkYVJBC0QXIg7Dxqssv/B8JlGOkVp7mEuZmlHm9tRCg=
+	t=1730710608; cv=none; b=YSyCAsovwqtiVCziJHWAtUtmQNZoIuU8pBZea+GyC/YhJJQmq9woMVM9i/w/Nqh+vmFwv7T9Ud696YIdndU6XRZICUzcOGrYBIzFWCtv9DqonaDvWcMGfjihXpMIBukOIp/IP0yOPTHYawlEfzvJD+miC+7BOr/6smgm3mFPq14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730710550; c=relaxed/simple;
-	bh=Y388ylC4i8iTPvc9B4G+QXOv3nw5BajY8qwg0zTx0Lo=;
+	s=arc-20240116; t=1730710608; c=relaxed/simple;
+	bh=Cd7w1aJWj9RaW8qRI2u0FHF8/JEncSVlg+8XB/AbH78=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DPE80N8eoVbG7yusZBtvMuS2WOIOHtekgvG2lwszvjNyBpz+4fcIDwxeYPz12hTx+4LFV/t2YMis3dWhpITVHy++uimViEl6m+OC5UhGfgZ7TUUrvVQrPMaHtusaNTqjIu6zWGrWXxnQnl46gGllwKn9ScSJd8Gfkqe4qM6cz6w=
+	 Content-Type:Content-Disposition:In-Reply-To; b=shifGVCckSB2J28Ey9XntaLl6k9pehyg5u1iH/fv3D6mWG7sQYn5S/iktUWDop9MXGmeeiEajPxsge6nJp+0YZBhwin815ar6jqHiOw5t3/59Gvp08hffd7S1GEYLFNlC7W96A2UcMXS7cVns2UEevSshPDLHv4yE1QuCAsJ1oo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id 8DFB9227AB0; Mon,  4 Nov 2024 09:55:45 +0100 (CET)
-Date: Mon, 4 Nov 2024 09:55:45 +0100
+	id 13FD4227AB3; Mon,  4 Nov 2024 09:56:43 +0100 (CET)
+Date: Mon, 4 Nov 2024 09:56:42 +0100
 From: Christoph Hellwig <hch@lst.de>
-To: Bart Van Assche <bvanassche@acm.org>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
 Cc: Leon Romanovsky <leon@kernel.org>, Jens Axboe <axboe@kernel.dk>,
 	Jason Gunthorpe <jgg@ziepe.ca>, Robin Murphy <robin.murphy@arm.com>,
 	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
@@ -55,8 +55,8 @@ Cc: Leon Romanovsky <leon@kernel.org>, Jens Axboe <axboe@kernel.dk>,
 	kvm@vger.kernel.org, linux-mm@kvack.org
 Subject: Re: [RFC PATCH 2/7] block: don't merge different kinds of P2P
  transfers in a single bio
-Message-ID: <20241104085545.GB24211@lst.de>
-References: <cover.1730037261.git.leon@kernel.org> <34d44537a65aba6ede215a8ad882aeee028b423a.1730037261.git.leon@kernel.org> <d4378502-6bc2-4064-8c35-191738105406@acm.org>
+Message-ID: <20241104085642.GC24211@lst.de>
+References: <cover.1730037261.git.leon@kernel.org> <34d44537a65aba6ede215a8ad882aeee028b423a.1730037261.git.leon@kernel.org> <f80e7b54-b897-4df2-a49d-bc6012640a8a@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -65,24 +65,15 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d4378502-6bc2-4064-8c35-191738105406@acm.org>
+In-Reply-To: <f80e7b54-b897-4df2-a49d-bc6012640a8a@linux.dev>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Thu, Oct 31, 2024 at 01:58:37PM -0700, Bart Van Assche wrote:
-> On 10/27/24 7:21 AM, Leon Romanovsky wrote:
->> +		/*
->> +		 * When doing ZONE_DEVICE-based P2P transfers, all pages in a
->> +		 * bio must be P2P pages from the same device.
->> +		 */
->> +		if ((bio->bi_opf & REQ_P2PDMA) &&
->> +		    !zone_device_pages_have_same_pgmap(bv->bv_page, page))
->> +			return 0;
->
-> It's probably too late to change the "zone_device_" prefix into
-> something that cannot be confused with a reference to zoned block
-> devices?
+On Sat, Nov 02, 2024 at 08:39:35AM +0100, Zhu Yanjun wrote
 
-It's too late and also wrong and also entirely out of scope for this
-series.
+<full quote delete>
 
+If you have something useful to say, please quote the mail you are
+replying to to the context required to make sense.
+
+Ignored for now.
 
