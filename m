@@ -1,84 +1,77 @@
-Return-Path: <linux-rdma+bounces-5734-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5735-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66DF89BAE72
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2024 09:47:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB0A9BAEAD
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2024 09:55:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98DE61C21704
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2024 08:47:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5CFCB20D8E
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2024 08:55:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC421ABEAC;
-	Mon,  4 Nov 2024 08:46:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="efFrL0lH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC521ABEB7;
+	Mon,  4 Nov 2024 08:55:31 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AAC5BA34
-	for <linux-rdma@vger.kernel.org>; Mon,  4 Nov 2024 08:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0216118E364;
+	Mon,  4 Nov 2024 08:55:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730710018; cv=none; b=RjsFEM3OB/2JoTIhKn4hqM3nVqTqO3HY5n1zLR5j//TKX3UfJKmSsuaV2/3JMoMVCEXoHSamykL+yFGHBsACKZdeK3496YtASCKnBP5D41C9+R0UbQHcw5L+ZCmCXS7hSyFgxai+HnjZBK8YUhEsBlkEtM6PDiynxGAOiekOcZA=
+	t=1730710531; cv=none; b=IbcdkGbkBrwuqQlCRKrBOojA34Hf8X9W4w53V1lO2G2DIHxx0yZ3NFWsgkQ9ilniEFl15QbiqOa3JCT6I8vh2NPW3wrUJmew6NJIOqZFvHTp/y6EEx/0NBBWqWgtQjwAveglrm5htBsW/Cd88fQNo1JzY19hdb0WWuZKp3LzXbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730710018; c=relaxed/simple;
-	bh=xLP8+ffyZB9247DF3k+meKWzbjTD9X7Y5umgUm8UFws=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=ODqyQ/qg++5WAxncAZk8o4ZzwCXT25n9ZTCb69QkN5UWDc7mGgLHxiniluv54/SjSvJcOPdC0ACg0arWs4oevvgfzguPnNulUv4q+yUXwtQRLo7BBohd/dItoZ2C72DWHssjVxln06IyD0QeKsWKj5qwnd98UW8HOA2UNpLVuR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=efFrL0lH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BE02C4CECE;
-	Mon,  4 Nov 2024 08:46:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730710017;
-	bh=xLP8+ffyZB9247DF3k+meKWzbjTD9X7Y5umgUm8UFws=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=efFrL0lHX+6Yy/3nqftmbErpU8QVXVQ0e8b+CzZXDaMbN2GxfnOSYhbPfeWG4wF96
-	 5lInnCVKu0Gh+D4cZ/nOArZx9y/chNnV0GDn/tF/KRCmDyDSVaPmGbC7xpJiaUcz5h
-	 fQgS4IK91rDfehkWLFF0/tzpXGNGYvoqSA6O8hy6Wr8A+TlLw8OJoaigvsM2DypL4v
-	 AhZaSSmim4GRe9NyqUvMBpftUPfHglo3/DCaKD605QDSVGorquQX+okIgImhMm8Aux
-	 OtCqtpDZXFMnpWKkTLGPtvGRnH4pJ3pN1U7Xd3UQuFIlV9TIMpEGjI/VFasJEi8IvU
-	 UTW6AW6MulPeg==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Chiara Meiohas <cmeiohas@nvidia.com>, linux-rdma@vger.kernel.org
-In-Reply-To: <093c978ef2766fd3ab4ff8798eeb68f2f11582f6.1730367038.git.leon@kernel.org>
-References: <093c978ef2766fd3ab4ff8798eeb68f2f11582f6.1730367038.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/nldev: Add IB device and net device
- rename events
-Message-Id: <173071001480.156548.6028774385344679687.b4-ty@kernel.org>
-Date: Mon, 04 Nov 2024 03:46:54 -0500
+	s=arc-20240116; t=1730710531; c=relaxed/simple;
+	bh=XJMROuE4JjYsw4wo8HK5SvAvW9x90cNUd3R+iiehUbQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=skvL/Dmh+mJc3FCG8aIY6RbS2SoBiRBoxWC56yuEviGWxvd0v0XsUu5mYBp11HUKvJSUki/vAhzI8cQT+ghelZ06botTFdmeBHfYJrq1wNvcDuJzTSmPgAAjerjr3+henSH/v9KQu8S/vpUgkTjPZWOHzH5U0gslBm6BeDSxmPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 95EF3227AAD; Mon,  4 Nov 2024 09:55:21 +0100 (CET)
+Date: Mon, 4 Nov 2024 09:55:21 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Bart Van Assche <bvanassche@acm.org>
+Cc: Leon Romanovsky <leon@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Robin Murphy <robin.murphy@arm.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+	Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH 1/7] block: share more code for bio addition helpers
+Message-ID: <20241104085521.GA24211@lst.de>
+References: <cover.1730037261.git.leon@kernel.org> <e6be9d87a3ca1a2f9c27bce73fbab559c21c765f.1730037261.git.leon@kernel.org> <4c7e679a-d3e6-4426-a679-ee581b5c728c@acm.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c7e679a-d3e6-4426-a679-ee581b5c728c@acm.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
+On Thu, Oct 31, 2024 at 01:55:11PM -0700, Bart Van Assche wrote:
+> Does "_int" stand for "_internal"? If so, please consider changing it
+> into "_impl". I think that will prevent that anyone confuses this suffix
+> with the "int" data type.
 
-On Thu, 31 Oct 2024 11:31:14 +0200, Leon Romanovsky wrote:
-> Implement event sending for IB device rename and IB device
-> port associated netdevice rename.
-> 
-> In iproute2, rdma monitor displays the IB device name, port
-> and the netdevice name when displaying event info. Since
-> users can modiy these names, we track and notify on renaming
-> events.
-> 
-> [...]
-
-Applied, thanks!
-
-[1/1] RDMA/nldev: Add IB device and net device rename events
-      https://git.kernel.org/rdma/rdma/c/d6eed30e43be23
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+_impl is even more unusual than _int, so no.
 
 
