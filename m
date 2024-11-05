@@ -1,196 +1,224 @@
-Return-Path: <linux-rdma+bounces-5775-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5776-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63DA99BD57E
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2024 19:56:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CC9D9BD627
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2024 20:54:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 843F51C22D17
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2024 18:56:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0847283C09
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2024 19:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA01B1E906B;
-	Tue,  5 Nov 2024 18:56:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71C8213EE3;
+	Tue,  5 Nov 2024 19:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qV3al8eh"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="cCnrWGzn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93ED817BEB7;
-	Tue,  5 Nov 2024 18:56:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68C421314D
+	for <linux-rdma@vger.kernel.org>; Tue,  5 Nov 2024 19:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730832994; cv=none; b=ee62gao2ofDK3+k9Zf2qY1KHpLwMtdTcB/6F5j055GeXtQsN41rYrLzglTBDVxPdMppQq/k1BSNWvWS1BgN1WFvOX+rjOdG1ZL5UmqGHvhW1SnqvvgrpZaqR9cDklXb9SkVJvhPq4C8XZaZAHVZ0dn89zFhWsspP5o2llpo795w=
+	t=1730836441; cv=none; b=bqPOfs08qHiMiEk7s8NMidWclhI8nbpgO3sltwRp5A2yC1O+DdcT6sd96ZymRMt+hZ8E3/+jZ6nL5hWQ3TbOAriC1eWqTJitGfpilJ7/NFdmkj14d7U9ujhurOtY+Uy2gDJlqYs10DpLlDg1/7kM+MJGtsG+MPDxYXZYXwr1bwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730832994; c=relaxed/simple;
-	bh=c/J5SfUIJ9hQst/+9a2BMM/+0T0QUgD6O198Li/u3mo=;
+	s=arc-20240116; t=1730836441; c=relaxed/simple;
+	bh=q3kRFS0aC9llW2hXigplm+6X6nuxwR5TAuU7KtMvtNw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pDzcFQjvgO3gn2LCu+fH6eKxygDgg4yQv7hDs1EqIim9RUkndsaeVIGVSeLLSILatf4v7GqMy/1t8uUJUb42O8vQ04BVl0aLQylWFv2qki3E3jAVp0cT+30AtlyzBsgfmyb9axAsw/ptnp5JEj93cPbx06uLbGNFh2Q4Jj3pzmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qV3al8eh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D8A9C4CECF;
-	Tue,  5 Nov 2024 18:56:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730832994;
-	bh=c/J5SfUIJ9hQst/+9a2BMM/+0T0QUgD6O198Li/u3mo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qV3al8eh5yGBIlvCge0rhsVraqUXO27A+aqiSVDZA5tCLYlWKWOGLDWFSgGOgNTOI
-	 Qn8OtFnHkRoQYja3H6tOBkwfekfawfjTrTb6F6H8Y+4edPtaRGEFIVHeQJjx08X2Ir
-	 xhFjsiY1wnGeOFfcSYgT1ifE9JSch6vBOiiSy9ra3xO3171ANU33EbGatSuJmpmGzP
-	 b12JaYiD9ZIQeavoZfoWbaDpOZ7Cc38rfDrOkoMP3UCmH7/hGj+1J0BZuLemgfERjL
-	 CNlimFcs6Hfgo9mRCKxQk0N5bmI2k9YBeL6ds57lLI6iaPd35BIjN3GO9qaAjuinHC
-	 AB1DoBGjv6nQA==
-Date: Tue, 5 Nov 2024 10:56:32 -0800
-From: Saeed Mahameed <saeed@kernel.org>
-To: Caleb Sander Mateos <csander@purestorage.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Parav Pandit <parav@nvidia.com>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3] mlx5/core: Schedule EQ comp tasklet only if
- necessary
-Message-ID: <ZypqYHaRbBCGo3FD@x130>
-References: <CY8PR12MB7195C97EB164CD3A0E9A99F9DC552@CY8PR12MB7195.namprd12.prod.outlook.com>
- <20241031163436.3732948-1-csander@purestorage.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bKzFUw45xfaniQjVcf0MC9brp0PWgxosYJZavfnvOHgYJJicffL2nc5I9Wi3p053kqGWEVfWANHIsZlgHMnsnRPOaLvRueg6HzCY1q+CFfkzxWOwQuksS99c1hCtpamI+TtJOV2zi+YHtZ7iOkHNSr+4OqfpmNNLMu9cGx8pLPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=cCnrWGzn; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6cbcc2bd800so1619766d6.0
+        for <linux-rdma@vger.kernel.org>; Tue, 05 Nov 2024 11:53:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1730836439; x=1731441239; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+fX00798BJ3ATWBHAwavTUTImd2ssZMf/WzAfMHnat0=;
+        b=cCnrWGznqeSBxBybSIX9KF2jm+YHihlVV6QSsqvER5HCYWOvEMYWGMMrUPl6GATwiZ
+         srLlBdBWXyC4dDZ9YWe3VWgJGOBPRvDEFxnahCiNSoGSK8bsmnQxtRiboeppWUadKGCS
+         P0/6mWuTEfwnZ1pXQCym0DsT+gHAJHBeVYSJiwS3/eJ6vh4YNHNi7skohTpFGvza6lWl
+         fkKSEpvQfMWtstvuZMSaGHptv80S6FNKODFfEMfpGP7fRaQ/eU4VJbTXyRIKbK2qiPC3
+         5qsFAaTWTC9aUfiNVu8c4B7nPODBl1MRoHORCscuhmjiWPpV8Au1arDi3GEwmKgoOGUS
+         NoAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730836439; x=1731441239;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+fX00798BJ3ATWBHAwavTUTImd2ssZMf/WzAfMHnat0=;
+        b=A3h8CF6h1nOLNIuLjmoKvI5nWGKFgLBEFp6Ak7BZTR4Sgm8IUEf2z7S2LBOcodYK8J
+         eQ1u7S1TpdixHJPl/JowxB8UAnFVGQ0dtPfDIDhUmaK/2H+pF68kmPgWy2z26igKZgbR
+         tTvE2sslo1M4A0lBjKCvlq2tFiKfsU1T4fzZvwcHPYzYOAIUxDc7xf9nhdH+PkoKOQQ3
+         5VBfrVW7S8TUmSEs7vOR0BGzabnk7o+pPS1Qx6F0+YpTZmD752Gw8iVUmaFz4Dr2sjnH
+         ztihEFpt4QTE+mDbEQds9jozmDH17a4R1RRFx9tOlliXgR+OH8UNxiIOFcpchPUlb430
+         SCQw==
+X-Forwarded-Encrypted: i=1; AJvYcCX8ZRkp01q23JetP0jDONL5+YgThLIFzyPas1yDXesYCpl1hDjB3liL3Y5ESmz6oHTlhXcDG+h7jCV3@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyl75qkr0X50RjNg3Ymkls5jCJnYld0EhU3kD3YGOi0OGLfboaj
+	o/6pOY5Ckfr0yivZGHZ2+ReBmoJRAuzY5h7wv4RNxeo43epAaozcYf4CyXXJZLyh26z1atAVs3h
+	p
+X-Google-Smtp-Source: AGHT+IEaav3D7n+muLVYjXAvVqOfQiyB3KvOcn2o5SW6dcKTwKh96GbO3Tfnssa4/aNZfrPdV+MQVQ==
+X-Received: by 2002:ad4:4eeb:0:b0:6cb:ed27:145c with SMTP id 6a1803df08f44-6d35b9510a3mr302739006d6.19.1730836438787;
+        Tue, 05 Nov 2024 11:53:58 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d35415a62asm63870536d6.80.2024.11.05.11.53.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Nov 2024 11:53:58 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1t8Pcj-000000023mq-1vDZ;
+	Tue, 05 Nov 2024 15:53:57 -0400
+Date: Tue, 5 Nov 2024 15:53:57 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Robin Murphy <robin.murphy@arm.com>, Leon Romanovsky <leon@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 00/17] Provide a new two step DMA mapping API
+Message-ID: <20241105195357.GI35848@ziepe.ca>
+References: <cover.1730298502.git.leon@kernel.org>
+ <3567312e-5942-4037-93dc-587f25f0778c@arm.com>
+ <20241104095831.GA28751@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241031163436.3732948-1-csander@purestorage.com>
+In-Reply-To: <20241104095831.GA28751@lst.de>
 
-On 31 Oct 10:34, Caleb Sander Mateos wrote:
->Currently, the mlx5_eq_comp_int() interrupt handler schedules a tasklet
->to call mlx5_cq_tasklet_cb() if it processes any completions. For CQs
->whose completions don't need to be processed in tasklet context, this
->adds unnecessary overhead. In a heavy TCP workload, we see 4% of CPU
->time spent on the tasklet_trylock() in tasklet_action_common(), with a
->smaller amount spent on the atomic operations in tasklet_schedule(),
->tasklet_clear_sched(), and locking the spinlock in mlx5_cq_tasklet_cb().
->TCP completions are handled by mlx5e_completion_event(), which schedules
->NAPI to poll the queue, so they don't need tasklet processing.
->
->Schedule the tasklet in mlx5_add_cq_to_tasklet() instead to avoid this
->overhead. mlx5_add_cq_to_tasklet() is responsible for enqueuing the CQs
->to be processed in tasklet context, so it can schedule the tasklet. CQs
->that need tasklet processing have their interrupt comp handler set to
->mlx5_add_cq_to_tasklet(), so they will schedule the tasklet. CQs that
->don't need tasklet processing won't schedule the tasklet. To avoid
->scheduling the tasklet multiple times during the same interrupt, only
->schedule the tasklet in mlx5_add_cq_to_tasklet() if the tasklet work
->queue was empty before the new CQ was pushed to it.
->
->The additional branch in mlx5_add_cq_to_tasklet(), called for each EQE,
->may add a small cost for the userspace Infiniband CQs whose completions
->are processed in tasklet context. But this seems worth it to avoid the
->tasklet overhead for CQs that don't need it.
->
->Note that the mlx4 driver works the same way: it schedules the tasklet
->in mlx4_add_cq_to_tasklet() and only if the work queue was empty before.
->
->Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
->Reviewed-by: Parav Pandit <parav@nvidia.com>
->---
->v3: revise commit message
->v2: reorder variable declarations, describe CPU profile results
->
-> drivers/net/ethernet/mellanox/mlx5/core/cq.c | 5 +++++
-> drivers/net/ethernet/mellanox/mlx5/core/eq.c | 5 +----
-> 2 files changed, 6 insertions(+), 4 deletions(-)
->
->diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cq.c b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
->index 4caa1b6f40ba..25f3b26db729 100644
->--- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
->+++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
->@@ -69,22 +69,27 @@ void mlx5_cq_tasklet_cb(struct tasklet_struct *t)
-> static void mlx5_add_cq_to_tasklet(struct mlx5_core_cq *cq,
-> 				   struct mlx5_eqe *eqe)
-> {
-> 	unsigned long flags;
-> 	struct mlx5_eq_tasklet *tasklet_ctx = cq->tasklet_ctx.priv;
->+	bool schedule_tasklet = false;
->
-> 	spin_lock_irqsave(&tasklet_ctx->lock, flags);
-> 	/* When migrating CQs between EQs will be implemented, please note
-> 	 * that you need to sync this point. It is possible that
-> 	 * while migrating a CQ, completions on the old EQs could
-> 	 * still arrive.
-> 	 */
-> 	if (list_empty_careful(&cq->tasklet_ctx.list)) {
-> 		mlx5_cq_hold(cq);
+On Mon, Nov 04, 2024 at 10:58:31AM +0100, Christoph Hellwig wrote:
+> On Thu, Oct 31, 2024 at 09:17:45PM +0000, Robin Murphy wrote:
+> > The hilarious amount of work that iommu_dma_map_sg() does is pretty much 
+> > entirely for the benefit of v4l2 and dma-buf importers who *depend* on 
+> > being able to linearise a scatterlist in DMA address space. TBH I doubt 
+> > there are many actual scatter-gather-capable devices with significant 
+> > enough limitations to meaningfully benefit from DMA segment combining these 
+> > days - I've often thought that by now it might be a good idea to turn that 
+> > behaviour off by default and add an attribute for callers to explicitly 
+> > request it.
+> 
+> Even when devices are not limited they often perform significantly better
+> when IOVA space is not completely fragmented.  While the dma_map_sg code
+> is a bit gross due to the fact that it has to deal with unaligned segments,
+> the coalescing itself often is a big win.
 
-The condition here is counter intuitive, please add a comment that relates
-to the tasklet routine mlx5_cq_tasklet_cb, something like.
-/* If this list isn't empty, the tasklet is already scheduled, and not yet
-  * executing the list, the spinlock here guarantees the addition of this CQ
-  * will be seen by the next execution, so rescheduling the tasklet is not
-  * required */ 
+RDMA is like this too, Almost all the MR HW gets big wins if the
+entire scatter list is IOVA contiguous. One of the future steps I'd
+like to see on top of this is to fine tune the IOVA allocation backing
+MRs to exactly match the HW needs. Having proper alignment and
+contiguity can be huge reduction in device overhead, like a 100MB MR
+may need to store 200K of mapping information on-device, but with a
+properly aligned IOVA this can be reduced to only 16 bytes.
 
-One other way to do this, is to flag tasklet_ctx.sched_flag = true, inside
-mlx5_add_cq_to_tasklet, and then schedule once at the end of eq irq processing 
-if (tasklet_ctx.sched_flag == true). to avoid "too" early scheduling, but
-since the tasklet can't run until the irq handler returns, I think your
-solution shouldn't suffer from "too" early scheduling .. 
+Avoiding a double translation tax when the iommu HW is enabled is
+potentially significant. We have some RDMA workloads with VMs where
+the NIC is holding ~1GB of memory just for translations, but the iommu
+is active as the S2. ie we are paying a double tax on translation.
 
-Acked-by: Saeed Mahameed <saeedm@nvidia.com>
+It could be a very interesting trade off to reduce the NIC side to
+nothing and rely on the CPU IOMMU with nested translation instead.
 
+> Note that dma_map_sg also has two other very useful features:  batching
+> of the iotlb flushing, and support for P2P, which to be efficient also
+> requires batching the lookups.
 
->+		schedule_tasklet = list_empty(&tasklet_ctx->list);
-> 		list_add_tail(&cq->tasklet_ctx.list, &tasklet_ctx->list);
-> 	}
-> 	spin_unlock_irqrestore(&tasklet_ctx->lock, flags);
->+
->+	if (schedule_tasklet)
->+		tasklet_schedule(&tasklet_ctx->task);
-> }
->
-> /* Callers must verify outbox status in case of err */
-> int mlx5_create_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
-> 		   u32 *in, int inlen, u32 *out, int outlen)
->diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
->index 859dcf09b770..3fd2091c11c8 100644
->--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
->+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
->@@ -112,14 +112,14 @@ static int mlx5_eq_comp_int(struct notifier_block *nb,
-> 	struct mlx5_eq_comp *eq_comp =
-> 		container_of(nb, struct mlx5_eq_comp, irq_nb);
-> 	struct mlx5_eq *eq = &eq_comp->core;
-> 	struct mlx5_eqe *eqe;
-> 	int num_eqes = 0;
->-	u32 cqn = -1;
->
-> 	while ((eqe = next_eqe_sw(eq))) {
-> 		struct mlx5_core_cq *cq;
->+		u32 cqn;
->
-> 		/* Make sure we read EQ entry contents after we've
-> 		 * checked the ownership bit.
-> 		 */
-> 		dma_rmb();
->@@ -142,13 +142,10 @@ static int mlx5_eq_comp_int(struct notifier_block *nb,
-> 			break;
-> 	}
->
-> 	eq_update_ci(eq, 1);
->
->-	if (cqn != -1)
->-		tasklet_schedule(&eq_comp->tasklet_ctx.task);
->-
-> 	return 0;
-> }
->
-> /* Some architectures don't latch interrupts when they are disabled, so using
->  * mlx5_eq_poll_irq_disabled could end up losing interrupts while trying to
->-- 
->2.45.2
->
->
+This is the main point, and I think, is the uniqueness Leon is talking
+about. We don't get those properties through any other API and this
+one series preserves them.
+
+In fact I would say that is the entire point of this series: preserve
+everything special about dma_map_sg() compared to dma_map_page() but
+don't require a scatterlist.
+
+> >> Several approaches have been explored to expand the DMA API with additional
+> >> scatterlist-like structures (BIO, rlist), instead split up the DMA API
+> >> to allow callers to bring their own data structure.
+> >
+> > And this line of reasoning is still "2 + 2 = Thursday" - what is to say 
+> > those two notions in any way related? We literally already have one generic 
+> > DMA operation which doesn't operate on struct page, yet needed nothing 
+> > "split up" to be possible.
+> 
+> Yeah, I don't really get the struct page argument.  In fact if we look
+> at the nitty-gritty details of dma_map_page it doesn't really need a
+> page at all. 
+
+Today, if you want to map a P2P address you must have a struct page,
+because page->pgmap is the only source of information on the P2P
+topology.
+
+So the logic is, to get P2P without struct page we need a way to have
+all the features of dma_map_sg() but without a mandatory scatterlist
+because we cannot remove struct page from scatterlist.
+
+This series gets to the first step - no scatterlist. There will need
+to be another series to provide an alternative to page->pgmap to get
+the P2P information. Then we really won't have struct page dependence
+in the DMA API.
+
+I actually once looked at how to enhance dma_map_resource() to support
+P2P and it was not very nice, the unmap side became quite complex. I
+think this is a more elgant solution than what I was sketching.
+
+> >>      for the device. Instead of allocating a scatter list entry per allocated
+> >>      page it can just allocate an array of 'struct page *', saving a large
+> >>      amount of memory.
+> >
+> > VFIO already assumes a coherent device with (realistically) an IOMMU which 
+> > it explicitly manages - why is it even pretending to need a generic DMA 
+> > API?
+> 
+> AFAIK that does isn't really vfio as we know it but the control device
+> for live migration.  But Leon or Jason might fill in more.
+
+Yes, this is the control side of the VFIO live migration driver that
+needs rather a lot of memory to store the migration blob. There is
+definitely an iommu, and the VF function is definitely translating,
+but it doesn't mean the PF function is using dma-iommu.c, it is often
+in iommu passthrough/identity and using DMA direct.
+
+It was done as an alternative example on how to use the API. Again
+there are more improvements possible there, the driver does not take
+advantage of contiguity or alignment when programming the HW.
+
+> Because we only need to preallocate the tiny constant sized dma_iova_state
+> as part of the request instead of an additional scatterlist that requires
+> sizeof(struct page *) + sizeof(dma_addr_t) + 3 * sizeof(unsigned int)
+> per segment, including a memory allocation per I/O for that.
+
+Right, eliminating scatterlist entirely on fast paths is a big
+point. I recall Chuck was keen on the same thing for NFSoRDMA as well.
+
+> At least for the block code we have a nice little core wrapper that is
+> very easy to use, and provides a great reduction of memory use and
+> allocations.  The HMM use case I'll let others talk about.
+
+I saw the Intel XE team make a complicated integration with the DMA
+API that wasn't so good. They were looking at an earlier version of
+this and I think the feedback was positive. It should make a big
+difference, but we will need to see what they come up and possibly
+tweak things.
+
+Jason
 
