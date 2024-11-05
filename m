@@ -1,140 +1,196 @@
-Return-Path: <linux-rdma+bounces-5774-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5775-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98C559BD563
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2024 19:52:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63DA99BD57E
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2024 19:56:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EC482842C3
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2024 18:52:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 843F51C22D17
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2024 18:56:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392B81EC019;
-	Tue,  5 Nov 2024 18:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA01B1E906B;
+	Tue,  5 Nov 2024 18:56:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="MwMI3f1F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qV3al8eh"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302A11EC012
-	for <linux-rdma@vger.kernel.org>; Tue,  5 Nov 2024 18:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93ED817BEB7;
+	Tue,  5 Nov 2024 18:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730832666; cv=none; b=W3RkUyu2phW/wVp7lA0o0gj6/XnFThxVfemjDHXIiPfzWC9eEY7z9J+foZIjJDgNZ95Z3F1SkAGRu8mc7mzcGD6rtwfakZ61XbK9458lyeysuS/mOYypJO3VHN/yHvHy9z99BiNEr+/3amsScjq6Tosn5okwrqvrk5uiIhojJJU=
+	t=1730832994; cv=none; b=ee62gao2ofDK3+k9Zf2qY1KHpLwMtdTcB/6F5j055GeXtQsN41rYrLzglTBDVxPdMppQq/k1BSNWvWS1BgN1WFvOX+rjOdG1ZL5UmqGHvhW1SnqvvgrpZaqR9cDklXb9SkVJvhPq4C8XZaZAHVZ0dn89zFhWsspP5o2llpo795w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730832666; c=relaxed/simple;
-	bh=nJnTbD5cGZ0OfD00jTtdrajsLazl3DFTJAxArG9Ps+Q=;
+	s=arc-20240116; t=1730832994; c=relaxed/simple;
+	bh=c/J5SfUIJ9hQst/+9a2BMM/+0T0QUgD6O198Li/u3mo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TCJrMyr2aTzlegLfXvUm7bJOT8lenJuU6/NlPVfZjLxyOBIWfX/ZCAovOtgE7JE1xWCFFmH0GjFngaqvUdX8UgsLfaZ8AGnB/clmB1YhRXTPoPgfi8hsR71iCYpzY5pSYLp4O9O+aLUGTih6V/gBhIByu1MuM9M4loXlpCE/uaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=MwMI3f1F; arc=none smtp.client-ip=209.85.222.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7b1457ba751so439099785a.3
-        for <linux-rdma@vger.kernel.org>; Tue, 05 Nov 2024 10:51:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1730832663; x=1731437463; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C194RVyLAfjN0SwVJhWOGUoO0421PCIPswUt8quSHT8=;
-        b=MwMI3f1FiJtKbSb+104JZqGid1wfIf3uJt8Wjuw4Mn8iu/DsebWaYWZdRPs8idwCnR
-         G+I7AF7bhCUUSUBNQw+QPCmepNj+NeS+8V7uRjlg5iaVIA9CPV//gHtzykp6RFpWjSB3
-         bEjGvNxbf2LnXaftz75p065/1sD/GAPsEOMMNpMZ5UjmD4y8a40GfLBTM1Qq2oU8QdZ3
-         J8GIR4YQWuWl6Dtsf0Dy0aRq1Eila20Aj2m0v4hcEgmRZY3sAHdnp8RqfyrRoDjZYtzT
-         ObzFuPZUFv04pc7JsyasDhZ57mi4ATensZ+Vjda89fVA64rlDYTQ6JD+3xUJlCux182V
-         pzZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730832663; x=1731437463;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C194RVyLAfjN0SwVJhWOGUoO0421PCIPswUt8quSHT8=;
-        b=vdK6PPG3B1zHe8Zd3TyGEdey4zC1OdfPijUPJzWeboEKHwCd4KeqDMRYfSedRdF7dm
-         BCBcd0GeH0Jn6LupSFxNLyNuO7m60Xw4j689QfvGtsSZ/3KC506k4OCrRzQ1Bw2WwkQY
-         TZxAXo9MQ7OcuNPXaucfwxQSEz1bMjga4Y96DenrDz9+uoQeuTNICht6dUHCremf6QBm
-         iu2lbQ2cRReBrG5bsZJQQwDwJ9ZHZHA6IRdKl7HELXesY9cY4tajDiVuLuFuXJEQ7w2O
-         W5+mD0Rp+H5YiwjeXd0plxjKrMp3HDFalT/K94MExim+ceWQkylTe9Umstgcs14vksAi
-         7epw==
-X-Forwarded-Encrypted: i=1; AJvYcCXpKUl5McN0BpIdDq9+5frLr25blDqEY0JgMQu+rMcuLlthZMqgCoyep6hczJ3qhTF81oynQb9NYZ3w@vger.kernel.org
-X-Gm-Message-State: AOJu0YzbZA5RU8JAXZ+CrCs3EOyW574G6DBChowHcIHPlS78vJfG0NHk
-	pmwBtS4GAa9uvvM0iyioAmJy268NOiw0xe8TsYxudTjSTJPbwZ48NKWxPteUyGg=
-X-Google-Smtp-Source: AGHT+IGWpBzbxGzBgv9Gx5tLlQAZYsSh7jgfOX8tW5mq4qsvhcUPgq93VZEIR90XeqIlAFYpEQmgSA==
-X-Received: by 2002:a05:620a:1908:b0:7b1:481f:b89c with SMTP id af79cd13be357-7b193f0a206mr4853751585a.35.1730832662826;
-        Tue, 05 Nov 2024 10:51:02 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b2f3a70971sm549852785a.77.2024.11.05.10.51.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Nov 2024 10:51:01 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1t8Odp-000000023WW-0CZJ;
-	Tue, 05 Nov 2024 14:51:01 -0400
-Date: Tue, 5 Nov 2024 14:51:01 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Robin Murphy <robin.murphy@arm.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 00/17] Provide a new two step DMA mapping API
-Message-ID: <20241105185101.GH35848@ziepe.ca>
-References: <cover.1730298502.git.leon@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pDzcFQjvgO3gn2LCu+fH6eKxygDgg4yQv7hDs1EqIim9RUkndsaeVIGVSeLLSILatf4v7GqMy/1t8uUJUb42O8vQ04BVl0aLQylWFv2qki3E3jAVp0cT+30AtlyzBsgfmyb9axAsw/ptnp5JEj93cPbx06uLbGNFh2Q4Jj3pzmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qV3al8eh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D8A9C4CECF;
+	Tue,  5 Nov 2024 18:56:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730832994;
+	bh=c/J5SfUIJ9hQst/+9a2BMM/+0T0QUgD6O198Li/u3mo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qV3al8eh5yGBIlvCge0rhsVraqUXO27A+aqiSVDZA5tCLYlWKWOGLDWFSgGOgNTOI
+	 Qn8OtFnHkRoQYja3H6tOBkwfekfawfjTrTb6F6H8Y+4edPtaRGEFIVHeQJjx08X2Ir
+	 xhFjsiY1wnGeOFfcSYgT1ifE9JSch6vBOiiSy9ra3xO3171ANU33EbGatSuJmpmGzP
+	 b12JaYiD9ZIQeavoZfoWbaDpOZ7Cc38rfDrOkoMP3UCmH7/hGj+1J0BZuLemgfERjL
+	 CNlimFcs6Hfgo9mRCKxQk0N5bmI2k9YBeL6ds57lLI6iaPd35BIjN3GO9qaAjuinHC
+	 AB1DoBGjv6nQA==
+Date: Tue, 5 Nov 2024 10:56:32 -0800
+From: Saeed Mahameed <saeed@kernel.org>
+To: Caleb Sander Mateos <csander@purestorage.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Parav Pandit <parav@nvidia.com>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3] mlx5/core: Schedule EQ comp tasklet only if
+ necessary
+Message-ID: <ZypqYHaRbBCGo3FD@x130>
+References: <CY8PR12MB7195C97EB164CD3A0E9A99F9DC552@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <20241031163436.3732948-1-csander@purestorage.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <cover.1730298502.git.leon@kernel.org>
+In-Reply-To: <20241031163436.3732948-1-csander@purestorage.com>
 
-On Wed, Oct 30, 2024 at 05:12:46PM +0200, Leon Romanovsky wrote:
+On 31 Oct 10:34, Caleb Sander Mateos wrote:
+>Currently, the mlx5_eq_comp_int() interrupt handler schedules a tasklet
+>to call mlx5_cq_tasklet_cb() if it processes any completions. For CQs
+>whose completions don't need to be processed in tasklet context, this
+>adds unnecessary overhead. In a heavy TCP workload, we see 4% of CPU
+>time spent on the tasklet_trylock() in tasklet_action_common(), with a
+>smaller amount spent on the atomic operations in tasklet_schedule(),
+>tasklet_clear_sched(), and locking the spinlock in mlx5_cq_tasklet_cb().
+>TCP completions are handled by mlx5e_completion_event(), which schedules
+>NAPI to poll the queue, so they don't need tasklet processing.
+>
+>Schedule the tasklet in mlx5_add_cq_to_tasklet() instead to avoid this
+>overhead. mlx5_add_cq_to_tasklet() is responsible for enqueuing the CQs
+>to be processed in tasklet context, so it can schedule the tasklet. CQs
+>that need tasklet processing have their interrupt comp handler set to
+>mlx5_add_cq_to_tasklet(), so they will schedule the tasklet. CQs that
+>don't need tasklet processing won't schedule the tasklet. To avoid
+>scheduling the tasklet multiple times during the same interrupt, only
+>schedule the tasklet in mlx5_add_cq_to_tasklet() if the tasklet work
+>queue was empty before the new CQ was pushed to it.
+>
+>The additional branch in mlx5_add_cq_to_tasklet(), called for each EQE,
+>may add a small cost for the userspace Infiniband CQs whose completions
+>are processed in tasklet context. But this seems worth it to avoid the
+>tasklet overhead for CQs that don't need it.
+>
+>Note that the mlx4 driver works the same way: it schedules the tasklet
+>in mlx4_add_cq_to_tasklet() and only if the work queue was empty before.
+>
+>Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
+>Reviewed-by: Parav Pandit <parav@nvidia.com>
+>---
+>v3: revise commit message
+>v2: reorder variable declarations, describe CPU profile results
+>
+> drivers/net/ethernet/mellanox/mlx5/core/cq.c | 5 +++++
+> drivers/net/ethernet/mellanox/mlx5/core/eq.c | 5 +----
+> 2 files changed, 6 insertions(+), 4 deletions(-)
+>
+>diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cq.c b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+>index 4caa1b6f40ba..25f3b26db729 100644
+>--- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+>+++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+>@@ -69,22 +69,27 @@ void mlx5_cq_tasklet_cb(struct tasklet_struct *t)
+> static void mlx5_add_cq_to_tasklet(struct mlx5_core_cq *cq,
+> 				   struct mlx5_eqe *eqe)
+> {
+> 	unsigned long flags;
+> 	struct mlx5_eq_tasklet *tasklet_ctx = cq->tasklet_ctx.priv;
+>+	bool schedule_tasklet = false;
+>
+> 	spin_lock_irqsave(&tasklet_ctx->lock, flags);
+> 	/* When migrating CQs between EQs will be implemented, please note
+> 	 * that you need to sync this point. It is possible that
+> 	 * while migrating a CQ, completions on the old EQs could
+> 	 * still arrive.
+> 	 */
+> 	if (list_empty_careful(&cq->tasklet_ctx.list)) {
+> 		mlx5_cq_hold(cq);
 
->  Documentation/core-api/dma-api.rst   |  70 ++++
->  drivers/infiniband/core/umem_odp.c   | 250 +++++----------
->  drivers/infiniband/hw/mlx5/mlx5_ib.h |  12 +-
->  drivers/infiniband/hw/mlx5/odp.c     |  65 ++--
->  drivers/infiniband/hw/mlx5/umr.c     |  12 +-
->  drivers/iommu/dma-iommu.c            | 459 +++++++++++++++++++++++----
->  drivers/iommu/iommu.c                |  65 ++--
->  drivers/pci/p2pdma.c                 |  38 +--
->  drivers/vfio/pci/mlx5/cmd.c          | 373 +++++++++++-----------
->  drivers/vfio/pci/mlx5/cmd.h          |  35 +-
->  drivers/vfio/pci/mlx5/main.c         |  87 +++--
->  include/linux/dma-map-ops.h          |  54 ----
->  include/linux/dma-mapping.h          |  85 +++++
->  include/linux/hmm-dma.h              |  32 ++
->  include/linux/hmm.h                  |  16 +
->  include/linux/iommu.h                |   4 +
->  include/linux/pci-p2pdma.h           |  84 +++++
->  include/rdma/ib_umem_odp.h           |  25 +-
->  kernel/dma/direct.c                  |  44 +--
->  kernel/dma/mapping.c                 |  20 ++
->  mm/hmm.c                             | 231 +++++++++++++-
+The condition here is counter intuitive, please add a comment that relates
+to the tasklet routine mlx5_cq_tasklet_cb, something like.
+/* If this list isn't empty, the tasklet is already scheduled, and not yet
+  * executing the list, the spinlock here guarantees the addition of this CQ
+  * will be seen by the next execution, so rescheduling the tasklet is not
+  * required */ 
 
-This is touching alot of subsystems, at least two are mine :)
+One other way to do this, is to flag tasklet_ctx.sched_flag = true, inside
+mlx5_add_cq_to_tasklet, and then schedule once at the end of eq irq processing 
+if (tasklet_ctx.sched_flag == true). to avoid "too" early scheduling, but
+since the tasklet can't run until the irq handler returns, I think your
+solution shouldn't suffer from "too" early scheduling .. 
 
-Who is in the hot seat to merge this? Are we expecting it this merge
-window?
+Acked-by: Saeed Mahameed <saeedm@nvidia.com>
 
-I've read through past versions and am happy with the general
-concept. Would like to read it again in details.
 
-Thanks,
-Jason
+>+		schedule_tasklet = list_empty(&tasklet_ctx->list);
+> 		list_add_tail(&cq->tasklet_ctx.list, &tasklet_ctx->list);
+> 	}
+> 	spin_unlock_irqrestore(&tasklet_ctx->lock, flags);
+>+
+>+	if (schedule_tasklet)
+>+		tasklet_schedule(&tasklet_ctx->task);
+> }
+>
+> /* Callers must verify outbox status in case of err */
+> int mlx5_create_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
+> 		   u32 *in, int inlen, u32 *out, int outlen)
+>diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+>index 859dcf09b770..3fd2091c11c8 100644
+>--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+>+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+>@@ -112,14 +112,14 @@ static int mlx5_eq_comp_int(struct notifier_block *nb,
+> 	struct mlx5_eq_comp *eq_comp =
+> 		container_of(nb, struct mlx5_eq_comp, irq_nb);
+> 	struct mlx5_eq *eq = &eq_comp->core;
+> 	struct mlx5_eqe *eqe;
+> 	int num_eqes = 0;
+>-	u32 cqn = -1;
+>
+> 	while ((eqe = next_eqe_sw(eq))) {
+> 		struct mlx5_core_cq *cq;
+>+		u32 cqn;
+>
+> 		/* Make sure we read EQ entry contents after we've
+> 		 * checked the ownership bit.
+> 		 */
+> 		dma_rmb();
+>@@ -142,13 +142,10 @@ static int mlx5_eq_comp_int(struct notifier_block *nb,
+> 			break;
+> 	}
+>
+> 	eq_update_ci(eq, 1);
+>
+>-	if (cqn != -1)
+>-		tasklet_schedule(&eq_comp->tasklet_ctx.task);
+>-
+> 	return 0;
+> }
+>
+> /* Some architectures don't latch interrupts when they are disabled, so using
+>  * mlx5_eq_poll_irq_disabled could end up losing interrupts while trying to
+>-- 
+>2.45.2
+>
+>
 
