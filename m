@@ -1,65 +1,65 @@
-Return-Path: <linux-rdma+bounces-5758-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5759-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 592E39BCA3A
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2024 11:20:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EEA89BCA3C
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2024 11:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C5991C220D6
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2024 10:20:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92F091C21D21
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2024 10:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447A91D27A6;
-	Tue,  5 Nov 2024 10:20:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9821D2B17;
+	Tue,  5 Nov 2024 10:20:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="aYbLsemr"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="CZjpcGjr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8296F1D26F6
-	for <linux-rdma@vger.kernel.org>; Tue,  5 Nov 2024 10:20:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A771D1E92
+	for <linux-rdma@vger.kernel.org>; Tue,  5 Nov 2024 10:20:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730802019; cv=none; b=R/OealiWp4uU9ONGO8iYaX5YpNZX87/mGDeVE1zvIZ17Et4R/VJ70tFSnK+FsRRegeqmBfCvihCBwaxDyJlfu4NqkiMJXeROvNqO1Ekqg3RRwMuE6mS+zBcQ+VVqJay0sAI1pNIWmUHf/2ke6UaUIrRT/gk9huHPe5uroRC/nJU=
+	t=1730802023; cv=none; b=nloo/Cs2dv2kGoidp9Bi0IqJ6wS2s4fJAM7dHAcp7OemuZAw2NVms1jBUqHqDfrbuhpiAUredA2l3i7HCa5/VOBHcCO+4t3YDJUR6PaAoQibbE4tLp7Y8rnTeZnOwQWcLdveZ4edUNyKAQ43Sb/To1G8JlQ2msElmm8e7X+uyR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730802019; c=relaxed/simple;
-	bh=yxkLjsadHPREpDRm/+wXaWXNQwMM8hEsZuHOPGHYO1Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=DFgosJ/TRhbIFFz+gto9ov2iXGXg8pl6xArqEk7hbsontxmdSardAbFDujguMkcGfw7iTldZEqxqGI1uCnN2izc3NV1Olp88UIpxVZ3QbWCHFmv9y/lbuDom5udAnUoTposEWi42x/xqwMuhgcpNgZWG5JGzFvp9ajdh6krxg1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=aYbLsemr; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1730802023; c=relaxed/simple;
+	bh=jD+cShbR5j46hyMs5F6R7f7NqxdyrvSwGdYQL8CPPGs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=WUyuLtcKIAkNUUqkunuTx7PbNOAqVs6WRf7BhKosFP3zUCMEDRWqojvbM0QB40F1R4JxwIaZLDMXd1FI3ofT9/G1VrO7FwAkkDS3UD4mrgN8yAsN3cPd2w4SrXATvYEUg8opJ58LudUXebMccQW3xNNnoouzIyMCO/lB01FwW6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=CZjpcGjr; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-20bb39d97d1so49794305ad.2
-        for <linux-rdma@vger.kernel.org>; Tue, 05 Nov 2024 02:20:17 -0800 (PST)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-20caccadbeeso56862215ad.2
+        for <linux-rdma@vger.kernel.org>; Tue, 05 Nov 2024 02:20:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1730802017; x=1731406817; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1730802021; x=1731406821; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=ybEBiux5Vv094dow5Dgd8OUinGfy5EcIFBDeKW/z2xM=;
-        b=aYbLsemrlF4d09ZEvmHirDJnneEzrh/+Lws6CfcZOHtcssGyVOEShZREPpMPvf/OxW
-         BogGj+Fgc1PtUnK/VWkWw90yWBkWdCH+QIXLxmUxlrIan3OjbgBF5vbieKE7mWCMQNmG
-         kCaRmUbRB6EhtGtLrvmOaQ5wAWvX9jtlYNCbw=
+        bh=eA1PTP98RNcNMUiOZVXtR51oHg/PYJgYgWSQcEEreX4=;
+        b=CZjpcGjrkFpsjuNmONu3FHcoTn7lNodgG0l4ivYhwMRt0ojPsVd4lZQVm4/DVCWJ2n
+         6R+TkYghEHafsGXcmxGqBFomz0HzuL8BpTG30eB2++2iQiXqCc8TBY3umac9TLmbsfLq
+         P+KUlNBAGFAMXv1B+dkVumFij9M/kINaZOEmc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730802017; x=1731406817;
+        d=1e100.net; s=20230601; t=1730802021; x=1731406821;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ybEBiux5Vv094dow5Dgd8OUinGfy5EcIFBDeKW/z2xM=;
-        b=g6+M4gfVLJVmUN8y4BIn++9C8T7CoQniSWdYt6f83mXTghMCgIJ01FfG5nJheaJ+32
-         ZI5FOeD9OTSiVNSz6TRww/Awk/kAgycZSJdGM1hVtxEkciNDuvMjPo2pmRLJYK2AVT60
-         uh/Mfk4vNCyCEE+76aoZ9Zb+Pleg2depsWVHUcXDBqsGT/THz6J07su2Q0wgfVn69saR
-         pA2Z8JscYs4I2oEAj6Sl1ha/gbX/yGfIJRiXZLjXyLryE9GyOQCOhFqfFO/ZWWdRUKrS
-         YVkUO2DWCmlt8VMF7OAAhCJlbn+JJx5//lKd4xY1LsEW2E3xUXsoBiKiaJpqIruY+iHM
-         CJXg==
-X-Gm-Message-State: AOJu0YxlzrCrVI/RwHSPEKWTGpeDtSLIGGGIcRle89YSFKth/24WcBg4
-	mqOEwpBHphS+i0GBQnRgZgKSmIBFIlnl9m4s6P+ytWtfbpXHaB0FsqrSsK3ubg==
-X-Google-Smtp-Source: AGHT+IEZuF405u/BIKY2Rz3IY3Chwlo8hZQsK1zAoTaAHaTfH2ThjwFUR2H2ehO99L97YcxOv21KLw==
-X-Received: by 2002:a17:902:f546:b0:211:18bf:e91d with SMTP id d9443c01a7336-21118bfe962mr243862045ad.27.1730802016735;
-        Tue, 05 Nov 2024 02:20:16 -0800 (PST)
+        bh=eA1PTP98RNcNMUiOZVXtR51oHg/PYJgYgWSQcEEreX4=;
+        b=rcxnr4fzCZmoGsnJ2Zj4gmRfmxZ2SRhjunYIQ9j9f9yVmwr8HjU3DJWF1iyql1Po5c
+         FizI9crlsz4nxW9sGqPNFIKNEBSPpxZsGYYNB+rcS+9MmYNYUvf0udD5SaEQnrkay/ZL
+         ZbNhxV5dXM1/I+dAbC0DsmbpkgR39cJnLDZ0aosmZbFpX+s4CEZpKl13Y56fFRKittCM
+         XaxKqK1SOclHiokFbShb7MQayv/0liddXPzhRiQe3HLEFKCSSP9NB+uOStgjIQmUjIBr
+         KxjIigH5blTsC4Ae3zkRqGLwMtmujLkMxuNW/rC8Nq+egzeLSQhUru2aD4AC7b0+eQSx
+         jsew==
+X-Gm-Message-State: AOJu0YzjkbMMDNFzax4k5RxIRjKyyEWRvRc7X9zUMPzReCZkmtsubXTa
+	73EqhZN64L+6hcM62Sna9Hx3gkgbz9YRjUZSEla4OsooAYhUqVBBmwHUkMAjAQ==
+X-Google-Smtp-Source: AGHT+IH/qYvaT3PtDuynTauf946bI2v1ZRqjjcXNnLbXg5rvgZwtO/0ou4y05CeYgyDM9mVzFv4A0g==
+X-Received: by 2002:a17:902:ea12:b0:20c:dd71:c94f with SMTP id d9443c01a7336-21103c5c8a1mr263584455ad.41.1730802020740;
+        Tue, 05 Nov 2024 02:20:20 -0800 (PST)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21105707132sm75306615ad.96.2024.11.05.02.20.13
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21105707132sm75306615ad.96.2024.11.05.02.20.17
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Nov 2024 02:20:16 -0800 (PST)
+        Tue, 05 Nov 2024 02:20:20 -0800 (PST)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -72,11 +72,11 @@ Cc: linux-rdma@vger.kernel.org,
 	michael.chan@broadcom.com,
 	andrew.gospodarek@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
-	Vikas Gupta <vikas.gupta@broadcom.com>,
+	Bhargava Chenna Marreddy <bhargava.marreddy@broadcom.com>,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH rdma-next 1/3] bnxt_en: Add support for RoCE sriov configuration
-Date: Tue,  5 Nov 2024 01:59:10 -0800
-Message-Id: <1730800752-29925-2-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH rdma-next 2/3] RDMA/bnxt_re: Enhance RoCE SRIOV resource configuration design
+Date: Tue,  5 Nov 2024 01:59:11 -0800
+Message-Id: <1730800752-29925-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1730800752-29925-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1730800752-29925-1-git-send-email-selvin.xavier@broadcom.com>
@@ -86,143 +86,138 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-From: Vikas Gupta <vikas.gupta@broadcom.com>
+From: Bhargava Chenna Marreddy <bhargava.marreddy@broadcom.com>
 
-On firmwares which support RoCE VF resource management by the
-NIC driver, configure RoCE sriov resources while resources for
-the VFs are allotted.
+Refine RoCE SRIOV resource configuration design,
+using the INITIALIZE_FW's flag as an indication
+for the new design to the firmware. RoCE driver does not
+have to provision resources to VF when firmware
+advertises support for RoCE resource management by NIC driver.
 
-Signed-off-by: Vikas Gupta <vikas.gupta@broadcom.com>
-Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: Bhargava Chenna Marreddy <bhargava.marreddy@broadcom.com>
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Reviewed-by: Vikas Gupta <vikas.gupta@broadcom.com>
+Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
+CC: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c       |  6 +++
- drivers/net/ethernet/broadcom/bnxt/bnxt.h       |  6 +++
- drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c | 53 +++++++++++++++++++++++++
- 3 files changed, 65 insertions(+)
+ drivers/infiniband/hw/bnxt_re/main.c          | 13 ++++++++-----
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c    |  2 ++
+ drivers/infiniband/hw/bnxt_re/qplib_res.h     |  3 +++
+ drivers/infiniband/hw/bnxt_re/roce_hsi.h      |  1 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |  2 ++
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |  1 +
+ 6 files changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 6e422e2..70230c5 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -8151,6 +8151,9 @@ static int bnxt_hwrm_func_qcfg(struct bnxt *bp)
- 	if (flags & FUNC_QCFG_RESP_FLAGS_RING_MONITOR_ENABLED)
- 		bp->fw_cap |= BNXT_FW_CAP_RING_MONITOR;
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 4127227..dd528dd 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -184,6 +184,7 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev)
+ 	rdev->rcfw.res = &rdev->qplib_res;
+ 	rdev->qplib_res.dattr = &rdev->dev_attr;
+ 	rdev->qplib_res.is_vf = BNXT_EN_VF(en_dev);
++	rdev->qplib_res.en_dev = en_dev;
  
-+	if (flags & FUNC_QCFG_RESP_FLAGS_ENABLE_RDMA_SRIOV)
-+		bp->fw_cap |= BNXT_FW_CAP_ENABLE_RDMA_SRIOV;
-+
- 	switch (resp->port_partition_type) {
- 	case FUNC_QCFG_RESP_PORT_PARTITION_TYPE_NPAR1_0:
- 	case FUNC_QCFG_RESP_PORT_PARTITION_TYPE_NPAR1_5:
-@@ -9177,6 +9180,9 @@ static int __bnxt_hwrm_func_qcaps(struct bnxt *bp)
- 		bp->flags |= BNXT_FLAG_UDP_GSO_CAP;
- 	if (flags_ext2 & FUNC_QCAPS_RESP_FLAGS_EXT2_TX_PKT_TS_CMPL_SUPPORTED)
- 		bp->fw_cap |= BNXT_FW_CAP_TX_TS_CMP;
-+	if (BNXT_PF(bp) &&
-+	    (flags_ext2 & FUNC_QCAPS_RESP_FLAGS_EXT2_ROCE_VF_RESOURCE_MGMT_SUPPORTED))
-+		bp->fw_cap |= BNXT_FW_CAP_ROCE_VF_RESC_MGMT_SUPPORTED;
+ 	bnxt_re_set_drv_mode(rdev);
  
- 	bp->tx_push_thresh = 0;
- 	if ((flags & FUNC_QCAPS_RESP_FLAGS_PUSH_MODE_SUPPORTED) &&
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-index 69231e8..2da6c7b 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-@@ -2406,6 +2406,8 @@ struct bnxt {
- 	#define BNXT_FW_CAP_DCBX_AGENT			BIT_ULL(2)
- 	#define BNXT_FW_CAP_NEW_RM			BIT_ULL(3)
- 	#define BNXT_FW_CAP_IF_CHANGE			BIT_ULL(4)
-+	#define BNXT_FW_CAP_ENABLE_RDMA_SRIOV           BIT_ULL(5)
-+	#define BNXT_FW_CAP_ROCE_VF_RESC_MGMT_SUPPORTED	BIT_ULL(6)
- 	#define BNXT_FW_CAP_KONG_MB_CHNL		BIT_ULL(7)
- 	#define BNXT_FW_CAP_OVS_64BIT_HANDLE		BIT_ULL(10)
- 	#define BNXT_FW_CAP_TRUSTED_VF			BIT_ULL(11)
-@@ -2452,6 +2454,10 @@ struct bnxt {
- #define BNXT_SUPPORTS_QUEUE_API(bp)				\
- 	(BNXT_PF(bp) && BNXT_SUPPORTS_NTUPLE_VNIC(bp) &&	\
- 	 ((bp)->fw_cap & BNXT_FW_CAP_VNIC_RE_FLUSH))
-+#define BNXT_RDMA_SRIOV_EN(bp)		\
-+	((bp)->fw_cap & BNXT_FW_CAP_ENABLE_RDMA_SRIOV)
-+#define BNXT_ROCE_VF_RESC_CAP(bp)	\
-+	((bp)->fw_cap & BNXT_FW_CAP_ROCE_VF_RESC_MGMT_SUPPORTED)
+@@ -285,6 +286,10 @@ static void bnxt_re_set_resource_limits(struct bnxt_re_dev *rdev)
  
- 	u32			hwrm_spec_code;
- 	u16			hwrm_cmd_seq;
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
-index 7bb8a5d..12b6ed5 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
-@@ -520,6 +520,56 @@ static int __bnxt_set_vf_params(struct bnxt *bp, int vf_id)
- 	return hwrm_req_send(bp, req);
- }
- 
-+static void bnxt_hwrm_roce_sriov_cfg(struct bnxt *bp, int num_vfs)
-+{
-+	struct hwrm_func_qcaps_output *resp;
-+	struct hwrm_func_cfg_input *cfg_req;
-+	struct hwrm_func_qcaps_input *req;
-+	int rc;
+ static void bnxt_re_vf_res_config(struct bnxt_re_dev *rdev)
+ {
++	/*
++	 * Use the total VF count since the actual VF count may not be
++	 * available at this point.
++	 */
+ 	rdev->num_vfs = pci_sriov_get_totalvfs(rdev->en_dev->pdev);
+ 	if (!bnxt_qplib_is_chip_gen_p5_p7(rdev->chip_ctx)) {
+ 		bnxt_re_set_resource_limits(rdev);
+@@ -2056,11 +2061,9 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
+ 		INIT_DELAYED_WORK(&rdev->worker, bnxt_re_worker);
+ 		set_bit(BNXT_RE_FLAG_QOS_WORK_REG, &rdev->flags);
+ 		schedule_delayed_work(&rdev->worker, msecs_to_jiffies(30000));
+-		/*
+-		 * Use the total VF count since the actual VF count may not be
+-		 * available at this point.
+-		 */
+-		bnxt_re_vf_res_config(rdev);
 +
-+	rc = hwrm_req_init(bp, req, HWRM_FUNC_QCAPS);
-+	if (rc)
-+		return;
-+
-+	req->fid = cpu_to_le16(0xffff);
-+	resp = hwrm_req_hold(bp, req);
-+	rc = hwrm_req_send(bp, req);
-+	if (rc)
-+		goto err;
-+
-+	rc = hwrm_req_init(bp, cfg_req, HWRM_FUNC_CFG);
-+	if (rc)
-+		goto err;
-+
-+	cfg_req->fid = cpu_to_le16(0xffff);
-+	cfg_req->enables2 =
-+		cpu_to_le32(FUNC_CFG_REQ_ENABLES2_ROCE_MAX_AV_PER_VF |
-+			    FUNC_CFG_REQ_ENABLES2_ROCE_MAX_CQ_PER_VF |
-+			    FUNC_CFG_REQ_ENABLES2_ROCE_MAX_MRW_PER_VF |
-+			    FUNC_CFG_REQ_ENABLES2_ROCE_MAX_QP_PER_VF |
-+			    FUNC_CFG_REQ_ENABLES2_ROCE_MAX_SRQ_PER_VF |
-+			    FUNC_CFG_REQ_ENABLES2_ROCE_MAX_GID_PER_VF);
-+	cfg_req->roce_max_av_per_vf =
-+		cpu_to_le32(le32_to_cpu(resp->roce_vf_max_av) / num_vfs);
-+	cfg_req->roce_max_cq_per_vf =
-+		cpu_to_le32(le32_to_cpu(resp->roce_vf_max_cq) / num_vfs);
-+	cfg_req->roce_max_mrw_per_vf =
-+		cpu_to_le32(le32_to_cpu(resp->roce_vf_max_mrw) / num_vfs);
-+	cfg_req->roce_max_qp_per_vf =
-+		cpu_to_le32(le32_to_cpu(resp->roce_vf_max_qp) / num_vfs);
-+	cfg_req->roce_max_srq_per_vf =
-+		cpu_to_le32(le32_to_cpu(resp->roce_vf_max_srq) / num_vfs);
-+	cfg_req->roce_max_gid_per_vf =
-+		cpu_to_le32(le32_to_cpu(resp->roce_vf_max_gid) / num_vfs);
-+
-+	rc = hwrm_req_send(bp, cfg_req);
-+
-+err:
-+	hwrm_req_drop(bp, req);
-+	if (rc)
-+		netdev_err(bp->dev, "RoCE sriov configuration failed\n");
-+}
-+
- /* Only called by PF to reserve resources for VFs, returns actual number of
-  * VFs configured, or < 0 on error.
-  */
-@@ -759,6 +809,9 @@ int bnxt_cfg_hw_sriov(struct bnxt *bp, int *num_vfs, bool reset)
- 		*num_vfs = rc;
++		if (!(rdev->qplib_res.en_dev->flags & BNXT_EN_FLAG_ROCE_VF_RES_MGMT))
++			bnxt_re_vf_res_config(rdev);
  	}
+ 	hash_init(rdev->cq_hash);
+ 	if (rdev->chip_ctx->modes.toggle_bits & BNXT_QPLIB_SRQ_TOGGLE_BIT)
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index f5713e3..005079b 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -910,6 +910,8 @@ int bnxt_qplib_init_rcfw(struct bnxt_qplib_rcfw *rcfw,
+ 		flags |= CMDQ_INITIALIZE_FW_FLAGS_HW_REQUESTER_RETX_SUPPORTED;
+ 	if (_is_optimize_modify_qp_supported(rcfw->res->dattr->dev_cap_flags2))
+ 		flags |= CMDQ_INITIALIZE_FW_FLAGS_OPTIMIZE_MODIFY_QP_SUPPORTED;
++	if (rcfw->res->en_dev->flags & BNXT_EN_FLAG_ROCE_VF_RES_MGMT)
++		flags |= CMDQ_INITIALIZE_FW_FLAGS_L2_VF_RESOURCE_MGMT;
+ 	req.flags |= cpu_to_le16(flags);
+ 	req.stat_ctx_id = cpu_to_le32(ctx->stats.fw_id);
+ 	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, NULL, sizeof(req), sizeof(resp), 0);
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+index 115910c..21fb148 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+@@ -39,6 +39,8 @@
+ #ifndef __BNXT_QPLIB_RES_H__
+ #define __BNXT_QPLIB_RES_H__
  
-+	if (BNXT_RDMA_SRIOV_EN(bp) && BNXT_ROCE_VF_RESC_CAP(bp))
-+		bnxt_hwrm_roce_sriov_cfg(bp, *num_vfs);
++#include "bnxt_ulp.h"
 +
- 	return 0;
- }
+ extern const struct bnxt_qplib_gid bnxt_qplib_gid_zero;
  
+ #define CHIP_NUM_57508		0x1750
+@@ -302,6 +304,7 @@ struct bnxt_qplib_res {
+ 	struct bnxt_qplib_chip_ctx	*cctx;
+ 	struct bnxt_qplib_dev_attr      *dattr;
+ 	struct net_device		*netdev;
++	struct bnxt_en_dev		*en_dev;
+ 	struct bnxt_qplib_rcfw		*rcfw;
+ 	struct bnxt_qplib_pd_tbl	pd_tbl;
+ 	/* To protect the pd table bit map */
+diff --git a/drivers/infiniband/hw/bnxt_re/roce_hsi.h b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
+index d9c5373..a98fc9c 100644
+--- a/drivers/infiniband/hw/bnxt_re/roce_hsi.h
++++ b/drivers/infiniband/hw/bnxt_re/roce_hsi.h
+@@ -217,6 +217,7 @@ struct cmdq_initialize_fw {
+ 	#define CMDQ_INITIALIZE_FW_FLAGS_MRAV_RESERVATION_SPLIT          0x1UL
+ 	#define CMDQ_INITIALIZE_FW_FLAGS_HW_REQUESTER_RETX_SUPPORTED     0x2UL
+ 	#define CMDQ_INITIALIZE_FW_FLAGS_OPTIMIZE_MODIFY_QP_SUPPORTED    0x8UL
++	#define CMDQ_INITIALIZE_FW_FLAGS_L2_VF_RESOURCE_MGMT		 0x10UL
+ 	__le16	cookie;
+ 	u8	resp_size;
+ 	u8	reserved8;
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+index fdd6356..b771c84 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+@@ -414,6 +414,8 @@ static void bnxt_set_edev_info(struct bnxt_en_dev *edev, struct bnxt *bp)
+ 		edev->flags |= BNXT_EN_FLAG_ROCEV2_CAP;
+ 	if (bp->flags & BNXT_FLAG_VF)
+ 		edev->flags |= BNXT_EN_FLAG_VF;
++	if (BNXT_ROCE_VF_RESC_CAP(bp))
++		edev->flags |= BNXT_EN_FLAG_ROCE_VF_RES_MGMT;
+ 
+ 	edev->chip_num = bp->chip_num;
+ 	edev->hw_ring_stats_size = bp->hw_ring_stats_size;
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
+index 4f4914f5..5d6aac6 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
+@@ -64,6 +64,7 @@ struct bnxt_en_dev {
+ 	#define BNXT_EN_FLAG_ULP_STOPPED	0x8
+ 	#define BNXT_EN_FLAG_VF			0x10
+ #define BNXT_EN_VF(edev)	((edev)->flags & BNXT_EN_FLAG_VF)
++	#define BNXT_EN_FLAG_ROCE_VF_RES_MGMT	0x20
+ 
+ 	struct bnxt_ulp			*ulp_tbl;
+ 	int				l2_db_size;	/* Doorbell BAR size in
 -- 
 2.5.5
 
