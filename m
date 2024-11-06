@@ -1,149 +1,269 @@
-Return-Path: <linux-rdma+bounces-5816-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5817-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5EC79BF7C8
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Nov 2024 21:05:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9B939BFA52
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 00:44:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A34C428348C
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Nov 2024 20:05:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE2DE1C210BB
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Nov 2024 23:44:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A3B20B1F4;
-	Wed,  6 Nov 2024 20:05:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE30320E00C;
+	Wed,  6 Nov 2024 23:44:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="XMm0UrpW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B2F209F38;
-	Wed,  6 Nov 2024 20:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C6220D51B
+	for <linux-rdma@vger.kernel.org>; Wed,  6 Nov 2024 23:44:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730923519; cv=none; b=WPfdJQzs+bGYcw4DrPKVHv0CJHJekHF4ejGtyQvxYmKFRBDYFs1bM/H2yJi+amwdh1g0Copmf/VBH/TwxHd5JBfObn5Yl2b4mesOWgnceP3qj0vkTF44D0u03EAynGF1RnldNtsPpevjZZbIssfj8hLnO5az3eadUI7wqiRjZWY=
+	t=1730936658; cv=none; b=jsUa0+UgqP+vWx8feib19k2ngMFwBcc9ipn7SXGDW3yd8pg+COQl/QBNtQRXHE8oSxtCnnph2rQin1ZT/1v32l5zhJ3cz6aQS421sA3Ea9+eYKlVkHsk9aSvANJ51UqnV2G0HtHusp0OfHVUhJdVdD6ZXu7+nXqk8w7KGU8Ffvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730923519; c=relaxed/simple;
-	bh=EQyA/ww37V7yAawtBTPhDySHgSA0BwaQRKu2lAhQyPE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RNC5YuEtsXnctuBFhL5irfpmG4aU0PFZs1scf1DNmq5T1gZyiUZQs97ACDLywuaBbAPtP6u/k6lkd5i6WZflbK4PJ5AX2qkAhDvHXx6EikLT1RZ/IYGOG0gBQw2E5bvcEWOssYsue9DGU10dmZrT5aZDQgYxvi2kTxKCWWBM1oQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2113da91b53so1654785ad.3;
-        Wed, 06 Nov 2024 12:05:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730923516; x=1731528316;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1730936658; c=relaxed/simple;
+	bh=lSxaigboPLXHNcddz2sY56eN7f1c39zsSqkEN3I8a4A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pE8V26fN063gdKQf3U50zfQJMikXwO9BlFQFSUxGfctvSt12bkhFtoZCE0kaAWpujLgeb3TYdDG7Nd8gquaTar2WV4CWvZJ7ARwXJj0E54dCKDFtzyHf68CKOaqTs4mdNLbRgLECH6WGIWhvpVqSSstqCHdHAo2KMcRUEdvtmpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=XMm0UrpW; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2e56750bb13so48125a91.2
+        for <linux-rdma@vger.kernel.org>; Wed, 06 Nov 2024 15:44:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1730936656; x=1731541456; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=57haWgxVK3Bhz2CTFQJdY/J31Debho+HXpt9b6frcmw=;
-        b=qfQaU53HzKBFTrK0c6g7QuZTQZcv0eDF0o/puRxunjb5tSd1zbHdzDcE7hqEAO+UFp
-         PxZQgwfoN+0lyimRni4rZvwOWdp6xZuNJV3JCY+85JRh1/Heq9nyN0FK7m1RKdv0BvvV
-         GRM6WNNjBwOkDM9xbZ/Y8eXlD0YFBhio0OE10qmrKgu4Qx/8Hh6tMKyrKpOC/P1cwTtI
-         DWxdv45irbyihb3lhvqa8b5gCfiMgissLtxHPnA/mJYzB4y3m3xyBuQ9f1Yf2dOkEdjJ
-         22VXGDmGaQXZ56RcMDkBKuYhPzmG2AmBTqttjDylsmp5TscccQgb8H5CBvjZMvdOseiR
-         aO0A==
-X-Forwarded-Encrypted: i=1; AJvYcCU0GDEsAiWFCEst9CSN9/DmbbxduKYZZk7rhqGFukbdKq1TCX7Gf0ouH6aW3xON+HbZzV6P+51AL4lggnM0@vger.kernel.org, AJvYcCU3bK/dnS61xtactLsUT/H8ceWq2QAY9X5ttnwMR6MLthbsACW1vMC5bvgp3WGjx88B8CXFEi7HHX3+VVdsc61bewfeXg==@vger.kernel.org, AJvYcCUTWrBxj8Vtryya959PAL1lt/E8WgcXQoXN9o2r5PLabJpHEjLKo4AKZZzsTyrgKqyOGtkOEaC5CuNS@vger.kernel.org, AJvYcCUmWVTlNwrWN6pKVgypvY5Q89csehOTfRkPaRI103wotpJsHYP8o9vWWOGFRqvOtl2TGsl2vq1UQEgx@vger.kernel.org, AJvYcCVKJ139WZ9zOvaUcuEOBoS/OYD3vxot8UDqchV+ZsU4YsFkYlHreuxaucdHC91NLD9S3G5MBMI3HcY70g==@vger.kernel.org, AJvYcCWyWpKjacsMLD2XKDtaRNGwD3uS1Hz3FH3g0415XD1NylBv+jHhxbx5QT//lndYw7nNo+5IF+Wb6W5cUg==@vger.kernel.org, AJvYcCX/RGyludkZbuL0ELUN5L/nMt5WQ+bUcX7Gul+KuIisNTSm5Bhnu7TjrBzmSryLkxNp3aDM/rTD1lEjKA==@vger.kernel.org, AJvYcCXBeghjvHd/iZVVl9GSUb00OGlFIfDYHghaZHijw/+7fQ/EL2PMww96L1scKGB78gCySbaZJ/hQ8bQr@vger.kernel.org, AJvYcCXb5VHrjkRtCQ6CNtuQ36/NhyfIrMJNGLQQs22D/PcpyNbCrFoVSldaiPopIw9TxsTMjES1j+zdq30JFlh+@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyk4xaEQeTM8S2Ack0oUZV412sLvANUkNCJ3VS5NDapaKXm7oZm
-	WNaTVw9e/07eEb3zVwkNkAtfpuIwf7OPDGUGJmOzY3KvcpoJeqhP
-X-Google-Smtp-Source: AGHT+IFmoIbZw8g1IipDn3Lp+ri/9C7OdJSPor3hPH1pRa7RYRF3y6lGuH/8ZaeEQ1eFo8eAFPaCWQ==
-X-Received: by 2002:a17:902:cecd:b0:20c:a97d:cc7f with SMTP id d9443c01a7336-210c6c3ec78mr567878865ad.41.1730923515866;
-        Wed, 06 Nov 2024 12:05:15 -0800 (PST)
-Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211057c076bsm99997795ad.197.2024.11.06.12.05.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Nov 2024 12:05:15 -0800 (PST)
-Date: Thu, 7 Nov 2024 05:05:13 +0900
-From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Ira Weiny <ira.weiny@intel.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-	Xinhui Pan <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
-	Simona Vetter <simona@ffwll.ch>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>,
-	Carlos Bilbao <carlos.bilbao.osdev@gmail.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	"David E. Box" <david.e.box@linux.intel.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Matt Turner <mattst88@gmail.com>,
-	Frederic Barrat <fbarrat@linux.ibm.com>,
-	Andrew Donnellan <ajd@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-cxl@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-	linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v2 02/10] sysfs: introduce callback
- attribute_group::bin_size
-Message-ID: <20241106200513.GB174958@rocinante>
-References: <20241103-sysfs-const-bin_attr-v2-0-71110628844c@weissschuh.net>
- <20241103-sysfs-const-bin_attr-v2-2-71110628844c@weissschuh.net>
+        bh=QPXJsl8fLkTdJ5MrNMMlzw9z0f/yutenIKxxBRJC7Ks=;
+        b=XMm0UrpWuVqnuuAaqgGDs7cdITimrNeenLyZ0gwcKNTNrUzCyXielur17h5iwj3l5F
+         Tncul6SeOOPoFbu81xdkAJBAFmOLfGdkyqsWEMYtHcNnpvzKb+HkWuClvGANIZG3R8Mw
+         SNHOZ99fu0gr7Bop6SRDHmpN1s46bi0Eygj1ys5dUoRsbi1w+uKOJAN0qZ6OscuxaSqD
+         CR7mCbKG88bvdDYvMs8dG6IMDCz+y07GFnHigDsHG3T24KrlTPKOXQLqB5xT6ty1NLvV
+         2bFZMS+rcE4AaO5nGS/jjlK6qu7ebVqFyvei6AWqlLKgmmhtlCZw92/hbBqP8iBubbv4
+         2zRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730936656; x=1731541456;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QPXJsl8fLkTdJ5MrNMMlzw9z0f/yutenIKxxBRJC7Ks=;
+        b=Odo2cBMvQslT17YHp1YRcgvT0+jwB1lBjWeeI6saloPDDPCo6H/PICTAO+pAoISYLS
+         Yb6+cCzykV8wBbEw1kSlY8H8x3iZDW5tRMjmsewxVzhss4PST6AWeIgHS79E9XQqjhaK
+         m6nmLS23lALps4kaxRNreCzXv8/7o/U74TIhW+JtBD2e2ujlA0l+S1yWn+vffU5Yye68
+         hl9FnWdD9LhZMFDRTya44v75KxC2uuveNu5H/KN7wS18/9r+PPF0nZE8kba2ja4TZow4
+         yzDVL1anGskN5VZqRWYrA2++dyNXluHhdk/cqdLZd7VKfx3Bxo0/2x8sq81ZimxVXtdt
+         z4Tg==
+X-Forwarded-Encrypted: i=1; AJvYcCXjDnMDTqCZnLllXdj7a/M45iAUPrm5Np6mfR//PK5GmnNQy5jqabmDleHx/WkLW5gH27YNa2o1jnz/@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGvHCCTWHk5/cIOnUEPyWOxrBaMgIwibBAODeZ3J+91BdosRff
+	+SAaii6lGJn5b/bHUin1sx4wBX4iLH+Rb8xDh8/TWyEfid5mvsz++EdfFFIYLQYIleH6TzJE5nv
+	eMwLbA1t2+fz7Mp1+L2f2t7TB0jhO/eUGW5Romw==
+X-Google-Smtp-Source: AGHT+IEfTLGxMRTgZVBrGwFKA9oioUe6XiP0kU3ZXwnrA2Gb+QVba1IpxfUk/kA/lH7d6J1l+V4TSFC0vo8qJ2jirVQ=
+X-Received: by 2002:a17:90a:e7c2:b0:2e2:ada8:2984 with SMTP id
+ 98e67ed59e1d1-2e9a4b22b1bmr587838a91.4.1730936656020; Wed, 06 Nov 2024
+ 15:44:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241103-sysfs-const-bin_attr-v2-2-71110628844c@weissschuh.net>
+References: <20241101034647.51590-1-csander@purestorage.com>
+ <20241101034647.51590-2-csander@purestorage.com> <CY8PR12MB71958512F168E2C172D0BE05DC502@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <CADUfDZofFwy12oZYTmm3TE314RM79EGsxV6bKEBRMVFv8C3jNg@mail.gmail.com>
+ <CY8PR12MB71953FD36C70ACACEBE3DBA1DC522@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <CADUfDZqanDo+v_jap7pQire86QkfaDQE4HvhvVBb64YqKNgRHg@mail.gmail.com> <CY8PR12MB7195FDC4A280F4CD7EA219ABDC532@CY8PR12MB7195.namprd12.prod.outlook.com>
+In-Reply-To: <CY8PR12MB7195FDC4A280F4CD7EA219ABDC532@CY8PR12MB7195.namprd12.prod.outlook.com>
+From: Caleb Sander <csander@purestorage.com>
+Date: Wed, 6 Nov 2024 15:44:04 -0800
+Message-ID: <CADUfDZon6QbURp7TqB6dvE4Ewb_To2EDyUTQ=spNCorXDy0DbQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/2] mlx5/core: deduplicate {mlx5_,}eq_update_ci()
+To: Parav Pandit <parav@nvidia.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Tue, Nov 5, 2024 at 9:44=E2=80=AFPM Parav Pandit <parav@nvidia.com> wrot=
+e:
+>
+>
+> > From: Caleb Sander <csander@purestorage.com>
+> > Sent: Tuesday, November 5, 2024 9:36 PM
+> >
+> > On Mon, Nov 4, 2024 at 9:22=E2=80=AFPM Parav Pandit <parav@nvidia.com> =
+wrote:
+> > >
+> > >
+> > >
+> > > > From: Caleb Sander <csander@purestorage.com>
+> > > > Sent: Monday, November 4, 2024 3:49 AM
+> > > >
+> > > > On Sat, Nov 2, 2024 at 8:55=E2=80=AFPM Parav Pandit <parav@nvidia.c=
+om> wrote:
+> > > > >
+> > > > >
+> > > > >
+> > > > > > From: Caleb Sander Mateos <csander@purestorage.com>
+> > > > > > Sent: Friday, November 1, 2024 9:17 AM
+> > > > > >
+> > > > > > The logic of eq_update_ci() is duplicated in mlx5_eq_update_ci(=
+).
+> > > > > > The only additional work done by mlx5_eq_update_ci() is to
+> > > > > > increment
+> > > > > > eq->cons_index. Call eq_update_ci() from mlx5_eq_update_ci() to
+> > > > > > eq->avoid
+> > > > > > the duplication.
+> > > > > >
+> > > > > > Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
+> > > > > > ---
+> > > > > >  drivers/net/ethernet/mellanox/mlx5/core/eq.c | 9 +--------
+> > > > > >  1 file changed, 1 insertion(+), 8 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+> > > > > > b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+> > > > > > index 859dcf09b770..078029c81935 100644
+> > > > > > --- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+> > > > > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+> > > > > > @@ -802,19 +802,12 @@ struct mlx5_eqe *mlx5_eq_get_eqe(struct
+> > > > > > mlx5_eq *eq, u32 cc)  }  EXPORT_SYMBOL(mlx5_eq_get_eqe);
+> > > > > >
+> > > > > >  void mlx5_eq_update_ci(struct mlx5_eq *eq, u32 cc, bool arm)  =
+{
+> > > > > > -     __be32 __iomem *addr =3D eq->doorbell + (arm ? 0 : 2);
+> > > > > > -     u32 val;
+> > > > > > -
+> > > > > >       eq->cons_index +=3D cc;
+> > > > > > -     val =3D (eq->cons_index & 0xffffff) | (eq->eqn << 24);
+> > > > > > -
+> > > > > > -     __raw_writel((__force u32)cpu_to_be32(val), addr);
+> > > > > > -     /* We still want ordering, just not swabbing, so add a ba=
+rrier */
+> > > > > > -     wmb();
+> > > > > > +     eq_update_ci(eq, arm);
+> > > > > Long ago I had similar rework patches to get rid of
+> > > > > __raw_writel(), which I never got chance to push,
+> > > > >
+> > > > > Eq_update_ci() is using full memory barrier.
+> > > > > While mlx5_eq_update_ci() is using only write memory barrier.
+> > > > >
+> > > > > So it is not 100% deduplication by this patch.
+> > > > > Please have a pre-patch improving eq_update_ci() to use wmb().
+> > > > > Followed by this patch.
+> > > >
+> > > > Right, patch 1/2 in this series is changing eq_update_ci() to use
+> > > > writel() instead of __raw_writel() and avoid the memory barrier:
+> > > > https://lore.kernel.org/lkml/20241101034647.51590-1-
+> > > > csander@purestorage.com/
+> > > This patch has two bugs.
+> > > 1. writel() writes the MMIO space in LE order. EQ updates are in BE o=
+rder.
+> > > So this will break on ppc64 BE.
+> >
+> > Okay, so this should be writel(cpu_to_le32(val), addr)?
+> >
+> That would break the x86 side because device should receive in BE format =
+regardless of cpu endianness.
+> Above code will write in the LE format.
+>
+> So an API foo_writel() need which does
+> a. write memory barrier
+> b. write to MMIO space but without endineness conversion.
 
-> Several drivers need to dynamically calculate the size of an binary
-> attribute. Currently this is done by assigning attr->size from the
-> is_bin_visible() callback.
-> 
-> This has drawbacks:
-> * It is not documented.
-> * A single attribute can be instantiated multiple times, overwriting the
->   shared size field.
-> * It prevents the structure to be moved to read-only memory.
-> 
-> Introduce a new dedicated callback to calculate the size of the
-> attribute.
+Got it, thanks. writel(bswap_32(val, addr)) should work, then? I
+suppose it may introduce a second bswap on BE architectures, but
+that's probably worth it to avoid the memory barrier.
 
-Would it be possible to have a helper that when run against a specific
-kobject reference, then it would refresh or re-run the size callbacks?
+>
+> > >
+> > > 2. writel() issues the barrier BEFORE the raw_writel().
+> > > As opposed to that eq update needs to have a barrier AFTER the writel=
+().
+> > > Likely to synchronize with other CQ related pointers update.
+> >
+> > I was referencing this prior discussion about the memory barrier:
+> > https://lore.kernel.org/netdev/CALzJLG8af0SMfA1C8U8r_Fddb_ZQhvEZd6=3D2
+> > a97dOoBcgLA0xg@mail.gmail.com/
+> > From Saeed's message, it sounds like the memory barrier is only used to
+> > ensure the ordering of writes to the doorbell register, not the orderin=
+g of the
+> > doorbell write relative to any other writes. If some other write needs =
+to be
+> > ordered after the doorbell write, please explain what it is.
+> Not write, reading of the CQE likely requires read barrier.
 
-We have an use case where we resize BARs on demand via sysfs, and currently
-the only way to update the size of each resource sysfs object is to remove
-and added them again, which is a bit crude, and can also be unsafe.
+But mlx5_eq_update_ci() is already using wmb(), which only imposes an
+ordering on writes. So if the existing code is correct, the memory
+barrier cannot be required to order the doorbell write with respect to
+a read of the CQE.
 
-Hence the question.
+>
+> > As Gal Pressman
+> > pointed out, a wmb() at the end of a function doesn't make much sense, =
+as
+> > there are no further writes in the function to order. If the doorbell w=
+rite needs
+> > to be ordered before some other write in a caller function, the memory =
+barrier
+> > should probably move to the caller.
+> It is the two EQ doorbell writes that needs to be ordered with respect to=
+ each other.
+> So please audit the code for CQE processing ensure that there is read bar=
+rier after valid bit.
+> And removal of this read barrier does not affect there.
+>
+> It would be best if you can test on ARM (non x86_64) platform for this ch=
+ange.
 
-There exist the sysfs_update_groups(), but the BAR resource sysfs objects
-are currently, at least not yet, added to any attribute group.
+Unfortunately I don't have access to any platform besides x86_64 with
+ConnectX cards.
 
-Thank you!
+>
+> >
+> > >
+> > > > Are you suggesting something different? If so, it would be great if
+> > > > you could clarify what you mean.
+> > > >
+> > > So I was suggesting to keep __raw_writel() as is and replace mb() wit=
+h
+> > wmb().
+> >
+> > wmb() would certainly be cheaper than mb(), but I would like to underst=
+and
+> > the requirement for the barrier in the first place. The fence instructi=
+on is very
+> > expensive.
+> >
+> To order two doorbell writes of the same EQ.
 
-	Krzysztof
+Right, I understand why the memory barrier is needed with the existing
+__raw_writel(), as it provides no ordering guarantees. But writel()
+seems to guarantee the necessary ordering of writes to the EQ's
+doorbell. This is the relevant documentation from memory-barriers.txt
+(I assume the mutual exclusion of interrupt handlers is equivalent to
+holding a spinlock):
+
+2. A writeX() issued by a CPU thread holding a spinlock is ordered
+   before a writeX() to the same peripheral from another CPU thread
+   issued after a later acquisition of the same spinlock. This ensures
+   that MMIO register writes to a particular device issued while holding
+   a spinlock will arrive in an order consistent with acquisitions of
+   the lock.
+
+Do you still think the barrier is necessary if writel() is used instead?
+
+If you feel strongly about keeping the wmb(), I can do that. It's
+certainly an improvement over the full memory barrier. But fences are
+quite expensive, so I would prefer to remove it if it's not necessary
+for correctness.
+
+Thanks,
+Caleb
 
