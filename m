@@ -1,75 +1,103 @@
-Return-Path: <linux-rdma+bounces-5836-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5837-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A51429C0569
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 13:13:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA0529C075D
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 14:28:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CB3E1F2259A
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 12:13:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36679B21514
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 13:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA6E220F5A3;
-	Thu,  7 Nov 2024 12:13:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F3F2101BF;
+	Thu,  7 Nov 2024 13:28:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I0TLjSo+"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Klf8FF6K"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BFB41EF0A2;
-	Thu,  7 Nov 2024 12:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE1C221018A
+	for <linux-rdma@vger.kernel.org>; Thu,  7 Nov 2024 13:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730981595; cv=none; b=HW850hWDEcO0542RYWuoS34mDktNXeBIW0EALFAq9VCy1Pp/7W456Sln8f6HngWG+Bb5pt4Vi/85/VprURjaQNnC9fyW79JRNSJDxWMX95HlW8i7xJ9SPlZB6ZbsUR2hv/WG60urBaf3J56DtEZk3nNE3/fG9vxYGjJJvt+WHm4=
+	t=1730986094; cv=none; b=A4HabqBm+3ltWDWLeQNDks6yFwBGl/gZFv8Lm6i8Tga0W98h3OlcQ1eWPjvJlSn7JrvbQESx7kBf53VgYRcnxjRhLSwGAskXot2/V55JpxSbVGPM0XqTQEVsAuyZ8wIKjPitX+Gc5jqf0Gk4aP7PtAKO3mONe3rebgbWlW3Pg7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730981595; c=relaxed/simple;
-	bh=wA6HaF5jWhqC7PHRHi/nW4wj5K9TmEPJwgmIrA6Ht2A=;
+	s=arc-20240116; t=1730986094; c=relaxed/simple;
+	bh=hYzChVDIuLb/8YgK+xhHVl47Zu6a9Yg+4tjwX8ly6HM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tvv8YG/RL815FFlbymguZ2HGoSqXm2dbuYUN7Im66ARrWBq+cH7QG4ENp6+Bo6JDVOxeNTztDQ92WYbmNgIRc+bxYZ2iWLZAQuMb1vfxEaRFOc2VkSJPXKR3nOR0tN6IKXW40uhd/MrhKPSLqmsEmqKE8UB+rGAlpV2RP5xycUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I0TLjSo+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CFDDC4CECC;
-	Thu,  7 Nov 2024 12:13:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730981594;
-	bh=wA6HaF5jWhqC7PHRHi/nW4wj5K9TmEPJwgmIrA6Ht2A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I0TLjSo+i59L8NKIbuMoYlUM/IhFCjq6dim4A6lnqJQ+86SbWy7/920OCxxG5828a
-	 eGFm8YGTVAkJ65mW/hL7d5ykmag5DOUQyK76Vv5zwkShDHC4k/1bbLpfn2xiKjhdEE
-	 AhwdGOpDpA3zwdbQ/NWAZLybgcXSECc9iwoqysidkD8OLDlT9bbFxIfmLcXSRzFr3G
-	 6mvWH0AWkuHgClh/cFDSqQz9ZTtFU8AnOybjF0kt7rpIDmE9qAAMeGx5rYmHJFmvdL
-	 tm/44D1xtPxEh3tSn15ZFfy8mjAGJ3Kp+PUmVN2MzwnJy3EuhC86c5YAQP2HtDXTns
-	 cX9idrzvy4S1Q==
-Date: Thu, 7 Nov 2024 14:13:07 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Halil Pasic <pasic@linux.ibm.com>
-Cc: Wenjia Zhang <wenjia@linux.ibm.com>, Wen Gu <guwen@linux.alibaba.com>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	David Miller <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-	Jan Karcher <jaka@linux.ibm.com>, Gerd Bayer <gbayer@linux.ibm.com>,
-	Alexandra Winter <wintera@linux.ibm.com>,
-	Nils Hoppmann <niho@linux.ibm.com>,
-	Niklas Schnell <schnelle@linux.ibm.com>,
-	Thorsten Winkler <twinkler@linux.ibm.com>,
-	Karsten Graul <kgraul@linux.ibm.com>,
-	Stefan Raspl <raspl@linux.ibm.com>, Aswin K <aswin@linux.ibm.com>,
-	linux-cifs@vger.kernel.org
-Subject: Re: [PATCH net] net/smc: Fix lookup of netdev by using
- ib_device_get_netdev()
-Message-ID: <20241107121307.GN5006@unreal>
-References: <20241025072356.56093-1-wenjia@linux.ibm.com>
- <20241027201857.GA1615717@unreal>
- <8d17b403-aefa-4f36-a913-7ace41cf2551@linux.ibm.com>
- <20241105112313.GE311159@unreal>
- <20241106102439.4ca5effc.pasic@linux.ibm.com>
- <20241106135910.GF5006@unreal>
- <20241107125643.04f97394.pasic@linux.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rEfxZRpiNp63ACOJX5FVUYEdGsFU0ZubnWpmbRFeJHK1lZDzLtfNgcOxLdi2j/I/uyABzoyedcj93RiEPj3GcIy7B7FxT0q5MPsiAkmvPI2p5Z1nMCP7n8MriNhUHwOnC8uQoZoaRSLr96kzH/5cp0THHbXhXsbmDqwiypV3BRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Klf8FF6K; arc=none smtp.client-ip=209.85.161.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5eb9ee4f14cso398014eaf.1
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Nov 2024 05:28:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1730986091; x=1731590891; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wLc6Cp3t0rRD6tSmNJMVeZRKi1v5LF88UUzndPTrhYc=;
+        b=Klf8FF6K6orux3fA7PlvEdFcnRWTsOhFc40v1LA1SLLrLlHk2tQvyVplk7vmmUJIFC
+         UknOQnoTmeFAm3yBhadTv54U2nvVsfR+DQmMYLaE8n8nDpWBCfnXoY7h3v1hnNBtylx+
+         FcWkAhNvr7b2fdDexWxLAmN1Y8fpneFLvut4gMB+b5yUNWHJzBoxK3Q4J/bwP8Vkas9y
+         LCmuRRtb6blTYR8N574C41llrNMyF91vMlNSv+uhzhETTkYMfCnpR2WZdzPPv+gBuDkX
+         1hFTYnCnnf3XxUJWxBtc7T+Z0T/qqIilo82AZKp5b/1TTffI3gJmDHnnIbLqyrxXR9FL
+         AU/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730986091; x=1731590891;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wLc6Cp3t0rRD6tSmNJMVeZRKi1v5LF88UUzndPTrhYc=;
+        b=YjWwWBp++6pgGG+9aXNB1dduWYrDfW0cqPvEV762yS8Uapfub8oRUS62PrNba/9DOC
+         xkJPjORDE+ZO40Bm7RKyc7g7qpP5mVwWavtyzQsRK8HFKQDb8WpyMXZhb4YiGWcz/kJa
+         1cUFsJUGFwi29H1/TqWOsNFel9pJMgRYCuDhZbl83JqElUIwgxNjs8X372HNDXBFCGmc
+         pBI4KJSCk3PioZ+5p292YHeogoDiL93hqh362Vjww2ySTanAObnuZj5oGhOXMrNB1EPt
+         LxvztmgSR55r22iZGT/P7q0atRNuvGxPzuQF33Y7W+fXCFBubH3AX03iTBfusFzYSQ4r
+         FCvw==
+X-Forwarded-Encrypted: i=1; AJvYcCXt40++e2oNzKy+Cn6F9uQi3FWomGheR5xsifxCWGRpQkgCuoiBcY2eqTtZtKOcVfeQs/wkmsX15pVE@vger.kernel.org
+X-Gm-Message-State: AOJu0YxVSNHhN+6wegT0EulJHdEN2zE+yBWWvAffg1DX9tEt0A20RYcF
+	YScbveSCgZUlXKY1a8EKwCPw9lxJe1E8P8GmunzZtaNr+drflh+5ZyOyPoak1I8=
+X-Google-Smtp-Source: AGHT+IF+tw+3lLnZf4WnNvvo/ldJVal46tJah/6dRwkTid9yDCpRNCjr9NuPNVZcVYNIHAZNA7U8ew==
+X-Received: by 2002:a05:6358:9696:b0:1c3:39ad:7c6c with SMTP id e5c5f4694b2df-1c5f99fec97mr1284772555d.17.1730986090941;
+        Thu, 07 Nov 2024 05:28:10 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d3961ecc4esm7389226d6.44.2024.11.07.05.28.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Nov 2024 05:28:09 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1t92YS-00000002FM3-2zqJ;
+	Thu, 07 Nov 2024 09:28:08 -0400
+Date: Thu, 7 Nov 2024 09:28:08 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Robin Murphy <robin.murphy@arm.com>, Leon Romanovsky <leon@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 00/17] Provide a new two step DMA mapping API
+Message-ID: <20241107132808.GK35848@ziepe.ca>
+References: <cover.1730298502.git.leon@kernel.org>
+ <3567312e-5942-4037-93dc-587f25f0778c@arm.com>
+ <20241104095831.GA28751@lst.de>
+ <20241105195357.GI35848@ziepe.ca>
+ <20241107083256.GA9071@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -78,42 +106,74 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241107125643.04f97394.pasic@linux.ibm.com>
+In-Reply-To: <20241107083256.GA9071@lst.de>
 
-On Thu, Nov 07, 2024 at 12:56:43PM +0100, Halil Pasic wrote:
-> On Wed, 6 Nov 2024 15:59:10 +0200
-> Leon Romanovsky <leon@kernel.org> wrote:
-> 
-> > > Does  fs/smb/server/transport_rdma.c qualify as inside of RDMA core code?  
+On Thu, Nov 07, 2024 at 09:32:56AM +0100, Christoph Hellwig wrote:
+> On Tue, Nov 05, 2024 at 03:53:57PM -0400, Jason Gunthorpe wrote:
+> > > Yeah, I don't really get the struct page argument.  In fact if we look
+> > > at the nitty-gritty details of dma_map_page it doesn't really need a
+> > > page at all. 
 > > 
-> > RDMA core code is drivers/infiniband/core/*.
-> 
-> Understood. So this is a violation of the no direct access to the
-> callbacks rule.
-
-It is not rule, but more common sense. Callbacks don't provide any
-module reference counting, module autoload e.t.c
-
-It is very rare situation where you call device callbacks from one subsystem
-in another. I'm not familiar with such situations.
-
-> 
+> > Today, if you want to map a P2P address you must have a struct page,
+> > because page->pgmap is the only source of information on the P2P
+> > topology.
 > > 
-> > > I would guess it is not, and I would not actually mind sending a patch
-> > > but I have trouble figuring out the logic behind  commit ecce70cf17d9
-> > > ("ksmbd: fix missing RDMA-capable flag for IPoIB device in
-> > > ksmbd_rdma_capable_netdev()").  
-> > 
-> > It is strange version of RDMA-CM. All other ULPs use RDMA-CM to avoid
-> > GID, netdev and fabric complexity.
+> > So the logic is, to get P2P without struct page we need a way to have
+> > all the features of dma_map_sg() but without a mandatory scatterlist
+> > because we cannot remove struct page from scatterlist.
 > 
-> I'm not familiar enough with either of the subsystems. Based on your
-> answer my guess is that it ain't outright bugous but still a layering 
-> violation. Copying linux-cifs@vger.kernel.org so that 
-> the smb are aware.
+> Well, that is true but also not the point.  The hard part is to
+> find the P2P routing information without the page.  After that
+> any physical address based interface will work, including a trivial
+> dma_map_phys.
+
+Once we are freed from scatterlist we can explore a design that would
+pass the P2P routing information directly. For instance imagine
+something like:
+
+   dma_map_p2p(dev, phys, p2p_provider);
+
+Then dma_map_page(dev, page) could be something like
+
+   if (is_pci_p2pdma_page(page))
+      dev_map_p2p(dev, page_to_phys(page), page->pgmap->p2p_provider)
+
+From there we could then go into DRM/VFIO/etc and give them
+p2p_providers without pgmaps. p2p_provider is some light refactoring
+of what is already in drivers/pci/p2pdma.c
+
+For the dmabuf use cases it is not actually hard to find the P2P
+routing information - the driver constructing the dmabuf has it. The
+challenge is carrying that information from the originating driver,
+through the dmabuf apis to the final place that does the dma mapping.
+
+So I'm thinking of a datastructure for things like dmabuf/rdma MR
+that is sort of like this:
+
+   struct phys_list {
+         enum type; // CPU, p2p, encrypted, whatever
+         struct p2p_provider *p2p_provider;
+         struct phys_list *next;
+         struct phys_range frags[];
+   }
+
+Where each phys_list would be a single uniform dma operation and
+easily carries the extra meta data. No struct page, no serious issue
+transfering the P2P routing information.
+
+> > I saw the Intel XE team make a complicated integration with the DMA
+> > API that wasn't so good. They were looking at an earlier version of
+> > this and I think the feedback was positive. It should make a big
+> > difference, but we will need to see what they come up and possibly
+> > tweak things.
 > 
-> Thank you very much for all the explanations!
-> 
-> Regards,
-> Halil 
+> Not even sure what XE is, but do you have a pointer to it?  It would
+> really be great if people having DMA problems talked to the dma-mapping
+> and iommu maintaines / list..
+
+GPU driver
+
+https://lore.kernel.org/dri-devel/20240117221223.18540-7-oak.zeng@intel.com/
+
+Jason
 
