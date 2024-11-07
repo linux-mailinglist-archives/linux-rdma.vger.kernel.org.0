@@ -1,107 +1,188 @@
-Return-Path: <linux-rdma+bounces-5841-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5842-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AE219C0B9C
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 17:28:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB1929C0BA7
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 17:28:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC8451F244CD
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 16:28:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 928EF1F22485
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 16:28:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39E99216A3D;
-	Thu,  7 Nov 2024 16:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59E0321730E;
+	Thu,  7 Nov 2024 16:27:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="yLlJQshv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgq9DuN9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D897C216A38
-	for <linux-rdma@vger.kernel.org>; Thu,  7 Nov 2024 16:24:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C832170BD;
+	Thu,  7 Nov 2024 16:27:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730996670; cv=none; b=M6mBfRkb1CbfzVDcT/lv1+Sc1TUIbbfHA4n8lK6o3axxOgvyVNEpx4/OHNuTWogw+ChziR+UBwNXJ1lbjuA4EzejbKkeituA87rKn/cU5+JqQmIfIRmlIpu7as9G4sY6qYrysteMCHKl9OdYnY6qfNnF6BxBUPiA1V9bPYoBhLY=
+	t=1730996830; cv=none; b=f+9Kxs+ilEXX4QvtaynQsB1mecl0VxRFh7WguluD6TbAkH2Nto3b9YLyQ9eQWTOzRzGY7XoGTugqQtrqwKUhKwU3VSu1l4BTNcnIAJGn2KsZEjeyW5xvr0+RfSSVg1UB9sMRAJSDewdVYyxLDYSD34Lcqm6j8PMxkNtKIhPq+gI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730996670; c=relaxed/simple;
-	bh=Wj4fOkQPXhbMAKih4r/Sld5wkvE3/LKYljfOua0Ngvo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=imQVEKmLEs1OSrF7BX2EHaudVoF1iz0o3WKCSDt5QM19T5tfKufiOrQ8D54/Wi9SSt8sufrym6YfjESJrhbCcXZxHrsOnOJvdgvwdT4PoZi/zl3/zSgIOgzbvDfcIY/Mq7EMLxJVuW3Hv4RXfICkoTcix6pXTy25yMVdN2zbGbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org; spf=pass smtp.mailfrom=networkplumber.org; dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b=yLlJQshv; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-7ee6edc47abso879158a12.3
-        for <linux-rdma@vger.kernel.org>; Thu, 07 Nov 2024 08:24:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1730996667; x=1731601467; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H8yOLzTUzlsG9KWjjsp8XyTHL3cnRzRcNsutj7MGbeA=;
-        b=yLlJQshvv+pa9pFYeZEvqoh06SJrOZowUSt6xDaZ3OUjwboAOpQOO9lqTl1h23UTDZ
-         W4jCAA9i0U2WapwQdkhkXZlc2C4Q2j13p2G0IHhPksiHiCiUZUAqPya9TtfAOwzB5i4k
-         HWlvELT2kZJnc26bnJwVo9gLS5F27zalnd+YZJJcbYpHH3tC1ycRd9Wfc1fbMF14XuwO
-         llJiRnNKtKGva8pyejrHZwD+zKLIoFBKIIm8kYTMNHL5cRPbe+vzTm9Hf5ambKenf8eZ
-         2cxDRx3A1zy0yv5mWqRsVJiIdSs9oTpxj4igqG6v4fEBlw+1DJw4N2tXvMvJDfalwRHZ
-         UGgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730996667; x=1731601467;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H8yOLzTUzlsG9KWjjsp8XyTHL3cnRzRcNsutj7MGbeA=;
-        b=ePjif19PLJ9udsg1k/y1VfEgM3yzjt3L7aroDh5jVGcXwpgwNpzD/GAeh7IFi9ErGf
-         of79Qs6wfmsZa/lfOr0dU6xV28BZG+swMwMDVadZiEKbT8skWkXENtiBIz4EUJnji7Z4
-         beBVzeEQH6twceawiXgU4muEkW2z9hyak71erKJf8JSYKSkjh1hz4x2pNVzkWXQEngBc
-         wyKEk5fl5FkMFsGmqQD8cRl5lok5fG/H1EXf7Wv4jWVjF3vdA8IkrUJIK+Mj8ujljSH4
-         tva8zkJ3tjHGWQnPVU59Y/QnjTjGwCxeWaIEQDYCIKvelGkYb5DA6m1Z2aob0ry4Rodd
-         jyXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVcvv5jFqUPV9kQedDRZNE+dt7XQPUuquxrO3byhKyQogMFmGwwlksusopnsrc+IGCcV37h6XBRywp2@vger.kernel.org
-X-Gm-Message-State: AOJu0YyoI4YsIeWsEzvy7kIHTSP0ne0sIn9Th0VpnrLMlY8okDZ5H07D
-	6hWLm5r9y8xzT+g2xWSgoS+idRMx4qIfVxknnflM09DZ1HU0ZlZZ6rB3iHXQlvc=
-X-Google-Smtp-Source: AGHT+IHlyVELjNAj2aJjY2JaCe7i+zLzQHpoz9KmkrKWBUeqMW+AT55BigFJRiYbmuvbEeUxhzrhvw==
-X-Received: by 2002:a05:6a21:6d9f:b0:1db:e587:4c3d with SMTP id adf61e73a8af0-1dc2057719amr146642637.23.1730996667070;
-        Thu, 07 Nov 2024 08:24:27 -0800 (PST)
-Received: from hermes.local (204-195-96-226.wavecable.com. [204.195.96.226])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724079aaa01sm1796761b3a.100.2024.11.07.08.24.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Nov 2024 08:24:26 -0800 (PST)
-Date: Thu, 7 Nov 2024 08:24:24 -0800
-From: Stephen Hemminger <stephen@networkplumber.org>
-To: Chiara Meiohas <cmeioahs@nvidia.com>
-Cc: <dsahern@gmail.com>, <leonro@nvidia.com>, <linux-rdma@vger.kernel.org>,
- <netdev@vger.kernel.org>, <jgg@nvidia.com>, Chiara Meiohas
- <cmeiohas@nvidia.com>
-Subject: Re: [PATCH v2 iproute2-next 0/5] Add RDMA monitor support
-Message-ID: <20241107082424.5fa1fa68@hermes.local>
-In-Reply-To: <20241107080248.2028680-1-cmeioahs@nvidia.com>
-References: <20241107080248.2028680-1-cmeioahs@nvidia.com>
+	s=arc-20240116; t=1730996830; c=relaxed/simple;
+	bh=RaF/yzDkwC/xI3JHS3wDYezLNgto4gJR15z4QCLcIec=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=SZxyKhBoI2WFa147IqtftwwHumxbvE8NGplrGaDPb4AsLbR8DH1dlLY8HZlcP94cAzUVWwTKLYIBd1c1CnBkRPmkKV8Xp/Ukt2E/PDCe0Y2mGXizcUc9dU/njwkDu/hu34a55bvUlxkpCyBQWpTZIrFcDCwpRgiEH2s4051cAGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sgq9DuN9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B3AFC4CECC;
+	Thu,  7 Nov 2024 16:27:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730996829;
+	bh=RaF/yzDkwC/xI3JHS3wDYezLNgto4gJR15z4QCLcIec=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=sgq9DuN999fo+gF31O1Sog3B6QwMV6OvcPe7VPqi8sJ1TCzU/W1Ez/tliuLSn6HZv
+	 H6WJr617Z9ho3vOtVhPzMb0TyqS+gb2SI7mq/C0wytQj+BYrK8SHegywRApVWEjefm
+	 VrP+Uq41/kYqyiwmALEKXPYG2sF+9dXoP558MEULT3X9CJ2qlfOgYo5XQQ/akQ/Li+
+	 8PC//m2NPppcQqPE5AwaE9VZUm8GEStHJrNdsbBXQj3zX2/Uw70Eqzdl18ZXk0ykpu
+	 Nv3hNeVLx2kThS8Iy5jvLz2TwdYaK/p8look0JzKdaIO94mqldL4oshBd2UJ53q8QV
+	 LBGXXQk7Ujmww==
+Date: Thu, 7 Nov 2024 10:27:07 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Ira Weiny <ira.weiny@intel.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Xinhui Pan <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>,
+	Carlos Bilbao <carlos.bilbao.osdev@gmail.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+	"David E. Box" <david.e.box@linux.intel.com>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Frederic Barrat <fbarrat@linux.ibm.com>,
+	Andrew Donnellan <ajd@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-cxl@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+	linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH v2 03/10] PCI/sysfs: Calculate bin_attribute size through
+ bin_size()
+Message-ID: <20241107162707.GA1618544@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20241103-sysfs-const-bin_attr-v2-3-71110628844c@weissschuh.net>
 
-On Thu, 7 Nov 2024 10:02:43 +0200
-Chiara Meiohas <cmeioahs@nvidia.com> wrote:
+On Sun, Nov 03, 2024 at 05:03:32PM +0000, Thomas Weißschuh wrote:
+> Stop abusing the is_bin_visible() callback to calculate the attribute
+> size. Instead use the new, dedicated bin_size() one.
+> 
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 
-> From: Chiara Meiohas <cmeiohas@nvidia.com>
-> 
-> This series adds support to a new command to monitor IB events
-> and expands the rdma-sys command to indicate whether this new
-> functionality is supported.
-> We've also included a fix for a typo in rdma-link man page.
-> 
-> Command usage and examples are in the commits and man pages.
-> 
-> These patches are complimentary to the kernel patches:
-> https://lore.kernel.org/linux-rdma/20240821051017.7730-1-michaelgur@nvidia.com/
-> https://lore.kernel.org/linux-rdma/093c978ef2766fd3ab4ff8798eeb68f2f11582f6.1730367038.git.leon@kernel.org/
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-What happens if you run new iproute2 with these commands
-on an older kernel? What error is reported?
+Thanks for doing this!
+
+> ---
+>  drivers/pci/pci-sysfs.c | 28 ++++++++++++++++------------
+>  1 file changed, 16 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 5d0f4db1cab78674c5e5906f321bf7a57b742983..040f01b2b999175e8d98b05851edc078bbabbe0d 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -818,21 +818,20 @@ static struct bin_attribute *pci_dev_config_attrs[] = {
+>  	NULL,
+>  };
+>  
+> -static umode_t pci_dev_config_attr_is_visible(struct kobject *kobj,
+> -					      struct bin_attribute *a, int n)
+> +static size_t pci_dev_config_attr_bin_size(struct kobject *kobj,
+> +					   const struct bin_attribute *a,
+> +					   int n)
+>  {
+>  	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
+>  
+> -	a->size = PCI_CFG_SPACE_SIZE;
+>  	if (pdev->cfg_size > PCI_CFG_SPACE_SIZE)
+> -		a->size = PCI_CFG_SPACE_EXP_SIZE;
+> -
+> -	return a->attr.mode;
+> +		return PCI_CFG_SPACE_EXP_SIZE;
+> +	return PCI_CFG_SPACE_SIZE;
+>  }
+>  
+>  static const struct attribute_group pci_dev_config_attr_group = {
+>  	.bin_attrs = pci_dev_config_attrs,
+> -	.is_bin_visible = pci_dev_config_attr_is_visible,
+> +	.bin_size = pci_dev_config_attr_bin_size,
+>  };
+>  
+>  /*
+> @@ -1330,21 +1329,26 @@ static umode_t pci_dev_rom_attr_is_visible(struct kobject *kobj,
+>  					   struct bin_attribute *a, int n)
+>  {
+>  	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
+> -	size_t rom_size;
+>  
+>  	/* If the device has a ROM, try to expose it in sysfs. */
+> -	rom_size = pci_resource_len(pdev, PCI_ROM_RESOURCE);
+> -	if (!rom_size)
+> +	if (!pci_resource_end(pdev, PCI_ROM_RESOURCE))
+>  		return 0;
+>  
+> -	a->size = rom_size;
+> -
+>  	return a->attr.mode;
+>  }
+>  
+> +static size_t pci_dev_rom_attr_bin_size(struct kobject *kobj,
+> +					const struct bin_attribute *a, int n)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
+> +
+> +	return pci_resource_len(pdev, PCI_ROM_RESOURCE);
+> +}
+> +
+>  static const struct attribute_group pci_dev_rom_attr_group = {
+>  	.bin_attrs = pci_dev_rom_attrs,
+>  	.is_bin_visible = pci_dev_rom_attr_is_visible,
+> +	.bin_size = pci_dev_rom_attr_bin_size,
+>  };
+>  
+>  static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
+> 
+> -- 
+> 2.47.0
+> 
 
