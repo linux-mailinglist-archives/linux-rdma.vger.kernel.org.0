@@ -1,91 +1,90 @@
-Return-Path: <linux-rdma+bounces-5828-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5829-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E1559BFF95
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 09:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2869E9BFF97
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 09:04:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CBA7282CFE
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 08:04:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC5A1282E40
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 08:04:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E7571D2B0E;
-	Thu,  7 Nov 2024 08:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D98719AA5A;
+	Thu,  7 Nov 2024 08:04:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="kgNEbIRg"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="imkZLbSa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2065.outbound.protection.outlook.com [40.107.92.65])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2059.outbound.protection.outlook.com [40.107.220.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DAC519AA5A;
-	Thu,  7 Nov 2024 08:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D2A158218;
+	Thu,  7 Nov 2024 08:04:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.59
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730966665; cv=fail; b=kCHvZBerIRUHhwey+iLcETg/WZh+iUR2F4iGdzLlmM8ILzZGFwvaKmJOnORliResSuDLpdeBXQMMurkPxU2Q0xqF8wfevFGxRk3kWJ1XEa6Y6nNhHzKnzar2vAPZa+iqRfFF6SXKj/oF3+46hJPmbLW57mPN3jHDUCSYW7oclz0=
+	t=1730966666; cv=fail; b=Aw9soYsFymJxEPlkRgqhW1vkYNmABpKtcIlYsrkErZdaDpvgju118oGXV6FFaVbOo6AHy1ciM+uQMLdWFQBl/GmLsJRuDHUrwuXVkglaZw0LhQHz5sJmpLZKpfHo98JdprQUKLoaq8pJqo/G4qb1yoFxFL7rh7mfgfFrQcJ7OmI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730966665; c=relaxed/simple;
-	bh=7AzVwdMpEGTPQmg/RIQ6+6NukoZvk/ZP6u/nk8X2IMc=;
+	s=arc-20240116; t=1730966666; c=relaxed/simple;
+	bh=ncle9SeKtepsEI3IDufpeHD4ZWhqjBnrNRh212vFwYE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hLV/hX5a9MHPxczqUddST+lsDdqoS/wRm9HlWqXik1lhMMLsTEoasce1PyOtNIbipuzzJ4UF6SEkwCi5c01dxIwHZF9NqmV4YrYfDVm8vivlc45gfyjVteCclaNywPI/ZKYcdH6fG0hfDTYwFUM7Qx+vci/ty4BMKNKSgPVDXbY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=kgNEbIRg; arc=fail smtp.client-ip=40.107.92.65
+	 MIME-Version:Content-Type; b=l5PHCaQnqyc/ffFQb5a1VdkGnfuf7Oei31Rpx20AACVhQ0a4GL2h/Y6ATqKFukaThmxtJP1u6SnQNLcVZmnhv+uPPcm67L7oXKeYo9y3972V3m9QNVKPGr8eBZLpRW4mKWZ3sfwzfs1UIFqi7gWOWh11TKqZBlUdwSfgLph86Bg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=imkZLbSa; arc=fail smtp.client-ip=40.107.220.59
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Qcv9thAdIXJpusXr3QBvZO5RtWyKVQAVQQrS1K99EwC3vCDh7UNKOg2uzOJ71eQ0qG9ctEuJV08H5qrYjJEyvNeBfcI28pbQ/dlys6m0fVRqLhf2Of+MQxbYQUBQ2WwfQxaVAo4Zn7hKxaQzYePjkEd184kNsu+7Yq4mhGxLuCnRQJFFN5RTHGOQ8EI9nisqwIhJed++Yc58H5R8q3FZnrLQ3AzNalEBWit4jdlJrT9BuqVIRw+CTpSdjYi1T8H61XdWsZyJHMPcdYcO/k0D1k4xIaemxx8jkBByc60pRQTS2WuI6EN+vsuOSK8EuhAdYd81JMfnkr768qXm0m6P2g==
+ b=wyGLBjGP1fN95jucpT6qH8b5aU0edJ+enHLrIVhMlbOMsD8o2Y4D1YqvbqboW8jXZ6fdHXzuAWdCu+/eCT2oNK6OlxpauPAGIlV5M8uDqAjFp7ffFGPokoN20uHMb34Urg5+qJ1eSJphLzE69y4dDdphySL7cZWQBayoqRvuGLSmuJsg7InRc+liWFvFCv0S+6EhFCjfx+YJFz2SvD7II/6P4h48JXPYA5ZGFJB2lgXOAkBnh/nAS1eMSg/UrgUFyNLQwYjGvUjHOvm5xh0f+aNoyYz1eX44jYXJW/grZ6H6WlPU8j+IZo4kShtOikFbETidil710/iU1oQPCI/z4g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cUfGHicv0ZzVSkWw+3sDCCDZKRMBeib2hhPUSeg8NaI=;
- b=EKIl3+Bozn2+DvTNqrws6gpCWUSajD0hDygctUOncpQ5cA/b9yCppQN+amcBUxwmeNd/SfKKeZ2MblUll2zjd3G5VtD9ZMOJ/Gy4RV0ZPoruTvFCoqA0l0QL81zgFSTikayB1Llo6B/CCSCDedTrIDNmDCMADBf2iShlmYCp/wN38pklDYWJvPjThy4wKecaIRv/opAkro7qKbWhqWAFkQSGWBNNK9SOuc0lICXGKDhy4QVXO1Ffjyl1L66NkkNqX6onUyE36LUcgMzwSJ5ERcbQNvJCkFAGqBen3PYZsowdVc5E2eA7Xr/v3gI/tGGJMlIDMChYF8FKm71LlIPzQA==
+ bh=WszNR1Ann5KlTSPBb8SuFfcM5mgaLX/yJ0umeESdJoU=;
+ b=rArOVThPMJR0NzNhf5vGI/WtD2T0Ko9s26gAQq1Cz0lzBk9nVNQybQAPJEYS5gOeOGNeWFf1g8ihTjlr4NKE9rsMj5CzWJgVXKUgxygBhludA10xjs9O47HOQNVCgag2hemEurciG2/ZYnHLaplKu1kkr+ID3rzSDgMVbXhz/aerDbLhLCXbktiA6Vhp1CA4bVAxiR6XXGZ5Oz3eXx3AB4F+TO4Wr4HtdeMxWue2EpCd8Ag484vSE80AGuGfiJcAJRX3bq8XBtxw9EPfVVlKx9oBqlgIKYItYNCU7FAzM4XMY5zGoxehOGNYUqJwEt5QYQG62vmcvwF+2fxNkIYYEg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ 216.228.118.233) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cUfGHicv0ZzVSkWw+3sDCCDZKRMBeib2hhPUSeg8NaI=;
- b=kgNEbIRgOXKSRztlV09DoYB9C5zasaLH3mAJ1LQ0lBFW91ujTfw/irpLoQouSAR0vijLWT2Pt9QNHZW4JbQxYrP00mS8UtlUZNE6npeYc1isMOVTCuB3ZDBzGxqVTBBNoWu7jQYjEtAYLnVen72sMoPwldX/hT0OpybDYnSXulhTqEU/EWgjDWqwoOqrVWW5ZvzXC4g5IJGiPY9Slz3Xai3FT210OwY7plRfwHc3Ao/vowqQocWcOXuqPftaEMicClivgmzJ2ZJwfvs07yZ846oh+27PhQDTZvMMV/4mtAAEY/QioeGi8E1CUkxChL6/eYqaXfl8jXVJUQGhjtKpDg==
-Received: from MN2PR11CA0009.namprd11.prod.outlook.com (2603:10b6:208:23b::14)
- by DS7PR12MB6070.namprd12.prod.outlook.com (2603:10b6:8:9e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.18; Thu, 7 Nov
- 2024 08:04:19 +0000
-Received: from MN1PEPF0000F0DF.namprd04.prod.outlook.com
- (2603:10b6:208:23b:cafe::37) by MN2PR11CA0009.outlook.office365.com
- (2603:10b6:208:23b::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.19 via Frontend
- Transport; Thu, 7 Nov 2024 08:04:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ bh=WszNR1Ann5KlTSPBb8SuFfcM5mgaLX/yJ0umeESdJoU=;
+ b=imkZLbSaJaIPhLLqQuCHNB4oW16EXJrKs9LRNThF2M1hNOtwzqHmTybCuZoWEyxRp/uPhT+a/aRORBndskcB2pVaHEPolx6RXlnxapuxwl7PtjcXCKR2UxJKCXcamUrXpGI3qnTbBiOSL6p4P74NbxPttsNMCr+1MV59nQeDlD+Ptoh5ZhX/AwEcB3RgJt42V0q9Uct+oXwSHzp78L85sNor9oynZO8kBzz0w/bjud0ogBSqd0ZacBoidz30Qjl5lE6ajV5J1nCeBGEXs/rKhns2Nictt9eguLtnxjyGCuEu3/gsPmT7MEpfedsk65t+iLY/K3bUQFhxLRyWEn8InA==
+Received: from BYAPR01CA0058.prod.exchangelabs.com (2603:10b6:a03:94::35) by
+ DS0PR12MB6413.namprd12.prod.outlook.com (2603:10b6:8:ce::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8114.33; Thu, 7 Nov 2024 08:04:22 +0000
+Received: from SJ1PEPF000023CB.namprd02.prod.outlook.com
+ (2603:10b6:a03:94:cafe::ae) by BYAPR01CA0058.outlook.office365.com
+ (2603:10b6:a03:94::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.34 via Frontend
+ Transport; Thu, 7 Nov 2024 08:04:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- MN1PEPF0000F0DF.mail.protection.outlook.com (10.167.242.37) with Microsoft
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SJ1PEPF000023CB.mail.protection.outlook.com (10.167.244.5) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8137.17 via Frontend Transport; Thu, 7 Nov 2024 08:04:18 +0000
+ 15.20.8137.17 via Frontend Transport; Thu, 7 Nov 2024 08:04:22 +0000
 Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 7 Nov 2024
- 00:04:07 -0800
+ 00:04:13 -0800
 Received: from drhqmail203.nvidia.com (10.126.190.182) by
  drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Thu, 7 Nov 2024 00:04:07 -0800
+ 15.2.1544.4; Thu, 7 Nov 2024 00:04:12 -0800
 Received: from vdi.nvidia.com (10.127.8.11) by mail.nvidia.com
  (10.126.190.182) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Thu, 7 Nov 2024 00:04:05 -0800
+ Transport; Thu, 7 Nov 2024 00:04:10 -0800
 From: Chiara Meiohas <cmeioahs@nvidia.com>
 To: <dsahern@gmail.com>, <leonro@nvidia.com>
 CC: <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, <jgg@nvidia.com>,
 	<stephen@networkplumber.org>, Chiara Meiohas <cmeiohas@nvidia.com>, "Mark
  Bloch" <mbloch@nvidia.com>
-Subject: [PATCH v2 iproute2-next 2/5] rdma: Expose whether RDMA monitoring is supported
-Date: Thu, 7 Nov 2024 10:02:45 +0200
-Message-ID: <20241107080248.2028680-3-cmeioahs@nvidia.com>
+Subject: [PATCH v2 iproute2-next 3/5] rdma: Fix typo in rdma-link man page
+Date: Thu, 7 Nov 2024 10:02:46 +0200
+Message-ID: <20241107080248.2028680-4-cmeioahs@nvidia.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20241107080248.2028680-1-cmeioahs@nvidia.com>
 References: <20241107080248.2028680-1-cmeioahs@nvidia.com>
@@ -100,149 +99,72 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0DF:EE_|DS7PR12MB6070:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3ff4abd9-f724-41e6-d96c-08dcff02c80b
+X-MS-TrafficTypeDiagnostic: SJ1PEPF000023CB:EE_|DS0PR12MB6413:EE_
+X-MS-Office365-Filtering-Correlation-Id: 184698c9-c565-4b0b-6f27-08dcff02c9e3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|376014|82310400026|61400799027;
+	BCL:0;ARA:13230040|82310400026|36860700013|61400799027|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?831na0vglASB/XbnjR0wG5rez4v/j4iKN7PHUxxQ5t3uUky5thu+kpSVXbg2?=
- =?us-ascii?Q?KrKeOC4Qh6yaYHiKoEgf+Qh7bEYCoGtE3DiBygOAHcYO0MIDWyZAwpjAzNXJ?=
- =?us-ascii?Q?awKGYWtKOen/9sQJjNJkUcl+orxjHRP3JTqQ8xsfbnMF7G0uH5glZaoB/39o?=
- =?us-ascii?Q?cPPr/tVG9+zRwR+WAdwJTPYTXnoYa1s7Pur1FECPZ4E1ktrIAxOqptG7Cmfv?=
- =?us-ascii?Q?VzTOIicHw6QZq8/7cm9xufzO0uBSPfNyxWRgZRcBH6bO0z8BNEP3VlBy+eD6?=
- =?us-ascii?Q?ZFTGzN+XytJF4DyTC3Vp7sWgAFtVaJXaU75MM9LZB7XrgFhEpYOa0fhA8dzy?=
- =?us-ascii?Q?5IQJGOx6ubPRLA3u4lqQ5CV7oWVOucxvjV6tLYVHzolSir5/a02uN0NfkA5i?=
- =?us-ascii?Q?PQgr/0XxUBNrOD4Vi4Aei9mrUjaINRoDa8iiV4T0774bUMHtIHAuk1zl16Cy?=
- =?us-ascii?Q?beLgCk1a0lsCiNcGJ7uaMoAf3WYMC9f13lE69UgZkfRvvzcLjQiGS1X5Xl7B?=
- =?us-ascii?Q?CmL6qalidgASKKVGU6gWV39Qday/aVxFjIhp1NKr1Z4dla4SGX1OfHrFUkVC?=
- =?us-ascii?Q?y+QrB4+qwzp/9FwbIEt7wSecN4hxJqmSw9jWoQn7HyqNh32bo3I426g7ZROJ?=
- =?us-ascii?Q?Z6R+gkTRZnKBnQmt0xH3aeteuoL5RHYPpHUYfBhArRqLm0SQyiZG4C84HXe0?=
- =?us-ascii?Q?EXL7rhqdHTQlmAg9YnR3vRWlyq/AJpiQGJhyX/ZOJo7devvsYCM8J14HZDFN?=
- =?us-ascii?Q?zrt6NBwcHziA7MSano3bDR74jNL8Wjq9aVuM2nAoPsKxteNwYFtQaqOB+ENx?=
- =?us-ascii?Q?cpIBwy89zgJi4OHATdV4hZsViV0TMgfbWIG3zSAU2aOPCDVWrD3J+CP4Difs?=
- =?us-ascii?Q?g8rqQSAdyX24rQEspsQbiElabgp+GuDVu9wThHZeFlRGo/mY/uHQXWFxV7M8?=
- =?us-ascii?Q?FYNjYbs9i0+ZRz48ZpLny5Yq6bvNgvWcutvddF9cDuP0DvDltnasMBk9dAki?=
- =?us-ascii?Q?4kbUvwIQAq0/TLhKjmdqfycyOYtH4oyBcYCfzHcJFh7rbyGCTvqdu4jndAY5?=
- =?us-ascii?Q?iK7VYgx9ldMuuS/aGTIKYvfk2d1/jNJHt3/0M+ax7NnXN7pemLZfsW3dpxyM?=
- =?us-ascii?Q?JnNYDh1fD5OJdBGAFw5ptpADfJ1ahsmDsnPM8iweUS5r3ywkfU3Fyz4f/jFp?=
- =?us-ascii?Q?W+rnaKq3WjT9Z8ALuZSwZUJ9T5jsIMqDKEA4YFTXEU0Emkiamqj4IEmAU1ne?=
- =?us-ascii?Q?ZbcLnJrPI9EGFgOGfvwfPh3bzG40DwEVmhjzgK3c4KuXrRRCrFkP1uSaLu7l?=
- =?us-ascii?Q?2raccqKNcY/YEWz4HbJXXpJjGUkMa0quqrFeGVnve4BMYY9Bt70PvRwd294q?=
- =?us-ascii?Q?tEY8rx9jUF9QpHZaerT24rT/EAmaEcSghO8I/gXyQhrXKtj02A=3D=3D?=
+	=?us-ascii?Q?+/R+pazt3tS0D25wvjwe5pEJVUibpowewLVh3DIoaTTLgRAsTtE7JWqwbXsp?=
+ =?us-ascii?Q?/X6qitsWeNbQT5uj/b6QkGz1NYYmTo8nGzz+bzNwfoYZXGzYF4dW8JROYTQq?=
+ =?us-ascii?Q?htRY3tf3fErf+wpkVvU2fO8BvCXehTifIZh5fRt2zy/3/XCjYh4t55qiecaU?=
+ =?us-ascii?Q?vO4ch+ccTnlxK6bu5wj6jgDAiRxd5mJK4VNcZB1EZP8Tz0nsh88h2Yw4n01k?=
+ =?us-ascii?Q?Tnf1LCJftKXigttNOeM2OgHFHbf61IoA1DBk6XqpDKV5N/gQMI0Kr1XKAHQq?=
+ =?us-ascii?Q?p7/W5GpvvCmKHgWV9yjE04SMGeIVhLqDq7aQ9kjO8rHdouAWtTO/npZRqZYQ?=
+ =?us-ascii?Q?aShoFlRDYfI9F4PrberLj1KnJkLcf4IQeaBibc/ku+/7y/GgCdtnLiZ7VwiH?=
+ =?us-ascii?Q?bxzsJhyOEeKHaK1dD/2oAGyehKyhsuE5qGbc2W8EWnnVNU2K1IrqPDVcB5HU?=
+ =?us-ascii?Q?LmgdsCv2gFS73uRIWDgyFmBTxhZpBMojyIcV3NcKAQGxF24iULDL2jfa1+Mi?=
+ =?us-ascii?Q?YHY2V8P5J6OJR4TiR5awJAPeC2MsEbA1nXRUEBSJQd9DHN20Cl60Mr21p09I?=
+ =?us-ascii?Q?Xyp2x0vbkvmWXQa8LpMGu2KYpNOycBQ76iimHlQfpeZmRC+9oDdTqTbqUhVe?=
+ =?us-ascii?Q?P4z/VNGPiSAk/FsJeucFhaOONQpi7dh2wcu3dqiFL44MiDG/3XvV9TDzPVKq?=
+ =?us-ascii?Q?D+v1AdXH+tvHnO1nEEcAjpPZeg3srLha624oteSwLSmkXlowmCMnQ+XwjjCw?=
+ =?us-ascii?Q?Dxp6Z3/sz1U4PxUkftpJJv9F3iW7cy31rxdHB1TNntbQ86P463H5BVFtIiGk?=
+ =?us-ascii?Q?DQC+BJs4YQqd2tRzROzyFm10Ijpktnu43/IXQivlg7x4Ng0/AZ0xU+nZiH1h?=
+ =?us-ascii?Q?014sJTOpOfShJjUn+SOofK33iROdqYRkPDCv5qBy0QPQDUbyHNr3pFJwa1sA?=
+ =?us-ascii?Q?7Zz4BhZAjIMcNogApiAiKB7L7zw37NDJ1YdX2FudiKmFy9r1kc7+tGUH9KSL?=
+ =?us-ascii?Q?oa/3jrR7jS8QRTr7X09fRsTejEFs/VAbIMYWHWrO+BIPt8p62lb9Nk5sPE90?=
+ =?us-ascii?Q?2HpbXU0NQzs/6NVAc3B9dMm6Trk8MOWFPZEQsl8XQLRg/0+Lda9mr4ZjCVTw?=
+ =?us-ascii?Q?MFcbz9eZtzBcoL4nRzWGzQwbZRqEh54nZvHxxwLkKGDQi2+z1sYOI6D0P2pQ?=
+ =?us-ascii?Q?MG6+C0Eq62AiIP4xx3gGF4wnO0TUdwM/XSkOZ92KFFCCk7Lc5VbxB2EV543k?=
+ =?us-ascii?Q?AqWX0PBK03GFDQmssqT+VLUrmcbcwd1UjgD+qYoJt8OqAoi7QrqAdx+LBREj?=
+ =?us-ascii?Q?NMIIkdkx0VbOVZamiuqtJMp13LsnVujgogRU19wsUMdhyYRve98fMeyubDfP?=
+ =?us-ascii?Q?2tKViXWejN1QMzQg44SGqDbFrGFbrRZ+G7cwkndDpMfa3sY9tg=3D=3D?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(376014)(82310400026)(61400799027);DIR:OUT;SFP:1101;
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(61400799027)(376014);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2024 08:04:18.9130
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2024 08:04:22.1754
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ff4abd9-f724-41e6-d96c-08dcff02c80b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 184698c9-c565-4b0b-6f27-08dcff02c9e3
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000F0DF.namprd04.prod.outlook.com
+	SJ1PEPF000023CB.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6070
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6413
 
 From: Chiara Meiohas <cmeiohas@nvidia.com>
-
-Extend the "rdma sys" command to display whether RDMA
-monitoring is supported.
-
-Example output for kernel where monitoring is supported:
-$ rdma sys show
-netns shared privileged-qkey off monitor on copy-on-fork on
-
-Example output for kernel where monitoring is not supported:
-$ rdma sys show
-netns shared privileged-qkey off monitor off copy-on-fork on
 
 Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
 Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 ---
- man/man8/rdma-system.8 | 9 +++++----
- rdma/sys.c             | 6 ++++++
- rdma/utils.c           | 1 +
- 3 files changed, 12 insertions(+), 4 deletions(-)
+ man/man8/rdma-link.8 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/man/man8/rdma-system.8 b/man/man8/rdma-system.8
-index 554938eb..5373027a 100644
---- a/man/man8/rdma-system.8
-+++ b/man/man8/rdma-system.8
-@@ -38,8 +38,8 @@ rdma-system \- RDMA subsystem configuration
- .SS rdma system set - set RDMA subsystem network namespace mode or
- privileged qkey mode
- 
--.SS rdma system show - display RDMA subsystem network namespace mode and
--privileged qkey state
-+.SS rdma system show - display RDMA subsystem network namespace mode,
-+privileged qkey state and whether RDMA monitoring is supported.
- 
- .PP
- .I "NEWMODE"
-@@ -66,8 +66,8 @@ controlled QKEY or not.
- .PP
- rdma system show
- .RS 4
--Shows the state of RDMA subsystem network namespace mode on the system and
--the state of privileged qkey parameter.
-+Shows the state of RDMA subsystem network namespace mode on the system,
-+the state of privileged qkey parameter and whether RDMA monitor is supported.
- .RE
- .PP
- rdma system set netns exclusive
-@@ -100,6 +100,7 @@ is *not* allowed to specify a controlled QKEY.
- .BR rdma (8),
- .BR rdma-link (8),
- .BR rdma-resource (8),
-+.BR rdma-monitor (8),
- .BR network_namespaces (7),
- .BR namespaces (7),
- .br
-diff --git a/rdma/sys.c b/rdma/sys.c
-index 7dbe4409..9f538e41 100644
---- a/rdma/sys.c
-+++ b/rdma/sys.c
-@@ -20,6 +20,7 @@ static const char *netns_modes_str[] = {
- static int sys_show_parse_cb(const struct nlmsghdr *nlh, void *data)
- {
- 	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
-+	uint8_t mon_mode = 0;
- 	bool cof = false;
- 
- 	mnl_attr_parse(nlh, 0, rd_attr_cb, tb);
-@@ -48,6 +49,10 @@ static int sys_show_parse_cb(const struct nlmsghdr *nlh, void *data)
- 
- 	}
- 
-+	if (tb[RDMA_NLDEV_SYS_ATTR_MONITOR_MODE])
-+		mon_mode = mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_MONITOR_MODE]);
-+	print_on_off(PRINT_ANY, "monitor", "monitor %s ", mon_mode);
-+
- 	if (tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK])
- 		cof = mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK]);
- 
-@@ -77,6 +82,7 @@ static int sys_show(struct rd *rd)
- 		{ NULL,			sys_show_no_args},
- 		{ "netns",		sys_show_no_args},
- 		{ "privileged-qkey",	sys_show_no_args},
-+		{ "monitor",		sys_show_no_args},
- 		{ 0 }
- 	};
- 
-diff --git a/rdma/utils.c b/rdma/utils.c
-index bc104e0f..07cb0224 100644
---- a/rdma/utils.c
-+++ b/rdma/utils.c
-@@ -478,6 +478,7 @@ static const enum mnl_attr_data_type nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_DEV_TYPE] = MNL_TYPE_U8,
- 	[RDMA_NLDEV_ATTR_PARENT_NAME] = MNL_TYPE_STRING,
- 	[RDMA_NLDEV_ATTR_EVENT_TYPE] = MNL_TYPE_U8,
-+	[RDMA_NLDEV_SYS_ATTR_MONITOR_MODE] = MNL_TYPE_U8,
- };
- 
- static int rd_attr_check(const struct nlattr *attr, int *typep)
+diff --git a/man/man8/rdma-link.8 b/man/man8/rdma-link.8
+index 32f80228..5e4a5307 100644
+--- a/man/man8/rdma-link.8
++++ b/man/man8/rdma-link.8
+@@ -6,7 +6,7 @@ rdma-link \- rdma link configuration
+ .ad l
+ .in +8
+ .ti -8
+-.B devlink
++.B rdma
+ .RI "[ " OPTIONS " ]"
+ .B link
+ .RI  " { " COMMAND " | "
 -- 
 2.44.0
 
