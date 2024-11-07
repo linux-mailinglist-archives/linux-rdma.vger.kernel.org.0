@@ -1,135 +1,147 @@
-Return-Path: <linux-rdma+bounces-5843-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5844-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDDDE9C0CC5
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 18:21:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB6E89C0DD4
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 19:31:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A895B23048
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 17:21:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF3B5283F7E
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 18:31:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C0C217307;
-	Thu,  7 Nov 2024 17:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47982217318;
+	Thu,  7 Nov 2024 18:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uirXLcMy"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="dCCfewTo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f98.google.com (mail-oa1-f98.google.com [209.85.160.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7A2216A3D;
-	Thu,  7 Nov 2024 17:20:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF392170D3
+	for <linux-rdma@vger.kernel.org>; Thu,  7 Nov 2024 18:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731000046; cv=none; b=KL9YtFCH28bzxEf2osqHXgYgeJnEz0G7dL/+51SWnjahq9Sah9GLbHDLRPsB0AuMcGS3dOJL2Zjp5KlHTPSBjicy/PG3+4VTcvpqETK+Pp8Ep+vxIQq8juLvCTjPG2Ycdpctzo+EpJyJUC0kstoFKTraBcyXMLC6v8CJkGsng1s=
+	t=1731004270; cv=none; b=ggf6S/vlyGzP1BCjQj6sPfCRxKAPviVb1jZHxpCI+3kkNYrRMZkRg4hBcK2zfaa4BfHfbTYJutBF1nTo7HEySmKvRTlT4VSiifYbFks0mSC0aqBSHc0yhmWD0SGi9XkN0CCSmgjSKpSzsb9+E6o0U6Di8SqKl+M4lk5ZVQh5Np8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731000046; c=relaxed/simple;
-	bh=cADn4ARQkTOhflqlIHhNxtca9L54H5LHvOrTgQwQP8c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=UT2Tkse7N2/fMJXyzMZIfnDM/7LJFyO7c7WniqZH1xaXzCEvDeIWJWld3fJitl5CFCJdLF70brs2TYA+H3VB8UNRSe8IRlXXUIXhdEBdE53bXbGCBvNpZRTHsyK7h91XXAxh6+mWNmWBGDe5B124QKO9/FcA0BIzjkj0SktJdWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uirXLcMy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8DA9C4CECC;
-	Thu,  7 Nov 2024 17:20:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731000045;
-	bh=cADn4ARQkTOhflqlIHhNxtca9L54H5LHvOrTgQwQP8c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=uirXLcMy1Qn//p7lSBnbOlzSbCL5aIT0TqEnGpIZm6Rx23BQJKj1JIwJAP4R6CQ3Y
-	 BGW5ysKmLw5HxKe9TW2Kb0/MrhrtH+FEMuRdl+3jaHMQQkHCavjZQ9xWr31Ghy5ARf
-	 J2TiGOLT8c6IMr+E/gnELx0660oj7VCoNS9utcB0Gb41g2oymp/+1G/7KVgOzIPwxq
-	 q5/0lzC969ZrJFg9aKvlY1ckSKQVQp4pt0o8irIOJAq56q9MDR85uEDv3iCGEqltvk
-	 QeOfANjQFk8pt3o4hyDqn3DINTzEn9s+ZnpBLM2/xaYcEN2lpP63yM+3MX3zh3CiMr
-	 Amp7lQpjSOJ2g==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,  "Rafael J. Wysocki"
- <rafael@kernel.org>,  Bjorn Helgaas <bhelgaas@google.com>,  Srinivas
- Kandagatla <srinivas.kandagatla@linaro.org>,  Davidlohr Bueso
- <dave@stgolabs.net>,  Jonathan Cameron <jonathan.cameron@huawei.com>,
-  Dave Jiang <dave.jiang@intel.com>,  Alison Schofield
- <alison.schofield@intel.com>,  Vishal Verma <vishal.l.verma@intel.com>,
-  Ira Weiny <ira.weiny@intel.com>,  Alex Deucher
- <alexander.deucher@amd.com>,  Christian =?utf-8?Q?K=C3=B6nig?=
- <christian.koenig@amd.com>,
-  Xinhui Pan <Xinhui.Pan@amd.com>,  David Airlie <airlied@gmail.com>,
-  Simona Vetter <simona@ffwll.ch>,  Dennis Dalessandro
- <dennis.dalessandro@cornelisnetworks.com>,  Jason Gunthorpe
- <jgg@ziepe.ca>,  Leon Romanovsky <leon@kernel.org>,  Tudor Ambarus
- <tudor.ambarus@linaro.org>,  Pratyush Yadav <pratyush@kernel.org>,
-  Michael Walle <mwalle@kernel.org>,  Miquel Raynal
- <miquel.raynal@bootlin.com>,  Richard Weinberger <richard@nod.at>,
-  Vignesh Raghavendra <vigneshr@ti.com>,  Naveen Krishna Chatradhi
- <naveenkrishna.chatradhi@amd.com>,  Carlos Bilbao
- <carlos.bilbao.osdev@gmail.com>,  Hans de Goede <hdegoede@redhat.com>,
-  Ilpo =?utf-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,  "David E.
- Box"
- <david.e.box@linux.intel.com>,  "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>,  "Martin K. Petersen"
- <martin.petersen@oracle.com>,  Richard Henderson
- <richard.henderson@linaro.org>,  Matt Turner <mattst88@gmail.com>,
-  Frederic Barrat <fbarrat@linux.ibm.com>,  Andrew Donnellan
- <ajd@linux.ibm.com>,  Arnd Bergmann <arnd@arndb.de>,  Logan Gunthorpe
- <logang@deltatee.com>,  "K. Y. Srinivasan" <kys@microsoft.com>,  Haiyang
- Zhang <haiyangz@microsoft.com>,  Wei Liu <wei.liu@kernel.org>,  Dexuan Cui
- <decui@microsoft.com>,  Dan Williams <dan.j.williams@intel.com>,
-  linux-kernel@vger.kernel.org,  linux-pci@vger.kernel.org,
-  linux-cxl@vger.kernel.org,  amd-gfx@lists.freedesktop.org,
-  dri-devel@lists.freedesktop.org,  linux-rdma@vger.kernel.org,
-  linux-mtd@lists.infradead.org,  platform-driver-x86@vger.kernel.org,
-  linux-scsi@vger.kernel.org,  linux-usb@vger.kernel.org,
-  linux-alpha@vger.kernel.org,  linuxppc-dev@lists.ozlabs.org,
-  linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v2 05/10] sysfs: treewide: constify attribute callback
- of bin_is_visible()
-In-Reply-To: <20241103-sysfs-const-bin_attr-v2-5-71110628844c@weissschuh.net>
-	("Thomas =?utf-8?Q?Wei=C3=9Fschuh=22's?= message of "Sun, 03 Nov 2024
- 17:03:34 +0000")
-References: <20241103-sysfs-const-bin_attr-v2-0-71110628844c@weissschuh.net>
-	<20241103-sysfs-const-bin_attr-v2-5-71110628844c@weissschuh.net>
-Date: Thu, 07 Nov 2024 17:20:37 +0000
-Message-ID: <mafs08qtv7yfu.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1731004270; c=relaxed/simple;
+	bh=+7GSFZS1z6Q2nK/J2hOMMCbumu8o1d3GcPgXqPKINp4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ggCiILH32qVmOgF1zHHLb/Wq7EUFCl3ZLd7RCM5ntdRtQe+7NL5y6wAqvwQecDqCzwmNX4VqLX57894L0Y+E5CzB0B9cNlDOlo6HzZTKx9yWywZsw/iOWBEUmDz09JFszBh2I+2lzHYTnJrM+YYLp2nqByob59Df/V2t5gTYe2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=dCCfewTo; arc=none smtp.client-ip=209.85.160.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-oa1-f98.google.com with SMTP id 586e51a60fabf-28893cc3acdso164896fac.2
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Nov 2024 10:31:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1731004267; x=1731609067; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sJVBj2BWP8MSLlUfkHkKfAXT6jikollCx1oJSSB5KYA=;
+        b=dCCfewToE6WDXM+aNrvaaWxNKu+Keal/QvnIC5yxKXKpdvBbK8MVTxtTI76XDng1VW
+         nPDmhnzu8LT5mdALd6JzMdkTgEhVjjlj0nXYY6kd0U6DdSeiNSkQho2VJoLdHfB1rRMP
+         4BxXbzupp6cElZ9H2LNKYRUj3lTbaIi2fbViwtgM6TjZu/CRGluFP3CVzaYqtbhAJ6g6
+         Bg6IDnWXolgh6YpRCjWeMbvC17Md+oy2BorOVWsf6/1CE1fmXkp7p5yChoYtFMipvPWj
+         adjrO1hEJOSVwcbK0h8o06r45+dfwDGvUPXNnAdEDEzg2YAc0VGOghrtNmRCcYzwOYa3
+         zVBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731004267; x=1731609067;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sJVBj2BWP8MSLlUfkHkKfAXT6jikollCx1oJSSB5KYA=;
+        b=vFWm37WANBTGXw57/DUtjqQJC+DLlOFf6nvl/oKdXkr+19Q3AO1cFXnicyN2tUJL0F
+         kOdS1hA++3t1zZpIxkooyvkWHItksULP+5dKtxokzv8LExP93lq55tRZMaweJuzMVeyT
+         YFLV4JEjEE1kCIH79TcaFQ7dNy2ixT7bOqB/SnzCATk97Lzx+ssqXrlH+jpF3M/0nWBw
+         dXW58airkZlIDJUmfdCP4oC7drsHDAM6XOu4OqTggd0qBZF/pidIVrT6WBFu2Z3f9tbA
+         ADquiqVq3Pd1Do67wn7wPugHxWaO9qYEpnp+DDoKmJX8iT9wkLc9+pkMHnix5/UgxIb5
+         975w==
+X-Forwarded-Encrypted: i=1; AJvYcCW5YvG0qQdxA/xcW6pbXpAKXJ3oyiSqSihbpL2l+3bntqLRpWWLFxaFV3ktGsaxFFYkoOPCZFZ6awnh@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJ8gLMZw7k0IeqsAnXGhgFAODpBnfoNDjovXpXA8DM41fcthyu
+	t28pUVbkTuyzEbS3z1GzcPanVp8c07gQwkpdAuq3mllLH8sAmr7ovcQBh+IIqgdd8Ad2zNmuPXP
+	hv8mqBPUQZFhaenm70WduBTLSSLS9rtnw
+X-Google-Smtp-Source: AGHT+IFy+P6qjGcCcGWY8SuGhP2P81lGxGaGxgCCjeNGSOOnvaRv9ggx/dWrjTCdmCSF3o0xeTnQ8LDvke76
+X-Received: by 2002:a05:6871:4e86:b0:288:5240:2ffe with SMTP id 586e51a60fabf-29559d81487mr280659fac.14.1731004265868;
+        Thu, 07 Nov 2024 10:31:05 -0800 (PST)
+Received: from c7-smtp-2023.dev.purestorage.com ([208.88.159.129])
+        by smtp-relay.gmail.com with ESMTPS id 586e51a60fabf-29546d9c868sm79284fac.26.2024.11.07.10.31.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Nov 2024 10:31:05 -0800 (PST)
+X-Relaying-Domain: purestorage.com
+Received: from dev-csander.dev.purestorage.com (dev-csander.dev.purestorage.com [10.7.70.37])
+	by c7-smtp-2023.dev.purestorage.com (Postfix) with ESMTP id C1C063401E5;
+	Thu,  7 Nov 2024 11:31:04 -0700 (MST)
+Received: by dev-csander.dev.purestorage.com (Postfix, from userid 1557716354)
+	id D3A72E40DC8; Thu,  7 Nov 2024 11:31:04 -0700 (MST)
+From: Caleb Sander Mateos <csander@purestorage.com>
+To: Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Parav Pandit <parav@nvidia.com>,
+	Caleb Sander Mateos <csander@purestorage.com>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 1/2] mlx5/core: relax memory barrier in eq_update_ci()
+Date: Thu,  7 Nov 2024 11:30:51 -0700
+Message-ID: <20241107183054.2443218-1-csander@purestorage.com>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <ZyxMsx8o7NtTAWPp@x130>
+References: <ZyxMsx8o7NtTAWPp@x130>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Nov 03 2024, Thomas Wei=C3=9Fschuh wrote:
+The memory barrier in eq_update_ci() after the doorbell write is a
+significant hot spot in mlx5_eq_comp_int(). Under heavy TCP load, we see
+3% of CPU time spent on the mfence instruction.
 
-> The is_bin_visible() callbacks should not modify the struct
-> bin_attribute passed as argument.
-> Enforce this by marking the argument as const.
->
-> As there are not many callback implementers perform this change
-> throughout the tree at once.
->
-> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
-> ---
-> diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
-> index 96064e4babf01f6950c81586764386e7671cbf97..5e9eb268073d18e0a46089000=
-f18a3200b4bf13d 100644
-> --- a/drivers/mtd/spi-nor/sysfs.c
-> +++ b/drivers/mtd/spi-nor/sysfs.c
-> @@ -87,7 +87,7 @@ static umode_t spi_nor_sysfs_is_visible(struct kobject =
-*kobj,
->  }
->=20=20
->  static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
-> -					    struct bin_attribute *attr, int n)
-> +					    const struct bin_attribute *attr, int n)
+98df6d5b877c ("net/mlx5: A write memory barrier is sufficient in EQ ci
+update") already relaxed the full memory barrier to just a write barrier
+in mlx5_eq_update_ci(), which duplicates eq_update_ci(). So replace mb()
+with wmb() in eq_update_ci() too.
 
-Acked-by: Pratyush Yadav <pratyush@kernel.org> # for spi-nor
+On strongly ordered architectures, no barrier is actually needed because
+the MMIO writes to the doorbell register are guaranteed to appear to the
+device in the order they were made. However, the kernel's ordered MMIO
+primitive writel() lacks a convenient big-endian interface.
+Therefore, we opt to stick with __raw_writel() + a barrier.
 
->  {
->  	struct spi_device *spi =3D to_spi_device(kobj_to_dev(kobj));
->  	struct spi_mem *spimem =3D spi_get_drvdata(spi);
+Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
+---
+v2: keep memory barrier instead of using ordered writel()
 
---=20
-Regards,
-Pratyush Yadav
+ drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
+index 4b7f7131c560..b1edc71ffc6d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
+@@ -70,11 +70,11 @@ static inline void eq_update_ci(struct mlx5_eq *eq, int arm)
+ 	__be32 __iomem *addr = eq->doorbell + (arm ? 0 : 2);
+ 	u32 val = (eq->cons_index & 0xffffff) | (eq->eqn << 24);
+ 
+ 	__raw_writel((__force u32)cpu_to_be32(val), addr);
+ 	/* We still want ordering, just not swabbing, so add a barrier */
+-	mb();
++	wmb();
+ }
+ 
+ int mlx5_eq_table_init(struct mlx5_core_dev *dev);
+ void mlx5_eq_table_cleanup(struct mlx5_core_dev *dev);
+ int mlx5_eq_table_create(struct mlx5_core_dev *dev);
+-- 
+2.45.2
+
 
