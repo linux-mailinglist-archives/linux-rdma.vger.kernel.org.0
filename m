@@ -1,52 +1,90 @@
-Return-Path: <linux-rdma+bounces-5825-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5826-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 036889BFE60
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 07:18:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D1C79BFF90
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 09:04:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B691F283D8E
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 06:18:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A0CFB225D4
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 08:04:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3726B194A70;
-	Thu,  7 Nov 2024 06:18:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2511199FA1;
+	Thu,  7 Nov 2024 08:04:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="r5KM4a5/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2065.outbound.protection.outlook.com [40.107.223.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A36A5193071;
-	Thu,  7 Nov 2024 06:18:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730960299; cv=none; b=u3GIRw4l58OUhGvekenedmCxtSohCeNpNYjgGepoSdfElrY4oJDkh7EDmpYvIBaqkmIhULOLasVhFIME2+xK7hOkeETfGjBvHavCcEs2pSoP24dP78nd2pPWNZafnfm3w9+jS1YLEcF9V2RiSB7DDhKvCADBkK+4FfunJGJjqos=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730960299; c=relaxed/simple;
-	bh=eKJGhOPlnFlS70bPwzrw6aHnQhhTj3ccfQFpPLvB0VQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mtR5XBPsEP+GbpHQxtHgEn5+Orq0RnbTs1mksYGUm9ZpFCCpsbNQwi8UKfWwoLTciZsKMMYgfOHdYFNn2k8FUO566Fa2yxeHPt3+TCZgISMaFerxJ9gNY20MKy09OSj6CteUvaqxNUh8Hq+HeVw3qFZnciQx/G1RJosRsyyL3Vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4XkWzj3Yg7zpXfc;
-	Thu,  7 Nov 2024 14:16:17 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 750B9140337;
-	Thu,  7 Nov 2024 14:18:11 +0800 (CST)
-Received: from localhost.localdomain (10.90.30.45) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD8B18755C;
+	Thu,  7 Nov 2024 08:04:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730966643; cv=fail; b=QEq47hp/7pyiGcvdVTzQ+zlOu4KZK1ULQPhOumGYM/D6xEDn4LKJYfMxxdeCSM8ndM08pE1Hu4RgUo5iEluTVxwM63XB20NEzrabXDQyLoZiwM+uDaNNGxysDvRRNetpce5tQzJdN6ZsXqaWq37g/21fFB9GisOm8BIm1YVy0UU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730966643; c=relaxed/simple;
+	bh=ifbbT5SLqk69jmXpMRN2+S7EeXMvWGAs874I8h8Dszw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=biu/oncGBWZdVrnG1R4FjzJaejcDTSe77TVYCqzVtbaiYBzzirHUAunWmcL6NJ2MzNqf/gvB8BArmsr3xf1c7BvKZ0vQ7hwI/Re4Y7fTw2qH8hbvODEJdDWYi5Uhhf9Hzx8s2EZPpIDRyqRo9IINsysMzygK/LY8AqmwyJhe6t8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=r5KM4a5/; arc=fail smtp.client-ip=40.107.223.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=xK1UGlieM9CHi1i1UqOX1+j3DNa9X8wytjCCWiU29lEoBk2X5RiVYsM97qlFTLGk/E2sKznXPQJcGPlW0rn8bgnqy0mOwNUBQVEI5gm4ITHeurmcBq4I/b4Kb8w2WjAFpidOHzHWlALzldnw4ex75iJcYoA1YVoWMVqJTsEkOH7Cie989PUqFQrrxFvFw/PeFHu95J+4hHF53SGTVy4/gKyhqBDE07unq+FTjFOD8mw60pfb8p9VzFe19fGIfnNcyllMN7ZIC98wqeYFGIMLLMwPE1L+roCmh1+wukOcFM74f6bLMEoyNToy/U3p4FVsHuNyvXq9QUYOUB4lUNf+aQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dT9McGKXAZ+klYbH3avszvGz3fNkjL06YVQjRQT2AHI=;
+ b=xX0hYTlnANDt+JyZ+2a0wV+OhiZrMLfWF4V1GOn0ZXsCwagOvrbIihtCzOhxlIbWM1WYGZFHpYCnp6pEfGlJygsnSPmmBKhXKIXpuLzlCFh9mLRAMq6uBMUGIB/30nQCKCy1uy2F3jY/LHC5h6Dg9hC/ld49+dOeRjh7wWy+Cj80g3QeAPryxYKoA+l/r/6GA1AIelLpCmNoGhFZGkaS8StXPDIfHSu7DlpbLSbwsqIep5J4jxTuHZUhi6Fr8P+sj4T3tnaYYWYFJTFU2umYot9NrcWC6r+k6tCyo5PgRXE7Sh8IzEzVEQSwILlBYIFn3fzCthv6Mq0b76WnOpd9ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dT9McGKXAZ+klYbH3avszvGz3fNkjL06YVQjRQT2AHI=;
+ b=r5KM4a5/PX3p66ur54Fx4wwHjAQ89NOf3l1OXbwCBJvO8ecA3q/PL4pd8K7XXS23tPezP3cGekwCF8U8Ts7Wb/KP1QzPjNaxcBQGZzDpR3XVtSnUFCQZ7QKXGzMxqBNYXDt4vMH/eZMaWgdFGTXheWi1gXFOZtXBjX1Scimcp7cZPvN2ldHPdLyNxr/XJHRjrStkozS+ilgDXLwDJlr92w5+hycyQPQNJvu8AscEKOHqvsKxMZw9nkcAhBJk1LZ1NUKTD3WKtEOpgvDJNUpoLMu09NzBjnpR8QcgJLS79qTeckIFtJS8zXhLVeyd8u9V8Mdf1yT1gpKzMCFpVc0ncw==
+Received: from BLAPR03CA0103.namprd03.prod.outlook.com (2603:10b6:208:32a::18)
+ by MN0PR12MB6103.namprd12.prod.outlook.com (2603:10b6:208:3c9::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.20; Thu, 7 Nov
+ 2024 08:03:57 +0000
+Received: from MN1PEPF0000F0E1.namprd04.prod.outlook.com
+ (2603:10b6:208:32a:cafe::c8) by BLAPR03CA0103.outlook.office365.com
+ (2603:10b6:208:32a::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.20 via Frontend
+ Transport; Thu, 7 Nov 2024 08:03:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ MN1PEPF0000F0E1.mail.protection.outlook.com (10.167.242.39) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8137.17 via Frontend Transport; Thu, 7 Nov 2024 08:03:57 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 7 Nov 2024
+ 00:03:45 -0800
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 7 Nov 2024 14:18:10 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
-	<tangchengchang@huawei.com>
-Subject: [PATCH v2 for-next] RDMA/hns: Fix different dgids mapping to the same dip_idx
-Date: Thu, 7 Nov 2024 14:11:48 +0800
-Message-ID: <20241107061148.2010241-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
+ 15.2.1544.4; Thu, 7 Nov 2024 00:03:45 -0800
+Received: from vdi.nvidia.com (10.127.8.11) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Thu, 7 Nov 2024 00:03:43 -0800
+From: Chiara Meiohas <cmeioahs@nvidia.com>
+To: <dsahern@gmail.com>, <leonro@nvidia.com>
+CC: <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, <jgg@nvidia.com>,
+	<stephen@networkplumber.org>, Chiara Meiohas <cmeiohas@nvidia.com>
+Subject: [PATCH v2 iproute2-next 0/5] Add RDMA monitor support
+Date: Thu, 7 Nov 2024 10:02:43 +0200
+Message-ID: <20241107080248.2028680-1-cmeioahs@nvidia.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -55,310 +93,98 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemf100018.china.huawei.com (7.202.181.17)
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E1:EE_|MN0PR12MB6103:EE_
+X-MS-Office365-Filtering-Correlation-Id: 83576ba3-e410-4a41-f1a3-08dcff02bb3e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|61400799027|36860700013|82310400026|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?GQEh4ngG+o7k9yvYwm+NwCv+LJ8fswFkRZjW+dvjCOhPB7+5MW4UiQwAzz7e?=
+ =?us-ascii?Q?SzybFGRilsmyISiXBQ9MARGqVyJJd8ALw/y9nzAFVGMxQuBtq1WH5Qq4AdGh?=
+ =?us-ascii?Q?3KIsf1OD4amykS8hCd0mdJ56LlmHfQVGAJPK77pX+zXCzY2p6UcL/yINoQZy?=
+ =?us-ascii?Q?YVlbXxwqpNnEIrNie6MMucUPDtwmJPWCj9bVjZK2KLKHxa/1U79Vc9BeHP5h?=
+ =?us-ascii?Q?ATiUDNfZno7ORM8MZsXnQO1Lp8APQyrsvC9JnkCmS+kANLOgcQiB9LFhtq5n?=
+ =?us-ascii?Q?C8XELoIMkAFrCygpr3wHUMPlR7eFNCmZPhm0UBx3eQ0gabKcXddGov+sBZUP?=
+ =?us-ascii?Q?KFIedTLVoNjSK5VZThTLJaS+TP6fc0A+6oVdtO3wxT03/wC2G90eg07oJ+PP?=
+ =?us-ascii?Q?ZvFeU8sahEhygTNEfCrgFOBpTmb9MrlupbO3kMu6il6XEuMsQZXtamYgh8Ia?=
+ =?us-ascii?Q?bqrSfgxLqua1htiS+PXaCP8c5CSmV2vcIhz2rv4izlaIkl9fGAS0xfH96aKn?=
+ =?us-ascii?Q?0kf8LOcUv0uByd9iHjZZfqFWx+VAFQJpQastqBCbZA4vbGM5/bghQPWNUGlU?=
+ =?us-ascii?Q?ySLfSRokhnpAIb3zS7/GXV6SZQqfMWrcmB8p6q6xUDuyQCFQa0furulxrvUh?=
+ =?us-ascii?Q?+WX1ibGUMXM561LkPtYnRjkb6Enano5rLP8bhdghElbTMWPHt2haOJ9lAoK9?=
+ =?us-ascii?Q?yjMliaJJmflhmtQxfp75PFdZXDMY/1EXBq8lFqJVoPMidmC3XTyxFMVLUDme?=
+ =?us-ascii?Q?R8WVzhUoQknGavzla/O+LgYrX/k5HgbC6QX52N/anofLMYCqbHdNGREa4ysK?=
+ =?us-ascii?Q?Tps7X+/Tmy5/Nm20jf1x6q92TVPKq6KqejdMdo9EnIwD5gi0oICHMabfjPoY?=
+ =?us-ascii?Q?frpZ0i+lJZZu+kRDNq59ZpZc6OjcAcnplb6KLuUMtj1e8mZN5GV7Y4kXdI8g?=
+ =?us-ascii?Q?f1XDQ5MDIyc1+1K5LhDqjDDGkyVSgB8An6raOXuZjVs3PJYfC2aT/dFLVI9l?=
+ =?us-ascii?Q?VOReIM0IccEzPVz2VE3yKqo4QN2bTs8Hd3YdyXX1bXNoVgzI+9UCULhFhuJ0?=
+ =?us-ascii?Q?GtQOa9TXXWwNd++JfgoMiQcJRtGfpdsT7QDEZxY9HBD9V81rzPo+3HCRcDgr?=
+ =?us-ascii?Q?YWc3lZg8jo3PN33Lky02u7kFvmH7MKyBgd4qSvQNAnftm13rBF0s9MC2WinS?=
+ =?us-ascii?Q?HJBdRfuOGNH3OBhxH8Ulb3JlIyi6YOj/D0aqIIGPW2N++93va6k2+X1usY3j?=
+ =?us-ascii?Q?HwSvcrCgmVuKBVICDO1StZ2+8UFVtCGNLT+7UVG8xP+NrEpZbBPc3AZDCkiY?=
+ =?us-ascii?Q?gZtyO3TZzzaeWOonYwy8VH3X7LngdKxd8FV5XHwHbuhMeIYqIknlHs6RQyso?=
+ =?us-ascii?Q?iDpz+kqE+g1wcPB1e4hPXxUbHm4BwZl6gQ8RljXIjrMTVwBycg=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(61400799027)(36860700013)(82310400026)(376014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2024 08:03:57.4218
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83576ba3-e410-4a41-f1a3-08dcff02bb3e
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MN1PEPF0000F0E1.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6103
 
-From: Feng Fang <fangfeng4@huawei.com>
+From: Chiara Meiohas <cmeiohas@nvidia.com>
 
-DIP algorithm requires a one-to-one mapping between dgid and dip_idx.
-Currently a queue 'spare_idx' is used to store QPN of QPs that use
-DIP algorithm. For a new dgid, use a QPN from spare_idx as dip_idx.
-This method lacks a mechanism for deduplicating QPN, which may result
-in different dgids sharing the same dip_idx and break the one-to-one
-mapping requirement.
+This series adds support to a new command to monitor IB events
+and expands the rdma-sys command to indicate whether this new
+functionality is supported.
+We've also included a fix for a typo in rdma-link man page.
 
-This patch replaces spare_idx with xarray and introduces a refcnt of
-a dip_idx to indicate the number of QPs that using this dip_idx.
+Command usage and examples are in the commits and man pages.
 
-The state machine for dip_idx management is implemented as:
+These patches are complimentary to the kernel patches:
+https://lore.kernel.org/linux-rdma/20240821051017.7730-1-michaelgur@nvidia.com/
+https://lore.kernel.org/linux-rdma/093c978ef2766fd3ab4ff8798eeb68f2f11582f6.1730367038.git.leon@kernel.org/
 
-* The entry at an index in xarray is empty -- This indicates that the
-  corresponding dip_idx hasn't been created.
-
-* The entry at an index in xarray is not empty but with 0 refcnt --
-  This indicates that the corresponding dip_idx has been created but
-  not used as dip_idx yet.
-
-* The entry at an index in xarray is not empty and with non-0 refcnt --
-  This indicates that the corresponding dip_idx is being used by refcnt
-  number of DIP QPs.
-
-Fixes: eb653eda1e91 ("RDMA/hns: Bugfix for incorrect association between dip_idx and dgid")
-Fixes: f91696f2f053 ("RDMA/hns: Support congestion control type selection according to the FW")
-Signed-off-by: Feng Fang <fangfeng4@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
-v1 -> v2:
-* Use xarray instead of bitmaps as Leon suggested.
-* v1: https://lore.kernel.org/all/20240906093444.3571619-10-huangjunxian6@hisilicon.com/
----
- drivers/infiniband/hw/hns/hns_roce_device.h | 11 +--
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 96 +++++++++++++++------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  2 +-
- drivers/infiniband/hw/hns/hns_roce_main.c   |  2 -
- drivers/infiniband/hw/hns/hns_roce_qp.c     |  7 +-
- 5 files changed, 74 insertions(+), 44 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 9b51d5a1533f..560a1d9de408 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -489,12 +489,6 @@ struct hns_roce_bank {
- 	u32 next; /* Next ID to allocate. */
- };
-
--struct hns_roce_idx_table {
--	u32 *spare_idx;
--	u32 head;
--	u32 tail;
--};
--
- struct hns_roce_qp_table {
- 	struct hns_roce_hem_table	qp_table;
- 	struct hns_roce_hem_table	irrl_table;
-@@ -503,7 +497,7 @@ struct hns_roce_qp_table {
- 	struct mutex			scc_mutex;
- 	struct hns_roce_bank bank[HNS_ROCE_QP_BANK_NUM];
- 	struct mutex bank_mutex;
--	struct hns_roce_idx_table	idx_table;
-+	struct xarray			dip_xa;
- };
-
- struct hns_roce_cq_table {
-@@ -658,6 +652,7 @@ struct hns_roce_qp {
- 	u8			tc_mode;
- 	u8			priority;
- 	spinlock_t flush_lock;
-+	struct hns_roce_dip *dip;
- };
-
- struct hns_roce_ib_iboe {
-@@ -984,8 +979,6 @@ struct hns_roce_dev {
- 	enum hns_roce_device_state state;
- 	struct list_head	qp_list; /* list of all qps on this dev */
- 	spinlock_t		qp_list_lock; /* protect qp_list */
--	struct list_head	dip_list; /* list of all dest ips on this dev */
--	spinlock_t		dip_list_lock; /* protect dip_list */
-
- 	struct list_head        pgdir_list;
- 	struct mutex            pgdir_mutex;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index d1c075fb0ad8..36e7cedfd106 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -2553,20 +2553,19 @@ static void hns_roce_free_link_table(struct hns_roce_dev *hr_dev)
- 	free_link_table_buf(hr_dev, &priv->ext_llm);
- }
-
--static void free_dip_list(struct hns_roce_dev *hr_dev)
-+static void free_dip_entry(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_dip *hr_dip;
--	struct hns_roce_dip *tmp;
--	unsigned long flags;
-+	unsigned long idx;
-
--	spin_lock_irqsave(&hr_dev->dip_list_lock, flags);
-+	xa_lock(&hr_dev->qp_table.dip_xa);
-
--	list_for_each_entry_safe(hr_dip, tmp, &hr_dev->dip_list, node) {
--		list_del(&hr_dip->node);
-+	xa_for_each(&hr_dev->qp_table.dip_xa, idx, hr_dip) {
-+		__xa_erase(&hr_dev->qp_table.dip_xa, hr_dip->dip_idx);
- 		kfree(hr_dip);
- 	}
-
--	spin_unlock_irqrestore(&hr_dev->dip_list_lock, flags);
-+	xa_unlock(&hr_dev->qp_table.dip_xa);
- }
-
- static struct ib_pd *free_mr_init_pd(struct hns_roce_dev *hr_dev)
-@@ -2974,7 +2973,7 @@ static void hns_roce_v2_exit(struct hns_roce_dev *hr_dev)
- 		hns_roce_free_link_table(hr_dev);
-
- 	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP09)
--		free_dip_list(hr_dev);
-+		free_dip_entry(hr_dev);
- }
-
- static int hns_roce_mbox_post(struct hns_roce_dev *hr_dev,
-@@ -4694,26 +4693,49 @@ static int modify_qp_rtr_to_rts(struct ib_qp *ibqp, int attr_mask,
- 	return 0;
- }
-
-+static int alloc_dip_entry(struct xarray *dip_xa, u32 qpn)
-+{
-+	struct hns_roce_dip *hr_dip;
-+	int ret;
-+
-+	hr_dip = xa_load(dip_xa, qpn);
-+	if (hr_dip)
-+		return 0;
-+
-+	hr_dip = kzalloc(sizeof(*hr_dip), GFP_KERNEL);
-+	if (!hr_dip)
-+		return -ENOMEM;
-+
-+	ret = xa_err(xa_store(dip_xa, qpn, hr_dip, GFP_KERNEL));
-+	if (ret)
-+		kfree(hr_dip);
-+
-+	return ret;
-+}
-+
- static int get_dip_ctx_idx(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
- 			   u32 *dip_idx)
- {
- 	const struct ib_global_route *grh = rdma_ah_read_grh(&attr->ah_attr);
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
--	u32 *spare_idx = hr_dev->qp_table.idx_table.spare_idx;
--	u32 *head =  &hr_dev->qp_table.idx_table.head;
--	u32 *tail =  &hr_dev->qp_table.idx_table.tail;
-+	struct xarray *dip_xa = &hr_dev->qp_table.dip_xa;
-+	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
- 	struct hns_roce_dip *hr_dip;
--	unsigned long flags;
-+	unsigned long idx;
- 	int ret = 0;
-
--	spin_lock_irqsave(&hr_dev->dip_list_lock, flags);
-+	ret = alloc_dip_entry(dip_xa, ibqp->qp_num);
-+	if (ret)
-+		return ret;
-
--	spare_idx[*tail] = ibqp->qp_num;
--	*tail = (*tail == hr_dev->caps.num_qps - 1) ? 0 : (*tail + 1);
-+	xa_lock(dip_xa);
-
--	list_for_each_entry(hr_dip, &hr_dev->dip_list, node) {
--		if (!memcmp(grh->dgid.raw, hr_dip->dgid, GID_LEN_V2)) {
-+	xa_for_each(dip_xa, idx, hr_dip) {
-+		if (hr_dip->qp_cnt &&
-+		    !memcmp(grh->dgid.raw, hr_dip->dgid, GID_LEN_V2)) {
- 			*dip_idx = hr_dip->dip_idx;
-+			hr_dip->qp_cnt++;
-+			hr_qp->dip = hr_dip;
- 			goto out;
- 		}
- 	}
-@@ -4721,19 +4743,24 @@ static int get_dip_ctx_idx(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
- 	/* If no dgid is found, a new dip and a mapping between dgid and
- 	 * dip_idx will be created.
- 	 */
--	hr_dip = kzalloc(sizeof(*hr_dip), GFP_ATOMIC);
--	if (!hr_dip) {
--		ret = -ENOMEM;
--		goto out;
-+	xa_for_each(dip_xa, idx, hr_dip) {
-+		if (hr_dip->qp_cnt)
-+			continue;
-+
-+		*dip_idx = idx;
-+		memcpy(hr_dip->dgid, grh->dgid.raw, sizeof(grh->dgid.raw));
-+		hr_dip->dip_idx = idx;
-+		hr_dip->qp_cnt++;
-+		hr_qp->dip = hr_dip;
-+		break;
- 	}
-
--	memcpy(hr_dip->dgid, grh->dgid.raw, sizeof(grh->dgid.raw));
--	hr_dip->dip_idx = *dip_idx = spare_idx[*head];
--	*head = (*head == hr_dev->caps.num_qps - 1) ? 0 : (*head + 1);
--	list_add_tail(&hr_dip->node, &hr_dev->dip_list);
-+	/* This should never happen. */
-+	if (WARN_ON_ONCE(!hr_qp->dip))
-+		ret = -ENOSPC;
-
- out:
--	spin_unlock_irqrestore(&hr_dev->dip_list_lock, flags);
-+	xa_unlock(dip_xa);
- 	return ret;
- }
-
-@@ -5587,6 +5614,20 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
- 	return ret;
- }
-
-+static void put_dip_ctx_idx(struct hns_roce_dev *hr_dev,
-+			    struct hns_roce_qp *hr_qp)
-+{
-+	struct hns_roce_dip *hr_dip = hr_qp->dip;
-+
-+	xa_lock(&hr_dev->qp_table.dip_xa);
-+
-+	hr_dip->qp_cnt--;
-+	if (!hr_dip->qp_cnt)
-+		memset(hr_dip->dgid, 0, GID_LEN_V2);
-+
-+	xa_unlock(&hr_dev->qp_table.dip_xa);
-+}
-+
- int hns_roce_v2_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- {
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
-@@ -5600,6 +5641,9 @@ int hns_roce_v2_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 	spin_unlock_irqrestore(&hr_qp->flush_lock, flags);
- 	flush_work(&hr_qp->flush_work.work);
-
-+	if (hr_qp->cong_type == CONG_TYPE_DIP)
-+		put_dip_ctx_idx(hr_dev, hr_qp);
-+
- 	ret = hns_roce_v2_destroy_qp_common(hr_dev, hr_qp, udata);
- 	if (ret)
- 		ibdev_err_ratelimited(&hr_dev->ib_dev,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 3b3c6259ace0..1c593fcf1143 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -1347,7 +1347,7 @@ struct hns_roce_v2_priv {
- struct hns_roce_dip {
- 	u8 dgid[GID_LEN_V2];
- 	u32 dip_idx;
--	struct list_head node; /* all dips are on a list */
-+	u32 qp_cnt;
- };
-
- struct fmea_ram_ecc {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 49315f39361d..ae24c81c9812 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -1135,8 +1135,6 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
-
- 	INIT_LIST_HEAD(&hr_dev->qp_list);
- 	spin_lock_init(&hr_dev->qp_list_lock);
--	INIT_LIST_HEAD(&hr_dev->dip_list);
--	spin_lock_init(&hr_dev->dip_list_lock);
-
- 	ret = hns_roce_register_device(hr_dev);
- 	if (ret)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 2ad03ecdbf8e..7d67cefe549c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -1573,14 +1573,10 @@ int hns_roce_init_qp_table(struct hns_roce_dev *hr_dev)
- 	unsigned int reserved_from_bot;
- 	unsigned int i;
-
--	qp_table->idx_table.spare_idx = kcalloc(hr_dev->caps.num_qps,
--					sizeof(u32), GFP_KERNEL);
--	if (!qp_table->idx_table.spare_idx)
--		return -ENOMEM;
--
- 	mutex_init(&qp_table->scc_mutex);
- 	mutex_init(&qp_table->bank_mutex);
- 	xa_init(&hr_dev->qp_table_xa);
-+	xa_init(&qp_table->dip_xa);
-
- 	reserved_from_bot = hr_dev->caps.reserved_qps;
-
-@@ -1607,5 +1603,4 @@ void hns_roce_cleanup_qp_table(struct hns_roce_dev *hr_dev)
- 		ida_destroy(&hr_dev->qp_table.bank[i].ida);
- 	mutex_destroy(&hr_dev->qp_table.bank_mutex);
- 	mutex_destroy(&hr_dev->qp_table.scc_mutex);
--	kfree(hr_dev->qp_table.idx_table.spare_idx);
- }
 --
-2.33.0
+v1->v2
+- Print hex value if an unknown event is received
+- Add IB device and net device names in the output
+- Add IB device and net device rename events
+
+Chiara Meiohas (5):
+  rdma: Add support for rdma monitor
+  rdma: Expose whether RDMA monitoring is supported
+  rdma: Fix typo in rdma-link man page
+  rdma: update uapi headers
+  rdma: Add IB device and net device rename events
+
+ include/mnl_utils.h                   |   1 +
+ lib/mnl_utils.c                       |   5 +
+ man/man8/rdma-link.8                  |   2 +-
+ man/man8/rdma-monitor.8               |  51 ++++++++
+ man/man8/rdma-system.8                |   9 +-
+ man/man8/rdma.8                       |   7 +-
+ rdma/Makefile                         |   3 +-
+ rdma/include/uapi/rdma/rdma_netlink.h |   2 +
+ rdma/monitor.c                        | 171 ++++++++++++++++++++++++++
+ rdma/rdma.c                           |   3 +-
+ rdma/rdma.h                           |   1 +
+ rdma/sys.c                            |   6 +
+ rdma/utils.c                          |   2 +
+ 13 files changed, 255 insertions(+), 8 deletions(-)
+ create mode 100644 man/man8/rdma-monitor.8
+ create mode 100644 rdma/monitor.c
+
+-- 
+2.44.0
 
 
