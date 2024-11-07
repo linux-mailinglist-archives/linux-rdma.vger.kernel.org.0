@@ -1,269 +1,141 @@
-Return-Path: <linux-rdma+bounces-5817-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5818-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9B939BFA52
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 00:44:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 675499BFB3C
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 02:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE2DE1C210BB
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Nov 2024 23:44:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53CCF1C2109F
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 01:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE30320E00C;
-	Wed,  6 Nov 2024 23:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C0B4A21;
+	Thu,  7 Nov 2024 01:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="XMm0UrpW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g20UIQph"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C6220D51B
-	for <linux-rdma@vger.kernel.org>; Wed,  6 Nov 2024 23:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4C279DC;
+	Thu,  7 Nov 2024 01:17:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730936658; cv=none; b=jsUa0+UgqP+vWx8feib19k2ngMFwBcc9ipn7SXGDW3yd8pg+COQl/QBNtQRXHE8oSxtCnnph2rQin1ZT/1v32l5zhJ3cz6aQS421sA3Ea9+eYKlVkHsk9aSvANJ51UqnV2G0HtHusp0OfHVUhJdVdD6ZXu7+nXqk8w7KGU8Ffvc=
+	t=1730942239; cv=none; b=fM8LHMXy/I7P60zj5T7FE65hgC/mhsLKfQHnFimenHXHAmSOlsLb6x4udIXCVis4YPXMiXZtkAUFqld4dmnO13R+35AYEoVncgLltZeZZrHxopmDl8xHPj77I8csamwgAbDJ7/QF9qV5i4e+ODelaXKWH20mCcOcVDuGzbWpzBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730936658; c=relaxed/simple;
-	bh=lSxaigboPLXHNcddz2sY56eN7f1c39zsSqkEN3I8a4A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pE8V26fN063gdKQf3U50zfQJMikXwO9BlFQFSUxGfctvSt12bkhFtoZCE0kaAWpujLgeb3TYdDG7Nd8gquaTar2WV4CWvZJ7ARwXJj0E54dCKDFtzyHf68CKOaqTs4mdNLbRgLECH6WGIWhvpVqSSstqCHdHAo2KMcRUEdvtmpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=XMm0UrpW; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2e56750bb13so48125a91.2
-        for <linux-rdma@vger.kernel.org>; Wed, 06 Nov 2024 15:44:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1730936656; x=1731541456; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QPXJsl8fLkTdJ5MrNMMlzw9z0f/yutenIKxxBRJC7Ks=;
-        b=XMm0UrpWuVqnuuAaqgGDs7cdITimrNeenLyZ0gwcKNTNrUzCyXielur17h5iwj3l5F
-         Tncul6SeOOPoFbu81xdkAJBAFmOLfGdkyqsWEMYtHcNnpvzKb+HkWuClvGANIZG3R8Mw
-         SNHOZ99fu0gr7Bop6SRDHmpN1s46bi0Eygj1ys5dUoRsbi1w+uKOJAN0qZ6OscuxaSqD
-         CR7mCbKG88bvdDYvMs8dG6IMDCz+y07GFnHigDsHG3T24KrlTPKOXQLqB5xT6ty1NLvV
-         2bFZMS+rcE4AaO5nGS/jjlK6qu7ebVqFyvei6AWqlLKgmmhtlCZw92/hbBqP8iBubbv4
-         2zRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730936656; x=1731541456;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QPXJsl8fLkTdJ5MrNMMlzw9z0f/yutenIKxxBRJC7Ks=;
-        b=Odo2cBMvQslT17YHp1YRcgvT0+jwB1lBjWeeI6saloPDDPCo6H/PICTAO+pAoISYLS
-         Yb6+cCzykV8wBbEw1kSlY8H8x3iZDW5tRMjmsewxVzhss4PST6AWeIgHS79E9XQqjhaK
-         m6nmLS23lALps4kaxRNreCzXv8/7o/U74TIhW+JtBD2e2ujlA0l+S1yWn+vffU5Yye68
-         hl9FnWdD9LhZMFDRTya44v75KxC2uuveNu5H/KN7wS18/9r+PPF0nZE8kba2ja4TZow4
-         yzDVL1anGskN5VZqRWYrA2++dyNXluHhdk/cqdLZd7VKfx3Bxo0/2x8sq81ZimxVXtdt
-         z4Tg==
-X-Forwarded-Encrypted: i=1; AJvYcCXjDnMDTqCZnLllXdj7a/M45iAUPrm5Np6mfR//PK5GmnNQy5jqabmDleHx/WkLW5gH27YNa2o1jnz/@vger.kernel.org
-X-Gm-Message-State: AOJu0YwGvHCCTWHk5/cIOnUEPyWOxrBaMgIwibBAODeZ3J+91BdosRff
-	+SAaii6lGJn5b/bHUin1sx4wBX4iLH+Rb8xDh8/TWyEfid5mvsz++EdfFFIYLQYIleH6TzJE5nv
-	eMwLbA1t2+fz7Mp1+L2f2t7TB0jhO/eUGW5Romw==
-X-Google-Smtp-Source: AGHT+IEfTLGxMRTgZVBrGwFKA9oioUe6XiP0kU3ZXwnrA2Gb+QVba1IpxfUk/kA/lH7d6J1l+V4TSFC0vo8qJ2jirVQ=
-X-Received: by 2002:a17:90a:e7c2:b0:2e2:ada8:2984 with SMTP id
- 98e67ed59e1d1-2e9a4b22b1bmr587838a91.4.1730936656020; Wed, 06 Nov 2024
- 15:44:16 -0800 (PST)
+	s=arc-20240116; t=1730942239; c=relaxed/simple;
+	bh=olvQqFHA0VXlofce8cYOdX7+1jqLoW3AbmHUMqvUUoI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nn2XNvYhd0od8Y+ANqfi3olvgasnPIF54I3go1W5BgN81rFhjFysdJ5EJy8oya/77Q1btMnWNbjERs14qV0NHrE+HP3FePgbBM1NNdC+ZvjgM5Vudk9O7+L007W/dKCewrg3PpFNAXvuzDboFmnNxAksE0+yY15RKN/In6JFMYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g20UIQph; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9059C4CEC6;
+	Thu,  7 Nov 2024 01:17:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730942239;
+	bh=olvQqFHA0VXlofce8cYOdX7+1jqLoW3AbmHUMqvUUoI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=g20UIQphyJqkNvrjgD284y8AmFfiLQRyGshcbW+nVukLF6mDj0jNCc/b2vdbxlAXF
+	 or4JE9optmGkCoVJjdArRkQkHX+uET0a4NzsRvW+K3p0Azn/2KodUhEpzTIl+J4flH
+	 Yoe56TAOyctNoOGPQ5j2/tdI1g+d86N2W2NT0ULkL9XWkC63TkTSE/MANENB8nx+Kr
+	 PfYa4T+mT/FYVEfQf+JMJtwAyRdHCtNHpVQaDB6OHG2V5NYevKYY7zuE12p2FMGAMX
+	 riiDXUoKj1C6hiGEaurJEFaG7Tfk0OOdlLpmIUXbFCTBweqtEj0VFAOThKORQu2VyN
+	 YgvUohMGCcONw==
+Date: Wed, 6 Nov 2024 17:17:17 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Gal Pressman <gal@nvidia.com>
+Cc: Yafang Shao <laoar.shao@gmail.com>, Tariq Toukan
+ <ttoukan.linux@gmail.com>, saeedm@nvidia.com, tariqt@nvidia.com,
+ leon@kernel.org, netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5e: Report rx_discards_phy via rx_missed_errors
+Message-ID: <20241106171717.1bf7331f@kernel.org>
+In-Reply-To: <9b3af2dd-8b56-4817-b223-c6a85ba80562@nvidia.com>
+References: <20241106064015.4118-1-laoar.shao@gmail.com>
+	<b3c6601b-9108-49cb-a090-247d2d56e64b@gmail.com>
+	<CALOAHbDPbwH7vqV2_NAm=_YnN2KnmVLOe7avWOYG+Rynd295Vg@mail.gmail.com>
+	<9b3af2dd-8b56-4817-b223-c6a85ba80562@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241101034647.51590-1-csander@purestorage.com>
- <20241101034647.51590-2-csander@purestorage.com> <CY8PR12MB71958512F168E2C172D0BE05DC502@CY8PR12MB7195.namprd12.prod.outlook.com>
- <CADUfDZofFwy12oZYTmm3TE314RM79EGsxV6bKEBRMVFv8C3jNg@mail.gmail.com>
- <CY8PR12MB71953FD36C70ACACEBE3DBA1DC522@CY8PR12MB7195.namprd12.prod.outlook.com>
- <CADUfDZqanDo+v_jap7pQire86QkfaDQE4HvhvVBb64YqKNgRHg@mail.gmail.com> <CY8PR12MB7195FDC4A280F4CD7EA219ABDC532@CY8PR12MB7195.namprd12.prod.outlook.com>
-In-Reply-To: <CY8PR12MB7195FDC4A280F4CD7EA219ABDC532@CY8PR12MB7195.namprd12.prod.outlook.com>
-From: Caleb Sander <csander@purestorage.com>
-Date: Wed, 6 Nov 2024 15:44:04 -0800
-Message-ID: <CADUfDZon6QbURp7TqB6dvE4Ewb_To2EDyUTQ=spNCorXDy0DbQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/2] mlx5/core: deduplicate {mlx5_,}eq_update_ci()
-To: Parav Pandit <parav@nvidia.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Nov 5, 2024 at 9:44=E2=80=AFPM Parav Pandit <parav@nvidia.com> wrot=
-e:
->
->
-> > From: Caleb Sander <csander@purestorage.com>
-> > Sent: Tuesday, November 5, 2024 9:36 PM
-> >
-> > On Mon, Nov 4, 2024 at 9:22=E2=80=AFPM Parav Pandit <parav@nvidia.com> =
-wrote:
-> > >
-> > >
-> > >
-> > > > From: Caleb Sander <csander@purestorage.com>
-> > > > Sent: Monday, November 4, 2024 3:49 AM
-> > > >
-> > > > On Sat, Nov 2, 2024 at 8:55=E2=80=AFPM Parav Pandit <parav@nvidia.c=
-om> wrote:
-> > > > >
-> > > > >
-> > > > >
-> > > > > > From: Caleb Sander Mateos <csander@purestorage.com>
-> > > > > > Sent: Friday, November 1, 2024 9:17 AM
-> > > > > >
-> > > > > > The logic of eq_update_ci() is duplicated in mlx5_eq_update_ci(=
-).
-> > > > > > The only additional work done by mlx5_eq_update_ci() is to
-> > > > > > increment
-> > > > > > eq->cons_index. Call eq_update_ci() from mlx5_eq_update_ci() to
-> > > > > > eq->avoid
-> > > > > > the duplication.
-> > > > > >
-> > > > > > Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
-> > > > > > ---
-> > > > > >  drivers/net/ethernet/mellanox/mlx5/core/eq.c | 9 +--------
-> > > > > >  1 file changed, 1 insertion(+), 8 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> > > > > > b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> > > > > > index 859dcf09b770..078029c81935 100644
-> > > > > > --- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> > > > > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> > > > > > @@ -802,19 +802,12 @@ struct mlx5_eqe *mlx5_eq_get_eqe(struct
-> > > > > > mlx5_eq *eq, u32 cc)  }  EXPORT_SYMBOL(mlx5_eq_get_eqe);
-> > > > > >
-> > > > > >  void mlx5_eq_update_ci(struct mlx5_eq *eq, u32 cc, bool arm)  =
-{
-> > > > > > -     __be32 __iomem *addr =3D eq->doorbell + (arm ? 0 : 2);
-> > > > > > -     u32 val;
-> > > > > > -
-> > > > > >       eq->cons_index +=3D cc;
-> > > > > > -     val =3D (eq->cons_index & 0xffffff) | (eq->eqn << 24);
-> > > > > > -
-> > > > > > -     __raw_writel((__force u32)cpu_to_be32(val), addr);
-> > > > > > -     /* We still want ordering, just not swabbing, so add a ba=
-rrier */
-> > > > > > -     wmb();
-> > > > > > +     eq_update_ci(eq, arm);
-> > > > > Long ago I had similar rework patches to get rid of
-> > > > > __raw_writel(), which I never got chance to push,
-> > > > >
-> > > > > Eq_update_ci() is using full memory barrier.
-> > > > > While mlx5_eq_update_ci() is using only write memory barrier.
-> > > > >
-> > > > > So it is not 100% deduplication by this patch.
-> > > > > Please have a pre-patch improving eq_update_ci() to use wmb().
-> > > > > Followed by this patch.
-> > > >
-> > > > Right, patch 1/2 in this series is changing eq_update_ci() to use
-> > > > writel() instead of __raw_writel() and avoid the memory barrier:
-> > > > https://lore.kernel.org/lkml/20241101034647.51590-1-
-> > > > csander@purestorage.com/
-> > > This patch has two bugs.
-> > > 1. writel() writes the MMIO space in LE order. EQ updates are in BE o=
-rder.
-> > > So this will break on ppc64 BE.
-> >
-> > Okay, so this should be writel(cpu_to_le32(val), addr)?
-> >
-> That would break the x86 side because device should receive in BE format =
-regardless of cpu endianness.
-> Above code will write in the LE format.
->
-> So an API foo_writel() need which does
-> a. write memory barrier
-> b. write to MMIO space but without endineness conversion.
+On Wed, 6 Nov 2024 21:23:47 +0200 Gal Pressman wrote:
+> > It appears that rx_fifo_errors is a more appropriate counter for this purpose.
+> > I will submit a v2. Thanks for your suggestion.  
+> 
+> Probably not a good idea:
+>  *   This statistics was used interchangeably with @rx_over_errors.
+>  *   Not recommended for use in drivers for high speed interfaces.
 
-Got it, thanks. writel(bswap_32(val, addr)) should work, then? I
-suppose it may introduce a second bswap on BE architectures, but
-that's probably worth it to avoid the memory barrier.
+FWIW we can change the definition. Let me copy paste below the commit
+which added the docs because it has the background.
 
->
-> > >
-> > > 2. writel() issues the barrier BEFORE the raw_writel().
-> > > As opposed to that eq update needs to have a barrier AFTER the writel=
-().
-> > > Likely to synchronize with other CQ related pointers update.
-> >
-> > I was referencing this prior discussion about the memory barrier:
-> > https://lore.kernel.org/netdev/CALzJLG8af0SMfA1C8U8r_Fddb_ZQhvEZd6=3D2
-> > a97dOoBcgLA0xg@mail.gmail.com/
-> > From Saeed's message, it sounds like the memory barrier is only used to
-> > ensure the ordering of writes to the doorbell register, not the orderin=
-g of the
-> > doorbell write relative to any other writes. If some other write needs =
-to be
-> > ordered after the doorbell write, please explain what it is.
-> Not write, reading of the CQE likely requires read barrier.
+tl;dr is that I was trying to push drivers towards a single stat to
+keep things simple. If we have a clear definition of how rx_fifo_errors
+would differ - we can reuse it and update the doc. For example if
+rx_discards_phy usually means that the adapter itself is overwhelmed
+(too many rules etc) that would be a pretty clear, since rx_missed is
+supposed to primarily indicate that the host rings are full or perhaps
+the PCIe interface of the NIC is struggling. But not the packet
+processing.
 
-But mlx5_eq_update_ci() is already using wmb(), which only imposes an
-ordering on writes. So if the existing code is correct, the memory
-barrier cannot be required to order the doorbell write with respect to
-a read of the CQE.
 
->
-> > As Gal Pressman
-> > pointed out, a wmb() at the end of a function doesn't make much sense, =
-as
-> > there are no further writes in the function to order. If the doorbell w=
-rite needs
-> > to be ordered before some other write in a caller function, the memory =
-barrier
-> > should probably move to the caller.
-> It is the two EQ doorbell writes that needs to be ordered with respect to=
- each other.
-> So please audit the code for CQE processing ensure that there is read bar=
-rier after valid bit.
-> And removal of this read barrier does not affect there.
->
-> It would be best if you can test on ARM (non x86_64) platform for this ch=
-ange.
 
-Unfortunately I don't have access to any platform besides x86_64 with
-ConnectX cards.
+commit 0db0c34cfbc9838c1a14cb04dd880602abd699a7
+Author: Jakub Kicinski <kuba@kernel.org>
+Date:   Thu Sep 3 16:14:31 2020 -0700
 
->
-> >
-> > >
-> > > > Are you suggesting something different? If so, it would be great if
-> > > > you could clarify what you mean.
-> > > >
-> > > So I was suggesting to keep __raw_writel() as is and replace mb() wit=
-h
-> > wmb().
-> >
-> > wmb() would certainly be cheaper than mb(), but I would like to underst=
-and
-> > the requirement for the barrier in the first place. The fence instructi=
-on is very
-> > expensive.
-> >
-> To order two doorbell writes of the same EQ.
-
-Right, I understand why the memory barrier is needed with the existing
-__raw_writel(), as it provides no ordering guarantees. But writel()
-seems to guarantee the necessary ordering of writes to the EQ's
-doorbell. This is the relevant documentation from memory-barriers.txt
-(I assume the mutual exclusion of interrupt handlers is equivalent to
-holding a spinlock):
-
-2. A writeX() issued by a CPU thread holding a spinlock is ordered
-   before a writeX() to the same peripheral from another CPU thread
-   issued after a later acquisition of the same spinlock. This ensures
-   that MMIO register writes to a particular device issued while holding
-   a spinlock will arrive in an order consistent with acquisitions of
-   the lock.
-
-Do you still think the barrier is necessary if writel() is used instead?
-
-If you feel strongly about keeping the wmb(), I can do that. It's
-certainly an improvement over the full memory barrier. But fences are
-quite expensive, so I would prefer to remove it if it's not necessary
-for correctness.
-
-Thanks,
-Caleb
+    net: tighten the definition of interface statistics
+    
+    This patch is born out of an investigation into which IEEE statistics
+    correspond to which struct rtnl_link_stats64 members. Turns out that
+    there seems to be reasonable consensus on the matter, among many drivers.
+    To save others the time (and it took more time than I'm comfortable
+    admitting) I'm adding comments referring to IEEE attributes to
+    struct rtnl_link_stats64.
+    
+    Up until now we had two forms of documentation for stats - in
+    Documentation/ABI/testing/sysfs-class-net-statistics and the comments
+    on struct rtnl_link_stats64 itself. While the former is very cautious
+    in defining the expected behavior, the latter feel quite dated and
+    may not be easy to understand for modern day driver author
+    (e.g. rx_over_errors). At the same time modern systems are far more
+    complex and once obvious definitions lost their clarity. For example
+    - does rx_packet count at the MAC layer (aFramesReceivedOK)?
+    packets processed correctly by hardware? received by the driver?
+    or maybe received by the stack?
+    
+    I tried to clarify the expectations, further clarifications from
+    others are very welcome.
+    
+    The part hardest to untangle is rx_over_errors vs rx_fifo_errors
+    vs rx_missed_errors. After much deliberation I concluded that for
+    modern HW only two of the counters will make sense. The distinction
+    between internal FIFO overflow and packets dropped due to back-pressure
+    from the host is likely too implementation (driver and device) specific
+    to expose in the standard stats.
+    
+    Now - which two of those counters we select to use is anyone's pick:
+    
+    sysfs documentation suggests rx_over_errors counts packets which
+    did not fit into buffers due to MTU being too small, which I reused.
+    There don't seem to be many modern drivers using it (well, CAN drivers
+    seem to love this statistic).
+    
+    Of the remaining two I picked rx_missed_errors to report device drops.
+    bnxt reports it and it's folded into "drop"s in procfs (while
+    rx_fifo_errors is an error, and modern devices usually receive the frame
+    OK, they just can't admit it into the pipeline).
+    
+    Of the drivers I looked at only AMD Lance-like and NS8390-like use all
+    three of these counters. rx_missed_errors counts missed frames,
+    rx_over_errors counts overflow events, and rx_fifo_errors counts frames
+    which were truncated because they didn't fit into buffers. This suggests
+    that rx_fifo_errors may be the correct stat for truncated packets, but
+    I'd think a FIFO stat counting truncated packets would be very confusing
+    to a modern reader.
 
