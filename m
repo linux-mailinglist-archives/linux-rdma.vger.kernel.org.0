@@ -1,141 +1,128 @@
-Return-Path: <linux-rdma+bounces-5818-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5819-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 675499BFB3C
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 02:17:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D064C9BFBCA
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 02:42:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53CCF1C2109F
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 01:17:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ECBEB2171A
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 01:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C0B4A21;
-	Thu,  7 Nov 2024 01:17:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g20UIQph"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05AA7F9D6;
+	Thu,  7 Nov 2024 01:42:02 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4C279DC;
-	Thu,  7 Nov 2024 01:17:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6C62F2D;
+	Thu,  7 Nov 2024 01:41:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730942239; cv=none; b=fM8LHMXy/I7P60zj5T7FE65hgC/mhsLKfQHnFimenHXHAmSOlsLb6x4udIXCVis4YPXMiXZtkAUFqld4dmnO13R+35AYEoVncgLltZeZZrHxopmDl8xHPj77I8csamwgAbDJ7/QF9qV5i4e+ODelaXKWH20mCcOcVDuGzbWpzBw=
+	t=1730943721; cv=none; b=hgScLN7Um3lhV3eqSVMo8MzpK9g7T8FN+T899Z0jVMjQ21hkPOscybTAenEZDy96DAHldwcqGo4jUb+SD2edLT6VaRz3nA5nt+cSwt5H9Lw1nCG3keFF9httg06J1oGGNUKU6m8nqos4Vic5UQuxNlIFO0BnGMub9e0mN6iUcK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730942239; c=relaxed/simple;
-	bh=olvQqFHA0VXlofce8cYOdX7+1jqLoW3AbmHUMqvUUoI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nn2XNvYhd0od8Y+ANqfi3olvgasnPIF54I3go1W5BgN81rFhjFysdJ5EJy8oya/77Q1btMnWNbjERs14qV0NHrE+HP3FePgbBM1NNdC+ZvjgM5Vudk9O7+L007W/dKCewrg3PpFNAXvuzDboFmnNxAksE0+yY15RKN/In6JFMYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g20UIQph; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9059C4CEC6;
-	Thu,  7 Nov 2024 01:17:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730942239;
-	bh=olvQqFHA0VXlofce8cYOdX7+1jqLoW3AbmHUMqvUUoI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=g20UIQphyJqkNvrjgD284y8AmFfiLQRyGshcbW+nVukLF6mDj0jNCc/b2vdbxlAXF
-	 or4JE9optmGkCoVJjdArRkQkHX+uET0a4NzsRvW+K3p0Azn/2KodUhEpzTIl+J4flH
-	 Yoe56TAOyctNoOGPQ5j2/tdI1g+d86N2W2NT0ULkL9XWkC63TkTSE/MANENB8nx+Kr
-	 PfYa4T+mT/FYVEfQf+JMJtwAyRdHCtNHpVQaDB6OHG2V5NYevKYY7zuE12p2FMGAMX
-	 riiDXUoKj1C6hiGEaurJEFaG7Tfk0OOdlLpmIUXbFCTBweqtEj0VFAOThKORQu2VyN
-	 YgvUohMGCcONw==
-Date: Wed, 6 Nov 2024 17:17:17 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Gal Pressman <gal@nvidia.com>
-Cc: Yafang Shao <laoar.shao@gmail.com>, Tariq Toukan
- <ttoukan.linux@gmail.com>, saeedm@nvidia.com, tariqt@nvidia.com,
- leon@kernel.org, netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5e: Report rx_discards_phy via rx_missed_errors
-Message-ID: <20241106171717.1bf7331f@kernel.org>
-In-Reply-To: <9b3af2dd-8b56-4817-b223-c6a85ba80562@nvidia.com>
-References: <20241106064015.4118-1-laoar.shao@gmail.com>
-	<b3c6601b-9108-49cb-a090-247d2d56e64b@gmail.com>
-	<CALOAHbDPbwH7vqV2_NAm=_YnN2KnmVLOe7avWOYG+Rynd295Vg@mail.gmail.com>
-	<9b3af2dd-8b56-4817-b223-c6a85ba80562@nvidia.com>
+	s=arc-20240116; t=1730943721; c=relaxed/simple;
+	bh=PrjAHSYNUFy7LOmdNZV+ZZB4eC9hXrGwwKFdK8n08Xg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Ng+M922iO3FR/BaW/mBBBrHVtxH1FDb3z3rpx5rBicclwdCD58tT1J79a867ZLWe1gqcFI4jTGTRWwFab/oylYPPFo7UHaoOx3FVDUliJkCW1vJODUXdlxppOVTD81FD7DZz1vT1PA/3X6UqoXTDz/ph4T+CPYZL6R7BcbDvEzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XkPsr40cRz20rX9;
+	Thu,  7 Nov 2024 09:40:48 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2A7571A0188;
+	Thu,  7 Nov 2024 09:41:56 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 7 Nov 2024 09:41:55 +0800
+Message-ID: <c9aaf37b-c6d8-0609-0113-449a635ddfc2@hisilicon.com>
+Date: Thu, 7 Nov 2024 09:41:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: [PATCH for-next 0/2] Small optimization for ib_map_mr_sg() and
+ ib_map_mr_sg_pi()
+Content-Language: en-US
+To: Leon Romanovsky <leon@kernel.org>
+CC: <dennis.dalessandro@cornelisnetworks.com>, <jgg@ziepe.ca>,
+	<linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <tangchengchang@huawei.com>
+References: <20241105120841.860068-1-huangjunxian6@hisilicon.com>
+ <20241106120819.GA5006@unreal>
+ <b7dd1cc5-849d-781e-ad08-c5b554900150@hisilicon.com>
+ <20241106133646.GE5006@unreal>
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20241106133646.GE5006@unreal>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-On Wed, 6 Nov 2024 21:23:47 +0200 Gal Pressman wrote:
-> > It appears that rx_fifo_errors is a more appropriate counter for this purpose.
-> > I will submit a v2. Thanks for your suggestion.  
+
+
+On 2024/11/6 21:36, Leon Romanovsky wrote:
+> On Wed, Nov 06, 2024 at 09:12:47PM +0800, Junxian Huang wrote:
+>>
+>>
+>> On 2024/11/6 20:08, Leon Romanovsky wrote:
+>>> On Tue, Nov 05, 2024 at 08:08:39PM +0800, Junxian Huang wrote:
+>>>> ib_map_mr_sg() and ib_map_mr_sg_pi() allow ULPs to specify NULL as
+>>>> the sg_offset/data_sg_offset/meta_sg_offset arguments. Drivers who
+>>>> need to derefernce these arguments have to add NULL pointer checks
+>>>> to avoid crashing the kernel.
+>>>>
+>>>> This can be optimized by adding dummy sg_offset pointer to these
+>>>> two APIs. When the sg_offset arguments are NULL, pass the pointer
+>>>> of dummy to drivers. Drivers can always get a valid pointer, so no
+>>>> need to add NULL pointer checks.
+>>>>
+>>>> Junxian Huang (2):
+>>>>   RDMA/core: Add dummy sg_offset pointer for ib_map_mr_sg() and
+>>>>     ib_map_mr_sg_pi()
+>>>>   RDMA: Delete NULL pointer checks for sg_offset in .map_mr_sg ops
+>>>>
+>>>>  drivers/infiniband/core/verbs.c         | 12 +++++++++---
+>>>>  drivers/infiniband/hw/mlx5/mr.c         | 18 ++++++------------
+>>>>  drivers/infiniband/sw/rdmavt/trace_mr.h |  2 +-
+>>>>  3 files changed, 16 insertions(+), 16 deletions(-)
+>>>
+>>> So what does this change give us?
+>>> We have same functionality, same number of lines, same everything ...
+>>>
+>>
+>> Actually this is inspired by an hns bug. When ib_map_mr_sg() passes a NULL
+>> sg_offset pointer to hns_roce_map_mr_sg(), we dereference this pointer
+>> without a NULL check.
+>>
+>> Of course we can fix it by adding NULL check in hns, but I think this
+>> patch may be a better solution since the sg_offset is guaranteed to be
+>> a valid pointer. This could benefit future drivers who also want to
+>> dereference sg_offset, they won't need to care about NULL checks.
 > 
-> Probably not a good idea:
->  *   This statistics was used interchangeably with @rx_over_errors.
->  *   Not recommended for use in drivers for high speed interfaces.
+> Let's fix hns please. We are moving away from SG in RDMA.
+> 
 
-FWIW we can change the definition. Let me copy paste below the commit
-which added the docs because it has the background.
+Sure, thanks
 
-tl;dr is that I was trying to push drivers towards a single stat to
-keep things simple. If we have a clear definition of how rx_fifo_errors
-would differ - we can reuse it and update the doc. For example if
-rx_discards_phy usually means that the adapter itself is overwhelmed
-(too many rules etc) that would be a pretty clear, since rx_missed is
-supposed to primarily indicate that the host rings are full or perhaps
-the PCIe interface of the NIC is struggling. But not the packet
-processing.
+Junxian
 
-
-
-commit 0db0c34cfbc9838c1a14cb04dd880602abd699a7
-Author: Jakub Kicinski <kuba@kernel.org>
-Date:   Thu Sep 3 16:14:31 2020 -0700
-
-    net: tighten the definition of interface statistics
-    
-    This patch is born out of an investigation into which IEEE statistics
-    correspond to which struct rtnl_link_stats64 members. Turns out that
-    there seems to be reasonable consensus on the matter, among many drivers.
-    To save others the time (and it took more time than I'm comfortable
-    admitting) I'm adding comments referring to IEEE attributes to
-    struct rtnl_link_stats64.
-    
-    Up until now we had two forms of documentation for stats - in
-    Documentation/ABI/testing/sysfs-class-net-statistics and the comments
-    on struct rtnl_link_stats64 itself. While the former is very cautious
-    in defining the expected behavior, the latter feel quite dated and
-    may not be easy to understand for modern day driver author
-    (e.g. rx_over_errors). At the same time modern systems are far more
-    complex and once obvious definitions lost their clarity. For example
-    - does rx_packet count at the MAC layer (aFramesReceivedOK)?
-    packets processed correctly by hardware? received by the driver?
-    or maybe received by the stack?
-    
-    I tried to clarify the expectations, further clarifications from
-    others are very welcome.
-    
-    The part hardest to untangle is rx_over_errors vs rx_fifo_errors
-    vs rx_missed_errors. After much deliberation I concluded that for
-    modern HW only two of the counters will make sense. The distinction
-    between internal FIFO overflow and packets dropped due to back-pressure
-    from the host is likely too implementation (driver and device) specific
-    to expose in the standard stats.
-    
-    Now - which two of those counters we select to use is anyone's pick:
-    
-    sysfs documentation suggests rx_over_errors counts packets which
-    did not fit into buffers due to MTU being too small, which I reused.
-    There don't seem to be many modern drivers using it (well, CAN drivers
-    seem to love this statistic).
-    
-    Of the remaining two I picked rx_missed_errors to report device drops.
-    bnxt reports it and it's folded into "drop"s in procfs (while
-    rx_fifo_errors is an error, and modern devices usually receive the frame
-    OK, they just can't admit it into the pipeline).
-    
-    Of the drivers I looked at only AMD Lance-like and NS8390-like use all
-    three of these counters. rx_missed_errors counts missed frames,
-    rx_over_errors counts overflow events, and rx_fifo_errors counts frames
-    which were truncated because they didn't fit into buffers. This suggests
-    that rx_fifo_errors may be the correct stat for truncated packets, but
-    I'd think a FIFO stat counting truncated packets would be very confusing
-    to a modern reader.
+>>
+>> Junxian
+>>
+>>> Thanks
+>>>
+>>>>
+>>>> --
+>>>> 2.33.0
+>>>>
+>>>>
 
