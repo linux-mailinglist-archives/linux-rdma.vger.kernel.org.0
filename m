@@ -1,128 +1,185 @@
-Return-Path: <linux-rdma+bounces-5819-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5820-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D064C9BFBCA
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 02:42:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CC7E9BFC98
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 03:36:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ECBEB2171A
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 01:42:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2496A1F224DE
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2024 02:36:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05AA7F9D6;
-	Thu,  7 Nov 2024 01:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B42374CB;
+	Thu,  7 Nov 2024 02:36:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O1IZXCle"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6C62F2D;
-	Thu,  7 Nov 2024 01:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDEB06AA7;
+	Thu,  7 Nov 2024 02:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730943721; cv=none; b=hgScLN7Um3lhV3eqSVMo8MzpK9g7T8FN+T899Z0jVMjQ21hkPOscybTAenEZDy96DAHldwcqGo4jUb+SD2edLT6VaRz3nA5nt+cSwt5H9Lw1nCG3keFF9httg06J1oGGNUKU6m8nqos4Vic5UQuxNlIFO0BnGMub9e0mN6iUcK4=
+	t=1730946971; cv=none; b=KWzT2cf7QwzwVG+vpwD0lU4xcbpCJg8KMlmhD0cfx2XBDMk1IG1Lep6roVqDoyVrpvNOZXF6oJDDYlkHbJ6xj5bgKoWcKm1ssSfa+LmdJrPVhn8B/+PWrtZeavNy/TnbxYXX4yqB9013WJQVc/0jeUCutAXPEaXB8Oj4Rnk28z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730943721; c=relaxed/simple;
-	bh=PrjAHSYNUFy7LOmdNZV+ZZB4eC9hXrGwwKFdK8n08Xg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Ng+M922iO3FR/BaW/mBBBrHVtxH1FDb3z3rpx5rBicclwdCD58tT1J79a867ZLWe1gqcFI4jTGTRWwFab/oylYPPFo7UHaoOx3FVDUliJkCW1vJODUXdlxppOVTD81FD7DZz1vT1PA/3X6UqoXTDz/ph4T+CPYZL6R7BcbDvEzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XkPsr40cRz20rX9;
-	Thu,  7 Nov 2024 09:40:48 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2A7571A0188;
-	Thu,  7 Nov 2024 09:41:56 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 7 Nov 2024 09:41:55 +0800
-Message-ID: <c9aaf37b-c6d8-0609-0113-449a635ddfc2@hisilicon.com>
-Date: Thu, 7 Nov 2024 09:41:54 +0800
+	s=arc-20240116; t=1730946971; c=relaxed/simple;
+	bh=UBme+orhLUevauWpsyoc1EM0CwPTJ74P0NEkliYWriw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BA4LycZ7BJOuPlqcdQIF6EljxZiXkVFxCf5JoNyx8NLxdGza7j+Ih9o3HFO6qqhkdtn1iJqKEX70Q4rV9Hbgg8h2Gb3aur+Fp5aYjQajlhhc4hp690q/9KaG/jxpRnjHxkDg2OMP/yG+CYyTPuWU6cYjLjLtzMxYYaAGFk1AihE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O1IZXCle; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CE60C4CEC6;
+	Thu,  7 Nov 2024 02:36:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730946970;
+	bh=UBme+orhLUevauWpsyoc1EM0CwPTJ74P0NEkliYWriw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O1IZXClefdkpwf8Md8xzzF/+fnNppyif1xvbl/7QoktK09DWU4jpK6jyP+i90SVPe
+	 2OS7wOvoUacIlwwsD9OSyXseqhIkjH42swr3Bs+HlkmIHiX/BARe6gegNTGHJVNNFT
+	 ABWllytXxlxLcv79/Pme/dRSOxFGgLLQ4afG7XELgxD7hMMLDHBegE9OLpSB8vjBVF
+	 Zj+bpjjHC+UdKwNQyDhILjzMA57XAukQlEOncvvsL24F9JCU9MfZN4L9Ikh+FIJJQ0
+	 Jw6mTwchst+Gedp5XfZXFC6QSpsRMiU6E554NmfWT3Nj4EFeZ9xNKxws3CGVtS1kZY
+	 WExYQbImBvSEw==
+Date: Wed, 6 Nov 2024 18:36:08 -0800
+From: Saeed Mahameed <saeed@kernel.org>
+To: Caleb Sander <csander@purestorage.com>
+Cc: Parav Pandit <parav@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 2/2] mlx5/core: deduplicate
+ {mlx5_,}eq_update_ci()
+Message-ID: <ZywnmDQIxzgV3uJe@x130>
+References: <20241101034647.51590-1-csander@purestorage.com>
+ <20241101034647.51590-2-csander@purestorage.com>
+ <CY8PR12MB71958512F168E2C172D0BE05DC502@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <CADUfDZofFwy12oZYTmm3TE314RM79EGsxV6bKEBRMVFv8C3jNg@mail.gmail.com>
+ <CY8PR12MB71953FD36C70ACACEBE3DBA1DC522@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <CADUfDZqanDo+v_jap7pQire86QkfaDQE4HvhvVBb64YqKNgRHg@mail.gmail.com>
+ <CY8PR12MB7195FDC4A280F4CD7EA219ABDC532@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <CADUfDZon6QbURp7TqB6dvE4Ewb_To2EDyUTQ=spNCorXDy0DbQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH for-next 0/2] Small optimization for ib_map_mr_sg() and
- ib_map_mr_sg_pi()
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>
-CC: <dennis.dalessandro@cornelisnetworks.com>, <jgg@ziepe.ca>,
-	<linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <tangchengchang@huawei.com>
-References: <20241105120841.860068-1-huangjunxian6@hisilicon.com>
- <20241106120819.GA5006@unreal>
- <b7dd1cc5-849d-781e-ad08-c5b554900150@hisilicon.com>
- <20241106133646.GE5006@unreal>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20241106133646.GE5006@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemf100018.china.huawei.com (7.202.181.17)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADUfDZon6QbURp7TqB6dvE4Ewb_To2EDyUTQ=spNCorXDy0DbQ@mail.gmail.com>
 
-
-
-On 2024/11/6 21:36, Leon Romanovsky wrote:
-> On Wed, Nov 06, 2024 at 09:12:47PM +0800, Junxian Huang wrote:
+On 06 Nov 15:44, Caleb Sander wrote:
+>On Tue, Nov 5, 2024 at 9:44 PM Parav Pandit <parav@nvidia.com> wrote:
 >>
 >>
->> On 2024/11/6 20:08, Leon Romanovsky wrote:
->>> On Tue, Nov 05, 2024 at 08:08:39PM +0800, Junxian Huang wrote:
->>>> ib_map_mr_sg() and ib_map_mr_sg_pi() allow ULPs to specify NULL as
->>>> the sg_offset/data_sg_offset/meta_sg_offset arguments. Drivers who
->>>> need to derefernce these arguments have to add NULL pointer checks
->>>> to avoid crashing the kernel.
->>>>
->>>> This can be optimized by adding dummy sg_offset pointer to these
->>>> two APIs. When the sg_offset arguments are NULL, pass the pointer
->>>> of dummy to drivers. Drivers can always get a valid pointer, so no
->>>> need to add NULL pointer checks.
->>>>
->>>> Junxian Huang (2):
->>>>   RDMA/core: Add dummy sg_offset pointer for ib_map_mr_sg() and
->>>>     ib_map_mr_sg_pi()
->>>>   RDMA: Delete NULL pointer checks for sg_offset in .map_mr_sg ops
->>>>
->>>>  drivers/infiniband/core/verbs.c         | 12 +++++++++---
->>>>  drivers/infiniband/hw/mlx5/mr.c         | 18 ++++++------------
->>>>  drivers/infiniband/sw/rdmavt/trace_mr.h |  2 +-
->>>>  3 files changed, 16 insertions(+), 16 deletions(-)
->>>
->>> So what does this change give us?
->>> We have same functionality, same number of lines, same everything ...
->>>
+>> > From: Caleb Sander <csander@purestorage.com>
+>> > Sent: Tuesday, November 5, 2024 9:36 PM
+>> >
+>> > On Mon, Nov 4, 2024 at 9:22 PM Parav Pandit <parav@nvidia.com> wrote:
+>> > >
+>> > >
+>> > >
+>> > > > From: Caleb Sander <csander@purestorage.com>
+>> > > > Sent: Monday, November 4, 2024 3:49 AM
+>> > > >
+>> > > > On Sat, Nov 2, 2024 at 8:55 PM Parav Pandit <parav@nvidia.com> wrote:
+>> > > > >
+>> > > > >
+>> > > > >
+>> > > > > > From: Caleb Sander Mateos <csander@purestorage.com>
+>> > > > > > Sent: Friday, November 1, 2024 9:17 AM
+>> > > > > >
+>> > > > > > The logic of eq_update_ci() is duplicated in mlx5_eq_update_ci().
+>> > > > > > The only additional work done by mlx5_eq_update_ci() is to
+>> > > > > > increment
+>> > > > > > eq->cons_index. Call eq_update_ci() from mlx5_eq_update_ci() to
+>> > > > > > eq->avoid
+>> > > > > > the duplication.
+>> > > > > >
+>> > > > > > Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
+>> > > > > > ---
+>> > > > > >  drivers/net/ethernet/mellanox/mlx5/core/eq.c | 9 +--------
+>> > > > > >  1 file changed, 1 insertion(+), 8 deletions(-)
+>> > > > > >
+>> > > > > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+>> > > > > > b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+>> > > > > > index 859dcf09b770..078029c81935 100644
+>> > > > > > --- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+>> > > > > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+>> > > > > > @@ -802,19 +802,12 @@ struct mlx5_eqe *mlx5_eq_get_eqe(struct
+>> > > > > > mlx5_eq *eq, u32 cc)  }  EXPORT_SYMBOL(mlx5_eq_get_eqe);
+>> > > > > >
+>> > > > > >  void mlx5_eq_update_ci(struct mlx5_eq *eq, u32 cc, bool arm)  {
+>> > > > > > -     __be32 __iomem *addr = eq->doorbell + (arm ? 0 : 2);
+>> > > > > > -     u32 val;
+>> > > > > > -
+>> > > > > >       eq->cons_index += cc;
+>> > > > > > -     val = (eq->cons_index & 0xffffff) | (eq->eqn << 24);
+>> > > > > > -
+>> > > > > > -     __raw_writel((__force u32)cpu_to_be32(val), addr);
+>> > > > > > -     /* We still want ordering, just not swabbing, so add a barrier */
+>> > > > > > -     wmb();
+>> > > > > > +     eq_update_ci(eq, arm);
+>> > > > > Long ago I had similar rework patches to get rid of
+>> > > > > __raw_writel(), which I never got chance to push,
+>> > > > >
+>> > > > > Eq_update_ci() is using full memory barrier.
+>> > > > > While mlx5_eq_update_ci() is using only write memory barrier.
+>> > > > >
+>> > > > > So it is not 100% deduplication by this patch.
+>> > > > > Please have a pre-patch improving eq_update_ci() to use wmb().
+>> > > > > Followed by this patch.
+>> > > >
+>> > > > Right, patch 1/2 in this series is changing eq_update_ci() to use
+>> > > > writel() instead of __raw_writel() and avoid the memory barrier:
+>> > > > https://lore.kernel.org/lkml/20241101034647.51590-1-
+>> > > > csander@purestorage.com/
+>> > > This patch has two bugs.
+>> > > 1. writel() writes the MMIO space in LE order. EQ updates are in BE order.
+>> > > So this will break on ppc64 BE.
+>> >
+>> > Okay, so this should be writel(cpu_to_le32(val), addr)?
+>> >
+>> That would break the x86 side because device should receive in BE format regardless of cpu endianness.
+>> Above code will write in the LE format.
 >>
->> Actually this is inspired by an hns bug. When ib_map_mr_sg() passes a NULL
->> sg_offset pointer to hns_roce_map_mr_sg(), we dereference this pointer
->> without a NULL check.
->>
->> Of course we can fix it by adding NULL check in hns, but I think this
->> patch may be a better solution since the sg_offset is guaranteed to be
->> a valid pointer. This could benefit future drivers who also want to
->> dereference sg_offset, they won't need to care about NULL checks.
-> 
-> Let's fix hns please. We are moving away from SG in RDMA.
-> 
+>> So an API foo_writel() need which does
+>> a. write memory barrier
+>> b. write to MMIO space but without endineness conversion.
+>
+>Got it, thanks. writel(bswap_32(val, addr)) should work, then? I
+>suppose it may introduce a second bswap on BE architectures, but
+>that's probably worth it to avoid the memory barrier.
+>
 
-Sure, thanks
+The existing mb() needs to be changed to wmb(), this will provide a more
+efficient fence on most architectures.
 
-Junxian
+I don't understand why you are still discussing the use of writel(), yes
+it will work but you are introducing two unconditional swaps per doorbell
+write.
 
->>
->> Junxian
->>
->>> Thanks
->>>
->>>>
->>>> --
->>>> 2.33.0
->>>>
->>>>
+Just replace the existing mb with wmb() in eq_update_ci()
+
+And if you have time to write one extra patch, please reuse eq_update_ci() 
+inside mlx5_eq_update_ci(). 
+
+mlx5_eq_update_ci(eq, cc, arm) {
+        eq->cons_index += cc;
+        eq_update_ci(eq, arm);
+}
+
+So we won't have two different implementations of EQ doorbell ringing
+anymore.
+
+Thanks,
+Saeed.
+
 
