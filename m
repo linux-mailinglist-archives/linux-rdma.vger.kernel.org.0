@@ -1,109 +1,129 @@
-Return-Path: <linux-rdma+bounces-5853-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5854-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 738FD9C1769
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2024 09:04:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B66809C1826
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2024 09:38:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A16F31C2256D
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2024 08:04:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4304AB23127
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2024 08:38:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D641C1D2B23;
-	Fri,  8 Nov 2024 08:04:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1330C1DE8A8;
+	Fri,  8 Nov 2024 08:38:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWCJbZGu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DAFC194A64;
-	Fri,  8 Nov 2024 08:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8841A2631;
+	Fri,  8 Nov 2024 08:38:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731053052; cv=none; b=ug8vDcxUQIG4u9nQBfGemSEE3o7YJLRQWZz5kOcK3i8B3TaEHRGI1MRiCo41geaJr9QPIepYmCEzRYRlsvt6g47Nl8HvoxsmA348rMg2F6OO3f1cGOhjEF7kxX+DgfLn8OSEZR8+M2eLC1qrFUCuSXQBCd5Gdy/uJgx8N7552mI=
+	t=1731055097; cv=none; b=k7zFTog/87n6icVSamdI3vlvCy7QiTibgj+Tb44lhWTT5Z30YiaEWXqNcu3Qiw7FNUgpeqbnOOXJ6eQlhKDLjzK9BsmHr0iOeEdkqncNim1IBSAjbyYDmvLk0dRRiU9mOqcjKX9iSxS36bFq9t2PBFGqZHARtT0ICSUpLh73+5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731053052; c=relaxed/simple;
-	bh=y0ySXRbHySn8vAQZkk/flVCrv+KGYhyW3jq5t4BDlv8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=E0O+6h2xlhV2yna2VQNPCQUKpfSSetfHJiSa6GxkwJ2vw11dM09wvVH7drxyp/FZ7spKeLtdSpE8/5recdeCYZqwyDBwQgLekA2gZlElCQ6F/7pIgJfZpt+TDMllcBYh0A7TbUgrE/olijV5D3+QJHXJLqwvV/naZ6pCgY0t3AQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4XlBKs4dRWz1yntB;
-	Fri,  8 Nov 2024 16:04:17 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 271A51A016C;
-	Fri,  8 Nov 2024 16:04:07 +0800 (CST)
-Received: from localhost.localdomain (10.90.30.45) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 8 Nov 2024 16:04:06 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
-	<tangchengchang@huawei.com>
-Subject: [PATCH for-rc 2/2] RDMA/hns: Fix NULL pointer derefernce in hns_roce_map_mr_sg()
-Date: Fri, 8 Nov 2024 15:57:43 +0800
-Message-ID: <20241108075743.2652258-3-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20241108075743.2652258-1-huangjunxian6@hisilicon.com>
-References: <20241108075743.2652258-1-huangjunxian6@hisilicon.com>
+	s=arc-20240116; t=1731055097; c=relaxed/simple;
+	bh=iwamr/dMh3k2/I46HgUh3becGE1nHJi92Buqgn3qoZw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DBGj944GOXKGbag3aqgYXnGCyDCjQxotGq16PBG86r5Tudv5IvypKqTAKmIqEuR8ZAnaDW7AfrqDuuyAVK+m8X/RZrO4Ixo20qqnx3Uu3YAJF+w+iCUlNXdPtqoCeG7BlaUsyXIGZYjDSn6bgY48ol2CycaZQG+P9SkXQGuqEp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YWCJbZGu; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-460ad0440ddso10536941cf.3;
+        Fri, 08 Nov 2024 00:38:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731055095; x=1731659895; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iwamr/dMh3k2/I46HgUh3becGE1nHJi92Buqgn3qoZw=;
+        b=YWCJbZGuVbjBXT0xlu4KmYlmGPZWpDWgcQkoxfAq7r3v5Vp9bC8LuNCW2K3WesWSC9
+         K7q56OiDzPzSB5kPUVykxQ83SzOYHwPjH9w03qLjdkhGeO4cz6yAI7ecYZYnfGAkc4oz
+         1y7HMCx+cLT6wpmIOnEJtN4Phj9/lwoFTp9tJbMKx7cSVfJ5UvZLmY9Z7h+UbZz8HNIO
+         fLk3qTcfau8zfi+vudjwVSJNu64LBdF2slAmKmpczNfa6iVW9gVMNKk5uIiTIOM8CGR4
+         HCcHahmT4mekSL5Y5QP1aJCrizBH2hoBndDto/aZXs5jX60HSWP5+wozfobTf6EzabOQ
+         P6vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731055095; x=1731659895;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iwamr/dMh3k2/I46HgUh3becGE1nHJi92Buqgn3qoZw=;
+        b=lb03cwwNn/9tUHfjjmDUJh+9dVMpeAbzjmE0/Gp9r1dywUjZ40I1gNv98GLSSFt83b
+         WxeKgRByq9DQMratGyYq7fEtJcPs0bKjo+8V2LlyxnJjGqj32Vm2eECXOHjhDocqmlNW
+         3/iDh/mptVWL2jifLX4KuNH26cKFxn5Jig3JJcazIs89oV0ryCCgjFE26USvCK2BNHGw
+         gkAr6lGyUnFHSw6tVAp0FCk3ZJrVdH2or3oUmO4rfUq27yaBRpchaO4PMcYCk4XL/W1v
+         bvdgjZm4A0UtdSyMn6/BhL9oWAVMiOow+H64YTG7mMegsff951e7ASEoCDzSSI/M6bKy
+         q1dQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUjt/bypDUw3mZWndYCotdsqCiqtoX3O0sT1Cv89TFtYNlgz2yghU7TTZmp/EEoPJg4y4yk1lf/@vger.kernel.org, AJvYcCVxQd+wKMiIPyFYIADyrk4nLMcBkjpyYJ3DiGsLbiqxS8ikze3hBbKtEN4HuoTl7u7Ig3h15fRVEYGw@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWNl4MTszfaP8mEN5HUC2ba2Cy02aue3I+0MTIqaPZ4pIHU8pX
+	Ct/BAHwQUnwqCES4Tlq1J0Dcg42E+Hv/QuFE1wwVj/kN583YiVtD4qkaOYiRdtosfB6PqNSTxdk
+	QTmOOvS2Gue3JBrHSHUHhylHt52Pm5gEeiqH0fA==
+X-Google-Smtp-Source: AGHT+IGhoswV9CyClzsmwJWWeJCEpKP1BBghvYfzoL8xrIBaRdW4iXi2wVUZFGb+pRZmIxxuds/TTLNfe98hd/xQhFA=
+X-Received: by 2002:a0c:f207:0:b0:6cc:b4:5dcb with SMTP id 6a1803df08f44-6d39e1f49e6mr22689246d6.47.1731055095293;
+ Fri, 08 Nov 2024 00:38:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemf100018.china.huawei.com (7.202.181.17)
+References: <20241106064015.4118-1-laoar.shao@gmail.com> <b3c6601b-9108-49cb-a090-247d2d56e64b@gmail.com>
+ <CALOAHbDPbwH7vqV2_NAm=_YnN2KnmVLOe7avWOYG+Rynd295Vg@mail.gmail.com> <9b3af2dd-8b56-4817-b223-c6a85ba80562@nvidia.com>
+In-Reply-To: <9b3af2dd-8b56-4817-b223-c6a85ba80562@nvidia.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Fri, 8 Nov 2024 16:37:38 +0800
+Message-ID: <CALOAHbCPDFs1D_XxoTmPushq70unz6UDn978Ati2sMV4fZ_MHg@mail.gmail.com>
+Subject: Re: [PATCH] net/mlx5e: Report rx_discards_phy via rx_missed_errors
+To: Gal Pressman <gal@nvidia.com>
+Cc: Tariq Toukan <ttoukan.linux@gmail.com>, saeedm@nvidia.com, tariqt@nvidia.com, 
+	leon@kernel.org, netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-ib_map_mr_sg() allows ULPs to specify NULL as the sg_offset argument.
-The driver needs to check whether it is a NULL pointer before
-dereferencing it.
+On Thu, Nov 7, 2024 at 3:23=E2=80=AFAM Gal Pressman <gal@nvidia.com> wrote:
+>
+> On 06/11/2024 13:49, Yafang Shao wrote:
+> > On Wed, Nov 6, 2024 at 5:56=E2=80=AFPM Tariq Toukan <ttoukan.linux@gmai=
+l.com> wrote:
+> >>
+> >>
+> >>
+> >> On 06/11/2024 8:40, Yafang Shao wrote:
+> >>> We observed a high number of rx_discards_phy events on some servers w=
+hen
+> >>> running `ethtool -S`. However, this important counter is not currentl=
+y
+> >>> reflected in the /proc/net/dev statistics file, making it challenging=
+ to
+> >>> monitor effectively.
+> >>>
+> >>> Since rx_missed_errors represents packets dropped due to buffer exhau=
+stion,
+> >>> it makes sense to include rx_discards_phy in this counter to enhance
+> >>> monitoring visibility. This change will help administrators track the=
+se
+> >>> events more effectively through standard interfaces.
+> >>>
+> >>
+> >> Hi,
+> >>
+> >> Thanks for your patch.
+> >>
+> >> It's a matter of interpretation...
+> >> The documentation in
+> >> Documentation/ABI/testing/sysfs-class-net-statistics refers to the
+> >> driver for the exact meaning.
+>
+> I think this documentation is outdated, a more recent one is in if_link.h=
+:
 
-Fixes: d387d4b54eb8 ("RDMA/hns: Fix missing pagesize and alignment check in FRMR")
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_mr.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Should we sync the documentation in if_link.h with
+Documentation/ABI/testing/sysfs-class-net-statistics?
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index 846da8c78b8b..d49088bf7906 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -435,15 +435,16 @@ static int hns_roce_set_page(struct ib_mr *ibmr, u64 addr)
- }
- 
- int hns_roce_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
--		       unsigned int *sg_offset)
-+		       unsigned int *sg_offset_p)
- {
-+	unsigned int sg_offset = sg_offset_p ? *sg_offset_p : 0;
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibmr->device);
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	struct hns_roce_mr *mr = to_hr_mr(ibmr);
- 	struct hns_roce_mtr *mtr = &mr->pbl_mtr;
- 	int ret, sg_num = 0;
- 
--	if (!IS_ALIGNED(*sg_offset, HNS_ROCE_FRMR_ALIGN_SIZE) ||
-+	if (!IS_ALIGNED(sg_offset, HNS_ROCE_FRMR_ALIGN_SIZE) ||
- 	    ibmr->page_size < HNS_HW_PAGE_SIZE ||
- 	    ibmr->page_size > HNS_HW_MAX_PAGE_SIZE)
- 		return sg_num;
-@@ -454,7 +455,7 @@ int hns_roce_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
- 	if (!mr->page_list)
- 		return sg_num;
- 
--	sg_num = ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset, hns_roce_set_page);
-+	sg_num = ib_sg_to_pages(ibmr, sg, sg_nents, sg_offset_p, hns_roce_set_page);
- 	if (sg_num < 1) {
- 		ibdev_err(ibdev, "failed to store sg pages %u %u, cnt = %d.\n",
- 			  mr->npages, mr->pbl_mtr.hem_cfg.buf_pg_count, sg_num);
--- 
-2.33.0
-
+--=20
+Regards
+Yafang
 
