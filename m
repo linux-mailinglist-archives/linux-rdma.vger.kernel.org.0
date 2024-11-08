@@ -1,473 +1,355 @@
-Return-Path: <linux-rdma+bounces-5861-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5862-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A6519C18B9
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2024 10:04:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FF909C1995
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2024 10:57:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 294B21F25304
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2024 09:04:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 210AA283EEC
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2024 09:57:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68091E0DB8;
-	Fri,  8 Nov 2024 09:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11BCA1E1C2F;
+	Fri,  8 Nov 2024 09:57:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="R4JMJMX2"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r+EmRHg9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F461E0E1A
-	for <linux-rdma@vger.kernel.org>; Fri,  8 Nov 2024 09:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B8001E1C02
+	for <linux-rdma@vger.kernel.org>; Fri,  8 Nov 2024 09:57:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731056624; cv=none; b=Py+05w9aQZ4Uc6MXdxgw4vt44VSB8Ut7cp4pHe9dUfKhKlEzuyqlo87Wjyh4LMBwjlQJa0OssIqYLCuRrdVEpWZLj5ztckoJl9UJF9OnZfD2m+raayn2tUf8cHtV7+20UWBRsVePec2O+AhR5NeUM9c4PT50+s5+jyuSZSa6/4k=
+	t=1731059852; cv=none; b=pgdMcbkFws+8Zml01Vfmb/gA+GDm6fO0TKpGNffJ/fhz91yW6lN5HQZMSOjPBHuTafzhBhNZ6bPs1iqxHTRGd4k/fvDK3E+Y7ClEEgrW7yDhTGu3mhFMrh/ErmzXwc/uIc/Y0gqjG3IHg13AlIEgIj6afK0l/7EQUR8aJ5pC8do=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731056624; c=relaxed/simple;
-	bh=yOIDLEjI3vxQA9zW3pmPy5EhQizV8Gjb21bFQuQ/5CQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=oQ2gzBHSOyopcfGsQY+8ajrlT+tn7vKye1v0s0RTOL0fPEmvKZoiEAOk9T+KK5dW4VKUzsANnIMmQw94T0JVy88TTz0SGBFp/lPL7SR+CePpkf8WLyiVBBaeEesK/TvJRYoFRQT8KwI9V+kFZK/aO+UGCPp/WnAjgGLQql5rZIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=R4JMJMX2; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-72041ff06a0so1537194b3a.2
-        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2024 01:03:42 -0800 (PST)
+	s=arc-20240116; t=1731059852; c=relaxed/simple;
+	bh=8fI1kWvz6hGfQzWAO2sB4JOqTLhejAN4OfQdn+uncMU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=F3uRpGJSzwoiwYu24MYfwBeD/RVEYehEA/rwat44cyW6enmHW8vB77dGR4iT7bjXrxzd4pVod7D7CBtx2N1yiuD8sIlATdlT4GguigqtTdmdAXXzjEP2MAb82ETyHdn7csf8vXXi6w8vwWXp0M4Y6ThdVPB6McVXNBiejLCiIVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r+EmRHg9; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4314b316495so16115915e9.2
+        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2024 01:57:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1731056622; x=1731661422; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1eyU60NWYoe5mjRm3PZbwmcZTns/IyuFInWVURn8jxc=;
-        b=R4JMJMX2tiE3WLa6G8195y0eQs2HaqOv2TMXUUEzsuFnPPLfgSUsyNA2AJsdDXJOeY
-         aBwVDnb2xzrhlV5XXD0gDTJ5T10EWXxLl69pJSg+OfYPVoLAp04yOqNyG3+jLZZTnahu
-         cUOW2XlCtICbqLMG2yF+kDEBrFpiTSf2xdayE=
+        d=linaro.org; s=google; t=1731059849; x=1731664649; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1qvSjFgT9QigLmSV7E1Bd8DDsmjWl8PjqBY+cyP/Rbk=;
+        b=r+EmRHg9Wio3I2CXfbejiEK7TYa+vBhJNccbX2yRyz5L8tYR8b4YkVDkmJF2rSAGqf
+         yeKCEEXSR22yA+MxHXnIm78RcdKuowWxl4t3MjX+EfSlc20OZ64o39uogROjxOGr0Kmf
+         jS5vf2OYMNmBmP9hA8owbCs2/R+M4peff78zfaoDuX14zWwruWkV2SnjZlvB8nFSaiB8
+         W0S/B/LpgIsEEBgyNN5GHcRUMu92u2yNWaffZYnTezcfGPCbtgAJb5/f/Ziva4/vqOLc
+         7+wkQI+cpjUTjXb5Vvr9zSI+oVslva2iTYPsodGIuPguPl1jgEVbl8nj/NKy9PxjsSA+
+         qQew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731056622; x=1731661422;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
+        d=1e100.net; s=20230601; t=1731059849; x=1731664649;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1eyU60NWYoe5mjRm3PZbwmcZTns/IyuFInWVURn8jxc=;
-        b=h/7EuDG8Lk4P4mS/pnpGVZFuDRMH3B1TacQtdR8ImWnznC7tNReeGSz73eSafMGTWG
-         aX+ly5rdocFvfKbuDNgrsIdqPMazXCk7aONdjilIy6itxqsxmj2IXN/SRkiZliL2oarn
-         /tqKrSLgKw0DOiwY/57MfMTbHAvnASM6n1ju/oPl8ahV6dfWXgvIUMXXKRq9PmoYvQ2t
-         HciKWWfM0/Pgg/oIIwF2oowNF45V9leC54BTNy0rzWUHzEfIlNFxYUp4RoL/diov1UjJ
-         SABtyH+OKZAlJCM7M4JIdZ3+SDR1XA1oZX/01Y+vxzqs820YS2ETcioZqTwW2BApgw5u
-         9ivA==
-X-Gm-Message-State: AOJu0YxWkzQzLVBrXLJwHc4YTIq3XJQ9PhxcN5DXDPwSugpZhnuUZ3ku
-	7VuV79Mqo9Y2dhsHOPuyVEgrOfXMsfbF/IqcyLs9hqYMtPb/Qnvtuv3eZroYCg==
-X-Google-Smtp-Source: AGHT+IGNSAsZOQOOB87mzYLojkJ0FiwN7aZ5GRMfA8dFHQOYN0H4YqYtDPsic3e5rQTwrRiASmH5IQ==
-X-Received: by 2002:a05:6a20:3d86:b0:1db:e5b0:4a6 with SMTP id adf61e73a8af0-1dc22b1a3bbmr2246519637.28.1731056621961;
-        Fri, 08 Nov 2024 01:03:41 -0800 (PST)
-Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7240785ffcdsm3096441b3a.31.2024.11.08.01.03.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Nov 2024 01:03:41 -0800 (PST)
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-To: leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com,
-	kalesh-anakkur.purayil@broadcom.com,
-	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [rdma-next 5/5] RDMA/bnxt_re: Add new function to setup NQs
-Date: Fri,  8 Nov 2024 00:42:39 -0800
-Message-Id: <1731055359-12603-6-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1731055359-12603-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1731055359-12603-1-git-send-email-selvin.xavier@broadcom.com>
+        bh=1qvSjFgT9QigLmSV7E1Bd8DDsmjWl8PjqBY+cyP/Rbk=;
+        b=LqPPfTix28Xl04EaRFAJuUkOlNAlvJWRQIj94G9yo0Ur/lm7xZprupeoTcEWIfhW4L
+         Tpwbbr6k6bLrTnAwzT5tVjRGR4blprZQrAqraxaa5dOjY34UjDLIbdZjuIFKi075R3YZ
+         0qjkICIEZLpcmUCIWkdJ65C3+yGKPa9c3jzF2nI/D03ImFa+epZ6agE7lwqLF/LTEWSx
+         0AZtcG2LhGFv1oSu6T5dziWop5G8zXxmwqfGlM3qgFmIqUWEGd4l3N4yOpMFZT+5VXB3
+         KjFdbKfSalwyKg7Qj3mlIJPfoWrD9LlDrmf9bWdXC9HnMX5Vz2C/mpa/Sjme11aaMZmV
+         yQtg==
+X-Forwarded-Encrypted: i=1; AJvYcCWe+MTAkOxHIEZF5ZtFm5djUlU8bVuETrz01ROtKryQaOrFbf9REfHt/WZg05dtt4gC7Lp5VHtN0IQE@vger.kernel.org
+X-Gm-Message-State: AOJu0YyVwq6W9A3F7EmB+xQZtwMfiP7thR8GrGAer9d/njsp51p+9Evj
+	2SnS0cBaXLCuZIA33ZsZdMMrvQ6jQjCXi418C46jDq4D3fXZderSvFcc5i8raPg=
+X-Google-Smtp-Source: AGHT+IGSM0YIoIJwn4bQFLUSfQjkco2eSXc7cP/BCeCrt62cX0r5HN3g5uOpTFuxNeCM9lxmmGx4PQ==
+X-Received: by 2002:a05:600c:4448:b0:430:52ec:1e41 with SMTP id 5b1f17b1804b1-432b7509c5fmr17646005e9.17.1731059848755;
+        Fri, 08 Nov 2024 01:57:28 -0800 (PST)
+Received: from [172.20.143.194] ([89.101.134.25])
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-432aa70a234sm94913735e9.34.2024.11.08.01.57.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Nov 2024 01:57:28 -0800 (PST)
+Message-ID: <5bd704c3-88c1-4b6f-82ec-25f9d7a6e92b@linaro.org>
+Date: Fri, 8 Nov 2024 09:57:23 +0000
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 05/10] sysfs: treewide: constify attribute callback of
+ bin_is_visible()
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Bjorn Helgaas
+ <bhelgaas@google.com>, Davidlohr Bueso <dave@stgolabs.net>,
+ Jonathan Cameron <jonathan.cameron@huawei.com>,
+ Dave Jiang <dave.jiang@intel.com>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Xinhui Pan <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>,
+ Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ Tudor Ambarus <tudor.ambarus@linaro.org>,
+ Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>,
+ Carlos Bilbao <carlos.bilbao.osdev@gmail.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ "David E. Box" <david.e.box@linux.intel.com>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Matt Turner <mattst88@gmail.com>, Frederic Barrat <fbarrat@linux.ibm.com>,
+ Andrew Donnellan <ajd@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
+ Logan Gunthorpe <logang@deltatee.com>, "K. Y. Srinivasan"
+ <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+ Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>
+Cc: Dan Williams <dan.j.williams@intel.com>, linux-kernel@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-cxl@vger.kernel.org,
+ amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-rdma@vger.kernel.org, linux-mtd@lists.infradead.org,
+ platform-driver-x86@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org
+References: <20241103-sysfs-const-bin_attr-v2-0-71110628844c@weissschuh.net>
+ <20241103-sysfs-const-bin_attr-v2-5-71110628844c@weissschuh.net>
+Content-Language: en-US
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20241103-sysfs-const-bin_attr-v2-5-71110628844c@weissschuh.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-Move the logic to setup and enable NQs to a new function.
-Similarly moved the NQ cleanup logic to a common function.
-Introdued a flag to keep track of NQ allocation status
-and added sanity checks inside bnxt_re_stop_irq() and
-bnxt_re_start_irq() to avoid possible race conditions.
 
-Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/bnxt_re.h |   2 +
- drivers/infiniband/hw/bnxt_re/main.c    | 204 +++++++++++++++++++-------------
- 2 files changed, 123 insertions(+), 83 deletions(-)
+On 03/11/2024 17:03, Thomas Weißschuh wrote:
+> The is_bin_visible() callbacks should not modify the struct
+> bin_attribute passed as argument.
+> Enforce this by marking the argument as const.
+> 
+> As there are not many callback implementers perform this change
+> throughout the tree at once.
+> 
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> ---
+>   drivers/cxl/port.c                      |  2 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c |  2 +-
+>   drivers/infiniband/hw/qib/qib_sysfs.c   |  2 +-
+>   drivers/mtd/spi-nor/sysfs.c             |  2 +-
 
-diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index 2975b11..74a340f 100644
---- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-+++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -160,6 +160,7 @@ struct bnxt_re_nq_record {
- 	struct bnxt_msix_entry	msix_entries[BNXT_RE_MAX_MSIX];
- 	struct bnxt_qplib_nq	nq[BNXT_RE_MAX_MSIX];
- 	int			num_msix;
-+	int			max_init;
- 	/* serialize NQ access */
- 	struct mutex		load_lock;
- };
-@@ -178,6 +179,7 @@ struct bnxt_re_dev {
- 	struct list_head		list;
- 	unsigned long			flags;
- #define BNXT_RE_FLAG_NETDEV_REGISTERED		0
-+#define BNXT_RE_FLAG_SETUP_NQ			1
- #define BNXT_RE_FLAG_HAVE_L2_REF		3
- #define BNXT_RE_FLAG_RCFW_CHANNEL_EN		4
- #define BNXT_RE_FLAG_QOS_WORK_REG		5
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 1c7171a..87a54db 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -324,13 +324,19 @@ static void bnxt_re_stop_irq(void *handle)
- 		return;
- 
- 	rdev = en_info->rdev;
-+	if (!rdev)
-+		return;
- 	rcfw = &rdev->rcfw;
- 
-+	if (!test_bit(BNXT_RE_FLAG_SETUP_NQ, &rdev->flags))
-+		goto free_rcfw_irq;
-+
- 	for (indx = BNXT_RE_NQ_IDX; indx < rdev->nqr->num_msix; indx++) {
- 		nq = &rdev->nqr->nq[indx - 1];
- 		bnxt_qplib_nq_stop_irq(nq, false);
- 	}
- 
-+free_rcfw_irq:
- 	bnxt_qplib_rcfw_stop_irq(rcfw, false);
- }
- 
-@@ -341,12 +347,18 @@ static void bnxt_re_start_irq(void *handle, struct bnxt_msix_entry *ent)
- 	struct bnxt_qplib_rcfw *rcfw;
- 	struct bnxt_re_dev *rdev;
- 	struct bnxt_qplib_nq *nq;
--	int indx, rc;
-+	int indx, rc, vec;
- 
- 	if (!en_info)
- 		return;
- 
- 	rdev = en_info->rdev;
-+	if (!rdev)
-+		return;
-+
-+	if (!test_bit(BNXT_RE_FLAG_SETUP_NQ, &rdev->flags))
-+		return;
-+
- 	msix_ent = rdev->nqr->msix_entries;
- 	rcfw = &rdev->rcfw;
- 	if (!ent) {
-@@ -360,7 +372,7 @@ static void bnxt_re_start_irq(void *handle, struct bnxt_msix_entry *ent)
- 	}
- 
- 	/* Vectors may change after restart, so update with new vectors
--	 * in device sctructure.
-+	 * in device structure.
- 	 */
- 	for (indx = 0; indx < rdev->nqr->num_msix; indx++)
- 		rdev->nqr->msix_entries[indx].vector = ent[indx].vector;
-@@ -371,10 +383,11 @@ static void bnxt_re_start_irq(void *handle, struct bnxt_msix_entry *ent)
- 		ibdev_warn(&rdev->ibdev, "Failed to reinit CREQ\n");
- 		return;
- 	}
--	for (indx = BNXT_RE_NQ_IDX ; indx < rdev->nqr->num_msix; indx++) {
--		nq = &rdev->nqr->nq[indx - 1];
--		rc = bnxt_qplib_nq_start_irq(nq, indx - 1,
--					     msix_ent[indx].vector, false);
-+	for (indx = 0 ; indx < rdev->nqr->max_init; indx++) {
-+		nq = &rdev->nqr->nq[indx];
-+		vec = indx + 1;
-+		rc = bnxt_qplib_nq_start_irq(nq, indx,
-+					     msix_ent[vec].vector, false);
- 		if (rc) {
- 			ibdev_warn(&rdev->ibdev, "Failed to reinit NQ index %d\n",
- 				   indx - 1);
-@@ -1549,64 +1562,39 @@ static int bnxt_re_cqn_handler(struct bnxt_qplib_nq *nq,
- 
- static void bnxt_re_cleanup_res(struct bnxt_re_dev *rdev)
- {
--	int i;
--
--	for (i = 1; i < rdev->nqr->num_msix; i++)
--		bnxt_qplib_disable_nq(&rdev->nqr->nq[i - 1]);
--
- 	if (rdev->qplib_res.rcfw)
- 		bnxt_qplib_cleanup_res(&rdev->qplib_res);
- }
- 
- static int bnxt_re_init_res(struct bnxt_re_dev *rdev)
- {
--	int num_vec_enabled = 0;
--	int rc = 0, i;
--	u32 db_offt;
--
- 	bnxt_qplib_init_res(&rdev->qplib_res);
- 
--	mutex_init(&rdev->nqr->load_lock);
--
--	for (i = 1; i < rdev->nqr->num_msix ; i++) {
--		db_offt = rdev->nqr->msix_entries[i].db_offset;
--		rc = bnxt_qplib_enable_nq(rdev->en_dev->pdev, &rdev->nqr->nq[i - 1],
--					  i - 1, rdev->nqr->msix_entries[i].vector,
--					  db_offt, &bnxt_re_cqn_handler,
--					  &bnxt_re_srqn_handler);
--		if (rc) {
--			ibdev_err(&rdev->ibdev,
--				  "Failed to enable NQ with rc = 0x%x", rc);
--			goto fail;
--		}
--		num_vec_enabled++;
--	}
- 	return 0;
--fail:
--	for (i = num_vec_enabled; i >= 0; i--)
--		bnxt_qplib_disable_nq(&rdev->nqr->nq[i]);
--	return rc;
- }
- 
--static void bnxt_re_free_nq_res(struct bnxt_re_dev *rdev)
-+static void bnxt_re_clean_nqs(struct bnxt_re_dev *rdev)
- {
- 	struct bnxt_qplib_nq *nq;
- 	u8 type;
- 	int i;
- 
--	for (i = 0; i < rdev->nqr->num_msix - 1; i++) {
-+	if (!rdev->nqr->max_init)
-+		return;
-+
-+	for (i = (rdev->nqr->max_init - 1); i >= 0; i--) {
- 		type = bnxt_qplib_get_ring_type(rdev->chip_ctx);
- 		nq = &rdev->nqr->nq[i];
-+		bnxt_qplib_disable_nq(nq);
- 		bnxt_re_net_ring_free(rdev, nq->ring_id, type);
- 		bnxt_qplib_free_nq(nq);
- 		nq->res = NULL;
- 	}
-+	rdev->nqr->max_init = 0;
- }
- 
- static void bnxt_re_free_res(struct bnxt_re_dev *rdev)
- {
--	bnxt_re_free_nq_res(rdev);
--
- 	if (rdev->qplib_res.dpi_tbl.max) {
- 		bnxt_qplib_dealloc_dpi(&rdev->qplib_res,
- 				       &rdev->dpi_privileged);
-@@ -1619,10 +1607,7 @@ static void bnxt_re_free_res(struct bnxt_re_dev *rdev)
- 
- static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
- {
--	struct bnxt_re_ring_attr rattr = {};
--	int num_vec_created = 0;
--	int rc, i;
--	u8 type;
-+	int rc;
- 
- 	/* Configure and allocate resources for qplib */
- 	rdev->qplib_res.rcfw = &rdev->rcfw;
-@@ -1641,43 +1626,8 @@ static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
- 	if (rc)
- 		goto dealloc_res;
- 
--	for (i = 0; i < rdev->nqr->num_msix - 1; i++) {
--		struct bnxt_qplib_nq *nq;
--
--		nq = &rdev->nqr->nq[i];
--		nq->hwq.max_elements = BNXT_QPLIB_NQE_MAX_CNT;
--		rc = bnxt_qplib_alloc_nq(&rdev->qplib_res, nq);
--		if (rc) {
--			ibdev_err(&rdev->ibdev, "Alloc Failed NQ%d rc:%#x",
--				  i, rc);
--			goto free_nq;
--		}
--		type = bnxt_qplib_get_ring_type(rdev->chip_ctx);
--		rattr.dma_arr = nq->hwq.pbl[PBL_LVL_0].pg_map_arr;
--		rattr.pages = nq->hwq.pbl[rdev->nqr->nq[i].hwq.level].pg_count;
--		rattr.type = type;
--		rattr.mode = RING_ALLOC_REQ_INT_MODE_MSIX;
--		rattr.depth = BNXT_QPLIB_NQE_MAX_CNT - 1;
--		rattr.lrid = rdev->nqr->msix_entries[i + 1].ring_idx;
--		rc = bnxt_re_net_ring_alloc(rdev, &rattr, &nq->ring_id);
--		if (rc) {
--			ibdev_err(&rdev->ibdev,
--				  "Failed to allocate NQ fw id with rc = 0x%x",
--				  rc);
--			bnxt_qplib_free_nq(nq);
--			goto free_nq;
--		}
--		num_vec_created++;
--	}
- 	return 0;
--free_nq:
--	for (i = num_vec_created - 1; i >= 0; i--) {
--		type = bnxt_qplib_get_ring_type(rdev->chip_ctx);
--		bnxt_re_net_ring_free(rdev, rdev->nqr->nq[i].ring_id, type);
--		bnxt_qplib_free_nq(&rdev->nqr->nq[i]);
--	}
--	bnxt_qplib_dealloc_dpi(&rdev->qplib_res,
--			       &rdev->dpi_privileged);
-+
- dealloc_res:
- 	bnxt_qplib_free_res(&rdev->qplib_res);
- 
-@@ -1884,6 +1834,71 @@ static void bnxt_re_free_nqr_mem(struct bnxt_re_dev *rdev)
- 	rdev->nqr = NULL;
- }
- 
-+static int bnxt_re_setup_nqs(struct bnxt_re_dev *rdev)
-+{
-+	struct bnxt_re_ring_attr rattr = {};
-+	struct bnxt_qplib_nq *nq;
-+	int rc, i;
-+	int depth;
-+	u32 offt;
-+	u16 vec;
-+	u8 type;
-+
-+	mutex_init(&rdev->nqr->load_lock);
-+
-+	depth = BNXT_QPLIB_NQE_MAX_CNT;
-+	for (i = 0; i < rdev->nqr->num_msix - 1; i++) {
-+		nq = &rdev->nqr->nq[i];
-+		vec = rdev->nqr->msix_entries[i + 1].vector;
-+		offt = rdev->nqr->msix_entries[i + 1].db_offset;
-+		nq->hwq.max_elements = depth;
-+		rc = bnxt_qplib_alloc_nq(&rdev->qplib_res, nq);
-+		if (rc) {
-+			dev_err(rdev_to_dev(rdev),
-+				"Failed to get mem for NQ %d, rc = 0x%x",
-+				i, rc);
-+			goto fail_mem;
-+		}
-+
-+		type = bnxt_qplib_get_ring_type(rdev->chip_ctx);
-+		rattr.dma_arr = nq->hwq.pbl[PBL_LVL_0].pg_map_arr;
-+		rattr.pages = nq->hwq.pbl[rdev->nqr->nq[i].hwq.level].pg_count;
-+		rattr.type = type;
-+		rattr.mode = RING_ALLOC_REQ_INT_MODE_MSIX;
-+		rattr.depth = nq->hwq.max_elements - 1;
-+		rattr.lrid = rdev->nqr->msix_entries[i + 1].ring_idx;
-+
-+		rc = bnxt_re_net_ring_alloc(rdev, &rattr, &nq->ring_id);
-+		if (rc) {
-+			nq->ring_id = 0xffff; /* Invalid ring-id */
-+			dev_err(rdev_to_dev(rdev),
-+				"Failed to get fw id for NQ %d, rc = 0x%x",
-+				i, rc);
-+			goto fail_ring;
-+		}
-+
-+		rc = bnxt_qplib_enable_nq(rdev->en_dev->pdev, nq, i, vec, offt,
-+					  &bnxt_re_cqn_handler,
-+					  &bnxt_re_srqn_handler);
-+		if (rc) {
-+			dev_err(rdev_to_dev(rdev),
-+				"Failed to enable NQ %d, rc = 0x%x", i, rc);
-+			goto fail_en;
-+		}
-+	}
-+
-+	rdev->nqr->max_init = i;
-+	return 0;
-+fail_en:
-+	/* *nq was i'th nq */
-+	bnxt_re_net_ring_free(rdev, nq->ring_id, type);
-+fail_ring:
-+	bnxt_qplib_free_nq(nq);
-+fail_mem:
-+	rdev->nqr->max_init = i;
-+	return rc;
-+}
-+
- static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev, u8 op_type)
- {
- 	u8 type;
-@@ -1894,6 +1909,11 @@ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev, u8 op_type)
- 	if (test_and_clear_bit(BNXT_RE_FLAG_QOS_WORK_REG, &rdev->flags))
- 		cancel_delayed_work_sync(&rdev->worker);
- 
-+	rtnl_lock();
-+	if (test_and_clear_bit(BNXT_RE_FLAG_SETUP_NQ, &rdev->flags))
-+		bnxt_re_clean_nqs(rdev);
-+	rtnl_unlock();
-+
- 	if (test_and_clear_bit(BNXT_RE_FLAG_RESOURCES_INITIALIZED,
- 			       &rdev->flags))
- 		bnxt_re_cleanup_res(rdev);
-@@ -1906,10 +1926,12 @@ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev, u8 op_type)
- 			ibdev_warn(&rdev->ibdev,
- 				   "Failed to deinitialize RCFW: %#x", rc);
- 		bnxt_re_net_stats_ctx_free(rdev, rdev->qplib_ctx.stats.fw_id);
-+		rtnl_lock();
- 		bnxt_qplib_free_ctx(&rdev->qplib_res, &rdev->qplib_ctx);
- 		bnxt_qplib_disable_rcfw_channel(&rdev->rcfw);
- 		type = bnxt_qplib_get_ring_type(rdev->chip_ctx);
- 		bnxt_re_net_ring_free(rdev, rdev->rcfw.creq.ring_id, type);
-+		rtnl_unlock();
- 		bnxt_qplib_free_rcfw_channel(&rdev->rcfw);
- 	}
- 
-@@ -1974,6 +1996,11 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
- 		return -EINVAL;
- 	}
- 
-+	/* Check whether VF or PF */
-+	bnxt_re_get_sriov_func_type(rdev);
-+
-+	bnxt_re_query_hwrm_intf_version(rdev);
-+
- 	rc = bnxt_re_alloc_nqr_mem(rdev);
- 	if (rc) {
- 		bnxt_re_destroy_chip_ctx(rdev);
-@@ -1981,15 +2008,11 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
- 		clear_bit(BNXT_RE_FLAG_NETDEV_REGISTERED, &rdev->flags);
- 		return rc;
- 	}
-+	rtnl_lock();
- 	rdev->nqr->num_msix = rdev->en_dev->ulp_tbl->msix_requested;
- 	memcpy(rdev->nqr->msix_entries, rdev->en_dev->msix_entries,
- 	       sizeof(struct bnxt_msix_entry) * rdev->nqr->num_msix);
- 
--	/* Check whether VF or PF */
--	bnxt_re_get_sriov_func_type(rdev);
--
--	bnxt_re_query_hwrm_intf_version(rdev);
--
- 	/* Establish RCFW Communication Channel to initialize the context
- 	 * memory for the function and all child VFs
- 	 */
-@@ -2083,6 +2106,20 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
- 	}
- 
- 	set_bit(BNXT_RE_FLAG_RESOURCES_INITIALIZED, &rdev->flags);
-+	rc = bnxt_re_setup_nqs(rdev);
-+	if (rc) {
-+		if (rdev->nqr->max_init == 0) {
-+			dev_err(rdev_to_dev(rdev),
-+				"Failed to setup NQs rc = %#x\n", rc);
-+			goto fail;
-+		}
-+
-+		dev_warn(rdev_to_dev(rdev),
-+			 "expected nqs %d available nqs %d\n",
-+			 rdev->nqr->num_msix, rdev->nqr->max_init);
-+	}
-+	set_bit(BNXT_RE_FLAG_SETUP_NQ, &rdev->flags);
-+	rtnl_unlock();
- 
- 	if (!rdev->is_virtfn) {
- 		rc = bnxt_re_setup_qos(rdev);
-@@ -2116,6 +2153,7 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
- free_rcfw:
- 	bnxt_qplib_free_rcfw_channel(&rdev->rcfw);
- fail:
-+	rtnl_unlock();
- 	bnxt_re_dev_uninit(rdev, BNXT_RE_COMPLETE_REMOVE);
- 
- 	return rc;
--- 
-2.5.5
+thanks for the patch.
 
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org> #nvmem
+
+
+--srini
+>   drivers/nvmem/core.c                    |  3 ++-
+>   drivers/pci/pci-sysfs.c                 |  2 +-
+>   drivers/pci/vpd.c                       |  2 +-
+>   drivers/platform/x86/amd/hsmp.c         |  2 +-
+>   drivers/platform/x86/intel/sdsi.c       |  2 +-
+>   drivers/scsi/scsi_sysfs.c               |  2 +-
+>   drivers/usb/core/sysfs.c                |  2 +-
+>   include/linux/sysfs.h                   | 30 +++++++++++++++---------------
+>   12 files changed, 27 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/cxl/port.c b/drivers/cxl/port.c
+> index 9dc394295e1fcd1610813837b2f515b66995eb25..24041cf85cfbe6c54c467ac325e48c775562b938 100644
+> --- a/drivers/cxl/port.c
+> +++ b/drivers/cxl/port.c
+> @@ -173,7 +173,7 @@ static ssize_t CDAT_read(struct file *filp, struct kobject *kobj,
+>   static BIN_ATTR_ADMIN_RO(CDAT, 0);
+>   
+>   static umode_t cxl_port_bin_attr_is_visible(struct kobject *kobj,
+> -					    struct bin_attribute *attr, int i)
+> +					    const struct bin_attribute *attr, int i)
+>   {
+>   	struct device *dev = kobj_to_dev(kobj);
+>   	struct cxl_port *port = to_cxl_port(dev);
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+> index 0b28b2cf1517d130da01989df70b9dff6433edc4..c1c329eb920b52af100a93bdf00df450e25608c4 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+> @@ -3999,7 +3999,7 @@ static umode_t amdgpu_flash_attr_is_visible(struct kobject *kobj, struct attribu
+>   }
+>   
+>   static umode_t amdgpu_bin_flash_attr_is_visible(struct kobject *kobj,
+> -						struct bin_attribute *attr,
+> +						const struct bin_attribute *attr,
+>   						int idx)
+>   {
+>   	struct device *dev = kobj_to_dev(kobj);
+> diff --git a/drivers/infiniband/hw/qib/qib_sysfs.c b/drivers/infiniband/hw/qib/qib_sysfs.c
+> index 53ec7510e4ebfb144e79884ca7dd7d0c873bd8a7..ba2cd68b53e6c240f1afc65c64012c75ccf488e0 100644
+> --- a/drivers/infiniband/hw/qib/qib_sysfs.c
+> +++ b/drivers/infiniband/hw/qib/qib_sysfs.c
+> @@ -283,7 +283,7 @@ static struct bin_attribute *port_ccmgta_attributes[] = {
+>   };
+>   
+>   static umode_t qib_ccmgta_is_bin_visible(struct kobject *kobj,
+> -				 struct bin_attribute *attr, int n)
+> +				 const struct bin_attribute *attr, int n)
+>   {
+>   	struct qib_pportdata *ppd = qib_get_pportdata_kobj(kobj);
+>   
+> diff --git a/drivers/mtd/spi-nor/sysfs.c b/drivers/mtd/spi-nor/sysfs.c
+> index 96064e4babf01f6950c81586764386e7671cbf97..5e9eb268073d18e0a46089000f18a3200b4bf13d 100644
+> --- a/drivers/mtd/spi-nor/sysfs.c
+> +++ b/drivers/mtd/spi-nor/sysfs.c
+> @@ -87,7 +87,7 @@ static umode_t spi_nor_sysfs_is_visible(struct kobject *kobj,
+>   }
+>   
+>   static umode_t spi_nor_sysfs_is_bin_visible(struct kobject *kobj,
+> -					    struct bin_attribute *attr, int n)
+> +					    const struct bin_attribute *attr, int n)
+>   {
+>   	struct spi_device *spi = to_spi_device(kobj_to_dev(kobj));
+>   	struct spi_mem *spimem = spi_get_drvdata(spi);
+> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> index 63370c76394ee9b8d514da074779617cef67c311..73e44d724f90f4cd8fe8cafb9fa0c0fb23078e61 100644
+> --- a/drivers/nvmem/core.c
+> +++ b/drivers/nvmem/core.c
+> @@ -298,7 +298,8 @@ static umode_t nvmem_bin_attr_get_umode(struct nvmem_device *nvmem)
+>   }
+>   
+>   static umode_t nvmem_bin_attr_is_visible(struct kobject *kobj,
+> -					 struct bin_attribute *attr, int i)
+> +					 const struct bin_attribute *attr,
+> +					 int i)
+>   {
+>   	struct device *dev = kobj_to_dev(kobj);
+>   	struct nvmem_device *nvmem = to_nvmem_device(dev);
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 040f01b2b999175e8d98b05851edc078bbabbe0d..13912940ed2bb66c0086e5bea9a3cb6417ac14dd 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1326,7 +1326,7 @@ static struct bin_attribute *pci_dev_rom_attrs[] = {
+>   };
+>   
+>   static umode_t pci_dev_rom_attr_is_visible(struct kobject *kobj,
+> -					   struct bin_attribute *a, int n)
+> +					   const struct bin_attribute *a, int n)
+>   {
+>   	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
+>   
+> diff --git a/drivers/pci/vpd.c b/drivers/pci/vpd.c
+> index e4300f5f304f3ca55a657fd25a1fa5ed919737a7..a469bcbc0da7f7677485c7f999f8dfb58b8ae8a3 100644
+> --- a/drivers/pci/vpd.c
+> +++ b/drivers/pci/vpd.c
+> @@ -325,7 +325,7 @@ static struct bin_attribute *vpd_attrs[] = {
+>   };
+>   
+>   static umode_t vpd_attr_is_visible(struct kobject *kobj,
+> -				   struct bin_attribute *a, int n)
+> +				   const struct bin_attribute *a, int n)
+>   {
+>   	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
+>   
+> diff --git a/drivers/platform/x86/amd/hsmp.c b/drivers/platform/x86/amd/hsmp.c
+> index 8fcf38eed7f00ee01aade6e3e55e20402458d5aa..8f00850c139fa8d419bc1c140c1832bf84b2c3bd 100644
+> --- a/drivers/platform/x86/amd/hsmp.c
+> +++ b/drivers/platform/x86/amd/hsmp.c
+> @@ -620,7 +620,7 @@ static int hsmp_get_tbl_dram_base(u16 sock_ind)
+>   }
+>   
+>   static umode_t hsmp_is_sock_attr_visible(struct kobject *kobj,
+> -					 struct bin_attribute *battr, int id)
+> +					 const struct bin_attribute *battr, int id)
+>   {
+>   	if (plat_dev.proto_ver == HSMP_PROTO_VER6)
+>   		return battr->attr.mode;
+> diff --git a/drivers/platform/x86/intel/sdsi.c b/drivers/platform/x86/intel/sdsi.c
+> index 9d137621f0e6e7a23be0e0bbc6175c51c403169f..33f33b1070fdc949c1373251c3bca4234d9da119 100644
+> --- a/drivers/platform/x86/intel/sdsi.c
+> +++ b/drivers/platform/x86/intel/sdsi.c
+> @@ -541,7 +541,7 @@ static struct bin_attribute *sdsi_bin_attrs[] = {
+>   };
+>   
+>   static umode_t
+> -sdsi_battr_is_visible(struct kobject *kobj, struct bin_attribute *attr, int n)
+> +sdsi_battr_is_visible(struct kobject *kobj, const struct bin_attribute *attr, int n)
+>   {
+>   	struct device *dev = kobj_to_dev(kobj);
+>   	struct sdsi_priv *priv = dev_get_drvdata(dev);
+> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+> index 32f94db6d6bf5d2bd289c1a121da7ffc6a7cb2ff..f3a1ecb42128a2b221ca5c362e041eb59dba0f20 100644
+> --- a/drivers/scsi/scsi_sysfs.c
+> +++ b/drivers/scsi/scsi_sysfs.c
+> @@ -1274,7 +1274,7 @@ static umode_t scsi_sdev_attr_is_visible(struct kobject *kobj,
+>   }
+>   
+>   static umode_t scsi_sdev_bin_attr_is_visible(struct kobject *kobj,
+> -					     struct bin_attribute *attr, int i)
+> +					     const struct bin_attribute *attr, int i)
+>   {
+>   	struct device *dev = kobj_to_dev(kobj);
+>   	struct scsi_device *sdev = to_scsi_device(dev);
+> diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
+> index 61b6d978892c799e213018bed22d9fb12a19d429..b4cba23831acd2d7d395b9f7683cd3ee3a8623c8 100644
+> --- a/drivers/usb/core/sysfs.c
+> +++ b/drivers/usb/core/sysfs.c
+> @@ -925,7 +925,7 @@ static struct bin_attribute *dev_bin_attrs[] = {
+>   };
+>   
+>   static umode_t dev_bin_attrs_are_visible(struct kobject *kobj,
+> -		struct bin_attribute *a, int n)
+> +		const struct bin_attribute *a, int n)
+>   {
+>   	struct device *dev = kobj_to_dev(kobj);
+>   	struct usb_device *udev = to_usb_device(dev);
+> diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
+> index 4746cccb95898b24df6f53de9421ea7649b5568f..d1b22d56198b55ee39fe4c4fc994f5b753641992 100644
+> --- a/include/linux/sysfs.h
+> +++ b/include/linux/sysfs.h
+> @@ -101,7 +101,7 @@ struct attribute_group {
+>   	umode_t			(*is_visible)(struct kobject *,
+>   					      struct attribute *, int);
+>   	umode_t			(*is_bin_visible)(struct kobject *,
+> -						  struct bin_attribute *, int);
+> +						  const struct bin_attribute *, int);
+>   	size_t			(*bin_size)(struct kobject *,
+>   					    const struct bin_attribute *,
+>   					    int);
+> @@ -199,22 +199,22 @@ struct attribute_group {
+>    * attributes, the group visibility is determined by the function
+>    * specified to is_visible() not is_bin_visible()
+>    */
+> -#define DEFINE_SYSFS_BIN_GROUP_VISIBLE(name)                             \
+> -	static inline umode_t sysfs_group_visible_##name(                \
+> -		struct kobject *kobj, struct bin_attribute *attr, int n) \
+> -	{                                                                \
+> -		if (n == 0 && !name##_group_visible(kobj))               \
+> -			return SYSFS_GROUP_INVISIBLE;                    \
+> -		return name##_attr_visible(kobj, attr, n);               \
+> +#define DEFINE_SYSFS_BIN_GROUP_VISIBLE(name)                                   \
+> +	static inline umode_t sysfs_group_visible_##name(                      \
+> +		struct kobject *kobj, const struct bin_attribute *attr, int n) \
+> +	{                                                                      \
+> +		if (n == 0 && !name##_group_visible(kobj))                     \
+> +			return SYSFS_GROUP_INVISIBLE;                          \
+> +		return name##_attr_visible(kobj, attr, n);                     \
+>   	}
+>   
+> -#define DEFINE_SIMPLE_SYSFS_BIN_GROUP_VISIBLE(name)                   \
+> -	static inline umode_t sysfs_group_visible_##name(             \
+> -		struct kobject *kobj, struct bin_attribute *a, int n) \
+> -	{                                                             \
+> -		if (n == 0 && !name##_group_visible(kobj))            \
+> -			return SYSFS_GROUP_INVISIBLE;                 \
+> -		return a->mode;                                       \
+> +#define DEFINE_SIMPLE_SYSFS_BIN_GROUP_VISIBLE(name)                         \
+> +	static inline umode_t sysfs_group_visible_##name(                   \
+> +		struct kobject *kobj, const struct bin_attribute *a, int n) \
+> +	{                                                                   \
+> +		if (n == 0 && !name##_group_visible(kobj))                  \
+> +			return SYSFS_GROUP_INVISIBLE;                       \
+> +		return a->mode;                                             \
+>   	}
+>   
+>   #define SYSFS_GROUP_VISIBLE(fn) sysfs_group_visible_##fn
+> 
 
