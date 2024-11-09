@@ -1,142 +1,138 @@
-Return-Path: <linux-rdma+bounces-5880-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5881-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 629099C2A50
-	for <lists+linux-rdma@lfdr.de>; Sat,  9 Nov 2024 06:32:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C088A9C2ECF
+	for <lists+linux-rdma@lfdr.de>; Sat,  9 Nov 2024 18:35:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AADC1F22255
-	for <lists+linux-rdma@lfdr.de>; Sat,  9 Nov 2024 05:32:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5F7A1C20BED
+	for <lists+linux-rdma@lfdr.de>; Sat,  9 Nov 2024 17:35:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1344DA03;
-	Sat,  9 Nov 2024 05:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CD7B19ABB7;
+	Sat,  9 Nov 2024 17:35:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JplINCLg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YMpITeGs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E2C013AD0;
-	Sat,  9 Nov 2024 05:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79E272556E;
+	Sat,  9 Nov 2024 17:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731130339; cv=none; b=WgCUqisDxE6/y/jJm2y/8aiZZavuc9a4DxQsAMKixYmu5wXBtrpLzAvVVJp1fu+DDaGzTh9ZFkQAMK0vNIbiCwQZXhYR9ul+IY/2SFylzqatXG+KHAwgi7hQ6du4vRsP0qyjdEMc3qsmO956Rl/zLB41rGf6aEMC2IWGyD1MNLs=
+	t=1731173699; cv=none; b=V915u1cz4vYPPvqe16uNxCf6hZ5TxqOGl4b0wOyZ7L9a0c5Z0ChgHthgbBhYzwsLUdF0F6d9BXHU90so052bQ1kdzj0xuwux+LHxrUUzt7CfmRyWhUK32pCpavrK7txXdGba4VEejK4xLXA9vFrcOAva7MB3+Q7U24f13O7E/JA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731130339; c=relaxed/simple;
-	bh=go6EJHLnFe6ngJ4hdleV0KKVBCur+J/KhNeoZHpz/3E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UxfFONbI8b4Tg/y5I6GJIhgUIX5KgswnQMcy2Lmj396CE9eEdPiZfDiWwGZTNe5cV6gM3v7auWr1r5EyOjEkSTm34GsoX3ODJbFHtCH95RxVh89X6jQAElM+IrRCy/kdu5AjvGc7EJ7KXmzKV/1Ye363bHOg4sdeosj9FvqsUWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JplINCLg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE007C4CED6;
-	Sat,  9 Nov 2024 05:32:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731130338;
-	bh=go6EJHLnFe6ngJ4hdleV0KKVBCur+J/KhNeoZHpz/3E=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=JplINCLgFXF2H6aXSBzvUZ/z5Zu/FtFsU8ZWKXKd3FVp/RbPjNmlJYVLEdGGW7sov
-	 ahiBIhZ28NXpp1pJ13xG5pzDGnm1t+AtzGTZB6PmCivzW2bb64QzfKNW8EyvjMS100
-	 OdKoemYTDAhx5/YCMIKRB2DdJOuxIdyZeXkWFbn071WTWndnsTT/8XYHGIauGePhbC
-	 XIkyMNclzxDhZjH1wIUC24XhxfB6/dRb0PcGEXmF4lfQQYYki1dKLtvNqmSg1+VBty
-	 Xewj21dMT6uEjYLMVHHkF8PXSis11ydZJEUAzc15VTo03gKHpOBXeZAPn3cHWsACaO
-	 zCFopkkSzq/DQ==
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-71807ad76a8so1740403a34.0;
-        Fri, 08 Nov 2024 21:32:18 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU6MjgEhL+V05DOj4SYkBOw0cu4pxh74cCUeHWQ57BWuyYSqYwSMr7YyqDgptmihv816rZ2Drhpdu134w==@vger.kernel.org, AJvYcCVvtJ5OeIAvZdrriHckG6LB6Jkw+Rf3z80rzQcQ5eIgPce0FnbB/qR2KX+K2wjiPLaPHFjpOwWVsQpD@vger.kernel.org, AJvYcCVyP2Wq1F9Xyk5LZLixLFTc5RBvTynCf9xdcJ6nsTOPpjySyA/A+XYJSsKZAczqQ5edgulnum/X@vger.kernel.org, AJvYcCWlPbodknCrV6gJWbwGzH7PC/EhmKU/UP1hIO1rY7p6V+Ru0NFCCSxd1iR+Mse/lI6PnXZZ7CAlU9S/cg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzKyJjStwdBwBKqdzCt0LWy2Edg6WM/URKbuPAVuG5EQ4G87EU
-	V8F73PwrewLLXYefU7EWoIxMn3Tmt2d9vYC/1iEPcbdbHI11LPrKwAi5/4XSv4T2Pfvn0UBN/oJ
-	BST00+P6YXxXMOUwQAHLBlGx3TEc=
-X-Google-Smtp-Source: AGHT+IGUk2Aoy8E+a8fBA7UoeDCTvBF9ts9tRUG7ZOLhiQIVcvd2RXZHo0CMHqhVCVLYEd13xSF8vSxYz2RjhcGsHrA=
-X-Received: by 2002:a05:6830:6105:b0:717:fe94:40af with SMTP id
- 46e09a7af769-71a1c1c417amr5830991a34.3.1731130338076; Fri, 08 Nov 2024
- 21:32:18 -0800 (PST)
+	s=arc-20240116; t=1731173699; c=relaxed/simple;
+	bh=qFTm8Za3QWAObXa4rILHgS4yDzakJhp87oTUZ0iNcro=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZjU8JGZYhY7asPmQJFONePzgcjcJqvSc4wBTDZhyNhQT7/ByIEpYOfKmRJM/bJPBiA7PMtqWSGtPfdW4hEHR9Ojy6fUeQ3bmNV6qgcKvWUDEcUd6jvdC2l2Tawg8AJchf2J+U1I2NVE+ZedZP6+bD9HwsJ/dq6g1TM/NZSLgheU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YMpITeGs; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-83ac817aac3so128708339f.0;
+        Sat, 09 Nov 2024 09:34:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731173697; x=1731778497; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p4ULSEJCIEw/7KxTQb7YcDIbWQxKgP6eRQCQeyfFeIs=;
+        b=YMpITeGsbOlWsI3fSqL3v6nqubHbUZKZy5l+GFWKuAQrRITwyGvxwuvb1JWMBdWXvP
+         pKpprg2PWShUVIIOeV/l+LzGtWtwP0VJfMuymrafRbwNT56hMwkgd5WZ6n0cqW4SxLK6
+         ARoYS0vUPF7C83K2rEQPIoQ1vqW9/Yh4ceElcsOwFBLUMsVHpUCFGsKtl36GXWLjRDun
+         hbEfzPDxtXJ51NTA8Xw9M3I8dTcADb7WNck9pMsw+MyZEYPzb9FlBlgCg9pIHdgmd95H
+         zubLeF0z0v4/vpiGa1kGvCl9sroCP4aqfZLOQ6Bi+xinkKpJ7JtrbDDjhYfUUkwLJS+F
+         PmRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731173697; x=1731778497;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p4ULSEJCIEw/7KxTQb7YcDIbWQxKgP6eRQCQeyfFeIs=;
+        b=Exv5jGu3MaDDihsBzHtA2JCRc5/eqtbYcstEPDlDQFY1Vc8IGGd9a+Axo5PWpzZehH
+         3sfsF7tbJD+0iKE9Ku7w+o0tcdNf6KiMy4svg46+XXM1bqFkQPqS6JiXO0CaUXvMUU65
+         Z2H68hTdA7gMR9Z4UTtRGAWOGNFvMkyI8MXYyoOJNVG7ZzD2q60bK/mrxnq/kk+JZzsr
+         u/tEuUYI9edSZYwp9FanW67td3dQ0JKwwi9fG+6586UHOPIm1/caKzoLyhjr7V/VcM3K
+         cYpBzSnNlR/gVGkOcK/A8G/fR8FFJfXgEPzOZFakZEHobc9nmZxmR/SWbvcIMBj46loK
+         pztQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX0pnGlIcyiiVzvTxf1SIYn6EpNHuiLZoWb4Ryg7gNTWwbxlGZMOfUAspFUI5LKpKyIA7fUuuM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyRUVBgJY5pzwmoi6IFTGKu5V1riE8BGdI9efHJdzZoNPlMFhWD
+	nO6VeYKfFhoQaK4CoREM9mU69lPPbQP8+y7AIDr/QcpN75laFc2H
+X-Google-Smtp-Source: AGHT+IFySXMafLzViu1XHdD7Em5OrKJJrNxOBVBY715SKFtJ0m8vUZG5IiJ50Ae7fLUyPy5sVVQrNA==
+X-Received: by 2002:a05:6602:13c8:b0:83a:f447:f0b9 with SMTP id ca18e2360f4ac-83e032fa188mr839414739f.9.1731173697495;
+        Sat, 09 Nov 2024 09:34:57 -0800 (PST)
+Received: from ?IPV6:2601:282:1e02:1040:54c3:8c58:2087:8094? ([2601:282:1e02:1040:54c3:8c58:2087:8094])
+        by smtp.googlemail.com with ESMTPSA id 8926c6da1cb9f-4de7871553csm427008173.19.2024.11.09.09.34.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Nov 2024 09:34:56 -0800 (PST)
+Message-ID: <d40cc960-f12e-4177-83d5-b573de41ed4c@gmail.com>
+Date: Sat, 9 Nov 2024 10:34:55 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241025072356.56093-1-wenjia@linux.ibm.com> <20241027201857.GA1615717@unreal>
- <8d17b403-aefa-4f36-a913-7ace41cf2551@linux.ibm.com> <20241105112313.GE311159@unreal>
- <20241106102439.4ca5effc.pasic@linux.ibm.com> <20241106135910.GF5006@unreal>
- <20241107125643.04f97394.pasic@linux.ibm.com> <CAKYAXd9QD5N-mYdGv5Sf1Bx6uBUwghCOWfvYC=_PC_2wDvao+w@mail.gmail.com>
- <20241108175906.GB189042@unreal>
-In-Reply-To: <20241108175906.GB189042@unreal>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Sat, 9 Nov 2024 14:32:07 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd8csLBOYhUOOXWnVDZjiH03KHdwuL68aQKAtF9dFW=YfA@mail.gmail.com>
-Message-ID: <CAKYAXd8csLBOYhUOOXWnVDZjiH03KHdwuL68aQKAtF9dFW=YfA@mail.gmail.com>
-Subject: Re: [PATCH net] net/smc: Fix lookup of netdev by using ib_device_get_netdev()
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Halil Pasic <pasic@linux.ibm.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
-	Wen Gu <guwen@linux.alibaba.com>, "D. Wythe" <alibuda@linux.alibaba.com>, 
-	Tony Lu <tonylu@linux.alibaba.com>, David Miller <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>, 
-	Jan Karcher <jaka@linux.ibm.com>, Gerd Bayer <gbayer@linux.ibm.com>, 
-	Alexandra Winter <wintera@linux.ibm.com>, Nils Hoppmann <niho@linux.ibm.com>, 
-	Niklas Schnell <schnelle@linux.ibm.com>, Thorsten Winkler <twinkler@linux.ibm.com>, 
-	Karsten Graul <kgraul@linux.ibm.com>, Stefan Raspl <raspl@linux.ibm.com>, 
-	Aswin K <aswin@linux.ibm.com>, linux-cifs@vger.kernel.org, 
-	Kangjing Huang <huangkangjing@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 iproute2-next 1/5] rdma: Add support for rdma monitor
+To: Chiara Meiohas <cmeioahs@nvidia.com>, leonro@nvidia.com
+Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org, jgg@nvidia.com,
+ stephen@networkplumber.org, Chiara Meiohas <cmeiohas@nvidia.com>,
+ Mark Bloch <mbloch@nvidia.com>
+References: <20241107080248.2028680-1-cmeioahs@nvidia.com>
+ <20241107080248.2028680-2-cmeioahs@nvidia.com>
+Content-Language: en-US
+From: David Ahern <dsahern@gmail.com>
+In-Reply-To: <20241107080248.2028680-2-cmeioahs@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Nov 9, 2024 at 2:59=E2=80=AFAM Leon Romanovsky <leon@kernel.org> wr=
-ote:
->
-> On Fri, Nov 08, 2024 at 08:40:40AM +0900, Namjae Jeon wrote:
-> > On Thu, Nov 7, 2024 at 9:00=E2=80=AFPM Halil Pasic <pasic@linux.ibm.com=
-> wrote:
-> > >
-> > > On Wed, 6 Nov 2024 15:59:10 +0200
-> > > Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > > > Does  fs/smb/server/transport_rdma.c qualify as inside of RDMA co=
-re code?
-> > > >
-> > > > RDMA core code is drivers/infiniband/core/*.
-> > >
-> > > Understood. So this is a violation of the no direct access to the
-> > > callbacks rule.
-> > >
-> > > >
-> > > > > I would guess it is not, and I would not actually mind sending a =
-patch
-> > > > > but I have trouble figuring out the logic behind  commit ecce70cf=
-17d9
-> > > > > ("ksmbd: fix missing RDMA-capable flag for IPoIB device in
-> > > > > ksmbd_rdma_capable_netdev()").
-> > > >
-> > > > It is strange version of RDMA-CM. All other ULPs use RDMA-CM to avo=
-id
-> > > > GID, netdev and fabric complexity.
-> > >
-> > > I'm not familiar enough with either of the subsystems. Based on your
-> > > answer my guess is that it ain't outright bugous but still a layering
-> > > violation. Copying linux-cifs@vger.kernel.org so that
-> > > the smb are aware.
-> > Could you please elaborate what the violation is ?
->
-> There are many, but the most screaming is that ksmbd has logic to
-> differentiate IPoIB devices. These devices are pure netdev devices
-> and should be treated like that. ULPs should treat them exactly
-> as they treat netdev devices.
-Okay, I'll discuss with Kangjing if there's another way to avoid this issue=
-.
-If not, I'll revert the patch.
+On 11/7/24 1:02 AM, Chiara Meiohas wrote:
+> diff --git a/rdma/monitor.c b/rdma/monitor.c
+> new file mode 100644
+> index 00000000..0a2d3053
+> --- /dev/null
+> +++ b/rdma/monitor.c
+> @@ -0,0 +1,169 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+> +/*
+> + * monitor.c	RDMA tool
+> + * Authors:     Chiara Meiohas <cmeiohas@nvidia.com>
+> + */
+> +
+> +#include "rdma.h"
+> +
+> +/* Global utils flags */
+> +extern int json;
 
-Thanks.
->
-> > I would also appreciate it if you could suggest to me how to fix this.
-> >
-> > Thanks.
-> > >
-> > > Thank you very much for all the explanations!
-> > >
-> > > Regards,
-> > > Halil
-> > >
+use include utils.h instead
+
+> +
+> +static void mon_print_event_type(struct nlattr **tb)
+> +{
+> +	static const char *const event_types_str[] = {
+> +		"[REGISTER]",
+> +		"[UNREGISTER]",
+> +		"[NETDEV_ATTACH]",
+> +		"[NETDEV_DETACH]",
+> +	};
+> +	enum rdma_nl_notify_event_type etype;
+> +	static char unknown_type[32];
+
+why static?
+
+> +
+> +	if (!tb[RDMA_NLDEV_ATTR_EVENT_TYPE])
+> +		return;
+> +
+> +	etype = mnl_attr_get_u8(tb[RDMA_NLDEV_ATTR_EVENT_TYPE]);
+> +	if (etype < ARRAY_SIZE(event_types_str)) {
+> +		print_string(PRINT_ANY, "event_type", "%s\t",
+> +			     event_types_str[etype]);
+> +	} else {
+> +		snprintf(unknown_type, sizeof(unknown_type), "[UNKNOWN 0x%02x]", etype);
+
+wrap at about 80 columns; in this case etype should go on the next line
 
