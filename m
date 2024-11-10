@@ -1,89 +1,111 @@
-Return-Path: <linux-rdma+bounces-5904-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5905-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D91959C32D2
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Nov 2024 15:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F4689C32FA
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Nov 2024 16:03:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 163A81C20906
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Nov 2024 14:31:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADAD01C20997
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Nov 2024 15:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E807D1D554;
-	Sun, 10 Nov 2024 14:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35D352F88;
+	Sun, 10 Nov 2024 15:03:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PYpINlEb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TVwmLxWU"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A303820323;
-	Sun, 10 Nov 2024 14:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 420A510A3E;
+	Sun, 10 Nov 2024 15:03:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731249082; cv=none; b=OzJ+jY0RZia1fIKjDhaJgvSwuDd2jMNr7MFufbYIEM1ewWLf/PZB3+E3VoJuAGiXglLIqi0IhS3zPpMCLwTTiaTmo1nDVedgNk+kLQN40q/7SEaGd/Avc5vR9B2HKy8uGm4/u50xdAuvtSHy346EC+0NUVCbK9rZRHBVlRBVU+A=
+	t=1731250982; cv=none; b=o9xXswtvsqJ3pMKWyGeHs/YLrUrPjoIDgh0Gy/qwoU4U340OKRPT0VKKZNUb/9R8oFbFtfsaHU3y0Rrl+16zSsmO0FdNkx0mrbratrVZyYS0BCBt1Y70p0e6ZbXsYNY+ri7rzAWx4VhzpIMsSVKlysypWZWEwJAT1P+HJfpZjbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731249082; c=relaxed/simple;
-	bh=VytAkGGjhbJmg9TO5kYnJWf1rKiZjWPDZDxF7GPn6qs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=uzUqVGb9qmHdbfg/of9SxvPHwnaAXwU7mVXpRlYMipnzAIBrIF7ZzHFMmH64k4pEE4HNZxHq+oKDeLVz8wOWRbI5L6Xo7zqumn9/YIqtQ9mFkzTgYCG05tdEgiojQ3ZxB5KvPWhiRmhZmt9Ah6W3dQWKxW2hmDqSKw1MEc4PSL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PYpINlEb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCE32C4CECD;
-	Sun, 10 Nov 2024 14:31:21 +0000 (UTC)
+	s=arc-20240116; t=1731250982; c=relaxed/simple;
+	bh=H99CbGRSaGSXRVVV52m+AMob/IL4Q3/JGWfnpSNKENA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qYNkIGHC7tL5b0abw/xdTn7xIEyoLqzG2dsyNxuqxOFOQYC/ZA1tYn3sDOuC7mlAsip2D4w7Dtss2hB76KrSsu3IJL7bIbtwpHUcNH1c7vVt4TWwFRtZc1mZwYlsDOV4oj9Tk6obm0aOeMcqAKQdTxYQNjEGwLf7M6E+lUZTcq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TVwmLxWU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3832C4CECD;
+	Sun, 10 Nov 2024 15:03:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731249082;
-	bh=VytAkGGjhbJmg9TO5kYnJWf1rKiZjWPDZDxF7GPn6qs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=PYpINlEbtPQnhQWyZEmciBDcJS+dKNfikO5butVVXGA0nhUTd52SnD8VfFCR47W/f
-	 +IRX0TxfOVje6W8Y2MEXz6g9oeN8W3l5EZ1PRTWDrp3XBe70HrrYbqKnXq4Q1k3/KU
-	 P3geebeq62749ZXcNfOvPPc/ed4ZKyeTshjpDciEFkOf1KHLAZMXzMJErUru8B9Mf8
-	 l9qBajDH92BKQjTi3PiVfOQljZ+bZoIhqhVjBE5yA7xErM1Z6hkhSSO3IyQJxDNy8K
-	 xcljfTPmvg9b3DGrXk0oGqTZfpoJq2Wcoqe+QuDM2rgHZR8s6FXVJ8sVcFBNRIYPzR
-	 LDeq3zcDPCDgQ==
+	s=k20201202; t=1731250981;
+	bh=H99CbGRSaGSXRVVV52m+AMob/IL4Q3/JGWfnpSNKENA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TVwmLxWUT7636wtSIn/3F7AHWh+dZu3txdkZkItxm0unJgeW4KtiXZiL58gs803AM
+	 cTpgx0WCmXHbvyxIBCXr9DzDU8JA5n8/NOqsyMf5XRKN9MrEZC2eZCOvpczcv9ACHK
+	 v7ZXQN5CjinJIlrQeu407CMxIv4Jwpdh7jkYYY9OFwo/6QpZFHmzzoIZf8RnJccdNf
+	 NsWv7ffb0rNdugoOgO3buFkBdpsGyVD3In32RFY7yDdnQdNmmNQN/FpOXboCyQtddN
+	 XvDtXEENeXdPZpCAoONbZK5EEPQYRj2pbnVHWqVbQ1EghtJIyvMAcCNVr1Iw+r0JLN
+	 5lMdfUvidgOnQ==
+Date: Sun, 10 Nov 2024 17:02:55 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
- linux-kernel@vger.kernel.org, tangchengchang@huawei.com
-In-Reply-To: <20241108075743.2652258-1-huangjunxian6@hisilicon.com>
-References: <20241108075743.2652258-1-huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH for-rc 0/2] RDMA/hns: Bugfixes
-Message-Id: <173124907897.105241.13173631230364645221.b4-ty@kernel.org>
-Date: Sun, 10 Nov 2024 09:31:18 -0500
+To: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>
+Cc: Keith Busch <kbusch@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v3 00/17] Provide a new two step DMA mapping API
+Message-ID: <20241110150255.GC50588@unreal>
+References: <cover.1731244445.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1731244445.git.leon@kernel.org>
 
+On Sun, Nov 10, 2024 at 03:46:47PM +0200, Leon Romanovsky wrote:
+> Changelog:
+> v3:
 
-On Fri, 08 Nov 2024 15:57:41 +0800, Junxian Huang wrote:
-> Two hns bugfixes.
+<...>
+
+> Christoph Hellwig (6):
+>   PCI/P2PDMA: Refactor the p2pdma mapping helpers
+>   dma-mapping: move the PCI P2PDMA mapping helpers to pci-p2pdma.h
+>   iommu: generalize the batched sync after map interface
+>   iommu/dma: Factor out a iommu_dma_map_swiotlb helper
+>   dma-mapping: add a dma_need_unmap helper
+>   docs: core-api: document the IOVA-based API
 > 
-> Junxian Huang (2):
->   RDMA/hns: Fix out-of-order issue of requester when setting FENCE
->   RDMA/hns: Fix NULL pointer derefernce in hns_roce_map_mr_sg()
-> 
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 +-
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 1 +
->  drivers/infiniband/hw/hns/hns_roce_mr.c    | 7 ++++---
->  3 files changed, 6 insertions(+), 4 deletions(-)
-> 
-> [...]
+> Leon Romanovsky (11):
+>   dma-mapping: Add check if IOVA can be used
+>   dma: Provide an interface to allow allocate IOVA
+>   dma-mapping: Implement link/unlink ranges API
+>   mm/hmm: let users to tag specific PFN with DMA mapped bit
+>   mm/hmm: provide generic DMA managing logic
 
-Applied, thanks!
+This patch detached from thread and can be found here.
+https://lore.kernel.org/all/a42f5a1ede10d4181c5cab3c88ed43a04be79565.1731245995.git.leon@kernel.org
 
-[1/2] RDMA/hns: Fix out-of-order issue of requester when setting FENCE
-      https://git.kernel.org/rdma/rdma/c/5dbcb1c1900f45
-[2/2] RDMA/hns: Fix NULL pointer derefernce in hns_roce_map_mr_sg()
-      https://git.kernel.org/rdma/rdma/c/6b526d17eed850
+Thanks
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+>   RDMA/umem: Store ODP access mask information in PFN
+>   RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page
+>     linkage
+>   RDMA/umem: Separate implicit ODP initialization from explicit ODP
+>   vfio/mlx5: Explicitly use number of pages instead of allocated length
+>   vfio/mlx5: Rewrite create mkey flow to allow better code reuse
+>   vfio/mlx5: Enable the DMA link API
 
