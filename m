@@ -1,109 +1,80 @@
-Return-Path: <linux-rdma+bounces-5921-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5922-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC5079C4157
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2024 15:59:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B2A59C48EF
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2024 23:15:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A12A4282D0E
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2024 14:59:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1067EB28EA6
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2024 22:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 009231A0AFE;
-	Mon, 11 Nov 2024 14:59:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C5DB1BC9FB;
+	Mon, 11 Nov 2024 22:13:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="U7Qof0wu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TCQxBffB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD2B1E481;
-	Mon, 11 Nov 2024 14:59:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C3A21BC085;
+	Mon, 11 Nov 2024 22:13:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731337169; cv=none; b=MtwU2kB5x4wUnF5zREa89UWPM4AlGiKzSef9HxYRmj/9wdAJ6Z/KOGLEO0TSMO68UoqDOISjUqFyxZMEkl6iJqB3BYBmWPoHZ2/wDsJyyR8vMHn+nDfyXpCvOtImR419J1TSw1vujD9hhTd7vgQkCLF6nz40gVMfVT0bemjpwaI=
+	t=1731363204; cv=none; b=UdstJqfoFJ3538L4dOzEWbWdnh+NG4f/1rWPrLXaFnixjM3TtM8zY46TGdDKv0d32Sm5U1+khR68C4EqvPAuF1QfUds/dUEDBbKR923pHR2wzhETqTuh55v3u8kBQ/K9S7rmrp+g0mxT77hLePhDFykKl2xXBwcgvH0tdMygP4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731337169; c=relaxed/simple;
-	bh=gg3nV1iKgs4bbxPK/uru5pPDw51yAhWHVenuhfd8RSY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=E1hbJAEALqlb5yL56DaF3Qdv35CRbOZUjo41njnTAapQEJ0PfjTeAMJlktQn6zFocYAD5AcntSDzEzxG0egw/joVNiqqGP+s2PtjzedHUpp4kPCeNPoPiPCIlkzq6cGu7gK+PF8oeOV3JldOMHb+qdPl62rL7Yt8XyMFS58xoNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=U7Qof0wu; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 45E36403F1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1731337167; bh=GwVTmx4eIglWLWGHYmk31OoK5pzNvXaKVe73vYEWSTk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=U7Qof0wuVnJGcnP06ChHK+MJPNdREQXE7RLUzC2W70ULBaY9a9VnJ9vQEtqDAf9Ah
-	 A3HwpVCu8PJVyEMghvrqu/hNDOC8sGYBt3mN173rM33gAFqU2dKpLTqp9ac4bjnapP
-	 A1UN+AgpzI588tU7KIuantdLBUeWBgXdiFu11n7kGDH4ZxFGW1T97qYFC9t3FAzyYo
-	 fgA7YQdK+SYmrHtsukzfx/wT5vFef/DoXSOK38XKAVdsxtI+fq2uPWuv8CV5NUKrxx
-	 iQj4S70o2yK54j7jT8p8fewkBThJBXMBi2CZoLIkGaK5OJDLnfOOJSXDckk3X1rExZ
-	 HhL9BYc+PyPqw==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625::1fe])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 45E36403F1;
-	Mon, 11 Nov 2024 14:59:27 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: anish kumar <yesanishhere@gmail.com>, Christoph Hellwig <hch@lst.de>
-Cc: Leon Romanovsky <leon@kernel.org>, Jens Axboe <axboe@kernel.dk>, Jason
- Gunthorpe <jgg@ziepe.ca>, Robin Murphy <robin.murphy@arm.com>, Joerg
- Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Sagi Grimberg
- <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>, Bjorn Helgaas
- <bhelgaas@google.com>, Logan Gunthorpe <logang@deltatee.com>, Yishai Hadas
- <yishaih@nvidia.com>, Shameer Kolothum
- <shameerali.kolothum.thodi@huawei.com>, Kevin Tian <kevin.tian@intel.com>,
- Alex Williamson <alex.williamson@redhat.com>, Marek Szyprowski
- <m.szyprowski@samsung.com>, =?utf-8?B?SsOpcsO0bWU=?= Glisse
- <jglisse@redhat.com>, Andrew
- Morton <akpm@linux-foundation.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
- linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
- kvm@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 09/17] docs: core-api: document the IOVA-based API
-In-Reply-To: <CABCoZhBVWY=aUQtQ5b=mF8hXqpgJw21_jAPf9YvEvdgPf_GALA@mail.gmail.com>
-References: <cover.1730298502.git.leon@kernel.org>
- <881ef0bcf9aa971e995fbdd00776c5140a7b5b3d.1730298502.git.leon@kernel.org>
- <87ttchwmde.fsf@trenco.lwn.net> <20241108200355.GC189042@unreal>
- <87h68hwkk8.fsf@trenco.lwn.net> <20241108202736.GD189042@unreal>
- <20241110104130.GA19265@unreal> <20241111063847.GB23992@lst.de>
- <CABCoZhBVWY=aUQtQ5b=mF8hXqpgJw21_jAPf9YvEvdgPf_GALA@mail.gmail.com>
-Date: Mon, 11 Nov 2024 07:59:26 -0700
-Message-ID: <87o72lu88h.fsf@trenco.lwn.net>
+	s=arc-20240116; t=1731363204; c=relaxed/simple;
+	bh=ojNX7ewQ5mBn+8GJnYQlZeE9p4+dRMgQGrBXvhs2+fI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=m3dqsvGOtMFKSYZvPlxpSw/jPxQSL4UJJNXhDNmypDRyBCASM25lIg6eF0Yf948n0S0YbB3rNg77mGpuFnhfV6CYE5/b5tBJZFlqsPgdkTXZwFRtkGtJ+pu+HUZd01JaNRUyXpgRA81JbNX4uiWJMNZjlA1wjBEzGGkIDNWHHFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TCQxBffB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 103DDC4CECF;
+	Mon, 11 Nov 2024 22:13:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731363203;
+	bh=ojNX7ewQ5mBn+8GJnYQlZeE9p4+dRMgQGrBXvhs2+fI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=TCQxBffBXyPKj2xKTDl6//xKba0ovCTA31loZDkm0SFTz3sw6YR/BHM/8Le7DZy7s
+	 aiCYcBwPe8OWe/MfHs4mGq7nc3s7/t+YjKfEyECHQK/iqvBQlsJs35JxN7X6ZfVN08
+	 slWovi9O55skKw5snL4fdwVQtWc9kESHJ0xulDXw5Qoh4ldQzDzpv8fSvzFFFch0pV
+	 3V2GeJPXt22BZJYmLPnfGNRntFuddZsepZXdE0M+puQi0SvYuWd2AzvoeXB1w12n1K
+	 Q6oZxiU8WsQlGyfbiZuw6JZuAxamncoYMg1bWVwxR1eT6ibE0HDBv2MJAe2CTM7yqf
+	 551OIgpkhLONw==
+Date: Mon, 11 Nov 2024 14:13:21 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Caleb Sander Mateos <csander@purestorage.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Parav Pandit
+ <parav@nvidia.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v4] mlx5/core: Schedule EQ comp tasklet only if
+ necessary
+Message-ID: <20241111141321.0d723c9d@kernel.org>
+In-Reply-To: <20241105204000.1807095-1-csander@purestorage.com>
+References: <ZypqYHaRbBCGo3FD@x130>
+	<20241105204000.1807095-1-csander@purestorage.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-anish kumar <yesanishhere@gmail.com> writes:
+On Tue,  5 Nov 2024 13:39:59 -0700 Caleb Sander Mateos wrote:
+> Currently, the mlx5_eq_comp_int() interrupt handler schedules a tasklet
+> to call mlx5_cq_tasklet_cb() if it processes any completions. For CQs
+> whose completions don't need to be processed in tasklet context, this
+> adds unnecessary overhead. In a heavy TCP workload, we see 4% of CPU
+> time spent on the tasklet_trylock() in tasklet_action_common(), with a
+> smaller amount spent on the atomic operations in tasklet_schedule(),
+> tasklet_clear_sched(), and locking the spinlock in mlx5_cq_tasklet_cb().
+> TCP completions are handled by mlx5e_completion_event(), which schedules
+> NAPI to poll the queue, so they don't need tasklet processing.
 
-> On Sun, Nov 10, 2024 at 10:39=E2=80=AFPM Christoph Hellwig <hch@lst.de> w=
-rote:
->>
->> On Sun, Nov 10, 2024 at 12:41:30PM +0200, Leon Romanovsky wrote:
->> > I tried this today and the output (HTML) in the new section looks
->> > so different from the rest of dma-api.rst that I lean to leave
->> > the current doc implementation as is.
->>
->> Yeah.  The whole DMA API documentation shows it's age and could use
->> a major revamp, but for now I'd prefer to stick to the way it is done.
->>
->> If we have any volunteers for bringing it up to standards I'd be glad
->> to help with input and review.
->
-> Jonathan, if you agree, I can take this up?
-
-I am happy to see help with the documentation, but agreement from the
-authors and maintainers of the DMA-mapping documentation is rather more
-important than agreement from me.
-
-jon
+Applied, thanks
 
