@@ -1,144 +1,148 @@
-Return-Path: <linux-rdma+bounces-5918-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5919-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B7589C39FC
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2024 09:47:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5782B9C3DD9
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2024 13:00:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDC7328244C
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2024 08:47:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5D23B241B9
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2024 11:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B037916F8E9;
-	Mon, 11 Nov 2024 08:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF86199FC9;
+	Mon, 11 Nov 2024 11:59:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H5syxAM7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA6EE16E863;
-	Mon, 11 Nov 2024 08:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C23719995E;
+	Mon, 11 Nov 2024 11:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731314839; cv=none; b=mBKeCx7hIRDMPYz0oQ2HjrQCk4p/HwNg7jrhy01GWZxYVipVoeuD/fmCRkpr7KQKCGO+Fd0rN+pBn39KpdonbBjHDlWHLW76uhYVZTKy2TwG0Nt5zv0xIdWuQcGAxl7/GeTsnW3G9LisXateRQ4Nfi/UG2T6RyU8fW1C0GgjG9A=
+	t=1731326386; cv=none; b=rpZdqMasw6zxraVZFeQmkx2+iBXo0CyCu6qcyy4CNVyFlGAKy3VJyqog8UNZl/Na2oi0mIhP5WkRRLWuomtXlHGIZT/4DM2hc8uxYhPGnxzutGQTYP4CWQZaQtrRsx7dXg6plt5AugDw/PT5CAc50g2iRRBzBnkCHzIbWRCbfJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731314839; c=relaxed/simple;
-	bh=v6yTDjLk1dp12i4TOQt6zwiAuZEOaKsPfnbGYw/afOc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GmIqRyYbeDKT5n73lwz/15026UdDVqh9irya29qheQOh9FPM5mJm604GMdllzQo+ihRNQ8+noc0kqbZ+SXJjOCOgKBN6hhV2vDch1Z5iaeHz4i3odHMDVFq4tFKjcosaMuOs4fVBB5MpDYBTV9SjEK6ycLb+Qnp8UefaRBof81g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Xn36T18yQz20t2P;
-	Mon, 11 Nov 2024 16:45:53 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 69245180043;
-	Mon, 11 Nov 2024 16:47:05 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 11 Nov 2024 16:47:04 +0800
-Message-ID: <e8230a57-4614-a2df-12fe-80e764d4df27@hisilicon.com>
-Date: Mon, 11 Nov 2024 16:47:04 +0800
+	s=arc-20240116; t=1731326386; c=relaxed/simple;
+	bh=KNU4wY5wjmSygjsz8VFqZf/kfLQiRGmzqRW7gpjXsQo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Akf8pUvKjwycHaThZvesbwQRJqAqPVarXSCVfKwzibhPVplmT1W89b23t9wHCHSvTgWpPwm2M6vYJjsKEnqLxbj0QF4L015qQJIvD+nPNSRFUn6cwSDueeisGwRA7iMSqQQvuL0uYDJ62V3DscuqwUN7cbQDoVtJna8B5XrLw9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H5syxAM7; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a99eb8b607aso651503366b.2;
+        Mon, 11 Nov 2024 03:59:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731326383; x=1731931183; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4KXooGMOhmi1Th3JVflxn1LYQFUXTjJHyv8htJbwU4E=;
+        b=H5syxAM7OtSiBApwZpzfTbP+L21TtjzL6Xzszir6w4ztYsSeeDFn+fMSjOJ4cYTkD9
+         kA0UoC0EPkYvXmjlDoUZY2mIkcH4ep6fdLR9BEY5s/pcTPNxir2m+lrYEinf0EgN4X/f
+         KfygUMDrh2zXJFonyIkjJki8E7hEf1YzpAeoJU0LxAy8LGyuSQq+I6DhAKmC9ZKCkWLj
+         36H2xb13W/ySMyHA+3HhUz944KsX4bTI/r5tAundXcfOpzYGmcd8Fkd7de0yRXndbFR8
+         eGpfISX5xyquo5AobWESgysSGXs0mvtdOcV4WVWZt87tzIglHGOHxS5vWu6SfpD3nZIK
+         uF/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731326383; x=1731931183;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4KXooGMOhmi1Th3JVflxn1LYQFUXTjJHyv8htJbwU4E=;
+        b=IR7CiQAO7A7FJdmGOEuZUMG0qrc+OASrmhSXzazmblHpgCV86dcCrhjBI0XfrmXzi/
+         oDSWzqOyD7xwCokWpimEvst9nb17DNw04r51+DQt+DxZbiNCOzWltAQhNItaFZxCUjOE
+         o305obyye8XIiVo8QjfkKUuRicAzKf/aMlU6x8ntpVaxk2x3LLZ/eUl2iFptw5l0aUCF
+         A3Gwg3G1tpU1EfSPiri5u1DeP1RwuV+C5ZY0/vMQQ+wmgcwDUFXtFqWJ0UcXEedOUevY
+         7VlNpnTver+vrmCNAk+U923d8Tv2BId+TfkLz6d1esz14CuwgABli4/w/pf1q3sJoDHz
+         73mg==
+X-Forwarded-Encrypted: i=1; AJvYcCVjvQiJ2YiluS6ugDpMCInrzDGB4eFnTDu3GkZdrB7BNyQ5FM2NZM4PnEo4OctJcU3H3W5rGzDzKJ/IlG8=@vger.kernel.org, AJvYcCWO0iSwgTvAAixsxmp9AIx2rlYV0+KdT/KXt0vBQ7m9IEan9RhqMm12Yt/Glwyf/L7XHn+TjlK8DaLvNA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzFD+3QKgmH9KcoayTB/1lEGjgsh0k1iAvcyqatVNOsX94wI66d
+	Gjw3wX91+24JRlakK1mx6wPNSVbkulalkZMOZ8iN5RiXBoQpCdQ1
+X-Google-Smtp-Source: AGHT+IF00jAtfRc2EUX+k3JSZj7csi0+1+brLEMrWXf/8w0U7/FZXLloGHMckhc11kzEm58d/QUUAQ==
+X-Received: by 2002:a17:907:7b86:b0:a9d:e01e:ffa9 with SMTP id a640c23a62f3a-a9eeff449femr1173865766b.33.1731326382147;
+        Mon, 11 Nov 2024 03:59:42 -0800 (PST)
+Received: from [172.27.51.98] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0e2e41bsm586296566b.191.2024.11.11.03.59.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Nov 2024 03:59:41 -0800 (PST)
+Message-ID: <aabb11f4-74ea-4e57-a085-3448e64a2d07@gmail.com>
+Date: Mon, 11 Nov 2024 13:59:37 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH v2 for-next] RDMA/hns: Fix different dgids mapping to the
- same dip_idx
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 2/2] mlx5/core: deduplicate
+ {mlx5_,}eq_update_ci()
+To: Parav Pandit <parav@nvidia.com>,
+ Caleb Sander Mateos <csander@purestorage.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <ZyxMsx8o7NtTAWPp@x130>
+ <20241107183054.2443218-1-csander@purestorage.com>
+ <20241107183054.2443218-2-csander@purestorage.com>
+ <CY8PR12MB71954BBB822554D67F08A1CBDC5D2@CY8PR12MB7195.namprd12.prod.outlook.com>
 Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>
-CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <tangchengchang@huawei.com>
-References: <20241107061148.2010241-1-huangjunxian6@hisilicon.com>
- <20241110142836.GB50588@unreal>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20241110142836.GB50588@unreal>
-Content-Type: text/plain; charset="UTF-8"
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <CY8PR12MB71954BBB822554D67F08A1CBDC5D2@CY8PR12MB7195.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemf100018.china.huawei.com (7.202.181.17)
 
 
 
-On 2024/11/10 22:28, Leon Romanovsky wrote:
-> On Thu, Nov 07, 2024 at 02:11:48PM +0800, Junxian Huang wrote:
->> From: Feng Fang <fangfeng4@huawei.com>
+On 08/11/2024 12:49, Parav Pandit wrote:
+> 
+>> From: Caleb Sander Mateos <csander@purestorage.com>
+>> Sent: Friday, November 8, 2024 12:01 AM
 >>
->> DIP algorithm requires a one-to-one mapping between dgid and dip_idx.
->> Currently a queue 'spare_idx' is used to store QPN of QPs that use
->> DIP algorithm. For a new dgid, use a QPN from spare_idx as dip_idx.
->> This method lacks a mechanism for deduplicating QPN, which may result
->> in different dgids sharing the same dip_idx and break the one-to-one
->> mapping requirement.
+>> The logic of eq_update_ci() is duplicated in mlx5_eq_update_ci(). The only
+>> additional work done by mlx5_eq_update_ci() is to increment
+>> eq->cons_index. Call eq_update_ci() from mlx5_eq_update_ci() to avoid
+>> the duplication.
 >>
->> This patch replaces spare_idx with xarray and introduces a refcnt of
->> a dip_idx to indicate the number of QPs that using this dip_idx.
->>
->> The state machine for dip_idx management is implemented as:
->>
->> * The entry at an index in xarray is empty -- This indicates that the
->>   corresponding dip_idx hasn't been created.
->>
->> * The entry at an index in xarray is not empty but with 0 refcnt --
->>   This indicates that the corresponding dip_idx has been created but
->>   not used as dip_idx yet.
->>
->> * The entry at an index in xarray is not empty and with non-0 refcnt --
->>   This indicates that the corresponding dip_idx is being used by refcnt
->>   number of DIP QPs.
->>
->> Fixes: eb653eda1e91 ("RDMA/hns: Bugfix for incorrect association between dip_idx and dgid")
->> Fixes: f91696f2f053 ("RDMA/hns: Support congestion control type selection according to the FW")
->> Signed-off-by: Feng Fang <fangfeng4@huawei.com>
->> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+>> Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
 >> ---
->> v1 -> v2:
->> * Use xarray instead of bitmaps as Leon suggested.
->> * v1: https://lore.kernel.org/all/20240906093444.3571619-10-huangjunxian6@hisilicon.com/
->> ---
->>  drivers/infiniband/hw/hns/hns_roce_device.h | 11 +--
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 96 +++++++++++++++------
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  2 +-
->>  drivers/infiniband/hw/hns/hns_roce_main.c   |  2 -
->>  drivers/infiniband/hw/hns/hns_roce_qp.c     |  7 +-
->>  5 files changed, 74 insertions(+), 44 deletions(-)
+>>   drivers/net/ethernet/mellanox/mlx5/core/eq.c | 9 +--------
+>>   1 file changed, 1 insertion(+), 8 deletions(-)
 >>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
->> index 9b51d5a1533f..560a1d9de408 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
->> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
->> @@ -489,12 +489,6 @@ struct hns_roce_bank {
->>  	u32 next; /* Next ID to allocate. */
->>  };
+>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+>> b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+>> index 859dcf09b770..078029c81935 100644
+>> --- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+>> @@ -802,19 +802,12 @@ struct mlx5_eqe *mlx5_eq_get_eqe(struct mlx5_eq
+>> *eq, u32 cc)  }  EXPORT_SYMBOL(mlx5_eq_get_eqe);
 >>
->> -struct hns_roce_idx_table {
->> -	u32 *spare_idx;
->> -	u32 head;
->> -	u32 tail;
->> -};
+>>   void mlx5_eq_update_ci(struct mlx5_eq *eq, u32 cc, bool arm)  {
+>> -	__be32 __iomem *addr = eq->doorbell + (arm ? 0 : 2);
+>> -	u32 val;
 >> -
->>  struct hns_roce_qp_table {
->>  	struct hns_roce_hem_table	qp_table;
->>  	struct hns_roce_hem_table	irrl_table;
->> @@ -503,7 +497,7 @@ struct hns_roce_qp_table {
->>  	struct mutex			scc_mutex;
->>  	struct hns_roce_bank bank[HNS_ROCE_QP_BANK_NUM];
->>  	struct mutex bank_mutex;
->> -	struct hns_roce_idx_table	idx_table;
->> +	struct xarray			dip_xa;
+>>   	eq->cons_index += cc;
+>> -	val = (eq->cons_index & 0xffffff) | (eq->eqn << 24);
+>> -
+>> -	__raw_writel((__force u32)cpu_to_be32(val), addr);
+>> -	/* We still want ordering, just not swabbing, so add a barrier */
+>> -	wmb();
+>> +	eq_update_ci(eq, arm);
+>>   }
+>>   EXPORT_SYMBOL(mlx5_eq_update_ci);
+>>
+>>   static void comp_irq_release_pci(struct mlx5_core_dev *dev, u16 vecidx)  {
+>> --
+>> 2.45.2
 > 
-> I don't see xa_destroy() for this xarray, why?
+> Reviewed-by: Parav Pandit <parav@nvidia.com>
 > 
 
-Will add in v3, thanks.
+Acked-by: Tariq Toukan <tariqt@nvidia.com>
 
-Junxian
-
-> Thanks
 
