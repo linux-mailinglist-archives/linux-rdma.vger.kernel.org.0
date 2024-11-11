@@ -1,155 +1,109 @@
-Return-Path: <linux-rdma+bounces-5920-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5921-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10FF49C3DDC
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2024 13:00:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC5079C4157
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2024 15:59:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 351E61C2179D
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2024 12:00:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A12A4282D0E
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2024 14:59:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6FA217C227;
-	Mon, 11 Nov 2024 12:00:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 009231A0AFE;
+	Mon, 11 Nov 2024 14:59:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iuvNKBFg"
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="U7Qof0wu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEEA4199943;
-	Mon, 11 Nov 2024 12:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD2B1E481;
+	Mon, 11 Nov 2024 14:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731326405; cv=none; b=kkFeR0pqV1OIFOlWuuL0ckfxRGsShCpcrXw4VtJbiXZQ7AQtjSXK4Acc0Wza1UGm9N4cwfRLpiTSqQ6UDh7zVVOBUb1t0vy0jCPfZ4u6u7eiT7FafpfAO9G+WZ/OsV4XmpwgrPqyYy2mXumVk3KpKBZ8F5uDNgKHXDGEtX7xm7s=
+	t=1731337169; cv=none; b=MtwU2kB5x4wUnF5zREa89UWPM4AlGiKzSef9HxYRmj/9wdAJ6Z/KOGLEO0TSMO68UoqDOISjUqFyxZMEkl6iJqB3BYBmWPoHZ2/wDsJyyR8vMHn+nDfyXpCvOtImR419J1TSw1vujD9hhTd7vgQkCLF6nz40gVMfVT0bemjpwaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731326405; c=relaxed/simple;
-	bh=aeOsBBfNgbMgQSr1NnwyxTSfx3+qg+WQGpKzj08cjqs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hiFWMWObBu+XAmUY4k/p74OUSAkHZz0Vey6qhOInWaS2GQmSSDX1vry5rKzDmYiOuOSHyt1e6qPd9oItQdpft2IHo+Jt7myFkjIWTzW9EwIu8JMn0FoRfCy77ZvXh0qKuRPB4k5jTRn1kUkT7rHXmt8AZ7w3Jj8h2162ZNUprzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iuvNKBFg; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a9f1d76dab1so188542266b.0;
-        Mon, 11 Nov 2024 04:00:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731326402; x=1731931202; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ERz2Qab/QZHhmp5ujVARsacqaYheTwZvXRQSx29cBsY=;
-        b=iuvNKBFg8P3JMe5bizOeWjTKqe87+Bw8aoDThhHn9dRsqMNmQSio73UGNjZQan6Wng
-         dgpwJyLv3cw0q/R4aYaVV1InSi+7JPbMWLf2z0Sqf965WNFLl/tJVAe1No2G98GTRQAF
-         OZO5xup74bOBK0reGayY2ZLl3LTKI/DSLgqgNsrXevLOFlWF0nT7nD6KtySWVUdq6DVP
-         8r+1x6OUpnxBwytXMwsEDEjzrDZPP6XbtCPUUbDRV5hD00QFANOnc5CUzH4WQduhudkp
-         vWbSAFmAs/eDYoxDNkjTJ6NmT1cKFqlACka8yHBc31mnXNq30rGq1f0NNPEPj1rXMbbn
-         zNWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731326402; x=1731931202;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ERz2Qab/QZHhmp5ujVARsacqaYheTwZvXRQSx29cBsY=;
-        b=A1KTHZnrNhd3/ZStLvQGX9X8N8gEOkmGmNDJKTSikmN9pfVUlaNJvR8kbZqpOhOjl1
-         Sufils/Yqgh/SswOhi3/5VLi9XKPUZYWA93gfw9bhV3km9G3pP4qGRUbB/REfqT+T45v
-         sI2rK/LcoItQd+xjJSBTdemh0B3+vGEBppNgPdJYiXKHHUUL0OxvHVg/BLB+LVzA5+GN
-         4GgbAP1OHn2/CDU9w6Di0mV9dR3HUaEvc/doU14byKm7FNwpGlNH9IAHkerNwet14ofo
-         A4ts3p1236/yRGF+CIPW7Himqs8Huy3pJdJ6YHHcaBpsMFDhPBBPD+vsjmPyY+7mJM3l
-         /QQA==
-X-Forwarded-Encrypted: i=1; AJvYcCVCv1VKkmw7teADE7fp6aRpOOydZcrMIsN6cdNqkzIjSmjOZsQYRNuYo2eznN1ISYMfFmMxKkvBiuUYkA==@vger.kernel.org, AJvYcCVUt2++MR0kpkspqS3SJJ5jngJ1FrGzZdO308P9psyG+a8FPhR9vfGLx9SCuSW3c0E1xhL3ntSsiSDFnUA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOD09wMDKD0IAgLaTCr8MIi0HgMGNBJIWaHNvlfxSTk8p3iNdK
-	uFPHD3/fo/HdYPhKnxSwh2q/rm+GqnsxxKeg3ZlGWZOy3UAgbpEq
-X-Google-Smtp-Source: AGHT+IElto91yI/s7EETqqUQ6isEerHA+zumw4wYVTzMGHsiInbZsOqOX2Jy0VD1W+4Ay5TlSktDLA==
-X-Received: by 2002:a17:907:94c1:b0:a9e:d417:c725 with SMTP id a640c23a62f3a-a9eefebd49emr1221025466b.3.1731326400309;
-        Mon, 11 Nov 2024 04:00:00 -0800 (PST)
-Received: from [172.27.51.98] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0dee5e6sm584993166b.137.2024.11.11.03.59.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Nov 2024 04:00:00 -0800 (PST)
-Message-ID: <f1a56268-f1d5-4204-be34-5c7a1749bcd9@gmail.com>
-Date: Mon, 11 Nov 2024 13:59:57 +0200
+	s=arc-20240116; t=1731337169; c=relaxed/simple;
+	bh=gg3nV1iKgs4bbxPK/uru5pPDw51yAhWHVenuhfd8RSY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=E1hbJAEALqlb5yL56DaF3Qdv35CRbOZUjo41njnTAapQEJ0PfjTeAMJlktQn6zFocYAD5AcntSDzEzxG0egw/joVNiqqGP+s2PtjzedHUpp4kPCeNPoPiPCIlkzq6cGu7gK+PF8oeOV3JldOMHb+qdPl62rL7Yt8XyMFS58xoNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=U7Qof0wu; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 45E36403F1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1731337167; bh=GwVTmx4eIglWLWGHYmk31OoK5pzNvXaKVe73vYEWSTk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=U7Qof0wuVnJGcnP06ChHK+MJPNdREQXE7RLUzC2W70ULBaY9a9VnJ9vQEtqDAf9Ah
+	 A3HwpVCu8PJVyEMghvrqu/hNDOC8sGYBt3mN173rM33gAFqU2dKpLTqp9ac4bjnapP
+	 A1UN+AgpzI588tU7KIuantdLBUeWBgXdiFu11n7kGDH4ZxFGW1T97qYFC9t3FAzyYo
+	 fgA7YQdK+SYmrHtsukzfx/wT5vFef/DoXSOK38XKAVdsxtI+fq2uPWuv8CV5NUKrxx
+	 iQj4S70o2yK54j7jT8p8fewkBThJBXMBi2CZoLIkGaK5OJDLnfOOJSXDckk3X1rExZ
+	 HhL9BYc+PyPqw==
+Received: from localhost (unknown [IPv6:2601:280:5e00:625::1fe])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 45E36403F1;
+	Mon, 11 Nov 2024 14:59:27 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: anish kumar <yesanishhere@gmail.com>, Christoph Hellwig <hch@lst.de>
+Cc: Leon Romanovsky <leon@kernel.org>, Jens Axboe <axboe@kernel.dk>, Jason
+ Gunthorpe <jgg@ziepe.ca>, Robin Murphy <robin.murphy@arm.com>, Joerg
+ Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Sagi Grimberg
+ <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>, Bjorn Helgaas
+ <bhelgaas@google.com>, Logan Gunthorpe <logang@deltatee.com>, Yishai Hadas
+ <yishaih@nvidia.com>, Shameer Kolothum
+ <shameerali.kolothum.thodi@huawei.com>, Kevin Tian <kevin.tian@intel.com>,
+ Alex Williamson <alex.williamson@redhat.com>, Marek Szyprowski
+ <m.szyprowski@samsung.com>, =?utf-8?B?SsOpcsO0bWU=?= Glisse
+ <jglisse@redhat.com>, Andrew
+ Morton <akpm@linux-foundation.org>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+ linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+ kvm@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 09/17] docs: core-api: document the IOVA-based API
+In-Reply-To: <CABCoZhBVWY=aUQtQ5b=mF8hXqpgJw21_jAPf9YvEvdgPf_GALA@mail.gmail.com>
+References: <cover.1730298502.git.leon@kernel.org>
+ <881ef0bcf9aa971e995fbdd00776c5140a7b5b3d.1730298502.git.leon@kernel.org>
+ <87ttchwmde.fsf@trenco.lwn.net> <20241108200355.GC189042@unreal>
+ <87h68hwkk8.fsf@trenco.lwn.net> <20241108202736.GD189042@unreal>
+ <20241110104130.GA19265@unreal> <20241111063847.GB23992@lst.de>
+ <CABCoZhBVWY=aUQtQ5b=mF8hXqpgJw21_jAPf9YvEvdgPf_GALA@mail.gmail.com>
+Date: Mon, 11 Nov 2024 07:59:26 -0700
+Message-ID: <87o72lu88h.fsf@trenco.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 1/2] mlx5/core: relax memory barrier in
- eq_update_ci()
-To: Parav Pandit <parav@nvidia.com>,
- Caleb Sander Mateos <csander@purestorage.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <ZyxMsx8o7NtTAWPp@x130>
- <20241107183054.2443218-1-csander@purestorage.com>
- <CY8PR12MB7195A03D0F6C66D906354549DC5D2@CY8PR12MB7195.namprd12.prod.outlook.com>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <CY8PR12MB7195A03D0F6C66D906354549DC5D2@CY8PR12MB7195.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+anish kumar <yesanishhere@gmail.com> writes:
 
+> On Sun, Nov 10, 2024 at 10:39=E2=80=AFPM Christoph Hellwig <hch@lst.de> w=
+rote:
+>>
+>> On Sun, Nov 10, 2024 at 12:41:30PM +0200, Leon Romanovsky wrote:
+>> > I tried this today and the output (HTML) in the new section looks
+>> > so different from the rest of dma-api.rst that I lean to leave
+>> > the current doc implementation as is.
+>>
+>> Yeah.  The whole DMA API documentation shows it's age and could use
+>> a major revamp, but for now I'd prefer to stick to the way it is done.
+>>
+>> If we have any volunteers for bringing it up to standards I'd be glad
+>> to help with input and review.
+>
+> Jonathan, if you agree, I can take this up?
 
-On 08/11/2024 12:46, Parav Pandit wrote:
-> 
->> From: Caleb Sander Mateos <csander@purestorage.com>
->> Sent: Friday, November 8, 2024 12:01 AM
->>
->> The memory barrier in eq_update_ci() after the doorbell write is a significant
->> hot spot in mlx5_eq_comp_int(). Under heavy TCP load, we see 3% of CPU
->> time spent on the mfence instruction.
->>
->> 98df6d5b877c ("net/mlx5: A write memory barrier is sufficient in EQ ci
->> update") already relaxed the full memory barrier to just a write barrier in
->> mlx5_eq_update_ci(), which duplicates eq_update_ci(). So replace mb() with
->> wmb() in eq_update_ci() too.
->>
->> On strongly ordered architectures, no barrier is actually needed because the
->> MMIO writes to the doorbell register are guaranteed to appear to the device in
->> the order they were made. However, the kernel's ordered MMIO primitive
->> writel() lacks a convenient big-endian interface.
->> Therefore, we opt to stick with __raw_writel() + a barrier.
->>
->> Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
->> ---
->> v2: keep memory barrier instead of using ordered writel()
->>
->>   drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
->> b/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
->> index 4b7f7131c560..b1edc71ffc6d 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/eq.h
->> @@ -70,11 +70,11 @@ static inline void eq_update_ci(struct mlx5_eq *eq, int
->> arm)
->>   	__be32 __iomem *addr = eq->doorbell + (arm ? 0 : 2);
->>   	u32 val = (eq->cons_index & 0xffffff) | (eq->eqn << 24);
->>
->>   	__raw_writel((__force u32)cpu_to_be32(val), addr);
->>   	/* We still want ordering, just not swabbing, so add a barrier */
->> -	mb();
->> +	wmb();
->>   }
->>
->>   int mlx5_eq_table_init(struct mlx5_core_dev *dev);  void
->> mlx5_eq_table_cleanup(struct mlx5_core_dev *dev);  int
->> mlx5_eq_table_create(struct mlx5_core_dev *dev);
->> --
->> 2.45.2
-> 
-> Reviewed-by: Parav Pandit <parav@nvidia.com>
-> 
+I am happy to see help with the documentation, but agreement from the
+authors and maintainers of the DMA-mapping documentation is rather more
+important than agreement from me.
 
-Acked-by: Tariq Toukan <tariqt@nvidia.com>
-
+jon
 
