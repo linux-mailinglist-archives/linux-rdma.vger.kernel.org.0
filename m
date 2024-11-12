@@ -1,140 +1,113 @@
-Return-Path: <linux-rdma+bounces-5945-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5946-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF4119C5989
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 14:50:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB2409C5B2A
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 16:01:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5F821F22FEF
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 13:50:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 924051F230A6
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 15:01:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1727A1FBCB4;
-	Tue, 12 Nov 2024 13:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hlI9Fq2C"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A400A20102D;
+	Tue, 12 Nov 2024 14:57:36 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from stargate.chelsio.com (stargate.chelsio.com [12.32.117.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AFE21F7084
-	for <linux-rdma@vger.kernel.org>; Tue, 12 Nov 2024 13:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B831FEFD1
+	for <linux-rdma@vger.kernel.org>; Tue, 12 Nov 2024 14:57:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=12.32.117.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731419420; cv=none; b=d4Du4jpYaByVxNDIexgaF9sVfznEiq26FlYYV3TXNoDMO+AVpnr9KnUrrbWYWlEe+jDMqppHjD+25f/fFDEKMajSEnoDA6y+y3ltubkUPRfzbl2ogx0l4Qo0Spedpi6DeiCmQJjG7gCaTbt8qM9fQpZ3D7OX1pf57lQlHckVRhA=
+	t=1731423456; cv=none; b=BNwRI7K1rvDGcJfooI/2D9lhwR+GW7c2SW+yMla7Rnu3pusuSJO5dce71/Nhw9G/rokvvdoPwEdN8Ce35BcsaJV1MPG9RuF7YjfJBYUGKyUqKTeBrcF6BoVaOHjLSxknnBDPWzz1LdDTaEkddgnSNevI3KLWB6AWfJGrbezmwAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731419420; c=relaxed/simple;
-	bh=nSOskOd9cmif+82CK5bd9zlOpXVHHGQGCb+Liwu2Csk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z50HjQu8mtX+OWidJ8PT+52A3qcVrBkUdNtWmum3XjaxjYmm5wFlqjOHfsTri8a4bHcutVQkJjAIhEbYFFtjTqxUb0GtvPZw/8YxQc2Nd/PmH7NjXARhfGolx7CyXQh4r/89296ARqdE8z8GPUudxULSNCI+HGZTuLotUe+qgLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hlI9Fq2C; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1731419418;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=/WX3p8cdeb2T0ayeSkNyCI7S/yaoWFFExVswly9zdi4=;
-	b=hlI9Fq2CCNc57Fe3DxfApFwxnKwaMnKnotihaHcNfKnNc69pWRgaYhpEWXZss2pA0nYt2F
-	oaz2RCLztgxhFQv2PvJX61F37LI9Ahiw/61UUyt61WtVkAwI6rh0B4e3VD42o31JeOCCRg
-	P25RUYWyaN9p4QjR7N/FoWzk15dNjXg=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-19-xAa1S21cPgqKL2zG9lAh2g-1; Tue,
- 12 Nov 2024 08:50:16 -0500
-X-MC-Unique: xAa1S21cPgqKL2zG9lAh2g-1
-X-Mimecast-MFC-AGG-ID: xAa1S21cPgqKL2zG9lAh2g
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 97BA41955BF4;
-	Tue, 12 Nov 2024 13:50:15 +0000 (UTC)
-Received: from mheiblap.localdomain.com (unknown [10.47.238.97])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id D3D7C19560A3;
-	Tue, 12 Nov 2024 13:50:13 +0000 (UTC)
-From: Mohammad Heib <mheib@redhat.com>
-To: linux-rdma@vger.kernel.org,
-	selvin.xavier@broadcom.com,
-	kashyap.desai@broadcom.com
-Cc: Mohammad Heib <mheib@redhat.com>
-Subject: [PATCH rdma] RDMA/bnxt_re: cmds completions handler avoid accessing invalid memeory
-Date: Tue, 12 Nov 2024 15:49:56 +0200
-Message-Id: <20241112134956.1415343-1-mheib@redhat.com>
+	s=arc-20240116; t=1731423456; c=relaxed/simple;
+	bh=GkPqEdWZYeHWROjUE/+dkcO8iEACrgOjNpaX513jJ9I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N1TlY4lA5r8pFEWZR4p299xGR5V1Sek+qPQEnXmJ6BVcXPUrTElwV+h9QLXtvDxvN7WPm8mgtZcb5LE1Iozj0mfLT/Al3j54kQZg8p7mAgUPJ6pUS7gI4SCFedCCE036G7HdEN2sBESKWZYS1Wnh4GK2AnlfJ2v10pRVUlIpGT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chelsio.com; spf=pass smtp.mailfrom=chelsio.com; arc=none smtp.client-ip=12.32.117.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=chelsio.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chelsio.com
+Received: from localhost (anumula.asicdesigners.com [10.193.191.65])
+	by stargate.chelsio.com (8.14.7/8.14.7) with ESMTP id 4ACE4dIl007684;
+	Tue, 12 Nov 2024 06:04:39 -0800
+Date: Tue, 12 Nov 2024 09:04:38 -0500
+From: Anumula Murali Mohan Reddy <anumula@chelsio.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: "jgg@nvidia.com" <jgg@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>
+Subject: Re: [PATCH for-rc v3] RDMA/core: Fix ENODEV error for iWARP test
+ over vlan
+Message-ID: <ZzNgdrjo1kSCGbRz@chelsio.com>
+References: <20241008114334.146702-1-anumula@chelsio.com>
+ <20241110130746.GA48891@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241110130746.GA48891@unreal>
 
-If bnxt FW behaves unexpectedly because of FW bug or unexpected behavior it
-can send completions for old  cookies that have already been handled by the
-bnxt driver. If that old cookie was associated with an old calling context
-the driver will try to access that caller memory again because the driver
-never clean the is_waiter_alive flag after the caller successfully complete
-waiting, and this access will cause the following kernel panic:
-
-Call Trace:
- <IRQ>
- ? __die+0x20/0x70
- ? page_fault_oops+0x75/0x170
- ? exc_page_fault+0xaa/0x140
- ? asm_exc_page_fault+0x22/0x30
- ? bnxt_qplib_process_qp_event.isra.0+0x20c/0x3a0 [bnxt_re]
- ? srso_return_thunk+0x5/0x5f
- ? __wake_up_common+0x78/0xa0
- ? srso_return_thunk+0x5/0x5f
- bnxt_qplib_service_creq+0x18d/0x250 [bnxt_re]
- tasklet_action_common+0xac/0x210
- handle_softirqs+0xd3/0x2b0
- __irq_exit_rcu+0x9b/0xc0
- common_interrupt+0x7f/0xa0
- </IRQ>
- <TASK>
-
-To avoid the above unexpected behavior clear the is_waiter_alive flag
-every time the caller finishes waiting for a completion.
-
-Fixes: 691eb7c6110f ("RDMA/bnxt_re: handle command completions after driver detect a timedout")
-Signed-off-by: Mohammad Heib <mheib@redhat.com>
----
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index f5713e3c39fb..eaf92029862b 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -511,15 +511,15 @@ static int __bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
- 	else
- 		rc = __poll_for_resp(rcfw, cookie);
- 
--	if (rc) {
--		spin_lock_irqsave(&rcfw->cmdq.hwq.lock, flags);
--		crsqe = &rcfw->crsqe_tbl[cookie];
--		crsqe->is_waiter_alive = false;
--		if (rc == -ENODEV)
--			set_bit(FIRMWARE_STALL_DETECTED, &rcfw->cmdq.flags);
--		spin_unlock_irqrestore(&rcfw->cmdq.hwq.lock, flags);
-+
-+	spin_lock_irqsave(&rcfw->cmdq.hwq.lock, flags);
-+	crsqe = &rcfw->crsqe_tbl[cookie];
-+	crsqe->is_waiter_alive = false;
-+	if (rc == -ENODEV)
-+		set_bit(FIRMWARE_STALL_DETECTED, &rcfw->cmdq.flags);
-+	spin_unlock_irqrestore(&rcfw->cmdq.hwq.lock, flags);
-+	if (rc)
- 		return -ETIMEDOUT;
--	}
- 
- 	if (evnt->status) {
- 		/* failed with status */
--- 
-2.34.3
-
+On Sunday, November 11/10/24, 2024 at 18:37:46 +0530, Leon Romanovsky wrote:
+> On Tue, Oct 08, 2024 at 05:13:34PM +0530, Anumula Murali Mohan Reddy wrote:
+> > If traffic is over vlan, cma_validate_port() fails to match vlan
+> > net_device ifindex with bound_if_index and results in ENODEV error.
+> > It is because rdma_copy_src_l2_addr() always assigns bound_if_index with
+> > real net_device ifindex.
+> > This patch fixes the issue by assigning bound_if_index with vlan
+> > net_device index if traffic is over vlan.
+> > 
+> > Fixes: f8ef1be816bf ("RDMA/cma: Avoid GID lookups on iWARP devices")
+> > Signed-off-by: Anumula Murali Mohan Reddy <anumula@chelsio.com>
+> > Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+> > ---
+> > Changes since v2:
+> > Addressed previous review comments
+> > ---
+> >  drivers/infiniband/core/addr.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> 
+> This patch causes to udaddy regression. It doesn't work over VLANs
+> anymore.
+> 
+> # Client:
+> ifconfig eth2 1.1.1.1
+> ip link add link eth2 name p0.3597 type vlan protocol 802.1Q id 3597
+> ip link set dev p0.3597 up
+> ip addr add 2.2.2.2/16 dev p0.3597
+> udaddy -S 847 -C 220 -c 2 -t 0 -s 2.2.2.3 -b 2.2.2.2
+> 
+> # Server:
+> ifconfig eth2 1.1.1.3
+> ip link add link eth2 name p0.3597 type vlan protocol 802.1Q id 3597
+> ip link set dev p0.3597 up
+> ip addr add 2.2.2.3/16 dev p0.3597
+> udaddy -S 847 -C 220 -c 2 -t 0 -b 2.2.2.3
+> 
+> Thanks
+> 
+> > 
+> > diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+> > index be0743dac3ff..c4cf26f1d149 100644
+> > --- a/drivers/infiniband/core/addr.c
+> > +++ b/drivers/infiniband/core/addr.c
+> > @@ -269,6 +269,8 @@ rdma_find_ndev_for_src_ip_rcu(struct net *net, const struct sockaddr *src_in)
+> >  		break;
+> >  #endif
+> >  	}
+> > +	if (!ret && dev && is_vlan_dev(dev))
+> > +		dev = vlan_dev_real_dev(dev);
+> >  	return ret ? ERR_PTR(ret) : dev;
+> >  }
+> >  
+> > -- 
+> > 2.39.3
+> >
+i am able to reproduce the issue with udaddy, i am working on a new patch.
+for now you can proceed with reverting this change
 
