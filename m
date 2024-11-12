@@ -1,118 +1,262 @@
-Return-Path: <linux-rdma+bounces-5927-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5928-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DEAC9C4F4F
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 08:21:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A93E99C500D
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 08:58:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE386B233CB
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 07:20:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 398271F2255A
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 07:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF0C120A5FF;
-	Tue, 12 Nov 2024 07:20:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA48D209F4A;
+	Tue, 12 Nov 2024 07:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dVmzKoMM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AwOTEPXi"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D81A83A14;
-	Tue, 12 Nov 2024 07:20:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C893220A5E2
+	for <linux-rdma@vger.kernel.org>; Tue, 12 Nov 2024 07:58:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731396047; cv=none; b=WMvQMHYDY+eko0GGrrCR9VcX3kl/M62cKGUTuLJt9E2vD541N+O3Lw9D4Vo65eGUlZylLaKGUy2gwfhiF+kybUbQ+idnZs8vyo4C5Kc4HPNInlpkLdRz/u9UJTiS/+CcvzCFDJQkN29eNOUg/3DZcdDB7hKfnv9UbZ/t+dyyllY=
+	t=1731398301; cv=none; b=l5Icdkf3DKr1O+4jHqMFuMauZISBj/EuRdaAb7eb7iXkZsbC7XpoKFoqIV+UYT7XmA6du7igfrHTy0uxL9iimPFutHRlms2H/ONKjiq0Iocnv0OJ0FpIiDbO6Q76W5cfQ8zWkPfLCMRyf8IJgR/la/JoL1m2WpohtOYgcVQg4k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731396047; c=relaxed/simple;
-	bh=iebmt1JJ4nc2KqO33nu0BylpM0uwrbfzxJxK70i+S/0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DpEsODAwdz8M2xm+mUqQhNdBY8eiomYMqwm3lZKBREcg34xcePz9aF2KHH7CvZfrBu+01bWj0tFsFeHExaH4chAPrstMoq1OzQqBaCaboM0mPXpa5OEB4mwci/inrBQ5zj8f+fMk0LCcqzByHxH/h8IqsgmIYLHm6LrIEM+lSXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dVmzKoMM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A7FFC4CED6;
-	Tue, 12 Nov 2024 07:20:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731396047;
-	bh=iebmt1JJ4nc2KqO33nu0BylpM0uwrbfzxJxK70i+S/0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dVmzKoMMLI1p5lld2AzbKA0OKhkaVTgahMbznY+ch5wqmWfYCEBoHJ5ZIQ8i4OEW7
-	 y0SB4PSstnJw8hURXljSVh3nG8HHVe3dC7gqHVMQQXmgFoRfx3x8hsZ36yggo7YlVq
-	 2q0lrQ8rdvyycCXVFgnX8tvivhS3iXRbVyFR1p3rkwOgGKPIQ2kftduBV0NwjkeMS6
-	 +NoAmsvdHq/cRMRpCO7yQhqTp7kgXfnEETQD/OipD9b2Ni66FEyjDAneYRjzAw6sNL
-	 U2vmfYx6TwAoyvedmOw9NUrF5kwpsNBTikX0r/vBN3EeyzUVC53eAjFgH0BRIJSoUB
-	 HtyTui/+hEy9g==
-Date: Tue, 12 Nov 2024 09:20:40 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Joerg Roedel <joro@8bytes.org>, ill Deacon <will@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v3 00/17] Provide a new two step DMA mapping API
-Message-ID: <20241112072040.GG71181@unreal>
-References: <cover.1731244445.git.leon@kernel.org>
+	s=arc-20240116; t=1731398301; c=relaxed/simple;
+	bh=sT5IejiZqa3RVLVPQ/AGGhiaaMNsUjY5IDHvqM+8Ir4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=jFrhQFS/LAD0yKx3qsbKTrPce7Pg0/S4iypwFeZYJduSWqtmiQRI8R/+gEhGMr0pDuPQFlUzCLz10N0j0kTFSdeNdGwc6ZF8PUP9fi+IU61NxIgTYU9AtKSr67ABwAVIArqESkfL7OGf1hf1W+ZragkE+54Ia+lsHATod2snAaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AwOTEPXi; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-71e49ad46b1so4570742b3a.1
+        for <linux-rdma@vger.kernel.org>; Mon, 11 Nov 2024 23:58:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731398299; x=1732003099; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e5XmjAYU+gLVstunWmCGtbnhWCqluAAyA9vdt7jsFxs=;
+        b=AwOTEPXiwEfUIKIOszbrijNhLKCVc5sBDZK4eITX4u5gzaMUbn8zsL4E5Ce9rkdcQR
+         pKyAGigmr2iLvIwTxiL1e2t4MCE4orwzTpg10AM3ugnK9Rmhr/6heZxuQOgQYmwO2QIz
+         mkqnBjRY+9egbM7yhmfFh3dTKmV7DIUWvw5UTTJrrSeo4Xay59coT5yfVNjUJBncHHwT
+         DNNUFGjnlZ326uo38z1LTkaTqBviSxsO1DQ8ohJEw9r9xdyDjF4D58dVOerEvnQiv2mo
+         iPLVSdIApaJH/QZqGmiY/ds4s7T8VT7loAHVdY2FpJ3OaMCLsCfJ7ily6NBpuE7WBgtx
+         KUZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731398299; x=1732003099;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e5XmjAYU+gLVstunWmCGtbnhWCqluAAyA9vdt7jsFxs=;
+        b=pT+yP3cQGv2XxDnENNcsVarT4SrCERu9v0jYG3Pp0a+PNtXWSVImgYnj4o1WVZBAdd
+         ub9RAaWw0ZjdtvCagmICeNUr9QUJvs1ZdKbHdd5HOFA63IAiZB0NpIKUukFiqOi7r8JN
+         vmi1o5td9BT2lsJNOgPaZ0wn47yau+q0Z0zJ3p3sFEdVBYsFVu/Vey1bwd/nUJ2XbcaY
+         JeFKiFH2bUyQwHokbMZYQZKOXSpD5FK7C5bba7Eg4TC9KBpcoV/LAJxcPNUDH+nZXzu/
+         X82nihHSYy/0DVCV594g2mJttHcBKMjpWCIbxgNMSpqdi1U+rETU1t12VM+mbhrXSmwL
+         X7uQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWoypCVJ80d1G1ZSiXYME2QDLqoZbPzTW3CwAXaZzTqfdh85NqDYVlWqsLOId4Ls5m+CK3UdUpAl4pI@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyb9fJRwv0jxIfhfThXSONQwWk9Dcl0BqKX5QvcfXtYPS/nGrAx
+	Opb00pNgWitAfTLlZ60DY9OXKnyfhSjO+O36b6HUH2ztu/1jIy4e
+X-Google-Smtp-Source: AGHT+IEJjLuH6JPNS3+L82R1yL4zcfy2ceMKi44efgf9JN4jZBiPtZHE1Ho1ZUUHakXfwViTh+4WUg==
+X-Received: by 2002:a05:6a00:894:b0:71e:cf8:d6fa with SMTP id d2e1a72fcca58-724132c04d3mr21912242b3a.15.1731398298940;
+        Mon, 11 Nov 2024 23:58:18 -0800 (PST)
+Received: from localhost.localdomain ([182.151.211.213])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7240785ff9csm10573111b3a.8.2024.11.11.23.58.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 11 Nov 2024 23:58:18 -0800 (PST)
+From: Cyclinder Kuo <kuocyclinder@gmail.com>
+To: liujian56@huawei.com
+Cc: amirv@mellanox.com,
+	dledford@redhat.com,
+	haggaie@mellanox.com,
+	jgg@ziepe.ca,
+	kamalh@mellanox.com,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org,
+	monis@mellanox.com,
+	rpearsonhpe@gmail.com,
+	yanjun.zhu@linux.dev,
+	zyjzyj2000@gmail.com
+Subject: Re: '[v6,0/8] Fix the problem that rxe can not work in net namespace'
+Date: Tue, 12 Nov 2024 15:58:09 +0800
+Message-Id: <20241112075809.86708-1-kuocyclinder@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+In-Reply-To: <20241031092019.2138467-1-liujian56@huawei.com>
+References: <20241031092019.2138467-1-liujian56@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1731244445.git.leon@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Sun, Nov 10, 2024 at 03:46:47PM +0200, Leon Romanovsky wrote:
-
-<...>
-
-> ----------------------------------------------------------------------------
-> The code can be downloaded from:
-> https://git.kernel.org/pub/scm/linux/kernel/git/leon/linux-rdma.git tag:dma-split-nov-09
-
-<...>
-
+> From: Zhu Yanjun <yanjun.zhu@linux.dev>
 > 
-> Christoph Hellwig (6):
->   PCI/P2PDMA: Refactor the p2pdma mapping helpers
->   dma-mapping: move the PCI P2PDMA mapping helpers to pci-p2pdma.h
->   iommu: generalize the batched sync after map interface
->   iommu/dma: Factor out a iommu_dma_map_swiotlb helper
->   dma-mapping: add a dma_need_unmap helper
->   docs: core-api: document the IOVA-based API
+> When run "ip link add" command to add a rxe rdma link in a net
+> namespace, normally this rxe rdma link can not work in a net
+> name space.
 > 
-> Leon Romanovsky (11):
->   dma-mapping: Add check if IOVA can be used
->   dma: Provide an interface to allow allocate IOVA
->   dma-mapping: Implement link/unlink ranges API
->   mm/hmm: let users to tag specific PFN with DMA mapped bit
->   mm/hmm: provide generic DMA managing logic
->   RDMA/umem: Store ODP access mask information in PFN
->   RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page
->     linkage
->   RDMA/umem: Separate implicit ODP initialization from explicit ODP
->   vfio/mlx5: Explicitly use number of pages instead of allocated length
->   vfio/mlx5: Rewrite create mkey flow to allow better code reuse
->   vfio/mlx5: Enable the DMA link API
+> The root cause is that a sock listening on udp port 4791 is created
+> in init_net when the rdma_rxe module is loaded into kernel. That is,
+> the sock listening on udp port 4791 is created in init_net. Other net
+> namespace is difficult to use this sock.
+> 
+> The following commits will solve this problem.
+> 
+> In the first commit, move the creating sock listening on udp port 4791
+> from module_init function to rdma link creating functions. That is,
+> after the module rdma_rxe is loaded, the sock will not be created.
+> When run "rdma link add ..." command, the sock will be created. So
+> when creating a rdma link in the net namespace, the sock will be
+> created in this net namespace.
+> 
+> In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
+> will check the sock exists in the net namespace or not. If yes, rdma
+> link will increase the reference count of this sock, then continue other
+> jobs instead of creating a new sock to listen on udp port 4791. Since the
+> network notifier is global, when the module rdma_rxe is loaded, this
+> notifier will be registered.
+> 
+> After the rdma link is created, the command "rdma link del" is to
+> delete rdma link at the same time the sock is checked. If the reference
+> count of this sock is greater than the sock reference count needed by
+> udp tunnel, the sock reference count is decreased by one. If equal, it
+> indicates that this rdma link is the last one. As such, the udp tunnel
+> is shut down and the sock is closed. The above work should be
+> implemented in linkdel function. But currently no dellink function in
+> rxe. So the 3rd commit addes dellink function pointer. And the 4th
+> commit implements the dellink function in rxe.
+> 
+> To now, it is not necessary to keep a global variable to store the sock
+> listening udp port 4791. This global variable can be replaced by the
+> functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
+> function udp6_lib_lookup is in the fast path, a member variable l_sk6
+> is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
+> to lookup the sock, then the sock is stored in l_sk6, in the future,it
+> can be used directly.
+> 
+> All the above work has been done in init_net. And it can also work in
+> the net namespace. So the init_net is replaced by the individual net
+> namespace. This is what the 6th commit does. Because rxe device is
+> dependent on the net device and the sock listening on udp port 4791,
+> every rxe device is in exclusive mode in the individual net namespace.
+> Other rdma netns operations will be considerred in the future.
+> 
+> In the 7th commit, the register_pernet_subsys/unregister_pernet_subsys
+> functions are added. When a new net namespace is created, the init
+> function will initialize the sk4 and sk6 socks. Then the 2 socks will
+> be released when the net namespace is destroyed. The functions
+> rxe_ns_pernet_sk4/rxe_ns_pernet_set_sk4 will get and set sk4 in the net
+> namespace. The functions rxe_ns_pernet_sk6/rxe_ns_pernet_set_sk6 will
+> handle sk6. Then sk4 and sk6 are used in the previous commits.
+> 
+> As the sk4 and sk6 in pernet namespace can be accessed, it is not
+> necessary to add a new l_sk6. As such, in the 8th commit, the l_sk6 is
+> replaced with the sk6 in pernet namespace.
+> 
+> Test steps:
+> 1) Suppose that 2 NICs are in 2 different net namespaces.
+> 
+>   # ip netns exec net0 ip link
+>   3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
+>      link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
+>      altname enp5s0
+> 
+>   # ip netns exec net1 ip link
+>   4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
+>      link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
+> 
+> 2) Add rdma link in the different net namespace
+>     net0:
+>     # ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
+> 
+>     net1:
+>     # ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
+> 
+> 3) Run rping test.
+>     net0
+>     # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
+>     [1] 1737
+>     # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
+>     verbose
+>     count 1
+>     ...
+>     ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+>     ...
+> 
+> 4) Remove the rdma links from the net namespaces.
+>     net0:
+>     # ip netns exec net0 ss -lu
+>     State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>     UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+>     UNCONN    0         0         [::]:4791             [::]:*
+> 
+>     # ip netns exec net0 rdma link del rxe0
+> 
+>     # ip netns exec net0 ss -lu
+>     State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+> 
+>     net1:
+>     # ip netns exec net0 ss -lu
+>     State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+>     UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+>     UNCONN    0         0         [::]:4791             [::]:*
+> 
+>     # ip netns exec net1 rdma link del rxe1
+> 
+>     # ip netns exec net0 ss -lu
+>     State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+> 
+> V5->V6: Fix resource leak problem when rxe_net_init fails. And fix some
+> 	style problems.
+> 
+> V4->V5: Rebase the commits to V6.4-rc1
+> 
+> V3->V4: Rebase the commits to rdma-next;
+> 
+> V2->V3: 1) Add "rdma link del" example in the cover letter, and use "ss -lu" to
+>            verify rdma link is removed.
+>         2) Add register_pernet_subsys/unregister_pernet_subsys net namespace
+>         3) Replace l_sk6 with sk6 of pernet_name_space
+> 
+> V1->V2: Add the explicit initialization of sk6.
+> 
+> Zhu Yanjun (8):
+>   RDMA/rxe: Creating listening sock in newlink function
+>   RDMA/rxe: Support more rdma links in init_net
+>   RDMA/nldev: Add dellink function pointer
+>   RDMA/rxe: Implement dellink in rxe
+>   RDMA/rxe: Replace global variable with sock lookup functions
+>   RDMA/rxe: add the support of net namespace
+>   RDMA/rxe: Add the support of net namespace notifier
+>   RDMA/rxe: Replace l_sk6 with sk6 in net namespace
+> 
+>  drivers/infiniband/core/nldev.c     |   6 ++
+>  drivers/infiniband/sw/rxe/Makefile  |   3 +-
+>  drivers/infiniband/sw/rxe/rxe.c     |  35 +++++++-
+>  drivers/infiniband/sw/rxe/rxe_net.c | 119 ++++++++++++++++++------
+>  drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
+>  drivers/infiniband/sw/rxe/rxe_ns.c  | 134 ++++++++++++++++++++++++++++
+>  drivers/infiniband/sw/rxe/rxe_ns.h  |  17 ++++
+>  include/rdma/rdma_netlink.h         |   2 +
+>  8 files changed, 285 insertions(+), 40 deletions(-)
+>  create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
+>  create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.h
+> 
 
-Robin,
+Hi mates, thanks for your work. I'm working on cloud native web related and I really need this patch :).
 
-All technical concerns were handled and this series is ready to be merged.
+Nowadays AI + Cloud Native is becoming more and more popular and there are more and more AI clusters running on Kubernetes. Most AI clusters use RDMA technology to communicate across nodes between training tasks, which speeds up training and reduces network latency. However, RDMA hardware devices are very expensive and costly for those who want to experience or test the entire AI training process (involving scheduling, using RDMA networks, and using nccl-like communication libraries, etc.). So we plan to develop a Kubernetes CNI plugin that can run RDMA locally, which will mount the rdma device on the host inside the container so that the AI tasks can also use the RDMA network.
 
-Robin, can you please Ack the dma-iommu patches?
+I understand that Soft Roce is able to virtualize rdma devices without RDMA hardware, and I have verified this locally, being able to test it with tools like ib_send_bw. However, I further moved the NIC on the host or the NIC on the host using macvlan technology to the network namespace inside the container, and then manually added the rdma device inside the container using the rdma link add command, and then finally found out that I couldn't see the virtualized rdma device inside the container by using the ibv_devices command, and I switched the system mode of the rdma respectively(shared or exclusive), and neither of them worked. I've also seen other developers report similar issues, refer [nccl-tests container can't use Soft-RoCE interfaces](https://github.com/NVIDIA/deepops/issues/772).
 
-Thanks
+I guess the Linux kernel upstream doesn't support soft roce containerization yet. I read the linux kernel upstream code and related patches carefully and confirmed my guess. So I contacted Yanjun, I really hope this patch can be merged into upstream, thanks again for your work.
+
+Best Regards
+Cyclinder kuo
+
 
