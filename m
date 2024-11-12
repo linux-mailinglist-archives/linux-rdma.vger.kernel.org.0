@@ -1,141 +1,140 @@
-Return-Path: <linux-rdma+bounces-5944-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5945-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00FCD9C5588
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 12:07:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF4119C5989
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 14:50:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAEE5B23CB5
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 10:36:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5F821F22FEF
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 13:50:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1E2213142;
-	Tue, 12 Nov 2024 10:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1727A1FBCB4;
+	Tue, 12 Nov 2024 13:50:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ha0TQiuX"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hlI9Fq2C"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C4E214406
-	for <linux-rdma@vger.kernel.org>; Tue, 12 Nov 2024 10:34:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AFE21F7084
+	for <linux-rdma@vger.kernel.org>; Tue, 12 Nov 2024 13:50:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731407676; cv=none; b=FVBhoJPje2b8PM9Gk2Lvdb4OSNbBJmVfqSqfBz4Yamldn/owHpomo4uDBNjc72sGucW+USEdEMqOSlH94NGvsX9mBtgXpKUx5vBjhLPTr6qB68jB81DMUrlFAXq1Fs1ur/2h/pTcLwD/MEZvL6ekkkzZp/Zg73R62juFpKGFzCQ=
+	t=1731419420; cv=none; b=d4Du4jpYaByVxNDIexgaF9sVfznEiq26FlYYV3TXNoDMO+AVpnr9KnUrrbWYWlEe+jDMqppHjD+25f/fFDEKMajSEnoDA6y+y3ltubkUPRfzbl2ogx0l4Qo0Spedpi6DeiCmQJjG7gCaTbt8qM9fQpZ3D7OX1pf57lQlHckVRhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731407676; c=relaxed/simple;
-	bh=5lVLdqMk3VgIc+loDggCqz+av+37IoPPL4KzOPwYXDM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=liYfAiX2rfnR0GC1idlSz9+S8SMkZR3WY9btRl/fkYej5t6Pu9zCj/sOnEkMe5iDhhfzTNdYP+BzOXtebCH0DiMO/c/tY5UtmyYn+mlrICpR83Bw0CxmpEQzczrgortUYyqt1XRwplZxrsqOmkrkqPwbKBF5aD32I+/tpat4nTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ha0TQiuX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFFB6C4CEDA;
-	Tue, 12 Nov 2024 10:34:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731407676;
-	bh=5lVLdqMk3VgIc+loDggCqz+av+37IoPPL4KzOPwYXDM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ha0TQiuX7F9hC3egdlnZLW8AG6egITA2hm/4WCPpMm0zbthi+ySuSUp+9T7lYn0gT
-	 ddu/Aj7I5tElokQORVx3hEKBBhAk73cramWTl77B7wADxlQP94Bm6J59ymgBy3kWTP
-	 f9ShxCtguOFByHWrie9Ng34fR0NxbC99O3SaXW1elDweGxWmgvS9zJBsVycHjLu9+V
-	 ch5T11aPWq9JAHY6QR0LtAmprUR/AwQFm9jtIrsoRT2mE5U/4r3j5GTC1x1iHdqZjp
-	 mSxDAtMByKiGbWNe0gmkT9NXH01ZwGRNVXWbV+Foq/gVng7C+gj/1bO4+lWfEx7xMm
-	 6zuWWl2oKI0jQ==
-Date: Tue, 12 Nov 2024 12:34:29 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: Michael Chan <michael.chan@broadcom.com>, jgg@ziepe.ca,
-	linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
-	kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [rdma-next 5/5] RDMA/bnxt_re: Add new function to setup NQs
-Message-ID: <20241112103429.GK71181@unreal>
-References: <1731055359-12603-1-git-send-email-selvin.xavier@broadcom.com>
- <1731055359-12603-6-git-send-email-selvin.xavier@broadcom.com>
- <20241112081746.GI71181@unreal>
- <CA+sbYW2BAUXLyk0Fa_hmXoQ1e7Ocmj-jw41JNBmjJQupimaD8Q@mail.gmail.com>
+	s=arc-20240116; t=1731419420; c=relaxed/simple;
+	bh=nSOskOd9cmif+82CK5bd9zlOpXVHHGQGCb+Liwu2Csk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z50HjQu8mtX+OWidJ8PT+52A3qcVrBkUdNtWmum3XjaxjYmm5wFlqjOHfsTri8a4bHcutVQkJjAIhEbYFFtjTqxUb0GtvPZw/8YxQc2Nd/PmH7NjXARhfGolx7CyXQh4r/89296ARqdE8z8GPUudxULSNCI+HGZTuLotUe+qgLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hlI9Fq2C; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1731419418;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=/WX3p8cdeb2T0ayeSkNyCI7S/yaoWFFExVswly9zdi4=;
+	b=hlI9Fq2CCNc57Fe3DxfApFwxnKwaMnKnotihaHcNfKnNc69pWRgaYhpEWXZss2pA0nYt2F
+	oaz2RCLztgxhFQv2PvJX61F37LI9Ahiw/61UUyt61WtVkAwI6rh0B4e3VD42o31JeOCCRg
+	P25RUYWyaN9p4QjR7N/FoWzk15dNjXg=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-19-xAa1S21cPgqKL2zG9lAh2g-1; Tue,
+ 12 Nov 2024 08:50:16 -0500
+X-MC-Unique: xAa1S21cPgqKL2zG9lAh2g-1
+X-Mimecast-MFC-AGG-ID: xAa1S21cPgqKL2zG9lAh2g
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 97BA41955BF4;
+	Tue, 12 Nov 2024 13:50:15 +0000 (UTC)
+Received: from mheiblap.localdomain.com (unknown [10.47.238.97])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id D3D7C19560A3;
+	Tue, 12 Nov 2024 13:50:13 +0000 (UTC)
+From: Mohammad Heib <mheib@redhat.com>
+To: linux-rdma@vger.kernel.org,
+	selvin.xavier@broadcom.com,
+	kashyap.desai@broadcom.com
+Cc: Mohammad Heib <mheib@redhat.com>
+Subject: [PATCH rdma] RDMA/bnxt_re: cmds completions handler avoid accessing invalid memeory
+Date: Tue, 12 Nov 2024 15:49:56 +0200
+Message-Id: <20241112134956.1415343-1-mheib@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+sbYW2BAUXLyk0Fa_hmXoQ1e7Ocmj-jw41JNBmjJQupimaD8Q@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-On Tue, Nov 12, 2024 at 02:55:12PM +0530, Selvin Xavier wrote:
-> +Michael Chan
-> 
-> On Tue, Nov 12, 2024 at 1:47 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Fri, Nov 08, 2024 at 12:42:39AM -0800, Selvin Xavier wrote:
-> > > From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> > >
-> > > Move the logic to setup and enable NQs to a new function.
-> > > Similarly moved the NQ cleanup logic to a common function.
-> > > Introdued a flag to keep track of NQ allocation status
-> > > and added sanity checks inside bnxt_re_stop_irq() and
-> > > bnxt_re_start_irq() to avoid possible race conditions.
-> > >
-> > > Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > > ---
-> > >  drivers/infiniband/hw/bnxt_re/bnxt_re.h |   2 +
-> > >  drivers/infiniband/hw/bnxt_re/main.c    | 204 +++++++++++++++++++-------------
-> > >  2 files changed, 123 insertions(+), 83 deletions(-)
-> >
-> > <...>
-> >
-> > >
-> > > +     rtnl_lock();
-> > > +     if (test_and_clear_bit(BNXT_RE_FLAG_SETUP_NQ, &rdev->flags))
-> > > +             bnxt_re_clean_nqs(rdev);
-> > > +     rtnl_unlock();
-> >
-> > <...>
-> >
-> > > +             rtnl_lock();
-> > >               bnxt_qplib_free_ctx(&rdev->qplib_res, &rdev->qplib_ctx);
-> > >               bnxt_qplib_disable_rcfw_channel(&rdev->rcfw);
-> > >               type = bnxt_qplib_get_ring_type(rdev->chip_ctx);
-> > >               bnxt_re_net_ring_free(rdev, rdev->rcfw.creq.ring_id, type);
-> > > +             rtnl_unlock();
-> >
-> > Please don't add rtnl_lock() to drivers in RDMA subsystem. BNXT driver
-> > is managed through netdev and it is there all proper locking should be
-> > done.
-> The main reason for bnxt_re to take the rtnl is because of the MSIx
-> resource configuration.
-> This is because the NIC driver is dynamically modifying the MSIx table
-> when the number
-> of ring change  or ndo->open/close is invoked. So we stop and restart
-> the interrupts of RoCE also with rtnl held.
+If bnxt FW behaves unexpectedly because of FW bug or unexpected behavior it
+can send completions for old  cookies that have already been handled by the
+bnxt driver. If that old cookie was associated with an old calling context
+the driver will try to access that caller memory again because the driver
+never clean the is_waiter_alive flag after the caller successfully complete
+waiting, and this access will cause the following kernel panic:
 
-rtnl_lock is a big kernel lock, which blocks almost everything in the netdev.
-In your case, you are changing one device configuration and should use
-your per-device locks. Even in the system with more than one BNXT device,
-the MSI-X on one device will influence other "innocent" devices.
+Call Trace:
+ <IRQ>
+ ? __die+0x20/0x70
+ ? page_fault_oops+0x75/0x170
+ ? exc_page_fault+0xaa/0x140
+ ? asm_exc_page_fault+0x22/0x30
+ ? bnxt_qplib_process_qp_event.isra.0+0x20c/0x3a0 [bnxt_re]
+ ? srso_return_thunk+0x5/0x5f
+ ? __wake_up_common+0x78/0xa0
+ ? srso_return_thunk+0x5/0x5f
+ bnxt_qplib_service_creq+0x18d/0x250 [bnxt_re]
+ tasklet_action_common+0xac/0x210
+ handle_softirqs+0xd3/0x2b0
+ __irq_exit_rcu+0x9b/0xc0
+ common_interrupt+0x7f/0xa0
+ </IRQ>
+ <TASK>
 
-> >
-> > Please work to remove existing rtnl_lock() from bnxt_re_update_en_info_rdev() too.
-> > IMHO that lock is not needed after your driver conversion to auxbus.
-> This check is also to synchronize between the irq_stop and restart
-> implementation between
-> bnxt_en and bnxt_re driver and roce driver unload.
-> 
->  We will review this locking and see if we can handle it. But it is a
-> major design change in both L2
-> and roce drivers.
+To avoid the above unexpected behavior clear the is_waiter_alive flag
+every time the caller finishes waiting for a completion.
 
-You are adding new rtnl_lock and not moving it from one place to
-another, so this redesign should be done together with this new
-feature.
+Fixes: 691eb7c6110f ("RDMA/bnxt_re: handle command completions after driver detect a timedout")
+Signed-off-by: Mohammad Heib <mheib@redhat.com>
+---
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Thanks
-
-> >
-> > Thanks
-
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index f5713e3c39fb..eaf92029862b 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -511,15 +511,15 @@ static int __bnxt_qplib_rcfw_send_message(struct bnxt_qplib_rcfw *rcfw,
+ 	else
+ 		rc = __poll_for_resp(rcfw, cookie);
+ 
+-	if (rc) {
+-		spin_lock_irqsave(&rcfw->cmdq.hwq.lock, flags);
+-		crsqe = &rcfw->crsqe_tbl[cookie];
+-		crsqe->is_waiter_alive = false;
+-		if (rc == -ENODEV)
+-			set_bit(FIRMWARE_STALL_DETECTED, &rcfw->cmdq.flags);
+-		spin_unlock_irqrestore(&rcfw->cmdq.hwq.lock, flags);
++
++	spin_lock_irqsave(&rcfw->cmdq.hwq.lock, flags);
++	crsqe = &rcfw->crsqe_tbl[cookie];
++	crsqe->is_waiter_alive = false;
++	if (rc == -ENODEV)
++		set_bit(FIRMWARE_STALL_DETECTED, &rcfw->cmdq.flags);
++	spin_unlock_irqrestore(&rcfw->cmdq.hwq.lock, flags);
++	if (rc)
+ 		return -ETIMEDOUT;
+-	}
+ 
+ 	if (evnt->status) {
+ 		/* failed with status */
+-- 
+2.34.3
 
 
