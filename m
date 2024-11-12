@@ -1,232 +1,320 @@
-Return-Path: <linux-rdma+bounces-5935-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5936-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 928779C5207
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 10:30:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D02CB9C5220
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 10:34:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2B52B2E749
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 09:25:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 612A81F21E85
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2024 09:34:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B1720DD42;
-	Tue, 12 Nov 2024 09:25:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174AE20E31C;
+	Tue, 12 Nov 2024 09:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="XTJwkX5t"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iASbMsgM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B30DD20D4E2
-	for <linux-rdma@vger.kernel.org>; Tue, 12 Nov 2024 09:25:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0694220D4E7
+	for <linux-rdma@vger.kernel.org>; Tue, 12 Nov 2024 09:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731403527; cv=none; b=JMkO2+Gb8OP7TAI9ou84hVzxpNS0eIAPuyHLz7NiMPS2IfilTS61a57skHoIZVK5rMOyq4VnUPoj4Wk6BJ4lmiiqcNA3b+BTi5I5h5dPJkf0eQg2UHaBUnJ3AatKsTwPl6jCogmwwlCdOILr5E0bZNKjQvJ6I86auFiERZf3fmI=
+	t=1731404042; cv=none; b=hYiv9fRc4AEzVLoi5vUOMvwBlG4TWpvg51XuCoaQ8GsHfCgwg64mE2jQG3Va8jmhCxKZ3fxu/9VT/xfdQuY9Wun87BkwU8rksn48Z2eMbuuUzo8iD9aKKizADry9szmFvkpcoh1ciHYMzjMfEZUFLEnHnPsSzgJFKa6ZhFSXU7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731403527; c=relaxed/simple;
-	bh=A2pPYyjVf1GSl/zqDlVl2bLHdGohsPJHM6bTfUtcYcA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C4wYMfty05BN11KXq+F+Fy6mKAwi8oKu+CvoUxPYj/e3tOWrqS5Akz63fviTQw1pyy8pTNufDvc/0JdjH6U3bwSHbGEjfEW3wabTT36z9PirolU9980hTYxFnBUuzfhrXzmz9RKmXwHehZqTZvXPnVbXfdy6vYfFL6mEsp11DB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=XTJwkX5t; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6e377e4aea3so42829407b3.3
-        for <linux-rdma@vger.kernel.org>; Tue, 12 Nov 2024 01:25:25 -0800 (PST)
+	s=arc-20240116; t=1731404042; c=relaxed/simple;
+	bh=qWeE+wnw8x7rkV1nwK1BycFxtKPZ58oORnJs2Eo8O9M=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=uwrsk1n1ffwYx9JqiO+qECLri0KVaaH4LkKomspDdYnwdOAADyRokW0bRRk7/HQX01V8TGfYA4PLeLYYSJKiHuT8Kply7usu/0DrKxmfytOsaLbMQM66326dDhQstfR8uChhzrScPBzCnqEGI7ypcbpq1HRjzQYYylYdnq1b04E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iASbMsgM; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2e2eb9dde40so4391212a91.0
+        for <linux-rdma@vger.kernel.org>; Tue, 12 Nov 2024 01:34:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1731403524; x=1732008324; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=J/MSHj2lzu8SPF1/p/SFzF0wJ5aPryWbuEkBuEq4w8U=;
-        b=XTJwkX5t56aD8E9VtypbuSC0di0C8QQ1E/0VVe8Xym5lIo+XEwyykvjBTbopbfbC+X
-         gD7Gge/sEqeHNjKlkFHPIXkproy5Vgf/VCbvgEKAnkmeZxNoOgmikPI7IAKe31khwh7q
-         e81N0w8Q0bFpwtojiuSGmTQuq+tBjWI9xFUlQ=
+        d=gmail.com; s=20230601; t=1731404040; x=1732008840; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4ZgCdEoSrFMEDqPsR6GojTZkOgi2KLxpzsUq1eOtaUc=;
+        b=iASbMsgMnMrEWXh3YieWqMWBcWBSUqB1iHAejohSG0dmoeIAPoeX33lRDX9qbCXoCi
+         L0MVwHisqgDnb2Ns+YYolJaPEIclxoavauUgBpB+GljcF6JokXxXYtWj9NFc1shrevd8
+         B6RwenY+HEkVnLJicQxBED3uu9gpRTJMLb0oOMeuTdJAdFB2WUWX3ecBckLSVTYhcTKx
+         F0yBI+LpARkDr3Pg1y30VLDrtaqYnZzJ1WFGbwzdT0fPjYz6DqriXALxB665MaGP9eTe
+         Yrf4ijX7ke1wssYLW0rHiPXlKvD+M8fQ7XArlpvqvy0szKJrXKik3r7Ce+CLw6wQo2+m
+         T0wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731403524; x=1732008324;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J/MSHj2lzu8SPF1/p/SFzF0wJ5aPryWbuEkBuEq4w8U=;
-        b=ud2V5EYoUnJ5h0qMVdmxnBCjZ64V11PjFtQ5UxK8J0UcsPY4mAy7FfT1P3c4hHj9yf
-         qbcrBxiJvhCEQmP7Pd2e0pokgLdM8vMijsPP3yNBWTgDFm8xa4h3dcZ99f3ZnHbC28lX
-         J/08mZDOX4jeQFYihRpDh6KsrEYM+aG++wnlMst0VfyUXhad8d+GVklvklTuf/Dlb1fE
-         Sa9QV2Q8h7zv+Xz8oKzaIEtckHxyfXtm5fiW4jyddA8eEQ8gDsLjIa7hEu3iu01EmuLK
-         NoIoEBT/bxR6xxqloTHq03Qn92HaNyjVNm0gF4XMZt2s9yVSBvaoIKQkM24InnS6n0TC
-         7EZg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwvfvhY1VvaJKFTFQCoNfcpTI3tqCpV4i2W7/6yvAHvDBwzN0F1i2/BSlxty9OCv6C4L8+OZWINQDx@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNQVbQc3s8gNN54bemJHazzinzXGNJmO8FSz2mDAGM6NXmpggo
-	eFyr5JrdS+GnnbyV3wyqdA9eiNIAlQycAjLYyPjyu3cbL7fUb5k8WFVucxtFcn2i2wqhEIyDapw
-	gAQi5e0+7MK2k6ogG7keHpBProKdCVRX2+N3C
-X-Google-Smtp-Source: AGHT+IE0QdUCsu6CRyM0Ed+bFnzf3jmr0KzLBwBmsSc84wzhPHf8j7oNyAE+xLO0PuTZNMdkNKt3mK+FobndxpS/a1U=
-X-Received: by 2002:a05:690c:f88:b0:6e3:453f:fbd5 with SMTP id
- 00721157ae682-6eaddfb83b2mr142791167b3.36.1731403524680; Tue, 12 Nov 2024
- 01:25:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1731404040; x=1732008840;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4ZgCdEoSrFMEDqPsR6GojTZkOgi2KLxpzsUq1eOtaUc=;
+        b=v9EgewodWndzHglRpOMUYC3lLrQogZg2VY52sri+h66xC6JioYpY4xbJbH16WSiQMV
+         MMqsT68PQ99XGe8yJvH29cn0PWpc0S9d2JMC50iJpSE3IXxsKyPy3H1OmMt3Oj5e19Y5
+         qn5MN3i3BCpMJ7GF4K030+uRZJW94V/kFlEeUgosQVdagmj7yzaTE6bzhDFtvuSO7WqO
+         g1iLykdXTYKavWWLahPGKxGvB3L3L+H1McTScc7RkAEaYN1RpzZQYH/r30nPf71cRNgn
+         qLoWCKxSMlSJVgaUEUM4UrxI8oWb90yibK5bXVubfHnFAVEOaPPFNbNiLt4h/wPsAEND
+         8opQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWJNekXhHKneWCxmfbE7avDoi8w9ar8lVubYZLhhZIBQbjH5fNPTSUjsAeYGhnlJhJV5p0fIm1o8k3g@vger.kernel.org
+X-Gm-Message-State: AOJu0YzrMRmvedCS2wKKnaNLaIMUfI8lQhLVuZVAMzRJLxxRSij4ZE/+
+	RBCpxR3pZNGbPXMqzvFecwZoyHXiOe2+ms/QKU9J/I2awNHmKppO
+X-Google-Smtp-Source: AGHT+IHif1ftZ8LeVpPjW4RLaG5QlYr4UmGg81j7uXOG3AiNgqGvCjsD+y/Q7rWUIRjqr02y5l8vGQ==
+X-Received: by 2002:a17:90b:1d88:b0:2e0:d1fa:fdd7 with SMTP id 98e67ed59e1d1-2e9b172af9cmr20331174a91.27.1731404039970;
+        Tue, 12 Nov 2024 01:33:59 -0800 (PST)
+Received: from 10-20-1-10.. ([58.34.148.69])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e9a5fd3f0dsm10086750a91.34.2024.11.12.01.33.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Nov 2024 01:33:59 -0800 (PST)
+From: Cyclinder Kuo <kuocyclinder@gmail.com>
+To: rpearsonhpe@gmail.com
+Cc: jgg@ziepe.ca,
+	lehrer@gmail.com,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org,
+	parav@nvidia.com,
+	yanjun.zhu@intel.com,
+	yanjun.zhu@linux.dev,
+	zyjzyj2000@gmail.com
+Subject: Re: [PATCH v6.4-rc1 v5 0/8] Fix the problem that rxe can not work in net namespace
+Date: Tue, 12 Nov 2024 17:33:55 +0800
+Message-Id: <20241112093355.2534407-1-kuocyclinder@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <4f097d4a-85f5-392f-53bb-85ca0d75e16f@gmail.com>
+References: <4f097d4a-85f5-392f-53bb-85ca0d75e16f@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1731055359-12603-1-git-send-email-selvin.xavier@broadcom.com>
- <1731055359-12603-6-git-send-email-selvin.xavier@broadcom.com> <20241112081746.GI71181@unreal>
-In-Reply-To: <20241112081746.GI71181@unreal>
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-Date: Tue, 12 Nov 2024 14:55:12 +0530
-Message-ID: <CA+sbYW2BAUXLyk0Fa_hmXoQ1e7Ocmj-jw41JNBmjJQupimaD8Q@mail.gmail.com>
-Subject: Re: [rdma-next 5/5] RDMA/bnxt_re: Add new function to setup NQs
-To: Leon Romanovsky <leon@kernel.org>, Michael Chan <michael.chan@broadcom.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
-	kalesh-anakkur.purayil@broadcom.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000011851a0626b3cc17"
+Content-Transfer-Encoding: 8bit
 
---00000000000011851a0626b3cc17
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> > From: Zhu Yanjun <yanjun.zhu@linux.dev>
+> > 
+> > When run "ip link add" command to add a rxe rdma link in a net
+> > namespace, normally this rxe rdma link can not work in a net
+> > name space.
+> > 
+> > The root cause is that a sock listening on udp port 4791 is created
+> > in init_net when the rdma_rxe module is loaded into kernel. That is,
+> > the sock listening on udp port 4791 is created in init_net. Other net
+> > namespace is difficult to use this sock.
+> > 
+> > The following commits will solve this problem.
+> > 
+> > In the first commit, move the creating sock listening on udp port 4791
+> > from module_init function to rdma link creating functions. That is,
+> > after the module rdma_rxe is loaded, the sock will not be created.
+> > When run "rdma link add ..." command, the sock will be created. So
+> > when creating a rdma link in the net namespace, the sock will be
+> > created in this net namespace.
+> > 
+> > In the second commit, the functions udp4_lib_lookup and udp6_lib_lookup
+> > will check the sock exists in the net namespace or not. If yes, rdma
+> > link will increase the reference count of this sock, then continue other
+> > jobs instead of creating a new sock to listen on udp port 4791. Since the
+> > network notifier is global, when the module rdma_rxe is loaded, this
+> > notifier will be registered.
+> > 
+> > After the rdma link is created, the command "rdma link del" is to
+> > delete rdma link at the same time the sock is checked. If the reference
+> > count of this sock is greater than the sock reference count needed by
+> > udp tunnel, the sock reference count is decreased by one. If equal, it
+> > indicates that this rdma link is the last one. As such, the udp tunnel
+> > is shut down and the sock is closed. The above work should be
+> > implemented in linkdel function. But currently no dellink function in
+> > rxe. So the 3rd commit addes dellink function pointer. And the 4th
+> > commit implements the dellink function in rxe.
+> > 
+> > To now, it is not necessary to keep a global variable to store the sock
+> > listening udp port 4791. This global variable can be replaced by the
+> > functions udp4_lib_lookup and udp6_lib_lookup totally. Because the
+> > function udp6_lib_lookup is in the fast path, a member variable l_sk6
+> > is added to store the sock. If l_sk6 is NULL, udp6_lib_lookup is called
+> > to lookup the sock, then the sock is stored in l_sk6, in the future,it
+> > can be used directly.
+> > 
+> > All the above work has been done in init_net. And it can also work in
+> > the net namespace. So the init_net is replaced by the individual net
+> > namespace. This is what the 6th commit does. Because rxe device is
+> > dependent on the net device and the sock listening on udp port 4791,
+> > every rxe device is in exclusive mode in the individual net namespace.
+> > Other rdma netns operations will be considerred in the future.
+> > 
+> > In the 7th commit, the register_pernet_subsys/unregister_pernet_subsys
+> > functions are added. When a new net namespace is created, the init
+> > function will initialize the sk4 and sk6 socks. Then the 2 socks will
+> > be released when the net namespace is destroyed. The functions
+> > rxe_ns_pernet_sk4/rxe_ns_pernet_set_sk4 will get and set sk4 in the net
+> > namespace. The functions rxe_ns_pernet_sk6/rxe_ns_pernet_set_sk6 will
+> > handle sk6. Then sk4 and sk6 are used in the previous commits.
+> > 
+> > As the sk4 and sk6 in pernet namespace can be accessed, it is not
+> > necessary to add a new l_sk6. As such, in the 8th commit, the l_sk6 is
+> > replaced with the sk6 in pernet namespace.
+> > 
+> > Test steps:
+> > 1) Suppose that 2 NICs are in 2 different net namespaces.
+> > 
+> >   # ip netns exec net0 ip link
+> >   3: eno2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
+> >      link/ether 00:1e:67:a0:22:3f brd ff:ff:ff:ff:ff:ff
+> >      altname enp5s0
+> > 
+> >   # ip netns exec net1 ip link
+> >   4: eno3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel
+> >      link/ether f8:e4:3b:3b:e4:10 brd ff:ff:ff:ff:ff:ff
+> > 
+> > 2) Add rdma link in the different net namespace
+> >     net0:
+> >     # ip netns exec net0 rdma link add rxe0 type rxe netdev eno2
+> > 
+> >     net1:
+> >     # ip netns exec net1 rdma link add rxe1 type rxe netdev eno3
+> > 
+> > 3) Run rping test.
+> >     net0
+> >     # ip netns exec net0 rping -s -a 192.168.2.1 -C 1&
+> >     [1] 1737
+> >     # ip netns exec net1 rping -c -a 192.168.2.1 -d -v -C 1
+> >     verbose
+> >     count 1
+> >     ...
+> >     ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+> >     ...
+> > 
+> > 4) Remove the rdma links from the net namespaces.
+> >     net0:
+> >     # ip netns exec net0 ss -lu
+> >     State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+> >     UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+> >     UNCONN    0         0         [::]:4791             [::]:*
+> > 
+> >     # ip netns exec net0 rdma link del rxe0
+> > 
+> >     # ip netns exec net0 ss -lu
+> >     State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+> > 
+> >     net1:
+> >     # ip netns exec net0 ss -lu
+> >     State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+> >     UNCONN    0         0         0.0.0.0:4791          0.0.0.0:*
+> >     UNCONN    0         0         [::]:4791             [::]:*
+> > 
+> >     # ip netns exec net1 rdma link del rxe1
+> > 
+> >     # ip netns exec net0 ss -lu
+> >     State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process
+> > 
+> > V4->V5: Rebase the commits to V6.4-rc1
+> > 
+> > V3->V4: Rebase the commits to rdma-next;
+> > 
+> > V2->V3: 1) Add "rdma link del" example in the cover letter, and use "ss -lu" to
+> >            verify rdma link is removed.
+> >         2) Add register_pernet_subsys/unregister_pernet_subsys net namespace
+> >         3) Replace l_sk6 with sk6 of pernet_name_space
+> > 
+> > V1->V2: Add the explicit initialization of sk6.
+> > 
+> > Zhu Yanjun (8):
+> >   RDMA/rxe: Creating listening sock in newlink function
+> >   RDMA/rxe: Support more rdma links in init_net
+> >   RDMA/nldev: Add dellink function pointer
+> >   RDMA/rxe: Implement dellink in rxe
+> >   RDMA/rxe: Replace global variable with sock lookup functions
+> >   RDMA/rxe: add the support of net namespace
+> >   RDMA/rxe: Add the support of net namespace notifier
+> >   RDMA/rxe: Replace l_sk6 with sk6 in net namespace
+> > 
+> >  drivers/infiniband/core/nldev.c     |   6 ++
+> >  drivers/infiniband/sw/rxe/Makefile  |   3 +-
+> >  drivers/infiniband/sw/rxe/rxe.c     |  35 +++++++-
+> >  drivers/infiniband/sw/rxe/rxe_net.c | 113 +++++++++++++++++------
+> >  drivers/infiniband/sw/rxe/rxe_net.h |   9 +-
+> >  drivers/infiniband/sw/rxe/rxe_ns.c  | 134 ++++++++++++++++++++++++++++ip netns add test
+> >  drivers/infiniband/sw/rxe/rxe_ns.h  |  17 ++++
+> >  include/rdma/rdma_netlink.h         |   2 +
+> >  8 files changed, 279 insertions(+), 40 deletions(-)
+> >  create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.c
+> >  create mode 100644 drivers/infiniband/sw/rxe/rxe_ns.hip netns add test
+> > 
+> 
+> Zhu,
+> 
+> I did some simple experiments on netns functionality.
+> 
+> With your patch set applied and rxe0 created on enp6s0 and rxe1 created on lo in the default namespace
+> 
+> 	# sudo ip netns add test
+> 	# ip netns
+> 	test
+> 	# sudo ip netns exec test ip link
+> 	1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+> 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+> 	# sudo ip netns exec test ip link set dev lo up
+> 	# sudo ip netns exec test ip link
+> 	1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+> 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+> 	# sudo ip netns exec test ip addr add dev lo fe80::0200:00ff:fe00:0000/64
+> 		[rxe doesn't work unless this IPV6 address is set]
+> 	# sudo ip netns exec test ip addr
+> 	1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+> 	    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+> 	    inet 127.0.0.1/8 scope host lo
+> 	       valid_lft forever preferred_lft forever
+> 	    inet6 fe80::200:ff:fe00:0/64 scope link 
+> 	       valid_lft forever preferred_lft forever
+> 	    inet6 ::1/128 scope host 
+> 	       valid_lft forever preferred_lft forever
+> 	# sudo ip netns exec test ls /sys/class/infiniband
+> 	rxe0  rxe1
+> 		[These show up even though the ndevs do *not* belong to the test namespace! Probably OK.]
+> 	# sudo ip netns exec test rdma link add rxe2 type rxe netdev lo
+> 	# ls /sys/class/infiniband
+> 	rxe0  rxe1  rxe2
+> 		[The new rxe device shows up in the default namespace. At least we're consistent.]
+> 	# ib_send_bw -d rxe0 ... 192.168.0.27
+> 		[Works. Didn't break the existing rxe devices. Expected]
+> 	# ib_send_bw -d rxe1 ... 127.0.0.1
+> 		[Works. Expected]
+> 	# ib_send_bw -d rxe2 ... 127.0.0.1
+> 	IB device rxe2 not found
+>  	 Unable to find the Infiniband/RoCE device
+> 		[Not work. Expected.]
+> 	# sudo ip netns exec test ib_send_bw -d rxe2 ... 127.0.0.1
+> 	IB device rxe2 not found
+> 	 Unable to find the Infiniband/RoCE device
+> 		[Also not work. Turns out rxe2 device is gone after failure. Not expected.]
+> 	# sudo ip netns exec test rdma link add rxe2 type rxe netdev lo
+> 	# ls /sys/class/infiniband
+> 	rxe0  rxe1  rxe2
+> 		[Good. It's back]
+> 	# sudo ip netns exec test ib_send_bw -d rxe2 ... 127.0.0.1
+> 		[Works in test namespace! Expected.]
+> 	# sudo ip netns exec test ib_send_bw -d rxe1 ... 127.0.0.1
+> 		[Also works. Definitely not expected.]
+> 
+> My take, it sort of works. But there are some serious issues. You shouldn't be able to use the
+> rxe2 device in the default namespace. It would be nice if you couldn't see the rxe devices in each
+> other's namespaces (Like ip link or ip addr hide other namespace's devices.)
 
-+Michael Chan
+Hi mates:
 
-On Tue, Nov 12, 2024 at 1:47=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
-rote:
->
-> On Fri, Nov 08, 2024 at 12:42:39AM -0800, Selvin Xavier wrote:
-> > From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> >
-> > Move the logic to setup and enable NQs to a new function.
-> > Similarly moved the NQ cleanup logic to a common function.
-> > Introdued a flag to keep track of NQ allocation status
-> > and added sanity checks inside bnxt_re_stop_irq() and
-> > bnxt_re_start_irq() to avoid possible race conditions.
-> >
-> > Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > ---
-> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h |   2 +
-> >  drivers/infiniband/hw/bnxt_re/main.c    | 204 +++++++++++++++++++-----=
---------
-> >  2 files changed, 123 insertions(+), 83 deletions(-)
->
-> <...>
->
-> >
-> > +     rtnl_lock();
-> > +     if (test_and_clear_bit(BNXT_RE_FLAG_SETUP_NQ, &rdev->flags))
-> > +             bnxt_re_clean_nqs(rdev);
-> > +     rtnl_unlock();
->
-> <...>
->
-> > +             rtnl_lock();
-> >               bnxt_qplib_free_ctx(&rdev->qplib_res, &rdev->qplib_ctx);
-> >               bnxt_qplib_disable_rcfw_channel(&rdev->rcfw);
-> >               type =3D bnxt_qplib_get_ring_type(rdev->chip_ctx);
-> >               bnxt_re_net_ring_free(rdev, rdev->rcfw.creq.ring_id, type=
-);
-> > +             rtnl_unlock();
->
-> Please don't add rtnl_lock() to drivers in RDMA subsystem. BNXT driver
-> is managed through netdev and it is there all proper locking should be
-> done.
-The main reason for bnxt_re to take the rtnl is because of the MSIx
-resource configuration.
-This is because the NIC driver is dynamically modifying the MSIx table
-when the number
-of ring change  or ndo->open/close is invoked. So we stop and restart
-the interrupts of RoCE also with rtnl held.
->
-> Please work to remove existing rtnl_lock() from bnxt_re_update_en_info_rd=
-ev() too.
-> IMHO that lock is not needed after your driver conversion to auxbus.
-This check is also to synchronize between the irq_stop and restart
-implementation between
-bnxt_en and bnxt_re driver and roce driver unload.
+If rdma's system is shared, should every net namespace see all rdma devices?
 
- We will review this locking and see if we can handle it. But it is a
-major design change in both L2
-and roce drivers.
->
-> Thanks
+Thanks for your work. I'm working on cloud native web related and I really need this patch :).
 
---00000000000011851a0626b3cc17
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Nowadays AI + Cloud Native is becoming more and more popular and there are more and more AI clusters running on Kubernetes. Most AI clusters use RDMA technology to communicate across nodes between training tasks, which speeds up training and reduces network latency. However, RDMA hardware devices are very expensive and costly for those who want to experience or test the entire AI training process (involving scheduling, using RDMA networks, and using nccl-like communication libraries, etc.). So we plan to develop a Kubernetes CNI plugin that can run RDMA locally, which will mount the rdma device on the host inside the container so that the AI tasks can also use the RDMA network.
 
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIB0KCWCwKtT2
-VRiSAudCqhRW2751oHrhY83r48IeMg6jMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTI0MTExMjA5MjUyNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDbS+s3UeVkQCM8nBHWOAWYutQeeCaC
-XwVuvztaXcIsYuBIHS0fF1eFownCXnlqaZdlaOc1atFEoTNvpaZDidJkS9IkQH37ohAm3R7PfjXO
-X5+72clVPUb90bubc4w+yeKKdW3Asreg82rRMPRBfQWQhxihULCWoq+3iRuRkP+JeOggKgvIt/0N
-0KUXTTpGsFaYjJ+rLGUd+TuuH1OQKIgtqdSEbOKM012f/Y8nVDbi0jGyKcSgssHpygq+1Af0HHu+
-0omxYoPW5xlFNVJpDsGmalmGP7AyfwLRiU7Ic9yrVUFSfgDonHS4OO93bR8gOgItI9BNBeV4JV8w
-ozI0jNU+
---00000000000011851a0626b3cc17--
+I understand that Soft Roce is able to virtualize rdma devices without RDMA hardware, and I have verified this locally, being able to test it with tools like ib_send_bw. However, I further moved the NIC on the host or the NIC on the host using macvlan technology to the network namespace inside the container, and then manually added the rdma device inside the container using the rdma link add command, and then finally found out that I couldn't see the virtualized rdma device inside the container by using the ibv_devices command, and I switched the system mode of the rdma respectively(shared or exclusive), and neither of them worked. I've also seen other developers report similar issues, refer [nccl-tests container can't use Soft-RoCE interfaces](https://github.com/NVIDIA/deepops/issues/772).
+
+I guess the Linux kernel upstream doesn't support soft roce containerization yet. I read the linux kernel upstream code and related patches carefully and confirmed my guess. So I contacted Yanjun, I really hope this patch can be merged into upstream, thanks again for your work, looking forward to working further.
+
+Best Regards
+Cyclinder
+
+> Bob
 
