@@ -1,204 +1,170 @@
-Return-Path: <linux-rdma+bounces-5967-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5968-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50AB79C701C
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 14:03:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 031899C7C0C
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 20:16:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D51031F2646B
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 13:03:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FFCDB29737
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 18:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A790D20606B;
-	Wed, 13 Nov 2024 12:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23AB520401E;
+	Wed, 13 Nov 2024 18:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AuKpQGr+"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="md40WSJz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E56AF200BAB;
-	Wed, 13 Nov 2024 12:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36F132036EE
+	for <linux-rdma@vger.kernel.org>; Wed, 13 Nov 2024 18:41:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731502710; cv=none; b=FlZdVhA33/D/hlMYNpgwBqWpnnxN4M9yDr6QwMp7Jyq3OcTKpGDUQmvnIKw2yOPSPl1TZTzqYf1IP6nPDfuw/z+cdKSj0bPm3woFtx1faXwcd6ZS03LgumXUW4lwyc84c2L/YSrwcb5qMN8MkWWw3iTxsirvYJTZEvtYGyNzF4M=
+	t=1731523293; cv=none; b=ihSoiRZClhlMKbtyYs7dworOY2W77O5Kf/EOzcIrkj34+wcrN2u6qhib7eqW6RXUgZ+XVZ4Zh9JE4lcdeGwo3zNptCG6h8CJBgVlxA6omZJ9XaX1bnReLYSibnXA82fN6ymTkholVDD2i5Uy/L1eRTlEsqswuqFbwjckZ9BbFf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731502710; c=relaxed/simple;
-	bh=MiIGFE7JQmeCulMCTNzU+03Zvl9uvgozGAxqw8x+eUI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=q3NPV58sgxYS3noyIQ25rRmrBl55BwWccZFal7b5yMGAm/urLbiMr5i4/YAB3JC01Nq7Dpl5KfDUNJdU85favmjSXi7uru2tVZns84rg26YuYZ0MontgRjV9p0N5iuLZcq8kTk9a932hNjR0CqkFH8UpRxO/w+RA+Gm2ZsZ7AvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AuKpQGr+; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2e9b55b83d2so4231647a91.3;
-        Wed, 13 Nov 2024 04:58:28 -0800 (PST)
+	s=arc-20240116; t=1731523293; c=relaxed/simple;
+	bh=/6cAFmMHE1TEpLz6LqHni1bfuBBiGvBf+Q9klO/pZOI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HqmmXgcYBYBCPSkuiGzRQvVhy1Tt1Vh5fwiWAfs5iuGpXWFcZW35Xy8ndWhlFVt6BEVpAUze+d+h58NkpIWgVQYzsH8XswCXHUzDyrdQ6QU0y7ZrBpAe56mwKpkNCYa6nJ7d7HWUhUvkzwxKmd1qkYlIM9xFe6bX7TQFdmkw/VE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=md40WSJz; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7b13fe8f4d0so464491785a.0
+        for <linux-rdma@vger.kernel.org>; Wed, 13 Nov 2024 10:41:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731502707; x=1732107507; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tqrrLk6+C692qIcVQOp9KatlJAZHjGryjisTBrwbzoI=;
-        b=AuKpQGr+TdF2ChIJohhWsFdVKp4kAXgRA6k+SK4b1DUiyvHUATwQUViv9lsaVf9t5v
-         vuxbV74pusxqjqorQfGH0Jg86vVbOPzvd/s4gFDCyPQyDXAXHBHZL9oy9wHxv06C5h6x
-         L2wSA/vgpy4gKuwZE7CRc+pOoYKBEEzWmefGVS0Rz99HX7fUCIYTax0cxmBHQgRuypRV
-         uBn+LlJmWBHnRx4Jr+D9SRx19t9OX+W3i7k9mBCT/CDlHzSW7SMdSn2DDHaXZNq768KV
-         bVV1osooSxE/32U3Aboe1m205SjNGOv9ZXrZaFBy8gBDecXuxzyfXk6FYCre3kyFOgOU
-         vD3Q==
+        d=ziepe.ca; s=google; t=1731523291; x=1732128091; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=G2y1TaKaV2g4XFVY3gJwH3zViZ7RCzLm1QmvK0MsuyE=;
+        b=md40WSJzXnh4zt4zBALYkynrbuAtS0evfqRbhhEdXfTSrU9X//rj7qQ+WdPBI/PFWv
+         iS9kVQ8Hqca7Z2agBU1ihwZ8FbOJVfmbsEztd3LDbnwvlUDRvVz1TFbRGxEV9cCgYiBL
+         9JD2ADXGsTSWmv4p1ePEyujwJIfg4hbu1xhv6Pb4Qa8tPR7Fu5QDq/X5YjYjBTPgB75i
+         wYqkTjfVm8EDxG4SqIwukURwEZPgrbRth8FEc/cM9gxfCigiWMpoZ8QWHdSRAnr879lx
+         M1ZzRlqPwNjY+l6nl20XTHr7PPErXX8QKmPEo4WzkBoKYxSKbhr70o8LjSsisjMwpHpD
+         pPhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731502707; x=1732107507;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tqrrLk6+C692qIcVQOp9KatlJAZHjGryjisTBrwbzoI=;
-        b=AMzYyX8uYwpKwENZ0IWCg7FUOnXhrD5N3+qA+3locZ1wrd0UMpOkKw6zUX1LwP97rA
-         NXul85JTsBfU0sFY+g5yW5cjYc2a9ywp9pvWETc1WZVebkPIGfTBZoLiIEIiEzaYXw8t
-         hgxxo8oZQ503HJxrYsA4uiH+WL/8guPjMKFVPqeb0xvD8P0cwa7rWg0ujLsRH5vsvKJG
-         I3zhk7CER1V15O8+cqPPWk8YnLcxlLedCD3R8yXT3/EQQRa0qzZFPbYXYJPWWDo7xgOU
-         gPxEXm4PiZFzmDCP/KhpXPm+GxmIlg8RU99FUPtTSvTxe1rUxl1neLHlaaY77omTL4yP
-         saVg==
-X-Forwarded-Encrypted: i=1; AJvYcCULsCtWFGahO/3fn7PwjJZbiC7SOZqPwWGg7yu+S82iKiHEW276pRd8UosYdAvdTrscdlBg7VGCGlIjtT6NwrU=@vger.kernel.org, AJvYcCVFUpZnCvRgG48vMQRVzLwmk0QWt/TQiM4tkHupx2B0OkSzA9wYIYk50D8TunnGESvaq8BZfcEnucxrOQ==@vger.kernel.org, AJvYcCVOIRpbZuqSeBGkXU7PDL7wwi+3RAGwRlBpAn+jAOeDEZGs1QW2wGjx8Lzmvv64sJFBKtyI+Nvb1yKE/g==@vger.kernel.org, AJvYcCVTStIh8Bwzq/vYTeoGXNwdgeuIxjjf4GXTW1a4uo5aUWuqmyihF/E5euhPcymkKkKH5Z8tzDaWg4Jl@vger.kernel.org, AJvYcCVjMX/MVXuce6ym31Z3DHeDh9DEFi7qGD9iQ5tQXAKeYrhRgrbY6DPpFOyNrquDN5yDJUHV0i2ay3GBl6yUvrm3@vger.kernel.org, AJvYcCVvUUPVH8lthRGVUr74f6GW/glOQiKgeSfQfhPBN1afYlGLd/hmmKJ++KAI9v9aE9AjG3A=@vger.kernel.org, AJvYcCX/guAv7i9DWMk+S+nJIOtmEzMmrMIA/GDP9KEnQEaux3WGKTebEwbA5hbGF7l56Xl7hw5oo6Of/ZK2@vger.kernel.org, AJvYcCXhfOgdk4KDgDJm8+3EgJjhjX4DVRiyE3A0i3nTl5QXFODlmZ5V5KCCkZRm1+2Nffp8RZUSJNrRD8WbN1Wy@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2gpZaroi1T1BGtN0s4SWlL4zHzjEUjpTWxcup1pUzyDRuh65b
-	ec5prC8vTpQHvfyNOyucRF+ED+Mgo2EadYGK5AganDcN1bByWLI8MahgRBr7WAc=
-X-Google-Smtp-Source: AGHT+IE/vtXg73mPc9UwMocIh3JnpJ4Nx9KNFh/J++F7E0J+l3pL2CaZbF6bhZwKtLiUviIv9q/4Rw==
-X-Received: by 2002:a17:90b:3c12:b0:2e2:b2ce:e41e with SMTP id 98e67ed59e1d1-2e9f2c78421mr3106773a91.13.1731502707231;
-        Wed, 13 Nov 2024 04:58:27 -0800 (PST)
-Received: from nova-ws.. ([103.167.140.11])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e9f3f8ed0esm1398632a91.40.2024.11.13.04.58.19
+        d=1e100.net; s=20230601; t=1731523291; x=1732128091;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G2y1TaKaV2g4XFVY3gJwH3zViZ7RCzLm1QmvK0MsuyE=;
+        b=q2aCUTx9cMgXwUXARnClFMBIVTPEnsUL0otTuC7OL/Io8IuMHJ54aBVoMpBKQz5puO
+         bRfKNxyEpaTY/MGKyOaA87T/UCjA0wOsxIVTiLL4gXrFYyKzk2bEdF6lRgBdSoFgC9RA
+         hMuWwwmQl3FE7Zs+Yg1CKZFVjK/TR9z0L/iIj2xYkwETFwcDetEaz68AK5MsjTza8J5G
+         uFRFOF8RAGu8MR9qkPQB8NwGHxTHH8PluJsd3KWLEbIK2jqa4xKhzxGLpsnv+Do0ZYsu
+         oaT0Mi50aDlOzrWxXEjYuYIYU9SAuRr1pvzBOydelTIVq1v0G0Cflr/ZM3Szo4j2hCUO
+         /i8w==
+X-Forwarded-Encrypted: i=1; AJvYcCVXc8H/xE9aDgyDBb+aM/pxbxsWlJRIu88TmUglKBnf46xXW+h4JJ1JprRyY1nXUKMd3T2trNUduMhx@vger.kernel.org
+X-Gm-Message-State: AOJu0YyTHtoYILkGeyootc1N3cAS7Y4WwceIaD7sKrg48Kcq9W0MuFhN
+	ZcRjBNdETXjjYJiXRj1UqVvVNn4W2h4A4Ik2LHy1yfLExKphvaOEduEPUR/LlU0=
+X-Google-Smtp-Source: AGHT+IGHlQ3B6cgvg7LHp9B0an1V9l7W1otIHEU9XZtLf2twbE4ctDauWQrxx5wsqcBmnHpCgDTZBw==
+X-Received: by 2002:a05:620a:4150:b0:7a2:1db:e286 with SMTP id af79cd13be357-7b35293bd6emr455709785a.52.1731523291038;
+        Wed, 13 Nov 2024 10:41:31 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b32acb0496sm718091885a.89.2024.11.13.10.41.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Nov 2024 04:58:26 -0800 (PST)
-From: Xiao Liang <shaw.leon@gmail.com>
-To: netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Donald Hunter <donald.hunter@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Simon Horman <horms@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Hangbin Liu <liuhangbin@gmail.com>,
-	linux-rdma@vger.kernel.org,
-	linux-can@vger.kernel.org,
-	osmocom-net-gprs@lists.osmocom.org,
-	bpf@vger.kernel.org,
-	linux-ppp@vger.kernel.org,
-	wireguard@lists.zx2c4.com,
-	linux-wireless@vger.kernel.org,
-	b.a.t.m.a.n@lists.open-mesh.org,
-	bridge@lists.linux.dev,
-	linux-wpan@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 6/6] selftests: net: Add two test cases for link netns
-Date: Wed, 13 Nov 2024 20:57:15 +0800
-Message-ID: <20241113125715.150201-7-shaw.leon@gmail.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241113125715.150201-1-shaw.leon@gmail.com>
-References: <20241113125715.150201-1-shaw.leon@gmail.com>
+        Wed, 13 Nov 2024 10:41:30 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1tBIIz-000000011lJ-0zht;
+	Wed, 13 Nov 2024 14:41:29 -0400
+Date: Wed, 13 Nov 2024 14:41:29 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Robin Murphy <robin.murphy@arm.com>, Leon Romanovsky <leon@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org, matthew.brost@intel.com,
+	Thomas.Hellstrom@linux.intel.com, brian.welty@intel.com,
+	himal.prasad.ghimiray@intel.com, krishnaiah.bommu@intel.com,
+	niranjana.vishwanathapura@intel.com
+Subject: Re: [PATCH v1 00/17] Provide a new two step DMA mapping API
+Message-ID: <20241113184129.GA173265@ziepe.ca>
+References: <20241105195357.GI35848@ziepe.ca>
+ <20241107083256.GA9071@lst.de>
+ <20241107132808.GK35848@ziepe.ca>
+ <20241107135025.GA14996@lst.de>
+ <20241108150226.GM35848@ziepe.ca>
+ <20241108150500.GA10102@lst.de>
+ <20241108152537.GN35848@ziepe.ca>
+ <20241108152956.GA12130@lst.de>
+ <20241108153846.GO35848@ziepe.ca>
+ <20241112060108.GA10056@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241112060108.GA10056@lst.de>
 
- - Add test for creating link in another netns when a link of the same
-   name and ifindex exists in current netns.
- - Add test for link netns atomicity - create link directly in target
-   netns, and no notifications should be generated in current netns.
+On Tue, Nov 12, 2024 at 07:01:08AM +0100, Christoph Hellwig wrote:
+> On Fri, Nov 08, 2024 at 11:38:46AM -0400, Jason Gunthorpe wrote:
+> > > > What I'm thinking about is replacing code like the above with something like:
+> > > > 
+> > > > 		if (p2p_provider)
+> > > > 			return DMA_MAPPING_ERROR;
+> > > > 
+> > > > And the caller is the one that would have done is_pci_p2pdma_page()
+> > > > and either passes p2p_provider=NULL or page->pgmap->p2p_provider.
+> > > 
+> > > And where do you get that one from?
+> > 
+> > Which one?
+> 
+> The p2p_provider thing (whatever that will actually be).
 
-Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
----
- tools/testing/selftests/net/Makefile        |  1 +
- tools/testing/selftests/net/netns-name.sh   | 10 ++++++
- tools/testing/selftests/net/netns_atomic.py | 38 +++++++++++++++++++++
- 3 files changed, 49 insertions(+)
- create mode 100755 tools/testing/selftests/net/netns_atomic.py
+p2p_provider would be splitting out the information in
+pci_p2pdma_pagemap to it's own type:
 
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 2b2a5ec7fa6a..4c15a115c251 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -34,6 +34,7 @@ TEST_PROGS += gre_gso.sh
- TEST_PROGS += cmsg_so_mark.sh
- TEST_PROGS += cmsg_time.sh cmsg_ipv6.sh
- TEST_PROGS += netns-name.sh
-+TEST_PROGS += netns_atomic.py
- TEST_PROGS += nl_netdev.py
- TEST_PROGS += srv6_end_dt46_l3vpn_test.sh
- TEST_PROGS += srv6_end_dt4_l3vpn_test.sh
-diff --git a/tools/testing/selftests/net/netns-name.sh b/tools/testing/selftests/net/netns-name.sh
-index 6974474c26f3..0be1905d1f2f 100755
---- a/tools/testing/selftests/net/netns-name.sh
-+++ b/tools/testing/selftests/net/netns-name.sh
-@@ -78,6 +78,16 @@ ip -netns $NS link show dev $ALT_NAME 2> /dev/null &&
-     fail "Can still find alt-name after move"
- ip -netns $test_ns link del $DEV || fail
- 
-+#
-+# Test no conflict of the same name/ifindex in different netns
-+#
-+ip -netns $NS link add name $DEV index 100 type dummy || fail
-+ip -netns $NS link add netns $test_ns name $DEV index 100 type dummy ||
-+    fail "Can create in netns without moving"
-+ip -netns $test_ns link show dev $DEV >> /dev/null || fail "Device not found"
-+ip -netns $NS link del $DEV || fail
-+ip -netns $test_ns link del $DEV || fail
-+
- echo -ne "$(basename $0) \t\t\t\t"
- if [ $RET_CODE -eq 0 ]; then
-     echo "[  OK  ]"
-diff --git a/tools/testing/selftests/net/netns_atomic.py b/tools/testing/selftests/net/netns_atomic.py
-new file mode 100755
-index 000000000000..e6c4147ef75e
---- /dev/null
-+++ b/tools/testing/selftests/net/netns_atomic.py
-@@ -0,0 +1,38 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+import time
-+
-+from lib.py import ksft_run, ksft_exit, ksft_true
-+from lib.py import ip
-+from lib.py import NetNS, NetNSEnter
-+from lib.py import RtnlFamily
-+
-+
-+def test_event(ns1, ns2) -> None:
-+    with NetNSEnter(str(ns1)):
-+        rtnl = RtnlFamily()
-+
-+    rtnl.ntf_subscribe("rtnlgrp-link")
-+
-+    ip(f"netns set {ns1} 0", ns=str(ns2))
-+
-+    ip(f"link add netns {ns2} link-netnsid 0 dummy1 type dummy")
-+    ip(f"link add netns {ns2} dummy2 type dummy", ns=str(ns1))
-+
-+    ip("link del dummy1", ns=str(ns2))
-+    ip("link del dummy2", ns=str(ns2))
-+
-+    time.sleep(1)
-+    rtnl.check_ntf()
-+    ksft_true(not rtnl.async_msg_queue, "Received unexpected link notification")
-+
-+
-+def main() -> None:
-+    with NetNS() as ns1, NetNS() as ns2:
-+        ksft_run([test_event], args=(ns1, ns2))
-+    ksft_exit()
-+
-+
-+if __name__ == "__main__":
-+    main()
--- 
-2.47.0
+struct pci_p2pdma_pagemap {
+	struct pci_dev *provider;
+	u64 bus_offset;
 
+That is the essential information to compute PCI_P2PDMA_MAP_*.
+
+For example when blk_rq_dma_map_iter_start() calls pci_p2pdma_state(),
+it has this information from page->pgmap. It would still have the
+information via the pgmap when we split it out of the
+pci_p2pdma_pagemap.
+
+Since everything doing a dma map has to do the pci_p2pdma_state() to
+compute PCI_P2PDMA_MAP_* every dma mapping operation has already got
+the provider. Since everything is uniform within a mapping operation
+the provider is constant for the whole map.
+
+For future non-struct page cases the provider comes along with the
+address list from whatever created the address list in the first
+place.
+
+Looking at dmabuf for example, I expect dmabuf to provide a new data
+structure which is a list of lists:
+
+ [[provider GPU: [mmio_addr1,mmio_addr2,mmio_addr3],
+  [provider NULL: [cpu_addr1, cpu_addr2, ...],
+   ..
+ ]
+
+And each uniform group would be dma map'd on its own using the
+embedded provider instead of page->pgmap.
+
+Jason
 
