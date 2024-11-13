@@ -1,55 +1,55 @@
-Return-Path: <linux-rdma+bounces-5957-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5959-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A1EC9C6D87
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 12:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E300E9C6D92
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 12:16:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC6E3B26443
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 11:13:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1397FB2408D
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 11:13:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E86D1FF60B;
-	Wed, 13 Nov 2024 11:13:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ABE81FF03F;
+	Wed, 13 Nov 2024 11:13:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OdjdkxGw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kxBLKBRU"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB641FB728
-	for <linux-rdma@vger.kernel.org>; Wed, 13 Nov 2024 11:13:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE671FF035
+	for <linux-rdma@vger.kernel.org>; Wed, 13 Nov 2024 11:13:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731496389; cv=none; b=Owg1KngXjyvOsFkmEhrY9xsaGTCsTxuMgkP2MI4k9VmMZmD95laKma2F9x/sG1lH1Vx1/tBh2pge4cB6ALlm8TuGIRPYnT8QhGrZpwo/dLUAuACsU1hsX8yVUjO2HgBsZRzfPsTmUD7SykEl96W785isDiMUWcTb+/prvjRYtZU=
+	t=1731496397; cv=none; b=rArMe6ID7Q5UF/+XpEcmjWe6C2aLqxhJlDSX1kQfpbC6MWrLdOgFkVSxhsMW7yYIRf/LlROOY2g86sMXM5IA86sJjI/lOP/B0gOeZ9QxT9NmFYNtolel5tzBMS5T8lhVGtIJHQgcd6LEzLsCQa7xlADTAekoUMfEaZUb1pZzkVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731496389; c=relaxed/simple;
-	bh=6dvjD1//nGuOZz9I0P9SdrrU0dEiF2LEG8t73pnIj0I=;
+	s=arc-20240116; t=1731496397; c=relaxed/simple;
+	bh=K7HfbveILg8AYwKcQLvxEOoCqsJB7y0j13M/kjhOSpw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=T8Gj/Awu3/DN2JgzCcjNnxBqEsTP48y9GwUhrTtoBWOyOl1JhxhuSXbZ/zrCvNPiEYGClxmdmxEZJeQgSuJNdALDIMFdOJ64f3fG+T2v3NHlv5nnZtosXhH9WMBJZ9tZ5/DDg3frbR8qErrZLAOSrDF9pEI3+fXVNF4VQgu3ttc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OdjdkxGw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A76ECC4CECD;
-	Wed, 13 Nov 2024 11:13:08 +0000 (UTC)
+	 MIME-Version; b=ZRmh0+Z0Wbzvz+IGjaOD6v4KVFT6CkCqZcObF++H+1H9XPvSZEHuaBQkGm1pu7BGKpJ71T2Ke8IPT+hg/2TqBksXvU7FvpTGBQB6FZ27InjMj4AcuyDI3wfR4Mmb4GD03juSvJEhrA/h3Gi9zT4H3e9arVWvtiwMzcccvQ7UBQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kxBLKBRU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D899C4CECD;
+	Wed, 13 Nov 2024 11:13:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731496389;
-	bh=6dvjD1//nGuOZz9I0P9SdrrU0dEiF2LEG8t73pnIj0I=;
+	s=k20201202; t=1731496396;
+	bh=K7HfbveILg8AYwKcQLvxEOoCqsJB7y0j13M/kjhOSpw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OdjdkxGwIaVZlGVz0xshv1nz0KSQnhp3/kKnP9LOaB05KkRqIUEkvfWujz1PQWoiv
-	 s76K1bpQsKlTObOu1L+E4wiGm1BTQFKle4EJ01F+PCwxEDj2YbED79lPNOcXAUPH7G
-	 dy5dRly1rn0KBet5lFSepMP7Sn7qEbTkupd0/88ys6HUF47fGqDRt42KTW1B+3gZ6g
-	 h8usKFUJEskQrnwFMwIUwN0xo3kt1U4zvb8VRiPdIqJO3layNR8Kl3Izf1Tm8mQwhi
-	 09ewev5Z87RE27vsrQaPIRfy3Fk74nxT54C8S+mqlJ/UfW9XiEsuPId7FCuIzZQwMh
-	 BRbpfOyDFfXOA==
+	b=kxBLKBRUmoFU65RKdIVBLSyzZQtcg2wzNM8Pu+vKd0WeV7WmHbAQ3eIJqMD9wy5nl
+	 BFeOrIuUdtnVtc7s+gg2vwM07TgnpdvHq+9n8d+M3tZTptaD2k8zxDZaaG8VyIK2HQ
+	 iy/BMrA22QoT4GLX1KA6hzTam5/41h99oY/OI5VMgNoTeSoE51HdaGZ/IB2+Bt9FTQ
+	 xcc/FZFB+hk6gJ7Q1V+xCLLkNaClW+0ogo55zjXqPLivSzhPIdN2p+algvx6+bTYL0
+	 5IMXclQkosxKdBJ0ATHqa/+S1OtXhZRgDab9pyl7smqdWEffbcnJjDEjxVPTxhIvsl
+	 C+H0D8Qzeuz/g==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Sean Hefty <shefty@nvidia.com>,
 	linux-rdma@vger.kernel.org,
 	Or Har-Toov <ohartoov@nvidia.com>,
 	Vlad Dumitrescu <vdumitrescu@nvidia.com>
-Subject: [PATCH rdma-next 1/3] IB/cm: Explicitly mark if a response MAD is a retransmission
-Date: Wed, 13 Nov 2024 13:12:54 +0200
-Message-ID: <1ee6e2a68f8de1992b9da23aa1d7e3f9f25e0036.1731495873.git.leon@kernel.org>
+Subject: [PATCH rdma-next 2/3] IB/cm: Do not hold reference on cm_id unless needed
+Date: Wed, 13 Nov 2024 13:12:55 +0200
+Message-ID: <1f0f96acace72790ecf89087fc765dead960189e.1731495873.git.leon@kernel.org>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <cover.1731495873.git.leon@kernel.org>
 References: <cover.1731495873.git.leon@kernel.org>
@@ -63,175 +63,292 @@ Content-Transfer-Encoding: 8bit
 
 From: Sean Hefty <shefty@nvidia.com>
 
-In several situations the CM may send a reply to a received MAD
-without the reply being directly linked with a cm_id.  For
-example, it may send a REJ in response to a REQ which does not
-match a listener.  Or, it may send a DREP in response to a DREQ
-if the cm_id has already been destroyed.  This can happen if the
-original DREP was lost and the DREQ was retried.
+Typically, when the CM sends a MAD it bumps a reference count
+on the associated cm_id.  There are some exceptions, such
+as when the MAD is a direct response to a receive MAD.  For
+example, the CM may generate an MRA in response to a duplicate
+REQ.  But, in general, if a MAD may be sent as a result of
+the user invoking an API call (e.g. ib_send_cm_rep(),
+ib_send_cm_rtu(), etc.), a reference is taken on the cm_id.
 
-When such a response MAD completes, it updates a counter tracking
-how many MADs were retried.  However, not all response MADs issued
-directly by the CM may be retries.  The REJ mentioned in the example
-above is such a case.  To distinguish between responses which were
-retries versus those that are not, the send_handler performs the
-following check: is a retry if the response is not associated with
-a cm_id and the response is not a REJ message.
+This reference is necessary if the MAD requires a response.
+The reference allows routing a response MAD back to the
+cm_id, or, if no response is received, allows updating the
+cm_id state to reflect the failure.
 
-Replace this indirect method of checking if a response is a retry
-with an explicit check.  Note that these retries are generated
-directly by the CM, rather than retried by the MAD layer.
+For MADs which do not generate a response from the
+target, however, there's no need to hold a reference on the cm_id.
+Such MADs will not be retried by the MAD layer and their
+completions do not change the state of the cm_id.
 
-This change will be needed by later changes which would otherwise
-break the indirect check.
+There are 2 internal calls used to allocate MADs which take
+a reference on the cm_id: cm_alloc_msg() and cm_alloc_priv_msg().
+The latter calls the former.  It turns out that all other places
+where cm_alloc_msg() is called are for MADs that do not generate
+a response from the target: sending an RTU, DREP, REJ, MRA, or
+SIDR REP.  In all of these cases, there's no need to hold a
+reference on the cm_id.
+
+The benefit of dropping unneeded references is that it allows
+destruction of the cm_id to proceed immediately.  Currently,
+the cm_destroy_id() call blocks as long as there's a reference
+held on the cm_id.  Worse, is that cm_destroy_id() will send
+MADs, which it then needs to complete.  Sending the MADs is
+beneficial, as they notify the peer that a connection is
+being destroyed.  However, since the MADs hold a reference
+on the cm_id, they block destruction and cannot be retried.
+
+Move cm_id referencing from cm_alloc_msg() to cm_alloc_priv_msg().
+The latter should hold a reference on the cm_id in all cases but
+one, which will be handled in a separate patch.  cm_alloc_priv_msg()
+is used when sending a REQ, REP, DREQ, and SIDR REQ, all of which
+require a response.
+
+Also, merge common code into cm_alloc_priv_msg() and combine the
+freeing of all messages which do not need a response.
 
 Signed-off-by: Sean Hefty <shefty@nvidia.com>
 Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>
 Signed-off-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/cm.c | 51 ++++++++++++++++++++++--------------
- 1 file changed, 31 insertions(+), 20 deletions(-)
+ drivers/infiniband/core/cm.c | 66 +++++++++++++-----------------------
+ 1 file changed, 24 insertions(+), 42 deletions(-)
 
 diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 07fb8d3c037f..99246e49dd3a 100644
+index 99246e49dd3a..2517bfebcfd5 100644
 --- a/drivers/infiniband/core/cm.c
 +++ b/drivers/infiniband/core/cm.c
-@@ -35,6 +35,8 @@ MODULE_DESCRIPTION("InfiniBand CM");
- MODULE_LICENSE("Dual BSD/GPL");
+@@ -309,12 +309,7 @@ static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
+ 		goto out;
+ 	}
  
- #define CM_DESTROY_ID_WAIT_TIMEOUT 10000 /* msecs */
-+#define CM_DIRECT_RETRY_CTX ((void *) 1UL)
-+
- static const char * const ibcm_rej_reason_strs[] = {
- 	[IB_CM_REJ_NO_QP]			= "no QP",
- 	[IB_CM_REJ_NO_EEC]			= "no EEC",
-@@ -358,13 +360,20 @@ static void cm_free_priv_msg(struct ib_mad_send_buf *msg)
+-	/* Timeout set by caller if response is expected. */
+ 	m->ah = ah;
+-	m->retries = cm_id_priv->max_cm_retries;
+-
+-	refcount_inc(&cm_id_priv->refcount);
+-	m->context[0] = cm_id_priv;
+ 
+ out:
+ 	spin_unlock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
+@@ -323,16 +318,13 @@ static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
+ 
+ static void cm_free_msg(struct ib_mad_send_buf *msg)
+ {
+-	struct cm_id_private *cm_id_priv = msg->context[0];
+-
+ 	if (msg->ah)
+ 		rdma_destroy_ah(msg->ah, 0);
+-	cm_deref_id(cm_id_priv);
  	ib_free_send_mad(msg);
  }
  
--static struct ib_mad_send_buf *cm_alloc_response_msg_no_ah(struct cm_port *port,
--							   struct ib_mad_recv_wc *mad_recv_wc)
-+static struct ib_mad_send_buf *
-+cm_alloc_response_msg_no_ah(struct cm_port *port,
-+			    struct ib_mad_recv_wc *mad_recv_wc,
-+			    bool direct_retry)
+ static struct ib_mad_send_buf *
+-cm_alloc_priv_msg(struct cm_id_private *cm_id_priv)
++cm_alloc_priv_msg(struct cm_id_private *cm_id_priv, enum ib_cm_state state)
  {
--	return ib_create_send_mad(port->mad_agent, 1, mad_recv_wc->wc->pkey_index,
--				  0, IB_MGMT_MAD_HDR, IB_MGMT_MAD_DATA,
--				  GFP_ATOMIC,
--				  IB_MGMT_BASE_VERSION);
-+	struct ib_mad_send_buf *m;
+ 	struct ib_mad_send_buf *msg;
+ 
+@@ -341,7 +333,15 @@ cm_alloc_priv_msg(struct cm_id_private *cm_id_priv)
+ 	msg = cm_alloc_msg(cm_id_priv);
+ 	if (IS_ERR(msg))
+ 		return msg;
 +
-+	m = ib_create_send_mad(port->mad_agent, 1, mad_recv_wc->wc->pkey_index,
-+			       0, IB_MGMT_MAD_HDR, IB_MGMT_MAD_DATA,
-+			       GFP_ATOMIC, IB_MGMT_BASE_VERSION);
-+	if (!IS_ERR(m))
-+		m->context[0] = direct_retry ? CM_DIRECT_RETRY_CTX : NULL;
+ 	cm_id_priv->msg = msg;
++	refcount_inc(&cm_id_priv->refcount);
++	msg->context[0] = cm_id_priv;
++	msg->context[1] = (void *) (unsigned long) state;
 +
-+	return m;
++	msg->retries = cm_id_priv->max_cm_retries;
++	msg->timeout_ms = cm_id_priv->timeout_ms;
++
+ 	return msg;
  }
  
- static int cm_create_response_msg_ah(struct cm_port *port,
-@@ -384,12 +393,13 @@ static int cm_create_response_msg_ah(struct cm_port *port,
+@@ -413,13 +413,6 @@ static int cm_alloc_response_msg(struct cm_port *port,
+ 	return 0;
+ }
  
- static int cm_alloc_response_msg(struct cm_port *port,
- 				 struct ib_mad_recv_wc *mad_recv_wc,
-+				 bool direct_retry,
- 				 struct ib_mad_send_buf **msg)
+-static void cm_free_response_msg(struct ib_mad_send_buf *msg)
+-{
+-	if (msg->ah)
+-		rdma_destroy_ah(msg->ah, 0);
+-	ib_free_send_mad(msg);
+-}
+-
+ static void *cm_copy_private_data(const void *private_data, u8 private_data_len)
  {
- 	struct ib_mad_send_buf *m;
- 	int ret;
+ 	void *data;
+@@ -1567,7 +1560,7 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
+ 	if (param->alternate_path)
+ 		cm_move_av_from_path(&cm_id_priv->alt_av, &alt_av);
  
--	m = cm_alloc_response_msg_no_ah(port, mad_recv_wc);
-+	m = cm_alloc_response_msg_no_ah(port, mad_recv_wc, direct_retry);
- 	if (IS_ERR(m))
- 		return PTR_ERR(m);
+-	msg = cm_alloc_priv_msg(cm_id_priv);
++	msg = cm_alloc_priv_msg(cm_id_priv, IB_CM_REQ_SENT);
+ 	if (IS_ERR(msg)) {
+ 		ret = PTR_ERR(msg);
+ 		goto out_unlock;
+@@ -1576,8 +1569,6 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
+ 	req_msg = (struct cm_req_msg *)msg->mad;
+ 	cm_format_req(req_msg, cm_id_priv, param);
+ 	cm_id_priv->tid = req_msg->hdr.tid;
+-	msg->timeout_ms = cm_id_priv->timeout_ms;
+-	msg->context[1] = (void *)(unsigned long)IB_CM_REQ_SENT;
  
-@@ -1598,7 +1608,7 @@ static int cm_issue_rej(struct cm_port *port,
- 	struct cm_rej_msg *rej_msg, *rcv_msg;
- 	int ret;
- 
--	ret = cm_alloc_response_msg(port, mad_recv_wc, &msg);
-+	ret = cm_alloc_response_msg(port, mad_recv_wc, false, &msg);
+ 	cm_id_priv->local_qpn = cpu_to_be32(IBA_GET(CM_REQ_LOCAL_QPN, req_msg));
+ 	cm_id_priv->rq_psn = cpu_to_be32(IBA_GET(CM_REQ_STARTING_PSN, req_msg));
+@@ -1634,7 +1625,7 @@ static int cm_issue_rej(struct cm_port *port,
+ 		IBA_GET(CM_REJ_REMOTE_COMM_ID, rcv_msg));
+ 	ret = ib_post_send_mad(msg, NULL);
  	if (ret)
- 		return ret;
+-		cm_free_response_msg(msg);
++		cm_free_msg(msg);
  
-@@ -1951,7 +1961,7 @@ static void cm_dup_req_handler(struct cm_work *work,
+ 	return ret;
+ }
+@@ -1990,7 +1981,7 @@ static void cm_dup_req_handler(struct cm_work *work,
+ 	return;
+ 
+ unlock:	spin_unlock_irq(&cm_id_priv->lock);
+-free:	cm_free_response_msg(msg);
++free:	cm_free_msg(msg);
+ }
+ 
+ static struct cm_id_private *cm_match_req(struct cm_work *work,
+@@ -2304,7 +2295,7 @@ int ib_send_cm_rep(struct ib_cm_id *cm_id,
+ 		goto out;
  	}
- 	spin_unlock_irq(&cm_id_priv->lock);
  
--	ret = cm_alloc_response_msg(work->port, work->mad_recv_wc, &msg);
-+	ret = cm_alloc_response_msg(work->port, work->mad_recv_wc, true, &msg);
+-	msg = cm_alloc_priv_msg(cm_id_priv);
++	msg = cm_alloc_priv_msg(cm_id_priv, IB_CM_REP_SENT);
+ 	if (IS_ERR(msg)) {
+ 		ret = PTR_ERR(msg);
+ 		goto out;
+@@ -2312,8 +2303,6 @@ int ib_send_cm_rep(struct ib_cm_id *cm_id,
+ 
+ 	rep_msg = (struct cm_rep_msg *) msg->mad;
+ 	cm_format_rep(rep_msg, cm_id_priv, param);
+-	msg->timeout_ms = cm_id_priv->timeout_ms;
+-	msg->context[1] = (void *) (unsigned long) IB_CM_REP_SENT;
+ 
+ 	trace_icm_send_rep(cm_id);
+ 	ret = ib_post_send_mad(msg, NULL);
+@@ -2479,7 +2468,7 @@ static void cm_dup_rep_handler(struct cm_work *work)
+ 	goto deref;
+ 
+ unlock:	spin_unlock_irq(&cm_id_priv->lock);
+-free:	cm_free_response_msg(msg);
++free:	cm_free_msg(msg);
+ deref:	cm_deref_id(cm_id_priv);
+ }
+ 
+@@ -2683,7 +2672,7 @@ static int cm_send_dreq_locked(struct cm_id_private *cm_id_priv,
+ 	    cm_id_priv->id.lap_state == IB_CM_MRA_LAP_RCVD)
+ 		ib_cancel_mad(cm_id_priv->msg);
+ 
+-	msg = cm_alloc_priv_msg(cm_id_priv);
++	msg = cm_alloc_priv_msg(cm_id_priv, IB_CM_DREQ_SENT);
+ 	if (IS_ERR(msg)) {
+ 		cm_enter_timewait(cm_id_priv);
+ 		return PTR_ERR(msg);
+@@ -2691,8 +2680,6 @@ static int cm_send_dreq_locked(struct cm_id_private *cm_id_priv,
+ 
+ 	cm_format_dreq((struct cm_dreq_msg *) msg->mad, cm_id_priv,
+ 		       private_data, private_data_len);
+-	msg->timeout_ms = cm_id_priv->timeout_ms;
+-	msg->context[1] = (void *) (unsigned long) IB_CM_DREQ_SENT;
+ 
+ 	trace_icm_send_dreq(&cm_id_priv->id);
+ 	ret = ib_post_send_mad(msg, NULL);
+@@ -2819,7 +2806,7 @@ static int cm_issue_drep(struct cm_port *port,
+ 		IBA_GET(CM_DREQ_REMOTE_COMM_ID, dreq_msg));
+ 	ret = ib_post_send_mad(msg, NULL);
  	if (ret)
- 		return;
+-		cm_free_response_msg(msg);
++		cm_free_msg(msg);
  
-@@ -2444,7 +2454,7 @@ static void cm_dup_rep_handler(struct cm_work *work)
+ 	return ret;
+ }
+@@ -2878,7 +2865,7 @@ static int cm_dreq_handler(struct cm_work *work)
  
- 	atomic_long_inc(
- 		&work->port->counters[CM_RECV_DUPLICATES][CM_REP_COUNTER]);
--	ret = cm_alloc_response_msg(work->port, work->mad_recv_wc, &msg);
-+	ret = cm_alloc_response_msg(work->port, work->mad_recv_wc, true, &msg);
- 	if (ret)
+ 		if (cm_create_response_msg_ah(work->port, work->mad_recv_wc, msg) ||
+ 		    ib_post_send_mad(msg, NULL))
+-			cm_free_response_msg(msg);
++			cm_free_msg(msg);
  		goto deref;
+ 	case IB_CM_DREQ_RCVD:
+ 		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
+@@ -3386,7 +3373,7 @@ static int cm_lap_handler(struct cm_work *work)
  
-@@ -2791,7 +2801,7 @@ static int cm_issue_drep(struct cm_port *port,
- 	struct cm_drep_msg *drep_msg;
+ 		if (cm_create_response_msg_ah(work->port, work->mad_recv_wc, msg) ||
+ 		    ib_post_send_mad(msg, NULL))
+-			cm_free_response_msg(msg);
++			cm_free_msg(msg);
+ 		goto deref;
+ 	case IB_CM_LAP_RCVD:
+ 		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
+@@ -3525,7 +3512,7 @@ int ib_send_cm_sidr_req(struct ib_cm_id *cm_id,
+ 		goto out_unlock;
+ 	}
+ 
+-	msg = cm_alloc_priv_msg(cm_id_priv);
++	msg = cm_alloc_priv_msg(cm_id_priv, IB_CM_SIDR_REQ_SENT);
+ 	if (IS_ERR(msg)) {
+ 		ret = PTR_ERR(msg);
+ 		goto out_unlock;
+@@ -3533,8 +3520,6 @@ int ib_send_cm_sidr_req(struct ib_cm_id *cm_id,
+ 
+ 	cm_format_sidr_req((struct cm_sidr_req_msg *)msg->mad, cm_id_priv,
+ 			   param);
+-	msg->timeout_ms = cm_id_priv->timeout_ms;
+-	msg->context[1] = (void *)(unsigned long)IB_CM_SIDR_REQ_SENT;
+ 
+ 	trace_icm_send_sidr_req(&cm_id_priv->id);
+ 	ret = ib_post_send_mad(msg, NULL);
+@@ -3780,17 +3765,17 @@ static int cm_sidr_rep_handler(struct cm_work *work)
+ 
+ static void cm_process_send_error(struct cm_id_private *cm_id_priv,
+ 				  struct ib_mad_send_buf *msg,
+-				  enum ib_cm_state state,
+ 				  enum ib_wc_status wc_status)
+ {
++	enum ib_cm_state state = (unsigned long) msg->context[1];
+ 	struct ib_cm_event cm_event = {};
  	int ret;
  
--	ret = cm_alloc_response_msg(port, mad_recv_wc, &msg);
-+	ret = cm_alloc_response_msg(port, mad_recv_wc, true, &msg);
- 	if (ret)
- 		return ret;
- 
-@@ -2856,7 +2866,8 @@ static int cm_dreq_handler(struct cm_work *work)
- 	case IB_CM_TIMEWAIT:
- 		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
- 						     [CM_DREQ_COUNTER]);
--		msg = cm_alloc_response_msg_no_ah(work->port, work->mad_recv_wc);
-+		msg = cm_alloc_response_msg_no_ah(work->port, work->mad_recv_wc,
-+						  true);
- 		if (IS_ERR(msg))
- 			goto unlock;
- 
-@@ -3361,7 +3372,8 @@ static int cm_lap_handler(struct cm_work *work)
- 	case IB_CM_MRA_LAP_SENT:
- 		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
- 						     [CM_LAP_COUNTER]);
--		msg = cm_alloc_response_msg_no_ah(work->port, work->mad_recv_wc);
-+		msg = cm_alloc_response_msg_no_ah(work->port, work->mad_recv_wc,
-+						  true);
- 		if (IS_ERR(msg))
- 			goto unlock;
- 
-@@ -3826,7 +3838,7 @@ static void cm_send_handler(struct ib_mad_agent *mad_agent,
- 			    struct ib_mad_send_wc *mad_send_wc)
+-	/* Discard old sends or ones without a response. */
++	/* Discard old sends. */
+ 	spin_lock_irq(&cm_id_priv->lock);
+ 	if (msg != cm_id_priv->msg) {
+ 		spin_unlock_irq(&cm_id_priv->lock);
+-		cm_free_msg(msg);
++		cm_free_priv_msg(msg);
+ 		return;
+ 	}
+ 	cm_free_priv_msg(msg);
+@@ -3839,8 +3824,6 @@ static void cm_send_handler(struct ib_mad_agent *mad_agent,
  {
  	struct ib_mad_send_buf *msg = mad_send_wc->send_buf;
--	struct cm_id_private *cm_id_priv = msg->context[0];
-+	struct cm_id_private *cm_id_priv;
- 	enum ib_cm_state state =
- 		(enum ib_cm_state)(unsigned long)msg->context[1];
+ 	struct cm_id_private *cm_id_priv;
+-	enum ib_cm_state state =
+-		(enum ib_cm_state)(unsigned long)msg->context[1];
  	struct cm_port *port;
-@@ -3836,13 +3848,12 @@ static void cm_send_handler(struct ib_mad_agent *mad_agent,
- 	attr_index = be16_to_cpu(((struct ib_mad_hdr *)
- 				  msg->mad)->attr_id) - CM_ATTR_ID_OFFSET;
+ 	u16 attr_index;
  
--	/*
--	 * If the send was in response to a received message (context[0] is not
--	 * set to a cm_id), and is not a REJ, then it is a send that was
--	 * manually retried.
--	 */
--	if (!cm_id_priv && (attr_index != CM_REJ_COUNTER))
-+	if (msg->context[0] == CM_DIRECT_RETRY_CTX) {
- 		msg->retries = 1;
-+		cm_id_priv = NULL;
-+	} else {
-+		cm_id_priv = msg->context[0];
-+	}
+@@ -3861,10 +3844,9 @@ static void cm_send_handler(struct ib_mad_agent *mad_agent,
+ 				&port->counters[CM_XMIT_RETRIES][attr_index]);
  
- 	atomic_long_add(1 + msg->retries, &port->counters[CM_XMIT][attr_index]);
- 	if (msg->retries)
+ 	if (cm_id_priv)
+-		cm_process_send_error(cm_id_priv, msg, state,
+-				      mad_send_wc->status);
++		cm_process_send_error(cm_id_priv, msg, mad_send_wc->status);
+ 	else
+-		cm_free_response_msg(msg);
++		cm_free_msg(msg);
+ }
+ 
+ static void cm_work_handler(struct work_struct *_work)
 -- 
 2.47.0
 
