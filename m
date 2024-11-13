@@ -1,58 +1,54 @@
-Return-Path: <linux-rdma+bounces-5958-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5960-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D2A19C6D80
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 12:13:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D7CF9C6DF3
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 12:36:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7A2D282643
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 11:13:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AFF0B2DE2C
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 11:23:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F6E1FF7C6;
-	Wed, 13 Nov 2024 11:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67D021FDFAE;
+	Wed, 13 Nov 2024 11:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rfx8Pqnv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lf0GiR/2"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FF1C1FEFDE
-	for <linux-rdma@vger.kernel.org>; Wed, 13 Nov 2024 11:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281871FA256
+	for <linux-rdma@vger.kernel.org>; Wed, 13 Nov 2024 11:23:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731496393; cv=none; b=R4gnkQfDJyskfUoPF4XipP2/whq0pwc40tshrJgCR9saxpB0wi6bVZWN7G5g0ADjsDJLoOAsReeVLRwMXVrFvi8FIpcsV57E+9rDwhbh9ErhL1UdNrLY94FzHfLIIxFgUXxBM6TPiGi6PNOFHT2Fpa4cTLD4Uhq6BCw6lM4QQwA=
+	t=1731497008; cv=none; b=fJUuWuLcH9bQP7tIAb8x2Vu6fFiB+S1EGrkz5kv7VUQArwSDjjXmcs7kuUFhoxCzzsrjeNDKHDg9njjD52EOGjVhHct9b1ian0N9o1ZlNwZF8Ob+mTObm5i279KYurhAp65S1AB+KqdOJ2j9t/4uxzSy1xICDjReydddzDZn6PI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731496393; c=relaxed/simple;
-	bh=dXwC9JmKnnV420HYAwNnWhkRbmteRscbJhUEHvZ0SOo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dPEdMQTW9CeQjvc5uqJDNShCfDmGFdb+BautAH2HC2/2ndOp+0f09O2/JdZxJ2U1rt6dqys0lZuoIRy/rD4hfTOm/LlYetzpWC33w4C3/BJn4i60bxvzDKYrPKtkfw6OrlxMhJFzv0lQVwbvMIzsEIQEAWH7EmNjot3TH7P92zM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rfx8Pqnv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86695C4CECD;
-	Wed, 13 Nov 2024 11:13:12 +0000 (UTC)
+	s=arc-20240116; t=1731497008; c=relaxed/simple;
+	bh=Yo7Zzyc17/vDtTwdiLn27kyV5fmgdjjp8sis54ZZet4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K79D5htGMNBunDQrA4N/WhzTaG0OTxyq9+FmxPQbdnnJusy6kJZS0+W9d27XZ4iMXnn2E4OdfHx9PG2yuzRsQmWRDxeag1Z55Ot9aCM2wi5zizXbc2OFXUQf7R3knIlLuY3uuhacToZfvAD6rNh5osde+ih9JLdKUJ+j95pEKGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lf0GiR/2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32861C4CECD;
+	Wed, 13 Nov 2024 11:23:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731496393;
-	bh=dXwC9JmKnnV420HYAwNnWhkRbmteRscbJhUEHvZ0SOo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Rfx8PqnvR7HokbFApzo78S4Im7nZgrwM+fXd9VJzCOS1bdLe+L2fjBmsygryyQlre
-	 5N531AEMyp+jsa5cpmcHwo5AbgenUn20BgbfzJDMGVaN+0dHdavLIBwesVQiW/4+nr
-	 fzEuBlsBwMWVoSq7vF6FeWJpK7XzwvHsQgsE7WsKF5hZ5aLXgbKYdAr/gls7inoZX4
-	 ozx4EFooWH/8plsOzF21wTBdjwnmuIr++c5/+8T9O5RYGHsfoJt0o6xlIxqo+r/saB
-	 Pm4B02ftAEPaHU/w495XVrWH7ZJS7OGu8Dgqtbtp6xFl1u9Qzvw0xcq0pEguo8/qXJ
-	 gI5GDrar9jaCA==
+	s=k20201202; t=1731497005;
+	bh=Yo7Zzyc17/vDtTwdiLn27kyV5fmgdjjp8sis54ZZet4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Lf0GiR/2hn4XNwrLZ9hkbTQwyQN9jHUpvp9gs94zalK4k7ZkQTeFwbKFa8HoKl0N/
+	 0SHfRqlUI3B/LNPUVnpWDAywZl7Bym0eWnyt/mo4c+/u35yYaHRRWt2qvbAepi+Q0R
+	 3cThIQzBNKcQRpGnBsXEg05YeITUVSYaSqu36kItuzgdcBMVTzzq9ZgCFMEph18y1o
+	 HuhjjaBUwQ77IV3ApqOWKiyGU/9YMVaDgHJBehTbzz3IV6yWlrrmbxZuoOuqWiKZsl
+	 3k0jViJ7WIF4CQ63bwsO/HBmLgQ7oU83gUB6/CJl57mRFwM1sFs1dQS5KGxFKlaJ7Q
+	 l7p+ggde72Wzw==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Sean Hefty <shefty@nvidia.com>,
+Cc: Patrisious Haddad <phaddad@nvidia.com>,
 	linux-rdma@vger.kernel.org,
-	Or Har-Toov <ohartoov@nvidia.com>,
-	Vlad Dumitrescu <vdumitrescu@nvidia.com>
-Subject: [PATCH rdma-next 3/3] IB/cm: Rework sending DREQ when destroying a cm_id
-Date: Wed, 13 Nov 2024 13:12:56 +0200
-Message-ID: <a288a098b8e0550305755fd4a7937431699317f4.1731495873.git.leon@kernel.org>
+	Michael Guralnik <michaelgur@nvidia.com>
+Subject: [PATCH rdma-next] RDMA/mlx5: Move events notifier registration to be after device registration
+Date: Wed, 13 Nov 2024 13:23:19 +0200
+Message-ID: <d271ceeff0c08431b3cbbbb3e2d416f09b6d1621.1731496944.git.leon@kernel.org>
 X-Mailer: git-send-email 2.47.0
-In-Reply-To: <cover.1731495873.git.leon@kernel.org>
-References: <cover.1731495873.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -61,147 +57,187 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Sean Hefty <shefty@nvidia.com>
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-A DREQ is sent in 2 situations:
+Move pkey change work initialization and cleanup from device resources
+stage to notifier stage, since this is the stage which handles this work
+events.
 
-  1. When requested by the user.
-     This DREQ has to wait for a DREP, which will be routed to the user.
+Fix a race between the device deregistration and pkey change work by moving
+MLX5_IB_STAGE_DEVICE_NOTIFIER to be after MLX5_IB_STAGE_IB_REG in order to
+ensure that the notifier is deregistered before the device during cleanup.
+Which ensures there are no works that are being executed after the
+device has already unregistered which can cause the panic below.
 
-  2. When the cm_id is destroyed.
-     This DREQ is generated by the CM to notify the peer that the
-     connection has been destroyed.
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+PGD 0 P4D 0
+Oops: 0000 [#1] PREEMPT SMP PTI
+CPU: 1 PID: 630071 Comm: kworker/1:2 Kdump: loaded Tainted: G W OE --------- --- 5.14.0-162.6.1.el9_1.x86_64 #1
+Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090008 02/27/2023
+Workqueue: events pkey_change_handler [mlx5_ib]
+RIP: 0010:setup_qp+0x38/0x1f0 [mlx5_ib]
+Code: ee 41 54 45 31 e4 55 89 f5 53 48 89 fb 48 83 ec 20 8b 77 08 65 48 8b 04 25 28 00 00 00 48 89 44 24 18 48 8b 07 48 8d 4c 24 16 <4c> 8b 38 49 8b 87 80 0b 00 00 4c 89 ff 48 8b 80 08 05 00 00 8b 40
+RSP: 0018:ffffbcc54068be20 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff954054494128 RCX: ffffbcc54068be36
+RDX: ffff954004934000 RSI: 0000000000000001 RDI: ffff954054494128
+RBP: 0000000000000023 R08: ffff954001be2c20 R09: 0000000000000001
+R10: ffff954001be2c20 R11: ffff9540260133c0 R12: 0000000000000000
+R13: 0000000000000023 R14: 0000000000000000 R15: ffff9540ffcb0905
+FS: 0000000000000000(0000) GS:ffff9540ffc80000(0000) knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000010625c001 CR4: 00000000003706e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+mlx5_ib_gsi_pkey_change+0x20/0x40 [mlx5_ib]
+process_one_work+0x1e8/0x3c0
+worker_thread+0x50/0x3b0
+? rescuer_thread+0x380/0x380
+kthread+0x149/0x170
+? set_kthread_struct+0x50/0x50
+ret_from_fork+0x22/0x30
+Modules linked in: rdma_ucm(OE) rdma_cm(OE) iw_cm(OE) ib_ipoib(OE) ib_cm(OE) ib_umad(OE) mlx5_ib(OE) mlx5_fwctl(OE) fwctl(OE) ib_uverbs(OE) mlx5_core(OE) mlxdevm(OE) ib_core(OE) mlx_compat(OE) psample mlxfw(OE) tls knem(OE) netconsole nfsv3 nfs_acl nfs lockd grace fscache netfs qrtr rfkill sunrpc intel_rapl_msr intel_rapl_common rapl hv_balloon hv_utils i2c_piix4 pcspkr joydev fuse ext4 mbcache jbd2 sr_mod sd_mod cdrom t10_pi sg ata_generic pci_hyperv pci_hyperv_intf hyperv_drm drm_shmem_helper drm_kms_helper hv_storvsc syscopyarea hv_netvsc sysfillrect sysimgblt hid_hyperv fb_sys_fops scsi_transport_fc hyperv_keyboard drm ata_piix crct10dif_pclmul crc32_pclmul crc32c_intel libata ghash_clmulni_intel hv_vmbus serio_raw [last unloaded: ib_core]
+CR2: 0000000000000000
+---[ end trace f6f8be4eae12f7bc ]---
 
-In the latter case, any DREP that is received will be discarded.
-There's no need to hold a reference on the cm_id.  Today, both
-situations are covered by the same function: cm_send_dreq_locked().
-When invoked in the cm_id destroy path, the cm_id reference would be
-held until the DREQ completes, blocking the destruction.  Because it
-could take several seconds to minutes before the DREQ receives a DREP,
-the destroy call posts a send for the DREQ then immediately cancels the
-MAD.  However, cancellation is not immediate in the MAD layer.  There
-could still be a delay before the MAD layer returns the DREQ to the CM.
-Moreover, the only guarantee is that the DREQ will be sent at most once.
-
-Introduce a separate flow for sending a DREQ when destroying the cm_id.
-The new flow will not hold a reference on the cm_id, allowing it to be
-cleaned up immediately.  The cancellation trick is no longer needed.
-The MAD layer will send the DREQ exactly once.
-
-Signed-off-by: Sean Hefty <shefty@nvidia.com>
-Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>
-Signed-off-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
+Fixes: 7722f47e71e5 ("IB/mlx5: Create GSI transmission QPs when P_Key table is changed")
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/cm.c | 53 ++++++++++++++++++++++--------------
- 1 file changed, 32 insertions(+), 21 deletions(-)
+ drivers/infiniband/hw/mlx5/main.c    | 40 +++++++++++++---------------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  2 +-
+ 2 files changed, 20 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 2517bfebcfd5..142170473e75 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -95,8 +95,7 @@ static void cm_process_work(struct cm_id_private *cm_id_priv,
- 			    struct cm_work *work);
- static int cm_send_sidr_rep_locked(struct cm_id_private *cm_id_priv,
- 				   struct ib_cm_sidr_rep_param *param);
--static int cm_send_dreq_locked(struct cm_id_private *cm_id_priv,
--			       const void *private_data, u8 private_data_len);
-+static void cm_issue_dreq(struct cm_id_private *cm_id_priv);
- static int cm_send_drep_locked(struct cm_id_private *cm_id_priv,
- 			       void *private_data, u8 private_data_len);
- static int cm_send_rej_locked(struct cm_id_private *cm_id_priv,
-@@ -1112,7 +1111,8 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- 			cm_id->state = IB_CM_IDLE;
- 			break;
- 		}
--		cm_send_dreq_locked(cm_id_priv, NULL, 0);
-+		cm_issue_dreq(cm_id_priv);
-+		cm_enter_timewait(cm_id_priv);
- 		goto retest;
- 	case IB_CM_DREQ_SENT:
- 		ib_cancel_mad(cm_id_priv->msg);
-@@ -2652,20 +2652,42 @@ static void cm_format_dreq(struct cm_dreq_msg *dreq_msg,
- 			    private_data_len);
- }
- 
--static int cm_send_dreq_locked(struct cm_id_private *cm_id_priv,
--			       const void *private_data, u8 private_data_len)
-+static void cm_issue_dreq(struct cm_id_private *cm_id_priv)
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 65da5df05d02..bc7930d0c564 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -3005,7 +3005,6 @@ int mlx5_ib_dev_res_srq_init(struct mlx5_ib_dev *dev)
+ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
  {
- 	struct ib_mad_send_buf *msg;
+ 	struct mlx5_ib_resources *devr = &dev->devr;
+-	int port;
  	int ret;
  
- 	lockdep_assert_held(&cm_id_priv->lock);
- 
-+	msg = cm_alloc_msg(cm_id_priv);
-+	if (IS_ERR(msg))
-+		return;
-+
-+	cm_format_dreq((struct cm_dreq_msg *) msg->mad, cm_id_priv, NULL, 0);
-+
-+	trace_icm_send_dreq(&cm_id_priv->id);
-+	ret = ib_post_send_mad(msg, NULL);
-+	if (ret)
-+		cm_free_msg(msg);
-+}
-+
-+int ib_send_cm_dreq(struct ib_cm_id *cm_id, const void *private_data,
-+		    u8 private_data_len)
-+{
-+	struct cm_id_private *cm_id_priv =
-+		container_of(cm_id, struct cm_id_private, id);
-+	struct ib_mad_send_buf *msg;
-+	unsigned long flags;
-+	int ret;
-+
- 	if (private_data && private_data_len > IB_CM_DREQ_PRIVATE_DATA_SIZE)
- 		return -EINVAL;
- 
-+	spin_lock_irqsave(&cm_id_priv->lock, flags);
- 	if (cm_id_priv->id.state != IB_CM_ESTABLISHED) {
- 		trace_icm_dreq_skipped(&cm_id_priv->id);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto unlock;
+ 	if (!MLX5_CAP_GEN(dev->mdev, xrc))
+@@ -3021,10 +3020,6 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
+ 		return ret;
  	}
  
- 	if (cm_id_priv->id.lap_state == IB_CM_LAP_SENT ||
-@@ -2675,7 +2697,8 @@ static int cm_send_dreq_locked(struct cm_id_private *cm_id_priv,
- 	msg = cm_alloc_priv_msg(cm_id_priv, IB_CM_DREQ_SENT);
- 	if (IS_ERR(msg)) {
- 		cm_enter_timewait(cm_id_priv);
--		return PTR_ERR(msg);
-+		ret = PTR_ERR(msg);
-+		goto unlock;
- 	}
- 
- 	cm_format_dreq((struct cm_dreq_msg *) msg->mad, cm_id_priv,
-@@ -2686,23 +2709,11 @@ static int cm_send_dreq_locked(struct cm_id_private *cm_id_priv,
- 	if (ret) {
- 		cm_enter_timewait(cm_id_priv);
- 		cm_free_priv_msg(msg);
--		return ret;
-+		goto unlock;
- 	}
- 
- 	cm_id_priv->id.state = IB_CM_DREQ_SENT;
--	return 0;
--}
+-	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
+-		INIT_WORK(&devr->ports[port].pkey_change_work,
+-			  pkey_change_handler);
 -
--int ib_send_cm_dreq(struct ib_cm_id *cm_id, const void *private_data,
--		    u8 private_data_len)
--{
--	struct cm_id_private *cm_id_priv =
--		container_of(cm_id, struct cm_id_private, id);
--	unsigned long flags;
--	int ret;
+ 	mutex_init(&devr->cq_lock);
+ 	mutex_init(&devr->srq_lock);
+ 
+@@ -3034,16 +3029,6 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
+ static void mlx5_ib_dev_res_cleanup(struct mlx5_ib_dev *dev)
+ {
+ 	struct mlx5_ib_resources *devr = &dev->devr;
+-	int port;
 -
--	spin_lock_irqsave(&cm_id_priv->lock, flags);
--	ret = cm_send_dreq_locked(cm_id_priv, private_data, private_data_len);
-+unlock:
- 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
- 	return ret;
+-	/*
+-	 * Make sure no change P_Key work items are still executing.
+-	 *
+-	 * At this stage, the mlx5_ib_event should be unregistered
+-	 * and it ensures that no new works are added.
+-	 */
+-	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
+-		cancel_work_sync(&devr->ports[port].pkey_change_work);
+ 
+ 	/* After s0/s1 init, they are not unset during the device lifetime. */
+ 	if (devr->s1) {
+@@ -4480,6 +4465,13 @@ static void mlx5_ib_stage_delay_drop_cleanup(struct mlx5_ib_dev *dev)
+ 
+ static int mlx5_ib_stage_dev_notifier_init(struct mlx5_ib_dev *dev)
+ {
++	struct mlx5_ib_resources *devr = &dev->devr;
++	int port;
++
++	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
++		INIT_WORK(&devr->ports[port].pkey_change_work,
++			  pkey_change_handler);
++
+ 	dev->mdev_events.notifier_call = mlx5_ib_event;
+ 	mlx5_notifier_register(dev->mdev, &dev->mdev_events);
+ 
+@@ -4490,8 +4482,14 @@ static int mlx5_ib_stage_dev_notifier_init(struct mlx5_ib_dev *dev)
+ 
+ static void mlx5_ib_stage_dev_notifier_cleanup(struct mlx5_ib_dev *dev)
+ {
++	struct mlx5_ib_resources *devr = &dev->devr;
++	int port;
++
+ 	mlx5r_macsec_event_unregister(dev);
+ 	mlx5_notifier_unregister(dev->mdev, &dev->mdev_events);
++
++	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
++		cancel_work_sync(&devr->ports[port].pkey_change_work);
  }
+ 
+ void mlx5_ib_data_direct_bind(struct mlx5_ib_dev *ibdev,
+@@ -4581,9 +4579,6 @@ static const struct mlx5_ib_profile pf_profile = {
+ 	STAGE_CREATE(MLX5_IB_STAGE_DEVICE_RESOURCES,
+ 		     mlx5_ib_dev_res_init,
+ 		     mlx5_ib_dev_res_cleanup),
+-	STAGE_CREATE(MLX5_IB_STAGE_DEVICE_NOTIFIER,
+-		     mlx5_ib_stage_dev_notifier_init,
+-		     mlx5_ib_stage_dev_notifier_cleanup),
+ 	STAGE_CREATE(MLX5_IB_STAGE_ODP,
+ 		     mlx5_ib_odp_init_one,
+ 		     mlx5_ib_odp_cleanup_one),
+@@ -4608,6 +4603,9 @@ static const struct mlx5_ib_profile pf_profile = {
+ 	STAGE_CREATE(MLX5_IB_STAGE_IB_REG,
+ 		     mlx5_ib_stage_ib_reg_init,
+ 		     mlx5_ib_stage_ib_reg_cleanup),
++	STAGE_CREATE(MLX5_IB_STAGE_DEVICE_NOTIFIER,
++		     mlx5_ib_stage_dev_notifier_init,
++		     mlx5_ib_stage_dev_notifier_cleanup),
+ 	STAGE_CREATE(MLX5_IB_STAGE_POST_IB_REG_UMR,
+ 		     mlx5_ib_stage_post_ib_reg_umr_init,
+ 		     NULL),
+@@ -4644,9 +4642,6 @@ const struct mlx5_ib_profile raw_eth_profile = {
+ 	STAGE_CREATE(MLX5_IB_STAGE_DEVICE_RESOURCES,
+ 		     mlx5_ib_dev_res_init,
+ 		     mlx5_ib_dev_res_cleanup),
+-	STAGE_CREATE(MLX5_IB_STAGE_DEVICE_NOTIFIER,
+-		     mlx5_ib_stage_dev_notifier_init,
+-		     mlx5_ib_stage_dev_notifier_cleanup),
+ 	STAGE_CREATE(MLX5_IB_STAGE_COUNTERS,
+ 		     mlx5_ib_counters_init,
+ 		     mlx5_ib_counters_cleanup),
+@@ -4668,6 +4663,9 @@ const struct mlx5_ib_profile raw_eth_profile = {
+ 	STAGE_CREATE(MLX5_IB_STAGE_IB_REG,
+ 		     mlx5_ib_stage_ib_reg_init,
+ 		     mlx5_ib_stage_ib_reg_cleanup),
++	STAGE_CREATE(MLX5_IB_STAGE_DEVICE_NOTIFIER,
++		     mlx5_ib_stage_dev_notifier_init,
++		     mlx5_ib_stage_dev_notifier_cleanup),
+ 	STAGE_CREATE(MLX5_IB_STAGE_POST_IB_REG_UMR,
+ 		     mlx5_ib_stage_post_ib_reg_umr_init,
+ 		     NULL),
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index 98619daffdcc..d6b045276244 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -973,7 +973,6 @@ enum mlx5_ib_stages {
+ 	MLX5_IB_STAGE_QP,
+ 	MLX5_IB_STAGE_SRQ,
+ 	MLX5_IB_STAGE_DEVICE_RESOURCES,
+-	MLX5_IB_STAGE_DEVICE_NOTIFIER,
+ 	MLX5_IB_STAGE_ODP,
+ 	MLX5_IB_STAGE_COUNTERS,
+ 	MLX5_IB_STAGE_CONG_DEBUGFS,
+@@ -982,6 +981,7 @@ enum mlx5_ib_stages {
+ 	MLX5_IB_STAGE_PRE_IB_REG_UMR,
+ 	MLX5_IB_STAGE_WHITELIST_UID,
+ 	MLX5_IB_STAGE_IB_REG,
++	MLX5_IB_STAGE_DEVICE_NOTIFIER,
+ 	MLX5_IB_STAGE_POST_IB_REG_UMR,
+ 	MLX5_IB_STAGE_DELAY_DROP,
+ 	MLX5_IB_STAGE_RESTRACK,
 -- 
 2.47.0
 
