@@ -1,53 +1,100 @@
-Return-Path: <linux-rdma+bounces-5960-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5961-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D7CF9C6DF3
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 12:36:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 010B39C704D
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 14:10:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AFF0B2DE2C
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 11:23:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B1E8B31E2B
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2024 12:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67D021FDFAE;
-	Wed, 13 Nov 2024 11:23:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06D931FF605;
+	Wed, 13 Nov 2024 12:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lf0GiR/2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UjzSmDnp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281871FA256
-	for <linux-rdma@vger.kernel.org>; Wed, 13 Nov 2024 11:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC8C1DEFF6;
+	Wed, 13 Nov 2024 12:57:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731497008; cv=none; b=fJUuWuLcH9bQP7tIAb8x2Vu6fFiB+S1EGrkz5kv7VUQArwSDjjXmcs7kuUFhoxCzzsrjeNDKHDg9njjD52EOGjVhHct9b1ian0N9o1ZlNwZF8Ob+mTObm5i279KYurhAp65S1AB+KqdOJ2j9t/4uxzSy1xICDjReydddzDZn6PI=
+	t=1731502659; cv=none; b=AMl85MASIoWbZguwvOhIQwJN33wpUg9XrCKoaQZ8RSNnFP+0u8Owe20HPfd6XJzCHxlHEHo9zfqR10eyh3tObksJesYWS3DO+h6sFzbblig+bupqxzZYXPO4PK5piHxVKYHh789LrZZTr9/moF7dbDPlHOk/AKjUGkeX93E4AyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731497008; c=relaxed/simple;
-	bh=Yo7Zzyc17/vDtTwdiLn27kyV5fmgdjjp8sis54ZZet4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K79D5htGMNBunDQrA4N/WhzTaG0OTxyq9+FmxPQbdnnJusy6kJZS0+W9d27XZ4iMXnn2E4OdfHx9PG2yuzRsQmWRDxeag1Z55Ot9aCM2wi5zizXbc2OFXUQf7R3knIlLuY3uuhacToZfvAD6rNh5osde+ih9JLdKUJ+j95pEKGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lf0GiR/2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32861C4CECD;
-	Wed, 13 Nov 2024 11:23:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731497005;
-	bh=Yo7Zzyc17/vDtTwdiLn27kyV5fmgdjjp8sis54ZZet4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Lf0GiR/2hn4XNwrLZ9hkbTQwyQN9jHUpvp9gs94zalK4k7ZkQTeFwbKFa8HoKl0N/
-	 0SHfRqlUI3B/LNPUVnpWDAywZl7Bym0eWnyt/mo4c+/u35yYaHRRWt2qvbAepi+Q0R
-	 3cThIQzBNKcQRpGnBsXEg05YeITUVSYaSqu36kItuzgdcBMVTzzq9ZgCFMEph18y1o
-	 HuhjjaBUwQ77IV3ApqOWKiyGU/9YMVaDgHJBehTbzz3IV6yWlrrmbxZuoOuqWiKZsl
-	 3k0jViJ7WIF4CQ63bwsO/HBmLgQ7oU83gUB6/CJl57mRFwM1sFs1dQS5KGxFKlaJ7Q
-	 l7p+ggde72Wzw==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Patrisious Haddad <phaddad@nvidia.com>,
+	s=arc-20240116; t=1731502659; c=relaxed/simple;
+	bh=LGhloGeZIC0Mz+li19UMoWZ/7zMlCQSy38g2HbfQ70Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gxF2iVQSO92x5lhc1E8XdrYNxU2w7JgUNuvdvwev+I0eYtED3lm+XK65v1iXRuRmvXm1C2smKLMNym6bYQ6Ogfr0dzYO38J7rzn7VuQ20qz98zmvWtWfzuobFanUJzEHLxRSeMVNAAkGRt63DVo3CkQqTDfEQKhwwcOQaN08CdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UjzSmDnp; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-72458c0e0d5so566514b3a.1;
+        Wed, 13 Nov 2024 04:57:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731502656; x=1732107456; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=16RIG7XtmkaIMsGLfFdWcl8EYTUAA5lDQMgC+uoAVXA=;
+        b=UjzSmDnpwXE41Xd2KIqsEuxJDaBCwJPB9vw19B/xyRF6xOFcSqSaKAJp40KW7kh5R7
+         cGviJWk0qqKbUm0I1JGgUbJNjIMLyorki6ahqU/wECMF+wA/Hw2iAQiCty8MdXW63ZvS
+         QUErb1N4VqXPkPPzwAIbYy9NhIYCCAT226CCmD7lw87FB6ttik9CLKfu+Ya/4mIKyl9u
+         7H0QD/iXMAr7Qwcs75ue/lx6CKTAfmXa53YRwrd3dk3ByN763O54z3WFQxoEwwWysKMp
+         dlLpcO7Fr/OgdUC6ngzwTu/VYst2KAO2QWHNfmQNMstQ7fo7TAKMDWlcEJox9+nHJ5b1
+         UStQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731502656; x=1732107456;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=16RIG7XtmkaIMsGLfFdWcl8EYTUAA5lDQMgC+uoAVXA=;
+        b=bDgfXcmBMoAjJg0urwLHbRFCu/fmt4JVWQwwOpBLS5/uV8AJWzQfon5348Gr6ApSo4
+         098/kU2uYLwDzuh8r8hlssKaA0A9d5AS0+ZS+JnMNhsSyI3nijTv9n20kX3D/29KMyF+
+         Ran/ERc8bXhTY3WGG+RJSELhgAuhPye+i8Uw7uB+2Bkf0q02DpFCpctYASd4XIbEHJ2f
+         UlwDApbqoN71dTEDt3/pZzJAZUTad/+/lzVFmOmMjnPT/TvnQdogB3+tjRQAH3CIeKkP
+         N8StZBrKvyJMFuErurzkuO9ZjNvALiFwevTABFKYxR8snFNtmsefiNx8FExgGCk37Ix6
+         zQNA==
+X-Forwarded-Encrypted: i=1; AJvYcCUGQ8GGbcYOKciM5No/nu6396j6Zsw6JVa1Bj/3k9HQPkMFPK2E5yC1ZOJeZaRHNS7X9Stl4dQ2Dh9LLw==@vger.kernel.org, AJvYcCULqAlWGm82M/N6dBaKZ07eJmp+AhJLgJqYPATY2qJNQEKKT3EB7iwo5ZqOTH/Px/kvZ/Yi/LHANaAM@vger.kernel.org, AJvYcCUoN2RkJt0kQ+ehTQPL+/I1FL8NmRqpPW4VfNVTjLLI6ACjFArx+g0kjXicFzzDKCgw5ZOOp5VWtyuP@vger.kernel.org, AJvYcCUxYmhqf5CGSkZLK5vQxP/zPLK4RDvusawvYt+f5Dhpmgh54LSOB/3SLafBwWxpOxQdJJz5mhcgWN8ZvOHa@vger.kernel.org, AJvYcCVDXeCuiF+Gux+afvyA8i3sfM7ImP5BcZQDR6r3POy404dSCe870SuNaaLOzY98d4I42r56qTih2f4AyaTQ1UNF@vger.kernel.org, AJvYcCVQW5iRhmrkqJtrIfG2U+ehBmrB/SUFZLtJX/La/cPiDWWF9s3vXKDEL41vo42Xqf2SFILZk8Bio3heGCN91gU=@vger.kernel.org, AJvYcCWA8D1JhXYu1/ghOT+HCbrjS6zo09k5NGwm6sC4mfRrHTIKrusWe02MgJo35x63SplZA442zU3dO8z1Xw==@vger.kernel.org, AJvYcCXHXe1n08eySLKK4QSTqCEbJNUKmxJ1cjuohBUWP/YaTomsWxtsbwrgKSMR3rkdb7NVExA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQFaTOpeCygy+0DYLXCXJ83USyAXqce9F7kLGdDCwaGOD1cmTK
+	iYurcismgEpBx7TOV9mKhtA27ugK7BKKz9TWDhQX66MofB8ttKKTFMED+Ct/VLg=
+X-Google-Smtp-Source: AGHT+IG1llNssb9d3itpdlPx9GEqMX+Zp38UcErZg9PjxNGttUHCL6O3wsgZQ/zCnjJA57EpkRZP1g==
+X-Received: by 2002:a17:90b:2789:b0:2e2:bb32:73e7 with SMTP id 98e67ed59e1d1-2e9b1f844damr30704968a91.15.1731502656393;
+        Wed, 13 Nov 2024 04:57:36 -0800 (PST)
+Received: from nova-ws.. ([103.167.140.11])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e9f3f8ed0esm1398632a91.40.2024.11.13.04.57.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Nov 2024 04:57:35 -0800 (PST)
+From: Xiao Liang <shaw.leon@gmail.com>
+To: netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Kuniyuki Iwashima <kuniyu@amazon.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Donald Hunter <donald.hunter@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Simon Horman <horms@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Hangbin Liu <liuhangbin@gmail.com>,
 	linux-rdma@vger.kernel.org,
-	Michael Guralnik <michaelgur@nvidia.com>
-Subject: [PATCH rdma-next] RDMA/mlx5: Move events notifier registration to be after device registration
-Date: Wed, 13 Nov 2024 13:23:19 +0200
-Message-ID: <d271ceeff0c08431b3cbbbb3e2d416f09b6d1621.1731496944.git.leon@kernel.org>
+	linux-can@vger.kernel.org,
+	osmocom-net-gprs@lists.osmocom.org,
+	bpf@vger.kernel.org,
+	linux-ppp@vger.kernel.org,
+	wireguard@lists.zx2c4.com,
+	linux-wireless@vger.kernel.org,
+	b.a.t.m.a.n@lists.open-mesh.org,
+	bridge@lists.linux.dev,
+	linux-wpan@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v3 0/6] net: Improve netns handling in RTNL and ip_tunnel
+Date: Wed, 13 Nov 2024 20:57:09 +0800
+Message-ID: <20241113125715.150201-1-shaw.leon@gmail.com>
 X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -57,187 +104,105 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Patrisious Haddad <phaddad@nvidia.com>
+This patch series includes some netns-related improvements and fixes for
+RTNL and ip_tunnel, to make link creation more intuitive:
 
-Move pkey change work initialization and cleanup from device resources
-stage to notifier stage, since this is the stage which handles this work
-events.
+ - Creating link in another net namespace doesn't conflict with link names
+   in current one.
+ - Refector rtnetlink link creation. Create link in target namespace
+   directly. Pass both source and link netns to drivers via newlink()
+   callback.
 
-Fix a race between the device deregistration and pkey change work by moving
-MLX5_IB_STAGE_DEVICE_NOTIFIER to be after MLX5_IB_STAGE_IB_REG in order to
-ensure that the notifier is deregistered before the device during cleanup.
-Which ensures there are no works that are being executed after the
-device has already unregistered which can cause the panic below.
+So that
 
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-PGD 0 P4D 0
-Oops: 0000 [#1] PREEMPT SMP PTI
-CPU: 1 PID: 630071 Comm: kworker/1:2 Kdump: loaded Tainted: G W OE --------- --- 5.14.0-162.6.1.el9_1.x86_64 #1
-Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS 090008 02/27/2023
-Workqueue: events pkey_change_handler [mlx5_ib]
-RIP: 0010:setup_qp+0x38/0x1f0 [mlx5_ib]
-Code: ee 41 54 45 31 e4 55 89 f5 53 48 89 fb 48 83 ec 20 8b 77 08 65 48 8b 04 25 28 00 00 00 48 89 44 24 18 48 8b 07 48 8d 4c 24 16 <4c> 8b 38 49 8b 87 80 0b 00 00 4c 89 ff 48 8b 80 08 05 00 00 8b 40
-RSP: 0018:ffffbcc54068be20 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff954054494128 RCX: ffffbcc54068be36
-RDX: ffff954004934000 RSI: 0000000000000001 RDI: ffff954054494128
-RBP: 0000000000000023 R08: ffff954001be2c20 R09: 0000000000000001
-R10: ffff954001be2c20 R11: ffff9540260133c0 R12: 0000000000000000
-R13: 0000000000000023 R14: 0000000000000000 R15: ffff9540ffcb0905
-FS: 0000000000000000(0000) GS:ffff9540ffc80000(0000) knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000010625c001 CR4: 00000000003706e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-mlx5_ib_gsi_pkey_change+0x20/0x40 [mlx5_ib]
-process_one_work+0x1e8/0x3c0
-worker_thread+0x50/0x3b0
-? rescuer_thread+0x380/0x380
-kthread+0x149/0x170
-? set_kthread_struct+0x50/0x50
-ret_from_fork+0x22/0x30
-Modules linked in: rdma_ucm(OE) rdma_cm(OE) iw_cm(OE) ib_ipoib(OE) ib_cm(OE) ib_umad(OE) mlx5_ib(OE) mlx5_fwctl(OE) fwctl(OE) ib_uverbs(OE) mlx5_core(OE) mlxdevm(OE) ib_core(OE) mlx_compat(OE) psample mlxfw(OE) tls knem(OE) netconsole nfsv3 nfs_acl nfs lockd grace fscache netfs qrtr rfkill sunrpc intel_rapl_msr intel_rapl_common rapl hv_balloon hv_utils i2c_piix4 pcspkr joydev fuse ext4 mbcache jbd2 sr_mod sd_mod cdrom t10_pi sg ata_generic pci_hyperv pci_hyperv_intf hyperv_drm drm_shmem_helper drm_kms_helper hv_storvsc syscopyarea hv_netvsc sysfillrect sysimgblt hid_hyperv fb_sys_fops scsi_transport_fc hyperv_keyboard drm ata_piix crct10dif_pclmul crc32_pclmul crc32c_intel libata ghash_clmulni_intel hv_vmbus serio_raw [last unloaded: ib_core]
-CR2: 0000000000000000
----[ end trace f6f8be4eae12f7bc ]---
+  # ip link add netns ns1 link-netns ns2 tun0 type gre ...
 
-Fixes: 7722f47e71e5 ("IB/mlx5: Create GSI transmission QPs when P_Key table is changed")
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+will create tun0 in ns1, rather than create it in ns2 and move to ns1.
+And don't conflict with another interface named "tun0" in current netns.
+
+Patch 1 from Donald is included just as a dependency.
+
 ---
- drivers/infiniband/hw/mlx5/main.c    | 40 +++++++++++++---------------
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  2 +-
- 2 files changed, 20 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 65da5df05d02..bc7930d0c564 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -3005,7 +3005,6 @@ int mlx5_ib_dev_res_srq_init(struct mlx5_ib_dev *dev)
- static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
- {
- 	struct mlx5_ib_resources *devr = &dev->devr;
--	int port;
- 	int ret;
- 
- 	if (!MLX5_CAP_GEN(dev->mdev, xrc))
-@@ -3021,10 +3020,6 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
- 		return ret;
- 	}
- 
--	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
--		INIT_WORK(&devr->ports[port].pkey_change_work,
--			  pkey_change_handler);
--
- 	mutex_init(&devr->cq_lock);
- 	mutex_init(&devr->srq_lock);
- 
-@@ -3034,16 +3029,6 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
- static void mlx5_ib_dev_res_cleanup(struct mlx5_ib_dev *dev)
- {
- 	struct mlx5_ib_resources *devr = &dev->devr;
--	int port;
--
--	/*
--	 * Make sure no change P_Key work items are still executing.
--	 *
--	 * At this stage, the mlx5_ib_event should be unregistered
--	 * and it ensures that no new works are added.
--	 */
--	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
--		cancel_work_sync(&devr->ports[port].pkey_change_work);
- 
- 	/* After s0/s1 init, they are not unset during the device lifetime. */
- 	if (devr->s1) {
-@@ -4480,6 +4465,13 @@ static void mlx5_ib_stage_delay_drop_cleanup(struct mlx5_ib_dev *dev)
- 
- static int mlx5_ib_stage_dev_notifier_init(struct mlx5_ib_dev *dev)
- {
-+	struct mlx5_ib_resources *devr = &dev->devr;
-+	int port;
-+
-+	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
-+		INIT_WORK(&devr->ports[port].pkey_change_work,
-+			  pkey_change_handler);
-+
- 	dev->mdev_events.notifier_call = mlx5_ib_event;
- 	mlx5_notifier_register(dev->mdev, &dev->mdev_events);
- 
-@@ -4490,8 +4482,14 @@ static int mlx5_ib_stage_dev_notifier_init(struct mlx5_ib_dev *dev)
- 
- static void mlx5_ib_stage_dev_notifier_cleanup(struct mlx5_ib_dev *dev)
- {
-+	struct mlx5_ib_resources *devr = &dev->devr;
-+	int port;
-+
- 	mlx5r_macsec_event_unregister(dev);
- 	mlx5_notifier_unregister(dev->mdev, &dev->mdev_events);
-+
-+	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
-+		cancel_work_sync(&devr->ports[port].pkey_change_work);
- }
- 
- void mlx5_ib_data_direct_bind(struct mlx5_ib_dev *ibdev,
-@@ -4581,9 +4579,6 @@ static const struct mlx5_ib_profile pf_profile = {
- 	STAGE_CREATE(MLX5_IB_STAGE_DEVICE_RESOURCES,
- 		     mlx5_ib_dev_res_init,
- 		     mlx5_ib_dev_res_cleanup),
--	STAGE_CREATE(MLX5_IB_STAGE_DEVICE_NOTIFIER,
--		     mlx5_ib_stage_dev_notifier_init,
--		     mlx5_ib_stage_dev_notifier_cleanup),
- 	STAGE_CREATE(MLX5_IB_STAGE_ODP,
- 		     mlx5_ib_odp_init_one,
- 		     mlx5_ib_odp_cleanup_one),
-@@ -4608,6 +4603,9 @@ static const struct mlx5_ib_profile pf_profile = {
- 	STAGE_CREATE(MLX5_IB_STAGE_IB_REG,
- 		     mlx5_ib_stage_ib_reg_init,
- 		     mlx5_ib_stage_ib_reg_cleanup),
-+	STAGE_CREATE(MLX5_IB_STAGE_DEVICE_NOTIFIER,
-+		     mlx5_ib_stage_dev_notifier_init,
-+		     mlx5_ib_stage_dev_notifier_cleanup),
- 	STAGE_CREATE(MLX5_IB_STAGE_POST_IB_REG_UMR,
- 		     mlx5_ib_stage_post_ib_reg_umr_init,
- 		     NULL),
-@@ -4644,9 +4642,6 @@ const struct mlx5_ib_profile raw_eth_profile = {
- 	STAGE_CREATE(MLX5_IB_STAGE_DEVICE_RESOURCES,
- 		     mlx5_ib_dev_res_init,
- 		     mlx5_ib_dev_res_cleanup),
--	STAGE_CREATE(MLX5_IB_STAGE_DEVICE_NOTIFIER,
--		     mlx5_ib_stage_dev_notifier_init,
--		     mlx5_ib_stage_dev_notifier_cleanup),
- 	STAGE_CREATE(MLX5_IB_STAGE_COUNTERS,
- 		     mlx5_ib_counters_init,
- 		     mlx5_ib_counters_cleanup),
-@@ -4668,6 +4663,9 @@ const struct mlx5_ib_profile raw_eth_profile = {
- 	STAGE_CREATE(MLX5_IB_STAGE_IB_REG,
- 		     mlx5_ib_stage_ib_reg_init,
- 		     mlx5_ib_stage_ib_reg_cleanup),
-+	STAGE_CREATE(MLX5_IB_STAGE_DEVICE_NOTIFIER,
-+		     mlx5_ib_stage_dev_notifier_init,
-+		     mlx5_ib_stage_dev_notifier_cleanup),
- 	STAGE_CREATE(MLX5_IB_STAGE_POST_IB_REG_UMR,
- 		     mlx5_ib_stage_post_ib_reg_umr_init,
- 		     NULL),
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 98619daffdcc..d6b045276244 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -973,7 +973,6 @@ enum mlx5_ib_stages {
- 	MLX5_IB_STAGE_QP,
- 	MLX5_IB_STAGE_SRQ,
- 	MLX5_IB_STAGE_DEVICE_RESOURCES,
--	MLX5_IB_STAGE_DEVICE_NOTIFIER,
- 	MLX5_IB_STAGE_ODP,
- 	MLX5_IB_STAGE_COUNTERS,
- 	MLX5_IB_STAGE_CONG_DEBUGFS,
-@@ -982,6 +981,7 @@ enum mlx5_ib_stages {
- 	MLX5_IB_STAGE_PRE_IB_REG_UMR,
- 	MLX5_IB_STAGE_WHITELIST_UID,
- 	MLX5_IB_STAGE_IB_REG,
-+	MLX5_IB_STAGE_DEVICE_NOTIFIER,
- 	MLX5_IB_STAGE_POST_IB_REG_UMR,
- 	MLX5_IB_STAGE_DELAY_DROP,
- 	MLX5_IB_STAGE_RESTRACK,
+v3:
+ - Drop "netns_atomic" flag and module parameter. Add netns parameter to
+   newlink() instead, and convert drivers accordingly.
+ - Move python NetNSEnter helper to net selftest lib.
+
+v2:
+ link: https://lore.kernel.org/all/20241107133004.7469-1-shaw.leon@gmail.com/
+ - Check NLM_F_EXCL to ensure only link creation is affected.
+ - Add self tests for link name/ifindex conflict and notifications
+   in different netns.
+ - Changes in dummy driver and ynl in order to add the test case.
+
+v1:
+ link: https://lore.kernel.org/all/20241023023146.372653-1-shaw.leon@gmail.com/
+
+
+Donald Hunter (1):
+  Revert "tools/net/ynl: improve async notification handling"
+
+Xiao Liang (5):
+  net: ip_tunnel: Build flow in underlay net namespace
+  rtnetlink: Lookup device in target netns when creating link
+  rtnetlink: Decouple net namespaces in rtnl_newlink_create()
+  selftests: net: Add python context manager for netns entering
+  selftests: net: Add two test cases for link netns
+
+ drivers/infiniband/ulp/ipoib/ipoib_netlink.c  |  6 ++-
+ drivers/net/amt.c                             |  6 +--
+ drivers/net/bareudp.c                         |  4 +-
+ drivers/net/bonding/bond_netlink.c            |  3 +-
+ drivers/net/can/dev/netlink.c                 |  2 +-
+ drivers/net/can/vxcan.c                       |  4 +-
+ .../ethernet/qualcomm/rmnet/rmnet_config.c    |  5 +-
+ drivers/net/geneve.c                          |  4 +-
+ drivers/net/gtp.c                             |  4 +-
+ drivers/net/ipvlan/ipvlan.h                   |  2 +-
+ drivers/net/ipvlan/ipvlan_main.c              |  5 +-
+ drivers/net/ipvlan/ipvtap.c                   |  4 +-
+ drivers/net/macsec.c                          |  5 +-
+ drivers/net/macvlan.c                         |  5 +-
+ drivers/net/macvtap.c                         |  5 +-
+ drivers/net/netkit.c                          |  4 +-
+ drivers/net/pfcp.c                            |  4 +-
+ drivers/net/ppp/ppp_generic.c                 |  4 +-
+ drivers/net/team/team_core.c                  |  2 +-
+ drivers/net/veth.c                            |  4 +-
+ drivers/net/vrf.c                             |  2 +-
+ drivers/net/vxlan/vxlan_core.c                |  4 +-
+ drivers/net/wireguard/device.c                |  4 +-
+ drivers/net/wireless/virtual/virt_wifi.c      |  5 +-
+ drivers/net/wwan/wwan_core.c                  |  6 ++-
+ include/net/ip_tunnels.h                      |  5 +-
+ include/net/rtnetlink.h                       | 22 ++++++++-
+ net/8021q/vlan_netlink.c                      |  5 +-
+ net/batman-adv/soft-interface.c               |  5 +-
+ net/bridge/br_netlink.c                       |  2 +-
+ net/caif/chnl_net.c                           |  2 +-
+ net/core/rtnetlink.c                          | 25 ++++++----
+ net/hsr/hsr_netlink.c                         |  8 +--
+ net/ieee802154/6lowpan/core.c                 |  5 +-
+ net/ipv4/ip_gre.c                             | 13 +++--
+ net/ipv4/ip_tunnel.c                          | 16 +++---
+ net/ipv4/ip_vti.c                             |  5 +-
+ net/ipv4/ipip.c                               |  5 +-
+ net/ipv6/ip6_gre.c                            | 17 ++++---
+ net/ipv6/ip6_tunnel.c                         | 11 ++---
+ net/ipv6/ip6_vti.c                            | 11 ++---
+ net/ipv6/sit.c                                | 11 ++---
+ net/xfrm/xfrm_interface_core.c                | 13 +++--
+ tools/net/ynl/cli.py                          | 10 ++--
+ tools/net/ynl/lib/ynl.py                      | 49 ++++++++-----------
+ tools/testing/selftests/net/Makefile          |  1 +
+ .../testing/selftests/net/lib/py/__init__.py  |  2 +-
+ tools/testing/selftests/net/lib/py/netns.py   | 18 +++++++
+ tools/testing/selftests/net/netns-name.sh     | 10 ++++
+ tools/testing/selftests/net/netns_atomic.py   | 38 ++++++++++++++
+ 50 files changed, 255 insertions(+), 157 deletions(-)
+ create mode 100755 tools/testing/selftests/net/netns_atomic.py
+
 -- 
 2.47.0
 
