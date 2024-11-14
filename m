@@ -1,87 +1,87 @@
-Return-Path: <linux-rdma+bounces-5988-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5989-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01D199C8D76
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2024 15:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1A059C903A
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2024 17:55:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7439FB28245
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2024 14:54:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC4F0B3ADFB
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2024 16:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EF7F55887;
-	Thu, 14 Nov 2024 14:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lAQO04f+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB30717E44A;
+	Thu, 14 Nov 2024 16:36:29 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D75D179BD
-	for <linux-rdma@vger.kernel.org>; Thu, 14 Nov 2024 14:54:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16861166F25;
+	Thu, 14 Nov 2024 16:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731596064; cv=none; b=edb1R4StPWZXYpNGOv7QCiEY+AYO+45GYI2SqpG/+4TIbmXVib7plpckhKPLubBMFFQ0AtyLpdwU9WKQ5Yml7W/9TT3oxU/dnIysuSyfikF+i1uBybcqI7ZOlDHd3Z+ddmOtrBBsjCeq67bdcANPDckavUOnA0k8ZgxyciuKISQ=
+	t=1731602189; cv=none; b=BLdVIDr3vsW5vyxJVJMOgJKfiXu04oPeiCbMVLgeYRpjfjDVv5QD95uGse4rnC+mG+2f4DP9iKH0to4dy2UGzQgFqTs2PJXIP6NaqE6xtmPTTEtdvf2z6INtGSJc6hA7jdt67CZAVB+4yTAwDo2rsK9kVHurmI71OlHY/JWzlmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731596064; c=relaxed/simple;
-	bh=88oDQEFE1X13zpb0nTrc5dT3s2xrkngKUE6x00pQwJA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=N6zBSdE+sXIxs3Uw0icJhlwAqmnafZmh44GmKUElPmpsCif3aSiN8IPbA7sw62T4TyGaJb12WHgO2WKuxwR4v+e/IJ/9XJBcffRQH7scFhznGeEVPvm/hMJZhXZnKiJyolu8NFN4sLESJ+cH9o58VDgUiM1Xbu6ZXDGHIG0SlyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lAQO04f+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C7E9C4CECD;
-	Thu, 14 Nov 2024 14:54:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731596063;
-	bh=88oDQEFE1X13zpb0nTrc5dT3s2xrkngKUE6x00pQwJA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=lAQO04f+JteN2ATUvUK1iJqdfqx3AFJcAp3Cl1RY7qdqq399kcCZdIjpPy4LkWKzG
-	 ueAsHYiYfXlpnEHBgL8WA2UVfeLG0VqwS8GO9uCtxMeWXThq5HxrmdFVyNNK3s0S0j
-	 5eUgaRvWhuEP+q1CL/zvPSXg6f0koUsjzg+x77IIxleXzm4boh7ZxliN/XJhEOaL4V
-	 ERTixFcp2sXAZUedf43ULYhdPyEcgm38b8cghNIt0Ka93Kq9gpUFfrCi1l3vRsIGJ7
-	 WuuzIdclkbUxH797Zh/UZhZu6nmi7Gl+svuYmEb/eRSFQGqG1zcyoutvjDzBXGAtjz
-	 kpmyuAP68zqPw==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Patrisious Haddad <phaddad@nvidia.com>, linux-rdma@vger.kernel.org, 
- Michael Guralnik <michaelgur@nvidia.com>
-In-Reply-To: <d271ceeff0c08431b3cbbbb3e2d416f09b6d1621.1731496944.git.leon@kernel.org>
-References: <d271ceeff0c08431b3cbbbb3e2d416f09b6d1621.1731496944.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: Move events notifier registration
- to be after device registration
-Message-Id: <173159606014.154263.2997995911872279251.b4-ty@kernel.org>
-Date: Thu, 14 Nov 2024 09:54:20 -0500
+	s=arc-20240116; t=1731602189; c=relaxed/simple;
+	bh=9CnMQTj/kx8j380p/9NSdXuITEG2atOw34vAty/glmk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vt3f9L/oC7wuGidpebDtDDo+LCgOdrmQOSgxvbQZdL/2B2UgSX2E02enk7rm5lwn3fTnrwmJZCPSxgIz2RosxKnhmlESAfX1Fwmz+DZNMjw8lNGM29ER3z6Sw73KdNLA6yQtrzQqpGTDE7Vu20kSF3aTfvZuNfDm2zoWkMtBB3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id A019B68C7B; Thu, 14 Nov 2024 17:36:22 +0100 (CET)
+Date: Thu, 14 Nov 2024 17:36:22 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig <hch@lst.de>,
+	Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Joerg Roedel <joro@8bytes.org>, ill Deacon <will@kernel.org>,
+	Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v3 00/17] Provide a new two step DMA mapping API
+Message-ID: <20241114163622.GA3121@lst.de>
+References: <cover.1731244445.git.leon@kernel.org> <20241112072040.GG71181@unreal> <20241114133011.GA606631@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241114133011.GA606631@unreal>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-
-On Wed, 13 Nov 2024 13:23:19 +0200, Leon Romanovsky wrote:
-> Move pkey change work initialization and cleanup from device resources
-> stage to notifier stage, since this is the stage which handles this work
-> events.
+On Thu, Nov 14, 2024 at 03:30:11PM +0200, Leon Romanovsky wrote:
+> > All technical concerns were handled and this series is ready to be merged.
+> > 
+> > Robin, can you please Ack the dma-iommu patches?
 > 
-> Fix a race between the device deregistration and pkey change work by moving
-> MLX5_IB_STAGE_DEVICE_NOTIFIER to be after MLX5_IB_STAGE_IB_REG in order to
-> ensure that the notifier is deregistered before the device during cleanup.
-> Which ensures there are no works that are being executed after the
-> device has already unregistered which can cause the panic below.
-> 
-> [...]
+> I don't see any response, so my assumption is that this series is ready
+> to be merged. Let's do it this cycle and save from us the burden of
+> having dependencies between subsystems.
 
-Applied, thanks!
+Slow down, please.  Nothing of this complexity is going to get merged
+half a week before a release.
 
-[1/1] RDMA/mlx5: Move events notifier registration to be after device registration
-      https://git.kernel.org/rdma/rdma/c/ede132a5cf559f
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+No changs to dma-iommu.c are going to get merged without an explicit
+ACK from Robin, and while there is no 100% for the core dma-mapping
+code I will also not merge anything that hasn't been resolved with
+my most trusted reviewer first, not even code I wrote myself.
 
 
