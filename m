@@ -1,103 +1,108 @@
-Return-Path: <linux-rdma+bounces-5983-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5985-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 840F69C8919
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2024 12:37:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 530249C8931
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2024 12:45:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F5CB1F2439D
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2024 11:37:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02AC11F23034
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2024 11:45:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE971F8909;
-	Thu, 14 Nov 2024 11:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D22911F8901;
+	Thu, 14 Nov 2024 11:45:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ei6yVwAr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gpGBsDvP"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD4B18C02F
-	for <linux-rdma@vger.kernel.org>; Thu, 14 Nov 2024 11:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8456D18C02F
+	for <linux-rdma@vger.kernel.org>; Thu, 14 Nov 2024 11:45:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731584257; cv=none; b=hNVMhpnU56HmrGAtd+609nwsd62+BUAC6IfY5cSSTZfPRoG50Z9I8pX1IplV0uoIhOMeG/4ZEPdWvMgsnM+D4iTENEF/JSHJ5jQTPJHnQFkg/m+MpWXr8tgqU54Dd7zeI8C/OzgOJdf8HvkAq43rf66AHkYaGMQ2sl4mT6mB6t8=
+	t=1731584728; cv=none; b=jA6znuCJVtYljzbx5N3A/iQm2ejyzPhvpOazSYpEdHlVEnQMS15VQtKabyiU9PswCw8fiIDV1/ND+oRLph85BMNzYoIyxbu4z79GUTB9V1IfvOEDA9Ddv45ps5pCul3/aJhi/SOFXLuyRKn+WbQLT5XlRtYkCx1XJ4Pky0UzFlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731584257; c=relaxed/simple;
-	bh=+OqNtV/MAJlWFyXPjtdIWo3Hfd0IwxVxXl2uVodtHLI=;
+	s=arc-20240116; t=1731584728; c=relaxed/simple;
+	bh=Hw3aSfTDSQrRuk/AGyqknutYrY6k8+kY9sYMgStUoOY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vF7fthWj/fnYGQm2fsYHgsO7W5JOp7bJ0UTGUupKNxzqb1zISmtp3NpmOkMPOc3AFmh0eoiWJvVJChCfWTJRjzJtZGXxLVvZUHSgVTiD8f/sC0C3UpMUJbB6IzQLFAKzlo2hXiqwyOc4HKKh0xvezf9DeqzPhMvpuI+o2BV7iXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ei6yVwAr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79659C4CECD;
-	Thu, 14 Nov 2024 11:37:36 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=IKarX0C6GWHHBji/mGBSGS7ZBrpriF1pEnbgQH+Vadv06xDG3338tac29XFX+kcs4cSOYH/gEN0jnu2ch9zVUkzX2Fw0YbqZAFCbFQFONnM2La5Eo6cc52vsqWP0QTWt+2/uzwNoGY6hSJ6GEYyy7v276nrtExiuFtEDBNFiYWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gpGBsDvP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71FD6C4CECD;
+	Thu, 14 Nov 2024 11:45:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731584256;
-	bh=+OqNtV/MAJlWFyXPjtdIWo3Hfd0IwxVxXl2uVodtHLI=;
+	s=k20201202; t=1731584726;
+	bh=Hw3aSfTDSQrRuk/AGyqknutYrY6k8+kY9sYMgStUoOY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ei6yVwAr//ol+U97poGD1BdHWwb+HyU9ung4PPwPVlSJtrTo5tQgYI6OuP7kWQen5
-	 t9VmIBbQtuIyi9LxnLWpMoz7Oe/jXB6tgv9PXqbSAsIgcxjpVLkekAr61dxBMBs2nU
-	 23gTdEUxDlozaLb+qXTDWgoaHmtD15wZyROVN8VD5s6ArV0snTS6Zd/dTQQu91lZLh
-	 i1WqXQ0u9AnxRugSAy0UwrKXKRWOKvjZ4ssAoTI/aq6r+B6+nmKjdpLaYEZLDKEPm4
-	 KUZeZTFEXmZPW9xLb4DWSFkC4GO4TYxAQx5mtF2xHcFjg97gUnZ2sLrFKCeP5U2OXI
-	 7zaoyH1jIGzGw==
-Date: Thu, 14 Nov 2024 13:37:26 +0200
+	b=gpGBsDvPOq3Cmn31YGi16re8GZv9GOCOcUMFpf8wWXRppp87TbykIcQL5Np9aik29
+	 5OMys0jpCqFKZC3wD+sYYC+s3BFxyxpTCG4TlWc/b/ujnNFSNCgsSHu4oQi5q/3lz0
+	 absCTB/zoKN8U0t/apOrhNf0LiUeLjT6K9WHJ6uMcKQr9N43V3rT4w/CmmoB8oZIE9
+	 dr1AuowR+KD/99nZBARr+5dqoqgKHodfzaC5xX/pZMg1zjZosgH60nqze4s+WI44Ws
+	 TmL2zuPXLgCmRIHaEnl+6Y8Tf0T1wGwMcxPTzpn2hWYJdVsHOKSCIgf0EnbzSZW7ej
+	 MIB02yGRwnd6Q==
+Date: Thu, 14 Nov 2024 13:45:21 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: jiang.kun2@zte.com.cn
-Cc: dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	xu.xin16@zte.com.cn, tu.qiang35@zte.com.cn
-Subject: Re: [PATCH linux 5.10] RDMA/restrack: Release MR/QP restrack when
- delete
-Message-ID: <20241114113726.GD499069@unreal>
-References: <202411141125595650lBfwAV8PE5HVMxAr96yl@zte.com.cn>
+To: Selvin Xavier <selvin.xavier@broadcom.com>
+Cc: Mohammad Heib <mheib@redhat.com>, linux-rdma@vger.kernel.org,
+	kashyap.desai@broadcom.com
+Subject: Re: [PATCH rdma] RDMA/bnxt_re: cmds completions handler avoid
+ accessing invalid memeory
+Message-ID: <20241114114521.GF499069@unreal>
+References: <20241112134956.1415343-1-mheib@redhat.com>
+ <20241114100413.GA499069@unreal>
+ <CA+sbYW1cp17tH-p8ffjtgBecyMP_fECmes9RN9Bj=bdNPD_W2g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202411141125595650lBfwAV8PE5HVMxAr96yl@zte.com.cn>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+sbYW1cp17tH-p8ffjtgBecyMP_fECmes9RN9Bj=bdNPD_W2g@mail.gmail.com>
 
-On Thu, Nov 14, 2024 at 11:25:59AM +0800, jiang.kun2@zte.com.cn wrote:
-> From: tuqiang <tu.qiang35@zte.com.cn>
-> 
-> The MR/QP restrack also needs to be released when delete it, otherwise it
-> cause memory leak as the task struct won't be released.
-> 
-> Refer to commit dac153f2802d ("RDMA/restrack: Release MR restrack when delete").
-> 
-> Fixes: 13ef5539def7 ("RDMA/restrack: Count references to the verbs objects")
-> Signed-off-by: tuqiang <tu.qiang35@zte.com.cn>
-> Signed-off-by: Jiang Kun <jiang.kun2@zte.com.cn>
-> Cc: xu xin <xu.xin16@zte.com.cn>
-> Cc: Doug Ledford <dledford@redhat.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Leon Romanovsky <leon@kernel.org>
-> ---
->  drivers/infiniband/core/restrack.c | 2 --
->  1 file changed, 2 deletions(-)
-
-This is not proper way to submit patches to stable@.
-Please read and Documentation/process/stable-kernel-rules.rst
+On Thu, Nov 14, 2024 at 03:37:30PM +0530, Selvin Xavier wrote:
+> On Thu, Nov 14, 2024 at 3:34 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Tue, Nov 12, 2024 at 03:49:56PM +0200, Mohammad Heib wrote:
+> > > If bnxt FW behaves unexpectedly because of FW bug or unexpected behavior it
+> > > can send completions for old  cookies that have already been handled by the
+> > > bnxt driver. If that old cookie was associated with an old calling context
+> > > the driver will try to access that caller memory again because the driver
+> > > never clean the is_waiter_alive flag after the caller successfully complete
+> > > waiting, and this access will cause the following kernel panic:
+> > >
+> > > Call Trace:
+> > >  <IRQ>
+> > >  ? __die+0x20/0x70
+> > >  ? page_fault_oops+0x75/0x170
+> > >  ? exc_page_fault+0xaa/0x140
+> > >  ? asm_exc_page_fault+0x22/0x30
+> > >  ? bnxt_qplib_process_qp_event.isra.0+0x20c/0x3a0 [bnxt_re]
+> > >  ? srso_return_thunk+0x5/0x5f
+> > >  ? __wake_up_common+0x78/0xa0
+> > >  ? srso_return_thunk+0x5/0x5f
+> > >  bnxt_qplib_service_creq+0x18d/0x250 [bnxt_re]
+> > >  tasklet_action_common+0xac/0x210
+> > >  handle_softirqs+0xd3/0x2b0
+> > >  __irq_exit_rcu+0x9b/0xc0
+> > >  common_interrupt+0x7f/0xa0
+> > >  </IRQ>
+> > >  <TASK>
+> > >
+> > > To avoid the above unexpected behavior clear the is_waiter_alive flag
+> > > every time the caller finishes waiting for a completion.
+> > >
+> > > Fixes: 691eb7c6110f ("RDMA/bnxt_re: handle command completions after driver detect a timedout")
+> > > Signed-off-by: Mohammad Heib <mheib@redhat.com>
+> > > ---
+> > >  drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 16 ++++++++--------
+> > >  1 file changed, 8 insertions(+), 8 deletions(-)
+> >
+> > Selvin?
+> Someone is confirming the fix. Will ack in a day. Thanks
 
 Thanks
-
-> 
-> diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-> index bbbbec5b1593..d5a69c4a1891 100644
-> --- a/drivers/infiniband/core/restrack.c
-> +++ b/drivers/infiniband/core/restrack.c
-> @@ -326,8 +326,6 @@ void rdma_restrack_del(struct rdma_restrack_entry *res)
->  	rt = &dev->res[res->type];
-> 
->  	old = xa_erase(&rt->xa, res->id);
-> -	if (res->type == RDMA_RESTRACK_MR || res->type == RDMA_RESTRACK_QP)
-> -		return;
->  	WARN_ON(old != res);
->  	res->valid = false;
-> 
-> -- 
-> 2.18.4
 
