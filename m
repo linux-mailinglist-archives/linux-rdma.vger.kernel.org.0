@@ -1,76 +1,75 @@
-Return-Path: <linux-rdma+bounces-5998-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-5999-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F92A9CDB1B
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F6579CDB1A
 	for <lists+linux-rdma@lfdr.de>; Fri, 15 Nov 2024 10:08:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36EACB2263F
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Nov 2024 09:08:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 360D81F2275A
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Nov 2024 09:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB4618CBF2;
-	Fri, 15 Nov 2024 09:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 512BC18C924;
+	Fri, 15 Nov 2024 09:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="PJATuAiM"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="SQ+vTZ85"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A2F188A3A
-	for <linux-rdma@vger.kernel.org>; Fri, 15 Nov 2024 09:08:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1972018A921
+	for <linux-rdma@vger.kernel.org>; Fri, 15 Nov 2024 09:08:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731661715; cv=none; b=TmMKN87ucztUaLZEG+r9u1ha3dEUNNnkLOYBavagDym1J3n8qpa2BjkFOqBkyIUArjXZz1C9eU/zIsdxfwvK8j2+THrYiascd6v1A5OnKCFLHrUHWJZMoM+jPoy6cek0ugVxkVY96lE0qj0PezEwXc6tufiHt6ufC3r2oF/sQko=
+	t=1731661719; cv=none; b=mA57CtihXN8fJeff+QsUT0qnEsAz0VuEEmItamMjr9ZmJYdeRnqsk1H26dJtP5dA0qfKTLDlAoKepaOHZh3i43xIkv03jQewaX32D8+HuutHHuQIwETY/OCfyVJVzH+gTUn84DnVvASJ2L1xUVTSYdbNpsTIFcN/c65ANO4f0no=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731661715; c=relaxed/simple;
-	bh=jO+6wrlHF7JEkrR57DxrmHttnb9NFFYqU2jKUtuEMdA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=E3brQxjVggBkYea0nSU255OOM5jCalasCQ1U8XZ8d23w/pu7XuUQ3KhRtMpZc7RFso74iwjrt/KOdue/kKjupXHMtIr//IUiCfWVVCep+tQylGKrEkE9nI/4XjmZTE9QsRih2mnQmYQsFaPZdr991vRf9ev2qWifIAMaOuKsDpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=PJATuAiM; arc=none smtp.client-ip=209.85.210.193
+	s=arc-20240116; t=1731661719; c=relaxed/simple;
+	bh=1E4Npxr/tCCfKchje+vXHKVdPoyh5tkpa/IeXb4tFGQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=o9jD3+Xs+TTDiwozlbMBH9SDf0b5PcuFEj791tGM51T0K6okF9KHsO7m9UJGt2bVltebAl4dpyl0sX4ylwYJW/NckCSMDezCM0FiUZvEFDXQ0XxwgPBlZJiWNj+rT04GfKYJM7vFqvILnjRA9xz3WhtPUVRfGyGraT9GgTIQqkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=SQ+vTZ85; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-720c286bcd6so1398757b3a.3
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Nov 2024 01:08:34 -0800 (PST)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-71e49ad46b1so1232153b3a.1
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Nov 2024 01:08:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1731661713; x=1732266513; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1731661716; x=1732266516; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=dg/hdqJktBcdJNz2xR56FmxvAVyE+yddqh0hutwjZ44=;
-        b=PJATuAiM9YHaKjsuPn1WTDtapWvuJ07V/rVn0Ho8S5Z5E8qga2A+JVPbuFybCwO8gh
-         gCs9M3abr7zVJcKmBDVhlPtnw2iNnsyd/jZR1nDqTEnJRWUbZvUfHtvciyTebKyuZxn8
-         rxyYHWDFvJGVB1xuM6hiUIJBQWF8SPutSelrI=
+        bh=23uSOGq4VRiGNcux5BW7xUZZAjH/eVPIOTZBgGxxPk8=;
+        b=SQ+vTZ85dog336MYUYXg2zsg+0JH4FUSK31SAi05YildItoLHD6gYeCSG6XJWByLU+
+         DBqD6J9trBDio9I0SY0DNyFMyyzGOxVfUBvmLflvBY61xRexRIb2E3Iwrx1yZODD5vq+
+         O3WVxYG2dgyFbrxTH4y5Y9hlNjVb3+Fc9CRGM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731661713; x=1732266513;
+        d=1e100.net; s=20230601; t=1731661716; x=1732266516;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dg/hdqJktBcdJNz2xR56FmxvAVyE+yddqh0hutwjZ44=;
-        b=VwaBblkoYajm1h1UPWlqBkCMVgPHL5GgqG9G8z+FUPFjKodYHsAVPDoU3PyAQi4j1q
-         q24n0/SOZ0HZcI3dKBV5kj/aWgrTMvBmHC/kiLFEa1U4ztC8Bssg1oUY2t2KU3Vxnypd
-         T9JZeD94QRAR85uz2xPPFqCMeHesPg0Fnhmo6FvgJVvIs25wpvv1o/uPNHmBF/X8COQB
-         p8KyXcVKecWIT8KeH17GKuJBEM+Hm3asFgiz0EMARPHLDASbjn4eCIgKQCLJoI/ijnwh
-         IYd12WrfDD9cW56i8si5rpWnH0zl8SXgfhWehw6IPDt1QIdJ8l0/+FUDzQTDf5jaEYj2
-         xgFg==
-X-Gm-Message-State: AOJu0Yys8llooFfxcY2X7iRjTy+aV8oQoI1hq7vRaFejGRHR1vzg3vP0
-	uzLNG9gsWS0nLrF8ayR2AQZQIaQa00nkbeDsgmCG7P+dp1APoL8YOFEh75JD6Q==
-X-Google-Smtp-Source: AGHT+IE+rx3zQYPKHhNBRB++8EY3MtAPuEYRkh34QwWxbGH3KEgdDyHCqtiJYJypZ2UuJKLtoN+UyA==
-X-Received: by 2002:a05:6a00:1393:b0:71e:7b8a:5953 with SMTP id d2e1a72fcca58-72476cb4154mr2298431b3a.24.1731661713529;
-        Fri, 15 Nov 2024 01:08:33 -0800 (PST)
+        bh=23uSOGq4VRiGNcux5BW7xUZZAjH/eVPIOTZBgGxxPk8=;
+        b=mwL5YJ/4F7kmk+F+CiPAbfnsUODDgIO4ewS/ZuKCScoJs02IssgpvFDVy1RmDBfDnF
+         q3MdqshHG+umbUi37RIyz9gJr4gpDW6aTKY40pr872G8/JRvZumpUVZSzg2qFZeqghUU
+         cqYOad/WdPIf5F23AGTSUB9jr4mbrN4tbVEp4375pjaMPzXVKA1EXwPr9L9NVEBgAlPc
+         uSc3KcPQF/jwXXzCLKVathiQNVq5P4H500qXc9G3zv14g5yxUUsGJpPi1gbfIrpYEDBp
+         X+akWQmUs4Gp02Q6oaFwJq4c2qrZNWZpujY9BfHWL55eHIVRSjcMH9RE5H+GWHd/ZMpF
+         hE1Q==
+X-Gm-Message-State: AOJu0YyjeWc/S6X0iOb1T11d+GP6Q2Af5qCIjsMEYVfam8LelTlxO1GP
+	dImUFRuWrfth0ietD7LJ5gax9IDoKaeUWVX57rTKZJH2GrgRykdMQ7ddQRkGMQ==
+X-Google-Smtp-Source: AGHT+IGi9+TIoLJwXUQ7W89ohz1IOKUMOw/U71Sthro7CxppLGLX+VuEyAZ4xq8cEVyhEyr2CTEOTw==
+X-Received: by 2002:a05:6a00:4b54:b0:71e:7046:c0f8 with SMTP id d2e1a72fcca58-72476f7c766mr2179185b3a.26.1731661716322;
+        Fri, 15 Nov 2024 01:08:36 -0800 (PST)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7247711de6fsm927926b3a.61.2024.11.15.01.08.30
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7247711de6fsm927926b3a.61.2024.11.15.01.08.33
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 15 Nov 2024 01:08:32 -0800 (PST)
+        Fri, 15 Nov 2024 01:08:35 -0800 (PST)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
-	Chandramohan Akula <chandramohan.akula@broadcom.com>,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH rdma-next 1/3] RDMA/bnxt_re: Support different traffic class
-Date: Fri, 15 Nov 2024 00:47:42 -0800
-Message-Id: <1731660464-27838-2-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH rdma-next 2/3] RDMA/bnxt_re: Use the default mode of congestion control
+Date: Fri, 15 Nov 2024 00:47:43 -0800
+Message-Id: <1731660464-27838-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1731660464-27838-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1731660464-27838-1-git-send-email-selvin.xavier@broadcom.com>
@@ -80,64 +79,36 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-From: Chandramohan Akula <chandramohan.akula@broadcom.com>
+From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-Adding support for different traffic class passed
-to driver. Fix the traffic class setting in modify_qp
-by skipping the ECN bits. Pass the service level received
-from applications to the firmware.
+Instead of driver setting the congestion mode, use
+the default values setup by Firmware. Enable the tos_ecn
+field in FW.
 
-Signed-off-by: Chandramohan Akula <chandramohan.akula@broadcom.com>
-Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c |  2 +-
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 12 +++++++++++-
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index f6e9eef..481261f 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -2136,7 +2136,7 @@ int bnxt_re_modify_qp(struct ib_qp *ib_qp, struct ib_qp_attr *qp_attr,
- 		qp->qplib_qp.ah.sgid_index = ctx->idx;
- 		qp->qplib_qp.ah.host_sgid_index = grh->sgid_index;
- 		qp->qplib_qp.ah.hop_limit = grh->hop_limit;
--		qp->qplib_qp.ah.traffic_class = grh->traffic_class;
-+		qp->qplib_qp.ah.traffic_class = grh->traffic_class >> 2;
- 		qp->qplib_qp.ah.sl = rdma_ah_get_sl(&qp_attr->ah_attr);
- 		ether_addr_copy(qp->qplib_qp.ah.dmac,
- 				qp_attr->ah_attr.roce.dmac);
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index e56f42f..256c437 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -1318,6 +1318,7 @@ int bnxt_qplib_modify_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	struct creq_modify_qp_resp resp = {};
- 	struct bnxt_qplib_cmdqmsg msg = {};
- 	struct cmdq_modify_qp req = {};
-+	u16 vlan_pcp_vlan_dei_vlan_id;
- 	u32 temp32[4];
- 	u32 bmask;
- 	int rc;
-@@ -1414,7 +1415,16 @@ int bnxt_qplib_modify_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	if (bmask & CMDQ_MODIFY_QP_MODIFY_MASK_DEST_QP_ID)
- 		req.dest_qp_id = cpu_to_le32(qp->dest_qpn);
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 533b9f1..ac475a5 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -2204,11 +2204,10 @@ static void bnxt_re_setup_cc(struct bnxt_re_dev *rdev, bool enable)
  
--	req.vlan_pcp_vlan_dei_vlan_id = cpu_to_le16(qp->vlan_id);
-+	if (bmask & CMDQ_MODIFY_QP_MODIFY_MASK_VLAN_ID) {
-+		vlan_pcp_vlan_dei_vlan_id =
-+			((res->sgid_tbl.tbl[qp->ah.sgid_index].vlan_id <<
-+			  CMDQ_MODIFY_QP_VLAN_ID_SFT) &
-+			 CMDQ_MODIFY_QP_VLAN_ID_MASK);
-+		vlan_pcp_vlan_dei_vlan_id |=
-+			((qp->ah.sl << CMDQ_MODIFY_QP_VLAN_PCP_SFT) &
-+			 CMDQ_MODIFY_QP_VLAN_PCP_MASK);
-+		req.vlan_pcp_vlan_dei_vlan_id = cpu_to_le16(vlan_pcp_vlan_dei_vlan_id);
-+	}
+ 	if (enable) {
+ 		cc_param.enable  = 1;
+-		cc_param.cc_mode = CMDQ_MODIFY_ROCE_CC_CC_MODE_PROBABILISTIC_CC_MODE;
++		cc_param.tos_ecn = 1;
+ 	}
  
- 	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, NULL, sizeof(req),  sizeof(resp), 0);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
+-	cc_param.mask = (CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_CC_MODE |
+-			 CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_ENABLE_CC |
++	cc_param.mask = (CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_ENABLE_CC |
+ 			 CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_TOS_ECN);
+ 
+ 	if (bnxt_qplib_modify_cc(&rdev->qplib_res, &cc_param))
 -- 
 2.5.5
 
