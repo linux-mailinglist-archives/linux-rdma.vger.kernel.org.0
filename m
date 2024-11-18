@@ -1,289 +1,154 @@
-Return-Path: <linux-rdma+bounces-6021-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6022-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49FB09D0A5C
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2024 08:38:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25FA59D0B2E
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2024 09:46:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09C742824A2
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2024 07:38:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A52CBB219E4
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2024 08:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5726114830C;
-	Mon, 18 Nov 2024 07:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D928C1547E8;
+	Mon, 18 Nov 2024 08:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kt13E3dj"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Qiwcj9hr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4440F2907
-	for <linux-rdma@vger.kernel.org>; Mon, 18 Nov 2024 07:38:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 228F423A9;
+	Mon, 18 Nov 2024 08:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731915510; cv=none; b=mEGYa7rztWixLeXkZMh/cKMFAiNn+DiTy0LQuZ/RnkNQecLGOUlPdz98AF/rQmd4PzBKapkzdwLrYgvGBkATfUm0/skLzINhELwFN1H3nS13sLpWabOl9AhGIPKgr7Ysz6DMzSDA/OAcqK37e7GwHxtEH6wsbndlCgo91+BioAs=
+	t=1731919599; cv=none; b=sdGggm3Up77p3sKD0XxEYNRFTlyGleofhFfyOsvX1+XeUVmVKByqtyIx2JVMQWa+wi63NLYkgta1uThkwYaBdxOp2lQkdhn1o36UA6Igur0Y9RFk3vqmefaE3HzZa9/TCqP6HlkwbTySJAj2r84/Y79omn/p6J3viOXhwkZAKrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731915510; c=relaxed/simple;
-	bh=XSxI+g5FS6WKG0qGdjLD1SMjpwU7Gaczw6SP7mbLKWA=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=Gc0pZgidEaNDllIesXiaqOGll4bm8HV+bU1qxe4pTifWvWolrirGJvVYlL+83BMIwwWRYfOcOvdbOfkJqVwICvOCwC6LXCWJsf0jPQwHdbKParFucLazrDOGjqos3mH1HmASUnh4+UchkMFkG5OYCie0OE1JWt3I9b4kGG040Q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kt13E3dj; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1731915508; x=1763451508;
-  h=date:from:to:cc:subject:message-id;
-  bh=XSxI+g5FS6WKG0qGdjLD1SMjpwU7Gaczw6SP7mbLKWA=;
-  b=kt13E3djJhwL3tGDsE6QJFYd5rJx24Mw46UBzjJxapd3p0K/QXxjPsUC
-   msT7N0ymQ2eUGjtPmgg6iWbizd09KUrY49/vmNPZG0DmjPbflhQSP/0tD
-   P6zPDOe3VotKYpKCzsPsG/3rAVbsHvaHy+8+0dZ+D2+8rigll9Hj2v3Ne
-   FAslBYVZ/ukXwl3gima6yEcBUneFv+6yY44iYl+DztdoL/TZ3LmTyN0mO
-   vm7HGJpoL8EQtoEJHKg2JGlYCf2P5sRfLlSiy5GfAvuLTNq7QjrQ2zihO
-   1UM12CG077vFGjc+EKcd9oBBzm5Jam27isif00/VVWf0iHbTjjgd0tZuF
-   A==;
-X-CSE-ConnectionGUID: 5Lwx5bUsTD28iH7wHeTL8Q==
-X-CSE-MsgGUID: GDEKQXRWSCOcH4Y+S8ENEA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11259"; a="32011122"
-X-IronPort-AV: E=Sophos;i="6.12,163,1728975600"; 
-   d="scan'208";a="32011122"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2024 23:38:27 -0800
-X-CSE-ConnectionGUID: hRVA5NfoTDO8u/KiZLqp9g==
-X-CSE-MsgGUID: jCCec8uARxOylEtBhq4njw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,163,1728975600"; 
-   d="scan'208";a="89927561"
-Received: from lkp-server01.sh.intel.com (HELO 1e3cc1889ffb) ([10.239.97.150])
-  by orviesa008.jf.intel.com with ESMTP; 17 Nov 2024 23:38:25 -0800
-Received: from kbuild by 1e3cc1889ffb with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tCwL0-0002K5-1L;
-	Mon, 18 Nov 2024 07:38:22 +0000
-Date: Mon, 18 Nov 2024 15:37:46 +0800
-From: kernel test robot <lkp@intel.com>
+	s=arc-20240116; t=1731919599; c=relaxed/simple;
+	bh=sMCWvKB7WkMax+URJGEcDgswx+LT/PidQgFP62KmMEg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=i6bMBecHSgs+N+iofBwa4mZa6IRa5En6kHLGw0ycyUD5DFtfDqTIjidwTPtPIBbjMS1UtnATjwKC/9UEjSgjXqXtDn/kz+TBgR+iM1NM+ZRTSt6KNr4Tca97h9FHt/JRMxEGlZUbwx6e39EtayleT8VFW9JIRfNTA66wtbmF7Ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Qiwcj9hr; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AI1XUfm002666;
+	Mon, 18 Nov 2024 08:46:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=kekD6b
+	px5PSVlj02oWh1qCXrsMNq8i3soFV5V/stK+Y=; b=Qiwcj9hrxaBUfPNe0e6n98
+	oohk2hID97IXTJaSv958RHIluuqB93BAUqJDAGWsu/ptP82ECBXGCKVusX9jtJig
+	0OOxmWGacDq1M6ZLMvuFvwVRSoqGe3i3KDUcqfQnxErZZdWrtXWrJXTPBdvGsZsM
+	/ihUmVhXb+UHVYXeqkruFGK6PY29luAU8+mkwxA6aocyypq915KJGQZKPHIVhfvQ
+	rJlirUFq1xvPy/j0Jwh27m/E4agMua02RyjZK2DjiIV6iyupz3xBOlaoFu2cHM1y
+	AVwWZCNl0vXtBcAQvTK0N111va/cXnFrGTIpzi1MKrANGQ4BjudRRjaW8eo3PNxw
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42xk20r3tx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Nov 2024 08:46:34 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AI8kY1B004109;
+	Mon, 18 Nov 2024 08:46:34 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42xk20r3tt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Nov 2024 08:46:34 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AI3U5Mi012123;
+	Mon, 18 Nov 2024 08:46:33 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 42y7xjj6va-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Nov 2024 08:46:33 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AI8kTKp57541084
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 18 Nov 2024 08:46:29 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6C6382004B;
+	Mon, 18 Nov 2024 08:46:29 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DD07D20043;
+	Mon, 18 Nov 2024 08:46:28 +0000 (GMT)
+Received: from [9.171.68.3] (unknown [9.171.68.3])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 18 Nov 2024 08:46:28 +0000 (GMT)
+Message-ID: <bd8e196839281fd324721650c5974db35b7990ec.camel@linux.ibm.com>
+Subject: Re: [PATCH net-next] net/smc: Run patches also by RDMA ML
+From: Gerd Bayer <gbayer@linux.ibm.com>
 To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:for-next] BUILD SUCCESS
- 68b3bca2df00f0a63f0aa2db2b2adc795665229e
-Message-ID: <202411181540.921XwUAd-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+Cc: Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+        Halil Pasic <pasic@linux.ibm.com>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, linux390-list@tuxmaker.boeblingen.de.ibm.com,
+        linux-kernel@vger.kernel.org
+Date: Mon, 18 Nov 2024 09:46:28 +0100
+In-Reply-To: <20241117100156.GA28954@unreal>
+References: <20241115-smc_lists-v1-1-a0a438125f13@linux.ibm.com>
+	 <20241117100156.GA28954@unreal>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: e4S5HiYg4CSEK4rcWnjIw9htUagIIPmv
+X-Proofpoint-GUID: Ut3Vn0GMU5dT5deJG9o1G3B4ot23WnUj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ mlxlogscore=999 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ malwarescore=0 clxscore=1015 mlxscore=0 spamscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2411180070
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: 68b3bca2df00f0a63f0aa2db2b2adc795665229e  RDMA/bnxt_re: Correct the sequence of device suspend
+On Sun, 2024-11-17 at 12:01 +0200, Leon Romanovsky wrote:
+> On Fri, Nov 15, 2024 at 06:44:57PM +0100, Gerd Bayer wrote:
+> > Commits for the SMC protocol usually get carried through the netdev
+> > mailing list. Some portions use InfiniBand verbs that are discussed on
+> > the RDMA mailing list. So run patches by that list too to increase the
+> > likelihood that all interested parties can see them.
+> >=20
+> > Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
+> > ---
+> > ---
+> >  MAINTAINERS | 1 +
+> >  1 file changed, 1 insertion(+)
+> >=20
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 32d157621b44fb919307e865e2481ab564eb17df..16024268b5fc1feb6c0d01e=
+ab3048bd9255d0bf9 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -20943,6 +20943,7 @@ M:	Jan Karcher <jaka@linux.ibm.com>
+> >  R:	D. Wythe <alibuda@linux.alibaba.com>
+> >  R:	Tony Lu <tonylu@linux.alibaba.com>
+> >  R:	Wen Gu <guwen@linux.alibaba.com>
+> > +L:	linux-rdma@vger.kernel.org
+> >  L:	linux-s390@vger.kernel.org
+>=20
 
-elapsed time: 1224m
+Hi Leon,
 
-configs tested: 195
-configs skipped: 5
+> Why don't we have netdev ML here too?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+since all smc code resides in net/smc the filter tag F: net/ in
+"NETWORKING [GENERAL]" provides that. My first internal draft contained
+an explicit L: tag for the netdev ML, but I dropped it to avoid any
+redundancy.
 
-tested configs:
-alpha                             allnoconfig    gcc-14.2.0
-alpha                            allyesconfig    clang-20
-alpha                            allyesconfig    gcc-14.2.0
-alpha                               defconfig    gcc-14.2.0
-arc                              allmodconfig    clang-20
-arc                               allnoconfig    gcc-13.2.0
-arc                               allnoconfig    gcc-14.2.0
-arc                              allyesconfig    clang-20
-arc                                 defconfig    gcc-14.2.0
-arc                        nsimosci_defconfig    clang-20
-arc                   randconfig-001-20241118    gcc-14.2.0
-arc                   randconfig-002-20241118    gcc-14.2.0
-arm                              allmodconfig    clang-20
-arm                               allnoconfig    clang-20
-arm                               allnoconfig    gcc-14.2.0
-arm                              allyesconfig    clang-20
-arm                       aspeed_g5_defconfig    clang-20
-arm                         axm55xx_defconfig    clang-20
-arm                                 defconfig    gcc-14.2.0
-arm                          ep93xx_defconfig    clang-20
-arm                            mmp2_defconfig    gcc-14.2.0
-arm                       omap2plus_defconfig    gcc-14.2.0
-arm                   randconfig-001-20241118    gcc-14.2.0
-arm                   randconfig-002-20241118    gcc-14.2.0
-arm                   randconfig-003-20241118    gcc-14.2.0
-arm                   randconfig-004-20241118    gcc-14.2.0
-arm64                            allmodconfig    clang-20
-arm64                             allnoconfig    gcc-14.2.0
-arm64                               defconfig    gcc-14.2.0
-arm64                 randconfig-001-20241118    gcc-14.2.0
-arm64                 randconfig-002-20241118    gcc-14.2.0
-arm64                 randconfig-003-20241118    gcc-14.2.0
-arm64                 randconfig-004-20241118    gcc-14.2.0
-csky                              allnoconfig    gcc-14.2.0
-csky                                defconfig    gcc-14.2.0
-csky                  randconfig-001-20241118    gcc-14.2.0
-csky                  randconfig-002-20241118    gcc-14.2.0
-hexagon                          allmodconfig    clang-20
-hexagon                           allnoconfig    clang-20
-hexagon                           allnoconfig    gcc-14.2.0
-hexagon                          allyesconfig    clang-20
-hexagon                             defconfig    gcc-14.2.0
-hexagon               randconfig-001-20241118    gcc-14.2.0
-hexagon               randconfig-002-20241118    gcc-14.2.0
-i386                             allmodconfig    clang-19
-i386                              allnoconfig    clang-19
-i386                             allyesconfig    clang-19
-i386        buildonly-randconfig-001-20241118    gcc-12
-i386        buildonly-randconfig-002-20241118    gcc-12
-i386        buildonly-randconfig-003-20241118    gcc-12
-i386        buildonly-randconfig-004-20241118    gcc-12
-i386        buildonly-randconfig-005-20241118    gcc-12
-i386        buildonly-randconfig-006-20241118    gcc-12
-i386                                defconfig    clang-19
-i386                  randconfig-001-20241118    gcc-12
-i386                  randconfig-002-20241118    gcc-12
-i386                  randconfig-003-20241118    gcc-12
-i386                  randconfig-004-20241118    gcc-12
-i386                  randconfig-005-20241118    gcc-12
-i386                  randconfig-006-20241118    gcc-12
-i386                  randconfig-011-20241118    gcc-12
-i386                  randconfig-012-20241118    gcc-12
-i386                  randconfig-013-20241118    gcc-12
-i386                  randconfig-014-20241118    gcc-12
-i386                  randconfig-015-20241118    gcc-12
-i386                  randconfig-016-20241118    gcc-12
-loongarch                        allmodconfig    gcc-14.2.0
-loongarch                         allnoconfig    gcc-14.2.0
-loongarch                           defconfig    gcc-14.2.0
-loongarch             randconfig-001-20241118    gcc-14.2.0
-loongarch             randconfig-002-20241118    gcc-14.2.0
-m68k                             allmodconfig    gcc-14.2.0
-m68k                              allnoconfig    gcc-14.2.0
-m68k                             allyesconfig    gcc-14.2.0
-m68k                                defconfig    gcc-14.2.0
-m68k                       m5475evb_defconfig    clang-20
-m68k                          multi_defconfig    gcc-14.2.0
-m68k                            q40_defconfig    gcc-14.2.0
-microblaze                       allmodconfig    gcc-14.2.0
-microblaze                        allnoconfig    gcc-14.2.0
-microblaze                       allyesconfig    gcc-14.2.0
-microblaze                          defconfig    gcc-14.2.0
-mips                              allnoconfig    gcc-14.2.0
-mips                         db1xxx_defconfig    clang-20
-mips                           ip27_defconfig    clang-20
-nios2                             allnoconfig    gcc-14.2.0
-nios2                               defconfig    gcc-14.2.0
-nios2                 randconfig-001-20241118    gcc-14.2.0
-nios2                 randconfig-002-20241118    gcc-14.2.0
-openrisc                          allnoconfig    clang-20
-openrisc                          allnoconfig    gcc-14.2.0
-openrisc                         allyesconfig    gcc-14.2.0
-openrisc                            defconfig    gcc-12
-parisc                           allmodconfig    gcc-14.2.0
-parisc                            allnoconfig    clang-20
-parisc                            allnoconfig    gcc-14.2.0
-parisc                           allyesconfig    gcc-14.2.0
-parisc                              defconfig    gcc-12
-parisc                randconfig-001-20241118    gcc-14.2.0
-parisc                randconfig-002-20241118    gcc-14.2.0
-parisc64                            defconfig    gcc-14.2.0
-powerpc                          allmodconfig    gcc-14.2.0
-powerpc                           allnoconfig    clang-20
-powerpc                           allnoconfig    gcc-14.2.0
-powerpc                          allyesconfig    gcc-14.2.0
-powerpc                   bluestone_defconfig    gcc-14.2.0
-powerpc                     ep8248e_defconfig    clang-20
-powerpc                    gamecube_defconfig    clang-20
-powerpc                      ppc44x_defconfig    gcc-14.2.0
-powerpc                     rainier_defconfig    gcc-14.2.0
-powerpc               randconfig-001-20241118    gcc-14.2.0
-powerpc               randconfig-002-20241118    gcc-14.2.0
-powerpc               randconfig-003-20241118    gcc-14.2.0
-powerpc                    sam440ep_defconfig    clang-20
-powerpc                 xes_mpc85xx_defconfig    clang-20
-powerpc64                        alldefconfig    clang-20
-powerpc64             randconfig-001-20241118    gcc-14.2.0
-powerpc64             randconfig-002-20241118    gcc-14.2.0
-riscv                            allmodconfig    gcc-14.2.0
-riscv                             allnoconfig    clang-20
-riscv                             allnoconfig    gcc-14.2.0
-riscv                            allyesconfig    gcc-14.2.0
-riscv                               defconfig    gcc-12
-riscv                 randconfig-001-20241118    gcc-14.2.0
-riscv                 randconfig-002-20241118    gcc-14.2.0
-s390                             allmodconfig    gcc-14.2.0
-s390                              allnoconfig    clang-20
-s390                             allyesconfig    gcc-14.2.0
-s390                                defconfig    gcc-12
-s390                  randconfig-001-20241118    gcc-14.2.0
-s390                  randconfig-002-20241118    gcc-14.2.0
-sh                               allmodconfig    gcc-14.2.0
-sh                                allnoconfig    gcc-14.2.0
-sh                               allyesconfig    gcc-14.2.0
-sh                                  defconfig    gcc-12
-sh                        dreamcast_defconfig    gcc-14.2.0
-sh                             espt_defconfig    gcc-14.2.0
-sh                 kfr2r09-romimage_defconfig    clang-20
-sh                          kfr2r09_defconfig    gcc-14.2.0
-sh                    randconfig-001-20241118    gcc-14.2.0
-sh                    randconfig-002-20241118    gcc-14.2.0
-sh                           se7750_defconfig    clang-20
-sh                   sh7770_generic_defconfig    clang-20
-sh                            shmin_defconfig    clang-20
-sh                             shx3_defconfig    gcc-14.2.0
-sh                          urquell_defconfig    gcc-14.2.0
-sparc                            allmodconfig    gcc-14.2.0
-sparc64                             defconfig    gcc-12
-sparc64               randconfig-001-20241118    gcc-14.2.0
-sparc64               randconfig-002-20241118    gcc-14.2.0
-um                               allmodconfig    clang-20
-um                                allnoconfig    clang-17
-um                                allnoconfig    clang-20
-um                               allyesconfig    clang-20
-um                               allyesconfig    gcc-12
-um                                  defconfig    gcc-12
-um                             i386_defconfig    gcc-12
-um                             i386_defconfig    gcc-14.2.0
-um                    randconfig-001-20241118    gcc-14.2.0
-um                    randconfig-002-20241118    gcc-14.2.0
-um                           x86_64_defconfig    gcc-12
-um                           x86_64_defconfig    gcc-14.2.0
-x86_64                            allnoconfig    clang-19
-x86_64                           allyesconfig    clang-19
-x86_64      buildonly-randconfig-001-20241118    gcc-12
-x86_64      buildonly-randconfig-002-20241118    gcc-12
-x86_64      buildonly-randconfig-003-20241118    gcc-12
-x86_64      buildonly-randconfig-004-20241118    gcc-12
-x86_64      buildonly-randconfig-005-20241118    gcc-12
-x86_64      buildonly-randconfig-006-20241118    gcc-12
-x86_64                              defconfig    clang-19
-x86_64                                  kexec    clang-19
-x86_64                randconfig-001-20241118    gcc-12
-x86_64                randconfig-002-20241118    gcc-12
-x86_64                randconfig-003-20241118    gcc-12
-x86_64                randconfig-004-20241118    gcc-12
-x86_64                randconfig-005-20241118    gcc-12
-x86_64                randconfig-006-20241118    gcc-12
-x86_64                randconfig-011-20241118    gcc-12
-x86_64                randconfig-012-20241118    gcc-12
-x86_64                randconfig-013-20241118    gcc-12
-x86_64                randconfig-014-20241118    gcc-12
-x86_64                randconfig-015-20241118    gcc-12
-x86_64                randconfig-016-20241118    gcc-12
-x86_64                randconfig-071-20241118    gcc-12
-x86_64                randconfig-072-20241118    gcc-12
-x86_64                randconfig-073-20241118    gcc-12
-x86_64                randconfig-074-20241118    gcc-12
-x86_64                randconfig-075-20241118    gcc-12
-x86_64                randconfig-076-20241118    gcc-12
-x86_64                               rhel-8.3    gcc-12
-xtensa                           alldefconfig    gcc-14.2.0
-xtensa                            allnoconfig    gcc-14.2.0
-xtensa                randconfig-001-20241118    gcc-14.2.0
-xtensa                randconfig-002-20241118    gcc-14.2.0
+>=20
+> Thanks
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Hope this helps,
+Gerd
+
 
