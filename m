@@ -1,105 +1,93 @@
-Return-Path: <linux-rdma+bounces-6034-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6035-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 914919D1EA4
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2024 04:07:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 140719D1F16
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2024 05:02:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B27CB20B5F
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2024 03:07:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB432280E9B
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2024 04:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678AB14600F;
-	Tue, 19 Nov 2024 03:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B691199EAF;
+	Tue, 19 Nov 2024 04:00:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oGWzVf9f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BmuWthTQ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB7D13775E;
-	Tue, 19 Nov 2024 03:07:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53E8C14D2A2;
+	Tue, 19 Nov 2024 04:00:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731985623; cv=none; b=J/nYG2R5emdrf/B6Qxy3Dl2KSYZ4F9NsyllYHkj7yoySGJR7DnYpoPij/1OiRvUaD+7+RsN3Mk2Fe3116qE2u/q0oL0QshQqpQvBEZiBqGmp9S4Tl9TJs9gSJ+wjbd+WZO1Irjked3EPtpg5MZXfnx2PwkrIcT8JwpVf0UCHdyk=
+	t=1731988838; cv=none; b=p/SUPD9PdvkOH0hsW55zIcaYml6Z2XSrmlDISlPlpc6yTBPLMGXPrZw2tOM95Lb1DO6c7ERoBa+UkmzWlLXNxB/OKxqU69pbQS8RamFs+fOkAAzs/ush+fAQEerXG+WpqiRxTqSftvz5892HsJA3lq1RAHen3LlGfQj46Ufj4Fw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731985623; c=relaxed/simple;
-	bh=PGoG8fEB7llM322/jpcOwn3LGAi0gafsk5SM9vL39KQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=H9KUdDdg2Pywl0c/wAu2E7DH5nMKCEX8sNTgvGUmZ/DWaNLS+RDwx9R/DRSGoVlKnr9uib+00w3veqmIB97V8s7WNkAk2YMIr03I8FHs3J45z8Km4wqwr6mRNvA6Gl9VV940/X9STBtscGXroR0mjpZ3XmSFmzGBhnVJ2yyKl18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oGWzVf9f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAD48C4CECF;
-	Tue, 19 Nov 2024 03:07:01 +0000 (UTC)
+	s=arc-20240116; t=1731988838; c=relaxed/simple;
+	bh=CHJFJC1Ym8NOwi/BVEDKveea7wPnXbCgSgufrNMkOa8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=JsGpeolyvd5DTT5u21fhBbezKbvHbViq6JDsUyCfyfcYo0y+ELDxV1ska6oNpjTxKv1gvdV+2Ti7RXvngic/ZYApB3Yd5RXoQXg2ZorECKJWmOboCjOogGexNVpfZXih3Pmb6jICTli/foOSTK4xn3HS/0G1kHexOR3Tew7tQL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BmuWthTQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3798C4FDE2;
+	Tue, 19 Nov 2024 04:00:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731985622;
-	bh=PGoG8fEB7llM322/jpcOwn3LGAi0gafsk5SM9vL39KQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=oGWzVf9fm47IURqF82sBjxlSLSQaSxQvnftln+sAaadyrOaTpKmG1QB1++Q+XtGq2
-	 iqnrNBO0CyTqqEwlU/q+011kC2hwIrbq/6K0SGXImw3qfRg1+XKGoOsssJ5vIMkYcz
-	 Z6YQRFxP4izqrZoqEbsdoy+taGRJqRWgfpsrekJKESn6nbT7e6NOHGhh6GN5IbeTmn
-	 lzthFeg7CnYNFnEs0XFbrLEZd2ql/Jl9IGwusT5cDv1Qr6Psf8Q5n6XqbkH/peqmPn
-	 uwk0TjN/tbOC/IkQ2CmF/L5xISUzVUBpQQlxdujGCk9lYUVk7IvT7QmP1ZZAPQtMkX
-	 AVNlOOjcQBmSw==
-Date: Mon, 18 Nov 2024 19:07:00 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Xiao Liang <shaw.leon@gmail.com>
-Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, Kuniyuki
- Iwashima <kuniyu@amazon.com>, Donald Hunter <donald.hunter@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ido
- Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Simon
- Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>, Jiri Pirko
- <jiri@resnulli.us>, Hangbin Liu <liuhangbin@gmail.com>,
- linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
- osmocom-net-gprs@lists.osmocom.org, bpf@vger.kernel.org,
- linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
- linux-wireless@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
- bridge@lists.linux.dev, linux-wpan@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v4 0/5] net: Improve netns handling in RTNL and
- ip_tunnel
-Message-ID: <20241118190700.4c1b8156@kernel.org>
-In-Reply-To: <20241118143244.1773-1-shaw.leon@gmail.com>
-References: <20241118143244.1773-1-shaw.leon@gmail.com>
+	s=k20201202; t=1731988837;
+	bh=CHJFJC1Ym8NOwi/BVEDKveea7wPnXbCgSgufrNMkOa8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=BmuWthTQYRJlj9DhFLhki7dy6ZI+cTbMIR/WfEbwfgGS4ZFfogF4O3VSdoJAYnWQZ
+	 LFF+9S2MhbSpPNIVFk8ggf1BZt3vG4jKbMfShmF9I8WnKC/pu0z0aoDKGX5k+Ko24u
+	 kf/3ZSia+o9l8v2PtBTdh9LyN8RxzeJcLmZQIHKvbig53dWb+2WfKxNdvy4LGqe5PG
+	 fnulH4tidakQLsPWby/qYNBHLJ7TIzQp6tcoUJBoqMBgSlg0cfVRXQJLRWzloM6hrc
+	 JT5i+SIr1mCPyqTUhH7NBpxAOYDY2jQj46l4/IkHp24O9Tt0MciX0L2+1LkSrhlypY
+	 W2YBGcJNVlDNw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 714613809A80;
+	Tue, 19 Nov 2024 04:00:50 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net/smc: Run patches also by RDMA ML
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173198884899.97799.17903430632973334489.git-patchwork-notify@kernel.org>
+Date: Tue, 19 Nov 2024 04:00:48 +0000
+References: <20241115-smc_lists-v1-1-a0a438125f13@linux.ibm.com>
+In-Reply-To: <20241115-smc_lists-v1-1-a0a438125f13@linux.ibm.com>
+To: Gerd Bayer <gbayer@linux.ibm.com>
+Cc: wenjia@linux.ibm.com, jaka@linux.ibm.com, alibuda@linux.alibaba.com,
+ tonylu@linux.alibaba.com, guwen@linux.alibaba.com, leon@kernel.org,
+ pasic@linux.ibm.com, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+ linux390-list@tuxmaker.boeblingen.de.ibm.com, linux-kernel@vger.kernel.org
 
-On Mon, 18 Nov 2024 22:32:39 +0800 Xiao Liang wrote:
-> This patch series includes some netns-related improvements and fixes for
-> RTNL and ip_tunnel, to make link creation more intuitive:
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri, 15 Nov 2024 18:44:57 +0100 you wrote:
+> Commits for the SMC protocol usually get carried through the netdev
+> mailing list. Some portions use InfiniBand verbs that are discussed on
+> the RDMA mailing list. So run patches by that list too to increase the
+> likelihood that all interested parties can see them.
 > 
->  - Creating link in another net namespace doesn't conflict with link names
->    in current one.
->  - Refector rtnetlink link creation. Create link in target namespace
->    directly. Pass both source and link netns to drivers via newlink()
->    callback.
+> Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
 > 
-> So that
-> 
->   # ip link add netns ns1 link-netns ns2 tun0 type gre ...
-> 
-> will create tun0 in ns1, rather than create it in ns2 and move to ns1.
-> And don't conflict with another interface named "tun0" in current netns.
+> [...]
 
-## Form letter - net-next-closed
+Here is the summary with links:
+  - [net-next] net/smc: Run patches also by RDMA ML
+    https://git.kernel.org/netdev/net-next/c/16a04d043baa
 
-The merge window for v6.13 has begun and net-next is closed for new drivers,
-features, code refactoring and optimizations. We are currently accepting
-bug fixes only.
-
-Please repost when net-next reopens after Dec 2nd.
-
-RFC patches sent for review only are welcome at any time.
-
-See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
+You are awesome, thank you!
 -- 
-pw-bot: defer
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
