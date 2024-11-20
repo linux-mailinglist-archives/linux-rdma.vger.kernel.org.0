@@ -1,60 +1,68 @@
-Return-Path: <linux-rdma+bounces-6044-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6045-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C29EB9D3F25
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2024 16:34:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D15A9D4371
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2024 22:18:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 305FBB315FE
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2024 15:14:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CB23282F60
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2024 21:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3971C3302;
-	Wed, 20 Nov 2024 15:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D86EF156872;
+	Wed, 20 Nov 2024 21:18:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="R3zP1Au8"
+	dkim=pass (2048-bit key) header.d=maxima.ru header.i=@maxima.ru header.b="kdB08FMd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B162191;
-	Wed, 20 Nov 2024 15:05:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+Received: from ksmg02.maxima.ru (ksmg02.maxima.ru [81.200.124.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 086A71386D7;
+	Wed, 20 Nov 2024 21:18:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.200.124.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732115123; cv=none; b=Q5gU2As7vurktd21ZHdCasdTsS9weB43Dn8xn0fSWCye88PILAQZYpRp2sAFkYqay20wZIwriXfzk9TDVOlzK+Iq8bdNmpz4jAsTUuDBBAI89I2HUa7+aDv0A5GRwePU+f/BBI+/7a7j3ARYur+HT2NJ+EkNepINZuoa0cluPHU=
+	t=1732137527; cv=none; b=h1WdxYFoS+bHpmyTdsuEiW5ulHIwuhe3Gi+7tEDE7sBxCcN1Fag48GGusWP4WOin6QWJveB59kCP9GV06HRaxGzloK2/MS/fKXdcq93CaT+AF3zoBMDOaZRqxgsDiir+oJhAWlYemQo8UOdnVyKiCN1nrsMr67w8J/Yze32Hmjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732115123; c=relaxed/simple;
-	bh=cJrE4ToYIP5CIareHQOhSJiVf7PCn0QVg3yRcgbv7S4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HKMDKE8NU4KbN6ZUrETe/P9T2NpGgYp3uR8xyZibJLHpqujeu2gFto99/XA4T+Sc+OoUzH6vjhzlEhnvn7Hy0efX+/CBYfbelliqHNIUYteSsXMJpf+6ABXDwlu1/9n6n2fcAyt7grn7Vu+dVwPfkYB2pSI3QyyPdvwYPfplZXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=R3zP1Au8; arc=none smtp.client-ip=117.135.210.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=An+oO
-	/WpoPVJKTAJOX8K0HE0T6gSg+KJ3jkNA6cU1ug=; b=R3zP1Au86glVFbMeSEVJt
-	7CmIM4sJjjcgg5H39FFw00dKziAHxKQ6ArZDchk+uRjaNwbB2gWa0vHhWxkccaEJ
-	4I/r3IUk7hGD3W28hbswSXgS61DhaNUgHRZK7KEbZTOKxMTJ1IGGlJPdYxEL8NS+
-	rv5uAMSik/ByzxMEmOiqGc=
-Received: from localhost.localdomain (unknown [193.203.214.57])
-	by gzga-smtp-mtada-g1-0 (Coremail) with SMTP id _____wD3fxSa+j1n+KAZCA--.15273S2;
-	Wed, 20 Nov 2024 23:04:59 +0800 (CST)
-From: tuqiang <tuqiang0606@163.com>
-To: gregkh@linuxfoundation.org
-Cc: dledford@redhat.com,
-	jgg@ziepe.ca,
-	jiang.kun2@zte.com.cn,
-	leon@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	stable@vger.kernel.org,
-	tu.qiang35@zte.com.cn,
-	xu.xin16@zte.com.cn
-Subject: Re: [PATCH STABLE 5.10] RDMA/restrack: Release MR/QP restrack when delete
-Date: Wed, 20 Nov 2024 15:04:58 +0000
-Message-Id: <20241120150458.3372235-1-tuqiang0606@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <2024111642-backside-reach-7ec3@gregkh>
-References: <2024111642-backside-reach-7ec3@gregkh>
+	s=arc-20240116; t=1732137527; c=relaxed/simple;
+	bh=s/ykia8tnQquMAciCLcq2D1BsQ1o40nj9QdizvoVbks=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=napd5cr8WyyDnSso8xIiOhyZt1GJHMsu6H3Xv41VgeOCIcb8ylOevBogY+YAv6npWYFmsEwfYt8C4JPsg6Is9RaqnR25taihoFKH1PKu1qAM2MERrojeE/jBANyqGbB8Q3A2NtKTd/VZvX8o/BcTiU5OfccbhHpTcfNOBSIjS3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maxima.ru; spf=pass smtp.mailfrom=maxima.ru; dkim=pass (2048-bit key) header.d=maxima.ru header.i=@maxima.ru header.b=kdB08FMd; arc=none smtp.client-ip=81.200.124.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maxima.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maxima.ru
+Received: from ksmg02.maxima.ru (localhost [127.0.0.1])
+	by ksmg02.maxima.ru (Postfix) with ESMTP id B85B11E0010;
+	Thu, 21 Nov 2024 00:18:32 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ksmg02.maxima.ru B85B11E0010
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maxima.ru; s=sl;
+	t=1732137512; bh=dXFFfkwKeRkZcHX5xFLpg60SG0o9S7rzk+KxSIUCzgk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=kdB08FMdFrg89QOmVYldTaVKLSQIeJz0R8QTxhaCBvlc2FpLfMvYqlPfTr4MkMwda
+	 pxP8f7EpGTzEaNL2zOxYInTqdPrIqkTK6QDVP85jqGBR8dnsklpB1soKrgDcon1CS0
+	 sLU68i9fCudm8IuEC40c1mSWqsgKoGVmL2fBC0VkdYbEBQMRRZTCawoHOENzHoJHr4
+	 iITieYuWdk6Or21233RNHO2QzctNRkaghoztwTRhLiL6gPPxS1M5wxlDa1dex2cRPd
+	 xmET58w9N1D+lxXuNSJXYl80pd+ecuu1o/Po11gxCiSf2+4oDF/MYJj0jvK6l/CpHS
+	 oJO9oDDBJHU0w==
+Received: from ksmg02.maxima.ru (mail.maxima.ru [81.200.124.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "*.maxima.ru", Issuer "GlobalSign GCC R3 DV TLS CA 2020" (verified OK))
+	by ksmg02.maxima.ru (Postfix) with ESMTPS;
+	Thu, 21 Nov 2024 00:18:32 +0300 (MSK)
+Received: from GS-NOTE-190.mt.ru (10.0.247.42) by mmail-p-exch02.mt.ru
+ (81.200.124.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1544.4; Thu, 21 Nov
+ 2024 00:18:31 +0300
+From: Murad Masimov <m.masimov@maxima.ru>
+To: Mustafa Ismail <mustafa.ismail@intel.com>
+CC: Murad Masimov <m.masimov@maxima.ru>, Tatyana Nikolova
+	<tatyana.e.nikolova@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>, Leon
+ Romanovsky <leon@kernel.org>, Shiraz Saleem <shiraz.saleem@intel.com>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<lvc-project@linuxtesting.org>
+Subject: [PATCH] RDMA/irdma: prevent out-of-bounds shift on timeout calculation
+Date: Thu, 21 Nov 2024 00:18:07 +0300
+Message-ID: <20241120211809.922-1-m.masimov@maxima.ru>
+X-Mailer: git-send-email 2.46.0.windows.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,63 +70,57 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3fxSa+j1n+KAZCA--.15273S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Kw18XFy8ZryfGF4xGryDWrg_yoW5Jry3pr
-	1DGrWfAw4UGryrAw4UJr15XF1Sy3yFya1UWrn293W5ZF1UKr1DJr1jkwn8Arn8GrWxAr47
-	tr1vgrZxK345tF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRrb15UUUUU=
-X-CM-SenderInfo: 5wxtxtdqjqliqw6rljoofrz/xtbBaRidIGc96Rzk0gAAsV
+Content-Type: text/plain
+X-ClientProxiedBy: mt-exch-01.mt.ru (91.220.120.210) To mmail-p-exch02.mt.ru
+ (81.200.124.62)
+X-KSMG-Rule-ID: 7
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 189318 [Nov 20 2024]
+X-KSMG-AntiSpam-Version: 6.1.1.7
+X-KSMG-AntiSpam-Envelope-From: m.masimov@maxima.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dmarc=none header.from=maxima.ru;spf=none smtp.mailfrom=maxima.ru;dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 42 0.3.42 bec10d90a7a48fa5da8c590feab6ebd7732fec6b, {rep_avail}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;maxima.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;81.200.124.62:7.1.2;ksmg02.maxima.ru:7.1.1, FromAlignment: s, ApMailHostAddress: 81.200.124.62
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/11/20 17:47:00 #26877225
+X-KSMG-AntiVirus-Status: Clean, skipped
 
->
->On Sat, Nov 16, 2024 at 05:57:48PM +0800, jiang.kun2@zte.com.cn wrote:
->> From: tuqiang <tu.qiang35@zte.com.cn>
->> 
->> The MR/QP restrack also needs to be released when delete it, otherwise it
->> cause memory leak as the task struct won't be released.
->> 
->> This problem has been fixed by the commit <dac153f2802d>
->> ("RDMA/restrack: Release MR restrack when delete"), but still exists in the
->> linux-5.10.y branch.
->
->Why don't we just take the correct fix?  Why is this needed instead?
+After some finite number of tries, bitshift in the calculation of timetosend at
+function irdma_cm_timer_tick() will lead to out-of-bounds shift, which in this
+case is an undefined behaviour. For instance, if HZ is equal to 1024, the issue
+occurs after 21 tries, which will take less than
+IRDMA_MAX_TIMEOUT / HZ * 21 = 252 seconds.
 
-1. Reply: Why don't we just take the correct fix?
-=========================================
-Due to inconsistent code context, it is not possible to directly cherry-pick the 
-changes to the linux-5.10 branch.
-The commit 514aee660df4 (RDMA: Globally allocate and release QP memory) resolved 
-the resource release issue for QP, but the MR issue remains unresolved.
+Lower IRDMA_DEFAULT_RETRANS from 32 to 20 to prevent out-of-bounds shift for
+any HZ value less than 2048.
 
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-2. Reply: Why is this needed instead?
-==================================
-When a user applies for resources by executing MR/QP-related commands, they will
-reference the task_struct object. However, when consuming the object, rdma_restrack_del 
-does not have the corresponding release mechanism.
+Fixes: 8385a875c9ee ("RDMA/irdma: Increase iWARP CM default rexmit count")
+Signed-off-by: Murad Masimov <m.masimov@maxima.ru>
+---
+ drivers/infiniband/hw/irdma/cm.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Stack:
-0xffffffffb70df1d0 : get_task_struct+0x0/0x50 [kernel]
-0xffffffffc5b3a42c : rdma_restrack_attach_task.isra.6+0x2c/0x50 [ib_core]
-0xffffffffc748fd54 : ib_uverbs_reg_mr+0x194/0x260 [ib_uverbs]
-0xffffffffc749a049 : ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xb9/0x110 [ib_uverbs]
-0xffffffffc7496a1f : ib_uverbs_run_method+0x6ff/0x7b0 [ib_uverbs]
-0xffffffffc7496c65 : ib_uverbs_cmd_verbs+0x195/0x360 [ib_uverbs]
-0xffffffffc7496ec3 : ib_uverbs_ioctl+0x93/0xe0 [ib_uverbs]
-0xffffffffb736bbe9 : __x64_sys_ioctl+0x89/0xc0 [kernel]
-0xffffffffb7a62a10 : do_syscall_64+0x30/0x40 [kernel]
+diff --git a/drivers/infiniband/hw/irdma/cm.h b/drivers/infiniband/hw/irdma/cm.h
+index 48ee285cf745..dc4ee1b185eb 100644
+--- a/drivers/infiniband/hw/irdma/cm.h
++++ b/drivers/infiniband/hw/irdma/cm.h
+@@ -41,7 +41,7 @@
+ #define TCP_OPTIONS_PADDING	3
 
-0xffffffffb70df1d0 : get_task_struct+0x0/0x50 [kernel]
-0xffffffffc5b3a42c : rdma_restrack_attach_task.isra.6+0x2c/0x50 [ib_core]
-0xffffffffc749bfea : ib_uverbs_handler_UVERBS_METHOD_QP_CREATE+0xaba/0xb40 [ib_uverbs]
-0xffffffffc7496a1f : ib_uverbs_run_method+0x6ff/0x7b0 [ib_uverbs]
-0xffffffffc7496c65 : ib_uverbs_cmd_verbs+0x195/0x360 [ib_uverbs]
-0xffffffffc7496ec3 : ib_uverbs_ioctl+0x93/0xe0 [ib_uverbs]
-0xffffffffb736bbe9 : __x64_sys_ioctl+0x89/0xc0 [kernel]
-0xffffffffb7a62a10 : do_syscall_64+0x30/0x40 [kernel]
-
->
->thanks,
->
->greg k-h
+ #define IRDMA_DEFAULT_RETRYS	64
+-#define IRDMA_DEFAULT_RETRANS	32
++#define IRDMA_DEFAULT_RETRANS	20
+ #define IRDMA_DEFAULT_TTL		0x40
+ #define IRDMA_DEFAULT_RTT_VAR		6
+ #define IRDMA_DEFAULT_SS_THRESH		0x3fffffff
+--
+2.39.2
 
 
