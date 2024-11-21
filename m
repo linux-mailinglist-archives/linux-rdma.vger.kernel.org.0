@@ -1,126 +1,163 @@
-Return-Path: <linux-rdma+bounces-6053-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6054-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ECB69D539B
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2024 20:52:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 243CD9D54F2
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2024 22:45:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 405E61F22399
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2024 19:52:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D12892849A9
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2024 21:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C0F19FA93;
-	Thu, 21 Nov 2024 19:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FD431DE2A4;
+	Thu, 21 Nov 2024 21:45:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bOO/faOt"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BNFcApkC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B2D200A3
-	for <linux-rdma@vger.kernel.org>; Thu, 21 Nov 2024 19:52:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2C71DBB19;
+	Thu, 21 Nov 2024 21:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732218748; cv=none; b=UlKw3AKQhUpu1NsQDQR34QRCH8RHyd3IboYgiU9RrMNAdX0pncD53j2lZlK7T4/uC0NCTpu2w4DlhuHxIBgRJgDMBN3LUYpnJraCA/2BYpqNJZPCNNh4bybhm8HNxxXiU+at0yo1h7pgXPb+dQ63J4pNUix/Ek+xEicl21DNjtA=
+	t=1732225505; cv=none; b=R33sdyZoXyCKDyPFYavTW9tUrhzKtcIj3NC7HACs1Jdae7o7+WQYbYfIkJC0AjlP+hDcwgm7VUjwNMkOe1gwHKa6m0L4VkANTYEtITtImU0UT3zgOXd90rISlyKgh5YNQ2DQgqtWySgAYoAdIfzmAZXfLTFElKUr4J0/+rONMe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732218748; c=relaxed/simple;
-	bh=ziL5KwyFVyg9SwKIbhyM1H83IRN94KGEOAt7H+aUFZQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GVvdXjSo7TYWLcH4mTr3wjCkJb0jKjEw9DUheNPWsDN5qfrgyYAPtMVCk/RcrvNKzEkjir/w2eQ4bwc0rmSrsnbg/ymXwQZsdn31+KEfxC1MYWsnPmFQfyxjqkd75p+xuFK9qtBYgQDnRmeVkvAuuU63V/8Hn/E5fLqZ4e49mQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bOO/faOt; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <578339be-b555-42cb-b7db-1d3e7b6c7017@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1732218741;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Hmal/P0rGGdkoCFkoKxklau6YyE1aZukTegpTUdvzSs=;
-	b=bOO/faOtk2NHL+v2Gf71mGg4RaeG7Y5YIKG/yUHrbPbtRaDiNuftt93I1ES51rk67gywwj
-	GFMqnGa8arYzWbCQ9f1dvAmaH/X5U/9qLmdKpxji7O6zH+QPWdTZA+TusXyQzeWsEmUG3C
-	E5+Czqk+QuSKl/5yVmnu7brpstrDVkQ=
-Date: Thu, 21 Nov 2024 20:52:16 +0100
+	s=arc-20240116; t=1732225505; c=relaxed/simple;
+	bh=NIUcN6+T+wki60rCRnwepyQ8KRF0PBbMkb47VLXLqKM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dVjNpgzoCzoV3P1SY4M70VTAZDlaKb1VAwsEM1ItD1jSqnZ8oEk4WbA4Yunuk6z/XrGBwY98cbCOG6yyN8Y5LUwzUJUxn2ke5vVrTyBL2hpXx5sUPfyED/Yex9E+kuvhjlDku0JhfrIeEnH7gxMJTIFYcRdTDLF3XzpUc0yYB/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BNFcApkC; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1732225504; x=1763761504;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=NIUcN6+T+wki60rCRnwepyQ8KRF0PBbMkb47VLXLqKM=;
+  b=BNFcApkCceVM9sS7dM7XHFFI8lIuy0mmm3XqLpRVhM+3qy5qt7P8kU4T
+   f/8rIOxMJXlnwqnAi+F/DijxT8xYFwtyGKOLXSj+8Tb23nEbIwvBWQewe
+   cFUuZd92N6PDupXXYMyNHL+GuBAQExGC+OITiX7sY8pwYweFr45jgh2p1
+   6ArBuuiGy1vRY6YcTCdIeuNsjVizmxfhe0ZtF/V4MN5DveTlaWvScF5Rt
+   7m/pbMhsNuxyC8wQ256oABy1O6lp+x9sVy6QFMHLOSQ6sVLGvcLzF0T5B
+   nDnRm8CHu7/JpKQSCWQzAva8/7hLpyH4mPx+Efl2AhMNXL47O4aZBD7+8
+   w==;
+X-CSE-ConnectionGUID: UGYcYd7LRrqR+VMlrOAW0g==
+X-CSE-MsgGUID: oCnwJEQ7Rc6PzIy/7uIaPA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11263"; a="32514204"
+X-IronPort-AV: E=Sophos;i="6.12,173,1728975600"; 
+   d="scan'208";a="32514204"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2024 13:45:01 -0800
+X-CSE-ConnectionGUID: xdpPO1RmQrC72kpFCsgzmg==
+X-CSE-MsgGUID: zhZedUIBSeupQFYJAgkZ8A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,173,1728975600"; 
+   d="scan'208";a="90753178"
+Received: from lkp-server01.sh.intel.com (HELO 8122d2fc1967) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 21 Nov 2024 13:44:56 -0800
+Received: from kbuild by 8122d2fc1967 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tEEyr-0003O1-1A;
+	Thu, 21 Nov 2024 21:44:53 +0000
+Date: Fri, 22 Nov 2024 05:43:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Xiao Liang <shaw.leon@gmail.com>, netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Kuniyuki Iwashima <kuniyu@amazon.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Donald Hunter <donald.hunter@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev, David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Simon Horman <horms@kernel.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Jiri Pirko <jiri@resnulli.us>, Hangbin Liu <liuhangbin@gmail.com>,
+	linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
+	osmocom-net-gprs@lists.osmocom.org, bpf@vger.kernel.org,
+	linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+	linux-wireless@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
+	bridge@lists.linux.dev, linux-wpan@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v4 3/5] rtnetlink: Decouple net namespaces in
+ rtnl_newlink_create()
+Message-ID: <202411220516.rokej98E-lkp@intel.com>
+References: <20241118143244.1773-4-shaw.leon@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-rc] RDMA/core: Fix ENODEV error for iWARP test over
- vlan
-To: Anumula Murali Mohan Reddy <anumula@chelsio.com>, jgg@nvidia.com,
- leonro@nvidia.com
-Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com
-References: <20241119061850.18607-1-anumula@chelsio.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20241119061850.18607-1-anumula@chelsio.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241118143244.1773-4-shaw.leon@gmail.com>
 
-在 2024/11/19 7:18, Anumula Murali Mohan Reddy 写道:
-> If traffic is over vlan, cma_validate_port() fails to match
-> net_device ifindex with bound_if_index and results in ENODEV error.
-> As iWARP gid table is static, it contains entry corresponding  to
-> only one net device which is either real netdev or vlan netdev for
-> cases like  siw attached to a vlan interface.
-> This patch fixes the issue by assigning bound_if_index with net
-> device index, if real net device obtained from bound if index matches
-> with net device retrieved from gid table
-> 
-> Fixes: f8ef1be816bf ("RDMA/cma: Avoid GID lookups on iWARP devices")
-> Link: https://lore.kernel.org/all/ZzNgdrjo1kSCGbRz@chelsio.com/
-> Signed-off-by: Anumula Murali Mohan Reddy <anumula@chelsio.com>
-> Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
-> ---
->   drivers/infiniband/core/cma.c | 17 ++++++++++++++++-
->   1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-> index 64ace0b968f0..97657e1810d8 100644
-> --- a/drivers/infiniband/core/cma.c
-> +++ b/drivers/infiniband/core/cma.c
-> @@ -689,7 +689,7 @@ cma_validate_port(struct ib_device *device, u32 port,
->   	const struct ib_gid_attr *sgid_attr = ERR_PTR(-ENODEV);
->   	int bound_if_index = dev_addr->bound_dev_if;
->   	int dev_type = dev_addr->dev_type;
-> -	struct net_device *ndev = NULL;
-> +	struct net_device *ndev = NULL, *pdev = NULL;
+Hi Xiao,
 
-In the original source code, the local variables lay out in the form of 
-Reverse Christmas Tree.
-But the new code breaks the rule of Reverse Christmas Tree.
+kernel test robot noticed the following build warnings:
 
-Zhu Yanjun
+[auto build test WARNING on net-next/main]
 
->   
->   	if (!rdma_dev_access_netns(device, id_priv->id.route.addr.dev_addr.net))
->   		goto out;
-> @@ -714,6 +714,21 @@ cma_validate_port(struct ib_device *device, u32 port,
->   
->   		rcu_read_lock();
->   		ndev = rcu_dereference(sgid_attr->ndev);
-> +		if (ndev->ifindex != bound_if_index) {
-> +			pdev = dev_get_by_index_rcu(dev_addr->net, bound_if_index);
-> +			if (pdev) {
-> +				if (is_vlan_dev(pdev)) {
-> +					pdev = vlan_dev_real_dev(pdev);
-> +					if (ndev->ifindex == pdev->ifindex)
-> +						bound_if_index = pdev->ifindex;
-> +				}
-> +				if (is_vlan_dev(ndev)) {
-> +					pdev = vlan_dev_real_dev(ndev);
-> +					if (bound_if_index == pdev->ifindex)
-> +						bound_if_index = ndev->ifindex;
-> +				}
-> +			}
-> +		}
->   		if (!net_eq(dev_net(ndev), dev_addr->net) ||
->   		    ndev->ifindex != bound_if_index) {
->   			rdma_put_gid_attr(sgid_attr);
+url:    https://github.com/intel-lab-lkp/linux/commits/Xiao-Liang/net-ip_tunnel-Build-flow-in-underlay-net-namespace/20241121-112705
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20241118143244.1773-4-shaw.leon%40gmail.com
+patch subject: [PATCH net-next v4 3/5] rtnetlink: Decouple net namespaces in rtnl_newlink_create()
+config: arc-randconfig-002-20241122 (https://download.01.org/0day-ci/archive/20241122/202411220516.rokej98E-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241122/202411220516.rokej98E-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202411220516.rokej98E-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> net/batman-adv/soft-interface.c:1075: warning: Function parameter or struct member 'params' not described in 'batadv_softif_newlink'
+>> net/batman-adv/soft-interface.c:1075: warning: Excess function parameter 'nets' description in 'batadv_softif_newlink'
+>> net/batman-adv/soft-interface.c:1075: warning: Excess function parameter 'dev' description in 'batadv_softif_newlink'
+>> net/batman-adv/soft-interface.c:1075: warning: Excess function parameter 'tb' description in 'batadv_softif_newlink'
+>> net/batman-adv/soft-interface.c:1075: warning: Excess function parameter 'data' description in 'batadv_softif_newlink'
+>> net/batman-adv/soft-interface.c:1075: warning: Excess function parameter 'extack' description in 'batadv_softif_newlink'
+
+
+vim +1075 net/batman-adv/soft-interface.c
+
+128254ceea6ffe Sven Eckelmann 2020-10-11  1063  
+128254ceea6ffe Sven Eckelmann 2020-10-11  1064  /**
+128254ceea6ffe Sven Eckelmann 2020-10-11  1065   * batadv_softif_newlink() - pre-initialize and register new batadv link
+c19808cb1d05d1 Xiao Liang     2024-11-18  1066   * @nets: the applicable net namespaces
+128254ceea6ffe Sven Eckelmann 2020-10-11  1067   * @dev: network device to register
+128254ceea6ffe Sven Eckelmann 2020-10-11  1068   * @tb: IFLA_INFO_DATA netlink attributes
+128254ceea6ffe Sven Eckelmann 2020-10-11  1069   * @data: enum batadv_ifla_attrs attributes
+128254ceea6ffe Sven Eckelmann 2020-10-11  1070   * @extack: extended ACK report struct
+128254ceea6ffe Sven Eckelmann 2020-10-11  1071   *
+128254ceea6ffe Sven Eckelmann 2020-10-11  1072   * Return: 0 if successful or error otherwise.
+128254ceea6ffe Sven Eckelmann 2020-10-11  1073   */
+c19808cb1d05d1 Xiao Liang     2024-11-18  1074  static int batadv_softif_newlink(struct rtnl_newlink_params *params)
+128254ceea6ffe Sven Eckelmann 2020-10-11 @1075  {
+c19808cb1d05d1 Xiao Liang     2024-11-18  1076  	struct net_device *dev = params->dev;
+c19808cb1d05d1 Xiao Liang     2024-11-18  1077  	struct nlattr **data = params->data;
+a5ad457eea41ef Sven Eckelmann 2020-10-11  1078  	struct batadv_priv *bat_priv = netdev_priv(dev);
+a5ad457eea41ef Sven Eckelmann 2020-10-11  1079  	const char *algo_name;
+a5ad457eea41ef Sven Eckelmann 2020-10-11  1080  	int err;
+a5ad457eea41ef Sven Eckelmann 2020-10-11  1081  
+a5ad457eea41ef Sven Eckelmann 2020-10-11  1082  	if (data && data[IFLA_BATADV_ALGO_NAME]) {
+a5ad457eea41ef Sven Eckelmann 2020-10-11  1083  		algo_name = nla_data(data[IFLA_BATADV_ALGO_NAME]);
+a5ad457eea41ef Sven Eckelmann 2020-10-11  1084  		err = batadv_algo_select(bat_priv, algo_name);
+a5ad457eea41ef Sven Eckelmann 2020-10-11  1085  		if (err)
+a5ad457eea41ef Sven Eckelmann 2020-10-11  1086  			return -EINVAL;
+a5ad457eea41ef Sven Eckelmann 2020-10-11  1087  	}
+a5ad457eea41ef Sven Eckelmann 2020-10-11  1088  
+128254ceea6ffe Sven Eckelmann 2020-10-11  1089  	return register_netdevice(dev);
+128254ceea6ffe Sven Eckelmann 2020-10-11  1090  }
+128254ceea6ffe Sven Eckelmann 2020-10-11  1091  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
