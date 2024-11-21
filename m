@@ -1,46 +1,81 @@
-Return-Path: <linux-rdma+bounces-6047-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6048-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 030CF9D45A2
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2024 03:00:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72EE39D489C
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2024 09:15:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 985E51F21DEF
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2024 02:00:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 382AB282DAC
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2024 08:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A679878289;
-	Thu, 21 Nov 2024 02:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE47B1CB9EB;
+	Thu, 21 Nov 2024 08:15:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="MCZN9h4v"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DbnhOXkb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCEDC2309A2;
-	Thu, 21 Nov 2024 02:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E281CB50B
+	for <linux-rdma@vger.kernel.org>; Thu, 21 Nov 2024 08:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732154429; cv=none; b=b7OxoJIDDDQlgbLcltEiiWzMu36VC97NFwzfetkAqC6EarFbftURkLkR0G1u1aiG3iFN2f8SRXvwSWiFxeuuoLO2CoevHRmP4zYRA1wxVZAv4rs3kl5ieAl0m5fjDoopYTk7ZNuIVobev6YekM9et0xfjqM4WxjoJ2Ncur+9HEw=
+	t=1732176937; cv=none; b=TMZ/9KKDG93tNN24VIx0khGNoNaLW6ITOhH7tRws/0oSC914WqWp9eoYklCt6Xw0wzMGWUTS3cpywwm3F37oPRfL6Nke5tLmaO2En25Kvmr0YSnmnibi04EIF+56NV2eX1XtiPCAP1d/KjNx4hO/Dqp6VNeAl/zmivoC/9eWYIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732154429; c=relaxed/simple;
-	bh=xPcOqsgfWRP7fz7JFDU7Jg1juGljBjJgB+PKbapdhn0=;
+	s=arc-20240116; t=1732176937; c=relaxed/simple;
+	bh=vx1+AwLU4UsvAMyNOFMRQ4EEtvnDkA2FBnIl/UudUDU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jsR4lJ1z3uJRasIwHQQ03P1Z5hTCE+lbXoceODTL/psrUj4NaS3SRIgp0IBb5UeYZmvBOglDr6EutAmJWGWYljkNnjBygrGeisM2OmxAyZ/i3blCxhMURWlNDjHzA8mML12EcgzreyDGkRDJIoGNcX7Yv44siEVshPw+nbGoAxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=MCZN9h4v; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1732154423; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=xh5Bpj6oIo/uqbOf5Itvj/cPaIQp+JkS88W542IzEM8=;
-	b=MCZN9h4vAdFjiZtaNKa4Z392ZjS7c4D3UJCyPzZ3Aaf/UnbDHtKYQG4+OIJLRsRe1PLLJGPlc7s3M7KN3Apn0UjeWUgO9aP/RSskfsLGkKIbK7L0Mk7kF5m6/3f2fQ+gKbxMqQxLWBax0z271zkguq1t3OPcqKt1B48v3UuzThU=
-Received: from 30.221.147.241(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WJu1vbm_1732154420 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 21 Nov 2024 10:00:21 +0800
-Message-ID: <e8ba7dc0-96b5-4119-b2f6-b07432f65fdb@linux.alibaba.com>
-Date: Thu, 21 Nov 2024 10:00:20 +0800
+	 In-Reply-To:Content-Type; b=oIj1vhDHTm3So9CmpaWAidUIYo3UM3eiOP5hfbOjntEL0yuQafSuY2lbs6XRnzkS+nVHtjySTYzVSRdFmAEZ5siMh8SYvWmddSEPZUZSjAbU7UqGgBj3OGViVQ8doAUjX0tPWtEtWUgxFfizSl2qI/8+s+1vwrkABAb8A/Au7zM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DbnhOXkb; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1732176932;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dAru0Q7sNpk/HHsEEZWynnmCBFQAz2UJFJPWzmB99Ic=;
+	b=DbnhOXkbT3bkxbJ+7lZIsHB2UY52yEd7bHq4HtwMabR9mySvuL1Fv/8X9tWgQnqLfPYy/B
+	w0Xacr2tKxQw2VGwNoY2wSLvw8EOMg89bwSStwGkkMLfz/VLsMYlJx3mGgOEbNSbyu0+1y
+	PqcIU9ivZA3ud3vVQBcdLKLcSipg7Ak=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-332-qjPKavCfPqGGoswbUaZFpQ-1; Thu, 21 Nov 2024 03:15:31 -0500
+X-MC-Unique: qjPKavCfPqGGoswbUaZFpQ-1
+X-Mimecast-MFC-AGG-ID: qjPKavCfPqGGoswbUaZFpQ
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-43159c07193so5361045e9.0
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Nov 2024 00:15:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732176930; x=1732781730;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dAru0Q7sNpk/HHsEEZWynnmCBFQAz2UJFJPWzmB99Ic=;
+        b=wP1zYqBYHEkDVv9OBpgIhG3WdIcPjjEjk9ztGfA8l/yRn6ROmBi3r+4AqtH6hmnPgz
+         j68Vay5xc471zE8igop67Z8ZCL0kKtpx60y8awmanUYH0ZbByiqTkax4CjH0MUP3yfOo
+         4x0qfovzjdLNvJ094CB7ViWhqein76LOxmGkC/8uq31QYvrDJlJJeLCKV245ko2exgjC
+         700T83paP2yICKC6lHSiCMkgBFPF8kijBxkoaRIPJgw0nNeEjTwtCCtOGA0tpuLq8bO8
+         PfeZ3hZnGftWAuFzsR0AeiCCkWGACC4y7w8aOlLxgsgzczu45cZDKQv+B56+6oaY1AhC
+         lIcg==
+X-Forwarded-Encrypted: i=1; AJvYcCXT7cP1b28B27vtUD+Gu/K56ZbYQOHpuASZlRgF8kk1OjruRz+2KG1rmJ/9wzG6BeEBSDjxR7ISlkPQ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+EVAnGvqOVRWXDJ6dai4S0bPhugA+Iern5AHduZkPpDy9DzMT
+	MQSwOb+TuTbpSExinbQF6yGIVD+ur9ZqTtmTsun+J0EqMrnr7S9j22SBzfGtqO5tQNqdVIaJNLy
+	asayFI4h/JL2WXDQL3SVcLcULtK550u9vbr0xZ4WtnwTStuIKBj7GDSNqiQM=
+X-Received: by 2002:a05:600c:502a:b0:42c:b508:750e with SMTP id 5b1f17b1804b1-433489a06ebmr58058125e9.11.1732176929991;
+        Thu, 21 Nov 2024 00:15:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEAAKP652fy4bHoCxWpHv86UZV5kyYHY85sFR0FghbNa9ObZXs7vQd2NPg/YLhM7rRCI5jfFg==
+X-Received: by 2002:a05:600c:502a:b0:42c:b508:750e with SMTP id 5b1f17b1804b1-433489a06ebmr58057935e9.11.1732176929686;
+        Thu, 21 Nov 2024 00:15:29 -0800 (PST)
+Received: from [192.168.88.24] (146-241-6-75.dyn.eolo.it. [146.241.6.75])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-433b46343e7sm44946215e9.33.2024.11.21.00.15.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Nov 2024 00:15:29 -0800 (PST)
+Message-ID: <59c96191-3203-4338-9754-ac7c5ee35e78@redhat.com>
+Date: Thu, 21 Nov 2024 09:15:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -48,151 +83,51 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 4/4] bpf/selftests: add simple selftest for
- bpf_smc_ops
-To: Zhu Yanjun <yanjun.zhu@linux.dev>, kgraul@linux.ibm.com,
- wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- pabeni@redhat.com, song@kernel.org, sdf@google.com, haoluo@google.com,
- yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com,
- kpsingh@kernel.org, jolsa@kernel.org, guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- dtcccc@linux.alibaba.com
-References: <1729737768-124596-1-git-send-email-alibuda@linux.alibaba.com>
- <1729737768-124596-5-git-send-email-alibuda@linux.alibaba.com>
- <8c06240b-540b-472f-974f-d2db80d90c22@linux.dev>
+Subject: Re: [PATCH] mlx5/core: remove mlx5_core_cq.tasklet_ctx.priv field
+To: Caleb Sander Mateos <csander@purestorage.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+ Leon Romanovsky <leon@kernel.org>
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>
+References: <20241119042448.2473694-1-csander@purestorage.com>
 Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <8c06240b-540b-472f-974f-d2db80d90c22@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20241119042448.2473694-1-csander@purestorage.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-
-On 11/3/24 9:01 PM, Zhu Yanjun wrote:
-> 在 2024/10/24 4:42, D. Wythe 写道:
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>
->> This PATCH adds a tiny selftest for bpf_smc_ops, to verify the ability
->> to attach and write access.
->>
->> Follow the steps below to run this test.
->>
->> make -C tools/testing/selftests/bpf
->> cd tools/testing/selftests/bpf
->> sudo ./test_progs -t smc
+On 11/19/24 05:24, Caleb Sander Mateos wrote:
+> The priv field in mlx5_core_cq's tasklet_ctx struct points to the
+> mlx5_eq_tasklet tasklet_ctx field of the CQ's mlx5_eq_comp. mlx5_core_cq
+> already stores a pointer to the EQ. Use this eq pointer to get a pointer
+> to the tasklet_ctx with no additional pointer dereferences and no void *
+> casts. Remove the now unused priv field.
 > 
-> Thanks a lot.
-> 
-> # ./test_progs -t smc
-> #27/1    bpf_smc/load:OK
-> #27      bpf_smc:OK
-> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> The above command is based on several kernel modules. After these dependent kernel modules are 
-> loaded, then can run the above command successfully.
-> 
-> Zhu Yanjun
-> 
+> Signed-off-by: Caleb Sander Mateos <csander@purestorage.com>
 
-Hi, Yanjun
+[Under the assumption Tariq is still handling the mlx5 tree, and patches
+from 3rd party contributors are supposed to land directly into the
+net/net-next tree]
 
-This is indeed a problem, a better way may be to create a separate testing directory for SMC, and we 
-are trying to do this.
+@Caleb: please include the target tree ('net-next') into the subj
+prefix. More importantly:
 
-Best wishes,
-D. Wythe
+## Form letter - net-next-closed
 
->>
->> Results shows:
->> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
->>
->> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->> ---
->>   .../selftests/bpf/prog_tests/test_bpf_smc.c        | 21 +++++++++++
->>   tools/testing/selftests/bpf/progs/bpf_smc.c        | 44 ++++++++++++++++++++++
->>   2 files changed, 65 insertions(+)
->>   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c 
->> b/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
->> new file mode 100644
->> index 00000000..2299853
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
->> @@ -0,0 +1,21 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +#include <test_progs.h>
->> +
->> +#include "bpf_smc.skel.h"
->> +
->> +static void load(void)
->> +{
->> +    struct bpf_smc *skel;
->> +
->> +    skel = bpf_smc__open_and_load();
->> +    if (!ASSERT_OK_PTR(skel, "bpf_smc__open_and_load"))
->> +        return;
->> +
->> +    bpf_smc__destroy(skel);
->> +}
->> +
->> +void test_bpf_smc(void)
->> +{
->> +    if (test__start_subtest("load"))
->> +        load();
->> +}
->> diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c 
->> b/tools/testing/selftests/bpf/progs/bpf_smc.c
->> new file mode 100644
->> index 00000000..ebff477
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
->> @@ -0,0 +1,44 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +
->> +#include "vmlinux.h"
->> +
->> +#include <bpf/bpf_helpers.h>
->> +#include <bpf/bpf_tracing.h>
->> +
->> +char _license[] SEC("license") = "GPL";
->> +
->> +struct smc_bpf_ops_ctx {
->> +    struct {
->> +        struct tcp_sock *tp;
->> +    } set_option;
->> +    struct {
->> +        const struct tcp_sock *tp;
->> +        struct inet_request_sock *ireq;
->> +        int smc_ok;
->> +    } set_option_cond;
->> +};
->> +
->> +struct smc_bpf_ops {
->> +    void (*set_option)(struct smc_bpf_ops_ctx *ctx);
->> +    void (*set_option_cond)(struct smc_bpf_ops_ctx *ctx);
->> +};
->> +
->> +SEC("struct_ops/bpf_smc_set_tcp_option_cond")
->> +void BPF_PROG(bpf_smc_set_tcp_option_cond, struct smc_bpf_ops_ctx *arg)
->> +{
->> +    arg->set_option_cond.smc_ok = 1;
->> +}
->> +
->> +SEC("struct_ops/bpf_smc_set_tcp_option")
->> +void BPF_PROG(bpf_smc_set_tcp_option, struct smc_bpf_ops_ctx *arg)
->> +{
->> +    struct tcp_sock *tp = arg->set_option.tp;
->> +
->> +    tp->syn_smc = 1;
->> +}
->> +
->> +SEC(".struct_ops.link")
->> +struct smc_bpf_ops sample_smc_bpf_ops = {
->> +    .set_option         = (void *) bpf_smc_set_tcp_option,
->> +    .set_option_cond    = (void *) bpf_smc_set_tcp_option_cond,
->> +};
+The merge window for v6.13 has begun and net-next is closed for new
+drivers, features, code refactoring and optimizations. We are currently
+accepting bug fixes only.
+
+Please repost when net-next reopens after Dec 2nd.
+
+RFC patches sent for review only are welcome at any time.
+
+See:
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
+
+
+
+
 
