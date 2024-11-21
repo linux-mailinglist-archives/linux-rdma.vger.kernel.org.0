@@ -1,178 +1,159 @@
-Return-Path: <linux-rdma+bounces-6050-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6051-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DB0E9D4AD1
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2024 11:24:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 263AC9D4E22
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2024 14:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBC00286BDF
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2024 10:24:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFA5D282AE8
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2024 13:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C741D279F;
-	Thu, 21 Nov 2024 10:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A4A01D7E50;
+	Thu, 21 Nov 2024 13:53:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b="Eyn2isdw"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="CP6QsN20"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from master.debian.org (master.debian.org [82.195.75.110])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1991CFEDC;
-	Thu, 21 Nov 2024 10:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.195.75.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F1F1CB9F9
+	for <linux-rdma@vger.kernel.org>; Thu, 21 Nov 2024 13:53:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732184585; cv=none; b=EZbSQlbb2s9rHWHwcmFup1WtzwNJyYuA27eklya8zGeZFEy097vFVdUoOu1e6jq4aextJ5mkxOv9j54ylQH5WTZKzR5NnaqB4/9aWAkGlebAL4i2On0fLnxUS0ayKa8UJl6FLvTAEXKYtFxdEUajK1LAlPk387n8kDBsJi/vp2E=
+	t=1732197217; cv=none; b=m4Q5oYAnGQVYUFej9ASW4FzplXRJN1wxHLFFCmlF3oJTJipRd/PJ/yOKAnKCp4rB8FZoyuPG+yBuxswVROrvD5f9HRXMmd1p0salv4OWTaqq6uhiJdjXU3/+HLHr4BcWR7B3Qx8SDdnlh0wdZMgjtViDYksUBG8CK204wPtZZGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732184585; c=relaxed/simple;
-	bh=YPZqpAxy7GCVvcdtXvolnWKZNRYVBf4yGsNDPr5iFM0=;
+	s=arc-20240116; t=1732197217; c=relaxed/simple;
+	bh=r6MspEvresOTn3QxXgxDqAj09zu2cS0aBe2ZP+i59J0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qGURQDKH/GuR/9G1l7H2e8jTUb2Bdndn7EzHTukn1yTdXHIt2KyLoHmnhzOas/UuVlhTpvT1m1pWYx5GgI/W9zG0uuTOCGzH5gI+fi6xcfJeusk9YRnRoLbxgr+Hf1detIos3aNvuJWKP0IfvlL+CXsN6s/yo21/ZOEj5P1c40c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=master.debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=Eyn2isdw; arc=none smtp.client-ip=82.195.75.110
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=master.debian.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
-	s=smtpauto.master; h=In-Reply-To:Content-Type:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description;
-	bh=ADhMWaYu2XGQ6+9qDOs+NTUdkqHg38q2DuFu48rxw4s=; b=Eyn2isdwa0VseUhA/yfY3MOikZ
-	lkUIHyyEcGnCyh0fem/6aEJeuEj57Kg2kbV1yYWxwxBQbWOYaW9uxgzd5dMph8Zjg36IG4pM2wPVI
-	FKxzDbmM8lBYug0M7KcF2EEQCzgVR+8/hkinXydA4BbgdiWCIKUu9GGOkQlTnai3zgFLr+9Xdw61H
-	WPrlZCKIqHiJLzEu8+nOIdrHFeurXetlSVbnd2Q5B3FS1JYUSPCcl34n6pxsl72zLdqFnB6xTCF68
-	N2nq2ajcS0U05SNHzru+JB7mVTcopAzw+/L+xemiehpLeWqos4i1FUJMXnyuh/yXwacY0N0wqqQA2
-	Q2xiO/FA==;
-Received: from ukleinek by master.debian.org with local (Exim 4.94.2)
-	(envelope-from <ukleinek@master.debian.org>)
-	id 1tE42o-006ID0-JD; Thu, 21 Nov 2024 10:04:14 +0000
-Date: Thu, 21 Nov 2024 11:04:13 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <ukleinek@debian.org>
-To: Francesco Poli <invernomuto@paranoici.org>, 1086520@bugs.debian.org
-Cc: Mark Zhang <markzhang@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>, 
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: Bug#1086520: linux-image-6.11.2-amd64: makes opensm fail to start
-Message-ID: <nvs4i2v7o6vn6zhmtq4sgazy2hu5kiulukxcntdelggmznnl7h@so3oul6uwgbl>
-References: <173040083268.16618.7451145398661885923.reportbug@crunch>
- <jaw7557rpn2eln3dtb2xbv2gvzkzde6mfful7d2mf5mgc3wql7@wikm2a7a3kcv>
- <173040083268.16618.7451145398661885923.reportbug@crunch>
- <20241113231503.54d12ed5b5d0c8fa9b7d9806@paranoici.org>
- <3wfi2j7jn2f7rajabfcengubgtyt3wkuin6hqepdoe5dlvfhvn@2clhco3z6fuw>
- <173040083268.16618.7451145398661885923.reportbug@crunch>
- <20241118200616.865cb4c869e693b19529df36@paranoici.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EHESE228RGj64XRPV9MM2ncz88WRX0R9i+ONYBMfbqu3O+NW6ixZP2p6cPCXUmfHA2+WJB+QWDl3ZjlBXNJDyl+Vc6dppr6uFpmOr8F/t5YKG3675iTOrEQg3T/0hlEyV81mPAcLDXGz7lB7w9Qzohcn4g8Dl+vifEqOGgu0ULs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=CP6QsN20; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-7b15eadee87so53457285a.2
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Nov 2024 05:53:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1732197214; x=1732802014; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=A4uQC+61RQiOUY1Dl95bxhptVZ9V560RrMjbg6Uiw7E=;
+        b=CP6QsN20xGYCOUBiBfPxodSVTpO0Hl2JvaHTqr6Xx1mxxOIs/VCF8NuJnZzc2foJfq
+         C5EQmU6NKnq0s4KuU8Xdyjt06mnM9P4oHzAUe8N76aAk/uGTUIGgKjxVYS3fo8r7K9kp
+         574kaK/3U+mPnZp0di90iKE/Bxw4VaxItKXu7zPGVIRtVC6m4qibIGCDZKQhl0mUoeIH
+         8aSFbjNnrgrNhGlNQ+a/vD7UUuw8JqTF0TtzmxIWqN2o0V7dgGtKbrRmKeQZbaVhTBuK
+         KmcqB4Ntp/oMt/2IHSRlcd49r78eQF8ZhQCCcNCDZpmuG0V44Q39mBGQp8f2jbOc7CK0
+         8MOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732197214; x=1732802014;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A4uQC+61RQiOUY1Dl95bxhptVZ9V560RrMjbg6Uiw7E=;
+        b=B1o3eob9uBVXxYbSAHoqTtmjFWDMUQN2OCYaJJof2zxbO+BIO2EKvJQNPJXUf7soRk
+         kYPmtaGptpl6tQ9vETb6mnvP0QfzWZQf8f+5VdhQRvcoOyt8Gaj4ilCQ5RgTH5aPxagz
+         3t/BDsH2fN6hI9MtkgcZbwCZhhti0oDqu3NEpuOvLMABNec1l9JdGeoePwJOBVcjPmih
+         mnSHEXzKM8+ZQyzXcpaqs0VFndBa4xvXtMGwDl2+ZJN3d1XLUfCN4qRV+uhHvCSQZ2Kk
+         pAT0i/8SwBKgervAU44JrRBKhi01pXbHxPfJn+84N6/UVmhGrpYhGVZzV8Be3bHlaFcS
+         fSEg==
+X-Forwarded-Encrypted: i=1; AJvYcCWum82WvgFaOnvbMHDaixcl4cjiQV3OlLXMHHJdveXTXZjfJUqAKU6Car1UAeSoGWwPKH0N48zWEWTy@vger.kernel.org
+X-Gm-Message-State: AOJu0YxppiNz2fZk9KGmV+qx7aP4+HLcvrSM9M7KRB5zv+XIFlCNPebb
+	I0BXnOcxG1fJqogu9LeXi5prQQlfT29lB3tKQqF2t8TkZHoqPgFJvOxeG7Nwy68=
+X-Gm-Gg: ASbGnctxEhVGFtYj31mEeLQtcHqtB2pMxmgji/aQZ32CroJCwc/f95dqRSVmOEwPvXo
+	5UitQqnT+vM0+mvJX9D2y4Dh0cSNOhshWN9/LVsJLeXNWf5N6uq6wQ5lltAKFEQUqvPx6rAF95y
+	AaAk3eTjV48ZllkRO5wj6LkUegnCuD+/hKpXtADEUzBN+FjB+B/HDkQVv+ZJHXsTRkOBhb8dBG9
+	Loi8+0VrGpNB9QyLEfQ2+bHfKlv5CB932FkDrV+GN75+etV3WTJXnbrcu3Gn7hTD3Unh9HxusXq
+	S7JUzCKYV57OuGEEw2s31iE=
+X-Google-Smtp-Source: AGHT+IHDmI9hye5XOi6YSrGUXA+r63Ly14kAASwQM2O8Pu1R5EQHAMNGo2bLTDb9eyt1MuS1FkFoHQ==
+X-Received: by 2002:a05:620a:4042:b0:7b1:48ff:6b48 with SMTP id af79cd13be357-7b42edbe9e0mr773356585a.14.1732197214343;
+        Thu, 21 Nov 2024 05:53:34 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b485226511sm211401085a.90.2024.11.21.05.53.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Nov 2024 05:53:33 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1tE7cj-00000003msa-01KT;
+	Thu, 21 Nov 2024 09:53:33 -0400
+Date: Thu, 21 Nov 2024 09:53:32 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Zelong Yue <yuezelong@bytedance.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC] RDMA/core: Fix IPv6 loopback dst MAC address lookup logic
+Message-ID: <20241121135332.GB773835@ziepe.ca>
+References: <20241110123532.37831-1-yuezelong@bytedance.com>
+ <b044faad-1e3f-4c65-b2e6-fc418aebd22e@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lxp75oumfys2vsey"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241118200616.865cb4c869e693b19529df36@paranoici.org>
+In-Reply-To: <b044faad-1e3f-4c65-b2e6-fc418aebd22e@bytedance.com>
 
+On Thu, Nov 21, 2024 at 05:22:36PM +0800, Zelong Yue wrote:
+> Gently ping. Do I need to provide more detailed information on how to
+> reproduce the issue?
+> 
+> On 11/10/24 8:35 PM, yuezelong wrote:
+> > Imagine we have two RNICs on a single machine, named eth1 and eth2, with
+> > 
+> > - IPv4 addresses: 192.168.1.2, 192.168.1.3
+> > - IPv6 addresses (scope global): fdbd::beef:2, fdbd::beef:3
+> > - MAC addresses: 11:11:11:11:11:02, 11:11:11:11:11:03,
+> > 
+> > they all connnected to a gateway with MAC address 22:22:22:22:22:02.
+> > 
+> > If we want to setup connections between these two RNICs, with RC QP, we
+> > would go through `rdma_resolve_ip` for looking up dst MAC addresses. The
+> > procedure it's the same as using command
+> > 
+> > `ip route get dst_addr from src_addr oif src_dev`
+> > 
+> > In IPv4 scenario, you would likely get
+> > 
+> > ```
+> > $ ip route get 192.168.1.2 from 192.168.1.3 oif eth2
+> > 
+> > 192.168.1.2 from 192.168.1.3 via 192.168.1.1 dev eth2 ...
+> > ```
+> > 
+> > Looks reasonable as it would go through the gateway.
+> > 
+> > But in IPv6 scenario, you would likely get
+> > 
+> > ```
+> > $ ip route get fdbd::beef:2 from fdbd::beef:3 oif eth2
+> > 
+> > local fdbd::beef:2 from fdbd::beed:3 dev lo table local proto kernel src fdbd::beef:2 metric 0 pref medium
+> > ```
+> > 
+> > This would lead to the RDMA route lookup procedure filling the dst MAC
+> > address with src net device's MAC address (11:11:11:11:11:03),  but
+> > filling the dst IP address with dst net device's IPv6 address
+> > (fdbd::beef:2), src net device would drop this packet, and we would fail
+> > to setup the connection.
+> > 
+> > To make setting up loopback connections like this possible, we need to
+> > send packets to the gateway and let the gateway send it back (actually,
+> > the IPv4 lookup result would lead to this, so there is no problem in IPv4
+> > scenario), so we need to adjust current lookup procedure, if we find out
+> > the src device and dst device is on the same machine (same namespace),
+> > we need to send the packets to the gateway instead of the src device
+> > itself.
 
---lxp75oumfys2vsey
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: Bug#1086520: linux-image-6.11.2-amd64: makes opensm fail to start
-MIME-Version: 1.0
+We can't just override the routing like this, if you want that kind of
+routing you need to setup the routing table to deliver it. For ipv4
+these configurations almost always come with policy routing
+configurations that avoid returning lo as a route. I assume ipv6 is
+the same.
 
-Hello Francesco,
+I'm not sure why your ipv4 example doesn't use lo either, by default
+it should have. It suggests to me there is alread some routing
+overrides present.
 
-[for the new-comers: This is about a regression in 6.11. Details
-available at https://bugs.debian.org/1086520. The TL;DR; is that on
-6.10.11 opensm works as expected, while it fails to start on 6.11.7.]
-
-On Mon, Nov 18, 2024 at 08:06:16PM +0100, Francesco Poli wrote:
-> On Mon, 18 Nov 2024 09:58:03 +0100 Uwe Kleine-K=F6nig wrote:
->=20
-> [...]
-> > On Wed, Nov 13, 2024 at 11:15:03PM +0100, Francesco Poli wrote:
-> > > On Mon, 11 Nov 2024 11:22:26 +0100 Uwe Kleine-K=F6nig wrote:
-> [...]
-> > > > I guess the kernel provides a directory "/sys/class/infiniband_mad"=
-=2E Do
-> > > > its contents look different on 6.10.x and 6.11.x?
-> > >=20
-> > > I will look into this as soon as I can reboot the cluster head node.
->=20
-> I looked into this, while testing the new Debian Linux kernel that has
-> just migrated to testing (which, once again, makes opensm fail to
-> start, just like other 6.11.x versions).
->=20
-> With a working kernel:
->=20
->   $ uname -v
->   #1 SMP PREEMPT_DYNAMIC Debian 6.10.11-1 (2024-09-22)
->   $ ls -altrF /sys/class/infiniband_mad/
->   total 0
->   lrwxrwxrwx  1 root root    0 Nov  4 15:58 umad0 -> ../../devices/pci000=
-0:80/0000:80:01.1/0000:81:00.0/infiniband_mad/umad0/
->   lrwxrwxrwx  1 root root    0 Nov  4 15:58 umad1 -> ../../devices/pci000=
-0:80/0000:80:01.1/0000:81:00.1/infiniband_mad/umad1/
->   lrwxrwxrwx  1 root root    0 Nov 11 15:54 issm1 -> ../../devices/pci000=
-0:80/0000:80:01.1/0000:81:00.1/infiniband_mad/issm1/
->   lrwxrwxrwx  1 root root    0 Nov 11 15:54 issm0 -> ../../devices/pci000=
-0:80/0000:80:01.1/0000:81:00.0/infiniband_mad/issm0/
->   drwxr-xr-x  2 root root    0 Nov 11 15:54 ./
->   drwxr-xr-x 72 root root    0 Nov 11 15:54 ../
->   -r--r--r--  1 root root 4096 Nov 11 15:54 abi_version
->   $ cat /sys/class/infiniband_mad/abi_version=20
->   5
->=20
-> With a kernel that makes opensm fail to start:
->=20
->   $ uname -v
->   #1 SMP PREEMPT_DYNAMIC Debian 6.11.7-1 (2024-11-09)
->   $ ls -altrF /sys/class/infiniband_mad/
->   total 0
->   drwxr-xr-x 73 root root    0 Nov 18 09:41 ../
->   -r--r--r--  1 root root 4096 Nov 18 09:41 abi_version
->   lrwxrwxrwx  1 root root    0 Nov 18 09:41 umad0 -> ../../devices/pci000=
-0:80/0000:80:01.1/0000:81:00.0/infiniband_mad/umad0/
->   lrwxrwxrwx  1 root root    0 Nov 18 09:41 umad1 -> ../../devices/pci000=
-0:80/0000:80:01.1/0000:81:00.1/infiniband_mad/umad1/
->   drwxr-xr-x  2 root root    0 Nov 18 09:43 ./
->   $ cat /sys/class/infiniband_mad/abi_version
->   5
->=20
-> As you can see, a couple of files (symlinks) are missing here...
-
-It looks like the commit that is biting you is
-
-https://git.kernel.org/linus/50660c5197f52b8137e223dc3ba8d43661179a1d
-
-So if you bisect, try 50660c5197f52b8137e223dc3ba8d43661179a1d and its
-parent 24943dcdc156cf294d97a36bf5c51168bf574c22 first.
-
-I don't know about infiniband, but I'd say: Either your machine doesn't
-have these issmX devices and opensm should cope with that, or these
-issmX devices are available then
-50660c5197f52b8137e223dc3ba8d43661179a1d is buggy.
-
-> Does this ring a bell?
-
-It doesn't for me, but maybe Mark Zhang or someone else among the new
-recipients has an idea?
-
-Best regards
-Uwe
-
-
---lxp75oumfys2vsey
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmc/BZoACgkQj4D7WH0S
-/k4zqQgAsbt26Ykfm1Qaj7z6hMKpBGkZmxeAjRv8ol7WKvRI844thn3aWf7tDE3W
-w8+0fXZge2/JAQHG/rBfplvl7fSvYl1w/JBkyX1TsX3S6kCZjPra9lT0O/jui34t
-/YDpriU28ZK84yF6WwuKjMGqR8eYcW5uQNrukSdMm6XwV5HfYAKOHP7u/83NdN71
-llzo3+mjzm9S6zQe60xy07r+yqtobKYV2T2CpefLKOh491hG363Q75I5xV6zCSd2
-GQBfvy5frs+Brj1lqpnYaSCdnsIAS9nkL5QwYsvuV4L0Ie0ltoDoSNI01vclGI+y
-5X/Z+t5L874w89JWKoObCRUDEA22qw==
-=Tkh1
------END PGP SIGNATURE-----
-
---lxp75oumfys2vsey--
+Jason
 
