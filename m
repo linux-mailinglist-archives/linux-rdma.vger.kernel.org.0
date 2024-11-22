@@ -1,44 +1,44 @@
-Return-Path: <linux-rdma+bounces-6056-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6055-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EAAE9D59EA
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 08:22:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2358E9D59CB
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 08:16:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6E4C1F232B1
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 07:22:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDE01283779
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 07:16:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8AA816F8EB;
-	Fri, 22 Nov 2024 07:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE28F171088;
+	Fri, 22 Nov 2024 07:16:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="HX7iYiBI"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="KbmIKtKr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49CD230987;
-	Fri, 22 Nov 2024 07:22:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3343616BE01;
+	Fri, 22 Nov 2024 07:16:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732260129; cv=none; b=BYIHfQ4ZlGX0N9Gi8sOcgabnxwJ8tMd7AG3z/RmOZaj7mi2Mn0fCNOogrwxssxU0Ij5/SeLXXffRQ0HNMlY6zeTwLD6EeILXWI8zE4GBuIY1UHstJt9LxDkMkONPfBA7QF4JJ6W6u8WCJwVJDe4LyeM1p0+tHwLTnZWmAeHdzSI=
+	t=1732259807; cv=none; b=gIKPNhyD1PinyPRc52QTGPobIanvfIzZjt6685ewBnJkh/kfaNufDxXjvKJccRswALR9SaPUWNRLwST4ecoooYwxc3dnWNxmDgCgb9OtS+HdcxW2nhbb2gsWinWd470vGnCGq5U0ytFP2gpTEFuo3TtTp9RHtOTvhkdb2Trcguw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732260129; c=relaxed/simple;
-	bh=krLSltSvxa1b5p+97f+phk+FYHKalBzUK+6b+JMRYx4=;
+	s=arc-20240116; t=1732259807; c=relaxed/simple;
+	bh=2cSQxrteySvr13xOvnwTvI9SQX8fC71lvBVAvXlndMM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kcN030gTVI2cPS6fur6JS9GD9paSRxsZRPw8omvw/0R+O08iLCMkt1IdP3zNVNfj17aB6bq7EnPSR2q5YK5gllq8qvVbuEI6CNSUzwL52gIJgZ250Yco5ef5IIc22YwBC0GbVCCueLzUznHrzauVF5c0M34lea2asXaDZ7Wzo5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=HX7iYiBI; arc=none smtp.client-ip=115.124.30.112
+	 MIME-Version; b=LW2J8syc8VxN7ITpdFUg2Mtukbgx1ZKmxVrzYw+MC3FrD0T1wZmBvvppyITo2j/04E2AgzY7z83FYbFHUMKdrhG3k4qhlHNJ64Yl560HFke9aorrdbZduEopu2T+VUnbssqAK4cwQX0nZjonDdzbRhIurenpyM51w6EyBKux6f4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=KbmIKtKr; arc=none smtp.client-ip=115.124.30.118
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1732260117; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=gaDcST95Gx4iPn815neB9XkKhGEorlv6Hxro/QIQDq0=;
-	b=HX7iYiBIv7GZGTDu2uM6KVaanHFL/1sCyAzBlwm/f8ThZXPUHENQTzwR+La72dgpDRb4q14vZ3uNd9vR9SuvVLPUe5IExZaMeKA69YmomsOEYH42rBgaK7ZP69gaqapZcPASZVajO7wlwfR09NF3kvmY88oSoPx+fK2Bd2N577Q=
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0WJzio16_1732259792 cluster:ay36)
+	t=1732259796; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=ijdPFqMJEXQyY7cj+GbQC+Q1McJItiVYA1uEbryR+DM=;
+	b=KbmIKtKrUjbelgN1+PZrVTI5HbgPeId/UAeBaJo998/EmwUhWxFUGOaxqL5SPSBrcucoU5iystuQgQ88dOTZGghWAqFhFq6mc0l8lvGfjacBtZ17XxYjKjYEm3963E5jXskt8zttdv0jrmUMsRRBeN4HTf6MGJSnyI+xQUWGreI=
+Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0WJzhgeP_1732259794 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Fri, 22 Nov 2024 15:16:34 +0800
+          Fri, 22 Nov 2024 15:16:35 +0800
 From: Wen Gu <guwen@linux.alibaba.com>
 To: wenjia@linux.ibm.com,
 	jaka@linux.ibm.com,
@@ -54,9 +54,9 @@ Cc: alibuda@linux.alibaba.com,
 	linux-s390@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net 1/2] net/smc: initialize close_work early to avoid warning
-Date: Fri, 22 Nov 2024 15:16:29 +0800
-Message-Id: <20241122071630.63707-2-guwen@linux.alibaba.com>
+Subject: [PATCH net 2/2] net/smc: fix LGR and link use-after-free issue
+Date: Fri, 22 Nov 2024 15:16:30 +0800
+Message-Id: <20241122071630.63707-3-guwen@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20241122071630.63707-1-guwen@linux.alibaba.com>
 References: <20241122071630.63707-1-guwen@linux.alibaba.com>
@@ -68,89 +68,120 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We encountered a warning that close_work was canceled before
-initialization.
+We encountered a LGR/link use-after-free issue, which manifested as
+the LGR/link refcnt reaching 0 early and entering the clear process,
+making resource access unsafe.
 
-  WARNING: CPU: 7 PID: 111103 at kernel/workqueue.c:3047 __flush_work+0x19e/0x1b0
-  Workqueue: events smc_lgr_terminate_work [smc]
-  RIP: 0010:__flush_work+0x19e/0x1b0
-  Call Trace:
-   ? __wake_up_common+0x7a/0x190
-   ? work_busy+0x80/0x80
-   __cancel_work_timer+0xe3/0x160
-   smc_close_cancel_work+0x1a/0x70 [smc]
-   smc_close_active_abort+0x207/0x360 [smc]
-   __smc_lgr_terminate.part.38+0xc8/0x180 [smc]
-   process_one_work+0x19e/0x340
-   worker_thread+0x30/0x370
-   ? process_one_work+0x340/0x340
-   kthread+0x117/0x130
-   ? __kthread_cancel_work+0x50/0x50
-   ret_from_fork+0x22/0x30
+ refcount_t: addition on 0; use-after-free.
+ WARNING: CPU: 14 PID: 107447 at lib/refcount.c:25 refcount_warn_saturate+0x9c/0x140
+ Workqueue: events smc_lgr_terminate_work [smc]
+ Call trace:
+  refcount_warn_saturate+0x9c/0x140
+  __smc_lgr_terminate.part.45+0x2a8/0x370 [smc]
+  smc_lgr_terminate_work+0x28/0x30 [smc]
+  process_one_work+0x1b8/0x420
+  worker_thread+0x158/0x510
+  kthread+0x114/0x118
 
-This is because when smc_close_cancel_work is triggered, e.g. the RDMA
-driver is rmmod and the LGR is terminated, the conn->close_work is
-flushed before initialization, resulting in WARN_ON(!work->func).
+or
 
-__smc_lgr_terminate             | smc_connect_{rdma|ism}
--------------------------------------------------------------
-                                | smc_conn_create
-				| \- smc_lgr_register_conn
-for conn in lgr->conns_all      |
-\- smc_conn_kill                |
-   \- smc_close_active_abort    |
-      \- smc_close_cancel_work  |
-         \- cancel_work_sync    |
-            \- __flush_work     |
-	         (close_work)   |
-	                        | smc_close_init
-	                        | \- INIT_WORK(&close_work)
+ refcount_t: underflow; use-after-free.
+ WARNING: CPU: 6 PID: 93140 at lib/refcount.c:28 refcount_warn_saturate+0xf0/0x140
+ Workqueue: smc_hs_wq smc_listen_work [smc]
+ Call trace:
+  refcount_warn_saturate+0xf0/0x140
+  smcr_link_put+0x1cc/0x1d8 [smc]
+  smc_conn_free+0x110/0x1b0 [smc]
+  smc_conn_abort+0x50/0x60 [smc]
+  smc_listen_find_device+0x75c/0x790 [smc]
+  smc_listen_work+0x368/0x8a0 [smc]
+  process_one_work+0x1b8/0x420
+  worker_thread+0x158/0x510
+  kthread+0x114/0x118
 
-So fix this by initializing close_work before establishing the
-connection.
+It is caused by repeated release of LGR/link refcnt. One suspect is that
+smc_conn_free() is called repeatedly because some smc_conn_free() are not
+protected by sock lock.
 
-Fixes: 46c28dbd4c23 ("net/smc: no socket state changes in tasklet context")
-Fixes: 413498440e30 ("net/smc: add SMC-D support in af_smc")
+Calls under socklock        | Calls not under socklock
+-------------------------------------------------------
+lock_sock(sk)               | smc_conn_abort
+smc_conn_free               | \- smc_conn_free
+\- smcr_link_put            |    \- smcr_link_put (duplicated)
+release_sock(sk)
+
+So make sure smc_conn_free() is called under the sock lock.
+
+Fixes: 8cf3f3e42374 ("net/smc: use helper smc_conn_abort() in listen processing")
+Co-developed-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+Co-developed-by: Kai <KaiShen@linux.alibaba.com>
+Signed-off-by: Kai <KaiShen@linux.alibaba.com>
 Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
 ---
- net/smc/af_smc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ net/smc/af_smc.c | 25 +++++++++++++++++++++----
+ 1 file changed, 21 insertions(+), 4 deletions(-)
 
 diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 9d76e902fd77..ed6d4d520bc7 100644
+index ed6d4d520bc7..e0a7a0151b11 100644
 --- a/net/smc/af_smc.c
 +++ b/net/smc/af_smc.c
-@@ -383,6 +383,7 @@ void smc_sk_init(struct net *net, struct sock *sk, int protocol)
- 	smc->limit_smc_hs = net->smc.limit_smc_hs;
- 	smc->use_fallback = false; /* assume rdma capability first */
- 	smc->fallback_rsn = 0;
-+	smc_close_init(smc);
+@@ -973,7 +973,8 @@ static int smc_connect_decline_fallback(struct smc_sock *smc, int reason_code,
+ 	return smc_connect_fallback(smc, reason_code);
  }
  
- static struct sock *smc_sock_alloc(struct net *net, struct socket *sock,
-@@ -1299,7 +1300,6 @@ static int smc_connect_rdma(struct smc_sock *smc,
- 		goto connect_abort;
- 	}
+-static void smc_conn_abort(struct smc_sock *smc, int local_first)
++static void __smc_conn_abort(struct smc_sock *smc, int local_first,
++			     bool locked)
+ {
+ 	struct smc_connection *conn = &smc->conn;
+ 	struct smc_link_group *lgr = conn->lgr;
+@@ -982,11 +983,27 @@ static void smc_conn_abort(struct smc_sock *smc, int local_first)
+ 	if (smc_conn_lgr_valid(conn))
+ 		lgr_valid = true;
  
--	smc_close_init(smc);
- 	smc_rx_init(smc);
+-	smc_conn_free(conn);
++	if (!locked) {
++		lock_sock(&smc->sk);
++		smc_conn_free(conn);
++		release_sock(&smc->sk);
++	} else {
++		smc_conn_free(conn);
++	}
+ 	if (local_first && lgr_valid)
+ 		smc_lgr_cleanup_early(lgr);
+ }
  
- 	if (ini->first_contact_local) {
-@@ -1435,7 +1435,6 @@ static int smc_connect_ism(struct smc_sock *smc,
- 			goto connect_abort;
- 		}
- 	}
--	smc_close_init(smc);
- 	smc_rx_init(smc);
- 	smc_tx_init(smc);
++static void smc_conn_abort(struct smc_sock *smc, int local_first)
++{
++	__smc_conn_abort(smc, local_first, false);
++}
++
++static void smc_conn_abort_locked(struct smc_sock *smc, int local_first)
++{
++	__smc_conn_abort(smc, local_first, true);
++}
++
+ /* check if there is a rdma device available for this connection. */
+ /* called for connect and listen */
+ static int smc_find_rdma_device(struct smc_sock *smc, struct smc_init_info *ini)
+@@ -1352,7 +1369,7 @@ static int smc_connect_rdma(struct smc_sock *smc,
  
-@@ -2479,7 +2478,6 @@ static void smc_listen_work(struct work_struct *work)
- 		goto out_decl;
+ 	return 0;
+ connect_abort:
+-	smc_conn_abort(smc, ini->first_contact_local);
++	smc_conn_abort_locked(smc, ini->first_contact_local);
+ 	mutex_unlock(&smc_client_lgr_pending);
+ 	smc->connect_nonblock = 0;
  
- 	mutex_lock(&smc_server_lgr_pending);
--	smc_close_init(new_smc);
- 	smc_rx_init(new_smc);
- 	smc_tx_init(new_smc);
+@@ -1454,7 +1471,7 @@ static int smc_connect_ism(struct smc_sock *smc,
+ 
+ 	return 0;
+ connect_abort:
+-	smc_conn_abort(smc, ini->first_contact_local);
++	smc_conn_abort_locked(smc, ini->first_contact_local);
+ 	mutex_unlock(&smc_server_lgr_pending);
+ 	smc->connect_nonblock = 0;
  
 -- 
 2.32.0.3.g01195cf9f
