@@ -1,40 +1,40 @@
-Return-Path: <linux-rdma+bounces-6059-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6058-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 593449D5D94
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 12:00:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D84239D5D93
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 12:00:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 483C0283337
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 11:00:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B47DB2276B
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 11:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF7D1DE8AD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FDD61DE2AB;
 	Fri, 22 Nov 2024 10:59:48 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44AB5175D32;
-	Fri, 22 Nov 2024 10:59:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91D0D1C4A3F;
+	Fri, 22 Nov 2024 10:59:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732273188; cv=none; b=HeGKCiUb8SlKhcRF0Vgi2ZSsBAvXvNkHvvkrwojWX+c+L/U4NLoB62HNbdrD1szTpImR2ryN03VUF/nfJBMwEn06+I1Emtgvt9wjbWKV4ZDMN/UZSBd59jYqQJnRordwvT7tlbezFFrOT23M2Ige0gP+ZUIvPyZfGXdyA9f/dEM=
+	t=1732273188; cv=none; b=WaACYrCUvfV7CqNZcMBxc3Y5FwlCw7Rvk5/8o7bHJLcpxd0HWOfx/z2GM8btUOSVxBPZ29jmC2hxdtVAp2Nv4rn+lhpvmPNDycWmCapSNaqy0Pm11nAYA2TQ5EPeKjoB4iXwWg+kDWRaJITF45rg7L4G3biAUSxsi2GgOogkrlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1732273188; c=relaxed/simple;
-	bh=UsxYxClk1FxUqkSF6XXWA9EKxDKAO/zX29C/GNFZEUs=;
+	bh=qT4tYrFkMfe7kfTchGNmvNv//LVumLq2SW4nrNpzDuQ=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NICMTawSBQemhN6jy3j4NYNHcYQ2LH3ZYTBkucqKAbgPTGfox6MW4LK3JdaCz5HAFjqEum0USa8sr1CusWFYzdopelV19ghMggecFj6YZ0TIwRG1ZtOsSXsXIR30n1fQV02BuqhhlVqo8k1OqSgouQrSlcUuG1rSRCdmxqfuUUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
+	 MIME-Version:Content-Type; b=eu0xG17jSIMTQwGiOY258UnfuJ2sT8DVxY2Q//31GDsA0hxi9hk/KMQ+iGqD90o/HqDRCgcxrkYLs4ThAMJprJPeMKJeFht2b+NKL2xAGeW33jsxsnnSc5PKASLFLIzWe960C9uKIDyLEPCsvCYsFvKFDtkHFrX5KjkKxwrVTc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XvsWS2VHRz2DhCd;
-	Fri, 22 Nov 2024 18:57:40 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XvsS90SKtz1JCls;
+	Fri, 22 Nov 2024 18:54:49 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id DF3141A0188;
-	Fri, 22 Nov 2024 18:59:41 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 8B72A1A016C;
+	Fri, 22 Nov 2024 18:59:42 +0800 (CST)
 Received: from localhost.localdomain (10.90.30.45) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -49,9 +49,9 @@ To: <jgg@ziepe.ca>, <leon@kernel.org>, <selvin.xavier@broadcom.com>,
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
 	<tangchengchang@huawei.com>, <liyuyu6@huawei.com>
-Subject: [PATCH RFC 02/12] RDMA/core: Support link status events dispatching
-Date: Fri, 22 Nov 2024 18:52:58 +0800
-Message-ID: <20241122105308.2150505-3-huangjunxian6@hisilicon.com>
+Subject: [PATCH RFC 03/12] RDMA/bnxt_re: Remove deliver net device event
+Date: Fri, 22 Nov 2024 18:52:59 +0800
+Message-ID: <20241122105308.2150505-4-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
 References: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
@@ -68,163 +68,99 @@ X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
 
 From: Yuyu Li <liyuyu6@huawei.com>
 
-Currently the dispatching of link status events is implemented by
-each RDMA driver independently, and most of them have very similar
-patterns. Add support for this in ib_core so that we can get rid
-of duplicate codes in each driver.
-
-A new last_port_state is added in ib_port_cache to cache the port
-state of the last link status events dispatching. The original
-port_state in ib_port_cache is not used here because it will be
-updated when ib_dispatch_event() is called, which means it may
-be changed between two link status events, and may lead to a loss
-of event dispatching.
-
-Some drivers currently have some private stuff in their link status
-events handler in addition to event dispatching, and cannot be
-perfectly integrated into the ib_core handling process. For these
-drivers, add a new ops report_port_event() so that they can keep
-their current processing.
-
-Finally, events of LAG devices are not supported yet in this patch
-as currently there is no way to obtain ibdev from upper netdev in
-ib_core. This can be a TODO work after the core have more support
-for LAG.
+Since the netdev events of link status is now handled in ib_core,
+remove the related code in drivers.
 
 Signed-off-by: Yuyu Li <liyuyu6@huawei.com>
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/core/device.c | 60 ++++++++++++++++++++++++++++++++
- include/rdma/ib_verbs.h          | 17 +++++++++
- 2 files changed, 77 insertions(+)
+ drivers/infiniband/hw/bnxt_re/main.c | 59 ----------------------------
+ 1 file changed, 59 deletions(-)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index c60dd50d434f..0838a423ac82 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2788,6 +2788,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, set_vf_guid);
- 	SET_DEVICE_OP(dev_ops, set_vf_link_state);
- 	SET_DEVICE_OP(dev_ops, ufile_hw_cleanup);
-+	SET_DEVICE_OP(dev_ops, report_port_event);
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 298c848f3a4d..973c1ecde4cf 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -81,8 +81,6 @@ static DEFINE_MUTEX(bnxt_re_mutex);
  
- 	SET_OBJ_SIZE(dev_ops, ib_ah);
- 	SET_OBJ_SIZE(dev_ops, ib_counters);
-@@ -2881,6 +2882,58 @@ static const struct rdma_nl_cbs ibnl_ls_cb_table[RDMA_NL_LS_NUM_OPS] = {
- 	},
- };
- 
-+void ib_dispatch_port_state_event(struct ib_device *ibdev, struct net_device *ndev)
-+{
-+	enum ib_port_state curr_state;
-+	struct ib_event ibevent = {};
-+	u32 port;
-+
-+	if (ib_query_netdev_port(ibdev, ndev, &port))
-+		return;
-+
-+	curr_state = ib_get_curr_port_state(ndev);
-+
-+	write_lock_irq(&ibdev->cache_lock);
-+	if (ibdev->port_data[port].cache.last_port_state == curr_state) {
-+		write_unlock_irq(&ibdev->cache_lock);
-+		return;
-+	}
-+	ibdev->port_data[port].cache.last_port_state = curr_state;
-+	write_unlock_irq(&ibdev->cache_lock);
-+
-+	ibevent.event = (curr_state == IB_PORT_DOWN) ?
-+					IB_EVENT_PORT_ERR : IB_EVENT_PORT_ACTIVE;
-+	ibevent.device = ibdev;
-+	ibevent.element.port_num = port;
-+	ib_dispatch_event(&ibevent);
-+}
-+EXPORT_SYMBOL(ib_dispatch_port_state_event);
-+
-+static void handle_port_event(struct net_device *ndev, unsigned long event)
-+{
-+	struct ib_device *ibdev;
-+
-+	/* Currently, link events in bonding scenarios are still
-+	 * reported by drivers that support bonding.
-+	 */
-+	if (netif_is_lag_master(ndev) || netif_is_lag_port(ndev))
-+		return;
-+
-+	ibdev = ib_device_get_by_netdev(ndev, RDMA_DRIVER_UNKNOWN);
-+	if (!ibdev)
-+		return;
-+
-+	if (ibdev->ops.report_port_event) {
-+		ibdev->ops.report_port_event(ibdev, ndev, event);
-+		goto put_ibdev;
-+	}
-+
-+	ib_dispatch_port_state_event(ibdev, ndev);
-+
-+put_ibdev:
-+	ib_device_put(ibdev);
-+};
-+
- static int ib_netdevice_event(struct notifier_block *this,
- 			      unsigned long event, void *ptr)
- {
-@@ -2902,6 +2955,13 @@ static int ib_netdevice_event(struct notifier_block *this,
- 		rdma_nl_notify_event(ibdev, port, RDMA_NETDEV_RENAME_EVENT);
- 		ib_device_put(ibdev);
- 		break;
-+
-+	case NETDEV_UP:
-+	case NETDEV_CHANGE:
-+	case NETDEV_DOWN:
-+		handle_port_event(ndev, event);
-+		break;
-+
- 	default:
- 		break;
+ static void bnxt_re_stop_irq(void *handle);
+ static void bnxt_re_dev_stop(struct bnxt_re_dev *rdev);
+-static int bnxt_re_netdev_event(struct notifier_block *notifier,
+-				unsigned long event, void *ptr);
+ static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev);
+ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev, u8 op_type);
+ static int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev);
+@@ -2169,14 +2167,6 @@ static int bnxt_re_add_device(struct auxiliary_device *adev, u8 op_type)
+ 		goto re_dev_uninit;
  	}
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index b5ee5e748a47..bc70299c42e9 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2177,6 +2177,7 @@ struct ib_port_cache {
- 	struct ib_gid_table   *gid;
- 	u8                     lmc;
- 	enum ib_port_state     port_state;
-+	enum ib_port_state     last_port_state;
- };
  
- struct ib_port_immutable {
-@@ -2681,6 +2682,13 @@ struct ib_device_ops {
- 	 */
- 	void (*ufile_hw_cleanup)(struct ib_uverbs_file *ufile);
+-	rdev->nb.notifier_call = bnxt_re_netdev_event;
+-	rc = register_netdevice_notifier(&rdev->nb);
+-	if (rc) {
+-		rdev->nb.notifier_call = NULL;
+-		pr_err("%s: Cannot register to netdevice_notifier",
+-		       ROCE_DRV_MODULE_NAME);
+-		return rc;
+-	}
+ 	bnxt_re_setup_cc(rdev, true);
  
-+	/**
-+	 * report_port_event - Drivers need to implement this if they have
-+	 * some private stuff to handle when link status changes.
-+	 */
-+	void (*report_port_event)(struct ib_device *ibdev,
-+				  struct net_device *ndev, unsigned long event);
-+
- 	DECLARE_RDMA_OBJ_SIZE(ib_ah);
- 	DECLARE_RDMA_OBJ_SIZE(ib_counters);
- 	DECLARE_RDMA_OBJ_SIZE(ib_cq);
-@@ -4471,6 +4479,15 @@ struct net_device *ib_device_get_netdev(struct ib_device *ib_dev,
- 					u32 port);
- int ib_query_netdev_port(struct ib_device *ibdev, struct net_device *ndev,
- 			 u32 *port);
-+
-+static inline enum ib_port_state ib_get_curr_port_state(struct net_device *net_dev)
-+{
-+	return (netif_running(net_dev) && netif_carrier_ok(net_dev)) ?
-+		IB_PORT_ACTIVE : IB_PORT_DOWN;
-+}
-+
-+void ib_dispatch_port_state_event(struct ib_device *ibdev,
-+				  struct net_device *ndev);
- struct ib_wq *ib_create_wq(struct ib_pd *pd,
- 			   struct ib_wq_init_attr *init_attr);
- int ib_destroy_wq_user(struct ib_wq *wq, struct ib_udata *udata);
+ 	return 0;
+@@ -2214,55 +2204,6 @@ static void bnxt_re_setup_cc(struct bnxt_re_dev *rdev, bool enable)
+ 		ibdev_err(&rdev->ibdev, "Failed to setup CC enable = %d\n", enable);
+ }
+ 
+-/*
+- * "Notifier chain callback can be invoked for the same chain from
+- * different CPUs at the same time".
+- *
+- * For cases when the netdev is already present, our call to the
+- * register_netdevice_notifier() will actually get the rtnl_lock()
+- * before sending NETDEV_REGISTER and (if up) NETDEV_UP
+- * events.
+- *
+- * But for cases when the netdev is not already present, the notifier
+- * chain is subjected to be invoked from different CPUs simultaneously.
+- *
+- * This is protected by the netdev_mutex.
+- */
+-static int bnxt_re_netdev_event(struct notifier_block *notifier,
+-				unsigned long event, void *ptr)
+-{
+-	struct net_device *real_dev, *netdev = netdev_notifier_info_to_dev(ptr);
+-	struct bnxt_re_dev *rdev;
+-
+-	real_dev = rdma_vlan_dev_real_dev(netdev);
+-	if (!real_dev)
+-		real_dev = netdev;
+-
+-	if (real_dev != netdev)
+-		goto exit;
+-
+-	rdev = bnxt_re_from_netdev(real_dev);
+-	if (!rdev)
+-		return NOTIFY_DONE;
+-
+-
+-	switch (event) {
+-	case NETDEV_UP:
+-	case NETDEV_DOWN:
+-	case NETDEV_CHANGE:
+-		bnxt_re_dispatch_event(&rdev->ibdev, NULL, 1,
+-					netif_carrier_ok(real_dev) ?
+-					IB_EVENT_PORT_ACTIVE :
+-					IB_EVENT_PORT_ERR);
+-		break;
+-	default:
+-		break;
+-	}
+-	ib_device_put(&rdev->ibdev);
+-exit:
+-	return NOTIFY_DONE;
+-}
+-
+ #define BNXT_ADEV_NAME "bnxt_en"
+ 
+ static void bnxt_re_remove_device(struct bnxt_re_dev *rdev, u8 op_type,
 -- 
 2.33.0
 
