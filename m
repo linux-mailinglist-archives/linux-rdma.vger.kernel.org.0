@@ -1,44 +1,44 @@
-Return-Path: <linux-rdma+bounces-6058-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6060-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D84239D5D93
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 12:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D892D9D5D95
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 12:00:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B47DB2276B
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 11:00:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0F6BB2268A
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 11:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FDD61DE2AB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BC61DE8AE;
 	Fri, 22 Nov 2024 10:59:48 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91D0D1C4A3F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AADF1CC8AA;
 	Fri, 22 Nov 2024 10:59:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732273188; cv=none; b=WaACYrCUvfV7CqNZcMBxc3Y5FwlCw7Rvk5/8o7bHJLcpxd0HWOfx/z2GM8btUOSVxBPZ29jmC2hxdtVAp2Nv4rn+lhpvmPNDycWmCapSNaqy0Pm11nAYA2TQ5EPeKjoB4iXwWg+kDWRaJITF45rg7L4G3biAUSxsi2GgOogkrlU=
+	t=1732273188; cv=none; b=jssrSknsDmBXaoUWWrK4/P0ehbyKxSTC70Yo8VlcgS6AEqJvGQaditfiJfzxCAQ0+7/HQp488e1zgndrG2pcJ64lg4cOFdjX3og6r9Wxhkdhwu0vEI5aWHSv8W07ueS2SDEp4Cq4Ezccz30nUJoQSikA/sOU9qaWApyMQMmiD2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1732273188; c=relaxed/simple;
-	bh=qT4tYrFkMfe7kfTchGNmvNv//LVumLq2SW4nrNpzDuQ=;
+	bh=hXFhrqmBQtAbGowPu3pSviu+hV0X2If9r8cGCVUsvkU=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eu0xG17jSIMTQwGiOY258UnfuJ2sT8DVxY2Q//31GDsA0hxi9hk/KMQ+iGqD90o/HqDRCgcxrkYLs4ThAMJprJPeMKJeFht2b+NKL2xAGeW33jsxsnnSc5PKASLFLIzWe960C9uKIDyLEPCsvCYsFvKFDtkHFrX5KjkKxwrVTc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
+	 MIME-Version:Content-Type; b=EEKo4cUR4W+NdordoqhiON9AIFH3BDjK03W4/Vwnbz45GaXthbbolkrCRTy/7IesLn+YuTpgjSupLO8FljMC3R7sqmEJd9h9tyIG2wbEp/vbFDUF6nKxTioqQmik+z8NU4j+QcicxrR/4qW1sfZb1V7lUvE4i8nWrxJDo2LIlDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.35
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XvsS90SKtz1JCls;
-	Fri, 22 Nov 2024 18:54:49 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4XvsWT0jCYz1T5FX;
+	Fri, 22 Nov 2024 18:57:41 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8B72A1A016C;
-	Fri, 22 Nov 2024 18:59:42 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 3B7EE18002B;
+	Fri, 22 Nov 2024 18:59:43 +0800 (CST)
 Received: from localhost.localdomain (10.90.30.45) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 22 Nov 2024 18:59:41 +0800
+ 15.2.1544.11; Fri, 22 Nov 2024 18:59:42 +0800
 From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>, <selvin.xavier@broadcom.com>,
 	<chengyou@linux.alibaba.com>, <kaishen@linux.alibaba.com>,
@@ -49,9 +49,9 @@ To: <jgg@ziepe.ca>, <leon@kernel.org>, <selvin.xavier@broadcom.com>,
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
 	<tangchengchang@huawei.com>, <liyuyu6@huawei.com>
-Subject: [PATCH RFC 03/12] RDMA/bnxt_re: Remove deliver net device event
-Date: Fri, 22 Nov 2024 18:52:59 +0800
-Message-ID: <20241122105308.2150505-4-huangjunxian6@hisilicon.com>
+Subject: [PATCH RFC 04/12] RDMA/erdma: Remove deliver net device event
+Date: Fri, 22 Nov 2024 18:53:00 +0800
+Message-ID: <20241122105308.2150505-5-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
 References: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
@@ -71,96 +71,70 @@ From: Yuyu Li <liyuyu6@huawei.com>
 Since the netdev events of link status is now handled in ib_core,
 remove the related code in drivers.
 
+In addition, remove dev->state as it is only used in erdma_query_port(),
+and it can be replaced by ib_get_curr_port_state().
+
 Signed-off-by: Yuyu Li <liyuyu6@huawei.com>
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 59 ----------------------------
- 1 file changed, 59 deletions(-)
+ drivers/infiniband/hw/erdma/erdma.h       | 2 --
+ drivers/infiniband/hw/erdma/erdma_main.c  | 8 --------
+ drivers/infiniband/hw/erdma/erdma_verbs.c | 8 ++------
+ 3 files changed, 2 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 298c848f3a4d..973c1ecde4cf 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -81,8 +81,6 @@ static DEFINE_MUTEX(bnxt_re_mutex);
+diff --git a/drivers/infiniband/hw/erdma/erdma.h b/drivers/infiniband/hw/erdma/erdma.h
+index 3c166359448d..7ba554da992d 100644
+--- a/drivers/infiniband/hw/erdma/erdma.h
++++ b/drivers/infiniband/hw/erdma/erdma.h
+@@ -192,8 +192,6 @@ struct erdma_dev {
+ 	u8 __iomem *func_bar;
  
- static void bnxt_re_stop_irq(void *handle);
- static void bnxt_re_dev_stop(struct bnxt_re_dev *rdev);
--static int bnxt_re_netdev_event(struct notifier_block *notifier,
--				unsigned long event, void *ptr);
- static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev);
- static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev, u8 op_type);
- static int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev);
-@@ -2169,14 +2167,6 @@ static int bnxt_re_add_device(struct auxiliary_device *adev, u8 op_type)
- 		goto re_dev_uninit;
- 	}
+ 	struct erdma_devattr attrs;
+-	/* physical port state (only one port per device) */
+-	enum ib_port_state state;
+ 	u32 mtu;
  
--	rdev->nb.notifier_call = bnxt_re_netdev_event;
--	rc = register_netdevice_notifier(&rdev->nb);
--	if (rc) {
--		rdev->nb.notifier_call = NULL;
--		pr_err("%s: Cannot register to netdevice_notifier",
--		       ROCE_DRV_MODULE_NAME);
--		return rc;
--	}
- 	bnxt_re_setup_cc(rdev, true);
+ 	/* cmdq and aeq use the same msix vector */
+diff --git a/drivers/infiniband/hw/erdma/erdma_main.c b/drivers/infiniband/hw/erdma/erdma_main.c
+index 62f497a71004..c5cdf7a4aa2d 100644
+--- a/drivers/infiniband/hw/erdma/erdma_main.c
++++ b/drivers/infiniband/hw/erdma/erdma_main.c
+@@ -26,14 +26,6 @@ static int erdma_netdev_event(struct notifier_block *nb, unsigned long event,
+ 		goto done;
  
- 	return 0;
-@@ -2214,55 +2204,6 @@ static void bnxt_re_setup_cc(struct bnxt_re_dev *rdev, bool enable)
- 		ibdev_err(&rdev->ibdev, "Failed to setup CC enable = %d\n", enable);
- }
- 
--/*
-- * "Notifier chain callback can be invoked for the same chain from
-- * different CPUs at the same time".
-- *
-- * For cases when the netdev is already present, our call to the
-- * register_netdevice_notifier() will actually get the rtnl_lock()
-- * before sending NETDEV_REGISTER and (if up) NETDEV_UP
-- * events.
-- *
-- * But for cases when the netdev is not already present, the notifier
-- * chain is subjected to be invoked from different CPUs simultaneously.
-- *
-- * This is protected by the netdev_mutex.
-- */
--static int bnxt_re_netdev_event(struct notifier_block *notifier,
--				unsigned long event, void *ptr)
--{
--	struct net_device *real_dev, *netdev = netdev_notifier_info_to_dev(ptr);
--	struct bnxt_re_dev *rdev;
--
--	real_dev = rdma_vlan_dev_real_dev(netdev);
--	if (!real_dev)
--		real_dev = netdev;
--
--	if (real_dev != netdev)
--		goto exit;
--
--	rdev = bnxt_re_from_netdev(real_dev);
--	if (!rdev)
--		return NOTIFY_DONE;
--
--
--	switch (event) {
+ 	switch (event) {
 -	case NETDEV_UP:
+-		dev->state = IB_PORT_ACTIVE;
+-		erdma_port_event(dev, IB_EVENT_PORT_ACTIVE);
+-		break;
 -	case NETDEV_DOWN:
--	case NETDEV_CHANGE:
--		bnxt_re_dispatch_event(&rdev->ibdev, NULL, 1,
--					netif_carrier_ok(real_dev) ?
--					IB_EVENT_PORT_ACTIVE :
--					IB_EVENT_PORT_ERR);
+-		dev->state = IB_PORT_DOWN;
+-		erdma_port_event(dev, IB_EVENT_PORT_ERR);
 -		break;
--	default:
--		break;
--	}
--	ib_device_put(&rdev->ibdev);
--exit:
--	return NOTIFY_DONE;
--}
--
- #define BNXT_ADEV_NAME "bnxt_en"
+ 	case NETDEV_CHANGEMTU:
+ 		if (dev->mtu != netdev->mtu) {
+ 			erdma_set_mtu(dev, netdev->mtu);
+diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
+index 51d619edb6c5..65a65416343c 100644
+--- a/drivers/infiniband/hw/erdma/erdma_verbs.c
++++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
+@@ -377,14 +377,10 @@ int erdma_query_port(struct ib_device *ibdev, u32 port,
+ 	ib_get_eth_speed(ibdev, port, &attr->active_speed, &attr->active_width);
+ 	attr->max_mtu = ib_mtu_int_to_enum(ndev->mtu);
+ 	attr->active_mtu = ib_mtu_int_to_enum(ndev->mtu);
+-	if (netif_running(ndev) && netif_carrier_ok(ndev))
+-		dev->state = IB_PORT_ACTIVE;
+-	else
+-		dev->state = IB_PORT_DOWN;
+-	attr->state = dev->state;
++	attr->state = ib_get_curr_port_state(ndev);
  
- static void bnxt_re_remove_device(struct bnxt_re_dev *rdev, u8 op_type,
+ out:
+-	if (dev->state == IB_PORT_ACTIVE)
++	if (attr->state == IB_PORT_ACTIVE)
+ 		attr->phys_state = IB_PORT_PHYS_STATE_LINK_UP;
+ 	else
+ 		attr->phys_state = IB_PORT_PHYS_STATE_DISABLED;
 -- 
 2.33.0
 
