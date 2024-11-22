@@ -1,44 +1,44 @@
-Return-Path: <linux-rdma+bounces-6064-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6066-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A43479D5D9F
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 12:01:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E7839D5DA3
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 12:01:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35E6EB22CDC
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 11:01:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C090B1F23A2E
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 11:01:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C02871DF74F;
-	Fri, 22 Nov 2024 10:59:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 734431DF983;
+	Fri, 22 Nov 2024 10:59:52 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85BA31DEFC7;
-	Fri, 22 Nov 2024 10:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF0E1DF253;
+	Fri, 22 Nov 2024 10:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732273191; cv=none; b=U0H8fNAjpR8FJK9mUoLXlUT88TlnaNGwKcIKiMcvZJdfLhRcKxlaWRIpXKXPFfAfzf/UJKpLqbGo5tyUlvn4cRkn5oYhNjPvFvyPM0CSIR3zQatSvsC/WS0uWc0mFL2TG4B6APINRpVm1ISxR7CBE/wLLErQeddlr3IbAzGsUaI=
+	t=1732273192; cv=none; b=nGzeW5WEolxnw8ZO5rEzGzsbRmSeSx0zqkZ0sFYU6RK3L2xEJxEVj+ITNAHastO+mc+4RjlBKM99QDA2dgane+R9lo4Ln+C8Sse5Vz4z3JSq5mMx+nsEgaXtWKerNqXUFQDI3m+/zwbUzoMgTdz0Wg+tIM7dW2Zfy1g/ouqD3ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732273191; c=relaxed/simple;
-	bh=XF/yJgQsWd5nS4twAMCFtfza8m+kJeN+0vHgtkL573o=;
+	s=arc-20240116; t=1732273192; c=relaxed/simple;
+	bh=oawhWXk9A2tAltRb66TGoGGjKnyj7j08cqjDIY5P8Z8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=E7hA1dFPxHj0fI26veUWFegxHDRgaRdhvpjVsfGUdQITtaLXxm3cAUa7wnXjJ1WTTk5oRpEOF3qSKW5+qW0RXuDvC3cQ7l0KWpqkCAAHWWHvHX57GdS6YXS7WRp+4Jp5KeMi8XiXddG2dEZ/7koDeLLMA0eFyAN9gRFmfczQtXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
+	 MIME-Version:Content-Type; b=mP4ouUrF5waDtw0TUmEU9GzSKv3RUqjYZQsiXp8TTTTJHKjX3NRhtCvp7a8pd9dDu44gJMGs37wqq7JbIdx+qWFR0nFZT49I5K+dXL5ogpeX70A3ohNfK7ZVIncfzG7gs+bNDV6G3fuFzZBiblB1DUezIDOBiEqOlEHBcGJeCoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XvsXG6bQ4z21ldb;
-	Fri, 22 Nov 2024 18:58:22 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XvsWZ3n1Fz1k0JX;
+	Fri, 22 Nov 2024 18:57:46 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3B5EB140158;
+	by mail.maildlp.com (Postfix) with ESMTPS id DDC45140445;
 	Fri, 22 Nov 2024 18:59:47 +0800 (CST)
 Received: from localhost.localdomain (10.90.30.45) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 22 Nov 2024 18:59:46 +0800
+ 15.2.1544.11; Fri, 22 Nov 2024 18:59:47 +0800
 From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>, <selvin.xavier@broadcom.com>,
 	<chengyou@linux.alibaba.com>, <kaishen@linux.alibaba.com>,
@@ -49,9 +49,9 @@ To: <jgg@ziepe.ca>, <leon@kernel.org>, <selvin.xavier@broadcom.com>,
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
 	<tangchengchang@huawei.com>, <liyuyu6@huawei.com>
-Subject: [PATCH RFC 10/12] RDMA/pvrdma: Support report_port_event() ops
-Date: Fri, 22 Nov 2024 18:53:06 +0800
-Message-ID: <20241122105308.2150505-11-huangjunxian6@hisilicon.com>
+Subject: [PATCH RFC 11/12] RDMA/mlx5: Handle link status event only for LAG device
+Date: Fri, 22 Nov 2024 18:53:07 +0800
+Message-ID: <20241122105308.2150505-12-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
 References: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
@@ -68,85 +68,29 @@ X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
 
 From: Yuyu Li <liyuyu6@huawei.com>
 
-In addition to dispatching event, some private stuffs need to be
-done in this driver's link status event handler. Implement the new
-report_port_event() ops with the link status event codes.
+The link status events of non-LAG devices are now handled in ib_core,
+so only LAG device events need to be handled in driver.
 
 Signed-off-by: Yuyu Li <liyuyu6@huawei.com>
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    | 42 +++++++++++++------
- 1 file changed, 29 insertions(+), 13 deletions(-)
+ drivers/infiniband/hw/mlx5/main.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-index 768aad364c89..4bf6c7b682b5 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-@@ -181,6 +181,7 @@ static const struct ib_device_ops pvrdma_dev_ops = {
- 	.query_qp = pvrdma_query_qp,
- 	.reg_user_mr = pvrdma_reg_user_mr,
- 	.req_notify_cq = pvrdma_req_notify_cq,
-+	.report_port_event = pvrdma_report_event_handle,
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index bc7930d0c564..e4010f871865 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -242,6 +242,9 @@ static int mlx5_netdev_event(struct notifier_block *this,
+ 	case NETDEV_DOWN: {
+ 		struct net_device *upper = NULL;
  
- 	INIT_RDMA_OBJ_SIZE(ib_ah, pvrdma_ah, ibah),
- 	INIT_RDMA_OBJ_SIZE(ib_cq, pvrdma_cq, ibcq),
-@@ -666,21 +667,8 @@ static void pvrdma_netdevice_event_handle(struct pvrdma_dev *dev,
++		if (!netif_is_lag_master(ndev) && !netif_is_lag_port(ndev))
++			return NOTIFY_DONE;
++
+ 		if (mlx5_lag_is_roce(mdev) || mlx5_lag_is_sriov(mdev)) {
+ 			struct net_device *lag_ndev;
  
- 	switch (event) {
- 	case NETDEV_REBOOT:
--	case NETDEV_DOWN:
- 		pvrdma_dispatch_event(dev, 1, IB_EVENT_PORT_ERR);
- 		break;
--	case NETDEV_UP:
--		pvrdma_write_reg(dev, PVRDMA_REG_CTL,
--				 PVRDMA_DEVICE_CTL_UNQUIESCE);
--
--		mb();
--
--		if (pvrdma_read_reg(dev, PVRDMA_REG_ERR))
--			dev_err(&dev->pdev->dev,
--				"failed to activate device during link up\n");
--		else
--			pvrdma_dispatch_event(dev, 1, IB_EVENT_PORT_ACTIVE);
--		break;
- 	case NETDEV_UNREGISTER:
- 		ib_device_set_netdev(&dev->ib_dev, NULL, 1);
- 		dev_put(dev->netdev);
-@@ -708,6 +696,34 @@ static void pvrdma_netdevice_event_handle(struct pvrdma_dev *dev,
- 	}
- }
- 
-+static void pvrdma_report_event_handle(struct ib_device *ibdev,
-+				       struct net_device *ndev,
-+				       unsigned long event)
-+{
-+	struct pvrdma_dev *dev = container_of(ibdev, struct pvrdma_dev, ib_dev);
-+
-+	switch (event) {
-+	case NETDEV_DOWN:
-+		pvrdma_dispatch_event(dev, 1, IB_EVENT_PORT_ERR);
-+		break;
-+	case NETDEV_UP:
-+		pvrdma_write_reg(dev, PVRDMA_REG_CTL,
-+				 PVRDMA_DEVICE_CTL_UNQUIESCE);
-+
-+		mb();
-+
-+		if (pvrdma_read_reg(dev, PVRDMA_REG_ERR))
-+			dev_err(&dev->pdev->dev,
-+				"failed to activate device during link up\n");
-+		else
-+			pvrdma_dispatch_event(dev, 1, IB_EVENT_PORT_ACTIVE);
-+		break;
-+
-+	default:
-+		break;
-+	}
-+}
-+
- static void pvrdma_netdevice_event_work(struct work_struct *work)
- {
- 	struct pvrdma_netdevice_work *netdev_work;
 -- 
 2.33.0
 
