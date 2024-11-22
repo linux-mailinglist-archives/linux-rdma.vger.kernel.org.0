@@ -1,44 +1,44 @@
-Return-Path: <linux-rdma+bounces-6061-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6062-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 330849D5D99
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 12:00:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B658A9D5D9C
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 12:01:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3CFB1F21798
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 11:00:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A34EA283D2E
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 11:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD00C1DEFDC;
-	Fri, 22 Nov 2024 10:59:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D576E1DF269;
+	Fri, 22 Nov 2024 10:59:50 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83A431DB54C;
-	Fri, 22 Nov 2024 10:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D30D1DDC29;
+	Fri, 22 Nov 2024 10:59:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732273189; cv=none; b=EU9KAg+S3C0HixYI6uD5xjpnssEuSTEpg75lRLO6wtruSn+OzV4rufx31UydSUQo807jVwXizLKGEM2UJbEez/g7RRPGXBQIdOcdq2Fvl5YCNgfxmpLLCuKK4iVphhdhDwUu39l493mFqcBQQHj0exSatShrRbkzy3SyPvgmt+U=
+	t=1732273190; cv=none; b=TaOx1kO5cSJEborOTQ7bbEaj1XaiiX8VEUzIEfBmLafj9eAVpSAbw2Sop5bmz86fORdu/aRRZVLXmR1XH5E8qsDq+YzCyIkCY2UgUTT8UXFb9WeLZBSP13dll71dq/hT0lRvJTrICADRgGMbLo2G6xNB/iCuKFoHt3yEj969Tew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732273189; c=relaxed/simple;
-	bh=RFZxQe0J3d8y2UkzHkH7HH8QrfLEOqQzDZQGiOaxJs4=;
+	s=arc-20240116; t=1732273190; c=relaxed/simple;
+	bh=2p2EV4qsK6lkoD6wGBAO3pu2TTsO1cxiOfgfVXFOmgk=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mnTwGiBvvUghbScZK9yxyuzVTrsTSHmBRknt14WIRrl60sdIBUFUynLav0yHY01e1HdC4Q5zHLx3g9DwJrp/ocrS/an6h2IBVgx5ioReSbFROqvm5PzXljB8hJbEnwf0P/LGXR8PyFtAeG2uZsF8gVuYnUXV6WXsKt+u/vCMjRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
+	 MIME-Version:Content-Type; b=IKqDWtIEwh/xjIOiOaRmhqySpsv7brgU0sRwEhO5B3yDXDwRjEIRmIGCmW8k/xS7nhar99xSchXAggg+POmzmsVMbOK7VAFmVddIt/bo2pJr3uKCcS2+QFTVfI4nPRlvPmW4BOUVatmY+T/VFfkqP1ARtw5BRqEWyNcX3eOZYo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4XvsVm0bbXz10SBk;
-	Fri, 22 Nov 2024 18:57:04 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XvsXF4BMRz21ldV;
+	Fri, 22 Nov 2024 18:58:21 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3E260180106;
+	by mail.maildlp.com (Postfix) with ESMTPS id DD4D81A0188;
 	Fri, 22 Nov 2024 18:59:45 +0800 (CST)
 Received: from localhost.localdomain (10.90.30.45) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 22 Nov 2024 18:59:44 +0800
+ 15.2.1544.11; Fri, 22 Nov 2024 18:59:45 +0800
 From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>, <selvin.xavier@broadcom.com>,
 	<chengyou@linux.alibaba.com>, <kaishen@linux.alibaba.com>,
@@ -49,9 +49,9 @@ To: <jgg@ziepe.ca>, <leon@kernel.org>, <selvin.xavier@broadcom.com>,
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
 	<tangchengchang@huawei.com>, <liyuyu6@huawei.com>
-Subject: [PATCH RFC 07/12] RDMA/siw: Remove deliver net device event
-Date: Fri, 22 Nov 2024 18:53:03 +0800
-Message-ID: <20241122105308.2150505-8-huangjunxian6@hisilicon.com>
+Subject: [PATCH RFC 08/12] RDMA/usnic: Support report_port_event() ops
+Date: Fri, 22 Nov 2024 18:53:04 +0800
+Message-ID: <20241122105308.2150505-9-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
 References: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
@@ -68,93 +68,112 @@ X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
 
 From: Yuyu Li <liyuyu6@huawei.com>
 
-Since the netdev events of link status is now handled in ib_core,
-remove the related code in drivers.
-
-In addition, remove sdev->state as it is only used in siw_query_port(),
-and it can be replaced by ib_get_curr_port_state().
+In addition to dispatching event, some private stuffs need to be
+done in this driver's link status event handler. Implement the new
+report_port_event() ops with the link status event codes.
 
 Signed-off-by: Yuyu Li <liyuyu6@huawei.com>
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/sw/siw/siw.h       |  3 ---
- drivers/infiniband/sw/siw/siw_main.c  | 16 ----------------
- drivers/infiniband/sw/siw/siw_verbs.c |  6 +++---
- 3 files changed, 3 insertions(+), 22 deletions(-)
+ drivers/infiniband/hw/usnic/usnic_ib_main.c | 71 +++++++++++++--------
+ 1 file changed, 43 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-index 86d4d6a2170e..f5dc4b3e0e60 100644
---- a/drivers/infiniband/sw/siw/siw.h
-+++ b/drivers/infiniband/sw/siw/siw.h
-@@ -76,9 +76,6 @@ struct siw_device {
- 	int numa_node;
- 	char raw_gid[ETH_ALEN];
- 
--	/* physical port state (only one port per device) */
--	enum ib_port_state state;
--
- 	spinlock_t lock;
- 
- 	struct xarray qp_xa;
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index 17abef48abcd..a9dc20f241ec 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -380,16 +380,6 @@ static int siw_netdev_event(struct notifier_block *nb, unsigned long event,
- 	sdev = to_siw_dev(base_dev);
- 
- 	switch (event) {
--	case NETDEV_UP:
--		sdev->state = IB_PORT_ACTIVE;
--		siw_port_event(sdev, 1, IB_EVENT_PORT_ACTIVE);
--		break;
--
--	case NETDEV_DOWN:
--		sdev->state = IB_PORT_DOWN;
--		siw_port_event(sdev, 1, IB_EVENT_PORT_ERR);
--		break;
--
- 	case NETDEV_REGISTER:
- 		/*
- 		 * Device registration now handled only by
-@@ -410,7 +400,6 @@ static int siw_netdev_event(struct notifier_block *nb, unsigned long event,
- 	 * Todo: Below netdev events are currently not handled.
- 	 */
- 	case NETDEV_CHANGEMTU:
--	case NETDEV_CHANGE:
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib_main.c b/drivers/infiniband/hw/usnic/usnic_ib_main.c
+index 13b654ddd3cc..5ad7fe7e662f 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib_main.c
++++ b/drivers/infiniband/hw/usnic/usnic_ib_main.c
+@@ -151,34 +151,6 @@ static void usnic_ib_handle_usdev_event(struct usnic_ib_dev *us_ibdev,
+ 		ib_event.element.port_num = 1;
+ 		ib_dispatch_event(&ib_event);
  		break;
+-	case NETDEV_UP:
+-	case NETDEV_DOWN:
+-	case NETDEV_CHANGE:
+-		if (!us_ibdev->ufdev->link_up &&
+-				netif_carrier_ok(netdev)) {
+-			usnic_fwd_carrier_up(us_ibdev->ufdev);
+-			usnic_info("Link UP on %s\n",
+-				   dev_name(&us_ibdev->ib_dev.dev));
+-			ib_event.event = IB_EVENT_PORT_ACTIVE;
+-			ib_event.device = &us_ibdev->ib_dev;
+-			ib_event.element.port_num = 1;
+-			ib_dispatch_event(&ib_event);
+-		} else if (us_ibdev->ufdev->link_up &&
+-				!netif_carrier_ok(netdev)) {
+-			usnic_fwd_carrier_down(us_ibdev->ufdev);
+-			usnic_info("Link DOWN on %s\n",
+-				   dev_name(&us_ibdev->ib_dev.dev));
+-			usnic_ib_qp_grp_modify_active_to_err(us_ibdev);
+-			ib_event.event = IB_EVENT_PORT_ERR;
+-			ib_event.device = &us_ibdev->ib_dev;
+-			ib_event.element.port_num = 1;
+-			ib_dispatch_event(&ib_event);
+-		} else {
+-			usnic_dbg("Ignoring %s on %s\n",
+-					netdev_cmd_to_name(event),
+-					dev_name(&us_ibdev->ib_dev.dev));
+-		}
+-		break;
+ 	case NETDEV_CHANGEADDR:
+ 		if (!memcmp(us_ibdev->ufdev->mac, netdev->dev_addr,
+ 				sizeof(us_ibdev->ufdev->mac))) {
+@@ -218,6 +190,48 @@ static void usnic_ib_handle_usdev_event(struct usnic_ib_dev *us_ibdev,
+ 	mutex_unlock(&us_ibdev->usdev_lock);
+ }
  
- 	default:
-@@ -443,11 +432,6 @@ static int siw_newlink(const char *basedev_name, struct net_device *netdev)
- 	if (sdev) {
- 		dev_dbg(&netdev->dev, "siw: new device\n");
- 
--		if (netif_running(netdev) && netif_carrier_ok(netdev))
--			sdev->state = IB_PORT_ACTIVE;
--		else
--			sdev->state = IB_PORT_DOWN;
--
- 		ib_mark_name_assigned_by_user(&sdev->base_dev);
- 		rv = siw_device_register(sdev, basedev_name);
- 		if (rv)
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index 986666c19378..137819184b3b 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -182,10 +182,10 @@ int siw_query_port(struct ib_device *base_dev, u32 port,
- 	attr->max_msg_sz = -1;
- 	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
- 	attr->active_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
--	attr->phys_state = sdev->state == IB_PORT_ACTIVE ?
--		IB_PORT_PHYS_STATE_LINK_UP : IB_PORT_PHYS_STATE_DISABLED;
- 	attr->port_cap_flags = IB_PORT_CM_SUP | IB_PORT_DEVICE_MGMT_SUP;
--	attr->state = sdev->state;
-+	attr->state = ib_get_curr_port_state(sdev->ndev);
-+	attr->phys_state = attr->state == IB_PORT_ACTIVE ?
-+		IB_PORT_PHYS_STATE_LINK_UP : IB_PORT_PHYS_STATE_DISABLED;
- 	/*
- 	 * All zero
- 	 *
++static void usnic_ib_handle_port_event(struct ib_device *ibdev,
++				       struct net_device *netdev,
++				       unsigned long event);
++{
++	struct usnic_ib_dev *us_ibdev =
++			container_of(ibdev, struct usnic_ib_dev, ib_dev);
++	mutex_lock(&us_ibdev->usdev_lock);
++	switch (event) {
++	case NETDEV_UP:
++	case NETDEV_DOWN:
++	case NETDEV_CHANGE:
++		if (!us_ibdev->ufdev->link_up &&
++		    netif_carrier_ok(netdev)) {
++			usnic_fwd_carrier_up(us_ibdev->ufdev);
++			usnic_info("Link UP on %s\n",
++				   dev_name(&us_ibdev->ib_dev.dev));
++			ib_event.event = IB_EVENT_PORT_ACTIVE;
++			ib_event.device = &us_ibdev->ib_dev;
++			ib_event.element.port_num = 1;
++			ib_dispatch_event(&ib_event);
++		} else if (us_ibdev->ufdev->link_up &&
++			   !netif_carrier_ok(netdev)) {
++			usnic_fwd_carrier_down(us_ibdev->ufdev);
++			usnic_info("Link DOWN on %s\n",
++				   dev_name(&us_ibdev->ib_dev.dev));
++			usnic_ib_qp_grp_modify_active_to_err(us_ibdev);
++			ib_event.event = IB_EVENT_PORT_ERR;
++			ib_event.device = &us_ibdev->ib_dev;
++			ib_event.element.port_num = 1;
++			ib_dispatch_event(&ib_event);
++		} else {
++			usnic_dbg("Ignoring %s on %s\n",
++				  netdev_cmd_to_name(event),
++				  dev_name(&us_ibdev->ib_dev.dev));
++		}
++		break;
++	default:
++		break;
++	}
++	mutex_unlock(&us_ibdev->usdev_lock);
++}
++
+ static int usnic_ib_netdevice_event(struct notifier_block *notifier,
+ 					unsigned long event, void *ptr)
+ {
+@@ -358,6 +372,7 @@ static const struct ib_device_ops usnic_dev_ops = {
+ 	.query_port = usnic_ib_query_port,
+ 	.query_qp = usnic_ib_query_qp,
+ 	.reg_user_mr = usnic_ib_reg_mr,
++	.report_port_event = usnic_ib_handle_port_event,
+ 	INIT_RDMA_OBJ_SIZE(ib_pd, usnic_ib_pd, ibpd),
+ 	INIT_RDMA_OBJ_SIZE(ib_cq, usnic_ib_cq, ibcq),
+ 	INIT_RDMA_OBJ_SIZE(ib_qp, usnic_ib_qp_grp, ibqp),
 -- 
 2.33.0
 
