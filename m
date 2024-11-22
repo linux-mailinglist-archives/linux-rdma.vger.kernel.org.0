@@ -1,43 +1,44 @@
-Return-Path: <linux-rdma+bounces-6070-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6065-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D256B9D5DDB
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 12:16:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28DC59D5DA0
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 12:01:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B67BB22122
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 11:16:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6135B22C70
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 11:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0802B1D7E4A;
-	Fri, 22 Nov 2024 11:16:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B471DED53;
+	Fri, 22 Nov 2024 10:59:52 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58503142E83;
-	Fri, 22 Nov 2024 11:16:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4101D1DED6D;
+	Fri, 22 Nov 2024 10:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732274166; cv=none; b=V9+L2xt4MH8DWO8cR/pO+kiLLmhl8FKiTKp/2FuqX3NbXtxjD7ljVBcRf9JNubbRWLsreoUs2sxQiFwhkIOgevtnrq3raOjSbsM7gmH6hEudCphdZwfvCdpxMcKzu9mdPss5YlkM2zoD322KsaRGqiKop77VkWPYoWBl9RenLsA=
+	t=1732273191; cv=none; b=kCGJK9yYTFGIRVzPJCo5z4HI7X4DfhrF/VFtdNzZeG/M3jAW7KHmmsRspVd+DfaOiTb3RsuJ+mFeI/uM+936gTeGzihGKazqccfai5Pgj2+f4WqFWCPglqbMFXyziGyhFvVxHkDKITmpDD8/nwSOsrxlJwJPP3J/RBjoO8TqPNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732274166; c=relaxed/simple;
-	bh=I7PUxhs247KXZ+vsf/vOCRF2Oe/G5iESOA2fOqgwK5g=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cNIdxIn9hRWUvyG6dmOfl8PPpA/3Z/lWfeZhT/vriPj2bFDJwCHxPPICMRPXEclZW2zS3f82pvofpob02NcvuVjTfnZCKem6kxBgeD/hhQeQkovht6ftSQkYPhl26Xa3jcL2QZOe6HEa5Tx3SeopPfZQPUdKURbNFoXN5IbtREs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.189
+	s=arc-20240116; t=1732273191; c=relaxed/simple;
+	bh=G8Eot4p3DQpSCqYcpocwVH08lCFhMK7sNDTgHt7LRO4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UcqrZP9quZDZ2kjDRTivEAx8zv3zYZeB/z+j1FprZ80Ot5hvnpmfC5cRvqSPPx14UAzOxcZbDEwdcxrq00fPVZ3j47ykepauyBvW6IWlvXbXeaVhqZU+1YKY5WHE8KAWfmOh3KuFSGKvHuO0ODy4Igwi6/ap50HZ6ZLSYNbbu/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4XvsX80HVtzQv3P;
-	Fri, 22 Nov 2024 18:58:16 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4XvsWf261WzqSXf;
+	Fri, 22 Nov 2024 18:57:50 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8B892180214;
-	Fri, 22 Nov 2024 18:59:40 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 375D9180106;
+	Fri, 22 Nov 2024 18:59:41 +0800 (CST)
 Received: from localhost.localdomain (10.90.30.45) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 22 Nov 2024 18:59:39 +0800
+ 15.2.1544.11; Fri, 22 Nov 2024 18:59:40 +0800
 From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>, <selvin.xavier@broadcom.com>,
 	<chengyou@linux.alibaba.com>, <kaishen@linux.alibaba.com>,
@@ -48,10 +49,12 @@ To: <jgg@ziepe.ca>, <leon@kernel.org>, <selvin.xavier@broadcom.com>,
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
 	<tangchengchang@huawei.com>, <liyuyu6@huawei.com>
-Subject: [PATCH RFC 00/12] RDMA: Support link status events dispatching in ib_core
-Date: Fri, 22 Nov 2024 18:52:56 +0800
-Message-ID: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
+Subject: [PATCH RFC 01/12] RDMA/core: Add ib_query_netdev_port() to query netdev port by IB device.
+Date: Fri, 22 Nov 2024 18:52:57 +0800
+Message-ID: <20241122105308.2150505-2-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
+References: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -63,85 +66,96 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemf100018.china.huawei.com (7.202.181.17)
 
-This series is to integrate a common link status event handler in
-ib_core as this functionality is needed by most drivers and
-implemented in very similar patterns. This is not a new issue but
-a restart of the previous work of our colleagues from several years
-ago, please see [1] and [2].
+From: Yuyu Li <liyuyu6@huawei.com>
 
-[1]: https://lore.kernel.org/linux-rdma/1570184954-21384-1-git-send-email-liweihang@hisilicon.com/
-[2]: https://lore.kernel.org/linux-rdma/20200204082408.18728-1-liweihang@huawei.com/
+Query the port number of a netdev associated with an ibdev.
 
-With this series, ib_core can handle netdev events of link status,
-i.e. NETDEV_UP, NETDEV_DOWN and NETDEV_CHANGE, and dispatch ib port
-events to ULPs instead of drivers. However some drivers currently
-have some private processing in their handler, rather than simply
-dispatching events. For these drivers, this series provides a new
-ops report_port_event(). If this ops is set, ib_core will call it
-and the events will still be handled in the driver.
+Signed-off-by: Yuyu Li <liyuyu6@huawei.com>
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+---
+ drivers/infiniband/core/device.c | 39 ++++++++++++++++++++++++++------
+ include/rdma/ib_verbs.h          |  2 ++
+ 2 files changed, 34 insertions(+), 7 deletions(-)
 
-Events of LAG devices are also not handled in ib_core as currently
-there is no way to obtain ibdev from upper netdev in ib_core. This
-can be a TODO work after the core have more support for LAG. For
-now mlx5 is the only driver that supports RoCE LAG, and the events
-handling of mlx5 RoCE LAG will remain in mlx5 driver.
-
-In this series:
-
-Patch #1 adds a new helper to query the port num of a netdev
-associated with an ibdev. This is used in the following patch.
-
-Patch #2 adds support for link status events dispatching in ib_core.
-
-Patch #3-#7 removes link status event handler in several drivers.
-The port state setting in erdma, rxe and siw are replaced with
-ib_get_curr_port_state(), so their handler can be totally removed.
-
-Patch #8-#10 add support for report_port_event() ops in usnic, mlx4
-and pvrdma as their current handler cannot be perfectly replaced by
-the ib_core handler in patch #2.
-
-Patch #11 adds a check in mlx5 that only events of RoCE LAG will be
-handled in mlx5 driver.
-
-Patch #12 adds a fast path for link-down events dispatching in hns by
-getting notified from hns3 nic driver directly.
-
-Yuyu Li (12):
-  RDMA/core: Add ib_query_netdev_port() to query netdev port by IB
-    device.
-  RDMA/core: Support link status events dispatching
-  RDMA/bnxt_re: Remove deliver net device event
-  RDMA/erdma: Remove deliver net device event
-  RDMA/irdma: Remove deliver net device event
-  RDMA/rxe: Remove deliver net device event
-  RDMA/siw: Remove deliver net device event
-  RDMA/usnic: Support report_port_event() ops
-  RDMA/mlx4: Support report_port_event() ops
-  RDMA/pvrdma: Support report_port_event() ops
-  RDMA/mlx5: Handle link status event only for LAG device
-  RDMA/hns: Support fast path for link-down events dispatching
-
- drivers/infiniband/core/device.c              | 99 +++++++++++++++++--
- drivers/infiniband/hw/bnxt_re/main.c          | 59 -----------
- drivers/infiniband/hw/erdma/erdma.h           |  2 -
- drivers/infiniband/hw/erdma/erdma_main.c      |  8 --
- drivers/infiniband/hw/erdma/erdma_verbs.c     |  8 +-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c    | 13 +++
- drivers/infiniband/hw/irdma/utils.c           |  3 -
- drivers/infiniband/hw/mlx4/main.c             | 58 +++++------
- drivers/infiniband/hw/mlx5/main.c             |  3 +
- drivers/infiniband/hw/usnic/usnic_ib_main.c   | 71 +++++++------
- .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    | 42 +++++---
- drivers/infiniband/sw/rxe/rxe_net.c           | 22 +----
- drivers/infiniband/sw/rxe/rxe_verbs.c         |  1 +
- drivers/infiniband/sw/siw/siw.h               |  3 -
- drivers/infiniband/sw/siw/siw_main.c          | 16 ---
- drivers/infiniband/sw/siw/siw_verbs.c         |  6 +-
- include/rdma/ib_verbs.h                       | 19 ++++
- 17 files changed, 239 insertions(+), 194 deletions(-)
-
---
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index ca9b956c034d..c60dd50d434f 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -2295,6 +2295,33 @@ struct net_device *ib_device_get_netdev(struct ib_device *ib_dev,
+ }
+ EXPORT_SYMBOL(ib_device_get_netdev);
+ 
++/**
++ * ib_query_netdev_port - Query the port number of a net_device
++ * associated with an ibdev
++ * @ibdev: IB device
++ * @ndev: Network device
++ * @port: IB port the net_device is connected to
++ */
++int ib_query_netdev_port(struct ib_device *ibdev, struct net_device *ndev,
++			 u32 *port)
++{
++	struct net_device *ib_ndev;
++	u32 port_num;
++
++	rdma_for_each_port(ibdev, port_num) {
++		ib_ndev = ib_device_get_netdev(ibdev, port_num);
++		if (ndev == ib_ndev) {
++			*port = port_num;
++			dev_put(ib_ndev);
++			return 0;
++		}
++		dev_put(ib_ndev);
++	}
++
++	return -ENOENT;
++}
++EXPORT_SYMBOL(ib_query_netdev_port);
++
+ /**
+  * ib_device_get_by_netdev - Find an IB device associated with a netdev
+  * @ndev: netdev to locate
+@@ -2858,7 +2885,6 @@ static int ib_netdevice_event(struct notifier_block *this,
+ 			      unsigned long event, void *ptr)
+ {
+ 	struct net_device *ndev = netdev_notifier_info_to_dev(ptr);
+-	struct net_device *ib_ndev;
+ 	struct ib_device *ibdev;
+ 	u32 port;
+ 
+@@ -2868,13 +2894,12 @@ static int ib_netdevice_event(struct notifier_block *this,
+ 		if (!ibdev)
+ 			return NOTIFY_DONE;
+ 
+-		rdma_for_each_port(ibdev, port) {
+-			ib_ndev = ib_device_get_netdev(ibdev, port);
+-			if (ndev == ib_ndev)
+-				rdma_nl_notify_event(ibdev, port,
+-						     RDMA_NETDEV_RENAME_EVENT);
+-			dev_put(ib_ndev);
++		if (ib_query_netdev_port(ibdev, ndev, &port)) {
++			ib_device_put(ibdev);
++			break;
+ 		}
++
++		rdma_nl_notify_event(ibdev, port, RDMA_NETDEV_RENAME_EVENT);
+ 		ib_device_put(ibdev);
+ 		break;
+ 	default:
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 3417636da960..b5ee5e748a47 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -4469,6 +4469,8 @@ int ib_device_set_netdev(struct ib_device *ib_dev, struct net_device *ndev,
+ 			 unsigned int port);
+ struct net_device *ib_device_get_netdev(struct ib_device *ib_dev,
+ 					u32 port);
++int ib_query_netdev_port(struct ib_device *ibdev, struct net_device *ndev,
++			 u32 *port);
+ struct ib_wq *ib_create_wq(struct ib_pd *pd,
+ 			   struct ib_wq_init_attr *init_attr);
+ int ib_destroy_wq_user(struct ib_wq *wq, struct ib_udata *udata);
+-- 
 2.33.0
 
 
