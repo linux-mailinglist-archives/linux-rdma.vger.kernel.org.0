@@ -1,65 +1,57 @@
-Return-Path: <linux-rdma+bounces-6055-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6070-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2358E9D59CB
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 08:16:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D256B9D5DDB
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 12:16:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDE01283779
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 07:16:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B67BB22122
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2024 11:16:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE28F171088;
-	Fri, 22 Nov 2024 07:16:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="KbmIKtKr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0802B1D7E4A;
+	Fri, 22 Nov 2024 11:16:07 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3343616BE01;
-	Fri, 22 Nov 2024 07:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58503142E83;
+	Fri, 22 Nov 2024 11:16:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732259807; cv=none; b=gIKPNhyD1PinyPRc52QTGPobIanvfIzZjt6685ewBnJkh/kfaNufDxXjvKJccRswALR9SaPUWNRLwST4ecoooYwxc3dnWNxmDgCgb9OtS+HdcxW2nhbb2gsWinWd470vGnCGq5U0ytFP2gpTEFuo3TtTp9RHtOTvhkdb2Trcguw=
+	t=1732274166; cv=none; b=V9+L2xt4MH8DWO8cR/pO+kiLLmhl8FKiTKp/2FuqX3NbXtxjD7ljVBcRf9JNubbRWLsreoUs2sxQiFwhkIOgevtnrq3raOjSbsM7gmH6hEudCphdZwfvCdpxMcKzu9mdPss5YlkM2zoD322KsaRGqiKop77VkWPYoWBl9RenLsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732259807; c=relaxed/simple;
-	bh=2cSQxrteySvr13xOvnwTvI9SQX8fC71lvBVAvXlndMM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LW2J8syc8VxN7ITpdFUg2Mtukbgx1ZKmxVrzYw+MC3FrD0T1wZmBvvppyITo2j/04E2AgzY7z83FYbFHUMKdrhG3k4qhlHNJ64Yl560HFke9aorrdbZduEopu2T+VUnbssqAK4cwQX0nZjonDdzbRhIurenpyM51w6EyBKux6f4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=KbmIKtKr; arc=none smtp.client-ip=115.124.30.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1732259796; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=ijdPFqMJEXQyY7cj+GbQC+Q1McJItiVYA1uEbryR+DM=;
-	b=KbmIKtKrUjbelgN1+PZrVTI5HbgPeId/UAeBaJo998/EmwUhWxFUGOaxqL5SPSBrcucoU5iystuQgQ88dOTZGghWAqFhFq6mc0l8lvGfjacBtZ17XxYjKjYEm3963E5jXskt8zttdv0jrmUMsRRBeN4HTf6MGJSnyI+xQUWGreI=
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0WJzhgeP_1732259794 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 22 Nov 2024 15:16:35 +0800
-From: Wen Gu <guwen@linux.alibaba.com>
-To: wenjia@linux.ibm.com,
-	jaka@linux.ibm.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: alibuda@linux.alibaba.com,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net 2/2] net/smc: fix LGR and link use-after-free issue
-Date: Fri, 22 Nov 2024 15:16:30 +0800
-Message-Id: <20241122071630.63707-3-guwen@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20241122071630.63707-1-guwen@linux.alibaba.com>
-References: <20241122071630.63707-1-guwen@linux.alibaba.com>
+	s=arc-20240116; t=1732274166; c=relaxed/simple;
+	bh=I7PUxhs247KXZ+vsf/vOCRF2Oe/G5iESOA2fOqgwK5g=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cNIdxIn9hRWUvyG6dmOfl8PPpA/3Z/lWfeZhT/vriPj2bFDJwCHxPPICMRPXEclZW2zS3f82pvofpob02NcvuVjTfnZCKem6kxBgeD/hhQeQkovht6ftSQkYPhl26Xa3jcL2QZOe6HEa5Tx3SeopPfZQPUdKURbNFoXN5IbtREs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4XvsX80HVtzQv3P;
+	Fri, 22 Nov 2024 18:58:16 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8B892180214;
+	Fri, 22 Nov 2024 18:59:40 +0800 (CST)
+Received: from localhost.localdomain (10.90.30.45) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 22 Nov 2024 18:59:39 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>, <selvin.xavier@broadcom.com>,
+	<chengyou@linux.alibaba.com>, <kaishen@linux.alibaba.com>,
+	<mustafa.ismail@intel.com>, <tatyana.e.nikolova@intel.com>,
+	<yishaih@nvidia.com>, <benve@cisco.com>, <neescoba@cisco.com>,
+	<bryan-bt.tan@broadcom.com>, <vishnu.dasa@broadcom.com>,
+	<zyjzyj2000@gmail.com>, <bmt@zurich.ibm.com>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
+	<tangchengchang@huawei.com>, <liyuyu6@huawei.com>
+Subject: [PATCH RFC 00/12] RDMA: Support link status events dispatching in ib_core
+Date: Fri, 22 Nov 2024 18:52:56 +0800
+Message-ID: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -67,123 +59,89 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-We encountered a LGR/link use-after-free issue, which manifested as
-the LGR/link refcnt reaching 0 early and entering the clear process,
-making resource access unsafe.
+This series is to integrate a common link status event handler in
+ib_core as this functionality is needed by most drivers and
+implemented in very similar patterns. This is not a new issue but
+a restart of the previous work of our colleagues from several years
+ago, please see [1] and [2].
 
- refcount_t: addition on 0; use-after-free.
- WARNING: CPU: 14 PID: 107447 at lib/refcount.c:25 refcount_warn_saturate+0x9c/0x140
- Workqueue: events smc_lgr_terminate_work [smc]
- Call trace:
-  refcount_warn_saturate+0x9c/0x140
-  __smc_lgr_terminate.part.45+0x2a8/0x370 [smc]
-  smc_lgr_terminate_work+0x28/0x30 [smc]
-  process_one_work+0x1b8/0x420
-  worker_thread+0x158/0x510
-  kthread+0x114/0x118
+[1]: https://lore.kernel.org/linux-rdma/1570184954-21384-1-git-send-email-liweihang@hisilicon.com/
+[2]: https://lore.kernel.org/linux-rdma/20200204082408.18728-1-liweihang@huawei.com/
 
-or
+With this series, ib_core can handle netdev events of link status,
+i.e. NETDEV_UP, NETDEV_DOWN and NETDEV_CHANGE, and dispatch ib port
+events to ULPs instead of drivers. However some drivers currently
+have some private processing in their handler, rather than simply
+dispatching events. For these drivers, this series provides a new
+ops report_port_event(). If this ops is set, ib_core will call it
+and the events will still be handled in the driver.
 
- refcount_t: underflow; use-after-free.
- WARNING: CPU: 6 PID: 93140 at lib/refcount.c:28 refcount_warn_saturate+0xf0/0x140
- Workqueue: smc_hs_wq smc_listen_work [smc]
- Call trace:
-  refcount_warn_saturate+0xf0/0x140
-  smcr_link_put+0x1cc/0x1d8 [smc]
-  smc_conn_free+0x110/0x1b0 [smc]
-  smc_conn_abort+0x50/0x60 [smc]
-  smc_listen_find_device+0x75c/0x790 [smc]
-  smc_listen_work+0x368/0x8a0 [smc]
-  process_one_work+0x1b8/0x420
-  worker_thread+0x158/0x510
-  kthread+0x114/0x118
+Events of LAG devices are also not handled in ib_core as currently
+there is no way to obtain ibdev from upper netdev in ib_core. This
+can be a TODO work after the core have more support for LAG. For
+now mlx5 is the only driver that supports RoCE LAG, and the events
+handling of mlx5 RoCE LAG will remain in mlx5 driver.
 
-It is caused by repeated release of LGR/link refcnt. One suspect is that
-smc_conn_free() is called repeatedly because some smc_conn_free() are not
-protected by sock lock.
+In this series:
 
-Calls under socklock        | Calls not under socklock
--------------------------------------------------------
-lock_sock(sk)               | smc_conn_abort
-smc_conn_free               | \- smc_conn_free
-\- smcr_link_put            |    \- smcr_link_put (duplicated)
-release_sock(sk)
+Patch #1 adds a new helper to query the port num of a netdev
+associated with an ibdev. This is used in the following patch.
 
-So make sure smc_conn_free() is called under the sock lock.
+Patch #2 adds support for link status events dispatching in ib_core.
 
-Fixes: 8cf3f3e42374 ("net/smc: use helper smc_conn_abort() in listen processing")
-Co-developed-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-Co-developed-by: Kai <KaiShen@linux.alibaba.com>
-Signed-off-by: Kai <KaiShen@linux.alibaba.com>
-Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
----
- net/smc/af_smc.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+Patch #3-#7 removes link status event handler in several drivers.
+The port state setting in erdma, rxe and siw are replaced with
+ib_get_curr_port_state(), so their handler can be totally removed.
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index ed6d4d520bc7..e0a7a0151b11 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -973,7 +973,8 @@ static int smc_connect_decline_fallback(struct smc_sock *smc, int reason_code,
- 	return smc_connect_fallback(smc, reason_code);
- }
- 
--static void smc_conn_abort(struct smc_sock *smc, int local_first)
-+static void __smc_conn_abort(struct smc_sock *smc, int local_first,
-+			     bool locked)
- {
- 	struct smc_connection *conn = &smc->conn;
- 	struct smc_link_group *lgr = conn->lgr;
-@@ -982,11 +983,27 @@ static void smc_conn_abort(struct smc_sock *smc, int local_first)
- 	if (smc_conn_lgr_valid(conn))
- 		lgr_valid = true;
- 
--	smc_conn_free(conn);
-+	if (!locked) {
-+		lock_sock(&smc->sk);
-+		smc_conn_free(conn);
-+		release_sock(&smc->sk);
-+	} else {
-+		smc_conn_free(conn);
-+	}
- 	if (local_first && lgr_valid)
- 		smc_lgr_cleanup_early(lgr);
- }
- 
-+static void smc_conn_abort(struct smc_sock *smc, int local_first)
-+{
-+	__smc_conn_abort(smc, local_first, false);
-+}
-+
-+static void smc_conn_abort_locked(struct smc_sock *smc, int local_first)
-+{
-+	__smc_conn_abort(smc, local_first, true);
-+}
-+
- /* check if there is a rdma device available for this connection. */
- /* called for connect and listen */
- static int smc_find_rdma_device(struct smc_sock *smc, struct smc_init_info *ini)
-@@ -1352,7 +1369,7 @@ static int smc_connect_rdma(struct smc_sock *smc,
- 
- 	return 0;
- connect_abort:
--	smc_conn_abort(smc, ini->first_contact_local);
-+	smc_conn_abort_locked(smc, ini->first_contact_local);
- 	mutex_unlock(&smc_client_lgr_pending);
- 	smc->connect_nonblock = 0;
- 
-@@ -1454,7 +1471,7 @@ static int smc_connect_ism(struct smc_sock *smc,
- 
- 	return 0;
- connect_abort:
--	smc_conn_abort(smc, ini->first_contact_local);
-+	smc_conn_abort_locked(smc, ini->first_contact_local);
- 	mutex_unlock(&smc_server_lgr_pending);
- 	smc->connect_nonblock = 0;
- 
--- 
-2.32.0.3.g01195cf9f
+Patch #8-#10 add support for report_port_event() ops in usnic, mlx4
+and pvrdma as their current handler cannot be perfectly replaced by
+the ib_core handler in patch #2.
+
+Patch #11 adds a check in mlx5 that only events of RoCE LAG will be
+handled in mlx5 driver.
+
+Patch #12 adds a fast path for link-down events dispatching in hns by
+getting notified from hns3 nic driver directly.
+
+Yuyu Li (12):
+  RDMA/core: Add ib_query_netdev_port() to query netdev port by IB
+    device.
+  RDMA/core: Support link status events dispatching
+  RDMA/bnxt_re: Remove deliver net device event
+  RDMA/erdma: Remove deliver net device event
+  RDMA/irdma: Remove deliver net device event
+  RDMA/rxe: Remove deliver net device event
+  RDMA/siw: Remove deliver net device event
+  RDMA/usnic: Support report_port_event() ops
+  RDMA/mlx4: Support report_port_event() ops
+  RDMA/pvrdma: Support report_port_event() ops
+  RDMA/mlx5: Handle link status event only for LAG device
+  RDMA/hns: Support fast path for link-down events dispatching
+
+ drivers/infiniband/core/device.c              | 99 +++++++++++++++++--
+ drivers/infiniband/hw/bnxt_re/main.c          | 59 -----------
+ drivers/infiniband/hw/erdma/erdma.h           |  2 -
+ drivers/infiniband/hw/erdma/erdma_main.c      |  8 --
+ drivers/infiniband/hw/erdma/erdma_verbs.c     |  8 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c    | 13 +++
+ drivers/infiniband/hw/irdma/utils.c           |  3 -
+ drivers/infiniband/hw/mlx4/main.c             | 58 +++++------
+ drivers/infiniband/hw/mlx5/main.c             |  3 +
+ drivers/infiniband/hw/usnic/usnic_ib_main.c   | 71 +++++++------
+ .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    | 42 +++++---
+ drivers/infiniband/sw/rxe/rxe_net.c           | 22 +----
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |  1 +
+ drivers/infiniband/sw/siw/siw.h               |  3 -
+ drivers/infiniband/sw/siw/siw_main.c          | 16 ---
+ drivers/infiniband/sw/siw/siw_verbs.c         |  6 +-
+ include/rdma/ib_verbs.h                       | 19 ++++
+ 17 files changed, 239 insertions(+), 194 deletions(-)
+
+--
+2.33.0
 
 
