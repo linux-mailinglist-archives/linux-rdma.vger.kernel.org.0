@@ -1,135 +1,79 @@
-Return-Path: <linux-rdma+bounces-6080-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6081-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FEE79D6720
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 Nov 2024 02:54:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 115E39D6771
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 Nov 2024 05:10:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D73C428232B
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 Nov 2024 01:54:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A110B219EF
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 Nov 2024 04:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D542E16DEB3;
-	Sat, 23 Nov 2024 01:54:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B729016BE2A;
+	Sat, 23 Nov 2024 04:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mouQgEsd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rAiavkj6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FA7B165F01;
-	Sat, 23 Nov 2024 01:54:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715AF7E0E8;
+	Sat, 23 Nov 2024 04:10:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732326860; cv=none; b=h7ePpjDT3usfLfFC9gqqFrRh4Q97c4a0wYXnUBrk1Z2sOt+51MmI+dBQzuTPUe0q7SSiLJQZcItgWd3yzBtZN+TEN741gkd5BHjW20HmJxkymx+JFOBlP2s+uzdbM/mqYxRgGTlcGLCi5k+c1kFoCi4w1F+mREcwemQOROp+h9o=
+	t=1732335029; cv=none; b=Sm6QU49NpS9R6dPyomGXvOoAaxOLw4/VhVgz8ovOOr6CPNBSyNsnUli/cVLYGnfVTKToFtnIESEbx1aT/t38D1pLar9sluK3IWiykUhZ7V+7h5MdJupMScDB6rJgyoK42/Me1vYYQrirOuM6OJnrZEzuJdwizEW7vZfRRkUy+Kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732326860; c=relaxed/simple;
-	bh=QujWJg/j/KlrXu16O9JlD+ghYNILn4x0FiRi2LhEivM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WbamgUW/9PBIxeH+0x/5OUXrfLYg9gLur3j2nbLUt+4v2D7UW9jAmECGl1NRLCLKKvnwFC64KpQ+FOOmn3V+33BdZU4QZHwGJVjuMl2EDHbmYmJjmMxxIA+W7L7MJJbwU2Nsc4DG2UkNc3hAgYC2YC1SijO7Z6BdC+Q8zJwhv7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mouQgEsd; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2ea568d8216so2304740a91.1;
-        Fri, 22 Nov 2024 17:54:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732326858; x=1732931658; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qlpv7zYDhEzSJeSt/GR+Zk814jy10VXiLign7bJf1Gc=;
-        b=mouQgEsdLOEbPieFDpx4NOfYUmWSaVbYEzFXtqm4a/przhq8+ugUJE8IyVKfie4Z4S
-         8oVVev8GFpZkJe7HYJ800PHjXVtRC8DMMmpxFFcBuEjYpByAZNQ8lFI86MD/YXiAR+qk
-         rEJtJ85ehhM0NTnXZHfctSWqlvEVZVjBO991HWrtbyg01HfsEv76JSPUGSr7HaRyzT3M
-         7h8dPaf93uxJ2Lml0G2j96gvRsuMlwWPTon3vfyaZyqZ1d702LmVdTUR806fLKbm8T4A
-         x6wAIARMNnlGgpG1607blrt2vMfQ/kdNXUf7lsQCtlsr42yOKv2jeHd4Gaw+h4YTc6TA
-         6vrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732326858; x=1732931658;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qlpv7zYDhEzSJeSt/GR+Zk814jy10VXiLign7bJf1Gc=;
-        b=imLvySdVxso7rcVpJdZZbqtVso9MKcvDAD0rgDyXi4SziQj+OVqBiAR5jw+wErkEU4
-         K51mPpXxTDKqLCNe15RDY3nzlzOGpJKswZWtTY8vBmQ7SMk7L7njpt9aR/FohlvY+MEu
-         cY811kekx8jQp+6J3jq0rwKFTkNgCh++BlgX9RhASIJpJ1UFZq2Y0QtgdnpUlKyGmiGh
-         aVaAwRsbF3M0LW3TLWe+7jPCxpNv/M1+wVDrKLtMHg5J+ZUR89oDt3VNWjPRqqbDQKZj
-         SkQwdXlvl8ZoyT7uwPsgxeam0GOdTCjSf3j6exq6kRwEG9Cx13dl963MU+XuCPK8UZ3u
-         /6Mw==
-X-Forwarded-Encrypted: i=1; AJvYcCVEw5r0bvSNEtsfJ/hqEA3DhsgBQilmIwUk7R2I/+zxD1XXzBT0cB2ek8OvZS42lDOR41MA92F0k1sGEjAhZZY7@vger.kernel.org, AJvYcCWAs6bOY9XeCRHE+1JfWcAlsVpQFJjLF2KrmaV2z5I5bVic3dNZfnpCT/YTfUDneY/acdGlpLy+CBUmTQ==@vger.kernel.org, AJvYcCWh02LysYKTeyf2wkntgQ/kUJ7b3aqHyBgMXNLLy0yodoW7qwp7HreOYk/YVS48cawLvt5Hqp3apBr1zpc=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/KqGnQKyB9VL968kKOmKPZCHaWxxXHUGRIQo+61BHeW9woYVB
-	T9jcKLCtQNxR2q+q9xP385bwMZq/VkoUHWgJOTkOIQwa3bGd3OEP
-X-Gm-Gg: ASbGncsjUgXmEKuDsZx5xnN/J4CgoDumFLHWsovRt4XUCGRKDOwiOwHLzoJTZZvqmA9
-	05bRZnY4gAzfFZ74+fOPb5rbq5+E1PC8BkmVw0pPXtKXEku08NIBcwytRG+sGQtWwHe2r8O54Tz
-	fUMQ6MHzWs7sGktl5CcWOfCcp5LfhVTLaQUZ85SVkIqpzOmxXKXRdARHsWUY/GqdjeZpdVqPKM1
-	hELnduSrKf23KOrtQEb60HJzfCWDOE4TPUgCwF7Q3VwUfFi1y9TIXI=
-X-Google-Smtp-Source: AGHT+IEPeMcQjD3hd3aJX0sQ1H72vTVDcJsqpdChjiw1hKxmKK4kX0f8mxvqFpH7A7HvxqaAsVhcbw==
-X-Received: by 2002:a17:90b:17c9:b0:2ea:a9ac:eee1 with SMTP id 98e67ed59e1d1-2eb0e234c02mr5833180a91.10.1732326858371;
-        Fri, 22 Nov 2024 17:54:18 -0800 (PST)
-Received: from fedora ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2eb0d06003csm2298548a91.43.2024.11.22.17.54.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Nov 2024 17:54:17 -0800 (PST)
-Date: Sat, 23 Nov 2024 01:54:09 +0000
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: Maximilian Heyne <mheyne@amazon.de>
-Cc: netdev@vger.kernel.org,
-	Allison Henderson <allison.henderson@oracle.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Vegard Nossum <vegard.nossum@oracle.com>,
-	Chuck Lever <chuck.lever@oracle.com>, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] selftests: rds: move include.sh to TEST_FILES
-Message-ID: <Z0E1wZ75xGCLvNC7@fedora>
-References: <20240927041349.81216-1-liuhangbin@gmail.com>
- <20241122150129.GB18887@dev-dsk-mheyne-1b-55676e6a.eu-west-1.amazon.com>
+	s=arc-20240116; t=1732335029; c=relaxed/simple;
+	bh=LwVZIubD2F+DzYWVOJditvYk7swy3HhWDFT4INpEMu0=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=tWfFABJ+PUZGnQvmXS0gvhp18pj1fRKdylhiVR+8KBjep8dCho+CcZUdVzpW8FX7rn2lX1/3GWsvFMERDqGISk0rA/4uJw81iMKtmYKiTBdL+cmjHI8OBdfZ7Vi/qGp0Gwh/8WxxP0NGxBQvnPRcz0Bo0aiGz4lHuSeJdMqPPDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rAiavkj6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 540CFC4CECF;
+	Sat, 23 Nov 2024 04:10:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732335029;
+	bh=LwVZIubD2F+DzYWVOJditvYk7swy3HhWDFT4INpEMu0=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=rAiavkj6DlUTX9CTDknf9R1wJhCMAnTaGt3vKCii6njMqtfTSZ1v4hA1HjERivu0K
+	 3REyiIzBJCMRUN5osBC9BKTYwHSbRzgU9JCQlU9TwxcKqOSPYcy01oYdTxc+V7X0FX
+	 Ed2VTavIEC8JMkcEHFlNufUtssq4n6bIjM1gzmwozcPrfR1zh5zC/h1MsS3hx6cYX4
+	 R/BpnK7pA7xtEQjQPpWFfrUHqjbaFu/BxI8Q8315j72GyErqZH76V6Xc6Ac8O5INBK
+	 nwC6nffy4VbGFloKATUiFm6agCeOs8BxPE7kPCGMqm2SDYFPOL5okiXuLCKYCi7VnE
+	 IVyzVmh6H0LQw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id CC2D83809A02;
+	Sat, 23 Nov 2024 04:10:42 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20241122183628.GA1102912@nvidia.com>
+References: <20241122183628.GA1102912@nvidia.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20241122183628.GA1102912@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 68b3bca2df00f0a63f0aa2db2b2adc795665229e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2a163a4cea153348172e260a0c5b5569103a66a3
+Message-Id: <173233504162.2897203.15209598676665816169.pr-tracker-bot@kernel.org>
+Date: Sat, 23 Nov 2024 04:10:41 +0000
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241122150129.GB18887@dev-dsk-mheyne-1b-55676e6a.eu-west-1.amazon.com>
 
-On Fri, Nov 22, 2024 at 03:01:29PM +0000, Maximilian Heyne wrote:
-> Hi Hangbin,
-> 
-> On Fri, Sep 27, 2024 at 12:13:49PM +0800, Hangbin Liu wrote:
-> > The include.sh file is generated for inclusion and should not be executable.
-> > Otherwise, it will be added to kselftest-list.txt. Additionally, add the
-> > executable bit for test.py at the same time to ensure proper functionality.
-> > 
-> > Fixes: 3ade6ce1255e ("selftests: rds: add testing infrastructure")
-> > Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> > ---
-> >  tools/testing/selftests/net/rds/Makefile | 3 ++-
-> >  tools/testing/selftests/net/rds/test.py  | 0
-> >  2 files changed, 2 insertions(+), 1 deletion(-)
-> >  mode change 100644 => 100755 tools/testing/selftests/net/rds/test.py
-> > 
-> > diff --git a/tools/testing/selftests/net/rds/Makefile b/tools/testing/selftests/net/rds/Makefile
-> > index da9714bc7aad..cf30307a829b 100644
-> > --- a/tools/testing/selftests/net/rds/Makefile
-> > +++ b/tools/testing/selftests/net/rds/Makefile
-> > @@ -4,9 +4,10 @@ all:
-> >  	@echo mk_build_dir="$(shell pwd)" > include.sh
-> >  
-> >  TEST_PROGS := run.sh \
-> > -	include.sh \
-> >  	test.py
-> 
-> Should test.py also move down to TEST_FILES? I think run.sh is executing
-> test.py anyway but does a couple of sanity checks before, so I think
-> this it's not necessary to let the runner execute test.py standalone.
+The pull request you sent on Fri, 22 Nov 2024 14:36:28 -0400:
 
-I was not aware of this. Thanks for the report. I will post a fix for this.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-Thanks
-Hangbin
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2a163a4cea153348172e260a0c5b5569103a66a3
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
