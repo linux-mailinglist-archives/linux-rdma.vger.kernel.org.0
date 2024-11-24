@@ -1,90 +1,133 @@
-Return-Path: <linux-rdma+bounces-6082-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6083-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 858439D6C84
-	for <lists+linux-rdma@lfdr.de>; Sun, 24 Nov 2024 03:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1875C9D6CF1
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 Nov 2024 08:33:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EF4F281691
-	for <lists+linux-rdma@lfdr.de>; Sun, 24 Nov 2024 02:50:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7769E281544
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 Nov 2024 07:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 442611E531;
-	Sun, 24 Nov 2024 02:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C4A187550;
+	Sun, 24 Nov 2024 07:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jGrwmVgc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WbXnN2kZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B03CA5B;
-	Sun, 24 Nov 2024 02:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6C33FBB3;
+	Sun, 24 Nov 2024 07:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732416626; cv=none; b=Xz7hxbCiKdnZZdYZv6E8RtffCKoD95iYO4CVVMpVrP2KhojPNKXuD2FNDCD1gRQd0Fo1qMMmu3fwV2KSkrjJXo4SPgl5YT0+yRkrDeLbKsGUikMToHVeVsC6PCTqsQVPYd04Ypf2pp7QRhSLeKvylT9xOPjX1Cihu8M8ECgfmuQ=
+	t=1732433581; cv=none; b=MFZR4EMzKuihtw7WABxr+tUY+JHAStlS+xkotjQ30YHXzwJa/rcYr4RZtSJ+TAbRbV9+HfzkUYJUhWXEN6Vnq+FKGrQOJwLySg/RYzqUOktQLXlbmA4Ga7FdIViWCV2tCZmTnQCaU0xRLJhUZHr8/xT1bJznIUyDjHr3IhAeUng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732416626; c=relaxed/simple;
-	bh=4DAbBpdVZZkEgYhQTabwG+d43KbKpV7Qgo3qiACmb/E=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Qymtfc4FOFVX94SGPobM5d+rOCN+LTh7T4jnkt0hItEDWRcw/gWVtXHsKdyQODAcPwcYPJe4i8skpqGKQDxLeCMIPHLR6mXuVjmU4KIR/RXzhv9Cxj6Dy1GdMZpReqJEBfsheey2qA7vmqrVHkQ4L6kjMUO6hSJ1Bj3r926hH2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jGrwmVgc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07F3BC4CECD;
-	Sun, 24 Nov 2024 02:50:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732416625;
-	bh=4DAbBpdVZZkEgYhQTabwG+d43KbKpV7Qgo3qiACmb/E=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jGrwmVgcyHHsUAw0W7wH/E0NiYPVUHIvX7ssRRu5X4Qk7jsakCZDhLy4M6OkrNBdo
-	 Wy/CXWqhnXnaQgB3qUicfci31zWWbt+cT6BgyUEGZ59foxbb3dWt46WAuTasjlO7gT
-	 BPX2aGKnH1nPlrZvc3NdPCwadYlPufbVnL/jCTiZbQIBIxEIaKzfr8BbPlCBGc8Sje
-	 KMTyhB5V0uFq9RHKW1E5HucA3cKb1WRUNPA6JBHpGLCm3lGLYXI3dbx0p+MJxamfP/
-	 3HXqfFfFwoj7uxq+RJtzmB2/SMmzSpe7yQ5Y91DC3ologXzO//LkfVpBxk0VVPjErV
-	 jTM8stzATOjQg==
-Date: Sat, 23 Nov 2024 18:50:24 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Gal Pressman <gal@nvidia.com>
-Cc: Saeed Mahameed <saeed@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
- Yafang Shao <laoar.shao@gmail.com>, ttoukan.linux@gmail.com,
- tariqt@nvidia.com, leon@kernel.org, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v2 net-next] net/mlx5e: Report rx_discards_phy via
- rx_fifo_errors
-Message-ID: <20241123185024.21315d99@kernel.org>
-In-Reply-To: <1060ac7d-ad76-4383-906f-9f20a7b8174a@nvidia.com>
-References: <20241114021711.5691-1-laoar.shao@gmail.com>
-	<20241114182750.0678f9ed@kernel.org>
-	<CALOAHbCQeoPfQnXK-Zt6+Fc-UuNAn12UwgT_y11gzrmtnWWpUQ@mail.gmail.com>
-	<20241114203256.3f0f2de2@kernel.org>
-	<CALOAHbBJ2xWKZ5frzR5wKq1D7-mzS62QkWpxB5Q-A7dR-Djhnw@mail.gmail.com>
-	<Zzb_7hXRPgYMACb9@x130>
-	<20241115112443.197c6c4e@kernel.org>
-	<Zzem_raXbyAuSyZO@x130>
-	<20241115132519.03f7396c@kernel.org>
-	<ZzfGfji0V2Xy4LAQ@x130>
-	<20241115144214.03f17c16@kernel.org>
-	<1060ac7d-ad76-4383-906f-9f20a7b8174a@nvidia.com>
+	s=arc-20240116; t=1732433581; c=relaxed/simple;
+	bh=U3pW/br4mPdRA9g2qa3TF6acrn0LRv7kMOPVDiNBhIA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q7d66sbkJRUmIN4yPXvcrVgPtHzMA/wkuXY7oE1pKV4RqiamrMOTOA8rUg/obACIzfzQxTUhHDAOBP5+hYoF1q869Yw/YsQ3EqWLqlV3BvM5zzBbMww+YuRcjic+YTuz+QobtnnohjXoer8OBM3Ci+HufqqNByEXGMR5NwkdtwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WbXnN2kZ; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-212776d6449so37714585ad.1;
+        Sat, 23 Nov 2024 23:33:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732433579; x=1733038379; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/QrxvnHLhHHbClsG+fnoj3DaRzMXyXEa249hcftSwf0=;
+        b=WbXnN2kZHQgohVZjHoBhpf/ai18NKYHovDgExac4Ec2nObUJipJMaX1tPF2u2ZjqnS
+         +9llTuYn4JQYp68EjftXFtpjeTDJPCd+Et+ybJ2Mggz+I08n6LHz9A8HxbDXKG79HoTP
+         tUi81bKz+LHmP5qyR0xySthjKF3JSOfDlys++roC6IDIQQHkUs6z+RHbheNZ9n2LsXsR
+         iifvuS3d46zvpy6FdFE9dB1Kwg31QQApD4HVTJ3JKK+luyvqQhncausjd00vXwhAeZTJ
+         CF1xL49te1kwS++kDLAMsG3SpubB0mDX198y50e/Tx2yS/GmAj9B0SIb59PudZ2rn+38
+         +CHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732433579; x=1733038379;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/QrxvnHLhHHbClsG+fnoj3DaRzMXyXEa249hcftSwf0=;
+        b=BQfV+wL/BalN/YPBll5TXlk7N4nJmfHNsBKqRvjDCNAk9Reiw6jXmDq/RbiTh1Vhhf
+         z8B78F9ja3PBDP38lXylcuE0fAtm63vosfXjuw6BNyJ+tX2CfKS2vl2S5LjskYc4qpSH
+         cHOfHEjNL4j5jfi9oYDKpNRlRxj48DFZbqTOvyc8k+F6OMWjXo2+2QicndTzr4hyYdNV
+         xln4xzgnVPf/8YP0zuWWgL9q5XWT0KTajBzqSuK79xvAH8ocJOptWzCSHcDGuaUOg9/w
+         obvwFofzs3XMgpEEGZ65T6LWxF3com7DISdNSyXOa+Y95NeHDSsGeBERR8CpX66QIyvH
+         OJgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW4MdLZ9fV7un8C3gWyATQuK6Om5eUwRzZLsBTrShYz67GlhyTXR5zNYMsiQPsUXL0oesLeIuqHMhFjkak=@vger.kernel.org, AJvYcCXEHgBH3DrMBlfwZxflGwiK1wx+ddMapv77BpPDgaG7ZAPvhyWbSTuxEc6Wkur8lrx2Ok0D58zvfxM7Rm7XT8eH@vger.kernel.org, AJvYcCXf0NWgK22BEN6LDzs/FocQGreSuEjs5GeUOqO/2rNGdBPmMlCqu4qgilyLYMAAKT8BChv0NR9x74lG3Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0YynRnPwoLzRsesCip2p0Cv0hZWK252GQx5H3jFHm/q4zPyRccXV
+	G/TYABz7ppooc2rmSas3mpOzERX/+vT4nene+j2e95g4ch1koHidZ0d57n+Ldp0=
+X-Gm-Gg: ASbGncvxwHl2MT53+2l3rC0uVGV3LECo30W7ep2qeA6LrOzo5nZwFJIO+tiPzhpz51c
+	wXv0PL+JolNnWqgPhjK8C2QxlDecLYU3+JnGOTpSyEBXFkqPbpbi1PifbvxKJtO9tYdyr2IBdYG
+	Q43oWJydY7056wTvpet1DTzFwE8EPj2ZIcwDFBSErIHQ3FVdVoaQ88N99Wr8w7tvt96tcOqEQZU
+	241DgVy+rl0aS+iKyy5V3brP2dx9i7KrEcCfKfulvkPw4+DD4f87YrJbD81IBvnNcI51Q==
+X-Google-Smtp-Source: AGHT+IH5VX8VLwH3q/3mONS3hSvP67LvADoIcPzqcrl1vByLw96QkSk+U2+gV5pEhf13xbrM09Cb+g==
+X-Received: by 2002:a17:902:e80a:b0:20b:bd8d:427c with SMTP id d9443c01a7336-2129f55a11emr108317305ad.23.1732433579276;
+        Sat, 23 Nov 2024 23:32:59 -0800 (PST)
+Received: from fedora.dns.podman ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2129db8c881sm42838605ad.13.2024.11.23.23.32.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Nov 2024 23:32:58 -0800 (PST)
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: netdev@vger.kernel.org
+Cc: Allison Henderson <allison.henderson@oracle.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Vegard Nossum <vegard.nossum@oracle.com>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Hangbin Liu <liuhangbin@gmail.com>,
+	Maximilian Heyne <mheyne@amazon.de>
+Subject: [PATCH net] selftests: rds: move test.py to TEST_FILES
+Date: Sun, 24 Nov 2024 07:32:43 +0000
+Message-ID: <20241124073243.847932-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Wed, 20 Nov 2024 08:04:35 +0200 Gal Pressman wrote:
-> > The comment just says not to add what's already counted in missed,
-> > because profcs adds the two and we'd end up double counting.  
-> 
-> So this is a procfs thing only?
-> Does that mean that netlink's rx_dropped might be different than procfs'
-> rx_dropped?
+The test.py should not be run separately. It should be run via run.sh,
+which will do some sanity checks first. Move the test.py from TEST_PROGS
+to TEST_FILES.
 
-Yes, procfs and rtnl show "different" stats.
-For more context on why I put the comment there -- some stats 
-the drivers are supposed to fold (error stats from memory).
+Reported-by: Maximilian Heyne <mheyne@amazon.de>
+Closes: https://lore.kernel.org/netdev/20241122150129.GB18887@dev-dsk-mheyne-1b-55676e6a.eu-west-1.amazon.com
+Fixes: 3ade6ce1255e ("selftests: rds: add testing infrastructure")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+ tools/testing/selftests/net/rds/Makefile | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Legacy stats are tricky, it'd be a major review time investment 
-to try to improve them..
+diff --git a/tools/testing/selftests/net/rds/Makefile b/tools/testing/selftests/net/rds/Makefile
+index 1803c39dbacb..612a7219990e 100644
+--- a/tools/testing/selftests/net/rds/Makefile
++++ b/tools/testing/selftests/net/rds/Makefile
+@@ -3,10 +3,9 @@
+ all:
+ 	@echo mk_build_dir="$(shell pwd)" > include.sh
+ 
+-TEST_PROGS := run.sh \
+-	test.py
++TEST_PROGS := run.sh
+ 
+-TEST_FILES := include.sh
++TEST_FILES := include.sh test.py
+ 
+ EXTRA_CLEAN := /tmp/rds_logs include.sh
+ 
+-- 
+2.46.0
+
 
