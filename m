@@ -1,121 +1,240 @@
-Return-Path: <linux-rdma+bounces-6087-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6088-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44A059D83A6
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Nov 2024 11:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8902A9D83DB
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Nov 2024 11:53:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D99DC1679F9
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Nov 2024 10:42:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BA5F1695B0
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Nov 2024 10:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B661AC887;
-	Mon, 25 Nov 2024 10:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9217519580F;
+	Mon, 25 Nov 2024 10:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=seltendoof.de header.i=@seltendoof.de header.b="egFZ8oIa"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AG/iqdDk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from server02.seltendoof.de (server02.seltendoof.de [168.119.48.163])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C8791A08A6;
-	Mon, 25 Nov 2024 10:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.48.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9B7A194A65
+	for <linux-rdma@vger.kernel.org>; Mon, 25 Nov 2024 10:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732531241; cv=none; b=AZlbwO5B7gGR2hr8/rHUMXq8yTiBwGz0+GTV5GVTY6Yuw2agx09PJz0np7grNdmL8I9/Gx8iibF9aLAF9IPsuRXd287VwmxPjyaA58L/4VqTA6PD18Am4qFw+qFYjLAuRbY/2AB2SeGgpKTmHpwqUNkd0W1ziSxnuhJwO96sjXw=
+	t=1732531970; cv=none; b=q1gv1ta3BwclJusbAedYkRVLSrRpmKoNKskyEghDbfDoY5d/F0d1vpKaXcSKsoZLCtjoy179cKIPUdoBg1/LBF8H2agELxXKiw5nuN7TSQ6yLMDovJ54BzR8w6WSoUIaQy1MHeprxyfo7YaamXE+atI38k25mrVnLTq8pvz4s6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732531241; c=relaxed/simple;
-	bh=lloAGaLbURbVlon1dVtedwbqFYbXXpREa5EYQ+0jSvc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=J1/tDY84VVkOSC68QZ5mBu7QiZwx3BngMNLtkS5BuKry/o+ASwqRBoVk0ghq09xXckUxNqgV/ZI8IYZyhT/3Lzp6kl+AmZ4ZF7/q13x8KKnosr6SCragXvvoM6xdW2nwUSsaHlpJM+eQzOnWq0pNmqwhH/kTfQeKtehxYWVqvFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seltendoof.de; spf=pass smtp.mailfrom=seltendoof.de; dkim=pass (2048-bit key) header.d=seltendoof.de header.i=@seltendoof.de header.b=egFZ8oIa; arc=none smtp.client-ip=168.119.48.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seltendoof.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seltendoof.de
-From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgoettsche@seltendoof.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seltendoof.de;
-	s=2023072701; t=1732531237;
-	h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
+	s=arc-20240116; t=1732531970; c=relaxed/simple;
+	bh=N5OJASuUNrxir7OkItusUNt/HE0H2KgHqM5QwkfAxB4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dBvXBeQlvh9FctLfqHJJu6qFzL8hg2XMIzd94xMpMvKusXLyehYuCOo5xrqTnH/Ox6A0XHdxCSpy9d5lDv9T3RlTqvSw4eMfIPAjTGFfkMSN8GApcaZWg5mRRoJN+qzBCMzC2hOInOoNU07yK+raSSyoIO8mIQ69d7RZMZDVxfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AG/iqdDk; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0a8c2285-29c2-4a79-b704-c2baeac90b70@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1732531965;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jlzbf+EP4WQ9ERhB8MeGSUxEvK9pVGrKH+pSzOMuEbY=;
-	b=egFZ8oIa6Adyyq1lI/k2/7m4vxLRXLRn+Wt3Rqrnhzb3SfQ5501wiHrxZ5Hh82c9pnpMXM
-	tYFM+X7VOO2MvY1lLyNSYdDsqdtL+pJRt3Q8+mM/LBcLLRFnb7XdJ1KQa5kGg/oCpQO9di
-	bCgKaiQoeHAmqvvLNsihH1RYfcsOPEbEktZ8DrpivnKmA7oW295+etWpuflxh+/+m2mC8h
-	JcHrixMYoiM89hrRnhz70aBFe5JJjrUZLCIRNJ5f+wt+8IJKX2gBONy56XdMKZzRYkhxLx
-	sRNOVGL1GBxGIPYLf8SztrzZNZb5E37pWOmFQDg7gpMMuxzx91L1/e8x2hR+ug==
-To: linux-security-module@vger.kernel.org
-Cc: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Serge Hallyn <serge@hallyn.com>,
-	Julia Lawall <Julia.Lawall@inria.fr>,
-	Nicolas Palix <nicolas.palix@imag.fr>,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	cocci@inria.fr
-Subject: [PATCH 11/11] infiniband: reorder capability check last
-Date: Mon, 25 Nov 2024 11:40:03 +0100
-Message-ID: <20241125104011.36552-10-cgoettsche@seltendoof.de>
-In-Reply-To: <20241125104011.36552-1-cgoettsche@seltendoof.de>
-References: <20241125104011.36552-1-cgoettsche@seltendoof.de>
-Reply-To: cgzones@googlemail.com
+	bh=A1KpdPwnSbk5EQncnXyppapMggQ4L+h6E0nxjLIioNE=;
+	b=AG/iqdDkm5jIIRtnb7xBAxMVoJGAo2sn3tvY6bD4JkeXlKoVRse76XaLuAX4yie46AGQGF
+	JsH5Y15Jp4wqxOt8rbkiipPmGxsWxcOWOR6skMT7Feqmh3/hVHvqJzBAUC+swQLa3P6Xbn
+	hxogJnIFHTnn1HgEfqI7udwg0HC99jw=
+Date: Mon, 25 Nov 2024 11:52:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH bpf-next 4/4] bpf/selftests: add simple selftest for
+ bpf_smc_ops
+To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+ wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ pabeni@redhat.com, song@kernel.org, sdf@google.com, haoluo@google.com,
+ yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com,
+ kpsingh@kernel.org, jolsa@kernel.org, guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+ linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+ dtcccc@linux.alibaba.com
+References: <1729737768-124596-1-git-send-email-alibuda@linux.alibaba.com>
+ <1729737768-124596-5-git-send-email-alibuda@linux.alibaba.com>
+ <8c06240b-540b-472f-974f-d2db80d90c22@linux.dev>
+ <e8ba7dc0-96b5-4119-b2f6-b07432f65fdb@linux.alibaba.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <e8ba7dc0-96b5-4119-b2f6-b07432f65fdb@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Christian Göttsche <cgzones@googlemail.com>
 
-capable() calls refer to enabled LSMs whether to permit or deny the
-request.  This is relevant in connection with SELinux, where a
-capability check results in a policy decision and by default a denial
-message on insufficient permission is issued.
-It can lead to three undesired cases:
-  1. A denial message is generated, even in case the operation was an
-     unprivileged one and thus the syscall succeeded, creating noise.
-  2. To avoid the noise from 1. the policy writer adds a rule to ignore
-     those denial messages, hiding future syscalls, where the task
-     performs an actual privileged operation, leading to hidden limited
-     functionality of that task.
-  3. To avoid the noise from 1. the policy writer adds a rule to permit
-     the task the requested capability, while it does not need it,
-     violating the principle of least privilege.
+On 21.11.24 03:00, D. Wythe wrote:
+>
+>
+> On 11/3/24 9:01 PM, Zhu Yanjun wrote:
+>> 在 2024/10/24 4:42, D. Wythe 写道:
+>>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>>
+>>> This PATCH adds a tiny selftest for bpf_smc_ops, to verify the ability
+>>> to attach and write access.
+>>>
+>>> Follow the steps below to run this test.
+>>>
+>>> make -C tools/testing/selftests/bpf
+>>> cd tools/testing/selftests/bpf
+>>> sudo ./test_progs -t smc
+>>
+>> Thanks a lot.
+>>
+>> # ./test_progs -t smc
+>> #27/1    bpf_smc/load:OK
+>> #27      bpf_smc:OK
+>> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+>>
+>> The above command is based on several kernel modules. After these 
+>> dependent kernel modules are loaded, then can run the above command 
+>> successfully.
+>>
+>> Zhu Yanjun
+>>
+>
+> Hi, Yanjun
+>
+> This is indeed a problem, a better way may be to create a separate 
+> testing directory for SMC, and we are trying to do this.
 
-Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
----
- drivers/infiniband/hw/mlx5/devx.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Got it. In the latest patch series, if a test program in sample/bpf can 
+verify this bpf feature, it is better than a selftest program in the 
+directory tools/testing/selftests/bpf.
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index 4186884c66e1..39304cae5b10 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -136,12 +136,14 @@ int mlx5_ib_devx_create(struct mlx5_ib_dev *dev, bool is_user)
- 		return -EINVAL;
- 
- 	uctx = MLX5_ADDR_OF(create_uctx_in, in, uctx);
--	if (is_user && capable(CAP_NET_RAW) &&
--	    (MLX5_CAP_GEN(dev->mdev, uctx_cap) & MLX5_UCTX_CAP_RAW_TX))
-+	if (is_user &&
-+	    (MLX5_CAP_GEN(dev->mdev, uctx_cap) & MLX5_UCTX_CAP_RAW_TX) &&
-+	    capable(CAP_NET_RAW))
- 		cap |= MLX5_UCTX_CAP_RAW_TX;
--	if (is_user && capable(CAP_SYS_RAWIO) &&
-+	if (is_user &&
- 	    (MLX5_CAP_GEN(dev->mdev, uctx_cap) &
--	     MLX5_UCTX_CAP_INTERNAL_DEV_RES))
-+	     MLX5_UCTX_CAP_INTERNAL_DEV_RES) &&
-+	    capable(CAP_SYS_RAWIO))
- 		cap |= MLX5_UCTX_CAP_INTERNAL_DEV_RES;
- 
- 	MLX5_SET(create_uctx_in, in, opcode, MLX5_CMD_OP_CREATE_UCTX);
+I delved into this selftest tool. It seems that this selftest tool only 
+makes the basic checks. A test program in sample/bpf can do more.
+
+I mean, it is very nice that a selftest tool can make selftest on smc 
+bpf. But it is better that a test program in sample/bpf can make some 
+parameter changes in smc.
+
+These parameter changes are mentioned in the previous commits.
+
+"
+
+     As a subsequent enhancement, this patch introduces a new hook for eBPF
+     programs that allows decisions on whether to use SMC or not at runtime,
+     including but not limited to local/remote IP address or ports. In
+     simpler words, this feature allows modifications to syn_smc through 
+eBPF
+     programs before the TCP three-way handshake got established.
+
+"
+
+Zhu Yanjun
+
+>
+> Best wishes,
+> D. Wythe
+>
+>>>
+>>> Results shows:
+>>> Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+>>>
+>>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+>>> ---
+>>>   .../selftests/bpf/prog_tests/test_bpf_smc.c        | 21 +++++++++++
+>>>   tools/testing/selftests/bpf/progs/bpf_smc.c        | 44 
+>>> ++++++++++++++++++++++
+>>>   2 files changed, 65 insertions(+)
+>>>   create mode 100644 
+>>> tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
+>>>   create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+>>>
+>>> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c 
+>>> b/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
+>>> new file mode 100644
+>>> index 00000000..2299853
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
+>>> @@ -0,0 +1,21 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +#include <test_progs.h>
+>>> +
+>>> +#include "bpf_smc.skel.h"
+>>> +
+>>> +static void load(void)
+>>> +{
+>>> +    struct bpf_smc *skel;
+>>> +
+>>> +    skel = bpf_smc__open_and_load();
+>>> +    if (!ASSERT_OK_PTR(skel, "bpf_smc__open_and_load"))
+>>> +        return;
+>>> +
+>>> +    bpf_smc__destroy(skel);
+>>> +}
+>>> +
+>>> +void test_bpf_smc(void)
+>>> +{
+>>> +    if (test__start_subtest("load"))
+>>> +        load();
+>>> +}
+>>> diff --git a/tools/testing/selftests/bpf/progs/bpf_smc.c 
+>>> b/tools/testing/selftests/bpf/progs/bpf_smc.c
+>>> new file mode 100644
+>>> index 00000000..ebff477
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/bpf/progs/bpf_smc.c
+>>> @@ -0,0 +1,44 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +
+>>> +#include "vmlinux.h"
+>>> +
+>>> +#include <bpf/bpf_helpers.h>
+>>> +#include <bpf/bpf_tracing.h>
+>>> +
+>>> +char _license[] SEC("license") = "GPL";
+>>> +
+>>> +struct smc_bpf_ops_ctx {
+>>> +    struct {
+>>> +        struct tcp_sock *tp;
+>>> +    } set_option;
+>>> +    struct {
+>>> +        const struct tcp_sock *tp;
+>>> +        struct inet_request_sock *ireq;
+>>> +        int smc_ok;
+>>> +    } set_option_cond;
+>>> +};
+>>> +
+>>> +struct smc_bpf_ops {
+>>> +    void (*set_option)(struct smc_bpf_ops_ctx *ctx);
+>>> +    void (*set_option_cond)(struct smc_bpf_ops_ctx *ctx);
+>>> +};
+>>> +
+>>> +SEC("struct_ops/bpf_smc_set_tcp_option_cond")
+>>> +void BPF_PROG(bpf_smc_set_tcp_option_cond, struct smc_bpf_ops_ctx 
+>>> *arg)
+>>> +{
+>>> +    arg->set_option_cond.smc_ok = 1;
+>>> +}
+>>> +
+>>> +SEC("struct_ops/bpf_smc_set_tcp_option")
+>>> +void BPF_PROG(bpf_smc_set_tcp_option, struct smc_bpf_ops_ctx *arg)
+>>> +{
+>>> +    struct tcp_sock *tp = arg->set_option.tp;
+>>> +
+>>> +    tp->syn_smc = 1;
+>>> +}
+>>> +
+>>> +SEC(".struct_ops.link")
+>>> +struct smc_bpf_ops sample_smc_bpf_ops = {
+>>> +    .set_option         = (void *) bpf_smc_set_tcp_option,
+>>> +    .set_option_cond    = (void *) bpf_smc_set_tcp_option_cond,
+>>> +};
+
 -- 
-2.45.2
+Best Regards,
+Yanjun.Zhu
 
 
