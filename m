@@ -1,374 +1,140 @@
-Return-Path: <linux-rdma+bounces-6105-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6107-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4A3A9D9214
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Nov 2024 08:04:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BE3B9D9250
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Nov 2024 08:18:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65AA12830F5
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Nov 2024 07:04:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB0C1B24769
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Nov 2024 07:18:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C7331917EB;
-	Tue, 26 Nov 2024 07:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FC79194AF3;
+	Tue, 26 Nov 2024 07:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="tVaLny+5"
+	dkim=pass (1024-bit key) header.d=paranoici.org header.i=@paranoici.org header.b="s9PJacUo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+Received: from devianza.investici.org (devianza.investici.org [198.167.222.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057F4191461
-	for <linux-rdma@vger.kernel.org>; Tue, 26 Nov 2024 07:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12B11898FC;
+	Tue, 26 Nov 2024 07:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.167.222.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732604650; cv=none; b=cU/K1f8clf3CGcQeGOyC/6dz7bAMZ0joX0MYCwbRK7Y4mFGKTWV9bHVn7Vm5UV8kzqt1PGIQ3FKa342tk3vifMscBLtxJtQ3y8Tg1F4sKSsu44FzpqdX0Vt93/GDwnxGp2G5pAsxrWbrxtnbKXefZ5fveE+hA7c+RCV3n6PrHn0=
+	t=1732605522; cv=none; b=M8kecIsLuaigTr+u7CXfFfVY3+J2PvjzQ4PArMlXr/2YRR9kyn/V4PRzVUqhi6SAWmLECZ8NSHZ2mUI2tRGUQ+sg6GERQxfUepA7PPK9B0OASgttSRinUeIHirMGfQtXPBx9at92zp0mY/PNsE76UStY73L+Z1Sf1pH2IPSgHOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732604650; c=relaxed/simple;
-	bh=1odNmYWJY8fNBwhlUL0hIWFRcmaD9S3HqG8wKF7E2PM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ljFEIaEm7zIoqxqBJfN5ni0Bzbwh1M/F4w8SyR3T3Mkgf3hCIVwvFEnD53wag5D5FVNN00+3I+ZLUijixilbjXwyBCpyKoL7Od5u9DZER5VN916U7ZjWie3dOQT2nPkzJVxhkdwpY3JWh4hat7QH0TFQLUeeHCcHwOaVeYYtH24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=tVaLny+5; arc=none smtp.client-ip=115.124.30.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1732604640; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=lxzZsRs1Zsw/3iCZ6pFED3dvWgbznWEH1M6DdG6c6P4=;
-	b=tVaLny+5J51x1uIkELHOUIAOHB1eJmhS6dABoAguyvKkSz0jbP+nwadf3tkTzsyr85iHxE/10tAn5iktwbgKh5D9K58kz2VtPgaV63Kwt/VAUFSY/zppMpVC60iY67odB51mulZMWfPrgGZzR3rY/V0dpnfotpfUQh19YvwjclI=
-Received: from localhost(mailfrom:boshiyu@linux.alibaba.com fp:SMTPD_---0WKHOCFk_1732604639 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 26 Nov 2024 15:03:59 +0800
-From: Boshi Yu <boshiyu@linux.alibaba.com>
-To: jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	kaishen@linux.alibaba.com,
-	chengyou@linux.alibaba.com
-Subject: [PATCH for-next 8/8] RDMA/erdma: Support UD QPs and UD WRs
-Date: Tue, 26 Nov 2024 14:59:14 +0800
-Message-ID: <20241126070351.92787-9-boshiyu@linux.alibaba.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20241126070351.92787-1-boshiyu@linux.alibaba.com>
-References: <20241126070351.92787-1-boshiyu@linux.alibaba.com>
+	s=arc-20240116; t=1732605522; c=relaxed/simple;
+	bh=3WG+rsDl8ssfKYzOttBsssvHgdqZSvcUE4T0kx9jmG8=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=hNLSGkyA/NMIEsriHqRM/61SO90TEuZ8Ehb6UmaJVPzbjOAMJCDb/3ZP08UbNR9NFpEVBhu2zIz7PbzyadOqY40FKNHIBOLGTDS+7XCcTGn7gF18wJDqhpcmF4jALiOqfKtPa366ODiNqfip7Uue4uJ3aJ4cG5F7iNIwxBctsl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=paranoici.org; spf=pass smtp.mailfrom=paranoici.org; dkim=pass (1024-bit key) header.d=paranoici.org header.i=@paranoici.org header.b=s9PJacUo; arc=none smtp.client-ip=198.167.222.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=paranoici.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paranoici.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paranoici.org;
+	s=stigmate; t=1732605514;
+	bh=C5ms5roH9t6g5LU0Y7op/suniBU+rWLbq1V6yV3ku2k=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=s9PJacUoPpikDhzNuIv5tVm15U0dfq9TCjUELSzG8f91NPGfQTK17u0QuWojqzv8p
+	 wUy0jCazqgNirKkYbJtfgxjZA9Cj452a+2VzY6c11MpezlvmoTmnURq8YI0FPC0Ksm
+	 vpKI+fj/DEAP69zTQHiavVhA873Pus1DBDw/y9+8=
+Received: from mx2.investici.org (unknown [127.0.0.1])
+	by devianza.investici.org (Postfix) with ESMTP id 4XyDSp35mzz6vVZ;
+	Tue, 26 Nov 2024 07:18:34 +0000 (UTC)
+Received: from [198.167.222.108] (mx2.investici.org [198.167.222.108]) (Authenticated sender: invernomuto@paranoici.org) by localhost (Postfix) with ESMTPSA id 4XyDSp2nwKz6vTY;
+	Tue, 26 Nov 2024 07:18:34 +0000 (UTC)
+Received: from frx by crunch with local (Exim 4.98)
+	(envelope-from <invernomuto@paranoici.org>)
+	id 1tFpqC-000000001vc-48NX;
+	Tue, 26 Nov 2024 08:18:32 +0100
+Date: Tue, 26 Nov 2024 08:18:24 +0100
+From: Francesco Poli <invernomuto@paranoici.org>
+To: Mark Zhang <markzhang@nvidia.com>
+Cc: Leon Romanovsky <leonro@nvidia.com>, Uwe =?UTF-8?B?S2xlaW5lLUvDtm5p?=
+ =?UTF-8?B?Zw==?= <ukleinek@debian.org>, 1086520@bugs.debian.org,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: Bug#1086520: linux-image-6.11.2-amd64: makes opensm fail to
+ start
+Message-Id: <20241126081824.afd7197d3a54c5242c4bb4b5@paranoici.org>
+In-Reply-To: <cd4ea02f-bcb8-4494-a26e-81cdf6c684bf@nvidia.com>
+References: <173040083268.16618.7451145398661885923.reportbug@crunch>
+	<jaw7557rpn2eln3dtb2xbv2gvzkzde6mfful7d2mf5mgc3wql7@wikm2a7a3kcv>
+	<173040083268.16618.7451145398661885923.reportbug@crunch>
+	<20241113231503.54d12ed5b5d0c8fa9b7d9806@paranoici.org>
+	<3wfi2j7jn2f7rajabfcengubgtyt3wkuin6hqepdoe5dlvfhvn@2clhco3z6fuw>
+	<173040083268.16618.7451145398661885923.reportbug@crunch>
+	<20241118200616.865cb4c869e693b19529df36@paranoici.org>
+	<nvs4i2v7o6vn6zhmtq4sgazy2hu5kiulukxcntdelggmznnl7h@so3oul6uwgbl>
+	<20241125195443.0ddf0d0176d7c34bd29942c7@paranoici.org>
+	<20241125193837.GH160612@unreal>
+	<cd4ea02f-bcb8-4494-a26e-81cdf6c684bf@nvidia.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA512";
+ boundary="Signature=_Tue__26_Nov_2024_08_18_24_+0100_milZIYpp=r8ZwzMM"
 
-The iWARP protocol supports only RC QPs previously. Now we add UD QPs
-and UD WRs support for the RoCEv2 protocol.
+--Signature=_Tue__26_Nov_2024_08_18_24_+0100_milZIYpp=r8ZwzMM
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Boshi Yu <boshiyu@linux.alibaba.com>
-Reviewed-by: Cheng Xu <chengyou@linux.alibaba.com>
----
- drivers/infiniband/hw/erdma/erdma_cq.c    | 20 +++++++
- drivers/infiniband/hw/erdma/erdma_hw.h    | 37 +++++++++++-
- drivers/infiniband/hw/erdma/erdma_qp.c    | 71 ++++++++++++++++++-----
- drivers/infiniband/hw/erdma/erdma_verbs.c | 29 +++++++--
- 4 files changed, 136 insertions(+), 21 deletions(-)
+On Tue, 26 Nov 2024 09:21:37 +0800 Mark Zhang wrote:
 
-diff --git a/drivers/infiniband/hw/erdma/erdma_cq.c b/drivers/infiniband/hw/erdma/erdma_cq.c
-index eada882472a3..1f456327e63c 100644
---- a/drivers/infiniband/hw/erdma/erdma_cq.c
-+++ b/drivers/infiniband/hw/erdma/erdma_cq.c
-@@ -105,6 +105,22 @@ static const struct {
- 	{ ERDMA_WC_RETRY_EXC_ERR, IB_WC_RETRY_EXC_ERR, ERDMA_WC_VENDOR_NO_ERR },
- };
- 
-+static void erdma_process_ud_cqe(struct erdma_cqe *cqe, struct ib_wc *wc)
-+{
-+	u32 ud_info;
-+
-+	wc->wc_flags |= (IB_WC_GRH | IB_WC_WITH_NETWORK_HDR_TYPE);
-+	ud_info = be32_to_cpu(cqe->ud.info);
-+	wc->network_hdr_type = FIELD_GET(ERDMA_CQE_NTYPE_MASK, ud_info);
-+	if (wc->network_hdr_type == ERDMA_NETWORK_TYPE_IPV4)
-+		wc->network_hdr_type = RDMA_NETWORK_IPV4;
-+	else
-+		wc->network_hdr_type = RDMA_NETWORK_IPV6;
-+	wc->src_qp = FIELD_GET(ERDMA_CQE_SQPN_MASK, ud_info);
-+	wc->sl = FIELD_GET(ERDMA_CQE_SL_MASK, ud_info);
-+	wc->pkey_index = 0;
-+}
-+
- #define ERDMA_POLLCQ_NO_QP 1
- 
- static int erdma_poll_one_cqe(struct erdma_cq *cq, struct ib_wc *wc)
-@@ -168,6 +184,10 @@ static int erdma_poll_one_cqe(struct erdma_cq *cq, struct ib_wc *wc)
- 		wc->wc_flags |= IB_WC_WITH_INVALIDATE;
- 	}
- 
-+	if (erdma_device_rocev2(dev) &&
-+	    (qp->ibqp.qp_type == IB_QPT_UD || qp->ibqp.qp_type == IB_QPT_GSI))
-+		erdma_process_ud_cqe(cqe, wc);
-+
- 	if (syndrome >= ERDMA_NUM_WC_STATUS)
- 		syndrome = ERDMA_WC_GENERAL_ERR;
- 
-diff --git a/drivers/infiniband/hw/erdma/erdma_hw.h b/drivers/infiniband/hw/erdma/erdma_hw.h
-index 809e77dde271..ea4db53901a4 100644
---- a/drivers/infiniband/hw/erdma/erdma_hw.h
-+++ b/drivers/infiniband/hw/erdma/erdma_hw.h
-@@ -374,6 +374,11 @@ struct erdma_cmdq_query_qp_req_rocev2 {
- 	u32 qpn;
- };
- 
-+enum erdma_qp_type {
-+	ERDMA_QPT_RC = 0,
-+	ERDMA_QPT_UD = 1,
-+};
-+
- /* create qp cfg0 */
- #define ERDMA_CMD_CREATE_QP_SQ_DEPTH_MASK GENMASK(31, 20)
- #define ERDMA_CMD_CREATE_QP_QPN_MASK GENMASK(19, 0)
-@@ -382,6 +387,9 @@ struct erdma_cmdq_query_qp_req_rocev2 {
- #define ERDMA_CMD_CREATE_QP_RQ_DEPTH_MASK GENMASK(31, 20)
- #define ERDMA_CMD_CREATE_QP_PD_MASK GENMASK(19, 0)
- 
-+/* create qp cfg2 */
-+#define ERDMA_CMD_CREATE_QP_TYPE_MASK GENMASK(3, 0)
-+
- /* create qp cqn_mtt_cfg */
- #define ERDMA_CMD_CREATE_QP_PAGE_SIZE_MASK GENMASK(31, 28)
- #define ERDMA_CMD_CREATE_QP_DB_CFG_MASK BIT(25)
-@@ -415,6 +423,7 @@ struct erdma_cmdq_create_qp_req {
- 	u64 rq_mtt_entry[3];
- 
- 	u32 db_cfg;
-+	u32 cfg2;
- };
- 
- struct erdma_cmdq_destroy_qp_req {
-@@ -522,6 +531,10 @@ enum {
- #define ERDMA_CQE_QTYPE_RQ 1
- #define ERDMA_CQE_QTYPE_CMDQ 2
- 
-+#define ERDMA_CQE_NTYPE_MASK BIT(31)
-+#define ERDMA_CQE_SL_MASK GENMASK(27, 20)
-+#define ERDMA_CQE_SQPN_MASK GENMASK(19, 0)
-+
- struct erdma_cqe {
- 	__be32 hdr;
- 	__be32 qe_idx;
-@@ -531,7 +544,16 @@ struct erdma_cqe {
- 		__be32 inv_rkey;
- 	};
- 	__be32 size;
--	__be32 rsvd[3];
-+	union {
-+		struct {
-+			__be32 rsvd[3];
-+		} rc;
-+
-+		struct {
-+			__be32 rsvd[2];
-+			__be32 info;
-+		} ud;
-+	};
- };
- 
- struct erdma_sge {
-@@ -583,7 +605,7 @@ struct erdma_write_sqe {
- 	struct erdma_sge sgl[];
- };
- 
--struct erdma_send_sqe {
-+struct erdma_send_sqe_rc {
- 	__le64 hdr;
- 	union {
- 		__be32 imm_data;
-@@ -594,6 +616,17 @@ struct erdma_send_sqe {
- 	struct erdma_sge sgl[];
- };
- 
-+struct erdma_send_sqe_ud {
-+	__le64 hdr;
-+	__be32 imm_data;
-+	__le32 length;
-+	__le32 qkey;
-+	__le32 dst_qpn;
-+	__le32 ahn;
-+	__le32 rsvd;
-+	struct erdma_sge sgl[];
-+};
-+
- struct erdma_readreq_sqe {
- 	__le64 hdr;
- 	__le32 invalid_stag;
-diff --git a/drivers/infiniband/hw/erdma/erdma_qp.c b/drivers/infiniband/hw/erdma/erdma_qp.c
-index 03d93f026fca..4dfb4272ad86 100644
---- a/drivers/infiniband/hw/erdma/erdma_qp.c
-+++ b/drivers/infiniband/hw/erdma/erdma_qp.c
-@@ -398,17 +398,57 @@ static int fill_sgl(struct erdma_qp *qp, const struct ib_send_wr *send_wr,
- 	return 0;
- }
- 
-+static void init_send_sqe_rc(struct erdma_qp *qp, struct erdma_send_sqe_rc *sqe,
-+			     const struct ib_send_wr *wr, u32 *hw_op)
-+{
-+	u32 op = ERDMA_OP_SEND;
-+
-+	if (wr->opcode == IB_WR_SEND_WITH_IMM) {
-+		op = ERDMA_OP_SEND_WITH_IMM;
-+		sqe->imm_data = wr->ex.imm_data;
-+	} else if (op == IB_WR_SEND_WITH_INV) {
-+		op = ERDMA_OP_SEND_WITH_INV;
-+		sqe->invalid_stag = cpu_to_le32(wr->ex.invalidate_rkey);
-+	}
-+
-+	*hw_op = op;
-+}
-+
-+static void init_send_sqe_ud(struct erdma_qp *qp, struct erdma_send_sqe_ud *sqe,
-+			     const struct ib_send_wr *wr, u32 *hw_op)
-+{
-+	const struct ib_ud_wr *uwr = ud_wr(wr);
-+	struct erdma_ah *ah = to_eah(uwr->ah);
-+	u32 op = ERDMA_OP_SEND;
-+
-+	if (wr->opcode == IB_WR_SEND_WITH_IMM) {
-+		op = ERDMA_OP_SEND_WITH_IMM;
-+		sqe->imm_data = wr->ex.imm_data;
-+	}
-+
-+	*hw_op = op;
-+
-+	sqe->ahn = cpu_to_le32(ah->ahn);
-+	sqe->dst_qpn = cpu_to_le32(uwr->remote_qpn);
-+	/* Not allowed to send control qkey */
-+	if (uwr->remote_qkey & 0x80000000)
-+		sqe->qkey = cpu_to_le32(qp->attrs.rocev2.qkey);
-+	else
-+		sqe->qkey = cpu_to_le32(uwr->remote_qkey);
-+}
-+
- static int erdma_push_one_sqe(struct erdma_qp *qp, u16 *pi,
- 			      const struct ib_send_wr *send_wr)
- {
- 	u32 wqe_size, wqebb_cnt, hw_op, flags, sgl_offset;
- 	u32 idx = *pi & (qp->attrs.sq_size - 1);
- 	enum ib_wr_opcode op = send_wr->opcode;
-+	struct erdma_send_sqe_rc *rc_send_sqe;
-+	struct erdma_send_sqe_ud *ud_send_sqe;
- 	struct erdma_atomic_sqe *atomic_sqe;
- 	struct erdma_readreq_sqe *read_sqe;
- 	struct erdma_reg_mr_sqe *regmr_sge;
- 	struct erdma_write_sqe *write_sqe;
--	struct erdma_send_sqe *send_sqe;
- 	struct ib_rdma_wr *rdma_wr;
- 	struct erdma_sge *sge;
- 	__le32 *length_field;
-@@ -417,6 +457,10 @@ static int erdma_push_one_sqe(struct erdma_qp *qp, u16 *pi,
- 	u32 attrs;
- 	int ret;
- 
-+	if (qp->ibqp.qp_type != IB_QPT_RC && send_wr->opcode != IB_WR_SEND &&
-+	    send_wr->opcode != IB_WR_SEND_WITH_IMM)
-+		return -EINVAL;
-+
- 	entry = get_queue_entry(qp->kern_qp.sq_buf, idx, qp->attrs.sq_size,
- 				SQEBB_SHIFT);
- 
-@@ -490,21 +534,20 @@ static int erdma_push_one_sqe(struct erdma_qp *qp, u16 *pi,
- 	case IB_WR_SEND:
- 	case IB_WR_SEND_WITH_IMM:
- 	case IB_WR_SEND_WITH_INV:
--		send_sqe = (struct erdma_send_sqe *)entry;
--		hw_op = ERDMA_OP_SEND;
--		if (op == IB_WR_SEND_WITH_IMM) {
--			hw_op = ERDMA_OP_SEND_WITH_IMM;
--			send_sqe->imm_data = send_wr->ex.imm_data;
--		} else if (op == IB_WR_SEND_WITH_INV) {
--			hw_op = ERDMA_OP_SEND_WITH_INV;
--			send_sqe->invalid_stag =
--				cpu_to_le32(send_wr->ex.invalidate_rkey);
-+		if (qp->ibqp.qp_type == IB_QPT_RC) {
-+			rc_send_sqe = (struct erdma_send_sqe_rc *)entry;
-+			init_send_sqe_rc(qp, rc_send_sqe, send_wr, &hw_op);
-+			length_field = &rc_send_sqe->length;
-+			wqe_size = sizeof(struct erdma_send_sqe_rc);
-+		} else {
-+			ud_send_sqe = (struct erdma_send_sqe_ud *)entry;
-+			init_send_sqe_ud(qp, ud_send_sqe, send_wr, &hw_op);
-+			length_field = &ud_send_sqe->length;
-+			wqe_size = sizeof(struct erdma_send_sqe_ud);
- 		}
--		wqe_hdr |= FIELD_PREP(ERDMA_SQE_HDR_OPCODE_MASK, hw_op);
--		length_field = &send_sqe->length;
--		wqe_size = sizeof(struct erdma_send_sqe);
--		sgl_offset = wqe_size;
- 
-+		sgl_offset = wqe_size;
-+		wqe_hdr |= FIELD_PREP(ERDMA_SQE_HDR_OPCODE_MASK, hw_op);
- 		break;
- 	case IB_WR_REG_MR:
- 		wqe_hdr |=
-diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
-index 28b792c31059..17850eea4938 100644
---- a/drivers/infiniband/hw/erdma/erdma_verbs.c
-+++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
-@@ -55,6 +55,13 @@ static int create_qp_cmd(struct erdma_ucontext *uctx, struct erdma_qp *qp)
- 			      ilog2(qp->attrs.rq_size)) |
- 		   FIELD_PREP(ERDMA_CMD_CREATE_QP_PD_MASK, pd->pdn);
- 
-+	if (qp->ibqp.qp_type == IB_QPT_RC)
-+		req.cfg2 = FIELD_PREP(ERDMA_CMD_CREATE_QP_TYPE_MASK,
-+				      ERDMA_QPT_RC);
-+	else
-+		req.cfg2 = FIELD_PREP(ERDMA_CMD_CREATE_QP_TYPE_MASK,
-+				      ERDMA_QPT_UD);
-+
- 	if (rdma_is_kernel_res(&qp->ibqp.res)) {
- 		u32 pgsz_range = ilog2(SZ_1M) - ERDMA_HW_PAGE_SHIFT;
- 
-@@ -481,7 +488,11 @@ static int erdma_qp_validate_cap(struct erdma_dev *dev,
- static int erdma_qp_validate_attr(struct erdma_dev *dev,
- 				  struct ib_qp_init_attr *attrs)
- {
--	if (attrs->qp_type != IB_QPT_RC)
-+	if (erdma_device_iwarp(dev) && attrs->qp_type != IB_QPT_RC)
-+		return -EOPNOTSUPP;
-+
-+	if (erdma_device_rocev2(dev) && attrs->qp_type != IB_QPT_RC &&
-+	    attrs->qp_type != IB_QPT_UD && attrs->qp_type != IB_QPT_GSI)
- 		return -EOPNOTSUPP;
- 
- 	if (attrs->srq)
-@@ -959,7 +970,8 @@ int erdma_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attrs,
- 		udata, struct erdma_ucontext, ibucontext);
- 	struct erdma_ureq_create_qp ureq;
- 	struct erdma_uresp_create_qp uresp;
--	int ret;
-+	void *old_entry;
-+	int ret = 0;
- 
- 	ret = erdma_qp_validate_cap(dev, attrs);
- 	if (ret)
-@@ -978,9 +990,16 @@ int erdma_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attrs,
- 	kref_init(&qp->ref);
- 	init_completion(&qp->safe_free);
- 
--	ret = xa_alloc_cyclic(&dev->qp_xa, &qp->ibqp.qp_num, qp,
--			      XA_LIMIT(1, dev->attrs.max_qp - 1),
--			      &dev->next_alloc_qpn, GFP_KERNEL);
-+	if (qp->ibqp.qp_type == IB_QPT_GSI) {
-+		old_entry = xa_store(&dev->qp_xa, 1, qp, GFP_KERNEL);
-+		if (xa_is_err(old_entry))
-+			ret = xa_err(old_entry);
-+	} else {
-+		ret = xa_alloc_cyclic(&dev->qp_xa, &qp->ibqp.qp_num, qp,
-+				      XA_LIMIT(1, dev->attrs.max_qp - 1),
-+				      &dev->next_alloc_qpn, GFP_KERNEL);
-+	}
-+
- 	if (ret < 0) {
- 		ret = -ENOMEM;
- 		goto err_out;
--- 
-2.43.5
+[...]
+> Yes looks like FW reports vport.num_plane > 0. What is your hw type and=20
+> FW version ("ethtool -i <netdev_of_the_ibdev>")? I don't think it=20
+> supports multiplane.
 
+  $ /sbin/ethtool -i ibp129s0f0
+  driver: mlx5_core[ib_ipoib]
+  version: 6.10.11-amd64
+  firmware-version: 20.40.1000 (MT_0000000224)
+  expansion-rom-version:=20
+  bus-info: 0000:81:00.0
+  supports-statistics: yes
+  supports-test: yes
+  supports-eeprom-access: no
+  supports-register-dump: no
+  supports-priv-flags: yes
+
+Please note that I determined <netdev_of_the_ibdev> by looking at
+the output of 'ibv_devices': I hope this is a correct way to answer
+your question.
+
+
+
+
+--=20
+ http://www.inventati.org/frx/
+ There's not a second to spare! To the laboratory!
+..................................................... Francesco Poli .
+ GnuPG key fpr =3D=3D CA01 1147 9CD2 EFDF FB82  3925 3E1C 27E1 1F69 BFFE
+
+--Signature=_Tue__26_Nov_2024_08_18_24_+0100_milZIYpp=r8ZwzMM
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEygERR5zS79/7gjklPhwn4R9pv/4FAmdFdkEACgkQPhwn4R9p
+v/42txAAlpTMgd77CdbAemqg2q22E7oNHCa9AUjWDzcHFN9yMNVbyGf1hntpyjYp
+e6iMRLNGywypVygonJZQXa/oCQBiCf6QQpZ39F061LhhzamcbVL/zlsEnV7h6c1H
+U36i9O18ws8pFUrN3E/2fAAWfDlujHS1iQkECLW24yzYTfNLRriLKApRvZjzyVrR
+PaiDbbVKDFMZ9LuaOkWr+fQg51l22ds+mUGvtBEBAKxz/aFFhM6b5BOAu6Gj4qEn
+qnKhl1I/lTB9843JqR5DVwz/kWnG5KoAK2DICXgz/QpyygEGxQ3aGyvn/yyiK/G7
+tbWE7rW+rGvg9L8q1e5n6ncmvSQW41nZLYEuBcZZ1SBa0wP7d1jPuedwFVkNhOkk
+SI4VriRig04i/zk0O3YamwPpw992eIeZyinsvw2xOwoc5B2KNPCnHRaeTO4F7EJl
+fDE5VkelZVCuMr8/hBzLw4XfzlnNoHY3BmMbNJslmCvFBX0k+adqF6No5e3JPllO
+cJyFNjjC9WD/y4Y8pV5KymvWS3gQiw36y3iq9q0tR80dzah/PShbiHZUHCpPElBW
+TGiSuPAx8t7lp4ci+HnZ0DfHdWEg1qo/apaWkTV3KlYMVZmNxyYTW3R8R98lhe+u
+ILofzAsyTWJS0CKjPiIHzOcUPesS+vc1k7vtFkyclhPNoNs40gk=
+=PMEd
+-----END PGP SIGNATURE-----
+
+--Signature=_Tue__26_Nov_2024_08_18_24_+0100_milZIYpp=r8ZwzMM--
 
