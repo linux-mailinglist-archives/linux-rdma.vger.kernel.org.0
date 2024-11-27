@@ -1,153 +1,230 @@
-Return-Path: <linux-rdma+bounces-6126-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6128-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC8029DA881
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2024 14:30:44 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7E16166766
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2024 13:30:38 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5EF71FCFCD;
-	Wed, 27 Nov 2024 13:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="RbnPhrHu"
-X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B6D59DACC5
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2024 18:57:47 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC87C5B1FB;
-	Wed, 27 Nov 2024 13:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 577F8B220D5
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2024 17:57:44 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 127F020103C;
+	Wed, 27 Nov 2024 17:57:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=paranoici.org header.i=@paranoici.org header.b="DMH9Nj4x"
+X-Original-To: linux-rdma@vger.kernel.org
+Received: from confino.investici.org (confino.investici.org [93.190.126.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13591F9EDC;
+	Wed, 27 Nov 2024 17:57:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.190.126.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732714226; cv=none; b=e3D0XFQ4io6cjT5IlfUG+CAUhw9EKfQKZ7MlYMrqjh5IKA2jOFpXiONyUlHtqlpyK4LCIvCaLL9IOtn2ngbHWQ5q8VFqvz0YDWDrmgMu1oweZj5hexHAAkhhvoTKSk/GFHOEQa25lSi++P2snrcGZXAHEyojKAps+Dwuv7vcuJ4=
+	t=1732730255; cv=none; b=fzzH3bgfLCAV/rpcu9Mi1ldLF5Hekx6dsrualEjwZkI10Cnes2txWd2eKPEzx2cCSRCF+22ZHYTRa9TddIAZ/bSxx8jfWI1nxXlzYi2E7gAnJOIbOd3qmOGFgVmHREmRGYH+6a/0ajBsFvYamBUl2wYPtqFMivTQUvMwtrEgpmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732714226; c=relaxed/simple;
-	bh=eurh3IoFffcwIYSmtKn6rRPAfOFD/U0NU9PvTvqgvII=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uA+c3Nmn1DLBe+ZCKvdbkoXltPay7jpindojiGWfQXJM3m6MpmalBMkWsigcsa+8xAegxLXOnaAuB4dYIPZZ67Y+c1qmBaNsfhsq1agLIyFh9VpzSwxoepXHLxKU2G20p3kCTSgpDRdh7X0amMXVlvzhSFFRyVmTjDMrUAXV17k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=RbnPhrHu; arc=none smtp.client-ip=115.124.30.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1732714220; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=VQ5YFXwzAVQWAU6LW3L0vrzXF2bw6K+KRSa11h34H0U=;
-	b=RbnPhrHuZiCcvnFwJUXvOzL+I6TfaX/b+5jaJVpRK5Eda6TVZecnjKGhKDJyw061qnehzJPS74CwtsWHclcZ3G3Ij765Dip4V7vQ8LI2YWPYYjrpEg2fpXY7G7i0K4H/f+9HS7e1sifI4kJocwT88QYBDqRDL7nIVyKuafHRrSA=
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0WKMbqSM_1732714218 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 27 Nov 2024 21:30:20 +0800
-From: Wen Gu <guwen@linux.alibaba.com>
-To: wenjia@linux.ibm.com,
-	jaka@linux.ibm.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: alibuda@linux.alibaba.com,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	horms@kernel.org,
-	kgraul@linux.ibm.com,
-	hwippel@linux.ibm.com,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net v2 2/2] net/smc: fix LGR and link use-after-free issue
-Date: Wed, 27 Nov 2024 21:30:14 +0800
-Message-Id: <20241127133014.100509-3-guwen@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20241127133014.100509-1-guwen@linux.alibaba.com>
-References: <20241127133014.100509-1-guwen@linux.alibaba.com>
+	s=arc-20240116; t=1732730255; c=relaxed/simple;
+	bh=ssc8+x45uYtdsQermSnlm21imfsLHCA0BpP4c3W5/bI=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=NoAJOtNVJRKFUs1OacBj7bKx37TpBlY3+DrYxLC1xfjPFlI23Z1xuixns3PPGcHV9+AkJGQQFRGCr3B1n83UshY1KVjwh/j28W8SibL29SMa2g0rf3QyamCXUDPfawl/kWji4bQ2ORAUBwefzO49/Qe1Vxw4LvqO+cWTZCCc2qI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=paranoici.org; spf=pass smtp.mailfrom=paranoici.org; dkim=pass (1024-bit key) header.d=paranoici.org header.i=@paranoici.org header.b=DMH9Nj4x; arc=none smtp.client-ip=93.190.126.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=paranoici.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paranoici.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paranoici.org;
+	s=stigmate; t=1732729703;
+	bh=TMfGlKmDkUlDGaT8cORJfVr29uuDvXsJrr1YxzKPkG0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=DMH9Nj4x+2vNPPYFirP4R/1Qbzs67ztXHICUO/MZnNlJk6a8bEGQfvQ8Sf1kJj/HL
+	 jK5tZFqS1QcRLXWBDemjfJ9Grk03LzaFXzvid03fXzwLiGz2uHwabv6AxJKeLpxUwm
+	 CiwdGD8GQZrqkkqE4aWFPIQCc+/RCvc7LRCv234o=
+Received: from mx1.investici.org (unknown [127.0.0.1])
+	by confino.investici.org (Postfix) with ESMTP id 4Xz6P3273nz11H3;
+	Wed, 27 Nov 2024 17:48:23 +0000 (UTC)
+Received: from [93.190.126.19] (mx1.investici.org [93.190.126.19]) (Authenticated sender: invernomuto@paranoici.org) by localhost (Postfix) with ESMTPSA id 4Xz6P31nF3z1144;
+	Wed, 27 Nov 2024 17:48:23 +0000 (UTC)
+Received: from frx by crunch with local (Exim 4.98)
+	(envelope-from <invernomuto@paranoici.org>)
+	id 1tGM9G-00000000CZc-0bFO;
+	Wed, 27 Nov 2024 18:48:22 +0100
+Date: Wed, 27 Nov 2024 18:48:03 +0100
+From: Francesco Poli <invernomuto@paranoici.org>
+To: Leon Romanovsky <leonro@nvidia.com>
+Cc: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <ukleinek@debian.org>,
+ <1086520@bugs.debian.org>, Mark Zhang <markzhang@nvidia.com>,
+ <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: Bug#1086520: linux-image-6.11.2-amd64: makes opensm fail to
+ start
+Message-Id: <20241127184803.75086499e71c6b1588a4fb5a@paranoici.org>
+In-Reply-To: <20241125193837.GH160612@unreal>
+References: <173040083268.16618.7451145398661885923.reportbug@crunch>
+	<jaw7557rpn2eln3dtb2xbv2gvzkzde6mfful7d2mf5mgc3wql7@wikm2a7a3kcv>
+	<173040083268.16618.7451145398661885923.reportbug@crunch>
+	<20241113231503.54d12ed5b5d0c8fa9b7d9806@paranoici.org>
+	<3wfi2j7jn2f7rajabfcengubgtyt3wkuin6hqepdoe5dlvfhvn@2clhco3z6fuw>
+	<173040083268.16618.7451145398661885923.reportbug@crunch>
+	<20241118200616.865cb4c869e693b19529df36@paranoici.org>
+	<nvs4i2v7o6vn6zhmtq4sgazy2hu5kiulukxcntdelggmznnl7h@so3oul6uwgbl>
+	<20241125195443.0ddf0d0176d7c34bd29942c7@paranoici.org>
+	<20241125193837.GH160612@unreal>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA512";
+ boundary="Signature=_Wed__27_Nov_2024_18_48_03_+0100_yjdnRe8fnuF.YdD8"
 
-We encountered a LGR/link use-after-free issue, which manifested as
-the LGR/link refcnt reaching 0 early and entering the clear process,
-making resource access unsafe.
+--Signature=_Wed__27_Nov_2024_18_48_03_+0100_yjdnRe8fnuF.YdD8
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- refcount_t: addition on 0; use-after-free.
- WARNING: CPU: 14 PID: 107447 at lib/refcount.c:25 refcount_warn_saturate+0x9c/0x140
- Workqueue: events smc_lgr_terminate_work [smc]
- Call trace:
-  refcount_warn_saturate+0x9c/0x140
-  __smc_lgr_terminate.part.45+0x2a8/0x370 [smc]
-  smc_lgr_terminate_work+0x28/0x30 [smc]
-  process_one_work+0x1b8/0x420
-  worker_thread+0x158/0x510
-  kthread+0x114/0x118
+On Mon, 25 Nov 2024 21:38:37 +0200 Leon Romanovsky wrote:
 
-or
+> On Mon, Nov 25, 2024 at 07:54:43PM +0100, Francesco Poli wrote:
+[...]
+> > I will try to continue to bisect by testing the resulting kernels on a
+> > compute node: there's no OpenSM there and it cannot run anyway, if
+> > there's another OpenSM on the same InfiniBand network.
+> > However, I can check whether those issm* symlinks are created in
+> > /sys/class/infiniband_mad/=20
+> > I really hope that this is enough to pinpoint the first bad
+> > commit...
+>=20
+> Yes, these symlinks should be there. Your test scenario is correct one.
 
- refcount_t: underflow; use-after-free.
- WARNING: CPU: 6 PID: 93140 at lib/refcount.c:28 refcount_warn_saturate+0xf0/0x140
- Workqueue: smc_hs_wq smc_listen_work [smc]
- Call trace:
-  refcount_warn_saturate+0xf0/0x140
-  smcr_link_put+0x1cc/0x1d8 [smc]
-  smc_conn_free+0x110/0x1b0 [smc]
-  smc_conn_abort+0x50/0x60 [smc]
-  smc_listen_find_device+0x75c/0x790 [smc]
-  smc_listen_work+0x368/0x8a0 [smc]
-  process_one_work+0x1b8/0x420
-  worker_thread+0x158/0x510
-  kthread+0x114/0x118
+OK, I have completed the bisect on a compute node without OpenSM, by
+looking at the issm* symlinks, as I said.
 
-It is caused by repeated release of LGR/link refcnt. One suspect is that
-smc_conn_free() is called repeatedly because some smc_conn_free() from
-server listening path are not protected by sock lock.
+See below.
 
-e.g.
+>=20
+> >=20
+> > Any better ideas?
+>=20
+> I think that commit: 2a5db20fa532 ("RDMA/mlx5: Add support to multi-plane=
+ device and port")
+> is the one which is causing to troubles, which leads me to suspect FW.
+[...]
 
-Calls under socklock        | smc_listen_work
--------------------------------------------------------
-lock_sock(sk)               | smc_conn_abort
-smc_conn_free               | \- smc_conn_free
-\- smcr_link_put            |    \- smcr_link_put (duplicated)
-release_sock(sk)
+Thanks to your guess about the possibly troublesome commit, the bisect was =
+completed in a few steps:
 
-So here add sock lock protection in smc_listen_work() path, making it
-exclusive with other connection operations.
+  $ git checkout 2a5db20fa532
+  $ make -j 12 my_defconfig bindeb-pkg
+ =20
+  [install this version on a compute node test image and reboot
+  one compute node with that image: the InfiniBand network was
+  working for that node, that's no surprise, since OpenSM was running
+  on the head node, but no issm* symlink was created; please note
+  that, surprisingly, the Ethernet network was not working, I mean
+  that the Ethernet interfaces were not found by the kernel...]
+ =20
+  root@node # ls -altrF /sys/class/infiniband_mad/
+  total 0
+  drwxr-xr-x 60 root root    0 Nov 26 17:06 ../
+  lrwxrwxrwx  1 root root    0 Nov 26 17:06 umad0 -> ../../devices/pci0000:=
+00/0000:00:01.1/0000:01:00.0/infiniband_mad/umad0/
+  -r--r--r--  1 root root 4096 Nov 26 17:06 abi_version
+  lrwxrwxrwx  1 root root    0 Nov 26 17:06 umad1 -> ../../devices/pci0000:=
+00/0000:00:01.1/0000:01:00.1/infiniband_mad/umad1/
+  drwxr-xr-x  2 root root    0 Nov 26 17:08 ./
+ =20
+  $ git bisect bad
+  Bisecting: 0 revisions left to test after this (roughly 0 steps)
+  [65528cfb21fdb68de8ae6dccae19af180d93e143] net/mlx5: mlx5_ifc update for =
+multi-plane support
+  $ make -j 12 my_defconfig bindeb-pkg
+ =20
+  [install this version on the compute node test image and reboot
+  one compute node with that image: the InfiniBand network again
+  working for that node, issm* symlinks were created;
+  Ethernet network again not working for that node...]
+ =20
+  root@node # ls -altrF /sys/class/infiniband_mad/
+  total 0
+  drwxr-xr-x 60 root root    0 Nov 26 17:31 ../
+  lrwxrwxrwx  1 root root    0 Nov 26 17:31 umad0 -> ../../devices/pci0000:=
+00/0000:00:01.1/0000:01:00.0/infiniband_mad/umad0/
+  -r--r--r--  1 root root 4096 Nov 26 17:31 abi_version
+  lrwxrwxrwx  1 root root    0 Nov 26 17:31 umad1 -> ../../devices/pci0000:=
+00/0000:00:01.1/0000:01:00.1/infiniband_mad/umad1/
+  lrwxrwxrwx  1 root root    0 Nov 26 17:36 issm1 -> ../../devices/pci0000:=
+00/0000:00:01.1/0000:01:00.1/infiniband_mad/issm1/
+  lrwxrwxrwx  1 root root    0 Nov 26 17:36 issm0 -> ../../devices/pci0000:=
+00/0000:00:01.1/0000:01:00.0/infiniband_mad/issm0/
+  drwxr-xr-x  2 root root    0 Nov 26 17:36 ./
+ =20
+  $ git bisect good
+  2a5db20fa532198639671713c6213f96ff285b85 is the first bad commit
+  commit 2a5db20fa532198639671713c6213f96ff285b85
+  Author: Mark Zhang <markzhang@nvidia.com>
+  Date:   Sun Jun 16 19:08:35 2024 +0300
+ =20
+      RDMA/mlx5: Add support to multi-plane device and port
+ =20
+      When multi-plane is supported, a logical port, which is aggregation of
+      multiple physical plane ports, is exposed for data transmission.
+      Compared with a normal mlx5 IB port, this logical port supports all
+      functionalities except Subnet Management.
+ =20
+      Signed-off-by: Mark Zhang <markzhang@nvidia.com>
+      Link: https://lore.kernel.org/r/7e37c06c9cb243be9ac79930cd17053903785=
+b95.1718553901.git.leon@kernel.org
+      Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+ =20
+   drivers/infiniband/hw/mlx5/main.c               | 60 +++++++++++++++++++=
+++----
+   drivers/infiniband/hw/mlx5/mlx5_ib.h            |  2 +
+   drivers/net/ethernet/mellanox/mlx5/core/vport.c |  1 +
+   include/linux/mlx5/driver.h                     |  1 +
+   4 files changed, 55 insertions(+), 9 deletions(-)
 
-Fixes: 3b2dec2603d5 ("net/smc: restructure client and server code in af_smc")
-Co-developed-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-Co-developed-by: Kai <KaiShen@linux.alibaba.com>
-Signed-off-by: Kai <KaiShen@linux.alibaba.com>
-Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
----
- net/smc/af_smc.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index ed6d4d520bc7..9e6c69d18581 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -1900,6 +1900,7 @@ static void smc_listen_out(struct smc_sock *new_smc)
- 	if (tcp_sk(new_smc->clcsock->sk)->syn_smc)
- 		atomic_dec(&lsmc->queued_smc_hs);
- 
-+	release_sock(newsmcsk); /* lock in smc_listen_work() */
- 	if (lsmc->sk.sk_state == SMC_LISTEN) {
- 		lock_sock_nested(&lsmc->sk, SINGLE_DEPTH_NESTING);
- 		smc_accept_enqueue(&lsmc->sk, newsmcsk);
-@@ -2421,6 +2422,7 @@ static void smc_listen_work(struct work_struct *work)
- 	u8 accept_version;
- 	int rc = 0;
- 
-+	lock_sock(&new_smc->sk); /* release in smc_listen_out() */
- 	if (new_smc->listen_smc->sk.sk_state != SMC_LISTEN)
- 		return smc_listen_out_err(new_smc);
- 
--- 
-2.32.0.3.g01195cf9f
+In other words, bingo!, your guess looks correct, the first bad commit
+is the one you mentioned.
 
+
+Now, I will try to upgrade the firmware of the InfiniBand NICs, as you
+suggested, and check whether this solves the issue with the recent
+Linux kernel versions.
+
+Please confirm that the procedure to be followed is the one described in
+<https://docs.nvidia.com/networking/display/ubuntu2204/firmware+burning>
+
+Thanks for your time and patience, and for all the help you are kindly
+providing!   :-)
+
+
+--=20
+ http://www.inventati.org/frx/
+ There's not a second to spare! To the laboratory!
+..................................................... Francesco Poli .
+ GnuPG key fpr =3D=3D CA01 1147 9CD2 EFDF FB82  3925 3E1C 27E1 1F69 BFFE
+
+--Signature=_Wed__27_Nov_2024_18_48_03_+0100_yjdnRe8fnuF.YdD8
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEygERR5zS79/7gjklPhwn4R9pv/4FAmdHW1MACgkQPhwn4R9p
+v/6QJRAAjYjCYH0ksnEdwq2Cj0PkDmAO2M5GpTH7Xg4i7ecErrvYyCGOXpKJ4Qog
+1qv5BtVYVbcK9fcDa8CUhZehbNH+4nVg8qHHT0I2HRrhErJErP7EoudHUfc9WeDc
+mRiXUQV9dg3hWY1PNMwees9RC81BADOO4GOEsme5rwuoL1P6zanR0plY5MmVbhj/
+f9Cia8wZoun19miYeA5JsEHDODjdhqEcnAuubF5JBEem9ZRvSmhlJJHapT+Tsb4k
+tu9iYg5+8AdCWQ0zTYJfR7bFgkbJ/kZNbk3e4KfXRgYXlukl89mS8+B0m2k+vbqt
+x46jm3W4yoBuxoWbA6i/sfHVX7H8gu1C0/TTMQ/CXM/mD8eVnFAmrHF/wN2BI50S
+OLPWrzSuVMzUxuW2qaUBaXaQLTwaOW+NVQb6IM5mknHY/GizskL6nP+aBomjSHo6
+MqYdj/NaWInOn/uNvr8h7yYsBQlK5wyjiwF0wU/f4HnTIUda11ZQZxOvDuQSHv9p
+ZdlwCsobdX97rl94Ty/oku96DAog/j6pKoFFDOcqXzCgEV11WU79KQ+6M0ACBf+/
+PVCCLnf/UjuoogDuaOeQ6QtMelS0SVX6uzh70gWv71q3EF396EpxqS1OCTtVHkxf
+buthBhNT6kDskVixMrBXwv2psypw7tGm7MqfzI4Ichf7IvzHYv0=
+=PxeC
+-----END PGP SIGNATURE-----
+
+--Signature=_Wed__27_Nov_2024_18_48_03_+0100_yjdnRe8fnuF.YdD8--
 
