@@ -1,295 +1,184 @@
-Return-Path: <linux-rdma+bounces-6138-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6139-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 019FB9DB17F
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Nov 2024 03:35:15 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AB15166017
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Nov 2024 02:35:11 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6128B2D600;
-	Thu, 28 Nov 2024 02:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ilQqfX/n"
-X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF2759DB4B3
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Nov 2024 10:21:55 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF5717BA5
-	for <linux-rdma@vger.kernel.org>; Thu, 28 Nov 2024 02:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 445E6B21B79
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Nov 2024 09:21:53 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A3B15535A;
+	Thu, 28 Nov 2024 09:21:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Wv2wOJE2"
+X-Original-To: linux-rdma@vger.kernel.org
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7147145A11
+	for <linux-rdma@vger.kernel.org>; Thu, 28 Nov 2024 09:21:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732761311; cv=none; b=bvA8FH0ic7ToKL330l0i0VBYJ9ZvUehc7FqWRzKO8UI4Vowm8bCnpfNCtQ6W1SqPlEuY8Yk4ot+AWWR/4G/2td4coP7EqcTCWG6zHjRS6dbvy5li4aEhs0n7vaQ09lODmz3QnVGzRVyV4JcvDxnsg4Q2QWc8vEIIJX1iDQUDW64=
+	t=1732785708; cv=none; b=Q6XfIhEwaTFPtjgvOUN4Ke/Tqb2RYQ3QI9VXOfqCe2KOeLCUChqWNgtY0PSTHzvqCaMvXlKR+At0PE2/dxJZPgtYP98KnyLn7mPQ3Lo2ljWhPzTsA48sFBmTf5fBfaTD5HEAVRJ1rbZNNlK/5iwiwno9d78UHjciOEj2Z4kOAjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732761311; c=relaxed/simple;
-	bh=0/ayha1+mLmHW9lris8TxAENrCaogWvCtIQcI8WMABE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZZNQZ2u6MYL3qesRRUp+i+fE3N+9sPPUSryW8A275KXXwMcfA6Qpuliss5wV26jS1ZMfmfFvthOJD8lE7oulBxlywc8jmwiLv8i6JfXZLFkUNuwCxXPLsQC1pZwUPXetRVx+mHw1UsiByuyp5sRWzYtPKC4YFURsNKIbpbPQKxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ilQqfX/n; arc=none smtp.client-ip=115.124.30.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1732761302; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=wZ8XZXYsh/p2+QGw6xi0rm4SIKJIxQ7Uyfx+wBLWznQ=;
-	b=ilQqfX/nTg3JXCLay8Wy5G/Dnuc5I2SaV4oFyvwCY4a10Qxb7fG+iFeGYfVb3RE4XwS9eacdysf98lofCTyweGgdXPKO93X+MWiWKgS8vmWKY6SBesRSaB1OpAO15BppewVemspO3N0FpRc2QO3lRX1gLqlxIVwu9zvvM1/AtPs=
-Received: from localhost(mailfrom:boshiyu@linux.alibaba.com fp:SMTPD_---0WKO2Ned_1732761301 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 28 Nov 2024 10:35:01 +0800
-Date: Thu, 28 Nov 2024 10:35:00 +0800
-From: Boshi Yu <boshiyu@linux.alibaba.com>
-To: Zhu Yanjun <yanjun.zhu@linux.dev>, jgg@ziepe.ca, leon@kernel.org,
-	chengyou@linux.alibaba.com
-Cc: linux-rdma@vger.kernel.org, kaishen@linux.alibaba.com
-Subject: Re: [PATCH for-next 2/8] RDMA/erdma: Add GID table management
- interfaces
-Message-ID: <Z0fW1JTJSl067TZP@xy-macbook.local>
-References: <20241126070351.92787-1-boshiyu@linux.alibaba.com>
- <20241126070351.92787-3-boshiyu@linux.alibaba.com>
- <580390cc-b4aa-4d72-86ae-ad1d24dd5b31@linux.dev>
+	s=arc-20240116; t=1732785708; c=relaxed/simple;
+	bh=N8DNgkwqra6DA63OZCYEC8tZLPgK2+BP8874CYOZbJM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZrbGlfCIkHgy7zIaa48juuCpkLg+lw0JrPW+CSmXD69nloMCPHutbQOwIsFYNNuxoYCDg8hlFeXtBIu/aPgfxHC7vkSF1wQXWwdi0xUfpMFKr2puXhgrmSRps3RpjNWfGnLxA6hO9PeXA7KaUdIEslpUo3OL9ITX0q5DOlWdlDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Wv2wOJE2; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21207f0d949so5223805ad.2
+        for <linux-rdma@vger.kernel.org>; Thu, 28 Nov 2024 01:21:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1732785706; x=1733390506; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CRY9/nbaetflrw1NbbLkku9KMkAtiSyxcjPtENsmXIQ=;
+        b=Wv2wOJE2TUMhy0mVMkhXyfsMk2i4vWNoP1tLECNnSONXOu6KujsdzCqkv0Ycarn3dF
+         aAokYBsvTmZzdL4DT1/enMtoYPYIHRGtHIq/qSLWj0WADsCpYsI6dwX+X7ZMthChD0Ug
+         87uZM7G+4M6Zp8uet6rDEQNLQ9JbRuFzFYSB3VoOVfA30mWjttVV8ntEHXToywDciWNC
+         GuXOrJf128mHGOidSkf8tuc1aqHAM7/NPWFSjQjvSOAT3zDOn5hOgFOrFFGxpGfPp82z
+         cwnn63PFyfPy6xxPuiuQu4lquR+pWSvcXNYoXXPvpoodqjw06DklTGz0IRvzVtR7IlA7
+         K8dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732785706; x=1733390506;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=CRY9/nbaetflrw1NbbLkku9KMkAtiSyxcjPtENsmXIQ=;
+        b=ZH4XeZi6BoY2z1fwK4ZCxJuj+obE0UQWDvrzptiMVkQC+UXGGz+dipLgn5MkMvLVJp
+         8/owQY0wZ47Q5Bc/c3/hUo4fNzH4OzBAqpyDVPSiWipQbMIX6G9/TJgG6TaUOTd5Zufq
+         ixnYa9/rP5/WoQiAYHoFEzy7wLI9CwP7faoWuLs6KXZvEylpYADmGGj2D7lFhZWsybUJ
+         GVqCBt7y9DZVqr0Exclo++WZEHtYXe+uvZh2ZTMHnnqGC0kxwKv3PyPoOlq6R+l+GjX9
+         rIDWAfR84xsQyOS7RwxYabwwaL+fXMIqfLCrbKdVW05HlrIqWG4zQTTPPl5MwcIWefdW
+         Usug==
+X-Forwarded-Encrypted: i=1; AJvYcCWX1kACrsP4G+xhBMnEqI3TLYHP69WqbJntLok+ZehhP0D1Rq4nQ2kYNGalfW6pAI5EBQjOPONnVG5J@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywf/xnoseDzkcDXDMKDqZzCmDYMqg0kUJj1YFVG5m9wsrRC+0xq
+	taT3j6wSpl4P1L37xQvoDSj7Go6ZC3+FRu8N7lpqi6SUfhSAhnNhLkx8XH5eNvIKZDgsh0a5azC
+	mhYFnZEjt
+X-Gm-Gg: ASbGnct4if6Rp7bEIvxrujsk2Dn0Lo1DsfI9YJ6uJYQiPCVPCd1V9Z2EdtKx+d8LjLr
+	Z2sLg40Li0VnVLM36t5tQvevenhxGJvPFwCJtUdyMzfZFdpxmKjc149OZ5mgZqnDY9fyO8fkCgD
+	fVLToxD7ietZaCfjBHHmleG4WhwYoDBvB3MjWhuKOOB+hRaN8/LmCkdQcw4Gnll/g/80GFdAIaG
+	ne26R9cexGpZK2hx5H2iKA3iAeT6kVRfr6UcnSL2Wg+ghYgVRIzcyIQg1klj3MVglPPPqVQckBO
+	6d3b5aTpEbIsS/DRgQ==
+X-Google-Smtp-Source: AGHT+IHXpaWB/WdBRJZ1WOYTG6gxa8Iy7jHZIHIxO39imryAFyaZS8pc21WRztC0LBP2MEq1f6NUhw==
+X-Received: by 2002:a17:902:d2c5:b0:212:4d01:d43a with SMTP id d9443c01a7336-21501d5d3c8mr99415995ad.48.1732785705916;
+        Thu, 28 Nov 2024 01:21:45 -0800 (PST)
+Received: from [10.88.242.212] ([61.213.176.57])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21521967acasm9148085ad.133.2024.11.28.01.21.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Nov 2024 01:21:45 -0800 (PST)
+Message-ID: <ab960175-d1f8-402e-9200-d47a7761315c@bytedance.com>
+Date: Thu, 28 Nov 2024 17:21:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] RDMA/core: Fix IPv6 loopback dst MAC address lookup logic
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20241110123532.37831-1-yuezelong@bytedance.com>
+ <b044faad-1e3f-4c65-b2e6-fc418aebd22e@bytedance.com>
+ <20241121135332.GB773835@ziepe.ca>
+From: Zelong Yue <yuezelong@bytedance.com>
+In-Reply-To: <20241121135332.GB773835@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <580390cc-b4aa-4d72-86ae-ad1d24dd5b31@linux.dev>
 
-On Tue, Nov 26, 2024 at 04:51:02PM +0100, Zhu Yanjun wrote:
-> 在 2024/11/26 7:59, Boshi Yu 写道:
-> > The erdma_add_gid() interface inserts a GID entry at the
-> > specified index. The erdma_del_gid() interface deletes the
-> > GID entry at the specified index. Additionally, programs
-> > can invoke the erdma_query_port() and erdma_get_port_immutable()
-> > interfaces to query the GID table length.
-> > 
-> > Signed-off-by: Boshi Yu <boshiyu@linux.alibaba.com>
-> > Reviewed-by: Cheng Xu <chengyou@linux.alibaba.com>
-> > ---
-> >   drivers/infiniband/hw/erdma/erdma.h       |  1 +
-> >   drivers/infiniband/hw/erdma/erdma_hw.h    | 28 +++++++++++-
-> >   drivers/infiniband/hw/erdma/erdma_main.c  |  3 ++
-> >   drivers/infiniband/hw/erdma/erdma_verbs.c | 56 +++++++++++++++++++++--
-> >   drivers/infiniband/hw/erdma/erdma_verbs.h | 12 +++++
-> >   5 files changed, 96 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/hw/erdma/erdma.h b/drivers/infiniband/hw/erdma/erdma.h
-> > index ad4dc1a4bdc7..42dabf674f5d 100644
-> > --- a/drivers/infiniband/hw/erdma/erdma.h
-> > +++ b/drivers/infiniband/hw/erdma/erdma.h
-> > @@ -148,6 +148,7 @@ struct erdma_devattr {
-> >   	u32 max_mr;
-> >   	u32 max_pd;
-> >   	u32 max_mw;
-> > +	u32 max_gid;
-> >   	u32 local_dma_key;
-> >   };
-> > diff --git a/drivers/infiniband/hw/erdma/erdma_hw.h b/drivers/infiniband/hw/erdma/erdma_hw.h
-> > index 970b392d4fb4..7e03c5f97501 100644
-> > --- a/drivers/infiniband/hw/erdma/erdma_hw.h
-> > +++ b/drivers/infiniband/hw/erdma/erdma_hw.h
-> > @@ -21,6 +21,9 @@
-> >   #define ERDMA_NUM_MSIX_VEC 32U
-> >   #define ERDMA_MSIX_VECTOR_CMDQ 0
-> > +/* RoCEv2 related */
-> > +#define ERDMA_ROCEV2_GID_SIZE 16
-> > +
-> >   /* erdma device protocol type */
-> >   enum erdma_proto_type {
-> >   	ERDMA_PROTO_IWARP = 0,
-> > @@ -143,7 +146,8 @@ enum CMDQ_RDMA_OPCODE {
-> >   	CMDQ_OPCODE_DESTROY_CQ = 5,
-> >   	CMDQ_OPCODE_REFLUSH = 6,
-> >   	CMDQ_OPCODE_REG_MR = 8,
-> > -	CMDQ_OPCODE_DEREG_MR = 9
-> > +	CMDQ_OPCODE_DEREG_MR = 9,
-> > +	CMDQ_OPCODE_SET_GID = 14,
-> >   };
-> >   enum CMDQ_COMMON_OPCODE {
-> > @@ -401,7 +405,29 @@ struct erdma_cmdq_query_stats_resp {
-> >   	u64 rx_pps_meter_drop_packets_cnt;
-> >   };
-> > +enum erdma_network_type {
-> > +	ERDMA_NETWORK_TYPE_IPV4 = 0,
-> > +	ERDMA_NETWORK_TYPE_IPV6 = 1,
-> > +};
-> 
-> In the file include/rdma/ib_verbs.h
-> 
-> "
-> ...
->  183 enum rdma_network_type {
-> ...
->  186     RDMA_NETWORK_IPV4,
->  187     RDMA_NETWORK_IPV6
->  188 };
-> ...
-> "
-> Not sure why the above RDMA_NETWORK_IPV4 and RDMA_NETWORK_IPV6 are not used.
-> 
-> Zhu Yanjun
-> 
 
-Hi, Yanjun,
+On 11/21/24 9:53 PM, Jason Gunthorpe wrote:
+> On Thu, Nov 21, 2024 at 05:22:36PM +0800, Zelong Yue wrote:
+>> Gently ping. Do I need to provide more detailed information on how to
+>> reproduce the issue?
+>>
+>> On 11/10/24 8:35 PM, yuezelong wrote:
+>>> Imagine we have two RNICs on a single machine, named eth1 and eth2, with
+>>>
+>>> - IPv4 addresses: 192.168.1.2, 192.168.1.3
+>>> - IPv6 addresses (scope global): fdbd::beef:2, fdbd::beef:3
+>>> - MAC addresses: 11:11:11:11:11:02, 11:11:11:11:11:03,
+>>>
+>>> they all connnected to a gateway with MAC address 22:22:22:22:22:02.
+>>>
+>>> If we want to setup connections between these two RNICs, with RC QP, we
+>>> would go through `rdma_resolve_ip` for looking up dst MAC addresses. The
+>>> procedure it's the same as using command
+>>>
+>>> `ip route get dst_addr from src_addr oif src_dev`
+>>>
+>>> In IPv4 scenario, you would likely get
+>>>
+>>> ```
+>>> $ ip route get 192.168.1.2 from 192.168.1.3 oif eth2
+>>>
+>>> 192.168.1.2 from 192.168.1.3 via 192.168.1.1 dev eth2 ...
+>>> ```
+>>>
+>>> Looks reasonable as it would go through the gateway.
+>>>
+>>> But in IPv6 scenario, you would likely get
+>>>
+>>> ```
+>>> $ ip route get fdbd::beef:2 from fdbd::beef:3 oif eth2
+>>>
+>>> local fdbd::beef:2 from fdbd::beed:3 dev lo table local proto kernel src fdbd::beef:2 metric 0 pref medium
+>>> ```
+>>>
+>>> This would lead to the RDMA route lookup procedure filling the dst MAC
+>>> address with src net device's MAC address (11:11:11:11:11:03),  but
+>>> filling the dst IP address with dst net device's IPv6 address
+>>> (fdbd::beef:2), src net device would drop this packet, and we would fail
+>>> to setup the connection.
+>>>
+>>> To make setting up loopback connections like this possible, we need to
+>>> send packets to the gateway and let the gateway send it back (actually,
+>>> the IPv4 lookup result would lead to this, so there is no problem in IPv4
+>>> scenario), so we need to adjust current lookup procedure, if we find out
+>>> the src device and dst device is on the same machine (same namespace),
+>>> we need to send the packets to the gateway instead of the src device
+>>> itself.
+> We can't just override the routing like this, if you want that kind of
+> routing you need to setup the routing table to deliver it. For ipv4
+> these configurations almost always come with policy routing
+> configurations that avoid returning lo as a route. I assume ipv6 is
+> the same.
+>
+Thank you for the feedback, Jason. It's absolutely right that we need 
+policy routing.
+Let me clarify our findings:
 
-Given that the values for RDMA_NETWORK_IPV4 and RDMA_NETWORK_IPV6 are 2 and 3,
-respectively, we would need 2 bits to store the network type if we use them
-directly. However, since we only need to differentiate between IPv4 and IPv6
-for the RoCEv2 protocol, 1 bit is sufficient.
+We've successfully configured IPv4 policy routing to avoid 'lo', but the 
+IPv6 scenario
+has proven more challenging. While we found a way to make IPv6 RDMA 
+loopback work through
+policy routing, it comes with significant constraints:
 
-Thanks,
-Boshi Yu
+1. IPv6 addresses must be in the same subnet
+2. The 'local' routing table must have lower priority than our custom 
+policy routes
+3. When IPv6 addresses are in different subnets, enabling RDMA loopback 
+breaks TCP loopback
+    functionality unless packet forwarding is enabled (which isn't 
+feasible in our DC
+    environment). We're still investigating a more elegant solution that 
+wouldn't require
+    packet forwarding or impact TCP loopback functionality.
 
-> > +
-> > +enum erdma_set_gid_op {
-> > +	ERDMA_SET_GID_OP_ADD = 0,
-> > +	ERDMA_SET_GID_OP_DEL = 1,
-> > +};
-> > +
-> > +/* set gid cfg */
-> > +#define ERDMA_CMD_SET_GID_SGID_IDX_MASK GENMASK(15, 0)
-> > +#define ERDMA_CMD_SET_GID_NTYPE_MASK BIT(16)
-> > +#define ERDMA_CMD_SET_GID_OP_MASK BIT(31)
-> > +
-> > +struct erdma_cmdq_set_gid_req {
-> > +	u64 hdr;
-> > +	u32 cfg;
-> > +	u8 gid[ERDMA_ROCEV2_GID_SIZE];
-> > +};
-> > +
-> >   /* cap qword 0 definition */
-> > +#define ERDMA_CMD_DEV_CAP_MAX_GID_MASK GENMASK_ULL(51, 48)
-> >   #define ERDMA_CMD_DEV_CAP_MAX_CQE_MASK GENMASK_ULL(47, 40)
-> >   #define ERDMA_CMD_DEV_CAP_FLAGS_MASK GENMASK_ULL(31, 24)
-> >   #define ERDMA_CMD_DEV_CAP_MAX_RECV_WR_MASK GENMASK_ULL(23, 16)
-> > diff --git a/drivers/infiniband/hw/erdma/erdma_main.c b/drivers/infiniband/hw/erdma/erdma_main.c
-> > index b6706c74cd96..d72b85e8971d 100644
-> > --- a/drivers/infiniband/hw/erdma/erdma_main.c
-> > +++ b/drivers/infiniband/hw/erdma/erdma_main.c
-> > @@ -404,6 +404,7 @@ static int erdma_dev_attrs_init(struct erdma_dev *dev)
-> >   	dev->attrs.max_mr_size = 1ULL << ERDMA_GET_CAP(MAX_MR_SIZE, cap0);
-> >   	dev->attrs.max_mw = 1 << ERDMA_GET_CAP(MAX_MW, cap1);
-> >   	dev->attrs.max_recv_wr = 1 << ERDMA_GET_CAP(MAX_RECV_WR, cap0);
-> > +	dev->attrs.max_gid = 1 << ERDMA_GET_CAP(MAX_GID, cap0);
-> >   	dev->attrs.local_dma_key = ERDMA_GET_CAP(DMA_LOCAL_KEY, cap1);
-> >   	dev->attrs.cc = ERDMA_GET_CAP(DEFAULT_CC, cap1);
-> >   	dev->attrs.max_qp = ERDMA_NQP_PER_QBLOCK * ERDMA_GET_CAP(QBLOCK, cap1);
-> > @@ -482,6 +483,8 @@ static void erdma_res_cb_free(struct erdma_dev *dev)
-> >   static const struct ib_device_ops erdma_device_ops_rocev2 = {
-> >   	.get_link_layer = erdma_get_link_layer,
-> > +	.add_gid = erdma_add_gid,
-> > +	.del_gid = erdma_del_gid,
-> >   };
-> >   static const struct ib_device_ops erdma_device_ops_iwarp = {
-> > diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
-> > index 3b7e55515cfd..9944eed584ec 100644
-> > --- a/drivers/infiniband/hw/erdma/erdma_verbs.c
-> > +++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
-> > @@ -367,7 +367,13 @@ int erdma_query_port(struct ib_device *ibdev, u32 port,
-> >   	memset(attr, 0, sizeof(*attr));
-> > -	attr->gid_tbl_len = 1;
-> > +	if (erdma_device_iwarp(dev)) {
-> > +		attr->gid_tbl_len = 1;
-> > +	} else {
-> > +		attr->gid_tbl_len = dev->attrs.max_gid;
-> > +		attr->ip_gids = true;
-> > +	}
-> > +
-> >   	attr->port_cap_flags = IB_PORT_CM_SUP | IB_PORT_DEVICE_MGMT_SUP;
-> >   	attr->max_msg_sz = -1;
-> > @@ -399,14 +405,14 @@ int erdma_get_port_immutable(struct ib_device *ibdev, u32 port,
-> >   	if (erdma_device_iwarp(dev)) {
-> >   		port_immutable->core_cap_flags = RDMA_CORE_PORT_IWARP;
-> > +		port_immutable->gid_tbl_len = 1;
-> >   	} else {
-> >   		port_immutable->core_cap_flags =
-> >   			RDMA_CORE_PORT_IBA_ROCE_UDP_ENCAP;
-> >   		port_immutable->max_mad_size = IB_MGMT_MAD_SIZE;
-> > +		port_immutable->gid_tbl_len = dev->attrs.max_gid;
-> >   	}
-> > -	port_immutable->gid_tbl_len = 1;
-> > -
-> >   	return 0;
-> >   }
-> > @@ -1853,3 +1859,47 @@ enum rdma_link_layer erdma_get_link_layer(struct ib_device *ibdev, u32 port_num)
-> >   {
-> >   	return IB_LINK_LAYER_ETHERNET;
-> >   }
-> > +
-> > +static int erdma_set_gid(struct erdma_dev *dev, u8 op, u32 idx,
-> > +			 const union ib_gid *gid)
-> > +{
-> > +	struct erdma_cmdq_set_gid_req req;
-> > +	u8 ntype;
-> > +
-> > +	req.cfg = FIELD_PREP(ERDMA_CMD_SET_GID_SGID_IDX_MASK, idx) |
-> > +		  FIELD_PREP(ERDMA_CMD_SET_GID_OP_MASK, op);
-> > +
-> > +	if (op == ERDMA_SET_GID_OP_ADD) {
-> > +		if (ipv6_addr_v4mapped((struct in6_addr *)gid))
-> > +			ntype = ERDMA_NETWORK_TYPE_IPV4;
-> > +		else
-> > +			ntype = ERDMA_NETWORK_TYPE_IPV6;
-> > +
-> > +		req.cfg |= FIELD_PREP(ERDMA_CMD_SET_GID_NTYPE_MASK, ntype);
-> > +
-> > +		memcpy(&req.gid, gid, ERDMA_ROCEV2_GID_SIZE);
-> > +	}
-> > +
-> > +	erdma_cmdq_build_reqhdr(&req.hdr, CMDQ_SUBMOD_RDMA,
-> > +				CMDQ_OPCODE_SET_GID);
-> > +	return erdma_post_cmd_wait(&dev->cmdq, &req, sizeof(req), NULL, NULL);
-> > +}
-> > +
-> > +int erdma_add_gid(const struct ib_gid_attr *attr, void **context)
-> > +{
-> > +	struct erdma_dev *dev = to_edev(attr->device);
-> > +	int ret;
-> > +
-> > +	ret = erdma_check_gid_attr(attr);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	return erdma_set_gid(dev, ERDMA_SET_GID_OP_ADD, attr->index,
-> > +			     &attr->gid);
-> > +}
-> > +
-> > +int erdma_del_gid(const struct ib_gid_attr *attr, void **context)
-> > +{
-> > +	return erdma_set_gid(to_edev(attr->device), ERDMA_SET_GID_OP_DEL,
-> > +			     attr->index, NULL);
-> > +}
-> > diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.h b/drivers/infiniband/hw/erdma/erdma_verbs.h
-> > index 90e2b35a0973..23cfeaf79eaa 100644
-> > --- a/drivers/infiniband/hw/erdma/erdma_verbs.h
-> > +++ b/drivers/infiniband/hw/erdma/erdma_verbs.h
-> > @@ -326,6 +326,16 @@ static inline struct erdma_cq *to_ecq(struct ib_cq *ibcq)
-> >   	return container_of(ibcq, struct erdma_cq, ibcq);
-> >   }
-> > +static inline int erdma_check_gid_attr(const struct ib_gid_attr *attr)
-> > +{
-> > +	u8 ntype = rdma_gid_attr_network_type(attr);
-> > +
-> > +	if (ntype != RDMA_NETWORK_IPV4 && ntype != RDMA_NETWORK_IPV6)
-> > +		return -EINVAL;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >   static inline struct erdma_user_mmap_entry *
-> >   to_emmap(struct rdma_user_mmap_entry *ibmmap)
-> >   {
-> > @@ -382,5 +392,7 @@ int erdma_get_hw_stats(struct ib_device *ibdev, struct rdma_hw_stats *stats,
-> >   		       u32 port, int index);
-> >   enum rdma_link_layer erdma_get_link_layer(struct ib_device *ibdev,
-> >   					  u32 port_num);
-> > +int erdma_add_gid(const struct ib_gid_attr *attr, void **context);
-> > +int erdma_del_gid(const struct ib_gid_attr *attr, void **context);
-> >   #endif
+Given that RDMA loopback has different requirements from TCP/UDP 
+loopback, maybe they
+should follow distinct routing logic.
+
+> I'm not sure why your ipv4 example doesn't use lo either, by default
+> it should have. It suggests to me there is alread some routing
+> overrides present.
+>
+> Jason
 
