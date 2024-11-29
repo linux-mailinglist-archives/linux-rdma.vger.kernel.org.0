@@ -1,200 +1,348 @@
-Return-Path: <linux-rdma+bounces-6163-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6164-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEEE89DEB64
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Nov 2024 18:01:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D63689DEC23
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Nov 2024 19:40:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80F52163365
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Nov 2024 17:01:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AED6163BAD
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Nov 2024 18:40:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F31C3155325;
-	Fri, 29 Nov 2024 17:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="L5OCGWnu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10EC7154C04;
+	Fri, 29 Nov 2024 18:40:25 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25AEF3224;
-	Fri, 29 Nov 2024 17:00:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 876D614D430
+	for <linux-rdma@vger.kernel.org>; Fri, 29 Nov 2024 18:40:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732899657; cv=none; b=rxNRZX70HLwPFrWrsaN3Swcq9czCJqMM8TDYn1YbKRV+tF0+CRtlSAcISVe6zxTLiRYmV0YM4T9ZyXMIr25g6zvqqUC6TD01jsgKmnIM0BxHRUT5ZrXFoNs6x1yeU+oae3tPCjsMurA/Ez027VpFDU57LMRZxs+KJblL8F0vcPA=
+	t=1732905624; cv=none; b=foSobb+aC9rr9djrZi44JDvHDEOEPTzpApBdePa2uiAFckGI3GnuHVrRgBfZRGlEM4M1GBlFh5b0eiJZMK9P45KO7MQLmBMqB7k5DORYzcaE0Jaz9HBtpTFfx9ADEtKVSR7gbJSKgVjGXSu8HfUpyclz8OSBIpHP9cSO1ydGmJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732899657; c=relaxed/simple;
-	bh=ZmvivWaCYAoHDICvb1YhX1qC/jOvPZlP0Lm+cWTHvv8=;
+	s=arc-20240116; t=1732905624; c=relaxed/simple;
+	bh=jbV9iXf/njM21BYDMurIrOTzrETBmjKCp1xQOjACsaA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JXPf+4JIgwJK4i5k8p1RnENDjIF7cvNhBTbAtYbhR9/3mxsGQzMjtbLN5gn0xnmCYGrW+iFS0khxzqXpwuSacGqbMQP2W6l1Nt6lMqZwod64Y1HTiVnJBvEIZDFmRFQGGYZhblwS0Hl95267iv5ooPA/MuqRGsYn4N5J1fsduPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=L5OCGWnu; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4ATGwVw3030776;
-	Fri, 29 Nov 2024 17:00:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=MnxY28
-	/1YNNvqOk/vkgPgYqjE6DiQ34K7ujp0qJySF4=; b=L5OCGWnugkRJ8H2riKO+uT
-	8NeQjuy7qlowsXZ4ZI6ptQHPOh7aE1ngFdZPKXAy4QE6kwgIuQ/Mw/iGCIyiLhNX
-	k5r+doQ2VPsQG83bCcZrLLh63B9waobUCRiWbwKFAxuIVkoff6yLVI8np4mFEhOn
-	nuePSAH9aeplHr05UhEHIlOKTljyNx0mh4d41r68m+Gs5dvOPoEid/rW81OSLM/x
-	EWaVCtWSYwgC8J1vfynax9N2Q/7iwsdcaPN0GB/aZUaDEdlv8jVI3pAE5rTKY+oK
-	JyAfpTjsy8RpcxcUOJGBP+LabjXzo1zCAGtGHdyDksVWLvWPVtWbIa7EdtBKbuCg
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 436upa5hc0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Nov 2024 17:00:50 +0000 (GMT)
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4ATGtlH1011203;
-	Fri, 29 Nov 2024 17:00:49 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 436upa5hbv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Nov 2024 17:00:49 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4ATH0dDD011922;
-	Fri, 29 Nov 2024 17:00:48 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43672gxs8e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 29 Nov 2024 17:00:48 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4ATH0lMl19792512
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 29 Nov 2024 17:00:47 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C672E58054;
-	Fri, 29 Nov 2024 17:00:47 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 24ADE5805A;
-	Fri, 29 Nov 2024 17:00:45 +0000 (GMT)
-Received: from [9.171.48.56] (unknown [9.171.48.56])
-	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 29 Nov 2024 17:00:44 +0000 (GMT)
-Message-ID: <ce432637-e4ca-4f0c-b123-4699c0c062a0@linux.ibm.com>
-Date: Fri, 29 Nov 2024 18:00:44 +0100
+	 In-Reply-To:Content-Type; b=Ilp8vWSjwduxH8J4Wh7NweTIBku6K/36CSV9O069N/jjF/1Glq8CTkuDAf1ELxQqyzeH7EETngfwkxuZpx3ALrTC+frBqj25cG+2Zb4/T8RImwI+MAuMM9CZxP577bt9Ngy6r4NfQ/+sGTRG+Nopb1dEo836t45VY3nvzDp1hAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c1a0563f-5d99-49ae-9718-bfc5eb386d64@linux.dev>
+Date: Fri, 29 Nov 2024 19:40:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 2/2] net/smc: fix LGR and link use-after-free issue
-To: Wen Gu <guwen@linux.alibaba.com>, jaka@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: alibuda@linux.alibaba.com, tonylu@linux.alibaba.com, horms@kernel.org,
-        kgraul@linux.ibm.com, hwippel@linux.ibm.com,
-        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20241127133014.100509-1-guwen@linux.alibaba.com>
- <20241127133014.100509-3-guwen@linux.alibaba.com>
-Content-Language: en-US
-From: Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <20241127133014.100509-3-guwen@linux.alibaba.com>
+Subject: Re: [PATCH for-next 2/8] RDMA/erdma: Add GID table management
+ interfaces
+To: Boshi Yu <boshiyu@linux.alibaba.com>, jgg@ziepe.ca, leon@kernel.org,
+ chengyou@linux.alibaba.com
+Cc: linux-rdma@vger.kernel.org, kaishen@linux.alibaba.com
+References: <20241126070351.92787-1-boshiyu@linux.alibaba.com>
+ <20241126070351.92787-3-boshiyu@linux.alibaba.com>
+ <580390cc-b4aa-4d72-86ae-ad1d24dd5b31@linux.dev>
+ <Z0fW1JTJSl067TZP@xy-macbook.local>
+ <e109482b-45a5-49a1-888b-d7ed3eb3ec89@linux.dev>
+ <c86e8468-2344-41f4-bfd8-c1796742bfd5@linux.alibaba.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <c86e8468-2344-41f4-bfd8-c1796742bfd5@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Wp0mHL2wzUO8NdNf_LYsgVKVQVHQD2q1
-X-Proofpoint-GUID: 9qQzr8Igid_U2NwibEu-uBdemqq0NOEG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 mlxscore=0
- adultscore=0 mlxlogscore=809 phishscore=0 bulkscore=0 suspectscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2411290137
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
+在 2024/11/29 12:18, Boshi Yu 写道:
+> 
+> 
+> 在 2024/11/29 16:54, Zhu Yanjun wrote:
+>> On 28.11.24 03:35, Boshi Yu wrote:
+>>> On Tue, Nov 26, 2024 at 04:51:02PM +0100, Zhu Yanjun wrote:
+>>>> 在 2024/11/26 7:59, Boshi Yu 写道:
+>>>>> The erdma_add_gid() interface inserts a GID entry at the
+>>>>> specified index. The erdma_del_gid() interface deletes the
+>>>>> GID entry at the specified index. Additionally, programs
+>>>>> can invoke the erdma_query_port() and erdma_get_port_immutable()
+>>>>> interfaces to query the GID table length.
+>>>>>
+>>>>> Signed-off-by: Boshi Yu <boshiyu@linux.alibaba.com>
+>>>>> Reviewed-by: Cheng Xu <chengyou@linux.alibaba.com>
+>>>>> ---
+>>>>>    drivers/infiniband/hw/erdma/erdma.h       |  1 +
+>>>>>    drivers/infiniband/hw/erdma/erdma_hw.h    | 28 +++++++++++-
+>>>>>    drivers/infiniband/hw/erdma/erdma_main.c  |  3 ++
+>>>>>    drivers/infiniband/hw/erdma/erdma_verbs.c | 56 +++++++++++++++++ 
+>>>>> + +++--
+>>>>>    drivers/infiniband/hw/erdma/erdma_verbs.h | 12 +++++
+>>>>>    5 files changed, 96 insertions(+), 4 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/infiniband/hw/erdma/erdma.h b/drivers/ 
+>>>>> infiniband/hw/erdma/erdma.h
+>>>>> index ad4dc1a4bdc7..42dabf674f5d 100644
+>>>>> --- a/drivers/infiniband/hw/erdma/erdma.h
+>>>>> +++ b/drivers/infiniband/hw/erdma/erdma.h
+>>>>> @@ -148,6 +148,7 @@ struct erdma_devattr {
+>>>>>        u32 max_mr;
+>>>>>        u32 max_pd;
+>>>>>        u32 max_mw;
+>>>>> +    u32 max_gid;
+>>>>>        u32 local_dma_key;
+>>>>>    };
+>>>>> diff --git a/drivers/infiniband/hw/erdma/erdma_hw.h b/drivers/ 
+>>>>> infiniband/hw/erdma/erdma_hw.h
+>>>>> index 970b392d4fb4..7e03c5f97501 100644
+>>>>> --- a/drivers/infiniband/hw/erdma/erdma_hw.h
+>>>>> +++ b/drivers/infiniband/hw/erdma/erdma_hw.h
+>>>>> @@ -21,6 +21,9 @@
+>>>>>    #define ERDMA_NUM_MSIX_VEC 32U
+>>>>>    #define ERDMA_MSIX_VECTOR_CMDQ 0
+>>>>> +/* RoCEv2 related */
+>>>>> +#define ERDMA_ROCEV2_GID_SIZE 16
+>>>>> +
+>>>>>    /* erdma device protocol type */
+>>>>>    enum erdma_proto_type {
+>>>>>        ERDMA_PROTO_IWARP = 0,
+>>>>> @@ -143,7 +146,8 @@ enum CMDQ_RDMA_OPCODE {
+>>>>>        CMDQ_OPCODE_DESTROY_CQ = 5,
+>>>>>        CMDQ_OPCODE_REFLUSH = 6,
+>>>>>        CMDQ_OPCODE_REG_MR = 8,
+>>>>> -    CMDQ_OPCODE_DEREG_MR = 9
+>>>>> +    CMDQ_OPCODE_DEREG_MR = 9,
+>>>>> +    CMDQ_OPCODE_SET_GID = 14,
+>>>>>    };
+>>>>>    enum CMDQ_COMMON_OPCODE {
+>>>>> @@ -401,7 +405,29 @@ struct erdma_cmdq_query_stats_resp {
+>>>>>        u64 rx_pps_meter_drop_packets_cnt;
+>>>>>    };
+>>>>> +enum erdma_network_type {
+>>>>> +    ERDMA_NETWORK_TYPE_IPV4 = 0,
+>>>>> +    ERDMA_NETWORK_TYPE_IPV6 = 1,
+>>>>> +};
+>>>>
+>>>> In the file include/rdma/ib_verbs.h
+>>>>
+>>>> "
+>>>> ...
+>>>>   183 enum rdma_network_type {
+>>>> ...
+>>>>   186     RDMA_NETWORK_IPV4,
+>>>>   187     RDMA_NETWORK_IPV6
+>>>>   188 };
+>>>> ...
+>>>> "
+>>>> Not sure why the above RDMA_NETWORK_IPV4 and RDMA_NETWORK_IPV6 are 
+>>>> not used.
+>>>>
+>>>> Zhu Yanjun
+>>>>
+>>>
+>>> Hi, Yanjun,
+>>>
+>>> Given that the values for RDMA_NETWORK_IPV4 and RDMA_NETWORK_IPV6 are 
+>>> 2 and 3,
+>>> respectively, we would need 2 bits to store the network type if we 
+>>> use them
+>>> directly. However, since we only need to differentiate between IPv4 
+>>> and IPv6
+>>> for the RoCEv2 protocol, 1 bit is sufficient.
+>>
+>> I can not get you. You mean, you want to use 1 bit to differentiate 
+>> between IPv4 and IPv6. How to implement this idea? Can you show us the 
+>> difference of 1 bit (enum erdma_network_type) and 2 bits (enum 
+>> rdma_network_type) in driver?
+>>
+>> Thanks,
+>>
+>> Zhu Yanjun
+> 
+> Hi, Yanjun,
+> 
+> I'm sorry for not explaining this issue clearly. The enum 
+> erdma_network_type is actually a convention between the erdma hardware 
+> and the erdma driver. We just want to use fewer bits to pass the 
+> information to the hardware, independent of the kernel definition.
 
+Thanks a lot. This makes sense to me. The enum erdma_network_type is 1 
+bit, including 0, 1. This can let the driver use fewer bits to 
+communicate with the hardware.
 
-On 27.11.24 14:30, Wen Gu wrote:
-> We encountered a LGR/link use-after-free issue, which manifested as
-> the LGR/link refcnt reaching 0 early and entering the clear process,
-> making resource access unsafe.
-> 
->   refcount_t: addition on 0; use-after-free.
->   WARNING: CPU: 14 PID: 107447 at lib/refcount.c:25 refcount_warn_saturate+0x9c/0x140
->   Workqueue: events smc_lgr_terminate_work [smc]
->   Call trace:
->    refcount_warn_saturate+0x9c/0x140
->    __smc_lgr_terminate.part.45+0x2a8/0x370 [smc]
->    smc_lgr_terminate_work+0x28/0x30 [smc]
->    process_one_work+0x1b8/0x420
->    worker_thread+0x158/0x510
->    kthread+0x114/0x118
-> 
-> or
-> 
->   refcount_t: underflow; use-after-free.
->   WARNING: CPU: 6 PID: 93140 at lib/refcount.c:28 refcount_warn_saturate+0xf0/0x140
->   Workqueue: smc_hs_wq smc_listen_work [smc]
->   Call trace:
->    refcount_warn_saturate+0xf0/0x140
->    smcr_link_put+0x1cc/0x1d8 [smc]
->    smc_conn_free+0x110/0x1b0 [smc]
->    smc_conn_abort+0x50/0x60 [smc]
->    smc_listen_find_device+0x75c/0x790 [smc]
->    smc_listen_work+0x368/0x8a0 [smc]
->    process_one_work+0x1b8/0x420
->    worker_thread+0x158/0x510
->    kthread+0x114/0x118
-> 
-> It is caused by repeated release of LGR/link refcnt. One suspect is that
-> smc_conn_free() is called repeatedly because some smc_conn_free() from
-> server listening path are not protected by sock lock.
-> 
-> e.g.
-> 
-> Calls under socklock        | smc_listen_work
-> -------------------------------------------------------
-> lock_sock(sk)               | smc_conn_abort
-> smc_conn_free               | \- smc_conn_free
-> \- smcr_link_put            |    \- smcr_link_put (duplicated)
-> release_sock(sk)
-> 
-> So here add sock lock protection in smc_listen_work() path, making it
-> exclusive with other connection operations.
-> 
-> Fixes: 3b2dec2603d5 ("net/smc: restructure client and server code in af_smc")
-> Co-developed-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-> Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-> Co-developed-by: Kai <KaiShen@linux.alibaba.com>
-> Signed-off-by: Kai <KaiShen@linux.alibaba.com>
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-> ---
->   net/smc/af_smc.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index ed6d4d520bc7..9e6c69d18581 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -1900,6 +1900,7 @@ static void smc_listen_out(struct smc_sock *new_smc)
->   	if (tcp_sk(new_smc->clcsock->sk)->syn_smc)
->   		atomic_dec(&lsmc->queued_smc_hs);
->   
-> +	release_sock(newsmcsk); /* lock in smc_listen_work() */
->   	if (lsmc->sk.sk_state == SMC_LISTEN) {
->   		lock_sock_nested(&lsmc->sk, SINGLE_DEPTH_NESTING);
->   		smc_accept_enqueue(&lsmc->sk, newsmcsk);
-> @@ -2421,6 +2422,7 @@ static void smc_listen_work(struct work_struct *work)
->   	u8 accept_version;
->   	int rc = 0;
->   
-> +	lock_sock(&new_smc->sk); /* release in smc_listen_out() */
->   	if (new_smc->listen_smc->sk.sk_state != SMC_LISTEN)
->   		return smc_listen_out_err(new_smc);
->   
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-It looked much clearer than the last version to me! Thank you for fixing it!
+Zhu Yanjun
 
-Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+> 
+> Thanks,
+> 
+> Boshi Yu
+> 
+>>>
+>>> Thanks,
+>>> Boshi Yu
+>>>
+>>>>> +
+>>>>> +enum erdma_set_gid_op {
+>>>>> +    ERDMA_SET_GID_OP_ADD = 0,
+>>>>> +    ERDMA_SET_GID_OP_DEL = 1,
+>>>>> +};
+>>>>> +
+>>>>> +/* set gid cfg */
+>>>>> +#define ERDMA_CMD_SET_GID_SGID_IDX_MASK GENMASK(15, 0)
+>>>>> +#define ERDMA_CMD_SET_GID_NTYPE_MASK BIT(16)
+>>>>> +#define ERDMA_CMD_SET_GID_OP_MASK BIT(31)
+>>>>> +
+>>>>> +struct erdma_cmdq_set_gid_req {
+>>>>> +    u64 hdr;
+>>>>> +    u32 cfg;
+>>>>> +    u8 gid[ERDMA_ROCEV2_GID_SIZE];
+>>>>> +};
+>>>>> +
+>>>>>    /* cap qword 0 definition */
+>>>>> +#define ERDMA_CMD_DEV_CAP_MAX_GID_MASK GENMASK_ULL(51, 48)
+>>>>>    #define ERDMA_CMD_DEV_CAP_MAX_CQE_MASK GENMASK_ULL(47, 40)
+>>>>>    #define ERDMA_CMD_DEV_CAP_FLAGS_MASK GENMASK_ULL(31, 24)
+>>>>>    #define ERDMA_CMD_DEV_CAP_MAX_RECV_WR_MASK GENMASK_ULL(23, 16)
+>>>>> diff --git a/drivers/infiniband/hw/erdma/erdma_main.c b/drivers/ 
+>>>>> infiniband/hw/erdma/erdma_main.c
+>>>>> index b6706c74cd96..d72b85e8971d 100644
+>>>>> --- a/drivers/infiniband/hw/erdma/erdma_main.c
+>>>>> +++ b/drivers/infiniband/hw/erdma/erdma_main.c
+>>>>> @@ -404,6 +404,7 @@ static int erdma_dev_attrs_init(struct 
+>>>>> erdma_dev *dev)
+>>>>>        dev->attrs.max_mr_size = 1ULL << ERDMA_GET_CAP(MAX_MR_SIZE, 
+>>>>> cap0);
+>>>>>        dev->attrs.max_mw = 1 << ERDMA_GET_CAP(MAX_MW, cap1);
+>>>>>        dev->attrs.max_recv_wr = 1 << ERDMA_GET_CAP(MAX_RECV_WR, cap0);
+>>>>> +    dev->attrs.max_gid = 1 << ERDMA_GET_CAP(MAX_GID, cap0);
+>>>>>        dev->attrs.local_dma_key = ERDMA_GET_CAP(DMA_LOCAL_KEY, cap1);
+>>>>>        dev->attrs.cc = ERDMA_GET_CAP(DEFAULT_CC, cap1);
+>>>>>        dev->attrs.max_qp = ERDMA_NQP_PER_QBLOCK * 
+>>>>> ERDMA_GET_CAP(QBLOCK, cap1);
+>>>>> @@ -482,6 +483,8 @@ static void erdma_res_cb_free(struct erdma_dev 
+>>>>> *dev)
+>>>>>    static const struct ib_device_ops erdma_device_ops_rocev2 = {
+>>>>>        .get_link_layer = erdma_get_link_layer,
+>>>>> +    .add_gid = erdma_add_gid,
+>>>>> +    .del_gid = erdma_del_gid,
+>>>>>    };
+>>>>>    static const struct ib_device_ops erdma_device_ops_iwarp = {
+>>>>> diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/ 
+>>>>> infiniband/hw/erdma/erdma_verbs.c
+>>>>> index 3b7e55515cfd..9944eed584ec 100644
+>>>>> --- a/drivers/infiniband/hw/erdma/erdma_verbs.c
+>>>>> +++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
+>>>>> @@ -367,7 +367,13 @@ int erdma_query_port(struct ib_device *ibdev, 
+>>>>> u32 port,
+>>>>>        memset(attr, 0, sizeof(*attr));
+>>>>> -    attr->gid_tbl_len = 1;
+>>>>> +    if (erdma_device_iwarp(dev)) {
+>>>>> +        attr->gid_tbl_len = 1;
+>>>>> +    } else {
+>>>>> +        attr->gid_tbl_len = dev->attrs.max_gid;
+>>>>> +        attr->ip_gids = true;
+>>>>> +    }
+>>>>> +
+>>>>>        attr->port_cap_flags = IB_PORT_CM_SUP | 
+>>>>> IB_PORT_DEVICE_MGMT_SUP;
+>>>>>        attr->max_msg_sz = -1;
+>>>>> @@ -399,14 +405,14 @@ int erdma_get_port_immutable(struct ib_device 
+>>>>> *ibdev, u32 port,
+>>>>>        if (erdma_device_iwarp(dev)) {
+>>>>>            port_immutable->core_cap_flags = RDMA_CORE_PORT_IWARP;
+>>>>> +        port_immutable->gid_tbl_len = 1;
+>>>>>        } else {
+>>>>>            port_immutable->core_cap_flags =
+>>>>>                RDMA_CORE_PORT_IBA_ROCE_UDP_ENCAP;
+>>>>>            port_immutable->max_mad_size = IB_MGMT_MAD_SIZE;
+>>>>> +        port_immutable->gid_tbl_len = dev->attrs.max_gid;
+>>>>>        }
+>>>>> -    port_immutable->gid_tbl_len = 1;
+>>>>> -
+>>>>>        return 0;
+>>>>>    }
+>>>>> @@ -1853,3 +1859,47 @@ enum rdma_link_layer 
+>>>>> erdma_get_link_layer(struct ib_device *ibdev, u32 port_num)
+>>>>>    {
+>>>>>        return IB_LINK_LAYER_ETHERNET;
+>>>>>    }
+>>>>> +
+>>>>> +static int erdma_set_gid(struct erdma_dev *dev, u8 op, u32 idx,
+>>>>> +             const union ib_gid *gid)
+>>>>> +{
+>>>>> +    struct erdma_cmdq_set_gid_req req;
+>>>>> +    u8 ntype;
+>>>>> +
+>>>>> +    req.cfg = FIELD_PREP(ERDMA_CMD_SET_GID_SGID_IDX_MASK, idx) |
+>>>>> +          FIELD_PREP(ERDMA_CMD_SET_GID_OP_MASK, op);
+>>>>> +
+>>>>> +    if (op == ERDMA_SET_GID_OP_ADD) {
+>>>>> +        if (ipv6_addr_v4mapped((struct in6_addr *)gid))
+>>>>> +            ntype = ERDMA_NETWORK_TYPE_IPV4;
+>>>>> +        else
+>>>>> +            ntype = ERDMA_NETWORK_TYPE_IPV6;
+>>>>> +
+>>>>> +        req.cfg |= FIELD_PREP(ERDMA_CMD_SET_GID_NTYPE_MASK, ntype);
+>>>>> +
+>>>>> +        memcpy(&req.gid, gid, ERDMA_ROCEV2_GID_SIZE);
+>>>>> +    }
+>>>>> +
+>>>>> +    erdma_cmdq_build_reqhdr(&req.hdr, CMDQ_SUBMOD_RDMA,
+>>>>> +                CMDQ_OPCODE_SET_GID);
+>>>>> +    return erdma_post_cmd_wait(&dev->cmdq, &req, sizeof(req), 
+>>>>> NULL, NULL);
+>>>>> +}
+>>>>> +
+>>>>> +int erdma_add_gid(const struct ib_gid_attr *attr, void **context)
+>>>>> +{
+>>>>> +    struct erdma_dev *dev = to_edev(attr->device);
+>>>>> +    int ret;
+>>>>> +
+>>>>> +    ret = erdma_check_gid_attr(attr);
+>>>>> +    if (ret)
+>>>>> +        return ret;
+>>>>> +
+>>>>> +    return erdma_set_gid(dev, ERDMA_SET_GID_OP_ADD, attr->index,
+>>>>> +                 &attr->gid);
+>>>>> +}
+>>>>> +
+>>>>> +int erdma_del_gid(const struct ib_gid_attr *attr, void **context)
+>>>>> +{
+>>>>> +    return erdma_set_gid(to_edev(attr->device), ERDMA_SET_GID_OP_DEL,
+>>>>> +                 attr->index, NULL);
+>>>>> +}
+>>>>> diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.h b/drivers/ 
+>>>>> infiniband/hw/erdma/erdma_verbs.h
+>>>>> index 90e2b35a0973..23cfeaf79eaa 100644
+>>>>> --- a/drivers/infiniband/hw/erdma/erdma_verbs.h
+>>>>> +++ b/drivers/infiniband/hw/erdma/erdma_verbs.h
+>>>>> @@ -326,6 +326,16 @@ static inline struct erdma_cq *to_ecq(struct 
+>>>>> ib_cq *ibcq)
+>>>>>        return container_of(ibcq, struct erdma_cq, ibcq);
+>>>>>    }
+>>>>> +static inline int erdma_check_gid_attr(const struct ib_gid_attr 
+>>>>> *attr)
+>>>>> +{
+>>>>> +    u8 ntype = rdma_gid_attr_network_type(attr);
+>>>>> +
+>>>>> +    if (ntype != RDMA_NETWORK_IPV4 && ntype != RDMA_NETWORK_IPV6)
+>>>>> +        return -EINVAL;
+>>>>> +
+>>>>> +    return 0;
+>>>>> +}
+>>>>> +
+>>>>>    static inline struct erdma_user_mmap_entry *
+>>>>>    to_emmap(struct rdma_user_mmap_entry *ibmmap)
+>>>>>    {
+>>>>> @@ -382,5 +392,7 @@ int erdma_get_hw_stats(struct ib_device *ibdev, 
+>>>>> struct rdma_hw_stats *stats,
+>>>>>                   u32 port, int index);
+>>>>>    enum rdma_link_layer erdma_get_link_layer(struct ib_device *ibdev,
+>>>>>                          u32 port_num);
+>>>>> +int erdma_add_gid(const struct ib_gid_attr *attr, void **context);
+>>>>> +int erdma_del_gid(const struct ib_gid_attr *attr, void **context);
+>>>>>    #endif
+> 
 
-Thanks,
-Wenjia
 
