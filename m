@@ -1,89 +1,85 @@
-Return-Path: <linux-rdma+bounces-6165-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6166-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FD159DEFC5
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2024 11:01:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A4829DEFCC
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2024 11:01:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322CA1636A7
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2024 10:01:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAC101635ED
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2024 10:01:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5978156991;
-	Sat, 30 Nov 2024 10:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD9F15539F;
+	Sat, 30 Nov 2024 10:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="d1YyKLUz"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LXY3bTJa"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2E51531CB
-	for <linux-rdma@vger.kernel.org>; Sat, 30 Nov 2024 10:01:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64091531CB
+	for <linux-rdma@vger.kernel.org>; Sat, 30 Nov 2024 10:01:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732960870; cv=none; b=RBKuZ0vum2C6bJsVEfoTqR6oDYPBVI1Trf/t/CWHZ9HzU62DiRydXa+SJOmzfBa/20pZMNR7mfwWT4k9flgsSWUCzuggENi8GrS+tw7tBqKoG/WVZ8PXZa8qJ22ftVTNI9IqvPC1UrCFslAH4p3Fj8JiVoPRN0q0lS3Y7WEQUo0=
+	t=1732960904; cv=none; b=RSlKOXlUjiTMT2AYSITvaaXaLiDviohlG+e9UsH8aQRkpULYSsZMRBY5RO0NTKivNKkMHea18830OXzxiaSfCWZe2jdJWEBkM/EZZ4i+SpcyC+4uvzx6pw3/inXShsj2Lvo4lbp4b8kG5sIlgD2M7BXvnEWB4VeKWPRW8WGbfBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732960870; c=relaxed/simple;
-	bh=/XpaTseG/TEeisBd+wk4TWWeiStEhV6ICnH01fIZSu0=;
+	s=arc-20240116; t=1732960904; c=relaxed/simple;
+	bh=SIBkMDM9PgjbFAyR8EA5YSQSJxCLhTUPXO4IfXW4hxA=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Ir+gjIHeLqCqI/PkQch2MrD+a+yyXGlMuX/ujoEeeFjDsuiq1qUKnxEDPFoaBssfubL7lMxofL/qFUhUmKVWJQ6i71JLd0Mu/QqUAaOvKSpNzXzxQu/MMWaD+Wdu8/Jq+WQC0kh3NJgZh2XICoRDDWhy7Za08T0KOo+PFAy63Ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=d1YyKLUz; arc=none smtp.client-ip=209.85.208.48
+	 Content-Disposition; b=b/m37dVSO+YF7uYezxcubiljIVKd6SbnZqOQmYfXlDeeFnXvKAzo/KZBfeDgvJaQgvWsNrrAMBERH83zZ+1sibT+Lkp/P95N7fT+XOkPOAxXW9uPak8akGCLP5EPV15LbYx4JJtEMVgdjw7Iq6gWDpSfoXrn5nUDueo/IGQ+jcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LXY3bTJa; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5cfc19065ffso2973596a12.3
-        for <linux-rdma@vger.kernel.org>; Sat, 30 Nov 2024 02:01:07 -0800 (PST)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5d0ac27b412so1755235a12.1
+        for <linux-rdma@vger.kernel.org>; Sat, 30 Nov 2024 02:01:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1732960866; x=1733565666; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1732960901; x=1733565701; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=a67SmAxg7nZOip6zVhj4ZsmBcbeJIrKRZCIwBRUJFXg=;
-        b=d1YyKLUzWuTjh2B4bEUrPOGTF5zhAiYqp3Ha8yY5Quyjso2KPJm4Yt6xEyzT99yZz2
-         nFTJbNWOzGTTXjU4aPAATBmUn9maJj4zvf1B4UH2+n2o8SSGI5XRf5s0U2ynrVd5ZKuv
-         YUzR+igj4Mu9a8DiHoCfEAWtSUzpMBwqOVMcG6dwxs0d8tGpWBcLnAN7x1FzwIZXFXqs
-         T33rqTeCOZ/nOxYSQbL4xJI4egCBO00mku5/zd8Zpodkuw367jFtr5ktz4QjnNhR5TJ1
-         9Q8N4GlOZI6BhdRzkg8HKX+AwHu4VlfYOohIYLH3AcMBeLpuR7GkjR5Ude0X1SclfK12
-         OCOA==
+        bh=gI0rRaj3h2iBiBAn9r1ZitfB9ykqVmf7MWwf3cvySCI=;
+        b=LXY3bTJajK069OeOXmcH4TERJntYiYTHdfzKYaSPfOBG7gGyEX5hJw0BCwUSEBOu0m
+         jMBXCzQ0WqpllbX36EYDR2r1yJABe11sJcH/cO9L1bxoACo+0sUqJcoHdGhppLppr7MP
+         98b6m2lJ7X6L1m7ou8nXwNYmJXhJUqnXuzPGYQOs8JFOC9xsv5OwTKmEL7W4Hx8n9HSS
+         SgBXocONN4dVhs43GA0x4c6Ei1RGFZ1Iacx9YliDpBAKM4wEtzz55bIQ2bkfKCJFoOEL
+         6v+1cANgeDDsS8TXibQDrH4gHSETrRVlj+uoF95WHEJq+SMMAkM9+hJMAtM5b4BRXtcK
+         Bk7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732960866; x=1733565666;
+        d=1e100.net; s=20230601; t=1732960901; x=1733565701;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a67SmAxg7nZOip6zVhj4ZsmBcbeJIrKRZCIwBRUJFXg=;
-        b=ABBIbdCQQpu2OYpNHguNdUXk/k2q2h4T8u9UL4Ov2BDBL/xn9kMHe14NFiczegLsF+
-         ltmspq/NlZxRKaBwdFXi7oweu/uS/yLOvSoughkREJTvkI6Xhr4pw5kcXnisRuG2JIGx
-         Dd/g4qyHW/+sgPhMfUHj1dReUCC07J0F9gy5prGmhvZqgCDShpz8WylCuaaPKENNvZ1h
-         aMzCHJhEaV7CvIPkib0ryoQo+A882QznsB/RgOWMvl0VlN+EdWlXDBuZoMYXq6BdAzw5
-         otpB1xcXy7oxHwYvPv+JtBa4cudpHvsV966Hjnit+VXvgCR9MDnWezbal6NRsZoKUZKX
-         E+pA==
-X-Forwarded-Encrypted: i=1; AJvYcCX3MB3YIr1fLJArnIohe37+bOs2ufUzM2ecRa+K9y9ltGw7NdE+UsSoZUKhgpKMdcJ6sYFKohiQAFfl@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTPq9d3dr21lzwJbOPpsBYGsYIRKprrCJKvglB8g0kgroNpYdd
-	73gkKowt9jW8LrUue1iDv2sJTrItfyzJLHmO+5LVShhTJ9DbBFXNF7M8bFRLQys=
-X-Gm-Gg: ASbGncuRJGV5JeZc+iYROiuLYlEvEKCYtw/sOVoknwFDEXMg8LtzDProYoHQwZa7ady
-	+JVhF+alX96nYOZa3vhxaod64umpzdElHjq++9ut9OBQFTN0XXhXZz1a1AmJ6GYlJBXdWBwtc6m
-	uQbpJE0/2MU/A5fa/dIQSszO65h6vZl3U2mVIfNP7Hp+9JqEVPKacFTWj2vPKUHgkCNVPWnkUr2
-	ZBneCmc4VqU6BIbl2bSxF9xNhAzCEYcUfo5nEMRGYai0rMQIQ6XMyBiYLxjSHDWbURckjfY
-X-Google-Smtp-Source: AGHT+IHz6Lgpgq1CwlN5SY6GoUtJEsnuXZdZiLP/TvT694J0WqT85iYkJrByZ7WTMbPj28wc6GAvsQ==
-X-Received: by 2002:a05:6402:354c:b0:5cf:e9d6:cc8a with SMTP id 4fb4d7f45d1cf-5d080bd019amr12849937a12.20.1732960865832;
-        Sat, 30 Nov 2024 02:01:05 -0800 (PST)
+        bh=gI0rRaj3h2iBiBAn9r1ZitfB9ykqVmf7MWwf3cvySCI=;
+        b=GQB3lAws99IehMIe6fX1TY/oK4CYjVXdDdSWzi+BwNoiFoKyafrt8RZjzFHKQFCwtK
+         H8G3b86U1zocKTeBmVGsekD6H9refEbk9wAXW0/FYAcS6O1hNRTimHJ3o04ORpn17zeu
+         PxaMuxDYUIOiPCOuEpzbicIUYkGDoMjKeQ71M575NBOO6Qhih/l1PE3FUoMgZ1QHlh8c
+         uc5EdcVs1K7TVbCumGwQEj6eirCtjOJjnG8dIavd8LI83Vn82p6mEOhgl9s5QeY2/Ok3
+         aRtGgFFK9jI37GgqnTr+6zZn0epYSdSS/lJyWpm1psdsOTiK+hiJqlEvj+czV+aV6McA
+         Volw==
+X-Forwarded-Encrypted: i=1; AJvYcCUzwzcENmvSltKH6gH8XPRBab2IPzhRijfGuIJ5ZjgGUil8db6qDCJ8vpfzPCckxNhWD8sGbTiPT3Kt@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4je4Wwdi0qiFkz6+rL0mgXCitkJ7ermNWIvhBjzAH3Zi7cq4L
+	4q7zIbdmvi+2BLD0ywFmjtNpy7tiPXRAdix3kTUFx2lhDcUN10r6qI6u9aA4Oz0=
+X-Gm-Gg: ASbGncv2zNkYGONbpDtDq5jstpPOn/L4Gvv4ud8lALAdnIkT6F+L0Uhz8f+srZ0x7HI
+	N/SUfdZJuuZOy3ES2Ns0vzSS23EXqiuPmWZJ3LloEJcLOduIT57wU3ZdpHv9qmQaqff6HH6LIx2
+	khNmwwI9bUdRqhn1xD3+VUcrVuG7onZ7h1eHo3j9PH0TIbcAmhrAqnXpS96VktxpL5l7eY/6JAx
+	VvOjtnwjc2Qhfr441QNy4G5tsvcU6BhFhBCtT1np9kIaNkZaCQprKol6mGSWu8FNRG9BYQc
+X-Google-Smtp-Source: AGHT+IEFpMg8pm0uwYaiFZHM3DW/3ch6uaXaKn10ANQVIeghH2SzJao+XGL30yqtSajOxrJ4Wm207w==
+X-Received: by 2002:a05:6402:1d4f:b0:5d0:840d:ed04 with SMTP id 4fb4d7f45d1cf-5d0840deeb0mr13550421a12.8.1732960901059;
+        Sat, 30 Nov 2024 02:01:41 -0800 (PST)
 Received: from localhost (h1109.n1.ips.mtn.co.ug. [41.210.145.9])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d097dd619bsm2665439a12.39.2024.11.30.02.01.04
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d0d0a026e6sm222374a12.80.2024.11.30.02.01.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Nov 2024 02:01:05 -0800 (PST)
-Date: Sat, 30 Nov 2024 13:01:01 +0300
+        Sat, 30 Nov 2024 02:01:40 -0800 (PST)
+Date: Sat, 30 Nov 2024 13:01:37 +0300
 From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Yevgeny Kliteynik <kliteyn@nvidia.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
+To: Atul Gupta <atul.gupta@chelsio.com>
+Cc: Potnuri Bharat Teja <bharat@chelsio.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
 	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Muhammad Sammar <muhammads@nvidia.com>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH net] net/mlx5: DR, prevent potential error pointer dereference
-Message-ID: <aadb7736-c497-43db-a93a-4461d1426de4@stanley.mountain>
+	Casey Leedom <leedom@chelsio.com>,
+	Michael Werner <werner@chelsio.com>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] cxgb4: prevent potential integer overflow on 32bit
+Message-ID: <86b404e1-4a75-4a35-a34e-e3054fa554c7@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -94,30 +90,36 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Mailer: git-send-email haha only kidding
 
-The dr_domain_add_vport_cap() function genereally returns NULL on error
-but sometimes we want it to return ERR_PTR(-EBUSY) so the caller can
-retry.  The problem here is that "ret" can be either -EBUSY or -ENOMEM
-and if it's and -ENOMEM then the error pointer is propogated back and
-eventually dereferenced in dr_ste_v0_build_src_gvmi_qpn_tag().
+The "gl->tot_len" variable is controlled by the user.  It comes from
+process_responses().  On 32bit systems, the "gl->tot_len +
+sizeof(struct cpl_pass_accept_req) + sizeof(struct rss_header)" addition
+could have an integer wrapping bug.  Use size_add() to prevent this.
 
-Fixes: 11a45def2e19 ("net/mlx5: DR, Add support for SF vports")
+Fixes: a08943947873 ("crypto: chtls - Register chtls with net tls")
 Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- .../net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c    | 2 ++
- 1 file changed, 2 insertions(+)
+This is from static analysis.  I've spent some time reviewing this code
+but I might be wrong.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c
-index 3d74109f8230..a379e8358f82 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c
-@@ -297,6 +297,8 @@ dr_domain_add_vport_cap(struct mlx5dr_domain *dmn, u16 vport)
- 	if (ret) {
- 		mlx5dr_dbg(dmn, "Couldn't insert new vport into xarray (%d)\n", ret);
- 		kvfree(vport_caps);
-+		if (ret != -EBUSY)
-+			return NULL;
- 		return ERR_PTR(ret);
- 	}
+ drivers/infiniband/hw/cxgb4/device.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/cxgb4/device.c b/drivers/infiniband/hw/cxgb4/device.c
+index 80970a1738f8..034b85c42255 100644
+--- a/drivers/infiniband/hw/cxgb4/device.c
++++ b/drivers/infiniband/hw/cxgb4/device.c
+@@ -1114,8 +1114,10 @@ static inline struct sk_buff *copy_gl_to_skb_pkt(const struct pkt_gl *gl,
+ 	 * The math here assumes sizeof cpl_pass_accept_req >= sizeof
+ 	 * cpl_rx_pkt.
+ 	 */
+-	skb = alloc_skb(gl->tot_len + sizeof(struct cpl_pass_accept_req) +
+-			sizeof(struct rss_header) - pktshift, GFP_ATOMIC);
++	skb = alloc_skb(size_add(gl->tot_len,
++				 sizeof(struct cpl_pass_accept_req) +
++				 sizeof(struct rss_header)) - pktshift,
++			GFP_ATOMIC);
+ 	if (unlikely(!skb))
+ 		return NULL;
  
 -- 
 2.45.2
