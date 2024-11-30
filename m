@@ -1,348 +1,125 @@
-Return-Path: <linux-rdma+bounces-6164-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6165-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D63689DEC23
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Nov 2024 19:40:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FD159DEFC5
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2024 11:01:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AED6163BAD
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Nov 2024 18:40:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322CA1636A7
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2024 10:01:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10EC7154C04;
-	Fri, 29 Nov 2024 18:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5978156991;
+	Sat, 30 Nov 2024 10:01:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="d1YyKLUz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 876D614D430
-	for <linux-rdma@vger.kernel.org>; Fri, 29 Nov 2024 18:40:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2E51531CB
+	for <linux-rdma@vger.kernel.org>; Sat, 30 Nov 2024 10:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732905624; cv=none; b=foSobb+aC9rr9djrZi44JDvHDEOEPTzpApBdePa2uiAFckGI3GnuHVrRgBfZRGlEM4M1GBlFh5b0eiJZMK9P45KO7MQLmBMqB7k5DORYzcaE0Jaz9HBtpTFfx9ADEtKVSR7gbJSKgVjGXSu8HfUpyclz8OSBIpHP9cSO1ydGmJI=
+	t=1732960870; cv=none; b=RBKuZ0vum2C6bJsVEfoTqR6oDYPBVI1Trf/t/CWHZ9HzU62DiRydXa+SJOmzfBa/20pZMNR7mfwWT4k9flgsSWUCzuggENi8GrS+tw7tBqKoG/WVZ8PXZa8qJ22ftVTNI9IqvPC1UrCFslAH4p3Fj8JiVoPRN0q0lS3Y7WEQUo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732905624; c=relaxed/simple;
-	bh=jbV9iXf/njM21BYDMurIrOTzrETBmjKCp1xQOjACsaA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ilp8vWSjwduxH8J4Wh7NweTIBku6K/36CSV9O069N/jjF/1Glq8CTkuDAf1ELxQqyzeH7EETngfwkxuZpx3ALrTC+frBqj25cG+2Zb4/T8RImwI+MAuMM9CZxP577bt9Ngy6r4NfQ/+sGTRG+Nopb1dEo836t45VY3nvzDp1hAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c1a0563f-5d99-49ae-9718-bfc5eb386d64@linux.dev>
-Date: Fri, 29 Nov 2024 19:40:13 +0100
+	s=arc-20240116; t=1732960870; c=relaxed/simple;
+	bh=/XpaTseG/TEeisBd+wk4TWWeiStEhV6ICnH01fIZSu0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Ir+gjIHeLqCqI/PkQch2MrD+a+yyXGlMuX/ujoEeeFjDsuiq1qUKnxEDPFoaBssfubL7lMxofL/qFUhUmKVWJQ6i71JLd0Mu/QqUAaOvKSpNzXzxQu/MMWaD+Wdu8/Jq+WQC0kh3NJgZh2XICoRDDWhy7Za08T0KOo+PFAy63Ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=d1YyKLUz; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5cfc19065ffso2973596a12.3
+        for <linux-rdma@vger.kernel.org>; Sat, 30 Nov 2024 02:01:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1732960866; x=1733565666; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a67SmAxg7nZOip6zVhj4ZsmBcbeJIrKRZCIwBRUJFXg=;
+        b=d1YyKLUzWuTjh2B4bEUrPOGTF5zhAiYqp3Ha8yY5Quyjso2KPJm4Yt6xEyzT99yZz2
+         nFTJbNWOzGTTXjU4aPAATBmUn9maJj4zvf1B4UH2+n2o8SSGI5XRf5s0U2ynrVd5ZKuv
+         YUzR+igj4Mu9a8DiHoCfEAWtSUzpMBwqOVMcG6dwxs0d8tGpWBcLnAN7x1FzwIZXFXqs
+         T33rqTeCOZ/nOxYSQbL4xJI4egCBO00mku5/zd8Zpodkuw367jFtr5ktz4QjnNhR5TJ1
+         9Q8N4GlOZI6BhdRzkg8HKX+AwHu4VlfYOohIYLH3AcMBeLpuR7GkjR5Ude0X1SclfK12
+         OCOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732960866; x=1733565666;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a67SmAxg7nZOip6zVhj4ZsmBcbeJIrKRZCIwBRUJFXg=;
+        b=ABBIbdCQQpu2OYpNHguNdUXk/k2q2h4T8u9UL4Ov2BDBL/xn9kMHe14NFiczegLsF+
+         ltmspq/NlZxRKaBwdFXi7oweu/uS/yLOvSoughkREJTvkI6Xhr4pw5kcXnisRuG2JIGx
+         Dd/g4qyHW/+sgPhMfUHj1dReUCC07J0F9gy5prGmhvZqgCDShpz8WylCuaaPKENNvZ1h
+         aMzCHJhEaV7CvIPkib0ryoQo+A882QznsB/RgOWMvl0VlN+EdWlXDBuZoMYXq6BdAzw5
+         otpB1xcXy7oxHwYvPv+JtBa4cudpHvsV966Hjnit+VXvgCR9MDnWezbal6NRsZoKUZKX
+         E+pA==
+X-Forwarded-Encrypted: i=1; AJvYcCX3MB3YIr1fLJArnIohe37+bOs2ufUzM2ecRa+K9y9ltGw7NdE+UsSoZUKhgpKMdcJ6sYFKohiQAFfl@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTPq9d3dr21lzwJbOPpsBYGsYIRKprrCJKvglB8g0kgroNpYdd
+	73gkKowt9jW8LrUue1iDv2sJTrItfyzJLHmO+5LVShhTJ9DbBFXNF7M8bFRLQys=
+X-Gm-Gg: ASbGncuRJGV5JeZc+iYROiuLYlEvEKCYtw/sOVoknwFDEXMg8LtzDProYoHQwZa7ady
+	+JVhF+alX96nYOZa3vhxaod64umpzdElHjq++9ut9OBQFTN0XXhXZz1a1AmJ6GYlJBXdWBwtc6m
+	uQbpJE0/2MU/A5fa/dIQSszO65h6vZl3U2mVIfNP7Hp+9JqEVPKacFTWj2vPKUHgkCNVPWnkUr2
+	ZBneCmc4VqU6BIbl2bSxF9xNhAzCEYcUfo5nEMRGYai0rMQIQ6XMyBiYLxjSHDWbURckjfY
+X-Google-Smtp-Source: AGHT+IHz6Lgpgq1CwlN5SY6GoUtJEsnuXZdZiLP/TvT694J0WqT85iYkJrByZ7WTMbPj28wc6GAvsQ==
+X-Received: by 2002:a05:6402:354c:b0:5cf:e9d6:cc8a with SMTP id 4fb4d7f45d1cf-5d080bd019amr12849937a12.20.1732960865832;
+        Sat, 30 Nov 2024 02:01:05 -0800 (PST)
+Received: from localhost (h1109.n1.ips.mtn.co.ug. [41.210.145.9])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d097dd619bsm2665439a12.39.2024.11.30.02.01.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Nov 2024 02:01:05 -0800 (PST)
+Date: Sat, 30 Nov 2024 13:01:01 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Yevgeny Kliteynik <kliteyn@nvidia.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Muhammad Sammar <muhammads@nvidia.com>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH net] net/mlx5: DR, prevent potential error pointer dereference
+Message-ID: <aadb7736-c497-43db-a93a-4461d1426de4@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-next 2/8] RDMA/erdma: Add GID table management
- interfaces
-To: Boshi Yu <boshiyu@linux.alibaba.com>, jgg@ziepe.ca, leon@kernel.org,
- chengyou@linux.alibaba.com
-Cc: linux-rdma@vger.kernel.org, kaishen@linux.alibaba.com
-References: <20241126070351.92787-1-boshiyu@linux.alibaba.com>
- <20241126070351.92787-3-boshiyu@linux.alibaba.com>
- <580390cc-b4aa-4d72-86ae-ad1d24dd5b31@linux.dev>
- <Z0fW1JTJSl067TZP@xy-macbook.local>
- <e109482b-45a5-49a1-888b-d7ed3eb3ec89@linux.dev>
- <c86e8468-2344-41f4-bfd8-c1796742bfd5@linux.alibaba.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <c86e8468-2344-41f4-bfd8-c1796742bfd5@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-在 2024/11/29 12:18, Boshi Yu 写道:
-> 
-> 
-> 在 2024/11/29 16:54, Zhu Yanjun wrote:
->> On 28.11.24 03:35, Boshi Yu wrote:
->>> On Tue, Nov 26, 2024 at 04:51:02PM +0100, Zhu Yanjun wrote:
->>>> 在 2024/11/26 7:59, Boshi Yu 写道:
->>>>> The erdma_add_gid() interface inserts a GID entry at the
->>>>> specified index. The erdma_del_gid() interface deletes the
->>>>> GID entry at the specified index. Additionally, programs
->>>>> can invoke the erdma_query_port() and erdma_get_port_immutable()
->>>>> interfaces to query the GID table length.
->>>>>
->>>>> Signed-off-by: Boshi Yu <boshiyu@linux.alibaba.com>
->>>>> Reviewed-by: Cheng Xu <chengyou@linux.alibaba.com>
->>>>> ---
->>>>>    drivers/infiniband/hw/erdma/erdma.h       |  1 +
->>>>>    drivers/infiniband/hw/erdma/erdma_hw.h    | 28 +++++++++++-
->>>>>    drivers/infiniband/hw/erdma/erdma_main.c  |  3 ++
->>>>>    drivers/infiniband/hw/erdma/erdma_verbs.c | 56 +++++++++++++++++ 
->>>>> + +++--
->>>>>    drivers/infiniband/hw/erdma/erdma_verbs.h | 12 +++++
->>>>>    5 files changed, 96 insertions(+), 4 deletions(-)
->>>>>
->>>>> diff --git a/drivers/infiniband/hw/erdma/erdma.h b/drivers/ 
->>>>> infiniband/hw/erdma/erdma.h
->>>>> index ad4dc1a4bdc7..42dabf674f5d 100644
->>>>> --- a/drivers/infiniband/hw/erdma/erdma.h
->>>>> +++ b/drivers/infiniband/hw/erdma/erdma.h
->>>>> @@ -148,6 +148,7 @@ struct erdma_devattr {
->>>>>        u32 max_mr;
->>>>>        u32 max_pd;
->>>>>        u32 max_mw;
->>>>> +    u32 max_gid;
->>>>>        u32 local_dma_key;
->>>>>    };
->>>>> diff --git a/drivers/infiniband/hw/erdma/erdma_hw.h b/drivers/ 
->>>>> infiniband/hw/erdma/erdma_hw.h
->>>>> index 970b392d4fb4..7e03c5f97501 100644
->>>>> --- a/drivers/infiniband/hw/erdma/erdma_hw.h
->>>>> +++ b/drivers/infiniband/hw/erdma/erdma_hw.h
->>>>> @@ -21,6 +21,9 @@
->>>>>    #define ERDMA_NUM_MSIX_VEC 32U
->>>>>    #define ERDMA_MSIX_VECTOR_CMDQ 0
->>>>> +/* RoCEv2 related */
->>>>> +#define ERDMA_ROCEV2_GID_SIZE 16
->>>>> +
->>>>>    /* erdma device protocol type */
->>>>>    enum erdma_proto_type {
->>>>>        ERDMA_PROTO_IWARP = 0,
->>>>> @@ -143,7 +146,8 @@ enum CMDQ_RDMA_OPCODE {
->>>>>        CMDQ_OPCODE_DESTROY_CQ = 5,
->>>>>        CMDQ_OPCODE_REFLUSH = 6,
->>>>>        CMDQ_OPCODE_REG_MR = 8,
->>>>> -    CMDQ_OPCODE_DEREG_MR = 9
->>>>> +    CMDQ_OPCODE_DEREG_MR = 9,
->>>>> +    CMDQ_OPCODE_SET_GID = 14,
->>>>>    };
->>>>>    enum CMDQ_COMMON_OPCODE {
->>>>> @@ -401,7 +405,29 @@ struct erdma_cmdq_query_stats_resp {
->>>>>        u64 rx_pps_meter_drop_packets_cnt;
->>>>>    };
->>>>> +enum erdma_network_type {
->>>>> +    ERDMA_NETWORK_TYPE_IPV4 = 0,
->>>>> +    ERDMA_NETWORK_TYPE_IPV6 = 1,
->>>>> +};
->>>>
->>>> In the file include/rdma/ib_verbs.h
->>>>
->>>> "
->>>> ...
->>>>   183 enum rdma_network_type {
->>>> ...
->>>>   186     RDMA_NETWORK_IPV4,
->>>>   187     RDMA_NETWORK_IPV6
->>>>   188 };
->>>> ...
->>>> "
->>>> Not sure why the above RDMA_NETWORK_IPV4 and RDMA_NETWORK_IPV6 are 
->>>> not used.
->>>>
->>>> Zhu Yanjun
->>>>
->>>
->>> Hi, Yanjun,
->>>
->>> Given that the values for RDMA_NETWORK_IPV4 and RDMA_NETWORK_IPV6 are 
->>> 2 and 3,
->>> respectively, we would need 2 bits to store the network type if we 
->>> use them
->>> directly. However, since we only need to differentiate between IPv4 
->>> and IPv6
->>> for the RoCEv2 protocol, 1 bit is sufficient.
->>
->> I can not get you. You mean, you want to use 1 bit to differentiate 
->> between IPv4 and IPv6. How to implement this idea? Can you show us the 
->> difference of 1 bit (enum erdma_network_type) and 2 bits (enum 
->> rdma_network_type) in driver?
->>
->> Thanks,
->>
->> Zhu Yanjun
-> 
-> Hi, Yanjun,
-> 
-> I'm sorry for not explaining this issue clearly. The enum 
-> erdma_network_type is actually a convention between the erdma hardware 
-> and the erdma driver. We just want to use fewer bits to pass the 
-> information to the hardware, independent of the kernel definition.
+The dr_domain_add_vport_cap() function genereally returns NULL on error
+but sometimes we want it to return ERR_PTR(-EBUSY) so the caller can
+retry.  The problem here is that "ret" can be either -EBUSY or -ENOMEM
+and if it's and -ENOMEM then the error pointer is propogated back and
+eventually dereferenced in dr_ste_v0_build_src_gvmi_qpn_tag().
 
-Thanks a lot. This makes sense to me. The enum erdma_network_type is 1 
-bit, including 0, 1. This can let the driver use fewer bits to 
-communicate with the hardware.
+Fixes: 11a45def2e19 ("net/mlx5: DR, Add support for SF vports")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ .../net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c    | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-
-Zhu Yanjun
-
-> 
-> Thanks,
-> 
-> Boshi Yu
-> 
->>>
->>> Thanks,
->>> Boshi Yu
->>>
->>>>> +
->>>>> +enum erdma_set_gid_op {
->>>>> +    ERDMA_SET_GID_OP_ADD = 0,
->>>>> +    ERDMA_SET_GID_OP_DEL = 1,
->>>>> +};
->>>>> +
->>>>> +/* set gid cfg */
->>>>> +#define ERDMA_CMD_SET_GID_SGID_IDX_MASK GENMASK(15, 0)
->>>>> +#define ERDMA_CMD_SET_GID_NTYPE_MASK BIT(16)
->>>>> +#define ERDMA_CMD_SET_GID_OP_MASK BIT(31)
->>>>> +
->>>>> +struct erdma_cmdq_set_gid_req {
->>>>> +    u64 hdr;
->>>>> +    u32 cfg;
->>>>> +    u8 gid[ERDMA_ROCEV2_GID_SIZE];
->>>>> +};
->>>>> +
->>>>>    /* cap qword 0 definition */
->>>>> +#define ERDMA_CMD_DEV_CAP_MAX_GID_MASK GENMASK_ULL(51, 48)
->>>>>    #define ERDMA_CMD_DEV_CAP_MAX_CQE_MASK GENMASK_ULL(47, 40)
->>>>>    #define ERDMA_CMD_DEV_CAP_FLAGS_MASK GENMASK_ULL(31, 24)
->>>>>    #define ERDMA_CMD_DEV_CAP_MAX_RECV_WR_MASK GENMASK_ULL(23, 16)
->>>>> diff --git a/drivers/infiniband/hw/erdma/erdma_main.c b/drivers/ 
->>>>> infiniband/hw/erdma/erdma_main.c
->>>>> index b6706c74cd96..d72b85e8971d 100644
->>>>> --- a/drivers/infiniband/hw/erdma/erdma_main.c
->>>>> +++ b/drivers/infiniband/hw/erdma/erdma_main.c
->>>>> @@ -404,6 +404,7 @@ static int erdma_dev_attrs_init(struct 
->>>>> erdma_dev *dev)
->>>>>        dev->attrs.max_mr_size = 1ULL << ERDMA_GET_CAP(MAX_MR_SIZE, 
->>>>> cap0);
->>>>>        dev->attrs.max_mw = 1 << ERDMA_GET_CAP(MAX_MW, cap1);
->>>>>        dev->attrs.max_recv_wr = 1 << ERDMA_GET_CAP(MAX_RECV_WR, cap0);
->>>>> +    dev->attrs.max_gid = 1 << ERDMA_GET_CAP(MAX_GID, cap0);
->>>>>        dev->attrs.local_dma_key = ERDMA_GET_CAP(DMA_LOCAL_KEY, cap1);
->>>>>        dev->attrs.cc = ERDMA_GET_CAP(DEFAULT_CC, cap1);
->>>>>        dev->attrs.max_qp = ERDMA_NQP_PER_QBLOCK * 
->>>>> ERDMA_GET_CAP(QBLOCK, cap1);
->>>>> @@ -482,6 +483,8 @@ static void erdma_res_cb_free(struct erdma_dev 
->>>>> *dev)
->>>>>    static const struct ib_device_ops erdma_device_ops_rocev2 = {
->>>>>        .get_link_layer = erdma_get_link_layer,
->>>>> +    .add_gid = erdma_add_gid,
->>>>> +    .del_gid = erdma_del_gid,
->>>>>    };
->>>>>    static const struct ib_device_ops erdma_device_ops_iwarp = {
->>>>> diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/ 
->>>>> infiniband/hw/erdma/erdma_verbs.c
->>>>> index 3b7e55515cfd..9944eed584ec 100644
->>>>> --- a/drivers/infiniband/hw/erdma/erdma_verbs.c
->>>>> +++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
->>>>> @@ -367,7 +367,13 @@ int erdma_query_port(struct ib_device *ibdev, 
->>>>> u32 port,
->>>>>        memset(attr, 0, sizeof(*attr));
->>>>> -    attr->gid_tbl_len = 1;
->>>>> +    if (erdma_device_iwarp(dev)) {
->>>>> +        attr->gid_tbl_len = 1;
->>>>> +    } else {
->>>>> +        attr->gid_tbl_len = dev->attrs.max_gid;
->>>>> +        attr->ip_gids = true;
->>>>> +    }
->>>>> +
->>>>>        attr->port_cap_flags = IB_PORT_CM_SUP | 
->>>>> IB_PORT_DEVICE_MGMT_SUP;
->>>>>        attr->max_msg_sz = -1;
->>>>> @@ -399,14 +405,14 @@ int erdma_get_port_immutable(struct ib_device 
->>>>> *ibdev, u32 port,
->>>>>        if (erdma_device_iwarp(dev)) {
->>>>>            port_immutable->core_cap_flags = RDMA_CORE_PORT_IWARP;
->>>>> +        port_immutable->gid_tbl_len = 1;
->>>>>        } else {
->>>>>            port_immutable->core_cap_flags =
->>>>>                RDMA_CORE_PORT_IBA_ROCE_UDP_ENCAP;
->>>>>            port_immutable->max_mad_size = IB_MGMT_MAD_SIZE;
->>>>> +        port_immutable->gid_tbl_len = dev->attrs.max_gid;
->>>>>        }
->>>>> -    port_immutable->gid_tbl_len = 1;
->>>>> -
->>>>>        return 0;
->>>>>    }
->>>>> @@ -1853,3 +1859,47 @@ enum rdma_link_layer 
->>>>> erdma_get_link_layer(struct ib_device *ibdev, u32 port_num)
->>>>>    {
->>>>>        return IB_LINK_LAYER_ETHERNET;
->>>>>    }
->>>>> +
->>>>> +static int erdma_set_gid(struct erdma_dev *dev, u8 op, u32 idx,
->>>>> +             const union ib_gid *gid)
->>>>> +{
->>>>> +    struct erdma_cmdq_set_gid_req req;
->>>>> +    u8 ntype;
->>>>> +
->>>>> +    req.cfg = FIELD_PREP(ERDMA_CMD_SET_GID_SGID_IDX_MASK, idx) |
->>>>> +          FIELD_PREP(ERDMA_CMD_SET_GID_OP_MASK, op);
->>>>> +
->>>>> +    if (op == ERDMA_SET_GID_OP_ADD) {
->>>>> +        if (ipv6_addr_v4mapped((struct in6_addr *)gid))
->>>>> +            ntype = ERDMA_NETWORK_TYPE_IPV4;
->>>>> +        else
->>>>> +            ntype = ERDMA_NETWORK_TYPE_IPV6;
->>>>> +
->>>>> +        req.cfg |= FIELD_PREP(ERDMA_CMD_SET_GID_NTYPE_MASK, ntype);
->>>>> +
->>>>> +        memcpy(&req.gid, gid, ERDMA_ROCEV2_GID_SIZE);
->>>>> +    }
->>>>> +
->>>>> +    erdma_cmdq_build_reqhdr(&req.hdr, CMDQ_SUBMOD_RDMA,
->>>>> +                CMDQ_OPCODE_SET_GID);
->>>>> +    return erdma_post_cmd_wait(&dev->cmdq, &req, sizeof(req), 
->>>>> NULL, NULL);
->>>>> +}
->>>>> +
->>>>> +int erdma_add_gid(const struct ib_gid_attr *attr, void **context)
->>>>> +{
->>>>> +    struct erdma_dev *dev = to_edev(attr->device);
->>>>> +    int ret;
->>>>> +
->>>>> +    ret = erdma_check_gid_attr(attr);
->>>>> +    if (ret)
->>>>> +        return ret;
->>>>> +
->>>>> +    return erdma_set_gid(dev, ERDMA_SET_GID_OP_ADD, attr->index,
->>>>> +                 &attr->gid);
->>>>> +}
->>>>> +
->>>>> +int erdma_del_gid(const struct ib_gid_attr *attr, void **context)
->>>>> +{
->>>>> +    return erdma_set_gid(to_edev(attr->device), ERDMA_SET_GID_OP_DEL,
->>>>> +                 attr->index, NULL);
->>>>> +}
->>>>> diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.h b/drivers/ 
->>>>> infiniband/hw/erdma/erdma_verbs.h
->>>>> index 90e2b35a0973..23cfeaf79eaa 100644
->>>>> --- a/drivers/infiniband/hw/erdma/erdma_verbs.h
->>>>> +++ b/drivers/infiniband/hw/erdma/erdma_verbs.h
->>>>> @@ -326,6 +326,16 @@ static inline struct erdma_cq *to_ecq(struct 
->>>>> ib_cq *ibcq)
->>>>>        return container_of(ibcq, struct erdma_cq, ibcq);
->>>>>    }
->>>>> +static inline int erdma_check_gid_attr(const struct ib_gid_attr 
->>>>> *attr)
->>>>> +{
->>>>> +    u8 ntype = rdma_gid_attr_network_type(attr);
->>>>> +
->>>>> +    if (ntype != RDMA_NETWORK_IPV4 && ntype != RDMA_NETWORK_IPV6)
->>>>> +        return -EINVAL;
->>>>> +
->>>>> +    return 0;
->>>>> +}
->>>>> +
->>>>>    static inline struct erdma_user_mmap_entry *
->>>>>    to_emmap(struct rdma_user_mmap_entry *ibmmap)
->>>>>    {
->>>>> @@ -382,5 +392,7 @@ int erdma_get_hw_stats(struct ib_device *ibdev, 
->>>>> struct rdma_hw_stats *stats,
->>>>>                   u32 port, int index);
->>>>>    enum rdma_link_layer erdma_get_link_layer(struct ib_device *ibdev,
->>>>>                          u32 port_num);
->>>>> +int erdma_add_gid(const struct ib_gid_attr *attr, void **context);
->>>>> +int erdma_del_gid(const struct ib_gid_attr *attr, void **context);
->>>>>    #endif
-> 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c
+index 3d74109f8230..a379e8358f82 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c
+@@ -297,6 +297,8 @@ dr_domain_add_vport_cap(struct mlx5dr_domain *dmn, u16 vport)
+ 	if (ret) {
+ 		mlx5dr_dbg(dmn, "Couldn't insert new vport into xarray (%d)\n", ret);
+ 		kvfree(vport_caps);
++		if (ret != -EBUSY)
++			return NULL;
+ 		return ERR_PTR(ret);
+ 	}
+ 
+-- 
+2.45.2
 
 
