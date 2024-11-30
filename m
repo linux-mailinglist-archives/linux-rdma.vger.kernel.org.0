@@ -1,160 +1,157 @@
-Return-Path: <linux-rdma+bounces-6167-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6168-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 033E69DEFCF
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2024 11:06:54 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90DF79DF393
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2024 23:53:07 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A58EA1630A3
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2024 10:06:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 564CC2815FF
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2024 22:53:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71579155382;
-	Sat, 30 Nov 2024 10:06:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VS/zch+m"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0745F15A864;
+	Sat, 30 Nov 2024 22:53:03 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8130F4087C
-	for <linux-rdma@vger.kernel.org>; Sat, 30 Nov 2024 10:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ADF412B93;
+	Sat, 30 Nov 2024 22:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732961209; cv=none; b=qXuQwrPTwZ1A8zkbpZk0DuXS7o+5HGLVQlEl3zj1Poz7SkgYwUFy4c5u8I0qA9HdT/l0b4IZCXDBcv3vX22Yz28UBq0Tsamr5bFKx38HjrzAUg8e7xB8zlfH5oh8IgrqkGBxCN47u3dHP227cDWbIVDx4ZP20xUMRWrL38G6E0M=
+	t=1733007182; cv=none; b=e2QyQT2PHd+U0nzVK8snJ7gdTWSPk78CW170BlrynzUVj+DGk2iLfgGNhPnovNa3pSPa4Cr1L6Qypfncm5iUBmyWHGlgK05VFRk5J4V2yb8TGsnocxcs6x/8cwZg3CYiw5OBMozk+CavRotcHv+rDIyDejAxBW0zstt4yMNuodE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732961209; c=relaxed/simple;
-	bh=yF4jc/0jnas8u7mphux/NDbZLQaah9CybZy/aj1SKX8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=dsQ33Q1i6AEe+CCJ03gY0Q8m7FuQwVJJls2uWtwxnZqC2rpgVdun6LhgyTO1ntSmFOhfQrFhhdMlAccAmAUxJXE8xQNlJdPJ9NeTS1Er6NHncvxM0QUrzEEnax35a0UpTq6oxs7X/kd16Q/LJY+/KQdxokOlI9W11f8jSnGHfB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VS/zch+m; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5d0c92e335bso705263a12.2
-        for <linux-rdma@vger.kernel.org>; Sat, 30 Nov 2024 02:06:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1732961206; x=1733566006; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=c8lTqcXsmGRMOtMxTUX660jV7KdM2uwrFwbDJ8pCTWo=;
-        b=VS/zch+m09chtAANJf75Mhcb0ZQcPj5smcPYN9Qdmn3GwT8IaMs3dNiwBqi+Eref0w
-         JGTk4lZG/FvqYZY0ZMbh/KOakPJoeA308dY8OwC9HY9M+iBWsdAwLOUvueJEhUGIQZON
-         yeJdXzV9V5YbZCzMYshLFMkam99FbSUwL8+p8DARNw59uQ6x7kv1OV1BJiQNgXDhS9gb
-         sUiuy5mEvExGdmImNyRwbz5PvVtGvmnkQPVMHBsZLTi6ZvPx2U9nrm5WuV+x0OfHjIyf
-         vG89wIjEvmTyZ4tDSZ5ukP6y8JsgXvtHb7oyoM+VTV7CJSEHWtbrcW4cHyg9klKXuChP
-         XfNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732961206; x=1733566006;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c8lTqcXsmGRMOtMxTUX660jV7KdM2uwrFwbDJ8pCTWo=;
-        b=YNlsEAM01uG02mKlXGNiw6wa2dUZ4BE7hnKme0ErzdogyToH+3FsQOnoZeopAvYYUE
-         +jRGkiLTsRZgXH0xwp3wpNPt29rPRhWMPza1O8Hxir+vn97LpkWa0bp8Z2N4dXH+rbL9
-         WGYrBfG9tcJVqbnsm50r8Ur0HSNOPeHX/J0g6mq84S2klFsZdlvxMSFy4V2yWuR8bqfP
-         LNEArlQxKejt0559cAeRtKQk30OPB5nAP9IMNcIoRXUDYeV1RyGeF/MSXsQpbsvu3yxA
-         cwWN4oPAfEcYymBJ9DQYPTzpofquiF38sc1AiKzwIWymraJVgrPXwcxWBH8Zv0FHQOLi
-         NRhw==
-X-Forwarded-Encrypted: i=1; AJvYcCVFaD+3uPGwgixsnk9JryV68zhAUx/0OCNAdn6N1l0MZFylQlWOh56D5BQe8H2/ISy4fb2tk1UwVwYh@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCvCDAxO03riahrxOdYkAt7U3AFMjcWTGfs09CA6EXpZQv7yXP
-	PwPqaCmpW66wKwh+WBAo8cZm2j2ybaUTVhhLaa6TifH1yMCWkNx3pPV14w8HWrs=
-X-Gm-Gg: ASbGncvyIztFrLoWPTJRhjNL16PcKBQ2EgduHxQh4+hQO1/44qGLJwz34bP6+x4VPHL
-	EEP0AaWs6uwxu3k7NIb3NiewcSY6coYB4WT5uxhqwKWPThe4++Mq83IQqTUCVkrh8jaXJha8cF1
-	UM/ul4dWyG7K2SkQyU0cO2zPpINlr1SpVhB4Bxrbgut47a338wJKrhgCYrf0f9ALXdBTB7qSrH+
-	k/Yu/3f2b4uPxAO54v/jpd4lBLKCKU1wyUeXWUxTh4QEoaPx6Y9sCpcnPnZ7nJ/DzlemH5I
-X-Google-Smtp-Source: AGHT+IG1JrcrPGtyAZJteVJCHxH7vH8ZY5O7MkjzsGsefj4ES1XpFTzV8A+g+FkUnjuwPIicEV56fQ==
-X-Received: by 2002:a05:6402:1d50:b0:5d0:b931:8db9 with SMTP id 4fb4d7f45d1cf-5d0b9319043mr5867129a12.20.1732961205855;
-        Sat, 30 Nov 2024 02:06:45 -0800 (PST)
-Received: from localhost (h1109.n1.ips.mtn.co.ug. [41.210.145.9])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa5996df78csm267844366b.67.2024.11.30.02.06.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Nov 2024 02:06:45 -0800 (PST)
-Date: Sat, 30 Nov 2024 13:06:41 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Roland Dreier <roland@kernel.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Erick Archer <erick.archer@gmx.com>,
-	Akiva Goldberger <agoldberger@nvidia.com>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] RDMA/uverbs: Prevent integer overflow issue
-Message-ID: <b8765ab3-c2da-4611-aae0-ddd6ba173d23@stanley.mountain>
+	s=arc-20240116; t=1733007182; c=relaxed/simple;
+	bh=LEeVOlUYjPThplReczUYZlo3DgovBTAiLD4zPKyjfkI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AphXe7HRZKVTCCBqLYd/kFy/HsoCT2lVqXH7MHQ4XcP9O0t3e4SNxznbIU6FaGKX4IpKTTy8ll08LbZfpsnM4ODyD5DtmOAKGDQztLdE6jABWdm6W11tLLbuc3GekbLa0wLQGI+k6q/z7ozBDRryvS0PTFnKucXc+hntRalmE+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sun, 1 Dec
+ 2024 01:52:54 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sun, 1 Dec 2024
+ 01:52:54 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Doug Ledford
+	<dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<lvc-project@linuxtesting.org>
+Subject: [PATCH 5.10] IB/core: Fix ib_cache_setup_one error flow cleanup
+Date: Sat, 30 Nov 2024 14:52:49 -0800
+Message-ID: <20241130225249.31899-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-In the expression "cmd.wqe_size * cmd.wr_count", both variables are u32
-values that come from the user so the multiplication can lead to integer
-wrapping.  Then we pass the result to uverbs_request_next_ptr() which also
-could potentially wrap.  The "cmd.sge_count * sizeof(struct ib_uverbs_sge)"
-multiplication can also overflow on 32bit systems although it's fine on
-64bit systems.
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-This patch does two things.  First, I've re-arranged the condition in
-uverbs_request_next_ptr() so that the use controlled variable "len" is on
-one side of the comparison by itself without any math.  Then I've modified
-all the callers to use size_mul() for the multiplications.
+[ Upstream commit 1403c8b14765eab805377dd3b75e96ace8747aed ]
 
-Fixes: 67cdb40ca444 ("[IB] uverbs: Implement more commands")
-Cc: stable@vger.kernel.org
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+When ib_cache_update return an error, we exit ib_cache_setup_one
+instantly with no proper cleanup, even though before this we had
+already successfully done gid_table_setup_one, that results in
+the kernel WARN below.
+
+Do proper cleanup using gid_table_cleanup_one before returning
+the err in order to fix the issue.
+
+WARNING: CPU: 4 PID: 922 at drivers/infiniband/core/cache.c:806 gid_table_release_one+0x181/0x1a0
+Modules linked in:
+CPU: 4 UID: 0 PID: 922 Comm: c_repro Not tainted 6.11.0-rc1+ #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+RIP: 0010:gid_table_release_one+0x181/0x1a0
+Code: 44 8b 38 75 0c e8 2f cb 34 ff 4d 8b b5 28 05 00 00 e8 23 cb 34 ff 44 89 f9 89 da 4c 89 f6 48 c7 c7 d0 58 14 83 e8 4f de 21 ff <0f> 0b 4c 8b 75 30 e9 54 ff ff ff 48 8    3 c4 10 5b 5d 41 5c 41 5d 41
+RSP: 0018:ffffc90002b835b0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff811c8527
+RDX: 0000000000000000 RSI: ffffffff811c8534 RDI: 0000000000000001
+RBP: ffff8881011b3d00 R08: ffff88810b3abe00 R09: 205d303839303631
+R10: 666572207972746e R11: 72746e6520444947 R12: 0000000000000001
+R13: ffff888106390000 R14: ffff8881011f2110 R15: 0000000000000001
+FS:  00007fecc3b70800(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000340 CR3: 000000010435a001 CR4: 00000000003706b0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ? show_regs+0x94/0xa0
+ ? __warn+0x9e/0x1c0
+ ? gid_table_release_one+0x181/0x1a0
+ ? report_bug+0x1f9/0x340
+ ? gid_table_release_one+0x181/0x1a0
+ ? handle_bug+0xa2/0x110
+ ? exc_invalid_op+0x31/0xa0
+ ? asm_exc_invalid_op+0x16/0x20
+ ? __warn_printk+0xc7/0x180
+ ? __warn_printk+0xd4/0x180
+ ? gid_table_release_one+0x181/0x1a0
+ ib_device_release+0x71/0xe0
+ ? __pfx_ib_device_release+0x10/0x10
+ device_release+0x44/0xd0
+ kobject_put+0x135/0x3d0
+ put_device+0x20/0x30
+ rxe_net_add+0x7d/0xa0
+ rxe_newlink+0xd7/0x190
+ nldev_newlink+0x1b0/0x2a0
+ ? __pfx_nldev_newlink+0x10/0x10
+ rdma_nl_rcv_msg+0x1ad/0x2e0
+ rdma_nl_rcv_skb.constprop.0+0x176/0x210
+ netlink_unicast+0x2de/0x400
+ netlink_sendmsg+0x306/0x660
+ __sock_sendmsg+0x110/0x120
+ ____sys_sendmsg+0x30e/0x390
+ ___sys_sendmsg+0x9b/0xf0
+ ? kstrtouint+0x6e/0xa0
+ ? kstrtouint_from_user+0x7c/0xb0
+ ? get_pid_task+0xb0/0xd0
+ ? proc_fail_nth_write+0x5b/0x140
+ ? __fget_light+0x9a/0x200
+ ? preempt_count_add+0x47/0xa0
+ __sys_sendmsg+0x61/0xd0
+ do_syscall_64+0x50/0x110
+ entry_SYSCALL_64_after_hwframe+0x76/0x7e
+
+Fixes: 1901b91f9982 ("IB/core: Fix potential NULL pointer dereference in pkey cache")
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Reviewed-by: Maher Sanalla <msanalla@nvidia.com>
+Link: https://patch.msgid.link/79137687d829899b0b1c9835fcb4b258004c439a.1725273354.git.leon@kernel.org
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
+[Nikita: minor fix to resolve merge conflict.]
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 ---
- drivers/infiniband/core/uverbs_cmd.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/infiniband/core/cache.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 66b02fbf077a..5ad14c39d48c 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -161,7 +161,7 @@ static const void __user *uverbs_request_next_ptr(struct uverbs_req_iter *iter,
- {
- 	const void __user *res = iter->cur;
+diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+index 7989b7e1d1c0..21b405abb0e1 100644
+--- a/drivers/infiniband/core/cache.c
++++ b/drivers/infiniband/core/cache.c
+@@ -1633,8 +1633,10 @@ int ib_cache_setup_one(struct ib_device *device)
  
--	if (iter->cur + len > iter->end)
-+	if (len > iter->end - iter->cur)
- 		return (void __force __user *)ERR_PTR(-ENOSPC);
- 	iter->cur += len;
- 	return res;
-@@ -2008,11 +2008,13 @@ static int ib_uverbs_post_send(struct uverbs_attr_bundle *attrs)
- 	ret = uverbs_request_start(attrs, &iter, &cmd, sizeof(cmd));
- 	if (ret)
- 		return ret;
--	wqes = uverbs_request_next_ptr(&iter, cmd.wqe_size * cmd.wr_count);
-+	wqes = uverbs_request_next_ptr(&iter, size_mul(cmd.wqe_size,
-+						       cmd.wr_count));
- 	if (IS_ERR(wqes))
- 		return PTR_ERR(wqes);
--	sgls = uverbs_request_next_ptr(
--		&iter, cmd.sge_count * sizeof(struct ib_uverbs_sge));
-+	sgls = uverbs_request_next_ptr(&iter,
-+				       size_mul(cmd.sge_count,
-+						sizeof(struct ib_uverbs_sge)));
- 	if (IS_ERR(sgls))
- 		return PTR_ERR(sgls);
- 	ret = uverbs_request_finish(&iter);
-@@ -2198,11 +2200,11 @@ ib_uverbs_unmarshall_recv(struct uverbs_req_iter *iter, u32 wr_count,
- 	if (wqe_size < sizeof(struct ib_uverbs_recv_wr))
- 		return ERR_PTR(-EINVAL);
+ 	rdma_for_each_port (device, p) {
+ 		err = ib_cache_update(device, p, true);
+-		if (err)
++		if (err) {
++			gid_table_cleanup_one(device);
+ 			return err;
++		}
+ 	}
  
--	wqes = uverbs_request_next_ptr(iter, wqe_size * wr_count);
-+	wqes = uverbs_request_next_ptr(iter, size_mul(wqe_size, wr_count));
- 	if (IS_ERR(wqes))
- 		return ERR_CAST(wqes);
--	sgls = uverbs_request_next_ptr(
--		iter, sge_count * sizeof(struct ib_uverbs_sge));
-+	sgls = uverbs_request_next_ptr(iter, size_mul(sge_count,
-+						      sizeof(struct ib_uverbs_sge)));
- 	if (IS_ERR(sgls))
- 		return ERR_CAST(sgls);
- 	ret = uverbs_request_finish(iter);
+ 	return 0;
 -- 
-2.45.2
+2.25.1
 
 
