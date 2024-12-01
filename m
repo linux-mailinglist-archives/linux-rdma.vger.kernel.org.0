@@ -1,50 +1,94 @@
-Return-Path: <linux-rdma+bounces-6168-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6169-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90DF79DF393
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2024 23:53:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 134339DF52F
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Dec 2024 11:38:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 564CC2815FF
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2024 22:53:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B5D22811CA
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Dec 2024 10:38:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0745F15A864;
-	Sat, 30 Nov 2024 22:53:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1A28614E;
+	Sun,  1 Dec 2024 10:37:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="BPjcToaZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2086.outbound.protection.outlook.com [40.107.243.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ADF412B93;
-	Sat, 30 Nov 2024 22:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733007182; cv=none; b=e2QyQT2PHd+U0nzVK8snJ7gdTWSPk78CW170BlrynzUVj+DGk2iLfgGNhPnovNa3pSPa4Cr1L6Qypfncm5iUBmyWHGlgK05VFRk5J4V2yb8TGsnocxcs6x/8cwZg3CYiw5OBMozk+CavRotcHv+rDIyDejAxBW0zstt4yMNuodE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733007182; c=relaxed/simple;
-	bh=LEeVOlUYjPThplReczUYZlo3DgovBTAiLD4zPKyjfkI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AphXe7HRZKVTCCBqLYd/kFy/HsoCT2lVqXH7MHQ4XcP9O0t3e4SNxznbIU6FaGKX4IpKTTy8ll08LbZfpsnM4ODyD5DtmOAKGDQztLdE6jABWdm6W11tLLbuc3GekbLa0wLQGI+k6q/z7ozBDRryvS0PTFnKucXc+hntRalmE+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sun, 1 Dec
- 2024 01:52:54 +0300
-Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sun, 1 Dec 2024
- 01:52:54 +0300
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>
-CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Doug Ledford
-	<dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>
-Subject: [PATCH 5.10] IB/core: Fix ib_cache_setup_one error flow cleanup
-Date: Sat, 30 Nov 2024 14:52:49 -0800
-Message-ID: <20241130225249.31899-1-n.zhandarovich@fintech.ru>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C30203F9FB;
+	Sun,  1 Dec 2024 10:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.86
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1733049478; cv=fail; b=sdZI2i1y3xEDQOSpmu8G+bbkONDND4bQ/sVuDnyl/+oCmU9zG4Hp9QLc8a93NhQFdRO3yddUCBZrp3cT3FvP/9o3DTuIwut7Ps8m/F1/He47ZaKOUgn3U6aqHwxlO9HVA1Y7wTc8ef+a0zSDJ799ws4rSp8NL28S4yxqXD3wUzU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1733049478; c=relaxed/simple;
+	bh=P5QdX8HPueRWCIvNTtegti5wUOHoBNVTgOm/la8/Mik=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tAZH6OrIcT8forYT5ufnDCjbo6o8PaQy7SiH3Xbn3XhSZuw3MUdvjUF1VeM0sTf0dZMCx+Fs+BOS+VTNvuY70luOLELZGkW5RZVo9WTPie+lX5lN2ecgt9s5zS6y/s5QRcm2oXZG3dBF/B6ce32WhvRI+4KljsQDq9Dff7urlBU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=BPjcToaZ; arc=fail smtp.client-ip=40.107.243.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=cKF1gdLMV1FJLrNPYBaXMzijM8H1yc0wMW3to+znBSQIDFGKDmyWlLxXO7SfHPZJW0YVCnuewHvVr7eI25TCa4ExVr/LJAcf6vUNLaibuV0qHBiDEowmU6EfpsJh+bwFpUuQB7uUgSZ1bB2dNNwfOu1SevvPO62S5NVVoWB6ajnEklJhPClH8GxGxaOlmt6GR1AFa0BDG2/2KIqxo3A0SJCVDKx96NMQl/8rMibwSfJ5a2qOzPHgYSkxTNDVGFltro7WZCcQmuaUY2Yjvn3L8QPxNlVrbHivi28b7fO1N9Vv8sEwFAfFJpgDs/jhzgr5aLU8fUa3DHtmElE0sH760g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GYisgyjLGYHAmzJ50Py8JaxV7XfThnXZRRhkkk0v/JI=;
+ b=vzs5TkDVMrr/0tfts5e4d3durE/BAmksRMPHFmq9j0nvAhYgO8X/Lg9O3SX2qFi5D8IV4Rm0qby1Ub31BpCPyqJRlapySMXeSTVQDQX8dU+OjUV6EF3+AZFGkrUqCK85qapg7B5Zj5/nLAcAifS7tDngQ20Z9qVWbipJ4ZxqROcf7Sho8eAhd6Pkdxl8mYKw7WM/nQTVBLsjRmAk/dfC0eGLbjkHlT2W9XKjwmnBZ//c8q3FhuX6S+xnqxK7t8VprFsbnBnipOybfamDhaGrPsM0nR7IaM+GSJpxz6Hg6jjYnENAykMRUHDeOCd94fRomtBcJwuYobvxnbeQhSxE2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GYisgyjLGYHAmzJ50Py8JaxV7XfThnXZRRhkkk0v/JI=;
+ b=BPjcToaZVxmyKVf4lhdCUBw0v7bZyuvYuMcVKAFga4z8ysSCDI3kfbdZdhtV5mJZWRDWhvJNgURXNrNSiwhKbxcJx+oauzWmMKmXJk2pOG2dDmRfnb4zynjoc8aFBcbP3hBtWVhNWKztbT/WRGaJJfVknEBMcb0EnL0IJYEPCjpO0JBPHC48UQPeXbq4Fx4b4fQDRwFHOdZ4DsRqDlOZVhCRSPllzigZCZjP/S1cG4zvJ0kNMjnZ9RP3CPM5Ln1f1etsSlZ/tbErImgKnPQNmyTnm+cuIINtF+Y6mHMLQ452OaQH3QV23nYxJi27ln8GWQTHmWxPDwC52u8XEUK+Vw==
+Received: from DM6PR18CA0022.namprd18.prod.outlook.com (2603:10b6:5:15b::35)
+ by IA1PR12MB6649.namprd12.prod.outlook.com (2603:10b6:208:3a2::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8207.16; Sun, 1 Dec
+ 2024 10:37:51 +0000
+Received: from DS3PEPF0000C37F.namprd04.prod.outlook.com
+ (2603:10b6:5:15b:cafe::ce) by DM6PR18CA0022.outlook.office365.com
+ (2603:10b6:5:15b::35) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8207.15 via Frontend Transport; Sun,
+ 1 Dec 2024 10:37:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ DS3PEPF0000C37F.mail.protection.outlook.com (10.167.23.9) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8230.7 via Frontend Transport; Sun, 1 Dec 2024 10:37:51 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Sun, 1 Dec 2024
+ 02:37:43 -0800
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Sun, 1 Dec 2024 02:37:43 -0800
+Received: from vdi.nvidia.com (10.127.8.9) by mail.nvidia.com (10.126.190.181)
+ with Microsoft SMTP Server id 15.2.1544.4 via Frontend Transport; Sun, 1 Dec
+ 2024 02:37:39 -0800
+From: Yonatan Maman <ymaman@nvidia.com>
+To: <kherbst@redhat.com>, <lyude@redhat.com>, <dakr@redhat.com>,
+	<airlied@gmail.com>, <simona@ffwll.ch>, <jgg@ziepe.ca>, <leon@kernel.org>,
+	<jglisse@redhat.com>, <akpm@linux-foundation.org>, <Ymaman@Nvidia.com>,
+	<GalShalom@Nvidia.com>, <dri-devel@lists.freedesktop.org>,
+	<nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+	<linux-tegra@vger.kernel.org>
+Subject: [RFC 0/5] GPU Direct RDMA (P2P DMA) for Device Private Pages
+Date: Sun, 1 Dec 2024 12:36:54 +0200
+Message-ID: <20241201103659.420677-1-ymaman@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -53,105 +97,110 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
- (10.0.10.18)
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF0000C37F:EE_|IA1PR12MB6649:EE_
+X-MS-Office365-Filtering-Correlation-Id: 619bd23f-0a3c-468f-906a-08dd11f434df
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|1800799024|36860700013|82310400026|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?ggUuCUOL5/Mv6MplhgM2wtqKpTIYPxzz3ALsWxH3AmS8dMfFyaPpFbu6pmez?=
+ =?us-ascii?Q?WV2+LVBvFEEaZAvoHxSn6KR3JpQCBJ4OlWvSVBH/xrV8H2tsFvDKeiZoLJic?=
+ =?us-ascii?Q?rDUpE6n7OvIPEWRMx7OOhnsL4/koMllwP6Y2gpSKIDRMnaoDnD+Tqa+lcxJi?=
+ =?us-ascii?Q?xPAG49FGS/qNdYK3/6KozqavrdT8uCkdmZH2yy2hasHaTVJ8TT9SAu3ziMlx?=
+ =?us-ascii?Q?5+yOuommidhzbOOYxsHuqncpC9xVJZctnEbmXVwG0CYxaNC2keFX3nl0MOci?=
+ =?us-ascii?Q?1oSrDdBnTnSdL6ZsMe141UFkVcYxPkz1h+12/Bsy9ed8HItq0WqbFrD96NSm?=
+ =?us-ascii?Q?iR+GxvB1af9ZvkTxxpFJGkyfk1uBRJ9wTNGSJ4feEza1c2iJ7oIf0GuT1bV4?=
+ =?us-ascii?Q?sfQEpVzVh33AzE3Ugpcswa2MYxD7A+4/pnt0gqvl7swoENQ+E0a6XpcG8jh9?=
+ =?us-ascii?Q?j7psdruvfFQzBzYAL4BSQ3ikMmfO5ph2MToANr8GlJ8EzYEAeJViaTWWT5oX?=
+ =?us-ascii?Q?X9Qa/VRWYDe7DQ5b6mU80U7Xyb2CrMRDG5veNLy/WeM00k5MHGnHTSNAEB2w?=
+ =?us-ascii?Q?bp64F/a8ncJV7afRm1t2iFNP7Pi4YNTm4Gk5hxAcijQIIXjDoxPx52R2XnaV?=
+ =?us-ascii?Q?VrYnBy21aHxs3ZydpXKlmYbnFRGf5oJ9Nv7wONY9TXqoJ6FujcveLT35cVOx?=
+ =?us-ascii?Q?wCJO5hiUdvaH8o4B8lVG1Z452Hb22Gx8TPaV/R5Npr1xg3VWA+SMtcFKZ+r7?=
+ =?us-ascii?Q?lqVHaV1o6btBgYOrNkItiDoC5GnrEE5QqN3OE5rdYFhIvn6z4LTN48rIZ7Ij?=
+ =?us-ascii?Q?w8JEOW4DnplhV8plNsQDFXIxP1yz4N6jgOSQlfULxxdRHa+SJcH3z6kBMjan?=
+ =?us-ascii?Q?2xu8aQGjIfhSrbLdHoYG0hx7zE5Q+qXPXRLmzwRoqKyj9RhuUhPhJqf1SG/n?=
+ =?us-ascii?Q?5cbipsp8yLj9rBVL7fn9RDBnjtC6IBGKkYITCT8RP0fpB+9QPUoPEpTltKvW?=
+ =?us-ascii?Q?2ByytzvUS2+pmktWv4rI4yu5RbHIpcuA6OQaAUkNi56vO5BzYEu1cULplBFe?=
+ =?us-ascii?Q?N/+V7C+0yUeRj8bR5Ul1uBiQVe+eboWCPEYcXLsVLHxWdQ9UKyBB4+MuZbh1?=
+ =?us-ascii?Q?gZAOcg26kgRxaUWgemte8bFPexr3WMEcTv1FSSPjxwu1PsWlrQWx94znm0wY?=
+ =?us-ascii?Q?4rI6eek8KvKsp2JAkAwg6JTkCSw6jvXzi2WxQF59rmOfWzDY/n29vUD7AJxu?=
+ =?us-ascii?Q?vGyTlkmzbU7K4hDVNpZcE6kk8hmSoTjv8XO4TvxDzqYcLMY0lRWNuhGRH6Zt?=
+ =?us-ascii?Q?plaBgvZPwlix3yCFjlm/5G4OYDCvAb5TTf2A6s5ykwXEPB3PMVVhVx0c8iA4?=
+ =?us-ascii?Q?mPoWzsUYm0aayILfNy+VQZ2qL/XNIvMt9a5WvzvHiYj9jAtFHcWf5lCxYLWN?=
+ =?us-ascii?Q?q+HEASHZH9WyzcAFcHcA4tE32T5qM5FCR0gsO5ljqHAUX3VARSqRSg=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(36860700013)(82310400026)(921020);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2024 10:37:51.2143
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 619bd23f-0a3c-468f-906a-08dd11f434df
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS3PEPF0000C37F.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6649
 
-From: Patrisious Haddad <phaddad@nvidia.com>
+From: Yonatan Maman <Ymaman@Nvidia.com>
 
-[ Upstream commit 1403c8b14765eab805377dd3b75e96ace8747aed ]
+Based on: Provide a new two step DMA mapping API patchset
+https://lore.kernel.org/kvm/20241114170247.GA5813@lst.de/T/#t
 
-When ib_cache_update return an error, we exit ib_cache_setup_one
-instantly with no proper cleanup, even though before this we had
-already successfully done gid_table_setup_one, that results in
-the kernel WARN below.
+This patch series aims to enable Peer-to-Peer (P2P) DMA access in
+GPU-centric applications that utilize RDMA and private device pages. This
+enhancement reduces data transfer overhead by allowing the GPU to directly
+expose device private page data to devices such as NICs, eliminating the
+need to traverse system RAM, which is the native method for exposing
+device private page data.
 
-Do proper cleanup using gid_table_cleanup_one before returning
-the err in order to fix the issue.
+To fully support Peer-to-Peer for device private pages, the following
+changes are proposed:
 
-WARNING: CPU: 4 PID: 922 at drivers/infiniband/core/cache.c:806 gid_table_release_one+0x181/0x1a0
-Modules linked in:
-CPU: 4 UID: 0 PID: 922 Comm: c_repro Not tainted 6.11.0-rc1+ #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-RIP: 0010:gid_table_release_one+0x181/0x1a0
-Code: 44 8b 38 75 0c e8 2f cb 34 ff 4d 8b b5 28 05 00 00 e8 23 cb 34 ff 44 89 f9 89 da 4c 89 f6 48 c7 c7 d0 58 14 83 e8 4f de 21 ff <0f> 0b 4c 8b 75 30 e9 54 ff ff ff 48 8    3 c4 10 5b 5d 41 5c 41 5d 41
-RSP: 0018:ffffc90002b835b0 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff811c8527
-RDX: 0000000000000000 RSI: ffffffff811c8534 RDI: 0000000000000001
-RBP: ffff8881011b3d00 R08: ffff88810b3abe00 R09: 205d303839303631
-R10: 666572207972746e R11: 72746e6520444947 R12: 0000000000000001
-R13: ffff888106390000 R14: ffff8881011f2110 R15: 0000000000000001
-FS:  00007fecc3b70800(0000) GS:ffff88813bd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000340 CR3: 000000010435a001 CR4: 00000000003706b0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ? show_regs+0x94/0xa0
- ? __warn+0x9e/0x1c0
- ? gid_table_release_one+0x181/0x1a0
- ? report_bug+0x1f9/0x340
- ? gid_table_release_one+0x181/0x1a0
- ? handle_bug+0xa2/0x110
- ? exc_invalid_op+0x31/0xa0
- ? asm_exc_invalid_op+0x16/0x20
- ? __warn_printk+0xc7/0x180
- ? __warn_printk+0xd4/0x180
- ? gid_table_release_one+0x181/0x1a0
- ib_device_release+0x71/0xe0
- ? __pfx_ib_device_release+0x10/0x10
- device_release+0x44/0xd0
- kobject_put+0x135/0x3d0
- put_device+0x20/0x30
- rxe_net_add+0x7d/0xa0
- rxe_newlink+0xd7/0x190
- nldev_newlink+0x1b0/0x2a0
- ? __pfx_nldev_newlink+0x10/0x10
- rdma_nl_rcv_msg+0x1ad/0x2e0
- rdma_nl_rcv_skb.constprop.0+0x176/0x210
- netlink_unicast+0x2de/0x400
- netlink_sendmsg+0x306/0x660
- __sock_sendmsg+0x110/0x120
- ____sys_sendmsg+0x30e/0x390
- ___sys_sendmsg+0x9b/0xf0
- ? kstrtouint+0x6e/0xa0
- ? kstrtouint_from_user+0x7c/0xb0
- ? get_pid_task+0xb0/0xd0
- ? proc_fail_nth_write+0x5b/0x140
- ? __fget_light+0x9a/0x200
- ? preempt_count_add+0x47/0xa0
- __sys_sendmsg+0x61/0xd0
- do_syscall_64+0x50/0x110
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
+`Memory Management (MM)`
+ * Leverage struct pagemap_ops to support P2P page operations: This
+modification ensures that the GPU can directly map device private pages
+for P2P DMA.
+ * Utilize hmm_range_fault to support P2P connections for device private
+pages (instead of Page fault)
 
-Fixes: 1901b91f9982 ("IB/core: Fix potential NULL pointer dereference in pkey cache")
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Reviewed-by: Maher Sanalla <msanalla@nvidia.com>
-Link: https://patch.msgid.link/79137687d829899b0b1c9835fcb4b258004c439a.1725273354.git.leon@kernel.org
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
-[Nikita: minor fix to resolve merge conflict.]
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
----
- drivers/infiniband/core/cache.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+`IB Drivers`
+Add TRY_P2P_REQ flag for the hmm_range_fault call: This flag indicates the
+need for P2P mapping, enabling IB drivers to efficiently handle P2P DMA
+requests.
 
-diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-index 7989b7e1d1c0..21b405abb0e1 100644
---- a/drivers/infiniband/core/cache.c
-+++ b/drivers/infiniband/core/cache.c
-@@ -1633,8 +1633,10 @@ int ib_cache_setup_one(struct ib_device *device)
- 
- 	rdma_for_each_port (device, p) {
- 		err = ib_cache_update(device, p, true);
--		if (err)
-+		if (err) {
-+			gid_table_cleanup_one(device);
- 			return err;
-+		}
- 	}
- 
- 	return 0;
+`Nouveau driver`
+Add support for the Nouveau p2p_page callback function: This update
+integrates P2P DMA support into the Nouveau driver, allowing it to handle
+P2P page operations seamlessly.
+
+`MLX5 Driver`
+Utilize NIC Address Translation Service (ATS) for ODP memory, to optimize
+DMA P2P for private device pages. Also, when P2P DMA mapping fails due to
+inaccessible bridges, the system falls back to standard DMA, which uses host
+memory, for the affected PFNs
+
+Yonatan Maman (5):
+  mm/hmm: HMM API to enable P2P DMA for device private pages
+  nouveau/dmem: HMM P2P DMA for private dev pages
+  IB/core: P2P DMA for device private pages
+  RDMA/mlx5: Add fallback for P2P DMA errors
+  RDMA/mlx5: Enabling ATS for ODP memory
+
+ drivers/gpu/drm/nouveau/nouveau_dmem.c | 110 +++++++++++++++++++++++++
+ drivers/infiniband/core/umem_odp.c     |   4 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h   |   6 +-
+ drivers/infiniband/hw/mlx5/odp.c       |  24 +++++-
+ include/linux/hmm.h                    |   3 +-
+ include/linux/memremap.h               |   8 ++
+ mm/hmm.c                               |  57 ++++++++++---
+ 7 files changed, 195 insertions(+), 17 deletions(-)
+
 -- 
-2.25.1
+2.34.1
 
 
