@@ -1,106 +1,93 @@
-Return-Path: <linux-rdma+bounces-6178-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6181-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 412C19E0297
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Dec 2024 13:57:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72E6E9E08F7
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Dec 2024 17:47:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2FAE28334C
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Dec 2024 12:57:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38038281E42
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Dec 2024 16:47:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 115421FECD0;
-	Mon,  2 Dec 2024 12:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B10C1D63DA;
+	Mon,  2 Dec 2024 16:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="hu9g1Bdl"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="wPJ9P13O"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940AF1FECAA;
-	Mon,  2 Dec 2024 12:57:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B61662E3EE
+	for <linux-rdma@vger.kernel.org>; Mon,  2 Dec 2024 16:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733144270; cv=none; b=WnAkHY9B0oSpM1tzsk+WSgfga2qpVLPQFnSB2VVntn9abfgpj/sBfK156NXfH+fhH8YnQklcX0JgFosWp6KIQJ9nQeqyw62Sc0Y41lZEzYInKrwt1jFfLRENZ1BL1uvy/in4zAKAOfJAsrMBXbYuHIeNp/1pRXKJckik6wuZ0JQ=
+	t=1733158051; cv=none; b=DYNXAj46Ecyb1QQ/d68gvS3ZqyEwArLsM1xuNkbpWESwUfPM8ISOHqFWUo2KxlGJMULhMJhX5Pk3I0JoVi9eEW4io9eiuk7tTA+F0wX4FbyXKHyJYcsx9EwKi2u1wpNV6u62nRK0odieF+miFMtC35cEFZj1Vt0m7SyidbOdzL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733144270; c=relaxed/simple;
-	bh=WIFTfLRtWIbmKOe5N2WxKahoy+fZDYTmWbbkb1Xe/h4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=M9AvfBsg30usgNeBs/EHtfjSEgwIZYMjnQbx9fsr5ftXIaciPcIZo18SXtYWgLifbEIagvelMoYAykRrs0wKgkNpJZmHhf+7iLScGKdrNyEv5XAzs15Y9eIfCJPeu1KzULs9j6hIeRJwPW/sgSziaeMTg7UOFCkCEAdUdpA63Bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=hu9g1Bdl; arc=none smtp.client-ip=115.124.30.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1733144264; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=Hwovjb37oAscD8S2WDwN1CnxYV2g6cBXzAMEDEitLYs=;
-	b=hu9g1BdlxaEyyeZc3jDaYLywmSL+JlwYT2++Q/5er3vU3BQLGCnq8LbfJKltkX6x6zj7loDjjG9oEP75B0kdNOEkH6mHoWEpFTGRfkOJXxBxFYvfZXn2wSso1olnwK9jAiopQ6p78tEKdu3JTOGyOMI3rSE2aLK3uD2YHIf09Qk=
-Received: from localhost.localdomain(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0WKiDfpQ_1733143936 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 02 Dec 2024 20:52:16 +0800
-From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-To: wenjia@linux.ibm.com,
-	jaka@linux.ibm.com,
-	alibuda@linux.alibaba.com,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Dust Li <dust.li@linux.alibaba.com>
-Subject: [PATCH net-next v2 2/2] net/smc: support ipv4 mapped ipv6 addr client for smc-r v2
-Date: Mon,  2 Dec 2024 20:52:03 +0800
-Message-Id: <20241202125203.48821-3-guangguan.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20241202125203.48821-1-guangguan.wang@linux.alibaba.com>
-References: <20241202125203.48821-1-guangguan.wang@linux.alibaba.com>
+	s=arc-20240116; t=1733158051; c=relaxed/simple;
+	bh=MAL945VeoPpgg1OjdyMjQ1TZBzZ18ZRy0tFJ/Qd9beg=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=LG1vSwUKrGLDUIt1GnmXwPrWRThd9LT9LTlJTyPYo1JsITMT7tblMlc10TNHebFSAPJ+s6sUcQDLmJIQ7adzEnWU4iNLWKOVKMX1oI/n6yh3Eavo3cccxJ8s/BOkE9bjtZf1lFeK3Eg8Jyj93oNhadsv+D5/l8+6giNx6uy75ZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=wPJ9P13O; arc=none smtp.client-ip=185.125.188.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 8CB893F96F
+	for <linux-rdma@vger.kernel.org>; Mon,  2 Dec 2024 16:47:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1733158040;
+	bh=MAL945VeoPpgg1OjdyMjQ1TZBzZ18ZRy0tFJ/Qd9beg=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=wPJ9P13OG7U+QtSvl9ENxOD4fQC0kZ2gHa7+hjYUBmHD/RetHPUKnoJoj5o5Ha5Aw
+	 vIo13S5lBRPjc7YoeHbFkQBKGkxtJVKR4BZPjBoJosry7UB7sGcb+v+igxK4jaD7E4
+	 XRm+SUucjzUQCDC/F6EC4Ga5QfGSQgSJMAob0oHx39ZqLy082gu0C/TD7VjO5q5gNM
+	 sDHRCsSqxA0jOTumgJtJGWBQMgEWPBUm9kqTlbSL6FThVOILddmyIMJ55ibdA3tjEh
+	 tZqBKPrKUAVLM0BsYor9Cha07hhnknMnuax8OhEwLjDlZBAJZ7m9V+PxQzvibP1IJn
+	 0DSgwP1ngD2BA==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+	by buildd-manager.lp.internal (Postfix) with ESMTP id 709827E248
+	for <linux-rdma@vger.kernel.org>; Mon,  2 Dec 2024 16:47:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3821152] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <173315804042.3877677.7810610156519487980.launchpad@buildd-manager.lp.internal>
+Date: Mon, 02 Dec 2024 16:47:20 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="1519c6efe8e9bd78e6c5ebf2eb5bcb040b95ad32"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 63070da42a8c839b121dc27c4bb466e744d4e3b4
 
-AF_INET6 is not supported for smc-r v2 client before, event if the
-ipv6 addr is ipv4 mapped. Thus, when using AF_INET6, smc-r connection
-will fallback to tcp, especially for java applications running smc-r.
-This patch support ipv4 mapped ipv6 addr client for smc-r v2. Clients
-using real global ipv6 addr is still not supported yet.
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 2 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3821152/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-008
 
-Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-Reviewed-by: Wen Gu <guwen@linux.alibaba.com>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-Reviewed-by: D. Wythe <alibuda@linux.alibaba.com>
----
- net/smc/af_smc.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 9d76e902fd77..5b13dd759766 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -1116,7 +1116,12 @@ static int smc_find_proposal_devices(struct smc_sock *smc,
- 	ini->check_smcrv2 = true;
- 	ini->smcrv2.saddr = smc->clcsock->sk->sk_rcv_saddr;
- 	if (!(ini->smcr_version & SMC_V2) ||
-+#if IS_ENABLED(CONFIG_IPV6)
-+	    (smc->clcsock->sk->sk_family != AF_INET &&
-+	     !ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)) ||
-+#else
- 	    smc->clcsock->sk->sk_family != AF_INET ||
-+#endif
- 	    !smc_clc_ueid_count() ||
- 	    smc_find_rdma_device(smc, ini))
- 		ini->smcr_version &= ~SMC_V2;
--- 
-2.24.3 (Apple Git-128)
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3821152
+Your team Linux RDMA is the requester of the build.
 
 
