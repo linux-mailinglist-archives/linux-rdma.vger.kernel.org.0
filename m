@@ -1,147 +1,126 @@
-Return-Path: <linux-rdma+bounces-6191-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6187-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFA4E9E18C2
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 11:04:31 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A016F166A58
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 10:04:28 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942681E0B78;
-	Tue,  3 Dec 2024 10:04:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Uflgpnjr"
-X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 911B69E1A90
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 12:15:30 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45E11E0B7A
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Dec 2024 10:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16D6EB60289
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 09:47:00 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98C71E1A14;
+	Tue,  3 Dec 2024 09:45:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uV4ME+gR"
+X-Original-To: linux-rdma@vger.kernel.org
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 031DC1E048F
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Dec 2024 09:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733220265; cv=none; b=sPuT5pPHcMdollkzO6X/3Qs2BDfpR1J74SfQQrbHzl9GI9hOoJoVkWX85aV2KYngqdNtR7MnNNB5t+TvO7bPCl6RhBaE2TfJZH7Pb9M7ZEJwKowT6GzFIwtYd/fRTGfmNFhW+En2agwMo+fe10pvwmgOug39+bCkSuicokgjbyc=
+	t=1733219122; cv=none; b=rCNVnKT7IXNcKktpPNTcMH+MKZsdJKHDxtAt3r+YtA2STaHFCVn1IMfjsGpgKuHyTwQAUNGszfVPMfdFWHkKMCk5fPNCpcbeOMrKEVt+Zoh823ZXFBJXW4hdgVM6AikrC6CtFAaW6ju2o/NmEfpYdCIaF0kQOnQPQest/yBZJVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733220265; c=relaxed/simple;
-	bh=HQ44SPqVqENJTbQrYY2kZjK603Ln//DhUNKAfXJorFc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E1MyP/6cFSkLPlq7R2RfeNlojVR1YJZodt+3LMbKMnZjvAHKtA6lIMaxzcgKglRv4coKcL9n9+QvqkbmuY/kKxdW1kSX4WHq/adJLn0fkNU1S4AJVFnVoj8HhvmLw01Kx03C0jILywLPG1A+wcJoxepP9F5h5fIQ3SrjncZbujo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Uflgpnjr; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1733220262;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W6Yz/wh2DDx3kpOempfoxxI4Bvmg2kZ7VVay1dulTJk=;
-	b=Uflgpnjr2EI17bH3TFgQx3OaKrSpMfeVr+1GQp2onAL3Z2LM7xGPyyrClUrMRJ5+bjtI+M
-	rE5qQym3FsHVTJrwT4o9QDau03G8jVSEJld03G5qQAx52hZVkxVrxJBJz6pwtDE1ToKork
-	6+fB9HvyrZFknmHGlTnfuHdcaA4pGI8=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-356-LkSJd8njNTGlS4UIcGl2ow-1; Tue, 03 Dec 2024 05:04:20 -0500
-X-MC-Unique: LkSJd8njNTGlS4UIcGl2ow-1
-X-Mimecast-MFC-AGG-ID: LkSJd8njNTGlS4UIcGl2ow
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-6d87f4c26a7so66206626d6.2
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Dec 2024 02:04:20 -0800 (PST)
+	s=arc-20240116; t=1733219122; c=relaxed/simple;
+	bh=RJ4dlBGD3salju0V5qaXj8Hlpmx2bDBn5RHAXBda2Hw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=FCLpWOj9PtGbdv9msLhc2gt7SptcJoXIIREUsmyPB9wFZUGcrKERU2CML3G75hAhT8VYrgKuwrK8QifHsTlBIfj1KWgEA9Z046AZXFk1/ENDb6J+2f7w+VKa0eVagtSLoKYnKqaxRnWo0blBZX7hG9suWr7/zTOLRM+PFvhEGL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uV4ME+gR; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-434a766b475so48688705e9.1
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Dec 2024 01:45:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1733219119; x=1733823919; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6I1Ptmv2KxZJwio/UIsOX+BhzfGwkhQGEzNHEKVRFKU=;
+        b=uV4ME+gRVBtdJasDf2fMwONsoRGQM5JE1tp3+s+c5xfAVh5yqwY3NGe0x9w1ch8Xsk
+         wQZZYyiZiqi/WOgXQiv8X8W7Y4hn13uZRQaHX0fOmwg94V+jIA4llTy5fA8LXnSFDuSw
+         JKvDa0Ttcqn91PKjU6UNi8az4afbfH9bUyq0/Yw1MNUNugheMzK8Y4a3t8TCJswHZZg6
+         RdRxxAZ86ILTnfJm3nhGg6nsjDAfDP1zMahUaEwnBtbGIJ78jz1WdLnGVrJIKosfsE6J
+         yqDpErgO+YhsHYSaNcyuqgcTrqYuVLKvBJTHo7vLPmKkXO2weeqSnHSd9mwL+F4BqB/P
+         dHyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733220259; x=1733825059;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1733219119; x=1733823919;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W6Yz/wh2DDx3kpOempfoxxI4Bvmg2kZ7VVay1dulTJk=;
-        b=nMZ3U+I1dcjVMhwId1V3uF/IU63jvRRJtvWqd7S03aMjqHzBfKyA8nUrmNL/Tojp0E
-         r9yuuIPK9vehZDY7r3aZoobHnIsr62L5eJcBbZCYfJ1eAWOrk8TiH7AIzFFyHpNowM7J
-         i0C5IvU8LGC659UyYzX2+4a8KXDLTWEylA52QJLyconJlB9/NdmJdEynfEzFpXCtp/9Q
-         LqqkfSLNGgGJFD1166NRtK35gSfGXVwpj49HDzI/Xqbnim/jj9yUe3nh5JNo2/kmVPmi
-         DIL2o2/7R4vegAMeeMDBwe0jiDQJ4asCVMw0IWThfFKI1OF2FlkFcih23MN6sfIxbZPN
-         kgXQ==
-X-Gm-Message-State: AOJu0YxaK6u+lBqrJ5FlL9IBB37iH9mZ1fnnO6zy+u6T0nL4J+bPp90u
-	dTCmJ9kmRu2/JxhoIObiHwOC3DJVncNeBqdKjkLhkz81ZZ895ljHhQBuzh9GnfJ2rAvsTvaxB80
-	85u0ZXe12PrHXrRNbzHKXMDIDwJxhd2i+47MpY11X34+sFC2gMaWomMdxX6s=
-X-Gm-Gg: ASbGncuiINeexrHdezd60LI4T82MVtgEyfXIDgN0l1RRm/x7g6d0QFyAt8Noo/788NG
-	9dy7hfyZ4DGHUq1su9vqwtikEM3d67ZmGROQ7wKLLILVaJz2whpua0KRbe+T+yBjNrHXpy3hJoS
-	xMey8XmcKedW+GUQB52HfH2d8PvsNQGXNO4JvnsNYdB3qi6Y8Ld8XpRxahWS75KZQrtzrAMpI+B
-	FdIf/gDgpIU7XMoTHOFWGbG/uIKSi9cXzGVKBPNJTV+K53ppxOKkUlvJcoF/P1kmDbyAVyyB4Zm
-X-Received: by 2002:ad4:5dc2:0:b0:6d8:a39e:32a4 with SMTP id 6a1803df08f44-6d8b7389459mr32032306d6.25.1733220259675;
-        Tue, 03 Dec 2024 02:04:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG1K5nqkk2YWvJZ36M/30xTQ0u4uphAR9Xza3eEbd6ZgDvKckxS8QXJ6vo2298noBcWsm6LJA==
-X-Received: by 2002:ad4:5dc2:0:b0:6d8:a39e:32a4 with SMTP id 6a1803df08f44-6d8b7389459mr32032066d6.25.1733220259408;
-        Tue, 03 Dec 2024 02:04:19 -0800 (PST)
-Received: from [192.168.88.24] (146-241-38-31.dyn.eolo.it. [146.241.38.31])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b6849c35efsm496606685a.118.2024.12.03.02.04.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Dec 2024 02:04:19 -0800 (PST)
-Message-ID: <62cd6d62-b233-4906-af4a-72127fc4c0f4@redhat.com>
-Date: Tue, 3 Dec 2024 11:04:15 +0100
+        bh=6I1Ptmv2KxZJwio/UIsOX+BhzfGwkhQGEzNHEKVRFKU=;
+        b=S0SkqYv2qFQ3yYOP93mmDvlHhpwxKmJavjZ/u9UAiWS8Ge/bMIJgO/S6z8lsEFOEkD
+         rIjUoWJCBlXMFfdK97Gr349voWHeDxgCX/7yLLgZgmowdbHV4d6o19prM4sTJv4y4RwK
+         sC21grdEl+ELJRMe1oGGXlcwOgUmbTWB7LxAwlQvRB6YJiRWbOOyo1qufRFc4tLqmKw9
+         /mTZCs70WxPKGrsBCaOXMFdVEy1kBTsXne3XtnAtC+MCk1T2Gchi3zErHxt+O5w2ffjP
+         9b+DZCkkU6uCUKFSmhW6wuXz4VZPVB7clrphEwGUQ1ztG3IG8i20hUqtUpWnO1rY7OzX
+         3Rlg==
+X-Forwarded-Encrypted: i=1; AJvYcCVyWPD8/mmDVdcqrcDEdkyPdGcBfhjzWd+/3W6x0S8G9LVEiO0kyGUPCshS0A/OOh9LGP0vm/HENxuI@vger.kernel.org
+X-Gm-Message-State: AOJu0YwzOS8/+/0G8EnZYuNOUQq5HN3SmH9rp7gyF28TFBtdX6cQ4krt
+	f0nxaDz+pDZ65KfuAT2HtCLOPJVFlkc+xM3HPyqkhqOHYzgOSgAfeRrEGSVpOA0=
+X-Gm-Gg: ASbGncvzGbub0qlE+Qu5X1ZMQyd1yPcyHfbdd51uVzWbLVXYhJE5Y1AXMHeFeQa8KkU
+	r/pVmFqdKxrTK4/Cxdb+oLX3qORFxeGddDmykYk2Od1LNQBRTOUwalqXDKGsK6hIWzOdRCAHNmg
+	fcJ/edEirAL18GAJDKg+UUxOtqC0ZAMS181G1Psna+pztehvt7maTOpIXLCDzX7IbafxEwZkI5k
+	NZNcI+/MAAEDpFAm2OTPIxUHq4m+k/E5BK2QOk1zr+YnoW5hCU1Uus=
+X-Google-Smtp-Source: AGHT+IFdpiCjCQ4owJdmqakSIReYwoM3vo6fpku4tNVal18DsXpYtsSKHcj3Ceq2fZLtSh1NDS08JA==
+X-Received: by 2002:a05:600c:19d3:b0:431:58cd:b259 with SMTP id 5b1f17b1804b1-434d0a23b36mr15900425e9.31.1733219119326;
+        Tue, 03 Dec 2024 01:45:19 -0800 (PST)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434aa78007dsm211772455e9.19.2024.12.03.01.45.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Dec 2024 01:45:18 -0800 (PST)
+Date: Tue, 3 Dec 2024 12:45:14 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Yevgeny Kliteynik <kliteyn@nvidia.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Muhammad Sammar <muhammads@nvidia.com>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH v2 net] net/mlx5: DR, prevent potential error pointer
+ dereference
+Message-ID: <Z07TKoNepxLApF49@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 2/6] net/smc: set SOCK_NOSPACE when send_remaining but
- no sndbuf_space left
-To: Guangguan Wang <guangguan.wang@linux.alibaba.com>, wenjia@linux.ibm.com,
- jaka@linux.ibm.com, alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, horms@kernel.org
-Cc: linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20241128121435.73071-1-guangguan.wang@linux.alibaba.com>
- <20241128121435.73071-3-guangguan.wang@linux.alibaba.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20241128121435.73071-3-guangguan.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+The dr_domain_add_vport_cap() function generally returns NULL on error
+but sometimes we want it to return ERR_PTR(-EBUSY) so the caller can
+retry.  The problem here is that "ret" can be either -EBUSY or -ENOMEM
+and if it's and -ENOMEM then the error pointer is propogated back and
+eventually dereferenced in dr_ste_v0_build_src_gvmi_qpn_tag().
 
+Fixes: 11a45def2e19 ("net/mlx5: DR, Add support for SF vports")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Reviewed-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
+---
+v2: Fix a typo in the commit message.  "generally".
 
-On 11/28/24 13:14, Guangguan Wang wrote:
-> When application sending data more than sndbuf_space, there have chances
-> application will sleep in epoll_wait, and will never be wakeup again. This
-> is caused by a race between smc_poll and smc_cdc_tx_handler.
-> 
-> application                                      tasklet
-> smc_tx_sendmsg(len > sndbuf_space)   |
-> epoll_wait for EPOLL_OUT,timeout=0   |
->   smc_poll                           |
->     if (!smc->conn.sndbuf_space)     |
->                                      |  smc_cdc_tx_handler
->                                      |    atomic_add sndbuf_space
->                                      |    smc_tx_sndbuf_nonfull
->                                      |      if (!test_bit SOCK_NOSPACE)
->                                      |        do not sk_write_space;
->       set_bit SOCK_NOSPACE;          |
->     return mask=0;                   |
-> 
-> Application will sleep in epoll_wait as smc_poll returns 0. And
-> smc_cdc_tx_handler will not call sk_write_space because the SOCK_NOSPACE
-> has not be set. If there is no inflight cdc msg, sk_write_space will not be
-> called any more, and application will sleep in epoll_wait forever.
-> So set SOCK_NOSPACE when send_remaining but no sndbuf_space left in
-> smc_tx_sendmsg, to ensure call sk_write_space in smc_cdc_tx_handler
-> even when the above race happens.
+ .../net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c    | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I think it should be preferable to address the mentioned race the same
-way as tcp_poll(). i.e. checking again smc->conn.sndbuf_space after
-setting the NOSPACE bit with appropriate barrier, see:
-
-https://elixir.bootlin.com/linux/v6.12.1/source/net/ipv4/tcp.c#L590
-
-that will avoid additional, possibly unneeded atomic operation in the tx
-path (the application could do the next sendmsg()/poll() call after that
-the send buf has been freed) and will avoid some code duplication.
-
-Cheers,
-
-Paolo
-
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c
+index 3d74109f8230..a379e8358f82 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c
+@@ -297,6 +297,8 @@ dr_domain_add_vport_cap(struct mlx5dr_domain *dmn, u16 vport)
+ 	if (ret) {
+ 		mlx5dr_dbg(dmn, "Couldn't insert new vport into xarray (%d)\n", ret);
+ 		kvfree(vport_caps);
++		if (ret != -EBUSY)
++			return NULL;
+ 		return ERR_PTR(ret);
+ 	}
+ 
+-- 
+2.45.2
 
