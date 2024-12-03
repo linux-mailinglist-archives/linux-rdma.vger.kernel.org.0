@@ -1,124 +1,193 @@
-Return-Path: <linux-rdma+bounces-6196-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6204-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60AA89E2402
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 16:45:22 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71A1A9E2651
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 17:12:02 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAA82B36348
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 13:47:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9805A169A9C
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 16:06:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9448D1EF0A9;
-	Tue,  3 Dec 2024 13:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4DD81F8934;
+	Tue,  3 Dec 2024 16:06:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="clZVwI/w"
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="lHnQZbqT";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="lHnQZbqT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518171EE019;
-	Tue,  3 Dec 2024 13:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112031F890D;
+	Tue,  3 Dec 2024 16:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733233544; cv=none; b=Rjyj5a63kmjfSeHb5GfPGXgjuU/s/1KKdmuv//qasrqItbDrLirh7RQUK5wOsEonks6TzyFp8H0y20h8IvHzSE+tSIY1C6U/kGq6r7kJy02QcVXS+glS38QCWeK58/h9VC2ekWo4g3MSLU5ptJF+fCvv74IxY24FFaIgpIEsPXE=
+	t=1733241988; cv=none; b=HvWod2SqmFkg1DvrTpYJmPACvaYAqiujjHJaUP5XogQl5IHsfeqePQ7/qFGEZO9jORmXBT9peLO2EvhCbYsLOP1W/1ulVWHrIMmdWjS/0+kEXiId5r6KJkStbDewnCAKuGXOPZTlmczrBd1Ep8DRJPmEfx5NeoKk7j93DeGQbEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733233544; c=relaxed/simple;
-	bh=cErb3bV+SAPedDc/tB1CJu1WvUbR1ZitnEExBcebm5I=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=inBNY98NOS4oorManOSwuGNnymYzBDpislhPOJVOSivcG4u2RrKA+nDPezSAfWDV5zFYmasf1Mia+limzXzKko/YmdY99QDHvlCNb0o/KSyf6XRvHEG59gxHIZPvDNw73XA/vJU7vT9ARS9BgeC6wJOmIT42BKR1u4GUXPl+Bfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=clZVwI/w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57DBDC4CED8;
-	Tue,  3 Dec 2024 13:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733233543;
-	bh=cErb3bV+SAPedDc/tB1CJu1WvUbR1ZitnEExBcebm5I=;
-	h=From:To:Cc:Subject:Date:From;
-	b=clZVwI/w0M9tVPUL2Fh+MVrC/V1CJxMg6uDiUiCNchFKjBCOOvBiCuLkb/XYN8SQG
-	 aXRacd9A4GptIovAa0y7LePwyLo1BAzH/UtQd80Nt8n9s53GDosAEsWbL8Xz5iw1YA
-	 n9aqhyYhZ+1lYOsXJiYTfrQGnTx5lff0cFe2ws+o7Haj6ulRFd1RIX243OV3pjp5Qf
-	 KBK4tzroFlS0Ihzq7lHN9QP4erkrH3vVALzzRHNSbBOVhBIK6G5JdWcB/9bBIWnEl2
-	 wj6zIo/Gn9lKSGpHPFSdyVO1uUnTPo/YUwoE67TivDZoZRuU2RAXxhKktwlSi89a0c
-	 TCEbuVZr8cPmg==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Patrisious Haddad <phaddad@nvidia.com>,
-	Daniel Jurgens <danielj@mellanox.com>,
-	linux-rdma@vger.kernel.org,
-	Mark Bloch <mbloch@nvidia.com>,
-	netdev@vger.kernel.org,
-	Parav Pandit <parav@mellanox.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>
-Subject: [PATCH mlx5-next] RDMA/mlx5: Enforce same type port association for multiport RoCE
-Date: Tue,  3 Dec 2024 15:45:37 +0200
-Message-ID: <88699500f690dff1c1852c1ddb71f8a1cc8b956e.1733233480.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.47.0
+	s=arc-20240116; t=1733241988; c=relaxed/simple;
+	bh=VBBfv3eA4AsVsLgBF8VnP+EajJe1ALpu2GW7YHfiN/w=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:Content-Type:
+	 MIME-Version; b=BiAXw5SXoTVaegE2WpiwoTt2OQDYpyrbUID2w5o0Ic0vKQD8ynBzTdo3OHScW0i+07RqXHOrls8c/ufPc5plYzAU/yqDt/25f+eksOCqOK8i46ietWYs7/7nN3Ofn7iWv/MaV3eyP+SbZ2s6ogcwyaUF05hkjAgsKrWQdaGF+gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=lHnQZbqT; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=lHnQZbqT; arc=none smtp.client-ip=96.44.175.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1733241982;
+	bh=VBBfv3eA4AsVsLgBF8VnP+EajJe1ALpu2GW7YHfiN/w=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:From;
+	b=lHnQZbqTPw8lccD9LZoQTnjENuqFmq3M4qdXn9YwdcXuh8kaYOH60UbGnuArtEJoE
+	 Px4kL7hmZa2/uxmjqmqHUiq2gnIFhqP/9JNM4Zxjm340Kjh3IenF17vJPycyc5doEz
+	 9qzMTvJH2/Dq+wqAj7McqxgXVZICR0uf3Mza6cXQ=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 9B55D12871C9;
+	Tue, 03 Dec 2024 11:06:22 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id OEo6FblEm0Xs; Tue,  3 Dec 2024 11:06:22 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1733241982;
+	bh=VBBfv3eA4AsVsLgBF8VnP+EajJe1ALpu2GW7YHfiN/w=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:From;
+	b=lHnQZbqTPw8lccD9LZoQTnjENuqFmq3M4qdXn9YwdcXuh8kaYOH60UbGnuArtEJoE
+	 Px4kL7hmZa2/uxmjqmqHUiq2gnIFhqP/9JNM4Zxjm340Kjh3IenF17vJPycyc5doEz
+	 9qzMTvJH2/Dq+wqAj7McqxgXVZICR0uf3Mza6cXQ=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 1133D128718C;
+	Tue, 03 Dec 2024 11:06:17 -0500 (EST)
+Message-ID: <7ed3b713f8901398f52d7485d59613c19ea0e752.camel@HansenPartnership.com>
+Subject: Re: [PATCH v2 09/10] sysfs: bin_attribute: add const read/write
+ callback variants
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: linux@weissschuh.net
+Cc: James.Bottomley@HansenPartnership.com, Xinhui.Pan@amd.com, 
+ airlied@gmail.com, ajd@linux.ibm.com, alexander.deucher@amd.com, 
+ alison.schofield@intel.com, amd-gfx@lists.freedesktop.org, arnd@arndb.de, 
+ bhelgaas@google.com, carlos.bilbao.osdev@gmail.com,
+ christian.koenig@amd.com,  dan.j.williams@intel.com, dave.jiang@intel.com,
+ dave@stgolabs.net,  david.e.box@linux.intel.com, decui@microsoft.com, 
+ dennis.dalessandro@cornelisnetworks.com, dri-devel@lists.freedesktop.org, 
+ fbarrat@linux.ibm.com, gregkh@linuxfoundation.org, haiyangz@microsoft.com, 
+ hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com, ira.weiny@intel.com, 
+ jgg@ziepe.ca, jonathan.cameron@huawei.com, kys@microsoft.com,
+ leon@kernel.org,  linux-alpha@vger.kernel.org, linux-cxl@vger.kernel.org, 
+ linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, linux-pci@vger.kernel.org, 
+ linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org, 
+ linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ logang@deltatee.com,  martin.petersen@oracle.com, mattst88@gmail.com,
+ miquel.raynal@bootlin.com,  mwalle@kernel.org,
+ naveenkrishna.chatradhi@amd.com,  platform-driver-x86@vger.kernel.org,
+ pratyush@kernel.org, rafael@kernel.org,  richard.henderson@linaro.org,
+ richard@nod.at, simona@ffwll.ch,  srinivas.kandagatla@linaro.org,
+ tudor.ambarus@linaro.org, vigneshr@ti.com,  vishal.l.verma@intel.com,
+ wei.liu@kernel.org
+Date: Tue, 03 Dec 2024 11:06:16 -0500
+In-Reply-To: <20241103-sysfs-const-bin_attr-v2-9-71110628844c@weissschuh.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-From: Patrisious Haddad <phaddad@nvidia.com>
+> diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
+> index
+> d17c473c1ef292875475bf3bdf62d07241c13882..d713a6445a6267145a7014f308d
+> f3bb25b8c3287 100644
+> --- a/include/linux/sysfs.h
+> +++ b/include/linux/sysfs.h
+> @@ -305,8 +305,12 @@ struct bin_attribute {
+>  	struct address_space *(*f_mapping)(void);
+>  	ssize_t (*read)(struct file *, struct kobject *, struct
+> bin_attribute *,
+>  			char *, loff_t, size_t);
+> +	ssize_t (*read_new)(struct file *, struct kobject *, const
+> struct bin_attribute *,
+> +			    char *, loff_t, size_t);
+>  	ssize_t (*write)(struct file *, struct kobject *, struct
+> bin_attribute *,
+>  			 char *, loff_t, size_t);
+> +	ssize_t (*write_new)(struct file *, struct kobject *,
+> +			     const struct bin_attribute *, char *,
+> loff_t, size_t);
+>  	loff_t (*llseek)(struct file *, struct kobject *, const
+> struct bin_attribute *,
+>  			 loff_t, int);
+>  	int (*mmap)(struct file *, struct kobject *, const struct
+> bin_attribute *attr,
+> @@ -325,11 +329,28 @@ struct bin_attribute {
+>   */
+>  #define sysfs_bin_attr_init(bin_attr) sysfs_attr_init(&(bin_attr)-
+> >attr)
+>  
+> +typedef ssize_t __sysfs_bin_rw_handler_new(struct file *, struct
+> kobject *,
+> +					   const struct
+> bin_attribute *, char *, loff_t, size_t);
+> +
+>  /* macros to create static binary attributes easier */
+>  #define __BIN_ATTR(_name, _mode, _read, _write, _size)
+> {		\
+>  	.attr = { .name = __stringify(_name), .mode = _mode
+> },		\
+> -	.read	=
+> _read,						\
+> -	.write	=
+> _write,						\
+> +	.read =
+> _Generic(_read,						\
+> +		__sysfs_bin_rw_handler_new * :
+> NULL,			\
+> +		default :
+> _read						\
+> +	),							
+> 	\
+> +	.read_new =
+> _Generic(_read,					\
+> +		__sysfs_bin_rw_handler_new * :
+> _read,			\
+> +		default :
+> NULL						\
+> +	),							
+> 	\
+> +	.write =
+> _Generic(_write,					\
+> +		__sysfs_bin_rw_handler_new * :
+> NULL,			\
+> +		default :
+> _write					\
+> +	),							
+> 	\
+> +	.write_new =
+> _Generic(_write,					\
+> +		__sysfs_bin_rw_handler_new * :
+> _write,			\
+> +		default :
+> NULL						\
+> +	),							
+> 	\
+>  	.size	=
+> _size,						\
+>  }
 
-Different core device types such as PFs and VFs shouldn't be affiliated
-together since they have different capabilities, fix that by enforcing
-type check before doing the affiliation.
+It's probably a bit late now, but you've done this the wrong way
+around.  What you should have done is added the const to .read/.write
+then added a .read_old/.write_old with the original function prototype
+and used _Generic() to switch between them.  Then when there are no
+more non const left, you can simply remove .read_old and .write_old
+without getting Linus annoyed by having to do something like this:
 
-Fixes: 32f69e4be269 ("{net, IB}/mlx5: Manage port association for multiport RoCE")
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/main.c | 6 ++++--
- include/linux/mlx5/driver.h       | 6 ++++++
- 2 files changed, 10 insertions(+), 2 deletions(-)
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e70140ba0d2b1a30467d4af6bcfe761327b9ec95
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index bc7930d0c564..c2314797afc9 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -3639,7 +3639,8 @@ static int mlx5_ib_init_multiport_master(struct mlx5_ib_dev *dev)
- 		list_for_each_entry(mpi, &mlx5_ib_unaffiliated_port_list,
- 				    list) {
- 			if (dev->sys_image_guid == mpi->sys_image_guid &&
--			    (mlx5_core_native_port_num(mpi->mdev) - 1) == i) {
-+			    (mlx5_core_native_port_num(mpi->mdev) - 1) == i &&
-+			    mlx5_core_same_coredev_type(dev->mdev, mpi->mdev)) {
- 				bound = mlx5_ib_bind_slave_port(dev, mpi);
- 			}
- 
-@@ -4785,7 +4786,8 @@ static int mlx5r_mp_probe(struct auxiliary_device *adev,
- 
- 	mutex_lock(&mlx5_ib_multiport_mutex);
- 	list_for_each_entry(dev, &mlx5_ib_dev_list, ib_dev_list) {
--		if (dev->sys_image_guid == mpi->sys_image_guid)
-+		if (dev->sys_image_guid == mpi->sys_image_guid &&
-+		    mlx5_core_same_coredev_type(dev->mdev, mpi->mdev))
- 			bound = mlx5_ib_bind_slave_port(dev, mpi);
- 
- 		if (bound) {
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index fc7e6153b73d..4f9e6f6dbaab 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -1202,6 +1202,12 @@ static inline bool mlx5_core_is_vf(const struct mlx5_core_dev *dev)
- 	return dev->coredev_type == MLX5_COREDEV_VF;
- }
- 
-+static inline bool mlx5_core_same_coredev_type(const struct mlx5_core_dev *dev1,
-+					       const struct mlx5_core_dev *dev2)
-+{
-+	return dev1->coredev_type == dev2->coredev_type;
-+}
-+
- static inline bool mlx5_core_is_ecpf(const struct mlx5_core_dev *dev)
- {
- 	return dev->caps.embedded_cpu;
--- 
-2.47.0
+Regards,
+
+James
 
 
