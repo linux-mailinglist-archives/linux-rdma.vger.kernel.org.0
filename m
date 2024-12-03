@@ -1,133 +1,125 @@
-Return-Path: <linux-rdma+bounces-6188-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6192-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D0779E1A99
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 12:16:24 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F9B29E1B0E
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 12:33:55 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDB071676C5
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 11:33:49 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E18B1E47B6;
+	Tue,  3 Dec 2024 11:33:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YfIphNkh"
+X-Original-To: linux-rdma@vger.kernel.org
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66B12B62126
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 09:50:22 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EEA91E0E18;
-	Tue,  3 Dec 2024 09:49:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Os4/fbpq"
-X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347B71E009F
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Dec 2024 09:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 017531E0490
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Dec 2024 11:33:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733219347; cv=none; b=MT3gxtqGUZldxVeqKAav/DGkBF4e1/ZSsylWV4G2EnWsS9m+wupO946BYLtSjll1Zd1ogPWdSvMqvE5OEo5o0qnw8MD7hfT+cy5c4mpooEgpRB7ped4lFFOqvduX681cbR6bHn2hFof1WiNWrcOywnuZpsZU2V3M93dhJ7lwanc=
+	t=1733225623; cv=none; b=Z8k1j8vA8XsOOwFCNuj5ApzKKyTO5Mo2a14gEkqDrtHxtYurLMr734QjL7ZL234E84Sbv76fI85ecwrhsko6Cjas8il3BPLcUmnbxhVS2abkhpRoUFJXR25DPmcf2VheukdMABMag42gEfnOP8CQrWHIgd8Z5eZP6qAEEpd2HCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733219347; c=relaxed/simple;
-	bh=66C7X0y5JSIvmxFiooKiDwrInLALIuU1cghHxsv7Mrw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hJpZKhHYH75ZrX204/oc+NE1RbDnVl+JquYGY5YGOmOzJgBJOK/M1q3e63xVlWdky2oBRlX58LiZbYKuqHRX5X6ko4QNoXolhxTTM11yduJSt8MrkWHau8edMHlZlRMjdZUsH8vfsyKVuO1gKoClUFAgvbK9G795Zca7fBfMTdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Os4/fbpq; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-434a95095efso36604275e9.0
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Dec 2024 01:49:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1733219344; x=1733824144; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=k5m6hg1T/8NDguGzINl2AjokycuEBlMQVbW4nuTy6h4=;
-        b=Os4/fbpq6FR4D2jx0XLq3ouYACEKaboZsV3uXhNT/xJhqFPFoyLunsdtORGF58ChM8
-         MaJn26loszUFyLfcPYRkAIba5cWHzYOOPc9xWOVvSGpB64fr9Hmhcr3FjyVKFw91hL14
-         hYvmmddyHfYzHLNWckwX8WS+WGINd1/4wEm55inotYVykwIFSIzHXhAwpvdY1WcV7P9Y
-         Z6uqGPV4S3lBBFGAJ5ys3fhvq0ij6cpV4/FP3P3PaE4+Tq2BJXnJ5a5Vb5m8ujCyt+24
-         FAfmipDS+n/qxQXyzd2/Pbu/T+AB6VIlCOSbavxepgTlStwtF77macYegLPA80Pr3QrG
-         xWXQ==
+	s=arc-20240116; t=1733225623; c=relaxed/simple;
+	bh=AHmmkPHjvu7RIKywEf+EAV3LQMeU6/vP4mpQ4B4VTxU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dC9QwOMnVxf8065WWnD8jdoQGWaxmTYCZVMWFXyaLXcvE4a41eeLUXTJ1HY4IPPmkoLG+N27qQvA7gum5X/eXoj8wNoHBSNDkIVKuYiwNEzdia9N25V8ng0/azdfqPsniHMbT8bQ3q2Cb0JOHU30dXFktHx69YMk0zfRcLa4wBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YfIphNkh; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1733225618;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zREU+lwYhiaQLLeLq6O0V37r0ooXMYuGzQk3sQUa+FM=;
+	b=YfIphNkhibQPDRaBRLDhx/J+/DFquO94HtzH2Pnd61H/xR0sKx8KAneo+mSGKGihutX7Sn
+	u5YIcgiDbgwBukCO5uCtvCOSaYcHumlBXPZlgPv4uqLUpu529cFUmLUNBuIsAF47mrqP2d
+	qOSK6EA5HkrVELWop0ZCkqdYGIKsHaY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-479-00pkQj16PICyv4wvhwC71g-1; Tue, 03 Dec 2024 06:33:37 -0500
+X-MC-Unique: 00pkQj16PICyv4wvhwC71g-1
+X-Mimecast-MFC-AGG-ID: 00pkQj16PICyv4wvhwC71g
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-385e1339790so2201297f8f.2
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Dec 2024 03:33:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733219344; x=1733824144;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k5m6hg1T/8NDguGzINl2AjokycuEBlMQVbW4nuTy6h4=;
-        b=cGNGPIppWxsU8DlQxFcwkuA1NPc5Hir/P5GSfgwMu6ZmHTWu9pqx5swjwIzSBErlNi
-         QfHctdGi7MOI8Lkpas8sOLy0N3Ckecv7t7n1PDgRuIkbMdWJ6ZCEsohyFee4X4cv5k/W
-         eXmFvhctXkO/34AiX71Z+D9Gq4SwI7fV2g0TiSTG+CVLbmtgeUCLexVH+QEzGiNiFhYv
-         OZInqZrpdG03c4mEou5Bikl2QgJ51Pd3bCYqjswH+3o0Xk8gQd++XkXjKeMlte1T4mcc
-         BP8+wQIZfHywULYj9BACroQUChT8aolX/oEoGMsVIFNJ0sD1H/7/ZoK3xN2aUeYGdPGp
-         bmAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU2mdDJQyJuAfFm2uM9kVVf1kFS0N4sZrvEGXXGd12KERMD350B+Ic3MK5gmrkbFE5Atngl5ShtRlzC@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/7/1BG4JXFEmBAjryUTXGBCkSmIToEvHGj+dr83IxQKU8tYxl
-	QyzKS5U10pk7ONhMeA1AlvrVAhoxy6zCBVaOvSzDnQ3XqjRVbNCZjShg9uunFmg=
-X-Gm-Gg: ASbGncu9EhuaiwXlXpgWLmVVb5a4G51ZeIxp1KukvRQAte5jycNoY5Xb5EedvkQaPDg
-	G8k6YyZqWJiTGvocqlF5vOy2tBDGKNHe5//SBrpKB9iLsLb6lMJhqk8oyOvYS6ibFFO1ODEC660
-	S83nGPODeBiCrS1dSigkjDppGZ4zrfwOYlBWq84DW1w8IeEGTJnHaYXZHUtIsaZSUh1gKVJ2os6
-	bQ5u7dyfbD+n6gtsEpa4lGnX5xMCdny1XNVIE4eHGlhA0apxeWtKiA=
-X-Google-Smtp-Source: AGHT+IGiq5MfIfBd9OA4L42VqbX8iZSuCB9pKeFGXwzXoQE5bTKyZlB+OEQ8WGkhd7IzIABfKHMT6w==
-X-Received: by 2002:a05:600c:198e:b0:434:9cf6:a2a5 with SMTP id 5b1f17b1804b1-434afb9ecc7mr189287195e9.8.1733219344634;
-        Tue, 03 Dec 2024 01:49:04 -0800 (PST)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434d04e7380sm15910995e9.0.2024.12.03.01.49.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Dec 2024 01:49:04 -0800 (PST)
-Date: Tue, 3 Dec 2024 12:49:00 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Yevgeny Kliteynik <kliteyn@nvidia.com>
-Cc: Mateusz Polchlopek <mateusz.polchlopek@intel.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Muhammad Sammar <muhammads@nvidia.com>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH net] net/mlx5: DR, prevent potential error pointer
- dereference
-Message-ID: <46a97b8a-042c-4903-817f-efe3be5afabc@stanley.mountain>
-References: <aadb7736-c497-43db-a93a-4461d1426de4@stanley.mountain>
- <ad93dd90-671b-4c0e-8a96-9dab239a5d07@intel.com>
- <bf47a26a-ec69-433b-9cf9-667f9bccbec1@stanley.mountain>
- <4183c48a-3c78-47e2-a7b2-11d387b6f833@nvidia.com>
+        d=1e100.net; s=20230601; t=1733225616; x=1733830416;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zREU+lwYhiaQLLeLq6O0V37r0ooXMYuGzQk3sQUa+FM=;
+        b=tbFKcKiAXNmSxjPkwkC3wa/BsoWnpT5eenUC4/kkoQuP8PDwm4vEnNLlZ4bCWf+9y9
+         31OwoYEO53S8bu9elQX8EwoJTHjDi/1BgF1Z47PNU8QLMrI0bk28ElOcFkJDm90bzuiM
+         Lacrh0cyz3Mw/BY2fd5A1ANlElyPV27UvbFkjv/+L7bleB0rOIajyf16mhiLbLYC3Nyz
+         D2puHa7oqi3Urz1YzlAhukeFLJBBA2HwrGmsgWZ2tXLJAs3lIl++aa5Eftb6Ger9p6oR
+         9WkRIzuQw65me7RMRrIRij3TolvC979gXspBvmwcj2HCVvV/nm5DMgHsGO5d1yXPNiVY
+         rsVg==
+X-Forwarded-Encrypted: i=1; AJvYcCXdcfDrxgGIfJQb71jpyvXZHE3tDPX0YMTWTdhBzdHpQRlMfXc+q4JgqoCqcCaGsp1Z54lH8CSbOFWc@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz6bJnmzZGbDqrTNZBHTrNpPyrzPPfi+MwpsR21nGbTCdDB3PRs
+	uw/AKn6y/UFxqBy6iTuLxF9qhXNYA2prlo0qvnGQP18KeuPIg0WRX39eFZaMyaFPvJeFFk/0fUB
+	4i7Eyx4av9ZUGT+c8cD/Q51OYDKiGb/R8E65J0Uhn8JwTNZiL6kGbFs/cJRA=
+X-Gm-Gg: ASbGnctRXqGdK1NHPwJPxkGQKEJ90vZWnxzAztubTu5ul8VQ0lj3f/djVilsaEqyu2n
+	WjiC9GWyTtIqTHAhesYR3E5Xs3/qH6AxXVuq25jWIS9kMhZyB+k9WoFrtTFIhzSN1tcYDPPwmHg
+	VPsmsFvOppOaDbe91nl6Yy+8/NQUxsd9+YCYb/ALDDyxj6jszttHpjfmwa2CH2/YQ/lOSzrLZ+1
+	91z/YWBRy3Kn6gxZFZ65nL4oeBBSYCL51nu3WLKufJoeOiKFvqwh7/+BLeOmJkH50qnSkStcvLt
+X-Received: by 2002:a05:6000:1a86:b0:385:ef8e:a652 with SMTP id ffacd0b85a97d-385fd43c331mr2302348f8f.56.1733225616655;
+        Tue, 03 Dec 2024 03:33:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGhUjhzZs78Nz7CtLp5MQzYsLnMpSAwzkbqY7OFNZJSdUe3DRiH8XjGzF8cD+LMHI88SBHTyg==
+X-Received: by 2002:a05:6000:1a86:b0:385:ef8e:a652 with SMTP id ffacd0b85a97d-385fd43c331mr2302316f8f.56.1733225616306;
+        Tue, 03 Dec 2024 03:33:36 -0800 (PST)
+Received: from [192.168.88.24] (146-241-38-31.dyn.eolo.it. [146.241.38.31])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-385fd599b31sm1570921f8f.21.2024.12.03.03.33.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Dec 2024 03:33:35 -0800 (PST)
+Message-ID: <4c426297-6215-46a4-a9bc-371fb4efe2d1@redhat.com>
+Date: Tue, 3 Dec 2024 12:33:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4183c48a-3c78-47e2-a7b2-11d387b6f833@nvidia.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next RESEND v2] net/smc: Remove unused function
+ parameter in __smc_diag_dump
+To: manas18244@iiitd.ac.in, Wenjia Zhang <wenjia@linux.ibm.com>,
+ Jan Karcher <jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>,
+ Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>
+Cc: Shuah Khan <shuah@kernel.org>, Anup Sharma <anupnewsmail@gmail.com>,
+ linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20241202-fix-oops-__smc_diag_dump-v2-1-119736963ba9@iiitd.ac.in>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20241202-fix-oops-__smc_diag_dump-v2-1-119736963ba9@iiitd.ac.in>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Dec 03, 2024 at 11:44:12AM +0200, Yevgeny Kliteynik wrote:
-> On 03-Dec-24 11:39, Dan Carpenter wrote:
-> > On Tue, Dec 03, 2024 at 10:32:13AM +0100, Mateusz Polchlopek wrote:
-> > > 
-> > > 
-> > > On 11/30/2024 11:01 AM, Dan Carpenter wrote:
-> > > > The dr_domain_add_vport_cap() function genereally returns NULL on error
-> > > 
-> > > Typo. Should be "generally"
-> > > 
-> > 
-> > Sure.
-> > 
-> > > > but sometimes we want it to return ERR_PTR(-EBUSY) so the caller can
-> > > > retry.  The problem here is that "ret" can be either -EBUSY or -ENOMEM
-> > > 
-> > > Please remove unnecessary space.
-> > > 
-> > 
-> > What are you talking about?
+On 12/2/24 11:10, Manas via B4 Relay wrote:
+> From: Manas <manas18244@iiitd.ac.in>
 > 
-> Oh, I see it :)
-> Double space between "retry." and "The"
+> The last parameter in __smc_diag_dump (struct nlattr *bc) is unused.
+> There is only one instance of this function being called and its passed
+> with a NULL value in place of bc.
+> 
+> Reviewed-by: Simon Horman <horms@kernel.org>
+> Signed-off-by: Manas <manas18244@iiitd.ac.in>
 
-I'm old.  I'm still using fixed width fonts in my editor so I still use
-the old school rules.
+The signed-off-by tag must include your full name, see:
 
-regards,
-dan carpenter
+https://elixir.bootlin.com/linux/v6.11.8/source/Documentation/process/submitting-patches.rst#L440
+
+Thanks,
+
+Paolo
 
 
