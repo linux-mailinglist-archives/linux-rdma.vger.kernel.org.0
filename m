@@ -1,252 +1,287 @@
-Return-Path: <linux-rdma+bounces-6206-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6207-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A76739E2AEF
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 19:32:33 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 658251678A1
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 18:32:30 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C8BC1FCD17;
-	Tue,  3 Dec 2024 18:32:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="JvCxKZSE"
-X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11022107.outbound.protection.outlook.com [40.107.200.107])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E832D9E2D17
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 21:30:25 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D33A1E009B;
-	Tue,  3 Dec 2024 18:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.107
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A87D4282A18
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 20:30:24 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170821D7E21;
+	Tue,  3 Dec 2024 20:30:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jZG5O6mS"
+X-Original-To: linux-rdma@vger.kernel.org
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2088.outbound.protection.outlook.com [40.107.95.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD7952F9E;
+	Tue,  3 Dec 2024 20:30:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.88
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733250748; cv=fail; b=pYFhRfJZGeEY4QtQFnSXtQnqehPdqqT77J3hrM2UAmDLF3Jx9L8MZu+tNsisTEaBd0uYwZO2+ruO65B0mApDmw3RxkaGGJo0kPZvH7a1ds4wE9pWZip1LkUkBuh6QqkG6txoZbXlRfFQ8iaZnoZVmC6VzdY/PcwcDQJvqK2reAI=
+	t=1733257813; cv=fail; b=rbqrAebcO2jyd9R6uZCUEhzmq323BUoeYlYqsW7cc4+Mp/DCal2f9jb2VgnP/4EbAf6bvKG84XF3WA/LfhIAjNZgNGwRGjaFXZPG/1td6IOzoO7tXY+tneaEfkQGb0RoThl2h6K/0HyC3xpu1/PozlsAA48+zRHab7Co0csroIU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733250748; c=relaxed/simple;
-	bh=bWZn169maYe9oCp/ZvoOIaxMuxJpUCzDluTDKEqj538=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=m8bLZ73IQk5g5yIjLDawj19zZ0tmxl0AAJVYGJJjOSyl+f9z/RFfedO+F3WOvF1LGIfP54RD8N4zNNWWas8X+AbCqHjXtCnDT+h1rRKL1WrEpg6p3iX32WV1+syCtRlwdOcowArSpKGpUBStv0xhqBf6ALR4PbODL4PHjmkONY0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=JvCxKZSE; arc=fail smtp.client-ip=40.107.200.107
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+	s=arc-20240116; t=1733257813; c=relaxed/simple;
+	bh=nj5hPiUVW1h60vL8TTN9I5S6xOlSR1xCmxl05FvTueY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AaSdX3bwNwKK/j5kccQUVlfPSl0KLzcH8r/jIK4yktAyWY8BjVknYf/fGLREWWKhD4hQPb/g678T9THhBbCibUF4gcvZC4TGHxQ775pKNH/jZlK7yyGljOz45S4adC19km+HgoFw/Bk9fb1Wn+/W3lkOtLWv+99A2hnZLlThSuo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jZG5O6mS; arc=fail smtp.client-ip=40.107.95.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=C97vYMyummi8cFD1u9tZqvsRWKEaZ4jVcmub4lVkxQn4qpQqTbjA0/s10H6shyQPdXIcQm5z5iVglQXqlQpYhsGPioSrJegG3LMMyw8xO3Uq6hT5da9OceVo/wEqXRE9UWuhe6w5cga9Ntua+M7a43PVQ46yRfawc5tdhWmfSEVgoZrhwMhdTRTmWacJsqm5UnYGIKCcvkh1emt6YTvbP0Ovo0MGWYv2dLrXPgp2rUhGVEz6JxiXGyznY3LtzK4ixuOb/QEqCmnIg6rbPKnxNYVACF4wqaMfAXWp8t6xY36EW8OGKHqr1jaPptv+DkuicA4ul5KAsxL/Bwzr+Zv9Qg==
+ b=uYWuRvB9HJ3Htx/vlQ9oRCml3YcDygpn3sP/e0mTxHZBqKCQqxEjzkR2iuYoVUrGBsUqn0qggMcnAwRE5FBaINIg9XW9fhf48OFYqxYpV4Sq48ZXzXpo8axHQbe+UEkQhc+JpJNTiEyLOS4Mv7AOeFPjcuAVUeQXYyq+1BZn40zUTNcYWBW25o/i6L5Av+xOVhAYW2eJRxW4QSLrTFfKflsva9fU8cDnuJ00rSWWASzYG08aIoi+JVAS6z2EaJY8OmbIe6HhGXzyUbuGZa55UqHJE1rvfsc7ObA5+LBr3iygFcW9CjQgzYxNcqDIXuTW4e4N7G8HfDmKTlKy6riV3A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MHuUSR1u8WLRr8MnesHnuQM322/5ssBKTyUmcuf0h5Y=;
- b=RMoAq6xiptNHtfwLS28yFBopb+kO9xtbNNsbmkTvPqr41ZG2cMlMj8Gq38Ygw/UYWmYURhVb1QAZSLZrxoNzVK7lqWwi4auKyiGQR1L7k2Uuc0u7aiKwlOmeyyIBbZ8pZCOt32e6jUUDuHS/iMLBAPaujKY2jhCf9qkbx8hBPA/K+pZRqa1ecU55XpOQ+Uo05r9ROhghtp0bTpcx1NLhIS3CP7U05DNbm99kmVdtw50Sq5rHHH5tsAYTFPsFfoHA0AoGAEP8Hw6RScQfIMCM8uMmUKFTEeoHDWddqozFmcJPZYHk5l8OFG2ipuK9dV6VjysNDOW3+DdY45xnttNcVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ bh=tm52LBuFPQ2qaArVCeAvnilOWXCSXRn69fX/jFD1gIo=;
+ b=FRHuDocJvYMhckZ5xiyhLSgMB2IM0FHQvcix1mQyzqcZyRoNBSEuq2GJYbHr6rbIrdVF4nTUCK2VmMadURKATFofJqAcwf2KAyIQHTOBLDzvGB9gtosTCC2rQxUIdyDI92ev1LSSjR9TvMPyHLQhhYuG+abejzE/b5uFHMEmZNcIQnF8QqJz2vxdqd2ECzOJgiRZk5Arp/7pAPMnhQN70Y98aAgbBJ0KxbeDzFTeMyIGfi82IdpAMXWaRsRvWWVjcrZkaCdgRUCnDh7GlVbGWjHihP/xFxbbhAGOhSzU3Y4LSJG08w7v8dsDFUFJdevIJkAiqYCda2/0Rytqp5DHJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MHuUSR1u8WLRr8MnesHnuQM322/5ssBKTyUmcuf0h5Y=;
- b=JvCxKZSEB1R95tlRE8l+lK+OLm2PdRqofMZgl/FXt1ZpfZgvhO5LqTjHx2BOoylxeURSnzbhbkoHjDBeJovFi7+p4GBlk8VGD8F4awPBZi3nyUbqRT2fejYE4I+yxwxC9p4PPObA7kdvJxmB0X/H0XGFuOe0MtDsr6I3pEY9rKo=
-Received: from CH3PR21MB4398.namprd21.prod.outlook.com (2603:10b6:610:21b::6)
- by CH3PR21MB4447.namprd21.prod.outlook.com (2603:10b6:610:218::12) with
+ bh=tm52LBuFPQ2qaArVCeAvnilOWXCSXRn69fX/jFD1gIo=;
+ b=jZG5O6mSPxvQH3Eb+qvC/WPuylBMYR1hKfLPP5r9CXht13zioynx4cxNaq2mR+fDU+soZm4xzDxm0+wfoGFLzH6zuPWwG15CHP4rzr/0lblr9W4mgVfEAHu4p0k0cUx40+PZOtAIvQKsKhe6LcIyEoVDCJcgvdR6FMT2NWulTkoxYuALMDZJBtHdkHYeR6sGUje48f2+6QaDtXRXZcy096mRE+pXZ2G9Ja8ythOaFYjpQcTZjXq9m2RgbfdmC5tCSSAJmnpC8MgRy8ryXUR8c8jYG+9Rap/ZKzHS5mgPkxApiMyOxjkY51QB7iSX/CRZ2YKsAzJAnh2OVlYEmDRlgw==
+Received: from DM5PR08CA0028.namprd08.prod.outlook.com (2603:10b6:4:60::17) by
+ BY5PR12MB4307.namprd12.prod.outlook.com (2603:10b6:a03:20c::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8251.4; Tue, 3 Dec
- 2024 18:32:23 +0000
-Received: from CH3PR21MB4398.namprd21.prod.outlook.com
- ([fe80::d17f:89c7:62dd:247d]) by CH3PR21MB4398.namprd21.prod.outlook.com
- ([fe80::d17f:89c7:62dd:247d%4]) with mapi id 15.20.8251.000; Tue, 3 Dec 2024
- 18:32:23 +0000
-From: Long Li <longli@microsoft.com>
-To: Leon Romanovsky <leon@kernel.org>
-CC: Parav Pandit <parav@nvidia.com>, Konstantin Taranov
-	<kotaranov@microsoft.com>, Konstantin Taranov
-	<kotaranov@linux.microsoft.com>, Wei Hu <weh@microsoft.com>,
-	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>, "jgg@ziepe.ca"
-	<jgg@ziepe.ca>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	linux-netdev <netdev@vger.kernel.org>, "open list:Hyper-V/Azure CORE AND
- DRIVERS" <linux-hyperv@vger.kernel.org>
-Subject: RE: [EXTERNAL] Re: [PATCH rdma-next 1/1] RDMA/mana_ib: Set correct
- device into ib
-Thread-Topic: [EXTERNAL] Re: [PATCH rdma-next 1/1] RDMA/mana_ib: Set correct
- device into ib
-Thread-Index:
- AQHaxupwGAu99WXsuk6CZeFbpa7lGLHZiusAgAA3HoCAADQIAIDnyovQgAdWm4CAAEchAIADHbcwgADpCICACG/HUA==
-Date: Tue, 3 Dec 2024 18:32:22 +0000
-Message-ID:
- <CH3PR21MB4398BF1EFC9294701C7B0D7ECE362@CH3PR21MB4398.namprd21.prod.outlook.com>
-References: <1719311307-7920-1-git-send-email-kotaranov@linux.microsoft.com>
- <20240626054748.GN29266@unreal>
- <PAXPR83MB0559F4678E73B0091A8ADFBBB4D62@PAXPR83MB0559.EURPRD83.prod.outlook.com>
- <20240626121118.GP29266@unreal>
- <CH3PR21MB43989630F6CA822AF3DFB32CCE222@CH3PR21MB4398.namprd21.prod.outlook.com>
- <CY8PR12MB719506ED60DBD124D3784CB6DC2E2@CY8PR12MB7195.namprd12.prod.outlook.com>
- <20241125201036.GK160612@unreal>
- <CH3PR21MB4398E0C57E7B6BC73B1A8F04CE282@CH3PR21MB4398.namprd21.prod.outlook.com>
- <20241128093947.GG1245331@unreal>
-In-Reply-To: <20241128093947.GG1245331@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=dbbf2f3b-0651-4d0a-b913-c43d319630a2;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-12-03T18:29:55Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CH3PR21MB4398:EE_|CH3PR21MB4447:EE_
-x-ms-office365-filtering-correlation-id: a55e14b9-32bf-4970-9a3a-08dd13c8d424
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|366016|376014|1800799024|38070700018;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?npiSIqqNUm3dFze1udW7Sgx4HFkY75xld/Moh7CPdjhc/j2WEHZlvJnCbBV8?=
- =?us-ascii?Q?H3D9uelMrB5DY2kL5cRAqtSos1UNTJVmzz5cZHSwF3GkehW44+GM6wZt5v0L?=
- =?us-ascii?Q?3E9o6ElzRioHx8XZMsyu8ZaCojUl5PedL4sDrpzQE8BjkbC+KaC/TYbLa2+n?=
- =?us-ascii?Q?vdvxhjS0gfbM1L1tYCtybA0ggLQsdxX2c5xB8XBYk/dxOev6pVmlZFCMgErr?=
- =?us-ascii?Q?aL3/dqScx5EISeKDbzxSLno6xzRdnw0FPkYdjtNlzLLhWnwQw8y0RQcqb3N6?=
- =?us-ascii?Q?qI/PefCo0jNdB6kT629ZZm0cJvixVsh0NKeTjFXBUP8odyTJxYNn0H7SHspt?=
- =?us-ascii?Q?Btq4IXXQa0RqxIC+rKspu1tvfh+8q4b7/gpngVyP1xriHa62O789kTLvgr6y?=
- =?us-ascii?Q?sw35sLPjNoxoKItrz19dX7nqHJ0ZY1Ga4xiF00IBpUxL+g1gluhmUJRh6Fv4?=
- =?us-ascii?Q?NbMerPoiDlgAWBtWvGUTjk8G/5XwMgfllswS+V+zDWVFAexPlaW9rVhKTQgv?=
- =?us-ascii?Q?SZtu2fZpaNKXhaL5Wy1laTEm1i0GNVf88kvvg6gyfOu3Qnm/1sqUIKC9Id7e?=
- =?us-ascii?Q?oqZr/5jYhBoBo5QQQ0Cf75KKdXhHuoqDSVtgLIElN7/Cv4p6LOvi1UwhRE1m?=
- =?us-ascii?Q?Dcmt4eLvRQc8GPj+Rbtaaq5QxYCIgFFBuBlAJ1K4do+QcBMtwsW5Ma8qMY4o?=
- =?us-ascii?Q?60SMVSjY7azdHgWbkX9/DaMQiJS9zK8e8gBJNV1Mwo34t7oTb70Cag18dZBm?=
- =?us-ascii?Q?vbuQmjmJXcb6oBuUL+EAIvr9iz2vL5nIURUKDpUcHLFz0ek/ev+Uykak298F?=
- =?us-ascii?Q?hUNVuuaWgkI1G2o9pWU/CXV/HvEvS570I0qaGGPoIwKfMvcenbUerXS29Ypj?=
- =?us-ascii?Q?jhMfKlYOD3R+7seVwrAfFojyB42XiE37YM8+/JZRI/Sq8IVhFSjcLTU/IpZ2?=
- =?us-ascii?Q?iNaQTD3EqKL6jEx2Th+rjsjZnqYvzY/Md/L2OrJgz1JmgNDGGT3qloX0uFWl?=
- =?us-ascii?Q?g7e1h5Rlh7t/hCVj624kPOX5wSrWGw5d/fRbF+P3c4mTLa1uVGml59yFPRVI?=
- =?us-ascii?Q?j4tP4Y5ofhf1JblYsTrUNNR7VUMWKHbWfQTbRwLQOmbvMSeC4sjGuBQcHodD?=
- =?us-ascii?Q?xss8LY9IwMdjewZ3M25HC9PPTxhRjvuH3vnbD470PZFrg9QkmT20M88BhNPv?=
- =?us-ascii?Q?nsPJoLVAWOBFpp2f5IB6pWQeN9o7OXtNaa8PhqUOYwczNq7uyJiO6VELWCyH?=
- =?us-ascii?Q?PSXpByTUzWezksMNl45oDEkXS//3uJ/5LSRLK7SMamKknYZJIXhcFv+6jAMj?=
- =?us-ascii?Q?H39dG5Zeqv/vGqKFTa1WbXsJFqgvXVM33uLQW9rJhsOnGy9zJft50E8hWTrQ?=
- =?us-ascii?Q?+lpvC+36/7nwlbghWOh9JtnqM7HFSvUECU1LCuhHfwbNw+ah7w=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR21MB4398.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(38070700018);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?VMcl7oNt94WYmczCEnV59SpZ0S9Lxb/Hdjc4sVq1zRym6jW35xt64REKRJm4?=
- =?us-ascii?Q?TLuiLbjMiyp5YL0aTtPgKIp6gUNYtMqfaimCVZ/8alScg3VdGyXeHZr8LnAs?=
- =?us-ascii?Q?U639RrJAjcAyN9QjnXtr7NIFjfuQpOwjtv3qsrf9xcM8l4Ux3Q4BQ6eM5ZnM?=
- =?us-ascii?Q?rtmKJWJnI3Y/DeCPQKQouCbObfe/GxWvF7LzYFOArGL/jpCmn8TpjOXXpoi3?=
- =?us-ascii?Q?n8lkgfd3f7pgw8C6LrRubZAgtyksK2WMAndDSozdpRA3VZoSJACtupfFePCH?=
- =?us-ascii?Q?9kekq4bzgGUGydiz/E3YqffTk0IZBwFoToR6RLc0oAQnk8sHuVz3DjOTHiRd?=
- =?us-ascii?Q?a9EzsEjFKmyXa+OYloOB9bq71TdpznH24Jj0AevyUl2u0mRAZ7Z9aqWxZ5a4?=
- =?us-ascii?Q?6GDUeKVD+1zuEl3FuQyPaeXndmDVnNQlpWTUcNG9pyzgKNJAHjGTwN5gQl9I?=
- =?us-ascii?Q?GY5iZvoZx/wbz5ahHMhzc7Wu9B28oQC/w8lfvmnveq/9CrzkC5KptnGlKanz?=
- =?us-ascii?Q?biduXA+4EdkIxKp75PHwX8VY/I/rhkz3v2ItO4enCAo6s1cSZpjT9/DH3KXm?=
- =?us-ascii?Q?C/Loq4vrL+BzQqDwR0hln6a8oA3AnlDrCxW6ZSRB0VdGacFLeExRuDoqzgf4?=
- =?us-ascii?Q?cJj8WT+/zYo0aHLnCTxcKaPt1yac6JA4j6lvYgKleiKdKix2ZcSc+uXiY9Yr?=
- =?us-ascii?Q?3RPdlOUifXCgxin3mADhgDlTDnbqBjyWJWCTEwzpT9YHNEHvV8P14dZXTawr?=
- =?us-ascii?Q?KVS+vDWW0z+esQxt3UJ4KxvOesylU1hXECHtHH+sHcIQMpXtns9zUzr4zKjb?=
- =?us-ascii?Q?xm5HrJy41j/pigUbgU92C+SjgnfGt2vDSoqUOJQQQu4kBQ8okKaxUlQ5RWUL?=
- =?us-ascii?Q?9f4+xYxL4EucOiU5WzzC7kvdZpy6SKvx0EdL8k4MYjXuTsFsqcVFotk5OPzP?=
- =?us-ascii?Q?f7HvvOOR9+Zsi8zFsVMj6RLk7ptQPH3lZlM3Yc+vMx2df2CfPHSd4vjficGF?=
- =?us-ascii?Q?N/wjhTMVDPRfRgGM6hwKyKSxlSn7bBVK6uOullFVhZASAsrLPt0N+YBaZkRw?=
- =?us-ascii?Q?+3ciEE0kPf+wCErC2k/8TCwYviK2BPfzQs8LzJkGVJtfFnVf4uLIDuo/2nj8?=
- =?us-ascii?Q?1ULBKuw4k1IOK2uZS7WbwS6BkvqZ8DUE7jlYFM13n/auSlMRujKGIkeDjvDN?=
- =?us-ascii?Q?8nxJoUq/7CjqGlr8KZcwhueflabFVu+OA76CV1LtkmtzrRuPzw7S7/+2Eihx?=
- =?us-ascii?Q?tJadxq7W68jgNeenzwgzzNVCyHEiHHLrJsRXv2BGSlY2qrcugBcDZCktTHoy?=
- =?us-ascii?Q?YyuhgY2BL95oc/tl+T8CzqawUh0UDXh9o4skcWucRP9pXr4TGohUxg74YEQY?=
- =?us-ascii?Q?k1tP7+IQ/lNWIukgDZBLPqK++zdtHaiyrzbDcr7frzXj6Q+ObRH27hHv9ewB?=
- =?us-ascii?Q?EiSX9ke/m266+aAsM93YcEDqW7XIAR6VqskGGwNBbUAVKqDKiBR39UhMqvOv?=
- =?us-ascii?Q?PHXczyg3zSN3GT1+9KGKh4KUs58xLMpZekCpCHYzUrNuTy1b0i9mbSnBuH+X?=
- =?us-ascii?Q?vMQXAlIelxWRfEkJevZVU7B7gRcIIpjm3NUx1rx/?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8207.20; Tue, 3 Dec
+ 2024 20:30:07 +0000
+Received: from DS2PEPF00003442.namprd04.prod.outlook.com
+ (2603:10b6:4:60:cafe::ce) by DM5PR08CA0028.outlook.office365.com
+ (2603:10b6:4:60::17) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8207.14 via Frontend Transport; Tue,
+ 3 Dec 2024 20:30:07 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ DS2PEPF00003442.mail.protection.outlook.com (10.167.17.69) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8230.7 via Frontend Transport; Tue, 3 Dec 2024 20:30:06 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 3 Dec 2024
+ 12:29:58 -0800
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Tue, 3 Dec 2024 12:29:57 -0800
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Tue, 3 Dec 2024 12:29:55 -0800
+From: Tariq Toukan <tariqt@nvidia.com>
+To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
+ Lunn" <andrew+netdev@lunn.ch>
+CC: <netdev@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman
+	<gal@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
+	<linux-rdma@vger.kernel.org>, Tariq Toukan <tariqt@nvidia.com>
+Subject: [PATCH net-next V4 00/11] net/mlx5: ConnectX-8 SW Steering + Rate management on traffic classes
+Date: Tue, 3 Dec 2024 22:29:13 +0200
+Message-ID: <20241203202924.228440-1-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR21MB4398.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a55e14b9-32bf-4970-9a3a-08dd13c8d424
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2024 18:32:22.9893
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003442:EE_|BY5PR12MB4307:EE_
+X-MS-Office365-Filtering-Correlation-Id: f7fe0818-4146-48fc-2b80-08dd13d9468d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|1800799024|36860700013|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?VzRpSm5HSGtYN1l6cHg5Y2RDYm41bEpaVHhZampTaVpJTkYrWVlUdEZDa245?=
+ =?utf-8?B?VitBUDN6SlBKTldBajYzUjEwU0xFQkhtell6MTBCVjFpdGxWcVVpV1ZZcnNP?=
+ =?utf-8?B?Q2VBR3p0bXpheGRCTHBveDVic0NUbm5RSm90ZWJWcGp0aEEzdjJnU1htbk9J?=
+ =?utf-8?B?TTBhNE9LUVUrb2xQWXp5WFl4dGRKV2ZhaGNUT3FpUC8yaktLQmdlMjFNcjdk?=
+ =?utf-8?B?Rm40SUZsa0ZoTndMQ3VkbnVPZzJaZEVBMjlVZk5jNVNGbkowMXp2YTRvMTZB?=
+ =?utf-8?B?ZlR0K1JzRkxRN3g4cE5zTTFmSFNjeXllRGhXNnpqeXNzckNqdlhnYWZPZ3VY?=
+ =?utf-8?B?QnBNSThJZW5LSzJpMkpPZkRJSmI5b0UwcjNsRmhNWnYyQUgweS9jNXZkYzJK?=
+ =?utf-8?B?ZWpjSHE1TmNBY0xQOCtKSEpJWGdSczZsWkkyWWxOcCtPWVN6b2had25yTUJ1?=
+ =?utf-8?B?ZEVhMmVOK0xjZHVFenF0Yi9aZDdicC84aEU4TGxsbWx1dlFqY01FTEdWWVdw?=
+ =?utf-8?B?REFKM3ErTGFVQkJoamdvSHJBaDBOMURaSG1ibDB1ZDlJa1hDWmNOQS9Ma3ZL?=
+ =?utf-8?B?NitRVDhjelMwQ2RyS0VqZWNsS0lsczUzaUQyTFZETk1VMFdBYlFuSmpiOUlZ?=
+ =?utf-8?B?VTRaa0dHb2lrcmFTRkp2MGFhNlM4blQwZWVBWEhRRmNMNkRmU3FRaENuZktC?=
+ =?utf-8?B?L2JnYzd3UTlzZ1Jhc2VWbzdOSmgvUmdzdFU3ODFxWWMzMTZEWDBMcEpwY3pH?=
+ =?utf-8?B?Z0NsUjl0MGRTaWRWL2laUzBxc1dBWEttakdlUElUZ3NlcklodXV4ZGVQZnJo?=
+ =?utf-8?B?SXQvekJLRTVJRkhPZWRUQkpkeWtSd3RhcXJVY1I4aGpaYlhXYklMVjF5R0dQ?=
+ =?utf-8?B?Yng5QVQrNEFRenBVd3dqRlV1QnVhd1lTaEZhWUNSRStaekRSRmIrMEJkYUFR?=
+ =?utf-8?B?b0ZuVURaZ1RqSnEwdktFa0lBU0tDWFM4Y2ZDNDhGeXJzaXJMcXJ5N0JvMjBm?=
+ =?utf-8?B?bzE5OHZYYXdvM0FWWnJuZmgyaWcvblI2N2JUS0F0UDRKQ1hOL053aTh6c2J1?=
+ =?utf-8?B?QUwvY0RxVktKcWl3dGtiZXJlRFdVSW9wUkhQYytRL1hxQTRKUjZBRGQ5dndm?=
+ =?utf-8?B?TE4vOXBaNWhPQ1FmdjNWakNmbmR1QjBEYVVEdXViUHZsNWlDSXdaNFQwVXMv?=
+ =?utf-8?B?ZEpEV2NDT3pQNUFGQlVnU1dyRkhDcXcydkNwejhGOXJ0OHdOSlEyZlBzV2pt?=
+ =?utf-8?B?eTNCRWtUQ2pHdTdvWVpCNTVaOUd2QlRMTTY2Qi94aVlpNkFtTk5xOHBiMVZ6?=
+ =?utf-8?B?ZU02L3FWYnhFc1dKRy81RFZ5akRNWmdaV0ZvUEQwYXdkaWZZQWRpdnFYckpT?=
+ =?utf-8?B?dFBHTVdPUUFKU2d2eTRGNGl5c29BcXpSd1NYTU5WNU8yUG1DQUdkMmNzY0U1?=
+ =?utf-8?B?bjloZmR5c0t1Mm96MEFBSE1YcFN1U29OWW8rNUpjOUlrNFpXcGRGVXJRYkJn?=
+ =?utf-8?B?Mi9iSFJmMFkydGQ1WjNDUkorZmpzU0sxKzZzeHovWkNYK2orYjVRZ0dZdFVH?=
+ =?utf-8?B?VE00SkcwRFdaWkpYNGM5eURyT3h6ZjV5QnVpSkJvVXRWVUxlbFNKQ05LeGJT?=
+ =?utf-8?B?K0NVTEwra2VPUHVJdmlPTnFUSEJwVWdNb1VQSTJTeHJwQ2cvVUkzRDVkK2I4?=
+ =?utf-8?B?K2ZrVFRua1lWZE5LcXJGQkVBeERQL3FHNEUrbVo1YXhWZy9HOEEzdHR4YUVs?=
+ =?utf-8?B?bnZiK0xPUk5jcW1nWmhKRVJLdkV3OGVWYXFua0tWOHRvRk12TEdTZUxjNmx4?=
+ =?utf-8?B?d0FBNWVsYzh0R0lqMzBBdFZ1Zy9zQ1dlWG9USldXYkkxb2FoRTVCcFZOZHJI?=
+ =?utf-8?B?UU9pNDV0bkJPSS9aZWdPV0hqb3NXeGNJL2tjYXVkZ25oVW4wK1BkNWEwRzF0?=
+ =?utf-8?Q?RpRRqUD+X4mmrsBfxyiBz3h8TmiB4Nqp?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(36860700013)(376014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2024 20:30:06.7560
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: muyf1am+wsmMdRUUD+lROXhbAHHZNc60VazjZT1UANErlKTKkJpD+ayZ7sqAxdNRt/hfajpugY+i0uhY43cdHw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR21MB4447
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7fe0818-4146-48fc-2b80-08dd13d9468d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS2PEPF00003442.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4307
 
-> Subject: Re: [EXTERNAL] Re: [PATCH rdma-next 1/1] RDMA/mana_ib: Set corre=
-ct
-> device into ib
->=20
-> On Wed, Nov 27, 2024 at 07:46:39PM +0000, Long Li wrote:
-> >
-> > > > > I think Konstantin's suggestion makes sense, how about we do
-> > > > > this (don't need to define netdev_is_slave(dev)):
-> > > > >
-> > > > > --- a/drivers/infiniband/core/roce_gid_mgmt.c
-> > > > > +++ b/drivers/infiniband/core/roce_gid_mgmt.c
-> > > > > @@ -161,7 +161,7 @@ is_eth_port_of_netdev_filter(struct
-> > > > > ib_device *ib_dev, u32 port,
-> > > > >         res =3D ((rdma_is_upper_dev_rcu(rdma_ndev, cookie) &&
-> > > > >                (is_eth_active_slave_of_bonding_rcu(rdma_ndev, rea=
-l_dev) &
-> > > > >                 REQUIRED_BOND_STATES)) ||
-> > > > > -              real_dev =3D=3D rdma_ndev);
-> > > > > +              (real_dev =3D=3D rdma_ndev &&
-> > > > > + !netif_is_bond_slave(rdma_ndev)));
-> > > > >
-> > > > >         rcu_read_unlock();
-> > > > >         return res;
-> > > > >
-> > > > >
-> > > > > is_eth_port_of_netdev_filter() should not return true if this
-> > > > > netdev is a bonded slave. In this case, only use the address of i=
-ts bonded
-> master.
-> > > > >
-> > > > Right. This change makes sense to me.
-> > > > I don't have a setup presently to verify it to ensure I didn't miss=
- a corner
-> case.
-> > > > Leon,
-> > > > Can you or others please test the regression once with the formal p=
-atch?
-> > >
-> > > Sure, once Long will send the patch, I'll make sure that it is tested=
-.
-> > >
-> > > Thanks
-> > >
-> >
-> > I posted patches for discussion.
-> > https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flor=
-e
-> > .kernel.org%2Flinux-rdma%2F1732736619-19941-1-git-send-email-longli%40
-> >
-> linuxonhyperv.com%2FT%2F%23t&data=3D05%7C02%7Clongli%40microsoft.com%7
-> C4
-> >
-> 20bac91521e414ff34c08dd0f909cf6%7C72f988bf86f141af91ab2d7cd011db47%7
-> C1
-> > %7C0%7C638683835975667120%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU
-> 1hcGkiOnRy
-> >
-> dWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D
-> %
-> >
-> 3D%7C0%7C%7C%7C&sdata=3D7vTTi%2FilkYdEKNG1qwpgYYDriOPPUF%2Bp8Zh91
-> 60CEVE%
-> > 3D&reserved=3D0
->=20
-> Please resend these patches as series with cover letter and don't embed e=
-xtra
-> patch (the one which is not numbered) into the series.
->=20
-> Thanks
+Hi,
+
+This patchset starts with 3 patches that modify the IFC, targeted to
+mlx5-next in order to be taken to rdma-next branch side sooner than in
+the next merge window.
+
+This patchset consists of two features:
+1. In patches 4-5, Itamar adds SW Steering support for ConnectX-8.
+2. Followed by patches by Carolina that add rate management support on
+traffic classes in devlink and mlx5, more details below [1].
+
+Series generated against:
+commit e8e7be7d212d ("mctp i2c: drop check because i2c_unregister_device() is NULL safe")
+
+Regards,
+Tariq
+
+V4:
+- Renamed the nested attribute for traffic class bandwidth to
+  DEVLINK_ATTR_RATE_TC_BWS.
+- Changed the order of the attributes in `devlink.h`.
+- Refactored the initialization tc-bw array in
+  devlink_nl_rate_tc_bw_set().
+- Added extack messages to provide clear feedback on issues with tc-bw
+  arguments.
+- Updated `rate-tc-bws` to support a multi-attr set, where each
+  attribute includes an index and the corresponding bandwidth for that
+  traffic class.
+- Handled the issue where the user could provide
+  DEVLINK_ATTR_RATE_TC_BWS with duplicate indices.
+- Provided ynl exmaples in devlink patch commit message.
+- Take IFC patches to beginning of the series, targeted for mlx5-next.
 
 
-I will resend those as a series after addressing the other comments on bond=
-ing.
+V3:
+- Dropped rate-tc-index, using tc-bw array index instead.
+- Renamed rate-bw to rate-tc-bw.
+- Documneted what the rate-tc-bw represents and added a range check for
+  validation.
+- Intorduced devlink_nl_rate_tc_bw_set() to parse and set the TC
+  bandwidth values.
+- Updated the user API in the commit message of patch 1/6 to ensure
+  bandwidths sum equals 100.
+- Fixed missing filling of rate-parent in devlink_nl_rate_fill().
 
-Thanks
+V2:
+- Included <linux/dcbnl.h> in devlink.h to resolve missing
+  IEEE_8021QAZ_MAX_TCS definition.
+- Refactored the rate-tc-bw attribute structure to use a separate
+  rate-tc-index.
+- Updated patch 2/6 title.
+
+
+[1]
+This patch series extends the devlink-rate API to support traffic class
+(TC) bandwidth management, enabling more granular control over traffic
+shaping and rate limiting across multiple TCs. The API now allows users
+to specify bandwidth proportions for different traffic classes in a
+single command. This is particularly useful for managing Enhanced
+Transmission Selection (ETS) for groups of Virtual Functions (VFs),
+allowing precise bandwidth allocation across traffic classes.
+
+Additionally the series refines the QoS handling in net/mlx5 to support
+TC arbitration and bandwidth management on vports and rate nodes.
+
+Extend devlink-rate API to support rate management on TCs:
+- devlink: Extend the devlink rate API to support traffic class
+  bandwidth management
+
+Introduce a no-op implementation:
+- net/mlx5: Add no-op implementation for setting tc-bw on rate objects
+
+Add support for enabling and disabling TC QoS on vports and nodes:
+- net/mlx5: Add support for setting tc-bw on nodes
+- net/mlx5: Add traffic class scheduling support for vport QoS
+
+Support for setting tc-bw on rate objects:
+- net/mlx5: Manage TC arbiter nodes and implement full support for
+  tc-bw
+
+Carolina Jubran (6):
+  net/mlx5: Add support for new scheduling elements
+  devlink: Extend devlink rate API with traffic classes bandwidth
+    management
+  net/mlx5: Add no-op implementation for setting tc-bw on rate objects
+  net/mlx5: Add support for setting tc-bw on nodes
+  net/mlx5: Add traffic class scheduling support for vport QoS
+  net/mlx5: Manage TC arbiter nodes and implement full support for tc-bw
+
+Cosmin Ratiu (2):
+  net/mlx5: ifc: Reorganize mlx5_ifc_flow_table_context_bits
+  net/mlx5: qos: Add ifc support for cross-esw scheduling
+
+Itamar Gozlan (2):
+  net/mlx5: DR, Expand SWS STE callbacks and consolidate common structs
+  net/mlx5: DR, Add support for ConnectX-8 steering
+
+Yevgeny Kliteynik (1):
+  net/mlx5: Add ConnectX-8 device to ifc
+
+ Documentation/netlink/specs/devlink.yaml      |  28 +-
+ .../net/ethernet/mellanox/mlx5/core/Makefile  |   1 +
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |   2 +
+ .../net/ethernet/mellanox/mlx5/core/esw/qos.c | 795 +++++++++++++++++-
+ .../net/ethernet/mellanox/mlx5/core/esw/qos.h |   4 +
+ .../net/ethernet/mellanox/mlx5/core/eswitch.h |  13 +-
+ drivers/net/ethernet/mellanox/mlx5/core/rl.c  |   4 +
+ .../mlx5/core/steering/sws/dr_domain.c        |   2 +-
+ .../mellanox/mlx5/core/steering/sws/dr_ste.c  |   6 +-
+ .../mellanox/mlx5/core/steering/sws/dr_ste.h  |  19 +-
+ .../mlx5/core/steering/sws/dr_ste_v0.c        |   6 +-
+ .../mlx5/core/steering/sws/dr_ste_v1.c        | 207 +----
+ .../mlx5/core/steering/sws/dr_ste_v1.h        | 147 +++-
+ .../mlx5/core/steering/sws/dr_ste_v2.c        | 169 +---
+ .../mlx5/core/steering/sws/dr_ste_v2.h        | 168 ++++
+ .../mlx5/core/steering/sws/dr_ste_v3.c        | 221 +++++
+ .../mlx5/core/steering/sws/mlx5_ifc_dr.h      |  40 +
+ .../mellanox/mlx5/core/steering/sws/mlx5dr.h  |   2 +-
+ include/linux/mlx5/mlx5_ifc.h                 |  56 +-
+ include/net/devlink.h                         |   7 +
+ include/uapi/linux/devlink.h                  |   4 +
+ net/devlink/netlink_gen.c                     |  15 +-
+ net/devlink/netlink_gen.h                     |   1 +
+ net/devlink/rate.c                            | 124 +++
+ 24 files changed, 1645 insertions(+), 396 deletions(-)
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v2.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v3.c
+
+-- 
+2.44.0
 
 
