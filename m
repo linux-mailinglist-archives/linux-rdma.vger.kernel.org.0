@@ -1,185 +1,213 @@
-Return-Path: <linux-rdma+bounces-6240-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6241-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEED19E42A7
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 18:58:51 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D9809E463A
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 22:01:43 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CC802850EF
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 17:58:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED4FC169165
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 21:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5B12165FE;
-	Wed,  4 Dec 2024 17:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2690B1917E3;
+	Wed,  4 Dec 2024 21:01:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=paranoici.org header.i=@paranoici.org header.b="fJn7q2lb"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nNSRR48i"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from devianza.investici.org (devianza.investici.org [198.167.222.108])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7C6215F74;
-	Wed,  4 Dec 2024 17:23:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.167.222.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3742918DF81;
+	Wed,  4 Dec 2024 21:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733332987; cv=none; b=R11gcHJ0mLKvUhNc2nt1iZ8Ghedm8triLNzcKl2oikJRU8dIBBRlhhIDdlVNf5jJsCpanssAx+fRu3boSzPR01LWGKn3IVXmwkGDyetYSaltW3jVxAkFBNbcdHHSRTGFGl6fOUZLCmKMEWMd8Bsji/qu+YLHHNrRPVI/cDXbaHA=
+	t=1733346089; cv=none; b=ToBsswANOLXscQ4bDSfPXHd7W/kwT8Op8Q5MBNV+eBaXyxrEYjw0rluBqe/Il4bzZTJYNwTysUce8/KtpeFcdz709tYZ+ZKCdAYY3QkIwKe2J42sTfmPj2ufuRxdZfVD1Zf0TgL022UCIc4Gb9R1f1npnTNaHvVzpr/zMZiwVvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733332987; c=relaxed/simple;
-	bh=8HO3mm3jNM/ZIi+ulQAkDTTq+p4TEOdSZ5DMUDAq2Vg=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=NWS5tHJADo4oYKCLMvmJTmy8jgazd+ocE447RVL4NL0zWuYhs0Tw1TVA+x9Z9WoR3Td38DQcoucpBXUtyU0mKVTQlWoFs/AIbWm4xnL3ZV34d8EV67md+9pvn6TbDvjQiPxQSu8BO2ENWFK/VkgQYfFO+FSs02W6u/s/sexXQLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=paranoici.org; spf=pass smtp.mailfrom=paranoici.org; dkim=pass (1024-bit key) header.d=paranoici.org header.i=@paranoici.org header.b=fJn7q2lb; arc=none smtp.client-ip=198.167.222.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=paranoici.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paranoici.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paranoici.org;
-	s=stigmate; t=1733332478;
-	bh=0QrBbFQ1Yk43wtEVuPMTkfoJbcLfYpa5h2xyKqF9TXQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fJn7q2lb6Sq30r4i7Hi1Idj/7Fj1J3PmPVtm/N7w9ggFeeYS6lWZ65FwuKrpRkF+K
-	 OIQ10ChwvBTbmF0gZWZyxven9Hcs5bhfJqy2jjLlnXDWRUYrjK/srEWd7Yiohr1cdS
-	 lJiDni5XC+IMba7+VMn3aNxn4Z6EyzxIvGN2+UQk=
-Received: from mx2.investici.org (unknown [127.0.0.1])
-	by devianza.investici.org (Postfix) with ESMTP id 4Y3PJt0MCvz6vVX;
-	Wed,  4 Dec 2024 17:14:38 +0000 (UTC)
-Received: from [198.167.222.108] (mx2.investici.org [198.167.222.108]) (Authenticated sender: invernomuto@paranoici.org) by localhost (Postfix) with ESMTPSA id 4Y3PJs70sJz6vVW;
-	Wed,  4 Dec 2024 17:14:37 +0000 (UTC)
-Received: from frx by crunch with local (Exim 4.98)
-	(envelope-from <invernomuto@paranoici.org>)
-	id 1tIsxQ-000000003X3-30eO;
-	Wed, 04 Dec 2024 18:14:36 +0100
-Date: Wed, 4 Dec 2024 18:13:56 +0100
-From: Francesco Poli <invernomuto@paranoici.org>
-To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <ukleinek@debian.org>
-Cc: Leon Romanovsky <leonro@nvidia.com>, 1086520-done@bugs.debian.org, Mark
- Zhang <markzhang@nvidia.com>, linux-rdma@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: Re: Bug#1086520: linux-image-6.11.2-amd64: makes opensm fail to
- start
-Message-Id: <20241204181356.932c49619598e04d8ad412e0@paranoici.org>
-In-Reply-To: <acpo6ocggcl66fjdllk5zrfs2vwiivpetd5ierdek5ruxvdbyl@tfbc3mfnp23o>
-References: <20241113231503.54d12ed5b5d0c8fa9b7d9806@paranoici.org>
-	<3wfi2j7jn2f7rajabfcengubgtyt3wkuin6hqepdoe5dlvfhvn@2clhco3z6fuw>
-	<173040083268.16618.7451145398661885923.reportbug@crunch>
-	<20241118200616.865cb4c869e693b19529df36@paranoici.org>
-	<nvs4i2v7o6vn6zhmtq4sgazy2hu5kiulukxcntdelggmznnl7h@so3oul6uwgbl>
-	<20241125195443.0ddf0d0176d7c34bd29942c7@paranoici.org>
-	<20241125193837.GH160612@unreal>
-	<20241127184803.75086499e71c6b1588a4fb5a@paranoici.org>
-	<173040083268.16618.7451145398661885923.reportbug@crunch>
-	<20241127200413.GE1245331@unreal>
-	<acpo6ocggcl66fjdllk5zrfs2vwiivpetd5ierdek5ruxvdbyl@tfbc3mfnp23o>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1733346089; c=relaxed/simple;
+	bh=YYisex5fANxvp1J7FXSt2wFTYyLxl4fy8A9aDQDg1FQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CNvrbLHg+1IuHwK6kwlRGa4AJjhPGK2Weg1G0uCFHS0JO8ri9aQuoYKRCwKyQUkl5aMDzkYgRV/mH1JC/bStrTF7fGQsVlsomLui2poeiWOdxzTAW/iEH90SOvbG1gAmND1s4seez4+UGFchNsZ9D44r87Zbo10SHKB7oLg6zg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nNSRR48i; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1733346088; x=1764882088;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YYisex5fANxvp1J7FXSt2wFTYyLxl4fy8A9aDQDg1FQ=;
+  b=nNSRR48i5t9Qm9/t5po/KTw13GNfQkhEabEwgZE/trvtAd5kVzZAzFkB
+   pNr9Provy09XZweEesbuoDeqHlPiCrM0O0NXLBwon3VXoY1xzi3Dn4FNt
+   duTbwgU331MHNg/jPABW7ZbO6n2cPqYWWnGyGfGP/WFdFoKLmS0yNsTo1
+   A+R+W/Khlv+oLJKkAcADYc1WSxeUDo4cFSKgXLFNwEuJ1r8rPzi1zu3SV
+   d2G+7yuulEG3IYIoRQWm2BpY9OhHMA9SvFVkmYAsiAl6ov7HPUc190y2K
+   yQshcoHESyxoin+aDII00rgsVDIw+di0evf+V/B4a7luXLobrjmwbx5ft
+   A==;
+X-CSE-ConnectionGUID: dW3lS1L2R7iWSW1w8WfVLg==
+X-CSE-MsgGUID: pAWn637UTgSHidUSV8nRlw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11276"; a="33376974"
+X-IronPort-AV: E=Sophos;i="6.12,208,1728975600"; 
+   d="scan'208";a="33376974"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2024 13:01:25 -0800
+X-CSE-ConnectionGUID: QWS2hJyNQWOxHgI42sEvdA==
+X-CSE-MsgGUID: 21i45RZzRYqLQ7OlhLyg3A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,208,1728975600"; 
+   d="scan'208";a="97937245"
+Received: from lkp-server02.sh.intel.com (HELO 1f5a171d57e2) ([10.239.97.151])
+  by fmviesa003.fm.intel.com with ESMTP; 04 Dec 2024 13:01:21 -0800
+Received: from kbuild by 1f5a171d57e2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tIwUo-0003UD-2j;
+	Wed, 04 Dec 2024 21:01:18 +0000
+Date: Thu, 5 Dec 2024 05:00:58 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tariq Toukan <tariqt@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+	Gal Pressman <gal@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
+	linux-rdma@vger.kernel.org, Carolina Jubran <cjubran@nvidia.com>,
+	Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>
+Subject: Re: [PATCH net-next V4 07/11] devlink: Extend devlink rate API with
+ traffic classes bandwidth management
+Message-ID: <202412050416.e7egEz4f-lkp@intel.com>
+References: <20241203202924.228440-8-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA512";
- boundary="Signature=_Wed__4_Dec_2024_18_13_56_+0100_OXoMkKkJzsj06Qbl"
-
---Signature=_Wed__4_Dec_2024_18_13_56_+0100_OXoMkKkJzsj06Qbl
-Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20241203202924.228440-8-tariqt@nvidia.com>
 
-On Wed, 4 Dec 2024 17:37:05 +0100 Uwe Kleine-K=C3=B6nig wrote:
+Hi Tariq,
 
-> Hello Francesco,
+kernel test robot noticed the following build warnings:
 
-Hello Uwe,
+[auto build test WARNING on net-next/main]
 
-[...]
-> I wonder if you could test a firmware upgrade or the above patch. Would
-> be nice to know if there are still some things to do for us (=3D Debian
-> kernel team) here.
+url:    https://github.com/intel-lab-lkp/linux/commits/Tariq-Toukan/net-mlx5-ifc-Reorganize-mlx5_ifc_flow_table_context_bits/20241204-124235
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20241203202924.228440-8-tariqt%40nvidia.com
+patch subject: [PATCH net-next V4 07/11] devlink: Extend devlink rate API with traffic classes bandwidth management
+config: x86_64-buildonly-randconfig-001-20241205 (https://download.01.org/0day-ci/archive/20241205/202412050416.e7egEz4f-lkp@intel.com/config)
+compiler: clang version 19.1.3 (https://github.com/llvm/llvm-project ab51eccf88f5321e7c60591c5546b254b6afab99)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241205/202412050416.e7egEz4f-lkp@intel.com/reproduce)
 
-Yes, I've finally got around to upgrading the firmware.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202412050416.e7egEz4f-lkp@intel.com/
 
-And today I had a time window, where I could reboot the cluster head
-node.
-After the reboot, the InfiniBand network works correctly:
+All warnings (new ones prefixed by >>):
 
-  $ uname -v
-  #1 SMP PREEMPT_DYNAMIC Debian 6.11.10-1 (2024-11-23)
-  $ ls -altrF /sys/class/infiniband_mad/
-  total 0
-  lrwxrwxrwx  1 root root    0 Dec  4 10:15 umad0 -> ../../devices/pci0000:=
-80/0000:80:01.1/0000:81:00.0/infiniband_mad/umad0/
-  lrwxrwxrwx  1 root root    0 Dec  4 10:15 umad1 -> ../../devices/pci0000:=
-80/0000:80:01.1/0000:81:00.1/infiniband_mad/umad1/
-  drwxr-xr-x  2 root root    0 Dec  4 10:17 ./
-  drwxr-xr-x 73 root root    0 Dec  4 10:17 ../
-  -r--r--r--  1 root root 4096 Dec  4 10:17 abi_version
-  lrwxrwxrwx  1 root root    0 Dec  4 18:08 issm1 -> ../../devices/pci0000:=
-80/0000:80:01.1/0000:81:00.1/infiniband_mad/issm1/
-  lrwxrwxrwx  1 root root    0 Dec  4 18:08 issm0 -> ../../devices/pci0000:=
-80/0000:80:01.1/0000:81:00.0/infiniband_mad/issm0/
-  # ethtool -i ibp129s0f0
-  driver: mlx5_core[ib_ipoib]
-  version: 6.11.10-amd64
-  firmware-version: 20.43.1014 (MT_0000000224)
-  expansion-rom-version:
-  bus-info: 0000:81:00.0
-  supports-statistics: yes
-  supports-test: yes
-  supports-eeprom-access: no
-  supports-register-dump: no
-  supports-priv-flags: yes
-  # ethtool -i ibp129s0f1
-  driver: mlx5_core[ib_ipoib]
-  version: 6.11.10-amd64
-  firmware-version: 20.43.1014 (MT_0000000224)
-  expansion-rom-version:
-  bus-info: 0000:81:00.1
-  supports-statistics: yes
-  supports-test: yes
-  supports-eeprom-access: no
-  supports-register-dump: no
-  supports-priv-flags: yes
-  $ ps aux | grep opens[m]
-  root        1150  0.0  0.0 1560776 3636 ?        Ssl  10:15   0:00 /usr/s=
-bin/opensm --guid 0x9c63c00300033240 --log_file /var/log/opensm.0x9c63c0030=
-0033240.log
+   In file included from net/devlink/rate.c:7:
+   In file included from net/devlink/devl_internal.h:7:
+   In file included from include/linux/etherdevice.h:20:
+   In file included from include/linux/if_ether.h:19:
+   In file included from include/linux/skbuff.h:17:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:8:
+   In file included from include/linux/cacheflush.h:5:
+   In file included from arch/x86/include/asm/cacheflush.h:5:
+   In file included from include/linux/mm.h:2223:
+   include/linux/vmstat.h:504:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     504 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     505 |                            item];
+         |                            ~~~~
+   include/linux/vmstat.h:511:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     511 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     512 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:518:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     518 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   include/linux/vmstat.h:524:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     524 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     525 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   In file included from net/devlink/rate.c:7:
+   net/devlink/devl_internal.h:29:19: warning: arithmetic between different enumeration types ('enum devlink_reload_limit' and 'enum devlink_reload_action') [-Wenum-enum-conversion]
+      29 |         u32 reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
+         |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   net/devlink/devl_internal.h:26:30: note: expanded from macro 'DEVLINK_RELOAD_STATS_ARRAY_SIZE'
+      26 |         (__DEVLINK_RELOAD_LIMIT_MAX * __DEVLINK_RELOAD_ACTION_MAX)
+         |          ~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   net/devlink/devl_internal.h:30:26: warning: arithmetic between different enumeration types ('enum devlink_reload_limit' and 'enum devlink_reload_action') [-Wenum-enum-conversion]
+      30 |         u32 remote_reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
+         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   net/devlink/devl_internal.h:26:30: note: expanded from macro 'DEVLINK_RELOAD_STATS_ARRAY_SIZE'
+      26 |         (__DEVLINK_RELOAD_LIMIT_MAX * __DEVLINK_RELOAD_ACTION_MAX)
+         |          ~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> net/devlink/rate.c:403:4: warning: 'snprintf' will always be truncated; specified size is 80, but format string expands to at least 83 [-Wformat-truncation]
+     403 |                         NL_SET_ERR_MSG_FMT(info->extack,
+         |                         ^
+   include/linux/netlink.h:116:6: note: expanded from macro 'NL_SET_ERR_MSG_FMT'
+     116 |         if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,               \
+         |             ^
+   7 warnings generated.
 
 
->=20
-> If everything is fine for you, I'd like to close this bug.
+vim +/snprintf +403 net/devlink/rate.c
 
-I am closing the Debian bug report right now.
-Thanks to everyone who has been involved for the great and kind help!
+   381	
+   382	static int devlink_nl_rate_tc_bw_set(struct devlink_rate *devlink_rate,
+   383					     struct genl_info *info)
+   384	{
+   385		DECLARE_BITMAP(bitmap, IEEE_8021QAZ_MAX_TCS) = {};
+   386		struct devlink *devlink = devlink_rate->devlink;
+   387		const struct devlink_ops *ops = devlink->ops;
+   388		u32 tc_bw[IEEE_8021QAZ_MAX_TCS] = {};
+   389		int rem, err = -EOPNOTSUPP, i;
+   390		struct nlattr *attr;
+   391	
+   392		nla_for_each_attr(attr, genlmsg_data(info->genlhdr),
+   393				  genlmsg_len(info->genlhdr), rem) {
+   394			if (nla_type(attr) == DEVLINK_ATTR_RATE_TC_BWS) {
+   395				err = devlink_nl_rate_tc_bw_parse(attr, tc_bw, bitmap, info->extack);
+   396				if (err)
+   397					return err;
+   398			}
+   399		}
+   400	
+   401		for (i = 0; i < IEEE_8021QAZ_MAX_TCS; i++) {
+   402			if (!test_bit(i, bitmap)) {
+ > 403				NL_SET_ERR_MSG_FMT(info->extack,
+   404						   "Incomplete traffic class bandwidth values, all %u traffic classes must be specified",
+   405						   IEEE_8021QAZ_MAX_TCS);
+   406				return -EINVAL;
+   407			}
+   408		}
+   409	
+   410		if (devlink_rate_is_leaf(devlink_rate))
+   411			err = ops->rate_leaf_tc_bw_set(devlink_rate, devlink_rate->priv, tc_bw,
+   412						       info->extack);
+   413		else if (devlink_rate_is_node(devlink_rate))
+   414			err = ops->rate_node_tc_bw_set(devlink_rate, devlink_rate->priv, tc_bw,
+   415						       info->extack);
+   416	
+   417		if (err)
+   418			return err;
+   419	
+   420		memcpy(devlink_rate->tc_bw, tc_bw, sizeof(tc_bw));
+   421	
+   422		return 0;
+   423	}
+   424	
 
->=20
-> Best regards
-
-Have a nice evening.   :-)
-
---=20
- http://www.inventati.org/frx/
- There's not a second to spare! To the laboratory!
-..................................................... Francesco Poli .
- GnuPG key fpr =3D=3D CA01 1147 9CD2 EFDF FB82  3925 3E1C 27E1 1F69 BFFE
-
---Signature=_Wed__4_Dec_2024_18_13_56_+0100_OXoMkKkJzsj06Qbl
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEygERR5zS79/7gjklPhwn4R9pv/4FAmdQjdQACgkQPhwn4R9p
-v/6AoA//TkOwnWjH5D4ks5SUi1DDiHU1IFfS/ix9o3TA2oWmP9/tQzIWV/ACfbbK
-5QBHtVb6lFSte9kIxSgc/mXP06PicFpsxOjByJ4Kwq8dlz9ksQqC/biF0h0PmKZt
-hRFVC0F69vDgUeUhREOQn6a3KscUv6pl9bEkUBmMjcXmdLkgPaFkMWt4jlopXhig
-w2U7vKhLFo+caw1WM3e4OJpF6iPXF4G6lyEOvXIo7zKohVwChVjH5rwUuIXmd0Q2
-ltvu8ZGcx0+wor5zoUORt1hYLXjOZ4jtJLAEgrvZNoa6eUGw1NPaNInwyjDo2hFS
-EidbgtJY3UFa3mytTbkQO4alfagC52CfjmxJfNC3dGqyBDHS5j2uXPB0V5NWbDWq
-lX7k1DcfBS9rJgNs+kBL5/aoU1KHWSCqdUbniomv3iba5thfmWpHF+mki5cJr/6+
-VIkARDEnLuk86nVm8dOVwm/jFLyerDXP6XzAdUjw4xPeBzib+dPlaD29r39YrvMf
-aRqSe8azvg7t+XFGpmfbXTnGgCUgv/YIACUtrs/ffif8ffTl9FC+8xMsgCH638J3
-nP7Sd1yVPzynZHshH1lGv+k7VSAZqGq2550hdAvmXs4pUPt/ow/3A2tBdNo8j00U
-GbZtEnbMp/i1nOZB/NOaTdmyT0Y5VEqqPmdkfL1KKASTSVK59Zw=
-=aoBA
------END PGP SIGNATURE-----
-
---Signature=_Wed__4_Dec_2024_18_13_56_+0100_OXoMkKkJzsj06Qbl--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
