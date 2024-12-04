@@ -1,82 +1,86 @@
-Return-Path: <linux-rdma+bounces-6222-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6223-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2A369E3544
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 09:28:25 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D2869E34D8
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 09:03:47 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 857F1B35974
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 08:03:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37DB416660D
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 08:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7B21AAE02;
-	Wed,  4 Dec 2024 07:58:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95CE71AAE10;
+	Wed,  4 Dec 2024 07:58:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="HKeCanKI"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="eGZA4DIz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EE418D643
-	for <linux-rdma@vger.kernel.org>; Wed,  4 Dec 2024 07:58:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8171192D86
+	for <linux-rdma@vger.kernel.org>; Wed,  4 Dec 2024 07:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733299092; cv=none; b=Hua5VHkZOA9ZkyEjejgU+djcfRxXZ0InO76QZS6w/AA0a3BxpglDiDbHGg7laYF5T2EeSfK2bJavGIfq+PyVNMW42j/CkYcsP4k1QRXTu1qBEgYfRnNEiA01+NKPjsbGe8HPzCR6zlK0atYTeLGQ1ZpUqmY9octtd/DFuknO0LA=
+	t=1733299097; cv=none; b=HhOtXmnpBQI1SW02zzKD1PGkOyLkJod/GQXL3w97Rad1URO/vWr/z4yeYyDfkBupPmoTHqDAs/19z6TqX6wYCSH7DeBcibDJu6867e3SzaRDeOMrLydQmMpRryHiT1qWygGXdMvyyKgpr8JFsDDeRT9mEIcrhrtnp1iTXm72A1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733299092; c=relaxed/simple;
-	bh=fRwu0Tgck7AgN/uibK2wsiXUmuP6yoVIXpVV0Otej/4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SSoliLm9+I2GTyBTi4B0fPRwhBSkJ5FfhN1rfO9KpSWg3nL8ztEQH/Tr903C4acdJxttwhR09hcDalsSXrM+5tEZahFKQVYxbOzTCsosYadOSLCY2oFfmiilT913WGMn9WXXak49HaPz0EnK8ecpao6fPcpnajXoLbCkM0N4qf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=HKeCanKI; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1733299097; c=relaxed/simple;
+	bh=N/U60O4Ck0Nm6kaetMC4A7sNcfgISQ4eA1+dej1Ae8o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=dbBR7k/B6JafQvTImeHKCTwkpuh6DuGE6SBJorm4i14R4GiNMaSV9Kb4T+MO9uUg6o6ZTNalTTYJEcB2m8ur6bzT69bdaEP2Gs3J3XAA3SswLvjBwPLuN2CJbXpBuKoixAIgf36Fktq30VjAVfXDHGJ9Er8tzP3+te2fHI/nPFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=eGZA4DIz; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-215cc7b0c56so12964715ad.3
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Dec 2024 23:58:10 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2154e3af730so39722115ad.3
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Dec 2024 23:58:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1733299090; x=1733903890; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1izmvet3S+2a47SGMkUisv53z/BVf88f/rut3KVNjFo=;
-        b=HKeCanKIrz3Ocf7Ar3zXqdPszyFAuUnYHUEvQTAiORTtHJsFc/45lpcZ9q5qPaet90
-         B7Dt6+iiSfaoa/zzyv6LXzXoVVhEAS8sJo4zM78CKkEq0RCjEbPVnVNk5MMsD4cME1Vk
-         sXw2iSz7AnNxfAabFcyNc7/zesnkFcm73EhWQ=
+        d=broadcom.com; s=google; t=1733299094; x=1733903894; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bMwFjqYRs5rLhlVUhm9tYS8e6al8EfCryfrjNlOEgLM=;
+        b=eGZA4DIzmN1VelDrRnUbkridjO//0i0h6KQBPJmXiE0Gd/B63KAijEjWwoxtdIoSpz
+         mRAH38mQkf06iU9GXFRIPTDuUYU+F8XHzA7B+g/E7+kB/+4czcjHGRGfCp/IPDOilGBo
+         iLlyFGrliO0POJmOKS1yXxhb4SBxR/SMXPYDQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733299090; x=1733903890;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1izmvet3S+2a47SGMkUisv53z/BVf88f/rut3KVNjFo=;
-        b=K3WjjzwmzwmAW85wdagpxltaKL0b4cizYWr/OK/ebupuO/5QoXIwd41I2GSywjBv+F
-         7prxnDMb4sKZkS5EwnesPJZXwqQZ4QcHeU3Hn+RM5UejN8RJPZzhY4jyg+v4mHPk9W3r
-         29F0pTCCC68gfIcdw+aurE/A+FV6C7NK26qNGOq6Pl442v5geiLQ5KpJ7t8QyjaCeUdz
-         C2rDTtpLQksWVSZqNL2y8KXXjQRKwiffg21eGEfKZRQq36yQvKktVMx4Z9a58lvacMmz
-         e+WPGTPc1yKb8q44atBNCVOgeg4jVKhdx5zPLtQVbmxchYKF7SinOweOGNovLSySMnBH
-         4WbA==
-X-Gm-Message-State: AOJu0YxbdvQPVqbrXUlVrBep0Sbmbja6jhTvkZKudyv7moKimRZhdOdK
-	bCoCKVfXr0V9hNaSZYO4dgyc1CXg830H1oh9Xhj7ZoLl8TwmzYIEIaALw+DRIA==
-X-Gm-Gg: ASbGncui9xKrzK9X5nmdlSCrBSkUWKXu1ft6clfLPCLYsQMmJaIwQlGkVviAXk2kTvc
-	KKgvsY6O+LsD/AHhjMhCtVedlkyvsJrl6d4+xf5fIx+gKOaGMx45zfb2tRQP9nd3uZLC8mpIGSO
-	T0rKDdkfSCIH96S42bTSdom8RUSCe9Jqaw8AnDbWeasEXcYg0hbLJ8MSNk1NG6Wmn/YUh93EsQ3
-	fHEhgix3LFmLeMxFrQPWoduDjhhXreRgFfmh6tE/gdul7cxdHR5l6H3fJBD7Q9Jc9Mxiag8l38J
-	m2kcOY1G0xguZwokjUreqqTZGLgl19RnYvbuDt+LSmXHzalyE80N
-X-Google-Smtp-Source: AGHT+IFw/RC7RIsQyz/vMF0Ub5SKcZ6PadIYsC8C5wPC56gvkKGW6jqBpmLFrhCZTmvjzRkVDA4Fig==
-X-Received: by 2002:a17:903:18e:b0:212:6187:6a76 with SMTP id d9443c01a7336-215bd0d0d5bmr55927965ad.14.1733299090259;
-        Tue, 03 Dec 2024 23:58:10 -0800 (PST)
+        d=1e100.net; s=20230601; t=1733299094; x=1733903894;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bMwFjqYRs5rLhlVUhm9tYS8e6al8EfCryfrjNlOEgLM=;
+        b=uxzdqEU7aZ+CbFAedPOw1RAP7VZg8ytag+pn9EqnH7ejhSl/uNgi+ijUlgKYN0cS53
+         t0gKsQK7HQef0FqLktw4HQnyrpoezLVxJ/Yea5FCjb4BYu8L4paORJQxTndaZZtiNNBs
+         o7EnoLtgVVItT2iXJRBSr5ZaF+mtO0wxdj9ZRBK47ZPb42qwCa1mOMUHQyOqIFX3evcv
+         N8aqxOr2udsFZh/MEAoY8K1LnUeekYu4qG9w9UUK5gXH6Y3db6/aF20JQp8ImOKN9t6D
+         n/gZl/0S/yqVmfIjfz1pIOFqweoHjwXW5M9y4MjfcpyioHL2tJs5d2GzLsbP8jyGLu35
+         7f/w==
+X-Gm-Message-State: AOJu0YzBOydCh9K5ctsLuYK7iW5vNAFJev6N/e81fin3dvw0IVD0FkGz
+	+p+rR8fFlO5V+Pkalg5pTZrZXrIrvHvjWlNYcNXc+Q9hZ4xvbMAc5iI8pyFt/Q==
+X-Gm-Gg: ASbGnctcb9j8XEJWj3guCfbFi5K5O3Tu25LexSGDj2VkkYdn1MebSBcde1EzGEMUgC0
+	r6QoDKGMb1jTEJUVTQhiC4DhOWIUaNEbc8FA6c+Ff/cJQRp7RZUKSIzXnBp3yM7MGzvaXfc2VQ/
+	HNl/sTUd1Tp49i9D8O60+UQKTNfOQPRGkn1MaQFfceVeGESmywNZ8plA/IvNjInZExyqD+PS3Pb
+	gFltiEoQxnX9fNsfxmZpry6ZQB0GXE7ssEoVbg1N9I+ZiJ8X/SWD4R3uTzeMnplwl4QnoFwgXWd
+	f5dOEQTFvQekf5F5aMS7TFLdl+jjQDsfcGMP4g/8d+jrzQ+5xyPn
+X-Google-Smtp-Source: AGHT+IHgilz1ch7ILFLhcQan9NEElCaD5AJUXagnVy67K2DQGxswA5uR365qu9FiJI2FRoWRid9reQ==
+X-Received: by 2002:a17:902:d4ca:b0:215:b6f1:78df with SMTP id d9443c01a7336-215d003e862mr56650895ad.19.1733299094130;
+        Tue, 03 Dec 2024 23:58:14 -0800 (PST)
 Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21536d67e95sm95462235ad.76.2024.12.03.23.58.07
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21536d67e95sm95462235ad.76.2024.12.03.23.58.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Dec 2024 23:58:09 -0800 (PST)
+        Tue, 03 Dec 2024 23:58:13 -0800 (PST)
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Subject: [PATCH for-rc 0/5] RDMA/bnxt_re: Bug fixes
-Date: Wed,  4 Dec 2024 13:24:11 +0530
-Message-ID: <20241204075416.478431-1-kalesh-anakkur.purayil@broadcom.com>
+	Kashyap Desai <kashyap.desai@broadcom.com>
+Subject: [PATCH for-rc 1/5] RDMA/bnxt_re: Fix max SGEs for the Work Request
+Date: Wed,  4 Dec 2024 13:24:12 +0530
+Message-ID: <20241204075416.478431-2-kalesh-anakkur.purayil@broadcom.com>
 X-Mailer: git-send-email 2.43.5
+In-Reply-To: <20241204075416.478431-1-kalesh-anakkur.purayil@broadcom.com>
+References: <20241204075416.478431-1-kalesh-anakkur.purayil@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -85,32 +89,44 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series contains some bug fixes for bnxt_re driver.
-Please review and apply.
+From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-Thanks,
-Kalesh AP
+Gen P7 supports up to 13 SGEs for now. WQE software structure
+can hold only 6 now. Since the max send sge is reported as
+13, the stack can give requests up to 13 SGEs. This is causing
+traffic failures and system crashes.
 
-Kalesh AP (2):
-  RDMA/bnxt_re: Fix error recovery sequence
-  RDMA/bnxt_re: Fix bnxt_re_destroy_qp()
+Use the define for max SGE supported for variable size. This
+will work for both static and variable WQEs.
 
-Kashyap Desai (2):
-  RDMA/bnxt_re: Fix max SGEs for the Work Request
-  RDMA/bnxt_re: Avoid sending the modify QP workaround for latest
-    adapters
+Fixes: 227f51743b61 ("RDMA/bnxt_re: Fix the max WQE size for static WQE support")
+Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Selvin Xavier (1):
-  RDMA/bnxt_re: Avoid initializing the software queue for user queues
-
- drivers/infiniband/hw/bnxt_re/ib_verbs.c   | 21 +++++------
- drivers/infiniband/hw/bnxt_re/main.c       |  8 +----
- drivers/infiniband/hw/bnxt_re/qplib_fp.c   | 42 ++++++++++++----------
- drivers/infiniband/hw/bnxt_re/qplib_fp.h   |  3 +-
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c |  7 ++--
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  3 ++
- 6 files changed, 41 insertions(+), 43 deletions(-)
-
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+index ef3424c81345..19e279871f10 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+@@ -114,7 +114,6 @@ struct bnxt_qplib_sge {
+ 	u32				size;
+ };
+ 
+-#define BNXT_QPLIB_QP_MAX_SGL	6
+ struct bnxt_qplib_swq {
+ 	u64				wr_id;
+ 	int				next_idx;
+@@ -154,7 +153,7 @@ struct bnxt_qplib_swqe {
+ #define BNXT_QPLIB_SWQE_FLAGS_UC_FENCE			BIT(2)
+ #define BNXT_QPLIB_SWQE_FLAGS_SOLICIT_EVENT		BIT(3)
+ #define BNXT_QPLIB_SWQE_FLAGS_INLINE			BIT(4)
+-	struct bnxt_qplib_sge		sg_list[BNXT_QPLIB_QP_MAX_SGL];
++	struct bnxt_qplib_sge		sg_list[BNXT_VAR_MAX_SGE];
+ 	int				num_sge;
+ 	/* Max inline data is 96 bytes */
+ 	u32				inline_len;
 -- 
 2.31.1
 
