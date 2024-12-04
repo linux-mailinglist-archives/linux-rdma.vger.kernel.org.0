@@ -1,254 +1,185 @@
-Return-Path: <linux-rdma+bounces-6239-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6240-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 991299E3FFA
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 17:43:50 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 420FF165C2F
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 16:43:47 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 934CD20CCC7;
-	Wed,  4 Dec 2024 16:43:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b="eKahpvPI"
-X-Original-To: linux-rdma@vger.kernel.org
-Received: from master.debian.org (master.debian.org [82.195.75.110])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEED19E42A7
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 18:58:51 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 795324A28;
-	Wed,  4 Dec 2024 16:43:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.195.75.110
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CC802850EF
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 17:58:50 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5B12165FE;
+	Wed,  4 Dec 2024 17:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=paranoici.org header.i=@paranoici.org header.b="fJn7q2lb"
+X-Original-To: linux-rdma@vger.kernel.org
+Received: from devianza.investici.org (devianza.investici.org [198.167.222.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7C6215F74;
+	Wed,  4 Dec 2024 17:23:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.167.222.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733330594; cv=none; b=jJfDd3vmU/BFGTcIRQoQvRz1BxyedqOaWYwnFC6fqMuROfI9/uRRPVNqfhkaMxXtKbmfWg771KtHsWo7jZIxkmo6jcpkZn/GYrvTs/F4+NNp8CyDSjX+uiDtuPrqNeN9q8xun2b2ABIcR/P4PPyEBH8jdrKxgp2MpRkTLv+B0KE=
+	t=1733332987; cv=none; b=R11gcHJ0mLKvUhNc2nt1iZ8Ghedm8triLNzcKl2oikJRU8dIBBRlhhIDdlVNf5jJsCpanssAx+fRu3boSzPR01LWGKn3IVXmwkGDyetYSaltW3jVxAkFBNbcdHHSRTGFGl6fOUZLCmKMEWMd8Bsji/qu+YLHHNrRPVI/cDXbaHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733330594; c=relaxed/simple;
-	bh=4tT1xTsxXZUI5Me8CpxOiXh3OyZEi6xFVGPDWXNILGs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YLrNSjFfbyDr15Pdf6jPPcetAqEdRigytn4yJTBV31uZb4LFwU7dV97DshsrQNGUwMQy2csl1wYQvUj6/wKI5oIvC4lsA4PrhQSeS1tzKAF/80jLlOkAMildveBZgYkRkrHfrEmMjL7FY0m1KYTbC052GO9xKfLSYQSraBebXcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=none smtp.mailfrom=master.debian.org; dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.b=eKahpvPI; arc=none smtp.client-ip=82.195.75.110
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=master.debian.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
-	s=smtpauto.master; h=In-Reply-To:Content-Type:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description;
-	bh=hSp0xWyYxAqanUPupWSJ2QUcd1qQP8zfPnZwqCrb51E=; b=eKahpvPI8v0ItV9zLwcMXCsJoT
-	pq9msAVeID6nZD5j+pNM05LsGkW2k+b5XRWG/Ydr2413QMs4hmH4NoHpcXbVjw0HLCfqjrSR+RUyn
-	8msd5D2TckXIBokSoptmKw1di8McWLybY16z1cdRbMYbpLOyJMF0l5JFc2om3qqeSFrTQ73s5DZX5
-	tsd731J6rxoOSoPqAVGlTxtp6gITnP+yXQZhFX7UCAPQy/qav13XGotVAIb87ifdNpQp7Hfgano+4
-	xt0HM4bzEqaL1HNEnP8YFxG3zSfxz1QNsP1Sp1NTnt9SOfxscHPVV6OdZhjKUGiIB7NqWE1QrxNtQ
-	670fg5HQ==;
-Received: from ukleinek by master.debian.org with local (Exim 4.94.2)
-	(envelope-from <ukleinek@master.debian.org>)
-	id 1tIsN8-00EObM-IS; Wed, 04 Dec 2024 16:37:06 +0000
-Date: Wed, 4 Dec 2024 17:37:05 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <ukleinek@debian.org>
-To: Francesco Poli <invernomuto@paranoici.org>
-Cc: Leon Romanovsky <leonro@nvidia.com>, 
-	"1086520@bugs.debian.org Mark Zhang" <markzhang@nvidia.com>, linux-rdma@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: Bug#1086520: linux-image-6.11.2-amd64: makes opensm fail to start
-Message-ID: <acpo6ocggcl66fjdllk5zrfs2vwiivpetd5ierdek5ruxvdbyl@tfbc3mfnp23o>
+	s=arc-20240116; t=1733332987; c=relaxed/simple;
+	bh=8HO3mm3jNM/ZIi+ulQAkDTTq+p4TEOdSZ5DMUDAq2Vg=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=NWS5tHJADo4oYKCLMvmJTmy8jgazd+ocE447RVL4NL0zWuYhs0Tw1TVA+x9Z9WoR3Td38DQcoucpBXUtyU0mKVTQlWoFs/AIbWm4xnL3ZV34d8EV67md+9pvn6TbDvjQiPxQSu8BO2ENWFK/VkgQYfFO+FSs02W6u/s/sexXQLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=paranoici.org; spf=pass smtp.mailfrom=paranoici.org; dkim=pass (1024-bit key) header.d=paranoici.org header.i=@paranoici.org header.b=fJn7q2lb; arc=none smtp.client-ip=198.167.222.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=paranoici.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paranoici.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=paranoici.org;
+	s=stigmate; t=1733332478;
+	bh=0QrBbFQ1Yk43wtEVuPMTkfoJbcLfYpa5h2xyKqF9TXQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fJn7q2lb6Sq30r4i7Hi1Idj/7Fj1J3PmPVtm/N7w9ggFeeYS6lWZ65FwuKrpRkF+K
+	 OIQ10ChwvBTbmF0gZWZyxven9Hcs5bhfJqy2jjLlnXDWRUYrjK/srEWd7Yiohr1cdS
+	 lJiDni5XC+IMba7+VMn3aNxn4Z6EyzxIvGN2+UQk=
+Received: from mx2.investici.org (unknown [127.0.0.1])
+	by devianza.investici.org (Postfix) with ESMTP id 4Y3PJt0MCvz6vVX;
+	Wed,  4 Dec 2024 17:14:38 +0000 (UTC)
+Received: from [198.167.222.108] (mx2.investici.org [198.167.222.108]) (Authenticated sender: invernomuto@paranoici.org) by localhost (Postfix) with ESMTPSA id 4Y3PJs70sJz6vVW;
+	Wed,  4 Dec 2024 17:14:37 +0000 (UTC)
+Received: from frx by crunch with local (Exim 4.98)
+	(envelope-from <invernomuto@paranoici.org>)
+	id 1tIsxQ-000000003X3-30eO;
+	Wed, 04 Dec 2024 18:14:36 +0100
+Date: Wed, 4 Dec 2024 18:13:56 +0100
+From: Francesco Poli <invernomuto@paranoici.org>
+To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <ukleinek@debian.org>
+Cc: Leon Romanovsky <leonro@nvidia.com>, 1086520-done@bugs.debian.org, Mark
+ Zhang <markzhang@nvidia.com>, linux-rdma@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: Re: Bug#1086520: linux-image-6.11.2-amd64: makes opensm fail to
+ start
+Message-Id: <20241204181356.932c49619598e04d8ad412e0@paranoici.org>
+In-Reply-To: <acpo6ocggcl66fjdllk5zrfs2vwiivpetd5ierdek5ruxvdbyl@tfbc3mfnp23o>
 References: <20241113231503.54d12ed5b5d0c8fa9b7d9806@paranoici.org>
- <3wfi2j7jn2f7rajabfcengubgtyt3wkuin6hqepdoe5dlvfhvn@2clhco3z6fuw>
- <173040083268.16618.7451145398661885923.reportbug@crunch>
- <20241118200616.865cb4c869e693b19529df36@paranoici.org>
- <nvs4i2v7o6vn6zhmtq4sgazy2hu5kiulukxcntdelggmznnl7h@so3oul6uwgbl>
- <20241125195443.0ddf0d0176d7c34bd29942c7@paranoici.org>
- <20241125193837.GH160612@unreal>
- <20241127184803.75086499e71c6b1588a4fb5a@paranoici.org>
- <173040083268.16618.7451145398661885923.reportbug@crunch>
- <20241127200413.GE1245331@unreal>
+	<3wfi2j7jn2f7rajabfcengubgtyt3wkuin6hqepdoe5dlvfhvn@2clhco3z6fuw>
+	<173040083268.16618.7451145398661885923.reportbug@crunch>
+	<20241118200616.865cb4c869e693b19529df36@paranoici.org>
+	<nvs4i2v7o6vn6zhmtq4sgazy2hu5kiulukxcntdelggmznnl7h@so3oul6uwgbl>
+	<20241125195443.0ddf0d0176d7c34bd29942c7@paranoici.org>
+	<20241125193837.GH160612@unreal>
+	<20241127184803.75086499e71c6b1588a4fb5a@paranoici.org>
+	<173040083268.16618.7451145398661885923.reportbug@crunch>
+	<20241127200413.GE1245331@unreal>
+	<acpo6ocggcl66fjdllk5zrfs2vwiivpetd5ierdek5ruxvdbyl@tfbc3mfnp23o>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="eq7qn5hdhaesruc2"
-Content-Disposition: inline
-In-Reply-To: <20241127200413.GE1245331@unreal>
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA512";
+ boundary="Signature=_Wed__4_Dec_2024_18_13_56_+0100_OXoMkKkJzsj06Qbl"
 
-
---eq7qn5hdhaesruc2
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+--Signature=_Wed__4_Dec_2024_18_13_56_+0100_OXoMkKkJzsj06Qbl
+Content-Type: text/plain; charset=UTF-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: Bug#1086520: linux-image-6.11.2-amd64: makes opensm fail to start
-MIME-Version: 1.0
 
-Hello Francesco,
+On Wed, 4 Dec 2024 17:37:05 +0100 Uwe Kleine-K=C3=B6nig wrote:
 
-On Wed, Nov 27, 2024 at 10:04:13PM +0200, Leon Romanovsky wrote:
-> On Wed, Nov 27, 2024 at 06:48:03PM +0100, Francesco Poli wrote:
-> > On Mon, 25 Nov 2024 21:38:37 +0200 Leon Romanovsky wrote:
-> >=20
-> > > On Mon, Nov 25, 2024 at 07:54:43PM +0100, Francesco Poli wrote:
-> > [...]
-> > > > I will try to continue to bisect by testing the resulting kernels o=
-n a
-> > > > compute node: there's no OpenSM there and it cannot run anyway, if
-> > > > there's another OpenSM on the same InfiniBand network.
-> > > > However, I can check whether those issm* symlinks are created in
-> > > > /sys/class/infiniband_mad/=20
-> > > > I really hope that this is enough to pinpoint the first bad
-> > > > commit...
-> > >=20
-> > > Yes, these symlinks should be there. Your test scenario is correct on=
-e.
-> >=20
-> > OK, I have completed the bisect on a compute node without OpenSM, by
-> > looking at the issm* symlinks, as I said.
-> >=20
-> > See below.
-> >=20
-> > >=20
-> > > >=20
-> > > > Any better ideas?
-> > >=20
-> > > I think that commit: 2a5db20fa532 ("RDMA/mlx5: Add support to multi-p=
-lane device and port")
-> > > is the one which is causing to troubles, which leads me to suspect FW.
-> > [...]
-> >=20
-> > Thanks to your guess about the possibly troublesome commit, the bisect =
-was completed in a few steps:
-> >=20
-> >   $ git checkout 2a5db20fa532
-> >   $ make -j 12 my_defconfig bindeb-pkg
-> >  =20
-> >   [install this version on a compute node test image and reboot
-> >   one compute node with that image: the InfiniBand network was
-> >   working for that node, that's no surprise, since OpenSM was running
-> >   on the head node, but no issm* symlink was created; please note
-> >   that, surprisingly, the Ethernet network was not working, I mean
-> >   that the Ethernet interfaces were not found by the kernel...]
-> >  =20
-> >   root@node # ls -altrF /sys/class/infiniband_mad/
-> >   total 0
-> >   drwxr-xr-x 60 root root    0 Nov 26 17:06 ../
-> >   lrwxrwxrwx  1 root root    0 Nov 26 17:06 umad0 -> ../../devices/pci0=
-000:00/0000:00:01.1/0000:01:00.0/infiniband_mad/umad0/
-> >   -r--r--r--  1 root root 4096 Nov 26 17:06 abi_version
-> >   lrwxrwxrwx  1 root root    0 Nov 26 17:06 umad1 -> ../../devices/pci0=
-000:00/0000:00:01.1/0000:01:00.1/infiniband_mad/umad1/
-> >   drwxr-xr-x  2 root root    0 Nov 26 17:08 ./
-> >  =20
-> >   $ git bisect bad
-> >   Bisecting: 0 revisions left to test after this (roughly 0 steps)
-> >   [65528cfb21fdb68de8ae6dccae19af180d93e143] net/mlx5: mlx5_ifc update =
-for multi-plane support
-> >   $ make -j 12 my_defconfig bindeb-pkg
-> >  =20
-> >   [install this version on the compute node test image and reboot
-> >   one compute node with that image: the InfiniBand network again
-> >   working for that node, issm* symlinks were created;
-> >   Ethernet network again not working for that node...]
-> >  =20
-> >   root@node # ls -altrF /sys/class/infiniband_mad/
-> >   total 0
-> >   drwxr-xr-x 60 root root    0 Nov 26 17:31 ../
-> >   lrwxrwxrwx  1 root root    0 Nov 26 17:31 umad0 -> ../../devices/pci0=
-000:00/0000:00:01.1/0000:01:00.0/infiniband_mad/umad0/
-> >   -r--r--r--  1 root root 4096 Nov 26 17:31 abi_version
-> >   lrwxrwxrwx  1 root root    0 Nov 26 17:31 umad1 -> ../../devices/pci0=
-000:00/0000:00:01.1/0000:01:00.1/infiniband_mad/umad1/
-> >   lrwxrwxrwx  1 root root    0 Nov 26 17:36 issm1 -> ../../devices/pci0=
-000:00/0000:00:01.1/0000:01:00.1/infiniband_mad/issm1/
-> >   lrwxrwxrwx  1 root root    0 Nov 26 17:36 issm0 -> ../../devices/pci0=
-000:00/0000:00:01.1/0000:01:00.0/infiniband_mad/issm0/
-> >   drwxr-xr-x  2 root root    0 Nov 26 17:36 ./
-> >  =20
-> >   $ git bisect good
-> >   2a5db20fa532198639671713c6213f96ff285b85 is the first bad commit
-> >   commit 2a5db20fa532198639671713c6213f96ff285b85
-> >   Author: Mark Zhang <markzhang@nvidia.com>
-> >   Date:   Sun Jun 16 19:08:35 2024 +0300
-> >  =20
-> >       RDMA/mlx5: Add support to multi-plane device and port
-> >  =20
-> >       When multi-plane is supported, a logical port, which is aggregati=
-on of
-> >       multiple physical plane ports, is exposed for data transmission.
-> >       Compared with a normal mlx5 IB port, this logical port supports a=
-ll
-> >       functionalities except Subnet Management.
-> >  =20
-> >       Signed-off-by: Mark Zhang <markzhang@nvidia.com>
-> >       Link: https://lore.kernel.org/r/7e37c06c9cb243be9ac79930cd1705390=
-3785b95.1718553901.git.leon@kernel.org
-> >       Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> >  =20
-> >    drivers/infiniband/hw/mlx5/main.c               | 60 +++++++++++++++=
-++++++----
-> >    drivers/infiniband/hw/mlx5/mlx5_ib.h            |  2 +
-> >    drivers/net/ethernet/mellanox/mlx5/core/vport.c |  1 +
-> >    include/linux/mlx5/driver.h                     |  1 +
-> >    4 files changed, 55 insertions(+), 9 deletions(-)
-> >=20
-> >=20
-> > In other words, bingo!, your guess looks correct, the first bad commit
-> > is the one you mentioned.
-> >=20
-> >=20
-> > Now, I will try to upgrade the firmware of the InfiniBand NICs, as you
-> > suggested, and check whether this solves the issue with the recent
-> > Linux kernel versions.
-> >=20
-> > Please confirm that the procedure to be followed is the one described in
-> > <https://docs.nvidia.com/networking/display/ubuntu2204/firmware+burning>
+> Hello Francesco,
+
+Hello Uwe,
+
+[...]
+> I wonder if you could test a firmware upgrade or the above patch. Would
+> be nice to know if there are still some things to do for us (=3D Debian
+> kernel team) here.
+
+Yes, I've finally got around to upgrading the firmware.
+
+And today I had a time window, where I could reboot the cluster head
+node.
+After the reboot, the InfiniBand network works correctly:
+
+  $ uname -v
+  #1 SMP PREEMPT_DYNAMIC Debian 6.11.10-1 (2024-11-23)
+  $ ls -altrF /sys/class/infiniband_mad/
+  total 0
+  lrwxrwxrwx  1 root root    0 Dec  4 10:15 umad0 -> ../../devices/pci0000:=
+80/0000:80:01.1/0000:81:00.0/infiniband_mad/umad0/
+  lrwxrwxrwx  1 root root    0 Dec  4 10:15 umad1 -> ../../devices/pci0000:=
+80/0000:80:01.1/0000:81:00.1/infiniband_mad/umad1/
+  drwxr-xr-x  2 root root    0 Dec  4 10:17 ./
+  drwxr-xr-x 73 root root    0 Dec  4 10:17 ../
+  -r--r--r--  1 root root 4096 Dec  4 10:17 abi_version
+  lrwxrwxrwx  1 root root    0 Dec  4 18:08 issm1 -> ../../devices/pci0000:=
+80/0000:80:01.1/0000:81:00.1/infiniband_mad/issm1/
+  lrwxrwxrwx  1 root root    0 Dec  4 18:08 issm0 -> ../../devices/pci0000:=
+80/0000:80:01.1/0000:81:00.0/infiniband_mad/issm0/
+  # ethtool -i ibp129s0f0
+  driver: mlx5_core[ib_ipoib]
+  version: 6.11.10-amd64
+  firmware-version: 20.43.1014 (MT_0000000224)
+  expansion-rom-version:
+  bus-info: 0000:81:00.0
+  supports-statistics: yes
+  supports-test: yes
+  supports-eeprom-access: no
+  supports-register-dump: no
+  supports-priv-flags: yes
+  # ethtool -i ibp129s0f1
+  driver: mlx5_core[ib_ipoib]
+  version: 6.11.10-amd64
+  firmware-version: 20.43.1014 (MT_0000000224)
+  expansion-rom-version:
+  bus-info: 0000:81:00.1
+  supports-statistics: yes
+  supports-test: yes
+  supports-eeprom-access: no
+  supports-register-dump: no
+  supports-priv-flags: yes
+  $ ps aux | grep opens[m]
+  root        1150  0.0  0.0 1560776 3636 ?        Ssl  10:15   0:00 /usr/s=
+bin/opensm --guid 0x9c63c00300033240 --log_file /var/log/opensm.0x9c63c0030=
+0033240.log
+
+
 >=20
-> Yes, it looks correct procedure.
-> If you didn't upgrade FW, this diff will achieve same result for you:
+> If everything is fine for you, I'd like to close this bug.
+
+I am closing the Debian bug report right now.
+Thanks to everyone who has been involved for the great and kind help!
+
 >=20
-> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/ml=
-x5/main.c
-> index c2314797afc9..110ce177c305 100644
-> --- a/drivers/infiniband/hw/mlx5/main.c
-> +++ b/drivers/infiniband/hw/mlx5/main.c
-> @@ -2846,7 +2846,7 @@ static int mlx5_ib_get_plane_num(struct mlx5_core_d=
-ev *mdev, u8 *num_plane)
->         if (err)
->                 return err;
->=20
-> -       *num_plane =3D vport_ctx.num_plane;
-> +       *num_plane =3D (vport_ctx.num_plane > 1) ? vport_ctx.num_plane : =
-0;
->         return 0;
->  }
->=20
-> The culprit of your issue that in some FW versions, the vport_ctx.num_pla=
-ne
-> was 1 and not 0 for devices which don't support that mode, while for the =
-driver
-> everything that is not 0 means supported.
+> Best regards
 
-I wonder if you could test a firmware upgrade or the above patch. Would
-be nice to know if there are still some things to do for us (=3D Debian
-kernel team) here.
+Have a nice evening.   :-)
 
-If everything is fine for you, I'd like to close this bug.
+--=20
+ http://www.inventati.org/frx/
+ There's not a second to spare! To the laboratory!
+..................................................... Francesco Poli .
+ GnuPG key fpr =3D=3D CA01 1147 9CD2 EFDF FB82  3925 3E1C 27E1 1F69 BFFE
 
-Best regards
-Uwe
-
---eq7qn5hdhaesruc2
-Content-Type: application/pgp-signature; name="signature.asc"
+--Signature=_Wed__4_Dec_2024_18_13_56_+0100_OXoMkKkJzsj06Qbl
+Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmdQhS4ACgkQj4D7WH0S
-/k78mggAgQeh/GCn2XHHJQ4qCF+fi4lbYa4h5vWY3TeUfVkO5sd3qEXjcnYYi2D8
-XjMPToRyBws3qsHdtzVP70mHZJIPbtSf2Ah22n4PUtf1St/j+o6MkgUWgviYPiO2
-y0Ayux/2aFXLhdTHuM44jXVkGJU5nCv9gpO9aiSb8wdwy3Kif0vzgAnj1uXxbNXC
-/sfCk9lhOz6HQZGldDNL5fudAMFWwt3DJb0BxpvVe8XzE9Uradsh7pUWs7K6rRLj
-yurlX9SxYhQ0oWycTsmHxcvwz5ltdXQ4Veb3gJbsLntmDofsiMHw1YhJqKPUCMVp
-jrGokmLt57u6GaWz+ZKnhC40q9vVNQ==
-=RBHV
+iQIzBAEBCgAdFiEEygERR5zS79/7gjklPhwn4R9pv/4FAmdQjdQACgkQPhwn4R9p
+v/6AoA//TkOwnWjH5D4ks5SUi1DDiHU1IFfS/ix9o3TA2oWmP9/tQzIWV/ACfbbK
+5QBHtVb6lFSte9kIxSgc/mXP06PicFpsxOjByJ4Kwq8dlz9ksQqC/biF0h0PmKZt
+hRFVC0F69vDgUeUhREOQn6a3KscUv6pl9bEkUBmMjcXmdLkgPaFkMWt4jlopXhig
+w2U7vKhLFo+caw1WM3e4OJpF6iPXF4G6lyEOvXIo7zKohVwChVjH5rwUuIXmd0Q2
+ltvu8ZGcx0+wor5zoUORt1hYLXjOZ4jtJLAEgrvZNoa6eUGw1NPaNInwyjDo2hFS
+EidbgtJY3UFa3mytTbkQO4alfagC52CfjmxJfNC3dGqyBDHS5j2uXPB0V5NWbDWq
+lX7k1DcfBS9rJgNs+kBL5/aoU1KHWSCqdUbniomv3iba5thfmWpHF+mki5cJr/6+
+VIkARDEnLuk86nVm8dOVwm/jFLyerDXP6XzAdUjw4xPeBzib+dPlaD29r39YrvMf
+aRqSe8azvg7t+XFGpmfbXTnGgCUgv/YIACUtrs/ffif8ffTl9FC+8xMsgCH638J3
+nP7Sd1yVPzynZHshH1lGv+k7VSAZqGq2550hdAvmXs4pUPt/ow/3A2tBdNo8j00U
+GbZtEnbMp/i1nOZB/NOaTdmyT0Y5VEqqPmdkfL1KKASTSVK59Zw=
+=aoBA
 -----END PGP SIGNATURE-----
 
---eq7qn5hdhaesruc2--
+--Signature=_Wed__4_Dec_2024_18_13_56_+0100_OXoMkKkJzsj06Qbl--
 
