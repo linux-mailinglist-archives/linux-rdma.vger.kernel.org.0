@@ -1,225 +1,150 @@
-Return-Path: <linux-rdma+bounces-6215-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6219-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D6699E2E34
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 22:39:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB5FC9E33A2
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 07:45:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95F43B60A3C
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2024 20:32:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9822D2840BA
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2024 06:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 153B0204F6E;
-	Tue,  3 Dec 2024 20:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B99F18A6C5;
+	Wed,  4 Dec 2024 06:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Ozm/UvsG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S0F7oKRA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2081.outbound.protection.outlook.com [40.107.223.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463DE1F75B3;
-	Tue,  3 Dec 2024 20:31:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.81
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733257861; cv=fail; b=MQV0fZUX3oFvZ4IvhF2iWPXhXZfTr6/VkkwHY0nEcGyqnDpV+9nl7MRsfNqUJkIItXahuWn5xgiAdg7NiSy/sGKBERq/5eFVPhvvMZ3Rzfh+X4fVaBSqOORW5a/dZDdAjOx7+6kq+lc0fE7WNyEpsrwxorMMvYYi4DpbbSjpTpw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733257861; c=relaxed/simple;
-	bh=p+f0Rc2cXt21kTHLqooaSn39K7o1wGJSQMQlC7VmNFk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YI4f9/0S5bRw/AjbCMizCOOyPa8x2vaItBaqw0ixRM5pr0RmoLVH4nsXbojN8z9kOBvvpZXBf2k3uRAB0qQ+qpI7pz9+mHQgRJ8BdzL2zz0hx827id7or6YQhiTTI7DKZ4usuLF3Q4cD5a7kZgsfQ5IK4Vv4gVJSW3jSVkT7UdE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Ozm/UvsG; arc=fail smtp.client-ip=40.107.223.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KXcBPqPG4q5a3KTdONUwLqAm7Prh2K86XLIKWfDOJUu/hZlrg3GM976Om4bJo99a71UlK9ZTUTyBN1RuvUC9RmYA/GhVDcGUWt31Dvuc8wyDPy03lRACde/c4JxwgQoRWsT4P1SEbgv9mN+uXKF2a4lOh+2qFi7Gv5hsl9tnwpz2zpYvPhekiAkxnAHl0dxI/TUjMBX03DHTmDflSBhL9u1nN+jcKAl8gqYITBpT5FVwzo/L/s6s0Tp8cyFT1xLvkYR4iYsK3U1PO6TcD9OpKGfojUzCPXqIaTRU8+EFQRbr1jSQb2fZyOk+xU05FNmxgxswxFDwndbbCnXPG57muA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=m7HaYmOaPnhb5t6S6+OAIrA4j5fQBco6gkGceNj+Ws4=;
- b=qbnXzv88kT6cgQm4O5Ct+FrXdq+dXFYMFSY8tEODQh/Up0gPSExuUn+hSYvFoTgztzZgj6wjGNC8jrQvHIpxueDN9Tu377EO6EN1dZKcPvG5Ojt3O1qSg2BzyulZ+X10rjiAqJwfkKwIafYqm0+hmGMpdT+ZkarM3iLVsd7uJQilOFMjh2pG0a6/c5fD8iT90uTYu0unEEm4Oe5PDhpSYvshWrenqc1xn1V9fmSwYRG4UnXh921sCH8J/D5CRbUV58R5cjLBv9CUyQZehHhKG9GOlWM4unKpugbyVKr1u/5fm8HZz/z5Jrsl6XJPw11vHpVy+JOWeV5wf8lEO8E8Ew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m7HaYmOaPnhb5t6S6+OAIrA4j5fQBco6gkGceNj+Ws4=;
- b=Ozm/UvsGppKUNyF2OVqynqdXLtg3K4taVlWY3u21etOVQv6aNC+Hi9eNafYjxg69wt8T+DvUY1QbshXqbKyHoxnqU3a0P52wehaHhRuS2pSX3qjDhJIgkW1e8UWeYQK/kQzRFgeqGQytqHo2sOvVIgQz57kQiefoe0+YpcFd1N+uMtJ+i5toBqyHWFkjOJhyffXZrSibgbf6IENmjSGst4Saj6WcfWTy82btaottEDiPJ0F8qGVurF4zQY/E8nNsc7LLJTFNSOUngFST+8/vTs0K6hIUVz7sCaP2GtSYq6IBzPSW+AoHHk/vHzQgEoDljLeS5bBWiBKb0p1YgJl6CQ==
-Received: from MN0PR02CA0019.namprd02.prod.outlook.com (2603:10b6:208:530::34)
- by BY5PR12MB4212.namprd12.prod.outlook.com (2603:10b6:a03:202::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8207.15; Tue, 3 Dec
- 2024 20:30:53 +0000
-Received: from BN1PEPF00005FFE.namprd05.prod.outlook.com
- (2603:10b6:208:530:cafe::1) by MN0PR02CA0019.outlook.office365.com
- (2603:10b6:208:530::34) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8207.19 via Frontend Transport; Tue,
- 3 Dec 2024 20:30:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- BN1PEPF00005FFE.mail.protection.outlook.com (10.167.243.230) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8230.7 via Frontend Transport; Tue, 3 Dec 2024 20:30:51 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 3 Dec 2024
- 12:30:29 -0800
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 3 Dec 2024 12:30:28 -0800
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Tue, 3 Dec 2024 12:30:25 -0800
-From: Tariq Toukan <tariqt@nvidia.com>
-To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
- Lunn" <andrew+netdev@lunn.ch>
-CC: <netdev@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman
-	<gal@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
-	<linux-rdma@vger.kernel.org>, Carolina Jubran <cjubran@nvidia.com>, "Cosmin
- Ratiu" <cratiu@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
-Subject: [PATCH net-next V4 08/11] net/mlx5: Add no-op implementation for setting tc-bw on rate objects
-Date: Tue, 3 Dec 2024 22:29:21 +0200
-Message-ID: <20241203202924.228440-9-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20241203202924.228440-1-tariqt@nvidia.com>
-References: <20241203202924.228440-1-tariqt@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27E19188737;
+	Wed,  4 Dec 2024 06:45:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1733294706; cv=none; b=TgzwpYb3xPZZoZamnTCJd4jq9MbvsP96l11YCdp9CcLUkS4/8qovjuMjqzFAGzyF5rGKkwdw5U5mSMeeLcGzyQpuRiDiI+S1qqp1kt/LD0y7PTgGH1OGsXIYz7XhoqVym8dZma3du8fNFUtGVaNuQeBPTucnCV71QlBa6QPGDTI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1733294706; c=relaxed/simple;
+	bh=KkcNcl1LQy62uBO4z6Bq1iIEjCeUXfSEBY4ZVwpqI2c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ka+aU3OjXS4Y1jgIzQB2atdKKBb7k/Qpd8K17DwsOAkRw5ciV/v8dm/D6YgFLw6Rv82kJeK0v3PMDzcMF+nxj4D0qAR8bJawdLOC8F8pSBoLArICY5vGy2JNee7tIs+1gnrjgX9kaBm466dp0nSduJrndaFNb+InvAw+V/9o/Tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S0F7oKRA; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-385ddcfc97bso4366641f8f.1;
+        Tue, 03 Dec 2024 22:45:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733294703; x=1733899503; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KjlGQXVf7Eo+4if+u3wgUii2FW9w100FoAUk+wz87k4=;
+        b=S0F7oKRA4YPhS6BlOKxSESMn2j+u7KsJ6SrlHtokUz0jFAuT9v7gUSMDEYfODc8S4E
+         Gp4ieJdJrvtH9VUISCRXSAVw0SIU3CU4jO3/gCOOzCwa61nsaYxcsh54MHxdKmQ5+BeZ
+         gLeUtvdkmIkhoFp6jRvOzc/bZWYprTxzLnv2eE7js+CW665cTsWaUk0wCymHfCawwJqt
+         Bxwo+LHHK/i0SHSJEnbuyXTYeA4bN8MTx3q6n6C5F+2pKkQvnsASH6fXlj1Eb3RtQjXz
+         9Arep9BD3ReCmRdfmX4pONp18qwwdZtfLslNlK4qw+zbAYFzVs/kSSYztJFwsKv5D+o1
+         nL5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733294703; x=1733899503;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KjlGQXVf7Eo+4if+u3wgUii2FW9w100FoAUk+wz87k4=;
+        b=Gzp2vHUei9JorQOhdBPFfe2eVtDmhWrUrMFxhBK4ZTKj142QUMxm9rNU4bwy43qyh7
+         xOOlIA5o3zXbYLTbeRdiuH387hLkQe6uukFUd3Bgb0JjCgB67IZfLp2kXJK0QsqK6CDn
+         7IywnwyTgWwR2JT+Z+3NALj2uRNzMxr7LDmbedIFeikvIOJ8Qawa4msvCy0b0niLV7s+
+         9qL69jR71pV7oSj7TofTi5Q9hq5uJ/PuWw/YrZk/dTHXXx6OWMsdgp316YK3GryXo+o/
+         CyM18RlDsebH1KjUCjVybjn9LNfGji4WeHxD/QeU66Ev9qvEaK8PLQ8UB4IsRfcznC1q
+         itOA==
+X-Forwarded-Encrypted: i=1; AJvYcCXodXddGjvQNJjaBOoC76SEEnCy+gqYC0SbXMDPTQ2EaB51zML/DokBEFsDhYaiw6zVDhT940T2/Ocj@vger.kernel.org
+X-Gm-Message-State: AOJu0YzBiGhHyMeWneqN/AMV8Xnb+pxzIheZl82Ae9gHDetHnfSR3qLu
+	z0siwNujKpcR+y9jzf+UZUFQpqpg4YxyH3k1HsGQsV8rYqpoEvFihyFqGA==
+X-Gm-Gg: ASbGncuY8JGo807qLO+UytOzshKy7a2UQrjz3CKLDiYjgrrbi+P0eaK98+ynTORlJ85
+	T9l3GyeFr7c4WWKI1Ar2e1bbVck5FMP7ig1xekJ1E7d3Hv7lVmiBggvJNssN4FyMKn+B06VcOxA
+	VHcGLQXYS/2J8RB71wvXtHf3Q3+atw48Rqip0yJbQqIRnR84nmSnvJK5phIdoSQVnV71DTLJhwy
+	a7LqAHMNrIRD9CQ5Z+Em47BU1G6GXkgQqhKKfkIcTulPP2S+D2SZf5SY20aR0EBYTT1F/4=
+X-Google-Smtp-Source: AGHT+IF1K237/R4Mz21kt1ysbS8NSEiJysru5Le0GKxEqBykESt9G5A75s2u663CRGZ9+OMKe0sjJg==
+X-Received: by 2002:a5d:6d8d:0:b0:382:4ab4:b428 with SMTP id ffacd0b85a97d-385fd3c6a5fmr4002028f8f.8.1733294702957;
+        Tue, 03 Dec 2024 22:45:02 -0800 (PST)
+Received: from [172.27.34.104] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-385e429ebccsm11661312f8f.10.2024.12.03.22.45.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Dec 2024 22:45:02 -0800 (PST)
+Message-ID: <f92c2cdd-187c-4559-8065-8571b5fbf67d@gmail.com>
+Date: Wed, 4 Dec 2024 08:44:58 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF00005FFE:EE_|BY5PR12MB4212:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6dc5c8bd-ac0c-4d53-c7b6-08dd13d9615d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|1800799024|82310400026|36860700013;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?lVHUm7ECHze6jeFIkje80OwFuf6oKGofi5LFktH7+OkyL3xc+sUiCrY7hNHw?=
- =?us-ascii?Q?39W76mhVN1o0aq6w6sbSL59tjzBuVHmXxUMTYKI2mrc3V5zYBuQola0hVmP8?=
- =?us-ascii?Q?MQHrta8qSvkV66Y2NuEpidyXtZtLE3j6l/Mjw6JLj30xDqvNJe/Yk67G3Vdk?=
- =?us-ascii?Q?kAApfQsBnhd6ryZqPvI5dwWMRF74XaD2WcfbTV3IECqP8/L+aZxdqkfyp37K?=
- =?us-ascii?Q?PjPW9grJqjmTjhpszUEAKllqsoT1j/g7l8LuUdLvyuAIYoa5Jf4z4ONhqdJ1?=
- =?us-ascii?Q?mIPRqL4JOyoT4khkteJ4AOgJdD3WjjqyI7r78w0niwpvws4M0cpQDfHFoxKH?=
- =?us-ascii?Q?IS/X81JHJvCzJYGWnMmfyMzAiDufqT1mY7NlmYaWB1LRId93IitUqGZ+s/e+?=
- =?us-ascii?Q?ktZnj4VIxLywpT49SJ4IeZwknth9ALzjsVacbwNHAzueWCqBdzzg66SUdmyd?=
- =?us-ascii?Q?q+eeM1Zs9ORhltAdrgZ2Huv7ArrqFMVATw6aFjBhCkI2IIDg2IONSxEdnn4J?=
- =?us-ascii?Q?IRt3Cs/Y0G6z5MBX/w7HmjT0FMphcq7JRg0IVcmJQQgJJRzBWeWd8FDOWJ5K?=
- =?us-ascii?Q?J9cqQUi3yPi+F9PxhvKqxbzqvq99s/fEtuVy1I7Z2Lwd/c1+70BeQHHzLLMz?=
- =?us-ascii?Q?zG0fVmBxEds8vxQYtoopwOWoE/ayk4LuWPrvvqAyYR1HgymRpJSH/WLU1F0Y?=
- =?us-ascii?Q?Vq/6z0YbSCElb2vgszuvjrlS4FngC9+l+d3Qdq2c+5ExWsXnEg12n0ew2M5n?=
- =?us-ascii?Q?uaYkl145cYkqhNAKABXNKSRyR1C8KPrB5Qocmkz8AmiVG0jQAfi/nsLL05yq?=
- =?us-ascii?Q?2EWUoDBxNTcMSY6kjyBz3WwZEvVPMIxIBs17ii5ERATm5r7oUNWKlSONRWUM?=
- =?us-ascii?Q?gLKRbzJ2lyJjyLcqfNMYSD/LLaSTyF4z1pAZE3vVp1OHpEwT4xWNUsqDgvED?=
- =?us-ascii?Q?hrRHohCg0bXvAmAwnj6a0Mtl0Gt4unOSBTrfV/K3JRpuIVM+m67B1zsPQFNX?=
- =?us-ascii?Q?BXr+V4Cl5RijO3ir1bF+qDKWbHlIfzdK0Pug9Q7jzZLXB4ANftDP3JX9Wowb?=
- =?us-ascii?Q?jxz0kCPMXvHjDHy4AohhxaMx1Rba5ORsxaHJeLhHj7BG4lCIX1gHj4RPtXru?=
- =?us-ascii?Q?X+aUkH6VEYiY/mMnbaFiu9fzzdA/r+ecu53BGP1zDMHg7Zf4LFecqPstJRAF?=
- =?us-ascii?Q?dFYOlCEkMv7Qxr5E7uqzJEc45wSsOEf1v4z9YevWBY9Dzg/UOxke9llwRAHX?=
- =?us-ascii?Q?jLTz3n1hE9vMB2jKt50yCtKqSq8DosnVK8CYugHmUoWHx0M9Q4zCg0HxI+LK?=
- =?us-ascii?Q?uXe78yA4oYqn0Iu0ZuI5IFzHNgj8k/eTX3PxMGigOOPZjNe5u0JHfQg9/Czj?=
- =?us-ascii?Q?UATkkFD9eMK77sHmLfAFcIo1tAhyS+pRnpB2Ro7yTGiV1fGeOzo+xdoSuMPp?=
- =?us-ascii?Q?mkmpEDRXxPx6suqbLelQcNTcn7l9Ripa?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(1800799024)(82310400026)(36860700013);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2024 20:30:51.6814
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6dc5c8bd-ac0c-4d53-c7b6-08dd13d9615d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF00005FFE.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4212
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V4 04/11] net/mlx5: qos: Add ifc support for
+ cross-esw scheduling
+To: Tariq Toukan <tariqt@nvidia.com>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>
+Cc: netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+ Gal Pressman <gal@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
+ linux-rdma@vger.kernel.org, Cosmin Ratiu <cratiu@nvidia.com>
+References: <20241203202924.228440-1-tariqt@nvidia.com>
+ <20241203202924.228440-5-tariqt@nvidia.com>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20241203202924.228440-5-tariqt@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Carolina Jubran <cjubran@nvidia.com>
+This IFC patch is targeted to mlx5-next.
+Sorry for the confusion.
 
-Introduce `mlx5_esw_devlink_rate_node_tc_bw_set()` and
-`mlx5_esw_devlink_rate_leaf_tc_bw_set()` with no-op logic.
-
-Future patches will add support for setting traffic class bandwidth
-on rate objects.
-
-Signed-off-by: Carolina Jubran <cjubran@nvidia.com>
-Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/devlink.c |  2 ++
- drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c | 14 ++++++++++++++
- drivers/net/ethernet/mellanox/mlx5/core/esw/qos.h |  4 ++++
- 3 files changed, 20 insertions(+)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-index 98d4306929f3..728d5c06d612 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-@@ -320,6 +320,8 @@ static const struct devlink_ops mlx5_devlink_ops = {
- 	.eswitch_encap_mode_get = mlx5_devlink_eswitch_encap_mode_get,
- 	.rate_leaf_tx_share_set = mlx5_esw_devlink_rate_leaf_tx_share_set,
- 	.rate_leaf_tx_max_set = mlx5_esw_devlink_rate_leaf_tx_max_set,
-+	.rate_leaf_tc_bw_set = mlx5_esw_devlink_rate_leaf_tc_bw_set,
-+	.rate_node_tc_bw_set = mlx5_esw_devlink_rate_node_tc_bw_set,
- 	.rate_node_tx_share_set = mlx5_esw_devlink_rate_node_tx_share_set,
- 	.rate_node_tx_max_set = mlx5_esw_devlink_rate_node_tx_max_set,
- 	.rate_node_new = mlx5_esw_devlink_rate_node_new,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
-index 8b7c843446e1..db112a87b7ee 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
-@@ -882,6 +882,20 @@ int mlx5_esw_devlink_rate_leaf_tx_max_set(struct devlink_rate *rate_leaf, void *
- 	return err;
- }
- 
-+int mlx5_esw_devlink_rate_leaf_tc_bw_set(struct devlink_rate *rate_leaf, void *priv,
-+					 u32 *tc_bw, struct netlink_ext_ack *extack)
-+{
-+	NL_SET_ERR_MSG_MOD(extack, "TC bandwidth shares are not supported on leafs");
-+	return -EOPNOTSUPP;
-+}
-+
-+int mlx5_esw_devlink_rate_node_tc_bw_set(struct devlink_rate *rate_node, void *priv,
-+					 u32 *tc_bw, struct netlink_ext_ack *extack)
-+{
-+	NL_SET_ERR_MSG_MOD(extack, "TC bandwidth shares are not supported on nodes");
-+	return -EOPNOTSUPP;
-+}
-+
- int mlx5_esw_devlink_rate_node_tx_share_set(struct devlink_rate *rate_node, void *priv,
- 					    u64 tx_share, struct netlink_ext_ack *extack)
- {
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.h b/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.h
-index 6eb8f6a648c8..0239f10f95e7 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.h
-@@ -21,6 +21,10 @@ int mlx5_esw_devlink_rate_leaf_tx_share_set(struct devlink_rate *rate_leaf, void
- 					    u64 tx_share, struct netlink_ext_ack *extack);
- int mlx5_esw_devlink_rate_leaf_tx_max_set(struct devlink_rate *rate_leaf, void *priv,
- 					  u64 tx_max, struct netlink_ext_ack *extack);
-+int mlx5_esw_devlink_rate_leaf_tc_bw_set(struct devlink_rate *rate_node, void *priv,
-+					 u32 *tc_bw, struct netlink_ext_ack *extack);
-+int mlx5_esw_devlink_rate_node_tc_bw_set(struct devlink_rate *rate_node, void *priv,
-+					 u32 *tc_bw, struct netlink_ext_ack *extack);
- int mlx5_esw_devlink_rate_node_tx_share_set(struct devlink_rate *rate_node, void *priv,
- 					    u64 tx_share, struct netlink_ext_ack *extack);
- int mlx5_esw_devlink_rate_node_tx_max_set(struct devlink_rate *rate_node, void *priv,
--- 
-2.44.0
+On 03/12/2024 22:29, Tariq Toukan wrote:
+> From: Cosmin Ratiu <cratiu@nvidia.com>
+> 
+> This adds the capability bit and the vport element fields related to
+> cross-esw scheduling.
+> 
+> Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>   include/linux/mlx5/mlx5_ifc.h | 11 ++++++++---
+>   1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+> index 8b202521b774..5451ff1d4356 100644
+> --- a/include/linux/mlx5/mlx5_ifc.h
+> +++ b/include/linux/mlx5/mlx5_ifc.h
+> @@ -1095,7 +1095,9 @@ struct mlx5_ifc_qos_cap_bits {
+>   	u8         log_esw_max_sched_depth[0x4];
+>   	u8         reserved_at_10[0x10];
+>   
+> -	u8         reserved_at_20[0xb];
+> +	u8         reserved_at_20[0x9];
+> +	u8         esw_cross_esw_sched[0x1];
+> +	u8         reserved_at_2a[0x1];
+>   	u8         log_max_qos_nic_queue_group[0x5];
+>   	u8         reserved_at_30[0x10];
+>   
+> @@ -4139,13 +4141,16 @@ struct mlx5_ifc_tsar_element_bits {
+>   };
+>   
+>   struct mlx5_ifc_vport_element_bits {
+> -	u8         reserved_at_0[0x10];
+> +	u8         reserved_at_0[0x4];
+> +	u8         eswitch_owner_vhca_id_valid[0x1];
+> +	u8         eswitch_owner_vhca_id[0xb];
+>   	u8         vport_number[0x10];
+>   };
+>   
+>   struct mlx5_ifc_vport_tc_element_bits {
+>   	u8         traffic_class[0x4];
+> -	u8         reserved_at_4[0xc];
+> +	u8         eswitch_owner_vhca_id_valid[0x1];
+> +	u8         eswitch_owner_vhca_id[0xb];
+>   	u8         vport_number[0x10];
+>   };
+>   
 
 
