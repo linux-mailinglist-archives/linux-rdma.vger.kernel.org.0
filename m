@@ -1,54 +1,54 @@
-Return-Path: <linux-rdma+bounces-6303-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6307-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB6839E57D3
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2024 14:51:10 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED7149E57D6
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2024 14:51:28 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98894286601
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2024 13:51:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B676163EDD
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2024 13:51:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99EC5219A60;
-	Thu,  5 Dec 2024 13:50:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7B3521323B;
+	Thu,  5 Dec 2024 13:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GZHeXhK2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aaZWzELo"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B271218EBF
-	for <linux-rdma@vger.kernel.org>; Thu,  5 Dec 2024 13:50:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A375A218EA7
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Dec 2024 13:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733406650; cv=none; b=r1nyFTVy6IAdBoB41flWEBmaOIGc72bfUCqiG+MJ2BfpVZlyG4a5+qTu9XwOYXrvOQfgOeNMcT8oeJL6lWoXRiVI5y+fw5x4tB24mu+5fg+wrFDNk3BfFYX/vEmHRQ7ymo+FJs60L2ZFEAb1vPbuQwVGT8SHYgXx3IY5jePalCw=
+	t=1733406663; cv=none; b=XODFMLeBeTNVdgvl6UFOprWFbmd8KKrQ4QkEx1nl6/AB253VipVjtUcF4vuFLV/4Lp7o67LAxAYEdXuzf2f7nADbWbfA+9P9nKQVZekEN1f7hslMFWR+CCAOnJbpfyNkbFjVANaEYLlQHVovfiYde0UE0NGQCQkKNHrE09Cjz2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733406650; c=relaxed/simple;
-	bh=CmxZO7CQEOtmJYZObt8DTER46vuplNhU5pZf2Un0/JI=;
+	s=arc-20240116; t=1733406663; c=relaxed/simple;
+	bh=EC+PxLZ1X5+89h9EChX8Db/ikUqERJP9WIvrUJmi1Pw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QyAR61hSbPqJk3qYfm+sf7QZDodM44P3xCexbpCEkDRMZgNEkGYHg2/S301h4RcpIIO+6lMG0EOmebdpok/5YItMa2XLNo51qJM/bBMoXlojToVoOH9gJcIBY2LU9lma05gVtBG/6WfPoI2YfSjWdqrP4cPzZY/A9H5mAHW/3WE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GZHeXhK2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BCFFC4CED1;
-	Thu,  5 Dec 2024 13:50:48 +0000 (UTC)
+	 MIME-Version; b=KTw7mLLlW8xJyH1BjJbge0jK0fYHCWvU2E8ZaFfkiSff6tJUCb1Q1HoMFeRBMaZBFY9lVXYhv5ENxxsU4rEuvJC34lLt9xJq+CauTHA9bbFgid7Jt15UJ2JnBdNqRt5vAuIbhca/FSltwAmEZKfB/UdamPP6SGZ89O9LQIVEZps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aaZWzELo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 178F4C4CED1;
+	Thu,  5 Dec 2024 13:51:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733406648;
-	bh=CmxZO7CQEOtmJYZObt8DTER46vuplNhU5pZf2Un0/JI=;
+	s=k20201202; t=1733406663;
+	bh=EC+PxLZ1X5+89h9EChX8Db/ikUqERJP9WIvrUJmi1Pw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GZHeXhK2qE7lGW3UmKRYWcUNDS5vf2n1/58eL3faQergkJNU8CmoK7JGzKX0n5ExM
-	 IYBBN7/HeHha07arEBJk7kufza4Y65GCGirDt/onNYrNyzzPFN4UrYkpWaqyPPb62b
-	 bh2Y+wmTUf1kd/Yt2A8qBfgbd5X5EyYST+84rl7CBnjD4A0OQ9CSVM5A+NGs3rDY6l
-	 Qj427VGorJzAefWfR4JgUXYHN+SuwMg9gx5G9QD4eVUs84cB1UcthojxFZl0agcXpj
-	 DADWbK3oJK5y1O7DMu5Ehm53juqCjW49uYos4KcsXzcen9w89eaTMInTo0KZJEdXan
-	 TLUDYSRaJ08fQ==
+	b=aaZWzELorP1GnmQmPezjQ0yS7glxe5zxlqsYugKhp/ZPFFJUHCM+5df+XQ/spOQJY
+	 n42qow8vcCzhjgUkzl1CDvAcW0G/kq+rCz4Y5FI1uQKoiO8q3PR0OkpBXv3ik6HJVs
+	 tzDFwlCZLIohoJnlUf65okjJa4O9RMd1gEC6uz4iQvw82bRBQg9/yzpDbFbYxXfR0l
+	 GpwlAEFsJ/LQgCoE90kIEU7HYnw8cbCsO47AmC3HTpYpwIcfz1uYl0ZAsLuYs/nprF
+	 UIeRMVjWPxWygBi6oiXrs//n5IlaX2zqvP3rIPKZQrX5fgLWUFIITrmXd420ZOMtlA
+	 kCL+RgSVIfG6g==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Vlad Dumitrescu <vdumitrescu@nvidia.com>,
 	linux-rdma@vger.kernel.org,
 	Sean Hefty <shefty@nvidia.com>
-Subject: [PATCH rdma-next 3/9] RDMA/sa_query: Enforce min retry interval and deadline
-Date: Thu,  5 Dec 2024 15:49:33 +0200
-Message-ID: <eae3b880eba41734d7fe9604d7f871960a27cb26.1733405453.git.leon@kernel.org>
+Subject: [PATCH rdma-next 4/9] RDMA/nldev: Add sa-min-timeout management attribute
+Date: Thu,  5 Dec 2024 15:49:34 +0200
+Message-ID: <69722b901037bf9727da09bc2cbea82e81f2f6e7.1733405453.git.leon@kernel.org>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <cover.1733405453.git.leon@kernel.org>
 References: <cover.1733405453.git.leon@kernel.org>
@@ -62,120 +62,287 @@ Content-Transfer-Encoding: 8bit
 
 From: Vlad Dumitrescu <vdumitrescu@nvidia.com>
 
-SA query users, both in-kernel and userspace (via rdma_resolve_route),
-pass in a total timeout and expect the SA query layer to handle retries.
-SA query relies on the MAD layer to issue a fixed number of 10 retries
-at the specified interval (timeout), set to 1/10 of the requested total
-timeout.
+Add new namespace for MAD (Management Datagram) protocols as we expect
+more attributes in this area.
 
-When the caller-requested total timeout is low (e.g., 1s for IPoIB), the
-resulting retry interval (e.g., 100ms) to too aggressive.  There have
-been reports of overloaded SA receivers.  Hence, enforce a minimum.  A
-follow-up change will make this configurable via rdma tool (netlink) at
-per-port granularity.
+Add first such attribute, to control the minimum initial timeout used by
+the SA client implementation.  The SA client relies on the MAD layer to
+issue retries, but has to configure an initial timeout value for the
+first retry.  While the SA client provides a default, the right value
+likely depends on network size, loss levels and capacity of the SA
+server.  This attribute enables system admins to tune the trade-off
+between speed of recovery under transient loss and load (on the network
+and/or the SA server) generated by unnecessary retries.
 
-Continue to enforce the caller's total timeout by using the new MAD
-layer deadline option.
+Enforce a reasonable range of 50ms - 10s.
 
-Remove small-timeout special case - the total timeout option will take
-care of stopping the send even when more retries are left.  Moreover,
-this special case results in an extremely aggressive 1ms retries, which
-is definitely not desirable.
+Changes do not apply to existing SA queries, which were already posted
+to the MAD layer.
+
+Example usage:
+  # rdma management show ibp1s0f0/1
+  0: ibp1s0f0: 1 sa-min-timeout 500 ...
+  # rdma management show
+  0: ibp1s0f0: 1 sa-min-timeout 500 ...
+  1: ibp1s0f1: 1 sa-min-timeout 500 ...
+  # rdma management set ibp1s0f1/1 sa-min-timeout 1000 ...
+  # rdma management show
+  0: ibp1s0f0: 1 sa-min-timeout 500 ...
+  1: ibp1s0f1: 1 sa-min-timeout 1000 ...
 
 Signed-off-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
 Reviewed-by: Sean Hefty <shefty@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/sa_query.c | 34 +++++++++++++++++++-----------
- 1 file changed, 22 insertions(+), 12 deletions(-)
+ drivers/infiniband/core/core_priv.h |   4 +
+ drivers/infiniband/core/nldev.c     | 114 ++++++++++++++++++++++++++++
+ drivers/infiniband/core/sa_query.c  |  47 ++++++++++++
+ include/uapi/rdma/rdma_netlink.h    |   5 ++
+ 4 files changed, 170 insertions(+)
 
+diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
+index 05102769a918..7a7326588297 100644
+--- a/drivers/infiniband/core/core_priv.h
++++ b/drivers/infiniband/core/core_priv.h
+@@ -199,6 +199,10 @@ void ib_mad_cleanup(void);
+ int ib_sa_init(void);
+ void ib_sa_cleanup(void);
+ 
++int ib_sa_min_timeout_set(struct ib_device *dev, u32 port_num, u32 val,
++			  struct netlink_ext_ack *extack);
++int ib_sa_min_timeout_get(struct ib_device *dev, u32 port_num, u32 *val);
++
+ void rdma_nl_init(void);
+ void rdma_nl_exit(void);
+ 
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index ff121e59b9c0..363742567dd2 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -171,6 +171,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
+ 	[RDMA_NLDEV_ATTR_PARENT_NAME]		= { .type = NLA_NUL_STRING },
+ 	[RDMA_NLDEV_ATTR_NAME_ASSIGN_TYPE]	= { .type = NLA_U8 },
+ 	[RDMA_NLDEV_ATTR_EVENT_TYPE]		= { .type = NLA_U8 },
++	[RDMA_NLDEV_MGMT_ATTR_SA_MIN_TIMEOUT]	= { .type = NLA_U32 },
+ };
+ 
+ static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
+@@ -2621,6 +2622,112 @@ static int nldev_deldev(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	return ib_del_sub_device_and_put(device);
+ }
+ 
++static int nldev_mgmt_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
++			       struct netlink_ext_ack *extack)
++{
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
++	struct ib_device *device;
++	struct sk_buff *msg;
++	u32 index;
++	u32 port;
++	u32 sa_min_timeout;
++	int ret;
++
++	ret = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1, nldev_policy,
++			    NL_VALIDATE_LIBERAL, extack);
++	if (ret ||
++	    !tb[RDMA_NLDEV_ATTR_DEV_INDEX] ||
++	    !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
++		return -EINVAL;
++
++	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
++	device = ib_device_get_by_index(sock_net(skb->sk), index);
++	if (!device)
++		return -EINVAL;
++
++	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
++	if (!rdma_is_port_valid(device, port)) {
++		ret = -EINVAL;
++		goto err;
++	}
++
++	if (rdma_cap_ib_sa(device, port)) {
++		ret = ib_sa_min_timeout_get(device, port, &sa_min_timeout);
++		if (ret)
++			goto err;
++	}
++
++	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
++	if (!msg) {
++		ret = -ENOMEM;
++		goto err;
++	}
++
++	nlh = nlmsg_put(
++		msg, NETLINK_CB(skb).portid, nlh->nlmsg_seq,
++		RDMA_NL_GET_TYPE(RDMA_NL_NLDEV, RDMA_NLDEV_CMD_MGMT_GET), 0, 0);
++	if (!nlh ||
++	    fill_nldev_handle(msg, device) ||
++	    nla_put_u32(msg, RDMA_NLDEV_ATTR_PORT_INDEX, port)) {
++		ret = -EMSGSIZE;
++		goto err_msg;
++	}
++
++	if (rdma_cap_ib_sa(device, port)) {
++		ret = nla_put_u32(msg, RDMA_NLDEV_MGMT_ATTR_SA_MIN_TIMEOUT,
++				  sa_min_timeout);
++		if (ret)
++			goto err_msg;
++	}
++
++	nlmsg_end(msg, nlh);
++	return rdma_nl_unicast(sock_net(skb->sk), msg, NETLINK_CB(skb).portid);
++
++err_msg:
++	nlmsg_free(msg);
++err:
++	ib_device_put(device);
++	return ret;
++}
++
++static int nldev_set_mgmt_set_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
++				   struct netlink_ext_ack *extack)
++{
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
++	struct ib_device *device;
++	u32 index;
++	u32 port;
++	u32 sa_min_timeout;
++	int ret;
++
++	ret = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1, nldev_policy,
++			  extack);
++	if (ret ||
++	    !tb[RDMA_NLDEV_ATTR_DEV_INDEX] ||
++	    !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
++		return -EINVAL;
++
++	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
++	device = ib_device_get_by_index(sock_net(skb->sk), index);
++	if (!device)
++		return -EINVAL;
++
++	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
++	if (!rdma_is_port_valid(device, port))
++		goto err;
++
++	if (tb[RDMA_NLDEV_MGMT_ATTR_SA_MIN_TIMEOUT]) {
++		sa_min_timeout =
++			nla_get_u32(tb[RDMA_NLDEV_MGMT_ATTR_SA_MIN_TIMEOUT]);
++		return ib_sa_min_timeout_set(device, port, sa_min_timeout,
++					     extack);
++	}
++
++err:
++	ib_device_put(device);
++	return -EINVAL;
++}
++
+ static const struct rdma_nl_cbs nldev_cb_table[RDMA_NLDEV_NUM_OPS] = {
+ 	[RDMA_NLDEV_CMD_GET] = {
+ 		.doit = nldev_get_doit,
+@@ -2727,6 +2834,13 @@ static const struct rdma_nl_cbs nldev_cb_table[RDMA_NLDEV_NUM_OPS] = {
+ 		.doit = nldev_deldev,
+ 		.flags = RDMA_NL_ADMIN_PERM,
+ 	},
++	[RDMA_NLDEV_CMD_MGMT_GET] = {
++		.doit = nldev_mgmt_get_doit,
++	},
++	[RDMA_NLDEV_CMD_MGMT_SET] = {
++		.doit = nldev_set_mgmt_set_doit,
++		.flags = RDMA_NL_ADMIN_PERM,
++	},
+ };
+ 
+ static int fill_mon_netdev_rename(struct sk_buff *msg,
 diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index 53571e6b3162..ac0d53bf91c4 100644
+index ac0d53bf91c4..7f63cad3f212 100644
 --- a/drivers/infiniband/core/sa_query.c
 +++ b/drivers/infiniband/core/sa_query.c
-@@ -39,6 +39,7 @@
- #include <linux/slab.h>
- #include <linux/dma-mapping.h>
- #include <linux/kref.h>
-+#include <linux/minmax.h>
- #include <linux/xarray.h>
- #include <linux/workqueue.h>
- #include <uapi/linux/if_ether.h>
-@@ -59,6 +60,7 @@
+@@ -60,7 +60,10 @@
  #define IB_SA_LOCAL_SVC_TIMEOUT_MAX		200000
  #define IB_SA_CPI_MAX_RETRY_CNT			3
  #define IB_SA_CPI_RETRY_WAIT			1000 /*msecs */
-+#define IB_SA_MIN_TIMEOUT_MS_DEFAULT		500
++#define IB_SA_MIN_TIMEOUT_MS_MIN		50
+ #define IB_SA_MIN_TIMEOUT_MS_DEFAULT		500
++#define IB_SA_MIN_TIMEOUT_MS_MAX		10000
++
  static int sa_local_svc_timeout_ms = IB_SA_LOCAL_SVC_TIMEOUT_DEFAULT;
  
  struct ib_sa_sm_ah {
-@@ -96,6 +98,7 @@ struct ib_sa_port {
- 	spinlock_t                   classport_lock; /* protects class port info set */
- 	spinlock_t           ah_lock;
- 	u32		     port_num;
-+	u32                  min_timeout_ms;
- };
- 
- struct ib_sa_device {
-@@ -1344,13 +1347,14 @@ static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
- 	if (ret < 0)
- 		return ret;
- 
--	query->mad_buf->timeout_ms  = timeout_ms / nmbr_sa_query_retries;
-+	query->mad_buf->timeout_ms =
-+		max(READ_ONCE(query->port->min_timeout_ms),
-+		    timeout_ms / nmbr_sa_query_retries);
- 	query->mad_buf->retries = nmbr_sa_query_retries;
--	if (!query->mad_buf->timeout_ms) {
--		/* Special case, very small timeout_ms */
--		query->mad_buf->timeout_ms = 1;
--		query->mad_buf->retries = timeout_ms;
--	}
-+	ret = ib_set_mad_deadline(query->mad_buf, timeout_ms);
-+	if (ret)
-+		goto out;
-+
- 	query->mad_buf->context[0] = query;
- 	query->id = id;
- 
-@@ -1364,18 +1368,22 @@ static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
- 	}
- 
- 	ret = ib_post_send_mad(query->mad_buf, NULL);
--	if (ret) {
--		xa_lock_irqsave(&queries, flags);
--		__xa_erase(&queries, id);
--		xa_unlock_irqrestore(&queries, flags);
--	}
- 
- 	/*
- 	 * It's not safe to dereference query any more, because the
- 	 * send may already have completed and freed the query in
- 	 * another context.
- 	 */
--	return ret ? ret : id;
-+
-+out:
-+	if (ret) {
-+		xa_lock_irqsave(&queries, flags);
-+		__xa_erase(&queries, id);
-+		xa_unlock_irqrestore(&queries, flags);
-+		return ret;
-+	}
-+
-+	return id;
+@@ -1334,6 +1337,50 @@ static void init_mad(struct ib_sa_query *query, struct ib_mad_agent *agent)
+ 	spin_unlock_irqrestore(&tid_lock, flags);
  }
  
- void ib_sa_unpack_path(void *attribute, struct sa_path_rec *rec)
-@@ -2192,6 +2200,8 @@ static int ib_sa_add_one(struct ib_device *device)
- 		INIT_DELAYED_WORK(&sa_dev->port[i].ib_cpi_work,
- 				  update_ib_cpi);
- 
-+		sa_dev->port[i].min_timeout_ms = IB_SA_MIN_TIMEOUT_MS_DEFAULT;
++int ib_sa_min_timeout_set(struct ib_device *dev, u32 port_num, u32 val,
++			  struct netlink_ext_ack *extack)
++{
++	struct ib_sa_device *sa_dev = ib_get_client_data(dev, &sa_client);
++	struct ib_sa_port *port;
 +
- 		count++;
- 	}
++	if (!rdma_cap_ib_sa(dev, port_num))
++		return -EOPNOTSUPP;
++
++	if (!sa_dev)
++		return -ENODEV;
++
++	port = &sa_dev->port[port_num - sa_dev->start_port];
++
++	if (val > IB_SA_MIN_TIMEOUT_MS_MAX || val < IB_SA_MIN_TIMEOUT_MS_MIN) {
++		NL_SET_ERR_MSG_FMT_MOD(extack, "Valid range [%u-%u]ms",
++				       IB_SA_MIN_TIMEOUT_MS_MIN,
++				       IB_SA_MIN_TIMEOUT_MS_MAX);
++		return -EINVAL;
++	}
++
++	WRITE_ONCE(port->min_timeout_ms, val);
++
++	return 0;
++}
++
++int ib_sa_min_timeout_get(struct ib_device *dev, u32 port_num, u32 *val)
++{
++	struct ib_sa_device *sa_dev = ib_get_client_data(dev, &sa_client);
++	struct ib_sa_port *port;
++
++	if (!rdma_cap_ib_sa(dev, port_num))
++		return -EOPNOTSUPP;
++
++	if (!sa_dev)
++		return -ENODEV;
++
++	port = &sa_dev->port[port_num - sa_dev->start_port];
++
++	*val = READ_ONCE(port->min_timeout_ms);
++
++	return 0;
++}
++
+ static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
+ 		    gfp_t gfp_mask)
+ {
+diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
+index 9f9cf20c1cd8..2b1c4c55e51f 100644
+--- a/include/uapi/rdma/rdma_netlink.h
++++ b/include/uapi/rdma/rdma_netlink.h
+@@ -308,6 +308,9 @@ enum rdma_nldev_command {
  
+ 	RDMA_NLDEV_CMD_MONITOR,
+ 
++	RDMA_NLDEV_CMD_MGMT_GET,
++	RDMA_NLDEV_CMD_MGMT_SET,
++
+ 	RDMA_NLDEV_NUM_OPS
+ };
+ 
+@@ -580,6 +583,8 @@ enum rdma_nldev_attr {
+ 	RDMA_NLDEV_ATTR_EVENT_TYPE,		/* u8 */
+ 
+ 	RDMA_NLDEV_SYS_ATTR_MONITOR_MODE,	/* u8 */
++
++	RDMA_NLDEV_MGMT_ATTR_SA_MIN_TIMEOUT,	/* u32 */
+ 	/*
+ 	 * Always the end
+ 	 */
 -- 
 2.47.0
 
