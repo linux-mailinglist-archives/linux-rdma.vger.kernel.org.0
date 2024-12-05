@@ -1,71 +1,116 @@
-Return-Path: <linux-rdma+bounces-6256-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6257-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8335E9E4C5C
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2024 03:39:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BD6F9E4C6D
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2024 03:46:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D3A51881811
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2024 02:39:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59C07169EE7
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2024 02:46:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0423617E00F;
-	Thu,  5 Dec 2024 02:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B09AD15DBB3;
+	Thu,  5 Dec 2024 02:46:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FRSCqx5h"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="rMFOKo78"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA19479DC;
-	Thu,  5 Dec 2024 02:39:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A51779DC
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Dec 2024 02:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733366387; cv=none; b=J814cskCJ+W7BHN2ayIdHGdR7YWF72uKRSgNOVUnP9KQnMQnHs8b24OL3/WL1ntBEvomaofi3YSfsVH38WN+NSW27IAmaX0ieYl/es6vYZtthnrOtA6ozHHTG/UcYoZsdyTNGXAi1UGPNapfUhw/mJFVwB+C0Jp/rbS3/escINM=
+	t=1733366814; cv=none; b=q9AXa1e+aG0Jmn3HknaPBFQsPonDlmJ9x3t4TKIVgpVBDTR8Nw/jG+AAanetv17BWR+lGphN9NuoQBjd2Ws7cJzNpTqg42RIqvQAWTxxmjQPMP5wZe+wEEMpTSiOssFywptj5TlcSXtJIkudZD6wLoMjXlzzhvLdYZpSZiNSfpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733366387; c=relaxed/simple;
-	bh=wCifLBtiH7uvFAQWr12TxflDBT7QOSS+B+BSxKTDQL8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Xg7SzWCNC0ZjmRFj3Wzu8aUu3/IQDS3xsj0BZp+yNWAOFHcbNRRB3upmPLO4jc+CsVzOBvQdCMoAZzBpOsXy5ei0DWFyoPHCefbM12qdzV48RbQcz2tw1AmnXQx4PRne9/5YbjYnzBHvRTMkmNw/LDqN48z4Vu2DcC3ZniVwY0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FRSCqx5h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B602FC4CECD;
-	Thu,  5 Dec 2024 02:39:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733366387;
-	bh=wCifLBtiH7uvFAQWr12TxflDBT7QOSS+B+BSxKTDQL8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=FRSCqx5hYhpH0pq/x+TwSCFqfC35fzNpfOEVfSNPIZHsGUfLg8wjR8InKYQivg4GJ
-	 LZ2vrU2Vj85RczH96Z+5mphyawpcichvMb8iuecSr0b6zbxjzHm9EwZ7S16I6aR5qO
-	 W/qx+/w0ibBL6kD1fJ9i6bSLe60OQ4xlD3jz3BPLTyqyEhcyjoGePKNfkXrGvyf1oB
-	 LcjvG7MEdxuhBfmIkRfjpMTB0RlijFZqwr2PE4fjCm+wVV+pDsZCTZDJmQ+v/gzRy6
-	 0uVFTeRKEron3C9qvtQUyJT/EvRL1eP68AYP9VTNrHQbgWGMU2wLRxF0Na0BrdQCnP
-	 M1skWTIQ+apBA==
-Date: Wed, 4 Dec 2024 18:39:45 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: wenjia@linux.ibm.com, jaka@linux.ibm.com
-Cc: Guangguan Wang <guangguan.wang@linux.alibaba.com>,
- alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, horms@kernel.org, linux-rdma@vger.kernel.org,
- linux-s390@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 0/2] net/smc: Two features for smc-r
-Message-ID: <20241204183945.47759ac5@kernel.org>
-In-Reply-To: <20241202125203.48821-1-guangguan.wang@linux.alibaba.com>
-References: <20241202125203.48821-1-guangguan.wang@linux.alibaba.com>
+	s=arc-20240116; t=1733366814; c=relaxed/simple;
+	bh=4jKk/gXYCjE02f6JFf14c89Z7E9LkuJCfcUV/P+fy1c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Zz6UvsFgf3IXBm7z5ShyH6LuANKZR7LNdbOe59y/0aL35Mcgf0uN806Tm92UglbhNYPbhoqnwwox7KdGhaW/9CmNeuu+iGZwiTD0Wlw8OgP6qjArUGkrfBG8Usqks54oc2zLE3je4MgKv78UNRDwoU2GWwx9DAWaQwjKcwovzs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=rMFOKo78; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1733366802; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=2R9aPQDLerjdjPUCye9hQsRAAgePTKGvGGZltUlQAQU=;
+	b=rMFOKo78A8F6vVjZpf8zwlVWYfIDnJHO1Ac5mS0noz7+BDRbV6aQO5fj9SVcBPUV44EwQz2reWlPT/KvR98uXenwhGDQN4O5g8c5fL2vVWzreaSzZcctE5YXEXqU8uvxAaEYU59j2Zb2WMidjO272bhhcrS0y+lA/UnMO9pCcC4=
+Received: from 30.221.116.17(mailfrom:boshiyu@linux.alibaba.com fp:SMTPD_---0WKrWW7y_1733366801 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Thu, 05 Dec 2024 10:46:42 +0800
+Message-ID: <3559c2d4-41f7-4787-b4fe-46f0a4cd6ff9@linux.alibaba.com>
+Date: Thu, 5 Dec 2024 10:46:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH for-next 1/8] RDMA/erdma: Probe the erdma RoCEv2 device
+To: Leon Romanovsky <leon@kernel.org>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, kaishen@linux.alibaba.com,
+ chengyou@linux.alibaba.com
+References: <20241126070351.92787-1-boshiyu@linux.alibaba.com>
+ <20241126070351.92787-2-boshiyu@linux.alibaba.com>
+ <20241204140307.GO1245331@unreal>
+From: Boshi Yu <boshiyu@linux.alibaba.com>
+In-Reply-To: <20241204140307.GO1245331@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon,  2 Dec 2024 20:52:01 +0800 Guangguan Wang wrote:
-> net/smc: Two features for smc-r
 
-changes look relatively straightforward, IBM folks do you need more
-time to review?
+
+在 2024/12/4 22:03, Leon Romanovsky 写道:
+> On Tue, Nov 26, 2024 at 02:59:07PM +0800, Boshi Yu wrote:
+>> Currently, the erdma driver supports both the iWARP and RoCEv2 protocols.
+>> The erdma driver reads the ERDMA_REGS_DEV_PROTO_REG register to identify
+>> the protocol used by the erdma device. Since each protocol requires
+>> different ib_device_ops, we introduce the erdma_device_ops_iwarp and
+>> erdma_device_ops_rocev2 for iWARP and RoCEv2 protocols, respectively.
+>>
+>> Signed-off-by: Boshi Yu <boshiyu@linux.alibaba.com>
+>> Reviewed-by: Cheng Xu <chengyou@linux.alibaba.com>
+>> ---
+>>   drivers/infiniband/hw/erdma/Kconfig       |  2 +-
+>>   drivers/infiniband/hw/erdma/erdma.h       |  3 +-
+>>   drivers/infiniband/hw/erdma/erdma_hw.h    |  7 ++++
+>>   drivers/infiniband/hw/erdma/erdma_main.c  | 47 ++++++++++++++++++-----
+>>   drivers/infiniband/hw/erdma/erdma_verbs.c | 16 +++++++-
+>>   drivers/infiniband/hw/erdma/erdma_verbs.h | 12 ++++++
+>>   6 files changed, 75 insertions(+), 12 deletions(-)
+> 
+> <...>
+> 
+>> +++ b/drivers/infiniband/hw/erdma/erdma_main.c
+>> @@ -172,6 +172,12 @@ static int erdma_device_init(struct erdma_dev *dev, struct pci_dev *pdev)
+>>   {
+>>   	int ret;
+>>   
+>> +	dev->proto = erdma_reg_read32(dev, ERDMA_REGS_DEV_PROTO_REG);
+>> +	if (!erdma_device_iwarp(dev) && !erdma_device_rocev2(dev)) {
+> 
+> Why do you need this check? Your old driver which supports only iwarp
+> doesn't have this check, so why did you suddenly need it for roce?
+> 
+
+Hi, Leon,
+
+We initially try to avoid reading an invalid value from the hardware.
+Thank you for your question; I found that the check is unnecessary since
+the value of ERDMA_REGS_DEV_PROTO_REG can only be 0 or 1. We will remove
+this check in patch v2.
+
+Thanks,
+
+Boshi Yu
+
+>> +		dev_err(&pdev->dev, "Unsupported protocol: %d\n", dev->proto);
+>> +		return -ENODEV;
+>> +	}
+>> +
+> 
+> Thanks
+
 
