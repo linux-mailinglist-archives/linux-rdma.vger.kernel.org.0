@@ -1,54 +1,54 @@
-Return-Path: <linux-rdma+bounces-6307-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6304-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED7149E57D6
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2024 14:51:28 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86FCA9E57D4
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2024 14:51:12 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B676163EDD
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2024 13:51:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4162E286752
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2024 13:51:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7B3521323B;
-	Thu,  5 Dec 2024 13:51:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9082219A68;
+	Thu,  5 Dec 2024 13:50:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aaZWzELo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WaBuwbSM"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A375A218EA7
-	for <linux-rdma@vger.kernel.org>; Thu,  5 Dec 2024 13:51:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8DC0219A66
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Dec 2024 13:50:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733406663; cv=none; b=XODFMLeBeTNVdgvl6UFOprWFbmd8KKrQ4QkEx1nl6/AB253VipVjtUcF4vuFLV/4Lp7o67LAxAYEdXuzf2f7nADbWbfA+9P9nKQVZekEN1f7hslMFWR+CCAOnJbpfyNkbFjVANaEYLlQHVovfiYde0UE0NGQCQkKNHrE09Cjz2I=
+	t=1733406652; cv=none; b=W/gtKnVWN8NmUxmUzAh+/wNN+fkaoR0z0ZW22WlNaB83XTfcBNVDsUDPrbneKrc1qeNL+LK0sodVpzVLtChTZk1Dfa5cVR9tVq3o7ql7pjRmKSivs+exZV9xrVU7u0sPEtrL2005pAY1iEjCIsUmlvd7dxieEHZ7wvPhLopN210=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733406663; c=relaxed/simple;
-	bh=EC+PxLZ1X5+89h9EChX8Db/ikUqERJP9WIvrUJmi1Pw=;
+	s=arc-20240116; t=1733406652; c=relaxed/simple;
+	bh=ZczzilvhBzoHP0XP8CgeNMTwOM2wl9FcSBFZzQ+Ojkk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KTw7mLLlW8xJyH1BjJbge0jK0fYHCWvU2E8ZaFfkiSff6tJUCb1Q1HoMFeRBMaZBFY9lVXYhv5ENxxsU4rEuvJC34lLt9xJq+CauTHA9bbFgid7Jt15UJ2JnBdNqRt5vAuIbhca/FSltwAmEZKfB/UdamPP6SGZ89O9LQIVEZps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aaZWzELo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 178F4C4CED1;
-	Thu,  5 Dec 2024 13:51:02 +0000 (UTC)
+	 MIME-Version; b=VfRwhprOjmWeTIWHpYzrtFRzc2fEofui3lSMkm4esO+hycG84S5zMfjYypFT0IiHoMEAEl2bveqWrHD0MhrV9DjYgTti5WTKXSWS7bRdgMxmj/J1K1Yly5J6kQDALH51pI1HgUusQ3g2euSp2cs0XY/JEkG+2xlh2uzuLZ8/Wls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WaBuwbSM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FB55C4CED1;
+	Thu,  5 Dec 2024 13:50:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733406663;
-	bh=EC+PxLZ1X5+89h9EChX8Db/ikUqERJP9WIvrUJmi1Pw=;
+	s=k20201202; t=1733406652;
+	bh=ZczzilvhBzoHP0XP8CgeNMTwOM2wl9FcSBFZzQ+Ojkk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aaZWzELorP1GnmQmPezjQ0yS7glxe5zxlqsYugKhp/ZPFFJUHCM+5df+XQ/spOQJY
-	 n42qow8vcCzhjgUkzl1CDvAcW0G/kq+rCz4Y5FI1uQKoiO8q3PR0OkpBXv3ik6HJVs
-	 tzDFwlCZLIohoJnlUf65okjJa4O9RMd1gEC6uz4iQvw82bRBQg9/yzpDbFbYxXfR0l
-	 GpwlAEFsJ/LQgCoE90kIEU7HYnw8cbCsO47AmC3HTpYpwIcfz1uYl0ZAsLuYs/nprF
-	 UIeRMVjWPxWygBi6oiXrs//n5IlaX2zqvP3rIPKZQrX5fgLWUFIITrmXd420ZOMtlA
-	 kCL+RgSVIfG6g==
+	b=WaBuwbSMeLOkLdfwoKndGlyirzP54zUKOovTgUKMIfNEMBFLTY3O1W/ZsiKue/EQ8
+	 +tIxH+QidzA1vdVcW676wb9CwSh8xHCYETu68BirvCsOxcj7e35qLzgJndvlQhKw3z
+	 RGOkDD6psNlp03yAsQPWOllSwNXngpGPDP7GT9b6ItFKUIQwUG2gkMZL1Sl2i/2pQ4
+	 H5HzzLUsKhjVOpg+rNmnyyo4pBUsHQiXgJwr4+Jhb0TZRaWX7rsVbk7GyPJ7eVk2NM
+	 a237/pd0TJvCxoPqPEskWXm+Ym4qNVi74eDBNccUUXf91gxBBSE/XH0uXwzeQO3AOm
+	 jGpTM+rm5qesQ==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Vlad Dumitrescu <vdumitrescu@nvidia.com>,
 	linux-rdma@vger.kernel.org,
 	Sean Hefty <shefty@nvidia.com>
-Subject: [PATCH rdma-next 4/9] RDMA/nldev: Add sa-min-timeout management attribute
-Date: Thu,  5 Dec 2024 15:49:34 +0200
-Message-ID: <69722b901037bf9727da09bc2cbea82e81f2f6e7.1733405453.git.leon@kernel.org>
+Subject: [PATCH rdma-next 5/9] IB/umad: Set deadline when sending non-RMPP MADs
+Date: Thu,  5 Dec 2024 15:49:35 +0200
+Message-ID: <3ddefc7bd188b15b9f03aebf469630f30f62bea2.1733405453.git.leon@kernel.org>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <cover.1733405453.git.leon@kernel.org>
 References: <cover.1733405453.git.leon@kernel.org>
@@ -62,287 +62,72 @@ Content-Transfer-Encoding: 8bit
 
 From: Vlad Dumitrescu <vdumitrescu@nvidia.com>
 
-Add new namespace for MAD (Management Datagram) protocols as we expect
-more attributes in this area.
+Change semantics of the UAPI struct ib_user_mad_hdr retries and
+timeout_ms fields.  Given the current implementation, users likely
+expect the total timeout to be (retries + 1) * timeout_ms.  Use that
+as MAD deadline.
 
-Add first such attribute, to control the minimum initial timeout used by
-the SA client implementation.  The SA client relies on the MAD layer to
-issue retries, but has to configure an initial timeout value for the
-first retry.  While the SA client provides a default, the right value
-likely depends on network size, loss levels and capacity of the SA
-server.  This attribute enables system admins to tune the trade-off
-between speed of recovery under transient loss and load (on the network
-and/or the SA server) generated by unnecessary retries.
-
-Enforce a reasonable range of 50ms - 10s.
-
-Changes do not apply to existing SA queries, which were already posted
-to the MAD layer.
-
-Example usage:
-  # rdma management show ibp1s0f0/1
-  0: ibp1s0f0: 1 sa-min-timeout 500 ...
-  # rdma management show
-  0: ibp1s0f0: 1 sa-min-timeout 500 ...
-  1: ibp1s0f1: 1 sa-min-timeout 500 ...
-  # rdma management set ibp1s0f1/1 sa-min-timeout 1000 ...
-  # rdma management show
-  0: ibp1s0f0: 1 sa-min-timeout 500 ...
-  1: ibp1s0f1: 1 sa-min-timeout 1000 ...
+This allows changes to the MAD layer's internal retry algorithm, for
+non-RMPP agents, without affecting the total timeout experienced by
+userspace.
 
 Signed-off-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
 Reviewed-by: Sean Hefty <shefty@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/core_priv.h |   4 +
- drivers/infiniband/core/nldev.c     | 114 ++++++++++++++++++++++++++++
- drivers/infiniband/core/sa_query.c  |  47 ++++++++++++
- include/uapi/rdma/rdma_netlink.h    |   5 ++
- 4 files changed, 170 insertions(+)
+ drivers/infiniband/core/user_mad.c |  8 ++++++++
+ include/uapi/rdma/ib_user_mad.h    | 12 ++++++++++--
+ 2 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index 05102769a918..7a7326588297 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -199,6 +199,10 @@ void ib_mad_cleanup(void);
- int ib_sa_init(void);
- void ib_sa_cleanup(void);
+diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
+index fd67fc9fe85a..3da6c0295657 100644
+--- a/drivers/infiniband/core/user_mad.c
++++ b/drivers/infiniband/core/user_mad.c
+@@ -650,6 +650,14 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
+ 		}
+ 	}
  
-+int ib_sa_min_timeout_set(struct ib_device *dev, u32 port_num, u32 val,
-+			  struct netlink_ext_ack *extack);
-+int ib_sa_min_timeout_get(struct ib_device *dev, u32 port_num, u32 *val);
-+
- void rdma_nl_init(void);
- void rdma_nl_exit(void);
- 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index ff121e59b9c0..363742567dd2 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -171,6 +171,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_PARENT_NAME]		= { .type = NLA_NUL_STRING },
- 	[RDMA_NLDEV_ATTR_NAME_ASSIGN_TYPE]	= { .type = NLA_U8 },
- 	[RDMA_NLDEV_ATTR_EVENT_TYPE]		= { .type = NLA_U8 },
-+	[RDMA_NLDEV_MGMT_ATTR_SA_MIN_TIMEOUT]	= { .type = NLA_U32 },
- };
- 
- static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
-@@ -2621,6 +2622,112 @@ static int nldev_deldev(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	return ib_del_sub_device_and_put(device);
- }
- 
-+static int nldev_mgmt_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
-+			       struct netlink_ext_ack *extack)
-+{
-+	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
-+	struct ib_device *device;
-+	struct sk_buff *msg;
-+	u32 index;
-+	u32 port;
-+	u32 sa_min_timeout;
-+	int ret;
-+
-+	ret = __nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1, nldev_policy,
-+			    NL_VALIDATE_LIBERAL, extack);
-+	if (ret ||
-+	    !tb[RDMA_NLDEV_ATTR_DEV_INDEX] ||
-+	    !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
-+		return -EINVAL;
-+
-+	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
-+	device = ib_device_get_by_index(sock_net(skb->sk), index);
-+	if (!device)
-+		return -EINVAL;
-+
-+	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
-+	if (!rdma_is_port_valid(device, port)) {
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	if (rdma_cap_ib_sa(device, port)) {
-+		ret = ib_sa_min_timeout_get(device, port, &sa_min_timeout);
++	if (!ib_mad_kernel_rmpp_agent(agent) && packet->mad.hdr.timeout_ms) {
++		ret = ib_set_mad_deadline(packet->msg,
++					  (packet->mad.hdr.retries + 1) *
++						  packet->mad.hdr.timeout_ms);
 +		if (ret)
-+			goto err;
++			goto err_send;
 +	}
 +
-+	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
-+	if (!msg) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
-+	nlh = nlmsg_put(
-+		msg, NETLINK_CB(skb).portid, nlh->nlmsg_seq,
-+		RDMA_NL_GET_TYPE(RDMA_NL_NLDEV, RDMA_NLDEV_CMD_MGMT_GET), 0, 0);
-+	if (!nlh ||
-+	    fill_nldev_handle(msg, device) ||
-+	    nla_put_u32(msg, RDMA_NLDEV_ATTR_PORT_INDEX, port)) {
-+		ret = -EMSGSIZE;
-+		goto err_msg;
-+	}
-+
-+	if (rdma_cap_ib_sa(device, port)) {
-+		ret = nla_put_u32(msg, RDMA_NLDEV_MGMT_ATTR_SA_MIN_TIMEOUT,
-+				  sa_min_timeout);
-+		if (ret)
-+			goto err_msg;
-+	}
-+
-+	nlmsg_end(msg, nlh);
-+	return rdma_nl_unicast(sock_net(skb->sk), msg, NETLINK_CB(skb).portid);
-+
-+err_msg:
-+	nlmsg_free(msg);
-+err:
-+	ib_device_put(device);
-+	return ret;
-+}
-+
-+static int nldev_set_mgmt_set_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
-+				   struct netlink_ext_ack *extack)
-+{
-+	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
-+	struct ib_device *device;
-+	u32 index;
-+	u32 port;
-+	u32 sa_min_timeout;
-+	int ret;
-+
-+	ret = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1, nldev_policy,
-+			  extack);
-+	if (ret ||
-+	    !tb[RDMA_NLDEV_ATTR_DEV_INDEX] ||
-+	    !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
-+		return -EINVAL;
-+
-+	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
-+	device = ib_device_get_by_index(sock_net(skb->sk), index);
-+	if (!device)
-+		return -EINVAL;
-+
-+	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
-+	if (!rdma_is_port_valid(device, port))
-+		goto err;
-+
-+	if (tb[RDMA_NLDEV_MGMT_ATTR_SA_MIN_TIMEOUT]) {
-+		sa_min_timeout =
-+			nla_get_u32(tb[RDMA_NLDEV_MGMT_ATTR_SA_MIN_TIMEOUT]);
-+		return ib_sa_min_timeout_set(device, port, sa_min_timeout,
-+					     extack);
-+	}
-+
-+err:
-+	ib_device_put(device);
-+	return -EINVAL;
-+}
-+
- static const struct rdma_nl_cbs nldev_cb_table[RDMA_NLDEV_NUM_OPS] = {
- 	[RDMA_NLDEV_CMD_GET] = {
- 		.doit = nldev_get_doit,
-@@ -2727,6 +2834,13 @@ static const struct rdma_nl_cbs nldev_cb_table[RDMA_NLDEV_NUM_OPS] = {
- 		.doit = nldev_deldev,
- 		.flags = RDMA_NL_ADMIN_PERM,
- 	},
-+	[RDMA_NLDEV_CMD_MGMT_GET] = {
-+		.doit = nldev_mgmt_get_doit,
-+	},
-+	[RDMA_NLDEV_CMD_MGMT_SET] = {
-+		.doit = nldev_set_mgmt_set_doit,
-+		.flags = RDMA_NL_ADMIN_PERM,
-+	},
- };
- 
- static int fill_mon_netdev_rename(struct sk_buff *msg,
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index ac0d53bf91c4..7f63cad3f212 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -60,7 +60,10 @@
- #define IB_SA_LOCAL_SVC_TIMEOUT_MAX		200000
- #define IB_SA_CPI_MAX_RETRY_CNT			3
- #define IB_SA_CPI_RETRY_WAIT			1000 /*msecs */
-+#define IB_SA_MIN_TIMEOUT_MS_MIN		50
- #define IB_SA_MIN_TIMEOUT_MS_DEFAULT		500
-+#define IB_SA_MIN_TIMEOUT_MS_MAX		10000
-+
- static int sa_local_svc_timeout_ms = IB_SA_LOCAL_SVC_TIMEOUT_DEFAULT;
- 
- struct ib_sa_sm_ah {
-@@ -1334,6 +1337,50 @@ static void init_mad(struct ib_sa_query *query, struct ib_mad_agent *agent)
- 	spin_unlock_irqrestore(&tid_lock, flags);
- }
- 
-+int ib_sa_min_timeout_set(struct ib_device *dev, u32 port_num, u32 val,
-+			  struct netlink_ext_ack *extack)
-+{
-+	struct ib_sa_device *sa_dev = ib_get_client_data(dev, &sa_client);
-+	struct ib_sa_port *port;
-+
-+	if (!rdma_cap_ib_sa(dev, port_num))
-+		return -EOPNOTSUPP;
-+
-+	if (!sa_dev)
-+		return -ENODEV;
-+
-+	port = &sa_dev->port[port_num - sa_dev->start_port];
-+
-+	if (val > IB_SA_MIN_TIMEOUT_MS_MAX || val < IB_SA_MIN_TIMEOUT_MS_MIN) {
-+		NL_SET_ERR_MSG_FMT_MOD(extack, "Valid range [%u-%u]ms",
-+				       IB_SA_MIN_TIMEOUT_MS_MIN,
-+				       IB_SA_MIN_TIMEOUT_MS_MAX);
-+		return -EINVAL;
-+	}
-+
-+	WRITE_ONCE(port->min_timeout_ms, val);
-+
-+	return 0;
-+}
-+
-+int ib_sa_min_timeout_get(struct ib_device *dev, u32 port_num, u32 *val)
-+{
-+	struct ib_sa_device *sa_dev = ib_get_client_data(dev, &sa_client);
-+	struct ib_sa_port *port;
-+
-+	if (!rdma_cap_ib_sa(dev, port_num))
-+		return -EOPNOTSUPP;
-+
-+	if (!sa_dev)
-+		return -ENODEV;
-+
-+	port = &sa_dev->port[port_num - sa_dev->start_port];
-+
-+	*val = READ_ONCE(port->min_timeout_ms);
-+
-+	return 0;
-+}
-+
- static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
- 		    gfp_t gfp_mask)
- {
-diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
-index 9f9cf20c1cd8..2b1c4c55e51f 100644
---- a/include/uapi/rdma/rdma_netlink.h
-+++ b/include/uapi/rdma/rdma_netlink.h
-@@ -308,6 +308,9 @@ enum rdma_nldev_command {
- 
- 	RDMA_NLDEV_CMD_MONITOR,
- 
-+	RDMA_NLDEV_CMD_MGMT_GET,
-+	RDMA_NLDEV_CMD_MGMT_SET,
-+
- 	RDMA_NLDEV_NUM_OPS
- };
- 
-@@ -580,6 +583,8 @@ enum rdma_nldev_attr {
- 	RDMA_NLDEV_ATTR_EVENT_TYPE,		/* u8 */
- 
- 	RDMA_NLDEV_SYS_ATTR_MONITOR_MODE,	/* u8 */
-+
-+	RDMA_NLDEV_MGMT_ATTR_SA_MIN_TIMEOUT,	/* u32 */
- 	/*
- 	 * Always the end
- 	 */
+ 	ret = ib_post_send_mad(packet->msg, NULL);
+ 	if (ret)
+ 		goto err_send;
+diff --git a/include/uapi/rdma/ib_user_mad.h b/include/uapi/rdma/ib_user_mad.h
+index 10b5f6a4c677..1e9c20a44e50 100644
+--- a/include/uapi/rdma/ib_user_mad.h
++++ b/include/uapi/rdma/ib_user_mad.h
+@@ -57,7 +57,11 @@
+  *   received (transaction ID in data[] will be set to TID of original
+  *   request) (ignored on send)
+  * @timeout_ms - Milliseconds to wait for response (unset on receive)
+- * @retries - Number of automatic retries to attempt
++ *   before issuing a retry
++ * @retries - Maximum number of automatic retries to attempt. Actual
++ *   number of retries could be less if (@retries + 1) * @timeout_ms
++ *   is exceeded. When the registration request sets @rmpp_version,
++ *   it applies per RMPP window
+  * @qpn - Remote QP number received from/to be sent to
+  * @qkey - Remote Q_Key to be sent with (unset on receive)
+  * @lid - Remote lid received from/to be sent to
+@@ -100,7 +104,11 @@ struct ib_user_mad_hdr_old {
+  *   received (transaction ID in data[] will be set to TID of original
+  *   request) (ignored on send)
+  * @timeout_ms - Milliseconds to wait for response (unset on receive)
+- * @retries - Number of automatic retries to attempt
++ *   before issuing a retry
++ * @retries - Maximum number of automatic retries to attempt. Actual
++ *   number of retries could be less if (@retries + 1) * @timeout_ms
++ *   is exceeded. When the registration request sets @rmpp_version,
++ *   it applies per RMPP window
+  * @qpn - Remote QP number received from/to be sent to
+  * @qkey - Remote Q_Key to be sent with (unset on receive)
+  * @lid - Remote lid received from/to be sent to
 -- 
 2.47.0
 
