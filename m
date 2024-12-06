@@ -1,151 +1,221 @@
-Return-Path: <linux-rdma+bounces-6316-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6317-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 382D69E6999
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Dec 2024 10:03:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D41B9E6C90
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Dec 2024 11:51:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0CDB18842FC
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Dec 2024 09:03:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63516167035
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Dec 2024 10:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 477E61E0DEA;
-	Fri,  6 Dec 2024 09:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F59B641;
+	Fri,  6 Dec 2024 10:51:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a1xhZt9w"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gGVGUYRf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0611DE3C7;
-	Fri,  6 Dec 2024 09:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B10B51AAE10;
+	Fri,  6 Dec 2024 10:51:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733475824; cv=none; b=Gkm0lN4b3nFWZbmq80QPrT72Gh1G9eXIhdxVCd69cWlU5lLVE088N0H5cEf5kU8Yoi5w5WJ5zj3IqDXYSUyV/TdTcQ/lYJXcWyls9yokY86Pu48nxQD4ezeFVn6U3SUAqJUnIIWfKmdifIq9FtOptrWQVHjVuJ+pbS1PzME0AHg=
+	t=1733482298; cv=none; b=CVIA9WjcJCDcwsxZa6N2KF1cKQ7+a4qY6dff1QCFgKi+lytr8NiD/OJbplV1rDw3RCmkRUqFHp3gossscZy9D3pErEqdT5pn6Ttm1sY/rX55W1nZD+tG1Hah8DtNLo5oJjrX0x4+dy6GzvP3hAM27IlLwtPMzbnb4e2InQIH2wE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733475824; c=relaxed/simple;
-	bh=9aDqtlCUiJKrKZPRA9Pwb1mlutnI39j9QaNes07JbYY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mXTUWQGgQOFDE66LouOAyh0ZLvFyQtpfRbr5vYrtsqnpvHlucgv70WdXdr+EuHstnjoM+9aC3LBjHH99GGYVVeM6Q6PfoLDwUGSoC8Fyu/UyASj9nMPDcR5ETFV/J6J6P+kWU+ull6l0A7mdL7mPUhSWqtjxXcEO1mW40+HBL8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a1xhZt9w; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-215bebfba73so17262525ad.1;
-        Fri, 06 Dec 2024 01:03:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733475822; x=1734080622; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SNmkcABijER99QBs4F7z9voX03afqB9KDzNNlLM/0Ug=;
-        b=a1xhZt9w2zPQWnvCWTwb6fB32vhNzSvxTtdi/dFXkIwnrgYLhR2262Y0fc3rV2Ey+0
-         YOnEMk1+p9Rca5G965pPscs4tQ3YgHTFNgDR0u5F7/3YAwdwgvqqNmTWvjzTcgGyznv7
-         vpBbpwpasA4+zx64ka/kwCE1FDx/AOQPyJNcX65syioGnVKMroMpRDxKyftAmaAfxKDK
-         jGq9Vc7G7hurXMesFwzJuyVI012E1Co6TVM5elLheu8IGuvjavwNa7dv2eutH2sdmp/i
-         ctqK4e0MOT199KZrSswm4WHWUravZMLwZ/ZBe4YNmQW6bF9qZ7ZRDf0ynNK8a148qat3
-         ieJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733475822; x=1734080622;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SNmkcABijER99QBs4F7z9voX03afqB9KDzNNlLM/0Ug=;
-        b=LJY3O9jIWruFlU7qqghKHWoCl8YLUkl+lIe3q+EryBv/VLWbuw8AaILvAalvpb7zZ2
-         O0p9IZZYLGfO+fnPljLC0qzkJs708VQKk/PWuxAKA7oAZG7HwtcEOyT8ulT40H9cPJiX
-         ixGXJPQXEa0fym+MnNKFhkDqNn3XBobebYhyDMqpM3oMvOaEuBe1tQ9S6RHqMu1ptn0T
-         4zcF99PhNNcAetlqu3SqFE+e6I6ThY5NRHFSjTYThb7cb0fsMDKM6JoCIpAB9hdclTyG
-         YOcayfJ+l9EUwRRnk77dlXgVvgj+xrth3Mkl5jXqE+199A8LbiJ+R471wz1pen8jfRnA
-         YJHw==
-X-Forwarded-Encrypted: i=1; AJvYcCWNxbBstPR4HZRicHCNGMqcuUV56qaCKwWq6/T8Jc/1mTV2jMD93vpcuPMH2/cK7m5l5Hr46On4Mvqn@vger.kernel.org
-X-Gm-Message-State: AOJu0YyC5DpsJaih1uw8eb3KJimC3Q6ig+3Xo+nxKnN4NfROYng5/cU5
-	2rGiG5a04oPJnHNWrg4QESB6jKvf4vltYkREJbi0jLYx3nBITV7r
-X-Gm-Gg: ASbGnctJWZCNP6cW6BDoitUnDNphTkqC4ZdpXzQkofixQlSkodXKw6yQpuo2Fe5T1LH
-	Fk7nAPiKV+7EfFbKd8rddOPc5L3J4kr68t+FQa5bmUpw7k7xMda2+/kfEPQzwMcl5wmfhEy5b1W
-	pjEO2Dyr2UKRftgCpEuyvezjtChGjta3eYTj81aO8w0AOgj/5dL9JQE82l1b+9tUA54i5MAq8Fy
-	2cTHvoKbwkiDPs4g/9aM1rrrfNtLAy5y/i/DiF5OfONq9HEYPRX1b/zZoFnl/YQQfuCLfdIZcKv
-X-Google-Smtp-Source: AGHT+IFXJUzXxiixFJYgU2jzZEtyzJ26r56ck1RGtjGbb7M1Eo9JnZ/Qy7y1GpXJEtcGyDHGKK8Rxw==
-X-Received: by 2002:a17:903:245:b0:211:7156:4283 with SMTP id d9443c01a7336-21614dc5181mr26133795ad.43.1733475821697;
-        Fri, 06 Dec 2024 01:03:41 -0800 (PST)
-Received: from localhost.localdomain ([180.159.118.224])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215f8e3ea67sm24632395ad.28.2024.12.06.01.03.34
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 06 Dec 2024 01:03:41 -0800 (PST)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: saeedm@nvidia.com,
-	tariqt@nvidia.com,
-	leon@kernel.org,
-	gal@nvidia.com,
-	kuba@kernel.org
-Cc: netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>,
-	Tariq Toukan <ttoukan.linux@gmail.com>
-Subject: [PATCH v3 net-next] net/mlx5e: Report rx_discards_phy via rx_fifo_errors
-Date: Fri,  6 Dec 2024 17:03:28 +0800
-Message-Id: <20241206090328.4758-1-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+	s=arc-20240116; t=1733482298; c=relaxed/simple;
+	bh=CouLME7orFdsU+8T/hW1JlX7rf7refWTSmCp9wD1qvo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kT3JJQdlHbFeCMpWmWLn/YTIFb4g6vWqUwNnjKFwLC6xoBrr0Sdh4aOK0RM9v1YvcT+nevQjPHDH5R9S803b6vhaFyOxQs3G/aMRHlBZN5SG8ghJOiwCj1cQ6eStaP/4P2nCjemt95ANteaqLjMfeqq5dGJsxtbf9ZsFdkzo5gs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gGVGUYRf; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4B627O4i030944;
+	Fri, 6 Dec 2024 10:51:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=hgsoxT
+	LPhEfkhPwnpiSSF2RRyng1pMSplvj6kwx2bBc=; b=gGVGUYRfLWDYqzLIlh6Qnh
+	Cg/GV01JosqKo+PTHS/pz5jDejKBIc/+THAXubsPeHWpBpzNRgzhZZP8j9Zn+Y2U
+	acEseQk2gk6aBG3VZtAO0r9O8JEG795ewQLDDkLrpmG+uI3H1EjQaixZXhzC2CVl
+	1CqK9ZwRQBOE7rD2j61KtCukVOFztpWnefCqMXIgGdmQh89I08GtUnJZ87lpXGn5
+	/dJJngcK8VG0TeG9i/s3FiSB6jn2o7ApK4un7/4WCbCBpjmbEoG3JYZM1NCS0oY1
+	X/5gxhniGXzi7vSE/dWAkmlpiGJED16Tg2nGkM0eI3PsBAGYWyj98z0bfbYSrysg
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43b6hb7mdc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 06 Dec 2024 10:51:31 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4B6AkUFR020759;
+	Fri, 6 Dec 2024 10:51:30 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43b6hb7md8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 06 Dec 2024 10:51:30 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4B67G1vf005213;
+	Fri, 6 Dec 2024 10:51:29 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43a2kxw0e1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 06 Dec 2024 10:51:29 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4B6ApSgS18612872
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 6 Dec 2024 10:51:28 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E484858067;
+	Fri,  6 Dec 2024 10:51:27 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 81BFE5805D;
+	Fri,  6 Dec 2024 10:51:25 +0000 (GMT)
+Received: from [9.171.74.148] (unknown [9.171.74.148])
+	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  6 Dec 2024 10:51:25 +0000 (GMT)
+Message-ID: <7de81edd-86f2-4cfd-95db-e273c3436eb6@linux.ibm.com>
+Date: Fri, 6 Dec 2024 11:51:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 2/2] net/smc: support ipv4 mapped ipv6 addr
+ client for smc-r v2
+To: Guangguan Wang <guangguan.wang@linux.alibaba.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Cc: jaka@linux.ibm.com, alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dust Li <dust.li@linux.alibaba.com>
+References: <20241202125203.48821-1-guangguan.wang@linux.alibaba.com>
+ <20241202125203.48821-3-guangguan.wang@linux.alibaba.com>
+ <894d640f-d9f6-4851-adb8-779ff3678440@linux.ibm.com>
+ <20241205135833.0beafd61.pasic@linux.ibm.com>
+ <5ac2c5a7-3f12-48e5-83a9-ecd3867e6125@linux.alibaba.com>
+Content-Language: en-US
+From: Wenjia Zhang <wenjia@linux.ibm.com>
+In-Reply-To: <5ac2c5a7-3f12-48e5-83a9-ecd3867e6125@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: v9iop3K27SzZta1MsyvdopGoIWgTM3xl
+X-Proofpoint-GUID: pE9rWIVZVP_Kh0eMFGqNfeh1mWLq_Ezt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ adultscore=0 suspectscore=0 mlxlogscore=910 clxscore=1015 impostorscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2411120000 definitions=main-2412060076
 
-We observed a high number of rx_discards_phy events on some servers when
-running `ethtool -S`. However, this important counter is not currently
-reflected in the /proc/net/dev statistics file, making it challenging to
-monitor effectively.
 
-Since rx_fifo_errors represents receive FIFO errors on this network
-deivice, it makes sense to include rx_discards_phy in this counter to
-enhance monitoring visibility. This change will help administrators track
-these events more effectively through standard interfaces.
 
-I have also verified the manual of ethtool counters on mlx5 [0], it seems
-that rx_discards_phy and rx_fifo_errors has the same meaning:
+On 06.12.24 07:06, Guangguan Wang wrote:
+> 
+> 
+> On 2024/12/5 20:58, Halil Pasic wrote:
+>> On Thu, 5 Dec 2024 11:16:27 +0100
+>> Wenjia Zhang <wenjia@linux.ibm.com> wrote:
+>>
+>>>> --- a/net/smc/af_smc.c
+>>>> +++ b/net/smc/af_smc.c
+>>>> @@ -1116,7 +1116,12 @@ static int smc_find_proposal_devices(struct
+>>>> smc_sock *smc, ini->check_smcrv2 = true;
+>>>>    	ini->smcrv2.saddr = smc->clcsock->sk->sk_rcv_saddr;
+>>>>    	if (!(ini->smcr_version & SMC_V2) ||
+>>>> +#if IS_ENABLED(CONFIG_IPV6)
+>>>> +	    (smc->clcsock->sk->sk_family != AF_INET &&
+>>>> +
+>>>> !ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)) ||
+>>> I think here you want to say !(smc->clcsock->sk->sk_family == AF_INET
+>>> && ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)), right? If
+>>> it is, the negativ form of the logical operation (a&&b) is (!a)||(!b),
+>>> i.e. here should be:
+>>> （smc->clcsock->sk->sk_family != AF_INET）||
+>>> （!ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)）
+>>
+>> Wenjia, I think you happen to confuse something here. The condition
+>> of this if statement is supposed to evaluate as true iff we don't want
+>> to propose SMCRv2 because the situation is such that SMCRv2 is not
+>> supported.
+>>
+>> We have a bunch of conditions we need to meet for SMCRv2 so
+>> logically we have (A && B && C && D). Now since the if is
+>> about when SMCRv2 is not supported we have a super structure
+>> that looks like !A || !B || !C || !D. With this patch, if
+>> CONFIG_IPV6 is not enabled, the sub-condition remains the same:
+>> if smc->clcsock->sk->sk_family is something else that AF_INET
+>> the we do not do SMCRv2!
+>>
+>> But when we do have CONFIG_IPV6 then we want to do SMCRv2 for
+>> AF_INET6 sockets too if the addresses used are actually
+>> v4 mapped addresses.
+>>
+>> Now this is where the cognitive dissonance starts on my end. I
+>> think the author assumes sk_family == AF_INET || sk_family == AF_INET6
+>> is a tautology in this context. That may be a reasonable thing to
+>> assume. Under that assumption
+>> sk_family != AF_INET &&	!ipv6_addr_v4mapped(addr) (shortened for
+>> convenience)
+>> becomes equivalent to
+>> sk_family == AF_INET6 && !ipv6_addr_v4mapped(addr)
+>> which means in words if the socket is an IPv6 sockeet and the addr is not
+>> a v4 mapped v6 address then we *can not* do SMCRv2. And the condition
+>> when we can is sk_family != AF_INET6 || ipv6_addr_v4mapped(addr) which
+>> is equivalen to sk_family == AF_INET || ipv6_addr_v4mapped(addr) under
+>> the aforementioned assumption.
+> 
+> Hi, Halil
+> 
+> Thank you for such a detailed derivation.
+> 
+> Yes, here assume that sk_family == AF_INET || sk_family == AF_INET6. Indeed,
+> many codes in SMC have already made this assumption, for example,
+> static int __smc_create(struct net *net, struct socket *sock, int protocol,
+> 			int kern, struct socket *clcsock)
+> {
+> 	int family = (protocol == SMCPROTO_SMC6) ? PF_INET6 : PF_INET;
+> 	...
+> }
+> And I also believe it is reasonable.
+> 
+> Before this patch, for SMCR client, only an IPV4 socket can do SMCRv2. This patch
+> introduce an IPV6 socket with v4 mapped v6 address for SMCRv2. It is equivalen
+> to sk_family == AF_INET || ipv6_addr_v4mapped(addr) as you described.
+> 
+>>
+>> But if we assume sk_family == AF_INET || sk_family == AF_INET6 then
+>> the #else does not make any sense, because I guess with IPv6 not
+>> available AF_INET6 is not available ant thus the else is always
+>> guaranteed to evaluate to false under the assumption made.
+>>
+> You are right. The #else here does not make any sense. It's my mistake.
+> 
+> The condition is easier to understand and read should be like this:
+>   	if (!(ini->smcr_version & SMC_V2) ||
+> +#if IS_ENABLED(CONFIG_IPV6)
+> +	    (smc->clcsock->sk->sk_family == AF_INET6 &&
+> +	     !ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)) ||
+> +#endif
+>   	    !smc_clc_ueid_count() ||
+>   	    smc_find_rdma_device(smc, ini))
+>   		ini->smcr_version &= ~SMC_V2;
+> 
 
-  rx_discards_phy: The number of received packets dropped due to lack of
-                   buffers on a physical port. If this counter is
-                   increasing, it implies that the adapter is congested and
-                   cannot absorb the traffic coming from the network.
+sorry, I still don't agree on this version. You removed the condition
+"
+smc->clcsock->sk->sk_family != AF_INET ||
+"
+completely. What about the socket with neither AF_INET nor AF_INET6 family?
 
-                   ConnectX-3 naming : rx_fifo_errors
-
-Link: https://enterprise-support.nvidia.com/s/article/understanding-mlx5-ethtool-counters [0]
-Suggested-by: Tariq Toukan <ttoukan.linux@gmail.com>
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Tariq Toukan <ttoukan.linux@gmail.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: Gal Pressman <gal@nvidia.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 1 +
- 1 file changed, 1 insertion(+)
-
-Changes:
-v2->v3:
-- Drop the changes on the Doc
-
-v1->v2: https://lore.kernel.org/netdev/20241114021711.5691-1-laoar.shao@gmail.com/
-- Use rx_fifo_errors instead (Tariq)
-- Update the if_link.h accordingly
-
-v1: https://lore.kernel.org/netdev/20241106064015.4118-1-laoar.shao@gmail.com/
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index e601324a690a..15b1a3e6e641 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -3916,6 +3916,7 @@ mlx5e_get_stats(struct net_device *dev, struct rtnl_link_stats64 *stats)
- 	}
- 
- 	stats->rx_missed_errors = priv->stats.qcnt.rx_out_of_buffer;
-+	stats->rx_fifo_errors = PPORT_2863_GET(pstats, if_in_discards);
- 
- 	stats->rx_length_errors =
- 		PPORT_802_3_GET(pstats, a_in_range_length_errors) +
--- 
-2.43.5
-
+Thanks,
+Wenjia
 
