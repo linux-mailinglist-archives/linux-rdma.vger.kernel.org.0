@@ -1,82 +1,82 @@
-Return-Path: <linux-rdma+bounces-6319-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6320-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 713B69E789F
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Dec 2024 20:12:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99C659E7945
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Dec 2024 20:49:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D5F7167AEF
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Dec 2024 19:12:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4262F1888149
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Dec 2024 19:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF0CF1F37CA;
-	Fri,  6 Dec 2024 19:12:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A80281D5CC1;
+	Fri,  6 Dec 2024 19:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="BCHHkO1X"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="RyduyTGj"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EB71953BA;
-	Fri,  6 Dec 2024 19:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4DF1C548B;
+	Fri,  6 Dec 2024 19:49:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733512360; cv=none; b=MYG8U5MpyA43J0quTwpLPsT+68vTN0Xp5/w8iJV5bPbXEpxZfKJkvZpbUN3P1+CfTKqqoWIbVsWNu8pcyOmT+bBNJX4yDO5c/rk11GS9aF2VOF6pXA5XaBY6vA8/nLzwT1H4NHeGaKUlme5IbZwcwwn9PTM2I3+cHVayFGyw5W4=
+	t=1733514578; cv=none; b=KPehtqEf3p/MMWN9Q22TaLRSfQfcjV/YDEsIIwtMFgcY6kAYHme9yqez2xOafpmAKg3L8xERHepNoTeeDRSBn8GN4YE1ZLnJPeXMsKmdwa6DG3c7KI1X4R8G4UqcNbzWRCyVUOPfiRDYsiaJ1bJ3p4kHth9CaiDFhtjOl9Sj6Zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733512360; c=relaxed/simple;
-	bh=yYS/hqCPFHXpdbPPeLXkG3gBTLnnQ9BQflgR6E9pt/g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DEh0gq+vqgtPdxNrxoAYsW7qcDro+Pa/juLUn2LU9JmqGdqSYQ5JjH+xEYKGoao9651PwutLVDWnHDp7WAST6t9kfvayCXr2MRZwTOmTouHs+inynZylvmqau4lpZmchq3zzIRSzYYBjWjVBMlHlBlTHXZ1Tz7jzPzD+bvcYemk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=BCHHkO1X; arc=none smtp.client-ip=148.163.158.5
+	s=arc-20240116; t=1733514578; c=relaxed/simple;
+	bh=5kyEv2XzLe30oY3RVRSeRgah1pQyiiJWSvpMP2pqYwY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=XR2JVndNz0Xvac2f2eWtBBJdzeN4bdFqNCH2iKfY9zPJJEsIlc32uKJsI2sRVdvktP9mgxs7q+KxdHR9CCo8CdjHAbriC7I6+HnyUV/+Tab8h9o/3izJVUvGB46oFPGbr8acfXHaQU0vkw8YMOqZ/+z2iHC6Ku8ZmcYyKs7wrOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=RyduyTGj; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4B6GnZI2001160;
-	Fri, 6 Dec 2024 19:12:29 GMT
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4B69US88027778;
+	Fri, 6 Dec 2024 19:49:29 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=BCZ4HY
-	EtVwvksCh+jI8wxPnlCTabDBqzvYUi0sSBpJc=; b=BCHHkO1XAzsweUFnlAwBH7
-	9lRPVrx0r6P9h+83YxaUWQUirq6eRiWtcntfAegWzjJwD1ptWSJkIhgA71YNIQ35
-	9XSL3DlFWqxpHc8Cg+8XyXSt06qVVfdExBs2asg8J8EoUydk1yu+Va9LJKFqw1Xe
-	KA69jovnApI1xcdcMJPv4OTeUktMvy3k5HI6yRr9PrPaO15BBSH75ikN1EnHS82u
-	+SHeg130GDVGaDc4FsZvQ76Q4vSgxjmNxTxDXJNBk80CnZiVkbhaxu+GnzYJnNKj
-	BTPC0M+j9IA7AT3BJLz7DSLfVTUoxvmswfLNT7bIHSPFg1201RASyl9cgRwC729g
+	:message-id:mime-version:references:subject:to; s=pp1; bh=0foSai
+	IAc2wM2z0WLUKCZiWxwHuAQ3XmtO4NM2jSHBs=; b=RyduyTGjoHVxgAAcqBOfe/
+	tn4HPdoOvz4vH12uHxvCCRAZTw/tRjZuOy8m9LxeelR5N7fbGAldrT+ltWXpn+Ry
+	M7dafut73xHp+GcLNU6ML7fWcz+0aq1E1t64KO2MDlDTufUpccETjI02buAlaEuf
+	XZmzfPmXdMMz0d3lIM4pVBo5jXdhF7tC5XrMLG+CxZ/++pWOyL3s5kvGEzG5heEv
+	l74cWYmG9nI/TbYou6aXyMrzEaEFv6f4bWWAIoVMU0CHmkpC6dARUJ5bw6mvRvUU
+	3Dj69pfF8yhavN/Qd1Iff6mZlVLfNGrL74U+i3hNjxNjfehDiYLO5KjOPxSHVt2w
 	==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43bvxktxup-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43bxptjk27-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 06 Dec 2024 19:12:29 +0000 (GMT)
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4B6JCS48026434;
-	Fri, 6 Dec 2024 19:12:28 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43bvxktxum-1
+	Fri, 06 Dec 2024 19:49:29 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4B6JnSiX021895;
+	Fri, 6 Dec 2024 19:49:28 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43bxptjk25-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 06 Dec 2024 19:12:28 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4B6InoAM023083;
-	Fri, 6 Dec 2024 19:12:27 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 438e1nf1sr-1
+	Fri, 06 Dec 2024 19:49:28 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4B6H1pCl012745;
+	Fri, 6 Dec 2024 19:49:28 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 438d1sr9ju-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 06 Dec 2024 19:12:27 +0000
+	Fri, 06 Dec 2024 19:49:28 +0000
 Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4B6JCRQA25166524
+	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4B6JnQGi32768738
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 6 Dec 2024 19:12:27 GMT
+	Fri, 6 Dec 2024 19:49:26 GMT
 Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 26A7E58056;
-	Fri,  6 Dec 2024 19:12:27 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 3E57B58056;
+	Fri,  6 Dec 2024 19:49:26 +0000 (GMT)
 Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 10B7458052;
-	Fri,  6 Dec 2024 19:12:25 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id C7D0658052;
+	Fri,  6 Dec 2024 19:49:23 +0000 (GMT)
 Received: from [9.171.74.148] (unknown [9.171.74.148])
 	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  6 Dec 2024 19:12:24 +0000 (GMT)
-Message-ID: <a6fdc5a9-dd34-4bc3-86cf-0dc967fcbbb8@linux.ibm.com>
-Date: Fri, 6 Dec 2024 20:12:24 +0100
+	Fri,  6 Dec 2024 19:49:23 +0000 (GMT)
+Message-ID: <3710a042-cabe-4b6d-9caa-fd4d864b2fdc@linux.ibm.com>
+Date: Fri, 6 Dec 2024 20:49:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -84,322 +84,173 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 1/2] net/smc: support SMC-R V2 for rdma
- devices with max_recv_sge equals to 1
-To: Guangguan Wang <guangguan.wang@linux.alibaba.com>, jaka@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, horms@kernel.org
-Cc: linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20241202125203.48821-1-guangguan.wang@linux.alibaba.com>
- <20241202125203.48821-2-guangguan.wang@linux.alibaba.com>
-Content-Language: en-US
+Subject: Re: [PATCH net-next v2 2/2] net/smc: support ipv4 mapped ipv6 addr
+ client for smc-r v2
 From: Wenjia Zhang <wenjia@linux.ibm.com>
-In-Reply-To: <20241202125203.48821-2-guangguan.wang@linux.alibaba.com>
+To: Guangguan Wang <guangguan.wang@linux.alibaba.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Cc: jaka@linux.ibm.com, alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dust Li <dust.li@linux.alibaba.com>
+References: <20241202125203.48821-1-guangguan.wang@linux.alibaba.com>
+ <20241202125203.48821-3-guangguan.wang@linux.alibaba.com>
+ <894d640f-d9f6-4851-adb8-779ff3678440@linux.ibm.com>
+ <20241205135833.0beafd61.pasic@linux.ibm.com>
+ <5ac2c5a7-3f12-48e5-83a9-ecd3867e6125@linux.alibaba.com>
+ <7de81edd-86f2-4cfd-95db-e273c3436eb6@linux.ibm.com>
+Content-Language: en-US
+In-Reply-To: <7de81edd-86f2-4cfd-95db-e273c3436eb6@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: u9SxSF1CVe4MIz89rYtPqR0tH5qxs44u
-X-Proofpoint-ORIG-GUID: 8ewCC_1txXO9MkyzHDuXXs3iZH3mnOji
+X-Proofpoint-GUID: EZK63Qtj6BQdv0vF6uj6J-PaNbmnuf7v
+X-Proofpoint-ORIG-GUID: gdPUPTOKqCqzo5vIYZRKoTH8yl1YdifA
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
  definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- malwarescore=0 lowpriorityscore=0 mlxscore=0 priorityscore=1501
- suspectscore=0 spamscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2412060143
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ malwarescore=0 priorityscore=1501 bulkscore=0 impostorscore=0
+ clxscore=1015 lowpriorityscore=0 adultscore=0 spamscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2411120000 definitions=main-2412060146
 
 
 
-On 02.12.24 13:52, Guangguan Wang wrote:
-> For SMC-R V2, llc msg can be larger than SMC_WR_BUF_SIZE, thus every
-> recv wr has 2 sges, the first sge with length SMC_WR_BUF_SIZE is for
-> V1/V2 compatible llc/cdc msg, and the second sge with length
-> SMC_WR_BUF_V2_SIZE-SMC_WR_TX_SIZE is for V2 specific llc msg, like
-> SMC_LLC_DELETE_RKEY and SMC_LLC_ADD_LINK for SMC-R V2. The memory
-> buffer in the second sge is shared by all recv wr in one link and
-> all link in one lgr for saving memory usage purpose.
+On 06.12.24 11:51, Wenjia Zhang wrote:
 > 
-> But not all RDMA devices with max_recv_sge greater than 1. Thus SMC-R
-> V2 can not support on such RDMA devices and SMC_CLC_DECL_INTERR fallback
-> happens because of the failure of create qp.
 > 
-> This patch introduce the support for SMC-R V2 on RDMA devices with
-> max_recv_sge equals to 1. Every recv wr has only one sge with individual
-> buffer whose size is SMC_WR_BUF_V2_SIZE once the RDMA device's max_recv_sge
-> equals to 1. It may use more memory, but it is better than
-> SMC_CLC_DECL_INTERR fallback.
+> On 06.12.24 07:06, Guangguan Wang wrote:
+>>
+>>
+>> On 2024/12/5 20:58, Halil Pasic wrote:
+>>> On Thu, 5 Dec 2024 11:16:27 +0100
+>>> Wenjia Zhang <wenjia@linux.ibm.com> wrote:
+>>>
+>>>>> --- a/net/smc/af_smc.c
+>>>>> +++ b/net/smc/af_smc.c
+>>>>> @@ -1116,7 +1116,12 @@ static int smc_find_proposal_devices(struct
+>>>>> smc_sock *smc, ini->check_smcrv2 = true;
+>>>>>        ini->smcrv2.saddr = smc->clcsock->sk->sk_rcv_saddr;
+>>>>>        if (!(ini->smcr_version & SMC_V2) ||
+>>>>> +#if IS_ENABLED(CONFIG_IPV6)
+>>>>> +        (smc->clcsock->sk->sk_family != AF_INET &&
+>>>>> +
+>>>>> !ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)) ||
+>>>> I think here you want to say !(smc->clcsock->sk->sk_family == AF_INET
+>>>> && ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)), right? If
+>>>> it is, the negativ form of the logical operation (a&&b) is (!a)||(!b),
+>>>> i.e. here should be:
+>>>> （smc->clcsock->sk->sk_family != AF_INET）||
+>>>> （!ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)）
+>>>
+>>> Wenjia, I think you happen to confuse something here. The condition
+>>> of this if statement is supposed to evaluate as true iff we don't want
+>>> to propose SMCRv2 because the situation is such that SMCRv2 is not
+>>> supported.
+>>>
+>>> We have a bunch of conditions we need to meet for SMCRv2 so
+>>> logically we have (A && B && C && D). Now since the if is
+>>> about when SMCRv2 is not supported we have a super structure
+>>> that looks like !A || !B || !C || !D. With this patch, if
+>>> CONFIG_IPV6 is not enabled, the sub-condition remains the same:
+>>> if smc->clcsock->sk->sk_family is something else that AF_INET
+>>> the we do not do SMCRv2!
+>>>
+>>> But when we do have CONFIG_IPV6 then we want to do SMCRv2 for
+>>> AF_INET6 sockets too if the addresses used are actually
+>>> v4 mapped addresses.
+>>>
+>>> Now this is where the cognitive dissonance starts on my end. I
+>>> think the author assumes sk_family == AF_INET || sk_family == AF_INET6
+>>> is a tautology in this context. That may be a reasonable thing to
+>>> assume. Under that assumption
+>>> sk_family != AF_INET &&    !ipv6_addr_v4mapped(addr) (shortened for
+>>> convenience)
+>>> becomes equivalent to
+>>> sk_family == AF_INET6 && !ipv6_addr_v4mapped(addr)
+>>> which means in words if the socket is an IPv6 sockeet and the addr is 
+>>> not
+>>> a v4 mapped v6 address then we *can not* do SMCRv2. And the condition
+>>> when we can is sk_family != AF_INET6 || ipv6_addr_v4mapped(addr) which
+>>> is equivalen to sk_family == AF_INET || ipv6_addr_v4mapped(addr) under
+>>> the aforementioned assumption.
+>>
+>> Hi, Halil
+>>
+>> Thank you for such a detailed derivation.
+>>
+>> Yes, here assume that sk_family == AF_INET || sk_family == AF_INET6. 
+>> Indeed,
+>> many codes in SMC have already made this assumption, for example,
+>> static int __smc_create(struct net *net, struct socket *sock, int 
+>> protocol,
+>>             int kern, struct socket *clcsock)
+>> {
+>>     int family = (protocol == SMCPROTO_SMC6) ? PF_INET6 : PF_INET;
+>>     ...
+>> }
+>> And I also believe it is reasonable.
+>>
+>> Before this patch, for SMCR client, only an IPV4 socket can do SMCRv2. 
+>> This patch
+>> introduce an IPV6 socket with v4 mapped v6 address for SMCRv2. It is 
+>> equivalen
+>> to sk_family == AF_INET || ipv6_addr_v4mapped(addr) as you described.
+>>
+>>>
+>>> But if we assume sk_family == AF_INET || sk_family == AF_INET6 then
+>>> the #else does not make any sense, because I guess with IPv6 not
+>>> available AF_INET6 is not available ant thus the else is always
+>>> guaranteed to evaluate to false under the assumption made.
+>>>
+>> You are right. The #else here does not make any sense. It's my mistake.
+>>
+>> The condition is easier to understand and read should be like this:
+>>       if (!(ini->smcr_version & SMC_V2) ||
+>> +#if IS_ENABLED(CONFIG_IPV6)
+>> +        (smc->clcsock->sk->sk_family == AF_INET6 &&
+>> +         !ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)) ||
+>> +#endif
+>>           !smc_clc_ueid_count() ||
+>>           smc_find_rdma_device(smc, ini))
+>>           ini->smcr_version &= ~SMC_V2;
+>>
 > 
-find good!
-> Co-developed-by: Wen Gu <guwen@linux.alibaba.com>
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-> Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-> ---
->   net/smc/smc_core.c |  5 +++++
->   net/smc/smc_core.h | 11 ++++++++++-
->   net/smc/smc_ib.c   |  3 +--
->   net/smc/smc_llc.c  | 21 +++++++++++++++------
->   net/smc/smc_wr.c   | 42 +++++++++++++++++++++---------------------
->   5 files changed, 52 insertions(+), 30 deletions(-)
+> sorry, I still don't agree on this version. You removed the condition
+> "
+> smc->clcsock->sk->sk_family != AF_INET ||
+> "
+> completely. What about the socket with neither AF_INET nor AF_INET6 family?
 > 
-> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-> index 500952c2e67b..ede4d5f3111b 100644
-> --- a/net/smc/smc_core.c
-> +++ b/net/smc/smc_core.c
-> @@ -795,9 +795,14 @@ int smcr_link_init(struct smc_link_group *lgr, struct smc_link *lnk,
->   	if (lgr->smc_version == SMC_V2) {
->   		lnk->smcibdev = ini->smcrv2.ib_dev_v2;
->   		lnk->ibport = ini->smcrv2.ib_port_v2;
-> +		lnk->wr_rx_sge_cnt = lnk->smcibdev->ibdev->attrs.max_recv_sge < 2 ? 1 : 2;
-> +		lnk->wr_rx_buflen = smc_link_shared_v2_rxbuf(lnk) ?
-> +			SMC_WR_BUF_SIZE : SMC_WR_BUF_V2_SIZE;
->   	} else {
->   		lnk->smcibdev = ini->ib_dev;
->   		lnk->ibport = ini->ib_port;
-> +		lnk->wr_rx_sge_cnt = 1;
-> +		lnk->wr_rx_buflen = SMC_WR_BUF_SIZE;
->   	}
->   	get_device(&lnk->smcibdev->ibdev->dev);
->   	atomic_inc(&lnk->smcibdev->lnk_cnt);
-> diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
-> index 69b54ecd6503..48a1b1dcb576 100644
-> --- a/net/smc/smc_core.h
-> +++ b/net/smc/smc_core.h
-> @@ -122,10 +122,14 @@ struct smc_link {
->   	} ____cacheline_aligned_in_smp;
->   	struct completion	tx_ref_comp;
->   
-> -	struct smc_wr_buf	*wr_rx_bufs;	/* WR recv payload buffers */
-> +	u8			*wr_rx_bufs;	/* WR recv payload buffers */
->   	struct ib_recv_wr	*wr_rx_ibs;	/* WR recv meta data */
->   	struct ib_sge		*wr_rx_sges;	/* WR recv scatter meta data */
->   	/* above three vectors have wr_rx_cnt elements and use the same index */
-> +	int			wr_rx_sge_cnt; /* rx sge, V1 is 1, V2 is either 2 or 1 */
-> +	int			wr_rx_buflen;	/* buffer len for the first sge, len for the
-> +						 * second sge is lgr shared if rx sge is 2.
-> +						 */
->   	dma_addr_t		wr_rx_dma_addr;	/* DMA address of wr_rx_bufs */
->   	dma_addr_t		wr_rx_v2_dma_addr; /* DMA address of v2 rx buf*/
->   	u64			wr_rx_id;	/* seq # of last recv WR */
-> @@ -506,6 +510,11 @@ static inline bool smc_link_active(struct smc_link *lnk)
->   	return lnk->state == SMC_LNK_ACTIVE;
->   }
->   
-> +static inline bool smc_link_shared_v2_rxbuf(struct smc_link *lnk)
-> +{
-> +	return lnk->wr_rx_sge_cnt > 1;
-> +}
-> +
->   static inline void smc_gid_be16_convert(__u8 *buf, u8 *gid_raw)
->   {
->   	sprintf(buf, "%04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x",
-> diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
-> index 9c563cdbea90..53828833a3f7 100644
-> --- a/net/smc/smc_ib.c
-> +++ b/net/smc/smc_ib.c
-> @@ -662,7 +662,6 @@ void smc_ib_destroy_queue_pair(struct smc_link *lnk)
->   /* create a queue pair within the protection domain for a link */
->   int smc_ib_create_queue_pair(struct smc_link *lnk)
->   {
-> -	int sges_per_buf = (lnk->lgr->smc_version == SMC_V2) ? 2 : 1;
->   	struct ib_qp_init_attr qp_attr = {
->   		.event_handler = smc_ib_qp_event_handler,
->   		.qp_context = lnk,
-> @@ -676,7 +675,7 @@ int smc_ib_create_queue_pair(struct smc_link *lnk)
->   			.max_send_wr = SMC_WR_BUF_CNT * 3,
->   			.max_recv_wr = SMC_WR_BUF_CNT * 3,
->   			.max_send_sge = SMC_IB_MAX_SEND_SGE,
-> -			.max_recv_sge = sges_per_buf,
-> +			.max_recv_sge = lnk->wr_rx_sge_cnt,
->   			.max_inline_data = 0,
->   		},
->   		.sq_sig_type = IB_SIGNAL_REQ_WR,
-> diff --git a/net/smc/smc_llc.c b/net/smc/smc_llc.c
-> index 018ce8133b02..f865c58c3aa7 100644
-> --- a/net/smc/smc_llc.c
-> +++ b/net/smc/smc_llc.c
-> @@ -997,13 +997,14 @@ static int smc_llc_cli_conf_link(struct smc_link *link,
->   }
->   
->   static void smc_llc_save_add_link_rkeys(struct smc_link *link,
-> -					struct smc_link *link_new)
-> +					struct smc_link *link_new,
-> +					u8 *llc_msg)
->   {
->   	struct smc_llc_msg_add_link_v2_ext *ext;
->   	struct smc_link_group *lgr = link->lgr;
->   	int max, i;
->   
-> -	ext = (struct smc_llc_msg_add_link_v2_ext *)((u8 *)lgr->wr_rx_buf_v2 +
-> +	ext = (struct smc_llc_msg_add_link_v2_ext *)(llc_msg +
->   						     SMC_WR_TX_SIZE);
->   	max = min_t(u8, ext->num_rkeys, SMC_LLC_RKEYS_PER_MSG_V2);
->   	down_write(&lgr->rmbs_lock);
-> @@ -1098,7 +1099,9 @@ int smc_llc_cli_add_link(struct smc_link *link, struct smc_llc_qentry *qentry)
->   	if (rc)
->   		goto out_clear_lnk;
->   	if (lgr->smc_version == SMC_V2) {
-> -		smc_llc_save_add_link_rkeys(link, lnk_new);
-> +		u8 *llc_msg = smc_link_shared_v2_rxbuf(link) ?
-> +			(u8 *)lgr->wr_rx_buf_v2 : (u8 *)llc;
-> +		smc_llc_save_add_link_rkeys(link, lnk_new, llc_msg);
->   	} else {
->   		rc = smc_llc_cli_rkey_exchange(link, lnk_new);
->   		if (rc) {
-> @@ -1498,7 +1501,9 @@ int smc_llc_srv_add_link(struct smc_link *link,
->   	if (rc)
->   		goto out_err;
->   	if (lgr->smc_version == SMC_V2) {
-> -		smc_llc_save_add_link_rkeys(link, link_new);
-> +		u8 *llc_msg = smc_link_shared_v2_rxbuf(link) ?
-> +			(u8 *)lgr->wr_rx_buf_v2 : (u8 *)add_llc;
-> +		smc_llc_save_add_link_rkeys(link, link_new, llc_msg);
->   	} else {
->   		rc = smc_llc_srv_rkey_exchange(link, link_new);
->   		if (rc)
-> @@ -1807,8 +1812,12 @@ static void smc_llc_rmt_delete_rkey(struct smc_link_group *lgr)
->   	if (lgr->smc_version == SMC_V2) {
->   		struct smc_llc_msg_delete_rkey_v2 *llcv2;
->   
-> -		memcpy(lgr->wr_rx_buf_v2, llc, sizeof(*llc));
-> -		llcv2 = (struct smc_llc_msg_delete_rkey_v2 *)lgr->wr_rx_buf_v2;
-> +		if (smc_link_shared_v2_rxbuf(link)) {
-> +			memcpy(lgr->wr_rx_buf_v2, llc, sizeof(*llc));
-> +			llcv2 = (struct smc_llc_msg_delete_rkey_v2 *)lgr->wr_rx_buf_v2;
-> +		} else {
-> +			llcv2 = (struct smc_llc_msg_delete_rkey_v2 *)llc;
-> +		}
->   		llcv2->num_inval_rkeys = 0;
->   
->   		max = min_t(u8, llcv2->num_rkeys, SMC_LLC_RKEYS_PER_MSG_V2);
-> diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
-> index 994c0cd4fddb..b04a21b8c511 100644
-> --- a/net/smc/smc_wr.c
-> +++ b/net/smc/smc_wr.c
-> @@ -439,7 +439,7 @@ static inline void smc_wr_rx_demultiplex(struct ib_wc *wc)
->   		return; /* short message */
->   	temp_wr_id = wc->wr_id;
->   	index = do_div(temp_wr_id, link->wr_rx_cnt);
-> -	wr_rx = (struct smc_wr_rx_hdr *)&link->wr_rx_bufs[index];
-> +	wr_rx = (struct smc_wr_rx_hdr *)(link->wr_rx_bufs + index * link->wr_rx_buflen);
->   	hash_for_each_possible(smc_wr_rx_hash, handler, list, wr_rx->type) {
->   		if (handler->type == wr_rx->type)
->   			handler->handler(wc, wr_rx);
-> @@ -555,7 +555,6 @@ void smc_wr_remember_qp_attr(struct smc_link *lnk)
->   
->   static void smc_wr_init_sge(struct smc_link *lnk)
->   {
-> -	int sges_per_buf = (lnk->lgr->smc_version == SMC_V2) ? 2 : 1;
->   	bool send_inline = (lnk->qp_attr.cap.max_inline_data > SMC_WR_TX_SIZE);
->   	u32 i;
->   
-> @@ -608,13 +607,14 @@ static void smc_wr_init_sge(struct smc_link *lnk)
->   	 * the larger spillover buffer, allowing easy data mapping.
->   	 */
->   	for (i = 0; i < lnk->wr_rx_cnt; i++) {
-> -		int x = i * sges_per_buf;
-> +		int x = i * lnk->wr_rx_sge_cnt;
->   
->   		lnk->wr_rx_sges[x].addr =
-> -			lnk->wr_rx_dma_addr + i * SMC_WR_BUF_SIZE;
-> -		lnk->wr_rx_sges[x].length = SMC_WR_TX_SIZE;
-> +			lnk->wr_rx_dma_addr + i * lnk->wr_rx_buflen;
-> +		lnk->wr_rx_sges[x].length = smc_link_shared_v2_rxbuf(lnk) ?
-> +			SMC_WR_TX_SIZE : lnk->wr_rx_buflen;
->   		lnk->wr_rx_sges[x].lkey = lnk->roce_pd->local_dma_lkey;
-> -		if (lnk->lgr->smc_version == SMC_V2) {
-> +		if (lnk->lgr->smc_version == SMC_V2 && smc_link_shared_v2_rxbuf(lnk)) {
->   			lnk->wr_rx_sges[x + 1].addr =
->   					lnk->wr_rx_v2_dma_addr + SMC_WR_TX_SIZE;
->   			lnk->wr_rx_sges[x + 1].length =
-> @@ -624,7 +624,7 @@ static void smc_wr_init_sge(struct smc_link *lnk)
->   		}
->   		lnk->wr_rx_ibs[i].next = NULL;
->   		lnk->wr_rx_ibs[i].sg_list = &lnk->wr_rx_sges[x];
-> -		lnk->wr_rx_ibs[i].num_sge = sges_per_buf;
-> +		lnk->wr_rx_ibs[i].num_sge = lnk->wr_rx_sge_cnt;
->   	}
->   	lnk->wr_reg.wr.next = NULL;
->   	lnk->wr_reg.wr.num_sge = 0;
-> @@ -655,7 +655,7 @@ void smc_wr_free_link(struct smc_link *lnk)
->   
->   	if (lnk->wr_rx_dma_addr) {
->   		ib_dma_unmap_single(ibdev, lnk->wr_rx_dma_addr,
-> -				    SMC_WR_BUF_SIZE * lnk->wr_rx_cnt,
-> +				    lnk->wr_rx_buflen * lnk->wr_rx_cnt,
->   				    DMA_FROM_DEVICE);
->   		lnk->wr_rx_dma_addr = 0;
->   	}
-> @@ -740,13 +740,11 @@ int smc_wr_alloc_lgr_mem(struct smc_link_group *lgr)
->   
->   int smc_wr_alloc_link_mem(struct smc_link *link)
->   {
-> -	int sges_per_buf = link->lgr->smc_version == SMC_V2 ? 2 : 1;
-> -
->   	/* allocate link related memory */
->   	link->wr_tx_bufs = kcalloc(SMC_WR_BUF_CNT, SMC_WR_BUF_SIZE, GFP_KERNEL);
->   	if (!link->wr_tx_bufs)
->   		goto no_mem;
-> -	link->wr_rx_bufs = kcalloc(SMC_WR_BUF_CNT * 3, SMC_WR_BUF_SIZE,
-> +	link->wr_rx_bufs = kcalloc(SMC_WR_BUF_CNT * 3, link->wr_rx_buflen,
->   				   GFP_KERNEL);
->   	if (!link->wr_rx_bufs)
->   		goto no_mem_wr_tx_bufs;
-> @@ -774,7 +772,7 @@ int smc_wr_alloc_link_mem(struct smc_link *link)
->   	if (!link->wr_tx_sges)
->   		goto no_mem_wr_tx_rdma_sges;
->   	link->wr_rx_sges = kcalloc(SMC_WR_BUF_CNT * 3,
-> -				   sizeof(link->wr_rx_sges[0]) * sges_per_buf,
-> +				   sizeof(link->wr_rx_sges[0]) * link->wr_rx_sge_cnt,
->   				   GFP_KERNEL);
->   	if (!link->wr_rx_sges)
->   		goto no_mem_wr_tx_sges;
-> @@ -872,7 +870,7 @@ int smc_wr_create_link(struct smc_link *lnk)
->   	smc_wr_tx_set_wr_id(&lnk->wr_tx_id, 0);
->   	lnk->wr_rx_id = 0;
->   	lnk->wr_rx_dma_addr = ib_dma_map_single(
-> -		ibdev, lnk->wr_rx_bufs,	SMC_WR_BUF_SIZE * lnk->wr_rx_cnt,
-> +		ibdev, lnk->wr_rx_bufs,	lnk->wr_rx_buflen * lnk->wr_rx_cnt,
->   		DMA_FROM_DEVICE);
->   	if (ib_dma_mapping_error(ibdev, lnk->wr_rx_dma_addr)) {
->   		lnk->wr_rx_dma_addr = 0;
-> @@ -880,13 +878,15 @@ int smc_wr_create_link(struct smc_link *lnk)
->   		goto out;
->   	}
->   	if (lnk->lgr->smc_version == SMC_V2) {
-> -		lnk->wr_rx_v2_dma_addr = ib_dma_map_single(ibdev,
-> -			lnk->lgr->wr_rx_buf_v2, SMC_WR_BUF_V2_SIZE,
-> -			DMA_FROM_DEVICE);
-> -		if (ib_dma_mapping_error(ibdev, lnk->wr_rx_v2_dma_addr)) {
-> -			lnk->wr_rx_v2_dma_addr = 0;
-> -			rc = -EIO;
-> -			goto dma_unmap;
-> +		if (smc_link_shared_v2_rxbuf(lnk)) {
-> +			lnk->wr_rx_v2_dma_addr =
-> +				ib_dma_map_single(ibdev, lnk->lgr->wr_rx_buf_v2,
-> +						  SMC_WR_BUF_V2_SIZE, DMA_FROM_DEVICE);
-> +			if (ib_dma_mapping_error(ibdev, lnk->wr_rx_v2_dma_addr)) {
-> +				lnk->wr_rx_v2_dma_addr = 0;
-> +				rc = -EIO;
-> +				goto dma_unmap;
-> +			}
->   		}
->   		lnk->wr_tx_v2_dma_addr = ib_dma_map_single(ibdev,
->   			lnk->lgr->wr_tx_buf_v2, SMC_WR_BUF_V2_SIZE,
-> @@ -935,7 +935,7 @@ int smc_wr_create_link(struct smc_link *lnk)
->   		lnk->wr_tx_v2_dma_addr = 0;
->   	}
->   	ib_dma_unmap_single(ibdev, lnk->wr_rx_dma_addr,
-> -			    SMC_WR_BUF_SIZE * lnk->wr_rx_cnt,
-> +			    lnk->wr_rx_buflen * lnk->wr_rx_cnt,
->   			    DMA_FROM_DEVICE);
->   	lnk->wr_rx_dma_addr = 0;
->   out:
-It looks good for me!
+> Thanks,
+> Wenjia
+> 
+I think the main problem in the original version was that
+(sk_family != AF_INET) is not equivalent to (sk_family == AF_INET6).
+Since you already in the new version above used sk_family == AF_INET6,
+the else condition could stay as it is. My suggestion:
 
-Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 8e3093938cd2..5f205a41fc48 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -1116,7 +1116,12 @@ static int smc_find_proposal_devices(struct 
+smc_sock *smc,
+         ini->check_smcrv2 = true;
+         ini->smcrv2.saddr = smc->clcsock->sk->sk_rcv_saddr;
+         if (!(ini->smcr_version & SMC_V2) ||
++#if IS_ENABLED(CONFIG_IPV6)
++           (smc->clcsock->sk->sk_family == AF_INET6 &&
++            !ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)) ||
++#else
+             smc->clcsock->sk->sk_family != AF_INET ||
++#endif
+             !smc_clc_ueid_count() ||
+             smc_find_rdma_device(smc, ini))
+                 ini->smcr_version &= ~SMC_V2;
 
 Thanks,
 Wenjia
