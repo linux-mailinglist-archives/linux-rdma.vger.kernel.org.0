@@ -1,359 +1,249 @@
-Return-Path: <linux-rdma+bounces-6325-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6326-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A12D9E8A76
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Dec 2024 05:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C7A959E8B55
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Dec 2024 07:05:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF5AD1885251
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Dec 2024 04:43:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C07A41885B91
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Dec 2024 06:05:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E6D192598;
-	Mon,  9 Dec 2024 04:43:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B2E2147FF;
+	Mon,  9 Dec 2024 06:04:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="BB44/IRr"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ZlJdK2X5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246FD189B9F
-	for <linux-rdma@vger.kernel.org>; Mon,  9 Dec 2024 04:43:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0932144A9;
+	Mon,  9 Dec 2024 06:04:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733719420; cv=none; b=gYn/F8Z0Mmsic9FikTse6qIWZzja25s/hxg1fk5SFhKfAygGuzzx+L08XDOZnsI7eFR8RJ7IGKRIQPkcHjX5BS69jxBLDn+pHPNIteXYKfN1+21fb9rVIbLumJLdcAolveXRSu/DXRjMUU/6GDsVERLiG6b2rsG0TZ1BpcN7EsE=
+	t=1733724296; cv=none; b=gcfB7JxXJUrkR2rVZvNPFosKqUlEpZwhMLDXgCh0TEME56e/y4Xt4IBtL054Yb0N1YtcWyw89Qj902/hG5qXp2osmqRG0DTnsm7R1J2M3BXNWdr4bWrahz+5fRVZSqxGK8iWe0VWAOBskqNYyW2rYDx3Fshd+tfNipxagdBNNlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733719420; c=relaxed/simple;
-	bh=J5uF+YK8Kub0I6bs8LyXxQcKpD6JxBE4SniUQltDiLo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fw4LxHdgXJkM+jp2Er2e4ptBPyfPtu0ptKJxmYKUqUrIESCi77zk3QJj7AhpAyW91U/qSzrmb566apnwd1esY3N4gFAYzKyMiOroglcpXPq+J5McN1T1uTlsxDh8MoPSLclXhueUgwXb4IYghYyL/Ysv8d6ZFgsWC7DrD5DGuGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=BB44/IRr; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6eff4f0d9fcso15827877b3.3
-        for <linux-rdma@vger.kernel.org>; Sun, 08 Dec 2024 20:43:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1733719417; x=1734324217; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vBsbku2s9AXzQnI8VnDx1q3r+shMnijf3ftKtmycaj8=;
-        b=BB44/IRrgWH9mh7E0D7XEAQtZS7lwGL7Y5BF86paA7rlZMbAsD5hGeqwDiNKqhwPjQ
-         P05gzzWSO3gJin6uwWjB3zirfknpl7JnpoejDO+VCsiWezpIOrqwAjyk1+i6N22pWXlK
-         v4VTtczsQ9Qy90JA2d7u+h+m2y2lsLRYYI8Ks=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733719417; x=1734324217;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vBsbku2s9AXzQnI8VnDx1q3r+shMnijf3ftKtmycaj8=;
-        b=SMz/bIGcoeUVWfvXNBKEj1wS+Tc/AUhRI+JXJuHUrj2X/y4npSyhdhZPBG+KPZ69Rs
-         wlmb3vUEXNhF1Em4ZsPchxTZ1f1fyQuRkc+gFJOfoJVl5lzKwE9U6eh7YMIMB/n5vqc+
-         EC4DvSCAqnQJkzkyv4sdhe5MTIqS7/eXTiHoDnhkw8pb1icRGjp+1rC1lVz/yfVqsdZo
-         nz2MEHpVtpyUDGggZZ9x2o9aHsvmzc7w7Wj92FMmiigj4jj5Oy5D2EOqwYclcmqUw5CD
-         J9AMT2zmAV3WMkeOByMTOyfvmFDOwmqfGrNwToZY8iAmzIbLNHITEQbb0C311MifvzGU
-         kDBw==
-X-Forwarded-Encrypted: i=1; AJvYcCW3plNhfrJFcNFyp/hzn5jHaXSWqNmXbzS4cfaeKgSs8HbCCwGHGiZaV1/9wtMl7DD/5W2f3goXcbGb@vger.kernel.org
-X-Gm-Message-State: AOJu0YyuDvEVSLVfyDwaskD+9Hg12+/aeFA6OMGSEuNVlbDsiJnKIX20
-	QukIhgoWBxTIRemxPPFULaa4AiiY+Jcswoy3jsEutIbYT777T6ly1F5qtNSrfD7eJvE1bZ9Te8A
-	gT3XIgRjl69M0ZvPlgvP7NgAilha9JY6at+FQ
-X-Gm-Gg: ASbGncshBkZ4CvLRsAa/5gOHOm9EZh51eByOY7IewAcLZnDmF/ukCd/2PmawfLmMF2I
-	uB2UeQkrUzwX/+HUsx+42npeD1FdWmZnE
-X-Google-Smtp-Source: AGHT+IEsMtv7QWo+tpKDBhoM18yntnUJr2Um4BU7sDBw1QyfNxO3G4w3OlnAyttIUketanyF9b8zZ80R+BEuF7tBK+I=
-X-Received: by 2002:a05:690c:48c7:b0:6ef:5688:f95e with SMTP id
- 00721157ae682-6efe3c91019mr104381667b3.42.1733719416920; Sun, 08 Dec 2024
- 20:43:36 -0800 (PST)
+	s=arc-20240116; t=1733724296; c=relaxed/simple;
+	bh=bhTklaj/2PsO5Nv8UhiyX2qItpwg7Uti9kyTx3adxzI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p4mMF9mYqbOA0T0jgXmiGUYMeKIepIrlnA6accTlvGibWhIgVKDc2g+7aTZIO80gL0xaxdPcvXNDCXxN80FrHejNwpvEDjW9gklFAhLD6pijBnAVmVvqJB3TrrzbCROkhbMyCb7lFLm8QKO3UOFap5pqtN5tY+L8ktv9rm4zqpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ZlJdK2X5; arc=none smtp.client-ip=115.124.30.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1733724284; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=s/c5AztEBJjv/BTvhC/ba+rQgienYOYyHkd/8hjQ3RM=;
+	b=ZlJdK2X5o9qXUKtk97iWhcq2H2PtlgZ1XNW/llV/mg4PROSba0ELJAup/Xemwzt2xPmZBhKdWk9wuYXIkQkbobDaAiN1hCGdl2dZhSRNQRbM0OaIvJfFe+bBog4Wj34YPS1zTNkA45Bvp7JvjIDJOuYTKpreDzVax/Ys26fDyt8=
+Received: from 30.221.100.140(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0WL36AV9_1733724281 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Mon, 09 Dec 2024 14:04:43 +0800
+Message-ID: <d2af79e2-adb2-46f0-a7e3-67a9265f3adf@linux.alibaba.com>
+Date: Mon, 9 Dec 2024 14:04:40 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241204075416.478431-1-kalesh-anakkur.purayil@broadcom.com>
- <20241204075416.478431-5-kalesh-anakkur.purayil@broadcom.com>
- <20241205090716.GU1245331@unreal> <CAH-L+nN0C=0ZoJmAgBTbjCUcwoQO00WoUc3d3BKn_tGPdk5UbA@mail.gmail.com>
- <20241205113841.GY1245331@unreal>
-In-Reply-To: <20241205113841.GY1245331@unreal>
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-Date: Mon, 9 Dec 2024 10:13:23 +0530
-Message-ID: <CA+sbYW21nc0JPs-N0rmR-DgUvX0pydCY_bZXUC57aA0rXUst1A@mail.gmail.com>
-Subject: Re: [PATCH for-rc 4/5] RDMA/bnxt_re: Fix error recovery sequence
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>, jgg@ziepe.ca, 
-	linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
-	Kashyap Desai <kashyap.desai@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000002b3600628cf02c4"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 2/2] net/smc: support ipv4 mapped ipv6 addr
+ client for smc-r v2
+To: Wenjia Zhang <wenjia@linux.ibm.com>, Halil Pasic <pasic@linux.ibm.com>
+Cc: jaka@linux.ibm.com, alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+ guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+ linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Dust Li <dust.li@linux.alibaba.com>
+References: <20241202125203.48821-1-guangguan.wang@linux.alibaba.com>
+ <20241202125203.48821-3-guangguan.wang@linux.alibaba.com>
+ <894d640f-d9f6-4851-adb8-779ff3678440@linux.ibm.com>
+ <20241205135833.0beafd61.pasic@linux.ibm.com>
+ <5ac2c5a7-3f12-48e5-83a9-ecd3867e6125@linux.alibaba.com>
+ <7de81edd-86f2-4cfd-95db-e273c3436eb6@linux.ibm.com>
+ <3710a042-cabe-4b6d-9caa-fd4d864b2fdc@linux.ibm.com>
+Content-Language: en-US
+From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+In-Reply-To: <3710a042-cabe-4b6d-9caa-fd4d864b2fdc@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
---00000000000002b3600628cf02c4
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 5, 2024 at 5:08=E2=80=AFPM Leon Romanovsky <leon@kernel.org> wr=
-ote:
->
-> On Thu, Dec 05, 2024 at 03:01:25PM +0530, Kalesh Anakkur Purayil wrote:
-> > On Thu, Dec 5, 2024 at 2:37=E2=80=AFPM Leon Romanovsky <leon@kernel.org=
-> wrote:
-> > >
-> > > On Wed, Dec 04, 2024 at 01:24:15PM +0530, Kalesh AP wrote:
-> > > > Fixed to return ENXIO from __send_message_basic_sanity()
-> > > > to indicate that device is in error state. In the case of
-> > > > ERR_DEVICE_DETACHED state, the driver should not post the
-> > > > commands to the firmware as it will time out eventually.
-> > > >
-> > > > Removed bnxt_re_modify_qp() call from bnxt_re_dev_stop()
-> > > > as it is a no-op.
-> > > >
-> > > > Fixes: cc5b9b48d447 ("RDMA/bnxt_re: Recover the device when FW erro=
-r is detected")
-> > > >
-> > >
-> > > Please don't add blank line here.
-> > Sure, my bad. I missed it. Thanks for pointing it out.
-> > >
-> > > > Reviewed-by: Kashyap Desai <kashyap.desai@broadcom.com>
-> > > > Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> > > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > > > ---
-> > > >  drivers/infiniband/hw/bnxt_re/main.c       | 8 +-------
-> > > >  drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 7 ++++---
-> > > >  drivers/infiniband/hw/bnxt_re/qplib_rcfw.h | 3 +++
-> > > >  3 files changed, 8 insertions(+), 10 deletions(-)
-> > > >
-> > > > diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infinib=
-and/hw/bnxt_re/main.c
-> > > > index b7af0d5ff3b6..c143f273b759 100644
-> > > > --- a/drivers/infiniband/hw/bnxt_re/main.c
-> > > > +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> > > > @@ -1715,11 +1715,8 @@ static bool bnxt_re_is_qp1_or_shadow_qp(stru=
-ct bnxt_re_dev *rdev,
-> > > >
-> > > >  static void bnxt_re_dev_stop(struct bnxt_re_dev *rdev)
-> > > >  {
-> > > > -     int mask =3D IB_QP_STATE;
-> > > > -     struct ib_qp_attr qp_attr;
-> > > >       struct bnxt_re_qp *qp;
-> > > >
-> > > > -     qp_attr.qp_state =3D IB_QPS_ERR;
-> > > >       mutex_lock(&rdev->qp_lock);
-> > > >       list_for_each_entry(qp, &rdev->qp_list, list) {
-> > > >               /* Modify the state of all QPs except QP1/Shadow QP *=
-/
-> > > > @@ -1727,12 +1724,9 @@ static void bnxt_re_dev_stop(struct bnxt_re_=
-dev *rdev)
-> > > >                       if (qp->qplib_qp.state !=3D
-> > > >                           CMDQ_MODIFY_QP_NEW_STATE_RESET &&
-> > > >                           qp->qplib_qp.state !=3D
-> > > > -                         CMDQ_MODIFY_QP_NEW_STATE_ERR) {
-> > > > +                         CMDQ_MODIFY_QP_NEW_STATE_ERR)
-> > > >                               bnxt_re_dispatch_event(&rdev->ibdev, =
-&qp->ib_qp,
-> > > >                                                      1, IB_EVENT_QP=
-_FATAL);
-> > > > -                             bnxt_re_modify_qp(&qp->ib_qp, &qp_att=
-r, mask,
-> > > > -                                               NULL);
-> > > > -                     }
-> > > >               }
-> > > >       }
-> > > >       mutex_unlock(&rdev->qp_lock);
-> > > > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/i=
-nfiniband/hw/bnxt_re/qplib_rcfw.c
-> > > > index 5e90ea232de8..c8e65169f58a 100644
-> > > > --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-> > > > +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-> > > > @@ -423,8 +423,9 @@ static int __send_message_basic_sanity(struct b=
-nxt_qplib_rcfw *rcfw,
-> > > >       cmdq =3D &rcfw->cmdq;
-> > > >
-> > > >       /* Prevent posting if f/w is not in a state to process */
-> > > > -     if (test_bit(ERR_DEVICE_DETACHED, &rcfw->cmdq.flags))
-> > > > -             return bnxt_qplib_map_rc(opcode);
-> > > > +     if (RCFW_NO_FW_ACCESS(rcfw))
-> > > > +             return -ENXIO;
-> > > > +
-> > > >       if (test_bit(FIRMWARE_STALL_DETECTED, &cmdq->flags))
-> > > >               return -ETIMEDOUT;
-> > > >
-> > > > @@ -493,7 +494,7 @@ static int __bnxt_qplib_rcfw_send_message(struc=
-t bnxt_qplib_rcfw *rcfw,
-> > > >
-> > > >       rc =3D __send_message_basic_sanity(rcfw, msg, opcode);
-> > > >       if (rc)
-> > > > -             return rc;
-> > > > +             return rc =3D=3D -ENXIO ? bnxt_qplib_map_rc(opcode) :=
- rc;
-> > > >
-> > > >       rc =3D __send_message(rcfw, msg, opcode);
-> > > >       if (rc)
-> > > > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/i=
-nfiniband/hw/bnxt_re/qplib_rcfw.h
-> > > > index 88814cb3aa74..4f7d800e35c3 100644
-> > > > --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-> > > > +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-> > > > @@ -129,6 +129,9 @@ static inline u32 bnxt_qplib_set_cmd_slots(stru=
-ct cmdq_base *req)
-> > > >
-> > > >  #define RCFW_MAX_COOKIE_VALUE                (BNXT_QPLIB_CMDQE_MAX=
-_CNT - 1)
-> > > >  #define RCFW_CMD_IS_BLOCKING         0x8000
-> > > > +#define RCFW_NO_FW_ACCESS(rcfw)                                   =
-           \
-> > > > +     (test_bit(ERR_DEVICE_DETACHED, &(rcfw)->cmdq.flags) ||       =
-   \
-> > > > +      pci_channel_offline((rcfw)->pdev))
-> > >
-> > > There is some disconnection between description and implementation.
-> > > ERR_DEVICE_DETACHED is set when device is suspended, at this stage al=
-l
-> > > FW commands should stop already and if they are not, bnxt_re has bugs
-> > > in cleanup path. It should flush/cancel/e.t.c and not randomly test s=
-ome
-> > > bit.
-> > Yes, the device is in reset state. All outstanding firmware commands
-> > are suspended. We do not want to post any new commands to firmware in
-> > the recovery teardown path. Any commands sent to firmware at this
-> > point will time out.
-> > To avoid that, before posting the command driver checks the state and
-> > returns early.
->
-> I understand that. Please reread my sentence "all FW commands should stop
-> already and if they are not, bnxt_re has bugs in cleanup path.", and answ=
-er
-> is how is it possible to get FW commands during restore.
-Hi Leon,
 
-Not sure if I also got your point correctly. Once the error recovery
-gets initiated, we
-unregister the ib device in the suspend path. During the ib_unregister_devi=
-ce,
-we get verb commands to destroy the QP, CQs etc. We want to prevent sending=
- the
-new commands to FW for all these operations. We also want to avoid sending
-any resource creation commands from the stack while the device is
-getting re-initialized
-This is a common check that prevents more commands from the stack down
-to Firmware.
+On 2024/12/7 03:49, Wenjia Zhang wrote:
+> 
+> 
+> On 06.12.24 11:51, Wenjia Zhang wrote:
+>>
+>>
+>> On 06.12.24 07:06, Guangguan Wang wrote:
+>>>
+>>>
+>>> On 2024/12/5 20:58, Halil Pasic wrote:
+>>>> On Thu, 5 Dec 2024 11:16:27 +0100
+>>>> Wenjia Zhang <wenjia@linux.ibm.com> wrote:
+>>>>
+>>>>>> --- a/net/smc/af_smc.c
+>>>>>> +++ b/net/smc/af_smc.c
+>>>>>> @@ -1116,7 +1116,12 @@ static int smc_find_proposal_devices(struct
+>>>>>> smc_sock *smc, ini->check_smcrv2 = true;
+>>>>>>        ini->smcrv2.saddr = smc->clcsock->sk->sk_rcv_saddr;
+>>>>>>        if (!(ini->smcr_version & SMC_V2) ||
+>>>>>> +#if IS_ENABLED(CONFIG_IPV6)
+>>>>>> +        (smc->clcsock->sk->sk_family != AF_INET &&
+>>>>>> +
+>>>>>> !ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)) ||
+>>>>> I think here you want to say !(smc->clcsock->sk->sk_family == AF_INET
+>>>>> && ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)), right? If
+>>>>> it is, the negativ form of the logical operation (a&&b) is (!a)||(!b),
+>>>>> i.e. here should be:
+>>>>> （smc->clcsock->sk->sk_family != AF_INET）||
+>>>>> （!ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)）
+>>>>
+>>>> Wenjia, I think you happen to confuse something here. The condition
+>>>> of this if statement is supposed to evaluate as true iff we don't want
+>>>> to propose SMCRv2 because the situation is such that SMCRv2 is not
+>>>> supported.
+>>>>
+>>>> We have a bunch of conditions we need to meet for SMCRv2 so
+>>>> logically we have (A && B && C && D). Now since the if is
+>>>> about when SMCRv2 is not supported we have a super structure
+>>>> that looks like !A || !B || !C || !D. With this patch, if
+>>>> CONFIG_IPV6 is not enabled, the sub-condition remains the same:
+>>>> if smc->clcsock->sk->sk_family is something else that AF_INET
+>>>> the we do not do SMCRv2!
+>>>>
+>>>> But when we do have CONFIG_IPV6 then we want to do SMCRv2 for
+>>>> AF_INET6 sockets too if the addresses used are actually
+>>>> v4 mapped addresses.
+>>>>
+>>>> Now this is where the cognitive dissonance starts on my end. I
+>>>> think the author assumes sk_family == AF_INET || sk_family == AF_INET6
+>>>> is a tautology in this context. That may be a reasonable thing to
+>>>> assume. Under that assumption
+>>>> sk_family != AF_INET &&    !ipv6_addr_v4mapped(addr) (shortened for
+>>>> convenience)
+>>>> becomes equivalent to
+>>>> sk_family == AF_INET6 && !ipv6_addr_v4mapped(addr)
+>>>> which means in words if the socket is an IPv6 sockeet and the addr is not
+>>>> a v4 mapped v6 address then we *can not* do SMCRv2. And the condition
+>>>> when we can is sk_family != AF_INET6 || ipv6_addr_v4mapped(addr) which
+>>>> is equivalen to sk_family == AF_INET || ipv6_addr_v4mapped(addr) under
+>>>> the aforementioned assumption.
+>>>
+>>> Hi, Halil
+>>>
+>>> Thank you for such a detailed derivation.
+>>>
+>>> Yes, here assume that sk_family == AF_INET || sk_family == AF_INET6. Indeed,
+>>> many codes in SMC have already made this assumption, for example,
+>>> static int __smc_create(struct net *net, struct socket *sock, int protocol,
+>>>             int kern, struct socket *clcsock)
+>>> {
+>>>     int family = (protocol == SMCPROTO_SMC6) ? PF_INET6 : PF_INET;
+>>>     ...
+>>> }
+>>> And I also believe it is reasonable.
+>>>
+>>> Before this patch, for SMCR client, only an IPV4 socket can do SMCRv2. This patch
+>>> introduce an IPV6 socket with v4 mapped v6 address for SMCRv2. It is equivalen
+>>> to sk_family == AF_INET || ipv6_addr_v4mapped(addr) as you described.
+>>>
+>>>>
+>>>> But if we assume sk_family == AF_INET || sk_family == AF_INET6 then
+>>>> the #else does not make any sense, because I guess with IPv6 not
+>>>> available AF_INET6 is not available ant thus the else is always
+>>>> guaranteed to evaluate to false under the assumption made.
+>>>>
+>>> You are right. The #else here does not make any sense. It's my mistake.
+>>>
+>>> The condition is easier to understand and read should be like this:
+>>>       if (!(ini->smcr_version & SMC_V2) ||
+>>> +#if IS_ENABLED(CONFIG_IPV6)
+>>> +        (smc->clcsock->sk->sk_family == AF_INET6 &&
+>>> +         !ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)) ||
+>>> +#endif
+>>>           !smc_clc_ueid_count() ||
+>>>           smc_find_rdma_device(smc, ini))
+>>>           ini->smcr_version &= ~SMC_V2;
+>>>
+>>
+>> sorry, I still don't agree on this version. You removed the condition
+>> "
+>> smc->clcsock->sk->sk_family != AF_INET ||
+>> "
+>> completely. What about the socket with neither AF_INET nor AF_INET6 family?
+>>
+>> Thanks,
+>> Wenjia
+>>
+> I think the main problem in the original version was that
+> (sk_family != AF_INET) is not equivalent to (sk_family == AF_INET6).
+> Since you already in the new version above used sk_family == AF_INET6,
+> the else condition could stay as it is. My suggestion:
+> 
+> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+> index 8e3093938cd2..5f205a41fc48 100644
+> --- a/net/smc/af_smc.c
+> +++ b/net/smc/af_smc.c
+> @@ -1116,7 +1116,12 @@ static int smc_find_proposal_devices(struct smc_sock *smc,
+>         ini->check_smcrv2 = true;
+>         ini->smcrv2.saddr = smc->clcsock->sk->sk_rcv_saddr;
+>         if (!(ini->smcr_version & SMC_V2) ||
+> +#if IS_ENABLED(CONFIG_IPV6)
+> +           (smc->clcsock->sk->sk_family == AF_INET6 &&
+> +            !ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)) ||
+> +#else
+>             smc->clcsock->sk->sk_family != AF_INET ||
+> +#endif
+>             !smc_clc_ueid_count() ||
+>             smc_find_rdma_device(smc, ini))
+>                 ini->smcr_version &= ~SMC_V2;
+> 
+> Thanks,
+> Wenjia
 
->
-> > >
-> > > In addition, pci_channel_offline() in driver which doesn't manage PCI
-> > > device looks strange to me. It should be part of bnxt core and not
-> > > related to IB.
-> > The bnxt_re driver also has a firmware communication channel where it
-> > writes to BAR to issue firmware commands. When the PCI channel is
-> > offline, any commands issued from the driver will time out eventually.
-> > To prevent that we added this extra check to detect that condition earl=
-y.
->
-> This micro optimization where you check in some random place for pci chan=
-nel
-> status is not correct.
-Will remove pci_channel_offline check and come up with some other
-mechanism to handle this case.
->
-> Thanks
->
-> >
-> > >
-> > > Thanks
-> > >
-> > > >
-> > > >  #define HWRM_VERSION_DEV_ATTR_MAX_DPI  0x1000A0000000DULL
-> > > >  /* HWRM version 1.10.3.18 */
-> > > > --
-> > > > 2.31.1
-> > > >
-> >
-> >
-> >
-> > --
-> > Regards,
-> > Kalesh A P
->
->
+The RFC7609 have confined SMC to socket applications using stream (i.e., TCP) sockets over IPv4 or IPv6.
+https://datatracker.ietf.org/doc/html/rfc7609#page-26:~:text=It%20is%20confined%20to%20socket%20applications%20using%20stream%0A%20%20%20(i.e.%2C%20TCP)%20sockets%20over%20IPv4%20or%20IPv6
 
---00000000000002b3600628cf02c4
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Both in the smc-tools and in smc kernel module, we can see codes that the sk_family is either AF_INET or AF_INET6.
+The codes here:
+https://raw.githubusercontent.com/ibm-s390-linux/smc-tools/refs/heads/main/smc-preload.c#:~:text=if%20((domain%20%3D%3D%20AF_INET%20%7C%7C%20domain%20%3D%3D%20AF_INET6)%20%26%26
+and
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/tree/net/smc/af_smc.c#:~:text=(sk%2D%3Esk_family%20!%3D%20AF_INET%20%26%26%20sk%2D%3Esk_family%20!%3D%20AF_INET6))
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/tree/net/smc/af_smc.c#:~:text=int%20family%20%3D%20(protocol%20%3D%3D%20SMCPROTO_SMC6)%20%3F%20PF_INET6%20%3A%20PF_INET%3B 
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/tree/net/smc/af_smc.c#:~:text=%2D%3Esin_family%20!%3D-,AF_INET,-%26%26%0A%09%20%20%20%20addr%2D%3E
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/tree/net/smc/af_smc.c#:~:text=%2D%3Esa_family%20!%3D-,AF_INET6,-)%0A%09%09goto%20out_err
+...
 
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFSPXOgExUOj
-UtHFSCmNlXgqTgq1v+Rz/oQSKMgTB/frMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTI0MTIwOTA0NDMzN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCYGzhQHTzEQWu+zr9/gijI1vcymMdO
-fBqbPDfLuOWeMXboppwldpl5hM139F3yvCNlRMDn9O0yyoPF5fetCd3xNplnW44O11Wv+AmUVCXC
-EJ3JwCYvoxBBwnVMN0gU5qr1w948dOf0uwVVD3u6ka0Zk9VKIZm9QNIecNsFMWGWT6cQPcBV2Z6e
-kWI9ioxQbeJRWayvIwK30GqQpNGrPhiLLMN5dVQkV95f9h2o2cwXhekQ228JSveaNtak1qTTpjqj
-U2wEOIthA8FdkqsjoRNI2Iw5l0SVGumw6MT1/eO/lfOiNamNMKFhuPnoXALuy3uHd4vLmRZZ6ukN
-Cf8E2esI
---00000000000002b3600628cf02c4--
+I wonder if SMC-R can support other address famliy rather than AF_INET AF_INET6 in design？
+And IBM has any plan to support other address family in future?  Wenjia, can you help explain
+this?
+
+If the answer is positive, the code should be like this:
+        if (!(ini->smcr_version & SMC_V2) ||
++#if IS_ENABLED(CONFIG_IPV6)
++           !(smc->clcsock->sk->sk_family == AF_INET || (smc->clcsock->sk->sk_family == AF_INET6 &&
++            ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr))) ||
++#else
+             smc->clcsock->sk->sk_family != AF_INET ||
++#endif
+             !smc_clc_ueid_count() ||
+             smc_find_rdma_device(smc, ini))
+                 ini->smcr_version &= ~SMC_V2;
+
+Otherwise, the code below is reasonable.
+      if (!(ini->smcr_version & SMC_V2) ||
++#if IS_ENABLED(CONFIG_IPV6)
++        (smc->clcsock->sk->sk_family == AF_INET6 &&
++         !ipv6_addr_v4mapped(&smc->clcsock->sk->sk_v6_rcv_saddr)) ||
++#endif
+          !smc_clc_ueid_count() ||
+          smc_find_rdma_device(smc, ini))
+          ini->smcr_version &= ~SMC_V2;
+
+Thanks,
+Guangguan Wang
 
