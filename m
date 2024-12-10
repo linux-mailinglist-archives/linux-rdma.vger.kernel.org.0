@@ -1,273 +1,191 @@
-Return-Path: <linux-rdma+bounces-6387-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6388-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93AF69EB1A2
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2024 14:05:41 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 284E09EB229
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2024 14:48:39 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8936281A10
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2024 13:05:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 653EB1887E03
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2024 13:48:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB5E1A76DE;
-	Tue, 10 Dec 2024 13:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B551A08A0;
+	Tue, 10 Dec 2024 13:48:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dWkW/IJ0"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Fda72QNP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2087.outbound.protection.outlook.com [40.107.220.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4C31A0B15;
-	Tue, 10 Dec 2024 13:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733835932; cv=none; b=giUJ7reU0qZX+AJ8R3bv/fAu1hjPd4tXn/+G/VQVyDYi/X/nsfWeOn6+7eF3Xd+gJpefUhnr5gX8qoxc3q8icJysu2h0G4MyN2RJl6vTVaAkVTiJzo1zwWNe2t0zHcEn38OGjCUW8HRS1KfOmW/V/C7xyNAQHityikNEA2zrqdA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733835932; c=relaxed/simple;
-	bh=ObIvv4aBHq42R6izYAIFAgUT2lfTA0MWQNtfEld2CnM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gHhwV91dnqQVIXZPAbTaodLBFNb1+w67iHz/0fv/IUJtbgs136GZb7SwK61L57x0C1SchOHjLWgbcjOEe8FjQjPCDnm1l4tiIhp2GeEI/F0muhjCv6/3CDbuT5pwZfCR/0KiqrSZUPzIE+coO0lylFymJcYTKtY7Yy39BRQq5jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zurich.ibm.com; spf=pass smtp.mailfrom=zurich.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dWkW/IJ0; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zurich.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zurich.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BA2SDY6032428;
-	Tue, 10 Dec 2024 13:05:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=Tmqk0ezcuIeoWDq63ykmLje//L3X4RDn77qpjUnro
-	VQ=; b=dWkW/IJ0sCNEJ1+7OwXVJr76H95F7ofKb/s2blW3AIW9TPjQYBlviZaxg
-	fENyUx3Nfd5jVXBn1W/X8nsLiv4+gqnfoj33FVkz14JB+n4VjHtyZDocphkXtwqj
-	NGjiYvcUAWB6a4IaDs5XdMCMzjwV8whFu8T6tbGaa7aLnsjJ7DYr77SNgtEMZupX
-	likRDK4Hj8AwuL4WzvKC2i4mhF2sDcCDLaw2NwUl9FjCgjjcxxQ07rZPIDJ+frhZ
-	AAAQuFRuXWYG/+yw2QYUIhcgRGSYeXq80W1045vEnolqZt0ruXuVzeFo1oiKRHo6
-	5hSQL1dvyyUJ3xW3ZoFRhbLB4tbFQ==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43cbsq6dkh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 10 Dec 2024 13:05:22 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4BAD5Mhl001327;
-	Tue, 10 Dec 2024 13:05:22 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43cbsq6dke-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 10 Dec 2024 13:05:22 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4BAAQDZb032727;
-	Tue, 10 Dec 2024 13:05:21 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 43d0psbwnh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 10 Dec 2024 13:05:21 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4BAD5JLv50790864
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 10 Dec 2024 13:05:20 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D061220043;
-	Tue, 10 Dec 2024 13:05:19 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9F63120040;
-	Tue, 10 Dec 2024 13:05:19 +0000 (GMT)
-Received: from rims.zurich.ibm.com (unknown [9.4.68.72])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 10 Dec 2024 13:05:19 +0000 (GMT)
-From: Bernard Metzler <bmt@zurich.ibm.com>
-To: linux-rdma@vger.kernel.org
-Cc: jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        zyjzyj2000@gmail.com, Bernard Metzler <bmt@zurich.ibm.com>,
-        syzbot+4b87489410b4efd181bf@syzkaller.appspotmail.com
-Subject: [PATCH] RDMA/siw: Remove direct link to net_device
-Date: Tue, 10 Dec 2024 14:03:51 +0100
-Message-Id: <20241210130351.406603-1-bmt@zurich.ibm.com>
-X-Mailer: git-send-email 2.38.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41811E515;
+	Tue, 10 Dec 2024 13:48:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1733838513; cv=fail; b=pumATHQk8BEGabVT4Dye6lf5kLkF5ED7fiG9Brih+IAVDvMzqPA4ys9tj9f5KdbXMjqD2YJeybuBvXk4uHFfE/7V0W0TWKRSHDLaGGY9RrSPzXhiCrqRmQbTYvBp1ngMAjMhr5CSXdmHNr/nQOftBzpMuaI8lgLxAw/O/AFTzmY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1733838513; c=relaxed/simple;
+	bh=RV1gQ6OZxqAcNvoA0YHlLN2lkt+7dZcF+AA38TlCotY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=cJtU+gZFMwe6B3kBy08Zkc4DcrRCiZ1E40dVlRcNQeiyCBvMBL5VKfd47Hvc01sqGfHC9VFlReiOnHT3+oS6AxVbXWZyfrwHPql832O9wkfEAuPyml99ewg4xzvrjicsKVQzlg11YZG9CJBF4WreRDUgSLC/tYQJ1Sh7mLm3GqM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Fda72QNP; arc=fail smtp.client-ip=40.107.220.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=IPBZy/qY1I2O5CZbmXGI+9fet0oCjdcnTVH1yw8UZbPwVajROwk+fYoYsUSaev3tpNAihlfPs4VCKN5XrdSjlEdRRzYjMPhRuK8O3Y3YfamlAnZsSOBuvqYCIY8YCqqElmsBCFqUCw8JZzBipxUgiL7y4jRG3yWT/4Rc1OgQsVsLfvZdx+vX/w1dotwYup8rvo7CrOtvNsyQIvAmE+K5YEwVNjgiSQp9PzDrlRgFZauHf1xdS96YKRWovQ/umuEmYymzByeZp/wdsWENGmM06hz+UJ8dVGh25mefkUuSYwpkBXvPXL0PlU+aTaYCAQ356ie3tkB2RpRvgei9Hy8fYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4uhoVustdB/9sB8ljf2ajbO8h13E4/YOJrGZSUEnhHQ=;
+ b=tuFSmuLzFxjy24V1PjYvQL5O0Waf0rBysofLNnIHZ3yjR4fy3TfHPocap8JDIQ5VSCsC6+oIXm3KioAU9W4CEC4JpHqdOnghtQufnHLNYhTuUAKJdzJYBveORL20zgnTk01oKj9muTfNityNAh6A2R/ybV1FeOLozNUsFkarA9QPQmEhjmy2MLlINnV06I47H3ySK4YNsEqGNQtEODI653cJDe7CQgKspMdOpVQRik5LxPPqE6xyITsmsOFcmWbkAneufRWZ51lGdL9uqwaQQICS0ORH5N9hiQEUpfa+sPYYWiCl0i/M4456Fclebn5tltI+6b6xGk9f6DBvjZNCmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4uhoVustdB/9sB8ljf2ajbO8h13E4/YOJrGZSUEnhHQ=;
+ b=Fda72QNPCW1tTsvNpWWJ3Nwne7BJRjQ802OsCGUlxDlaRqetFmB1Ase60VIloBFRGiVz25z2y1ccg7A23xFbD+0VwEvISux5Mv1HbCRCBz3SXmtDmEZPYxUZCrpAW0A8nJo3Xg7DM+qA6g7GK3JNLbAzIv3DCqoBRAr+BjU0ki0CXl3z6shGduyR+WQ5J5bq5QW2s5KMQxW58rtOMAzMvLopHR3GrpLDwu9bxtSki6jrIWop7vv1kqNBmG/ugGIrEbsIuq38QlIwK7HvlklFiFf/9xttsOKQ5DuP4f7PZRI7lTdzqnDs9EhhSPpAo/Bw0xqVN/f/3zcfIIgHIsMnJg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by LV3PR12MB9118.namprd12.prod.outlook.com (2603:10b6:408:1a1::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8230.18; Tue, 10 Dec
+ 2024 13:48:28 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%5]) with mapi id 15.20.8230.010; Tue, 10 Dec 2024
+ 13:48:28 +0000
+Date: Tue, 10 Dec 2024 09:48:27 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+	linux-kernel@vger.kernel.org, tangchengchang@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Support mmapping reset state to
+ userspace
+Message-ID: <20241210134827.GG2347147@nvidia.com>
+References: <20241014130731.1650279-1-huangjunxian6@hisilicon.com>
+ <20241209190125.GA2367762@nvidia.com>
+ <f046d3f8-a1c8-0174-8db9-24467c038557@hisilicon.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f046d3f8-a1c8-0174-8db9-24467c038557@hisilicon.com>
+X-ClientProxiedBy: MN2PR13CA0005.namprd13.prod.outlook.com
+ (2603:10b6:208:160::18) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: jGLhd_i-PGUraM-d4GchWu6iJHnGFpdE
-X-Proofpoint-GUID: yW7HGGi5IYCoqZzpE0Gni0e6AkiodKsD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=934 adultscore=0
- lowpriorityscore=0 clxscore=1011 phishscore=0 impostorscore=0
- suspectscore=0 spamscore=0 mlxscore=0 priorityscore=1501 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2412100097
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|LV3PR12MB9118:EE_
+X-MS-Office365-Filtering-Correlation-Id: e34c6f6c-4ec4-4115-e9ee-08dd192153c6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?vNdV74TSb/K3vcw10RhiuvoWzcRJUHkRYJCO6eLy5n6nLeJ9jV9ntR8S1aJI?=
+ =?us-ascii?Q?tHlf6XoT3klynvl7a3uTmsNenjBaM9dc3/7IieKiksXv2AaK5ZfiJ0mEyfOx?=
+ =?us-ascii?Q?N+9c+bRpqS9QSDIAgnw1UqTq6bOgGHyRjzkl6CoYfsVUnQqVuUb6vBSaYSgz?=
+ =?us-ascii?Q?UxXziOX3SvpauLQaTKXUu9Blq7vUpT1ZmXXY2gnE02qiHA5/57G+qIypioz0?=
+ =?us-ascii?Q?rVIca+E61PjMnO8dWgER/+Xc3eGLq5MukRCWC0E+2Lb8+cHO0NxYy3N4T/rD?=
+ =?us-ascii?Q?fRL8GV+IxdnmzVW2pLNTk6nGQoTW+17tZ5g/4uXZ1/8lY6Pz2hvUsVnxKgLF?=
+ =?us-ascii?Q?kI3dQPjKMv/2ykN5Eyzzy0aibQAfmi1icnZGPAtRBCGx8AlS+WbAy4vZ6Je9?=
+ =?us-ascii?Q?X0xjlqFz+RjcSKDnE1+zJvLrY4t1uxvbJVkFAyjMBunH2M7Ja1fhrx6Ey14E?=
+ =?us-ascii?Q?rJvB0jPMhY+zjhyF6Qm0Wu36hNRedYyzpOxK88DroHeHSkApNBUs6j2dL9pO?=
+ =?us-ascii?Q?T+tOPNdC9E/CW8YenTL21TK+By2sCFH75FD/ulz4A4jHDiAKaTdkoJLlFrZ5?=
+ =?us-ascii?Q?SqgK/15WO6lXvBlMWf0Drkk5/q13tVMY9/7uXX/QHLu/R7bRsbd9rj3gZsLn?=
+ =?us-ascii?Q?iImq2+em7VCSd3q5EmaCWPc9lu9gaj4rTwcKmHp89TRFcqAPnxKQ+PqHa8DC?=
+ =?us-ascii?Q?utg8d6HZ/KOheVq4wLb1EswVXVs3ThMWzSgharzwHHd+Ps+P7LpWUK2qDhdq?=
+ =?us-ascii?Q?hkV9i8Y71jKkmjqblseDZiqiC+b1s281vg5MmJXob04yL+xyJUOJZmJjKcc3?=
+ =?us-ascii?Q?SrefY7qsuEzcdikkJXC8QgYidnaTlyHXXfeYuhpPVG19RhX0akwv7Fe10tQ4?=
+ =?us-ascii?Q?aHjtawce2YuiTHGk489X9vkSMK05i/qIBYuI7KrDxp1+ZUFlHRMHsgPOrGHq?=
+ =?us-ascii?Q?buyW1Tera9vpZF2hyTzOPnxB4ciyEsAu31BuK1BHeYWw+JUavec6Zw03BlAP?=
+ =?us-ascii?Q?ky119a4WtDtWxG5YIbG3zDNwnSsFiHzDGOnEAjy1p7s5ECN2JgHom+AkLWuF?=
+ =?us-ascii?Q?PedMGneUlIeJl1J9o5cERF/ttRZAGH33LWcHLSzuN0IWXzRZbByyK/xa80Op?=
+ =?us-ascii?Q?wr2uZHBzd1MsDfzLWOv7VYHr7TlCZeO2vSLlGmZ4+3gL+Cn8/PLOq6fPlQud?=
+ =?us-ascii?Q?erpSkhfq/JWKYpqenmPNR+1PeQuU9d4A4rOrXUvGkdm0zDezhbSJ9OCYyFL4?=
+ =?us-ascii?Q?KsYFVrXg2oJTg2h22Sq35vMAkEXGJjpZI869OgYX32SFDQVgWCpty108AYOU?=
+ =?us-ascii?Q?2Ux1sDpIiFpCd2Qr8K7uWPhSzxx+kkC53eAkXU3lpmRADQ=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?F4HHCI6497oKSyfv0WO/O8mdBnKNlw/TzQ+VMhHQXwM35UoxEfPCzQ3bP7+y?=
+ =?us-ascii?Q?shLlNSpbuZJApN742YJrZ+ck45wrHXfOR7Pg4zzCXz/PRTYLdB1p5RH928Gi?=
+ =?us-ascii?Q?NBh8vvFljxpgGC+y3c+aTibvRFauGyy1wTy/X2Z/I++nPIde1OFMNzYNpkfy?=
+ =?us-ascii?Q?qeqDj73LDuq07wewBI+UkT3k+1pX2kdUiI7fEOmHqSAFkhq+ro79bNCx6hQ5?=
+ =?us-ascii?Q?ankHCaM3byhEomZVscrB8tofL2RJy5LBXg1a9Rs/etqFTLgCl2IucM3zfpOg?=
+ =?us-ascii?Q?LpttL/ll6asjMwrsUV417BuqGeZwuJtwXnwoO7OL2mSWQvxJkJe83HcvSDig?=
+ =?us-ascii?Q?v8t8XXy/Va9dw8ph9AcCLHisa/pNqhCdsF/hmL5AeYUtFmcuaJYVy/cLQXLR?=
+ =?us-ascii?Q?QGBWN+6lUB+PKRHPhHkfM2q/KtcJ57zdE9U/Ks2y0KyuZ+3ZkdGX7klZ9iBv?=
+ =?us-ascii?Q?Rl4oUcXo8VNHN/dgMWgU01C9a+LTIvxL9l9rv9a2B1v/kUOGFWIz1IuRNywV?=
+ =?us-ascii?Q?NPoeroA2qN9C83z8Tpd6w5YTcIOkbBEba7HRgjqFva1hixXDG82I6I6KSmIV?=
+ =?us-ascii?Q?Qh9geJxdcWgRnzbNUFnrGR+dXAvsO5sR8CHfY4Dzm3cj8gjIpBD5t7da7j9B?=
+ =?us-ascii?Q?r7luAD8K9DxqBsP1McIwF/J6bCvOAirZcyPpkVDXbORyNIYUg94xpT0dbOvR?=
+ =?us-ascii?Q?23+Q5hwPyRSgtaQURbf2KT261LwMWrZk1kTwTJnbaSegjaNz91b6ZpFzd55K?=
+ =?us-ascii?Q?2SCKLLvzBumHwURibCV7dgH790AKVIxid/zFkcVbQuiaZUi00h+VahN2DjZn?=
+ =?us-ascii?Q?H0dKdSTjPCuiRamHpTxCvmsERs+7Hhm11yMGDMLnjsmPlGimYqi9xmLpT1Gr?=
+ =?us-ascii?Q?rZbi4bgcK1vLtxFpNUGMOSlY48spsRBdzWfGVTVeKxZTAKKRtZcp8zvZG6wm?=
+ =?us-ascii?Q?UH2fr0RVmiOF5JV8jyGd3w+GKl2dxVH/C3+5kWMscNj7DQNSmkukD3a2a5Lu?=
+ =?us-ascii?Q?PCSQbobr2v5+03J0qLt6K4yDTmHjjTiyfoC2yzRnNneQ7LKIhPO8Nr8Oi2tA?=
+ =?us-ascii?Q?yg7SwM+PR8advab3WfB37P51wHxc37icwrF9J9KwOHBPZh/o7HsmxPRNmGDI?=
+ =?us-ascii?Q?pghegpcSzSO8G8EXNhE0QBQYOPV8oaZd8gag/Q7QhS8SC8Pcnq5AAjQOA1As?=
+ =?us-ascii?Q?/LhwS61xrOcr4bZiOgoD090lj/vM6kjnKRaHYUboZOWlieuBeDrxTTEZHw5j?=
+ =?us-ascii?Q?dUpm2JKeoy6oy87mgdyrgOj5j+4+aUtKF/9RM6Zr0FkPX/tyqVKwaK/IAaQT?=
+ =?us-ascii?Q?GeiwoxQWydkJALyJKZr6Z2UOAJL9W9omSyi/MzSir88kNSOIqO4x8aBjqJDe?=
+ =?us-ascii?Q?WB0fk3YvK/M+6Nti5kKMBLDzw8SDQsCfWQCygSQLbYaSiUn05Qx5IaEGasks?=
+ =?us-ascii?Q?4U9jrEcoUZU10phmlv6skjUYfpUv4BvAV58gVwt3eICNJRPet8a8mGbJMYLQ?=
+ =?us-ascii?Q?hFeNtYmkIzgLAvbxbnevjWakFCLjgZPf/RcEd/655/U2P2xt5qwmq0gKuu2n?=
+ =?us-ascii?Q?kHoDlZ9GuP+6hKtg0xQDluRM4PLEGEnVxoF2g4KY?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e34c6f6c-4ec4-4115-e9ee-08dd192153c6
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2024 13:48:28.7929
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jlBPMa7p9Kt/+D4QOhm+apxEj7tGaknskz81uQ7RNmy5EofNLTIyplMy73f6N6xn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9118
 
-Maintain needed network interface information locally, but
-remove a direct link to net_device which can become stale.
-Accessing a stale net_device link was causing a 'KASAN:
-slab-use-after-free' exception during siw_query_port()
-call.
+On Tue, Dec 10, 2024 at 02:24:16PM +0800, Junxian Huang wrote:
+> 
+> 
+> On 2024/12/10 3:01, Jason Gunthorpe wrote:
+> > On Mon, Oct 14, 2024 at 09:07:31PM +0800, Junxian Huang wrote:
+> >> From: Chengchang Tang <tangchengchang@huawei.com>
+> >>
+> >> Mmap reset state to notify userspace about HW reset. The mmaped flag
+> >> hw_ready will be initiated to a non-zero value. When HW is reset,
+> >> the mmap page will be zapped and userspace will get a zero value of
+> >> hw_ready.
+> > 
+> > This needs alot more explanation about *why* does userspace need this
+> > information and why is hns unique here.
+> > 
+> 
+> Our HW cannot flush WQEs by itself unless the driver posts a modify-qp-to-err
+> mailbox. But when the HW is reset, it'll stop handling mailbox too, so the HW
+> becomes unable to produce any more CQEs for the existing WQEs. This will break
+> some users' expectation that they should be able to poll CQEs as many as the
+> number of the posted WQEs in any cases.
 
-Fixes: bdcf26bf9b3a ("rdma/siw: network and RDMA core interface")
-Reported-by: syzbot+4b87489410b4efd181bf@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=4b87489410b4efd181bf
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
----
- drivers/infiniband/sw/siw/siw.h       | 11 +++++++----
- drivers/infiniband/sw/siw/siw_cm.c    |  4 ++--
- drivers/infiniband/sw/siw/siw_main.c  | 18 ++++++++++++------
- drivers/infiniband/sw/siw/siw_verbs.c | 11 ++++++-----
- 4 files changed, 27 insertions(+), 17 deletions(-)
+But your reset flow partially disassociates the device, when the
+userspace goes back to sleep, or rearms the CQ, it should get a hard
+fail and do a full cleanup without relying on flushing.
 
-diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-index 86d4d6a2170e..c8f75527b513 100644
---- a/drivers/infiniband/sw/siw/siw.h
-+++ b/drivers/infiniband/sw/siw/siw.h
-@@ -69,16 +69,19 @@ struct siw_pd {
- 
- struct siw_device {
- 	struct ib_device base_dev;
--	struct net_device *netdev;
- 	struct siw_dev_cap attrs;
- 
- 	u32 vendor_part_id;
-+	struct {
-+		int ifindex;
-+		enum ib_port_state state;
-+		enum ib_mtu mtu;
-+		enum ib_mtu max_mtu;
-+	} ifinfo;
-+
- 	int numa_node;
- 	char raw_gid[ETH_ALEN];
- 
--	/* physical port state (only one port per device) */
--	enum ib_port_state state;
--
- 	spinlock_t lock;
- 
- 	struct xarray qp_xa;
-diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-index 86323918a570..451b50d92f7f 100644
---- a/drivers/infiniband/sw/siw/siw_cm.c
-+++ b/drivers/infiniband/sw/siw/siw_cm.c
-@@ -1780,7 +1780,7 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
- 
- 		/* For wildcard addr, limit binding to current device only */
- 		if (ipv4_is_zeronet(laddr->sin_addr.s_addr))
--			s->sk->sk_bound_dev_if = sdev->netdev->ifindex;
-+			s->sk->sk_bound_dev_if = sdev->ifinfo.ifindex;
- 
- 		rv = s->ops->bind(s, (struct sockaddr *)laddr,
- 				  sizeof(struct sockaddr_in));
-@@ -1798,7 +1798,7 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
- 
- 		/* For wildcard addr, limit binding to current device only */
- 		if (ipv6_addr_any(&laddr->sin6_addr))
--			s->sk->sk_bound_dev_if = sdev->netdev->ifindex;
-+			s->sk->sk_bound_dev_if = sdev->ifinfo.ifindex;
- 
- 		rv = s->ops->bind(s, (struct sockaddr *)laddr,
- 				  sizeof(struct sockaddr_in6));
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index 17abef48abcd..4db10bdfb515 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -287,7 +287,6 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
- 		return NULL;
- 
- 	base_dev = &sdev->base_dev;
--	sdev->netdev = netdev;
- 
- 	if (netdev->addr_len) {
- 		memcpy(sdev->raw_gid, netdev->dev_addr,
-@@ -354,6 +353,10 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
- 	atomic_set(&sdev->num_mr, 0);
- 	atomic_set(&sdev->num_pd, 0);
- 
-+	sdev->ifinfo.max_mtu = ib_mtu_int_to_enum(netdev->max_mtu);
-+	sdev->ifinfo.mtu = ib_mtu_int_to_enum(READ_ONCE(netdev->mtu));
-+	sdev->ifinfo.ifindex = netdev->ifindex;
-+
- 	sdev->numa_node = dev_to_node(&netdev->dev);
- 	spin_lock_init(&sdev->lock);
- 
-@@ -381,12 +384,12 @@ static int siw_netdev_event(struct notifier_block *nb, unsigned long event,
- 
- 	switch (event) {
- 	case NETDEV_UP:
--		sdev->state = IB_PORT_ACTIVE;
-+		sdev->ifinfo.state = IB_PORT_ACTIVE;
- 		siw_port_event(sdev, 1, IB_EVENT_PORT_ACTIVE);
- 		break;
- 
- 	case NETDEV_DOWN:
--		sdev->state = IB_PORT_DOWN;
-+		sdev->ifinfo.state = IB_PORT_DOWN;
- 		siw_port_event(sdev, 1, IB_EVENT_PORT_ERR);
- 		break;
- 
-@@ -406,10 +409,13 @@ static int siw_netdev_event(struct notifier_block *nb, unsigned long event,
- 	case NETDEV_CHANGEADDR:
- 		siw_port_event(sdev, 1, IB_EVENT_LID_CHANGE);
- 		break;
-+
-+	case NETDEV_CHANGEMTU:
-+		sdev->ifinfo.mtu = ib_mtu_int_to_enum(READ_ONCE(netdev->mtu));
-+		break;
- 	/*
- 	 * Todo: Below netdev events are currently not handled.
- 	 */
--	case NETDEV_CHANGEMTU:
- 	case NETDEV_CHANGE:
- 		break;
- 
-@@ -444,9 +450,9 @@ static int siw_newlink(const char *basedev_name, struct net_device *netdev)
- 		dev_dbg(&netdev->dev, "siw: new device\n");
- 
- 		if (netif_running(netdev) && netif_carrier_ok(netdev))
--			sdev->state = IB_PORT_ACTIVE;
-+			sdev->ifinfo.state = IB_PORT_ACTIVE;
- 		else
--			sdev->state = IB_PORT_DOWN;
-+			sdev->ifinfo.state = IB_PORT_DOWN;
- 
- 		ib_mark_name_assigned_by_user(&sdev->base_dev);
- 		rv = siw_device_register(sdev, basedev_name);
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index 986666c19378..3ab9c5170637 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -178,14 +178,15 @@ int siw_query_port(struct ib_device *base_dev, u32 port,
- 
- 	rv = ib_get_eth_speed(base_dev, port, &attr->active_speed,
- 			 &attr->active_width);
-+
- 	attr->gid_tbl_len = 1;
- 	attr->max_msg_sz = -1;
--	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
--	attr->active_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
--	attr->phys_state = sdev->state == IB_PORT_ACTIVE ?
-+	attr->max_mtu = sdev->ifinfo.max_mtu;
-+	attr->active_mtu = sdev->ifinfo.mtu;
-+	attr->phys_state = sdev->ifinfo.state == IB_PORT_ACTIVE ?
- 		IB_PORT_PHYS_STATE_LINK_UP : IB_PORT_PHYS_STATE_DISABLED;
- 	attr->port_cap_flags = IB_PORT_CM_SUP | IB_PORT_DEVICE_MGMT_SUP;
--	attr->state = sdev->state;
-+	attr->state = sdev->ifinfo.state;
- 	/*
- 	 * All zero
- 	 *
-@@ -519,7 +520,7 @@ int siw_query_qp(struct ib_qp *base_qp, struct ib_qp_attr *qp_attr,
- 	qp_attr->cap.max_send_sge = qp->attrs.sq_max_sges;
- 	qp_attr->cap.max_recv_wr = qp->attrs.rq_size;
- 	qp_attr->cap.max_recv_sge = qp->attrs.rq_max_sges;
--	qp_attr->path_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
-+	qp_attr->path_mtu = sdev->ifinfo.mtu;
- 	qp_attr->max_rd_atomic = qp->attrs.irq_size;
- 	qp_attr->max_dest_rd_atomic = qp->attrs.orq_size;
- 
--- 
-2.38.1
+> We try to notify the reset state to userspace so that we can generate software
+> WCs for the existing WQEs in userspace instead of HW in reset state, which is
+> what this rdma-core PR does:
 
+That doesn't sound right at all. Device disassociation is a hard fail,
+we don't try to elegantly do things like generate completions. The
+device is dead, the queues are gone.
+
+Jason
 
