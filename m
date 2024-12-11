@@ -1,122 +1,83 @@
-Return-Path: <linux-rdma+bounces-6426-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6428-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EA299EC790
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 09:44:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCCC59EC8D4
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 10:20:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2472188C6AD
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 08:44:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A85AE188CF90
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 09:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FBB41DE3C3;
-	Wed, 11 Dec 2024 08:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E11C2336A1;
+	Wed, 11 Dec 2024 09:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ZYuC8lYb"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="mpKm2Rk3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA9C01DE4DD
-	for <linux-rdma@vger.kernel.org>; Wed, 11 Dec 2024 08:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE10A2336A4;
+	Wed, 11 Dec 2024 09:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733906658; cv=none; b=AOIrhfAmyYMKDOnI2PrLyJcfVNKtJGi7vQLBgcdOS7c/2PnFUGouNAcGYm7EWh9mH3MCXCZirrjSxhMbMQHgRCC3khRhbWc6glMIXfbLh9t505itLQAxO3+Gtg4j2jdUW2ad5dJBtLsEy+Vhg4d1gNW+065war/tfDlVZi5bxWQ=
+	t=1733908763; cv=none; b=LYLXqYoeAttqrL5pdJb2eMhBJ/Tty+qGtFb02VX8kSnZdLK19KRHTSraEjn1kohXSoTkUxiipJOhgcZ47IVui91zi2O60utT8GCcxU8uq6G08nbRbQ+qtHO2/uqNFnV7Ep5b8sEphOJF7sEA4/IVjrwcuWGyHS30ZGZyIDanR/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733906658; c=relaxed/simple;
-	bh=Ryy+XDb4+QBAxdNg+YTrQaIrLJTqHYQ+ec6iOPWqOoA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FCL3HNnBZmbU9PShN/R5FAEKdBF3L7saWhJ5oWBrzMQKObQiuCOSvUrtBKi71P3XyYt3bvaU6HKAhzBDX0dXAeUNPga+3+CpJkg4P986FE8igAu72SlD+ioGzPMwD/iolY3rPBgRZ+XY+ilJgeiQraDt9IRoPiYxrf4N7LE1T+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=ZYuC8lYb; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-725abf74334so5341768b3a.3
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Dec 2024 00:44:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1733906656; x=1734511456; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oOYZYdU3JWuoiavyQRrUsypvOvLtXEF8XXAnKXeMFSk=;
-        b=ZYuC8lYbJ8nOM9SEN8zIb/2brp3ZBGh7r6GYtu9V3bIBAyd9/93ig6xbrzUUApBNir
-         97fm7EEta8TMFpumDlMz+7ROdxTyHVct4B/rac9ceUrIptbsGoSBAIjzGJLJS19fm9Q/
-         D8obAvQNc8WeQO5WC1i7E23tOaPpDcLYfRq38=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733906656; x=1734511456;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oOYZYdU3JWuoiavyQRrUsypvOvLtXEF8XXAnKXeMFSk=;
-        b=bzfyz0BqZGVywontl5QKzq9F0iNdz9uODhSB/1PEyyzKuI2ttSzooQWnbLBKibAKB+
-         5wf+LU8VfzFhwGLTGqQcw+3o+KTm/E0R4VU7YhBTnty7qwNBPuGkfnPMIztCgfkrPBgD
-         xqZzOn43mCXdiBkkYAvREZ4+cMKT5ruSyAPh5YONPUrCiWes6whCo3nhb96P54ALz3CG
-         a+GzjJY0xUjw1GN8jGqnwPZgUv4F1ogTf6dYNR+IixkTwxl0DE3rEahIK8r7FuewPVNX
-         LMb6BLs897+ZL4VysuC9+j0/lHH620DpaVKwydHM/JiHkbKAjRJZmFMsxlnFVAr9MZZc
-         f5UQ==
-X-Gm-Message-State: AOJu0YzzcKA7JM4KwqRqP+AV0epEVGTpj161Q4cUWC2fSKElrAnMTjEy
-	JkXvaiVB2vOcThNio0IaXID5zHb/qM/eDTDUoBo4/AyZtgYEpJL8bextUdGVtw==
-X-Gm-Gg: ASbGnctdylI/6n2QKCZFo6pADHhgYoB6EEhZTdG04zN+hoCkAgsnMfKC72Vpo53pyks
-	5eSn5eGlIckqGtXrQcVSBP6LT7wiKqZfBfT+gdWyFIBDFIAs63iHzj/87W7Cm07PjICOLxhQVZd
-	Ak+aGIxBNtfUJYrYQ+XIkFMWgOIRuIjtYkREzgiL8b6N+1XZ2CdBkTfPiE+ddZjRhD12zmzYhmT
-	AjIkmh461I4WS6Y5oR41CTGgITP/Kq2Vu9/yOKhLKFUe958Ebqh//ukMsOz0eGSMIcuHw6gTMMq
-	Iu276/nuygwOSdusz51/plmLHbIAG98qEV0LRd36+88KX1nOSZ4gh9Vt
-X-Google-Smtp-Source: AGHT+IGRUbfLlDOnYmlfofgJGtYyR27Yk6k4nkntVf3cWG0h3zyIA4Mtq6Y/DnN5k3NFqYSK+WbUrA==
-X-Received: by 2002:a05:6a00:4645:b0:71d:eb7d:20d5 with SMTP id d2e1a72fcca58-728ed3cbe04mr4043354b3a.8.1733906655896;
-        Wed, 11 Dec 2024 00:44:15 -0800 (PST)
-Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7273b69ce95sm3653678b3a.66.2024.12.11.00.44.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Dec 2024 00:44:15 -0800 (PST)
-From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-To: leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com,
-	selvin.xavier@broadcom.com,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Preethi G <preethi.gurusiddalingeswaraswamy@broadcom.com>
-Subject: [PATCH for-rc 5/5] RDMA/bnxt_re: Fix reporting hw_ver in query_device
-Date: Wed, 11 Dec 2024 14:09:31 +0530
-Message-ID: <20241211083931.968831-6-kalesh-anakkur.purayil@broadcom.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20241211083931.968831-1-kalesh-anakkur.purayil@broadcom.com>
-References: <20241211083931.968831-1-kalesh-anakkur.purayil@broadcom.com>
+	s=arc-20240116; t=1733908763; c=relaxed/simple;
+	bh=5Zj9F6Cp4uvMjjvZ3FuxT+1lsAKj5je8ROGKo0mRbJI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SqasIWTMzx2J3A/lpTfdLjxdHaMI4r3Pxvis2cDUYOlhlJ16eddQFSm0xZdAoVBkVOtoyF0O6qjyZBpKB7nCoj18TuRw0bPdkQmDHQq2qgVIouzhudgnlEDmU7pt7T1xjJjKLgecCWPGqgB0LzykzxiJLJ80mdghsR1d7TjMglg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=mpKm2Rk3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05104C4CED2;
+	Wed, 11 Dec 2024 09:19:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1733908762;
+	bh=5Zj9F6Cp4uvMjjvZ3FuxT+1lsAKj5je8ROGKo0mRbJI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mpKm2Rk3FddeI8Ei4uiZbNP7W1JvxK1fjaXlSowmJSskMVf1tZL2SPV1FX+gKZ43s
+	 Td3tN+RR+0gxseyXWQYRmOzGJw91VjqZe2az5MyFaENi5MVyPbsCF7lqUeqMCSVDCx
+	 hr5qo4trOKn6qjN7jfEsS6DWi7iC2RGNmyX37hos=
+Date: Wed, 11 Dec 2024 10:18:46 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: jianqi.ren.cn@windriver.com
+Cc: cratiu@nvidia.com, dtatulea@nvidia.com, tariqt@nvidia.com,
+	pabeni@redhat.com, patches@lists.linux.dev, stable@vger.kernel.org,
+	saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, roid@nvidia.com,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6.1.y] net/mlx5e: Don't call cleanup on profile rollback
+ failure
+Message-ID: <2024121114-subsidize-tattered-dd8c@gregkh>
+References: <20241211100953.2069964-1-jianqi.ren.cn@windriver.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241211100953.2069964-1-jianqi.ren.cn@windriver.com>
 
-Driver currently populates subsystem_device id in the
-"hw_ver" field of ib_attr structure in query_device.
+On Wed, Dec 11, 2024 at 06:09:53PM +0800, jianqi.ren.cn@windriver.com wrote:
+> From: Cosmin Ratiu <cratiu@nvidia.com>
+> 
+> [ Upstream commit 4dbc1d1a9f39c3711ad2a40addca04d07d9ab5d0 ]
 
-Updated to populate PCI revision ID.
+Please note that we can not apply a commit to an older stable tree that
+is NOT in newer ones as you would obviously have a regression when
+moving to a newer kernel.
 
-Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-Reviewed-by: Preethi G <preethi.gurusiddalingeswaraswamy@broadcom.com>
-Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am guessing that you are being tasked with backporting CVE fixes to
+older stable kernels, which is great, but please work "down the release
+list" by starting with the newest one, and then moving to the older
+ones.  Otherwise we just can't take these and you are causing a lot of
+extra review/checking time on our side here to verify you are doing it
+all correctly :(
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index bcb7cfc63d09..e3d26bd6de05 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -199,7 +199,7 @@ int bnxt_re_query_device(struct ib_device *ibdev,
- 
- 	ib_attr->vendor_id = rdev->en_dev->pdev->vendor;
- 	ib_attr->vendor_part_id = rdev->en_dev->pdev->device;
--	ib_attr->hw_ver = rdev->en_dev->pdev->subsystem_device;
-+	ib_attr->hw_ver = rdev->en_dev->pdev->revision;
- 	ib_attr->max_qp = dev_attr->max_qp;
- 	ib_attr->max_qp_wr = dev_attr->max_qp_wqes;
- 	ib_attr->device_cap_flags =
--- 
-2.43.5
+thanks,
 
+greg k-h
 
