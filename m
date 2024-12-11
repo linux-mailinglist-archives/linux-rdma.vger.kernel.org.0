@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-6444-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6445-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 323C59ECD88
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 14:45:15 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 730BD188AFE9
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 13:45:03 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFD6C2368E1;
-	Wed, 11 Dec 2024 13:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="EknisLg5"
-X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2062.outbound.protection.outlook.com [40.107.237.62])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B749ECD86
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 14:45:09 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC8719F12A;
-	Wed, 11 Dec 2024 13:44:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.62
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C727282B17
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 13:45:08 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 779512368F3;
+	Wed, 11 Dec 2024 13:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="gYSS/Bfo"
+X-Original-To: linux-rdma@vger.kernel.org
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2071.outbound.protection.outlook.com [40.107.92.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F962336BD;
+	Wed, 11 Dec 2024 13:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.71
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733924664; cv=fail; b=bdwVEZ7IwjUbSqytdOW6z44giR57hZk25ASrrj5gHRZ/7nhIjW9H+212CU3rwVc0RVuuVNWevnLNagEwLeCf1oy296QuuLYup1gX9GcBEeRlu9gnTICAmc09jaebQXpCsTBBGs9tj66gSu9zsObYsq0RevtpBDkQ8qmTgSiCZAQ=
+	t=1733924675; cv=fail; b=DRIVNbpCaZ5/ZYqRR7qfD4S8N3DL9xa3LizNH2ZR2twDX3o7IA6i7E+Q1a8WEUDwhB4202lnNlDL3SIWsqglZmCaZfj7q8aSx5/0nYn3v8DU8cluMhivjflAerAfFPoH+uKZZoQJ58FeDzBpdkjcE3lcOGIGhafFHUH40BlPaNg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733924664; c=relaxed/simple;
-	bh=2LpWy9qn4uW5YI5WK39NwzFb5eQxxie9ms2nCar+biY=;
+	s=arc-20240116; t=1733924675; c=relaxed/simple;
+	bh=ps4aCLxSgG5gNBdJnaJL7F+ga9XiU0M6OIa9skgp9NA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gLzNHApOKbFd0fAWdmthfFqWvK6SdbeCppyzaDiRXv57U6NaQfw5bpwuoinf3g8C1AijCJlqb1U+0JSqbOVXJksHEQPsknwhuCmPbXncPsh+kkYnZNQyiMWsqVPw6idvDPoMTEIDWxhYfzrBDLt2tZH+ArzXFWJKqmyeMZGDXUw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=EknisLg5; arc=fail smtp.client-ip=40.107.237.62
+	 MIME-Version:Content-Type; b=NL9972OMIa+A710QAwdJmCGDLeez1kZQkt0Vh4HWgpJF7ZWUXTWfTOpTxCXj/Egn6TpT/Gai/gdyv4gE1IqfTVSThX599pd/0xI28O1WaHCiFTYsM8WY4+KymsEMMftzDiKVUrXQ+ZmyrSbk0696kd/JmG5yQW6iTIlmCSQxBPg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=gYSS/Bfo; arc=fail smtp.client-ip=40.107.92.71
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=CTaHVEJHwG99R5XcWDJYPjhaLwoJbS3fq0+atANSM/bNAJsde7i+QcIdBGK7z9QuzvXQzYu0crRZhskIUqTsO9xTEJ0Gb9MpkFRy4aNTESEAr8QwXKY1CPBA3hps060PHdUarNa3RswQt4TKmn43ihjdyKS8eTJlqeATHB7AafCtKMATylQ1M282/qlq1xSE8ndC6trJnmO5riP4witrKAdkfcLSDf0woo405DXDGPoKjKUObcAILMQVa3HwJdTrZ15OS1mx1uzMkIWIvKnuUMKoChSmJk5qmmZJtKwOe6X5kKmlSaI/60U/uaA721pKaB5tIgL90pMjlk8Vs4NI2A==
+ b=oD1Rv6AINRLMeyt6WdtvYDOj0+nLkMyJiEXPB8EV/+r7ELBQlANLrahBbM2BwigituYSHKId+5WSmuc2g120cHYvR7djwrWeixgo3jlO49GqT0SQogkyjiSDFdEB7KTKwPXie5062lIsAI82dTuc43nbSrataQMiHAABHP4/R/l/LvX6hn8xr6NfbRYABhgWdR5ZlVx7TsSOr777syBMzLP8d4wC5W2zlZpWzu83J9dlflI+k0ZtH9q9/2VdEq/FoJUjsVnWxr/DFXnoOGPUC7Bcivb8tHye/fd3iYQSq8BR+ZDC1W8BqX9nf4r9Qix0ZoGT3GOLbGcvkZ99SQqcpQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EO4tnkbD8WI62s1KECvHKqg44Q4JsEJDsXpIi9+BCV4=;
- b=rrv0d0f/DolHUzh5573hw8aN/25q4HKCWwOi2m6fauzqk/yDwBgB6dmS2Gn/y2ko8oZtdhr13SAT2oFXnDJCBY+yJ8iFZnbFQ9PerwxfsDfVWOjLfwZCkLYsjQtS/WkDQTsJt00kk9JZn/tpvnMR5YeihLP1StNWfBQ2arpvbA+/U6R8IJSKyozv8VLShWx/OyEvkNLEomTB7UawH4QlSVai6f1+gf+1D756uJyFM1wMDrP8+GW2Dpu7IgUiA3hikDKCdLLc342fG4ug1GbxEQqvKmKINTjztkI8KBsgVl02PVe0iYBEATMKlDUeM5PRopUJraI/dy8EwQPZJ/CkdA==
+ bh=sL6q/HkGem98gpiHQNeoIIMrYQlj61TLN/sCBIkgQek=;
+ b=fnkTWHcJcBIqMAZAgAmpH3aYvVK0AScvZm2YS/MVKFrsrh7mShlZMzQn0PZKEkAz3K1y3Y6+lEODKfJCMgqU6RpL9H+xuk29oP7yKAJD8UMb9gtdowgpY6HwX+gCxs3YOJi68x3TK2aSucuOa61iSxllWaxvTUXhWLNZ9+i2beOCjtr0WGEd4zG4cPWh13HIxaGT/87b9O5s+V38Xnbp7b4UQ0Y+23JCICd/1vVmZFu6aA8joB4htZCewSfBToN2rkOQNkCLp6OcNyOeGu0JGBbSPhQoei816UTCUXFIybUT6E1tEa1TlbIC/B8/dhR4zlTzZ76hwx9xOi1nUqv29w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -45,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EO4tnkbD8WI62s1KECvHKqg44Q4JsEJDsXpIi9+BCV4=;
- b=EknisLg58pPP15/8dvF/xMVlGKNLzgOdMVahRWa1DbYcAx+TKMJm8KumHB1VhJ3pCZraAsyprSGQeAASlgD4dHXEy++5vK+7nSUhz6HZBEDZurec5MFJyEc6NxS4Ao41ejlbE1G/4YheiMUwkOV/xsONA2rGF0N8NTQp3NMBcmltnQyQIMKJfldVlcUmwfXj//WebSIeVBWt+L3Ka2dJc3/v0lFyTrSt2MsZQmaSOOWz7pQmhoMA0BC+3xYAtC2fRRhHY4EIC/8o4uwfJmboGAOA8U5T+SIOYi2GPcaYAGJv00YI3FF99OOX+LFeAPTq6SncDqftrH4yOcCoYAfLiA==
-Received: from DS0PR17CA0017.namprd17.prod.outlook.com (2603:10b6:8:191::28)
- by DS0PR12MB6438.namprd12.prod.outlook.com (2603:10b6:8:ca::16) with
+ bh=sL6q/HkGem98gpiHQNeoIIMrYQlj61TLN/sCBIkgQek=;
+ b=gYSS/Bfolwrwkak3ZxH1vRX2hKdmrcVb8YsNW21dSDxXk08FO0caRQuJUCROTxWD/zCm1pVUhGzMnAknuCZbdEncS9viID6PgsE8hw2OGDyAc+2q3AwfhDbeR8LcLxJYKjApgGhRysweMIZhTy3aoyawlfrwqfLfz81d5Ce8KBDLt7oCrx9WEmYvs23PSYOXs0treFcSlQHIBG4wJJNCClbdvb2Fvm+p2Y3F9u3hqNuN0Vw1da/hrGrt4Tcs9SscytFNtUW4WfNWEdVRcXevLAbl7a5KVHz/g7W7o0fdXIYgVmyL2x8eZ2WO8fCM1ElovrAGTMI6hBllK1tbIlLoig==
+Received: from DS7P220CA0070.NAMP220.PROD.OUTLOOK.COM (2603:10b6:8:224::33) by
+ CH3PR12MB9023.namprd12.prod.outlook.com (2603:10b6:610:17b::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8230.18; Wed, 11 Dec
- 2024 13:44:18 +0000
-Received: from DS2PEPF00003443.namprd04.prod.outlook.com
- (2603:10b6:8:191:cafe::9f) by DS0PR17CA0017.outlook.office365.com
- (2603:10b6:8:191::28) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8230.18 via Frontend Transport; Wed,
- 11 Dec 2024 13:44:18 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8230.22; Wed, 11 Dec
+ 2024 13:44:24 +0000
+Received: from DS2PEPF00003442.namprd04.prod.outlook.com
+ (2603:10b6:8:224:cafe::65) by DS7P220CA0070.outlook.office365.com
+ (2603:10b6:8:224::33) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8230.15 via Frontend Transport; Wed,
+ 11 Dec 2024 13:44:24 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -64,31 +64,31 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.160 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.160) by
- DS2PEPF00003443.mail.protection.outlook.com (10.167.17.70) with Microsoft
+ DS2PEPF00003442.mail.protection.outlook.com (10.167.17.69) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8251.15 via Frontend Transport; Wed, 11 Dec 2024 13:44:17 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ 15.20.8251.15 via Frontend Transport; Wed, 11 Dec 2024 13:44:23 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
  (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 11 Dec
- 2024 05:44:03 -0800
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ 2024 05:44:07 -0800
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 11 Dec
- 2024 05:44:03 -0800
+ 2024 05:44:06 -0800
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.9)
  with Microsoft SMTP Server id 15.2.1544.4 via Frontend Transport; Wed, 11 Dec
- 2024 05:43:59 -0800
+ 2024 05:44:03 -0800
 From: Tariq Toukan <tariqt@nvidia.com>
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
  Lunn" <andrew+netdev@lunn.ch>, Leon Romanovsky <leonro@nvidia.com>
 CC: <netdev@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman
 	<gal@nvidia.com>, <linux-rdma@vger.kernel.org>, Yevgeny Kliteynik
-	<kliteyn@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Itamar Gozlan
-	<igozlan@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
-Subject: [PATCH net-next 07/12] net/mlx5: HWS, no need to expose mlx5hws_send_queues_open/close
-Date: Wed, 11 Dec 2024 15:42:18 +0200
-Message-ID: <20241211134223.389616-8-tariqt@nvidia.com>
+	<kliteyn@nvidia.com>, Itamar Gozlan <igozlan@nvidia.com>, Mark Bloch
+	<mbloch@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
+Subject: [PATCH net-next 08/12] net/mlx5: HWS, do not initialize native API queues
+Date: Wed, 11 Dec 2024 15:42:19 +0200
+Message-ID: <20241211134223.389616-9-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20241211134223.389616-1-tariqt@nvidia.com>
 References: <20241211134223.389616-1-tariqt@nvidia.com>
@@ -103,125 +103,224 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: AnonymousSubmission
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003443:EE_|DS0PR12MB6438:EE_
-X-MS-Office365-Filtering-Correlation-Id: e8d4e5e1-055a-4bae-e03f-08dd19e9e8a2
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003442:EE_|CH3PR12MB9023:EE_
+X-MS-Office365-Filtering-Correlation-Id: eeb5a238-7b12-4078-fa95-08dd19e9ec1a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|1800799024|376014|82310400026;
+	BCL:0;ARA:13230040|376014|1800799024|82310400026|36860700013;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?xIa6Vq1fANRglA9apXG2anJAnfit/6dI3WqvmAc3d7OUjg9SyIJtmae7c/A7?=
- =?us-ascii?Q?1RRJagVHRsoAoQM96lCWovkfKbYkEwOFEZexEYddU44Qqania2qMul75t7is?=
- =?us-ascii?Q?NsegMhZyUX5+S7b7moOM0KUU0eSMVbWAyo3aa8+3TawLeb+qaFl9+4yy2Ah7?=
- =?us-ascii?Q?yftVy5ZNIZxfKyaWO85OA425luAwRwpfAcAGStfn3bx1ZLVXzh4x6EJ9XrhS?=
- =?us-ascii?Q?b5pAeAmXaX4Dmem6wd3A8Pk/r7o4jSab5ehKlyBofX/VkHsEHM1dEtK6htvC?=
- =?us-ascii?Q?2g4GhUqYGu8sqkzZEFTxq/eyOfuUG1/tTZF7u/jvBp+LJD75WOiSRZMgVPj2?=
- =?us-ascii?Q?FCMVLUT5xKTpUtLHHgJqjKtY/spSuRfJ/9INczZI+CElz6rJlThOP57dNGe2?=
- =?us-ascii?Q?trZ1jFFm6K7DIowBcw4Fpk3Eaw4Ifw8xEqaqQWysAPImGU1Nl5mGhjQwPt0J?=
- =?us-ascii?Q?P53XVLb79Li0/gfrd30Q8cubphII9agVcD9Yv5G63FQWmkgQz8L+YVGmG+OS?=
- =?us-ascii?Q?NWQCcm9g48meNjK2qk46BciOL2qaiNUVipraumxe04Ya2a1O/1IFyyJCtvJA?=
- =?us-ascii?Q?pxgCL5XntkGXs8C/g0iOlinBoImVGC8tLRfuQW6ggup3a2EqOE+dWkRpwjvN?=
- =?us-ascii?Q?Sed1gvZWfsllLEciaIDyeWT4spJr5P6B9v5C5Rwo9wtJ+l/bv/O8LtuDr1Vo?=
- =?us-ascii?Q?4wdBn54cyu+yzC2BqOyRebUoSxnfRB0iPtDtRRGuXgsZn3AVjxJ5Hdp4mH6U?=
- =?us-ascii?Q?hB7k0RiIJ74c8Z5lL7XaQjeyk360f/ZnnH9IxI1NhecRhzPN4OReIeacL9A0?=
- =?us-ascii?Q?tJG+W1mKAmFKhkTioOXtr5lap76onvFpka18xzz1y+a5qTH24y0CehWxetmI?=
- =?us-ascii?Q?+6C1LWS010uWd+00wo93XKTlMbhvlGPlfptGAXDb/EL8zQ79Ge6miRHiP8TL?=
- =?us-ascii?Q?3p6f+JbkUnQW0Gd6bDBhpPmXAq1Efz/Ei7i3hcZU1wqmDbPgVlwUZLHn4QtI?=
- =?us-ascii?Q?TckP6FZuoVLr2ax/ItoHgX/Tx+9rpHIVZHoVKRPBZ7SsAjIt+0tJ7KVK5EOZ?=
- =?us-ascii?Q?BcK0lqKVZmUMBUxhadQuHLuXtc2jLRoPNllvbapIQQoSMxyLxc/kVq/oMhe5?=
- =?us-ascii?Q?8Ed+nkwayu46MHi8KtNf3T9otvUaQjZKIhEIiEnbB2YjfV92NZJujAMKYQye?=
- =?us-ascii?Q?BU1KVDYE/m7MG7gQtFd9uwwVKW1v+XDp3OpyrRegMnoolCBihngfp60ac8En?=
- =?us-ascii?Q?96K4mL4ymwk40gOCUWxw3ftH0Q5D/vtw46L2Ihb1agUQ6zLRYGFDZa97ASQf?=
- =?us-ascii?Q?0raaoIEAVSQMtzlI3xTXMVedfaKA9lrIdHPhP/6ZuvsAsqn9Sh+GYPUxGoxv?=
- =?us-ascii?Q?fFTP8Tie0l7O0FPDJG7MC196zhLyPxSiyrLcCKhHkUUTT0ux7wfaiCtzmcZ4?=
- =?us-ascii?Q?L+/GeAWklTAd2B3TRm02MtEtt/CMZQSE?=
+	=?us-ascii?Q?ttN0xuuFT7/gNhCmwXhHPStzG2u1vDybgjb/Y3moN8TAaUQsP7k0dzncyXTu?=
+ =?us-ascii?Q?CpNegqbywdrAjLdBazDGG0nKQXKGCoqbB+36jkqVOrOS/3dGQ8R1Pgy97Cgl?=
+ =?us-ascii?Q?tuDXMf+aO1UBm3rHdZh3irHSQg4c2DOuwUDpUVIojip9/JVqTeLcScKrguPe?=
+ =?us-ascii?Q?jDrveYZBB5p0pKbTqKZpTTAXudfRCljpVRqhkhriAv8ene6QKUUjy0fBEkGI?=
+ =?us-ascii?Q?yH1n43b8q+yLpCZqIAGGLhAhfteu5uQ7F9uavVlbZCKiXfNAMxP8hLFcswx4?=
+ =?us-ascii?Q?eyspGbLIGFE/JSP5ngOlATdi+erw7P10B8nnAm2pJHu3SXvMa/b7UElTK4Dl?=
+ =?us-ascii?Q?jIvqP0HYBN+5b6FXUKlthTD1GwmlUElXlJUCAxtDUiKpWtDL/+po4fpOw0Gx?=
+ =?us-ascii?Q?pIPeRLtxFX6aklpexKDPjbzRux1bP2HRkizhksx7vA4MldEzA/kS6FOVziqi?=
+ =?us-ascii?Q?ZREN1L5cAcC+uCW5WE6P8qJVJnwPe4KxuyRMUwQevnTThLL12XazLXvRklEW?=
+ =?us-ascii?Q?VkZlxwh6pKcNuhiQ7D+bQmncV5VZO11Ubv12f578KsPxt6DPkoAksR+S71nS?=
+ =?us-ascii?Q?ypQo43Bp+YQRFjUEmrsnbuM5Ybjq0jUHdHY4KDCdu/nJMwVaSMlSPMpdYq4S?=
+ =?us-ascii?Q?91IBF2TB9v+lmltUqlfy9m/r9sUA33NCCe5TL7aJiwSajCW4vWTXe9XnDOfu?=
+ =?us-ascii?Q?huHUzYFL1GB78nPu/9R4Vf/hinmlvM5Elv70VizU+A137scXWqh3iNonYwrs?=
+ =?us-ascii?Q?62cAdPO7QjrLQUh26r2kKkWBAEmyW8d+i7qMJFh5Vkd0bX+J12FqBMsumrOw?=
+ =?us-ascii?Q?bXNw+clDV8JiBq5NPpmP70ZrbYq1IrjMjOUho60zJiIVY24Cp97hRF5JfjLL?=
+ =?us-ascii?Q?TJLfT5BytcfA6i9pxrcCM3RINBOoHDGBzGLDriGF8RUnqikZJtM2OgHfJfKu?=
+ =?us-ascii?Q?k+zxIL/DSNUDNpAjWjv0W9o2BdEqgwZ8QMiMNGeU1cdUMbMxUfavDTXFgKXU?=
+ =?us-ascii?Q?/OR33O1CXGJC9aN7Ekrubiy5ijAYkYv1HTeJkc/HZbsKON1AKEAJm2PUME02?=
+ =?us-ascii?Q?Kb5TcCHGAcyHd9kNI1mvwUbIVG6EAyVSiwPFZ1TT5jo7NlDGbi7ysYK954Nn?=
+ =?us-ascii?Q?0i5TOJT0rPmCA7jjIlmzHakyoS0t+WQc43Vs2agO7NQmb7Cpiyt4lDnaMVwl?=
+ =?us-ascii?Q?2xPfCJg5rQ+r2IjbSU30K/XWGxh8cw78PnnRXtGXtIPJWLCyxlGWypFtMtOW?=
+ =?us-ascii?Q?GZeidB5EYifmdkTui+4OLV5dZtsYnc1oy/8N0rjiYF7OqjycEDVk8jXDI47v?=
+ =?us-ascii?Q?mWi4+tsNVb6TLGoJ8/UYeK84uRvzKumMMLspHhWffjw+d3v62Cj9jUoUWFaj?=
+ =?us-ascii?Q?fmRIupdSGyxp5FNUX0waz7bXeNa0T2H2DXBeAIuvX7IpI+zzssmiNhu9w6/E?=
+ =?us-ascii?Q?+o9Bsv7hFWqHYFrrgb9tO8P3tHUVwVZN?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(376014)(82310400026);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(1800799024)(82310400026)(36860700013);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2024 13:44:17.5978
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2024 13:44:23.4337
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8d4e5e1-055a-4bae-e03f-08dd19e9e8a2
+X-MS-Exchange-CrossTenant-Network-Message-Id: eeb5a238-7b12-4078-fa95-08dd19e9ec1a
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF00003443.namprd04.prod.outlook.com
+	DS2PEPF00003442.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6438
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9023
 
 From: Yevgeny Kliteynik <kliteyn@nvidia.com>
 
-No need to have mlx5hws_send_queues_open/close in header.
-Make them static and remove from header.
+HWS has two types of APIs:
+ - Native: fastest and slimmest, async API.
+   The user of this API is required to manage rule handles memory,
+   and to poll for completion for each rule.
+ - BWC: backward compatible API, similar semantics to SWS API.
+   This layer is implemented above native API and it does all
+   the work for the user, so that it is easy to switch between
+   SWS and HWS.
+
+Right now the existing users of HWS require only BWC API.
+Therefore, in order to not waste resources, this patch disables
+send queues allocation for native API.
+
+If in the future support for faster HWS rule insertion will be required
+(such as for Connection Tracking), native queues can be enabled.
 
 Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 Reviewed-by: Itamar Gozlan <igozlan@nvidia.com>
+Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- .../ethernet/mellanox/mlx5/core/steering/hws/send.c  | 12 ++++++------
- .../ethernet/mellanox/mlx5/core/steering/hws/send.h  |  6 ------
- 2 files changed, 6 insertions(+), 12 deletions(-)
+ .../mellanox/mlx5/core/steering/hws/bwc.h     |  6 ++-
+ .../mellanox/mlx5/core/steering/hws/context.c |  6 ++-
+ .../mellanox/mlx5/core/steering/hws/context.h |  6 +++
+ .../mellanox/mlx5/core/steering/hws/mlx5hws.h |  1 -
+ .../mellanox/mlx5/core/steering/hws/send.c    | 38 ++++++++++++++-----
+ 5 files changed, 43 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
-index 883b4ed30892..a93da4f71646 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
-@@ -896,15 +896,15 @@ static int mlx5hws_send_ring_open(struct mlx5hws_context *ctx,
- 	return err;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h
+index 0b745968e21e..3d4965213b01 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h
+@@ -60,9 +60,11 @@ void mlx5hws_bwc_rule_fill_attr(struct mlx5hws_bwc_matcher *bwc_matcher,
+ static inline u16 mlx5hws_bwc_queues(struct mlx5hws_context *ctx)
+ {
+ 	/* Besides the control queue, half of the queues are
+-	 * reguler HWS queues, and the other half are BWC queues.
++	 * regular HWS queues, and the other half are BWC queues.
+ 	 */
+-	return (ctx->queues - 1) / 2;
++	if (mlx5hws_context_bwc_supported(ctx))
++		return (ctx->queues - 1) / 2;
++	return 0;
  }
  
--void mlx5hws_send_queue_close(struct mlx5hws_send_engine *queue)
-+static void hws_send_queue_close(struct mlx5hws_send_engine *queue)
+ static inline u16 mlx5hws_bwc_get_queue_id(struct mlx5hws_context *ctx, u16 idx)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.c
+index fd48b05e91e0..4a8928f33bb9 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.c
+@@ -161,8 +161,10 @@ static int hws_context_init_hws(struct mlx5hws_context *ctx,
+ 	if (ret)
+ 		goto uninit_pd;
+ 
+-	if (attr->bwc)
+-		ctx->flags |= MLX5HWS_CONTEXT_FLAG_BWC_SUPPORT;
++	/* Context has support for backward compatible API,
++	 * and does not have support for native HWS API.
++	 */
++	ctx->flags |= MLX5HWS_CONTEXT_FLAG_BWC_SUPPORT;
+ 
+ 	ret = mlx5hws_send_queues_open(ctx, attr->queues, attr->queue_size);
+ 	if (ret)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.h
+index 47f5cc8de73f..1c9cc4fba083 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.h
+@@ -8,6 +8,7 @@ enum mlx5hws_context_flags {
+ 	MLX5HWS_CONTEXT_FLAG_HWS_SUPPORT = 1 << 0,
+ 	MLX5HWS_CONTEXT_FLAG_PRIVATE_PD = 1 << 1,
+ 	MLX5HWS_CONTEXT_FLAG_BWC_SUPPORT = 1 << 2,
++	MLX5HWS_CONTEXT_FLAG_NATIVE_SUPPORT = 1 << 3,
+ };
+ 
+ enum mlx5hws_context_shared_stc_type {
+@@ -58,6 +59,11 @@ static inline bool mlx5hws_context_bwc_supported(struct mlx5hws_context *ctx)
+ 	return ctx->flags & MLX5HWS_CONTEXT_FLAG_BWC_SUPPORT;
+ }
+ 
++static inline bool mlx5hws_context_native_supported(struct mlx5hws_context *ctx)
++{
++	return ctx->flags & MLX5HWS_CONTEXT_FLAG_NATIVE_SUPPORT;
++}
++
+ bool mlx5hws_context_cap_dynamic_reparse(struct mlx5hws_context *ctx);
+ 
+ u8 mlx5hws_context_get_reparse_mode(struct mlx5hws_context *ctx);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h
+index f39d636ff39a..5121951f2778 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h
+@@ -70,7 +70,6 @@ enum mlx5hws_send_queue_actions {
+ struct mlx5hws_context_attr {
+ 	u16 queues;
+ 	u16 queue_size;
+-	bool bwc; /* add support for backward compatible API*/
+ };
+ 
+ struct mlx5hws_table_attr {
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
+index a93da4f71646..e3d621f013f6 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
+@@ -898,6 +898,9 @@ static int mlx5hws_send_ring_open(struct mlx5hws_context *ctx,
+ 
+ static void hws_send_queue_close(struct mlx5hws_send_engine *queue)
  {
++	if (!queue->num_entries)
++		return; /* this queue wasn't initialized */
++
  	hws_send_ring_close(queue);
  	kfree(queue->completed.entries);
  }
- 
--int mlx5hws_send_queue_open(struct mlx5hws_context *ctx,
--			    struct mlx5hws_send_engine *queue,
--			    u16 queue_size)
-+static int hws_send_queue_open(struct mlx5hws_context *ctx,
-+			       struct mlx5hws_send_engine *queue,
-+			       u16 queue_size)
- {
- 	int err;
- 
-@@ -936,7 +936,7 @@ int mlx5hws_send_queue_open(struct mlx5hws_context *ctx,
- static void __hws_send_queues_close(struct mlx5hws_context *ctx, u16 queues)
- {
- 	while (queues--)
--		mlx5hws_send_queue_close(&ctx->send_queue[queues]);
-+		hws_send_queue_close(&ctx->send_queue[queues]);
+@@ -1000,12 +1003,33 @@ static int hws_bwc_send_queues_init(struct mlx5hws_context *ctx)
+ 	return -ENOMEM;
  }
  
- static void hws_send_queues_bwc_locks_destroy(struct mlx5hws_context *ctx)
-@@ -1022,7 +1022,7 @@ int mlx5hws_send_queues_open(struct mlx5hws_context *ctx,
- 	}
- 
- 	for (i = 0; i < ctx->queues; i++) {
--		err = mlx5hws_send_queue_open(ctx, &ctx->send_queue[i], queue_size);
++static int hws_send_queues_open(struct mlx5hws_context *ctx, u16 queue_size)
++{
++	int err = 0;
++	u32 i = 0;
++
++	/* If native API isn't supported, skip the unused native queues:
++	 * initialize BWC queues and control queue only.
++	 */
++	if (!mlx5hws_context_native_supported(ctx))
++		i = mlx5hws_bwc_get_queue_id(ctx, 0);
++
++	for (; i < ctx->queues; i++) {
 +		err = hws_send_queue_open(ctx, &ctx->send_queue[i], queue_size);
- 		if (err)
- 			goto close_send_queues;
- 	}
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.h
-index b50825d6dc53..f833092235c1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.h
-@@ -189,12 +189,6 @@ void mlx5hws_send_abort_new_dep_wqe(struct mlx5hws_send_engine *queue);
- 
- void mlx5hws_send_all_dep_wqe(struct mlx5hws_send_engine *queue);
- 
--void mlx5hws_send_queue_close(struct mlx5hws_send_engine *queue);
--
--int mlx5hws_send_queue_open(struct mlx5hws_context *ctx,
--			    struct mlx5hws_send_engine *queue,
--			    u16 queue_size);
--
- void mlx5hws_send_queues_close(struct mlx5hws_context *ctx);
- 
++		if (err) {
++			__hws_send_queues_close(ctx, i);
++			return err;
++		}
++	}
++
++	return 0;
++}
++
  int mlx5hws_send_queues_open(struct mlx5hws_context *ctx,
+ 			     u16 queues,
+ 			     u16 queue_size)
+ {
+ 	int err = 0;
+-	u32 i;
+ 
+ 	/* Open one extra queue for control path */
+ 	ctx->queues = queues + 1;
+@@ -1021,17 +1045,13 @@ int mlx5hws_send_queues_open(struct mlx5hws_context *ctx,
+ 		goto free_bwc_locks;
+ 	}
+ 
+-	for (i = 0; i < ctx->queues; i++) {
+-		err = hws_send_queue_open(ctx, &ctx->send_queue[i], queue_size);
+-		if (err)
+-			goto close_send_queues;
+-	}
++	err = hws_send_queues_open(ctx, queue_size);
++	if (err)
++		goto free_queues;
+ 
+ 	return 0;
+ 
+-close_send_queues:
+-	 __hws_send_queues_close(ctx, i);
+-
++free_queues:
+ 	kfree(ctx->send_queue);
+ 
+ free_bwc_locks:
 -- 
 2.44.0
 
