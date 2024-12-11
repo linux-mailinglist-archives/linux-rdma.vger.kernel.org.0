@@ -1,83 +1,82 @@
-Return-Path: <linux-rdma+bounces-6441-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6442-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2B559ECD81
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 14:44:42 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36AD49ECD84
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 14:44:55 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C4152829A2
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 13:44:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2897C162986
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 13:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFCCE2336A2;
-	Wed, 11 Dec 2024 13:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2BFD236923;
+	Wed, 11 Dec 2024 13:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="IefaxbJ3"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="bulrQ5Al"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2085.outbound.protection.outlook.com [40.107.92.85])
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2066.outbound.protection.outlook.com [40.107.100.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A9AA233687;
-	Wed, 11 Dec 2024 13:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.85
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1D7233689;
+	Wed, 11 Dec 2024 13:44:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.66
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733924657; cv=fail; b=PtXfE1ojjJ9BKe+Em2EBNB4aPtUcZmMDjgj/je8TX69YaFijp0VLlE/MZeUwbnzRmqqdxvIEatM4AKUnqGXEDmdruD72xPHdmpKvQ+qlIjyUP/r7S3RI1I59jWJMqwtAZyBugQMarwJ/478DZmIvSNLy6G6CLDpnlSV/XR8CfTE=
+	t=1733924658; cv=fail; b=AuCX9NNajYfIXh7XTA9ayGOkQ3xmfiWxMc6iDY0u8yXUq/v1Gnqi9+94BXq6vZH9ijt8wXiifjfpnccHlmKG5B+li7+znZqsuUWtF8s1+4w6kidsrljltTWlHMwaSQoZt1iykrh0z5yp3TJAdlW9ZIOM2+zKvhZgfBQmoBSmCME=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733924657; c=relaxed/simple;
-	bh=xbo/zkYV1TrR12u67xhMfRzOgrLIcOSQnTa27Rx3Fv4=;
+	s=arc-20240116; t=1733924658; c=relaxed/simple;
+	bh=AgFl2ZdpNwSQL41LhymUKQ07IQYrgKXswjCWquKviLg=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=K8yxE1jRL6Y7eUrL9ysRp65XWn3Gh3aPcaQ76xf9XRRZ+P4d3Yt9Q0JuwsWwVPSP1+1F7ItOBC5Emhy+SZpA8TsdnGG54a9zlEYPydOfeGwRMfZqkYDt0cFX8yr5kkGERZsXB8fN9A7tSKEufD9MwzyRKlR5LTuP3fw12CMDEew=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=IefaxbJ3; arc=fail smtp.client-ip=40.107.92.85
+	 MIME-Version:Content-Type; b=QB5G9Gv9PjDWLiEtjKI1elldR5yDB3X+zJ5bNtsLsarJLqtBhYBXRUEdIilIq29bCuXIr/fX4TPQJXc6Z+05gE+aF60SRv8KAw7/T4w95k9cBsStr2pPLuFoQ7OkUCR5alaWqHR2uMXzG8nZLNtrGqNMML3jxhf0xt0Val2WQrY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=bulrQ5Al; arc=fail smtp.client-ip=40.107.100.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=R16eo69RuwnasRhUPGY8MO7a30aW771WsLFa4dWI8Gq+ztzKxAltURWBYrQgIzOJPZv2A5uhWCPDygMJRl0EkfD15lTMsoh9KGVpuysW7rGXiDvyGrDZQ8XXRMJ/zAGCVpJo/1BqYKoJsKIa8jRhFNd4F5WPIZ3BMiFQeGeU5LoJiQyzOJdx/+I/xFNkefzBDEzK+6P7cHPXyxG/h89GvxDAMvToVCCAbNkRw7ojY4kr9k5UvMyN2i/imf0Rs+kOo/OaFK6ThZ9fZnrAlGNErFPUWcrt2EzO77gRv5ekgPEb6lXKJPUIdq7UjYq+Qi6dSfge47IRRkVtBte52dt85Q==
+ b=tl/Np9kzVk9u79O+Eg9lNEivToDTbFC2UhpUrq9WddRp8Nv4r7SAq40ozmyElfb1d7rJVr/Ppp4XbCahY+Hehv9l43rfT9u1csbSbT908BlJPNsW11nLdeBjzkuKkJUlRZZO6X4Hnup+8Ft5wJKwhInd5IltY7dYlGBEFa2PDoLmi81vSCFyztBdY1UGVBOOhXxB5b0gTaZv1Q202IX1pxu9nEkPvnDRwfuoL8KUTsuZbcZ29g7IlBII+znY0W4rm9i3gU049VT5Yxhwreg6MpIc2X6H/kl82QeW51Uo26MjEnuO09m1rdkXaDi/Z3sFVebD8zCxkz6vIQbggk0Xzw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=faCZ1LQxeNVTlG51YUHIEvtMw97EmViQwJTKmBtwaBU=;
- b=FzR6adTYrJwI8NU+sgxEAHV6qvRbB96v92gPWDDF6Wtb8/u63PaO/SmBFJvoVQ/2gIs3KSOVKgzELbIgUIYQGAiEdU7GMixldHMuKPpEogDz/yHsb6beqhy41lG170bgP0cW+oNnUTp9dP/tdA6d+SWrY3etWNfPOu4QYsZmqxJKIgUzBKpEDzplAPTZsNlt8OpdOTZFotjjJc+1ERJbK9THULz+Gki+MIT8qiEb+TSH1r+r2PTWcfO7HUPJ02YPGN1Mbgvr1oLb2ykerNxc9u6hPQiPE9mrhhtO4R17eskfh5Q/vXpPKNvtqm1bQvwLbmtjb7OlbU733c5dDD9Wgw==
+ bh=IbXJMMwHFYJ4TaeUKdaUIx5zd6lk1RrnyB7+/vfOvWY=;
+ b=ClaHLSfFbBWMjr+bITYdJ2TnF/8VwVdSzyLyKib0ADOAE5vdi/AeVpjZEcpeUoHBLCny1y7XEoeC82Fbp5JxDCn0yGBB/vLQ4+ifAHIkWVlG28whqsmwiEFl8AS2Hsanv2u7suMC2phfxZE8Tw9QDDMzYAdpvoxtDim51ohkxF7pfbmyIiEbue2Th0STm0eBiuc7C+Kzee/pf3RKXmETXGExgSIlPn/0IQRaVp+jy8kDT5adV/TgFJBDCL7iu4oVbzZDPYPVX0Hzdj9EseUcRtxqcbxloyOkoUxYUMxYqwRwoONXz0bO1+By7C1X7BCNSbCkidaGq7WtK0IKGH9FPA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=faCZ1LQxeNVTlG51YUHIEvtMw97EmViQwJTKmBtwaBU=;
- b=IefaxbJ3BAQSMmVpwiC3R+2nuDxI5NKPN7u6GfrMeByX3QSk7+fbJHaPvpxl+xIPU84hon0dinO6cEvHVOgfxEHQqvq1GSBFhlfE5KvKw8LRaD3X40/MpBl9ZcOfubUyYomeTieofE41uj7w93HbDWcxdOs6vEzNw5orEm9gTfEGKhOYLrAfGaQcPIn46BYbWfWeZujjkOEUrSTjWFXQnKXc+Bqf9Vckc/+PgsqMYBWeMbIT8kzTQVPnE4y5BjoXf65itnz5gGaqnDhUCUAdGXKByY5ofpNT35/WD279zko9Pi7mEx1P8ANf7GZ43a7s0x9PrEgC24UXx2cBnI/Iig==
-Received: from DM5PR07CA0079.namprd07.prod.outlook.com (2603:10b6:4:ad::44) by
- MW4PR12MB7119.namprd12.prod.outlook.com (2603:10b6:303:220::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8251.15; Wed, 11 Dec
- 2024 13:44:05 +0000
-Received: from DS2PEPF00003448.namprd04.prod.outlook.com
- (2603:10b6:4:ad:cafe::c9) by DM5PR07CA0079.outlook.office365.com
- (2603:10b6:4:ad::44) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8251.16 via Frontend Transport; Wed,
- 11 Dec 2024 13:44:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ bh=IbXJMMwHFYJ4TaeUKdaUIx5zd6lk1RrnyB7+/vfOvWY=;
+ b=bulrQ5AlNWHtzSld7nlwFo+iOQjIESy3eMWXoHQ+FvWoj8vI5qbGggwHiBbVvpoxthdic2eKsPyiqVa/VTMw6FRYpuOxQLV1PNeVJxcTjtud8kqfAaxfyYKJSvuEm4MtayIhjz8awyCRrGGQjaLCmJIn++1PavQgM1r2immT3NQNDTtkz2qBMl9cT+6unUHE4Ec9npD78rZMPK41ykmWTEFuMawIXiV4uWDZpGWFjOuX3CzOgHKvPzcWekxxTO2yYjNxPGh9oPZnByvYFEBe8RGSg58o3KyiUVLulOqq+MmBKXAt15haj1QRrpXvrdhO8CmiFCqvUe5qtFna65WcuQ==
+Received: from CY5P221CA0012.NAMP221.PROD.OUTLOOK.COM (2603:10b6:930:b::26) by
+ SJ0PR12MB8138.namprd12.prod.outlook.com (2603:10b6:a03:4e0::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8230.22; Wed, 11 Dec 2024 13:44:07 +0000
+Received: from CY4PEPF0000EE3C.namprd03.prod.outlook.com
+ (2603:10b6:930:b:cafe::be) by CY5P221CA0012.outlook.office365.com
+ (2603:10b6:930:b::26) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8251.14 via Frontend Transport; Wed,
+ 11 Dec 2024 13:44:07 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- DS2PEPF00003448.mail.protection.outlook.com (10.167.17.75) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000EE3C.mail.protection.outlook.com (10.167.242.13) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8251.15 via Frontend Transport; Wed, 11 Dec 2024 13:44:05 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.8251.15 via Frontend Transport; Wed, 11 Dec 2024 13:44:07 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 11 Dec
- 2024 05:43:52 -0800
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ 2024 05:43:56 -0800
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 11 Dec
- 2024 05:43:51 -0800
+ 2024 05:43:55 -0800
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.9)
  with Microsoft SMTP Server id 15.2.1544.4 via Frontend Transport; Wed, 11 Dec
- 2024 05:43:48 -0800
+ 2024 05:43:52 -0800
 From: Tariq Toukan <tariqt@nvidia.com>
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
@@ -86,9 +85,9 @@ CC: <netdev@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman
 	<gal@nvidia.com>, <linux-rdma@vger.kernel.org>, Moshe Shemesh
 	<moshe@nvidia.com>, Yevgeny Kliteynik <kliteyn@nvidia.com>, Mark Bloch
 	<mbloch@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
-Subject: [PATCH net-next 04/12] net/mlx5: fs, add counter object to flow destination
-Date: Wed, 11 Dec 2024 15:42:15 +0200
-Message-ID: <20241211134223.389616-5-tariqt@nvidia.com>
+Subject: [PATCH net-next 05/12] net/mlx5: fs, add mlx5_fs_pool API
+Date: Wed, 11 Dec 2024 15:42:16 +0200
+Message-ID: <20241211134223.389616-6-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20241211134223.389616-1-tariqt@nvidia.com>
 References: <20241211134223.389616-1-tariqt@nvidia.com>
@@ -103,626 +102,735 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: AnonymousSubmission
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003448:EE_|MW4PR12MB7119:EE_
-X-MS-Office365-Filtering-Correlation-Id: c4e1f7af-44dc-478b-6aa9-08dd19e9e168
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE3C:EE_|SJ0PR12MB8138:EE_
+X-MS-Office365-Filtering-Correlation-Id: 35b0f175-d0db-495d-1bd3-08dd19e9e27c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|376014|82310400026|1800799024|36860700013;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?+oVBnPowskvreVmH3I1QgLRI14vjV4fh5V0aDVT4MZDYyw2I6wD6oCNIUgMC?=
- =?us-ascii?Q?hbtcSeruEnnmAqwAi6sbHjC86iEz93IpgBOWEpTUv5QV1ZqZEft0GTrXwAq+?=
- =?us-ascii?Q?tOcV+3dsiIHXUy8VY8ITL+4udjaJ1nUETowIyxSx0IVFaJ0SVk3+1RsqVnQw?=
- =?us-ascii?Q?SVixcpy7VfMJ6io/XNTGk0XfJJ6hUKrHKR4/aupqPOsnEUJJJiDoqkDfaf87?=
- =?us-ascii?Q?b8Q8AFUuDcAMylZlzo3E1jHZch+OZj0KWAmAT+a3/jWf7yL/a55rDOcRhBv5?=
- =?us-ascii?Q?KYiiSuw7VS94Ef4ldzhM4dZr3SPFB/w1rzT9hvaT0E8I4q+U2Osjf11Brnbr?=
- =?us-ascii?Q?X6PiX68YQoVYnrIUqvRpBGe6xypSPU3m0gyN3Bpd/GBqFrjegKGVpCZC7ToP?=
- =?us-ascii?Q?bMp7/SMKQgjjZ6TX7QdbSMaW/movNpL5DWMLDPjvTHw1uI1yz2w75Y6UrWbt?=
- =?us-ascii?Q?4POZN857TIexZljXC0+WQfe7WlDzoi3QVKXE0AwK/oh32+0j4f+tRZ39bBaV?=
- =?us-ascii?Q?Go581QBBu4i6KDcB6WTlQ7g0zsCBUSTu2vjS0525S9mBf6k2nIoiSa8Z6c1B?=
- =?us-ascii?Q?kYbtsf0nJ2ILRh7ytFyYxyF2utX4UVZ7tILfrU0UnYVm019aqirMplxPvLSV?=
- =?us-ascii?Q?/yQv0/C4g++W9uaIZZ6Mg3qKl/OYBiA08oGgls4mRb1pMoKD0CEBBCJwl8Mw?=
- =?us-ascii?Q?0QpUpU3xgK38mWTduD+2CpxA89qL3ajdcEhZstYBSTXq7ZwtYCaKiE/n/h96?=
- =?us-ascii?Q?bFyWrzR7vT4DZDud3iuGxYQkUUnNb/LC588gajdyDJpaR7zH6e2Mq99V7WNB?=
- =?us-ascii?Q?KT7qmw1R+EV4Fj2Ydez9XPDyf9dXF0c09JvU13hru1PduA4giDsHdlYv0gCT?=
- =?us-ascii?Q?oXGv0wvSP/4sWKxAbcrX0nL2+hsOGCtrCLkOwzsbtQuXEDhL8raO7cot2tDR?=
- =?us-ascii?Q?ciZ50ZSo7A0ATXNeCLHCGRYsa3BDWv+1awPshPmAl9uufdv/x6QF7h/hF2GB?=
- =?us-ascii?Q?4HEz9/TxUYGKcWWM1Ua2gngxpDS76vK7aIRcUXZlo/7Te3Li4UUuf1WLRzt3?=
- =?us-ascii?Q?lJXBURo+a5BJQMg2A8jHOW4E+cFYQMLq2tzAxF7uPGRsz9UEhhPrj7AaPxjK?=
- =?us-ascii?Q?rd4RL0sT/MV9SxdOLM+kUefznSIUh2fItF1j22oRbJY37ggpaEkkEtVaZlK6?=
- =?us-ascii?Q?AzZtnDkJRAnL53wiwJ7IW5UFznocKcZ3L+Atm47knh403IT3bLJ7Yc+Fc12o?=
- =?us-ascii?Q?UwkRUBWdBdTagMMp1aWUa3JtgjVDJqqBD8Lf6CKMHb4VTwCJEqYP00ECTtDO?=
- =?us-ascii?Q?sRhtH4pHzclrjlIJ2eGRlR+NJVna33F6I+Kei+rcCzqYZGS5hoKE559oBuXT?=
- =?us-ascii?Q?EqyDCsaY/QpqLUmaiUotjx0iOp3dzMWqJwEksaI2KXxXcBCWMD1KZUMX6Vzh?=
- =?us-ascii?Q?G4JN80ey/2dllGbSTAP3cDOJ79zkzcOJ?=
+	=?us-ascii?Q?6C2fOOpBgif7xTa7E4gqlB9oU0f4Ihg+nPYYS/Fu2zk9Dce+Uaj/DdyVSDGj?=
+ =?us-ascii?Q?B6e7ABnaZAm8ZzmKtb84DFFRSU3HqpHEXUao456ZaldMGjluSvmv5rujucA1?=
+ =?us-ascii?Q?ScZITCsoXs4tJfVHdV5n2n+wo3KOMiO18NLzP8Na5a0kV5us1CgKS60LBO+I?=
+ =?us-ascii?Q?2PYNB1CoDj782EBnAfl06kxVyX1+3Xyqdqm/Z6X6uaQ+KHyuVeV1fU6xPVxL?=
+ =?us-ascii?Q?N1LqpiHdW7C67qBswutA3X+V/9o3PHc7+SApFtlpSvbGiqw1nkziEIFfXm3b?=
+ =?us-ascii?Q?2A4VQAUB+3fMuZ1k8pctBb0DTlYc/OE1Rr+7rrBQIhy8sTcVEC0fgJKEYgNL?=
+ =?us-ascii?Q?Wa4USC3GlCPBqJbl3M5sMlo2iEwEFnaXEs9RoOH8t/kTH6iMd30a8t/9Fysd?=
+ =?us-ascii?Q?yzlXdLvjKy+9vXuWDVRgRIb6qzrwipMJu9Au79StR7U5CClX1bePir7GjM1P?=
+ =?us-ascii?Q?EG4Hr/ppcyA5GuG5Yi4Ix4qJezXJWNSh1Dt4AbC/lYO3JvY42/lqxSMnvyPT?=
+ =?us-ascii?Q?fLmuv+ZFcjn+d+qXZBikvMMtvlu6LlUyJq1VAJ/aN++UwgZsFiH9YNH0owP7?=
+ =?us-ascii?Q?KwX/KizU6RjLKOaP5BtYB5kjxxVH9cWXVwaAZoMWyAKtAx831rkx2m8Aemfu?=
+ =?us-ascii?Q?lQEpFPq2pq7YL3QWBJ/e3T5wsU3JsQIpvf88Oe3FEGcnJuhv3LvjPO1paCtA?=
+ =?us-ascii?Q?TBTkdOayTPqVCjkBRDvFDUVY0zqV9dTLOkvkekz6CxY69gYzeYYXkAuzJVsn?=
+ =?us-ascii?Q?Neat4W5u4ws8BVQqsjJgb7bVDN7YUYjbaGJlQtH06DzzJZ5BKVILeNFVRTv7?=
+ =?us-ascii?Q?40Lj9Z0/Tvi3bhHwPSYezBjrZcBcT+G80eoqb/kU3XJVdf+JI+AphIhLrRO7?=
+ =?us-ascii?Q?ae5Ry7ap9mNrSJqwTDNiK7WC5FtfAOnppix/JRcEMICHewj+LwYB6wz7h/OB?=
+ =?us-ascii?Q?BIpG0pQrFG9xtwxaVYRprCIuzfc5MtnSZ66QYi4hElBgYTsJBLgsVF52I+Ie?=
+ =?us-ascii?Q?HdRNA8n9bKZmzK8twLyN8gJcsQsEpp1cB6/kYCSjWyx9vNPoGf8FJfa0KpyF?=
+ =?us-ascii?Q?AI0rh92CbvFdN5rMuSMHrQTLRlYEoRQgUhwGNHFusPn7/RiYjQmJkQtQw9Da?=
+ =?us-ascii?Q?2eEMHm9Xl5EUvFqKPNvqbLlg+4+EHi0KsQ/5eEvNAkmJg2C3qjdrcqmdsFss?=
+ =?us-ascii?Q?D89iOjt6yLc3A1WyxvY2e4X57du1xvsYpUBr/x7quxLodEDyqqre4OIqwZ2Q?=
+ =?us-ascii?Q?JtKRJjIwtdbVL5WCbdYSsw36ID9Y8yJGli2N5CAObltFskvP1wQ1c9kMuXQ5?=
+ =?us-ascii?Q?O9Qu4mrwwibfoGIAV+Za5EXwfyR19nVUGQVyrHjgcdJPCBoRJzhk+czXTmd3?=
+ =?us-ascii?Q?TnefCLWFLjw+N0OzJ5XvxSYtXubx9Mkma+kN6FjcxV61E9vw77+cvmYK3Rzz?=
+ =?us-ascii?Q?pOxWTnCCLK55m6h9M2Vo2aA5inMEsfY2?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(82310400026)(1800799024)(36860700013);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(82310400026)(1800799024)(36860700013);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2024 13:44:05.5175
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2024 13:44:07.2930
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4e1f7af-44dc-478b-6aa9-08dd19e9e168
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35b0f175-d0db-495d-1bd3-08dd19e9e27c
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF00003448.namprd04.prod.outlook.com
+	CY4PEPF0000EE3C.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7119
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB8138
 
 From: Moshe Shemesh <moshe@nvidia.com>
 
-Currently mlx5_flow_destination includes counter_id which is assigned in
-case we use flow counter on the flow steering rule. However, counter_id
-is not enough data in case of using HW Steering. Thus, have mlx5_fc
-object as part of mlx5_flow_destination instead of counter_id and assign
-it where needed.
-
-In case counter_id is received from user space, create a local counter
-object to represent it.
+Refactor fc_pool API to create generic fs_pool API, as HW steering has
+more flow steering elements which can take advantage of the same pool of
+bulks API. Change fs_counters code to use the fs_pool API.
 
 Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
 Reviewed-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
 Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/fs.c               | 37 ++++++++++----
- .../mellanox/mlx5/core/diag/fs_tracepoint.h   |  2 +-
- .../mellanox/mlx5/core/en_accel/ipsec_fs.c    | 20 ++++----
- .../net/ethernet/mellanox/mlx5/core/en_tc.c   |  2 +-
- .../mellanox/mlx5/core/esw/acl/egress_lgcy.c  |  2 +-
- .../mellanox/mlx5/core/esw/acl/ingress_lgcy.c |  2 +-
- .../ethernet/mellanox/mlx5/core/esw/bridge.c  | 20 ++++----
- .../mellanox/mlx5/core/eswitch_offloads.c     |  2 +-
- .../net/ethernet/mellanox/mlx5/core/fs_cmd.c  |  2 +-
- .../net/ethernet/mellanox/mlx5/core/fs_core.c |  1 +
- .../ethernet/mellanox/mlx5/core/fs_counters.c | 50 +++++++++++++++++++
- .../mellanox/mlx5/core/lib/macsec_fs.c        |  8 +--
- .../mellanox/mlx5/core/steering/sws/fs_dr.c   |  2 +-
- include/linux/mlx5/fs.h                       |  4 +-
- 14 files changed, 112 insertions(+), 42 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/Makefile  |   2 +-
+ .../ethernet/mellanox/mlx5/core/fs_counters.c | 294 +++++-------------
+ .../net/ethernet/mellanox/mlx5/core/fs_pool.c | 194 ++++++++++++
+ .../net/ethernet/mellanox/mlx5/core/fs_pool.h |  54 ++++
+ 4 files changed, 331 insertions(+), 213 deletions(-)
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/fs_pool.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/fs_pool.h
 
-diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
-index 520034acf73a..162814ae8cb4 100644
---- a/drivers/infiniband/hw/mlx5/fs.c
-+++ b/drivers/infiniband/hw/mlx5/fs.c
-@@ -943,7 +943,7 @@ int mlx5_ib_fs_add_op_fc(struct mlx5_ib_dev *dev, u32 port_num,
- 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
+index be3d0876c521..79fe09de0a9f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/Makefile
++++ b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
+@@ -17,7 +17,7 @@ mlx5_core-y :=	main.o cmd.o debugfs.o fw.o eq.o uar.o pagealloc.o \
+ 		fs_counters.o fs_ft_pool.o rl.o lag/debugfs.o lag/lag.o dev.o events.o wq.o lib/gid.o \
+ 		lib/devcom.o lib/pci_vsc.o lib/dm.o lib/fs_ttc.o diag/fs_tracepoint.o \
+ 		diag/fw_tracer.o diag/crdump.o devlink.o diag/rsc_dump.o diag/reporter_vnic.o \
+-		fw_reset.o qos.o lib/tout.o lib/aso.o wc.o
++		fw_reset.o qos.o lib/tout.o lib/aso.o wc.o fs_pool.o
  
- 	dst.type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	dst.counter_id = mlx5_fc_id(opfc->fc);
-+	dst.counter = opfc->fc;
- 
- 	flow_act.action =
- 		MLX5_FLOW_CONTEXT_ACTION_COUNT | MLX5_FLOW_CONTEXT_ACTION_ALLOW;
-@@ -1113,8 +1113,8 @@ static struct mlx5_ib_flow_handler *_create_flow_rule(struct mlx5_ib_dev *dev,
- 		handler->ibcounters = flow_act.counters;
- 		dest_arr[dest_num].type =
- 			MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--		dest_arr[dest_num].counter_id =
--			mlx5_fc_id(mcounters->hw_cntrs_hndl);
-+		dest_arr[dest_num].counter =
-+			mcounters->hw_cntrs_hndl;
- 		dest_num++;
- 	}
- 
-@@ -1603,7 +1603,7 @@ static bool raw_fs_is_multicast(struct mlx5_ib_flow_matcher *fs_matcher,
- static struct mlx5_ib_flow_handler *raw_fs_rule_add(
- 	struct mlx5_ib_dev *dev, struct mlx5_ib_flow_matcher *fs_matcher,
- 	struct mlx5_flow_context *flow_context, struct mlx5_flow_act *flow_act,
--	u32 counter_id, void *cmd_in, int inlen, int dest_id, int dest_type)
-+	struct mlx5_fc *counter, void *cmd_in, int inlen, int dest_id, int dest_type)
- {
- 	struct mlx5_flow_destination *dst;
- 	struct mlx5_ib_flow_prio *ft_prio;
-@@ -1652,8 +1652,12 @@ static struct mlx5_ib_flow_handler *raw_fs_rule_add(
- 	}
- 
- 	if (flow_act->action & MLX5_FLOW_CONTEXT_ACTION_COUNT) {
-+		if (WARN_ON(!counter)) {
-+			err = -EINVAL;
-+			goto unlock;
-+		}
- 		dst[dst_num].type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--		dst[dst_num].counter_id = counter_id;
-+		dst[dst_num].counter = counter;
- 		dst_num++;
- 	}
- 
-@@ -1878,7 +1882,8 @@ static int get_dests(struct uverbs_attr_bundle *attrs,
- 	return 0;
- }
- 
--static bool is_flow_counter(void *obj, u32 offset, u32 *counter_id)
-+static bool
-+is_flow_counter(void *obj, u32 offset, u32 *counter_id, u32 *fc_bulk_size)
- {
- 	struct devx_obj *devx_obj = obj;
- 	u16 opcode = MLX5_GET(general_obj_in_cmd_hdr, devx_obj->dinbox, opcode);
-@@ -1888,6 +1893,7 @@ static bool is_flow_counter(void *obj, u32 offset, u32 *counter_id)
- 		if (offset && offset >= devx_obj->flow_counter_bulk_size)
- 			return false;
- 
-+		*fc_bulk_size = devx_obj->flow_counter_bulk_size;
- 		*counter_id = MLX5_GET(dealloc_flow_counter_in,
- 				       devx_obj->dinbox,
- 				       flow_counter_id);
-@@ -1904,13 +1910,13 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
- {
- 	struct mlx5_flow_context flow_context = {.flow_tag =
- 		MLX5_FS_DEFAULT_FLOW_TAG};
--	u32 *offset_attr, offset = 0, counter_id = 0;
- 	int dest_id, dest_type = -1, inlen, len, ret, i;
- 	struct mlx5_ib_flow_handler *flow_handler;
- 	struct mlx5_ib_flow_matcher *fs_matcher;
- 	struct ib_uobject **arr_flow_actions;
- 	struct ib_uflow_resources *uflow_res;
- 	struct mlx5_flow_act flow_act = {};
-+	struct mlx5_fc *counter = NULL;
- 	struct ib_qp *qp = NULL;
- 	void *devx_obj, *cmd_in;
- 	struct ib_uobject *uobj;
-@@ -1937,6 +1943,7 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
- 	len = uverbs_attr_get_uobjs_arr(attrs,
- 		MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX, &arr_flow_actions);
- 	if (len) {
-+		u32 *offset_attr, fc_bulk_size, offset = 0, counter_id = 0;
- 		devx_obj = arr_flow_actions[0]->object;
- 
- 		if (uverbs_attr_is_valid(attrs,
-@@ -1956,8 +1963,11 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
- 			offset = *offset_attr;
- 		}
- 
--		if (!is_flow_counter(devx_obj, offset, &counter_id))
-+		if (!is_flow_counter(devx_obj, offset, &counter_id, &fc_bulk_size))
- 			return -EINVAL;
-+		counter = mlx5_fc_local_create(counter_id, offset, fc_bulk_size);
-+		if (IS_ERR(counter))
-+			return PTR_ERR(counter);
- 
- 		flow_act.action |= MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 	}
-@@ -1968,8 +1978,10 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
- 				    MLX5_IB_ATTR_CREATE_FLOW_MATCH_VALUE);
- 
- 	uflow_res = flow_resources_alloc(MLX5_IB_CREATE_FLOW_MAX_FLOW_ACTIONS);
--	if (!uflow_res)
--		return -ENOMEM;
-+	if (!uflow_res) {
-+		ret = -ENOMEM;
-+		goto destroy_counter;
-+	}
- 
- 	len = uverbs_attr_get_uobjs_arr(attrs,
- 		MLX5_IB_ATTR_CREATE_FLOW_ARR_FLOW_ACTIONS, &arr_flow_actions);
-@@ -1996,7 +2008,7 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
- 
- 	flow_handler =
- 		raw_fs_rule_add(dev, fs_matcher, &flow_context, &flow_act,
--				counter_id, cmd_in, inlen, dest_id, dest_type);
-+				counter, cmd_in, inlen, dest_id, dest_type);
- 	if (IS_ERR(flow_handler)) {
- 		ret = PTR_ERR(flow_handler);
- 		goto err_out;
-@@ -2007,6 +2019,9 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
- 	return 0;
- err_out:
- 	ib_uverbs_flow_resources_free(uflow_res);
-+destroy_counter:
-+	if (counter)
-+		mlx5_fc_local_destroy(counter);
- 	return ret;
- }
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fs_tracepoint.h b/drivers/net/ethernet/mellanox/mlx5/core/diag/fs_tracepoint.h
-index 9aed29fa4900..d6e736c1fb24 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fs_tracepoint.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fs_tracepoint.h
-@@ -292,7 +292,7 @@ TRACE_EVENT(mlx5_fs_add_rule,
- 			   if (rule->dest_attr.type &
- 			       MLX5_FLOW_DESTINATION_TYPE_COUNTER)
- 				__entry->counter_id =
--					rule->dest_attr.counter_id;
-+					mlx5_fc_id(rule->dest_attr.counter);
- 	    ),
- 	    TP_printk("rule=%p fte=%p index=%u sw_action=<%s> [dst] %s\n",
- 		      __entry->rule, __entry->fte, __entry->index,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
-index e51b03d4c717..687bd95d2c3e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
-@@ -194,7 +194,7 @@ static int rx_add_rule_drop_auth_trailer(struct mlx5e_ipsec_sa_entry *sa_entry,
- 	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_DROP | MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 	flow_act.flags = FLOW_ACT_NO_APPEND;
- 	dest.type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	dest.counter_id = mlx5_fc_id(flow_counter);
-+	dest.counter = flow_counter;
- 	if (rx == ipsec->rx_esw)
- 		spec->flow_context.flow_source = MLX5_FLOW_CONTEXT_FLOW_SOURCE_UPLINK;
- 
-@@ -223,7 +223,7 @@ static int rx_add_rule_drop_auth_trailer(struct mlx5e_ipsec_sa_entry *sa_entry,
- 	}
- 	sa_entry->ipsec_rule.trailer.fc = flow_counter;
- 
--	dest.counter_id = mlx5_fc_id(flow_counter);
-+	dest.counter = flow_counter;
- 	MLX5_SET(fte_match_param, spec->match_value, misc_parameters_2.ipsec_syndrome, 2);
- 	rule = mlx5_add_flow_rules(ft, spec, &flow_act, &dest, 1);
- 	if (IS_ERR(rule)) {
-@@ -275,7 +275,7 @@ static int rx_add_rule_drop_replay(struct mlx5e_ipsec_sa_entry *sa_entry, struct
- 	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_DROP | MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 	flow_act.flags = FLOW_ACT_NO_APPEND;
- 	dest.type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	dest.counter_id = mlx5_fc_id(flow_counter);
-+	dest.counter = flow_counter;
- 	if (rx == ipsec->rx_esw)
- 		spec->flow_context.flow_source = MLX5_FLOW_CONTEXT_FLOW_SOURCE_UPLINK;
- 
-@@ -348,7 +348,7 @@ static int ipsec_rx_status_drop_all_create(struct mlx5e_ipsec *ipsec,
- 
- 	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_DROP | MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 	dest.type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	dest.counter_id = mlx5_fc_id(flow_counter);
-+	dest.counter = flow_counter;
- 	if (rx == ipsec->rx_esw)
- 		spec->flow_context.flow_source = MLX5_FLOW_CONTEXT_FLOW_SOURCE_UPLINK;
- 	rule = mlx5_add_flow_rules(ft, spec, &flow_act, &dest, 1);
-@@ -686,7 +686,7 @@ static int rx_create(struct mlx5_core_dev *mdev, struct mlx5e_ipsec *ipsec,
- 	rx->ft.status = ft;
- 
- 	dest[1].type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	dest[1].counter_id = mlx5_fc_id(rx->fc->cnt);
-+	dest[1].counter = rx->fc->cnt;
- 	err = mlx5_ipsec_rx_status_create(ipsec, rx, dest);
- 	if (err)
- 		goto err_add;
-@@ -873,7 +873,7 @@ static int ipsec_counter_rule_tx(struct mlx5_core_dev *mdev, struct mlx5e_ipsec_
- 	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_ALLOW |
- 			  MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 	dest.type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	dest.counter_id = mlx5_fc_id(tx->fc->cnt);
-+	dest.counter = tx->fc->cnt;
- 	fte = mlx5_add_flow_rules(tx->ft.status, spec, &flow_act, &dest, 1);
- 	if (IS_ERR(fte)) {
- 		err = PTR_ERR(fte);
-@@ -1649,7 +1649,7 @@ static int rx_add_rule(struct mlx5e_ipsec_sa_entry *sa_entry)
- 	dest[0].type = MLX5_FLOW_DESTINATION_TYPE_FLOW_TABLE;
- 	dest[0].ft = rx->ft.status;
- 	dest[1].type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	dest[1].counter_id = mlx5_fc_id(counter);
-+	dest[1].counter = counter;
- 	rule = mlx5_add_flow_rules(rx->ft.sa, spec, &flow_act, dest, 2);
- 	if (IS_ERR(rule)) {
- 		err = PTR_ERR(rule);
-@@ -1762,7 +1762,7 @@ static int tx_add_rule(struct mlx5e_ipsec_sa_entry *sa_entry)
- 	dest[0].ft = tx->ft.status;
- 	dest[0].type = MLX5_FLOW_DESTINATION_TYPE_FLOW_TABLE;
- 	dest[1].type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	dest[1].counter_id = mlx5_fc_id(counter);
-+	dest[1].counter = counter;
- 	rule = mlx5_add_flow_rules(tx->ft.sa, spec, &flow_act, dest, 2);
- 	if (IS_ERR(rule)) {
- 		err = PTR_ERR(rule);
-@@ -1835,7 +1835,7 @@ static int tx_add_policy(struct mlx5e_ipsec_pol_entry *pol_entry)
- 		flow_act.action |= MLX5_FLOW_CONTEXT_ACTION_DROP |
- 				   MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 		dest[dstn].type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--		dest[dstn].counter_id = mlx5_fc_id(tx->fc->drop);
-+		dest[dstn].counter = tx->fc->drop;
- 		dstn++;
- 		break;
- 	default:
-@@ -1913,7 +1913,7 @@ static int rx_add_policy(struct mlx5e_ipsec_pol_entry *pol_entry)
- 	case XFRM_POLICY_BLOCK:
- 		flow_act.action |= MLX5_FLOW_CONTEXT_ACTION_DROP | MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 		dest[dstn].type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--		dest[dstn].counter_id = mlx5_fc_id(rx->fc->drop);
-+		dest[dstn].counter = rx->fc->drop;
- 		dstn++;
- 		break;
- 	default:
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index 6b3b1afe8312..9ba99609999f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -1282,7 +1282,7 @@ mlx5e_add_offloaded_nic_rule(struct mlx5e_priv *priv,
- 
- 	if (flow_act.action & MLX5_FLOW_CONTEXT_ACTION_COUNT) {
- 		dest[dest_ix].type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--		dest[dest_ix].counter_id = mlx5_fc_id(attr->counter);
-+		dest[dest_ix].counter = attr->counter;
- 		dest_ix++;
- 	}
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c
-index 6b4c9ffad95b..7dd1dc3f77c7 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/egress_lgcy.c
-@@ -135,7 +135,7 @@ int esw_acl_egress_lgcy_setup(struct mlx5_eswitch *esw,
- 	if (drop_counter) {
- 		flow_act.action |= MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 		drop_ctr_dst.type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--		drop_ctr_dst.counter_id = mlx5_fc_id(drop_counter);
-+		drop_ctr_dst.counter = drop_counter;
- 		dst = &drop_ctr_dst;
- 		dest_num++;
- 	}
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
-index 093ed86a0acd..1c37098e09ea 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_lgcy.c
-@@ -260,7 +260,7 @@ int esw_acl_ingress_lgcy_setup(struct mlx5_eswitch *esw,
- 	if (counter) {
- 		flow_act.action |= MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 		drop_ctr_dst.type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--		drop_ctr_dst.counter_id = mlx5_fc_id(counter);
-+		drop_ctr_dst.counter = counter;
- 		dst = &drop_ctr_dst;
- 		dest_num++;
- 	}
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
-index c5ea1d1d2b03..5f647358a05c 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
-@@ -570,7 +570,8 @@ mlx5_esw_bridge_egress_table_cleanup(struct mlx5_esw_bridge *bridge)
- 
- static struct mlx5_flow_handle *
- mlx5_esw_bridge_ingress_flow_with_esw_create(u16 vport_num, const unsigned char *addr,
--					     struct mlx5_esw_bridge_vlan *vlan, u32 counter_id,
-+					     struct mlx5_esw_bridge_vlan *vlan,
-+					     struct mlx5_fc *counter,
- 					     struct mlx5_esw_bridge *bridge,
- 					     struct mlx5_eswitch *esw)
- {
-@@ -628,7 +629,7 @@ mlx5_esw_bridge_ingress_flow_with_esw_create(u16 vport_num, const unsigned char
- 	dests[0].type = MLX5_FLOW_DESTINATION_TYPE_FLOW_TABLE;
- 	dests[0].ft = bridge->egress_ft;
- 	dests[1].type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	dests[1].counter_id = counter_id;
-+	dests[1].counter = counter;
- 
- 	handle = mlx5_add_flow_rules(br_offloads->ingress_ft, rule_spec, &flow_act, dests,
- 				     ARRAY_SIZE(dests));
-@@ -639,17 +640,19 @@ mlx5_esw_bridge_ingress_flow_with_esw_create(u16 vport_num, const unsigned char
- 
- static struct mlx5_flow_handle *
- mlx5_esw_bridge_ingress_flow_create(u16 vport_num, const unsigned char *addr,
--				    struct mlx5_esw_bridge_vlan *vlan, u32 counter_id,
-+				    struct mlx5_esw_bridge_vlan *vlan,
-+				    struct mlx5_fc *counter,
- 				    struct mlx5_esw_bridge *bridge)
- {
--	return mlx5_esw_bridge_ingress_flow_with_esw_create(vport_num, addr, vlan, counter_id,
-+	return mlx5_esw_bridge_ingress_flow_with_esw_create(vport_num, addr, vlan, counter,
- 							    bridge, bridge->br_offloads->esw);
- }
- 
- static struct mlx5_flow_handle *
- mlx5_esw_bridge_ingress_flow_peer_create(u16 vport_num, u16 esw_owner_vhca_id,
- 					 const unsigned char *addr,
--					 struct mlx5_esw_bridge_vlan *vlan, u32 counter_id,
-+					 struct mlx5_esw_bridge_vlan *vlan,
-+					 struct mlx5_fc *counter,
- 					 struct mlx5_esw_bridge *bridge)
- {
- 	struct mlx5_devcom_comp_dev *devcom = bridge->br_offloads->esw->devcom, *pos;
-@@ -671,7 +674,7 @@ mlx5_esw_bridge_ingress_flow_peer_create(u16 vport_num, u16 esw_owner_vhca_id,
- 		goto out;
- 	}
- 
--	handle = mlx5_esw_bridge_ingress_flow_with_esw_create(vport_num, addr, vlan, counter_id,
-+	handle = mlx5_esw_bridge_ingress_flow_with_esw_create(vport_num, addr, vlan, counter,
- 							      bridge, peer_esw);
- 
- out:
-@@ -1385,10 +1388,9 @@ mlx5_esw_bridge_fdb_entry_init(struct net_device *dev, u16 vport_num, u16 esw_ow
- 
- 	handle = peer ?
- 		mlx5_esw_bridge_ingress_flow_peer_create(vport_num, esw_owner_vhca_id,
--							 addr, vlan, mlx5_fc_id(counter),
--							 bridge) :
-+							 addr, vlan, counter, bridge) :
- 		mlx5_esw_bridge_ingress_flow_create(vport_num, addr, vlan,
--						    mlx5_fc_id(counter), bridge);
-+						    counter, bridge);
- 	if (IS_ERR(handle)) {
- 		err = PTR_ERR(handle);
- 		esw_warn(esw->dev, "Failed to create ingress flow(vport=%u,err=%d,peer=%d)\n",
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-index d5b42b3a19fd..8636f0485800 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-@@ -724,7 +724,7 @@ mlx5_eswitch_add_offloaded_rule(struct mlx5_eswitch *esw,
- 
- 	if (flow_act.action & MLX5_FLOW_CONTEXT_ACTION_COUNT) {
- 		dest[i].type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--		dest[i].counter_id = mlx5_fc_id(attr->counter);
-+		dest[i].counter = attr->counter;
- 		i++;
- 	}
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
-index 676005854dad..6bf0aade69d7 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
-@@ -718,7 +718,7 @@ static int mlx5_cmd_set_fte(struct mlx5_core_dev *dev,
- 				continue;
- 
- 			MLX5_SET(flow_counter_list, in_dests, flow_counter_id,
--				 dst->dest_attr.counter_id);
-+				 mlx5_fc_id(dst->dest_attr.counter));
- 			in_dests += dst_cnt_size;
- 			list_size++;
- 		}
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-index 2eabfcc247c6..f781f8f169b9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-@@ -658,6 +658,7 @@ static void del_sw_hw_rule(struct fs_node *node)
- 			BIT(MLX5_SET_FTE_MODIFY_ENABLE_MASK_ACTION) |
- 			BIT(MLX5_SET_FTE_MODIFY_ENABLE_MASK_FLOW_COUNTERS);
- 		fte->act_dests.action.action &= ~MLX5_FLOW_CONTEXT_ACTION_COUNT;
-+		mlx5_fc_local_destroy(rule->dest_attr.counter);
- 		goto out;
- 	}
- 
+ #
+ # Netdev basic
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c
-index 62d0c689796b..8cd5e274d6d3 100644
+index 8cd5e274d6d3..2a167a2fd25d 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c
-@@ -43,6 +43,11 @@
- #define MLX5_FC_POOL_MAX_THRESHOLD BIT(18)
- #define MLX5_FC_POOL_USED_BUFF_RATIO 10
+@@ -34,6 +34,7 @@
+ #include <linux/mlx5/fs.h>
+ #include "mlx5_core.h"
+ #include "fs_core.h"
++#include "fs_pool.h"
+ #include "fs_cmd.h"
  
-+enum mlx5_fc_type {
-+	MLX5_FC_TYPE_ACQUIRED = 0,
-+	MLX5_FC_TYPE_LOCAL,
-+};
-+
- struct mlx5_fc_cache {
- 	u64 packets;
- 	u64 bytes;
-@@ -52,6 +57,7 @@ struct mlx5_fc_cache {
- struct mlx5_fc {
- 	u32 id;
- 	bool aging;
-+	enum mlx5_fc_type type;
- 	struct mlx5_fc_bulk *bulk;
- 	struct mlx5_fc_cache cache;
- 	/* last{packets,bytes} are used for calculating deltas since last reading. */
-@@ -186,6 +192,9 @@ static void mlx5_fc_release(struct mlx5_core_dev *dev, struct mlx5_fc *counter)
+ #define MLX5_FC_STATS_PERIOD msecs_to_jiffies(1000)
+@@ -65,17 +66,6 @@ struct mlx5_fc {
+ 	u64 lastbytes;
+ };
+ 
+-struct mlx5_fc_pool {
+-	struct mlx5_core_dev *dev;
+-	struct mutex pool_lock; /* protects pool lists */
+-	struct list_head fully_used;
+-	struct list_head partially_used;
+-	struct list_head unused;
+-	int available_fcs;
+-	int used_fcs;
+-	int threshold;
+-};
+-
+ struct mlx5_fc_stats {
+ 	struct xarray counters;
+ 
+@@ -86,13 +76,13 @@ struct mlx5_fc_stats {
+ 	int bulk_query_len;
+ 	bool bulk_query_alloc_failed;
+ 	unsigned long next_bulk_query_alloc;
+-	struct mlx5_fc_pool fc_pool;
++	struct mlx5_fs_pool fc_pool;
+ };
+ 
+-static void mlx5_fc_pool_init(struct mlx5_fc_pool *fc_pool, struct mlx5_core_dev *dev);
+-static void mlx5_fc_pool_cleanup(struct mlx5_fc_pool *fc_pool);
+-static struct mlx5_fc *mlx5_fc_pool_acquire_counter(struct mlx5_fc_pool *fc_pool);
+-static void mlx5_fc_pool_release_counter(struct mlx5_fc_pool *fc_pool, struct mlx5_fc *fc);
++static void mlx5_fc_pool_init(struct mlx5_fs_pool *fc_pool, struct mlx5_core_dev *dev);
++static void mlx5_fc_pool_cleanup(struct mlx5_fs_pool *fc_pool);
++static struct mlx5_fc *mlx5_fc_pool_acquire_counter(struct mlx5_fs_pool *fc_pool);
++static void mlx5_fc_pool_release_counter(struct mlx5_fs_pool *fc_pool, struct mlx5_fc *fc);
+ 
+ static int get_init_bulk_query_len(struct mlx5_core_dev *dev)
  {
- 	struct mlx5_fc_stats *fc_stats = dev->priv.fc_stats;
+@@ -447,11 +437,9 @@ void mlx5_fc_update_sampling_interval(struct mlx5_core_dev *dev,
+ /* Flow counter bluks */
  
-+	if (WARN_ON(counter->type == MLX5_FC_TYPE_LOCAL))
-+		return;
+ struct mlx5_fc_bulk {
+-	struct list_head pool_list;
++	struct mlx5_fs_bulk fs_bulk;
+ 	u32 base_id;
+-	int bulk_len;
+-	unsigned long *bitmask;
+-	struct mlx5_fc fcs[] __counted_by(bulk_len);
++	struct mlx5_fc fcs[] __counted_by(fs_bulk.bulk_len);
+ };
+ 
+ static void mlx5_fc_init(struct mlx5_fc *counter, struct mlx5_fc_bulk *bulk,
+@@ -461,16 +449,10 @@ static void mlx5_fc_init(struct mlx5_fc *counter, struct mlx5_fc_bulk *bulk,
+ 	counter->id = id;
+ }
+ 
+-static int mlx5_fc_bulk_get_free_fcs_amount(struct mlx5_fc_bulk *bulk)
+-{
+-	return bitmap_weight(bulk->bitmask, bulk->bulk_len);
+-}
+-
+-static struct mlx5_fc_bulk *mlx5_fc_bulk_create(struct mlx5_core_dev *dev)
++static struct mlx5_fs_bulk *mlx5_fc_bulk_create(struct mlx5_core_dev *dev)
+ {
+ 	enum mlx5_fc_bulk_alloc_bitmask alloc_bitmask;
+-	struct mlx5_fc_bulk *bulk;
+-	int err = -ENOMEM;
++	struct mlx5_fc_bulk *fc_bulk;
+ 	int bulk_len;
+ 	u32 base_id;
+ 	int i;
+@@ -478,71 +460,97 @@ static struct mlx5_fc_bulk *mlx5_fc_bulk_create(struct mlx5_core_dev *dev)
+ 	alloc_bitmask = MLX5_CAP_GEN(dev, flow_counter_bulk_alloc);
+ 	bulk_len = alloc_bitmask > 0 ? MLX5_FC_BULK_NUM_FCS(alloc_bitmask) : 1;
+ 
+-	bulk = kvzalloc(struct_size(bulk, fcs, bulk_len), GFP_KERNEL);
+-	if (!bulk)
+-		goto err_alloc_bulk;
++	fc_bulk = kvzalloc(struct_size(fc_bulk, fcs, bulk_len), GFP_KERNEL);
++	if (!fc_bulk)
++		return NULL;
+ 
+-	bulk->bitmask = kvcalloc(BITS_TO_LONGS(bulk_len), sizeof(unsigned long),
+-				 GFP_KERNEL);
+-	if (!bulk->bitmask)
+-		goto err_alloc_bitmask;
++	if (mlx5_fs_bulk_init(dev, &fc_bulk->fs_bulk, bulk_len))
++		goto err_fs_bulk_init;
+ 
+-	err = mlx5_cmd_fc_bulk_alloc(dev, alloc_bitmask, &base_id);
+-	if (err)
+-		goto err_mlx5_cmd_bulk_alloc;
++	if (mlx5_cmd_fc_bulk_alloc(dev, alloc_bitmask, &base_id))
++		goto err_cmd_bulk_alloc;
++	fc_bulk->base_id = base_id;
++	for (i = 0; i < bulk_len; i++)
++		mlx5_fc_init(&fc_bulk->fcs[i], fc_bulk, base_id + i);
+ 
+-	bulk->base_id = base_id;
+-	bulk->bulk_len = bulk_len;
+-	for (i = 0; i < bulk_len; i++) {
+-		mlx5_fc_init(&bulk->fcs[i], bulk, base_id + i);
+-		set_bit(i, bulk->bitmask);
+-	}
++	return &fc_bulk->fs_bulk;
+ 
+-	return bulk;
+-
+-err_mlx5_cmd_bulk_alloc:
+-	kvfree(bulk->bitmask);
+-err_alloc_bitmask:
+-	kvfree(bulk);
+-err_alloc_bulk:
+-	return ERR_PTR(err);
++err_cmd_bulk_alloc:
++	mlx5_fs_bulk_cleanup(&fc_bulk->fs_bulk);
++err_fs_bulk_init:
++	kvfree(fc_bulk);
++	return NULL;
+ }
+ 
+ static int
+-mlx5_fc_bulk_destroy(struct mlx5_core_dev *dev, struct mlx5_fc_bulk *bulk)
++mlx5_fc_bulk_destroy(struct mlx5_core_dev *dev, struct mlx5_fs_bulk *fs_bulk)
+ {
+-	if (mlx5_fc_bulk_get_free_fcs_amount(bulk) < bulk->bulk_len) {
++	struct mlx5_fc_bulk *fc_bulk = container_of(fs_bulk,
++						    struct mlx5_fc_bulk,
++						    fs_bulk);
 +
- 	if (counter->bulk)
- 		mlx5_fc_pool_release_counter(&fc_stats->fc_pool, counter);
- 	else
-@@ -536,6 +545,47 @@ static int mlx5_fc_bulk_release_fc(struct mlx5_fc_bulk *bulk, struct mlx5_fc *fc
++	if (mlx5_fs_bulk_get_free_amount(fs_bulk) < fs_bulk->bulk_len) {
+ 		mlx5_core_err(dev, "Freeing bulk before all counters were released\n");
+ 		return -EBUSY;
+ 	}
+ 
+-	mlx5_cmd_fc_free(dev, bulk->base_id);
+-	kvfree(bulk->bitmask);
+-	kvfree(bulk);
++	mlx5_cmd_fc_free(dev, fc_bulk->base_id);
++	mlx5_fs_bulk_cleanup(fs_bulk);
++	kvfree(fc_bulk);
+ 
  	return 0;
  }
  
-+/**
-+ * mlx5_fc_local_create - Allocate mlx5_fc struct for a counter which
-+ * was already acquired using its counter id and bulk data.
-+ *
-+ * @counter_id: counter acquired counter id
-+ * @offset: counter offset from bulk base
-+ * @bulk_size: counter's bulk size as was allocated
-+ */
-+struct mlx5_fc *
-+mlx5_fc_local_create(u32 counter_id, u32 offset, u32 bulk_size)
-+{
-+	struct mlx5_fc_bulk *bulk;
-+	struct mlx5_fc *counter;
+-static struct mlx5_fc *mlx5_fc_bulk_acquire_fc(struct mlx5_fc_bulk *bulk)
++static void mlx5_fc_pool_update_threshold(struct mlx5_fs_pool *fc_pool)
+ {
+-	int free_fc_index = find_first_bit(bulk->bitmask, bulk->bulk_len);
++	fc_pool->threshold = min_t(int, MLX5_FC_POOL_MAX_THRESHOLD,
++				   fc_pool->used_units / MLX5_FC_POOL_USED_BUFF_RATIO);
++}
+ 
+-	if (free_fc_index >= bulk->bulk_len)
+-		return ERR_PTR(-ENOSPC);
++/* Flow counters pool API */
 +
-+	counter = kzalloc(sizeof(*counter), GFP_KERNEL);
-+	if (!counter)
-+		return ERR_PTR(-ENOMEM);
-+	bulk = kzalloc(sizeof(*bulk), GFP_KERNEL);
-+	if (!bulk) {
-+		kfree(counter);
-+		return ERR_PTR(-ENOMEM);
++static const struct mlx5_fs_pool_ops mlx5_fc_pool_ops = {
++	.bulk_destroy = mlx5_fc_bulk_destroy,
++	.bulk_create = mlx5_fc_bulk_create,
++	.update_threshold = mlx5_fc_pool_update_threshold,
++};
+ 
+-	clear_bit(free_fc_index, bulk->bitmask);
+-	return &bulk->fcs[free_fc_index];
++static void
++mlx5_fc_pool_init(struct mlx5_fs_pool *fc_pool, struct mlx5_core_dev *dev)
++{
++	mlx5_fs_pool_init(fc_pool, dev, &mlx5_fc_pool_ops);
+ }
+ 
+-static int mlx5_fc_bulk_release_fc(struct mlx5_fc_bulk *bulk, struct mlx5_fc *fc)
++static void mlx5_fc_pool_cleanup(struct mlx5_fs_pool *fc_pool)
+ {
+-	int fc_index = fc->id - bulk->base_id;
++	mlx5_fs_pool_cleanup(fc_pool);
++}
+ 
+-	if (test_bit(fc_index, bulk->bitmask))
+-		return -EINVAL;
++static struct mlx5_fc *
++mlx5_fc_pool_acquire_counter(struct mlx5_fs_pool *fc_pool)
++{
++	struct mlx5_fs_pool_index pool_index = {};
++	struct mlx5_fc_bulk *fc_bulk;
++	int err;
+ 
+-	set_bit(fc_index, bulk->bitmask);
+-	return 0;
++	err = mlx5_fs_pool_acquire_index(fc_pool, &pool_index);
++	if (err)
++		return ERR_PTR(err);
++	fc_bulk = container_of(pool_index.fs_bulk, struct mlx5_fc_bulk, fs_bulk);
++	return &fc_bulk->fcs[pool_index.index];
++}
++
++static void
++mlx5_fc_pool_release_counter(struct mlx5_fs_pool *fc_pool, struct mlx5_fc *fc)
++{
++	struct mlx5_fs_bulk *fs_bulk = &fc->bulk->fs_bulk;
++	struct mlx5_fs_pool_index pool_index = {};
++	struct mlx5_core_dev *dev = fc_pool->dev;
++
++	pool_index.fs_bulk = fs_bulk;
++	pool_index.index = fc->id - fc->bulk->base_id;
++	if (mlx5_fs_pool_release_index(fc_pool, &pool_index))
++		mlx5_core_warn(dev, "Attempted to release a counter which is not acquired\n");
+ }
+ 
+ /**
+@@ -556,22 +564,22 @@ static int mlx5_fc_bulk_release_fc(struct mlx5_fc_bulk *bulk, struct mlx5_fc *fc
+ struct mlx5_fc *
+ mlx5_fc_local_create(u32 counter_id, u32 offset, u32 bulk_size)
+ {
+-	struct mlx5_fc_bulk *bulk;
++	struct mlx5_fc_bulk *fc_bulk;
+ 	struct mlx5_fc *counter;
+ 
+ 	counter = kzalloc(sizeof(*counter), GFP_KERNEL);
+ 	if (!counter)
+ 		return ERR_PTR(-ENOMEM);
+-	bulk = kzalloc(sizeof(*bulk), GFP_KERNEL);
+-	if (!bulk) {
++	fc_bulk = kzalloc(sizeof(*fc_bulk), GFP_KERNEL);
++	if (!fc_bulk) {
+ 		kfree(counter);
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+ 
+ 	counter->type = MLX5_FC_TYPE_LOCAL;
+ 	counter->id = counter_id;
+-	bulk->base_id = counter_id - offset;
+-	bulk->bulk_len = bulk_size;
++	fc_bulk->base_id = counter_id - offset;
++	fc_bulk->fs_bulk.bulk_len = bulk_size;
+ 	return counter;
+ }
+ EXPORT_SYMBOL(mlx5_fc_local_create);
+@@ -585,141 +593,3 @@ void mlx5_fc_local_destroy(struct mlx5_fc *counter)
+ 	kfree(counter);
+ }
+ EXPORT_SYMBOL(mlx5_fc_local_destroy);
+-
+-/* Flow counters pool API */
+-
+-static void mlx5_fc_pool_init(struct mlx5_fc_pool *fc_pool, struct mlx5_core_dev *dev)
+-{
+-	fc_pool->dev = dev;
+-	mutex_init(&fc_pool->pool_lock);
+-	INIT_LIST_HEAD(&fc_pool->fully_used);
+-	INIT_LIST_HEAD(&fc_pool->partially_used);
+-	INIT_LIST_HEAD(&fc_pool->unused);
+-	fc_pool->available_fcs = 0;
+-	fc_pool->used_fcs = 0;
+-	fc_pool->threshold = 0;
+-}
+-
+-static void mlx5_fc_pool_cleanup(struct mlx5_fc_pool *fc_pool)
+-{
+-	struct mlx5_core_dev *dev = fc_pool->dev;
+-	struct mlx5_fc_bulk *bulk;
+-	struct mlx5_fc_bulk *tmp;
+-
+-	list_for_each_entry_safe(bulk, tmp, &fc_pool->fully_used, pool_list)
+-		mlx5_fc_bulk_destroy(dev, bulk);
+-	list_for_each_entry_safe(bulk, tmp, &fc_pool->partially_used, pool_list)
+-		mlx5_fc_bulk_destroy(dev, bulk);
+-	list_for_each_entry_safe(bulk, tmp, &fc_pool->unused, pool_list)
+-		mlx5_fc_bulk_destroy(dev, bulk);
+-}
+-
+-static void mlx5_fc_pool_update_threshold(struct mlx5_fc_pool *fc_pool)
+-{
+-	fc_pool->threshold = min_t(int, MLX5_FC_POOL_MAX_THRESHOLD,
+-				   fc_pool->used_fcs / MLX5_FC_POOL_USED_BUFF_RATIO);
+-}
+-
+-static struct mlx5_fc_bulk *
+-mlx5_fc_pool_alloc_new_bulk(struct mlx5_fc_pool *fc_pool)
+-{
+-	struct mlx5_core_dev *dev = fc_pool->dev;
+-	struct mlx5_fc_bulk *new_bulk;
+-
+-	new_bulk = mlx5_fc_bulk_create(dev);
+-	if (!IS_ERR(new_bulk))
+-		fc_pool->available_fcs += new_bulk->bulk_len;
+-	mlx5_fc_pool_update_threshold(fc_pool);
+-	return new_bulk;
+-}
+-
+-static void
+-mlx5_fc_pool_free_bulk(struct mlx5_fc_pool *fc_pool, struct mlx5_fc_bulk *bulk)
+-{
+-	struct mlx5_core_dev *dev = fc_pool->dev;
+-
+-	fc_pool->available_fcs -= bulk->bulk_len;
+-	mlx5_fc_bulk_destroy(dev, bulk);
+-	mlx5_fc_pool_update_threshold(fc_pool);
+-}
+-
+-static struct mlx5_fc *
+-mlx5_fc_pool_acquire_from_list(struct list_head *src_list,
+-			       struct list_head *next_list,
+-			       bool move_non_full_bulk)
+-{
+-	struct mlx5_fc_bulk *bulk;
+-	struct mlx5_fc *fc;
+-
+-	if (list_empty(src_list))
+-		return ERR_PTR(-ENODATA);
+-
+-	bulk = list_first_entry(src_list, struct mlx5_fc_bulk, pool_list);
+-	fc = mlx5_fc_bulk_acquire_fc(bulk);
+-	if (move_non_full_bulk || mlx5_fc_bulk_get_free_fcs_amount(bulk) == 0)
+-		list_move(&bulk->pool_list, next_list);
+-	return fc;
+-}
+-
+-static struct mlx5_fc *
+-mlx5_fc_pool_acquire_counter(struct mlx5_fc_pool *fc_pool)
+-{
+-	struct mlx5_fc_bulk *new_bulk;
+-	struct mlx5_fc *fc;
+-
+-	mutex_lock(&fc_pool->pool_lock);
+-
+-	fc = mlx5_fc_pool_acquire_from_list(&fc_pool->partially_used,
+-					    &fc_pool->fully_used, false);
+-	if (IS_ERR(fc))
+-		fc = mlx5_fc_pool_acquire_from_list(&fc_pool->unused,
+-						    &fc_pool->partially_used,
+-						    true);
+-	if (IS_ERR(fc)) {
+-		new_bulk = mlx5_fc_pool_alloc_new_bulk(fc_pool);
+-		if (IS_ERR(new_bulk)) {
+-			fc = ERR_CAST(new_bulk);
+-			goto out;
+-		}
+-		fc = mlx5_fc_bulk_acquire_fc(new_bulk);
+-		list_add(&new_bulk->pool_list, &fc_pool->partially_used);
+-	}
+-	fc_pool->available_fcs--;
+-	fc_pool->used_fcs++;
+-
+-out:
+-	mutex_unlock(&fc_pool->pool_lock);
+-	return fc;
+-}
+-
+-static void
+-mlx5_fc_pool_release_counter(struct mlx5_fc_pool *fc_pool, struct mlx5_fc *fc)
+-{
+-	struct mlx5_core_dev *dev = fc_pool->dev;
+-	struct mlx5_fc_bulk *bulk = fc->bulk;
+-	int bulk_free_fcs_amount;
+-
+-	mutex_lock(&fc_pool->pool_lock);
+-
+-	if (mlx5_fc_bulk_release_fc(bulk, fc)) {
+-		mlx5_core_warn(dev, "Attempted to release a counter which is not acquired\n");
+-		goto unlock;
+-	}
+-
+-	fc_pool->available_fcs++;
+-	fc_pool->used_fcs--;
+-
+-	bulk_free_fcs_amount = mlx5_fc_bulk_get_free_fcs_amount(bulk);
+-	if (bulk_free_fcs_amount == 1)
+-		list_move_tail(&bulk->pool_list, &fc_pool->partially_used);
+-	if (bulk_free_fcs_amount == bulk->bulk_len) {
+-		list_del(&bulk->pool_list);
+-		if (fc_pool->available_fcs > fc_pool->threshold)
+-			mlx5_fc_pool_free_bulk(fc_pool, bulk);
+-		else
+-			list_add(&bulk->pool_list, &fc_pool->unused);
+-	}
+-
+-unlock:
+-	mutex_unlock(&fc_pool->pool_lock);
+-}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.c
+new file mode 100644
+index 000000000000..b891d7b9e3e0
+--- /dev/null
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.c
+@@ -0,0 +1,194 @@
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
++/* Copyright (c) 2024 NVIDIA Corporation & Affiliates */
++
++#include <mlx5_core.h>
++#include "fs_pool.h"
++
++int mlx5_fs_bulk_init(struct mlx5_core_dev *dev, struct mlx5_fs_bulk *fs_bulk,
++		      int bulk_len)
++{
++	int i;
++
++	fs_bulk->bitmask = kvcalloc(BITS_TO_LONGS(bulk_len), sizeof(unsigned long),
++				    GFP_KERNEL);
++	if (!fs_bulk->bitmask)
++		return -ENOMEM;
++
++	fs_bulk->bulk_len = bulk_len;
++	for (i = 0; i < bulk_len; i++)
++		set_bit(i, fs_bulk->bitmask);
++
++	return 0;
++}
++
++void mlx5_fs_bulk_cleanup(struct mlx5_fs_bulk *fs_bulk)
++{
++	kvfree(fs_bulk->bitmask);
++}
++
++int mlx5_fs_bulk_get_free_amount(struct mlx5_fs_bulk *bulk)
++{
++	return bitmap_weight(bulk->bitmask, bulk->bulk_len);
++}
++
++static int mlx5_fs_bulk_acquire_index(struct mlx5_fs_bulk *fs_bulk,
++				      struct mlx5_fs_pool_index *pool_index)
++{
++	int free_index = find_first_bit(fs_bulk->bitmask, fs_bulk->bulk_len);
++
++	WARN_ON_ONCE(!pool_index || !fs_bulk);
++	if (free_index >= fs_bulk->bulk_len)
++		return -ENOSPC;
++
++	clear_bit(free_index, fs_bulk->bitmask);
++	pool_index->fs_bulk = fs_bulk;
++	pool_index->index = free_index;
++	return 0;
++}
++
++static int mlx5_fs_bulk_release_index(struct mlx5_fs_bulk *fs_bulk, int index)
++{
++	if (test_bit(index, fs_bulk->bitmask))
++		return -EINVAL;
++
++	set_bit(index, fs_bulk->bitmask);
++	return 0;
++}
++
++void mlx5_fs_pool_init(struct mlx5_fs_pool *pool, struct mlx5_core_dev *dev,
++		       const struct mlx5_fs_pool_ops *ops)
++{
++	WARN_ON_ONCE(!ops || !ops->bulk_destroy || !ops->bulk_create ||
++		     !ops->update_threshold);
++	pool->dev = dev;
++	mutex_init(&pool->pool_lock);
++	INIT_LIST_HEAD(&pool->fully_used);
++	INIT_LIST_HEAD(&pool->partially_used);
++	INIT_LIST_HEAD(&pool->unused);
++	pool->available_units = 0;
++	pool->used_units = 0;
++	pool->threshold = 0;
++	pool->ops = ops;
++}
++
++void mlx5_fs_pool_cleanup(struct mlx5_fs_pool *pool)
++{
++	struct mlx5_core_dev *dev = pool->dev;
++	struct mlx5_fs_bulk *bulk;
++	struct mlx5_fs_bulk *tmp;
++
++	list_for_each_entry_safe(bulk, tmp, &pool->fully_used, pool_list)
++		pool->ops->bulk_destroy(dev, bulk);
++	list_for_each_entry_safe(bulk, tmp, &pool->partially_used, pool_list)
++		pool->ops->bulk_destroy(dev, bulk);
++	list_for_each_entry_safe(bulk, tmp, &pool->unused, pool_list)
++		pool->ops->bulk_destroy(dev, bulk);
++}
++
++static struct mlx5_fs_bulk *
++mlx5_fs_pool_alloc_new_bulk(struct mlx5_fs_pool *fs_pool)
++{
++	struct mlx5_core_dev *dev = fs_pool->dev;
++	struct mlx5_fs_bulk *new_bulk;
++
++	new_bulk = fs_pool->ops->bulk_create(dev);
++	if (new_bulk)
++		fs_pool->available_units += new_bulk->bulk_len;
++	fs_pool->ops->update_threshold(fs_pool);
++	return new_bulk;
++}
++
++static void
++mlx5_fs_pool_free_bulk(struct mlx5_fs_pool *fs_pool, struct mlx5_fs_bulk *bulk)
++{
++	struct mlx5_core_dev *dev = fs_pool->dev;
++
++	fs_pool->available_units -= bulk->bulk_len;
++	fs_pool->ops->bulk_destroy(dev, bulk);
++	fs_pool->ops->update_threshold(fs_pool);
++}
++
++static int
++mlx5_fs_pool_acquire_from_list(struct list_head *src_list,
++			       struct list_head *next_list,
++			       bool move_non_full_bulk,
++			       struct mlx5_fs_pool_index *pool_index)
++{
++	struct mlx5_fs_bulk *fs_bulk;
++	int err;
++
++	if (list_empty(src_list))
++		return -ENODATA;
++
++	fs_bulk = list_first_entry(src_list, struct mlx5_fs_bulk, pool_list);
++	err = mlx5_fs_bulk_acquire_index(fs_bulk, pool_index);
++	if (move_non_full_bulk || mlx5_fs_bulk_get_free_amount(fs_bulk) == 0)
++		list_move(&fs_bulk->pool_list, next_list);
++	return err;
++}
++
++int mlx5_fs_pool_acquire_index(struct mlx5_fs_pool *fs_pool,
++			       struct mlx5_fs_pool_index *pool_index)
++{
++	struct mlx5_fs_bulk *new_bulk;
++	int err;
++
++	mutex_lock(&fs_pool->pool_lock);
++
++	err = mlx5_fs_pool_acquire_from_list(&fs_pool->partially_used,
++					     &fs_pool->fully_used, false,
++					     pool_index);
++	if (err)
++		err = mlx5_fs_pool_acquire_from_list(&fs_pool->unused,
++						     &fs_pool->partially_used,
++						     true, pool_index);
++	if (err) {
++		new_bulk = mlx5_fs_pool_alloc_new_bulk(fs_pool);
++		if (!new_bulk) {
++			err = -ENOENT;
++			goto out;
++		}
++		err = mlx5_fs_bulk_acquire_index(new_bulk, pool_index);
++		WARN_ON_ONCE(err);
++		list_add(&new_bulk->pool_list, &fs_pool->partially_used);
++	}
++	fs_pool->available_units--;
++	fs_pool->used_units++;
++
++out:
++	mutex_unlock(&fs_pool->pool_lock);
++	return err;
++}
++
++int mlx5_fs_pool_release_index(struct mlx5_fs_pool *fs_pool,
++			       struct mlx5_fs_pool_index *pool_index)
++{
++	struct mlx5_fs_bulk *bulk = pool_index->fs_bulk;
++	int bulk_free_amount;
++	int err;
++
++	mutex_lock(&fs_pool->pool_lock);
++
++	/* TBD would rather return void if there was no warn here in original code */
++	err = mlx5_fs_bulk_release_index(bulk, pool_index->index);
++	if (err)
++		goto unlock;
++
++	fs_pool->available_units++;
++	fs_pool->used_units--;
++
++	bulk_free_amount = mlx5_fs_bulk_get_free_amount(bulk);
++	if (bulk_free_amount == 1)
++		list_move_tail(&bulk->pool_list, &fs_pool->partially_used);
++	if (bulk_free_amount == bulk->bulk_len) {
++		list_del(&bulk->pool_list);
++		if (fs_pool->available_units > fs_pool->threshold)
++			mlx5_fs_pool_free_bulk(fs_pool, bulk);
++		else
++			list_add(&bulk->pool_list, &fs_pool->unused);
 +	}
 +
-+	counter->type = MLX5_FC_TYPE_LOCAL;
-+	counter->id = counter_id;
-+	bulk->base_id = counter_id - offset;
-+	bulk->bulk_len = bulk_size;
-+	return counter;
++unlock:
++	mutex_unlock(&fs_pool->pool_lock);
++	return err;
 +}
-+EXPORT_SYMBOL(mlx5_fc_local_create);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.h b/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.h
+new file mode 100644
+index 000000000000..3b149863260c
+--- /dev/null
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.h
+@@ -0,0 +1,54 @@
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
++/* Copyright (c) 2024 NVIDIA Corporation & Affiliates */
 +
-+void mlx5_fc_local_destroy(struct mlx5_fc *counter)
-+{
-+	if (!counter || counter->type != MLX5_FC_TYPE_LOCAL)
-+		return;
++#ifndef __MLX5_FS_POOL_H__
++#define __MLX5_FS_POOL_H__
 +
-+	kfree(counter->bulk);
-+	kfree(counter);
-+}
-+EXPORT_SYMBOL(mlx5_fc_local_destroy);
++#include <linux/mlx5/driver.h>
 +
- /* Flow counters pool API */
- 
- static void mlx5_fc_pool_init(struct mlx5_fc_pool *fc_pool, struct mlx5_core_dev *dev)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
-index 4a078113e292..762d55ba9e51 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
-@@ -497,7 +497,7 @@ static int macsec_fs_tx_create(struct mlx5_macsec_fs *macsec_fs)
- 	memset(&dest, 0, sizeof(struct mlx5_flow_destination));
- 	memset(&flow_act, 0, sizeof(flow_act));
- 	dest.type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	dest.counter_id = mlx5_fc_id(tx_tables->check_miss_rule_counter);
-+	dest.counter = tx_tables->check_miss_rule_counter;
- 	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_DROP | MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 	rule = mlx5_add_flow_rules(tx_tables->ft_check,  NULL, &flow_act, &dest, 1);
- 	if (IS_ERR(rule)) {
-@@ -519,7 +519,7 @@ static int macsec_fs_tx_create(struct mlx5_macsec_fs *macsec_fs)
- 	flow_act.flags = FLOW_ACT_NO_APPEND;
- 	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_ALLOW | MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 	dest.type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	dest.counter_id = mlx5_fc_id(tx_tables->check_rule_counter);
-+	dest.counter = tx_tables->check_rule_counter;
- 	rule = mlx5_add_flow_rules(tx_tables->ft_check, spec, &flow_act, &dest, 1);
- 	if (IS_ERR(rule)) {
- 		err = PTR_ERR(rule);
-@@ -1200,7 +1200,7 @@ static int macsec_fs_rx_create_check_decap_rule(struct mlx5_macsec_fs *macsec_fs
- 	flow_act->action |= MLX5_FLOW_CONTEXT_ACTION_PACKET_REFORMAT |
- 			    MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 	roce_dest[dstn].type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	roce_dest[dstn].counter_id = mlx5_fc_id(rx_tables->check_rule_counter);
-+	roce_dest[dstn].counter = rx_tables->check_rule_counter;
- 	rule = mlx5_add_flow_rules(rx_tables->ft_check, spec, flow_act, roce_dest, dstn + 1);
- 
- 	if (IS_ERR(rule)) {
-@@ -1592,7 +1592,7 @@ static int macsec_fs_rx_create(struct mlx5_macsec_fs *macsec_fs)
- 	memset(&flow_act, 0, sizeof(flow_act));
- 
- 	dest.type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
--	dest.counter_id = mlx5_fc_id(rx_tables->check_miss_rule_counter);
-+	dest.counter = rx_tables->check_miss_rule_counter;
- 	flow_act.action = MLX5_FLOW_CONTEXT_ACTION_DROP | MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 	rule = mlx5_add_flow_rules(rx_tables->ft_check,  NULL, &flow_act, &dest, 1);
- 	if (IS_ERR(rule)) {
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/fs_dr.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/fs_dr.c
-index 4b349d4005e4..8007d3f523c9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/fs_dr.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/fs_dr.c
-@@ -521,7 +521,7 @@ static int mlx5_cmd_dr_create_fte(struct mlx5_flow_root_namespace *ns,
- 				goto free_actions;
- 			}
- 
--			id = dst->dest_attr.counter_id;
-+			id = mlx5_fc_id(dst->dest_attr.counter);
- 			tmp_action =
- 				mlx5dr_action_create_flow_counter(id);
- 			if (!tmp_action) {
-diff --git a/include/linux/mlx5/fs.h b/include/linux/mlx5/fs.h
-index 438db888bde0..2a69d9d71276 100644
---- a/include/linux/mlx5/fs.h
-+++ b/include/linux/mlx5/fs.h
-@@ -163,7 +163,7 @@ struct mlx5_flow_destination {
- 		u32			tir_num;
- 		u32			ft_num;
- 		struct mlx5_flow_table	*ft;
--		u32			counter_id;
-+		struct mlx5_fc          *counter;
- 		struct {
- 			u16		num;
- 			u16		vhca_id;
-@@ -299,6 +299,8 @@ int mlx5_modify_rule_destination(struct mlx5_flow_handle *handler,
- struct mlx5_fc *mlx5_fc_create(struct mlx5_core_dev *dev, bool aging);
- 
- void mlx5_fc_destroy(struct mlx5_core_dev *dev, struct mlx5_fc *counter);
-+struct mlx5_fc *mlx5_fc_local_create(u32 counter_id, u32 offset, u32 bulk_size);
-+void mlx5_fc_local_destroy(struct mlx5_fc *counter);
- u64 mlx5_fc_query_lastuse(struct mlx5_fc *counter);
- void mlx5_fc_query_cached(struct mlx5_fc *counter,
- 			  u64 *bytes, u64 *packets, u64 *lastuse);
++struct mlx5_fs_bulk {
++	struct list_head pool_list;
++	int bulk_len;
++	unsigned long *bitmask;
++};
++
++struct mlx5_fs_pool_index {
++	struct mlx5_fs_bulk *fs_bulk;
++	int index;
++};
++
++struct mlx5_fs_pool;
++
++struct mlx5_fs_pool_ops {
++	int (*bulk_destroy)(struct mlx5_core_dev *dev, struct mlx5_fs_bulk *bulk);
++	struct mlx5_fs_bulk * (*bulk_create)(struct mlx5_core_dev *dev);
++	void (*update_threshold)(struct mlx5_fs_pool *pool);
++};
++
++struct mlx5_fs_pool {
++	struct mlx5_core_dev *dev;
++	void *pool_ctx;
++	const struct mlx5_fs_pool_ops *ops;
++	struct mutex pool_lock; /* protects pool lists */
++	struct list_head fully_used;
++	struct list_head partially_used;
++	struct list_head unused;
++	int available_units;
++	int used_units;
++	int threshold;
++};
++
++int mlx5_fs_bulk_init(struct mlx5_core_dev *dev, struct mlx5_fs_bulk *fs_bulk,
++		      int bulk_len);
++void mlx5_fs_bulk_cleanup(struct mlx5_fs_bulk *fs_bulk);
++int mlx5_fs_bulk_get_free_amount(struct mlx5_fs_bulk *bulk);
++
++void mlx5_fs_pool_init(struct mlx5_fs_pool *pool, struct mlx5_core_dev *dev,
++		       const struct mlx5_fs_pool_ops *ops);
++void mlx5_fs_pool_cleanup(struct mlx5_fs_pool *pool);
++int mlx5_fs_pool_acquire_index(struct mlx5_fs_pool *fs_pool,
++			       struct mlx5_fs_pool_index *pool_index);
++int mlx5_fs_pool_release_index(struct mlx5_fs_pool *fs_pool,
++			       struct mlx5_fs_pool_index *pool_index);
++
++#endif /* __MLX5_FS_POOL_H__ */
 -- 
 2.44.0
 
