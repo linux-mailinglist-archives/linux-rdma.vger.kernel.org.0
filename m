@@ -1,59 +1,93 @@
-Return-Path: <linux-rdma+bounces-6427-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6437-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB3579EC88E
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 10:12:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C23599ECD79
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 14:44:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B19D21885171
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 09:12:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA8F8164153
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 13:44:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35362210D7;
-	Wed, 11 Dec 2024 09:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F31C9233684;
+	Wed, 11 Dec 2024 13:44:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="R5hOrcM0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2059.outbound.protection.outlook.com [40.107.93.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D872210C6;
-	Wed, 11 Dec 2024 09:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733908338; cv=none; b=kwup7nAafQy7lABhNw+HzkR3smHV2LUhLKbA2XB2f0sHbPIEj7ELstSxP2dwh82+OYDb3Y5zZe/uQy6Wk/wLGejuQoP4XiwtXsfA/IyYgrcVeynRQiBaVHqukFU6KUhy/Q7DI+t+H6Mn3uj55N2SM0ffdvgT5XLv3yG8SIOvx8A=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733908338; c=relaxed/simple;
-	bh=Knj5TIsDQgyLg8p5+cY2aWCAJDz82Z4lK2SWfH0yCD8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=heaIi3xNiS74qT0/6CN5ry05rRPFcP0IpBE1wctF7C6zRx2PRkyKRD0YSqNA01fQmawPP2pjVYqPLUxC/2D+q1TBaNj+YOAegmkWPxClpYg3aeMbvCtdXPdl7DOwvuo+SuiBdzo/au9NtZ56UVqw7Ql/4a84vX1vZ5mSxnNS//Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BB7fYB5012824;
-	Wed, 11 Dec 2024 09:12:05 GMT
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 43cx4xbybu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Wed, 11 Dec 2024 09:12:04 +0000 (GMT)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.43; Wed, 11 Dec 2024 01:12:03 -0800
-Received: from pek-lpg-core1.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.43 via Frontend Transport; Wed, 11 Dec 2024 01:11:59 -0800
-From: <jianqi.ren.cn@windriver.com>
-To: <cratiu@nvidia.com>, <gregkh@linuxfoundation.org>
-CC: <dtatulea@nvidia.com>, <tariqt@nvidia.com>, <pabeni@redhat.com>,
-        <patches@lists.linux.dev>, <stable@vger.kernel.org>,
-        <saeedm@nvidia.com>, <leon@kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <roid@nvidia.com>,
-        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 6.1.y] net/mlx5e: Don't call cleanup on profile rollback failure
-Date: Wed, 11 Dec 2024 18:09:53 +0800
-Message-ID: <20241211100953.2069964-1-jianqi.ren.cn@windriver.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B7B23FD00;
+	Wed, 11 Dec 2024 13:44:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1733924646; cv=fail; b=pFXkFQqoH7I8rnzuzj0/7KoSdaOzydA7vYLJOH7fT7rNsnask2oNfliy1U7mdi19AKZEFDxBK7lSGMIrILdTnYYTdhNPOu4lHOuw+oRqMuBKHEE+mVJ/sEXsTNYCAlLKLusBLbOtB9Q5K3N+Dhly9qI5RBS1FDv/cUR21wltIvc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1733924646; c=relaxed/simple;
+	bh=YfwkFq5UY4yIbvAUpKUaF2AB7t7Z7ZtZCmPmXq04HqM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jHNt7Ss63wYnHjOX9nFhXtdknp1/9QfGJrM+YoYjI8Uc27yRdWkS+NW1VoDr8fi+ba9AT2y6mrqmpJXQP8RefpHOEobOUcsIHP8FMOQT92Jle0UOeFoj6IIw74KsPiJ3aEs8XD3dPal6qa+TPsHxUTuDJYXomL3tqmDiB1B1/2g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=R5hOrcM0; arc=fail smtp.client-ip=40.107.93.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=MhVSt/Z93VHp2BuUEXY+/XgrGxWK/lT5F/M4eOTI4KeJ3ScnS0uLRQGPijwgD/irTrWZPuJUSBV4HLB40ntiOXhtJZaujXq9nwar1S8Q5DgirOPy2DJyTkBkjQKD+dBQvi4x+/VtvqIUDnGhlQEuk5w2CgRHBcbByF6UtEQBOUXLH0eEqbDBFRcT1j8Hr+1NzZSuja24d9Me7tbwP/f2N3zas6eCD8C2xhsz6TcDN+JVnPhYk69nz/xICMZzSL/WMbhwrc9QVgh+xpvjYIymK+RYsRF9iKf36ywnsq+Jp4jdZmAcaNj1j0mFhYT24A2qDV1Kj1vXs63IxIF2VSubFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o9OPGYzN9zt6JPK8B965RG/NUpNm7vddNuaqAWq96RQ=;
+ b=np8NXJudHRikFh8B1Btio6Q09csEqcbQVpBhY+BVwfIaGIolhfVBb2N+UeEiZkldfsBPosM1JyWoSR2rys9O17M6RaUa9mGli+Ra4bu09fR1k5UI8oyeC5/0upRUtVFEVowzlsENduW4rLDC2cOS4SwT3WKBjo4t4nBrTun6jhf/HZGx+U5+QG0dDSzx9a1aypVHgRVZNSM0oXJJti4wbX6xOvGVVV5yUCJTmxB7OmKTkQwu1y9XOmmaTLwWp+H5XzQtDDxauql0etaMSS7elI73H4xfRaUDkkXMKAWOvRLK6lfgv3rOS1Pg70Eic+fUwzN4i2a1s7ZcxJ8lZbOFdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o9OPGYzN9zt6JPK8B965RG/NUpNm7vddNuaqAWq96RQ=;
+ b=R5hOrcM0ggJ0xDSJLVH5UABhPweCcR2yf1YNpYvOCJfmNJppDIZR70eBigZWmjl6tOmmlX5tO/WO/9BGIANj0QozW8mYqfMG9CDSNxtNQrWUfiF2TlEgJ2r8A8WcAHNeKV8kSEKhS9nIrxPFh9H6flsSZtBG5yZ7pimaMDix33huoLr+8M0jUSHmeAPXAt9dEPwoXdOhnKO7OdL+MRezeNBK+fNgNzDQEqXIrnLpgnuxsvJAAFDYGbmmtBcAPCY5o6EwryvhGMQYXLXXd6CPOtHoGHLvnLNEJgAoLAyAK/+2Q168bidaGyWUi+yRJ1eZjHBWL3OCdsgHJ01UzAfGXQ==
+Received: from PH7P220CA0144.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:327::6)
+ by DS0PR12MB6654.namprd12.prod.outlook.com (2603:10b6:8:d1::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8230.18; Wed, 11 Dec
+ 2024 13:43:51 +0000
+Received: from CY4PEPF0000EE3A.namprd03.prod.outlook.com
+ (2603:10b6:510:327:cafe::be) by PH7P220CA0144.outlook.office365.com
+ (2603:10b6:510:327::6) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8230.15 via Frontend Transport; Wed,
+ 11 Dec 2024 13:43:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000EE3A.mail.protection.outlook.com (10.167.242.12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8251.15 via Frontend Transport; Wed, 11 Dec 2024 13:43:50 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 11 Dec
+ 2024 05:43:37 -0800
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 11 Dec
+ 2024 05:43:36 -0800
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.9)
+ with Microsoft SMTP Server id 15.2.1544.4 via Frontend Transport; Wed, 11 Dec
+ 2024 05:43:33 -0800
+From: Tariq Toukan <tariqt@nvidia.com>
+To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
+ Lunn" <andrew+netdev@lunn.ch>, Leon Romanovsky <leonro@nvidia.com>
+CC: <netdev@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman
+	<gal@nvidia.com>, <linux-rdma@vger.kernel.org>, Tariq Toukan
+	<tariqt@nvidia.com>
+Subject: [PATCH net-next 00/12] mlx5 misc changes 2024-12-11
+Date: Wed, 11 Dec 2024 15:42:11 +0200
+Message-ID: <20241211134223.389616-1-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,97 +96,159 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: QoGXlSgbYD0qKXE6BvwAKD0aea_IgHQn
-X-Proofpoint-ORIG-GUID: QoGXlSgbYD0qKXE6BvwAKD0aea_IgHQn
-X-Authority-Analysis: v=2.4 cv=Y/UCsgeN c=1 sm=1 tr=0 ts=67595764 cx=c_pps a=K4BcnWQioVPsTJd46EJO2w==:117 a=K4BcnWQioVPsTJd46EJO2w==:17 a=RZcAm9yDv7YA:10 a=Ikd4Dj_1AAAA:8 a=20KFwNOVAAAA:8 a=t7CeM3EgAAAA:8 a=O6WMtLnDkRuORcTRUxwA:9 a=FdTzh2GWekK77mhwV6Dw:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2024-12-11_08,2024-12-10_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 mlxscore=0 clxscore=1011 malwarescore=0 priorityscore=1501
- phishscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 spamscore=0
- impostorscore=0 classifier=spam authscore=0 adjust=0 reason=mlx
- scancount=1 engine=8.21.0-2411120000 definitions=main-2412110068
+X-NV-OnPremToCloud: AnonymousSubmission
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE3A:EE_|DS0PR12MB6654:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0d2718a3-7597-4954-a479-08dd19e9d83f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|1800799024|376014|36860700013;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?2hkTQOFUcAu5GROGmkX/ZHpcZubaR4uIQRqv0Ml8b1J1lo6lpV+3pYhcXy88?=
+ =?us-ascii?Q?i7KoFfPxadIL+xIhH3S50Z0qIrAJucnHnJVNRWXQ37fdxFd1So+MAObz2ocJ?=
+ =?us-ascii?Q?rTPGgpIF3pCHPu/WxmfrSDcIvE9lado0uYGTeT2md2qeJEUw1sm1pCKhEAZO?=
+ =?us-ascii?Q?bY7Y9LbZq1Q8gDh/cxa8svCqJ1RoKfRJik0If01MLKVAaJHo3FnwfZuaUvKZ?=
+ =?us-ascii?Q?8T4CpM21gVS5BAD8CSXCAYUq+1PCf+U/E8Ge0Ti2U+4TLINmor9ngbq0VJCM?=
+ =?us-ascii?Q?JP89nl8b6+lcJlHjVoiLw8KxqHJ7qxLXcNp9NFA98ZFfBXYHCqxG+47lNvhS?=
+ =?us-ascii?Q?4yoojWu5QKQtxAosnX/37bfpUHq7jQHjJ6U7QP1hl5J6J0Hkatj4YRWd8aXf?=
+ =?us-ascii?Q?uEtt/ksXvhZXlZUpYIbsvq4+9WjYKEhqs3CTasJxYbU4XED1DTW43IYJFMZ9?=
+ =?us-ascii?Q?LiJjBgK2f5D/gcUcUsHxtPieedScEOTgSMqZPZLFdkBrXk44gRVe/CwByDHY?=
+ =?us-ascii?Q?WIojwA/oG1CviHQzz65CMLQpz435y61bg8vMqT6cYmyau4Qt7SKI6YtTH+xV?=
+ =?us-ascii?Q?2/duMYBLMaNaYHI7fQnibt4cJNZ8qnizFXfZhMwLYxRAfJrrrd0BNe1Kb2V9?=
+ =?us-ascii?Q?+deVgefkPv+NGXdeCm2LrW/Ua5niXijTlr5CoxLq2b7aU5gZwRZ6DtGXJd0+?=
+ =?us-ascii?Q?5Ncmddr5xo7OCoziNsIbrdJFkorEmcGCw1gzU5stavwGgEx6VXT8MgQd/8XT?=
+ =?us-ascii?Q?oOt2j29jJ7+tEZVhhSaB0atCYclblABB7+NqAteWXHrt1tgiuOkszXoKmeYv?=
+ =?us-ascii?Q?VihFAt17X7Ln0/mPhyN3xSAB2UtUIm2yPuY0MoF+501rqyvogWw5kWyEwbUI?=
+ =?us-ascii?Q?3xmVGNAMXr9koXL4VcPX3RFwV5c74M3dfpuji7MN9nB+v2yJPjHzXQbF91yN?=
+ =?us-ascii?Q?kpFV7jhjZZscqCKSABYRs21wA1lLpkDxam13i2atNzZPrSlULOUe0z3ler0U?=
+ =?us-ascii?Q?0GzMw1TZOdW3h0Bm31NJs84xU8NO4pIzdGlrS/SMU54ikJeNfgoSVT1RFzBa?=
+ =?us-ascii?Q?ZIAUVrfnu09ySZkge2g4uHmIiX2+aX6qKBSxfGadrtn5s/ROQJbpt5P1RIMm?=
+ =?us-ascii?Q?gqQ1bhipGrl4QdIpjo+b2H3GMyWpJlpKqi5d0qyq9VrDoqMFyVYdWVhBJH4a?=
+ =?us-ascii?Q?xJKufJYAATj52Zn2AUWmejs1LchDJfrB/KVcos4QK0fUkoMxdedw9PgEo1BU?=
+ =?us-ascii?Q?p84shI6+jDnb+J1CMgs3m3SVLrJgUCHlLJ3sJYE+jV+/Zprn8pmM58K9wHFx?=
+ =?us-ascii?Q?gmtLYzfi5rRLIcNPU+cJShK/V6ucaWzzb2jRa5OhEkagim8qEUWpxzoHUcBh?=
+ =?us-ascii?Q?iswhOgOdeJEvSUnwLS256T8djP/aMvP9Pgzl/a5dkjXpqxD7thXnMZ/suBsM?=
+ =?us-ascii?Q?Pd6LRkXtHYEFDXvQHiQ8dJtS+6/TfFQu?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(376014)(36860700013);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2024 13:43:50.1196
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d2718a3-7597-4954-a479-08dd19e9d83f
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000EE3A.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6654
 
-From: Cosmin Ratiu <cratiu@nvidia.com>
+Hi,
 
-[ Upstream commit 4dbc1d1a9f39c3711ad2a40addca04d07d9ab5d0 ]
+This patchset from the team consists of misc additions to the mlx5 core
+driver. It requires pulling 4 IFC patches that were applied to
+mlx5-next:
+https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/log/?h=mlx5-next
 
-When profile rollback fails in mlx5e_netdev_change_profile, the netdev
-profile var is left set to NULL. Avoid a crash when unloading the driver
-by not calling profile->cleanup in such a case.
+The first patch is an IFC change that's targeted to mlx5-next.  It's
+followed by two more patches by Rongwei that add support for multi-host
+LAG. The new multi-host NICs provide each host with partial ports,
+allowing each host to maintain its unique LAG configuration.
 
-This was encountered while testing, with the original trigger that
-the wq rescuer thread creation got interrupted (presumably due to
-Ctrl+C-ing modprobe), which gets converted to ENOMEM (-12) by
-mlx5e_priv_init, the profile rollback also fails for the same reason
-(signal still active) so the profile is left as NULL, leading to a crash
-later in _mlx5e_remove.
+Patches 4-8 by Moshe, Mark and Yevgeny are enhancements and preparations
+in fs_core and HW steering, in preparation for future patchsets.
 
- [  732.473932] mlx5_core 0000:08:00.1: E-Switch: Unload vfs: mode(OFFLOADS), nvfs(2), necvfs(0), active vports(2)
- [  734.525513] workqueue: Failed to create a rescuer kthread for wq "mlx5e": -EINTR
- [  734.557372] mlx5_core 0000:08:00.1: mlx5e_netdev_init_profile:6235:(pid 6086): mlx5e_priv_init failed, err=-12
- [  734.559187] mlx5_core 0000:08:00.1 eth3: mlx5e_netdev_change_profile: new profile init failed, -12
- [  734.560153] workqueue: Failed to create a rescuer kthread for wq "mlx5e": -EINTR
- [  734.589378] mlx5_core 0000:08:00.1: mlx5e_netdev_init_profile:6235:(pid 6086): mlx5e_priv_init failed, err=-12
- [  734.591136] mlx5_core 0000:08:00.1 eth3: mlx5e_netdev_change_profile: failed to rollback to orig profile, -12
- [  745.537492] BUG: kernel NULL pointer dereference, address: 0000000000000008
- [  745.538222] #PF: supervisor read access in kernel mode
-<snipped>
- [  745.551290] Call Trace:
- [  745.551590]  <TASK>
- [  745.551866]  ? __die+0x20/0x60
- [  745.552218]  ? page_fault_oops+0x150/0x400
- [  745.555307]  ? exc_page_fault+0x79/0x240
- [  745.555729]  ? asm_exc_page_fault+0x22/0x30
- [  745.556166]  ? mlx5e_remove+0x6b/0xb0 [mlx5_core]
- [  745.556698]  auxiliary_bus_remove+0x18/0x30
- [  745.557134]  device_release_driver_internal+0x1df/0x240
- [  745.557654]  bus_remove_device+0xd7/0x140
- [  745.558075]  device_del+0x15b/0x3c0
- [  745.558456]  mlx5_rescan_drivers_locked.part.0+0xb1/0x2f0 [mlx5_core]
- [  745.559112]  mlx5_unregister_device+0x34/0x50 [mlx5_core]
- [  745.559686]  mlx5_uninit_one+0x46/0xf0 [mlx5_core]
- [  745.560203]  remove_one+0x4e/0xd0 [mlx5_core]
- [  745.560694]  pci_device_remove+0x39/0xa0
- [  745.561112]  device_release_driver_internal+0x1df/0x240
- [  745.561631]  driver_detach+0x47/0x90
- [  745.562022]  bus_remove_driver+0x84/0x100
- [  745.562444]  pci_unregister_driver+0x3b/0x90
- [  745.562890]  mlx5_cleanup+0xc/0x1b [mlx5_core]
- [  745.563415]  __x64_sys_delete_module+0x14d/0x2f0
- [  745.563886]  ? kmem_cache_free+0x1b0/0x460
- [  745.564313]  ? lockdep_hardirqs_on_prepare+0xe2/0x190
- [  745.564825]  do_syscall_64+0x6d/0x140
- [  745.565223]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
- [  745.565725] RIP: 0033:0x7f1579b1288b
+Patches 9-10 by Itamar add SW Steering support for ConnectX-8. They are
+moved here after being part of previous submissions, yet to be accepted.
 
-Fixes: 3ef14e463f6e ("net/mlx5e: Separate between netdev objects and mlx5e profiles initialization")
-Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Jianqi Ren <jianqi.ren.cn@windriver.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Patch 11 by Carolina cleans up an unnecessary log message.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 385904502a6b..8ee6a81b42b4 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -5980,7 +5980,9 @@ static void mlx5e_remove(struct auxiliary_device *adev)
- 	mlx5e_dcbnl_delete_app(priv);
- 	unregister_netdev(priv->netdev);
- 	mlx5e_suspend(adev, state);
--	priv->profile->cleanup(priv);
-+	/* Avoid cleanup if profile rollback failed. */
-+	if (priv->profile)
-+		priv->profile->cleanup(priv);
- 	mlx5e_devlink_port_unregister(priv);
- 	mlx5e_destroy_netdev(priv);
- }
+Patch 12 by Patrisious allows RDMA RX steering creation over devices
+with IB link layer.
+
+Regards,
+Tariq
+
+
+Carolina Jubran (1):
+  net/mlx5: Remove PTM support log message
+
+Itamar Gozlan (2):
+  net/mlx5: DR, expand SWS STE callbacks and consolidate common structs
+  net/mlx5: DR, add support for ConnectX-8 steering
+
+Mark Bloch (1):
+  net/mlx5: fs, retry insertion to hash table on EBUSY
+
+Moshe Shemesh (2):
+  net/mlx5: fs, add counter object to flow destination
+  net/mlx5: fs, add mlx5_fs_pool API
+
+Patrisious Haddad (1):
+  net/mlx5: fs, Add support for RDMA RX steering over IB link layer
+
+Rongwei Liu (2):
+  net/mlx5: Add device cap abs_native_port_num
+  net/mlx5: LAG, Refactor lag logic
+
+Tariq Toukan (1):
+  net/mlx5: LAG, Support LAG over Multi-Host NICs
+
+Yevgeny Kliteynik (2):
+  net/mlx5: HWS, no need to expose mlx5hws_send_queues_open/close
+  net/mlx5: HWS, do not initialize native API queues
+
+ drivers/infiniband/hw/mlx5/fs.c               |  37 +-
+ .../net/ethernet/mellanox/mlx5/core/Makefile  |   3 +-
+ .../mellanox/mlx5/core/diag/fs_tracepoint.h   |   2 +-
+ .../mellanox/mlx5/core/en_accel/ipsec_fs.c    |  20 +-
+ .../net/ethernet/mellanox/mlx5/core/en_tc.c   |   2 +-
+ .../mellanox/mlx5/core/esw/acl/egress_lgcy.c  |   2 +-
+ .../mellanox/mlx5/core/esw/acl/ingress_lgcy.c |   2 +-
+ .../ethernet/mellanox/mlx5/core/esw/bridge.c  |  20 +-
+ .../mellanox/mlx5/core/eswitch_offloads.c     |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/fs_cmd.c  |   5 +-
+ .../net/ethernet/mellanox/mlx5/core/fs_core.c |  12 +-
+ .../ethernet/mellanox/mlx5/core/fs_counters.c | 290 +++++---------
+ .../net/ethernet/mellanox/mlx5/core/fs_pool.c | 194 ++++++++++
+ .../net/ethernet/mellanox/mlx5/core/fs_pool.h |  54 +++
+ .../ethernet/mellanox/mlx5/core/lag/debugfs.c |  13 +-
+ .../net/ethernet/mellanox/mlx5/core/lag/lag.c | 365 ++++++++++++------
+ .../net/ethernet/mellanox/mlx5/core/lag/lag.h |  17 +-
+ .../net/ethernet/mellanox/mlx5/core/lag/mp.c  |  77 ++--
+ .../ethernet/mellanox/mlx5/core/lag/mpesw.c   |  16 +-
+ .../mellanox/mlx5/core/lag/port_sel.c         |  55 ++-
+ .../mellanox/mlx5/core/lib/macsec_fs.c        |   8 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |   8 +-
+ .../mellanox/mlx5/core/steering/hws/bwc.h     |   6 +-
+ .../mellanox/mlx5/core/steering/hws/context.c |   6 +-
+ .../mellanox/mlx5/core/steering/hws/context.h |   6 +
+ .../mellanox/mlx5/core/steering/hws/mlx5hws.h |   1 -
+ .../mellanox/mlx5/core/steering/hws/send.c    |  48 ++-
+ .../mellanox/mlx5/core/steering/hws/send.h    |   6 -
+ .../mlx5/core/steering/sws/dr_domain.c        |   2 +-
+ .../mellanox/mlx5/core/steering/sws/dr_ste.c  |   6 +-
+ .../mellanox/mlx5/core/steering/sws/dr_ste.h  |  19 +-
+ .../mlx5/core/steering/sws/dr_ste_v0.c        |   6 +-
+ .../mlx5/core/steering/sws/dr_ste_v1.c        | 207 ++--------
+ .../mlx5/core/steering/sws/dr_ste_v1.h        | 147 ++++++-
+ .../mlx5/core/steering/sws/dr_ste_v2.c        | 169 +-------
+ .../mlx5/core/steering/sws/dr_ste_v2.h        | 168 ++++++++
+ .../mlx5/core/steering/sws/dr_ste_v3.c        | 221 +++++++++++
+ .../mellanox/mlx5/core/steering/sws/fs_dr.c   |   2 +-
+ .../mlx5/core/steering/sws/mlx5_ifc_dr.h      |  40 ++
+ .../mellanox/mlx5/core/steering/sws/mlx5dr.h  |   2 +-
+ include/linux/mlx5/fs.h                       |   4 +-
+ include/linux/mlx5/mlx5_ifc.h                 |   3 +-
+ 42 files changed, 1478 insertions(+), 795 deletions(-)
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/fs_pool.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/fs_pool.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v2.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v3.c
+
 -- 
-2.25.1
+2.44.0
 
 
