@@ -1,70 +1,71 @@
-Return-Path: <linux-rdma+bounces-6417-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6418-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0CEB9EC3DB
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 05:06:49 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 285E49EC3DC
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 05:06:53 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29C78283CC3
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 04:06:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D5E51887FEF
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2024 04:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87BCE1AA782;
-	Wed, 11 Dec 2024 04:06:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A5E1BC07B;
+	Wed, 11 Dec 2024 04:06:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DRJFP0fi"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="UEueqjAZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D10712451C0
-	for <linux-rdma@vger.kernel.org>; Wed, 11 Dec 2024 04:06:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 547C82451C0
+	for <linux-rdma@vger.kernel.org>; Wed, 11 Dec 2024 04:06:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733890005; cv=none; b=lHMF4z5TsRyDwwtYdWeA+aBZZW7J1UKBq5I2txg0OKV1KdLsWAJYXeTAy+WQxpv0lsCMVLSfS6OQj6ULTbzCsIfyFt/Gu5Nv3pt2fxf4HMR28SHWFblq2fc4SHNeFzfMzVyHc/8TpAEh6I5MPv0Ds3Qj6NqwZQZqpN/6DWEP9Vk=
+	t=1733890007; cv=none; b=COFsqwMS9GRxFXDItY5Iv1VVcfvcul1owj0TCxykO8ghO3RRG0cLYQmuHx9cvVNc4RWh7La0VjN/2s9+/1VTEnHnQev8hnz85YXucvWdmfA17v2I1BP/y6Ij8XntJb30Jd6SRJdHEC+ch7PgoVHVDAJpNpuIxG5QGB/++S6IvI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733890005; c=relaxed/simple;
-	bh=fO8EeUXrc2/TBt3vLeD81sdSxeYxP70yTRZeRTjeYMM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=ItkkC2QN84rOrX+eFZVINvdM6Sy2njuvqm61lztYOzzKS6CU2S9t4Xali6T9v6G8DAvUwnOP2sszhxQgUKHSAw+JyTIrxY4n5kd05ywiKvz9DemrbW2TF1LFG7ATE71Dv/a7fYDuo3cANspB+glywCVX599THDIK11Djb7rGKnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=DRJFP0fi; arc=none smtp.client-ip=209.85.216.52
+	s=arc-20240116; t=1733890007; c=relaxed/simple;
+	bh=/AbQhHAGXip2gWIvELB44f0eovrmLpNX4tbXGQvqq8U=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=ooA9ZvNsmWbCyItvEV+hs7ussWTK/dsnsyGohrB2LL9HzUyZSv9UA2P9Ecq1wRVFHwnWVyUp6PuO7VlpboZSBYSLQsEUMViboERni8c//v1kvah6LBvp+DgV8kPWRQPsSS3KE0en/hmP/bFcWdc7/JIsR8Ik2mqrOdsoIIbMNT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=UEueqjAZ; arc=none smtp.client-ip=209.85.216.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2efb17478adso2349568a91.1
-        for <linux-rdma@vger.kernel.org>; Tue, 10 Dec 2024 20:06:43 -0800 (PST)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2ee46851b5eso4545436a91.1
+        for <linux-rdma@vger.kernel.org>; Tue, 10 Dec 2024 20:06:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1733890003; x=1734494803; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1733890006; x=1734494806; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=uTNRZXKqk1Z8hQ0CaF0SoqYPfI6bk4nicfkzpP6gq3M=;
-        b=DRJFP0fikRBtkQ4GiHg9sQLqejRlbskY+q7fLAQcJ8GJaYaiG/hfplsF/cCrga6Lws
-         IyyK6iQx4CZAGabkveVYRTIx/2YbyLlxH2r6QXWdqDVYZPMfNktYwdL3eYC1HB3Z1xEy
-         Qewn0X7ohd7N8ebK3Y/p5egH/z+DlncKtzSiU=
+        bh=pHO8WIMPG+IkKbx5GL/jKU/mNV7T0FGxXoSv7ZHnF1I=;
+        b=UEueqjAZc1F2lXcbDvxzPQknTrMibRaVLMF1+MuZBN0jsAhxIwgOCFb+IUstuNeVW/
+         WmYiq6JxCFyz6dZMPXWhkgiQ2l0BC3hPLqgWl3TLaQ4XxXF7enx7z1PLcJ5LCJ7CZUgs
+         NdMFjCg7g7/5gWpFWL+9lqf1+eY417ggSAQgs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733890003; x=1734494803;
+        d=1e100.net; s=20230601; t=1733890006; x=1734494806;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uTNRZXKqk1Z8hQ0CaF0SoqYPfI6bk4nicfkzpP6gq3M=;
-        b=vohVJDkIB/B99j6vyCXXXyBdxdT/Z/1wUgnh3WnQt4jZr+WwroGazq5ipssAcEe9mc
-         ZkScGJuwBqBVjBSym9Eo072LiRnBl6do2FvaiBwAERG1YDyeqd2rPWYf45EPRphff0Yr
-         XlvMr6TMDExOOdv92YlmSBhs9ZVIGDAHIlG8NgfOvKQZbmWOFv8mP+ut4kfJoNouSV64
-         Y78eqaM61yPrU1GOKzhjKrIXfw0blYpCO3g0i2XviKmeFHx6BpNzKtOy2OFkFPx7MYs6
-         Q7/+VecM87s9WNtiBAkKEVuwJeUdJXdG3MGjU6pTF6kdV7CSvW+sAzuBP4/tDoLeOcdC
-         hUdQ==
-X-Gm-Message-State: AOJu0YycuJPgpGe2neqjhwUPoL7prnZsgEp6DJVBpFSkRzHz3TbUxxbw
-	TBkwKZkNLAlUG/UUbAliAL5LKxEP164ai1sgydMXIR42m94Z+YsjNTrjAKRFIw==
-X-Gm-Gg: ASbGncsO+h8CyHNruss0OMVLUlEXVsnMio6PxNQWIhjZTl9RvE4Thj+mlhzE9OFrhKC
-	k9GXlQJFuvDf7RdHtva3Kyd8iOCTSr1RKxLkgoG8aTkeqgeknqVTh/PqCY5+2+XG/1LaCTaUOut
-	HeMaLnLgUD1iG4Ix8FylqZ5GLvsc13apWoOQwWoBWxDV5x9aTNUqq9YKMpkhZsE5QjDhFIEmeXU
-	cOaglGFYfyHUBYgC4SLUq1/Ur3CsxBdZmSJm0jBjmRxyWLmkAbLPQQxc+aNOiIqM4LStPJGbykI
-	mv5cGFn4OdkGRJB+/pmW/WC9/Y6OewvA/5eN
-X-Google-Smtp-Source: AGHT+IFFdyD/Kkkst0eR6fZVHJEoIhV/KAfUII4ohzU7J9DEoJFr5MTC+bsMcxPeVe3NfZ35kc4g8w==
-X-Received: by 2002:a17:90b:4a41:b0:2ee:c9b6:c266 with SMTP id 98e67ed59e1d1-2f127fa5e74mr2374315a91.13.1733890003077;
-        Tue, 10 Dec 2024 20:06:43 -0800 (PST)
+        bh=pHO8WIMPG+IkKbx5GL/jKU/mNV7T0FGxXoSv7ZHnF1I=;
+        b=AslNXmUG/yplxorRMf9dEle9ZqhEJIAcVl4RURSo7KgMmsLgILA6V+CBXUxDdDJaAH
+         1hVpnx6AIQyxpCjjWbVWcra2eTgz6eAixl9c4kDrET2OYumG76uCZZyuNednWejqxMoV
+         1LLs08Qp3sOY+hQo+HppGeAn+Q7vJUjNyRXqRc8TE+zgzutfexOXZh5f250bH4XMTKIV
+         CwtUocomlU6Mmb8xpOUxToY3IDcop5SVVzGlRji9aU5fG7RzM/nLIl2iEW/WUWkpEc0H
+         dcWZmNThlq6tXtBS0/X9H4wmRJTYgId573FMFKm56K+/+FoWPiH+bjd/SGHVhliQbTI2
+         GyAg==
+X-Gm-Message-State: AOJu0YxpnZs8CFLA/TwP3aLDUPwWGQOAZJAkWDBkrrHtkxg/JTHnA/l4
+	K4UZt4dA9mJ0e1wctdUj2rCK6sAHvD+YKEZ8f4FJjhgrRF9TX4xCwsxUcmGK+BWUbJJKj17PTJX
+	zNg==
+X-Gm-Gg: ASbGncur/t5wIJA/vQQekzdbPhJdImHC2Qmb3ICelhLgo1udIXyI2UcQUdQNFcym3GD
+	QPT20Qbl2mDAxftipZC3E7lIPXGOVn9Os472TLQLfwCHL8hiq0zyIxkkC4f5RQDdWAdj8JRVcdd
+	F2wPzXjNgArp7ERIqS04DCJl74IywShl1XGvUtlzb8YCr6NINKSgWNzyI8QzzBnflRVtr0PO/Ze
+	ukSnG0WMC4rBChPEq2q/fV3E2P/fY4/5ZVNTEBZ+Hwtj8tHfedPGF80Oasg1/jPkMtfBdVucND5
+	r8dqCg28nxNbHa4LRYtg3HeEZn7eONF2yg==
+X-Google-Smtp-Source: AGHT+IGzmkoDc4bKDf7QSZDpa+zmlAgFSJh4jOWaZm5yieRoyO+8exmSD4fPaO73JDFK6WwYZTj1Kw==
+X-Received: by 2002:a17:90b:4d11:b0:2ee:d824:b559 with SMTP id 98e67ed59e1d1-2f128035362mr1963951a91.28.1733890005869;
+        Tue, 10 Dec 2024 20:06:45 -0800 (PST)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ef26ffc948sm12477773a91.3.2024.12.10.20.06.40
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ef26ffc948sm12477773a91.3.2024.12.10.20.06.43
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Dec 2024 20:06:42 -0800 (PST)
+        Tue, 10 Dec 2024 20:06:45 -0800 (PST)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -72,9 +73,9 @@ Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH rdma-next 4/5] RDMA/bnxt_re: Eliminate need for some forward declarations
-Date: Tue, 10 Dec 2024 19:45:44 -0800
-Message-Id: <1733888745-30939-5-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH rdma-next 5/5] RDMA/bnxt_re: Remove unnecessary header file inclusion
+Date: Tue, 10 Dec 2024 19:45:45 -0800
+Message-Id: <1733888745-30939-6-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1733888745-30939-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1733888745-30939-1-git-send-email-selvin.xavier@broadcom.com>
@@ -86,139 +87,53 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-Move the function definition of bnxt_re_shutdown() to avoid
-forward declarartion of bnxt_re_dev_uninit().
-
-Move the function definition of bnxt_re_setup_cc() before
-bnxt_re_add_device() to avoid it's forward declarations.
-
-Also, forward declarartions of bnxt_re_stop_irq() and
-bnxt_re_dev_stop() are unnecessary.
+There is no need to include bnxt_ulp.h in ib_verbs.c.
+Remove it. Also, fixed hw_counters.c to remove unwanted
+header file inclusions.
 
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 73 +++++++++++++++++-------------------
- 1 file changed, 34 insertions(+), 39 deletions(-)
+ drivers/infiniband/hw/bnxt_re/hw_counters.c | 9 ---------
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c    | 2 --
+ 2 files changed, 11 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 75e1611..5e10b54 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -79,17 +79,12 @@ MODULE_LICENSE("Dual BSD/GPL");
- /* globals */
- static DEFINE_MUTEX(bnxt_re_mutex);
+diff --git a/drivers/infiniband/hw/bnxt_re/hw_counters.c b/drivers/infiniband/hw/bnxt_re/hw_counters.c
+index 1e63f80..77ec2ed 100644
+--- a/drivers/infiniband/hw/bnxt_re/hw_counters.c
++++ b/drivers/infiniband/hw/bnxt_re/hw_counters.c
+@@ -37,18 +37,9 @@
+  *
+  */
  
--static void bnxt_re_stop_irq(void *handle);
--static void bnxt_re_dev_stop(struct bnxt_re_dev *rdev);
- static int bnxt_re_netdev_event(struct notifier_block *notifier,
- 				unsigned long event, void *ptr);
--static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev);
--static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev, u8 op_type);
- static int bnxt_re_hwrm_qcaps(struct bnxt_re_dev *rdev);
+-#include <linux/interrupt.h>
+ #include <linux/types.h>
+-#include <linux/spinlock.h>
+-#include <linux/sched.h>
+-#include <linux/slab.h>
+ #include <linux/pci.h>
+-#include <linux/prefetch.h>
+-#include <linux/delay.h>
  
- static int bnxt_re_hwrm_qcfg(struct bnxt_re_dev *rdev, u32 *db_len,
- 			     u32 *offset);
--static void bnxt_re_setup_cc(struct bnxt_re_dev *rdev, bool enable);
- static void bnxt_re_set_db_offset(struct bnxt_re_dev *rdev)
- {
- 	struct bnxt_qplib_chip_ctx *cctx;
-@@ -302,16 +297,6 @@ static void bnxt_re_vf_res_config(struct bnxt_re_dev *rdev)
- 				      &rdev->qplib_ctx);
- }
+-#include <rdma/ib_addr.h>
+-
+-#include "bnxt_ulp.h"
+ #include "roce_hsi.h"
+ #include "qplib_res.h"
+ #include "qplib_sp.h"
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 8202339..129178b 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -52,8 +52,6 @@
+ #include <rdma/uverbs_ioctl.h>
+ #include <linux/hashtable.h>
  
--static void bnxt_re_shutdown(struct auxiliary_device *adev)
--{
--	struct bnxt_re_en_dev_info *en_info = auxiliary_get_drvdata(adev);
--	struct bnxt_re_dev *rdev;
+-#include "bnxt_ulp.h"
 -
--	rdev = en_info->rdev;
--	ib_unregister_device(&rdev->ibdev);
--	bnxt_re_dev_uninit(rdev, BNXT_RE_COMPLETE_REMOVE);
--}
--
- static void bnxt_re_stop_irq(void *handle)
- {
- 	struct bnxt_re_en_dev_info *en_info = auxiliary_get_drvdata(handle);
-@@ -2123,6 +2108,30 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
- 	return rc;
- }
- 
-+static void bnxt_re_setup_cc(struct bnxt_re_dev *rdev, bool enable)
-+{
-+	struct bnxt_qplib_cc_param cc_param = {};
-+
-+	/* Do not enable congestion control on VFs */
-+	if (rdev->is_virtfn)
-+		return;
-+
-+	/* Currently enabling only for GenP5 adapters */
-+	if (!bnxt_qplib_is_chip_gen_p5_p7(rdev->chip_ctx))
-+		return;
-+
-+	if (enable) {
-+		cc_param.enable  = 1;
-+		cc_param.tos_ecn = 1;
-+	}
-+
-+	cc_param.mask = (CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_ENABLE_CC |
-+			 CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_TOS_ECN);
-+
-+	if (bnxt_qplib_modify_cc(&rdev->qplib_res, &cc_param))
-+		ibdev_err(&rdev->ibdev, "Failed to setup CC enable = %d\n", enable);
-+}
-+
- static void bnxt_re_update_en_info_rdev(struct bnxt_re_dev *rdev,
- 					struct bnxt_re_en_dev_info *en_info,
- 					struct auxiliary_device *adev)
-@@ -2192,30 +2201,6 @@ static int bnxt_re_add_device(struct auxiliary_device *adev, u8 op_type)
- 	return rc;
- }
- 
--static void bnxt_re_setup_cc(struct bnxt_re_dev *rdev, bool enable)
--{
--	struct bnxt_qplib_cc_param cc_param = {};
--
--	/* Do not enable congestion control on VFs */
--	if (rdev->is_virtfn)
--		return;
--
--	/* Currently enabling only for GenP5 adapters */
--	if (!bnxt_qplib_is_chip_gen_p5_p7(rdev->chip_ctx))
--		return;
--
--	if (enable) {
--		cc_param.enable  = 1;
--		cc_param.tos_ecn = 1;
--	}
--
--	cc_param.mask = (CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_ENABLE_CC |
--			 CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_TOS_ECN);
--
--	if (bnxt_qplib_modify_cc(&rdev->qplib_res, &cc_param))
--		ibdev_err(&rdev->ibdev, "Failed to setup CC enable = %d\n", enable);
--}
--
- /*
-  * "Notifier chain callback can be invoked for the same chain from
-  * different CPUs at the same time".
-@@ -2376,6 +2361,16 @@ static int bnxt_re_resume(struct auxiliary_device *adev)
- 	return 0;
- }
- 
-+static void bnxt_re_shutdown(struct auxiliary_device *adev)
-+{
-+	struct bnxt_re_en_dev_info *en_info = auxiliary_get_drvdata(adev);
-+	struct bnxt_re_dev *rdev;
-+
-+	rdev = en_info->rdev;
-+	ib_unregister_device(&rdev->ibdev);
-+	bnxt_re_dev_uninit(rdev, BNXT_RE_COMPLETE_REMOVE);
-+}
-+
- static const struct auxiliary_device_id bnxt_re_id_table[] = {
- 	{ .name = BNXT_ADEV_NAME ".rdma", },
- 	{},
+ #include "roce_hsi.h"
+ #include "qplib_res.h"
+ #include "qplib_sp.h"
 -- 
 2.5.5
 
