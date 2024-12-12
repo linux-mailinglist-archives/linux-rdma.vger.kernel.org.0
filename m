@@ -1,212 +1,140 @@
-Return-Path: <linux-rdma+bounces-6470-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6471-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAD1A9EE6EF
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 13:41:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0353C9EE711
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 13:49:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9D451885FE4
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 12:41:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83AB21886D41
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 12:49:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38BE02135B9;
-	Thu, 12 Dec 2024 12:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76EF1213E8F;
+	Thu, 12 Dec 2024 12:49:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RtCTHG9c"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Tsa9J2at"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34BA6212F9E;
-	Thu, 12 Dec 2024 12:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 499322116EC
+	for <linux-rdma@vger.kernel.org>; Thu, 12 Dec 2024 12:49:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734007307; cv=none; b=H+uRk9BPpCjvQ8mhJkmAnkmVEiQsolymkN/BAebhAV3G1fpccUfix8FvVrT9LM3CiuaQBSjnBy4VnAlFNi5e/p4OKP2+wrC7dcMHKpj50OGFG/E0a+EDaAExJn8HW+4dkt1d9l+IxHhCAgbVT4UvMekW/8ETLxBdf4l23EyfSR4=
+	t=1734007782; cv=none; b=aVz5Z8e9USgCSnYal5FcwwLbCRww66o+1Q58gBwNnH68ytvWk0D7YF9oULjlMj65OoKL/TKWiQQEDYKBg8cetjzQ6f7x8xiUriMmrb3fhNRC2EH0UuIlhXCHz6nGet/QCLmGomcLQEwF4gzeVwlHElH1C0dnrA0ipmVgpIWOLyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734007307; c=relaxed/simple;
-	bh=jo2gukOfLEvouFNhtdX1Kl6/D7IkbXWRkgRk3E64PLw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iRa8uGyxizZveQWF+8FoGjgTUxIErxcudlV7T2ajHb+N6qFHRBvSM4ZTZVm4hGGVFqHVgycC+DWFea6KwIDvaevIclyJGhbD3aE4P7/SYhlkLO8W34IEDOB5h4eryoOCysRrVUzKXMtK8ATlDeXYq0NBu+0l754xfjc67azAhbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RtCTHG9c; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-436202dd7f6so6136815e9.0;
-        Thu, 12 Dec 2024 04:41:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734007303; x=1734612103; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UdqXBrFz+MhhB28jjWBHlFWKaOr9dT3/Vp6X30ps4DU=;
-        b=RtCTHG9cS3eoTTd2KCWow/hepNeQnAYwlY6lHSixeAW1b3fVztcDM5jzG301JWaHXj
-         1Df24Gq1ix5yy+ymwYF/biR7A88m9sg0hh2/tnjgzUPq7lMcXlp6/KT57yzqtTy0cL47
-         E3tM32y2IGBwiAvaOzVlGx5+mOQytM76EL8h8LUW6PpqpqW/GcPqmrCjjBtPYedkMeXA
-         S+AY9sGOYkix3e6O1MEWxJl/pBNytj5NdXUU1D/JHKmKwYnn5hLp2uzLFlKjBR2/jwz+
-         UqrGHuzW/2eMDIm7cGFH2JHGsbij7Su2lCGY7DzftJVjBGvAxPG/Y7WjpfI9CKTTFQUY
-         60Mw==
+	s=arc-20240116; t=1734007782; c=relaxed/simple;
+	bh=YyEpl48QgjEe2bn12JUr/hGhuZXIyNMzlFs8mERZ05k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CFc/q1qucv/FH/heP4bEcPzUvF/Dr7qY+e1mTvsp5fgBjRhOkjVYi5PQtRrgW8oe6QiVsDICIgy19fVdC1XdwHzj0IKsB3zpe6Wj12A27Aiepv7jo5FdcEferPwdecBeU7Mf7NjdVLuOU9leomUYtal3Plb2ZUDe/bNp9Dg2Zvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Tsa9J2at; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1734007777;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=itGE2V8xhlh187Ac7QymDWhnP6f5RsijIHH7cFJeYf8=;
+	b=Tsa9J2atuW/LZ7VQrhheeXKfen7SHJ3qT8V7x8qmC9PnE5mc1twapGdyA/y1j//Jtwrg0B
+	xzIHaVTAEW32ElyZGUGaPtHcjKcZa9gK/+/ghzpv4P3EinzIyd32Qomcx9bFb/5b0/Ldp9
+	mhG/Qj3tpDYhMizBarlathL7GPBByL0=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-186-Q0h5dcDsPxeaBodH5uVm0Q-1; Thu, 12 Dec 2024 07:49:35 -0500
+X-MC-Unique: Q0h5dcDsPxeaBodH5uVm0Q-1
+X-Mimecast-MFC-AGG-ID: Q0h5dcDsPxeaBodH5uVm0Q
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6d8f14fc179so16184926d6.2
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Dec 2024 04:49:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734007303; x=1734612103;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UdqXBrFz+MhhB28jjWBHlFWKaOr9dT3/Vp6X30ps4DU=;
-        b=pIKq8+9wDVXu3BC9M11burBtQQc7MGGMy6h4QR8mxijdlNv9HdDQnjb3R5CNvNmRdV
-         EG+jOxaxK0LMDnVhxEOw0DcLTAUFylDBTAzqOsQxVTQEYrYqdfsSXrJFwbqD5MheIX5B
-         x8zwkYhofJBwe4zZdx176ywIFQ7GkgLG8bw2lZ7AxmANw6LzuyCFROWQOpXKWqh+CmJa
-         QFW6LT3/yQ7l0Dej2A/Ls3MVWrppyUYULuWLFVaIWXKlZhn0GkWF8N3dcCDA/uIMEJZ9
-         TZGzJf2k17aEwwPXpVuGPnRactMRingc1TV/9JmBfo9cAGxd9wxDtwZDvfYRscaMobSA
-         u9Ug==
-X-Forwarded-Encrypted: i=1; AJvYcCU+qtQ7jmvGher16t2jyNTtAQlyDOI5zueQFAlcKClOHPwPcKwIsncAnzdwqdM7pV6a3+NRM+48OZwmpA==@vger.kernel.org, AJvYcCU0uNwB6RNMnIJjdUqimBKnfLaubomdWU0KujD6x1F+oG9ZUKlw2wvSAPhxdIajLL+pt+yRxf8Ly/WRlwpbJic=@vger.kernel.org, AJvYcCUILYc95y/qpsSLSNrbJYcaNFeA4c1AXytvwQq2ZBUhv2gMEYqPgkkSSxIm3nzfjRmjUzLirY7ClPtH@vger.kernel.org, AJvYcCUbIvk8szrAvBHYDz+rz+LZN7/WQawizTw1a/SZIqJaJac0NLhonpqAym/vC1+ELDySVQ0V7ZHEL23Y@vger.kernel.org, AJvYcCVXAUFpY91WrEp4OBtYrOX6SzU1tbSRN6v6R6z2hr8xLvScBq7gvQwI5Cp4Uw1UK3LHOvDHnRlqk87adCE6@vger.kernel.org, AJvYcCWOtaf+qKj4NRzhSMFovPECSTLJ5xdnbCOJOvc7E798Hj5ULcMsl8AVIgXSE1OzU55Xwfd/8SJFdsQM9g==@vger.kernel.org, AJvYcCXduIiLrQCwkvkZ3pduUERsp4y9AO1BY0yCYgO9wVdBBzhj8M0QtaGHzOtS6t2lTM5+yHQ=@vger.kernel.org, AJvYcCXxcmfs7q/5TCS1mP3TitPfo7WoKsCfZa7HD5prGmW1QCfVLab62BFpK93tthqIdSKxq2xTmkgBt3A1KswdKxUC@vger.kernel.org
-X-Gm-Message-State: AOJu0YxjoGbINz+t7IpRJNaOBSs0NnHXtrKdtniXsv2F7OGq3iepBv0h
-	NCDkFYH0KqklngSrPmdzGOg1hZDVV5au3PjDGw2f31k+JUC+NePnj9IzAgTLw6vkOq8aHZUDOpQ
-	QpMEbrsm8qAz4Lwq5DsU26PwyXJs=
-X-Gm-Gg: ASbGncvsdT6DNV65BM/GFrSD768quk64y244O923Eij/aK0pSu8/EgBzDcBGGPpmTgr
-	HWchv8+cebnQfRFofAvdqsr/592PBKIelvA4I
-X-Google-Smtp-Source: AGHT+IFqFk9dpKGWg1iKfKEea53yF0KmGIqYqHw17PI/mHu0HdGMd6qhUvlxmt/ZCzWy1qtAEPF2qQKT7Apiv7Ssc/8=
-X-Received: by 2002:a05:6000:a0b:b0:385:f44a:a68 with SMTP id
- ffacd0b85a97d-3878769805bmr3014357f8f.35.1734007303234; Thu, 12 Dec 2024
- 04:41:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1734007775; x=1734612575;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=itGE2V8xhlh187Ac7QymDWhnP6f5RsijIHH7cFJeYf8=;
+        b=obewHAcKmErgGl6HG5vUf5Gtdfra3Ow122CPBzZdRVffSC2SkjjTSXYNsSKEN/BHWQ
+         py71555tx9jSc2S4Z2BqainYhfiOAwvPR23zpdq/Ot2erSRHBthvbe4i41gGhlHjkvaO
+         5zkxD3zMyQuZHNSk/408Vme22lITGyVw+Tc4dhm6xQkT39Hh4AZunx4j2kl9hvBU/RZs
+         vfXO0IIfXkdGbhMBxE3XQ3TCSv8/bRLCQxPzJ73XS/l7YhtpI7cdpaOcz+5gVaUBPSb1
+         FCKsKSOkdLLBiC4+3oVOKB/BnIuX7LfuPQIvFjklpez4efs+TQSWRd+RYku6jyyQWocl
+         ltbA==
+X-Forwarded-Encrypted: i=1; AJvYcCXV/5+fqJd3u9c5m/I7K0MLkGV2jiKfR+lGatfNXEvhIBEiTyg1KBQUidbgQOxL3vCLZuJknq8sxbjD@vger.kernel.org
+X-Gm-Message-State: AOJu0YztxXxD86g/ASrEzLZe0RK+UoMWvR6So1DI9m1y+aK3XTvcvPXJ
+	mmsyi72QTG3WCd9RYIQwdx2Yka1XZBhB790ZFNrBWiqDiyS7Q9YylbKFnNU9ArE/NhrfN62f1rI
+	b26s5+RpvvsOTmShRJ5zplH9/VKnhKsAa/uxuQuKDnokHUNv4JUnhq6Nx0H+I5vrlSGxCiw==
+X-Gm-Gg: ASbGncvt77TwnZlH7sTFlDWVGVhttqiXupw8Y3NdVKBX4fbQQ3dR/VUYqlT3YP9mIpx
+	P1sNqpbLtDM0cmoLHmk7Fy+byKSaiFWybeDFxGzoLSgA+8/YWhKV9Te+Vzg/RF8L6j9HhoTaF0T
+	DeZsKQGBqR8kNmiXjjrQyrkiHa8x9tqXTyuzf61c6ZxAnvOqE9uR6NQSPeARNGLWLs/Nin1PYlK
+	fErSBsCQbbrh7EYhwQO+B4JCbxjFpb7AI3LTrCKtYxwnWGI9zoftG6100xJqU3gY/01zKhnUDDv
+	nLq7khI=
+X-Received: by 2002:a05:620a:1a03:b0:7b1:4fba:b02e with SMTP id af79cd13be357-7b6f88c85b4mr44458285a.12.1734007774848;
+        Thu, 12 Dec 2024 04:49:34 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF4Ag6lWJ9NB6/EzRTpVTPEefZcnvZ6mnIYDz3+GXqvWUtfKmm+Nj3KJ0262kDPgAuHx0vVcw==
+X-Received: by 2002:a05:620a:1a03:b0:7b1:4fba:b02e with SMTP id af79cd13be357-7b6f88c85b4mr44455085a.12.1734007774551;
+        Thu, 12 Dec 2024 04:49:34 -0800 (PST)
+Received: from [192.168.88.24] (146-241-48-67.dyn.eolo.it. [146.241.48.67])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b6db04175bsm327709085a.52.2024.12.12.04.49.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Dec 2024 04:49:34 -0800 (PST)
+Message-ID: <c67f6f4d-2291-41c8-8a89-aa0ae8f2ecd9@redhat.com>
+Date: Thu, 12 Dec 2024 13:49:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241209140151.231257-1-shaw.leon@gmail.com> <20241209140151.231257-4-shaw.leon@gmail.com>
- <2b89667d-ccd6-40b7-b355-1c71e159d14f@redhat.com>
-In-Reply-To: <2b89667d-ccd6-40b7-b355-1c71e159d14f@redhat.com>
-From: Xiao Liang <shaw.leon@gmail.com>
-Date: Thu, 12 Dec 2024 20:41:06 +0800
-Message-ID: <CABAhCOTv1tDOXBEE56CL1-S_J6ADZTcvso5GHtkarzJMqOC4xQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 3/5] rtnetlink: Decouple net namespaces in rtnl_newlink_create()
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Kuniyuki Iwashima <kuniyu@amazon.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Donald Hunter <donald.hunter@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, 
-	Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	Simon Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>, Jiri Pirko <jiri@resnulli.us>, 
-	Hangbin Liu <liuhangbin@gmail.com>, linux-rdma@vger.kernel.org, 
-	linux-can@vger.kernel.org, osmocom-net-gprs@lists.osmocom.org, 
-	bpf@vger.kernel.org, linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com, 
-	linux-wireless@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org, 
-	bridge@lists.linux.dev, linux-wpan@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next RESEND v3 2/2] net/smc: support ipv4 mapped ipv6
+ addr client for smc-r v2
+To: Halil Pasic <pasic@linux.ibm.com>,
+ Guangguan Wang <guangguan.wang@linux.alibaba.com>
+Cc: wenjia@linux.ibm.com, jaka@linux.ibm.com, alibuda@linux.alibaba.com,
+ tonylu@linux.alibaba.com, guwen@linux.alibaba.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, horms@kernel.org,
+ linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Dust Li <dust.li@linux.alibaba.com>
+References: <20241211023055.89610-1-guangguan.wang@linux.alibaba.com>
+ <20241211023055.89610-3-guangguan.wang@linux.alibaba.com>
+ <20241211195440.54b37a79.pasic@linux.ibm.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20241211195440.54b37a79.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Dec 12, 2024 at 5:27=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
-te:
->
-> On 12/9/24 15:01, Xiao Liang wrote:
-> > There are 4 net namespaces involved when creating links:
-> >
-> >  - source netns - where the netlink socket resides,
-> >  - target netns - where to put the device being created,
-> >  - link netns - netns associated with the device (backend),
-> >  - peer netns - netns of peer device.
-> >
-> > Currently, two nets are passed to newlink() callback - "src_net"
-> > parameter and "dev_net" (implicitly in net_device). They are set as
-> > follows, depending on netlink attributes.
-> >
-> >  +------------+-------------------+---------+---------+
-> >  | peer netns | IFLA_LINK_NETNSID | src_net | dev_net |
-> >  +------------+-------------------+---------+---------+
-> >  |            | absent            | source  | target  |
-> >  | absent     +-------------------+---------+---------+
-> >  |            | present           | link    | link    |
-> >  +------------+-------------------+---------+---------+
-> >  |            | absent            | peer    | target  |
-> >  | present    +-------------------+---------+---------+
-> >  |            | present           | peer    | link    |
-> >  +------------+-------------------+---------+---------+
-> >
-> > When IFLA_LINK_NETNSID is present, the device is created in link netns
-> > first. This has some side effects, including extra ifindex allocation,
-> > ifname validation and link notifications. There's also an extra step to
-> > move the device to target netns. These could be avoided if we create it
-> > in target netns at the beginning.
-> >
-> > On the other hand, the meaning of src_net is ambiguous. It varies
-> > depending on how parameters are passed. It is the effective link or pee=
-r
-> > netns by design, but some drivers ignore it and use dev_net instead.
-> >
-> > This patch refactors netns handling by packing newlink() parameters int=
-o
-> > a struct, and passing source, link and peer netns as is through this
-> > struct. Fallback logic is implemented in helper functions -
-> > rtnl_newlink_link_net() and rtnl_newlink_peer_net(). If is not set, pee=
-r
-> > netns falls back to link netns, and link netns falls back to source net=
-ns.
-> > rtnl_newlink_create() now creates devices in target netns directly,
-> > so dev_net is always target netns.
-> >
-> > For drivers that use dev_net as fallback of link_netns, current behavio=
-r
-> > is kept for compatibility.
-> >
-> > Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
->
-> I must admit this patch is way too huge for me to allow any reasonable
-> review except that this has the potential of breaking a lot of things.
->
-> I think you should be splitted to make it more palatable; i.e.
-> - a patch just add the params struct with no semantic changes.
-> - a patch making the dev_change_net_namespace() conditional on net !=3D
-> tge_net[1]
-> - many per-device patches creating directly the device in the target
-> namespace.
-> - a patch reverting [1]
->
-> Other may have different opinions, I'd love to hear them.
+On 12/11/24 19:54, Halil Pasic wrote:
+> On Wed, 11 Dec 2024 10:30:55 +0800
+> Guangguan Wang <guangguan.wang@linux.alibaba.com> wrote:
+> 
+>> AF_INET6 is not supported for smc-r v2 client before, even if the
+>> ipv6 addr is ipv4 mapped. Thus, when using AF_INET6, smc-r connection
+>> will fallback to tcp, especially for java applications running smc-r.
+>> This patch support ipv4 mapped ipv6 addr client for smc-r v2. Clients
+>> using real global ipv6 addr is still not supported yet.
+>>
+>> Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+>> Reviewed-by: Wen Gu <guwen@linux.alibaba.com>
+>> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+>> Reviewed-by: D. Wythe <alibuda@linux.alibaba.com>
+>> Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+>> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+> 
+> Sorry for the late remark, but does this need a Fixes tag? I mean
+> my gut feeling is that this is a bugfix -- i.e. should have been
+> working from the get go -- and not a mere enhancement. No strong
+> opinions here.
 
-Thanks. I understand your concern. Since the device is created in common
-code, how about splitting the patch this way:
+FTR: my take is this is really a new feature, as the ipv6 support for
+missing from the smc-r v2 introduction and sub-system maintainers
+already implicitly agreed on that via RB tags.
 
- 1) make the params struct contain both current src_net and other netns:
-        struct rtnl_newlink_params {
-                struct net *net;        // renamed from current src_net
-                struct net *src_net;    // real src_net
-                struct net *link_net;
-                ...
-        };
- 2) convert each driver to use the accurate netns,
- 3) remove "net", which is not used now, from params struct,
- 4) change rtnl_newlink_create() to create device in target netns
-    directly.
+Cheers,
 
-So 1) will be a big one but has no semantic changes.
-And I will send Patch 1 in this series to the net tree instead.
+/P
 
->
-> > diff --git a/drivers/net/amt.c b/drivers/net/amt.c
-> > index 98c6205ed19f..2f7bf50e05d2 100644
-> > --- a/drivers/net/amt.c
-> > +++ b/drivers/net/amt.c
-> > @@ -3161,14 +3161,17 @@ static int amt_validate(struct nlattr *tb[], st=
-ruct nlattr *data[],
-> >       return 0;
-> >  }
-> >
-> > -static int amt_newlink(struct net *net, struct net_device *dev,
-> > -                    struct nlattr *tb[], struct nlattr *data[],
-> > -                    struct netlink_ext_ack *extack)
-> > +static int amt_newlink(struct rtnl_newlink_params *params)
-> >  {
-> > +     struct net_device *dev =3D params->dev;
-> > +     struct nlattr **tb =3D params->tb;
-> > +     struct nlattr **data =3D params->data;
-> > +     struct netlink_ext_ack *extack =3D params->extack;
-> > +     struct net *link_net =3D rtnl_newlink_link_net(params);
-> >       struct amt_dev *amt =3D netdev_priv(dev);
-> >       int err =3D -EINVAL;
->
-> Minor nit: here and and many other places, please respect the reverse
-> xmas tree order.
-
-Will fix this.
 
