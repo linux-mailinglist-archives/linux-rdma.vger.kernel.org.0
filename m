@@ -1,79 +1,89 @@
-Return-Path: <linux-rdma+bounces-6457-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6458-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE4B79EDDB4
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 03:37:10 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 546CD9EE154
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 09:33:39 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B43C1282B7F
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 02:37:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 778EC188798C
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 08:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96CBB13D8A0;
-	Thu, 12 Dec 2024 02:37:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SNni2L3k"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5EC920CCC0;
+	Thu, 12 Dec 2024 08:33:22 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ACF518643;
-	Thu, 12 Dec 2024 02:37:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F35FF153BF6;
+	Thu, 12 Dec 2024 08:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733971022; cv=none; b=KDhGIJVSgvjwkUJP7GAjQ01PSgF/G6t9EVnmijBqWIjkZJY4y9A18pkW8LpjIh7LQr79LQnCEpBF9DM6xfSH88tVpuJovaWMYRGt+pw84jHUrVSNJqyV5JpV+S/u6M9wDw1UWSfN0y9qjuV0allHwHvMphKyMJ9Nja15dSHzWes=
+	t=1733992402; cv=none; b=RFHgyqljImpmVbDsdC5Aw51V4z7ud7VtqqPEXQHeHHtW+jpPSgIQOHp7bOYbnBtDYaq/yEXf5Zu40jeell3RHbDBQ6H8GRHB5d+DaZvVC5iAsb5B8RZdYZ2fPWdQa0tvEta2L49hEb3+uha7LmxLv/aXgGlFwqIP80YQXk/K+Lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733971022; c=relaxed/simple;
-	bh=DRclRfHEitaK10C0WBuLlWgcfYHfKPNDcjpntNVUWCQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a6O2nPjnf2CMTn+bEWAoOq9M+z6/zqacsqfuluFMe/tSSHIjajo9COIqNVfGIqAl24umH/UXbK7QpMID8oYaGBNz7pIRDS4WK4rEC+0AgTOwYoidAXPQOCsHNbWG2GGGAI4Sf5VwL+6uQKQeoO6uFBmICU1wYQeQq4j2k1QeF5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SNni2L3k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68498C4CED2;
-	Thu, 12 Dec 2024 02:37:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733971021;
-	bh=DRclRfHEitaK10C0WBuLlWgcfYHfKPNDcjpntNVUWCQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SNni2L3kqNkeHb4Q2KanH+1K7uRMb2m3dNsaK363SMWE5GU768G4IR2FKnmi2kjQg
-	 KCU6T08m/vjKoLp8SxKK1VKGmjP8tAjDJRezPR4zPqKBUSk7KQaA4Y0hVjH2aCiGY2
-	 wVm+HSlUZ9hRPLfwZnTjs93u1uEStIh90k8icclt4axuU9nfwlnI1EO5cedpZ9QJUi
-	 JzD82c39pmujhoVE+A7JG8oR+XgtAx3gelhcYY/L9q8WKfZ+u0l29Qw02Fvn+DRC79
-	 CIke2ZQGvTRpbxV3+a3idJYktB2CTHYHuY/z6zALXRLg7GEtKzfeOOmTTDOV2dCdQr
-	 F2TBh0J+xcVTw==
-Date: Wed, 11 Dec 2024 18:37:00 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Bernard Metzler <bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org,
- leon@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- syzkaller-bugs@googlegroups.com, zyjzyj2000@gmail.com,
- syzbot+4b87489410b4efd181bf@syzkaller.appspotmail.com
-Subject: Re: [PATCH] RDMA/siw: Remove direct link to net_device
-Message-ID: <20241211183700.1dff156f@kernel.org>
-In-Reply-To: <20241211160055.GM1888283@ziepe.ca>
-References: <20241210130351.406603-1-bmt@zurich.ibm.com>
-	<20241210145627.GH1888283@ziepe.ca>
-	<20241210175237.3342a9eb@kernel.org>
-	<20241211160055.GM1888283@ziepe.ca>
+	s=arc-20240116; t=1733992402; c=relaxed/simple;
+	bh=ot48Ik4V4v5EQENxhTEcEi66UwS0ekYW2KvZvqQWfBA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DVeJiktYN+MkZG2G6TlNw3U/MNHUbG0AoObaU5cMemLGMvk6idHBM4Zet+tskyzZoufpW/KNqd4NcxSc1p8Ivt/RF8rcULpeY62cLS20OtFru7TW5MysSY8lrNbeU5ONgk7vTFWUffbDJy1m8pbd3LxIXyqaIhtKcoPHGMLd/ts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 9FDD768D0E; Thu, 12 Dec 2024 09:33:12 +0100 (CET)
+Date: Thu, 12 Dec 2024 09:33:12 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH v4 04/18] iommu: add kernel-doc for iommu_unmap and
+ iommu_unmap_fast
+Message-ID: <20241212083312.GA9376@lst.de>
+References: <cover.1733398913.git.leon@kernel.org> <da4827fda833e69dbe487ef404a9333c51d8ed2e.1733398913.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <da4827fda833e69dbe487ef404a9333c51d8ed2e.1733398913.git.leon@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Wed, 11 Dec 2024 12:00:55 -0400 Jason Gunthorpe wrote:
-> > > ifindex is only stable so long as you are holding a reference on the
-> > > netdev..  
-> > 
-> > Does not compute. Can you elaborate what you mean, Jason?  
-> 
-> I mean you can't replace a netdev pointer with an ifindex, you can't
-> reliably get back to the same netdev from ifindex alone.
+On Thu, Dec 05, 2024 at 03:21:03PM +0200, Leon Romanovsky wrote:
+> +/**
+> + * iommu_unmap_fast() - Remove mappings from a range of IOVA without IOTLB sync
+> + * @domain: Domain to manipulate
+> + * @iova: IO virtual address to start
+> + * @size: Length of the range starting from @iova
+> + * @iotlb_gather: range information for a pending IOTLB flush
+> + *
+> + * iommu_unmap_fast() will remove a translation created by iommu_map(). It cannot
 
-With the right use of locking and the netdev notifier the ifindex
-is as good as a pointer. I just wanted to point out that taking 
-a reference makes no difference here.
+Please avoid the overly long line here.
+
+Otherwise looks good:
+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
