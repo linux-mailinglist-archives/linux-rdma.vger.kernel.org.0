@@ -1,79 +1,79 @@
-Return-Path: <linux-rdma+bounces-6485-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6486-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0458F9EFAF4
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 19:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 056679EFB00
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 19:33:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E0501888832
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 18:32:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A25891888CC2
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 18:33:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EEE9223316;
-	Thu, 12 Dec 2024 18:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0A2223C54;
+	Thu, 12 Dec 2024 18:32:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AmBZBJS1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dUSZcu12"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA5F13D52E;
-	Thu, 12 Dec 2024 18:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EBEF218594;
+	Thu, 12 Dec 2024 18:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734028329; cv=none; b=P8aqcpQllClBQnU1NqqVmD2Qvylq08jthK0F4za9NIKkhLUepH1Aa6cv/iWzK45xhvSgHJQykcNweDsnYM73ELAcvbguEg+8ejepdswa+aFQqcwGe+m5N3nOJ3TX5ui4joiCbs6SuV80d81FcWQMyOG9/TqH4uvwPOA5j+SkzHk=
+	t=1734028370; cv=none; b=IAsBrQFyVjDHUvix/wX/exZp681a4OGa1YzY0WH9hyjUH/9p2mAtDhKU4kzUhu99fNueRnzSOGH6o2ojJ+jzd0cC78t92m7uxHXJL1abwShgvn1QGn+oGvy2FgNn5OWlA28daD/AhW3VhoktY23p/mC2S8fPWi+me7oiD1X3GE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734028329; c=relaxed/simple;
-	bh=v5OFhyt5ZbqfNsLBv6mYpAWj6yYkHzAbdZOgrHO+VTg=;
+	s=arc-20240116; t=1734028370; c=relaxed/simple;
+	bh=NURB90wRGIQtGvHpZHK8+KtK1idFKaDLMy9I4MPNQNY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VyiW7VBrK21hf485uQHVGm6mR/4Z+oc+LLvVcMttmtzP6kR5PyypIleqg2Hs41y58FFtnFIhqKJcwo17qUylS4nA7YyY15WWwRxB0cGgjWxxyVpAzEJg9KhCPXk6E67Gv4Vwf55D2cZFbJIVvEwGyv0sxIfmJghacUudIOsm4rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AmBZBJS1; arc=none smtp.client-ip=209.85.128.43
+	 In-Reply-To:Content-Type; b=l3ZLZb6OfLo5f3ndkRLyEb6FDOK1eFaKxCYIv435By+8s1KUnRRpoUD7U8aB2FFHNQcElo2qOvoL8HCQFhq0bFp8B8c3jfJFOwvhHmGenR+/Y5zFB6iO08OwT9JJ4hET/y8qrXQs0GYEvfuaV3blA0NqQdgUd8Mnxm1LNqMEXis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dUSZcu12; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43623f0c574so6879795e9.2;
-        Thu, 12 Dec 2024 10:32:07 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43625c4a50dso6554555e9.0;
+        Thu, 12 Dec 2024 10:32:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734028326; x=1734633126; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734028367; x=1734633167; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=SLPXRVWKbDazqkS8IFoT/M0UALwj1qpLRM3RyZHx7Bs=;
-        b=AmBZBJS1I2Ve9aBYdKC3m9ll7UjTsRKesDsRVFU0oU0Spkcie2bsyaPe0f5mJGOpWh
-         mgOUCBkoyqGtpRkmmq+sU39ehOIsDpujBDTER7XpXu8ZbXI2h0sqOeBgt7vAx3UJ1PTW
-         QXGdkqVg5voQg9r/u7jHZPJtffETj93xvHHpWZox5W5TbrAro00Rg/v5ZmBGwNCSlm2U
-         VkxdeiZbBDoc5PFDOKh3Hd2WEOctM03qoO+1CeGPk+serLo5X6/b2OptVN1RnfETty31
-         3OhemWc2NjrgeN+SiuHTLrZcjTcH4GdWFTjeh+XkzERdq9mN28kfDTDkgD3AfWuUFh+l
-         zGDQ==
+        bh=CWktdjl/kWYB1GC6Zg93kea9N92lFMus/9lPyPyncnI=;
+        b=dUSZcu12lWOXxZMDNzuyOmkf55RAE8zjTfCkqLg7C03lZv86Ap8isXdl/NdiF0bUTA
+         /YV2awEz3qr9kBODsDhufzdwH6EJocSmKyAThjprZN8nIzYZEKLAJjwAaITySkGbW4nO
+         UDYf3D6QZZER/OsjcMawWxLwP+vu+xZ5NDpI8brPbtb2NahSKp7nUrtVxlXy+9Fwzf56
+         eCOBL+zKscrI/sRgTbe8uOSCR61D8goDP7HDOYrgUA36BZxkHzoPb+dKzJU8FNXh3hzv
+         ZpI8SkbyzKAferX+t3Q6SdjjzBwt7VpwxFse6VZGH4kpEG4WSjCtx8nOeoorqBdOntPu
+         9FDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734028326; x=1734633126;
+        d=1e100.net; s=20230601; t=1734028367; x=1734633167;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SLPXRVWKbDazqkS8IFoT/M0UALwj1qpLRM3RyZHx7Bs=;
-        b=d8bFmLwclw+GsTM7vowhh08Wz9O0zgM8HYl+LV+Wse58d5xysSoFniibOMciOXXrFF
-         bcw0XjSvMEBIFOYy9aEeZs4UlRA72IKjyEaBH+nI6X8nPI9IIx6Hcs20SVCE43qZJvcb
-         if4mKUo7flHzpuAT15qQhknzUHOOn03DEn5UijnHHSm+qWTDustxqH7Av7Ynkw5kE9+f
-         ZpdhkJWbkTzy6RouMTXQA7Y7as8oFrxhyAbsgB48kt8WZpmOpvbQ5s70sURc7gddEli0
-         5LoCNheGSQrRJ21yKv+SH8uZoZ7+rnfw122vKdKScTFgtftgW8S1phyRpXaSqirv+Ozt
-         8Vyg==
-X-Forwarded-Encrypted: i=1; AJvYcCVFI7uwiZsAnEN43AHCzSrV9vyNOYNBtFpNbrWpUPdFHs9wL72fHW6btZLVyb6u8x64Ayj0Nykz@vger.kernel.org, AJvYcCWlK63jWkb5dbHK1C4/n3mmc4iZdQWDpxdSI2ftVnSYerP+R8np9PjjVYr0Ngh8PFuuJTR+4GLk4nfD@vger.kernel.org
-X-Gm-Message-State: AOJu0YyeifPh5egFDOAprKOsLAEbliL7ruF6u+XGmn06qgh766vl83M8
-	MTzr4/WVphcGTMigpU601+OJ2Nas06t01W0+Khs1KZJmF4gMzT9O
-X-Gm-Gg: ASbGncuU3iOdBrrFf/HwiMFfZC8lQsW0t6FACE9eQSdXqbFhCAGM1d6M+Y3maPZAnK6
-	QOCEzCTGRIElDe728JtrBz2XAQQQAn7OHD6NpY8KcBRxS0IW/U0H8xv2S/IrI5Y2eYvOkGYp7/A
-	Te+1dWftTdvDox44LMUmnALBMWHcSuZW3ex7Zm+U/YCRU+STu6LNdzQim84oqYYlJXEVg/sY1CB
-	PDysmttTR2fGCdCpXl8A7QdJE6Pu7aeOiTZ15Sdq34rOprrlUVVCJ5S3hDpkZUajOyeoVXtonr3
-	Mw==
-X-Google-Smtp-Source: AGHT+IFt8z4HRiHsROj1qa22WlzhwMT+NUV98JNTRGGANTJ5g0Oa0RDnO2ukkUxGGswzgStp0tod1w==
-X-Received: by 2002:a05:600c:c11:b0:434:9c1b:b36a with SMTP id 5b1f17b1804b1-4361c37187bmr68103865e9.13.1734028325435;
-        Thu, 12 Dec 2024 10:32:05 -0800 (PST)
+        bh=CWktdjl/kWYB1GC6Zg93kea9N92lFMus/9lPyPyncnI=;
+        b=d1MkMwYpVwjWrtEDcvXve4/Z6n4fxpYxjsaLntrPagnG/IUZc9Knxw8qXskfjXAMnV
+         5mlizuzYdNSNuNt3oNvZg2btR3NjifPQcddaaAHH6CVl/HktKjTnAiqJsl7kZhwO7Nx1
+         oLAz7c681lsuoqTdBJAWnZ0BDQxvdQEVmqGHMiE4f167SQIr1lyXKF1gXzdugLsIi9KO
+         aDzZZs6jmEEMpgjSzmhH41vNi/7cZAh6IdAJVzC7pBWECMLcMjklIu2yaxK2qSCR5RJO
+         eOYpFHsVauVgZmjjeHBtgZ7VEK/NhX+A3LhaN0zM4lbBXhJFZzI1PtxQJ9sDjbCIQc33
+         2ZkA==
+X-Forwarded-Encrypted: i=1; AJvYcCUW48jeeOGu3kCKrgAHF3RR6DJvAyVLgWxzkWxBJkl2AnoWHXj6sfO5pkEVKfhxNQAPAf9g6YGH@vger.kernel.org, AJvYcCVXOdtV7hWM/pLpEx/RE4iKcq9esJdYJ+jfs76PbzD5Du0rXSJrWbzR58lw885mxICS0WTRZFic80y/@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyyynp9BBKDQU8QyfwZnT9UTFb31a5zMfw3DCeBIZB7FMe4Rj/r
+	2KRfnCFc6zpGwSxU2A52yw7WM7N921xB/gUTuk5z98vSGFGE9BUi
+X-Gm-Gg: ASbGncv8UlH8oMyVcZcXYHdlYz2WX5hf+0GdV+isSXcpkBU0zSzp22gj1j7lICtPus3
+	4wy19Z+UdmR/AuWR4flnwOKOmncyrPZ3Qn4LhfExl+b/UZUmCRvGoSvufqE6IWgTOw+CadVpWbB
+	mqUU5wHpmmmkuVj10naH+WvDQ144WhRek9kcp7YwOUmHFzWy2PEAAN+oNyXetQmD7qMxOZ060el
+	XvcJ8uVLElnObYRRaWauqeu2Q9P0xlYbcyDpS5aWgowt2lblYlPC7nrR8B17Y55FviEdhkqoNSp
+	zA==
+X-Google-Smtp-Source: AGHT+IFdLztDXFBQj4/ti9O4gJrfl1ie6+YRgfQ+RloUIzBeNQNxqVF/5aLFSsFKFwzLsBO+MlG2yw==
+X-Received: by 2002:a05:600c:8507:b0:434:a29d:6c71 with SMTP id 5b1f17b1804b1-4361c411ab0mr61381985e9.27.1734028366467;
+        Thu, 12 Dec 2024 10:32:46 -0800 (PST)
 Received: from [172.27.21.212] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43625706caesm24123675e9.32.2024.12.12.10.32.03
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4362557c66esm24756035e9.14.2024.12.12.10.32.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Dec 2024 10:32:05 -0800 (PST)
-Message-ID: <5b6c8feb-c779-428a-bcca-2febdae5bb0f@gmail.com>
-Date: Thu, 12 Dec 2024 20:31:30 +0200
+        Thu, 12 Dec 2024 10:32:46 -0800 (PST)
+Message-ID: <5a0dfc70-3899-4dca-b121-52e6bb75743a@gmail.com>
+Date: Thu, 12 Dec 2024 20:32:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -81,91 +81,80 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 10/12] net/mlx5: DR, add support for ConnectX-8
- steering
+Subject: Re: [PATCH net-next 04/12] net/mlx5: fs, add counter object to flow
+ destination
 To: Simon Horman <horms@kernel.org>, Tariq Toukan <tariqt@nvidia.com>
 Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski
  <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
  Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
  Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org,
  Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman <gal@nvidia.com>,
- linux-rdma@vger.kernel.org, Itamar Gozlan <igozlan@nvidia.com>,
- Yevgeny Kliteynik <kliteyn@nvidia.com>
+ linux-rdma@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
+ Yevgeny Kliteynik <kliteyn@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
 References: <20241211134223.389616-1-tariqt@nvidia.com>
- <20241211134223.389616-11-tariqt@nvidia.com>
- <20241212173113.GF73795@kernel.org>
+ <20241211134223.389616-5-tariqt@nvidia.com>
+ <20241212172024.GD73795@kernel.org>
 Content-Language: en-US
 From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20241212173113.GF73795@kernel.org>
+In-Reply-To: <20241212172024.GD73795@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 12/12/2024 19:31, Simon Horman wrote:
-> On Wed, Dec 11, 2024 at 03:42:21PM +0200, Tariq Toukan wrote:
->> From: Itamar Gozlan <igozlan@nvidia.com>
+On 12/12/2024 19:20, Simon Horman wrote:
+> On Wed, Dec 11, 2024 at 03:42:15PM +0200, Tariq Toukan wrote:
+>> From: Moshe Shemesh <moshe@nvidia.com>
 >>
->> Add support for a new steering format version that is implemented by
->> ConnectX-8.
->> Except for several differences, the STEv3 is identical to STEv2, so
->> for most callbacks STEv3 context struct will call STEv2 functions.
+>> Currently mlx5_flow_destination includes counter_id which is assigned in
+>> case we use flow counter on the flow steering rule. However, counter_id
+>> is not enough data in case of using HW Steering. Thus, have mlx5_fc
+>> object as part of mlx5_flow_destination instead of counter_id and assign
+>> it where needed.
 >>
->> Signed-off-by: Itamar Gozlan <igozlan@nvidia.com>
->> Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
+>> In case counter_id is received from user space, create a local counter
+>> object to represent it.
+>>
+>> Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
+>> Reviewed-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
+>> Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 >> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
->> ---
->>   .../net/ethernet/mellanox/mlx5/core/Makefile  |   1 +
->>   .../mlx5/core/steering/sws/dr_domain.c        |   2 +-
->>   .../mellanox/mlx5/core/steering/sws/dr_ste.c  |   2 +
->>   .../mellanox/mlx5/core/steering/sws/dr_ste.h  |   1 +
->>   .../mlx5/core/steering/sws/dr_ste_v3.c        | 221 ++++++++++++++++++
->>   .../mlx5/core/steering/sws/mlx5_ifc_dr.h      |  40 ++++
->>   .../mellanox/mlx5/core/steering/sws/mlx5dr.h  |   2 +-
->>   7 files changed, 267 insertions(+), 2 deletions(-)
->>   create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v3.c
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
->> index 79fe09de0a9f..10a763e668ed 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/Makefile
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
->> @@ -123,6 +123,7 @@ mlx5_core-$(CONFIG_MLX5_SW_STEERING) += steering/sws/dr_domain.o \
->>   					steering/sws/dr_ste_v0.o \
->>   					steering/sws/dr_ste_v1.o \
->>   					steering/sws/dr_ste_v2.o \
->> +					steering/sws/dr_ste_v3.o \
->>   					steering/sws/dr_cmd.o \
->>   					steering/sws/dr_fw.o \
->>   					steering/sws/dr_action.o \
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c
->> index 3d74109f8230..bd361ba6658c 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_domain.c
->> @@ -8,7 +8,7 @@
->>   #define DR_DOMAIN_SW_STEERING_SUPPORTED(dmn, dmn_type)	\
->>   	((dmn)->info.caps.dmn_type##_sw_owner ||	\
->>   	 ((dmn)->info.caps.dmn_type##_sw_owner_v2 &&	\
->> -	  (dmn)->info.caps.sw_format_ver <= MLX5_STEERING_FORMAT_CONNECTX_7))
->> +	  (dmn)->info.caps.sw_format_ver <= MLX5_STEERING_FORMAT_CONNECTX_8))
 > 
-> A definition for MLX5_STEERING_FORMAT_CONNECTX_8 seems to be missing
-> from this patch.
+> Unfortunately, I think that this misses two counter_id instances
+> in mlx5_vnet.c and the following is needed:
+> 
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index 5f581e71e201..36099047560d 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -1952,7 +1952,7 @@ static int mlx5_vdpa_add_mac_vlan_rules(struct mlx5_vdpa_net *ndev, u8 *mac,
+>   		goto out_free;
+>   
+>   #if defined(CONFIG_MLX5_VDPA_STEERING_DEBUG)
+> -	dests[1].counter_id = mlx5_fc_id(node->ucast_counter.counter);
+> +	dests[1].counter = node->ucast_counter.counter;
+>   #endif
+>   	node->ucast_rule = mlx5_add_flow_rules(ndev->rxft, spec, &flow_act, dests, NUM_DESTS);
+>   	if (IS_ERR(node->ucast_rule)) {
+> @@ -1961,7 +1961,7 @@ static int mlx5_vdpa_add_mac_vlan_rules(struct mlx5_vdpa_net *ndev, u8 *mac,
+>   	}
+>   
+>   #if defined(CONFIG_MLX5_VDPA_STEERING_DEBUG)
+> -	dests[1].counter_id = mlx5_fc_id(node->mcast_counter.counter);
+> +	dests[1].counter = node->mcast_counter.counter;
+>   #endif
+>   
+>   	memset(dmac_c, 0, ETH_ALEN);
+> 
+> You can observe this with an allmodconfig build.
 > 
 
-Should be pulled from mlx5-next, as described in the cover letter.
+Thanks, will fix.
 
-Copying here for your convenience:
-
-It requires pulling 4 IFC patches that were applied to
-mlx5-next:
-https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/log/?h=mlx5-next
-
-
->>   
->>   bool mlx5dr_domain_is_support_ptrn_arg(struct mlx5dr_domain *dmn)
->>   {
 > 
-> ...
+> Also, please consider including a "Returns:" section in
+> the Kernel doc of mlx5_fc_local_create().
 > 
 
+I'll add.
 
