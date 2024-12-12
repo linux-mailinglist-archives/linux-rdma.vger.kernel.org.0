@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-6493-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6494-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 700B79EFF18
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 23:15:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C66E9EFF1C
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 23:15:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C524287E02
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 22:15:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CB2D281148
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2024 22:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4641DE4EA;
-	Thu, 12 Dec 2024 22:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 656441DE2BF;
+	Thu, 12 Dec 2024 22:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="kaZWPKsx"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="mecxz/sT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2069.outbound.protection.outlook.com [40.107.220.69])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2063.outbound.protection.outlook.com [40.107.223.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D708A1DDC14;
-	Thu, 12 Dec 2024 22:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 587F61D7989;
+	Thu, 12 Dec 2024 22:15:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.63
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734041721; cv=fail; b=JAfKikphmsPeYiGkf0qBfPWoByEM9yGhNSHC6inxoeveXO6apwL4uD1/6aLZCRjczQ7vDdXRdWpEtAZ+Fw0GaTUyHQebSrM1UONL60Y4TqYUygNgj4Ns2J31UrF2xNukYcITMuEWRcIvu0bdPUwX1XvtDAngZj4BRMsGsYqH5n4=
+	t=1734041740; cv=fail; b=Ptyv0QrSYqL99p7lu/8SkxdYDsqJKJAq8DspAmXcfqc7tudM5haJFrmQAPX4vDTiof4288atbxi7zb1Wg8/pyiLlnhHodajLVHAt2ItBDKsN9sgkYGt092i5vlO86nT21eRAepGDF6GnTsUtFA3AP75mA7Gx1D4itB5U1WeE3OU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734041721; c=relaxed/simple;
-	bh=ps4aCLxSgG5gNBdJnaJL7F+ga9XiU0M6OIa9skgp9NA=;
+	s=arc-20240116; t=1734041740; c=relaxed/simple;
+	bh=u5gboAqmZ4cg9fUrTFwfulOROlP3FOFOXHwTi4TXjT4=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BdRhQ0ZUjEuXaHrli3U2hoYhhbA/yZBxoHeMpfqQy0L15lLXawr1dELNgE222MCo/IcIJZWbxdAVvFR01WM17zswYOxQy0Wqc4m7v2x7DqjGD60PQSJgfYnCEsjxX3XHFAks1q3LrNLYJAE2pJLLrdwjDIikRClxvPZDEa5XF7g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=kaZWPKsx; arc=fail smtp.client-ip=40.107.220.69
+	 MIME-Version:Content-Type; b=iIZ6T8CIUv34n+PDFpB27c8DhY69y4CvYxoWuegkTu49ri/wfl2m2myk5rEvMVVwfr7nqxWqduTpAVjE92KsDESzXJB4nHrUmyvl3gyhYs7Yoc0aAJXBmp1QRhYfrYD4XyfwYLjBbEtkmy5Rq8vpJHB896JN0s+kjTBQlAX0Xh8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=mecxz/sT; arc=fail smtp.client-ip=40.107.223.63
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=SIzzoWSpysXNGwX9UgQJliknblLqQ9HyPBGn9zV6fcntWcxfFndk+Ohq5nfdkrRgTwftws3cStGzk4XE50Ye3N4v5POPIp/WVMG2WwIrx5Vba5Deh3mxWpZ7KeFWpLzIf80ArdYplz6HCCLw8kEyXehmqBbZ+cIYTlFMKAclAyCkSPqNYpIY8p9G4lCpJID4wrokgZU/jU33iNUHXw5jsGIEUjSY5gyzj9eb0MzWVwU37/tDHsWtBxj8zDlSuAFpHvf/l/U4LaCDbAfqj90LtF0uy0jVKZp12ZwGPbRTnrVPJTbA1xBNRH1g8W+4pUyFMe/gbrmkKKgOJo+bS6ToFQ==
+ b=q8vhpFaTKA588uHOche2VfCH0EHyIwUnOS27H/Z2xIC4gi3vvh61n6rtAFkeX5aYO7mkfwDLE83PK4/Dd8zqgNmyQjVl1W8tHtmWCd6Hp9/GIWEIpETOR8+ddO43rblI7dA2FEIWDACu5GkFKQI/LLtC2ADHX6SXJzWCmmxtsxXoa0OsJEAPir1J4HFrrtPj1G5EXcyCLv5WvhwoN1cIawATDdPJRh00HHdTH1YayCjgASEtckeOXuXGcdCnPfmteRz9hyd7TOxNVKe6YsToBNJN4WXrPW458Z5x960VcIf9VVjLo4chC//J/Zih8jMJ45g+x14PrJN6Thc4UiVnBw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sL6q/HkGem98gpiHQNeoIIMrYQlj61TLN/sCBIkgQek=;
- b=oGV70beRr17cNXdVP0Un3kmA+GGjZ2VIYAsgKGP7hPV7yw2ee2O8hDXtdEya3rah0Wi1FWKHykdXrWPi1jqF4wlqv1zH8JqbmXxGOqkGfv3DWQ2QP97NivvAasjAOahfpjvCtGQ5vft0Ku1qnNCYR6gH4tlG7QZcS178h2KDZzO4U9o9KRyv2K84qHPSgb4YOGabs2bpbR7dEI5HpthEmmaaC8mqNqMiEutSXnqn9O2yX0CQPceL2wFIIzaAZ9BtruLYZo333Qgye+Ggeo5T8mPlVABBtX135m0QOKid5Th1ZgqyFCAhDwadPylI1zCl13aGI9Luv8Ljv5vqwxh8sg==
+ bh=Pau08nKiXKlCsZtbvC2vBvvbLmkUKXzWrUDYBnn9VX0=;
+ b=Y/S4gw7cmTxBeOXlFasKbV+oVYOHjmmFhfQcrgTNMX5OAsaxyqkW0y5QntP3inKNC+l8i2nhKT7y9Ko+YFBRMFvCwoo0/W8UUJQHnhqY76elERydJdv4AQX+OV/6ROiQFBs+3/8RpBLBLVmqothsoYOYpEiNmKW9T83KhYm2RJtOlEd37cHFOMaLAr074rNqW/sGLFakBzLVOlQXGvHZ/0zbw7F3WAaSujvLs0k9NBxlZuuNDUrzM3DMuZjyozt4IJxer9wZfKHTIQiPl3YW26QVZ+1y1p7ILdqU6BvIiQTXaBqnlV+88rVwhsTioB0chpgnEh6XMDiILDLKdczPNA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.118.233) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -45,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sL6q/HkGem98gpiHQNeoIIMrYQlj61TLN/sCBIkgQek=;
- b=kaZWPKsxMGxqvpYwgxNaElBVXSUzb/LVYCCL72ZakGYuys7fPQh/0mLTP0FengHSyVXrBkH+BTkGZdGuww3BDIYRUDZykI17d4r3ZkQ9mS5eKtBnxoMJPrVIvoRQsr7s4ejNlVURVcwLyauKigoZsKt3cWSOqx34/K1m+j4BWK8C3SMLa8XyxzXX2hcYyi4q+XV4t4hrzozk1cetxPpQ2edk9LqohmauUHK8A1Xh0JCpr2JhB7/EEc9dlyMkIFg16xFtAjYDlJGoU3UlzmUSs5xdMqSbbcDje9/jnEZba0cVgeAD2NKxEUnCoh0CmeDL05eVI2i+bN++yVKf6rJ76g==
-Received: from SJ2PR07CA0007.namprd07.prod.outlook.com (2603:10b6:a03:505::12)
- by SN7PR12MB6864.namprd12.prod.outlook.com (2603:10b6:806:263::10) with
+ bh=Pau08nKiXKlCsZtbvC2vBvvbLmkUKXzWrUDYBnn9VX0=;
+ b=mecxz/sTDkR9JyVo4mvKh+W07zEMcorZoffXv3pmemYZ6WnNnYBjOXrrhZe6qV5zzxdPI8P3oCwNtcRH2xNw1rUYcy3H8PPm2tomul78IdbVagzoFq/xRj1pS0N/FUYS5xjjkJrRheSC9ofPYvi3xu00JLIsDK829unm2KmeYbuluzf25Z0J/Yuzgia2pQdW8A3YWA3sKCeG6KKwGJDZM/hvAbPrJRXEgI07sMKxhRg8R6J4e1uvhBSe+bsRyF3GcrbXk6tpIJOEz7EgIr9nVafWbWjfT6A8T9d+4iS+pJ9SXkle10wakMMQ+uC3cZEmGvvUnSRK7yXHZ5DzA7RktQ==
+Received: from SJ2PR07CA0004.namprd07.prod.outlook.com (2603:10b6:a03:505::10)
+ by BL3PR12MB6546.namprd12.prod.outlook.com (2603:10b6:208:38d::6) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8230.23; Thu, 12 Dec
- 2024 22:15:17 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8251.15; Thu, 12 Dec
+ 2024 22:15:22 +0000
 Received: from SJ5PEPF000001C8.namprd05.prod.outlook.com
- (2603:10b6:a03:505:cafe::20) by SJ2PR07CA0007.outlook.office365.com
- (2603:10b6:a03:505::12) with Microsoft SMTP Server (version=TLS1_3,
+ (2603:10b6:a03:505:cafe::89) by SJ2PR07CA0004.outlook.office365.com
+ (2603:10b6:a03:505::10) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.8251.15 via Frontend Transport; Thu,
- 12 Dec 2024 22:15:16 +0000
+ 12 Dec 2024 22:15:22 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -66,29 +66,29 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
 Received: from mail.nvidia.com (216.228.118.233) by
  SJ5PEPF000001C8.mail.protection.outlook.com (10.167.242.36) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8251.15 via Frontend Transport; Thu, 12 Dec 2024 22:15:16 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ 15.20.8251.15 via Frontend Transport; Thu, 12 Dec 2024 22:15:22 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
  (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 12 Dec
- 2024 14:15:06 -0800
+ 2024 14:15:09 -0800
 Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Thu, 12 Dec 2024 14:15:05 -0800
+ 15.2.1544.4; Thu, 12 Dec 2024 14:15:09 -0800
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
  (10.126.190.181) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Thu, 12 Dec 2024 14:15:02 -0800
+ Transport; Thu, 12 Dec 2024 14:15:06 -0800
 From: Tariq Toukan <tariqt@nvidia.com>
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
  Lunn" <andrew+netdev@lunn.ch>, Leon Romanovsky <leonro@nvidia.com>
 CC: <netdev@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman
-	<gal@nvidia.com>, <linux-rdma@vger.kernel.org>, Yevgeny Kliteynik
-	<kliteyn@nvidia.com>, Itamar Gozlan <igozlan@nvidia.com>, Mark Bloch
-	<mbloch@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
-Subject: [PATCH net-next V2 06/10] net/mlx5: HWS, do not initialize native API queues
-Date: Fri, 13 Dec 2024 00:13:25 +0200
-Message-ID: <20241212221329.961628-7-tariqt@nvidia.com>
+	<gal@nvidia.com>, <linux-rdma@vger.kernel.org>, Itamar Gozlan
+	<igozlan@nvidia.com>, Yevgeny Kliteynik <kliteyn@nvidia.com>, Tariq Toukan
+	<tariqt@nvidia.com>
+Subject: [PATCH net-next V2 07/10] net/mlx5: DR, expand SWS STE callbacks and consolidate common structs
+Date: Fri, 13 Dec 2024 00:13:26 +0200
+Message-ID: <20241212221329.961628-8-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20241212221329.961628-1-tariqt@nvidia.com>
 References: <20241212221329.961628-1-tariqt@nvidia.com>
@@ -103,224 +103,1033 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: AnonymousSubmission
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001C8:EE_|SN7PR12MB6864:EE_
-X-MS-Office365-Filtering-Correlation-Id: ea5560b0-4c85-4bbd-0860-08dd1afa7529
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001C8:EE_|BL3PR12MB6546:EE_
+X-MS-Office365-Filtering-Correlation-Id: 248b37ed-ee0d-4fa3-554e-08dd1afa78c1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|1800799024|36860700013|376014|82310400026;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?VLepaG9YTzx9IqQ7HtCuhyc1mCSyi79IPPWj6dDABn5WzKbiP+eMfRy3jd12?=
- =?us-ascii?Q?RW/iNj/I55bOYTbAimco699rIXpc+hKIB0WUJTryfos4NFGNwxBKZqmdHk5L?=
- =?us-ascii?Q?PhyAcTjTw7ki0+2y2tP3Dbv7jBE8g3odr+XMRG7qutguunWqGgJ10KwlI4Ha?=
- =?us-ascii?Q?c5Mz0Ia/L1dru0h7WTqRHYdfbdUQlshahri6KtIX81hF21IIOA9WNCL665IN?=
- =?us-ascii?Q?fUkGjHTQ2WPjEXMheqpefApflcxSiSyUJ41jCq5zG31xM3ch7svB2En/r44r?=
- =?us-ascii?Q?S72K/JrIrEC1EFrTcqLYg+nAD4a+qkYnjEBU5ARcn3KyH1Bv0QXdAO55wrin?=
- =?us-ascii?Q?joSHmAWBb1CDwcpFRe/FABzNycdlyubcUJlOQo8FUPlzm1A/UY6ywZWX45NK?=
- =?us-ascii?Q?yFTmSvwzSQbQ6+vdkPpDlVLu4T8YDb79KTvFz0hZYv/jNea2KYnWz4IyUkEe?=
- =?us-ascii?Q?huW3eklfZBDHP9QbIPO/NIbrgzSuWPP5ZqGjcCYnQCXWq1uAl+LS1juort7/?=
- =?us-ascii?Q?pCcmYLnkPnZQUjRfaV3DlT3Ol2Cak0dr/H3NVcxcZ5kZOpSzbApGKTLSdgrK?=
- =?us-ascii?Q?IhyZUZAwM06HbAYSD6/zBf2sE2tiESoO2A5U42Cwmig0xjgKcLJgRTYc6L8u?=
- =?us-ascii?Q?U3BQht5beNB/SVJQoyPDiHzLHgOJ0J+3a7bIa7YkoFRjvj8z/JVmO1DsIMJs?=
- =?us-ascii?Q?1y7rY4kh/99/IYEi1M8+Y8U2od5iK07JBiCvRbwnH6oXZSqYBq6Z0+a64l8I?=
- =?us-ascii?Q?m02qzmU2cMkk6bukojL93LJKtuYSHMRsdTFV4koD7PulexT+8tclfA3EoHRE?=
- =?us-ascii?Q?kH0ptYNIeKVKIB/BwHczejsbJQdU54Gt/ZJsaPdcQ59rMt5+0ekZpG1G3S6E?=
- =?us-ascii?Q?DpVC7C6pufC+A8Hz5JwNq1zxBnPOt4gyPgYEuoz7vHkHunve04qq0iQGIgoD?=
- =?us-ascii?Q?7KFcH1lYGdVM76kxgnDZXIamYMOWel4HnYiKV5fI/b3hl/sKOUTMTPg07vYn?=
- =?us-ascii?Q?1q3WV4DAyWBPQcZveGzMrstCHRPQdEDNNQT3EE+gQACLgmwrcNnQgFM+0mgX?=
- =?us-ascii?Q?esbeu1NcqJJIwnvbiWLWDl8GfGVt6v5Od0WWC9DBrrg3xLUYFS/FB5NGtXwv?=
- =?us-ascii?Q?WLn9vzpKZmPOg4G4PzVgjTgH5CjuMDGwlB+QG1L5Mrcud3IeFlye81bzCezM?=
- =?us-ascii?Q?h1yIDx+u4m2AE3bvD+nbwdYQCKbCUl0bQDhT7lPa+A4u/PfAY4Okb3jdWpDs?=
- =?us-ascii?Q?s62zB21OCbTbWbpC18OFg2mmopKZgx4LIxoJHLz244pNDZAwbSPtXEDrAAmG?=
- =?us-ascii?Q?bkDos3RmomihX/1P7gfODEchvlT98jGs71D5hMsayhtGnHwJ0cpHN0TGYD2M?=
- =?us-ascii?Q?c07Th+hZhnV/y1O4LC23FsIFjkBDeYI5cqSIvSRSW7PEMYii4C/fnAK33oHK?=
- =?us-ascii?Q?OOnKdgYshB/meagbCz+z1NhJ+F/qCGWw?=
+	=?us-ascii?Q?+nH60Ad8xphyJrDaPwn7fEoDlmy8HuO8sGrWwPjiAPu6IaAmSvASnf6kZogw?=
+ =?us-ascii?Q?Wkw8298Fj8VACGjNb2IMc7+/hE49x/4nPD7AE5sFdQ6F0kHUUxPq7wRlzz1Z?=
+ =?us-ascii?Q?84XM4VnSZ8biJsPdAs6ZalSurlDRvUveawq5kyZRlCSmMhinujOIdmGQYM6Q?=
+ =?us-ascii?Q?32Ufh5gZWrDymhXPmg2nfXzX7QsfcwDkZxYR/Lca7MF77Yhc4o4dkGnxxZEa?=
+ =?us-ascii?Q?ABHTHbKI32wB28HgecOLT7Rw+QPSmE1U36YrQ+rFSzeRxNwk8KRhZjmoV9TT?=
+ =?us-ascii?Q?IU7ePvdeien4OdSWQTkqN+4oPbrrjmn/nghn0hGZJ/QgU8B5rOtKf6QCNLaW?=
+ =?us-ascii?Q?irQUZgYsxWbqGXgOm9Rl0x+uR1jjs3cnLYUPg47yyjSPNpvu60vxR48PIMeX?=
+ =?us-ascii?Q?0mwuE95xicTu+FFdRuHQyYqT7Lpfr44Bu0khBugJyGlSzNpF5G4k6pyViqJH?=
+ =?us-ascii?Q?TJ7kg5BvwvAQNUJdgzS0OFTXRqmyIbOrV/pNeL8HUvyPTQcQtSdFK8vTNenB?=
+ =?us-ascii?Q?8+sJ4Ai1mScNQKERGpnZvqB9Yxd3vUkDxFh5a/pOgflY/j0xIyQEgSphR4Ab?=
+ =?us-ascii?Q?jcrT7fANqCzP5myOZcox+dEMkytpNrTum6RtyM1NBWrybhbKu5F+Jmr7q7dc?=
+ =?us-ascii?Q?dUpybWg7RBdwMcCYuAgbzBOuoqIpvb6M02oQqQc2ufSmsrGLqOqgEJFxw1aL?=
+ =?us-ascii?Q?p9hDlorwbU8T4OEKSIciaFUOVSNAfoDTR/nAYbyuAk30OSh06LEkwCVwZ7/W?=
+ =?us-ascii?Q?gu5n7muUSkCM9On3SqroKCKI68IogNsN3hlnGz7DQRudqSlWqVs4QQnIRWeo?=
+ =?us-ascii?Q?RZvbL/JZvq7FhhH2bT66eKEOCHC67nddqC6z9qf9q8L6tEreZdTWFp3Dhc4/?=
+ =?us-ascii?Q?DUWVIaMUH8ZRmrY7h+vFE+6G+E3kVwIChyc9SyNyH+KWcMBq/ytTZtkbEdej?=
+ =?us-ascii?Q?aha6sZZvO15gFp4YQgUlCnDGKxdBggPH44IyF84hQQ4WrfSdmXIpSF96SP23?=
+ =?us-ascii?Q?YcA4BRH2+qUNfKfArgYP0NTRDUyExrbyVpOxG8L3YfweD9AMXOrss3HUaeMd?=
+ =?us-ascii?Q?DXj+z7JUP/WisoaQB00keFTArqtXbWXesRiAEMVC6UWlyjbDJvpqCoGfeadv?=
+ =?us-ascii?Q?cu99BY2q8uhPgSoR8ThfPm73e756bLG3Llp4ulEGedcfHf2malS1834z/2x0?=
+ =?us-ascii?Q?R1LKg6IHu05vH6qzL4kOlqMp3greoxZGNnLf+aG1jgF3wl2YIpg6AZxoijcX?=
+ =?us-ascii?Q?f1RAOB+B500oaoM4k27e2hKgxr86gnUSmqGleyentEaF4JFqFBpH7hkchLIQ?=
+ =?us-ascii?Q?nH2Pq8cvHU9QdQCwf3gZRvT2Huok7xLgfpAHvTUKJGY3LXLrYvO1z/x12eGg?=
+ =?us-ascii?Q?HpT3bWNbP99kDlQmZ+jtDJyyAYpd/QolNuExCm+xxNo8nk02a8CkMmJuuZtC?=
+ =?us-ascii?Q?8xtDnp+skLr1sWhRgDhLisrlWd2R1WkD?=
 X-Forefront-Antispam-Report:
 	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(376014)(82310400026);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2024 22:15:16.6091
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2024 22:15:22.6248
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea5560b0-4c85-4bbd-0860-08dd1afa7529
+X-MS-Exchange-CrossTenant-Network-Message-Id: 248b37ed-ee0d-4fa3-554e-08dd1afa78c1
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	SJ5PEPF000001C8.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6864
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6546
 
-From: Yevgeny Kliteynik <kliteyn@nvidia.com>
+From: Itamar Gozlan <igozlan@nvidia.com>
 
-HWS has two types of APIs:
- - Native: fastest and slimmest, async API.
-   The user of this API is required to manage rule handles memory,
-   and to poll for completion for each rule.
- - BWC: backward compatible API, similar semantics to SWS API.
-   This layer is implemented above native API and it does all
-   the work for the user, so that it is easy to switch between
-   SWS and HWS.
+Expand SWS STE callbacks to support ConnectX-8 hardware.
+Move common enums and structures to a shared header file.
 
-Right now the existing users of HWS require only BWC API.
-Therefore, in order to not waste resources, this patch disables
-send queues allocation for native API.
-
-If in the future support for faster HWS rule insertion will be required
-(such as for Connection Tracking), native queues can be enabled.
-
+Signed-off-by: Itamar Gozlan <igozlan@nvidia.com>
 Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
-Reviewed-by: Itamar Gozlan <igozlan@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- .../mellanox/mlx5/core/steering/hws/bwc.h     |  6 ++-
- .../mellanox/mlx5/core/steering/hws/context.c |  6 ++-
- .../mellanox/mlx5/core/steering/hws/context.h |  6 +++
- .../mellanox/mlx5/core/steering/hws/mlx5hws.h |  1 -
- .../mellanox/mlx5/core/steering/hws/send.c    | 38 ++++++++++++++-----
- 5 files changed, 43 insertions(+), 14 deletions(-)
+ .../mellanox/mlx5/core/steering/sws/dr_ste.c  |   4 +-
+ .../mellanox/mlx5/core/steering/sws/dr_ste.h  |  18 +-
+ .../mlx5/core/steering/sws/dr_ste_v0.c        |   6 +-
+ .../mlx5/core/steering/sws/dr_ste_v1.c        | 207 ++++--------------
+ .../mlx5/core/steering/sws/dr_ste_v1.h        | 147 ++++++++++++-
+ .../mlx5/core/steering/sws/dr_ste_v2.c        | 169 +-------------
+ .../mlx5/core/steering/sws/dr_ste_v2.h        | 168 ++++++++++++++
+ 7 files changed, 377 insertions(+), 342 deletions(-)
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v2.h
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h
-index 0b745968e21e..3d4965213b01 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h
-@@ -60,9 +60,11 @@ void mlx5hws_bwc_rule_fill_attr(struct mlx5hws_bwc_matcher *bwc_matcher,
- static inline u16 mlx5hws_bwc_queues(struct mlx5hws_context *ctx)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste.c
+index e94fbb015efa..01ba8eae2983 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste.c
+@@ -555,7 +555,7 @@ void mlx5dr_ste_set_actions_tx(struct mlx5dr_ste_ctx *ste_ctx,
+ 			       struct mlx5dr_ste_actions_attr *attr,
+ 			       u32 *added_stes)
  {
- 	/* Besides the control queue, half of the queues are
--	 * reguler HWS queues, and the other half are BWC queues.
-+	 * regular HWS queues, and the other half are BWC queues.
- 	 */
--	return (ctx->queues - 1) / 2;
-+	if (mlx5hws_context_bwc_supported(ctx))
-+		return (ctx->queues - 1) / 2;
-+	return 0;
+-	ste_ctx->set_actions_tx(dmn, action_type_set, ste_ctx->actions_caps,
++	ste_ctx->set_actions_tx(ste_ctx, dmn, action_type_set, ste_ctx->actions_caps,
+ 				hw_ste_arr, attr, added_stes);
  }
  
- static inline u16 mlx5hws_bwc_get_queue_id(struct mlx5hws_context *ctx, u16 idx)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.c
-index fd48b05e91e0..4a8928f33bb9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.c
-@@ -161,8 +161,10 @@ static int hws_context_init_hws(struct mlx5hws_context *ctx,
- 	if (ret)
- 		goto uninit_pd;
- 
--	if (attr->bwc)
--		ctx->flags |= MLX5HWS_CONTEXT_FLAG_BWC_SUPPORT;
-+	/* Context has support for backward compatible API,
-+	 * and does not have support for native HWS API.
-+	 */
-+	ctx->flags |= MLX5HWS_CONTEXT_FLAG_BWC_SUPPORT;
- 
- 	ret = mlx5hws_send_queues_open(ctx, attr->queues, attr->queue_size);
- 	if (ret)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.h
-index 47f5cc8de73f..1c9cc4fba083 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/context.h
-@@ -8,6 +8,7 @@ enum mlx5hws_context_flags {
- 	MLX5HWS_CONTEXT_FLAG_HWS_SUPPORT = 1 << 0,
- 	MLX5HWS_CONTEXT_FLAG_PRIVATE_PD = 1 << 1,
- 	MLX5HWS_CONTEXT_FLAG_BWC_SUPPORT = 1 << 2,
-+	MLX5HWS_CONTEXT_FLAG_NATIVE_SUPPORT = 1 << 3,
- };
- 
- enum mlx5hws_context_shared_stc_type {
-@@ -58,6 +59,11 @@ static inline bool mlx5hws_context_bwc_supported(struct mlx5hws_context *ctx)
- 	return ctx->flags & MLX5HWS_CONTEXT_FLAG_BWC_SUPPORT;
- }
- 
-+static inline bool mlx5hws_context_native_supported(struct mlx5hws_context *ctx)
-+{
-+	return ctx->flags & MLX5HWS_CONTEXT_FLAG_NATIVE_SUPPORT;
-+}
-+
- bool mlx5hws_context_cap_dynamic_reparse(struct mlx5hws_context *ctx);
- 
- u8 mlx5hws_context_get_reparse_mode(struct mlx5hws_context *ctx);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h
-index f39d636ff39a..5121951f2778 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h
-@@ -70,7 +70,6 @@ enum mlx5hws_send_queue_actions {
- struct mlx5hws_context_attr {
- 	u16 queues;
- 	u16 queue_size;
--	bool bwc; /* add support for backward compatible API*/
- };
- 
- struct mlx5hws_table_attr {
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
-index a93da4f71646..e3d621f013f6 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
-@@ -898,6 +898,9 @@ static int mlx5hws_send_ring_open(struct mlx5hws_context *ctx,
- 
- static void hws_send_queue_close(struct mlx5hws_send_engine *queue)
+@@ -566,7 +566,7 @@ void mlx5dr_ste_set_actions_rx(struct mlx5dr_ste_ctx *ste_ctx,
+ 			       struct mlx5dr_ste_actions_attr *attr,
+ 			       u32 *added_stes)
  {
-+	if (!queue->num_entries)
-+		return; /* this queue wasn't initialized */
-+
- 	hws_send_ring_close(queue);
- 	kfree(queue->completed.entries);
- }
-@@ -1000,12 +1003,33 @@ static int hws_bwc_send_queues_init(struct mlx5hws_context *ctx)
- 	return -ENOMEM;
+-	ste_ctx->set_actions_rx(dmn, action_type_set, ste_ctx->actions_caps,
++	ste_ctx->set_actions_rx(ste_ctx, dmn, action_type_set, ste_ctx->actions_caps,
+ 				hw_ste_arr, attr, added_stes);
  }
  
-+static int hws_send_queues_open(struct mlx5hws_context *ctx, u16 queue_size)
-+{
-+	int err = 0;
-+	u32 i = 0;
-+
-+	/* If native API isn't supported, skip the unused native queues:
-+	 * initialize BWC queues and control queue only.
-+	 */
-+	if (!mlx5hws_context_native_supported(ctx))
-+		i = mlx5hws_bwc_get_queue_id(ctx, 0);
-+
-+	for (; i < ctx->queues; i++) {
-+		err = hws_send_queue_open(ctx, &ctx->send_queue[i], queue_size);
-+		if (err) {
-+			__hws_send_queues_close(ctx, i);
-+			return err;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- int mlx5hws_send_queues_open(struct mlx5hws_context *ctx,
- 			     u16 queues,
- 			     u16 queue_size)
- {
- 	int err = 0;
--	u32 i;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste.h
+index 54a6619c3ecb..b6ec8d30d990 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste.h
+@@ -160,13 +160,15 @@ struct mlx5dr_ste_ctx {
  
- 	/* Open one extra queue for control path */
- 	ctx->queues = queues + 1;
-@@ -1021,17 +1045,13 @@ int mlx5hws_send_queues_open(struct mlx5hws_context *ctx,
- 		goto free_bwc_locks;
- 	}
- 
--	for (i = 0; i < ctx->queues; i++) {
--		err = hws_send_queue_open(ctx, &ctx->send_queue[i], queue_size);
--		if (err)
--			goto close_send_queues;
--	}
-+	err = hws_send_queues_open(ctx, queue_size);
-+	if (err)
-+		goto free_queues;
- 
- 	return 0;
- 
--close_send_queues:
--	 __hws_send_queues_close(ctx, i);
+ 	/* Actions */
+ 	u32 actions_caps;
+-	void (*set_actions_rx)(struct mlx5dr_domain *dmn,
++	void (*set_actions_rx)(struct mlx5dr_ste_ctx *ste_ctx,
++			       struct mlx5dr_domain *dmn,
+ 			       u8 *action_type_set,
+ 			       u32 actions_caps,
+ 			       u8 *hw_ste_arr,
+ 			       struct mlx5dr_ste_actions_attr *attr,
+ 			       u32 *added_stes);
+-	void (*set_actions_tx)(struct mlx5dr_domain *dmn,
++	void (*set_actions_tx)(struct mlx5dr_ste_ctx *ste_ctx,
++			       struct mlx5dr_domain *dmn,
+ 			       u8 *action_type_set,
+ 			       u32 actions_caps,
+ 			       u8 *hw_ste_arr,
+@@ -197,7 +199,17 @@ struct mlx5dr_ste_ctx {
+ 					u16 *used_hw_action_num);
+ 	int (*alloc_modify_hdr_chunk)(struct mlx5dr_action *action);
+ 	void (*dealloc_modify_hdr_chunk)(struct mlx5dr_action *action);
 -
-+free_queues:
- 	kfree(ctx->send_queue);
++	/* Actions bit set */
++	void (*set_encap)(u8 *hw_ste_p, u8 *d_action,
++			  u32 reformat_id, int size);
++	void (*set_push_vlan)(u8 *ste, u8 *d_action,
++			      u32 vlan_hdr);
++	void (*set_pop_vlan)(u8 *hw_ste_p, u8 *s_action,
++			     u8 vlans_num);
++	void (*set_rx_decap)(u8 *hw_ste_p, u8 *s_action);
++	void (*set_encap_l3)(u8 *hw_ste_p, u8 *frst_s_action,
++			     u8 *scnd_d_action, u32 reformat_id,
++			     int size);
+ 	/* Send */
+ 	void (*prepare_for_postsend)(u8 *hw_ste_p, u32 ste_size);
+ };
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v0.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v0.c
+index e9f6c7ed7a7b..42536bee55e2 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v0.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v0.c
+@@ -406,7 +406,8 @@ static void dr_ste_v0_arr_init_next(u8 **last_ste,
+ }
  
- free_bwc_locks:
+ static void
+-dr_ste_v0_set_actions_tx(struct mlx5dr_domain *dmn,
++dr_ste_v0_set_actions_tx(struct mlx5dr_ste_ctx *ste_ctx,
++			 struct mlx5dr_domain *dmn,
+ 			 u8 *action_type_set,
+ 			 u32 actions_caps,
+ 			 u8 *last_ste,
+@@ -476,7 +477,8 @@ dr_ste_v0_set_actions_tx(struct mlx5dr_domain *dmn,
+ }
+ 
+ static void
+-dr_ste_v0_set_actions_rx(struct mlx5dr_domain *dmn,
++dr_ste_v0_set_actions_rx(struct mlx5dr_ste_ctx *ste_ctx,
++			 struct mlx5dr_domain *dmn,
+ 			 u8 *action_type_set,
+ 			 u32 actions_caps,
+ 			 u8 *last_ste,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v1.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v1.c
+index 1d49704b9542..7f83d77c43ef 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v1.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v1.c
+@@ -5,136 +5,6 @@
+ #include "mlx5_ifc_dr_ste_v1.h"
+ #include "dr_ste_v1.h"
+ 
+-#define DR_STE_CALC_DFNR_TYPE(lookup_type, inner) \
+-	((inner) ? DR_STE_V1_LU_TYPE_##lookup_type##_I : \
+-		   DR_STE_V1_LU_TYPE_##lookup_type##_O)
+-
+-enum dr_ste_v1_entry_format {
+-	DR_STE_V1_TYPE_BWC_BYTE	= 0x0,
+-	DR_STE_V1_TYPE_BWC_DW	= 0x1,
+-	DR_STE_V1_TYPE_MATCH	= 0x2,
+-	DR_STE_V1_TYPE_MATCH_RANGES = 0x7,
+-};
+-
+-/* Lookup type is built from 2B: [ Definer mode 1B ][ Definer index 1B ] */
+-enum {
+-	DR_STE_V1_LU_TYPE_NOP				= 0x0000,
+-	DR_STE_V1_LU_TYPE_ETHL2_TNL			= 0x0002,
+-	DR_STE_V1_LU_TYPE_IBL3_EXT			= 0x0102,
+-	DR_STE_V1_LU_TYPE_ETHL2_O			= 0x0003,
+-	DR_STE_V1_LU_TYPE_IBL4				= 0x0103,
+-	DR_STE_V1_LU_TYPE_ETHL2_I			= 0x0004,
+-	DR_STE_V1_LU_TYPE_SRC_QP_GVMI			= 0x0104,
+-	DR_STE_V1_LU_TYPE_ETHL2_SRC_O			= 0x0005,
+-	DR_STE_V1_LU_TYPE_ETHL2_HEADERS_O		= 0x0105,
+-	DR_STE_V1_LU_TYPE_ETHL2_SRC_I			= 0x0006,
+-	DR_STE_V1_LU_TYPE_ETHL2_HEADERS_I		= 0x0106,
+-	DR_STE_V1_LU_TYPE_ETHL3_IPV4_5_TUPLE_O		= 0x0007,
+-	DR_STE_V1_LU_TYPE_IPV6_DES_O			= 0x0107,
+-	DR_STE_V1_LU_TYPE_ETHL3_IPV4_5_TUPLE_I		= 0x0008,
+-	DR_STE_V1_LU_TYPE_IPV6_DES_I			= 0x0108,
+-	DR_STE_V1_LU_TYPE_ETHL4_O			= 0x0009,
+-	DR_STE_V1_LU_TYPE_IPV6_SRC_O			= 0x0109,
+-	DR_STE_V1_LU_TYPE_ETHL4_I			= 0x000a,
+-	DR_STE_V1_LU_TYPE_IPV6_SRC_I			= 0x010a,
+-	DR_STE_V1_LU_TYPE_ETHL2_SRC_DST_O		= 0x000b,
+-	DR_STE_V1_LU_TYPE_MPLS_O			= 0x010b,
+-	DR_STE_V1_LU_TYPE_ETHL2_SRC_DST_I		= 0x000c,
+-	DR_STE_V1_LU_TYPE_MPLS_I			= 0x010c,
+-	DR_STE_V1_LU_TYPE_ETHL3_IPV4_MISC_O		= 0x000d,
+-	DR_STE_V1_LU_TYPE_GRE				= 0x010d,
+-	DR_STE_V1_LU_TYPE_FLEX_PARSER_TNL_HEADER	= 0x000e,
+-	DR_STE_V1_LU_TYPE_GENERAL_PURPOSE		= 0x010e,
+-	DR_STE_V1_LU_TYPE_ETHL3_IPV4_MISC_I		= 0x000f,
+-	DR_STE_V1_LU_TYPE_STEERING_REGISTERS_0		= 0x010f,
+-	DR_STE_V1_LU_TYPE_STEERING_REGISTERS_1		= 0x0110,
+-	DR_STE_V1_LU_TYPE_FLEX_PARSER_OK		= 0x0011,
+-	DR_STE_V1_LU_TYPE_FLEX_PARSER_0			= 0x0111,
+-	DR_STE_V1_LU_TYPE_FLEX_PARSER_1			= 0x0112,
+-	DR_STE_V1_LU_TYPE_ETHL4_MISC_O			= 0x0113,
+-	DR_STE_V1_LU_TYPE_ETHL4_MISC_I			= 0x0114,
+-	DR_STE_V1_LU_TYPE_INVALID			= 0x00ff,
+-	DR_STE_V1_LU_TYPE_DONT_CARE			= MLX5DR_STE_LU_TYPE_DONT_CARE,
+-};
+-
+-enum dr_ste_v1_header_anchors {
+-	DR_STE_HEADER_ANCHOR_START_OUTER		= 0x00,
+-	DR_STE_HEADER_ANCHOR_1ST_VLAN			= 0x02,
+-	DR_STE_HEADER_ANCHOR_IPV6_IPV4			= 0x07,
+-	DR_STE_HEADER_ANCHOR_INNER_MAC			= 0x13,
+-	DR_STE_HEADER_ANCHOR_INNER_IPV6_IPV4		= 0x19,
+-};
+-
+-enum dr_ste_v1_action_size {
+-	DR_STE_ACTION_SINGLE_SZ = 4,
+-	DR_STE_ACTION_DOUBLE_SZ = 8,
+-	DR_STE_ACTION_TRIPLE_SZ = 12,
+-};
+-
+-enum dr_ste_v1_action_insert_ptr_attr {
+-	DR_STE_V1_ACTION_INSERT_PTR_ATTR_NONE = 0,  /* Regular push header (e.g. push vlan) */
+-	DR_STE_V1_ACTION_INSERT_PTR_ATTR_ENCAP = 1, /* Encapsulation / Tunneling */
+-	DR_STE_V1_ACTION_INSERT_PTR_ATTR_ESP = 2,   /* IPsec */
+-};
+-
+-enum dr_ste_v1_action_id {
+-	DR_STE_V1_ACTION_ID_NOP				= 0x00,
+-	DR_STE_V1_ACTION_ID_COPY			= 0x05,
+-	DR_STE_V1_ACTION_ID_SET				= 0x06,
+-	DR_STE_V1_ACTION_ID_ADD				= 0x07,
+-	DR_STE_V1_ACTION_ID_REMOVE_BY_SIZE		= 0x08,
+-	DR_STE_V1_ACTION_ID_REMOVE_HEADER_TO_HEADER	= 0x09,
+-	DR_STE_V1_ACTION_ID_INSERT_INLINE		= 0x0a,
+-	DR_STE_V1_ACTION_ID_INSERT_POINTER		= 0x0b,
+-	DR_STE_V1_ACTION_ID_FLOW_TAG			= 0x0c,
+-	DR_STE_V1_ACTION_ID_QUEUE_ID_SEL		= 0x0d,
+-	DR_STE_V1_ACTION_ID_ACCELERATED_LIST		= 0x0e,
+-	DR_STE_V1_ACTION_ID_MODIFY_LIST			= 0x0f,
+-	DR_STE_V1_ACTION_ID_ASO				= 0x12,
+-	DR_STE_V1_ACTION_ID_TRAILER			= 0x13,
+-	DR_STE_V1_ACTION_ID_COUNTER_ID			= 0x14,
+-	DR_STE_V1_ACTION_ID_MAX				= 0x21,
+-	/* use for special cases */
+-	DR_STE_V1_ACTION_ID_SPECIAL_ENCAP_L3		= 0x22,
+-};
+-
+-enum {
+-	DR_STE_V1_ACTION_MDFY_FLD_L2_OUT_0		= 0x00,
+-	DR_STE_V1_ACTION_MDFY_FLD_L2_OUT_1		= 0x01,
+-	DR_STE_V1_ACTION_MDFY_FLD_L2_OUT_2		= 0x02,
+-	DR_STE_V1_ACTION_MDFY_FLD_SRC_L2_OUT_0		= 0x08,
+-	DR_STE_V1_ACTION_MDFY_FLD_SRC_L2_OUT_1		= 0x09,
+-	DR_STE_V1_ACTION_MDFY_FLD_L3_OUT_0		= 0x0e,
+-	DR_STE_V1_ACTION_MDFY_FLD_L4_OUT_0		= 0x18,
+-	DR_STE_V1_ACTION_MDFY_FLD_L4_OUT_1		= 0x19,
+-	DR_STE_V1_ACTION_MDFY_FLD_IPV4_OUT_0		= 0x40,
+-	DR_STE_V1_ACTION_MDFY_FLD_IPV4_OUT_1		= 0x41,
+-	DR_STE_V1_ACTION_MDFY_FLD_IPV6_DST_OUT_0	= 0x44,
+-	DR_STE_V1_ACTION_MDFY_FLD_IPV6_DST_OUT_1	= 0x45,
+-	DR_STE_V1_ACTION_MDFY_FLD_IPV6_DST_OUT_2	= 0x46,
+-	DR_STE_V1_ACTION_MDFY_FLD_IPV6_DST_OUT_3	= 0x47,
+-	DR_STE_V1_ACTION_MDFY_FLD_IPV6_SRC_OUT_0	= 0x4c,
+-	DR_STE_V1_ACTION_MDFY_FLD_IPV6_SRC_OUT_1	= 0x4d,
+-	DR_STE_V1_ACTION_MDFY_FLD_IPV6_SRC_OUT_2	= 0x4e,
+-	DR_STE_V1_ACTION_MDFY_FLD_IPV6_SRC_OUT_3	= 0x4f,
+-	DR_STE_V1_ACTION_MDFY_FLD_TCP_MISC_0		= 0x5e,
+-	DR_STE_V1_ACTION_MDFY_FLD_TCP_MISC_1		= 0x5f,
+-	DR_STE_V1_ACTION_MDFY_FLD_CFG_HDR_0_0		= 0x6f,
+-	DR_STE_V1_ACTION_MDFY_FLD_CFG_HDR_0_1		= 0x70,
+-	DR_STE_V1_ACTION_MDFY_FLD_METADATA_2_CQE	= 0x7b,
+-	DR_STE_V1_ACTION_MDFY_FLD_GNRL_PURPOSE		= 0x7c,
+-	DR_STE_V1_ACTION_MDFY_FLD_REGISTER_2_0		= 0x8c,
+-	DR_STE_V1_ACTION_MDFY_FLD_REGISTER_2_1		= 0x8d,
+-	DR_STE_V1_ACTION_MDFY_FLD_REGISTER_1_0		= 0x8e,
+-	DR_STE_V1_ACTION_MDFY_FLD_REGISTER_1_1		= 0x8f,
+-	DR_STE_V1_ACTION_MDFY_FLD_REGISTER_0_0		= 0x90,
+-	DR_STE_V1_ACTION_MDFY_FLD_REGISTER_0_1		= 0x91,
+-};
+-
+-enum dr_ste_v1_aso_ctx_type {
+-	DR_STE_V1_ASO_CTX_TYPE_POLICERS = 0x2,
+-};
+-
+ static const struct mlx5dr_ste_action_modify_field dr_ste_v1_action_modify_field_arr[] = {
+ 	[MLX5_ACTION_IN_FIELD_OUT_SMAC_47_16] = {
+ 		.hw_field = DR_STE_V1_ACTION_MDFY_FLD_SRC_L2_OUT_0, .start = 0, .end = 31,
+@@ -379,13 +249,12 @@ static void dr_ste_v1_set_counter_id(u8 *hw_ste_p, u32 ctr_id)
+ 	MLX5_SET(ste_match_bwc_v1, hw_ste_p, counter_id, ctr_id);
+ }
+ 
+-static void dr_ste_v1_set_reparse(u8 *hw_ste_p)
++void dr_ste_v1_set_reparse(u8 *hw_ste_p)
+ {
+ 	MLX5_SET(ste_match_bwc_v1, hw_ste_p, reparse, 1);
+ }
+ 
+-static void dr_ste_v1_set_encap(u8 *hw_ste_p, u8 *d_action,
+-				u32 reformat_id, int size)
++void dr_ste_v1_set_encap(u8 *hw_ste_p, u8 *d_action, u32 reformat_id, int size)
+ {
+ 	MLX5_SET(ste_double_action_insert_with_ptr_v1, d_action, action_id,
+ 		 DR_STE_V1_ACTION_ID_INSERT_POINTER);
+@@ -432,8 +301,7 @@ static void dr_ste_v1_set_remove_hdr(u8 *hw_ste_p, u8 *s_action,
+ 	dr_ste_v1_set_reparse(hw_ste_p);
+ }
+ 
+-static void dr_ste_v1_set_push_vlan(u8 *hw_ste_p, u8 *d_action,
+-				    u32 vlan_hdr)
++void dr_ste_v1_set_push_vlan(u8 *hw_ste_p, u8 *d_action, u32 vlan_hdr)
+ {
+ 	MLX5_SET(ste_double_action_insert_with_inline_v1, d_action,
+ 		 action_id, DR_STE_V1_ACTION_ID_INSERT_INLINE);
+@@ -446,7 +314,7 @@ static void dr_ste_v1_set_push_vlan(u8 *hw_ste_p, u8 *d_action,
+ 	dr_ste_v1_set_reparse(hw_ste_p);
+ }
+ 
+-static void dr_ste_v1_set_pop_vlan(u8 *hw_ste_p, u8 *s_action, u8 vlans_num)
++void dr_ste_v1_set_pop_vlan(u8 *hw_ste_p, u8 *s_action, u8 vlans_num)
+ {
+ 	MLX5_SET(ste_single_action_remove_header_size_v1, s_action,
+ 		 action_id, DR_STE_V1_ACTION_ID_REMOVE_BY_SIZE);
+@@ -459,11 +327,8 @@ static void dr_ste_v1_set_pop_vlan(u8 *hw_ste_p, u8 *s_action, u8 vlans_num)
+ 	dr_ste_v1_set_reparse(hw_ste_p);
+ }
+ 
+-static void dr_ste_v1_set_encap_l3(u8 *hw_ste_p,
+-				   u8 *frst_s_action,
+-				   u8 *scnd_d_action,
+-				   u32 reformat_id,
+-				   int size)
++void dr_ste_v1_set_encap_l3(u8 *hw_ste_p, u8 *frst_s_action, u8 *scnd_d_action,
++			    u32 reformat_id, int size)
+ {
+ 	/* Remove L2 headers */
+ 	MLX5_SET(ste_single_action_remove_header_v1, frst_s_action, action_id,
+@@ -483,7 +348,7 @@ static void dr_ste_v1_set_encap_l3(u8 *hw_ste_p,
+ 	dr_ste_v1_set_reparse(hw_ste_p);
+ }
+ 
+-static void dr_ste_v1_set_rx_decap(u8 *hw_ste_p, u8 *s_action)
++void dr_ste_v1_set_rx_decap(u8 *hw_ste_p, u8 *s_action)
+ {
+ 	MLX5_SET(ste_single_action_remove_header_v1, s_action, action_id,
+ 		 DR_STE_V1_ACTION_ID_REMOVE_HEADER_TO_HEADER);
+@@ -620,7 +485,8 @@ static void dr_ste_v1_arr_init_next_match_range(u8 **last_ste,
+ 	dr_ste_v1_set_entry_type(*last_ste, DR_STE_V1_TYPE_MATCH_RANGES);
+ }
+ 
+-void dr_ste_v1_set_actions_tx(struct mlx5dr_domain *dmn,
++void dr_ste_v1_set_actions_tx(struct mlx5dr_ste_ctx *ste_ctx,
++			      struct mlx5dr_domain *dmn,
+ 			      u8 *action_type_set,
+ 			      u32 actions_caps,
+ 			      u8 *last_ste,
+@@ -640,7 +506,7 @@ void dr_ste_v1_set_actions_tx(struct mlx5dr_domain *dmn,
+ 					      last_ste, action);
+ 			action_sz = DR_STE_ACTION_TRIPLE_SZ;
+ 		}
+-		dr_ste_v1_set_pop_vlan(last_ste, action, attr->vlans.count);
++		ste_ctx->set_pop_vlan(last_ste, action, attr->vlans.count);
+ 		action_sz -= DR_STE_ACTION_SINGLE_SZ;
+ 		action += DR_STE_ACTION_SINGLE_SZ;
+ 
+@@ -677,8 +543,8 @@ void dr_ste_v1_set_actions_tx(struct mlx5dr_domain *dmn,
+ 				action_sz = DR_STE_ACTION_TRIPLE_SZ;
+ 				allow_encap = true;
+ 			}
+-			dr_ste_v1_set_push_vlan(last_ste, action,
+-						attr->vlans.headers[i]);
++			ste_ctx->set_push_vlan(last_ste, action,
++					       attr->vlans.headers[i]);
+ 			action_sz -= DR_STE_ACTION_DOUBLE_SZ;
+ 			action += DR_STE_ACTION_DOUBLE_SZ;
+ 		}
+@@ -691,9 +557,9 @@ void dr_ste_v1_set_actions_tx(struct mlx5dr_domain *dmn,
+ 			action_sz = DR_STE_ACTION_TRIPLE_SZ;
+ 			allow_encap = true;
+ 		}
+-		dr_ste_v1_set_encap(last_ste, action,
+-				    attr->reformat.id,
+-				    attr->reformat.size);
++		ste_ctx->set_encap(last_ste, action,
++				   attr->reformat.id,
++				   attr->reformat.size);
+ 		action_sz -= DR_STE_ACTION_DOUBLE_SZ;
+ 		action += DR_STE_ACTION_DOUBLE_SZ;
+ 	} else if (action_type_set[DR_ACTION_TYP_L2_TO_TNL_L3]) {
+@@ -706,10 +572,10 @@ void dr_ste_v1_set_actions_tx(struct mlx5dr_domain *dmn,
+ 		}
+ 		d_action = action + DR_STE_ACTION_SINGLE_SZ;
+ 
+-		dr_ste_v1_set_encap_l3(last_ste,
+-				       action, d_action,
+-				       attr->reformat.id,
+-				       attr->reformat.size);
++		ste_ctx->set_encap_l3(last_ste,
++				      action, d_action,
++				      attr->reformat.id,
++				      attr->reformat.size);
+ 		action_sz -= DR_STE_ACTION_TRIPLE_SZ;
+ 		action += DR_STE_ACTION_TRIPLE_SZ;
+ 	} else if (action_type_set[DR_ACTION_TYP_INSERT_HDR]) {
+@@ -776,7 +642,8 @@ void dr_ste_v1_set_actions_tx(struct mlx5dr_domain *dmn,
+ 	dr_ste_v1_set_hit_addr(last_ste, attr->final_icm_addr, 1);
+ }
+ 
+-void dr_ste_v1_set_actions_rx(struct mlx5dr_domain *dmn,
++void dr_ste_v1_set_actions_rx(struct mlx5dr_ste_ctx *ste_ctx,
++			      struct mlx5dr_domain *dmn,
+ 			      u8 *action_type_set,
+ 			      u32 actions_caps,
+ 			      u8 *last_ste,
+@@ -799,7 +666,7 @@ void dr_ste_v1_set_actions_rx(struct mlx5dr_domain *dmn,
+ 		allow_modify_hdr = false;
+ 		allow_ctr = false;
+ 	} else if (action_type_set[DR_ACTION_TYP_TNL_L2_TO_L2]) {
+-		dr_ste_v1_set_rx_decap(last_ste, action);
++		ste_ctx->set_rx_decap(last_ste, action);
+ 		action_sz -= DR_STE_ACTION_SINGLE_SZ;
+ 		action += DR_STE_ACTION_SINGLE_SZ;
+ 		allow_modify_hdr = false;
+@@ -827,7 +694,7 @@ void dr_ste_v1_set_actions_rx(struct mlx5dr_domain *dmn,
+ 			action_sz = DR_STE_ACTION_TRIPLE_SZ;
+ 		}
+ 
+-		dr_ste_v1_set_pop_vlan(last_ste, action, attr->vlans.count);
++		ste_ctx->set_pop_vlan(last_ste, action, attr->vlans.count);
+ 		action_sz -= DR_STE_ACTION_SINGLE_SZ;
+ 		action += DR_STE_ACTION_SINGLE_SZ;
+ 		allow_ctr = false;
+@@ -868,8 +735,8 @@ void dr_ste_v1_set_actions_rx(struct mlx5dr_domain *dmn,
+ 						      last_ste, action);
+ 				action_sz = DR_STE_ACTION_TRIPLE_SZ;
+ 			}
+-			dr_ste_v1_set_push_vlan(last_ste, action,
+-						attr->vlans.headers[i]);
++			ste_ctx->set_push_vlan(last_ste, action,
++					       attr->vlans.headers[i]);
+ 			action_sz -= DR_STE_ACTION_DOUBLE_SZ;
+ 			action += DR_STE_ACTION_DOUBLE_SZ;
+ 		}
+@@ -895,9 +762,9 @@ void dr_ste_v1_set_actions_rx(struct mlx5dr_domain *dmn,
+ 			action = MLX5_ADDR_OF(ste_mask_and_match_v1, last_ste, action);
+ 			action_sz = DR_STE_ACTION_TRIPLE_SZ;
+ 		}
+-		dr_ste_v1_set_encap(last_ste, action,
+-				    attr->reformat.id,
+-				    attr->reformat.size);
++		ste_ctx->set_encap(last_ste, action,
++				   attr->reformat.id,
++				   attr->reformat.size);
+ 		action_sz -= DR_STE_ACTION_DOUBLE_SZ;
+ 		action += DR_STE_ACTION_DOUBLE_SZ;
+ 		allow_modify_hdr = false;
+@@ -912,10 +779,10 @@ void dr_ste_v1_set_actions_rx(struct mlx5dr_domain *dmn,
+ 
+ 		d_action = action + DR_STE_ACTION_SINGLE_SZ;
+ 
+-		dr_ste_v1_set_encap_l3(last_ste,
+-				       action, d_action,
+-				       attr->reformat.id,
+-				       attr->reformat.size);
++		ste_ctx->set_encap_l3(last_ste,
++				      action, d_action,
++				      attr->reformat.id,
++				      attr->reformat.size);
+ 		action_sz -= DR_STE_ACTION_TRIPLE_SZ;
+ 		allow_modify_hdr = false;
+ 	} else if (action_type_set[DR_ACTION_TYP_INSERT_HDR]) {
+@@ -1027,9 +894,6 @@ void dr_ste_v1_set_action_copy(u8 *d_action,
+ 	MLX5_SET(ste_double_action_copy_v1, d_action, source_right_shifter, src_shifter);
+ }
+ 
+-#define DR_STE_DECAP_L3_ACTION_NUM	8
+-#define DR_STE_L2_HDR_MAX_SZ		20
+-
+ int dr_ste_v1_set_action_decap_l3_list(void *data,
+ 				       u32 data_sz,
+ 				       u8 *hw_action,
+@@ -2330,7 +2194,12 @@ static struct mlx5dr_ste_ctx ste_ctx_v1 = {
+ 	.set_action_decap_l3_list	= &dr_ste_v1_set_action_decap_l3_list,
+ 	.alloc_modify_hdr_chunk		= &dr_ste_v1_alloc_modify_hdr_ptrn_arg,
+ 	.dealloc_modify_hdr_chunk	= &dr_ste_v1_free_modify_hdr_ptrn_arg,
+-
++	/* Actions bit set */
++	.set_encap			= &dr_ste_v1_set_encap,
++	.set_push_vlan			= &dr_ste_v1_set_push_vlan,
++	.set_pop_vlan			= &dr_ste_v1_set_pop_vlan,
++	.set_rx_decap			= &dr_ste_v1_set_rx_decap,
++	.set_encap_l3			= &dr_ste_v1_set_encap_l3,
+ 	/* Send */
+ 	.prepare_for_postsend		= &dr_ste_v1_prepare_for_postsend,
+ };
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v1.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v1.h
+index e2fc69867088..a8d9e308d339 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v1.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v1.h
+@@ -7,6 +7,138 @@
+ #include "dr_types.h"
+ #include "dr_ste.h"
+ 
++#define DR_STE_DECAP_L3_ACTION_NUM	8
++#define DR_STE_L2_HDR_MAX_SZ		20
++#define DR_STE_CALC_DFNR_TYPE(lookup_type, inner) \
++	((inner) ? DR_STE_V1_LU_TYPE_##lookup_type##_I : \
++		   DR_STE_V1_LU_TYPE_##lookup_type##_O)
++
++enum dr_ste_v1_entry_format {
++	DR_STE_V1_TYPE_BWC_BYTE	= 0x0,
++	DR_STE_V1_TYPE_BWC_DW	= 0x1,
++	DR_STE_V1_TYPE_MATCH	= 0x2,
++	DR_STE_V1_TYPE_MATCH_RANGES = 0x7,
++};
++
++/* Lookup type is built from 2B: [ Definer mode 1B ][ Definer index 1B ] */
++enum {
++	DR_STE_V1_LU_TYPE_NOP				= 0x0000,
++	DR_STE_V1_LU_TYPE_ETHL2_TNL			= 0x0002,
++	DR_STE_V1_LU_TYPE_IBL3_EXT			= 0x0102,
++	DR_STE_V1_LU_TYPE_ETHL2_O			= 0x0003,
++	DR_STE_V1_LU_TYPE_IBL4				= 0x0103,
++	DR_STE_V1_LU_TYPE_ETHL2_I			= 0x0004,
++	DR_STE_V1_LU_TYPE_SRC_QP_GVMI			= 0x0104,
++	DR_STE_V1_LU_TYPE_ETHL2_SRC_O			= 0x0005,
++	DR_STE_V1_LU_TYPE_ETHL2_HEADERS_O		= 0x0105,
++	DR_STE_V1_LU_TYPE_ETHL2_SRC_I			= 0x0006,
++	DR_STE_V1_LU_TYPE_ETHL2_HEADERS_I		= 0x0106,
++	DR_STE_V1_LU_TYPE_ETHL3_IPV4_5_TUPLE_O		= 0x0007,
++	DR_STE_V1_LU_TYPE_IPV6_DES_O			= 0x0107,
++	DR_STE_V1_LU_TYPE_ETHL3_IPV4_5_TUPLE_I		= 0x0008,
++	DR_STE_V1_LU_TYPE_IPV6_DES_I			= 0x0108,
++	DR_STE_V1_LU_TYPE_ETHL4_O			= 0x0009,
++	DR_STE_V1_LU_TYPE_IPV6_SRC_O			= 0x0109,
++	DR_STE_V1_LU_TYPE_ETHL4_I			= 0x000a,
++	DR_STE_V1_LU_TYPE_IPV6_SRC_I			= 0x010a,
++	DR_STE_V1_LU_TYPE_ETHL2_SRC_DST_O		= 0x000b,
++	DR_STE_V1_LU_TYPE_MPLS_O			= 0x010b,
++	DR_STE_V1_LU_TYPE_ETHL2_SRC_DST_I		= 0x000c,
++	DR_STE_V1_LU_TYPE_MPLS_I			= 0x010c,
++	DR_STE_V1_LU_TYPE_ETHL3_IPV4_MISC_O		= 0x000d,
++	DR_STE_V1_LU_TYPE_GRE				= 0x010d,
++	DR_STE_V1_LU_TYPE_FLEX_PARSER_TNL_HEADER	= 0x000e,
++	DR_STE_V1_LU_TYPE_GENERAL_PURPOSE		= 0x010e,
++	DR_STE_V1_LU_TYPE_ETHL3_IPV4_MISC_I		= 0x000f,
++	DR_STE_V1_LU_TYPE_STEERING_REGISTERS_0		= 0x010f,
++	DR_STE_V1_LU_TYPE_STEERING_REGISTERS_1		= 0x0110,
++	DR_STE_V1_LU_TYPE_FLEX_PARSER_OK		= 0x0011,
++	DR_STE_V1_LU_TYPE_FLEX_PARSER_0			= 0x0111,
++	DR_STE_V1_LU_TYPE_FLEX_PARSER_1			= 0x0112,
++	DR_STE_V1_LU_TYPE_ETHL4_MISC_O			= 0x0113,
++	DR_STE_V1_LU_TYPE_ETHL4_MISC_I			= 0x0114,
++	DR_STE_V1_LU_TYPE_INVALID			= 0x00ff,
++	DR_STE_V1_LU_TYPE_DONT_CARE			= MLX5DR_STE_LU_TYPE_DONT_CARE,
++};
++
++enum dr_ste_v1_header_anchors {
++	DR_STE_HEADER_ANCHOR_START_OUTER		= 0x00,
++	DR_STE_HEADER_ANCHOR_1ST_VLAN			= 0x02,
++	DR_STE_HEADER_ANCHOR_IPV6_IPV4			= 0x07,
++	DR_STE_HEADER_ANCHOR_INNER_MAC			= 0x13,
++	DR_STE_HEADER_ANCHOR_INNER_IPV6_IPV4		= 0x19,
++};
++
++enum dr_ste_v1_action_size {
++	DR_STE_ACTION_SINGLE_SZ = 4,
++	DR_STE_ACTION_DOUBLE_SZ = 8,
++	DR_STE_ACTION_TRIPLE_SZ = 12,
++};
++
++enum dr_ste_v1_action_insert_ptr_attr {
++	DR_STE_V1_ACTION_INSERT_PTR_ATTR_NONE = 0,  /* Regular push header (e.g. push vlan) */
++	DR_STE_V1_ACTION_INSERT_PTR_ATTR_ENCAP = 1, /* Encapsulation / Tunneling */
++	DR_STE_V1_ACTION_INSERT_PTR_ATTR_ESP = 2,   /* IPsec */
++};
++
++enum dr_ste_v1_action_id {
++	DR_STE_V1_ACTION_ID_NOP				= 0x00,
++	DR_STE_V1_ACTION_ID_COPY			= 0x05,
++	DR_STE_V1_ACTION_ID_SET				= 0x06,
++	DR_STE_V1_ACTION_ID_ADD				= 0x07,
++	DR_STE_V1_ACTION_ID_REMOVE_BY_SIZE		= 0x08,
++	DR_STE_V1_ACTION_ID_REMOVE_HEADER_TO_HEADER	= 0x09,
++	DR_STE_V1_ACTION_ID_INSERT_INLINE		= 0x0a,
++	DR_STE_V1_ACTION_ID_INSERT_POINTER		= 0x0b,
++	DR_STE_V1_ACTION_ID_FLOW_TAG			= 0x0c,
++	DR_STE_V1_ACTION_ID_QUEUE_ID_SEL		= 0x0d,
++	DR_STE_V1_ACTION_ID_ACCELERATED_LIST		= 0x0e,
++	DR_STE_V1_ACTION_ID_MODIFY_LIST			= 0x0f,
++	DR_STE_V1_ACTION_ID_ASO				= 0x12,
++	DR_STE_V1_ACTION_ID_TRAILER			= 0x13,
++	DR_STE_V1_ACTION_ID_COUNTER_ID			= 0x14,
++	DR_STE_V1_ACTION_ID_MAX				= 0x21,
++	/* use for special cases */
++	DR_STE_V1_ACTION_ID_SPECIAL_ENCAP_L3		= 0x22,
++};
++
++enum {
++	DR_STE_V1_ACTION_MDFY_FLD_L2_OUT_0		= 0x00,
++	DR_STE_V1_ACTION_MDFY_FLD_L2_OUT_1		= 0x01,
++	DR_STE_V1_ACTION_MDFY_FLD_L2_OUT_2		= 0x02,
++	DR_STE_V1_ACTION_MDFY_FLD_SRC_L2_OUT_0		= 0x08,
++	DR_STE_V1_ACTION_MDFY_FLD_SRC_L2_OUT_1		= 0x09,
++	DR_STE_V1_ACTION_MDFY_FLD_L3_OUT_0		= 0x0e,
++	DR_STE_V1_ACTION_MDFY_FLD_L4_OUT_0		= 0x18,
++	DR_STE_V1_ACTION_MDFY_FLD_L4_OUT_1		= 0x19,
++	DR_STE_V1_ACTION_MDFY_FLD_IPV4_OUT_0		= 0x40,
++	DR_STE_V1_ACTION_MDFY_FLD_IPV4_OUT_1		= 0x41,
++	DR_STE_V1_ACTION_MDFY_FLD_IPV6_DST_OUT_0	= 0x44,
++	DR_STE_V1_ACTION_MDFY_FLD_IPV6_DST_OUT_1	= 0x45,
++	DR_STE_V1_ACTION_MDFY_FLD_IPV6_DST_OUT_2	= 0x46,
++	DR_STE_V1_ACTION_MDFY_FLD_IPV6_DST_OUT_3	= 0x47,
++	DR_STE_V1_ACTION_MDFY_FLD_IPV6_SRC_OUT_0	= 0x4c,
++	DR_STE_V1_ACTION_MDFY_FLD_IPV6_SRC_OUT_1	= 0x4d,
++	DR_STE_V1_ACTION_MDFY_FLD_IPV6_SRC_OUT_2	= 0x4e,
++	DR_STE_V1_ACTION_MDFY_FLD_IPV6_SRC_OUT_3	= 0x4f,
++	DR_STE_V1_ACTION_MDFY_FLD_TCP_MISC_0		= 0x5e,
++	DR_STE_V1_ACTION_MDFY_FLD_TCP_MISC_1		= 0x5f,
++	DR_STE_V1_ACTION_MDFY_FLD_CFG_HDR_0_0		= 0x6f,
++	DR_STE_V1_ACTION_MDFY_FLD_CFG_HDR_0_1		= 0x70,
++	DR_STE_V1_ACTION_MDFY_FLD_METADATA_2_CQE	= 0x7b,
++	DR_STE_V1_ACTION_MDFY_FLD_GNRL_PURPOSE		= 0x7c,
++	DR_STE_V1_ACTION_MDFY_FLD_REGISTER_2_0		= 0x8c,
++	DR_STE_V1_ACTION_MDFY_FLD_REGISTER_2_1		= 0x8d,
++	DR_STE_V1_ACTION_MDFY_FLD_REGISTER_1_0		= 0x8e,
++	DR_STE_V1_ACTION_MDFY_FLD_REGISTER_1_1		= 0x8f,
++	DR_STE_V1_ACTION_MDFY_FLD_REGISTER_0_0		= 0x90,
++	DR_STE_V1_ACTION_MDFY_FLD_REGISTER_0_1		= 0x91,
++};
++
++enum dr_ste_v1_aso_ctx_type {
++	DR_STE_V1_ASO_CTX_TYPE_POLICERS = 0x2,
++};
++
+ bool dr_ste_v1_is_miss_addr_set(u8 *hw_ste_p);
+ void dr_ste_v1_set_miss_addr(u8 *hw_ste_p, u64 miss_addr);
+ u64 dr_ste_v1_get_miss_addr(u8 *hw_ste_p);
+@@ -17,11 +149,18 @@ u16 dr_ste_v1_get_next_lu_type(u8 *hw_ste_p);
+ void dr_ste_v1_set_hit_addr(u8 *hw_ste_p, u64 icm_addr, u32 ht_size);
+ void dr_ste_v1_init(u8 *hw_ste_p, u16 lu_type, bool is_rx, u16 gvmi);
+ void dr_ste_v1_prepare_for_postsend(u8 *hw_ste_p, u32 ste_size);
+-void dr_ste_v1_set_actions_tx(struct mlx5dr_domain *dmn, u8 *action_type_set,
+-			      u32 actions_caps, u8 *last_ste,
++void dr_ste_v1_set_reparse(u8 *hw_ste_p);
++void dr_ste_v1_set_encap(u8 *hw_ste_p, u8 *d_action, u32 reformat_id, int size);
++void dr_ste_v1_set_push_vlan(u8 *hw_ste_p, u8 *d_action, u32 vlan_hdr);
++void dr_ste_v1_set_pop_vlan(u8 *hw_ste_p, u8 *s_action, u8 vlans_num);
++void dr_ste_v1_set_encap_l3(u8 *hw_ste_p, u8 *frst_s_action, u8 *scnd_d_action,
++			    u32 reformat_id, int size);
++void dr_ste_v1_set_rx_decap(u8 *hw_ste_p, u8 *s_action);
++void dr_ste_v1_set_actions_tx(struct mlx5dr_ste_ctx *ste_ctx, struct mlx5dr_domain *dmn,
++			      u8 *action_type_set, u32 actions_caps, u8 *last_ste,
+ 			      struct mlx5dr_ste_actions_attr *attr, u32 *added_stes);
+-void dr_ste_v1_set_actions_rx(struct mlx5dr_domain *dmn, u8 *action_type_set,
+-			      u32 actions_caps, u8 *last_ste,
++void dr_ste_v1_set_actions_rx(struct mlx5dr_ste_ctx *ste_ctx, struct mlx5dr_domain *dmn,
++			      u8 *action_type_set, u32 actions_caps, u8 *last_ste,
+ 			      struct mlx5dr_ste_actions_attr *attr, u32 *added_stes);
+ void dr_ste_v1_set_action_set(u8 *d_action, u8 hw_field, u8 shifter,
+ 			      u8 length, u32 data);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v2.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v2.c
+index 808b013cf48c..0882dba0f64b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v2.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v2.c
+@@ -2,167 +2,7 @@
+ /* Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. All rights reserved. */
+ 
+ #include "dr_ste_v1.h"
+-
+-enum {
+-	DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_0		= 0x00,
+-	DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_1		= 0x01,
+-	DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_2		= 0x02,
+-	DR_STE_V2_ACTION_MDFY_FLD_SRC_L2_OUT_0		= 0x08,
+-	DR_STE_V2_ACTION_MDFY_FLD_SRC_L2_OUT_1		= 0x09,
+-	DR_STE_V2_ACTION_MDFY_FLD_L3_OUT_0		= 0x0e,
+-	DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_0		= 0x18,
+-	DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_1		= 0x19,
+-	DR_STE_V2_ACTION_MDFY_FLD_IPV4_OUT_0		= 0x40,
+-	DR_STE_V2_ACTION_MDFY_FLD_IPV4_OUT_1		= 0x41,
+-	DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_0	= 0x44,
+-	DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_1	= 0x45,
+-	DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_2	= 0x46,
+-	DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_3	= 0x47,
+-	DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_0	= 0x4c,
+-	DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_1	= 0x4d,
+-	DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_2	= 0x4e,
+-	DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_3	= 0x4f,
+-	DR_STE_V2_ACTION_MDFY_FLD_TCP_MISC_0		= 0x5e,
+-	DR_STE_V2_ACTION_MDFY_FLD_TCP_MISC_1		= 0x5f,
+-	DR_STE_V2_ACTION_MDFY_FLD_CFG_HDR_0_0		= 0x6f,
+-	DR_STE_V2_ACTION_MDFY_FLD_CFG_HDR_0_1		= 0x70,
+-	DR_STE_V2_ACTION_MDFY_FLD_METADATA_2_CQE	= 0x7b,
+-	DR_STE_V2_ACTION_MDFY_FLD_GNRL_PURPOSE		= 0x7c,
+-	DR_STE_V2_ACTION_MDFY_FLD_REGISTER_2_0		= 0x90,
+-	DR_STE_V2_ACTION_MDFY_FLD_REGISTER_2_1		= 0x91,
+-	DR_STE_V2_ACTION_MDFY_FLD_REGISTER_1_0		= 0x92,
+-	DR_STE_V2_ACTION_MDFY_FLD_REGISTER_1_1		= 0x93,
+-	DR_STE_V2_ACTION_MDFY_FLD_REGISTER_0_0		= 0x94,
+-	DR_STE_V2_ACTION_MDFY_FLD_REGISTER_0_1		= 0x95,
+-};
+-
+-static const struct mlx5dr_ste_action_modify_field dr_ste_v2_action_modify_field_arr[] = {
+-	[MLX5_ACTION_IN_FIELD_OUT_SMAC_47_16] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_SRC_L2_OUT_0, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_SMAC_15_0] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_SRC_L2_OUT_1, .start = 16, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_ETHERTYPE] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_1, .start = 0, .end = 15,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_DMAC_47_16] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_0, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_DMAC_15_0] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_1, .start = 16, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_IP_DSCP] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L3_OUT_0, .start = 18, .end = 23,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_TCP_FLAGS] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_1, .start = 16, .end = 24,
+-		.l4_type = DR_STE_ACTION_MDFY_TYPE_L4_TCP,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_TCP_SPORT] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_0, .start = 16, .end = 31,
+-		.l4_type = DR_STE_ACTION_MDFY_TYPE_L4_TCP,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_TCP_DPORT] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_0, .start = 0, .end = 15,
+-		.l4_type = DR_STE_ACTION_MDFY_TYPE_L4_TCP,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_IP_TTL] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L3_OUT_0, .start = 8, .end = 15,
+-		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV4,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_IPV6_HOPLIMIT] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L3_OUT_0, .start = 8, .end = 15,
+-		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_UDP_SPORT] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_0, .start = 16, .end = 31,
+-		.l4_type = DR_STE_ACTION_MDFY_TYPE_L4_UDP,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_UDP_DPORT] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_0, .start = 0, .end = 15,
+-		.l4_type = DR_STE_ACTION_MDFY_TYPE_L4_UDP,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_SIPV6_127_96] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_0, .start = 0, .end = 31,
+-		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_SIPV6_95_64] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_1, .start = 0, .end = 31,
+-		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_SIPV6_63_32] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_2, .start = 0, .end = 31,
+-		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_SIPV6_31_0] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_3, .start = 0, .end = 31,
+-		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_DIPV6_127_96] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_0, .start = 0, .end = 31,
+-		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_DIPV6_95_64] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_1, .start = 0, .end = 31,
+-		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_DIPV6_63_32] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_2, .start = 0, .end = 31,
+-		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_DIPV6_31_0] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_3, .start = 0, .end = 31,
+-		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_SIPV4] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV4_OUT_0, .start = 0, .end = 31,
+-		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV4,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_DIPV4] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV4_OUT_1, .start = 0, .end = 31,
+-		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV4,
+-	},
+-	[MLX5_ACTION_IN_FIELD_METADATA_REG_A] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_GNRL_PURPOSE, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_METADATA_REG_B] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_METADATA_2_CQE, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_METADATA_REG_C_0] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_REGISTER_0_0, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_METADATA_REG_C_1] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_REGISTER_0_1, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_METADATA_REG_C_2] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_REGISTER_1_0, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_METADATA_REG_C_3] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_REGISTER_1_1, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_METADATA_REG_C_4] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_REGISTER_2_0, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_METADATA_REG_C_5] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_REGISTER_2_1, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_TCP_SEQ_NUM] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_TCP_MISC_0, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_TCP_ACK_NUM] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_TCP_MISC_1, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_FIRST_VID] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_2, .start = 0, .end = 15,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_EMD_31_0] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_CFG_HDR_0_1, .start = 0, .end = 31,
+-	},
+-	[MLX5_ACTION_IN_FIELD_OUT_EMD_47_32] = {
+-		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_CFG_HDR_0_0, .start = 0, .end = 15,
+-	},
+-};
++#include "dr_ste_v2.h"
+ 
+ static struct mlx5dr_ste_ctx ste_ctx_v2 = {
+ 	/* Builders */
+@@ -223,7 +63,12 @@ static struct mlx5dr_ste_ctx ste_ctx_v2 = {
+ 	.set_action_decap_l3_list	= &dr_ste_v1_set_action_decap_l3_list,
+ 	.alloc_modify_hdr_chunk		= &dr_ste_v1_alloc_modify_hdr_ptrn_arg,
+ 	.dealloc_modify_hdr_chunk	= &dr_ste_v1_free_modify_hdr_ptrn_arg,
+-
++	/* Actions bit set */
++	.set_encap			= &dr_ste_v1_set_encap,
++	.set_push_vlan			= &dr_ste_v1_set_push_vlan,
++	.set_pop_vlan			= &dr_ste_v1_set_pop_vlan,
++	.set_rx_decap			= &dr_ste_v1_set_rx_decap,
++	.set_encap_l3			= &dr_ste_v1_set_encap_l3,
+ 	/* Send */
+ 	.prepare_for_postsend		= &dr_ste_v1_prepare_for_postsend,
+ };
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v2.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v2.h
+new file mode 100644
+index 000000000000..d853fde49cfc
+--- /dev/null
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_ste_v2.h
+@@ -0,0 +1,168 @@
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
++/* Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved. */
++
++#ifndef	_DR_STE_V2_
++#define	_DR_STE_V2_
++
++enum {
++	DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_0		= 0x00,
++	DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_1		= 0x01,
++	DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_2		= 0x02,
++	DR_STE_V2_ACTION_MDFY_FLD_SRC_L2_OUT_0		= 0x08,
++	DR_STE_V2_ACTION_MDFY_FLD_SRC_L2_OUT_1		= 0x09,
++	DR_STE_V2_ACTION_MDFY_FLD_L3_OUT_0		= 0x0e,
++	DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_0		= 0x18,
++	DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_1		= 0x19,
++	DR_STE_V2_ACTION_MDFY_FLD_IPV4_OUT_0		= 0x40,
++	DR_STE_V2_ACTION_MDFY_FLD_IPV4_OUT_1		= 0x41,
++	DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_0	= 0x44,
++	DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_1	= 0x45,
++	DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_2	= 0x46,
++	DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_3	= 0x47,
++	DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_0	= 0x4c,
++	DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_1	= 0x4d,
++	DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_2	= 0x4e,
++	DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_3	= 0x4f,
++	DR_STE_V2_ACTION_MDFY_FLD_TCP_MISC_0		= 0x5e,
++	DR_STE_V2_ACTION_MDFY_FLD_TCP_MISC_1		= 0x5f,
++	DR_STE_V2_ACTION_MDFY_FLD_CFG_HDR_0_0		= 0x6f,
++	DR_STE_V2_ACTION_MDFY_FLD_CFG_HDR_0_1		= 0x70,
++	DR_STE_V2_ACTION_MDFY_FLD_METADATA_2_CQE	= 0x7b,
++	DR_STE_V2_ACTION_MDFY_FLD_GNRL_PURPOSE		= 0x7c,
++	DR_STE_V2_ACTION_MDFY_FLD_REGISTER_2_0		= 0x90,
++	DR_STE_V2_ACTION_MDFY_FLD_REGISTER_2_1		= 0x91,
++	DR_STE_V2_ACTION_MDFY_FLD_REGISTER_1_0		= 0x92,
++	DR_STE_V2_ACTION_MDFY_FLD_REGISTER_1_1		= 0x93,
++	DR_STE_V2_ACTION_MDFY_FLD_REGISTER_0_0		= 0x94,
++	DR_STE_V2_ACTION_MDFY_FLD_REGISTER_0_1		= 0x95,
++};
++
++static const struct mlx5dr_ste_action_modify_field dr_ste_v2_action_modify_field_arr[] = {
++	[MLX5_ACTION_IN_FIELD_OUT_SMAC_47_16] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_SRC_L2_OUT_0, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_SMAC_15_0] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_SRC_L2_OUT_1, .start = 16, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_ETHERTYPE] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_1, .start = 0, .end = 15,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_DMAC_47_16] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_0, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_DMAC_15_0] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_1, .start = 16, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_IP_DSCP] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L3_OUT_0, .start = 18, .end = 23,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_TCP_FLAGS] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_1, .start = 16, .end = 24,
++		.l4_type = DR_STE_ACTION_MDFY_TYPE_L4_TCP,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_TCP_SPORT] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_0, .start = 16, .end = 31,
++		.l4_type = DR_STE_ACTION_MDFY_TYPE_L4_TCP,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_TCP_DPORT] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_0, .start = 0, .end = 15,
++		.l4_type = DR_STE_ACTION_MDFY_TYPE_L4_TCP,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_IP_TTL] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L3_OUT_0, .start = 8, .end = 15,
++		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV4,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_IPV6_HOPLIMIT] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L3_OUT_0, .start = 8, .end = 15,
++		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_UDP_SPORT] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_0, .start = 16, .end = 31,
++		.l4_type = DR_STE_ACTION_MDFY_TYPE_L4_UDP,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_UDP_DPORT] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L4_OUT_0, .start = 0, .end = 15,
++		.l4_type = DR_STE_ACTION_MDFY_TYPE_L4_UDP,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_SIPV6_127_96] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_0, .start = 0, .end = 31,
++		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_SIPV6_95_64] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_1, .start = 0, .end = 31,
++		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_SIPV6_63_32] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_2, .start = 0, .end = 31,
++		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_SIPV6_31_0] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_SRC_OUT_3, .start = 0, .end = 31,
++		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_DIPV6_127_96] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_0, .start = 0, .end = 31,
++		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_DIPV6_95_64] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_1, .start = 0, .end = 31,
++		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_DIPV6_63_32] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_2, .start = 0, .end = 31,
++		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_DIPV6_31_0] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV6_DST_OUT_3, .start = 0, .end = 31,
++		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV6,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_SIPV4] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV4_OUT_0, .start = 0, .end = 31,
++		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV4,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_DIPV4] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_IPV4_OUT_1, .start = 0, .end = 31,
++		.l3_type = DR_STE_ACTION_MDFY_TYPE_L3_IPV4,
++	},
++	[MLX5_ACTION_IN_FIELD_METADATA_REG_A] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_GNRL_PURPOSE, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_METADATA_REG_B] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_METADATA_2_CQE, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_METADATA_REG_C_0] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_REGISTER_0_0, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_METADATA_REG_C_1] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_REGISTER_0_1, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_METADATA_REG_C_2] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_REGISTER_1_0, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_METADATA_REG_C_3] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_REGISTER_1_1, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_METADATA_REG_C_4] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_REGISTER_2_0, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_METADATA_REG_C_5] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_REGISTER_2_1, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_TCP_SEQ_NUM] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_TCP_MISC_0, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_TCP_ACK_NUM] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_TCP_MISC_1, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_FIRST_VID] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_L2_OUT_2, .start = 0, .end = 15,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_EMD_31_0] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_CFG_HDR_0_1, .start = 0, .end = 31,
++	},
++	[MLX5_ACTION_IN_FIELD_OUT_EMD_47_32] = {
++		.hw_field = DR_STE_V2_ACTION_MDFY_FLD_CFG_HDR_0_0, .start = 0, .end = 15,
++	},
++};
++
++#endif  /* _DR_STE_V2_ */
 -- 
 2.44.0
 
