@@ -1,84 +1,81 @@
-Return-Path: <linux-rdma+bounces-6500-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6501-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EC229F01A7
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 02:11:40 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B076C9F040C
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 06:15:38 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F34A284A99
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 01:11:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA8D916A172
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 05:15:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F59117BA1;
-	Fri, 13 Dec 2024 01:11:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sBiqZCWH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2B371684AC;
+	Fri, 13 Dec 2024 05:15:34 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from baidu.com (mx24.baidu.com [111.206.215.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ABD753BE;
-	Fri, 13 Dec 2024 01:11:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D30A80B;
+	Fri, 13 Dec 2024 05:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.206.215.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734052296; cv=none; b=TefjFHuu2RZ0gDsQmZPxaMQWfyh99+GwsN4P9P8O5iVrWODUOGv+tCGz1hV4AqH7aC2banQaU01FCJwmOw5MoVmII6eBq+XyCwfL8qvtOjrslJrF8JkHE086N1ZKdD+BIA8cN0Be5uSyIFIUP8OOlof1c0SPVzuGdBtq3F+4fys=
+	t=1734066934; cv=none; b=ZIEM88/FGK0/5/y9uYXeoEVmkCI27j2F4K9xJLlBqq2S8GgBf6Zd6Px5Skjtoi2ZDKFLQ67IbMH+PG0SqkMlptu9lkmc84wVm7gsYdyLPQLGSvB3znZ6ZJSw6/aWMbXAxEeab7gZ+gs249Q+aZlt1sFsrT9xxJ/Z7R1N86Qy6RA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734052296; c=relaxed/simple;
-	bh=mBQgaAZqDPlNmiCqczWwxTN4WHwpUuQ8rF5+Uhg/xcE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oAU27IJV62LTXNz+v06XaP5kDFJBIT1D/a3gzT0/etXpvNWZg7eEphYUGE5I4OzexuQVmN+Nm1i2SRLy9l3PQG8swkYohnTKffQqol4DAdhEh0wsDACecEtXaHi7ACr2gdPS78vIqkFtyiUM16Th4w8ljBCOHvvHBAQv0yhXl38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sBiqZCWH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FA59C4CECE;
-	Fri, 13 Dec 2024 01:11:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734052296;
-	bh=mBQgaAZqDPlNmiCqczWwxTN4WHwpUuQ8rF5+Uhg/xcE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sBiqZCWHG/zjPPBB/wF0B/dEgyZk9FKD/VXsr7IIrhjrHAHGY6HVvogHj+WSs5/pc
-	 Dnft5+/FPRydaHWtGmacerbTT4J9WF2FYnZjW7IfRctKgWunVjQu6IbggsGuOaR3mp
-	 xsDyMCt5Uc1IwjKT1zZMf/9zz+wfg6GtZhk2SBbMfGTjUU6g25SvZvj2+E4o5gDm1+
-	 H32zt87L5Zt4XTl088LJsfd6xJHwzOUGR4iGlV4w43dWWT/wq2eOp11hv6iqXYnS2A
-	 OtwWFOLkpttu1opriOjtvTxgOzrd5JS/6jICLyUEFZ3q/jKfIEohC1yWOIbZjP5hUM
-	 ksG2/PMtrmqxQ==
-Date: Thu, 12 Dec 2024 17:11:34 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <ttoukan.linux@gmail.com>
-Cc: Simon Horman <horms@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
- "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org, Saeed Mahameed
- <saeedm@nvidia.com>, Gal Pressman <gal@nvidia.com>,
- linux-rdma@vger.kernel.org, Itamar Gozlan <igozlan@nvidia.com>, Yevgeny
- Kliteynik <kliteyn@nvidia.com>
-Subject: Re: [PATCH net-next 10/12] net/mlx5: DR, add support for ConnectX-8
- steering
-Message-ID: <20241212171134.52017f1e@kernel.org>
-In-Reply-To: <5b6c8feb-c779-428a-bcca-2febdae5bb0f@gmail.com>
-References: <20241211134223.389616-1-tariqt@nvidia.com>
-	<20241211134223.389616-11-tariqt@nvidia.com>
-	<20241212173113.GF73795@kernel.org>
-	<5b6c8feb-c779-428a-bcca-2febdae5bb0f@gmail.com>
+	s=arc-20240116; t=1734066934; c=relaxed/simple;
+	bh=RNegVMeUzmHjlB1Zs2yb8+wR3Yav6ylxo9nkvxy0vTA=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=D1HR2KOWGgr4KEMdTsAMJA85I6sqkJBpBpnAJ9hw+Mo2K8IWxmr0JSXLBgtY1eUvE7L3Gz6WDHnPUmyzw/GVkxVaVWPdNEJGExuQKNL0irB1oD5kJjuzFgXpmMgdQ++bVeMtsW2ZkrKifnZIFpw6kQ2LI2nHZm6HwjfHOo8Z930=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; arc=none smtp.client-ip=111.206.215.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baidu.com
+From: "Li,Rongqing" <lirongqing@baidu.com>
+To: "saeedm@nvidia.com" <saeedm@nvidia.com>, "leon@kernel.org"
+	<leon@kernel.org>, "tariqt@nvidia.com" <tariqt@nvidia.com>,
+	"davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com"
+	<edumazet@google.com>, "kuba@kernel.org" <kuba@kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIXVtuZXQtbmV4dF0gbmV0L21seDU6IFBpY2sgdGhlIGZp?=
+ =?gb2312?B?cnN0IG1hdGNoZWQgbm9kZSBvZiBwcml2LmZyZWVfbGlzdCBpbiBhbGxvY180?=
+ =?gb2312?Q?k?=
+Thread-Topic: [PATCH][net-next] net/mlx5: Pick the first matched node of
+ priv.free_list in alloc_4k
+Thread-Index: AQHa9SQKbu2MLSbO/UqzPRUr7o8sl7LkSHtw
+Date: Fri, 13 Dec 2024 04:43:45 +0000
+Message-ID: <e2a50fa8fd79488cb047018713e14731@baidu.com>
+References: <20240823061648.17862-1-lirongqing@baidu.com>
+In-Reply-To: <20240823061648.17862-1-lirongqing@baidu.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-FEAS-Client-IP: 172.31.51.56
+X-FE-Last-Public-Client-IP: 100.100.100.38
+X-FE-Policy-ID: 52:10:53:SYSTEM
 
-On Thu, 12 Dec 2024 20:31:30 +0200 Tariq Toukan wrote:
-> It requires pulling 4 IFC patches that were applied to
-> mlx5-next:
-> https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/log/?h=mlx5-next
-
-What do you expect we'll do with this series?
-
-If you expect it to be set to Awaiting Upstream - could you make sure
-that the cover letter has "mlx5-next" in the subject? That will makes 
-it easier to automate in patchwork.
-
-If you expect the series to be applied / merged - LMK, I can try 
-to explain why that's impossible..
+DQo+IFBpY2sgdGhlIGZpcnN0IG5vZGUgaW5zdGVhZCBvZiBsYXN0LCB0byBhdm9pZCB1bm5lY2Vz
+c2FyeSBpdGVyYXRpbmcgb3ZlciB3aG9sZQ0KPiBmcmVlIGxpc3QNCj4gDQo+IFNpZ25lZC1vZmYt
+Ynk6IExpIFJvbmdRaW5nIDxsaXJvbmdxaW5nQGJhaWR1LmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJz
+L25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvcGFnZWFsbG9jLmMgfCAxICsNCj4gIDEg
+ZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9wYWdlYWxsb2MuYw0KPiBiL2RyaXZlcnMv
+bmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9wYWdlYWxsb2MuYw0KPiBpbmRleCA5NzJl
+OGU5Li5jZDIwZjExIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5v
+eC9tbHg1L2NvcmUvcGFnZWFsbG9jLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVs
+bGFub3gvbWx4NS9jb3JlL3BhZ2VhbGxvYy5jDQo+IEBAIC0yMjgsNiArMjI4LDcgQEAgc3RhdGlj
+IGludCBhbGxvY180ayhzdHJ1Y3QgbWx4NV9jb3JlX2RldiAqZGV2LCB1NjQNCj4gKmFkZHIsIHUz
+MiBmdW5jdGlvbikNCj4gIAkJaWYgKGl0ZXItPmZ1bmN0aW9uICE9IGZ1bmN0aW9uKQ0KPiAgCQkJ
+Y29udGludWU7DQo+ICAJCWZwID0gaXRlcjsNCj4gKwkJYnJlYWs7DQo+ICAJfQ0KPiANCj4gIAlp
+ZiAobGlzdF9lbXB0eSgmZGV2LT5wcml2LmZyZWVfbGlzdCkgfHwgIWZwKQ0KPiAtLQ0KDQoNCnBp
+bmcNCg0KPiAyLjkuNA0KDQo=
 
