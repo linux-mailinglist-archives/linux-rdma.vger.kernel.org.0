@@ -1,121 +1,118 @@
-Return-Path: <linux-rdma+bounces-6502-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6503-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 187979F0575
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 08:27:16 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAB099F080B
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 10:38:13 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC6C3282E66
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 07:27:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B205B188BF0D
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 09:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7C018BC3D;
-	Fri, 13 Dec 2024 07:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Fe/qjYbH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDF0B1B3925;
+	Fri, 13 Dec 2024 09:38:05 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63BD91552FC
-	for <linux-rdma@vger.kernel.org>; Fri, 13 Dec 2024 07:27:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 696841B3922;
+	Fri, 13 Dec 2024 09:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734074830; cv=none; b=k5/YGguNiwx831uccUZa2AnEhgnqXtDhHLNR+jk3YsKsc81MpvoW4PbZXnzUCYj308X89PSBMWkn8R/FYklO3/b40BF7lYy0AL04HJ3wVDOGWypK4roy7iHD5PUQuBndNNSPlak9xCPkek1eUNP3bZapI4S/2bLHh48Mo5vLUdo=
+	t=1734082685; cv=none; b=lNLmBDNS6EdTMJRaBc4LhNR+zE6lwaJnDhoFeUE05GE4W99KMBIJOUqu+2wEVDMeHl9V83AvT4fC8Cnk9D2PlftYG4oks22NdIdnhzwlzFUman2mc4I+LjYL7pvxerxwv/m0G+uk4yFVVOe6ftlWosjtGnkWmL/es8bs9f+fL5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734074830; c=relaxed/simple;
-	bh=Yl9FtTWfm5AJnHEzx+o37iffwW8fKKulQ7FYGqNq9CA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=JfZUhLL1cP/CG+JvICAvMf5SU3wJJaAzyw4LDhrPQtMF/Za4RnoXdY2s2dLS2gmj17wvcAdjnxOWB+D0XuUjHBM8iU8i/jxEGsnnA8x7AB66FxCmF47N6LtgUyF1VkudaliurlqfDzRkNeOW0nqJ2zPGNq/xPCFALp4GKQltpW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Fe/qjYbH; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b82f5caf-09d7-49be-aa4a-8a402d6b89a2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734074825;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nANURs/9bFtfWppkan0ral+I/xL33sd1BSNCKM+vm0A=;
-	b=Fe/qjYbHRIaCLni0Cg1MmAfesKD64Gc9dk106a0J+CwgwIWGpCgoOaqg+KAp9G0zVNSPUb
-	rmoVkChvBHWjSyqH22crQf2UmGtJISvHkIAHGd2ttx3AWMasYw3UuKMQvPP8oVHY+FU8er
-	X6F3tdk8Inx+0t/5G53EXDMZ7iQc8xM=
-Date: Fri, 13 Dec 2024 08:26:58 +0100
+	s=arc-20240116; t=1734082685; c=relaxed/simple;
+	bh=HITZSZpjru9RSOjYBpX/AlEUY8rBdvdHz3Y6Yqg8P0k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=q0AlnDHMSEKUc4xxgrisMAGe/exnB/RAO5FZDMouBRIqqyuty3pnbJLsBqZRPfK/QWmbGA/vEcBQgkVfINcoUYBzv/1mDVHYLW3wFfao/KhcmOzujuraqfC+QEc0DPnkGEo3un3dSQTYweJbKAqMnGRW/Oq6jlgem3h/HdHsmi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Y8klV1K3Zz1JFDP;
+	Fri, 13 Dec 2024 17:37:42 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6B6CA140123;
+	Fri, 13 Dec 2024 17:37:59 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 13 Dec 2024 17:37:58 +0800
+Message-ID: <92d90a3b-40e5-b47a-e570-ca63e4e58126@hisilicon.com>
+Date: Fri, 13 Dec 2024 17:37:58 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH][net-next] net/mlx5: Pick the first matched node of
- priv.free_list in alloc_4k
-To: Li RongQing <lirongqing@baidu.com>, saeedm@nvidia.com, leon@kernel.org,
- tariqt@nvidia.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org
-References: <20240823061648.17862-1-lirongqing@baidu.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240823061648.17862-1-lirongqing@baidu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH for-next] RDMA/hns: Support mmapping reset state to
+ userspace
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@nvidia.com>
+CC: <leon@kernel.org>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <tangchengchang@huawei.com>
+References: <20241014130731.1650279-1-huangjunxian6@hisilicon.com>
+ <20241209190125.GA2367762@nvidia.com>
+ <f046d3f8-a1c8-0174-8db9-24467c038557@hisilicon.com>
+ <20241210134827.GG2347147@nvidia.com>
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20241210134827.GG2347147@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-在 2024/8/23 8:16, Li RongQing 写道:
-> Pick the first node instead of last, to avoid unnecessary iterating
-> over whole free list
+
+
+On 2024/12/10 21:48, Jason Gunthorpe wrote:
+> On Tue, Dec 10, 2024 at 02:24:16PM +0800, Junxian Huang wrote:
+>>
+>>
+>> On 2024/12/10 3:01, Jason Gunthorpe wrote:
+>>> On Mon, Oct 14, 2024 at 09:07:31PM +0800, Junxian Huang wrote:
+>>>> From: Chengchang Tang <tangchengchang@huawei.com>
+>>>>
+>>>> Mmap reset state to notify userspace about HW reset. The mmaped flag
+>>>> hw_ready will be initiated to a non-zero value. When HW is reset,
+>>>> the mmap page will be zapped and userspace will get a zero value of
+>>>> hw_ready.
+>>>
+>>> This needs alot more explanation about *why* does userspace need this
+>>> information and why is hns unique here.
+>>>
+>>
+>> Our HW cannot flush WQEs by itself unless the driver posts a modify-qp-to-err
+>> mailbox. But when the HW is reset, it'll stop handling mailbox too, so the HW
+>> becomes unable to produce any more CQEs for the existing WQEs. This will break
+>> some users' expectation that they should be able to poll CQEs as many as the
+>> number of the posted WQEs in any cases.
 > 
-> Signed-off-by: Li RongQing <lirongqing@baidu.com>
-
-Your commit is to fix the problem from the following commit?
-So the following should be needed.
-
-Fixes: 2726cd4a2928 ("net/mlx5: Dedicate fw page to the requesting function"
-
-commit 2726cd4a29280c20ea983be285a6aefe75b205a4
-Author: Eran Ben Elisha <eranbe@mellanox.com>
-Date:   Sun May 3 10:15:58 2020 +0300
-
-     net/mlx5: Dedicate fw page to the requesting function
-
-     The cited patch assumes that all chuncks in a fw page belong to the 
-same
-     function, thus the driver must dedicate fw page to the requesting
-     function, which is actually what was intedned in the original fw pages
-     allocator design, hence the fwp->func_id !
-
-     Up until the cited patch everything worked ok, but now "relase all 
-pages"
-     is broken on systems with page_size > 4k.
-
-     Fix this by dedicating fw page to the requesting function id via 
-adding a
-     func_id parameter to alloc_4k() function.
-
-     Fixes: c6168161f693 ("net/mlx5: Add support for release all pages 
-event")
-     Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
-     Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-
-Zhu Yanjun
-
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c | 1 +
->   1 file changed, 1 insertion(+)
+> But your reset flow partially disassociates the device, when the
+> userspace goes back to sleep, or rearms the CQ, it should get a hard
+> fail and do a full cleanup without relying on flushing.
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
-> index 972e8e9..cd20f11 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
-> @@ -228,6 +228,7 @@ static int alloc_4k(struct mlx5_core_dev *dev, u64 *addr, u32 function)
->   		if (iter->function != function)
->   			continue;
->   		fp = iter;
-> +		break;
->   	}
->   
->   	if (list_empty(&dev->priv.free_list) || !fp)
 
+Not sure if I got your point, when you said "the userspace goes back to sleep",
+did you mean the ibv_get_async_event() api? Are you suggesting that userspace
+should call ibv_get_async_event() to monitor async events, and when it gets a
+fatal event, it should stop polling CQs and clean up everything instead of
+still waiting for the remaining CQEs?
+
+Thanks,
+Junxian
+
+>> We try to notify the reset state to userspace so that we can generate software
+>> WCs for the existing WQEs in userspace instead of HW in reset state, which is
+>> what this rdma-core PR does:
+> 
+> That doesn't sound right at all. Device disassociation is a hard fail,
+> we don't try to elegantly do things like generate completions. The
+> device is dead, the queues are gone.
+> 
+> Jason
+> 
 
