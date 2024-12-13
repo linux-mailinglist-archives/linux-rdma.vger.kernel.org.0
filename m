@@ -1,81 +1,121 @@
-Return-Path: <linux-rdma+bounces-6501-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6502-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B076C9F040C
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 06:15:38 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA8D916A172
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 05:15:35 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2B371684AC;
-	Fri, 13 Dec 2024 05:15:34 +0000 (UTC)
-X-Original-To: linux-rdma@vger.kernel.org
-Received: from baidu.com (mx24.baidu.com [111.206.215.185])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 187979F0575
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 08:27:16 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D30A80B;
-	Fri, 13 Dec 2024 05:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.206.215.185
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC6C3282E66
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 07:27:14 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7C018BC3D;
+	Fri, 13 Dec 2024 07:27:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Fe/qjYbH"
+X-Original-To: linux-rdma@vger.kernel.org
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63BD91552FC
+	for <linux-rdma@vger.kernel.org>; Fri, 13 Dec 2024 07:27:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734066934; cv=none; b=ZIEM88/FGK0/5/y9uYXeoEVmkCI27j2F4K9xJLlBqq2S8GgBf6Zd6Px5Skjtoi2ZDKFLQ67IbMH+PG0SqkMlptu9lkmc84wVm7gsYdyLPQLGSvB3znZ6ZJSw6/aWMbXAxEeab7gZ+gs249Q+aZlt1sFsrT9xxJ/Z7R1N86Qy6RA=
+	t=1734074830; cv=none; b=k5/YGguNiwx831uccUZa2AnEhgnqXtDhHLNR+jk3YsKsc81MpvoW4PbZXnzUCYj308X89PSBMWkn8R/FYklO3/b40BF7lYy0AL04HJ3wVDOGWypK4roy7iHD5PUQuBndNNSPlak9xCPkek1eUNP3bZapI4S/2bLHh48Mo5vLUdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734066934; c=relaxed/simple;
-	bh=RNegVMeUzmHjlB1Zs2yb8+wR3Yav6ylxo9nkvxy0vTA=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=D1HR2KOWGgr4KEMdTsAMJA85I6sqkJBpBpnAJ9hw+Mo2K8IWxmr0JSXLBgtY1eUvE7L3Gz6WDHnPUmyzw/GVkxVaVWPdNEJGExuQKNL0irB1oD5kJjuzFgXpmMgdQ++bVeMtsW2ZkrKifnZIFpw6kQ2LI2nHZm6HwjfHOo8Z930=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; arc=none smtp.client-ip=111.206.215.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baidu.com
-From: "Li,Rongqing" <lirongqing@baidu.com>
-To: "saeedm@nvidia.com" <saeedm@nvidia.com>, "leon@kernel.org"
-	<leon@kernel.org>, "tariqt@nvidia.com" <tariqt@nvidia.com>,
-	"davem@davemloft.net" <davem@davemloft.net>, "edumazet@google.com"
-	<edumazet@google.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIXVtuZXQtbmV4dF0gbmV0L21seDU6IFBpY2sgdGhlIGZp?=
- =?gb2312?B?cnN0IG1hdGNoZWQgbm9kZSBvZiBwcml2LmZyZWVfbGlzdCBpbiBhbGxvY180?=
- =?gb2312?Q?k?=
-Thread-Topic: [PATCH][net-next] net/mlx5: Pick the first matched node of
- priv.free_list in alloc_4k
-Thread-Index: AQHa9SQKbu2MLSbO/UqzPRUr7o8sl7LkSHtw
-Date: Fri, 13 Dec 2024 04:43:45 +0000
-Message-ID: <e2a50fa8fd79488cb047018713e14731@baidu.com>
-References: <20240823061648.17862-1-lirongqing@baidu.com>
-In-Reply-To: <20240823061648.17862-1-lirongqing@baidu.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1734074830; c=relaxed/simple;
+	bh=Yl9FtTWfm5AJnHEzx+o37iffwW8fKKulQ7FYGqNq9CA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=JfZUhLL1cP/CG+JvICAvMf5SU3wJJaAzyw4LDhrPQtMF/Za4RnoXdY2s2dLS2gmj17wvcAdjnxOWB+D0XuUjHBM8iU8i/jxEGsnnA8x7AB66FxCmF47N6LtgUyF1VkudaliurlqfDzRkNeOW0nqJ2zPGNq/xPCFALp4GKQltpW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Fe/qjYbH; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b82f5caf-09d7-49be-aa4a-8a402d6b89a2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734074825;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nANURs/9bFtfWppkan0ral+I/xL33sd1BSNCKM+vm0A=;
+	b=Fe/qjYbHRIaCLni0Cg1MmAfesKD64Gc9dk106a0J+CwgwIWGpCgoOaqg+KAp9G0zVNSPUb
+	rmoVkChvBHWjSyqH22crQf2UmGtJISvHkIAHGd2ttx3AWMasYw3UuKMQvPP8oVHY+FU8er
+	X6F3tdk8Inx+0t/5G53EXDMZ7iQc8xM=
+Date: Fri, 13 Dec 2024 08:26:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-FEAS-Client-IP: 172.31.51.56
-X-FE-Last-Public-Client-IP: 100.100.100.38
-X-FE-Policy-ID: 52:10:53:SYSTEM
+Subject: Re: [PATCH][net-next] net/mlx5: Pick the first matched node of
+ priv.free_list in alloc_4k
+To: Li RongQing <lirongqing@baidu.com>, saeedm@nvidia.com, leon@kernel.org,
+ tariqt@nvidia.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org
+References: <20240823061648.17862-1-lirongqing@baidu.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20240823061648.17862-1-lirongqing@baidu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-DQo+IFBpY2sgdGhlIGZpcnN0IG5vZGUgaW5zdGVhZCBvZiBsYXN0LCB0byBhdm9pZCB1bm5lY2Vz
-c2FyeSBpdGVyYXRpbmcgb3ZlciB3aG9sZQ0KPiBmcmVlIGxpc3QNCj4gDQo+IFNpZ25lZC1vZmYt
-Ynk6IExpIFJvbmdRaW5nIDxsaXJvbmdxaW5nQGJhaWR1LmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJz
-L25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvcGFnZWFsbG9jLmMgfCAxICsNCj4gIDEg
-ZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-bmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9wYWdlYWxsb2MuYw0KPiBiL2RyaXZlcnMv
-bmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9wYWdlYWxsb2MuYw0KPiBpbmRleCA5NzJl
-OGU5Li5jZDIwZjExIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5v
-eC9tbHg1L2NvcmUvcGFnZWFsbG9jLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVs
-bGFub3gvbWx4NS9jb3JlL3BhZ2VhbGxvYy5jDQo+IEBAIC0yMjgsNiArMjI4LDcgQEAgc3RhdGlj
-IGludCBhbGxvY180ayhzdHJ1Y3QgbWx4NV9jb3JlX2RldiAqZGV2LCB1NjQNCj4gKmFkZHIsIHUz
-MiBmdW5jdGlvbikNCj4gIAkJaWYgKGl0ZXItPmZ1bmN0aW9uICE9IGZ1bmN0aW9uKQ0KPiAgCQkJ
-Y29udGludWU7DQo+ICAJCWZwID0gaXRlcjsNCj4gKwkJYnJlYWs7DQo+ICAJfQ0KPiANCj4gIAlp
-ZiAobGlzdF9lbXB0eSgmZGV2LT5wcml2LmZyZWVfbGlzdCkgfHwgIWZwKQ0KPiAtLQ0KDQoNCnBp
-bmcNCg0KPiAyLjkuNA0KDQo=
+在 2024/8/23 8:16, Li RongQing 写道:
+> Pick the first node instead of last, to avoid unnecessary iterating
+> over whole free list
+> 
+> Signed-off-by: Li RongQing <lirongqing@baidu.com>
+
+Your commit is to fix the problem from the following commit?
+So the following should be needed.
+
+Fixes: 2726cd4a2928 ("net/mlx5: Dedicate fw page to the requesting function"
+
+commit 2726cd4a29280c20ea983be285a6aefe75b205a4
+Author: Eran Ben Elisha <eranbe@mellanox.com>
+Date:   Sun May 3 10:15:58 2020 +0300
+
+     net/mlx5: Dedicate fw page to the requesting function
+
+     The cited patch assumes that all chuncks in a fw page belong to the 
+same
+     function, thus the driver must dedicate fw page to the requesting
+     function, which is actually what was intedned in the original fw pages
+     allocator design, hence the fwp->func_id !
+
+     Up until the cited patch everything worked ok, but now "relase all 
+pages"
+     is broken on systems with page_size > 4k.
+
+     Fix this by dedicating fw page to the requesting function id via 
+adding a
+     func_id parameter to alloc_4k() function.
+
+     Fixes: c6168161f693 ("net/mlx5: Add support for release all pages 
+event")
+     Signed-off-by: Eran Ben Elisha <eranbe@mellanox.com>
+     Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+
+Zhu Yanjun
+
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
+> index 972e8e9..cd20f11 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
+> @@ -228,6 +228,7 @@ static int alloc_4k(struct mlx5_core_dev *dev, u64 *addr, u32 function)
+>   		if (iter->function != function)
+>   			continue;
+>   		fp = iter;
+> +		break;
+>   	}
+>   
+>   	if (list_empty(&dev->priv.free_list) || !fp)
+
 
