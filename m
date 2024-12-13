@@ -1,231 +1,162 @@
-Return-Path: <linux-rdma+bounces-6516-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6517-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7641E9F15D1
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 20:30:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ECF59F1738
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 21:11:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90EF616AB5F
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 19:30:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE365188D722
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2024 20:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B481E0DDC;
-	Fri, 13 Dec 2024 19:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5861F191484;
+	Fri, 13 Dec 2024 20:06:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Qt+4wLpP"
+	dkim=pass (1024-bit key) header.d=linuxonhyperv.com header.i=@linuxonhyperv.com header.b="bUsl9Xks"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6AF51EB9EB
-	for <linux-rdma@vger.kernel.org>; Fri, 13 Dec 2024 19:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B33718FDBE;
+	Fri, 13 Dec 2024 20:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734118211; cv=none; b=PI3QRzmmehUEaQr3/Da+RGTQFxSYVCRlCnb5dDPt7cCwgpBF8BmT/oAkNp/QS25zhwPesLM/CFV+QPT+YfpDKe9X+Es/6wQumpJ3pDbU2Klh2TMiCNBjqEq+xdwbTINPYe6iPTb4+pCdHu6lPJG6r24kRlZb8bwgn6Vgx9gGW38=
+	t=1734120386; cv=none; b=WS+EFUZmchgANShzcD4L2qvJryJcKmIQ9MxrIBr4r2NBHT2YFGlEUhOXacA7mCUELDVMtXRZ3T61UtO29j2MdyXHVtLCuwY8tko2YxSmqNEXp96jvvnU90AF64bCrkAabBEqD704RvpZ0VXACMALsoG1SjArYyKvUnxnRMBXwI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734118211; c=relaxed/simple;
-	bh=hPcJtYiuWPRNJlKLgudMBwVeXqKKRl0zEVJnL8wmuOc=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=Ji54+R1scmDsdBb6NKH9TxuuA1IFyZtsA1iDMMocMoFgoqgYLwNHoyBJ8Za8j6edxSOqAPvhMDJQMbEdOvv/KY/q8J9cDWqEXyZmNH7+ejReojf/GVzq906kLIi+gy7/vsDuyCKql2/qxCzTPQ29r+6yWuV+NiyULeEv6oI31KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Qt+4wLpP; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0d0ee443-a903-406e-9bec-b02b1391b7d0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734118206;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=i+pjXm9FXxIs046v1l4pm30VBH0t/AOQPT9dPbEJdpE=;
-	b=Qt+4wLpPteYzjIhSzmvOV9rsgIJ8QWvPBsG1YdGungBe7cqU74FUdq97CEtFXIrGz7UJ29
-	eLfpIe132P9B/j1ATC2G1fYBJKEPQ7G94w3Cg5zgJPdzpzaoi0UqksobwLo+OV2ZJMdIne
-	ES1liOI/lEWqOy8bhJpH3df1czo+MLQ=
-Date: Fri, 13 Dec 2024 20:30:01 +0100
+	s=arc-20240116; t=1734120386; c=relaxed/simple;
+	bh=PpdV+TAyG3tKXdPwl6HN0V9j9NLvFMFR7G1T99bJP4A=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=gTrtVQhc82KU26l8aCjBOtPuQwFWgLz4uoNxHo4JfYV4KdUUYmHphUjTNXtDEqMBl6ZVL5eovbx7i45/koORwm3k1acSG8X47Kp31s5JCA1kuOt1+DB8e0xSfihxxUEunbuFX7sWsnzdERqtB07K2HgPBhYLkiRiAT/gI0fE3WU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxonhyperv.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linuxonhyperv.com header.i=@linuxonhyperv.com header.b=bUsl9Xks; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxonhyperv.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1202)
+	id 0CCBF20BCAD0; Fri, 13 Dec 2024 12:06:24 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0CCBF20BCAD0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+	s=default; t=1734120384;
+	bh=vJ1S+b1BSe5VAHRIRV0GkW0d4sHaXpM7+ERD6ffAyVE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bUsl9XksWclBwDTryioRbgDJcBWGomCsPSbbY003/uRc8A4dCpW+CVqRwunLyD8PB
+	 +EVjyuA//sWeDmAjX5OqxZIZ7hVVSgF1hgTD2yn6bGQbIIlDFn/rscNSFFmY1+6SxO
+	 VCOabvRZruoaaQ0IawAf86m9DlYMoIKcX61svFoM=
+From: longli@linuxonhyperv.com
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Stephen Hemminger <stephen@networkplumber.org>
+Cc: linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	Long Li <longli@microsoft.com>
+Subject: [Patch net-next v2] hv_netvsc: Set device flags for properly indicating bonding in Hyper-V
+Date: Fri, 13 Dec 2024 12:06:01 -0800
+Message-Id: <1734120361-26599-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: workqueue: WQ_MEM_RECLAIM nvmet-wq:nvmet_rdma_release_queue_work
- [nvmet_rdma] is flushing !WQ_MEM_RECLAIM irdma-cleanup-wq:irdma_flush_worker
- [irdma]
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-To: Honggang LI <honggangli@163.com>, linux-nvme@lists.infradead.org,
- linux-rdma@vger.kernel.org
-References: <Z1wBEgluXUDrDJmN@fc39>
- <d6067519-26ab-4851-ba58-3ebe254e88d1@linux.dev>
-In-Reply-To: <d6067519-26ab-4851-ba58-3ebe254e88d1@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+From: Long Li <longli@microsoft.com>
 
+On Hyper-V platforms, a slave VF netdev always bonds to Netvsc and remains
+as Netvsc's only active slave as long as the slave device is present. This
+behavior is not user-configurable.
 
-在 2024/12/13 19:55, Zhu Yanjun 写道:
-> 在 2024/12/13 10:40, Honggang LI 写道:
->> It is 100% reproducible. The NVMEoRDMA client side is running RXE.
->> To reproduce it, the clinet side repeat to connect and disconnect
->> to the NVMEoRDMA target.
->>
->> [ 685.757357] ------------[ cut here ]------------
->> [ 685.758725] workqueue: WQ_MEM_RECLAIM nvmet- 
->> wq:nvmet_rdma_release_queue_work [nvmet_rdma] is flushing ! 
->> WQ_MEM_RECLAIM irdma-cleanup-wq:irdma_flush_worker [irdma]
+Other kernel APIs (e.g those in "include/linux/netdevice.h") check for
+IFF_MASTER, IFF_SLAVE and IFF_BONDING for determing if those are used
+in a master/slave bonded setup. RDMA uses those APIs extensively when
+looking for master/slave devices. Netvsc's bonding setup with its slave
+device falls into this category.
 
-I delved into this problem. It seems that it is a known problem.
-Can you apply the following to make tests again?
+Make hv_netvsc properly indicate bonding with its slave and change the
+API to reflect this bonding setup.
 
-diff --git a/drivers/infiniband/hw/irdma/hw.c 
-b/drivers/infiniband/hw/irdma/hw.c
-index ad50b77282f8..31501ff9f282 100644
---- a/drivers/infiniband/hw/irdma/hw.c
-+++ b/drivers/infiniband/hw/irdma/hw.c
-@@ -1872,7 +1872,7 @@ int irdma_rt_init_hw(struct irdma_device *iwdev,
-                  * free cq bufs
-                  */
-                 iwdev->cleanup_wq = alloc_workqueue("irdma-cleanup-wq",
--                                       WQ_UNBOUND, WQ_UNBOUND_MAX_ACTIVE);
-+                                       WQ_UNBOUND|WQ_MEM_RECLAIM, 
-WQ_UNBOUND_MAX_ACTIVE);
-                 if (!iwdev->cleanup_wq)
-                         return -ENOMEM;
-                 irdma_get_used_rsrc(iwdev);
+Signed-off-by: Long Li <longli@microsoft.com>
+---
 
-Zhu Yanjun
+Change log
+v2: instead of re-using IFF_BOND, introduce permanent_bond in netdev
 
->> [ 685.758809] WARNING: CPU: 16 PID: 1897 at kernel/workqueue.c:2966 
->> check_flush_dependency+0x11f/0x140
->> [ 685.762880] Modules linked in: nvmet_rdma nvmet nvme_keyring 
->> tcm_loop target_core_user uio target_core_pscsi target_core_file 
->> target_core_iblock rpcrdma qrtr rdma_ucm ib_srpt ib_isert 
->> iscsi_target_mod target_core_mod rfkill ib_iser libiscsi 
->> scsi_transport_iscsi rdma_cm iw_cm ib_cm intel_rapl_msr 
->> intel_rapl_common sb_edac x86_pkg_temp_thermal intel_powerclamp 
->> coretemp sunrpc kvm_intel kvm irqbypass binfmt_misc rapl intel_cstate 
->> irdma ipmi_ssif i40e iTCO_wdt intel_pmc_bxt iTCO_vendor_support 
->> ib_uverbs acpi_ipmi intel_uncore joydev ipmi_si pcspkr mxm_wmi ib_core 
->> mei_me ipmi_devintf i2c_i801 mei i2c_smbus lpc_ich ioatdma 
->> ipmi_msghandler loop dm_multipath nfnetlink zram ice crct10dif_pclmul 
->> crc32_pclmul crc32c_intel polyval_clmulni polyval_generic nvme isci 
->> nvme_core ghash_clmulni_intel sha512_ssse3 igb sha256_ssse3 libsas 
->> sha1_ssse3 nvme_auth mgag200 scsi_transport_sas dca gnss i2c_algo_bit 
->> wmi scsi_dh_rdac scsi_dh_emc scsi_dh_alua ip6_tables ip_tables fuse
->> [ 685.773891] CPU: 16 PID: 1897 Comm: kworker/16:2 Kdump: loaded 
->> Tainted: G S 6.8.4-300.patched.fc40.x86_64 #1
->> [ 685.775267] Hardware name: Sugon I620-G10/X9DR3-F, BIOS 3.0b 07/22/2014
->> [ 685.776627] Workqueue: nvmet-wq nvmet_rdma_release_queue_work 
->> [nvmet_rdma]
->> [ 685.777993] RIP: 0010:check_flush_dependency+0x11f/0x140
-> 
-> Maybe it is related with this line. What is the above line?
-> 
-> Zhu Yanjun
-> 
->> [ 685.779331] Code: 8b 45 18 48 8d b2 b0 00 00 00 49 89 e8 48 8d 8b b0 
->> 00 00 00 48 c7 c7 28 fe b1 b2 c6 05 4f 97 59 02 01 48 89 c2 e8 a1 91 
->> fd ff <0f> 0b e9 fc fe ff ff 80 3d 3a 97 59 02 00 75 93 e9 2a ff ff ff 66
->> [ 685.782050] RSP: 0018:ffffb31348793cc8 EFLAGS: 00010082
->> [ 685.783398] RAX: 0000000000000000 RBX: ffff96c705754800 RCX: 
->> 0000000000000027
->> [ 685.784744] RDX: ffff96ce5fca18c8 RSI: 0000000000000001 RDI: 
->> ffff96ce5fca18c0
->> [ 685.786077] RBP: ffffffffc0d217f0 R08: 0000000000000000 R09: 
->> ffffb31348793b38
->> [ 685.787390] R10: ffffffffb3516808 R11: 0000000000000003 R12: 
->> ffff96c70d2aa8c0
->> [ 685.788688] R13: ffff96c7043c6a80 R14: 0000000000000001 R15: 
->> ffff96c704147400
->> [ 685.789970] FS: 0000000000000000(0000) GS:ffff96ce5fc80000(0000) 
->> knlGS:0000000000000000
->> [ 685.791239] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [ 685.792495] CR2: 00007f8207151000 CR3: 0000000d15422006 CR4: 
->> 00000000001706f0
->> [ 685.793745] Call Trace:
->> [ 685.794973] <TASK>
->> [ 685.796179] ? check_flush_dependency+0x11f/0x140
->> [ 685.797382] ? __warn+0x81/0x130
->> [ 685.798563] ? check_flush_dependency+0x11f/0x140
->> [ 685.799732] ? report_bug+0x16f/0x1a0
->> [ 685.800882] ? handle_bug+0x3c/0x80
->> [ 685.802003] ? exc_invalid_op+0x17/0x70
->> [ 685.803107] ? asm_exc_invalid_op+0x1a/0x20
->> [ 685.804200] ? __pfx_irdma_flush_worker+0x10/0x10 [irdma]
->> [ 685.805315] ? check_flush_dependency+0x11f/0x140
->> [ 685.806373] ? check_flush_dependency+0x11f/0x140
->> [ 685.807407] __flush_work.isra.0+0x10d/0x290
->> [ 685.808420] __cancel_work_timer+0x103/0x1a0
->> [ 685.809418] irdma_destroy_qp+0xd4/0x180 [irdma]
->> [ 685.810437] ib_destroy_qp_user+0x93/0x1a0 [ib_core]
->> [ 685.811474] nvmet_rdma_free_queue+0x35/0xc0 [nvmet_rdma]
->> [ 685.812437] nvmet_rdma_release_queue_work+0x1d/0x50 [nvmet_rdma]
->> [ 685.813385] process_one_work+0x170/0x330
->> [ 685.814300] worker_thread+0x280/0x3d0
->> [ 685.815201] ? __pfx_worker_thread+0x10/0x10
->> [ 685.816090] kthread+0xe8/0x120
->> [ 685.816956] ? __pfx_kthread+0x10/0x10
->> [ 685.817801] ret_from_fork+0x34/0x50
->> [ 685.818633] ? __pfx_kthread+0x10/0x10
->> [ 685.819439] ret_from_fork_asm+0x1b/0x30
->> [ 685.820232] </TASK>
->> [ 685.820994] Kernel panic - not syncing: kernel: panic_on_warn set ...
->> [ 685.821749] CPU: 16 PID: 1897 Comm: kworker/16:2 Kdump: loaded 
->> Tainted: G S 6.8.4-300.patched.fc40.x86_64 #1
->> [ 685.822513] Hardware name: Sugon I620-G10/X9DR3-F, BIOS 3.0b 07/22/2014
->> [ 685.823259] Workqueue: nvmet-wq nvmet_rdma_release_queue_work 
->> [nvmet_rdma]
->> [ 685.824002] Call Trace:
->> [ 685.824706] <TASK>
->> [ 685.825386] dump_stack_lvl+0x4d/0x70
->> [ 685.826060] panic+0x33e/0x370
->> [ 685.826724] ? check_flush_dependency+0x11f/0x140
->> [ 685.827383] check_panic_on_warn+0x44/0x60
->> [ 685.828021] __warn+0x8d/0x130
->> [ 685.828629] ? check_flush_dependency+0x11f/0x140
->> [ 685.829229] report_bug+0x16f/0x1a0
->> [ 685.829819] handle_bug+0x3c/0x80
->> [ 685.830396] exc_invalid_op+0x17/0x70
->> [ 685.830972] asm_exc_invalid_op+0x1a/0x20
->> [ 685.831548] RIP: 0010:check_flush_dependency+0x11f/0x140
->> [ 685.832129] Code: 8b 45 18 48 8d b2 b0 00 00 00 49 89 e8 48 8d 8b b0 
->> 00 00 00 48 c7 c7 28 fe b1 b2 c6 05 4f 97 59 02 01 48 89 c2 e8 a1 91 
->> fd ff <0f> 0b e9 fc fe ff ff 80 3d 3a 97 59 02 00 75 93 e9 2a ff ff ff 66
->> [ 685.833341] RSP: 0018:ffffb31348793cc8 EFLAGS: 00010082
->> [ 685.833954] RAX: 0000000000000000 RBX: ffff96c705754800 RCX: 
->> 0000000000000027
->> [ 685.834569] RDX: ffff96ce5fca18c8 RSI: 0000000000000001 RDI: 
->> ffff96ce5fca18c0
->> [ 685.835196] RBP: ffffffffc0d217f0 R08: 0000000000000000 R09: 
->> ffffb31348793b38
->> [ 685.835823] R10: ffffffffb3516808 R11: 0000000000000003 R12: 
->> ffff96c70d2aa8c0
->> [ 685.836450] R13: ffff96c7043c6a80 R14: 0000000000000001 R15: 
->> ffff96c704147400
->> [ 685.837079] ? __pfx_irdma_flush_worker+0x10/0x10 [irdma]
->> [ 685.837755] ? check_flush_dependency+0x11f/0x140
->> [ 685.838394] __flush_work.isra.0+0x10d/0x290
->> [ 685.839037] __cancel_work_timer+0x103/0x1a0
->> [ 685.839679] irdma_destroy_qp+0xd4/0x180 [irdma]
->> [ 685.840354] ib_destroy_qp_user+0x93/0x1a0 [ib_core]
->> [ 685.841049] nvmet_rdma_free_queue+0x35/0xc0 [nvmet_rdma]
->> [ 685.841707] nvmet_rdma_release_queue_work+0x1d/0x50 [nvmet_rdma]
->> [ 685.842367] process_one_work+0x170/0x330
->> [ 685.843020] worker_thread+0x280/0x3d0
->> [ 685.843670] ? __pfx_worker_thread+0x10/0x10
->> [ 685.844316] kthread+0xe8/0x120
->> [ 685.844955] ? __pfx_kthread+0x10/0x10
->> [ 685.845590] ret_from_fork+0x34/0x50
->> [ 685.846223] ? __pfx_kthread+0x10/0x10
->> [ 685.846853] ret_from_fork_asm+0x1b/0x30
->> [ 685.847485] </TASK>
->>
-> 
+ drivers/net/hyperv/netvsc_drv.c | 12 ++++++++++++
+ include/linux/netdevice.h       |  8 ++++++--
+ 2 files changed, 18 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index d6c4abfc3a28..7867f8e45f86 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -2204,6 +2204,10 @@ static int netvsc_vf_join(struct net_device *vf_netdev,
+ 		goto rx_handler_failed;
+ 	}
+ 
++	vf_netdev->permanent_bond = 1;
++	ndev->permanent_bond = 1;
++	ndev->flags |= IFF_MASTER;
++
+ 	ret = netdev_master_upper_dev_link(vf_netdev, ndev,
+ 					   NULL, NULL, NULL);
+ 	if (ret != 0) {
+@@ -2484,7 +2488,15 @@ static int netvsc_unregister_vf(struct net_device *vf_netdev)
+ 
+ 	reinit_completion(&net_device_ctx->vf_add);
+ 	netdev_rx_handler_unregister(vf_netdev);
++
++	/* Unlink the slave device and clear flag */
++	vf_netdev->permanent_bond = 0;
++	ndev->permanent_bond = 0;
++	vf_netdev->flags &= ~IFF_SLAVE;
++	ndev->flags &= ~IFF_MASTER;
++
+ 	netdev_upper_dev_unlink(vf_netdev, ndev);
++
+ 	RCU_INIT_POINTER(net_device_ctx->vf_netdev, NULL);
+ 	dev_put(vf_netdev);
+ 
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index ecc686409161..4531f45d3e83 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -1997,6 +1997,7 @@ enum netdev_reg_state {
+  *	@change_proto_down: device supports setting carrier via IFLA_PROTO_DOWN
+  *	@netns_local: interface can't change network namespaces
+  *	@fcoe_mtu:	device supports maximum FCoE MTU, 2158 bytes
++ *	@permanent_bond: device is permanently bonded to another device
+  *
+  *	@net_notifier_list:	List of per-net netdev notifier block
+  *				that follow this device when it is moved
+@@ -2402,6 +2403,7 @@ struct net_device {
+ 	unsigned long		change_proto_down:1;
+ 	unsigned long		netns_local:1;
+ 	unsigned long		fcoe_mtu:1;
++	unsigned long		permanent_bond:1;
+ 
+ 	struct list_head	net_notifier_list;
+ 
+@@ -5150,12 +5152,14 @@ static inline bool netif_is_macvlan_port(const struct net_device *dev)
+ 
+ static inline bool netif_is_bond_master(const struct net_device *dev)
+ {
+-	return dev->flags & IFF_MASTER && dev->priv_flags & IFF_BONDING;
++	return dev->flags & IFF_MASTER &&
++	       (dev->priv_flags & IFF_BONDING || dev->permanent_bond);
+ }
+ 
+ static inline bool netif_is_bond_slave(const struct net_device *dev)
+ {
+-	return dev->flags & IFF_SLAVE && dev->priv_flags & IFF_BONDING;
++	return dev->flags & IFF_SLAVE &&
++	       (dev->priv_flags & IFF_BONDING || dev->permanent_bond);
+ }
+ 
+ static inline bool netif_supports_nofcs(struct net_device *dev)
 -- 
-Best Regards,
-Yanjun.Zhu
+2.34.1
 
 
