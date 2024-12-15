@@ -1,347 +1,103 @@
-Return-Path: <linux-rdma+bounces-6526-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6527-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5763E9F2517
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Dec 2024 18:38:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AFAD9F262E
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Dec 2024 22:12:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFA491885949
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Dec 2024 17:38:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4A5D1885C82
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Dec 2024 21:12:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5878A1B21AD;
-	Sun, 15 Dec 2024 17:37:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34DAE1BF804;
+	Sun, 15 Dec 2024 21:12:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PpBogtvU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xya9Vtk5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF4B11547FB
-	for <linux-rdma@vger.kernel.org>; Sun, 15 Dec 2024 17:37:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F7F189F20;
+	Sun, 15 Dec 2024 21:12:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734284276; cv=none; b=BPt8goI/Y6Qd6my/bfcSSGykH5bJPGrUz+T2vdMzGX/iv1nsOFuvK1NpuxbpydMH2CXHI2ChgLVxq5gib44RAtHeHIUzhsCoUO55aVbsSHK8ilYcnbrwUbd9UZJp2BVFhwH2RIaeTQueq/c0M+bZ1tDuQaX6ox1CjkNfa9HGtyw=
+	t=1734297141; cv=none; b=t+NvEz8AaoV5sR/Znv6lbFGu29SBurdvc+1KjpaidfwKYbG2h6pqLPY0ueG1zVXdopaKXUwiCJ1UdLzDx/rD3Usuiu0OgYEwH22c3fpuG3IZ5jO42iaGi0Gq1YlEIDYgmDWwazETPJ4w+GDAarGpzlf+rHVCTeZ4VsNxaEhTOb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734284276; c=relaxed/simple;
-	bh=CgguZdX5lORxW4OTDcOMO7ui+/LTgN+3L9/uk0zUZHU=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Xx8EFB1Vx3iiUayDXrcQN6DsUryosQK7XZvyT8ES461Aynoy0L+mgpmqlK6TLsNBXerrcCzwy12tl6wRUBwzPkUo+6W9ZF288IWdJirJkRz4epf6WeDJ9k4NHPKJcQ3C5kWMJY+XupLsFZoktpNB976Ubx989df0pZ6d2iSpdko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PpBogtvU; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b2a32a23-19b9-4344-9bd8-cc83d657bbeb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734284270;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WVdRc13VYfC1ovhQl/yj1Ri1wle9AN6NK8FPloEYbMM=;
-	b=PpBogtvUVpmRijwtNGk3caWtbS5hyZ5BUfElNQXk3zOeebvsIgTImVv5mN6x4wFzfRpMxS
-	pguM/vBBXY6gSO5YEEgqr8z09jFn11+Ho1VDjHCUXuZZKQ6txBGQZUc7+ocfGfTDw3yzur
-	uJnsO+ncsWdnjqk/2uPH9IUB1ppwUgg=
-Date: Sun, 15 Dec 2024 18:37:45 +0100
+	s=arc-20240116; t=1734297141; c=relaxed/simple;
+	bh=D31U1yjezZQ8gufsOjmvl7a6VTecr6RWAsPZT3BNrRg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iH92H6yLbcAV1U4lNbwt7P7TmtblqoY+e+/yFSl08hJxnrVVJ2+OL95QikrX/Y/kl7t9HaQXXnXJBnGIHyIql0EBu8MnGpA1RJot657t348RCBy2s5OYel4yBlBZ717zv4wvFA66QO+90N5BVIBhLlmrlpvAO0uY2tFVWfKhnvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xya9Vtk5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC67CC4CECE;
+	Sun, 15 Dec 2024 21:12:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734297140;
+	bh=D31U1yjezZQ8gufsOjmvl7a6VTecr6RWAsPZT3BNrRg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Xya9Vtk5BtfCTyKKDlGYZTw88/7v/anzy2IoLNBBa8vtQoEDumHp+8Mvd8C+BOq8j
+	 ojERMqjs2BeJW4W/GcNflNys6kNUgBTb9/OUWINeu4joZVeC/G8glhnuZ83AiDLRcG
+	 /jY2PhJghmwDpuGzG4nA9gCqK5rpnnhrCQm07EwL/g0akag6Z0kfhG/Lfg8i2z3JEM
+	 5bUoUcxYy+q+2g2jisCC+eGeQeYlMZHj1kFvRWEfOhj06K8B6c2qEeVgLdP+omCbT6
+	 1hcHYuN8feeRr6G4O7CJVhB2XHdJPSXfl1KhMDO5jyLGSMeg3l38P5wPX8gTWbTUSh
+	 NzcdGTlxpiYzQ==
+Date: Sun, 15 Dec 2024 13:12:18 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Tariq Toukan <ttoukan.linux@gmail.com>
+Cc: Simon Horman <horms@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org, Saeed Mahameed
+ <saeedm@nvidia.com>, Gal Pressman <gal@nvidia.com>,
+ linux-rdma@vger.kernel.org, Itamar Gozlan <igozlan@nvidia.com>, Yevgeny
+ Kliteynik <kliteyn@nvidia.com>
+Subject: Re: [PATCH net-next 10/12] net/mlx5: DR, add support for ConnectX-8
+ steering
+Message-ID: <20241215131218.3d040ad8@kernel.org>
+In-Reply-To: <1e8c075c-2fd0-4d10-887d-04a5fb15baa2@gmail.com>
+References: <20241211134223.389616-1-tariqt@nvidia.com>
+	<20241211134223.389616-11-tariqt@nvidia.com>
+	<20241212173113.GF73795@kernel.org>
+	<5b6c8feb-c779-428a-bcca-2febdae5bb0f@gmail.com>
+	<20241212171134.52017f1e@kernel.org>
+	<1e8c075c-2fd0-4d10-887d-04a5fb15baa2@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH RESEND v2] RDMA/siw: Remove direct link to net_device
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-To: Bernard Metzler <bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org
-Cc: jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
- zyjzyj2000@gmail.com, syzbot+4b87489410b4efd181bf@syzkaller.appspotmail.com
-References: <20241212151848.564872-1-bmt@zurich.ibm.com>
- <163b6d77-3e26-4789-8e87-50b989701c9c@linux.dev>
-In-Reply-To: <163b6d77-3e26-4789-8e87-50b989701c9c@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-
-
-在 2024/12/14 13:37, Zhu Yanjun 写道:
-> 在 2024/12/12 16:18, Bernard Metzler 写道:
->> Do not manage a per device direct link to net_device. Rely
->> on associated ib_devices net_device management, not doubling
->> the effort locally. A badly managed local link to net_device
->> was causing a 'KASAN: slab-use-after-free' exception during
->> siw_query_port() call.
->>
->> Fixes: bdcf26bf9b3a ("rdma/siw: network and RDMA core interface")
->> Reported-by: syzbot+4b87489410b4efd181bf@syzkaller.appspotmail.com
->> Link: https://syzkaller.appspot.com/bug?extid=4b87489410b4efd181bf
->> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
->> ---
->>   drivers/infiniband/sw/siw/siw.h       |  7 +++---
->>   drivers/infiniband/sw/siw/siw_cm.c    | 31 +++++++++++++++++++-----
->>   drivers/infiniband/sw/siw/siw_main.c  | 15 +-----------
->>   drivers/infiniband/sw/siw/siw_verbs.c | 35 ++++++++++++++++++---------
->>   4 files changed, 53 insertions(+), 35 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/ 
->> siw/siw.h
->> index 86d4d6a2170e..ea5eee50dc39 100644
->> --- a/drivers/infiniband/sw/siw/siw.h
->> +++ b/drivers/infiniband/sw/siw/siw.h
->> @@ -46,6 +46,9 @@
->>    */
->>   #define SIW_IRQ_MAXBURST_SQ_ACTIVE 4
->> +/* There is always only a port 1 per siw device */
->> +#define SIW_PORT 1
->> +
->>   struct siw_dev_cap {
->>       int max_qp;
->>       int max_qp_wr;
->> @@ -69,16 +72,12 @@ struct siw_pd {
->>   struct siw_device {
->>       struct ib_device base_dev;
->> -    struct net_device *netdev;
->>       struct siw_dev_cap attrs;
->>       u32 vendor_part_id;
->>       int numa_node;
->>       char raw_gid[ETH_ALEN];
->> -    /* physical port state (only one port per device) */
->> -    enum ib_port_state state;
->> -
->>       spinlock_t lock;
->>       struct xarray qp_xa;
->> diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/ 
->> sw/siw/siw_cm.c
->> index 86323918a570..b157bd01e70b 100644
->> --- a/drivers/infiniband/sw/siw/siw_cm.c
->> +++ b/drivers/infiniband/sw/siw/siw_cm.c
->> @@ -1759,6 +1759,7 @@ int siw_create_listen(struct iw_cm_id *id, int 
->> backlog)
->>   {
->>       struct socket *s;
->>       struct siw_cep *cep = NULL;
->> +    struct net_device *ndev = NULL;
->>       struct siw_device *sdev = to_siw_dev(id->device);
->>       int addr_family = id->local_addr.ss_family;
->>       int rv = 0;
->> @@ -1779,9 +1780,15 @@ int siw_create_listen(struct iw_cm_id *id, int 
->> backlog)
->>           struct sockaddr_in *laddr = &to_sockaddr_in(id->local_addr);
->>           /* For wildcard addr, limit binding to current device only */
->> -        if (ipv4_is_zeronet(laddr->sin_addr.s_addr))
->> -            s->sk->sk_bound_dev_if = sdev->netdev->ifindex;
->> -
->> +        if (ipv4_is_zeronet(laddr->sin_addr.s_addr)) {
->> +            ndev = ib_device_get_netdev(id->device, SIW_PORT);
->> +            if (ndev) {
->> +                s->sk->sk_bound_dev_if = ndev->ifindex;
->> +            } else {
->> +                rv = -ENODEV;
->> +                goto error;
->> +            }
->> +        }
->>           rv = s->ops->bind(s, (struct sockaddr *)laddr,
->>                     sizeof(struct sockaddr_in));
->>       } else {
->> @@ -1797,9 +1804,15 @@ int siw_create_listen(struct iw_cm_id *id, int 
->> backlog)
->>           }
->>           /* For wildcard addr, limit binding to current device only */
->> -        if (ipv6_addr_any(&laddr->sin6_addr))
->> -            s->sk->sk_bound_dev_if = sdev->netdev->ifindex;
->> -
->> +        if (ipv6_addr_any(&laddr->sin6_addr)) {
->> +            ndev = ib_device_get_netdev(id->device, SIW_PORT);
->> +            if (ndev) {
->> +                s->sk->sk_bound_dev_if = ndev->ifindex;
->> +            } else {
->> +                rv = -ENODEV;
->> +                goto error;
->> +            }
->> +        }
->>           rv = s->ops->bind(s, (struct sockaddr *)laddr,
->>                     sizeof(struct sockaddr_in6));
->>       }
->> @@ -1861,6 +1874,9 @@ int siw_create_listen(struct iw_cm_id *id, int 
->> backlog)
->>       list_add_tail(&cep->listenq, (struct list_head *)id- 
->> >provider_data);
->>       cep->state = SIW_EPSTATE_LISTENING;
->> +    if (ndev)
->> +        dev_put(ndev);
->> +
+On Sun, 15 Dec 2024 08:25:44 +0200 Tariq Toukan wrote:
+> > What do you expect we'll do with this series?
+> > 
+> > If you expect it to be set to Awaiting Upstream - could you make sure
+> > that the cover letter has "mlx5-next" in the subject? That will makes
+> > it easier to automate in patchwork.
 > 
-> <...>
+> The relevant patches have mlx5-next in their topic.
+> Should the cover letter as well?
+> What about other non-IFC patches, keep them with net-next?
 > 
->>       siw_dbg(id->device, "Listen at laddr %pISp\n", &id->local_addr);
->>       return 0;
->> @@ -1880,6 +1896,9 @@ int siw_create_listen(struct iw_cm_id *id, int 
->> backlog)
->>       }
->>       sock_release(s);
->> +    if (ndev)
->> +        dev_put(ndev);
->> +
+> > If you expect the series to be applied / merged - LMK, I can try
+> > to explain why that's impossible..  
 > 
-> dev_put will invoke netdev_put. In netdev_put, dev is checked.
-> Thus, no need to check ndev before dev_put function?
-
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-
-Zhu Yanjun
-
+> The motivation is to avoid potential conflicts with rdma trees.
+> AFAIK this is the agreed practice and is being followed for some time...
 > 
-> static inline void netdev_put(struct net_device *dev,
->                    netdevice_tracker *tracker)
-> {
->      if (dev) {
->          netdev_tracker_free(dev, tracker);
->          __dev_put(dev);
->      }
-> }
-> 
->>       return rv;
->>   }
->> diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/ 
->> infiniband/sw/siw/siw_main.c
->> index 17abef48abcd..14d3103aee6f 100644
->> --- a/drivers/infiniband/sw/siw/siw_main.c
->> +++ b/drivers/infiniband/sw/siw/siw_main.c
->> @@ -287,7 +287,6 @@ static struct siw_device *siw_device_create(struct 
->> net_device *netdev)
->>           return NULL;
->>       base_dev = &sdev->base_dev;
->> -    sdev->netdev = netdev;
->>       if (netdev->addr_len) {
->>           memcpy(sdev->raw_gid, netdev->dev_addr,
->> @@ -381,12 +380,10 @@ static int siw_netdev_event(struct 
->> notifier_block *nb, unsigned long event,
->>       switch (event) {
->>       case NETDEV_UP:
->> -        sdev->state = IB_PORT_ACTIVE;
->>           siw_port_event(sdev, 1, IB_EVENT_PORT_ACTIVE);
->>           break;
->>       case NETDEV_DOWN:
->> -        sdev->state = IB_PORT_DOWN;
->>           siw_port_event(sdev, 1, IB_EVENT_PORT_ERR);
->>           break;
->> @@ -407,12 +404,8 @@ static int siw_netdev_event(struct notifier_block 
->> *nb, unsigned long event,
->>           siw_port_event(sdev, 1, IB_EVENT_LID_CHANGE);
->>           break;
->>       /*
->> -     * Todo: Below netdev events are currently not handled.
->> +     * All other events are not handled
->>        */
->> -    case NETDEV_CHANGEMTU:
->> -    case NETDEV_CHANGE:
->> -        break;
->> -
->>       default:
->>           break;
->>       }
->> @@ -442,12 +435,6 @@ static int siw_newlink(const char *basedev_name, 
->> struct net_device *netdev)
->>       sdev = siw_device_create(netdev);
->>       if (sdev) {
->>           dev_dbg(&netdev->dev, "siw: new device\n");
->> -
->> -        if (netif_running(netdev) && netif_carrier_ok(netdev))
->> -            sdev->state = IB_PORT_ACTIVE;
->> -        else
->> -            sdev->state = IB_PORT_DOWN;
->> -
->>           ib_mark_name_assigned_by_user(&sdev->base_dev);
->>           rv = siw_device_register(sdev, basedev_name);
->>           if (rv)
->> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/ 
->> infiniband/sw/siw/siw_verbs.c
->> index 986666c19378..7ca0297d68a4 100644
->> --- a/drivers/infiniband/sw/siw/siw_verbs.c
->> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
->> @@ -171,21 +171,29 @@ int siw_query_device(struct ib_device *base_dev, 
->> struct ib_device_attr *attr,
->>   int siw_query_port(struct ib_device *base_dev, u32 port,
->>              struct ib_port_attr *attr)
->>   {
->> -    struct siw_device *sdev = to_siw_dev(base_dev);
->> +    struct net_device *ndev;
->>       int rv;
->>       memset(attr, 0, sizeof(*attr));
->>       rv = ib_get_eth_speed(base_dev, port, &attr->active_speed,
->>                &attr->active_width);
->> +    if (rv)
->> +        return rv;
->> +
->> +    ndev = ib_device_get_netdev(base_dev, SIW_PORT);
->> +    if (!ndev)
->> +        return -ENODEV;
->> +
->>       attr->gid_tbl_len = 1;
->>       attr->max_msg_sz = -1;
->> -    attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
->> -    attr->active_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
->> -    attr->phys_state = sdev->state == IB_PORT_ACTIVE ?
->> +    attr->max_mtu = ib_mtu_int_to_enum(ndev->max_mtu);
->> +    attr->active_mtu = ib_mtu_int_to_enum(READ_ONCE(ndev->mtu));
->> +    attr->phys_state = (netif_running(ndev) && netif_carrier_ok(ndev)) ?
->>           IB_PORT_PHYS_STATE_LINK_UP : IB_PORT_PHYS_STATE_DISABLED;
->> +    attr->state = attr->phys_state == IB_PORT_PHYS_STATE_LINK_UP ?
->> +        IB_PORT_ACTIVE : IB_PORT_DOWN;
->>       attr->port_cap_flags = IB_PORT_CM_SUP | IB_PORT_DEVICE_MGMT_SUP;
->> -    attr->state = sdev->state;
->>       /*
->>        * All zero
->>        *
->> @@ -199,6 +207,7 @@ int siw_query_port(struct ib_device *base_dev, u32 
->> port,
->>        * attr->subnet_timeout = 0;
->>        * attr->init_type_repy = 0;
->>        */
->> +    dev_put(ndev);
->>       return rv;
->>   }
->> @@ -505,21 +514,24 @@ int siw_query_qp(struct ib_qp *base_qp, struct 
->> ib_qp_attr *qp_attr,
->>            int qp_attr_mask, struct ib_qp_init_attr *qp_init_attr)
->>   {
->>       struct siw_qp *qp;
->> -    struct siw_device *sdev;
->> +    struct net_device *ndev;
->> -    if (base_qp && qp_attr && qp_init_attr) {
->> +    if (base_qp && qp_attr && qp_init_attr)
->>           qp = to_siw_qp(base_qp);
->> -        sdev = to_siw_dev(base_qp->device);
->> -    } else {
->> +    else
->>           return -EINVAL;
->> -    }
->> +
->> +    ndev = ib_device_get_netdev(base_qp->device, SIW_PORT);
->> +    if (!ndev)
->> +        return -ENODEV;
->> +
->>       qp_attr->qp_state = siw_qp_state_to_ib_qp_state[qp->attrs.state];
->>       qp_attr->cap.max_inline_data = SIW_MAX_INLINE;
->>       qp_attr->cap.max_send_wr = qp->attrs.sq_size;
->>       qp_attr->cap.max_send_sge = qp->attrs.sq_max_sges;
->>       qp_attr->cap.max_recv_wr = qp->attrs.rq_size;
->>       qp_attr->cap.max_recv_sge = qp->attrs.rq_max_sges;
->> -    qp_attr->path_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
->> +    qp_attr->path_mtu = ib_mtu_int_to_enum(READ_ONCE(ndev->mtu));
->>       qp_attr->max_rd_atomic = qp->attrs.irq_size;
->>       qp_attr->max_dest_rd_atomic = qp->attrs.orq_size;
->> @@ -534,6 +546,7 @@ int siw_query_qp(struct ib_qp *base_qp, struct 
->> ib_qp_attr *qp_attr,
->>       qp_init_attr->cap = qp_attr->cap;
->> +    dev_put(ndev);
->>       return 0;
->>   }
-> 
+> If not, what's the suggested procedure then?
+> How do you suggest getting these IFC changes to both net and rdma trees?
 
--- 
-Best Regards,
-Yanjun.Zhu
+You can post just the mlx5-next patches (preferably) or the combined
+set (with mlx5-next in the cover letter tag). Wait a day or two (normal
+review period, like netdev maintainers would when applying to
+net-next). Apply the mlx5-next patches to mlx5-next. Send us a pull
+request with just the mlx5-next stuff.
 
+Post the net-next patches which depend on mlx5-next interface changes.
+
+We can count this as the posting, so feel free to apply patch 1 to
+mlx5-next and send the PR.
 
