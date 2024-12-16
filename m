@@ -1,103 +1,116 @@
-Return-Path: <linux-rdma+bounces-6527-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6528-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AFAD9F262E
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Dec 2024 22:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DF4AA9F286B
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 03:14:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4A5D1885C82
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Dec 2024 21:12:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7578F18851FD
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 02:14:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34DAE1BF804;
-	Sun, 15 Dec 2024 21:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F2D18E25;
+	Mon, 16 Dec 2024 02:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xya9Vtk5"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="vnrsu+zy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F7F189F20;
-	Sun, 15 Dec 2024 21:12:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 249938BE8;
+	Mon, 16 Dec 2024 02:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734297141; cv=none; b=t+NvEz8AaoV5sR/Znv6lbFGu29SBurdvc+1KjpaidfwKYbG2h6pqLPY0ueG1zVXdopaKXUwiCJ1UdLzDx/rD3Usuiu0OgYEwH22c3fpuG3IZ5jO42iaGi0Gq1YlEIDYgmDWwazETPJ4w+GDAarGpzlf+rHVCTeZ4VsNxaEhTOb4=
+	t=1734315265; cv=none; b=T1u5I5E25hyxpc9ZG0Xhg0jnIqwtGJye5M4Telhbciyu0q6lmc0FsmEeJeTuFru+yWs2Ug6pebX/Dvfe8O4XmaGxFtZBFAajJUrp8JqOqt1qDX0zA4mrbQDDe+cWFO/y0fqLKPYNVV2F51LwsSX2b9DJe2ytFiKxLP2cJWkPMb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734297141; c=relaxed/simple;
-	bh=D31U1yjezZQ8gufsOjmvl7a6VTecr6RWAsPZT3BNrRg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iH92H6yLbcAV1U4lNbwt7P7TmtblqoY+e+/yFSl08hJxnrVVJ2+OL95QikrX/Y/kl7t9HaQXXnXJBnGIHyIql0EBu8MnGpA1RJot657t348RCBy2s5OYel4yBlBZ717zv4wvFA66QO+90N5BVIBhLlmrlpvAO0uY2tFVWfKhnvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xya9Vtk5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC67CC4CECE;
-	Sun, 15 Dec 2024 21:12:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734297140;
-	bh=D31U1yjezZQ8gufsOjmvl7a6VTecr6RWAsPZT3BNrRg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Xya9Vtk5BtfCTyKKDlGYZTw88/7v/anzy2IoLNBBa8vtQoEDumHp+8Mvd8C+BOq8j
-	 ojERMqjs2BeJW4W/GcNflNys6kNUgBTb9/OUWINeu4joZVeC/G8glhnuZ83AiDLRcG
-	 /jY2PhJghmwDpuGzG4nA9gCqK5rpnnhrCQm07EwL/g0akag6Z0kfhG/Lfg8i2z3JEM
-	 5bUoUcxYy+q+2g2jisCC+eGeQeYlMZHj1kFvRWEfOhj06K8B6c2qEeVgLdP+omCbT6
-	 1hcHYuN8feeRr6G4O7CJVhB2XHdJPSXfl1KhMDO5jyLGSMeg3l38P5wPX8gTWbTUSh
-	 NzcdGTlxpiYzQ==
-Date: Sun, 15 Dec 2024 13:12:18 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <ttoukan.linux@gmail.com>
-Cc: Simon Horman <horms@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
- "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org, Saeed Mahameed
- <saeedm@nvidia.com>, Gal Pressman <gal@nvidia.com>,
- linux-rdma@vger.kernel.org, Itamar Gozlan <igozlan@nvidia.com>, Yevgeny
- Kliteynik <kliteyn@nvidia.com>
-Subject: Re: [PATCH net-next 10/12] net/mlx5: DR, add support for ConnectX-8
- steering
-Message-ID: <20241215131218.3d040ad8@kernel.org>
-In-Reply-To: <1e8c075c-2fd0-4d10-887d-04a5fb15baa2@gmail.com>
-References: <20241211134223.389616-1-tariqt@nvidia.com>
-	<20241211134223.389616-11-tariqt@nvidia.com>
-	<20241212173113.GF73795@kernel.org>
-	<5b6c8feb-c779-428a-bcca-2febdae5bb0f@gmail.com>
-	<20241212171134.52017f1e@kernel.org>
-	<1e8c075c-2fd0-4d10-887d-04a5fb15baa2@gmail.com>
+	s=arc-20240116; t=1734315265; c=relaxed/simple;
+	bh=6V+shrdB2vbTHb6R82jUo0/uUAiL8Fi82YYWHfrXz9I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nmm+Za2VYwRVh8P5k5xugzwHFHx46Dh05p5/+NpQ7zhnQkxGWLhZKRwKRf2GBKsjjjFDZpiD41Hm8Z400RleCR6lmOekoyXb2gFeASoRQ4Fn1BirioR62n1IxnUUBjqLNPhZ7M86OEBkL86SuuC9AlADWaPaRtmPK2W0dx8+scQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=vnrsu+zy; arc=none smtp.client-ip=115.124.30.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1734315253; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=aqauEWhdS3VAOAkJnsfZji7HEujR8JydSb0C6qnhp9I=;
+	b=vnrsu+zyYs/gTZemDtQT7ksKcC2uy6bmJYQwjFJv3XLYrcyeDEJdMBISUifFopivpidxWvTKLFcBELfdfhDT9m8yGVmTQ6u9Yr295WBs2qhyGHdhLpfWFw7APEqPONsRocTmWmQgbiuKMH24L4YQwbOw9N6y/3C2r12K0zI+P2I=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WLVDXsW_1734315250 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Mon, 16 Dec 2024 10:14:11 +0800
+Date: Mon, 16 Dec 2024 10:14:10 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	pabeni@redhat.com, song@kernel.org, sdf@google.com,
+	haoluo@google.com, yhs@fb.com, edumazet@google.com,
+	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
+	guwen@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
+	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 4/5] libbpf: fix error when st-prefix_ops and
+ ops from differ btf
+Message-ID: <20241216021410.GA129445@j66a10360.sqa.eu95>
+References: <20241210040404.10606-1-alibuda@linux.alibaba.com>
+ <20241210040404.10606-5-alibuda@linux.alibaba.com>
+ <CAEf4BzYMWTTnniPN-2cmjkPOefDFOLgbdo0cHzmMNJiFPL8riQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYMWTTnniPN-2cmjkPOefDFOLgbdo0cHzmMNJiFPL8riQ@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Sun, 15 Dec 2024 08:25:44 +0200 Tariq Toukan wrote:
-> > What do you expect we'll do with this series?
-> > 
-> > If you expect it to be set to Awaiting Upstream - could you make sure
-> > that the cover letter has "mlx5-next" in the subject? That will makes
-> > it easier to automate in patchwork.
+On Thu, Dec 12, 2024 at 02:24:46PM -0800, Andrii Nakryiko wrote:
+> On Mon, Dec 9, 2024 at 8:04 PM D. Wythe <alibuda@linux.alibaba.com> wrote:
+> >
+> > When a struct_ops named xxx_ops was registered by a module, and
+> > it will be used in both built-in modules and the module itself,
+> > so that the btf_type of xxx_ops will be present in btf_vmlinux
 > 
-> The relevant patches have mlx5-next in their topic.
-> Should the cover letter as well?
-> What about other non-IFC patches, keep them with net-next?
+> instead of using find_btf_by_prefix_kind, let's have:
 > 
-> > If you expect the series to be applied / merged - LMK, I can try
-> > to explain why that's impossible..  
-> 
-> The motivation is to avoid potential conflicts with rdma trees.
-> AFAIK this is the agreed practice and is being followed for some time...
-> 
-> If not, what's the suggested procedure then?
-> How do you suggest getting these IFC changes to both net and rdma trees?
+> 1) snprintf(STRUCT_OPS_VALUE_PREFIX, tname) right here in this
+> function, so we have expected type constructed and ready to be used
+> and reused, if necessary
+> 2) call btf__find_by_name_kind() instead of find_btf_by_prefix_kind()
+> 3) if (kern_vtype_id < 0 && !*mod_btf)
+>       kern_vtype_id = find_ksym_btf_id(...)
+> 4) if (kern_vtype_id < 0) /* now emit error and error out */
 
-You can post just the mlx5-next patches (preferably) or the combined
-set (with mlx5-next in the cover letter tag). Wait a day or two (normal
-review period, like netdev maintainers would when applying to
-net-next). Apply the mlx5-next patches to mlx5-next. Send us a pull
-request with just the mlx5-next stuff.
+Got it. This looks more concise, I will modify it in the next version in
+this way.
 
-Post the net-next patches which depend on mlx5-next interface changes.
+Thanks,
+D. Wythe
 
-We can count this as the posting, so feel free to apply patch 1 to
-mlx5-next and send the PR.
+> 
+> >         if (kern_vtype_id < 0) {
+> > -               pr_warn("struct_ops init_kern: struct %s%s is not found in kernel BTF\n",
+> > -                       STRUCT_OPS_VALUE_PREFIX, tname);
+> > -               return kern_vtype_id;
+> > +               if (kern_vtype_id == -ENOENT && !*mod_btf)
+> > +                       kern_vtype_id =
+> > +                               find_ksym_btf_id_by_prefix_kind(obj, STRUCT_OPS_VALUE_PREFIX,
+> > +                                                               tname, BTF_KIND_STRUCT, &btf,
+> > +                                                               mod_btf);
+> > +               if (kern_vtype_id < 0) {
+> > +                       pr_warn("struct_ops init_kern: struct %s%s is not found in kernel BTF\n",
+> > +                               STRUCT_OPS_VALUE_PREFIX, tname);
+> > +                       return kern_vtype_id;
+> > +               }
+> >         }
+> >         kern_vtype = btf__type_by_id(btf, kern_vtype_id);
+> >
+> > --
+> > 2.45.0
+> >
 
