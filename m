@@ -1,93 +1,124 @@
-Return-Path: <linux-rdma+bounces-6544-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6545-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86A579F3199
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 14:34:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33A7F9F36A5
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 17:53:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5D7616880C
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 13:34:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A5C67A6D17
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 16:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130A1205E2F;
-	Mon, 16 Dec 2024 13:34:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9174220ADD4;
+	Mon, 16 Dec 2024 16:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kbw4RJkn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="exfyr9mW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1584204F9D
-	for <linux-rdma@vger.kernel.org>; Mon, 16 Dec 2024 13:34:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D2920ADCE
+	for <linux-rdma@vger.kernel.org>; Mon, 16 Dec 2024 16:47:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734356047; cv=none; b=NiaufLwBfJhHAv4GAky7hjJBLfLE24k5U6dZgneXkVUmA2zyjERW/kAf8CCOLLuIeHIuInFGwTFwEs3BJOleD1dctn8TRE5PjoKGTjU5MyaJrGzGmP9xWrMbMdds+7g+hpN3olUgqeXkRWSP5rwhd37j0aLA1U6yKP7Q1E//Akc=
+	t=1734367637; cv=none; b=BFggBqrwEfI/EE1VA+Cv003k+hY+ATTnu3JlYwng0fpbVwASv9eqMk4EVo3+6/aVcBJomgrv5FtNLl1zMWiHzxbTrH74PfEfxHQpPvone2UQvYfYvm0RiuFc2oHe0e46fjep/fdtW/mGPDRitWHQwtLgKvUL3JkzD8em0deeXrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734356047; c=relaxed/simple;
-	bh=aHFspQXAL041jP6EsID14HyF2GfkTGTND+hd2Q3EKLs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=lFiI4lNWfK3Vugcxl26/xYqbIZQWPq8ivWa1ZejOHQJhC8gHtl7c2Na32nMNFfk3Wj/Ovo5P+Y1QnkfFQKhRS9plVo3kjI/0VR1RH1UlhL9mtGj9jQWi14XIY07pdwbcyEbubIGT7dgDpwbYKV7SvSmebVErp3ugvCuOkzOAu6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kbw4RJkn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B1A2C4CED3;
-	Mon, 16 Dec 2024 13:34:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734356047;
-	bh=aHFspQXAL041jP6EsID14HyF2GfkTGTND+hd2Q3EKLs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Kbw4RJknji5EB61avgZPqnEQl7ApY7kEzCRSRx/ZogkCOFBbgOFlivymzIRDXqn5d
-	 /w81ej6DM7mHa6Jp75qX9j9skojmEBhBacE78SXeYSbFT+ZuCp2XRNKcpQgcrrKwSQ
-	 4fxj/Ws7+OE4Q02W+2ze6n4E/oyIHmgapyutUpIjiVizWPUI/eI+97v5WrrWeS85SS
-	 h2dwPNapYLWBdhCPPWkHSThl5OfaBu+T7F773SaxuvHCE4WYNEpvK8t2zZuJ6hieze
-	 uriFi/X0BOU48PB3ix65SchtNWZMSnObMAWNDfBRg9mJr/pX7M3trcIf0G1kbeBqR3
-	 SnMmMfIpsZ5LQ==
-From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
- selvin.xavier@broadcom.com
-In-Reply-To: <20241211083931.968831-1-kalesh-anakkur.purayil@broadcom.com>
-References: <20241211083931.968831-1-kalesh-anakkur.purayil@broadcom.com>
-Subject: Re: [PATCH for-rc 0/5] bnxt_re Bug fixes
-Message-Id: <173435604428.184777.10942641262119798141.b4-ty@kernel.org>
-Date: Mon, 16 Dec 2024 08:34:04 -0500
+	s=arc-20240116; t=1734367637; c=relaxed/simple;
+	bh=8Q1js+pcs8/n4rytudeIN8FuQ/fPk7XU2j+tixD6Ao4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pHmaiBtZh4rdTxE43DmnwJNoyax9XHPk1LRH56L01CflVS95JK8KJU/dRzPUIKiC5qrkl8fB3aQDLP93HGyOv/7ufpfW8K2j50VDiR2HTQlzCBw5YC9i9GCnsZvx7JJUE+7fJuwL3RCUvLfJ7pnXZKG7G/dyCWWo7NgCIk2vcFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=exfyr9mW; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <affab92f-9a5b-481a-8816-8d5560721648@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734367632;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=skTx0h9TH3DNtnegz4CJL4HMrceOqd6LbXCDG8zrIto=;
+	b=exfyr9mWtCx+Tvg/549jdKiZtgeUr3etAll3gsc6DiUfX7ar1SX9JdBfUe8ccrzA/BmSTt
+	eIRKE9Nop2E3tushrQAR+PqDNCD+JScwnsUqfvNmifb5z5C2fBwiI2bsW7cilbqPRnLKkx
+	/nr0eCBnGitylWlNB2ufauUDjHAfUqo=
+Date: Mon, 16 Dec 2024 17:47:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Subject: Re: [PATCH] RDMA/rxe: Fix mismatched max_msg_sz
+To: zhenwei pi <pizhenwei@bytedance.com>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org
+References: <20241216121953.765331-1-pizhenwei@bytedance.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20241216121953.765331-1-pizhenwei@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-
-On Wed, 11 Dec 2024 14:09:26 +0530, Kalesh AP wrote:
-> This series contains some bug fixes for bnxt_re.
-> Please review and apply.
+在 2024/12/16 13:19, zhenwei pi 写道:
+> User mode queries max_msg_sz as 0x800000 by command 'ibv_devinfo -v',
+> however ibv_post_send/ibv_post_recv has a limit of 2^31. Fix this
+> mismatched information.
 > 
-> Regards,
-> Kalesh
+
+This is a buf fix. Perhaps Fixes tag is needed?
+
+> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe_param.h | 2 +-
+>   drivers/infiniband/sw/rxe/rxe_verbs.c | 5 ++---
+>   2 files changed, 3 insertions(+), 4 deletions(-)
 > 
-> Damodharam Ammepalli (1):
->   RDMA/bnxt_re: Fix setting mandatory attributes for modify_qp
-> 
-> [...]
+> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
+> index d2f57ead78ad..003f681e5dc0 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_param.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
+> @@ -129,7 +129,7 @@ enum rxe_device_param {
+>   enum rxe_port_param {
+>   	RXE_PORT_GID_TBL_LEN		= 1024,
+>   	RXE_PORT_PORT_CAP_FLAGS		= IB_PORT_CM_SUP,
+> -	RXE_PORT_MAX_MSG_SZ		= 0x800000,
+> +	RXE_PORT_MAX_MSG_SZ		= (1UL << 31),
 
-Applied, thanks!
+In the above, perhaps the parentheses is not necessary.
+Except that, I am fine with this.
 
-[1/5] RDMA/bnxt_re: Fix the check for 9060 condition
-      https://git.kernel.org/rdma/rdma/c/38651476e46e08
-[2/5] RDMA/bnxt_re: Add check for path mtu in modify_qp
-      https://git.kernel.org/rdma/rdma/c/798653a0ee30d3
-[3/5] RDMA/bnxt_re: Fix setting mandatory attributes for modify_qp
-      https://git.kernel.org/rdma/rdma/c/da2132e683954e
-[4/5] RDMA/bnxt_re: Fix to export port num to ib_query_qp
-      https://git.kernel.org/rdma/rdma/c/34db8ec931b84d
-[5/5] RDMA/bnxt_re: Fix reporting hw_ver in query_device
-      https://git.kernel.org/rdma/rdma/c/7179fe0074a3c9
+Thanks a lot.
+Review-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+Zhu Yanjun
+
+>   	RXE_PORT_BAD_PKEY_CNTR		= 0,
+>   	RXE_PORT_QKEY_VIOL_CNTR		= 0,
+>   	RXE_PORT_LID			= 0,
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index 5c18f7e342f2..ffd5b07ad3e6 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -688,7 +688,7 @@ static int validate_send_wr(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
+>   		for (i = 0; i < ibwr->num_sge; i++)
+>   			length += ibwr->sg_list[i].length;
+>   
+> -		if (length > (1UL << 31)) {
+> +		if (length > RXE_PORT_MAX_MSG_SZ) {
+>   			rxe_err_qp(qp, "message length too long\n");
+>   			break;
+>   		}
+> @@ -972,8 +972,7 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
+>   	for (i = 0; i < num_sge; i++)
+>   		length += ibwr->sg_list[i].length;
+>   
+> -	/* IBA max message size is 2^31 */
+> -	if (length >= (1UL<<31)) {
+> +	if (length > RXE_PORT_MAX_MSG_SZ) {
+>   		err = -EINVAL;
+>   		rxe_dbg("message length too long\n");
+>   		goto err_out;
 
 
