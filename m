@@ -1,91 +1,101 @@
-Return-Path: <linux-rdma+bounces-6542-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6543-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9856A9F3168
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 14:22:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 904A39F3196
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 14:34:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B65767A2EA3
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 13:22:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C54977A327F
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 13:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EC43204C2C;
-	Mon, 16 Dec 2024 13:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CEDF20551E;
+	Mon, 16 Dec 2024 13:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JpotKHrd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FjKJfeUI"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C93420011E
-	for <linux-rdma@vger.kernel.org>; Mon, 16 Dec 2024 13:22:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D148B19066D
+	for <linux-rdma@vger.kernel.org>; Mon, 16 Dec 2024 13:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734355345; cv=none; b=rtyFKmNZuFWRHW8JeyVIJK9Rx0dRhfnMSYO5KHBqtp6HsP75PhGrZiZE6Y6v3yaPrm2ktPTiz+0rB2LLp+DEQYJV7gQ0vVNLWRFHHwIjqCAOCEU5LNICLCmkoBY6xdihaa0huaMsRME0QPsj+lYaMbfOErG6RCrZnUS9Sfp6gOk=
+	t=1734355929; cv=none; b=HJh2pSgsehBZgN7doWOM0ydNeUDWZjqNeb1YB8jg1/9YBjxz8n7YM9BGcvpO+Try0hIoeRtgWYkFI+bkBZhBsKsWsib++nCaOpw+RzU+efwKKH+g9p4LjUUuQkFFEB1NKSSfhWUfGl2lg1aQgZTbLkvByDAJph34vbusnsWRz88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734355345; c=relaxed/simple;
-	bh=IcfuPOQCRc8RR//UpdLrxx1t9uizEEg4jT45oA+TUz8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=ozxFm7UblqRey3B4P3W+GpDeJ6KhnnrZV2TMeNlQcGL9dyKX+VksTAKoSso3/XmSibmN6/SH3+egMjH1hTXwXRkvlsAKWxnPHzAkzP2TcAcmaAWfpqgs8dyk1GDalki3v+kFhKE/4/xzW4CM+GVNBXO+LqMTewLrLUFQNjdzjlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JpotKHrd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F2B4C4CED3;
-	Mon, 16 Dec 2024 13:22:23 +0000 (UTC)
+	s=arc-20240116; t=1734355929; c=relaxed/simple;
+	bh=ATCWS4KxP6+yU0qUUnDkBOsdHCOy1Obr3suOEmvmYEA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X8TbM5Qok4Gr70MnK11GD5KsUNazSeNwnm87xV9DjlsBem4CfLPBXb5lFcvpw7FPU8CmpZUSRbENe+RUSibpnJIO7mvorvAp9aQqXpEUfgdSo/zgP0LsTlHExeEefSHmL6pisKV9GM4DE/hSCWTOwsLfGr8Miz2SGJ6pbABm4ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FjKJfeUI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4552C4CED0;
+	Mon, 16 Dec 2024 13:32:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734355344;
-	bh=IcfuPOQCRc8RR//UpdLrxx1t9uizEEg4jT45oA+TUz8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=JpotKHrd7Rf/qnkgEfuAhQSAB8fWhJ3Ay2s9IFrnUs1aArK612obxSRhhxA1WX9A2
-	 QAAeuWKlNAP57VzTU5bqx6CwlmNb2QGDrnLAjwZrWY6559HJ5gT2tOLzuu9JSBJKtC
-	 GSy4xr3uxsmCHmxreBTaZz55KhLyDeCxHJP6DID33mEb+FF7yd+6psn7fTqRB8JUeZ
-	 /1fynp3UvfNH/fXSq7oyiEOr0x5jjtotR2FwFu2y+X1axeNo7C0u8mmLORyeTFwnq+
-	 Cppbl9yqJeLu/s/Zs9fk/xXuqQNLA0XGepheWxERm5i3JkjrnzYlIahttmrZ0YQTsT
-	 tJObimQlOSpiw==
+	s=k20201202; t=1734355929;
+	bh=ATCWS4KxP6+yU0qUUnDkBOsdHCOy1Obr3suOEmvmYEA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FjKJfeUIvahb2QNf/Lrzobyu/CViP7IkQChnXlisSUTaYyV7cPPZwOEIaLstA2kW1
+	 JCCVqm3WSOvKOsPKwXbo/0m7ToANK1M8jQq0ItFbz+/OByyhFSolfRgyl0rPCOW2B7
+	 VbSeqayD6hDP0w2h0XZ9G35u91EuycH5JO60q+9y6hn/W8pbt2yXsvOzB7WE/noDsN
+	 0Gxjt9fDkdvAePNm/oVGTokgQGtEoIGnrnpXZ8WjKw7UTv8m/Z4yhywiJ47YAmhbPn
+	 acqEA6U1lRzFW2avw/TYEiVHgrZEBWBtNJ80nlSwZTxlpqs+AenmDfDswAE1CiG4Bf
+	 PPWmGlDNOPUFA==
+Date: Mon, 16 Dec 2024 15:32:04 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
- kalesh-anakkur.purayil@broadcom.com
-In-Reply-To: <1733888745-30939-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1733888745-30939-1-git-send-email-selvin.xavier@broadcom.com>
-Subject: Re: [PATCH rdma-next 0/5] RDMA/bnxt_re: Minor code cleanups
-Message-Id: <173435534161.184097.8790138952791773104.b4-ty@kernel.org>
-Date: Mon, 16 Dec 2024 08:22:21 -0500
+To: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	Preethi G <preethi.gurusiddalingeswaraswamy@broadcom.com>
+Subject: Re: [PATCH for-rc 5/5] RDMA/bnxt_re: Fix reporting hw_ver in
+ query_device
+Message-ID: <20241216133204.GJ1245331@unreal>
+References: <20241211083931.968831-1-kalesh-anakkur.purayil@broadcom.com>
+ <20241211083931.968831-6-kalesh-anakkur.purayil@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241211083931.968831-6-kalesh-anakkur.purayil@broadcom.com>
 
+On Wed, Dec 11, 2024 at 02:09:31PM +0530, Kalesh AP wrote:
+> Driver currently populates subsystem_device id in the
+> "hw_ver" field of ib_attr structure in query_device.
 
-On Tue, 10 Dec 2024 19:45:40 -0800, Selvin Xavier wrote:
-> Some minor code cleanup for bnxt_re.
+I applied this patch, but it is not currently, it was the case for last
+7 years and it has chances to break your customers.
+
+Thanks
+
 > 
-> Please review and apply.
+> Updated to populate PCI revision ID.
 > 
-> Thanks,
-> Selvin Xavier
+> Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
+> Reviewed-by: Preethi G <preethi.gurusiddalingeswaraswamy@broadcom.com>
+> Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> [...]
-
-Applied, thanks!
-
-[1/5] RDMA/bnxt_re: Remove extra new line in bnxt_re_netdev_event
-      https://git.kernel.org/rdma/rdma/c/c7f2cfe81e059a
-[2/5] RDMA/bnxt_re: Remove unnecessary goto in bnxt_re_netdev_event
-      https://git.kernel.org/rdma/rdma/c/ae51cb98213268
-[3/5] RDMA/bnxt_re: Optimize error handling in bnxt_re_probe
-      https://git.kernel.org/rdma/rdma/c/55992c386263f3
-[4/5] RDMA/bnxt_re: Eliminate need for some forward declarations
-      https://git.kernel.org/rdma/rdma/c/8aa3dd3e765912
-[5/5] RDMA/bnxt_re: Remove unnecessary header file inclusion
-      https://git.kernel.org/rdma/rdma/c/1950af31dc6648
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> index bcb7cfc63d09..e3d26bd6de05 100644
+> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> @@ -199,7 +199,7 @@ int bnxt_re_query_device(struct ib_device *ibdev,
+>  
+>  	ib_attr->vendor_id = rdev->en_dev->pdev->vendor;
+>  	ib_attr->vendor_part_id = rdev->en_dev->pdev->device;
+> -	ib_attr->hw_ver = rdev->en_dev->pdev->subsystem_device;
+> +	ib_attr->hw_ver = rdev->en_dev->pdev->revision;
+>  	ib_attr->max_qp = dev_attr->max_qp;
+>  	ib_attr->max_qp_wr = dev_attr->max_qp_wqes;
+>  	ib_attr->device_cap_flags =
+> -- 
+> 2.43.5
+> 
 
