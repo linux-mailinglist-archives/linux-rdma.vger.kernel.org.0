@@ -1,101 +1,93 @@
-Return-Path: <linux-rdma+bounces-6543-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6544-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 904A39F3196
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 14:34:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86A579F3199
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 14:34:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C54977A327F
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 13:34:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5D7616880C
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 13:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CEDF20551E;
-	Mon, 16 Dec 2024 13:32:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130A1205E2F;
+	Mon, 16 Dec 2024 13:34:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FjKJfeUI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kbw4RJkn"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D148B19066D
-	for <linux-rdma@vger.kernel.org>; Mon, 16 Dec 2024 13:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1584204F9D
+	for <linux-rdma@vger.kernel.org>; Mon, 16 Dec 2024 13:34:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734355929; cv=none; b=HJh2pSgsehBZgN7doWOM0ydNeUDWZjqNeb1YB8jg1/9YBjxz8n7YM9BGcvpO+Try0hIoeRtgWYkFI+bkBZhBsKsWsib++nCaOpw+RzU+efwKKH+g9p4LjUUuQkFFEB1NKSSfhWUfGl2lg1aQgZTbLkvByDAJph34vbusnsWRz88=
+	t=1734356047; cv=none; b=NiaufLwBfJhHAv4GAky7hjJBLfLE24k5U6dZgneXkVUmA2zyjERW/kAf8CCOLLuIeHIuInFGwTFwEs3BJOleD1dctn8TRE5PjoKGTjU5MyaJrGzGmP9xWrMbMdds+7g+hpN3olUgqeXkRWSP5rwhd37j0aLA1U6yKP7Q1E//Akc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734355929; c=relaxed/simple;
-	bh=ATCWS4KxP6+yU0qUUnDkBOsdHCOy1Obr3suOEmvmYEA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X8TbM5Qok4Gr70MnK11GD5KsUNazSeNwnm87xV9DjlsBem4CfLPBXb5lFcvpw7FPU8CmpZUSRbENe+RUSibpnJIO7mvorvAp9aQqXpEUfgdSo/zgP0LsTlHExeEefSHmL6pisKV9GM4DE/hSCWTOwsLfGr8Miz2SGJ6pbABm4ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FjKJfeUI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4552C4CED0;
-	Mon, 16 Dec 2024 13:32:08 +0000 (UTC)
+	s=arc-20240116; t=1734356047; c=relaxed/simple;
+	bh=aHFspQXAL041jP6EsID14HyF2GfkTGTND+hd2Q3EKLs=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=lFiI4lNWfK3Vugcxl26/xYqbIZQWPq8ivWa1ZejOHQJhC8gHtl7c2Na32nMNFfk3Wj/Ovo5P+Y1QnkfFQKhRS9plVo3kjI/0VR1RH1UlhL9mtGj9jQWi14XIY07pdwbcyEbubIGT7dgDpwbYKV7SvSmebVErp3ugvCuOkzOAu6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kbw4RJkn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B1A2C4CED3;
+	Mon, 16 Dec 2024 13:34:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734355929;
-	bh=ATCWS4KxP6+yU0qUUnDkBOsdHCOy1Obr3suOEmvmYEA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FjKJfeUIvahb2QNf/Lrzobyu/CViP7IkQChnXlisSUTaYyV7cPPZwOEIaLstA2kW1
-	 JCCVqm3WSOvKOsPKwXbo/0m7ToANK1M8jQq0ItFbz+/OByyhFSolfRgyl0rPCOW2B7
-	 VbSeqayD6hDP0w2h0XZ9G35u91EuycH5JO60q+9y6hn/W8pbt2yXsvOzB7WE/noDsN
-	 0Gxjt9fDkdvAePNm/oVGTokgQGtEoIGnrnpXZ8WjKw7UTv8m/Z4yhywiJ47YAmhbPn
-	 acqEA6U1lRzFW2avw/TYEiVHgrZEBWBtNJ80nlSwZTxlpqs+AenmDfDswAE1CiG4Bf
-	 PPWmGlDNOPUFA==
-Date: Mon, 16 Dec 2024 15:32:04 +0200
+	s=k20201202; t=1734356047;
+	bh=aHFspQXAL041jP6EsID14HyF2GfkTGTND+hd2Q3EKLs=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Kbw4RJknji5EB61avgZPqnEQl7ApY7kEzCRSRx/ZogkCOFBbgOFlivymzIRDXqn5d
+	 /w81ej6DM7mHa6Jp75qX9j9skojmEBhBacE78SXeYSbFT+ZuCp2XRNKcpQgcrrKwSQ
+	 4fxj/Ws7+OE4Q02W+2ze6n4E/oyIHmgapyutUpIjiVizWPUI/eI+97v5WrrWeS85SS
+	 h2dwPNapYLWBdhCPPWkHSThl5OfaBu+T7F773SaxuvHCE4WYNEpvK8t2zZuJ6hieze
+	 uriFi/X0BOU48PB3ix65SchtNWZMSnObMAWNDfBRg9mJr/pX7M3trcIf0G1kbeBqR3
+	 SnMmMfIpsZ5LQ==
 From: Leon Romanovsky <leon@kernel.org>
-To: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
-	Preethi G <preethi.gurusiddalingeswaraswamy@broadcom.com>
-Subject: Re: [PATCH for-rc 5/5] RDMA/bnxt_re: Fix reporting hw_ver in
- query_device
-Message-ID: <20241216133204.GJ1245331@unreal>
+To: jgg@ziepe.ca, Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
+ selvin.xavier@broadcom.com
+In-Reply-To: <20241211083931.968831-1-kalesh-anakkur.purayil@broadcom.com>
 References: <20241211083931.968831-1-kalesh-anakkur.purayil@broadcom.com>
- <20241211083931.968831-6-kalesh-anakkur.purayil@broadcom.com>
+Subject: Re: [PATCH for-rc 0/5] bnxt_re Bug fixes
+Message-Id: <173435604428.184777.10942641262119798141.b4-ty@kernel.org>
+Date: Mon, 16 Dec 2024 08:34:04 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241211083931.968831-6-kalesh-anakkur.purayil@broadcom.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-On Wed, Dec 11, 2024 at 02:09:31PM +0530, Kalesh AP wrote:
-> Driver currently populates subsystem_device id in the
-> "hw_ver" field of ib_attr structure in query_device.
 
-I applied this patch, but it is not currently, it was the case for last
-7 years and it has chances to break your customers.
+On Wed, 11 Dec 2024 14:09:26 +0530, Kalesh AP wrote:
+> This series contains some bug fixes for bnxt_re.
+> Please review and apply.
+> 
+> Regards,
+> Kalesh
+> 
+> Damodharam Ammepalli (1):
+>   RDMA/bnxt_re: Fix setting mandatory attributes for modify_qp
+> 
+> [...]
 
-Thanks
+Applied, thanks!
 
-> 
-> Updated to populate PCI revision ID.
-> 
-> Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-> Reviewed-by: Preethi G <preethi.gurusiddalingeswaraswamy@broadcom.com>
-> Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> ---
->  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> index bcb7cfc63d09..e3d26bd6de05 100644
-> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> @@ -199,7 +199,7 @@ int bnxt_re_query_device(struct ib_device *ibdev,
->  
->  	ib_attr->vendor_id = rdev->en_dev->pdev->vendor;
->  	ib_attr->vendor_part_id = rdev->en_dev->pdev->device;
-> -	ib_attr->hw_ver = rdev->en_dev->pdev->subsystem_device;
-> +	ib_attr->hw_ver = rdev->en_dev->pdev->revision;
->  	ib_attr->max_qp = dev_attr->max_qp;
->  	ib_attr->max_qp_wr = dev_attr->max_qp_wqes;
->  	ib_attr->device_cap_flags =
-> -- 
-> 2.43.5
-> 
+[1/5] RDMA/bnxt_re: Fix the check for 9060 condition
+      https://git.kernel.org/rdma/rdma/c/38651476e46e08
+[2/5] RDMA/bnxt_re: Add check for path mtu in modify_qp
+      https://git.kernel.org/rdma/rdma/c/798653a0ee30d3
+[3/5] RDMA/bnxt_re: Fix setting mandatory attributes for modify_qp
+      https://git.kernel.org/rdma/rdma/c/da2132e683954e
+[4/5] RDMA/bnxt_re: Fix to export port num to ib_query_qp
+      https://git.kernel.org/rdma/rdma/c/34db8ec931b84d
+[5/5] RDMA/bnxt_re: Fix reporting hw_ver in query_device
+      https://git.kernel.org/rdma/rdma/c/7179fe0074a3c9
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
