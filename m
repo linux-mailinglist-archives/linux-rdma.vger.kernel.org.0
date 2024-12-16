@@ -1,61 +1,61 @@
-Return-Path: <linux-rdma+bounces-6549-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6550-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40B929F38A2
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 19:16:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B36A9F3887
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 19:14:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F0F4189238B
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 18:12:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39BBE16DC8C
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2024 18:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F77206F2A;
-	Mon, 16 Dec 2024 18:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFF1207A19;
+	Mon, 16 Dec 2024 18:06:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=raptorengineering.com header.i=@raptorengineering.com header.b="KHKFF+oV"
+	dkim=pass (1024-bit key) header.d=raptorengineering.com header.i=@raptorengineering.com header.b="ANSXYDZT"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from raptorengineering.com (mail.raptorengineering.com [23.155.224.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B2B2207A06
-	for <linux-rdma@vger.kernel.org>; Mon, 16 Dec 2024 18:05:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F48B207A06
+	for <linux-rdma@vger.kernel.org>; Mon, 16 Dec 2024 18:06:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.155.224.40
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734372345; cv=none; b=O+GCiCKBK6tLdQHL5P9B8VMCVXI9vnMv28mzUW+kh1YWOJ/Z+Wk/LuL+hYdIGqwicNrGDpqqL6yMF64onrPCVmkFN6ZQSpwpuO3Cq2r13xC+vX9Wvzv2bpod8z3RLYW4blxU35LPMBhuL2RcjLPde49BUSu+rKK+AGR7G+S4nf8=
+	t=1734372369; cv=none; b=Vhk/R3e5ug+shwfwpiM5Kt07Ht+1I1IrpRX9TdqjLOYaaWLhPSsCiVsWl0RHRiMgn0Itvn8JIYYThcTPL9ba0j+A6UpE3qwNEoWK2ZfzLGN41w2y1EKyrnekjYlL2QYBj/k/U9yO9jE1CTIzZ4pSuD6xDYiandVQMwvCib6yX34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734372345; c=relaxed/simple;
+	s=arc-20240116; t=1734372369; c=relaxed/simple;
 	bh=MdKLIkSAnubC0vOt9Z7hWJrvw0mpJzItYuVy0z/NlWU=;
-	h=Date:Message-ID:To:From:Cc:Subject:In-reply-to; b=FQIE6eXplEYUx0IDJcjjiMLLWShS6tWnkL9AkLAXVS5UkEkmaaZat74YwNt04wLF8zTRCsZSXiaXjuhONdU4vD8BQ9aT8GD778AzNDfuAG5Z40Xa2OuykbsPvwNIAweUeaDYtP4AQU2UZ92W7AKP/JMowcRotZ51r23ShalQTa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raptorengineering.com; spf=pass smtp.mailfrom=raptorengineering.com; dkim=pass (1024-bit key) header.d=raptorengineering.com header.i=@raptorengineering.com header.b=KHKFF+oV; arc=none smtp.client-ip=23.155.224.40
+	h=Date:Message-ID:To:From:Cc:Subject:In-reply-to; b=LWrCzJJ9MN17HChWGUmjSfHEQVwdBcX7/k/Mmq7sPIn+pbas4n2tc1g3owNcJKNL4NPdZ3N7p9tcHfunS6apVVfJ6HIJlX26oV9x+YwScp2THgGlh5I7dVsfECJEuZ4cdspblEHFHOzbeNBdtrGCzpZnnca6cnhgaF9Q/uIHjH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raptorengineering.com; spf=pass smtp.mailfrom=raptorengineering.com; dkim=pass (1024-bit key) header.d=raptorengineering.com header.i=@raptorengineering.com header.b=ANSXYDZT; arc=none smtp.client-ip=23.155.224.40
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raptorengineering.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raptorengineering.com
 Received: from localhost (localhost [127.0.0.1])
-	by mail.rptsys.com (Postfix) with ESMTP id BE9BE828580A;
-	Mon, 16 Dec 2024 12:05:40 -0600 (CST)
+	by mail.rptsys.com (Postfix) with ESMTP id 41BE0828798A;
+	Mon, 16 Dec 2024 12:06:06 -0600 (CST)
 Received: from mail.rptsys.com ([127.0.0.1])
 	by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id s8iUA0j4AO3C; Mon, 16 Dec 2024 12:05:39 -0600 (CST)
+	with ESMTP id X1zx9d9wD6Js; Mon, 16 Dec 2024 12:06:05 -0600 (CST)
 Received: from localhost (localhost [127.0.0.1])
-	by mail.rptsys.com (Postfix) with ESMTP id 8F5318286D2D;
-	Mon, 16 Dec 2024 12:05:39 -0600 (CST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com 8F5318286D2D
+	by mail.rptsys.com (Postfix) with ESMTP id 90F668287F63;
+	Mon, 16 Dec 2024 12:06:05 -0600 (CST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com 90F668287F63
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=raptorengineering.com; s=B8E824E6-0BE2-11E6-931D-288C65937AAD;
-	t=1734372339; bh=uKH2Fxkar68QLA/X67oOwZAUGc2Lc5NIPifaUJcWZI4=;
+	t=1734372365; bh=uKH2Fxkar68QLA/X67oOwZAUGc2Lc5NIPifaUJcWZI4=;
 	h=Date:Message-ID:To:From;
-	b=KHKFF+oV11H486nhYR/1HGaBAjwmm1rDhD9GZQ0cZ1B7cOKouLphDxs23hrI1Ff6O
-	 rR1cpaynAhBPZEiYMy+z/1kcRYLELBniDxRpyr4jA0ey8SZytUSg4cEz+jBwtiLtdZ
-	 qLfjukxhDdB23SBkbNKtqZm4/pdsPoCdDu+1rxIg=
+	b=ANSXYDZTtK9kdVUXuBuU/jmWpQvnRcu+EBJD4w3UZI3MQ5ydbGHoqjqeCL3UluFH2
+	 hpr1XYSzcGycNzZLKaz4MNvVwgYWhyauuUtZ1q2zmR8+772nkCjnEh6WLt8fRzQsBF
+	 m/TifWtlrW9OWbgIHw+XmUb6Kl3PKHXumLTAPr/w=
 X-Virus-Scanned: amavisd-new at rptsys.com
 Received: from mail.rptsys.com ([127.0.0.1])
 	by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id kRr1PE5S4Q48; Mon, 16 Dec 2024 12:05:39 -0600 (CST)
+	with ESMTP id 7052iN26o0H2; Mon, 16 Dec 2024 12:06:05 -0600 (CST)
 Received: from localhost (unknown [192.168.3.8])
-	by mail.rptsys.com (Postfix) with ESMTP id 6A064828580A;
-	Mon, 16 Dec 2024 12:05:39 -0600 (CST)
-Date: Mon, 16 Dec 2024 12:05:39 -0600
-Message-ID: <fba3779b3e870b9f26bb97a9e5c5b0e4.tpearson@raptorengineering.com>
+	by mail.rptsys.com (Postfix) with ESMTP id 6C976828798A;
+	Mon, 16 Dec 2024 12:06:05 -0600 (CST)
+Date: Mon, 16 Dec 2024 12:06:05 -0600
+Message-ID: <b602d5f23ac94d012ba301c1eba40304.tpearson@raptorengineering.com>
 To: rug@usm.lmu.de
 From: tpearson@raptorengineering.com
 Cc: linux-rdma@vger.kernel.org
