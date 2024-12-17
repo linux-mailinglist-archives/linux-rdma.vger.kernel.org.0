@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-6592-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6590-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 679879F4BB4
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 14:14:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC1269F4B9E
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 14:10:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D41D1723D9
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 13:05:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 143C2188E55B
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 13:04:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B281F8678;
-	Tue, 17 Dec 2024 13:01:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C736C1F7594;
+	Tue, 17 Dec 2024 13:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LdACD9MK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HEKE/+zX"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833321F03F1;
-	Tue, 17 Dec 2024 13:01:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717BA1F7584;
+	Tue, 17 Dec 2024 13:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734440498; cv=none; b=JgtyeapUYdc7jIcZR7kAr+bj06lkFHjitMI9I73VGnPhTxqeC5OPb32+Ba7QHgL6v8rJzxo0uqP2ZApNvxMPNBpnzH+Q7s8+Ety3vtpnLXq1wBR+EF3D9OpimJADniB3fO0/TE2y7JNmRODxq223RvqD0J6/JAMoUcwikhy3dgA=
+	t=1734440489; cv=none; b=T4l5lUX+W/mDkul1mn6P6Z/JdIaq3zsibe4OsNMsqM+EHK7EXBVXhLrWi4CtoENbD+MiQzC1lU/dToSMv7dtRk9k86y7leIy4m+/vEMRrM9/i7UPH4Xo5oyaTzgKCOQnJVsW82KnuJjT3k4yblkBiI2YOZAI1+be7AGHnid2UGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734440498; c=relaxed/simple;
-	bh=txr0vDjl8mznkO+cXTCQ+EHv0Saw9V/4thNLzvjUkyQ=;
+	s=arc-20240116; t=1734440489; c=relaxed/simple;
+	bh=iIU3nAodcPqgXhM415qJ6UO7wN8Xjlyg5zHcBf3DQZk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NiHNihAI9/RdHXmWpJzmgBvMl4XjDQg1n74bhKOLwbnX0wNTUcLC/3t+ssV/oeFzJe1mOIoDbmZlpKk41b9ic/D2BcKxuvnuGFflEBgbttcRQ+De1tEEXJJhUf/UY2E/MCIDOauaTZ12wyYDlg6LfyimU84Fl7eWQJS4qMeczbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LdACD9MK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DE30C4CED4;
-	Tue, 17 Dec 2024 13:01:37 +0000 (UTC)
+	 MIME-Version; b=lBg4EqPs+FlwO9i/5w0susqIeRc4M7uKWWFnUuN+SW1nUdgVot+blvdGbcvGSiWU6S+jeQwX1/1efop04k4dqVb5kPpJ70F7tAuQeIGrnvngjxSX96pOeAKfKR43vgGsGLcUE16/rXe8TdCqCysw9AWmYlQTVOdoGcncm6Le0PM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HEKE/+zX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E3CFC4CED4;
+	Tue, 17 Dec 2024 13:01:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734440498;
-	bh=txr0vDjl8mznkO+cXTCQ+EHv0Saw9V/4thNLzvjUkyQ=;
+	s=k20201202; t=1734440489;
+	bh=iIU3nAodcPqgXhM415qJ6UO7wN8Xjlyg5zHcBf3DQZk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LdACD9MKWm1D6X4kRWaGTcthlF/q9vCUHezCoZOdL0kT2cXJttd2ePXuz/zIlQNyl
-	 p1T9uZdqg7os8bvNjLWvtY/Lr5cR2Z6JNP5SfO4oN3KqvQr2euWy6ueUFvzxsHQDwC
-	 R45dGMGpmp5NuG7inw7meA1EvPtQkjchsEYMbFYmmszNsEWpE+01zji7p4Mx25xe6B
-	 mrP6eP1QXEnn8RWQ6/61RZRHfZJSAS8otC1BZrVeMEHTBEdyH9ULX4tUYI+DZpbVrA
-	 FT6u2VbZ7DoMdvqfBKNbj2KHcChAxZFAfQfGV2qhyQFOB5pBToEvmDShClNsfty4Qt
-	 I2BRfo/20eJ5Q==
+	b=HEKE/+zX+ZdFZ/bWCF8cQSMXArY/rreeS3qzRw8Eeu6EzOGw/Z1JrKiOfPOyVSkFH
+	 kHZlx+qqB7dSpSCgCpOCMOtZc+Fo8v+6UYjKoFb2Xd9zDNsuFoI0OOuBsJxZPl7pJh
+	 dNSTnpKCfVe82F/lCx8zqFy3TaxV2gFUGzc7/qFSsbzSmOi5OQoKMuHthehZMzeMam
+	 eLzSmHxPiLYfsTmC8Jw/a52JDN/ZH/+lyrzoi8FkhpRTZjxnQa6rv9eItSzpWooiYV
+	 CxiBLRT9PR8d8JkpFs8QBkshTvp9Yc+wF1IOA4vnuA3uNmm5kbPutlclWHDhQx3klo
+	 D9T+xxGicipwg==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jens Axboe <axboe@kernel.dk>,
 	Jason Gunthorpe <jgg@ziepe.ca>,
@@ -49,8 +49,7 @@ To: Jens Axboe <axboe@kernel.dk>,
 	Will Deacon <will@kernel.org>,
 	Christoph Hellwig <hch@lst.de>,
 	Sagi Grimberg <sagi@grimberg.me>
-Cc: Leon Romanovsky <leonro@nvidia.com>,
-	Keith Busch <kbusch@kernel.org>,
+Cc: Keith Busch <kbusch@kernel.org>,
 	Bjorn Helgaas <bhelgaas@google.com>,
 	Logan Gunthorpe <logang@deltatee.com>,
 	Yishai Hadas <yishaih@nvidia.com>,
@@ -70,11 +69,10 @@ Cc: Leon Romanovsky <leonro@nvidia.com>,
 	linux-pci@vger.kernel.org,
 	kvm@vger.kernel.org,
 	linux-mm@kvack.org,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH v5 04/17] iommu: add kernel-doc for iommu_unmap and iommu_unmap_fast
-Date: Tue, 17 Dec 2024 15:00:22 +0200
-Message-ID: <0ae577f8b99f7e03c679729434c87ea7daf78955.1734436840.git.leon@kernel.org>
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH v5 08/17] dma-mapping: add a dma_need_unmap helper
+Date: Tue, 17 Dec 2024 15:00:26 +0200
+Message-ID: <c513ce1c5212200d7150f58bc31848bfe22699cd.1734436840.git.leon@kernel.org>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <cover.1734436840.git.leon@kernel.org>
 References: <cover.1734436840.git.leon@kernel.org>
@@ -86,50 +84,70 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Christoph Hellwig <hch@lst.de>
 
-Add kernel-doc section for iommu_unmap and iommu_unmap_fast to document
-existing limitation of underlying functions which can't split individual
-ranges.
+Add helper that allows a driver to skip calling dma_unmap_*
+if the DMA layer can guarantee that they are no-nops.
 
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Acked-by: Will Deacon <will@kernel.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/iommu/iommu.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ include/linux/dma-mapping.h |  5 +++++
+ kernel/dma/mapping.c        | 18 ++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index ec75d14497bf..c86a57abe292 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -2590,6 +2590,25 @@ size_t iommu_unmap(struct iommu_domain *domain,
+diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+index f4d717e17bde..bda090beb9b1 100644
+--- a/include/linux/dma-mapping.h
++++ b/include/linux/dma-mapping.h
+@@ -407,6 +407,7 @@ static inline bool dma_need_sync(struct device *dev, dma_addr_t dma_addr)
+ {
+ 	return dma_dev_need_sync(dev) ? __dma_need_sync(dev, dma_addr) : false;
  }
- EXPORT_SYMBOL_GPL(iommu_unmap);
++bool dma_need_unmap(struct device *dev);
+ #else /* !CONFIG_HAS_DMA || !CONFIG_DMA_NEED_SYNC */
+ static inline bool dma_dev_need_sync(const struct device *dev)
+ {
+@@ -432,6 +433,10 @@ static inline bool dma_need_sync(struct device *dev, dma_addr_t dma_addr)
+ {
+ 	return false;
+ }
++static inline bool dma_need_unmap(struct device *dev)
++{
++	return false;
++}
+ #endif /* !CONFIG_HAS_DMA || !CONFIG_DMA_NEED_SYNC */
+ 
+ struct page *dma_alloc_pages(struct device *dev, size_t size,
+diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+index cda127027e48..3c3204ad2839 100644
+--- a/kernel/dma/mapping.c
++++ b/kernel/dma/mapping.c
+@@ -443,6 +443,24 @@ bool __dma_need_sync(struct device *dev, dma_addr_t dma_addr)
+ }
+ EXPORT_SYMBOL_GPL(__dma_need_sync);
  
 +/**
-+ * iommu_unmap_fast() - Remove mappings from a range of IOVA without IOTLB sync
-+ * @domain: Domain to manipulate
-+ * @iova: IO virtual address to start
-+ * @size: Length of the range starting from @iova
-+ * @iotlb_gather: range information for a pending IOTLB flush
++ * dma_need_unmap - does this device need dma_unmap_* operations
++ * @dev: device to check
 + *
-+ * iommu_unmap_fast() will remove a translation created by iommu_map().
-+ * It can't subdivide a mapping created by iommu_map(), so it should be
-+ * called with IOVA ranges that match what was passed to iommu_map(). The
-+ * range can aggregate contiguous iommu_map() calls so long as no individual
-+ * range is split.
-+ *
-+ * Basically iommu_unmap_fast() is the same as iommu_unmap() but for callers
-+ * which manage the IOTLB flushing externally to perform a batched sync.
-+ *
-+ * Returns: Number of bytes of IOVA unmapped. iova + res will be the point
-+ * unmapping stopped.
++ * If this function returns %false, drivers can skip calling dma_unmap_* after
++ * finishing an I/O.  This function must be called after all mappings that might
++ * need to be unmapped have been performed.
 + */
- size_t iommu_unmap_fast(struct iommu_domain *domain,
- 			unsigned long iova, size_t size,
- 			struct iommu_iotlb_gather *iotlb_gather)
++bool dma_need_unmap(struct device *dev)
++{
++	if (!dma_map_direct(dev, get_dma_ops(dev)))
++		return true;
++	if (!dev->dma_skip_sync)
++		return true;
++	return IS_ENABLED(CONFIG_DMA_API_DEBUG);
++}
++EXPORT_SYMBOL_GPL(dma_need_unmap);
++
+ static void dma_setup_need_sync(struct device *dev)
+ {
+ 	const struct dma_map_ops *ops = get_dma_ops(dev);
 -- 
 2.47.0
 
