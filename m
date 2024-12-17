@@ -1,226 +1,274 @@
-Return-Path: <linux-rdma+bounces-6581-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6582-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 917239F4B3D
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 13:50:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4FA39F4B48
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 13:53:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8894D7A16DD
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 12:50:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C51F1887E84
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 12:53:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB4C1F1316;
-	Tue, 17 Dec 2024 12:50:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E05221F37D9;
+	Tue, 17 Dec 2024 12:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CSny3iql"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="UbBfDg5n"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2065.outbound.protection.outlook.com [40.107.92.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794671F03DE
-	for <linux-rdma@vger.kernel.org>; Tue, 17 Dec 2024 12:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734439845; cv=none; b=AsR+SXXCkAHC019Wm/2F6h+cAAvP6PLH/+hETM/aqY32ghOEu/H+QzaMEzWVEZs+tOKxgBWxE0BbOTe3RrzWR+E6HMgiwGe/HFY5Ut6VE2g9Vyh+AusluUuXosbQ1VjwrZLqXmqFzozg81wEZxPQYeg9db5KjkT3XEB6O1GEKvk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734439845; c=relaxed/simple;
-	bh=GA+djSqGDY1RFIcv/R7nkdjGtYzmg56B/WzVIh54E7I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eUos8F/DKbYuFTLxufEZ4AUpHZwCj/g6H4OXkSokX+ThZPNPJ9C8HiNmdQXLqMWAN+/hHxxPyRvrTSmi5XPvCFGvPycp6+KYz2778S8cvoI4aszQ5MtaVIomthn5rAizarz9RKd5dSnHs3x/fDseqQbKCEXP44HRM4cweXNuAzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CSny3iql; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a3bbcb1d-00bc-4218-85da-291bf368770d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734439839;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DPYCuEeLDn/6I/UoHhU2pgVxOltCHqKuIo/KzDnZ2bY=;
-	b=CSny3iqlXNPVKJB9Zq8GZvfqCx7U88kP6ZsSiNXyj6C8qBpTTlLeeMJf+7WWy2ir2dtuku
-	JaDmzxwOtqhm0BDyFonoXGj0Yio+Lld9nPXPoXB9f0CAsaF6vuiXzI/YGEct69mqm6TWs9
-	vMjbtcnAYd5CAyFZJcJM0qpnIC1bncY=
-Date: Tue, 17 Dec 2024 13:50:36 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE9A41F238D;
+	Tue, 17 Dec 2024 12:53:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1734439991; cv=fail; b=Ai0d5CFkFA3S5Pt2L2waz6EObJTH1pvS2XkJHKHvH4nzc/7GPpyWp4ukBIJp+GmLsp9VO5Sntvl8jKZWD67WGh5RRA9yOFv0rG4z1USzmgkC3wbZ0Bzx1UKm4GgX1DIMVWC8ILeS0Uq5LqPDWFf8rHIV1setI4PAu5m/1MzYJSc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1734439991; c=relaxed/simple;
+	bh=PlenLvkT894SSmnQAzSl9EM5ZIDPr3KAkJw/fdtILHQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=guEB7XdSqrtVj6qLXIRzwpL9e7T1oJB+ONLfb9UDfxyxCTACEu3ENQ4IMLe5oWew4b8WBkq19vb9ub0tcwsBUko+ZUgRycvJwfrzp7PSIuuHUkKVd98JFLaSHhiZpI/ukk0/fyMCZa1MAqM22YkStu6gNbJ5T6W2DZ4N4xPzHB0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=UbBfDg5n; arc=fail smtp.client-ip=40.107.92.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Fc90/JY3ivVivOQ/rMnjiqpb6U2saa694yCStcZqtDxlK4SuKIYX0d8M6PYd5LlTHiS3th+Bx17kACY5pmQOHUd512/UrkwkKMy3N3gTaIOiEbKLLs7GwbsCN3oWh11ItwS5eV7xbd4LdGFpCNsmrsD7SxNJCmo7TC3nyYNhfQw+DolPWJ0OLGtLb6YMyZgxAr6FMq9kZjrzCjAWghDHHhOObaf4my13ptOSXTY8mLpVN5wIk/4/BmzePOBkUg3qUfIKc8YqIVuahO1F3Q3s36BYS/SBo6Yfxe8cdV4IS9TQkSrhyzpY6Ki9t6+Wm0DyB54L6CzBO8RlxLO/qi07DQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eXoiY1GUZB1lrpnZ5aOqvFMlsSvo6lgU2WcFVhA+Mgs=;
+ b=T3FOMqz5i8yhSDaw1GH2mwqd2rz8ReHmP4ZLdg6gLqUn83A7AhUHzYNWCw1itjk/2muXG9E06SO8lNB/Aq1uelkvBdFScsug1SL1XKblWIvN677VN1bL8eoXYQbFbnuJvFoqNX04yhj0j0dn1HKup4wxbShSk4YObwAuQByZY/hkIytId/vGgeT/gldCGFzazkkmuPkj837925SdpMSbdwPUMHcRbhWC9kU5cYA5xmjkxVfauFSKsTgzfxZgyTbozlyzhe0myW6ioLhZWY68dm+RCf1Yd6pmn/6eUCukCc9TDAYCvHZtPAai0Qk0XQA0IwlVyqhoK5AS4fCBoUGO6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eXoiY1GUZB1lrpnZ5aOqvFMlsSvo6lgU2WcFVhA+Mgs=;
+ b=UbBfDg5ndfsxm8NkC2fOwEPwmepM6vS6XkPb2QlviDNPc1jUj+RgQwg1HqHMUiIuELYdA6+T/aOFMyzSI7ArQQrFJpDx7Pp476X9L0vBBw6NweMQwvFDSQTbY+lmQ3wM8xgTHOp18akxsNDB07XWlLiRFMp4wbV1zYhicGuVmh2qxtIytCsdH5xlNu7ovBBEwR0fB3EUwvFDlzqmQzrTjuT7NljDy+c/jd+iOOjhqP/w0VkPI0XntQWMCZrW3hBTWfXPmZ+b49LIhowCiauPrIB0Hu863IdcdOl60iA2+NgupXbRDuZDewhx/6IeJOGZbAXZ3DBVYNOhxkePd0Cseg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB7548.namprd12.prod.outlook.com (2603:10b6:610:144::12)
+ by DS7PR12MB5741.namprd12.prod.outlook.com (2603:10b6:8:70::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8251.21; Tue, 17 Dec 2024 12:53:06 +0000
+Received: from CH3PR12MB7548.namprd12.prod.outlook.com
+ ([fe80::e8c:e992:7287:cb06]) by CH3PR12MB7548.namprd12.prod.outlook.com
+ ([fe80::e8c:e992:7287:cb06%7]) with mapi id 15.20.8272.005; Tue, 17 Dec 2024
+ 12:53:06 +0000
+Message-ID: <624f1c54-8bfe-4031-9614-79c4998a8d78@nvidia.com>
+Date: Tue, 17 Dec 2024 14:52:55 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 02/12] net/mlx5: LAG, Refactor lag logic
+To: Alexander Lobakin <aleksander.lobakin@intel.com>,
+ rongwei liu <rongweil@nvidia.com>
+Cc: Tariq Toukan <tariqt@nvidia.com>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, Leon Romanovsky <leonro@nvidia.com>,
+ netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+ Gal Pressman <gal@nvidia.com>, linux-rdma@vger.kernel.org
+References: <20241211134223.389616-1-tariqt@nvidia.com>
+ <20241211134223.389616-3-tariqt@nvidia.com>
+ <93a38917-954c-48bb-a637-011533649ed1@intel.com>
+ <981b2b0f-9c35-4968-a5e8-dd0d36ebec05@nvidia.com>
+ <abfe7b20-61d7-4b5f-908c-170697429900@intel.com>
+Content-Language: en-US
+From: Mark Bloch <mbloch@nvidia.com>
+In-Reply-To: <abfe7b20-61d7-4b5f-908c-170697429900@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YT3PR01CA0118.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:85::32) To CH3PR12MB7548.namprd12.prod.outlook.com
+ (2603:10b6:610:144::12)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [BUG] rdma_cm: unable to handle kernel NULL pointer dereference
- in process_one_work when disconnect
-To: "xiyan@cestc.cn" <xiyan@cestc.cn>, linux-rdma <linux-rdma@vger.kernel.org>
-Cc: markzhang <markzhang@nvidia.com>, phaddad <phaddad@nvidia.com>,
- leon <leon@kernel.org>, "yuan.liu" <yuan.liu@cestc.cn>,
- zhangsiyao <zhangsiyao@cestc.cn>, peizhiwei <peizhiwei@cestc.cn>,
- eaujames <eaujames@ddn.com>, ssmirnov <ssmirnov@whamcloud.com>
-References: <2024121711472494997716@cestc.cn>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <2024121711472494997716@cestc.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB7548:EE_|DS7PR12MB5741:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3a1ce9a5-56f8-4fe5-a1b9-08dd1e99c02b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?WDZ2bWVKWnI5dEVLSEd4YWJtNTdMOWRrNUFMZEc0Lzc0MVpPV3ZQWm9rTytM?=
+ =?utf-8?B?TGx2VXU5Qk5JNm5MTWdkc0tOU3JSYUdsZ1VSSW9tdEFKNTIwUmwzZ1Z6Sk1B?=
+ =?utf-8?B?eXdTeWJBekVRNU81UVdNbDlxZEo3TG5UMzYweEZrKzRtRjN1cUNCM3RCUk44?=
+ =?utf-8?B?Z1hQeU5FQWw3dFV0YmozQ1FFMzhiYmthaFA3Y051SmpWZWhYLzN6a2UxNkk2?=
+ =?utf-8?B?emZ0NHFxU1VnSHhVNFl5bGdFSEs5RTlDUmVLUm14VWVyYUZTd0lLaUZlN253?=
+ =?utf-8?B?Ym93eHR2KzNrTkppSVlJVnZLZWJFR2dEeEMxU2xpYThMd3hYa2xQdUY0Qldl?=
+ =?utf-8?B?T08zUkU5VTBuYmVJQWJtTUVad1ZDQVg4SmYzcCtMSlRHa3N5S3FLcXVwQ3hJ?=
+ =?utf-8?B?VzNjUTFvbTUrRENnYUFyWEY2T2VKOFkxaDArUExuM1BKb0h2Ryt1dVQ2T2V3?=
+ =?utf-8?B?Z2ErckNOM2FPSk5Dcy8wVmtCcHJ5OFBESzdXWTdJeW1BVkh5eWI0NDBFZnZY?=
+ =?utf-8?B?dEZPSk5RNFdtSnFzU1gzalRVTEE0QWhuSDNiZjlFSzQ4ZWxONmU3MGpRR094?=
+ =?utf-8?B?emJYK3lFOE9LTVVTRHNwMmlDL3YxVFMxUVpvQVNiY2RZR3FkaHY4WUU4WVA2?=
+ =?utf-8?B?eGFlV2hCcEtPcDM4cDJmS3JtYVV6UzZLeGRIUDUxY3FMUE1yYTN3U2FLTDdv?=
+ =?utf-8?B?bGRySlo5TCtla0l0QkJ6cmtOdjI5a3VJenkwbEdJY2tqN1BDOHZZVkhkT2FR?=
+ =?utf-8?B?QU8vOWExdlY4bFpoWFVQUWV1bnlGSW1RLzBTWnRoZ3VFQnVJM2svOExLRHY2?=
+ =?utf-8?B?UGRYZzZjcXNXTUR6TStCRWVYWjZCYy9PUit4YkpFSUdWQ0RvaUNxVG5yb2ln?=
+ =?utf-8?B?cjVFODd4YnlqTm1paEhmdFM5S1ByZW9ySTJ3ZEwySWNJMjQzLytPN2xZQnlk?=
+ =?utf-8?B?b1pST3ZyU0pFU1JTMjN0U1NZUktPNE1uUFE1NmR4dlhvSkZXSU5EVURVRHE4?=
+ =?utf-8?B?Z2dPRHdPZG81R1NoYzBydXY0bXJoMk0xeWJQamhtWlBhL2tOOVdNWWdaaXVK?=
+ =?utf-8?B?VzNOclBrcEZpZXVJeVIrRzZ0ZFNzZkszdVlzM1ZML1E5MW9rcVVmNFE2VStH?=
+ =?utf-8?B?bWluNVhVWTFuT0FDY2kvRzZ2MTNtQ0hBUU5qV2ZYZWsrUjhkTy82bVF2QUZu?=
+ =?utf-8?B?QVJGeCt4L1JMTzcva0UxN255aWVXWnRSU3ZiRHJjSkFZK2hFL01ENmZ4eC9R?=
+ =?utf-8?B?RUFqRm9XdUQ0cVRJNnd3U1dya3IzdVdIZU5qU3hIR0MydEplaTFSTkxyb2l0?=
+ =?utf-8?B?ZXgyNy92ZExSMElRa1lqU3FUQjFqUE93Y3ByKzA3U2NVbVJMNEQrelJmbUJF?=
+ =?utf-8?B?anU1aTE4b2Z5S0VSWHZ5em5DSWx5RDhLbStvNEg1NHNxQ2pLQTh6MTN2YXFH?=
+ =?utf-8?B?cGtqTXIzazlsUmZoUEJpQUhaRjNaajdFMEtBOU5uRnE2K1RvaGhqRi9VU3BF?=
+ =?utf-8?B?V2xNVDV5bTk0d2U1dnl5MHcwZWpocXBpM3JQWE1zTzRGZ0RydXZqWFpESGRi?=
+ =?utf-8?B?aEY0SmJxdTVIejNjM25xdjdSRElva09mZTAzK0pES3FIc21IY2l3cHpVQ0Zm?=
+ =?utf-8?B?cHR1aVpRdFpnNFQvenBrY2N6Vm5xTjg4aXBwSmZPWVRiejN3eG80Q3EzZFlo?=
+ =?utf-8?B?Tk9yejIzdjBwR2ttcTZrdDc1TERRZjArZjNlYkk3SmlySUQrNnRFVDVVdENi?=
+ =?utf-8?B?d0ZQWnN5MjRySjVrU2ZkNVRqQVRkNHNuVWUrTGxTRDN4YmF2dEwxajRzYjRy?=
+ =?utf-8?B?VFcvSjFUOFhPS1lMa1pKMTR3NEMzMXllTU5EY2RYb1lYN2lBVER1bGpsd2dL?=
+ =?utf-8?Q?q473Ns57SfeW6?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB7548.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?cEx6b0oreU5lSlN4bk9OMktMeVJPelVCM0VhREQ5eUNkWitKak5zYVBmekhZ?=
+ =?utf-8?B?ajYyMm1xTmRNVjg0cUozYmM5T292azNCT24zMG4va1BhVW5KcEI4cGdxRVM0?=
+ =?utf-8?B?dUFHdTB4QStDWUJKaXJhMlVIaEpzd3BBNjZMMi9HUlZQbGNxUDZ4TWw1SHJu?=
+ =?utf-8?B?TVBPL0hVV1AzUnZuandndE1weVNvVjg0eURVbU8zVEhXcG9JZ2ZJNEFXbkt1?=
+ =?utf-8?B?bVRSWExMZXUrLzJMWVl5aHgxUTBOWUZDN21HNmY2Ynl5ODdFVjN1T1VUNkcy?=
+ =?utf-8?B?L3NjUEFXTG1QdTJqUE84NDh4MHVlMXRiTExSODcrVnF0VWtHaGxmaXIyMVox?=
+ =?utf-8?B?aDlId1BJRVlqY2dQeEhvMmdlY0tlbWNjL2VGWGFhcHhQTFpmQWF1cDJCVytU?=
+ =?utf-8?B?MFgzTGpzNTgzTzBPYS9GNUFXb3p1aFV2NUVMTEQrYjRNbEpXWHVKRTVNNGpr?=
+ =?utf-8?B?UldVN3RNWDJhSzFXc0cxOGlKL3ZRbi9jV240aTN6Q1BZb3crTkNPRTFCK2F3?=
+ =?utf-8?B?NHQ1UTQyN1Y1LzNFQ0VNTUVaaG9uLzlBL3J0MmJKZ2hneitoblpiSGNsaE1m?=
+ =?utf-8?B?aGV0aFpkM0dlaUIxS3ltVmNYWXNUbFAxMHBWM1kvWjF0bUhvd2tVc2Q1S3Vp?=
+ =?utf-8?B?OWJTOW10UXhNVkhEak5QZ1BmVU5uNXVGNHhMR293elN4OW1GNEJsdk5OaHVW?=
+ =?utf-8?B?VXlkbmRmWENGQ015OWZycGhZOHprbnNpMjB6L0lNOTRkSEtNSEF1Y1NqM2FR?=
+ =?utf-8?B?WmJYVkJac3lDdnBzNXFzTlMyZjkwckRDTElScUVyNUVMMmY5NUVBeGs4QVU2?=
+ =?utf-8?B?d2VvY1FlU0dEbzZsOUZhMEU5VkpiMGNtK3I0b1JrZ1I5TG9HMXpWaVRUSzBD?=
+ =?utf-8?B?VVJLUFYzZ1BTcVdibXM4QUlPU0xoMFNQc3VQSTFRZEcvN2ROSDFvRWdGSVRt?=
+ =?utf-8?B?MVRsek9nSS8yeGJmd2I1ZjZKOFFGWndRczZZemRzYTNGVk1RVE9yME1RN3hJ?=
+ =?utf-8?B?ck43L2VzWFh6Vmw5c0dydTY1RXU5MUZwcGpBaWYydkdhQ0hrTldtVG5JdGZp?=
+ =?utf-8?B?TGNSUERHVlpiREZZeE9HZnpTZTVWN3Nkdy9lbWRuZDZ3VDk5bGlDUkxXdmt0?=
+ =?utf-8?B?OXhXN1ZEUFpwVllYbnAvZzBwYk94TGhHN20rZHRhR2c3NUpiTmtkMjJsN0lm?=
+ =?utf-8?B?b1U2OUtVdUdsTmRkS1dCcTdwbUF1U29UeUk3TkpHcHNlOGc0TWVIM1h1QUhn?=
+ =?utf-8?B?dHZNcWh3WXN2cmNiRlNjaXNQbldteEhWOENWaGVkN2EwcW91QWVzS2cxYlJ0?=
+ =?utf-8?B?UnZTYTluTjBLOWNqRWYzcmwrZmorYUZwcmxJVWNraStkNGlGUWRKUkcwZGZK?=
+ =?utf-8?B?MHlTUEpEaHFtbkdrTmtOcllMR0RpbURETWdzbmU1K1VBNEJjRFVaWVJEN1cv?=
+ =?utf-8?B?REJtNkF3Uk5KcytCeCs5YTNaaHU0UXJOS2w5NnR6S2dGeXlwSjBCNG5YaHlJ?=
+ =?utf-8?B?NU5UTGpudGFML2E0MkxydGtIbUZ5VEg2YThjM0l5bzFFTms3aWpNUmgwTk5a?=
+ =?utf-8?B?eGhpeHZJWE0za3BPc1NscXg2VTVDT3JHbVVwR2VjQkFtT1FFcDg4dVVBSUtw?=
+ =?utf-8?B?SlNVWFlqYW5OZ1lxckJpTkxsVllIVFlxQVhxYWRIMWs5dlVINDQxRzlOT1Y3?=
+ =?utf-8?B?YVF4SENyYWtIUFJ2bmxmSnJkT0lmMDgxc04rYUx5eE1RVGVTTWdON09OV25I?=
+ =?utf-8?B?ZndDVmZMTnAxYitxUjFVbTBFdHR2QktSc25QSytNSTVIeWwyWEZpT1BVOUlL?=
+ =?utf-8?B?b2VZVzAzMndNRnJxaCtVUDNGVkNaOVQ3Wmt2UG5TSU8yeE5BVll1N1hGdlox?=
+ =?utf-8?B?VzRRd1NJOHRVbW9XQkVuWGp6OWx5TTlMOWRuNmFETjRwVUQvQ25PZHA2WWlv?=
+ =?utf-8?B?eUgzSDVNM2llaEFXTzFBSGRNYjh5c0NQcVFXTm5TOXU3YmZHRlV6bXRHM0pV?=
+ =?utf-8?B?TnVDYUIvdkdKS1czVGxvRjlld1IvVmdNeVNBYmxqRXQ5am5OSXNXU0wrVS9B?=
+ =?utf-8?B?VFY1aVJrWER0VGU2bTFoSmNKbnliRC90OEJXR1JEMm1pZTRkRmNiUUQzVmp6?=
+ =?utf-8?Q?fJ9lxPur8CAGxDiU6oMJGje/b?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a1ce9a5-56f8-4fe5-a1b9-08dd1e99c02b
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB7548.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2024 12:53:06.1027
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YP4EZ3sWpABuVEiBZtEMBW9g6sLHON1zNF4WfMfmMDu4RJdLNUoTpgJfBqIhDRhq2c2J/6EeKsZLpsOnasiX8A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5741
 
-On 17.12.24 04:47, xiyan@cestc.cn wrote:
-> Hello RDMA Community,
-> While testing the RoCEv2 feature of the Lustre file system, we encountered a crash issue related to ARP updates. Preliminary analysis suggests that this issue may be kernel-related, and it is also observed in the nvmeof environment，We are eager to receive your assistance. Below are the detailed information regarding the issue  LU-18364.
-> Thanks.
-> 
-> Lustre's client and server are deployed within the VM, The VM uses the network card PF pass-through mode.
-> 【OS】
-> VM Version: qemu-kvm-7.0.0
-> OS Verion: Rocky 8.10
-> Kernel Verion: 4.18.0-553.el8_10.x86_64
-> 
-> 【Network Card】
-> Client：
-> MLX CX6 1*100G RoCE v2
-> MLNX_OFED_LINUX-23.10-3.2.2.0-rhel8.10-x86_64
-> firmware-version: 22.35.2000 (MT_0000000359)
-> 
-> Server:
-> MLX CX6 1*100G RoCE v2
-> MLNX_OFED_LINUX-23.10-3.2.2.0-rhel8.10-x86_64
-> firmware-version: 22.35.2000 (MT_0000000359)
-> 
-> 【Kernel Commit】
-> [PATCH rdma-next v2 2/2] RDMA/core: Add a netevent notifier to cma - Leon Romanovsky
-> https://lore.kernel.org/all/bb255c9e301cd50b905663b8e73f7f5133d0e4c5.1654601342.git.leonro@nvidia.com/
-> 
-> 【Lustre Issue】
-> LU-18364：https://jira.whamcloud.com/browse/LU-18364
-> LU-18275：https://jira.whamcloud.com/browse/LU-18275
-> 
-> 【Problem Reproduction Steps】
-> We've found a stable reproduction step for the crash issue:
-> 1. We only use one network card, and do not use bonding.
-> 2. Use vdbench run read/write test case on the lustre client.
-> 3. Construct an ARP update for a lustre server IP address on the lustre client.
-> 
-> for example, the lustre client ip is 192.168.122.220,  the lustre server ip is 192.168.122.115, so do "arp -s 192.168.122.115 10:71:fc:69:92:b8 && arp -d 192.168.122.115" on 192.168.122.220, 10:71:fc:69:92:b8 is a wrong mac address.
-> 
-> The crash stack is blow:
->        KERNEL: /usr/lib/debug/lib/modules/4.18.0-553.el8_10.x86_64/vmlinux  [TAINTED]
->      DUMPFILE: vmcore  [PARTIAL DUMP]
->          CPUS: 20
->          DATE: Tue Dec  3 14:58:41 CST 2024
->        UPTIME: 00:06:20
-> LOAD AVERAGE: 10.14, 2.56, 0.86
->         TASKS: 1076
->      NODENAME: rocky8vm3
->       RELEASE: 4.18.0-553.el8_10.x86_64
->       VERSION: #1 SMP Fri May 24 13:05:10 UTC 2024
->       MACHINE: x86_64  (2599 Mhz)
->        MEMORY: 31.4 GB
->         PANIC: "BUG: unable to handle kernel NULL pointer dereference at 0000000000000008"
->           PID: 607
->       COMMAND: "kworker/u40:28"
->          TASK: ff1e34360b6e0000  [THREAD_INFO: ff1e34360b6e0000]
->           CPU: 1
->         STATE: TASK_RUNNING (PANIC)crash> bt
-> PID: 607      TASK: ff1e34360b6e0000  CPU: 1    COMMAND: "kworker/u40:28"
->   #0 [ff4de14b444cbbc0] machine_kexec at ffffffff9c46f2d3
->   #1 [ff4de14b444cbc18] __crash_kexec at ffffffff9c5baa5a
->   #2 [ff4de14b444cbcd8] crash_kexec at ffffffff9c5bb991
->   #3 [ff4de14b444cbcf0] oops_end at ffffffff9c42d811
->   #4 [ff4de14b444cbd10] no_context at ffffffff9c481cf3
->   #5 [ff4de14b444cbd68] __bad_area_nosemaphore at ffffffff9c48206c
->   #6 [ff4de14b444cbdb0] do_page_fault at ffffffff9c482cf7
->   #7 [ff4de14b444cbde0] page_fault at ffffffff9d0011ae
->      [exception RIP: process_one_work+46]
->      RIP: ffffffff9c51944e  RSP: ff4de14b444cbe98  RFLAGS: 00010046
->      RAX: 0000000000000000  RBX: ff1e34360734b5d8  RCX: dead000000000200
->      RDX: 000000010001393f  RSI: ff1e34360734b5d8  RDI: ff1e343ca7eed5c0
->      RBP: ff1e343600019400   R8: ff1e343d37c73bb8   R9: 0000005885358800
->      R10: 0000000000000000  R11: ff1e343d37c71dc4  R12: 0000000000000000
->      R13: ff1e343600019420  R14: ff1e3436000194d0  R15: ff1e343ca7eed5c0
->      ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
->   #8 [ff4de14b444cbed8] worker_thread at ffffffff9c5197e0
->   #9 [ff4de14b444cbf10] kthread at ffffffff9c520e04
-> #10 [ff4de14b444cbf50] ret_from_fork at ffffffff9d00028f
-> 
-> Another stack is below:
-> [ 1656.060089] list_del corruption. next->prev should be ff4880c9d81b8d48, but was ff4880ccfb2d45e0
 
-It seems that it is a memory corruption problem. The reason that causes 
-this memory corruption is very complicated. Because you can reproduce 
-this problem, perhaps some eBPF tools can help you to find out the root 
-cause.
 
-Zhu Yanjun
+On 17/12/2024 13:32, Alexander Lobakin wrote:
+> From: Rongwei Liu <rongweil@nvidia.com>
+> Date: Tue, 17 Dec 2024 13:44:07 +0800
+> 
+>>
+>>
+>> On 2024/12/17 01:55, Alexander Lobakin wrote:
+>>> From: Tariq Toukan <tariqt@nvidia.com>
+>>> Date: Wed, 11 Dec 2024 15:42:13 +0200
+>>>
+>>>> From: Rongwei Liu <rongweil@nvidia.com>
+>>>>
+>>>> Wrap the lag pf access into two new macros:
+>>>> 1. ldev_for_each()
+>>>> 2. ldev_for_each_reverse()
+>>>> The maximum number of lag ports and the index to `natvie_port_num`
+>>>> mapping will be handled by the two new macros.
+>>>> Users shouldn't use the for loop anymore.
+>>>
+>>> [...]
+>>>
+>>>> @@ -1417,6 +1398,26 @@ void mlx5_lag_add_netdev(struct mlx5_core_dev *dev,
+>>>>  	mlx5_queue_bond_work(ldev, 0);
+>>>>  }
+>>>>  
+>>>> +int get_pre_ldev_func(struct mlx5_lag *ldev, int start_idx, int end_idx)
+>>>> +{
+>>>> +	int i;
+>>>> +
+>>>> +	for (i = start_idx; i >= end_idx; i--)
+>>>> +		if (ldev->pf[i].dev)
+>>>> +			return i;
+>>>> +	return -1;
+>>>> +}
+>>>> +
+>>>> +int get_next_ldev_func(struct mlx5_lag *ldev, int start_idx)
+>>>> +{
+>>>> +	int i;
+>>>> +
+>>>> +	for (i = start_idx; i < MLX5_MAX_PORTS; i++)
+>>>> +		if (ldev->pf[i].dev)
+>>>> +			return i;
+>>>> +	return MLX5_MAX_PORTS;
+>>>> +}
+>>>
+>>> Why aren't these two prefixed with mlx5?
+>>> We can have. No mlx5 prefix aligns with "ldev_for_each/ldev_for_each_reverse()", simple, short and meaningful.
+> 
+> All drivers must have its symbols prefixed, otherwise there might be
+> name conflicts at anytime and also it's not clear where a definition
+> comes from if it's not prefixed.
+> 
 
-> [ 1656.060536] ------------[ cut here ]------------
-> [ 1656.060538] kernel BUG at lib/list_debug.c:56!
-> [ 1656.060738] invalid opcode: 0000 [#1] SMP NOPTI
-> [ 1656.060872] CPU: 4 PID: 606 Comm: kworker/u40:27 Kdump: loaded Tainted: GF          OE     -------- -  - 4.18.0-553.el8_10.x86_64 #1
-> [ 1656.061130] Hardware name: Red Hat KVM/RHEL-AV, BIOS 1.16.0-4.module+el8.9.0+1408+7b966129 04/01/2014
-> [ 1656.061261] Workqueue: mlx5_cmd_0000:11:00.0 cmd_work_handler [mlx5_core]
-> [ 1656.061457] RIP: 0010:__list_del_entry_valid.cold.1+0x20/0x48
-> [ 1656.061586] Code: 45 d4 99 e8 5e 52 c7 ff 0f 0b 48 89 fe 48 89 c2 48 c7 c7 00 46 d4 99 e8 4a 52 c7 ff 0f 0b 48 c7 c7 b0 46 d4 99 e8 3c 52 c7 ff <0f> 0b 48 89 f2 48 89 fe 48 c7 c7 70 46 d4 99 e8 28 52 c7 ff 0f 0b
-> [ 1656.061846] RSP: 0018:ff650559444dfe90 EFLAGS: 00010046
-> [ 1656.061974] RAX: 0000000000000054 RBX: ff4880c9d81b8d40 RCX: 0000000000000000
-> [ 1656.062103] RDX: 0000000000000000 RSI: ff4880cf9731e698 RDI: ff4880cf9731e698
-> [ 1656.062238] RBP: ff4880c840019400 R08: 0000000000000000 R09: c0000000ffff7fff
-> [ 1656.062366] R10: 0000000000000001 R11: ff650559444dfcb0 R12: ff4880c862647b00
-> [ 1656.062492] R13: ff4880c879326540 R14: 0000000000000000 R15: ff4880c9d81b8d48
-> [ 1656.062619] FS:  0000000000000000(0000) GS:ff4880cf97300000(0000) knlGS:0000000000000000
-> [ 1656.062745] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 1656.062868] CR2: 000055cc1af6b000 CR3: 000000084b610006 CR4: 0000000000771ee0
-> [ 1656.062996] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [ 1656.063127] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [ 1656.063250] PKRU: 55555554
->        KERNEL: /usr/lib/debug/lib/modules/4.18.0-553.el8_10.x86_64/vmlinux  [TAINTED]
->      DUMPFILE: vmcore  [PARTIAL DUMP]
->          CPUS: 20
->          DATE: Fri Nov 29 17:37:31 CST 2024
->        UPTIME: 00:27:35
-> LOAD AVERAGE: 350.47, 237.79, 163.91
->         TASKS: 1106
->      NODENAME: rocky8vm3
->       RELEASE: 4.18.0-553.el8_10.x86_64
->       VERSION: #1 SMP Fri May 24 13:05:10 UTC 2024
->       MACHINE: x86_64  (2599 Mhz)
->        MEMORY: 31.4 GB
->         PANIC: "kernel BUG at lib/list_debug.c:56!"
->           PID: 606
->       COMMAND: "kworker/u40:27"
->          TASK: ff4880c8793f8000  [THREAD_INFO: ff4880c8793f8000]
->           CPU: 4
->         STATE: TASK_RUNNING (PANIC)crash> bt
-> PID: 606      TASK: ff4880c8793f8000  CPU: 4    COMMAND: "kworker/u40:27"
->   #0 [ff650559444dfc28] machine_kexec at ffffffff98a6f2d3
->   #1 [ff650559444dfc80] __crash_kexec at ffffffff98bbaa5a
->   #2 [ff650559444dfd40] crash_kexec at ffffffff98bbb991
->   #3 [ff650559444dfd58] oops_end at ffffffff98a2d811
->   #4 [ff650559444dfd78] do_trap at ffffffff98a29a27
->   #5 [ff650559444dfdc0] do_invalid_op at ffffffff98a2a766
->   #6 [ff650559444dfde0] invalid_op at ffffffff99600da4
->      [exception RIP: __list_del_entry_valid.cold.1+32]
->      RIP: ffffffff98ef8f98  RSP: ff650559444dfe90  RFLAGS: 00010046
->      RAX: 0000000000000054  RBX: ff4880c9d81b8d40  RCX: 0000000000000000
->      RDX: 0000000000000000  RSI: ff4880cf9731e698  RDI: ff4880cf9731e698
->      RBP: ff4880c840019400   R8: 0000000000000000   R9: c0000000ffff7fff
->      R10: 0000000000000001  R11: ff650559444dfcb0  R12: ff4880c862647b00
->      R13: ff4880c879326540  R14: 0000000000000000  R15: ff4880c9d81b8d48
->      ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
->   #7 [ff650559444dfe90] process_one_work at ffffffff98b19557
->   #8 [ff650559444dfed8] worker_thread at ffffffff98b197e0
->   #9 [ff650559444dff10] kthread at ffffffff98b20e04
-> #10 [ff650559444dff50] ret_from_fork at ffffffff9960028f
+However, those aren't exported symbols, they are used exclusively by the mlx5 lag code.
+I don't see any added value in prefixing internal functions with mlx5 unless it adds
+context to the logic.
+Here it's very clear we are going over the members that are stored inside the ldev struct.
+
+Mark
+
+>>>> +
+>>>>  bool mlx5_lag_is_roce(struct mlx5_core_dev *dev)
+>>>>  {
+>>>>  	struct mlx5_lag *ldev;
+>>>
+>>> [...]
+>>>
+>>>>  
+>>>> +#define ldev_for_each(i, start_index, ldev) \
+>>>> +	for (int tmp = start_index; tmp = get_next_ldev_func(ldev, tmp), \
+>>>> +	     i = tmp, tmp < MLX5_MAX_PORTS; tmp++)
+>>>> +
+>>>> +#define ldev_for_each_reverse(i, start_index, end_index, ldev)      \
+>>>> +	for (int tmp = start_index, tmp1 = end_index; \
+>>>> +	     tmp = get_pre_ldev_func(ldev, tmp, tmp1), \
+>>>> +	     i = tmp, tmp >= tmp1; tmp--)
+>>>
+>>> Same?
+>> Reverse is used to the error handling. Add end index is more convenient.
+>> Of course, we can remove the end_index. 
+>> But all the logic need to add:
+>> 	if (i < end_index)
+>> 		break;
+>> If no strong comments, I would like to keep as now.
 > 
-> This bug seems to be in rdma_cm module on the MOFED/kernel side. So we try to reproduce the crash on the Nvme-oF node:
-> 1. Mount the nvme-of disk, do "nvme connect -t rdma -n "nqn.2014-08.org.nvmexpress:67240ebd3fa63ca3" -a 192.168.122.30 -s 4421"
-> 2. Use dd run write/read test case, for example, "dd if=/dev/nvme0n17 of=./test bs=32K count=102400 oflag=direct"
-> 3. Construct an ARP update, do "arp -s 192.168.122.112 10:71:fe:69:93:b8 && arp -d 192.168.122.112" on the nvme_of client.
-> 4. The crash is already reproduce.
+> By "same?" I meant that there two are also not prefixed with mlx5_, the
+> same as the two above.
 > 
-> The issue may involve the following key points:
-> 1. The RDMA module receives multiple network events simultaneously.
-> 2. We have observed that during normal ARP updates, one or more events may be generated, making this issue probabilistic.
-> 3. When both ARP update events and connection termination (conn disconnect) events are received at the same time, it triggers issue LU-18275.
+> Thanks,
+> Olek
 
 
