@@ -1,341 +1,226 @@
-Return-Path: <linux-rdma+bounces-6580-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6581-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE09E9F4AD6
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 13:19:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 917239F4B3D
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 13:50:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18FF11683AC
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 12:19:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8894D7A16DD
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 12:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D34D1F03D6;
-	Tue, 17 Dec 2024 12:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB4C1F1316;
+	Tue, 17 Dec 2024 12:50:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="ao0GrP4a"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CSny3iql"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672381D5CCC;
-	Tue, 17 Dec 2024 12:19:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734437984; cv=fail; b=AeCL2fRQdye9Ohf5eU6t1UB54JD2bj10p2UxP8YoNGEVBs0O7uHw/bIL3TWd4/b2HYNX5RjZX3vbsg+wZy582rxXZUZ3qiEGgHceDa9k2MIBkrKWhRP73TUToV/VSoOEITBbBVRDGXQq6Z0iK0r26shLXIZFckS4LPSIwCRJCms=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734437984; c=relaxed/simple;
-	bh=BzuY1zNqE8GvN5aOhtf7y9rRG5yjA73zxB+3ugtxwFo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=Vu08cQQwyX0b60Qa57Qc2cKmkdOzHvFqs3tezYfKwWkRvDarlCaZ172RzBEnApeo+3976LwTmRvTqZ4j5xEIxcmd5CEwMcvqTcJqa0Iqr6RgB9ARsdZNTJ7B2mLyvdlCCbXfVE7wTnADoYso2xYSzK5GDsUZxyabAbGCZxJ0bkU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=ao0GrP4a; arc=fail smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BHBdghp025795;
-	Tue, 17 Dec 2024 04:19:41 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-id:content-transfer-encoding:content-type:date:from
-	:in-reply-to:message-id:mime-version:references:subject:to; s=
-	s2048-2021-q4; bh=7PhX5+gAyT+SuAHokI7gYmLvSRCIT6LH6p/xGnoyraY=; b=
-	ao0GrP4a0neACxaJgRt6AIdjNgsmOF6pihlsS3t3tejofmPVRHdl2n+VJprTNSEf
-	9DqTuxfR2HXsqvdfQcFlc2hy2q6jonuq3TDiZXc12hOigMR9us6QxRAqmNcQVrLM
-	ysSDY5YDgvysQxJKh/xsvrJV6bGRpn8bLJnH+xQovThyY8ARGXGww16tALhIK/e8
-	ykHKdkytrM3LhV8sMHliaftmzwEy9dDN8ssSbwpbCHtfdKt+PekO5i9EPuoiOitN
-	Y+N44oXYD+x/y1cJrfI55/0Qcr8qVxhuL8wZ1tPWnEoVWrMYsFcDYuyY1vjLqZIE
-	+QxJOcFdUP519S4UG0Tjmg==
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 43k80a0cus-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 17 Dec 2024 04:19:40 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ri02mZaX17lVahVopvEyapePkm1YxpXQy8sISrZ8sE83T7Gg3WAA/4KdygPeXlN4WHR7KeMC/qbcI8nWaRTI9KIxYhuKLE7RrqGS3vPN2WOXsHUB/CeFz91hlkq4bOYHR6cKB5qxCA1EZnXWRFn4TcqUuhRbDOkUJcVfENv/79DSr4v3tVkzgcvg2tE3/ty9MY5dPqTnOPeL2b0AREUe3kDVqSaDctVafvYVKyL7zfrw9o2wEZax66gNK0q5K/ZNoZikwJjbxM1hW4Czc9sTFr4JeZOC16H58FsqT5f8ICLI4RbBnWhs37dT4veMB+wt2Zdx/K79qE6+9i+DyOEE3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rDAWTkzs725ZwSElirwfGYQpPSay644swGxAyIDOWvM=;
- b=fgj8RTLMsRjJUcdMlMYicCj6YbJR3HxGk7+pk8OpAbxhXBnJy4FbzAGTsUL20VU27zGSStYvV5ePItiRLHkBJy+pWLYcGbcnL2/tycAx5zlUmH+SFc5jyFCeEVc4dO7SUxuS6sJJE7klQPpDE6LDHqHaup1veLW19REO5xcFSntBkMDRmondNH+c1pR/F3TiiimGdk3Nkg8O+kPJpMrtYEWZhLPrsrOc/l56KmcllvACNI/zT5zKos41KyzxbK2y8pQGRZJcrGlsWfpNM51C1exfjJQbwn6Ey1TW+A5fhv4w6VUKtB9T007KfdywvTbFeNs+5vZiYcXi7lx988ef1w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SA1PR15MB5258.namprd15.prod.outlook.com (2603:10b6:806:22a::12)
- by PH0PR15MB4815.namprd15.prod.outlook.com (2603:10b6:510:ac::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8272.13; Tue, 17 Dec
- 2024 12:19:36 +0000
-Received: from SA1PR15MB5258.namprd15.prod.outlook.com
- ([fe80::a29e:a332:eb15:993c]) by SA1PR15MB5258.namprd15.prod.outlook.com
- ([fe80::a29e:a332:eb15:993c%4]) with mapi id 15.20.8251.015; Tue, 17 Dec 2024
- 12:19:36 +0000
-From: Wei Lin Guay <wguay@meta.com>
-To: "Kasireddy, Vivek" <vivek.kasireddy@intel.com>
-CC: Wei Lin Guay <wguay@meta.com>,
-        "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>,
-        "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>,
-        "kvm@vger.kernel.org"
-	<kvm@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>,
-        "jgg@nvidia.com" <jgg@nvidia.com>, Dag Moxnes
-	<dagmoxnes@meta.com>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        Nicolaas
- Viljoen <nviljoen@meta.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        =?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>,
-        Daniel
- Vetter <daniel.vetter@ffwll.ch>,
-        Leon Romanovsky <leon@kernel.org>, Maor
- Gottlieb <maorg@nvidia.com>
-Subject: Re: [PATCH 0/4] cover-letter: Allow MMIO regions to be exported
- through dmabuf
-Thread-Topic: [PATCH 0/4] cover-letter: Allow MMIO regions to be exported
- through dmabuf
-Thread-Index: AQHbT6O5Loc/d/3VGEWjEKeLiKCgu7LpIlYAgAE6MQA=
-Date: Tue, 17 Dec 2024 12:19:36 +0000
-Message-ID: <924671F4-E8B5-4007-BE5D-29ED58B95F46@meta.com>
-References: <20241216095920.237117-1-wguay@fb.com>
- <IA0PR11MB7185FDD56CFDD0A2B8D21468F83B2@IA0PR11MB7185.namprd11.prod.outlook.com>
-In-Reply-To:
- <IA0PR11MB7185FDD56CFDD0A2B8D21468F83B2@IA0PR11MB7185.namprd11.prod.outlook.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR15MB5258:EE_|PH0PR15MB4815:EE_
-x-ms-office365-filtering-correlation-id: f69ba188-a026-42b4-fe4a-08dd1e95124a
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|366016|7416014|376014|1800799024|10070799003|7053199007|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?OFYrUEhZNzZJNHBYUXhLR3YzUHY1dEl1bitKWk1pODVWY0Fsa0o1VktFNndz?=
- =?utf-8?B?WWFJVSsrSFdFWkZ1R3JxNEhTUHpMQlFtcnU4K3o1b3B3UXMyekVTMzRQeDln?=
- =?utf-8?B?S1hqWHVobk1iS1RrNEJuY05XZUovVlhqcWVoaHEyS3hmT1F4NnRuK0puZ1F3?=
- =?utf-8?B?T3ZpZFJ5bnVJT0Y4T29ycGZVcmlEVUVZTnYvcjBuT3FYbjY0U0tSRm5pamQ0?=
- =?utf-8?B?SmFwZDVhb2dVdVJSZzBMdERPZWVtRStQbDJOSWZhSmQybmJmcG9wR3gyNlUw?=
- =?utf-8?B?WFZNellLYUdpMzRsM3Y2Z1FoTGFlQzVOdzFwVUJaMmNyczQ1eVZoMGFmOTNx?=
- =?utf-8?B?WVJZWjFpaEJJNTErbHhKNlVMWHRZTmNBYmZORmpPZ1ZXWEtjOWpKZU9qWStZ?=
- =?utf-8?B?RHowdWlCUFN2L05lK201cEpkSDMrNSsyNk0xSVlSUEppekdlUkNuN1JvQ3hs?=
- =?utf-8?B?ZG5Vd0tzN0tKekZIc0pRcmJtREVPeEhSQW5SeFNKMG9EbUFsRmlMUTg0NHUv?=
- =?utf-8?B?QWg1dEduSHJVRU5BYmpVcmgwQ1k4UEd5NUZkUXJnU09jY3E3aHNsL0JHQ0hF?=
- =?utf-8?B?UmRlVDJHRTZhZHl2ODZ6WFV3Z2Rvd0c2LzA1Q2pJazhXWkkrYnA0WlFCYVNv?=
- =?utf-8?B?OHd2RTB2VkN2WjFJNmd6YXJLcG90ckJ3bHFXeXZFZk02K2dpaTRLVUpKRlM0?=
- =?utf-8?B?QjFaaFlLQWhQbWhKM1JtZzdvWG9ncDRBN1Vpay9YcTZYWWlqNzdhVDc3dUVI?=
- =?utf-8?B?emtBanJpZG9KSEVLcFgyVjhGZlRmVzJyOGxZVmxvc0hYdmJGYXBUN1BVZEk1?=
- =?utf-8?B?TkM2K2o5WDRHVW03cVRXdGJkNk1qVUxaSEVzNzVseGxmaEM3aHEvY0FUNll4?=
- =?utf-8?B?NW5OUTVHb3ZvRzJpSG1WUXEvQzRrb2R4WjFhTks5RDBrL2tHSG1IZjVQemF1?=
- =?utf-8?B?R2tLR3pjQy9JczhTcVUxQXJ2ZktaYU9SSytoWEcyK0JvQUhMc1BGemlGMitn?=
- =?utf-8?B?MDNRZzkwUTlvQ0hURkNtb0YzZ3YyWCtnN3k4VFMyMmRIVGMxcUN4NE54c0Jp?=
- =?utf-8?B?YzFvWXZkWWdCejZtUzRXWDcvQmxXZXVROWJPNzNVVDlmWVM3eVpydTdCSVdL?=
- =?utf-8?B?THg1U0ZNUnB1alEwNzVUTWJadVlRYXpwNlQrcjE4NUY5NnErN2ZuZjhVOG40?=
- =?utf-8?B?VXhiczd6YjUrU1FHUjFxY2lNcUFUVTBqRm8xY1lEN0xBMHFEVUlCN0hab1BO?=
- =?utf-8?B?RU4xanRlSzY3bDBLRGFFNW5FNTZzbmExaEVUTEtjTjdHRjZwd3RFa1BvT3ZJ?=
- =?utf-8?B?TjBEblZiRGhBaytmeDhVajVQelU2bkNoT1ArMUI5ODYzejZtWUwvbGFZN2ky?=
- =?utf-8?B?ZldURXg3RmxRNnA1ZGxlb0tVendSQWtZR3o4S3Q3azE4UFlzb0RlRzgxNGdh?=
- =?utf-8?B?eGZDNjdvenZuNjEyaklZMkxncC85K2kza1RUcGd5S0RaRjF0YVFOL3NyZ05L?=
- =?utf-8?B?Yk8yL003MVptcGRuaXhDZ1pSN1J5bEYxNngvSHVaRXFjQ2R4ZHV1UHM1b2Rk?=
- =?utf-8?B?QXRYeU9IbVIwT1BQVENNTnY0QkJ2TWpBNUM4UFBLRVpyZW54emJUSzFwdHNw?=
- =?utf-8?B?T1k1MDVzUEY2ZHp2eGlxZ1BBSWZFUnhqZWlEREZXd05VdUpHKzJXZzNUQ2RQ?=
- =?utf-8?B?bUFNM3RmWDRoR1JaMVgvWkpIVVRvb0tSc3ErMFNNbUlFL3pzbHN4UHMwejVk?=
- =?utf-8?B?Z3N2UWFlWThGRjFMNVdyZk1xR3JNVktSaDJwSHlzbGIwYktjTHRlaEFtTC9u?=
- =?utf-8?B?YzRkdGI5eUI4dHVOS3p3aXJmQUhNeUpNenBMS0hDRkk3a2JLd053L2JoK0N3?=
- =?utf-8?B?VmhFTkZndVhaYnphQ0pkQWl4b05NdmdvY1NjbTd5djVDSjVuRnhUallCdW1I?=
- =?utf-8?Q?3cOMzZT6pNMxxgjcNd1Um8yIvBj+h0Xt?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5258.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024)(10070799003)(7053199007)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?TFgzS1VaU1ZOZWVrYzVkY1hWa1ZQeUF0Vy82ZWc4UjZsSm5RS2JzbjU2WjN0?=
- =?utf-8?B?eUxIbncxa3JIcHRoVDl6TUw1QTJIem5iWmpldVR4MlJVdTA4aXZrNUpKL2pS?=
- =?utf-8?B?U3E1M1ZrU01SSnlDcU1XT0hscDk1M2FBeG03WTBXMmpVOWxPSGJQbVg1Q2s5?=
- =?utf-8?B?b3RrbGM0cmdTUEZicjRJTGladGE2bEppUFgyb3pLc3M3ZWlSa0JJME5JZFNG?=
- =?utf-8?B?aTlBSFBtcENQQlZsenA2c2dyKzVMS3JneUxraDNVUCtZRVg1WG9jMVdGbkVZ?=
- =?utf-8?B?NTk2RGZlSThKMzgxc3pVcFpRYXYrMVdGQWRoWjYveWljK0cxbUJ5M2hRRXdo?=
- =?utf-8?B?d1E4eWVOOTFSakttVXJJWksxRnozYjRNRkVzMVdOWWs3TVcrVmNLc0hXMzdK?=
- =?utf-8?B?RmQxejgyNlE1RUY3dForNGw3N3pTczhHeHZiZVpEZ1ZuTitsWUxweWdibENp?=
- =?utf-8?B?QU1xNXVDOXdIbU5xMVpBcHYxTk1ydEN1NWEvYllQS2szUGNETW8zOHBWVFFp?=
- =?utf-8?B?MGhsYnFpUTVUR3RVeFlyNVo0QzB1UytadUVMRHFmNGVCREFHNFhQeTUzeUNt?=
- =?utf-8?B?WStJNUNoTlF6bmpHTHZHWjJmWkp6MzhIeTU1Yko1REhMRExKdGtwREhOemFu?=
- =?utf-8?B?TUVZTW1zVDUvVGJJL2FFU2RHNzJ6RVRQakM5Q295S3ZGTElVdnVxOVFDSmxO?=
- =?utf-8?B?SXBHd2FiZzR3cnpNd292SFNpOS9US2JnMS9wZldqRnVuYkprNjMvREtteE5X?=
- =?utf-8?B?aXpRUy9GcDk3R0J1dENzUDJFVUV6ek5XQm5jamNOdVJabVN4NlQ2Qm9PTW9Z?=
- =?utf-8?B?SWRrRlAzMGI3VzFrb2pIRU0xL002TE94Ym92aFBmcEZ0MjZTNSsxNTJDbVdP?=
- =?utf-8?B?dFpiOXRSMkNlQzgvcGZTYkFITEEwMUxrS3hhcnlIRDc4QU1CR1ZwZ1crendH?=
- =?utf-8?B?SFBjS2c0cGlrT2RvNmZNTUhvRnpEcjlPd0tRV1p1c3JUQ21zRkl4Rk12MUxN?=
- =?utf-8?B?R1VoSGZsUWJnb2ZHT0ttY1R2T3p0U0JNS2dsVVV0TDFpc25SM0tLeXg5SnIv?=
- =?utf-8?B?aE45TVlRRU0xL2ZVdFJXRW55cUJhSEVIZXpxREpOeFRsaS9wb1FjVjRTelFF?=
- =?utf-8?B?Qm5pNGVQNTMvcmZkcnp3Qk8xR00zMnhGYTB6d1ovUEtMa2tZb3JNVWxpR3hm?=
- =?utf-8?B?RVpIUGJyUjBkMWJ2MzM4NTBnUzA3NXltR3BkSUthSUJTSVBkaW5MSFFJVml6?=
- =?utf-8?B?SFlKUWJvbHZDZFdEME1qaTlDcW5wRlFDTGdKR1hNYnk1VFZqa1BXUTFyRUJl?=
- =?utf-8?B?U1ExNG9VSFdCNFpvZTJocndQSzArK3RCR3QyZnVQUXdTWUdhL2FYaDJyWVo1?=
- =?utf-8?B?NlB0TXlCT3BsMTQ1bGRlVUMrT0tlcFh0VU5uaGRpQXpmbzByZmZlVnFrYzl0?=
- =?utf-8?B?RE9JRVlabWhiNFVDVFAySldKWG44YUoxZUdQVlJwVmZpbXpTRnR0RXFWNkhB?=
- =?utf-8?B?Tldsc2NmQ2FHcGdQNjd3RHpzVUdYNVBKbEV0K2NrbUhpc1lnaHdlN3BpRWdH?=
- =?utf-8?B?eHk1cG9QMURvaDJsbGpSMTR1LzJJeWRTYjg2S3JEazVMUTM3RzgvTnl2NHhB?=
- =?utf-8?B?UkdxRU9rc0s1TFRnM0t5TE5QdlM3K2FuekdSakwrY1R2TGhLa1hnMzFOR3pS?=
- =?utf-8?B?VkNHUHZ6MEhRNUlyaktPdFBkZnQzOU5DQmp2VVJKV24yNU1FTnc2VWkvU01V?=
- =?utf-8?B?R01NYldjUlpsMTZCQmJzMjBXOG51c1lZdjdIMFhSN1ZrajVSTkpsNlArR1F3?=
- =?utf-8?B?bDlzSHJiOGRuOVJiNnVOTHU5RWs5V3pMd0k5TVJQQzhZWDJmSWhHcFRZZERj?=
- =?utf-8?B?QmkyQk51dnBiTk9ycWJEQi9OYndBZVpOTzZndTJtSDg2MlNKY3Y2dTBkRE0w?=
- =?utf-8?B?QmlDa0FaV2s2ZjVSV3YyMzNqcGs4T1dZeGQ4Z0NKR3F4TENwMWkvMXJVSmRK?=
- =?utf-8?B?UlI4S0haWGFHSEpOWTRZUzNmajJzbHBJRkFxZ25NQlNUYXRpaEJ4NVA4Z1M3?=
- =?utf-8?B?akxQRFk1L3JWWVVaalptVHJLdUlIVmxQVVFNQVZMTWNTOURPRzF0OE5qdmtp?=
- =?utf-8?B?L1F3MU9KbU5STTlyNlNBRWRRQTZMakpGUThPcXdWenZGVit5S1RZaWJxT3hi?=
- =?utf-8?B?Vmc9PQ==?=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794671F03DE
+	for <linux-rdma@vger.kernel.org>; Tue, 17 Dec 2024 12:50:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1734439845; cv=none; b=AsR+SXXCkAHC019Wm/2F6h+cAAvP6PLH/+hETM/aqY32ghOEu/H+QzaMEzWVEZs+tOKxgBWxE0BbOTe3RrzWR+E6HMgiwGe/HFY5Ut6VE2g9Vyh+AusluUuXosbQ1VjwrZLqXmqFzozg81wEZxPQYeg9db5KjkT3XEB6O1GEKvk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1734439845; c=relaxed/simple;
+	bh=GA+djSqGDY1RFIcv/R7nkdjGtYzmg56B/WzVIh54E7I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eUos8F/DKbYuFTLxufEZ4AUpHZwCj/g6H4OXkSokX+ThZPNPJ9C8HiNmdQXLqMWAN+/hHxxPyRvrTSmi5XPvCFGvPycp6+KYz2778S8cvoI4aszQ5MtaVIomthn5rAizarz9RKd5dSnHs3x/fDseqQbKCEXP44HRM4cweXNuAzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CSny3iql; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a3bbcb1d-00bc-4218-85da-291bf368770d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734439839;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DPYCuEeLDn/6I/UoHhU2pgVxOltCHqKuIo/KzDnZ2bY=;
+	b=CSny3iqlXNPVKJB9Zq8GZvfqCx7U88kP6ZsSiNXyj6C8qBpTTlLeeMJf+7WWy2ir2dtuku
+	JaDmzxwOtqhm0BDyFonoXGj0Yio+Lld9nPXPoXB9f0CAsaF6vuiXzI/YGEct69mqm6TWs9
+	vMjbtcnAYd5CAyFZJcJM0qpnIC1bncY=
+Date: Tue, 17 Dec 2024 13:50:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5258.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f69ba188-a026-42b4-fe4a-08dd1e95124a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Dec 2024 12:19:36.2096
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yB8+puUbr6xKLvVrz2XWgK0hsZKwv4qVOjd+3Gtc5VJ+2hPECSs0VQHuTB8kgdV7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4815
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-ID: <5208929DDE666848BE3848801C422EF4@namprd15.prod.outlook.com>
-X-Proofpoint-ORIG-GUID: lr7YsLGrSChE0dkh5IuizdpCZ80SwwVj
-X-Proofpoint-GUID: lr7YsLGrSChE0dkh5IuizdpCZ80SwwVj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
+Subject: Re: [BUG] rdma_cm: unable to handle kernel NULL pointer dereference
+ in process_one_work when disconnect
+To: "xiyan@cestc.cn" <xiyan@cestc.cn>, linux-rdma <linux-rdma@vger.kernel.org>
+Cc: markzhang <markzhang@nvidia.com>, phaddad <phaddad@nvidia.com>,
+ leon <leon@kernel.org>, "yuan.liu" <yuan.liu@cestc.cn>,
+ zhangsiyao <zhangsiyao@cestc.cn>, peizhiwei <peizhiwei@cestc.cn>,
+ eaujames <eaujames@ddn.com>, ssmirnov <ssmirnov@whamcloud.com>
+References: <2024121711472494997716@cestc.cn>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <2024121711472494997716@cestc.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Vivek,=20
+On 17.12.24 04:47, xiyan@cestc.cn wrote:
+> Hello RDMA Community,
+> While testing the RoCEv2 feature of the Lustre file system, we encountered a crash issue related to ARP updates. Preliminary analysis suggests that this issue may be kernel-related, and it is also observed in the nvmeof environment，We are eager to receive your assistance. Below are the detailed information regarding the issue  LU-18364.
+> Thanks.
+> 
+> Lustre's client and server are deployed within the VM, The VM uses the network card PF pass-through mode.
+> 【OS】
+> VM Version: qemu-kvm-7.0.0
+> OS Verion: Rocky 8.10
+> Kernel Verion: 4.18.0-553.el8_10.x86_64
+> 
+> 【Network Card】
+> Client：
+> MLX CX6 1*100G RoCE v2
+> MLNX_OFED_LINUX-23.10-3.2.2.0-rhel8.10-x86_64
+> firmware-version: 22.35.2000 (MT_0000000359)
+> 
+> Server:
+> MLX CX6 1*100G RoCE v2
+> MLNX_OFED_LINUX-23.10-3.2.2.0-rhel8.10-x86_64
+> firmware-version: 22.35.2000 (MT_0000000359)
+> 
+> 【Kernel Commit】
+> [PATCH rdma-next v2 2/2] RDMA/core: Add a netevent notifier to cma - Leon Romanovsky
+> https://lore.kernel.org/all/bb255c9e301cd50b905663b8e73f7f5133d0e4c5.1654601342.git.leonro@nvidia.com/
+> 
+> 【Lustre Issue】
+> LU-18364：https://jira.whamcloud.com/browse/LU-18364
+> LU-18275：https://jira.whamcloud.com/browse/LU-18275
+> 
+> 【Problem Reproduction Steps】
+> We've found a stable reproduction step for the crash issue:
+> 1. We only use one network card, and do not use bonding.
+> 2. Use vdbench run read/write test case on the lustre client.
+> 3. Construct an ARP update for a lustre server IP address on the lustre client.
+> 
+> for example, the lustre client ip is 192.168.122.220,  the lustre server ip is 192.168.122.115, so do "arp -s 192.168.122.115 10:71:fc:69:92:b8 && arp -d 192.168.122.115" on 192.168.122.220, 10:71:fc:69:92:b8 is a wrong mac address.
+> 
+> The crash stack is blow:
+>        KERNEL: /usr/lib/debug/lib/modules/4.18.0-553.el8_10.x86_64/vmlinux  [TAINTED]
+>      DUMPFILE: vmcore  [PARTIAL DUMP]
+>          CPUS: 20
+>          DATE: Tue Dec  3 14:58:41 CST 2024
+>        UPTIME: 00:06:20
+> LOAD AVERAGE: 10.14, 2.56, 0.86
+>         TASKS: 1076
+>      NODENAME: rocky8vm3
+>       RELEASE: 4.18.0-553.el8_10.x86_64
+>       VERSION: #1 SMP Fri May 24 13:05:10 UTC 2024
+>       MACHINE: x86_64  (2599 Mhz)
+>        MEMORY: 31.4 GB
+>         PANIC: "BUG: unable to handle kernel NULL pointer dereference at 0000000000000008"
+>           PID: 607
+>       COMMAND: "kworker/u40:28"
+>          TASK: ff1e34360b6e0000  [THREAD_INFO: ff1e34360b6e0000]
+>           CPU: 1
+>         STATE: TASK_RUNNING (PANIC)crash> bt
+> PID: 607      TASK: ff1e34360b6e0000  CPU: 1    COMMAND: "kworker/u40:28"
+>   #0 [ff4de14b444cbbc0] machine_kexec at ffffffff9c46f2d3
+>   #1 [ff4de14b444cbc18] __crash_kexec at ffffffff9c5baa5a
+>   #2 [ff4de14b444cbcd8] crash_kexec at ffffffff9c5bb991
+>   #3 [ff4de14b444cbcf0] oops_end at ffffffff9c42d811
+>   #4 [ff4de14b444cbd10] no_context at ffffffff9c481cf3
+>   #5 [ff4de14b444cbd68] __bad_area_nosemaphore at ffffffff9c48206c
+>   #6 [ff4de14b444cbdb0] do_page_fault at ffffffff9c482cf7
+>   #7 [ff4de14b444cbde0] page_fault at ffffffff9d0011ae
+>      [exception RIP: process_one_work+46]
+>      RIP: ffffffff9c51944e  RSP: ff4de14b444cbe98  RFLAGS: 00010046
+>      RAX: 0000000000000000  RBX: ff1e34360734b5d8  RCX: dead000000000200
+>      RDX: 000000010001393f  RSI: ff1e34360734b5d8  RDI: ff1e343ca7eed5c0
+>      RBP: ff1e343600019400   R8: ff1e343d37c73bb8   R9: 0000005885358800
+>      R10: 0000000000000000  R11: ff1e343d37c71dc4  R12: 0000000000000000
+>      R13: ff1e343600019420  R14: ff1e3436000194d0  R15: ff1e343ca7eed5c0
+>      ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+>   #8 [ff4de14b444cbed8] worker_thread at ffffffff9c5197e0
+>   #9 [ff4de14b444cbf10] kthread at ffffffff9c520e04
+> #10 [ff4de14b444cbf50] ret_from_fork at ffffffff9d00028f
+> 
+> Another stack is below:
+> [ 1656.060089] list_del corruption. next->prev should be ff4880c9d81b8d48, but was ff4880ccfb2d45e0
 
-> On 16 Dec 2024, at 18:34, Kasireddy, Vivek <vivek.kasireddy@intel.com> wr=
-ote:
->=20
-> >=20
-> Hi Wei Lin,
->=20
->> Subject: [PATCH 0/4] cover-letter: Allow MMIO regions to be exported
->> through dmabuf
->>=20
->> From: Wei Lin Guay <wguay@meta.com>
->>=20
->> This is another attempt to revive the patches posted by Jason
->> Gunthorpe and Vivek Kasireddy, at
->> https://patchwork.kernel.org/project/linux-media/cover/0-v2-
->> 472615b3877e+28f7-vfio_dma_buf_jgg@nvidia.com/
->> https://urldefense.com/v3/__https://lwn.net/Articles/970751/__;!!Bt8RZUm=
-9aw!5uPrlSI9DhXVIeRMntADbkdWcu4YYhAzGN0OwyQ2NHxrN7bYE9f1eQBXUD8xHHPxiJorSkY=
-hNjIRwdG4PsD2$
-> v2: https://lore.kernel.org/dri-devel/20240624065552.1572580-1-vivek.kasi=
-reddy@intel.com/
-> addresses review comments from Alex and Jason and also includes the abili=
-ty
-> to create the dmabuf from multiple ranges. This is really needed to futur=
-e-proof
-> the feature.=20
+It seems that it is a memory corruption problem. The reason that causes 
+this memory corruption is very complicated. Because you can reproduce 
+this problem, perhaps some eBPF tools can help you to find out the root 
+cause.
 
-The good thing is that your patch series addressed Christian=E2=80=99s conc=
-erns of adding dma_buf_try_get().
+Zhu Yanjun
 
-However, several questions regarding your v2 patch: =20
-- The dma-buf still support redundant mmap handler? (One of review comments=
- from v1?)=20
-- Rather than handle different regions within a single dma-buf, would vfio-=
-user open multiple distinct file descriptors work?
-For our specific use case, we don't require multiple regions and prefer Jas=
-on=E2=80=99s original patch.
-
->=20
-> Also, my understanding is that this patchset cannot proceed until Leon's =
-series is merged:
-> https://lore.kernel.org/kvm/cover.1733398913.git.leon@kernel.org/
-
-Thanks for the pointer.=20
-I will rebase my local patch series on top of that.=20
-
-Thanks,
-Wei Lin
-
->=20
->=20
-> Thanks,
-> Vivek
->=20
->>=20
->> In addition to the initial proposal by Jason, another promising
->> application is exposing memory from an AI accelerator (bound to VFIO)
->> to an RDMA device. This would allow the RDMA device to directly access
->> the accelerator's memory, thereby facilitating direct data
->> transactions between the RDMA device and the accelerator.
->>=20
->> Below is from the text/motivation from the orginal cover letter.
->>=20
->> dma-buf has become a way to safely acquire a handle to non-struct page
->> memory that can still have lifetime controlled by the exporter. Notably
->> RDMA can now import dma-buf FDs and build them into MRs which allows
->> for
->> PCI P2P operations. Extend this to allow vfio-pci to export MMIO memory
->> from PCI device BARs.
->>=20
->> This series supports a use case for SPDK where a NVMe device will be own=
-ed
->> by SPDK through VFIO but interacting with a RDMA device. The RDMA device
->> may directly access the NVMe CMB or directly manipulate the NVMe device's
->> doorbell using PCI P2P.
->>=20
->> However, as a general mechanism, it can support many other scenarios with
->> VFIO. I imagine this dmabuf approach to be usable by iommufd as well for
->> generic and safe P2P mappings.
->>=20
->> This series goes after the "Break up ioctl dispatch functions to one
->> function per ioctl" series.
->>=20
->> v2:
->> - Name the new file dma_buf.c
->> - Restore orig_nents before freeing
->> - Fix reversed logic around priv->revoked
->> - Set priv->index
->> - Rebased on v2 "Break up ioctl dispatch functions"
->> v1: https://lore.kernel.org/r/0-v1-9e6e1739ed95+5fa-
->> vfio_dma_buf_jgg@nvidia.com
->> Cc: linux-rdma@vger.kernel.org
->> Cc: Oded Gabbay <ogabbay@kernel.org>
->> Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
->> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
->> Cc: Leon Romanovsky <leon@kernel.org>
->> Cc: Maor Gottlieb <maorg@nvidia.com>
->> Cc: dri-devel@lists.freedesktop.org
->> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
->>=20
->> Jason Gunthorpe (3):
->>  vfio: Add vfio_device_get()
->>  dma-buf: Add dma_buf_try_get()
->>  vfio/pci: Allow MMIO regions to be exported through dma-buf
->>=20
->> Wei Lin Guay (1):
->>  vfio/pci: Allow export dmabuf without move_notify from importer
->>=20
->> drivers/vfio/pci/Makefile          |   1 +
->> drivers/vfio/pci/dma_buf.c         | 291 +++++++++++++++++++++++++++++
->> drivers/vfio/pci/vfio_pci_config.c |   8 +-
->> drivers/vfio/pci/vfio_pci_core.c   |  44 ++++-
->> drivers/vfio/pci/vfio_pci_priv.h   |  30 +++
->> drivers/vfio/vfio_main.c           |   1 +
->> include/linux/dma-buf.h            |  13 ++
->> include/linux/vfio.h               |   6 +
->> include/linux/vfio_pci_core.h      |   1 +
->> include/uapi/linux/vfio.h          |  18 ++
->> 10 files changed, 405 insertions(+), 8 deletions(-)
->> create mode 100644 drivers/vfio/pci/dma_buf.c
->>=20
->> --
->> 2.43.5
+> [ 1656.060536] ------------[ cut here ]------------
+> [ 1656.060538] kernel BUG at lib/list_debug.c:56!
+> [ 1656.060738] invalid opcode: 0000 [#1] SMP NOPTI
+> [ 1656.060872] CPU: 4 PID: 606 Comm: kworker/u40:27 Kdump: loaded Tainted: GF          OE     -------- -  - 4.18.0-553.el8_10.x86_64 #1
+> [ 1656.061130] Hardware name: Red Hat KVM/RHEL-AV, BIOS 1.16.0-4.module+el8.9.0+1408+7b966129 04/01/2014
+> [ 1656.061261] Workqueue: mlx5_cmd_0000:11:00.0 cmd_work_handler [mlx5_core]
+> [ 1656.061457] RIP: 0010:__list_del_entry_valid.cold.1+0x20/0x48
+> [ 1656.061586] Code: 45 d4 99 e8 5e 52 c7 ff 0f 0b 48 89 fe 48 89 c2 48 c7 c7 00 46 d4 99 e8 4a 52 c7 ff 0f 0b 48 c7 c7 b0 46 d4 99 e8 3c 52 c7 ff <0f> 0b 48 89 f2 48 89 fe 48 c7 c7 70 46 d4 99 e8 28 52 c7 ff 0f 0b
+> [ 1656.061846] RSP: 0018:ff650559444dfe90 EFLAGS: 00010046
+> [ 1656.061974] RAX: 0000000000000054 RBX: ff4880c9d81b8d40 RCX: 0000000000000000
+> [ 1656.062103] RDX: 0000000000000000 RSI: ff4880cf9731e698 RDI: ff4880cf9731e698
+> [ 1656.062238] RBP: ff4880c840019400 R08: 0000000000000000 R09: c0000000ffff7fff
+> [ 1656.062366] R10: 0000000000000001 R11: ff650559444dfcb0 R12: ff4880c862647b00
+> [ 1656.062492] R13: ff4880c879326540 R14: 0000000000000000 R15: ff4880c9d81b8d48
+> [ 1656.062619] FS:  0000000000000000(0000) GS:ff4880cf97300000(0000) knlGS:0000000000000000
+> [ 1656.062745] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 1656.062868] CR2: 000055cc1af6b000 CR3: 000000084b610006 CR4: 0000000000771ee0
+> [ 1656.062996] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 1656.063127] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [ 1656.063250] PKRU: 55555554
+>        KERNEL: /usr/lib/debug/lib/modules/4.18.0-553.el8_10.x86_64/vmlinux  [TAINTED]
+>      DUMPFILE: vmcore  [PARTIAL DUMP]
+>          CPUS: 20
+>          DATE: Fri Nov 29 17:37:31 CST 2024
+>        UPTIME: 00:27:35
+> LOAD AVERAGE: 350.47, 237.79, 163.91
+>         TASKS: 1106
+>      NODENAME: rocky8vm3
+>       RELEASE: 4.18.0-553.el8_10.x86_64
+>       VERSION: #1 SMP Fri May 24 13:05:10 UTC 2024
+>       MACHINE: x86_64  (2599 Mhz)
+>        MEMORY: 31.4 GB
+>         PANIC: "kernel BUG at lib/list_debug.c:56!"
+>           PID: 606
+>       COMMAND: "kworker/u40:27"
+>          TASK: ff4880c8793f8000  [THREAD_INFO: ff4880c8793f8000]
+>           CPU: 4
+>         STATE: TASK_RUNNING (PANIC)crash> bt
+> PID: 606      TASK: ff4880c8793f8000  CPU: 4    COMMAND: "kworker/u40:27"
+>   #0 [ff650559444dfc28] machine_kexec at ffffffff98a6f2d3
+>   #1 [ff650559444dfc80] __crash_kexec at ffffffff98bbaa5a
+>   #2 [ff650559444dfd40] crash_kexec at ffffffff98bbb991
+>   #3 [ff650559444dfd58] oops_end at ffffffff98a2d811
+>   #4 [ff650559444dfd78] do_trap at ffffffff98a29a27
+>   #5 [ff650559444dfdc0] do_invalid_op at ffffffff98a2a766
+>   #6 [ff650559444dfde0] invalid_op at ffffffff99600da4
+>      [exception RIP: __list_del_entry_valid.cold.1+32]
+>      RIP: ffffffff98ef8f98  RSP: ff650559444dfe90  RFLAGS: 00010046
+>      RAX: 0000000000000054  RBX: ff4880c9d81b8d40  RCX: 0000000000000000
+>      RDX: 0000000000000000  RSI: ff4880cf9731e698  RDI: ff4880cf9731e698
+>      RBP: ff4880c840019400   R8: 0000000000000000   R9: c0000000ffff7fff
+>      R10: 0000000000000001  R11: ff650559444dfcb0  R12: ff4880c862647b00
+>      R13: ff4880c879326540  R14: 0000000000000000  R15: ff4880c9d81b8d48
+>      ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+>   #7 [ff650559444dfe90] process_one_work at ffffffff98b19557
+>   #8 [ff650559444dfed8] worker_thread at ffffffff98b197e0
+>   #9 [ff650559444dff10] kthread at ffffffff98b20e04
+> #10 [ff650559444dff50] ret_from_fork at ffffffff9960028f
+> 
+> This bug seems to be in rdma_cm module on the MOFED/kernel side. So we try to reproduce the crash on the Nvme-oF node:
+> 1. Mount the nvme-of disk, do "nvme connect -t rdma -n "nqn.2014-08.org.nvmexpress:67240ebd3fa63ca3" -a 192.168.122.30 -s 4421"
+> 2. Use dd run write/read test case, for example, "dd if=/dev/nvme0n17 of=./test bs=32K count=102400 oflag=direct"
+> 3. Construct an ARP update, do "arp -s 192.168.122.112 10:71:fe:69:93:b8 && arp -d 192.168.122.112" on the nvme_of client.
+> 4. The crash is already reproduce.
+> 
+> The issue may involve the following key points:
+> 1. The RDMA module receives multiple network events simultaneously.
+> 2. We have observed that during normal ARP updates, one or more events may be generated, making this issue probabilistic.
+> 3. When both ARP update events and connection termination (conn disconnect) events are received at the same time, it triggers issue LU-18275.
 
 
