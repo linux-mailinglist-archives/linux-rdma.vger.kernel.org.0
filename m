@@ -1,100 +1,88 @@
-Return-Path: <linux-rdma+bounces-6573-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6574-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 721139F4930
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 11:47:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 332E09F493A
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 11:52:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFABC16F3A3
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 10:47:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1FA4189206B
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2024 10:52:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFFCB1EBA02;
-	Tue, 17 Dec 2024 10:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DCEA1EBFED;
+	Tue, 17 Dec 2024 10:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="bMkPRocn"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="CkhRfWme"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444451DFE0F;
-	Tue, 17 Dec 2024 10:46:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DEE11EB9E8;
+	Tue, 17 Dec 2024 10:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734432411; cv=none; b=ZnKjd9cvBmt3J9Ew+H2Cp22AqP+0u3oIVWnJ3RELM4BZUgUfeHCCPlcaKbCmBzW7eCbB5nzD7OaknvrDGEKZJt8eIb7kUzPZChRGdQq6PC197w/xAVV2bCfetmhU3ouzxvY3niq9oUp2DVqNv3QzRDJM+5rrG5yv431/PFZK2Mo=
+	t=1734432736; cv=none; b=Aqf7F/4hZsMP/Cy80052gaO2mnIBUxswt+cpjR9KMKqghntiWRgQkyTLWHYZ24cPFLoxSDtsjxE8+7kbJsrSgfmDEKA9AhHx8tBzFBHfpx6gRgspf5g/uIWM+dYIb4SpE00z70r/60VmHLe+oLg1zB7isNJgvegacyGcdALeBmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734432411; c=relaxed/simple;
-	bh=5lyyw0lWpQi2YgVrgXKcaOUXj4vRl5LPW0uHLdmqiV4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rgrjjSr2rzUWRDDv08rTXc9y5L1Zpyq2EejDSvDR155T+nhkjvUtgA7Yw+g9qKTpSHMR6PoQScwJSCnjJuRgEWKKqqL+L9CO8XejUBPisWhAImfseANpUTxVm3w4/GwsjRBwhJw5QOiH/PZ80GOY3I8Ggc+AFxG4u56uikBNKy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=bMkPRocn; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=OlgaT
-	GFYRjVPm1jcUodWnSy0zASPpTDUGrYjZ8ffJgo=; b=bMkPRocnEofr+wf9vkH14
-	ZP/nc5OZHNzK/vDsu+R7uyS1xC7bgU8otV7qI1POPiJfBQChMbJnK7l2jsBu2VSO
-	KZnQvSnWTUO/X+JVf109ClTcuO0pgtZ8WPqk9/JZVqTL+/bMcJhX9H7qR8q0LNoM
-	VXEA/loKjrOhvfdaXP+zPU=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [])
-	by gzga-smtp-mtada-g0-1 (Coremail) with SMTP id _____wDHz_1vVmFny666BA--.16303S4;
-	Tue, 17 Dec 2024 18:46:16 +0800 (CST)
-From: Ma Ke <make_ruc2021@163.com>
-To: bvanassche@acm.org,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Ma Ke <make_ruc2021@163.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2] RDMA/srp: Fix error handling in srp_add_port
-Date: Tue, 17 Dec 2024 18:46:05 +0800
-Message-Id: <20241217104605.2924666-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1734432736; c=relaxed/simple;
+	bh=ia3GvqxjT+P91CXaTlnsbjQPa35vnkH4Dgy4Hx/lhdE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s22LVExVs7CYmscVL/4++IBdz2yRqNarj5EB9tKNg/wkPo7qvOahUJKtTC6rU0qN9bu/twS+s9/1dvRkDba/LO01DHMwzDRgIY54JeddFX5/ghZZ21Z3NAsqCuWPR6JDEgb6nncMjAGEm2Sykiuq7uYaAzxiNu3ALNSYjsYwY0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=CkhRfWme; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=pKIaSLMgzRitaeQqeBKxAj8nc5TyrOFd+OEeRdGYXPE=; b=CkhRfWmeWxL/5x2HeV77SFNevT
+	xWGadKHW6ILfP+HFgtZY4mAyhk4hUPYV3TrbmIEorvoe0uU3PvgqsQiQgEfXK+R0yFwly3kMrPR5E
+	8xd8/6tYYfb9dvrA44DbPxuqGO1wIcIeu8R/MOTqh0waxkni6idzCvdtPIlbA49oBMR8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1tNVBP-000vL6-UP; Tue, 17 Dec 2024 11:52:07 +0100
+Date: Tue, 17 Dec 2024 11:52:07 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Avri Kehat <avri.kehat@intel.com>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	ogabbay@kernel.org, oshpigelman@habana.ai, sgoutham@marvell.com,
+	zyehudai@habana.ai
+Subject: Re: [PATCH 06/15] net: hbl_cn: debugfs support
+Message-ID: <ce20fa38-0949-47fe-8c2f-635f761479f1@lunn.ch>
+References: <b40391d5-66d2-44be-bc83-4ac3b7bcfe08@lunn.ch>
+ <20241217100039.79132-1-avri.kehat@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDHz_1vVmFny666BA--.16303S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XrWkJFyDGF4xKF1fKFy5twb_yoWkAFg_Kw
-	4jvr92qry8C3Wvywn3Z3ZxZry8KrnFqryrArZIqr9ak39xXF97Zwn7Xrs0yw47Z3W29r15
-	XF13Wr48Jr4rKjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRXBMtUUUUUU==
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/xtbBFRi4C2dhLpVeiwABsX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241217100039.79132-1-avri.kehat@intel.com>
 
-Once device_add() failed, we should call only put_device() to
-decrement reference count for cleanup. We should not call device_del()
-before put_device().
+On Tue, Dec 17, 2024 at 12:00:39PM +0200, Avri Kehat wrote:
+> Revisiting the comments regarding our use of debugfs as an interface for device configurations -
+> A big part of the non-statistics debugfs parameters are HW related debug-only capabilities, and not configurations required by the user.
+> Should these sort of parameters be part of devlink as well?
+> Is there another location where debug related configurations for development can reside in?
 
-As comment of device_add() says, 'if device_add() succeeds, you should
-call device_del() when you want to get rid of it. If device_add() has
-not succeeded, use only put_device() to drop the reference count'.
+There are a few options:
 
-Found by code review.
-Cc: stable@vger.kernel.org
-Fixes: c8e4c2397655 ("RDMA/srp: Rework the srp_add_port() error path")
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
-Changes in v2:
-- modified the bug description as suggestions.
----
- drivers/infiniband/ulp/srp/ib_srp.c | 1 -
- 1 file changed, 1 deletion(-)
+If the user does not require them, don't even implement them. If the
+user is not using them, who is?
 
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index 2916e77f589b..7289ae0b83ac 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -3978,7 +3978,6 @@ static struct srp_host *srp_add_port(struct srp_device *device, u32 port)
- 	return host;
- 
- put_host:
--	device_del(&host->dev);
- 	put_device(&host->dev);
- 	return NULL;
- }
--- 
-2.25.1
+Implement them in an out of tree patch, which your development team
+can use, since these are not user configuration options.
 
+devlink is a possibility, but developers complain it is slow to get
+them merged since we want to understand what the configuration option
+does, why would i want to use it, would any other vendor have the same
+need, and should it be made generic etc.
+
+You could join those asking for fwctl, which is a contentious subject.
+
+	Andrew
 
