@@ -1,54 +1,71 @@
-Return-Path: <linux-rdma+bounces-6608-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6613-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 110689F5CEC
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2024 03:38:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16DEC9F5D0C
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2024 03:45:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 993D7169232
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2024 02:37:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0AF727A10AE
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2024 02:45:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E91D1535DC;
-	Wed, 18 Dec 2024 02:37:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B07B14883F;
+	Wed, 18 Dec 2024 02:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="X3nicI1v"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="aKI0l9Fs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC2E27726;
-	Wed, 18 Dec 2024 02:37:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE7913F42F;
+	Wed, 18 Dec 2024 02:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734489427; cv=none; b=lMPVu0KTocswZ4fQ7J4GevwgPqPPxDk6skX+19desDfdPAp1jkyVBW7D0QWC7bjVz3V8yh0NL8wO5mz5JsPl3IZWMKK1dFBpEKTYXsIdixTOyTo5dP+w5HjGOmzcVLdzKlBOT3lqfnfk456MFI53GCHm00xv9Pf/sy4jvy1Cox0=
+	t=1734489879; cv=none; b=EbDdZxPcC7BPNWrjiydJXezlSD/dyfcKpe8K8niO0PS1FIyes2EYHLWPSiR9yxHI49tlSMUd35+oxjpTL3zyIfv3tSGlzS1tU9QxJb4bXEEZpBqtrJF+KhrcDGCziRPmSj4FOcWxjc0qFGEy1MUhpREh9Gh3TYMha5/aimEy5/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734489427; c=relaxed/simple;
-	bh=jaqbbLQoknIFQwmg10bJ1tjvgzlprTal8JU1aoAgPjc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TwFssNAHCH3PeGpDXpcjngS5kxsJ/UeHrDGyJetC0svXWekmy7Ytr1OLahANkcVL/aZbU7GN7lo5TEik7Z9Xm106jvGqme++C037sW65SkI+EPYH/mEjp6ZA0VHx5I/wSBwI38vbZGy6X4a+G0zWKmnHb1cILNRdV9eAgEujqvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=X3nicI1v; arc=none smtp.client-ip=220.197.31.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=hj2/9
-	QDLoQo5a1w3izcY0WRs2JQA5rA7zdcu4wKx9SE=; b=X3nicI1vpb365lq22pvRQ
-	AzUn3Q861mQflu+Gfc89s2gjJtLGVJzyobzS170k+LViaqVl26lM1Y+6CCMFTvIJ
-	U8YEsqXFFwocnzwXguzlufnGuSk2Ds/DunelD1Oek0arVsgQrJABSNwIZIhnPCdZ
-	4hCzHk0LS7r/PKfdnADT9Y=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [])
-	by gzga-smtp-mtada-g0-1 (Coremail) with SMTP id _____wDHj_wmNWJn4OtKBQ--.30105S4;
-	Wed, 18 Dec 2024 10:36:25 +0800 (CST)
-From: Ma Ke <make_ruc2021@163.com>
-To: bvanassche@acm.org,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Ma Ke <make_ruc2021@163.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v3] RDMA/srp: Fix error handling in srp_add_port
-Date: Wed, 18 Dec 2024 10:36:14 +0800
-Message-Id: <20241218023614.2968024-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1734489879; c=relaxed/simple;
+	bh=AajkgNdYfDVPf5h30MJZ28AMOzbXrlyF3F9tu4DAi9w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ETdFRXCmQGSrHzEGfAGy2K3dOe9beDk9hktGYun60u8CjquEjPujDIQNo/1YB8kNG7z3pTyI8QciMHTzZW74gaYAaVuXoSPBXS094xsGhjWkDFbbxscqfIZxOdgHnuWrjSwFO8c1+LzAS62RdvUOeANsTqG6BawLjVoKFNlKl4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=aKI0l9Fs; arc=none smtp.client-ip=115.124.30.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1734489868; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=GiaqvJ/ATJVxRZbvIn3hyHmB1fPXH0dg0ZXdH0cIS+k=;
+	b=aKI0l9FsdOz2X4cHeIAnjtDlPFOTQcqu42kLbVEtGvRrBkqXpd9XLMBWJQ9SnH3CajX4bNgTuJjJfNkyxgezvJ94TQZDBIxa+Z7tN2i+Hi/ZU15KgvYb2RwplzBnGXF/ca7myd/pUY8PN4pP5a68z8fBUdwu6dvnV1ieauD5nuI=
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WLko6by_1734489862 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 18 Dec 2024 10:44:27 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com,
+	jaka@linux.ibm.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	pabeni@redhat.com,
+	song@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	yhs@fb.com,
+	edumazet@google.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	jolsa@kernel.org,
+	guwen@linux.alibaba.com
+Cc: kuba@kernel.org,
+	davem@davemloft.net,
+	netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/5] net/smc: Introduce smc_ops
+Date: Wed, 18 Dec 2024 10:44:16 +0800
+Message-ID: <20241218024422.23423-1-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -56,48 +73,71 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDHj_wmNWJn4OtKBQ--.30105S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWrZr1rGryUWryUtrWDXrWDurg_yoW8JrW5p3
-	ykGa4Ykry5GF1DK3WvvF1IvFy5G3Wjywn8Wr1Fv34YkanYqryIyF9Fk348X3WkAFZrAayU
-	ZFy7ZrW8Gr48uw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0p_miiUUUUUU=
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/xtbBFR25C2diLHiOdgABsS
 
-If device_add() fails, call only put_device() to decrement reference
-count for cleanup. Do not call device_del() before put_device().
+This patches attempt to introduce BPF injection capability for SMC,
+and add selftest to ensure code stability.
 
-As comment of device_add() says, 'if device_add() succeeds, you should
-call device_del() when you want to get rid of it. If device_add() has
-not succeeded, use only put_device() to drop the reference count'.
+Since the SMC protocol is not suitable for all scenarios,
+especially for short-lived. For most applications, they cannot
+guarantee that there are no such scenarios at all. Therefore, apps
+may need some specific strategies to decide shall we need to use SMC
+or not, for example, apps can limit the scope of the SMC to a specific
+IP address or port.
 
-Found by code review.
+Based on the consideration of transparent replacement, we hope that apps
+can remain transparent even if they need to formulate some specific
+strategies for SMC using. That is, do not need to recompile their code.
 
-Cc: stable@vger.kernel.org
-Fixes: c8e4c2397655 ("RDMA/srp: Rework the srp_add_port() error path")
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
-Changes in v3:
-- modified the bug description as suggestions;
-- added a blank line to separate the description and the tags.
-Changes in v2:
-- modified the bug description as suggestions.
----
- drivers/infiniband/ulp/srp/ib_srp.c | 1 -
- 1 file changed, 1 deletion(-)
+On the other hand, we need to ensure the scalability of strategies
+implementation. Although it is simple to use socket options or sysctl,
+it will bring more complexity to subsequent expansion.
 
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index 2916e77f589b..7289ae0b83ac 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -3978,7 +3978,6 @@ static struct srp_host *srp_add_port(struct srp_device *device, u32 port)
- 	return host;
- 
- put_host:
--	device_del(&host->dev);
- 	put_device(&host->dev);
- 	return NULL;
- }
+Fortunately, BPF can solve these concerns very well, users can write
+thire own strategies in eBPF to choose whether to use SMC or not.
+And it's quite easy for them to modify their strategies in the future.
+
+v2:
+  1. Rename smc_bpf_ops to smc_ops.
+  2. Change the scope of smc_ops from global to per netns.
+  3. Directly pass parameters to ops instead of smc_ops_ctx.
+  4. Remove struct smc_ops_ctx.
+  5. Remove exports that are no longer needed.
+
+v3:
+  1. Remove find_ksym_btf_id_by_prefix_kind.
+  2. Enhance selftest, introduce a complete ops for filtering smc
+     connections based on ip pairs and a realistic topology test
+     to verify it.
+
+D. Wythe (5):
+  bpf: export necessary sympols for modules with struct_ops
+  net/smc: Introduce generic hook smc_ops
+  net/smc: bpf: register smc_ops info struct_ops
+  libbpf: fix error when st-prefix_ops and ops from differ btf
+  bpf/selftests: add selftest for bpf_smc_ops
+
+ include/net/netns/smc.h                       |   3 +
+ include/net/smc.h                             |  51 ++
+ kernel/bpf/bpf_struct_ops.c                   |   2 +
+ kernel/bpf/syscall.c                          |   1 +
+ net/ipv4/tcp_output.c                         |  15 +-
+ net/smc/Kconfig                               |  12 +
+ net/smc/Makefile                              |   1 +
+ net/smc/af_smc.c                              |  10 +
+ net/smc/smc_ops.c                             | 150 +++++
+ net/smc/smc_ops.h                             |  31 +
+ net/smc/smc_sysctl.c                          |  95 ++++
+ tools/lib/bpf/libbpf.c                        |  25 +-
+ tools/testing/selftests/bpf/config            |   4 +
+ .../selftests/bpf/prog_tests/test_bpf_smc.c   | 535 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_smc.c   | 109 ++++
+ 15 files changed, 1032 insertions(+), 12 deletions(-)
+ create mode 100644 net/smc/smc_ops.c
+ create mode 100644 net/smc/smc_ops.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+
 -- 
-2.25.1
+2.45.0
 
 
