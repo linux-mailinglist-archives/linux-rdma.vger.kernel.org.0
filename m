@@ -1,111 +1,174 @@
-Return-Path: <linux-rdma+bounces-6660-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6661-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 238449F83CF
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2024 20:09:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BA419F8804
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2024 23:43:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 251171881B06
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2024 19:09:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57A1216B5A6
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2024 22:43:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 159DF1A2632;
-	Thu, 19 Dec 2024 19:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 938961C3F13;
+	Thu, 19 Dec 2024 22:43:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=ijzerbout.nl header.i=@ijzerbout.nl header.b="AOu0n1GA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ft+wKP6q"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from bout3.ijzerbout.nl (bout3.ijzerbout.nl [136.144.140.114])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0BC194C96
-	for <linux-rdma@vger.kernel.org>; Thu, 19 Dec 2024 19:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.144.140.114
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F4541D6DB8
+	for <linux-rdma@vger.kernel.org>; Thu, 19 Dec 2024 22:43:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734635388; cv=none; b=Cv5Hu+YO0AHqFbSea4uOV6/fN/1d94v1aS6vl3ufQbx0Wx4qlvs7oESk5iSXK94WsVKL6U4771hnSgyY0y0EE8d8mDlLthgZBl//pwg8emylzMB+FjppnRPELYEvzFo3GTcmtvF4QDPflGvAVkODVSZXGXvrUkXYqEgU/vqxEK0=
+	t=1734648231; cv=none; b=dpFSWZ/8Rtv27G2swXp6nXb64ebRTGTL0vxofQpEUO03qzZ6V5ySopGrdKSEocumR1o3UWHBQLRqb1g2WWJiWv9WHSS0O/x5QBH19pRdEMbdrGIBCd607dasSpo2a4w1uID2TaYl5NpcfRpGk7178uuSZauq1MvveooWXlZE3Oc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734635388; c=relaxed/simple;
-	bh=+neKZhwJttOQSPggIH3NzTEjUbHkZrUntvVYjfLw1Jc=;
+	s=arc-20240116; t=1734648231; c=relaxed/simple;
+	bh=4fmPcWKjeO67qj6ciJPlVo6dJyCUn+0clUCf5Birzy8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pR19eRrhqSHwxvBdcpa59yn1HsnFTAZWdn7uQ2E0F3K1ykiV90/s+T8AnuxVqhpT3eG1brIGQrQGlZkR9W4Ne0RDn/o5q2RPY6COmEV0Jcf7RWnJ6FpF4pRXKtWccH9KmkeVopc/RkE5PdQQzfDFeWF3WcBV93+sMrNfUj/GGo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ijzerbout.nl; spf=pass smtp.mailfrom=ijzerbout.nl; dkim=pass (4096-bit key) header.d=ijzerbout.nl header.i=@ijzerbout.nl header.b=AOu0n1GA; arc=none smtp.client-ip=136.144.140.114
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ijzerbout.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ijzerbout.nl
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ijzerbout.nl; s=key;
-	t=1734635383; bh=+neKZhwJttOQSPggIH3NzTEjUbHkZrUntvVYjfLw1Jc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=AOu0n1GA/AEjvQWpP/ijIWVE/spKE0giPoNSnmVFqv4Gj0oVViOV2mI4IIiA8G6RP
-	 DOA++s1IjbDC4LfwKX2dT+U7jM5rSCKxxBF33O1xFepqnPSvz193zRCyjwm6mNBdXZ
-	 MUMUA0aNV7JgleIZJSVUwLDRP2Wmuv6hKW6GOO8aKErOVERjWq0rqtOPxjfgUUc6nK
-	 P9/cHYBGDWTO0aOLa9Rng1GM9cnNZZ+hGj9BbJ6rxzgbNFcjx+qqhQZM+hM5/SAbrp
-	 lxGSGv7YP7a5SF+c7bSF43tK2qv6hwhy0BbheaGK66foVrESASC88OG2UBeAwZHgG+
-	 dbfa73ve04v/qyanYVwr4bau8IooTyYOo7IA4DmlvxW/YiW78WHDTtUCjyegr/DA+y
-	 PREonQEgD6R5kfRU9KzZg1SgFvDeKl7L7U/7uXHlQv5Y/CEwxpJcw7d9i9dVkV3pi9
-	 L/EHZv3UG4s4xL5Ao0ea7hKbDonDDvJPA/51e8cEGeiBzZy+6aoRZRk0dENPc4iIkQ
-	 H1o8SedyuoKuN/QV/MZmDZxve6/bgkpjSVcT7ONwvOvMk7O1dELY4ddRbRacCHkIub
-	 ABZArLTqoAsA2EU6NGTb8SAk66bAygRevRyRXYYHNxvGRxtKQzGzaGyAV/6tgM1Wj2
-	 vD1Kg5U7PHZhg6k8wcKsl9mw=
-Received: from [IPV6:2a10:3781:99:1:1ac0:4dff:fea7:ec3a] (racer.ijzerbout.nl [IPv6:2a10:3781:99:1:1ac0:4dff:fea7:ec3a])
-	by bout3.ijzerbout.nl (Postfix) with ESMTPSA id 6786C18010B;
-	Thu, 19 Dec 2024 20:09:42 +0100 (CET)
-Message-ID: <3853b8d2-0333-4501-9002-aaa677910bb9@ijzerbout.nl>
-Date: Thu, 19 Dec 2024 20:09:40 +0100
+	 In-Reply-To:Content-Type; b=REkOHsPtf6w8qVmheai+iJrBP0Rz4A3R3qz1tOAWycUEBaLaSVsL357uZq7V4F3NV/l3b0/FRoDiwkdd1Xw5eG7TvrmyVVrRgBnC9qsMCyRTTzqj3QCchDlZ1dlk9ZMywDBSXJRjp008rXvpk6wvAQaFRuCXQUdtepiVsiBtm1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ft+wKP6q; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2f56aca3-a27a-49b6-90de-7f1b2ff39df1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734648217;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=q+i4PtjvWS84jCmxpRNu1g3Fzl6WMJ7eBdsTXPqebBg=;
+	b=Ft+wKP6q6S5wsyOb5FP9+VzdSYp8OdSpAuPpk3Tgii6ZLXEelP9M2xOAsvkD17FsFTlWvK
+	5051wHWOzA6YgrGmmm76c/qk2xn/tge4c22azzSpuBoyVtpevLMRIu/la/bM58PnBM4uca
+	qxgjqCMaYuoHICVL027sUcvsmawjxYk=
+Date: Thu, 19 Dec 2024 14:43:30 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH for-next v2 8/8] RDMA/erdma: Support UD QPs and UD WRs
-To: Boshi Yu <boshiyu@linux.alibaba.com>, jgg@ziepe.ca, leon@kernel.org
-Cc: linux-rdma@vger.kernel.org, kaishen@linux.alibaba.com,
- chengyou@linux.alibaba.com
-References: <20241211020930.68833-1-boshiyu@linux.alibaba.com>
- <20241211020930.68833-9-boshiyu@linux.alibaba.com>
+Subject: Re: [PATCH bpf-next v3 4/5] libbpf: fix error when st-prefix_ops and
+ ops from differ btf
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
+ song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
+ edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+ jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org,
+ davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org, Daniel Xu <dlxu@meta.com>
+References: <20241218024422.23423-1-alibuda@linux.alibaba.com>
+ <20241218024422.23423-5-alibuda@linux.alibaba.com>
 Content-Language: en-US
-From: Kees Bakker <kees@ijzerbout.nl>
-In-Reply-To: <20241211020930.68833-9-boshiyu@linux.alibaba.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20241218024422.23423-5-alibuda@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Op 11-12-2024 om 03:09 schreef Boshi Yu:
-> The iWARP protocol supports only RC QPs previously. Now we add UD QPs
-> and UD WRs support for the RoCEv2 protocol.
->
-> Signed-off-by: Boshi Yu <boshiyu@linux.alibaba.com>
-> Reviewed-by: Cheng Xu <chengyou@linux.alibaba.com>
+On 12/17/24 6:44 PM, D. Wythe wrote:
+> When a struct_ops named xxx_ops was registered by a module, and
+> it will be used in both built-in modules and the module itself,
+> so that the btf_type of xxx_ops will be present in btf_vmlinux
+> instead of in btf_mod, which means that the btf_type of
+> bpf_struct_ops_xxx_ops and xxx_ops will not be in the same btf.
+> 
+> Here are four possible case:
+> 
+> +--------+-------------+-------------+---------------------------------+
+> |        | st_opx_xxx  | xxx         |                                 |
+> +--------+-------------+-------------+---------------------------------+
+> | case 0 | btf_vmlinux | bft_vmlinux | be used and reg only in vmlinux |
+> +--------+-------------+-------------+---------------------------------+
+> | case 1 | btf_vmlinux | bpf_mod     | INVALID                         |
+> +--------+-------------+-------------+---------------------------------+
+> | case 2 | btf_mod     | btf_vmlinux | reg in mod but be used both in  |
+> |        |             |             | vmlinux and mod.                |
+> +--------+-------------+-------------+---------------------------------+
+> | case 3 | btf_mod     | btf_mod     | be used and reg only in mod     |
+> +--------+-------------+-------------+---------------------------------+
+> 
+> At present, cases 0, 1, and 3 can be correctly identified, because
+> st_ops_xxx is searched from the same btf with xxx. In order to
+> handle case 2 correctly without affecting other cases, we cannot simply
+> change the search method for st_ops_xxx from find_btf_by_prefix_kind()
+> to find_ksym_btf_id(), because in this way, case 1 will not be
+> recognized anymore.
+> 
+> To address this issue, if st_ops_xxx cannot be found in the btf with xxx
+> and mod_btf does not exist, do find_ksym_btf_id() again to
+> avoid such issue.
+> 
+> Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 > ---
->   drivers/infiniband/hw/erdma/erdma_cq.c    | 20 +++++++
->   drivers/infiniband/hw/erdma/erdma_hw.h    | 37 +++++++++++-
->   drivers/infiniband/hw/erdma/erdma_qp.c    | 71 ++++++++++++++++++-----
->   drivers/infiniband/hw/erdma/erdma_verbs.c | 29 +++++++--
->   4 files changed, 136 insertions(+), 21 deletions(-)
->
-> [...]
-> diff --git a/drivers/infiniband/hw/erdma/erdma_qp.c b/drivers/infiniband/hw/erdma/erdma_qp.c
-> index 03d93f026fca..4dfb4272ad86 100644
-> --- a/drivers/infiniband/hw/erdma/erdma_qp.c
-> +++ b/drivers/infiniband/hw/erdma/erdma_qp.c
-> @@ -398,17 +398,57 @@ static int fill_sgl(struct erdma_qp *qp, const struct ib_send_wr *send_wr,
->   	return 0;
->   }
+>   tools/lib/bpf/libbpf.c | 25 +++++++++++++++++--------
+>   1 file changed, 17 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 66173ddb5a2d..56bf74894110 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1005,7 +1005,8 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
+>   	const struct btf_member *kern_data_member;
+>   	struct btf *btf = NULL;
+>   	__s32 kern_vtype_id, kern_type_id;
+> -	char tname[256];
+> +	char tname[256], stname[256];
+> +	int ret;
+>   	__u32 i;
 >   
-> +static void init_send_sqe_rc(struct erdma_qp *qp, struct erdma_send_sqe_rc *sqe,
-> +			     const struct ib_send_wr *wr, u32 *hw_op)
-> +{
-> +	u32 op = ERDMA_OP_SEND;
+>   	snprintf(tname, sizeof(tname), "%.*s",
+> @@ -1020,17 +1021,25 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
+>   	}
+>   	kern_type = btf__type_by_id(btf, kern_type_id);
+>   
+> +	ret = snprintf(stname, sizeof(stname), "%s%s", STRUCT_OPS_VALUE_PREFIX, tname);
+
+How about always look for "struct bpf_struct_ops_smc_ops" first, figure out the 
+btf, and then look for "struct smc_ops", would it work?
+
+If CONFIG_SMC=y instead of =m, this change cannot be tested?
+
+> +	if (ret < 0 || ret >= sizeof(stname))
+> +		return -ENAMETOOLONG;
 > +
-> +	if (wr->opcode == IB_WR_SEND_WITH_IMM) {
-> +		op = ERDMA_OP_SEND_WITH_IMM;
-> +		sqe->imm_data = wr->ex.imm_data;
-> +	} else if (op == IB_WR_SEND_WITH_INV) {
-> +		op = ERDMA_OP_SEND_WITH_INV;
-> +		sqe->invalid_stag = cpu_to_le32(wr->ex.invalidate_rkey);
-> +	}
-> +
-> +	*hw_op = op;
-> +}
-> +
-The else if condition is always false. Is there maybe a typo?
--- 
-Kees
+>   	/* Find the corresponding "map_value" type that will be used
+>   	 * in map_update(BPF_MAP_TYPE_STRUCT_OPS).  For example,
+>   	 * find "struct bpf_struct_ops_tcp_congestion_ops" from the
+>   	 * btf_vmlinux.
+>   	 */
+> -	kern_vtype_id = find_btf_by_prefix_kind(btf, STRUCT_OPS_VALUE_PREFIX,
+> -						tname, BTF_KIND_STRUCT);
+> +	kern_vtype_id = btf__find_by_name_kind(btf, stname, BTF_KIND_STRUCT);
+>   	if (kern_vtype_id < 0) {
+> -		pr_warn("struct_ops init_kern: struct %s%s is not found in kernel BTF\n",
+> -			STRUCT_OPS_VALUE_PREFIX, tname);
+> -		return kern_vtype_id;
+> +		if (kern_vtype_id == -ENOENT && !*mod_btf)
+> +			kern_vtype_id = find_ksym_btf_id(obj, stname, BTF_KIND_STRUCT,
+> +							 &btf, mod_btf);
+> +		if (kern_vtype_id < 0) {
+> +			pr_warn("struct_ops init_kern: struct %s is not found in kernel BTF\n",
+> +				stname);
+> +			return kern_vtype_id;
+> +		}
+>   	}
+>   	kern_vtype = btf__type_by_id(btf, kern_vtype_id);
+>   
+> @@ -1046,8 +1055,8 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
+>   			break;
+>   	}
+>   	if (i == btf_vlen(kern_vtype)) {
+> -		pr_warn("struct_ops init_kern: struct %s data is not found in struct %s%s\n",
+> -			tname, STRUCT_OPS_VALUE_PREFIX, tname);
+> +		pr_warn("struct_ops init_kern: struct %s data is not found in struct %s\n",
+> +			tname, stname);
+>   		return -EINVAL;
+>   	}
+>   
+
 
