@@ -1,55 +1,56 @@
-Return-Path: <linux-rdma+bounces-6652-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6653-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 432F99F7AD5
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2024 12:58:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FEEF9F7B07
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2024 13:17:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A764164AFE
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2024 11:58:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 258B97A2BAE
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2024 12:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EFCA223E74;
-	Thu, 19 Dec 2024 11:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B64221D8E;
+	Thu, 19 Dec 2024 12:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="irHzRYut"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iIyvd9+e"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA99223C49
-	for <linux-rdma@vger.kernel.org>; Thu, 19 Dec 2024 11:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9F8218EB4;
+	Thu, 19 Dec 2024 12:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734609505; cv=none; b=utO2eA300OnZQEIztAjSkp8mfDUOATuUlSddPFt3vaNV5dSnl7aMXbYRP5Jr4n2gLAxCsNf4vDjHoGMlGGtuqbRbfpR6ZY7py0VjCDwJOD4vv/Gaen+vMgR8cG640gC13CbOS8GlhoJRfxRjTizCp1e9aFGEzXefXUxls195XvI=
+	t=1734610621; cv=none; b=kqlo7H9JVwFbKimhVyk/dnYjMcQfiq4z/P3PgZCdaMRtGkrX/9G2kOIqEaA6PO7wWw640QnGpBDsR9lLGFZ9Q/cxKXpL+Pe7WaLdP9KfLDSivMnthWwMm6M96g/Wi5vfCfCFPlwk+ZKUrljonbRboG16KJjQ4pf7RqCLK499eB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734609505; c=relaxed/simple;
-	bh=Ga7EPy+qL1u0DA7nejZSNZLxSKE4+bOSmMU967tKNqo=;
+	s=arc-20240116; t=1734610621; c=relaxed/simple;
+	bh=Xt6l9hCFcAZOu0vZVVc2LxSIJxwrGuC9d+R6ow64clI=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=VQ/MtMulIDZQqJs3z/bOonvkTI/DzZIXA0TVIaiXKjKrO3h6/bLVlGLS0y4mvW26Efd3ZBb3vVOZvWF9N3YbpJn2hoALAvAVp8Z3zSldR8Y5yoiOgFTYTw+q1lw3tg3LgXcIUWStRJeNhDESP2EM80mTwSq0me/Lnf30TiyIvA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=irHzRYut; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F0DCC4CED0;
-	Thu, 19 Dec 2024 11:58:23 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Wrfi4xEtCcjxS5KZSpYyl0Wo+c/KtVXlLmfsbH8kZO70THGeqWK9DmeNEHK9l7p5Xid1kyeCbuPRkM5sWKJYeCUrCAI89zxCrIWG0vJWlkIhOs/HCrxBRzRrCfCEiI3ThUbV/vXWNeECzLx7OY6TO98aol1RoFV7YTKu4w30yHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iIyvd9+e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EB85C4CECE;
+	Thu, 19 Dec 2024 12:16:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734609504;
-	bh=Ga7EPy+qL1u0DA7nejZSNZLxSKE4+bOSmMU967tKNqo=;
+	s=k20201202; t=1734610620;
+	bh=Xt6l9hCFcAZOu0vZVVc2LxSIJxwrGuC9d+R6ow64clI=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=irHzRYutYtVdiGNX3WVazPtEcatFpxSwtcQtHwBFuIgcaZnDZDeT7fCrkUqU+RGYU
-	 SGlIRvnVQ3QqjClKe9x3CkiIHrB9FXbYSagi5OjbQ6YbenVUyql9qgreCJpputVbX2
-	 cza+u3lmjzF49O4gU3nEvdHLfT8AtJafjPPAupLLVhrb7G0fQ24HUgC1N2+0t4jP2o
-	 Sq4hR01+2PpSgTrn5fPc1mSJVXluhNbw6lrp2//O8xvIX0kjGIBXezOwNxxLa6pHyw
-	 bYjcVku2URnxzjA7kEu2cFNILkMdKrBdTld2in1mJRMpkDrFAxE1V6hVumeFUbdMid
-	 /Qe6h5aLYhdkQ==
+	b=iIyvd9+elDXvFAK4YYdJ7QP3FGj2drdlWRLyYGbrRc8pXiF3bq7EcDkx40nJbHDez
+	 k6drsBXeS4cpiJbeS5YUihbP/wX4GGYeKUd4Sd6w5NZW0p/68kGLTV6Vw29/kEtAFq
+	 l0TYJkU77rIQ3lgc97Nq28hJ/6csl/D4dDZcOGMSFgMtXAW2E18BkYnM4fN61dq1/+
+	 Sy5onYF4ZIjpDuMQk1jtyP5pgAmvbs2OPaSIFfePpXj7ONgFfc7TZyiT04UzrSgXZ0
+	 URP3iCYfDrzE/1Iz95fDVRfVJ639WracwLqmAmXp5vz2u9Z22nrkny4Cb8nJt/h+Wp
+	 KcUORm7pmEPYg==
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
- selvin.xavier@broadcom.com
-In-Reply-To: <20241217102649.1377704-1-kalesh-anakkur.purayil@broadcom.com>
-References: <20241217102649.1377704-1-kalesh-anakkur.purayil@broadcom.com>
-Subject: Re: [PATCH for-rc 0/5] bnxt_re bug fixes
-Message-Id: <173460950150.348922.8636373953699969663.b4-ty@kernel.org>
-Date: Thu, 19 Dec 2024 06:58:21 -0500
+To: Cheng Xu <chengyou@linux.alibaba.com>, 
+ Kai Shen <kaishen@linux.alibaba.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+ Advait Dhamorikar <advaitdhamorikar@gmail.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20241219043939.10344-1-advaitdhamorikar@gmail.com>
+References: <20241219043939.10344-1-advaitdhamorikar@gmail.com>
+Subject: Re: [PATCH-next] RDMA/erdma: Fix opcode conditional check
+Message-Id: <173461061730.349703.2739528249042727020.b4-ty@kernel.org>
+Date: Thu, 19 Dec 2024 07:16:57 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -61,30 +62,17 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
 
 
-On Tue, 17 Dec 2024 15:56:44 +0530, Kalesh AP wrote:
-> This series contains bug fixes related to variable WQE
-> support in the driver. One fix is for adding a missing
-> synchronization in the QP create path.
+On Thu, 19 Dec 2024 10:09:39 +0530, Advait Dhamorikar wrote:
+> Fix conditional if else check by checking with wr->opcode.
+> The indicated dead code may have performed some action; that
+> action will never occur as op is pre-assigned a different value.
 > 
-> Please review and apply.
 > 
-> Regards,
-> Kalesh AP
-> 
-> [...]
 
 Applied, thanks!
 
-[1/5] RDMA/bnxt_re: Fix max_qp_wrs reported
-      https://git.kernel.org/rdma/rdma/c/40be32303ec829
-[2/5] RDMA/bnxt_re: Disable use of reserved wqes
-      https://git.kernel.org/rdma/rdma/c/d5a38bf2f35979
-[3/5] RDMA/bnxt_re: Add send queue size check for variable wqe
-      https://git.kernel.org/rdma/rdma/c/d13be54dc18bae
-[4/5] RDMA/bnxt_re: Fix MSN table size for variable wqe mode
-      https://git.kernel.org/rdma/rdma/c/bb839f3ace0fee
-[5/5] RDMA/bnxt_re: Fix the locking while accessing the QP table
-      https://git.kernel.org/rdma/rdma/c/9272cba0ded71b
+[1/1] RDMA/erdma: Fix opcode conditional check
+      https://git.kernel.org/rdma/rdma/c/c57c76498a895a
 
 Best regards,
 -- 
