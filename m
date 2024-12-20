@@ -1,153 +1,299 @@
-Return-Path: <linux-rdma+bounces-6666-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6667-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E6BA9F8A14
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 03:26:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1959E9F8A80
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 04:15:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A4F07A3210
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 02:26:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66DBB166576
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 03:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB08D1804A;
-	Fri, 20 Dec 2024 02:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04A23A8D2;
+	Fri, 20 Dec 2024 03:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Ou9MhpTu"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="K3LzJ5yF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 155312594BB
-	for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2024 02:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4AE33993;
+	Fri, 20 Dec 2024 03:15:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734661565; cv=none; b=SN+NoqoeEPNaNYlZgEOLrynLFJSqMajm21mdWkUt57xkplZw6l+J9ooYsvan1xMgOH+d/Ela8nMT/GdHAOsL4PulHQTIJDZmbYrxlNMFI8gU9m+TJ5ta2vHVW9o9oGSihxIzcP4vz7EtsBZISMn0nbI0FGauBmpKLRmCPiMtj48=
+	t=1734664509; cv=none; b=XYagYitD08pVN24Ak5crI7M7pganYTcHJTBDmXbNr6ZNeV3jrgrAT5Ex4iCQU4XTzEiorMOljswSkF8QHTIhhRnreypryTzQOk/xUeABBVeqkXK+PDaygzcVHJfSLd57s1l88wSznREpMEEdqCnx9Bre8T+x6ClT1b01XkAgPcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734661565; c=relaxed/simple;
-	bh=Z11gmbcn+SBf4GhqNkoXeUJVGA12oIavKw69wJOVt70=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=pasJrbnNyula3kUXx5wvJ/Sc5yeIAWs/coJBvNmNfEMCMlvKH5urGpoUXLms/jqYHPYyOFUC+Giac7vWtPwcNdYgFy4paVSKAbK7nNxc6hEwvcSndHc3x1n2I6dp2sixpSo8BIgMv9u/YdaJQkCWri1kGbjqtax5sia22M2UOv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Ou9MhpTu; arc=none smtp.client-ip=115.124.30.124
+	s=arc-20240116; t=1734664509; c=relaxed/simple;
+	bh=MrjKHl08WG7I6KsHrAmlTjxG+QUeZvK3AkOTAmSzFoc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YchP5tN9TuZ3iw557SwnE8/wruq16attMhqFC/CgUBwB/YtTQlMn+GWGiKkOpP8MH4U8pzo7MWMeedKJVkx1VUgIRXrgGTUeYmtjCFsMnlxnN0ZGrNp20MEW53AunSS21fbWe41cdsFuTEUpu/BXNjJaZckfb5b6OBAehnV8AVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=K3LzJ5yF; arc=none smtp.client-ip=115.124.30.99
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1734661558; h=Message-ID:Date:MIME-Version:Subject:From:To:Content-Type;
-	bh=jVjRZL162rNDdIkykLer9M6zfU1jU+Ct7zisCVup9uw=;
-	b=Ou9MhpTuLkIJwsSADOYa8FPjKQ5a9mt2YUkDkiqX41CxuJwrGtwvHghQJffN0H5NL9HmBmWcqIpwjogo48SfVtsQ3qLM++JDhtvtvas7XU9VpZmp+k1GqxwlYBjogj7ypZKAXCkO9h3ZbGI6lcNw5On5xpCCn95WETqocdR8LZM=
-Received: from 30.221.117.29(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0WLs9TH._1734661557 cluster:ay36)
+	t=1734664496; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=L6FmUvXrbK5qPalUsZlUdWxbXtiHVKENTq+v6+NdXGI=;
+	b=K3LzJ5yFEKNEk+hpfZb5wBa4yiUP1zBE+tEECCdnyzQyLJGtgukOXXlGb1QjEThETcHpXp2Bm9y4ZVgR2g6NqHFEtVBAR4Lz9SmzyrF9v4HZ96t+B4x4hBQ5YVkqrq0N2fzKhpqqvPqCbfmHeg4589B36vQBGbEbduuArI16A/Q=
+Received: from localhost.localdomain(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0WLsFhS8_1734664494 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Fri, 20 Dec 2024 10:25:57 +0800
-Message-ID: <880cf690-15f2-7ef8-a90b-d54be9d0084f@linux.alibaba.com>
-Date: Fri, 20 Dec 2024 10:25:57 +0800
+          Fri, 20 Dec 2024 11:14:56 +0800
+From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+To: wenjia@linux.ibm.com,
+	jaka@linux.ibm.com,
+	PASIC@de.ibm.com,
+	alibuda@linux.alibaba.com,
+	tonylu@linux.alibaba.com,
+	guwen@linux.alibaba.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net] net/smc: fix data error when recvmsg with MSG_PEEK flag
+Date: Fri, 20 Dec 2024 11:14:51 +0800
+Message-Id: <20241220031451.52343-1-guangguan.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: Potential use of NULL pointer in erdma/erdma_verbs.c
-Content-Language: en-US
-From: Cheng Xu <chengyou@linux.alibaba.com>
-To: Kees Bakker <kees@ijzerbout.nl>, Boshi Yu <boshiyu@linux.alibaba.com>,
- Leon Romanovsky <leon@kernel.org>
-Cc: linux-rdma@vger.kernel.org
-References: <6975f57c-8053-4ff1-b1ac-cd985e254ecb@ijzerbout.nl>
- <7a262ba9-e4fa-c53d-7616-d217fbfa0f77@linux.alibaba.com>
-In-Reply-To: <7a262ba9-e4fa-c53d-7616-d217fbfa0f77@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+When recvmsg with MSG_PEEK flag, the data will be copied to
+user's buffer without advancing consume cursor and without
+reducing the length of rx available data. Once the expected
+peek length is larger than the value of bytes_to_rcv, in the
+loop of do while in smc_rx_recvmsg, the first loop will copy
+bytes_to_rcv bytes of data from the position local_tx_ctrl.cons,
+the second loop will copy the min(bytes_to_rcv, read_remaining)
+bytes from the position local_tx_ctrl.cons again because of the
+lacking of process with advancing consume cursor and reducing
+the length of available data. So do the subsequent loops. The
+data copied in the second loop and the subsequent loops will
+result in data error, as it should not be copied if no more data
+arrives and it should be copied from the position advancing
+bytes_to_rcv bytes from the local_tx_ctrl.cons if more data arrives.
 
+This issue can be reproduce by the following python script:
+server.py:
+import socket
+import time
+server_ip = '0.0.0.0'
+server_port = 12346
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.bind((server_ip, server_port))
+server_socket.listen(1)
+print('Server is running and listening for connections...')
+conn, addr = server_socket.accept()
+print('Connected by', addr)
+while True:
+    data = conn.recv(1024)
+    if not data:
+        break
+    print('Received request:', data.decode())
+    conn.sendall(b'Hello, client!\n')
+    time.sleep(5)
+    conn.sendall(b'Hello, again!\n')
+conn.close()
 
-On 12/20/24 10:06 AM, Cheng Xu wrote:
-> 
-> 
-> On 12/20/24 3:02 AM, Kees Bakker wrote:
->> Hi,
->>
->> As identified by Coverity Scan (CID 1602609) there is a potential
->> use of a NULL pointer.
->>
->> It was introduced in commit 6534de1fe385
->> Author: Cheng Xu <chengyou@linux.alibaba.com>
->> Date:   Tue Jun 6 13:50:04 2023 +0800
->>
->>     RDMA/erdma: Associate QPs/CQs with doorbells for authorization
->>
->>     For the isolation requirement, each QP/CQ can only issue doorbells from the
->>     allocated mmio space. Configure the relationship between QPs/CQs and
->>     mmio doorbell spaces to hardware in create_qp/create_cq interfaces.
->>
->>     Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
->>     Link: https://lore.kernel.org/r/20230606055005.80729-4-chengyou@linux.alibaba.com
->>     Signed-off-by: Leon Romanovsky <leon@kernel.org>
->>
->> int erdma_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attrs,
->>                     struct ib_udata *udata)
->> {
->>         struct erdma_qp *qp = to_eqp(ibqp);
->>         struct erdma_dev *dev = to_edev(ibqp->device);
->>         struct erdma_ucontext *uctx = rdma_udata_to_drv_context(
->>                 udata, struct erdma_ucontext, ibucontext);
->> [...]
->>         if (uctx) {
->>                 ret = ib_copy_from_udata(&ureq, udata,
->>                                          min(sizeof(ureq), udata->inlen));
->> [...]
->>         } else {
->>                 init_kernel_qp(dev, qp, attrs);
->>         }
->>
->>         qp->attrs.max_send_sge = attrs->cap.max_send_sge;
->>         qp->attrs.max_recv_sge = attrs->cap.max_recv_sge;
->>
->>         if (erdma_device_iwarp(qp->dev))
->>                 qp->attrs.iwarp.state = ERDMA_QPS_IWARP_IDLE;
->>         else
->>                 qp->attrs.rocev2.state = ERDMA_QPS_ROCEV2_RESET;
->>
->>         INIT_DELAYED_WORK(&qp->reflush_dwork, erdma_flush_worker);
->>
->>         ret = create_qp_cmd(uctx, qp);
->> [...]
->> This shows that `uctx` can be NULL. The problem is that `uctx` can be
->> dereferenced in create_qp_cmd(). There is no guard against NULL.
->>
->> Can one of you have a look and say that it OK to potential pass a
->> NULL pointer in `uctx`?
->>
-> 
-> static int create_qp_cmd(struct erdma_ucontext *uctx, struct erdma_qp *qp)
-> {
->         [...]
-> 
->         if (rdma_is_kernel_res(&qp->ibqp.res)) {
->             [...]
-> 	} else {
->             // uctx used here...
->         }
-> 
->         [...]
-> }
-> 
-> When uctx == NULL, rdma_is_kernel_res() will always return false and uctx will not be
-                                                             ^^^^^
-                                                             true
-> dereferenced. So the current implementation is OK.
-> 
+client.py:
+import socket
+server_ip = '<server ip>'
+server_port = 12346
+resp=b'Hello, client!\nHello, again!\n'
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket.connect((server_ip, server_port))
+request = 'Hello, server!'
+client_socket.sendall(request.encode())
+peek_data = client_socket.recv(len(resp),
+    socket.MSG_PEEK | socket.MSG_WAITALL)
+print('Peeked data:', peek_data.decode())
+client_socket.close()
 
-Sorry for this typo.
+Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+---
+ net/smc/af_smc.c |  2 +-
+ net/smc/smc_rx.c | 37 +++++++++++++++++++++----------------
+ net/smc/smc_rx.h |  8 ++++----
+ 3 files changed, 26 insertions(+), 21 deletions(-)
 
-Cheng Xu
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 6cc7b846cff1..ebc41a7b13db 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -2738,7 +2738,7 @@ int smc_accept(struct socket *sock, struct socket *new_sock,
+ 			release_sock(clcsk);
+ 		} else if (!atomic_read(&smc_sk(nsk)->conn.bytes_to_rcv)) {
+ 			lock_sock(nsk);
+-			smc_rx_wait(smc_sk(nsk), &timeo, smc_rx_data_available);
++			smc_rx_wait(smc_sk(nsk), &timeo, 0, smc_rx_data_available);
+ 			release_sock(nsk);
+ 		}
+ 	}
+diff --git a/net/smc/smc_rx.c b/net/smc/smc_rx.c
+index f0cbe77a80b4..79047721df51 100644
+--- a/net/smc/smc_rx.c
++++ b/net/smc/smc_rx.c
+@@ -238,22 +238,23 @@ static int smc_rx_splice(struct pipe_inode_info *pipe, char *src, size_t len,
+ 	return -ENOMEM;
+ }
+ 
+-static int smc_rx_data_available_and_no_splice_pend(struct smc_connection *conn)
++static int smc_rx_data_available_and_no_splice_pend(struct smc_connection *conn, size_t peeked)
+ {
+-	return atomic_read(&conn->bytes_to_rcv) &&
++	return smc_rx_data_available(conn, peeked) &&
+ 	       !atomic_read(&conn->splice_pending);
+ }
+ 
+ /* blocks rcvbuf consumer until >=len bytes available or timeout or interrupted
+  *   @smc    smc socket
+  *   @timeo  pointer to max seconds to wait, pointer to value 0 for no timeout
++ *   @peeked  number of bytes already peeked
+  *   @fcrit  add'l criterion to evaluate as function pointer
+  * Returns:
+  * 1 if at least 1 byte available in rcvbuf or if socket error/shutdown.
+  * 0 otherwise (nothing in rcvbuf nor timeout, e.g. interrupted).
+  */
+-int smc_rx_wait(struct smc_sock *smc, long *timeo,
+-		int (*fcrit)(struct smc_connection *conn))
++int smc_rx_wait(struct smc_sock *smc, long *timeo, size_t peeked,
++		int (*fcrit)(struct smc_connection *conn, size_t baseline))
+ {
+ 	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+ 	struct smc_connection *conn = &smc->conn;
+@@ -262,7 +263,7 @@ int smc_rx_wait(struct smc_sock *smc, long *timeo,
+ 	struct sock *sk = &smc->sk;
+ 	int rc;
+ 
+-	if (fcrit(conn))
++	if (fcrit(conn, peeked))
+ 		return 1;
+ 	sk_set_bit(SOCKWQ_ASYNC_WAITDATA, sk);
+ 	add_wait_queue(sk_sleep(sk), &wait);
+@@ -271,7 +272,7 @@ int smc_rx_wait(struct smc_sock *smc, long *timeo,
+ 			   cflags->peer_conn_abort ||
+ 			   READ_ONCE(sk->sk_shutdown) & RCV_SHUTDOWN ||
+ 			   conn->killed ||
+-			   fcrit(conn),
++			   fcrit(conn, peeked),
+ 			   &wait);
+ 	remove_wait_queue(sk_sleep(sk), &wait);
+ 	sk_clear_bit(SOCKWQ_ASYNC_WAITDATA, sk);
+@@ -322,11 +323,11 @@ static int smc_rx_recv_urg(struct smc_sock *smc, struct msghdr *msg, int len,
+ 	return -EAGAIN;
+ }
+ 
+-static bool smc_rx_recvmsg_data_available(struct smc_sock *smc)
++static bool smc_rx_recvmsg_data_available(struct smc_sock *smc, size_t peeked)
+ {
+ 	struct smc_connection *conn = &smc->conn;
+ 
+-	if (smc_rx_data_available(conn))
++	if (smc_rx_data_available(conn, peeked))
+ 		return true;
+ 	else if (conn->urg_state == SMC_URG_VALID)
+ 		/* we received a single urgent Byte - skip */
+@@ -344,10 +345,10 @@ static bool smc_rx_recvmsg_data_available(struct smc_sock *smc)
+ int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
+ 		   struct pipe_inode_info *pipe, size_t len, int flags)
+ {
+-	size_t copylen, read_done = 0, read_remaining = len;
++	size_t copylen, read_done = 0, read_remaining = len, peeked_bytes = 0;
+ 	size_t chunk_len, chunk_off, chunk_len_sum;
+ 	struct smc_connection *conn = &smc->conn;
+-	int (*func)(struct smc_connection *conn);
++	int (*func)(struct smc_connection *conn, size_t baseline);
+ 	union smc_host_cursor cons;
+ 	int readable, chunk;
+ 	char *rcvbuf_base;
+@@ -384,14 +385,14 @@ int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
+ 		if (conn->killed)
+ 			break;
+ 
+-		if (smc_rx_recvmsg_data_available(smc))
++		if (smc_rx_recvmsg_data_available(smc, peeked_bytes))
+ 			goto copy;
+ 
+ 		if (sk->sk_shutdown & RCV_SHUTDOWN) {
+ 			/* smc_cdc_msg_recv_action() could have run after
+ 			 * above smc_rx_recvmsg_data_available()
+ 			 */
+-			if (smc_rx_recvmsg_data_available(smc))
++			if (smc_rx_recvmsg_data_available(smc, peeked_bytes))
+ 				goto copy;
+ 			break;
+ 		}
+@@ -425,26 +426,28 @@ int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
+ 			}
+ 		}
+ 
+-		if (!smc_rx_data_available(conn)) {
+-			smc_rx_wait(smc, &timeo, smc_rx_data_available);
++		if (!smc_rx_data_available(conn, peeked_bytes)) {
++			smc_rx_wait(smc, &timeo, peeked_bytes, smc_rx_data_available);
+ 			continue;
+ 		}
+ 
+ copy:
+ 		/* initialize variables for 1st iteration of subsequent loop */
+ 		/* could be just 1 byte, even after waiting on data above */
+-		readable = atomic_read(&conn->bytes_to_rcv);
++		readable = smc_rx_data_available(conn, peeked_bytes);
+ 		splbytes = atomic_read(&conn->splice_pending);
+ 		if (!readable || (msg && splbytes)) {
+ 			if (splbytes)
+ 				func = smc_rx_data_available_and_no_splice_pend;
+ 			else
+ 				func = smc_rx_data_available;
+-			smc_rx_wait(smc, &timeo, func);
++			smc_rx_wait(smc, &timeo, peeked_bytes, func);
+ 			continue;
+ 		}
+ 
+ 		smc_curs_copy(&cons, &conn->local_tx_ctrl.cons, conn);
++		if ((flags & MSG_PEEK) && peeked_bytes)
++			smc_curs_add(conn->rmb_desc->len, &cons, peeked_bytes);
+ 		/* subsequent splice() calls pick up where previous left */
+ 		if (splbytes)
+ 			smc_curs_add(conn->rmb_desc->len, &cons, splbytes);
+@@ -480,6 +483,8 @@ int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
+ 			}
+ 			read_remaining -= chunk_len;
+ 			read_done += chunk_len;
++			if (flags & MSG_PEEK)
++				peeked_bytes += chunk_len;
+ 
+ 			if (chunk_len_sum == copylen)
+ 				break; /* either on 1st or 2nd iteration */
+diff --git a/net/smc/smc_rx.h b/net/smc/smc_rx.h
+index db823c97d824..994f5e42d1ba 100644
+--- a/net/smc/smc_rx.h
++++ b/net/smc/smc_rx.h
+@@ -21,11 +21,11 @@ void smc_rx_init(struct smc_sock *smc);
+ 
+ int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
+ 		   struct pipe_inode_info *pipe, size_t len, int flags);
+-int smc_rx_wait(struct smc_sock *smc, long *timeo,
+-		int (*fcrit)(struct smc_connection *conn));
+-static inline int smc_rx_data_available(struct smc_connection *conn)
++int smc_rx_wait(struct smc_sock *smc, long *timeo, size_t peeked,
++		int (*fcrit)(struct smc_connection *conn, size_t baseline));
++static inline int smc_rx_data_available(struct smc_connection *conn, size_t peeked)
+ {
+-	return atomic_read(&conn->bytes_to_rcv);
++	return atomic_read(&conn->bytes_to_rcv) - peeked;
+ }
+ 
+ #endif /* SMC_RX_H */
+-- 
+2.24.3 (Apple Git-128)
 
-> Thanks,
-> Cheng Xu
-> 
-> 
->> Kind regards,
->> Kees Bakker
 
