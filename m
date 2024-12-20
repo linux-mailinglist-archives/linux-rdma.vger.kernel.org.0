@@ -1,166 +1,126 @@
-Return-Path: <linux-rdma+bounces-6685-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6686-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EE119F957B
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 16:33:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E0B79F9874
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 18:45:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AD5B7A1A43
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 15:32:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEEA4161A9D
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 17:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ACDC218E92;
-	Fri, 20 Dec 2024 15:32:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80242288CA;
+	Fri, 20 Dec 2024 17:20:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dwd.de header.i=@dwd.de header.b="Us8RKQvE"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from zg8tmtu5ljy1ljeznc42.icoremail.net (zg8tmtu5ljy1ljeznc42.icoremail.net [159.65.134.6])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E3E218AC9;
-	Fri, 20 Dec 2024 15:32:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.65.134.6
+Received: from ofcsgdbm.dwd.de (ofcsgdbm.dwd.de [141.38.3.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A0FF21C19B
+	for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2024 17:20:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.38.3.245
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734708775; cv=none; b=qhoJKlE3BxBXA5tdvfcf9VmC0YTCz7EtNG+SBEKDdZE37R2CTZhQKNVMTvcRQz8gYapZCtoluubm/pRMDeujC+EqtwejRJyx6K8ig2/+N1u0obGj36+qd/4/jUBa+WPH4MHfV0MV8Q+hVjAMVkdvSnLMTCN4cQUyhCmqsLis5PA=
+	t=1734715241; cv=none; b=NXnsKMqrVDP6rqFg5RM0zs7BBlG7preBAdPK2ShMv5if+Rtn8VqHte9FmVydYmjxOJf7OUVHkdoDDKXpq837pBL0jg/TB3XR7xEK4/pxi+MlAKyJAKvSBH/BYsCPv5uHduJ+Q1UAcDYv7h7A9lrbow6nSf6rRzcXZO/GRB0or9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734708775; c=relaxed/simple;
-	bh=KoC6ecgYs5iyg360vJrTKCCc6EKx/Go0dMp6gjIw5+c=;
-	h=Date:From:To:Subject:Content-Type:MIME-Version:Message-ID; b=Ki1fhUlGisnqY07TOOeJO31pK7yABoaaEI6SyfeqEfsB3goPB6QhCWMxLHj4OWJ6ghyYtQjNMokPZvnoSHvo7Jw3zm9KEskB8Z0BLvChJpPt7zZ1o3/KjzSmseWoxrllNb5RMb1vNcpJVNusKfl/UfLCrYN4kSJMY35zppUm06k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=159.65.134.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from linma$zju.edu.cn ( [183.157.161.220] ) by
- ajax-webmail-mail-app2 (Coremail) ; Fri, 20 Dec 2024 23:32:34 +0800
- (GMT+08:00)
-Date: Fri, 20 Dec 2024 23:32:34 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: "Lin Ma" <linma@zju.edu.cn>
-To: jgg@ziepe.ca, leon@kernel.org, cmeiohas@nvidia.com,
-	michaelgur@nvidia.com, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [bug report] RDMA/iwpm: reentrant iwpm hello message
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2024.1-cmXT5 build
- 20240625(a75f206e) Copyright (c) 2002-2024 www.mailtech.cn zju.edu.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	s=arc-20240116; t=1734715241; c=relaxed/simple;
+	bh=/0AQXtKnlfstruO3vKaibzufsMl7kCMfHSA0BvHgDDk=;
+	h=Date:From:To:cc:Subject:Message-ID:MIME-Version:Content-Type; b=c7ONUSMtXq9Q7slyeOEs8HJDJMGRIoGoPdvHhHbwHreOEIZySvdFrUIBgEQdM58hszf2RO3+RfArxXx+8QLY1yKn/0Nn3AN6MpQiKaztO22lAkTnk9FQ8SbfjXX1h8FuRINijJvZIbsXzXkVMhtpy0ykBejp0Oyq6aChIyMRIKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dwd.de; spf=pass smtp.mailfrom=dwd.de; dkim=pass (2048-bit key) header.d=dwd.de header.i=@dwd.de header.b=Us8RKQvE; arc=none smtp.client-ip=141.38.3.245
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dwd.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dwd.de
+Received: from localhost (localhost [127.0.0.1])
+	by ofcsg2dn1.dwd.de (Postfix) with ESMTP id 4YFDS63mSxz3wsk
+	for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2024 17:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dwd.de; h=
+	content-type:content-type:mime-version:message-id:subject
+	:subject:from:from:date:date:received:received:received:received
+	:received:received:received:received; s=dwd-csg20210107; t=
+	1734714598; x=1735924199; bh=/0AQXtKnlfstruO3vKaibzufsMl7kCMfHSA
+	0BvHgDDk=; b=Us8RKQvEOaBJasP33O5oqC9Kw/wcA3J3zFK1b0S7PMvuJtDu9f5
+	99wXGt1uxnXQvLsZZJCIzAdkt5/Jy4y6iswktTJu1MNIjq053Gw3jeU/qFt5jb8+
+	hL1dxGRkG/E7bGCaoAz9NuS2iqEX1fudgf7OWD98Gyd9F/xCzhmQJg4KoLGjVVA8
+	/ESTULx10O84f9oohC9u8ECxX7J8aIJwvBNXVtlB75t4vnzoozUWk4ejAR4cGUQe
+	qsE3fZ8tyF0BKo0dKMBhVQm7d6EmXVU+YRoqzNa0x6E8MkDimSqzx+OHj+4Q+i+J
+	K3Vlede6A1nOhj2vZwjcDM/8yBPGFNcqboA==
+X-Virus-Scanned: by amavisd-new at csg.dwd.de
+Received: from ofcsg2cteh1.dwd.de ([172.30.232.65])
+ by localhost (ofcsg2dn1.dwd.de [172.30.232.24]) (amavis, port 10024)
+ with ESMTP id vFw5Z5IFC9dt for <linux-rdma@vger.kernel.org>;
+ Fri, 20 Dec 2024 17:09:58 +0000 (UTC)
+Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
+	by DDEI (Postfix) with ESMTP id 984E8C906BEB
+	for <root@ofcsg2dn1.dwd.de>; Fri, 20 Dec 2024 17:10:32 +0000 (UTC)
+Received: from ofcsg2cteh1.dwd.de (unknown [127.0.0.1])
+	by DDEI (Postfix) with ESMTP id 8D16AC90685C
+	for <root@ofcsg2dn1.dwd.de>; Fri, 20 Dec 2024 17:10:32 +0000 (UTC)
+X-DDEI-TLS-USAGE: Unused
+Received: from ofcsgdbm.dwd.de (unknown [172.30.232.24])
+	by ofcsg2cteh1.dwd.de (Postfix) with ESMTP
+	for <root@ofcsg2dn1.dwd.de>; Fri, 20 Dec 2024 17:10:32 +0000 (UTC)
+Received: from ofcsgdbm.dwd.de by localhost (Postfix XFORWARD proxy);
+ Fri, 20 Dec 2024 17:09:58 -0000
+Received: from ofcsg2dvf1.dwd.de (unknown [172.30.232.10])
+	by ofcsg2dn1.dwd.de (Postfix) with ESMTPS id 4YFDS618Yqz3wsk;
+	Fri, 20 Dec 2024 17:09:58 +0000 (UTC)
+Received: from ofmailhub.dwd.de (ofmailhub.dwd.de [141.38.39.196])
+	by ofcsg2dvf1.dwd.de  with ESMTP id 4BKHAWZe007584-4BKHAWZf007584;
+	Fri, 20 Dec 2024 17:10:32 GMT
+Received: from praktifix.dwd.de (praktifix.dwd.de [141.38.44.46])
+	by ofmailhub.dwd.de (Postfix) with ESMTP id 062F8E25F1;
+	Fri, 20 Dec 2024 17:10:32 +0000 (UTC)
+Date: Fri, 20 Dec 2024 17:10:32 +0000 (GMT)
+From: Holger Kiehl <Holger.Kiehl@dwd.de>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+cc: linux-rdma@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>
+Subject: failed to allocate device WQ
+Message-ID: <8328f0ab-fbd8-5d43-fbb3-f2954ccbd779@praktifix.dwd.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <661ee85f.a4a2.193e4b2f91b.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:by_KCgAHOpYTjmVnOb1zAA--.10536W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwQBEmdld6IB0wABsQ
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW3Jw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+Content-Type: text/plain; charset=US-ASCII
+X-FEAS-Client-IP: 141.38.39.196
+X-FE-Last-Public-Client-IP: 141.38.39.196
+X-FE-Policy-ID: 2:2:1:SYSTEM
+X-TMASE-Version: DDEI-5.1-9.1.1004-28872.001
+X-TMASE-Result: 10--2.752800-10.000000
+X-TMASE-MatchedRID: XQoK3HqFntBQgCX90x0ZfqzGfgakLdjaeQ2UkIAUu3tu2nYtSdFm0IIk
+	OetmK5M4D7+3bU6CmpfgqUlnicmmewjt4l5TmF6fVfLHMdWDkKjbLuvAgD3xvJ6fSoF3Lt+M8Wk
+	jUyUpHj0lyItZ36xSGZsoi2XrUn/JzhtqOA7SSC8UGm4zriL0oQtuKBGekqUpdvpxIsTHHHays4
+	MQjA230E7abOrmtkeVBeYzNOg44AJ7IHyMjS7MbjP2Baz7nnE4nl2mZXQ9hJjYqwSmPUy4lRw4H
+	e0X/RhwgOCwf8YblpOyfl8uZdQ2rhuJyuskHg4AzM2FBO7i4hJRYW5hfzhEW0CLmZDDvMfdqnbn
+	7VT0BbY=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-TMASE-INERTIA: 0-0;;;;
+X-DDEI-PROCESSED-RESULT: Safe
 
-SGVsbG8gbWFpbnRhaW5lcnMsCgpPdXIgZnV6emVyIGlkZW50aWZpZWQgb25lIGludGVyZXN0aW5n
-IHJlZW50cmFudCBidWcgdGhhdCBjb3VsZCBjYXVzZSBoYW5nCmluIHRoZSBrZXJuZWwuIFRoZSBj
-cmFzaCBsb2cgaXMgbGlrZSBiZWxvdzoKClsgICAzMi42MTY1NzVdWyBUMjk4M10KWyAgIDMyLjYx
-NzAwMF1bIFQyOTgzXSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PQpbICAgMzIuNjE3ODc5XVsgVDI5ODNdIFdBUk5JTkc6IHBvc3NpYmxlIHJlY3Vyc2l2ZSBsb2Nr
-aW5nIGRldGVjdGVkClsgICAzMi42MTg3NTldWyBUMjk4M10gNi4xLjcwICMxIE5vdCB0YWludGVk
-ClsgICAzMi42MTkzNjJdWyBUMjk4M10gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KWyAgIDMyLjYyMDI0OF1bIFQyOTgzXSBoZWxsby5lbGYvMjk4MyBpcyB0cnlp
-bmcgdG8gYWNxdWlyZSBsb2NrOgpbICAgMzIuNjIxMDg0XVsgVDI5ODNdIGZmZmZmZmZmOTE5Nzhm
-ZjggKCZyZG1hX25sX3R5cGVzW2lkeF0uc2VtKXsuKy4rfS17MzozfSwgYXQ6IHJkbWFfbmxfcmN2
-KzB4MzBmLzB4OTkwClsgICAzMi42MjQyMzRdWyBUMjk4M10KWyAgIDMyLjYyNDIzNF1bIFQyOTgz
-XSBidXQgdGFzayBpcyBhbHJlYWR5IGhvbGRpbmcgbG9jazoKWyAgIDMyLjYyNTIzN11bIFQyOTgz
-XSBmZmZmZmZmZjkxOTc4ZmY4ICgmcmRtYV9ubF90eXBlc1tpZHhdLnNlbSl7LisuK30tezM6M30s
-IGF0OiByZG1hX25sX3JjdisweDMwZi8weDk5MApbICAgMzIuNjI2NTYyXVsgVDI5ODNdClsgICAz
-Mi42MjY1NjJdWyBUMjk4M10gb3RoZXIgaW5mbyB0aGF0IG1pZ2h0IGhlbHAgdXMgZGVidWcgdGhp
-czoKWyAgIDMyLjYyNzY0OF1bIFQyOTgzXSAgUG9zc2libGUgdW5zYWZlIGxvY2tpbmcgc2NlbmFy
-aW86ClsgICAzMi42Mjc2NDhdWyBUMjk4M10KWyAgIDMyLjYzMzcwOF1bIFQyOTgzXSAgICAgICAg
-Q1BVMApbICAgMzIuNjM0MTg0XVsgVDI5ODNdICAgICAgICAtLS0tClsgICAzMi42MzQ2NDZdWyBU
-Mjk4M10gICBsb2NrKCZyZG1hX25sX3R5cGVzW2lkeF0uc2VtKTsKWyAgIDMyLjYzNTQzM11bIFQy
-OTgzXSAgIGxvY2soJnJkbWFfbmxfdHlwZXNbaWR4XS5zZW0pOwpbICAgMzIuNjM2MTU1XVsgVDI5
-ODNdClsgICAzMi42MzYxNTVdWyBUMjk4M10gICoqKiBERUFETE9DSyAqKioKWyAgIDMyLjYzNjE1
-NV1bIFQyOTgzXQpbICAgMzIuNjM3MjM2XVsgVDI5ODNdICBNYXkgYmUgZHVlIHRvIG1pc3Npbmcg
-bG9jayBuZXN0aW5nIG5vdGF0aW9uClsgICAzMi42MzcyMzZdWyBUMjk4M10KWyAgIDMyLjYzODQw
-OF1bIFQyOTgzXSAyIGxvY2tzIGhlbGQgYnkgaGVsbG8uZWxmLzI5ODM6ClsgICAzMi42MzkxMzVd
-WyBUMjk4M10gICMwOiBmZmZmZmZmZjkxOTc4ZmY4ICgmcmRtYV9ubF90eXBlc1tpZHhdLnNlbSl7
-LisuK30tezM6M30sIGF0OiByZG1hX25sX3JjdisweDMwZi8weDk5MApbICAgMzIuNjQwNjA1XVsg
-VDI5ODNdICAjMTogZmZmZjg4ODEwM2Y4ZjY5MCAobmxrX2NiX211dGV4LVJETUEpeysuKy59LXsz
-OjN9LCBhdDogbmV0bGlua19kdW1wKzB4ZDMvMHhjNjAKWyAgIDMyLjY0MTk4MV1bIFQyOTgzXQpb
-ICAgMzIuNjQxOTgxXVsgVDI5ODNdIHN0YWNrIGJhY2t0cmFjZToKWyAgIDMyLjY0MjgzM11bIFQy
-OTgzXSBDUFU6IDAgUElEOiAyOTgzIENvbW06IGhlbGxvLmVsZiBOb3QgdGFpbnRlZCA2LjEuNzAg
-IzEKWyAgIDMyLjY0MzgzMF1bIFQyOTgzXSBIYXJkd2FyZSBuYW1lOiBRRU1VIFN0YW5kYXJkIFBD
-IChpNDQwRlggKyBQSUlYLCAxOTk2KSwgQklPUyAxLjEzLjAtMXVidW50dTEuMSAwNC8wMS8yMDE0
-ClsgICAzMi42NDUyNDNdWyBUMjk4M10gQ2FsbCBUcmFjZToKWyAgIDMyLjY0NTczNV1bIFQyOTgz
-XSAgPFRBU0s+ClsgICAzMi42NDYxOTddWyBUMjk4M10gIGR1bXBfc3RhY2tfbHZsKzB4MTc3LzB4
-MjMxClsgICAzMi42NDY5MDFdWyBUMjk4M10gID8gbmZfdGNwX2hhbmRsZV9pbnZhbGlkKzB4NjA1
-LzB4NjA1ClsgICAzMi42NDc3MDVdWyBUMjk4M10gID8gcGFuaWMrMHg3MjUvMHg3MjUKWyAgIDMy
-LjY0ODM1MF1bIFQyOTgzXSAgdmFsaWRhdGVfY2hhaW4rMHg0ZGQwLzB4NjAxMApbICAgMzIuNjQ5
-MDgwXVsgVDI5ODNdICA/IHJlYWNxdWlyZV9oZWxkX2xvY2tzKzB4NWEwLzB4NWEwClsgICAzMi42
-NDk4NjRdWyBUMjk4M10gID8gbWFya19sb2NrKzB4OTQvMHgzMjAKWyAgIDMyLjY1MDUwNl1bIFQy
-OTgzXSAgPyBsb2NrZGVwX2hhcmRpcnFzX29uX3ByZXBhcmUrMHgzZmQvMHg3NjAKWyAgIDMyLjY1
-MTM3Nl1bIFQyOTgzXSAgPyBwcmludF9pcnF0cmFjZV9ldmVudHMrMHgyMTAvMHgyMTAKWyAgIDMy
-LjY1MjE4Ml1bIFQyOTgzXSAgPyBtYXJrX2xvY2srMHg5NC8weDMyMApbICAgMzIuNjUyODI1XVsg
-VDI5ODNdICBfX2xvY2tfYWNxdWlyZSsweDEyYWQvMHgyMDEwClsgICAzMi42NTM1NDFdWyBUMjk4
-M10gIGxvY2tfYWNxdWlyZSsweDFiNC8weDQ5MApbICAgMzIuNjU0MjExXVsgVDI5ODNdICA/IHJk
-bWFfbmxfcmN2KzB4MzBmLzB4OTkwClsgICAzMi42NTQ4OTFdWyBUMjk4M10gID8gX19taWdodF9z
-bGVlcCsweGQwLzB4ZDAKWyAgIDMyLjY1NTU2OV1bIFQyOTgzXSAgPyBfX2xvY2tfYWNxdWlyZSsw
-eDEyYWQvMHgyMDEwClsgICAzMi42NTYzMTZdWyBUMjk4M10gID8gcmVhZF9sb2NrX2lzX3JlY3Vy
-c2l2ZSsweDEwLzB4MTAKWyAgIDMyLjY1NzEwOV1bIFQyOTgzXSAgZG93bl9yZWFkKzB4NDIvMHgy
-ZDAKWyAgIDMyLjY1NzcyM11bIFQyOTgzXSAgPyByZG1hX25sX3JjdisweDMwZi8weDk5MApbICAg
-MzIuNjU4NDAwXVsgVDI5ODNdICByZG1hX25sX3JjdisweDMwZi8weDk5MApbICAgMzIuNjU5MTMy
-XVsgVDI5ODNdICA/IHJkbWFfbmxfbmV0X2luaXQrMHgxNjAvMHgxNjAKWyAgIDMyLjY1OTg0N11b
-IFQyOTgzXSAgPyBuZXRsaW5rX2xvb2t1cCsweDMwLzB4MjAwClsgICAzMi42NjA1MTldWyBUMjk4
-M10gID8gX19uZXRsaW5rX2xvb2t1cCsweDJhLzB4NmQwClsgICAzMi42NjEyMTRdWyBUMjk4M10g
-ID8gbmV0bGlua19sb29rdXArMHgzMC8weDIwMApbICAgMzIuNjYxODgwXVsgVDI5ODNdICA/IG5l
-dGxpbmtfbG9va3VwKzB4MzAvMHgyMDAKWyAgIDMyLjY2MjU0NV1bIFQyOTgzXSAgbmV0bGlua191
-bmljYXN0KzB4NzRiLzB4OGMwClsgICAzMi42NjMyMTVdWyBUMjk4M10gIHJkbWFfbmxfdW5pY2Fz
-dCsweDRiLzB4NjAKWyAgIDMyLjY2Mzg1Ml1bIFQyOTgzXSAgaXdwbV9zZW5kX2hlbGxvKzB4MWQ4
-LzB4MzUwClsgICAzMi42NjQ1MjVdWyBUMjk4M10gID8gaXdwbV9tYXBpbmZvX2F2YWlsYWJsZSsw
-eDEzMC8weDEzMApbICAgMzIuNjY1Mjk1XVsgVDI5ODNdICA/IGl3cG1fcGFyc2Vfbmxtc2crMHgx
-MjQvMHgyNjAKWyAgIDMyLjY2NTk5NV1bIFQyOTgzXSAgaXdwbV9oZWxsb19jYisweDFlMS8weDJl
-MApbICAgMzIuNjY2NjM4XVsgVDI5ODNdICA/IG5ldGxpbmtfZHVtcCsweDIzNi8weGM2MApbICAg
-MzIuNjY3Mjk0XVsgVDI5ODNdICA/IGl3cG1fbWFwcGluZ19lcnJvcl9jYisweDNlMC8weDNlMApb
-ICAgMzIuNjY4MDY0XVsgVDI5ODNdICBuZXRsaW5rX2R1bXArMHg1OTIvMHhjNjAKWyAgIDMyLjY2
-ODcwNl1bIFQyOTgzXSAgPyBuZXRsaW5rX2xvb2t1cCsweDIwMC8weDIwMApbICAgMzIuNjY5Mzgx
-XVsgVDI5ODNdICA/IF9fbmV0bGlua19sb29rdXArMHgyYS8weDZkMApbICAgMzIuNjcwMDczXVsg
-VDI5ODNdICA/IG5ldGxpbmtfbG9va3VwKzB4MzAvMHgyMDAKWyAgIDMyLjY3MDczMV1bIFQyOTgz
-XSAgPyBuZXRsaW5rX2xvb2t1cCsweDMwLzB4MjAwClsgICAzMi42NzE0MTFdWyBUMjk4M10gIF9f
-bmV0bGlua19kdW1wX3N0YXJ0KzB4NTRlLzB4NzEwClsgICAzMi42NzIyMjBdWyBUMjk4M10gIHJk
-bWFfbmxfcmN2KzB4NzUzLzB4OTkwClsgICAzMi42NzI4NDZdWyBUMjk4M10gID8gcmRtYV9ubF9u
-ZXRfaW5pdCsweDE2MC8weDE2MApbICAgMzIuNjczNTM4XVsgVDI5ODNdICA/IGl3cG1fbWFwcGlu
-Z19lcnJvcl9jYisweDNlMC8weDNlMApbICAgMzIuNjc0MzE2XVsgVDI5ODNdICA/IG5ldGxpbmtf
-ZGVsaXZlcl90YXArMHgyZS8weDFiMApbICAgMzIuNjc1MTA2XVsgVDI5ODNdICA/IG5ldF9nZW5l
-cmljKzB4MWUvMHgyNDAKWyAgIDMyLjY3NTc3OF1bIFQyOTgzXSAgPyBuZXRsaW5rX2RlbGl2ZXJf
-dGFwKzB4MmUvMHgxYjAKWyAgIDMyLjY3NjU1M11bIFQyOTgzXSAgbmV0bGlua191bmljYXN0KzB4
-NzRiLzB4OGMwClsgICAzMi42NzcyNjJdWyBUMjk4M10gIG5ldGxpbmtfc2VuZG1zZysweDg4Mi8w
-eGI5MApbICAgMzIuNjc3OTY5XVsgVDI5ODNdICA/IG5ldGxpbmtfZ2V0c29ja29wdCsweDU1MC8w
-eDU1MApbICAgMzIuNjc4NzMyXVsgVDI5ODNdICA/IGFhX3NvY2tfbXNnX3Blcm0rMHg5NC8weDE1
-MApbICAgMzIuNjc5NDY1XVsgVDI5ODNdICA/IGJwZl9sc21fc29ja2V0X3NlbmRtc2crMHg1LzB4
-MTAKWyAgIDMyLjY4MDI0M11bIFQyOTgzXSAgPyBzZWN1cml0eV9zb2NrZXRfc2VuZG1zZysweDdj
-LzB4YTAKWyAgIDMyLjY4MTA0OF1bIFQyOTgzXSAgX19zeXNfc2VuZHRvKzB4NDU2LzB4NWIwClsg
-ICAzMi42ODE3MjRdWyBUMjk4M10gID8gX19pYTMyX3N5c19nZXRwZWVybmFtZSsweDgwLzB4ODAK
-WyAgIDMyLjY4MjUxMF1bIFQyOTgzXSAgPyBfX2xvY2tfYWNxdWlyZSsweDIwMTAvMHgyMDEwClsg
-ICAzMi42ODMyNDFdWyBUMjk4M10gID8gbG9ja2RlcF9oYXJkaXJxc19vbl9wcmVwYXJlKzB4M2Zk
-LzB4NzYwClsgICAzMi42ODQxMzRdWyBUMjk4M10gID8gZmRfaW5zdGFsbCsweDVjLzB4NGYwClsg
-ICAzMi42ODQ3OTRdWyBUMjk4M10gID8gcHJpbnRfaXJxdHJhY2VfZXZlbnRzKzB4MjEwLzB4MjEw
-ClsgICAzMi42ODU2MDhdWyBUMjk4M10gIF9feDY0X3N5c19zZW5kdG8rMHhkYS8weGYwClsgICAz
-Mi42ODYyOThdWyBUMjk4M10gIGRvX3N5c2NhbGxfNjQrMHg0NS8weDkwClsgICAzMi42ODY5NTVd
-WyBUMjk4M10gIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsweDYzLzB4Y2QKWyAgIDMy
-LjY4NzgxMF1bIFQyOTgzXSBSSVA6IDAwMzM6MHg0NDA2MjQKWyAgIDMyLjY5MTk0NF1bIFQyOTgz
-XSBSU1A6IDAwMmI6MDAwMDdmZmM4MmYzZWU0OCBFRkxBR1M6IDAwMDAwMjQ2IE9SSUdfUkFYOiAw
-MDAwMDAwMDAwMDAwMDJjClsgICAzMi42OTMxMzZdWyBUMjk4M10gUkFYOiBmZmZmZmZmZmZmZmZm
-ZmRhIFJCWDogMDAwMDAwMDAwMDQwMDQwMCBSQ1g6IDAwMDAwMDAwMDA0NDA2MjQKWyAgIDMyLjY5
-NDI2NF1bIFQyOTgzXSBSRFg6IDAwMDAwMDAwMDAwMDAwMTggUlNJOiAwMDAwN2ZmYzgyZjNlZTgw
-IFJESTogMDAwMDAwMDAwMDAwMDAwMwpbICAgMzIuNjk1Mzg3XVsgVDI5ODNdIFJCUDogMDAwMDdm
-ZmM4MmYzZmU5MCBSMDg6IDAwMDAwMDAwMDA0N2RmMDggUjA5OiAwMDAwMDAwMDAwMDAwMDBjClsg
-ICAzMi42OTY2MjFdWyBUMjk4M10gUjEwOiAwMDAwMDAwMDAwMDAwMDAwIFIxMTogMDAwMDAwMDAw
-MDAwMDI0NiBSMTI6IDAwMDAwMDAwMDA0MDM5OTAKWyAgIDMyLjY5NzY5M11bIFQyOTgzXSBSMTM6
-IDAwMDAwMDAwMDAwMDAwMDAgUjE0OiAwMDAwMDAwMDAwNmE2MDE4IFIxNTogMDAwMDAwMDAwMDAw
-MDAwMApbICAgMzIuNjk4Nzc0XVsgVDI5ODNdICA8L1RBU0s+CgpJbiBhIG51dHNoZWxsLCB0aGUg
-Y2FsbGJhY2sgZnVuY3Rpb24gZm9yIHRoZSBjb21tYW5kIFJETUFfTkxfSVdQTV9IRUxMTywgaXdw
-bV9oZWxsb19jYiwKY2FuIGZ1cnRoZXIgY2FsbCByZG1hX25sX3VuaWNhc3QsIGxlYWRpbmcgdG8g
-cmVwZWF0ZWQgY2FsbHMgdGhhdCBtYXkgY2F1c2UKYSBkZWFkbG9jayBhbmQgcG90ZW50aWFsbHkg
-aGFybSB0aGUga2VybmVsLgoKSSBhbSBub3QgZmFtaWxpYXIgd2l0aCB0aGUgaW50ZXJuYWwgd29y
-a2luZ3Mgb2YgdGhlIGNhbGxiYWNrIG1lY2hhbmlzbSBvciBob3cKSVdQTUQgdXRpbGl6ZXMgaXQs
-IHNvIEknbSB1bmNlcnRhaW4gd2hldGhlciB0aGlzIHJlZW50cmFuY3kgaXMgZXhwZWN0ZWQgYmVo
-YXZpb3IuCklmIGl0IGlzLCBwZXJoYXBzIGEgcmVmZXJlbmNlIGNvdW50ZXIgc2hvdWxkIGJlIHVz
-ZWQgaW5zdGVhZCBvZiBhbiByd19zZW1hcGhvcmUuCklmIG5vdCwgYSBwcm9wZXIgY2hlY2sgc2hv
-dWxkIGJlIGltcGxlbWVudGVkLgoKUmVnYXJkcywKTGlu
+Hello,
+
+since upgrading from kernel 6.10 to 6.11 (also 6.12) one Infiniband
+card sometimes hits this error:
+
+   kernel: workqueue: Failed to create a rescuer kthread for wq "ipoib_wq": -EINTR
+   kernel: ib0: failed to allocate device WQ
+   kernel: mlx5_1: failed to initialize device: ib0 port 1 (ret = -12)
+   kernel: mlx5_1: couldn't register ipoib port 1; error -12
+
+The system has two cards:
+
+   41:00.0 Infiniband controller: Mellanox Technologies MT28908 Family [ConnectX-6]
+   c4:00.0 Infiniband controller: Mellanox Technologies MT28908 Family [ConnectX-6]
+
+If that happens one cannot use that card for TCP/IP communication. It does
+not always happen, but when it does it always happens with the second
+card mlx5_1. Never with mlx5_0. This happens on four different systems.
+
+Any idea what I can do to stop this from happening?
+
+Regards,
+Holger
+
+PS: Firmware for both cards is 20.41.1000
 
