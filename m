@@ -1,65 +1,65 @@
-Return-Path: <linux-rdma+bounces-6681-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6679-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E1AF9F8FEB
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 11:12:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 379E29F8FE7
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 11:11:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B267316DE87
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 10:11:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2B3016A1D2
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 10:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B7A1BD027;
-	Fri, 20 Dec 2024 10:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F20B31BEF97;
+	Fri, 20 Dec 2024 10:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="FvGnxkD9"
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="Pg7ebfdk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com [139.138.61.252])
+Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com [68.232.139.117])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D34291C0DED;
-	Fri, 20 Dec 2024 10:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.138.61.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797CC1AAA3D;
+	Fri, 20 Dec 2024 10:10:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.139.117
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734689423; cv=none; b=IVROOrkDnooycai6H/Sde/YZA/z8+YV+nnOgxXSeP9AVbMrceFybgx3eJKKxwuw4blJahGAknmSfwpx4fyEIrUMRdW15rQegcFDwJHTYQCUk6RVgWEnGqt/xlCOyajq8cNKNN87owiCofdgD7RU/W4DkOWqNvqhpsNBKwTf4L64=
+	t=1734689418; cv=none; b=fMTh8EsMza9guNjmS9ktTO9qmvNIjdOQ+2xsM0zB/pWkTATDoPKEzD4FK9mcFBNQiU3wymlPCcaihOhTARTc90oEc75xUs3/TMqdiUhrt6aWVb5KIiRrOt2uPle+27es9NiQobfMyNdxmEFM7PcvO3P807G0enXrUyyArZbIqy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734689423; c=relaxed/simple;
-	bh=n2sP4DecmZDxZfHzEQPg0qcVq+Jlny28ynFu1Gyhdyc=;
+	s=arc-20240116; t=1734689418; c=relaxed/simple;
+	bh=tjI3RBe/5HcoD/GJymJmGnHSsX9G9yUAfmPYNSXHMjA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bM53FZcGGRoTFMp1L/ci+DtqLNC/5Zj6bHB21wSuPALf31u30++oeG3uqcGE/Z73v045HHId0LkPC8ucH/qup7amO1LCgqtrNDdYh6gI0XjT0dJ2lrRI7SdVEOTEpcbEyylPzJgWVAOkDaOQOIoeR1+VuLTSos48mzWSrJAhIZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=FvGnxkD9; arc=none smtp.client-ip=139.138.61.252
+	 MIME-Version; b=B5mvuAYUwjv6MUpOFKKG4kfqXzbcNqdn0cUUjobkeYupSUmCgwCH/GVTKXAx+rWN0PMZNH3pJCa7eN1EWAORLC8K4/tmViuoinQ1x5/r4ghcR5Hjvvt0IvAqzsFAKqJAHz01aBgBdCJshGpzEOBqmej1iavudcicOd3EMdODL4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=Pg7ebfdk; arc=none smtp.client-ip=68.232.139.117
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1734689420; x=1766225420;
+  t=1734689416; x=1766225416;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=n2sP4DecmZDxZfHzEQPg0qcVq+Jlny28ynFu1Gyhdyc=;
-  b=FvGnxkD9W/8CcPm5V6R/aWj42uVXLn2lfySh1lONr10g4k0PJ65yiFeN
-   xrtF6xGjfkcq+VghwFOrayv7+LTi3GJ36/Y/9bS9HgToDbpvGrFucyF17
-   49K1c1J5Fk36G34IOiETuGludjjKZ/Bd5hHzbEVRjqtCyu3Ut6cEv4s0T
-   NdgyV+N44MirYOsgOdfYvdiPyQAHZWt5oYIjgo3yBuIWuTK2mnsNEkPg1
-   qWtkLWCGciimF2rqmKTXbjsToYMOuDTR1Bd0jPeLfgrdRqifUuC36I5VL
-   1E7djR6UhQeYyRU8KPPDUGMK1TOTaoH722pLLFof9KuOR5CNbnFdThBsH
-   w==;
-X-CSE-ConnectionGUID: Lu/uDwhKQA2tCLfImW5+qQ==
-X-CSE-MsgGUID: Ty60ePE3S/2PlOTXa6ZirQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11291"; a="163321228"
+  bh=tjI3RBe/5HcoD/GJymJmGnHSsX9G9yUAfmPYNSXHMjA=;
+  b=Pg7ebfdkzxCGyo2moYdSI+eYbOcRhbHcD0VlQY8O7gT099x0oEC67khE
+   yc/3rGgARf3DeKs+8NLWBr+bF/OUYLultRMpfBI76IeXonjlIXGfZ3LX8
+   oVtnqFNxp25zB5UGYHkekJ65bo+43djqiq5MpliUgGuLBbWjdBGbCACsm
+   X6X0RdPiqzAza9pTz0yYTnqykQLEoJsVFQpmyKxiuu981jrXk++smBqr/
+   l2O2ZwKu0wGVWzeuWKRpb0b4E6WfRXSUinNgQG9Y75D7TBwCU/cbNRMDp
+   U61hfVAxd3J3j404qa0ai9l9TM/sHwVFXJuzKnwW3156G/rqg1hJY82Jt
+   A==;
+X-CSE-ConnectionGUID: kwz5rEXTQ7Wx6WalgAgoLQ==
+X-CSE-MsgGUID: fRdJSJPgSp6InPatSlvKVw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11291"; a="184642845"
 X-IronPort-AV: E=Sophos;i="6.12,250,1728918000"; 
-   d="scan'208";a="163321228"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
-  by esa7.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2024 19:10:12 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com [192.168.83.64])
-	by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 904F4D500C;
-	Fri, 20 Dec 2024 19:10:10 +0900 (JST)
+   d="scan'208";a="184642845"
+Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
+  by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2024 19:10:15 +0900
+Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com [192.168.87.60])
+	by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id F1F47D4807;
+	Fri, 20 Dec 2024 19:10:12 +0900 (JST)
 Received: from m3003.s.css.fujitsu.com (sqmail-3003.b.css.fujitsu.com [10.128.233.114])
-	by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 6076FCFBC3;
-	Fri, 20 Dec 2024 19:10:10 +0900 (JST)
+	by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id C4A4ED94A6;
+	Fri, 20 Dec 2024 19:10:12 +0900 (JST)
 Received: from sm-x86-stp01.ssoft.mng.com (unknown [10.124.178.20])
-	by m3003.s.css.fujitsu.com (Postfix) with ESMTP id 3329C200597B;
-	Fri, 20 Dec 2024 19:10:10 +0900 (JST)
+	by m3003.s.css.fujitsu.com (Postfix) with ESMTP id 85035200597B;
+	Fri, 20 Dec 2024 19:10:12 +0900 (JST)
 From: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
 To: linux-rdma@vger.kernel.org,
 	leon@kernel.org,
@@ -69,9 +69,9 @@ Cc: linux-kernel@vger.kernel.org,
 	rpearsonhpe@gmail.com,
 	lizhijian@fujitsu.com,
 	Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Subject: [PATCH for-next v9 4/5] RDMA/rxe: Add support for Send/Recv/Write/Read with ODP
-Date: Fri, 20 Dec 2024 19:09:35 +0900
-Message-Id: <20241220100936.2193541-5-matsuda-daisuke@fujitsu.com>
+Subject: [PATCH for-next v9 5/5] RDMA/rxe: Add support for the traditional Atomic operations with ODP
+Date: Fri, 20 Dec 2024 19:09:36 +0900
+Message-Id: <20241220100936.2193541-6-matsuda-daisuke@fujitsu.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20241220100936.2193541-1-matsuda-daisuke@fujitsu.com>
 References: <20241220100936.2193541-1-matsuda-daisuke@fujitsu.com>
@@ -83,226 +83,178 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-rxe_mr_copy() is used widely to copy data to/from a user MR. requester uses
-it to load payloads of requesting packets; responder uses it to process
-Send, Write, and Read operaetions; completer uses it to copy data from
-response packets of Read and Atomic operations to a user MR.
-
-Allow these operations to be used with ODP by adding a subordinate function
-rxe_odp_mr_copy(). It is comprised of the following steps:
- 1. Check the driver page table(umem_odp->dma_list) to see if pages being
-    accessed are present with appropriate permission.
- 2. If necessary, trigger page fault to map the pages.
- 3. Convert their user space addresses to kernel logical addresses using
-    PFNs in the driver page table(umem_odp->pfn_list).
- 4. Execute data copy to/from the pages.
+Enable 'fetch and add' and 'compare and swap' operations to be used with
+ODP. This is comprised of the following steps:
+ 1. Check the driver page table(umem_odp->dma_list) to see if the target
+    page is both readable and writable.
+ 2. If not, then trigger page fault to map the page.
+ 3. Convert its user space address to a kernel logical address using PFNs
+    in the driver page table(umem_odp->pfn_list).
+ 4. Execute the operation.
 
 Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
 ---
- drivers/infiniband/sw/rxe/rxe.c     |  10 +++
- drivers/infiniband/sw/rxe/rxe_loc.h |   7 ++
- drivers/infiniband/sw/rxe/rxe_mr.c  |   2 +-
- drivers/infiniband/sw/rxe/rxe_odp.c | 131 ++++++++++++++++++++++++++++
- 4 files changed, 149 insertions(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe.c      |  1 +
+ drivers/infiniband/sw/rxe/rxe_loc.h  | 11 +++++
+ drivers/infiniband/sw/rxe/rxe_mr.c   |  2 +-
+ drivers/infiniband/sw/rxe/rxe_odp.c  | 69 ++++++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_resp.c |  5 +-
+ 5 files changed, 86 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index 3ca73f8d96cc..ea643ebf9667 100644
+index ea643ebf9667..08c69c637663 100644
 --- a/drivers/infiniband/sw/rxe/rxe.c
 +++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -81,6 +81,16 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
- 
- 		/* IB_ODP_SUPPORT_IMPLICIT is not supported right now. */
- 		rxe->attr.odp_caps.general_caps |= IB_ODP_SUPPORT;
-+
-+		rxe->attr.odp_caps.per_transport_caps.ud_odp_caps |= IB_ODP_SUPPORT_SEND;
-+		rxe->attr.odp_caps.per_transport_caps.ud_odp_caps |= IB_ODP_SUPPORT_RECV;
-+		rxe->attr.odp_caps.per_transport_caps.ud_odp_caps |= IB_ODP_SUPPORT_SRQ_RECV;
-+
-+		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_SEND;
-+		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_RECV;
-+		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_WRITE;
-+		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_READ;
-+		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_SRQ_RECV;
+@@ -90,6 +90,7 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
+ 		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_RECV;
+ 		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_WRITE;
+ 		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_READ;
++		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_ATOMIC;
+ 		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_SRQ_RECV;
  	}
  }
- 
 diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 1043240daa97..7a735108d475 100644
+index 7a735108d475..a45ff6236613 100644
 --- a/drivers/infiniband/sw/rxe/rxe_loc.h
 +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -188,6 +188,8 @@ extern const struct mmu_interval_notifier_ops rxe_mn_ops;
- #ifdef CONFIG_INFINIBAND_ON_DEMAND_PAGING
- int rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
+@@ -81,6 +81,9 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 key);
+ int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
+ void rxe_mr_cleanup(struct rxe_pool_elem *elem);
+ 
++/* defined in rxe_mr.c; used in rxe_mr.c and rxe_odp.c */
++extern spinlock_t atomic_ops_lock;
++
+ /* rxe_mw.c */
+ int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata);
+ int rxe_dealloc_mw(struct ib_mw *ibmw);
+@@ -190,6 +193,8 @@ int rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
  			 u64 iova, int access_flags, struct rxe_mr *mr);
-+int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
-+		    enum rxe_mr_copy_dir dir);
+ int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
+ 		    enum rxe_mr_copy_dir dir);
++int rxe_odp_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
++			 u64 compare, u64 swap_add, u64 *orig_val);
  #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
  static inline int
  rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
-@@ -195,6 +197,11 @@ rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+@@ -202,6 +207,12 @@ static inline int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
  {
  	return -EOPNOTSUPP;
  }
-+static inline int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
-+				  int length, enum rxe_mr_copy_dir dir)
++static inline int
++rxe_odp_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
++		     u64 compare, u64 swap_add, u64 *orig_val)
 +{
-+	return -EOPNOTSUPP;
++	return RESPST_ERR_UNSUPPORTED_OPCODE;
 +}
  #endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
  
  #endif /* RXE_LOC_H */
 diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 190225a34139..6cd668a8dfb2 100644
+index 6cd668a8dfb2..868d2f0b74e9 100644
 --- a/drivers/infiniband/sw/rxe/rxe_mr.c
 +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -324,7 +324,7 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
- 	}
- 
- 	if (mr->umem->is_odp)
--		return -EOPNOTSUPP;
-+		return rxe_odp_mr_copy(mr, iova, addr, length, dir);
- 	else
- 		return rxe_mr_copy_xarray(mr, iova, addr, length, dir);
+@@ -469,7 +469,7 @@ int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, unsigned int length)
  }
+ 
+ /* Guarantee atomicity of atomic operations at the machine level. */
+-static DEFINE_SPINLOCK(atomic_ops_lock);
++DEFINE_SPINLOCK(atomic_ops_lock);
+ 
+ int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
+ 			u64 compare, u64 swap_add, u64 *orig_val)
 diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-index 141290078754..d3c67d18c173 100644
+index d3c67d18c173..a82e5011360c 100644
 --- a/drivers/infiniband/sw/rxe/rxe_odp.c
 +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-@@ -122,3 +122,134 @@ int rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
+@@ -253,3 +253,72 @@ int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
  
  	return err;
  }
 +
-+static inline bool rxe_check_pagefault(struct ib_umem_odp *umem_odp,
-+				       u64 iova, int length, u32 perm)
-+{
-+	bool need_fault = false;
-+	u64 addr;
-+	int idx;
-+
-+	addr = iova & (~(BIT(umem_odp->page_shift) - 1));
-+
-+	/* Skim through all pages that are to be accessed. */
-+	while (addr < iova + length) {
-+		idx = (addr - ib_umem_start(umem_odp)) >> umem_odp->page_shift;
-+
-+		if (!(umem_odp->dma_list[idx] & perm)) {
-+			need_fault = true;
-+			break;
-+		}
-+
-+		addr += BIT(umem_odp->page_shift);
-+	}
-+	return need_fault;
-+}
-+
-+static int rxe_odp_map_range_and_lock(struct rxe_mr *mr, u64 iova, int length, u32 flags)
++static int rxe_odp_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
++				u64 compare, u64 swap_add, u64 *orig_val)
 +{
 +	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
-+	bool need_fault;
-+	u64 perm;
++	unsigned int page_offset;
++	struct page *page;
++	unsigned int idx;
++	u64 value;
++	u64 *va;
 +	int err;
 +
-+	if (unlikely(length < 1))
-+		return -EINVAL;
-+
-+	perm = ODP_READ_ALLOWED_BIT;
-+	if (!(flags & RXE_PAGEFAULT_RDONLY))
-+		perm |= ODP_WRITE_ALLOWED_BIT;
-+
-+	mutex_lock(&umem_odp->umem_mutex);
-+
-+	need_fault = rxe_check_pagefault(umem_odp, iova, length, perm);
-+	if (need_fault) {
-+		mutex_unlock(&umem_odp->umem_mutex);
-+
-+		/* umem_mutex is locked on success. */
-+		err = rxe_odp_do_pagefault_and_lock(mr, iova, length,
-+						    flags);
-+		if (err < 0)
-+			return err;
-+
-+		need_fault = rxe_check_pagefault(umem_odp, iova, length, perm);
-+		if (need_fault)
-+			return -EFAULT;
++	if (unlikely(mr->state != RXE_MR_STATE_VALID)) {
++		rxe_dbg_mr(mr, "mr not in valid state\n");
++		return RESPST_ERR_RKEY_VIOLATION;
 +	}
 +
-+	return 0;
-+}
-+
-+static int __rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
-+			     int length, enum rxe_mr_copy_dir dir)
-+{
-+	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
-+	struct page *page;
-+	int idx, bytes;
-+	size_t offset;
-+	u8 *user_va;
++	err = mr_check_range(mr, iova, sizeof(value));
++	if (err) {
++		rxe_dbg_mr(mr, "iova out of range\n");
++		return RESPST_ERR_RKEY_VIOLATION;
++	}
 +
 +	idx = (iova - ib_umem_start(umem_odp)) >> umem_odp->page_shift;
-+	offset = iova & (BIT(umem_odp->page_shift) - 1);
++	page_offset = iova & (BIT(umem_odp->page_shift) - 1);
++	page = hmm_pfn_to_page(umem_odp->pfn_list[idx]);
++	if (!page)
++		return RESPST_ERR_RKEY_VIOLATION;
 +
-+	while (length > 0) {
-+		u8 *src, *dest;
-+
-+		page = hmm_pfn_to_page(umem_odp->pfn_list[idx]);
-+		user_va = kmap_local_page(page);
-+		if (!user_va)
-+			return -EFAULT;
-+
-+		src = (dir == RXE_TO_MR_OBJ) ? addr : user_va;
-+		dest = (dir == RXE_TO_MR_OBJ) ? user_va : addr;
-+
-+		bytes = BIT(umem_odp->page_shift) - offset;
-+		if (bytes > length)
-+			bytes = length;
-+
-+		memcpy(dest, src, bytes);
-+		kunmap_local(user_va);
-+
-+		length  -= bytes;
-+		idx++;
-+		offset = 0;
++	if (unlikely(page_offset & 0x7)) {
++		rxe_dbg_mr(mr, "iova not aligned\n");
++		return RESPST_ERR_MISALIGNED_ATOMIC;
 +	}
++
++	va = kmap_local_page(page);
++
++	spin_lock_bh(&atomic_ops_lock);
++	value = *orig_val = va[page_offset >> 3];
++
++	if (opcode == IB_OPCODE_RC_COMPARE_SWAP) {
++		if (value == compare)
++			va[page_offset >> 3] = swap_add;
++	} else {
++		value += swap_add;
++		va[page_offset >> 3] = value;
++	}
++	spin_unlock_bh(&atomic_ops_lock);
++
++	kunmap_local(va);
 +
 +	return 0;
 +}
 +
-+int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
-+		    enum rxe_mr_copy_dir dir)
++int rxe_odp_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
++			 u64 compare, u64 swap_add, u64 *orig_val)
 +{
 +	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
-+	u32 flags = 0;
 +	int err;
 +
-+	if (length == 0)
-+		return 0;
-+
-+	if (unlikely(!mr->umem->is_odp))
-+		return -EOPNOTSUPP;
-+
-+	switch (dir) {
-+	case RXE_TO_MR_OBJ:
-+		break;
-+
-+	case RXE_FROM_MR_OBJ:
-+		flags = RXE_PAGEFAULT_RDONLY;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	err = rxe_odp_map_range_and_lock(mr, iova, length, flags);
-+	if (err)
++	err = rxe_odp_map_range_and_lock(mr, iova, sizeof(char), 0);
++	if (err < 0)
 +		return err;
 +
-+	err =  __rxe_odp_mr_copy(mr, iova, addr, length, dir);
-+
++	err = rxe_odp_do_atomic_op(mr, iova, opcode, compare, swap_add,
++				   orig_val);
 +	mutex_unlock(&umem_odp->umem_mutex);
 +
 +	return err;
 +}
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index e703a3ab82d4..54ba9ee1acc5 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -707,7 +707,10 @@ static enum resp_states atomic_reply(struct rxe_qp *qp,
+ 		u64 iova = qp->resp.va + qp->resp.offset;
+ 
+ 		if (mr->umem->is_odp)
+-			err = RESPST_ERR_UNSUPPORTED_OPCODE;
++			err = rxe_odp_atomic_op(mr, iova, pkt->opcode,
++						atmeth_comp(pkt),
++						atmeth_swap_add(pkt),
++						&res->atomic.orig_val);
+ 		else
+ 			err = rxe_mr_do_atomic_op(mr, iova, pkt->opcode,
+ 						  atmeth_comp(pkt),
 -- 
 2.43.0
 
