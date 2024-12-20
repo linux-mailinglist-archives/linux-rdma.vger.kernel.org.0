@@ -1,207 +1,453 @@
-Return-Path: <linux-rdma+bounces-6687-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6688-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 587109F98F2
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 19:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39C579F9CB7
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 23:24:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9EB91960934
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 17:56:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D49B188B85F
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 22:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DFE6230D32;
-	Fri, 20 Dec 2024 17:41:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E97226881;
+	Fri, 20 Dec 2024 22:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="CL/UXxT3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kdAWsjLD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71AE12206B9
-	for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2024 17:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93AB11A3BAD
+	for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2024 22:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734716461; cv=none; b=X2OjLhpe3mMEJe2RGuNfcydDDVidYsWXesvSoGApnRWa9SdF3AFvAxsyouBqJ6weY6ZHlJmWsNIVx/xs4QCKPa2e5IVxCxfGF0KUzkon0iOB7BIODOLfMi4vEA2ZGz84NUCSc2WosNW0vmeVUChuhfFH16ySO4D1uw5BKxINLOU=
+	t=1734733426; cv=none; b=qUepKcl967AlmzdTgqMGEOZltBG7/LScw/AW+Bhj006p34M9vcmaNPz0HLULYRERLsSAvPCWaCsI3LAIataRA6r4pQBbR4QzepHnrfVtijcqe7zsqdsaCkjpub9+8qkcBf78TpgvgWZCZCs7QqpmrSOSN5rnEZ1pgcz3UOqIWr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734716461; c=relaxed/simple;
-	bh=iEUGCjBbtkH37HKrbX0b7LpJEVvYl2PEK1v4afLn508=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LFqaDBwO+JwHggHj7QW+s1kwRZojbP+ymsmAw+jYlGi4sJIdru87mRHEd4zoNnKE+NvqS7prOlyyAS6k2aZBZEnAoOZ7bdV+3olvqOrrU72KT9/Co1r3krbuctXXTeYVuLsQebf/8LJ5HX+wHZAfbq0cpJ2rHK3mM7cqxHECvxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=CL/UXxT3; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-728e1799d95so2603893b3a.2
-        for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2024 09:40:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1734716459; x=1735321259; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=b1Eta0nuAwctETcvrKKs7bPK/JbTvDxM/GusCkZRXTw=;
-        b=CL/UXxT391YuHNhsbJeDiwUmfxapg48NrG6xOIroaHtRVQM13lFoCWGDFCSihmLc+l
-         pTi+YsAJo90/aFadfGgpvsMg3i3tUCZNuakpGtPRYCxn8FokvSXS8TlCynLQkC2dlyqd
-         QRTvcka28iACY4YKVaTlf9NCuQR0KTZg1pGbM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734716459; x=1735321259;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=b1Eta0nuAwctETcvrKKs7bPK/JbTvDxM/GusCkZRXTw=;
-        b=hvalAg1H/466Iq++TID0ZBhq64+ryg/eYtWf6kIswyot5b1aXBGYIiHtPphGKh2ypU
-         Et2FG9StrguWiEcUh0eW451JFyUuyF1xYkVavK32FHNeDOUM4KKGvZET/795g5JogrIO
-         7RFl2UgHbKmPR6VseT2gLNhqKnNbeXnmsmkylSMwXFBveVwH4b9bIVMPlb/Y5pujsib8
-         6YcVQHD8CSxN+2ntwTnw/diWyyn6QD2fZ/N/C/AK20Jeq+iDItx2KCpExomZt/3hrMqd
-         f01No5lAxMMAsIHg7+OomxYxReuYqOtEo822yDbrA3ZYnoNYG2DU2j1qGaaklrURDA4S
-         m9ew==
-X-Forwarded-Encrypted: i=1; AJvYcCXmJxRGJQYCXL4c5Cv0C2yDKCavYVuK0LRRrbOVQboWAPGOWfAYVB0tV04CuHL3CgfW1k8QDFBKrflP@vger.kernel.org
-X-Gm-Message-State: AOJu0YwCgwK8Vr/sKOdpJw8RbBbeNN8FJy2uPTng+5mAGqjsCZGkzxvV
-	DwmSlnr+GEQoD8CFnN7ibfse8JsQkzgE+d/Q2ye1nIEVkXB2CD8T5Acd1UXjjAU=
-X-Gm-Gg: ASbGncvfQdaq4Tm9A4ykXTRbfaH7aEHJ0suCpeRjRG+V7bnVTTOLD/JnhT8MM16Svxj
-	YNI4vARhCc2p/HGZXCvjUzb5redTgQX2QfLTqjbUJOYf44klbQJpmSe83ND9q7jXX5wXhhqvYVq
-	NKycIBx5kedlIF2clgMtydljU/dGaTel6KMgaViGju3OpHKYM6HDzijlfJAPThyZzN001vyribH
-	62fXpLiNIkHu7jBgxC/Z8woC8XoetzwUXgMzzC6frFYEK/ktsPUgYYXoK3euBAxHbO7WYpaLbi/
-	6YiQBpECaOZd6jsJtpAM1kA=
-X-Google-Smtp-Source: AGHT+IGxh4PZgIriyltpnSerdK3R+0CRnHeegY0SDIcMBfpAi2CSUjzEyXE/AdwCDJ2cN8IKdMCFLQ==
-X-Received: by 2002:a05:6a20:d81b:b0:1e0:c30a:6f22 with SMTP id adf61e73a8af0-1e5e080cba4mr7002714637.40.1734716458826;
-        Fri, 20 Dec 2024 09:40:58 -0800 (PST)
-Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-842b31ef0c0sm2696655a12.28.2024.12.20.09.40.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Dec 2024 09:40:58 -0800 (PST)
-Date: Fri, 20 Dec 2024 09:40:54 -0800
-From: Joe Damato <jdamato@fastly.com>
-To: Alex Lazar <alazar@nvidia.com>,
-	"aleksander.lobakin@intel.com" <aleksander.lobakin@intel.com>,
-	"almasrymina@google.com" <almasrymina@google.com>,
-	"amritha.nambiar@intel.com" <amritha.nambiar@intel.com>,
-	"bigeasy@linutronix.de" <bigeasy@linutronix.de>,
-	"bjorn@rivosinc.com" <bjorn@rivosinc.com>,
-	"corbet@lwn.net" <corbet@lwn.net>, Dan Jurgens <danielj@nvidia.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"donald.hunter@gmail.com" <donald.hunter@gmail.com>,
-	"dsahern@kernel.org" <dsahern@kernel.org>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"hawk@kernel.org" <hawk@kernel.org>,
-	"jiri@resnulli.us" <jiri@resnulli.us>,
-	"johannes.berg@intel.com" <johannes.berg@intel.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"leitao@debian.org" <leitao@debian.org>,
-	"leon@kernel.org" <leon@kernel.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"lorenzo@kernel.org" <lorenzo@kernel.org>,
-	"michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-	"mkarsten@uwaterloo.ca" <mkarsten@uwaterloo.ca>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	"sdf@fomichev.me" <sdf@fomichev.me>,
-	"skhawaja@google.com" <skhawaja@google.com>,
-	"sridhar.samudrala@intel.com" <sridhar.samudrala@intel.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	"willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
-	"xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
-	Gal Pressman <gal@nvidia.com>, Nimrod Oren <noren@nvidia.com>,
-	Dror Tennenbaum <drort@nvidia.com>,
-	Dragos Tatulea <dtatulea@nvidia.com>
-Subject: Re: [net-next v6 0/9] Add support for per-NAPI config via netlink
-Message-ID: <Z2WsJtaBpBqJFXeO@LQ3V64L9R2>
-Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
-	Alex Lazar <alazar@nvidia.com>,
-	"aleksander.lobakin@intel.com" <aleksander.lobakin@intel.com>,
-	"almasrymina@google.com" <almasrymina@google.com>,
-	"amritha.nambiar@intel.com" <amritha.nambiar@intel.com>,
-	"bigeasy@linutronix.de" <bigeasy@linutronix.de>,
-	"bjorn@rivosinc.com" <bjorn@rivosinc.com>,
-	"corbet@lwn.net" <corbet@lwn.net>, Dan Jurgens <danielj@nvidia.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"donald.hunter@gmail.com" <donald.hunter@gmail.com>,
-	"dsahern@kernel.org" <dsahern@kernel.org>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"hawk@kernel.org" <hawk@kernel.org>,
-	"jiri@resnulli.us" <jiri@resnulli.us>,
-	"johannes.berg@intel.com" <johannes.berg@intel.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"leitao@debian.org" <leitao@debian.org>,
-	"leon@kernel.org" <leon@kernel.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"lorenzo@kernel.org" <lorenzo@kernel.org>,
-	"michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-	"mkarsten@uwaterloo.ca" <mkarsten@uwaterloo.ca>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	"sdf@fomichev.me" <sdf@fomichev.me>,
-	"skhawaja@google.com" <skhawaja@google.com>,
-	"sridhar.samudrala@intel.com" <sridhar.samudrala@intel.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	"willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
-	"xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
-	Gal Pressman <gal@nvidia.com>, Nimrod Oren <noren@nvidia.com>,
-	Dror Tennenbaum <drort@nvidia.com>,
-	Dragos Tatulea <dtatulea@nvidia.com>
-References: <DM8PR12MB5447837576EA58F490D6D4BFAD052@DM8PR12MB5447.namprd12.prod.outlook.com>
- <Z2MBqrc2FM2rizqP@LQ3V64L9R2>
+	s=arc-20240116; t=1734733426; c=relaxed/simple;
+	bh=ig+PDMFUuLdPnqvFCQ3Q+aZqLXmz53euBnzCHKaHR3Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aV3OY7IHBKW5mvVILVltCIVZxy4X7gEXnZ15fcxbXQ1dpoJJ5GI+QMdGhvCUevtxjbgHkMrRe1AUOlTSAzkOVky4m7jq6W9KlETL1pxm7vMso2acNmA3bNOhc+xB92ncglqLlnqzOmYckVZChFGOlhcAGjXGLenOmQbITscE4L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kdAWsjLD; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734733420;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=hnhFU0nVrVgt3WTMHRgzR+xmTXLQGPcri8FX6qvMVMo=;
+	b=kdAWsjLDurPgIeLvJi349r1rI7Xjzxd/MrejV36aq/neGq4vJN6cFsDqeuN5Hbm5YnvolP
+	sfbbkH0lxVIYzdu0zwASrcnnTZs6lA5D1UFG4hVUfiU+hwkgnjEh0Ov47amYqcWTACyeBE
+	3vG0OdO9YIOVbS2LkYT6ayYPU9pW4+g=
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+To: zyjzyj2000@gmail.com,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Zhu Yanjun <yanjun.zhu@linux.dev>,
+	syzbot+4b87489410b4efd181bf@syzkaller.appspotmail.com
+Subject: [PATCH 1/1] RDMA/rxe: Remove the direct link to net_device
+Date: Fri, 20 Dec 2024 23:23:25 +0100
+Message-Id: <20241220222325.2487767-1-yanjun.zhu@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z2MBqrc2FM2rizqP@LQ3V64L9R2>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Dec 18, 2024 at 09:08:58AM -0800, Joe Damato wrote:
-> On Wed, Dec 18, 2024 at 11:22:33AM +0000, Alex Lazar wrote:
-> > Hi Joe and all,
-> > 
-> > I am part of the NVIDIA Eth drivers team, and we are experiencing a problem,
-> > sibesced to this change: commit 86e25f40aa1e ("net: napi: Add napi_config")
-> > 
-> > The issue occurs when sending packets from one machine to another.
-> > On the receiver side, we have XSK (XDPsock) that receives the packet and sends it
-> > back to the sender.
-> > At some point, one packet (packet A) gets "stuck," and if we send a new packet
-> > (packet B), it "pushes" the previous one. Packet A is then processed by the NAPI
-> > poll, and packet B gets stuck, and so on.
-> > 
-> > Your change involves moving napi_hash_del() and napi_hash_add() from
-> > netif_napi_del() and netif_napi_add_weight() to napi_enable() and napi_disable().
-> > If I move them back to netif_napi_del() and netif_napi_add_weight(),
-> > the issue is resolved (I moved the entire if/else block, not just the napi_hash_del/add).
-> > 
-> > This issue occurs with both the new and old APIs (netif_napi_add/_config).
-> > Moving the napi_hash_add() and napi_hash_del() functions resolves it for both.
-> > I am debugging this, no breakthrough so far.
-> > 
-> > I would appreciate if you could look into this.
-> > We can provide more details per request.
-> 
-> I appreciate your report, but there is not a lot in your message to
-> help debug the issue.
-> 
-> Can you please:
-> 
-> 1.) Verify that the kernel tree you are testing on has commit
-> cecc1555a8c2 ("net: Make napi_hash_lock irq safe") included ? If it
-> does not, can you pull in that commit and re-run your test and
-> report back if that fixes your problem?
-> 
-> 2.) If (1) does not fix your problem, can you please reply with at
-> least the following information:
->   - Specify what device this is happening on (in case I have access
->     to one)
->   - Which driver is affected
->   - Which upstream kernel SHA you are building your test kernel from
->   - The reproducer program(s) with clear instructions on how exactly
->     to run it/them in order to reproduce the issue
+The similar patch in siw is in the link:
+https://git.kernel.org/rdma/rdma/c/16b87037b48889
 
-I didn't hear back on the above, but wanted to let you know that
-I'll be out of the office soon, so my responses/bandwidth for
-helping to debug this will be limited over the next week or two.
+This problem also occurred in RXE. The following analyze this problem.
+In the following Call Traces:
+"
+BUG: KASAN: slab-use-after-free in dev_get_flags+0x188/0x1d0 net/core/dev.c:8782
+Read of size 4 at addr ffff8880554640b0 by task kworker/1:4/5295
+
+CPU: 1 UID: 0 PID: 5295 Comm: kworker/1:4 Not tainted
+6.12.0-rc3-syzkaller-00399-g9197b73fd7bb #0
+Hardware name: Google Compute Engine/Google Compute Engine,
+BIOS Google 09/13/2024
+Workqueue: infiniband ib_cache_event_task
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0x169/0x550 mm/kasan/report.c:488
+ kasan_report+0x143/0x180 mm/kasan/report.c:601
+ dev_get_flags+0x188/0x1d0 net/core/dev.c:8782
+ rxe_query_port+0x12d/0x260 drivers/infiniband/sw/rxe/rxe_verbs.c:60
+ __ib_query_port drivers/infiniband/core/device.c:2111 [inline]
+ ib_query_port+0x168/0x7d0 drivers/infiniband/core/device.c:2143
+ ib_cache_update+0x1a9/0xb80 drivers/infiniband/core/cache.c:1494
+ ib_cache_event_task+0xf3/0x1e0 drivers/infiniband/core/cache.c:1568
+ process_one_work kernel/workqueue.c:3229 [inline]
+ process_scheduled_works+0xa65/0x1850 kernel/workqueue.c:3310
+ worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+ kthread+0x2f2/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+"
+
+1). In the link [1],
+
+"
+[  839.350575][  T930] infiniband syz2: set down
+"
+
+This means that on 839.350575, the event ib_cache_event_task was sent andi
+queued in ib_wq.
+
+2). In the link [1],
+
+"
+[  843.251853][  T930] team0 (unregistering): Port device team_slave_0 removed
+"
+
+It indicates that before 843.251853, the net device should be freed.
+
+3). In the link [1],
+
+"
+[  850.559070][ T5295] BUG: KASAN: slab-use-after-free in dev_get_flags+0x188/0x1d0
+"
+
+This means that on 850.559070, this slab-use-after-free problem occurred.
+
+In all, on 839.350575, the event ib_cache_event_task was sent and queued
+in ib_wq,
+
+before 843.251853, the net device veth was freed.
+
+on 850.559070, this event was executed, and the mentioned freed net device
+was called. Thus, the above call trace occurred.
+
+[1] https://syzkaller.appspot.com/x/log.txt?x=12e7025f980000
+
+Reported-by: syzbot+4b87489410b4efd181bf@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=4b87489410b4efd181bf
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+ drivers/infiniband/sw/rxe/rxe.c       | 23 +++++++++++++++++++----
+ drivers/infiniband/sw/rxe/rxe.h       |  3 ++-
+ drivers/infiniband/sw/rxe/rxe_mcast.c | 22 ++++++++++++++++++++--
+ drivers/infiniband/sw/rxe/rxe_net.c   | 24 ++++++++++++++++++++----
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 26 +++++++++++++++++++++-----
+ drivers/infiniband/sw/rxe/rxe_verbs.h | 11 ++++++++---
+ 6 files changed, 90 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index 255677bc12b2..1ba4a0c8726a 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -40,6 +40,8 @@ void rxe_dealloc(struct ib_device *ib_dev)
+ /* initialize rxe device parameters */
+ static void rxe_init_device_param(struct rxe_dev *rxe)
+ {
++	struct net_device *ndev;
++
+ 	rxe->max_inline_data			= RXE_MAX_INLINE_DATA;
+ 
+ 	rxe->attr.vendor_id			= RXE_VENDOR_ID;
+@@ -71,8 +73,15 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
+ 	rxe->attr.max_fast_reg_page_list_len	= RXE_MAX_FMR_PAGE_LIST_LEN;
+ 	rxe->attr.max_pkeys			= RXE_MAX_PKEYS;
+ 	rxe->attr.local_ca_ack_delay		= RXE_LOCAL_CA_ACK_DELAY;
++
++	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
++	if (!ndev)
++		return;
++
+ 	addrconf_addr_eui48((unsigned char *)&rxe->attr.sys_image_guid,
+-			rxe->ndev->dev_addr);
++			ndev->dev_addr);
++
++	dev_put(ndev);
+ 
+ 	rxe->max_ucontext			= RXE_MAX_UCONTEXT;
+ }
+@@ -109,10 +118,15 @@ static void rxe_init_port_param(struct rxe_port *port)
+ static void rxe_init_ports(struct rxe_dev *rxe)
+ {
+ 	struct rxe_port *port = &rxe->port;
++	struct net_device *ndev;
+ 
+ 	rxe_init_port_param(port);
++	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
++	if (!ndev)
++		return;
+ 	addrconf_addr_eui48((unsigned char *)&port->port_guid,
+-			    rxe->ndev->dev_addr);
++			    ndev->dev_addr);
++	dev_put(ndev);
+ 	spin_lock_init(&port->port_lock);
+ }
+ 
+@@ -167,12 +181,13 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu)
+ /* called by ifc layer to create new rxe device.
+  * The caller should allocate memory for rxe by calling ib_alloc_device.
+  */
+-int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name)
++int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name,
++			struct net_device *ndev)
+ {
+ 	rxe_init(rxe);
+ 	rxe_set_mtu(rxe, mtu);
+ 
+-	return rxe_register_device(rxe, ibdev_name);
++	return rxe_register_device(rxe, ibdev_name, ndev);
+ }
+ 
+ static int rxe_newlink(const char *ibdev_name, struct net_device *ndev)
+diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
+index d8fb2c7af30a..fe7f97066732 100644
+--- a/drivers/infiniband/sw/rxe/rxe.h
++++ b/drivers/infiniband/sw/rxe/rxe.h
+@@ -139,7 +139,8 @@ enum resp_states {
+ 
+ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int dev_mtu);
+ 
+-int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name);
++int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name,
++			struct net_device *ndev);
+ 
+ void rxe_rcv(struct sk_buff *skb);
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
+index 86cc2e18a7fd..07ff47bae31d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mcast.c
++++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
+@@ -31,10 +31,19 @@
+ static int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid)
+ {
+ 	unsigned char ll_addr[ETH_ALEN];
++	struct net_device *ndev;
++	int ret;
++
++	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
++	if (!ndev)
++		return -ENODEV;
+ 
+ 	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
+ 
+-	return dev_mc_add(rxe->ndev, ll_addr);
++	ret = dev_mc_add(ndev, ll_addr);
++	dev_put(ndev);
++
++	return ret;
+ }
+ 
+ /**
+@@ -47,10 +56,19 @@ static int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid)
+ static int rxe_mcast_del(struct rxe_dev *rxe, union ib_gid *mgid)
+ {
+ 	unsigned char ll_addr[ETH_ALEN];
++	struct net_device *ndev;
++	int ret;
++
++	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
++	if (!ndev)
++		return -ENODEV;
+ 
+ 	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
+ 
+-	return dev_mc_del(rxe->ndev, ll_addr);
++	ret = dev_mc_del(ndev, ll_addr);
++	dev_put(ndev);
++
++	return ret;
+ }
+ 
+ /**
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index 75d1407db52d..8cc64ceeb356 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -524,7 +524,16 @@ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
+  */
+ const char *rxe_parent_name(struct rxe_dev *rxe, unsigned int port_num)
+ {
+-	return rxe->ndev->name;
++	struct net_device *ndev;
++	char *ndev_name;
++
++	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
++	if (!ndev)
++		return NULL;
++	ndev_name = ndev->name;
++	dev_put(ndev);
++
++	return ndev_name;
+ }
+ 
+ int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
+@@ -536,10 +545,9 @@ int rxe_net_add(const char *ibdev_name, struct net_device *ndev)
+ 	if (!rxe)
+ 		return -ENOMEM;
+ 
+-	rxe->ndev = ndev;
+ 	ib_mark_name_assigned_by_user(&rxe->ib_dev);
+ 
+-	err = rxe_add(rxe, ndev->mtu, ibdev_name);
++	err = rxe_add(rxe, ndev->mtu, ibdev_name, ndev);
+ 	if (err) {
+ 		ib_dealloc_device(&rxe->ib_dev);
+ 		return err;
+@@ -587,10 +595,18 @@ void rxe_port_down(struct rxe_dev *rxe)
+ 
+ void rxe_set_port_state(struct rxe_dev *rxe)
+ {
+-	if (netif_running(rxe->ndev) && netif_carrier_ok(rxe->ndev))
++	struct net_device *ndev;
++
++	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
++	if (!ndev)
++		return;
++
++	if (netif_running(ndev) && netif_carrier_ok(ndev))
+ 		rxe_port_up(rxe);
+ 	else
+ 		rxe_port_down(rxe);
++
++	dev_put(ndev);
+ }
+ 
+ static int rxe_notify(struct notifier_block *not_blk,
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 5c18f7e342f2..8a5fc20fd186 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -41,6 +41,7 @@ static int rxe_query_port(struct ib_device *ibdev,
+ 			  u32 port_num, struct ib_port_attr *attr)
+ {
+ 	struct rxe_dev *rxe = to_rdev(ibdev);
++	struct net_device *ndev;
+ 	int err, ret;
+ 
+ 	if (port_num != 1) {
+@@ -49,6 +50,12 @@ static int rxe_query_port(struct ib_device *ibdev,
+ 		goto err_out;
+ 	}
+ 
++	ndev = rxe_ib_device_get_netdev(ibdev);
++	if (!ndev) {
++		err = -ENODEV;
++		goto err_out;
++	}
++
+ 	memcpy(attr, &rxe->port.attr, sizeof(*attr));
+ 
+ 	mutex_lock(&rxe->usdev_lock);
+@@ -57,13 +64,14 @@ static int rxe_query_port(struct ib_device *ibdev,
+ 
+ 	if (attr->state == IB_PORT_ACTIVE)
+ 		attr->phys_state = IB_PORT_PHYS_STATE_LINK_UP;
+-	else if (dev_get_flags(rxe->ndev) & IFF_UP)
++	else if (dev_get_flags(ndev) & IFF_UP)
+ 		attr->phys_state = IB_PORT_PHYS_STATE_POLLING;
+ 	else
+ 		attr->phys_state = IB_PORT_PHYS_STATE_DISABLED;
+ 
+ 	mutex_unlock(&rxe->usdev_lock);
+ 
++	dev_put(ndev);
+ 	return ret;
+ 
+ err_out:
+@@ -1425,9 +1433,16 @@ static const struct attribute_group rxe_attr_group = {
+ static int rxe_enable_driver(struct ib_device *ib_dev)
+ {
+ 	struct rxe_dev *rxe = container_of(ib_dev, struct rxe_dev, ib_dev);
++	struct net_device *ndev;
++
++	ndev = rxe_ib_device_get_netdev(ib_dev);
++	if (!ndev)
++		return -ENODEV;
+ 
+ 	rxe_set_port_state(rxe);
+-	dev_info(&rxe->ib_dev.dev, "added %s\n", netdev_name(rxe->ndev));
++	dev_info(&rxe->ib_dev.dev, "added %s\n", netdev_name(ndev));
++
++	dev_put(ndev);
+ 	return 0;
+ }
+ 
+@@ -1495,7 +1510,8 @@ static const struct ib_device_ops rxe_dev_ops = {
+ 	INIT_RDMA_OBJ_SIZE(ib_mw, rxe_mw, ibmw),
+ };
+ 
+-int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
++int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name,
++						struct net_device *ndev)
+ {
+ 	int err;
+ 	struct ib_device *dev = &rxe->ib_dev;
+@@ -1507,13 +1523,13 @@ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
+ 	dev->num_comp_vectors = num_possible_cpus();
+ 	dev->local_dma_lkey = 0;
+ 	addrconf_addr_eui48((unsigned char *)&dev->node_guid,
+-			    rxe->ndev->dev_addr);
++			    ndev->dev_addr);
+ 
+ 	dev->uverbs_cmd_mask |= BIT_ULL(IB_USER_VERBS_CMD_POST_SEND) |
+ 				BIT_ULL(IB_USER_VERBS_CMD_REQ_NOTIFY_CQ);
+ 
+ 	ib_set_device_ops(dev, &rxe_dev_ops);
+-	err = ib_device_set_netdev(&rxe->ib_dev, rxe->ndev, 1);
++	err = ib_device_set_netdev(&rxe->ib_dev, ndev, 1);
+ 	if (err)
+ 		return err;
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index 3c1354f82283..6573ceec0ef5 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -370,6 +370,7 @@ struct rxe_port {
+ 	u32			qp_gsi_index;
+ };
+ 
++#define	RXE_PORT	1
+ struct rxe_dev {
+ 	struct ib_device	ib_dev;
+ 	struct ib_device_attr	attr;
+@@ -377,8 +378,6 @@ struct rxe_dev {
+ 	int			max_inline_data;
+ 	struct mutex	usdev_lock;
+ 
+-	struct net_device	*ndev;
+-
+ 	struct rxe_pool		uc_pool;
+ 	struct rxe_pool		pd_pool;
+ 	struct rxe_pool		ah_pool;
+@@ -406,6 +405,11 @@ struct rxe_dev {
+ 	struct crypto_shash	*tfm;
+ };
+ 
++static inline struct net_device *rxe_ib_device_get_netdev(struct ib_device *dev)
++{
++	return ib_device_get_netdev(dev, RXE_PORT);
++}
++
+ static inline void rxe_counter_inc(struct rxe_dev *rxe, enum rxe_counters index)
+ {
+ 	atomic64_inc(&rxe->stats_counters[index]);
+@@ -471,6 +475,7 @@ static inline struct rxe_pd *rxe_mw_pd(struct rxe_mw *mw)
+ 	return to_rpd(mw->ibmw.pd);
+ }
+ 
+-int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name);
++int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name,
++						struct net_device *ndev);
+ 
+ #endif /* RXE_VERBS_H */
+-- 
+2.34.1
+
 
