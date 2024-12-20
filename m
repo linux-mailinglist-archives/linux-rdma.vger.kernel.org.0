@@ -1,261 +1,375 @@
-Return-Path: <linux-rdma+bounces-6679-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6684-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 379E29F8FE7
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 11:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC2FA9F9239
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 13:30:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2B3016A1D2
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 10:10:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48EE916A050
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 12:30:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F20B31BEF97;
-	Fri, 20 Dec 2024 10:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEF82046A2;
+	Fri, 20 Dec 2024 12:29:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="Pg7ebfdk"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ppZDZjhx"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com [68.232.139.117])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797CC1AAA3D;
-	Fri, 20 Dec 2024 10:10:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.139.117
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BECE7204698
+	for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2024 12:29:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734689418; cv=none; b=fMTh8EsMza9guNjmS9ktTO9qmvNIjdOQ+2xsM0zB/pWkTATDoPKEzD4FK9mcFBNQiU3wymlPCcaihOhTARTc90oEc75xUs3/TMqdiUhrt6aWVb5KIiRrOt2uPle+27es9NiQobfMyNdxmEFM7PcvO3P807G0enXrUyyArZbIqy8=
+	t=1734697798; cv=none; b=JM8WcPbEI0+66o8xs2dgHFV4vRmusHp07qTCQ4Dqnjk/0f5LW4nWJl6fkToIe24YFWXFzXYQKMtHHiE8EMgX6oyLymIX4GFiIQ5Mp9wsSYydj2X/4tn96LAMlnhQQCvkSvFC7mMeb0k3OnW24Fhe/Zl8JVTP+M3QkRn0NJGEG3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734689418; c=relaxed/simple;
-	bh=tjI3RBe/5HcoD/GJymJmGnHSsX9G9yUAfmPYNSXHMjA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=B5mvuAYUwjv6MUpOFKKG4kfqXzbcNqdn0cUUjobkeYupSUmCgwCH/GVTKXAx+rWN0PMZNH3pJCa7eN1EWAORLC8K4/tmViuoinQ1x5/r4ghcR5Hjvvt0IvAqzsFAKqJAHz01aBgBdCJshGpzEOBqmej1iavudcicOd3EMdODL4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=Pg7ebfdk; arc=none smtp.client-ip=68.232.139.117
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1734689416; x=1766225416;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=tjI3RBe/5HcoD/GJymJmGnHSsX9G9yUAfmPYNSXHMjA=;
-  b=Pg7ebfdkzxCGyo2moYdSI+eYbOcRhbHcD0VlQY8O7gT099x0oEC67khE
-   yc/3rGgARf3DeKs+8NLWBr+bF/OUYLultRMpfBI76IeXonjlIXGfZ3LX8
-   oVtnqFNxp25zB5UGYHkekJ65bo+43djqiq5MpliUgGuLBbWjdBGbCACsm
-   X6X0RdPiqzAza9pTz0yYTnqykQLEoJsVFQpmyKxiuu981jrXk++smBqr/
-   l2O2ZwKu0wGVWzeuWKRpb0b4E6WfRXSUinNgQG9Y75D7TBwCU/cbNRMDp
-   U61hfVAxd3J3j404qa0ai9l9TM/sHwVFXJuzKnwW3156G/rqg1hJY82Jt
-   A==;
-X-CSE-ConnectionGUID: kwz5rEXTQ7Wx6WalgAgoLQ==
-X-CSE-MsgGUID: fRdJSJPgSp6InPatSlvKVw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11291"; a="184642845"
-X-IronPort-AV: E=Sophos;i="6.12,250,1728918000"; 
-   d="scan'208";a="184642845"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
-  by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2024 19:10:15 +0900
-Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com [192.168.87.60])
-	by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id F1F47D4807;
-	Fri, 20 Dec 2024 19:10:12 +0900 (JST)
-Received: from m3003.s.css.fujitsu.com (sqmail-3003.b.css.fujitsu.com [10.128.233.114])
-	by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id C4A4ED94A6;
-	Fri, 20 Dec 2024 19:10:12 +0900 (JST)
-Received: from sm-x86-stp01.ssoft.mng.com (unknown [10.124.178.20])
-	by m3003.s.css.fujitsu.com (Postfix) with ESMTP id 85035200597B;
-	Fri, 20 Dec 2024 19:10:12 +0900 (JST)
-From: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-To: linux-rdma@vger.kernel.org,
-	leon@kernel.org,
-	jgg@ziepe.ca,
-	zyjzyj2000@gmail.com
-Cc: linux-kernel@vger.kernel.org,
-	rpearsonhpe@gmail.com,
-	lizhijian@fujitsu.com,
-	Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Subject: [PATCH for-next v9 5/5] RDMA/rxe: Add support for the traditional Atomic operations with ODP
-Date: Fri, 20 Dec 2024 19:09:36 +0900
-Message-Id: <20241220100936.2193541-6-matsuda-daisuke@fujitsu.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20241220100936.2193541-1-matsuda-daisuke@fujitsu.com>
-References: <20241220100936.2193541-1-matsuda-daisuke@fujitsu.com>
+	s=arc-20240116; t=1734697798; c=relaxed/simple;
+	bh=66CvT6ns+hHH6BDz1EEtJ1zFnpF+MWdHM0cUPxVKIZI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q8nFKcAhGx5Cd1cyEnxgZaiWKoAf7wgFot2LUwg+ODrw1/UVBBb+PFAlthJaxoJMK4Au8R9qJOok6gQ6cgkfdwb+r7Oyp1xlbmEv4fqsVgYulQg3QcAJRAuKfXuxx5gPR5/d4buAeix/yiYkO1nKj5pcLT+gMryu/bP6WUrAmL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ppZDZjhx; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e3983426f80so1469013276.1
+        for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2024 04:29:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1734697796; x=1735302596; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VmRCmaPkLkPswmKEyB/ZICUJHMBmUsSjq9Yct5NQ1ro=;
+        b=ppZDZjhxB3N7WSspD6BavgGwANaKs4GCgU2/GX4iWnzqxjKuQPpfAnrcb0n+NJZQe9
+         hjlF2ocPlEbN2GFg8uhM1kkQfVDevqS6QjA9f/yiLin5KJCmeYvtBPbqdiuxpI44MaJR
+         kPrIVBnRJ621HA+fDJkJofG7Li8oUrYR5oxajpzu/44Q+9K1WNJttN4BPBHVSJEXrD6x
+         iW5n70M8++Z3C2Y8tLr2cgNJKTSNqXyClZ5u1X9/S+xNLNZKmTREFO+ni5WpoiyZOfz7
+         9SRDuhtyxOWaeah7ds1eV3Amx3JOq4pAAMg/iuh/8HdZjxuYCCUSQU92yj5Q5wy5LRHy
+         kFrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734697796; x=1735302596;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VmRCmaPkLkPswmKEyB/ZICUJHMBmUsSjq9Yct5NQ1ro=;
+        b=rCTp53IUVaqQxrh9rTNo58I3AZScP7myB2JiY1nNGaEJ8JxUwY8qEm0vT6e1Ii71+a
+         3pZY4JljsaIhFkDhc5i70DJwWmQMS44twaWTNChuwXokcbWLdPZ+h8g2T6umff7MOOyG
+         zMtwxk3mE3pPW7Qyk7RW0WnFaUVKCH9r26p1XzLBNyi3o1u199qv7W1ygpQQgEbo3XA4
+         Sg+JOJqT4hH7SuErsuEn5wdV77gcO1pPv5qsxe9P4EAGcZQa3KAOa1VJVO4UVpagLS0C
+         aFbF27bJ2Q7V7Cf9YJG4+oZoFW5wyfbFcx8zXggCEwVVjV5v8lkbRD8xy0tbjnO+YmTe
+         MG+g==
+X-Forwarded-Encrypted: i=1; AJvYcCV9A7QqHw89KAalpEvHtMgUAlbbbqwLoPxz2CMHh4m9MkkjoyyBPknkQj8wdaY2+PG+h1+eH0PCOTv4@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4qhUylz4m2Qkg4kFv5E1ysNl8Abw5d1yD8MH7cE+yt1X7iywF
+	qL3CqPm+Vyrk3ML0FWYx9K7hFhN9QqJtlwmcRG8YSgxj85CrGH+m0NXJeqhPIxMgkk8gtZWA0C0
+	Ke7uPgB2PNOuybmJc4L5c5nBhRuGy1zImMd8qDQ==
+X-Gm-Gg: ASbGncsrxhfLIAWu5hgiqbFwj9QUJW+sABuo47dVSUYXUFG17hcYFPWeVHtVs7qSXTW
+	C7X6d8XxzF8zk9RyiD05tPrSjkqTbt/0WMdqeDA==
+X-Google-Smtp-Source: AGHT+IGSsUG4iSnRRcdUuCq27bUw63jRg+t86G+uWqSkEhiBTf+pNCH23b3m4irAGr9UmyGYIOuuYUx3ncEVJac77D0=
+X-Received: by 2002:a05:6902:982:b0:e3c:8ec9:c896 with SMTP id
+ 3f1490d57ef6-e538c350d10mr1981319276.34.1734697795572; Fri, 20 Dec 2024
+ 04:29:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241213122739.4050137-1-linyunsheng@huawei.com> <20241213122739.4050137-2-linyunsheng@huawei.com>
+In-Reply-To: <20241213122739.4050137-2-linyunsheng@huawei.com>
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date: Fri, 20 Dec 2024 14:29:19 +0200
+Message-ID: <CAC_iWj+3Q7CAS3xH9+zWA7nXdFNSJ-XMKQB3ZT0YvUQ-Q2gMCQ@mail.gmail.com>
+Subject: Re: [PATCH RFCv5 1/8] page_pool: introduce page_pool_to_pp() API
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
+	somnath.kotur@broadcom.com, liuyonglong@huawei.com, fanghaiqing@huawei.com, 
+	zhangkun09@huawei.com, Wei Fang <wei.fang@nxp.com>, 
+	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, 
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
+	Shailend Chand <shailend@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, 
+	Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, 
+	Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Simon Horman <horms@kernel.org>, 
+	imx@lists.linux.dev, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-Enable 'fetch and add' and 'compare and swap' operations to be used with
-ODP. This is comprised of the following steps:
- 1. Check the driver page table(umem_odp->dma_list) to see if the target
-    page is both readable and writable.
- 2. If not, then trigger page fault to map the page.
- 3. Convert its user space address to a kernel logical address using PFNs
-    in the driver page table(umem_odp->pfn_list).
- 4. Execute the operation.
+Hi Yunsheng,
 
-Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
----
- drivers/infiniband/sw/rxe/rxe.c      |  1 +
- drivers/infiniband/sw/rxe/rxe_loc.h  | 11 +++++
- drivers/infiniband/sw/rxe/rxe_mr.c   |  2 +-
- drivers/infiniband/sw/rxe/rxe_odp.c  | 69 ++++++++++++++++++++++++++++
- drivers/infiniband/sw/rxe/rxe_resp.c |  5 +-
- 5 files changed, 86 insertions(+), 2 deletions(-)
+On Fri, 13 Dec 2024 at 14:35, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> introduce page_pool_to_pp() API to avoid caller accessing
+> page->pp directly.
+>
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index ea643ebf9667..08c69c637663 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -90,6 +90,7 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
- 		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_RECV;
- 		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_WRITE;
- 		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_READ;
-+		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_ATOMIC;
- 		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_SRQ_RECV;
- 	}
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 7a735108d475..a45ff6236613 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -81,6 +81,9 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 key);
- int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
- void rxe_mr_cleanup(struct rxe_pool_elem *elem);
- 
-+/* defined in rxe_mr.c; used in rxe_mr.c and rxe_odp.c */
-+extern spinlock_t atomic_ops_lock;
-+
- /* rxe_mw.c */
- int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata);
- int rxe_dealloc_mw(struct ib_mw *ibmw);
-@@ -190,6 +193,8 @@ int rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
- 			 u64 iova, int access_flags, struct rxe_mr *mr);
- int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 		    enum rxe_mr_copy_dir dir);
-+int rxe_odp_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
-+			 u64 compare, u64 swap_add, u64 *orig_val);
- #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
- static inline int
- rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
-@@ -202,6 +207,12 @@ static inline int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
- {
- 	return -EOPNOTSUPP;
- }
-+static inline int
-+rxe_odp_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
-+		     u64 compare, u64 swap_add, u64 *orig_val)
-+{
-+	return RESPST_ERR_UNSUPPORTED_OPCODE;
-+}
- #endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
- 
- #endif /* RXE_LOC_H */
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 6cd668a8dfb2..868d2f0b74e9 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -469,7 +469,7 @@ int rxe_flush_pmem_iova(struct rxe_mr *mr, u64 iova, unsigned int length)
- }
- 
- /* Guarantee atomicity of atomic operations at the machine level. */
--static DEFINE_SPINLOCK(atomic_ops_lock);
-+DEFINE_SPINLOCK(atomic_ops_lock);
- 
- int rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- 			u64 compare, u64 swap_add, u64 *orig_val)
-diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-index d3c67d18c173..a82e5011360c 100644
---- a/drivers/infiniband/sw/rxe/rxe_odp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-@@ -253,3 +253,72 @@ int rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 
- 	return err;
- }
-+
-+static int rxe_odp_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
-+				u64 compare, u64 swap_add, u64 *orig_val)
-+{
-+	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
-+	unsigned int page_offset;
-+	struct page *page;
-+	unsigned int idx;
-+	u64 value;
-+	u64 *va;
-+	int err;
-+
-+	if (unlikely(mr->state != RXE_MR_STATE_VALID)) {
-+		rxe_dbg_mr(mr, "mr not in valid state\n");
-+		return RESPST_ERR_RKEY_VIOLATION;
-+	}
-+
-+	err = mr_check_range(mr, iova, sizeof(value));
-+	if (err) {
-+		rxe_dbg_mr(mr, "iova out of range\n");
-+		return RESPST_ERR_RKEY_VIOLATION;
-+	}
-+
-+	idx = (iova - ib_umem_start(umem_odp)) >> umem_odp->page_shift;
-+	page_offset = iova & (BIT(umem_odp->page_shift) - 1);
-+	page = hmm_pfn_to_page(umem_odp->pfn_list[idx]);
-+	if (!page)
-+		return RESPST_ERR_RKEY_VIOLATION;
-+
-+	if (unlikely(page_offset & 0x7)) {
-+		rxe_dbg_mr(mr, "iova not aligned\n");
-+		return RESPST_ERR_MISALIGNED_ATOMIC;
-+	}
-+
-+	va = kmap_local_page(page);
-+
-+	spin_lock_bh(&atomic_ops_lock);
-+	value = *orig_val = va[page_offset >> 3];
-+
-+	if (opcode == IB_OPCODE_RC_COMPARE_SWAP) {
-+		if (value == compare)
-+			va[page_offset >> 3] = swap_add;
-+	} else {
-+		value += swap_add;
-+		va[page_offset >> 3] = value;
-+	}
-+	spin_unlock_bh(&atomic_ops_lock);
-+
-+	kunmap_local(va);
-+
-+	return 0;
-+}
-+
-+int rxe_odp_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
-+			 u64 compare, u64 swap_add, u64 *orig_val)
-+{
-+	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
-+	int err;
-+
-+	err = rxe_odp_map_range_and_lock(mr, iova, sizeof(char), 0);
-+	if (err < 0)
-+		return err;
-+
-+	err = rxe_odp_do_atomic_op(mr, iova, opcode, compare, swap_add,
-+				   orig_val);
-+	mutex_unlock(&umem_odp->umem_mutex);
-+
-+	return err;
-+}
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index e703a3ab82d4..54ba9ee1acc5 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -707,7 +707,10 @@ static enum resp_states atomic_reply(struct rxe_qp *qp,
- 		u64 iova = qp->resp.va + qp->resp.offset;
- 
- 		if (mr->umem->is_odp)
--			err = RESPST_ERR_UNSUPPORTED_OPCODE;
-+			err = rxe_odp_atomic_op(mr, iova, pkt->opcode,
-+						atmeth_comp(pkt),
-+						atmeth_swap_add(pkt),
-+						&res->atomic.orig_val);
- 		else
- 			err = rxe_mr_do_atomic_op(mr, iova, pkt->opcode,
- 						  atmeth_comp(pkt),
--- 
-2.43.0
+I think we already have way too many abstractions, I'd say we need
+less not more. I don't know what others think, but I don't see what we
+gain from this
 
+Thanks
+/Ilias
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
+>  drivers/net/ethernet/freescale/fec_main.c          |  8 +++++---
+>  .../net/ethernet/google/gve/gve_buffer_mgmt_dqo.c  |  2 +-
+>  drivers/net/ethernet/intel/iavf/iavf_txrx.c        |  6 ++++--
+>  drivers/net/ethernet/intel/idpf/idpf_txrx.c        | 14 +++++++++-----
+>  drivers/net/ethernet/intel/libeth/rx.c             |  2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c   |  3 ++-
+>  drivers/net/netdevsim/netdev.c                     |  6 ++++--
+>  drivers/net/wireless/mediatek/mt76/mt76.h          |  2 +-
+>  include/net/libeth/rx.h                            |  3 ++-
+>  include/net/page_pool/helpers.h                    |  5 +++++
+>  net/core/skbuff.c                                  |  3 ++-
+>  net/core/xdp.c                                     |  3 ++-
+>  12 files changed, 38 insertions(+), 19 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+> index 1b55047c0237..98fce41d088c 100644
+> --- a/drivers/net/ethernet/freescale/fec_main.c
+> +++ b/drivers/net/ethernet/freescale/fec_main.c
+> @@ -1009,7 +1009,8 @@ static void fec_enet_bd_init(struct net_device *dev)
+>                                 struct page *page = txq->tx_buf[i].buf_p;
+>
+>                                 if (page)
+> -                                       page_pool_put_page(page->pp, page, 0, false);
+> +                                       page_pool_put_page(page_pool_to_pp(page),
+> +                                                          page, 0, false);
+>                         }
+>
+>                         txq->tx_buf[i].buf_p = NULL;
+> @@ -1549,7 +1550,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
+>                         xdp_return_frame_rx_napi(xdpf);
+>                 } else { /* recycle pages of XDP_TX frames */
+>                         /* The dma_sync_size = 0 as XDP_TX has already synced DMA for_device */
+> -                       page_pool_put_page(page->pp, page, 0, true);
+> +                       page_pool_put_page(page_pool_to_pp(page), page, 0, true);
+>                 }
+>
+>                 txq->tx_buf[index].buf_p = NULL;
+> @@ -3311,7 +3312,8 @@ static void fec_enet_free_buffers(struct net_device *ndev)
+>                         } else {
+>                                 struct page *page = txq->tx_buf[i].buf_p;
+>
+> -                               page_pool_put_page(page->pp, page, 0, false);
+> +                               page_pool_put_page(page_pool_to_pp(page),
+> +                                                  page, 0, false);
+>                         }
+>
+>                         txq->tx_buf[i].buf_p = NULL;
+> diff --git a/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c b/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
+> index 403f0f335ba6..db5926152c72 100644
+> --- a/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
+> +++ b/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
+> @@ -210,7 +210,7 @@ void gve_free_to_page_pool(struct gve_rx_ring *rx,
+>         if (!page)
+>                 return;
+>
+> -       page_pool_put_full_page(page->pp, page, allow_direct);
+> +       page_pool_put_full_page(page_pool_to_pp(page), page, allow_direct);
+>         buf_state->page_info.page = NULL;
+>  }
+>
+> diff --git a/drivers/net/ethernet/intel/iavf/iavf_txrx.c b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
+> index 26b424fd6718..658d8f9a6abb 100644
+> --- a/drivers/net/ethernet/intel/iavf/iavf_txrx.c
+> +++ b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
+> @@ -1050,7 +1050,8 @@ static void iavf_add_rx_frag(struct sk_buff *skb,
+>                              const struct libeth_fqe *rx_buffer,
+>                              unsigned int size)
+>  {
+> -       u32 hr = rx_buffer->page->pp->p.offset;
+> +       struct page_pool *pool = page_pool_to_pp(rx_buffer->page);
+> +       u32 hr = pool->p.offset;
+>
+>         skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buffer->page,
+>                         rx_buffer->offset + hr, size, rx_buffer->truesize);
+> @@ -1067,7 +1068,8 @@ static void iavf_add_rx_frag(struct sk_buff *skb,
+>  static struct sk_buff *iavf_build_skb(const struct libeth_fqe *rx_buffer,
+>                                       unsigned int size)
+>  {
+> -       u32 hr = rx_buffer->page->pp->p.offset;
+> +       struct page_pool *pool = page_pool_to_pp(rx_buffer->page);
+> +       u32 hr = pool->p.offset;
+>         struct sk_buff *skb;
+>         void *va;
+>
+> diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+> index da2a5becf62f..38ad32678bcc 100644
+> --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+> +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+> @@ -385,7 +385,8 @@ static void idpf_rx_page_rel(struct libeth_fqe *rx_buf)
+>         if (unlikely(!rx_buf->page))
+>                 return;
+>
+> -       page_pool_put_full_page(rx_buf->page->pp, rx_buf->page, false);
+> +       page_pool_put_full_page(page_pool_to_pp(rx_buf->page), rx_buf->page,
+> +                               false);
+>
+>         rx_buf->page = NULL;
+>         rx_buf->offset = 0;
+> @@ -3097,7 +3098,8 @@ idpf_rx_process_skb_fields(struct idpf_rx_queue *rxq, struct sk_buff *skb,
+>  void idpf_rx_add_frag(struct idpf_rx_buf *rx_buf, struct sk_buff *skb,
+>                       unsigned int size)
+>  {
+> -       u32 hr = rx_buf->page->pp->p.offset;
+> +       struct page_pool *pool = page_pool_to_pp(rx_buf->page);
+> +       u32 hr = pool->p.offset;
+>
+>         skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buf->page,
+>                         rx_buf->offset + hr, size, rx_buf->truesize);
+> @@ -3129,8 +3131,10 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
+>         if (!libeth_rx_sync_for_cpu(buf, copy))
+>                 return 0;
+>
+> -       dst = page_address(hdr->page) + hdr->offset + hdr->page->pp->p.offset;
+> -       src = page_address(buf->page) + buf->offset + buf->page->pp->p.offset;
+> +       dst = page_address(hdr->page) + hdr->offset +
+> +               page_pool_to_pp(hdr->page)->p.offset;
+> +       src = page_address(buf->page) + buf->offset +
+> +               page_pool_to_pp(buf->page)->p.offset;
+>         memcpy(dst, src, LARGEST_ALIGN(copy));
+>
+>         buf->offset += copy;
+> @@ -3148,7 +3152,7 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
+>   */
+>  struct sk_buff *idpf_rx_build_skb(const struct libeth_fqe *buf, u32 size)
+>  {
+> -       u32 hr = buf->page->pp->p.offset;
+> +       u32 hr = page_pool_to_pp(buf->page)->p.offset;
+>         struct sk_buff *skb;
+>         void *va;
+>
+> diff --git a/drivers/net/ethernet/intel/libeth/rx.c b/drivers/net/ethernet/intel/libeth/rx.c
+> index f20926669318..385afca0e61d 100644
+> --- a/drivers/net/ethernet/intel/libeth/rx.c
+> +++ b/drivers/net/ethernet/intel/libeth/rx.c
+> @@ -207,7 +207,7 @@ EXPORT_SYMBOL_NS_GPL(libeth_rx_fq_destroy, LIBETH);
+>   */
+>  void libeth_rx_recycle_slow(struct page *page)
+>  {
+> -       page_pool_recycle_direct(page->pp, page);
+> +       page_pool_recycle_direct(page_pool_to_pp(page), page);
+>  }
+>  EXPORT_SYMBOL_NS_GPL(libeth_rx_recycle_slow, LIBETH);
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> index 94b291662087..78866b5473da 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> @@ -716,7 +716,8 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
+>                                 /* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
+>                                  * as we know this is a page_pool page.
+>                                  */
+> -                               page_pool_recycle_direct(page->pp, page);
+> +                               page_pool_recycle_direct(page_pool_to_pp(page),
+> +                                                        page);
+>                         } while (++n < num);
+>
+>                         break;
+> diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netdev.c
+> index 0be47fed4efc..088f4836a0e2 100644
+> --- a/drivers/net/netdevsim/netdev.c
+> +++ b/drivers/net/netdevsim/netdev.c
+> @@ -632,7 +632,8 @@ nsim_pp_hold_write(struct file *file, const char __user *data,
+>                 if (!ns->page)
+>                         ret = -ENOMEM;
+>         } else {
+> -               page_pool_put_full_page(ns->page->pp, ns->page, false);
+> +               page_pool_put_full_page(page_pool_to_pp(ns->page), ns->page,
+> +                                       false);
+>                 ns->page = NULL;
+>         }
+>         rtnl_unlock();
+> @@ -831,7 +832,8 @@ void nsim_destroy(struct netdevsim *ns)
+>
+>         /* Put this intentionally late to exercise the orphaning path */
+>         if (ns->page) {
+> -               page_pool_put_full_page(ns->page->pp, ns->page, false);
+> +               page_pool_put_full_page(page_pool_to_pp(ns->page), ns->page,
+> +                                       false);
+>                 ns->page = NULL;
+>         }
+>
+> diff --git a/drivers/net/wireless/mediatek/mt76/mt76.h b/drivers/net/wireless/mediatek/mt76/mt76.h
+> index 0b75a45ad2e8..94a277290909 100644
+> --- a/drivers/net/wireless/mediatek/mt76/mt76.h
+> +++ b/drivers/net/wireless/mediatek/mt76/mt76.h
+> @@ -1688,7 +1688,7 @@ static inline void mt76_put_page_pool_buf(void *buf, bool allow_direct)
+>  {
+>         struct page *page = virt_to_head_page(buf);
+>
+> -       page_pool_put_full_page(page->pp, page, allow_direct);
+> +       page_pool_put_full_page(page_pool_to_pp(page), page, allow_direct);
+>  }
+>
+>  static inline void *
+> diff --git a/include/net/libeth/rx.h b/include/net/libeth/rx.h
+> index 43574bd6612f..beee7ddd77a5 100644
+> --- a/include/net/libeth/rx.h
+> +++ b/include/net/libeth/rx.h
+> @@ -137,7 +137,8 @@ static inline bool libeth_rx_sync_for_cpu(const struct libeth_fqe *fqe,
+>                 return false;
+>         }
+>
+> -       page_pool_dma_sync_for_cpu(page->pp, page, fqe->offset, len);
+> +       page_pool_dma_sync_for_cpu(page_pool_to_pp(page), page, fqe->offset,
+> +                                  len);
+>
+>         return true;
+>  }
+> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
+> index 793e6fd78bc5..1659f1995985 100644
+> --- a/include/net/page_pool/helpers.h
+> +++ b/include/net/page_pool/helpers.h
+> @@ -83,6 +83,11 @@ static inline u64 *page_pool_ethtool_stats_get(u64 *data, const void *stats)
+>  }
+>  #endif
+>
+> +static inline struct page_pool *page_pool_to_pp(struct page *page)
+> +{
+> +       return page->pp;
+> +}
+> +
+>  /**
+>   * page_pool_dev_alloc_pages() - allocate a page.
+>   * @pool:      pool from which to allocate
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 6841e61a6bd0..54e8e7cf2bc9 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -1033,7 +1033,8 @@ bool napi_pp_put_page(netmem_ref netmem)
+>         if (unlikely(!is_pp_netmem(netmem)))
+>                 return false;
+>
+> -       page_pool_put_full_netmem(netmem_get_pp(netmem), netmem, false);
+> +       page_pool_put_full_netmem(page_pool_to_pp(netmem_to_page(netmem)),
+> +                                 netmem, false);
+>
+>         return true;
+>  }
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index bcc5551c6424..e8582036b411 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -384,7 +384,8 @@ void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+>                 /* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
+>                  * as mem->type knows this a page_pool page
+>                  */
+> -               page_pool_put_full_page(page->pp, page, napi_direct);
+> +               page_pool_put_full_page(page_pool_to_pp(page), page,
+> +                                       napi_direct);
+>                 break;
+>         case MEM_TYPE_PAGE_SHARED:
+>                 page_frag_free(data);
+> --
+> 2.33.0
+>
 
