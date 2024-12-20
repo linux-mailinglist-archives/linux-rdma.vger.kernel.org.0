@@ -1,375 +1,166 @@
-Return-Path: <linux-rdma+bounces-6684-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6685-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC2FA9F9239
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 13:30:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EE119F957B
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 16:33:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48EE916A050
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 12:30:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AD5B7A1A43
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2024 15:32:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEF82046A2;
-	Fri, 20 Dec 2024 12:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ppZDZjhx"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ACDC218E92;
+	Fri, 20 Dec 2024 15:32:55 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BECE7204698
-	for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2024 12:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+Received: from zg8tmtu5ljy1ljeznc42.icoremail.net (zg8tmtu5ljy1ljeznc42.icoremail.net [159.65.134.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E3E218AC9;
+	Fri, 20 Dec 2024 15:32:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.65.134.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734697798; cv=none; b=JM8WcPbEI0+66o8xs2dgHFV4vRmusHp07qTCQ4Dqnjk/0f5LW4nWJl6fkToIe24YFWXFzXYQKMtHHiE8EMgX6oyLymIX4GFiIQ5Mp9wsSYydj2X/4tn96LAMlnhQQCvkSvFC7mMeb0k3OnW24Fhe/Zl8JVTP+M3QkRn0NJGEG3I=
+	t=1734708775; cv=none; b=qhoJKlE3BxBXA5tdvfcf9VmC0YTCz7EtNG+SBEKDdZE37R2CTZhQKNVMTvcRQz8gYapZCtoluubm/pRMDeujC+EqtwejRJyx6K8ig2/+N1u0obGj36+qd/4/jUBa+WPH4MHfV0MV8Q+hVjAMVkdvSnLMTCN4cQUyhCmqsLis5PA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734697798; c=relaxed/simple;
-	bh=66CvT6ns+hHH6BDz1EEtJ1zFnpF+MWdHM0cUPxVKIZI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q8nFKcAhGx5Cd1cyEnxgZaiWKoAf7wgFot2LUwg+ODrw1/UVBBb+PFAlthJaxoJMK4Au8R9qJOok6gQ6cgkfdwb+r7Oyp1xlbmEv4fqsVgYulQg3QcAJRAuKfXuxx5gPR5/d4buAeix/yiYkO1nKj5pcLT+gMryu/bP6WUrAmL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ppZDZjhx; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e3983426f80so1469013276.1
-        for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2024 04:29:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1734697796; x=1735302596; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VmRCmaPkLkPswmKEyB/ZICUJHMBmUsSjq9Yct5NQ1ro=;
-        b=ppZDZjhxB3N7WSspD6BavgGwANaKs4GCgU2/GX4iWnzqxjKuQPpfAnrcb0n+NJZQe9
-         hjlF2ocPlEbN2GFg8uhM1kkQfVDevqS6QjA9f/yiLin5KJCmeYvtBPbqdiuxpI44MaJR
-         kPrIVBnRJ621HA+fDJkJofG7Li8oUrYR5oxajpzu/44Q+9K1WNJttN4BPBHVSJEXrD6x
-         iW5n70M8++Z3C2Y8tLr2cgNJKTSNqXyClZ5u1X9/S+xNLNZKmTREFO+ni5WpoiyZOfz7
-         9SRDuhtyxOWaeah7ds1eV3Amx3JOq4pAAMg/iuh/8HdZjxuYCCUSQU92yj5Q5wy5LRHy
-         kFrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734697796; x=1735302596;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VmRCmaPkLkPswmKEyB/ZICUJHMBmUsSjq9Yct5NQ1ro=;
-        b=rCTp53IUVaqQxrh9rTNo58I3AZScP7myB2JiY1nNGaEJ8JxUwY8qEm0vT6e1Ii71+a
-         3pZY4JljsaIhFkDhc5i70DJwWmQMS44twaWTNChuwXokcbWLdPZ+h8g2T6umff7MOOyG
-         zMtwxk3mE3pPW7Qyk7RW0WnFaUVKCH9r26p1XzLBNyi3o1u199qv7W1ygpQQgEbo3XA4
-         Sg+JOJqT4hH7SuErsuEn5wdV77gcO1pPv5qsxe9P4EAGcZQa3KAOa1VJVO4UVpagLS0C
-         aFbF27bJ2Q7V7Cf9YJG4+oZoFW5wyfbFcx8zXggCEwVVjV5v8lkbRD8xy0tbjnO+YmTe
-         MG+g==
-X-Forwarded-Encrypted: i=1; AJvYcCV9A7QqHw89KAalpEvHtMgUAlbbbqwLoPxz2CMHh4m9MkkjoyyBPknkQj8wdaY2+PG+h1+eH0PCOTv4@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4qhUylz4m2Qkg4kFv5E1ysNl8Abw5d1yD8MH7cE+yt1X7iywF
-	qL3CqPm+Vyrk3ML0FWYx9K7hFhN9QqJtlwmcRG8YSgxj85CrGH+m0NXJeqhPIxMgkk8gtZWA0C0
-	Ke7uPgB2PNOuybmJc4L5c5nBhRuGy1zImMd8qDQ==
-X-Gm-Gg: ASbGncsrxhfLIAWu5hgiqbFwj9QUJW+sABuo47dVSUYXUFG17hcYFPWeVHtVs7qSXTW
-	C7X6d8XxzF8zk9RyiD05tPrSjkqTbt/0WMdqeDA==
-X-Google-Smtp-Source: AGHT+IGSsUG4iSnRRcdUuCq27bUw63jRg+t86G+uWqSkEhiBTf+pNCH23b3m4irAGr9UmyGYIOuuYUx3ncEVJac77D0=
-X-Received: by 2002:a05:6902:982:b0:e3c:8ec9:c896 with SMTP id
- 3f1490d57ef6-e538c350d10mr1981319276.34.1734697795572; Fri, 20 Dec 2024
- 04:29:55 -0800 (PST)
+	s=arc-20240116; t=1734708775; c=relaxed/simple;
+	bh=KoC6ecgYs5iyg360vJrTKCCc6EKx/Go0dMp6gjIw5+c=;
+	h=Date:From:To:Subject:Content-Type:MIME-Version:Message-ID; b=Ki1fhUlGisnqY07TOOeJO31pK7yABoaaEI6SyfeqEfsB3goPB6QhCWMxLHj4OWJ6ghyYtQjNMokPZvnoSHvo7Jw3zm9KEskB8Z0BLvChJpPt7zZ1o3/KjzSmseWoxrllNb5RMb1vNcpJVNusKfl/UfLCrYN4kSJMY35zppUm06k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=159.65.134.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from linma$zju.edu.cn ( [183.157.161.220] ) by
+ ajax-webmail-mail-app2 (Coremail) ; Fri, 20 Dec 2024 23:32:34 +0800
+ (GMT+08:00)
+Date: Fri, 20 Dec 2024 23:32:34 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: "Lin Ma" <linma@zju.edu.cn>
+To: jgg@ziepe.ca, leon@kernel.org, cmeiohas@nvidia.com,
+	michaelgur@nvidia.com, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [bug report] RDMA/iwpm: reentrant iwpm hello message
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2024.1-cmXT5 build
+ 20240625(a75f206e) Copyright (c) 2002-2024 www.mailtech.cn zju.edu.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241213122739.4050137-1-linyunsheng@huawei.com> <20241213122739.4050137-2-linyunsheng@huawei.com>
-In-Reply-To: <20241213122739.4050137-2-linyunsheng@huawei.com>
-From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date: Fri, 20 Dec 2024 14:29:19 +0200
-Message-ID: <CAC_iWj+3Q7CAS3xH9+zWA7nXdFNSJ-XMKQB3ZT0YvUQ-Q2gMCQ@mail.gmail.com>
-Subject: Re: [PATCH RFCv5 1/8] page_pool: introduce page_pool_to_pp() API
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	somnath.kotur@broadcom.com, liuyonglong@huawei.com, fanghaiqing@huawei.com, 
-	zhangkun09@huawei.com, Wei Fang <wei.fang@nxp.com>, 
-	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
-	Shailend Chand <shailend@google.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, 
-	Shayne Chen <shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, 
-	Kalle Valo <kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Simon Horman <horms@kernel.org>, 
-	imx@lists.linux.dev, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	intel-wired-lan@lists.osuosl.org, bpf@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <661ee85f.a4a2.193e4b2f91b.Coremail.linma@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:by_KCgAHOpYTjmVnOb1zAA--.10536W
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwQBEmdld6IB0wABsQ
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW3Jw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-Hi Yunsheng,
-
-On Fri, 13 Dec 2024 at 14:35, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> introduce page_pool_to_pp() API to avoid caller accessing
-> page->pp directly.
->
-
-I think we already have way too many abstractions, I'd say we need
-less not more. I don't know what others think, but I don't see what we
-gain from this
-
-Thanks
-/Ilias
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
->  drivers/net/ethernet/freescale/fec_main.c          |  8 +++++---
->  .../net/ethernet/google/gve/gve_buffer_mgmt_dqo.c  |  2 +-
->  drivers/net/ethernet/intel/iavf/iavf_txrx.c        |  6 ++++--
->  drivers/net/ethernet/intel/idpf/idpf_txrx.c        | 14 +++++++++-----
->  drivers/net/ethernet/intel/libeth/rx.c             |  2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c   |  3 ++-
->  drivers/net/netdevsim/netdev.c                     |  6 ++++--
->  drivers/net/wireless/mediatek/mt76/mt76.h          |  2 +-
->  include/net/libeth/rx.h                            |  3 ++-
->  include/net/page_pool/helpers.h                    |  5 +++++
->  net/core/skbuff.c                                  |  3 ++-
->  net/core/xdp.c                                     |  3 ++-
->  12 files changed, 38 insertions(+), 19 deletions(-)
->
-> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-> index 1b55047c0237..98fce41d088c 100644
-> --- a/drivers/net/ethernet/freescale/fec_main.c
-> +++ b/drivers/net/ethernet/freescale/fec_main.c
-> @@ -1009,7 +1009,8 @@ static void fec_enet_bd_init(struct net_device *dev)
->                                 struct page *page = txq->tx_buf[i].buf_p;
->
->                                 if (page)
-> -                                       page_pool_put_page(page->pp, page, 0, false);
-> +                                       page_pool_put_page(page_pool_to_pp(page),
-> +                                                          page, 0, false);
->                         }
->
->                         txq->tx_buf[i].buf_p = NULL;
-> @@ -1549,7 +1550,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->                         xdp_return_frame_rx_napi(xdpf);
->                 } else { /* recycle pages of XDP_TX frames */
->                         /* The dma_sync_size = 0 as XDP_TX has already synced DMA for_device */
-> -                       page_pool_put_page(page->pp, page, 0, true);
-> +                       page_pool_put_page(page_pool_to_pp(page), page, 0, true);
->                 }
->
->                 txq->tx_buf[index].buf_p = NULL;
-> @@ -3311,7 +3312,8 @@ static void fec_enet_free_buffers(struct net_device *ndev)
->                         } else {
->                                 struct page *page = txq->tx_buf[i].buf_p;
->
-> -                               page_pool_put_page(page->pp, page, 0, false);
-> +                               page_pool_put_page(page_pool_to_pp(page),
-> +                                                  page, 0, false);
->                         }
->
->                         txq->tx_buf[i].buf_p = NULL;
-> diff --git a/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c b/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
-> index 403f0f335ba6..db5926152c72 100644
-> --- a/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
-> +++ b/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
-> @@ -210,7 +210,7 @@ void gve_free_to_page_pool(struct gve_rx_ring *rx,
->         if (!page)
->                 return;
->
-> -       page_pool_put_full_page(page->pp, page, allow_direct);
-> +       page_pool_put_full_page(page_pool_to_pp(page), page, allow_direct);
->         buf_state->page_info.page = NULL;
->  }
->
-> diff --git a/drivers/net/ethernet/intel/iavf/iavf_txrx.c b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
-> index 26b424fd6718..658d8f9a6abb 100644
-> --- a/drivers/net/ethernet/intel/iavf/iavf_txrx.c
-> +++ b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
-> @@ -1050,7 +1050,8 @@ static void iavf_add_rx_frag(struct sk_buff *skb,
->                              const struct libeth_fqe *rx_buffer,
->                              unsigned int size)
->  {
-> -       u32 hr = rx_buffer->page->pp->p.offset;
-> +       struct page_pool *pool = page_pool_to_pp(rx_buffer->page);
-> +       u32 hr = pool->p.offset;
->
->         skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buffer->page,
->                         rx_buffer->offset + hr, size, rx_buffer->truesize);
-> @@ -1067,7 +1068,8 @@ static void iavf_add_rx_frag(struct sk_buff *skb,
->  static struct sk_buff *iavf_build_skb(const struct libeth_fqe *rx_buffer,
->                                       unsigned int size)
->  {
-> -       u32 hr = rx_buffer->page->pp->p.offset;
-> +       struct page_pool *pool = page_pool_to_pp(rx_buffer->page);
-> +       u32 hr = pool->p.offset;
->         struct sk_buff *skb;
->         void *va;
->
-> diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-> index da2a5becf62f..38ad32678bcc 100644
-> --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-> +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-> @@ -385,7 +385,8 @@ static void idpf_rx_page_rel(struct libeth_fqe *rx_buf)
->         if (unlikely(!rx_buf->page))
->                 return;
->
-> -       page_pool_put_full_page(rx_buf->page->pp, rx_buf->page, false);
-> +       page_pool_put_full_page(page_pool_to_pp(rx_buf->page), rx_buf->page,
-> +                               false);
->
->         rx_buf->page = NULL;
->         rx_buf->offset = 0;
-> @@ -3097,7 +3098,8 @@ idpf_rx_process_skb_fields(struct idpf_rx_queue *rxq, struct sk_buff *skb,
->  void idpf_rx_add_frag(struct idpf_rx_buf *rx_buf, struct sk_buff *skb,
->                       unsigned int size)
->  {
-> -       u32 hr = rx_buf->page->pp->p.offset;
-> +       struct page_pool *pool = page_pool_to_pp(rx_buf->page);
-> +       u32 hr = pool->p.offset;
->
->         skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buf->page,
->                         rx_buf->offset + hr, size, rx_buf->truesize);
-> @@ -3129,8 +3131,10 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
->         if (!libeth_rx_sync_for_cpu(buf, copy))
->                 return 0;
->
-> -       dst = page_address(hdr->page) + hdr->offset + hdr->page->pp->p.offset;
-> -       src = page_address(buf->page) + buf->offset + buf->page->pp->p.offset;
-> +       dst = page_address(hdr->page) + hdr->offset +
-> +               page_pool_to_pp(hdr->page)->p.offset;
-> +       src = page_address(buf->page) + buf->offset +
-> +               page_pool_to_pp(buf->page)->p.offset;
->         memcpy(dst, src, LARGEST_ALIGN(copy));
->
->         buf->offset += copy;
-> @@ -3148,7 +3152,7 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
->   */
->  struct sk_buff *idpf_rx_build_skb(const struct libeth_fqe *buf, u32 size)
->  {
-> -       u32 hr = buf->page->pp->p.offset;
-> +       u32 hr = page_pool_to_pp(buf->page)->p.offset;
->         struct sk_buff *skb;
->         void *va;
->
-> diff --git a/drivers/net/ethernet/intel/libeth/rx.c b/drivers/net/ethernet/intel/libeth/rx.c
-> index f20926669318..385afca0e61d 100644
-> --- a/drivers/net/ethernet/intel/libeth/rx.c
-> +++ b/drivers/net/ethernet/intel/libeth/rx.c
-> @@ -207,7 +207,7 @@ EXPORT_SYMBOL_NS_GPL(libeth_rx_fq_destroy, LIBETH);
->   */
->  void libeth_rx_recycle_slow(struct page *page)
->  {
-> -       page_pool_recycle_direct(page->pp, page);
-> +       page_pool_recycle_direct(page_pool_to_pp(page), page);
->  }
->  EXPORT_SYMBOL_NS_GPL(libeth_rx_recycle_slow, LIBETH);
->
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> index 94b291662087..78866b5473da 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> @@ -716,7 +716,8 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
->                                 /* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
->                                  * as we know this is a page_pool page.
->                                  */
-> -                               page_pool_recycle_direct(page->pp, page);
-> +                               page_pool_recycle_direct(page_pool_to_pp(page),
-> +                                                        page);
->                         } while (++n < num);
->
->                         break;
-> diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netdev.c
-> index 0be47fed4efc..088f4836a0e2 100644
-> --- a/drivers/net/netdevsim/netdev.c
-> +++ b/drivers/net/netdevsim/netdev.c
-> @@ -632,7 +632,8 @@ nsim_pp_hold_write(struct file *file, const char __user *data,
->                 if (!ns->page)
->                         ret = -ENOMEM;
->         } else {
-> -               page_pool_put_full_page(ns->page->pp, ns->page, false);
-> +               page_pool_put_full_page(page_pool_to_pp(ns->page), ns->page,
-> +                                       false);
->                 ns->page = NULL;
->         }
->         rtnl_unlock();
-> @@ -831,7 +832,8 @@ void nsim_destroy(struct netdevsim *ns)
->
->         /* Put this intentionally late to exercise the orphaning path */
->         if (ns->page) {
-> -               page_pool_put_full_page(ns->page->pp, ns->page, false);
-> +               page_pool_put_full_page(page_pool_to_pp(ns->page), ns->page,
-> +                                       false);
->                 ns->page = NULL;
->         }
->
-> diff --git a/drivers/net/wireless/mediatek/mt76/mt76.h b/drivers/net/wireless/mediatek/mt76/mt76.h
-> index 0b75a45ad2e8..94a277290909 100644
-> --- a/drivers/net/wireless/mediatek/mt76/mt76.h
-> +++ b/drivers/net/wireless/mediatek/mt76/mt76.h
-> @@ -1688,7 +1688,7 @@ static inline void mt76_put_page_pool_buf(void *buf, bool allow_direct)
->  {
->         struct page *page = virt_to_head_page(buf);
->
-> -       page_pool_put_full_page(page->pp, page, allow_direct);
-> +       page_pool_put_full_page(page_pool_to_pp(page), page, allow_direct);
->  }
->
->  static inline void *
-> diff --git a/include/net/libeth/rx.h b/include/net/libeth/rx.h
-> index 43574bd6612f..beee7ddd77a5 100644
-> --- a/include/net/libeth/rx.h
-> +++ b/include/net/libeth/rx.h
-> @@ -137,7 +137,8 @@ static inline bool libeth_rx_sync_for_cpu(const struct libeth_fqe *fqe,
->                 return false;
->         }
->
-> -       page_pool_dma_sync_for_cpu(page->pp, page, fqe->offset, len);
-> +       page_pool_dma_sync_for_cpu(page_pool_to_pp(page), page, fqe->offset,
-> +                                  len);
->
->         return true;
->  }
-> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-> index 793e6fd78bc5..1659f1995985 100644
-> --- a/include/net/page_pool/helpers.h
-> +++ b/include/net/page_pool/helpers.h
-> @@ -83,6 +83,11 @@ static inline u64 *page_pool_ethtool_stats_get(u64 *data, const void *stats)
->  }
->  #endif
->
-> +static inline struct page_pool *page_pool_to_pp(struct page *page)
-> +{
-> +       return page->pp;
-> +}
-> +
->  /**
->   * page_pool_dev_alloc_pages() - allocate a page.
->   * @pool:      pool from which to allocate
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 6841e61a6bd0..54e8e7cf2bc9 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -1033,7 +1033,8 @@ bool napi_pp_put_page(netmem_ref netmem)
->         if (unlikely(!is_pp_netmem(netmem)))
->                 return false;
->
-> -       page_pool_put_full_netmem(netmem_get_pp(netmem), netmem, false);
-> +       page_pool_put_full_netmem(page_pool_to_pp(netmem_to_page(netmem)),
-> +                                 netmem, false);
->
->         return true;
->  }
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index bcc5551c6424..e8582036b411 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -384,7 +384,8 @@ void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
->                 /* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
->                  * as mem->type knows this a page_pool page
->                  */
-> -               page_pool_put_full_page(page->pp, page, napi_direct);
-> +               page_pool_put_full_page(page_pool_to_pp(page), page,
-> +                                       napi_direct);
->                 break;
->         case MEM_TYPE_PAGE_SHARED:
->                 page_frag_free(data);
-> --
-> 2.33.0
->
+SGVsbG8gbWFpbnRhaW5lcnMsCgpPdXIgZnV6emVyIGlkZW50aWZpZWQgb25lIGludGVyZXN0aW5n
+IHJlZW50cmFudCBidWcgdGhhdCBjb3VsZCBjYXVzZSBoYW5nCmluIHRoZSBrZXJuZWwuIFRoZSBj
+cmFzaCBsb2cgaXMgbGlrZSBiZWxvdzoKClsgICAzMi42MTY1NzVdWyBUMjk4M10KWyAgIDMyLjYx
+NzAwMF1bIFQyOTgzXSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQpbICAgMzIuNjE3ODc5XVsgVDI5ODNdIFdBUk5JTkc6IHBvc3NpYmxlIHJlY3Vyc2l2ZSBsb2Nr
+aW5nIGRldGVjdGVkClsgICAzMi42MTg3NTldWyBUMjk4M10gNi4xLjcwICMxIE5vdCB0YWludGVk
+ClsgICAzMi42MTkzNjJdWyBUMjk4M10gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KWyAgIDMyLjYyMDI0OF1bIFQyOTgzXSBoZWxsby5lbGYvMjk4MyBpcyB0cnlp
+bmcgdG8gYWNxdWlyZSBsb2NrOgpbICAgMzIuNjIxMDg0XVsgVDI5ODNdIGZmZmZmZmZmOTE5Nzhm
+ZjggKCZyZG1hX25sX3R5cGVzW2lkeF0uc2VtKXsuKy4rfS17MzozfSwgYXQ6IHJkbWFfbmxfcmN2
+KzB4MzBmLzB4OTkwClsgICAzMi42MjQyMzRdWyBUMjk4M10KWyAgIDMyLjYyNDIzNF1bIFQyOTgz
+XSBidXQgdGFzayBpcyBhbHJlYWR5IGhvbGRpbmcgbG9jazoKWyAgIDMyLjYyNTIzN11bIFQyOTgz
+XSBmZmZmZmZmZjkxOTc4ZmY4ICgmcmRtYV9ubF90eXBlc1tpZHhdLnNlbSl7LisuK30tezM6M30s
+IGF0OiByZG1hX25sX3JjdisweDMwZi8weDk5MApbICAgMzIuNjI2NTYyXVsgVDI5ODNdClsgICAz
+Mi42MjY1NjJdWyBUMjk4M10gb3RoZXIgaW5mbyB0aGF0IG1pZ2h0IGhlbHAgdXMgZGVidWcgdGhp
+czoKWyAgIDMyLjYyNzY0OF1bIFQyOTgzXSAgUG9zc2libGUgdW5zYWZlIGxvY2tpbmcgc2NlbmFy
+aW86ClsgICAzMi42Mjc2NDhdWyBUMjk4M10KWyAgIDMyLjYzMzcwOF1bIFQyOTgzXSAgICAgICAg
+Q1BVMApbICAgMzIuNjM0MTg0XVsgVDI5ODNdICAgICAgICAtLS0tClsgICAzMi42MzQ2NDZdWyBU
+Mjk4M10gICBsb2NrKCZyZG1hX25sX3R5cGVzW2lkeF0uc2VtKTsKWyAgIDMyLjYzNTQzM11bIFQy
+OTgzXSAgIGxvY2soJnJkbWFfbmxfdHlwZXNbaWR4XS5zZW0pOwpbICAgMzIuNjM2MTU1XVsgVDI5
+ODNdClsgICAzMi42MzYxNTVdWyBUMjk4M10gICoqKiBERUFETE9DSyAqKioKWyAgIDMyLjYzNjE1
+NV1bIFQyOTgzXQpbICAgMzIuNjM3MjM2XVsgVDI5ODNdICBNYXkgYmUgZHVlIHRvIG1pc3Npbmcg
+bG9jayBuZXN0aW5nIG5vdGF0aW9uClsgICAzMi42MzcyMzZdWyBUMjk4M10KWyAgIDMyLjYzODQw
+OF1bIFQyOTgzXSAyIGxvY2tzIGhlbGQgYnkgaGVsbG8uZWxmLzI5ODM6ClsgICAzMi42MzkxMzVd
+WyBUMjk4M10gICMwOiBmZmZmZmZmZjkxOTc4ZmY4ICgmcmRtYV9ubF90eXBlc1tpZHhdLnNlbSl7
+LisuK30tezM6M30sIGF0OiByZG1hX25sX3JjdisweDMwZi8weDk5MApbICAgMzIuNjQwNjA1XVsg
+VDI5ODNdICAjMTogZmZmZjg4ODEwM2Y4ZjY5MCAobmxrX2NiX211dGV4LVJETUEpeysuKy59LXsz
+OjN9LCBhdDogbmV0bGlua19kdW1wKzB4ZDMvMHhjNjAKWyAgIDMyLjY0MTk4MV1bIFQyOTgzXQpb
+ICAgMzIuNjQxOTgxXVsgVDI5ODNdIHN0YWNrIGJhY2t0cmFjZToKWyAgIDMyLjY0MjgzM11bIFQy
+OTgzXSBDUFU6IDAgUElEOiAyOTgzIENvbW06IGhlbGxvLmVsZiBOb3QgdGFpbnRlZCA2LjEuNzAg
+IzEKWyAgIDMyLjY0MzgzMF1bIFQyOTgzXSBIYXJkd2FyZSBuYW1lOiBRRU1VIFN0YW5kYXJkIFBD
+IChpNDQwRlggKyBQSUlYLCAxOTk2KSwgQklPUyAxLjEzLjAtMXVidW50dTEuMSAwNC8wMS8yMDE0
+ClsgICAzMi42NDUyNDNdWyBUMjk4M10gQ2FsbCBUcmFjZToKWyAgIDMyLjY0NTczNV1bIFQyOTgz
+XSAgPFRBU0s+ClsgICAzMi42NDYxOTddWyBUMjk4M10gIGR1bXBfc3RhY2tfbHZsKzB4MTc3LzB4
+MjMxClsgICAzMi42NDY5MDFdWyBUMjk4M10gID8gbmZfdGNwX2hhbmRsZV9pbnZhbGlkKzB4NjA1
+LzB4NjA1ClsgICAzMi42NDc3MDVdWyBUMjk4M10gID8gcGFuaWMrMHg3MjUvMHg3MjUKWyAgIDMy
+LjY0ODM1MF1bIFQyOTgzXSAgdmFsaWRhdGVfY2hhaW4rMHg0ZGQwLzB4NjAxMApbICAgMzIuNjQ5
+MDgwXVsgVDI5ODNdICA/IHJlYWNxdWlyZV9oZWxkX2xvY2tzKzB4NWEwLzB4NWEwClsgICAzMi42
+NDk4NjRdWyBUMjk4M10gID8gbWFya19sb2NrKzB4OTQvMHgzMjAKWyAgIDMyLjY1MDUwNl1bIFQy
+OTgzXSAgPyBsb2NrZGVwX2hhcmRpcnFzX29uX3ByZXBhcmUrMHgzZmQvMHg3NjAKWyAgIDMyLjY1
+MTM3Nl1bIFQyOTgzXSAgPyBwcmludF9pcnF0cmFjZV9ldmVudHMrMHgyMTAvMHgyMTAKWyAgIDMy
+LjY1MjE4Ml1bIFQyOTgzXSAgPyBtYXJrX2xvY2srMHg5NC8weDMyMApbICAgMzIuNjUyODI1XVsg
+VDI5ODNdICBfX2xvY2tfYWNxdWlyZSsweDEyYWQvMHgyMDEwClsgICAzMi42NTM1NDFdWyBUMjk4
+M10gIGxvY2tfYWNxdWlyZSsweDFiNC8weDQ5MApbICAgMzIuNjU0MjExXVsgVDI5ODNdICA/IHJk
+bWFfbmxfcmN2KzB4MzBmLzB4OTkwClsgICAzMi42NTQ4OTFdWyBUMjk4M10gID8gX19taWdodF9z
+bGVlcCsweGQwLzB4ZDAKWyAgIDMyLjY1NTU2OV1bIFQyOTgzXSAgPyBfX2xvY2tfYWNxdWlyZSsw
+eDEyYWQvMHgyMDEwClsgICAzMi42NTYzMTZdWyBUMjk4M10gID8gcmVhZF9sb2NrX2lzX3JlY3Vy
+c2l2ZSsweDEwLzB4MTAKWyAgIDMyLjY1NzEwOV1bIFQyOTgzXSAgZG93bl9yZWFkKzB4NDIvMHgy
+ZDAKWyAgIDMyLjY1NzcyM11bIFQyOTgzXSAgPyByZG1hX25sX3JjdisweDMwZi8weDk5MApbICAg
+MzIuNjU4NDAwXVsgVDI5ODNdICByZG1hX25sX3JjdisweDMwZi8weDk5MApbICAgMzIuNjU5MTMy
+XVsgVDI5ODNdICA/IHJkbWFfbmxfbmV0X2luaXQrMHgxNjAvMHgxNjAKWyAgIDMyLjY1OTg0N11b
+IFQyOTgzXSAgPyBuZXRsaW5rX2xvb2t1cCsweDMwLzB4MjAwClsgICAzMi42NjA1MTldWyBUMjk4
+M10gID8gX19uZXRsaW5rX2xvb2t1cCsweDJhLzB4NmQwClsgICAzMi42NjEyMTRdWyBUMjk4M10g
+ID8gbmV0bGlua19sb29rdXArMHgzMC8weDIwMApbICAgMzIuNjYxODgwXVsgVDI5ODNdICA/IG5l
+dGxpbmtfbG9va3VwKzB4MzAvMHgyMDAKWyAgIDMyLjY2MjU0NV1bIFQyOTgzXSAgbmV0bGlua191
+bmljYXN0KzB4NzRiLzB4OGMwClsgICAzMi42NjMyMTVdWyBUMjk4M10gIHJkbWFfbmxfdW5pY2Fz
+dCsweDRiLzB4NjAKWyAgIDMyLjY2Mzg1Ml1bIFQyOTgzXSAgaXdwbV9zZW5kX2hlbGxvKzB4MWQ4
+LzB4MzUwClsgICAzMi42NjQ1MjVdWyBUMjk4M10gID8gaXdwbV9tYXBpbmZvX2F2YWlsYWJsZSsw
+eDEzMC8weDEzMApbICAgMzIuNjY1Mjk1XVsgVDI5ODNdICA/IGl3cG1fcGFyc2Vfbmxtc2crMHgx
+MjQvMHgyNjAKWyAgIDMyLjY2NTk5NV1bIFQyOTgzXSAgaXdwbV9oZWxsb19jYisweDFlMS8weDJl
+MApbICAgMzIuNjY2NjM4XVsgVDI5ODNdICA/IG5ldGxpbmtfZHVtcCsweDIzNi8weGM2MApbICAg
+MzIuNjY3Mjk0XVsgVDI5ODNdICA/IGl3cG1fbWFwcGluZ19lcnJvcl9jYisweDNlMC8weDNlMApb
+ICAgMzIuNjY4MDY0XVsgVDI5ODNdICBuZXRsaW5rX2R1bXArMHg1OTIvMHhjNjAKWyAgIDMyLjY2
+ODcwNl1bIFQyOTgzXSAgPyBuZXRsaW5rX2xvb2t1cCsweDIwMC8weDIwMApbICAgMzIuNjY5Mzgx
+XVsgVDI5ODNdICA/IF9fbmV0bGlua19sb29rdXArMHgyYS8weDZkMApbICAgMzIuNjcwMDczXVsg
+VDI5ODNdICA/IG5ldGxpbmtfbG9va3VwKzB4MzAvMHgyMDAKWyAgIDMyLjY3MDczMV1bIFQyOTgz
+XSAgPyBuZXRsaW5rX2xvb2t1cCsweDMwLzB4MjAwClsgICAzMi42NzE0MTFdWyBUMjk4M10gIF9f
+bmV0bGlua19kdW1wX3N0YXJ0KzB4NTRlLzB4NzEwClsgICAzMi42NzIyMjBdWyBUMjk4M10gIHJk
+bWFfbmxfcmN2KzB4NzUzLzB4OTkwClsgICAzMi42NzI4NDZdWyBUMjk4M10gID8gcmRtYV9ubF9u
+ZXRfaW5pdCsweDE2MC8weDE2MApbICAgMzIuNjczNTM4XVsgVDI5ODNdICA/IGl3cG1fbWFwcGlu
+Z19lcnJvcl9jYisweDNlMC8weDNlMApbICAgMzIuNjc0MzE2XVsgVDI5ODNdICA/IG5ldGxpbmtf
+ZGVsaXZlcl90YXArMHgyZS8weDFiMApbICAgMzIuNjc1MTA2XVsgVDI5ODNdICA/IG5ldF9nZW5l
+cmljKzB4MWUvMHgyNDAKWyAgIDMyLjY3NTc3OF1bIFQyOTgzXSAgPyBuZXRsaW5rX2RlbGl2ZXJf
+dGFwKzB4MmUvMHgxYjAKWyAgIDMyLjY3NjU1M11bIFQyOTgzXSAgbmV0bGlua191bmljYXN0KzB4
+NzRiLzB4OGMwClsgICAzMi42NzcyNjJdWyBUMjk4M10gIG5ldGxpbmtfc2VuZG1zZysweDg4Mi8w
+eGI5MApbICAgMzIuNjc3OTY5XVsgVDI5ODNdICA/IG5ldGxpbmtfZ2V0c29ja29wdCsweDU1MC8w
+eDU1MApbICAgMzIuNjc4NzMyXVsgVDI5ODNdICA/IGFhX3NvY2tfbXNnX3Blcm0rMHg5NC8weDE1
+MApbICAgMzIuNjc5NDY1XVsgVDI5ODNdICA/IGJwZl9sc21fc29ja2V0X3NlbmRtc2crMHg1LzB4
+MTAKWyAgIDMyLjY4MDI0M11bIFQyOTgzXSAgPyBzZWN1cml0eV9zb2NrZXRfc2VuZG1zZysweDdj
+LzB4YTAKWyAgIDMyLjY4MTA0OF1bIFQyOTgzXSAgX19zeXNfc2VuZHRvKzB4NDU2LzB4NWIwClsg
+ICAzMi42ODE3MjRdWyBUMjk4M10gID8gX19pYTMyX3N5c19nZXRwZWVybmFtZSsweDgwLzB4ODAK
+WyAgIDMyLjY4MjUxMF1bIFQyOTgzXSAgPyBfX2xvY2tfYWNxdWlyZSsweDIwMTAvMHgyMDEwClsg
+ICAzMi42ODMyNDFdWyBUMjk4M10gID8gbG9ja2RlcF9oYXJkaXJxc19vbl9wcmVwYXJlKzB4M2Zk
+LzB4NzYwClsgICAzMi42ODQxMzRdWyBUMjk4M10gID8gZmRfaW5zdGFsbCsweDVjLzB4NGYwClsg
+ICAzMi42ODQ3OTRdWyBUMjk4M10gID8gcHJpbnRfaXJxdHJhY2VfZXZlbnRzKzB4MjEwLzB4MjEw
+ClsgICAzMi42ODU2MDhdWyBUMjk4M10gIF9feDY0X3N5c19zZW5kdG8rMHhkYS8weGYwClsgICAz
+Mi42ODYyOThdWyBUMjk4M10gIGRvX3N5c2NhbGxfNjQrMHg0NS8weDkwClsgICAzMi42ODY5NTVd
+WyBUMjk4M10gIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsweDYzLzB4Y2QKWyAgIDMy
+LjY4NzgxMF1bIFQyOTgzXSBSSVA6IDAwMzM6MHg0NDA2MjQKWyAgIDMyLjY5MTk0NF1bIFQyOTgz
+XSBSU1A6IDAwMmI6MDAwMDdmZmM4MmYzZWU0OCBFRkxBR1M6IDAwMDAwMjQ2IE9SSUdfUkFYOiAw
+MDAwMDAwMDAwMDAwMDJjClsgICAzMi42OTMxMzZdWyBUMjk4M10gUkFYOiBmZmZmZmZmZmZmZmZm
+ZmRhIFJCWDogMDAwMDAwMDAwMDQwMDQwMCBSQ1g6IDAwMDAwMDAwMDA0NDA2MjQKWyAgIDMyLjY5
+NDI2NF1bIFQyOTgzXSBSRFg6IDAwMDAwMDAwMDAwMDAwMTggUlNJOiAwMDAwN2ZmYzgyZjNlZTgw
+IFJESTogMDAwMDAwMDAwMDAwMDAwMwpbICAgMzIuNjk1Mzg3XVsgVDI5ODNdIFJCUDogMDAwMDdm
+ZmM4MmYzZmU5MCBSMDg6IDAwMDAwMDAwMDA0N2RmMDggUjA5OiAwMDAwMDAwMDAwMDAwMDBjClsg
+ICAzMi42OTY2MjFdWyBUMjk4M10gUjEwOiAwMDAwMDAwMDAwMDAwMDAwIFIxMTogMDAwMDAwMDAw
+MDAwMDI0NiBSMTI6IDAwMDAwMDAwMDA0MDM5OTAKWyAgIDMyLjY5NzY5M11bIFQyOTgzXSBSMTM6
+IDAwMDAwMDAwMDAwMDAwMDAgUjE0OiAwMDAwMDAwMDAwNmE2MDE4IFIxNTogMDAwMDAwMDAwMDAw
+MDAwMApbICAgMzIuNjk4Nzc0XVsgVDI5ODNdICA8L1RBU0s+CgpJbiBhIG51dHNoZWxsLCB0aGUg
+Y2FsbGJhY2sgZnVuY3Rpb24gZm9yIHRoZSBjb21tYW5kIFJETUFfTkxfSVdQTV9IRUxMTywgaXdw
+bV9oZWxsb19jYiwKY2FuIGZ1cnRoZXIgY2FsbCByZG1hX25sX3VuaWNhc3QsIGxlYWRpbmcgdG8g
+cmVwZWF0ZWQgY2FsbHMgdGhhdCBtYXkgY2F1c2UKYSBkZWFkbG9jayBhbmQgcG90ZW50aWFsbHkg
+aGFybSB0aGUga2VybmVsLgoKSSBhbSBub3QgZmFtaWxpYXIgd2l0aCB0aGUgaW50ZXJuYWwgd29y
+a2luZ3Mgb2YgdGhlIGNhbGxiYWNrIG1lY2hhbmlzbSBvciBob3cKSVdQTUQgdXRpbGl6ZXMgaXQs
+IHNvIEknbSB1bmNlcnRhaW4gd2hldGhlciB0aGlzIHJlZW50cmFuY3kgaXMgZXhwZWN0ZWQgYmVo
+YXZpb3IuCklmIGl0IGlzLCBwZXJoYXBzIGEgcmVmZXJlbmNlIGNvdW50ZXIgc2hvdWxkIGJlIHVz
+ZWQgaW5zdGVhZCBvZiBhbiByd19zZW1hcGhvcmUuCklmIG5vdCwgYSBwcm9wZXIgY2hlY2sgc2hv
+dWxkIGJlIGltcGxlbWVudGVkLgoKUmVnYXJkcywKTGlu
 
