@@ -1,48 +1,48 @@
-Return-Path: <linux-rdma+bounces-6690-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6691-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C9959F9DC4
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Dec 2024 02:40:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35FC49F9DC7
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Dec 2024 02:40:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75D7216800A
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Dec 2024 01:40:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4871E1892E71
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Dec 2024 01:40:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFEC1558BB;
-	Sat, 21 Dec 2024 01:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A91A97DA73;
+	Sat, 21 Dec 2024 01:40:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="Ifvc09ke"
+	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="r8mlntAC"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B006282EE;
-	Sat, 21 Dec 2024 01:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3283288DA;
+	Sat, 21 Dec 2024 01:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734745232; cv=none; b=aluqddDPxSgJawHpB6AUfR97uEPbRJslVTGte5DrcYlGtywIdQGEB9XLERjAET4jYtGEIgQ302udbTYWctKDnqk/xIyDcmN+dIj9OGE3nmGdrvzkmo9ZNrVaL+X0yCqjTAJZp2D+Hio2/jMTmssR9N6T9PosPt1Gu3vVUiBMFsg=
+	t=1734745233; cv=none; b=DhzhKW5FutjoXfnXx9DWjBvoGm5RsHD6wlknJxOZjvO2uzQuKjxxssFUMjvrFuuZYrGzmrePfuZREiELQYTZHihE1snlFhm/DKb00nDvVsq7m5oZABhJnchp33sHOy52oUUawWnJabWIgy6JBcU8loTdxyhpbjcYvKxOinPDl90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734745232; c=relaxed/simple;
-	bh=59cATSC8tYG6qTczkafkxfKMcZ83dqEKLqp5g3yDhlM=;
+	s=arc-20240116; t=1734745233; c=relaxed/simple;
+	bh=t0wSe1vEXTJT7CrxQB22YzkGBxglSvHD+hEM7MF90EI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=T2OXx772je7K9nmTaGGCsIrZWg9TyEHmn2EbYz03AsiD/DXPX33j7I/2sEdv50Fi5xkkKt18nxJhEJAA6WlPlxsVZMdzlBjY8wFMlTfa1IpH3eF/IEq3VWaEHNexAbNhhSW4Yqaevtgms9RSYPTY8kRfnwckGTuNYVQx8UDk7mA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=Ifvc09ke; arc=none smtp.client-ip=46.235.229.95
+	 MIME-Version; b=eXxAuKMuBBhMbfpuV1AbU4042rgk5rXPOey5jGZq2GsWxU7mU4IgXV27QGzJK+RnPm+pace2znG07X1Ji/kY/fqcI1QKI+iB5wrX4RVaXkMqomjqrhtFZiGAH+Db24ARlF8S4+6Mw18PiKAy24vcbJjoocZdKSB+UNx+DhKvbJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=r8mlntAC; arc=none smtp.client-ip=46.235.229.95
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
 	; s=bytemarkmx; h=MIME-Version:Message-ID:Date:Subject:From:Content-Type:From
-	:Subject; bh=/EYrkAQg5wWMF/k4iroqJWgKXPZPZyDZ6ZVafcGJAvo=; b=Ifvc09ke/KxQGu2V
-	4mHJ+iho7soxuawpW9GcO3yDBAtiljoAf+pMNDI3Y/g/8mYBedZmFk0DvhxnThTT8Xhiaty7bRWyA
-	g1smLO8gNr/ifbl80PBZFZnW1SnHJZBYzoppqt7hwl4N2PkGaSyF1wZk4AJyunpIulC5LHqVOvglG
-	FR006bo/nU7FSWXBB39OWE3SS9Ig3WnaysKwJp7NWkmnpBOIrWwRyYhfbKb6oxFXNwa3k4eQTc0VP
-	p93USdueU1KyBz/icXSKyB83eNF51rE/TWQ4Co7QH4BNDrRzyt4AfTzAssXFUK9Pya/fMUz274zEV
-	xv/5WFxx0PJH0YvuGA==;
+	:Subject; bh=xBXnrMAGGAq3U5kaAcYKfGNI6duVEzIOO8CBeqvWFAY=; b=r8mlntACvuwjey8r
+	MpHaX4/6nsIj8Idkgx2IWxJRktOpTbQdVOpwj0yxXITDhLUy+doVDtOo/kXhZNfqJfVc966uIE0yW
+	vjs2U3NkjO4I1+NG1+LZXnI6j9OBItp/rtweV/NdJRWs4x5QjQsAola7y8RnEQD/zAcxnckM+MdDo
+	7Jwdv+beyDJpUUntNbUwiB87NBjTPoAAYTEydG9Q3mGw1ipPK2vyFc8sTH49itPwcod3ELltCiQGd
+	xECN4sLYCm1gyZqqElllxKXN3BFPc3PpjF4IDr8taq1HCZdq1msXu6zcIDTW/4Z5ZXr+eb7dP0wtq
+	NWXlBcUPMaVsDz0EZA==;
 Received: from localhost ([127.0.0.1] helo=dalek.home.treblig.org)
 	by mx.treblig.org with esmtp (Exim 4.96)
 	(envelope-from <linux@treblig.org>)
-	id 1tOoTj-006dmT-3A;
+	id 1tOoTk-006dmT-1k;
 	Sat, 21 Dec 2024 01:40:28 +0000
 From: linux@treblig.org
 To: jgg@ziepe.ca,
@@ -50,9 +50,9 @@ To: jgg@ziepe.ca,
 	linux-rdma@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	"Dr. David Alan Gilbert" <linux@treblig.org>
-Subject: [PATCH 2/4] RDMA/core: Remove unused ib_find_exact_cached_pkey
-Date: Sat, 21 Dec 2024 01:40:19 +0000
-Message-ID: <20241221014021.343979-3-linux@treblig.org>
+Subject: [PATCH 3/4] RDMA/core: Remove unused ibdev_printk
+Date: Sat, 21 Dec 2024 01:40:20 +0000
+Message-ID: <20241221014021.343979-4-linux@treblig.org>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20241221014021.343979-1-linux@treblig.org>
 References: <20241221014021.343979-1-linux@treblig.org>
@@ -66,91 +66,62 @@ Content-Transfer-Encoding: 8bit
 
 From: "Dr. David Alan Gilbert" <linux@treblig.org>
 
-The last use of ib_find_exact_cached_pkey() was removed in 2012
-by commit 2c75d2ccb6e5 ("IB/mlx4: Fix QP1 P_Key processing in the Primary
-Physical Function (PPF)")
+The last use of ibdev_printk() was removed in 2019 by
+commit b2299e83815c ("RDMA: Delete DEBUG code")
 
 Remove it.
 
+Note: The __ibdev_printk() is still used in the idev_err etc functions
+so leave that.
+
 Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
 ---
- drivers/infiniband/core/cache.c | 35 ---------------------------------
- include/rdma/ib_cache.h         | 16 ---------------
- 2 files changed, 51 deletions(-)
+ drivers/infiniband/core/device.c | 17 -----------------
+ include/rdma/ib_verbs.h          |  3 ---
+ 2 files changed, 20 deletions(-)
 
-diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-index b7c078b7f7cf..f8413f8a9f26 100644
---- a/drivers/infiniband/core/cache.c
-+++ b/drivers/infiniband/core/cache.c
-@@ -1127,41 +1127,6 @@ int ib_find_cached_pkey(struct ib_device *device, u32 port_num,
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index ca9b956c034d..a74e192b5588 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -209,23 +209,6 @@ static void __ibdev_printk(const char *level, const struct ib_device *ibdev,
+ 		printk("%s(NULL ib_device): %pV", level, vaf);
  }
- EXPORT_SYMBOL(ib_find_cached_pkey);
  
--int ib_find_exact_cached_pkey(struct ib_device *device, u32 port_num,
--			      u16 pkey, u16 *index)
+-void ibdev_printk(const char *level, const struct ib_device *ibdev,
+-		  const char *format, ...)
 -{
--	struct ib_pkey_cache *cache;
--	unsigned long flags;
--	int i;
--	int ret = -ENOENT;
+-	struct va_format vaf;
+-	va_list args;
 -
--	if (!rdma_is_port_valid(device, port_num))
--		return -EINVAL;
+-	va_start(args, format);
 -
--	read_lock_irqsave(&device->cache_lock, flags);
+-	vaf.fmt = format;
+-	vaf.va = &args;
 -
--	cache = device->port_data[port_num].cache.pkey;
--	if (!cache) {
--		ret = -EINVAL;
--		goto err;
--	}
+-	__ibdev_printk(level, ibdev, &vaf);
 -
--	*index = -1;
--
--	for (i = 0; i < cache->table_len; ++i)
--		if (cache->table[i] == pkey) {
--			*index = i;
--			ret = 0;
--			break;
--		}
--
--err:
--	read_unlock_irqrestore(&device->cache_lock, flags);
--
--	return ret;
+-	va_end(args);
 -}
--EXPORT_SYMBOL(ib_find_exact_cached_pkey);
+-EXPORT_SYMBOL(ibdev_printk);
 -
- int ib_get_cached_lmc(struct ib_device *device, u32 port_num, u8 *lmc)
- {
- 	unsigned long flags;
-diff --git a/include/rdma/ib_cache.h b/include/rdma/ib_cache.h
-index 226ae3702d8a..2bf09b594d10 100644
---- a/include/rdma/ib_cache.h
-+++ b/include/rdma/ib_cache.h
-@@ -63,22 +63,6 @@ int ib_find_cached_pkey(struct ib_device    *device,
- 			u16                  pkey,
- 			u16                 *index);
+ #define define_ibdev_printk_level(func, level)                  \
+ void func(const struct ib_device *ibdev, const char *fmt, ...)  \
+ {                                                               \
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 3417636da960..295c394ffb48 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -59,9 +59,6 @@ extern struct workqueue_struct *ib_comp_unbound_wq;
  
--/**
-- * ib_find_exact_cached_pkey - Returns the PKey table index where a specified
-- *   PKey value occurs. Comparison uses the FULL 16 bits (incl membership bit)
-- * @device: The device to query.
-- * @port_num: The port number of the device to search for the PKey.
-- * @pkey: The PKey value to search for.
-- * @index: The index into the cached PKey table where the PKey was found.
-- *
-- * ib_find_exact_cached_pkey() searches the specified PKey table in
-- * the local software cache.
-- */
--int ib_find_exact_cached_pkey(struct ib_device    *device,
--			      u32                  port_num,
--			      u16                  pkey,
--			      u16                 *index);
--
- /**
-  * ib_get_cached_lmc - Returns a cached lmc table entry
-  * @device: The device to query.
+ struct ib_ucq_object;
+ 
+-__printf(3, 4) __cold
+-void ibdev_printk(const char *level, const struct ib_device *ibdev,
+-		  const char *format, ...);
+ __printf(2, 3) __cold
+ void ibdev_emerg(const struct ib_device *ibdev, const char *format, ...);
+ __printf(2, 3) __cold
 -- 
 2.47.1
 
