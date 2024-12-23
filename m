@@ -1,190 +1,246 @@
-Return-Path: <linux-rdma+bounces-6705-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6706-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 158EA9FA9B9
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Dec 2024 04:31:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D54079FAA12
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Dec 2024 06:46:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B77E7A2741
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Dec 2024 03:31:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5153D163F8A
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Dec 2024 05:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70AF441C92;
-	Mon, 23 Dec 2024 03:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE9A84A22;
+	Mon, 23 Dec 2024 05:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="biHBDSvB"
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="N1QQsgNb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com [139.138.37.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E12179BC
-	for <linux-rdma@vger.kernel.org>; Mon, 23 Dec 2024 03:31:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A02A1392;
+	Mon, 23 Dec 2024 05:46:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.138.37.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734924707; cv=none; b=S39MEpCuVemHoHlryN+B1kUG9nAQv7oJnYG4Tmc4bMTTH8ah0B5AnhV5nT50q1GEOrtiYTdWOEQ4t59Rwk6zDXnCTRL96xidyze1zlyrvL42DM7mfhCToXdb2gsP2R5ZBwGIrHjQG/JiaInIjjoBQekflRg+JZHMXcRV4BSlSKY=
+	t=1734932764; cv=none; b=Xuw39NbE+QonAN+cWPVRnAPi/ked7iXLFwn25PGvTkb8HjrgPTbYtMqXfeUphUAbdJKK3yyRLH1QrBRK+8XPBIjTC8Rb2tIeWiMQawHKkCjW0jNhCBKICgQq+8Oxq3XZG7ejOHlXOJRZkvOO+dHAou7rpkFHNwsgw3bxMTH7Q+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734924707; c=relaxed/simple;
-	bh=wZYmJzsEJ8HXnB5ojj/ddMkgROi+Vov00njLLaBqSJo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RHt0ZYldVJpdp0nANxDVxxdA7FNed7DHA+/CftVxd8sKUPeS2nnc5zwmsfvuwar5Hj2HEq9HIWMMNnUYnWfMHxA1hYKv2RnRsnGmBgctcDdUDXiQBlM3PZ296JAYMXvqlesnwltK4VoG19ch7M9rFfgWQAVNx46TwTxkUv+l298=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=biHBDSvB; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5d0ac27b412so4810830a12.1
-        for <linux-rdma@vger.kernel.org>; Sun, 22 Dec 2024 19:31:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1734924704; x=1735529504; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wZYmJzsEJ8HXnB5ojj/ddMkgROi+Vov00njLLaBqSJo=;
-        b=biHBDSvBu15ACj1f8AYSQWQ6TvLqhEahFNFEQxrEdCZHEcO+W/kMPlbEDyyZ3JQhn0
-         QvlcFPK60kBekMlzJOBALs/7xpLbiwJjzsqkC09BKmrbcYmU0L5McNo9bGTCmVn0vnhY
-         s1EvUp+8Kqomf9hNz75egIpixKFO+l31wVTPc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734924704; x=1735529504;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wZYmJzsEJ8HXnB5ojj/ddMkgROi+Vov00njLLaBqSJo=;
-        b=lA5ailK8eW53XPD0pX2AYO7v2duNGACYiRASuCoeSKgMAZyqctUFldRKpqdeLjWaq3
-         C3IgFlgEuE0zK9vo2YHofFjgUTaJDM60R68niMHyFkciUK9N3yk4mfqh6vZlqKVH7Lwq
-         O2Sr3GXpbIGLBdL/hX/U1y3jBQkSg7JaYYKf1U164I2So5t7TKRdKtsC8PF1mjr14MYu
-         k3C9Ad4aMfz446u481FfAy0oVfuRgdOCgiV2WrPxusFuw4t7sTfOGYNDgU1CrR9sKWIe
-         HzzBFPp9YEnC+lDEXbd3N15Xyx7rtITIWyMfSf9SoP+BWrJ6+k1li37c1KfLYuQhKC1X
-         fYIg==
-X-Forwarded-Encrypted: i=1; AJvYcCXBKQ6VHlU8LHS79cDuRltQCiGG+QdvCfPaZUJdce6yeAcc68HBj2e8HWBC3umrUJwM6oheifaLOkiI@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzeJyzC1x/Iyg48NmgFG6Rp/fz0rk0+e+dskEXcMPmoq1o2C0N
-	ZkL5rkJScC87oPgn79U9XJlIbJwa+B1+pvhq5BFb9hKydyqV0PtrlxKr9HfvJNSJ+eBx4nQg030
-	Pw76tpieGdwfHmUN0v8CERpyhgyMVfW/UkZVk
-X-Gm-Gg: ASbGncvRCFLTkgH+mgNtg+bQcQr7SJeRUo6JLrWYZYgVrnKCLE7QGFQmIBISEBE70JX
-	7msSZep7PXac7NsWdOZ01i6REoy48zh4V8DFYLA==
-X-Google-Smtp-Source: AGHT+IE6rgnbQzxTAdSbK1FEAxs/0XLxbooOLDM8lVoY4Q/cxV7mEsJcCazXQBSXsx4xDcqIqj/AdVluCJzw7cbMfgo=
-X-Received: by 2002:a17:907:7f13:b0:aa6:ac19:7502 with SMTP id
- a640c23a62f3a-aac2703a601mr839593766b.4.1734924703893; Sun, 22 Dec 2024
- 19:31:43 -0800 (PST)
+	s=arc-20240116; t=1734932764; c=relaxed/simple;
+	bh=kwh8yt7QrtrmbLFLEnSzLcgMG/3xNk4QproYhsIu8AI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RzRpaOwFN0irDG0wc/yUhj2KykDjF5HUYwvfUexSG33K+o9MHH8vlrLvVHfh76Knymi7BsOyc9gCZ+JA5HI0+Y30w5j9BIuUMqMXRfaIbHyWPRUjEINiBi2lauRwq8Mh/IhUxPHaF2CF/NJ/mRtsZWvf4CszSHDVTjYL8emw0J4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=N1QQsgNb; arc=none smtp.client-ip=139.138.37.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1734932759; x=1766468759;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kwh8yt7QrtrmbLFLEnSzLcgMG/3xNk4QproYhsIu8AI=;
+  b=N1QQsgNbAzush2JI4XGZlq3ZSFA8UD4Vsky90Maom1HW68Xx947DD3jU
+   csTIH2qX3TC/uYrPlfScuS33VgxLS46QDz3QV6RTt8lGpajvWaE2HuxI5
+   DN3Cex2VnQOFQmeN3W4XOKclD5PTdGiJzT6xgcCmtzcQVI7luUA8zd/Jh
+   HeVmylTXiDFbE2cNeZ35IHk2oxYbvR6LqjzzXOqThuzdb28AoQzCJ15uo
+   pA6T9PpqdQQJXPQbvIHQlwq202JFbgoRV83KNIxkD9ySwSjxhXyDgJOi3
+   XZ6DgRIYkOUOP8XO/bHjVr/Hhz/5UczZ2DjOZB+jGuqMBk2hu7NkQLv3i
+   Q==;
+X-CSE-ConnectionGUID: 8h2mBt3eQvW9ldElNEkrXA==
+X-CSE-MsgGUID: 25zEAtcRRdaO9DUalJ04zw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11294"; a="163567376"
+X-IronPort-AV: E=Sophos;i="6.12,256,1728918000"; 
+   d="scan'208";a="163567376"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+  by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2024 14:45:50 +0900
+Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com [192.168.87.58])
+	by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 088B2DBB87;
+	Mon, 23 Dec 2024 14:45:50 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
+	by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id D6145D8ADF;
+	Mon, 23 Dec 2024 14:45:49 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 3D20340306;
+	Mon, 23 Dec 2024 14:45:49 +0900 (JST)
+Received: from iaas-rpma.. (unknown [10.167.135.44])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 336701A006C;
+	Mon, 23 Dec 2024 13:45:48 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-block@vger.kernel.org
+Cc: shinichiro.kawasaki@wdc.com,
+	linux-rdma@vger.kernel.org,
+	Li Zhijian <lizhijian@fujitsu.com>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>
+Subject: [PATCH blktests] tests/rnbd: Implement RNBD regression test
+Date: Mon, 23 Dec 2024 13:45:35 +0800
+Message-Id: <20241223054535.295371-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241221014021.343979-1-linux@treblig.org> <20241221014021.343979-3-linux@treblig.org>
-In-Reply-To: <20241221014021.343979-3-linux@treblig.org>
-From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Mon, 23 Dec 2024 09:01:31 +0530
-Message-ID: <CAH-L+nMVE3Tkys09b_p7FdfkdeipqiCegZPx7SSBtoaVrR4NaQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] RDMA/core: Remove unused ib_find_exact_cached_pkey
-To: linux@treblig.org
-Cc: jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000b4e69a0629e7a22f"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28876.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28876.005
+X-TMASE-Result: 10--7.771600-10.000000
+X-TMASE-MatchedRID: B9/cONLFiGgvt8akOOKRVrPx3rO+jk2QPYWAASIMdr/kMnUVL5d0EyBd
+	jvfSqXgxiEMe1XiiIvM26w1VKWEcTZO8e+qccBn+vHKClHGjjr34qCLIu0mtIL54YCapH5tAi3G
+	OCGgGiOYppiuzBwGFPv+EMOr9fJmZr8SWmHOl/UsReM8i8p3vgEyQ5fRSh265uBsk5njfgGyLzF
+	PtiZmry+gN+fRudlV6jkW+L+PYS7OmWOD8X0TFhHV7tdtvoibaR8s92weZBuct3rmov76grPcLT
+	3NnoHhsvtqCRGwbz0HMQN2xWFtdUkRj6tUqFpLAngIgpj8eDcAZ1CdBJOsoY8RB0bsfrpPIfiAq
+	rjYtFiSfWhurbevooodJtkBf4H9CAWidOnfRxpXQ7EKDnf7m537cGd19dSFd
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
---000000000000b4e69a0629e7a22f
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This test case has been in my possession for quite some time.
+I am upstreaming it now because it has once again detected a regression in
+a recent kernel release [1].
 
-On Sat, Dec 21, 2024 at 7:10=E2=80=AFAM <linux@treblig.org> wrote:
->
-> From: "Dr. David Alan Gilbert" <linux@treblig.org>
->
-> The last use of ib_find_exact_cached_pkey() was removed in 2012
-> by commit 2c75d2ccb6e5 ("IB/mlx4: Fix QP1 P_Key processing in the Primary
-> Physical Function (PPF)")
->
-> Remove it.
->
-> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+It's just stupid to connect and disconnect RNBD on localhost and expect
+no dmesg exceptions, with some attempts actually succeeding.
 
-LGTM,
-Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Please note that currently, only RTRS over RXE is supported.
 
+[1] https://lore.kernel.org/linux-rdma/20241223025700.292536-1-lizhijian@fujitsu.com/
 
---=20
-Regards,
-Kalesh AP
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+Copy to the RDMA/rtrs guys:
 
---000000000000b4e69a0629e7a22f
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Cc: Jack Wang <jinpu.wang@ionos.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: "Md. Haris Iqbal" <haris.iqbal@ionos.com>
+---
+ tests/rnbd/001     | 37 ++++++++++++++++++++++++++++
+ tests/rnbd/001.out |  2 ++
+ tests/rnbd/rc      | 60 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 99 insertions(+)
+ create mode 100755 tests/rnbd/001
+ create mode 100644 tests/rnbd/001.out
+ create mode 100644 tests/rnbd/rc
 
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBWowggRSoAMCAQICDDfBRQmwNSI92mit0zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODI5NTZaFw0yNTA5MTAwODI5NTZaMIGi
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xHzAdBgNVBAMTFkthbGVzaCBBbmFra3VyIFB1cmF5aWwxMjAw
-BgkqhkiG9w0BCQEWI2thbGVzaC1hbmFra3VyLnB1cmF5aWxAYnJvYWRjb20uY29tMIIBIjANBgkq
-hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxnv1Reaeezfr6NEmg3xZlh4cz9m7QCN13+j4z1scrX+b
-JfnV8xITT5yvwdQv3R3p7nzD/t29lTRWK3wjodUd2nImo6vBaH3JbDwleIjIWhDXLNZ4u7WIXYwx
-aQ8lYCdKXRsHXgGPY0+zSx9ddpqHZJlHwcvas3oKnQN9WgzZtsM7A8SJefWkNvkcOtef6bL8Ew+3
-FBfXmtsPL9I2vita8gkYzunj9Nu2IM+MnsP7V/+Coy/yZDtFJHp30hDnYGzuOhJchDF9/eASvE8T
-T1xqJODKM9xn5xXB1qezadfdgUs8k8QAYyP/oVBafF9uqDudL6otcBnziyDBQdFCuAQN7wIDAQAB
-o4IB5DCCAeAwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZC
-aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJj
-YTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3Iz
-cGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcC
-ARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNV
-HR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNp
-Z24yY2EyMDIwLmNybDAuBgNVHREEJzAlgSNrYWxlc2gtYW5ha2t1ci5wdXJheWlsQGJyb2FkY29t
-LmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGP
-zzAdBgNVHQ4EFgQUI3+tdStI+ABRGSqksMsiCmO9uDAwDQYJKoZIhvcNAQELBQADggEBAGfe1o9b
-4wUud0FMjb/FNdc433meL15npjdYWUeioHdlCGB5UvEaMGu71QysfoDOfUNeyO9YKp0h0fm7clvo
-cBqeWe4CPv9TQbmLEtXKdEpj5kFZBGmav69mGTlu1A9KDQW3y0CDzCPG2Fdm4s73PnkwvemRk9E2
-u9/kcZ8KWVeS+xq+XZ78kGTKQ6Wii3dMK/EHQhnDfidadoN/n+x2ySC8yyDNvy81BocnblQzvbuB
-a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
-x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
-VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
-bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEINNEUCWGu4t+aFocq3N/nefL3a1pYWCnJBTIascSDLB9MBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MTIyMzAzMzE0NFowaQYJKoZIhvcNAQkPMVwwWjAL
-BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQATqqo1yUpL
-a7cUcvnJQ7B1voEmIaCQTgZ0lU9EuMAY8AMhEGAgVKgZCc5RJDEXchtFt04/8v1Nx3VR4imW8swd
-fiC/hIt9l0fQViz6JWg2cki02YwzKFOWYZToRoBVjNkHkk5j0poDL+aZbTLgzinQXosDhGyCt001
-dxC7Zvq5KSxApgHxU9PEqCSTv+j16Uj++5RIPg84JWQbQad24JusyK7V4daNLdWMqkGph7JR/Oz9
-PHrEPGpahHXFOPyb4oemvw8U0Uy3A4Ld0HC2wsjZESOoK77HXiAfMm7z+4IXDZbK5G5ytw84WU8i
-3EMaSqPNHv228zrMzHQy/dV1YpMb
---000000000000b4e69a0629e7a22f--
+diff --git a/tests/rnbd/001 b/tests/rnbd/001
+new file mode 100755
+index 000000000000..220468f0f5b4
+--- /dev/null
++++ b/tests/rnbd/001
+@@ -0,0 +1,37 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-3.0+
++# Copyright 2024, Fujitsu
++#
++. tests/rnbd/rc
++
++DESCRIPTION="Start Stop RNBD"
++CHECK_DMESG=1
++
++requires() {
++	_have_rnbd
++}
++
++test_start_stop()
++{
++	_setup_rnbd || return
++
++	local loop_dev i j
++	loop_dev="$(losetup -f)"
++
++	for ((i=0;i<100;i++))
++	do
++		_start_rnbd_client "${loop_dev}" &>/dev/null &&
++		_stop_rnbd_client &>/dev/null && ((j++))
++	done
++
++	# We expect at least 10% start/stop successfully
++	if [[ $j -lt 10 ]]; then
++		echo "Failed: $j/$i"
++	fi
++}
++
++test() {
++	echo "Running ${TEST_NAME}"
++	test_start_stop
++	echo "Test complete"
++}
+diff --git a/tests/rnbd/001.out b/tests/rnbd/001.out
+new file mode 100644
+index 000000000000..c1f9980d0f7b
+--- /dev/null
++++ b/tests/rnbd/001.out
+@@ -0,0 +1,2 @@
++Running rnbd/001
++Test complete
+diff --git a/tests/rnbd/rc b/tests/rnbd/rc
+new file mode 100644
+index 000000000000..143ba0b59f38
+--- /dev/null
++++ b/tests/rnbd/rc
+@@ -0,0 +1,60 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-3.0+
++# Copyright 2024, Fujitsu
++#
++# RNBD tests.
++
++. common/rc
++. common/multipath-over-rdma
++
++_have_rnbd() {
++	if [[ "$USE_RXE" != 1 ]]; then
++		SKIP_REASONS+=("Only USE_RXE=1 is supported")
++		return 1
++	fi
++	_have_driver rdma_rxe || return
++	_have_driver rnbd_server || return
++	_have_driver rnbd_client
++}
++
++_setup_rnbd() {
++	modprobe -q rnbd_server
++	modprobe -q rnbd_client
++	start_soft_rdma
++	for i in $(rdma_network_interfaces)
++	do
++		ipv4_addr=$(get_ipv4_addr "$i")
++		if [[ -n "${ipv4_addr}" ]]; then
++			def_traddr=${ipv4_addr}
++		fi
++	done
++}
++
++_start_rnbd_client() {
++	local a b
++	local blkdev=$1
++	local before after
++
++	before=$(ls -d /sys/block/rnbd* 2>/dev/null)
++	if ! echo "sessname=blktest path=ip:$def_traddr device_path=$blkdev" > /sys/devices/virtual/rnbd-client/ctl/map_device; then
++		return 1
++	fi
++
++	# Retrieve the newly added rnbd entry
++	after=$(ls -d /sys/block/rnbd* 2>/dev/null)
++	for a in $after
++	do
++		[[ -n "$before" ]] || break
++
++		for b in $before
++		do
++			[[ "$a" = "$b" ]] || break
++		done
++	done
++
++	rnbd_node=$a
++}
++
++_stop_rnbd_client() {
++	echo "normal" > "$rnbd_node"/rnbd/unmap_device
++}
+-- 
+2.47.0
+
 
