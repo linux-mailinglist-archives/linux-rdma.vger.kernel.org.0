@@ -1,154 +1,148 @@
-Return-Path: <linux-rdma+bounces-6701-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6702-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD3F99FA947
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Dec 2024 03:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2C119FA96B
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Dec 2024 03:57:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B01A41885DA7
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Dec 2024 02:16:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FD741885F4E
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Dec 2024 02:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E00C232C85;
-	Mon, 23 Dec 2024 02:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D6778C91;
+	Mon, 23 Dec 2024 02:57:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="bn+cKf+6"
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="GABjmykS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+Received: from esa1.hc1455-7.c3s2.iphmx.com (esa1.hc1455-7.c3s2.iphmx.com [207.54.90.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C06632;
-	Mon, 23 Dec 2024 02:16:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44F2A2BB15;
+	Mon, 23 Dec 2024 02:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.54.90.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734920168; cv=none; b=jhnrZ5bFp3J5lOzGpHF0JlJA5+o6dwL8CU2mrnHh4d94tRX3A4cAcvIleNyU9/foccjALN7AhpreROodDqAQ4n0fvOlTsBo/1jAcXp25HseBhLfWFKGkuftJ934XDAZ2aMnIN9+9tf9fhEp7xPx138ewjqp5jb0aVkztBVCfSFM=
+	t=1734922641; cv=none; b=WmGybyQcekcC54JaE+k+dCXGFP2qLyY5lxh+E7I6aHff7Pk77rlpd+Xrwr8qkcO1u5TtnXe91IjJsOsWAdKs/+cy43eq4c7Qo+8KszzP5tV9KBjD/CuwGMCekFi/l+dQAxXiUmLPJ8kcsPBbvKDIrMJDvhvFpoYbvtsWwjs6A0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734920168; c=relaxed/simple;
-	bh=fYb8/eRsED0a5QPevVYXqFlTk81Xxf99AFlxwor7Bx4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RUnI4W1X0wnWmRiHjGQjLeYybXtVJj+ZYkFTkFt2zFskr+VtuRXR3PVcyCh0awz/YDCqO4kN83gdTlnYzeu+GZU5mapQ5/kO1D8T1Ui1oMKys7nBwZa84GBSu+ISYeNEn5jG59wKm8bKGXQkmbraAZDMqSRromxWvHkvGfGNs+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=bn+cKf+6; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1734920161; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=X8L9prpbeK1sda734hduULb78ArRrtxowYpuEuW1bZM=;
-	b=bn+cKf+6jWnT90k7Mr6akem1g6VMseS2C7F/L/smAJ6fTPoqWn0qHbpVV1WPRZRBBMLGaAzuNQazGUFKuK5bFlVKukAtu0hXoFQCe7/wq/fzr7+dICUCapIoS5VSqQcHB+DAGLrolI1Q9YjlZpD8ZDJMmq7GTLuw0GBcu226Fuw=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WM-5smN_1734919836 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Dec 2024 10:10:37 +0800
-Date: Mon, 23 Dec 2024 10:10:36 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
-	song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
-	edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-	jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org,
-	davem@davemloft.net, netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org, Daniel Xu <dlxu@meta.com>
-Subject: Re: [PATCH bpf-next v3 4/5] libbpf: fix error when st-prefix_ops and
- ops from differ btf
-Message-ID: <20241223021036.GC36000@j66a10360.sqa.eu95>
-References: <20241218024422.23423-1-alibuda@linux.alibaba.com>
- <20241218024422.23423-5-alibuda@linux.alibaba.com>
- <2f56aca3-a27a-49b6-90de-7f1b2ff39df1@linux.dev>
+	s=arc-20240116; t=1734922641; c=relaxed/simple;
+	bh=aW1Ts21ePnqwZmKD042bdVOwmMEH+v5/Y1PQJHL6rxY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iQBjSozAMhI8sS9gRHHU4CedEIPTqxAwyi8suY5wR53Uq5f/sB5PqVR2jNK98mKMm/xSDKO/r/UAoVACyVeZlrdrmqf3/ckJkhOgkY32HJNq3wWpPc1QrPWCxaVoQoZE+O9aZtXBswB6IRx5nxJJ6gL+t9k/OfDaZ953f5YrMkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=GABjmykS; arc=none smtp.client-ip=207.54.90.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1734922640; x=1766458640;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=aW1Ts21ePnqwZmKD042bdVOwmMEH+v5/Y1PQJHL6rxY=;
+  b=GABjmykSdyA8yt9GKe23eyNqOrx0CCjrlyzvbym39umhYlQ0iZTpsimg
+   PIUzlmW8NH04zJjaDXD0NhPOUVFR2xj0fAx0FyleE49tZFaaszMo65dBi
+   Q06Pjhywm2b1j14rfYW3yJDDXuWszZRbX0so7EWpRkbwcHxy1qMTy4gIm
+   hMtYs1uTNV0XcH322mJOQ46qlTjY7KT39JBqHevlTYUCgOIQjyT35au3Y
+   JquXId81GJ2/LzNxVmQhYgMc0jJ3/LOowKvMEoUf3OT0I4LGD5JJ+rk5S
+   V3Iz507J9+RLOvmP27UvXterzSpeMtXN5eLdpmzAbh+9sJM5Y64sjbA4e
+   A==;
+X-CSE-ConnectionGUID: Eh2APx07T7a9f+fqRVw3XQ==
+X-CSE-MsgGUID: 6gwPgewPTAOmAWZD3viEiA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11294"; a="184636150"
+X-IronPort-AV: E=Sophos;i="6.12,256,1728918000"; 
+   d="scan'208";a="184636150"
+Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
+  by esa1.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2024 11:57:12 +0900
+Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com [192.168.83.67])
+	by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 76F31D4F5F;
+	Mon, 23 Dec 2024 11:57:09 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
+	by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 46AA9D5043;
+	Mon, 23 Dec 2024 11:57:09 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id BA70920076D12;
+	Mon, 23 Dec 2024 11:57:08 +0900 (JST)
+Received: from iaas-rpma.. (unknown [10.167.135.44])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id D08AB1A006C;
+	Mon, 23 Dec 2024 10:57:07 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-rdma@vger.kernel.org
+Cc: haris.iqbal@ionos.com,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	Li Zhijian <lizhijian@fujitsu.com>
+Subject: [PATCH] RDMA/ulp: Add missing deinit() call
+Date: Mon, 23 Dec 2024 10:57:00 +0800
+Message-Id: <20241223025700.292536-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f56aca3-a27a-49b6-90de-7f1b2ff39df1@linux.dev>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28876.004
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28876.004
+X-TMASE-Result: 10--4.307900-10.000000
+X-TMASE-MatchedRID: 2wfub8HDRfOPo+6vQMop+jYTypjB3iDVYjDXdM/x2VNx1I8cSFvoV5Ky
+	Pf1j7t431DGesiNkyfju5J7i9V7QtWMAzi+7d0ch/sUSFaCjTLylLADMASK8x6fDpVD78xj9B82
+	GyGpZHXtF+l3+KzhDQcoAVnIK3cw/BXY0oXpqJ14ReM8i8p3vgFQQ0EgzIoPRuqWf6Nh7tmFuKp
+	6bV95JA+LzNWBegCW2xl8lw85EaVQLbigRnpKlKZx+7GyJjhAUk/4+qv9A0SbXO9DU31GxuP46y
+	66IWMlzZBb9N2wM/+1q3cvp/9h/GIQjiHxb+vggwcQABRoFCs1+w0a95oRHeUvDW9RnLTnDmw0Q
+	aktp+ussz+cQMs/Tnp75MOLIf/j3DF+QsB+Q01JoBmTSwRxjXg==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-On Thu, Dec 19, 2024 at 02:43:30PM -0800, Martin KaFai Lau wrote:
-> On 12/17/24 6:44 PM, D. Wythe wrote:
-> >Here are four possible case:
-> >
-> >+--------+-------------+-------------+---------------------------------+
-> >|        | st_opx_xxx  | xxx         |                                 |
-> >+--------+-------------+-------------+---------------------------------+
-> >| case 0 | btf_vmlinux | bft_vmlinux | be used and reg only in vmlinux |
-> >+--------+-------------+-------------+---------------------------------+
-> >| case 1 | btf_vmlinux | bpf_mod     | INVALID                         |
-> >+--------+-------------+-------------+---------------------------------+
-> >| case 2 | btf_mod     | btf_vmlinux | reg in mod but be used both in  |
-> >|        |             |             | vmlinux and mod.                |
-> >+--------+-------------+-------------+---------------------------------+
-> >| case 3 | btf_mod     | btf_mod     | be used and reg only in mod     |
-> >+--------+-------------+-------------+---------------------------------+
-> >
-> >At present, cases 0, 1, and 3 can be correctly identified, because
-> >st_ops_xxx is searched from the same btf with xxx. In order to
-> >handle case 2 correctly without affecting other cases, we cannot simply
-> >change the search method for st_ops_xxx from find_btf_by_prefix_kind()
-> >to find_ksym_btf_id(), because in this way, case 1 will not be
-> >recognized anymore.
-> >  	snprintf(tname, sizeof(tname), "%.*s",
-> >@@ -1020,17 +1021,25 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
-> >  	}
-> >  	kern_type = btf__type_by_id(btf, kern_type_id);
-> >+	ret = snprintf(stname, sizeof(stname), "%s%s", STRUCT_OPS_VALUE_PREFIX, tname);
-> 
-> How about always look for "struct bpf_struct_ops_smc_ops" first,
-> figure out the btf, and then look for "struct smc_ops", would it
-> work?
+A warning is triggered when repeatedly connecting and disconnecting the
+rnbd:
+ list_add corruption. prev->next should be next (ffff88800b13e480), but was ffff88801ecd1338. (prev=ffff88801ecd1340).
+ WARNING: CPU: 1 PID: 36562 at lib/list_debug.c:32 __list_add_valid_or_report+0x7f/0xa0
+ Workqueue: ib_cm cm_work_handler [ib_cm]
+ RIP: 0010:__list_add_valid_or_report+0x7f/0xa0
+  ? __list_add_valid_or_report+0x7f/0xa0
+  ib_register_event_handler+0x65/0x93 [ib_core]
+  rtrs_srv_ib_dev_init+0x29/0x30 [rtrs_server]
+  rtrs_ib_dev_find_or_add+0x124/0x1d0 [rtrs_core]
+  __alloc_path+0x46c/0x680 [rtrs_server]
+  ? rtrs_rdma_connect+0xa6/0x2d0 [rtrs_server]
+  ? rcu_is_watching+0xd/0x40
+  ? __mutex_lock+0x312/0xcf0
+  ? get_or_create_srv+0xad/0x310 [rtrs_server]
+  ? rtrs_rdma_connect+0xa6/0x2d0 [rtrs_server]
+  rtrs_rdma_connect+0x23c/0x2d0 [rtrs_server]
+  ? __lock_release+0x1b1/0x2d0
+  cma_cm_event_handler+0x4a/0x1a0 [rdma_cm]
+  cma_ib_req_handler+0x3a0/0x7e0 [rdma_cm]
+  cm_process_work+0x28/0x1a0 [ib_cm]
+  ? _raw_spin_unlock_irq+0x2f/0x50
+  cm_req_handler+0x618/0xa60 [ib_cm]
+  cm_work_handler+0x71/0x520 [ib_cm]
 
-I think this might not work, as the core issue lies in the fact that
-bpf_struct_ops_smc_ops and smc_ops are located on different btf.
-Searching for one fisrt cannot lead to the inference of the other.
+Fix it by invoking the `deinit()` to appropriately unregister the IB event
+handler.
 
-> 
-> If CONFIG_SMC=y instead of =m, this change cannot be tested?
-> 
+Fixes: 667db86bcbe8 ("RDMA/rtrs: Register ib event handler")
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+ drivers/infiniband/ulp/rtrs/rtrs.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-That is indeed a problem, but currently there is no better solution
-unless the CI can add a step to run 'make modules_install'.
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
+index 4e17d546d4cc..3b3efecd0817 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+@@ -580,6 +580,9 @@ static void dev_free(struct kref *ref)
+ 	dev = container_of(ref, typeof(*dev), ref);
+ 	pool = dev->pool;
+ 
++	if (pool->ops && pool->ops->deinit)
++		pool->ops->deinit(dev);
++
+ 	mutex_lock(&pool->mutex);
+ 	list_del(&dev->entry);
+ 	mutex_unlock(&pool->mutex);
+-- 
+2.47.0
 
-
-Best wishes,
-D. Wythe
-
-> >+	if (ret < 0 || ret >= sizeof(stname))
-> >+		return -ENAMETOOLONG;
-> >+
-> >  	/* Find the corresponding "map_value" type that will be used
-> >  	 * in map_update(BPF_MAP_TYPE_STRUCT_OPS).  For example,
-> >  	 * find "struct bpf_struct_ops_tcp_congestion_ops" from the
-> >  	 * btf_vmlinux.
-> >  	 */
-> >-	kern_vtype_id = find_btf_by_prefix_kind(btf, STRUCT_OPS_VALUE_PREFIX,
-> >-						tname, BTF_KIND_STRUCT);
-> >+	kern_vtype_id = btf__find_by_name_kind(btf, stname, BTF_KIND_STRUCT);
-> >  	if (kern_vtype_id < 0) {
-> >-		pr_warn("struct_ops init_kern: struct %s%s is not found in kernel BTF\n",
-> >-			STRUCT_OPS_VALUE_PREFIX, tname);
-> >-		return kern_vtype_id;
-> >+		if (kern_vtype_id == -ENOENT && !*mod_btf)
-> >+			kern_vtype_id = find_ksym_btf_id(obj, stname, BTF_KIND_STRUCT,
-> >+							 &btf, mod_btf);
-> >+		if (kern_vtype_id < 0) {
-> >+			pr_warn("struct_ops init_kern: struct %s is not found in kernel BTF\n",
-> >+				stname);
-> >+			return kern_vtype_id;
-> >+		}
-> >  	}
-> >  	kern_vtype = btf__type_by_id(btf, kern_vtype_id);
-> >@@ -1046,8 +1055,8 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
-> >  			break;
-> >  	}
-> >  	if (i == btf_vlen(kern_vtype)) {
-> >-		pr_warn("struct_ops init_kern: struct %s data is not found in struct %s%s\n",
-> >-			tname, STRUCT_OPS_VALUE_PREFIX, tname);
-> >+		pr_warn("struct_ops init_kern: struct %s data is not found in struct %s\n",
-> >+			tname, stname);
-> >  		return -EINVAL;
-> >  	}
 
