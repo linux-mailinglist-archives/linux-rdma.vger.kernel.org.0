@@ -1,85 +1,96 @@
-Return-Path: <linux-rdma+bounces-6719-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6720-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DD889FBB55
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2024 10:38:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CCCC9FBB88
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2024 10:52:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4BD1164EA0
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2024 09:38:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2339D188772C
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2024 09:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8861F190072;
-	Tue, 24 Dec 2024 09:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C9D1B4F3E;
+	Tue, 24 Dec 2024 09:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dYdBtzM6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fe/CI9sh"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C6286250
-	for <linux-rdma@vger.kernel.org>; Tue, 24 Dec 2024 09:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06191B4F1A;
+	Tue, 24 Dec 2024 09:47:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735033080; cv=none; b=Gu1eJzl9BdWKdi1SdRIUALHw8FSPNmIMBNN64hI3cQ4LmVPIDF+zUrsWfpAnRqYzkoe2payymuiKI2d+9M1/T6TRxnpYD7Hqrf1f22JwdCFDxUGTrIcTac978syckdIjoIFSFHh/eSZ2z5YZiIPKXXrTj/GKIDJLP5WQXKAyqg0=
+	t=1735033652; cv=none; b=CxDz4moDcv2ILQfoft5VSLQ+/xNsMzSArA9VIvRLbFTf0WAHdE7pesRPeW7IIBdCZC3fC+l+NVOATKfAuhsrJptszGFNWgnUBiH/s5Y3TTuSvpPexdd18fpTFL/SA+iMRNdEeKS3FUpRIONbcC3cvxWMevM67zddjkOfbrMDqJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735033080; c=relaxed/simple;
-	bh=PFgmKjQBf/cNxxAZScZn/nG1EkWaWnl5WSS4Qj9B7GE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=FL3sGrloTqy/fjxypbbg6z6PsTOWr/qLs76H7ec+Xt9tR+Fix2c0rCeCV6R5LDs7yz0fsVaA5VSA2rhKGhK//y2d3yzGSh6kOo1NurCzKufOeWFBaBj7K98ZHGojsneI/b2aXQn1gCI6PUKDrKkitMCt+OBL0Tlc7oebRd1ufbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dYdBtzM6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D7B8C4CED0;
-	Tue, 24 Dec 2024 09:37:59 +0000 (UTC)
+	s=arc-20240116; t=1735033652; c=relaxed/simple;
+	bh=jY9IZPx6jk7OwS6OUhXuvp90vIsFxDF46hmZoG0Kbx4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jhcxeCKK+ih3P74lxRuaJZvDeGOLqvHsoZaR2cjgfyBrCV+OxGqJLGVyKIhxzE/dBrmbp8jsSe7dM/B1JUkPksHkMdgjErK58r7DX19rytk3Pm91HmGTbJy4c0DJCfdyawQ24sCbgFkzGXf3/fSoIL8mTC7fRlLCCnU+04nMb6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fe/CI9sh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78F8BC4CED0;
+	Tue, 24 Dec 2024 09:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735033079;
-	bh=PFgmKjQBf/cNxxAZScZn/nG1EkWaWnl5WSS4Qj9B7GE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=dYdBtzM6hp3D74ayYJwqsC95bvBEhK5Q/R1AFgVjMrJ9rGl+WZRHNr3NQLd0g3b8t
-	 PxAmcoPipCVePryC+wmbTiva8bNV01fqPTA+cs1uVye0VK7IcGMxWBBA1A127TdhDE
-	 TFIFSi/ojNKix/NzmUF0abpl0YVhjRW/b0GzqDOpVXuCMSxBsDvNkbs9evzgb+LE2O
-	 8NLO70A5bKzrkVo7kzmgkZvA06zRBmxeR8AEOjRLBS+IR2bk9khY+zp6TTZnApDczT
-	 QD3ew5wSt0gY/xj2uNNujTyeliwtxMc63OjmNSPZy7Uhh/V+jsZhMENUOHfPlLkyxg
-	 nI2msJEqAuMXg==
+	s=k20201202; t=1735033652;
+	bh=jY9IZPx6jk7OwS6OUhXuvp90vIsFxDF46hmZoG0Kbx4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fe/CI9shC/Linp3eJUijYQQhEw05jHmlQLOXfV30AXXWD4MahQ55LJ6rsYflgHF4z
+	 oUzhz3Hst65Cu1abaSGq6C8Lu0T8uIIeu1AqFWyTHwreJml/L9+YtjXxOdhVsZsiNa
+	 av9GBmG76Uhmgnc7eB9TQpDDBFOtkFIb5HqLATZ27ApRISmb4Kt/s9Ui8S0cAd9vs4
+	 UXFWxbbxRb5xrCCoDn0OCCnODBUScMuncqbufFzELxON2qM1u1gHTw6GP33QnV/bYk
+	 xMNPlFYPs2J9ueRR+2ln0FOWd6rxQmV0RAszZDJeemD2RS8LsqKWjI0aUr9r1sOcL7
+	 0LdVR2vnNZsxQ==
+Date: Tue, 24 Dec 2024 11:47:27 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org, 
- Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: syzbot+4b87489410b4efd181bf@syzkaller.appspotmail.com
-In-Reply-To: <20241220222325.2487767-1-yanjun.zhu@linux.dev>
-References: <20241220222325.2487767-1-yanjun.zhu@linux.dev>
-Subject: Re: [PATCH 1/1] RDMA/rxe: Remove the direct link to net_device
-Message-Id: <173503307672.412749.12115010936328461187.b4-ty@kernel.org>
-Date: Tue, 24 Dec 2024 04:37:56 -0500
+To: Holger Kiehl <Holger.Kiehl@dwd.de>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+	linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: failed to allocate device WQ
+Message-ID: <20241224094727.GD171473@unreal>
+References: <8328f0ab-fbd8-5d43-fbb3-f2954ccbd779@praktifix.dwd.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8328f0ab-fbd8-5d43-fbb3-f2954ccbd779@praktifix.dwd.de>
 
-
-On Fri, 20 Dec 2024 23:23:25 +0100, Zhu Yanjun wrote:
-> The similar patch in siw is in the link:
-> https://git.kernel.org/rdma/rdma/c/16b87037b48889
+On Fri, Dec 20, 2024 at 05:10:32PM +0000, Holger Kiehl wrote:
+> Hello,
 > 
-> This problem also occurred in RXE. The following analyze this problem.
-> In the following Call Traces:
-> "
-> BUG: KASAN: slab-use-after-free in dev_get_flags+0x188/0x1d0 net/core/dev.c:8782
-> Read of size 4 at addr ffff8880554640b0 by task kworker/1:4/5295
+> since upgrading from kernel 6.10 to 6.11 (also 6.12) one Infiniband
+> card sometimes hits this error:
 > 
-> [...]
+>    kernel: workqueue: Failed to create a rescuer kthread for wq "ipoib_wq": -EINTR
+>    kernel: ib0: failed to allocate device WQ
+>    kernel: mlx5_1: failed to initialize device: ib0 port 1 (ret = -12)
+>    kernel: mlx5_1: couldn't register ipoib port 1; error -12
+> 
+> The system has two cards:
+> 
+>    41:00.0 Infiniband controller: Mellanox Technologies MT28908 Family [ConnectX-6]
+>    c4:00.0 Infiniband controller: Mellanox Technologies MT28908 Family [ConnectX-6]
+> 
+> If that happens one cannot use that card for TCP/IP communication. It does
+> not always happen, but when it does it always happens with the second
+> card mlx5_1. Never with mlx5_0. This happens on four different systems.
+> 
+> Any idea what I can do to stop this from happening?
 
-Applied, thanks!
+It is not related to the FW but to how your system loads kernel modules.
 
-[1/1] RDMA/rxe: Remove the direct link to net_device
-      https://git.kernel.org/rdma/rdma/c/2ac5415022d16d
+This merged PR in rdma-core probably fixes it.
+* Ensure RDMA service loads modules in initrd - https://github.com/linux-rdma/rdma-core/pull/1481
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+Thanks
 
+> 
+> Regards,
+> Holger
+> 
+> PS: Firmware for both cards is 20.41.1000
 
