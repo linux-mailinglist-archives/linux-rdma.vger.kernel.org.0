@@ -1,138 +1,157 @@
-Return-Path: <linux-rdma+bounces-6731-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6732-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEAA79FBFFD
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2024 17:16:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC3BB9FC1A7
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2024 20:26:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62C0D188399F
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2024 16:17:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D4E7165A95
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2024 19:26:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358631D79BE;
-	Tue, 24 Dec 2024 16:16:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97E93188587;
+	Tue, 24 Dec 2024 19:26:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pBfq+2U2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D41CA6B;
-	Tue, 24 Dec 2024 16:16:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=61.164.42.155
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 500408C1F;
+	Tue, 24 Dec 2024 19:26:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735057012; cv=none; b=ozuO6UlFgXwFcqCoH+dtaqGoVQUeYafZAOzZx7k+zaMGcKyN9XlJ+Fa/ZGRpZaUPpO4qYfyzgb/N46pZ+c+p/uU08jEnFmcsZGikL7+4HYvLx9SwWGDNsB2uz1SqktBH5/g4WYiNMf7BwnHrWFNBAiz6/junEzZBDixSIt+528I=
+	t=1735068382; cv=none; b=IUtVfNGbSp/liLj+qDnkY+UYNy2+uFbTQRLTxFejPRZZriWYX/49+7fhDUThmBOSkMiwUl5G+h52Noj0yWpTVvk8emN+4poVmXBMru8rV+RP1b8ApAlrRoe2wObqiqXK1AxWYvKJi0VuSsLX4u2R78smeYSOR36ZUiUMcGVuHAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735057012; c=relaxed/simple;
-	bh=GciYVDq22oMRRrRQD2jxQd1c6VUaWkE6D4tJVwfcp10=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=LBF/KW0+UipEl6yohECDo5f2itIwCFIsJ3WMEOpsu/MMnkzSF93T6KehxBdFZS0+2F2MI9zT6ye9xoYtyCy7PCqM5XP3EwXcA1tmMSbWAmxlto9Cs3wJ8tivRed+SPRJx1pDuMlbBZOqVWGy8MjUP6TCl+O4hR2MQZ/JGNfNOPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=61.164.42.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from linma$zju.edu.cn ( [10.192.155.25] ) by
- ajax-webmail-mail-app2 (Coremail) ; Wed, 25 Dec 2024 00:16:45 +0800
- (GMT+08:00)
-Date: Wed, 25 Dec 2024 00:16:45 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: "Lin Ma" <linma@zju.edu.cn>
-To: "Leon Romanovsky" <leon@kernel.org>
+	s=arc-20240116; t=1735068382; c=relaxed/simple;
+	bh=0fStXC2Be9umDwsXNJjpPIk8i2XTUm+Pupv8qwKYIxw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pZiawv5THKyMd7bg536G+VK3FaV3XGx9Qa+mR20XxrQDMkkL7oztuu7QFwJmWR0H788cf2Jk4+xF9jbx/ANZ//POrgF9OwfVBbYvr7O5WGPYforoUVOtQukulWqPCHWh7lH0lLL6xmA76uO6m126qxUlnvu6gDstx4UHKkQ3KK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pBfq+2U2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48B4BC4CED0;
+	Tue, 24 Dec 2024 19:26:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1735068381;
+	bh=0fStXC2Be9umDwsXNJjpPIk8i2XTUm+Pupv8qwKYIxw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pBfq+2U27XXkJONBK1Pqu4ZCIHGcklC3XEbjQlJ4BVnu9QsvEYSGUPm9eg1aRR2K+
+	 DrAgeMB9gL8D4k7rm540f6qD11bgGDbTy8rCos36fiPQ/UljROXcdg/wz8Dd93CoKG
+	 BRFlKhXjovJCghf+Af6Db+PIOOoa0gJZNBE4ERb8CQhiogsRgd7y4Lm6FDzoy+1HPE
+	 wqhvdRbHWAs5vdGRrVqMw7Fs8h6bvo74iitRdMMb/MVsbQU3k5+c/x5o/0wMumjw0/
+	 HsVkN82AdWdsR2J7Zcaxw0vlStUpJNdGmj8ncXpMmup5fQBTjO2hL3BXDW9cUsAEcR
+	 1SZgpRdYeEsKg==
+Date: Tue, 24 Dec 2024 21:26:16 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Lin Ma <linma@zju.edu.cn>
 Cc: jgg@ziepe.ca, cmeiohas@nvidia.com, michaelgur@nvidia.com,
 	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [bug report] RDMA/iwpm: reentrant iwpm hello message
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2024.1-cmXT5 build
- 20240625(a75f206e) Copyright (c) 2002-2024 www.mailtech.cn zju.edu.cn
-In-Reply-To: <20241224141127.GH171473@unreal>
+Message-ID: <20241224192616.GI171473@unreal>
 References: <661ee85f.a4a2.193e4b2f91b.Coremail.linma@zju.edu.cn>
  <20241224092938.GC171473@unreal>
  <103c061b.e87e.193f84b0840.Coremail.linma@zju.edu.cn>
  <20241224141127.GH171473@unreal>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+ <48307bf.eecb.193f974dadf.Coremail.linma@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <48307bf.eecb.193f974dadf.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: en_US
-X-CM-TRANSID:by_KCgAHp5Jt3mpnd5akAA--.13704W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwUFEmdqvaIC3QABsd
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-	daVFxhVjvjDU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <48307bf.eecb.193f974dadf.Coremail.linma@zju.edu.cn>
 
-SGVsbG8gTGVvbiwKCj4gPiBQbGVhc2UgbGV0IG1lIGtub3cgaWYgSSB1bmRlcnN0YW5kIHRoaXMg
-Y29ycmVjdGx5IG9yIGluY29ycmVjdGx5Pwo+IAo+IFRoZSB0aGluZyBpcyB0aGF0IGRvd25fd3Jp
-dGUoKSBpcyBjYWxsZWQgd2hlbiB3ZSB1bnJlZ2lzdGVyaW5nIG1vZHVsZQo+IHdoaWNoIHNlbnQg
-bmV0bGluayBtZXNzYWdlcy4gSXQgc2hvdWxkbid0IGhhcHBlbi4KPiAKCkkgYWNrbm93bGVkZ2Ug
-dGhhdCB0aGlzIGlzIGEgbG93LXByb2JhYmlsaXR5IGV2ZW50LiBIb3dldmVyLCB0aGUgcmFjZQpj
-b25kaXRpb24gc3RpbGwgZXhpc3RzOyBvdGhlcndpc2UsIHRoZXNlIHJlYWQgYW5kIHdyaXRlIHNl
-bWFwaG9yZXMKd291bGQgbm90IGJlIG5lY2Vzc2FyeS4gV2h5IG5vdCBqdXN0IHJlbW92ZSBhbGwg
-b2YgdGhlbT8KCk1vcmVvdmVyLCBJIGZpbmQgdGhhdCBldmVuIHdpdGhvdXQgdGhlIGRlYWRsb2Nr
-LCB0aGlzIHJlZW50cmFudCBtZXNzYWdlCndvdWxkIGhhbmcgdGhlIGtlcm5lbCBhbmQgY2Fubm90
-IGJlIGtpbGxlZCwgd2l0aCBsb2dzIGxpa2UgYmVsb3c6CihhZnRlciBkaXNhYmxpbmcgbG9ja2lu
-ZyBzYW5pdGl6ZXIsIHRlc3RlZCBpbiBsYXRlc3QgdWJ1bnR1KQoKWzIxODc5ODMuODk5OTk4XSBJ
-TkZPOiB0YXNrIHBvYy5lbGY6MTcxNzAyMSBibG9ja2VkIGZvciBtb3JlIHRoYW4gMTIyIHNlY29u
-ZHMuClsyMTg3OTgzLjkwMDA0OV0gICAgICAgTm90IHRhaW50ZWQgNi44LjAtNDktZ2VuZXJpYyAj
-NDl+MjIuMDQuMS1VYnVudHUKWzIxODc5ODMuOTAwMDU3XSAiZWNobyAwID4gL3Byb2Mvc3lzL2tl
-cm5lbC9odW5nX3Rhc2tfdGltZW91dF9zZWNzIiBkaXNhYmxlcyB0aGlzIG1lc3NhZ2UuClsyMTg3
-OTgzLjkwMDA2M10gdGFzazpwb2MuZWxmICAgICAgIHN0YXRlOkQgc3RhY2s6MCAgICAgcGlkOjE3
-MTcwMjEgdGdpZDoxNzE3MDIxIHBwaWQ6MTcxNjgzNCBmbGFnczoweDAwMDA0MDA2ClsyMTg3OTgz
-LjkwMDA4N10gQ2FsbCBUcmFjZToKWzIxODc5ODMuOTAwMDk0XSAgPFRBU0s+ClsyMTg3OTgzLjkw
-MDM1NV0gIF9fc2NoZWR1bGUrMHgyN2MvMHg2YTAKWzIxODc5ODMuOTAwNDMwXSAgc2NoZWR1bGUr
-MHgzMy8weDExMApbMjE4Nzk4My45MDA0NDJdICBzY2hlZHVsZV9wcmVlbXB0X2Rpc2FibGVkKzB4
-MTUvMHgzMApbMjE4Nzk4My45MDA0NTRdICBfX211dGV4X2xvY2suY29uc3Rwcm9wLjArMHgzZjgv
-MHg3YTAKWzIxODc5ODMuOTAwNDc2XSAgX19tdXRleF9sb2NrX3Nsb3dwYXRoKzB4MTMvMHgyMApb
-MjE4Nzk4My45MDA0ODZdICBtdXRleF9sb2NrKzB4M2MvMHg1MApbMjE4Nzk4My45MDA0OTNdICBf
-X25ldGxpbmtfZHVtcF9zdGFydCsweDc2LzB4MmEwClsyMTg3OTgzLjkwMDU1Ml0gIHJkbWFfbmxf
-cmN2X21zZysweDI0Yy8weDMxMCBbaWJfY29yZV0KWzIxODc5ODMuOTAwNjczXSAgPyBfX3BmeF9p
-d3BtX2hlbGxvX2NiKzB4MTAvMHgxMCBbaXdfY21dClsyMTg3OTgzLjkwMDY5OV0gIHJkbWFfbmxf
-cmN2X3NrYi5jb25zdHByb3AuMC5pc3JhLjArMHhiYi8weDEyMCBbaWJfY29yZV0KWzIxODc5ODMu
-OTAwODAyXSAgcmRtYV9ubF9yY3YrMHhlLzB4MjAgW2liX2NvcmVdClsyMTg3OTgzLjkwMDg5OF0g
-IG5ldGxpbmtfdW5pY2FzdCsweDFiMC8weDJhMApbMjE4Nzk4My45MDA5MTFdICByZG1hX25sX3Vu
-aWNhc3QrMHg0OS8weDcwIFtpYl9jb3JlXQpbMjE4Nzk4My45MDEwMDVdICBpd3BtX3NlbmRfaGVs
-bG8rMHhmZC8weDE1MCBbaXdfY21dClsyMTg3OTgzLjkwMTAzMF0gIGl3cG1faGVsbG9fY2IrMHhi
-OS8weDEzMCBbaXdfY21dClsyMTg3OTgzLjkwMTA1Ml0gIG5ldGxpbmtfZHVtcCsweDFjMC8weDM0
-MApbMjE4Nzk4My45MDEwNjVdICBfX25ldGxpbmtfZHVtcF9zdGFydCsweDFlZi8weDJhMApbMjE4
-Nzk4My45MDEwNzddICByZG1hX25sX3Jjdl9tc2crMHgyNGMvMHgzMTAgW2liX2NvcmVdClsyMTg3
-OTgzLjkwMTIxOV0gID8gX19wZnhfaXdwbV9oZWxsb19jYisweDEwLzB4MTAgW2l3X2NtXQpbMjE4
-Nzk4My45MDEyNDVdICByZG1hX25sX3Jjdl9za2IuY29uc3Rwcm9wLjAuaXNyYS4wKzB4YmIvMHgx
-MjAgW2liX2NvcmVdClsyMTg3OTgzLjkwMTM0NF0gIHJkbWFfbmxfcmN2KzB4ZS8weDIwIFtpYl9j
-b3JlXQpbMjE4Nzk4My45MDE0MzddICBuZXRsaW5rX3VuaWNhc3QrMHgxYjAvMHgyYTAKWzIxODc5
-ODMuOTAxNDQ5XSAgcmRtYV9ubF91bmljYXN0KzB4NDkvMHg3MCBbaWJfY29yZV0KWzIxODc5ODMu
-OTAxNTQ0XSAgaXdwbV9zZW5kX2hlbGxvKzB4ZmQvMHgxNTAgW2l3X2NtXQpbMjE4Nzk4My45MDE1
-NjddICBpd3BtX2hlbGxvX2NiKzB4YjkvMHgxMzAgW2l3X2NtXQpbMjE4Nzk4My45MDE1ODldICBu
-ZXRsaW5rX2R1bXArMHgxYzAvMHgzNDAKWzIxODc5ODMuOTAxNjAyXSAgX19uZXRsaW5rX2R1bXBf
-c3RhcnQrMHgxZWYvMHgyYTAKWzIxODc5ODMuOTAxNjEzXSAgcmRtYV9ubF9yY3ZfbXNnKzB4MjRj
-LzB4MzEwIFtpYl9jb3JlXQpbMjE4Nzk4My45MDE3MDddICA/IF9fcGZ4X2l3cG1faGVsbG9fY2Ir
-MHgxMC8weDEwIFtpd19jbV0KWzIxODc5ODMuOTAxNzMxXSAgcmRtYV9ubF9yY3Zfc2tiLmNvbnN0
-cHJvcC4wLmlzcmEuMCsweGJiLzB4MTIwIFtpYl9jb3JlXQpbMjE4Nzk4My45MDE4MzBdICByZG1h
-X25sX3JjdisweGUvMHgyMCBbaWJfY29yZV0KWzIxODc5ODMuOTAxOTIyXSAgbmV0bGlua191bmlj
-YXN0KzB4MWIwLzB4MmEwClsyMTg3OTgzLjkwMTkzM10gIG5ldGxpbmtfc2VuZG1zZysweDIxNC8w
-eDQ3MApbMjE4Nzk4My45MDE5NDZdICBfX3N5c19zZW5kdG8rMHgyMWIvMHgyMzAKWzIxODc5ODMu
-OTAxOTkyXSAgX194NjRfc3lzX3NlbmR0bysweDI0LzB4NDAKWzIxODc5ODMuOTAyMDAyXSAgeDY0
-X3N5c19jYWxsKzB4MWZjMC8weDI0YjAKWzIxODc5ODMuOTAyMDIzXSAgZG9fc3lzY2FsbF82NCsw
-eDgxLzB4MTcwClsyMTg3OTgzLjkwMjA1OV0gID8gc2VjdXJpdHlfZmlsZV9hbGxvYysweDVmLzB4
-ZjAKWzIxODc5ODMuOTAyMDc5XSAgPyBhbGxvY19lbXB0eV9maWxlKzB4ODUvMHgxMzAKWzIxODc5
-ODMuOTAyMTQwXSAgPyBhbGxvY19maWxlKzB4OWIvMHgxNzAKWzIxODc5ODMuOTAyMTUwXSAgPyBh
-bGxvY19maWxlX3BzZXVkbysweDllLzB4MTAwClsyMTg3OTgzLjkwMjE2M10gID8gcmVzdG9yZV9m
-cHJlZ3NfZnJvbV9mcHN0YXRlKzB4M2QvMHhkMApbMjE4Nzk4My45MDIxOTddICA/IHN3aXRjaF9m
-cHVfcmV0dXJuKzB4NTUvMHhmMApbMjE4Nzk4My45MDIyMDhdICA/IHN5c2NhbGxfZXhpdF90b191
-c2VyX21vZGUrMHg4My8weDI2MApbMjE4Nzk4My45MDIyMjldICA/IGRvX3N5c2NhbGxfNjQrMHg4
-ZC8weDE3MApbMjE4Nzk4My45MDIyNDBdICA/IGlycWVudHJ5X2V4aXQrMHg0My8weDUwClsyMTg3
-OTgzLjkwMjI0OV0gID8gY2xlYXJfYmhiX2xvb3ArMHgxNS8weDcwClsyMTg3OTgzLjkwMjI5M10g
-ID8gY2xlYXJfYmhiX2xvb3ArMHgxNS8weDcwClsyMTg3OTgzLjkwMjMwMl0gID8gY2xlYXJfYmhi
-X2xvb3ArMHgxNS8weDcwClsyMTg3OTgzLjkwMjMxMV0gIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJf
-aHdmcmFtZSsweDc4LzB4ODAKWzIxODc5ODMuOTAyMzE5XSBSSVA6IDAwMzM6MHg0NDA2MjQKWzIx
-ODc5ODMuOTAyNTgyXSBSU1A6IDAwMmI6MDAwMDdmZmNmYTRiMjlmOCBFRkxBR1M6IDAwMDAwMjQ2
-IE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMDJjClsyMTg3OTgzLjkwMjU5Ml0gUkFYOiBmZmZmZmZm
-ZmZmZmZmZmRhIFJCWDogMDAwMDAwMDAwMDQwMDQwMCBSQ1g6IDAwMDAwMDAwMDA0NDA2MjQKWzIx
-ODc5ODMuOTAyNTk4XSBSRFg6IDAwMDAwMDAwMDAwMDAwMTggUlNJOiAwMDAwN2ZmY2ZhNGIyYTMw
-IFJESTogMDAwMDAwMDAwMDAwMDAwMwpbMjE4Nzk4My45MDI2MDRdIFJCUDogMDAwMDdmZmNmYTRi
-M2E0MCBSMDg6IDAwMDAwMDAwMDA0N2RmMDggUjA5OiAwMDAwMDAwMDAwMDAwMDBjClsyMTg3OTgz
-LjkwMjYwOV0gUjEwOiAwMDAwMDAwMDAwMDAwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDI0NiBSMTI6
-IDAwMDAwMDAwMDA0MDM5OTAKWzIxODc5ODMuOTAyNjE0XSBSMTM6IDAwMDAwMDAwMDAwMDAwMDAg
-UjE0OiAwMDAwMDAwMDAwNmE2MDE4IFIxNTogMDAwMDAwMDAwMDAwMDAwMAoKVGhhdCdzIHdoeSBJ
-J20gcXVpdGUgc3VyZSB0aGlzIGlzIGEgYnVnIGFuZCByZXF1aXJlcyBmaXhpbmcuCgpUaGFua3MK
-TGluCg==
+On Wed, Dec 25, 2024 at 12:16:45AM +0800, Lin Ma wrote:
+> Hello Leon,
+> 
+> > > Please let me know if I understand this correctly or incorrectly?
+> > 
+> > The thing is that down_write() is called when we unregistering module
+> > which sent netlink messages. It shouldn't happen.
+> > 
+> 
+> I acknowledge that this is a low-probability event. However, the race
+> condition still exists; otherwise, these read and write semaphores
+> would not be necessary. Why not just remove all of them?
+
+netlink input and module removal are different paths and they can be in
+parallel, and from this race, the semaphore is protecting.
+
+Do you have reproducer for that?
+
+> 
+> Moreover, I find that even without the deadlock, this reentrant message
+> would hang the kernel and cannot be killed, with logs like below:
+> (after disabling locking sanitizer, tested in latest ubuntu)
+> 
+> [2187983.899998] INFO: task poc.elf:1717021 blocked for more than 122 seconds.
+> [2187983.900049]       Not tainted 6.8.0-49-generic #49~22.04.1-Ubuntu
+> [2187983.900057] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [2187983.900063] task:poc.elf       state:D stack:0     pid:1717021 tgid:1717021 ppid:1716834 flags:0x00004006
+> [2187983.900087] Call Trace:
+> [2187983.900094]  <TASK>
+> [2187983.900355]  __schedule+0x27c/0x6a0
+> [2187983.900430]  schedule+0x33/0x110
+> [2187983.900442]  schedule_preempt_disabled+0x15/0x30
+> [2187983.900454]  __mutex_lock.constprop.0+0x3f8/0x7a0
+> [2187983.900476]  __mutex_lock_slowpath+0x13/0x20
+> [2187983.900486]  mutex_lock+0x3c/0x50
+> [2187983.900493]  __netlink_dump_start+0x76/0x2a0
+> [2187983.900552]  rdma_nl_rcv_msg+0x24c/0x310 [ib_core]
+> [2187983.900673]  ? __pfx_iwpm_hello_cb+0x10/0x10 [iw_cm]
+> [2187983.900699]  rdma_nl_rcv_skb.constprop.0.isra.0+0xbb/0x120 [ib_core]
+> [2187983.900802]  rdma_nl_rcv+0xe/0x20 [ib_core]
+> [2187983.900898]  netlink_unicast+0x1b0/0x2a0
+> [2187983.900911]  rdma_nl_unicast+0x49/0x70 [ib_core]
+> [2187983.901005]  iwpm_send_hello+0xfd/0x150 [iw_cm]
+> [2187983.901030]  iwpm_hello_cb+0xb9/0x130 [iw_cm]
+> [2187983.901052]  netlink_dump+0x1c0/0x340
+> [2187983.901065]  __netlink_dump_start+0x1ef/0x2a0
+> [2187983.901077]  rdma_nl_rcv_msg+0x24c/0x310 [ib_core]
+> [2187983.901219]  ? __pfx_iwpm_hello_cb+0x10/0x10 [iw_cm]
+> [2187983.901245]  rdma_nl_rcv_skb.constprop.0.isra.0+0xbb/0x120 [ib_core]
+> [2187983.901344]  rdma_nl_rcv+0xe/0x20 [ib_core]
+> [2187983.901437]  netlink_unicast+0x1b0/0x2a0
+> [2187983.901449]  rdma_nl_unicast+0x49/0x70 [ib_core]
+> [2187983.901544]  iwpm_send_hello+0xfd/0x150 [iw_cm]
+> [2187983.901567]  iwpm_hello_cb+0xb9/0x130 [iw_cm]
+> [2187983.901589]  netlink_dump+0x1c0/0x340
+> [2187983.901602]  __netlink_dump_start+0x1ef/0x2a0
+> [2187983.901613]  rdma_nl_rcv_msg+0x24c/0x310 [ib_core]
+> [2187983.901707]  ? __pfx_iwpm_hello_cb+0x10/0x10 [iw_cm]
+> [2187983.901731]  rdma_nl_rcv_skb.constprop.0.isra.0+0xbb/0x120 [ib_core]
+> [2187983.901830]  rdma_nl_rcv+0xe/0x20 [ib_core]
+> [2187983.901922]  netlink_unicast+0x1b0/0x2a0
+> [2187983.901933]  netlink_sendmsg+0x214/0x470
+> [2187983.901946]  __sys_sendto+0x21b/0x230
+> [2187983.901992]  __x64_sys_sendto+0x24/0x40
+> [2187983.902002]  x64_sys_call+0x1fc0/0x24b0
+> [2187983.902023]  do_syscall_64+0x81/0x170
+> [2187983.902059]  ? security_file_alloc+0x5f/0xf0
+> [2187983.902079]  ? alloc_empty_file+0x85/0x130
+> [2187983.902140]  ? alloc_file+0x9b/0x170
+> [2187983.902150]  ? alloc_file_pseudo+0x9e/0x100
+> [2187983.902163]  ? restore_fpregs_from_fpstate+0x3d/0xd0
+> [2187983.902197]  ? switch_fpu_return+0x55/0xf0
+> [2187983.902208]  ? syscall_exit_to_user_mode+0x83/0x260
+> [2187983.902229]  ? do_syscall_64+0x8d/0x170
+> [2187983.902240]  ? irqentry_exit+0x43/0x50
+> [2187983.902249]  ? clear_bhb_loop+0x15/0x70
+> [2187983.902293]  ? clear_bhb_loop+0x15/0x70
+> [2187983.902302]  ? clear_bhb_loop+0x15/0x70
+> [2187983.902311]  entry_SYSCALL_64_after_hwframe+0x78/0x80
+> [2187983.902319] RIP: 0033:0x440624
+> [2187983.902582] RSP: 002b:00007ffcfa4b29f8 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+> [2187983.902592] RAX: ffffffffffffffda RBX: 0000000000400400 RCX: 0000000000440624
+> [2187983.902598] RDX: 0000000000000018 RSI: 00007ffcfa4b2a30 RDI: 0000000000000003
+> [2187983.902604] RBP: 00007ffcfa4b3a40 R08: 000000000047df08 R09: 000000000000000c
+> [2187983.902609] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403990
+> [2187983.902614] R13: 0000000000000000 R14: 00000000006a6018 R15: 0000000000000000
+> 
+> That's why I'm quite sure this is a bug and requires fixing.
+> 
+> Thanks
+> Lin
 
