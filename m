@@ -1,225 +1,99 @@
-Return-Path: <linux-rdma+bounces-6728-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6729-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D06AE9FBECD
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2024 14:40:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C130A9FBF0D
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2024 15:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F3611880214
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2024 13:40:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37D58166860
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2024 14:12:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A912B1DDA00;
-	Tue, 24 Dec 2024 13:39:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC6511C5491;
+	Tue, 24 Dec 2024 14:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TOsG3tRn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dk+6EYpM"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5583E1D9350;
-	Tue, 24 Dec 2024 13:39:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F4D1BD9DC;
+	Tue, 24 Dec 2024 14:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735047542; cv=none; b=VY1juIvinOxRrAx+XikNYjDcw9tvGRkv3740sr7D+SKcKZqR6GRj2i1gAcN0trfc9lUDSrgVrV1frLycJ99PIPFUvqpftkVEunuf1i7xC7jYeW2sYtcS+YC4qOjs+W2Me4GNDFjOyUaej8yf3ogc7914KlN0sgF557sads4Sxx4=
+	t=1735049492; cv=none; b=AXf1LjarPewSshVAnLBNpqjo1QZ1z5Ut7ngiCF4fRb6+jO0pw9qUZFTNT8+jRL8y8S1w3ASzaQYmruRXrM+cmkHFcpYH+FLyhpmTzRMTR942Y6uCLDFIC1SAL4ENv96uBnlolPxMXiRsidg0z7HCiBm8KpgJsEjBP1IReUu6HaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735047542; c=relaxed/simple;
-	bh=XKcFUzG8vxeMmdr2SPk5lZ5wyXWvT/+2RPKtGQtlpOQ=;
+	s=arc-20240116; t=1735049492; c=relaxed/simple;
+	bh=eYIGAzSIfGDGlaRSoQ/lPv7690qmuqmpbXYYcfMF3jU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cQz8xh0bzZ5GBEE19EBhrvPx6+gtI9lAfh7OpoqzucWE2K1mpDZXY5pFsoLLL9DoTdyWKOMkn4hcbY7gxeLvLBY1vyi6kQdaDMgy4QFewsSSxiKpeWxl4Rj4jQml1dlR7i+DtMqdir196OEzRaq2o9AWrQqThB9e0+dInWk3oao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TOsG3tRn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 286F5C4CED0;
-	Tue, 24 Dec 2024 13:39:00 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=nJUuFiJ7xqrwzq2gMFi64Xe2kVAInMzVNQAFE64vyYnZctZImY/i2akVmzqxdgZ6GBstJ5eTQF+5l+ZKbZ13DPLk0S/a9XvlNl9BxN8fJHafyewcyzKqf0tJmros1/qRtxbXN6PhlFPlZ5ink9glMsuYrhJI3r+pCyOG+hjU0xM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dk+6EYpM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5672BC4CED0;
+	Tue, 24 Dec 2024 14:11:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735047541;
-	bh=XKcFUzG8vxeMmdr2SPk5lZ5wyXWvT/+2RPKtGQtlpOQ=;
+	s=k20201202; t=1735049492;
+	bh=eYIGAzSIfGDGlaRSoQ/lPv7690qmuqmpbXYYcfMF3jU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TOsG3tRnJWxoGCod7z9R02sQlM1NQX1BSfxxkavyNsRSOZ3E5YeUheYVR0Iks3KCM
-	 XhE0DOU/uir9hFxOhmM8DLAAO16NLx8ZhO6T2JetGbQHem2K1rni8KuElXbrnRZhIt
-	 RNzv74BzCXse7PYEX3WN1TJVfVGB9oHbWpTKYswWoz2rIoIPcrRvSid6Kn4GkrHS78
-	 Ujjz7IFfvf7vDZLuwQib4HLLC5+YsVI5KhMQfMuYMk1sHl7YDW5UsREyCNt31nFKBL
-	 KeeB8sDJkz22n5YF8CWCGTFxjfe8k8hEAPD+H5svYXO/1b3Esfkt5Foss8UPoNaaf8
-	 E4v4+O4ocg6BQ==
-Date: Tue, 24 Dec 2024 15:38:56 +0200
+	b=dk+6EYpMcJ+RA8E9b0kP4cNz5Qn3T2eUIZpWMlXeuFAy+nWJE0u3eyyF5r8Se3+Or
+	 nLwrKRyW+PPMpWSb5j8OMQfud8uKkboUzC6vwQyKF1m80fVJUOImJKdwoGKUsaSySb
+	 b+o4mm4YIxLRLQyWGFnewT0Ay/U/TChhKHJVGcYjkdovi45rjlfLj0UUrsT8pO7b6p
+	 FEudZ89eiUlciy0u9Mg6F9KP7wElx6DntYeptLuzb09Sd0nNZN2kBC0fd8HSJ/avCQ
+	 UhCzx4Dw2dDzWGEogfLqy+G6eUl/uO4UHUJveXB2trzY7EmNlpQJKb4RY3SwrnG4yl
+	 sIPztlzE4KipQ==
+Date: Tue, 24 Dec 2024 16:11:27 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: jgg@ziepe.ca, selvin.xavier@broadcom.com, chengyou@linux.alibaba.com,
-	kaishen@linux.alibaba.com, mustafa.ismail@intel.com,
-	tatyana.e.nikolova@intel.com, yishaih@nvidia.com, benve@cisco.com,
-	neescoba@cisco.com, bryan-bt.tan@broadcom.com,
-	vishnu.dasa@broadcom.com, zyjzyj2000@gmail.com, bmt@zurich.ibm.com,
-	linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-	linux-kernel@vger.kernel.org, tangchengchang@huawei.com,
-	liyuyu6@huawei.com, linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH RFC 00/12] RDMA: Support link status events dispatching
- in ib_core
-Message-ID: <20241224133856.GG171473@unreal>
-References: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
- <20241224103224.GF171473@unreal>
- <ea392da6-15e1-ea62-f5f0-78e3da0874ae@hisilicon.com>
+To: Lin Ma <linma@zju.edu.cn>
+Cc: jgg@ziepe.ca, cmeiohas@nvidia.com, michaelgur@nvidia.com,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [bug report] RDMA/iwpm: reentrant iwpm hello message
+Message-ID: <20241224141127.GH171473@unreal>
+References: <661ee85f.a4a2.193e4b2f91b.Coremail.linma@zju.edu.cn>
+ <20241224092938.GC171473@unreal>
+ <103c061b.e87e.193f84b0840.Coremail.linma@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ea392da6-15e1-ea62-f5f0-78e3da0874ae@hisilicon.com>
+In-Reply-To: <103c061b.e87e.193f84b0840.Coremail.linma@zju.edu.cn>
 
-On Tue, Dec 24, 2024 at 08:05:26PM +0800, Junxian Huang wrote:
+On Tue, Dec 24, 2024 at 06:51:27PM +0800, Lin Ma wrote:
+> Hello Leon,
 > 
-> 
-> On 2024/12/24 18:32, Leon Romanovsky wrote:
-> > On Fri, Nov 22, 2024 at 06:52:56PM +0800, Junxian Huang wrote:
-> >> This series is to integrate a common link status event handler in
-> >> ib_core as this functionality is needed by most drivers and
-> >> implemented in very similar patterns. This is not a new issue but
-> >> a restart of the previous work of our colleagues from several years
-> >> ago, please see [1] and [2].
-> >>
-> >> [1]: https://lore.kernel.org/linux-rdma/1570184954-21384-1-git-send-email-liweihang@hisilicon.com/
-> >> [2]: https://lore.kernel.org/linux-rdma/20200204082408.18728-1-liweihang@huawei.com/
-> >>
-> >> With this series, ib_core can handle netdev events of link status,
-> >> i.e. NETDEV_UP, NETDEV_DOWN and NETDEV_CHANGE, and dispatch ib port
-> >> events to ULPs instead of drivers. However some drivers currently
-> >> have some private processing in their handler, rather than simply
-> >> dispatching events. For these drivers, this series provides a new
-> >> ops report_port_event(). If this ops is set, ib_core will call it
-> >> and the events will still be handled in the driver.
-> >>
-> >> Events of LAG devices are also not handled in ib_core as currently
-> >> there is no way to obtain ibdev from upper netdev in ib_core. This
-> >> can be a TODO work after the core have more support for LAG. For
-> >> now mlx5 is the only driver that supports RoCE LAG, and the events
-> >> handling of mlx5 RoCE LAG will remain in mlx5 driver.
-> >>
-> >> In this series:
-> >>
-> >> Patch #1 adds a new helper to query the port num of a netdev
-> >> associated with an ibdev. This is used in the following patch.
-> >>
-> >> Patch #2 adds support for link status events dispatching in ib_core.
-> >>
-> >> Patch #3-#7 removes link status event handler in several drivers.
-> >> The port state setting in erdma, rxe and siw are replaced with
-> >> ib_get_curr_port_state(), so their handler can be totally removed.
-> >>
-> >> Patch #8-#10 add support for report_port_event() ops in usnic, mlx4
-> >> and pvrdma as their current handler cannot be perfectly replaced by
-> >> the ib_core handler in patch #2.
-> >>
-> >> Patch #11 adds a check in mlx5 that only events of RoCE LAG will be
-> >> handled in mlx5 driver.
-> >>
-> >> Patch #12 adds a fast path for link-down events dispatching in hns by
-> >> getting notified from hns3 nic driver directly.
-> >>
-> >> Yuyu Li (12):
-> >>   RDMA/core: Add ib_query_netdev_port() to query netdev port by IB
-> >>     device.
-> >>   RDMA/core: Support link status events dispatching
-> >>   RDMA/bnxt_re: Remove deliver net device event
-> >>   RDMA/erdma: Remove deliver net device event
-> >>   RDMA/irdma: Remove deliver net device event
-> >>   RDMA/rxe: Remove deliver net device event
-> >>   RDMA/siw: Remove deliver net device event
-> >>   RDMA/usnic: Support report_port_event() ops
-> >>   RDMA/mlx4: Support report_port_event() ops
-> >>   RDMA/pvrdma: Support report_port_event() ops
-> >>   RDMA/mlx5: Handle link status event only for LAG device
-> >>   RDMA/hns: Support fast path for link-down events dispatching
 > > 
-> > I took the series as it is good thing to remove code duplication
-> > and we waited enough.
+> > I'm not fully understand the lockdep here. We use down_read(), which is
+> > reentry safe.
 > > 
 > 
-> Thanks Leon.
+> Really? To my knowledge, though down_read() itself will not trigger locking
+> errors. But below scenario will lead to deadlock, and that's why this
+> WARNING is raised.
 > 
-> The kernel test robot has reported one warning and one error for
-> this series:
+>    CPU0                CPU1
+>    ----                ----
+> down_read()[1]
+>                   down_write()[2]
+> down_read()[3]
 > 
-> https://lore.kernel.org/oe-kbuild-all/202411251625.VrcLuTRx-lkp@intel.com/
-> https://lore.kernel.org/oe-kbuild-all/202411251727.RFxtcpiI-lkp@intel.com/
+> If CPU1 thread not exists, the CPU0 will run smoothly (However, it will keep
+> looping and the PoC cannot be killed by any signal, causing Denial-of-Service).
 > 
-> I was planning to fix them when I could send the formal patches,
-> but since you have applied these RFC patches，could you please
-> fix them on your wip branch, or should I send separate patches
-> to fix them?
+> When CPU1 calls down_write(), it will wait for [1] to be released.
+> However, when [3] is called, it will then wait for [2] to be released,
+> leading to a deadlock situation.
+> 
+> Please let me know if I understand this correctly or incorrectly?
 
-This is how I fixed it. Is it ok?
+The thing is that down_write() is called when we unregistering module
+which sent netlink messages. It shouldn't happen.
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 4286fd4a9324..b886fe2922ae 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -822,17 +822,6 @@ static void bnxt_re_disassociate_ucontext(struct ib_ucontext *ibcontext)
- }
- 
- /* Device */
--
--static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev)
--{
--	struct ib_device *ibdev =
--		ib_device_get_by_netdev(netdev, RDMA_DRIVER_BNXT_RE);
--	if (!ibdev)
--		return NULL;
--
--	return container_of(ibdev, struct bnxt_re_dev, ibdev);
--}
--
- static ssize_t hw_rev_show(struct device *device, struct device_attribute *attr,
- 			   char *buf)
- {
-diff --git a/drivers/infiniband/hw/usnic/usnic_ib_main.c b/drivers/infiniband/hw/usnic/usnic_ib_main.c
-index 5ad7fe7e662f..4ddcd5860e0f 100644
---- a/drivers/infiniband/hw/usnic/usnic_ib_main.c
-+++ b/drivers/infiniband/hw/usnic/usnic_ib_main.c
-@@ -192,10 +192,12 @@ static void usnic_ib_handle_usdev_event(struct usnic_ib_dev *us_ibdev,
- 
- static void usnic_ib_handle_port_event(struct ib_device *ibdev,
- 				       struct net_device *netdev,
--				       unsigned long event);
-+				       unsigned long event)
- {
- 	struct usnic_ib_dev *us_ibdev =
- 			container_of(ibdev, struct usnic_ib_dev, ib_dev);
-+	struct ib_event ib_event;
-+
- 	mutex_lock(&us_ibdev->usdev_lock);
- 	switch (event) {
- 	case NETDEV_UP:
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index 137819184b3b..6b24438df917 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -172,6 +172,7 @@ int siw_query_port(struct ib_device *base_dev, u32 port,
- 		   struct ib_port_attr *attr)
- {
- 	struct siw_device *sdev = to_siw_dev(base_dev);
-+	struct net_device *ndev;
- 	int rv;
- 
- 	memset(attr, 0, sizeof(*attr));
-@@ -183,7 +184,12 @@ int siw_query_port(struct ib_device *base_dev, u32 port,
- 	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
- 	attr->active_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
- 	attr->port_cap_flags = IB_PORT_CM_SUP | IB_PORT_DEVICE_MGMT_SUP;
--	attr->state = ib_get_curr_port_state(sdev->ndev);
-+	ndev = ib_device_get_netdev(base_dev, port);
-+	if (ndev)
-+		attr->state = ib_get_curr_port_state(ndev);
-+	else
-+		attr->state = IB_PORT_DOWN;
-+	dev_put(ndev);
- 	attr->phys_state = attr->state == IB_PORT_ACTIVE ?
- 		IB_PORT_PHYS_STATE_LINK_UP : IB_PORT_PHYS_STATE_DISABLED;
- 	/*
-
+Thanks
 
 > 
-> Junxian
+> Thanks,
+> Lin
 
