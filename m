@@ -1,135 +1,246 @@
-Return-Path: <linux-rdma+bounces-6735-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6736-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6048D9FC392
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Dec 2024 06:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 986C79FC3C5
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Dec 2024 07:13:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B921D1645FA
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Dec 2024 05:11:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB77E1641B1
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Dec 2024 06:13:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE7085628;
-	Wed, 25 Dec 2024 05:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cyOAF9WZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FE3146000;
+	Wed, 25 Dec 2024 06:13:09 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com [209.85.167.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A5F17BD5;
-	Wed, 25 Dec 2024 05:11:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C982633DF;
+	Wed, 25 Dec 2024 06:13:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735103504; cv=none; b=dzPIeN0osLDkYBEgeWBFaz4Y7IMzulk1BYrtN6Gngz4ZjTP8drhRNgBcsiBtDjPkQr75GUcy76LD+/dVqRO1+9sNX5nbW/4w6KA7A5tB6dhkdlVMrFbXzMPfvpI7Gp7Wm9lRZ4RFTsfIK/qyEDB5SVt/VAV5NvnPdn6aYGMzkeI=
+	t=1735107189; cv=none; b=H//G9KIOgouhoR0TWNLHXg8ZXhJ/c7a655+8T2Kd+h7IdFzWjuajtqcRSlKEo0aZNrxXPxyVc6naPSA3q2aOdZLGYUPBGR0tQN1V6hVUkQ6frtG1NBR/Nhdtw0sf34BWY5zC3/atkfSDYdVa8MXzmwDLQFjVQo8orNBTxP48Pjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735103504; c=relaxed/simple;
-	bh=MHUtLgX2FgZLkFvUWFMlj6dZEQCHyzGLF3sNfi4PujY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NXOR8NSurYbI9b+H5h9y8XL9ohGMs8m/XsZqsyWlpaGFyYbxMpzh97ZI+1hModnzTVjK4CoRT5dPXtpt523+em/Ybj6VuIDP3DN7h7RtS7FqUj0t0MxzyD22P/0OdDsHO2UFL83Idju6vHkR77R6byNneMMjM7MrtsgRd0vDbR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cyOAF9WZ; arc=none smtp.client-ip=209.85.167.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f194.google.com with SMTP id 5614622812f47-3eb9ba53f90so1404424b6e.1;
-        Tue, 24 Dec 2024 21:11:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735103501; x=1735708301; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h9y1NrjQdNnlewCnCtL0H5ZrmT/ffvt8WagiVTsajB4=;
-        b=cyOAF9WZxctoHiaZKId80UzN0LhQnlI8RYx5NwP5bWVJTMxLMU47xrlO0yZFbS1M0K
-         ev2vouzEh4BARvOq92gjNM6UN86R0pNu0E3o9jP3yZc/rRvYCRhc1LvqOaPvg7xY8457
-         gLIN9/dywNj5JPxzG/Wlq7VbWo2GF7g7pgypm17OOJ9r9JRd/Lu7Wcqf7nLJprxO1SZT
-         tv7OpFr8qCzTx6vjehnpMn0xo1O04rPc4Gy2afmN5VCgqQVpdsjk14TJTa07Y1R51JlM
-         HC+OiChv+Hal1mO3/gzBSArUkwrTg9Y7orr9uzEWsqF/fhPMthvk/zgZEFYM++NQhQl6
-         4npQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735103501; x=1735708301;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h9y1NrjQdNnlewCnCtL0H5ZrmT/ffvt8WagiVTsajB4=;
-        b=c6QDQmaiGT1E1cnMd6apqKN2BvwRK297vDFGf4IK6cjwjXmRtIdhHvAxmLjEk1SanW
-         T/dlpqjy8poDGK0FXJvkqW/F8zSLxwHnUrxk2gY+7MnODdUpRPQFuFmlTLzwdpRntYi5
-         jW6JFa8wx1UptNEmc29P0cm5aZqoNMn8Bx9dzZfTdymMyBFvNsCF9Xe7ZNYpWoZFS4aP
-         m8phSGO4oRQK+E5TONN7BRPcP4GXe0u2AtzSMFOWpaUPNJLG6eoDWy2y2sKB90D2w8YO
-         WRZjzFAnZc9/7VQKVXck1Fjx8Ebr60wJHEkuyhh5N6i3HFgdCPVDc99og4MV3JfX6QfC
-         QhsA==
-X-Forwarded-Encrypted: i=1; AJvYcCUoSYw4dFDg4QZLEGFpkYjF6XMQY6BGAAeudzFU9g/52Bo37a1KhY8n+1Gjl2jNb3QmE6aXPh67VHvphw==@vger.kernel.org, AJvYcCVhJZcZjNsc8tVsI3AEoDWgB81NqDQxMRNOFyxaKHUQgIDK5aqSkrAuTjl7KEuF8g1alnT4smtWOd7QTjg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9qcCZn58gMg6/ZcrkjJO5XL9T6Sa5OEK8wBooswIydsJtWwEd
-	dnrFNs+Q9vMe1diCQiHjNOOuA7aPJ1Q715xzranLREXZk8KQ0hgGwvMUwxO6viUtUTu+ofZWStG
-	ne53xkh1e5xecQ3xUUrAM3FLKE9M=
-X-Gm-Gg: ASbGncutXlrrRwWp+aeUAsEmk7VPK+/QX5wcJWRiO1IGCmccIiKgVvmMkFDcAIlLMRl
-	HDCpMkFNVnyLc46H3B0AGkKZT8VwYhg0IVrf4OA==
-X-Google-Smtp-Source: AGHT+IGVQovdAvRvUckQB4uy/O6k2iiHlumwhgx2+GKqfg9m/blsQhN38+7tmZ53jnfaZ0wPWWuzYRqC4aqaMOz9xh0=
-X-Received: by 2002:a05:6871:80cc:b0:29e:2bbd:51cb with SMTP id
- 586e51a60fabf-2a7fb1619cdmr10529436fac.24.1735103501090; Tue, 24 Dec 2024
- 21:11:41 -0800 (PST)
+	s=arc-20240116; t=1735107189; c=relaxed/simple;
+	bh=iCq7PTbBtpdm7C2nY1QXhZ7d1rxeIteL3j5HgbRM29I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=JRoYSdEzEsuq8VDrBUrPZEFKTcdsThh2NSnQOQ4EEhK6MRrmvRvR2+agYDnvB8b9RE3oenTdpnLGmITFP4PwaiiRLVIO9m7TNGdjX9CWzxryh7Xl/fKo8hvTgzjiHpeaI9mPgOKPABd8675dFyBSsYM0w4Lwc7+R5LEwaaQLnfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4YJ1f73Jv1z20mbf;
+	Wed, 25 Dec 2024 14:13:19 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9D44F1400F4;
+	Wed, 25 Dec 2024 14:12:59 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 25 Dec 2024 14:12:58 +0800
+Message-ID: <4e68fb45-667c-988e-9f6d-fc29858ff782@hisilicon.com>
+Date: Wed, 25 Dec 2024 14:12:58 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8328f0ab-fbd8-5d43-fbb3-f2954ccbd779@praktifix.dwd.de> <7f0908c3-f730-4c5d-88d7-85677810082a@linux.dev>
-In-Reply-To: <7f0908c3-f730-4c5d-88d7-85677810082a@linux.dev>
-From: Joe Klein <joe.klein812@gmail.com>
-Date: Wed, 25 Dec 2024 06:11:30 +0100
-Message-ID: <CAHjRaAcO866yePi_XJdPm5R05bkyLVYyzzMRCbPNwko5d=rY1A@mail.gmail.com>
-Subject: Re: failed to allocate device WQ
-To: Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: Holger Kiehl <Holger.Kiehl@dwd.de>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
-	linux-rdma@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH RFC 00/12] RDMA: Support link status events dispatching in
+ ib_core
+Content-Language: en-US
+To: Leon Romanovsky <leon@kernel.org>
+CC: <jgg@ziepe.ca>, <selvin.xavier@broadcom.com>,
+	<chengyou@linux.alibaba.com>, <kaishen@linux.alibaba.com>,
+	<mustafa.ismail@intel.com>, <tatyana.e.nikolova@intel.com>,
+	<yishaih@nvidia.com>, <benve@cisco.com>, <neescoba@cisco.com>,
+	<bryan-bt.tan@broadcom.com>, <vishnu.dasa@broadcom.com>,
+	<zyjzyj2000@gmail.com>, <bmt@zurich.ibm.com>, <linux-rdma@vger.kernel.org>,
+	<linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
+	<tangchengchang@huawei.com>, <liyuyu6@huawei.com>, linux-netdev
+	<netdev@vger.kernel.org>
+References: <20241122105308.2150505-1-huangjunxian6@hisilicon.com>
+ <20241224103224.GF171473@unreal>
+ <ea392da6-15e1-ea62-f5f0-78e3da0874ae@hisilicon.com>
+ <20241224133856.GG171473@unreal>
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20241224133856.GG171473@unreal>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-On Sat, Dec 21, 2024 at 9:38=E2=80=AFAM Zhu Yanjun <yanjun.zhu@linux.dev> w=
-rote:
->
-> =E5=9C=A8 2024/12/20 18:10, Holger Kiehl =E5=86=99=E9=81=93:
-> > Hello,
-> >
-> > since upgrading from kernel 6.10 to 6.11 (also 6.12) one Infiniband
-> > card sometimes hits this error:
-> >
-> >     kernel: workqueue: Failed to create a rescuer kthread for wq "ipoib=
-_wq": -EINTR
-> >     kernel: ib0: failed to allocate device WQ
-> >     kernel: mlx5_1: failed to initialize device: ib0 port 1 (ret =3D -1=
-2)
-> >     kernel: mlx5_1: couldn't register ipoib port 1; error -12
-> >
-> > The system has two cards:
-> >
-> >     41:00.0 Infiniband controller: Mellanox Technologies MT28908 Family=
- [ConnectX-6]
-> >     c4:00.0 Infiniband controller: Mellanox Technologies MT28908 Family=
- [ConnectX-6]
-> >
-> > If that happens one cannot use that card for TCP/IP communication. It d=
-oes
-> > not always happen, but when it does it always happens with the second
-> > card mlx5_1. Never with mlx5_0. This happens on four different systems.
-> >
-> > Any idea what I can do to stop this from happening?
-> >
-> > Regards,
-> > Holger
-> >
-> > PS: Firmware for both cards is 20.41.1000
->
-> It is very possible that FW is not compatible with the driver. IMO, you
-> can make tests with Mellanox OFED.
->
-> If the driver is compatible with FW, this problem should disappear.
 
-Thanks, Zhu. We have the similar problem and have been fixed by your soluti=
-on.
-We are in the same boat. Appreciate your help.
 
->
-> Zhu Yanjun
->
+On 2024/12/24 21:38, Leon Romanovsky wrote:
+> On Tue, Dec 24, 2024 at 08:05:26PM +0800, Junxian Huang wrote:
+>>
+>>
+>> On 2024/12/24 18:32, Leon Romanovsky wrote:
+>>> On Fri, Nov 22, 2024 at 06:52:56PM +0800, Junxian Huang wrote:
+>>>> This series is to integrate a common link status event handler in
+>>>> ib_core as this functionality is needed by most drivers and
+>>>> implemented in very similar patterns. This is not a new issue but
+>>>> a restart of the previous work of our colleagues from several years
+>>>> ago, please see [1] and [2].
+>>>>
+>>>> [1]: https://lore.kernel.org/linux-rdma/1570184954-21384-1-git-send-email-liweihang@hisilicon.com/
+>>>> [2]: https://lore.kernel.org/linux-rdma/20200204082408.18728-1-liweihang@huawei.com/
+>>>>
+>>>> With this series, ib_core can handle netdev events of link status,
+>>>> i.e. NETDEV_UP, NETDEV_DOWN and NETDEV_CHANGE, and dispatch ib port
+>>>> events to ULPs instead of drivers. However some drivers currently
+>>>> have some private processing in their handler, rather than simply
+>>>> dispatching events. For these drivers, this series provides a new
+>>>> ops report_port_event(). If this ops is set, ib_core will call it
+>>>> and the events will still be handled in the driver.
+>>>>
+>>>> Events of LAG devices are also not handled in ib_core as currently
+>>>> there is no way to obtain ibdev from upper netdev in ib_core. This
+>>>> can be a TODO work after the core have more support for LAG. For
+>>>> now mlx5 is the only driver that supports RoCE LAG, and the events
+>>>> handling of mlx5 RoCE LAG will remain in mlx5 driver.
+>>>>
+>>>> In this series:
+>>>>
+>>>> Patch #1 adds a new helper to query the port num of a netdev
+>>>> associated with an ibdev. This is used in the following patch.
+>>>>
+>>>> Patch #2 adds support for link status events dispatching in ib_core.
+>>>>
+>>>> Patch #3-#7 removes link status event handler in several drivers.
+>>>> The port state setting in erdma, rxe and siw are replaced with
+>>>> ib_get_curr_port_state(), so their handler can be totally removed.
+>>>>
+>>>> Patch #8-#10 add support for report_port_event() ops in usnic, mlx4
+>>>> and pvrdma as their current handler cannot be perfectly replaced by
+>>>> the ib_core handler in patch #2.
+>>>>
+>>>> Patch #11 adds a check in mlx5 that only events of RoCE LAG will be
+>>>> handled in mlx5 driver.
+>>>>
+>>>> Patch #12 adds a fast path for link-down events dispatching in hns by
+>>>> getting notified from hns3 nic driver directly.
+>>>>
+>>>> Yuyu Li (12):
+>>>>   RDMA/core: Add ib_query_netdev_port() to query netdev port by IB
+>>>>     device.
+>>>>   RDMA/core: Support link status events dispatching
+>>>>   RDMA/bnxt_re: Remove deliver net device event
+>>>>   RDMA/erdma: Remove deliver net device event
+>>>>   RDMA/irdma: Remove deliver net device event
+>>>>   RDMA/rxe: Remove deliver net device event
+>>>>   RDMA/siw: Remove deliver net device event
+>>>>   RDMA/usnic: Support report_port_event() ops
+>>>>   RDMA/mlx4: Support report_port_event() ops
+>>>>   RDMA/pvrdma: Support report_port_event() ops
+>>>>   RDMA/mlx5: Handle link status event only for LAG device
+>>>>   RDMA/hns: Support fast path for link-down events dispatching
+>>>
+>>> I took the series as it is good thing to remove code duplication
+>>> and we waited enough.
+>>>
+>>
+>> Thanks Leon.
+>>
+>> The kernel test robot has reported one warning and one error for
+>> this series:
+>>
+>> https://lore.kernel.org/oe-kbuild-all/202411251625.VrcLuTRx-lkp@intel.com/
+>> https://lore.kernel.org/oe-kbuild-all/202411251727.RFxtcpiI-lkp@intel.com/
+>>
+>> I was planning to fix them when I could send the formal patches,
+>> but since you have applied these RFC patches，could you please
+>> fix them on your wip branch, or should I send separate patches
+>> to fix them?
+> 
+> This is how I fixed it. Is it ok?
+> 
+> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+> index 4286fd4a9324..b886fe2922ae 100644
+> --- a/drivers/infiniband/hw/bnxt_re/main.c
+> +++ b/drivers/infiniband/hw/bnxt_re/main.c
+> @@ -822,17 +822,6 @@ static void bnxt_re_disassociate_ucontext(struct ib_ucontext *ibcontext)
+>  }
+>  
+>  /* Device */
+> -
+> -static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev)
+> -{
+> -	struct ib_device *ibdev =
+> -		ib_device_get_by_netdev(netdev, RDMA_DRIVER_BNXT_RE);
+> -	if (!ibdev)
+> -		return NULL;
+> -
+> -	return container_of(ibdev, struct bnxt_re_dev, ibdev);
+> -}
+> -
+>  static ssize_t hw_rev_show(struct device *device, struct device_attribute *attr,
+>  			   char *buf)
+>  {
+> diff --git a/drivers/infiniband/hw/usnic/usnic_ib_main.c b/drivers/infiniband/hw/usnic/usnic_ib_main.c
+> index 5ad7fe7e662f..4ddcd5860e0f 100644
+> --- a/drivers/infiniband/hw/usnic/usnic_ib_main.c
+> +++ b/drivers/infiniband/hw/usnic/usnic_ib_main.c
+> @@ -192,10 +192,12 @@ static void usnic_ib_handle_usdev_event(struct usnic_ib_dev *us_ibdev,
+>  
+>  static void usnic_ib_handle_port_event(struct ib_device *ibdev,
+>  				       struct net_device *netdev,
+> -				       unsigned long event);
+> +				       unsigned long event)
+>  {
+>  	struct usnic_ib_dev *us_ibdev =
+>  			container_of(ibdev, struct usnic_ib_dev, ib_dev);
+> +	struct ib_event ib_event;
+> +
+>  	mutex_lock(&us_ibdev->usdev_lock);
+>  	switch (event) {
+>  	case NETDEV_UP:
+> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+> index 137819184b3b..6b24438df917 100644
+> --- a/drivers/infiniband/sw/siw/siw_verbs.c
+> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
+> @@ -172,6 +172,7 @@ int siw_query_port(struct ib_device *base_dev, u32 port,
+>  		   struct ib_port_attr *attr)
+>  {
+>  	struct siw_device *sdev = to_siw_dev(base_dev);
+> +	struct net_device *ndev;
+>  	int rv;
+>  
+>  	memset(attr, 0, sizeof(*attr));
+> @@ -183,7 +184,12 @@ int siw_query_port(struct ib_device *base_dev, u32 port,
+>  	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
+>  	attr->active_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
+>  	attr->port_cap_flags = IB_PORT_CM_SUP | IB_PORT_DEVICE_MGMT_SUP;
+> -	attr->state = ib_get_curr_port_state(sdev->ndev);
+> +	ndev = ib_device_get_netdev(base_dev, port);
+> +	if (ndev)
+> +		attr->state = ib_get_curr_port_state(ndev);
+> +	else
+> +		attr->state = IB_PORT_DOWN;
+> +	dev_put(ndev);
+
+I think this is a simpler way:
+
+attr->state = ib_get_curr_port_state(sdev->netdev);
+
+But overall LGTM, thanks.
+
+BTW, it seems the kernel test robot has reported some more warnings
+after you applied these patches (and solved the conflicts I guess?)
+
+Thanks,
+Junxian
+
+>  	attr->phys_state = attr->state == IB_PORT_ACTIVE ?
+>  		IB_PORT_PHYS_STATE_LINK_UP : IB_PORT_PHYS_STATE_DISABLED;
+>  	/*
+> 
+> 
+>>
+>> Junxian
+> 
 
