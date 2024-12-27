@@ -1,396 +1,131 @@
-Return-Path: <linux-rdma+bounces-6758-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6759-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F1F79FD3D3
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Dec 2024 12:25:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D410B9FD6D5
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Dec 2024 19:11:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE3281884E72
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Dec 2024 11:25:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C95B3A2623
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Dec 2024 18:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46BC315575E;
-	Fri, 27 Dec 2024 11:25:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2C421F8913;
+	Fri, 27 Dec 2024 18:10:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Twtj3/fT"
+	dkim=pass (2048-bit key) header.d=maxima.ru header.i=@maxima.ru header.b="LSHqAXvG"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+Received: from ksmg01.maxima.ru (ksmg01.maxima.ru [81.200.124.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D05130499
-	for <linux-rdma@vger.kernel.org>; Fri, 27 Dec 2024 11:25:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC6F1F2C45;
+	Fri, 27 Dec 2024 18:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.200.124.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735298715; cv=none; b=B+mDQsjAkfjt/li8hwzYOlna5nCzGVf4Rqdh5Uvsx9+tZPjW93i1DjKcWxW4RRu73Rrdx4K03QNFQSreTDxMdm8bbuUIQIDgB5/zIz24tsp8CPsXnnKK0C6iea5uSLrQN4IuGLlyuWcihUxZ5dE9CzqV2Z0zlZ9zqOmn3/MOBlM=
+	t=1735323057; cv=none; b=RSH8JZ2YgbTAsBa56mGNpGj9jOpDJrmfsLP8oJq5L606DLuZvnJ4cdSBOnMCd8gVnvyc5A8USUZpSndHc5wL5750jDsa8yjhF8Rb85oCs7OwZ1oK+rK3wu6ZPtkKS38x3EUcqCl4YPmAaXjNYIUVWHum9zv7+ZnZTGyC86v3TYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735298715; c=relaxed/simple;
-	bh=p+GmaPppmRlYZYCugl/bKThsSs7PoDN40LRkWTlWVgY=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=P52hBJ9Q8NdKGH61t0u+OStu1vo8+YQwNfGywOaFqNHxeaQd+I9kRefuUmI49UJHw3QCIDNjSKIIteg5dVMg6tMc/h63+9b/Fj8QrUQTpYnLGW9lYer3quLahwHxWVjcFmBeK0sm4duTp8tbn/PaRxkwvHKS9coL6Er5FAgjfOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Twtj3/fT; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <7d20d1bd-e3dc-4c1f-b463-bafb618af2f3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1735298710;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hDO0P8QWzFXZWi8TjqjDyBGyRF1tFe5aSXLByqEJBmY=;
-	b=Twtj3/fTZrc5X/0BXcsZQRsfvOjNJYn74gyv/IBGhGRla7GlSZji1M1O3z45dsNMqQkE5i
-	Sg7CQipVUYzKRl6ZnAUvjr+Xya+KMoPpRx0fQDW0ROOwM7WS3gK3qbde/enpvSdYmsASpT
-	a7ezB+XentHtFYa8D4xUjfovohnD7yE=
-Date: Fri, 27 Dec 2024 12:25:01 +0100
+	s=arc-20240116; t=1735323057; c=relaxed/simple;
+	bh=baYYmO+xPvlr04bGFbAE9Co2U4ljOtRgZnNejUSU4Ro=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=u82R98/K99it0ko74HsBuAzeOIRbKj9xvIWlqwxCZsgnTv9EZx9aJH8GXtJUY47TT8eW9TOnmhbPYhOSmrYAxx4hAoz0aPDPlcU32oKO3Fk07/7XfVshKdnz9dT77dVwbT+vWAfytH7QwsL4V/lH/i2ZvPSyMY7xzXc34dlCzaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maxima.ru; spf=pass smtp.mailfrom=mt-integration.ru; dkim=pass (2048-bit key) header.d=maxima.ru header.i=@maxima.ru header.b=LSHqAXvG; arc=none smtp.client-ip=81.200.124.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maxima.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mt-integration.ru
+Received: from ksmg01.maxima.ru (localhost [127.0.0.1])
+	by ksmg01.maxima.ru (Postfix) with ESMTP id 0B335C0009;
+	Fri, 27 Dec 2024 21:10:44 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ksmg01.maxima.ru 0B335C0009
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maxima.ru; s=sl;
+	t=1735323044; bh=6LtxCC/JUoZ5G/hmJKsTCOpVL/MnjirK0lxryGHAYPw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=LSHqAXvGjzRmK5I11Rqp2cowmNpAoa31UQERpGoFVxnL11qAXp3ugPXXgF3kvjbLk
+	 dOEuiG32MuDBAxG8xEB/UHXZXu9Ksh/K8GV8aSqf5z4sV89NzCrebuABAlQq9IM0TZ
+	 eV/JZE/n+FFgAqHEhQSL8sVaARL+V225HisKfJ0Xn2Q/L4v/SvsMLvYtmqT+TEkmjZ
+	 BQ+dRgu5zhoXKGPLlqlzrYYCkT0B1jST/QYnod3wYSasiPsuRdq2thwLjPwBsX3Rlt
+	 HH0nhXOnBaG8uOGbGivYAH74pVqIlN2nSxhVfAUO2Q9TJRjY8HQyaUzFapM19mkSfc
+	 /ndLblXp+KHsw==
+Received: from ksmg01.maxima.ru (autodiscover.maxima.ru [81.200.124.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "*.maxima.ru", Issuer "GlobalSign GCC R3 DV TLS CA 2020" (verified OK))
+	by ksmg01.maxima.ru (Postfix) with ESMTPS;
+	Fri, 27 Dec 2024 21:10:43 +0300 (MSK)
+Received: from localhost.maximatelecom.ru (217.116.54.35) by
+ mmail-p-exch01.mt.ru (81.200.124.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1544.4; Fri, 27 Dec 2024 21:10:42 +0300
+From: Vitaliy Shevtsov <v.shevtsov@maxima.ru>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+CC: Vitaliy Shevtsov <v.shevtsov@maxima.ru>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>, Mitko Haralanov
+	<mitko.haralanov@intel.com>, Mike Marciniszyn <mike.marciniszyn@intel.com>,
+	Doug Ledford <dledford@redhat.com>, Don Hiatt <don.hiatt@intel.com>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<lvc-project@linuxtesting.org>
+Subject: [PATCH] IB/hfi1: fix buffer underflow in fault injection code
+Date: Fri, 27 Dec 2024 23:09:38 +0000
+Message-ID: <20241227230940.20894-1-v.shevtsov@maxima.ru>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH blktests v2 2/2] [NOT-FOR-MERGE] just for testing
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-To: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
- Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20241225093751.307267-1-lizhijian@fujitsu.com>
- <20241225093751.307267-2-lizhijian@fujitsu.com>
- <fzj26m4oig4yd2qffkcz6j5xblpqmcvtiln4d7l5ru2cdizjfs@nxhi2lvif7qk>
- <6a1f3e8f-deb0-49f9-bc69-a9b03ecfcda7@fujitsu.com>
- <0487df3d-63cf-40a8-a23b-104fbde319e6@linux.dev>
-Content-Language: en-US
-In-Reply-To: <0487df3d-63cf-40a8-a23b-104fbde319e6@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-ClientProxiedBy: mt-exch-01.mt.ru (91.220.120.210) To mmail-p-exch01.mt.ru
+ (81.200.124.61)
+X-KSMG-Rule-ID: 7
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 190124 [Dec 27 2024]
+X-KSMG-AntiSpam-Version: 6.1.1.7
+X-KSMG-AntiSpam-Envelope-From: v.shevtsov@mt-integration.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dmarc=none header.from=maxima.ru;spf=none smtp.mailfrom=mt-integration.ru;dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 49 0.3.49 28b3b64a43732373258a371bd1554adb2caa23cb, {rep_avail}, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;maxima.ru:7.1.1;127.0.0.199:7.1.2;ksmg01.maxima.ru:7.1.1;mt-integration.ru:7.1.1;81.200.124.61:7.1.2, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, FromAlignment: n, ApMailHostAddress: 81.200.124.61
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/12/27 12:45:00 #26922086
+X-KSMG-AntiVirus-Status: Clean, skipped
 
+[Why]
+The fault injection code may have a buffer underflow, which may cause
+memory corruption by writing a newline character before the base address of
+the array. This can happen if the fault->opcodes bitmap is empty.
 
+Since a file in debugfs is created with an empty bitmap, it is possible to
+read the file before any set bits are written to it.
 
-On 27.12.24 10:23, Zhu Yanjun wrote:
-> On 27.12.24 06:37, Zhijian Li (Fujitsu) wrote:
->> Hi, Shin'ichiro,
->>
->> Your attached kconfig+this rnbd test triggered another BUG.
->>
->> Cced: RDMA
->>
->> Is this a known issue in RDMA/RXE communities?
-> 
->  From my side, it should not be a known issue. It seems that it is 
-> related with this rnbd test.
-> 
-> In previous tests, this problem does not appear.
-> 
-> I am not sure if others also find this problem or not. To me, it is my 
-> first time to find this problem.
+[How]
+Fix this by checking that the size variable is greater than zero, otherwise
+return zero as the number of bytes read.
 
-FYI, Zhijian
+Found by Linux Verification Center (linuxtesting.org) with Svace.
 
-If I remember correctly, this problem does not occur in the previous 
-kernel versions. Thus, it is very possible that this problem is 
-introduced in recent kernel versions.
+Fixes: a74d5307caba ("IB/hfi1: Rework fault injection machinery")
+Signed-off-by: Vitaliy Shevtsov <v.shevtsov@maxima.ru>
+---
+ drivers/infiniband/hw/hfi1/fault.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Because you have a test scenario that can reproduce this problem, as 
-such, "git bisect" is a powerful tool that can help you to find the root 
-cause.
-
-Have a good luck.
-
-Zhu Yanjun
-
-> 
-> Zhu Yanjun
-> 
->>
->>
->> On 26/12/2024 21:17, Shinichiro Kawasaki wrote:
->>> On Dec 25, 2024 / 17:37, Li Zhijian wrote:
->>>> Hi, Shin'ichiro
->>>>
->>>> All your comments has been addressed except the success ratio one. 
->>>> Could
->>>> you help to check this patch([NOT-FOR-MERGE] just for testing) that 
->>>> can tell
->>>> where it fails at in your envrionment.
->>>>
->>>> I tested it today in my QEMU enviroment, It almost 100% success
->>>
->>> Thanks for this effort. I ran rnbd/001 with this series in my QEMU 
->>> environment.
->>> It looks still failing. Please find the 001.out.bad file generated 
->>> [X]. The
->>> kernel was v6.13-rc4 with the fix patch "RDMA/ulp: Add missing 
->>> deinit() call".
->>>
->>> I wonder what is the difference between your environment and mine. 
->>> FYI, my QEMU
->>> environment has 4 CPUs and 16GB DRAM. It runs Fedora 40. I also 
->>> attach the
->>> kernel config I used just in case you are interested in.
->>
->>
->> Due to this bug, I cannot finish rnbd/001 at all.
->>
->> However, I can reproduce your log by adding `_start_rnbd_client` 
->> before the iteration.
->> And it can be fixed by calling `_stop_rnbd_client` regardless of 
->> whether `_start_rnbd_client`
->> succeeds or not(Please feel free to give it a try when you have the 
->> opportunity).
->>
->> diff --git a/tests/rnbd/001 b/tests/rnbd/001
->> index 9c6d56e3ee98..321c4c010e78 100755
->> --- a/tests/rnbd/001
->> +++ b/tests/rnbd/001
->> @@ -26,6 +26,7 @@ test_start_stop()
->>           local loop_dev i j=0
->>           loop_dev="$(losetup -f)"
->> +       _start_rnbd_client    # this makes the _start_rnbd_client in 
->> below iteration fails
->>           for ((i=0;i<100;i++))
->>           do
->>                   if _start_rnbd_client "${loop_dev}" &>/dev/null; then
->> @@ -33,6 +34,7 @@ test_start_stop()
->>                           _stop_rnbd_client &>/dev/null && echo 
->> 'disconnect ok' || echo 'disconnect not ok'
->>                           ((j++))
->>                   else
->> +                       _stop_rnbd_client  # always stop rnbd so that 
->> we can connect again.
->>                           echo 'connect not ok'
->>                   fi
->>           done
->>
->> ===========================
->>
->> [   27.864420] run blktests rnbd/001 at 2024-12-27 13:21:37
->> [   27.888742] infiniband eth0_rxe: set active
->> [   27.889497] infiniband eth0_rxe: added eth0
->> [   27.910304] rnbd_client L599: Mapping device /dev/loop0 on session 
->> blktest, (access_mode: rw, nr_poll_queues: 0)
->> [   27.924065] rnbd_client L1190: [session=blktest] mapped 4/4 
->> default/read queues.
->> [   27.925825] rnbd_server L782: </dev/loop0@blktest>: Opened device 
->> 'loop0'
->> [   27.927554] rnbd_client L1612: </dev/loop0@blktest> map_device: 
->> Device mapped as rnbd0 (nsectors: 0, logical_block_size: 512, 
->> physical_block_size: 512, max_write_zeroes_sectors: 0, 
->> max_discard_sectors: 0, discard_granularity: 51
->> 2, discard_alignment: 0, secure_discard: 0, max_segments: 128, 
->> max_hw_sectors: 248, wc: 0, fua: 0)
->> [   27.938295] rnbd_client L323: </dev/loop0@blktest> Unmapping 
->> device, option: normal.
->> [   27.962570] rnbd_server L238: </dev/loop0@blktest>: Device closed
->> [   27.967500] BUG: kernel NULL pointer dereference, address: 
->> 0000000000000000
->> [   27.967500] BUG: kernel NULL pointer dereference, address: 
->> 0000000000000000                                                                                                                                       13:21:38 [11/9189]
->> [   27.976554] #PF: supervisor read access in kernel mode
->> [   27.984926] #PF: error_code(0x0000) - not-present page
->> [   27.989126] PGD 0 P4D 0
->> [   27.991067] Oops: Oops: 0000 [#1] PREEMPT SMP PTI
->> [   27.993226] CPU: 3 UID: 0 PID: 304 Comm: kworker/u20:2 Not tainted 
->> 6.13.0-rc3+ #1
->> [   27.996697] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), 
->> BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
->> [   27.999333] Workqueue: rxe_wq do_work [rdma_rxe]
->> [   28.000309] RIP: 0010:memcpy_orig+0xd5/0x140
->> [   28.001304] Code: 16 f8 4c 89 07 4c 89 4f 08 4c 89 54 17 f0 4c 89 
->> 5c 17 f8 c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 83 fa 
->> 08 72 1b <4c> 8b 06 4c 8b 4c 16 f8 4c 89 07 4c 89 4c 17 f8 c3 cc cc cc 
->> cc 66
->> [   28.004932] RSP: 0018:ffffb934c0643cc0 EFLAGS: 00010246
->> [   28.005845] RAX: ffff976bc1e12d5a RBX: 0000000000000000 RCX: 
->> 0000000000000000
->> [   28.007090] RDX: 0000000000000008 RSI: 0000000000000000 RDI: 
->> ffff976bc1e12d5a
->> [   28.008380] RBP: ffff976bc1e12d5a R08: 0000000000000001 R09: 
->> 0000000000000001
->> [   28.009639] R10: 0000000000000005 R11: 0000000000000000 R12: 
->> 0000000080000000
->> [   28.010836] R13: 0000000000000008 R14: 0000000000000008 R15: 
->> 0000000000000008
->> [   28.011948] FS:  0000000000000000(0000) GS:ffff976f2fd80000(0000) 
->> knlGS:0000000000000000
->> [   28.013335] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [   28.014275] CR2: 0000000000000000 CR3: 00000001837da002 CR4: 
->> 00000000001706f0
->> [   28.015424] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
->> 0000000000000000
->> [   28.016598] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
->> 0000000000000400
->> [   28.017728] Call Trace:
->> [   28.018114]  <TASK>
->> [   28.018453]  ? __die_body.cold+0x19/0x27
->> [   28.019167]  ? page_fault_oops+0x15a/0x2d0
->> [   28.019861]  ? search_module_extables+0x19/0x60
->> [   28.020617]  ? search_bpf_extables+0x5f/0x80
->> [   28.021611]  ? exc_page_fault+0x7e/0x180
->> [   28.022488]  ? asm_exc_page_fault+0x26/0x30
->> [   28.023547]  ? memcpy_orig+0xd5/0x140
->> [   28.024396]  rxe_mr_copy+0x1c3/0x200 [rdma_rxe]
->> [   28.025476]  ? rxe_pool_get_index+0x4b/0x80 [rdma_rxe]
->> [   28.026612]  copy_data+0xa5/0x230 [rdma_rxe]
->> [   28.027611]  rxe_requester+0xd9b/0xf70 [rdma_rxe]
->> [   28.028727]  ? finish_task_switch.isra.0+0x99/0x2e0
->> [   28.029878]  rxe_sender+0x13/0x40 [rdma_rxe]
->> [   28.030920]  do_task+0x68/0x1e0 [rdma_rxe]
->> [   28.031893]  process_one_work+0x177/0x330
->> [   28.032854]  worker_thread+0x252/0x390
->> [   28.033748]  ? __pfx_worker_thread+0x10/0x10
->> [   28.034665]  kthread+0xd2/0x100
->> [   28.035382]  ? __pfx_kthread+0x10/0x10
->> [   28.036252]  ret_from_fork+0x34/0x50
->> [   28.037220]  ? __pfx_kthread+0x10/0x10
->> [   28.038072]  ret_from_fork_asm+0x1a/0x30
->> [   28.038991]  </TASK>
->> [   28.039543] Modules linked in: loop rnbd_client rtrs_client 
->> rnbd_server rtrs_server rtrs_core rdma_cm iw_cm ib_cm rdma_rxe 
->> ib_uverbs ib_core ip6_udp_tunnel udp_tunnel rfkill intel_rapl_msr 
->> intel_rapl_common kmem rapl cxl_mem iTC
->> O_wdt intel_pmc_bxt cxl_pmem dax_hmem iTCO_vendor_support device_dax 
->> cxl_acpi cxl_pci cxl_port joydev qxl cxl_core pcspkr drm_ttm_helper 
->> lpc_ich ttm i2c_i801 virtio_balloon i2c_smbus nd_pmem nd_btt dax_pmem 
->> einj ip_tables crct10dif
->> _pclmul crc32_pclmul crc32c_intel polyval_clmulni polyval_generic 
->> ghash_clmulni_intel sha512_ssse3 sha256_ssse3 sha1_ssse3 virtiofs fuse 
->> virtio_net nfit virtio_console net_failover libnvdimm serio_raw 
->> virtio_blk failover qemu_fw_cf
->> g dm_multipath sunrpc
->> [   28.051034] CR2: 0000000000000000
->> [   28.052072] ---[ end trace 0000000000000000 ]---
->> [   28.053099] RIP: 0010:memcpy_orig+0xd5/0x140
->> [   28.054188] Code: 16 f8 4c 89 07 4c 89 4f 08 4c 89 54 17 f0 4c 89 
->> 5c 17 f8 c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 83 fa 
->> 08 72 1b <4c> 8b 06 4c 8b 4c 16 f8 4c 89 07 4c 89 4c 17 f8 c3 cc cc cc 
->> cc 66
->> [   28.058290] RSP: 0018:ffffb934c0643cc0 EFLAGS: 00010246
->> [   28.059514] RAX: ffff976bc1e12d5a RBX: 0000000000000000 RCX: 
->> 0000000000000000
->> [   28.061194] RDX: 0000000000000008 RSI: 0000000000000000 RDI: 
->> ffff976bc1e12d5a
->> [   28.062588] RBP: ffff976bc1e12d5a R08: 0000000000000001 R09: 
->> 0000000000000001
->>
->>
->>
->>
->>>
->>>
->>> [X]
->>>
->>> 001.out.bad
->>> ----------------------------------------------------------------------------
->>> Running rnbd/001
->>> connect ok
->>> disconnect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> connect not ok
->>> Failed: 1/100
->>> Test complete
-> 
-
+diff --git a/drivers/infiniband/hw/hfi1/fault.c b/drivers/infiniband/hw/hfi1/fault.c
+index ec9ee59fcf0c..2d87f9c8b89d 100644
+--- a/drivers/infiniband/hw/hfi1/fault.c
++++ b/drivers/infiniband/hw/hfi1/fault.c
+@@ -190,7 +190,8 @@ static ssize_t fault_opcodes_read(struct file *file, char __user *buf,
+ 		bit = find_next_bit(fault->opcodes, bitsize, zero);
+ 	}
+ 	debugfs_file_put(file->f_path.dentry);
+-	data[size - 1] = '\n';
++	if (size)
++		data[size - 1] = '\n';
+ 	data[size] = '\0';
+ 	ret = simple_read_from_buffer(buf, len, pos, data, size);
+ free_data:
 -- 
-Best Regards,
-Yanjun.Zhu
+2.47.1
+
 
