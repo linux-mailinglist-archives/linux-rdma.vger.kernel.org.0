@@ -1,235 +1,81 @@
-Return-Path: <linux-rdma+bounces-6767-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6768-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D28E9FE9D9
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Dec 2024 19:29:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C6F19FEA12
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Dec 2024 19:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE67A3A1659
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Dec 2024 18:29:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 614123A0F66
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Dec 2024 18:41:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49201B041E;
-	Mon, 30 Dec 2024 18:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8122186607;
+	Mon, 30 Dec 2024 18:41:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IO9n4Z/f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N7UT4++O"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6431119DF40
-	for <linux-rdma@vger.kernel.org>; Mon, 30 Dec 2024 18:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85ABFEAD0
+	for <linux-rdma@vger.kernel.org>; Mon, 30 Dec 2024 18:41:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735583356; cv=none; b=nk4+5F3rM2G1D6sISGbaWwcxjvLQpqPiN+ln/avCAXghzVO/B/s7ko3Ybij6Is0dLznv39266s4UXvBSTV+ieasX92fXn9PcJBcG14Wba7n5OEQW1I1oOo1SevN6Fk7/CS6KdBCvIPqQY4eJf995eWTOnLJhngmZ0+/dEpCde28=
+	t=1735584114; cv=none; b=WwOuWkZiWrajJ3rR3CdXJ7Cpo/PVCmMdCyW5FMZwlrVJR3ra+RE65FqSSAHUiPGUgXI8Y72xccQXXA89SHAh3NhXTJIHVCFjWDbo32ibytdCVr5KCYyfUeCRqw3V0j1+bJboR6FITq3eF7kRkfRABIgAW02ZoISKQwbMUq5m+xg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735583356; c=relaxed/simple;
-	bh=OTsgSAikLZ/xvc0smXrrHzXWU2OX6+UmTIwR6/n/4Cc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HVmMrSQaWB6UDEFMrkqA+ib7iI2OjMBqlHNLxAvCK0kgoBUhkp96GwTwK/Vg5vd1Dd7V9smf2xcL0Ltysr73fNQ/TDcmkARvjQSVvyNlpg3cfQrp+OmPv8p9wuGwCYa3f+mMPnvHjeZLyvrcXJaBNSjZESI6j7IuuhlC+k5DSro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IO9n4Z/f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F5C3C4CED2;
-	Mon, 30 Dec 2024 18:29:15 +0000 (UTC)
+	s=arc-20240116; t=1735584114; c=relaxed/simple;
+	bh=9bCPPLWjYVyf7JS8peGzskwSjDzld2YccuXauTNEhK8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=XYK4tSoGLxzyfnReEHdKz02By7GZPlI8urxVDdiyw7jYdZWG78i1vzXD4YRfgB5JOocfnI8lNFfQY+GPb0qG+un/5iVQKobCCG6lo7Oc8edA2MW5YolE2QMeudSuoZ/r20BLss2znf4x8ynYrscYEDYhFPVU/9ZXfmjB+I2JgQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N7UT4++O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A730BC4CED0;
+	Mon, 30 Dec 2024 18:41:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735583356;
-	bh=OTsgSAikLZ/xvc0smXrrHzXWU2OX6+UmTIwR6/n/4Cc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IO9n4Z/f5j0y7w50YLM+2iBv0Y7A7iqPcjAmQAM6R2xyitrQKqGYFtjDkDS34Vurt
-	 x3PNXxbGmJAH+nD8SstFSp2xJL6eNP+PdF/kWbVas9zj9D7DsOU18ngCv7spM64nMm
-	 FiW0CVTD+nowEbBIlZEpLXRk7+QO32WHV/TfD1n13yvvtDyVL1UlngftNoXeRMuM67
-	 uDKuwfIZf2WE0Qoeahw9eT4IjekLJS7+QsbhiS7nC0o4hp1VD/2Jy6J5XZUDsk69PQ
-	 Xwk8TL96C83nLQA5Gtf3Fr/ZkagD/hJRSdJKrSlXjWv41qhaBXZqW7FtcnQRZBABwR
-	 MUkgNXdrVvZJg==
-Date: Mon, 30 Dec 2024 20:29:11 +0200
+	s=k20201202; t=1735584114;
+	bh=9bCPPLWjYVyf7JS8peGzskwSjDzld2YccuXauTNEhK8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=N7UT4++OWem0vXUeKNqvXOkGWcmHb/PoozjdQhQdhNugIg7a9OhDUx204NCBTOZB3
+	 ci+kHvsyPnIhQOWIaQ8B9RBZmh3w5GffDHXHHR/mvQhyk9g9+pn1SLizD4Qpa8zKld
+	 6grUcd560+yQ4J8H/eKh6n1/eSFBBv626z3/FQxOjFU6fllk7pVaiACsL0gcDt6kbV
+	 SaOjXrJxIdkjXxUod1zu5jX0uaYiY7aKseebQNzoeaTsou/fbI1x/6eC3no27iW8vg
+	 FcbuHRJaPe+m5KrN1XoKcUoKUiu6hxry+kTIL/GHzu0NzkNljWqNtwPtBCMv35MigP
+	 SYgeEW9kZNw7Q==
 From: Leon Romanovsky <leon@kernel.org>
-To: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
-	Kashyap Desai <kashyap.desai@broadcom.com>
-Subject: Re: [PATCH for-rc v2] RDMA/bnxt_re: Fix error recovery sequence
-Message-ID: <20241230182911.GB81460@unreal>
-References: <20241220075920.1566165-1-kalesh-anakkur.purayil@broadcom.com>
- <20241223150033.GA171473@unreal>
- <CAH-L+nPAkBggkMx1VVwLs4xSRZZLuidoHT77doKJSw1KWSPT8A@mail.gmail.com>
- <20241223164215.GB171473@unreal>
- <CAH-L+nMLU5wqqJk9-Kw6gMUzmDZotcwbXRn-UW3Tr+7xJhJ8hw@mail.gmail.com>
+To: linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>, 
+ Michael Margolin <mrgolin@amazon.com>
+Cc: sleybo@amazon.com, matua@amazon.com, gal.pressman@linux.dev, 
+ Firas Jahjah <firasj@amazon.com>, Yonatan Nachum <ynachum@amazon.com>
+In-Reply-To: <20241225131548.15155-1-mrgolin@amazon.com>
+References: <20241225131548.15155-1-mrgolin@amazon.com>
+Subject: Re: [PATCH for-next] RDMA/efa: Reset device on probe failure
+Message-Id: <173558411063.95823.1274325128325651766.b4-ty@kernel.org>
+Date: Mon, 30 Dec 2024 13:41:50 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH-L+nMLU5wqqJk9-Kw6gMUzmDZotcwbXRn-UW3Tr+7xJhJ8hw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-On Wed, Dec 25, 2024 at 07:25:08PM +0530, Kalesh Anakkur Purayil wrote:
-> On Mon, 23 Dec 2024 at 10:12 PM, Leon Romanovsky <leon@kernel.org> wrote:
-> 
-> > On Mon, Dec 23, 2024 at 09:12:53PM +0530, Kalesh Anakkur Purayil wrote:
-> > > Regards,
-> > > Kalesh AP
-> > >
-> > >
-> > > On Mon, 23 Dec 2024 at 8:30 PM, Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > > On Fri, Dec 20, 2024 at 01:29:20PM +0530, Kalesh AP wrote:
-> > > > > Fixed to return ENXIO from __send_message_basic_sanity()
-> > > > > to indicate that device is in error state. In the case of
-> > > > > ERR_DEVICE_DETACHED state, the driver should not post the
-> > > > > commands to the firmware as it will time out eventually.
-> > > > >
-> > > > > Removed bnxt_re_modify_qp() call from bnxt_re_dev_stop()
-> > > > > as it is a no-op.
-> > > > >
-> > > > > Fixes: cc5b9b48d447 ("RDMA/bnxt_re: Recover the device when FW error
-> > is
-> > > > detected")
-> > > > > Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> > > > > Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
-> > > > > Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > > > > ---
-> > > > > V2: No changes since v1 and is just a resend.
-> > > > > V1:
-> > > >
-> > https://patchwork.kernel.org/project/linux-rdma/patch/20241204075416.478431-5-kalesh-anakkur.purayil@broadcom.com/
-> > > > > ---
-> > > > >  drivers/infiniband/hw/bnxt_re/main.c       | 8 +-------
-> > > > >  drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 7 ++++---
-> > > > >  drivers/infiniband/hw/bnxt_re/qplib_rcfw.h | 3 +++
-> > > > >  3 files changed, 8 insertions(+), 10 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/infiniband/hw/bnxt_re/main.c
-> > > > b/drivers/infiniband/hw/bnxt_re/main.c
-> > > > > index b7af0d5ff3b6..c143f273b759 100644
-> > > > > --- a/drivers/infiniband/hw/bnxt_re/main.c
-> > > > > +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> > > > > @@ -1715,11 +1715,8 @@ static bool bnxt_re_is_qp1_or_shadow_qp(struct
-> > > > bnxt_re_dev *rdev,
-> > > > >
-> > > > >  static void bnxt_re_dev_stop(struct bnxt_re_dev *rdev)
-> > > > >  {
-> > > > > -     int mask = IB_QP_STATE;
-> > > > > -     struct ib_qp_attr qp_attr;
-> > > > >       struct bnxt_re_qp *qp;
-> > > > >
-> > > > > -     qp_attr.qp_state = IB_QPS_ERR;
-> > > > >       mutex_lock(&rdev->qp_lock);
-> > > > >       list_for_each_entry(qp, &rdev->qp_list, list) {
-> > > > >               /* Modify the state of all QPs except QP1/Shadow QP */
-> > > > > @@ -1727,12 +1724,9 @@ static void bnxt_re_dev_stop(struct
-> > bnxt_re_dev
-> > > > *rdev)
-> > > > >                       if (qp->qplib_qp.state !=
-> > > > >                           CMDQ_MODIFY_QP_NEW_STATE_RESET &&
-> > > > >                           qp->qplib_qp.state !=
-> > > > > -                         CMDQ_MODIFY_QP_NEW_STATE_ERR) {
-> > > > > +                         CMDQ_MODIFY_QP_NEW_STATE_ERR)
-> > > > >                               bnxt_re_dispatch_event(&rdev->ibdev,
-> > > > &qp->ib_qp,
-> > > > >                                                      1,
-> > > > IB_EVENT_QP_FATAL);
-> > > > > -                             bnxt_re_modify_qp(&qp->ib_qp, &qp_attr,
-> > > > mask,
-> > > > > -                                               NULL);
-> > > > > -                     }
-> > > > >               }
-> > > > >       }
-> > > > >       mutex_unlock(&rdev->qp_lock);
-> > > > > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-> > > > b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-> > > > > index 5e90ea232de8..c8e65169f58a 100644
-> > > > > --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-> > > > > +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-> > > > > @@ -423,8 +423,9 @@ static int __send_message_basic_sanity(struct
-> > > > bnxt_qplib_rcfw *rcfw,
-> > > > >       cmdq = &rcfw->cmdq;
-> > > > >
-> > > > >       /* Prevent posting if f/w is not in a state to process */
-> > > > > -     if (test_bit(ERR_DEVICE_DETACHED, &rcfw->cmdq.flags))
-> > > > > -             return bnxt_qplib_map_rc(opcode);
-> > > > > +     if (RCFW_NO_FW_ACCESS(rcfw))
-> > > > > +             return -ENXIO;
-> > > > > +
-> > > > >       if (test_bit(FIRMWARE_STALL_DETECTED, &cmdq->flags))
-> > > > >               return -ETIMEDOUT;
-> > > > >
-> > > > > @@ -493,7 +494,7 @@ static int __bnxt_qplib_rcfw_send_message(struct
-> > > > bnxt_qplib_rcfw *rcfw,
-> > > > >
-> > > > >       rc = __send_message_basic_sanity(rcfw, msg, opcode);
-> > > > >       if (rc)
-> > > > > -             return rc;
-> > > > > +             return rc == -ENXIO ? bnxt_qplib_map_rc(opcode) : rc;
-> > > > >
-> > > > >       rc = __send_message(rcfw, msg, opcode);
-> > > > >       if (rc)
-> > > > > diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-> > > > b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-> > > > > index 88814cb3aa74..4f7d800e35c3 100644
-> > > > > --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-> > > > > +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-> > > > > @@ -129,6 +129,9 @@ static inline u32 bnxt_qplib_set_cmd_slots(struct
-> > > > cmdq_base *req)
-> > > > >
-> > > > >  #define RCFW_MAX_COOKIE_VALUE
-> > (BNXT_QPLIB_CMDQE_MAX_CNT
-> > > > - 1)
-> > > > >  #define RCFW_CMD_IS_BLOCKING         0x8000
-> > > > > +#define RCFW_NO_FW_ACCESS(rcfw)
-> > > >       \
-> > > > > +     (test_bit(ERR_DEVICE_DETACHED, &(rcfw)->cmdq.flags) ||
-> >   \
-> > > > > +      pci_channel_offline((rcfw)->pdev))
-> > > >
-> > > > You promised me that this patch handles races, so how is this
-> > > > pci_channel_offline() check protected?
-> > > >
-> > > > Thansk
-> > >
-> > > Hi Leon,
-> > >
-> > > Sorry, I may be missing something here.
-> > > Could you help me understand what is the race condition here? I can then
-> > > internally discuss with the team based on your input.
-> >
-> > pci_channel_offline() is placed completely randomly here. There is no
-> > guarantee that PCI card won't be offline immediately after this check.
-> 
-> Thank you Leon. I will discuss with the team about this and take it forward
-> as a separate patch.
-> For the time being, I will push a V3 with pci_channel_offline() check
-> removed, is that okay with you?
 
-Yes, please.
-
+On Wed, 25 Dec 2024 13:15:48 +0000, Michael Margolin wrote:
+> Make sure the device is being reset on driver exit whatever the reason
+> is, to keep the device aligned and allow it to close shared resources
+> (e.g. admin queue).
 > 
-> Regards,
-> Kalesh
 > 
-> >
-> >
-> > Thanks
-> >
-> >
-> > >
-> > > Regards,
-> > > Kalesh AP
-> > >
-> > > >
-> > > >
-> > > > >
-> > > > >  #define HWRM_VERSION_DEV_ATTR_MAX_DPI  0x1000A0000000DULL
-> > > > >  /* HWRM version 1.10.3.18 */
-> > > > > --
-> > > > > 2.43.5
-> > > > >
-> > > >
-> >
-> >
-> >
 
+Applied, thanks!
+
+[1/1] RDMA/efa: Reset device on probe failure
+      https://git.kernel.org/rdma/rdma/c/123c13f10ed362
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
 
 
