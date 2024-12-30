@@ -1,108 +1,93 @@
-Return-Path: <linux-rdma+bounces-6763-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6764-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB5FF9FE4BA
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Dec 2024 10:15:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A81D79FE6E2
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Dec 2024 15:14:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17C2E3A05BC
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Dec 2024 09:15:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89A93188195E
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Dec 2024 14:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947381A23B6;
-	Mon, 30 Dec 2024 09:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0B3E1A9B48;
+	Mon, 30 Dec 2024 14:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nuKZcnLu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA1215B984;
-	Mon, 30 Dec 2024 09:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EBD613633F
+	for <linux-rdma@vger.kernel.org>; Mon, 30 Dec 2024 14:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735550125; cv=none; b=JPRXE0O+Wrnj1SL8XJbtkOJVarKWhrvhgNMt85ClVCtcchsIfFTEYMfw/xmhPwFATpaF5O4k6hqkjeQLRyNnWNGTXFkhBvzXLaoxB56XtMSfRlO/WM7Miqtc2oTszrkgMecnOw3qcNBe1m/TRlJevTOInv4AAYjN79sAClicq6o=
+	t=1735568050; cv=none; b=c3ZdULiK9tb40nW/uLLKjQQjDTrngiBLXnmbnz1/NN27ymMH9+hkoQG7hp9ukvROSGM4XbNPlYVJmlFo3RBAsZyfcRvRgRen9zHBbfNxwOnWHjh8yd3jvSsenvgSAE9tK49aKuqxijAUE+IZ7nnjBvrz6timl1snLw3tPoW3zxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735550125; c=relaxed/simple;
-	bh=mW34OzIcEipYpv+1fB0287jMNmYeJfn2mFWjcuu4MOo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=T4xPu9wJjcHS3JatKo3FyDsOrjtotusBS8VEhXlCS+GioRC3jJ0cGd7aPMaviPTyipbVQ6fGg8iuhR3whA4D619Kp0IoUug/lu5NKXyGvQEWl+9oPdZ7cO8lCaGtcqgXhrGjony2fgpCx5v8JY+rNQoCbA2eECeHdnCJM7JUI+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4YM9R84Z9Wz1JGfM;
-	Mon, 30 Dec 2024 17:14:44 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 326781A0188;
-	Mon, 30 Dec 2024 17:15:20 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 30 Dec 2024 17:15:19 +0800
-Message-ID: <354e423e-1111-43d5-accd-17a099690369@huawei.com>
-Date: Mon, 30 Dec 2024 17:15:19 +0800
+	s=arc-20240116; t=1735568050; c=relaxed/simple;
+	bh=n14qTOgK4+o4OOKTNS11V6IYOsOA04BTUYKos4b00S4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mumiNTS5U41U4sz9vdsgM8uvSQk+9sy2LqxGFvC7ZlFqvPDU+JKQtMBxQmRxgkc39ptsrUIS4FPBkE6IX12uF+g0wGW2SB1MA7Kdo2QXWjoLYW91R8r6OyZEG0wRXortTABahlSFMD1bOrD8SXj/WO23JIfRwnhmLAVU624ePAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nuKZcnLu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95D9AC4CED0;
+	Mon, 30 Dec 2024 14:14:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1735568050;
+	bh=n14qTOgK4+o4OOKTNS11V6IYOsOA04BTUYKos4b00S4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=nuKZcnLuGGBu8KT/AMriHC97QykQrQT9wRh6iRIgQPUl8cHybTkt1AEoIsbZZek2D
+	 AGnm8h1+jZBQa5XYUzy2zOv5qr0EEUSMydtQ+rMDD7utJ8ghMwE42AVNbAz1xGc8Ju
+	 GpWBmvfcLoJOKuiKzo2BsNwvevHxVmr3zpUDbHD7YDbo4luzKAw3kgQZki8nzrUNbX
+	 XWPIhsuZgfz6qz1z095tNyooE4+iSdCgoN54aGFHpSt4wAHQjtRXa3AjHbySp4Et2n
+	 oFL1xepyZrMXaUR5rzZ7pEQFoYmy9AmDIuvmKuhM9EebqP2DxvUfKML0zSOse+uBwr
+	 WeItTV5Qto9lg==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Patrisious Haddad <phaddad@nvidia.com>,
+	Junxian Huang <huangjunxian6@hisilicon.com>,
+	linux-rdma@vger.kernel.org,
+	Maor Gottlieb <maorg@nvidia.com>,
+	Yuyu Li <liyuyu6@huawei.com>
+Subject: [PATCH rdma-next] RDMA/mlx5: Fix link status down event for MPV
+Date: Mon, 30 Dec 2024 16:14:04 +0200
+Message-ID: <d7731478e456f61255af798a7fd4e64b006ddebb.1735567976.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFCv5 1/8] page_pool: introduce page_pool_to_pp() API
-To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<somnath.kotur@broadcom.com>, <liuyonglong@huawei.com>,
-	<fanghaiqing@huawei.com>, <zhangkun09@huawei.com>, Wei Fang
-	<wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
-	<xiaoning.wang@nxp.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet
-	<edumazet@google.com>, Jeroen de Borst <jeroendb@google.com>, Praveen
- Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
-	<przemyslaw.kitszel@intel.com>, Alexander Lobakin
-	<aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
-	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
-	<tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi
-	<lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
-	<shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle Valo
-	<kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Simon
- Horman <horms@kernel.org>, <imx@lists.linux.dev>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
-	<bpf@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-wireless@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>
-References: <20241213122739.4050137-1-linyunsheng@huawei.com>
- <20241213122739.4050137-2-linyunsheng@huawei.com>
- <CAC_iWj+3Q7CAS3xH9+zWA7nXdFNSJ-XMKQB3ZT0YvUQ-Q2gMCQ@mail.gmail.com>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <CAC_iWj+3Q7CAS3xH9+zWA7nXdFNSJ-XMKQB3ZT0YvUQ-Q2gMCQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Content-Transfer-Encoding: 8bit
 
-On 2024/12/20 20:29, Ilias Apalodimas wrote:
-> Hi Yunsheng,
-> 
-> On Fri, 13 Dec 2024 at 14:35, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> introduce page_pool_to_pp() API to avoid caller accessing
->> page->pp directly.
->>
-> 
-> I think we already have way too many abstractions, I'd say we need
-> less not more. I don't know what others think, but I don't see what we
-> gain from this
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-I am not sure how it is related to 'abstraction' here.
-Either we don't allow drivers accessing the page->pp directly, otherwise
-it seems better to provide a proper API for that as my understanding as it
-seems better not to mess with internal detail of page_pool.
+The commit below prevented MPV from unloading correctly due to blocking
+the netdev down event, allow sending the event for MPV mode to maintain
+proper unload flow.
 
-> 
-> Thanks
-> /Ilias
+Fixes: 379013776222 ("RDMA/mlx5: Handle link status event only for LAG device")
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 9ea1869f2ab9..81849eb671a1 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -242,7 +242,8 @@ static int mlx5_netdev_event(struct notifier_block *this,
+ 	case NETDEV_DOWN: {
+ 		struct net_device *upper = NULL;
+ 
+-		if (!netif_is_lag_master(ndev) && !netif_is_lag_port(ndev))
++		if (!netif_is_lag_master(ndev) && !netif_is_lag_port(ndev) &&
++		    !mlx5_core_mp_enabled(mdev))
+ 			return NOTIFY_DONE;
+ 
+ 		if (mlx5_lag_is_roce(mdev) || mlx5_lag_is_sriov(mdev)) {
+-- 
+2.47.1
+
 
