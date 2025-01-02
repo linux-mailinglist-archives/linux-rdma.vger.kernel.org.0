@@ -1,428 +1,212 @@
-Return-Path: <linux-rdma+bounces-6779-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6781-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCB659FF8E8
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2025 12:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 052919FF9E1
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2025 14:40:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFACA3A02FD
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2025 11:36:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F25F53A39C8
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2025 13:40:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51EE6191F60;
-	Thu,  2 Jan 2025 11:36:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47DBC1AAA32;
+	Thu,  2 Jan 2025 13:40:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Io/HUP2R"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ICjmcQqA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2073.outbound.protection.outlook.com [40.107.237.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A776194C77
-	for <linux-rdma@vger.kernel.org>; Thu,  2 Jan 2025 11:36:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735817785; cv=none; b=TnCvWwP12Z+C91ED7dyQFOvH7246QGUNe8Vx3+aB0XqDtKtLiUO2Op+0gtzeTb371Lti3xvMjhlxkBGy8cysF+6Q0nXl5NNKvC439DWsdcYDHNGJZjM6v/hGWjG9VrL6+zzKFCLDTlkKypQSICC8SKsR78WSLYCE9bBv/MdmWGw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735817785; c=relaxed/simple;
-	bh=5ijsCcAwh3aYLzoAz04wDS6Cr4z1FuZP5CgKyYH0Nzk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cDUFDvReM2PtIzTN3TFfXFML7H6/A5ttyLbYgoB+iztz1gO/+xI1TQPy5Er0Nf9nj74M/sW0qXMW1gD22HjxhX7o9Ms8MhA9TKxntnU+AS+t8Qwg+OaeLch/x2Er2SOAydS3muXd2BYJWbwssL/b8ljaFrxT4iFuVx6Y4rlXlqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Io/HUP2R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66E8EC4CED0;
-	Thu,  2 Jan 2025 11:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735817785;
-	bh=5ijsCcAwh3aYLzoAz04wDS6Cr4z1FuZP5CgKyYH0Nzk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Io/HUP2RV52LJxYrGfQuzwi9LygDyaIKdkh0+4Gx5qnH++hLOjDO1eHXauzTSmXB7
-	 tdrE1MtiDI5TaGiDKZxDWZ4VGqi04UxwTjpcNbeZ8hH3W/zMzHBfzBL1G3OzuBfuPj
-	 UwL4J2+enWilghf4Sn7m6hi9WLV+JEfM93h4CmQgNw/xjltXgg9m5vdw4MOnymIvkj
-	 UxOaKp8DKb0k1ImYuGXUGiJ6CZ7KTwSrYwn6aD3J2Jy0Bu5LRHRA6TNOQ5AVl553/F
-	 oiNttL+SLddLSqIT0Ebgra+iU0+SL6xWzCF0DXafeVlg59EdEfevTosrl9AF7mVDrK
-	 bTJ84WKcNK3KA==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Patrisious Haddad <phaddad@nvidia.com>,
-	linux-rdma@vger.kernel.org,
-	Mark Bloch <mbloch@nvidia.com>
-Subject: [PATCH rdma-next 3/3] RDMA/mlx5: Expose RDMA TRANSPORT flow table types to userspace
-Date: Thu,  2 Jan 2025 13:36:07 +0200
-Message-ID: <2746a9a8b04d8d6b4fd46b7629daf481aebb2619.1735817449.git.leon@kernel.org>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <cover.1735817449.git.leon@kernel.org>
-References: <cover.1735817449.git.leon@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0BC6FB0;
+	Thu,  2 Jan 2025 13:40:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.73
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1735825205; cv=fail; b=SoKYb+N1o/zMHuJ3DsSgQeg5NC0/a53N+FQjkr0G19W+1lUQh3gIFKcIxsphmRcXRXFmUwd+SwD2stCF6lCRcnrDbl8hm7Qk5gOctIWfPtfAoPpLBjfz5IeqnlaPRLIck8eGY7R/eljtnVpp2q10BFeM0XUXGERo0VgujcXzfeo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1735825205; c=relaxed/simple;
+	bh=G7m2OxDcm1vNVviBgiZwjO1zYhYA7Xn/DOObP/fKBxM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=VrDjeDxNInal4h/wT0fIs0bjrZ6IImllnMJuxzBPxy/woZnxYU23NnHpo8fu6iYWfsqAKSaioitn4ek85ZV48sTlrO6lDPOSvA6r/WKE/ZlnG2m1RY1u/nNb6tSuKcmgNaaxROXVOyvr016PtU1aKsTqhfBzFdzu6p49D2pej3E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ICjmcQqA; arc=fail smtp.client-ip=40.107.237.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=e7xVuhVoFdMKDkiX9IXhih57agcMMNRH+T6TogjpmASHxECYxVodcxhuuG1yzKKnFOljAYBuZoNZUQKXyfiLdckrlWM+/VS9FauQpCrbHV3U5KVa+j4D5UGEtm5Uvz6Fn7sZkA8//aAqtQIkcN8kokY/VKtGGAsZp8TqJEi9A4yl0hhVMI55i6bosnBeLIHJQY/5XUTo6jACvR+rzC9hUvxiIiAzif9UeJnMF1z8QVOW2JHY0/TMXcJX3OvkXmwXvkM8wXnPwouoEWgzovO0CpPGMjcLyevaWl51J7EfnXjgHvnsUQmQ+o4bzoqs4aNm8Q6RiyY/SKFzQ+n7+S4E8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Wb/ra7Vjkw46FGNVvSucpUeuYunfZTt8HPTFrpGSinA=;
+ b=nLhll/fQvfMblxTd0Fdr4Xjqw26DceDZgy7GyCVY+UTgXVEeiTeS+TLvYzMSrOjd9sswNSpeFmsM0+mWQfDVXiyPHQmdBuKCDHyyTrOsJxBY1CtGJ8HLtzrh/ph6H7WkmCH+V6FnKt0DCTbnNRXZ4+6hSxWVMfurjeBxy8EpuWH3auHziDyXMIx2P+hR5YqK28OzE+P94YqMJlToP0GuPpqPk6UJny1EteqM141E+iWwjprEO8gxbhDiCgecTtiMKYSt/ML1ZX1aKT3QHwDclZwHBAIVWEksL08OfmhO/xJV6I0e3O7GHk0BiqFVfL5PLqsXb0wW88VJz9uUH6wFDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Wb/ra7Vjkw46FGNVvSucpUeuYunfZTt8HPTFrpGSinA=;
+ b=ICjmcQqA7qf7o2+vYzokkR897Bk/zmbwqGoRcaex/pr1CBKvwrxP9zCKHvsHmO31yhwtK35mYyCd2SZGo96zQZcSV7qET22vE/LxE53ueHO/rFSRl2aup7rHskfTvNGBGWOoUJQDsFxk2buMidNZwc3BDuvGLkq/1eRZWFk2uhpDnkIp4JSSn47CaE047e6nuKFEIzmAn+CCSbGoTWd6Kaj4Ab40aJ4Z8N6lqxuWOoClLpp35CikpwatJycNBM/PnBXP/9lHpanDApEYamO8C/fxlFCIstNPCEdmEqB7iw8OhcXRww9DXLrdPgS3A9RysBYUZoMbVAcxaPGqJaeHSg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by MW4PR12MB5643.namprd12.prod.outlook.com (2603:10b6:303:188::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8314.12; Thu, 2 Jan
+ 2025 13:39:53 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8314.012; Thu, 2 Jan 2025
+ 13:39:52 +0000
+Date: Thu, 2 Jan 2025 09:39:51 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc: "Kasireddy, Vivek" <vivek.kasireddy@intel.com>,
+	Wei Lin Guay <wguay@meta.com>, Keith Busch <kbusch@kernel.org>,
+	"alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	Dag Moxnes <dagmoxnes@meta.com>,
+	Nicolaas Viljoen <nviljoen@meta.com>,
+	Oded Gabbay <ogabbay@kernel.org>,
+	Simona Vetter <simona.vetter@ffwll.ch>,
+	Leon Romanovsky <leon@kernel.org>, Maor Gottlieb <maorg@nvidia.com>
+Subject: Re: [PATCH 0/4] cover-letter: Allow MMIO regions to be exported
+ through dmabuf
+Message-ID: <20250102133951.GB5556@nvidia.com>
+References: <20241216095429.210792-1-wguay@fb.com>
+ <89d9071b-0d3e-4fcd-963b-7aa234031a38@amd.com>
+ <Z2BbPKvbxm7jvJL9@kbusch-mbp.dhcp.thefacebook.com>
+ <0f207bf8-572a-4d32-bd24-602a0bf02d90@amd.com>
+ <C369F330-5BAD-4AC6-A13C-EEABD29F2F08@meta.com>
+ <e8759159-b141-410b-be08-aad54eaed41f@amd.com>
+ <IA0PR11MB7185D0E4EE2DA36A87AE6EACF8052@IA0PR11MB7185.namprd11.prod.outlook.com>
+ <0c7ab6c9-9523-41de-91e9-602cbcaa1c68@amd.com>
+ <IA0PR11MB71855CFE176047053A4E6D07F8062@IA0PR11MB7185.namprd11.prod.outlook.com>
+ <0843cda7-6f33-4484-a38a-1f77cbc9d250@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0843cda7-6f33-4484-a38a-1f77cbc9d250@amd.com>
+X-ClientProxiedBy: BN9PR03CA0387.namprd03.prod.outlook.com
+ (2603:10b6:408:f7::32) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|MW4PR12MB5643:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6114e894-f632-473a-37f8-08dd2b32ef90
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|7416014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?SGtSbEw5RDlMVHIveXNyWVdpRnR1c29yVUg5SUN1Q2xLTnJPMEN1MmZzK2JG?=
+ =?utf-8?B?QVlsVkM5UWNiUGxIdW91ak5LcGEvQ3ZiZ0ZKMUlxNHJxaUM0YWgvaVZReG43?=
+ =?utf-8?B?THhOVUp1aSsvNnFPWUhhUWpTQTV4Wk1LWnl4VWhNaFdnUXJQMzUza09LN2VB?=
+ =?utf-8?B?WHFnbnJ0c0p4R0ZJTGdxbVlIL1NmaldLcVRHdHo0OHRIL1pTZWcvWXUyZ1VJ?=
+ =?utf-8?B?SlAvOXBRU2JzeXFKbkdPWlFseGlCdTEwK1RNdXBHbjdVOE9zQXJGUnhNcGpr?=
+ =?utf-8?B?UjVMQnpBWU5iQ2xKemxVbHJHbGJTcHFwOFlPeXhsVkhjZDByVitKNGR6ZFlU?=
+ =?utf-8?B?UURMZ3pGNCsyYU54MnlPRFA4VW9LU3V3ZFdndkd2Yk5ZZ2dwOUVldHlNRXFy?=
+ =?utf-8?B?bFp1OHFWYVFsdnZJckdwc1RJdWJEMDVxN1o4aTdmc1A0VHlIcm5CTVJCUHRj?=
+ =?utf-8?B?dERnMS9PdXlvaWQ0Z2tuY3hkdkozaHBQNTdNTkJGNTMwUGFvcExJazJSQUFF?=
+ =?utf-8?B?S1J0U3JwRG9udkQ0OW10am1zSFE5NU5ZMjNVWTZWcDlRc0VZUytubk0wRU1U?=
+ =?utf-8?B?angvREZuK1NTdkNXcDNEdTkwODhRcmMwMXhWQkg1ZDVDNEh2WmhrRm9KRS9M?=
+ =?utf-8?B?ckxwSFZSREh0VFIxN2lGTDk2UmhjdTBEYjJROFBHVjE5Ymd5VTRINUNwY1lx?=
+ =?utf-8?B?LzZlK3AxREVkWUlCU1FKcXlKOWR2VldaenkxUTF5TWpHSzFqREdSeHQxbjV4?=
+ =?utf-8?B?bml0dlk1Tzd2cGFvNHc0ejJtMnZTMWxHVE5uK2xScWw1SS9TaTg5OXI2TGFk?=
+ =?utf-8?B?RzdRZHNVTGYvWTR3M2lqZk4rYUVKNXVLQ0VpSlkyeDRrVVRWemZnTWFFL0dt?=
+ =?utf-8?B?Z2xscE5qdS8yK0ZtcncxNHdSWTJGRWVHSHM3b1dIbVZmMXd5NTRueEJZaGFR?=
+ =?utf-8?B?WEtkdlN2eTFpcm5DOWV3QmFMUWxpeExHTU5NelBXbDBnVlFNaVRXMlVuaFpi?=
+ =?utf-8?B?SDJrRWZTZlNvZUJ5UENTeUdzNUY1QWFpeno3MnNES3hlSHJSL3F2bGVuMHcz?=
+ =?utf-8?B?T3hHUllNb2wxRHhYY2J3cFNzalBrY3RWM2pUUEMxZTRFMGFvUjQxZXF0M0U2?=
+ =?utf-8?B?WSttWFlaWnRxU0s4TW8wODFEQW0xRWlnZEp3LzlncXhUQis1d1pUcTVIcU0y?=
+ =?utf-8?B?Vkp3UDhrYVFEY3JBMmlYYy9abWg2YTJNcitCRWlkZDcyL2psODNnNEJoeVZx?=
+ =?utf-8?B?MzRIeG9EYkM3Slpvd1FYT1o5UXJXS05MVGhFTWVrV0wwY0xGUUVTTjl3ek5J?=
+ =?utf-8?B?MDlzWTZHTXFjeTBCQVdDeHZlNlFmajU3QUFkWEJ5dmVRNnRxWGpIeHFYMHN3?=
+ =?utf-8?B?bEdUN2NLOHoxUFUrcTlBNFc4RkE4NGpqVENYZ1lWZjdCMHhjY2pneitWbG5H?=
+ =?utf-8?B?UHVIZ3RMYkdXS0ZNK1VEbW1QU05WQjJ3M2s3emFuQURHS1YvUWRvYzVrK1U5?=
+ =?utf-8?B?czk1eVp0ajVwRFZPSkp4aFdSREtlRFlvT0owVlFPcmNIRUlDVzlCN21CRStq?=
+ =?utf-8?B?NXdYZmhTd2hURzhVQ3IxeTU5REpNWEFJM2lCYVd5UTdPdkVuQ0M2VnJwRXJx?=
+ =?utf-8?B?NWpnNm9rZjQrR2ZVOWdyWU9CU2J5aHFvQVREdTNMcUdXK1V6YXFra3VOcWFT?=
+ =?utf-8?B?ckJRdmo1Tm5TdXErSXI5MWZzbTdpTmZCbFFUalExbU1nSHRXV0JyMDdyeVl2?=
+ =?utf-8?B?WVlmclZRbE15TUd6VXdpSnUxUWtWK2hYVGpranZwRm9VdkQ2L1hHalZLOWFm?=
+ =?utf-8?B?YkFJbldKZlFFWFQ1K2ZjTmhERGpBc3VJVjZqcU1aQVJYNks1bEx4RXVVNVlx?=
+ =?utf-8?Q?YNPYMrNIOJi9P?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?eVpsM2VkU1ErMnZ4WGFpeEdqbTBLbnNHWGpxcXd3SFduNTBpek1IcXFsa1lC?=
+ =?utf-8?B?bzM2aTQxdkdMRkVMbk9RSlYxVUI5c1NYaWMvVUorb2tEak9JWVF0Z2RaQTVJ?=
+ =?utf-8?B?UVF2MFc0RHFqb2kzMFlqZmZEcHRHSy9yQnRPTWk4TXhGQVM0R1NFRHFRVTBG?=
+ =?utf-8?B?aWQ2cFp5RGhoUkxIYXFLZ1lUWWcxUnI5MVNqcnRqdzJucjhFSkZUNmdaZG5G?=
+ =?utf-8?B?RHZHQUdTZW1ZMExvMlFJWTFPOU5XdFZvODFqdTRQUHF5cG5OdFJmS2VlcGxI?=
+ =?utf-8?B?MkhreDlhcHNzR2taUXJGTytITWl5UmlQTUxiL2h3NUNkL3M3TGlaV2ljYmZv?=
+ =?utf-8?B?bEZibnBzWjR4Nm5EdnJrSTVCR3dFTngyZitKL2oyU3RoTEF6TG53YlREaWVJ?=
+ =?utf-8?B?bnlVWDcyWExZTUpQNCthQmpwNCtScnhmWTNvbERqNmpxSDhMY2U4OE9jK2R6?=
+ =?utf-8?B?WHRjc2hDYk9LTGQvaWlHV3lqanBNc3UvQ2Zmc2VFSFVWb2ZkY09mbFEvRzc2?=
+ =?utf-8?B?K0RESGpYVlJrd3FBZEdTeXhGbDJaYlVXY3o0TEIwc2k0ZGs1Ykd4ODdwRklP?=
+ =?utf-8?B?R2lLZ25kWkY4cVQvaTdySHMyREUxVExoNWtOSjhJeGVvY2pvMGNaQk00UW9s?=
+ =?utf-8?B?M2Q3QjIzemxYZm1PbTZwYjRSKzVmNTBGbEZyaUFHMzBXVE91bDhQaEVzVEpY?=
+ =?utf-8?B?YjRsbHRBcU0yb3VjRmVSSDNrT0JQcU13cG5nNEVmWmlKV3M5VjlQcUVPZ0hw?=
+ =?utf-8?B?WXFLQ21mYXBUYlpmckNEVXBCTFdTVURieXBmLzY3S3FUdFJpb200OWpwcWJn?=
+ =?utf-8?B?VksxMWppZUpCbXlVUTFycW1PR1NWRVNOMFV1TDNLai9qNm9PMlBseXFNZUJQ?=
+ =?utf-8?B?Z3FBYkdRVHNkQzhPQ0JxNFIweFozSThFWG8zNS9UVUpqbkhVa0IvaUYvcVQx?=
+ =?utf-8?B?eGFZR2FGeDJ0NmhCVno5TVJDVjg1TnlWUzJyWTk5Wll0TnVyWVNjeE1Bekxy?=
+ =?utf-8?B?OU44MVUyQjcweFF5UWU1VlNvTmlsWm5sS0ZSbjFXWVFlbWlmY3FleTNOcXJS?=
+ =?utf-8?B?ZzlmSUNROUx1MXRrUGozcTBPWXQvUVdOSXVSL3FWZXE0T2cvekxOSGFBem5Y?=
+ =?utf-8?B?cnVkUDNFK1VKbVpTSEpxY0JycGxQdUlzWnFnRnAxMHJ6bnhjQXZ0VkNnV09M?=
+ =?utf-8?B?U2hoOWJMQzF3NGJGRGRRaFZocFduQU5ucWEwZmdjQUh5T0liWWJiSlhHVGN4?=
+ =?utf-8?B?cG5tNUE0Uk1FRU51UUhxdzUzK2dVMUgwbmduUWFRMmVzanQ3cW9HbFFnZjFo?=
+ =?utf-8?B?N3Q4K25tMDdLZ3ovT0dNUDdoZVZBaUlRQ00wZUxuL3pOWnFrTGkySmVsUUVT?=
+ =?utf-8?B?cVpwbHY2NkcwVjkrcFpnTVo4OG1FVGJBdStMYTE2TnBTQUIxTDhlb1hZYUx0?=
+ =?utf-8?B?YWxpZGZoekJNZEtoZGcvSk0rQnZUTWFrNGRsMjRjMlVBR2huWnJheU9pNU81?=
+ =?utf-8?B?SWZmM0REZlVvd1JCTXIvVEpLV3NHckhOelBCeEV3RklPRjNLUFc1eHhiTW9L?=
+ =?utf-8?B?UWJuQnEwdkJlbkZSc3d2ZVR3VGx3L3ZuV2xyMnhEUk50alpPdWFzQ25MR2pu?=
+ =?utf-8?B?SDZTRVVLUXdmSFo0Z3BYVW1DNktOTkdudW0rZ0doY1lUWlFER3RZMGVoZDY0?=
+ =?utf-8?B?dkpxaWFwdTExR0FsV2JCMk1GQmozRGIvaHJMcGhSMlpuaFp3VlU0SEUrcFJs?=
+ =?utf-8?B?TjVFSUM2TGNBSWRVUGtLaGNJdGY4R3FSTkZ0WmNaRkxBeFVWQzBCbmJGVkNK?=
+ =?utf-8?B?Mm5jeVFWUHF3bE8xUmdNblc4ZG9vZE9MQjRIbGxwckxtUWdHY2JkUHltNndu?=
+ =?utf-8?B?ZkZzOHR1bE1WM3hDOUhEVjQ4VU1TdFRPNUtFU1hhZUhWTStybkQ2clRROXJ1?=
+ =?utf-8?B?UzVKZnNvZHF1ZjBIOW9OdHYyRDMvQWRaVy9tNDA0Zk5vcTF3R1RZcWVjcUN0?=
+ =?utf-8?B?T0E3VmtVL1h5eFNoSUNOZ3VKT3M1UW53c29SWjBYMDNHc0lLVnpNb3ZwdFRj?=
+ =?utf-8?B?eUJQUDIvUmpXNGNSVHNVMTBCV2NlNjIrSGhuNDg3UU41YlQ1WDJwKzJjSDkw?=
+ =?utf-8?Q?/Y7g=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6114e894-f632-473a-37f8-08dd2b32ef90
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jan 2025 13:39:52.5481
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nsIStHaMhMVO8Jt5j0suY0fxk3lZSgXfewCbeJk65U3EbXruzHCKtoJBV2JtPfVF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5643
 
-From: Patrisious Haddad <phaddad@nvidia.com>
+On Thu, Dec 19, 2024 at 11:04:54AM +0100, Christian König wrote:
 
-This patch adds RDMA_TRANSPORT_RX and RDMA_TRANSPORT_TX as a new flow
-table type for matcher creation.
+> > Based on all the above, I think we can conclude that since dma_buf_put()
+> > does not directly (or synchronously) call the f_op->release() handler, a
+> > deadlock is unlikely to occur in the scenario you described.
 
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/fs.c           | 140 ++++++++++++++++++++--
- drivers/infiniband/hw/mlx5/fs.h           |   2 +
- drivers/infiniband/hw/mlx5/mlx5_ib.h      |   3 +
- include/uapi/rdma/mlx5_user_ioctl_cmds.h  |   1 +
- include/uapi/rdma/mlx5_user_ioctl_verbs.h |   2 +
- 5 files changed, 135 insertions(+), 13 deletions(-)
+Right, there is no deadlock here, and there is nothing inhernetly
+wrong with using try_get like this. The locking here is ugly ugly
+ugly, I forget why, but this was the best I came up with to untangle
+it without deadlocks or races.
 
-diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
-index 520034acf73aa..2d1430673238e 100644
---- a/drivers/infiniband/hw/mlx5/fs.c
-+++ b/drivers/infiniband/hw/mlx5/fs.c
-@@ -690,7 +690,7 @@ static struct mlx5_ib_flow_prio *_get_prio(struct mlx5_ib_dev *dev,
- 					   struct mlx5_ib_flow_prio *prio,
- 					   int priority,
- 					   int num_entries, int num_groups,
--					   u32 flags)
-+					   u32 flags, u16 vport)
- {
- 	struct mlx5_flow_table_attr ft_attr = {};
- 	struct mlx5_flow_table *ft;
-@@ -698,6 +698,7 @@ static struct mlx5_ib_flow_prio *_get_prio(struct mlx5_ib_dev *dev,
- 	ft_attr.prio = priority;
- 	ft_attr.max_fte = num_entries;
- 	ft_attr.flags = flags;
-+	ft_attr.vport = vport;
- 	ft_attr.autogroup.max_num_groups = num_groups;
- 	ft = mlx5_create_auto_grouped_flow_table(ns, &ft_attr);
- 	if (IS_ERR(ft))
-@@ -792,7 +793,7 @@ static struct mlx5_ib_flow_prio *get_flow_table(struct mlx5_ib_dev *dev,
- 	ft = prio->flow_table;
- 	if (!ft)
- 		return _get_prio(dev, ns, prio, priority, max_table_size,
--				 num_groups, flags);
-+				 num_groups, flags, 0);
- 
- 	return prio;
- }
-@@ -935,7 +936,7 @@ int mlx5_ib_fs_add_op_fc(struct mlx5_ib_dev *dev, u32 port_num,
- 	prio = &dev->flow_db->opfcs[type];
- 	if (!prio->flow_table) {
- 		prio = _get_prio(dev, ns, prio, priority,
--				 dev->num_ports * MAX_OPFC_RULES, 1, 0);
-+				 dev->num_ports * MAX_OPFC_RULES, 1, 0, 0);
- 		if (IS_ERR(prio)) {
- 			err = PTR_ERR(prio);
- 			goto free;
-@@ -1413,17 +1414,51 @@ static struct ib_flow *mlx5_ib_create_flow(struct ib_qp *qp,
- 	return ERR_PTR(err);
- }
- 
-+static int mlx5_ib_fill_transport_ns_info(struct mlx5_ib_dev *dev,
-+					  enum mlx5_flow_namespace_type type,
-+					  u32 *flags, u16 *vport_idx,
-+					  u16 *vport,
-+					  struct mlx5_core_dev **ft_mdev,
-+					  u32 ib_port)
-+{
-+	struct mlx5_core_dev *esw_mdev;
-+
-+	if (!is_mdev_switchdev_mode(dev->mdev))
-+		return 0;
-+
-+	if (!MLX5_CAP_ADV_RDMA(dev->mdev, rdma_transport_manager))
-+		return -EOPNOTSUPP;
-+
-+	if (!dev->port[ib_port - 1].rep)
-+		return -EINVAL;
-+
-+	esw_mdev = mlx5_eswitch_get_core_dev(dev->port[ib_port - 1].rep->esw);
-+	if (esw_mdev != dev->mdev)
-+		return -EOPNOTSUPP;
-+
-+	*flags |= MLX5_FLOW_TABLE_OTHER_VPORT;
-+	*ft_mdev = esw_mdev;
-+	*vport = dev->port[ib_port - 1].rep->vport;
-+	*vport_idx = dev->port[ib_port - 1].rep->vport_index;
-+
-+	return 0;
-+}
-+
- static struct mlx5_ib_flow_prio *
- _get_flow_table(struct mlx5_ib_dev *dev, u16 user_priority,
- 		enum mlx5_flow_namespace_type ns_type,
--		bool mcast)
-+		bool mcast, u32 ib_port)
- {
-+	struct mlx5_core_dev *ft_mdev = dev->mdev;
- 	struct mlx5_flow_namespace *ns = NULL;
- 	struct mlx5_ib_flow_prio *prio = NULL;
- 	int max_table_size = 0;
-+	u16 vport_idx = 0;
- 	bool esw_encap;
- 	u32 flags = 0;
-+	u16 vport = 0;
- 	int priority;
-+	int ret;
- 
- 	if (mcast)
- 		priority = MLX5_IB_FLOW_MCAST_PRIO;
-@@ -1471,13 +1506,38 @@ _get_flow_table(struct mlx5_ib_dev *dev, u16 user_priority,
- 			MLX5_CAP_FLOWTABLE_RDMA_TX(dev->mdev, log_max_ft_size));
- 		priority = user_priority;
- 		break;
-+	case MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_RX:
-+	case MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_TX:
-+		if (ib_port == 0 || user_priority > MLX5_RDMA_TRANSPORT_BYPASS_PRIO)
-+			return ERR_PTR(-EINVAL);
-+		ret = mlx5_ib_fill_transport_ns_info(dev, ns_type, &flags,
-+						     &vport_idx, &vport,
-+						     &ft_mdev, ib_port);
-+		if (ret)
-+			return ERR_PTR(ret);
-+
-+		if (ns_type == MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_RX)
-+			max_table_size =
-+				BIT(MLX5_CAP_FLOWTABLE_RDMA_TRANSPORT_RX(
-+					ft_mdev, log_max_ft_size));
-+		else
-+			max_table_size =
-+				BIT(MLX5_CAP_FLOWTABLE_RDMA_TRANSPORT_TX(
-+					ft_mdev, log_max_ft_size));
-+		priority = user_priority;
-+		break;
- 	default:
- 		break;
- 	}
- 
- 	max_table_size = min_t(int, max_table_size, MLX5_FS_MAX_ENTRIES);
- 
--	ns = mlx5_get_flow_namespace(dev->mdev, ns_type);
-+	if (ns_type == MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_RX ||
-+	    ns_type == MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_TX)
-+		ns = mlx5_get_flow_vport_namespace(ft_mdev, ns_type, vport_idx);
-+	else
-+		ns = mlx5_get_flow_namespace(ft_mdev, ns_type);
-+
- 	if (!ns)
- 		return ERR_PTR(-EOPNOTSUPP);
- 
-@@ -1497,6 +1557,12 @@ _get_flow_table(struct mlx5_ib_dev *dev, u16 user_priority,
- 	case MLX5_FLOW_NAMESPACE_RDMA_TX:
- 		prio = &dev->flow_db->rdma_tx[priority];
- 		break;
-+	case MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_RX:
-+		prio = &dev->flow_db->rdma_transport_rx[ib_port - 1];
-+		break;
-+	case MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_TX:
-+		prio = &dev->flow_db->rdma_transport_tx[ib_port - 1];
-+		break;
- 	default: return ERR_PTR(-EINVAL);
- 	}
- 
-@@ -1507,7 +1573,7 @@ _get_flow_table(struct mlx5_ib_dev *dev, u16 user_priority,
- 		return prio;
- 
- 	return _get_prio(dev, ns, prio, priority, max_table_size,
--			 MLX5_FS_MAX_TYPES, flags);
-+			 MLX5_FS_MAX_TYPES, flags, vport);
- }
- 
- static struct mlx5_ib_flow_handler *
-@@ -1626,7 +1692,8 @@ static struct mlx5_ib_flow_handler *raw_fs_rule_add(
- 	mutex_lock(&dev->flow_db->lock);
- 
- 	ft_prio = _get_flow_table(dev, fs_matcher->priority,
--				  fs_matcher->ns_type, mcast);
-+				  fs_matcher->ns_type, mcast,
-+				  fs_matcher->ib_port);
- 	if (IS_ERR(ft_prio)) {
- 		err = PTR_ERR(ft_prio);
- 		goto unlock;
-@@ -1738,6 +1805,12 @@ mlx5_ib_ft_type_to_namespace(enum mlx5_ib_uapi_flow_table_type table_type,
- 	case MLX5_IB_UAPI_FLOW_TABLE_TYPE_RDMA_TX:
- 		*namespace = MLX5_FLOW_NAMESPACE_RDMA_TX;
- 		break;
-+	case MLX5_IB_UAPI_FLOW_TABLE_TYPE_RDMA_TRANSPORT_RX:
-+		*namespace = MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_RX;
-+		break;
-+	case MLX5_IB_UAPI_FLOW_TABLE_TYPE_RDMA_TRANSPORT_TX:
-+		*namespace = MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_TX;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -1827,7 +1900,8 @@ static int get_dests(struct uverbs_attr_bundle *attrs,
- 		return -EINVAL;
- 
- 	/* Allow only DEVX object or QP as dest when inserting to RDMA_RX */
--	if ((fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_RX) &&
-+	if ((fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_RX ||
-+	     fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_RX) &&
- 	    ((!dest_devx && !dest_qp) || (dest_devx && dest_qp)))
- 		return -EINVAL;
- 
-@@ -1844,7 +1918,8 @@ static int get_dests(struct uverbs_attr_bundle *attrs,
- 			return -EINVAL;
- 		/* Allow only flow table as dest when inserting to FDB or RDMA_RX */
- 		if ((fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_FDB_BYPASS ||
--		     fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_RX) &&
-+		     fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_RX ||
-+		     fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_RX) &&
- 		    *dest_type != MLX5_FLOW_DESTINATION_TYPE_FLOW_TABLE)
- 			return -EINVAL;
- 	} else if (dest_qp) {
-@@ -1865,14 +1940,16 @@ static int get_dests(struct uverbs_attr_bundle *attrs,
- 			*dest_id = mqp->raw_packet_qp.rq.tirn;
- 		*dest_type = MLX5_FLOW_DESTINATION_TYPE_TIR;
- 	} else if ((fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_EGRESS ||
--		    fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_TX) &&
-+		    fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_TX ||
-+		    fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_TX) &&
- 		   !(*flags & MLX5_IB_ATTR_CREATE_FLOW_FLAGS_DROP)) {
- 		*dest_type = MLX5_FLOW_DESTINATION_TYPE_PORT;
- 	}
- 
- 	if (*dest_type == MLX5_FLOW_DESTINATION_TYPE_TIR &&
- 	    (fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_EGRESS ||
--	     fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_TX))
-+	     fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_TX ||
-+	     fs_matcher->ns_type == MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_TX))
- 		return -EINVAL;
- 
- 	return 0;
-@@ -2386,6 +2463,22 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_FLOW_MATCHER_CREATE)(
- 		goto end;
- 	}
- 
-+	if (uverbs_attr_is_valid(attrs, MLX5_IB_ATTR_FLOW_MATCHER_IB_PORT)) {
-+		err = uverbs_copy_from(&obj->ib_port, attrs,
-+				       MLX5_IB_ATTR_FLOW_MATCHER_IB_PORT);
-+		if (err)
-+			goto end;
-+		if (!rdma_is_port_valid(&dev->ib_dev, obj->ib_port)) {
-+			err = -EINVAL;
-+			goto end;
-+		}
-+		if (obj->ns_type != MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_RX &&
-+		    obj->ns_type != MLX5_FLOW_NAMESPACE_RDMA_TRANSPORT_TX) {
-+			err = -EINVAL;
-+			goto end;
-+		}
-+	}
-+
- 	uobj->object = obj;
- 	obj->mdev = dev->mdev;
- 	atomic_set(&obj->usecnt, 0);
-@@ -2433,7 +2526,7 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_STEERING_ANCHOR_CREATE)(
- 
- 	mutex_lock(&dev->flow_db->lock);
- 
--	ft_prio = _get_flow_table(dev, priority, ns_type, 0);
-+	ft_prio = _get_flow_table(dev, priority, ns_type, 0, 0);
- 	if (IS_ERR(ft_prio)) {
- 		err = PTR_ERR(ft_prio);
- 		goto free_obj;
-@@ -2819,7 +2912,10 @@ DECLARE_UVERBS_NAMED_METHOD(
- 			     UA_OPTIONAL),
- 	UVERBS_ATTR_CONST_IN(MLX5_IB_ATTR_FLOW_MATCHER_FT_TYPE,
- 			     enum mlx5_ib_uapi_flow_table_type,
--			     UA_OPTIONAL));
-+			     UA_OPTIONAL),
-+	UVERBS_ATTR_PTR_IN(MLX5_IB_ATTR_FLOW_MATCHER_IB_PORT,
-+			   UVERBS_ATTR_TYPE(u32),
-+			   UA_OPTIONAL));
- 
- DECLARE_UVERBS_NAMED_METHOD_DESTROY(
- 	MLX5_IB_METHOD_FLOW_MATCHER_DESTROY,
-@@ -2889,8 +2985,26 @@ int mlx5_ib_fs_init(struct mlx5_ib_dev *dev)
- 	if (!dev->flow_db)
- 		return -ENOMEM;
- 
-+	dev->flow_db->rdma_transport_rx = kcalloc(dev->num_ports,
-+					sizeof(struct mlx5_ib_flow_prio),
-+					GFP_KERNEL);
-+	if (!dev->flow_db->rdma_transport_rx)
-+		goto free_flow_db;
-+
-+	dev->flow_db->rdma_transport_tx = kcalloc(dev->num_ports,
-+					sizeof(struct mlx5_ib_flow_prio),
-+					GFP_KERNEL);
-+	if (!dev->flow_db->rdma_transport_tx)
-+		goto free_rdma_transport_rx;
-+
- 	mutex_init(&dev->flow_db->lock);
- 
- 	ib_set_device_ops(&dev->ib_dev, &flow_ops);
- 	return 0;
-+
-+free_rdma_transport_rx:
-+	kfree(dev->flow_db->rdma_transport_rx);
-+free_flow_db:
-+	kfree(dev->flow_db);
-+	return -ENOMEM;
- }
-diff --git a/drivers/infiniband/hw/mlx5/fs.h b/drivers/infiniband/hw/mlx5/fs.h
-index b9734904f5f01..0516555eb1c17 100644
---- a/drivers/infiniband/hw/mlx5/fs.h
-+++ b/drivers/infiniband/hw/mlx5/fs.h
-@@ -40,6 +40,8 @@ static inline void mlx5_ib_fs_cleanup(struct mlx5_ib_dev *dev)
- 	 * is a safe assumption that all references are gone.
- 	 */
- 	mlx5_ib_fs_cleanup_anchor(dev);
-+	kfree(dev->flow_db->rdma_transport_tx);
-+	kfree(dev->flow_db->rdma_transport_rx);
- 	kfree(dev->flow_db);
- }
- #endif /* _MLX5_IB_FS_H */
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 6b6e8ca2f9070..a0138bdfa3894 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -276,6 +276,7 @@ struct mlx5_ib_flow_matcher {
- 	struct mlx5_core_dev	*mdev;
- 	atomic_t		usecnt;
- 	u8			match_criteria_enable;
-+	u32			ib_port;
- };
- 
- struct mlx5_ib_steering_anchor {
-@@ -307,6 +308,8 @@ struct mlx5_ib_flow_db {
- 	struct mlx5_ib_flow_prio	rdma_tx[MLX5_IB_NUM_FLOW_FT];
- 	struct mlx5_ib_flow_prio	opfcs[MLX5_IB_OPCOUNTER_MAX];
- 	struct mlx5_flow_table		*lag_demux_ft;
-+	struct mlx5_ib_flow_prio        *rdma_transport_rx;
-+	struct mlx5_ib_flow_prio        *rdma_transport_tx;
- 	/* Protect flow steering bypass flow tables
- 	 * when add/del flow rules.
- 	 * only single add/removal of flow steering rule could be done
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-index fd2e4a3a56b36..18f9fe0702132 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-@@ -239,6 +239,7 @@ enum mlx5_ib_flow_matcher_create_attrs {
- 	MLX5_IB_ATTR_FLOW_MATCHER_MATCH_CRITERIA,
- 	MLX5_IB_ATTR_FLOW_MATCHER_FLOW_FLAGS,
- 	MLX5_IB_ATTR_FLOW_MATCHER_FT_TYPE,
-+	MLX5_IB_ATTR_FLOW_MATCHER_IB_PORT,
- };
- 
- enum mlx5_ib_flow_matcher_destroy_attrs {
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_verbs.h b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-index 7c233df475e71..8f86e79d78a5f 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_verbs.h
-@@ -45,6 +45,8 @@ enum mlx5_ib_uapi_flow_table_type {
- 	MLX5_IB_UAPI_FLOW_TABLE_TYPE_FDB	= 0x2,
- 	MLX5_IB_UAPI_FLOW_TABLE_TYPE_RDMA_RX	= 0x3,
- 	MLX5_IB_UAPI_FLOW_TABLE_TYPE_RDMA_TX	= 0x4,
-+	MLX5_IB_UAPI_FLOW_TABLE_TYPE_RDMA_TRANSPORT_RX	= 0x5,
-+	MLX5_IB_UAPI_FLOW_TABLE_TYPE_RDMA_TRANSPORT_TX	= 0x6,
- };
- 
- enum mlx5_ib_uapi_flow_action_packet_reformat_type {
--- 
-2.47.1
+> Yeah, I agree.
+> 
+> Interesting to know, I wasn't aware that the task_work functionality exists
+> for that use case.
 
+IIRC it was changed a while back because call chains were getting kind of
+crazy long with the file release functions and stack overflow was a
+problem in some cases.
+
+Jason
 
