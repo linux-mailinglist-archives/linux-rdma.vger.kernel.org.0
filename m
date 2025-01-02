@@ -1,82 +1,109 @@
-Return-Path: <linux-rdma+bounces-6776-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6777-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8780A9FF7AB
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2025 10:49:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A211F9FF8E4
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2025 12:36:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B25AE188047C
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2025 09:49:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76A66161AC4
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2025 11:36:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE081A4F22;
-	Thu,  2 Jan 2025 09:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88EF71AC456;
+	Thu,  2 Jan 2025 11:36:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L6j98rEr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lRskpZFE"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C84D19A2A3
-	for <linux-rdma@vger.kernel.org>; Thu,  2 Jan 2025 09:48:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4280613FEE;
+	Thu,  2 Jan 2025 11:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735811330; cv=none; b=FmMzlhMxdJU5ta+HumQRne7P4i8sV8wXRFp0bkOi8Hl4jZBk1CgTlSkj937xYiOkMMHFOjnuRCnvRwFr/KyNkDlRzXb8Z1OqDSQM1A1IHuUivrQThn2eS2fGQNAPgyWiKIyIwZjdUHVls4CwWFvFldBrWtoSa18ykBF15uoDUw0=
+	t=1735817778; cv=none; b=liEfwBCqohHWguKUPi8sIpdERf/YBVBGicaLJQl4I8XwT8+uvToVElwblH4ECyh0iWwG/jP0pqlWcHnOcCzPoeM0iCzmY+N0pcED/iyJB4QOby/wYlDgIwQVVer5sIapxqeme6NloXNl9IDv2L8VANyJb25l3th1eaJlanq8+l0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735811330; c=relaxed/simple;
-	bh=Q2YcoKPvAY2CKsxyBqL9Ks3lfBWBlnaRG7+0SgYNYpA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=cP4TgqasWYbGjzAUcbutFtuZQBq1+nV0IscustR6gs3Jyf8ygefDs5vyRr+bo6YUN7+hOw/N0nalID3kNKQRCu7Wcun8/DDaZiMKYN1oSo3qbfeCNBUjEB083QqUVX0H+qMZ55PCfC5KGVsY3FYP3tZvcwXS07MxdgWG4fE1RtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L6j98rEr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67C59C4CED0;
-	Thu,  2 Jan 2025 09:48:49 +0000 (UTC)
+	s=arc-20240116; t=1735817778; c=relaxed/simple;
+	bh=yjHGcKiL5zM5KXjwjgPEvNLsH7YFyyE3gPZPVjLlatQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZtULxDWgnigoOKNKK797uQN5hve+J7hcp11WIrbGlKAjSD04Zna2qKX5BRlx/TMObzyKmqQ6J/10WoB84bYXyi2iQp2KuhpSsv8ceY4t1AC6UqJZUASG7A2hL+xM5bPt78dIGGeSuXZwksHiZxxZu4XzLNXtXPwMRpPPGwcnqEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lRskpZFE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 534D6C4CED0;
+	Thu,  2 Jan 2025 11:36:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735811329;
-	bh=Q2YcoKPvAY2CKsxyBqL9Ks3lfBWBlnaRG7+0SgYNYpA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=L6j98rErdjMDFn/sYyRacr10g67TFleWXqgNrXIloh2nMYl56rIsH88/sNtVCtbYU
-	 ifkgxwajb+dA9FmgpPKGue2rEdvauKD/tdu3mK9IBI04OHyun8v8IxzGxDzdduhrpT
-	 ujVgM8E1WTUVxLH5qBWI/AmDeCRrIAt95KReMP9OygkEl2Yv6gLMo5nTAQ/3NIadiq
-	 G8pq/LS/SkXVXp3VvCz56Z0Jg/iyNeo5/GhpgsLrfNF8UFtYrotM8sFlwigCUbDwDG
-	 /AWpiT/9EltpATJCEIcQvXpMAYn04rzaeFapa7VLbq7SBY9q4p853rSsIuxwbhCVfs
-	 xf2lmZsDD+PCQ==
+	s=k20201202; t=1735817777;
+	bh=yjHGcKiL5zM5KXjwjgPEvNLsH7YFyyE3gPZPVjLlatQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=lRskpZFEq7Ky26CPZStq0P8LIC30pMw6I30ojRSKs+rVl0xgMJEU8ES7672PROx+B
+	 iOAFQdhXAYLbLVLyG4oS/VwhbpYEmdFqeirtLPfyTYgEpVSboCCBTb3phTQNOV/YeI
+	 jl0eQxviLX1Z9LKHZgW5LxHGhsewiciRJMti5Z3gMq/EnqN7uo8uKybU9xY0uJGAMd
+	 O1LjesCQ6f2bI8iXS/xgRB8SOOxdFSryk6omDlH+zB+lyjloyx6gDWtXBGAdm01fy5
+	 WyP5oqdPdMSzTpxXXwo0Sj2smHhYZav9rpPzvx8ct1Tr9HfMm1rap304uFmXj2VAzN
+	 x7o02oOrUnFHg==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Patrisious Haddad <phaddad@nvidia.com>, 
- Junxian Huang <huangjunxian6@hisilicon.com>, linux-rdma@vger.kernel.org, 
- Maor Gottlieb <maorg@nvidia.com>, Yuyu Li <liyuyu6@huawei.com>
-In-Reply-To: <d7731478e456f61255af798a7fd4e64b006ddebb.1735567976.git.leonro@nvidia.com>
-References: <d7731478e456f61255af798a7fd4e64b006ddebb.1735567976.git.leonro@nvidia.com>
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: Fix link status down event for
- MPV
-Message-Id: <173581132636.147384.2346327182250671636.b4-ty@kernel.org>
-Date: Thu, 02 Jan 2025 04:48:46 -0500
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	linux-rdma@vger.kernel.org,
+	Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>,
+	Patrisious Haddad <phaddad@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>
+Subject: [PATCH rdma-next 0/3] Add RDMA TRANSPORT steering domain
+Date: Thu,  2 Jan 2025 13:36:04 +0200
+Message-ID: <cover.1735817449.git.leon@kernel.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Transfer-Encoding: 8bit
 
+From Patrisious,
 
-On Mon, 30 Dec 2024 16:14:04 +0200, Leon Romanovsky wrote:
-> The commit below prevented MPV from unloading correctly due to blocking
-> the netdev down event, allow sending the event for MPV mode to maintain
-> proper unload flow.
-> 
-> 
+The following series adds two new steering domains:
+RDMA_TRANSPORT_RX - Packets will traverse through it after RDMA_RX
+RDMA_TRANSPORT_TX - Packets will traverse through it before RDMA_TX
 
-Applied, thanks!
+These domains created on the vport group manager for each vport.
+So RDMA application running on VF(or SF) is not aware of this domain,
+and the main motivation behind it is to catch control packets, forward
+them to VF QP as well as the control SW to help with congestion control.
 
-[1/1] RDMA/mlx5: Fix link status down event for MPV
-      https://git.kernel.org/rdma/rdma/c/220043b06fded9
+These new domains are also exposed to users through mlx5dv_create_flow_matcher()
+which will now support these two new table types which have to be created with
+its corresponding ib_port.
 
-Best regards,
+Thanks
+
+Patrisious Haddad (3):
+  net/mlx5: Query ADV_RDMA capabilities
+  net/mlx5: fs, add RDMA TRANSPORT steering domain support
+  RDMA/mlx5: Expose RDMA TRANSPORT flow table types to userspace
+
+ drivers/infiniband/hw/mlx5/fs.c               | 140 ++++++++++++--
+ drivers/infiniband/hw/mlx5/fs.h               |   2 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   3 +
+ .../mellanox/mlx5/core/esw/acl/helper.c       |   2 +-
+ .../mellanox/mlx5/core/eswitch_offloads.c     |   6 +-
+ .../net/ethernet/mellanox/mlx5/core/fs_cmd.c  |   2 +
+ .../net/ethernet/mellanox/mlx5/core/fs_core.c | 178 ++++++++++++++++--
+ .../net/ethernet/mellanox/mlx5/core/fs_core.h |  12 +-
+ drivers/net/ethernet/mellanox/mlx5/core/fw.c  |   7 +
+ .../net/ethernet/mellanox/mlx5/core/main.c    |   1 +
+ include/linux/mlx5/device.h                   |  11 ++
+ include/linux/mlx5/fs.h                       |  11 +-
+ include/linux/mlx5/mlx5_ifc.h                 |  42 ++++-
+ include/uapi/rdma/mlx5_user_ioctl_cmds.h      |   1 +
+ include/uapi/rdma/mlx5_user_ioctl_verbs.h     |   2 +
+ 15 files changed, 385 insertions(+), 35 deletions(-)
+
 -- 
-Leon Romanovsky <leon@kernel.org>
+2.47.1
 
 
