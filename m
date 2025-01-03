@@ -1,133 +1,180 @@
-Return-Path: <linux-rdma+bounces-6794-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6795-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D5BEA00B76
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2025 16:31:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 289E6A00CFD
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2025 18:41:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A24EE160678
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2025 15:31:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E9BE1883E46
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2025 17:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146FA1FBCB7;
-	Fri,  3 Jan 2025 15:31:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C679C1B6CE6;
+	Fri,  3 Jan 2025 17:41:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="oYMH+sa7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BQl1zJtS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+Received: from mail-oa1-f65.google.com (mail-oa1-f65.google.com [209.85.160.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27EBE1FA8D7
-	for <linux-rdma@vger.kernel.org>; Fri,  3 Jan 2025 15:31:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E6B11CA0;
+	Fri,  3 Jan 2025 17:41:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735918308; cv=none; b=K5H3k0s5e1opLiC3VRO/bryjehTpT/vm4lWDyrE5Io7KG6ciuhVaMdhD3kchuECivIXCh+bK08iR/g/MuyEjeLvoAdjlDxnYQfB28OXaoMYYVhyjEhPo6Lg0FDAwUpnC8QzIzlVxEjG3kX5TGPVgiDJGYr55YLY0vxAxg0VHe+0=
+	t=1735926062; cv=none; b=Y5ue9OhBDUpxanbXRWMvVv1t3KNyln+TCn0O+WBaTgOaApLVfnrRtc+1xeYfwwo+YRe4dETgUVnec/cCB12UZ5UToyIeMl5ecSlD9+3wFzyMybOJE2LbqAGrZUQvl2a1DxgaEFAAIUEhCCb2xxXnbtG3OAMBe9riaDP2+l1gWSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735918308; c=relaxed/simple;
-	bh=zhL6B/F6IJvl55yDzVTfZTnD5kNIU58Yiz2yT9h1oIo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L6Jr3hQXLzPNpsr0QFXQBPs9kVPYBjWGnei1wA+Zki/zOc7ox0bZs8iR+x/dep9oR3/Dhz7a6hrUi8G4LP4PDDfTZoMFzJkGFp0L2Ttuy1nRylY8XDDV73ZBZQXRM43Ir597qlw+bjs5Jj/IgLLihXw60ENYaybNd4I1thIzwv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=oYMH+sa7; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-46b1d40abbdso1538931cf.2
-        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2025 07:31:45 -0800 (PST)
+	s=arc-20240116; t=1735926062; c=relaxed/simple;
+	bh=znxZ7WhO10sxyeu4QvDup0SoE78oQlfF4GsgEZk5HXQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XlWRtWK87Pr32BgaNnNMYrwbr6wUB2KRtfePR8nuLb6YuNvoWEkva8WIuuM07J44YEqfPysyUdVEdGojV4TVMSVEmLL36AL3jrDKTI4eVlvlebKVinhq4aQM8Y88km34o7ErQQFMD3kCHbBub1Bu1VpdmCjV6Cmgx1D9XbLW0EY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BQl1zJtS; arc=none smtp.client-ip=209.85.160.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f65.google.com with SMTP id 586e51a60fabf-2a01707db44so4262216fac.2;
+        Fri, 03 Jan 2025 09:41:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1735918305; x=1736523105; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zhL6B/F6IJvl55yDzVTfZTnD5kNIU58Yiz2yT9h1oIo=;
-        b=oYMH+sa7IIZn5gesamn1VZqPo+vNjeYVPU5Oi+qvKaHgoaGQTzCv63MzRsADVfR8mq
-         oNs/OEKfR8fc8fTh+BthODVRGYb8SOOoGADh9xP7orujzNjWwKGQ9dfQNGFtDs3ymDDM
-         6GJD2ILvom/L0R6aWEtEdA8nE7tBF5Z2oy+A9m5Wspct+xnMafZ2ZiwMSiBfqHBWTiTO
-         6BzqTnkBe32IGHJkoV/KaxFLcH7zW1/OWbAZTSyhiPeVOkjI6ZEF/qnLCkhjQr53sZP7
-         FstaZ2wiJisk9Cu+3jsmBGTqpzX7S058rO1guHHElG2zLt3HzgAhYYY8itmIJjf0+kGy
-         tp/Q==
+        d=gmail.com; s=20230601; t=1735926060; x=1736530860; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=znxZ7WhO10sxyeu4QvDup0SoE78oQlfF4GsgEZk5HXQ=;
+        b=BQl1zJtSL8MYC6pyOajWt7yOd6o+HJes7YPDWH1cusAdxoY3c/TI8nilds31T82/fN
+         F1VxsBM5GwyPB8Ln+CiLCzd2FhNDrLz9Zt7UcTNyGD3LnPtbQewut4m4R1CY1o3pswLK
+         bkYlY09cSOkd+Ls7yYMJLVu4irzanRvLZHzpd3QYS+xgwkaKrmvG84QXAnU1sMKGUsQQ
+         Gu3FRRRep91UAs6xhIxakNienEzGi45HlTVROwoqZfsdcHb56y3UlSlIVp4EDu5WaDCZ
+         GqxXY8n0gH8Bjk3vfVTnA/ufwq230TAxVbogAYsFzgCp6HhxITQM3ekECIavAzsVnXXa
+         VGCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735918305; x=1736523105;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zhL6B/F6IJvl55yDzVTfZTnD5kNIU58Yiz2yT9h1oIo=;
-        b=hlYOVO2cqmPO9krpL6O+Gm+qrCDaJJR18LssLmZegZxbGNIOBUJTEknVeQFUuXjwcX
-         wiWLAEULXHZGTwvT8BGCOQvn1nBi/xAJBX7yoEzbQZO0TRIlppnvSyFM1sd2dnr1gq+3
-         0jIUKEFxAKVXxwG73qcwioSjd7/hEZtAzIq+5NjKFtNfeL/P0CmqnX3QePX7n2YNXqbh
-         63rwVstBphHLt9mrjrHwa3CcobB1RtSahLbS9y+c233XjrtPV5lrhljoXs1VzmZA8uHC
-         fr8OTMilkwHDfcCaoC1J6ho9ZuEEBG+ySUw7hYb/bxoFwWcFi5zSUAAXHoFgn7qi31y2
-         tSwg==
-X-Forwarded-Encrypted: i=1; AJvYcCXXmJVN+s5pzzIimIfEEXIe67bLRV8F1NxZcphnVhE6q7yiT+fxujdqRyyJDFs6+wOAkWSLM3MKFGtR@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhNld3zAytsPp/++P3R2Ego5J9JWX4w86YvQl9tJ2qR4UPU7dj
-	X6ehmHAIot/aYP4Sywfnhxb5Mg6tZhL1N966iSjdkIMQZgN02bYU749iK/kZJHo=
-X-Gm-Gg: ASbGnct6y015Ti32hP6VbmWkVIX09q5zlKbKqK5cK8vArEruXZKuNJyOvjLCmHr78cx
-	wel8mqgxGuw8b0TO++MGiRVtjisosbC0RpzahlKCQ/SZoiBoePZ39NjJtE8jfzB6MlCs9PYtJkt
-	lKV4mkXW0ASn1Y8dv4q2bxFTAR2wWKkRBKshq/we3lvb4dZRJ70Bmy9uJxDoWS0xkWGlOQgLXuk
-	mo8QPGIP1NvmObbrIe4n7RxYLCvTNqLwouNlbeMxb0O+EBYVGo54M2ZMiAEKZP3DSVr4SJxezfZ
-	0bdw40nGNw3DjCVmpToQ1dOob0nKFQ==
-X-Google-Smtp-Source: AGHT+IHLKH/Qkpd3ineas86woJtpW9dqgaHH8lI5LWDDkQuIsCv/4PrdU/YrEijFsXEAJMoI/tHNlw==
-X-Received: by 2002:ac8:5a86:0:b0:466:a091:aa3f with SMTP id d75a77b69052e-46a4a9a28fcmr805071131cf.51.1735918304858;
-        Fri, 03 Jan 2025 07:31:44 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46a3eb175eesm146697171cf.55.2025.01.03.07.31.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jan 2025 07:31:44 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1tTjeJ-00000000j2m-0UUS;
-	Fri, 03 Jan 2025 11:31:43 -0400
-Date: Fri, 3 Jan 2025 11:31:43 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Zelong Yue <yuezelong@bytedance.com>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC] RDMA/core: Fix IPv6 loopback dst MAC address lookup logic
-Message-ID: <20250103153143.GF26854@ziepe.ca>
-References: <20241110123532.37831-1-yuezelong@bytedance.com>
- <b044faad-1e3f-4c65-b2e6-fc418aebd22e@bytedance.com>
- <20241121135332.GB773835@ziepe.ca>
- <ab960175-d1f8-402e-9200-d47a7761315c@bytedance.com>
+        d=1e100.net; s=20230601; t=1735926060; x=1736530860;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=znxZ7WhO10sxyeu4QvDup0SoE78oQlfF4GsgEZk5HXQ=;
+        b=mITIw2W0xv2v46XmeRRlDcqGyNMLrwqC/9CyuZXuLmyY5LMvBpq88WP3IKD3fjPJGt
+         j/F9m8e/z2qzUBdDExY+iUModdVgOUgFfYtpG4WvP7UycR9hbudygL3Km6sijXuBL15X
+         MEgVW+2HMh2b4EeurSQWB1K1G2z1ugUn0vY9E8cet5C/1NL/8f/guS+khRzKzLE6M9Da
+         A5yj/6V/XWqV6ooDZNrOKZNFCko9ZBNSvr8f821QZUJJmoQnAtaCfXJkO4QXVKkYoWZI
+         y1VhUHojJIyE8VHOOnDH3edWkccMtmOiQSkzlmM5b2fmY/xTGhTwhDp/SG8Jm0H6cmOj
+         wn3A==
+X-Forwarded-Encrypted: i=1; AJvYcCWB6EtLALlWxh6KMn4mZQz4EPebDkhY3dLaafbmqVVl0FlWAK2SWrUsibpsq+7XNde+cRSefptTSeyNPw==@vger.kernel.org, AJvYcCXi/90f6UwTuTIYew6S7BpIKqdhINkoVafWwXqCY+Z7civaHBt+gKTiNBpeKP2blrX2W5u9On52LR6/6yc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyXDTzhKFtQ7H0PfbrGDgcmNkXY+SxiHln8T8rOeOPuwXkWSoj+
+	PIj8DEhrZQ2LKUKOW30kMaAItRja2sGfu7buFN3SgCqBpCJIsY2Aicb7Qa6S6hDI1STL71hhXMp
+	S6/JajR7q0eGs0nLLC/EJdx1Hk7I=
+X-Gm-Gg: ASbGncu66mjaW+LCWtHWg8QWh+FSKCPOjjancyyf6jyPPC60eKXCW26strXmCXNu9fb
+	qItLifGzictJHXJKaMnua7DX5yR3a6AsCZMi43g==
+X-Google-Smtp-Source: AGHT+IFT5H6LGEn9TYl5FXzT8azaIbqlJ5CYrxwKlzGqtweiWc8Fgyddx64eROyu20NgTAln74RzV3Y6fmi3bFm76Bk=
+X-Received: by 2002:a05:6871:a4c4:b0:29d:c832:8422 with SMTP id
+ 586e51a60fabf-2a7fb123672mr27509496fac.18.1735926059911; Fri, 03 Jan 2025
+ 09:40:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ab960175-d1f8-402e-9200-d47a7761315c@bytedance.com>
+References: <20241220100936.2193541-1-matsuda-daisuke@fujitsu.com>
+ <CAHjRaAeXCC+AAV+Ne0cJMpZJYxbD8ox28kp966wkdVJLJdSC_g@mail.gmail.com>
+ <OS3PR01MB98654FDD5E833D1C409B9C2CE5022@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+ <OS3PR01MB9865F967A8BE67AE332FC926E5032@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+ <20250103150546.GD26854@ziepe.ca>
+In-Reply-To: <20250103150546.GD26854@ziepe.ca>
+From: Joe Klein <joe.klein812@gmail.com>
+Date: Fri, 3 Jan 2025 18:40:48 +0100
+Message-ID: <CAHjRaAfuTDGP9TKqBWVDE32t0JzE3jpL8WPBpO_iMhrgMS6MFQ@mail.gmail.com>
+Subject: Re: [PATCH for-next v9 0/5] On-Demand Paging on SoftRoCE
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>, 
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "leon@kernel.org" <leon@kernel.org>, 
+	"zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>, "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 28, 2024 at 05:21:42PM +0800, Zelong Yue wrote:
+On Fri, Jan 3, 2025 at 4:05=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrote=
+:
+>
+> On Tue, Dec 24, 2024 at 08:52:24AM +0000, Daisuke Matsuda (Fujitsu) wrote=
+:
+> > On Mon, Dec 23, 2024 10:55 AM Daisuke Matsuda (Fujitsu) <matsuda-daisuk=
+e@fujitsu.com> wrote:
+> > > On Mon, Dec 23, 2024 2:25 AM Joe Klein <joe.klein812@gmail.com> wrote=
+:
+> > > > We have tested this patcheset and had a lot of problems, even witho=
+ut using the ODP option in softroce. I don't know if
+> > > others have done similar tests. If we have to merge this patchset int=
+o upstream, is it > possible to add a kernel option to
+> > > enable/disable this patchset?
+> > >
+> > > Hi Joe,
+> > >
+> > > Can you clarify the test and the problems you observed?
+> > > I wonder if you tried the test with the latest tree WITHOUT my patche=
+s.
+> > >
+> > > As far as I know, there is something wrong with the upstream right no=
+w.
+> > > It does not complete the rdma-core testcases, and 'segmentation fault=
+' is observed
+> > > in the middle of the full test run, which did not happen before Octob=
+er 2024.
+> >
+> > It appears that the root cause of this issue lies within the userspace =
+components.
+> > My report yesterday was based on experiments conducted on Ubuntu 24.04.=
+1 LTS (x86_64).
+> > It seems to me that rxe is somehow broken regardless of kernel version
+> > as long as userspace components are provided by Ubuntu 24.04.1 LTS.
+> > I built and tried linux-6.11, linux-6.10, and linux-6.8, and they all f=
+ailed as I reported.
+> >
+> > I switched to Ubuntu 22.04.5 LTS (aarch64) to test with the older libra=
+ries.
+> > All tests available passed using the rdma for-next tree without any pro=
+blem.
+> > Then, I applied my ODP patches onto it, and everything is still fine.
+> > ####################
+> > ubuntu@rdma-aarch64:~/rdma-core$ git branch -v
+> > * master fb965e2d0 Merge pull request #1531 from selvintxavier/pbuf_opt=
+imization
+> > ubuntu@rdma-aarch64:~/rdma-core$ ./build/bin/run_tests.py
+> > ..........ss..........ssssssssss..............sssssssssssssssssssssssss=
+s.sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss=
+ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss.....=
+...ssssss..ss....s.sssssss....ss....ss..............s......................=
+ss.............sss...ssss
+> > ----------------------------------------------------------------------
+> > Ran 321 tests in 3.599s
+> >
+> > OK (skipped=3D211)
+> > ubuntu@rdma-aarch64:~/rdma-core$ ./build/bin/run_tests.py -k odp
+> > sssssssss..ss....s.s
+> > ----------------------------------------------------------------------
+> > Ran 20 tests in 0.269s
+> >
+> > OK (skipped=3D13)
+> > ####################
+> >
+> > Possibly, there was a regression in libibverbs between v39.0-1 and v50.=
+0-2build2.
+> > We need to take a closer look to resolve the malfunction of rxe on Ubun=
+tu 24.04.
+>
+> That's distressing.
+>
+> > In conclusion, I believe there is nothing in my ODP patches that could =
+cause
+> > the rxe driver to fail. I would appreciate any feedback on potential im=
+provements.
+>
+> What am I supposed to do with this though?
+>
+> Joe, can you please answer Daisuke's questions on what problems you
+> observed and if you observe them without the ODP patches?
 
-> 1. IPv6 addresses must be in the same subnet
-> 2. The 'local' routing table must have lower priority than our custom policy
-> routes
-> 3. When IPv6 addresses are in different subnets, enabling RDMA loopback
-> breaks TCP loopback
->    functionality unless packet forwarding is enabled (which isn't feasible
-> in our DC
->    environment). We're still investigating a more elegant solution that
-> wouldn't require
->    packet forwarding or impact TCP loopback functionality.
+Will make tests and let you know the result very soon.
 
-What do you mean by packet forwarding?
-
-For multi-NIC RDMA loopback to work the network must forward packets
-externally from one NIC to another. Internal-to-the-node loopback is
-not possible. If that forwarding works for RDMA I would expect it to
-work for TCP too.
-
-For single-NIC, I believe you can use lo to trigger an internal NIC
-RDMA loopback as well.
-
-In all cases TCP and RDMA traffic should be aligned, otherwise it
-becomes impossible to use normal IP tools to debug the RDMA traffic.
-
-> Given that RDMA loopback has different requirements from TCP/UDP
-> loopback, maybe they should follow distinct routing logic.
-
-It cannot, things must be consisent.
-
-Jason
+>
+> Jason
 
