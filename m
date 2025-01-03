@@ -1,180 +1,158 @@
-Return-Path: <linux-rdma+bounces-6795-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6796-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 289E6A00CFD
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2025 18:41:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50007A00D27
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2025 18:48:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E9BE1883E46
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2025 17:41:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 290813A2D66
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2025 17:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C679C1B6CE6;
-	Fri,  3 Jan 2025 17:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679E31FAC53;
+	Fri,  3 Jan 2025 17:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BQl1zJtS"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="eubpLLm3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oa1-f65.google.com (mail-oa1-f65.google.com [209.85.160.65])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E6B11CA0;
-	Fri,  3 Jan 2025 17:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7141FC11D
+	for <linux-rdma@vger.kernel.org>; Fri,  3 Jan 2025 17:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735926062; cv=none; b=Y5ue9OhBDUpxanbXRWMvVv1t3KNyln+TCn0O+WBaTgOaApLVfnrRtc+1xeYfwwo+YRe4dETgUVnec/cCB12UZ5UToyIeMl5ecSlD9+3wFzyMybOJE2LbqAGrZUQvl2a1DxgaEFAAIUEhCCb2xxXnbtG3OAMBe9riaDP2+l1gWSk=
+	t=1735926398; cv=none; b=vFAhvTfmgNsYLDICrY6CQXRKlJmsGfNq6iIpK1cY6oM5hPySkFTsQuzpBTxYRcK9rWUTZ5/R1oRjS2t4gYJUvF7X2TzylbgKRVFHdfJef80YEzD9gYw1HrgZCmLT8pv0ZfbpndIpBRrOViB1/bSm0BiJt2eioGZRf0JquC2FLdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735926062; c=relaxed/simple;
-	bh=znxZ7WhO10sxyeu4QvDup0SoE78oQlfF4GsgEZk5HXQ=;
+	s=arc-20240116; t=1735926398; c=relaxed/simple;
+	bh=VDCJKGEZMluRCZrFOpRMQLzESzYMId03i4HdukxCE64=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XlWRtWK87Pr32BgaNnNMYrwbr6wUB2KRtfePR8nuLb6YuNvoWEkva8WIuuM07J44YEqfPysyUdVEdGojV4TVMSVEmLL36AL3jrDKTI4eVlvlebKVinhq4aQM8Y88km34o7ErQQFMD3kCHbBub1Bu1VpdmCjV6Cmgx1D9XbLW0EY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BQl1zJtS; arc=none smtp.client-ip=209.85.160.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f65.google.com with SMTP id 586e51a60fabf-2a01707db44so4262216fac.2;
-        Fri, 03 Jan 2025 09:41:00 -0800 (PST)
+	 To:Cc:Content-Type; b=OkmQQNIt84fPhD6dNasL0UVq1MHgqdlF76ogJelHMwDVCbUxBneftkk9VW7sMJbIrUiQj3BF91T6xRNe786kATr4OIXm5wMK/tHjBYYjqoYQmvgqJ9TYuNH0MSQz6/2AP/mVpETphESwlb7+A09zCsIXLWT05auldoKTYb+xfFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=eubpLLm3; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5d3da226a2aso2308064a12.0
+        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2025 09:46:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735926060; x=1736530860; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1735926392; x=1736531192; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=znxZ7WhO10sxyeu4QvDup0SoE78oQlfF4GsgEZk5HXQ=;
-        b=BQl1zJtSL8MYC6pyOajWt7yOd6o+HJes7YPDWH1cusAdxoY3c/TI8nilds31T82/fN
-         F1VxsBM5GwyPB8Ln+CiLCzd2FhNDrLz9Zt7UcTNyGD3LnPtbQewut4m4R1CY1o3pswLK
-         bkYlY09cSOkd+Ls7yYMJLVu4irzanRvLZHzpd3QYS+xgwkaKrmvG84QXAnU1sMKGUsQQ
-         Gu3FRRRep91UAs6xhIxakNienEzGi45HlTVROwoqZfsdcHb56y3UlSlIVp4EDu5WaDCZ
-         GqxXY8n0gH8Bjk3vfVTnA/ufwq230TAxVbogAYsFzgCp6HhxITQM3ekECIavAzsVnXXa
-         VGCA==
+        bh=2TJJ18KTh0ifU+lPbN1+aU29vENTzq2+LdHig1jQDZA=;
+        b=eubpLLm3gCrobmAyYLuRlt5N3AjDu+kAX3fAwsMmxbI/LrJvO/3anVOTWDHFAAaHnD
+         xVoYTnKqu17ZcBiy9ihC4MCjE+XA4UAygDiQZ4eSOAcqyGwL7swiC3T/RwvF5gQPdmoZ
+         XGxekci9FjGmxENS3WSzJYWZWkubmLdgErR6zx5VQUdMt/KQXrcwaXFQfCgMJU9Qxrd4
+         8Re/Wj8IwgU9fAd4PxcRI/kQWUVrFSErP8OnGokhK2CgF/7+Nqqx50lyCJxJcDOFC42f
+         LhzSLDghiEQtNiCwwDCBl14eUcQc86KHVzuy3a7I7GfdWKJEM1yNS5TPsG+8OQ7Hgrdy
+         PO+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735926060; x=1736530860;
+        d=1e100.net; s=20230601; t=1735926392; x=1736531192;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=znxZ7WhO10sxyeu4QvDup0SoE78oQlfF4GsgEZk5HXQ=;
-        b=mITIw2W0xv2v46XmeRRlDcqGyNMLrwqC/9CyuZXuLmyY5LMvBpq88WP3IKD3fjPJGt
-         j/F9m8e/z2qzUBdDExY+iUModdVgOUgFfYtpG4WvP7UycR9hbudygL3Km6sijXuBL15X
-         MEgVW+2HMh2b4EeurSQWB1K1G2z1ugUn0vY9E8cet5C/1NL/8f/guS+khRzKzLE6M9Da
-         A5yj/6V/XWqV6ooDZNrOKZNFCko9ZBNSvr8f821QZUJJmoQnAtaCfXJkO4QXVKkYoWZI
-         y1VhUHojJIyE8VHOOnDH3edWkccMtmOiQSkzlmM5b2fmY/xTGhTwhDp/SG8Jm0H6cmOj
-         wn3A==
-X-Forwarded-Encrypted: i=1; AJvYcCWB6EtLALlWxh6KMn4mZQz4EPebDkhY3dLaafbmqVVl0FlWAK2SWrUsibpsq+7XNde+cRSefptTSeyNPw==@vger.kernel.org, AJvYcCXi/90f6UwTuTIYew6S7BpIKqdhINkoVafWwXqCY+Z7civaHBt+gKTiNBpeKP2blrX2W5u9On52LR6/6yc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyXDTzhKFtQ7H0PfbrGDgcmNkXY+SxiHln8T8rOeOPuwXkWSoj+
-	PIj8DEhrZQ2LKUKOW30kMaAItRja2sGfu7buFN3SgCqBpCJIsY2Aicb7Qa6S6hDI1STL71hhXMp
-	S6/JajR7q0eGs0nLLC/EJdx1Hk7I=
-X-Gm-Gg: ASbGncu66mjaW+LCWtHWg8QWh+FSKCPOjjancyyf6jyPPC60eKXCW26strXmCXNu9fb
-	qItLifGzictJHXJKaMnua7DX5yR3a6AsCZMi43g==
-X-Google-Smtp-Source: AGHT+IFT5H6LGEn9TYl5FXzT8azaIbqlJ5CYrxwKlzGqtweiWc8Fgyddx64eROyu20NgTAln74RzV3Y6fmi3bFm76Bk=
-X-Received: by 2002:a05:6871:a4c4:b0:29d:c832:8422 with SMTP id
- 586e51a60fabf-2a7fb123672mr27509496fac.18.1735926059911; Fri, 03 Jan 2025
- 09:40:59 -0800 (PST)
+        bh=2TJJ18KTh0ifU+lPbN1+aU29vENTzq2+LdHig1jQDZA=;
+        b=u7xsUGQjXuVk1oJtZiVosioSeWjtaZAbyxFrZ4qnTTpAOACFJlF9CQSmeLWV40xHa9
+         ObbjKLIkhzKLRT0R156LSnZbX95a1+DCcpZpC9fMRwz+01w+ZFA5MaPHEyREj74MxwA1
+         Rbn3QdSYjXT/qlkLRl85+pEv3HS4iaAkDAcBNDd/vlR5dH358SPqeqO7Dc2CFkQwxXUI
+         sQH4f8eAbflXbEHFO6jBpiLBUVKb2z6XMx9dnqFQNkKVQ2M7P+xKbuvrXQbKj8Y0UDl1
+         N/FSG6yizZP9zk3KY9Iq5j5lV+Ik+oGbpjdYYVCjLbAO+3zSFiVCx0nRt8mhVWyUP++H
+         e+Dw==
+X-Gm-Message-State: AOJu0YydcX32vcxFS5/lhIHBBKJzLzPqsZnC0L2rl5SuWrZ8MzHqpm5F
+	kLGXXgCAGOm60uM0uasBcHFyhnwHKYHP7tCrKvSIlo4sPGGsjPFaXohS9bcqLMNKsKa9MZGrb6j
+	sgAyD9fKsB/14wiNeJF5+VLsqwvdYjpP7SRqWvg==
+X-Gm-Gg: ASbGncuoElCFQFR59gEad8fO4HGl4GsSGc2XtdrPWtpQmoXjQOpixZzBRO3jN7Wa9/u
+	vufpHeRJEXZlzrFo96ctRT0Jxw2uJ24dLfswkVyt9dyDD1ALkB7bNRtvkxQZQzvZOBeSE0lk=
+X-Google-Smtp-Source: AGHT+IFzQ/XVPfIOzkIUSTg7tt7oiRx+qUsT5adYgtD7Xcd/v9iyv4nNQsfRWoLuBXh6+6DScalBU6gzVWznDYiM2nw=
+X-Received: by 2002:a05:6402:540b:b0:5d3:e843:fcfd with SMTP id
+ 4fb4d7f45d1cf-5d81de35cadmr16660639a12.11.1735926391946; Fri, 03 Jan 2025
+ 09:46:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241220100936.2193541-1-matsuda-daisuke@fujitsu.com>
- <CAHjRaAeXCC+AAV+Ne0cJMpZJYxbD8ox28kp966wkdVJLJdSC_g@mail.gmail.com>
- <OS3PR01MB98654FDD5E833D1C409B9C2CE5022@OS3PR01MB9865.jpnprd01.prod.outlook.com>
- <OS3PR01MB9865F967A8BE67AE332FC926E5032@OS3PR01MB9865.jpnprd01.prod.outlook.com>
- <20250103150546.GD26854@ziepe.ca>
-In-Reply-To: <20250103150546.GD26854@ziepe.ca>
-From: Joe Klein <joe.klein812@gmail.com>
-Date: Fri, 3 Jan 2025 18:40:48 +0100
-Message-ID: <CAHjRaAfuTDGP9TKqBWVDE32t0JzE3jpL8WPBpO_iMhrgMS6MFQ@mail.gmail.com>
-Subject: Re: [PATCH for-next v9 0/5] On-Demand Paging on SoftRoCE
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>, 
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "leon@kernel.org" <leon@kernel.org>, 
-	"zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>, "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+References: <20250103030839.2636-1-lizhijian@fujitsu.com>
+In-Reply-To: <20250103030839.2636-1-lizhijian@fujitsu.com>
+From: Jinpu Wang <jinpu.wang@ionos.com>
+Date: Fri, 3 Jan 2025 18:46:20 +0100
+Message-ID: <CAMGffEnWkf7TzBS6=HtqO98b0oh4uRKYDHMghnt=aeJdY+36Xw@mail.gmail.com>
+Subject: Re: [PATCH v2] RDMA/rtrs: Add missing deinit() call
+To: Li Zhijian <lizhijian@fujitsu.com>
+Cc: linux-rdma@vger.kernel.org, haris.iqbal@ionos.com, 
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 3, 2025 at 4:05=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrote=
-:
->
-> On Tue, Dec 24, 2024 at 08:52:24AM +0000, Daisuke Matsuda (Fujitsu) wrote=
-:
-> > On Mon, Dec 23, 2024 10:55 AM Daisuke Matsuda (Fujitsu) <matsuda-daisuk=
-e@fujitsu.com> wrote:
-> > > On Mon, Dec 23, 2024 2:25 AM Joe Klein <joe.klein812@gmail.com> wrote=
-:
-> > > > We have tested this patcheset and had a lot of problems, even witho=
-ut using the ODP option in softroce. I don't know if
-> > > others have done similar tests. If we have to merge this patchset int=
-o upstream, is it > possible to add a kernel option to
-> > > enable/disable this patchset?
-> > >
-> > > Hi Joe,
-> > >
-> > > Can you clarify the test and the problems you observed?
-> > > I wonder if you tried the test with the latest tree WITHOUT my patche=
-s.
-> > >
-> > > As far as I know, there is something wrong with the upstream right no=
-w.
-> > > It does not complete the rdma-core testcases, and 'segmentation fault=
-' is observed
-> > > in the middle of the full test run, which did not happen before Octob=
-er 2024.
-> >
-> > It appears that the root cause of this issue lies within the userspace =
-components.
-> > My report yesterday was based on experiments conducted on Ubuntu 24.04.=
-1 LTS (x86_64).
-> > It seems to me that rxe is somehow broken regardless of kernel version
-> > as long as userspace components are provided by Ubuntu 24.04.1 LTS.
-> > I built and tried linux-6.11, linux-6.10, and linux-6.8, and they all f=
-ailed as I reported.
-> >
-> > I switched to Ubuntu 22.04.5 LTS (aarch64) to test with the older libra=
-ries.
-> > All tests available passed using the rdma for-next tree without any pro=
-blem.
-> > Then, I applied my ODP patches onto it, and everything is still fine.
-> > ####################
-> > ubuntu@rdma-aarch64:~/rdma-core$ git branch -v
-> > * master fb965e2d0 Merge pull request #1531 from selvintxavier/pbuf_opt=
-imization
-> > ubuntu@rdma-aarch64:~/rdma-core$ ./build/bin/run_tests.py
-> > ..........ss..........ssssssssss..............sssssssssssssssssssssssss=
-s.sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss=
-ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss.....=
-...ssssss..ss....s.sssssss....ss....ss..............s......................=
-ss.............sss...ssss
-> > ----------------------------------------------------------------------
-> > Ran 321 tests in 3.599s
-> >
-> > OK (skipped=3D211)
-> > ubuntu@rdma-aarch64:~/rdma-core$ ./build/bin/run_tests.py -k odp
-> > sssssssss..ss....s.s
-> > ----------------------------------------------------------------------
-> > Ran 20 tests in 0.269s
-> >
-> > OK (skipped=3D13)
-> > ####################
-> >
-> > Possibly, there was a regression in libibverbs between v39.0-1 and v50.=
-0-2build2.
-> > We need to take a closer look to resolve the malfunction of rxe on Ubun=
-tu 24.04.
->
-> That's distressing.
->
-> > In conclusion, I believe there is nothing in my ODP patches that could =
-cause
-> > the rxe driver to fail. I would appreciate any feedback on potential im=
-provements.
->
-> What am I supposed to do with this though?
->
-> Joe, can you please answer Daisuke's questions on what problems you
-> observed and if you observe them without the ODP patches?
+Hi Zhijian,
 
-Will make tests and let you know the result very soon.
-
+On Fri, Jan 3, 2025 at 4:08=E2=80=AFAM Li Zhijian <lizhijian@fujitsu.com> w=
+rote:
 >
-> Jason
+> A warning is triggered when repeatedly connecting and disconnecting the
+> rnbd:
+>  list_add corruption. prev->next should be next (ffff88800b13e480), but w=
+as ffff88801ecd1338. (prev=3Dffff88801ecd1340).
+>  WARNING: CPU: 1 PID: 36562 at lib/list_debug.c:32 __list_add_valid_or_re=
+port+0x7f/0xa0
+>  Workqueue: ib_cm cm_work_handler [ib_cm]
+>  RIP: 0010:__list_add_valid_or_report+0x7f/0xa0
+>   ? __list_add_valid_or_report+0x7f/0xa0
+>   ib_register_event_handler+0x65/0x93 [ib_core]
+>   rtrs_srv_ib_dev_init+0x29/0x30 [rtrs_server]
+>   rtrs_ib_dev_find_or_add+0x124/0x1d0 [rtrs_core]
+>   __alloc_path+0x46c/0x680 [rtrs_server]
+>   ? rtrs_rdma_connect+0xa6/0x2d0 [rtrs_server]
+>   ? rcu_is_watching+0xd/0x40
+>   ? __mutex_lock+0x312/0xcf0
+>   ? get_or_create_srv+0xad/0x310 [rtrs_server]
+>   ? rtrs_rdma_connect+0xa6/0x2d0 [rtrs_server]
+>   rtrs_rdma_connect+0x23c/0x2d0 [rtrs_server]
+>   ? __lock_release+0x1b1/0x2d0
+>   cma_cm_event_handler+0x4a/0x1a0 [rdma_cm]
+>   cma_ib_req_handler+0x3a0/0x7e0 [rdma_cm]
+>   cm_process_work+0x28/0x1a0 [ib_cm]
+>   ? _raw_spin_unlock_irq+0x2f/0x50
+>   cm_req_handler+0x618/0xa60 [ib_cm]
+>   cm_work_handler+0x71/0x520 [ib_cm]
+>
+> Commit 667db86bcbe8 ("RDMA/rtrs: Register ib event handler") introduced a
+> new element .deinit but never used it at all. Fix it by invoking the
+> `deinit()` to appropriately unregister the IB event handler.
+>
+> Fixes: 667db86bcbe8 ("RDMA/rtrs: Register ib event handler")
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+> V2: update the subject 'RDMA/ulp' -> 'RDMA/rtrs'
+>     update commit log
+> ---
+>  drivers/infiniband/ulp/rtrs/rtrs.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/=
+rtrs/rtrs.c
+> index 4e17d546d4cc..3b3efecd0817 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+> @@ -580,6 +580,9 @@ static void dev_free(struct kref *ref)
+>         dev =3D container_of(ref, typeof(*dev), ref);
+>         pool =3D dev->pool;
+>
+> +       if (pool->ops && pool->ops->deinit)
+> +               pool->ops->deinit(dev);
+> +
+>         mutex_lock(&pool->mutex);
+>         list_del(&dev->entry);
+>         mutex_unlock(&pool->mutex);
+
+Thx for the fix, I would suggest to move the change after list_del
+block, keep the opposite order from rtrs_ib_dev_find_or_add which do
+list_add as the last step, and then  if (pool->ops && pool->ops->init
+&& pool->ops->init(dev)).
+
+Regards!
+
+> --
+> 2.47.0
+>
 
