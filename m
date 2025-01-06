@@ -1,101 +1,140 @@
-Return-Path: <linux-rdma+bounces-6839-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6840-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB224A02692
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 14:29:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ED3A2A02695
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 14:32:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A1943A4620
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 13:29:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CC873A2426
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 13:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C345A1D9595;
-	Mon,  6 Jan 2025 13:29:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1161DC04C;
+	Mon,  6 Jan 2025 13:32:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SCBi7gGk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jvcL/hyH"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E6292BAEC;
-	Mon,  6 Jan 2025 13:29:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7674C1D86F1
+	for <linux-rdma@vger.kernel.org>; Mon,  6 Jan 2025 13:32:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736170169; cv=none; b=F+Eoyikf+P/pwPZwc+hxd808qoujBtNErpTO0VptXoLTbJ+6/L2eJ8RT4pAIDaElSxhVs9W0ARmxJ6R9UqQDZag5T90DX0mpK6zPGo7A4emaRb+XB3U+AQJ1UOsaEHpxohFcI8eL2axlZ98zp7ll6BOqf+Ypou+c3Id4LjkSqzM=
+	t=1736170324; cv=none; b=hju5bTVA03+IJjZ7SAHM5tXrTc/Q/kDb3pIFCbC947u0dcwCeoJTWgXxvEJSqLJmF95gkH2ulhSpU4n7zZpIZn4vCj0WHyF0QgOO4Cu5UVDFVyhaRutXEbhCiD/sg5TWZHJ/sJvdVSgt4Hesr+YwhmX9IGirAKwKrGdMVGqyB4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736170169; c=relaxed/simple;
-	bh=3t8M9CcPBLepKQDw/r5V9bbiF56s0CcQJqw8lB4ac8I=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=A1fH0OiJZtUf2pBRY8ChsecaR1UiRhCBKsx277BIixTdoCqilP18jWIB+xenjREh334dd3ndWyMaw5su0kmwwKXwS8LDyPMEAdutYSCl7CXetBpDKT/9WQWgDiGQ9t5wOlHG+F1d9K1s6uNwUxtDhnl4fWDFPr9eSLlilHgIBCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SCBi7gGk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B975C4CEDD;
-	Mon,  6 Jan 2025 13:29:27 +0000 (UTC)
+	s=arc-20240116; t=1736170324; c=relaxed/simple;
+	bh=HgPGqFPsW3irZTnVSRPzUireH4pw21/23XErXs4Iuys=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YMGrD2CiGDBnHfh/8cptO6LfY1e+D3VR7iGVvU8w1ToiVDUbZAdHmtg6VccZAqhinYFfcNicfe6UBVtRgLajVw4AgSgff+JEBjgKoJnBhCv6QcZ4LKKBeC2Tu+2K5V8bB/ZOIJ2s1+d0VD8f/1LFwI+dRug5QtHJEEZflAJzaEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jvcL/hyH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E157C4CED2;
+	Mon,  6 Jan 2025 13:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736170168;
-	bh=3t8M9CcPBLepKQDw/r5V9bbiF56s0CcQJqw8lB4ac8I=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=SCBi7gGk+EvaJbcCroiFnm1QfZ3lpXliaLEAbV2jO89j4NGwveOLUzZ9fFxyp3v2S
-	 /TmOAaY7wRbf3iYHWra9ofAV0pdD0TxRbex+7PaCgp4BLAuJPOASCQOIgAaMiMG5mX
-	 m7WlhAsjya9fQP+kLsZ8CdI20cpGFgocWJw18Q1ckkG00tMbf4xhXWaG0NJXyZ37xP
-	 pgPmFPE/U6o88qcvLylyftpLP4MePUejcqCxDKncDLUMphurvcAbGcWgG9vTZarOih
-	 sZeTzyumhM7IFPNDwT9ojmFOO4C8nBd6Bl1grKAaRrNFbueto3B75apdcaj8nGhOiI
-	 7B1aQpdrVLI9Q==
+	s=k20201202; t=1736170324;
+	bh=HgPGqFPsW3irZTnVSRPzUireH4pw21/23XErXs4Iuys=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jvcL/hyH/K+7oFrjJ80ygPaiMCg+WkR2W+r30yl3hKxs9uZhLxyU2eeHViSZHuQ2u
+	 f3Dxd5f8LWoj7JHj+7UUId4vfMvJwHk0sqIhzpculxh7s+/iLcIjb69aOSkv0C9U+G
+	 eht9vjrMme6QebO16SaWluHZPeSTvELlaGu1xPGx1FdhCB6wfqIHYwxT2Et/uSBuF4
+	 oxLUjV2J3OWx+F3Om7H91iHWCP7ozpqYLFYLEWfRPuYVLzGzXHUhm/2GfN506Q/bGT
+	 YwmJbomnG2MnQD3OBL/6m3HoxwrQLLNox+K13wljnHTWYSTNmxmDoxcmj1llcJmML6
+	 Us2F6Xic3ZDqQ==
+Date: Mon, 6 Jan 2025 15:31:59 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: linux-rdma@vger.kernel.org, Li Zhijian <lizhijian@fujitsu.com>
-Cc: haris.iqbal@ionos.com, Jack Wang <jinpu.wang@ionos.com>, 
- Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org
-In-Reply-To: <20250106004516.16611-1-lizhijian@fujitsu.com>
-References: <20250106004516.16611-1-lizhijian@fujitsu.com>
-Subject: Re: [PATCH v3] RDMA/rtrs: Add missing deinit() call
-Message-Id: <173617016505.510269.15505675662356312678.b4-ty@kernel.org>
-Date: Mon, 06 Jan 2025 08:29:25 -0500
+To: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	michael.chan@broadcom.com
+Subject: Re: [PATCH for-next v2 0/4] RDMA/bnxt_re: Support for FW async event
+ handling
+Message-ID: <20250106133159.GA468445@unreal>
+References: <20250106095349.2880446-1-kalesh-anakkur.purayil@broadcom.com>
+ <CAH-L+nN=OoLpfOFjEFJx_ehyBRj+zYY3woQZhOdS0gxAfJzpsw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAH-L+nN=OoLpfOFjEFJx_ehyBRj+zYY3woQZhOdS0gxAfJzpsw@mail.gmail.com>
 
-
-On Mon, 06 Jan 2025 08:45:16 +0800, Li Zhijian wrote:
-> A warning is triggered when repeatedly connecting and disconnecting the
-> rnbd:
->  list_add corruption. prev->next should be next (ffff88800b13e480), but was ffff88801ecd1338. (prev=ffff88801ecd1340).
->  WARNING: CPU: 1 PID: 36562 at lib/list_debug.c:32 __list_add_valid_or_report+0x7f/0xa0
->  Workqueue: ib_cm cm_work_handler [ib_cm]
->  RIP: 0010:__list_add_valid_or_report+0x7f/0xa0
->   ? __list_add_valid_or_report+0x7f/0xa0
->   ib_register_event_handler+0x65/0x93 [ib_core]
->   rtrs_srv_ib_dev_init+0x29/0x30 [rtrs_server]
->   rtrs_ib_dev_find_or_add+0x124/0x1d0 [rtrs_core]
->   __alloc_path+0x46c/0x680 [rtrs_server]
->   ? rtrs_rdma_connect+0xa6/0x2d0 [rtrs_server]
->   ? rcu_is_watching+0xd/0x40
->   ? __mutex_lock+0x312/0xcf0
->   ? get_or_create_srv+0xad/0x310 [rtrs_server]
->   ? rtrs_rdma_connect+0xa6/0x2d0 [rtrs_server]
->   rtrs_rdma_connect+0x23c/0x2d0 [rtrs_server]
->   ? __lock_release+0x1b1/0x2d0
->   cma_cm_event_handler+0x4a/0x1a0 [rdma_cm]
->   cma_ib_req_handler+0x3a0/0x7e0 [rdma_cm]
->   cm_process_work+0x28/0x1a0 [ib_cm]
->   ? _raw_spin_unlock_irq+0x2f/0x50
->   cm_req_handler+0x618/0xa60 [ib_cm]
->   cm_work_handler+0x71/0x520 [ib_cm]
+On Mon, Jan 06, 2025 at 03:43:47PM +0530, Kalesh Anakkur Purayil wrote:
+> Hi Leon,
 > 
-> [...]
+> I missed to copy netdev maintainers and ML. One of the patches in the
+> series is for Broadcom bnxt driver.
+> 
+> I will resend the series.
 
-Applied, thanks!
+Great, thanks
 
-[1/1] RDMA/rtrs: Add missing deinit() call
-      https://git.kernel.org/rdma/rdma/c/81468c4058a62e
+> 
+> On Mon, Jan 6, 2025 at 3:31 PM Kalesh AP
+> <kalesh-anakkur.purayil@broadcom.com> wrote:
+> >
+> > This patch series adds support for FW async event handling
+> > in the bnxt_re driver.
+> >
+> > V1->V2:
+> > 1. Rebased on top of the latest "for-next" tree.
+> > 2. Split Patch#1 into 2 - one for Ethernet driver changes and
+> >    another one for RDMA driver changes.
+> > 3. Addressed Leon's comments on Patch#1 and Patch #3.
+> > V1: https://lore.kernel.org/linux-rdma/1725363051-19268-1-git-send-email-selvin.xavier@broadcom.com/T/#t
+> >
+> > Patch #1:
+> > 1. Removed BNXT_EN_FLAG_ULP_STOPPED state check from bnxt_ulp_async_events().
+> >    The ulp_ops are protected by RCU. This means that during bnxt_unregister_dev(),
+> >    Ethernet driver set the ulp_ops pointer to NULL and do RCU sync before return
+> >    to the RDMA driver.
+> >    So ulp_ops and the pointers in ulp_ops are always valid or NULL when the
+> >    Ethernet driver references ulp_ops. ULP_STOPPED is a state and should be
+> >    unrelated to async events. It should not affect whether async events should
+> >    or should not be passed to the RDMA driver.
+> > 2. Changed Author of Ethernet driver changes to Michael Chan.
+> > 3. Removed unnecessary export of function bnxt_ulp_async_events.
+> >
+> > Patch #3:
+> > 1. Removed unnecessary flush_workqueue() before destroy_workqueue()
+> > 2. Removed unnecessary NULL assignment after free.
+> > 3. Changed to use "ibdev_xxx" and reduce level of couple of logs to debug.
+> >
+> > Please review and apply.
+> >
+> > Regards,
+> > Kalesh
+> >
+> > Kalesh AP (3):
+> >   RDMA/bnxt_re: Add Async event handling support
+> >   RDMA/bnxt_re: Query firmware defaults of CC params during probe
+> >   RDMA/bnxt_re: Add support to handle DCB_CONFIG_CHANGE event
+> >
+> > Michael Chan (1):
+> >   bnxt_en: Add ULP call to notify async events
+> >
+> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h       |   3 +
+> >  drivers/infiniband/hw/bnxt_re/main.c          | 156 ++++++++++++++++++
+> >  drivers/infiniband/hw/bnxt_re/qplib_fp.h      |   2 +
+> >  drivers/infiniband/hw/bnxt_re/qplib_sp.c      | 113 +++++++++++++
+> >  drivers/infiniband/hw/bnxt_re/qplib_sp.h      |   3 +
+> >  drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   1 +
+> >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |  28 ++++
+> >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |   1 +
+> >  8 files changed, 307 insertions(+)
+> >
+> > --
+> > 2.43.5
+> >
+> 
+> 
+> -- 
+> Regards,
+> Kalesh AP
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
 
 
