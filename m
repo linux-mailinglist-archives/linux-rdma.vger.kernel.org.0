@@ -1,144 +1,201 @@
-Return-Path: <linux-rdma+bounces-6844-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6845-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2E17A02E0D
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 17:43:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74FBAA02FBC
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 19:27:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9656A18847E5
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 16:43:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CB671621F9
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 18:27:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3AA1DFD86;
-	Mon,  6 Jan 2025 16:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04D8A1DACBB;
+	Mon,  6 Jan 2025 18:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HOeYQxOB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e4yLdIoL"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11D301DF977;
-	Mon,  6 Jan 2025 16:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7ABE3597E
+	for <linux-rdma@vger.kernel.org>; Mon,  6 Jan 2025 18:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736181729; cv=none; b=mPjVYu4mTwfv5/V1Ktocs0QCDNgH2Hc++IBUvQx+FZdUuGA9SsyQVj3w3ni+tjnxEros05uMc9P1DS/cY/7Bud6dvxnpjO14ahGZzqN0SMWInGYmXV4G1q7iCCtuG+ssD58/ewI0dH2p7Rdx7hQr2rtGRY6BGqFim4advWmjzNk=
+	t=1736188038; cv=none; b=dVUFDL0QVy7oLlpjgY4UHVvwordmwxVuHjX3gm1Tzudivw0X9Hn1R7it5JzRrt0E7WZGdkUIC8iQj6Dd1RVCxfAMS5y3eXbTbyck+n+t0xzLHql50uizVH7CVAYvfAmFiBuIx3sU1DrdwK6zeE7QDT4Rb/jDO5wNrSk6w+FJ65Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736181729; c=relaxed/simple;
-	bh=Y8fYE1YFF8k0KskaUUCPy3tiBp5tshWng+TrJSW92qk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HUChTz7G8uDNJmwWX4VtZ7jYono4e0YOecpkfIWzzwnJmfCvBcv+G90XzGm8tLNw/WTA+Ry/X3cTAgAbzQXUTQC2yC0K56gwttelrruZKiUSrFLtnaDRVlVK/HkAn+gsmnVZG8nvYRvxM4HZAnkUmGyMVh3LsF415v8PyeIiItw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HOeYQxOB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70D6CC4CED6;
-	Mon,  6 Jan 2025 16:42:07 +0000 (UTC)
+	s=arc-20240116; t=1736188038; c=relaxed/simple;
+	bh=/SSMk5qG24R97Mv38tI955ebt+AEK6Fk2f69Ws+JZL4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h1Ke7/1uHH98IfbX8js73E01qPD73fSO47Xyi9JZh0FzL6E/S0l+z1uQ42wDIKU+on0mlzZSuVA+dRF+KCCTQei54+CHuqxL19Cj3AUOnm36/d2FsTKrWLR3DCOtzWxOic6r2J8PE0DEGZh46dyrcXGwCtJgn9w7gkq4XwZyKBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e4yLdIoL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B783BC4CED2;
+	Mon,  6 Jan 2025 18:27:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736181728;
-	bh=Y8fYE1YFF8k0KskaUUCPy3tiBp5tshWng+TrJSW92qk=;
+	s=k20201202; t=1736188038;
+	bh=/SSMk5qG24R97Mv38tI955ebt+AEK6Fk2f69Ws+JZL4=;
 	h=From:To:Cc:Subject:Date:From;
-	b=HOeYQxOBsTjPnrmM8veIXCcYUMln2riVu23+RXIevPOjH5ADwriuENfk027Uvk4OD
-	 oWF91RbuclEbiEZZ+WRaGgjq9YxwaSX76Q67g4GZRSa0Qve60vvQkmBeubep+uSHp3
-	 GCqlUKtzLyVGRjkb8TSsHMxTjSVgZTFW7dUqghIcTpSSI9axAEjfXOoHkdVPRsfR0K
-	 HD4eOaR/C+ESf98npFfenRP+wbINrjiQKujiY4bSlwYrgXUEPOY9yKnXNVAk+Kjhfd
-	 PXvypz5N4LXIXYkBjpmETaOEnmPym8okPZs/+5OprztZGPYG5HjQ7Bhgl0JJ16JSBy
-	 DHxvMga73DMfQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Hongguang Gao <hongguang.gao@broadcom.com>,
-	Saravanan Vajravel <saravanan.vajravel@broadcom.com>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Selvin Xavier <selvin.xavier@broadcom.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
+	b=e4yLdIoLfHq9jBMiwCbaHQd1Lv1H9Hs3TSDxDr2OTsc7CBWR8tEVdbYJltGCoxoe2
+	 2yCDozntPEgdraZtyWLEXoTHR0QFTxFZWflGxWbRhHed3UEnRRNhn1aGzXTiWF/tOs
+	 IHXYJkWv4ZQwxb4D96k9+6wyqHdTip7idIHlnk0/FydCmI7od4zAYxhBLxCWn9irrx
+	 z7ofmMPJrf8AOUgAODt3pJKrlIjaLILPvJz+CxkcHR3MQimsQo3IxqtcOIg1szOPSV
+	 jrJAi3yXwWMHCNpq3NIIHbG3MPuxsJdfZj1xBT1czglMMmQQ4etiGno5HD+KZNPUqR
+	 1s6pE1leR8dew==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Michael Guralnik <michaelgur@nvidia.com>,
+	Artemy Kovalyov <artemyko@mellanox.com>,
+	Artemy Kovalyov <artemyko@nvidia.com>,
+	Doug Ledford <dledford@redhat.com>,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 1/2] RDMA/bnxt_re: Fix to export port num to ib_query_qp
-Date: Mon,  6 Jan 2025 11:42:04 -0500
-Message-Id: <20250106164206.1122310-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
+Subject: [PATCH rdma-next] RDMA/mlx5: Fix indirect mkey ODP page count
+Date: Mon,  6 Jan 2025 20:27:10 +0200
+Message-ID: <86c483d9e75ce8fe14e9ff85b62df72b779f8ab1.1736187990.git.leon@kernel.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.69
 Content-Transfer-Encoding: 8bit
 
-From: Hongguang Gao <hongguang.gao@broadcom.com>
+From: Michael Guralnik <michaelgur@nvidia.com>
 
-[ Upstream commit 34db8ec931b84d1426423f263b1927539e73b397 ]
+Restrict the check for the number of pages handled during an ODP page
+fault to direct mkeys.
+Perform the check right after handling the page fault and don't
+propagate the number of handled pages to callers.
 
-Current driver implementation doesn't populate the port_num
-field in query_qp. Adding the code to convert internal firmware
-port id to ibv defined port number and export it.
+Indirect mkeys and their associated direct mkeys can have different
+start addresses. As a result, the calculation of the number of pages to
+handle for an indirect mkey may not match the actual page fault
+handling done on the direct mkey.
 
-Reviewed-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Signed-off-by: Hongguang Gao <hongguang.gao@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Link: https://patch.msgid.link/20241211083931.968831-5-kalesh-anakkur.purayil@broadcom.com
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+For example:
+A 4K sized page fault on a KSM mkey that has a start address that is not
+aligned to a page will result a calculation that assumes the number of
+pages required to handle are 2.
+While the underlying MTT might be aligned will require fetching only a
+single page.
+Thus, do the calculation and compare number of pages handled only per
+direct mkey.
+
+Fixes: db570d7deafb ("IB/mlx5: Add ODP support to MW")
+Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
+Reviewed-by: Artemy Kovalyov <artemyko@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 1 +
- drivers/infiniband/hw/bnxt_re/ib_verbs.h | 4 ++++
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 1 +
- drivers/infiniband/hw/bnxt_re/qplib_fp.h | 1 +
- 4 files changed, 7 insertions(+)
+ drivers/infiniband/hw/mlx5/odp.c | 32 +++++++++++++++-----------------
+ 1 file changed, 15 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index df5897260601..5f6b1d7278da 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -2214,6 +2214,7 @@ int bnxt_re_query_qp(struct ib_qp *ib_qp, struct ib_qp_attr *qp_attr,
- 	qp_attr->retry_cnt = qplib_qp->retry_cnt;
- 	qp_attr->rnr_retry = qplib_qp->rnr_retry;
- 	qp_attr->min_rnr_timer = qplib_qp->min_rnr_timer;
-+	qp_attr->port_num = __to_ib_port_num(qplib_qp->port_id);
- 	qp_attr->rq_psn = qplib_qp->rq.psn;
- 	qp_attr->max_rd_atomic = qplib_qp->max_rd_atomic;
- 	qp_attr->sq_psn = qplib_qp->sq.psn;
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-index 98baea98fc17..ef910e6e2ccb 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
-@@ -245,6 +245,10 @@ void bnxt_re_dealloc_ucontext(struct ib_ucontext *context);
- int bnxt_re_mmap(struct ib_ucontext *context, struct vm_area_struct *vma);
- void bnxt_re_mmap_free(struct rdma_user_mmap_entry *rdma_entry);
+diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+index e2468a602e3df..d33ecc37eafed 100644
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -961,8 +961,7 @@ static struct mlx5_ib_mkey *find_odp_mkey(struct mlx5_ib_dev *dev, u32 key)
+ /*
+  * Handle a single data segment in a page-fault WQE or RDMA region.
+  *
+- * Returns number of OS pages retrieved on success. The caller may continue to
+- * the next data segment.
++ * Returns zero on success. The caller may continue to the next data segment.
+  * Can return the following error codes:
+  * -EAGAIN to designate a temporary error. The caller will abort handling the
+  *  page fault and resolve it.
+@@ -975,7 +974,7 @@ static int pagefault_single_data_segment(struct mlx5_ib_dev *dev,
+ 					 u32 *bytes_committed,
+ 					 u32 *bytes_mapped)
+ {
+-	int npages = 0, ret, i, outlen, cur_outlen = 0, depth = 0;
++	int ret, i, outlen, cur_outlen = 0, depth = 0, pages_in_range;
+ 	struct pf_frame *head = NULL, *frame;
+ 	struct mlx5_ib_mkey *mmkey;
+ 	struct mlx5_ib_mr *mr;
+@@ -1010,13 +1009,20 @@ static int pagefault_single_data_segment(struct mlx5_ib_dev *dev,
+ 	case MLX5_MKEY_MR:
+ 		mr = container_of(mmkey, struct mlx5_ib_mr, mmkey);
  
-+static inline u32 __to_ib_port_num(u16 port_id)
-+{
-+	return (u32)port_id + 1;
-+}
++		pages_in_range = (ALIGN(io_virt + bcnt, PAGE_SIZE) -
++				  (io_virt & PAGE_MASK)) >>
++				 PAGE_SHIFT;
+ 		ret = pagefault_mr(mr, io_virt, bcnt, bytes_mapped, 0, false);
+ 		if (ret < 0)
+ 			goto end;
  
- unsigned long bnxt_re_lock_cqs(struct bnxt_re_qp *qp);
- void bnxt_re_unlock_cqs(struct bnxt_re_qp *qp, unsigned long flags);
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index b624c255eee6..00df8360dcd8 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -1451,6 +1451,7 @@ int bnxt_qplib_query_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	qp->dest_qpn = le32_to_cpu(sb->dest_qp_id);
- 	memcpy(qp->smac, sb->src_mac, 6);
- 	qp->vlan_id = le16_to_cpu(sb->vlan_pcp_vlan_dei_vlan_id);
-+	qp->port_id = le16_to_cpu(sb->port_id);
- bail:
- 	dma_free_coherent(&rcfw->pdev->dev, sbuf.size,
- 			  sbuf.sb, sbuf.dma_addr);
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-index 5d4c49089a20..0e0df5083ed3 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-@@ -297,6 +297,7 @@ struct bnxt_qplib_qp {
- 	u32				dest_qpn;
- 	u8				smac[6];
- 	u16				vlan_id;
-+	u16				port_id;
- 	u8				nw_type;
- 	struct bnxt_qplib_ah		ah;
+ 		mlx5_update_odp_stats_with_handled(mr, faults, ret);
  
+-		npages += ret;
++		if (ret < pages_in_range) {
++			ret = -EFAULT;
++			goto end;
++		}
++
+ 		ret = 0;
+ 		break;
+ 
+@@ -1107,7 +1113,7 @@ static int pagefault_single_data_segment(struct mlx5_ib_dev *dev,
+ 	kfree(out);
+ 
+ 	*bytes_committed = 0;
+-	return ret ? ret : npages;
++	return ret;
+ }
+ 
+ /*
+@@ -1126,8 +1132,7 @@ static int pagefault_single_data_segment(struct mlx5_ib_dev *dev,
+  *                   the committed bytes).
+  * @receive_queue: receive WQE end of sg list
+  *
+- * Returns the number of pages loaded if positive, zero for an empty WQE, or a
+- * negative error code.
++ * Returns zero for success or a negative error code.
+  */
+ static int pagefault_data_segments(struct mlx5_ib_dev *dev,
+ 				   struct mlx5_pagefault *pfault,
+@@ -1135,7 +1140,7 @@ static int pagefault_data_segments(struct mlx5_ib_dev *dev,
+ 				   void *wqe_end, u32 *bytes_mapped,
+ 				   u32 *total_wqe_bytes, bool receive_queue)
+ {
+-	int ret = 0, npages = 0;
++	int ret = 0;
+ 	u64 io_virt;
+ 	__be32 key;
+ 	u32 byte_count;
+@@ -1192,10 +1197,9 @@ static int pagefault_data_segments(struct mlx5_ib_dev *dev,
+ 						    bytes_mapped);
+ 		if (ret < 0)
+ 			break;
+-		npages += ret;
+ 	}
+ 
+-	return ret < 0 ? ret : npages;
++	return ret;
+ }
+ 
+ /*
+@@ -1431,12 +1435,6 @@ static void mlx5_ib_mr_wqe_pfault_handler(struct mlx5_ib_dev *dev,
+ 	free_page((unsigned long)wqe_start);
+ }
+ 
+-static int pages_in_range(u64 address, u32 length)
+-{
+-	return (ALIGN(address + length, PAGE_SIZE) -
+-		(address & PAGE_MASK)) >> PAGE_SHIFT;
+-}
+-
+ static void mlx5_ib_mr_rdma_pfault_handler(struct mlx5_ib_dev *dev,
+ 					   struct mlx5_pagefault *pfault)
+ {
+@@ -1475,7 +1473,7 @@ static void mlx5_ib_mr_rdma_pfault_handler(struct mlx5_ib_dev *dev,
+ 	if (ret == -EAGAIN) {
+ 		/* We're racing with an invalidation, don't prefetch */
+ 		prefetch_activated = 0;
+-	} else if (ret < 0 || pages_in_range(address, length) > ret) {
++	} else if (ret < 0) {
+ 		mlx5_ib_page_fault_resume(dev, pfault, 1);
+ 		if (ret != -ENOENT)
+ 			mlx5_ib_dbg(dev, "PAGE FAULT error %d. QP 0x%llx, type: 0x%x\n",
 -- 
-2.39.5
+2.47.1
 
 
