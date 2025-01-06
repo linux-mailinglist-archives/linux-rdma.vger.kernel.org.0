@@ -1,80 +1,83 @@
-Return-Path: <linux-rdma+bounces-6828-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6829-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04D09A0218C
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 10:14:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7F54A0225D
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 11:01:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C72A3A2BF4
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 09:14:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 752871883577
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 10:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC1111D7E4B;
-	Mon,  6 Jan 2025 09:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF4A1D63CF;
+	Mon,  6 Jan 2025 10:01:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="UGiumO1c"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6608C73451;
-	Mon,  6 Jan 2025 09:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4CB41DA628
+	for <linux-rdma@vger.kernel.org>; Mon,  6 Jan 2025 10:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736154884; cv=none; b=JXzkwzN8pMe1PJxPl6QflOjakrb4ainEN7es5rXZKwDvLTQ53rCoobOcgJSBA0sfp4snOBUI9SOHQuAUHHeK8u3ODB0hF8dvs6ZbtWiG1CyqN2Sir9BdQggNjMl9AE1rb1zVmi0ufcifLvZ89dU5xRrOdNeigydSN3bWtW7g8PA=
+	t=1736157676; cv=none; b=dwNURuLNRl/3fXJJkIcX6lmhtpvTtx50Rdyhch989NOSOtEegXM5mFAuxYcFsp43J4Dmcl7OunErZZn3Aooh3TZUm/0kgAZipgtQDrcgYCeF2Zgb6htMat+vfKI8okQNpCDhteYPCf0LIL6ePbW801CKarNtiyCe984opvo0xDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736154884; c=relaxed/simple;
-	bh=2h85PlXOibt5ZYISHaWad7JB7lZUNHsMN+lZ2aFAPXo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pVVEXDrRpkt9bdyWkaVKXx7CpRRSx3DZvpGHz6Ne3qiLxpSHVwAAz+WytmKJpGxllU/GnCSwnzRuGjuUsPEqKtArT3DmGGtfhmeJoI9EOkvDthNvbtZJuMh1YGbV+e6O8BDDsCqcvyt+3ijV0PKsSCJA9jJz/2N/F/U4pfpJZm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: a504dd70cc0e11efa216b1d71e6e1362-20250106
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
-	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
-	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_BAD
-	CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU
-	AMN_T1, AMN_GOOD, AMN_C_TI, AMN_C_BU, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.45,REQID:c611a422-6b4d-411c-b4eb-caccfa52d457,IP:10,
-	URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACT
-	ION:release,TS:-24
-X-CID-INFO: VERSION:1.1.45,REQID:c611a422-6b4d-411c-b4eb-caccfa52d457,IP:10,UR
-	L:0,TC:0,Content:-25,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-24
-X-CID-META: VersionHash:6493067,CLOUDID:8742086dd31c12bd01e96ec0e303e1df,BulkI
-	D:250106171434K6ZSZBQC,BulkQuantity:0,Recheck:0,SF:17|19|24|38|43|66|74|78
-	|102,TC:nil,Content:0|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:ni
-	l,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:
-	0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
-X-UUID: a504dd70cc0e11efa216b1d71e6e1362-20250106
-X-User: zhaochenguang@kylinos.cn
-Received: from localhost.localdomain [(223.70.160.239)] by mailgw.kylinos.cn
-	(envelope-from <zhaochenguang@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1492161839; Mon, 06 Jan 2025 17:14:34 +0800
-From: Chenguang Zhao <zhaochenguang@kylinos.cn>
-To: Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Chenguang Zhao <zhaochenguang@kylinos.cn>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH] net/mlx5: Fix variable not being completed when function returns
-Date: Mon,  6 Jan 2025 17:14:26 +0800
-Message-Id: <20250106091426.256243-1-zhaochenguang@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1736157676; c=relaxed/simple;
+	bh=/6F27y9kQKa9Q22CBQ8xNBg1XcD8YPMW3jnNjvbuFyk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jkAy5DZdQX3flqGakJarFOK7ZsB3B7ZA0LPSXYsRCoWjM3W7rKcILYiun4VDCjhZv1RjjCgW9J+0t7evteAlne+R0zLco3CYDAoLmzbgUOcjhTobTHmsbvuFH9HY0JIECG2K6/f4SBUZkHsAbeQTiQbzQPglgJzXruZAzkr7bVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=UGiumO1c; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2165cb60719so205304865ad.0
+        for <linux-rdma@vger.kernel.org>; Mon, 06 Jan 2025 02:01:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1736157673; x=1736762473; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n1l+xAlw2herRAu4qdkkcLWOtbIwdNqzOj5BQXF51Ik=;
+        b=UGiumO1cZv10ayrJDjTPRCjCLrMWtG2YrQbUW5KeFCl/FFq+8WBjFk7+zE4OLVvQrH
+         x58vRWTQB2d6cklrbjKSVS+vFZmaU24P30HbXDSq9a15dczy1Gn2hLqyXyhz453sVZJF
+         NVabunJNXtKJFR7dmXgxp98QPeszMGxRV3nyo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736157673; x=1736762473;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n1l+xAlw2herRAu4qdkkcLWOtbIwdNqzOj5BQXF51Ik=;
+        b=NksKFwfjxXfNFy9/BwSorsRDs6F+/5IuFnf0mX3FtZeyRU2iR5/plwIdxbmQYfo9ib
+         DobGu0gfCuvjIJiLpkToeHG9Ws+fmaim67gpZs0VCt0QIOlBM/IsWFkeGoSFWxPHzmhN
+         SDJCxnVIDC/eUqjGcm3DAKGcmgzSzwgCEuBlry1JYKPArUXompSEovqbx+1RIgZpGtOC
+         Zw/c5PvfOjOW1gprKh6Z3pmQyA6N89HhPDCkjEVhaHWN6Cil/0RNrB+1DSFSdEnMphk+
+         e84oQyj2kELAkwQpDVCx3+CQkSlafWQZvDRObh4I3tUn8y93aMnlBIoPw1Jpd2JXsVqO
+         UEcA==
+X-Gm-Message-State: AOJu0YzRbClp1eSAXhg1XEmAJPHS5IpYQO9hv0+5nx/Zx0U7m0news8S
+	XNP7OQ+1bvrLtBP1VzhF4KMRCoo3EqcqULWzg4zPW4hMlMWaYzfEe50saojZDQ==
+X-Gm-Gg: ASbGncuojVza1/5tdVvdujuM9KVHNL/MFv8aF/VSJiV03KsfFxUkpq0RJPzaHStx+xY
+	+/APgXYVvtHqCtaAsZFe5vQZpwLx1F5UvU7ayhVD1899gEnMDoVKantAOAcrbGhgdlHUwBiwpwf
+	AYE3sPanZUyhxkSuSknTpaPb+4LDmG5G1c6jKSNTK/rl8sW4nMUXfjlSqyYiJXIATIxiSLMQE4d
+	MZIuxkSMUiVxPZhz375M0GjK9YRdYVk3ZE/LccyZ62iUZ8DT6JpBdE5EoIdet7ZMa1HzfxlA6AG
+	5LtdJjdGKndcQJP6NeyRQHYbHn7jKRunfuU1wmOw77F5rkBTpnCtUG7QwaE=
+X-Google-Smtp-Source: AGHT+IH6Av7biyJePXyEWkfwMvpccxw7ZsWuLUW2oYP0UK0gmwka1D6K0W0pituN+gSQdwqBQItXkA==
+X-Received: by 2002:a17:903:234f:b0:216:4b6f:ddda with SMTP id d9443c01a7336-219e6f0e6c3mr837996575ad.35.1736157671589;
+        Mon, 06 Jan 2025 02:01:11 -0800 (PST)
+Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc9d4c89sm282325265ad.124.2025.01.06.02.01.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jan 2025 02:01:10 -0800 (PST)
+From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com,
+	michael.chan@broadcom.com,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Subject: [PATCH for-next v2 0/4] RDMA/bnxt_re: Support for FW async event handling
+Date: Mon,  6 Jan 2025 15:23:45 +0530
+Message-ID: <20250106095349.2880446-1-kalesh-anakkur.purayil@broadcom.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,57 +86,57 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-    The cmd_work_handler function returns from the child function
-    cmd_alloc_index because the allocate command entry fails,
-    Before returning, there is no complete ent->slotted.
+This patch series adds support for FW async event handling
+in the bnxt_re driver.
 
-    The patch fixes it.
+V1->V2:
+1. Rebased on top of the latest "for-next" tree.
+2. Split Patch#1 into 2 - one for Ethernet driver changes and
+   another one for RDMA driver changes.
+3. Addressed Leon's comments on Patch#1 and Patch #3.
+V1: https://lore.kernel.org/linux-rdma/1725363051-19268-1-git-send-email-selvin.xavier@broadcom.com/T/#t
 
-	Trace:
+Patch #1:
+1. Removed BNXT_EN_FLAG_ULP_STOPPED state check from bnxt_ulp_async_events().
+   The ulp_ops are protected by RCU. This means that during bnxt_unregister_dev(),
+   Ethernet driver set the ulp_ops pointer to NULL and do RCU sync before return
+   to the RDMA driver.
+   So ulp_ops and the pointers in ulp_ops are always valid or NULL when the
+   Ethernet driver references ulp_ops. ULP_STOPPED is a state and should be
+   unrelated to async events. It should not affect whether async events should
+   or should not be passed to the RDMA driver.
+2. Changed Author of Ethernet driver changes to Michael Chan.
+3. Removed unnecessary export of function bnxt_ulp_async_events.
 
-     mlx5_core 0000:01:00.0: cmd_work_handler:877:(pid 3880418): failed to
-	  allocate command entry
-     INFO: task kworker/13:2:4055883 blocked for more than 120 seconds.
-           Not tainted 4.19.90-25.44.v2101.ky10.aarch64 #1
-     "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
-	  this message.
-     kworker/13:2    D    0 4055883      2 0x00000228
-     Workqueue: events mlx5e_tx_dim_work [mlx5_core]
-     Call trace:
-      __switch_to+0xe8/0x150
-      __schedule+0x2a8/0x9b8
-      schedule+0x2c/0x88
-      schedule_timeout+0x204/0x478
-      wait_for_common+0x154/0x250
-      wait_for_completion+0x28/0x38
-      cmd_exec+0x7a0/0xa00 [mlx5_core]
-      mlx5_cmd_exec+0x54/0x80 [mlx5_core]
-      mlx5_core_modify_cq+0x6c/0x80 [mlx5_core]
-      mlx5_core_modify_cq_moderation+0xa0/0xb8 [mlx5_core]
-      mlx5e_tx_dim_work+0x54/0x68 [mlx5_core]
-      process_one_work+0x1b0/0x448
-      worker_thread+0x54/0x468
-      kthread+0x134/0x138
-      ret_from_fork+0x10/0x18
+Patch #3:
+1. Removed unnecessary flush_workqueue() before destroy_workqueue()
+2. Removed unnecessary NULL assignment after free.
+3. Changed to use "ibdev_xxx" and reduce level of couple of logs to debug. 
 
-Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
----
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 1 +
- 1 file changed, 1 insertion(+)
+Please review and apply.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-index 6bd8a18e3af3..e733b81e18a2 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -1013,6 +1013,7 @@ static void cmd_work_handler(struct work_struct *work)
- 				complete(&ent->done);
- 			}
- 			up(&cmd->vars.sem);
-+			complete(&ent->slotted);
- 			return;
- 		}
- 	} else {
+Regards,
+Kalesh
+
+Kalesh AP (3):
+  RDMA/bnxt_re: Add Async event handling support
+  RDMA/bnxt_re: Query firmware defaults of CC params during probe
+  RDMA/bnxt_re: Add support to handle DCB_CONFIG_CHANGE event
+
+Michael Chan (1):
+  bnxt_en: Add ULP call to notify async events
+
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h       |   3 +
+ drivers/infiniband/hw/bnxt_re/main.c          | 156 ++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h      |   2 +
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c      | 113 +++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h      |   3 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   1 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |  28 ++++
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |   1 +
+ 8 files changed, 307 insertions(+)
+
 -- 
-2.25.1
+2.43.5
 
 
