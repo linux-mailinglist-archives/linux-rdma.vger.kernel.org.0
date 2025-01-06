@@ -1,153 +1,139 @@
-Return-Path: <linux-rdma+bounces-6827-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6828-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CDD9A01EC5
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 06:18:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04D09A0218C
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 10:14:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAA113A3786
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 05:18:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C72A3A2BF4
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2025 09:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BAF5152E0C;
-	Mon,  6 Jan 2025 05:18:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="JGhJ1CTW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC1111D7E4B;
+	Mon,  6 Jan 2025 09:14:44 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD21D171D2
-	for <linux-rdma@vger.kernel.org>; Mon,  6 Jan 2025 05:18:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6608C73451;
+	Mon,  6 Jan 2025 09:14:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736140732; cv=none; b=ilcpGzmPrPmuzjQfU/ZWPOSiThWmlDX/1KdGTGQNOhr1mhSXltc6bjAoMjbvU02m2IHkHeASK8ZnBPvNH6z0tT+OPfrsm2SHim0+EYESKJO0KYpVq6zrS9KpGpVbjbU1APKhiedTDSsBthrYRFY6C1yyjAUmL9T0io0QCSkl1Zo=
+	t=1736154884; cv=none; b=JXzkwzN8pMe1PJxPl6QflOjakrb4ainEN7es5rXZKwDvLTQ53rCoobOcgJSBA0sfp4snOBUI9SOHQuAUHHeK8u3ODB0hF8dvs6ZbtWiG1CyqN2Sir9BdQggNjMl9AE1rb1zVmi0ufcifLvZ89dU5xRrOdNeigydSN3bWtW7g8PA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736140732; c=relaxed/simple;
-	bh=6990JYMA3xgqZWlSs/iW3KYDr7XEfmCQOOMJCgChEtc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CNJOGkqbHHi+J4COqnU9HoanlC9urc0EvZLGeQ8cP4kn5DoNjrBR0Z/ICG7enylhaZvbinC1eONmEQnKzbVcUNLljl3JSW+W6Cd2NAZk+isZLgsOftuD+Nzx/wcVhjoNdK4THcMxxRPn16qGpcvFef4lc75qOAd/ufWchzdtF1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=JGhJ1CTW; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5d3ea2a5a9fso2096307a12.2
-        for <linux-rdma@vger.kernel.org>; Sun, 05 Jan 2025 21:18:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1736140728; x=1736745528; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XyMVPT/x/3fxi6e2zK/8Nz4t2kSwYLLfmLbXR0s//lM=;
-        b=JGhJ1CTWqvrQpyIgLuvu7lLf4jp+uqIZ/qay8csv6FqfRU4ltK0ZxbnoKjvrGSwCmx
-         Mln7u/MKHQavfE/MxdGmVjZtUMNjjBoqX9gKzsDjiV1tV4gjhgJtI9E9cdl4vFwdllFZ
-         QnWByO8HAiS2wM5PiUjUbB3ccTlvjJjO34Xg1rxF7piTejH0l26fmONZiZvfKS9mZxeJ
-         jeVfNujAHVxDDQ7dIBYevbPIWMSvTwtNies31CAkw+vpJr45cBqWbPVoMRpDZLulDxIa
-         J+lnO+pv4Jr9kuU5enWRsejNzHAlgStC/q+heOnV22cUM1F2MHuHvEbHex3lcEerPy6U
-         ovbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736140728; x=1736745528;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XyMVPT/x/3fxi6e2zK/8Nz4t2kSwYLLfmLbXR0s//lM=;
-        b=cKI1G2TMss8xbQ/yWxKIwhc8j6McOfWT3bwUVTDUeG1Ny/dheiRKjxF+S3AUybiyrL
-         eicMi/84gYtoRW52r76EtKpk/TpgU1yOpkQhDN7qZSU9n23YvO5hU+/oJkfxl17LB2bn
-         F4Y+yZhXwPE+1j2GOssAxQCjyE4BvxA6PqVRuU47wiqZXTnRT508uBYI8nI0ZuA7XDKl
-         89w/oG7mkoCFcKdGtou5IXtPjfNELP9heFcate4WYQz/p02fndVNgElL/YQc7TEjv1Vh
-         LTn9rhK5W7oVYrSXyLuasXtPnA7jd+iuvEBCzAV7NSUwWEznbEaEhKMJ1U1ZQEoHexBO
-         zp3A==
-X-Gm-Message-State: AOJu0YwSe4Dt8Ekus4kGpIyObUTt7+S20I7uZm33sPy19XsfZWUDMr8D
-	nWahZi+/rGtKttPx+HZ8fKsRQW4mqxe2UiR9RvT3dPT7ZD7a4HCYWYSVA8gBLoeXQ/bSk7rzdoq
-	rxvt3KVvMNH4dg0HyHN1dg6NdQZL6d1zArDHa9A==
-X-Gm-Gg: ASbGncuXp3JMiIXLOD2GKk4B2i+GH0g7rOk/2UH2f5KvNqw5iyJWROT94+zturC94c5
-	/fUgKslmoutcBwy3I1XONbHZALz4w3o7O2Oi/GiYoEGG8vdo/7+2sMR86Dgd73R1I4bGBCv4=
-X-Google-Smtp-Source: AGHT+IHKQJE0xt4NSlAZTBOlon6bKZ3HewjiplFI0c5vviTGmRAB2lPkkAwnmdQoLT5WcTalfYOjNtTxYxDqKmsac0w=
-X-Received: by 2002:a05:6402:13c7:b0:5d3:ba42:e9f8 with SMTP id
- 4fb4d7f45d1cf-5d81ddf80bcmr15645769a12.7.1736140728157; Sun, 05 Jan 2025
- 21:18:48 -0800 (PST)
+	s=arc-20240116; t=1736154884; c=relaxed/simple;
+	bh=2h85PlXOibt5ZYISHaWad7JB7lZUNHsMN+lZ2aFAPXo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pVVEXDrRpkt9bdyWkaVKXx7CpRRSx3DZvpGHz6Ne3qiLxpSHVwAAz+WytmKJpGxllU/GnCSwnzRuGjuUsPEqKtArT3DmGGtfhmeJoI9EOkvDthNvbtZJuMh1YGbV+e6O8BDDsCqcvyt+3ijV0PKsSCJA9jJz/2N/F/U4pfpJZm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: a504dd70cc0e11efa216b1d71e6e1362-20250106
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
+	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_BAD
+	CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU
+	AMN_T1, AMN_GOOD, AMN_C_TI, AMN_C_BU, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:c611a422-6b4d-411c-b4eb-caccfa52d457,IP:10,
+	URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:-24
+X-CID-INFO: VERSION:1.1.45,REQID:c611a422-6b4d-411c-b4eb-caccfa52d457,IP:10,UR
+	L:0,TC:0,Content:-25,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-24
+X-CID-META: VersionHash:6493067,CLOUDID:8742086dd31c12bd01e96ec0e303e1df,BulkI
+	D:250106171434K6ZSZBQC,BulkQuantity:0,Recheck:0,SF:17|19|24|38|43|66|74|78
+	|102,TC:nil,Content:0|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:ni
+	l,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:
+	0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-UUID: a504dd70cc0e11efa216b1d71e6e1362-20250106
+X-User: zhaochenguang@kylinos.cn
+Received: from localhost.localdomain [(223.70.160.239)] by mailgw.kylinos.cn
+	(envelope-from <zhaochenguang@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1492161839; Mon, 06 Jan 2025 17:14:34 +0800
+From: Chenguang Zhao <zhaochenguang@kylinos.cn>
+To: Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Chenguang Zhao <zhaochenguang@kylinos.cn>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH] net/mlx5: Fix variable not being completed when function returns
+Date: Mon,  6 Jan 2025 17:14:26 +0800
+Message-Id: <20250106091426.256243-1-zhaochenguang@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250106004516.16611-1-lizhijian@fujitsu.com>
-In-Reply-To: <20250106004516.16611-1-lizhijian@fujitsu.com>
-From: Jinpu Wang <jinpu.wang@ionos.com>
-Date: Mon, 6 Jan 2025 06:18:39 +0100
-Message-ID: <CAMGffEmSMpERR_3arNHCqB1qnmzRURUyOiBWkSGmJ3rTH5v5ng@mail.gmail.com>
-Subject: Re: [PATCH v3] RDMA/rtrs: Add missing deinit() call
-To: Li Zhijian <lizhijian@fujitsu.com>
-Cc: linux-rdma@vger.kernel.org, haris.iqbal@ionos.com, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 6, 2025 at 1:45=E2=80=AFAM Li Zhijian <lizhijian@fujitsu.com> w=
-rote:
->
-> A warning is triggered when repeatedly connecting and disconnecting the
-> rnbd:
->  list_add corruption. prev->next should be next (ffff88800b13e480), but w=
-as ffff88801ecd1338. (prev=3Dffff88801ecd1340).
->  WARNING: CPU: 1 PID: 36562 at lib/list_debug.c:32 __list_add_valid_or_re=
-port+0x7f/0xa0
->  Workqueue: ib_cm cm_work_handler [ib_cm]
->  RIP: 0010:__list_add_valid_or_report+0x7f/0xa0
->   ? __list_add_valid_or_report+0x7f/0xa0
->   ib_register_event_handler+0x65/0x93 [ib_core]
->   rtrs_srv_ib_dev_init+0x29/0x30 [rtrs_server]
->   rtrs_ib_dev_find_or_add+0x124/0x1d0 [rtrs_core]
->   __alloc_path+0x46c/0x680 [rtrs_server]
->   ? rtrs_rdma_connect+0xa6/0x2d0 [rtrs_server]
->   ? rcu_is_watching+0xd/0x40
->   ? __mutex_lock+0x312/0xcf0
->   ? get_or_create_srv+0xad/0x310 [rtrs_server]
->   ? rtrs_rdma_connect+0xa6/0x2d0 [rtrs_server]
->   rtrs_rdma_connect+0x23c/0x2d0 [rtrs_server]
->   ? __lock_release+0x1b1/0x2d0
->   cma_cm_event_handler+0x4a/0x1a0 [rdma_cm]
->   cma_ib_req_handler+0x3a0/0x7e0 [rdma_cm]
->   cm_process_work+0x28/0x1a0 [ib_cm]
->   ? _raw_spin_unlock_irq+0x2f/0x50
->   cm_req_handler+0x618/0xa60 [ib_cm]
->   cm_work_handler+0x71/0x520 [ib_cm]
->
-> Commit 667db86bcbe8 ("RDMA/rtrs: Register ib event handler") introduced a
-> new element .deinit but never used it at all. Fix it by invoking the
-> `deinit()` to appropriately unregister the IB event handler.
->
-> Cc: Jinpu Wang <jinpu.wang@ionos.com>
-> Fixes: 667db86bcbe8 ("RDMA/rtrs: Register ib event handler")
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-Thx!
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
-> ---
-> V3: Move deinit behind list_del # Jinpu Wang <jinpu.wang@ionos.com>
->
-> V2: update the subject 'RDMA/ulp' -> 'RDMA/rtrs'
->     update commit log
-> ---
->  drivers/infiniband/ulp/rtrs/rtrs.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/=
-rtrs/rtrs.c
-> index 4e17d546d4cc..bf38ac6f87c4 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs.c
-> @@ -584,6 +584,9 @@ static void dev_free(struct kref *ref)
->         list_del(&dev->entry);
->         mutex_unlock(&pool->mutex);
->
-> +       if (pool->ops && pool->ops->deinit)
-> +               pool->ops->deinit(dev);
-> +
->         ib_dealloc_pd(dev->ib_pd);
->         kfree(dev);
->  }
-> --
-> 2.47.0
->
+    The cmd_work_handler function returns from the child function
+    cmd_alloc_index because the allocate command entry fails,
+    Before returning, there is no complete ent->slotted.
+
+    The patch fixes it.
+
+	Trace:
+
+     mlx5_core 0000:01:00.0: cmd_work_handler:877:(pid 3880418): failed to
+	  allocate command entry
+     INFO: task kworker/13:2:4055883 blocked for more than 120 seconds.
+           Not tainted 4.19.90-25.44.v2101.ky10.aarch64 #1
+     "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
+	  this message.
+     kworker/13:2    D    0 4055883      2 0x00000228
+     Workqueue: events mlx5e_tx_dim_work [mlx5_core]
+     Call trace:
+      __switch_to+0xe8/0x150
+      __schedule+0x2a8/0x9b8
+      schedule+0x2c/0x88
+      schedule_timeout+0x204/0x478
+      wait_for_common+0x154/0x250
+      wait_for_completion+0x28/0x38
+      cmd_exec+0x7a0/0xa00 [mlx5_core]
+      mlx5_cmd_exec+0x54/0x80 [mlx5_core]
+      mlx5_core_modify_cq+0x6c/0x80 [mlx5_core]
+      mlx5_core_modify_cq_moderation+0xa0/0xb8 [mlx5_core]
+      mlx5e_tx_dim_work+0x54/0x68 [mlx5_core]
+      process_one_work+0x1b0/0x448
+      worker_thread+0x54/0x468
+      kthread+0x134/0x138
+      ret_from_fork+0x10/0x18
+
+Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+index 6bd8a18e3af3..e733b81e18a2 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -1013,6 +1013,7 @@ static void cmd_work_handler(struct work_struct *work)
+ 				complete(&ent->done);
+ 			}
+ 			up(&cmd->vars.sem);
++			complete(&ent->slotted);
+ 			return;
+ 		}
+ 	} else {
+-- 
+2.25.1
+
 
