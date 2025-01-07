@@ -1,54 +1,62 @@
-Return-Path: <linux-rdma+bounces-6877-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6878-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB5EFA03C2E
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 11:19:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0D62A03C35
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 11:22:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90D931661D6
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 10:19:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B5637A2AD4
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 10:22:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 270A21E47C8;
-	Tue,  7 Jan 2025 10:19:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 464951E0DC0;
+	Tue,  7 Jan 2025 10:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bsLh5MsE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DmNfU8nW"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E451E3DE8
-	for <linux-rdma@vger.kernel.org>; Tue,  7 Jan 2025 10:19:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19FD1AAA10;
+	Tue,  7 Jan 2025 10:22:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736245156; cv=none; b=OpUxwTdm8IamOOoIocvAwc9i+VFbavH06j3f9Lym4Lr3XUx0UjpUXoM2g44MI7ccRAIggLl/8zRjygLnCJ0DmTq4iwEhUu1HICvdjCn1LAZSXQsu+IMGb+2N5JBQJeZuWoiYM8m/yMtCl1q733JQVypiMgdP7Bv95v6lUOmgR/o=
+	t=1736245331; cv=none; b=iMbv4rJ2J4G6V7gEKH8NBQpcYQ4p6W1Ddajodj929dipgtkIi95vqnTjhNMBSiOY+a8L76psdqpRZVpuZOhZoxvzt1PWmpMfmeLHeP5tHdt4DdlhVVHNW1Laz3YtQnp/FwKplY+rSZ3oMBRXCCkAsIX0cZSmu9jvz+KhvGiGSug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736245156; c=relaxed/simple;
-	bh=pRqxukP27Qcyi2SIR3OQy9/ovYviZz1XUAExAz980q0=;
+	s=arc-20240116; t=1736245331; c=relaxed/simple;
+	bh=Wb3Ea2iB8+M8aL3ooVQ7LOltSr1/6YrzyALThhjx3TI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aWElA1Kjmrh+g/SsKpKfEaojqfdEYZh/8mQcHQtBV+qZ3z7WkJN0Rpjgf2TpBtPDMyk2A4dgQD6kx2PvCB2RF/bORrT8Zw7TbuEJ3tjS5PGH7vk+Ec20sDeE4J8lofE81Z9HCu8Wbb1euY/w3Rhb5pTtu5uvtZUZACzMFuiHUhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bsLh5MsE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93EBCC4CEDD;
-	Tue,  7 Jan 2025 10:19:15 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=BTtZ0mBlPpnKiSZrhwsLWjOuQjwsAeAbyNJBgMbd8t5ZqvtPvUnAlwJUP8sIzVCvvsINqmaJBnpfGzUSj3BSUefiJRk66zlHmMsBlaYOPkbNwdgltT1OpcGw0oBPleDZoVBG0Z2vrg5LGaeJzPm8yU3l2dBdTo8VIjyvEZIuaEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DmNfU8nW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9714C4CED6;
+	Tue,  7 Jan 2025 10:22:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736245156;
-	bh=pRqxukP27Qcyi2SIR3OQy9/ovYviZz1XUAExAz980q0=;
+	s=k20201202; t=1736245329;
+	bh=Wb3Ea2iB8+M8aL3ooVQ7LOltSr1/6YrzyALThhjx3TI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bsLh5MsEwBM8M1ElRCmxwlHWWrnx/mkvlzqpSUojyGMaVGK87NcCYodNWz2s7++QF
-	 xn7CbGO3lyhBsY8xQjyTJWM5GeMPVF0B/vMiz4ap25/+8KfPrKF5cIlNvszBYj0Qbb
-	 ZFuEBnEY6VpkWVKDvw4daoMGxscm/n8GZ/VV3JOZYDeTN2GiNYBTh6lczIWxE087zX
-	 4biRxdR1cpKEltgY0LsycfC9HLRynyvYOInkexDSQAQg3rDrVPkwwgSVuXgPEBoac4
-	 bncpQAaMbgs5eJwSzxbvse9T7N9iNB/miClI8SWPwqUyMZVhIaxleNuHZ6I2VuSr/7
-	 q9n1Sw6s94Q6w==
-Date: Tue, 7 Jan 2025 12:19:11 +0200
+	b=DmNfU8nWLBuNkkgcsPZZpv1EIaEoOmLXTmnqfJ7XOpK5AJw9NqvsA3rEgqpDN6KC5
+	 EZ76YiWsYoDWHKtTxeQatN+C76DPga3faVhdtz65TJA1pNiNIDp0Xi9E6WR+HMIRIo
+	 A9C/Bs8BYOMGaV2VDJhV4DblSUS6C6i2jFyeTgcJUtkzd1DFJq83UmW9OXwC4FiAiH
+	 2sQXwWwCaUn+POtfJdpu4jlcDVJMVSi8iOJ7a2uhALOBAjd2aGCFULZQXV2Ga3JnHF
+	 bCbT8o9lJWPYxp4wTD+je9bEbeDHVZL7Lxq9U+LW6fgyNsfouVZmYHAR6CWYr3+QuV
+	 GTy4uwlc5HzZA==
+Date: Tue, 7 Jan 2025 12:22:04 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Anumula Murali Mohan Reddy <anumula@chelsio.com>
-Cc: jgg@nvidia.com, linux-rdma@vger.kernel.org, bharat@chelsio.com
-Subject: Re: [PATCH for-rc v2] RDMA/cxgb4: notify rdma stack for
- IB_EVENT_QP_LAST_WQE_REACHED event
-Message-ID: <20250107101911.GA87447@unreal>
-References: <20250107095053.81007-1-anumula@chelsio.com>
+To: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: Jianbo Liu <jianbol@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Jakub Kicinski <kuba@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+	Potnuri Bharat Teja <bharat@chelsio.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>
+Subject: Re: [PATCH ipsec-next 1/2] xfrm: Support ESN context update to
+ hardware for TX
+Message-ID: <20250107102204.GB87447@unreal>
+References: <874f965d786606b0b4351c976f50271349f68b03.1734611621.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -57,63 +65,87 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250107095053.81007-1-anumula@chelsio.com>
+In-Reply-To: <874f965d786606b0b4351c976f50271349f68b03.1734611621.git.leon@kernel.org>
 
-On Tue, Jan 07, 2025 at 03:20:53PM +0530, Anumula Murali Mohan Reddy wrote:
-> This patch sends IB_EVENT_QP_LAST_WQE_REACHED event on a QP that is in
-> error state and associated with an SRQ. This behaviour is incorporated
-> in flush_qp() which is called when QP transitions to error state.
-> Supports SRQ drain functionality added by commit 844bc12e6da3 ("IB/core:
-> add support for draining Shared receive queues")
+On Thu, Dec 19, 2024 at 02:37:29PM +0200, Leon Romanovsky wrote:
+> From: Jianbo Liu <jianbol@nvidia.com>
 > 
-> Fixes: 844bc12e6da3 ("IB/core: add support for draining Shared receive queues")
-> Signed-off-by: Anumula Murali Mohan Reddy <anumula@chelsio.com>
-> Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+> Previously xfrm_dev_state_advance_esn() was added for RX only. But
+> it's possible that ESN context also need to be synced to hardware for
+> TX, so call it for outbound in this patch.
+> 
+> Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 > ---
-> Changes since v1:
-> Addressed previous review comments
+>  Documentation/networking/xfrm_device.rst                 | 3 ++-
+>  drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c          | 3 +++
+>  drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c | 3 +++
+>  net/xfrm/xfrm_replay.c                                   | 1 +
+>  4 files changed, 9 insertions(+), 1 deletion(-)
 
-There are two review comments. One is Fixes line, which is not a big deal
-as I can add it when applying patch, but what about second comment?
+Steffen,
 
-Why is this event limited to QP with SRQ only?
-https://lore.kernel.org/all/20250105090622.GA5511@unreal/
+This is kindly reminder.
 
 Thanks
 
-> ---
->  drivers/infiniband/hw/cxgb4/qp.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
 > 
-> diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
-> index 7b5c4522b426..10f61bc16dd5 100644
-> --- a/drivers/infiniband/hw/cxgb4/qp.c
-> +++ b/drivers/infiniband/hw/cxgb4/qp.c
-> @@ -1599,6 +1599,7 @@ static void __flush_qp(struct c4iw_qp *qhp, struct c4iw_cq *rchp,
->  	int count;
->  	int rq_flushed = 0, sq_flushed;
->  	unsigned long flag;
-> +	struct ib_event ev;
+> diff --git a/Documentation/networking/xfrm_device.rst b/Documentation/networking/xfrm_device.rst
+> index bfea9d8579ed..66f6e9a9b59a 100644
+> --- a/Documentation/networking/xfrm_device.rst
+> +++ b/Documentation/networking/xfrm_device.rst
+> @@ -169,7 +169,8 @@ the stack in xfrm_input().
 >  
->  	pr_debug("qhp %p rchp %p schp %p\n", qhp, rchp, schp);
+>  	hand the packet to napi_gro_receive() as usual
 >  
-> @@ -1607,6 +1608,14 @@ static void __flush_qp(struct c4iw_qp *qhp, struct c4iw_cq *rchp,
->  	if (schp != rchp)
->  		spin_lock(&schp->lock);
->  	spin_lock(&qhp->lock);
-> +	if (qhp->srq) {
-> +		if (qhp->attr.state == C4IW_QP_STATE_ERROR && qhp->ibqp.event_handler) {
-> +			ev.device = qhp->ibqp.device;
-> +			ev.element.qp = &qhp->ibqp;
-> +			ev.event = IB_EVENT_QP_LAST_WQE_REACHED;
-> +			qhp->ibqp.event_handler(&ev, qhp->ibqp.qp_context);
-> +		}
-> +	}
+> -In ESN mode, xdo_dev_state_advance_esn() is called from xfrm_replay_advance_esn().
+> +In ESN mode, xdo_dev_state_advance_esn() is called from
+> +xfrm_replay_advance_esn() for RX, and xfrm_replay_overflow_offload_esn for TX.
+>  Driver will check packet seq number and update HW ESN state machine if needed.
 >  
->  	if (qhp->wq.flushed) {
->  		spin_unlock(&qhp->lock);
+>  Packet offload mode:
+> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
+> index bc3af0054406..e56e4f238795 100644
+> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
+> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
+> @@ -6559,6 +6559,9 @@ static void cxgb4_advance_esn_state(struct xfrm_state *x)
+>  {
+>  	struct adapter *adap = netdev2adap(x->xso.dev);
+>  
+> +	if (x->xso.dir != XFRM_DEV_OFFLOAD_IN)
+> +		return;
+> +
+>  	if (!mutex_trylock(&uld_mutex)) {
+>  		dev_dbg(adap->pdev_dev,
+>  			"crypto uld critical resource is under use\n");
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+> index ca92e518be76..3dd4f2492090 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+> @@ -980,6 +980,9 @@ static void mlx5e_xfrm_advance_esn_state(struct xfrm_state *x)
+>  	struct mlx5e_ipsec_sa_entry *sa_entry_shadow;
+>  	bool need_update;
+>  
+> +	if (x->xso.dir != XFRM_DEV_OFFLOAD_IN)
+> +		return;
+> +
+>  	need_update = mlx5e_ipsec_update_esn_state(sa_entry);
+>  	if (!need_update)
+>  		return;
+> diff --git a/net/xfrm/xfrm_replay.c b/net/xfrm/xfrm_replay.c
+> index bc56c6305725..e500aebbad22 100644
+> --- a/net/xfrm/xfrm_replay.c
+> +++ b/net/xfrm/xfrm_replay.c
+> @@ -729,6 +729,7 @@ static int xfrm_replay_overflow_offload_esn(struct xfrm_state *x, struct sk_buff
+>  		}
+>  
+>  		replay_esn->oseq = oseq;
+> +		xfrm_dev_state_advance_esn(x);
+>  
+>  		if (xfrm_aevent_is_on(net))
+>  			xfrm_replay_notify(x, XFRM_REPLAY_UPDATE);
 > -- 
-> 2.39.3
+> 2.47.0
 > 
 > 
 
