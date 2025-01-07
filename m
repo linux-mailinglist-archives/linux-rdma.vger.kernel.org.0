@@ -1,468 +1,245 @@
-Return-Path: <linux-rdma+bounces-6886-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6887-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68C39A041A2
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 15:07:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB318A04310
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 15:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55BFF7A29E2
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 14:07:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07E2D1881278
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 14:47:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B071F1F4293;
-	Tue,  7 Jan 2025 14:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11BFB1F237F;
+	Tue,  7 Jan 2025 14:47:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pqono/gT"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="CMnk2QAv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2901F892C
-	for <linux-rdma@vger.kernel.org>; Tue,  7 Jan 2025 14:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D241F2370;
+	Tue,  7 Jan 2025 14:47:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736258554; cv=none; b=bk1AU42w7OMJ4/yNVhs1lZbEMpuwVKVTn3qojKJSFv+kgSaNiJCX1T1439+2+TBN8B0Bo3BPDdjM7EfFG4DpPcqSZgZG+gtCGDmdmxsIxBu4St52gXWYlZI53OEvUccKHVjS29W9OCesXA6HQdNUqhqPtX3g4EW5tP2LaXz8dxg=
+	t=1736261262; cv=none; b=YoVE2gSx2HhylkvRnx6kkVBPw0ibIcgi3r3k1o9DEUZQJj9OcE9O1z1jYyCgcsYl8fCJN2m2EkNtnLva/oJIQJsAkCBOhbCo/KA+0rSm2U5VREeLAnlQHRWfK18p2Nae+zfLd6qXaFbK9SFGcTybtdkyWgosoeM/snviu/bdyH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736258554; c=relaxed/simple;
-	bh=Q3TJALiG9qSCnsn6oAxHX3sChs8fkYJg+koi62EjVGg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rKTLqMxK9dUhCVc/m6XUhuYN1r/PjVSCvZzsEpHTWKcmN6FgwSJdazN4GD9Qd/4yLXX6itF7WNr5uL64grm5OO3HbU1g6jDXYCeF2rGAQn+NVq1DIGgdq4oFVahBzangSuoxVtyPOvP8BGyOhqk/D/8qty6xmYFDH/RkXZZg3nI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pqono/gT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFEA0C4CED6;
-	Tue,  7 Jan 2025 14:02:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736258554;
-	bh=Q3TJALiG9qSCnsn6oAxHX3sChs8fkYJg+koi62EjVGg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pqono/gTSo7wDjbYdYkZd1teDnMkoV6hLmFVCA/cJhpFm3HrFMVLaOBWYz/bup+jp
-	 F8YWJ1yWu+rkwIdZyCTN2TcMXSSvRtVqCbj38GX+7PDSdH/6hRAQGbYucfvUwLkUUG
-	 ahjrSh7qcJxnsVFzGqIdeilsViIV+xaoPdlJwf8l6oGJAF3Mf4IeeSqiRzV7/6Yg/N
-	 Bl24LqPyQFrUzIraEqbOv5mbXwJs5qr7msYKC2RyyOzMY5yD309DvFmUD+MGtOvRxR
-	 vPu5TPRlIdNAICgvu+7k4vnmpK61RG5EulgQRr9o1wy2+snvAeuQewauVZdaFf9dQM
-	 YZ8rmA5Xkvt7Q==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Or Har-Toov <ohartoov@nvidia.com>,
-	linux-rdma@vger.kernel.org,
-	Maher Sanalla <msanalla@nvidia.com>
-Subject: [PATCH rdma-next v1 2/2] IB/mad: Add flow control for solicited MADs
-Date: Tue,  7 Jan 2025 16:02:13 +0200
-Message-ID: <da2bb4a27cfd47ec0dd23e24d82e4a364b8b5b4d.1736258116.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <cover.1736258116.git.leonro@nvidia.com>
-References: <cover.1736258116.git.leonro@nvidia.com>
+	s=arc-20240116; t=1736261262; c=relaxed/simple;
+	bh=z9AcZKXBTCewxT8SPTS20nArEMQztrWlt8OFGIyL2io=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IYlnjIW7o4aNmRmVeS0JaJ5Uh6EujVNUGkJ9Ygn04NB2/390iCUiYARKA7P/Uu2Jr4DtsG6lOS4B4weDtUUMpIyfX1fam4kfZw+po38N7cBMuWVLAyLAirv5cMnVf0seWDibaH+POxuZL1YV35uRUrQWqkSJ/5bNbgqZ9am+f7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=CMnk2QAv; arc=none smtp.client-ip=52.119.213.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1736261260; x=1767797260;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=kzqP3KWquCSCvitwLtozsomdOR3PJTWU3++JR+6rcS0=;
+  b=CMnk2QAv+JNq4OBfRUrZVbBCfKqza9z7TrdKUxm27DJAaahnb4CdtgBL
+   66LHR5midZDHrrm8oIXMyF5ikBKH2LApxfvYcOYC6+0zc4YJM0S4TKT2L
+   lPtHkepVHwolN1flxAXBoyBkNqmTyN38Oge7fpqLBYh7BsASJ4Ce7KpB2
+   Q=;
+X-IronPort-AV: E=Sophos;i="6.12,295,1728950400"; 
+   d="scan'208";a="687495332"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2025 14:47:34 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.21.151:43223]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.51.48:2525] with esmtp (Farcaster)
+ id 9b48386a-8619-40f1-8b35-660ddef4cf53; Tue, 7 Jan 2025 14:47:33 +0000 (UTC)
+X-Farcaster-Flow-ID: 9b48386a-8619-40f1-8b35-660ddef4cf53
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
+ Tue, 7 Jan 2025 14:47:33 +0000
+Received: from 6c7e67c6786f.amazon.com (10.118.249.113) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
+ Tue, 7 Jan 2025 14:47:24 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <shaw.leon@gmail.com>
+CC: <andrew+netdev@lunn.ch>, <b.a.t.m.a.n@lists.open-mesh.org>,
+	<bpf@vger.kernel.org>, <bridge@lists.linux.dev>, <davem@davemloft.net>,
+	<donald.hunter@gmail.com>, <dsahern@kernel.org>, <edumazet@google.com>,
+	<horms@kernel.org>, <idosch@nvidia.com>, <jiri@resnulli.us>,
+	<kuba@kernel.org>, <kuniyu@amazon.com>, <linux-can@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<linux-ppp@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-wireless@vger.kernel.org>, <linux-wpan@vger.kernel.org>,
+	<liuhangbin@gmail.com>, <netdev@vger.kernel.org>,
+	<osmocom-net-gprs@lists.osmocom.org>, <pabeni@redhat.com>,
+	<shuah@kernel.org>, <wireguard@lists.zx2c4.com>
+Subject: Re: [PATCH net-next v7 00/11] net: Improve netns handling in rtnetlink
+Date: Tue, 7 Jan 2025 23:47:14 +0900
+Message-ID: <20250107144714.74446-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <CABAhCOQdBL6h9M2C+kd+bGivRJ9Q72JUxW+-gur0nub_=PmFPA@mail.gmail.com>
+References: <CABAhCOQdBL6h9M2C+kd+bGivRJ9Q72JUxW+-gur0nub_=PmFPA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: EX19D045UWC004.ant.amazon.com (10.13.139.203) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-From: Or Har-Toov <ohartoov@nvidia.com>
+From: Xiao Liang <shaw.leon@gmail.com>
+Date: Tue, 7 Jan 2025 20:53:19 +0800
+> On Tue, Jan 7, 2025 at 4:57 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+> [...]
+> >
+> > We can fix this by linking the dev to the socket's netns and
+> > clean them up in __net_exit hook as done in bareudp and geneve.
+> >
+> > ---8<---
+> > diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+> > index 89a996ad8cd0..77638a815873 100644
+> > --- a/drivers/net/gtp.c
+> > +++ b/drivers/net/gtp.c
+> > @@ -70,6 +70,7 @@ struct pdp_ctx {
+> >  /* One instance of the GTP device. */
+> >  struct gtp_dev {
+> >         struct list_head        list;
+> > +       struct list_head        sock_list;
+> >
+> >         struct sock             *sk0;
+> >         struct sock             *sk1u;
+> > @@ -102,6 +103,7 @@ static unsigned int gtp_net_id __read_mostly;
+> >
+> >  struct gtp_net {
+> >         struct list_head gtp_dev_list;
+> > +       struct list_head gtp_sock_list;
+> 
+> After a closer look at the GTP driver, I'm confused about
+> the gtp_dev_list here. GTP device is linked to this list at
+> creation time, but netns can be changed afterwards.
+> The list is used in gtp_net_exit_batch_rtnl(), but to my
+> understanding net devices can already be deleted in
+> default_device_exit_batch() by default.
+> And I wonder if the use in gtp_genl_dump_pdp() can be
+> replaced by something like for_each_netdev_rcu().
 
-Currently, MADs sent via an agent are being forwarded directly to the
-corresponding MAD QP layer.
+Right, it should be, or we need to set netns_local.
+Will include this diff in the fix series.
 
-MADs with a timeout value set and requiring a response (solicited MADs)
-will be resent if the timeout expires without receiving a response.
-In a congested subnet, flooding MAD QP layer with more solicited send
-requests from the agent will only worsen the situation by triggering
-more timeouts and therefore more retries.
-
-Thus, add flow control for non-user solicited MADs to block agents from
-issuing new solicited MAD requests to the MAD QP until outstanding
-requests are completed and the MAD QP is ready to process additional
-requests.
-
-Therefore, keep track of the total outstanding solicited MAD work
-requests in send or wait list. The number of outstanding send WRs
-will be limited by a fraction of the RQ size, and any new send WR
-that exceeds that limit will be held in a backlog list.
-Backlog MADs will be forwarded to agent send list only once the total
-number of outstanding send WRs falls below the limit.
-
-Unsolicited MADs, RMPP MADs and MADs which are not SA, SMP or CM are
-not subject to this flow control mechanism and will not be affected by
-this change.
-
-For this purpose, a new state is introduced:
-- 'IB_MAD_STATE_QUEUED': MAD is in backlog list
-
-Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>
-Reviewed-by: Maher Sanalla <msanalla@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/mad.c      | 173 +++++++++++++++++++++++++++--
- drivers/infiniband/core/mad_priv.h |  17 ++-
- 2 files changed, 182 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/infiniband/core/mad.c b/drivers/infiniband/core/mad.c
-index 49da1d246f72a..3dc31640f53af 100644
---- a/drivers/infiniband/core/mad.c
-+++ b/drivers/infiniband/core/mad.c
-@@ -210,6 +210,29 @@ int ib_response_mad(const struct ib_mad_hdr *hdr)
- }
- EXPORT_SYMBOL(ib_response_mad);
+---8<---
+diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+index 2460a2c13c32..f9186eda36f0 100644
+--- a/drivers/net/gtp.c
++++ b/drivers/net/gtp.c
+@@ -2278,6 +2278,7 @@ static int gtp_genl_dump_pdp(struct sk_buff *skb,
+ 	struct gtp_dev *last_gtp = (struct gtp_dev *)cb->args[2], *gtp;
+ 	int i, j, bucket = cb->args[0], skip = cb->args[1];
+ 	struct net *net = sock_net(skb->sk);
++	struct net_device *dev;
+ 	struct pdp_ctx *pctx;
+ 	struct gtp_net *gn;
  
-+#define SOL_FC_MAX_DEFAULT_FRAC 4
-+#define SOL_FC_MAX_SA_FRAC 32
+@@ -2287,7 +2288,10 @@ static int gtp_genl_dump_pdp(struct sk_buff *skb,
+ 		return 0;
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry_rcu(gtp, &gn->gtp_dev_list, list) {
++	for_each_netdev_rcu(net, dev) {
++		if (dev->rtnl_link_ops != &gtp_link_ops)
++			continue;
 +
-+static int get_sol_fc_max_outstanding(struct ib_mad_reg_req *mad_reg_req)
+ 		if (last_gtp && last_gtp != gtp)
+ 			continue;
+ 		else
+---8<---
+
+Otherwise, we need to move it manually like this, which is
+apparently overkill and unnecessary :p
+
+---8<---
+diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+index 2460a2c13c32..90b410b73c89 100644
+--- a/drivers/net/gtp.c
++++ b/drivers/net/gtp.c
+@@ -2501,6 +2501,46 @@ static struct pernet_operations gtp_net_ops = {
+ 	.size	= sizeof(struct gtp_net),
+ };
+ 
++static int gtp_device_event(struct notifier_block *nb,
++			    unsigned long event, void *ptr)
 +{
-+	if (!mad_reg_req)
-+		/* Send only agent */
-+		return mad_recvq_size / SOL_FC_MAX_DEFAULT_FRAC;
++	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
++	struct gtp_dev *gtp;
++	struct gtp_net *gn;
 +
-+	switch (mad_reg_req->mgmt_class) {
-+	case IB_MGMT_CLASS_CM:
-+		return mad_recvq_size / SOL_FC_MAX_DEFAULT_FRAC;
-+	case IB_MGMT_CLASS_SUBN_ADM:
-+		return mad_recvq_size / SOL_FC_MAX_SA_FRAC;
-+	case IB_MGMT_CLASS_SUBN_LID_ROUTED:
-+	case IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE:
-+		return min(mad_recvq_size, IB_MAD_QP_RECV_SIZE) /
-+		       SOL_FC_MAX_DEFAULT_FRAC;
-+	default:
-+		return 0;
-+	}
-+}
++	if (dev->rtnl_link_ops != &gtp_link_ops)
++		goto out;
 +
- /*
-  * ib_register_mad_agent - Register to send/receive MADs
-  *
-@@ -392,12 +415,16 @@ struct ib_mad_agent *ib_register_mad_agent(struct ib_device *device,
- 	INIT_LIST_HEAD(&mad_agent_priv->send_list);
- 	INIT_LIST_HEAD(&mad_agent_priv->wait_list);
- 	INIT_LIST_HEAD(&mad_agent_priv->rmpp_list);
-+	INIT_LIST_HEAD(&mad_agent_priv->backlog_list);
- 	INIT_DELAYED_WORK(&mad_agent_priv->timed_work, timeout_sends);
- 	INIT_LIST_HEAD(&mad_agent_priv->local_list);
- 	INIT_WORK(&mad_agent_priv->local_work, local_completions);
- 	refcount_set(&mad_agent_priv->refcount, 1);
- 	init_completion(&mad_agent_priv->comp);
--
-+	mad_agent_priv->sol_fc_send_count = 0;
-+	mad_agent_priv->sol_fc_wait_count = 0;
-+	mad_agent_priv->sol_fc_max =
-+		get_sol_fc_max_outstanding(mad_reg_req);
- 	ret2 = ib_mad_agent_security_setup(&mad_agent_priv->agent, qp_type);
- 	if (ret2) {
- 		ret = ERR_PTR(ret2);
-@@ -1054,6 +1081,13 @@ int ib_send_mad(struct ib_mad_send_wr_private *mad_send_wr)
- 	return ret;
- }
- 
-+static void handle_queued_state(struct ib_mad_send_wr_private *mad_send_wr,
-+		       struct ib_mad_agent_private *mad_agent_priv)
-+{
-+	NOT_EXPECT_MAD_STATE(mad_send_wr, 0);
-+	list_add_tail(&mad_send_wr->agent_list, &mad_agent_priv->backlog_list);
-+}
++	gtp = netdev_priv(dev);
 +
- static void handle_send_state(struct ib_mad_send_wr_private *mad_send_wr,
- 		       struct ib_mad_agent_private *mad_agent_priv)
- {
-@@ -1061,10 +1095,17 @@ static void handle_send_state(struct ib_mad_send_wr_private *mad_send_wr,
- 		list_add_tail(&mad_send_wr->agent_list,
- 			      &mad_agent_priv->send_list);
- 	} else {
--		EXPECT_MAD_STATE(mad_send_wr, IB_MAD_STATE_WAIT_RESP);
-+		EXPECT_MAD_STATE2(mad_send_wr, IB_MAD_STATE_QUEUED,
-+				  IB_MAD_STATE_WAIT_RESP);
- 		list_move_tail(&mad_send_wr->agent_list,
- 			       &mad_agent_priv->send_list);
- 	}
++	switch (event) {
++	case NETDEV_UNREGISTER:
++		if (dev->reg_state != NETREG_REGISTERED)
++			goto out;
 +
-+	if (mad_send_wr->is_solicited_fc) {
-+		if (mad_send_wr->state == IB_MAD_STATE_WAIT_RESP)
-+			mad_agent_priv->sol_fc_wait_count--;
-+		mad_agent_priv->sol_fc_send_count++;
-+	}
- }
- 
- static void handle_wait_state(struct ib_mad_send_wr_private *mad_send_wr,
-@@ -1076,8 +1117,13 @@ static void handle_wait_state(struct ib_mad_send_wr_private *mad_send_wr,
- 
- 	EXPECT_MAD_STATE3(mad_send_wr, IB_MAD_STATE_SEND_START,
- 			  IB_MAD_STATE_WAIT_RESP, IB_MAD_STATE_CANCELED);
--	list_del_init(&mad_send_wr->agent_list);
-+	if (mad_send_wr->state == IB_MAD_STATE_SEND_START &&
-+	    mad_send_wr->is_solicited_fc) {
-+		mad_agent_priv->sol_fc_send_count--;
-+		mad_agent_priv->sol_fc_wait_count++;
-+	}
- 
-+	list_del_init(&mad_send_wr->agent_list);
- 	delay = mad_send_wr->timeout;
- 	mad_send_wr->timeout += jiffies;
- 
-@@ -1103,17 +1149,32 @@ static void handle_early_resp_state(struct ib_mad_send_wr_private *mad_send_wr,
- 			    struct ib_mad_agent_private *mad_agent_priv)
- {
- 	EXPECT_MAD_STATE(mad_send_wr, IB_MAD_STATE_SEND_START);
-+	mad_agent_priv->sol_fc_send_count -= mad_send_wr->is_solicited_fc;
- }
- 
- static void handle_canceled_state(struct ib_mad_send_wr_private *mad_send_wr,
- 			 struct ib_mad_agent_private *mad_agent_priv)
- {
- 	NOT_EXPECT_MAD_STATE(mad_send_wr, IB_MAD_STATE_DONE);
-+	if (mad_send_wr->is_solicited_fc) {
-+		if (mad_send_wr->state == IB_MAD_STATE_SEND_START)
-+			mad_agent_priv->sol_fc_send_count--;
-+		else if (mad_send_wr->state == IB_MAD_STATE_WAIT_RESP)
-+			mad_agent_priv->sol_fc_wait_count--;
-+	}
- }
- 
- static void handle_done_state(struct ib_mad_send_wr_private *mad_send_wr,
- 		       struct ib_mad_agent_private *mad_agent_priv)
- {
-+	NOT_EXPECT_MAD_STATE(mad_send_wr, IB_MAD_STATE_QUEUED);
-+	if (mad_send_wr->is_solicited_fc) {
-+		if (mad_send_wr->state == IB_MAD_STATE_SEND_START)
-+			mad_agent_priv->sol_fc_send_count--;
-+		else if (mad_send_wr->state == IB_MAD_STATE_WAIT_RESP)
-+			mad_agent_priv->sol_fc_wait_count--;
-+	}
-+
- 	list_del_init(&mad_send_wr->agent_list);
- }
- 
-@@ -1124,6 +1185,9 @@ void change_mad_state(struct ib_mad_send_wr_private *mad_send_wr,
- 		mad_send_wr->mad_agent_priv;
- 
- 	switch (new_state) {
-+	case IB_MAD_STATE_QUEUED:
-+		handle_queued_state(mad_send_wr, mad_agent_priv);
++		/* dev_net(dev) is changed, see __dev_change_net_namespace().
++		 * rcu_barrier() after NETDEV_UNREGISTER guarantees that no
++		 * one traversing a list in the old netns jumps to another
++		 * list in the new netns.
++		 */
++		list_del_rcu(&gtp->list);
 +		break;
- 	case IB_MAD_STATE_SEND_START:
- 		handle_send_state(mad_send_wr, mad_agent_priv);
- 		break;
-@@ -1146,6 +1210,43 @@ void change_mad_state(struct ib_mad_send_wr_private *mad_send_wr,
- 	mad_send_wr->state = new_state;
- }
- 
-+static bool is_solicited_fc_mad(struct ib_mad_send_wr_private *mad_send_wr)
-+{
-+	struct ib_rmpp_mad *rmpp_mad;
-+	u8 mgmt_class;
++	case NETDEV_REGISTER:
++		if (gtp->list.prev != LIST_POISON2)
++			goto out;
 +
-+	if (!mad_send_wr->timeout)
-+		return 0;
-+
-+	rmpp_mad = mad_send_wr->send_buf.mad;
-+	if (mad_send_wr->mad_agent_priv->agent.rmpp_version &&
-+	    (ib_get_rmpp_flags(&rmpp_mad->rmpp_hdr) & IB_MGMT_RMPP_FLAG_ACTIVE))
-+		return 0;
-+
-+	mgmt_class =
-+		((struct ib_mad_hdr *)mad_send_wr->send_buf.mad)->mgmt_class;
-+	return mgmt_class == IB_MGMT_CLASS_CM ||
-+	       mgmt_class == IB_MGMT_CLASS_SUBN_ADM ||
-+	       mgmt_class == IB_MGMT_CLASS_SUBN_LID_ROUTED ||
-+	       mgmt_class == IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE;
-+}
-+
-+static bool mad_is_for_backlog(struct ib_mad_send_wr_private *mad_send_wr)
-+{
-+	struct ib_mad_agent_private *mad_agent_priv =
-+		mad_send_wr->mad_agent_priv;
-+
-+	if (!mad_send_wr->is_solicited_fc || !mad_agent_priv->sol_fc_max)
-+		return false;
-+
-+	if (!list_empty(&mad_agent_priv->backlog_list))
-+		return true;
-+
-+	return mad_agent_priv->sol_fc_send_count +
-+		       mad_agent_priv->sol_fc_wait_count >=
-+	       mad_agent_priv->sol_fc_max;
-+}
-+
- /*
-  * ib_post_send_mad - Posts MAD(s) to the send queue of the QP associated
-  *  with the registered client
-@@ -1214,6 +1315,13 @@ int ib_post_send_mad(struct ib_mad_send_buf *send_buf,
- 		/* Reference MAD agent until send completes */
- 		refcount_inc(&mad_agent_priv->refcount);
- 		spin_lock_irqsave(&mad_agent_priv->lock, flags);
-+		mad_send_wr->is_solicited_fc = is_solicited_fc_mad(mad_send_wr);
-+		if (mad_is_for_backlog(mad_send_wr)) {
-+			change_mad_state(mad_send_wr, IB_MAD_STATE_QUEUED);
-+			spin_unlock_irqrestore(&mad_agent_priv->lock, flags);
-+			return 0;
-+		}
-+
- 		change_mad_state(mad_send_wr, IB_MAD_STATE_SEND_START);
- 		spin_unlock_irqrestore(&mad_agent_priv->lock, flags);
- 
-@@ -1858,6 +1966,42 @@ ib_find_send_mad(const struct ib_mad_agent_private *mad_agent_priv,
- 	return NULL;
- }
- 
-+static void
-+process_mad_from_backlog(struct ib_mad_agent_private *mad_agent_priv)
-+{
-+	struct ib_mad_send_wr_private *mad_send_wr;
-+	struct ib_mad_send_wc mad_send_wc = {};
-+	unsigned long flags;
-+	int ret;
-+
-+	spin_lock_irqsave(&mad_agent_priv->lock, flags);
-+	while (!list_empty(&mad_agent_priv->backlog_list) &&
-+	       (mad_agent_priv->sol_fc_send_count +
-+			mad_agent_priv->sol_fc_wait_count <
-+		mad_agent_priv->sol_fc_max)) {
-+		mad_send_wr = list_entry(mad_agent_priv->backlog_list.next,
-+					 struct ib_mad_send_wr_private,
-+					 agent_list);
-+		change_mad_state(mad_send_wr, IB_MAD_STATE_SEND_START);
-+		spin_unlock_irqrestore(&mad_agent_priv->lock, flags);
-+		ret = ib_send_mad(mad_send_wr);
-+		if (!ret)
-+			return;
-+
-+		spin_lock_irqsave(&mad_agent_priv->lock, flags);
-+		deref_mad_agent(mad_agent_priv);
-+		change_mad_state(mad_send_wr, IB_MAD_STATE_DONE);
-+		spin_unlock_irqrestore(&mad_agent_priv->lock, flags);
-+		mad_send_wc.send_buf = &mad_send_wr->send_buf;
-+		mad_send_wc.status = IB_WC_LOC_QP_OP_ERR;
-+		mad_agent_priv->agent.send_handler(&mad_agent_priv->agent,
-+						   &mad_send_wc);
-+		spin_lock_irqsave(&mad_agent_priv->lock, flags);
++		/* complete netns change. */
++		gn = net_generic(dev_net(dev), gtp_net_id);
++		list_add_rcu(&gtp->list, &gn->gtp_dev_list);
 +	}
-+
-+	spin_unlock_irqrestore(&mad_agent_priv->lock, flags);
++out:
++	return NOTIFY_DONE;
 +}
 +
- void ib_mark_mad_done(struct ib_mad_send_wr_private *mad_send_wr)
++static struct notifier_block gtp_notifier_block = {
++	.notifier_call = gtp_device_event,
++};
++
+ static int __init gtp_init(void)
  {
- 	mad_send_wr->timeout = 0;
-@@ -2318,11 +2462,14 @@ void ib_mad_complete_send_wr(struct ib_mad_send_wr_private *mad_send_wr,
- 	adjust_timeout(mad_agent_priv);
- 	spin_unlock_irqrestore(&mad_agent_priv->lock, flags);
+ 	int err;
+@@ -2511,10 +2551,14 @@ static int __init gtp_init(void)
+ 	if (err < 0)
+ 		goto error_out;
  
--	if (ret == IB_RMPP_RESULT_INTERNAL)
-+	if (ret == IB_RMPP_RESULT_INTERNAL) {
- 		ib_rmpp_send_handler(mad_send_wc);
--	else
-+	} else {
-+		if (mad_send_wr->is_solicited_fc)
-+			process_mad_from_backlog(mad_agent_priv);
- 		mad_agent_priv->agent.send_handler(&mad_agent_priv->agent,
- 						   mad_send_wc);
-+	}
+-	err = rtnl_link_register(&gtp_link_ops);
++	err = register_netdevice_notifier(&gtp_notifier_block);
+ 	if (err < 0)
+ 		goto unreg_pernet_subsys;
  
- 	/* Release reference on agent taken when sending */
- 	deref_mad_agent(mad_agent_priv);
-@@ -2480,6 +2627,8 @@ static void cancel_mads(struct ib_mad_agent_private *mad_agent_priv)
- 
- 	/* Empty wait list to prevent receives from finding a request */
- 	list_splice_init(&mad_agent_priv->wait_list, &cancel_list);
-+	mad_agent_priv->sol_fc_wait_count = 0;
-+	list_splice_tail_init(&mad_agent_priv->backlog_list, &cancel_list);
- 	spin_unlock_irqrestore(&mad_agent_priv->lock, flags);
- 
- 	/* Report all cancelled requests */
-@@ -2515,6 +2664,13 @@ find_send_wr(struct ib_mad_agent_private *mad_agent_priv,
- 		    &mad_send_wr->send_buf == send_buf)
- 			return mad_send_wr;
- 	}
++	err = rtnl_link_register(&gtp_link_ops);
++	if (err < 0)
++		goto unreg_netdev_notifier;
 +
-+	list_for_each_entry(mad_send_wr, &mad_agent_priv->backlog_list,
-+			    agent_list) {
-+		if (&mad_send_wr->send_buf == send_buf)
-+			return mad_send_wr;
-+	}
-+
- 	return NULL;
- }
+ 	err = genl_register_family(&gtp_genl_family);
+ 	if (err < 0)
+ 		goto unreg_rtnl_link;
+@@ -2525,6 +2569,8 @@ static int __init gtp_init(void)
  
-@@ -2537,8 +2693,9 @@ int ib_modify_mad(struct ib_mad_send_buf *send_buf, u32 timeout_ms)
- 		return -EINVAL;
- 	}
+ unreg_rtnl_link:
+ 	rtnl_link_unregister(&gtp_link_ops);
++unreg_netdev_notifier:
++	register_netdevice_notifier(&gtp_notifier_block);
+ unreg_pernet_subsys:
+ 	unregister_pernet_subsys(&gtp_net_ops);
+ error_out:
+@@ -2537,6 +2583,7 @@ static void __exit gtp_fini(void)
+ {
+ 	genl_unregister_family(&gtp_genl_family);
+ 	rtnl_link_unregister(&gtp_link_ops);
++	register_netdevice_notifier(&gtp_notifier_block);
+ 	unregister_pernet_subsys(&gtp_net_ops);
  
--	active = (mad_send_wr->state == IB_MAD_STATE_SEND_START ||
--		  mad_send_wr->state == IB_MAD_STATE_EARLY_RESP);
-+	active = ((mad_send_wr->state == IB_MAD_STATE_SEND_START) ||
-+		  (mad_send_wr->state == IB_MAD_STATE_EARLY_RESP) ||
-+		  (mad_send_wr->state == IB_MAD_STATE_QUEUED && timeout_ms));
- 	if (!timeout_ms)
- 		change_mad_state(mad_send_wr, IB_MAD_STATE_CANCELED);
- 
-@@ -2687,6 +2844,8 @@ static void clear_mad_error_list(struct list_head *list,
- 
- 	list_for_each_entry_safe(mad_send_wr, n, list, agent_list) {
- 		mad_send_wc.send_buf = &mad_send_wr->send_buf;
-+		if (mad_send_wr->is_solicited_fc)
-+			process_mad_from_backlog(mad_agent_priv);
- 		mad_agent_priv->agent.send_handler(&mad_agent_priv->agent,
- 						   &mad_send_wc);
- 		deref_mad_agent(mad_agent_priv);
-diff --git a/drivers/infiniband/core/mad_priv.h b/drivers/infiniband/core/mad_priv.h
-index bfcf0a62fdd65..52655f24e16d4 100644
---- a/drivers/infiniband/core/mad_priv.h
-+++ b/drivers/infiniband/core/mad_priv.h
-@@ -95,12 +95,16 @@ struct ib_mad_agent_private {
- 
- 	spinlock_t lock;
- 	struct list_head send_list;
-+	unsigned int sol_fc_send_count;
- 	struct list_head wait_list;
-+	unsigned int sol_fc_wait_count;
- 	struct delayed_work timed_work;
- 	unsigned long timeout;
- 	struct list_head local_list;
- 	struct work_struct local_work;
- 	struct list_head rmpp_list;
-+	unsigned int sol_fc_max;
-+	struct list_head backlog_list;
- 
- 	refcount_t refcount;
- 	union {
-@@ -118,11 +122,13 @@ struct ib_mad_snoop_private {
- };
- 
- enum ib_mad_state {
-+	/* MAD is in backlog list */
-+	IB_MAD_STATE_QUEUED = 1,
- 	/*
- 	 * MAD was sent to the QP and is waiting for completion
- 	 * notification in send list.
- 	 */
--	IB_MAD_STATE_SEND_START = 1,
-+	IB_MAD_STATE_SEND_START,
- 	/*
- 	 * MAD send completed successfully, waiting for a response
- 	 * in wait list.
-@@ -144,6 +150,12 @@ enum ib_mad_state {
- 		if (IS_ENABLED(CONFIG_LOCKDEP))                        \
- 			WARN_ON(mad_send_wr->state != expected_state); \
- 	}
-+#define EXPECT_MAD_STATE2(mad_send_wr, expected_state1, expected_state2) \
-+	{                                                                \
-+		if (IS_ENABLED(CONFIG_LOCKDEP))                          \
-+			WARN_ON(mad_send_wr->state != expected_state1 && \
-+				mad_send_wr->state != expected_state2);  \
-+	}
- #define EXPECT_MAD_STATE3(mad_send_wr, expected_state1, expected_state2, \
- 			  expected_state3)                               \
- 	{                                                                \
-@@ -183,6 +195,9 @@ struct ib_mad_send_wr_private {
- 	int pad;
- 
- 	enum ib_mad_state state;
-+
-+	/* Solicited MAD flow control */
-+	bool is_solicited_fc;
- };
- 
- struct ib_mad_local_private {
--- 
-2.47.1
-
+ 	pr_info("GTP module unloaded\n");
+---8<---
 
