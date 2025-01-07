@@ -1,151 +1,181 @@
-Return-Path: <linux-rdma+bounces-6878-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6879-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D62A03C35
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 11:22:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68C0BA03CD7
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 11:48:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B5637A2AD4
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 10:22:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C41A61883AA8
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 10:48:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 464951E0DC0;
-	Tue,  7 Jan 2025 10:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E2E1EE00F;
+	Tue,  7 Jan 2025 10:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DmNfU8nW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CpjNhOIS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19FD1AAA10;
-	Tue,  7 Jan 2025 10:22:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7485F1EBA0D;
+	Tue,  7 Jan 2025 10:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736245331; cv=none; b=iMbv4rJ2J4G6V7gEKH8NBQpcYQ4p6W1Ddajodj929dipgtkIi95vqnTjhNMBSiOY+a8L76psdqpRZVpuZOhZoxvzt1PWmpMfmeLHeP5tHdt4DdlhVVHNW1Laz3YtQnp/FwKplY+rSZ3oMBRXCCkAsIX0cZSmu9jvz+KhvGiGSug=
+	t=1736246839; cv=none; b=dpJvGG5OGRtSXO2cSQZi97Fw5PVcO2gsSEEwwzbftzFLHJX8SQgVjQdGa2Ql1o+Uh1RKBNgMEn+FFQTTbGg9G3ITeHT2xaeU45TyZMQv3+/7CPjFF6Yhj2K6darGVjAhXdjsFvj0HfZ9PdAhyd5bFVZMW9aaDwyy8XbR8qOJvUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736245331; c=relaxed/simple;
-	bh=Wb3Ea2iB8+M8aL3ooVQ7LOltSr1/6YrzyALThhjx3TI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BTtZ0mBlPpnKiSZrhwsLWjOuQjwsAeAbyNJBgMbd8t5ZqvtPvUnAlwJUP8sIzVCvvsINqmaJBnpfGzUSj3BSUefiJRk66zlHmMsBlaYOPkbNwdgltT1OpcGw0oBPleDZoVBG0Z2vrg5LGaeJzPm8yU3l2dBdTo8VIjyvEZIuaEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DmNfU8nW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9714C4CED6;
-	Tue,  7 Jan 2025 10:22:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736245329;
-	bh=Wb3Ea2iB8+M8aL3ooVQ7LOltSr1/6YrzyALThhjx3TI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DmNfU8nWLBuNkkgcsPZZpv1EIaEoOmLXTmnqfJ7XOpK5AJw9NqvsA3rEgqpDN6KC5
-	 EZ76YiWsYoDWHKtTxeQatN+C76DPga3faVhdtz65TJA1pNiNIDp0Xi9E6WR+HMIRIo
-	 A9C/Bs8BYOMGaV2VDJhV4DblSUS6C6i2jFyeTgcJUtkzd1DFJq83UmW9OXwC4FiAiH
-	 2sQXwWwCaUn+POtfJdpu4jlcDVJMVSi8iOJ7a2uhALOBAjd2aGCFULZQXV2Ga3JnHF
-	 bCbT8o9lJWPYxp4wTD+je9bEbeDHVZL7Lxq9U+LW6fgyNsfouVZmYHAR6CWYr3+QuV
-	 GTy4uwlc5HzZA==
-Date: Tue, 7 Jan 2025 12:22:04 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: Jianbo Liu <jianbol@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Jakub Kicinski <kuba@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-	Potnuri Bharat Teja <bharat@chelsio.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>
-Subject: Re: [PATCH ipsec-next 1/2] xfrm: Support ESN context update to
- hardware for TX
-Message-ID: <20250107102204.GB87447@unreal>
-References: <874f965d786606b0b4351c976f50271349f68b03.1734611621.git.leon@kernel.org>
+	s=arc-20240116; t=1736246839; c=relaxed/simple;
+	bh=rmV+IrFXiYRmJO8m/Th28rKjbiFt6MRkkO4Sbqpe3Gw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TNb14KTZ/Gk9LUtJWYCr1QUzqn5NyplQvLv55/qnCE8Zu6ZAo2BAdxeqNqO6QHLuogJ5r69RWkq8BwohWTpreKTnNE+1ULcyCA9R7VYJX2omtq7CvUnuY6rc2vFS5UpK0nv9UmFu6fKGOuKyrvsDt2rJ3BGBfcv3gOPsWYxvq04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CpjNhOIS; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3862df95f92so6746814f8f.2;
+        Tue, 07 Jan 2025 02:47:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736246836; x=1736851636; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fh0AFKuAKxAUWXpt7kGI1qVooHVbo7SNiy/9flSEnaA=;
+        b=CpjNhOISeqslgdQr8wnZOAp9ApHs2YwkPksnqk1MKQ3QUOLtcQZk7hA0hrb07/9/7w
+         DeCq7eKw8HMlHv/jTgrClZY/UpKs0dm6fFCNyiHME+4jwmttynV65KVfS5bhPgIuZSyB
+         NUJc6AHKEfCN1BBVj30d3b9oN7m0Lm5DNKA8F3l+Pg2XPvx8UXMNJFLLMuafrBPbM8sT
+         BWzb4jejI0sE0nYIv9saiZIA0NS2yVLt8jp3rV/VWq+7fHcsZqm3w25fmO/t7IbvdDSZ
+         QmD6Oc7ZQuc1QSx7yVyG8Py/QtnR73wSV9l0ttm/E2hQEfOn3zA4Cars7nJHrcXWM09e
+         o4VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736246836; x=1736851636;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fh0AFKuAKxAUWXpt7kGI1qVooHVbo7SNiy/9flSEnaA=;
+        b=mFtrPvJjBAGjxAmAZWbxXqEIyL3aC9hidFvitNPDzHXsPypEbgQzSWR5x4LmpKblzE
+         6nRbfhLPdrGEUiYO3/Kzw1yNVqvr9Y6P035rGl9ZcdfNZ/MZAupgjm5o58zWOOx3Dvlh
+         4+Bmw1MvV2f/xAmMUECW2xG7XCgZocbkXvCLP2nKWEkgoxrEAkKqYma6NAgpwyk+2OnJ
+         47Cfb6Tw4Yz/lvDa3jzYgFZ0C7378AZkuABGCYmYCM5ckf+8gz+4SgXp/zFtQRxRRujl
+         m20u1bMQWjrVCLE1h82pSnf75G6KdXPDznnHie9YpeMfZZxvDHkX0Pqd3wqJsqrCxJke
+         bEJA==
+X-Forwarded-Encrypted: i=1; AJvYcCUBK8ZOT4hMZho0bTffApVOjCLJuhuMqDWczKlvOjbrrZVAsKp+qrEhuZoCc5MfI9b5FYY=@vger.kernel.org, AJvYcCUfHeUaTrTME02pjvkkXLPDOgj7wqJdQlhkzI/V4tzlB1p0B+L+IeYV00CwK4gMso3e2Q39pF3+yOFVgQ==@vger.kernel.org, AJvYcCV6VJPvg9gAUyI7S2BjNXlFtJ1na2/IckmZj0hgV9rWo4kpjFPPnNnzEGrDMIVYdYDGs/W/FfYj1mPe2SpUo0QH@vger.kernel.org, AJvYcCVB/oQ5RAPRCmg3OHubbU4edbCPbpeTIHQHWDs266UAIAJoaIL9/8QnORdjLv/LI6LeVDxczpLbWfMWA8JASGY=@vger.kernel.org, AJvYcCWtpdhJfVVcbI++sm9qYQXuDvFFa/z8W27l4CgSiGStsQOumx5cFLIPPGfqXtrGPxv3UwyQB9W4@vger.kernel.org, AJvYcCX4aI1OkbVCkO3dZ6bdwISAOJtS2vCZ1CF3fAxLy17kqeDR8q2pU0S7QbFKdxdtR1xyyee7e3puIbu7@vger.kernel.org, AJvYcCXUQKrQ0wF2qtY5oOa9v8p6wlWfobcXO5/U5rTmHbot+cStJfWy9e8YNroJ/OujX0M56A8RadBWFo56C5Au@vger.kernel.org, AJvYcCXY8EACV/lA1hY4o105sAatpGB/KNJov3S+W3coJ80N7vX7AIPEuzTtyntcHkwCiXa2gU52CJ33xaTWuA==@vger.kernel.org, AJvYcCXxX0J4F8Jj8JiKybWKhtXJg0TOQObvD7HIyKoS1Z27pLyIO51GPCyfC+8SG5g4c99TNOp2nxcMW2dO@vger.kernel.org
+X-Gm-Message-State: AOJu0YwR7xZHmlYBFjisBzLTlIh6j1zZY0Cd8IVSNcA7I2X0h04MqW17
+	s6eRsNRpJOsrbCMXi9rC9QmOvf5t68olKOc+D9AKSQH4U4fcBckxUY09lkHaqTZEgI2ORXAUMdR
+	3EbLSjbuinzW+g692W18EmOZEMbiJEKd9
+X-Gm-Gg: ASbGncsTONgZgyE2X7IM4+HIcEKSBdwCbzhE8lgyqlRee7wuV/6sHzIVCQ8BbLLN4X2
+	srNBsmR44ZzqwPIXkj2mCY1gDkL92LMaOmpZv
+X-Google-Smtp-Source: AGHT+IHp1K2L48YKiIQv0pwnQlZPYX8cMCBbRBU/fwg+IEmnnlA8QF5/odQWLMrNcSpCZK0F/LO3cHqTWVNEZ39orXM=
+X-Received: by 2002:a05:6000:480a:b0:386:1cd3:89fa with SMTP id
+ ffacd0b85a97d-38a221fa8c6mr57843141f8f.33.1736246835555; Tue, 07 Jan 2025
+ 02:47:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874f965d786606b0b4351c976f50271349f68b03.1734611621.git.leon@kernel.org>
+References: <20250104125732.17335-1-shaw.leon@gmail.com> <20250107085646.42302-1-kuniyu@amazon.com>
+In-Reply-To: <20250107085646.42302-1-kuniyu@amazon.com>
+From: Xiao Liang <shaw.leon@gmail.com>
+Date: Tue, 7 Jan 2025 18:46:38 +0800
+Message-ID: <CABAhCOQAqspiaFO-486UtZpEWsua51f+1f6-LocNhHVfAqW=NQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 00/11] net: Improve netns handling in rtnetlink
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: andrew+netdev@lunn.ch, b.a.t.m.a.n@lists.open-mesh.org, 
+	bpf@vger.kernel.org, bridge@lists.linux.dev, davem@davemloft.net, 
+	donald.hunter@gmail.com, dsahern@kernel.org, edumazet@google.com, 
+	horms@kernel.org, idosch@nvidia.com, jiri@resnulli.us, kuba@kernel.org, 
+	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-ppp@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-wpan@vger.kernel.org, liuhangbin@gmail.com, netdev@vger.kernel.org, 
+	osmocom-net-gprs@lists.osmocom.org, pabeni@redhat.com, shuah@kernel.org, 
+	wireguard@lists.zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 19, 2024 at 02:37:29PM +0200, Leon Romanovsky wrote:
-> From: Jianbo Liu <jianbol@nvidia.com>
-> 
-> Previously xfrm_dev_state_advance_esn() was added for RX only. But
-> it's possible that ESN context also need to be synced to hardware for
-> TX, so call it for outbound in this patch.
-> 
-> Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  Documentation/networking/xfrm_device.rst                 | 3 ++-
->  drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c          | 3 +++
->  drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c | 3 +++
->  net/xfrm/xfrm_replay.c                                   | 1 +
->  4 files changed, 9 insertions(+), 1 deletion(-)
+On Tue, Jan 7, 2025 at 4:57=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.com=
+> wrote:
+>
+> From: Xiao Liang <shaw.leon@gmail.com>
+> Date: Sat,  4 Jan 2025 20:57:21 +0800
+[...]
+> > - In amt_newlink() drivers/net/amt.c:
+> >
+> >     amt->net =3D net;
+> >     ...
+> >     amt->stream_dev =3D dev_get_by_index(net, ...
+> >
+> >   Uses net, but amt_lookup_upper_dev() only searches in dev_net.
+> >   So the AMT device may not be properly deleted if it's in a different
+> >   netns from lower dev.
+>
+> I think you are right, and the upper device will be leaked
+> and UAF will happen.
+>
+> amt must manage a list linked to a lower dev.
+>
+> Given no one has reported the issue, another option would be
+> drop cross netns support in a short period.
 
-Steffen,
+Yes. I also noticed AMT sets dev->netns_local to prevent netns
+change. Probably it also assumes the same netns during creation.
 
-This is kindly reminder.
+[...]
+> >
+> > - In gtp_newlink() in drivers/net/gtp.c:
+> >
+> >     gtp->net =3D src_net;
+> >     ...
+> >     gn =3D net_generic(dev_net(dev), gtp_net_id);
+> >     list_add_rcu(&gtp->list, &gn->gtp_dev_list);
+> >
+> >   Uses src_net, but priv is linked to list in dev_net. So it may not be
+> >   properly deleted on removal of link netns.
+>
+> The device is linked to a list in the same netns, so the
+> device will not be leaked.  See gtp_net_exit_batch_rtnl().
+>
+> Rather, the problem is the udp tunnel socket netns could be
+> freed earlier than the dev netns.
 
-Thanks
+Yes, you're right. Actually I mean the netns of the socket by "link netns"
+(there's some clarification about this in patch 02).
 
-> 
-> diff --git a/Documentation/networking/xfrm_device.rst b/Documentation/networking/xfrm_device.rst
-> index bfea9d8579ed..66f6e9a9b59a 100644
-> --- a/Documentation/networking/xfrm_device.rst
-> +++ b/Documentation/networking/xfrm_device.rst
-> @@ -169,7 +169,8 @@ the stack in xfrm_input().
->  
->  	hand the packet to napi_gro_receive() as usual
->  
-> -In ESN mode, xdo_dev_state_advance_esn() is called from xfrm_replay_advance_esn().
-> +In ESN mode, xdo_dev_state_advance_esn() is called from
-> +xfrm_replay_advance_esn() for RX, and xfrm_replay_overflow_offload_esn for TX.
->  Driver will check packet seq number and update HW ESN state machine if needed.
->  
->  Packet offload mode:
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-> index bc3af0054406..e56e4f238795 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-> @@ -6559,6 +6559,9 @@ static void cxgb4_advance_esn_state(struct xfrm_state *x)
->  {
->  	struct adapter *adap = netdev2adap(x->xso.dev);
->  
-> +	if (x->xso.dir != XFRM_DEV_OFFLOAD_IN)
-> +		return;
-> +
->  	if (!mutex_trylock(&uld_mutex)) {
->  		dev_dbg(adap->pdev_dev,
->  			"crypto uld critical resource is under use\n");
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
-> index ca92e518be76..3dd4f2492090 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
-> @@ -980,6 +980,9 @@ static void mlx5e_xfrm_advance_esn_state(struct xfrm_state *x)
->  	struct mlx5e_ipsec_sa_entry *sa_entry_shadow;
->  	bool need_update;
->  
-> +	if (x->xso.dir != XFRM_DEV_OFFLOAD_IN)
-> +		return;
-> +
->  	need_update = mlx5e_ipsec_update_esn_state(sa_entry);
->  	if (!need_update)
->  		return;
-> diff --git a/net/xfrm/xfrm_replay.c b/net/xfrm/xfrm_replay.c
-> index bc56c6305725..e500aebbad22 100644
-> --- a/net/xfrm/xfrm_replay.c
-> +++ b/net/xfrm/xfrm_replay.c
-> @@ -729,6 +729,7 @@ static int xfrm_replay_overflow_offload_esn(struct xfrm_state *x, struct sk_buff
->  		}
->  
->  		replay_esn->oseq = oseq;
-> +		xfrm_dev_state_advance_esn(x);
->  
->  		if (xfrm_aevent_is_on(net))
->  			xfrm_replay_notify(x, XFRM_REPLAY_UPDATE);
-> -- 
-> 2.47.0
-> 
-> 
+[...]
+> >
+> > - In pfcp_newlink() in drivers/net/pfcp.c:
+> >
+> >     pfcp->net =3D net;
+> >     ...
+> >     pn =3D net_generic(dev_net(dev), pfcp_net_id);
+> >     list_add_rcu(&pfcp->list, &pn->pfcp_dev_list);
+> >
+> >   Same as above.
+>
+> I haven't tested pfcp but it seems to have the same problem.
+>
+> I'll post patches for gtp and pfcp.
+>
+
+It would be nice.
+
+>
+> >
+> > - In lowpan_newlink() in net/ieee802154/6lowpan/core.c:
+> >
+> >     wdev =3D dev_get_by_index(dev_net(ldev), nla_get_u32(tb[IFLA_LINK])=
+);
+> >
+> >   Looks for IFLA_LINK in dev_net, but in theory the ifindex is defined
+> >   in link netns.
+>
+> I guess you mean the ifindex is defined in src_net instead.
+> Not sure if it's too late to change the behaviour.
+
+Yes, it's source net for lowpan. I think it depends on whether
+the interpretation of IFLA_LINK should be considered as part API
+provided by rtnetlink core, or something customizable by driver.
+In the former case, this can be considered as a bug.
+
+Thanks.
 
