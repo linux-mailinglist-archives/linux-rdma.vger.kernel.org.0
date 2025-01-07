@@ -1,84 +1,84 @@
-Return-Path: <linux-rdma+bounces-6870-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6871-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5900A038DE
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 08:37:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA2FDA038E3
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 08:38:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BC89164B08
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 07:37:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2347164F4A
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 07:38:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35001E0499;
-	Tue,  7 Jan 2025 07:37:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05CBB1662F1;
+	Tue,  7 Jan 2025 07:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="cIIse52q"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="PWBJOlhH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02BC4154BE2
-	for <linux-rdma@vger.kernel.org>; Tue,  7 Jan 2025 07:37:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AAEF194A7C
+	for <linux-rdma@vger.kernel.org>; Tue,  7 Jan 2025 07:38:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736235466; cv=none; b=c+06Q0UG8QHQJ0LMAclXt90Li8tYIFfrZZh8hxCetOGmEb79LsNx+qYHmjZA1lVRnzYFr0CsuTo5w/eOrDfQcWSeYMeJ9UKP3n+Re6GsybJ1BeZA4NgHSylsa4PKo43eHNs6vFJ1w3kCmhwvTDunge8dUPVMDwLxaRE2+2FeMC4=
+	t=1736235502; cv=none; b=prRmWGe/QcPrYL0/lr8JVhWUX/bX51L6KidCXg1iXTctsSOrKD3Wdbwu0viXe00zPLuFBwmQFMGR/G2/bFB2UTsWoTmUyo2LZDquQztg9XDiTviHVW5btFLyyeLSntpLqSyFr4QMQK1jBF+9Jl1tYERUQoYPPbcu/UXL+CXjSek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736235466; c=relaxed/simple;
-	bh=G0SNaoKmbujuoRbYi3RItEIAYIfkojoXo0Uyf/uEh+A=;
+	s=arc-20240116; t=1736235502; c=relaxed/simple;
+	bh=MeHjwlmHyRYJwqF55zIqyHrTafSLhdOwEGgkfNw2/cA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JABPGlM8NFczCW70O5AveRW78w7I40nJQ9SfBVfDAd45XhZtwx6iudiM1wk+iysURPsa0LG1C/i6VTrqrUehv+HyARto14C1kjUO/TG44n8q8U05FkPkzG2v+muPpEHnDr9CqNA+s1wXwgI2k8ijknbd/yHJKHIIN+43xCwmNyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=cIIse52q; arc=none smtp.client-ip=209.85.208.42
+	 To:Cc:Content-Type; b=uY1fEPv2FXRU1KHuruVOWgE5CKbTM0i8fOif5mY1mIQvkctXkmSu4u4/5jEjbRU301q3fsqOTYNZJJwsMLovBaRYWUq4GZfRjVZ/cAvjVpyd2S3XLCy3VXYuKovUxhsWOuHaoPx3fqy386w0Bkt6tEjYMM4CD953uCk0CCZjFys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=PWBJOlhH; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5d3d69e5b63so2505601a12.1
-        for <linux-rdma@vger.kernel.org>; Mon, 06 Jan 2025 23:37:42 -0800 (PST)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5d44550adb7so3664209a12.2
+        for <linux-rdma@vger.kernel.org>; Mon, 06 Jan 2025 23:38:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1736235461; x=1736840261; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1736235495; x=1736840295; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bx+19x0B2gmDNiPmEgOxy9mSgxj2NhTgxhyx+fJPwMI=;
-        b=cIIse52qF9qKKdbDe8MRc5La1gHFmZM84uUFajFRqyyoVbkCGxUOkZKV/q6bF1JMbL
-         WmVMsJHiZ29qEzdyxgLhE4xEHEDwxYj6zHDr+gK9MSnJGo+6qrdA3O4b9R8E+5ZkOQTY
-         FdZN3hVylVvjfLYSiyoTOknt5vHzTZ3N6yI7G/QtGZurNKy/ow4X3gQDzD9+PJachTpe
-         HQpWWtzr/hH7kLrUcwx0rf599oyDVvhL/HRbuDDywTMqHddMlaOr4Pnb7Srpo6IKBHPG
-         jsCACtjoxru99YL89iNd3d1CG2rtR7WIikqtj0joljKi8JtStzv6Mk8acpz1tHaQAvY9
-         aOaA==
+        bh=+K5NTtkkHH0F4j1K3TcqwFsH8+ooT4rladtnvSGOOpM=;
+        b=PWBJOlhHnrza5YuqS+/eAUU/E7AJYPJNX5NTjD4Jq2xbCGX9xjRHThB2uleP/MMWRb
+         /uDWgRg+DmWDNfxN7jScC6fQ4X962sGfiWe8CwAQGm1i/4l4U8C7xyuKTCtPzbbo2Flg
+         Ntg7KSCogu7U6uz8wOOHuKcYxTTR5ZShdc4f2yKUZYS1awUmzoLEb9cGOUP/749qxlPf
+         WMfF42Q/nraqjamWDz/Ao9kYAwUFOX98dRqPTzyoDnRuvzRyQc1AfpLbdwnrG7/qAEPA
+         lJkMTsjcS7f71L+OuyUEr1dmK/9b2wsByl18SqlIesLK5HXDw0Dm52A75CJbWNiO6Cwu
+         +Smw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736235461; x=1736840261;
+        d=1e100.net; s=20230601; t=1736235495; x=1736840295;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bx+19x0B2gmDNiPmEgOxy9mSgxj2NhTgxhyx+fJPwMI=;
-        b=E0BYGH7qrePxrUuBcQhkl45/zxKhLrzzO1Whbym6IIfvSH4MtijYQj4n7S4whybgaB
-         u21zSmenIb3E7cn0PqX7WqddQeAG1+l8LWLgBxrqMlLDduj2evNJ3TkIsyIgrJCNhtGa
-         ocbUxu7W5V9AIn6EDFHQ9Dl11t4Tqc72mQVyPugnTcClUPqe75fpcx8SuP0I62y8y0t8
-         unAEC8lTD90xfw+3eZ3AxmguXK/AYyyV9LYci8whysv9O5HaUWm2dSO/qID4Oo1Pgu1V
-         dEUWqqx+Xw3ctJhydYWcknl2AhRA+NtG3jm5HggKJ+N6Zfu1Umi3YB+HxX7yh/VqzFJ2
-         7bNg==
-X-Forwarded-Encrypted: i=1; AJvYcCUByUfCf2tbfIjivVjJn5xjN83r1ql2Pu2HmWdUDJOCQqFlFj4DH+X7vgSJ+zwy+x2t1KqPFCFyBo/v@vger.kernel.org
-X-Gm-Message-State: AOJu0YxuFFaFOdrVoHMm3Agd+PzDIZv/oHIVsB6HKCRyLBsHSglsdmsr
-	ypUMWl0eTB/FWxgjBgPzwIkResY3f/4nU8mDXd9Gt83fGN5A0IWnZsGarE4jGTNUs3WVnEPyubf
-	S8hv12BzXB2z1Rxcf4Pe9t39W5q+1z6xBAsIhYA==
-X-Gm-Gg: ASbGncsqP4O6JCBK/1CuigElo4YJz6Z0kcfCuF5ouIbcJjtMfFfgFf3rPqnK8LnbEzn
-	H0/PF5he4BIahwgzKZIej0DDw1MvgHLWtKE+Qy9wfyO/qXQLjzdQeCOhBYV0h0rNIdqWUz7E=
-X-Google-Smtp-Source: AGHT+IFHiWN7HRV0tjVYeqqyJzr7VZvRlCA285ZkJj39Az5Q+NOXa/GqcYy3kqLT8UjvlN/1cFajXcSI9RNarU2euj8=
-X-Received: by 2002:a05:6402:2790:b0:5d0:e852:dca0 with SMTP id
- 4fb4d7f45d1cf-5d81de1c377mr21426236a12.11.1736235461329; Mon, 06 Jan 2025
- 23:37:41 -0800 (PST)
+        bh=+K5NTtkkHH0F4j1K3TcqwFsH8+ooT4rladtnvSGOOpM=;
+        b=J+tPr3pPy4E4sgW+3juIwmDH38h9z5Qk4u9StDU/opzgWk8N3S6bzho7b+Go5szogM
+         4l15I1ORzguH8dc2hRShRmWNvmXjqMJy9cqtY09aPvt3odXd5O3mlgWPqKYUjHadrhsA
+         VUzswvPBOLN7Zq+V/wGMqnzF/cT1jEP7J2YRxCBzbK79JrEKCwDxsZ/ClrDXTIeGtCd9
+         Y9LhMa5iBEWn/zqr1sqdpgcQi6VcxL5UquyKAFpwMBZRp4rR9Dh3yNN+mjnWD5U4R7bp
+         eizMgr3PkBQI5+dhkAHHGzeL/6Xwp1SvXr9Lk8hssJozYouQOR9B7bzbeVos/24Lsjoh
+         NW1w==
+X-Forwarded-Encrypted: i=1; AJvYcCUdpEXD+WseUu4glTe/Q81Kh6qvhathpf1wcX0VTXtX5gyyPifeDNrgCPH30a9LO6ySerVvWyx2IMUz@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+YCVLo4fSsPX2Al3VSA16Xmmhpv3MtMYW5A5Ggv9wAchFpaJT
+	rJ7Y2H+CS2pP95BO7TiU0vIoJAexIK2o2hXGEC758lxaZqn6lBdM5P/whcLvMoNgGJeCxGZpeov
+	1duuLxTE6VQgZp/kBwpO3uWhe6+ykuOg/H4JEzCioacQXxlddlKg=
+X-Gm-Gg: ASbGncv5TmLnQL4/PR0hgdjdly4rkJi//W+gIzQk/KfNqyFu567yChfAewvDsC7+G4h
+	zMfqS5Ry4MTin6fBGYwcXsIPLisTy/DnyOhJx2HX2CKYkBFI7lwlOQubG6z7ZZsgfMa3qKsU=
+X-Google-Smtp-Source: AGHT+IH0yHgQYI52xxhkAl+Pv+y2nSjW7oz6dhILeey3Yd3VP16wJofS2RwX7ROj0q0KGDxt7BeW9iSgKHibBj84w+w=
+X-Received: by 2002:a05:6402:5187:b0:5d0:bf79:e925 with SMTP id
+ 4fb4d7f45d1cf-5d81de07d1dmr19780495a12.6.1736235495597; Mon, 06 Jan 2025
+ 23:38:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250107060810.91111-1-lizhijian@fujitsu.com>
-In-Reply-To: <20250107060810.91111-1-lizhijian@fujitsu.com>
+References: <20250107060810.91111-1-lizhijian@fujitsu.com> <20250107060810.91111-2-lizhijian@fujitsu.com>
+In-Reply-To: <20250107060810.91111-2-lizhijian@fujitsu.com>
 From: Jinpu Wang <jinpu.wang@ionos.com>
-Date: Tue, 7 Jan 2025 08:37:30 +0100
-Message-ID: <CAMGffEmi5odRsHvjbqXiLNvuy8AFMJBOw1vv7HHGE9kep=HGgA@mail.gmail.com>
-Subject: Re: [PATCH blktests v4 1/2] tests/rnbd: Add a basic RNBD test
+Date: Tue, 7 Jan 2025 08:38:05 +0100
+Message-ID: <CAMGffEnkqZSEts7Cu9pCUmi9uYtP-vgjQ4qPYkDdkZpG=A_HNw@mail.gmail.com>
+Subject: Re: [PATCH blktests v4 2/2] tests/rnbd: Implement RNBD regression test
 To: Li Zhijian <lizhijian@fujitsu.com>
 Cc: linux-block@vger.kernel.org, shinichiro.kawasaki@wdc.com, 
 	linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>, 
@@ -89,27 +89,36 @@ Content-Transfer-Encoding: quoted-printable
 On Tue, Jan 7, 2025 at 7:08=E2=80=AFAM Li Zhijian <lizhijian@fujitsu.com> w=
 rote:
 >
-> It attempts to connect and disconnect the rnbd service on localhost.
-> Actually, It also reveals a real kernel issue[0].
+> This test case has been in my possession for quite some time.
+> I am upstreaming it now because it has once again detected a regression i=
+n
+> a recent kernel release[0].
 >
-> rnbd/001 (Start Stop RNBD)                                   [passed]
->     runtime  1.425s  ...  1.157s
+> It's just stupid to connect and disconnect RNBD on localhost and expect
+> no dmesg exceptions, with some attempts actually succeeding.
 >
-> Please note that currently, only RTRS over RXE is supported.
+> rnbd/002 (Start Stop RNBD repeatedly)                        [passed]
+>     runtime                   13.252s  ...  13.099s
+>     start/stop success ratio  100/100  ...  100/100
 >
-> [0] https://lore.kernel.org/linux-rdma/20241231013416.1290920-1-lizhijian=
-@fujitsu.com/
+> [0] https://lore.kernel.org/linux-rdma/20241223025700.292536-1-lizhijian@=
+fujitsu.com/
 >
 > Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 Thx for the patch, LGTM
 Reviewed-by: Jack Wang <jinpu.wang@ionos.com>
 > ---
 > V4:
->   test start_soft_rdma # Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com=
+>   - Fix a typo and update the passed condition # Shinichiro Kawasaki <shi=
+nichiro.kawasaki@wdc.com>
+>   - rename test_start_stop() to test_start_stop_repeatedly()
 >
 > V3:
->   new patch, add a seperate basic rnbd test and simplify the _start_rnbd_=
-client
+>   - Always stop the rnbd regardless of the result of start
+>
+> V2:
+>   - address comments from Shinichiro
+>   - minor fixes
 >
 > Copy to the RDMA/rtrs guys:
 >
@@ -118,29 +127,34 @@ client
 > Cc: Leon Romanovsky <leon@kernel.org>
 > Cc: "Md. Haris Iqbal" <haris.iqbal@ionos.com>
 > ---
->  tests/rnbd/001     | 39 ++++++++++++++++++++++++++++++++++
->  tests/rnbd/001.out |  2 ++
->  tests/rnbd/rc      | 52 ++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 93 insertions(+)
->  create mode 100755 tests/rnbd/001
->  create mode 100644 tests/rnbd/001.out
->  create mode 100644 tests/rnbd/rc
+>  tests/rnbd/002     | 47 ++++++++++++++++++++++++++++++++++++++++++++++
+>  tests/rnbd/002.out |  2 ++
+>  2 files changed, 49 insertions(+)
+>  create mode 100755 tests/rnbd/002
+>  create mode 100644 tests/rnbd/002.out
 >
-> diff --git a/tests/rnbd/001 b/tests/rnbd/001
+> diff --git a/tests/rnbd/002 b/tests/rnbd/002
 > new file mode 100755
-> index 000000000000..ace2f8ea8a2b
+> index 000000000000..7d7da9401974
 > --- /dev/null
-> +++ b/tests/rnbd/001
-> @@ -0,0 +1,39 @@
+> +++ b/tests/rnbd/002
+> @@ -0,0 +1,47 @@
 > +#!/bin/bash
 > +# SPDX-License-Identifier: GPL-3.0+
 > +# Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
 > +#
-> +# Basic RNBD test
+> +# Commit 667db86bcbe8 ("RDMA/rtrs: Register ib event handler") introduce=
+d a
+> +# new element .deinit but never used it at all that lead to a
+> +# 'list_add corruption' kernel warning.
+> +#
+> +# This test is intended to check whether the current kernel is affected.
+> +# The following patch resolves this issue.
+> +#  RDMA/rtrs: Add missing deinit() call
 > +#
 > +. tests/rnbd/rc
 > +
-> +DESCRIPTION=3D"Start Stop RNBD"
+> +DESCRIPTION=3D"Start Stop RNBD repeatedly"
 > +CHECK_DMESG=3D1
 > +QUICK=3D1
 > +
@@ -149,96 +163,39 @@ client
 > +       _have_loop
 > +}
 > +
-> +test_start_stop()
+> +test_start_stop_repeatedly()
 > +{
 > +       _setup_rnbd || return
 > +
-> +       local loop_dev
+> +       local loop_dev i j=3D0
 > +       loop_dev=3D"$(losetup -f)"
 > +
-> +       if _start_rnbd_client "${loop_dev}"; then
-> +               sleep 0.5
-> +               _stop_rnbd_client || echo "Failed to disconnect rnbd"
-> +       else
-> +               echo "Failed to connect rnbd"
-> +       fi
+> +       for ((i=3D0;i<100;i++))
+> +       do
+> +               _start_rnbd_client "${loop_dev}" &>/dev/null
+> +               # Always stop it so that the next start has change to wor=
+k
+> +               _stop_rnbd_client &>/dev/null && ((j++))
+> +       done
+> +
+> +       TEST_RUN["start/stop success ratio"]=3D"${j}/${i}"
 > +
 > +       _cleanup_rnbd
 > +}
 > +
 > +test() {
 > +       echo "Running ${TEST_NAME}"
-> +       test_start_stop
+> +       test_start_stop_repeatedly
 > +       echo "Test complete"
 > +}
-> diff --git a/tests/rnbd/001.out b/tests/rnbd/001.out
+> diff --git a/tests/rnbd/002.out b/tests/rnbd/002.out
 > new file mode 100644
-> index 000000000000..c1f9980d0f7b
+> index 000000000000..2f055b8c82f9
 > --- /dev/null
-> +++ b/tests/rnbd/001.out
+> +++ b/tests/rnbd/002.out
 > @@ -0,0 +1,2 @@
-> +Running rnbd/001
+> +Running rnbd/002
 > +Test complete
-> diff --git a/tests/rnbd/rc b/tests/rnbd/rc
-> new file mode 100644
-> index 000000000000..a5edc2e5ad9c
-> --- /dev/null
-> +++ b/tests/rnbd/rc
-> @@ -0,0 +1,52 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-3.0+
-> +# Copyright (c) 2024 FUJITSU LIMITED. All Rights Reserved.
-> +#
-> +# RNBD tests.
-> +
-> +. common/rc
-> +. common/multipath-over-rdma
-> +
-> +_have_rnbd() {
-> +       if [[ "$USE_RXE" !=3D 1 ]]; then
-> +               SKIP_REASONS+=3D("Only USE_RXE=3D1 is supported")
-> +       fi
-> +       _have_driver rdma_rxe
-> +       _have_driver rnbd_server
-> +       _have_driver rnbd_client
-> +}
-> +
-> +_setup_rnbd() {
-> +       start_soft_rdma || return $?
-> +
-> +       for i in $(rdma_network_interfaces)
-> +       do
-> +               ipv4_addr=3D$(get_ipv4_addr "$i")
-> +               if [[ -n "${ipv4_addr}" ]]; then
-> +                       def_traddr=3D${ipv4_addr}
-> +               fi
-> +       done
-> +}
-> +
-> +_cleanup_rnbd()
-> +{
-> +       stop_soft_rdma
-> +}
-> +
-> +_stop_rnbd_client() {
-> +       local s sessions
-> +
-> +       sessions=3D$(ls -d /sys/block/rnbd* 2>/dev/null)
-> +       for s in $sessions
-> +       do
-> +               grep -qx blktest "$s"/rnbd/session && echo "normal" > "$s=
-"/rnbd/unmap_device
-> +       done
-> +}
-> +
-> +_start_rnbd_client() {
-> +       local blkdev=3D$1
-> +
-> +       # Stop potential remaining blktest sessions first
-> +       _stop_rnbd_client
-> +       echo "sessname=3Dblktest path=3Dip:$def_traddr device_path=3D$blk=
-dev" > /sys/devices/virtual/rnbd-client/ctl/map_device
-> +}
 > --
 > 2.47.0
 >
