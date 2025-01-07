@@ -1,73 +1,73 @@
-Return-Path: <linux-rdma+bounces-6851-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6852-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19F85A03583
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 03:53:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03DE0A03585
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 03:53:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A6AD3A4360
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 02:53:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 714DA3A447C
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 02:53:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D76618A6B8;
-	Tue,  7 Jan 2025 02:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BBC0185E7F;
+	Tue,  7 Jan 2025 02:53:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DX/hb4z7"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="g7iHe1/L"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AE08157493
-	for <linux-rdma@vger.kernel.org>; Tue,  7 Jan 2025 02:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB7418BBA8
+	for <linux-rdma@vger.kernel.org>; Tue,  7 Jan 2025 02:53:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736218413; cv=none; b=OP5BvYIOYstrbY8jNXNw/lpwskHOhTCwX/HioB3yMOCjNC5eE3TcaZztCHuiNUDDZMA/nhWudNWHBDa4A+lrSTpXHiYBRzVamhJ6jeEbGhz9EVjWQPMWTIfKZZtiUX/zCRV6VGre9MaBu1P9pVeJvXDCJgXFNXDfIMOa6FvU7k0=
+	t=1736218418; cv=none; b=i/TyuMffQpvw2YBtk2tHn52xelLaYFOescLUtARMraEoEEJHLTTM7C0rXgPVWfUgt/olLo1yBeb5ZTiF5JimKDkAN4Ht9ouhup/nYKxgXB4rcV5tlBKBHB8lA4TDS6FGT2tlV1rQscWdpxJ27BTiEesXjbgB2jfSlXwxAgQXg3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736218413; c=relaxed/simple;
-	bh=CFt2wRtVsghTC9fPCTpEo5HM5TJN8QOuhLfOm6ek8ZA=;
+	s=arc-20240116; t=1736218418; c=relaxed/simple;
+	bh=9Et+OTL51PQqtzERuMR71pZCuvpO0dF7doaSmf2iD3g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JOt8gkB3c3PWTZSmMenzBhEGBlw7r1BfDBR8+I39M1e3DVkce94mWNHUaSXSxJOzhDc4CotZAza5duWl26Ts+vE2AX6hs25TGUrWKqMxwpv+k60sy62704as9kZaa7SHG0KbA8ZqJsixreDbeiXzGN7tLGAi0QpzzR2J/JZGWR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=DX/hb4z7; arc=none smtp.client-ip=209.85.214.169
+	 MIME-Version; b=sMjtoOYl5OB9KhfqVKudnMfUfj9FFKk9YUKqxEhzKz3z+HVUSyXG4jZyP41mWPFBC1S1dnzTffOBOIsjPzKA+ezijzddZE1UnF+RO0fMm9/pmTz3Z/a0sF++G0pzm1IRrAL8yY0Vwjc/J+xL2ZNdaHKLvC64VOrHS6X6SHhyS5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=g7iHe1/L; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2164b1f05caso213679635ad.3
-        for <linux-rdma@vger.kernel.org>; Mon, 06 Jan 2025 18:53:30 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-21675fd60feso21144895ad.2
+        for <linux-rdma@vger.kernel.org>; Mon, 06 Jan 2025 18:53:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1736218410; x=1736823210; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1736218414; x=1736823214; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GSGckmjUr1gcXmHMYI9glP3WZPfHuctvVdT8PdD1UKk=;
-        b=DX/hb4z7F/Qdk8AFi2XSlv1cgvGlB/uul+RhEHIZplAXoWGwA7jNp2nMJOwre+2vVD
-         yAzh5gBTj17KDIEB4L0JSE+jIMA7NwTgAPXWnnT2SZw0yPixp4E6wXYzY0vljXWU77VH
-         lPlENAahI88sRkW1pGbg8Lw6yKI/l0MVkL0QI=
+        bh=fcVwvAn82oDbL4UZKDanDj9GdX7S4bHhDPNmufyqUqc=;
+        b=g7iHe1/LmUDN9CFya0OOQ9gKitZITgLgalmyf8hewHBs3y/NZ5BtrgQJXMeq+qgiHm
+         L1mmpZ68uPOu/k7ibaUOZVjbRFZJlCXNMSEKVYDh3QqGe5SE8rBp5oiD+SXH9Evmse6P
+         WOPrRSNpWPGtLpN8VaFScRQQD6B6JkUohV+3g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736218410; x=1736823210;
+        d=1e100.net; s=20230601; t=1736218414; x=1736823214;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GSGckmjUr1gcXmHMYI9glP3WZPfHuctvVdT8PdD1UKk=;
-        b=FXB/D7ny45UzhQSmFvVv7SJb3QNvk5TFFN5rU8eSupWCFr0XAM7MO0codZLFkelW4x
-         l3y4hkWNBQ1nz6alZePAlR8qBLWEXt5avZKe12qJRI0+x3KG6JGCr9JYsoIW16x8HSR8
-         7tMFGfzLFaVEJqtYjMbvm7j1Wwfz8co8vHKnbxkJW4lL6GJ36Z88WO0H/YZjJCMKJhV9
-         V6E6N+XzpaoFbSRCl2L86QtOLfZZBYsVd8El8yF8YjheeCe1JOh2H2z7zDAXk+udE8j/
-         AxdyjjB+w8BjZ8ujapRyFUC9H/aEFZvEs/vF/j1B2mNgL3NgyJwxmvqv0oxD4V0vrdm6
-         XhuA==
-X-Gm-Message-State: AOJu0Yy/jIprajiNxlf5Ky0oWBU5D0lcDi6kwctONhf4ux3H+DrUnh0A
-	56Lhbn/f5h2d8jI3RCZKzTcFQcnz70BTiyamUxsqsIxKWv18S4jujJxLOkv9rA==
-X-Gm-Gg: ASbGncsze+poi3wriocyza8lNFz3B+2BbRCvBsKuDNwg9IzKzI5uIvIAX0VEcvqZ+Kg
-	iBF3TWXBNAbGZDNSQz3lxS4LJkVQPUJYBWNNfY/lohEHmH1Su4fhtb+IoKza9492vx7ETDrgVT7
-	1Ofa7ld21yGCeEjcGPfAsd1US9PuQeET8Xdm4BWmN966jFuPR/E6GuIfwejjiExZaJW5ql+qn7M
-	MsnGnArvd6l/NH/7YMBPOzd3r6MhNyzeeBrX2kNCt4V3phcBL3C9DAwuK3PBJBNrSGDZbJpnae4
-	wJNEqHDtBkIJBVxbbEsk2x7NWAoB1lh530YJMIemCLjlWRtQvoGRCKN25dE=
-X-Google-Smtp-Source: AGHT+IF8L9qH9kH4c40fqzSLcDB2Cq23VhevoV2vqYcWkmBP/ZD2HoBe7xwgmrWqd3aL19PBH0l0bA==
-X-Received: by 2002:a17:902:e546:b0:215:9894:5670 with SMTP id d9443c01a7336-219e6ea26b3mr726800715ad.16.1736218409764;
-        Mon, 06 Jan 2025 18:53:29 -0800 (PST)
+        bh=fcVwvAn82oDbL4UZKDanDj9GdX7S4bHhDPNmufyqUqc=;
+        b=OyLC1er1rMAcxV7JHzSXp5UMAomW+18uxiei2AXgxGrsC1O/4k8SQwhZz7EY6J0Nge
+         +n8X1Ucbc/dl1ujN8x5GkMpR0C0ZqgY7fURa73m86SuX3smAUnhVRz+YSSm4inDYt8ZW
+         1gaSJr/RLiUgN0yPze7WQbH//tLdEevyhtZxbSy3gkWYBhZSvbuxovrRfdtrDalbcLuN
+         ELit4RNCsQEzrQmSvbXs+WVlZhqK1PYs3/+k0uO+17vFJeOfHOlMZQJgyIjH+t81NRwV
+         CBROZj5eVoTgCwwYPuArAbX0fxW5Zot3ZI03myhiOR7F161aMtEsLJMdLWl4WSmgnyp/
+         eOQw==
+X-Gm-Message-State: AOJu0Yzyy1l2+Rr1STtpUq/c3tQTsiXcFcG8MNZgMbZu434sGAk5IwP0
+	RHuczIPu2sHO7iavdlqEM3A67ppG0kyZthwnwdmZGVzpVBlq/eMrZSZOfXeCoA==
+X-Gm-Gg: ASbGnctowdpLvhyvgjElQrJO1Y4lJT6ESVW+7xX49fcQQyKW7bwINHw3VcqtzNOym6H
+	ZFXp2wPcpQDzBBmst5zHUNyJUr+tu/KQAL8KFHR6cKaeMl9zMv+11lOG0YOOsFzbedkWgw/Y7tp
+	+uTEvl2/iVfAstT2K4FQ2vScKPo+V1JXvA8VH7ZGMrx0YxH5tBYQ7YQoXK3nG1621DWEEXIPH1Z
+	vCIGSDkDOlZy/tX1SVDsZQxOcEko2ug93VXGVDo/Z3myCxYm/WRjG8PMTYajiHLnmCCc2j6Cwra
+	iK5JiKYTgJgk/i5munGQSXVEG/F+eac8dTvZx39qrCj7tEIBBzAcyTJ+DFo=
+X-Google-Smtp-Source: AGHT+IEQpvEF4lvCoCgENoLYRwJnaTxd3vjOWWeO7RvKuZHfHB2z6ebBtEQL8WpZb0cfxJbZjQdPxA==
+X-Received: by 2002:a17:902:d58e:b0:216:4724:2757 with SMTP id d9443c01a7336-219e6e8bc23mr976777985ad.4.1736218414282;
+        Mon, 06 Jan 2025 18:53:34 -0800 (PST)
 Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc9f692fsm300093285ad.216.2025.01.06.18.53.25
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc9f692fsm300093285ad.216.2025.01.06.18.53.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2025 18:53:29 -0800 (PST)
+        Mon, 06 Jan 2025 18:53:33 -0800 (PST)
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -83,9 +83,9 @@ Cc: linux-rdma@vger.kernel.org,
 	michael.chan@broadcom.com,
 	pavan.chebbi@broadcom.com,
 	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Subject: [PATCH rdma-next v2 RESEND 2/4] RDMA/bnxt_re: Add Async event handling support
-Date: Tue,  7 Jan 2025 08:15:50 +0530
-Message-ID: <20250107024553.2926983-3-kalesh-anakkur.purayil@broadcom.com>
+Subject: [PATCH rdma-next v2 RESEND 3/4] RDMA/bnxt_re: Query firmware defaults of CC params during probe
+Date: Tue,  7 Jan 2025 08:15:51 +0530
+Message-ID: <20250107024553.2926983-4-kalesh-anakkur.purayil@broadcom.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20250107024553.2926983-1-kalesh-anakkur.purayil@broadcom.com>
 References: <20250107024553.2926983-1-kalesh-anakkur.purayil@broadcom.com>
@@ -97,115 +97,181 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Using the option provided by Ethernet driver, register for FW Async
-event. During probe, while registeriung with Ethernet driver, provide
-the ulp hook 'ulp_async_notifier' for receiving the firmware events.
+Added function to query firmware default values of CC parameters
+during driver init. These values will be stored in driver local
+structure and used in subsequent patch.
 
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/bnxt_re.h |  1 +
- drivers/infiniband/hw/bnxt_re/main.c    | 47 +++++++++++++++++++++++++
- 2 files changed, 48 insertions(+)
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h  |   1 +
+ drivers/infiniband/hw/bnxt_re/main.c     |   5 +
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c | 113 +++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h |   2 +
+ 4 files changed, 121 insertions(+)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index 2975b11b79bf..018386295bcd 100644
+index 018386295bcd..f40aca550328 100644
 --- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
 +++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -229,6 +229,7 @@ struct bnxt_re_dev {
- 	DECLARE_HASHTABLE(srq_hash, MAX_SRQ_HASH_BITS);
+@@ -230,6 +230,7 @@ struct bnxt_re_dev {
  	struct dentry			*dbg_root;
  	struct dentry			*qp_debugfs;
-+	unsigned long			event_bitmap;
+ 	unsigned long			event_bitmap;
++	struct bnxt_qplib_cc_param	cc_param;
  };
  
  #define to_bnxt_re_dev(ptr, member)	\
 diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 6d1800e285ef..1dc305689d7b 100644
+index 1dc305689d7b..aa08eb5bbb68 100644
 --- a/drivers/infiniband/hw/bnxt_re/main.c
 +++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -295,6 +295,20 @@ static void bnxt_re_vf_res_config(struct bnxt_re_dev *rdev)
- 				      &rdev->qplib_ctx);
- }
+@@ -2104,6 +2104,11 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
+ 	set_bit(BNXT_RE_FLAG_RESOURCES_INITIALIZED, &rdev->flags);
  
-+static void bnxt_re_async_notifier(void *handle, struct hwrm_async_event_cmpl *cmpl)
+ 	if (!rdev->is_virtfn) {
++		/* Query f/w defaults of CC params */
++		rc = bnxt_qplib_query_cc_param(&rdev->qplib_res, &rdev->cc_param);
++		if (rc)
++			ibdev_warn(&rdev->ibdev, "Failed to query CC defaults\n");
++
+ 		rc = bnxt_re_setup_qos(rdev);
+ 		if (rc)
+ 			ibdev_info(&rdev->ibdev,
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+index 7e20ae3d2c4f..d56cc3330d1b 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
+@@ -1016,3 +1016,116 @@ int bnxt_qplib_read_context(struct bnxt_qplib_rcfw *rcfw, u8 res_type,
+ 	dma_free_coherent(&rcfw->pdev->dev, sbuf.size, sbuf.sb, sbuf.dma_addr);
+ 	return rc;
+ }
++
++static void bnxt_qplib_read_cc_gen1(struct bnxt_qplib_cc_param_ext *cc_ext,
++				    struct creq_query_roce_cc_gen1_resp_sb_tlv *sb)
 +{
-+	struct bnxt_re_dev *rdev = (struct bnxt_re_dev *)handle;
-+	u32 data1, data2;
-+	u16 event_id;
-+
-+	event_id = le16_to_cpu(cmpl->event_id);
-+	data1 = le32_to_cpu(cmpl->event_data1);
-+	data2 = le32_to_cpu(cmpl->event_data2);
-+
-+	ibdev_dbg(&rdev->ibdev, "Async event_id = %d data1 = %d data2 = %d",
-+		  event_id, data1, data2);
++	cc_ext->inact_th_hi = le16_to_cpu(sb->inactivity_th_hi);
++	cc_ext->min_delta_cnp = le16_to_cpu(sb->min_time_between_cnps);
++	cc_ext->init_cp = le16_to_cpu(sb->init_cp);
++	cc_ext->tr_update_mode = sb->tr_update_mode;
++	cc_ext->tr_update_cyls = sb->tr_update_cycles;
++	cc_ext->fr_rtt = sb->fr_num_rtts;
++	cc_ext->ai_rate_incr = sb->ai_rate_increase;
++	cc_ext->rr_rtt_th = le16_to_cpu(sb->reduction_relax_rtts_th);
++	cc_ext->ar_cr_th = le16_to_cpu(sb->additional_relax_cr_th);
++	cc_ext->cr_min_th = le16_to_cpu(sb->cr_min_th);
++	cc_ext->bw_avg_weight = sb->bw_avg_weight;
++	cc_ext->cr_factor = sb->actual_cr_factor;
++	cc_ext->cr_th_max_cp = le16_to_cpu(sb->max_cp_cr_th);
++	cc_ext->cp_bias_en = sb->cp_bias_en;
++	cc_ext->cp_bias = sb->cp_bias;
++	cc_ext->cnp_ecn = sb->cnp_ecn;
++	cc_ext->rtt_jitter_en = sb->rtt_jitter_en;
++	cc_ext->bytes_per_usec = le16_to_cpu(sb->link_bytes_per_usec);
++	cc_ext->cc_cr_reset_th = le16_to_cpu(sb->reset_cc_cr_th);
++	cc_ext->cr_width = sb->cr_width;
++	cc_ext->min_quota = sb->quota_period_min;
++	cc_ext->max_quota = sb->quota_period_max;
++	cc_ext->abs_max_quota = sb->quota_period_abs_max;
++	cc_ext->tr_lb = le16_to_cpu(sb->tr_lower_bound);
++	cc_ext->cr_prob_fac = sb->cr_prob_factor;
++	cc_ext->tr_prob_fac = sb->tr_prob_factor;
++	cc_ext->fair_cr_th = le16_to_cpu(sb->fairness_cr_th);
++	cc_ext->red_div = sb->red_div;
++	cc_ext->cnp_ratio_th = sb->cnp_ratio_th;
++	cc_ext->ai_ext_rtt = le16_to_cpu(sb->exp_ai_rtts);
++	cc_ext->exp_crcp_ratio = sb->exp_ai_cr_cp_ratio;
++	cc_ext->low_rate_en = sb->use_rate_table;
++	cc_ext->cpcr_update_th = le16_to_cpu(sb->cp_exp_update_th);
++	cc_ext->ai_rtt_th1 = le16_to_cpu(sb->high_exp_ai_rtts_th1);
++	cc_ext->ai_rtt_th2 = le16_to_cpu(sb->high_exp_ai_rtts_th2);
++	cc_ext->cf_rtt_th = le16_to_cpu(sb->actual_cr_cong_free_rtts_th);
++	cc_ext->sc_cr_th1 = le16_to_cpu(sb->severe_cong_cr_th1);
++	cc_ext->sc_cr_th2 = le16_to_cpu(sb->severe_cong_cr_th2);
++	cc_ext->l64B_per_rtt = le32_to_cpu(sb->link64B_per_rtt);
++	cc_ext->cc_ack_bytes = sb->cc_ack_bytes;
++	cc_ext->reduce_cf_rtt_th = le16_to_cpu(sb->reduce_init_cong_free_rtts_th);
 +}
 +
- static void bnxt_re_stop_irq(void *handle)
- {
- 	struct bnxt_re_en_dev_info *en_info = auxiliary_get_drvdata(handle);
-@@ -361,6 +375,7 @@ static void bnxt_re_start_irq(void *handle, struct bnxt_msix_entry *ent)
- }
- 
- static struct bnxt_ulp_ops bnxt_re_ulp_ops = {
-+	.ulp_async_notifier = bnxt_re_async_notifier,
- 	.ulp_irq_stop = bnxt_re_stop_irq,
- 	.ulp_irq_restart = bnxt_re_start_irq
- };
-@@ -1785,6 +1800,34 @@ static int bnxt_re_setup_qos(struct bnxt_re_dev *rdev)
- 	return 0;
- }
- 
-+static void bnxt_re_net_unregister_async_event(struct bnxt_re_dev *rdev)
++int bnxt_qplib_query_cc_param(struct bnxt_qplib_res *res,
++			      struct bnxt_qplib_cc_param *cc_param)
 +{
++	struct bnxt_qplib_tlv_query_rcc_sb *ext_sb;
++	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
++	struct creq_query_roce_cc_resp resp = {};
++	struct creq_query_roce_cc_resp_sb *sb;
++	struct bnxt_qplib_cmdqmsg msg = {};
++	struct cmdq_query_roce_cc req = {};
++	struct bnxt_qplib_rcfw_sbuf sbuf;
++	size_t resp_size;
 +	int rc;
 +
-+	if (rdev->is_virtfn)
-+		return;
++	/* Query the parameters from chip */
++	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req, CMDQ_BASE_OPCODE_QUERY_ROCE_CC,
++				 sizeof(req));
++	if (bnxt_qplib_is_chip_gen_p5_p7(res->cctx))
++		resp_size = sizeof(*ext_sb);
++	else
++		resp_size = sizeof(*sb);
 +
-+	memset(&rdev->event_bitmap, 0, sizeof(rdev->event_bitmap));
-+	rc = bnxt_register_async_events(rdev->en_dev, &rdev->event_bitmap,
-+					ASYNC_EVENT_CMPL_EVENT_ID_DCB_CONFIG_CHANGE);
++	sbuf.size = ALIGN(resp_size, BNXT_QPLIB_CMDQE_UNITS);
++	sbuf.sb = dma_alloc_coherent(&rcfw->pdev->dev, sbuf.size,
++				     &sbuf.dma_addr, GFP_KERNEL);
++	if (!sbuf.sb)
++		return -ENOMEM;
++
++	req.resp_size = sbuf.size / BNXT_QPLIB_CMDQE_UNITS;
++	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, &sbuf, sizeof(req),
++				sizeof(resp), 0);
++	rc = bnxt_qplib_rcfw_send_message(res->rcfw, &msg);
 +	if (rc)
-+		ibdev_err(&rdev->ibdev, "Failed to unregister async event");
++		goto out;
++
++	ext_sb = sbuf.sb;
++	sb = bnxt_qplib_is_chip_gen_p5_p7(res->cctx) ? &ext_sb->base_sb :
++		(struct creq_query_roce_cc_resp_sb *)ext_sb;
++
++	cc_param->enable = sb->enable_cc & CREQ_QUERY_ROCE_CC_RESP_SB_ENABLE_CC;
++	cc_param->tos_ecn = (sb->tos_dscp_tos_ecn &
++			     CREQ_QUERY_ROCE_CC_RESP_SB_TOS_ECN_MASK) >>
++			    CREQ_QUERY_ROCE_CC_RESP_SB_TOS_ECN_SFT;
++	cc_param->tos_dscp = (sb->tos_dscp_tos_ecn &
++			      CREQ_QUERY_ROCE_CC_RESP_SB_TOS_DSCP_MASK) >>
++			     CREQ_QUERY_ROCE_CC_RESP_SB_TOS_DSCP_SFT;
++	cc_param->alt_tos_dscp = sb->alt_tos_dscp;
++	cc_param->alt_vlan_pcp = sb->alt_vlan_pcp;
++
++	cc_param->g = sb->g;
++	cc_param->nph_per_state = sb->num_phases_per_state;
++	cc_param->init_cr = le16_to_cpu(sb->init_cr);
++	cc_param->init_tr = le16_to_cpu(sb->init_tr);
++	cc_param->cc_mode = sb->cc_mode;
++	cc_param->inact_th = le16_to_cpu(sb->inactivity_th);
++	cc_param->rtt = le16_to_cpu(sb->rtt);
++	cc_param->tcp_cp = le16_to_cpu(sb->tcp_cp);
++	cc_param->time_pph = sb->time_per_phase;
++	cc_param->pkts_pph = sb->pkts_per_phase;
++	if (bnxt_qplib_is_chip_gen_p5_p7(res->cctx)) {
++		bnxt_qplib_read_cc_gen1(&cc_param->cc_ext, &ext_sb->gen1_sb);
++		cc_param->inact_th |= (cc_param->cc_ext.inact_th_hi & 0x3F) << 16;
++	}
++out:
++	dma_free_coherent(&rcfw->pdev->dev, sbuf.size, sbuf.sb, sbuf.dma_addr);
++	return rc;
 +}
-+
-+static void bnxt_re_net_register_async_event(struct bnxt_re_dev *rdev)
-+{
-+	int rc;
-+
-+	if (rdev->is_virtfn)
-+		return;
-+
-+	rdev->event_bitmap |= (1 << ASYNC_EVENT_CMPL_EVENT_ID_DCB_CONFIG_CHANGE);
-+	rc = bnxt_register_async_events(rdev->en_dev, &rdev->event_bitmap,
-+					ASYNC_EVENT_CMPL_EVENT_ID_DCB_CONFIG_CHANGE);
-+	if (rc)
-+		ibdev_err(&rdev->ibdev, "Failed to unregister async event");
-+}
-+
- static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
- {
- 	struct bnxt_en_dev *en_dev = rdev->en_dev;
-@@ -1864,6 +1907,8 @@ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev, u8 op_type)
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+index e6beeb514b7d..debb26080143 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+@@ -355,6 +355,8 @@ int bnxt_qplib_modify_cc(struct bnxt_qplib_res *res,
+ 			 struct bnxt_qplib_cc_param *cc_param);
+ int bnxt_qplib_read_context(struct bnxt_qplib_rcfw *rcfw, u8 type, u32 xid,
+ 			    u32 resp_size, void *resp_va);
++int bnxt_qplib_query_cc_param(struct bnxt_qplib_res *res,
++			      struct bnxt_qplib_cc_param *cc_param);
  
- 	bnxt_re_debugfs_rem_pdev(rdev);
- 
-+	bnxt_re_net_unregister_async_event(rdev);
-+
- 	if (test_and_clear_bit(BNXT_RE_FLAG_QOS_WORK_REG, &rdev->flags))
- 		cancel_delayed_work_sync(&rdev->worker);
- 
-@@ -2077,6 +2122,8 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
- 
- 	bnxt_re_debugfs_add_pdev(rdev);
- 
-+	bnxt_re_net_register_async_event(rdev);
-+
- 	return 0;
- free_sctx:
- 	bnxt_re_net_stats_ctx_free(rdev, rdev->qplib_ctx.stats.fw_id);
+ #define BNXT_VAR_MAX_WQE       4352
+ #define BNXT_VAR_MAX_SLOT_ALIGN 256
 -- 
 2.43.5
 
