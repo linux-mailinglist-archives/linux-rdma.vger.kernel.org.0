@@ -1,181 +1,135 @@
-Return-Path: <linux-rdma+bounces-6879-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6880-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68C0BA03CD7
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 11:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B621DA03E4C
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 12:56:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C41A61883AA8
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 10:48:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 041A218857F0
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2025 11:56:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E2E1EE00F;
-	Tue,  7 Jan 2025 10:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB7CC1E5701;
+	Tue,  7 Jan 2025 11:56:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CpjNhOIS"
+	dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b="ONfKM3sg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCCE1AD3E0;
+	Tue,  7 Jan 2025 11:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.96.220.36
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736251005; cv=none; b=idPF/w69uJM9qtdcaRyzJK6XYcHBmuvjnB/SeZONCR9TvDln9WN6WpxGPvi21mCv5WVfxprrNwQ4rf0scmWFq6w/h5MW3fKqz/bTHXXLndojLXBUSI1oy/G0jCUpAKgXHfRAbVpWzh/BHd0F3On/q6Se4Osam/bVPRwKztK2g34=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736251005; c=relaxed/simple;
+	bh=Y/W35cGL4AP760QZmhuCb73b/ujNw5RzEZcAa2siicw=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p+dnTb4m0O6ELo3RWB0vdHfQw3/p7AJnAIPjHRl5oVaciz8KqqusXv285KW+TVKy+w9jVtpv8KAk3l+72ijqgrJIZunEbl+Cve79bMGXR54hlek+OEoCwCClK8Cqj6VXq8EYEb1m4RxDAkIriTQT7si0e9+YJePkLW6ZaXDVTFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=secunet.com; spf=pass smtp.mailfrom=secunet.com; dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b=ONfKM3sg; arc=none smtp.client-ip=62.96.220.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=secunet.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=secunet.com
+Received: from localhost (localhost [127.0.0.1])
+	by a.mx.secunet.com (Postfix) with ESMTP id 0061A20704;
+	Tue,  7 Jan 2025 12:56:39 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 4IneULMp334a; Tue,  7 Jan 2025 12:56:34 +0100 (CET)
+Received: from cas-essen-01.secunet.de (rl1.secunet.de [10.53.40.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7485F1EBA0D;
-	Tue,  7 Jan 2025 10:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736246839; cv=none; b=dpJvGG5OGRtSXO2cSQZi97Fw5PVcO2gsSEEwwzbftzFLHJX8SQgVjQdGa2Ql1o+Uh1RKBNgMEn+FFQTTbGg9G3ITeHT2xaeU45TyZMQv3+/7CPjFF6Yhj2K6darGVjAhXdjsFvj0HfZ9PdAhyd5bFVZMW9aaDwyy8XbR8qOJvUc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736246839; c=relaxed/simple;
-	bh=rmV+IrFXiYRmJO8m/Th28rKjbiFt6MRkkO4Sbqpe3Gw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TNb14KTZ/Gk9LUtJWYCr1QUzqn5NyplQvLv55/qnCE8Zu6ZAo2BAdxeqNqO6QHLuogJ5r69RWkq8BwohWTpreKTnNE+1ULcyCA9R7VYJX2omtq7CvUnuY6rc2vFS5UpK0nv9UmFu6fKGOuKyrvsDt2rJ3BGBfcv3gOPsWYxvq04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CpjNhOIS; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3862df95f92so6746814f8f.2;
-        Tue, 07 Jan 2025 02:47:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736246836; x=1736851636; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fh0AFKuAKxAUWXpt7kGI1qVooHVbo7SNiy/9flSEnaA=;
-        b=CpjNhOISeqslgdQr8wnZOAp9ApHs2YwkPksnqk1MKQ3QUOLtcQZk7hA0hrb07/9/7w
-         DeCq7eKw8HMlHv/jTgrClZY/UpKs0dm6fFCNyiHME+4jwmttynV65KVfS5bhPgIuZSyB
-         NUJc6AHKEfCN1BBVj30d3b9oN7m0Lm5DNKA8F3l+Pg2XPvx8UXMNJFLLMuafrBPbM8sT
-         BWzb4jejI0sE0nYIv9saiZIA0NS2yVLt8jp3rV/VWq+7fHcsZqm3w25fmO/t7IbvdDSZ
-         QmD6Oc7ZQuc1QSx7yVyG8Py/QtnR73wSV9l0ttm/E2hQEfOn3zA4Cars7nJHrcXWM09e
-         o4VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736246836; x=1736851636;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fh0AFKuAKxAUWXpt7kGI1qVooHVbo7SNiy/9flSEnaA=;
-        b=mFtrPvJjBAGjxAmAZWbxXqEIyL3aC9hidFvitNPDzHXsPypEbgQzSWR5x4LmpKblzE
-         6nRbfhLPdrGEUiYO3/Kzw1yNVqvr9Y6P035rGl9ZcdfNZ/MZAupgjm5o58zWOOx3Dvlh
-         4+Bmw1MvV2f/xAmMUECW2xG7XCgZocbkXvCLP2nKWEkgoxrEAkKqYma6NAgpwyk+2OnJ
-         47Cfb6Tw4Yz/lvDa3jzYgFZ0C7378AZkuABGCYmYCM5ckf+8gz+4SgXp/zFtQRxRRujl
-         m20u1bMQWjrVCLE1h82pSnf75G6KdXPDznnHie9YpeMfZZxvDHkX0Pqd3wqJsqrCxJke
-         bEJA==
-X-Forwarded-Encrypted: i=1; AJvYcCUBK8ZOT4hMZho0bTffApVOjCLJuhuMqDWczKlvOjbrrZVAsKp+qrEhuZoCc5MfI9b5FYY=@vger.kernel.org, AJvYcCUfHeUaTrTME02pjvkkXLPDOgj7wqJdQlhkzI/V4tzlB1p0B+L+IeYV00CwK4gMso3e2Q39pF3+yOFVgQ==@vger.kernel.org, AJvYcCV6VJPvg9gAUyI7S2BjNXlFtJ1na2/IckmZj0hgV9rWo4kpjFPPnNnzEGrDMIVYdYDGs/W/FfYj1mPe2SpUo0QH@vger.kernel.org, AJvYcCVB/oQ5RAPRCmg3OHubbU4edbCPbpeTIHQHWDs266UAIAJoaIL9/8QnORdjLv/LI6LeVDxczpLbWfMWA8JASGY=@vger.kernel.org, AJvYcCWtpdhJfVVcbI++sm9qYQXuDvFFa/z8W27l4CgSiGStsQOumx5cFLIPPGfqXtrGPxv3UwyQB9W4@vger.kernel.org, AJvYcCX4aI1OkbVCkO3dZ6bdwISAOJtS2vCZ1CF3fAxLy17kqeDR8q2pU0S7QbFKdxdtR1xyyee7e3puIbu7@vger.kernel.org, AJvYcCXUQKrQ0wF2qtY5oOa9v8p6wlWfobcXO5/U5rTmHbot+cStJfWy9e8YNroJ/OujX0M56A8RadBWFo56C5Au@vger.kernel.org, AJvYcCXY8EACV/lA1hY4o105sAatpGB/KNJov3S+W3coJ80N7vX7AIPEuzTtyntcHkwCiXa2gU52CJ33xaTWuA==@vger.kernel.org, AJvYcCXxX0J4F8Jj8JiKybWKhtXJg0TOQObvD7HIyKoS1Z27pLyIO51GPCyfC+8SG5g4c99TNOp2nxcMW2dO@vger.kernel.org
-X-Gm-Message-State: AOJu0YwR7xZHmlYBFjisBzLTlIh6j1zZY0Cd8IVSNcA7I2X0h04MqW17
-	s6eRsNRpJOsrbCMXi9rC9QmOvf5t68olKOc+D9AKSQH4U4fcBckxUY09lkHaqTZEgI2ORXAUMdR
-	3EbLSjbuinzW+g692W18EmOZEMbiJEKd9
-X-Gm-Gg: ASbGncsTONgZgyE2X7IM4+HIcEKSBdwCbzhE8lgyqlRee7wuV/6sHzIVCQ8BbLLN4X2
-	srNBsmR44ZzqwPIXkj2mCY1gDkL92LMaOmpZv
-X-Google-Smtp-Source: AGHT+IHp1K2L48YKiIQv0pwnQlZPYX8cMCBbRBU/fwg+IEmnnlA8QF5/odQWLMrNcSpCZK0F/LO3cHqTWVNEZ39orXM=
-X-Received: by 2002:a05:6000:480a:b0:386:1cd3:89fa with SMTP id
- ffacd0b85a97d-38a221fa8c6mr57843141f8f.33.1736246835555; Tue, 07 Jan 2025
- 02:47:15 -0800 (PST)
+	by a.mx.secunet.com (Postfix) with ESMTPS id 98F722067F;
+	Tue,  7 Jan 2025 12:56:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 98F722067F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secunet.com;
+	s=202301; t=1736250994;
+	bh=14o46c5adIkRvsnT1HmrA12+G3Y47DkBP+h07nnvIBE=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:From;
+	b=ONfKM3sgpapRE1/WnoG11ngvBe3ycsZSpc8AAWH/ILYjK3Lltf56mdvqVvkc/JLgL
+	 D6TyQuU8TYe7W07PQANFCM06TC7xnKUUhJg999Kb0xfeWgLWn+w75skYbeMSJxdFWR
+	 U68UWoWQPeVvZPrtGEcB0MnZdLHynR6OQMzfrnMRiU43LEq7eBjsl6wR6q7ANS9I9F
+	 PlUH8lD6HpF/8y19VzOCd4NR0WH7cZr2uU2FHDTLZFCkImnkwSJ3YPW9ICQdZe3GKr
+	 TiG6tuqCkpPEV3GBOMjMiuME61PWC9hQeSl6V1VYqJ1Bm7s3jhQ2mNsVfbvtThnjwf
+	 z0ZtwZbNW+r2g==
+Received: from mbx-essen-02.secunet.de (10.53.40.198) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Tue, 7 Jan 2025 12:56:34 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
+ (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Tue, 7 Jan
+ 2025 12:56:34 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+	id E79173184216; Tue,  7 Jan 2025 12:56:33 +0100 (CET)
+Date: Tue, 7 Jan 2025 12:56:33 +0100
+From: Steffen Klassert <steffen.klassert@secunet.com>
+To: Leon Romanovsky <leon@kernel.org>
+CC: Jianbo Liu <jianbol@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+	"Eric Dumazet" <edumazet@google.com>, Herbert Xu
+	<herbert@gondor.apana.org.au>, Jakub Kicinski <kuba@kernel.org>, Jonathan
+ Corbet <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, "Potnuri Bharat Teja" <bharat@chelsio.com>, Saeed
+ Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
+Subject: Re: [PATCH ipsec-next 1/2] xfrm: Support ESN context update to
+ hardware for TX
+Message-ID: <Z30WcStdG5Z4tDru@gauss3.secunet.de>
+References: <874f965d786606b0b4351c976f50271349f68b03.1734611621.git.leon@kernel.org>
+ <20250107102204.GB87447@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250104125732.17335-1-shaw.leon@gmail.com> <20250107085646.42302-1-kuniyu@amazon.com>
-In-Reply-To: <20250107085646.42302-1-kuniyu@amazon.com>
-From: Xiao Liang <shaw.leon@gmail.com>
-Date: Tue, 7 Jan 2025 18:46:38 +0800
-Message-ID: <CABAhCOQAqspiaFO-486UtZpEWsua51f+1f6-LocNhHVfAqW=NQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v7 00/11] net: Improve netns handling in rtnetlink
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: andrew+netdev@lunn.ch, b.a.t.m.a.n@lists.open-mesh.org, 
-	bpf@vger.kernel.org, bridge@lists.linux.dev, davem@davemloft.net, 
-	donald.hunter@gmail.com, dsahern@kernel.org, edumazet@google.com, 
-	horms@kernel.org, idosch@nvidia.com, jiri@resnulli.us, kuba@kernel.org, 
-	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-ppp@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	linux-wpan@vger.kernel.org, liuhangbin@gmail.com, netdev@vger.kernel.org, 
-	osmocom-net-gprs@lists.osmocom.org, pabeni@redhat.com, shuah@kernel.org, 
-	wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20250107102204.GB87447@unreal>
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-02.secunet.de (10.53.40.198)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
-On Tue, Jan 7, 2025 at 4:57=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.com=
-> wrote:
->
-> From: Xiao Liang <shaw.leon@gmail.com>
-> Date: Sat,  4 Jan 2025 20:57:21 +0800
-[...]
-> > - In amt_newlink() drivers/net/amt.c:
-> >
-> >     amt->net =3D net;
-> >     ...
-> >     amt->stream_dev =3D dev_get_by_index(net, ...
-> >
-> >   Uses net, but amt_lookup_upper_dev() only searches in dev_net.
-> >   So the AMT device may not be properly deleted if it's in a different
-> >   netns from lower dev.
->
-> I think you are right, and the upper device will be leaked
-> and UAF will happen.
->
-> amt must manage a list linked to a lower dev.
->
-> Given no one has reported the issue, another option would be
-> drop cross netns support in a short period.
+On Tue, Jan 07, 2025 at 12:22:04PM +0200, Leon Romanovsky wrote:
+> On Thu, Dec 19, 2024 at 02:37:29PM +0200, Leon Romanovsky wrote:
+> > From: Jianbo Liu <jianbol@nvidia.com>
+> > 
+> > Previously xfrm_dev_state_advance_esn() was added for RX only. But
+> > it's possible that ESN context also need to be synced to hardware for
+> > TX, so call it for outbound in this patch.
+> > 
+> > Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >  Documentation/networking/xfrm_device.rst                 | 3 ++-
+> >  drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c          | 3 +++
+> >  drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c | 3 +++
+> >  net/xfrm/xfrm_replay.c                                   | 1 +
+> >  4 files changed, 9 insertions(+), 1 deletion(-)
+> 
+> Steffen,
+> 
+> This is kindly reminder.
 
-Yes. I also noticed AMT sets dev->netns_local to prevent netns
-change. Probably it also assumes the same netns during creation.
+Sorry for the dealy, the holidays came faster than expected :)
 
-[...]
-> >
-> > - In gtp_newlink() in drivers/net/gtp.c:
-> >
-> >     gtp->net =3D src_net;
-> >     ...
-> >     gn =3D net_generic(dev_net(dev), gtp_net_id);
-> >     list_add_rcu(&gtp->list, &gn->gtp_dev_list);
-> >
-> >   Uses src_net, but priv is linked to list in dev_net. So it may not be
-> >   properly deleted on removal of link netns.
->
-> The device is linked to a list in the same netns, so the
-> device will not be leaked.  See gtp_net_exit_batch_rtnl().
->
-> Rather, the problem is the udp tunnel socket netns could be
-> freed earlier than the dev netns.
+> > diff --git a/net/xfrm/xfrm_replay.c b/net/xfrm/xfrm_replay.c
+> > index bc56c6305725..e500aebbad22 100644
+> > --- a/net/xfrm/xfrm_replay.c
+> > +++ b/net/xfrm/xfrm_replay.c
+> > @@ -729,6 +729,7 @@ static int xfrm_replay_overflow_offload_esn(struct xfrm_state *x, struct sk_buff
+> >  		}
+> >  
+> >  		replay_esn->oseq = oseq;
+> > +		xfrm_dev_state_advance_esn(x);
 
-Yes, you're right. Actually I mean the netns of the socket by "link netns"
-(there's some clarification about this in patch 02).
+This is the only line of code that this patchset adds
+to the xfrm stack, so merging this through mlx5 might
+create less conflicts.
 
-[...]
-> >
-> > - In pfcp_newlink() in drivers/net/pfcp.c:
-> >
-> >     pfcp->net =3D net;
-> >     ...
-> >     pn =3D net_generic(dev_net(dev), pfcp_net_id);
-> >     list_add_rcu(&pfcp->list, &pn->pfcp_dev_list);
-> >
-> >   Same as above.
->
-> I haven't tested pfcp but it seems to have the same problem.
->
-> I'll post patches for gtp and pfcp.
->
-
-It would be nice.
-
->
-> >
-> > - In lowpan_newlink() in net/ieee802154/6lowpan/core.c:
-> >
-> >     wdev =3D dev_get_by_index(dev_net(ldev), nla_get_u32(tb[IFLA_LINK])=
-);
-> >
-> >   Looks for IFLA_LINK in dev_net, but in theory the ifindex is defined
-> >   in link netns.
->
-> I guess you mean the ifindex is defined in src_net instead.
-> Not sure if it's too late to change the behaviour.
-
-Yes, it's source net for lowpan. I think it depends on whether
-the interpretation of IFLA_LINK should be considered as part API
-provided by rtnetlink core, or something customizable by driver.
-In the former case, this can be considered as a bug.
-
-Thanks.
+In case you want to do that, you can add my 'Acked-by'
+to this patch. Otherwise I'll pull it into the ipsec-next
+tree tomorrow.
 
