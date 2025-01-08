@@ -1,191 +1,120 @@
-Return-Path: <linux-rdma+bounces-6903-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6904-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 097EDA05B49
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 13:18:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E730A05D28
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 14:45:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0965D167C5D
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 12:17:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 128BE1882C41
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 13:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66981FBC89;
-	Wed,  8 Jan 2025 12:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C403126C18;
+	Wed,  8 Jan 2025 13:45:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="RDwwK6+z"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="VRkXMmwQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B89B1FA8D1
-	for <linux-rdma@vger.kernel.org>; Wed,  8 Jan 2025 12:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC9B1F75B3;
+	Wed,  8 Jan 2025 13:45:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736338590; cv=none; b=Djy7/4km6rRayp5MahZNJkmMyIdO6hALxM9N4v+9vokEQerxGhNsayuBff0jU5GSewQTUypisU5pXaJJwDNhpLz14zWB5+580rRtH63ebl+170QO8y85Hs9k9B2PoWyEWb/cP5MXuvN2jzoHG5RloiUwsf83SnuwUb3kEfJvWlE=
+	t=1736343935; cv=none; b=GtijnYsTA0LsxJ/Wzgb+HdI516msaPvNWwrNPDBvsyJYnbnK2ApQHYq7/kg57P0C9IorvIBuc0IqhaN25/O9frrjnclsNHUH1u3ttNCW3EzJCtIRgnge+sscaLa6Fp+6qA7tObSPl2eAMbWk10KOmNFZXZLAxdLZEf00kmy2m2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736338590; c=relaxed/simple;
-	bh=/gVxMSi2PThhFWRSRQw+jpQpZQl2Znw0cBmbzJ2sJgE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ao3yV1BVCW4fmD7K9lLsBIGcowFSm1TCH/qvzZ6U0P/Iuscg6wAAadWA4BpW29evoUFDfVH5X6f8DYilKoeSDZYrCGg2hjI507K8v33Ltrq5+OtHFLnJPlPX7KXibgeY6Wj20e7V1YVhf18W5oXXxlqPuf29/2xouVAjUzzkTzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=RDwwK6+z; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5d3e6f6cf69so28776336a12.1
-        for <linux-rdma@vger.kernel.org>; Wed, 08 Jan 2025 04:16:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1736338587; x=1736943387; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fd4LUxQrzHMSarr7s2+vZOgbYQiXE12QmbGFAswRnT8=;
-        b=RDwwK6+zTzGCqL9NBHzee8DdCS3F+kwNnnJw6pYXAof+bBs6SDv91Kb5+oT9te9WaJ
-         bTjI7ULzCBO59qrc1lhhyBGkFc3e5tFOyI/u9oFNOjsubBUW8n/HP2v7RMarnuz4+JqY
-         NWbKhX0L3BYUCQVZVSGeSxqBuzt4RtZ7BGfAY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736338587; x=1736943387;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Fd4LUxQrzHMSarr7s2+vZOgbYQiXE12QmbGFAswRnT8=;
-        b=JDre9OvM9N3y/i+/yLswmBt8BXo6TkSc7zSOG8Km7+XhPshNQQzFlp+hd+QxxN+jxn
-         WapAq/OBAtmOyA8wqt6002jn1u8Jb8/HkGNAh0s/smDslNvJoYlgY5LkErbF6e1LuGh6
-         LJUUEnj2aSjmvIOC4sj5b/owhmrgvgg7hMBOucsYGr4EYACaehhTPDzjB6T6fRsffTZ0
-         qEzOvCZn/vIrQUo5Pu/L5RJRMa3qdLV1HxZB0fQCMCzOtOI/nO35hhe3lwyQMrTJRQjv
-         xvdBJliT1QcgA8KXN7HYC2HzsuT1Ti+XRi6J6PbTmVkiqlce2paoubdQsTn4t0cZXpHg
-         kcFA==
-X-Forwarded-Encrypted: i=1; AJvYcCVgyeDoC7bDEH72rDSIKLE+hGUrA43FhSMjWQ657efQysfrD6JCUw5Met9suT+vYISvceZfRAH6JU1x@vger.kernel.org
-X-Gm-Message-State: AOJu0YxSceReIEmHpR23uI11hEcBFEsSybs8I5hqaRrugGlgpdlZDtsm
-	p7NaybD8TC4yhMstJzq4kRKOlk+5nfW3MFRFn0mdowjSJI9U9UxO9WhyN+6GjDena2erNFbZzhP
-	842T9HrUm6qSGF0Ic3PP7YPSpQpW99BX6tTi7
-X-Gm-Gg: ASbGncuSyQAg44A1SzO5NccgEe+zjcM+BV5Vb55YwUfSoJypY4+x3HYvoBnXxNoEpFp
-	iWpIRPO7FZ2Z4evF1cuU/YiOkWVFQcWfTzCpL
-X-Google-Smtp-Source: AGHT+IHLn8HBlVwNvq+tovXBPbQMwQ9nAuq+jl4DQFxCMXw0zNFrBytsE637M0LgtUvqP5U7YhniyiwkKOeHTx+Apc0=
-X-Received: by 2002:a05:6402:360c:b0:5d0:e826:f0da with SMTP id
- 4fb4d7f45d1cf-5d972e1683fmr2246245a12.16.1736338586996; Wed, 08 Jan 2025
- 04:16:26 -0800 (PST)
+	s=arc-20240116; t=1736343935; c=relaxed/simple;
+	bh=HbpdT9HkY7xxFWMxrkrd7qVDKm4x1pyECsN8AoEeNQY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CGN0uSfqPRPsfm1g8vCreWv40eMsM9cloT4jiLGSw3RNEBu8QLu1y7nNrpmRc/wsgRySyEcKzrl6DU1xXhXe/CSFEJ82nXduczvauik/sBDs/ihcyHrU3xeWB/KEvii97ofTEsPnE8x8Xl+e2/h5+52Sod5WgN/XF0+AhAE3YNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=VRkXMmwQ; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1736343930; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=L1umNgqUP6pQ7JUaQ5lBzkMOWVEgdY9nQMF+Ck+7oa0=;
+	b=VRkXMmwQWlzsuXelUh3/52OtLszfEntfzr/C3xczSrFhRd2R2+yj3jLLX1JUrOa/n4iOY6o5XbDFEuWxh86ewyUq7FkiZrXJaY0pOxQlhr9jiVHlzfSAyz+lGj1nE80OkqVdWtMDkd+g7cPq74zjznYcqilfgd5PPrTjOq/P9i0=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WNEGLEv_1736343927 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 08 Jan 2025 21:45:28 +0800
+Date: Wed, 8 Jan 2025 21:45:27 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
+	song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
+	edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+	jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org,
+	davem@davemloft.net, netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org, Daniel Xu <dlxu@meta.com>
+Subject: Re: [PATCH bpf-next v3 4/5] libbpf: fix error when st-prefix_ops and
+ ops from differ btf
+Message-ID: <20250108134527.GA86266@j66a10360.sqa.eu95>
+References: <20241218024422.23423-1-alibuda@linux.alibaba.com>
+ <20241218024422.23423-5-alibuda@linux.alibaba.com>
+ <2f56aca3-a27a-49b6-90de-7f1b2ff39df1@linux.dev>
+ <20241223021036.GC36000@j66a10360.sqa.eu95>
+ <f897692c-cbf2-4906-aa15-1661162621eb@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ee1a790b-f874-4512-b3ae-9c45f99dc640@stanley.mountain>
-In-Reply-To: <ee1a790b-f874-4512-b3ae-9c45f99dc640@stanley.mountain>
-From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Wed, 8 Jan 2025 17:46:14 +0530
-X-Gm-Features: AbW1kvYDhfzIql41LdFYILzHNun7Af6T5PK_lZaCo4FP-HiLxTo8FtCtIiOLGrE
-Message-ID: <CAH-L+nMpNvYr4igweeTgkXj_gKBSzSa=SZZ+mkZoKz4v8te7Qw@mail.gmail.com>
-Subject: Re: [PATCH net-next] net/smc: delete pointless divide by one
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>, 
-	"D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>, 
-	Wen Gu <guwen@linux.alibaba.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Simon Horman <horms@kernel.org>, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000b58317062b30d431"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f897692c-cbf2-4906-aa15-1661162621eb@linux.dev>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
---000000000000b58317062b30d431
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jan 07, 2025 at 03:24:51PM -0800, Martin KaFai Lau wrote:
+> On 12/22/24 6:10 PM, D. Wythe wrote:
+> >On Thu, Dec 19, 2024 at 02:43:30PM -0800, Martin KaFai Lau wrote:
+> >>On 12/17/24 6:44 PM, D. Wythe wrote:
+> >>>Here are four possible case:
+> >>>
+> >>>+--------+-------------+-------------+---------------------------------+
+> >>>|        | st_opx_xxx  | xxx         |                                 |
+> >>>+--------+-------------+-------------+---------------------------------+
+> >>>| case 0 | btf_vmlinux | bft_vmlinux | be used and reg only in vmlinux |
+> >>>+--------+-------------+-------------+---------------------------------+
+> >>>| case 1 | btf_vmlinux | bpf_mod     | INVALID                         |
+> >>>+--------+-------------+-------------+---------------------------------+
+> >>>| case 2 | btf_mod     | btf_vmlinux | reg in mod but be used both in  |
+> >>>|        |             |             | vmlinux and mod.                |
+> >>>+--------+-------------+-------------+---------------------------------+
+> >>>| case 3 | btf_mod     | btf_mod     | be used and reg only in mod     |
+> >>>+--------+-------------+-------------+---------------------------------+
+> >>>
+> >>>At present, cases 0, 1, and 3 can be correctly identified, because
+> >>>st_ops_xxx is searched from the same btf with xxx. In order to
+> >>>handle case 2 correctly without affecting other cases, we cannot simply
+> >>>change the search method for st_ops_xxx from find_btf_by_prefix_kind()
+> >>>to find_ksym_btf_id(), because in this way, case 1 will not be
+> >>>recognized anymore.
+> >>>  	snprintf(tname, sizeof(tname), "%.*s",
+> >>>@@ -1020,17 +1021,25 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
+> >>>  	}
+> >>>  	kern_type = btf__type_by_id(btf, kern_type_id);
+> >>>+	ret = snprintf(stname, sizeof(stname), "%s%s", STRUCT_OPS_VALUE_PREFIX, tname);
+> >>
+> >>How about always look for "struct bpf_struct_ops_smc_ops" first,
+> >>figure out the btf, and then look for "struct smc_ops", would it
+> >>work?
+> >
+> >I think this might not work, as the core issue lies in the fact that
+> >bpf_struct_ops_smc_ops and smc_ops are located on different btf.
+> >Searching for one fisrt cannot lead to the inference of the other.
+> 
+> Take a look at btf_find_by_name_kind(btf, 1 /* from base_btf */,
+> ...) and also btf_type_by_id(). It starts searching from the
+> btf->base_btf which should be the btf_vmlinux here and should have
+> the "struct smc_ops". Please try.
 
-On Wed, Jan 8, 2025 at 2:56=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro.=
-org> wrote:
->
-> Here "buf" is a void pointer so sizeof(*buf) is one.  Doing a divide
-> by one makes the code less readable.  Delete it.
->
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-LGTM,
-Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Got it, I will try it, thanks for your suggestion.
 
-
---=20
-Regards,
-Kalesh AP
-
---000000000000b58317062b30d431
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBWowggRSoAMCAQICDDfBRQmwNSI92mit0zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODI5NTZaFw0yNTA5MTAwODI5NTZaMIGi
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xHzAdBgNVBAMTFkthbGVzaCBBbmFra3VyIFB1cmF5aWwxMjAw
-BgkqhkiG9w0BCQEWI2thbGVzaC1hbmFra3VyLnB1cmF5aWxAYnJvYWRjb20uY29tMIIBIjANBgkq
-hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxnv1Reaeezfr6NEmg3xZlh4cz9m7QCN13+j4z1scrX+b
-JfnV8xITT5yvwdQv3R3p7nzD/t29lTRWK3wjodUd2nImo6vBaH3JbDwleIjIWhDXLNZ4u7WIXYwx
-aQ8lYCdKXRsHXgGPY0+zSx9ddpqHZJlHwcvas3oKnQN9WgzZtsM7A8SJefWkNvkcOtef6bL8Ew+3
-FBfXmtsPL9I2vita8gkYzunj9Nu2IM+MnsP7V/+Coy/yZDtFJHp30hDnYGzuOhJchDF9/eASvE8T
-T1xqJODKM9xn5xXB1qezadfdgUs8k8QAYyP/oVBafF9uqDudL6otcBnziyDBQdFCuAQN7wIDAQAB
-o4IB5DCCAeAwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZC
-aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJj
-YTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3Iz
-cGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcC
-ARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNV
-HR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNp
-Z24yY2EyMDIwLmNybDAuBgNVHREEJzAlgSNrYWxlc2gtYW5ha2t1ci5wdXJheWlsQGJyb2FkY29t
-LmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGP
-zzAdBgNVHQ4EFgQUI3+tdStI+ABRGSqksMsiCmO9uDAwDQYJKoZIhvcNAQELBQADggEBAGfe1o9b
-4wUud0FMjb/FNdc433meL15npjdYWUeioHdlCGB5UvEaMGu71QysfoDOfUNeyO9YKp0h0fm7clvo
-cBqeWe4CPv9TQbmLEtXKdEpj5kFZBGmav69mGTlu1A9KDQW3y0CDzCPG2Fdm4s73PnkwvemRk9E2
-u9/kcZ8KWVeS+xq+XZ78kGTKQ6Wii3dMK/EHQhnDfidadoN/n+x2ySC8yyDNvy81BocnblQzvbuB
-a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
-x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
-VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
-bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEIPow6+HBgLf8WoW+ZUXJNwfjaMP/gSTu/SdfHf3F1gFMMBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDEwODEyMTYyN1owaQYJKoZIhvcNAQkPMVwwWjAL
-BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAcYlO8QrqZ
-ZwjgaP9LLlRpAYCYuZ8zrJubRYY9mVos41+9+Fc9A2Azeb9/pPK+QsGOjUfNrmPFGOcXoUqxQFsx
-+X7pEjMKAt9lzfnYm1rmEo9a7HDZctmHCJ887Ti2r2acyhP7dNzl0AgSnA4zeaEU2d2wwdCyclJz
-FNoUAm259cBCl+HGG957fx03JjoN5jU0Nq0W1xt4Nf9860R7ZcaJbsXCYUXXJtJfASmYZ+QVqoxk
-fi+A7Ohp/yQ7pcz0A7esCwsnWqWGOeEgVE+dY+U/23Pqc4JZGPtTwM1SuhgJclR9AQ+i0d0n9d+J
-joLhvnEvmqHp1Gum52bQl31u2mdP
---000000000000b58317062b30d431--
+D. Wythe
 
