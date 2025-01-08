@@ -1,183 +1,109 @@
-Return-Path: <linux-rdma+bounces-6919-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6920-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64DEDA06290
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 17:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 267BFA06380
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 18:32:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F70D3A48E8
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 16:48:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35BCA3A688A
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 17:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA6132594BC;
-	Wed,  8 Jan 2025 16:48:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7FF0201031;
+	Wed,  8 Jan 2025 17:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="P+dMSXpw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dHciAqjY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090DB1FECC1
-	for <linux-rdma@vger.kernel.org>; Wed,  8 Jan 2025 16:48:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5592F1A2541;
+	Wed,  8 Jan 2025 17:31:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736354917; cv=none; b=c7xaFh62GeUwpiFKvt3E210n6oSupZ6kWg1OedfaopAIxhdJo805UDNvkkkAOgNQom6rI44iCPTm+8zYZqwsUH6hlZsn42SHZdffcziCLSRgKcUGZc62OS9zNK0t3NpEA95evuNmZCGxSdUchz6po42Gv+2NkcOh0orZNUWHhlM=
+	t=1736357501; cv=none; b=e3K7HSH1ColxvRm7q1LA5N+ebyq0UT25YSvEp39h5jMDufWKMZAT+S392H1Xk2acbXVMLNDi99pJfqdkau4NKt107oigXZqPoQYX7xiV3OmqLVHbqsv2fkCEmrRuEs5QfT4Lzbt9OGbWUqT1mezrv9SXN8tPiZURcHxlVC4QJYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736354917; c=relaxed/simple;
-	bh=gffYnheyHmQirnOLrLWnuXR/bCkBh259lAiuaWxaIbE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PAVjRPwIkbZAsRBQmQ7SX/SOcLbutcP6DZwSyRTJiZ0FSeSmPcLm5y7vdx2bpRwCSMzNBbU+BLYFdARS7+BUi9CEZVcBAnHz2XYG3EH9jJ13NkoyWjoUaZmjrjEWNvj2wcxOGsNbzXY7/H+fGtnGu0LVQrChd4dnIAwykeubkZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=P+dMSXpw; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-43624b2d453so348765e9.2
-        for <linux-rdma@vger.kernel.org>; Wed, 08 Jan 2025 08:48:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1736354914; x=1736959714; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0UT5umqpvXzX+OHEo2z2rTpWOE07qIe9i0VrPSb4y5A=;
-        b=P+dMSXpwUa4kqEohgFGZ1o55U5BQIhDc1U41dSLrjRAMb0zcJok2n+wX7N8Joenb9m
-         MEo9h4u0N17hQiz1qbtDGg6HmfdpV5/9xSET7TXtOULJh5Ix18nHoyueVNSuXteEHKVF
-         XtYm9wRgTvgVtx94jPVzBxR6pNBbzKQrPmSeY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736354914; x=1736959714;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0UT5umqpvXzX+OHEo2z2rTpWOE07qIe9i0VrPSb4y5A=;
-        b=ACQ9Vv3ggrBUJBC6YBmBqDnnb4gVT12aguzWrZa5OC8RmzPT26uL35m5BPcuNLFvMe
-         2uc9FmIvVWhFrc00ZdEZdOruW9iD0LkvAISIL5ICs/dTxp9xdd2Hqzii6o8Kpr8mrq6E
-         fNBFInFTM16C0pcrTQa/yxbWLsnjvY9JRVebJ2FazKpcLo6pKFF++jrlDimWIBnYcJlL
-         YhTrOAsmdHCryOsCIP5RwV1fB7BQ+Ez1tLepIHmPWH8TQDypVbORvvcfrNatjG8RYsAM
-         9zJxf3VIpXSdFTouFu7eWp69r9cwlPHeuPgA8+nkGNUCvENMCjvxarXwGAgONIfJYA1L
-         KYew==
-X-Forwarded-Encrypted: i=1; AJvYcCVN4KtqQuEDw9VvcEDtd0ikVoSFIgn/vlS6KHVG14JbpEExJ+736DaOBjBBsOHa10KEU6E8BTFSpdRQ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxD5AHWAPS654MU6xvoshohdSLCCEAST4WjK2OI8O4FUwQILRFY
-	JAKTY68BBlp8BUqIildc1HinDoDQanqvtl0GiKuvoMQiMfjJcftECwV0rU8F+D8=
-X-Gm-Gg: ASbGncuomxv5T1RG9aEZKW48og8aLifnTL54zzVKSHx8YzDvqD86gy2siPQ50QP5V0c
-	TKPkinoGtRh6f29kcsl0biZe+rrZLFahQ/a3H1ne9mvgxHP3ZrKpnsbxDorWww509suvQJQlUKR
-	FGyOZ2hlYVarQJRRqQfzKgFF3IXGeVk05UlgMOr+EDDUsA4/GNoWFZa7yETizn3DusjYkvF5auO
-	wCTj82Ck0DnMiIl/JS0/CZ1KjSWPm9qajq/evauf4n1U3OSeKKVet6Qfl3bFTbzxWiy
-X-Google-Smtp-Source: AGHT+IEu1vDzbKs7I7Y2fxV73AUw4WocoWZ3S+yonWf2wLofuc/3i9UvSC6dX6IXU9yETNGe3ZMUpQ==
-X-Received: by 2002:a05:600c:444b:b0:434:f586:7520 with SMTP id 5b1f17b1804b1-436e2679a31mr29981125e9.6.1736354914223;
-        Wed, 08 Jan 2025 08:48:34 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:5485:d4b2:c087:b497])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-436e2ddefcbsm26275945e9.22.2025.01.08.08.48.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jan 2025 08:48:33 -0800 (PST)
-Date: Wed, 8 Jan 2025 17:48:31 +0100
-From: Simona Vetter <simona.vetter@ffwll.ch>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Simona Vetter <simona.vetter@ffwll.ch>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	"Kasireddy, Vivek" <vivek.kasireddy@intel.com>,
-	Wei Lin Guay <wguay@meta.com>, Keith Busch <kbusch@kernel.org>,
-	"alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	Dag Moxnes <dagmoxnes@meta.com>,
-	Nicolaas Viljoen <nviljoen@meta.com>,
-	Oded Gabbay <ogabbay@kernel.org>, Leon Romanovsky <leon@kernel.org>,
-	Maor Gottlieb <maorg@nvidia.com>
-Subject: Re: [PATCH 0/4] cover-letter: Allow MMIO regions to be exported
- through dmabuf
-Message-ID: <Z36sXzCpRhh_WXMY@phenom.ffwll.local>
-References: <0f207bf8-572a-4d32-bd24-602a0bf02d90@amd.com>
- <C369F330-5BAD-4AC6-A13C-EEABD29F2F08@meta.com>
- <e8759159-b141-410b-be08-aad54eaed41f@amd.com>
- <IA0PR11MB7185D0E4EE2DA36A87AE6EACF8052@IA0PR11MB7185.namprd11.prod.outlook.com>
- <0c7ab6c9-9523-41de-91e9-602cbcaa1c68@amd.com>
- <IA0PR11MB71855CFE176047053A4E6D07F8062@IA0PR11MB7185.namprd11.prod.outlook.com>
- <0843cda7-6f33-4484-a38a-1f77cbc9d250@amd.com>
- <20250102133951.GB5556@nvidia.com>
- <Z3vG9JNOaQMfDZAY@phenom.ffwll.local>
- <20250106162757.GH5556@nvidia.com>
+	s=arc-20240116; t=1736357501; c=relaxed/simple;
+	bh=nFNghkqYK0OyBrmna6riJjtdRf/DJ2kks0ygjdBlGVE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SdVuEVCtu9hO2jJQ4QF/RHTNX6uHNrJozYhfwYlrTxx5JYmUmx9RTjElJn3iH/uV3hkyIxgjRg0kNkCOL6vzggd0ANi90za6VMeX+Q8gIkfuTnFJFOmEioi8/mVAELz+elq+KP2sjCSbO9dQM2H9a4Za/AGCewQuNRKgVpDMTpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dHciAqjY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17A24C4CED3;
+	Wed,  8 Jan 2025 17:31:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736357500;
+	bh=nFNghkqYK0OyBrmna6riJjtdRf/DJ2kks0ygjdBlGVE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=dHciAqjYDmfJ4f1GrLA+k2mHdvH/PcVoEoaHp5l6oKUNCl2H/rGngM0bwH32RiDGA
+	 RKqyu4tcA5nz7uUemz8c9pBwQy5/Yl8okpkaljtV2r2hG4AolL+jj/8d3xoqFgJj/k
+	 A8Gm9TIsj/lz+b3kQ9boVv/nZhWvr6TKHL4QkMBonYptSr9cZeQpQoKuXcOHybpkHo
+	 e98f1a4tvA5J5nyWISRW/K9JoOD2UBjXudUvXF9tlj/7wrEctr/u5Qqq3QhEk/fT8p
+	 UuTt5BSsN/f7ZpDAzFwxdIWvEiqXFx0/T5vxvOySo2ialJKoOi0JYP1ThEhqIye8Rl
+	 dB8lzKIIuuacA==
+Date: Wed, 8 Jan 2025 09:31:39 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Xiao Liang <shaw.leon@gmail.com>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, Kuniyuki
+ Iwashima <kuniyu@amazon.com>, Donald Hunter <donald.hunter@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ido
+ Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Simon
+ Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>, Jiri Pirko
+ <jiri@resnulli.us>, Hangbin Liu <liuhangbin@gmail.com>,
+ linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
+ osmocom-net-gprs@lists.osmocom.org, bpf@vger.kernel.org,
+ linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+ linux-wireless@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
+ bridge@lists.linux.dev, linux-wpan@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v7 02/11] rtnetlink: Pack newlink() params into
+ struct
+Message-ID: <20250108093139.126716e9@kernel.org>
+In-Reply-To: <CABAhCORV_s9m-EJ8914zUXCXt6O_e1wsaOVdSKUtm0Rbvc4orQ@mail.gmail.com>
+References: <20250104125732.17335-1-shaw.leon@gmail.com>
+	<20250104125732.17335-3-shaw.leon@gmail.com>
+	<20250107123805.748080ab@kernel.org>
+	<CABAhCORV_s9m-EJ8914zUXCXt6O_e1wsaOVdSKUtm0Rbvc4orQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250106162757.GH5556@nvidia.com>
-X-Operating-System: Linux phenom 6.12.3-amd64 
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 06, 2025 at 12:27:57PM -0400, Jason Gunthorpe wrote:
-> On Mon, Jan 06, 2025 at 01:05:08PM +0100, Simona Vetter wrote:
-> > On Thu, Jan 02, 2025 at 09:39:51AM -0400, Jason Gunthorpe wrote:
-> > > On Thu, Dec 19, 2024 at 11:04:54AM +0100, Christian König wrote:
-> > > 
-> > > > > Based on all the above, I think we can conclude that since dma_buf_put()
-> > > > > does not directly (or synchronously) call the f_op->release() handler, a
-> > > > > deadlock is unlikely to occur in the scenario you described.
-> > > 
-> > > Right, there is no deadlock here, and there is nothing inhernetly
-> > > wrong with using try_get like this. The locking here is ugly ugly
-> > > ugly, I forget why, but this was the best I came up with to untangle
-> > > it without deadlocks or races.
-> > 
-> > Yeah, imo try_get is perfectly fine pattern. With that sorted my only
-> > request is to make the try_get specific to the dma_ops, because it only
-> > works if both ->release and the calling context of try_get follow the same
-> > rules, which by necessity are exporter specific.
-> 
-> We already know the fd is a dma_ops one because it is on an internal
-> list and it could not get there otherwise.
-> 
-> The pointer cannot become invalid and freed back to the type safe RCU
-> while on the list, meaning the try_get is safe as is.
-> 
-> I think Christian's original advice to just open code it is the best
-> option.
+On Wed, 8 Jan 2025 16:36:26 +0800 Xiao Liang wrote:
+> On Wed, Jan 8, 2025 at 4:38=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
+rote:
+> >
+> > On Sat,  4 Jan 2025 20:57:23 +0800 Xiao Liang wrote: =20
+> > > -static int amt_newlink(struct net *net, struct net_device *dev,
+> > > -                    struct nlattr *tb[], struct nlattr *data[],
+> > > -                    struct netlink_ext_ack *extack)
+> > > +static int amt_newlink(struct rtnl_newlink_params *params)
+> > >  {
+> > > -     struct amt_dev *amt =3D netdev_priv(dev);
+> > > +     struct netlink_ext_ack *extack =3D params->extack;
+> > > +     struct net_device *dev =3D params->dev;
+> > > +     struct nlattr **data =3D params->data;
+> > > +     struct nlattr **tb =3D params->tb;
+> > > +     struct net *net =3D params->net;
+> > > +     struct amt_dev *amt; =20
+> >
+> > IMHO you packed a little too much into the struct.
+> > Could you take the dev and the extack back out? =20
+>=20
+> Sure. I thought you were suggesting packing them all
+> in review of v3...
 
-Yeah open coding in vfio is imo best, agreed on that.
+Sorry about that, I wasn't very clear :(
 
-> > In full generality as a dma_buf.c interface it's just busted and there's
-> > no way to make it work, unless we inflict that locking ugliness on
-> > absolutely every exporter.
-> 
-> I'm not sure about that, the struct file code has special logic to
-> accommodate the type safe RCU trick. I didn't try to digest it fully,
-> but I expect there are ways to use it safely without the locking on
-> release.
+What I had in mind was similar to how we define ethtool ops,
+(especially the more recent ones which have extack)
+for example:
 
-Hm yes, if you use a write barrier when set your file pointer and clear it
-in release, then you can use get_file_rcu with just rcu_read_lock on the
-read side. But you have to directly use your own struct file * pointer
-since it needs to reload that in a loop, you can't use dma_buf->file.
-
-At that point you're already massively peeking behind the dma_buf
-abstraction that just directly using get_file_rcu is imo better.
-
-And for anything else, whether it's rcu or plain locks, it's all subsystem
-specific anyway that I think a dma_buf.c wrapper
-
-Not entirely sure, but for the dma_buf_try_get wrapper you have to put a
-full lock acquisition or rcu_sychnronize into your ->release callback,
-otherwise I don't think it's safe to use.
-
-> > > IIRC it was changed a while back because call chains were getting kind of
-> > > crazy long with the file release functions and stack overflow was a
-> > > problem in some cases.
-> > 
-> > Hm I thought it was also a "oh fuck deadlocks" moment, because usually
-> > most of the very deep fput calls are for temporary reference and not the
-> > final one.
-> 
-> That sounds motivating too, but I've also seen cases of being careful
-> to unlock before fputting things..
-
-Yeah I think knowledge about this issue was very uneven in different
-subsystems.
--Sima
--- 
-Simona Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+	int	(*set_mm)(struct net_device *dev, struct ethtool_mm_cfg *cfg,
+			  struct netlink_ext_ack *extack);
 
