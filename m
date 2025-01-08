@@ -1,128 +1,143 @@
-Return-Path: <linux-rdma+bounces-6900-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6901-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02CA7A05705
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 10:38:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E8B0A05816
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 11:25:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BA141888F52
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 09:38:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE5BB1886C49
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 10:25:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790F71F3D3E;
-	Wed,  8 Jan 2025 09:38:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 118721F7586;
+	Wed,  8 Jan 2025 10:25:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b="gUJbR3m3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BFA019F42C;
-	Wed,  8 Jan 2025 09:37:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC5F18B463;
+	Wed,  8 Jan 2025 10:25:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.96.220.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736329081; cv=none; b=XQd+hKt60fVxUWHKVhzpLJ6RpZMsM3HDI03fNPrfLqr39c+yrZOMYGhDToTEnASK824fcBmZBCRtYxSC1/LRrSnbgYg9rsf1pvgVJyMQZcZ36YKpqjfo0/Xm0USHYhEdYcFjk2O3M13rHsCnYw6ME2+YgrpXQFv/btjCATp1oEA=
+	t=1736331930; cv=none; b=FGRPJ9olmSitNGxJcakRaLhqnegrd9WwRDgESTjxEdtscmtIxaVgHhEH2jFpkCMmr7/2Y1ilRZzsDz+VaIof/CcK6S9V1tB5DK37krv6yj77JYpSJvtncG3pLTZd6Hc+gtAlcIezsAtan1p2aHNUBhJBZP5+xa4C4fH9dfMbBBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736329081; c=relaxed/simple;
-	bh=fV3g+YF8NI3cRH3DfRWU4swOQF7pcduVSxTH7G0FkWE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Dk5Hy4l+8ZvhFy1sOkQ+28EPUjeyE14P3nux8LfrPjD1FmE5yYNMKx0lRI7Xrqfjh07l+naZWQWITPRtH6PSxL3rAP/sBrhL5R+sv27Qo3MZPBX10aK31K9japV8S+O8TiFyY+MMUREhU2mRwBFEjBAekOr9gYGS56S05fKrMeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4YSjRV6mV3z1W3jT;
-	Wed,  8 Jan 2025 17:34:14 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id A9BDB14035E;
-	Wed,  8 Jan 2025 17:37:56 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 8 Jan 2025 17:37:55 +0800
-Message-ID: <f86d3fe9-f508-4463-8587-b001979d70c4@huawei.com>
-Date: Wed, 8 Jan 2025 17:37:55 +0800
+	s=arc-20240116; t=1736331930; c=relaxed/simple;
+	bh=3cZ55hodolcBonWydC/oE7gQh6CX1J5FFqedEknJZJQ=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D9sGrMATHMWkGtcz9/DyGMBkZhLIGOLKNVL81dPUy7/eRsNUssXltdmoSu26CsJjwiE0jl3wKuk1b+U0SVoG8OZs6/2qRekdaScooD/yFI+SfwP6mmphSAU7fq3PzuiXG69puvBe0IkvSdkMclc2Cp7SWQdrVpRztzalCfT3KDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=secunet.com; spf=pass smtp.mailfrom=secunet.com; dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b=gUJbR3m3; arc=none smtp.client-ip=62.96.220.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=secunet.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=secunet.com
+Received: from localhost (localhost [127.0.0.1])
+	by a.mx.secunet.com (Postfix) with ESMTP id 74B8020842;
+	Wed,  8 Jan 2025 11:25:25 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id RUVdqUoOIaqi; Wed,  8 Jan 2025 11:25:24 +0100 (CET)
+Received: from cas-essen-01.secunet.de (rl1.secunet.de [10.53.40.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by a.mx.secunet.com (Postfix) with ESMTPS id DC64720839;
+	Wed,  8 Jan 2025 11:25:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com DC64720839
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secunet.com;
+	s=202301; t=1736331924;
+	bh=usGPeQ402tsz9Fi75tKbQFlNSZtqq/m5TNddeEQ1ofg=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:From;
+	b=gUJbR3m3btQZajtjq8qboCjn8896kCM0S6a2Sw6gXB2ufHgD0U6BPKA28Dgtzvdoe
+	 eCYwAncSUsaOxq9XIozt+Tu0OvoAsH1gTE00/IbjuDZClIvo3G0uaMMNsL3SmTPNI1
+	 A2YYoGoGING3SVYrv4KxMOh0tjwdeAmCQipxy52Z0MNIHZFUKy42nJvxOZiCbyXfOX
+	 n3UKdGzGaTifhipYMyOFIybRVJRnHRsTRwBpnyUWclczfev6akSA+WRPWo65xP/RTJ
+	 hCRP3GpWvDGjD7JbR7g0LlFA3KlSZS3kp1YYx7WAhhp6tpQg+zLTIjlHI+N0mHlsin
+	 Ltib/SSRC/gmA==
+Received: from mbx-essen-02.secunet.de (10.53.40.198) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Wed, 8 Jan 2025 11:25:24 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
+ (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 8 Jan
+ 2025 11:25:24 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+	id 0F9DC3183F0A; Wed,  8 Jan 2025 11:25:24 +0100 (CET)
+Date: Wed, 8 Jan 2025 11:25:23 +0100
+From: Steffen Klassert <steffen.klassert@secunet.com>
+To: Leon Romanovsky <leon@kernel.org>
+CC: Jianbo Liu <jianbol@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+	"Eric Dumazet" <edumazet@google.com>, Herbert Xu
+	<herbert@gondor.apana.org.au>, Jakub Kicinski <kuba@kernel.org>, Jonathan
+ Corbet <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, "Potnuri Bharat Teja" <bharat@chelsio.com>, Saeed
+ Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
+Subject: Re: [PATCH ipsec-next 1/2] xfrm: Support ESN context update to
+ hardware for TX
+Message-ID: <Z35Sk688mOcePbJE@gauss3.secunet.de>
+References: <874f965d786606b0b4351c976f50271349f68b03.1734611621.git.leon@kernel.org>
+ <20250107102204.GB87447@unreal>
+ <Z30WcStdG5Z4tDru@gauss3.secunet.de>
+ <20250107120905.GD87447@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 1/8] page_pool: introduce page_pool_get_pp()
- API
-To: Jesper Dangaard Brouer <hawk@kernel.org>, <davem@davemloft.net>,
-	<kuba@kernel.org>, <pabeni@redhat.com>
-CC: <liuyonglong@huawei.com>, <fanghaiqing@huawei.com>,
-	<zhangkun09@huawei.com>, Wei Fang <wei.fang@nxp.com>, Shenwei Wang
-	<shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, Andrew Lunn
-	<andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Jeroen de Borst
-	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
-	Shailend Chand <shailend@google.com>, Tony Nguyen
-	<anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>, Alexei Starovoitov
-	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
-	<john.fastabend@gmail.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon
- Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Felix Fietkau
-	<nbd@nbd.name>, Lorenzo Bianconi <lorenzo@kernel.org>, Ryder Lee
-	<ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, Sean Wang
-	<sean.wang@mediatek.com>, Kalle Valo <kvalo@kernel.org>, Matthias Brugger
-	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, Simon Horman <horms@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, <imx@lists.linux.dev>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<intel-wired-lan@lists.osuosl.org>, <bpf@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-References: <20250106130116.457938-1-linyunsheng@huawei.com>
- <20250106130116.457938-2-linyunsheng@huawei.com>
- <02896f96-57dd-47d5-8fa0-8a8aed30fa9a@kernel.org>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <02896f96-57dd-47d5-8fa0-8a8aed30fa9a@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20250107120905.GD87447@unreal>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-02.secunet.de (10.53.40.198)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
-On 2025/1/7 22:52, Jesper Dangaard Brouer wrote:
+On Tue, Jan 07, 2025 at 02:09:05PM +0200, Leon Romanovsky wrote:
+> On Tue, Jan 07, 2025 at 12:56:33PM +0100, Steffen Klassert wrote:
+> > On Tue, Jan 07, 2025 at 12:22:04PM +0200, Leon Romanovsky wrote:
+> > > On Thu, Dec 19, 2024 at 02:37:29PM +0200, Leon Romanovsky wrote:
+> > > > From: Jianbo Liu <jianbol@nvidia.com>
+> > > > 
+> > > > Previously xfrm_dev_state_advance_esn() was added for RX only. But
+> > > > it's possible that ESN context also need to be synced to hardware for
+> > > > TX, so call it for outbound in this patch.
+> > > > 
+> > > > Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
+> > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > > ---
+> > > >  Documentation/networking/xfrm_device.rst                 | 3 ++-
+> > > >  drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c          | 3 +++
+> > > >  drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c | 3 +++
+> > > >  net/xfrm/xfrm_replay.c                                   | 1 +
+> > > >  4 files changed, 9 insertions(+), 1 deletion(-)
+> > > 
+> > > Steffen,
+> > > 
+> > > This is kindly reminder.
+> > 
+> > Sorry for the dealy, the holidays came faster than expected :)
+> > 
+> > > > diff --git a/net/xfrm/xfrm_replay.c b/net/xfrm/xfrm_replay.c
+> > > > index bc56c6305725..e500aebbad22 100644
+> > > > --- a/net/xfrm/xfrm_replay.c
+> > > > +++ b/net/xfrm/xfrm_replay.c
+> > > > @@ -729,6 +729,7 @@ static int xfrm_replay_overflow_offload_esn(struct xfrm_state *x, struct sk_buff
+> > > >  		}
+> > > >  
+> > > >  		replay_esn->oseq = oseq;
+> > > > +		xfrm_dev_state_advance_esn(x);
+> > 
+> > This is the only line of code that this patchset adds
+> > to the xfrm stack, so merging this through mlx5 might
+> > create less conflicts.
+> > 
+> > In case you want to do that, you can add my 'Acked-by'
+> > to this patch. Otherwise I'll pull it into the ipsec-next
+> > tree tomorrow.
 > 
-> On 06/01/2025 14.01, Yunsheng Lin wrote:
->> introduce page_pool_get_pp() API to avoid caller accessing
->> page->pp directly.
->>
-> [...]
-> 
->> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
->> index 543f54fa3020..9c4dbd2289b1 100644
->> --- a/include/net/page_pool/helpers.h
->> +++ b/include/net/page_pool/helpers.h
->> @@ -83,6 +83,11 @@ static inline u64 *page_pool_ethtool_stats_get(u64 *data, const void *stats)
->>   }
->>   #endif
->>   +static inline struct page_pool *page_pool_get_pp(struct page *page)
->> +{
->> +    return page->pp;
->> +}
-> 
-> IMHO the function name "page_pool_get_pp" is problematic. As calling it "get" indicate to me that we are taking some reference on the pp object. Is this you plan in later patches?
+> Let's do it through your tree, please. IMHO, it is more appropriate.
 
-No, this patchset is not going to taking some reference on the pp object.
-
-> 
-> If it is simply a dereference of page->pp ... then we could call it page2pp ?
-
-Before this version page_pool_to_pp() is used, this version renamed it to
-page_pool_get_pp() as there is an exising netmem_get_pp() in patch 3, which
-is also simply a dereference of netmem->pp, using page_pool_to_pp() does not
-seem consistent with netmem from API naming point.
-
-> ... but I'm uncertain why we need this change.
-
-This patch is added to make patch 3 more reviewable as page->pp is renamed to
-page->pp_item in patch 3. If there is no helper added in this patch, patch 3
-might need to touch all the places touched in this patch too.
-
-> 
-> --Jesper
-> 
+Ok, series applied to ipsec-next, thanks everyone!
 
