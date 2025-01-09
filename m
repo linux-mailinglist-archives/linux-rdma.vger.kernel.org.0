@@ -1,166 +1,99 @@
-Return-Path: <linux-rdma+bounces-6926-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6927-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC953A0774A
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jan 2025 14:25:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1748BA079A8
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jan 2025 15:49:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 637CB1889F43
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jan 2025 13:25:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C58F167966
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jan 2025 14:49:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9B6D218821;
-	Thu,  9 Jan 2025 13:25:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFV6bUwA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2559121C160;
+	Thu,  9 Jan 2025 14:49:09 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED1742040BF;
-	Thu,  9 Jan 2025 13:25:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96BF33FBB3;
+	Thu,  9 Jan 2025 14:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736429142; cv=none; b=R02Z2SDfMhErPn7zFTLAEWmAt0cYokLBsZiI+ox4xoLy+lYb8ne0rthIvMpgeoew083Qo31ysAnIOdc98DQ0OrBHsfR2k5LB6SzpHJ7U6xCc6Pr0Dd0TvjfT9EDZ/+wos7pvdr3vgFDhOQ52MQW9ppProBryHuJ1XtrqDlRI+oc=
+	t=1736434148; cv=none; b=k0rU2qCSk1sacKNAwDkbIDfoixc1IxmQFLV4hJQFRZpq6H6kYi1F6M6QMzxbawenf0GFZ6suD6xVY/FBinaEny72eCL8jexOj5iUtRcoFAf8W7KhT3rwgfrfw5aRb80+b0cecTUTCuSw1g7/MkTSFdzBBcGcBQARYaVYROLKlU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736429142; c=relaxed/simple;
-	bh=WcauYQ2v+oJmfWJOp7J0Cb4eGrakgWLWi6inDubS2c4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AmudX4jIXA1rLiXuQt/wGFdtUaorHshaWxRZbj698c1sq9/arXxCpwDRNP1cgGpcdXMVX2BBznMRAAN9WtkwBsjwJvrAsyEv8Daswes+l2CONfiWJc1x80/4wq+RAdKGW8GMOMrRgyt662k8K4KtupDXfDyxffP4Q9s0OHNuPZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eFV6bUwA; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5d0ac27b412so1032791a12.1;
-        Thu, 09 Jan 2025 05:25:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736429139; x=1737033939; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3/Cgnni2PUqE4r71m306iwfF9nt2mHGGQjSDjTdkLvQ=;
-        b=eFV6bUwADQbOxTsQKPnDGwKBhEoR75GYijWNro0G241dCR2rJqpPaObS5bsdUexDKF
-         OCs6MSaHnWfzoHM2E3WBE/BOiyJ/Oz3H/Cw9M3BNR9gAsdlO5MiEv9XdAiHtaFYHgicH
-         ++ex+6zsfVhGjdOAhoXgHuGO2lBgAZTDT0avFciYm6rqS/62D8tULX/MNOyoBbPrif0+
-         Vb/iJ2U9rI/eLphAUtvcF/CTzHlsFMSzh9fyTpvCnCwPkkStij+D1swKKIQas0R/fBRu
-         KlmPlsZ2wsvDYrG/wEo/IaxJPICeof58TEmAFSx5ROth4Y8pns/Ow1RV9wDHMdF7sz78
-         5MyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736429139; x=1737033939;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3/Cgnni2PUqE4r71m306iwfF9nt2mHGGQjSDjTdkLvQ=;
-        b=BM7U4ei2HlL+WAcDIIWrtKAuHDfWjw/NfVPAYSXsyw8qo6xEHR+JP9jRVaKh33RnQM
-         OlOEDPXwvVnfyrCTqW+LlxIR2uXLQtpwP83yUbhRi8z8IHW5fwAZL/a5hATPMRJhJoFC
-         uPRQGwVT8FGaage7tppoAhV1fsZ6v/gSMdllbVgwBzdyVIVHtNTn+GlfUKFVhLpnAUbr
-         50xLWHyp87peDSXdOGts7u+1EsrmF2OMhulma7iA2uVHu+dq+vijDdFt4/Z312XWKix5
-         eUX1yycab3IXP6X4grmNQ50w9YHwrPio4UXExmGBsQDHos1ck0PI3lR874/8oB8yDVHQ
-         V2WQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWCsK/T2oM6gRpZUURBEHalMgKkjmc1MUyNHJW+cebC3XK/70Vk9adWKaUB3T7WVb1W5Bf9fnh/HM2K@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzoev69KWRtZCDGcHrRAgo19GEm8PwKXaP59T8mBj8l13DRoqTJ
-	Gt2t7rkXyGaYCiaT6UWDkHokUSmS7EO6BpftLG+T5+YMP4bwkjuKaPZ8Kw==
-X-Gm-Gg: ASbGncudIsVjhLRBBgAViP3O6b9ZI9cDf6P5O7Qh3wtCo5bKfgMHhBQ3+qxtQ5dD8Ts
-	SLUR35Ke/dDLBFPdAZE7IRFs5CUmWAZHOityThcGkH8ur/Zbgui+uItKi/svLjHBLV3lVWMzK2Z
-	t/2fVOCbiefDNKgenBBsX4Q8t4ZEshNWTOoXF2KQ0MuR9O/BLb+20VNlYk3KjapWW3bZXTsr+Zs
-	tQGwIm+kOTkB/wIk0iDz7+4kpxwc61XOXXiuaiozKpc5Nq6Pdqc9midzsMRZ8XU8EhcbO9u8EbR
-	sg==
-X-Google-Smtp-Source: AGHT+IHvw83dREGTSGGLHglwCRhN0H1ptiO+KIVjWD+3DR+Gz0KbzI4XRCU3DMpjiuXNUnxc8iRh1Q==
-X-Received: by 2002:a05:6402:2550:b0:5d3:bc03:cb7a with SMTP id 4fb4d7f45d1cf-5d972e4c9b2mr6556582a12.27.1736429138543;
-        Thu, 09 Jan 2025 05:25:38 -0800 (PST)
-Received: from [172.27.58.138] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d99008c523sm611334a12.8.2025.01.09.05.25.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Jan 2025 05:25:38 -0800 (PST)
-Message-ID: <f6e79987-a48e-4546-b55e-ec95f7f0befe@gmail.com>
-Date: Thu, 9 Jan 2025 15:25:36 +0200
+	s=arc-20240116; t=1736434148; c=relaxed/simple;
+	bh=46OfJedDFsal/84XtGkdidDlykadwg95odP8kEBZssY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uoHQkJ1uNH96+Nx59w/vQTLSR+n3d0MLE3Oyv95Kpd4XF2eMKkCcOnSA4lsYfklJJ6c447yx2AiQRrLEZQXzmtsPigGOnzVaRLn9ZYF9fX66IU0RhsQnWZckf5v3jqM0lOLADlh6yezWjp/vNMyGxKcZzn6jIb8FAFJFEAyTh/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35F4DC4CED2;
+	Thu,  9 Jan 2025 14:49:04 +0000 (UTC)
+Date: Thu, 9 Jan 2025 09:50:37 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Joel Granados <joel.granados@kernel.org>
+Cc: Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <linux@weissschuh.net>, Kees Cook
+ <kees@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
+ openipmi-developer@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
+ linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-serial@vger.kernel.org, xen-devel@lists.xenproject.org,
+ linux-aio@kvack.org, linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
+ codalist@coda.cs.cmu.edu, linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+ ocfs2-devel@lists.linux.dev, fsverity@lists.linux.dev,
+ linux-xfs@vger.kernel.org, io-uring@vger.kernel.org, bpf@vger.kernel.org,
+ kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org, apparmor@lists.ubuntu.com,
+ linux-security-module@vger.kernel.org, keyrings@vger.kernel.org
+Subject: Re: [PATCH] treewide: const qualify ctl_tables where applicable
+Message-ID: <20250109095037.0ac3fe09@gandalf.local.home>
+In-Reply-To: <20250109-jag-ctl_table_const-v1-1-622aea7230cf@kernel.org>
+References: <20250109-jag-ctl_table_const-v1-1-622aea7230cf@kernel.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] net/mlx5: Fix variable not being completed when
- function returns
-To: Chenguang Zhao <zhaochenguang@kylinos.cn>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Moshe Shemesh <moshe@nvidia.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <20250108030009.68520-1-zhaochenguang@kylinos.cn>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20250108030009.68520-1-zhaochenguang@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
+On Thu, 09 Jan 2025 14:16:39 +0100
+Joel Granados <joel.granados@kernel.org> wrote:
 
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index 2e113f8b13a2..489cbab3d64c 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -8786,7 +8786,7 @@ ftrace_enable_sysctl(const struct ctl_table *table, int write,
+>  	return ret;
+>  }
+>  
+> -static struct ctl_table ftrace_sysctls[] = {
+> +static const struct ctl_table ftrace_sysctls[] = {
+>  	{
+>  		.procname       = "ftrace_enabled",
+>  		.data           = &ftrace_enabled,
+> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+> index 17bcad8f79de..97325fbd6283 100644
+> --- a/kernel/trace/trace_events_user.c
+> +++ b/kernel/trace/trace_events_user.c
+> @@ -2899,7 +2899,7 @@ static int set_max_user_events_sysctl(const struct ctl_table *table, int write,
+>  	return ret;
+>  }
+>  
+> -static struct ctl_table user_event_sysctls[] = {
+> +static const struct ctl_table user_event_sysctls[] = {
+>  	{
+>  		.procname	= "user_events_max",
+>  		.data		= &max_user_events,
 
-On 08/01/2025 5:00, Chenguang Zhao wrote:
->      The cmd_work_handler function returns from the child function
->      cmd_alloc_index because the allocate command entry fails,
->      Before returning, there is no complete ent->slotted.
-> 
->      The patch fixes it.
-> 
+Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org> # for kernel/trace/
 
-Unnecessary indentation.
-
->       mlx5_core 0000:01:00.0: cmd_work_handler:877:(pid 3880418): failed to allocate command entry
->       INFO: task kworker/13:2:4055883 blocked for more than 120 seconds.
->             Not tainted 4.19.90-25.44.v2101.ky10.aarch64 #1
->       "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->       kworker/13:2    D    0 4055883      2 0x00000228
->       Workqueue: events mlx5e_tx_dim_work [mlx5_core]
->       Call trace:
->        __switch_to+0xe8/0x150
->        __schedule+0x2a8/0x9b8
->        schedule+0x2c/0x88
->        schedule_timeout+0x204/0x478
->        wait_for_common+0x154/0x250
->        wait_for_completion+0x28/0x38
->        cmd_exec+0x7a0/0xa00 [mlx5_core]
->        mlx5_cmd_exec+0x54/0x80 [mlx5_core]
->        mlx5_core_modify_cq+0x6c/0x80 [mlx5_core]
->        mlx5_core_modify_cq_moderation+0xa0/0xb8 [mlx5_core]
->        mlx5e_tx_dim_work+0x54/0x68 [mlx5_core]
->        process_one_work+0x1b0/0x448
->        worker_thread+0x54/0x468
->        kthread+0x134/0x138
->        ret_from_fork+0x10/0x18
-> 
->      Fixes: 485d65e13571 ("net/mlx5: Add a timeout to acquire the command queue semaphore")
-
-Also for the Fixes tag.
-
-Other than that:
-Acked-by: Tariq Toukan <tariqt@nvidia.com>
-
-
-> 
-> Signed-off-by: Chenguang Zhao zhaochenguang@kylinos.cn
-> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-> ---
-> v2:
-> 	add Fixes tag and Reviewed-by
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> index 6bd8a18e3af3..e733b81e18a2 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> @@ -1013,6 +1013,7 @@ static void cmd_work_handler(struct work_struct *work)
->   				complete(&ent->done);
->   			}
->   			up(&cmd->vars.sem);
-> +			complete(&ent->slotted);
->   			return;
->   		}
->   	} else {
-
+-- Steve
 
