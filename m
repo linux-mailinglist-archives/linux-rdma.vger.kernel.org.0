@@ -1,60 +1,100 @@
-Return-Path: <linux-rdma+bounces-6921-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6922-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AE9EA063BB
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 18:53:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99A5DA06BD3
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jan 2025 04:05:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AA373A6619
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2025 17:53:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 296B918883AE
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jan 2025 03:05:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACF26200B8B;
-	Wed,  8 Jan 2025 17:52:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB2613B7AE;
+	Thu,  9 Jan 2025 03:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UJyjD3xR"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SLVbenMt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF8B1FFC67;
-	Wed,  8 Jan 2025 17:52:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CB0F139CF2;
+	Thu,  9 Jan 2025 03:04:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736358779; cv=none; b=nbTnKk/90mzGiv1QgAIzGiHyAQxE1T1emtEMa1cVlkf3ecA87VBVEYwO/xcNu6NUeqEDzwbyHFuTTugB4hqArz4sThU4Dsr4fe9viQJ11OtUoS/QedgygmGTRBHSm2xC3ykjHxZPtyKhPkigOCNpWlvwzLOmIBRNdUPa5ZpIQN4=
+	t=1736391885; cv=none; b=sg9X0b2qzdd+tq5o2HqJgpz0xRwDy7hEZY+QIzt5yfZxZ+9V/qD7+eXlJSnY/7tyI97AY37uv0+gu42NVvAcBsXOuLneiHOudLpwHMTDk0dPjXnIjbvXzWoWXNdkCaihZkQ453qa/sa+N3YCjnQCr8A35cYAhR1dXF5yy8GNRRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736358779; c=relaxed/simple;
-	bh=QV0zSXXSQW8UjP5PQeq8PFF2s8zCILiTY+PAQRr2D+E=;
+	s=arc-20240116; t=1736391885; c=relaxed/simple;
+	bh=K+nUBd2JGauhb1BPitIYbNWXqXl1MYo9/CXFAZQ0+cY=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZYGlCew+fuw39ACXNJl4U8vykRV62rawC174UKKJwvQnd0Kg3ZZ6wH19kKbkYiCHACTXO2GF+6dAihkWPOlkcwPKUD+SmIpbmTuLe1WJvSqvDNANWhAFCx4MJdItRenKlE/stX8SCxkf/TBpGb1S4GF+Ua80GXZyjhl9V1qGD4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UJyjD3xR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 887BAC4CED3;
-	Wed,  8 Jan 2025 17:52:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736358779;
-	bh=QV0zSXXSQW8UjP5PQeq8PFF2s8zCILiTY+PAQRr2D+E=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=UJyjD3xRKLU4YEUp69wtcS7Pvi+qHqJChMvTk/AeVs14Cm00nzzQXMbhQ9wMMOCJY
-	 HWfX+cXIWtYCZQGDLbkwNu4/Ssr6xsDlO/wWDCwbLUGD8rfTshPiEgkt/RfjMaq9RQ
-	 r7aGqnMNLCIwcCzW2tAUOJLlkKp1vLkFBGeR/ZqQAidDVUNxA7YOxzIT6vBExVgl3F
-	 W15yO9QinDagAAgbLLM2v/XyZTdLjF3O81OdufonyRXimopakG5Ba08XFlOEDgd51P
-	 c7LAmkB48tKgLxHn0pHFUFK9fa4FIouD66pfhZU/hekwzsxVgtGFef8oV9gk59CAWu
-	 +ZyxGUqqrXEZA==
-Date: Wed, 8 Jan 2025 09:52:57 -0800
-From: Jakub Kicinski <kuba@kernel.org>
+	 MIME-Version:Content-Type; b=PvLlihFe+gq4C6yKh7fDr8JWsS4LPHLCcj8AZIKWDkdoD61YyQqQrtcCZh9pmBKgOjPynuYxi+CKk9dkLUn3uqF2o+5JYLdVxwlFLfd7x1dXcC7UJRkG0SUcJwd+OzO5YQU3Rl78u011KF2XftIp0K2jdRaLaDK7MVEOoQRq/pE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SLVbenMt; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 508Nwd4U016940;
+	Thu, 9 Jan 2025 03:04:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=F521Mj
+	HfEQEV+dlWDHPgFtwV3eLXoTVg74aU2NY3oRw=; b=SLVbenMtH6CVzvsmJMpr+1
+	vSBMKFQi5iTCtZDd/aTxjmbI7iqAY5WGtaPCfXmcqDBwkgLhBdadRYQKi4ScpWNx
+	K2zhCwYTF6SxlE52xMp63+WHd+iDeBUSJeToOKhQQ7zDkVLB5k2ImauMVhLOx8O1
+	6owydunUXOyfnlKS4L8iJdrAgeNPVBtaNipAHjrqwHDiWpIC3ZSpxhACeCvtpSZU
+	4PLyoBrP0UIvFFP3Pxcrst4JEDHf+uzrGAXoOEpBzg2fgPoWVS0YLZPGZ/3ML8Ac
+	PE8OruzedWR9suYpetN2gcYyHxUuKqtjw6BWoKcoBxWLw9PzdnVdaREvKojAAa+A
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4423ghrmeq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 09 Jan 2025 03:04:37 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 5092vBLK007706;
+	Thu, 9 Jan 2025 03:04:37 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4423ghrmen-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 09 Jan 2025 03:04:37 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50905YnZ008869;
+	Thu, 9 Jan 2025 03:04:35 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43yfq037eg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 09 Jan 2025 03:04:35 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 50934W2Z8585492
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 9 Jan 2025 03:04:32 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id F184220043;
+	Thu,  9 Jan 2025 03:04:31 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E3EC32004B;
+	Thu,  9 Jan 2025 03:04:30 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.84.105])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with SMTP;
+	Thu,  9 Jan 2025 03:04:30 +0000 (GMT)
+Date: Thu, 9 Jan 2025 04:04:29 +0100
+From: Halil Pasic <pasic@linux.ibm.com>
 To: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-Cc: wenjia@linux.ibm.com, jaka@linux.ibm.com, alibuda@linux.alibaba.com,
- tonylu@linux.alibaba.com, guwen@linux.alibaba.com, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, horms@kernel.org,
- linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Halil Pasic
- <pasic@linux.ibm.com>, Alexandra Winter <wintera@linux.ibm.com>
-Subject: Re: [PATCH RESEND net] net/smc: fix data error when recvmsg with
- MSG_PEEK flag
-Message-ID: <20250108095257.2b93b6c6@kernel.org>
-In-Reply-To: <20250104143201.35529-1-guangguan.wang@linux.alibaba.com>
-References: <20250104143201.35529-1-guangguan.wang@linux.alibaba.com>
+Cc: Paolo Abeni <pabeni@redhat.com>, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, horms@kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexandra Winter <wintera@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH net] net/smc: use the correct ndev to find pnetid by
+ pnetid table
+Message-ID: <20250109040429.350fdd60.pasic@linux.ibm.com>
+In-Reply-To: <908be351-b4f8-4c25-9171-4f033e11ffc4@linux.alibaba.com>
+References: <20241227040455.91854-1-guangguan.wang@linux.alibaba.com>
+	<1f4a721f-fa23-4f1d-97a9-1b27bdcd1e21@redhat.com>
+	<20250107203218.5787acb4.pasic@linux.ibm.com>
+	<908be351-b4f8-4c25-9171-4f033e11ffc4@linux.alibaba.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,239 +102,84 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: c-YJzEI6PimfRixeIzOGUPFCXjLQCG_e
+X-Proofpoint-ORIG-GUID: -i-ItMAOiafV3SiAw9NPA3NkVctKgiuD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ mlxscore=0 impostorscore=0 bulkscore=0 priorityscore=1501 suspectscore=0
+ clxscore=1015 mlxlogscore=500 spamscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2411120000
+ definitions=main-2501090022
 
-CC: Halil, Alexandra
+On Wed, 8 Jan 2025 12:57:00 +0800
+Guangguan Wang <guangguan.wang@linux.alibaba.com> wrote:
 
-On Sat,  4 Jan 2025 22:32:01 +0800 Guangguan Wang wrote:
-> When recvmsg with MSG_PEEK flag, the data will be copied to
-> user's buffer without advancing consume cursor and without
-> reducing the length of rx available data. Once the expected
-> peek length is larger than the value of bytes_to_rcv, in the
-> loop of do while in smc_rx_recvmsg, the first loop will copy
-> bytes_to_rcv bytes of data from the position local_tx_ctrl.cons,
-> the second loop will copy the min(bytes_to_rcv, read_remaining)
-> bytes from the position local_tx_ctrl.cons again because of the
-> lacking of process with advancing consume cursor and reducing
-> the length of available data. So do the subsequent loops. The
-> data copied in the second loop and the subsequent loops will
-> result in data error, as it should not be copied if no more data
-> arrives and it should be copied from the position advancing
-> bytes_to_rcv bytes from the local_tx_ctrl.cons if more data arrives.
+> > sorry for chiming in late. Wenjia is on vacation and Jan is out sick!
+> > After some reading and thinking I could not figure out how 890a2cb4a966
+> > ("net/smc: rework pnet table") is broken.  
 > 
-> This issue can be reproduce by the following python script:
-> server.py:
-> import socket
-> import time
-> server_ip = '0.0.0.0'
-> server_port = 12346
-> server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-> server_socket.bind((server_ip, server_port))
-> server_socket.listen(1)
-> print('Server is running and listening for connections...')
-> conn, addr = server_socket.accept()
-> print('Connected by', addr)
-> while True:
->     data = conn.recv(1024)
->     if not data:
->         break
->     print('Received request:', data.decode())
->     conn.sendall(b'Hello, client!\n')
->     time.sleep(5)
->     conn.sendall(b'Hello, again!\n')
-> conn.close()
+> Before commit 890a2cb4a966:
+> smc_pnet_find_roce_resource
+>     smc_pnet_find_roce_by_pnetid(ndev, ...) /* lookup via hardware-defined pnetid */
+>         smc_pnetid_by_dev_port(base_ndev, ...)
+>     smc_pnet_find_roce_by_table(ndev, ...) /* lookup via SMC PNET table */
+>     {
+>         ...
+>         list_for_each_entry(pnetelem, &smc_pnettable.pnetlist, list) {
+>                 if (ndev == pnetelem->ndev) { /* notice here, it was ndev to matching pnetid element in pnet table */
+>         ...
+>     }
 > 
-> client.py:
-> import socket
-> server_ip = '<server ip>'
-> server_port = 12346
-> resp=b'Hello, client!\nHello, again!\n'
-> client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-> client_socket.connect((server_ip, server_port))
-> request = 'Hello, server!'
-> client_socket.sendall(request.encode())
-> peek_data = client_socket.recv(len(resp),
->     socket.MSG_PEEK | socket.MSG_WAITALL)
-> print('Peeked data:', peek_data.decode())
-> client_socket.close()
+> After commit 890a2cb4a966:
+> smc_pnet_find_roce_resource
+>     smc_pnet_find_roce_by_pnetid
+>     {
+>         ...
+>         base_ndev = pnet_find_base_ndev(ndev); /* rename the variable name to base_ndev for better understanding */
+>         smc_pnetid_by_dev_port(base_ndev, ...)
+>         smc_pnet_find_ndev_pnetid_by_table(base_ndev, ...)
+>         {
+>                 ...
+>                 list_for_each_entry(pnetelem, &smc_pnettable.pnetlist, list) {
+>                 if (base_ndev == pnetelem->ndev) { /* notice here, it is base_ndev to matching pnetid element in pnet table */
+>                 ...
+>         }
 > 
-> Fixes: 952310ccf2d8 ("smc: receive data from RMBE")
-> Reported-by: D. Wythe <alibuda@linux.alibaba.com>
-> Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-> ---
->  net/smc/af_smc.c |  2 +-
->  net/smc/smc_rx.c | 37 +++++++++++++++++++++----------------
->  net/smc/smc_rx.h |  8 ++++----
->  3 files changed, 26 insertions(+), 21 deletions(-)
+>     }
 > 
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index 6cc7b846cff1..ebc41a7b13db 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -2738,7 +2738,7 @@ int smc_accept(struct socket *sock, struct socket *new_sock,
->  			release_sock(clcsk);
->  		} else if (!atomic_read(&smc_sk(nsk)->conn.bytes_to_rcv)) {
->  			lock_sock(nsk);
-> -			smc_rx_wait(smc_sk(nsk), &timeo, smc_rx_data_available);
-> +			smc_rx_wait(smc_sk(nsk), &timeo, 0, smc_rx_data_available);
->  			release_sock(nsk);
->  		}
->  	}
-> diff --git a/net/smc/smc_rx.c b/net/smc/smc_rx.c
-> index f0cbe77a80b4..79047721df51 100644
-> --- a/net/smc/smc_rx.c
-> +++ b/net/smc/smc_rx.c
-> @@ -238,22 +238,23 @@ static int smc_rx_splice(struct pipe_inode_info *pipe, char *src, size_t len,
->  	return -ENOMEM;
->  }
->  
-> -static int smc_rx_data_available_and_no_splice_pend(struct smc_connection *conn)
-> +static int smc_rx_data_available_and_no_splice_pend(struct smc_connection *conn, size_t peeked)
->  {
-> -	return atomic_read(&conn->bytes_to_rcv) &&
-> +	return smc_rx_data_available(conn, peeked) &&
->  	       !atomic_read(&conn->splice_pending);
->  }
->  
->  /* blocks rcvbuf consumer until >=len bytes available or timeout or interrupted
->   *   @smc    smc socket
->   *   @timeo  pointer to max seconds to wait, pointer to value 0 for no timeout
-> + *   @peeked  number of bytes already peeked
->   *   @fcrit  add'l criterion to evaluate as function pointer
->   * Returns:
->   * 1 if at least 1 byte available in rcvbuf or if socket error/shutdown.
->   * 0 otherwise (nothing in rcvbuf nor timeout, e.g. interrupted).
->   */
-> -int smc_rx_wait(struct smc_sock *smc, long *timeo,
-> -		int (*fcrit)(struct smc_connection *conn))
-> +int smc_rx_wait(struct smc_sock *smc, long *timeo, size_t peeked,
-> +		int (*fcrit)(struct smc_connection *conn, size_t baseline))
->  {
->  	DEFINE_WAIT_FUNC(wait, woken_wake_function);
->  	struct smc_connection *conn = &smc->conn;
-> @@ -262,7 +263,7 @@ int smc_rx_wait(struct smc_sock *smc, long *timeo,
->  	struct sock *sk = &smc->sk;
->  	int rc;
->  
-> -	if (fcrit(conn))
-> +	if (fcrit(conn, peeked))
->  		return 1;
->  	sk_set_bit(SOCKWQ_ASYNC_WAITDATA, sk);
->  	add_wait_queue(sk_sleep(sk), &wait);
-> @@ -271,7 +272,7 @@ int smc_rx_wait(struct smc_sock *smc, long *timeo,
->  			   cflags->peer_conn_abort ||
->  			   READ_ONCE(sk->sk_shutdown) & RCV_SHUTDOWN ||
->  			   conn->killed ||
-> -			   fcrit(conn),
-> +			   fcrit(conn, peeked),
->  			   &wait);
->  	remove_wait_queue(sk_sleep(sk), &wait);
->  	sk_clear_bit(SOCKWQ_ASYNC_WAITDATA, sk);
-> @@ -322,11 +323,11 @@ static int smc_rx_recv_urg(struct smc_sock *smc, struct msghdr *msg, int len,
->  	return -EAGAIN;
->  }
->  
-> -static bool smc_rx_recvmsg_data_available(struct smc_sock *smc)
-> +static bool smc_rx_recvmsg_data_available(struct smc_sock *smc, size_t peeked)
->  {
->  	struct smc_connection *conn = &smc->conn;
->  
-> -	if (smc_rx_data_available(conn))
-> +	if (smc_rx_data_available(conn, peeked))
->  		return true;
->  	else if (conn->urg_state == SMC_URG_VALID)
->  		/* we received a single urgent Byte - skip */
-> @@ -344,10 +345,10 @@ static bool smc_rx_recvmsg_data_available(struct smc_sock *smc)
->  int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
->  		   struct pipe_inode_info *pipe, size_t len, int flags)
->  {
-> -	size_t copylen, read_done = 0, read_remaining = len;
-> +	size_t copylen, read_done = 0, read_remaining = len, peeked_bytes = 0;
->  	size_t chunk_len, chunk_off, chunk_len_sum;
->  	struct smc_connection *conn = &smc->conn;
-> -	int (*func)(struct smc_connection *conn);
-> +	int (*func)(struct smc_connection *conn, size_t baseline);
->  	union smc_host_cursor cons;
->  	int readable, chunk;
->  	char *rcvbuf_base;
-> @@ -384,14 +385,14 @@ int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
->  		if (conn->killed)
->  			break;
->  
-> -		if (smc_rx_recvmsg_data_available(smc))
-> +		if (smc_rx_recvmsg_data_available(smc, peeked_bytes))
->  			goto copy;
->  
->  		if (sk->sk_shutdown & RCV_SHUTDOWN) {
->  			/* smc_cdc_msg_recv_action() could have run after
->  			 * above smc_rx_recvmsg_data_available()
->  			 */
-> -			if (smc_rx_recvmsg_data_available(smc))
-> +			if (smc_rx_recvmsg_data_available(smc, peeked_bytes))
->  				goto copy;
->  			break;
->  		}
-> @@ -425,26 +426,28 @@ int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
->  			}
->  		}
->  
-> -		if (!smc_rx_data_available(conn)) {
-> -			smc_rx_wait(smc, &timeo, smc_rx_data_available);
-> +		if (!smc_rx_data_available(conn, peeked_bytes)) {
-> +			smc_rx_wait(smc, &timeo, peeked_bytes, smc_rx_data_available);
->  			continue;
->  		}
->  
->  copy:
->  		/* initialize variables for 1st iteration of subsequent loop */
->  		/* could be just 1 byte, even after waiting on data above */
-> -		readable = atomic_read(&conn->bytes_to_rcv);
-> +		readable = smc_rx_data_available(conn, peeked_bytes);
->  		splbytes = atomic_read(&conn->splice_pending);
->  		if (!readable || (msg && splbytes)) {
->  			if (splbytes)
->  				func = smc_rx_data_available_and_no_splice_pend;
->  			else
->  				func = smc_rx_data_available;
-> -			smc_rx_wait(smc, &timeo, func);
-> +			smc_rx_wait(smc, &timeo, peeked_bytes, func);
->  			continue;
->  		}
->  
->  		smc_curs_copy(&cons, &conn->local_tx_ctrl.cons, conn);
-> +		if ((flags & MSG_PEEK) && peeked_bytes)
-> +			smc_curs_add(conn->rmb_desc->len, &cons, peeked_bytes);
->  		/* subsequent splice() calls pick up where previous left */
->  		if (splbytes)
->  			smc_curs_add(conn->rmb_desc->len, &cons, splbytes);
-> @@ -480,6 +483,8 @@ int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
->  			}
->  			read_remaining -= chunk_len;
->  			read_done += chunk_len;
-> +			if (flags & MSG_PEEK)
-> +				peeked_bytes += chunk_len;
->  
->  			if (chunk_len_sum == copylen)
->  				break; /* either on 1st or 2nd iteration */
-> diff --git a/net/smc/smc_rx.h b/net/smc/smc_rx.h
-> index db823c97d824..994f5e42d1ba 100644
-> --- a/net/smc/smc_rx.h
-> +++ b/net/smc/smc_rx.h
-> @@ -21,11 +21,11 @@ void smc_rx_init(struct smc_sock *smc);
->  
->  int smc_rx_recvmsg(struct smc_sock *smc, struct msghdr *msg,
->  		   struct pipe_inode_info *pipe, size_t len, int flags);
-> -int smc_rx_wait(struct smc_sock *smc, long *timeo,
-> -		int (*fcrit)(struct smc_connection *conn));
-> -static inline int smc_rx_data_available(struct smc_connection *conn)
-> +int smc_rx_wait(struct smc_sock *smc, long *timeo, size_t peeked,
-> +		int (*fcrit)(struct smc_connection *conn, size_t baseline));
-> +static inline int smc_rx_data_available(struct smc_connection *conn, size_t peeked)
->  {
-> -	return atomic_read(&conn->bytes_to_rcv);
-> +	return atomic_read(&conn->bytes_to_rcv) - peeked;
->  }
->  
->  #endif /* SMC_RX_H */
+> The commit 890a2cb4a966 has changed ndev to base_ndev when matching pnetid element in pnet table.
+> But in the function smc_pnet_add_eth, the pnetid is attached to the ndev itself, not the base_ndev.
+> smc_pnet_add_eth(...)
+> {
+>     ...
+>     ndev = dev_get_by_name(net, eth_name);
+>     ...
+>         if (new_netdev) {
+>             if (ndev) {
+>                 new_pe->ndev = ndev;
+>                 netdev_tracker_alloc(ndev, &new_pe->dev_tracker,
+>                     GFP_ATOMIC);
+>             }
+>             list_add_tail(&new_pe->list, &pnettable->pnetlist);
+>             mutex_unlock(&pnettable->lock);
+>         } else {
+>     ...
+> }
 
+I still not understand why do you think that 890a2cb4a966~1 is better
+than 890a2cb4a966 even if things changed with 890a2cb4a966 which
+I did not verify for myself but am willing to assume.
+
+Is there some particular setup that you think would benefit from
+you patch? I.e. going back to the 890a2cb4a966~1 behavior I suppose.
+
+I think I showed a valid and practical setup that would break with your
+patch as is. Do you agree with that statement?
+
+Regards,
+Halil
 
