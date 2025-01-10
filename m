@@ -1,91 +1,91 @@
-Return-Path: <linux-rdma+bounces-6950-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6951-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEF83A08614
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 04:55:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18F99A08616
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 04:55:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F35A169489
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 03:55:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC876188BA7B
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 03:55:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5D01E32CB;
-	Fri, 10 Jan 2025 03:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2C11FC114;
+	Fri, 10 Jan 2025 03:55:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DI/3rsy7"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="YbqBE1Ek"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DFAA502B1
-	for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2025 03:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361031C5F2C
+	for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2025 03:55:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736481321; cv=none; b=Neu0jw5mDSqqyFOtizTrBbuhyeuz67f+bpKOs09YHYW4KDELEHjjEUhlUyk/c6LKQooUzSWNI0g2WPW1NlvWP+LlxZIbdWYKKPUaRfUb7Bxvzi57xlrAnLDrNWZYvRBVHY35u3Mj7FHi4gKPiV0zYQaw5ZgyOnnD0OHFj2gqpP8=
+	t=1736481343; cv=none; b=UYS8fPxgiztWSE/DmJg1/VHrHymnLYCzX1nITw6oIS8B2TQzwhs07VQbE5OMzTAOEzS90XvX/XGp//qUvQLu3WzNiwvponA4YrYm+EM5paxKVGa1slT3n+NSmj+vwmtP1s/ZtWxjgDomjKP5aH5rEwXND7SmX0rwQ93lAuLrJPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736481321; c=relaxed/simple;
-	bh=hNIWK7sdFkwLlBR1exs1KHhi0RPav6691aJaEt29jnU=;
+	s=arc-20240116; t=1736481343; c=relaxed/simple;
+	bh=3aDXcCoNsEsDnNokXF4E39pwlTVDvkvDks8gRW0Cdls=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o6fPC9vw/rFGaG9yd6tTYNJckgnaprFE2fe0CvhSDpytjSNj1pLQjZ+spiBCDkrbwlBe6zYkbtQUFZEPg1XX4JlzpXkr9QRVeMTD3MF2471H34hHg5GT85BIk8WtWzZv8zu9/xzOx9fHyoPGoYnMVcqtZJmOfw33vVwK4+YICsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=DI/3rsy7; arc=none smtp.client-ip=209.85.214.174
+	 To:Cc:Content-Type; b=lGHD2/0z/Z52iOByrONoc8WxIt/K8Hwecsoam6uAzk9ZOR8rD/OU/48XT9EpVzvPdUC8zXNllkeI+iUDp2N68/tBZOY3aYqMbZTFh92wfwaNbAwgwqIHtEJhAvNH9w1mMwFngAD2ZYd9cE6FLdBgJdloULRse9wfrySnlY4h2wE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=YbqBE1Ek; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21619108a6bso26739945ad.3
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jan 2025 19:55:19 -0800 (PST)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2ee86a1a92dso2363159a91.1
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Jan 2025 19:55:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1736481319; x=1737086119; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1736481341; x=1737086141; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hNIWK7sdFkwLlBR1exs1KHhi0RPav6691aJaEt29jnU=;
-        b=DI/3rsy7dv0FQVPs5sXF8YJgBUx/m41E8dvHVsoqByM1dEHsp7Xd4wcMfmwDvpEjCi
-         brHTjgVQ5uYyP9w36mtM/GaGqI0GuNibZ234YZWjb/JL2n6pjLNseGZbvrZ9s+egK3SE
-         qqFwWGfeEIdwW7scxJx5ZBv2BdO+LZ9sAUC1c=
+        bh=3aDXcCoNsEsDnNokXF4E39pwlTVDvkvDks8gRW0Cdls=;
+        b=YbqBE1EkE1Zi2uvlgVQ/FxqNhu5dzHBlTjLKO+n5YT2s37Tf4L5s9swt2enmeMD4al
+         1qheTjiT60GXanaxhuI+gri6r3LCkxakniE5eZ0KiiKTP1v2Etn7PruNJvFeCpQWZxBf
+         ON1pD1KtqTgsEGW1KpuQb+SriU28PeKZo8X6c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736481319; x=1737086119;
+        d=1e100.net; s=20230601; t=1736481341; x=1737086141;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hNIWK7sdFkwLlBR1exs1KHhi0RPav6691aJaEt29jnU=;
-        b=aJ1BSsF8AV0t/OWDFH7jLVvIAlqlfKNnCt/ZC6aRUpKVy/PQWbBuYh1oZRy/wrynN2
-         XyTR3jsF1GcMeQYhmtd1rfYGgOhJB6Ib6RWDIR0JraHeMS73q4uU/tdIGfOO4PWn1fa8
-         t63MuNYun91mnEEfSC3AKDvhN0CHXcrfkbafwqFsMTqKfY7fh2Vm75FhR16admZATXvF
-         vqDZCWQz4Pn6ex0VB2NekdRR3+2mEjuafgBLgfRxNk9rC/l9nCbY7BemAiHfg7bHrf8W
-         9x9IUdC2nSaqUEyI0Ojj0kGyRoqB/0v8cpylRVRKVBufU3v0eJ0UT9rOUhWd+UmFNAK0
-         F8Ng==
-X-Forwarded-Encrypted: i=1; AJvYcCVTyTf23DDcGLZG9CO3VoxQh/erBJKIc5ZGtZucJ3tlA/bvF2WicQ+YYgHJ+eHq5r7RzrN7ZPC9Ga/N@vger.kernel.org
-X-Gm-Message-State: AOJu0YzK3rkzqPnXT3alR6aS5uwZseYcZjNEfxN99wnXRXPQsylvCeq2
-	SDvhiusXMyHp3t9NQ4lS2xy/VAxcCiIJoVGKhFgbaR2Fz+IWkDtSqsgIGsbxAhDaIfz+Knibiw5
-	mTrKjkP0DsEHxure12NRn1lq4XcplZtR0QEsD
-X-Gm-Gg: ASbGncskouBpaFDfH7JYGySgGCSmsjq6e8/NRcJGQYxG/UHB1VxZPkjYttRt2wN5/Fv
-	rM+X5JdAVFsPIuaSVJfhGcErVk4wI6PhYj++feQU=
-X-Google-Smtp-Source: AGHT+IHuZ0xWwUUMfDx0TS1ckpImAO/r/A9JGPKCmgr6Ya81tIw750HRwnaHifeUOp/kR5zKM8Xr3B4BxURemJ3WtMw=
-X-Received: by 2002:a05:6a20:43a9:b0:1e1:b727:1801 with SMTP id
- adf61e73a8af0-1e88d15a830mr14144331637.27.1736481319588; Thu, 09 Jan 2025
- 19:55:19 -0800 (PST)
+        bh=3aDXcCoNsEsDnNokXF4E39pwlTVDvkvDks8gRW0Cdls=;
+        b=gUhVplethTy89yVQrB88Ow30O19eiItzyf7sNzh9HG7hHQwzP8BPMSbmwfuAhV9oAF
+         eYHZIaHtmXynaLb8ybsWWdV/OhwDDqZ6MDeY0+p4z2SaAoMqq1V7TSVt9W2r0bcoHZtF
+         D1C4Qq99XGYyEDBbKS01WX7+cV+nL6DN6je/CR5rselNC/Kwlhth0B+bhYlbCG0s+uye
+         hlaL0u23Po5z4dsaY9WnsONMsAOhwlocY5nFsDpAfS+PNJC74r5yosTa2maYcnji7rpv
+         PRGlla4bz1+kl/6wpmfAs+uZnbJ/iiNBMI6chJncb3GEPzAJO78bqu9vt7IC99opv4jQ
+         LQxA==
+X-Forwarded-Encrypted: i=1; AJvYcCWlxearsQUCvn5AtRQta9CRilTPbFPTArh3xEgVDZi6dPmiWdNrtMUlTosErnpQSKl71yp9dvhB5R/e@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbRSIPVL2OKjVLlDxbLCz7+x2xfGOjGQpmazFdmreIC6iYOxSu
+	UkHQ00B1hxrDCFjrGP8cYrcBlxLHCe2n5Jw61nHwS8gHUjuKkLqe/G75+jMJABJFH3dh3zLJ9Jt
+	btlaEQaW6nCpgNbVm2GhefVL9aS1ITzhfy0HY
+X-Gm-Gg: ASbGncvQ+6y4oo+FFggIimFKvQDb9CflJve2I1LyrQ496XReXWn2bR8UA6pLB2+qq6z
+	WL4Q5hJ53KkoaNNO5jkyIRaA3BQMJ6bxiRf6Q5Mg=
+X-Google-Smtp-Source: AGHT+IEM8AfkrkY9i/I3T+4/423KLWnM9F5yqIsVG9BVwg1K4TLKNfK5hRF2MymysDdCnG2cEG3iEptbLZzJKOoTpHs=
+X-Received: by 2002:a17:90b:538b:b0:2ee:f19b:86e5 with SMTP id
+ 98e67ed59e1d1-2f548eae0eamr14541090a91.14.1736481341569; Thu, 09 Jan 2025
+ 19:55:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250109204231.1809851-1-tariqt@nvidia.com> <20250109204231.1809851-2-tariqt@nvidia.com>
-In-Reply-To: <20250109204231.1809851-2-tariqt@nvidia.com>
+References: <20250109204231.1809851-1-tariqt@nvidia.com> <20250109204231.1809851-3-tariqt@nvidia.com>
+In-Reply-To: <20250109204231.1809851-3-tariqt@nvidia.com>
 From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Fri, 10 Jan 2025 09:25:06 +0530
-X-Gm-Features: AbW1kvZtHbzIJ5SqEjaH_mfNPV4cQIEXLddV1pctvPJnIBNWWZVKCbI9WE-kylY
-Message-ID: <CAH-L+nPVdcZ5EP0-_rB9MQznfvLyS9dBpNKV+aSXEG9Q+OkJPw@mail.gmail.com>
-Subject: Re: [PATCH mlx5-next 1/4] net/mlx5: Update mlx5_ifc to support FEC
- for 200G per lane link modes
+Date: Fri, 10 Jan 2025 09:25:28 +0530
+X-Gm-Features: AbW1kvbsK0jz-TSNrxQs-xRK8YsiB01D_cKS6GL7Nem_qQe5dBYYlxa4AfPVd_M
+Message-ID: <CAH-L+nMv5Aemo+GxZfnhQu7waDqOT5ni9kjjADWRW83JtL1i3A@mail.gmail.com>
+Subject: Re: [PATCH mlx5-next 2/4] net/mlx5: Add support for MRTCQ register
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>, 
 	Jason Gunthorpe <jgg@nvidia.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
 	Jakub Kicinski <kuba@kernel.org>, Gal Pressman <gal@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Moshe Shemesh <moshe@nvidia.com>, Jianbo Liu <jianbol@nvidia.com>
+	Moshe Shemesh <moshe@nvidia.com>, Jianbo Liu <jianbol@nvidia.com>, 
+	Dragos Tatulea <dtatulea@nvidia.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000003a2854062b521023"
+	boundary="0000000000008a4256062b521182"
 
---0000000000003a2854062b521023
+--0000000000008a4256062b521182
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -94,10 +94,11 @@ ote:
 >
 > From: Jianbo Liu <jianbol@nvidia.com>
 >
-> Add FEC admin and override related fields in PPLM, and the bit in PCAM
-> to indicate those fields are supported.
+> Management Real Time Clock Query (MRTCQ) register is used to query
+> hardware clock identity.
 >
 > Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 
 Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
@@ -107,7 +108,7 @@ Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Regards,
 Kalesh AP
 
---0000000000003a2854062b521023
+--0000000000008a4256062b521182
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -179,14 +180,14 @@ a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
 x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
 VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
 bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEIFAjzVQCJRRU/eYX+UXh39DIUsMjg8B826TmOMsPPrg9MBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDExMDAzNTUxOVowaQYJKoZIhvcNAQkPMVwwWjAL
+AQkEMSIEIASKaHRwSbHYXJd+zFPRDfL22Aok6DTuN7S+YiRs7BGeMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDExMDAzNTU0MVowaQYJKoZIhvcNAQkPMVwwWjAL
 BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCFV28tZ2lS
-Tv/xWrf8C2stkH/UBIZQmpz0P4Z1YmEUxTvgD+lqM7skt4pEr12McJKq8r0lFXbM7m3hFRgWAVV8
-TXFPNiVpPAEJzA4uN4myHy5vjwC/71uR/OonuM6zOTsSD3FdunGo+DLdwMN4O/YT/+FR4eKLrrco
-qCCVprUb8ClyFsyBhdnCq/CevP3p5En75uXzaVLXPNcJ1MrCcp9ig946rQjyrQRXteOKXKirZfQP
-n8f3clYzPP4lRCtbzY912/vuXBdQ8soo+qczlpXIbIjH5kOlztca0HGxooc+Y9AimwsQmpKkpLIw
-X+3SIRTdoyxjd4FLhHJrrUJw0a5+
---0000000000003a2854062b521023--
+9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCGn7Lp/UUs
+wsFJVLLwVbXIakPYSDIdH+zVzEJuU7LEVZqPzfRzFkVFr1DFfLR7Wv78E1dAkKwIU8AQKTAijQOS
+vF8ZQNwE6V7NdkWzYggYj1OBgyCE1yfN3UGKP7zmm7afGRgCXeLIpV1N77brJ44J//bxI6UqMKlW
+OTa3MV8AYJIcS5ARI87bjVyMs3F3VK+HdHccSAPY6idxcg0PN512cqV4EH5xEmKstzT82AGql3y1
+BorySOjE8Uykpm32oBWJlGD+cfRMQUaECQnp9I1w6MO7G5qClkly/Clthd6f7HD9+ozspe3s5N42
+d67FLWbej0s33DSnHc+6vK0HWsc6
+--0000000000008a4256062b521182--
 
