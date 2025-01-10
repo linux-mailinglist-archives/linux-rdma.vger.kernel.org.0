@@ -1,103 +1,103 @@
-Return-Path: <linux-rdma+bounces-6951-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6952-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18F99A08616
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 04:55:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C883FA0861A
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 04:57:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC876188BA7B
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 03:55:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6D08168A5F
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 03:57:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2C11FC114;
-	Fri, 10 Jan 2025 03:55:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED14E1FF7DA;
+	Fri, 10 Jan 2025 03:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="YbqBE1Ek"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Z17U7vqH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361031C5F2C
-	for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2025 03:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5851E1FC7EE
+	for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2025 03:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736481343; cv=none; b=UYS8fPxgiztWSE/DmJg1/VHrHymnLYCzX1nITw6oIS8B2TQzwhs07VQbE5OMzTAOEzS90XvX/XGp//qUvQLu3WzNiwvponA4YrYm+EM5paxKVGa1slT3n+NSmj+vwmtP1s/ZtWxjgDomjKP5aH5rEwXND7SmX0rwQ93lAuLrJPs=
+	t=1736481418; cv=none; b=c1y2Ddk6k7jMifTaRWnMRNC91GWr34xLgJxPpZm9hRBlO3N1sNroB6xjXAnEs75PKgcTWOS6tIsP/RmxlEFrmO3YEnn8kB7Jwqri4k2qYpELuH2sDOyl07v9GFViybDCAA9Ma/u99Sh+lN+gecj3PLBhD8FukhV1V0ZzkEw/6yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736481343; c=relaxed/simple;
-	bh=3aDXcCoNsEsDnNokXF4E39pwlTVDvkvDks8gRW0Cdls=;
+	s=arc-20240116; t=1736481418; c=relaxed/simple;
+	bh=NtufWuDS2yCIcGqERTF7RYFNy1NPVYdwbBIyGK6VDSU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lGHD2/0z/Z52iOByrONoc8WxIt/K8Hwecsoam6uAzk9ZOR8rD/OU/48XT9EpVzvPdUC8zXNllkeI+iUDp2N68/tBZOY3aYqMbZTFh92wfwaNbAwgwqIHtEJhAvNH9w1mMwFngAD2ZYd9cE6FLdBgJdloULRse9wfrySnlY4h2wE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=YbqBE1Ek; arc=none smtp.client-ip=209.85.216.49
+	 To:Cc:Content-Type; b=n4pDpXbbQIf8MVCf9Mw+/ywCTfMntoS6Dy/W5BmkkObO1ACVVOEy4sSsatwhmuJOv3/ZYuMYpxYq4i7QelslZeST2lN7AwZ9Qy1oiA2k93B256+9Ev7j/mOpAZsGOtusnq5GQGLNeceOY8+PcQ4AOYVjC21ElRIrw3mznpLYOt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Z17U7vqH; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2ee86a1a92dso2363159a91.1
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jan 2025 19:55:41 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-21661be2c2dso24884565ad.1
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Jan 2025 19:56:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1736481341; x=1737086141; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1736481417; x=1737086217; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3aDXcCoNsEsDnNokXF4E39pwlTVDvkvDks8gRW0Cdls=;
-        b=YbqBE1EkE1Zi2uvlgVQ/FxqNhu5dzHBlTjLKO+n5YT2s37Tf4L5s9swt2enmeMD4al
-         1qheTjiT60GXanaxhuI+gri6r3LCkxakniE5eZ0KiiKTP1v2Etn7PruNJvFeCpQWZxBf
-         ON1pD1KtqTgsEGW1KpuQb+SriU28PeKZo8X6c=
+        bh=NtufWuDS2yCIcGqERTF7RYFNy1NPVYdwbBIyGK6VDSU=;
+        b=Z17U7vqH1Q1ZwumfuonJ6bKyqqNbcVOIkdLvRUMtrml+vZoKpSIyzbfpyck52yVrCl
+         et63sLoWKdUSBsdwesqNAmE8xWu7Dq65mKbrZrMW6F2ZCMZi7JII7bDicI0dMhjdoLI3
+         VPFTjWTklWE5M7J3S6wnkh7MosXa3wLEWJtEk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736481341; x=1737086141;
+        d=1e100.net; s=20230601; t=1736481417; x=1737086217;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3aDXcCoNsEsDnNokXF4E39pwlTVDvkvDks8gRW0Cdls=;
-        b=gUhVplethTy89yVQrB88Ow30O19eiItzyf7sNzh9HG7hHQwzP8BPMSbmwfuAhV9oAF
-         eYHZIaHtmXynaLb8ybsWWdV/OhwDDqZ6MDeY0+p4z2SaAoMqq1V7TSVt9W2r0bcoHZtF
-         D1C4Qq99XGYyEDBbKS01WX7+cV+nL6DN6je/CR5rselNC/Kwlhth0B+bhYlbCG0s+uye
-         hlaL0u23Po5z4dsaY9WnsONMsAOhwlocY5nFsDpAfS+PNJC74r5yosTa2maYcnji7rpv
-         PRGlla4bz1+kl/6wpmfAs+uZnbJ/iiNBMI6chJncb3GEPzAJO78bqu9vt7IC99opv4jQ
-         LQxA==
-X-Forwarded-Encrypted: i=1; AJvYcCWlxearsQUCvn5AtRQta9CRilTPbFPTArh3xEgVDZi6dPmiWdNrtMUlTosErnpQSKl71yp9dvhB5R/e@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbRSIPVL2OKjVLlDxbLCz7+x2xfGOjGQpmazFdmreIC6iYOxSu
-	UkHQ00B1hxrDCFjrGP8cYrcBlxLHCe2n5Jw61nHwS8gHUjuKkLqe/G75+jMJABJFH3dh3zLJ9Jt
-	btlaEQaW6nCpgNbVm2GhefVL9aS1ITzhfy0HY
-X-Gm-Gg: ASbGncvQ+6y4oo+FFggIimFKvQDb9CflJve2I1LyrQ496XReXWn2bR8UA6pLB2+qq6z
-	WL4Q5hJ53KkoaNNO5jkyIRaA3BQMJ6bxiRf6Q5Mg=
-X-Google-Smtp-Source: AGHT+IEM8AfkrkY9i/I3T+4/423KLWnM9F5yqIsVG9BVwg1K4TLKNfK5hRF2MymysDdCnG2cEG3iEptbLZzJKOoTpHs=
-X-Received: by 2002:a17:90b:538b:b0:2ee:f19b:86e5 with SMTP id
- 98e67ed59e1d1-2f548eae0eamr14541090a91.14.1736481341569; Thu, 09 Jan 2025
- 19:55:41 -0800 (PST)
+        bh=NtufWuDS2yCIcGqERTF7RYFNy1NPVYdwbBIyGK6VDSU=;
+        b=aFfKnKH2h9Dshzbv12lcJtMZhAxruc6IK39h9MSKBeSqGtv/0HG1Tkw9cACBjEIdqu
+         9Ewl/bH5TmL2ZNa2iVWp1Z3091/uCAUma68WiUNxWQ0dy42snSAryyXX96Jkf5a3ghwQ
+         b+1/8jakqMiJsqXWAUmmnTux5GOrGZc1czoEHTXAZPdCmtt1GEEZOLkS1IxshZkpcA/h
+         7TrkdPUy49MD2oDm9U6gC4pxcZsP3bHgRrsDeRJzsH4PJIY+j5Q4ZiXvS4kmn+dnbhM3
+         68yliMVyEj4OIkQr8W/lJZIkuw4e9c7rozsU+q5PIARtkNn6bHG5doxyZHsrLJCozaBT
+         wwEw==
+X-Forwarded-Encrypted: i=1; AJvYcCVn/iqAwqc7p+tg+SICpmzsBrVKaObGcsaYTCRamux62hfX3y9IaYDlXGCWHUMsLDHF6tNLSXDDmKAC@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx4x11F+TXbVfMALIzKVP+U2SXubshNy4DIjAt8zwpsjfdTexrG
+	dLioAn1Kr2wH8hw0Pmn8ss8BblRzsKkOvTW52WqkeneDmHZFkPzde1MXEOHL20Lrn4S7LR+ebDW
+	V1Jqem2IDknV09ZlYf3HbEKBu1TVEPtKmYrN6
+X-Gm-Gg: ASbGncuxLm1YIOY2zNsXXix77sOK8jOEDMLmiHEx5saua5A65IT7I7u4+0BAlT9Y7nm
+	XqaNpEhkMnD5LMjdhzWIeW+n/6R3yfovPL2yZSZg=
+X-Google-Smtp-Source: AGHT+IHNx9Y3XVI+mnqNHU+FVaGtFB4OOGelKJfIuukbM3jZ6jbFY01sjharDA0n4kFNgyMuM2KpBk1kbZO8/LcEU1o=
+X-Received: by 2002:a05:6a00:4ac6:b0:727:3cd0:1167 with SMTP id
+ d2e1a72fcca58-72d21fea50emr13852293b3a.21.1736481416755; Thu, 09 Jan 2025
+ 19:56:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250109204231.1809851-1-tariqt@nvidia.com> <20250109204231.1809851-3-tariqt@nvidia.com>
-In-Reply-To: <20250109204231.1809851-3-tariqt@nvidia.com>
+References: <20250109204231.1809851-1-tariqt@nvidia.com> <20250109204231.1809851-4-tariqt@nvidia.com>
+In-Reply-To: <20250109204231.1809851-4-tariqt@nvidia.com>
 From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Fri, 10 Jan 2025 09:25:28 +0530
-X-Gm-Features: AbW1kvbsK0jz-TSNrxQs-xRK8YsiB01D_cKS6GL7Nem_qQe5dBYYlxa4AfPVd_M
-Message-ID: <CAH-L+nMv5Aemo+GxZfnhQu7waDqOT5ni9kjjADWRW83JtL1i3A@mail.gmail.com>
-Subject: Re: [PATCH mlx5-next 2/4] net/mlx5: Add support for MRTCQ register
+Date: Fri, 10 Jan 2025 09:26:43 +0530
+X-Gm-Features: AbW1kvbhJK9SzyBqE5tQ5eti7fFXgFvD1s2rf9p84pZRVkOD8zjEPZuBgSVLBIk
+Message-ID: <CAH-L+nPPYn0QimQrx3MDer7krmH8ieNLb71jPr4-c32UeZUODw@mail.gmail.com>
+Subject: Re: [PATCH mlx5-next 3/4] net/mlx5: SHAMPO: Introduce new SHAMPO
+ specific HCA caps
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>, 
 	Jason Gunthorpe <jgg@nvidia.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
 	Jakub Kicinski <kuba@kernel.org>, Gal Pressman <gal@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Moshe Shemesh <moshe@nvidia.com>, Jianbo Liu <jianbol@nvidia.com>, 
-	Dragos Tatulea <dtatulea@nvidia.com>
+	Moshe Shemesh <moshe@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000008a4256062b521182"
+	boundary="00000000000004ddcf062b521670"
 
---0000000000008a4256062b521182
+--00000000000004ddcf062b521670
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Fri, Jan 10, 2025 at 2:14=E2=80=AFAM Tariq Toukan <tariqt@nvidia.com> wr=
 ote:
 >
-> From: Jianbo Liu <jianbol@nvidia.com>
+> From: Saeed Mahameed <saeedm@nvidia.com>
 >
-> Management Real Time Clock Query (MRTCQ) register is used to query
-> hardware clock identity.
+> Read and cache SHAMPO specific caps for header data split capabilities.
+> Will be used in downstream patch.
 >
-> Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
+> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 > Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 
@@ -108,7 +108,7 @@ Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Regards,
 Kalesh AP
 
---0000000000008a4256062b521182
+--00000000000004ddcf062b521670
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -180,14 +180,14 @@ a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
 x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
 VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
 bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEIASKaHRwSbHYXJd+zFPRDfL22Aok6DTuN7S+YiRs7BGeMBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDExMDAzNTU0MVowaQYJKoZIhvcNAQkPMVwwWjAL
+AQkEMSIEIFbc1HDNXmOFtWrQVHe6iJmwull0NDTazWtZZ1S0HLwoMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDExMDAzNTY1NlowaQYJKoZIhvcNAQkPMVwwWjAL
 BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCGn7Lp/UUs
-wsFJVLLwVbXIakPYSDIdH+zVzEJuU7LEVZqPzfRzFkVFr1DFfLR7Wv78E1dAkKwIU8AQKTAijQOS
-vF8ZQNwE6V7NdkWzYggYj1OBgyCE1yfN3UGKP7zmm7afGRgCXeLIpV1N77brJ44J//bxI6UqMKlW
-OTa3MV8AYJIcS5ARI87bjVyMs3F3VK+HdHccSAPY6idxcg0PN512cqV4EH5xEmKstzT82AGql3y1
-BorySOjE8Uykpm32oBWJlGD+cfRMQUaECQnp9I1w6MO7G5qClkly/Clthd6f7HD9+ozspe3s5N42
-d67FLWbej0s33DSnHc+6vK0HWsc6
---0000000000008a4256062b521182--
+9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAQm92H5KGt
+46058CVVP+TzKWaCJLoBosEAYtdD1SuAF9dIPc/lR971iTIVBjBOKahBwtQp/ifytSDYYP9+nFcJ
+g1SaXDH/locUGc4LqmmzRosTlzUHqzxK2wv1mK1/l0II61hFO2ARC4sZOrXFxPfhwLvaS0OtRcdP
+iw+KjTtDvTTASgyp7NSTMZYE3/mYXBqcOCVKk2eFnztHAQg8BDAPxp64P6SuQQt27qceFi+40qZv
+qDUjocGIfLrL2dJx1dlhLX3FmvEyFrsB3L7yHaOvnxg43T6jN5pH/imRuDDC/Wn+CvEb+0ga6y5b
+ht7qpeJwjMKrrLZPa5H9xmiqt9Aj
+--00000000000004ddcf062b521670--
 
