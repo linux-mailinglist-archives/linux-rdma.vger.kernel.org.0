@@ -1,128 +1,189 @@
-Return-Path: <linux-rdma+bounces-6960-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6961-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C186A0983F
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 18:14:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6893A09929
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 19:16:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86389188EF8F
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 17:14:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9A381631EB
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 18:16:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458FA2139D2;
-	Fri, 10 Jan 2025 17:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C58D8213E77;
+	Fri, 10 Jan 2025 18:16:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hWvPm9S9"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="tFyTCU+a"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 998202135CD;
-	Fri, 10 Jan 2025 17:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AE932135A5
+	for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2025 18:16:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736529242; cv=none; b=YHA6WPjai2AXfv8OxCgDNDW8FylN1NKdGUqRSC6O90OLumH01NHdj+tExkim4UrVuEpaBrxeWW0ai5/asBXa+KLeTLSlafDwEeWsl0l1YfvFTA4OtmWaTR8GkMDHj6MlmRNRch3FGSU6NMqpvnx9EzlQs2pxJYVBC7vEqR5Jwe8=
+	t=1736532999; cv=none; b=IUbm4/fjLU1d8RSvVecHjJA982fnI+3MkAe99xIpflcxQ5NhL5gHsr5FMVLiHtPMi9AC8G1X2w6B27ruB7oQ/8CbYjpn2q3E77CImDzEFxUxsrSISi5YHWHv3o1cDu6Hapj0wuO7V/sSWKFfT4lmOpOWHy+EVvenMZ2G7vzUmmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736529242; c=relaxed/simple;
-	bh=zCD9wMt7oj+kJBhlIcsVVTGT43QE2wPIyfO0mHZuo3E=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AAjN4aD1+LG9tm4CDTT98hANfLwZOwpT1esfVG5PUP6rD7p7JWcTczqfDiExaoNz3ll+vgd7jPhqO5SOXaqsiL0jBTIJg7zQs17Fy/X+gzZ7qpj2jCYmpz0HK+OUtxEG5+vAlk3BL/j4o23sXW2dz9yvHfZw2tUEfPpwytLLdGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hWvPm9S9; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1736529240; x=1768065240;
-  h=date:message-id:from:to:cc:subject:in-reply-to:
-   references:mime-version;
-  bh=zCD9wMt7oj+kJBhlIcsVVTGT43QE2wPIyfO0mHZuo3E=;
-  b=hWvPm9S9gyyWflhxezAJQ0/Zw5EZKsCuAkNL9pt9ibrxvKhfx8igBLau
-   BqAxt/w+4WkhB7JJeGhd2XKu7BTEUI/u+ZCjJZLax3klENzioM0Ogu8lV
-   PfZO/Ur9FgiISKQAktuwXDv+fKDWBBLhsHE3nTEvd7HEfk5ILPMEy+C+i
-   v7E/Bn3dcZExGuv+WXwcKSpdB8KGwD5qn3eKJp4zYHR+m82wlFlpFSVej
-   Zj+F+2HJbkF1YqnKygWuQDJ/VUu15h2UnCLWYzcjwzwNjZ/0bri7MxpqP
-   ws6x4YtpsaSIYSiiMKXJNlfXHbNtrSTP7okJPY7QFGY+mFzAY/yI1B5Pm
-   Q==;
-X-CSE-ConnectionGUID: eETlnapHTZaJYZoWsWncOQ==
-X-CSE-MsgGUID: kcx024AdTVSnnR8CHTt/pw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11311"; a="36712482"
-X-IronPort-AV: E=Sophos;i="6.12,303,1728975600"; 
-   d="scan'208";a="36712482"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2025 09:13:58 -0800
-X-CSE-ConnectionGUID: d+N1H3FPQryemumCSoERgQ==
-X-CSE-MsgGUID: skCK+1HISZSgobnkHZdoJg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="127073384"
-Received: from orsosgc001.jf.intel.com (HELO orsosgc001.intel.com) ([10.165.21.142])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2025 09:13:57 -0800
-Date: Fri, 10 Jan 2025 09:13:56 -0800
-Message-ID: <8534hqvbfv.wl-ashutosh.dixit@intel.com>
-From: "Dixit, Ashutosh" <ashutosh.dixit@intel.com>
-To: Joel Granados <joel.granados@kernel.org>
-Cc: Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,	Kees Cook
- <kees@kernel.org>,	Luis Chamberlain <mcgrof@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,	linux-crypto@vger.kernel.org,
-	openipmi-developer@lists.sourceforge.net,	intel-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,	intel-xe@lists.freedesktop.org,
-	linux-hyperv@vger.kernel.org,	linux-rdma@vger.kernel.org,
-	linux-raid@vger.kernel.org,	linux-scsi@vger.kernel.org,
-	linux-serial@vger.kernel.org,	xen-devel@lists.xenproject.org,
-	linux-aio@kvack.org,	linux-fsdevel@vger.kernel.org,	netfs@lists.linux.dev,
-	codalist@coda.cs.cmu.edu,	linux-mm@kvack.org,	linux-nfs@vger.kernel.org,
-	ocfs2-devel@lists.linux.dev,	fsverity@lists.linux.dev,
-	linux-xfs@vger.kernel.org,	io-uring@vger.kernel.org,	bpf@vger.kernel.org,
-	kexec@lists.infradead.org,	linux-trace-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,	apparmor@lists.ubuntu.com,
-	linux-security-module@vger.kernel.org,	keyrings@vger.kernel.org
-Subject: Re: [PATCH] treewide: const qualify ctl_tables where applicable
-In-Reply-To: <20250109-jag-ctl_table_const-v1-1-622aea7230cf@kernel.org>
-References: <20250109-jag-ctl_table_const-v1-1-622aea7230cf@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?ISO-8859-4?Q?Goj=F2?=) APEL-LB/10.8 EasyPG/1.0.0
- Emacs/28.2 (x86_64-redhat-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1736532999; c=relaxed/simple;
+	bh=j7+PWSvlOCck/O3Hl20ap/chGFVg17VpKs4g+lNfIns=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ojAd2dknlMTWtWqm4cgpohruNZilGhterg+VcFSfBYO6t5ajXea85s0Rvu0AnwBm8dBc9d5KK4WdYUX7Y44dl4zWzUBTG+8ZgjV7sWh57wUbAr+8ywLMgMkwznzXLznjn5GqcvQHIkd7i+N3KBZrddU9uDHME8/3wiPP6szMOns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=tFyTCU+a; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-21a1e6fd923so52708775ad.1
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2025 10:16:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1736532997; x=1737137797; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KbmEUgKglVd5Dz/2kVyTyuSVhcq7AQGwm9hyTCDaD6U=;
+        b=tFyTCU+aRnJiPUl2YfCUfsFCzblJzwf49CopVSB86citbrOlOCov6vpOfOooR66Xj/
+         jjbVw+6kzVBialyywPGGNiaRawrK0B892Amf/gSxlghDS/gZbsbsXAYZsEXkh82Z4ty5
+         uxuPQKXop6ZEXAv5PDOV4/bcNsrBRYckxuHLc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736532997; x=1737137797;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KbmEUgKglVd5Dz/2kVyTyuSVhcq7AQGwm9hyTCDaD6U=;
+        b=Dk57kHtJJh6HPqhuLJJnr/1a2HxnfpYSMCcFcZ4QGwlkOkyYuyfEjR8Xsx/d9/myAk
+         tq97CRguC4tOeWtHnrAyPboLvrz1+aNz3iapytcfOvMcEfGBrTS+FhfdpTImvs8s63aw
+         SY7hOMBT2ZQjOtbT/f4g/IXmVmLpyTaR7dRwOgfozwVbyakorHRyqA+DmbEfMY2bFZB4
+         c8vE2MDQzpuKtoIBJdilGBIYzFGW8sQTXZ5muOFbWUJLF8kfYDYTbwAjtO4MKMpfIQi6
+         Vr4yVrhlvCIoT/dP8Ze84mlNDtdqPvjwuANmmBEBI0gwu724L/ZDhpX4Gau/oOSk0Yu0
+         10uA==
+X-Forwarded-Encrypted: i=1; AJvYcCWO7JvVngpcH4+xyJUoVvykP2vwuyIt4C6vS0UPNP9xK4oijgp0qpsrgsljBBO5MbRZNg/jH313ja7j@vger.kernel.org
+X-Gm-Message-State: AOJu0YxG1MCWAF1v2Nq2215GF8VjEDsXh5YMNPnPF2UhLfKyI+HRnfan
+	0C4EzDtsfaNzjZwGJeyNklrKwRdBcNQRIn8Ht4jN90Xvub42lY2ELq/7xEJfOZo=
+X-Gm-Gg: ASbGncsm1Oy8H/vISDDYEFwClqiaOdaAEFYWjBVBiEsspYtaaI9uCP3v4yNYXV9GNu0
+	bEfhYTK1CN/74bjTi/xGjM142xKVirdbh/2OZGeleyf5YZ4Vl+jNKOD8b/D8jDDdgwaX19J1JWi
+	Pcf71zhu1zEweXvuRrlboGKzYn3QHlaRv6F5dudSUah9WW+3sIUdy/p0i3IULuOWXrnJlaKR6IZ
+	3r+BOUJB1o6NKN0lzOG6mcB+SltHYioZOh4NJcvM5XJSbebKl9mNKg90UxZYJBEJRnUSRyfXv2T
+	7Fd4NYv7wNecUz4YoluBY7M=
+X-Google-Smtp-Source: AGHT+IHruBHu1QGg5HyjhzVxD0L/TVoRooPSp2PmMzqzxAYvF3+4hYN4Rj0/zrOgu8RbdwJ9g9q9Rg==
+X-Received: by 2002:a05:6a20:918d:b0:1e0:f05b:e727 with SMTP id adf61e73a8af0-1e88d0e63a6mr18792600637.2.1736532997494;
+        Fri, 10 Jan 2025 10:16:37 -0800 (PST)
+Received: from LQ3V64L9R2 (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72d406a5384sm1795023b3a.157.2025.01.10.10.16.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jan 2025 10:16:37 -0800 (PST)
+Date: Fri, 10 Jan 2025 10:16:33 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Alex Lazar <alazar@nvidia.com>,
+	"aleksander.lobakin@intel.com" <aleksander.lobakin@intel.com>,
+	"almasrymina@google.com" <almasrymina@google.com>,
+	"bigeasy@linutronix.de" <bigeasy@linutronix.de>,
+	"bjorn@rivosinc.com" <bjorn@rivosinc.com>,
+	Dan Jurgens <danielj@nvidia.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"donald.hunter@gmail.com" <donald.hunter@gmail.com>,
+	"dsahern@kernel.org" <dsahern@kernel.org>,
+	"edumazet@google.com" <edumazet@google.com>,
+	"hawk@kernel.org" <hawk@kernel.org>,
+	"jiri@resnulli.us" <jiri@resnulli.us>,
+	"johannes.berg@intel.com" <johannes.berg@intel.com>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	"leitao@debian.org" <leitao@debian.org>,
+	"leon@kernel.org" <leon@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"lorenzo@kernel.org" <lorenzo@kernel.org>,
+	"michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+	"mkarsten@uwaterloo.ca" <mkarsten@uwaterloo.ca>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	"sdf@fomichev.me" <sdf@fomichev.me>,
+	"skhawaja@google.com" <skhawaja@google.com>,
+	"sridhar.samudrala@intel.com" <sridhar.samudrala@intel.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	"willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
+	"xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
+	Gal Pressman <gal@nvidia.com>, Nimrod Oren <noren@nvidia.com>,
+	Dror Tennenbaum <drort@nvidia.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>
+Subject: Re: [net-next v6 0/9] Add support for per-NAPI config via netlink
+Message-ID: <Z4FkAZkNnySdjdRb@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Alex Lazar <alazar@nvidia.com>,
+	"aleksander.lobakin@intel.com" <aleksander.lobakin@intel.com>,
+	"almasrymina@google.com" <almasrymina@google.com>,
+	"bigeasy@linutronix.de" <bigeasy@linutronix.de>,
+	"bjorn@rivosinc.com" <bjorn@rivosinc.com>,
+	Dan Jurgens <danielj@nvidia.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"donald.hunter@gmail.com" <donald.hunter@gmail.com>,
+	"dsahern@kernel.org" <dsahern@kernel.org>,
+	"edumazet@google.com" <edumazet@google.com>,
+	"hawk@kernel.org" <hawk@kernel.org>,
+	"jiri@resnulli.us" <jiri@resnulli.us>,
+	"johannes.berg@intel.com" <johannes.berg@intel.com>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	"leitao@debian.org" <leitao@debian.org>,
+	"leon@kernel.org" <leon@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"lorenzo@kernel.org" <lorenzo@kernel.org>,
+	"michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+	"mkarsten@uwaterloo.ca" <mkarsten@uwaterloo.ca>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	"sdf@fomichev.me" <sdf@fomichev.me>,
+	"skhawaja@google.com" <skhawaja@google.com>,
+	"sridhar.samudrala@intel.com" <sridhar.samudrala@intel.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	"willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>,
+	"xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
+	Gal Pressman <gal@nvidia.com>, Nimrod Oren <noren@nvidia.com>,
+	Dror Tennenbaum <drort@nvidia.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>
+References: <DM8PR12MB5447837576EA58F490D6D4BFAD052@DM8PR12MB5447.namprd12.prod.outlook.com>
+ <Z2MBqrc2FM2rizqP@LQ3V64L9R2>
+ <Z2WsJtaBpBqJFXeO@LQ3V64L9R2>
+ <550af81b-6d62-4fc3-9df3-2d74989f4ca0@nvidia.com>
+ <Z3Kuu44L0ZcnavQF@LQ3V64L9R2>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z3Kuu44L0ZcnavQF@LQ3V64L9R2>
 
-On Thu, 09 Jan 2025 05:16:39 -0800, Joel Granados wrote:
->
-> diff --git a/drivers/gpu/drm/i915/i915_perf.c b/drivers/gpu/drm/i915/i915_perf.c
-> index 2406cda75b7b..5384d1bb4923 100644
-> --- a/drivers/gpu/drm/i915/i915_perf.c
-> +++ b/drivers/gpu/drm/i915/i915_perf.c
-> @@ -4802,7 +4802,7 @@ int i915_perf_remove_config_ioctl(struct drm_device *dev, void *data,
->	return ret;
->  }
->
-> -static struct ctl_table oa_table[] = {
-> +static const struct ctl_table oa_table[] = {
->	{
->	 .procname = "perf_stream_paranoid",
->	 .data = &i915_perf_stream_paranoid,
-> diff --git a/drivers/gpu/drm/xe/xe_observation.c b/drivers/gpu/drm/xe/xe_observation.c
-> index 8ec1b84cbb9e..57cf01efc07f 100644
-> --- a/drivers/gpu/drm/xe/xe_observation.c
-> +++ b/drivers/gpu/drm/xe/xe_observation.c
-> @@ -56,7 +56,7 @@ int xe_observation_ioctl(struct drm_device *dev, void *data, struct drm_file *fi
->	}
->  }
->
-> -static struct ctl_table observation_ctl_table[] = {
-> +static const struct ctl_table observation_ctl_table[] = {
->	{
->	 .procname = "observation_paranoid",
->	 .data = &xe_observation_paranoid,
+On Mon, Dec 30, 2024 at 09:31:23AM -0500, Joe Damato wrote:
+> On Mon, Dec 23, 2024 at 08:17:08AM +0000, Alex Lazar wrote:
+> > 
 
-For i915 and xe:
+[...]
 
-Acked-by: Ashutosh Dixit <ashutosh.dixit@intel.com>
+> > 
+> > Hi Joe,
+> > 
+> > Thanks for the quick response.
+> > Comments inline, If you need more details or further clarification, 
+> > please let me know.
+> 
+> As mentioned above and in my previous emails: please provide lot
+> more detail and make it as easy as possible for me to reproduce this
+> issue with the simplest reproducer possible and a much more detailed
+> explanation.
+> 
+> Please note: I will be out of the office until Jan 9 so my responses
+> will be limited until then.
+
+Just to follow up on this for anyone who missed the other thread,
+Stanislav proposed a patch which _might_ fix the issue being hit
+here.
+
+Please see [1], try that patch, and report back if that patch fixes
+the issue.
+
+Thanks.
+
+[1]: https://lore.kernel.org/netdev/20250109003436.2829560-1-sdf@fomichev.me/
 
