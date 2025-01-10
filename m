@@ -1,192 +1,220 @@
-Return-Path: <linux-rdma+bounces-6953-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6954-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1FD1A0861C
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 04:57:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4966FA086BB
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 06:44:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC74216942F
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 03:57:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AD9A3A64E3
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2025 05:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F78200B8C;
-	Fri, 10 Jan 2025 03:57:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B219E2066CB;
+	Fri, 10 Jan 2025 05:44:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="O0nxLJPv"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="mLRbtEG+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D67FB661
-	for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2025 03:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84FBC746E;
+	Fri, 10 Jan 2025 05:43:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736481463; cv=none; b=ck7SG1RnYs57Nzsy/tkmztgrXECnIYvUnL0WCYE6JlVSn4lZtbVAEVU2L/D9h4SIbmJ32gpddiaSGiuJVTSqJ/LIfDc8o16zHiLQYXnJCCpEgSH879JpTniqtAd5bVuAnqOEJY8QKOtrWbyD2HUJhU9wYNbVxaAEfRFAS23vN10=
+	t=1736487840; cv=none; b=bmnUlTABkcX6opTIzJYeyulBAV0CDow+S5Zb1gOwSmT6T74K0C55CT0lBkvgAG7En6x8gc4x93FeIcNqJKBly5jagqIzbexOlCZNY8f8NKfHRjuXTUBaaxk/DtWybtENZcjJMaQGW2di+H9ow6OvbvVoI5vFPxQzFoPBmXIM318=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736481463; c=relaxed/simple;
-	bh=Y36d6KUnROfnO0K3bSgPoMyOFvCs10aRszrp0DtgKS0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GVuRcMOsbWuKrFVPbbHvIEkNzxOKs86KY29Mkr1fvq/4rKpOuxT5eBkv95biIV8QO9ziEzeQTwso9KqFu7yJlj+zriGXc2P137QY2GVUoVnEcxfsnyDvsE1aW9Z0N2otMC0oDiyg8E5MjzU2/TU2C7XNBB3ZdQhhkYV7TyyQW9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=O0nxLJPv; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2164b1f05caso27319995ad.3
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jan 2025 19:57:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1736481462; x=1737086262; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y36d6KUnROfnO0K3bSgPoMyOFvCs10aRszrp0DtgKS0=;
-        b=O0nxLJPvlDJlYMaihQ2SJbu8v1ChBtGEv88aNru3QRpgrtCi2t6BVssg2qUTLWZRwx
-         GAiyMqQ+XsVMk/6X26lk6gClAPNizbVuJXVwAR8toUZx8Fz1+cHlutdgJzUCOrhTGVNb
-         /VrsUXTcTJT5iKjWOWVaz7O9pHLSDDTCAanTQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736481462; x=1737086262;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y36d6KUnROfnO0K3bSgPoMyOFvCs10aRszrp0DtgKS0=;
-        b=qNRwa81aprgNfJSiDm3LLoKqkEoue4n8++zOXJuijz3P7MbBJLbwjLHNcV4pLqZTig
-         puk96BrYD+RLnC4KITFcWuWct81B32V8Zga0gk2hO+sOP1hxMOJL93safAcTCIUHDiAX
-         SbUBA28kXBNnAVUcdXPXVj8X0R0ZlSdqUEYtSamF9CbWcbR/e0ATdIjZkMtmW/0jOnx7
-         Wr+8S/aI/u8KY66pKTrCD0lnTLOheEfq04z393SKCJglZc0a53pjQBgjv8XvEDYe4hGU
-         OPL6jHBEYQVygQU7IlbYbr+EKdvOGpRzu50sO5e3LXOfiS79rpascSlCHIJe+mggPM5f
-         8ycg==
-X-Forwarded-Encrypted: i=1; AJvYcCVtJlDjiTXlqE+o9HrbMmN8tAvT9NETXLH2RCrBqYK8fPkTpG3m1RxLX6cxgfKTtSP9vhxuCBya7iDx@vger.kernel.org
-X-Gm-Message-State: AOJu0YzoMNTsz7NJJoJSH/R/q4wUrWOQCgpGMOdqJJR8dgehd56Fwqnq
-	DHkECsB2SLiPdc1p+CWL7ouuuzbujNCUSsQMpkwRl9YjMddOsM2s9IeiRuFXZXwWoK18W6lQioO
-	8sMHlydSzz3Ct4Zsp1ozwgdP+9MvcbCQ5agbJv0nCXJCHUSNrIAtq
-X-Gm-Gg: ASbGncv7aNOZs0PRJNYgRxjNKXU+4HQuBKW8Zm0lGCRNU2R8g+4Hbbi9Ul71D7sUrmP
-	PaVjq8HKHhmxcTgYtPaoHFNdWv0wr57RhE53xUTI=
-X-Google-Smtp-Source: AGHT+IGg9M3nkVk0Pa99bdhlY/I8a6SaRcV+JP7DZw/JIVNRAHEJPuLnRxZXIK8CJPWPrEP4xkhp8ZTfHJSzsRpKS44=
-X-Received: by 2002:a05:6a00:948a:b0:725:f1b1:cbc5 with SMTP id
- d2e1a72fcca58-72d21f7e7c3mr12796158b3a.3.1736481461945; Thu, 09 Jan 2025
- 19:57:41 -0800 (PST)
+	s=arc-20240116; t=1736487840; c=relaxed/simple;
+	bh=9G/L1ZomCQwviZeWuRSudJqgRPVeuQmTot+azaFSyS8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mvIaAWo/qtsUptZ5F9op1ckfv7+0ZVDdSWEiJLwUTc5uGIuyZQovemy4ikt6EqWHN0ToWe6+DrLuyBrgg7gz8KAcxLdI2V2yPY+BmWqICOIHhIAlXXCjA2lP2ghlGdBhO/AKlkRYWSSXoa0kfu9ZFoMDyMoNhJ4kecUdOgNZZ3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=mLRbtEG+; arc=none smtp.client-ip=115.124.30.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1736487827; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=xAyuwYq8sl8JF7mbt/6XCIrVbtDcyq2uevTq8dLVNrk=;
+	b=mLRbtEG+7GUMB5zKf6BaeRQCOP42HFvlOEnuOh4oW8nvF4qy52a74gP+z3CuRtwEqOO922pXF7xep5X8Kb5ZglJPDyvnGkthXSfEuoh68hkZQoTvy3bTwk/9hqUfVhR0xG4QkEdgbufUU7ZWq5atH7qjuGtS8Kpche+ffEcN7v4=
+Received: from 30.221.98.188(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0WNJnBTV_1736487825 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Fri, 10 Jan 2025 13:43:46 +0800
+Message-ID: <b1053a92-3a3f-4042-9be9-60b94b97747d@linux.alibaba.com>
+Date: Fri, 10 Jan 2025 13:43:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250109204231.1809851-1-tariqt@nvidia.com> <20250109204231.1809851-5-tariqt@nvidia.com>
-In-Reply-To: <20250109204231.1809851-5-tariqt@nvidia.com>
-From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Fri, 10 Jan 2025 09:27:28 +0530
-X-Gm-Features: AbW1kvajPJMiyQ0iIHX9Rc2DERHzCtWAHpdhxXmhdUpnBjpGqVi764phMGr9KUo
-Message-ID: <CAH-L+nO1PdXK6jCkn_fvi3OSjWqKp4aun44+f1fsZuUC1SWJGg@mail.gmail.com>
-Subject: Re: [PATCH mlx5-next 4/4] net/mlx5: Add nic_cap_reg and vhca_icm_ctrl registers
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>, 
-	Jason Gunthorpe <jgg@nvidia.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	Jakub Kicinski <kuba@kernel.org>, Gal Pressman <gal@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Moshe Shemesh <moshe@nvidia.com>, Akiva Goldberger <agoldberger@nvidia.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000b68128062b52186d"
-
---000000000000b68128062b52186d
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jan 10, 2025 at 2:14=E2=80=AFAM Tariq Toukan <tariqt@nvidia.com> wr=
-ote:
->
-> From: Akiva Goldberger <agoldberger@nvidia.com>
->
-> Add nic_cap_reg and vhca_icm_ctrl registers interfaces for exposing ICM
-> consumption.
->
-> Signed-off-by: Akiva Goldberger <agoldberger@nvidia.com>
-> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-
-Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net/smc: use the correct ndev to find pnetid by
+ pnetid table
+To: Halil Pasic <pasic@linux.ibm.com>
+Cc: Paolo Abeni <pabeni@redhat.com>, wenjia@linux.ibm.com,
+ jaka@linux.ibm.com, alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+ guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, horms@kernel.org, linux-rdma@vger.kernel.org,
+ linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Alexandra Winter <wintera@linux.ibm.com>
+References: <20241227040455.91854-1-guangguan.wang@linux.alibaba.com>
+ <1f4a721f-fa23-4f1d-97a9-1b27bdcd1e21@redhat.com>
+ <20250107203218.5787acb4.pasic@linux.ibm.com>
+ <908be351-b4f8-4c25-9171-4f033e11ffc4@linux.alibaba.com>
+ <20250109040429.350fdd60.pasic@linux.ibm.com>
+Content-Language: en-US
+From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+In-Reply-To: <20250109040429.350fdd60.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
---=20
-Regards,
-Kalesh AP
 
---000000000000b68128062b52186d
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+On 2025/1/9 11:04, Halil Pasic wrote:
+> On Wed, 8 Jan 2025 12:57:00 +0800
+> Guangguan Wang <guangguan.wang@linux.alibaba.com> wrote:
+> 
+>>> sorry for chiming in late. Wenjia is on vacation and Jan is out sick!
+>>> After some reading and thinking I could not figure out how 890a2cb4a966
+>>> ("net/smc: rework pnet table") is broken.  
+>>
+>> Before commit 890a2cb4a966:
+>> smc_pnet_find_roce_resource
+>>     smc_pnet_find_roce_by_pnetid(ndev, ...) /* lookup via hardware-defined pnetid */
+>>         smc_pnetid_by_dev_port(base_ndev, ...)
+>>     smc_pnet_find_roce_by_table(ndev, ...) /* lookup via SMC PNET table */
+>>     {
+>>         ...
+>>         list_for_each_entry(pnetelem, &smc_pnettable.pnetlist, list) {
+>>                 if (ndev == pnetelem->ndev) { /* notice here, it was ndev to matching pnetid element in pnet table */
+>>         ...
+>>     }
+>>
+>> After commit 890a2cb4a966:
+>> smc_pnet_find_roce_resource
+>>     smc_pnet_find_roce_by_pnetid
+>>     {
+>>         ...
+>>         base_ndev = pnet_find_base_ndev(ndev); /* rename the variable name to base_ndev for better understanding */
+>>         smc_pnetid_by_dev_port(base_ndev, ...)
+>>         smc_pnet_find_ndev_pnetid_by_table(base_ndev, ...)
+>>         {
+>>                 ...
+>>                 list_for_each_entry(pnetelem, &smc_pnettable.pnetlist, list) {
+>>                 if (base_ndev == pnetelem->ndev) { /* notice here, it is base_ndev to matching pnetid element in pnet table */
+>>                 ...
+>>         }
+>>
+>>     }
+>>
+>> The commit 890a2cb4a966 has changed ndev to base_ndev when matching pnetid element in pnet table.
+>> But in the function smc_pnet_add_eth, the pnetid is attached to the ndev itself, not the base_ndev.
+>> smc_pnet_add_eth(...)
+>> {
+>>     ...
+>>     ndev = dev_get_by_name(net, eth_name);
+>>     ...
+>>         if (new_netdev) {
+>>             if (ndev) {
+>>                 new_pe->ndev = ndev;
+>>                 netdev_tracker_alloc(ndev, &new_pe->dev_tracker,
+>>                     GFP_ATOMIC);
+>>             }
+>>             list_add_tail(&new_pe->list, &pnettable->pnetlist);
+>>             mutex_unlock(&pnettable->lock);
+>>         } else {
+>>     ...
+>> }
+> 
+> I still not understand why do you think that 890a2cb4a966~1 is better
+> than 890a2cb4a966 even if things changed with 890a2cb4a966 which
+> I did not verify for myself but am willing to assume.
+> 
+> Is there some particular setup that you think would benefit from
+> you patch? I.e. going back to the 890a2cb4a966~1 behavior I suppose.
+> 
 
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBWowggRSoAMCAQICDDfBRQmwNSI92mit0zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODI5NTZaFw0yNTA5MTAwODI5NTZaMIGi
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xHzAdBgNVBAMTFkthbGVzaCBBbmFra3VyIFB1cmF5aWwxMjAw
-BgkqhkiG9w0BCQEWI2thbGVzaC1hbmFra3VyLnB1cmF5aWxAYnJvYWRjb20uY29tMIIBIjANBgkq
-hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxnv1Reaeezfr6NEmg3xZlh4cz9m7QCN13+j4z1scrX+b
-JfnV8xITT5yvwdQv3R3p7nzD/t29lTRWK3wjodUd2nImo6vBaH3JbDwleIjIWhDXLNZ4u7WIXYwx
-aQ8lYCdKXRsHXgGPY0+zSx9ddpqHZJlHwcvas3oKnQN9WgzZtsM7A8SJefWkNvkcOtef6bL8Ew+3
-FBfXmtsPL9I2vita8gkYzunj9Nu2IM+MnsP7V/+Coy/yZDtFJHp30hDnYGzuOhJchDF9/eASvE8T
-T1xqJODKM9xn5xXB1qezadfdgUs8k8QAYyP/oVBafF9uqDudL6otcBnziyDBQdFCuAQN7wIDAQAB
-o4IB5DCCAeAwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZC
-aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJj
-YTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3Iz
-cGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcC
-ARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNV
-HR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNp
-Z24yY2EyMDIwLmNybDAuBgNVHREEJzAlgSNrYWxlc2gtYW5ha2t1ci5wdXJheWlsQGJyb2FkY29t
-LmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGP
-zzAdBgNVHQ4EFgQUI3+tdStI+ABRGSqksMsiCmO9uDAwDQYJKoZIhvcNAQELBQADggEBAGfe1o9b
-4wUud0FMjb/FNdc433meL15npjdYWUeioHdlCGB5UvEaMGu71QysfoDOfUNeyO9YKp0h0fm7clvo
-cBqeWe4CPv9TQbmLEtXKdEpj5kFZBGmav69mGTlu1A9KDQW3y0CDzCPG2Fdm4s73PnkwvemRk9E2
-u9/kcZ8KWVeS+xq+XZ78kGTKQ6Wii3dMK/EHQhnDfidadoN/n+x2ySC8yyDNvy81BocnblQzvbuB
-a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
-x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
-VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
-bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEILHryVuSb6sYZcJIbhM+0GRAORcm4B2YtsFEopG1QlsqMBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDExMDAzNTc0MlowaQYJKoZIhvcNAQkPMVwwWjAL
-BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB+B8LT42A1
-T6Dqyno+nfeSa/c2Cu2FYx5ZAT1/0EsCYaC1rfQ79X9P4LMo/IvTzR5wt2wk6tHXZ6NiMjfC3Tdw
-GhBD4fc80qDibBuzx0of9ltnhe6IXDF2W3L+usTNS/+Wc4owgdgt3GwE6KwQ+B5MNrcbbxQOpbom
-+CkzFBInTPsaTLcjDEStNNT5UIDre9KiWuCBCHM5jVX++82iIwo4LJm8TNvlE6JXRKZCYpA995wv
-p8taWzNpGYckZCHGQvn5fu+j6+5WLS2HC2stGDg+a8v4qR9C1Wqw3f/NBxFlSzdwyxEQMsGMziHC
-SNQpJhXKjEax50G1BUszGSsLk4kh
---000000000000b68128062b52186d--
+We want to use SMC in container on cloud environment, and encounter problem
+when using smc_pnet with commit 890a2cb4a966. In container, there have choices
+of different container network, such as directly using host network, virtual
+network IPVLAN, veth, etc. Different choices of container network have different
+netdev hierarchy. Examples of netdev hierarchy show below. (eth0 and eth1 in host
+below is the netdev directly related to the physical device).
+ _______________________________      ________________________________   
+|   _________________           |     |   _________________           |  
+|  |POD              |          |     |  |POD  __________  |          |  
+|  |                 |          |     |  |    |upper_ndev| |          |  
+|  | eth0_________   |          |     |  |eth0|__________| |          |  
+|  |____|         |__|          |     |  |_______|_________|          |  
+|       |         |             |     |          |lower netdev        |  
+|       |         |             |     |        __|______              |  
+|   eth1|base_ndev| eth0_______ |     |   eth1|         | eth0_______ |  
+|       |         |    | RDMA  ||     |       |base_ndev|    | RDMA  ||  
+| host  |_________|    |_______||     | host  |_________|    |_______||  
+———————————————————————————————-      ———————————————————————————————-    
+ netdev hierarchy if directly          netdev hierarchy if using IPVLAN    
+   using host network
+ _______________________________
+|   _____________________       |
+|  |POD        _________ |      |
+|  |          |base_ndev||      |
+|  |eth0(veth)|_________||      |
+|  |____________|________|      |
+|               |pairs          |
+|        _______|_              |
+|       |         | eth0_______ |
+|   veth|base_ndev|    | RDMA  ||
+|       |_________|    |_______||
+|        _________              |
+|   eth1|base_ndev|             |
+| host  |_________|             |
+ ———————————————————————————————
+  netdev hierarchy if using veth
+
+Due to some reasons, the eth1 in host is not RDMA attached netdevice, pnetid
+is needed to map the eth1(in host) with RDMA device so that POD can do SMC-R.
+Because the eth1(in host) is managed by CNI plugin(such as Terway, network
+management plugin in container environment), and in cloud environment the
+eth(in host) can dynamically be inserted by CNI when POD create and dynamically
+be removed by CNI when POD destroy and no POD related to the eth(in host)
+anymore. It is hard for us to config the pnetid to the eth1(in host). So we
+config the pnetid to the netdevice which can be seen in POD. When do SMC-R, both
+the container directly using host network and the container using veth network
+can successfully match the RDMA device, because the configured pnetid netdev is a
+base_ndev. But the container using IPVLAN can not successfully match the RDMA
+device and 0x03030000 fallback happens, because the configured pnetid netdev is
+not a base_ndev. Additionally, if config pnetid to the eth1(in host) also can not
+work for matching RDMA device when using veth network and doing SMC-R in POD.
+
+My patch can resolve the problem we encountered and also can unify the pnetid setup
+of different network choices list above, assuming the pnetid is not limited to
+config to the base_ndev directly related to the physical device(indeed, the current
+implementation has not limited it yet).
+
+> I think I showed a valid and practical setup that would break with your
+> patch as is. Do you agree with that statement?
+Did you mean
+"
+Now for something like a bond of two OSA
+interfaces, I would expect the two legs of the bond to probably have a
+"HW PNETID", but the netdev representing the bond itself won't have one
+unless the Linux admin defines a software PNETID, which is work, and
+can't have a HW PNETID because it is a software construct within Linux.
+Breaking for example an active-backup bond setup where the legs have
+HW PNETIDs and the admin did not bother to specify a PNETID for the bond
+is not acceptable.
+" ?
+If the legs have HW pnetids, add pnetid to bond netdev will fail as
+smc_pnet_add_eth will check whether the base_ndev already have HW pnetid.
+
+If the legs without HW pnetids, and admin add pnetids to legs through smc_pnet.
+Yes, my patch will break the setup. What Paolo suggests(both checking ndev and
+base_ndev, and replace || by && )can help compatible with the setup.
+
+
+Thanks,
+Guangguan Wang
+> 
+> Regards,
+> Halil
 
