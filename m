@@ -1,93 +1,122 @@
-Return-Path: <linux-rdma+bounces-6970-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6971-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5884A0A7D5
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jan 2025 09:58:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4E8CA0A846
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jan 2025 11:37:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A461618884A4
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jan 2025 08:58:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE5297A37C1
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jan 2025 10:37:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6A8188CAE;
-	Sun, 12 Jan 2025 08:58:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932A9193070;
+	Sun, 12 Jan 2025 10:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cmGDvKJZ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JRaeevjZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55790BA3F;
-	Sun, 12 Jan 2025 08:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30DA1A4AAA
+	for <linux-rdma@vger.kernel.org>; Sun, 12 Jan 2025 10:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736672306; cv=none; b=gClpV6od14nzUjHV8/jbPxFyjP0limRn+AhsiKCt98TinH6+iaFZm2tMkcCAny6A0SjEVqJaTu3mEv0JR8RvtpWECIufpWesl+PsrCmQIVHg5AX3R+ABlN6+9OApO1LvX3y55VVRGznQwpGtl32H9rDuB90CD6weAfy1Qns+7MU=
+	t=1736678211; cv=none; b=jXkMUAan6OUhsZZGSScfAZRVNGEfLv+DqPEIah4Irsh0DjhV7FGB8SW2fpecz5inQXMEbqL29ild/V8eLDkcRvjBFzltG3yJWivHdfPSLxHbViYYtR5RS7h7QcPMvJygZVcixTwCXS/LVSTS7pDJJvCK9ylmKRhlxRqdD1+f83A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736672306; c=relaxed/simple;
-	bh=v0achWYsfTqjctn1My0eZ+7zXEt9WGcj1uKRGMBNaKA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=pXYTaEGZA/HzGIpMeJ+1HPgmyXzsbBY5bz6gPv0eF5d9j07YWlA2v3zQY40ipbVfuzSlZ75IOFsVBz/5YaqwuQLuCFJRtDcYji3rgN9ac0fcUv8FQI/leRCBlC5Szjg49CNmoZOxHyWNr3viPaXOchihZpRl+5/ohoXHMB3HJLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cmGDvKJZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A130C4CEDF;
-	Sun, 12 Jan 2025 08:58:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736672305;
-	bh=v0achWYsfTqjctn1My0eZ+7zXEt9WGcj1uKRGMBNaKA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=cmGDvKJZXxwxYwfR7UOSN+/lxdWl/PCWRFuvG51FM3vtR7pULEcXP8ODTItptNaUH
-	 /cHh4cUkIrtB3wLdxvv/G0oNl1TB6mDDZkdD6Bmb1NzPiinhd1/9v6qQ+WAn6bCh1i
-	 urfrLN+DldLyOQG6ldEwBXO/TnpiNAvWCFMsr0GKwsYOh/s8lRVXyCt54H3/fZ9WLE
-	 SpP5DMQuZ/ekWEl/lziHzVDjj8zwPbRQyTdZPlleacfDipFtMEIGWFbK5opu1GibVE
-	 GkuUaKdJH8BOom47LzA+OCTWkuo31jmZ5MNLQbG5JgLB6GQ0wJPOqvpivbUYQodkk2
-	 27SwS1rStQlgA==
-From: Leon Romanovsky <leon@kernel.org>
-To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
- Jason Gunthorpe <jgg@ziepe.ca>, Tariq Toukan <tariqt@nvidia.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
- Jakub Kicinski <kuba@kernel.org>, Gal Pressman <gal@nvidia.com>, 
- Mark Bloch <mbloch@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>
-In-Reply-To: <20250109204231.1809851-1-tariqt@nvidia.com>
-References: <20250109204231.1809851-1-tariqt@nvidia.com>
-Subject: Re: [PATCH mlx5-next 0/4] mlx5-next updates 2025-01-09
-Message-Id: <173667230255.1013956.8857479733504746208.b4-ty@kernel.org>
-Date: Sun, 12 Jan 2025 03:58:22 -0500
+	s=arc-20240116; t=1736678211; c=relaxed/simple;
+	bh=REgFctRGG2i+aWyJ1ZRxJ6TwTZBV1cOPjFQdvPEnzK0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R6lkcd3BE3AswfTS2l3E4ITEszyBhvfslWl9Gly5Hqi6BL1XAH+v7DJnBoO1rIx9bEWqyLU6BkS6QyKW7OGBSaD3X59rLOMXxo7ePEZrINOSo9BQXyD7dHOr/DQBG8970khaicrdvwkHkU5HNoDsyxpB1trIpxwb0uYD++VmRzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JRaeevjZ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1736678208;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sjZIf+MqzlX40O8hdTacUc+jXg2UIC0x4trWd6422To=;
+	b=JRaeevjZ96oHjJQ1+zlJLKv3PPjA6x4TtwGlVB6Z5mmYMrjQse/nVDRGC38ugLjgwvtMcY
+	IL/GrFzptogbiZYIn6bgXf9Q0KtEiDos66j3/Vd+y7nMYvy1aYMLdO15a0bKkMD3+6uPEw
+	sH5apmamWA3dNIUA7cIrBCLBBRMCGRs=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-543-0DSN8VPiNBSr_DA-YHIeIA-1; Sun,
+ 12 Jan 2025 05:36:43 -0500
+X-MC-Unique: 0DSN8VPiNBSr_DA-YHIeIA-1
+X-Mimecast-MFC-AGG-ID: 0DSN8VPiNBSr_DA-YHIeIA
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A2F3A19560BB;
+	Sun, 12 Jan 2025 10:36:36 +0000 (UTC)
+Received: from localhost (unknown [10.72.113.4])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5808B195608A;
+	Sun, 12 Jan 2025 10:36:31 +0000 (UTC)
+Date: Sun, 12 Jan 2025 18:36:27 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Joel Granados <joel.granados@kernel.org>
+Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Kees Cook <kees@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
+	openipmi-developer@lists.sourceforge.net,
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	intel-xe@lists.freedesktop.org, linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-raid@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
+	xen-devel@lists.xenproject.org, linux-aio@kvack.org,
+	linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
+	codalist@coda.cs.cmu.edu, linux-mm@kvack.org,
+	linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+	fsverity@lists.linux.dev, linux-xfs@vger.kernel.org,
+	io-uring@vger.kernel.org, bpf@vger.kernel.org,
+	kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org, apparmor@lists.ubuntu.com,
+	linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+	Song Liu <song@kernel.org>,
+	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Jani Nikula <jani.nikula@intel.com>,
+	Corey Minyard <cminyard@mvista.com>
+Subject: Re: [PATCH v2] treewide: const qualify ctl_tables where applicable
+Message-ID: <Z4ObK5hkQ7qjWgbf@MiWiFi-R3L-srv>
+References: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
+On 01/10/25 at 03:16pm, Joel Granados wrote:
+...snip...
+> diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+> index c0caa14880c3..71b0809e06d6 100644
+> --- a/kernel/kexec_core.c
+> +++ b/kernel/kexec_core.c
+> @@ -925,7 +925,7 @@ static int kexec_limit_handler(const struct ctl_table *table, int write,
+>  	return proc_dointvec(&tmp, write, buffer, lenp, ppos);
+>  }
+>  
+> -static struct ctl_table kexec_core_sysctls[] = {
+> +static const struct ctl_table kexec_core_sysctls[] = {
+>  	{
+>  		.procname	= "kexec_load_disabled",
+>  		.data		= &kexec_load_disabled,
 
-On Thu, 09 Jan 2025 22:42:27 +0200, Tariq Toukan wrote:
-> This series contains mlx5 IFC updates as preparation for upcoming
-> features.
-> 
-> Regards,
-> Tariq
-> 
-> Akiva Goldberger (1):
->   net/mlx5: Add nic_cap_reg and vhca_icm_ctrl registers
-> 
-> [...]
+For the kexec/kdump part,
 
-Applied, thanks!
-
-[1/4] net/mlx5: Update mlx5_ifc to support FEC for 200G per lane link modes
-      https://git.kernel.org/rdma/rdma/c/387bef82d0b4af
-[2/4] net/mlx5: Add support for MRTCQ register
-      https://git.kernel.org/rdma/rdma/c/e2685ef5f56295
-[3/4] net/mlx5: SHAMPO: Introduce new SHAMPO specific HCA caps
-      https://git.kernel.org/rdma/rdma/c/df75ad562a6f9a
-[4/4] net/mlx5: Add nic_cap_reg and vhca_icm_ctrl registers
-      https://git.kernel.org/rdma/rdma/c/6ca00ec47b70ac
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+Acked-by: Baoquan He <bhe@redhat.com>
+......
 
 
