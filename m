@@ -1,261 +1,201 @@
-Return-Path: <linux-rdma+bounces-6999-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7000-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C191A1029F
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 10:03:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 313D6A102AA
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 10:05:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C665B1889557
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 09:03:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5F1B3A338F
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 09:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 888F328EC9C;
-	Tue, 14 Jan 2025 09:03:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57DE3284A6D;
+	Tue, 14 Jan 2025 09:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PHmupNuS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uJ1+yvo4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7095D1C3BFC;
-	Tue, 14 Jan 2025 09:03:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126B21D5AB2;
+	Tue, 14 Jan 2025 09:05:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736845401; cv=none; b=NWQPyJd7/wW2mg7VKIXWfGGzzpzJZWu7yTe6J9mfJ+xGArBt3RTVdum4rix7XKqE9qPyXoqJPGVU4H8qrQ7b1mZMBOU3xwTZgX3AeF5YWzH58CKFk2avje8qlXEK8/nnkXTybsriq+j/d2oQ9iJMsguYtABa1T3vyapQnqF/+80=
+	t=1736845517; cv=none; b=udeZZa+SC7PZ/VhsdaXTFvCKk7bIQSN/RItnFa3JR4b7OqkRHZRCxUTIRtsKVj1fXSYEE3cykdSMrhrEihuCom7X/cnNQae2gvYeG2FQSwncjYwoVOkKBjf0wTrhRUuWawUSHIZ5h2JUx0o3J7XW37myor1sF6alMDddDhqCRb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736845401; c=relaxed/simple;
-	bh=QNvuh5EDJiuoHdaCpoRHoR7O5EvfHOckuuZ644v9d00=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i5PGQvG4AyzcthDOwLJZnzzuNX3QB/MpzTtvxsUJA6itDrLlypMjPloxfVyRoR+Lc9KID0gAwmhVqPc5ExHygGkNwmnIXcmeVtErjyyMQ4Qc0xnEnV4dKYzxAND395Rx6eLTwX4cwLPSkaxltotcEJW9soal3tsC3FlpgJe4loo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PHmupNuS; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-436345cc17bso37198405e9.0;
-        Tue, 14 Jan 2025 01:03:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736845398; x=1737450198; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RJdpc5af8GraPbTvgj2FYJk8F44uMY7sTK/kVSc+LHs=;
-        b=PHmupNuSqVZ1c4/9v08gmJxdnkQvZjVlsgbq7lqgakh3UY6n2MUmIPbh7XyCDtOYi8
-         h6sP9bD7t1gKblz/t/SDukdku4HCUnggUayfr9KuWegfBu/n2S169RZ3lOToLNqjrtEI
-         deVyH7+RxKyoEpeBYPhwOYl42E0oYPM8lmSdCidaZJQy/cswl50hF/yHR3bHgWfNwBNp
-         bkMQmOlMV50gc6eVTvPUSyAWDIWxDJjz5J6sYZLq512TktDYZu9X+nKcZVILkax40d1m
-         zh6Pr8Wgag24BZyv5ZyUFUvHdaVh6sDLpLC2b4GH+UvX3Q+YqKCTF3LQ/Kd/RR6f+0TH
-         fwTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736845398; x=1737450198;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RJdpc5af8GraPbTvgj2FYJk8F44uMY7sTK/kVSc+LHs=;
-        b=SR0b32nf6bZsp/Id9rQoUgTQlhiY23Nwz8yTybRsvjaDVWQ8GK2a6TU9/tB1S++qXy
-         4A5OlPxy2yLuYEMaqgp7bca9Bo7PlyalMeF3YZy0x8q+QiFcuPv/xPXBruol7M3Muy65
-         UXl/FaFOHJvUBRa6QK0AP71vPTeiBb3WJdoUMPSkzDyuOTRtbPAUOP4PwUo79NycKEsB
-         Tl/fldDzs4cZT5aXGX/QdRif2FXEnF5mSxXGHTLwOxU4XJUxmxvzUPbOkuu9q2ykl2dI
-         uMwLroPkyy1w7AdlkCX+vDAro+1de1DAMYQbOeda4rbbC0IbnKT0Gslq4aLwlRUWFeWc
-         3c5w==
-X-Forwarded-Encrypted: i=1; AJvYcCVUJ12DHJyneuoUvKCUd+A1iXh2/D62xggUWicCF6YeikE2Hm9DZRd94ZfvhzXtiREdeyE=@vger.kernel.org, AJvYcCWDMweVxKdTfL345NNnW78cGwY/72iAVTK/Eyn7zYGX+ehNKfbMqxjJvCM5EGk2kdAq+TDKtBJzYcB0dw==@vger.kernel.org, AJvYcCWMqiEvqS7S+p19JoyC4Mxy972Vd2LiczbS6FG4FTZeam+On2DzenjrFb1z6Gyi+OJ3ViSbNkwk@vger.kernel.org, AJvYcCWNBkAKp9/QN6NVsD/h0Q02/ZsLvO9OyvLQGYLLWF3GW8ZGFCOsv9wTTFgirS//Ytn+3q31xGLLEk4dDtznM00=@vger.kernel.org, AJvYcCXJ8t/KNOq1MB57Uai6xRBh0hL7otQfEeu3UgiDI2n+7xV4iIXP/aKMdU2khKhdm0mDpdGLa9VC22yat8ztC7J2@vger.kernel.org, AJvYcCXLuHVvTS/agrf59atzsIcg/BGiLaJqHr4k9hIxDR1Jz14HnUdo0rEsAgRYS7MwsNsIQBizLqwSRcE6AtGA@vger.kernel.org, AJvYcCXMv1EaYpD8i7Oku1H4GtQCkc9Y4s7kIeg6yWCiqod77UbsMAFKnnY7VwH4z6sAOCTtWKeALybkVXoJFQ==@vger.kernel.org, AJvYcCXa7WaEwP8vuyDTOrFnXjGE2Prpg+vceKX14fsUJE+h3i9yTDPrTER7S8/todguSfwelgJG/LVSDfN0@vger.kernel.org, AJvYcCXuuZ8G7OjtYnRKMa+CYDHhrdEDpPQt87Raq5qdhR3zMG9ZD8O5YhLEjhdDgoZQZw7WjVtxx/FaM1YR@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx1zBSZt600gFH9asb9ZlFZ19wtcTE+285dLRqCkxyci/RBJbb4
-	GaILyXT8XXKsd13/iHHWhueRSsnsc/xnOj2Qj8pEYiCtq2eVHqNrs2AtKp6pnU4lyOIBC3GRfnp
-	qAXrPEqlHLV+/Dy4FHaj7sHxK4R1+WDqnM1w=
-X-Gm-Gg: ASbGnctdlxk6OoyjEmfE4+sJM0l36A8DZ36/8hJzxFdVAmpO+BlY/Ln+dx8Iszu0v9m
-	byTbQYtz4gmww3wyo+7fUsllfBRiDgMs78u6U
-X-Google-Smtp-Source: AGHT+IE8ZeqfL/AgiOHI7JzByaRH/gCmdKgPWO5Hj9zc39/ATmbh/1nt9GKO3Q2GNRNSP3Oe53/t8se7t847Ok8yve4=
-X-Received: by 2002:a05:600c:1ca9:b0:435:136:75f6 with SMTP id
- 5b1f17b1804b1-436e2551d7bmr233515785e9.0.1736845397493; Tue, 14 Jan 2025
- 01:03:17 -0800 (PST)
+	s=arc-20240116; t=1736845517; c=relaxed/simple;
+	bh=F8NQ5S2qctuP6WfgHg3ftRT8zixg+7C/eUO+d4uebRI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VFahEUfLW2u1Olu0OCX+loTw6+US+wkSZdwxI52VbWeSPPOO5+5V917CAUM0IgOB4UGNdErbJTvolNLIqsFZz0EdNrUO7QMdTO442y0SWh5oC+6qe1EG71dK+hnICOe4kcorwvUYudKra/rCu0l4mpcYZdXATMlPrGtNZ8WL9QU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uJ1+yvo4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 799C5C4CEDD;
+	Tue, 14 Jan 2025 09:05:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736845516;
+	bh=F8NQ5S2qctuP6WfgHg3ftRT8zixg+7C/eUO+d4uebRI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uJ1+yvo4GoKIreXyCc59GlSWvezx6l6bPVHrWKm9xcxpGJtRxB4ixIWbiTGof0zDR
+	 zHMVNKT6hppbUqKJFUnMisDBW8qEJY3SlYFA7E9Iw29NTYeFpjvaY3MZbNPEKQYlfK
+	 VuB0ZODOdrdip5ZUHdBo5mVWjYJG9w+hOEuFhABnDYffCv0b27QGpARnTpGBbTWaGa
+	 TKXbVwXnWHCqi14iZFUJY4at9RrSWJ9vDc+KlMoyQmUIfvC4eDAtsdvLoy1S7TX7qY
+	 CDo0gjLKg0TVfixJ0sq1a8UlTZXTvmQNGLez51grpl6iPPG4OZZ/Q2PAPkwJ/ltG/w
+	 wyMpC89LRVhzQ==
+Date: Tue, 14 Jan 2025 11:05:10 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, netdev@vger.kernel.org,
+	pabeni@redhat.com, andrew+netdev@lunn.ch,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	michael.chan@broadcom.com, pavan.chebbi@broadcom.com
+Subject: Re: [PATCH rdma-next v2 RESEND 0/4] RDMA/bnxt_re: Support for FW
+ async event handling
+Message-ID: <20250114090510.GF3146852@unreal>
+References: <20250107024553.2926983-1-kalesh-anakkur.purayil@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250113143719.7948-3-shaw.leon@gmail.com> <20250114044935.26418-1-kuniyu@amazon.com>
-In-Reply-To: <20250114044935.26418-1-kuniyu@amazon.com>
-From: Xiao Liang <shaw.leon@gmail.com>
-Date: Tue, 14 Jan 2025 17:02:40 +0800
-X-Gm-Features: AbW1kvbnYf6XKcEPFQ7StR4SBvDI6u3mnWVP_-_JSDczC5xWtD3eG1aBQEYey8A
-Message-ID: <CABAhCOQy-qw8pY+8XjHGPVz7jWZ7wqnadPXZrF-enAO0AEgXyQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v8 06/11] net: ipv6: Use link netns in newlink()
- of rtnl_link_ops
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: alex.aring@gmail.com, andrew+netdev@lunn.ch, 
-	b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org, bridge@lists.linux.dev, 
-	davem@davemloft.net, donald.hunter@gmail.com, dsahern@kernel.org, 
-	edumazet@google.com, herbert@gondor.apana.org.au, horms@kernel.org, 
-	kuba@kernel.org, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-ppp@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	linux-wpan@vger.kernel.org, miquel.raynal@bootlin.com, netdev@vger.kernel.org, 
-	osmocom-net-gprs@lists.osmocom.org, pabeni@redhat.com, shuah@kernel.org, 
-	stefan@datenfreihafen.org, steffen.klassert@secunet.com, 
-	wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250107024553.2926983-1-kalesh-anakkur.purayil@broadcom.com>
 
-On Tue, Jan 14, 2025 at 12:49=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.c=
-om> wrote:
->
-> From: Xiao Liang <shaw.leon@gmail.com>
-> Date: Mon, 13 Jan 2025 22:37:14 +0800
-> > diff --git a/drivers/net/bonding/bond_netlink.c b/drivers/net/bonding/b=
-ond_netlink.c
-> > index 2a6a424806aa..ac5e402c34bc 100644
-> > --- a/drivers/net/bonding/bond_netlink.c
-> > +++ b/drivers/net/bonding/bond_netlink.c
-> > @@ -564,10 +564,12 @@ static int bond_changelink(struct net_device *bon=
-d_dev, struct nlattr *tb[],
-> >       return 0;
-> >  }
-> >
-> > -static int bond_newlink(struct net *src_net, struct net_device *bond_d=
-ev,
-> > -                     struct nlattr *tb[], struct nlattr *data[],
-> > +static int bond_newlink(struct net_device *bond_dev,
-> > +                     struct rtnl_newlink_params *params,
-> >                       struct netlink_ext_ack *extack)
-> >  {
-> > +     struct nlattr **data =3D params->data;
-> > +     struct nlattr **tb =3D params->tb;
-> >       int err;
-> >
-> >       err =3D bond_changelink(bond_dev, tb, data, extack);
->
-> Note that IFLA_BOND_ACTIVE_SLAVE uses dev_net(dev) for
-> __dev_get_by_index().
+On Tue, Jan 07, 2025 at 08:15:48AM +0530, Kalesh AP wrote:
+> This patch series adds support for FW async event handling
+> in the bnxt_re driver.
+> 
+> V1->V2:
+> 1. Rebased on top of the latest "for-next" tree.
+> 2. Split Patch#1 into 2 - one for Ethernet driver changes and
+>    another one for RDMA driver changes.
+> 3. Addressed Leon's comments on Patch#1 and Patch #3.
+> V1: https://lore.kernel.org/linux-rdma/1725363051-19268-1-git-send-email-selvin.xavier@broadcom.com/T/#t
+> 
+> Patch #1:
+> 1. Removed BNXT_EN_FLAG_ULP_STOPPED state check from bnxt_ulp_async_events().
+>    The ulp_ops are protected by RCU. This means that during bnxt_unregister_dev(),
+>    Ethernet driver set the ulp_ops pointer to NULL and do RCU sync before return
+>    to the RDMA driver.
+>    So ulp_ops and the pointers in ulp_ops are always valid or NULL when the
+>    Ethernet driver references ulp_ops. ULP_STOPPED is a state and should be
+>    unrelated to async events. It should not affect whether async events should
+>    or should not be passed to the RDMA driver.
+> 2. Changed Author of Ethernet driver changes to Michael Chan.
+> 3. Removed unnecessary export of function bnxt_ulp_async_events.
+> 
+> Patch #3:
+> 1. Removed unnecessary flush_workqueue() before destroy_workqueue()
+> 2. Removed unnecessary NULL assignment after free.
+> 3. Changed to use "ibdev_xxx" and reduce level of couple of logs to debug.
+> 
+> Please review and apply.
+> 
+> Regards,
+> Kalesh
+> 
+> 
+> Kalesh AP (3):
+>   RDMA/bnxt_re: Add Async event handling support
+>   RDMA/bnxt_re: Query firmware defaults of CC params during probe
+>   RDMA/bnxt_re: Add support to handle DCB_CONFIG_CHANGE event
+> 
+> Michael Chan (1):
+>   bnxt_en: Add ULP call to notify async events
+> 
+>  drivers/infiniband/hw/bnxt_re/bnxt_re.h       |   3 +
+>  drivers/infiniband/hw/bnxt_re/main.c          | 156 ++++++++++++++++++
+>  drivers/infiniband/hw/bnxt_re/qplib_fp.h      |   1 +
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.c      | 113 +++++++++++++
+>  drivers/infiniband/hw/bnxt_re/qplib_sp.h      |   3 +
+>  drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   1 +
+>  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |  28 ++++
+>  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |   2 +
+>  8 files changed, 307 insertions(+)
 
-That's true. Bond devices have no "link-netns", and a slave
-device must be in the same namespace of the main dev.
+Applied with the following fix
 
-> [...]
-> > diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
-> > index fed4fe2a4748..0c496aa1f706 100644
-> > --- a/drivers/net/macvlan.c
-> > +++ b/drivers/net/macvlan.c
-> > @@ -1565,11 +1565,12 @@ int macvlan_common_newlink(struct net *src_net,=
- struct net_device *dev,
-> >  }
-> >  EXPORT_SYMBOL_GPL(macvlan_common_newlink);
-> >
-> > -static int macvlan_newlink(struct net *src_net, struct net_device *dev=
-,
-> > -                        struct nlattr *tb[], struct nlattr *data[],
-> > +static int macvlan_newlink(struct net_device *dev,
-> > +                        struct rtnl_newlink_params *params,
-> >                          struct netlink_ext_ack *extack)
-> >  {
-> > -     return macvlan_common_newlink(src_net, dev, tb, data, extack);
-> > +     return macvlan_common_newlink(params->net, dev, params->tb,
-> > +                                   params->data, extack);
->
-> Pass params as is as you did for ipvlan_link_new().
->
-> Same for macvtap_newlink().
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 1dc305689d7bb..54dee0f5dd3f5 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -1802,30 +1802,22 @@ static int bnxt_re_setup_qos(struct bnxt_re_dev *rdev)
+ 
+ static void bnxt_re_net_unregister_async_event(struct bnxt_re_dev *rdev)
+ {
+-	int rc;
+-
+ 	if (rdev->is_virtfn)
+ 		return;
+ 
+ 	memset(&rdev->event_bitmap, 0, sizeof(rdev->event_bitmap));
+-	rc = bnxt_register_async_events(rdev->en_dev, &rdev->event_bitmap,
+-					ASYNC_EVENT_CMPL_EVENT_ID_DCB_CONFIG_CHANGE);
+-	if (rc)
+-		ibdev_err(&rdev->ibdev, "Failed to unregister async event");
++	bnxt_register_async_events(rdev->en_dev, &rdev->event_bitmap,
++				   ASYNC_EVENT_CMPL_EVENT_ID_DCB_CONFIG_CHANGE);
+ }
+ 
+ static void bnxt_re_net_register_async_event(struct bnxt_re_dev *rdev)
+ {
+-	int rc;
+-
+ 	if (rdev->is_virtfn)
+ 		return;
+ 
+ 	rdev->event_bitmap |= (1 << ASYNC_EVENT_CMPL_EVENT_ID_DCB_CONFIG_CHANGE);
+-	rc = bnxt_register_async_events(rdev->en_dev, &rdev->event_bitmap,
+-					ASYNC_EVENT_CMPL_EVENT_ID_DCB_CONFIG_CHANGE);
+-	if (rc)
+-		ibdev_err(&rdev->ibdev, "Failed to unregister async event");
++	bnxt_register_async_events(rdev->en_dev, &rdev->event_bitmap,
++				   ASYNC_EVENT_CMPL_EVENT_ID_DCB_CONFIG_CHANGE);
+ }
+ 
+ static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+index 59c280634bc5f..3e17db0a453e0 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+@@ -373,9 +373,8 @@ void bnxt_ulp_async_events(struct bnxt *bp, struct hwrm_async_event_cmpl *cmpl)
+ 	rcu_read_unlock();
+ }
+ 
+-int bnxt_register_async_events(struct bnxt_en_dev *edev,
+-			       unsigned long *events_bmap,
+-			       u16 max_id)
++void bnxt_register_async_events(struct bnxt_en_dev *edev,
++				unsigned long *events_bmap, u16 max_id)
+ {
+ 	struct net_device *dev = edev->net;
+ 	struct bnxt *bp = netdev_priv(dev);
+@@ -387,7 +386,6 @@ int bnxt_register_async_events(struct bnxt_en_dev *edev,
+ 	smp_wmb();
+ 	ulp->max_async_event_id = max_id;
+ 	bnxt_hwrm_func_drv_rgtr(bp, events_bmap, max_id + 1, true);
+-	return 0;
+ }
+ EXPORT_SYMBOL(bnxt_register_async_events);
+ 
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
+index a21294cf197b8..ee6a5b8562c3e 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
+@@ -126,6 +126,6 @@ int bnxt_register_dev(struct bnxt_en_dev *edev, struct bnxt_ulp_ops *ulp_ops,
+ 		      void *handle);
+ void bnxt_unregister_dev(struct bnxt_en_dev *edev);
+ int bnxt_send_msg(struct bnxt_en_dev *edev, struct bnxt_fw_msg *fw_msg);
+-int bnxt_register_async_events(struct bnxt_en_dev *edev,
+-			       unsigned long *events_bmap, u16 max_id);
++void bnxt_register_async_events(struct bnxt_en_dev *edev,
++				unsigned long *events_bmap, u16 max_id);
+ #endif
 
-OK.
-
-> [...]
-> > diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-> > index 1e1b00756be7..1e9eadc77da2 100644
-> > --- a/drivers/net/netkit.c
-> > +++ b/drivers/net/netkit.c
-> > @@ -327,10 +327,13 @@ static int netkit_validate(struct nlattr *tb[], s=
-truct nlattr *data[],
-> >
-> >  static struct rtnl_link_ops netkit_link_ops;
-> >
-> > -static int netkit_new_link(struct net *peer_net, struct net_device *de=
-v,
-> > -                        struct nlattr *tb[], struct nlattr *data[],
-> > +static int netkit_new_link(struct net_device *dev,
-> > +                        struct rtnl_newlink_params *params,
-> >                          struct netlink_ext_ack *extack)
-> >  {
-> > +     struct nlattr **data =3D params->data;
-> > +     struct net *peer_net =3D params->net;
-> > +     struct nlattr **tb =3D params->tb;
->
-> nit: please keep the reverse xmas tree order.
->
->
-> >       struct nlattr *peer_tb[IFLA_MAX + 1], **tbp =3D tb, *attr;
->
-> you can define *tbp here and initialise it later.
->
->         struct nlattr *peer_tb[IFLA_MAX + 1], **tbp, *attr;
->
-> >       enum netkit_action policy_prim =3D NETKIT_PASS;
-> >       enum netkit_action policy_peer =3D NETKIT_PASS;
->
->
-> [...]
-> > @@ -1064,6 +1067,11 @@ static void wwan_create_default_link(struct wwan=
-_device *wwandev,
-> >       struct net_device *dev;
-> >       struct nlmsghdr *nlh;
-> >       struct sk_buff *msg;
-> > +     struct rtnl_newlink_params params =3D {
-> > +             .net =3D &init_net,
-> > +             .tb =3D tb,
-> > +             .data =3D data,
-> > +     };
->
-> nit: Reverse xmas tree order
->
->
-> [...]
-> > diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-> > index ec98349b9620..7ff5e96f6ba7 100644
-> > --- a/net/core/rtnetlink.c
-> > +++ b/net/core/rtnetlink.c
-> > @@ -3766,6 +3766,14 @@ static int rtnl_newlink_create(struct sk_buff *s=
-kb, struct ifinfomsg *ifm,
-> >       struct net_device *dev;
-> >       char ifname[IFNAMSIZ];
-> >       int err;
-> > +     struct rtnl_newlink_params params =3D {
->
-> nit: Reverse xmas tree order
->
->
-> > +             .net =3D net,
->
-> Use sock_net(skb->sk) directly here and remove net defined above,
-> which is no longer used in this function.
->
-> ---8<---
->         unsigned char name_assign_type =3D NET_NAME_USER;
->         struct rtnl_newlink_params params =3D {
->                 .net =3D sock_net(skb->sk),
->                 .src_net =3D net,
->                 .link_net =3D link_net,
->                 .peer_net =3D peer_net,
->                 .tb =3D tb,
->                 .data =3D data,
->         };
->         u32 portid =3D NETLINK_CB(skb).portid;
-> ---8<---
->
->
-> [...]
-> > @@ -1698,6 +1702,10 @@ struct net_device *gretap_fb_dev_create(struct n=
-et *net, const char *name,
-> >       LIST_HEAD(list_kill);
-> >       struct ip_tunnel *t;
-> >       int err;
-> > +     struct rtnl_newlink_params params =3D {
-> > +             .net =3D net,
-> > +             .tb =3D tb,
-> > +     };
-> >
-> >       memset(&tb, 0, sizeof(tb));
->
-> nit: Reverse xmas tree
-
-Will fix the style issues mentioned above in the next version.
-
-Thanks.
+> 
+> -- 
+> 2.43.5
+> 
 
