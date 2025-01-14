@@ -1,56 +1,55 @@
-Return-Path: <linux-rdma+bounces-7008-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7009-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4D3FA10585
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 12:32:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2017A105C8
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 12:44:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C124E167153
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 11:32:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC32D1626D3
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 11:44:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE42234CFC;
-	Tue, 14 Jan 2025 11:32:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37220234D10;
+	Tue, 14 Jan 2025 11:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S8cBzuCv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FsMTggFh"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE627234CF5
-	for <linux-rdma@vger.kernel.org>; Tue, 14 Jan 2025 11:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF1A234CEA
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Jan 2025 11:44:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736854373; cv=none; b=MbDKhniPM9ByWssz1RZiTjtSe7A3g9jU7y648MzfnWJy3UP7Htqg0MxA0Zbw9zQGkqulCXB1VcGRLVjJ1Xndnz7fEmWpBn1Sg6mddDNAe4DUpsvnSbmUUVbE7hbBqKDd6ZoBnLOLNtJTPRBxfge/yUK1YmpixnultWGuJzgd8/Q=
+	t=1736855052; cv=none; b=t3sZDOy3IuuE1e9NaMEIwPSvqsonq8BDmOoal6hLLOkPOwAVnTSyC3kPb/qkVh8W0pvxcFyge440vLrT/s5B2/mIfgSYWa79AuP6SotpTWKu8mEAANWt9AqVWll2FS/OTTiMSOoUF5HtvsPA0xkN2gmg2x6HS75vrkYkWjaprDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736854373; c=relaxed/simple;
-	bh=fUbzdf1+F4Y76HPN9ow9COrYHvGe80nVMo61M9yEvNI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=YJxYQ/KF9IO207OaqloHGrDq9D917tURnzZv/H3WqL3ialUq1lxKv0K6i7All03IwzmMwQS/LC8c+IsgT9lwjN5EqJaOI2FWK32WlZ7lw3lnj4YwlVcfNn7VxFGNZXSPsl6FmJOOxxWtY48HzptyzuUW9DpkJRSAqQ9/VfrMskA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S8cBzuCv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAEF7C4CEE5;
-	Tue, 14 Jan 2025 11:32:51 +0000 (UTC)
+	s=arc-20240116; t=1736855052; c=relaxed/simple;
+	bh=+8d+h5vV43bpiCxou+p25uKwq1eaIa31N3Oxhs/tJIY=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=masEYVLHLO6w3O6yT6fFbi+RrQ86KOnHOCg0PC4cLPENIgtFtDeblTvOWqt6wHDo4ApUUsk3cPjTyhYqv47qstY12JRlj6Jf5v6C81YYp5ozI2wgaCETUZkcIJ/PP+EFJyti1wco3xGIq42NT+KjJsZP3v9CCQzULR050c1hF5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FsMTggFh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED721C4CEE1;
+	Tue, 14 Jan 2025 11:44:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736854372;
-	bh=fUbzdf1+F4Y76HPN9ow9COrYHvGe80nVMo61M9yEvNI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=S8cBzuCvjUleSpxrpJIVUNqSZKajIZv3YPcTWE/4RZQUZ2w9dEvFgJIDra/LX/tko
-	 BjyAufxt87uz1eBwyPISBZIV9o9M1b1U1m6+pUR8DqPVm2hhOZLsz+/3iOP51Y7TSN
-	 jVOkY01URDFRxZigpK/mKp28RrcOHjQxQVZjmYbTkzZbgxBzVfmaFEXbc7X5ZoeJMr
-	 Rnf6DNKCKifOONGpIYArdWKudqM5ypIF4Olr6IaUuHbgMzGGVwuRmGngCBEz/tssVp
-	 Iv72XogN0tbqWtu7avjJ1PKuJHTGAI4ihm+SbL3C5FFQN7a+Uo8csmMPZxRlIEKNDm
-	 XHwzT8+StePCg==
+	s=k20201202; t=1736855051;
+	bh=+8d+h5vV43bpiCxou+p25uKwq1eaIa31N3Oxhs/tJIY=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=FsMTggFhDSTD+63eVQ/iBkjLRVRx0nahO38IS36KW2Vl5MBSyPs8pnIgS8HmQBWV8
+	 xt3mTGPK3kuE951PUUZSE/um1XX+Q7kOayFaG4HMXJZ4NC2UeI5AL98R+I4D692bXS
+	 4/ZnwmygkWnjAdr7s0iRo9hCtOrQnX3wpo3OzExnBoNTfou8SvTGCmNTNJ5Q7WuQwX
+	 NJ4vz+wTSHJOm1cait/BD+lgyolFwDE4i9l+JAxZTPmxnMMb8REPFPWT8xqSsiKnj/
+	 OWBVhGks9JR8We17hXad300bF5yGfXX0J3f3stUBRfEt8ZM3wTMc2Bs+mM9AIOPOty
+	 2Q9lE9II+e5Qw==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
- Anumula Murali Mohan Reddy <anumula@chelsio.com>
-Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com
-In-Reply-To: <20250107095053.81007-1-anumula@chelsio.com>
-References: <20250107095053.81007-1-anumula@chelsio.com>
-Subject: Re: [PATCH for-rc v2] RDMA/cxgb4: notify rdma stack for
- IB_EVENT_QP_LAST_WQE_REACHED event
-Message-Id: <173685436861.1202230.9578949419995793384.b4-ty@kernel.org>
-Date: Tue, 14 Jan 2025 06:32:48 -0500
+To: zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org, 
+ Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20250110160927.55014-1-yanjun.zhu@linux.dev>
+References: <20250110160927.55014-1-yanjun.zhu@linux.dev>
+Subject: Re: [PATCH 1/1] RDMA/rxe: Fix the warning
+ "__rxe_cleanup+0x12c/0x170 [rdma_rxe]"
+Message-Id: <173685504799.1202663.15209197429452789715.b4-ty@kernel.org>
+Date: Tue, 14 Jan 2025 06:44:07 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,20 +61,43 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
 
 
-On Tue, 07 Jan 2025 15:20:53 +0530, Anumula Murali Mohan Reddy wrote:
-> This patch sends IB_EVENT_QP_LAST_WQE_REACHED event on a QP that is in
-> error state and associated with an SRQ. This behaviour is incorporated
-> in flush_qp() which is called when QP transitions to error state.
-> Supports SRQ drain functionality added by commit 844bc12e6da3 ("IB/core:
-> add support for draining Shared receive queues")
-> 
+On Fri, 10 Jan 2025 17:09:27 +0100, Zhu Yanjun wrote:
+> The Call Trace is as below:
+> "
+>   <TASK>
+>   ? show_regs.cold+0x1a/0x1f
+>   ? __rxe_cleanup+0x12c/0x170 [rdma_rxe]
+>   ? __warn+0x84/0xd0
+>   ? __rxe_cleanup+0x12c/0x170 [rdma_rxe]
+>   ? report_bug+0x105/0x180
+>   ? handle_bug+0x46/0x80
+>   ? exc_invalid_op+0x19/0x70
+>   ? asm_exc_invalid_op+0x1b/0x20
+>   ? __rxe_cleanup+0x12c/0x170 [rdma_rxe]
+>   ? __rxe_cleanup+0x124/0x170 [rdma_rxe]
+>   rxe_destroy_qp.cold+0x24/0x29 [rdma_rxe]
+>   ib_destroy_qp_user+0x118/0x190 [ib_core]
+>   rdma_destroy_qp.cold+0x43/0x5e [rdma_cm]
+>   rtrs_cq_qp_destroy.cold+0x1d/0x2b [rtrs_core]
+>   rtrs_srv_close_work.cold+0x1b/0x31 [rtrs_server]
+>   process_one_work+0x21d/0x3f0
+>   worker_thread+0x4a/0x3c0
+>   ? process_one_work+0x3f0/0x3f0
+>   kthread+0xf0/0x120
+>   ? kthread_complete_and_exit+0x20/0x20
+>   ret_from_fork+0x22/0x30
+>   </TASK>
+> "
+> When too many rdma resources are allocated, rxe needs more time to
+> handle these rdma resources. Sometimes with the current timeout, rxe
+> can not release the rdma resources correctly.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] RDMA/cxgb4: notify rdma stack for IB_EVENT_QP_LAST_WQE_REACHED event
-      https://git.kernel.org/rdma/rdma/c/42e6ddda4c17fa
+[1/1] RDMA/rxe: Fix the warning "__rxe_cleanup+0x12c/0x170 [rdma_rxe]"
+      https://git.kernel.org/rdma/rdma/c/edc4ef0e015409
 
 Best regards,
 -- 
