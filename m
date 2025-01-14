@@ -1,82 +1,50 @@
-Return-Path: <linux-rdma+bounces-6994-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6995-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BC74A0FE36
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 02:39:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D07EA0FF0C
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 04:10:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43FB11888FDA
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 01:39:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3BA47A2491
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 03:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E15923026D;
-	Tue, 14 Jan 2025 01:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFC1232794;
+	Tue, 14 Jan 2025 03:10:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="WUFS1kKx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VAim8GkZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5545C224B0D;
-	Tue, 14 Jan 2025 01:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CCA3596A;
+	Tue, 14 Jan 2025 03:10:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736818775; cv=none; b=r2KKtRrRxFz3HBVVbtDSm3B9N3eMbh3zqD1lYB368z34abTFrAImoHH3vHsldyGDiS5P8Xvk/iflGPk3ncz/5ni1Tl2P956lk5tXE4wSkPFHZG/qUN5b9KgywkQOWdvf1/TO93iNcngIheT3kQgyM56VQOlin7HlQEdZgT8NiOQ=
+	t=1736824215; cv=none; b=nW1mU7n2xQoJKs3K5Z+WJ/aDp1arhUU1xoofBNbm7wtKdnlf03bsSoo3xsPIl5SWvrDbGAT8okcpl/zsTEx73zOExI+hcv04iCa0v/mwp66/IkGZpjEN57n+cmjBPZyIxcgE5M+JEnvsiSs1f2mvNlrMFvPja3aTvxkisRKOMfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736818775; c=relaxed/simple;
-	bh=fvsXsSG3rvQldIY/85wzJ0AHdohJOHv8n5QAPKehmcM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DiqVNV7VfOo+9yVWhGe3xbwyrLrmex0Ez7ljioPbXrDaETbjUsogfXd9K07CIny2mJy437Kdd37GPPuV7JV/xQS7WduHOjnb8BqkhFozZvob9vb4lr0RSK6TBZmVIlaByUn7DOLmgjnIfYXzVmN7cwlqswIn2ZSyDkbviXNeopU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=WUFS1kKx; arc=none smtp.client-ip=72.21.196.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1736818774; x=1768354774;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=0cedPuJPQkStIGe+OXyB1F52+EDOiClOdRu6CBFc8ew=;
-  b=WUFS1kKx08w53QWvUM8u1Z75DHg3d3VMxWl/1Bq6I+AF1lwc7CnBvm5G
-   9TpPIwJsz8P/bRTdyQy54QvIPIXVgxSebFL1BEaenLLz8x/uUPvVxpf+D
-   S143HXX4DgXw+fUA57hCf4RciOAfESxcqwESW5XhRCK6j7slfnnB3NOtp
-   I=;
-X-IronPort-AV: E=Sophos;i="6.12,312,1728950400"; 
-   d="scan'208";a="458589578"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2025 01:39:28 +0000
-Received: from EX19MTAUWA001.ant.amazon.com [10.0.7.35:58030]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.14.236:2525] with esmtp (Farcaster)
- id 86aea7c8-dd91-44b2-aaf7-7a7eff52786e; Tue, 14 Jan 2025 01:39:28 +0000 (UTC)
-X-Farcaster-Flow-ID: 86aea7c8-dd91-44b2-aaf7-7a7eff52786e
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
- Tue, 14 Jan 2025 01:39:27 +0000
-Received: from 6c7e67c6786f.amazon.com (10.119.11.99) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
- Tue, 14 Jan 2025 01:39:19 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <shaw.leon@gmail.com>
-CC: <alex.aring@gmail.com>, <andrew+netdev@lunn.ch>,
-	<b.a.t.m.a.n@lists.open-mesh.org>, <bpf@vger.kernel.org>,
-	<bridge@lists.linux.dev>, <davem@davemloft.net>, <donald.hunter@gmail.com>,
-	<dsahern@kernel.org>, <edumazet@google.com>, <herbert@gondor.apana.org.au>,
-	<horms@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
-	<linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>, <linux-ppp@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<linux-wpan@vger.kernel.org>, <miquel.raynal@bootlin.com>,
-	<netdev@vger.kernel.org>, <osmocom-net-gprs@lists.osmocom.org>,
-	<pabeni@redhat.com>, <shuah@kernel.org>, <stefan@datenfreihafen.org>,
-	<steffen.klassert@secunet.com>, <wireguard@lists.zx2c4.com>
-Subject: Re: [PATCH net-next v8 01/11] rtnetlink: Lookup device in target netns when creating link
-Date: Tue, 14 Jan 2025 10:39:09 +0900
-Message-ID: <20250114013909.7102-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20250113143719.7948-2-shaw.leon@gmail.com>
-References: <20250113143719.7948-2-shaw.leon@gmail.com>
+	s=arc-20240116; t=1736824215; c=relaxed/simple;
+	bh=wtiqlRNAijPwFZxttNbA9gPDMRele86XZmih4s3L2aQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=VMJE7rjvv3ZDnCromx2ZC12AMkMzXm3o32OZl2IyUQPP3Jaew7Por2zr4G0h+ncexJTEY2V9z84zf5nS70xuHswOgBJn/PoqYxOV2Hjyf8LUi4Ux4GrvZYH6TS6EaCbBoCpuw1drFOjTcMHnGXrxJ0r+oHif4KmcFB0ASEICSRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VAim8GkZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9D94C4CEE5;
+	Tue, 14 Jan 2025 03:10:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736824213;
+	bh=wtiqlRNAijPwFZxttNbA9gPDMRele86XZmih4s3L2aQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=VAim8GkZh/aQqBoaFlLQwWeoAw550NavRJtAAdPyInHO/U6DbVE4MXR2FQkdwOjnx
+	 64LzrZk+3llFe8FuZ0MH/GCdYAr0dyj/x8Tf7X3itOgtRpUbIS3/uQtEHZFGEA6wh6
+	 T4/HWZjuT/2Zz/nGV7/wXsjkrpFtlMZCGL6YzkQP9DXXq/6lsxOHTj/0iAG67Y09Cq
+	 9W0DHnuGnURxUIVVBKWerKlLzGAJbRKslHVv9kfikuE5M4Cy5B4Jsz4vIL2CY+DEjv
+	 4BvD7zbcG4/ahhpW2r/HtxETrCYOpaFbnqT9EjkGvcE7BV3ahQwuUdTeUNHu45gJ2r
+	 ODKufr3CfJUsg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE4EC380AA5F;
+	Tue, 14 Jan 2025 03:10:37 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -84,22 +52,52 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D045UWA004.ant.amazon.com (10.13.139.91) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Subject: Re: [PATCH RESEND net] net/smc: fix data error when recvmsg with MSG_PEEK
+ flag
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173682423623.3717681.3711335962362031005.git-patchwork-notify@kernel.org>
+Date: Tue, 14 Jan 2025 03:10:36 +0000
+References: <20250104143201.35529-1-guangguan.wang@linux.alibaba.com>
+In-Reply-To: <20250104143201.35529-1-guangguan.wang@linux.alibaba.com>
+To: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+Cc: wenjia@linux.ibm.com, jaka@linux.ibm.com, alibuda@linux.alibaba.com,
+ tonylu@linux.alibaba.com, guwen@linux.alibaba.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+ linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-From: Xiao Liang <shaw.leon@gmail.com>
-Date: Mon, 13 Jan 2025 22:37:09 +0800
-> When creating link, lookup for existing device in target net namespace
-> instead of current one.
-> For example, two links created by:
-> 
->   # ip link add dummy1 type dummy
->   # ip link add netns ns1 dummy1 type dummy
-> 
-> should have no conflict since they are in different namespaces.
-> 
-> Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
+Hello:
 
-Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Sat,  4 Jan 2025 22:32:01 +0800 you wrote:
+> When recvmsg with MSG_PEEK flag, the data will be copied to
+> user's buffer without advancing consume cursor and without
+> reducing the length of rx available data. Once the expected
+> peek length is larger than the value of bytes_to_rcv, in the
+> loop of do while in smc_rx_recvmsg, the first loop will copy
+> bytes_to_rcv bytes of data from the position local_tx_ctrl.cons,
+> the second loop will copy the min(bytes_to_rcv, read_remaining)
+> bytes from the position local_tx_ctrl.cons again because of the
+> lacking of process with advancing consume cursor and reducing
+> the length of available data. So do the subsequent loops. The
+> data copied in the second loop and the subsequent loops will
+> result in data error, as it should not be copied if no more data
+> arrives and it should be copied from the position advancing
+> bytes_to_rcv bytes from the local_tx_ctrl.cons if more data arrives.
+> 
+> [...]
+
+Here is the summary with links:
+  - [RESEND,net] net/smc: fix data error when recvmsg with MSG_PEEK flag
+    https://git.kernel.org/netdev/net-next/c/a4b6539038c1
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
