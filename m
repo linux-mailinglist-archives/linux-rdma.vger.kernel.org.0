@@ -1,134 +1,105 @@
-Return-Path: <linux-rdma+bounces-6993-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6994-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63DE5A0C27E
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jan 2025 21:16:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BC74A0FE36
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 02:39:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ECD53A6F9D
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jan 2025 20:16:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43FB11888FDA
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 01:39:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CFBD1CDA3F;
-	Mon, 13 Jan 2025 20:16:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E15923026D;
+	Tue, 14 Jan 2025 01:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="lMmUGG/U"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="WUFS1kKx"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127D41B422D
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Jan 2025 20:16:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5545C224B0D;
+	Tue, 14 Jan 2025 01:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736799376; cv=none; b=QIwIbFCrElNXPQha8HsHhSaWQQ0D69jyPI8ilLO4X+OqcexF0pa3HUMBlHgbPK4AnD5okBvE83dU8GiFGTbLHd2/vSwGLnz6WaUChoT4Vlff1I7otbt9KEPejIvUWCdRYxq1aAPRuDGSowcHHZF2kmYYzl6chBEq1zaCSasmLjc=
+	t=1736818775; cv=none; b=r2KKtRrRxFz3HBVVbtDSm3B9N3eMbh3zqD1lYB368z34abTFrAImoHH3vHsldyGDiS5P8Xvk/iflGPk3ncz/5ni1Tl2P956lk5tXE4wSkPFHZG/qUN5b9KgywkQOWdvf1/TO93iNcngIheT3kQgyM56VQOlin7HlQEdZgT8NiOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736799376; c=relaxed/simple;
-	bh=MyEof7sewwTZqWH0oZekNraGwzL6R7PK6gkhxRccXmM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a4VUyNJZOUzDLGwDtDj0uUha6Zk1wAOEK3hvITpZveewzFclEfA38o9jFjVA0Cc8Wh02zb5Mng2cwJ1Tqph8EbwJsZL9xx0kbfH1lD9DdH8qrkVCsKnrB/lxefB3xqU5qUGR7IH1Lb/RWmmFmHxDxvz6ydAgeVCtdYH8yVNCBTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=lMmUGG/U; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7b6f19a6c04so430274185a.0
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Jan 2025 12:16:13 -0800 (PST)
+	s=arc-20240116; t=1736818775; c=relaxed/simple;
+	bh=fvsXsSG3rvQldIY/85wzJ0AHdohJOHv8n5QAPKehmcM=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DiqVNV7VfOo+9yVWhGe3xbwyrLrmex0Ez7ljioPbXrDaETbjUsogfXd9K07CIny2mJy437Kdd37GPPuV7JV/xQS7WduHOjnb8BqkhFozZvob9vb4lr0RSK6TBZmVIlaByUn7DOLmgjnIfYXzVmN7cwlqswIn2ZSyDkbviXNeopU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=WUFS1kKx; arc=none smtp.client-ip=72.21.196.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1736799373; x=1737404173; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UAji/BaEzNe2xaZcTtq4Gz2pQcrkRBfA3gTcPpODPhs=;
-        b=lMmUGG/U//MJpAZh6XsN7pdxXRp8qqxmgu/mrVXYhhRbeGVWanSDvYRp5PWMz0my8f
-         1lqETD2obLoBh2xZ7fWvWHRaWEW9qvLq66nd3lJdsev6VjX6FJliUAJKvPJdEXWlC5aO
-         yrcwMM95EaAklFWMXzf5LZLLC4SkE/jW5Cj/Piw8E6ppkM6a+Nz1WEYkQ5+agrfJDtKW
-         5QuxzJoQKnMPHWxJpxW+72t3qCX58oXBzHOBYtKPU9OpcZ8sse8wTfjYYJpJgnL1qqLu
-         OfQ3j7IdXa6AqsK7N+nnyhD2S2qYTyoXe+VIzK1QfHTC4rEiV5/s8YvvHC3mE1QtfKGM
-         xs2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736799373; x=1737404173;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UAji/BaEzNe2xaZcTtq4Gz2pQcrkRBfA3gTcPpODPhs=;
-        b=YCL3b/jB/jq4bCWliZD35g+gBvJqYdPWSNkeyx8CLygck0/jq3pJvVdW7PI4p1gOLW
-         x8mk6YdstHIecay1DvEc3oyNWjQfO6B7ThwO236swB76r8xwL/w8K07GJ6B3OLIAF/+G
-         IxGb4C1KBS9MDdmGTFNRl66x5GWMnw+iwBU/8AdaWt2d9F0yK7JWiMWGYsiMlYMmXH8P
-         vPSwFy4tpvPoUL8OSSGleyOvy4Ma90EJPcN6pfbXdfxA4mckXZjM8YGk6hfO7t8MgNLh
-         X45s8AiscQLMn8ohPvBxDsm6RgSpDcpvt78qZsTxfWgZ8Uhtj+ECuNt3jM0cvgxJU/K7
-         8KHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXbGFqeif5ZOQAGhDao4snv+hsOSxeMkFGmIF6aKOzY5NjKosk06lNRPl4moYopom86Jhi6V/YZndEZ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxw33LbGYTE481zSvfSfa5LItVrFFM8eh1Ghf88CLDXKgCsUPTU
-	SRx0SUcLMo9Pz/AIfGSm5e4fwtLvazpU6cJ4M+XgYYB+I8UR7hI74hjn9qMhFIY=
-X-Gm-Gg: ASbGncsGVOg5mp+PoQ2joIjUWluajnCDYy16xELRnDev3UTIR/AHuxGOQjktYknVIke
-	aJm3SR2LmVrab/r0UNKOrKhU6BKnNpL99xbboh09yLKNOvaXRnjh7aIXzhGymXDvjLkW82MNv+Q
-	3MRTKd/06Va3xSYi9qRxy2pUfeSvDvnpOV1hpY5oG9lkMN20tI82agpI0am6CX3DsSmCkjAEzjH
-	+w2TTSzx8t2rKSeHUNYV/XQIo3GPlWrOK9ILt531WPuCO/Av593J6gS9hTBMoDuf96P3RMY4Whr
-	BK6to7d1yWfnEfLEhdM7ynETBvItOQ==
-X-Google-Smtp-Source: AGHT+IHo3Mz1vKNcokkBbim1vP9RGO6dYA3VuUNg2gKiMYSRYvapHAAT5GEF83WyW8n11joAx/p95Q==
-X-Received: by 2002:a05:620a:6601:b0:7b6:c486:c4fc with SMTP id af79cd13be357-7bcd9727aa6mr3444940085a.4.1736799373040;
-        Mon, 13 Jan 2025 12:16:13 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7bce3516004sm525855085a.101.2025.01.13.12.16.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jan 2025 12:16:12 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1tXQr5-00000002HNX-1oNN;
-	Mon, 13 Jan 2025 16:16:11 -0400
-Date: Mon, 13 Jan 2025 16:16:11 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Joe Klein <joe.klein812@gmail.com>
-Cc: "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"leon@kernel.org" <leon@kernel.org>,
-	"zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-	"Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
-Subject: Re: [PATCH for-next v9 0/5] On-Demand Paging on SoftRoCE
-Message-ID: <20250113201611.GI26854@ziepe.ca>
-References: <20241220100936.2193541-1-matsuda-daisuke@fujitsu.com>
- <CAHjRaAeXCC+AAV+Ne0cJMpZJYxbD8ox28kp966wkdVJLJdSC_g@mail.gmail.com>
- <OS3PR01MB98654FDD5E833D1C409B9C2CE5022@OS3PR01MB9865.jpnprd01.prod.outlook.com>
- <OS3PR01MB9865F967A8BE67AE332FC926E5032@OS3PR01MB9865.jpnprd01.prod.outlook.com>
- <20250103150546.GD26854@ziepe.ca>
- <CAHjRaAfuTDGP9TKqBWVDE32t0JzE3jpL8WPBpO_iMhrgMS6MFQ@mail.gmail.com>
- <CAHjRaAd+x1DapbWu0eMXdFuVru5Jw8jzTHyXo2-+RSZYUK9vgg@mail.gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1736818774; x=1768354774;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=0cedPuJPQkStIGe+OXyB1F52+EDOiClOdRu6CBFc8ew=;
+  b=WUFS1kKx08w53QWvUM8u1Z75DHg3d3VMxWl/1Bq6I+AF1lwc7CnBvm5G
+   9TpPIwJsz8P/bRTdyQy54QvIPIXVgxSebFL1BEaenLLz8x/uUPvVxpf+D
+   S143HXX4DgXw+fUA57hCf4RciOAfESxcqwESW5XhRCK6j7slfnnB3NOtp
+   I=;
+X-IronPort-AV: E=Sophos;i="6.12,312,1728950400"; 
+   d="scan'208";a="458589578"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2025 01:39:28 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [10.0.7.35:58030]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.14.236:2525] with esmtp (Farcaster)
+ id 86aea7c8-dd91-44b2-aaf7-7a7eff52786e; Tue, 14 Jan 2025 01:39:28 +0000 (UTC)
+X-Farcaster-Flow-ID: 86aea7c8-dd91-44b2-aaf7-7a7eff52786e
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA001.ant.amazon.com (10.250.64.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
+ Tue, 14 Jan 2025 01:39:27 +0000
+Received: from 6c7e67c6786f.amazon.com (10.119.11.99) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
+ Tue, 14 Jan 2025 01:39:19 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <shaw.leon@gmail.com>
+CC: <alex.aring@gmail.com>, <andrew+netdev@lunn.ch>,
+	<b.a.t.m.a.n@lists.open-mesh.org>, <bpf@vger.kernel.org>,
+	<bridge@lists.linux.dev>, <davem@davemloft.net>, <donald.hunter@gmail.com>,
+	<dsahern@kernel.org>, <edumazet@google.com>, <herbert@gondor.apana.org.au>,
+	<horms@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+	<linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>, <linux-ppp@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<linux-wpan@vger.kernel.org>, <miquel.raynal@bootlin.com>,
+	<netdev@vger.kernel.org>, <osmocom-net-gprs@lists.osmocom.org>,
+	<pabeni@redhat.com>, <shuah@kernel.org>, <stefan@datenfreihafen.org>,
+	<steffen.klassert@secunet.com>, <wireguard@lists.zx2c4.com>
+Subject: Re: [PATCH net-next v8 01/11] rtnetlink: Lookup device in target netns when creating link
+Date: Tue, 14 Jan 2025 10:39:09 +0900
+Message-ID: <20250114013909.7102-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <20250113143719.7948-2-shaw.leon@gmail.com>
+References: <20250113143719.7948-2-shaw.leon@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHjRaAd+x1DapbWu0eMXdFuVru5Jw8jzTHyXo2-+RSZYUK9vgg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D045UWA004.ant.amazon.com (10.13.139.91) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-On Mon, Jan 13, 2025 at 02:15:27PM +0100, Joe Klein wrote:
-
-> > > > Possibly, there was a regression in libibverbs between v39.0-1 and v50.0-2build2.
-> > > > We need to take a closer look to resolve the malfunction of rxe on Ubuntu 24.04.
-> > >
-> > > That's distressing.
-> > >
-> > > > In conclusion, I believe there is nothing in my ODP patches that could cause
-> > > > the rxe driver to fail. I would appreciate any feedback on potential improvements.
-> > >
-> > > What am I supposed to do with this though?
-> > >
-> > > Joe, can you please answer Daisuke's questions on what problems you
-> > > observed and if you observe them without the ODP patches?
-> >
-> > Will make tests and let you know the result very soon.
+From: Xiao Liang <shaw.leon@gmail.com>
+Date: Mon, 13 Jan 2025 22:37:09 +0800
+> When creating link, lookup for existing device in target net namespace
+> instead of current one.
+> For example, two links created by:
 > 
-> Need time to complete the test scenario configurations.
+>   # ip link add dummy1 type dummy
+>   # ip link add netns ns1 dummy1 type dummy
 > 
-> We made tests again. Some memory errors are from RXE ODP.
-> The whole tests can not be complete with this patch set.
-> Without this patch set, all the tests can pass.
+> should have no conflict since they are in different namespaces.
+> 
+> Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
 
-Can you share your logs so that Daisuke can resolve whatever the
-problem is?
-
-Jason
+Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
 
