@@ -1,233 +1,151 @@
-Return-Path: <linux-rdma+bounces-6996-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6997-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C6E8A10002
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 05:50:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4154A10130
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 08:12:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF5D23A4D8F
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 04:50:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBF691887F24
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 07:12:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 226D8230D39;
-	Tue, 14 Jan 2025 04:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E8DB24334D;
+	Tue, 14 Jan 2025 07:12:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="COW1ZdIw"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="RCXLwQ2I"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
+Received: from out199-3.us.a.mail.aliyun.com (out199-3.us.a.mail.aliyun.com [47.90.199.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED9924023E;
-	Tue, 14 Jan 2025 04:49:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B948E224D6;
+	Tue, 14 Jan 2025 07:12:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.199.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736830201; cv=none; b=pbYde5fm7Ox4qq8hNdUlImXGPOvWXIOmYv6U7kwnARd1b2Z64xGzCCjxfDbVSjeBgzfX3aTxaEJyscGmXZUpiD3LM5sc74gUfr2FQiKztv3OzEuT8rquJs3YupVi8xWQdsb5xHtmm1vmf7Z2eigCSrjhRyNqAv1D1v3Qt0MsfZk=
+	t=1736838734; cv=none; b=hoy/XNOVy85KWqwlKbtTLfIFpca+3oY8s7gEsBXfoHEXDMSaDTtGCR6cnrsBshCuY/OnPzbP20X61IAA0zjb/+FvA6uTNh0XOJnvMGRyIw7a/89JF5GGhlsYBZrV6ukxdlhBW80lBqBaH8ikLm7n/CZof3OPvyh8KsG4w9El1KQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736830201; c=relaxed/simple;
-	bh=CG5ADQvDH2PcbnFujbCeqXAd7kbVHN7UAWyREHlgoEc=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cf03h3EbKqqkPku1QkeD4WG5PPBtMV2PLDcOxM/xtCoRtF/A00AbI1ril7/cgQvj1ec6x1Z0dxbk5lAQGy8oWdOUaAdeEZ9D8ddIfUQX2cp+a9Z+zCDDv+xAS6InI0Tuuj07gqwHShS3b5Qotx4ssy/LdsTeD1P+u3ZSGvvgAbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=COW1ZdIw; arc=none smtp.client-ip=52.119.213.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1736830201; x=1768366201;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=A4qSpa9PKTl3u7k1DQyLqfv8mgl5yR42K0bhyD7dYtE=;
-  b=COW1ZdIwZiklBml6Wt/rKHHhfhf0eL4SlXcS5jjqeHHLzX9kF+aJ6MLt
-   UHKkt6j6aRIzzo2r/7GrRfWU7vwdmVX7+L+ZtGXjUtMV8k7KRAb+2pFSg
-   WgRtxA6fzX2AAKW8eClhT1+Tk+4SEFJYAUeZ4LXBN96EqpoN6Fu4S+1nN
-   I=;
-X-IronPort-AV: E=Sophos;i="6.12,313,1728950400"; 
-   d="scan'208";a="57499934"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2025 04:49:55 +0000
-Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:22602]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.15.93:2525] with esmtp (Farcaster)
- id 7019b803-c524-49e9-8de0-4c37547d545c; Tue, 14 Jan 2025 04:49:53 +0000 (UTC)
-X-Farcaster-Flow-ID: 7019b803-c524-49e9-8de0-4c37547d545c
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
- Tue, 14 Jan 2025 04:49:53 +0000
-Received: from 6c7e67c6786f.amazon.com (10.119.11.99) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.39;
- Tue, 14 Jan 2025 04:49:44 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <shaw.leon@gmail.com>
-CC: <alex.aring@gmail.com>, <andrew+netdev@lunn.ch>,
-	<b.a.t.m.a.n@lists.open-mesh.org>, <bpf@vger.kernel.org>,
-	<bridge@lists.linux.dev>, <davem@davemloft.net>, <donald.hunter@gmail.com>,
-	<dsahern@kernel.org>, <edumazet@google.com>, <herbert@gondor.apana.org.au>,
-	<horms@kernel.org>, <kuba@kernel.org>, <kuniyu@amazon.com>,
-	<linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>, <linux-ppp@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<linux-wpan@vger.kernel.org>, <miquel.raynal@bootlin.com>,
-	<netdev@vger.kernel.org>, <osmocom-net-gprs@lists.osmocom.org>,
-	<pabeni@redhat.com>, <shuah@kernel.org>, <stefan@datenfreihafen.org>,
-	<steffen.klassert@secunet.com>, <wireguard@lists.zx2c4.com>
-Subject: Re: [PATCH net-next v8 06/11] net: ipv6: Use link netns in newlink() of rtnl_link_ops
-Date: Tue, 14 Jan 2025 13:49:35 +0900
-Message-ID: <20250114044935.26418-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20250113143719.7948-3-shaw.leon@gmail.com>
-References: <20250113143719.7948-3-shaw.leon@gmail.com>
+	s=arc-20240116; t=1736838734; c=relaxed/simple;
+	bh=/jTiEukBk4OXr0oz4YiAlGU6iQIdT0wI4GSysHcmIvg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CyrEKW0l69iMz0hjJwIHzpveqP3xVXXnmJNNvgdRrQlLfK9PNpKijpTPSC9S3aoCofJPxKuVyO7Q3ZDYdkrB2ggQgZ12jhw7O0SaNs5OXTpgunhDwWAZitIQ1bjfA19QTATGVm0GW0F60/dqU78gO+8vbsGlBEt6JM/JLxzAPgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=RCXLwQ2I; arc=none smtp.client-ip=47.90.199.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1736838711; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=g27TgMLSSWDA6rh7dbNBUqwtZ6V1tqrqcoJ1TbS5P1w=;
+	b=RCXLwQ2IOdQJjr2AfLeAMRLw0f01qDq72ivynUb1Ad9i/WKHtuXlxmZ1zcsN5atUBUFf5yooDhH6wmvjXYHIieb4iL7OJlAYfcLKuFyNIviDlkouEXibyWfctVUBo4chj+suWYsd04uGNXiP5KhTaK5vRblkZUJ2JC4pQcX2pGE=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WNeEgmT_1736838709 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 14 Jan 2025 15:11:49 +0800
+Date: Tue, 14 Jan 2025 15:11:49 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	pabeni@redhat.com, song@kernel.org, sdf@google.com,
+	haoluo@google.com, yhs@fb.com, edumazet@google.com,
+	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
+	guwen@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
+	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 4/5] libbpf: fix error when st-prefix_ops and
+ ops from differ btf
+Message-ID: <20250114071149.GA106114@j66a10360.sqa.eu95>
+References: <20241218024422.23423-1-alibuda@linux.alibaba.com>
+ <20241218024422.23423-5-alibuda@linux.alibaba.com>
+ <CAEf4Bzas7E4bSFnxiObJysf4hDv2AJVd4B4Q+me1wmGtdHVVbQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D033UWA004.ant.amazon.com (10.13.139.85) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+In-Reply-To: <CAEf4Bzas7E4bSFnxiObJysf4hDv2AJVd4B4Q+me1wmGtdHVVbQ@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-From: Xiao Liang <shaw.leon@gmail.com>
-Date: Mon, 13 Jan 2025 22:37:14 +0800
-> diff --git a/drivers/net/bonding/bond_netlink.c b/drivers/net/bonding/bond_netlink.c
-> index 2a6a424806aa..ac5e402c34bc 100644
-> --- a/drivers/net/bonding/bond_netlink.c
-> +++ b/drivers/net/bonding/bond_netlink.c
-> @@ -564,10 +564,12 @@ static int bond_changelink(struct net_device *bond_dev, struct nlattr *tb[],
->  	return 0;
->  }
->  
-> -static int bond_newlink(struct net *src_net, struct net_device *bond_dev,
-> -			struct nlattr *tb[], struct nlattr *data[],
-> +static int bond_newlink(struct net_device *bond_dev,
-> +			struct rtnl_newlink_params *params,
->  			struct netlink_ext_ack *extack)
->  {
-> +	struct nlattr **data = params->data;
-> +	struct nlattr **tb = params->tb;
->  	int err;
->  
->  	err = bond_changelink(bond_dev, tb, data, extack);
+On Fri, Jan 10, 2025 at 03:38:19PM -0800, Andrii Nakryiko wrote:
+> On Tue, Dec 17, 2024 at 6:44 PM D. Wythe <alibuda@linux.alibaba.com> wrote:
+> >
+> > When a struct_ops named xxx_ops was registered by a module, and
+> > it will be used in both built-in modules and the module itself,
+> > so that the btf_type of xxx_ops will be present in btf_vmlinux
+> > instead of in btf_mod, which means that the btf_type of
+> > bpf_struct_ops_xxx_ops and xxx_ops will not be in the same btf.
+> >
+> > Here are four possible case:
+> >
+> > +--------+-------------+-------------+---------------------------------+
+> > |        | st_opx_xxx  | xxx         |                                 |
+> > +--------+-------------+-------------+---------------------------------+
+> > | case 0 | btf_vmlinux | bft_vmlinux | be used and reg only in vmlinux |
+> > +--------+-------------+-------------+---------------------------------+
+> > | case 1 | btf_vmlinux | bpf_mod     | INVALID                         |
+> > +--------+-------------+-------------+---------------------------------+
+> > | case 2 | btf_mod     | btf_vmlinux | reg in mod but be used both in  |
+> > |        |             |             | vmlinux and mod.                |
+> > +--------+-------------+-------------+---------------------------------+
+> > | case 3 | btf_mod     | btf_mod     | be used and reg only in mod     |
+> > +--------+-------------+-------------+---------------------------------+
+> >
+> > At present, cases 0, 1, and 3 can be correctly identified, because
+> > st_ops_xxx is searched from the same btf with xxx. In order to
+> > handle case 2 correctly without affecting other cases, we cannot simply
+> > change the search method for st_ops_xxx from find_btf_by_prefix_kind()
+> > to find_ksym_btf_id(), because in this way, case 1 will not be
+> > recognized anymore.
+> >
+> > To address this issue, if st_ops_xxx cannot be found in the btf with xxx
+> > and mod_btf does not exist, do find_ksym_btf_id() again to
+> > avoid such issue.
+> > +               }
+> 
+> purely from the coding perspective, this is unnecessarily nested and
+> convoluted. Wouldn't this work the same but be less nested:
+> 
+> kern_vtype_id = btf__find_by_name_kind(btf, stname, BTF_KIND_STRUCT);
+> if (kern_vtype_id == -ENOENT && !*mod_btf)
+>     kern_vtype_id = find_ksym_btf_id(...);
+> if (kern_vtype_id < 0) {
+>     pr_warn(...);
+>     return kern_vtype_id;
+> }
 
-Note that IFLA_BOND_ACTIVE_SLAVE uses dev_net(dev) for
-__dev_get_by_index().
+Hi Andrii,
 
+It's indeed more concise with your code. Thanks very much for your suggestion.
+And Martin has provided us with another suggestion to address this issue,
+and according to his plan, there shall be no such complex conditional
+checks too.
 
-[...]
-> diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
-> index fed4fe2a4748..0c496aa1f706 100644
-> --- a/drivers/net/macvlan.c
-> +++ b/drivers/net/macvlan.c
-> @@ -1565,11 +1565,12 @@ int macvlan_common_newlink(struct net *src_net, struct net_device *dev,
->  }
->  EXPORT_SYMBOL_GPL(macvlan_common_newlink);
->  
-> -static int macvlan_newlink(struct net *src_net, struct net_device *dev,
-> -			   struct nlattr *tb[], struct nlattr *data[],
-> +static int macvlan_newlink(struct net_device *dev,
-> +			   struct rtnl_newlink_params *params,
->  			   struct netlink_ext_ack *extack)
->  {
-> -	return macvlan_common_newlink(src_net, dev, tb, data, extack);
-> +	return macvlan_common_newlink(params->net, dev, params->tb,
-> +				      params->data, extack);
+Anyway, I will keep my code concise in the next version. Thank you for
+the reminder.
 
-Pass params as is as you did for ipvlan_link_new().
+Best wishes,
+D. Wythe
 
-Same for macvtap_newlink().
-
-
-[...]
-> diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-> index 1e1b00756be7..1e9eadc77da2 100644
-> --- a/drivers/net/netkit.c
-> +++ b/drivers/net/netkit.c
-> @@ -327,10 +327,13 @@ static int netkit_validate(struct nlattr *tb[], struct nlattr *data[],
->  
->  static struct rtnl_link_ops netkit_link_ops;
->  
-> -static int netkit_new_link(struct net *peer_net, struct net_device *dev,
-> -			   struct nlattr *tb[], struct nlattr *data[],
-> +static int netkit_new_link(struct net_device *dev,
-> +			   struct rtnl_newlink_params *params,
->  			   struct netlink_ext_ack *extack)
->  {
-> +	struct nlattr **data = params->data;
-> +	struct net *peer_net = params->net;
-> +	struct nlattr **tb = params->tb;
-
-nit: please keep the reverse xmas tree order.
-
-
->  	struct nlattr *peer_tb[IFLA_MAX + 1], **tbp = tb, *attr;
-
-you can define *tbp here and initialise it later.
-
-  	struct nlattr *peer_tb[IFLA_MAX + 1], **tbp, *attr;
-
->  	enum netkit_action policy_prim = NETKIT_PASS;
->  	enum netkit_action policy_peer = NETKIT_PASS;
-
-
-[...]
-> @@ -1064,6 +1067,11 @@ static void wwan_create_default_link(struct wwan_device *wwandev,
->  	struct net_device *dev;
->  	struct nlmsghdr *nlh;
->  	struct sk_buff *msg;
-> +	struct rtnl_newlink_params params = {
-> +		.net = &init_net,
-> +		.tb = tb,
-> +		.data = data,
-> +	};
-
-nit: Reverse xmas tree order
-
-
-[...]
-> diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-> index ec98349b9620..7ff5e96f6ba7 100644
-> --- a/net/core/rtnetlink.c
-> +++ b/net/core/rtnetlink.c
-> @@ -3766,6 +3766,14 @@ static int rtnl_newlink_create(struct sk_buff *skb, struct ifinfomsg *ifm,
->  	struct net_device *dev;
->  	char ifname[IFNAMSIZ];
->  	int err;
-> +	struct rtnl_newlink_params params = {
-
-nit: Reverse xmas tree order
-
-
-> +		.net = net,
-
-Use sock_net(skb->sk) directly here and remove net defined above,
-which is no longer used in this function.
-
----8<---
-        unsigned char name_assign_type = NET_NAME_USER;
-        struct rtnl_newlink_params params = {
-                .net = sock_net(skb->sk),
-                .src_net = net,
-                .link_net = link_net,
-                .peer_net = peer_net,
-                .tb = tb,
-                .data = data,
-        };
-        u32 portid = NETLINK_CB(skb).portid;
----8<---
-
-
-[...]
-> @@ -1698,6 +1702,10 @@ struct net_device *gretap_fb_dev_create(struct net *net, const char *name,
->  	LIST_HEAD(list_kill);
->  	struct ip_tunnel *t;
->  	int err;
-> +	struct rtnl_newlink_params params = {
-> +		.net = net,
-> +		.tb = tb,
-> +	};
->  
->  	memset(&tb, 0, sizeof(tb));
-
-nit: Reverse xmas tree
+> 
+> 
+> >         }
+> >         kern_vtype = btf__type_by_id(btf, kern_vtype_id);
+> >
+> > @@ -1046,8 +1055,8 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
+> >                         break;
+> >         }
+> >         if (i == btf_vlen(kern_vtype)) {
+> > -               pr_warn("struct_ops init_kern: struct %s data is not found in struct %s%s\n",
+> > -                       tname, STRUCT_OPS_VALUE_PREFIX, tname);
+> > +               pr_warn("struct_ops init_kern: struct %s data is not found in struct %s\n",
+> > +                       tname, stname);
+> >                 return -EINVAL;
+> >         }
+> >
+> > --
+> > 2.45.0
+> >
 
