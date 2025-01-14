@@ -1,103 +1,85 @@
-Return-Path: <linux-rdma+bounces-7006-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7007-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E871A1054A
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 12:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3397AA1054B
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 12:26:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF19B3A7172
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 11:25:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E429A3A41B5
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 11:26:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02C32309AC;
-	Tue, 14 Jan 2025 11:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6921D231C9A;
+	Tue, 14 Jan 2025 11:26:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="brk8G+6k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cvpaSlay"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B041620F97C
-	for <linux-rdma@vger.kernel.org>; Tue, 14 Jan 2025 11:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A0A220F97C
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Jan 2025 11:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736853961; cv=none; b=gXvE4Fnm/Av6PNdQW+5Q/931ayQFTv1f+yYWTuGk2LcWKZTLj0duxtCoaixceUmwMeX1HEQvaNyDqUj+SF0KGDjpjyRoDFgzc6a51MXbRNz+qCSgC6a+o9fDDkSsgQRp7nmVQB2gGlzVhKs5LPMzJty3izNQgZWpDuo4qXmtSHU=
+	t=1736853973; cv=none; b=OP1DHmIyAD9dEv9Ckrv6jB8bZMUTUhQ04hqU4Iyx3Ab2Efb5ZsVCBxFWeVPY0o2PULTgksz+C6Wt/71lLHa2GetlVs7GLsZwZw2HNTSrK+RrEbEEqaMcjrctQ2aLi4tN55nODh+ojUZrEM71ijhx4ycvnONNPX9XQQZOg1xSl9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736853961; c=relaxed/simple;
-	bh=y+3QYDRo0AS26gA4QeRQLeZxwT2FTH73LSbLR4ePQrI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ODqFypiAKy3cvBjBmeZV6ePpeDM+u//rSli3LzFfJwDToUy65PTarw1bKWeYTf6R/gkY2O827hMspoz9oktoPsfqHxYDuaXo5No2+Ukvl2Bf+lV85D1SocTNYYe7hLwaYB8MtVqiB6NI83vK7wBqnVw29rerrVJ2Qa/+BhC6UYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=brk8G+6k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E250C4CEDD;
-	Tue, 14 Jan 2025 11:25:59 +0000 (UTC)
+	s=arc-20240116; t=1736853973; c=relaxed/simple;
+	bh=hJ2kTpoGJlKsLJAS4cGRwMUtYNQ1Alg3bL2KAMnbX0A=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=oUroIR7V89P3okCDtjyXtPggQbwBOUEHSSbk3+hVBdHFMvEelsS/K8NxU7EgUVUk1iEeAEqNT9YOIJcX5oYKsvGkOk/59qCawhGtOW53GAsfLp0+7IQzlAzjHL90qGuT0kdhFgpkxoS2+Y4sc2+BKLJMwQeQc/hFJDl4OQfqeSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cvpaSlay; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18588C4CEDD;
+	Tue, 14 Jan 2025 11:26:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736853961;
-	bh=y+3QYDRo0AS26gA4QeRQLeZxwT2FTH73LSbLR4ePQrI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=brk8G+6kQrIDJLqkH4vaMiaSQCtv1EJ+/1Fy+kUyS8qBQgtVkIQX2XFZ+DIu0DJsp
-	 bF7r4nLB1B1pVOa5C03XtY3Cb035f6HVuzVW8H/vIBXqvPPHmw4gKiB9uGAsYgGhSU
-	 v8trNFakQDd2lPeYVMhAWLHqQpiqAQjyosSIkhEwcFxxFDXi1+qHEMJIm85JI6lEE3
-	 irjeA7n+5Iy+qgM7xZFaODRLHmf41ZhUAGrqDkHrFoaVORnOeVeQ4wEg0WmPVOyg9H
-	 TeYsZH+YtlyEmxhUTYF9SnrVQeBYlAKjxL2YeiXGgGoecOfRMddwKefCoYZ37+QnyH
-	 p67HDNoO4a0UA==
-Date: Tue, 14 Jan 2025 13:25:55 +0200
+	s=k20201202; t=1736853972;
+	bh=hJ2kTpoGJlKsLJAS4cGRwMUtYNQ1Alg3bL2KAMnbX0A=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=cvpaSlaytt5m+THD5KEhpNAT0IYdTdkMcJ/CxoR66XfFnLFnAh4XFjdr8LJyItt7+
+	 GamkRFTL7onczFckeXVI95w9gcN2yI8UIeOvm2PncwVcT8h7e3McBArwv8h96dE+1m
+	 euEBPJNuJ7AC9wYNXixPYMUerA4BjRUTBveuzdCpq7oKSMYD7TnC/4rFvacw/KReA8
+	 ao2VZegNBi4Ccu/Qsu/0KREUr8x+Tmh11NlTVoBAI6HFDd+/MkGmSuOL1lW3G8qcbk
+	 yvc6mKQAe7zztjU0qqcFUsqucZYc5Xc3yDFXHnRP2Sz7p5qkrwqvYHiOPFbBF3i6gJ
+	 YADgqeStufo7w==
 From: Leon Romanovsky <leon@kernel.org>
-To: Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com, kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [PATCH for-next 2/2] RDMA/bnxt_re: Allocate dev_attr information
- dynamically
-Message-ID: <20250114112555.GG3146852@unreal>
+To: jgg@ziepe.ca, Selvin Xavier <selvin.xavier@broadcom.com>
+Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
+ kalesh-anakkur.purayil@broadcom.com
+In-Reply-To: <1736446693-6692-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1736446693-6692-1-git-send-email-selvin.xavier@broadcom.com>
- <1736446693-6692-3-git-send-email-selvin.xavier@broadcom.com>
+Subject: Re: [PATCH for-next 0/2] RDMA/bnxt_re: Driver update
+Message-Id: <173685396901.1201524.8407787627052331408.b4-ty@kernel.org>
+Date: Tue, 14 Jan 2025 06:26:09 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1736446693-6692-3-git-send-email-selvin.xavier@broadcom.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-On Thu, Jan 09, 2025 at 10:18:13AM -0800, Selvin Xavier wrote:
-> From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+
+On Thu, 09 Jan 2025 10:18:11 -0800, Selvin Xavier wrote:
+> Generic updates to bnxt_re driver. Pass the info that indicates
+> the context of the caller in ulp_irq_stop. Also, code reorganization
+> to optimize the device data structure.
 > 
-> In order to optimize the size of driver private structure,
-> the memory for dev_attr is allocated dynamically during the
-> chip context initialization. In order to make certain runtime
-> decisions, store dev_attr in the qplib_res structure.
+> This series is created on top of the changes from Kalesh
+> https://patchwork.kernel.org/project/linux-rdma/list/?series=922731
 > 
-> Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> ---
->  drivers/infiniband/hw/bnxt_re/bnxt_re.h     |  2 +-
->  drivers/infiniband/hw/bnxt_re/hw_counters.c |  2 +-
->  drivers/infiniband/hw/bnxt_re/ib_verbs.c    | 38 ++++++++++++++---------------
->  drivers/infiniband/hw/bnxt_re/main.c        | 36 +++++++++++++++++----------
->  drivers/infiniband/hw/bnxt_re/qplib_res.c   |  7 +++---
->  drivers/infiniband/hw/bnxt_re/qplib_res.h   |  4 +--
->  drivers/infiniband/hw/bnxt_re/qplib_sp.c    |  4 +--
->  drivers/infiniband/hw/bnxt_re/qplib_sp.h    |  3 +--
->  8 files changed, 51 insertions(+), 45 deletions(-)
+> [...]
 
-<...>
+Applied, thanks!
 
-> index 33956fc..7c7057b 100644
-> --- a/drivers/infiniband/hw/bnxt_re/main.c
-> +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> @@ -148,6 +148,10 @@ static void bnxt_re_destroy_chip_ctx(struct bnxt_re_dev *rdev)
->  
->  	if (!rdev->chip_ctx)
->  		return;
-> +
-> +	kfree(rdev->dev_attr);
-> +	rdev->dev_attr = NULL;
-> +
+[1/2] RDMA/bnxt_re: Pass the context for ulp_irq_stop
+      https://git.kernel.org/rdma/rdma/c/57e6464c221c7f
+[2/2] RDMA/bnxt_re: Allocate dev_attr information dynamically
+      https://git.kernel.org/rdma/rdma/c/9264cd6aa8f194
 
-I'm taking this patch, but please let's stop this practice of setting NULL
-for the pointers which are not going to be reused. Such assignment hides bugs.
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
 
-Thanks
 
