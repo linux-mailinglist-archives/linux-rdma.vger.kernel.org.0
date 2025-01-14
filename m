@@ -1,169 +1,162 @@
-Return-Path: <linux-rdma+bounces-7002-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7003-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B833DA102E6
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 10:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48E54A102E9
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 10:22:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5795F7A26FA
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 09:21:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C08617A150E
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 09:22:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80BAE1D555;
-	Tue, 14 Jan 2025 09:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6011284A5A;
+	Tue, 14 Jan 2025 09:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hw4oft+r"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RdMGOuqm"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392E322DC20
-	for <linux-rdma@vger.kernel.org>; Tue, 14 Jan 2025 09:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF7E191F89
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Jan 2025 09:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736846491; cv=none; b=GCH7fqj7KeHHrBp/ngZeMlJs892V3KoSQTtObi0Tm0OAjwpXK4SU004PCqn7ZnwZAHklP7eeY3qS/34KXna3FmOkxvOjsYP1xxbiBoBPbglde3avJD/rVMtKhjR2jrwCgzyodL+tDu5+U8GJT2XQzdqDdTqoWU0Or82OYdZhOo8=
+	t=1736846531; cv=none; b=LENp1g/Jr1UMLZ2z5S61dA43l705MhxfpELZp7BYP1vONRWSKbSc8IiwzTyG2CltVrQTF1m//J/nJ3G1VyknqAKdsara1sT8R9ekP5Ho+0fD673QI3q0Obil9++V2Td5YFBwmL+YPXdyKQ2y7Gwqlq1gBlbEOXbDNUu4I2m5Hjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736846491; c=relaxed/simple;
-	bh=/K0m5VdAkbzZYsL+cb6FOHaOxoTYdyoS7HV+CYZWeVc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kmKMYZ9Q1+CcQBMOg8CxwlI2dfuk4MypWu61hvnrKpODGUEANq955961+aRlvTcrwhvQWWo/szdtlrLxTmoAKBK6OE6LpOdbutr/4DEKMVj5xpPEjOzV32nC60OO+SpV0Ks9ywyvDfmEnJ0anrayebgDmwUEn0gYK5BPuhdNaJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hw4oft+r; arc=none smtp.client-ip=91.218.175.186
+	s=arc-20240116; t=1736846531; c=relaxed/simple;
+	bh=NgzEvaMpanjjQLiCcx//8rUxRw36miyOFV1dPjEJQNY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=m6v8oCn0W1qFNP4I/RDYR0a1D4aAcusD8mDbgX5zP3SRHT5w4JLikrnYUqkhtY835DkH/zd1nduoONoG2sHdGGtt+hETPemwmR82farg+OfDXG7N9Bs6MRzyFFotWkB7KCmB26Zfy+y4AAxQLuxe+ZK8CbLrdVX4QIgXNW+FUOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RdMGOuqm; arc=none smtp.client-ip=91.218.175.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0fb49f1e-e8a8-42fb-b448-2e168a8b2940@linux.dev>
+Message-ID: <88445978-0523-477e-9713-05b563be847a@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1736846481;
+	t=1736846522;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nWWuigCdNRgvbmlsFtJEBeCnjmRO+gvmXBVpZunag0U=;
-	b=hw4oft+rdBR6QyOSrs1hI4/Z70G4UE/VEX8Fg/gJtqTkwBpH3+VrCXse4XmudrBLCHKkvr
-	47M3GFNWXPDnuaenBooHAzKwJDQJvEiEH9p/JUilvohxgg6vW9U0ZmRNtow5AIAg/49qka
-	K5C2qDhqxHqb/6awOl63MxMcDP1B24M=
-Date: Tue, 14 Jan 2025 10:21:19 +0100
+	bh=8rQ/LkhxVtGRY2V5lPEE50vmclopEShRIzl5QLQgcGU=;
+	b=RdMGOuqmhMMjLFTwyjxI8LQxtMyBNUQFOU+MeaAHmS4AwSsB6vwfaCb8FYQglNIX21W5w/
+	ACU8XZRcsUF9AS5+O8if+N2GeQ4q/nEXLCihnC8whcyPW9h97kQ7iu8dnI6ydJVvx2jE9e
+	oA94Grz9b7WT5BimfFCVmLTf/Yg+2nc=
+Date: Tue, 14 Jan 2025 10:22:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] RDMA/rxe: Fix the warning "__rxe_cleanup+0x12c/0x170
- [rdma_rxe]"
-To: Joe Klein <joe.klein812@gmail.com>
-Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
- linux-rdma@vger.kernel.org
-References: <20250110160927.55014-1-yanjun.zhu@linux.dev>
- <CAHjRaAeCAUw3WGjKxvFqT_5XCTut-LbnrTKgPpLshn1jmH50Pg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] RDMA/rxe: Change the return type from int to bool
+To: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
+ "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>, "jgg@ziepe.ca"
+ <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20250111102758.308502-1-yanjun.zhu@linux.dev>
+ <947653a5-5cca-42f6-a85c-f74773f2148a@fujitsu.com>
 Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <CAHjRaAeCAUw3WGjKxvFqT_5XCTut-LbnrTKgPpLshn1jmH50Pg@mail.gmail.com>
+In-Reply-To: <947653a5-5cca-42f6-a85c-f74773f2148a@fujitsu.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-On 13.01.25 14:28, Joe Klein wrote:
-> On Fri, Jan 10, 2025 at 5:09 PM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+On 13.01.25 01:53, Zhijian Li (Fujitsu) wrote:
+> 
+> 
+> On 11/01/2025 18:27, Zhu Yanjun wrote:
+>> The return type of the functions queue_full and queue_empty should be
+>> bool.
 >>
->> The Call Trace is as below:
->> "
->>    <TASK>
->>    ? show_regs.cold+0x1a/0x1f
->>    ? __rxe_cleanup+0x12c/0x170 [rdma_rxe]
->>    ? __warn+0x84/0xd0
->>    ? __rxe_cleanup+0x12c/0x170 [rdma_rxe]
->>    ? report_bug+0x105/0x180
->>    ? handle_bug+0x46/0x80
->>    ? exc_invalid_op+0x19/0x70
->>    ? asm_exc_invalid_op+0x1b/0x20
->>    ? __rxe_cleanup+0x12c/0x170 [rdma_rxe]
->>    ? __rxe_cleanup+0x124/0x170 [rdma_rxe]
->>    rxe_destroy_qp.cold+0x24/0x29 [rdma_rxe]
->>    ib_destroy_qp_user+0x118/0x190 [ib_core]
->>    rdma_destroy_qp.cold+0x43/0x5e [rdma_cm]
->>    rtrs_cq_qp_destroy.cold+0x1d/0x2b [rtrs_core]
->>    rtrs_srv_close_work.cold+0x1b/0x31 [rtrs_server]
->>    process_one_work+0x21d/0x3f0
->>    worker_thread+0x4a/0x3c0
->>    ? process_one_work+0x3f0/0x3f0
->>    kthread+0xf0/0x120
->>    ? kthread_complete_and_exit+0x20/0x20
->>    ret_from_fork+0x22/0x30
->>    </TASK>
->> "
->> When too many rdma resources are allocated, rxe needs more time to
->> handle these rdma resources. Sometimes with the current timeout, rxe
->> can not release the rdma resources correctly.
+>> No functional changes.
 >>
->> Compared with other rdma drivers, a bigger timeout is used.
->>
->> Fixes: 215d0a755e1b ("RDMA/rxe: Stop lookup of partially built objects")
+>> Fixes: 8700e3e7c485 ("Soft RoCE driver")
 >> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 > 
-> We tested this patch. All the tests can pass with this patch.
+> Looks good to me
 
-
-Thanks a lot. Appreciate your testing.
+Thanks for your code review.
 
 Zhu Yanjun
 
 > 
-> Tested-by: Joe Klein <joe.klein812@gmail.com>
+> Reviewed-by: Li Zhijian <lizhijian@fujitsu.com>
+> 
 > 
 >> ---
->>   drivers/infiniband/sw/rxe/rxe_pool.c | 11 +++++------
->>   1 file changed, 5 insertions(+), 6 deletions(-)
+>>    drivers/infiniband/sw/rxe/rxe_cq.c    | 2 +-
+>>    drivers/infiniband/sw/rxe/rxe_queue.h | 4 ++--
+>>    drivers/infiniband/sw/rxe/rxe_verbs.c | 6 +++---
+>>    3 files changed, 6 insertions(+), 6 deletions(-)
 >>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
->> index 67567d62195e..d9cb682fd71f 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
->> @@ -178,7 +178,6 @@ int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
->>   {
->>          struct rxe_pool *pool = elem->pool;
->>          struct xarray *xa = &pool->xa;
->> -       static int timeout = RXE_POOL_TIMEOUT;
->>          int ret, err = 0;
->>          void *xa_ret;
->>
->> @@ -202,19 +201,19 @@ int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
->>           * return to rdma-core
->>           */
->>          if (sleepable) {
->> -               if (!completion_done(&elem->complete) && timeout) {
->> +               if (!completion_done(&elem->complete)) {
->>                          ret = wait_for_completion_timeout(&elem->complete,
->> -                                       timeout);
->> +                                       msecs_to_jiffies(50000));
->>
->>                          /* Shouldn't happen. There are still references to
->>                           * the object but, rather than deadlock, free the
->>                           * object or pass back to rdma-core.
->>                           */
->>                          if (WARN_ON(!ret))
->> -                               err = -EINVAL;
->> +                               err = -ETIMEDOUT;
->>                  }
->>          } else {
->> -               unsigned long until = jiffies + timeout;
->> +               unsigned long until = jiffies + RXE_POOL_TIMEOUT;
->>
->>                  /* AH objects are unique in that the destroy_ah verb
->>                   * can be called in atomic context. This delay
->> @@ -226,7 +225,7 @@ int __rxe_cleanup(struct rxe_pool_elem *elem, bool sleepable)
->>                          mdelay(1);
->>
->>                  if (WARN_ON(!completion_done(&elem->complete)))
->> -                       err = -EINVAL;
->> +                       err = -ETIMEDOUT;
->>          }
->>
->>          if (pool->cleanup)
->> --
->> 2.34.1
->>
->>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
+>> index fec87c9030ab..a2df55e13ea4 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_cq.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_cq.c
+>> @@ -88,7 +88,7 @@ int rxe_cq_resize_queue(struct rxe_cq *cq, int cqe,
+>>    int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+>>    {
+>>    	struct ib_event ev;
+>> -	int full;
+>> +	bool full;
+>>    	void *addr;
+>>    	unsigned long flags;
+>>    
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_queue.h b/drivers/infiniband/sw/rxe/rxe_queue.h
+>> index c711cb98b949..597e3da469a1 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_queue.h
+>> +++ b/drivers/infiniband/sw/rxe/rxe_queue.h
+>> @@ -151,7 +151,7 @@ static inline u32 queue_get_consumer(const struct rxe_queue *q,
+>>    	return cons;
+>>    }
+>>    
+>> -static inline int queue_empty(struct rxe_queue *q, enum queue_type type)
+>> +static inline bool queue_empty(struct rxe_queue *q, enum queue_type type)
+>>    {
+>>    	u32 prod = queue_get_producer(q, type);
+>>    	u32 cons = queue_get_consumer(q, type);
+>> @@ -159,7 +159,7 @@ static inline int queue_empty(struct rxe_queue *q, enum queue_type type)
+>>    	return ((prod - cons) & q->index_mask) == 0;
+>>    }
+>>    
+>> -static inline int queue_full(struct rxe_queue *q, enum queue_type type)
+>> +static inline bool queue_full(struct rxe_queue *q, enum queue_type type)
+>>    {
+>>    	u32 prod = queue_get_producer(q, type);
+>>    	u32 cons = queue_get_consumer(q, type);
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+>> index 8a5fc20fd186..c88140d896c5 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+>> @@ -870,7 +870,7 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr)
+>>    	struct rxe_send_wqe *send_wqe;
+>>    	unsigned int mask;
+>>    	unsigned int length;
+>> -	int full;
+>> +	bool full;
+>>    
+>>    	err = validate_send_wr(qp, ibwr, &mask, &length);
+>>    	if (err)
+>> @@ -960,7 +960,7 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
+>>    	unsigned long length;
+>>    	struct rxe_recv_wqe *recv_wqe;
+>>    	int num_sge = ibwr->num_sge;
+>> -	int full;
+>> +	bool full;
+>>    	int err;
+>>    
+>>    	full = queue_full(rq->queue, QUEUE_TYPE_FROM_ULP);
+>> @@ -1185,7 +1185,7 @@ static int rxe_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags)
+>>    {
+>>    	struct rxe_cq *cq = to_rcq(ibcq);
+>>    	int ret = 0;
+>> -	int empty;
+>> +	bool empty;
+>>    	unsigned long irq_flags;
+>>    
+>>    	spin_lock_irqsave(&cq->cq_lock, irq_flags);
 
 
