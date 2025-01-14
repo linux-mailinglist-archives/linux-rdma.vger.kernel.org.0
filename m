@@ -1,151 +1,141 @@
-Return-Path: <linux-rdma+bounces-6997-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-6998-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4154A10130
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 08:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA097A10234
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 09:39:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBF691887F24
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 07:12:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7F0718854B1
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2025 08:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E8DB24334D;
-	Tue, 14 Jan 2025 07:12:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C309284A64;
+	Tue, 14 Jan 2025 08:38:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="RCXLwQ2I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ssv9xXhO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out199-3.us.a.mail.aliyun.com (out199-3.us.a.mail.aliyun.com [47.90.199.3])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B948E224D6;
-	Tue, 14 Jan 2025 07:12:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.199.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA6AC1CDA19;
+	Tue, 14 Jan 2025 08:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736838734; cv=none; b=hoy/XNOVy85KWqwlKbtTLfIFpca+3oY8s7gEsBXfoHEXDMSaDTtGCR6cnrsBshCuY/OnPzbP20X61IAA0zjb/+FvA6uTNh0XOJnvMGRyIw7a/89JF5GGhlsYBZrV6ukxdlhBW80lBqBaH8ikLm7n/CZof3OPvyh8KsG4w9El1KQ=
+	t=1736843935; cv=none; b=rGW0xy4ucJRNbPK8F2Q6NLC1o0vXaBjGi+8zLPfInfiphyUSYkohtEoGf5ZEreLPlqH/nSQaYFUyzF76LWwwVxrM7kmilqh1OewoZL17X7vr2Ll7wkzFIoP+EPrQu5+k9h1wnRC5pSVi7JpQstPGOPY/VY04m0XDr69JmnsVm/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736838734; c=relaxed/simple;
-	bh=/jTiEukBk4OXr0oz4YiAlGU6iQIdT0wI4GSysHcmIvg=;
+	s=arc-20240116; t=1736843935; c=relaxed/simple;
+	bh=WCmlIJb/eJ3RtRwBL0vbXX0Y9UrynyAEdph0c+wowPY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CyrEKW0l69iMz0hjJwIHzpveqP3xVXXnmJNNvgdRrQlLfK9PNpKijpTPSC9S3aoCofJPxKuVyO7Q3ZDYdkrB2ggQgZ12jhw7O0SaNs5OXTpgunhDwWAZitIQ1bjfA19QTATGVm0GW0F60/dqU78gO+8vbsGlBEt6JM/JLxzAPgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=RCXLwQ2I; arc=none smtp.client-ip=47.90.199.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1736838711; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=g27TgMLSSWDA6rh7dbNBUqwtZ6V1tqrqcoJ1TbS5P1w=;
-	b=RCXLwQ2IOdQJjr2AfLeAMRLw0f01qDq72ivynUb1Ad9i/WKHtuXlxmZ1zcsN5atUBUFf5yooDhH6wmvjXYHIieb4iL7OJlAYfcLKuFyNIviDlkouEXibyWfctVUBo4chj+suWYsd04uGNXiP5KhTaK5vRblkZUJ2JC4pQcX2pGE=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WNeEgmT_1736838709 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 14 Jan 2025 15:11:49 +0800
-Date: Tue, 14 Jan 2025 15:11:49 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	pabeni@redhat.com, song@kernel.org, sdf@google.com,
-	haoluo@google.com, yhs@fb.com, edumazet@google.com,
-	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-	guwen@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
-	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 4/5] libbpf: fix error when st-prefix_ops and
- ops from differ btf
-Message-ID: <20250114071149.GA106114@j66a10360.sqa.eu95>
-References: <20241218024422.23423-1-alibuda@linux.alibaba.com>
- <20241218024422.23423-5-alibuda@linux.alibaba.com>
- <CAEf4Bzas7E4bSFnxiObJysf4hDv2AJVd4B4Q+me1wmGtdHVVbQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fL0Xr8X8zyI0a/u3GvEX/o7PP+kalNtm0XPaSBemICoiVh//aP7oDh2W5WYv0HRABVFLgIsdrZt9cUkeFUdE15u2yBvZZnN19mVpkfITi/+G5LM7yni7nopqQ5zLT9Y4ta4RCDplBBsMtshG982cQ9fk3SVe/7t3FTayZFff5fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ssv9xXhO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3272C4CEDD;
+	Tue, 14 Jan 2025 08:38:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736843934;
+	bh=WCmlIJb/eJ3RtRwBL0vbXX0Y9UrynyAEdph0c+wowPY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ssv9xXhOL7JbMMQrzlaq27YWcIfBrJoOCeudEXG9TZo+CTwB4dvd5GSjmpavw7e45
+	 mnFmWBsl8OxWd53GB8Ai3qRopj9qNOYzrIKnjN918usYV953p8Z71j8T9h8bRRgd80
+	 mbGV/Q9H0WnXVRuMYHxZFQGgigZ6wJf8UrCX5GqCfJBdnZINfpgPJQrTxLzhlJg07Y
+	 BIQWvXINHA2mvOIkrZyZDtdpZqKLm7qpvrTk+kx7XKDDXEu0pCnY7dzHvA1pZbR8yv
+	 o9iPi8YszEl9iejfRQW/qe5KSfvou9DSiPIxxOEteYKg009tI7JHlqlu+nZukZHN0U
+	 oaCRxAZ2exYjA==
+Date: Tue, 14 Jan 2025 10:38:47 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+	Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v5 00/17] Provide a new two step DMA mapping API
+Message-ID: <20250114083847.GE3146852@unreal>
+References: <cover.1734436840.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4Bzas7E4bSFnxiObJysf4hDv2AJVd4B4Q+me1wmGtdHVVbQ@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <cover.1734436840.git.leon@kernel.org>
 
-On Fri, Jan 10, 2025 at 03:38:19PM -0800, Andrii Nakryiko wrote:
-> On Tue, Dec 17, 2024 at 6:44 PM D. Wythe <alibuda@linux.alibaba.com> wrote:
-> >
-> > When a struct_ops named xxx_ops was registered by a module, and
-> > it will be used in both built-in modules and the module itself,
-> > so that the btf_type of xxx_ops will be present in btf_vmlinux
-> > instead of in btf_mod, which means that the btf_type of
-> > bpf_struct_ops_xxx_ops and xxx_ops will not be in the same btf.
-> >
-> > Here are four possible case:
-> >
-> > +--------+-------------+-------------+---------------------------------+
-> > |        | st_opx_xxx  | xxx         |                                 |
-> > +--------+-------------+-------------+---------------------------------+
-> > | case 0 | btf_vmlinux | bft_vmlinux | be used and reg only in vmlinux |
-> > +--------+-------------+-------------+---------------------------------+
-> > | case 1 | btf_vmlinux | bpf_mod     | INVALID                         |
-> > +--------+-------------+-------------+---------------------------------+
-> > | case 2 | btf_mod     | btf_vmlinux | reg in mod but be used both in  |
-> > |        |             |             | vmlinux and mod.                |
-> > +--------+-------------+-------------+---------------------------------+
-> > | case 3 | btf_mod     | btf_mod     | be used and reg only in mod     |
-> > +--------+-------------+-------------+---------------------------------+
-> >
-> > At present, cases 0, 1, and 3 can be correctly identified, because
-> > st_ops_xxx is searched from the same btf with xxx. In order to
-> > handle case 2 correctly without affecting other cases, we cannot simply
-> > change the search method for st_ops_xxx from find_btf_by_prefix_kind()
-> > to find_ksym_btf_id(), because in this way, case 1 will not be
-> > recognized anymore.
-> >
-> > To address this issue, if st_ops_xxx cannot be found in the btf with xxx
-> > and mod_btf does not exist, do find_ksym_btf_id() again to
-> > avoid such issue.
-> > +               }
+On Tue, Dec 17, 2024 at 03:00:18PM +0200, Leon Romanovsky wrote:
+> Changelog:
+
+<...>
+
+> Christoph Hellwig (6):
+>   PCI/P2PDMA: Refactor the p2pdma mapping helpers
+>   dma-mapping: move the PCI P2PDMA mapping helpers to pci-p2pdma.h
+>   iommu: generalize the batched sync after map interface
+>   iommu/dma: Factor out a iommu_dma_map_swiotlb helper
+>   dma-mapping: add a dma_need_unmap helper
+>   docs: core-api: document the IOVA-based API
 > 
-> purely from the coding perspective, this is unnecessarily nested and
-> convoluted. Wouldn't this work the same but be less nested:
+> Leon Romanovsky (11):
+>   iommu: add kernel-doc for iommu_unmap and iommu_unmap_fast
+>   dma-mapping: Provide an interface to allow allocate IOVA
+>   dma-mapping: Implement link/unlink ranges API
+>   mm/hmm: let users to tag specific PFN with DMA mapped bit
+>   mm/hmm: provide generic DMA managing logic
+>   RDMA/umem: Store ODP access mask information in PFN
+>   RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page
+>     linkage
+>   RDMA/umem: Separate implicit ODP initialization from explicit ODP
+>   vfio/mlx5: Explicitly use number of pages instead of allocated length
+>   vfio/mlx5: Rewrite create mkey flow to allow better code reuse
+>   vfio/mlx5: Enable the DMA link API
 > 
-> kern_vtype_id = btf__find_by_name_kind(btf, stname, BTF_KIND_STRUCT);
-> if (kern_vtype_id == -ENOENT && !*mod_btf)
->     kern_vtype_id = find_ksym_btf_id(...);
-> if (kern_vtype_id < 0) {
->     pr_warn(...);
->     return kern_vtype_id;
-> }
+>  Documentation/core-api/dma-api.rst   |  70 +++++
+>  drivers/infiniband/core/umem_odp.c   | 250 +++++----------
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h |  12 +-
+>  drivers/infiniband/hw/mlx5/odp.c     |  65 ++--
+>  drivers/infiniband/hw/mlx5/umr.c     |  12 +-
+>  drivers/iommu/dma-iommu.c            | 454 +++++++++++++++++++++++----
+>  drivers/iommu/iommu.c                |  84 ++---
+>  drivers/pci/p2pdma.c                 |  38 +--
+>  drivers/vfio/pci/mlx5/cmd.c          | 376 +++++++++++-----------
+>  drivers/vfio/pci/mlx5/cmd.h          |  35 ++-
+>  drivers/vfio/pci/mlx5/main.c         |  87 +++--
+>  include/linux/dma-map-ops.h          |  54 ----
+>  include/linux/dma-mapping.h          |  86 +++++
+>  include/linux/hmm-dma.h              |  33 ++
+>  include/linux/hmm.h                  |  21 ++
+>  include/linux/iommu.h                |   4 +
+>  include/linux/pci-p2pdma.h           |  84 +++++
+>  include/rdma/ib_umem_odp.h           |  25 +-
+>  kernel/dma/direct.c                  |  44 +--
+>  kernel/dma/mapping.c                 |  18 ++
+>  mm/hmm.c                             | 264 ++++++++++++++--
+>  21 files changed, 1423 insertions(+), 693 deletions(-)
+>  create mode 100644 include/linux/hmm-dma.h
 
-Hi Andrii,
+Hi Robin,
 
-It's indeed more concise with your code. Thanks very much for your suggestion.
-And Martin has provided us with another suggestion to address this issue,
-and according to his plan, there shall be no such complex conditional
-checks too.
+Can you please Ack the dma-iommu changes?
 
-Anyway, I will keep my code concise in the next version. Thank you for
-the reminder.
-
-Best wishes,
-D. Wythe
+Thanks
 
 > 
+> -- 
+> 2.47.0
 > 
-> >         }
-> >         kern_vtype = btf__type_by_id(btf, kern_vtype_id);
-> >
-> > @@ -1046,8 +1055,8 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
-> >                         break;
-> >         }
-> >         if (i == btf_vlen(kern_vtype)) {
-> > -               pr_warn("struct_ops init_kern: struct %s data is not found in struct %s%s\n",
-> > -                       tname, STRUCT_OPS_VALUE_PREFIX, tname);
-> > +               pr_warn("struct_ops init_kern: struct %s data is not found in struct %s\n",
-> > +                       tname, stname);
-> >                 return -EINVAL;
-> >         }
-> >
-> > --
-> > 2.45.0
-> >
+> 
 
