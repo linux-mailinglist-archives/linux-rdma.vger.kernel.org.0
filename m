@@ -1,196 +1,132 @@
-Return-Path: <linux-rdma+bounces-7025-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7026-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AD4DA11C13
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 09:34:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A8FDA12348
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 12:56:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ED98167CB6
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 08:34:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC7E116CECE
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 11:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123AC1E7C0F;
-	Wed, 15 Jan 2025 08:33:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B114241695;
+	Wed, 15 Jan 2025 11:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mCWDVkUq"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="HW453Z1s"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FCEB155A30;
-	Wed, 15 Jan 2025 08:33:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0846224AEF;
+	Wed, 15 Jan 2025 11:53:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736930028; cv=none; b=Ci4AKJ2mvPeFzISvnZg0jbrpFYPjhwoBlz07PofTf3GMTdoWl162ltrBiGpw13upMf+Kiu/8eIXZOWw6CggVnhO6J2A+fbT1DBSSEBUo+cR7cIb2hhF4RCPVHcn6MAqR40vX/y0Q1aoR2hJ8IvHHz3hoj1iLslAhREsWMCRIWFU=
+	t=1736942005; cv=none; b=cRi0t5KYwKvye2Jepk6SYJ+lyZwC+vYo1kbU6KHWo0cR6CdGY7H2jp8vknYfe2I3SC+9S5shmUNQ0danSEQ3MCYDGn/C3dZHnsKQ20KsoaxvtYDM861zTgznDNyzn+KoyH953DSSKtr22qbbtkdg5fkhYh1DAjQ5c+0DkT+qmUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736930028; c=relaxed/simple;
-	bh=q//4PX+/kKs0NcRsMaK0IRFD8IgnEeYPZkHGethy6Xc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tn0yaW4j8kX4iyFRYf/5dGgqhuZTLTjk0y72MAmWT25GUPotSTZ2la6ZC2qbxGEj9K+Desd8CdC+bVp/4eMYBpmfz7p/r5lWTOeJ0J+Au8h5bq/axFylcRUM5zHnoBkTn7xw+YmYOZMaz/GbhYCnFVRAfzp+UBYgZaMzAIAgPpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mCWDVkUq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E083DC4CEE2;
-	Wed, 15 Jan 2025 08:33:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736930028;
-	bh=q//4PX+/kKs0NcRsMaK0IRFD8IgnEeYPZkHGethy6Xc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mCWDVkUqHQRGTYemu0OT2ih+ESCVIZ/aTGA9LOFnN2apzUXuQ6js3wGRvMvmPD0Q4
-	 qPuVV2jFdCTf9DIs+hAcwNkgetPw+3PG1Lpnlw/6yRfq11aaFbmf0jL/DFWnEBrlVw
-	 Ua5VHXN/Wk/lZkcpIs8HKqmwrhDVRgZOiJTe7WsPa5iJP6YN5+bhjqq5Jd10hVAZze
-	 QrEQ79dFiDRigierP81hoV+aRHQMIswxIRHmBXxqXzkaq8aaF3N2iCj59qFjsa3k/F
-	 66JPQhMe1Azzt9/n3bF5LnqLwPghqkXaMemOLirAJWtGi32tua3HSrRA0qNoLRzLR7
-	 YnubzClMeJP7Q==
-Date: Wed, 15 Jan 2025 10:33:40 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-	Keith Busch <kbusch@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v5 07/17] dma-mapping: Implement link/unlink ranges API
-Message-ID: <20250115083340.GL3146852@unreal>
-References: <cover.1734436840.git.leon@kernel.org>
- <fa43307222f263e65ae0a84c303150def15e2c77.1734436840.git.leon@kernel.org>
- <ad2312e0-10d5-467a-be5e-75e80805b311@arm.com>
+	s=arc-20240116; t=1736942005; c=relaxed/simple;
+	bh=vom1M5y0t/2i6oRVZy3Twpq/IpbkTcdH5c9rb3WAZx4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EBEzqYfxk/lb8QNa8nCjSdmTOajlDb38CzER+Yb2Hp52p4xgnIqit9lrBrkcQZn/0kIhDYVL1fLqUKf/2gmddpLwVOm5qwbH9meiCQzImjyzOGg52J4lIMWVwiLYbNto3oUSSvVHtyuFCD3SIKmMfIc0Awm9eWxLBTf7emfeuDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=HW453Z1s; arc=none smtp.client-ip=115.124.30.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1736941997; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=L1nv3aPuQLf0keVSQjzBMEcZo7dzqH6nOk+7lPFkYBQ=;
+	b=HW453Z1s4Cb2JvJv8SgbS6cMHKZFZXFkxDuzbN+67torJ5+wnhHWuNFUKRojklrkOsqgKtk+MYvyhUpspVHNK87HNQnAdiBr06gEoEXzjPASHt1RjvG7jXmeCFpEH1pxcU/uz6JOwOAi6nTYqQgUCeP2N5lshdN0wWRMLhUgtl8=
+Received: from 30.221.98.4(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0WNiOY3G_1736941995 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 15 Jan 2025 19:53:16 +0800
+Message-ID: <3dc68650-904c-4a1d-adc4-172e771f640c@linux.alibaba.com>
+Date: Wed, 15 Jan 2025 19:53:15 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad2312e0-10d5-467a-be5e-75e80805b311@arm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net/smc: use the correct ndev to find pnetid by
+ pnetid table
+To: Halil Pasic <pasic@linux.ibm.com>
+Cc: Paolo Abeni <pabeni@redhat.com>, wenjia@linux.ibm.com,
+ jaka@linux.ibm.com, alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+ guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, horms@kernel.org, linux-rdma@vger.kernel.org,
+ linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Alexandra Winter <wintera@linux.ibm.com>
+References: <20241227040455.91854-1-guangguan.wang@linux.alibaba.com>
+ <1f4a721f-fa23-4f1d-97a9-1b27bdcd1e21@redhat.com>
+ <20250107203218.5787acb4.pasic@linux.ibm.com>
+ <908be351-b4f8-4c25-9171-4f033e11ffc4@linux.alibaba.com>
+ <20250109040429.350fdd60.pasic@linux.ibm.com>
+ <b1053a92-3a3f-4042-9be9-60b94b97747d@linux.alibaba.com>
+ <20250114130747.77a56d9a.pasic@linux.ibm.com>
+Content-Language: en-US
+From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+In-Reply-To: <20250114130747.77a56d9a.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 14, 2025 at 08:50:35PM +0000, Robin Murphy wrote:
-> On 17/12/2024 1:00 pm, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > Introduce new DMA APIs to perform DMA linkage of buffers
-> > in layers higher than DMA.
-> > 
-> > In proposed API, the callers will perform the following steps.
-> > In map path:
-> > 	if (dma_can_use_iova(...))
-> > 	    dma_iova_alloc()
-> > 	    for (page in range)
-> > 	       dma_iova_link_next(...)
-> > 	    dma_iova_sync(...)
-> > 	else
-> > 	     /* Fallback to legacy map pages */
-> >               for (all pages)
-> > 	       dma_map_page(...)
-> > 
-> > In unmap path:
-> > 	if (dma_can_use_iova(...))
-> > 	     dma_iova_destroy()
-> > 	else
-> > 	     for (all pages)
-> > 		dma_unmap_page(...)
-> > 
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >   drivers/iommu/dma-iommu.c   | 259 ++++++++++++++++++++++++++++++++++++
-> >   include/linux/dma-mapping.h |  32 +++++
-> >   2 files changed, 291 insertions(+)
 
-<...>
 
-> > +static void iommu_dma_iova_unlink_range_slow(struct device *dev,
-> > +		dma_addr_t addr, size_t size, enum dma_data_direction dir,
-> > +		unsigned long attrs)
-> > +{
-> > +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> > +	struct iommu_dma_cookie *cookie = domain->iova_cookie;
-> > +	struct iova_domain *iovad = &cookie->iovad;
-> > +	size_t iova_start_pad = iova_offset(iovad, addr);
-> > +	dma_addr_t end = addr + size;
-> > +
-> > +	do {
-> > +		phys_addr_t phys;
-> > +		size_t len;
-> > +
-> > +		phys = iommu_iova_to_phys(domain, addr);
-> > +		if (WARN_ON(!phys))
-> > +			continue;
+On 2025/1/14 20:07, Halil Pasic wrote:
+> On Fri, 10 Jan 2025 13:43:44 +0800
+> Guangguan Wang <guangguan.wang@linux.alibaba.com> wrote:
 > 
-> Infinite WARN_ON loop, nice.
+>>> I think I showed a valid and practical setup that would break with your
+>>> patch as is. Do you agree with that statement?  
+>> Did you mean
+>> "
+>> Now for something like a bond of two OSA
+>> interfaces, I would expect the two legs of the bond to probably have a
+>> "HW PNETID", but the netdev representing the bond itself won't have one
+>> unless the Linux admin defines a software PNETID, which is work, and
+>> can't have a HW PNETID because it is a software construct within Linux.
+>> Breaking for example an active-backup bond setup where the legs have
+>> HW PNETIDs and the admin did not bother to specify a PNETID for the bond
+>> is not acceptable.
+>> " ?
+>> If the legs have HW pnetids, add pnetid to bond netdev will fail as
+>> smc_pnet_add_eth will check whether the base_ndev already have HW pnetid.
+>>
+>> If the legs without HW pnetids, and admin add pnetids to legs through smc_pnet.
+>> Yes, my patch will break the setup. What Paolo suggests(both checking ndev and
+>> base_ndev, and replace || by && )can help compatible with the setup.
+> 
+> I'm glad we agree on that part. Things are much more acceptable if we
+> are doing both base and ndev. 
+It is also acceptable for me.
 
-No problem, will change it to WARN_ON_ONCE.
+> Nevertheless I would like to understand
+> your problem better, and talk about it to my team. I will also ask some
+> questions in another email.
+Questions are welcome.
 
 > 
-> > +		len = min_t(size_t,
-> > +			end - addr, iovad->granule - iova_start_pad);
-
-<...>
-
-> > +
-> > +		swiotlb_tbl_unmap_single(dev, phys, len, dir, attrs);
+> That said having things work differently if there is a HW PNETID on
+> the base, and different if there is none is IMHO wonky and again
+> asymmetric.
 > 
-> This is still dumb. For everything other than the first and last granule,
-> either it's definitely not in SWIOTLB, or it is (per the unaligned size
-> thing above) but then "len" is definitely wrong and SWIOTLB will complain.
+> Imagine the following you have your nice little setup with a PNETID on
+> a non-leaf and a base_ndev that has no PNETID. Then your HW admin
+> configures a PNETID to your base_ndev, a different one. Suddenly
+> your ndev PNETID is ignored for reasons not obvious to you. Yes it is
+> similar to having a software PNETID on the base_ndev and getting it
+> overruled by a HW PNETID, but much less obvious IMHO. I am wondering if there are any scenarios that require setting different
+pnetids for different net devices in one netdev hierarchy. If no, maybe
+we should limit that only one pnetid can be set to one netdev hierarchy.
 
-Like Christoph said, we tested it with NVMe which uses SWIOTLB path and
-despite having a lot of unaligned sizes, it worked without SWIOTLB
-complains.
+> I also think
+> a software PNETID of the base should probably take precedence over over
+> the software pnetid of ndev.
+Agree!
 
+Thanks,
+Guangguan Wang
 > 
-> > +
-> > +		addr += len;
-> > +		iova_start_pad = 0;
-> > +	} while (addr < end);
-> > +}
-> > +
-> > +static void __iommu_dma_iova_unlink(struct device *dev,
-> > +		struct dma_iova_state *state, size_t offset, size_t size,
-> > +		enum dma_data_direction dir, unsigned long attrs,
-> > +		bool free_iova)
-> > +{
-> > +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> > +	struct iommu_dma_cookie *cookie = domain->iova_cookie;
-> > +	struct iova_domain *iovad = &cookie->iovad;
-> > +	dma_addr_t addr = state->addr + offset;
-> > +	size_t iova_start_pad = iova_offset(iovad, addr);
-> > +	struct iommu_iotlb_gather iotlb_gather;
-> > +	size_t unmapped;
-> > +
-> > +	if ((state->__size & DMA_IOVA_USE_SWIOTLB) ||
-> > +	    (!dev_is_dma_coherent(dev) && !(attrs & DMA_ATTR_SKIP_CPU_SYNC)))
-> > +		iommu_dma_iova_unlink_range_slow(dev, addr, size, dir, attrs);
-> > +
-> > +	iommu_iotlb_gather_init(&iotlb_gather);
-> > +	iotlb_gather.queued = free_iova && READ_ONCE(cookie->fq_domain);
-> 
-> This makes things needlessly hard to follow, just keep the IOVA freeing
-> separate. And by that I really mean just have unlink and free, since
-> dma_iova_destroy() really doesn't seem worth the extra complexity to save
-> one line in one caller...
-
-In initial versions, I didn't implement dma_iova_destroy() and used
-unlink->free calls directly. Both Jason and Christoph asked me to
-provide dma_iova_destroy(), so we can reuse same iotlb_gather.
-
-Almost all callers (except HMM-like) will use this API call.
-
-Let's keep it.
-
-Thanks
+> Regards,
+> Halil
 
