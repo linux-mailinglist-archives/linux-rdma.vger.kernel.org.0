@@ -1,229 +1,133 @@
-Return-Path: <linux-rdma+bounces-7020-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7021-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95DA6A11836
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 05:03:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2612BA1197B
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 07:13:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6300188861D
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 04:03:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4763F168233
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 06:13:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4048F156676;
-	Wed, 15 Jan 2025 04:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="OOAFbzyU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82DD22F82C;
+	Wed, 15 Jan 2025 06:13:35 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9464735949
-	for <linux-rdma@vger.kernel.org>; Wed, 15 Jan 2025 04:03:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C2A22E41E;
+	Wed, 15 Jan 2025 06:13:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736913811; cv=none; b=hzniq4JmzagTUFUIs5jKq/5H2lQLjm4rGSWz+7+TFjXNskDN79ICia+uDm1aVHCjhLRv0RwUyxFQl37YvevBrav8OPPdai7Cg3W5y7wDopjOrv8JqV9wu/s1urB691JfJn58mvgpMTXJ+ff5DeWeE2PNzW3f091XBCROLn77k/E=
+	t=1736921615; cv=none; b=hExpO6q1Q+yh8+k7NV0x+FPQElQ3ruoKlkkQrov2JKeKqzAi8yAsYjY6MdeK67MMuKQi2KKJ13UP688dXOgi1PX0K+JoEtJTK3JUUW+XHT6ov8IzM3fZzkkHxX5Vsdaa3mJJouQVnDTWUgAndK21Off+cDZjufY3s9qoCkjylN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736913811; c=relaxed/simple;
-	bh=xzAVcVDebsMyPqCylk/wEQgyS9c57GvjPxm7yxxqCjM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k5WfYWHi9vtLgL+ISWNPMcZfLpRBLPbWNcCBgey/c/Svy/1pC9LPXEMQXckqzEyqOimcrPqMlBjZB+ce4CBcbuZ+wSMRZZpVEoWLzdrjBbsLataDB7rrs9AgKpxY8ziJLusxzEJU4aVEYP/489Uoyd1NxV8K26PFl+8+B8mZvCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=OOAFbzyU; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2f42992f608so8587434a91.0
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jan 2025 20:03:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1736913809; x=1737518609; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Dd0ziXHs51/1i6VAqBt3kwFCUZGJcCyUBdwxIRo3nM=;
-        b=OOAFbzyUVcBDKZ9OUdaqz1M1j2WYo+N/D0/bUiBGG5QWpi0T3vPAoqpJ03s8rFPuJo
-         xiO/gIc7w+2i9T4YhR0F3PPsFKhQDOMpI7e4rh0fA6+BIT4bMKATEZHy/aymqjhv/gNq
-         vTims5z50D96BVRP9StJshZgUVviFXedluQ10=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736913809; x=1737518609;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+Dd0ziXHs51/1i6VAqBt3kwFCUZGJcCyUBdwxIRo3nM=;
-        b=BHvkNvXgpI4l/DBmKqRFr17VrZhqxo63iZb0g8pxUdmGYmZ5bGyDpAqwHAvMaQErOf
-         +8WS0otHtaOSx/LQHMJOOBO6JSXa/f5HOKm3o0UvRYZHXYpaBIgNq5H4V8ixsubt9pdg
-         bc+0uSOZbufOD4oks30l2QyoSljD492EodlKUplDSmtr3AHOoABXAP+9964lU6cXHq5q
-         ypO15rixoZd68RM6A/eMACFfkvH4dzXE1TxI05U2t5tHFpwJdQZur1bNyF3+K9oqiA0O
-         wn+HmLvJTrf2vC1ZuOGUYj1+jwNn9MqT/BwgnUEwcNuzScc10NKgmNwZ1AXnLVmHvVnR
-         lORw==
-X-Forwarded-Encrypted: i=1; AJvYcCUImEFQCbYc+xSxVHPabfwvpKbTrLlufQUis5kjzPVsGTqHSUs4vh8BFZ2gwgYaoCVlv0qhTkDDSm0/@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9Dm+e9Q7slfmXkYS+hBEKpThpv2+eTTjcY50dT+iJuYSPz0Wm
-	XOSw32ORHOATXzbEiCZdkxFNT/Q8+Sx0lfespH/iwSFzU2pG9W51QRfmbrix3xprSYmKO23FNEW
-	FwHcPE1U7Y1VRIjYMbCcnE6U/rPP5+KJxbNnM
-X-Gm-Gg: ASbGnctb1Ncx8jsFjZvFqmfkmKhPDiFwnjkP2Lch3P90JkMM6l/3reK1Xp4Kz9jjPJb
-	/VK2iz0y93E9zpt+DM5bgBiBGMZNnttP3d307R/4=
-X-Google-Smtp-Source: AGHT+IEJkpUwUdXOZswp5BhWCYgVuTaOfK5fGuvAtOlGG2EGWPqzf4cIGeeW3vj2H+imxcyyv3dCsiOPjUvCSN9FUTQ=
-X-Received: by 2002:a17:90b:2588:b0:2ee:c9b6:c26a with SMTP id
- 98e67ed59e1d1-2f548eae05amr40522802a91.11.1736913808848; Tue, 14 Jan 2025
- 20:03:28 -0800 (PST)
+	s=arc-20240116; t=1736921615; c=relaxed/simple;
+	bh=IJpGGqTdTn3Pi3/xnnXvoMDIxvhrzP92PeGu0JYmNS8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bHlyHNBz+cC3GVDmLNT/HaXc5j7TbusI2Las05Fu6JqjKT760uw4h0vJcWNkaopdTRiXkFqOGCwC5KLWAKYFCyqr0P8FOLF/wGCHb9QUxY84yDva8+L+1kSkEhzXO64bObSgM3iZ1ypqk2WoIaWHAaw+T+cCwfhaU0jdEovDveE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id F412068B05; Wed, 15 Jan 2025 07:13:26 +0100 (CET)
+Date: Wed, 15 Jan 2025 07:13:26 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Leon Romanovsky <leon@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v5 05/17] dma-mapping: Provide an interface to allow
+ allocate IOVA
+Message-ID: <20250115061326.GA29643@lst.de>
+References: <cover.1734436840.git.leon@kernel.org> <fac6bc6fdcf8e13bd5668386d36289ee38a8a95b.1734436840.git.leon@kernel.org> <ecb59036-b279-4412-9a09-40e05af3b9ea@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1736446693-6692-1-git-send-email-selvin.xavier@broadcom.com>
- <1736446693-6692-3-git-send-email-selvin.xavier@broadcom.com> <20250114112555.GG3146852@unreal>
-In-Reply-To: <20250114112555.GG3146852@unreal>
-From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Wed, 15 Jan 2025 09:33:18 +0530
-X-Gm-Features: AbW1kvbypQTPYC5byN0YkdrviNoFmYuXRmPXEnKLC_YSDknTTjBQWYbXOfozc6Q
-Message-ID: <CAH-L+nMe0BPbXesZH_nc7tQut84dEtNR=mz8sdUXF6K_E7RyWg@mail.gmail.com>
-Subject: Re: [PATCH for-next 2/2] RDMA/bnxt_re: Allocate dev_attr information dynamically
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Selvin Xavier <selvin.xavier@broadcom.com>, jgg@ziepe.ca, linux-rdma@vger.kernel.org, 
-	andrew.gospodarek@broadcom.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000099e755062bb6c2f7"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ecb59036-b279-4412-9a09-40e05af3b9ea@arm.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
---00000000000099e755062bb6c2f7
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jan 14, 2025 at 4:56=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
-rote:
+On Tue, Jan 14, 2025 at 08:50:28PM +0000, Robin Murphy wrote:
+>> +bool dma_iova_try_alloc(struct device *dev, struct dma_iova_state *state,
+>> +		phys_addr_t phys, size_t size)
+>> +{
+>> +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
+>> +	struct iommu_dma_cookie *cookie = domain->iova_cookie;
+>> +	struct iova_domain *iovad = &cookie->iovad;
+>> +	size_t iova_off = iova_offset(iovad, phys);
+>> +	dma_addr_t addr;
+>> +
+>> +	memset(state, 0, sizeof(*state));
+>> +	if (!use_dma_iommu(dev))
+>> +		return false;
 >
-> On Thu, Jan 09, 2025 at 10:18:13AM -0800, Selvin Xavier wrote:
-> > From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> >
-> > In order to optimize the size of driver private structure,
-> > the memory for dev_attr is allocated dynamically during the
-> > chip context initialization. In order to make certain runtime
-> > decisions, store dev_attr in the qplib_res structure.
-> >
-> > Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > ---
-> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h     |  2 +-
-> >  drivers/infiniband/hw/bnxt_re/hw_counters.c |  2 +-
-> >  drivers/infiniband/hw/bnxt_re/ib_verbs.c    | 38 ++++++++++++++-------=
---------
-> >  drivers/infiniband/hw/bnxt_re/main.c        | 36 +++++++++++++++++----=
-------
-> >  drivers/infiniband/hw/bnxt_re/qplib_res.c   |  7 +++---
-> >  drivers/infiniband/hw/bnxt_re/qplib_res.h   |  4 +--
-> >  drivers/infiniband/hw/bnxt_re/qplib_sp.c    |  4 +--
-> >  drivers/infiniband/hw/bnxt_re/qplib_sp.h    |  3 +--
-> >  8 files changed, 51 insertions(+), 45 deletions(-)
+> Can you guess why that return won't ever be taken?
+
+It is regularly taken.  Now that it's quoted this way it would probably
+good to split the thing up to not do the deferferences above, as they
+might cause problems if the compiler wasn't smart enough to only
+perform them after the check..
+
+>> +	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
+>> +	    iommu_deferred_attach(dev, iommu_get_domain_for_dev(dev)))
+>> +		return false;
+>> +
+>> +	if (WARN_ON_ONCE(!size))
+>> +		return false;
+>> +	if (WARN_ON_ONCE(size & DMA_IOVA_USE_SWIOTLB))
 >
-> <...>
+> This looks weird. Why would a caller ever set an effectively-private flag 
+> in the first place? If it's actually supposed to be a maximum size check, 
+> please make it look like a maximum size check.
+
+As the person who added it - this is to catch a user passing in a value
+that would set it.  To me this looks obvious, but should we add a
+comment?
+
+> (Which also makes me consider iommu_dma_max_mapping_size() returning 
+> SIZE_MAX isn't strictly accurate, ho hum...)
+
+You can still map SIZE_MAX, just not using this interface.  Assuming
+no other real life limitations get in way, which I bet they will.
+
+>> @@ -72,6 +74,21 @@
+>>     #define DMA_BIT_MASK(n)	(((n) == 64) ? ~0ULL : ((1ULL<<(n))-1))
+>>   +struct dma_iova_state {
+>> +	dma_addr_t addr;
+>> +	size_t __size;
+>> +};
+>> +
+>> +/*
+>> + * Use the high bit to mark if we used swiotlb for one or more ranges.
+>> + */
+>> +#define DMA_IOVA_USE_SWIOTLB		(1ULL << 63)
 >
-> > index 33956fc..7c7057b 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/main.c
-> > +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> > @@ -148,6 +148,10 @@ static void bnxt_re_destroy_chip_ctx(struct bnxt_r=
-e_dev *rdev)
-> >
-> >       if (!rdev->chip_ctx)
-> >               return;
-> > +
-> > +     kfree(rdev->dev_attr);
-> > +     rdev->dev_attr =3D NULL;
-> > +
->
-> I'm taking this patch, but please let's stop this practice of setting NUL=
-L
-> for the pointers which are not going to be reused. Such assignment hides =
-bugs.
+> This will give surprising results for 32-bit size_t (in fact I guess it 
+> might fire some build warnings already).
 
-Sure, we will try to remove such occurrences in the driver and push a
-cleanup patch. Thanks!
->
-> Thanks
+Good point.  I guess __size should simply become a u64.
 
-
-
---=20
-Regards,
-Kalesh AP
-
---00000000000099e755062bb6c2f7
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBWowggRSoAMCAQICDDfBRQmwNSI92mit0zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODI5NTZaFw0yNTA5MTAwODI5NTZaMIGi
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xHzAdBgNVBAMTFkthbGVzaCBBbmFra3VyIFB1cmF5aWwxMjAw
-BgkqhkiG9w0BCQEWI2thbGVzaC1hbmFra3VyLnB1cmF5aWxAYnJvYWRjb20uY29tMIIBIjANBgkq
-hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxnv1Reaeezfr6NEmg3xZlh4cz9m7QCN13+j4z1scrX+b
-JfnV8xITT5yvwdQv3R3p7nzD/t29lTRWK3wjodUd2nImo6vBaH3JbDwleIjIWhDXLNZ4u7WIXYwx
-aQ8lYCdKXRsHXgGPY0+zSx9ddpqHZJlHwcvas3oKnQN9WgzZtsM7A8SJefWkNvkcOtef6bL8Ew+3
-FBfXmtsPL9I2vita8gkYzunj9Nu2IM+MnsP7V/+Coy/yZDtFJHp30hDnYGzuOhJchDF9/eASvE8T
-T1xqJODKM9xn5xXB1qezadfdgUs8k8QAYyP/oVBafF9uqDudL6otcBnziyDBQdFCuAQN7wIDAQAB
-o4IB5DCCAeAwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZC
-aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJj
-YTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3Iz
-cGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcC
-ARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNV
-HR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNp
-Z24yY2EyMDIwLmNybDAuBgNVHREEJzAlgSNrYWxlc2gtYW5ha2t1ci5wdXJheWlsQGJyb2FkY29t
-LmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGP
-zzAdBgNVHQ4EFgQUI3+tdStI+ABRGSqksMsiCmO9uDAwDQYJKoZIhvcNAQELBQADggEBAGfe1o9b
-4wUud0FMjb/FNdc433meL15npjdYWUeioHdlCGB5UvEaMGu71QysfoDOfUNeyO9YKp0h0fm7clvo
-cBqeWe4CPv9TQbmLEtXKdEpj5kFZBGmav69mGTlu1A9KDQW3y0CDzCPG2Fdm4s73PnkwvemRk9E2
-u9/kcZ8KWVeS+xq+XZ78kGTKQ6Wii3dMK/EHQhnDfidadoN/n+x2ySC8yyDNvy81BocnblQzvbuB
-a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
-x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
-VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
-bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEIAKvyTWy8xA1/9FMTmpq48QzyYfhIi8l/UUvWj/WbdXBMBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDExNTA0MDMyOVowaQYJKoZIhvcNAQkPMVwwWjAL
-BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCEKcxLPtP8
-EO8USuGqGL1rjJNinxTq4+tRhyBV+4oGI6/hAJ/iZ4lB+6ORo/wrmOoa2ZlzhhcAXEmBiiyDO7CB
-f3dKrY0CpIsneYbXI9i7vOOKxULk2goCWOozavf6YWdvkeDpxvJXr50WbZqaXEs9ywyywZt3c2n4
-OjyMENYbhbWxqzB7V1XFqXpvCko+XfBupRKPOpypOmBIJOk7mw8i6gu/fKtXALZDpIDPTBhPtDDY
-hJ5aZEFAOvioc9ek5evE1zhl9RjVkF61psYbo0GGDHzvmSvdVbCA4u3YCzZi9zf6OBNqotOWmSik
-ElbgWIcVVAbe6v+5VKbHqq56hLHQ
---00000000000099e755062bb6c2f7--
 
