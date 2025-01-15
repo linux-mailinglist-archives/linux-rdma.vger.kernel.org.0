@@ -1,37 +1,37 @@
-Return-Path: <linux-rdma+bounces-7021-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7022-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2612BA1197B
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 07:13:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED686A11994
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 07:26:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4763F168233
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 06:13:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D7E23A3C70
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 06:26:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82DD22F82C;
-	Wed, 15 Jan 2025 06:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9E022F831;
+	Wed, 15 Jan 2025 06:26:37 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C2A22E41E;
-	Wed, 15 Jan 2025 06:13:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5EDD2D05E;
+	Wed, 15 Jan 2025 06:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736921615; cv=none; b=hExpO6q1Q+yh8+k7NV0x+FPQElQ3ruoKlkkQrov2JKeKqzAi8yAsYjY6MdeK67MMuKQi2KKJ13UP688dXOgi1PX0K+JoEtJTK3JUUW+XHT6ov8IzM3fZzkkHxX5Vsdaa3mJJouQVnDTWUgAndK21Off+cDZjufY3s9qoCkjylN0=
+	t=1736922397; cv=none; b=CTnBD1P/t1W6PEyF3PR4OVbEVY/XN9XaGM27Xmr317K4RvkCmEHCMVq+gGGZHTb7ziKjRavVN+BaXJTAv5FXwbkkH1T/74wsTUTSPziv0cLarKEwYHi6yJyeYDoJGoqV3N7J9k1RuV8E4HALpbCRoXpdkHUy2QNk8Df9Aa/mO7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736921615; c=relaxed/simple;
-	bh=IJpGGqTdTn3Pi3/xnnXvoMDIxvhrzP92PeGu0JYmNS8=;
+	s=arc-20240116; t=1736922397; c=relaxed/simple;
+	bh=xFSna/f7xJGH8y4tKSVlhCPS16R70dhbYvwgmnPhA4c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bHlyHNBz+cC3GVDmLNT/HaXc5j7TbusI2Las05Fu6JqjKT760uw4h0vJcWNkaopdTRiXkFqOGCwC5KLWAKYFCyqr0P8FOLF/wGCHb9QUxY84yDva8+L+1kSkEhzXO64bObSgM3iZ1ypqk2WoIaWHAaw+T+cCwfhaU0jdEovDveE=
+	 Content-Type:Content-Disposition:In-Reply-To; b=rpMUQ9XUZ77834EeK0PQ5ALgjvtVXVld4v4x/SzNEzWiEtf49415INYfTOa6d5CgJsyPiEVEgyjeyw0ejg8fTAGtc5juyZRMUOa3HJrE6TiE0iWRYP/ybHLdrF9WoER3SxX2u1zHBalJfxKckqFQ395rCFgdXjKmfccbD6+AIMQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id F412068B05; Wed, 15 Jan 2025 07:13:26 +0100 (CET)
-Date: Wed, 15 Jan 2025 07:13:26 +0100
+	id A1F9068B05; Wed, 15 Jan 2025 07:26:28 +0100 (CET)
+Date: Wed, 15 Jan 2025 07:26:28 +0100
 From: Christoph Hellwig <hch@lst.de>
 To: Robin Murphy <robin.murphy@arm.com>
 Cc: Leon Romanovsky <leon@kernel.org>, Jens Axboe <axboe@kernel.dk>,
@@ -55,10 +55,9 @@ Cc: Leon Romanovsky <leon@kernel.org>, Jens Axboe <axboe@kernel.dk>,
 	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
 	kvm@vger.kernel.org, linux-mm@kvack.org,
 	Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v5 05/17] dma-mapping: Provide an interface to allow
- allocate IOVA
-Message-ID: <20250115061326.GA29643@lst.de>
-References: <cover.1734436840.git.leon@kernel.org> <fac6bc6fdcf8e13bd5668386d36289ee38a8a95b.1734436840.git.leon@kernel.org> <ecb59036-b279-4412-9a09-40e05af3b9ea@arm.com>
+Subject: Re: [PATCH v5 07/17] dma-mapping: Implement link/unlink ranges API
+Message-ID: <20250115062628.GA29782@lst.de>
+References: <cover.1734436840.git.leon@kernel.org> <fa43307222f263e65ae0a84c303150def15e2c77.1734436840.git.leon@kernel.org> <ad2312e0-10d5-467a-be5e-75e80805b311@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -67,67 +66,90 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ecb59036-b279-4412-9a09-40e05af3b9ea@arm.com>
+In-Reply-To: <ad2312e0-10d5-467a-be5e-75e80805b311@arm.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Tue, Jan 14, 2025 at 08:50:28PM +0000, Robin Murphy wrote:
->> +bool dma_iova_try_alloc(struct device *dev, struct dma_iova_state *state,
->> +		phys_addr_t phys, size_t size)
+On Tue, Jan 14, 2025 at 08:50:35PM +0000, Robin Murphy wrote:
+>>   EXPORT_SYMBOL_GPL(dma_iova_free);
+>>   +static int __dma_iova_link(struct device *dev, dma_addr_t addr,
+>> +		phys_addr_t phys, size_t size, enum dma_data_direction dir,
+>> +		unsigned long attrs)
+>> +{
+>> +	bool coherent = dev_is_dma_coherent(dev);
+>> +
+>> +	if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+>> +		arch_sync_dma_for_device(phys, size, dir);
+>
+> Again, if we're going to pretend to support non-coherent devices, where are 
+> the dma_sync_for_{device,cpu} calls that work for a dma_iova_state? It 
+> can't be the existing dma_sync_single ops since that would require the user 
+> to keep track of every mapping to sync them individually, and the whole 
+> premise is to avoid doing that (not to mention dma-debug wouldn't like it). 
+> Same for anything coherent but SWIOTLB-bounced.
+
+That assumes you actually need to sync them.  Many DMA mapping if not
+most dma mappings are one shots - map and unmap, no sync.  And these
+will work fine here.
+
+But I guess the documentation needs to spell that out.  While I don't
+have a good non-coherent system to test, swiotlb has actually been
+tested with nvme when I implemented this part.
+
 >> +{
 >> +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
 >> +	struct iommu_dma_cookie *cookie = domain->iova_cookie;
 >> +	struct iova_domain *iovad = &cookie->iovad;
->> +	size_t iova_off = iova_offset(iovad, phys);
->> +	dma_addr_t addr;
->> +
->> +	memset(state, 0, sizeof(*state));
->> +	if (!use_dma_iommu(dev))
->> +		return false;
+>> +	size_t iova_start_pad = iova_offset(iovad, phys);
+>> +	size_t iova_end_pad = iova_offset(iovad, phys + size);
 >
-> Can you guess why that return won't ever be taken?
+> "end_pad" implies a length of padding from the unaligned end address to 
+> reach the *next* granule boundary, but it seems this is actually the 
+> unaligned tail length of the data itself. That's what confused me last 
+> time, since in the map path that post-data padding region does matter in 
+> its own right.
 
-It is regularly taken.  Now that it's quoted this way it would probably
-good to split the thing up to not do the deferferences above, as they
-might cause problems if the compiler wasn't smart enough to only
-perform them after the check..
+Yeah.  Do you have a suggestion for a better name?
 
->> +	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
->> +	    iommu_deferred_attach(dev, iommu_get_domain_for_dev(dev)))
->> +		return false;
+>> +		phys_addr_t phys, size_t offset, size_t size,
+>> +		enum dma_data_direction dir, unsigned long attrs)
+>> +{
+>> +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
+>> +	struct iommu_dma_cookie *cookie = domain->iova_cookie;
+>> +	struct iova_domain *iovad = &cookie->iovad;
+>> +	size_t iova_start_pad = iova_offset(iovad, phys);
 >> +
->> +	if (WARN_ON_ONCE(!size))
->> +		return false;
->> +	if (WARN_ON_ONCE(size & DMA_IOVA_USE_SWIOTLB))
+>> +	if (WARN_ON_ONCE(iova_start_pad && offset > 0))
 >
-> This looks weird. Why would a caller ever set an effectively-private flag 
-> in the first place? If it's actually supposed to be a maximum size check, 
-> please make it look like a maximum size check.
+> "iova_start_pad == 0" still doesn't guarantee that "phys" and "offset" are 
+> appropriately aligned to each other.
 
-As the person who added it - this is to catch a user passing in a value
-that would set it.  To me this looks obvious, but should we add a
-comment?
-
-> (Which also makes me consider iommu_dma_max_mapping_size() returning 
-> SIZE_MAX isn't strictly accurate, ho hum...)
-
-You can still map SIZE_MAX, just not using this interface.  Assuming
-no other real life limitations get in way, which I bet they will.
-
->> @@ -72,6 +74,21 @@
->>     #define DMA_BIT_MASK(n)	(((n) == 64) ? ~0ULL : ((1ULL<<(n))-1))
->>   +struct dma_iova_state {
->> +	dma_addr_t addr;
->> +	size_t __size;
->> +};
->> +
->> +/*
->> + * Use the high bit to mark if we used swiotlb for one or more ranges.
->> + */
->> +#define DMA_IOVA_USE_SWIOTLB		(1ULL << 63)
+>> +	if (dev_use_swiotlb(dev, size, dir) && iova_offset(iovad, phys | size))
 >
-> This will give surprising results for 32-bit size_t (in fact I guess it 
-> might fire some build warnings already).
+> Again, why are we supporting non-granule-aligned mappings in the middle of 
+> a range when the documentation explicitly says not to?
 
-Good point.  I guess __size should simply become a u64.
+It's not trying to support that, but checking that this is guaranteed
+to be the last one is harder than handling it like this.  If you have
+a suggestion for better checks that would be very welcome.
+
+>> +		if (!dev_is_dma_coherent(dev) &&
+>> +		    !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+>> +			arch_sync_dma_for_cpu(phys, len, dir);
+>
+> Hmm, how do attrs even work for a bulk unlink/destroy when the individual 
+> mappings could have been linked with different values?
+
+They shouldn't.  Just like randomly mixing flags doesn't work for the
+existing APIs.
+
+> (So no, irrespective of how conceptually horrid it is, clearly it's not 
+> even functionally viable to open-code abuse of DMA_ATTR_SKIP_CPU_SYNC in 
+> callers to attempt to work around P2P mappings...)
+
+What do you mean with "work around"?  I guess Leon added it to the hmm
+code based on previous feedback, but I still don't think any of our P2P
+infrastructure works reliably with non-coherent devices as
+iommu_dma_map_sg gets this wrong.  So despite the earlier comments I
+suspect this should stick to the state of the art even if that is broken.
 
 
