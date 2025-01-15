@@ -1,52 +1,52 @@
-Return-Path: <linux-rdma+bounces-7023-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7024-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B962A11ADF
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 08:27:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E3E2A11BB2
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 09:17:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 156201670A9
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 07:27:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 030593A2A48
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 08:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86171DB13A;
-	Wed, 15 Jan 2025 07:27:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F18724022C;
+	Wed, 15 Jan 2025 08:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PlEsLImC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jtS4YogD"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 558B71DB129;
-	Wed, 15 Jan 2025 07:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F30DC1DB150;
+	Wed, 15 Jan 2025 08:17:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736926043; cv=none; b=qfg/HrWswn8z+gwYG8u+x2u06Wn9/uJIAH4TgeziIWuje2zTnoyA10DaA7pK7iapOU87n9UrofIkYRZgbaL5UgHAe/vW1fkARDyBi40FCg+yFjrXs9o8NRzc2wjViFRyS0+hZVkE3/bdizN3pBKU+1u8+XW9q7RS6o4nDPxFH8A=
+	t=1736929052; cv=none; b=Y/zBce6A2YuCB7Wwb36PZweG4WOEh4vIBW/6KXdRAZ/h+vh29ZzT/5b3gcA+gWLMZxWEto0Cc4NdjBz1SA3ZaUjMRgcajoGfi9cTZTXQPqVWpBcjwevoKKXsJgdksWzSH9heuW+h8VOLyZG5LD1V/uFpbL/BRiUnChJelBtNIzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736926043; c=relaxed/simple;
-	bh=W+JWGoU6jLFwbe+ZoYGQcxjcZ17AGd0C8/odV+o/TLM=;
+	s=arc-20240116; t=1736929052; c=relaxed/simple;
+	bh=Yu7S/jLyUGhfFZjVFlk4eprtZYRxfla2Nw7nZEhy9no=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JKo+3Ns97yGfbdOqQZHBJ3K/FwdYDIVHsDPLOUDC13VFPinxDJhg/Gd9HsMlVMhennS/Jj+/x1wtRL294LkmlfFyTSEUBoTSg9rdwsph/A3h0BLaI6d+yQ1wqZ75r5ZBtvICnvPU5SviPAUgijr2xObsKEo89DtiyxYGYRZfsaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PlEsLImC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FD41C4CEDF;
-	Wed, 15 Jan 2025 07:27:22 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=nHYM0FRi8hR27xAay804JFfYHPqR3c82VSXMvKjfyg+QXHjtLGrSfPvg8YvzraFY5uzrD+nzXRJ6oU7mjTcCMC3SERRuwDd4M0aNXS3AyQiTjotk7MOkQPXV/DVsOZp9i4u8hGXSvOLfaJewEvIVI8kh67Xrz2ckXvM+4NASUl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jtS4YogD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCD6DC4CEDF;
+	Wed, 15 Jan 2025 08:17:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736926042;
-	bh=W+JWGoU6jLFwbe+ZoYGQcxjcZ17AGd0C8/odV+o/TLM=;
+	s=k20201202; t=1736929050;
+	bh=Yu7S/jLyUGhfFZjVFlk4eprtZYRxfla2Nw7nZEhy9no=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PlEsLImCwnYqAoqms0P20DW62uLfIgjKyzptCpjG5UVIUXYCrzVmwk7m0oi/eJDWg
-	 i7D1HOkxJZnKKnh0C+5xD+1X+uFQNGWJ1iZOiw1yU9Qcb7+5dh8ogtNN/k0QCZgCZJ
-	 TyKE1gNFh1Eh9kiL7Z6WnV63cZKl9hwNUc02tBxWp3qPFnFGIDvADP4ssiUBQEzGog
-	 BSgaFn4z3ohejNw+thnAgwWyLPajfW6rH21UYgVzsz5O38cma/CfLRJS2ZPPOsw53e
-	 j7/TVSSizkDLGNS26gONx2q0vAi+LG3NkSnHwl81L1TUxhDeOkKbBvsH1CHdaPabMt
-	 mR77nKXe/gODQ==
-Date: Wed, 15 Jan 2025 09:27:18 +0200
+	b=jtS4YogDlGBJKPE4uxCOLjxH7XCi5QYsOo4leoD+xgmN8tj70qVx5829WIg+sShgX
+	 yiakEsBadvxORmzL2tNvh64PTbxN2Yn7ZjPr4SYb84VfV3NxFD7kGP/KdoZOcX+tov
+	 rQJGthlfV+pWswtBJZw2US2akwQ3E9tQt/jwG/ICtUFlz/2ySVXe68KJv7W8xdw1OU
+	 pIcG2l3K1LSF8572QwfNaFSMofL4ExapBuk12HqOU0whbiq9SaXUul7IQT4rV47kiH
+	 Y6/VezMg1RWwWJ+XN6OfK0HDAZ0irI3FF3+Tw83vfWul8FBVAnUy0tZrZ3zZK1Ybu0
+	 cyRrXOGYV/nDQ==
+Date: Wed, 15 Jan 2025 10:17:26 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Robin Murphy <robin.murphy@arm.com>, Jens Axboe <axboe@kernel.dk>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Jens Axboe <axboe@kernel.dk>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
 	Keith Busch <kbusch@kernel.org>,
 	Bjorn Helgaas <bhelgaas@google.com>,
 	Logan Gunthorpe <logang@deltatee.com>,
@@ -63,12 +63,12 @@ Cc: Robin Murphy <robin.murphy@arm.com>, Jens Axboe <axboe@kernel.dk>,
 	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
 	kvm@vger.kernel.org, linux-mm@kvack.org,
 	Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v5 07/17] dma-mapping: Implement link/unlink ranges API
-Message-ID: <20250115072718.GJ3146852@unreal>
+Subject: Re: [PATCH v5 05/17] dma-mapping: Provide an interface to allow
+ allocate IOVA
+Message-ID: <20250115081726.GK3146852@unreal>
 References: <cover.1734436840.git.leon@kernel.org>
- <fa43307222f263e65ae0a84c303150def15e2c77.1734436840.git.leon@kernel.org>
- <ad2312e0-10d5-467a-be5e-75e80805b311@arm.com>
- <20250115062628.GA29782@lst.de>
+ <fac6bc6fdcf8e13bd5668386d36289ee38a8a95b.1734436840.git.leon@kernel.org>
+ <ecb59036-b279-4412-9a09-40e05af3b9ea@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -77,52 +77,176 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250115062628.GA29782@lst.de>
+In-Reply-To: <ecb59036-b279-4412-9a09-40e05af3b9ea@arm.com>
 
-On Wed, Jan 15, 2025 at 07:26:28AM +0100, Christoph Hellwig wrote:
-> On Tue, Jan 14, 2025 at 08:50:35PM +0000, Robin Murphy wrote:
+On Tue, Jan 14, 2025 at 08:50:28PM +0000, Robin Murphy wrote:
+> On 17/12/2024 1:00 pm, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > The existing .map_page() callback provides both allocating of IOVA
+> > and linking DMA pages. That combination works great for most of the
+> > callers who use it in control paths, but is less effective in fast
+> > paths where there may be multiple calls to map_page().
+> > 
+> > These advanced callers already manage their data in some sort of
+> > database and can perform IOVA allocation in advance, leaving range
+> > linkage operation to be in fast path.
+> > 
+> > Provide an interface to allocate/deallocate IOVA and next patch
+> > link/unlink DMA ranges to that specific IOVA.
+> > 
+> > In the new API a DMA mapping transaction is identified by a
+> > struct dma_iova_state, which holds some recomputed information
+> > for the transaction which does not change for each page being
+> > mapped, so add a check if IOVA can be used for the specific
+> > transaction.
+> > 
+> > The API is exported from dma-iommu as it is the only implementation
+> > supported, the namespace is clearly different from iommu_* functions
+> > which are not allowed to be used. This code layout allows us to save
+> > function call per API call used in datapath as well as a lot of boilerplate
+> > code.
+> > 
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >   drivers/iommu/dma-iommu.c   | 74 +++++++++++++++++++++++++++++++++++++
+> >   include/linux/dma-mapping.h | 49 ++++++++++++++++++++++++
+> >   2 files changed, 123 insertions(+)
+> > 
+> > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> > index 853247c42f7d..5906b47a300c 100644
+> > --- a/drivers/iommu/dma-iommu.c
+> > +++ b/drivers/iommu/dma-iommu.c
+> > @@ -1746,6 +1746,80 @@ size_t iommu_dma_max_mapping_size(struct device *dev)
+> >   	return SIZE_MAX;
+> >   }
+> > +/**
+> > + * dma_iova_try_alloc - Try to allocate an IOVA space
+> > + * @dev: Device to allocate the IOVA space for
+> > + * @state: IOVA state
+> > + * @phys: physical address
+> > + * @size: IOVA size
+> > + *
+> > + * Check if @dev supports the IOVA-based DMA API, and if yes allocate IOVA space
+> > + * for the given base address and size.
+> > + *
+> > + * Note: @phys is only used to calculate the IOVA alignment. Callers that always
+> > + * do PAGE_SIZE aligned transfers can safely pass 0 here.
+> > + *
+> > + * Returns %true if the IOVA-based DMA API can be used and IOVA space has been
+> > + * allocated, or %false if the regular DMA API should be used.
+> > + */
+> > +bool dma_iova_try_alloc(struct device *dev, struct dma_iova_state *state,
+> > +		phys_addr_t phys, size_t size)
+> > +{
+> > +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
+> > +	struct iommu_dma_cookie *cookie = domain->iova_cookie;
+> > +	struct iova_domain *iovad = &cookie->iovad;
+> > +	size_t iova_off = iova_offset(iovad, phys);
+> > +	dma_addr_t addr;
+> > +
+> > +	memset(state, 0, sizeof(*state));
+> > +	if (!use_dma_iommu(dev))
+> > +		return false;
+> 
+> Can you guess why that return won't ever be taken?
+
+I will move references to pointers after this check, but like Christoph
+said, this "if ..." is taken a lot and we didn't see any issues with
+inbox GCC versions.
+
+> 
+> > +	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
+> > +	    iommu_deferred_attach(dev, iommu_get_domain_for_dev(dev)))
+> > +		return false;
+> > +
+> > +	if (WARN_ON_ONCE(!size))
+> > +		return false;
+> > +	if (WARN_ON_ONCE(size & DMA_IOVA_USE_SWIOTLB))
+> 
+> This looks weird. Why would a caller ever set an effectively-private flag in
+> the first place? If it's actually supposed to be a maximum size check,
+> please make it look like a maximum size check.
+
+It is in-kernel API and the idea is to warn developers of something that
+is not right and not perform defensive programming by doing size checks.
 
 <...>
 
-> >> +	if (dev_use_swiotlb(dev, size, dir) && iova_offset(iovad, phys | size))
-> >
-> > Again, why are we supporting non-granule-aligned mappings in the middle of 
-> > a range when the documentation explicitly says not to?
+> > +/**
+> > + * dma_iova_free - Free an IOVA space
+> > + * @dev: Device to free the IOVA space for
+> > + * @state: IOVA state
+> > + *
+> > + * Undoes a successful dma_try_iova_alloc().
+> > + *
+> > + * Note that all dma_iova_link() calls need to be undone first.  For callers
+> > + * that never call dma_iova_unlink(), dma_iova_destroy() can be used instead
+> > + * which unlinks all ranges and frees the IOVA space in a single efficient
+> > + * operation.
 > 
-> It's not trying to support that, but checking that this is guaranteed
-> to be the last one is harder than handling it like this.  If you have
-> a suggestion for better checks that would be very welcome.
-> 
-> >> +		if (!dev_is_dma_coherent(dev) &&
-> >> +		    !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-> >> +			arch_sync_dma_for_cpu(phys, len, dir);
-> >
-> > Hmm, how do attrs even work for a bulk unlink/destroy when the individual 
-> > mappings could have been linked with different values?
-> 
-> They shouldn't.  Just like randomly mixing flags doesn't work for the
-> existing APIs.
-> 
-> > (So no, irrespective of how conceptually horrid it is, clearly it's not 
-> > even functionally viable to open-code abuse of DMA_ATTR_SKIP_CPU_SYNC in 
-> > callers to attempt to work around P2P mappings...)
-> 
-> What do you mean with "work around"?  I guess Leon added it to the hmm
-> code based on previous feedback, but I still don't think any of our P2P
-> infrastructure works reliably with non-coherent devices as
-> iommu_dma_map_sg gets this wrong.  So despite the earlier comments I
-> suspect this should stick to the state of the art even if that is broken.
+> That's only true if they *also* call dma_iova_link() in just the right way
+> too.
 
-Right, I was asked to set DMA_ATTR_SKIP_CPU_SYNC for PCI_P2PDMA_MAP_THRU_HOST_BRIDGE case.
-...
-  752         case PCI_P2PDMA_MAP_THRU_HOST_BRIDGE:
-  753                 attrs |= DMA_ATTR_SKIP_CPU_SYNC;
-  754                 pfns[idx] |= HMM_PFN_P2PDMA;
-  755                 break;
+We can update the comment section to any wording, feel free to propose.
 
-At this stage, we didn't change DMA/IOMMU previous behaviour and if it
-was broken for certain flows, it stays to be broken after this series
-too.
+> 
+> > + */
+> > +void dma_iova_free(struct device *dev, struct dma_iova_state *state)
+> > +{
+> > +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
+> > +	struct iommu_dma_cookie *cookie = domain->iova_cookie;
+> > +	struct iova_domain *iovad = &cookie->iovad;
+> > +	size_t iova_start_pad = iova_offset(iovad, state->addr);
+> > +	size_t size = dma_iova_size(state);
+> > +
+> > +	iommu_dma_free_iova(cookie, state->addr - iova_start_pad,
+> > +			iova_align(iovad, size + iova_start_pad), NULL);
+> > +}
+> > +EXPORT_SYMBOL_GPL(dma_iova_free);
+> > +
+> >   void iommu_setup_dma_ops(struct device *dev)
+> >   {
+> >   	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
+> > diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+> > index b79925b1c433..55899d65668b 100644
+> > --- a/include/linux/dma-mapping.h
+> > +++ b/include/linux/dma-mapping.h
+> > @@ -7,6 +7,8 @@
+> >   #include <linux/dma-direction.h>
+> >   #include <linux/scatterlist.h>
+> >   #include <linux/bug.h>
+> > +#include <linux/mem_encrypt.h>
+> > +#include <linux/iommu.h>
+> 
+> Why are these being pulled in here?
+
+It is rebase leftover.
+
+> 
+> >   /**
+> >    * List of possible attributes associated with a DMA mapping. The semantics
+> > @@ -72,6 +74,21 @@
+> >   #define DMA_BIT_MASK(n)	(((n) == 64) ? ~0ULL : ((1ULL<<(n))-1))
+> > +struct dma_iova_state {
+> > +	dma_addr_t addr;
+> > +	size_t __size;
+> > +};
+> > +
+> > +/*
+> > + * Use the high bit to mark if we used swiotlb for one or more ranges.
+> > + */
+> > +#define DMA_IOVA_USE_SWIOTLB		(1ULL << 63)
+> 
+> This will give surprising results for 32-bit size_t (in fact I guess it
+> might fire some build warnings already).
+
+We got none, I will change to u64.
+
+> 
+> Thanks,
+> Robin.
 
 Thanks
 
