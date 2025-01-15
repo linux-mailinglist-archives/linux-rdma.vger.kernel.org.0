@@ -1,268 +1,150 @@
-Return-Path: <linux-rdma+bounces-7019-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7020-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9172FA11834
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 05:02:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95DA6A11836
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 05:03:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 387923A7AB7
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 04:01:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6300188861D
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2025 04:03:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB327155333;
-	Wed, 15 Jan 2025 04:01:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4048F156676;
+	Wed, 15 Jan 2025 04:03:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="byA2KpiL"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="OOAFbzyU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FEB16F305
-	for <linux-rdma@vger.kernel.org>; Wed, 15 Jan 2025 04:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9464735949
+	for <linux-rdma@vger.kernel.org>; Wed, 15 Jan 2025 04:03:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736913716; cv=none; b=LWp1MECaTApn5992oJ8NxU7WXtjl2zo+gDVcpNl/UsEZXLviyasCKGBHoAt8hPDnv6nSrYmHRtu4ytk0LsJ3tsTs3WA/ooXKq2b+SBQQ67EVi/NGRfqDvPtOYTljFWwAE2qL66RorP8ksBrFki+sEWJ6i67uWimkx3zvxg535v0=
+	t=1736913811; cv=none; b=hzniq4JmzagTUFUIs5jKq/5H2lQLjm4rGSWz+7+TFjXNskDN79ICia+uDm1aVHCjhLRv0RwUyxFQl37YvevBrav8OPPdai7Cg3W5y7wDopjOrv8JqV9wu/s1urB691JfJn58mvgpMTXJ+ff5DeWeE2PNzW3f091XBCROLn77k/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736913716; c=relaxed/simple;
-	bh=Vwzn1BYlSEnRZTdd7ouckVv3z70uXk/EbBV1SebN718=;
+	s=arc-20240116; t=1736913811; c=relaxed/simple;
+	bh=xzAVcVDebsMyPqCylk/wEQgyS9c57GvjPxm7yxxqCjM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nDoZKB2XXzWPROqMVW8mMAnZB499wfWO145FSRrlJhkzrxYeltcmioMT7eMV31UYSP03wCOkiNmXmQqLNSGuakWkERY8gt+t7iX83PWZKKvUWIf1EiNv9ZkFQ/dbHuWAimW0En5rgs6EbbNvCVqpeKhixqGYnFqdGmZfCuerEVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=byA2KpiL; arc=none smtp.client-ip=209.85.216.44
+	 To:Cc:Content-Type; b=k5WfYWHi9vtLgL+ISWNPMcZfLpRBLPbWNcCBgey/c/Svy/1pC9LPXEMQXckqzEyqOimcrPqMlBjZB+ce4CBcbuZ+wSMRZZpVEoWLzdrjBbsLataDB7rrs9AgKpxY8ziJLusxzEJU4aVEYP/489Uoyd1NxV8K26PFl+8+B8mZvCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=OOAFbzyU; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2ef748105deso7849222a91.1
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jan 2025 20:01:54 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2f42992f608so8587434a91.0
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Jan 2025 20:03:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1736913714; x=1737518514; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1736913809; x=1737518609; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mPvlu8jmW+AxCZkn4jHHyw+d9Oyq2wufQnTz5veT2fc=;
-        b=byA2KpiLLcR96oigKwbg8NP2xVUaPFm/1MHnZxMu8oglaFdXLTOacS0a5GKLO97Kso
-         jx4E9xCq31AQWG9RsoQMEH2r5j4Y0oztAbJ3D8yvbeBGiRGBOwi5f3Kc6qL7936508d5
-         Vy/kbxQdZg6m45nsG9fmh0jRhVA+MBs3dQC9c=
+        bh=+Dd0ziXHs51/1i6VAqBt3kwFCUZGJcCyUBdwxIRo3nM=;
+        b=OOAFbzyUVcBDKZ9OUdaqz1M1j2WYo+N/D0/bUiBGG5QWpi0T3vPAoqpJ03s8rFPuJo
+         xiO/gIc7w+2i9T4YhR0F3PPsFKhQDOMpI7e4rh0fA6+BIT4bMKATEZHy/aymqjhv/gNq
+         vTims5z50D96BVRP9StJshZgUVviFXedluQ10=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736913714; x=1737518514;
+        d=1e100.net; s=20230601; t=1736913809; x=1737518609;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mPvlu8jmW+AxCZkn4jHHyw+d9Oyq2wufQnTz5veT2fc=;
-        b=BT4WElrV8OlpF4ZdCsGMe2syNFkar77Vqoz8jVSne1/bRw0j5z9EyxGX6cqrbLlVcV
-         YdzdZI+qldwiNgRvHwgZWDgYPSpeOpbaReX6mhxUYJfIyX1D5bJHPte3Cebddr2YmL19
-         8u4gHw0VF0kD4FVuxAqC/rrU242rkhvlWbfUcbpD11lVcs9V0D4NDkWYmEf5x+7SZHFO
-         mYo9Hb52spvZUT9LoX7OwHUvc0sk+bpF0OdN9Zb9oZz9ML0XNHQFaSgB57gjNLaTwOkc
-         9bNNBYF9Ooal83zHsc3Qhl/LXR5fZJ4J1xMcXXFaIK0RxqXZrbpwMDbBOlSZFThoPRWY
-         JZmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXBSBkkpOMp5R71tziu8Nk6hjY92jMM6Fyw6+V4ua+viibyzrjMtVSi+R6JEcyJcDzaOZM8sK9LvI86@vger.kernel.org
-X-Gm-Message-State: AOJu0YzkHIPG3/znV79T4r5WOBiJC0kjQQU6Ak7lVMqdvm8v3M6IRlkk
-	Et7BUhU4r0+G9xvO4vtCtRTmeYsf02cgoFOY5SHs3FnRCcgQMic8H5DWG9vJRvfMS7H2OC3Ta/K
-	k4PJ3WkAupqaNpatkgKibsCL/ZDr5UpH2kysn
-X-Gm-Gg: ASbGncsWgHmSb+UKaUn1QCaYDcEtxco+AINczVkmY9uTUz/6qFk1q2Sz/ygDMFJiOS+
-	RGQRNev9roQpy8XUXe6NPy9SAK0Fh5XP+kUrawJI=
-X-Google-Smtp-Source: AGHT+IHy0TkxhMDSQ+sLU/tJZcOLmVXHzzp4kPEDPOJfRCM/5jdcIDch9qN07B2FHWLWxv9mIxcudLM7KHUOzWZon44=
-X-Received: by 2002:a17:90a:fc48:b0:2ee:b2fe:eeeb with SMTP id
- 98e67ed59e1d1-2f548eca9dfmr34012593a91.22.1736913714243; Tue, 14 Jan 2025
- 20:01:54 -0800 (PST)
+        bh=+Dd0ziXHs51/1i6VAqBt3kwFCUZGJcCyUBdwxIRo3nM=;
+        b=BHvkNvXgpI4l/DBmKqRFr17VrZhqxo63iZb0g8pxUdmGYmZ5bGyDpAqwHAvMaQErOf
+         +8WS0otHtaOSx/LQHMJOOBO6JSXa/f5HOKm3o0UvRYZHXYpaBIgNq5H4V8ixsubt9pdg
+         bc+0uSOZbufOD4oks30l2QyoSljD492EodlKUplDSmtr3AHOoABXAP+9964lU6cXHq5q
+         ypO15rixoZd68RM6A/eMACFfkvH4dzXE1TxI05U2t5tHFpwJdQZur1bNyF3+K9oqiA0O
+         wn+HmLvJTrf2vC1ZuOGUYj1+jwNn9MqT/BwgnUEwcNuzScc10NKgmNwZ1AXnLVmHvVnR
+         lORw==
+X-Forwarded-Encrypted: i=1; AJvYcCUImEFQCbYc+xSxVHPabfwvpKbTrLlufQUis5kjzPVsGTqHSUs4vh8BFZ2gwgYaoCVlv0qhTkDDSm0/@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9Dm+e9Q7slfmXkYS+hBEKpThpv2+eTTjcY50dT+iJuYSPz0Wm
+	XOSw32ORHOATXzbEiCZdkxFNT/Q8+Sx0lfespH/iwSFzU2pG9W51QRfmbrix3xprSYmKO23FNEW
+	FwHcPE1U7Y1VRIjYMbCcnE6U/rPP5+KJxbNnM
+X-Gm-Gg: ASbGnctb1Ncx8jsFjZvFqmfkmKhPDiFwnjkP2Lch3P90JkMM6l/3reK1Xp4Kz9jjPJb
+	/VK2iz0y93E9zpt+DM5bgBiBGMZNnttP3d307R/4=
+X-Google-Smtp-Source: AGHT+IEJkpUwUdXOZswp5BhWCYgVuTaOfK5fGuvAtOlGG2EGWPqzf4cIGeeW3vj2H+imxcyyv3dCsiOPjUvCSN9FUTQ=
+X-Received: by 2002:a17:90b:2588:b0:2ee:c9b6:c26a with SMTP id
+ 98e67ed59e1d1-2f548eae05amr40522802a91.11.1736913808848; Tue, 14 Jan 2025
+ 20:03:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250107024553.2926983-1-kalesh-anakkur.purayil@broadcom.com> <20250114090510.GF3146852@unreal>
-In-Reply-To: <20250114090510.GF3146852@unreal>
+References: <1736446693-6692-1-git-send-email-selvin.xavier@broadcom.com>
+ <1736446693-6692-3-git-send-email-selvin.xavier@broadcom.com> <20250114112555.GG3146852@unreal>
+In-Reply-To: <20250114112555.GG3146852@unreal>
 From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Wed, 15 Jan 2025 09:31:42 +0530
-X-Gm-Features: AbW1kvY8gAdFOqmz62zmRAgs4EPdxY9YAUkjF6ntLi9gUEr-Q_RPLrkTobxyXW4
-Message-ID: <CAH-L+nPYMQAHwb+k=LDaGwUUFs+j4jPc2tC079GhtyS8fQDrNQ@mail.gmail.com>
-Subject: Re: [PATCH rdma-next v2 RESEND 0/4] RDMA/bnxt_re: Support for FW
- async event handling
+Date: Wed, 15 Jan 2025 09:33:18 +0530
+X-Gm-Features: AbW1kvbypQTPYC5byN0YkdrviNoFmYuXRmPXEnKLC_YSDknTTjBQWYbXOfozc6Q
+Message-ID: <CAH-L+nMe0BPbXesZH_nc7tQut84dEtNR=mz8sdUXF6K_E7RyWg@mail.gmail.com>
+Subject: Re: [PATCH for-next 2/2] RDMA/bnxt_re: Allocate dev_attr information dynamically
 To: Leon Romanovsky <leon@kernel.org>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, andrew+netdev@lunn.ch, andrew.gospodarek@broadcom.com, 
-	selvin.xavier@broadcom.com, michael.chan@broadcom.com, 
-	pavan.chebbi@broadcom.com
+Cc: Selvin Xavier <selvin.xavier@broadcom.com>, jgg@ziepe.ca, linux-rdma@vger.kernel.org, 
+	andrew.gospodarek@broadcom.com
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000f69cdf062bb6bc07"
+	boundary="00000000000099e755062bb6c2f7"
 
---000000000000f69cdf062bb6bc07
+--00000000000099e755062bb6c2f7
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 14, 2025 at 2:35=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
+On Tue, Jan 14, 2025 at 4:56=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
 rote:
 >
-> On Tue, Jan 07, 2025 at 08:15:48AM +0530, Kalesh AP wrote:
-> > This patch series adds support for FW async event handling
-> > in the bnxt_re driver.
+> On Thu, Jan 09, 2025 at 10:18:13AM -0800, Selvin Xavier wrote:
+> > From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 > >
-> > V1->V2:
-> > 1. Rebased on top of the latest "for-next" tree.
-> > 2. Split Patch#1 into 2 - one for Ethernet driver changes and
-> >    another one for RDMA driver changes.
-> > 3. Addressed Leon's comments on Patch#1 and Patch #3.
-> > V1: https://lore.kernel.org/linux-rdma/1725363051-19268-1-git-send-emai=
-l-selvin.xavier@broadcom.com/T/#t
+> > In order to optimize the size of driver private structure,
+> > the memory for dev_attr is allocated dynamically during the
+> > chip context initialization. In order to make certain runtime
+> > decisions, store dev_attr in the qplib_res structure.
 > >
-> > Patch #1:
-> > 1. Removed BNXT_EN_FLAG_ULP_STOPPED state check from bnxt_ulp_async_eve=
-nts().
-> >    The ulp_ops are protected by RCU. This means that during bnxt_unregi=
-ster_dev(),
-> >    Ethernet driver set the ulp_ops pointer to NULL and do RCU sync befo=
-re return
-> >    to the RDMA driver.
-> >    So ulp_ops and the pointers in ulp_ops are always valid or NULL when=
- the
-> >    Ethernet driver references ulp_ops. ULP_STOPPED is a state and shoul=
-d be
-> >    unrelated to async events. It should not affect whether async events=
- should
-> >    or should not be passed to the RDMA driver.
-> > 2. Changed Author of Ethernet driver changes to Michael Chan.
-> > 3. Removed unnecessary export of function bnxt_ulp_async_events.
+> > Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> > ---
+> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h     |  2 +-
+> >  drivers/infiniband/hw/bnxt_re/hw_counters.c |  2 +-
+> >  drivers/infiniband/hw/bnxt_re/ib_verbs.c    | 38 ++++++++++++++-------=
+--------
+> >  drivers/infiniband/hw/bnxt_re/main.c        | 36 +++++++++++++++++----=
+------
+> >  drivers/infiniband/hw/bnxt_re/qplib_res.c   |  7 +++---
+> >  drivers/infiniband/hw/bnxt_re/qplib_res.h   |  4 +--
+> >  drivers/infiniband/hw/bnxt_re/qplib_sp.c    |  4 +--
+> >  drivers/infiniband/hw/bnxt_re/qplib_sp.h    |  3 +--
+> >  8 files changed, 51 insertions(+), 45 deletions(-)
+>
+> <...>
+>
+> > index 33956fc..7c7057b 100644
+> > --- a/drivers/infiniband/hw/bnxt_re/main.c
+> > +++ b/drivers/infiniband/hw/bnxt_re/main.c
+> > @@ -148,6 +148,10 @@ static void bnxt_re_destroy_chip_ctx(struct bnxt_r=
+e_dev *rdev)
 > >
-> > Patch #3:
-> > 1. Removed unnecessary flush_workqueue() before destroy_workqueue()
-> > 2. Removed unnecessary NULL assignment after free.
-> > 3. Changed to use "ibdev_xxx" and reduce level of couple of logs to deb=
-ug.
-> >
-> > Please review and apply.
-> >
-> > Regards,
-> > Kalesh
-> >
-> >
-> > Kalesh AP (3):
-> >   RDMA/bnxt_re: Add Async event handling support
-> >   RDMA/bnxt_re: Query firmware defaults of CC params during probe
-> >   RDMA/bnxt_re: Add support to handle DCB_CONFIG_CHANGE event
-> >
-> > Michael Chan (1):
-> >   bnxt_en: Add ULP call to notify async events
-> >
-> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h       |   3 +
-> >  drivers/infiniband/hw/bnxt_re/main.c          | 156 ++++++++++++++++++
-> >  drivers/infiniband/hw/bnxt_re/qplib_fp.h      |   1 +
-> >  drivers/infiniband/hw/bnxt_re/qplib_sp.c      | 113 +++++++++++++
-> >  drivers/infiniband/hw/bnxt_re/qplib_sp.h      |   3 +
-> >  drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   1 +
-> >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c |  28 ++++
-> >  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |   2 +
-> >  8 files changed, 307 insertions(+)
+> >       if (!rdev->chip_ctx)
+> >               return;
+> > +
+> > +     kfree(rdev->dev_attr);
+> > +     rdev->dev_attr =3D NULL;
+> > +
 >
-> Applied with the following fix
->
-> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw=
-/bnxt_re/main.c
-> index 1dc305689d7bb..54dee0f5dd3f5 100644
-> --- a/drivers/infiniband/hw/bnxt_re/main.c
-> +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> @@ -1802,30 +1802,22 @@ static int bnxt_re_setup_qos(struct bnxt_re_dev *=
-rdev)
->
->  static void bnxt_re_net_unregister_async_event(struct bnxt_re_dev *rdev)
->  {
-> -       int rc;
-> -
->         if (rdev->is_virtfn)
->                 return;
->
->         memset(&rdev->event_bitmap, 0, sizeof(rdev->event_bitmap));
-> -       rc =3D bnxt_register_async_events(rdev->en_dev, &rdev->event_bitm=
-ap,
-> -                                       ASYNC_EVENT_CMPL_EVENT_ID_DCB_CON=
-FIG_CHANGE);
-> -       if (rc)
-> -               ibdev_err(&rdev->ibdev, "Failed to unregister async event=
-");
-> +       bnxt_register_async_events(rdev->en_dev, &rdev->event_bitmap,
-> +                                  ASYNC_EVENT_CMPL_EVENT_ID_DCB_CONFIG_C=
-HANGE);
->  }
->
->  static void bnxt_re_net_register_async_event(struct bnxt_re_dev *rdev)
->  {
-> -       int rc;
-> -
->         if (rdev->is_virtfn)
->                 return;
->
->         rdev->event_bitmap |=3D (1 << ASYNC_EVENT_CMPL_EVENT_ID_DCB_CONFI=
-G_CHANGE);
-> -       rc =3D bnxt_register_async_events(rdev->en_dev, &rdev->event_bitm=
-ap,
-> -                                       ASYNC_EVENT_CMPL_EVENT_ID_DCB_CON=
-FIG_CHANGE);
-> -       if (rc)
-> -               ibdev_err(&rdev->ibdev, "Failed to unregister async event=
-");
-> +       bnxt_register_async_events(rdev->en_dev, &rdev->event_bitmap,
-> +                                  ASYNC_EVENT_CMPL_EVENT_ID_DCB_CONFIG_C=
-HANGE);
->  }
->
->  static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/=
-ethernet/broadcom/bnxt/bnxt_ulp.c
-> index 59c280634bc5f..3e17db0a453e0 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-> @@ -373,9 +373,8 @@ void bnxt_ulp_async_events(struct bnxt *bp, struct hw=
-rm_async_event_cmpl *cmpl)
->         rcu_read_unlock();
->  }
->
-> -int bnxt_register_async_events(struct bnxt_en_dev *edev,
-> -                              unsigned long *events_bmap,
-> -                              u16 max_id)
-> +void bnxt_register_async_events(struct bnxt_en_dev *edev,
-> +                               unsigned long *events_bmap, u16 max_id)
->  {
->         struct net_device *dev =3D edev->net;
->         struct bnxt *bp =3D netdev_priv(dev);
-> @@ -387,7 +386,6 @@ int bnxt_register_async_events(struct bnxt_en_dev *ed=
-ev,
->         smp_wmb();
->         ulp->max_async_event_id =3D max_id;
->         bnxt_hwrm_func_drv_rgtr(bp, events_bmap, max_id + 1, true);
-> -       return 0;
->  }
->  EXPORT_SYMBOL(bnxt_register_async_events);
->
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h b/drivers/net/=
-ethernet/broadcom/bnxt/bnxt_ulp.h
-> index a21294cf197b8..ee6a5b8562c3e 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
-> @@ -126,6 +126,6 @@ int bnxt_register_dev(struct bnxt_en_dev *edev, struc=
-t bnxt_ulp_ops *ulp_ops,
->                       void *handle);
->  void bnxt_unregister_dev(struct bnxt_en_dev *edev);
->  int bnxt_send_msg(struct bnxt_en_dev *edev, struct bnxt_fw_msg *fw_msg);
-> -int bnxt_register_async_events(struct bnxt_en_dev *edev,
-> -                              unsigned long *events_bmap, u16 max_id);
-> +void bnxt_register_async_events(struct bnxt_en_dev *edev,
-> +                               unsigned long *events_bmap, u16 max_id);
->  #endif
+> I'm taking this patch, but please let's stop this practice of setting NUL=
+L
+> for the pointers which are not going to be reused. Such assignment hides =
+bugs.
 
-Makes sense and LGTM, thank you Leon!
+Sure, we will try to remove such occurrences in the driver and push a
+cleanup patch. Thanks!
 >
-> >
-> > --
-> > 2.43.5
-> >
+> Thanks
 
 
 
-
---
+--=20
 Regards,
 Kalesh AP
 
---000000000000f69cdf062bb6bc07
+--00000000000099e755062bb6c2f7
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -334,14 +216,14 @@ a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
 x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
 VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
 bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEIKPc2tsuf8NG/O+iM/AcMD7k6SKFlvzArIoaehXcXW7/MBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDExNTA0MDE1NFowaQYJKoZIhvcNAQkPMVwwWjAL
+AQkEMSIEIAKvyTWy8xA1/9FMTmpq48QzyYfhIi8l/UUvWj/WbdXBMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDExNTA0MDMyOVowaQYJKoZIhvcNAQkPMVwwWjAL
 BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB3oDpx8h9r
-FZ2WUbiCb7rHdhFY84zHzX2ZEWUW2XRGbwr/SoJRHxA/mTMGduV1a+Etqlg/D5uihl618YdkBhvP
-TxhqEDAnHTBw3fRW7us+5xrYy+B1qArrJFWAojY1JUn3yWSvx+0z/b0zk4kJ/vVbyVgS1n2dvQux
-P+K0EU+WTAV+MmxEQWzlPVThKSMHGW/FXvuH0lY06F1wXBCWLZ7jWT29FtHjv329m4CGCMq9TvE5
-r0tHlv2jBXhQUNfRIrXXmvnP97Tj1gMlH48YCG5tUjrvy+bzlkBEsP5dPAFmwd8LYiEsDEgfNPRP
-kIrVtXxxYlzL9isKLoCjVkN28DjU
---000000000000f69cdf062bb6bc07--
+9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCEKcxLPtP8
+EO8USuGqGL1rjJNinxTq4+tRhyBV+4oGI6/hAJ/iZ4lB+6ORo/wrmOoa2ZlzhhcAXEmBiiyDO7CB
+f3dKrY0CpIsneYbXI9i7vOOKxULk2goCWOozavf6YWdvkeDpxvJXr50WbZqaXEs9ywyywZt3c2n4
+OjyMENYbhbWxqzB7V1XFqXpvCko+XfBupRKPOpypOmBIJOk7mw8i6gu/fKtXALZDpIDPTBhPtDDY
+hJ5aZEFAOvioc9ek5evE1zhl9RjVkF61psYbo0GGDHzvmSvdVbCA4u3YCzZi9zf6OBNqotOWmSik
+ElbgWIcVVAbe6v+5VKbHqq56hLHQ
+--00000000000099e755062bb6c2f7--
 
