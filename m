@@ -1,384 +1,229 @@
-Return-Path: <linux-rdma+bounces-7034-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7035-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB978A131E1
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2025 05:05:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 842E0A131F0
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2025 05:16:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 976077A27D4
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2025 04:05:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B57B81887776
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2025 04:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA9178F2E;
-	Thu, 16 Jan 2025 04:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A23482890;
+	Thu, 16 Jan 2025 04:16:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="X+ltxZ1r"
+	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="iwZU2Wes"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from esa12.hc1455-7.c3s2.iphmx.com (esa12.hc1455-7.c3s2.iphmx.com [139.138.37.100])
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2100.outbound.protection.outlook.com [40.107.94.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926D241C6A;
-	Thu, 16 Jan 2025 04:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.138.37.100
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737000347; cv=none; b=Yc0MALmodl2N1TJFYXL8icxxFv0XuF7PrH3Gfd47Y7NEvq/DpfCWy9V7T1lxbR5h59Mta8M9jqs9r30ezR7PBH7v8HC8EiZye6leM/wYedrPbDUFzwuPjebUryQ2aBpcq/O5P85efRY3hlT1/pREzc/87mC6WaKmULMToarsTsY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737000347; c=relaxed/simple;
-	bh=7lIrF7oO4Pwd4L12BlIXY2/1HqjaOPrMQyk1MFQIJpI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XRFSdISoV1Lh2mHZcp33KdM0AjVqFk23/tOcCAOwLcKK1OBa9jdDoBv3RCALnHtk5Lh1ffIi6pRhKBrr5pfo9Qz9bXjbYa3Q2RUyOSup0+MCTUTRsGi+19mZlMJqNb1Has9l3MaI3d2no/ThN3YcJX19G/B6XU8Cu6RAhSKwv/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=X+ltxZ1r; arc=none smtp.client-ip=139.138.37.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1737000345; x=1768536345;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=7lIrF7oO4Pwd4L12BlIXY2/1HqjaOPrMQyk1MFQIJpI=;
-  b=X+ltxZ1rFtUJNYQ6K0eiVMKddIfcb/GjMQVWh1SBiAV9jSrlCrUes1pY
-   lg3FujVXH5gUkUnEXZ6NQ9sdPWJXlN+pHil8+v0xQbIYxKTBmfVjICXua
-   4XyWFFMAqdlI/X+6hISNnmnw5K2RQ3k6dV08J5MAbGpDovb0RtlNWYWbu
-   /skP0frtCnou5DgBwqWtE9TtniodAWat7pmC4BrHlRby6IB579h20bmpb
-   xxJu/X8LlNH+NviqIEednTG7CAXX0BwhmUXdd71xzSwXSr4CB6Vdn3SZ9
-   5gueYHrtgw5RwZaYqj8yDSksFbJ0FILil63HnD4AI1NIMD9mgEu9mfpah
-   w==;
-X-CSE-ConnectionGUID: LFpgde60Tu2cebYlAAIQDA==
-X-CSE-MsgGUID: OXDBUgpQSY21Sxg2zEepSA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11316"; a="165642541"
-X-IronPort-AV: E=Sophos;i="6.13,208,1732546800"; 
-   d="scan'208";a="165642541"
-Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
-  by esa12.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2025 13:05:36 +0900
-Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com [192.168.87.58])
-	by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id DAE34C2260;
-	Thu, 16 Jan 2025 13:05:33 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
-	by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id B30FBD8AF6;
-	Thu, 16 Jan 2025 13:05:33 +0900 (JST)
-Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
-	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 3EE0D6B64B;
-	Thu, 16 Jan 2025 13:05:33 +0900 (JST)
-Received: from iaas-rpma.. (unknown [10.167.135.44])
-	by edo.cn.fujitsu.com (Postfix) with ESMTP id 915171A0073;
-	Thu, 16 Jan 2025 12:05:30 +0800 (CST)
-From: Li Zhijian <lizhijian@fujitsu.com>
-To: linux-block@vger.kernel.org
-Cc: shinichiro.kawasaki@wdc.com,
-	linux-rdma@vger.kernel.org,
-	Li Zhijian <lizhijian@fujitsu.com>
-Subject: [PATCH blktests v2] tests: Remove unnecessary '&&' in requires() functions
-Date: Thu, 16 Jan 2025 12:05:25 +0800
-Message-Id: <20250116040525.173256-1-lizhijian@fujitsu.com>
-X-Mailer: git-send-email 2.31.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E9004414;
+	Thu, 16 Jan 2025 04:16:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.100
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1737000988; cv=fail; b=YvfqODRd/2D9pY5w+ZU4L6qOzIRQIyLNl11Bc9+0UOfPUM4QgDGZaGzpIY+2XYePqHv4FM1o5ihpRhsjwXWIOxcJjvStgJhxln5twBmhZch/3PzwcuDK8LfqOo5BdCQqKDJA86OFVn3F2H76DsEQe4LjITqnR3viIUjPTz1jCl8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1737000988; c=relaxed/simple;
+	bh=8zPbicVuP32munAAORCgrfo8aSm6J0kN5UnAH2rKe+0=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Ii0B9T0nk9WfUANcs91E8vxxwLOIExZ0G6w3JziYNkSb78V0SDW2QPxPt1HI7hpOMYy0+RlH/BmiSZcrq/RWUKImAy2Gd1RDsdxOo3/fQwgIkUzG+bLqMWgWfIsCdBYmAzWmHVX0IpVhAslHh3Z1fLO96BwoL8yHXNLcBUVjWsQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=iwZU2Wes; arc=fail smtp.client-ip=40.107.94.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=vI9fUuQVWZDKvLICtyhXgIZBugMPenvrlN3GYLcxVqSVa8Yl+DekDqiGgVa8omabj8qRt6F1Vkgn1M8kalksLaSTTc5M5rBaFb3P8a8ndh/vfh++TrxECPQSJNLgZ1/3mCJc3he+55XPsYOA1Cg7vHwp6eT6v3atAA5NOpFTvBOHR809v5ZLrNs4YFZYDZAlF9HibvEz0qCzBRK89/XwVQovVq8PTh5sXaJMQW08E+4FfbgoZss3ntycphABVGGYMFWdo30DePUwQDElL/hzOb4QKWNpprpbJams1SlHWiy+JpGzIWMziY/CPMo/NTyF0bTrOMbJXTkIwb3Xog91bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GhxTuSN4JrNDVPwjG/H0CLvIBenrahnjGeuroUATP6Q=;
+ b=vEttb2exizwks5t5JAlgREeZwXIFGH5q7BHCzEKMQAlgP1NwbRIEgmsXVzOxS1bC/xTj5leH9s51w+SX7MW8uyqBIDGJD7snLUb6w3lBsv91JgYfQcBDqo2db64EeS1jh6ImrvfcV9jcPv+ZAB2N9pEV3McE8k1dAKk7SqWZB8/91g024bQ9A1eYGcYu4jVtNZ3DGRd5hdXXySVCQI2oYpUXJ13Q7HMmCiuHEtYcvAel+qqDj8kaJfgMHmNJll8eupvgNsCy1TMAptKnKSketcw4KH7BlzG3I/swP3+GxRSbgglXdLehwd9TYWjDNw4gd9Apm4Ws5TV3/aY2LADf+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GhxTuSN4JrNDVPwjG/H0CLvIBenrahnjGeuroUATP6Q=;
+ b=iwZU2WesJmQwQ9UCnLkmmTbZGjc0WKeaWxGRyVkU5uQCJVxsjT6qcS4LFbNyMSQwcA68LUVxTwC7vK3EtFVkREXWfLehALvZUzHAbVNj7sG+QSwHtY8PYjikxoKHc5pGQz739M1WBeO2KXzEg2Tkl/dwU6qgfooDftJzD3ZY+h9HVBtJlrTgozVpNqt0LiGsOz6KPxoqMud4atKQ+ukh3zuhk3Y7Xn+Hh6xAtC55RPi2Gwidjkg+nUAkD4qpRKjWZYNdwenF94fwrvGDiT5EukC/Pj38rJZKvFIjjdBDKk3ojQ9vVNnQM95wLnqECnySdpurqcmFfrGjAP02eDwjBA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
+Received: from SJ0PR01MB6158.prod.exchangelabs.com (2603:10b6:a03:2a0::15) by
+ MW4PR01MB6482.prod.exchangelabs.com (2603:10b6:303:65::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8356.14; Thu, 16 Jan 2025 04:16:23 +0000
+Received: from SJ0PR01MB6158.prod.exchangelabs.com
+ ([fe80::d4a8:cb9c:7a0:eb5b]) by SJ0PR01MB6158.prod.exchangelabs.com
+ ([fe80::d4a8:cb9c:7a0:eb5b%4]) with mapi id 15.20.8356.010; Thu, 16 Jan 2025
+ 04:16:23 +0000
+Message-ID: <3a3a857e-7769-40b4-81d2-2a4e71bd301f@cornelisnetworks.com>
+Date: Wed, 15 Jan 2025 23:16:18 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [lvc-project] [PATCH] IB/hfi1: fix buffer underflow in fault
+ injection code
+To: Fedor Pchelkin <pchelkin@ispras.ru>
+Cc: Vitaliy Shevtsov <v.shevtsov@maxima.ru>, lvc-project@linuxtesting.org,
+ Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>
+References: <20241227230940.20894-1-v.shevtsov@maxima.ru>
+ <4e7675a0-0dc0-4da3-b8ae-2462a5b112d1@cornelisnetworks.com>
+ <gwdzoxk5gq5ve5jqklt4mkuoo25nhpjagjwbjuqvcrwhccauet@2frrkt22grg7>
+Content-Language: en-US
+From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+In-Reply-To: <gwdzoxk5gq5ve5jqklt4mkuoo25nhpjagjwbjuqvcrwhccauet@2frrkt22grg7>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BN9PR03CA0869.namprd03.prod.outlook.com
+ (2603:10b6:408:13d::34) To SJ0PR01MB6158.prod.exchangelabs.com
+ (2603:10b6:a03:2a0::15)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28926.004
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28926.004
-X-TMASE-Result: 10--12.800000-10.000000
-X-TMASE-MatchedRID: yLHOPqhdQyVzKOD0ULzeCUocPLxXXRnc2FA7wK9mP9fVjNsehGf0vTos
-	Lf1kH5Cf4QymIl443zKoQPOGYWh+VYV0mK0vUjwHAiwTe0IqjZfFmmMdIwjrDqr4vEVTsLe2i3G
-	OCGgGiOaPHlfcV0jhQOaffHI8kAmiHY/bzRmIaZGqh5pv1eDPz0xUJyPnqTyGzAdJD7JeNMPIvl
-	CZY6Ax8LX80TaNz00Y2kWu1n9CuOHyq/cli2hvDTllFsU0CXSPwJjn8yqLU6LIFck3f6fvyA57Z
-	+qS9uMQTbaQJuvVgicxBm2TrrWsvOVHGbcDbAq6FEUknJ/kEl7dB/CxWTRRu25FeHtsUoHu64m6
-	9tDAKAacGLKN1Nr+/fLxngnWo/hwDYPL3ugnpjY+kK598Yf3Mg==
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR01MB6158:EE_|MW4PR01MB6482:EE_
+X-MS-Office365-Filtering-Correlation-Id: 214b7251-ff12-478c-7913-08dd35e48948
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?Wm1NSEdHM3VEQ1NTM0lCTHBIK0dTd01peEtDNHlYdWZONWRML1ZzTFdrNysx?=
+ =?utf-8?B?bUp5Ry8xVTFtdTlGb0pvc2JRQ0kwWW1aaG9JUElVRzRwK0FzVjlrYVdQYURI?=
+ =?utf-8?B?Z3JaZm5tUm93YnRtSUc4ZTBQQjFYampCcVl0enpiYW5URFNnSFRwY1I4VFZo?=
+ =?utf-8?B?K293NFJyRkdEaE0zSjZ4OWtodXBqc2pTM1V6RXd0WUxpWjZDOU5HdmliRVRE?=
+ =?utf-8?B?cFowOTErYjRKdGFVMER1NldvN2JTb1RlNWJhQ0tTSFFRdTZBb2tnaVlZYTk2?=
+ =?utf-8?B?cmw1RTFSZzJaZFNrNDZ1djZGV1VsY2NEQmxsUW9JaWpKb05IMG1JcXQ5NTF6?=
+ =?utf-8?B?Vm1PajZmdTBmQllrRzg5S1hTeHdDblk2aEY2RExWbWtQK0cxTU1Ob3E3QU5p?=
+ =?utf-8?B?cjVWTkQ5eVpJWDI5NDJleWRXVXlVTEN2WTFjWFFCSm5YYmhVM1E0cU5mNUVy?=
+ =?utf-8?B?TDVwanhWcGV5SDg4S3ZSWVNUZ2dZbkswd2hXWUU1WjMwcVQ4UHExMnFKS2tH?=
+ =?utf-8?B?Q2xtR1VMcFcrMHNhQW5yd2V2RDBiaDU1UnJpcVlzTjBDLzQ4T29idkJhWnRK?=
+ =?utf-8?B?TnFMYkpab2tKZ3JUdWRuaFd4WmFaUWorY292TDNmc0Mzd1k5QkRWMVVwclB2?=
+ =?utf-8?B?T3RBdG1zZmpoamM3SGVWbGV1Y2s1dy9lS01jY21Gb0xab2dscGkwRWFvQnBW?=
+ =?utf-8?B?dXpsTzQxYzlvVjkvT0YwWGtZVmxXN1ZnYmkvSlJBUERvaDhaY2hPMGl6Q3lK?=
+ =?utf-8?B?UWlyNHBFMTFUMmxDcUFESk5DbDlkYVFtT0pzN2dxbW05cE9QcDhGVjdZTXpp?=
+ =?utf-8?B?dFRBbFd6c2ZkTHoxZ1U4UExZQXQ1bWFsdUMwZ0gvelFJK242aXNtZHZVNlJZ?=
+ =?utf-8?B?emFuZHhHUmdyOTdVckR3a3A4dWN2dXdpNkxWY3lBMFFyVm0zdHd2RG9CRFdn?=
+ =?utf-8?B?eU5JdnBQN3I2OUpxMG1wRi9GUGhKNTFhSXN4MGdjaUpOQndlOXBMTnJESmRz?=
+ =?utf-8?B?SklGOEpCNjA2cUdEeDZDTVVPZ3dSRWdTUUUwKzVhZHFDWnRUdHB3MTMybk1x?=
+ =?utf-8?B?OXRlc1lOUGx0RThFMWRHSkJHZFNud04vUzZDSklmOUZrRFNVR25ITGF5S1N6?=
+ =?utf-8?B?am1KeEZxbmVOOVMvZFE0Vko4aVRVSnhTUUQ2WGFzNWtJa1BjME03dktoTWFC?=
+ =?utf-8?B?N1RqTS95cHFpTUtFcGc3b1ZHSFEzYmtxQkVBVlEyQ0ozMGpHblVma0hOL3NK?=
+ =?utf-8?B?STRUUGk2Q003WW5tMWVJZW9ZYW5QUlBlYXRLYlBWVGpsYllLUHJia0UzRWly?=
+ =?utf-8?B?VzdCU1Y4TDF0ZHA5c2gxakw5YU4rNGlKVVQ1RktJcDZXN0FiV09jYWRNZDV1?=
+ =?utf-8?B?UmhqdUpzeTBTb3FySzZhTXQyUWpBMTlXN09XS0FhcGN2YnpBcnRaQkRrQUFZ?=
+ =?utf-8?B?QkhOaXJiVktzSkFEUE53S1hEd3JJejlpZ2Z2YWNaRnZHZHZyK2pES21zVXdZ?=
+ =?utf-8?B?aEU3R0RkNjFvdEZOMmJrYnpZVm9wSFl6TWg5Smp5TmI2YWRPWFIyblF2bU4w?=
+ =?utf-8?B?WmFyZFNETHNKSmVVYWpWRHRsc1ZuYXF2NkEzd0QvQ28rbzdqVEtIWkN2emNL?=
+ =?utf-8?B?djVyeDh6eTRaMGFHeDVoN3JoSk9RaktLaUxRaWJLUXY4L0JFdTIvREFlbzRU?=
+ =?utf-8?B?SVowb293L2NPYTVubUJKN0t1VFVlVnd5Qm13cGpFUVp3emxhRSs0NmVFZWNO?=
+ =?utf-8?B?MERLOTFzUStsV1NJYlROYmd1WThkN2xQRy9VclJ5anpBcXZnVlhNOTd0azVj?=
+ =?utf-8?B?Zm9KTEV4MVNLQ21zNGtYS3B6S1piVWlhZjJTQUwwSTc1RzE3RWVITDBPejJD?=
+ =?utf-8?Q?uuuC2uhTfssuw?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR01MB6158.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WnN6UDNWdmk4VDNPcVUxR1VQMzVNQVMyQWdJaHprdU1EZWZEOUw4SnJHR1pT?=
+ =?utf-8?B?N1hPSFVDcWM2TzBORlgvUUs1WThub1kyRndSaGsvbXJGOUlKaHFlYm4xdEd2?=
+ =?utf-8?B?UWN0d29hOUhjaGFnTGZmVkFxb2ZIczRCKzc5RC9ENCtlNEdTclRKcXpoTi9K?=
+ =?utf-8?B?ZEV5TmZTMGdQN0ZoaDlVTDlIK293QW40T1JSa1lHSURuRFlUbHYyNENjNXhU?=
+ =?utf-8?B?N0VPeDZCcytqVjVET05NWTVsV3IvYkdYZit3T0hadXZHaHhnUnRDK3M4a2RX?=
+ =?utf-8?B?TS9ZYmhFNFFVUFFyaVJwdlVTUVgrU1EwditUZ3hHdWNaODl4cnE3aktDQWxJ?=
+ =?utf-8?B?UDViM0ZrM3pZQ0xCSzVhUVdxTmYzcUhGWXhlRXIva1pjdzd6djNWNkF4dXU3?=
+ =?utf-8?B?T2R4S1NzQnNLUVRFcjRuOXBSWUZDd0FITFNWNkNWaUgyOHZrSEhaRzROZGxz?=
+ =?utf-8?B?VjV1TXEzMTZVSXJoTlUrdUJVVWhseVVpc0ZMYW1OL1ZZRFBDOGwzUFdZWlo2?=
+ =?utf-8?B?SVhkajNXTVhpRjdPOHhjWmJGV1piV0dCeWdkZ0JMM1lVSUZSbk9qeHk0S2ZK?=
+ =?utf-8?B?Njhiak51RXR1SlRyTFBwUVBqSHBLbDBPbm9peEFLV1NaSGxnRkRHZDZLOTBO?=
+ =?utf-8?B?RkU1dy9PMVZIdHQyY2RKeEVWRjRJZEw3YTVZV1lGT21McXZoT1owYlBqZWx5?=
+ =?utf-8?B?cEZPcTVtbGE2SHJNNDlpS3RtTXZZSVR0aWtMOUJHTVVQb2xiaENISTFmcDBI?=
+ =?utf-8?B?TGV4YkJZQ3V6K0NwNU41cloxa2NkYWNpR2RPb2Z3SW5ncVpmZ0s4b3dzNDJK?=
+ =?utf-8?B?S1hiRHR6SzZPTFJCOHAyUzl1RUJYR3B0aThOTjlBTlNtSDVaRlRDaVYwS3ZQ?=
+ =?utf-8?B?czBwb2VMODY3djVmUDNZNTFYcVE2M1BYQzg4WHV4R3FodndvZW5OeWhuYnBm?=
+ =?utf-8?B?WmJMdjU5VXUvRStXRG9lVW1jNkx5YjhPb05MdkhQbFkrUHJkdE1UMUcySENH?=
+ =?utf-8?B?VitpbGVKTUdFcG5RRHhmeTNBYTVKRmpWdmFuQzRDUDVyL1FkRFIvSXJvRzhB?=
+ =?utf-8?B?S2dYMjFmSng1WUVXSTBqN1NLQlF0QzRUczV4VWJMNS9Mc2l5MjFoTFdTYTRN?=
+ =?utf-8?B?VUtYdmNYa1dZSVB2S0xwZmJYYVBoUUVwWUtERVY1eHBsWGZEd2VEQ3ZrWTJp?=
+ =?utf-8?B?Z1RmUkFPTEQrK0dJTWliVDI4WUFiSUpkVUFFL21zSklYNVNQT1JoSFYweWhm?=
+ =?utf-8?B?VFpSejNCZ2d0Z2JDVjVEdnJrMUtWS3QxZ3R1YkdPblNMb0N5SWRmTVlncmI3?=
+ =?utf-8?B?L0NNTVh2d1l5aXUvUlYxRUJyVEZCME9KdjFtMlMrRFRsS0Vld3QzMkV6MjVy?=
+ =?utf-8?B?dGlULzFtcXJCUkRJenkzc1JBeFBuWFdZVEZDTkJoZzdOcUFCd3kzS2tSN2E5?=
+ =?utf-8?B?OGdDVG1WQjRQdTE5WFBGK1dlUGNmcEtxMWowRThNY1hHcmVFa3I4Q3RCdE5X?=
+ =?utf-8?B?bXpGYU5UL2RJcFJCbEphUm5Db1NyZkVlWE9MVE5lRkF6WEp6bDdHcytMSm96?=
+ =?utf-8?B?Qlo4SlhVR2tTWThYbklkYTB5WWNMRGhoSEM1QkFTRFhUeVFlL0YzRVhLWEZ3?=
+ =?utf-8?B?bExwY3JJWHl5MkZyL0Qxc0hCc25jR2c4Zi9FbS9oY01keHRZYi9NRzZUTFpl?=
+ =?utf-8?B?OVIzMUtqNUdPd1VkSE1vamFjeUlhelJpYlpjMVJocXVBaG9jL2hDYUFGZWla?=
+ =?utf-8?B?RnF0ZllTY2hDVE9MS1ZxMDNvLzVuVDlxV2dSRGlYNWo1YUZJMDYzTTJRQ3ZB?=
+ =?utf-8?B?dGhhdUtlMVhZMTRnUTZmaGdzMU9wbmpXTnpna3BRaXVkWFozMkZXYWh0RVNX?=
+ =?utf-8?B?T3NKb0w2eTExOVVoQWx6b3BsL3VJNzcxQVUvUkNmV3JmMjN0WDRYVE1TWFRR?=
+ =?utf-8?B?eG01MUpiRGEzd2VOaGZSaDB2WStMWmYwU2xCU3VYMVMwQ1U3V3pPMEU4NXJY?=
+ =?utf-8?B?cjBwcWV0b1JLQUNpaWpFMFErME1RR2tRV0QwQmhhcFIyOUVOTXgwcktXMzJN?=
+ =?utf-8?B?SmYwYjhUWllwdTlKckx1S1ZmS1FMUjNTMzEwd3dCWjhuN09idHp0MngwTTZD?=
+ =?utf-8?B?bnRSV3hUT3EyT2c4ZGsxeENzU1pWeDN5bXVWUWlWMDZ0QmIyQ2RWbnh2L3FL?=
+ =?utf-8?Q?aF4ry47urEVuFHrmWrdugRk=3D?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 214b7251-ff12-478c-7913-08dd35e48948
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR01MB6158.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2025 04:16:23.1105
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rOZFlzmJvtuRvijeFJjlVIdpVj/l1CWX+4qr/hLPZ2M/cwuCfBbUFrzKZqn/Bve4Kzmq5n7eTuOC/iRzjJ3aHnIy+fwVIRePhBuvzlScCjMJfYjOjtgLp9Wp7Mdbtp99
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR01MB6482
 
-The '&&' operator should only be used when the second operand
-is dependent on the first. In the context of requires() functions,
-we prefer to evaluate all conditions independently to display
-all SKIP_REASONS at once. This change separates the conditions
-into individual lines to ensure each condition is evaluated
-regardless of the others.
+On 1/15/25 2:14 PM, Fedor Pchelkin wrote:
+> On Wed, 15. Jan 12:55, Dennis Dalessandro wrote:
+>> On 12/27/24 6:09 PM, Vitaliy Shevtsov wrote:
+>>> [Why]
+>>> The fault injection code may have a buffer underflow, which may cause
+>>> memory corruption by writing a newline character before the base address of
+>>> the array. This can happen if the fault->opcodes bitmap is empty.
+>>>
+>>> Since a file in debugfs is created with an empty bitmap, it is possible to
+>>> read the file before any set bits are written to it.
+>>>
+>>> [How]
+>>> Fix this by checking that the size variable is greater than zero, otherwise
+>>> return zero as the number of bytes read.
+>>>
+>>> Found by Linux Verification Center (linuxtesting.org) with Svace.
+>>>
+>>> Fixes: a74d5307caba ("IB/hfi1: Rework fault injection machinery")
+>>> Signed-off-by: Vitaliy Shevtsov <v.shevtsov@maxima.ru>
+>>> ---
+>>>  drivers/infiniband/hw/hfi1/fault.c | 3 ++-
+>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/infiniband/hw/hfi1/fault.c b/drivers/infiniband/hw/hfi1/fault.c
+>>> index ec9ee59fcf0c..2d87f9c8b89d 100644
+>>> --- a/drivers/infiniband/hw/hfi1/fault.c
+>>> +++ b/drivers/infiniband/hw/hfi1/fault.c
+>>> @@ -190,7 +190,8 @@ static ssize_t fault_opcodes_read(struct file *file, char __user *buf,
+>>>  		bit = find_next_bit(fault->opcodes, bitsize, zero);
+>>>  	}
+>>>  	debugfs_file_put(file->f_path.dentry);
+>>> -	data[size - 1] = '\n';
+>>> +	if (size)
+>>> +		data[size - 1] = '\n';
+>>>  	data[size] = '\0';
+>>>  	ret = simple_read_from_buffer(buf, len, pos, data, size);
+>>>  free_data:
+>>
+>> I don't think size can ever be 0. No reason to change this I don't think.
+>>
+>> -Denny
+>>
+> 
+> Seems the patch description rather clearly shows the size can be zero in
+> case the corresponding opcodes bitmap is empty. Which is the case when
+> user reads the file before writing anything to it.
 
-After this patch, there are a few '&&' remain
-$ git grep -wl 'requires()' | xargs -I {} sed -n '/^requires() *{/,/}/p' {} | grep '&&'
-        _have_null_blk && _have_module_param null_blk blocking
-        _have_null_blk && _have_module_param null_blk shared_tags
-        _have_null_blk && _have_module_param null_blk timeout
-        _have_null_blk && _have_module_param null_blk requeue
-        _have_null_blk && _have_module_param null_blk shared_tags
-        _have_null_blk && _have_module_param null_blk init_hctx
-        _have_module nvme_tcp && _have_module_param nvme_tcp ddp_offload
-        _have_program mkfs.btrfs && have_good_mkfs_btrfs
+Guess it's OK then.
 
-Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
----
-V2:
-  rebase and
-  Even though '_have_null_blk &&  _have_module_param null_blk' can be simplify to
-  '_have_module_param null_blk', I keep it as it's so that we are safe to
-  have updates in _have_null_blk() in the future.
----
- tests/block/006 | 3 ++-
- tests/block/008 | 3 ++-
- tests/block/010 | 3 ++-
- tests/block/011 | 3 ++-
- tests/block/019 | 3 ++-
- tests/block/020 | 3 ++-
- tests/block/029 | 3 ++-
- tests/loop/002  | 4 +++-
- tests/nbd/001   | 4 +++-
- tests/nbd/002   | 3 ++-
- tests/nbd/003   | 3 ++-
- tests/nvme/005  | 3 ++-
- tests/nvme/010  | 3 ++-
- tests/nvme/039  | 4 ++--
- tests/nvme/056  | 4 +++-
- tests/scsi/001  | 3 ++-
- tests/scsi/002  | 3 ++-
- 17 files changed, 37 insertions(+), 18 deletions(-)
-
-diff --git a/tests/block/006 b/tests/block/006
-index 7d05b1113fb9..8601397f4bf8 100755
---- a/tests/block/006
-+++ b/tests/block/006
-@@ -15,7 +15,8 @@ TIMED=1
- CAN_BE_ZONED=1
- 
- requires() {
--	_have_null_blk && _have_module_param null_blk blocking && _have_fio
-+	_have_null_blk && _have_module_param null_blk blocking
-+	_have_fio
- }
- 
- test() {
-diff --git a/tests/block/008 b/tests/block/008
-index cd0935259157..859c0fe7d85e 100755
---- a/tests/block/008
-+++ b/tests/block/008
-@@ -12,7 +12,8 @@ TIMED=1
- CAN_BE_ZONED=1
- 
- requires() {
--	_have_cpu_hotplug && _have_fio
-+	_have_cpu_hotplug
-+	_have_fio
- }
- 
- test_device() {
-diff --git a/tests/block/010 b/tests/block/010
-index ed5613525255..5b52fdb948c7 100755
---- a/tests/block/010
-+++ b/tests/block/010
-@@ -15,7 +15,8 @@ TIMED=1
- CAN_BE_ZONED=1
- 
- requires() {
--	_have_null_blk && _have_module_param null_blk shared_tags && _have_fio
-+	_have_null_blk && _have_module_param null_blk shared_tags
-+	_have_fio
- }
- 
- run_fio_job() {
-diff --git a/tests/block/011 b/tests/block/011
-index 63212122a736..662f41c301ce 100755
---- a/tests/block/011
-+++ b/tests/block/011
-@@ -24,7 +24,8 @@ pci_dev_mounted() {
- }
- 
- requires() {
--	_have_fio && _have_program setpci
-+	_have_fio
-+	_have_program setpci
- }
- 
- device_requires() {
-diff --git a/tests/block/019 b/tests/block/019
-index 58aca4cc1020..723eb61350f9 100755
---- a/tests/block/019
-+++ b/tests/block/019
-@@ -11,7 +11,8 @@ QUICK=1
- CAN_BE_ZONED=1
- 
- requires() {
--	_have_fio && _have_program setpci
-+	_have_fio
-+	_have_program setpci
- }
- 
- device_requires() {
-diff --git a/tests/block/020 b/tests/block/020
-index 5ffa23248804..66f380edfc61 100755
---- a/tests/block/020
-+++ b/tests/block/020
-@@ -14,7 +14,8 @@ QUICK=1
- CAN_BE_ZONED=1
- 
- requires() {
--	_have_null_blk && _have_fio
-+	_have_null_blk
-+	_have_fio
- }
- 
- test() {
-diff --git a/tests/block/029 b/tests/block/029
-index b9a897dbf830..c00bdeba28e1 100755
---- a/tests/block/029
-+++ b/tests/block/029
-@@ -11,7 +11,8 @@ DESCRIPTION="trigger blk_mq_update_nr_hw_queues()"
- QUICK=1
- 
- requires() {
--	_have_fio && _have_null_blk
-+	_have_fio
-+	_have_null_blk
- }
- 
- modify_nr_hw_queues() {
-diff --git a/tests/loop/002 b/tests/loop/002
-index d0ef964989e6..07b9c6c53c9c 100755
---- a/tests/loop/002
-+++ b/tests/loop/002
-@@ -15,7 +15,9 @@ DESCRIPTION="try various loop device block sizes"
- QUICK=1
- 
- requires() {
--	_have_program xfs_io && _have_src_program loblksize && _have_loop_set_block_size
-+	_have_program xfs_io
-+	_have_src_program loblksize
-+	_have_loop_set_block_size
- }
- 
- test() {
-diff --git a/tests/nbd/001 b/tests/nbd/001
-index 0975af0543e2..cc083e3ce6ed 100755
---- a/tests/nbd/001
-+++ b/tests/nbd/001
-@@ -11,7 +11,9 @@ DESCRIPTION="resize a connected nbd device"
- QUICK=1
- 
- requires() {
--	_have_nbd && _have_program parted && _have_src_program nbdsetsize
-+	_have_nbd
-+	_have_program parted
-+	_have_src_program nbdsetsize
- }
- 
- test() {
-diff --git a/tests/nbd/002 b/tests/nbd/002
-index 8e4e062eba66..00701b11236d 100755
---- a/tests/nbd/002
-+++ b/tests/nbd/002
-@@ -17,7 +17,8 @@ DESCRIPTION="tests on partition handling for an nbd device"
- QUICK=1
- 
- requires() {
--	_have_nbd_netlink && _have_program parted
-+	_have_nbd_netlink
-+	_have_program parted
- }
- 
- test() {
-diff --git a/tests/nbd/003 b/tests/nbd/003
-index 57fb63a9e70f..4fabdebc8f6a 100755
---- a/tests/nbd/003
-+++ b/tests/nbd/003
-@@ -11,7 +11,8 @@ DESCRIPTION="mount/unmount concurrently with NBD_CLEAR_SOCK"
- QUICK=1
- 
- requires() {
--	_have_nbd && _have_src_program mount_clear_sock
-+	_have_nbd
-+	_have_src_program mount_clear_sock
- }
- 
- test() {
-diff --git a/tests/nvme/005 b/tests/nvme/005
-index 66c12fdb7d8d..8fc1f574ce3d 100755
---- a/tests/nvme/005
-+++ b/tests/nvme/005
-@@ -12,7 +12,8 @@ QUICK=1
- 
- requires() {
- 	_nvme_requires
--	_have_loop && _have_module_param_value nvme_core multipath Y
-+	_have_loop
-+	_have_module_param_value nvme_core multipath Y
- 	_require_nvme_trtype_is_fabrics
- }
- 
-diff --git a/tests/nvme/010 b/tests/nvme/010
-index a5ddf581ecc9..58c8693b1373 100755
---- a/tests/nvme/010
-+++ b/tests/nvme/010
-@@ -11,7 +11,8 @@ TIMED=1
- 
- requires() {
- 	_nvme_requires
--	_have_fio && _have_loop
-+	_have_fio
-+	_have_loop
- 	_require_nvme_trtype_is_fabrics
- }
- 
-diff --git a/tests/nvme/039 b/tests/nvme/039
-index eca8ba35475e..ab58f3b91c7d 100755
---- a/tests/nvme/039
-+++ b/tests/nvme/039
-@@ -14,8 +14,8 @@ QUICK=1
- 
- requires() {
- 	_have_program nvme
--	_have_kernel_option FAULT_INJECTION && \
--	    _have_kernel_option FAULT_INJECTION_DEBUG_FS
-+	_have_kernel_option FAULT_INJECTION
-+	_have_kernel_option FAULT_INJECTION_DEBUG_FS
- }
- 
- device_requires() {
-diff --git a/tests/nvme/056 b/tests/nvme/056
-index d4dda2d98b91..958c2e31165c 100755
---- a/tests/nvme/056
-+++ b/tests/nvme/056
-@@ -30,7 +30,9 @@ requires() {
- 	_have_fio
- 	_have_program ip
- 	_have_program ethtool
--	_have_kernel_source && _have_program python3 && have_netlink_cli
-+	_have_kernel_source
-+	_have_program python3
-+	have_netlink_cli
- 	have_iface
- }
- 
-diff --git a/tests/scsi/001 b/tests/scsi/001
-index 54ca58227659..9e43c8dfbd11 100755
---- a/tests/scsi/001
-+++ b/tests/scsi/001
-@@ -11,7 +11,8 @@ DESCRIPTION="try triggering a kernel GPF with 0 byte SG reads"
- QUICK=1
- 
- requires() {
--	_have_scsi_generic && _have_src_program sg/syzkaller1
-+	_have_scsi_generic
-+	_have_src_program sg/syzkaller1
- }
- 
- test_device() {
-diff --git a/tests/scsi/002 b/tests/scsi/002
-index b38706447f83..82e9d8a554ca 100755
---- a/tests/scsi/002
-+++ b/tests/scsi/002
-@@ -11,7 +11,8 @@ DESCRIPTION="perform a SG_DXFER_FROM_DEV from the /dev/sg read-write interface"
- QUICK=1
- 
- requires() {
--	_have_scsi_generic && _have_src_program sg/dxfer-from-dev
-+	_have_scsi_generic
-+	_have_src_program sg/dxfer-from-dev
- }
- 
- test_device() {
--- 
-2.47.0
-
+Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 
