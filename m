@@ -1,180 +1,130 @@
-Return-Path: <linux-rdma+bounces-7044-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7045-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E339A139DF
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2025 13:23:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BD18A14185
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2025 19:17:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60A69188AF79
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2025 12:23:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D7BA3A3489
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2025 18:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC411DE4FE;
-	Thu, 16 Jan 2025 12:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD82C22E40F;
+	Thu, 16 Jan 2025 18:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="aBbdOx0G"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aln2NhOX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0DB1DE4D4;
-	Thu, 16 Jan 2025 12:23:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E67F9190685;
+	Thu, 16 Jan 2025 18:17:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737030193; cv=none; b=XxzFmYw8kXskbEVsZfAp4StUD62X6nDl/kmg7Y0MgIR+oKzw6TKlFfuq2EOwcxQBilqQxdlNppzdHM/AXCEMdIlIUTWQRrQ080HlVyKflMYBjn4WbG1d5Wf2PgQfM3ovz4tmzh4uvInbJlC5RoI6l0t9Z4zKcKJT+eLL/Dwq8Fg=
+	t=1737051427; cv=none; b=eDWUegVVpz413QompJfEcgkixvwhUwRHDRbp/0Lk4MIIDlOtjhz7nJfq7WbybWTCCCfqVvp8+ICbAkeuHibqRjhZsmnXkjj/yZnFXorenhhFTK+Gtkz7VZTXd9BEy2havGqfbTTgdtyiJYexCYawdDk1PSaVTo10l18KY5o+i9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737030193; c=relaxed/simple;
-	bh=DHqEvLwf3HDkS2JVIwmCrqfeDQIkB8B3EbXIvh3PJ8s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jTUmeOX+Q3Oe4YoQ+5+XASb2HUZ8DgjecY/CkLe3lb4S2SQYYl4MfLj5rd6LNa/piutsA70HQVXOEltrylRFhWom21PbLzW6QZ5GWRMmtiAuHXbSmywFREIfPRcKMrsZVtd4HtaaVAZ5zdiJljdEj5DCMviuv0Dk3r7tsVxoDOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=aBbdOx0G; arc=none smtp.client-ip=115.124.30.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1737030181; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=z/2X4QCJz0+PjyBqoo8pjyWfSn+lHxhP2Hw0xitx+xw=;
-	b=aBbdOx0GBWv0xqNbiQwOCdBdCoX7wngQbPTG8guLWzkYLFE0NLORM3BXK6GJE2Zu7UCdzw6OMMpw7YXoOOIdRlCYHicTQVcl9yqM50YBkq0oyxE8ucKfOMiVXE1MYjrbR0xf09kbLtrUK0ZCwXymIr9qy87SZ9e3OLAYyX99j3s=
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0WNlhgBZ_1737030179 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 16 Jan 2025 20:23:00 +0800
-Date: Thu, 16 Jan 2025 20:22:59 +0800
-From: Dust Li <dust.li@linux.alibaba.com>
-To: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	pabeni@redhat.com, song@kernel.org, sdf@google.com,
-	haoluo@google.com, yhs@fb.com, edumazet@google.com,
-	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-	guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v6 2/5] net/smc: Introduce generic hook smc_ops
-Message-ID: <20250116122259.GE89233@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20250116074442.79304-1-alibuda@linux.alibaba.com>
- <20250116074442.79304-3-alibuda@linux.alibaba.com>
+	s=arc-20240116; t=1737051427; c=relaxed/simple;
+	bh=MeYoPD+K0np5mAk0A2X3+j2z8tt6EETtDJZqTQzBgcQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tvldTRmPk4Nkm0GrZaxa9jQn1sW2osbXJ0zCvzw+8K41/roqI8pZXbLY67CwS76GgxKuA140cyqX2i2Ayfyzz3PLKNxXVOwEsZ1NVCPc/BkZaWpxF6X+MyScKxIQ1rAhTULPe9+ALp07r0YVFwn8TIacMCQwDdDahz3lgXiLd4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aln2NhOX; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-385d7b4da2bso1164452f8f.1;
+        Thu, 16 Jan 2025 10:17:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1737051424; x=1737656224; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=N4YWdjoeDX+MAdyj/JMomsHTE8KnFR0wYLN1dc5PSd4=;
+        b=aln2NhOX0ARlwEhsGZluwQIjlkt2I36I7uULOArZLeSIoFCTpGUj71j0btsLhlYlw0
+         jZc6dIGjIB9FvpjjKXW9hurnd9IBwaKKLHIXWmzl6HhTguuSV6KhFNNE6/kpD2Ju925w
+         6/x/KQX3rPcwKHPbfODdRBEf2WbwH6nAo7UENlImz3k4shncuDvrRj0/iLUIbvqcWwVd
+         vJhBEw5wM9aHbAtcpUOw1rrBaQtPnkSdIuTGApgDmEfaqnmgBvrk32k5J1nRPmblYkwZ
+         MlkN9bUyuYIvbcd/Vwbm1xnh1c1Ibyd3a7cb4/QT1Tift6P7z2UVQ5Iw9krktxkfkEcK
+         6B4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737051424; x=1737656224;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N4YWdjoeDX+MAdyj/JMomsHTE8KnFR0wYLN1dc5PSd4=;
+        b=cFGSxeaM0BAB2q9HwOS+4oA6+Ceyg/63PJRijUnpDCZyW5XANpGdoVLJVPX4mOMYJn
+         gVLe2bX+FCnwIYFUfU7gNy+bYtKJlIhmAY086dLAsTlFC/Y02xN0Cx1jwSFTT4simxtN
+         Cq8GNILghdthxzmZWypMw81o6tXIXseDakDRnnYm/+glhZt/xJ2pZ2GLQFsaQDtZF2X8
+         htK65hk2rZ8t6eBHdGWJMQaC8hM+irYaqkq16cdAWobbe5OY3/QiKvGB8VJIJlEcFIFS
+         r4+tZ2DAzTkcOiOjWv9muYAohALXlm1AAmeNDA3of3UWb/3a99YltOr6W8RuGrGVF5Qt
+         835A==
+X-Forwarded-Encrypted: i=1; AJvYcCW5oNRclQCvugBH5iaV8OaLIXB71VqiHDksHulOAGqdsikUuUosKCqF+k7xc/7rdiZRrINFdt2Q3f2bFw==@vger.kernel.org, AJvYcCXykeHJvJSnuKvkEegabz0Xoq4d9wY+3S5LOUrBI/eR1MtRPCKRbMuoogISyAImMgLafeFNU8ltXZIpJB4=@vger.kernel.org, AJvYcCXyu16Y6v36zekaZ0dt4oiLQjo7VUR3ZjDxxeL3/nJyDPxfoaJ2vev/gSS/lOxhjBZsyi0z0jdg@vger.kernel.org
+X-Gm-Message-State: AOJu0YwZg3zxWCicDuFiCL/W+S1WPu2nATAOjZf6HiDCdp660uQd1D3G
+	ZzWZ3Xne1J+ZHW8eVguk6B7JUDZtdGPdu3bAR/QrncSmyIbd388C
+X-Gm-Gg: ASbGncuCt/E2NKgITwGPeUUhXaz0ddLdhUwFN0xMrWL3hxhSgyWM3vLwMs2vOMAq5wk
+	gGtnhjx4w7Yc2NVZLIjwBOWs7niOQO0qu750KGSKwEWHZfwbaqDpZI/hTbTXUPEnLXM9IJ13WO0
+	ejj19DiOGMRDXJuJW9RGCMudEZ1bFGhi8hBUy74iWmMlF2aD7KXCkwqZvfadYCXPt5BHOEaBy5l
+	aQ1nidm7x4BfziOorpMt590kt03FACnQVZ9cUAahb2cHRcKJVvjqZoLSg==
+X-Google-Smtp-Source: AGHT+IF6bcPdXcf65TB9E6FxmOSPGwJ4wTAjOYV4SZ94Yg1RTECT1VqhoqSk5bGR33sBMm9dW+zOeg==
+X-Received: by 2002:a5d:5f4d:0:b0:38b:ec34:2d62 with SMTP id ffacd0b85a97d-38bec342de2mr3524199f8f.24.1737051424149;
+        Thu, 16 Jan 2025 10:17:04 -0800 (PST)
+Received: from localhost ([194.120.133.72])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38bf32754dcsm475367f8f.77.2025.01.16.10.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jan 2025 10:17:03 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Moshe Shemesh <moshe@nvidia.com>,
+	Yevgeny Kliteynik <kliteyn@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net/mlx5: fix unintentional sign extension on shift of dest_attr->vport.vhca_id
+Date: Thu, 16 Jan 2025 18:17:00 +0000
+Message-ID: <20250116181700.96437-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250116074442.79304-3-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On 2025-01-16 15:44:39, D. Wythe wrote:
->The introduction of IPPROTO_SMC enables eBPF programs to determine
->whether to use SMC based on the context of socket creation, such as
->network namespaces, PID and comm name, etc.
->
->As a subsequent enhancement, to introduce a new generic hook that
->allows decisions on whether to use SMC or not at runtime, including
->but not limited to local/remote IP address or ports.
->
->Moreover, in the future, we can achieve more complex extensions to the
->protocol stack by extending this ops.
->
->Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
->---
-> include/net/netns/smc.h |  3 ++
-> include/net/smc.h       | 53 +++++++++++++++++++++++
-> net/ipv4/tcp_output.c   | 18 ++++++--
-> net/smc/Kconfig         | 12 ++++++
-> net/smc/Makefile        |  1 +
-> net/smc/smc_ops.c       | 53 +++++++++++++++++++++++
-> net/smc/smc_ops.h       | 28 ++++++++++++
-> net/smc/smc_sysctl.c    | 94 +++++++++++++++++++++++++++++++++++++++++
-> 8 files changed, 258 insertions(+), 4 deletions(-)
-> create mode 100644 net/smc/smc_ops.c
-> create mode 100644 net/smc/smc_ops.h
->
->diff --git a/include/net/netns/smc.h b/include/net/netns/smc.h
->index fc752a50f91b..81b3fdb39cd2 100644
->--- a/include/net/netns/smc.h
->+++ b/include/net/netns/smc.h
->@@ -17,6 +17,9 @@ struct netns_smc {
-> #ifdef CONFIG_SYSCTL
-> 	struct ctl_table_header		*smc_hdr;
-> #endif
->+#if IS_ENABLED(CONFIG_SMC_OPS)
->+	struct smc_ops __rcu		*ops;
->+#endif /* CONFIG_SMC_OPS */
-> 	unsigned int			sysctl_autocorking_size;
-> 	unsigned int			sysctl_smcr_buf_type;
-> 	int				sysctl_smcr_testlink_time;
->diff --git a/include/net/smc.h b/include/net/smc.h
->index db84e4e35080..271838591b63 100644
->--- a/include/net/smc.h
->+++ b/include/net/smc.h
->@@ -18,6 +18,8 @@
-> #include "linux/ism.h"
-> 
-> struct sock;
->+struct tcp_sock;
->+struct inet_request_sock;
-> 
-> #define SMC_MAX_PNETID_LEN	16	/* Max. length of PNET id */
-> 
->@@ -97,4 +99,55 @@ struct smcd_dev {
-> 	u8 going_away : 1;
-> };
-> 
->+#define  SMC_OPS_NAME_MAX 16
->+
->+enum {
->+	/* ops can be inherit from init_net */
->+	SMC_OPS_FLAG_INHERITABLE = 0x1,
->+
->+	SMC_OPS_ALL_FLAGS = SMC_OPS_FLAG_INHERITABLE,
->+};
->+
->+struct smc_ops {
->+	/* priavte */
->+
->+	struct list_head list;
->+	struct module *owner;
->+
->+	/* public */
->+
->+	/* unique name */
->+	char name[SMC_OPS_NAME_MAX];
->+	int flags;
->+
->+	/* Invoked before computing SMC option for SYN packets.
->+	 * We can control whether to set SMC options by returning varios value.
->+	 * Return 0 to disable SMC, or return any other value to enable it.
->+	 */
->+	int (*set_option)(struct tcp_sock *tp);
->+
->+	/* Invoked before Set up SMC options for SYN-ACK packets
->+	 * We can control whether to respond SMC options by returning varios
->+	 * value. Return 0 to disable SMC, or return any other value to enable
->+	 * it.
->+	 */
->+	int (*set_option_cond)(const struct tcp_sock *tp,
->+			       struct inet_request_sock *ireq);
->+};
->+
->+#if IS_ENABLED(CONFIG_SMC_OPS)
->+#define smc_call_retops(init_val, sk, func, ...) ({	\
->+	typeof(init_val) __ret = (init_val);		\
->+	struct smc_ops *ops;				\
->+	rcu_read_lock();				\
->+	ops = READ_ONCE(sock_net(sk)->smc.ops);		\
->+	if (ops && ops->func)				\
->+		__ret = ops->func(__VA_ARGS__);		\
->+	rcu_read_unlock();				\
->+	!!__ret;					\
->+})
+Shifting dest_attr->vport.vhca_id << 16 results in a promotion from an
+unsigned 16 bit integer to a 32 bit signed integer, this is then sign
+extended to a 64 bit unsigned long on 64 bitarchitectures. If vhca_id is
+greater than 0x7fff then this leads to a sign extended result where all
+the upper 32 bits of idx are set to 1. Fix this by casting vhca_id
+to the same type as idx before performing the shift.
 
-Here you force the return value to be bool by !!ret, what if the
-future caller expects the return value to be an integer or other types ?
+Fixes: 8e2e08a6d1e0 ("net/mlx5: fs, add support for dest vport HWS action")
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
-Dust
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.c
+index 05329afeb9ea..f34bbbbba1c2 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.c
+@@ -417,7 +417,7 @@ mlx5_fs_get_dest_action_vport(struct mlx5_fs_hws_context *fs_ctx,
+ 	vport_num = is_dest_type_uplink ? MLX5_VPORT_UPLINK : dest_attr->vport.num;
+ 	if (vhca_id_valid) {
+ 		dests_xa = &fs_ctx->hws_pool.vport_vhca_dests;
+-		idx = dest_attr->vport.vhca_id << 16 | vport_num;
++		idx = (unsigned long)dest_attr->vport.vhca_id << 16 | vport_num;
+ 	} else {
+ 		dests_xa = &fs_ctx->hws_pool.vport_dests;
+ 		idx = vport_num;
+-- 
+2.47.1
 
 
