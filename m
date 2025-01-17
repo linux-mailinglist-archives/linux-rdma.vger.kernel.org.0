@@ -1,255 +1,209 @@
-Return-Path: <linux-rdma+bounces-7071-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7072-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 711EFA15719
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2025 19:41:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 314ACA15A2C
+	for <lists+linux-rdma@lfdr.de>; Sat, 18 Jan 2025 00:51:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD1443A9704
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2025 18:40:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23F3F188B557
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2025 23:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA9A1DF995;
-	Fri, 17 Jan 2025 18:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82091DE3C8;
+	Fri, 17 Jan 2025 23:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jBnz7DNy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YRCxG/WM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C85161DF97F;
-	Fri, 17 Jan 2025 18:37:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC4AD1B0F2C
+	for <linux-rdma@vger.kernel.org>; Fri, 17 Jan 2025 23:51:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737139025; cv=none; b=hzDOfvCnXZV2kzFRa1k0enYlCAs87UKJmy9u6FQOSMytV+v1CvPdw7tHopYONovyUhdDjnBk14FYRS7JwQgWh1RYKpxEmpYK7Z8hoTaPV+shckQAzKGMYAgS7HBB0J+lBb/z71DoDfFjyfG+4bM9A5jG9z379GlC6wjUn7MJBR0=
+	t=1737157879; cv=none; b=kdVYoG4xcR1LCwPlRPdy5UnMDXYuaeXYMMkl6F2S4iOdfVU85h9iqUkrd34OHJ/aJKCEfMLplPjsKyiG417bf55hvzJX9cXZmvmSv/CAN2rDVFKHGEpbIG2ye6zR6SihYdlQt+8ZwMkAMPIRIh8Am+vMLk7MF8kZWgN96cw0ZKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737139025; c=relaxed/simple;
-	bh=L5nptAiaGY2hZpZb1eHBCcH++P2uqkiVoyI3tk7Jz1U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I+s1BBT3dw9Qj4lMlFrHkkMoIhIzLhraCS8URoB1IMYiFu5+8/gNs5fTtGtsMgRdIrNvgA+9XKh/WBVy/pIkZfbEYeOFoNi9Ig+GzZeOZbEhYraDhsSyJYlzFBHEF047hTf+sFxChxx9+KqymFyfo71xucGBl4El9DTiq3QYYIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jBnz7DNy; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2ef87d24c2dso3462428a91.1;
-        Fri, 17 Jan 2025 10:37:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737139023; x=1737743823; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/paU3XV2YsdW8sqUdUFAzVL/jr9cL20VV7Pd7X+jfQo=;
-        b=jBnz7DNyBDc0KzCvuble9xh/KNs1BDPuaAL027+/jWJXt5aHFI6WmvjGowjx73grX0
-         B45n4ZMvy7XaOXuIlBeJirgLcHyhEU71VAl4Dah7hci+oCfFM2NTj0OcDUZufDKSqdCm
-         pG1YZkJcy4chxfWvDOQjlAoqVgjfNQcek1QN7rlEgGnbefnWPV1+pJgo7FJvSmkCHac6
-         RiVxb6ifmoQZ+qXEepD6krrhT7vI06JJtehYk2gL5nFLdjf0GIbzI1Ls7TLAeuVObI7e
-         6CUPzn7VAhG1fEwInaYH12i2Zbcq0hhEiyLW2cG03mhjeyee5EP1yhrTFn+K+TTb2VmL
-         lFXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737139023; x=1737743823;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/paU3XV2YsdW8sqUdUFAzVL/jr9cL20VV7Pd7X+jfQo=;
-        b=W54ayDDRb5j5++2Cy7YR0TgOx3iKe3lPUhIldk+S8e1YIk+Sph+qvdeZ5eC7Mo6X7K
-         +Q6fVfN3OUx557MVCLDbS3uVnlVYu6CYQ5CbdC6dPV0dVsnLWOP8xYZljpCLBe92zh7V
-         XPfihaSyANHtRwlXmRR2pFgzlqhPoFx+791inxvei11lL/IA6ps8W8/1oQdIbRSxvDH5
-         b4jBp5a2xI7om1gzP8CzVeD7+813No+oYDgiffdUBwK0UFZTRfleRp3mkNq0IQcY8kKo
-         La0plFIVhdB37UDvxROvr6P0oaM2iq/0uGQzKRQ1MZ++GsgVyAcGLlSD2qkEmdJ8ARWp
-         vBkw==
-X-Forwarded-Encrypted: i=1; AJvYcCV7G9ibuecgzcXVg6QJWnkWE8EUy53WostzEl27HVNEhWbjCifeYnf2REEmFUg+IOZ534wPfbLM@vger.kernel.org, AJvYcCX5J1Zk0sAQyZRbumtVUUCFJR77qotZ4bN6KloH1OvWw81CjbrA3yhY0rjs0URWOKFQrWo=@vger.kernel.org, AJvYcCXEtZnLYCeEOWPluCxdbA01ldcl4VLlmQQ3VUOSmCt/SJav9YT7kLz3axEXb9BhpDhaeLAHaV48i7sYXg==@vger.kernel.org, AJvYcCXcfC9jb0I6JF/68KWoGILKz6Y1/E/2Qj2Lz0sT00QegSPGYqXqN25qvyMSG8JLKX9foNsaG4uvab0lqg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywn519TAm8z0PCrvawjiITyEGZQj9ChAxj2+3S6yLenUneVyq8b
-	ORiG9jFG8xCuJj86e2yBF5qxL8eb0Jv2nykJA1VE8bl06OWsXaHtCdXGvvVac9uTlqN7OqeLpL/
-	ComVtxjfTzjnns9LZzOm0gtyrzXI=
-X-Gm-Gg: ASbGnctCEF21aOtTplhr0CGacO6HnsJBOmSZ9oiGTdAqTf57gWOS5BAJLAlptdBNJNo
-	RURZK1tPJ2cdqskgGwkO1vxIz4Wga7RPE0b5C
-X-Google-Smtp-Source: AGHT+IHlKXjKmNWGoqU/eH4r2mE6aT+7ReHvtK4TLTDiMthduAsThbIwDyr+XObLaRSjQuTbphVlH9jain7orH9zxZE=
-X-Received: by 2002:a17:90b:534b:b0:2ee:a6f0:f54 with SMTP id
- 98e67ed59e1d1-2f782c93df5mr5199405a91.13.1737139023096; Fri, 17 Jan 2025
- 10:37:03 -0800 (PST)
+	s=arc-20240116; t=1737157879; c=relaxed/simple;
+	bh=GS+eplDaO0zzBE8kd3f7WLgIU8qo0/W7A9RLNj9cN2Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SbXbC7tzTj9K0+6H1EvRgUDBYX+PMoo5nnpmrqqLByEsj4hDSJAx/wbEiOO7gNHU0XWCMQB1+ShJB0Ols5IJGz+KPAWsmdizcrvOhjjY0ZMzSQxxWVqBYa7UGBwEijms6gKqwq1dXutqGc9U9l1djlKmpjOFRT4ez78FiSSCF4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YRCxG/WM; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <86948347-529b-433a-991d-0b298776db63@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1737157864;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ON6aq/S2ODX7ZKRZdnbNdkw0Pwc6gEEIJlkq4LjKrL8=;
+	b=YRCxG/WM6HJkcW5AyJeqHEJUpJFfw50178ECRPL59g4zob3dT6hB54KooAGzbdCMLTdT3H
+	ygQ5+t0eLkJoRFNk3Zp+s5F2mKCChLc8wKOOpQOOQtiYFZSR3ccUtZeeZ46ZRE4ybYTxjX
+	EgpcwS3cSQEzqhsukBEUfubKDVmhesk=
+Date: Fri, 17 Jan 2025 15:50:48 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250116074442.79304-1-alibuda@linux.alibaba.com> <20250116074442.79304-5-alibuda@linux.alibaba.com>
-In-Reply-To: <20250116074442.79304-5-alibuda@linux.alibaba.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 17 Jan 2025 10:36:50 -0800
-X-Gm-Features: AbW1kvZPOA_e4VBRxGF2UR8BvcgPSnH8-FR3ERgszYydOW9nflDbMRjIRPEPz28
-Message-ID: <CAEf4BzZvxqiQ2J1XQMm-ZDBjSsmtJJk6-_RbexPk9vWxAO=ksw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 4/5] libbpf: fix error when st-prefix_ops and
- ops from differ btf
+Subject: Re: [PATCH bpf-next v6 2/5] net/smc: Introduce generic hook smc_ops
 To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	pabeni@redhat.com, song@kernel.org, sdf@google.com, haoluo@google.com, 
-	yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org, 
-	davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+ ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
+ song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
+ edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+ jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org,
+ davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+References: <20250116074442.79304-1-alibuda@linux.alibaba.com>
+ <20250116074442.79304-3-alibuda@linux.alibaba.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20250116074442.79304-3-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Jan 15, 2025 at 11:45=E2=80=AFPM D. Wythe <alibuda@linux.alibaba.co=
-m> wrote:
->
-> When a struct_ops named xxx_ops was registered by a module, and
-> it will be used in both built-in modules and the module itself,
-> so that the btf_type of xxx_ops will be present in btf_vmlinux
-> instead of in btf_mod, which means that the btf_type of
-> bpf_struct_ops_xxx_ops and xxx_ops will not be in the same btf.
->
-> Here are four possible case:
->
-> +--------+---------------+-------------+---------------------------------=
-+
-> |        | st_ops_xxx_ops| xxx_ops     |                                 =
-|
-> +--------+---------------+-------------+---------------------------------=
-+
-> | case 0 | btf_vmlinux   | bft_vmlinux | be used and reg only in vmlinux =
-|
-> +--------+---------------+-------------+---------------------------------=
-+
-> | case 1 | btf_vmlinux   | bpf_mod     | INVALID                         =
-|
-> +--------+---------------+-------------+---------------------------------=
-+
-> | case 2 | btf_mod       | btf_vmlinux | reg in mod but be used both in  =
-|
-> |        |               |             | vmlinux and mod.                =
-|
-> +--------+---------------+-------------+---------------------------------=
-+
-> | case 3 | btf_mod       | btf_mod     | be used and reg only in mod     =
-|
-> +--------+---------------+-------------+---------------------------------=
-+
->
-> At present, cases 0, 1, and 3 can be correctly identified, because
-> st_ops_xxx_ops is searched from the same btf with xxx_ops. In order to
-> handle case 2 correctly without affecting other cases, we cannot simply
-> change the search method for st_ops_xxx_ops from find_btf_by_prefix_kind(=
-)
-> to find_ksym_btf_id(), because in this way, case 1 will not be
-> recognized anymore.
->
-> To address the issue, we always look for st_ops_xxx_ops first,
-> figure out the btf, and then look for xxx_ops with the very btf to avoid
-> such issue.
->
-> Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
->  tools/lib/bpf/libbpf.c | 41 +++++++++++++++++++++++------------------
->  1 file changed, 23 insertions(+), 18 deletions(-)
->
-
-Other than a few nits below, LGTM
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 66173ddb5a2d..202bc4c1001e 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -1005,14 +1005,33 @@ find_struct_ops_kern_types(struct bpf_object *obj=
-, const char *tname_raw,
->         const struct btf_member *kern_data_member;
->         struct btf *btf =3D NULL;
->         __s32 kern_vtype_id, kern_type_id;
-> -       char tname[256];
-> +       char tname[256], stname[256];
-> +       int ret;
->         __u32 i;
->
->         snprintf(tname, sizeof(tname), "%.*s",
->                  (int)bpf_core_essential_name_len(tname_raw), tname_raw);
->
-> -       kern_type_id =3D find_ksym_btf_id(obj, tname, BTF_KIND_STRUCT,
-> +       ret =3D snprintf(stname, sizeof(stname), "%s%s", STRUCT_OPS_VALUE=
-_PREFIX,
-> +                      tname);
-> +       if (ret < 0 || ret >=3D sizeof(stname))
-> +               return -ENAMETOOLONG;
-
-see preexisting snprintf() above, we don't really handle truncation
-errors explicitly, they are extremely unlikely and not expected at
-all, and worst case nothing will be found and user will get some
--ENOENT or something like that eventually. I'd drop this extra error
-checking and keep it streamlines, similar to tname
-
+On 1/15/25 11:44 PM, D. Wythe wrote:
+> diff --git a/net/smc/smc_sysctl.c b/net/smc/smc_sysctl.c
+> index 2fab6456f765..2004241c3045 100644
+> --- a/net/smc/smc_sysctl.c
+> +++ b/net/smc/smc_sysctl.c
+> @@ -18,6 +18,7 @@
+>   #include "smc_core.h"
+>   #include "smc_llc.h"
+>   #include "smc_sysctl.h"
+> +#include "smc_ops.h"
+>   
+>   static int min_sndbuf = SMC_BUF_MIN_SIZE;
+>   static int min_rcvbuf = SMC_BUF_MIN_SIZE;
+> @@ -30,6 +31,69 @@ static int links_per_lgr_max = SMC_LINKS_ADD_LNK_MAX;
+>   static int conns_per_lgr_min = SMC_CONN_PER_LGR_MIN;
+>   static int conns_per_lgr_max = SMC_CONN_PER_LGR_MAX;
+>   
+> +#if IS_ENABLED(CONFIG_SMC_OPS)
+> +static int smc_net_replace_smc_ops(struct net *net, const char *name)
+> +{
+> +	struct smc_ops *ops = NULL;
 > +
-> +       /* Look for the corresponding "map_value" type that will be used
-> +        * in map_update(BPF_MAP_TYPE_STRUCT_OPS) first, figure out the b=
-tf
-> +        * and the mod_btf.
-> +        * For example, find "struct bpf_struct_ops_tcp_congestion_ops".
-> +        */
-> +       kern_vtype_id =3D find_ksym_btf_id(obj, stname, BTF_KIND_STRUCT,
->                                         &btf, mod_btf);
+> +	rcu_read_lock();
+> +	/* null or empty name ask to clear current ops */
+> +	if (name && name[0]) {
+> +		ops = smc_ops_find_by_name(name);
+> +		if (!ops) {
+> +			rcu_read_unlock();
+> +			return -EINVAL;
+> +		}
+> +		/* no change, just return */
+> +		if (ops == rcu_dereference(net->smc.ops)) {
+> +			rcu_read_unlock();
+> +			return 0;
+> +		}
+> +	}
+> +	if (!ops || bpf_try_module_get(ops, ops->owner)) {
+> +		/* xhcg */
 
-nit: if this fits under 100 characters, keep it single line
+typo. I noticed it only because...
 
-> +       if (kern_vtype_id < 0) {
-> +               pr_warn("struct_ops init_kern: struct %s is not found in =
-kernel BTF\n",
-> +                               stname);
+> +		ops = rcu_replace_pointer(net->smc.ops, ops, true);
 
-same nit about preserving single-line statements as much as possible,
-they are much easier to read
+... rcu_replace_pointer() does not align with the above xchg comment. From 
+looking into rcu_replace_pointer, it is not a xchg. It is also not obvious to me 
+why it is safe to assume "true" here...
 
-> +               return kern_vtype_id;
-> +       }
-> +       kern_vtype =3D btf__type_by_id(btf, kern_vtype_id);
+> +		/* release old ops */
+> +		if (ops)
+> +			bpf_module_put(ops, ops->owner);
+
+... together with a put here on the return value of the rcu_replace_pointer.
+
+> +	} else if (ops) {
+
+nit. This looks redundant when looking at the "if (!ops || ..." test above
+
+Also a nit, I would move the bpf_try_module_get() immediately after the above 
+"if (ops == rcu_dereference(net->smc.ops))" test. This should simplify the later 
+cases.
+
+> +		rcu_read_unlock();
+> +		return -EBUSY;
+> +	}
+> +	rcu_read_unlock();
+> +	return 0;
+> +}
 > +
-> +       kern_type_id =3D btf__find_by_name_kind(btf, tname, BTF_KIND_STRU=
-CT);
->         if (kern_type_id < 0) {
->                 pr_warn("struct_ops init_kern: struct %s is not found in =
-kernel BTF\n",
->                         tname);
-> @@ -1020,20 +1039,6 @@ find_struct_ops_kern_types(struct bpf_object *obj,=
- const char *tname_raw,
->         }
->         kern_type =3D btf__type_by_id(btf, kern_type_id);
->
-> -       /* Find the corresponding "map_value" type that will be used
-> -        * in map_update(BPF_MAP_TYPE_STRUCT_OPS).  For example,
-> -        * find "struct bpf_struct_ops_tcp_congestion_ops" from the
-> -        * btf_vmlinux.
-> -        */
-> -       kern_vtype_id =3D find_btf_by_prefix_kind(btf, STRUCT_OPS_VALUE_P=
-REFIX,
-> -                                               tname, BTF_KIND_STRUCT);
-> -       if (kern_vtype_id < 0) {
-> -               pr_warn("struct_ops init_kern: struct %s%s is not found i=
-n kernel BTF\n",
-> -                       STRUCT_OPS_VALUE_PREFIX, tname);
-> -               return kern_vtype_id;
-> -       }
-> -       kern_vtype =3D btf__type_by_id(btf, kern_vtype_id);
-> -
->         /* Find "struct tcp_congestion_ops" from
->          * struct bpf_struct_ops_tcp_congestion_ops {
->          *      [ ... ]
-> @@ -1046,8 +1051,8 @@ find_struct_ops_kern_types(struct bpf_object *obj, =
-const char *tname_raw,
->                         break;
->         }
->         if (i =3D=3D btf_vlen(kern_vtype)) {
-> -               pr_warn("struct_ops init_kern: struct %s data is not foun=
-d in struct %s%s\n",
-> -                       tname, STRUCT_OPS_VALUE_PREFIX, tname);
-> +               pr_warn("struct_ops init_kern: struct %s data is not foun=
-d in struct %s\n",
-> +                       tname, stname);
->                 return -EINVAL;
->         }
->
-> --
-> 2.45.0
->
+> +static int proc_smc_ops(const struct ctl_table *ctl, int write,
+> +			void *buffer, size_t *lenp, loff_t *ppos)
+> +{
+> +	struct net *net = container_of(ctl->data, struct net, smc.ops);
+> +	char val[SMC_OPS_NAME_MAX];
+> +	const struct ctl_table tbl = {
+> +		.data = val,
+> +		.maxlen = SMC_OPS_NAME_MAX,
+> +	};
+> +	struct smc_ops *ops;
+> +	int ret;
+> +
+> +	rcu_read_lock();
+> +	ops = rcu_dereference(net->smc.ops);
+> +	if (ops)
+> +		memcpy(val, ops->name, sizeof(ops->name));
+> +	else
+> +		val[0] = '\0';
+> +	rcu_read_unlock();
+> +
+> +	ret = proc_dostring(&tbl, write, buffer, lenp, ppos);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (write)
+> +		ret = smc_net_replace_smc_ops(net, val);
+> +	return ret;
+> +}
+> +#endif /* CONFIG_SMC_OPS */
+> +
+>   static struct ctl_table smc_table[] = {
+>   	{
+>   		.procname       = "autocorking_size",
+> @@ -99,6 +163,15 @@ static struct ctl_table smc_table[] = {
+>   		.extra1		= SYSCTL_ZERO,
+>   		.extra2		= SYSCTL_ONE,
+>   	},
+> +#if IS_ENABLED(CONFIG_SMC_OPS)
+> +	{
+> +		.procname	= "ops",
+> +		.data		= &init_net.smc.ops,
+> +		.mode		= 0644,
+> +		.maxlen		= SMC_OPS_NAME_MAX,
+> +		.proc_handler	= proc_smc_ops,
+> +	},
+> +#endif /* CONFIG_SMC_OPS */
+>   };
+>   
+>   int __net_init smc_sysctl_net_init(struct net *net)
+> @@ -109,6 +182,20 @@ int __net_init smc_sysctl_net_init(struct net *net)
+>   	table = smc_table;
+>   	if (!net_eq(net, &init_net)) {
+>   		int i;
+> +#if IS_ENABLED(CONFIG_SMC_OPS)
+> +		struct smc_ops *ops;
+> +
+> +		rcu_read_lock();
+> +		ops = rcu_dereference(init_net.smc.ops);
+> +		if (ops && ops->flags & SMC_OPS_FLAG_INHERITABLE) {
+> +			if (!bpf_try_module_get(ops, ops->owner)) {
+> +				rcu_read_unlock();
+> +				return -EBUSY;
+
+Not sure if it should count as error when the ops is in the process of 
+un-register-ing. The next smc_sysctl_net_init will have NULL ops and succeed. 
+Something for you to consider.
+
+
+Also, it needs an ack from the SMC maintainer for the SMC specific parts like 
+the sysctl here.
 
