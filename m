@@ -1,284 +1,178 @@
-Return-Path: <linux-rdma+bounces-7079-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7080-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4FA5A16065
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2025 06:50:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B398A160E2
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2025 09:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8D401886A2F
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2025 05:50:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB2107A30C0
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2025 08:21:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED991885A1;
-	Sun, 19 Jan 2025 05:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19ADD19B59C;
+	Sun, 19 Jan 2025 08:21:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dby3Nh38"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE9A502B1
-	for <linux-rdma@vger.kernel.org>; Sun, 19 Jan 2025 05:50:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC2CF42A92
+	for <linux-rdma@vger.kernel.org>; Sun, 19 Jan 2025 08:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737265828; cv=none; b=lNh2p0yd66u5Lzrp6gGa8b3jeXaOwSed6LAuACk80YE9H6Zi9/iuB/TaGq8ymaBlQ3JETIv+MTMOdx4jco6Avww6X4hUkiOPg3BtGwpTU2w55C2/7VBPKuvr6hwYpCjCYiYpxIUurblJNiCqNk24F/Lh3yCKhnrsU+63IX4BAW0=
+	t=1737274912; cv=none; b=ffDldI0enNNBikykv2DIGVfKY13lJM67Kz8RfZiwNYAx7DdTkl7wsu678sOVnZfH7dZbqWGuQ588doKTCSAuX3m4Y79AlcrfHQxb9d06QSaj5JZh+9UdiKmdDF6PLZEVvtGOn1GeIfbcwdSChLX3OsKx0g37A7sd+fGg/YUxPM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737265828; c=relaxed/simple;
-	bh=KtiYxz19VrU3uK87Xq6veb7Q5cbyysOLAtYiN0HIomA=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=P3qAOtr1wauaWO9VsD/VjWyIZ/ZbVv6yRw2L7ZdFGeviZrXio2agcmmKem4/88pfNsb9Mw/KjhmL8SbrjndemtvVgAXtate/eLZjNSYoqR7TZfOmGUdHLgIGuKdPTdlXX+txDgbjx9ZAakMH7hzD9Hd7+shoVgDr6D5ol9jTioc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3ce81381737so58800345ab.2
-        for <linux-rdma@vger.kernel.org>; Sat, 18 Jan 2025 21:50:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737265825; x=1737870625;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CGOLwG0ZYOhOJOG2wsSGObkhiF3ZcrTZyJ00Z0CuwkA=;
-        b=pBoF+x22ry1EQ29Vo5+AfPTmtVs3+1H71pv/3Gy+TJUdMoNvHg4vYjsh3r4Q8r36F8
-         cnUeL2fhEF8SAney4GLIyN/U3peRUIg476GjWvxHLd93StHQ6diHAe8ABAEKHYvWBAhP
-         2NAQhQUM63LrnIjRSwbokEyn8qq3RknU5RuoMZtlEajLMGg8awRpaToPjExS2R4UhaKA
-         y9jPYi20wu6vJJ5e4YdtyZGPtsJf6Ia6I4Qtls9isKWpY2h3pL6FMRk9vLNDkyG90owm
-         5M6pZhCpZiE+jkyr5M+46N2TIViY1v81O6AOgScIZ7DUCRq6ErndvC+N6ZYoEC9gjUwD
-         e+Aw==
-X-Forwarded-Encrypted: i=1; AJvYcCWN4JKNfKyDLFTEuwb+yLWXJqMSRN/IdYcGos9iouO7DUENQyWKa4xkmy3/YtA9N6DZTSq+vGGBt0fY@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqFCiuVG4RGfjrUL3KtbvyQD9Buwh7Y27uKHwhYdsKwDoAU0Qw
-	4sTo9II4S7NxCfgeQbEzNCfDN8SxsazIs5guV0ZzqAd2EtOHlZwi21CyyCI61l1pmsGu79sYsOX
-	kMnEARfPIfye25MtEoqgr+i9PTnuRAmfFTvEzJrNWLEI8s6YUhetvfO4=
-X-Google-Smtp-Source: AGHT+IF/7QCHZqtagmzSrRYsqMT151+fc9BUplRNPMhANA0290vDu09egR2h0tKKaOsbWYAreN15TWjDfn79X2poi5rYUymE2ehM
+	s=arc-20240116; t=1737274912; c=relaxed/simple;
+	bh=Hlm2OfSKa1CCILt0NxR5HndxJyBhf8y2a9qR8zb7p8I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eNON4J3lSUlb8uFvOlpxlFnKDJ8oh5Ce1uV+36izcYbUlOuv/fFeEDwTv0iu9mM4YBFoTUZXOgKVdYbg34CrI50RLDKzBd5T72udACM77Y7RDA5L8UxqKR0s+PHTJg/DV4eaGLKOqCgUMjJjowxWk+DRW9rBi+XrCFM6V4dnm0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dby3Nh38; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 165D8C4CED6;
+	Sun, 19 Jan 2025 08:21:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1737274912;
+	bh=Hlm2OfSKa1CCILt0NxR5HndxJyBhf8y2a9qR8zb7p8I=;
+	h=From:To:Cc:Subject:Date:From;
+	b=dby3Nh38AbP8o2IZ1uru9wF/BB640TfLv3bSZuPLJgOr8B4SRNcW8y9R3OQK5E1PG
+	 hMp7q3tn4ozsxZS5bxn7Fwam7wOGVbH9VTZi7jlYReLpw2TpmRR8Iv+C/vRJ9ARtG9
+	 9Nh6yr7ESUZ0ieR/X3JjBSIZ2xJmJ6nxMtAp2WlOlBjs+jxnHhgmlPrQGfg+dX0WVq
+	 WPaVtC9lpYHa9nPVMCt9vcIMp17xinFhXW1IuCwfLjHs8fCq85hmRsNasnrwTItnD/
+	 pDFvBQHLZl+IYej4KzNr6RcUKxWHUibSTSqEeqGZHkUUO77iLhZrDdboYyBcMCJf8Y
+	 g1eyn7vMtzQDg==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Patrisious Haddad <phaddad@nvidia.com>,
+	Artemy Kovalyov <artemyko@mellanox.com>,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next v1] RDMA/mlx5: Fix implicit ODP use after free
+Date: Sun, 19 Jan 2025 10:21:41 +0200
+Message-ID: <c96b8645a81085abff739e6b06e286a350d1283d.1737274283.git.leon@kernel.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1fcd:b0:3a6:ad61:7ff8 with SMTP id
- e9e14a558f8ab-3cf7442a567mr71606145ab.12.1737265825444; Sat, 18 Jan 2025
- 21:50:25 -0800 (PST)
-Date: Sat, 18 Jan 2025 21:50:25 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <678c92a1.050a0220.303755.004c.GAE@google.com>
-Subject: [syzbot] [s390?] [net?] possible deadlock in smc_close_non_accepted (2)
-From: syzbot <syzbot+a68f8bafb37fc879d662@syzkaller.appspotmail.com>
-To: agordeev@linux.ibm.com, alibuda@linux.alibaba.com, davem@davemloft.net, 
-	edumazet@google.com, guwen@linux.alibaba.com, horms@kernel.org, 
-	jaka@linux.ibm.com, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
-	tonylu@linux.alibaba.com, wenjia@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-syzbot found the following issue on:
+Prevent double queueing of implicit ODP mr destroy work by using
+__xa_cmpxchg() to make sure, this is the first and last time we are
+destroying this specific mr.
 
-HEAD commit:    c3812b15000c Merge tag 'scsi-fixes' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=137189df980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f5e182416a4b418f
-dashboard link: https://syzkaller.appspot.com/bug?extid=a68f8bafb37fc879d662
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+Without this change, we could try to invalidate this mr twice, which in
+turn could result in queuing a MR work destroy twice, and eventually the
+second work could execute after the MR was freed due to the first work,
+causing a user after free and trace below.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d3f1a4960f46/disk-c3812b15.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6816bebbf8db/vmlinux-c3812b15.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/112bb789a175/bzImage-c3812b15.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a68f8bafb37fc879d662@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.13.0-rc7-syzkaller-00039-gc3812b15000c #0 Not tainted
-------------------------------------------------------
-syz.1.909/9790 is trying to acquire lock:
-ffff8880325e8dd8 (sk_lock-AF_SMC){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1623 [inline]
-ffff8880325e8dd8 (sk_lock-AF_SMC){+.+.}-{0:0}, at: smc_close_non_accepted+0x80/0x200 net/smc/af_smc.c:1832
-
-but task is already holding lock:
-ffff88807a380dd8 (sk_lock-AF_INET/1){+.+.}-{0:0}, at: smc_release+0x378/0x5f0 net/smc/af_smc.c:336
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #4 (sk_lock-AF_INET/1){+.+.}-{0:0}:
-       lock_sock_nested+0x3a/0xf0 net/core/sock.c:3625
-       sctp_sock_migrate+0x987/0x1270 net/sctp/socket.c:9655
-       sctp_accept+0x654/0x800 net/sctp/socket.c:4899
-       inet_accept+0xc4/0x180 net/ipv4/af_inet.c:781
-       do_accept+0x337/0x530 net/socket.c:1941
-       __sys_accept4_file net/socket.c:1981 [inline]
-       __sys_accept4+0xfe/0x1b0 net/socket.c:2010
-       __do_sys_accept net/socket.c:2023 [inline]
-       __se_sys_accept net/socket.c:2020 [inline]
-       __x64_sys_accept+0x74/0xb0 net/socket.c:2020
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #3 (sk_lock-AF_INET){+.+.}-{0:0}:
-       lock_sock_nested+0x3a/0xf0 net/core/sock.c:3625
-       lock_sock include/net/sock.h:1623 [inline]
-       sockopt_lock_sock net/core/sock.c:1126 [inline]
-       sockopt_lock_sock+0x54/0x70 net/core/sock.c:1117
-       do_ip_setsockopt+0x101/0x38c0 net/ipv4/ip_sockglue.c:1078
-       ip_setsockopt+0x59/0xf0 net/ipv4/ip_sockglue.c:1417
-       raw_setsockopt+0xb8/0x290 net/ipv4/raw.c:845
-       do_sock_setsockopt+0x222/0x480 net/socket.c:2313
-       __sys_setsockopt+0x1a0/0x230 net/socket.c:2338
-       __do_sys_setsockopt net/socket.c:2344 [inline]
-       __se_sys_setsockopt net/socket.c:2341 [inline]
-       __x64_sys_setsockopt+0xbd/0x160 net/socket.c:2341
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #2 (rtnl_mutex){+.+.}-{4:4}:
-       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
-       __mutex_lock+0x19b/0xa60 kernel/locking/mutex.c:735
-       do_ip_setsockopt+0xf9/0x38c0 net/ipv4/ip_sockglue.c:1077
-       ip_setsockopt+0x59/0xf0 net/ipv4/ip_sockglue.c:1417
-       ipv6_setsockopt+0x155/0x170 net/ipv6/ipv6_sockglue.c:988
-       tcp_setsockopt+0xa4/0x100 net/ipv4/tcp.c:4030
-       smc_setsockopt+0x1b4/0xc00 net/smc/af_smc.c:3078
-       do_sock_setsockopt+0x222/0x480 net/socket.c:2313
-       __sys_setsockopt+0x1a0/0x230 net/socket.c:2338
-       __do_sys_setsockopt net/socket.c:2344 [inline]
-       __se_sys_setsockopt net/socket.c:2341 [inline]
-       __x64_sys_setsockopt+0xbd/0x160 net/socket.c:2341
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #1 (&smc->clcsock_release_lock){+.+.}-{4:4}:
-       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
-       __mutex_lock+0x19b/0xa60 kernel/locking/mutex.c:735
-       smc_switch_to_fallback+0x2d/0xa00 net/smc/af_smc.c:903
-       smc_sendmsg+0x13d/0x520 net/smc/af_smc.c:2778
-       sock_sendmsg_nosec net/socket.c:711 [inline]
-       __sock_sendmsg net/socket.c:726 [inline]
-       ____sys_sendmsg+0x9ae/0xb40 net/socket.c:2583
-       ___sys_sendmsg+0x135/0x1e0 net/socket.c:2637
-       __sys_sendmmsg+0x201/0x420 net/socket.c:2726
-       __do_sys_sendmmsg net/socket.c:2753 [inline]
-       __se_sys_sendmmsg net/socket.c:2750 [inline]
-       __x64_sys_sendmmsg+0x9c/0x100 net/socket.c:2750
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #0 (sk_lock-AF_SMC){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3161 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3280 [inline]
-       validate_chain kernel/locking/lockdep.c:3904 [inline]
-       __lock_acquire+0x249e/0x3c40 kernel/locking/lockdep.c:5226
-       lock_acquire.part.0+0x11b/0x380 kernel/locking/lockdep.c:5849
-       lock_sock_nested+0x3a/0xf0 net/core/sock.c:3625
-       lock_sock include/net/sock.h:1623 [inline]
-       smc_close_non_accepted+0x80/0x200 net/smc/af_smc.c:1832
-       smc_close_cleanup_listen net/smc/smc_close.c:45 [inline]
-       smc_close_active+0xc3c/0x1070 net/smc/smc_close.c:225
-       __smc_release+0x634/0x880 net/smc/af_smc.c:277
-       smc_release+0x1fc/0x5f0 net/smc/af_smc.c:344
-       __sock_release+0xb0/0x270 net/socket.c:640
-       sock_close+0x1c/0x30 net/socket.c:1408
-       __fput+0x3f8/0xb60 fs/file_table.c:450
-       task_work_run+0x14e/0x250 kernel/task_work.c:239
-       resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
-       exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
-       exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
-       __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
-       syscall_exit_to_user_mode+0x27b/0x2a0 kernel/entry/common.c:218
-       do_syscall_64+0xda/0x250 arch/x86/entry/common.c:89
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-other info that might help us debug this:
-
-Chain exists of:
-  sk_lock-AF_SMC --> sk_lock-AF_INET --> sk_lock-AF_INET/1
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(sk_lock-AF_INET/1);
-                               lock(sk_lock-AF_INET);
-                               lock(sk_lock-AF_INET/1);
-  lock(sk_lock-AF_SMC);
-
- *** DEADLOCK ***
-
-2 locks held by syz.1.909/9790:
- #0: ffff888049c7f408 (&sb->s_type->i_mutex_key#10){+.+.}-{4:4}, at: inode_lock include/linux/fs.h:818 [inline]
- #0: ffff888049c7f408 (&sb->s_type->i_mutex_key#10){+.+.}-{4:4}, at: __sock_release+0x86/0x270 net/socket.c:639
- #1: ffff88807a380dd8 (sk_lock-AF_INET/1){+.+.}-{0:0}, at: smc_release+0x378/0x5f0 net/smc/af_smc.c:336
-
-stack backtrace:
-CPU: 0 UID: 0 PID: 9790 Comm: syz.1.909 Not tainted 6.13.0-rc7-syzkaller-00039-gc3812b15000c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 12/27/2024
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 2 PID: 12178 at lib/refcount.c:28 refcount_warn_saturate+0x12b/0x130
+Modules linked in: bonding ib_ipoib vfio_pci ip_gre geneve nf_tables ip6_gre gre ip6_tunnel tunnel6 ipip tunnel4 ib_umad rdma_ucm mlx5_vfio_pci vfio_pci_core vfio_iommu_type1 mlx5_ib vfio ib_uverbs mlx5_core iptable_raw openvswitch nsh rpcrdma ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm ib_core xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink xt_addrtype iptable_nat nf_nat br_netfilter rpcsec_gss_krb5 auth_rpcgss oid_registry overlay zram zsmalloc fuse [last unloaded: ib_uverbs]
+CPU: 2 PID: 12178 Comm: kworker/u20:5 Not tainted 6.5.0-rc1_net_next_mlx5_58c644e #1
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+Workqueue: events_unbound free_implicit_child_mr_work [mlx5_ib]
+RIP: 0010:refcount_warn_saturate+0x12b/0x130
+Code: 48 c7 c7 38 95 2a 82 c6 05 bc c6 fe 00 01 e8 0c 66 aa ff 0f 0b 5b c3 48 c7 c7 e0 94 2a 82 c6 05 a7 c6 fe 00 01 e8 f5 65 aa ff <0f> 0b 5b c3 90 8b 07 3d 00 00 00 c0 74 12 83 f8 01 74 13 8d 50 ff
+RSP: 0018:ffff8881008e3e40 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000027
+RDX: ffff88852c91b5c8 RSI: 0000000000000001 RDI: ffff88852c91b5c0
+RBP: ffff8881dacd4e00 R08: 00000000ffffffff R09: 0000000000000019
+R10: 000000000000072e R11: 0000000063666572 R12: ffff88812bfd9e00
+R13: ffff8881c792d200 R14: ffff88810011c005 R15: ffff8881002099c0
+FS:  0000000000000000(0000) GS:ffff88852c900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f5694b5e000 CR3: 00000001153f6003 CR4: 0000000000370ea0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:120
- print_circular_bug+0x41c/0x610 kernel/locking/lockdep.c:2074
- check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2206
- check_prev_add kernel/locking/lockdep.c:3161 [inline]
- check_prevs_add kernel/locking/lockdep.c:3280 [inline]
- validate_chain kernel/locking/lockdep.c:3904 [inline]
- __lock_acquire+0x249e/0x3c40 kernel/locking/lockdep.c:5226
- lock_acquire.part.0+0x11b/0x380 kernel/locking/lockdep.c:5849
- lock_sock_nested+0x3a/0xf0 net/core/sock.c:3625
- lock_sock include/net/sock.h:1623 [inline]
- smc_close_non_accepted+0x80/0x200 net/smc/af_smc.c:1832
- smc_close_cleanup_listen net/smc/smc_close.c:45 [inline]
- smc_close_active+0xc3c/0x1070 net/smc/smc_close.c:225
- __smc_release+0x634/0x880 net/smc/af_smc.c:277
- smc_release+0x1fc/0x5f0 net/smc/af_smc.c:344
- __sock_release+0xb0/0x270 net/socket.c:640
- sock_close+0x1c/0x30 net/socket.c:1408
- __fput+0x3f8/0xb60 fs/file_table.c:450
- task_work_run+0x14e/0x250 kernel/task_work.c:239
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x27b/0x2a0 kernel/entry/common.c:218
- do_syscall_64+0xda/0x250 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fe6cff85d29
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fe6d0ce0038 EFLAGS: 00000246 ORIG_RAX: 00000000000001b4
-RAX: 0000000000000000 RBX: 00007fe6d0175fa0 RCX: 00007fe6cff85d29
-RDX: 0000000000000000 RSI: 000000000000000a RDI: 0000000000000002
-RBP: 00007fe6d0001b08 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007fe6d0175fa0 R15: 00007ffd3f25a1e8
+ ? __warn+0x79/0x120
+ ? refcount_warn_saturate+0x12b/0x130
+ ? report_bug+0x17c/0x190
+ ? handle_bug+0x3c/0x60
+ ? exc_invalid_op+0x14/0x70
+ ? asm_exc_invalid_op+0x16/0x20
+ ? refcount_warn_saturate+0x12b/0x130
+ free_implicit_child_mr_work+0x180/0x1b0 [mlx5_ib]
+ ? try_to_wake_up+0x5d/0x450
+ ? destroy_sched_domains_rcu+0x30/0x30
+ process_one_work+0x1cc/0x3c0
+ worker_thread+0x218/0x3c0
+ ? process_one_work+0x3c0/0x3c0
+ kthread+0xc6/0xf0
+ ? kthread_complete_and_exit+0x20/0x20
+ ret_from_fork+0x1f/0x30
  </TASK>
+---[ end trace 0000000000000000 ]---
 
-
+Fixes: 5256edcb98a1 ("RDMA/mlx5: Rework implicit ODP destroy")
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Changelog:
+v1: Used code suggestion from Jason
+v0: https://lore.kernel.org/all/84ecb15d9f251dd760377e53da0de9eb385ea65c.1736251907.git.leon@kernel.org
+---
+ drivers/infiniband/hw/mlx5/odp.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+index da7b4d6ad2c3..f4cd50a3693c 100644
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -240,13 +240,20 @@ static void destroy_unused_implicit_child_mr(struct mlx5_ib_mr *mr)
+ 	unsigned long idx = ib_umem_start(odp) >> MLX5_IMR_MTT_SHIFT;
+ 	struct mlx5_ib_mr *imr = mr->parent;
+ 
+-	if (!refcount_inc_not_zero(&imr->mmkey.usecount))
++	xa_lock(&imr->implicit_children);
++	if (__xa_cmpxchg(&imr->implicit_children, idx, mr, NULL, GFP_KERNEL) !=
++	    mr) {
++		xa_unlock(&imr->implicit_children);
+ 		return;
++	}
+ 
+-	xa_erase(&imr->implicit_children, idx);
+ 	if (MLX5_CAP_ODP(mr_to_mdev(mr)->mdev, mem_page_fault))
+-		xa_erase(&mr_to_mdev(mr)->odp_mkeys,
+-			 mlx5_base_mkey(mr->mmkey.key));
++		__xa_erase(&mr_to_mdev(mr)->odp_mkeys,
++			   mlx5_base_mkey(mr->mmkey.key));
++	xa_unlock(&imr->implicit_children);
++
++	if (!refcount_inc_not_zero(&imr->mmkey.usecount))
++		return;
+ 
+ 	/* Freeing a MR is a sleeping operation, so bounce to a work queue */
+ 	INIT_WORK(&mr->odp_destroy.work, free_implicit_child_mr_work);
+@@ -513,18 +520,18 @@ static struct mlx5_ib_mr *implicit_get_child_mr(struct mlx5_ib_mr *imr,
+ 		refcount_inc(&ret->mmkey.usecount);
+ 		goto out_lock;
+ 	}
+-	xa_unlock(&imr->implicit_children);
+ 
+ 	if (MLX5_CAP_ODP(dev->mdev, mem_page_fault)) {
+-		ret = xa_store(&dev->odp_mkeys, mlx5_base_mkey(mr->mmkey.key),
+-			       &mr->mmkey, GFP_KERNEL);
++		ret = __xa_store(&dev->odp_mkeys, mlx5_base_mkey(mr->mmkey.key),
++				 &mr->mmkey, GFP_KERNEL);
+ 		if (xa_is_err(ret)) {
+ 			ret = ERR_PTR(xa_err(ret));
+-			xa_erase(&imr->implicit_children, idx);
+-			goto out_mr;
++			__xa_erase(&imr->implicit_children, idx);
++			goto out_lock;
+ 		}
+ 		mr->mmkey.type = MLX5_MKEY_IMPLICIT_CHILD;
+ 	}
++	xa_unlock(&imr->implicit_children);
+ 	mlx5_ib_dbg(mr_to_mdev(imr), "key %x mr %p\n", mr->mmkey.key, mr);
+ 	return mr;
+ 
+-- 
+2.47.1
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
