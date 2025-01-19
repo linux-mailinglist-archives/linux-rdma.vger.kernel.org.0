@@ -1,53 +1,53 @@
-Return-Path: <linux-rdma+bounces-7092-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7093-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5DB7A161D8
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2025 13:57:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7692A161D9
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2025 13:57:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FDF83A5807
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2025 12:57:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4AC9164E9D
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2025 12:57:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39CCC1DED4C;
-	Sun, 19 Jan 2025 12:57:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F2721DED6E;
+	Sun, 19 Jan 2025 12:57:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YQk6WXZj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lzv067oj"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA0FEEB5
-	for <linux-rdma@vger.kernel.org>; Sun, 19 Jan 2025 12:57:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FA36EEB5
+	for <linux-rdma@vger.kernel.org>; Sun, 19 Jan 2025 12:57:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737291435; cv=none; b=Cgbaa1nTpe5oowd5Gj9seC+exUxEIvHKSZ5i0KbUqyoCwLehMjVXgCQckW3Ib876xLgXIJ3IaUcRazqaucWa1EFwHMOzfzjFhfxe4AOGI7bBITVcdF5sVnlovv3dh61zTt9VnVRdHdvFYPMeJ/yxNC75bvBAm7l4PMXhKCtNNOA=
+	t=1737291437; cv=none; b=dGgzDbPk/9gb4j/ZJ+QqWHbxTXczPUrM1qammGwMP46KNI4BijnpfHkIbQHWEgIRJLzizXA6Z73EIBoGJOJY7v/f/kIXpd31pr1vlQVvWhikDZA9+9g6DqoaZSVQ2SsuMZv669BnnkR/L18JWTyI30AXzFqJ0+L51aw6EmH0Hfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737291435; c=relaxed/simple;
-	bh=jD15RZoRCklDpXXoRoVsAadZUUpIm2Kv2YDd6Jiu390=;
+	s=arc-20240116; t=1737291437; c=relaxed/simple;
+	bh=RE8qJVesfpU8vzkRw7dceBBasePuOpg/DRMFlgSlo08=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QH7mG5yhSDv2WSfq7BAcfebNigYVlGctbDZTjvSEwYkfdToy6vlHcKOT4dU3BMKZkdq4ShKrqzKmFVvCH0sAlu0wn0+OmqwsA8TlbGZhambV6GhBROOym7Wc1Z93HHHA1GgQLNaJzLaOApQ9Qz7MaLGjoaghmf9UCRs6hm7Wt74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YQk6WXZj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABB05C4CEE7;
-	Sun, 19 Jan 2025 12:57:12 +0000 (UTC)
+	 MIME-Version; b=b4tSkTBgglsNvDZbASn7md5R3X9D+BxBI3oVFoZsKwyG64kMn4o2u9qyBPuHLU6LtigoaFQ1DKkUvwHPqJuexs4y35eyteO5ggpjm7QEHMzWkH7xF+P+NTBbBboxyfF0D6+HuZdLyfHL9rQytIqPLoMmEJ+b2mWkYqTxC9dQp5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lzv067oj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A86B5C4CED6;
+	Sun, 19 Jan 2025 12:57:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737291433;
-	bh=jD15RZoRCklDpXXoRoVsAadZUUpIm2Kv2YDd6Jiu390=;
+	s=k20201202; t=1737291437;
+	bh=RE8qJVesfpU8vzkRw7dceBBasePuOpg/DRMFlgSlo08=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YQk6WXZjdNJgPp7k2IwUkxEDq4aTAMI4zY6I0WRpeAe5vt3EmOB2hsmbErRh6Xmo6
-	 ++1czy7DazS8P1rDHLcF6qS8KXQ4plWwlcp2Nd9fLiCIwba/ICnAMS0VhoXtGkwbFA
-	 RJZTg6irZFsCmtIuuTSAUVTplsmkuBFeNxoXfBDE90mVDKGBU8HZTAzPnodNu4P0iS
-	 oekPSk676aIXeXg5Z02gpisHn+YdKglp4TUtV7cWO8kwtWCUjzbBIqNFhVvaXVquTV
-	 8gZeWda1B41aZuk4+Fh6mWDR/2TyPp3vZxHptDwAHS6incCqr0Win5iYYwoAWNMd9P
-	 MM2iUUAM44VQA==
+	b=Lzv067ojHdD6PaA86QQGPjengntmPc7Kzrlf+iNP2VeiXBBzmEWwGYucmW3kQjNtH
+	 04Moi2xdG5pBCsXgPRq5ultefiiSQFne2wuD+yl9Dxj7ijUy5gjUQGCOst4yGOknv5
+	 TMJnBsBxB0pLnR0+/JCvN0yKnNT1ZC0lDIv2oW/VjSy4pG421rc7au7+K6PmaE3DZ6
+	 oJPUSGO/zgg8lhJazAHPMl+MdHPGVMocwBcgucxSea9SFxTlkyvHo7pG7KXpJYqHS0
+	 /dq5ugXg6WSfJI/Q3qr6DUMG2qAP0X4sdxzkqDRZSje9y87yjSQ2Y37Z/h2gYFYtZw
+	 xu+CvLeWR3vbw==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Maher Sanalla <msanalla@nvidia.com>,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 1/3] IB/cache: Add log messages for IB device state changes
-Date: Sun, 19 Jan 2025 14:57:00 +0200
-Message-ID: <836272c0a839393c71df4df5138f2c072c6f67c2.1737290406.git.leon@kernel.org>
+Subject: [PATCH rdma-next 2/3] RDMA/core: Use ib_port_state_to_str() for IB state sysfs
+Date: Sun, 19 Jan 2025 14:57:01 +0200
+Message-ID: <5fe1664b6c363800ce2469261a9cb909473275ad.1737290406.git.leon@kernel.org>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1737290406.git.leon@kernel.org>
 References: <cover.1737290406.git.leon@kernel.org>
@@ -61,64 +61,46 @@ Content-Transfer-Encoding: 8bit
 
 From: Maher Sanalla <msanalla@nvidia.com>
 
-Enhance visibility into IB device state transitions by adding log messages
-to the kernel log (dmesg). Whenever an IB device changes state, a relevant
-print will be printed, such as:
-
-"mlx5_core 0000:08:00.0 mlx5_0: Port DOWN"
-"mlx5_core 0000:08:00.0 rocep8s0f0: Port ACTIVE"
+Refactor the IB state sysfs implementation to replace the local array
+used for converting IB state to string with the ib_port_state_to_str()
+function.
 
 Signed-off-by: Maher Sanalla <msanalla@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/cache.c |  5 +++++
- include/rdma/ib_verbs.h         | 17 +++++++++++++++++
- 2 files changed, 22 insertions(+)
+ drivers/infiniband/core/sysfs.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-index f8413f8a9f26..a35a2f3c9ab1 100644
---- a/drivers/infiniband/core/cache.c
-+++ b/drivers/infiniband/core/cache.c
-@@ -1501,6 +1501,11 @@ ib_cache_update(struct ib_device *device, u32 port, bool update_gids,
- 		device->port_data[port].cache.pkey = pkey_cache;
- 	}
- 	device->port_data[port].cache.lmc = tprops->lmc;
-+
-+	if (device->port_data[port].cache.port_state != tprops->state)
-+		ibdev_info(device, "Port %s\n",
-+			   ib_port_state_to_str(tprops->state));
-+
- 	device->port_data[port].cache.port_state = tprops->state;
+diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+index 9f97bef02149..7491328ca5e6 100644
+--- a/drivers/infiniband/core/sysfs.c
++++ b/drivers/infiniband/core/sysfs.c
+@@ -216,24 +216,12 @@ static ssize_t state_show(struct ib_device *ibdev, u32 port_num,
+ 	struct ib_port_attr attr;
+ 	ssize_t ret;
  
- 	device->port_data[port].cache.subnet_prefix = tprops->subnet_prefix;
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 0ad104dae253..b59bf30de430 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -519,6 +519,23 @@ enum ib_port_state {
- 	IB_PORT_ACTIVE_DEFER	= 5
- };
+-	static const char *state_name[] = {
+-		[IB_PORT_NOP]		= "NOP",
+-		[IB_PORT_DOWN]		= "DOWN",
+-		[IB_PORT_INIT]		= "INIT",
+-		[IB_PORT_ARMED]		= "ARMED",
+-		[IB_PORT_ACTIVE]	= "ACTIVE",
+-		[IB_PORT_ACTIVE_DEFER]	= "ACTIVE_DEFER"
+-	};
+-
+ 	ret = ib_query_port(ibdev, port_num, &attr);
+ 	if (ret)
+ 		return ret;
  
-+static inline const char *__attribute_const__
-+ib_port_state_to_str(enum ib_port_state state)
-+{
-+	const char * const states[] = {
-+		[IB_PORT_NOP] = "NOP",
-+		[IB_PORT_DOWN] = "DOWN",
-+		[IB_PORT_INIT] = "INIT",
-+		[IB_PORT_ARMED] = "ARMED",
-+		[IB_PORT_ACTIVE] = "ACTIVE",
-+		[IB_PORT_ACTIVE_DEFER] = "ACTIVE_DEFER",
-+	};
-+
-+	if (state < ARRAY_SIZE(states))
-+		return states[state];
-+	return "UNKNOWN";
-+}
-+
- enum ib_port_phys_state {
- 	IB_PORT_PHYS_STATE_SLEEP = 1,
- 	IB_PORT_PHYS_STATE_POLLING = 2,
+ 	return sysfs_emit(buf, "%d: %s\n", attr.state,
+-			  attr.state >= 0 &&
+-					  attr.state < ARRAY_SIZE(state_name) ?
+-				  state_name[attr.state] :
+-				  "UNKNOWN");
++			  ib_port_state_to_str(attr.state));
+ }
+ 
+ static ssize_t lid_show(struct ib_device *ibdev, u32 port_num,
 -- 
 2.47.1
 
