@@ -1,55 +1,56 @@
-Return-Path: <linux-rdma+bounces-7091-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7092-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26FA3A161D6
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2025 13:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5DB7A161D8
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2025 13:57:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F23F3A5128
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2025 12:57:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FDF83A5807
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2025 12:57:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 434121DE8B7;
-	Sun, 19 Jan 2025 12:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39CCC1DED4C;
+	Sun, 19 Jan 2025 12:57:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k9d7aiGu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YQk6WXZj"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1DA8EEB5;
-	Sun, 19 Jan 2025 12:57:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA0FEEB5
+	for <linux-rdma@vger.kernel.org>; Sun, 19 Jan 2025 12:57:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737291430; cv=none; b=JWrO1tTxq1WblxNqWJeZvQS/yGM26GhBwfOSE7NYFgOYv4hXRGYNbVCfHoaWG7C7qLpRb1cCz3nUuZGOAsWx4I3AMyVBBlbtW9bhgTkdaAW6Jg8KyvhLmuqCU0hDQPS54mHMkGY1mm/YOlD8u7r3Q/Wesaryml7utcJo1nKwRL8=
+	t=1737291435; cv=none; b=Cgbaa1nTpe5oowd5Gj9seC+exUxEIvHKSZ5i0KbUqyoCwLehMjVXgCQckW3Ib876xLgXIJ3IaUcRazqaucWa1EFwHMOzfzjFhfxe4AOGI7bBITVcdF5sVnlovv3dh61zTt9VnVRdHdvFYPMeJ/yxNC75bvBAm7l4PMXhKCtNNOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737291430; c=relaxed/simple;
-	bh=kZBk0xY7dzPEbqW2Oj9HUHBdBGOfJSzXNqHm2jGWMU0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Srg9DaVpgiQUYyfCoTTzScWIrBCgjkgboy/3tTCLBacaGg2TiD/W1LzbglPOsd/pKXTobbX6CTo9YnNzPVouo7h3ufSemGWC3QSGfIsU8n4l2aLXoLoCfMyH6Ff9PW5zhpsXW80ZipFabNXT0OkLRzmyRDLcPD7nosBspV1Yiu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k9d7aiGu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EAE5C4CED6;
-	Sun, 19 Jan 2025 12:57:08 +0000 (UTC)
+	s=arc-20240116; t=1737291435; c=relaxed/simple;
+	bh=jD15RZoRCklDpXXoRoVsAadZUUpIm2Kv2YDd6Jiu390=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=QH7mG5yhSDv2WSfq7BAcfebNigYVlGctbDZTjvSEwYkfdToy6vlHcKOT4dU3BMKZkdq4ShKrqzKmFVvCH0sAlu0wn0+OmqwsA8TlbGZhambV6GhBROOym7Wc1Z93HHHA1GgQLNaJzLaOApQ9Qz7MaLGjoaghmf9UCRs6hm7Wt74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YQk6WXZj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABB05C4CEE7;
+	Sun, 19 Jan 2025 12:57:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737291429;
-	bh=kZBk0xY7dzPEbqW2Oj9HUHBdBGOfJSzXNqHm2jGWMU0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=k9d7aiGuS3Wceq/yPgDQlkiBt0M3ysKH5WL5IVTj2rJ/xOW6dTb8BPel4UflZ6JCy
-	 z2QJWZAhoALlwZZ9omi+w2B+/bgGDklBdEycCuOip+zLO4yeZgpHtpNqEE+fb9wdtI
-	 yRk8vDWcm+gSCOwNck4Woff/CnHWwcTTymhqpLTEJVQUpfYBZVWX8+2minEfRWR0ut
-	 WRwoAoSNsMXE53X36I/134VjXk16t66PrQ0s0jyEXSejSkoeOPqMbnJJVKNtL+/uGb
-	 Hxdn10aUW2roDb6Yyn83fV8XSAOW+C+2bzNWmKQztRtNPmQyuVDNX6q54ta1EZisPa
-	 6eUo9yZIuNe/A==
+	s=k20201202; t=1737291433;
+	bh=jD15RZoRCklDpXXoRoVsAadZUUpIm2Kv2YDd6Jiu390=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=YQk6WXZjdNJgPp7k2IwUkxEDq4aTAMI4zY6I0WRpeAe5vt3EmOB2hsmbErRh6Xmo6
+	 ++1czy7DazS8P1rDHLcF6qS8KXQ4plWwlcp2Nd9fLiCIwba/ICnAMS0VhoXtGkwbFA
+	 RJZTg6irZFsCmtIuuTSAUVTplsmkuBFeNxoXfBDE90mVDKGBU8HZTAzPnodNu4P0iS
+	 oekPSk676aIXeXg5Z02gpisHn+YdKglp4TUtV7cWO8kwtWCUjzbBIqNFhVvaXVquTV
+	 8gZeWda1B41aZuk4+Fh6mWDR/2TyPp3vZxHptDwAHS6incCqr0Win5iYYwoAWNMd9P
+	 MM2iUUAM44VQA==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	Maher Sanalla <msanalla@nvidia.com>
-Subject: [PATCH rdma-next 0/3] Print link status when it is changed
-Date: Sun, 19 Jan 2025 14:56:59 +0200
-Message-ID: <cover.1737290406.git.leon@kernel.org>
+Cc: Maher Sanalla <msanalla@nvidia.com>,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next 1/3] IB/cache: Add log messages for IB device state changes
+Date: Sun, 19 Jan 2025 14:57:00 +0200
+Message-ID: <836272c0a839393c71df4df5138f2c072c6f67c2.1737290406.git.leon@kernel.org>
 X-Mailer: git-send-email 2.48.1
+In-Reply-To: <cover.1737290406.git.leon@kernel.org>
+References: <cover.1737290406.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -58,28 +59,66 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In similar to netdev and hfi1 behaviour, add general implementation to
-IB/core to print IB port state changes.
+From: Maher Sanalla <msanalla@nvidia.com>
+
+Enhance visibility into IB device state transitions by adding log messages
+to the kernel log (dmesg). Whenever an IB device changes state, a relevant
+print will be printed, such as:
 
 "mlx5_core 0000:08:00.0 mlx5_0: Port DOWN"
 "mlx5_core 0000:08:00.0 rocep8s0f0: Port ACTIVE"
 
-Thanks
+Signed-off-by: Maher Sanalla <msanalla@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/core/cache.c |  5 +++++
+ include/rdma/ib_verbs.h         | 17 +++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-Maher Sanalla (3):
-  IB/cache: Add log messages for IB device state changes
-  RDMA/core: Use ib_port_state_to_str() for IB state sysfs
-  IB/hfi1: Remove state transition log message and opa_lstate_name()
-
- drivers/infiniband/core/cache.c     |  5 +++++
- drivers/infiniband/core/sysfs.c     | 14 +-------------
- drivers/infiniband/hw/hfi1/chip.c   | 18 ------------------
- drivers/infiniband/hw/hfi1/chip.h   |  1 -
- drivers/infiniband/hw/hfi1/driver.c |  2 +-
- drivers/infiniband/hw/hfi1/mad.c    |  4 ++--
- include/rdma/ib_verbs.h             | 17 +++++++++++++++++
- 7 files changed, 26 insertions(+), 35 deletions(-)
-
+diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+index f8413f8a9f26..a35a2f3c9ab1 100644
+--- a/drivers/infiniband/core/cache.c
++++ b/drivers/infiniband/core/cache.c
+@@ -1501,6 +1501,11 @@ ib_cache_update(struct ib_device *device, u32 port, bool update_gids,
+ 		device->port_data[port].cache.pkey = pkey_cache;
+ 	}
+ 	device->port_data[port].cache.lmc = tprops->lmc;
++
++	if (device->port_data[port].cache.port_state != tprops->state)
++		ibdev_info(device, "Port %s\n",
++			   ib_port_state_to_str(tprops->state));
++
+ 	device->port_data[port].cache.port_state = tprops->state;
+ 
+ 	device->port_data[port].cache.subnet_prefix = tprops->subnet_prefix;
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 0ad104dae253..b59bf30de430 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -519,6 +519,23 @@ enum ib_port_state {
+ 	IB_PORT_ACTIVE_DEFER	= 5
+ };
+ 
++static inline const char *__attribute_const__
++ib_port_state_to_str(enum ib_port_state state)
++{
++	const char * const states[] = {
++		[IB_PORT_NOP] = "NOP",
++		[IB_PORT_DOWN] = "DOWN",
++		[IB_PORT_INIT] = "INIT",
++		[IB_PORT_ARMED] = "ARMED",
++		[IB_PORT_ACTIVE] = "ACTIVE",
++		[IB_PORT_ACTIVE_DEFER] = "ACTIVE_DEFER",
++	};
++
++	if (state < ARRAY_SIZE(states))
++		return states[state];
++	return "UNKNOWN";
++}
++
+ enum ib_port_phys_state {
+ 	IB_PORT_PHYS_STATE_SLEEP = 1,
+ 	IB_PORT_PHYS_STATE_POLLING = 2,
 -- 
 2.47.1
 
