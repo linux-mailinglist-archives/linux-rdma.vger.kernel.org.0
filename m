@@ -1,91 +1,89 @@
-Return-Path: <linux-rdma+bounces-7103-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7104-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4902BA16DB6
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jan 2025 14:47:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5557BA17056
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jan 2025 17:40:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6111F3A4FC9
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jan 2025 13:47:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13CB718896DE
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jan 2025 16:40:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486341E0DE9;
-	Mon, 20 Jan 2025 13:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB501E9B25;
+	Mon, 20 Jan 2025 16:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="h7toN3Oj"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="aq2a3Tjk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006E0193
-	for <linux-rdma@vger.kernel.org>; Mon, 20 Jan 2025 13:47:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD459BE65
+	for <linux-rdma@vger.kernel.org>; Mon, 20 Jan 2025 16:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737380848; cv=none; b=A5OOg8esjwfw0HP5yK+RXqfAMxzaeafIThVPkuxE8OouB4gOdUuhPs+u2XKHvFxK0Z07p88hcY35my+sXj4hD5xZUJ0KAealvZ5ieqHPr7xc8pwhjBF+jnd/OGOJ8hmhf94IWDwUNmoZl4dyW25OvOY9+V037Rqc5qvDD9iMj8Y=
+	t=1737391204; cv=none; b=IIIkye3C50Pqf530mrWTGhIA+rCtEDLbFoA/XRa7wGPdsc3BW42VYEzTMgjpgHmxeWKwIvzr69IEw8nVOIC1FdTjIaxZhWHEgX12M6ObEfva092sy7URfdECxZ2ML0++G9jyB2VMF5w+Hsp19P22FsopXtBdCjOR5thT07/wQjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737380848; c=relaxed/simple;
-	bh=GeXzxCgGuKWx1M+Ms08i+VNSkY1XAtyqLHaEmv0yXmI=;
+	s=arc-20240116; t=1737391204; c=relaxed/simple;
+	bh=AlwjtWZgYjy6OHzhYhahMaUBoYuKqBA1E3oCYGfiQZo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g2Memur/l4gfE9a5WKV8sbua5ZcvIWalIek7QCGTsxXf0fJOLwRNRWEv5J0veYqCmTvlox1/VwdG17NQ8qxqZxZU9LsUfZJyV9Gk2n4fYA7/N6Csysq7DJPpq6CackH35aMMHgAkJAF48EORhyy2BNfgfxQCSgxIxHfR2PvGs9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=h7toN3Oj; arc=none smtp.client-ip=209.85.222.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=Of+hyJ/xkWVPoTAw4E5c+9LwcoXySYnNtrcHRAft/2hgXFmdqdXlJ/cutETjFaVmg+ze87W1rdxp+o25xZFPOkmBN0ZX4+y/Tda2bCM74rZd1blQrh1SmAEnYsbOsLx8potrdDBp463D5TDVBxn8c+BUa/yBTHNXjGsrqT6vRyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=aq2a3Tjk; arc=none smtp.client-ip=209.85.219.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-7b6eb531e13so239468385a.0
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Jan 2025 05:47:25 -0800 (PST)
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6dcd4f1aaccso71940926d6.2
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Jan 2025 08:40:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1737380845; x=1737985645; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1737391201; x=1737996001; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RJBG1SauCV8VABLZVs4NNU7kMCxu/6Hdc/HxqVjIv94=;
-        b=h7toN3OjpvIRrgOz0sZjcnGMLsElVgEGrzANzfrc6t3P7apcuOn1SY5MwvXs12ZlRI
-         D8sylQoBxatpJjeo9RrH+BP3lBgi8KBVHROzxlHCuprKV/Xtf0yH1wys8h0Re/9kUotY
-         Eh8aG7/sKWVRHkq/TFZJmfYVFZGNcAesjWKYB4bXm0g98g9qhkwdY72s8YdsOjHKLlkt
-         FVBYFMi8oQm5Mbv6qcfB/kNTngMOpKqedXbFadl0izYJDiFwpXv70rfge0bSdU4mV/Hi
-         WcmtD3UCw1Vi0ldc3gSmiko0PT87Vf1z/v2dqU/CPuFUpORmC1pPdmgBu5SAKuuYRdkp
-         Eu+A==
+        bh=lDNornUnHShtIGZIycaK8pbpoPcK8DfapEOMzhM2soo=;
+        b=aq2a3Tjk9ohnc+ZSyNzgYgqKRM+XdurqFvMDNBX2R65jfx53SBZEv3ts5+zGkgOvjd
+         6HV2OgbJwrHN8oGapOlDc+HWkC0RkCwArPxkIYxCpoCi01j10VWG9VKNQoWT3QL0uDUp
+         cEijq9aGiUfygJL3YYtwWaVS7Xz3uUbQqPLs3ZNH6Fx6RL9FAOgqQJMYNzNgPbMyJxkO
+         D8qroeuU7wEIOXsWI1geYJ2dcqMC+YFjs+9+yJmbwZI6JJfs+1mrkQ4sMC9XkJRHfwHh
+         2vcQrR+4gM1WjP38eeq6Nx7/amF9FmJOQnt/xo6q7D5gdNBlkSrspdBKt8LRR0H62F+Q
+         0WUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737380845; x=1737985645;
+        d=1e100.net; s=20230601; t=1737391201; x=1737996001;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RJBG1SauCV8VABLZVs4NNU7kMCxu/6Hdc/HxqVjIv94=;
-        b=u3NEM42+AXMbNoehAuxTl//zFrnhDKoVOzV1/sUmnrEDyM51812IH7o7gZavozHNO4
-         ZDg4LW5qw1jn+JOjhMxjp5KiKJ2beQDPDecbEWudlnhEt8YKGAskMAgXUf91XvHCEFvR
-         RuOYEg+q7epfbJ4+AMOP18+jjyct+vEdxA5nrC+YGKchGvJCeW/aQRZ4h1VYkC5mbw77
-         BINWQgoAeg3tbCxi8qlH0bFMQijHu5GePQOA/tazkBWm5medqlOJIJCPZezxruOos/s7
-         fXQ51xutXXzJaLkVBpiF+bxgNCK+t1seyrL1Bi6EK6GiSejevdsgxAeCnIiYljSQzlXJ
-         Ld9w==
-X-Forwarded-Encrypted: i=1; AJvYcCVt/DcqofmLekBWxkqSpJVug3r4gyv2UZGFHLqv/M8eSgugTvqEf4+6ba0RilDxOKjrmubx3XQBijsR@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyvgr9Zbi1n3OoKA+HElxp3N4xqySdjV7KpQHlp5kLOSa+OSRKX
-	A5f/TJnS1SjpYeCfNI2TKcZi6kIxII50IrB+XptOZyATGS9yFjqpuYAla7Azvgw=
-X-Gm-Gg: ASbGncvMxRPwFjA8K3KsiQYeBdbH1Yqx6wnFQ7hLK34pzPe9zf0RUj1HtNiMBFtI0wZ
-	CE3371+nsL7CHGsaTPGEZmr/hr28AjM5R9KOQw/BAOrI7/jefLPgMSohzEVGupgQLPLYc1HlJnQ
-	WK+0/WuohbXPSV7T08sAkTLqSAX0+XjmCNdqW2KqLeqpmYNdxBARC00Yfh+3k5uu62UzxO2YyLq
-	kEpYaQitkEUVVnc8n+YdTNULRhpGX70in+MO4vb37PmwUBLnRqV068hX4oKnf1mXOsuhtsMIXXU
-	YHgAlc/amTNdT6t3Ta1O1vrFkawOdX/7H78ulJd5DXI=
-X-Google-Smtp-Source: AGHT+IF5A3qF3INaO0pH9iu8A2SuQIUdjjVoTY7L0AZSsMj8dCFU5Jf+YHNQ1rLqgwNMJBmUwQmQ6A==
-X-Received: by 2002:a05:620a:44c4:b0:7b6:79c8:d036 with SMTP id af79cd13be357-7be631e7233mr1995927785a.3.1737380844758;
-        Mon, 20 Jan 2025 05:47:24 -0800 (PST)
+        bh=lDNornUnHShtIGZIycaK8pbpoPcK8DfapEOMzhM2soo=;
+        b=PjE6tCyxWsmLUPdoYQUKjr7gwBMNyR6WRmD49cCOR9PE94/uYTggZqRJajL7fPYBaL
+         WwaWXTNm5HCcAqO4O8aACUQx0AbfmamnEsPDt26QnF/YJ3qbdZDaeKxn7+GYn8Je9UIJ
+         myKyOFmFwZHfTEOK4+33TceyReOYLGw2aySHvSOvt0pYfokQ5oYkPJDeIF6Uh7b2xvb6
+         JSl+8G3gt+i4Po1EWdTIX9ot2acjh82+hybkrNdnH74pc98JEbLuwFDGK9pzOvzNH24X
+         7vGGf0iWujzufbt5/NCxXImQO6VDLf4kfc0ZvH+LUXDF7XeZT0JCij24lOGEleiN1u5b
+         93CA==
+X-Forwarded-Encrypted: i=1; AJvYcCXaYIgvKys9gyXbHhQEMAWn0oxz665s70mJbQ5+iAPHSonzvo//GKJHiZ1Kv9STrSDXBIzALw2LIJYc@vger.kernel.org
+X-Gm-Message-State: AOJu0YwwemGmmt8rUyUTM6iGI22/sk1hJax8AmA9YjC2G8lXLahFQJnv
+	dCLS4KNgFANoLu141VlVIiZnM45zUv0yww6JkHS5VboSv7q6nJwimdi8261JIKg=
+X-Gm-Gg: ASbGncvSF30yDhmS5b20QY6Mp/J2r1BMr+Bc1rHRErMSlJhX47itLqcveNbn6gMfk2M
+	yA+udrmbNjJdZ0Gi3sgtevkzBB94lVMWLA94eAPqgsFqSRTgVyEGwqhdKLc4yGoQMSlWJofDj+y
+	3oyf3agRnitqecseyeAda4VAEvIqg9yRTTOcwmGUl4+lI7Q2QUL5eKpGN9rkR2EMrE6wGJT/m2z
+	r3RHVWqA424ZiaVLkYU9vO++uav4jAF6criWoTWJiT2ka+RbSlkL4GUf8nS1m9+MTNYR/Dc6Z24
+	7kAeqHgiZdOUz5XH3HZdkx1m4Cj4nUTdR5jc4yxwgks=
+X-Google-Smtp-Source: AGHT+IFqaVAozfFmDGPamm9D+FKfw5SJTDzMEEbwKwj4/H/hCgOFrHupydb7nFodhJe0DlZfuxHJDA==
+X-Received: by 2002:a05:6214:3007:b0:6d8:9062:6616 with SMTP id 6a1803df08f44-6e1b216ef7dmr234997036d6.7.1737391201474;
+        Mon, 20 Jan 2025 08:40:01 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7be6147500csm442655185a.10.2025.01.20.05.47.23
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e1afbf5e2dsm43033746d6.21.2025.01.20.08.40.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jan 2025 05:47:23 -0800 (PST)
+        Mon, 20 Jan 2025 08:40:01 -0800 (PST)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1tZs7e-00000003PRq-3jFO;
-	Mon, 20 Jan 2025 09:47:22 -0400
-Date: Mon, 20 Jan 2025 09:47:22 -0400
+	id 1tZuoi-00000003UZV-209x;
+	Mon, 20 Jan 2025 12:40:00 -0400
+Date: Mon, 20 Jan 2025 12:40:00 -0400
 From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Or Har-Toov <ohartoov@nvidia.com>, linux-rdma@vger.kernel.org,
-	Maher Sanalla <msanalla@nvidia.com>
-Subject: Re: [PATCH rdma-next v1 1/2] IB/mad: Add state machine to MAD layer
-Message-ID: <20250120134722.GI674319@ziepe.ca>
-References: <cover.1736258116.git.leonro@nvidia.com>
- <bf1d3e6c5eceb452a4fa4f6d08ea6b5220ab5cc9.1736258116.git.leonro@nvidia.com>
- <20250114194208.GF5556@nvidia.com>
- <20250119082624.GA21007@unreal>
+To: Selvin Xavier <selvin.xavier@broadcom.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, kalesh-anakkur.purayil@broadcom.com
+Subject: Re: [PATCH for-next v2] RDMA/bnxt_re: Congestion control settings
+ using debugfs hook
+Message-ID: <20250120164000.GO674319@ziepe.ca>
+References: <1737301535-6599-1-git-send-email-selvin.xavier@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -94,25 +92,20 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250119082624.GA21007@unreal>
+In-Reply-To: <1737301535-6599-1-git-send-email-selvin.xavier@broadcom.com>
 
-On Sun, Jan 19, 2025 at 10:26:24AM +0200, Leon Romanovsky wrote:
+On Sun, Jan 19, 2025 at 07:45:35AM -0800, Selvin Xavier wrote:
+> Implements routines to set and get different settings  of
+> the congestion control. This will enable the users to modify
+> the settings according to their network.
 
-> > > +#define NOT_EXPECT_MAD_STATE(mad_send_wr, wrong_state)              \
-> > > +	{                                                           \
-> > > +		if (IS_ENABLED(CONFIG_LOCKDEP))                     \
-> > > +			WARN_ON(mad_send_wr->state == wrong_state); \
-> > > +	}
-> > 
-> > These could all be static inlines, otherwise at least
-> > mad_send_wr->state needs brackets (mad_send_wr)->state
-> 
-> I don't think that it is worth to have functions here.
+Should something like this be in debugfs though?
 
-You should always prefer functions to function-like-macros if
-possible..
+bnxt_qplib_modify_cc() is just sending a firmware command, seems like
+this should belong to fwctl?
 
-The expected_state needs () as well
+Additionally there may be interest in some common way to control CC
+for RDMA..
 
 Jason
 
