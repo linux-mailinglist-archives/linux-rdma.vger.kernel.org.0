@@ -1,138 +1,142 @@
-Return-Path: <linux-rdma+bounces-7154-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7155-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B13D5A1812A
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 16:31:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 221C6A18285
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 18:06:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97F6F16B0B9
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 15:31:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 710DF167E60
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 17:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130131F3FFF;
-	Tue, 21 Jan 2025 15:31:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D351F4E4C;
+	Tue, 21 Jan 2025 17:06:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="GcjmxX5y"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="KvgkrE0r"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E8D1EE02F
-	for <linux-rdma@vger.kernel.org>; Tue, 21 Jan 2025 15:31:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238391B394B;
+	Tue, 21 Jan 2025 17:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737473491; cv=none; b=UFfKHFazcJPIZIsFlYUcxT/J4nGeps0bco6XxpUp2miodUEVBtNathrmfb/ajheE4zKuhwNMpSPrPgoWfdHhWvUyfzd77PkiGZKqh7qDgpMbny/TMPgYXKBg5tjwVI120E2bU4FtU5NoKIuO4A/9l0JnZd5jXhmuixChng/4pY4=
+	t=1737479161; cv=none; b=msYKRArBOBArvqTHyL+IG+0CXSZWKgRihf17dEpzfx0Qtfg1EGGGdB79OGiaf6lkeVqgfZOKhdMB9jU3tF8DRZDzh9xQquzU6UYwudKSGNpsPqm2txyd8Xh781qWjaFl9zhjXCqmznTbh2pMgy01K27bb+rouuX4voPdNoAJEaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737473491; c=relaxed/simple;
-	bh=wHYFqK7LptvWr2bOTBZxdUSSPRb3ra/bFZMAnCiFkQ0=;
+	s=arc-20240116; t=1737479161; c=relaxed/simple;
+	bh=PmBFIKLTamNuhMcnkQsiWtJmWxFhkW3jVfnxJIvhdFU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=av6tcsDXK8ysY1YBGqS9pQwyi3JEWyRjMblV93Al79RvRSekNyNcqhVkqkntAdvwOgGoPLvj4MxQb9yqmiHP9FR474Vi31l/xxJ5CW8fsFQRnv2qeT/ZAPoq+u6aISYg6+pryQ7FbZVKAF+1jk+oKw+A0Soi4SfUuGbW2v0VnfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=GcjmxX5y; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6e1a41935c3so80204916d6.3
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Jan 2025 07:31:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1737473489; x=1738078289; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UPCv4qoKfIbPdswlQsZvRuLUgfvq5IiyKEcgbCel5fc=;
-        b=GcjmxX5yAnFwIrC6unZ28x2HApOfsPYYK0dLXU1H5AW9WiEMPh9amByxr2RclUnKz2
-         JFlN4GW6Ju/FQJ2oF6VJNI68Ri996U/yYJxGnRTK7REdDPgDpS3hJG1I/gzIBPztgP8Y
-         wjjg7ipfn7trDd34rfHg1pJ7eBKyu0sQ6H1glV3TZ8hhJhy2qG2cNgN/6O6Q1qmwHmkQ
-         B+xzJv7Na/jCoqKh6qwPk6o7NLZZBnZgZOGjYcWDboO62awAYX8ZA12M+glIj0d5Zrjd
-         47t0K5UyJKk4HCGP5Zjvv4e29qlOE5Bhx8cL1vKPWtfSV73uVCz2IoI70tu/qy9+sryD
-         T/cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737473489; x=1738078289;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UPCv4qoKfIbPdswlQsZvRuLUgfvq5IiyKEcgbCel5fc=;
-        b=BOS56wPmHxNYFpaHfWuFC7K1r8qo0ZEbL67HdR6ABn39Z0Bpj4WdQ5fMgj79S/r2J/
-         sExj8MkKegJdC4AlnJt2EUksdBT7AVXH1ejxJxFTX58KOC4sdB9iBQlyoqYFUNYOWomd
-         /TQfLzVgTo3OYHowGfvCmaaphxteXh/QFCD79+UW1zK/vm1EXDA4eHC3+PCJN5j4MGJi
-         4yF6VrMHBQuXXEd26yOIeFbb4gcJ5mApfayl2mB5u+Nqyf7YJtnxpHpMmQmBQhdKOASL
-         1zLscVoHxrDJNHm/linDWW4cpcGsdSdG1Nl5zuNnmm4L0PaAFXW8wW0R7ltuUYt52BrU
-         k05w==
-X-Forwarded-Encrypted: i=1; AJvYcCVDtHd0Gi49zojGyOD3EtvyGF7/g3yYcozCx539HBNN7O7TBiua0/JX20eIV9iy6T+rS19NHDwsbX0S@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzsajtbIz/thkRqm6Hk+NMTRSm5sYzsRexWN2zghyjjzIEbLfT
-	JJlnYi6khaN+9y3T67dE0d3PwgDceY5UW4ByAT68Mp9Fkd336/srI37Hf1y/SPY=
-X-Gm-Gg: ASbGncsYjOP1zDQSpW5CPgh5t1B3MoIgwVCzInVS/sNP2PbJ2MeM4vf45Gqoqt4XxNW
-	H0LSc9NKpR0ypPJQttArepV5xNmqvzmk0x10n/N9xbrsFNAeWUCnn7ujYme9SObgh+p2a1D9YNz
-	VNCHArAfVEUKliULBuOjVeYMC+eW0IvUewCdpnmk2HjEU0xhVP+ap2IFQI1lP9mP8Xfj0ml633C
-	VOiVF0sKf7xpuP4kRLxZrj1eQjiEA2SogB6O03c+/K7s/Clg6myhKbFZNYpGLJS6R9DeC+o0pIq
-	Gd9lCwiDJMizCcDNIYNu6erMUpcC0Twb4Tgy1WpwESU=
-X-Google-Smtp-Source: AGHT+IFOgTKAFBKPvh5H/bk2itpBrqHiuu/AcNWRoG1B5sDLkfv57soIFmaJDTuSfJr9WM5H4mrkvg==
-X-Received: by 2002:ad4:5c8f:0:b0:6d3:b636:eccc with SMTP id 6a1803df08f44-6e1b2187426mr288202196d6.21.1737473488804;
-        Tue, 21 Jan 2025 07:31:28 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e1b43df872sm45644686d6.39.2025.01.21.07.31.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jan 2025 07:31:28 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1taGDv-00000003g7k-2HMV;
-	Tue, 21 Jan 2025 11:31:27 -0400
-Date: Tue, 21 Jan 2025 11:31:27 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Selvin Xavier <selvin.xavier@broadcom.com>,
-	andrew.gospodarek@broadcom.com
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
-	kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [PATCH for-next v2] RDMA/bnxt_re: Congestion control settings
- using debugfs hook
-Message-ID: <20250121153127.GQ674319@ziepe.ca>
-References: <1737301535-6599-1-git-send-email-selvin.xavier@broadcom.com>
- <20250120164000.GO674319@ziepe.ca>
- <CA+sbYW2oDbrodgYdzOgUiSv6v+8aBcACLbfrXM+0NZGmHquUFw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lERJ/fM1BNbKx/IwyJLA9/Vx9hVGspyklMdI6daDxtFYCqMe2oKFrpV3dW9t6jSpHfMf+q5viCo+ucS9FQd3XHLLrDLYuJzJOIsJj3ebCy+BAPP5jMYhRPlT5bkE346sI1WjGyrf7PPQnYITuHPIrd2ExEHhSo/hCbm5RA8q3eQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=KvgkrE0r; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=OItftmU3nmHodeFN5LD5V3oR/F2npmbkhzoTbe1kM+o=; b=KvgkrE0rogp+a/4Foip2XP4U8x
+	7NhupLyR9KURgt2tWVnxxhnN+fuusBdQm2LJzlGsNJ8JxYZfRX7vxAPVEQnlQQRcp6gHKhf11OY5m
+	j+euHjhojXFdazNYT0+Bl9oPNw1CYGN5PmAphZw7+ncC05I8+KC9iBfRDLnHhz1d9jGpqhLoYM/HG
+	KiRudfiigr49OVXnJEIUqoWaqcGmlM83i4xUSx9zgkfaieokWY1Izd5dfoAME2pHX9PvhStQahys6
+	4esaFGu1hvglBHtS3YKHfQMw8BMlhGhj5mkDW86sud/NMo3Gr+92HOZ2YpjTGKY9FzMXGhtGt+kOj
+	VMBlOGuw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:40242)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1taHh8-0007Tf-30;
+	Tue, 21 Jan 2025 17:05:43 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.96)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1taHh0-00043L-1F;
+	Tue, 21 Jan 2025 17:05:34 +0000
+Date: Tue, 21 Jan 2025 17:05:34 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Huisong Li <lihuisong@huawei.com>
+Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	arm-scmi@vger.kernel.org, netdev@vger.kernel.org,
+	linux-rtc@vger.kernel.org, oss-drivers@corigine.com,
+	linux-rdma@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+	linuxarm@huawei.com, linux@roeck-us.net, jdelvare@suse.com,
+	kernel@maidavale.org, pauk.denis@gmail.com, james@equiv.tech,
+	sudeep.holla@arm.com, cristian.marussi@arm.com, matt@ranostay.sg,
+	mchehab@kernel.org, irusskikh@marvell.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org,
+	tariqt@nvidia.com, louis.peens@corigine.com, hkallweit1@gmail.com,
+	kabel@kernel.org, W_Armin@gmx.de, hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com, alexandre.belloni@bootlin.com,
+	krzk@kernel.org, jonathan.cameron@huawei.com,
+	zhanjie9@hisilicon.com, zhenglifeng1@huawei.com,
+	liuyonglong@huawei.com
+Subject: Re: [PATCH v1 01/21] hwmon: Fix the type of 'config' in struct
+ hwmon_channel_info to u64
+Message-ID: <Z4_T3s7zn3UQNkbW@shell.armlinux.org.uk>
+References: <20250121064519.18974-1-lihuisong@huawei.com>
+ <20250121064519.18974-2-lihuisong@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+sbYW2oDbrodgYdzOgUiSv6v+8aBcACLbfrXM+0NZGmHquUFw@mail.gmail.com>
+In-Reply-To: <20250121064519.18974-2-lihuisong@huawei.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Tue, Jan 21, 2025 at 04:10:33PM +0530, Selvin Xavier wrote:
-> On Mon, Jan 20, 2025 at 10:10 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Sun, Jan 19, 2025 at 07:45:35AM -0800, Selvin Xavier wrote:
-> > > Implements routines to set and get different settings  of
-> > > the congestion control. This will enable the users to modify
-> > > the settings according to their network.
-> >
-> > Should something like this be in debugfs though?
-> Since these are Broadcom specific parameters, i thought its better to
-> be under debugfs. Also I took the reference of a similar
-> implementation in mlx5.
+On Tue, Jan 21, 2025 at 02:44:59PM +0800, Huisong Li wrote:
+>   */
+>  struct hwmon_channel_info {
+>  	enum hwmon_sensor_types type;
+> -	const u32 *config;
+> +	const u64 *config;
+>  };
+>  
+>  #define HWMON_CHANNEL_INFO(stype, ...)		\
+>  	(&(const struct hwmon_channel_info) {	\
+>  		.type = hwmon_##stype,		\
+> -		.config = (const u32 []) {	\
+> +		.config = (const u64 []) {	\
+>  			__VA_ARGS__, 0		\
+>  		}				\
+>  	})
 
-debugfs is disabled in a lot of deployments, it is a big part of why
-we are doing fwctl. If you know it works for you cases, debugfs is
-pretty open ended..
+I'm sorry, but... no. Just no. Have you tried building with only your
+first patch?
 
-> > bnxt_qplib_modify_cc() is just sending a firmware command, seems like
-> > this should belong to fwctl?
-> Agree. We can move to this model once fwctl is accepted. For now, it
-> is important for us to support our customers with an immediate
-> solution. Customers are asking for this support.
+It will cause the compiler to barf on, e.g. the following:
 
-Well, fwctl can be accepted when you guys come through with an
-implementation :)
- 
-> > Additionally there may be interest in some common way to control CC
-> > for RDMA..
-> 
-> Do you think there are common parameters for multiple vendors here? I
-> think enable/disable is an option.
+static u32 marvell_hwmon_chip_config[] = {
+...
 
-I haven't seen much commonality here, every site seems to have their
-own totally different stuff right now.
+static const struct hwmon_channel_info marvell_hwmon_chip = {
+        .type = hwmon_chip,
+        .config = marvell_hwmon_chip_config,
+};
 
-Jason
+I suggest that you rearrange your series: first, do the conversions
+to HWMON_CHANNEL_INFO() in the drivers you have.
+
+At this point, if all the drivers that assign to hw_channel_info.config
+have been converted, this patch 1 is then suitable.
+
+If there are still drivers that assign a u32 array to
+hw_channel_info.config, then you need to consider how to handle
+that without causing regressions. You can't cast it between a u32
+array and u64 array to silence the warning, because config[1]
+won't point at the next entry.
+
+I think your only option would be to combine the conversion of struct
+hwmon_channel_info and the other drivers into a single patch. Slightly
+annoying, but without introducing more preprocessor yuckiness, I don't
+see another way.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
