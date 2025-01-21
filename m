@@ -1,48 +1,48 @@
-Return-Path: <linux-rdma+bounces-7139-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7140-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AA0FA17816
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 08:04:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AD91A1781E
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 08:04:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1FDB1881329
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 07:03:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4B9A18887EC
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 07:04:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86A11F4E33;
-	Tue, 21 Jan 2025 06:57:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7131F540F;
+	Tue, 21 Jan 2025 06:57:51 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33991B218B;
-	Tue, 21 Jan 2025 06:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493591F4737;
+	Tue, 21 Jan 2025 06:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737442669; cv=none; b=rxO//DPbqtzHJ7S9elTdnWGQh5DTCsIGlrLnfQQX1GPrml37wAQld73MbFi0mu97XoDs1RJFlMqANCjHEHWCuH6KGnIhmVzCoatnFBVyXRB0djrBHdbbWOzDYWK1aucWM8HoeKgXGLGO2CRUp9kIceJslPNM7uW+0JNk3ubppAU=
+	t=1737442671; cv=none; b=iTyzS8GMB0toAN/smhvy8ZLSIc6cMs7M4pxhodjvP2IjTgNHtwEZifjhQdhjfGZrr0FoMAfKdAjy7IAxtB4o1z1ynOoJeLbfwTz1+N9EVWvfvgV6wTQ3qQPDjJlD6UMi12GA5pRYvFNWEVWCNPK2w87O2/Lsb/+4hGJVW+N3L38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737442669; c=relaxed/simple;
-	bh=3EkVz02jQnSqLYxB/Hwwe223CTvBiIcVa+DqBc+/ipY=;
+	s=arc-20240116; t=1737442671; c=relaxed/simple;
+	bh=CY/LA6wV3F32vjCuvAOt1fgOjyoJxl6MWIXDZZK3KrY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sYPVQi6PO2qSVsECMxccxZz+WHiiAcN1ZWFueWZccB2oe7fe07bI8hxiSQXyYMMLKlKHchJGonIS1h6xbrSzlvgpAte5lx6uvMVI+5zqXheaz7dQdamWyXdo8tzVJSHqdcEAr8Bs88JbFN3WQ/NlHVtv0GRgYSZpfWsIh4JLXFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	 MIME-Version:Content-Type; b=Gy2Y7POAsXmf3tRJfVxIRGhidM3G0l+P93Dj8oMa6leiF4NPovqF3L5YW0j4sLpMNBRbcarhZKnwBqNaKSTjH2+QuC6Ho24kXymF329GXuOpdBAxl4rTqyyaEeBSbGv1zlMC9DdGaZIIj43TRxK5boBXPogZln8LvF7C+mI/VR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4YcdHG4ZBczgbt5;
-	Tue, 21 Jan 2025 14:54:34 +0800 (CST)
-Received: from dggemv704-chm.china.huawei.com (unknown [10.3.19.47])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7A2FE1800D1;
-	Tue, 21 Jan 2025 14:57:45 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4YcdH92N4Cz1kysr;
+	Tue, 21 Jan 2025 14:54:29 +0800 (CST)
+Received: from dggemv703-chm.china.huawei.com (unknown [10.3.19.46])
+	by mail.maildlp.com (Postfix) with ESMTPS id D91471A016C;
+	Tue, 21 Jan 2025 14:57:46 +0800 (CST)
 Received: from kwepemn100009.china.huawei.com (7.202.194.112) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 21 Jan 2025 14:57:45 +0800
+ 15.1.2507.39; Tue, 21 Jan 2025 14:57:46 +0800
 Received: from localhost.localdomain (10.28.79.22) by
  kwepemn100009.china.huawei.com (7.202.194.112) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 21 Jan 2025 14:57:43 +0800
+ 15.2.1544.11; Tue, 21 Jan 2025 14:57:45 +0800
 From: Huisong Li <lihuisong@huawei.com>
 To: <linux-hwmon@vger.kernel.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
@@ -61,9 +61,9 @@ CC: <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
 	<ilpo.jarvinen@linux.intel.com>, <alexandre.belloni@bootlin.com>,
 	<krzk@kernel.org>, <jonathan.cameron@huawei.com>, <zhanjie9@hisilicon.com>,
 	<zhenglifeng1@huawei.com>, <liuyonglong@huawei.com>, <lihuisong@huawei.com>
-Subject: [PATCH v1 18/21] net/mlx5: Fix the type of 'config' in struct hwmon_channel_info to u64
-Date: Tue, 21 Jan 2025 14:45:16 +0800
-Message-ID: <20250121064519.18974-19-lihuisong@huawei.com>
+Subject: [PATCH v1 19/21] platform/x86: dell-ddv: Fix the type of 'config' in struct hwmon_channel_info to u64
+Date: Tue, 21 Jan 2025 14:45:17 +0800
+Message-ID: <20250121064519.18974-20-lihuisong@huawei.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20250121064519.18974-1-lihuisong@huawei.com>
 References: <20250121064519.18974-1-lihuisong@huawei.com>
@@ -83,42 +83,40 @@ Modify the related code in driver to avoid compiling failure.
 
 Signed-off-by: Huisong Li <lihuisong@huawei.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/hwmon.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/platform/x86/dell/dell-wmi-ddv.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/hwmon.c b/drivers/net/ethernet/mellanox/mlx5/core/hwmon.c
-index 353f81dccd1c..fe39b97d214e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/hwmon.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/hwmon.c
-@@ -30,9 +30,9 @@ struct mlx5_hwmon {
- 	struct mlx5_core_dev *mdev;
- 	struct device *hwmon_dev;
- 	struct hwmon_channel_info chip_info;
--	u32 chip_channel_config[CHIP_CONFIG_NUM + 1];
-+	u64 chip_channel_config[CHIP_CONFIG_NUM + 1];
- 	struct hwmon_channel_info temp_info;
--	u32 *temp_channel_config;
-+	u64 *temp_channel_config;
- 	const struct hwmon_channel_info *channel_info[CHANNELS_TYPE_NUM + 1];
- 	struct hwmon_chip_info chip;
- 	struct temp_channel_desc *temp_channel_desc;
-@@ -233,14 +233,14 @@ static void mlx5_hwmon_channel_info_init(struct mlx5_hwmon *hwmon)
- 	hwmon->channel_info[1] = &hwmon->temp_info;
+diff --git a/drivers/platform/x86/dell/dell-wmi-ddv.c b/drivers/platform/x86/dell/dell-wmi-ddv.c
+index e75cd6e1efe6..efb2278aabb9 100644
+--- a/drivers/platform/x86/dell/dell-wmi-ddv.c
++++ b/drivers/platform/x86/dell/dell-wmi-ddv.c
+@@ -86,7 +86,7 @@ struct thermal_sensor_entry {
  
- 	hwmon->chip_channel_config[0] = HWMON_C_REGISTER_TZ;
--	hwmon->chip_info.config = (const u32 *)hwmon->chip_channel_config;
-+	hwmon->chip_info.config = (const u64 *)hwmon->chip_channel_config;
- 	hwmon->chip_info.type = hwmon_chip;
+ struct combined_channel_info {
+ 	struct hwmon_channel_info info;
+-	u32 config[];
++	u64 config[];
+ };
  
- 	for (i = 0; i < hwmon->asic_platform_scount + hwmon->module_scount; i++)
- 		hwmon->temp_channel_config[i] = HWMON_T_INPUT | HWMON_T_HIGHEST | HWMON_T_CRIT |
- 					     HWMON_T_RESET_HISTORY | HWMON_T_LABEL;
+ struct combined_chip_info {
+@@ -500,7 +500,7 @@ static const struct hwmon_ops dell_wmi_ddv_ops = {
  
--	hwmon->temp_info.config = (const u32 *)hwmon->temp_channel_config;
-+	hwmon->temp_info.config = (const u64 *)hwmon->temp_channel_config;
- 	hwmon->temp_info.type = hwmon_temp;
- }
- 
+ static struct hwmon_channel_info *dell_wmi_ddv_channel_create(struct device *dev, u64 count,
+ 							      enum hwmon_sensor_types type,
+-							      u32 config)
++							      u64 config)
+ {
+ 	struct combined_channel_info *cinfo;
+ 	int i;
+@@ -543,7 +543,7 @@ static struct hwmon_channel_info *dell_wmi_ddv_channel_init(struct wmi_device *w
+ 							    struct dell_wmi_ddv_sensors *sensors,
+ 							    size_t entry_size,
+ 							    enum hwmon_sensor_types type,
+-							    u32 config)
++							    u64 config)
+ {
+ 	struct hwmon_channel_info *info;
+ 	int ret;
 -- 
 2.22.0
 
