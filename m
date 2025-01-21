@@ -1,39 +1,39 @@
-Return-Path: <linux-rdma+bounces-7129-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7126-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 721D9A177D2
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 07:59:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08FD0A177BA
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 07:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B8663AB87D
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 06:59:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81D8316B547
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 06:58:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 888C81C243D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D5901B983E;
 	Tue, 21 Jan 2025 06:57:38 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8D91B041B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE9411B0424;
 	Tue, 21 Jan 2025 06:57:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737442658; cv=none; b=g2PWY6pP6AU5b8XF/UZ6no6M08VKgbA+JTXNrUAU6WWPX8a6epP3bUA41xN5Rx09z0/Ro/p3juM2rdCyS+humBdF+PIW2zyv1rlgfSsenuGlwoS6tmhiKDXU4vQuY6dKJe5KT2Anm68IXU1L7hvSscuuAsrSRkOGhtlsOXN8ppY=
+	t=1737442657; cv=none; b=KuikS32Bhk2Uu+VKcZOOi7KG+0C3Ucsd0FA7dIux0oMd3psW9IUV8jvEULVJrZ80Dg1Lmna1yqU1VqMvkfzbqjJUyQT1HuOMcgzHL9EZwZAen12xZ0N3jUdmVKq9PtylaO6MDPpKqDZ9eiBdptqpJ0fFmCoFL5IzOb7u2krsjNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737442658; c=relaxed/simple;
-	bh=MHb9TyuXgUHeuarU9Yir/7RmkDw32ubVkuACnX19mig=;
+	s=arc-20240116; t=1737442657; c=relaxed/simple;
+	bh=mWX/fp1URit59PoIjt60VZfGFkJQZLYn2jvxHT7rK+c=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j5XtzGt88s/a4zQj/JjShdMXVvYX0f+4TwtpfreSKhYptTwJcfsYPdyzyQ1cm3x93AMlb95SG3t16I78wdZ5SeI+WcS+UYH6ZH946woipur59SFQvxqVLCe6B6MbQdKnUKNkwaHdE18bl0BQVcuQEvg2PAnGbRrjHsUnKuB0zd8=
+	 MIME-Version:Content-Type; b=sJBY60LbnmI8EP3P9VRlxvk9MPmK/ZVIhFbqjDspeFhxAR581OhJmoNeVd7QQfZSlUi4a077XZbyFIjb3CtyaPPgX/hhwjhyZkk2Pqb7ZTHyei6dEI/4KU6CH9XWUX6a9SpDAZsayhcktfkCX3GkKaxcuTpXseJdQ17SGmGpGrE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4YcdHq4py9z22lgZ;
-	Tue, 21 Jan 2025 14:55:03 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4YcdGv0jWZz2FcW9;
+	Tue, 21 Jan 2025 14:54:15 +0800 (CST)
 Received: from dggemv712-chm.china.huawei.com (unknown [10.1.198.32])
-	by mail.maildlp.com (Postfix) with ESMTPS id 956551402C3;
+	by mail.maildlp.com (Postfix) with ESMTPS id CD2F41402C3;
 	Tue, 21 Jan 2025 14:57:32 +0800 (CST)
 Received: from kwepemn100009.china.huawei.com (7.202.194.112) by
  dggemv712-chm.china.huawei.com (10.1.198.32) with Microsoft SMTP Server
@@ -42,7 +42,7 @@ Received: from kwepemn100009.china.huawei.com (7.202.194.112) by
 Received: from localhost.localdomain (10.28.79.22) by
  kwepemn100009.china.huawei.com (7.202.194.112) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 21 Jan 2025 14:57:22 +0800
+ 15.2.1544.11; Tue, 21 Jan 2025 14:57:23 +0800
 From: Huisong Li <lihuisong@huawei.com>
 To: <linux-hwmon@vger.kernel.org>
 CC: <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
@@ -61,9 +61,9 @@ CC: <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
 	<ilpo.jarvinen@linux.intel.com>, <alexandre.belloni@bootlin.com>,
 	<krzk@kernel.org>, <jonathan.cameron@huawei.com>, <zhanjie9@hisilicon.com>,
 	<zhenglifeng1@huawei.com>, <liuyonglong@huawei.com>, <lihuisong@huawei.com>
-Subject: [PATCH v1 03/21] net: aquantia: Use HWMON_CHANNEL_INFO macro to simplify code
-Date: Tue, 21 Jan 2025 14:45:01 +0800
-Message-ID: <20250121064519.18974-4-lihuisong@huawei.com>
+Subject: [PATCH v1 04/21] net: nfp: Use HWMON_CHANNEL_INFO macro to simplify code
+Date: Tue, 21 Jan 2025 14:45:02 +0800
+Message-ID: <20250121064519.18974-5-lihuisong@huawei.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20250121064519.18974-1-lihuisong@huawei.com>
 References: <20250121064519.18974-1-lihuisong@huawei.com>
@@ -82,33 +82,59 @@ Use HWMON_CHANNEL_INFO macro to simplify code.
 
 Signed-off-by: Huisong Li <lihuisong@huawei.com>
 ---
- .../net/ethernet/aquantia/atlantic/aq_drvinfo.c    | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ .../net/ethernet/netronome/nfp/nfp_hwmon.c    | 40 +++----------------
+ 1 file changed, 5 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_drvinfo.c b/drivers/net/ethernet/aquantia/atlantic/aq_drvinfo.c
-index 414b2e448d59..787ea91802e7 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_drvinfo.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_drvinfo.c
-@@ -113,19 +113,9 @@ static const struct hwmon_ops aq_hwmon_ops = {
- 	.read_string = aq_hwmon_read_string,
- };
+diff --git a/drivers/net/ethernet/netronome/nfp/nfp_hwmon.c b/drivers/net/ethernet/netronome/nfp/nfp_hwmon.c
+index 0d6c59d6d4ae..ea6a288c0d5e 100644
+--- a/drivers/net/ethernet/netronome/nfp/nfp_hwmon.c
++++ b/drivers/net/ethernet/netronome/nfp/nfp_hwmon.c
+@@ -83,42 +83,12 @@ nfp_hwmon_is_visible(const void *data, enum hwmon_sensor_types type, u32 attr,
+ 	return 0;
+ }
  
--static u32 aq_hwmon_temp_config[] = {
--	HWMON_T_INPUT | HWMON_T_LABEL,
--	HWMON_T_INPUT | HWMON_T_LABEL,
--	0,
+-static u32 nfp_chip_config[] = {
+-	HWMON_C_REGISTER_TZ,
+-	0
 -};
 -
--static const struct hwmon_channel_info aq_hwmon_temp = {
+-static const struct hwmon_channel_info nfp_chip = {
+-	.type = hwmon_chip,
+-	.config = nfp_chip_config,
+-};
+-
+-static u32 nfp_temp_config[] = {
+-	HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT,
+-	0
+-};
+-
+-static const struct hwmon_channel_info nfp_temp = {
 -	.type = hwmon_temp,
--	.config = aq_hwmon_temp_config,
+-	.config = nfp_temp_config,
 -};
 -
- static const struct hwmon_channel_info * const aq_hwmon_info[] = {
--	&aq_hwmon_temp,
-+	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL),
- 	NULL,
+-static u32 nfp_power_config[] = {
+-	HWMON_P_INPUT | HWMON_P_MAX,
+-	HWMON_P_INPUT,
+-	HWMON_P_INPUT,
+-	0
+-};
+-
+-static const struct hwmon_channel_info nfp_power = {
+-	.type = hwmon_power,
+-	.config = nfp_power_config,
+-};
+-
+ static const struct hwmon_channel_info * const nfp_hwmon_info[] = {
+-	&nfp_chip,
+-	&nfp_temp,
+-	&nfp_power,
++	HWMON_CHANNEL_INFO(chip, HWMON_C_REGISTER_TZ),
++	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_CRIT),
++	HWMON_CHANNEL_INFO(power, HWMON_P_INPUT | HWMON_P_MAX,
++			   HWMON_P_INPUT,
++			   HWMON_P_INPUT),
+ 	NULL
  };
  
 -- 
