@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-7157-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7158-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6183CA182F4
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 18:32:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EC0EA18312
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 18:38:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A270E168F86
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 17:32:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94D4A3A19E4
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 17:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6CC1F540F;
-	Tue, 21 Jan 2025 17:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB3F1F5432;
+	Tue, 21 Jan 2025 17:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ze6i0c5l"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DCWG+GmJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 435E2185935;
-	Tue, 21 Jan 2025 17:32:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7EB113213E;
+	Tue, 21 Jan 2025 17:37:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737480751; cv=none; b=EWLVHwVIbCe5TKrjayMWWx0jo4S6UhVg/UQGr2NuryudP9KHCnepTYRsx7I0tvBeQ6uSHt6Qv2EMEIcnIZlb/zDkvGfhCMizsF5iYJaZWS0OW7FLd/5wevFDag893VUoglLzIvhFE8yAil2yMmRPWxUHtkHfhHF7fBkYDGnZHVo=
+	t=1737481079; cv=none; b=UeoiLVcUpVA/ZNKOKUpnbCpi/M9MCe+VtCJ4CxpXxdSdxZ/AZmThdqiwKhF9e6pOaGMsWvEdzcgViHQLl0XwGyOPb20DnvdYRMu6IOfeOmRjNT31EEpnrd70PtynoC2rIJgTv/fqBKxkFAfi08uZVM4pePdykd3rUVqTF1yuq0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737480751; c=relaxed/simple;
-	bh=dTZWB5gA2aH7Tg7qjPQ2eXnkVx1GW10/+mBHDafwFoY=;
+	s=arc-20240116; t=1737481079; c=relaxed/simple;
+	bh=M/XrGSUsxs1D+fGUTmUTE3TVHjLRKTcWBkuR8eI2Kd0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W+6k25xqJs/zPZSQOjVxbEbG4s/7kVClNSK/yfz12aOQNwRbtRV5HiLtZgEZu6lP+BmpYaBcblQDNX64JrbC/OT4MvmBxUej+Ldgt6hTlwOaCJ9GVUpKpu5h5gFrAceP8Aa02Eajx7MF7DZxSSv4LmPllwhtOo/BAdvNJnI3mNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ze6i0c5l; arc=none smtp.client-ip=209.85.214.182
+	 In-Reply-To:Content-Type; b=etr1wXZXUNjLA4CR+NrF9vvHYpToSFMaVvpHJpux+7/R7X+Q9Ns7SW8iqvyhpg34a3Bqs+vrVMj6kJyEboVCYKJeMTmadspKC8AWgNp1n072SNPZ75wCmEVHfOnfw430dq+mVBf5HKFGWLj4Z4vd5U/WcSWeVSCKP2vw/WYHlKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DCWG+GmJ; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2165448243fso129696455ad.1;
-        Tue, 21 Jan 2025 09:32:28 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21670dce0a7so124536785ad.1;
+        Tue, 21 Jan 2025 09:37:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737480748; x=1738085548; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1737481077; x=1738085877; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=tjzENzNcJI3kMv2wJNKt36aOtMgEQTQOR9G5/GIQJis=;
-        b=Ze6i0c5l3LnIb9RN8ieCaM1duJVraOmIFzD0F5LOI8nuYpowKLv8kyXYA1cLZbHaX9
-         lZRO6NBO2Lm3bpF/Yn5Umk4lkP6mQ7OO6rIAFCk3W3Sos5KRA9ohsUiWIRvtSYxpQ8b4
-         MyYuHAg8Ewhu+/eEXCb+9cnOJM6cNQMCmZR7gaASuOj5vhWDbOvjw4HLh1tsu5wjQ6LK
-         SUsCkr6FeyZUmf435SNYHetbhtuf/FW4AgO8Q8HY2hd1ExTcR4vnrvZDCswEWOn+QqQa
-         0+nLpSf8nR6/Z3NHnuu0R0TdiKWLQvnlxdk4GONYL+rpTa8lJF2+LFF8KhMFEHV2aGyi
-         h2PA==
+        bh=njrMv7/v3hrxrqYA6u5qEwMI8KFQ0dRUo1yYjGE3JFk=;
+        b=DCWG+GmJtBrypejro/X/nQo8UA6127TRlNccpsISAzCOw3L21pX342p2RCJIfzI2MK
+         goTMMGj6jKIMnwbF2tpS3OadTdZpxv8Y2xMe/DiOwO1DEtYtRKFQBOMOP+Ub9DBhVpIB
+         tLaeEL9x7bU8+i9W19DHCVgQZm0+BXFZiNyVDK0J8FEgaEs+J3CCTlLDK7ls9/xwr9zX
+         1Jqtqo7ZFs0Hlf+j7DkU+fZsBxIuLl0Aeeo4TV3AH0xHFeQL0ChS4aH3uGO0+Hlxipx0
+         iIG/+g0GuY9xidsqNyzf2breITFbCLm0JIq54mHO33dzKaXhRIvqSqBMMRyv6Nnr1XCe
+         0LXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737480748; x=1738085548;
+        d=1e100.net; s=20230601; t=1737481077; x=1738085877;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tjzENzNcJI3kMv2wJNKt36aOtMgEQTQOR9G5/GIQJis=;
-        b=pi0Wua03KonTJ1nxrjl+EPmtUNvdAGp4tvvDZH+Uto8xpvcH1ZSSqyNKfJxndMzXmE
-         BhxzxoXq7/GTcAzJQCzQSkAAFKDmI5S7Nc30wu1q1SZcu7ta5LAkXGSRJniA3REob6da
-         1lFxvp4W27KOgUA9scXK15NXwbXITgoKzX/hGBaFzdrGN/ZaHVW9UeI5dN9Zukbf/cOE
-         8TU705CmvgyQCFBXsEMrnfY3pjUZbvz4JOsBYHf4AbfY1Mo+mvkuc3yFN5odLP6fZkdk
-         R+5tpZCbRFLkKi7x57LWRVwztbJaCAWQSFmmqDGY/LvPD36xhboE1T+g/6irtQHDPnLC
-         OzhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUeUa8Wcqj8+pEEvubLFnuTSkjaKYMCsw2KjIvDXhhgtM7oQuOhtNgvvf5BxEPqbR8StJ/gSPKGheKu@vger.kernel.org, AJvYcCUpQlKuhJ18G4qH4QGdyyZQNIp2Z5uLu9ccawDlvonpyLMxlybqKrPkSHYBSZR1HQR4UhKRsSMEOmXTPg==@vger.kernel.org, AJvYcCUw/dWXiNgSeUTtIiyVsg+1UMbUZw6vYuu49uyW3kO5EgejIrmc0tW8gL2CukcCfUua3CQTT2yjSR6wuJzSk/wz0VFDzQ==@vger.kernel.org, AJvYcCVENE8f5anXmTJJ2ReEeb3EtEiKOvFKab/VT0vGpYzXj4Iw2bZmTRw4E1XtXgDVgJovHQxorzUF@vger.kernel.org, AJvYcCVac9070jpQPtA+u2VexL0BdUn+/SEgcmQSI9u3w9Krox1WRmuny8N/+A+gyEuWd1cpOKshfxtGofZIirBp@vger.kernel.org, AJvYcCVzMkwx08WUgfF+u4gWz4cGmgEPMtAjAC/Rbj1ARsX7IvWAiGOIwG7/TqrRYbkNdDLtJlSJIAYrnLoRgW8=@vger.kernel.org, AJvYcCWaopZBiiB/PL3xo1uOiTiNLpcDrMEw2J0GcDoLNkG1x0J0gYy5ydylu7ufQb6o8UzWbEV3MVu/Vw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBk9OC8+qrcps5m/s3BXgokhT3ZiLRYvlBXrKSgi6IX4Fe9VBx
-	H5wFn7PLzw+0mC0KpI2aoBnhdtaJ08HUmYMFP24RHAfVVWvSFytp
-X-Gm-Gg: ASbGncv+TAkzPcLHmFTlUROCZB97+Kf5YD6CkXoXXtz1Iu3m4w48p6iWHQyNj7f8OuR
-	56o/GrRrxy+sV6mhwbY9+ExNeX/tCdD+KWffx1c15v1+qjfYuqZt4/ofch0RTMsxkCLvGnJHonQ
-	uGvADaVOJnRWzrrCbXmX/tYn+LLqJDqxlNwTpziqgST8Ece7GLNQ7FyjL64SrOBqDmKsjL+og8R
-	YUm9JnQl4RICMUJHXnxYTtJRyzEBqLYE+4cpskPI6Hlr4FuHa8AnsAV8Ww9ITTh2B47qJlB6+3r
-	0U0iubkcQxqMXW5qpvUrmH5J2G2tJ0lNZZprlCuJMJk=
-X-Google-Smtp-Source: AGHT+IEuvg3vAcQfjXET6AR8ux8wjRA5zzJlIOjxyWZLfufb5XYvWraoCGwicb2vYnn92H36vXW25w==
-X-Received: by 2002:a05:6a00:340c:b0:728:e906:e446 with SMTP id d2e1a72fcca58-72dafbda6ddmr28903077b3a.24.1737480747843;
-        Tue, 21 Jan 2025 09:32:27 -0800 (PST)
+        bh=njrMv7/v3hrxrqYA6u5qEwMI8KFQ0dRUo1yYjGE3JFk=;
+        b=mFCVTIuTy1rFtPURNZKCzamiaiYRxtRNkMjfA8+OaNL/neOGuSrhd5l+nDZz+2fJAC
+         H7I2RLD1M+/JHqnXpX4T8ABHwUqL0izwLIT8VyKiGQPj7eMnzcd/u58NrVRT+GQirOQ5
+         koa2qfZ5rNnr5hKPbh2ga4alX04+eKLQyFOVVytyaniGPFLUYJpUoSlmLuLdgOIim6N8
+         xz2eSlT3qhObPn1AnBMPc7oZW1OJdR1FCtXetvSULnCuR5wZ2RiyuX7rGZQnTDaodGUx
+         Nc9fxKD80+Gtq3u2tzX++5kOeub9Y+SODWjEDlbBu+TSaUgDQC/kzOi66qHAvdesCE7O
+         /YHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVLU49w8eZTQMSGBwZqe6DAdLZj4yExJyYU9ZXUT5kXBaKi/Z4o12eTZGNecIRxRuDF1I40HUfi@vger.kernel.org, AJvYcCVmiptKQwoSQJaR/iC8wDKeILVZ5IQi8xCt8rrjXuvhZe50Ab6vVdtJg6mwVTXDncIwUWWgHJUrSvKD7Z8=@vger.kernel.org, AJvYcCVr69SFEmC5k+ML7nzBCVg7DFHhEdbmdKHW5nPRwRlcxciKEpn378dUV6VB5y1FOVScxCuPOXkN78uEVzY=@vger.kernel.org, AJvYcCW5kbKil7Tm+V17gEjCOyBkp1Fvx8hnMn/+OgByEX7Motf6sKaVfoZlTd6022l09n3i05RRxsuv/U6rBExN@vger.kernel.org, AJvYcCWiKDf/WTW5W2cL/f/YIN77NQQXghh+ioeFCu4+FqgSKGuymC69TMots9kXgNtU+lk5VswghRAB3Ws6juXyOYW68g2jZw==@vger.kernel.org, AJvYcCWohTyckOa2BKTDi8BMkqcdK/z7qAk/22lyutjNHcA/Am4qwLQIctwjJdKoDg+pjMKzqMmWKajzHm6B@vger.kernel.org, AJvYcCXSJAJmp6wEh8zMoAnnUCVvQvrfPiMgAArZDOxwscYFwtGrmuW0YyHlP4nNW7Ci6i6m+5AsgEgVuraX+w==@vger.kernel.org, AJvYcCXuVxgu8DL8eWH95clLXQ+qbnGioLxxXLR65kA7yyxXdkbUohKqJdS0oSEK7CT5oMNhHliy0wYKuA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxSuR6OYHngw/cfWznysQvWILQ4FLLZutpgNmckfIBW1VLXAYdQ
+	bsWisV1bTuqPw9W7hW6V3Hu823lp3NSntbK5fggIBtlQFDpdbykz
+X-Gm-Gg: ASbGncsOzlAIEmv786J3vIUybTVyV9eQJ1kGc+GD+s/6luUowQIwEosqlBx3to0ibB/
+	0U47JR11qRs0PsQu8ISBri3FyGW8dj9b/VMglbDBMZguMBJtQVlojZeG4FTusXiz97GgViP5eag
+	d+YHgPQR2INas0EjZ/V5ZocvnXn9sZBVN6SKMrJKw1BJwwtd0UdcUsIULL1NOVf0EV6o2Y2hRFt
+	9aHYBGrKqZmF0reS5IhEGY9FcLwZ6bbOPIk8bhdXsEJOtYP7VDZ8d419hHbEAxZgSmaO5lFJOFz
+	Ev00jOzA3dIAttHA4UkqctktbrAPiMjIqV5xjYxgkV0=
+X-Google-Smtp-Source: AGHT+IEJOI4zC1nxoJutJ0GIn7T5vVTBsqgozLgVRkp1XHIsrJ/AQjPAJdeaf4DFlti33uVCSnqVhw==
+X-Received: by 2002:a05:6a00:4fd3:b0:72a:8461:d172 with SMTP id d2e1a72fcca58-72daf9becfamr29107128b3a.3.1737481076941;
+        Tue, 21 Jan 2025 09:37:56 -0800 (PST)
 Received: from ?IPV6:2600:1700:e321:62f0:da43:aeff:fecc:bfd5? ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72dab81336esm9324395b3a.38.2025.01.21.09.32.24
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72dabace1bdsm9639120b3a.171.2025.01.21.09.37.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Jan 2025 09:32:27 -0800 (PST)
+        Tue, 21 Jan 2025 09:37:56 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <193f1583-973e-4d5b-8a9f-559622b16441@roeck-us.net>
-Date: Tue, 21 Jan 2025 09:32:23 -0800
+Message-ID: <d945ddc0-06e9-4ca3-a9c3-c19dd9457d15@roeck-us.net>
+Date: Tue, 21 Jan 2025 09:37:52 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,11 +83,11 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 01/21] hwmon: Fix the type of 'config' in struct
+Subject: Re: [PATCH v1 00/21] hwmon: Fix the type of 'config' in struct
  hwmon_channel_info to u64
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>,
- Huisong Li <lihuisong@huawei.com>
-Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Armin Wolf <W_Armin@gmx.de>, Huisong Li <lihuisong@huawei.com>,
+ linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  arm-scmi@vger.kernel.org, netdev@vger.kernel.org, linux-rtc@vger.kernel.org,
  oss-drivers@corigine.com, linux-rdma@vger.kernel.org,
@@ -98,12 +98,13 @@ Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
  davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
  pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
  louis.peens@corigine.com, hkallweit1@gmail.com, kabel@kernel.org,
- W_Armin@gmx.de, hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
+ hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
  alexandre.belloni@bootlin.com, krzk@kernel.org, jonathan.cameron@huawei.com,
  zhanjie9@hisilicon.com, zhenglifeng1@huawei.com, liuyonglong@huawei.com
 References: <20250121064519.18974-1-lihuisong@huawei.com>
- <20250121064519.18974-2-lihuisong@huawei.com>
- <Z4_T3s7zn3UQNkbW@shell.armlinux.org.uk>
+ <03b138e9-688f-4ebc-bd01-3d54fd20e525@gmx.de>
+ <9add68ac-7d10-4011-9da8-1f2de077d3e9@roeck-us.net>
+ <Z4_XQQ0tkD1EkOJ4@shell.armlinux.org.uk>
 Content-Language: en-US
 From: Guenter Roeck <linux@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
@@ -149,68 +150,37 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
  HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
  mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <Z4_T3s7zn3UQNkbW@shell.armlinux.org.uk>
+In-Reply-To: <Z4_XQQ0tkD1EkOJ4@shell.armlinux.org.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 1/21/25 09:05, Russell King (Oracle) wrote:
-> On Tue, Jan 21, 2025 at 02:44:59PM +0800, Huisong Li wrote:
->>    */
->>   struct hwmon_channel_info {
->>   	enum hwmon_sensor_types type;
->> -	const u32 *config;
->> +	const u64 *config;
->>   };
->>   
->>   #define HWMON_CHANNEL_INFO(stype, ...)		\
->>   	(&(const struct hwmon_channel_info) {	\
->>   		.type = hwmon_##stype,		\
->> -		.config = (const u32 []) {	\
->> +		.config = (const u64 []) {	\
->>   			__VA_ARGS__, 0		\
->>   		}				\
->>   	})
+On 1/21/25 09:20, Russell King (Oracle) wrote:
+[ ... ]
 > 
-> I'm sorry, but... no. Just no. Have you tried building with only your
-> first patch?
+> 1. convert *all* drivers that defines a config array to be defined by
+>     their own macro in hwmon.h, and then switch that macro to make the
+>     definitions be a u64 array at the same time as switching struct
+>      hwmon_channel_info.config
 > 
-> It will cause the compiler to barf on, e.g. the following:
+> 2. convert *all* drivers to use HWMON_CHANNEL_INFO() unconditionally,
+>     and switch that along with struct hwmon_channel_info.config.
 > 
-> static u32 marvell_hwmon_chip_config[] = {
-> ...
-> 
-> static const struct hwmon_channel_info marvell_hwmon_chip = {
->          .type = hwmon_chip,
->          .config = marvell_hwmon_chip_config,
-> };
-> 
-> I suggest that you rearrange your series: first, do the conversions
-> to HWMON_CHANNEL_INFO() in the drivers you have.
-> 
-> At this point, if all the drivers that assign to hw_channel_info.config
-> have been converted, this patch 1 is then suitable.
-> 
-> If there are still drivers that assign a u32 array to
-> hw_channel_info.config, then you need to consider how to handle
-> that without causing regressions. You can't cast it between a u32
-> array and u64 array to silence the warning, because config[1]
-> won't point at the next entry.
-> 
-> I think your only option would be to combine the conversion of struct
-> hwmon_channel_info and the other drivers into a single patch. Slightly
-> annoying, but without introducing more preprocessor yuckiness, I don't
-> see another way.
+> 3. add a new member to struct hwmon_channel_info such as
+>     "const u64 *config64" and then gradually convert drivers to use it.
+>     Once everyone is converted over, then remove "const u32 *config",
+>     optionally rename "config64" back to "config" and then re-patch all
+>     drivers. That'll be joyful, with multiple patches to drivers that
+>     need to be merged in sync with hwmon changes - and last over several
+>     kernel release cycles.
 > 
 
-This is moot because the series does not explain which attributes
-would be added ... and it turns out the to-be-added attributes would be
-non-standard and thus not be acceptable anyway. On top of that, if the
-size of configuration fields ever becomes an issue, I would look for a
-much less invasive solution.
+Alternatively, add another sensor type for the overflowing field, such as
+hwmon_power_2 (or whatever), and use it for the additional attributes.
 
-The author of this series did not contact me before submitting it,
-and I did not have a chance to prevent it from being submitted.
-Still, sorry for the noise.
+> This is not going to be an easy change!
+> 
+
+Neither is it necessary at this time.
 
 Guenter
 
