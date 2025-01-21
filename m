@@ -1,225 +1,236 @@
-Return-Path: <linux-rdma+bounces-7150-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7151-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD735A17DDC
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 13:36:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33AC6A17F03
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 14:41:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5336318868B6
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 12:36:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65436169EDB
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 13:41:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4696B1F1927;
-	Tue, 21 Jan 2025 12:36:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035DA1F37A0;
+	Tue, 21 Jan 2025 13:40:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="T67C3wj7"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="XXJc1fjY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2071.outbound.protection.outlook.com [40.107.220.71])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D601F03F2;
-	Tue, 21 Jan 2025 12:36:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.71
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737462998; cv=fail; b=tw3V7/CBVQnVI8agU0X5eUxQpncQ/9Bohnw2f9kIfCPtBc+JNBfWxcOURsFLu4e3t463RHUp8VKS4+Uo/ukDzsazyvG0HkAn1v3EjCTDDFmRjbVdSLQ9uTXR0Ic/MpJWDw3EkX4J9fwvceKqYLLACWg5wYgIIlAtpCtU51pUo6w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737462998; c=relaxed/simple;
-	bh=2gaFYvU4WS/oQkV6kGtciOp5N9CRCpT16349hePnfsw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=RH3+sMXdN6Ryhwk1DobA/2nkDpOkCuWZkA2NFZRknbAVXTQC0RjQrkKkd5oQ1v6k9qe8g9m50Ej7wySMM3upRhKF6WHMb0XMxFwR5OsDYtfxTkf31ioRPn1r+8aMC6PHM1HlWTsr9OJ7hy/b6RP7C+DG006x5+1/kgFAb3UnDps=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=T67C3wj7; arc=fail smtp.client-ip=40.107.220.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mSrS7DPSRmSMxhqMf7XCa2EbEr+ZYEYpEfCPLi6SX4LqrTmUI8r290t1nP81pDoZxjz0zfLI48KzjlfG8me/6KKD8QUFCH+L1WDTediIaT8kd/9AcV7B466vT62f2867+jJtwYXAFVdNOfng60dSL3aTWMyjwY+T0UGL6k1xW5HDyHMA5g/aSXA2Az/7ljlkDJzbZ+JNn/VQaCPgKGLwe8ppr57//MMrcX7wrkVix7Dpo06EeWo+3HKvLRjOR7OXm7obKWWfjUrKi+65yGEXUrJRkKloAJtQc05bRGywtf17tCmQDDDuow53GzAk/GaNsEc0Af6qSyN0Gqy37nH3fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BOIeD7ljDWnhGqcDTHAs9qRIt6bHfcvlMTO+Qmrhob8=;
- b=LBeWlZVuIasEuc3wNszRNNsw8majrmIai7WeRcQjGWOSVnVD0F4zhSbGbIE47gZTq1C1KdW8ZFP7MK7YYpkeX45/xRzJVxf7Eje+hbZE/eS36mwdPI+aSSeUvGsLVDo01wEhDeO696BBYoa8AvspIPJyqy7LuFaeTjp09QUJwfpj1RExJoEjVUfP5TG6cPIqjClLZt/Cneyt0eO176sEWKHGYq7MBh2q62/vCAdMRK21yuQkdRb5XVxviujFV+PtZ+igGvzZVweGS+a9LapjJgckD4Y3RoBWITWDtZZaSTJRVVwzfkOTEzcnveHeqYBVbCNEJk+kW1hciP4yP6ygWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BOIeD7ljDWnhGqcDTHAs9qRIt6bHfcvlMTO+Qmrhob8=;
- b=T67C3wj7eBz12zgBBvIv35lVCqQ59VB44rg0dv5zdDWn5Wff2ue+gV95b4zhB7AcRbRy3WpGNaV/azuHzdYyJ+wekxH/FQDrZRyfnLi2yBluU29ORPaB609BM3I5uGV+sQrkJT0fh5Bby3BFvurbb1+VtJkVqvd0pOLbnQyxRm2c1QGhxmWRDZx9x13x+l/FwOyhv6UjOCOwtitZpIM16QHbbrXTak08ABE7M9YbUnS87I+biCI0IBDA4oKF8qMqaZh4fJgDcUqElnY4B4mVmO1QT8XagHtF1NxXdSbNtWgaTM4Y3tQ7sUncJdcTNzCVxzczNtBCjxDplw1L5sagNw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MW4PR12MB7141.namprd12.prod.outlook.com (2603:10b6:303:213::20)
- by CH2PR12MB9519.namprd12.prod.outlook.com (2603:10b6:610:27c::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8356.21; Tue, 21 Jan
- 2025 12:36:33 +0000
-Received: from MW4PR12MB7141.namprd12.prod.outlook.com
- ([fe80::932c:7607:9eaa:b1f2]) by MW4PR12MB7141.namprd12.prod.outlook.com
- ([fe80::932c:7607:9eaa:b1f2%4]) with mapi id 15.20.8356.020; Tue, 21 Jan 2025
- 12:36:33 +0000
-Message-ID: <a76be788-a0ae-456a-9450-686e03209e84@nvidia.com>
-Date: Tue, 21 Jan 2025 14:36:25 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next V5 07/11] devlink: Extend devlink rate API with
- traffic classes bandwidth management
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Tariq Toukan <ttoukan.linux@gmail.com>, Tariq Toukan <tariqt@nvidia.com>,
- "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org,
- Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman <gal@nvidia.com>,
- linux-rdma@vger.kernel.org, Cosmin Ratiu <cratiu@nvidia.com>,
- Jiri Pirko <jiri@nvidia.com>
-References: <20241204220931.254964-1-tariqt@nvidia.com>
- <20241204220931.254964-8-tariqt@nvidia.com>
- <20241206181056.3d323c0e@kernel.org>
- <89652b98-65a8-4a97-a2e2-6c36acf7c663@gmail.com>
- <20241209132734.2039dead@kernel.org>
- <1e886aaf-e1eb-4f1a-b7ef-f63b350a3320@nvidia.com>
- <20250120101447.1711b641@kernel.org>
-Content-Language: en-US
-From: Carolina Jubran <cjubran@nvidia.com>
-In-Reply-To: <20250120101447.1711b641@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0153.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ba::14) To MW4PR12MB7141.namprd12.prod.outlook.com
- (2603:10b6:303:213::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E391119A;
+	Tue, 21 Jan 2025 13:40:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1737466858; cv=none; b=bJQoNIMjC/ZXVoJ9wiufPCSv5ONcgARl1wWqraDdni4qk1GowmVhzTHL6R998R8EqbzgTlSvgGzEZlCYymJCYngaqJ0SXqrrIhxezLxr2xByS2OncKC/RsC8VRnyt47GMNuAI5uxtioi9uIDm14kjd45oLvhwocHzVQ4q/+2rSc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1737466858; c=relaxed/simple;
+	bh=O6UDpyy68BQo7X626NvkAmSzVuRiTAwo5GjYO1FKjts=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rEQwzI8gOlpxKvmAG5rEfLCFl3QaHckMVAjI5Qbbgr4hNKX7uuOo8DAHBjFUMyQU0qjpKhxAxpFG5zZ9VVeS8VVvzYJwFYfVmgQyFpWy4z/+SgRVlBJvhROJWQm0JcpvL70u98TRZpKvMYUSvw0amTkvcpyZ6mIXFj1TysfDmYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=XXJc1fjY; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50LBcWDl021758;
+	Tue, 21 Jan 2025 13:40:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=1XuHjAhe+6crgeyPxGiThULHkHEa/Q
+	wDtL3yiBvZqn4=; b=XXJc1fjY1LEte8uWYOHY0rVlVq4wX9PCcoXpIbn1EYs9EL
+	OD4/8pPTNQ9wGah7zwpokGzeZLvKhyS2XwyswSQynQSvx4Pq0nVXT5v0PMm1KdzN
+	F6FmU2v9zN3MF0dGtVIr8337iz/SeaELL+AkChcaIBTAfjVK9Q1TKCVQHZUYF4b8
+	lkEmavTZcGG7bcRDLLuw9HOFrKWm+iyEw+rBb1iDcR2ksQakFyzbWZB9l+0n9NZH
+	7bFXS3CXhWJ3qAfxFUQeEb9d90I2xBmDXS8qIuY9SsKjzzFL1VStL4eYIhJR/WhB
+	kacwVPn3TvuRt93neu9S0HZxZA9oxnhjkLM3qkFg==
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44a1n9b0sf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 21 Jan 2025 13:40:21 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50LAtOsq021012;
+	Tue, 21 Jan 2025 13:40:19 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 448sb1b14q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 21 Jan 2025 13:40:19 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 50LDeIWj60031254
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 21 Jan 2025 13:40:18 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 25C3B2004B;
+	Tue, 21 Jan 2025 13:40:18 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7FD1A20040;
+	Tue, 21 Jan 2025 13:40:17 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 21 Jan 2025 13:40:17 +0000 (GMT)
+Date: Tue, 21 Jan 2025 14:40:16 +0100
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Joel Granados <joel.granados@kernel.org>
+Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Kees Cook <kees@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        intel-xe@lists.freedesktop.org, linux-hyperv@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-aio@kvack.org,
+        linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
+        codalist@coda.cs.cmu.edu, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+        fsverity@lists.linux.dev, linux-xfs@vger.kernel.org,
+        io-uring@vger.kernel.org, bpf@vger.kernel.org,
+        kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, apparmor@lists.ubuntu.com,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        Song Liu <song@kernel.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Corey Minyard <cminyard@mvista.com>
+Subject: Re: [PATCH v2] treewide: const qualify ctl_tables where applicable
+Message-ID: <Z4+jwDBrZNRgu85S@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR12MB7141:EE_|CH2PR12MB9519:EE_
-X-MS-Office365-Filtering-Correlation-Id: bbc8590b-ef47-4506-6827-08dd3a183cd2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?emVOT1Q4Z3pjaUJqTGVuQTREUW9KMXBKSFp4MG1sUVRjb01DWWIraGFsckFD?=
- =?utf-8?B?anJFZ2dWZFBoTjdRN2JBZWJFMUVJdkVUVnNRK1YyWHhhbWpoMGErRmNnNUUr?=
- =?utf-8?B?L2F3QVRFNmJtTzVkcnBDeVlzUEZJNmsySk5UbWtQSkdYSlBzWmthb1J2TEk5?=
- =?utf-8?B?dUd0YXhDRjVxbktJY1BrMHRnWWhtZ29PaGRud3c0eC9rSHRaYWQ0dDRpdGcv?=
- =?utf-8?B?Z1JYUGdjWHYra1VQb2FlT2pHbmdKb1dsRjFHRlYxSkFEK01MOWtUWHBmbUY0?=
- =?utf-8?B?NDBSR05Bd0NidkdkTEY5UUVRaTJsOEhKWm1JMWRrRnlqYXpMNGpGS0lnSU92?=
- =?utf-8?B?NHE5SXZ3MkFyanBUd25CSndhY1FhTHowZ3VkeFV4MUhsNkJzS2ZQdHlHdnV5?=
- =?utf-8?B?bDBSVUl2L1hUZnFjanAxdUhYVk1ZMms3blkzWC9qdWFHeTd6elFHaXNoVHMy?=
- =?utf-8?B?Rml1cjJ1Rm4wd2N5NnNRV0NvRWN0eEZjemRtc3dlcHhIbC8xWmFjMFRhZExS?=
- =?utf-8?B?ZDVlMkRiaVRGU2E2OGloZERrVlJNdjIvQUF0a0pMUFp4RkVBTHRVUVBpeVJL?=
- =?utf-8?B?bEpCeTFqVS9JZGRMRGI1d25pTjdlVS81QlNTeWdQUUZlTk1TbytLWmpkOXNJ?=
- =?utf-8?B?ZGdsRXJTT1NjaDBwYmE1U1I4Y3N1S2UrUDBsZXpYMHNjU1hOUThsOW8yNWk5?=
- =?utf-8?B?UURRUjNKSSsyS3ZZdmNwMHJ3TytNSUJyOFIrR1NzdG0wQ0pQQ04ycDdWZlNp?=
- =?utf-8?B?c25uUjhCVktqa0N2TGFkVDRHZk1XY0pRYURJSHUvN1ZUTEdYektpcjBhZ2cr?=
- =?utf-8?B?aU5DbG9vNWxOQllDeGVnRGRaZWl3NGluUERZMll5eXpWMFgrbHM0eFNMZlhh?=
- =?utf-8?B?Nk81eldISGJSSXF3aHF0M0lrdm1BMmkxWHpZNjlhRHNLRzFxWUc4RFVRVitG?=
- =?utf-8?B?TVI0Y2lpcXcwUitHOHkzc1BudXBNRld4TFpHY3Zhc0FTa2FONTRCeU5TZjFG?=
- =?utf-8?B?cTdyUVJxOGVsNDQ4UU4wNXlETWtnYTdJTEZPWVJYYU53RTNlWk0zM0o0MnU2?=
- =?utf-8?B?a01PYjRwT2JERHYvUnZmK3M5QTZkcHNNbmJ4US84ZXhRMkNRdGxLL3R4WFp3?=
- =?utf-8?B?N2cvN2ZpVHpHdzZ3a2QraDhGS0ZiWWxDN3RCelZpc1d6ZFVibERaM1QvaTM1?=
- =?utf-8?B?V2x3anM4Zk1vUkZKV2ZvYVhrY1Npd0Z3ci95N0p3c0hKazF5OWpxUXZGWlF5?=
- =?utf-8?B?YlFPL0NqUWwyamk3SWdpcFV6NkRJMUpITnBqaC9qMk85NW03eXdRdVd1NDRY?=
- =?utf-8?B?dnBqZzVRcng3Z2o1WFk0bzBTdjdqMDFoaXBXTm5uUEE1YnhFV29EWjRhaU5I?=
- =?utf-8?B?N2hUZ2MrNjhQaVkzcXdISUJCSVYwM2JwRWZvRFNlZjRGVjBPMVo3OFkvWjhl?=
- =?utf-8?B?TTZVY2xSQjVnWVByTEJsc0VlT01tZHBRaEhVS0psYzZ4MTZVL2xCRTNyNE5p?=
- =?utf-8?B?Z0VjZ2xMR1RlUVNQQ00zb3RRbElvMk5FU1JKWkhKRzhiYWNJeGRnT2F6ZUxp?=
- =?utf-8?B?dkxaeDFDaVJPQktmQlJpeW5WaW5WaDZiWkM2R0wzT21GNGlYVGZrLzU3QUJ6?=
- =?utf-8?B?V1grZlRBbVcvNTRHMkZCY21QREx3aVlyKy95cjFmb244WjB2SS80NWNyNW9i?=
- =?utf-8?B?VHRQT2FKQlNTZ3dMMWJrcTZVaEN5TU90NXBuZy9tZUphd2pqbW9aa21tU1kr?=
- =?utf-8?B?SEdIaTJhdUZ1YkV1enEyZFl1RHNCL2hUd1JZSDdnOEpDSVB4cmthQlpFKzVK?=
- =?utf-8?B?TFFCMVZHZmdDVlFsZFV2S21vY1lNQVlXK1NHcXgzYkswUHZGNFhjUzZyM0lh?=
- =?utf-8?Q?JhSkO/IYH8ijb?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7141.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UGNxQWltVnhaTDBYYjFLVkZvdFA3bkZhbHhOa00wMzNXbWJsQWRrWndFVVNs?=
- =?utf-8?B?UzRFZFpqTlNjT0RWYXc0ZndUa2JSRmFlcklCaDB0VE5SVmsxTXByOHdWNmZs?=
- =?utf-8?B?QmFZMkNJVDVDcW1XSTJMOHVNYmFCRkR3NGNwQi9lWENEQlIvblIxbjE5SGtW?=
- =?utf-8?B?bzhxSFFMUEZucVhPR2g1V2Y0ZS9Da1RkMGlGakoxcG9CcGlzcTF5QTE5ZlM1?=
- =?utf-8?B?YmRlZ1o2ZzJaSEpXMXhJNWV3NDR6YWtncXdmSmw4Q3U1U3dTOHR4V1EwMisv?=
- =?utf-8?B?eXlpSXkyd1JMRHFsdy9Tek54QlRZcjFGWFJob051VWxOaFhCeWhodEpzekQz?=
- =?utf-8?B?QnV1NmpheG5rd0w0d1dPNjJxaU9BZmpmMlJ4UUp6NmFiSG1PRFdsTlc0Rk5y?=
- =?utf-8?B?MS9PNGZXV2hqMzJLRmQ1Tmp6OThBNHFacVNJU1U4bG5LNGczTWZaeGtrZlcx?=
- =?utf-8?B?aTRYYWcxUzdOK211SWM1aXJwRVBYQ3M3aGMxNVFlL282NkVLMnpKdG5VWjk4?=
- =?utf-8?B?dVBWSjBPNEJGVTQwUS9yY0xxSVB1L0lncDVBSWYyU3YzQmZtL1BRc0Q5b3d0?=
- =?utf-8?B?QWZjUWRvUW5rejVGbVBmRXUvdjZUU1V3WjNPbVhQci9SMWJRNjVlL1crYnNX?=
- =?utf-8?B?NGlUU0ZXQU1hNmtvZlVJQTZUS3FxeGlUZ2lqUFQvazJTM09wN05ESk9EYWtz?=
- =?utf-8?B?a2I1RndhbXY0NGZIaS9aK29qdWt4R1JGbzE1eDlmcFRvOHhzRlR2VXJ3dlBk?=
- =?utf-8?B?bEE3VEVGNm5ibDFDMjUyWGY0bXNYRHc0WFcxRWlXeUpsQWRSbGprNDVpWTVl?=
- =?utf-8?B?NVdIamM0MnZhVEZaRVE5aXhWMzRycmtubjg3L0hDdFRuUS9OcnJBb3N1T1p1?=
- =?utf-8?B?aTRETzVMUGNSRUg0NXdwSC82dk9EcVhZV0YxM1hkbnVRMEI2bjJkWlp4WkMx?=
- =?utf-8?B?Nk9mbm1DdmU5VDcydzRoZWM4ZVNFZk9mVEFOb3RjN1dpUEdSNityS1FwMGpV?=
- =?utf-8?B?R2RMZS9yQ01CVGpRUHlCMXdXNGJRVUdsS3lTNEVxZjUyaGhuODR2TGxhUVFR?=
- =?utf-8?B?eDhOb200WFhQV0Z5TlNlZEREZ3BrSEVJZzRvdENLNC9MdHdkVjN6UDVYT0lN?=
- =?utf-8?B?RVBRU2crQWQ0WmsrL281ZjhRWGo2ZnRvenRPbEZISWZtdzZtSWdCaWR1V1Jl?=
- =?utf-8?B?bGRCTnp2Z3U2UjE1anFBUnI3NE8vOGp2b1FZdXZIbUlZODNKeHVONkRBLysy?=
- =?utf-8?B?cUQrYUQ1UGtiYm0yQ3Z1QzYwM3JZdXptTTk1TnR4N0VObXJJR0pNaWJvYnpy?=
- =?utf-8?B?LzA2ZzhHYTJMVDN0OHN6akNQUlJxOUNRMXZIL2V1ZjNNV1h4SXgrcTFrUThl?=
- =?utf-8?B?MmpxWnZSMEIwTUFIVkZwcVJuTElnMDR0cFJ6aUlFUUJ3c0RUbHVFa2h1NS9M?=
- =?utf-8?B?RGlGVVpnVHNscERmMDhiRHdPQ2RvTTd0Y1dSMXB3Vi9MbER3SHFoVmlYNnQv?=
- =?utf-8?B?LzR2OXZUWW0wUFBQWDcxYW9nZHhBSjNvSzNYMXc3QklBVE5zZG1HbExjcHpZ?=
- =?utf-8?B?d1YyUWZmQjlqWERBUGpxS3dGSFBpeDRiVjM4RjRpU3NCRGF4TFBkREtIQkZm?=
- =?utf-8?B?bzE5cC9QTDNLUTBadXVwaW9LcWVLRGJOT2NqZVBVL0drU2xkQWNvUExvamtQ?=
- =?utf-8?B?NzY1Q2FNb3dIakh6MmRxRklRN2JmcXkrNWo1R2cwWkxXb21mZnIvcUc2eHhC?=
- =?utf-8?B?L01BZ0wzeVo0T2tVdHltNVNEYS9MVFNYNXJLeGtVamdHMDZWV2tkWndxeWxD?=
- =?utf-8?B?REo1MDRGUXBXRlpRQUJHSk5xMFFIZWlaNDRzZlRlTnFLNlhnVEpFdzcvSUVr?=
- =?utf-8?B?OHZBbzc0UWVDZU45T245a0ZWSWJsblRLT0JlUVROb0s5KzJJS0dQcHByc2E0?=
- =?utf-8?B?ZUwwQWpsRE9tbmVUOS9ZZ2tOcWMxTEZLYWttMUJvZTlOaFBEWkZKdHdZeGgx?=
- =?utf-8?B?bEpFc3QvU2dHdndyUGlnU1ZtaTBhaUo4WGUyMmsvUzRnOVVCUlFIUlplQm1n?=
- =?utf-8?B?eXEyNzdYT2Rsa0U1WkpOQW80MGJnNlRnc1FMYno1U3QzUVBuQ3BjUCtGSFg5?=
- =?utf-8?Q?2Vkq2ay7jaOpuxsalxPmjA3JE?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bbc8590b-ef47-4506-6827-08dd3a183cd2
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7141.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2025 12:36:33.3396
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4I33iNXJDCC1in2t6SWTodqHzQVW0D5QL4UH5dE1T8YGwmNDPPLD2OHOYtmyZzhjY3SKXWY7nuQR2+3qhcc19w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB9519
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: mWjZL4Eizm--6YwnTI2RlL8astD0-e-i
+X-Proofpoint-GUID: mWjZL4Eizm--6YwnTI2RlL8astD0-e-i
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-01-21_05,2025-01-21_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ bulkscore=0 suspectscore=0 adultscore=0 clxscore=1011 priorityscore=1501
+ spamscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2411120000
+ definitions=main-2501210112
 
+On Fri, Jan 10, 2025 at 03:16:08PM +0100, Joel Granados wrote:
 
+Hi Joel,
 
-On 20/01/2025 20:14, Jakub Kicinski wrote:
-> On Mon, 20 Jan 2025 13:55:58 +0200 Carolina Jubran wrote:
->> On 09/12/2024 23:27, Jakub Kicinski wrote:
->>> On Mon, 9 Dec 2024 23:03:04 +0200 Tariq Toukan wrote:
->>>> If we enforce by policy we need to use the constant 7, not the macro
->>>> IEEE_8021QAZ_MAX_TCS-1.
->>>> I'll keep it.
->>>
->>> The spec should support using "foreign constants"
->>> Off the top of my head - you can define the ieee-8021qaz-max-tcs contant
->>> as if you were defining a devlink constant, then add a header:
->>> attribute. This will tell C codegen to include that header instead of
->>> generating the definition.
->>>    
->>
->> Hi Jakub,
->>
->> I tried implementing this as you suggested, but it seems that the only
->> supported definition types are ['const', 'enum', 'flags', 'struct'],
->> while the max value in checks only accepts patterns matching
->> ^[su](8|16|32|64)-(min|max)$.
->>
->>   From what I see, it doesn’t currently support using a const value for
->> the max or min checks. Let me know if I’m missing something or if
->> there’s an alternative way to achieve this.
+> Add the const qualifier to all the ctl_tables in the tree except for
+> watchdog_hardlockup_sysctl, memory_allocation_profiling_sysctls,
+> loadpin_sysctl_table and the ones calling register_net_sysctl (./net,
+> drivers/inifiniband dirs). These are special cases as they use a
+> registration function with a non-const qualified ctl_table argument or
+> modify the arrays before passing them on to the registration function.
 > 
-> Ah, I thought we already implemented this, sorry.
-> Can you try the two patches from the top of this branch?
-> 
-> https://github.com/kuba-moo/linux/tree/ynl-limits
+> Constifying ctl_table structs will prevent the modification of
+> proc_handler function pointers as the arrays would reside in .rodata.
+> This is made possible after commit 78eb4ea25cd5 ("sysctl: treewide:
+> constify the ctl_table argument of proc_handlers") constified all the
+> proc_handlers.
 
-Yes, it worked after applying the pattern changes to the
-genetlink-legacy.yaml , as devlink uses it.
+I could identify at least these occurences in s390 code as well:
 
-Thank you!
+diff --git a/arch/s390/appldata/appldata_base.c b/arch/s390/appldata/appldata_base.c
+index dd7ba7587dd5..9b83c318f919 100644
+--- a/arch/s390/appldata/appldata_base.c
++++ b/arch/s390/appldata/appldata_base.c
+@@ -204,7 +204,7 @@ appldata_timer_handler(const struct ctl_table *ctl, int write,
+ {
+ 	int timer_active = appldata_timer_active;
+ 	int rc;
+-	struct ctl_table ctl_entry = {
++	const struct ctl_table ctl_entry = {
+ 		.procname	= ctl->procname,
+ 		.data		= &timer_active,
+ 		.maxlen		= sizeof(int),
+@@ -237,7 +237,7 @@ appldata_interval_handler(const struct ctl_table *ctl, int write,
+ {
+ 	int interval = appldata_interval;
+ 	int rc;
+-	struct ctl_table ctl_entry = {
++	const struct ctl_table ctl_entry = {
+ 		.procname	= ctl->procname,
+ 		.data		= &interval,
+ 		.maxlen		= sizeof(int),
+@@ -269,7 +269,7 @@ appldata_generic_handler(const struct ctl_table *ctl, int write,
+ 	struct list_head *lh;
+ 	int rc, found;
+ 	int active;
+-	struct ctl_table ctl_entry = {
++	const struct ctl_table ctl_entry = {
+ 		.data		= &active,
+ 		.maxlen		= sizeof(int),
+ 		.extra1		= SYSCTL_ZERO,
+diff --git a/arch/s390/kernel/hiperdispatch.c b/arch/s390/kernel/hiperdispatch.c
+index 7857a7e8e56c..7d0ba16085c1 100644
+--- a/arch/s390/kernel/hiperdispatch.c
++++ b/arch/s390/kernel/hiperdispatch.c
+@@ -273,7 +273,7 @@ static int hiperdispatch_ctl_handler(const struct ctl_table *ctl, int write,
+ {
+ 	int hiperdispatch;
+ 	int rc;
+-	struct ctl_table ctl_entry = {
++	const struct ctl_table ctl_entry = {
+ 		.procname	= ctl->procname,
+ 		.data		= &hiperdispatch,
+ 		.maxlen		= sizeof(int),
+diff --git a/arch/s390/kernel/topology.c b/arch/s390/kernel/topology.c
+index 6691808bf50a..26e50de83d80 100644
+--- a/arch/s390/kernel/topology.c
++++ b/arch/s390/kernel/topology.c
+@@ -629,7 +629,7 @@ static int topology_ctl_handler(const struct ctl_table *ctl, int write,
+ 	int enabled = topology_is_enabled();
+ 	int new_mode;
+ 	int rc;
+-	struct ctl_table ctl_entry = {
++	const struct ctl_table ctl_entry = {
+ 		.procname	= ctl->procname,
+ 		.data		= &enabled,
+ 		.maxlen		= sizeof(int),
+@@ -658,7 +658,7 @@ static int polarization_ctl_handler(const struct ctl_table *ctl, int write,
+ {
+ 	int polarization;
+ 	int rc;
+-	struct ctl_table ctl_entry = {
++	const struct ctl_table ctl_entry = {
+ 		.procname	= ctl->procname,
+ 		.data		= &polarization,
+ 		.maxlen		= sizeof(int),
+diff --git a/arch/s390/mm/cmm.c b/arch/s390/mm/cmm.c
+index 939e3bec2db7..8e354c90a3dd 100644
+--- a/arch/s390/mm/cmm.c
++++ b/arch/s390/mm/cmm.c
+@@ -263,7 +263,7 @@ static int cmm_pages_handler(const struct ctl_table *ctl, int write,
+ 			     void *buffer, size_t *lenp, loff_t *ppos)
+ {
+ 	long nr = cmm_get_pages();
+-	struct ctl_table ctl_entry = {
++	const struct ctl_table ctl_entry = {
+ 		.procname	= ctl->procname,
+ 		.data		= &nr,
+ 		.maxlen		= sizeof(long),
+@@ -283,7 +283,7 @@ static int cmm_timed_pages_handler(const struct ctl_table *ctl, int write,
+ 				   loff_t *ppos)
+ {
+ 	long nr = cmm_get_timed_pages();
+-	struct ctl_table ctl_entry = {
++	const struct ctl_table ctl_entry = {
+ 		.procname	= ctl->procname,
+ 		.data		= &nr,
+ 		.maxlen		= sizeof(long),
 
-Carolina
 
+> Best regards,
+> -- 
+> Joel Granados <joel.granados@kernel.org>
+
+Thanks!
 
