@@ -1,236 +1,212 @@
-Return-Path: <linux-rdma+bounces-7151-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7152-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33AC6A17F03
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 14:41:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D47CCA17F78
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 15:14:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65436169EDB
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 13:41:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B69C188B994
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 14:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035DA1F37A0;
-	Tue, 21 Jan 2025 13:40:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB7E1F37D2;
+	Tue, 21 Jan 2025 14:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="XXJc1fjY"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="MDqCQlCd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E391119A;
-	Tue, 21 Jan 2025 13:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81BF963CF;
+	Tue, 21 Jan 2025 14:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737466858; cv=none; b=bJQoNIMjC/ZXVoJ9wiufPCSv5ONcgARl1wWqraDdni4qk1GowmVhzTHL6R998R8EqbzgTlSvgGzEZlCYymJCYngaqJ0SXqrrIhxezLxr2xByS2OncKC/RsC8VRnyt47GMNuAI5uxtioi9uIDm14kjd45oLvhwocHzVQ4q/+2rSc=
+	t=1737468847; cv=none; b=ORDG0PW8gwePHGL8Xe9WS42oJbPC+uN54/pqJH2/rPOVl4ekXF3mG48D1wrP9TjorADL7UccRXnGu/VVYKo74L8CIULPUv7qwVfAJk0n4cLBUuigukbmrvnISYXgNHf3sapwQ1QplzjG2hVSWxf3FBftsv9PZ1Y4/euRl6YzGbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737466858; c=relaxed/simple;
-	bh=O6UDpyy68BQo7X626NvkAmSzVuRiTAwo5GjYO1FKjts=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rEQwzI8gOlpxKvmAG5rEfLCFl3QaHckMVAjI5Qbbgr4hNKX7uuOo8DAHBjFUMyQU0qjpKhxAxpFG5zZ9VVeS8VVvzYJwFYfVmgQyFpWy4z/+SgRVlBJvhROJWQm0JcpvL70u98TRZpKvMYUSvw0amTkvcpyZ6mIXFj1TysfDmYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=XXJc1fjY; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50LBcWDl021758;
-	Tue, 21 Jan 2025 13:40:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=1XuHjAhe+6crgeyPxGiThULHkHEa/Q
-	wDtL3yiBvZqn4=; b=XXJc1fjY1LEte8uWYOHY0rVlVq4wX9PCcoXpIbn1EYs9EL
-	OD4/8pPTNQ9wGah7zwpokGzeZLvKhyS2XwyswSQynQSvx4Pq0nVXT5v0PMm1KdzN
-	F6FmU2v9zN3MF0dGtVIr8337iz/SeaELL+AkChcaIBTAfjVK9Q1TKCVQHZUYF4b8
-	lkEmavTZcGG7bcRDLLuw9HOFrKWm+iyEw+rBb1iDcR2ksQakFyzbWZB9l+0n9NZH
-	7bFXS3CXhWJ3qAfxFUQeEb9d90I2xBmDXS8qIuY9SsKjzzFL1VStL4eYIhJR/WhB
-	kacwVPn3TvuRt93neu9S0HZxZA9oxnhjkLM3qkFg==
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44a1n9b0sf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 21 Jan 2025 13:40:21 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50LAtOsq021012;
-	Tue, 21 Jan 2025 13:40:19 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 448sb1b14q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 21 Jan 2025 13:40:19 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 50LDeIWj60031254
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 21 Jan 2025 13:40:18 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 25C3B2004B;
-	Tue, 21 Jan 2025 13:40:18 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7FD1A20040;
-	Tue, 21 Jan 2025 13:40:17 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 21 Jan 2025 13:40:17 +0000 (GMT)
-Date: Tue, 21 Jan 2025 14:40:16 +0100
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Joel Granados <joel.granados@kernel.org>
-Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Kees Cook <kees@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        intel-xe@lists.freedesktop.org, linux-hyperv@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-aio@kvack.org,
-        linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
-        codalist@coda.cs.cmu.edu, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
-        fsverity@lists.linux.dev, linux-xfs@vger.kernel.org,
-        io-uring@vger.kernel.org, bpf@vger.kernel.org,
-        kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, apparmor@lists.ubuntu.com,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        Song Liu <song@kernel.org>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Corey Minyard <cminyard@mvista.com>
-Subject: Re: [PATCH v2] treewide: const qualify ctl_tables where applicable
-Message-ID: <Z4+jwDBrZNRgu85S@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
+	s=arc-20240116; t=1737468847; c=relaxed/simple;
+	bh=uSXhQE1lWmVNXDRGO1SbE3SwNrRV91qgBAmOvH5wijc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qx7Cs/SLAAfrU3ZjLVMcwGpZAjRqKFZ7yBTQOBnLbsCjlSXtk1II6m+HfzJ0Vixz97YROX/6SAJOx17yNN8cNqY5VO/UcbVWRwdrVhfsxGdUVBZdzSf4x3auxNCQy9E1TwAZmwQisjWKFGkfvF0wwb7bfoCr1uCkbr3ucRN2pgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=MDqCQlCd; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1737468762; x=1738073562; i=w_armin@gmx.de;
+	bh=x9XPqJuiHeFmslhn9JxO368mOzb+Ow/0VyVvRzkFXq8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=MDqCQlCdqWzm/hmvYobAfB9qMdYiVG/+SV6HE44ptNrMa7fPH89+BSunDp0VnhCg
+	 ueUZwkDISyhqV3kRR+IEGINYM971J8nibhiOxQQz6Ts87WEmrboCx5Q0+qWy9WZCc
+	 +4fCtS2fvLdlo1L89qZ0UbQOz9i9eesXLPYz6hQVsD1oBZfO6ZNifyvd2bfVQiJWg
+	 /XsZ6buKUeKSUOGlXwYjRBlUMIw8haxFvg/icclaK5eeG1h6XRlKWQwjPkA0GBQri
+	 qgEK12MEpnWiluunyzlmRFvTRFsFhVeq1FcVd3PN2Lio4Ky6HLSHgUEcYsiSEutF1
+	 E/9WC/CLr/7V/rn87g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.0.69] ([93.202.253.70]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M72sP-1taWdZ1wwp-00Gegp; Tue, 21
+ Jan 2025 15:12:42 +0100
+Message-ID: <03b138e9-688f-4ebc-bd01-3d54fd20e525@gmx.de>
+Date: Tue, 21 Jan 2025 15:12:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: mWjZL4Eizm--6YwnTI2RlL8astD0-e-i
-X-Proofpoint-GUID: mWjZL4Eizm--6YwnTI2RlL8astD0-e-i
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-21_05,2025-01-21_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- bulkscore=0 suspectscore=0 adultscore=0 clxscore=1011 priorityscore=1501
- spamscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2411120000
- definitions=main-2501210112
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 00/21] hwmon: Fix the type of 'config' in struct
+ hwmon_channel_info to u64
+To: Huisong Li <lihuisong@huawei.com>, linux-hwmon@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, arm-scmi@vger.kernel.org,
+ netdev@vger.kernel.org, linux-rtc@vger.kernel.org, oss-drivers@corigine.com,
+ linux-rdma@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ linuxarm@huawei.com, linux@roeck-us.net, jdelvare@suse.com,
+ kernel@maidavale.org, pauk.denis@gmail.com, james@equiv.tech,
+ sudeep.holla@arm.com, cristian.marussi@arm.com, matt@ranostay.sg,
+ mchehab@kernel.org, irusskikh@marvell.com, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
+ louis.peens@corigine.com, hkallweit1@gmail.com, linux@armlinux.org.uk,
+ kabel@kernel.org, hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
+ alexandre.belloni@bootlin.com, krzk@kernel.org, jonathan.cameron@huawei.com,
+ zhanjie9@hisilicon.com, zhenglifeng1@huawei.com, liuyonglong@huawei.com
+References: <20250121064519.18974-1-lihuisong@huawei.com>
+Content-Language: en-US
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <20250121064519.18974-1-lihuisong@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:7/G4V4KAu+etM0B4X0zIj2cDFjln5bReWl7v+Totq/edMUjLLWH
+ zFxOxapMoT9n+dnxkeWM2B7x42rqhWIweUhJVly4GKBKa6ntyoArNQMzhbAoj4MypZHxKRZ
+ MZ7sYbMHuTiMO5RIoulxNqBUkyxCBvXKK6z4e1cszmQPsyyCxDDCT4ORExJtlnvH3VRF5o4
+ uIZg7LKg/5IPk3gEfBLIA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:MdsFvjde5OI=;8iUQeccSnXW5OExW3MOjjqo608U
+ UuPKnTXIMhIjDOxJ+WxeghaG1nPUqAsDE/BjwU/Mysu3bnhhYioKopErLT2SfiADnTSdcyaqf
+ lVQOMw22z304wvfrsk43KmXoKdq/BwVuE0Zz8wYAP+Yb3pYas/gTSMdNDVzJVzONiC72ubmgV
+ IUXLJquxGfcmg9WV8Dp4azyvMXAFT3YEwDdR52oNEL+4lJOhqf4V/8sjK8clPyVYAn3DryMR/
+ 5bHa64QNwxLIQJQbuvJM2sF99WqJaoiHMrlyeMAH2V9ul68wbmAHoH+kRwFtHc4mlfe7elHJu
+ CGPi+z/yyIg0zPbkf5ydl5/9lXXWd5z6+eg/AhkfiuNM9qoIehuUxC0lbsszsNl58M2soUhRn
+ kDP94KQnM931rMnb2rWaIqfZ/Jqx3MXZuo1GCVO0753AiPtblQnoDwa8xTBvuqfEYLLn/j/Hw
+ clp4La2uS3Q6ZTDxKWg8hYrAU3NI7pGq9MBnieyvZZkZHxi37YOLOSDBxbmP0xWXMcQjZLh5B
+ 8HbxeuJq9ZwF+GNreUQaJ6uxYjm+1Me+d5uQq2vU1KZ4hiS4eAxHDZxagO00YnQ8jhrA4A58c
+ hW0GuK0qcEUIdvMIoNeJzdaHG8Wquu2PU38Gi174EJcYFbc+hCYa6fzomkm3BoRSFINHtucBR
+ iZSVXByjDliubDqy7S+7veGcCIHiKFVK+SXIaKFuKfpL+sfq1UPMRN4bWkGCx/gnvHhSPeuYb
+ JFUNwaiwTbrp4RQLNx4yX14GVD+6BIO/41XrYbZR9Xsl4uQw1WlULfIYwXvfQufGdir/+WNO0
+ SHU6jGxsIkJchVwfTKCaaQCsjjLrdDaCmwI+X1aBJFWWoUPb8cMGRkU7NPOmxc5VNrwsk4Z5n
+ PvbVA218nKmUBTd/uiZ64RN+UuLpT1azGjWkuBz2afSuOUp4OYOXJ9yZkUQMXf/uTrIUt/01c
+ 2NzAGMd/GxrqlibB4O2KU4SArZzSsJUeKsNqPCWjmx3fp7DCEMRkXy/EpNfujE6YInjG+Uqh6
+ s66ljRjsyPKRO96kwxCe+B/t6Q9iAjpYB9K07Rpigzh6hS78z0aSvk6Y7Svkml2x5QmYwH1Fh
+ CDPfE/CkYFrBjBHC/e2fnGPqYtZ4J05oC+xVpnLH0dXGjaNw02cZYwLSU2P06ikk55MO5xkXz
+ sASz0ETR5PmRBRcDYspQgn9PkWEZN6Qtu07Rzupwncw==
 
-On Fri, Jan 10, 2025 at 03:16:08PM +0100, Joel Granados wrote:
+Am 21.01.25 um 07:44 schrieb Huisong Li:
 
-Hi Joel,
+> The hwmon_device_register() is deprecated. When I try to repace it with
+> hwmon_device_register_with_info() for acpi_power_meter driver, I found that
+> the power channel attribute in linux/hwmon.h have to extend and is more
+> than 32 after this replacement.
+>
+> However, the maximum number of hwmon channel attributes is 32 which is
+> limited by current hwmon codes. This is not good to add new channel
+> attribute for some hwmon sensor type and support more channel attribute.
+>
+> This series are aimed to do this. And also make sure that acpi_power_meter
+> driver can successfully replace the deprecated hwmon_device_register()
+> later.
 
-> Add the const qualifier to all the ctl_tables in the tree except for
-> watchdog_hardlockup_sysctl, memory_allocation_profiling_sysctls,
-> loadpin_sysctl_table and the ones calling register_net_sysctl (./net,
-> drivers/inifiniband dirs). These are special cases as they use a
-> registration function with a non-const qualified ctl_table argument or
-> modify the arrays before passing them on to the registration function.
-> 
-> Constifying ctl_table structs will prevent the modification of
-> proc_handler function pointers as the arrays would reside in .rodata.
-> This is made possible after commit 78eb4ea25cd5 ("sysctl: treewide:
-> constify the ctl_table argument of proc_handlers") constified all the
-> proc_handlers.
+Hi,
 
-I could identify at least these occurences in s390 code as well:
+what kind of new power attributes do you want to add to the hwmon API?
 
-diff --git a/arch/s390/appldata/appldata_base.c b/arch/s390/appldata/appldata_base.c
-index dd7ba7587dd5..9b83c318f919 100644
---- a/arch/s390/appldata/appldata_base.c
-+++ b/arch/s390/appldata/appldata_base.c
-@@ -204,7 +204,7 @@ appldata_timer_handler(const struct ctl_table *ctl, int write,
- {
- 	int timer_active = appldata_timer_active;
- 	int rc;
--	struct ctl_table ctl_entry = {
-+	const struct ctl_table ctl_entry = {
- 		.procname	= ctl->procname,
- 		.data		= &timer_active,
- 		.maxlen		= sizeof(int),
-@@ -237,7 +237,7 @@ appldata_interval_handler(const struct ctl_table *ctl, int write,
- {
- 	int interval = appldata_interval;
- 	int rc;
--	struct ctl_table ctl_entry = {
-+	const struct ctl_table ctl_entry = {
- 		.procname	= ctl->procname,
- 		.data		= &interval,
- 		.maxlen		= sizeof(int),
-@@ -269,7 +269,7 @@ appldata_generic_handler(const struct ctl_table *ctl, int write,
- 	struct list_head *lh;
- 	int rc, found;
- 	int active;
--	struct ctl_table ctl_entry = {
-+	const struct ctl_table ctl_entry = {
- 		.data		= &active,
- 		.maxlen		= sizeof(int),
- 		.extra1		= SYSCTL_ZERO,
-diff --git a/arch/s390/kernel/hiperdispatch.c b/arch/s390/kernel/hiperdispatch.c
-index 7857a7e8e56c..7d0ba16085c1 100644
---- a/arch/s390/kernel/hiperdispatch.c
-+++ b/arch/s390/kernel/hiperdispatch.c
-@@ -273,7 +273,7 @@ static int hiperdispatch_ctl_handler(const struct ctl_table *ctl, int write,
- {
- 	int hiperdispatch;
- 	int rc;
--	struct ctl_table ctl_entry = {
-+	const struct ctl_table ctl_entry = {
- 		.procname	= ctl->procname,
- 		.data		= &hiperdispatch,
- 		.maxlen		= sizeof(int),
-diff --git a/arch/s390/kernel/topology.c b/arch/s390/kernel/topology.c
-index 6691808bf50a..26e50de83d80 100644
---- a/arch/s390/kernel/topology.c
-+++ b/arch/s390/kernel/topology.c
-@@ -629,7 +629,7 @@ static int topology_ctl_handler(const struct ctl_table *ctl, int write,
- 	int enabled = topology_is_enabled();
- 	int new_mode;
- 	int rc;
--	struct ctl_table ctl_entry = {
-+	const struct ctl_table ctl_entry = {
- 		.procname	= ctl->procname,
- 		.data		= &enabled,
- 		.maxlen		= sizeof(int),
-@@ -658,7 +658,7 @@ static int polarization_ctl_handler(const struct ctl_table *ctl, int write,
- {
- 	int polarization;
- 	int rc;
--	struct ctl_table ctl_entry = {
-+	const struct ctl_table ctl_entry = {
- 		.procname	= ctl->procname,
- 		.data		= &polarization,
- 		.maxlen		= sizeof(int),
-diff --git a/arch/s390/mm/cmm.c b/arch/s390/mm/cmm.c
-index 939e3bec2db7..8e354c90a3dd 100644
---- a/arch/s390/mm/cmm.c
-+++ b/arch/s390/mm/cmm.c
-@@ -263,7 +263,7 @@ static int cmm_pages_handler(const struct ctl_table *ctl, int write,
- 			     void *buffer, size_t *lenp, loff_t *ppos)
- {
- 	long nr = cmm_get_pages();
--	struct ctl_table ctl_entry = {
-+	const struct ctl_table ctl_entry = {
- 		.procname	= ctl->procname,
- 		.data		= &nr,
- 		.maxlen		= sizeof(long),
-@@ -283,7 +283,7 @@ static int cmm_timed_pages_handler(const struct ctl_table *ctl, int write,
- 				   loff_t *ppos)
- {
- 	long nr = cmm_get_timed_pages();
--	struct ctl_table ctl_entry = {
-+	const struct ctl_table ctl_entry = {
- 		.procname	= ctl->procname,
- 		.data		= &nr,
- 		.maxlen		= sizeof(long),
+AFAIK the acpi-power-meter driver supports the following attributes:
 
+	power1_accuracy			-> HWMON_P_ACCURACY
+	power1_cap_min			-> HWMON_P_CAP_MIN
+	power1_cap_max			-> HWMON_P_CAP_MAX
+	power1_cap_hyst			-> HWMON_P_CAP_HYST
+	power1_cap			-> HWMON_P_CAP
+	power1_average			-> HWMON_P_AVERAGE
+	power1_average_min		-> HWMON_P_AVERAGE_MIN
+	power1_average_max		-> HWMON_P_AVERAGE_MAX
+	power1_average_interval		-> HWMON_P_AVERAGE_INTERVAL
+	power1_average_interval_min	-> HWMON_P_AVERAGE_INTERVAL_MIN
+	power1_average_interval_max	-> HWMON_P_AVERAGE_INTERVAL_MAX
+	power1_alarm			-> HWMON_P_ALARM
+	power1_model_number
+	power1_oem_info
+	power1_serial_number
+	power1_is_battery
+	name				-> handled by hwmon core
 
-> Best regards,
-> -- 
-> Joel Granados <joel.granados@kernel.org>
+The remaining attributes are in my opinion not generic enough to add them to the generic
+hwmon power attributes. I think you should implement them as a attribute_group which can
+be passed to hwmon_device_register_with_info() using the "extra_groups" parameter.
 
-Thanks!
+Thanks,
+Armin Wolf
+
+>
+> Huisong Li (21):
+>    hwmon: Fix the type of 'config' in struct hwmon_channel_info to u64
+>    media: video-i2c: Use HWMON_CHANNEL_INFO macro to simplify code
+>    net: aquantia: Use HWMON_CHANNEL_INFO macro to simplify code
+>    net: nfp: Use HWMON_CHANNEL_INFO macro to simplify code
+>    net: phy: marvell: Use HWMON_CHANNEL_INFO macro to simplify code
+>    net: phy: marvell10g: Use HWMON_CHANNEL_INFO macro to simplify code
+>    rtc: ab-eoz9: Use HWMON_CHANNEL_INFO macro to simplify code
+>    rtc: ds3232: Use HWMON_CHANNEL_INFO macro to simplify code
+>    w1: w1_therm: w1: Use HWMON_CHANNEL_INFO macro to simplify code
+>    net: phy: aquantia: Use HWMON_CHANNEL_INFO macro to simplify code
+>    hwmon: (asus_wmi_sensors) Fix type of 'config' in struct
+>      hwmon_channel_info to u64
+>    hwmon: (hp-wmi-sensors) Fix type of 'config' in struct
+>      hwmon_channel_info to u64
+>    hwmon: (mr75203) Fix the type of 'config' in struct hwmon_channel_info
+>      to u64
+>    hwmon: (pwm-fan) Fix the type of 'config' in struct hwmon_channel_info
+>      to u64
+>    hwmon: (scmi-hwmon) Fix the type of 'config' in struct
+>      hwmon_channel_info to u64
+>    hwmon: (tmp401) Fix the type of 'config' in struct hwmon_channel_info
+>      to u64
+>    hwmon: (tmp421) Fix the type of 'config' in struct hwmon_channel_info
+>      to u64
+>    net/mlx5: Fix the type of 'config' in struct hwmon_channel_info to u64
+>    platform/x86: dell-ddv: Fix the type of 'config' in struct
+>      hwmon_channel_info to u64
+>    hwmon: (asus-ec-sensors) Fix the type of 'config' in struct
+>      hwmon_channel_info to u64
+>    hwmon: (lm90) Fix the type of 'config' in struct hwmon_channel_info to
+>      u64
+>
+>   drivers/hwmon/asus-ec-sensors.c               |   6 +-
+>   drivers/hwmon/asus_wmi_sensors.c              |   8 +-
+>   drivers/hwmon/hp-wmi-sensors.c                |   6 +-
+>   drivers/hwmon/hwmon.c                         |   4 +-
+>   drivers/hwmon/lm90.c                          |   4 +-
+>   drivers/hwmon/mr75203.c                       |   6 +-
+>   drivers/hwmon/pwm-fan.c                       |   4 +-
+>   drivers/hwmon/scmi-hwmon.c                    |   6 +-
+>   drivers/hwmon/tmp401.c                        |   4 +-
+>   drivers/hwmon/tmp421.c                        |   2 +-
+>   drivers/media/i2c/video-i2c.c                 |  12 +-
+>   .../ethernet/aquantia/atlantic/aq_drvinfo.c   |  14 +-
+>   .../net/ethernet/mellanox/mlx5/core/hwmon.c   |   8 +-
+>   .../net/ethernet/netronome/nfp/nfp_hwmon.c    |  40 +--
+>   drivers/net/phy/aquantia/aquantia_hwmon.c     |  32 +-
+>   drivers/net/phy/marvell.c                     |  24 +-
+>   drivers/net/phy/marvell10g.c                  |  24 +-
+>   drivers/platform/x86/dell/dell-wmi-ddv.c      |   6 +-
+>   drivers/rtc/rtc-ab-eoz9.c                     |  24 +-
+>   drivers/rtc/rtc-ds3232.c                      |  24 +-
+>   drivers/w1/slaves/w1_therm.c                  |  12 +-
+>   include/linux/hwmon.h                         | 300 +++++++++---------
+>   22 files changed, 205 insertions(+), 365 deletions(-)
+>
 
