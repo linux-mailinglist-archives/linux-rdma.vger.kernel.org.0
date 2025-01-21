@@ -1,135 +1,151 @@
-Return-Path: <linux-rdma+bounces-7148-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7149-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE88A17C49
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 11:52:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDD26A17DB4
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 13:19:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA0B63A1C43
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 10:52:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0079E16B6F9
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2025 12:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 595F81F0E32;
-	Tue, 21 Jan 2025 10:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F3301F151B;
+	Tue, 21 Jan 2025 12:19:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b="j8iHg7Wc"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jGxs+pk9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx.swemel.ru (mx.swemel.ru [95.143.211.150])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D486E1A8409;
-	Tue, 21 Jan 2025 10:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.143.211.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509481D554;
+	Tue, 21 Jan 2025 12:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737456771; cv=none; b=kf6fOwbZo0sxb3DmPFfHLg6YwYxPtrszZ61c4A6MU0t33wNOEt/cDrLV/Lo9piQGBrt8LsOSfEPDt9WGZniCPMapkPkHTNvmS0uiAM2CmI+r18sT+jxVvvRM17OR+TWM8eT0CrziNYpABq4/CwM6k4Jna4XXlT0+EI7vaJipVKc=
+	t=1737461956; cv=none; b=pD9/Bz4aysIW6XPHWwPDLywyoGJV3eq5N+T1okE+SwAF8wih78lS5bLWwhw4wTATcl5i3iFJPFmvL9aDQi4rKp/0/UUdNM2fwCI1xTrkMKtHpngj5cXX/50dPdE/tFqHwKjZRosVIxAh9MIOJX8sW2iZ0Lf65JJuowl6GAlrp/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737456771; c=relaxed/simple;
-	bh=0R48WJkUpGKSFqPeM7L4K3mJRPAcN5JYm/BLNSGSXIY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N6Uya5bTX660jfMwrx0wsX2XeLTqeF1TUaft2Kgg8aGCF4QFSAxO3xRJyZzXSQ5MWUQ/hUc6nogZb/tyBnUmsSzh1HIpD+VERP5mC1Jdo5WEcHgb8+NDFtBfPXlrMia2BYJZvQ8GfZO/ZlaCORPVyvw7FGS+RqscmphrXcLdAWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru; spf=pass smtp.mailfrom=swemel.ru; dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b=j8iHg7Wc; arc=none smtp.client-ip=95.143.211.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=swemel.ru
-From: Denis Arefev <arefev@swemel.ru>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=swemel.ru; s=mail;
-	t=1737456758;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=o2UMJAE0rSMu4do0LJ3F7njadk4L3n4HwNwxYUayb9w=;
-	b=j8iHg7WcbcSJ/ENqDEUU36RgLKCJvxwYbLOH0SMsRBGcFWkyPXMFNXUqEmDVod+ZBFIQ73
-	i1mNfkWtwoENlHw4hqtqh/m0b9MDt9w8VOfRmRtIeY5MDyt3wIWC0wU/zm0zkHFXA/YbrM
-	OPmAIPvNHtkFyGRQv3qKkjP/qH7TckM=
-To: stable@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Lijun Ou <oulijun@huawei.com>,
-	"Wei Hu(Xavier)" <huwei87@hisilicon.com>,
-	Weihang Li <liweihang@huawei.com>,
-	Doug Ledford <dledford@redhat.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	Chengchang Tang <tangchengchang@huawei.com>,
-	Junxian Huang <huangjunxian6@hisilicon.com>,
-	Leon Romanovsky <leon@kernel.org>
-Subject: [PATCH 5.10] RDMA/hns: Fix deadlock on SRQ async events.
-Date: Tue, 21 Jan 2025 13:52:36 +0300
-Message-ID: <20250121105238.15409-1-arefev@swemel.ru>
+	s=arc-20240116; t=1737461956; c=relaxed/simple;
+	bh=sPesZWYC0ulEJj/gesJPmVOOyLfPgsGZKiiMssRCLcU=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=BIIoOnl1eOC7ze4x3NvELKOI0fgC8Rfysu5NS59XiOXKMNNhQ5x2SMP7J6H4XcPeeTBXKQBbMcXSJqXbWNnFRX82Pm0FezWVeTVNW8uUhe0mskhev+TdOhG4oaVUKoS5d0okybGAkBkeWcQIYGLb50txEHCarEuPQg34GaWGfWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jGxs+pk9; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1737461955; x=1768997955;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=sPesZWYC0ulEJj/gesJPmVOOyLfPgsGZKiiMssRCLcU=;
+  b=jGxs+pk9Czd0TRSNFjT4SUeyymLccvvh0CKFcZHTdxZu97ZOO1kuWSOt
+   AmMxmV1CkWT3bNQPwNK1urxn53nI2FgN1zRwLJzi6NvzQDTXhpHl5aCZe
+   NUgo70btqPNZRNXjm5pqN09cHG2dFWZNyD5dBzXDlJx9eljNM2DozFwoe
+   CGYYqfkGuVXIoV3I2oPcY02w3X19LVhuAc5tw5TaxsOxFLKK/w0CBOjZP
+   nepX2xsI3RgPQtOTPd7mf7L/mmD4YTpWjslB3NWtts/Fh8cLTeSUImhKR
+   G/xP9bJvkr1/ZieQ5dOOrJurQE0NARn9nbcbL4PThwy/o07sohsC4Feba
+   Q==;
+X-CSE-ConnectionGUID: Ndw0UAZJQg+MRYZ3bRbGDQ==
+X-CSE-MsgGUID: kNelo3TwQaCvORPfdvV2+A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11321"; a="38115461"
+X-IronPort-AV: E=Sophos;i="6.13,222,1732608000"; 
+   d="scan'208";a="38115461"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2025 04:19:14 -0800
+X-CSE-ConnectionGUID: gH3zVvHuQEysE1CEtIUNmw==
+X-CSE-MsgGUID: XYxDmMaMQhuYGVua7yV6Ig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,222,1732608000"; 
+   d="scan'208";a="111790831"
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.188])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2025 04:19:00 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 21 Jan 2025 14:18:56 +0200 (EET)
+To: Huisong Li <lihuisong@huawei.com>
+cc: linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+    linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+    arm-scmi@vger.kernel.org, Netdev <netdev@vger.kernel.org>, 
+    linux-rtc@vger.kernel.org, oss-drivers@corigine.com, 
+    linux-rdma@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
+    linuxarm@huawei.com, linux@roeck-us.net, jdelvare@suse.com, 
+    kernel@maidavale.org, pauk.denis@gmail.com, james@equiv.tech, 
+    sudeep.holla@arm.com, cristian.marussi@arm.com, matt@ranostay.sg, 
+    mchehab@kernel.org, irusskikh@marvell.com, andrew+netdev@lunn.ch, 
+    davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+    pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com, 
+    louis.peens@corigine.com, hkallweit1@gmail.com, linux@armlinux.org.uk, 
+    kabel@kernel.org, W_Armin@gmx.de, Hans de Goede <hdegoede@redhat.com>, 
+    alexandre.belloni@bootlin.com, krzk@kernel.org, 
+    jonathan.cameron@huawei.com, zhanjie9@hisilicon.com, 
+    zhenglifeng1@huawei.com, liuyonglong@huawei.com
+Subject: Re: [PATCH v1 19/21] platform/x86: dell-ddv: Fix the type of 'config'
+ in struct hwmon_channel_info to u64
+In-Reply-To: <20250121064519.18974-20-lihuisong@huawei.com>
+Message-ID: <844c5097-eeb7-7275-7558-83ca4e5ee4b2@linux.intel.com>
+References: <20250121064519.18974-1-lihuisong@huawei.com> <20250121064519.18974-20-lihuisong@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+On Tue, 21 Jan 2025, Huisong Li wrote:
 
-commit b46494b6f9c19f141114a57729e198698f40af37 upstream.  
+> The type of 'config' in struct hwmon_channel_info has been fixed to u64.
+> Modify the related code in driver to avoid compiling failure.
 
-xa_lock for SRQ table may be required in AEQ. Use xa_store_irq()/
-xa_erase_irq() to avoid deadlock.
+Does this mean that after applying part of your series but not yet this 
+patch, compile would fail? If so, it's unacceptable. At no point in a 
+patch series are you allowed to cause a compile failure because it hinders 
+'git bisect' that is an important troubleshooting tool.
 
-Fixes: 81fce6291d99 ("RDMA/hns: Add SRQ asynchronous event support")
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
-Link: https://lore.kernel.org/r/20240412091616.370789-5-huangjunxian6@hisilicon.com
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
-[Denis: minor fix to resolve merge conflict.]                                           
-Signed-off-by: Denis Arefev <arefev@swemel.ru>                                    
----
-Backport fix for CVE-2024-38591 
-Link: https://nvd.nist.gov/vuln/detail/cve-2024-38591
----
- drivers/infiniband/hw/hns/hns_roce_main.c | 1 +
- drivers/infiniband/hw/hns/hns_roce_srq.c  | 6 +++---
- 2 files changed, 4 insertions(+), 3 deletions(-)
+So you might have to combine changes to drivers and API if you make an 
+API change that breaks driver build until driver too is changed. Note that 
+it will impact a lot how quickly your patches can be accepted as much 
+higher level of coordination is usually required if your patch is touching 
+things all over the place, but it cannot be avoided at times. And 
+requirement of doing minimal change only will be much much higher in such 
+a large scale change.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index f62162771db5..a0f243ffa5b5 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -37,6 +37,7 @@
- #include <rdma/ib_smi.h>
- #include <rdma/ib_user_verbs.h>
- #include <rdma/ib_cache.h>
-+#include "hnae3.h"
- #include "hns_roce_common.h"
- #include "hns_roce_device.h"
- #include <rdma/hns-abi.h>
-diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index 02e2416b5fed..6a510dbe5849 100644
---- a/drivers/infiniband/hw/hns/hns_roce_srq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -120,7 +120,7 @@ static int alloc_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
- 		goto err_out;
- 	}
- 
--	ret = xa_err(xa_store(&srq_table->xa, srq->srqn, srq, GFP_KERNEL));
-+	ret = xa_err(xa_store_irq(&srq_table->xa, srq->srqn, srq, GFP_KERNEL));
- 	if (ret) {
- 		ibdev_err(ibdev, "failed to store SRQC, ret = %d.\n", ret);
- 		goto err_put;
-@@ -149,7 +149,7 @@ static int alloc_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
- 	return ret;
- 
- err_xa:
--	xa_erase(&srq_table->xa, srq->srqn);
-+	xa_erase_irq(&srq_table->xa, srq->srqn);
- 
- err_put:
- 	hns_roce_table_put(hr_dev, &srq_table->table, srq->srqn);
-@@ -169,7 +169,7 @@ static void free_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
- 		dev_err(hr_dev->dev, "DESTROY_SRQ failed (%d) for SRQN %06lx\n",
- 			ret, srq->srqn);
- 
--	xa_erase(&srq_table->xa, srq->srqn);
-+	xa_erase_irq(&srq_table->xa, srq->srqn);
- 
- 	if (atomic_dec_and_test(&srq->refcount))
- 		complete(&srq->free);
--- 
-2.43.0
+--
+ i.
 
+> Signed-off-by: Huisong Li <lihuisong@huawei.com>
+> ---
+>  drivers/platform/x86/dell/dell-wmi-ddv.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/dell/dell-wmi-ddv.c b/drivers/platform/x86/dell/dell-wmi-ddv.c
+> index e75cd6e1efe6..efb2278aabb9 100644
+> --- a/drivers/platform/x86/dell/dell-wmi-ddv.c
+> +++ b/drivers/platform/x86/dell/dell-wmi-ddv.c
+> @@ -86,7 +86,7 @@ struct thermal_sensor_entry {
+>  
+>  struct combined_channel_info {
+>  	struct hwmon_channel_info info;
+> -	u32 config[];
+> +	u64 config[];
+>  };
+>  
+>  struct combined_chip_info {
+> @@ -500,7 +500,7 @@ static const struct hwmon_ops dell_wmi_ddv_ops = {
+>  
+>  static struct hwmon_channel_info *dell_wmi_ddv_channel_create(struct device *dev, u64 count,
+>  							      enum hwmon_sensor_types type,
+> -							      u32 config)
+> +							      u64 config)
+>  {
+>  	struct combined_channel_info *cinfo;
+>  	int i;
+> @@ -543,7 +543,7 @@ static struct hwmon_channel_info *dell_wmi_ddv_channel_init(struct wmi_device *w
+>  							    struct dell_wmi_ddv_sensors *sensors,
+>  							    size_t entry_size,
+>  							    enum hwmon_sensor_types type,
+> -							    u32 config)
+> +							    u64 config)
+>  {
+>  	struct hwmon_channel_info *info;
+>  	int ret;
+> 
 
