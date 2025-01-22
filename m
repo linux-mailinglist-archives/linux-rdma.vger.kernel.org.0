@@ -1,222 +1,179 @@
-Return-Path: <linux-rdma+bounces-7169-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7170-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 004C0A18AE5
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 05:06:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E496EA18B10
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 05:35:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29B3D163615
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 04:06:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB02E3AC34B
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 04:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383A515F41F;
-	Wed, 22 Jan 2025 04:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 484CD15F41F;
+	Wed, 22 Jan 2025 04:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="mYgY2h8V"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28DD91B95B;
-	Wed, 22 Jan 2025 04:06:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9EEECF;
+	Wed, 22 Jan 2025 04:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737518807; cv=none; b=XN26CVwQNL7wPL1RueHS4WlZZE5LpYM9lpoGC1E5NAsPYt4KjL7q6YJ2yN52ZqWXVtELQ3cCXrzcieNfeDRbMoGKMiljlduSXDa4jTFicqBwE4Hh1L468uRbqgzE1KiuRGwZR3661S1ScPBrKsoJWdZ3O72jtJIX/hsUsCYvEbE=
+	t=1737520552; cv=none; b=h6daPBmCNiaa2zcF1/mVqsd/QjK2GRyRxgSijWX1v9lbwO0lzc6fHdtS8oE12ALcRfxFBeGLSm0Rp0jeZo4kbOZNTHAOfWCzthN9eT6arhGbMzmRrGOyN4kuBsnl6r0zXsBsoRxVea531RbyUNpCIolqEPVOXS9VpD0bnfUqdG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737518807; c=relaxed/simple;
-	bh=IdaLKlCRLAsWwx4XruBwLM15qh+gkyjXQJnpTcIU+Ng=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=B7UkOP840pAbRMNXLUe+T1LqCA9Di27tJrd/IZkucDEuyk27yHJ5Z0OdVh2ONf9j4RKSiDMr8VdQBpsfGGQLIExPkl13WYN/3md089HwYzGTmEtVYzYKj2unhegUgnmjo8iCYV+sNqE9nSLjG05NPJYRo2cURVW9OYs9D25nFE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Yd9WR3cwTz20p8h;
-	Wed, 22 Jan 2025 12:06:59 +0800 (CST)
-Received: from dggemv711-chm.china.huawei.com (unknown [10.1.198.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2D1DE14013B;
-	Wed, 22 Jan 2025 12:06:34 +0800 (CST)
-Received: from kwepemn100009.china.huawei.com (7.202.194.112) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Wed, 22 Jan 2025 12:06:33 +0800
-Received: from [10.67.121.59] (10.67.121.59) by kwepemn100009.china.huawei.com
- (7.202.194.112) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 22 Jan
- 2025 12:06:32 +0800
-Message-ID: <15d63183-3bdb-e934-a68d-393ae2dcb8ea@huawei.com>
-Date: Wed, 22 Jan 2025 12:06:31 +0800
+	s=arc-20240116; t=1737520552; c=relaxed/simple;
+	bh=kx4htrhC1LwQWfgDqorHI8uXV4Zpz4t+IvJ7Z5oP+9s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aufTdLKaftmeS2vqhLD16M7KRkLv3ckducaid3CTQMH6815BT18FOurPjXXWttC0TgzyImewTq9mWhJf4w0dzB1mURa79XUgigVXrhAR9QS3H0qlFedBrmDSzInPD4NVKKmM+4yNfrNPZf5RoNMFFE6taJxdQjDAz5gLIiEmir4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=mYgY2h8V; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1737520540; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=IHehevSmLWkA9dPFMqFrIjYjGxd1L3QHCe+CuOPx340=;
+	b=mYgY2h8V+fmrfLld9djLlPnK0vONOHRGBdUnfEYIjw34Bc/QZ7s4VN1AKUg+ctHzHzZVRL/0nnYz3/Yjf47nvEHNp7exqYT0Y0j3WetuaHxwCFL011He9rlVfRnDO9hbiAAIOIDM0Wg7z9aF84pWyNDeRwkKiR3f3JP0zjPQQhg=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WO7DQQg_1737520538 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 22 Jan 2025 12:35:38 +0800
+Date: Wed, 22 Jan 2025 12:35:38 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, pabeni@redhat.com,
+	song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
+	edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+	jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org,
+	davem@davemloft.net, netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v6 2/5] net/smc: Introduce generic hook smc_ops
+Message-ID: <20250122043538.GC81479@j66a10360.sqa.eu95>
+References: <20250116074442.79304-1-alibuda@linux.alibaba.com>
+ <20250116074442.79304-3-alibuda@linux.alibaba.com>
+ <86948347-529b-433a-991d-0b298776db63@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v1 00/21] hwmon: Fix the type of 'config' in struct
- hwmon_channel_info to u64
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>, Guenter Roeck
-	<linux@roeck-us.net>
-CC: Armin Wolf <W_Armin@gmx.de>, <linux-hwmon@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <arm-scmi@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
-	<oss-drivers@corigine.com>, <linux-rdma@vger.kernel.org>,
-	<platform-driver-x86@vger.kernel.org>, <linuxarm@huawei.com>,
-	<jdelvare@suse.com>, <kernel@maidavale.org>, <pauk.denis@gmail.com>,
-	<james@equiv.tech>, <sudeep.holla@arm.com>, <cristian.marussi@arm.com>,
-	<matt@ranostay.sg>, <mchehab@kernel.org>, <irusskikh@marvell.com>,
-	<andrew+netdev@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <saeedm@nvidia.com>,
-	<leon@kernel.org>, <tariqt@nvidia.com>, <louis.peens@corigine.com>,
-	<hkallweit1@gmail.com>, <kabel@kernel.org>, <hdegoede@redhat.com>,
-	<ilpo.jarvinen@linux.intel.com>, <alexandre.belloni@bootlin.com>,
-	<krzk@kernel.org>, <jonathan.cameron@huawei.com>, <zhanjie9@hisilicon.com>,
-	<zhenglifeng1@huawei.com>, <liuyonglong@huawei.com>
-References: <20250121064519.18974-1-lihuisong@huawei.com>
- <03b138e9-688f-4ebc-bd01-3d54fd20e525@gmx.de>
- <9add68ac-7d10-4011-9da8-1f2de077d3e9@roeck-us.net>
- <Z4_XQQ0tkD1EkOJ4@shell.armlinux.org.uk>
-From: "lihuisong (C)" <lihuisong@huawei.com>
-In-Reply-To: <Z4_XQQ0tkD1EkOJ4@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemn100009.china.huawei.com (7.202.194.112)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86948347-529b-433a-991d-0b298776db63@linux.dev>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-Hi
+On Fri, Jan 17, 2025 at 03:50:48PM -0800, Martin KaFai Lau wrote:
+> On 1/15/25 11:44 PM, D. Wythe wrote:
+> >diff --git a/net/smc/smc_sysctl.c b/net/smc/smc_sysctl.c
+> >index 2fab6456f765..2004241c3045 100644
+> >--- a/net/smc/smc_sysctl.c
+> >+++ b/net/smc/smc_sysctl.c
+> >@@ -18,6 +18,7 @@
+> >  #include "smc_core.h"
+> >  #include "smc_llc.h"
+> >  #include "smc_sysctl.h"
+> >+#include "smc_ops.h"
+> >  static int min_sndbuf = SMC_BUF_MIN_SIZE;
+> >  static int min_rcvbuf = SMC_BUF_MIN_SIZE;
+> >@@ -30,6 +31,69 @@ static int links_per_lgr_max = SMC_LINKS_ADD_LNK_MAX;
+> >  static int conns_per_lgr_min = SMC_CONN_PER_LGR_MIN;
+> >  static int conns_per_lgr_max = SMC_CONN_PER_LGR_MAX;
+> >+#if IS_ENABLED(CONFIG_SMC_OPS)
+> >+static int smc_net_replace_smc_ops(struct net *net, const char *name)
+> >+{
+> >+	struct smc_ops *ops = NULL;
+> >+
+> >+	rcu_read_lock();
+> >+	/* null or empty name ask to clear current ops */
+> >+	if (name && name[0]) {
+> >+		ops = smc_ops_find_by_name(name);
+> >+		if (!ops) {
+> >+			rcu_read_unlock();
+> >+			return -EINVAL;
+> >+		}
+> >+		/* no change, just return */
+> >+		if (ops == rcu_dereference(net->smc.ops)) {
+> >+			rcu_read_unlock();
+> >+			return 0;
+> >+		}
+> >+	}
+> >+	if (!ops || bpf_try_module_get(ops, ops->owner)) {
+> >+		/* xhcg */
+> 
+> typo. I noticed it only because...
+> 
+> >+		ops = rcu_replace_pointer(net->smc.ops, ops, true);
+> 
+> ... rcu_replace_pointer() does not align with the above xchg
+> comment. From looking into rcu_replace_pointer, it is not a xchg. It
+> is also not obvious to me why it is safe to assume "true" here...
+> 
+> >+		/* release old ops */
+> >+		if (ops)
+> >+			bpf_module_put(ops, ops->owner);
+> 
+> ... together with a put here on the return value of the rcu_replace_pointer.
+> 
 
-在 2025/1/22 1:20, Russell King (Oracle) 写道:
-> On Tue, Jan 21, 2025 at 06:50:00AM -0800, Guenter Roeck wrote:
->> On 1/21/25 06:12, Armin Wolf wrote:
->>> Am 21.01.25 um 07:44 schrieb Huisong Li:
->>>> The hwmon_device_register() is deprecated. When I try to repace it with
->>>> hwmon_device_register_with_info() for acpi_power_meter driver, I found that
->>>> the power channel attribute in linux/hwmon.h have to extend and is more
->>>> than 32 after this replacement.
->>>>
->>>> However, the maximum number of hwmon channel attributes is 32 which is
->>>> limited by current hwmon codes. This is not good to add new channel
->>>> attribute for some hwmon sensor type and support more channel attribute.
->>>>
->>>> This series are aimed to do this. And also make sure that acpi_power_meter
->>>> driver can successfully replace the deprecated hwmon_device_register()
->>>> later.
->> This explanation completely misses the point. The series tries to make space
->> for additional "standard" attributes. Such a change should be independent
->> of a driver conversion and be discussed on its own, not in the context
->> of a new driver or a driver conversion.
-> I think something needs to budge here, because I think what you're
-> asking is actually impossible!
->
-> One can't change the type of struct hwmon_channel_info.config to be a
-> u64 without also updating every hwmon driver that assigns to that
-> member.
->
-> This is not possible:
->
->   struct hwmon_channel_info {
->           enum hwmon_sensor_types type;
-> -        const u32 *config;
-> +        const u64 *config;
->   };
->
-> static u32 marvell_hwmon_chip_config[] = {
-> ...
-> };
->
-> static const struct hwmon_channel_info marvell_hwmon_chip = {
->          .type = hwmon_chip,
->          .config = marvell_hwmon_chip_config,
-> };
->
-> This assignment to .config will cause a warning/error with the above
-> change. If instead we do:
->
-> -	.config = marvell_hwmon_chip_config,
-> +	.config = (u64 *)marvell_hwmon_chip_config,
->
-> which would have to happen to every driver, then no, this also doesn't
-> work, because config[1] now points beyond the bounds of
-> marvell_hwmon_chip_config, which only has two u32 entries.
->
-> You can't just change the type of struct hwmon_channel_info.config
-> without patching every driver that assigns to
-> struct hwmon_channel_info.config as things currently stand.
->
-> The only way out of that would be:
->
-> 1. convert *all* drivers that defines a config array to be defined by
->     their own macro in hwmon.h, and then switch that macro to make the
->     definitions be a u64 array at the same time as switching struct
->      hwmon_channel_info.config
->
-> 2. convert *all* drivers to use HWMON_CHANNEL_INFO() unconditionally,
->     and switch that along with struct hwmon_channel_info.config.
->
-> 3. add a new member to struct hwmon_channel_info such as
->     "const u64 *config64" and then gradually convert drivers to use it.
->     Once everyone is converted over, then remove "const u32 *config",
->     optionally rename "config64" back to "config" and then re-patch all
->     drivers. That'll be joyful, with multiple patches to drivers that
->     need to be merged in sync with hwmon changes - and last over several
->     kernel release cycles.
->
-> This is not going to be an easy change!
-Yeah, it's a very time-consuming method and not easy to change.
+Hi Martin,
 
-Although some attributes of acpi_power_meter, like power1_model_number, 
-can not add to the generic hwmon power attributes,
-I still don't think the maximum attribute number of one sensor type 
-doesn't need to limit to 32.
-We can not make sure that the current generic attributes can fully 
-satisfy the useage in furture.
+This is indeed a very good catch. Initially, I used the xhcg()
+for swapping, but later I thought there wouldn't be a situation where
+smc_net_replace_smc_ops would be called simultaneously with the same net.
 
+Therefore, I modified it to rcu_replace_pointer, which is also why I assumed
+that it was true here, I thought the updates here was prevented. but now I
+realize that sysctl might not be mutually exclusive. It seems that this should
+be changed back to xhcg().
 
-I got an idea. it may just need one patch in hwmon core, like the following:
+> >+	} else if (ops) {
+> 
+> nit. This looks redundant when looking at the "if (!ops || ..." test above
+> Also a nit, I would move the bpf_try_module_get() immediately after
+> the above "if (ops == rcu_dereference(net->smc.ops))" test. This
+> should simplify the later cases.
+> 
 
--->
+This is a very good suggestion. I tried it and the code became very
+clean. I'll take it in next version.
 
-  struct hwmon_channel_info {
-         enum hwmon_sensor_types type;
--       const u32 *config;
-+       union {
-+               const u32 *config;
-+               const u64 *config64;
-+       }
-  };
-
-  #define HWMON_CHANNEL_INFO(stype, ...)         \
-@@ -444,12 +447,22 @@ struct hwmon_channel_info {
-                 }                               \
-         })
-
-+#define HWMON_CHANNEL_INFO64(stype, ...)               \
-+       (&(const struct hwmon_channel_info) {   \
-+               .type = hwmon_##stype,          \
-+               .config64 = (const u64 []) {    \
-+                       __VA_ARGS__, 0          \
-+               }                               \
-+       })
-+
-+
-  /**
-   * struct hwmon_chip_info - Chip configuration
-   * @ops:       Pointer to hwmon operations.
-   * @info:      Null-terminated list of channel information.
-   */
-  struct hwmon_chip_info {
-+       bool hwmon_attribute_bit64; // use config64 pointer if it is true.
-         const struct hwmon_ops *ops;
-         const struct hwmon_channel_info * const *info;
-  };
-
-
-For hwmon core code, we can use the 'config' or 'confit64' and compute 
-attribute number based on the 'hwmon_attribute_bit64' value.
-New driver can use HWMON_CHANNEL_INFO64 macro. Old drivers are not 
-supposed to need to have any modification.
-
-/Huisong
+> >+		rcu_read_unlock();
+> >+		return -EBUSY;
+> >+	}
+> >+	rcu_read_unlock();
+> >+	return 0;
+> >+}
+> >+
+> >+static int proc_smc_ops(const struct ctl_table *ctl, int write,
+> >+#if IS_ENABLED(CONFIG_SMC_OPS)
+> >+		struct smc_ops *ops;
+> >+
+> >+		rcu_read_lock();
+> >+		ops = rcu_dereference(init_net.smc.ops);
+> >+		if (ops && ops->flags & SMC_OPS_FLAG_INHERITABLE) {
+> >+			if (!bpf_try_module_get(ops, ops->owner)) {
+> >+				rcu_read_unlock();
+> >+				return -EBUSY;
+> 
+> Not sure if it should count as error when the ops is in the process
+> of un-register-ing. The next smc_sysctl_net_init will have NULL ops
+> and succeed. Something for you to consider.
 >
+
+It seems more reasonable that no need to prevent net initialization
+just because ops is uninstalling... I plan to just skip that error.
+
+> 
+> Also, it needs an ack from the SMC maintainer for the SMC specific
+> parts like the sysctl here.
+
+Got it. I will communicate this matter with the SMC maintainers.
+
+Best wishes,
+D. Wythe
 
