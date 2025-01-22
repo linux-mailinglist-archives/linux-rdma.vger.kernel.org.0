@@ -1,130 +1,154 @@
-Return-Path: <linux-rdma+bounces-7173-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7174-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8A60A18CA2
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 08:16:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5089A18D1A
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 08:51:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACB623A6A25
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 07:16:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F32A47A44AA
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 07:51:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 729CD1BD4F1;
-	Wed, 22 Jan 2025 07:16:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1771C3034;
+	Wed, 22 Jan 2025 07:51:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bE38QQ6v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OcHKa0ET"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3371BBBE0;
-	Wed, 22 Jan 2025 07:16:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09DD828EC;
+	Wed, 22 Jan 2025 07:51:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737530166; cv=none; b=WiUEhaWFol6rqGetcpcfr+r/GarmdWLkKIvqCxWiyGXs28tcNnSUan534s0/OKsfxjib9v74hVLRVjUpBOFhslJlIu2Nh4FdZDtvKIxoaO9jif+7JkdFC7KuW20edphxHYvIlqa9z2pI8M3IKWpiOKRdfV7xrfDMj3VETtteFJU=
+	t=1737532303; cv=none; b=Hb0kUGyP8TwVgbVo2Jx4W6ccuBIA9Q55O7wBCKuIil+O0LvsBN5GERtWqjfmZdfbqoVkoFK/wJpQSw38rZqSO2xvyzSVN69+z3MrQ9GnGLoRKwkothy/ncQrTFz7LPqWpBjlJck87M/L4pcfMFqD6Zu4QqKWohWTjQ+xQeKWFK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737530166; c=relaxed/simple;
-	bh=tSo5YKl5X3DFM1qWK3NIAZZXFJGx8VgXV6QXZ6sOkCs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Xu9n8p9dnmiP36EDZUHpvlHckaihNKE6AVSMLHqwJXhlvwAHSu+R3KkJXkbNKrKzWADgP539UuzBX13Bxe7WZezmhO3QJoVW4aVmdJ0DayzV1sKlfP1VMeSrW3d0e4DkwOoyWLjtdg7Wi5kgJf7t/DPnYgJFzUSiafYSp4BE1Xk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bE38QQ6v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16F05C4CEE2;
-	Wed, 22 Jan 2025 07:16:03 +0000 (UTC)
+	s=arc-20240116; t=1737532303; c=relaxed/simple;
+	bh=msNhgHEYXHG3C130zRedQp0KghXab41wBWaPBjnjDiA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=d5pctgH1SASXGm6Fv5NXX2gOOtWUx/e8fFT23qwSAsrzBBMd/c5k5n/0dXlJHhg6WKQF+pcdB0Cq6nXzGfXfGuHyfZ+l/MAxNIMsnKay5a4//oZeZFT68Xv7P0SpmeSSM2f7ES+zMTMetmb+3aEvwP6KlviEes6yso+42EKIHro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OcHKa0ET; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 011E4C4CED6;
+	Wed, 22 Jan 2025 07:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737530164;
-	bh=tSo5YKl5X3DFM1qWK3NIAZZXFJGx8VgXV6QXZ6sOkCs=;
-	h=Date:From:To:Cc:Subject:From;
-	b=bE38QQ6vnaUxbTv5Xsmn18B0iOF4kSDFj4rpFxv8Mms3apibukB9coTAosEmDhXdg
-	 pLpiMUba7Pt7NmZ3Vb4ilncay0Exvoo31IIQA333KVqd1sh9VoDfEZAXO9Xnw1/DSp
-	 g0J8O5XqJReO4BkUd4VTMv9ZTpHZ84Rkwxfh+v5Z5y5wLuR89QxJzsMKUiYUZklyUP
-	 yPR2Py/GUuBXWQJsriiuwLQMQ1HxSiwm/6J5ZKG8HezsuhGG43G5CCqEpPQjZCyhJL
-	 Of7JJzziQa8zqgoKWKtc4uWtJRP2OCSNdWAaC/F62hPvfJ6fqfv9Sr9OWVB33vw9Ku
-	 v0X2rrbjIBfTg==
-Date: Wed, 22 Jan 2025 09:16:00 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: lsf-pc@lists.linux-foundation.org
-Cc: linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-	Matthew Wilcox <willy@infradead.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	David Howells <dhowells@redhat.com>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	John Hubbard <jhubbard@nvidia.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Simona Vetter <simona.vetter@ffwll.ch>,
-	RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: [LSF/MM/BPF TOPIC] DMA mapping API in complex scenarios
-Message-ID: <20250122071600.GC10702@unreal>
+	s=k20201202; t=1737532302;
+	bh=msNhgHEYXHG3C130zRedQp0KghXab41wBWaPBjnjDiA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=OcHKa0ETgCGkBiVXh/ew2CBSZ99NvZ+uQdhJ8DMLYKfBvzvEZepe2h7xvvdMSfhmX
+	 9rwz3hSzhhRQRIhlYetOiiLol4uTtJHw0KZi0caUOTMkgzsVGkiYu+63DwtdUi+S4F
+	 Ao18BpYEpYV7V/RIRUVRioefdSufwF4MM2NW+IoXoeuXRBVvb943wXvTEZRUIYop9w
+	 vbyRGUNCsGNcNQh0it/CpQ0OG+km+Pb+ipu+lt4U7B0pjZE7UAbUWDUT/8cNQnC3ol
+	 Q9s0M5jbx6nQd0XRm8bKDkl5g5txdIQ/jE+Xf3sjQwbjW+6eNPTrhpJQkdi5rUE2Aw
+	 0TuLx/coAVXVQ==
+Message-ID: <4959c2c0-564a-4e3c-9650-228dede9a1f9@kernel.org>
+Date: Wed, 22 Jan 2025 08:51:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 00/21] hwmon: Fix the type of 'config' in struct
+ hwmon_channel_info to u64
+To: "lihuisong (C)" <lihuisong@huawei.com>, linux-hwmon@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, arm-scmi@vger.kernel.org,
+ netdev@vger.kernel.org, linux-rtc@vger.kernel.org, oss-drivers@corigine.com,
+ linux-rdma@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ linuxarm@huawei.com, linux@roeck-us.net, jdelvare@suse.com,
+ kernel@maidavale.org, pauk.denis@gmail.com, james@equiv.tech,
+ sudeep.holla@arm.com, cristian.marussi@arm.com, matt@ranostay.sg,
+ mchehab@kernel.org, irusskikh@marvell.com, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
+ louis.peens@corigine.com, hkallweit1@gmail.com, linux@armlinux.org.uk,
+ kabel@kernel.org, W_Armin@gmx.de, hdegoede@redhat.com,
+ ilpo.jarvinen@linux.intel.com, alexandre.belloni@bootlin.com,
+ jonathan.cameron@huawei.com, zhanjie9@hisilicon.com,
+ zhenglifeng1@huawei.com, liuyonglong@huawei.com
+References: <20250121064519.18974-1-lihuisong@huawei.com>
+ <870c6b3e-d4f9-4722-934e-00e9ddb84e2e@kernel.org>
+ <d42bf49b-e71b-d31e-2784-379076ebf370@huawei.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <d42bf49b-e71b-d31e-2784-379076ebf370@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Currently the only efficient way to map a complex memory description through
-the DMA API is by using the scatterlist APIs. The SG APIs are unique in that
-they efficiently combine the two fundamental operations of sizing and allocating
-a large IOVA window from the IOMMU and processing all the per-address
-swiotlb/flushing/p2p/map details.
+On 21/01/2025 09:14, lihuisong (C) wrote:
+> 
+> 在 2025/1/21 15:47, Krzysztof Kozlowski 写道:
+>> On 21/01/2025 07:44, Huisong Li wrote:
+>>> The hwmon_device_register() is deprecated. When I try to repace it with
+>>> hwmon_device_register_with_info() for acpi_power_meter driver, I found that
+>>> the power channel attribute in linux/hwmon.h have to extend and is more
+>>> than 32 after this replacement.
+>>>
+>>> However, the maximum number of hwmon channel attributes is 32 which is
+>>> limited by current hwmon codes. This is not good to add new channel
+>>> attribute for some hwmon sensor type and support more channel attribute.
+>>>
+>>> This series are aimed to do this. And also make sure that acpi_power_meter
+>>> driver can successfully replace the deprecated hwmon_device_register()
+>>> later.
+>> Avoid combining independent patches into one patch bomb. Or explain the
+>> dependencies and how is it supposed to be merged - that's why you have
+>> cover letter here.
+> These patches having a title ('Use HWMON_CHANNEL_INFO macro to simplify 
+> code') are also for this series.
+> Or we need to modify the type of the 'xxx_config' array in these patches.
+> If we directly use the macro HWMON_CHANNEL_INFO, the type of 'config' 
+> has been modifyed in patch 1/21 and these driver don't need to care this 
+> change.
 
-This uniqueness has been a long standing pain point as the scatterlist API
-is mandatory, but expensive to use. It prevents any kind of optimization or
-feature improvement (such as avoiding struct page for P2P) due to the
-impossibility of improving the scatterlist.
+None of above addresses my concern. I am dropping the series from my
+inbox/to-review box.
 
-Several approaches have been explored to expand the DMA API with additional
-scatterlist-like structures (BIO, rlist), instead split up the DMA API
-to allow callers to bring their own data structure [1].
-
-The API is split up into parts:
- - Allocate IOVA space:
-    To do any pre-allocation required. This is done based on the caller
-    supplying some details about how much IOMMU address space it would need
-    in worst case.
- - Map and unmap relevant structures to pre-allocated IOVA space:
-    Perform the actual mapping into the pre-allocated IOVA. This is very
-    similar to dma_map_page().
-
-In this topic, I would like to present existing DMA API abuses and present path
-to move forward with the help of new DMA API.
-
-In this topic I will briefly present the new API and have a forward
-looking discussion about how such a significant change is expected to
-impact the kernel.
-
-Particularly how this API fits with Matthew's phyr sketch, and where
-we might see this go in the storage layer (David's proposal for iter [2]).
-In addition, we will discuss the roadmap of converting DMABUF and RDMA to
-SG-free world (Jasons's vision [3]):
-
- 1) The new DMA API lands
- 2) We improve the new DMA API to be fully struct page free, including
-    setting up P2P
- 3) VFIO provides a dmbuf exporter using the new DMA API's P2P
-    support. We'd have to continue with the scatterlist hacks for now.
-    VFIO would be a move_notify exporter. This should work with RDMA
- 4) RDMA works to drop scatterlist from its internal flows and use the
-    new DMA API instead.
- 5) VFIO/RDMA implement a new non-scatterlist DMABUF op to
-    demonstrate the post-scatterlist world and deprecate the scatterlist
-    hacks.
- 6) We add revoke semantics to dmabuf, and VFIO/RDMA implements them
- 7) iommufd can import a pinnable revokable dmabuf using CPU pfns
-    through the non-scatterlist op.
- 8) Relevant GPU drivers implement the non-scatterlist op and RDMA
-    removes support for the deprecated scatterlist hacks.
-
-[1] https://lore.kernel.org/all/cover.1737106761.git.leon@kernel.org
-[2] https://lore.kernel.org/all/886959.1737148612@warthog.procyon.org.uk/
-[3] https://lore.kernel.org/all/20250120175901.GP5556@nvidia.com
-
-----------------------------------------------------------------------------
- LWN coverage:
-Dancing the DMA two-step - https://lwn.net/Articles/997563/
-----------------------------------------------------------------------------
-
-Thanks
+Best regards,
+Krzysztof
 
