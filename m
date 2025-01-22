@@ -1,241 +1,204 @@
-Return-Path: <linux-rdma+bounces-7184-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7185-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 462DAA19758
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 18:17:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB4E1A19A3E
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 22:17:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E0FC166D18
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 17:17:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A01D07A2C56
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 21:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3FE21504B;
-	Wed, 22 Jan 2025 17:17:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CBC01C5D4A;
+	Wed, 22 Jan 2025 21:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F+oEs/Py"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZFOHGJ2j"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA421369B4;
-	Wed, 22 Jan 2025 17:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F69B1C4A17
+	for <linux-rdma@vger.kernel.org>; Wed, 22 Jan 2025 21:17:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737566233; cv=none; b=HN5qX9PQHrpnto5/hjSgaSLa8eQlBPKT5G961pAkPlHXtyk1FGHit/DAshxtUri2L0Fx5bvTM4/ELYgwE9OSjZjHFwFwpFfwem0zgcAulppXZS52NfV19uKt0QSNzKnWrmJ9fYQA9LcyukOxeprfR1pVocEI5zCIA5uiW1rQLcw=
+	t=1737580639; cv=none; b=L1arOf9IbXKE38B/PhXbukmVnUnokoKxKZCNw8juqrIXT4GQuTdFhtjtp1+iE5cMmG4siVOxM3DzNtdUhJZTs2H/iTyc7k0Mdxy2a1XgtwBe8rIqQf/UVI2WFTDgZgza7i8C4S7Jy6Id3/V/evCUpvCm637q+McIR+UYQbk239w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737566233; c=relaxed/simple;
-	bh=o1SE3o3NcZUVY/hmBRha3xtrviGaumM9KPn/dAGuTFk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QPALcrurHa+hSdXZBvfFMCXO5VwzZAi6mJapAvxu2LhGlKau7NEESWeD6OYsEu9KyvOMEkSeewRI6M5BqSFaDpeAGB2CtoJv6MDjEUBwilBtcgucmsf7x1G9B9eF6g2Rpsr/3kLwDjPt4/440jX7zlHqb+Wb4DNel/7JwwhhFxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F+oEs/Py; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2ef760a1001so99537a91.0;
-        Wed, 22 Jan 2025 09:17:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737566231; x=1738171031; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gFCVPvzzCocOSj8lSB1mfBdT82DT1p+MPx9OjvYvaR0=;
-        b=F+oEs/Pyob0UjEyYbUJ7b0LWFxqk0BsDzJMcmqoEvmieb+0AUBSatVQVh6GQHDzDB4
-         O1e9c+9bqlyy3wgtgvwIGGfdZ900KN7D1U6KnqUiu1dc1kopCO4eoxtTdyrMYgtWo9nl
-         NkYVinvhuggjBYoqHGMC1JVxfE9zxlh5mHx2fxdLH8m0G1pa2gbBiYBefP+1FYeeiHM1
-         U31OVehyRDCySW7yahEFHa14Zsd/rWHZF2p6hNk2q8nlsQ3lBncF+2/YE3J6fXMja5r8
-         byImxHe5tuEoWtO+ODy5VVp9KXMOw/AA84KHZkpAP9fD3ycVPv1R3fyvbVs7ewiCWSDb
-         5xhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737566231; x=1738171031;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gFCVPvzzCocOSj8lSB1mfBdT82DT1p+MPx9OjvYvaR0=;
-        b=WWbeUQpwAebWFAUH5ecySh9ANcKqrVa0jI407PAJXruUgdZRPWRNxu0PlgchR4gaOB
-         ykNXkaf3LJIjDHeuJDCJy4PHNT71kFIKDbHqI1w9if4QAhfgIHRVphKMAWeMlZJbrYPy
-         zetKRAtXY/fs2L4+DPEVwBA3I+53q1GR0zpvcWCvklEic+n3A7VmSIQzvZ+Hvs78PQrk
-         lKk1DZfMYnM6p1p2JfJmc59qOxc89pG3xNwmu8uYuJfZ7uV5pJewT8K/xtqdztDjS4CJ
-         D5s06k4qe1UVxbN5BpOnYcsSvJJbqfolXOjryCziJoyVkrNEi42AxzUglClucWfFGAdy
-         ATkA==
-X-Forwarded-Encrypted: i=1; AJvYcCUx/rankgafe8k97rzEUzy70NfVq8tio0S6kYkwkvWUzN+9nUukq7fX+RurkAXdy98PAfs=@vger.kernel.org, AJvYcCVKCN8zfFOOhjOBqyVavqpESeO87ivID2h3q4rpYBIfdvs04g2qCykzeWYS/nzcH4YbhXIJd9TzoJafmg==@vger.kernel.org, AJvYcCVKwfF6bG9kgmQWMdhl3YE6YRaLq9QLEq1PLkJLvvvJqcl3hJ9+NJO5h3cHTiw/4DvpVd7zp3TV@vger.kernel.org, AJvYcCXW4dveTUXyhF3G3PYBETze2Ch9HzEWgjuiOu8ZOB5j00p39D6o4r9tST0XeqCC5pWKr6UD/GzAHzBnow==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwK98E6JI84Op7m3lc6IXSYTOz9Ah8L4ERf46b6lvxeh/0OxikM
-	z3m4U65bhX5ZO/fVIBPmmogkaiQFOe9xvL7hZ4IVff65Jt6+jO/jchyM2ECjEUkMi23B46tAkkR
-	xKv2ikDWLA0cFZlUXXerVfm2gXfU=
-X-Gm-Gg: ASbGncu2KqbgZWpWTAPRoFyyOpHc5N8AQJg3W/tidYBeAtHNWZ7e2VQ1q65U709SI3o
-	h6aSKBiLZv2Va9mDtLMZldDzv2zEXBVP/I292rO9QKX6KejewKEzCVOz7AfvRELygKJQ=
-X-Google-Smtp-Source: AGHT+IHTvHTC++TojYxC/UgWgVuinh02AQWbyRQC6b5Z9w3BtCafMdo3/RyX2E4nRXqJ2H6wOGvd5dmMFKUFBshJkuA=
-X-Received: by 2002:a05:6a00:2184:b0:72a:8cc8:34aa with SMTP id
- d2e1a72fcca58-72daf88b65dmr33962621b3a.0.1737566230650; Wed, 22 Jan 2025
- 09:17:10 -0800 (PST)
+	s=arc-20240116; t=1737580639; c=relaxed/simple;
+	bh=J5NUUeVdnRnHCtXRpWj2Twp+ySiOQjasOs8vU/gpJQ0=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=mlfF2uMlrmteHo5THXSu+vBR7t2GmEo+cqygAZfCoq9zRVQ9aJTkgZCFpngycmmzmHP0V31kLXukwK34THXNCQE/vvLNxBUs5AqgddW7X1JA0SLcbEgm7SQ8JyLLwdX7sMSlfBE0u2Bo7zlGjgIzRAzCjirFZ3x/bQwonKl7Oso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZFOHGJ2j; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1737580638; x=1769116638;
+  h=date:from:to:cc:subject:message-id;
+  bh=J5NUUeVdnRnHCtXRpWj2Twp+ySiOQjasOs8vU/gpJQ0=;
+  b=ZFOHGJ2j8wKnDJgCrdA9eo6JczmQ5q6t63SSfBkJM/CU0R+71YfHYn1I
+   eKJT8b7dEoONOEFSlJYQYf6IVFoQu74UqXEhcr9x5Cz3Yp8B4I5gO2N8i
+   PtMT5PEo6XXb8OdLDZfdog5VljBlYthfLQ+paGNSmrw+wArK156g5aAkc
+   050o1vm1mrWxW3THeJLyOPICwwPhXyJsFdnjzmvf1JudLjXMt8Of5eomL
+   nGBcOtr+JOcpweV0CdcsTqJM9lQbATKO/17nh0HKnJMmuw7XM/dDKZ396
+   bJ+/paYGO4dKbDt9T2MOkh9VaZMpYwh2FRSLtI/8gPvNQT7tR8LjzHWG0
+   A==;
+X-CSE-ConnectionGUID: TmTEViRgT/e2kmOplTrZFw==
+X-CSE-MsgGUID: PywgkXjNSDODtgBBn0jlHw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11323"; a="38224160"
+X-IronPort-AV: E=Sophos;i="6.13,226,1732608000"; 
+   d="scan'208";a="38224160"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2025 13:17:17 -0800
+X-CSE-ConnectionGUID: rumbyQDySP+MWPPk4uGGSg==
+X-CSE-MsgGUID: 6CeGJ/M2SCqfDLv7kYZ6GA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="130557192"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 22 Jan 2025 13:17:05 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tai5u-000aJt-3C;
+	Wed, 22 Jan 2025 21:17:02 +0000
+Date: Thu, 23 Jan 2025 05:16:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: [rdma:for-next] BUILD SUCCESS
+ d3d930411ce390e532470194296658a960887773
+Message-ID: <202501230500.qYMkBVtu-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250116074442.79304-1-alibuda@linux.alibaba.com>
- <20250116074442.79304-5-alibuda@linux.alibaba.com> <CAEf4BzZvxqiQ2J1XQMm-ZDBjSsmtJJk6-_RbexPk9vWxAO=ksw@mail.gmail.com>
- <20250122024327.GA81479@j66a10360.sqa.eu95>
-In-Reply-To: <20250122024327.GA81479@j66a10360.sqa.eu95>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 22 Jan 2025 09:16:58 -0800
-X-Gm-Features: AbW1kvZiku1BiieaalyxZJhB_Vt4Hw2HwinTvpys0Vs7Ip41IhYFnB8AF6RUhzc
-Message-ID: <CAEf4Bzabc+83abj7gP0h0sCxp-Bajqhm0bdAyn1Gn5bNi5nNXg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 4/5] libbpf: fix error when st-prefix_ops and
- ops from differ btf
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: kgraul@linux.ibm.com, wenjia@linux.ibm.com, jaka@linux.ibm.com, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	pabeni@redhat.com, song@kernel.org, sdf@google.com, haoluo@google.com, 
-	yhs@fb.com, edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org, 
-	davem@davemloft.net, netdev@vger.kernel.org, linux-s390@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 21, 2025 at 6:43=E2=80=AFPM D. Wythe <alibuda@linux.alibaba.com=
-> wrote:
->
-> On Fri, Jan 17, 2025 at 10:36:50AM -0800, Andrii Nakryiko wrote:
-> > On Wed, Jan 15, 2025 at 11:45=E2=80=AFPM D. Wythe <alibuda@linux.alibab=
-a.com> wrote:
-> > >
-> > > When a struct_ops named xxx_ops was registered by a module, and
-> > > it will be used in both built-in modules and the module itself,
-> > > so that the btf_type of xxx_ops will be present in btf_vmlinux
-> > > instead of in btf_mod, which means that the btf_type of
-> > > bpf_struct_ops_xxx_ops and xxx_ops will not be in the same btf.
-> > >
-> > > Here are four possible case:
-> > >
-> > > +--------+---------------+-------------+-----------------------------=
-----+
-> > > |        | st_ops_xxx_ops| xxx_ops     |                             =
-    |
-> > > +--------+---------------+-------------+-----------------------------=
-----+
-> > > | case 0 | btf_vmlinux   | bft_vmlinux | be used and reg only in vmli=
-nux |
-> > > +--------+---------------+-------------+-----------------------------=
-----+
-> > > | case 1 | btf_vmlinux   | bpf_mod     | INVALID                     =
-    |
-> > > +--------+---------------+-------------+-----------------------------=
-----+
-> > > | case 2 | btf_mod       | btf_vmlinux | reg in mod but be used both =
-in  |
-> > > |        |               |             | vmlinux and mod.            =
-    |
-> > > +--------+---------------+-------------+-----------------------------=
-----+
-> > > | case 3 | btf_mod       | btf_mod     | be used and reg only in mod =
-    |
-> > > +--------+---------------+-------------+-----------------------------=
-----+
-> > >
-> > > At present, cases 0, 1, and 3 can be correctly identified, because
-> > > +       if (ret < 0 || ret >=3D sizeof(stname))
-> > > +               return -ENAMETOOLONG;
-> >
-> > see preexisting snprintf() above, we don't really handle truncation
-> > errors explicitly, they are extremely unlikely and not expected at
-> > all, and worst case nothing will be found and user will get some
-> > -ENOENT or something like that eventually. I'd drop this extra error
-> > checking and keep it streamlines, similar to tname
-> >
->
-> Sounds reasonable to me. I will remove the explicit error checks in the
-> next version.
->
-> > > +
-> > > +       /* Look for the corresponding "map_value" type that will be u=
-sed
-> > > +        * in map_update(BPF_MAP_TYPE_STRUCT_OPS) first, figure out t=
-he btf
-> > > +        * and the mod_btf.
-> > > +        * For example, find "struct bpf_struct_ops_tcp_congestion_op=
-s".
-> > > +        */
-> > > +       kern_vtype_id =3D find_ksym_btf_id(obj, stname, BTF_KIND_STRU=
-CT,
-> > >                                         &btf, mod_btf);
-> >
-> > nit: if this fits under 100 characters, keep it single line
-> >
-> > > +       if (kern_vtype_id < 0) {
-> > > +               pr_warn("struct_ops init_kern: struct %s is not found=
- in kernel BTF\n",
-> > > +                               stname);
-> >
-> > same nit about preserving single-line statements as much as possible,
-> > they are much easier to read
->
-> None of them exceed 100 lines. Usually, I would check patches with 85 lin=
-es limitations,
-> but since 100 lines is acceptable, we can modify it to a single line here=
- for
-> better readability.
->
-> And thanks very much for your suggestion, I plan to fix these style
-> issues in next versions with you ack, is this okay for you?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: d3d930411ce390e532470194296658a960887773  RDMA/mlx5: Fix implicit ODP use after free
 
-yep, sgtm
+elapsed time: 1445m
 
->
-> Best wishes,
-> D. Wythe
-> >
-> > > +               return kern_vtype_id;
-> > > +       }
-> > > +       kern_vtype =3D btf__type_by_id(btf, kern_vtype_id);
-> > > +
-> > > +       kern_type_id =3D btf__find_by_name_kind(btf, tname, BTF_KIND_=
-STRUCT);
-> > >         if (kern_type_id < 0) {
-> > >                 pr_warn("struct_ops init_kern: struct %s is not found=
- in kernel BTF\n",
-> > >                         tname);
-> > > @@ -1020,20 +1039,6 @@ find_struct_ops_kern_types(struct bpf_object *=
-obj, const char *tname_raw,
-> > >         }
-> > >         kern_type =3D btf__type_by_id(btf, kern_type_id);
-> > >
-> > > -       /* Find the corresponding "map_value" type that will be used
-> > > -        * in map_update(BPF_MAP_TYPE_STRUCT_OPS).  For example,
-> > > -        * find "struct bpf_struct_ops_tcp_congestion_ops" from the
-> > > -        * btf_vmlinux.
-> > > -        */
-> > > -       kern_vtype_id =3D find_btf_by_prefix_kind(btf, STRUCT_OPS_VAL=
-UE_PREFIX,
-> > > -                                               tname, BTF_KIND_STRUC=
-T);
-> > > -       if (kern_vtype_id < 0) {
-> > > -               pr_warn("struct_ops init_kern: struct %s%s is not fou=
-nd in kernel BTF\n",
-> > > -                       STRUCT_OPS_VALUE_PREFIX, tname);
-> > > -               return kern_vtype_id;
-> > > -       }
-> > > -       kern_vtype =3D btf__type_by_id(btf, kern_vtype_id);
-> > > -
-> > >         /* Find "struct tcp_congestion_ops" from
-> > >          * struct bpf_struct_ops_tcp_congestion_ops {
-> > >          *      [ ... ]
-> > > @@ -1046,8 +1051,8 @@ find_struct_ops_kern_types(struct bpf_object *o=
-bj, const char *tname_raw,
-> > >                         break;
-> > >         }
-> > >         if (i =3D=3D btf_vlen(kern_vtype)) {
-> > > -               pr_warn("struct_ops init_kern: struct %s data is not =
-found in struct %s%s\n",
-> > > -                       tname, STRUCT_OPS_VALUE_PREFIX, tname);
-> > > +               pr_warn("struct_ops init_kern: struct %s data is not =
-found in struct %s\n",
-> > > +                       tname, stname);
-> > >                 return -EINVAL;
-> > >         }
-> > >
-> > > --
-> > > 2.45.0
-> > >
+configs tested: 111
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            alldefconfig    gcc-14.2.0
+alpha                             allnoconfig    gcc-14.2.0
+alpha                            allyesconfig    gcc-14.2.0
+arc                              allmodconfig    gcc-13.2.0
+arc                               allnoconfig    gcc-13.2.0
+arc                              allyesconfig    gcc-13.2.0
+arc                        nsimosci_defconfig    gcc-13.2.0
+arc                   randconfig-001-20250122    gcc-13.2.0
+arc                   randconfig-002-20250122    gcc-13.2.0
+arm                              allmodconfig    gcc-14.2.0
+arm                               allnoconfig    clang-17
+arm                              allyesconfig    gcc-14.2.0
+arm                        clps711x_defconfig    clang-19
+arm                   randconfig-001-20250122    clang-19
+arm                   randconfig-002-20250122    clang-20
+arm                   randconfig-003-20250122    gcc-14.2.0
+arm                   randconfig-004-20250122    gcc-14.2.0
+arm                         socfpga_defconfig    gcc-14.2.0
+arm64                            allmodconfig    clang-18
+arm64                             allnoconfig    gcc-14.2.0
+arm64                 randconfig-001-20250122    clang-20
+arm64                 randconfig-002-20250122    clang-15
+arm64                 randconfig-003-20250122    clang-20
+arm64                 randconfig-004-20250122    clang-19
+csky                              allnoconfig    gcc-14.2.0
+csky                  randconfig-001-20250122    gcc-14.2.0
+csky                  randconfig-001-20250123    gcc-14.2.0
+csky                  randconfig-002-20250122    gcc-14.2.0
+hexagon                          allmodconfig    clang-20
+hexagon                           allnoconfig    clang-20
+hexagon               randconfig-001-20250122    clang-20
+hexagon               randconfig-002-20250122    clang-20
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250122    clang-19
+i386        buildonly-randconfig-001-20250123    gcc-12
+i386        buildonly-randconfig-002-20250122    gcc-12
+i386        buildonly-randconfig-002-20250123    clang-19
+i386        buildonly-randconfig-003-20250122    gcc-12
+i386        buildonly-randconfig-003-20250123    gcc-12
+i386        buildonly-randconfig-004-20250122    clang-19
+i386        buildonly-randconfig-004-20250123    clang-19
+i386        buildonly-randconfig-005-20250122    clang-19
+i386        buildonly-randconfig-005-20250123    gcc-12
+i386        buildonly-randconfig-006-20250122    clang-19
+i386        buildonly-randconfig-006-20250123    clang-19
+i386                                defconfig    clang-19
+loongarch                        allmodconfig    gcc-14.2.0
+loongarch                         allnoconfig    gcc-14.2.0
+loongarch             randconfig-001-20250122    gcc-14.2.0
+loongarch             randconfig-002-20250122    gcc-14.2.0
+m68k                             allmodconfig    gcc-14.2.0
+m68k                             allyesconfig    gcc-14.2.0
+microblaze                       allmodconfig    gcc-14.2.0
+mips                           ip32_defconfig    clang-20
+nios2                 randconfig-001-20250122    gcc-14.2.0
+nios2                 randconfig-002-20250122    gcc-14.2.0
+openrisc                          allnoconfig    gcc-14.2.0
+openrisc                         allyesconfig    gcc-14.2.0
+parisc                           allmodconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                           allyesconfig    gcc-14.2.0
+parisc                generic-32bit_defconfig    gcc-14.2.0
+parisc                randconfig-001-20250122    gcc-14.2.0
+parisc                randconfig-002-20250122    gcc-14.2.0
+powerpc                          allmodconfig    gcc-14.2.0
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc                          allyesconfig    clang-16
+powerpc               randconfig-001-20250122    gcc-14.2.0
+powerpc               randconfig-002-20250122    clang-17
+powerpc               randconfig-003-20250122    clang-15
+powerpc64             randconfig-001-20250122    clang-20
+powerpc64             randconfig-002-20250122    clang-19
+powerpc64             randconfig-003-20250122    clang-20
+riscv                            allmodconfig    clang-20
+riscv                             allnoconfig    gcc-14.2.0
+riscv                            allyesconfig    clang-20
+riscv                    nommu_k210_defconfig    clang-15
+riscv                 randconfig-001-20250122    clang-20
+riscv                 randconfig-002-20250122    gcc-14.2.0
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-20
+s390                             allyesconfig    gcc-14.2.0
+s390                  randconfig-001-20250122    clang-18
+s390                  randconfig-002-20250122    clang-20
+sh                               allmodconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                    randconfig-001-20250122    gcc-14.2.0
+sh                    randconfig-002-20250122    gcc-14.2.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                 randconfig-001-20250122    gcc-14.2.0
+sparc                 randconfig-002-20250122    gcc-14.2.0
+sparc64               randconfig-001-20250122    gcc-14.2.0
+sparc64               randconfig-002-20250122    gcc-14.2.0
+um                               allmodconfig    clang-20
+um                                allnoconfig    clang-18
+um                               allyesconfig    gcc-12
+um                    randconfig-001-20250122    gcc-12
+um                    randconfig-002-20250122    clang-20
+x86_64                            allnoconfig    clang-19
+x86_64                           allyesconfig    clang-19
+x86_64      buildonly-randconfig-001-20250122    gcc-12
+x86_64      buildonly-randconfig-002-20250122    clang-19
+x86_64      buildonly-randconfig-003-20250122    gcc-12
+x86_64      buildonly-randconfig-004-20250122    gcc-12
+x86_64      buildonly-randconfig-005-20250122    gcc-12
+x86_64      buildonly-randconfig-006-20250122    clang-19
+x86_64                              defconfig    gcc-11
+xtensa                randconfig-001-20250122    gcc-14.2.0
+xtensa                randconfig-002-20250122    gcc-14.2.0
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
