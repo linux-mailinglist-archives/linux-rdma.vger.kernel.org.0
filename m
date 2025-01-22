@@ -1,200 +1,181 @@
-Return-Path: <linux-rdma+bounces-7162-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7163-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A12B9A18A14
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 03:40:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32FB2A18A26
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 03:43:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 603447A1BE9
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 02:40:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE3D0188C68A
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 02:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0475215687D;
-	Wed, 22 Jan 2025 02:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD98E14A09E;
+	Wed, 22 Jan 2025 02:43:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="qrbU+zWG"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A73354764;
-	Wed, 22 Jan 2025 02:34:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9982A249F9;
+	Wed, 22 Jan 2025 02:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737513258; cv=none; b=aLBQh6w/ulWuP2PIlyFuiy6KEAPi4qNoY6OB6ddNbglelZvlGKFoFIRngjUeuMcGWJ14d2N4UHEO3+NgTmqKcG4YsMCtgxlm+DJQASyNjY5uVsVkQiwnBV+cD7Hvrh0q0PL9dtNRAe/AS8K1vLD5BZNRvz2jXeuwY/p6kLOFXW4=
+	t=1737513816; cv=none; b=keLcp2BiQKFD213OEG5bp1t2PMAEBdfmtzqkOuEnbOqUKeKyRN8vGATsSH9NEpjlJdyerwwSH/u9uvOFJB4kcFEnKt1oNUuJwnqSEJx2gFQjn3rGQJIdWOQ37CTxYEUxw43i3hGeky0YDRqved2ep46OBNRBZXUO0ppXWQ9+SMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737513258; c=relaxed/simple;
-	bh=ahL/0Ai3hbmd4fgtPdz9MFVO3eMVv9sVRtU0Vxotbj0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Ku3gTH4DA7GtVTZ38PtKPQWLK5O3nXAGHk29a2rGOtwxlHwXzQ/7TOphRQoLcyJlqB4Pc8Y7Gy43BXmizTzyZ0OjSYxA7N/4RkzRrGap3bak3Bnrkw/+z7Pl3JrfbDozUIP8aUtZSeIKho/fQeg6G1iSZhhHFfxQAQQa5AYX9JE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Yd7PV04n7zRln3;
-	Wed, 22 Jan 2025 10:31:42 +0800 (CST)
-Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0615818006C;
-	Wed, 22 Jan 2025 10:34:12 +0800 (CST)
-Received: from kwepemn100009.china.huawei.com (7.202.194.112) by
- dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 22 Jan 2025 10:34:11 +0800
-Received: from [10.67.121.59] (10.67.121.59) by kwepemn100009.china.huawei.com
- (7.202.194.112) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 22 Jan
- 2025 10:34:09 +0800
-Message-ID: <9575c823-4f77-8037-a4be-075b2e35d6f1@huawei.com>
-Date: Wed, 22 Jan 2025 10:34:08 +0800
+	s=arc-20240116; t=1737513816; c=relaxed/simple;
+	bh=Pawcx0vZWzoopIr28M39WQOkeACCe/QrUbhq4P9QjiE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EnzCEd0lxtxAlj5tZpA9KonpzDQpveibp1ucpA7rtJN0ZEo8pltpP9j+JjwBpdQBEGXAqsMGeP5OyvXEnQnTZi1jO3Ho2gv72eSCtazJ8q9uDzLwQZGFE3xoMIQEllKO3eN/+pTbcIxjDvRAgiaq0muLLvQASwMYk/xhrkmHGZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=qrbU+zWG; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1737513810; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=lIgQW60MhRib77iPDue7FbAXzBMeV+tiKHMcuW5lSNc=;
+	b=qrbU+zWGtadA/blmCuSNX9ifiPpM1ow1Rl4d3LjtR2AQzkivC6NRZXp7LXEblYmNw9hr3rqJkq5LqxnCdpQ0CXTN1fi9yC3qCbnwu69qGFbNI38TEONjfnYrUohK7r4njvDigmBU7OAxwDAsRqJAI7tScDLQQ0h1rbgV/nG7raY=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WO6rCK3_1737513807 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 22 Jan 2025 10:43:28 +0800
+Date: Wed, 22 Jan 2025 10:43:27 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com, jaka@linux.ibm.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	pabeni@redhat.com, song@kernel.org, sdf@google.com,
+	haoluo@google.com, yhs@fb.com, edumazet@google.com,
+	john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
+	guwen@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
+	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v6 4/5] libbpf: fix error when st-prefix_ops and
+ ops from differ btf
+Message-ID: <20250122024327.GA81479@j66a10360.sqa.eu95>
+References: <20250116074442.79304-1-alibuda@linux.alibaba.com>
+ <20250116074442.79304-5-alibuda@linux.alibaba.com>
+ <CAEf4BzZvxqiQ2J1XQMm-ZDBjSsmtJJk6-_RbexPk9vWxAO=ksw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v1 00/21] hwmon: Fix the type of 'config' in struct
- hwmon_channel_info to u64
-To: Armin Wolf <W_Armin@gmx.de>
-CC: <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-media@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<arm-scmi@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<linux-rtc@vger.kernel.org>, <oss-drivers@corigine.com>,
-	<linux-rdma@vger.kernel.org>, <platform-driver-x86@vger.kernel.org>,
-	<linuxarm@huawei.com>, <linux@roeck-us.net>, <jdelvare@suse.com>,
-	<kernel@maidavale.org>, <pauk.denis@gmail.com>, <james@equiv.tech>,
-	<sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <matt@ranostay.sg>,
-	<mchehab@kernel.org>, <irusskikh@marvell.com>, <andrew+netdev@lunn.ch>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <saeedm@nvidia.com>, <leon@kernel.org>,
-	<tariqt@nvidia.com>, <louis.peens@corigine.com>, <hkallweit1@gmail.com>,
-	<linux@armlinux.org.uk>, <kabel@kernel.org>, <hdegoede@redhat.com>,
-	<ilpo.jarvinen@linux.intel.com>, <alexandre.belloni@bootlin.com>,
-	<krzk@kernel.org>, <jonathan.cameron@huawei.com>, <zhanjie9@hisilicon.com>,
-	<zhenglifeng1@huawei.com>, <liuyonglong@huawei.com>
-References: <20250121064519.18974-1-lihuisong@huawei.com>
- <03b138e9-688f-4ebc-bd01-3d54fd20e525@gmx.de>
-From: "lihuisong (C)" <lihuisong@huawei.com>
-In-Reply-To: <03b138e9-688f-4ebc-bd01-3d54fd20e525@gmx.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemn100009.china.huawei.com (7.202.194.112)
+In-Reply-To: <CAEf4BzZvxqiQ2J1XQMm-ZDBjSsmtJJk6-_RbexPk9vWxAO=ksw@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
+On Fri, Jan 17, 2025 at 10:36:50AM -0800, Andrii Nakryiko wrote:
+> On Wed, Jan 15, 2025 at 11:45 PM D. Wythe <alibuda@linux.alibaba.com> wrote:
+> >
+> > When a struct_ops named xxx_ops was registered by a module, and
+> > it will be used in both built-in modules and the module itself,
+> > so that the btf_type of xxx_ops will be present in btf_vmlinux
+> > instead of in btf_mod, which means that the btf_type of
+> > bpf_struct_ops_xxx_ops and xxx_ops will not be in the same btf.
+> >
+> > Here are four possible case:
+> >
+> > +--------+---------------+-------------+---------------------------------+
+> > |        | st_ops_xxx_ops| xxx_ops     |                                 |
+> > +--------+---------------+-------------+---------------------------------+
+> > | case 0 | btf_vmlinux   | bft_vmlinux | be used and reg only in vmlinux |
+> > +--------+---------------+-------------+---------------------------------+
+> > | case 1 | btf_vmlinux   | bpf_mod     | INVALID                         |
+> > +--------+---------------+-------------+---------------------------------+
+> > | case 2 | btf_mod       | btf_vmlinux | reg in mod but be used both in  |
+> > |        |               |             | vmlinux and mod.                |
+> > +--------+---------------+-------------+---------------------------------+
+> > | case 3 | btf_mod       | btf_mod     | be used and reg only in mod     |
+> > +--------+---------------+-------------+---------------------------------+
+> >
+> > At present, cases 0, 1, and 3 can be correctly identified, because
+> > +       if (ret < 0 || ret >= sizeof(stname))
+> > +               return -ENAMETOOLONG;
+> 
+> see preexisting snprintf() above, we don't really handle truncation
+> errors explicitly, they are extremely unlikely and not expected at
+> all, and worst case nothing will be found and user will get some
+> -ENOENT or something like that eventually. I'd drop this extra error
+> checking and keep it streamlines, similar to tname
+> 
 
-在 2025/1/21 22:12, Armin Wolf 写道:
-> Am 21.01.25 um 07:44 schrieb Huisong Li:
->
->> The hwmon_device_register() is deprecated. When I try to repace it with
->> hwmon_device_register_with_info() for acpi_power_meter driver, I 
->> found that
->> the power channel attribute in linux/hwmon.h have to extend and is more
->> than 32 after this replacement.
->>
->> However, the maximum number of hwmon channel attributes is 32 which is
->> limited by current hwmon codes. This is not good to add new channel
->> attribute for some hwmon sensor type and support more channel attribute.
->>
->> This series are aimed to do this. And also make sure that 
->> acpi_power_meter
->> driver can successfully replace the deprecated hwmon_device_register()
->> later.
->
-> Hi,
->
-> what kind of new power attributes do you want to add to the hwmon API?
-The attributes you list is right.
->
-> AFAIK the acpi-power-meter driver supports the following attributes:
->
->     power1_accuracy            -> HWMON_P_ACCURACY
->     power1_cap_min            -> HWMON_P_CAP_MIN
->     power1_cap_max            -> HWMON_P_CAP_MAX
->     power1_cap_hyst            -> HWMON_P_CAP_HYST
->     power1_cap            -> HWMON_P_CAP
->     power1_average            -> HWMON_P_AVERAGE
->     power1_average_min        -> HWMON_P_AVERAGE_MIN
->     power1_average_max        -> HWMON_P_AVERAGE_MAX
->     power1_average_interval        -> HWMON_P_AVERAGE_INTERVAL
->     power1_average_interval_min    -> HWMON_P_AVERAGE_INTERVAL_MIN
->     power1_average_interval_max    -> HWMON_P_AVERAGE_INTERVAL_MAX
->     power1_alarm            -> HWMON_P_ALARM
->     power1_model_number
->     power1_oem_info
->     power1_serial_number
->     power1_is_battery
->     name                -> handled by hwmon core
->
-> The remaining attributes are in my opinion not generic enough to add 
-> them to the generic
-> hwmon power attributes. I think you should implement them as a 
-> attribute_group which can
-> be passed to hwmon_device_register_with_info() using the 
-> "extra_groups" parameter.
->
-This is a good idea. Thanks.
->
->>
->> Huisong Li (21):
->>    hwmon: Fix the type of 'config' in struct hwmon_channel_info to u64
->>    media: video-i2c: Use HWMON_CHANNEL_INFO macro to simplify code
->>    net: aquantia: Use HWMON_CHANNEL_INFO macro to simplify code
->>    net: nfp: Use HWMON_CHANNEL_INFO macro to simplify code
->>    net: phy: marvell: Use HWMON_CHANNEL_INFO macro to simplify code
->>    net: phy: marvell10g: Use HWMON_CHANNEL_INFO macro to simplify code
->>    rtc: ab-eoz9: Use HWMON_CHANNEL_INFO macro to simplify code
->>    rtc: ds3232: Use HWMON_CHANNEL_INFO macro to simplify code
->>    w1: w1_therm: w1: Use HWMON_CHANNEL_INFO macro to simplify code
->>    net: phy: aquantia: Use HWMON_CHANNEL_INFO macro to simplify code
->>    hwmon: (asus_wmi_sensors) Fix type of 'config' in struct
->>      hwmon_channel_info to u64
->>    hwmon: (hp-wmi-sensors) Fix type of 'config' in struct
->>      hwmon_channel_info to u64
->>    hwmon: (mr75203) Fix the type of 'config' in struct 
->> hwmon_channel_info
->>      to u64
->>    hwmon: (pwm-fan) Fix the type of 'config' in struct 
->> hwmon_channel_info
->>      to u64
->>    hwmon: (scmi-hwmon) Fix the type of 'config' in struct
->>      hwmon_channel_info to u64
->>    hwmon: (tmp401) Fix the type of 'config' in struct hwmon_channel_info
->>      to u64
->>    hwmon: (tmp421) Fix the type of 'config' in struct hwmon_channel_info
->>      to u64
->>    net/mlx5: Fix the type of 'config' in struct hwmon_channel_info to 
->> u64
->>    platform/x86: dell-ddv: Fix the type of 'config' in struct
->>      hwmon_channel_info to u64
->>    hwmon: (asus-ec-sensors) Fix the type of 'config' in struct
->>      hwmon_channel_info to u64
->>    hwmon: (lm90) Fix the type of 'config' in struct 
->> hwmon_channel_info to
->>      u64
->>
->>   drivers/hwmon/asus-ec-sensors.c               |   6 +-
->>   drivers/hwmon/asus_wmi_sensors.c              |   8 +-
->>   drivers/hwmon/hp-wmi-sensors.c                |   6 +-
->>   drivers/hwmon/hwmon.c                         |   4 +-
->>   drivers/hwmon/lm90.c                          |   4 +-
->>   drivers/hwmon/mr75203.c                       |   6 +-
->>   drivers/hwmon/pwm-fan.c                       |   4 +-
->>   drivers/hwmon/scmi-hwmon.c                    |   6 +-
->>   drivers/hwmon/tmp401.c                        |   4 +-
->>   drivers/hwmon/tmp421.c                        |   2 +-
->>   drivers/media/i2c/video-i2c.c                 |  12 +-
->>   .../ethernet/aquantia/atlantic/aq_drvinfo.c   |  14 +-
->>   .../net/ethernet/mellanox/mlx5/core/hwmon.c   |   8 +-
->>   .../net/ethernet/netronome/nfp/nfp_hwmon.c    |  40 +--
->>   drivers/net/phy/aquantia/aquantia_hwmon.c     |  32 +-
->>   drivers/net/phy/marvell.c                     |  24 +-
->>   drivers/net/phy/marvell10g.c                  |  24 +-
->>   drivers/platform/x86/dell/dell-wmi-ddv.c      |   6 +-
->>   drivers/rtc/rtc-ab-eoz9.c                     |  24 +-
->>   drivers/rtc/rtc-ds3232.c                      |  24 +-
->>   drivers/w1/slaves/w1_therm.c                  |  12 +-
->>   include/linux/hwmon.h                         | 300 +++++++++---------
->>   22 files changed, 205 insertions(+), 365 deletions(-)
->>
-> .
+Sounds reasonable to me. I will remove the explicit error checks in the
+next version.
+
+> > +
+> > +       /* Look for the corresponding "map_value" type that will be used
+> > +        * in map_update(BPF_MAP_TYPE_STRUCT_OPS) first, figure out the btf
+> > +        * and the mod_btf.
+> > +        * For example, find "struct bpf_struct_ops_tcp_congestion_ops".
+> > +        */
+> > +       kern_vtype_id = find_ksym_btf_id(obj, stname, BTF_KIND_STRUCT,
+> >                                         &btf, mod_btf);
+> 
+> nit: if this fits under 100 characters, keep it single line
+> 
+> > +       if (kern_vtype_id < 0) {
+> > +               pr_warn("struct_ops init_kern: struct %s is not found in kernel BTF\n",
+> > +                               stname);
+> 
+> same nit about preserving single-line statements as much as possible,
+> they are much easier to read
+
+None of them exceed 100 lines. Usually, I would check patches with 85 lines limitations,
+but since 100 lines is acceptable, we can modify it to a single line here for
+better readability.
+
+And thanks very much for your suggestion, I plan to fix these style
+issues in next versions with you ack, is this okay for you?
+
+Best wishes,
+D. Wythe
+> 
+> > +               return kern_vtype_id;
+> > +       }
+> > +       kern_vtype = btf__type_by_id(btf, kern_vtype_id);
+> > +
+> > +       kern_type_id = btf__find_by_name_kind(btf, tname, BTF_KIND_STRUCT);
+> >         if (kern_type_id < 0) {
+> >                 pr_warn("struct_ops init_kern: struct %s is not found in kernel BTF\n",
+> >                         tname);
+> > @@ -1020,20 +1039,6 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
+> >         }
+> >         kern_type = btf__type_by_id(btf, kern_type_id);
+> >
+> > -       /* Find the corresponding "map_value" type that will be used
+> > -        * in map_update(BPF_MAP_TYPE_STRUCT_OPS).  For example,
+> > -        * find "struct bpf_struct_ops_tcp_congestion_ops" from the
+> > -        * btf_vmlinux.
+> > -        */
+> > -       kern_vtype_id = find_btf_by_prefix_kind(btf, STRUCT_OPS_VALUE_PREFIX,
+> > -                                               tname, BTF_KIND_STRUCT);
+> > -       if (kern_vtype_id < 0) {
+> > -               pr_warn("struct_ops init_kern: struct %s%s is not found in kernel BTF\n",
+> > -                       STRUCT_OPS_VALUE_PREFIX, tname);
+> > -               return kern_vtype_id;
+> > -       }
+> > -       kern_vtype = btf__type_by_id(btf, kern_vtype_id);
+> > -
+> >         /* Find "struct tcp_congestion_ops" from
+> >          * struct bpf_struct_ops_tcp_congestion_ops {
+> >          *      [ ... ]
+> > @@ -1046,8 +1051,8 @@ find_struct_ops_kern_types(struct bpf_object *obj, const char *tname_raw,
+> >                         break;
+> >         }
+> >         if (i == btf_vlen(kern_vtype)) {
+> > -               pr_warn("struct_ops init_kern: struct %s data is not found in struct %s%s\n",
+> > -                       tname, STRUCT_OPS_VALUE_PREFIX, tname);
+> > +               pr_warn("struct_ops init_kern: struct %s data is not found in struct %s\n",
+> > +                       tname, stname);
+> >                 return -EINVAL;
+> >         }
+> >
+> > --
+> > 2.45.0
+> >
 
