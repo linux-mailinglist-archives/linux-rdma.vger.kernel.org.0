@@ -1,182 +1,225 @@
-Return-Path: <linux-rdma+bounces-7198-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7199-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8BE3A19D3D
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2025 04:23:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6117DA19DE8
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2025 06:17:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01EFA188DB00
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2025 03:23:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C41D1888F9E
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2025 05:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94FE454918;
-	Thu, 23 Jan 2025 03:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C506E17BB0D;
+	Thu, 23 Jan 2025 05:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GZTuM0tF"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="ZL1gHOuZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2109.outbound.protection.outlook.com [40.107.236.109])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EB3335C0;
-	Thu, 23 Jan 2025 03:23:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737602594; cv=none; b=b0j8iKHoU8NwuH2PN5g7+Ro20huZ2Bs1p58+15psm2aEG/UQ/YmH9dWL2DMNr5zQK6AQSDgCth4zjEjcsa3GZpri9MgoxlkO80Nng0WHVTaM8rYQtW9TVBDv7czI6BvtA5gEl7meSIHPFc69DGKgD7msNnZnUp7VZ6N1afS9kR0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737602594; c=relaxed/simple;
-	bh=esc9p8uRAAcKQAeYH0qKOI77SqoRSioVkN8/jCoFF2s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DBEfSvmtcFYJaQLS3igFft5KFnrw2JhzXdt4WvmiMLRyoYjrn4+VoQr2nMTy8yho4NDk3aQOM3nKdqPmVPAuR+Y8ppp5DlR0aq+Jfer07RlM1lCENOqYesOpVH79CT4ZB+FVUmRVTk6dDUpDC9B7ot9O+UPUQea6wX8pKSzJ3FY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GZTuM0tF; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2ee51f8c47dso709351a91.1;
-        Wed, 22 Jan 2025 19:23:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1737602592; x=1738207392; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=S2lwk6lg/hcsK3tR10SuqMwZBkERsQ/DxupetFfAsnI=;
-        b=GZTuM0tFtJ58OwW+fYHHGrtSkmGqvbBGmwd239rkuRYS1FrH2ZLR9bV55j8OzSoP8p
-         Aoha8beSsNxW2R7ILa3QOVzWoFOqfUZB/uaHKbQcPrErnVfelbyz2ZucebNyZAnQrmw/
-         tX/9AcDRbDgwBzG3TbsqNEoAIU9zozMisgl07tjGpYb7LS87qi/UkLYGnlvpBUrJvvGT
-         m9iOqJB/uJazMK2yEnOLHWIYZ7OtvODk9ten1nLSRVMz99gmefG0Q/LReXXaUBVUAlpD
-         4Rtih93Ya7kgSRzZxHGcBUPg3mEJNh6sVLAYR2JnrhDi7fasYTSWJ28hKiLugMkN+5VK
-         XhKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737602592; x=1738207392;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=S2lwk6lg/hcsK3tR10SuqMwZBkERsQ/DxupetFfAsnI=;
-        b=kTEA8USAAbH/1dNvn6+g/H3SPDD2Hnso0L3QEzdZ9p0cGxxbKqMdxpHAm32j9N6F+R
-         nTATHS66Bakdg/hcQi1stzbuzr+CAUgJlMAwSdRNRws4q50Wht4PPEZgrTfnQM2eWz6/
-         vtCJxy2A6n+V7gjFh7zBbRaUYFamzgxI7GgO7uRnMdlvCb992cnzAba8vwMYP7QQLhN/
-         oZOR989d/syLJgZ2BGaA9+Edjn8NBfgV/naAtYNMpnA7gJrWg7ihPi1g3+x9jR1zmSNu
-         T2UempBzpLGnPQRiT9SIxqldK9VvRpXvsWHdK9LmkvjyoCfStGMemAS+H3IE7zud3iW4
-         bRLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVuQXYnF9GFsktMVLnVuIx7/LJcqmZLQ5fHSukOFuOQoWybs2EjfiGmCPON4M+dQpZLrlT44K2X@vger.kernel.org, AJvYcCWQjptA6KBu5J9eKryr9S5PFPEUDRtituVnpMs7HmHHoAnsOZUKoCdDJm6fFwerKAo5otx8wlxbCdglIw==@vger.kernel.org, AJvYcCWXUUbww8ZYb8RLvsO6Tyl5iggsyYXvRliSi6R6bcSKnXuTist3U9cLUMUByOXPEWwZZ8f4JlSUCN+nj44=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwB6SU3oLOWs9mXu/MwOU+tpK2EglgkyjDDjjCLVZ1lvfQJom+A
-	+R4r2UxAI89KLtd+5U5jKqN9MR8LmzmcSWY4pHOZws7FRZiov/lYpFwDNUJx
-X-Gm-Gg: ASbGncuGgdFF3U0mShox/u2HcTgUePaIsy4ULp+0aWKKQLnOa2jfj250tRDveT6nlg5
-	3Pdq7Ju+TfE061JEz73Ss7hRWIuS9Y9Oxftzkw+tvGU3rDc22vNIumH2f8tRxOJuR4cq17OhfaC
-	d+eFLEDOIvNMfP4aucD4Xv8utrKSkrncn8OetlJ2V3ILldFSC4tv32EjV/OMpw1sCv05kgLhOGS
-	zVFLoB6b4UieChRHi8iX3McCcwTG+bj99kymtZk/vKiuvu4+9d77FpPGTrHVyT4fxCQMWBwE5P8
-	Z+hLLasRZTPf+GfiSLbKGTvkDiL8jQ==
-X-Google-Smtp-Source: AGHT+IG/nhSi0IwQlKVL7jrc+VPm3/7CeXeXjuo1Bqdbblsv39vZjCseJch/hzD3/cpysAUqvrtUGA==
-X-Received: by 2002:a05:6a00:190c:b0:729:1b8f:9645 with SMTP id d2e1a72fcca58-72dafbd02ecmr40258688b3a.24.1737602591672;
-        Wed, 22 Jan 2025 19:23:11 -0800 (PST)
-Received: from jren-d3.localdomain ([221.222.62.240])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72daba48eb8sm12208725b3a.136.2025.01.22.19.23.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jan 2025 19:23:11 -0800 (PST)
-From: Imkanmod Khan <imkanmodkhan@gmail.com>
-To: stable@vger.kernel.org
-Cc: cratiu@nvidia.com,
-	saeedm@nvidia.com,
-	leon@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	roid@nvidia.com,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Dragos Tatulea <dtatulea@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Imkanmod Khan <imkanmodkhan@gmail.com>
-Subject: [PATCH 6.6.y] net/mlx5e: Don't call cleanup on profile rollback failure
-Date: Thu, 23 Jan 2025 11:22:53 +0800
-Message-ID: <20250123032254.34250-1-imkanmodkhan@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C713596B;
+	Thu, 23 Jan 2025 05:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.109
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1737609427; cv=fail; b=fKqGWVXZ0ihAIbxkw6qNYLiuu8dc5e+3saQzdQ58OXKkFO0qpwWsIVw0XKguT/gH7M3Cm0JFTiXqwv3UTySAyyckVu/ifmNNxAxQgnclDKC6RatT48aCvlFItjdV5fpUJKBpNLSjDGrgqQUAdojQfR7Z9KHDDiN51yWp8PuasOE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1737609427; c=relaxed/simple;
+	bh=t1CBnBPnY1GhM6/WUXzHUa/DVrai9mHfRjCbGYm63n0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=m/P8F4PfVLxVHHIvWvD3s+f2uC5GxHFmhNsGT1dj0N2wEnJW3XP0P5qsmRSgvc8efqOtaCoFC+qUHll0V920/YH+eVhQ7326tQBfYNKgY4tVpRB9/M573rLsraEzDlA1rjYuREeHx6H8CHPxBiNuu8EkoeDbuvM98PK8cG64YOc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=ZL1gHOuZ; arc=fail smtp.client-ip=40.107.236.109
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=RFn7LJ/slHtK1AqUgYBYNCCh37MZWMsda+mNCpV6ZEWt+HTrgpIOQVrW+bd0ueEmb833sjpCqPJJUus7YC7aCmPhcebO3sA63WoFrO5tAymX3B81XtDUNPQbn0IEnZKgkitzjCzIiNzt8pP+eIvr2ddMus+hPIqya8EkJEvleR0If+/cIIjVgYYUfA7qGzhGinZKD+BmxRqVGzbUm721jC6gDegkGJfSskAgB9KCZ3YaWYhlEhjCg/besz2ix+9+FOqTmp7xSqt6QOvXtA7Vc6X3+LZ2k/fpWr6Q0Sg2X6PKsOhg6XekNhf0QPCBy0PBbrXh3XJXwCa0BKl8kd2y6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RHBQTUhQEYX6uADhDEbpkAJc0d33lYyfXz5x7WTOOaA=;
+ b=Obk3j9Edy0zko5lfF6PfB/TFxZ6m/OcWt3+vkuax0JyU+7nBDjCQb4NFo0qU32XBymxsR9gBdihukA45JpMvCIWxxzidWY1lcqn8XThWCUc0wF/0fdhN4LECug8doFSmAwh2D8f9EHa9oxxmpIb6qNNmpTAvyqY1b7qqh8kBIvkvv7SEQawfwOHOYeGuTgnD2KFFTI83A+BoIICQQHyNSk+oC94bo3ytmJXBhtfjcVgAdgS9jDNPSg9JKWirrOOg0oYHo/tSGbgWjSq3Prbdj9cB0v44JtY/xgDvN0Ke5vHgszR99GNNWUzg76jMTfC0HdqUuwXYROaHFreGsfPO3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RHBQTUhQEYX6uADhDEbpkAJc0d33lYyfXz5x7WTOOaA=;
+ b=ZL1gHOuZP0mATww7HHAufibSZBBmAkbHkBvI0TwDclP7upXjPqAmY+zDHaLtYRHX8kimUuJV54GIYtGeEIhvCVzg6g3Xq2IpEuXPAbT+uDnD9CZlRqQoRbQfWpk41C1F7ZuwPkjye+Q7CdzixNmAZQfcj7Yvkw9Q3sfZw+hWLmY=
+Received: from SA6PR21MB4231.namprd21.prod.outlook.com (2603:10b6:806:412::20)
+ by SA6PR21MB4302.namprd21.prod.outlook.com (2603:10b6:806:418::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8398.7; Thu, 23 Jan
+ 2025 05:17:02 +0000
+Received: from SA6PR21MB4231.namprd21.prod.outlook.com
+ ([fe80::5c62:d7c6:4531:3aff]) by SA6PR21MB4231.namprd21.prod.outlook.com
+ ([fe80::5c62:d7c6:4531:3aff%5]) with mapi id 15.20.8398.005; Thu, 23 Jan 2025
+ 05:17:02 +0000
+From: Long Li <longli@microsoft.com>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>, Konstantin Taranov
+	<kotaranov@microsoft.com>, Shiraz Saleem <shirazsaleem@microsoft.com>,
+	"pabeni@redhat.com" <pabeni@redhat.com>, Haiyang Zhang
+	<haiyangz@microsoft.com>, KY Srinivasan <kys@microsoft.com>,
+	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
+	<kuba@kernel.org>, "davem@davemloft.net" <davem@davemloft.net>, Dexuan Cui
+	<decui@microsoft.com>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
+	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>, "jgg@ziepe.ca"
+	<jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>
+CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: RE: [PATCH rdma-next 01/13] RDMA/mana_ib: Allow registration of
+ DMA-mapped memory in PDs
+Thread-Topic: [PATCH rdma-next 01/13] RDMA/mana_ib: Allow registration of
+ DMA-mapped memory in PDs
+Thread-Index: AQHba2CVaMl2TmeRG0O5ev1nFYViF7Mj1TfA
+Date: Thu, 23 Jan 2025 05:17:01 +0000
+Message-ID:
+ <SA6PR21MB4231B2C714A7944F39BD464ECEE02@SA6PR21MB4231.namprd21.prod.outlook.com>
+References: <1737394039-28772-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1737394039-28772-2-git-send-email-kotaranov@linux.microsoft.com>
+In-Reply-To: <1737394039-28772-2-git-send-email-kotaranov@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=1d60f2d3-cc08-4f5d-9ee5-c33eaccff85b;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-01-23T05:16:41Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA6PR21MB4231:EE_|SA6PR21MB4302:EE_
+x-ms-office365-filtering-correlation-id: 9e5cf17e-9100-482b-f836-08dd3b6d2b40
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|7416014|1800799024|366016|921020|38070700018;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?1pmVHKwGTMl1ez3hYHwUmBNat56PWMC/Q4sCsL7mCtx4w3CtTPGyMCymaAwL?=
+ =?us-ascii?Q?rx/5eHESbZWnClUQ50bzA4a/4IvDvpHTlky5wkXIzNcfOnWqZJzYuKgLesKe?=
+ =?us-ascii?Q?i7dNPYQ/wzQI8A47JxfGKnGzsJJo5NN8GN9kgoqxKbNu1AISNl/N7dHYuumr?=
+ =?us-ascii?Q?wT1m/x79XSJXoItdapiuFfdWo3a45AdT+9Ftph+salbAAdCA+46zNhZCJVSS?=
+ =?us-ascii?Q?ruiTzUzRw/biZHUNkTjZ5GAJjezgbvaVv/wWeAqDVwOLlMRSy9la0LH4YDkx?=
+ =?us-ascii?Q?tSssGWdT5KDl76Gkeh2ffgnO0aaNDjN6RowBpI4tQK6GHm2nJm1TcCrAdIIh?=
+ =?us-ascii?Q?mvEdPz3YVmbdzCpqeZNQo9dnon7NQDV1nma643khyjsGrnvhhUdx5hpLVWHz?=
+ =?us-ascii?Q?tlvH0bqjuRLnDO5SSwJXHVRsuRU/B3VFuqAILrIF+sxQIBX6xZBzqoJL8hkB?=
+ =?us-ascii?Q?E30/udPdFr0tUVcgwjDothTHlfPT920lcLNYG6SlCBRUGIDupAd8nNn5QCo7?=
+ =?us-ascii?Q?XP89+Rv0X4blPqvjGxAb5euAwkgs8zhtHgPUuyj0YJYKdcnPc+nMjuMpfxrL?=
+ =?us-ascii?Q?+JlZgECq+0IqxglyQZ1VsRZEQfBqUim1OfPU1jmP5dkFQOJdrvmAOvOCiQT6?=
+ =?us-ascii?Q?pnXJd90wsex93CZ+Ail0WMCgIyrSJuqNI/C+wAJX2olyLCs669svB9z/5zla?=
+ =?us-ascii?Q?a73q27Jy5hzxqSsv7S8NHP34ctSwv0K8felaDWgYOcsSMDTu3H4bFxGRv/pK?=
+ =?us-ascii?Q?YlywSpDSsQkqgPjkw2W7ZB+YHdNCKqYwPubjTsWa79IQkiV1njoXEIngarX9?=
+ =?us-ascii?Q?fh07GMpsDy/PpYr4RQPwAHKxUmWRFPSiwGTeLzpwa+2iIQE22Q+CJXW/gii9?=
+ =?us-ascii?Q?il5gNUOih4UM1XVftS8GW1Qmg9vh1zQDn/8ktws5Vprusp0mAIgi4wCAlZc5?=
+ =?us-ascii?Q?rGTcCM+BfH2xk+Nrd7/4ntoBRtTe9oPoDdMKKliMSgBY6K1pC/DLQnVmnLeK?=
+ =?us-ascii?Q?4phXLo5h4bI1UVQIzIHu8e5IJvIkZWoEc6oE7fdRda1j/yOmTU/huw2+jBTO?=
+ =?us-ascii?Q?igctoEOxB94GXS5GnKvK6n8a1qA/SlGAmvytu/7p4XAjghYLVJWZEGpfioci?=
+ =?us-ascii?Q?iMN/+G0Gc2BR7g8r26LUmm/6EFOpG4krtfNA+CxD3VrejXGck9+dEMyeG4ki?=
+ =?us-ascii?Q?/BHv+nQoRfJ2VOhHTL4GlXThw9QZYoHCCfIFCn5/K0wz5miCcJTb+vIme/QV?=
+ =?us-ascii?Q?y0vyJP3beWAsCCObSq3Nevd7+h39G2P+JuIqOE8aA7GtVgbaJjdH/OaSAYFP?=
+ =?us-ascii?Q?nxY4bjtuwtufj2ErbFlHnjkdeTzhYKGfNsQj/6BtVkKmMS94riXiU/4SyNYz?=
+ =?us-ascii?Q?yYYQRmDNYD+eXP8s40GK9UbEj1r0+SMD9v0rDDVFo4deWcOnBG40LsBltx9x?=
+ =?us-ascii?Q?C1sR3zSD7jAv9Xt1wq5FZj97GBK3CwGzJrxBucIxuxRJ9AOWO0agFw=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA6PR21MB4231.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016)(921020)(38070700018);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?sNVjVtkQ2g/lXNvdA+F6JxEhj9BBTxXAgWDPH71qbFJ0cxUr1hJ2vNnXesEQ?=
+ =?us-ascii?Q?GpETm098Hn/BqpFS8YNbynBvPdNrCft3RwidqjerOjm0DuPvrwbhm9WktSPO?=
+ =?us-ascii?Q?kwUUPj/ZVTvajTXYPk0QLOHJ2dq/saT6QrtXqrkjTdcOrkZiAU3wqvHHITLr?=
+ =?us-ascii?Q?AjAd0FY1sXZYBAMX+sOgQ4x36uRSjB14JlrveAXPY84kInRolDtifqwaWwTM?=
+ =?us-ascii?Q?duvPc+oJ7y0cgqHcBSEm+uvWzdpY/9cwXbj7FBs6f62W6xXqTgcy9+kTiBrb?=
+ =?us-ascii?Q?mhKkRRzpYP90GtT+yOAurN1VN3arW8DmZ43OfEX7kCWrOx3ugPX9n01VG6mQ?=
+ =?us-ascii?Q?gmf9TTm1cU1GFTdUtQrD4lgYdkOCosq/ffB3xA25Al7UVpvDWViT1IVXsld5?=
+ =?us-ascii?Q?OHN1JdKhNLGJAaqGqyDN8yw/i/Ivwq4VLZazOPGMO6e+78HSPeVrb2/8bSgX?=
+ =?us-ascii?Q?ZofCVSMjOdxN0nZgEHXpMq5CLQjXzHvuMRZVGk5i7+vyXpFBkwm3VtbrKOzO?=
+ =?us-ascii?Q?N3l1nxEysOqyeIKoXh7vwQKXUpjzhsX5uqmdEzJA9Y0Ex0+eG85gbhP27Iki?=
+ =?us-ascii?Q?28C9OcanW0QTMUpl7NweYQq7bBskAfBbhRm4ycl6151qe+REkCSLiB23+Ep6?=
+ =?us-ascii?Q?hiVxG/htqrFg0qCbeMBb+yZf9pgKgAsjU0vKErsNEnBCNAVAPNV1I3xZ1mNv?=
+ =?us-ascii?Q?6IreLfDUEOmZ1DyE3ofBPmwpRweCXvw33bO8fOXgjEpgweHXGaxTkmenZfzV?=
+ =?us-ascii?Q?to+4t00YPRjCslT9+ouNdPulmffB+mY4D+czhyeKEb9t/2NXbBvTF6qSdb59?=
+ =?us-ascii?Q?RG8BLauAKBrGyro4IPfMUUaPKFH+626tL0m3bhQX/mae0nW0E1pkshwvkmX7?=
+ =?us-ascii?Q?cDaCPcKT8KdRO/pPlr9VfcNMhTl6XbGyfvzCASZ1W+I6AMA8vhrw2nG8IGc4?=
+ =?us-ascii?Q?015BdlY3qSaKj/+NCDv3r84YBif8Uwywj52X46B10X/J+F36KQKjv5TOgaWL?=
+ =?us-ascii?Q?eP7qQqBdS5PtcnMATDS2Xl6Y8qvCwAb1gsmrSw6hDh5/iZSkIJ//LZhn6kSH?=
+ =?us-ascii?Q?SHj5qAQmoCuyDJ2+ONNYPSV2BRyqzb9isjS/Q1eVg9lElaFCOUME1wCEFQ3s?=
+ =?us-ascii?Q?I4j99AKqT6MogI5m38kTtNtP6mPLrYYiR6bT30yGSl5sFXysvvQzCWv5j2kz?=
+ =?us-ascii?Q?wl7oOk1UJGHZzsfrgrQGmYgVL+Hre3Oq394XH2mEV4c1PdxMMpaaryzP3OPV?=
+ =?us-ascii?Q?mJC/UhsOZn3gDPI6/24Dxk2wSJhcMbChX4fX1CLHMtfrT07jgG5/ij54Zpaf?=
+ =?us-ascii?Q?R/61jOekckGEowSoDTUk7N1iZ0QiZ0tK0DbQE0jSMmnZZIKW9cFjf2Ucx999?=
+ =?us-ascii?Q?EOb4XOJADAMNGPAZ8CXhlDs3G/i9iUWnzo2/FsOFY4aO0CTfSg7PyNTPD+td?=
+ =?us-ascii?Q?1E6D2wTZzlotpkl5EuYW3ExK1E9VzvsQbp33ZJ9UDfDyhCnuDvXTQEaYQ4UF?=
+ =?us-ascii?Q?FmMqj4M5bJjbLD8cZOFMyHeMuep34H1qAGKjWmZrpPTnorMV34co6FQHYwDt?=
+ =?us-ascii?Q?XN2Ub7cR5sQalOXeO1A/lJNvsMwAoUCTAZXwUV2p?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA6PR21MB4231.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e5cf17e-9100-482b-f836-08dd3b6d2b40
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2025 05:17:01.9572
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cGP2C1g8Uau214sqlPh09XYoWsBdkc3wMNzyYafeff0wQaQWDM9WcAbfwhT5KhEIb749H/EP2JOnGUu5uZcmuw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA6PR21MB4302
 
-From: Cosmin Ratiu <cratiu@nvidia.com>
+> Subject: [PATCH rdma-next 01/13] RDMA/mana_ib: Allow registration of DMA-
+> mapped memory in PDs
+>=20
+> From: Konstantin Taranov <kotaranov@microsoft.com>
+>=20
+> Allow the HW to register DMA-mapped memory for kernel-level PDs.
+>=20
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> Reviewed-by: Shiraz Saleem <shirazsaleem@microsoft.com>
 
-[ Upstream commit 4dbc1d1a9f39c3711ad2a40addca04d07d9ab5d0 ]
+Reviewed-by: Long Li <longli@microsoft.com>
 
-When profile rollback fails in mlx5e_netdev_change_profile, the netdev
-profile var is left set to NULL. Avoid a crash when unloading the driver
-by not calling profile->cleanup in such a case.
-
-This was encountered while testing, with the original trigger that
-the wq rescuer thread creation got interrupted (presumably due to
-Ctrl+C-ing modprobe), which gets converted to ENOMEM (-12) by
-mlx5e_priv_init, the profile rollback also fails for the same reason
-(signal still active) so the profile is left as NULL, leading to a crash
-later in _mlx5e_remove.
-
- [  732.473932] mlx5_core 0000:08:00.1: E-Switch: Unload vfs: mode(OFFLOADS), nvfs(2), necvfs(0), active vports(2)
- [  734.525513] workqueue: Failed to create a rescuer kthread for wq "mlx5e": -EINTR
- [  734.557372] mlx5_core 0000:08:00.1: mlx5e_netdev_init_profile:6235:(pid 6086): mlx5e_priv_init failed, err=-12
- [  734.559187] mlx5_core 0000:08:00.1 eth3: mlx5e_netdev_change_profile: new profile init failed, -12
- [  734.560153] workqueue: Failed to create a rescuer kthread for wq "mlx5e": -EINTR
- [  734.589378] mlx5_core 0000:08:00.1: mlx5e_netdev_init_profile:6235:(pid 6086): mlx5e_priv_init failed, err=-12
- [  734.591136] mlx5_core 0000:08:00.1 eth3: mlx5e_netdev_change_profile: failed to rollback to orig profile, -12
- [  745.537492] BUG: kernel NULL pointer dereference, address: 0000000000000008
- [  745.538222] #PF: supervisor read access in kernel mode
-<snipped>
- [  745.551290] Call Trace:
- [  745.551590]  <TASK>
- [  745.551866]  ? __die+0x20/0x60
- [  745.552218]  ? page_fault_oops+0x150/0x400
- [  745.555307]  ? exc_page_fault+0x79/0x240
- [  745.555729]  ? asm_exc_page_fault+0x22/0x30
- [  745.556166]  ? mlx5e_remove+0x6b/0xb0 [mlx5_core]
- [  745.556698]  auxiliary_bus_remove+0x18/0x30
- [  745.557134]  device_release_driver_internal+0x1df/0x240
- [  745.557654]  bus_remove_device+0xd7/0x140
- [  745.558075]  device_del+0x15b/0x3c0
- [  745.558456]  mlx5_rescan_drivers_locked.part.0+0xb1/0x2f0 [mlx5_core]
- [  745.559112]  mlx5_unregister_device+0x34/0x50 [mlx5_core]
- [  745.559686]  mlx5_uninit_one+0x46/0xf0 [mlx5_core]
- [  745.560203]  remove_one+0x4e/0xd0 [mlx5_core]
- [  745.560694]  pci_device_remove+0x39/0xa0
- [  745.561112]  device_release_driver_internal+0x1df/0x240
- [  745.561631]  driver_detach+0x47/0x90
- [  745.562022]  bus_remove_driver+0x84/0x100
- [  745.562444]  pci_unregister_driver+0x3b/0x90
- [  745.562890]  mlx5_cleanup+0xc/0x1b [mlx5_core]
- [  745.563415]  __x64_sys_delete_module+0x14d/0x2f0
- [  745.563886]  ? kmem_cache_free+0x1b0/0x460
- [  745.564313]  ? lockdep_hardirqs_on_prepare+0xe2/0x190
- [  745.564825]  do_syscall_64+0x6d/0x140
- [  745.565223]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
- [  745.565725] RIP: 0033:0x7f1579b1288b
-
-Fixes: 3ef14e463f6e ("net/mlx5e: Separate between netdev objects and mlx5e profiles initialization")
-Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Imkanmod Khan <imkanmodkhan@gmail.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 6e431f587c23..b34f57ab9755 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -6110,7 +6110,9 @@ static void mlx5e_remove(struct auxiliary_device *adev)
- 	mlx5e_dcbnl_delete_app(priv);
- 	unregister_netdev(priv->netdev);
- 	mlx5e_suspend(adev, state);
--	priv->profile->cleanup(priv);
-+	/* Avoid cleanup if profile rollback failed. */
-+	if (priv->profile)
-+		priv->profile->cleanup(priv);
- 	mlx5e_destroy_netdev(priv);
- 	mlx5e_devlink_port_unregister(mlx5e_dev);
- 	mlx5e_destroy_devlink(mlx5e_dev);
--- 
-2.25.1
+> ---
+>  drivers/infiniband/hw/mana/main.c | 3 +++
+>  include/net/mana/gdma.h           | 1 +
+>  2 files changed, 4 insertions(+)
+>=20
+> diff --git a/drivers/infiniband/hw/mana/main.c
+> b/drivers/infiniband/hw/mana/main.c
+> index 67c2d43..45b251b 100644
+> --- a/drivers/infiniband/hw/mana/main.c
+> +++ b/drivers/infiniband/hw/mana/main.c
+> @@ -82,6 +82,9 @@ int mana_ib_alloc_pd(struct ib_pd *ibpd, struct ib_udat=
+a
+> *udata)
+>  	mana_gd_init_req_hdr(&req.hdr, GDMA_CREATE_PD, sizeof(req),
+>  			     sizeof(resp));
+>=20
+> +	if (!udata)
+> +		flags |=3D GDMA_PD_FLAG_ALLOW_GPA_MR;
+> +
+>  	req.flags =3D flags;
+>  	err =3D mana_gd_send_request(gc, sizeof(req), &req,
+>  				   sizeof(resp), &resp);
+> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h index
+> 90f5665..03e1b25 100644
+> --- a/include/net/mana/gdma.h
+> +++ b/include/net/mana/gdma.h
+> @@ -775,6 +775,7 @@ struct gdma_destroy_dma_region_req {
+>=20
+>  enum gdma_pd_flags {
+>  	GDMA_PD_FLAG_INVALID =3D 0,
+> +	GDMA_PD_FLAG_ALLOW_GPA_MR =3D 1,
+>  };
+>=20
+>  struct gdma_create_pd_req {
+> --
+> 2.43.0
 
 
