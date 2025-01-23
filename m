@@ -1,204 +1,165 @@
-Return-Path: <linux-rdma+bounces-7185-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7186-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB4E1A19A3E
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 22:17:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C32FDA19BA7
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2025 01:04:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A01D07A2C56
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jan 2025 21:17:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 161AE16BD54
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2025 00:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CBC01C5D4A;
-	Wed, 22 Jan 2025 21:17:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZFOHGJ2j"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61640258A;
+	Thu, 23 Jan 2025 00:04:11 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F69B1C4A17
-	for <linux-rdma@vger.kernel.org>; Wed, 22 Jan 2025 21:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64BCC629;
+	Thu, 23 Jan 2025 00:04:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737580639; cv=none; b=L1arOf9IbXKE38B/PhXbukmVnUnokoKxKZCNw8juqrIXT4GQuTdFhtjtp1+iE5cMmG4siVOxM3DzNtdUhJZTs2H/iTyc7k0Mdxy2a1XgtwBe8rIqQf/UVI2WFTDgZgza7i8C4S7Jy6Id3/V/evCUpvCm637q+McIR+UYQbk239w=
+	t=1737590651; cv=none; b=p2AW0ndzf4weZLUk66pA4ZxQbljXkAL4QrRVFCvQuz2QSPF/Y29jY8D53s6diOHGsRbzKwYFNFeR37JyR1i18B+w/sQ7kH0JqUXrVg9l1zHG/e1qoGKZQ8hulqaGI8gOVJwf7Sj9A/+2PgvZkQ7g1ohLepw+uztyeqy3o+SgVCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737580639; c=relaxed/simple;
-	bh=J5NUUeVdnRnHCtXRpWj2Twp+ySiOQjasOs8vU/gpJQ0=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=mlfF2uMlrmteHo5THXSu+vBR7t2GmEo+cqygAZfCoq9zRVQ9aJTkgZCFpngycmmzmHP0V31kLXukwK34THXNCQE/vvLNxBUs5AqgddW7X1JA0SLcbEgm7SQ8JyLLwdX7sMSlfBE0u2Bo7zlGjgIzRAzCjirFZ3x/bQwonKl7Oso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZFOHGJ2j; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1737580638; x=1769116638;
-  h=date:from:to:cc:subject:message-id;
-  bh=J5NUUeVdnRnHCtXRpWj2Twp+ySiOQjasOs8vU/gpJQ0=;
-  b=ZFOHGJ2j8wKnDJgCrdA9eo6JczmQ5q6t63SSfBkJM/CU0R+71YfHYn1I
-   eKJT8b7dEoONOEFSlJYQYf6IVFoQu74UqXEhcr9x5Cz3Yp8B4I5gO2N8i
-   PtMT5PEo6XXb8OdLDZfdog5VljBlYthfLQ+paGNSmrw+wArK156g5aAkc
-   050o1vm1mrWxW3THeJLyOPICwwPhXyJsFdnjzmvf1JudLjXMt8Of5eomL
-   nGBcOtr+JOcpweV0CdcsTqJM9lQbATKO/17nh0HKnJMmuw7XM/dDKZ396
-   bJ+/paYGO4dKbDt9T2MOkh9VaZMpYwh2FRSLtI/8gPvNQT7tR8LjzHWG0
-   A==;
-X-CSE-ConnectionGUID: TmTEViRgT/e2kmOplTrZFw==
-X-CSE-MsgGUID: PywgkXjNSDODtgBBn0jlHw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11323"; a="38224160"
-X-IronPort-AV: E=Sophos;i="6.13,226,1732608000"; 
-   d="scan'208";a="38224160"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2025 13:17:17 -0800
-X-CSE-ConnectionGUID: rumbyQDySP+MWPPk4uGGSg==
-X-CSE-MsgGUID: 6CeGJ/M2SCqfDLv7kYZ6GA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="130557192"
-Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 22 Jan 2025 13:17:05 -0800
-Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tai5u-000aJt-3C;
-	Wed, 22 Jan 2025 21:17:02 +0000
-Date: Thu, 23 Jan 2025 05:16:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: [rdma:for-next] BUILD SUCCESS
- d3d930411ce390e532470194296658a960887773
-Message-ID: <202501230500.qYMkBVtu-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1737590651; c=relaxed/simple;
+	bh=PH8LxbIrb2Kq9AS8sl24KAaDNIbUwoOmj7D4FMfbdgE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MeUbaR69rBItmrn02lsdgksKlgqSDf5NOLyHRvSs9T84d8ZlREsDPzuV5kzVtrTslnDZkhnA0ng2Y6b4HC/1dRcDH9gnuN3WFZfaIxjEqAjAv1XaiVHgFESS91majjli8KM9m2cqRs07/H+QMbEoHqyg1RiE5FO0nWBtR9TEgmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fomichev.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-21670dce0a7so5119845ad.1;
+        Wed, 22 Jan 2025 16:04:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737590648; x=1738195448;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bY8ZVk2Uf7HppO8+gzzWHK3AIfhiQMvTEXF+Lh4vqR4=;
+        b=Hs++o+zTWe10BDFbnKU8eWLiu/WIYViWNtIAfdTnJfK7jc0TgCe4n2a8GQMCNdZisx
+         J//cIq7l6Jc/VkZapLZ2vS8rxGGw77SGMlXIGtSRQtq9IVhNgwiH4iWnHAlaGW+iquqa
+         3IvUUMKq/WfgVJLgS4jthVly/XHHO7l8wN3OCg1tg6B+dh+XzdOku40I3Xos9RymnpFd
+         Kl/dUJaJUZL7UOQ3I1lG/fCkqvQJ/vsLWsoVdCM/POsUqKZUnwVKplh/dK70Y0WvdVjF
+         hoh61JblSQYojS1wuve9xGAN/Bwd5XYW4THxr9unGSHdBRr91AGOk8/Hriik2UzwjVeA
+         TClQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVdbDp3WORmtsT9WVOY9Zbs8+WuqMZxkqr3F0g2PsqhAt6dZMz9qagGqIXgLZCR+QuvJ6wsRn/Ymz9i/OQ=@vger.kernel.org, AJvYcCWZjGW3+oTspOpp8LpVXNEmgvWM7W/3pDJ/nkZ8W1K5Tqcg0OK5g9YhSib967+fX6BrJdP9QzSrjzBU4g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YykV0OI1AYQiTRiVLCqJ7v9ji6M4y2RnNhT6esXaaiRO1EK4jwH
+	5DKGMINoPXch042Pc1TCFrQEkpbMYKfXsxSfG4pgikgEGp0TIi3pDDkg
+X-Gm-Gg: ASbGncuPtrPkMG2mTmH7jBgRikBSpilMknZUnalV/gOD4RTJLAzefXxDRq6uVbNRmoy
+	jA6/a7TuWBZ6qk14EAzFl0Ue/h+XZCYhnL2lGpBiRhlNuCq9Gxkx1VkdEu8xXp6m1pAYhwzAf7c
+	ra9v8qnzwl8WfsKxejEoNFQTEPWamw74pVpBo5Cj6f8MjVR0t7gDXiL0KvVzCmm7GtPtxHJvvTW
+	3I9KrgKD3bkocjhEpTjJs4+e1MmhreZTo3DnAwFkp4hT0QO88RSXBnk0VTjU1KWbd65Yg==
+X-Google-Smtp-Source: AGHT+IE7dxxpYn3JHZUsJEN8kIdACZ5n8A0bzXRZzD93uctIb4hINpZXVpaiSir5eGOs1NpJU+HmYg==
+X-Received: by 2002:a05:6a20:9144:b0:1e1:a9dd:5a58 with SMTP id adf61e73a8af0-1eb215ec11cmr43812181637.30.1737590648353;
+        Wed, 22 Jan 2025 16:04:08 -0800 (PST)
+Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72f510a2e24sm5293718b3a.47.2025.01.22.16.04.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jan 2025 16:04:07 -0800 (PST)
+From: Stanislav Fomichev <sdf@fomichev.me>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev,
+	saeedm@nvidia.com,
+	tariqt@nvidia.com,
+	leon@kernel.org,
+	andrew+netdev@lunn.ch,
+	nathan@kernel.org,
+	ndesaulniers@google.com,
+	morbo@google.com,
+	justinstitt@google.com,
+	witu@nvidia.com,
+	parav@nvidia.com
+Subject: [PATCH net] net/mlx5e: add missing cpu_to_node to kvzalloc_node in mlx5e_open_xdpredirect_sq
+Date: Wed, 22 Jan 2025 16:04:07 -0800
+Message-ID: <20250123000407.3464715-1-sdf@fomichev.me>
+X-Mailer: git-send-email 2.48.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: d3d930411ce390e532470194296658a960887773  RDMA/mlx5: Fix implicit ODP use after free
+kvzalloc_node is not doing a runtime check on the node argument
+(__alloc_pages_node_noprof does have a VM_BUG_ON, but it expands to
+nothing on !CONFIG_DEBUG_VM builds), so doing any ethtool/netlink
+operation that calls mlx5e_open on a CPU that's larger that MAX_NUMNODES
+triggers OOB access and panic (see the trace below).
 
-elapsed time: 1445m
+Add missing cpu_to_node call to convert cpu id to node id.
 
-configs tested: 111
-configs skipped: 3
+[  165.427394] mlx5_core 0000:5c:00.0 beth1: Link up
+[  166.479327] BUG: unable to handle page fault for address: 0000000800000010
+[  166.494592] #PF: supervisor read access in kernel mode
+[  166.505995] #PF: error_code(0x0000) - not-present page
+...
+[  166.816958] Call Trace:
+[  166.822380]  <TASK>
+[  166.827034]  ? __die_body+0x64/0xb0
+[  166.834774]  ? page_fault_oops+0x2cd/0x3f0
+[  166.843862]  ? exc_page_fault+0x63/0x130
+[  166.852564]  ? asm_exc_page_fault+0x22/0x30
+[  166.861843]  ? __kvmalloc_node_noprof+0x43/0xd0
+[  166.871897]  ? get_partial_node+0x1c/0x320
+[  166.880983]  ? deactivate_slab+0x269/0x2b0
+[  166.890069]  ___slab_alloc+0x521/0xa90
+[  166.898389]  ? __kvmalloc_node_noprof+0x43/0xd0
+[  166.908442]  __kmalloc_node_noprof+0x216/0x3f0
+[  166.918302]  ? __kvmalloc_node_noprof+0x43/0xd0
+[  166.928354]  __kvmalloc_node_noprof+0x43/0xd0
+[  166.938021]  mlx5e_open_channels+0x5e2/0xc00
+[  166.947496]  mlx5e_open_locked+0x3e/0xf0
+[  166.956201]  mlx5e_open+0x23/0x50
+[  166.963551]  __dev_open+0x114/0x1c0
+[  166.971292]  __dev_change_flags+0xa2/0x1b0
+[  166.980378]  dev_change_flags+0x21/0x60
+[  166.988887]  do_setlink+0x38d/0xf20
+[  166.996628]  ? ep_poll_callback+0x1b9/0x240
+[  167.005910]  ? __nla_validate_parse.llvm.10713395753544950386+0x80/0xd70
+[  167.020782]  ? __wake_up_sync_key+0x52/0x80
+[  167.030066]  ? __mutex_lock+0xff/0x550
+[  167.038382]  ? security_capable+0x50/0x90
+[  167.047279]  rtnl_setlink+0x1c9/0x210
+[  167.055403]  ? ep_poll_callback+0x1b9/0x240
+[  167.064684]  ? security_capable+0x50/0x90
+[  167.073579]  rtnetlink_rcv_msg+0x2f9/0x310
+[  167.082667]  ? rtnetlink_bind+0x30/0x30
+[  167.091173]  netlink_rcv_skb+0xb1/0xe0
+[  167.099492]  netlink_unicast+0x20f/0x2e0
+[  167.108191]  netlink_sendmsg+0x389/0x420
+[  167.116896]  __sys_sendto+0x158/0x1c0
+[  167.125024]  __x64_sys_sendto+0x22/0x30
+[  167.133534]  do_syscall_64+0x63/0x130
+[  167.141657]  ? __irq_exit_rcu.llvm.17843942359718260576+0x52/0xd0
+[  167.155181]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Fixes: bb135e40129d ("net/mlx5e: move XDP_REDIRECT sq to dynamic allocation")
+Signed-off-by: Stanislav Fomichev <sdf@fomichev.me>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-tested configs:
-alpha                            alldefconfig    gcc-14.2.0
-alpha                             allnoconfig    gcc-14.2.0
-alpha                            allyesconfig    gcc-14.2.0
-arc                              allmodconfig    gcc-13.2.0
-arc                               allnoconfig    gcc-13.2.0
-arc                              allyesconfig    gcc-13.2.0
-arc                        nsimosci_defconfig    gcc-13.2.0
-arc                   randconfig-001-20250122    gcc-13.2.0
-arc                   randconfig-002-20250122    gcc-13.2.0
-arm                              allmodconfig    gcc-14.2.0
-arm                               allnoconfig    clang-17
-arm                              allyesconfig    gcc-14.2.0
-arm                        clps711x_defconfig    clang-19
-arm                   randconfig-001-20250122    clang-19
-arm                   randconfig-002-20250122    clang-20
-arm                   randconfig-003-20250122    gcc-14.2.0
-arm                   randconfig-004-20250122    gcc-14.2.0
-arm                         socfpga_defconfig    gcc-14.2.0
-arm64                            allmodconfig    clang-18
-arm64                             allnoconfig    gcc-14.2.0
-arm64                 randconfig-001-20250122    clang-20
-arm64                 randconfig-002-20250122    clang-15
-arm64                 randconfig-003-20250122    clang-20
-arm64                 randconfig-004-20250122    clang-19
-csky                              allnoconfig    gcc-14.2.0
-csky                  randconfig-001-20250122    gcc-14.2.0
-csky                  randconfig-001-20250123    gcc-14.2.0
-csky                  randconfig-002-20250122    gcc-14.2.0
-hexagon                          allmodconfig    clang-20
-hexagon                           allnoconfig    clang-20
-hexagon               randconfig-001-20250122    clang-20
-hexagon               randconfig-002-20250122    clang-20
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20250122    clang-19
-i386        buildonly-randconfig-001-20250123    gcc-12
-i386        buildonly-randconfig-002-20250122    gcc-12
-i386        buildonly-randconfig-002-20250123    clang-19
-i386        buildonly-randconfig-003-20250122    gcc-12
-i386        buildonly-randconfig-003-20250123    gcc-12
-i386        buildonly-randconfig-004-20250122    clang-19
-i386        buildonly-randconfig-004-20250123    clang-19
-i386        buildonly-randconfig-005-20250122    clang-19
-i386        buildonly-randconfig-005-20250123    gcc-12
-i386        buildonly-randconfig-006-20250122    clang-19
-i386        buildonly-randconfig-006-20250123    clang-19
-i386                                defconfig    clang-19
-loongarch                        allmodconfig    gcc-14.2.0
-loongarch                         allnoconfig    gcc-14.2.0
-loongarch             randconfig-001-20250122    gcc-14.2.0
-loongarch             randconfig-002-20250122    gcc-14.2.0
-m68k                             allmodconfig    gcc-14.2.0
-m68k                             allyesconfig    gcc-14.2.0
-microblaze                       allmodconfig    gcc-14.2.0
-mips                           ip32_defconfig    clang-20
-nios2                 randconfig-001-20250122    gcc-14.2.0
-nios2                 randconfig-002-20250122    gcc-14.2.0
-openrisc                          allnoconfig    gcc-14.2.0
-openrisc                         allyesconfig    gcc-14.2.0
-parisc                           allmodconfig    gcc-14.2.0
-parisc                            allnoconfig    gcc-14.2.0
-parisc                           allyesconfig    gcc-14.2.0
-parisc                generic-32bit_defconfig    gcc-14.2.0
-parisc                randconfig-001-20250122    gcc-14.2.0
-parisc                randconfig-002-20250122    gcc-14.2.0
-powerpc                          allmodconfig    gcc-14.2.0
-powerpc                           allnoconfig    gcc-14.2.0
-powerpc                          allyesconfig    clang-16
-powerpc               randconfig-001-20250122    gcc-14.2.0
-powerpc               randconfig-002-20250122    clang-17
-powerpc               randconfig-003-20250122    clang-15
-powerpc64             randconfig-001-20250122    clang-20
-powerpc64             randconfig-002-20250122    clang-19
-powerpc64             randconfig-003-20250122    clang-20
-riscv                            allmodconfig    clang-20
-riscv                             allnoconfig    gcc-14.2.0
-riscv                            allyesconfig    clang-20
-riscv                    nommu_k210_defconfig    clang-15
-riscv                 randconfig-001-20250122    clang-20
-riscv                 randconfig-002-20250122    gcc-14.2.0
-s390                             allmodconfig    clang-19
-s390                              allnoconfig    clang-20
-s390                             allyesconfig    gcc-14.2.0
-s390                  randconfig-001-20250122    clang-18
-s390                  randconfig-002-20250122    clang-20
-sh                               allmodconfig    gcc-14.2.0
-sh                               allyesconfig    gcc-14.2.0
-sh                    randconfig-001-20250122    gcc-14.2.0
-sh                    randconfig-002-20250122    gcc-14.2.0
-sparc                            allmodconfig    gcc-14.2.0
-sparc                 randconfig-001-20250122    gcc-14.2.0
-sparc                 randconfig-002-20250122    gcc-14.2.0
-sparc64               randconfig-001-20250122    gcc-14.2.0
-sparc64               randconfig-002-20250122    gcc-14.2.0
-um                               allmodconfig    clang-20
-um                                allnoconfig    clang-18
-um                               allyesconfig    gcc-12
-um                    randconfig-001-20250122    gcc-12
-um                    randconfig-002-20250122    clang-20
-x86_64                            allnoconfig    clang-19
-x86_64                           allyesconfig    clang-19
-x86_64      buildonly-randconfig-001-20250122    gcc-12
-x86_64      buildonly-randconfig-002-20250122    clang-19
-x86_64      buildonly-randconfig-003-20250122    gcc-12
-x86_64      buildonly-randconfig-004-20250122    gcc-12
-x86_64      buildonly-randconfig-005-20250122    gcc-12
-x86_64      buildonly-randconfig-006-20250122    clang-19
-x86_64                              defconfig    gcc-11
-xtensa                randconfig-001-20250122    gcc-14.2.0
-xtensa                randconfig-002-20250122    gcc-14.2.0
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index bd41b75d246e..a814b63ed97e 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -2087,7 +2087,7 @@ static struct mlx5e_xdpsq *mlx5e_open_xdpredirect_sq(struct mlx5e_channel *c,
+ 	struct mlx5e_xdpsq *xdpsq;
+ 	int err;
+ 
+-	xdpsq = kvzalloc_node(sizeof(*xdpsq), GFP_KERNEL, c->cpu);
++	xdpsq = kvzalloc_node(sizeof(*xdpsq), GFP_KERNEL, cpu_to_node(c->cpu));
+ 	if (!xdpsq)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-- 
+2.48.0
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
