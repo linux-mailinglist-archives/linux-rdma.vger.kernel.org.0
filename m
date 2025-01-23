@@ -1,51 +1,71 @@
-Return-Path: <linux-rdma+bounces-7189-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7193-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1980FA19C41
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2025 02:36:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4576A19CB1
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2025 03:00:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D52243A7CEE
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2025 01:36:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CC9B188F0BF
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2025 02:00:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA06F9C1;
-	Thu, 23 Jan 2025 01:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C833681724;
+	Thu, 23 Jan 2025 01:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="OLav0dyd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1668335953
-	for <linux-rdma@vger.kernel.org>; Thu, 23 Jan 2025 01:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2405A17741;
+	Thu, 23 Jan 2025 01:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737596209; cv=none; b=I3tFECJqeRlHtqh+GNRwuFtZY4hwcC60ZI5XKdn3LbuUgPiqkA4Ndt1g/8Vx3GZguewEnPRNheoTf569fWwIYWv/1bNnO4L4gr2L28gZSoGZIKC9SGGW5JHLYVW4ghdoST4XmdqMR4rUNzNFvuFZpmDNrpjoDidkHHS2M7wu9xI=
+	t=1737597599; cv=none; b=dJt/vISRGBSmzXIVLNX2KXeZ8vFRl1yffI5JU2QswhOcoQfx9Tktt752h+lFvnzptz74AQBCJinn4reFVVIBKQBW0gNzZVggrAFkiox5On3dosdEdES27bgXqKcJa61f+fv2hkMJbY9pbtwAuesKNk/tSJK6sjhIQwNSGXEoiM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737596209; c=relaxed/simple;
-	bh=vpTLzYedo/PxKkAloWmFxXiIgwibCDCYH9zaGIoUn2Q=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=sscnXZqsTpJfjc0vthYilRbBgiR9bwVLLLxRTKrntu7yObqA4a6A+qWuCo1UvTL8rM8z1GqRoh2utQkhgcwEqrB6aRBlWbWqEesGwY/7VbSoXh7W7PdwJpXsLxgvamvKE3MRkQMyHsSaf+JPtQtBx96yRtiNrDADJnuf4OD+HxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Ydk2s2VHDz1W4Vr;
-	Thu, 23 Jan 2025 09:32:37 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 058EE180218;
-	Thu, 23 Jan 2025 09:36:38 +0800 (CST)
-Received: from localhost.localdomain (10.90.30.45) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 23 Jan 2025 09:36:37 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<huangjunxian6@hisilicon.com>, <tangchengchang@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Fix mbox timing out by adding retry mechanism
-Date: Thu, 23 Jan 2025 09:29:30 +0800
-Message-ID: <20250123012930.2049043-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
+	s=arc-20240116; t=1737597599; c=relaxed/simple;
+	bh=eRskHU/WUvePbwISvgcAgI72IVUm/QmGMMyssyqBQuU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ngZnGlJHeMGo6HvHfxRG6FzKwgJlcy4im8ucrtX5o1l3zl6MSdX4nhCCrTbNQhj8jGRRYdrtofR2c2NZ6akySP1xqtVt2VdvMFe5O3U88JkG5ZQBLFpHZrVC6PNEx7QKdSiggbCS/cynMfZNNTJyC0v9XM6Qn/3g5IcNvxKxGb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=OLav0dyd; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1737597588; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=rqkK4Fa05O4jYFfWx+iq53v/+mmKBvlIuTXvfqc+pk4=;
+	b=OLav0dydfCQPBv7Mm28hxybRHbDLIdCG3t09rNiQPFsv++UdIaC2aDD3USDgTDEHpXs01ZbzacpfGMVjGBRCF/ub2q156I5TFCUbuN0uGf+X9SxBxe/I03mwww/iEhadeiPR8BRp+Gl6IsglkaiMvZsqmqxKjyVZfWmTdtKLUwY=
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WO9yfDO_1737597582 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Thu, 23 Jan 2025 09:59:47 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com,
+	jaka@linux.ibm.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	pabeni@redhat.com,
+	song@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	yhs@fb.com,
+	edumazet@google.com,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	jolsa@kernel.org,
+	guwen@linux.alibaba.com
+Cc: kuba@kernel.org,
+	davem@davemloft.net,
+	netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH bpf-next v7 0/6] net/smc: Introduce smc_ops
+Date: Thu, 23 Jan 2025 09:59:36 +0800
+Message-ID: <20250123015942.94810-1-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -53,204 +73,111 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemf100018.china.huawei.com (7.202.181.17)
 
-If a QP is modified to error state and a flush CQE process is triggered,
-the subsequent QP destruction mbox can still be successfully posted but
-will be blocked in HW until the flush CQE process finishes. This causes
-further mbox posting timeouts in driver. The blocking time is related
-to QP depth. Considering an extreme case where SQ depth and RQ depth
-are both 32K, the blocking time can reach about 135ms.
+This patch aims to introduce BPF injection capabilities for SMC and
+includes a self-test to ensure code stability.
 
-This patch adds a retry mechanism for mbox posting. For each try, FW
-waits 15ms for HW to complete the previous mbox, otherwise return a
-timeout error code to driver. Counting other time consumption in FW,
-set 8 tries for mbox posting and a 5ms time gap before each retry to
-increase to a sufficient timeout limit.
+Since the SMC protocol isn't ideal for every situation, especially
+short-lived ones, most applications can't guarantee the absence of
+such scenarios. Consequently, applications may need specific strategies
+to decide whether to use SMC. For example, an application might limit SMC
+usage to certain IP addresses or ports.
 
-Fixes: 0425e3e6e0c7 ("RDMA/hns: Support flush cqe for hip08 in kernel space")
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 93 ++++++++++++++++------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  6 +-
- 2 files changed, 74 insertions(+), 25 deletions(-)
+To maintain the principle of transparent replacement, we want applications
+to remain unaffected even if they need specific SMC strategies. In other
+words, they should not require recompilation of their code.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 5c911d1def03..512866324f59 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1268,24 +1268,27 @@ static int hns_roce_cmd_err_convert_errno(u16 desc_ret)
- 	return -EIO;
- }
- 
--static u32 hns_roce_cmdq_tx_timeout(u16 opcode, u32 tx_timeout)
-+static void hns_roce_get_cmdq_param(u16 opcode, u32 *tx_timeout, u8 *try_cnt,
-+				    u8 *retry_gap_msec)
- {
--	static const struct hns_roce_cmdq_tx_timeout_map cmdq_tx_timeout[] = {
--		{HNS_ROCE_OPC_POST_MB, HNS_ROCE_OPC_POST_MB_TIMEOUT},
-+	static const struct hns_roce_cmdq_param_map param[] = {
-+		{HNS_ROCE_OPC_POST_MB, HNS_ROCE_OPC_POST_MB_TIMEOUT,
-+		 HNS_ROCE_OPC_POST_MB_TRY_CNT,
-+		 HNS_ROCE_OPC_POST_MB_RETRY_GAP_MSEC},
- 	};
- 	int i;
- 
--	for (i = 0; i < ARRAY_SIZE(cmdq_tx_timeout); i++)
--		if (cmdq_tx_timeout[i].opcode == opcode)
--			return cmdq_tx_timeout[i].tx_timeout;
--
--	return tx_timeout;
-+	for (i = 0; i < ARRAY_SIZE(param); i++)
-+		if (param[i].opcode == opcode) {
-+			*tx_timeout = param[i].tx_timeout;
-+			*try_cnt = param[i].try_cnt;
-+			*retry_gap_msec = param[i].retry_gap_msec;
-+			return;
-+		}
- }
- 
--static void hns_roce_wait_csq_done(struct hns_roce_dev *hr_dev, u16 opcode)
-+static void hns_roce_wait_csq_done(struct hns_roce_dev *hr_dev, u32 tx_timeout)
- {
--	struct hns_roce_v2_priv *priv = hr_dev->priv;
--	u32 tx_timeout = hns_roce_cmdq_tx_timeout(opcode, priv->cmq.tx_timeout);
- 	u32 timeout = 0;
- 
- 	do {
-@@ -1295,8 +1298,9 @@ static void hns_roce_wait_csq_done(struct hns_roce_dev *hr_dev, u16 opcode)
- 	} while (++timeout < tx_timeout);
- }
- 
--static int __hns_roce_cmq_send(struct hns_roce_dev *hr_dev,
--			       struct hns_roce_cmq_desc *desc, int num)
-+static int __hns_roce_cmq_send_one(struct hns_roce_dev *hr_dev,
-+				   struct hns_roce_cmq_desc *desc,
-+				   int num, u32 tx_timeout)
- {
- 	struct hns_roce_v2_priv *priv = hr_dev->priv;
- 	struct hns_roce_v2_cmq_ring *csq = &priv->cmq.csq;
-@@ -1305,8 +1309,6 @@ static int __hns_roce_cmq_send(struct hns_roce_dev *hr_dev,
- 	int ret;
- 	int i;
- 
--	spin_lock_bh(&csq->lock);
--
- 	tail = csq->head;
- 
- 	for (i = 0; i < num; i++) {
-@@ -1320,22 +1322,17 @@ static int __hns_roce_cmq_send(struct hns_roce_dev *hr_dev,
- 
- 	atomic64_inc(&hr_dev->dfx_cnt[HNS_ROCE_DFX_CMDS_CNT]);
- 
--	hns_roce_wait_csq_done(hr_dev, le16_to_cpu(desc->opcode));
-+	hns_roce_wait_csq_done(hr_dev, tx_timeout);
- 	if (hns_roce_cmq_csq_done(hr_dev)) {
- 		ret = 0;
- 		for (i = 0; i < num; i++) {
- 			/* check the result of hardware write back */
--			desc[i] = csq->desc[tail++];
-+			desc_ret = le16_to_cpu(csq->desc[tail++].retval);
- 			if (tail == csq->desc_num)
- 				tail = 0;
--
--			desc_ret = le16_to_cpu(desc[i].retval);
- 			if (likely(desc_ret == CMD_EXEC_SUCCESS))
- 				continue;
- 
--			dev_err_ratelimited(hr_dev->dev,
--					    "Cmdq IO error, opcode = 0x%x, return = 0x%x.\n",
--					    desc->opcode, desc_ret);
- 			ret = hns_roce_cmd_err_convert_errno(desc_ret);
- 		}
- 	} else {
-@@ -1350,14 +1347,62 @@ static int __hns_roce_cmq_send(struct hns_roce_dev *hr_dev,
- 		ret = -EAGAIN;
- 	}
- 
--	spin_unlock_bh(&csq->lock);
--
- 	if (ret)
- 		atomic64_inc(&hr_dev->dfx_cnt[HNS_ROCE_DFX_CMDS_ERR_CNT]);
- 
- 	return ret;
- }
- 
-+static bool check_cmq_retry(u16 opcode, int ret)
-+{
-+	return opcode == HNS_ROCE_OPC_POST_MB && ret == -ETIME;
-+}
-+
-+static int __hns_roce_cmq_send(struct hns_roce_dev *hr_dev,
-+			       struct hns_roce_cmq_desc *desc, int num)
-+{
-+	struct hns_roce_v2_priv *priv = hr_dev->priv;
-+	struct hns_roce_v2_cmq_ring *csq = &priv->cmq.csq;
-+	u16 opcode = le16_to_cpu(desc->opcode);
-+	u32 tx_timeout = priv->cmq.tx_timeout;
-+	u8 retry_gap_msec = 0;
-+	u8 try_cnt = 1;
-+	u32 rsv_tail;
-+	int ret;
-+	int i;
-+
-+	hns_roce_get_cmdq_param(opcode, &tx_timeout,
-+				&try_cnt, &retry_gap_msec);
-+
-+	while (try_cnt) {
-+		try_cnt--;
-+
-+		spin_lock_bh(&csq->lock);
-+		rsv_tail = csq->head;
-+		ret = __hns_roce_cmq_send_one(hr_dev, desc, num, tx_timeout);
-+		if (check_cmq_retry(opcode, ret) && try_cnt) {
-+			spin_unlock_bh(&csq->lock);
-+			mdelay(retry_gap_msec);
-+			continue;
-+		}
-+
-+		for (i = 0; i < num; i++) {
-+			desc[i] = csq->desc[rsv_tail++];
-+			if (rsv_tail == csq->desc_num)
-+				rsv_tail = 0;
-+		}
-+		spin_unlock_bh(&csq->lock);
-+		break;
-+	}
-+
-+	if (ret)
-+		dev_err_ratelimited(hr_dev->dev,
-+				    "Cmdq IO error, opcode = 0x%x, return = %d.\n",
-+				    opcode, ret);
-+
-+	return ret;
-+}
-+
- static int hns_roce_cmq_send(struct hns_roce_dev *hr_dev,
- 			     struct hns_roce_cmq_desc *desc, int num)
- {
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index cbdbc9edbce6..2e91babf333c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -230,9 +230,13 @@ enum hns_roce_opcode_type {
- };
- 
- #define HNS_ROCE_OPC_POST_MB_TIMEOUT 35000
--struct hns_roce_cmdq_tx_timeout_map {
-+#define HNS_ROCE_OPC_POST_MB_TRY_CNT 8
-+#define HNS_ROCE_OPC_POST_MB_RETRY_GAP_MSEC 5
-+struct hns_roce_cmdq_param_map {
- 	u16 opcode;
- 	u32 tx_timeout;
-+	u8 try_cnt;
-+	u8 retry_gap_msec;
- };
- 
- enum {
+Additionally, we need to ensure the scalability of strategy implementation.
+While using socket options or sysctl might be straightforward, it could
+complicate future expansions.
+
+Fortunately, BPF addresses these concerns effectively. Users can write
+their own strategies in eBPF to determine whether to use SMC, and they can
+easily modify those strategies in the future.
+
+v2:
+  1. Rename smc_bpf_ops to smc_ops.
+  2. Change the scope of smc_ops from global to per netns.
+  3. Directly pass parameters to ops instead of smc_ops_ctx.
+  4. Remove struct smc_ops_ctx.
+  5. Remove exports that are no longer needed.
+
+v3:
+  1. Remove find_ksym_btf_id_by_prefix_kind.
+  2. Enhance selftest, introduce a complete ops for filtering smc
+     connections based on ip pairs and a realistic topology test
+     to verify it.
+
+v4:
+  1. Remove unless func: smc_bpf_ops_check_member()
+  2. Remove unless inline func: smc_ops_find_by_name()
+  3. Change CONFIG_SMC=y to complete CI testing
+  4. Change smc_sock to smc_sock___local in test to avoid
+     compiling failed with CONFIG_SMC=y
+  5. Improve test cases, remove unnecessary timeouts and multi-thread
+     test, using network_helpers to start testing between server and
+     client.
+  6. Fix issues when the return value of the ops function is neither 0
+     nor 1.
+
+v5:
+  1. Fix incorrect CI config from CONFIG_SMC=Y to CONFIG_SMC=y.
+
+v6:
+  1. Fix some spelling errors and code styles.
+  2. Fix test failed under s390x.
+  3. New approach to fix libbpf exceptions.
+  4. Fix warning & failure when compiling "Introduce generic hook smc_ops".
+
+v7:
+  1. Fix some code styles.
+  2. Added a fix patch for the potential UAF issue in SMC, which can occur
+     easily during BPF CI tests.
+  3. Fix the incorrect usage of rcu_replace_pointer and replace it with
+     xhcg.
+  4. Remove the forced type conversion in smc_call_retops.
+  5. Use more appropriate assert macros for testing code.
+  6. Remove unnecessary BPF_CORE_READ.
+
+D. Wythe (6):
+  bpf: export necessary sympols for modules with struct_ops
+  net/smc: fix UAF on smcsk after smc_listen_out()
+  net/smc: Introduce generic hook smc_ops
+  net/smc: bpf: register smc_ops info struct_ops
+  libbpf: fix error when st-prefix_ops and ops from differ btf
+  bpf/selftests: add selftest for bpf_smc_ops
+
+
+D. Wythe (6):
+  bpf: export necessary sympols for modules with struct_ops
+  net/smc: fix UAF on smcsk after smc_listen_out()
+  net/smc: Introduce generic hook smc_ops
+  net/smc: bpf: register smc_ops info struct_ops
+  libbpf: fix error when st-prefix_ops and ops from differ btf
+  bpf/selftests: add selftest for bpf_smc_ops
+
+ include/net/netns/smc.h                       |   3 +
+ include/net/smc.h                             |  53 +++
+ kernel/bpf/bpf_struct_ops.c                   |   2 +
+ kernel/bpf/syscall.c                          |   1 +
+ net/ipv4/tcp_output.c                         |  18 +-
+ net/smc/Kconfig                               |  12 +
+ net/smc/Makefile                              |   1 +
+ net/smc/af_smc.c                              |  14 +-
+ net/smc/smc_ops.c                             | 131 ++++++
+ net/smc/smc_ops.h                             |  33 ++
+ net/smc/smc_sysctl.c                          |  90 ++++
+ tools/lib/bpf/libbpf.c                        |  37 +-
+ tools/testing/selftests/bpf/config            |   4 +
+ .../selftests/bpf/prog_tests/test_bpf_smc.c   | 396 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_smc.c   | 117 ++++++
+ 15 files changed, 888 insertions(+), 24 deletions(-)
+ create mode 100644 net/smc/smc_ops.c
+ create mode 100644 net/smc/smc_ops.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_smc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_smc.c
+
 -- 
-2.33.0
+2.45.0
 
 
