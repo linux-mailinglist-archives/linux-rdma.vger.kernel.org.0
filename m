@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-7229-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7230-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B174A1CB7C
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2025 16:48:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90AA0A1CBC5
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2025 16:54:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 685F0162267
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2025 15:43:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2B323AC01C
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2025 15:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64E5A225407;
-	Sun, 26 Jan 2025 15:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FBBE228CB0;
+	Sun, 26 Jan 2025 15:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OmQpe+Vy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gkg337R2"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA622253FD;
-	Sun, 26 Jan 2025 15:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F306228C99;
+	Sun, 26 Jan 2025 15:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737903851; cv=none; b=VILoN6SSKH3DuJ7aUK9xiGWMI8UsQRMmig3SlukRiD4K6EtXkIyyc40aJqIa1mi8uSe7u8mYCyB2QjKjeDYloX3/iXbGX2xgWNv++Ir8iOD7RZPbWjR1gfVrp3zznWPcCY63fYIe6JOMH3PWP3uuJlPqUPLKvphwMIlbc5skM5I=
+	t=1737903886; cv=none; b=F00Wn1oYHYP6aNmhyqi4VqqbB2CiIOhNjb2tHjZGZj/2kU06jHsDNk9dbVoLAPKgu2UPT2SNF1mSommxgtblRxuBeYN0oWFAGR4QQz1swTXEaDem0670mhVhoPOTNaqm+trj7/It8LgQ/wRGr5Ff1TGUcRcOozyixvydoMLVskk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737903851; c=relaxed/simple;
-	bh=sVlPh/U3i0Z1o6GEEtNzav9Jt92d1eFsixS67PJiSfc=;
+	s=arc-20240116; t=1737903886; c=relaxed/simple;
+	bh=cw+KWHZ1sZybl/8w3xIx8akhRsW/EuEKwhCM3OT44tc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pbgyzfBU3plc77OedmNLLM7Of6JSgnPezFW7Py/08w46zq/8AIU4jHEvf7g47x8O5kJ9bPcfRP32GNuXEYF6jT61VBKBWD/zUlMMz2Dw+FnktPeFaZKWIbmYXYH8JlreOW5v9gCUR01yJVCF12cfAT/PKcdP8UCs8nTg1/Lpj2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OmQpe+Vy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EAC2C4CEE3;
-	Sun, 26 Jan 2025 15:04:09 +0000 (UTC)
+	 MIME-Version; b=QVLxYud9nNyrIS8Jwj9jCwPplbT+Al4ScXWeNxLsjo8bwbJpeY3rYBxHZCaVM9XiFPpF6GmWHr6peWSUojfMtiZalAZgBCY1RQT86TGdNQDOXEAZFb4DtUXLVtpQkbF+zjDw+TlIZs5b9M3IlmLcRDGEuBTosjXqrT8Pn9M+Qrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gkg337R2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47231C4CEE2;
+	Sun, 26 Jan 2025 15:04:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737903851;
-	bh=sVlPh/U3i0Z1o6GEEtNzav9Jt92d1eFsixS67PJiSfc=;
+	s=k20201202; t=1737903886;
+	bh=cw+KWHZ1sZybl/8w3xIx8akhRsW/EuEKwhCM3OT44tc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OmQpe+Vy3mbjU1sAu+jIEXFViH6V1UQlmQaWd4cJRNv+RKCbrwF+6mZJmkzn+s/i9
-	 RFjgXOObVCk3oRMIo/TeILV1EXX0CfpLupQT+WELDrv9uFL1KZ9RaZ0my+aX3Rmkad
-	 65p2UJuo5nztLEmincBVGBr9wQ5Bg8Z9hjki3RxkVzk+/sD01wZGDxyTJX9XnkGptp
-	 bkyTQhowky7q2sQjqBR9yfJJmiCE79MEeY+ku8Ys+mHCbMiobpmXX2D/sXJi1AXbnV
-	 cIFDYKPNjAM7aj58AovmumMRho+HjzsjVhC34WFcOqM7n6Z1bHxCVvvgPmRWOhjnMe
-	 Smd2k5bql5ZxQ==
+	b=Gkg337R2xCu1BMBxOhChcI0kCyZDoyY4DTL+o3YI3/n79ZuiOoGOEDOYwrxE0z06K
+	 sZTjI6fQ61NhMyLaFJ3pKFxBAPMkkqNLLAsHf7+Owa96e5+CE6fHKL1rdY+sfC9BgQ
+	 ov61N01i+QOawDLJOOPLIUNB4Hp3cZpUqTQz26gksUEVZFupG3i9PwyW2MQtMyLJP8
+	 g7GRaEc+QQ/ISPybcBGDXGZoNmvKb8iNCt9bugMeWHsS5FFt8U+5L4n3tXx+26y2pC
+	 7w+C/iq74wtn5wmAvJH/Oa3aPKIkxwRZvbvKilubx1Dfi9zAlj/YrTC7bzvxMsMY/r
+	 LohIWIDJFSOJA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -55,17 +55,17 @@ Cc: Vadim Fedorenko <vadfed@meta.com>,
 	edumazet@google.com,
 	kuba@kernel.org,
 	richardcochran@gmail.com,
-	vadim.fedorenko@linux.dev,
 	rrameshbabu@nvidia.com,
+	vadim.fedorenko@linux.dev,
 	cjubran@nvidia.com,
 	netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 08/17] net/mlx5: use do_aux_work for PHC overflow checks
-Date: Sun, 26 Jan 2025 10:03:44 -0500
-Message-Id: <20250126150353.957794-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 07/14] net/mlx5: use do_aux_work for PHC overflow checks
+Date: Sun, 26 Jan 2025 10:04:23 -0500
+Message-Id: <20250126150430.958708-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250126150353.957794-1-sashal@kernel.org>
-References: <20250126150353.957794-1-sashal@kernel.org>
+In-Reply-To: <20250126150430.958708-1-sashal@kernel.org>
+References: <20250126150430.958708-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.127
+X-stable-base: Linux 5.15.177
 Content-Transfer-Encoding: 8bit
 
 From: Vadim Fedorenko <vadfed@meta.com>
@@ -102,10 +102,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 13 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-index 2ac255bb918ba..133e8220aaeaf 100644
+index 6fece284de0f3..26d91b080d3c4 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-@@ -186,17 +186,16 @@ static void mlx5_pps_out(struct work_struct *work)
+@@ -177,17 +177,16 @@ static void mlx5_pps_out(struct work_struct *work)
  	}
  }
  
@@ -126,7 +126,7 @@ index 2ac255bb918ba..133e8220aaeaf 100644
  
  	if (mdev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR)
  		goto out;
-@@ -207,7 +206,7 @@ static void mlx5_timestamp_overflow(struct work_struct *work)
+@@ -198,7 +197,7 @@ static void mlx5_timestamp_overflow(struct work_struct *work)
  	write_sequnlock_irqrestore(&clock->lock, flags);
  
  out:
@@ -135,7 +135,7 @@ index 2ac255bb918ba..133e8220aaeaf 100644
  }
  
  static int mlx5_ptp_settime_real_time(struct mlx5_core_dev *mdev,
-@@ -375,6 +374,7 @@ static int mlx5_ptp_adjfreq(struct ptp_clock_info *ptp, s32 delta)
+@@ -366,6 +365,7 @@ static int mlx5_ptp_adjfreq(struct ptp_clock_info *ptp, s32 delta)
  				       timer->nominal_c_mult + diff;
  	mlx5_update_clock_info_page(mdev);
  	write_sequnlock_irqrestore(&clock->lock, flags);
@@ -143,7 +143,7 @@ index 2ac255bb918ba..133e8220aaeaf 100644
  
  	return 0;
  }
-@@ -708,6 +708,7 @@ static const struct ptp_clock_info mlx5_ptp_clock_info = {
+@@ -616,6 +616,7 @@ static const struct ptp_clock_info mlx5_ptp_clock_info = {
  	.settime64	= mlx5_ptp_settime,
  	.enable		= NULL,
  	.verify		= NULL,
@@ -151,7 +151,7 @@ index 2ac255bb918ba..133e8220aaeaf 100644
  };
  
  static int mlx5_query_mtpps_pin_mode(struct mlx5_core_dev *mdev, u8 pin,
-@@ -908,12 +909,11 @@ static void mlx5_init_overflow_period(struct mlx5_clock *clock)
+@@ -809,12 +810,11 @@ static void mlx5_init_overflow_period(struct mlx5_clock *clock)
  	do_div(ns, NSEC_PER_SEC / HZ);
  	timer->overflow_period = ns;
  
@@ -168,7 +168,7 @@ index 2ac255bb918ba..133e8220aaeaf 100644
  
  	if (clock_info)
  		clock_info->overflow_period = timer->overflow_period;
-@@ -999,6 +999,9 @@ void mlx5_init_clock(struct mlx5_core_dev *mdev)
+@@ -900,6 +900,9 @@ void mlx5_init_clock(struct mlx5_core_dev *mdev)
  
  	MLX5_NB_INIT(&clock->pps_nb, mlx5_pps_event, PPS_EVENT);
  	mlx5_eq_notifier_register(mdev, &clock->pps_nb);
@@ -178,7 +178,7 @@ index 2ac255bb918ba..133e8220aaeaf 100644
  }
  
  void mlx5_cleanup_clock(struct mlx5_core_dev *mdev)
-@@ -1015,7 +1018,6 @@ void mlx5_cleanup_clock(struct mlx5_core_dev *mdev)
+@@ -916,7 +919,6 @@ void mlx5_cleanup_clock(struct mlx5_core_dev *mdev)
  	}
  
  	cancel_work_sync(&clock->pps_info.out_work);
@@ -187,10 +187,10 @@ index 2ac255bb918ba..133e8220aaeaf 100644
  	if (mdev->clock_info) {
  		free_page((unsigned long)mdev->clock_info);
 diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index 2588ddd3512b1..3c3e0f26c2446 100644
+index 62d60a515b038..4efd83a7f14fe 100644
 --- a/include/linux/mlx5/driver.h
 +++ b/include/linux/mlx5/driver.h
-@@ -716,7 +716,6 @@ struct mlx5_timer {
+@@ -686,7 +686,6 @@ struct mlx5_timer {
  	struct timecounter         tc;
  	u32                        nominal_c_mult;
  	unsigned long              overflow_period;
