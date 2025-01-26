@@ -1,66 +1,67 @@
-Return-Path: <linux-rdma+bounces-7225-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7226-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B38BFA1CA63
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2025 16:24:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8130AA1CA8F
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2025 16:28:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FB3E7A160C
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2025 15:23:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 236BD1680BD
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2025 15:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A283919C574;
-	Sun, 26 Jan 2025 15:01:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD20A2040B4;
+	Sun, 26 Jan 2025 15:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BglAlWzv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mEvT29ST"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FFE019992C;
-	Sun, 26 Jan 2025 15:01:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7627E1DE8B0;
+	Sun, 26 Jan 2025 15:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737903683; cv=none; b=L+GVoDXFzrVDZHNuML87/zEU+vDrZj9aTHj+/ZUbfL7Pw1Bo629bR0J1SEJjjfUjCGQUTJrN3+VhMl8/h0GqVnAG5XBl/sx/gtOQGAktqjX/2DtHYKvUDg1QGIoM1llrkE+PopCxa+hPhMuQh7D9OImgYLzgguaIx3L8C/SCPw0=
+	t=1737903689; cv=none; b=Chg8kacVT5LHAYxh8oqNnavaNFSf1qC4LWRK6uAHyI27T4F1MC4j6kINTKL0kErr6UNiQhL3B9sIKDih3OrvVFLB3rc3hXA1evpwPDVIj80Hra0AiL9HU7+vfbgZwnNI3JPRK7NXJyPCH6MACih0FmTWmubn+mUzJl4SgPkiaF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737903683; c=relaxed/simple;
-	bh=R3aFH1ESDnx8HbJ794vbnL2NlubjNeI0tizQIxY15Zk=;
+	s=arc-20240116; t=1737903689; c=relaxed/simple;
+	bh=jKkYIHF4skevEc1SkvAkyBLhgJzhm05aP8IIFRNROYI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ndiblQ27i8gnDznZOkWumoG3b3HNYe3eV5BiOZbB6YXmU0WD5wwknSjdQbyVgnkJJDxwzGNLX66U928IdS+gABB6XJ7ESKKp0f2Vtcs0H3FFwxrQsCivSlJCyHG4ixFj2m1cF3EElvUJwOEky7bImbkCMItbum4Xdt6vN7h0ODo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BglAlWzv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EFD1C4CEE2;
-	Sun, 26 Jan 2025 15:01:21 +0000 (UTC)
+	 MIME-Version; b=iN9oJZIIoU7B7z+L4u5dNrP7fckGFLCdLJBHZ+MsLl/fbflDuy0V11cbOeeSA2sn9/ZFL2OQqTEN+trxvGWGRYT63x10fzL6O1RQKClwBj95GiS2Rz1OHgplQrplKDuXNITRPA/5c3tU7M3llGhlOq0sKAORTsoV90d6fvHETxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mEvT29ST; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 923F5C4CEE2;
+	Sun, 26 Jan 2025 15:01:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737903682;
-	bh=R3aFH1ESDnx8HbJ794vbnL2NlubjNeI0tizQIxY15Zk=;
+	s=k20201202; t=1737903689;
+	bh=jKkYIHF4skevEc1SkvAkyBLhgJzhm05aP8IIFRNROYI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BglAlWzvcIyLfbpKFMrXilhydofpFOHHt3HgDWx4neiQNYpyC7v7RAe8jqNiWWQn7
-	 PpNmLZ1c1tEIUdbx1reBt3+5yWQeWCKckyMyzNlHo3K0Nb+WcIGGrL6bTsD2FF8XIy
-	 EpfDZcIjS/ovx7ad4xjjjtxu+qP+XHXazFECliQUiCy2jLZjyat8y13kkTpij/+tjS
-	 2Y6jaq1p3tcD/ctgMLxApK0nMXHqE5PJ+3TT1zyJhkRROA3j7GnC8qMmTu4iAuM5yq
-	 m0QCNLLZ68WZuCONJPJFZJX4/qIaNmmlCBMUbHT10ddmqNBEzMxrdKkkWSEWQFOz1o
-	 9fotFoKNSWOXA==
+	b=mEvT29ST+vJAaBLXMrVPkbSojjkZ5UISAVdrZ5kLq+Hn9iU6VM/IbjpGg6aP7IOcf
+	 mkYbvnfilkqiPNa37+/drPsGKJj8f0jtj1Eio/gtu+ue0dQiflXbcTZkHyTBL6mmjD
+	 SZD9CkJWs7vyhV5NWS9B/9vVaRHu7XmWIypmuYF4j2jGgeBS8IgVIQPITmYAXUL9Nx
+	 mOzlSmrfZlkiAiBL90YxPv3XQFreakRIxwtATIPv/0SIPTxHUrIJofQqDfJyWtmFzJ
+	 m43iB9+fyE17+/wLC6DpsYV8r9iUbglwL6c5D/9giqwgdy9jtkAv5zZQktEPTfIXco
+	 WZjqNnfXJHeYQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yevgeny Kliteynik <kliteyn@nvidia.com>,
-	Erez Shitrit <erezsh@nvidia.com>,
-	Mark Bloch <mbloch@nvidia.com>,
+Cc: Vadim Fedorenko <vadfed@meta.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>,
 	Tariq Toukan <tariqt@nvidia.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
 	Sasha Levin <sashal@kernel.org>,
 	saeedm@nvidia.com,
 	andrew+netdev@lunn.ch,
 	davem@davemloft.net,
 	edumazet@google.com,
-	pabeni@redhat.com,
-	igozlan@nvidia.com,
+	kuba@kernel.org,
+	richardcochran@gmail.com,
+	rrameshbabu@nvidia.com,
+	vadim.fedorenko@linux.dev,
 	netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.13 14/35] net/mlx5: HWS, num_of_rules counter on matcher should be atomic
-Date: Sun, 26 Jan 2025 10:00:08 -0500
-Message-Id: <20250126150029.953021-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.13 17/35] net/mlx5: use do_aux_work for PHC overflow checks
+Date: Sun, 26 Jan 2025 10:00:11 -0500
+Message-Id: <20250126150029.953021-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250126150029.953021-1-sashal@kernel.org>
 References: <20250126150029.953021-1-sashal@kernel.org>
@@ -75,114 +76,127 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.13
 Content-Transfer-Encoding: 8bit
 
-From: Yevgeny Kliteynik <kliteyn@nvidia.com>
+From: Vadim Fedorenko <vadfed@meta.com>
 
-[ Upstream commit 61fb92701b8ac9174857c417cfa988adc24e32c2 ]
+[ Upstream commit e61e6c415ba9ff2b32bb6780ce1b17d1d76238f1 ]
 
-Rule counter in matcher's struct is used in two places:
+The overflow_work is using system wq to do overflow checks and updates
+for PHC device timecounter, which might be overhelmed by other tasks.
+But there is dedicated kthread in PTP subsystem designed for such
+things. This patch changes the work queue to proper align with PTP
+subsystem and to avoid overloading system work queue.
+The adjfine() function acts the same way as overflow check worker,
+we can postpone ptp aux worker till the next overflow period after
+adjfine() was called.
 
-1. As heuristics to decide when the number of rules have crossed a
-certain percentage threshold and the matcher should be resized.
-We don't mind here if the number will be off by 1-2 due to concurrency.
-
-2. When destroying matcher, the counter value is checked and the
-user is warned if it is not 0. Here we lock all the queues, so the
-counter will be correct.
-
-We don't need to always have *exact* number, but we do need this
-number to not be corrupted, which is what is happening when the
-counter isn't atomic, due to update by different threads.
-
-Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
-Reviewed-by: Erez Shitrit <erezsh@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Link: https://patch.msgid.link/20250102181415.1477316-10-tariqt@nvidia.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
+Acked-by: Tariq Toukan <tariqt@nvidia.com>
+Link: https://patch.msgid.link/20250107104812.380225-1-vadfed@meta.com
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../mellanox/mlx5/core/steering/hws/bwc.c       | 17 +++++++++++------
- .../mellanox/mlx5/core/steering/hws/bwc.h       |  2 +-
- 2 files changed, 12 insertions(+), 7 deletions(-)
+ .../ethernet/mellanox/mlx5/core/lib/clock.c   | 24 ++++++++++---------
+ include/linux/mlx5/driver.h                   |  1 -
+ 2 files changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c
-index baacf662c0ab8..ae2849cf4dd49 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c
-@@ -152,6 +152,8 @@ mlx5hws_bwc_matcher_create(struct mlx5hws_table *table,
- 	if (!bwc_matcher)
- 		return NULL;
- 
-+	atomic_set(&bwc_matcher->num_of_rules, 0);
-+
- 	/* Check if the required match params can be all matched
- 	 * in single STE, otherwise complex matcher is needed.
- 	 */
-@@ -199,10 +201,12 @@ int mlx5hws_bwc_matcher_destroy_simple(struct mlx5hws_bwc_matcher *bwc_matcher)
- 
- int mlx5hws_bwc_matcher_destroy(struct mlx5hws_bwc_matcher *bwc_matcher)
- {
--	if (bwc_matcher->num_of_rules)
-+	u32 num_of_rules = atomic_read(&bwc_matcher->num_of_rules);
-+
-+	if (num_of_rules)
- 		mlx5hws_err(bwc_matcher->matcher->tbl->ctx,
- 			    "BWC matcher destroy: matcher still has %d rules\n",
--			    bwc_matcher->num_of_rules);
-+			    num_of_rules);
- 
- 	mlx5hws_bwc_matcher_destroy_simple(bwc_matcher);
- 
-@@ -309,7 +313,7 @@ static void hws_bwc_rule_list_add(struct mlx5hws_bwc_rule *bwc_rule, u16 idx)
- {
- 	struct mlx5hws_bwc_matcher *bwc_matcher = bwc_rule->bwc_matcher;
- 
--	bwc_matcher->num_of_rules++;
-+	atomic_inc(&bwc_matcher->num_of_rules);
- 	bwc_rule->bwc_queue_idx = idx;
- 	list_add(&bwc_rule->list_node, &bwc_matcher->rules[idx]);
- }
-@@ -318,7 +322,7 @@ static void hws_bwc_rule_list_remove(struct mlx5hws_bwc_rule *bwc_rule)
- {
- 	struct mlx5hws_bwc_matcher *bwc_matcher = bwc_rule->bwc_matcher;
- 
--	bwc_matcher->num_of_rules--;
-+	atomic_dec(&bwc_matcher->num_of_rules);
- 	list_del_init(&bwc_rule->list_node);
- }
- 
-@@ -704,7 +708,8 @@ hws_bwc_matcher_rehash_size(struct mlx5hws_bwc_matcher *bwc_matcher)
- 	 * Need to check again if we really need rehash.
- 	 * If the reason for rehash was size, but not any more - skip rehash.
- 	 */
--	if (!hws_bwc_matcher_rehash_size_needed(bwc_matcher, bwc_matcher->num_of_rules))
-+	if (!hws_bwc_matcher_rehash_size_needed(bwc_matcher,
-+						atomic_read(&bwc_matcher->num_of_rules)))
- 		return 0;
- 
- 	/* Now we're done all the checking - do the rehash:
-@@ -797,7 +802,7 @@ int mlx5hws_bwc_rule_create_simple(struct mlx5hws_bwc_rule *bwc_rule,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+index 4822d01123b45..d61a1a9297c90 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+@@ -322,17 +322,16 @@ static void mlx5_pps_out(struct work_struct *work)
  	}
+ }
  
- 	/* check if number of rules require rehash */
--	num_of_rules = bwc_matcher->num_of_rules;
-+	num_of_rules = atomic_read(&bwc_matcher->num_of_rules);
+-static void mlx5_timestamp_overflow(struct work_struct *work)
++static long mlx5_timestamp_overflow(struct ptp_clock_info *ptp_info)
+ {
+-	struct delayed_work *dwork = to_delayed_work(work);
+ 	struct mlx5_core_dev *mdev;
+ 	struct mlx5_timer *timer;
+ 	struct mlx5_clock *clock;
+ 	unsigned long flags;
  
- 	if (unlikely(hws_bwc_matcher_rehash_size_needed(bwc_matcher, num_of_rules))) {
- 		mutex_unlock(queue_lock);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h
-index 0b745968e21e1..655fa7a22d84f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h
-@@ -19,7 +19,7 @@ struct mlx5hws_bwc_matcher {
- 	u8 num_of_at;
- 	u16 priority;
- 	u8 size_log;
--	u32 num_of_rules; /* atomically accessed */
-+	atomic_t num_of_rules;
- 	struct list_head *rules;
+-	timer = container_of(dwork, struct mlx5_timer, overflow_work);
+-	clock = container_of(timer, struct mlx5_clock, timer);
++	clock = container_of(ptp_info, struct mlx5_clock, ptp_info);
+ 	mdev = container_of(clock, struct mlx5_core_dev, clock);
++	timer = &clock->timer;
+ 
+ 	if (mdev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR)
+ 		goto out;
+@@ -343,7 +342,7 @@ static void mlx5_timestamp_overflow(struct work_struct *work)
+ 	write_sequnlock_irqrestore(&clock->lock, flags);
+ 
+ out:
+-	schedule_delayed_work(&timer->overflow_work, timer->overflow_period);
++	return timer->overflow_period;
+ }
+ 
+ static int mlx5_ptp_settime_real_time(struct mlx5_core_dev *mdev,
+@@ -517,6 +516,7 @@ static int mlx5_ptp_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
+ 	timer->cycles.mult = mult;
+ 	mlx5_update_clock_info_page(mdev);
+ 	write_sequnlock_irqrestore(&clock->lock, flags);
++	ptp_schedule_worker(clock->ptp, timer->overflow_period);
+ 
+ 	return 0;
+ }
+@@ -852,6 +852,7 @@ static const struct ptp_clock_info mlx5_ptp_clock_info = {
+ 	.settime64	= mlx5_ptp_settime,
+ 	.enable		= NULL,
+ 	.verify		= NULL,
++	.do_aux_work	= mlx5_timestamp_overflow,
  };
  
+ static int mlx5_query_mtpps_pin_mode(struct mlx5_core_dev *mdev, u8 pin,
+@@ -1052,12 +1053,11 @@ static void mlx5_init_overflow_period(struct mlx5_clock *clock)
+ 	do_div(ns, NSEC_PER_SEC / HZ);
+ 	timer->overflow_period = ns;
+ 
+-	INIT_DELAYED_WORK(&timer->overflow_work, mlx5_timestamp_overflow);
+-	if (timer->overflow_period)
+-		schedule_delayed_work(&timer->overflow_work, 0);
+-	else
++	if (!timer->overflow_period) {
++		timer->overflow_period = HZ;
+ 		mlx5_core_warn(mdev,
+-			       "invalid overflow period, overflow_work is not scheduled\n");
++			       "invalid overflow period, overflow_work is scheduled once per second\n");
++	}
+ 
+ 	if (clock_info)
+ 		clock_info->overflow_period = timer->overflow_period;
+@@ -1172,6 +1172,9 @@ void mlx5_init_clock(struct mlx5_core_dev *mdev)
+ 
+ 	MLX5_NB_INIT(&clock->pps_nb, mlx5_pps_event, PPS_EVENT);
+ 	mlx5_eq_notifier_register(mdev, &clock->pps_nb);
++
++	if (clock->ptp)
++		ptp_schedule_worker(clock->ptp, 0);
+ }
+ 
+ void mlx5_cleanup_clock(struct mlx5_core_dev *mdev)
+@@ -1188,7 +1191,6 @@ void mlx5_cleanup_clock(struct mlx5_core_dev *mdev)
+ 	}
+ 
+ 	cancel_work_sync(&clock->pps_info.out_work);
+-	cancel_delayed_work_sync(&clock->timer.overflow_work);
+ 
+ 	if (mdev->clock_info) {
+ 		free_page((unsigned long)mdev->clock_info);
+diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
+index ea48eb879a0f5..fed666c5bd163 100644
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -691,7 +691,6 @@ struct mlx5_timer {
+ 	struct timecounter         tc;
+ 	u32                        nominal_c_mult;
+ 	unsigned long              overflow_period;
+-	struct delayed_work        overflow_work;
+ };
+ 
+ struct mlx5_clock {
 -- 
 2.39.5
 
