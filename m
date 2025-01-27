@@ -1,136 +1,329 @@
-Return-Path: <linux-rdma+bounces-7235-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7236-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00104A1CD37
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2025 17:49:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23077A1CFAC
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2025 04:05:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43B6A7A2AC9
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2025 16:49:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F7E91887B82
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2025 03:05:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8F0E19E97F;
-	Sun, 26 Jan 2025 16:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K3folyR2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 687C71FC7C1;
+	Mon, 27 Jan 2025 03:05:00 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3D2B19E96A;
-	Sun, 26 Jan 2025 16:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 147D01442F2;
+	Mon, 27 Jan 2025 03:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737909980; cv=none; b=XekMdLspuZWi6740T5ZuCSqiRvrAg/Y7IQ5G2EscYhmBStLqngahmeIDtxcVRmSJUGqfvBSIUxW+tb7M0vagHZbiYD7cg8SghdvYbLPGipSou9IKahhByU1CeiPlDxu51jO5LhYQuSkh7TClyk1oTk4JeeHxhUoEgbABocZfS0Q=
+	t=1737947100; cv=none; b=Q+O4MfOfLa7vjSJBvlfcCBmjE7mkAMpcKG6fR+HyOMXK66sngyU+hIv4Nh6n4j1pmkgIeNxV+pQKr4jmyzfG2i3iEM7E7McyKxRcHRwsHO/1SWJ087SwYV1uEg2DZ8h9wbB0NQSgWoMORJ4IL1KnYot035H66OImYL7b19hNjwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737909980; c=relaxed/simple;
-	bh=c/z8Fqyndj1hHrx1Q0bB/JSDepO/52l2S2hAJuhZz64=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SS+8ySCwz+xETSsCVPsNnTm4+cMPbVsiyKYYRTYem232upA3Q50BvyAcJE1/O3/JWbYbKWYo9XDtIVGtLxyc8RgptHQzxLU5H/RamxNpk/1N/U606RItePpVbVbaZZjwoYAW3XCVQeOC5BoCacNywqb1iqBSTW188XrjlVUuqxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K3folyR2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FA3EC4CED3;
-	Sun, 26 Jan 2025 16:46:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737909980;
-	bh=c/z8Fqyndj1hHrx1Q0bB/JSDepO/52l2S2hAJuhZz64=;
-	h=From:To:Cc:Subject:Date:From;
-	b=K3folyR2iKV35fJCJAQ43M3CxiLA2q0HxtF9+zKNCziUEoLSPPRcyeZzKlVZQSZjt
-	 ylqqJfje28G8RmDbFEsI8dEBqiIpTFPhMyssM4M8ob5cgqEn2BTCqpdmHcnu59G5gD
-	 KEoEtdNmpqfOZZWsXduBR5n3d9vnVEkSi2WJF3aWyQ7VFHyCYvD9ZinExzu8lCHAF8
-	 DHJZO9g/MIxvmG0Wkj7TNtGZbiMBrvAcb3sOr/Xs9r6NTFL5tkteXkUb86YKuHr/pG
-	 KUDCOM/NV4ZCgGiLXLf3MtjrvK0S6vxDk4uir+ZGba8c77rEVnyden0ucW//NkKQyA
-	 Yk30AvD/KTzqA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Michael Margolin <mrgolin@amazon.com>,
-	Firas Jahjah <firasj@amazon.com>,
-	Yonatan Nachum <ynachum@amazon.com>,
-	Gal Pressman <gal.pressman@linux.dev>,
-	Leon Romanovsky <leon@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 1/2] RDMA/efa: Reset device on probe failure
-Date: Sun, 26 Jan 2025 11:46:17 -0500
-Message-Id: <20250126164618.964225-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
+	s=arc-20240116; t=1737947100; c=relaxed/simple;
+	bh=TbJDnKkOKwPGi4I8v4q7sAbSCUPNDrw0zvJqnGtWerY=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fEBzC8FmN1R/oVkD3y/j9oWIObDQVVTOu66R1yrPByn4v9fxEaR1nx9fGZwXs5NZwo3BsKMDm+8Edn3USw5p/otaX2uZ6zE0KffhupucnpfAy0RGXgaksx4WLV784ecLh4F/ktrNfAA5lvMuTr42+EZOTAyz5vzL+U7LGJgLH9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YhCqf1TZHz11TB4;
+	Mon, 27 Jan 2025 11:01:34 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2F3481402CF;
+	Mon, 27 Jan 2025 11:04:49 +0800 (CST)
+Received: from localhost.localdomain (10.90.30.45) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 27 Jan 2025 11:04:48 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <zhangkun09@huawei.com>, <liuyonglong@huawei.com>,
+	<fanghaiqing@huawei.com>, Yunsheng Lin <linyunsheng@huawei.com>, Wei Fang
+	<wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
+	<xiaoning.wang@nxp.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet
+	<edumazet@google.com>, Jeroen de Borst <jeroendb@google.com>, Praveen
+ Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
+	<przemyslaw.kitszel@intel.com>, Alexander Lobakin
+	<aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
+	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
+	<tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi
+	<lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
+	<shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle Valo
+	<kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Simon
+ Horman <horms@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	<imx@lists.linux.dev>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
+	<bpf@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-wireless@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>
+Subject: [RFC v8 1/5] page_pool: introduce page_pool_get_pp() API
+Date: Mon, 27 Jan 2025 10:57:30 +0800
+Message-ID: <20250127025734.3406167-2-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20250127025734.3406167-1-linyunsheng@huawei.com>
+References: <20250127025734.3406167-1-linyunsheng@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.127
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-From: Michael Margolin <mrgolin@amazon.com>
+introduce page_pool_get_pp() API to avoid caller accessing
+page->pp directly.
 
-[ Upstream commit 123c13f10ed3627ba112172d8bd122a72cae226d ]
-
-Make sure the device is being reset on driver exit whatever the reason
-is, to keep the device aligned and allow it to close shared resources
-(e.g. admin queue).
-
-Reviewed-by: Firas Jahjah <firasj@amazon.com>
-Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
-Signed-off-by: Michael Margolin <mrgolin@amazon.com>
-Link: https://patch.msgid.link/20241225131548.15155-1-mrgolin@amazon.com
-Reviewed-by: Gal Pressman <gal.pressman@linux.dev>
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 ---
- drivers/infiniband/hw/efa/efa_main.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/freescale/fec_main.c          |  8 +++++---
+ .../net/ethernet/google/gve/gve_buffer_mgmt_dqo.c  |  2 +-
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c        |  6 ++++--
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c        | 14 +++++++++-----
+ drivers/net/ethernet/intel/libeth/rx.c             |  2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c   |  3 ++-
+ drivers/net/netdevsim/netdev.c                     |  6 ++++--
+ drivers/net/wireless/mediatek/mt76/mt76.h          |  2 +-
+ include/net/libeth/rx.h                            |  3 ++-
+ include/net/page_pool/helpers.h                    |  5 +++++
+ net/core/xdp.c                                     |  3 ++-
+ 11 files changed, 36 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-index 15ee920811187..924940ca9de0a 100644
---- a/drivers/infiniband/hw/efa/efa_main.c
-+++ b/drivers/infiniband/hw/efa/efa_main.c
-@@ -452,7 +452,6 @@ static void efa_ib_device_remove(struct efa_dev *dev)
- 	ibdev_info(&dev->ibdev, "Unregister ib device\n");
- 	ib_unregister_device(&dev->ibdev);
- 	efa_destroy_eqs(dev);
--	efa_com_dev_reset(&dev->edev, EFA_REGS_RESET_NORMAL);
- 	efa_release_doorbell_bar(dev);
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index 1b55047c0237..8709426ae6d9 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -1009,7 +1009,8 @@ static void fec_enet_bd_init(struct net_device *dev)
+ 				struct page *page = txq->tx_buf[i].buf_p;
+ 
+ 				if (page)
+-					page_pool_put_page(page->pp, page, 0, false);
++					page_pool_put_page(page_pool_get_pp(page),
++							   page, 0, false);
+ 			}
+ 
+ 			txq->tx_buf[i].buf_p = NULL;
+@@ -1549,7 +1550,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
+ 			xdp_return_frame_rx_napi(xdpf);
+ 		} else { /* recycle pages of XDP_TX frames */
+ 			/* The dma_sync_size = 0 as XDP_TX has already synced DMA for_device */
+-			page_pool_put_page(page->pp, page, 0, true);
++			page_pool_put_page(page_pool_get_pp(page), page, 0, true);
+ 		}
+ 
+ 		txq->tx_buf[index].buf_p = NULL;
+@@ -3311,7 +3312,8 @@ static void fec_enet_free_buffers(struct net_device *ndev)
+ 			} else {
+ 				struct page *page = txq->tx_buf[i].buf_p;
+ 
+-				page_pool_put_page(page->pp, page, 0, false);
++				page_pool_put_page(page_pool_get_pp(page),
++						   page, 0, false);
+ 			}
+ 
+ 			txq->tx_buf[i].buf_p = NULL;
+diff --git a/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c b/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
+index 403f0f335ba6..87422b8828ff 100644
+--- a/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
++++ b/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
+@@ -210,7 +210,7 @@ void gve_free_to_page_pool(struct gve_rx_ring *rx,
+ 	if (!page)
+ 		return;
+ 
+-	page_pool_put_full_page(page->pp, page, allow_direct);
++	page_pool_put_full_page(page_pool_get_pp(page), page, allow_direct);
+ 	buf_state->page_info.page = NULL;
  }
  
-@@ -623,12 +622,14 @@ static struct efa_dev *efa_probe_device(struct pci_dev *pdev)
- 	return ERR_PTR(err);
- }
- 
--static void efa_remove_device(struct pci_dev *pdev)
-+static void efa_remove_device(struct pci_dev *pdev,
-+			      enum efa_regs_reset_reason_types reset_reason)
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_txrx.c b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
+index 26b424fd6718..e1bf5554f6e3 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_txrx.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
+@@ -1050,7 +1050,8 @@ static void iavf_add_rx_frag(struct sk_buff *skb,
+ 			     const struct libeth_fqe *rx_buffer,
+ 			     unsigned int size)
  {
- 	struct efa_dev *dev = pci_get_drvdata(pdev);
- 	struct efa_com_dev *edev;
+-	u32 hr = rx_buffer->page->pp->p.offset;
++	struct page_pool *pool = page_pool_get_pp(rx_buffer->page);
++	u32 hr = pool->p.offset;
  
- 	edev = &dev->edev;
-+	efa_com_dev_reset(edev, reset_reason);
- 	efa_com_admin_destroy(edev);
- 	efa_free_irq(dev, &dev->admin_irq);
- 	efa_disable_msix(dev);
-@@ -656,7 +657,7 @@ static int efa_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	return 0;
+ 	skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buffer->page,
+ 			rx_buffer->offset + hr, size, rx_buffer->truesize);
+@@ -1067,7 +1068,8 @@ static void iavf_add_rx_frag(struct sk_buff *skb,
+ static struct sk_buff *iavf_build_skb(const struct libeth_fqe *rx_buffer,
+ 				      unsigned int size)
+ {
+-	u32 hr = rx_buffer->page->pp->p.offset;
++	struct page_pool *pool = page_pool_get_pp(rx_buffer->page);
++	u32 hr = pool->p.offset;
+ 	struct sk_buff *skb;
+ 	void *va;
  
- err_remove_device:
--	efa_remove_device(pdev);
-+	efa_remove_device(pdev, EFA_REGS_RESET_INIT_ERR);
- 	return err;
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+index 2fa9c36e33c9..04f2347716ca 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+@@ -385,7 +385,8 @@ static void idpf_rx_page_rel(struct libeth_fqe *rx_buf)
+ 	if (unlikely(!rx_buf->page))
+ 		return;
+ 
+-	page_pool_put_full_page(rx_buf->page->pp, rx_buf->page, false);
++	page_pool_put_full_page(page_pool_get_pp(rx_buf->page), rx_buf->page,
++				false);
+ 
+ 	rx_buf->page = NULL;
+ 	rx_buf->offset = 0;
+@@ -3098,7 +3099,8 @@ idpf_rx_process_skb_fields(struct idpf_rx_queue *rxq, struct sk_buff *skb,
+ void idpf_rx_add_frag(struct idpf_rx_buf *rx_buf, struct sk_buff *skb,
+ 		      unsigned int size)
+ {
+-	u32 hr = rx_buf->page->pp->p.offset;
++	struct page_pool *pool = page_pool_get_pp(rx_buf->page);
++	u32 hr = pool->p.offset;
+ 
+ 	skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buf->page,
+ 			rx_buf->offset + hr, size, rx_buf->truesize);
+@@ -3130,8 +3132,10 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
+ 	if (!libeth_rx_sync_for_cpu(buf, copy))
+ 		return 0;
+ 
+-	dst = page_address(hdr->page) + hdr->offset + hdr->page->pp->p.offset;
+-	src = page_address(buf->page) + buf->offset + buf->page->pp->p.offset;
++	dst = page_address(hdr->page) + hdr->offset +
++		page_pool_get_pp(hdr->page)->p.offset;
++	src = page_address(buf->page) + buf->offset +
++		page_pool_get_pp(buf->page)->p.offset;
+ 	memcpy(dst, src, LARGEST_ALIGN(copy));
+ 
+ 	buf->offset += copy;
+@@ -3149,7 +3153,7 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
+  */
+ struct sk_buff *idpf_rx_build_skb(const struct libeth_fqe *buf, u32 size)
+ {
+-	u32 hr = buf->page->pp->p.offset;
++	u32 hr = page_pool_get_pp(buf->page)->p.offset;
+ 	struct sk_buff *skb;
+ 	void *va;
+ 
+diff --git a/drivers/net/ethernet/intel/libeth/rx.c b/drivers/net/ethernet/intel/libeth/rx.c
+index 66d1d23b8ad2..8de0c3a3b146 100644
+--- a/drivers/net/ethernet/intel/libeth/rx.c
++++ b/drivers/net/ethernet/intel/libeth/rx.c
+@@ -207,7 +207,7 @@ EXPORT_SYMBOL_NS_GPL(libeth_rx_fq_destroy, "LIBETH");
+  */
+ void libeth_rx_recycle_slow(struct page *page)
+ {
+-	page_pool_recycle_direct(page->pp, page);
++	page_pool_recycle_direct(page_pool_get_pp(page), page);
+ }
+ EXPORT_SYMBOL_NS_GPL(libeth_rx_recycle_slow, "LIBETH");
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+index 94b291662087..30baca49c71e 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+@@ -716,7 +716,8 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
+ 				/* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
+ 				 * as we know this is a page_pool page.
+ 				 */
+-				page_pool_recycle_direct(page->pp, page);
++				page_pool_recycle_direct(page_pool_get_pp(page),
++							 page);
+ 			} while (++n < num);
+ 
+ 			break;
+diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netdev.c
+index e068a9761c09..e583415f9088 100644
+--- a/drivers/net/netdevsim/netdev.c
++++ b/drivers/net/netdevsim/netdev.c
+@@ -632,7 +632,8 @@ nsim_pp_hold_write(struct file *file, const char __user *data,
+ 		if (!ns->page)
+ 			ret = -ENOMEM;
+ 	} else {
+-		page_pool_put_full_page(ns->page->pp, ns->page, false);
++		page_pool_put_full_page(page_pool_get_pp(ns->page), ns->page,
++					false);
+ 		ns->page = NULL;
+ 	}
+ 
+@@ -831,7 +832,8 @@ void nsim_destroy(struct netdevsim *ns)
+ 
+ 	/* Put this intentionally late to exercise the orphaning path */
+ 	if (ns->page) {
+-		page_pool_put_full_page(ns->page->pp, ns->page, false);
++		page_pool_put_full_page(page_pool_get_pp(ns->page), ns->page,
++					false);
+ 		ns->page = NULL;
+ 	}
+ 
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76.h b/drivers/net/wireless/mediatek/mt76/mt76.h
+index 0b75a45ad2e8..c3f79686f3b0 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76.h
++++ b/drivers/net/wireless/mediatek/mt76/mt76.h
+@@ -1688,7 +1688,7 @@ static inline void mt76_put_page_pool_buf(void *buf, bool allow_direct)
+ {
+ 	struct page *page = virt_to_head_page(buf);
+ 
+-	page_pool_put_full_page(page->pp, page, allow_direct);
++	page_pool_put_full_page(page_pool_get_pp(page), page, allow_direct);
  }
  
-@@ -665,7 +666,7 @@ static void efa_remove(struct pci_dev *pdev)
- 	struct efa_dev *dev = pci_get_drvdata(pdev);
+ static inline void *
+diff --git a/include/net/libeth/rx.h b/include/net/libeth/rx.h
+index 43574bd6612f..f4ae75f9cc1b 100644
+--- a/include/net/libeth/rx.h
++++ b/include/net/libeth/rx.h
+@@ -137,7 +137,8 @@ static inline bool libeth_rx_sync_for_cpu(const struct libeth_fqe *fqe,
+ 		return false;
+ 	}
  
- 	efa_ib_device_remove(dev);
--	efa_remove_device(pdev);
-+	efa_remove_device(pdev, EFA_REGS_RESET_NORMAL);
+-	page_pool_dma_sync_for_cpu(page->pp, page, fqe->offset, len);
++	page_pool_dma_sync_for_cpu(page_pool_get_pp(page), page, fqe->offset,
++				   len);
+ 
+ 	return true;
  }
+diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
+index 793e6fd78bc5..d48e17f571bc 100644
+--- a/include/net/page_pool/helpers.h
++++ b/include/net/page_pool/helpers.h
+@@ -83,6 +83,11 @@ static inline u64 *page_pool_ethtool_stats_get(u64 *data, const void *stats)
+ }
+ #endif
  
- static struct pci_driver efa_pci_driver = {
++static inline struct page_pool *page_pool_get_pp(struct page *page)
++{
++	return page->pp;
++}
++
+ /**
+  * page_pool_dev_alloc_pages() - allocate a page.
+  * @pool:	pool from which to allocate
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index bcc5551c6424..73576192710b 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -384,7 +384,8 @@ void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+ 		/* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
+ 		 * as mem->type knows this a page_pool page
+ 		 */
+-		page_pool_put_full_page(page->pp, page, napi_direct);
++		page_pool_put_full_page(page_pool_get_pp(page), page,
++					napi_direct);
+ 		break;
+ 	case MEM_TYPE_PAGE_SHARED:
+ 		page_frag_free(data);
 -- 
-2.39.5
+2.33.0
 
 
