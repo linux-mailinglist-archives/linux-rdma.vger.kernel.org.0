@@ -1,171 +1,169 @@
-Return-Path: <linux-rdma+bounces-7272-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7273-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56843A20F87
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2025 18:21:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0278EA210D5
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2025 19:22:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FC27188876F
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2025 17:21:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1452B7A23AB
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2025 18:21:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD991DE4C8;
-	Tue, 28 Jan 2025 17:21:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5CE91DF726;
+	Tue, 28 Jan 2025 18:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="VSp0Pb07"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="rbsRgRXs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDCFC1D2F42
-	for <linux-rdma@vger.kernel.org>; Tue, 28 Jan 2025 17:21:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A411B040E;
+	Tue, 28 Jan 2025 18:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738084887; cv=none; b=g5AR7rDvPaEGkNlAQ7LEKUTvdwORgcz6gD2lc2lc3ATRHysC81m90khxkqMQtZpFKwBxuV6I+ybQmQrz7J3wopH+wcVHOZelYGsLak3ZFR3Senv4AVVjELuTmX4hzIBgm4OP7iR3nUXP9SrNhP3Id+OUupH2DOGBiF2TfMtFkp4=
+	t=1738088519; cv=none; b=fjXo6ARyHRjpEv5+fwPpoIil7BgOxxmnmi0LnvisazEsrfGTosFyYc69ksQjA5y7V0hCKLNw9n7v1r16ngAb/5vX+1RagV6l+FO0HS3aBw4bWN2TWpLaxtJpiEWwiQf7OGTnWO8aLRvw6LYcXkJUB2U5gUdxfphQKMzTzlDup5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738084887; c=relaxed/simple;
-	bh=LWS+HKZhTEpQAgnrmbl5ecib7RdlRXcgNtTUGmEM03A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CPx3+L9WhRLsMZr7Xi/MuXCXnKd00RIkBKojdyTgYWf6qn663Ph80uv/Jo8YIwTurEdxuoDwQIXSRJyVYTq0Sf/ERPhLdFfdjkklxb3viE9E8gkD7Z9YXpRh5N1IChanCTR+Wui5IMbDkH8t/AHIA82y76PCeckaVFG2YVzB8pY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=VSp0Pb07; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6df83fd01cbso23939716d6.2
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jan 2025 09:21:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1738084884; x=1738689684; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WQb9VqqmKpGrKRk3ww/ULOiy6hcfV9wcFh+Cwya87Xc=;
-        b=VSp0Pb07+krCs+4Tq8KrwFa4JAfuXFe2B4cXK9aRHARG3bxXcG4JW6vezh67IZ3K0i
-         nUZpedN8qNd3U3qHM2c1ETuLQjqhpst8tcVq0K56xwNc2thXKJFGllIqd5royiDmmNj/
-         YWKxgYAVF1Eti+teHCeQNSWQt1c3PcfIfUPsPV4FLn0xIjcwVRTkQaT8VJfmiMjabJCL
-         /n+W8EgY8oUHccoUe9g7B/dgaVKp7H/3V3cWcoKjKxTkEIDSsuNWJSEBD724PZP2MNYt
-         5C08Yus+u6SRNHrLyJYWwroTz5eocUZw1QqCVe7DZhBpox8X8lFOfhrstpJP50qCoQkO
-         2HlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738084884; x=1738689684;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WQb9VqqmKpGrKRk3ww/ULOiy6hcfV9wcFh+Cwya87Xc=;
-        b=kbu5sfOzNHu2ElFREkxqW+0aGLyaE+YsMBD31SRirOUo3xfV0kpJe+2RQveU8AZjJr
-         U6K8QOHEsgZV//7F9tSG9E0X2d4LU4ExGH/IVu/HPLokVRGs+AfnN0+dXlSmchW0TSoe
-         fmScQXInRpCNemgMCJxzDT/36UjUvMrsWoch752qS+0HBnyKMt4chfLZBuN5vntukrX0
-         x7xIGZKj10KqCQBTsz6BTc2gfCTkmZZcWpmfJS6Atxtz/Jh15H3IKw99vm2ajLzsm86r
-         a6MTf9g/D66f8s59DRd2pgWeg4XywanaYb4r6LG3ftivFxhIiZ8GQ7ZLRVHj65DxAbfE
-         f0gQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXnRfBPPMpbLgDP6ndT5GESqnTZdgbidfzkUnKQJ0xf/LX+VNY8ysnveTcgJiHyOF+8nVxtr5vePNDR@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzdf9VzmI54MDIPsZ3WsSFcI+PyZb896BxI33JcX8i6xpf/TNQV
-	jKBMbUTbizhhdz7HNJg5CqdvzYufmxxWaZns8Z2cvG2StouoY3Bp/5v6Y8pmdcg=
-X-Gm-Gg: ASbGncu1dJEWhFszY4HLcpv1l6i7mHEAK/8ZmV1bqFySM+y8+IXTzSbZ8THr1n8LNgm
-	ujUc9TZia18FFpKVSubMo3QGY0bh0GrQfYWstx0QrcIe5JtlsKa1TAgncSTQ4HPhZd56wog7c+U
-	VdlpoFIZd9h5d3KXF7pwz5DGjsWj/tvqLMpWuk8lt3Be/aHt/jNZ/stPQrGcb/rXdsi9Nu/CMoj
-	bSmiRryqBl3KjD7D2W+C2k5s4MLxGjajdJnEwNYXcS72rwgRVmQJ1Gx6NNKmw3xGwLvlowoorOo
-	5qu2cm5wVmratEaK7Tscs5Vykf+mrYjL5tQrujR+kn/15vj+I7Sznb3dkXA++uU1
-X-Google-Smtp-Source: AGHT+IFAz/5UyS+F0PBK9pFt62lYn0eXOpLs0OowxWjeV7IrxMQsEK70VEddYKwgKGQF4XA2ZTXc8w==
-X-Received: by 2002:a05:6214:260a:b0:6d8:8a60:ef2c with SMTP id 6a1803df08f44-6e1b2140cadmr656249486d6.2.1738084884552;
-        Tue, 28 Jan 2025 09:21:24 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e2057a8ab6sm47105096d6.81.2025.01.28.09.21.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jan 2025 09:21:24 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1tcpH9-00000007f7z-2OLv;
-	Tue, 28 Jan 2025 13:21:23 -0400
-Date: Tue, 28 Jan 2025 13:21:23 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>
-Cc: Yonatan Maman <ymaman@nvidia.com>, kherbst@redhat.com, lyude@redhat.com,
-	dakr@redhat.com, airlied@gmail.com, simona@ffwll.ch,
-	leon@kernel.org, jglisse@redhat.com, akpm@linux-foundation.org,
-	GalShalom@nvidia.com, dri-devel@lists.freedesktop.org,
-	nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-	linux-tegra@vger.kernel.org
-Subject: Re: [RFC 1/5] mm/hmm: HMM API to enable P2P DMA for device private
- pages
-Message-ID: <20250128172123.GD1524382@ziepe.ca>
-References: <20241201103659.420677-1-ymaman@nvidia.com>
- <20241201103659.420677-2-ymaman@nvidia.com>
- <7282ac68c47886caa2bc2a2813d41a04adf938e1.camel@linux.intel.com>
- <20250128132034.GA1524382@ziepe.ca>
- <de293a7e9b4c44eab8792b31a4605cc9e93b2bf5.camel@linux.intel.com>
- <20250128151610.GC1524382@ziepe.ca>
- <b78d32e13811ef1fa57b0535749c811f2afb4dcd.camel@linux.intel.com>
+	s=arc-20240116; t=1738088519; c=relaxed/simple;
+	bh=sHSV1VeTK4GqSPaEADJvEkDZCJZ38hJL0yKDoC4Uqao=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ONYJFT5ZwSxKjIxoakPd2yH0nFIxQW3+nAnM+XCto6/hjkt+8C9GT12r/2BI89dik1hb8Hny0dQSEO++h0V/oGWpz5rNQSd15V2KqDoKVdo50XdnNqrwQqCFFzMBNNU94RCh04HIPD1mqZU8aOgz3Fy8kR+YeGGDPHdj+a3Js/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=rbsRgRXs; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from eahariha-devbox.internal.cloudapp.net (unknown [40.91.112.99])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 5C2E02037175;
+	Tue, 28 Jan 2025 10:21:57 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5C2E02037175
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1738088517;
+	bh=DWnZxqt2SesB4Fck6kqsaU204yIBxTyh+Yo+gWHnxew=;
+	h=From:Subject:Date:To:Cc:From;
+	b=rbsRgRXsDhgQ49qwzz8O9F+b3CIaPu+u/u5bFNXstLiqFfaEZgC1iIU54pEJ4SCC9
+	 qXRUrwxGkFwK11MEhKH4r7I0e/4uhHl3G7yCK3E3A4G+YwxkrF4Z/N40iZHmQckLfV
+	 +mfJ829accGVQ64/iuqsqnpCIMIptrmhiAA8pmnE=
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+Subject: [PATCH 00/16] Converge on using secs_to_jiffies() part two
+Date: Tue, 28 Jan 2025 18:21:45 +0000
+Message-Id: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b78d32e13811ef1fa57b0535749c811f2afb4dcd.camel@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADogmWcC/x2NMQrDMAwAvxI0VxAbE0O/UjoYV2qUwQ6SSQshf
+ 6/oeDfcnWCkQgb36QSlQ0x6cwi3Cepa2ptQXs4Q55hCDBlrbwepe6NqODpuwuwF3IsOHJ+OnNI
+ ccikLLxm8syuxfP+Px/O6fgSSOflzAAAA
+X-Change-ID: 20241217-converge-secs-to-jiffies-part-two-f44017aa6f67
+To: Andrew Morton <akpm@linux-foundation.org>, 
+ Yaron Avizrat <yaron.avizrat@intel.com>, Oded Gabbay <ogabbay@kernel.org>, 
+ Julia Lawall <Julia.Lawall@inria.fr>, Nicolas Palix <nicolas.palix@imag.fr>, 
+ James Smart <james.smart@broadcom.com>, 
+ Dick Kennedy <dick.kennedy@broadcom.com>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ "Martin K. Petersen" <martin.petersen@oracle.com>, 
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>, Ilya Dryomov <idryomov@gmail.com>, 
+ Dongsheng Yang <dongsheng.yang@easystack.cn>, Jens Axboe <axboe@kernel.dk>, 
+ Xiubo Li <xiubli@redhat.com>, Damien Le Moal <dlemoal@kernel.org>, 
+ Niklas Cassel <cassel@kernel.org>, Carlos Maiolino <cem@kernel.org>, 
+ "Darrick J. Wong" <djwong@kernel.org>, Sebastian Reichel <sre@kernel.org>, 
+ Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>, 
+ Sagi Grimberg <sagi@grimberg.me>, Frank Li <Frank.Li@nxp.com>, 
+ Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, 
+ Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, 
+ Hans de Goede <hdegoede@redhat.com>, 
+ =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+ Henrique de Moraes Holschuh <hmh@hmh.eng.br>, 
+ Selvin Xavier <selvin.xavier@broadcom.com>, 
+ Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, 
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc: cocci@inria.fr, linux-kernel@vger.kernel.org, 
+ linux-scsi@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+ linux-sound@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+ ceph-devel@vger.kernel.org, linux-block@vger.kernel.org, 
+ linux-ide@vger.kernel.org, linux-xfs@vger.kernel.org, 
+ linux-pm@vger.kernel.org, linux-nvme@lists.infradead.org, 
+ linux-spi@vger.kernel.org, imx@lists.linux.dev, 
+ linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
+ ibm-acpi-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org, 
+ Easwar Hariharan <eahariha@linux.microsoft.com>
+X-Mailer: b4 0.14.2
 
-On Tue, Jan 28, 2025 at 05:32:23PM +0100, Thomas Hellström wrote:
-> > This series supports three case:
-> > 
-> >  1) pgmap->owner == range->dev_private_owner
-> >     This is "driver private fast interconnect" in this case HMM
-> > should
-> >     immediately return the page. The calling driver understands the
-> >     private parts of the pgmap and computes the private interconnect
-> >     address.
-> > 
-> >     This requires organizing your driver so that all private
-> >     interconnect has the same pgmap->owner.
-> 
-> Yes, although that makes this map static, since pgmap->owner has to be
-> set at pgmap creation time. and we were during initial discussions
-> looking at something dynamic here. However I think we can probably do
-> with a per-driver owner for now and get back if that's not sufficient.
+This is the second series (part 1*) that converts users of msecs_to_jiffies() that
+either use the multiply pattern of either of:
+- msecs_to_jiffies(N*1000) or
+- msecs_to_jiffies(N*MSEC_PER_SEC)
 
-The pgmap->owner doesn't *have* to fixed, certainly during early boot before
-you hand out any page references it can be changed. I wouldn't be
-surprised if this is useful to some requirements to build up the
-private interconnect topology?
+where N is a constant or an expression, to avoid the multiplication.
 
-> >  2) The page is DEVICE_PRIVATE and get_dma_pfn_for_device() exists.
-> >     The exporting driver has the option to return a P2P struct page
-> >     that can be used for PCI P2P without any migration. In a PCI GPU
-> >     context this means the GPU has mapped its local memory to a PCI
-> >     address. The assumption is that P2P always works and so this
-> >     address can be DMA'd from.
-> 
-> So do I understand it correctly, that the driver then needs to set up
-> one device_private struct page and one pcie_p2p struct page for each
-> page of device memory participating in this way?
+The conversion is made with Coccinelle with the secs_to_jiffies() script
+in scripts/coccinelle/misc. Attention is paid to what the best change
+can be rather than restricting to what the tool provides.
 
-Yes, for now. I hope to remove the p2p page eventually.
+Andrew has kindly agreed to take the series through mm.git modulo the
+patches maintainers want to pick through their own trees.
 
-> > If you are just talking about your private multi-path, then that is
-> > already handled..
-> 
-> No, the issue I'm having with this is really why would
-> hmm_range_fault() need the new pfn when it could easily be obtained
-> from the device-private pfn by the hmm_range_fault() caller? 
+This series is based on next-20250128
 
-That isn't the API of HMM, the caller uses hmm to get PFNs it can use.
+Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 
-Deliberately returning PFNs the caller cannot use is nonsensical to
-it's purpose :)
+* https://lore.kernel.org/all/20241210-converge-secs-to-jiffies-v3-0-ddfefd7e9f2a@linux.microsoft.com/
 
-> So anyway what we'll do is to try to use an interconnect-common owner
-> for now and revisit the problem if that's not sufficient so we can come
-> up with an acceptable solution.
+---
+Easwar Hariharan (16):
+      coccinelle: misc: secs_to_jiffies: Patch expressions too
+      scsi: lpfc: convert timeouts to secs_to_jiffies()
+      accel/habanalabs: convert timeouts to secs_to_jiffies()
+      ALSA: ac97: convert timeouts to secs_to_jiffies()
+      btrfs: convert timeouts to secs_to_jiffies()
+      rbd: convert timeouts to secs_to_jiffies()
+      libceph: convert timeouts to secs_to_jiffies()
+      libata: zpodd: convert timeouts to secs_to_jiffies()
+      xfs: convert timeouts to secs_to_jiffies()
+      power: supply: da9030: convert timeouts to secs_to_jiffies()
+      nvme: convert timeouts to secs_to_jiffies()
+      spi: spi-fsl-lpspi: convert timeouts to secs_to_jiffies()
+      spi: spi-imx: convert timeouts to secs_to_jiffies()
+      platform/x86/amd/pmf: convert timeouts to secs_to_jiffies()
+      platform/x86: thinkpad_acpi: convert timeouts to secs_to_jiffies()
+      RDMA/bnxt_re: convert timeouts to secs_to_jiffies()
 
-That is the intention for sure. The idea was that the drivers under
-the private pages would somehow generate unique owners for shared
-private interconnect segments.
+ .../accel/habanalabs/common/command_submission.c   |  2 +-
+ drivers/accel/habanalabs/common/debugfs.c          |  2 +-
+ drivers/accel/habanalabs/common/device.c           |  2 +-
+ drivers/accel/habanalabs/common/habanalabs_drv.c   |  2 +-
+ drivers/ata/libata-zpodd.c                         |  3 +--
+ drivers/block/rbd.c                                |  6 +++---
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c         |  2 +-
+ drivers/nvme/host/core.c                           |  6 ++----
+ drivers/platform/x86/amd/pmf/acpi.c                |  3 ++-
+ drivers/platform/x86/thinkpad_acpi.c               |  2 +-
+ drivers/power/supply/da9030_battery.c              |  3 +--
+ drivers/scsi/lpfc/lpfc_init.c                      |  4 ++--
+ drivers/scsi/lpfc/lpfc_scsi.c                      | 12 +++++------
+ drivers/scsi/lpfc/lpfc_sli.c                       | 24 ++++++++--------------
+ drivers/scsi/lpfc/lpfc_vport.c                     |  2 +-
+ drivers/spi/spi-fsl-lpspi.c                        |  2 +-
+ drivers/spi/spi-imx.c                              |  2 +-
+ fs/btrfs/disk-io.c                                 |  6 +++---
+ fs/xfs/xfs_icache.c                                |  2 +-
+ fs/xfs/xfs_sysfs.c                                 |  7 +++----
+ net/ceph/ceph_common.c                             | 10 ++++-----
+ net/ceph/osd_client.c                              |  3 +--
+ scripts/coccinelle/misc/secs_to_jiffies.cocci      | 22 ++++++++++++++------
+ sound/pci/ac97/ac97_codec.c                        |  3 +--
+ 24 files changed, 63 insertions(+), 69 deletions(-)
+---
+base-commit: 9a87ce288fe30f268b3a598422fe76af9bb2c2d2
+change-id: 20241217-converge-secs-to-jiffies-part-two-f44017aa6f67
 
-I wouldn't say this is the end all of the idea, if there are better
-ways to handle accepting private pages they can certainly be
-explored..
+Best regards,
+-- 
+Easwar Hariharan <eahariha@linux.microsoft.com>
 
-Jason
 
