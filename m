@@ -1,136 +1,110 @@
-Return-Path: <linux-rdma+bounces-7263-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7264-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E579A2079A
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2025 10:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A00A2099B
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2025 12:23:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11F54168C05
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2025 09:43:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61A36163541
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2025 11:23:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D9619CC11;
-	Tue, 28 Jan 2025 09:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61D031A2397;
+	Tue, 28 Jan 2025 11:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=clip-os.org header.i=@clip-os.org header.b="CvwD9NT4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="foTouGKI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8652F199385;
-	Tue, 28 Jan 2025 09:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADE501A072A;
+	Tue, 28 Jan 2025 11:22:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738057407; cv=none; b=iEEGMp/j3YzRSiSTKgLYjjvfovmz95fuoUYiU1dsGnzTEUGZtP+MvR9Gf4zS/jSQsYjXBv6f38GBR3TlHnxcSGa4uV8BY5hziiECYopHVYnRY0SRBYXvXBRxV+jK/T5358NTQ3BTtp3txqnWgSGUR87PIcMhefGLj3r7IAXiB3w=
+	t=1738063363; cv=none; b=WIed3RYgYQwzRJ8kptd6WG0A7azbhd6tlAJ8xEBUaWX2ov0kUBy04gQIi6BbWu8tMFYNKl75YN8czkWDvn+WWRj8QIwQhjvvqbNMsrA3L5EA19mI/kH3RDJIhN/o6fCHiQgk2PAGt6/tbb88ey/PRCR2gcvdGF3miENGXU3HHl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738057407; c=relaxed/simple;
-	bh=dENO/oSZL4YN1E2GWU4YlF70onT5q7LmAVAl1FRWQMM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=N6Ky+MmZpUz/Fru1IoatQdDi1CujYA67YwPsosJeUsQuDB4yzWsqNUsSK7SKohxjRnKSCORFCzDUchsjSm6y3mjuDFRq1yF1dje9pbXT2vtoAFgFUG8kpEXOTzAGSYT3FwPFOkio7APOwKF3mlzzHvJl5E2fDWkX+uG59+HHIaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=clip-os.org; spf=pass smtp.mailfrom=clip-os.org; dkim=pass (2048-bit key) header.d=clip-os.org header.i=@clip-os.org header.b=CvwD9NT4; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=clip-os.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=clip-os.org
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AE34DFF807;
-	Tue, 28 Jan 2025 09:43:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=clip-os.org; s=gm1;
-	t=1738057396;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eaz9YOMv0cC2o84WWZHZqF4Zkm0uRbALe+GHZz7OYhQ=;
-	b=CvwD9NT4j+WIHpH7BHuA5lGxqGUk1QYZ7fTaDY8yoEdZ5mbATIGUxT/1MN9/uP4z/ZMsev
-	hBb4updQGuMtVZ1VUJQY3lwuHaTaAaYFNGLlb6PWP3aIZg9yWN6Jmx6F6nmnkPV8TZVrQO
-	VJvVea89Wgo9XUG/fNJIJEtPT0i0QEGqvkodT1O5+iJ2z4mxL06Vuef40FWoAOHitI2oZl
-	zbSgoHE22Yc8KSp8BxbVtM5sh6I6GQsVLiJXMEc52i4KKMK/d1ILcvKu2aLb8CE157C//5
-	ojysacr84i3YBNB+80BXgABya35ROLupWE9fdr5TPY39V/QUDufiRcm0j3Gpag==
-Message-ID: <3b7a4fb3-9c88-47ca-afc3-a1bb7913fc3d@clip-os.org>
-Date: Tue, 28 Jan 2025 10:43:13 +0100
+	s=arc-20240116; t=1738063363; c=relaxed/simple;
+	bh=AJfDJn9pFkPItjs+l9CjDlC33TdlTCE01Kr4mfJIOJE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g+cCyGb2/fsQowQreYNLg9qSUrLirXR7MS1CsgJTWL5oNhbhe1swUVk/CwSswe8PDryMSusPUfNKlrWUa3532e8R+YEEmmA4oN6QzpCINKU580mS3vkG99WHUT1yexgg3lDas9CYY6cW1AeZPm219ztniPyeJErJcq9Nc2Lg5xE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=foTouGKI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98109C4CEDF;
+	Tue, 28 Jan 2025 11:22:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738063362;
+	bh=AJfDJn9pFkPItjs+l9CjDlC33TdlTCE01Kr4mfJIOJE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=foTouGKI5Xpt6DiifiySGU1Px4B0JlxynZkL/A+4GJ+F1wUAFkM/N4G83a9sI8N06
+	 lsMHA2F0I+BGkV1h4oylhwmSeJznMzbN+UJy9qwbYRK5QlpfqNfv8Msq/ndA/iDm4I
+	 JYp3P2GR22dNEIcBnZOOATJGYPU+gMIFK9XfLLma3B24+UKToDLZL/ZLBF6bwp16qy
+	 HMKr9svtYad8MrCuOMMF5t2I0WLB8bGS9HGYMu9w94+SD6sanYCztaTmP2cubx4D+F
+	 lhSPEntAtoYhJR/j92VqRwE5MifEf7tNzvj9NQnTwv0sbHofELHMou005/QzH1lonP
+	 yczCENnq4hKEA==
+Date: Tue, 28 Jan 2025 12:22:37 +0100
+From: Joel Granados <joel.granados@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Jani Nikula <jani.nikula@intel.com>, Ard Biesheuvel <ardb@kernel.org>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
+	Kees Cook <kees@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	openipmi-developer@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	intel-xe@lists.freedesktop.org, linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org, 
+	xen-devel@lists.xenproject.org, linux-aio@kvack.org, linux-fsdevel@vger.kernel.org, 
+	netfs@lists.linux.dev, codalist@coda.cs.cmu.edu, linux-mm@kvack.org, 
+	linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev, fsverity@lists.linux.dev, 
+	linux-xfs@vger.kernel.org, io-uring@vger.kernel.org, bpf@vger.kernel.org, 
+	kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
+	keyrings@vger.kernel.org, Song Liu <song@kernel.org>, 
+	"Steven Rostedt (Google)" <rostedt@goodmis.org>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	"Darrick J. Wong" <djwong@kernel.org>, Corey Minyard <cminyard@mvista.com>
+Subject: Re: Re: Re: Re: [PATCH v2] treewide: const qualify ctl_tables where
+ applicable
+Message-ID: <u2fwibsnbfvulxj6adigla6geiafh2vuve4hcyo4vmeytwjl7p@oz6xonrq5225>
+References: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
+ <Z4+jwDBrZNRgu85S@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <nslqrapp4v3rknjgtfk4cg64ha7rewrrg24aslo2e5jmxfwce5@t4chrpuk632k>
+ <CAMj1kXEZPe8zk7s67SADK9wVH3cfBup-sAZSC6_pJyng9QT7aw@mail.gmail.com>
+ <f4lfo2fb7ajogucsvisfd5sg2avykavmkizr6ycsllcrco4mo3@qt2zx4zp57zh>
+ <87jzag9ugx.fsf@intel.com>
+ <Z5epb86xkHQ3BLhp@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/9] Fixes multiple sysctl bound checks
-To: Joe Damato <jdamato@fastly.com>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
- codalist@coda.cs.cmu.edu, linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
- netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
- Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>,
- Joel Granados <j.granados@samsung.com>, Bart Van Assche
- <bvanassche@acm.org>, Leon Romanovsky <leon@kernel.org>,
- Zhu Yanjun <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@ziepe.ca>,
- Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
-References: <20250127142014.37834-1-nicolas.bouchinet@clip-os.org>
- <Z5fK6jnrjMBDrDJg@LQ3V64L9R2>
-Content-Language: en-US
-From: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
-In-Reply-To: <Z5fK6jnrjMBDrDJg@LQ3V64L9R2>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: nicolas.bouchinet@clip-os.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z5epb86xkHQ3BLhp@casper.infradead.org>
 
-Hi,
+On Mon, Jan 27, 2025 at 03:42:39PM +0000, Matthew Wilcox wrote:
+> On Mon, Jan 27, 2025 at 04:55:58PM +0200, Jani Nikula wrote:
+> > You could have static const within functions too. You get the rodata
+> > protection and function local scope, best of both worlds?
+> 
+> timer_active is on the stack, so it can't be static const.
+> 
+> Does this really need to be cc'd to such a wide distribution list?
+That is a very good question. I removed 160 people from the original
+e-mail and left the ones that where previously involved with this patch
+and left all the lists for good measure. But it seems I can reduce it
+even more.
 
-Thank's for your reply.
+How about this: For these treewide efforts I just leave the people that
+are/were involved in the series and add two lists: linux-kernel and
+linux-hardening.
 
-On 1/27/25 19:05, Joe Damato wrote:
-> On Mon, Jan 27, 2025 at 03:19:57PM +0100, nicolas.bouchinet@clip-os.org wrote:
->> From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
->>
->> Hi,
->>
->> This patchset adds some bound checks to sysctls to avoid negative
->> value writes.
->>
->> The patched sysctls were storing the result of the proc_dointvec
->> proc_handler into an unsigned int data. proc_dointvec being able to
->> parse negative value, and it return value being a signed int, this could
->> lead to undefined behaviors.
->> This has led to kernel crash in the past as described in commit
->> 3b3376f222e3 ("sysctl.c: fix underflow value setting risk in vm_table")
->>
->> Most of them are now bounded between SYSCTL_ZERO and SYSCTL_INT_MAX.
->> nf_conntrack_expect_max is bounded between SYSCTL_ONE and SYSCTL_INT_MAX
->> as defined by its documentation.
-> I noticed that none of the patches have a Fixes tags. Do any of
-> these fix existing crashes or is this just cleanup?
+Unless someone screams, I'll try this out on my next treewide.
 
-I've just saw that xfrm{4,6}_gc_thresh sysctls where obsolete since 4.14 
-in the documentation...
+Thx for the feedback
 
-Also, ipv4_dst_ops.gc_thresh is set to `~0` since commit 4ff3885262d0 
-("ipv4: Delete routing cache.").
+Best
 
-Wich will be printed as -1 when this syctl is read.
+-- 
 
-```
-$ cat /proc/sys/net/ipv4/route/gc_thresh
--1
-```
-
-IIUC, it seems to be used in order to disable the garbage collection, 
-hence, this patch would make it impossible
-to a user to disable it this way.
-It should thus be bounded it between SYSCTL_NEG_ONE and SYSCTL_INT_MAX.
-
-
-Your right, it's only cleanup, I'll push patch 3 separately only on 
-netdev, with extended impact analyses, sorry for that.
-
-
->
-> I am asking because if this is cleanup then it would be "net-next"
-> material instead of "net" and would need to be resubmit when then
-> merge window has passed [1].
->
-> FWIW, I submit a similar change some time ago and it was submit to
-> net-next as cleanup [2].
->
-> [1]: https://lore.kernel.org/netdev/20250117182059.7ce1196f@kernel.org/
-> [2]: https://lore.kernel.org/netdev/CANn89i+=HiffVo9iv2NKMC2LFT15xFLG16h7wN3MCrTiKT3zQQ@mail.gmail.com/T/
->
+Joel Granados
 
