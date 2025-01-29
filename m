@@ -1,133 +1,193 @@
-Return-Path: <linux-rdma+bounces-7312-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7313-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39859A22314
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 18:36:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91398A223A2
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 19:12:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D12C7A2338
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 17:35:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C18D3A48C0
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 18:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 807141E0DED;
-	Wed, 29 Jan 2025 17:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C94B01E1027;
+	Wed, 29 Jan 2025 18:11:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="WdTF6heG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kw4kYcgw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA3FD190696;
-	Wed, 29 Jan 2025 17:36:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB3E12DD95
+	for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2025 18:11:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738172196; cv=none; b=pOK+GPozhmD7U/BSWHi1mTZMMK1ZG6wZluY/jloxJ8R1+YpzHYvY3hFLLseoysLkKghWhnMt9GfXc6uzj0xtpEjJrhk4PTT0Asi2Q8nZNUWN5tOvyp1iVj8i5XxcikugWN3rvFs5uvKaA0T/C0RlyeL1ubmL916xavfNiPAC7qk=
+	t=1738174311; cv=none; b=lOklO3ITzxNZ2YRhLTmGSh3+jmoWnOnemL7GoKK0iehYIdrmncNGeRNtW2FRheZ4Tnm+8okBa4do2qEq4xguvex/hqB5cF6LOEXfo7SQGbn9Ax62yyZS4KoYuumrFmJqo0BCPs0eD/TaX1BY66tOusi00ijHHCV11UmaWlnHzwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738172196; c=relaxed/simple;
-	bh=aRxp+TRakpowcUaDsGSNpKX92RxnLaSoDAyix4SGDVI=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=X54ax7ph/P6Qfxefs+eKX1Jp5uv+v04ZAMfxzvO0ITiKfceHlftgabBY8LI2GWKWJyPzS8qDEYn3xH5TwE8CbB/14m4dxHTjwPuRRsg3olXPX0D8WJ5/eKjhro1YoNEXc7mUJI9xW4BE6bBxZdp0O+b/6qjBqXdUe7IU1wx16xE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=WdTF6heG; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.65.98.224] (unknown [20.236.10.66])
-	by linux.microsoft.com (Postfix) with ESMTPSA id A3CA2205721D;
-	Wed, 29 Jan 2025 09:36:32 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A3CA2205721D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1738172194;
-	bh=32VWyKda36DT3SVOQLKSI+Nu4mFH6I0v9p1Ypx/s/UM=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=WdTF6heG9MXWg27CPpr2zs00gFmg/LzwKj0Alp7kuExME9ZkmRvd6i5RlINsUJmCj
-	 gyW4AT2kMUzCtyC2BYOQAoboe3fZn9gnSQn/nvMf6cJwjiMZFtGWg0RkK4mQ7CXmnv
-	 aKvKdhLh7jtgcjd5i92zHQeesuEbYFvcBS4PUXbY=
-Message-ID: <f991dba7-79fb-490d-8ac5-6bd14f3209a8@linux.microsoft.com>
-Date: Wed, 29 Jan 2025 09:36:35 -0800
+	s=arc-20240116; t=1738174311; c=relaxed/simple;
+	bh=2VMCFHe6TAoYhSnRaaEs0vvVGkCPtU2pM0uj5QOsXvo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TjOV2OmNNUdEkmGHl7JgucNVWHnf8pXubPGzexyDK4EFhMJbXOpV4oD8Jtyc/WrACbXyG0Z1p+sP65yPXuzv3CB87s1GaDAZjQH3hz53pv/GHDayAOmyLcVFRU+wMmCWQvFPePDY7WzdQLoq6DG/nY9uoTxh6f6tRXjcZvoIgMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Kw4kYcgw; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <048daa22-fdc6-4f5f-9fa3-e023dc421aab@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1738174297;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ucg1UGnTRUyjA0To+rmMuDRod1jYtDux4BwxrLAs2pk=;
+	b=Kw4kYcgwqqzrmAM96zVrn9hAemk82VSaCvfn5VKrqogKUxEseNfBlthTM/EUJkPkc1c0kt
+	3tq9nOZCg0sOlW1xuT5aov2/P7uv3mIL2pqnMNS+HsFN0t5nO+9+a5nR6hIQxu7CMR4irX
+	rjgjr1/j34ZZ6JwNAjq0pIgPEPuu4RI=
+Date: Wed, 29 Jan 2025 19:11:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Yaron Avizrat <yaron.avizrat@intel.com>, Oded Gabbay <ogabbay@kernel.org>,
- Julia Lawall <Julia.Lawall@inria.fr>, Nicolas Palix <nicolas.palix@imag.fr>,
- James Smart <james.smart@broadcom.com>,
- Dick Kennedy <dick.kennedy@broadcom.com>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
- David Sterba <dsterba@suse.com>, Ilya Dryomov <idryomov@gmail.com>,
- Dongsheng Yang <dongsheng.yang@easystack.cn>, Jens Axboe <axboe@kernel.dk>,
- Xiubo Li <xiubli@redhat.com>, Niklas Cassel <cassel@kernel.org>,
- Carlos Maiolino <cem@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>,
- Sebastian Reichel <sre@kernel.org>, Keith Busch <kbusch@kernel.org>,
- Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
- Frank Li <Frank.Li@nxp.com>, Mark Brown <broonie@kernel.org>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>,
- Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
- Hans de Goede <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
- Selvin Xavier <selvin.xavier@broadcom.com>,
- Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+Subject: Re: [PATCH 2/6] RDMA/rxe: consolidate code for calculating ICRC of
+ packets
+To: Eric Biggers <ebiggers@kernel.org>, linux-rdma@vger.kernel.org,
+ Mustafa Ismail <mustafa.ismail@intel.com>,
+ Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
  Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- eahariha@linux.microsoft.com, cocci@inria.fr, linux-kernel@vger.kernel.org,
- linux-scsi@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-sound@vger.kernel.org, linux-btrfs@vger.kernel.org,
- ceph-devel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-ide@vger.kernel.org, linux-xfs@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-nvme@lists.infradead.org,
- linux-spi@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org,
- ibm-acpi-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 08/16] libata: zpodd: convert timeouts to
- secs_to_jiffies()
-To: Damien Le Moal <dlemoal@kernel.org>
-References: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
- <20250128-converge-secs-to-jiffies-part-two-v1-8-9a6ecf0b2308@linux.microsoft.com>
- <f39cde78-19de-45fc-9c64-d3656e07d4a7@kernel.org>
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-Content-Language: en-US
-In-Reply-To: <f39cde78-19de-45fc-9c64-d3656e07d4a7@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ Zhu Yanjun <zyjzyj2000@gmail.com>, Bernard Metzler <bmt@zurich.ibm.com>
+Cc: linux-kernel@vger.kernel.org
+References: <20250127223840.67280-1-ebiggers@kernel.org>
+ <20250127223840.67280-3-ebiggers@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20250127223840.67280-3-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 1/28/2025 4:21 PM, Damien Le Moal wrote:
-> On 1/29/25 3:21 AM, Easwar Hariharan wrote:
->> Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
->> secs_to_jiffies().  As the value here is a multiple of 1000, use
->> secs_to_jiffies() instead of msecs_to_jiffies to avoid the multiplication.
->>
->> This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci with
->> the following Coccinelle rules:
->>
->> @depends on patch@
->> expression E;
->> @@
->>
->> -msecs_to_jiffies
->> +secs_to_jiffies
->> (E
->> - * \( 1000 \| MSEC_PER_SEC \)
->> )
->>
->> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+在 2025/1/27 23:38, Eric Biggers 写道:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> The subject line should be:
+> Since rxe_icrc_hdr() is always immediately followed by updating the CRC
+> with the packet's payload, just rename it to rxe_icrc() and make it
+> include the payload in the CRC, so it now handles the entire packet.
 > 
-> ata: libata-zpodd: convert timeouts to secs_to_jiffies()
-> 
-> Other than that, looks good to me.
-> 
-> Acked-by: Damien Le Moal <dlemoal@kernel.org>
-> 
+> This is a refactor with no change in behavior.
 
-Thanks for the review and ack! I'll fix the subject line in v2.
+In this commit, currently the entire packet are checked while the header 
+is checked in the original source code.
 
-- Easwar (he/him)
+Now it can work between RXE <----> RXE.
+I am not sure whether RXE <---> MLX can work or not.
+
+If it can work well, I am fine with this patch.
+
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+
+Zhu Yanjun
+
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe_icrc.c | 36 ++++++++++++----------------
+>   1 file changed, 15 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_icrc.c b/drivers/infiniband/sw/rxe/rxe_icrc.c
+> index ee417a0bbbdca..c7b0b4673b959 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_icrc.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_icrc.c
+> @@ -60,26 +60,24 @@ static u32 rxe_crc32(struct rxe_dev *rxe, u32 crc, void *next, size_t len)
+>   
+>   	return icrc;
+>   }
+>   
+>   /**
+> - * rxe_icrc_hdr() - Compute the partial ICRC for the network and transport
+> - *		  headers of a packet.
+> + * rxe_icrc() - Compute the ICRC of a packet
+>    * @skb: packet buffer
+>    * @pkt: packet information
+>    *
+> - * Return: the partial ICRC
+> + * Return: the ICRC
+>    */
+> -static u32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+> +static u32 rxe_icrc(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+>   {
+>   	unsigned int bth_offset = 0;
+>   	struct iphdr *ip4h = NULL;
+>   	struct ipv6hdr *ip6h = NULL;
+>   	struct udphdr *udph;
+>   	struct rxe_bth *bth;
+>   	u32 crc;
+> -	int length;
+>   	int hdr_size = sizeof(struct udphdr) +
+>   		(skb->protocol == htons(ETH_P_IP) ?
+>   		sizeof(struct iphdr) : sizeof(struct ipv6hdr));
+>   	/* pseudo header buffer size is calculate using ipv6 header size since
+>   	 * it is bigger than ipv4
+> @@ -118,17 +116,23 @@ static u32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+>   	bth = (struct rxe_bth *)&pshdr[bth_offset];
+>   
+>   	/* exclude bth.resv8a */
+>   	bth->qpn |= cpu_to_be32(~BTH_QPN_MASK);
+>   
+> -	length = hdr_size + RXE_BTH_BYTES;
+> -	crc = rxe_crc32(pkt->rxe, crc, pshdr, length);
+> +	/* Update the CRC with the first part of the headers. */
+> +	crc = rxe_crc32(pkt->rxe, crc, pshdr, hdr_size + RXE_BTH_BYTES);
+>   
+> -	/* And finish to compute the CRC on the remainder of the headers. */
+> +	/* Update the CRC with the remainder of the headers. */
+>   	crc = rxe_crc32(pkt->rxe, crc, pkt->hdr + RXE_BTH_BYTES,
+>   			rxe_opcode[pkt->opcode].length - RXE_BTH_BYTES);
+> -	return crc;
+> +
+> +	/* Update the CRC with the payload. */
+> +	crc = rxe_crc32(pkt->rxe, crc, payload_addr(pkt),
+> +			payload_size(pkt) + bth_pad(pkt));
+> +
+> +	/* Invert the CRC and return it. */
+> +	return ~crc;
+>   }
+>   
+>   /**
+>    * rxe_icrc_check() - Compute ICRC for a packet and compare to the ICRC
+>    *		      delivered in the packet.
+> @@ -146,18 +150,12 @@ int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+>   	 * descending order from the x^31 coefficient to the x^0 one.  When the
+>   	 * result is interpreted as a 32-bit integer using the required reverse
+>   	 * mapping between bits and polynomial coefficients, it's a __le32.
+>   	 */
+>   	__le32 *icrcp = (__le32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
+> -	u32 icrc;
+>   
+> -	icrc = rxe_icrc_hdr(skb, pkt);
+> -	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
+> -				payload_size(pkt) + bth_pad(pkt));
+> -	icrc = ~icrc;
+> -
+> -	if (unlikely(icrc != le32_to_cpu(*icrcp)))
+> +	if (unlikely(rxe_icrc(skb, pkt) != le32_to_cpu(*icrcp)))
+>   		return -EINVAL;
+>   
+>   	return 0;
+>   }
+>   
+> @@ -167,12 +165,8 @@ int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+>    * @pkt: packet information
+>    */
+>   void rxe_icrc_generate(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+>   {
+>   	__le32 *icrcp = (__le32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
+> -	u32 icrc;
+>   
+> -	icrc = rxe_icrc_hdr(skb, pkt);
+> -	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
+> -				payload_size(pkt) + bth_pad(pkt));
+> -	*icrcp = cpu_to_le32(~icrc);
+> +	*icrcp = cpu_to_le32(rxe_icrc(skb, pkt));
+>   }
 
 
