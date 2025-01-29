@@ -1,245 +1,167 @@
-Return-Path: <linux-rdma+bounces-7315-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7316-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41417A223D9
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 19:27:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CE85A223E0
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 19:30:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6B261634D5
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 18:27:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 593411883F47
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 18:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEBD1E22FD;
-	Wed, 29 Jan 2025 18:27:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A07F1E25F2;
+	Wed, 29 Jan 2025 18:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KMNg62Df"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="gWMKOkZe"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA86D1E22E6
-	for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2025 18:27:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 204BB1E25F1
+	for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2025 18:30:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738175257; cv=none; b=LTf8YTYzdBzqwbaRsN8cRQCsbIEC4eOrAuurLtUw0/pKJQ1qj9H2i7kZWl1ExWu9hxuxjviJDRhdmUdNYYjn6BAV1kZ/QkWTHuG/aqE/cBekxzFn6IxodJ2DIee6GrJe/sSwIH7lTP9vM20jq28pEv6pimiRsM6vSPS4tJD9wkA=
+	t=1738175413; cv=none; b=sXJZ/KFva6hA1VbDwZC0qS2gNL3lFio9cm8clgOuSEfQFuCBSxXmlHfPopChW+mA7Ekv6EKfHugWEEPhjZLCBs4B8woCiuXD4wpGYBlZNcHH/SmjtLkurO3H2lS7I2n8G3tENZthwvH1o6Ao3C2TFrxZJgtsDiLD8FcN6gGxDg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738175257; c=relaxed/simple;
-	bh=SrflsmlL0ChiTFeT8MflcAtmU8DTpOMw98Tdz6kDa2g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DtbhzYZhRGCVGCeWpu13TW0t2grBHbcx/5rlkvZdgFCQrkinKle5nsuPPAsT43Zh4kYEzrfDhid7rlqVZrq5ACYAl2AAWy8s7V8wRDrJO/dgGTJ+zDX2+0VdTTdl8NXXnAFzYp2+ybrjnwwFnWurj1fo0h9B7c82mFGKuvLxuks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KMNg62Df; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d0d05601-0eee-4684-9ed0-d6da8938603b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738175243;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UuszRON8P8FWVqiJYlCZEXfuzBMBh/75nRHN6ub6BxI=;
-	b=KMNg62Dfq0eqk6uv0YI8nGPHXnZzTfp8G4yv5uyZpRJCfVAwm+29YW5cHDC5BXpt5eXAm1
-	+IAayxg5j0M480YymuvgmL1850PnWtuAgeTu0I7VE7MCF4SIfwewnt75nTADHIqPq/R2rn
-	b3OcMGYgRUeDRCfdWWNVFm+sdsItw+0=
-Date: Wed, 29 Jan 2025 19:27:20 +0100
+	s=arc-20240116; t=1738175413; c=relaxed/simple;
+	bh=V3h04rIV92zeS1OapG9TdeCcYQBzM7Gky3PA5S8ttac=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dW0tDdiqavdk7jjfbt+hj8kyv37YtD1UwO2TRLEbqnr7RbEIRqmXoFZ9cAqiXHk1vnIAN0gQUxZpSzQ2IwTNL2R3AifV5sAauzD28fgDejiiOCwG28pLxP+eQe72ESPj3col2LB1XPJydwbIm3Dt10dk8DYCEZfbBnGj3TZOTdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=gWMKOkZe; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-467b955e288so76126321cf.1
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2025 10:30:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1738175411; x=1738780211; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XD0YMmssfsqTqz7P5jLcOM43e1brk96cTTh0E8gXUWI=;
+        b=gWMKOkZeoonN9reatGYy3NItD1BQNy3gZcIx0EUMgPU5ovj2ZHhjagXA0Ldxu6HhUR
+         g/cLRHRWp2KPQU8xrGAAPU62/qs1c1aowWB8ah52/4C8q/6gPusbsJF0ttjP/cSb+8tQ
+         LAOkWd7AMxZJC6vhc1wpJxzuy8L2e+02X7RwoO8YEqgEOmEtyqHiwjLIQKYLHpZdE9Xh
+         zaJpnVw1N+zbydM5nHBYa7GSX0yJyOfpz/4jLS/02j4IxiHclkvob0xsccYQ3Cl0xPoq
+         tZ4+SL2UQGnVog4YwGTk4vgsfg2kS2qemG6ZgFXjttCOMa/fPpcd4ousX91clx3UZuzN
+         KCyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738175411; x=1738780211;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XD0YMmssfsqTqz7P5jLcOM43e1brk96cTTh0E8gXUWI=;
+        b=DweNx9nr+uB8FlEFtF2ds704Kv6NghN8lzbCxKpymPGu11W7zURVjyKcXMlZCdjBID
+         T9bEODq6alb+YfF77PaxVzcF/+VbdEF5SVTCB8ITv55RfxB/w8ptlIW3pTR5o1nKWAuT
+         ej0JHT/5RgByP/XA5VFq6qY6y5AygvzjOF7FSkCysBvzOKSp2OyT0furzEejLl+QY43Q
+         hS3Z9RGcY7s49ObJDbwu9CcyWgb+9juAmqLCAcrFGWs8tv9MtG4RWkF/DSXJpDWSvEYz
+         tEQahu3Sq6U98inWIfG8Qc67KxpLkUShTkHx++Q3l5lxPGWJPOT/UnmbEXvyamFsMNbO
+         ln0g==
+X-Forwarded-Encrypted: i=1; AJvYcCUwzYyH0HLFRdWb6wqvNAT1xNcUbFBGo8J88MSCHl3EhyBosPu6Y06wD5yuo+vN7k0k03LASdqWH0gB@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy155b5dZJ9J7Es3dADUCY5rHgSGwzNPWULJiC3v9nHRk4g6/Iu
+	EiyxW4uQeQ1MF9/3iqGY+VKrrEvTZ6mg8ivqDaBEtdSw3kuoEk3zOh83YYT/5DQ=
+X-Gm-Gg: ASbGncteGP5AZ1GSKFBHfwgoj6pSEq5jfhwo4G9Aar6zE5TNFCUrldsvIumDpBVtJcI
+	y9nsrkM078QHBUm+hfe3gxHff/McCb7M+AK5UjIKt+kbHKPoYn0UahrhPDcEx+S3+jPJffU4M8m
+	wahZtWdU7uSLMOeFRAB5UZ7XORKXFbn5TVj7FJIyJSdfKwMeL2cAH82XpuIPfOZOZn9CtoYDTFf
+	UFOKzi1PQE8Z8870HDa1oUwCq5CxKI51xv+Po44yA+zJWuR9OCzgNqh4gtkdWrl+axnsQkgXY2d
+	D8V6cCaw56Es14CTPxcAYR72DUcspMDM2Lc2T3BVlec18fTOIJu3LUZqqyyde8vo
+X-Google-Smtp-Source: AGHT+IFU2CSEw7nEQnS3hKi4MzP25PEd5L1/HqejOvMmapaGN2P5mirb8xGOSLzYxz2tblSZd8yYPg==
+X-Received: by 2002:a05:622a:47:b0:46e:23dc:97dd with SMTP id d75a77b69052e-46fd0bda6efmr75744211cf.52.1738175410947;
+        Wed, 29 Jan 2025 10:30:10 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46e66b89811sm64595011cf.77.2025.01.29.10.30.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jan 2025 10:30:10 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1tdCpF-00000009Qzj-3huR;
+	Wed, 29 Jan 2025 14:30:09 -0400
+Date: Wed, 29 Jan 2025 14:30:09 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Eric Biggers <ebiggers@kernel.org>, linux-rdma@vger.kernel.org,
+	Mustafa Ismail <mustafa.ismail@intel.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Bernard Metzler <bmt@zurich.ibm.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] RDMA/rxe: handle ICRC correctly on big endian systems
+Message-ID: <20250129183009.GC2120662@ziepe.ca>
+References: <20250127223840.67280-1-ebiggers@kernel.org>
+ <20250127223840.67280-2-ebiggers@kernel.org>
+ <ae41a37e-3ee4-484e-ba53-1cad9225df7a@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/6] RDMA/rxe: handle ICRC correctly on big endian systems
-To: Eric Biggers <ebiggers@kernel.org>, linux-rdma@vger.kernel.org,
- Mustafa Ismail <mustafa.ismail@intel.com>,
- Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Zhu Yanjun <zyjzyj2000@gmail.com>, Bernard Metzler <bmt@zurich.ibm.com>
-Cc: linux-kernel@vger.kernel.org
-References: <20250127223840.67280-1-ebiggers@kernel.org>
- <20250127223840.67280-2-ebiggers@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250127223840.67280-2-ebiggers@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <ae41a37e-3ee4-484e-ba53-1cad9225df7a@linux.dev>
 
-在 2025/1/27 23:38, Eric Biggers 写道:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> The usual big endian convention of InfiniBand does not apply to the
-> ICRC field, whose transmission is specified in terms of the CRC32
-> polynomial coefficients.  The coefficients are transmitted in
-> descending order from the x^31 coefficient to the x^0 one.  When the
-> result is interpreted as a 32-bit integer using the required reverse
-> mapping between bits and polynomial coefficients, it's a __le32.
-In InfiniBand Architecture Specification, the following
-"
-The resulting bits are sent in order from the bit representing the 
-coefficient of the highest term of the remainder polynomial. The least 
-significant bit, most significant byte first ordering of the packet does 
-not apply to the ICRC field.
-"
-and
-"
-The 32 Flip-Flops are initialized to 1 before every ICRC generation. The
-packet is fed to the reference design of Figure 57 one bit at a time in 
-the order specified in Section 7.8.1 on page 222. The Remainder is the 
-bitwise NOT of the value stored at the 32 Flip-Flops after the last bit 
-of the packet was clocked into the ICRC Generator. ICRC Field is 
-obtained from the Remainder as shown in Figure 57. ICRC Field is 
-transmitted using Big Endian byte ordering like every field of an 
-InfiniBand packet.
-"
+On Wed, Jan 29, 2025 at 10:44:39AM +0100, Zhu Yanjun wrote:
+> 在 2025/1/27 23:38, Eric Biggers 写道:
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > The usual big endian convention of InfiniBand does not apply to the
+> > ICRC field, whose transmission is specified in terms of the CRC32
+> > polynomial coefficients.  
 
-It seems that big endian byte ordering is needed in ICRC field. I am not 
-sure if MLX NIC can connect to RXE after this patchset is applied.
+This patch is on to something but this is not a good explanation.
 
-Thanks,
-Zhu Yanjun
+The CRC32 in IB is stored as big endian and computed in big endian,
+the spec says so explicitly:
 
-> 
-> The code used __be32, but it did not actually do an endianness
-> conversion.  So it actually just used the CPU's native endianness,
-> making it comply with the spec on little endian systems only.
-> 
-> Fix the code to use __le32 and do the needed le32_to_cpu() and
-> cpu_to_le32() so that it complies with the spec on big endian systems.
-> 
-> Also update the lower-level helper functions to use u32, as they are
-> working with CPU native values.  This part does not change behavior.
-> 
-> Found through code review.  I don't know whether anyone is actually
-> using this code on big endian systems.  Probably not.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe_icrc.c | 41 +++++++++++++++-------------
->   1 file changed, 22 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_icrc.c b/drivers/infiniband/sw/rxe/rxe_icrc.c
-> index fdf5f08cd8f17..ee417a0bbbdca 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_icrc.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_icrc.c
-> @@ -38,26 +38,26 @@ int rxe_icrc_init(struct rxe_dev *rxe)
->    * @next: starting address of current segment
->    * @len: length of current segment
->    *
->    * Return: the cumulative crc32 checksum
->    */
-> -static __be32 rxe_crc32(struct rxe_dev *rxe, __be32 crc, void *next, size_t len)
-> +static u32 rxe_crc32(struct rxe_dev *rxe, u32 crc, void *next, size_t len)
->   {
-> -	__be32 icrc;
-> +	u32 icrc;
->   	int err;
->   
->   	SHASH_DESC_ON_STACK(shash, rxe->tfm);
->   
->   	shash->tfm = rxe->tfm;
-> -	*(__be32 *)shash_desc_ctx(shash) = crc;
-> +	*(u32 *)shash_desc_ctx(shash) = crc;
->   	err = crypto_shash_update(shash, next, len);
->   	if (unlikely(err)) {
->   		rxe_dbg_dev(rxe, "failed crc calculation, err: %d\n", err);
-> -		return (__force __be32)crc32_le((__force u32)crc, next, len);
-> +		return crc32_le(crc, next, len);
->   	}
->   
-> -	icrc = *(__be32 *)shash_desc_ctx(shash);
-> +	icrc = *(u32 *)shash_desc_ctx(shash);
->   	barrier_data(shash_desc_ctx(shash));
->   
->   	return icrc;
->   }
->   
-> @@ -67,18 +67,18 @@ static __be32 rxe_crc32(struct rxe_dev *rxe, __be32 crc, void *next, size_t len)
->    * @skb: packet buffer
->    * @pkt: packet information
->    *
->    * Return: the partial ICRC
->    */
-> -static __be32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
-> +static u32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
->   {
->   	unsigned int bth_offset = 0;
->   	struct iphdr *ip4h = NULL;
->   	struct ipv6hdr *ip6h = NULL;
->   	struct udphdr *udph;
->   	struct rxe_bth *bth;
-> -	__be32 crc;
-> +	u32 crc;
->   	int length;
->   	int hdr_size = sizeof(struct udphdr) +
->   		(skb->protocol == htons(ETH_P_IP) ?
->   		sizeof(struct iphdr) : sizeof(struct ipv6hdr));
->   	/* pseudo header buffer size is calculate using ipv6 header size since
-> @@ -89,11 +89,11 @@ static __be32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
->   		RXE_BTH_BYTES];
->   
->   	/* This seed is the result of computing a CRC with a seed of
->   	 * 0xfffffff and 8 bytes of 0xff representing a masked LRH.
->   	 */
-> -	crc = (__force __be32)0xdebb20e3;
-> +	crc = 0xdebb20e3;
->   
->   	if (skb->protocol == htons(ETH_P_IP)) { /* IPv4 */
->   		memcpy(pshdr, ip_hdr(skb), hdr_size);
->   		ip4h = (struct iphdr *)pshdr;
->   		udph = (struct udphdr *)(ip4h + 1);
-> @@ -137,23 +137,27 @@ static __be32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
->    *
->    * Return: 0 if the values match else an error
->    */
->   int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt)
->   {
-> -	__be32 *icrcp;
-> -	__be32 pkt_icrc;
-> -	__be32 icrc;
-> -
-> -	icrcp = (__be32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
-> -	pkt_icrc = *icrcp;
-> +	/*
-> +	 * The usual big endian convention of InfiniBand does not apply to the
-> +	 * ICRC field, whose transmission is specified in terms of the CRC32
-> +	 * polynomial coefficients.  The coefficients are transmitted in
-> +	 * descending order from the x^31 coefficient to the x^0 one.  When the
-> +	 * result is interpreted as a 32-bit integer using the required reverse
-> +	 * mapping between bits and polynomial coefficients, it's a __le32.
-> +	 */
-> +	__le32 *icrcp = (__le32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
-> +	u32 icrc;
->   
->   	icrc = rxe_icrc_hdr(skb, pkt);
->   	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
->   				payload_size(pkt) + bth_pad(pkt));
->   	icrc = ~icrc;
->   
-> -	if (unlikely(icrc != pkt_icrc))
-> +	if (unlikely(icrc != le32_to_cpu(*icrcp)))
->   		return -EINVAL;
->   
->   	return 0;
->   }
->   
-> @@ -162,14 +166,13 @@ int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt)
->    * @skb: packet buffer
->    * @pkt: packet information
->    */
->   void rxe_icrc_generate(struct sk_buff *skb, struct rxe_pkt_info *pkt)
->   {
-> -	__be32 *icrcp;
-> -	__be32 icrc;
-> +	__le32 *icrcp = (__le32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
-> +	u32 icrc;
->   
-> -	icrcp = (__be32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
->   	icrc = rxe_icrc_hdr(skb, pkt);
->   	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
->   				payload_size(pkt) + bth_pad(pkt));
-> -	*icrcp = ~icrc;
-> +	*icrcp = cpu_to_le32(~icrc);
->   }
+2) The CRC calculation is done in big endian byte order with the least
+   31 significant bit of the most significant byte being the first
+   bits in the 32 CRC calculation.
 
+In this context saying it is not "big endian" doesn't seem to be quite
+right..
+
+The spec gives a sample data packet (in offset/value pairs):
+
+0  0xF0 15 0xB3 30 0x7A 45 0x8B
+1  0x12 16 0x00 31 0x05 46 0xC0
+2  0x37 17 0x0D 32 0x00 47 0x69
+3  0x5C 18 0xEC 33 0x00 48 0x0E
+4  0x00 19 0x2A 34 0x00 49 0xD4
+5  0x0E 20 0x01 35 0x0E 50 0x00
+6  0x17 21 0x71 36 0xBB 51 0x00
+7  0xD2 22 0x0A 37 0x88
+8  0x0A 23 0x1C 38 0x4D
+9  0x20 24 0x01 39 0x85
+10 0x24 25 0x5D 40 0xFD
+11 0x87 26 0x40 41 0x5C
+12 0xFF 27 0x02 42 0xFB
+13 0x87 28 0x38 43 0xA4
+14 0xB1 29 0xF2 44 0x72
+
+If you feed that to the CRC32 you should get 0x9625B75A in a CPU
+register u32.
+
+cpu_to_be32() will put it in the right order for on the wire.
+
+Since rxe doesn't have any cpu_to_be32() on this path, I'm guessing
+the Linux CRC32 implementations gives a u32 with the
+value = 0x5AB72596 ie swapped.
+
+Probably the issue here is that the Linux CRC32 and the IBTA CRC32 are
+using a different mapping of LFSR bits. I love CRCs. So many different
+ways to implement the same thing.
+
+Thus, I guess, the code should really read:
+ linux_crc32 = swab32(be32_to_cpu(val));
+
+Which is a NOP on x86 and requires a swap on BE.
+
+Zhu, can you check it for Eric? (this is page 229 in the spec).
+
+I assume the Linux CRC32 always gives the same CPU value regardless of
+LE or BE?
+
+Jason
 
