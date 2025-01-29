@@ -1,79 +1,83 @@
-Return-Path: <linux-rdma+bounces-7307-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7308-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0FE0A21DF3
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 14:39:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD247A21E23
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 14:48:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD5F23A60F7
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 13:39:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED6343A5F8B
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 13:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FD3A133987;
-	Wed, 29 Jan 2025 13:39:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B10712E1CD;
+	Wed, 29 Jan 2025 13:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="LRbXARLx"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="HGdV6S4n"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769831BC20
-	for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2025 13:39:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269F53C38
+	for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2025 13:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738157946; cv=none; b=JJ/S+9tdsehiI7n+Gm7viAP2b39Ueh7AbzAdY0w1phFjrUc285ms/8GHQ+TaBuOsyK12o4MP9jLKNfKi+oeM/dhZN/rwusrgHoOQaWBUq2IYw5/pAWzbIz8eT/bAxQi/wa9li7K/st3t1HCTM0mz59qDV5cJlDlmMRKF33ay5TM=
+	t=1738158481; cv=none; b=F1zlm6ZN1yGMYZSH+C5UKkCvuTlaobzVAxxKmmYUGxryMe66QjV6NjEKFEi5i/fJoOKn9cx7F6wxdlFWRr+x/DIPsw2XxFf9bBUOdIc3HsDH1OjNU+RSY6xxLxfpvfZaJrpJ2J0xYggumPoFi1f6MkysML+8vCMUq3EMAc9cO3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738157946; c=relaxed/simple;
-	bh=RxH/qA/BgpYkjBVmBtOP+Wt33+Id7p5IBZ1sJh+PVe8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MkVYKm47AvBuh7Wn4Uw0iy4RsnZfAAvB79pYaJxf8+6+QchZWwBKPMSjn4R7QhaNVhg85kSuoXzkNIU9yhF6rn3yxuKVocw+G53+HfaoWCh87W3L1jI6WRXee/EGqh0rdwAG0RIdcLXbweEdw2cfIuZ5bU8mAL7A9gmrN1kH0W4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=LRbXARLx; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-436281c8a38so48720385e9.3
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2025 05:39:04 -0800 (PST)
+	s=arc-20240116; t=1738158481; c=relaxed/simple;
+	bh=4p5V8MeeXoHZimLX86DEqr7isEbN5AK9qq48FtatG0c=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IwiIHmnkX6rjTnmvC4s/ycMb+IgVLuhciICffZINAepzXIHtqc1VgHMlkm/0N0PjZMQNL2jp5aG5E96IGNIyi7dawot0gFN++jcVg36jUDYS3Nqo1jMqnlRxOhqXfaROVZCNdPiDYnf25GV1pfZI/dqYQLF/3CuhtdfVZuHydFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=HGdV6S4n; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4679eacf25cso40051081cf.3
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2025 05:47:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1738157942; x=1738762742; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ekPyuSS82CPNI1Lh/E6IsIbzoEEGT2LSw6fRdzUam+8=;
-        b=LRbXARLxcVlSVLOIW9nPwxiGleXpTsHVUK1xrS0UwYak72R+r5JA7lmqK8UxnnQHw+
-         hjfkoSJN3yj16qLBqvfCG4JqRqP92QoaOZ3ZY+1vjEGDAPpILcv+DlIlstdU29B49j00
-         9/MvPxpeF0nk8EcLadAsFREGfVtX/6b+FsBDM=
+        d=ziepe.ca; s=google; t=1738158479; x=1738763279; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TGxs1D5kHZWfV3TMw8ydKze6LYDZn037JbgBy8rBgVo=;
+        b=HGdV6S4nUFZxmhXDs7awIf2kGvYN68fgxC7JmV36Qhk4/9FruV2YgpuCyKsY5Ra0hd
+         JfgEZUp8oseQ3RlKPNFY4CnvKCrDEaHhNrK6/eRgvElFo8mxoek++GIE2itG74BSmP6k
+         VB3Tal1clOyaiHL4920xmNAizQxnS02sE7d58ouhi0fjvtEhTFaed3muC9RlBe+ZbGP2
+         yFGRLkxYuqE8SMoxWKrmquIiVP33KKbFeQHoei/OO7PZ1H8mgOSHOX0vU7NJcFOG05UL
+         63QKyad5ykGWf0n88K4AMzCGSY6foiHmZHTxfYQDTBgmAevtEu+DjuytkhyKdNT70tdi
+         C1YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738157942; x=1738762742;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ekPyuSS82CPNI1Lh/E6IsIbzoEEGT2LSw6fRdzUam+8=;
-        b=ItgwQKfs5hFHx2NedC2gCGKUdhPwkmYiVUcGQiX7ruEaCgBFHqU/GFncLVW3MYxVL1
-         75rhWw2q13DtYGkIGcS3di8vfQRoi7yv2PGNhELAQK9XMq2qLAdM9qDi99LtPs+nCIer
-         mV6rw4qKfGxamaDfqUkAyL59wu95P/2U5eM/N+mmrgKgMP9cU5SahLLGYphhkDCpqpKe
-         s4Jl+M1Vnj+5+4/8EhVriY6IZ5sltT6/IXn3cy1VxhY62kcHMgBlPEhDGdAUI6pSlI00
-         WxlmFNmkPwbvHruBMGCt60aCKiub27B9UnxsgGG9YLxh1Lod5yO4FYOznCJc5dBn95vg
-         H8cw==
-X-Forwarded-Encrypted: i=1; AJvYcCWVWVfKHAiNbwWggmB0M5aCAziBPWUeMumTI4ppXB5+hByh6iEAbGZZtMMXWla/cB4G1E0mh7jytYtI@vger.kernel.org
-X-Gm-Message-State: AOJu0YxiZw5j9vgxkvf+b2VtDatDeTKp/1QAfeEwyFrOUmUQNKJMvP7M
-	ips6YTIksDuo/b2NsChmMawK5gYaQDsVcw4B3tDzqGf9nRKqcDYFrb/k6adHL+4=
-X-Gm-Gg: ASbGncuo3CAjQ4Pul/h71j4m4eM8fcnewqjE+syeDN9SNqxnsgxr2n9dHvqoSIj6XHc
-	JzJminUrbpwIPCDbDIj3Ay81rMJOno7QkZXqNExlaJY5ipMxpwBS3KE+0RMYN42Wc6qH/+78//x
-	cpndKhXy+RnLvDHAPNyGSqK5j3fwCqtdnSJsCXJqZX95GD+cJRpBB5N5ZS/Q5HG4nCcNBAWlEdJ
-	S7Nj9nov1bhpMtlrsJtuz7hseEKk5vVhr2mSkPPpTBXwD18lT9iurh5AyIvByIQx7yD7d8V36CY
-	l0SVreGMONlVJGYb7OVR22plST0=
-X-Google-Smtp-Source: AGHT+IFp40yYl/FrcEC18d1HA1Wbr1YBHRju+Twtn7vgv1BIenNhcb0w0RrYUn5K84MH3BCfQBYGmw==
-X-Received: by 2002:a05:600c:5486:b0:433:c76d:d57e with SMTP id 5b1f17b1804b1-438dc3a40d3mr30211795e9.5.1738157942387;
-        Wed, 29 Jan 2025 05:39:02 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:5485:d4b2:c087:b497])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438dcc263f0sm23501465e9.9.2025.01.29.05.39.01
+        d=1e100.net; s=20230601; t=1738158479; x=1738763279;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TGxs1D5kHZWfV3TMw8ydKze6LYDZn037JbgBy8rBgVo=;
+        b=FFxmrcF9DnJjXAmkPvkhwfFQEtyv2+K96gkHfKP4Gh1ygF9w2VbT+uDfPAmetU3hF7
+         Wr+lGl9i4hrNrL2eBI3NtXtShRzIG3x1TsUdNI18TXfQQSR9jtO6xqidbxWcd3m99POK
+         8J1CJYr92aVTcUlJ3dtIdPWCQU0KRQshFraMUnt5Hib29TLD6/1OUt8fLPcmJowjNDlW
+         ASDHZQ9o6j2W1pvbYxzFadOCfMBGf34G6VXuFJty5qH0Tty5H2M8iQX5kerW8CwAduOl
+         bAXJ+gq9v2jYrSaDy17E+IMEq5wIMJBd8rhyAf/oq5Df4+r3wLcSXuEjxwvHctADYyK/
+         qgQA==
+X-Forwarded-Encrypted: i=1; AJvYcCUCTrPh3yM/18pZO1Lv8AxkRARcVUfOpFBYnBf1TfwTUUJYxviPRhsx9NdCeN3FX9SpVQKJwG3VeyUL@vger.kernel.org
+X-Gm-Message-State: AOJu0YxnpeAM4dmMqXVZwfzhBjTQmbKQcq2MttNv9RUb8/hoie5Yt2wP
+	63jwLsFeptNRQjj3hQM3su/2KVv6eqlF0aVei9NxrNyD6hXWxT9tTy9U3d10lrM=
+X-Gm-Gg: ASbGncstc0dwxqp4kqlagY+w6/Y4OTG4GNLd2AutfZOyxQsrIQuILWF8QlVK6UQbxl1
+	uzl4+mpWF46HDOsS8KVrW5q4DoFjw5MO9UfU+yPCncpJ0Gp0qBOxojabiTWKzW1MKCOIMsfeRjX
+	5tHHChnkPDSEFkWaxM9v+UBfUNMP5aCmSChYAhqvy6uB5RjVRDz/irzM7C+lbu7AfcBjj3Xq1cV
+	/JTFe2hNS5E+bVOmWsJ/iJPmtAo8retHVsfnc4aPmfjUjOqDxBj2aQuSDAzGNvHj+YwYPfGnr+L
+	MvEflRGkWWuRBr2twy7pjUyARG8WSdE91Ka6JnZgN0mgNdRZXqjCDxXuzKyv3EsV
+X-Google-Smtp-Source: AGHT+IHuYCAk+wYHqjFRDvmI1uuhKYfRXYz+H9jof+ajiAjSs3miFEirWAObJrrIBPKksD6vvP2lVg==
+X-Received: by 2002:ac8:5a08:0:b0:46c:782f:5f85 with SMTP id d75a77b69052e-46fd0b98596mr53288201cf.52.1738158478735;
+        Wed, 29 Jan 2025 05:47:58 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46e66b67680sm62281881cf.60.2025.01.29.05.47.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jan 2025 05:39:01 -0800 (PST)
-Date: Wed, 29 Jan 2025 14:38:58 +0100
-From: Simona Vetter <simona.vetter@ffwll.ch>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+        Wed, 29 Jan 2025 05:47:58 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1td8Q9-00000009BlF-1by8;
+	Wed, 29 Jan 2025 09:47:57 -0400
+Date: Wed, 29 Jan 2025 09:47:57 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
 	Yonatan Maman <ymaman@nvidia.com>, kherbst@redhat.com,
 	lyude@redhat.com, dakr@redhat.com, airlied@gmail.com,
 	simona@ffwll.ch, leon@kernel.org, jglisse@redhat.com,
@@ -83,16 +87,7 @@ Cc: Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
 	linux-mm@kvack.org, linux-tegra@vger.kernel.org
 Subject: Re: [RFC 1/5] mm/hmm: HMM API to enable P2P DMA for device private
  pages
-Message-ID: <Z5ovcnX2zVoqdomA@phenom.ffwll.local>
-Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	Yonatan Maman <ymaman@nvidia.com>, kherbst@redhat.com,
-	lyude@redhat.com, dakr@redhat.com, airlied@gmail.com,
-	simona@ffwll.ch, leon@kernel.org, jglisse@redhat.com,
-	akpm@linux-foundation.org, GalShalom@nvidia.com,
-	dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-mm@kvack.org, linux-tegra@vger.kernel.org
+Message-ID: <20250129134757.GA2120662@ziepe.ca>
 References: <20241201103659.420677-1-ymaman@nvidia.com>
  <20241201103659.420677-2-ymaman@nvidia.com>
  <7282ac68c47886caa2bc2a2813d41a04adf938e1.camel@linux.intel.com>
@@ -101,98 +96,53 @@ References: <20241201103659.420677-1-ymaman@nvidia.com>
  <20250128151610.GC1524382@ziepe.ca>
  <b78d32e13811ef1fa57b0535749c811f2afb4dcd.camel@linux.intel.com>
  <20250128172123.GD1524382@ziepe.ca>
+ <Z5ovcnX2zVoqdomA@phenom.ffwll.local>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250128172123.GD1524382@ziepe.ca>
-X-Operating-System: Linux phenom 6.12.11-amd64 
+In-Reply-To: <Z5ovcnX2zVoqdomA@phenom.ffwll.local>
 
-On Tue, Jan 28, 2025 at 01:21:23PM -0400, Jason Gunthorpe wrote:
-> On Tue, Jan 28, 2025 at 05:32:23PM +0100, Thomas Hellström wrote:
-> > > This series supports three case:
-> > > 
-> > >  1) pgmap->owner == range->dev_private_owner
-> > >     This is "driver private fast interconnect" in this case HMM
-> > > should
-> > >     immediately return the page. The calling driver understands the
-> > >     private parts of the pgmap and computes the private interconnect
-> > >     address.
-> > > 
-> > >     This requires organizing your driver so that all private
-> > >     interconnect has the same pgmap->owner.
-> > 
-> > Yes, although that makes this map static, since pgmap->owner has to be
-> > set at pgmap creation time. and we were during initial discussions
-> > looking at something dynamic here. However I think we can probably do
-> > with a per-driver owner for now and get back if that's not sufficient.
-> 
-> The pgmap->owner doesn't *have* to fixed, certainly during early boot before
-> you hand out any page references it can be changed. I wouldn't be
-> surprised if this is useful to some requirements to build up the
-> private interconnect topology?
+On Wed, Jan 29, 2025 at 02:38:58PM +0100, Simona Vetter wrote:
 
-The trouble I'm seeing is device probe and the fundemantal issue that you
-never know when you're done. And so if we entirely rely on pgmap->owner to
-figure out the driver private interconnect topology, that's going to be
-messy. That's why I'm also leaning towards both comparing owners and
-having an additional check whether the interconnect is actually there or
-not yet.
+> > The pgmap->owner doesn't *have* to fixed, certainly during early boot before
+> > you hand out any page references it can be changed. I wouldn't be
+> > surprised if this is useful to some requirements to build up the
+> > private interconnect topology?
+> 
+> The trouble I'm seeing is device probe and the fundemantal issue that you
+> never know when you're done. And so if we entirely rely on pgmap->owner to
+> figure out the driver private interconnect topology, that's going to be
+> messy. That's why I'm also leaning towards both comparing owners and
+> having an additional check whether the interconnect is actually there or
+> not yet.
 
-You can fake that by doing these checks after hmm_range_fault returned,
-and if you get a bunch of unsuitable pages, toss it back to
-hmm_range_fault asking for an unconditional migration to system memory for
-those. But that's kinda not great and I think goes at least against the
-spirit of how you want to handle pci p2p in step 2 below?
+Hoenstely, I'd rather invest more effort into being able to update
+owner for those special corner cases than to slow down the fast path
+in hmm_range_fault..
 
-Cheers, Sima
+The notion is that owner should represent a contiguous region of
+connectivity. IMHO you can always create this, but I suppose there
+could be corner cases where you need to split/merge owners.
 
-> > >  2) The page is DEVICE_PRIVATE and get_dma_pfn_for_device() exists.
-> > >     The exporting driver has the option to return a P2P struct page
-> > >     that can be used for PCI P2P without any migration. In a PCI GPU
-> > >     context this means the GPU has mapped its local memory to a PCI
-> > >     address. The assumption is that P2P always works and so this
-> > >     address can be DMA'd from.
-> > 
-> > So do I understand it correctly, that the driver then needs to set up
-> > one device_private struct page and one pcie_p2p struct page for each
-> > page of device memory participating in this way?
-> 
-> Yes, for now. I hope to remove the p2p page eventually.
-> 
-> > > If you are just talking about your private multi-path, then that is
-> > > already handled..
-> > 
-> > No, the issue I'm having with this is really why would
-> > hmm_range_fault() need the new pfn when it could easily be obtained
-> > from the device-private pfn by the hmm_range_fault() caller? 
-> 
-> That isn't the API of HMM, the caller uses hmm to get PFNs it can use.
-> 
-> Deliberately returning PFNs the caller cannot use is nonsensical to
-> it's purpose :)
-> 
-> > So anyway what we'll do is to try to use an interconnect-common owner
-> > for now and revisit the problem if that's not sufficient so we can come
-> > up with an acceptable solution.
-> 
-> That is the intention for sure. The idea was that the drivers under
-> the private pages would somehow generate unique owners for shared
-> private interconnect segments.
-> 
-> I wouldn't say this is the end all of the idea, if there are better
-> ways to handle accepting private pages they can certainly be
-> explored..
-> 
-> Jason
+But again, this isn't set in stone, if someone has a better way to
+match the private interconnects without going to driver callbacks then
+try that too.
 
--- 
-Simona Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+I think driver callbacks inside hmm_range_fault should be the last resort..
+
+> You can fake that by doing these checks after hmm_range_fault returned,
+> and if you get a bunch of unsuitable pages, toss it back to
+> hmm_range_fault asking for an unconditional migration to system memory for
+> those. But that's kinda not great and I think goes at least against the
+> spirit of how you want to handle pci p2p in step 2 below?
+
+Right, hmm_range_fault should return pages that can be used and you
+should not call it twice.
+
+Jason
 
