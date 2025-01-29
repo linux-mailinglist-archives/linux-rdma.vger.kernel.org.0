@@ -1,199 +1,233 @@
-Return-Path: <linux-rdma+bounces-7301-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7302-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F8A1A21A0D
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 10:41:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED14EA21A38
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 10:46:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5A231886903
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 09:41:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C43DD7A40B9
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 09:44:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1731ACEDE;
-	Wed, 29 Jan 2025 09:40:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4AD1AC435;
+	Wed, 29 Jan 2025 09:44:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ibsOXJKP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rpTtz9Rd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.11])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7A81917F9;
-	Wed, 29 Jan 2025 09:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F69C1AB6D4
+	for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2025 09:44:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738143644; cv=none; b=Td7qm/3cZgwYjyMxLmZLmUO1zmIEGtxTN4ff9gVizbxnP/0VVz1ZyhefltpY+h5rdA2OQnhyHCVuUl2lFmxOqai7fe0Lc5GyF3cGrt6hifGySFdT5mnubViTT2WW++nEoaJEDCLUs/rVx8D8gJnfclVfVRPgP9oRitqyJsDb1Tw=
+	t=1738143892; cv=none; b=H0nAoGx2BAWHAC3u3e8LhOHaxWKtDITPxOPBzW1Jff38dqF5/DvgaPcuAEZEV9HLiyKhJ9CNdopIYCt1x6ipIrW7NADRuAyEk8mfhnqmlTfeSpCiP4mcWFu9/UkHL2bZhiShjKRhIxluHrqclaHXL7WNzjQ68s1tI7go1I6xfpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738143644; c=relaxed/simple;
-	bh=f6YZi+aj3vtvGBm2x62fa1lw4+jY/LfPDrFJLCES+DY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qoMJCS+7sm0r3KwmP6/B8SishjWvXuQrJTfabMFowKWvxai/SNKa9e0kI69UqTAgPCetmcB55cd85FIz0UA5fNHXLv9e7Msr17x3wMvZgEgExTxVRmcOqqaDvJQzDcFX/iuoHckWXV+rry4BpimOE2B0Zsg3J7ZTJNbHIY7yMUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=ibsOXJKP; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1738143622; x=1738748422; i=markus.elfring@web.de;
-	bh=RmUlpFblDQ0X0FrPNxA6WyeicYW3HpJ3EyGlM0jP5z0=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=ibsOXJKPJKhZo8FqJFepmaYQoSFoyR2qxzl8lohWNNUQx+2NF2ManFbNjUNGq/F2
-	 gbw8iml79L7rvtKd56Ir7+yYHXrAe1EUIefoTtrBNrmtFI2yM2WYsLj1b568yC1rb
-	 SKGUWYn0X41jPRogXjuGLSd6Gt6171dGmUJ2Fp3bc0pBO92HArHd48fDFFdCCxzPK
-	 pf78m0ogusJQNS3QQ3zn1K/mM4iA6yn4B0KggTtABnb9cI7MMqnv247Vl4f+VntcE
-	 +DVoabadzyBcjKoDGRsAmxtyEkjkG+dxMfHbTqq28F/8W87L00uXvdFhKdqm9Gctj
-	 xUEgsrypLeLKtXHbAg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.93.19]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MG994-1tgKE62NvY-00Fdf6; Wed, 29
- Jan 2025 10:40:22 +0100
-Message-ID: <9ca0337d-e378-4de5-99be-1dfa1d4f8cff@web.de>
-Date: Wed, 29 Jan 2025 10:40:18 +0100
+	s=arc-20240116; t=1738143892; c=relaxed/simple;
+	bh=NB+mrkHlJYhqFgI/s7MtofvjWsYHDwldvB+bLx5OzGc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=Kq2g9K+/LFLi3Z9H8Pu65ke53BmFJDLkJDjc12/iaern2HSsQyrnVztT3OnfYN2PTGC4CMaWFbII+B6H1pMVxGDHqZv/Kty02xR9itIPQSyJEGIrM/hIodHjcHPCqSTDFGjNauHnuhlit8yFR29/G4nOiqASETvmb955oOT41Bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rpTtz9Rd; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ae41a37e-3ee4-484e-ba53-1cad9225df7a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1738143886;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ospkZMJl+ewSlQifWEgGSZnKjzC1MKUrYCRJpX9WsCk=;
+	b=rpTtz9RddFXBuO95TNVrfP0ib5jZPGUShPa8dMVCyzcJUvrI43QDngSOQ1I8Upx9CgiSEy
+	pDlBjNEqcUBbSd78NXdQ6GFt1l5SMZi4685O2A5jJIcdfG+s3+W1z5hfHYML6tgHTY3rJE
+	d9WO/qKH80CO9dSg7add2NG2WPonIR4=
+Date: Wed, 29 Jan 2025 10:44:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [01/16] coccinelle: misc: secs_to_jiffies: Patch expressions too
-To: Easwar Hariharan <eahariha@linux.microsoft.com>, cocci@inria.fr
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
- linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-ide@vger.kernel.org, linux-nvme@lists.infradead.org,
- linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-sound@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-xfs@vger.kernel.org,
- ceph-devel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
- dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net,
- imx@lists.linux.dev, kernel@pengutronix.de,
- linux-arm-kernel@lists.infradead.org,
- Andrew Morton <akpm@linux-foundation.org>, Carlos Maiolino <cem@kernel.org>,
- Chris Mason <clm@fb.com>, Christoph Hellwig <hch@lst.de>,
- Damien Le Moal <dlemoal@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>,
- David Sterba <dsterba@suse.com>, Dick Kennedy <dick.kennedy@broadcom.com>,
- Dongsheng Yang <dongsheng.yang@easystack.cn>,
- Fabio Estevam <festevam@gmail.com>, Frank Li <Frank.Li@nxp.com>,
- Hans de Goede <hdegoede@redhat.com>,
- Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
- James Bottomley <James.Bottomley@HansenPartnership.com>,
- James Smart <james.smart@broadcom.com>, Jaroslav Kysela <perex@perex.cz>,
- Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
- Josef Bacik <josef@toxicpanda.com>, Julia Lawall <Julia.Lawall@inria.fr>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Ilya Dryomov <idryomov@gmail.com>,
- Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>,
- Keith Busch <kbusch@kernel.org>, Leon Romanovsky <leon@kernel.org>,
- Mark Brown <broonie@kernel.org>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Nicolas Palix <nicolas.palix@imag.fr>, Niklas Cassel <cassel@kernel.org>,
- Oded Gabbay <ogabbay@kernel.org>, Ricardo Ribalda <ribalda@google.com>,
- Sagi Grimberg <sagi@grimberg.me>, Sascha Hauer <s.hauer@pengutronix.de>,
- Sebastian Reichel <sre@kernel.org>,
- Selvin Xavier <selvin.xavier@broadcom.com>, Shawn Guo <shawnguo@kernel.org>,
- Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, Takashi Iwai <tiwai@suse.com>,
- Victor Gambier <victor.gambier@inria.fr>, Xiubo Li <xiubli@redhat.com>,
- Yaron Avizrat <yaron.avizrat@intel.com>
-References: <20250128-converge-secs-to-jiffies-part-two-v1-1-9a6ecf0b2308@linux.microsoft.com>
- <565fb1db-3618-4636-8820-1ca77dad07a2@web.de>
- <2402812d-b818-4d1b-9653-767c9cd89dda@linux.microsoft.com>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <2402812d-b818-4d1b-9653-767c9cd89dda@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VVUayMb32w7y67C7tTjgB5AAr0xhckczX0N8TokrIpC9jN6eUE9
- EFsN7wRaBX0tQgtAxOLriEuyy3B/8avbPqaD1zz3GlxmzANwcYY0B13b3+dGcse9e29fR2B
- x1FDILYMT0Hm6Op4dZPmgiuO2ynGivSf8q+hlfpEEa8MIXRg6GY1vfPop11AepKnCCaop1O
- +p76d5j2Efo5XT3k24tTg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:tcxCLGC+RCc=;ey0yBxZW/tRSJQW6qo2D+Q6kDrW
- B7ti/3QUhXC8WrcBjNzI4u6z+d1rV4adoqTUoUSMt/DqJcKI/DlrivOEoz806s/5+Kn56DDqL
- LU9xtxxU9vsLyCTP7I8gL7dl6Qx1gz/cso735SydkffMPYwAsbCaRqy9WGoFqBlIQ9QCxafc3
- W4RbDo3aQwMCu9VcGvB6j+H5tbohMyIwgg8IKKOqedJ1nboWwMgz4OIZ7EST+13jVvGHzPDUP
- RMgEYGdAiBMWyxIajIWHh0tiMSE3p1A+yPFCKxzA51+Jsl4lqfDwp6i6xfZI0wLLB4pLlY9o9
- 4q4fn10BcFNZy38f62U9iuLflyBSQy3IDj2SnmtLJbJzYINTq3rTIPHq21PIW76G8fDbFN0aG
- 3ac6gqwYlxfQhltWeUu6Jf+r0y/8ZDSvg6BenYTc1SAFAqZHEM4upcrvZQorHyWClmJeL4R1d
- pwRYkmLBgkDzN9R/bb0jfrgkgXUIzdRpQYEu62HTHwYHvlMnYXeCcivCQRHgqKox7R6hNuIrn
- rxTrTFacoaE+vqTHL959kdf+7baowrszBGfdV4G67c90sFgZ24V7UDmogT/jAdPtbbKWpCJ3F
- kMrOyabr3gWq6SX50hyVFHIUca6hdwNAbHNQqpbFNzCXjeuhFqIkBldPkgoHIWodZqGhWHxbJ
- rh9yga8+A7Xz90bS7If3X8UB0JOiOJoqee5k8VuGqGUor7M8/IYAWxEzk0sfRhZN5x9gzYIwj
- z5v+Opf6qMCYFMEpDc5oZNLzukYChx6b04HyYvuAIbzbqHM64L8pCx9PjiofRQqAAUENSsyVK
- wSLOByWJNd0hj3dnFK4MWKIc72WDX2na+gBRF+CITUiUaTapl8UB+IMJ1+mNkz1dW85FtBpIj
- tD/0moj9gcbkIb1LR6m5OI0uHLkCOXIBTrIfx3IHv6b13SsYXuqGkV/RzTBhQpQUsnir3VJIj
- cVkG88L1qB1XMwvpL5WZaIlaVUahCedhQsFB49sgDWhVH58n5+/Z9aWfVKo9SGwG1/1EYyVhs
- xdj7mKATCRxJL8YFYbK1K5zFB2c5chXeAOrRuI6GfbxLg4Jr5TwIV+gUIoOLkM9oBMdE3PZmY
- FmuKpySVCwL9uRLQ0lYfPXIDXqcQix+7IQpKOnC7/mKJSccV7o1cXqpz0osAScgdxIeUIW7Oo
- TT3dPmTAxqyMA5HLb2IdqDbNqBt78hG7Vp0fBYOvquK98imV2V34SSApTC+PTRD9nO5SEk1WD
- M5c0DPUlZtR3e/lmnDioWB77iUkT5JV0a7FRF40QmlHGvbSs8vfTQg9ZFgjUq8jYaGVb32YjP
- AEhromp4VpaoN9T5CJol8F+orrIemlZIcgjTh9W5NmdUN4pRCbHOUfJ/tbXwdPtCw5lPPfB1R
- 5kdsgtTCg2hWVnV9uMjqAZCd/Sr1UngGlxpd0=
+Subject: Re: [PATCH 1/6] RDMA/rxe: handle ICRC correctly on big endian systems
+To: Eric Biggers <ebiggers@kernel.org>, linux-rdma@vger.kernel.org,
+ Mustafa Ismail <mustafa.ismail@intel.com>,
+ Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ Zhu Yanjun <zyjzyj2000@gmail.com>, Bernard Metzler <bmt@zurich.ibm.com>
+References: <20250127223840.67280-1-ebiggers@kernel.org>
+ <20250127223840.67280-2-ebiggers@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+In-Reply-To: <20250127223840.67280-2-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
->> =E2=80=A6
->>> +++ b/scripts/coccinelle/misc/secs_to_jiffies.cocci
->>> @@ -11,12 +11,22 @@
->>>
->>>  virtual patch
->> =E2=80=A6
->>> -@depends on patch@ constant C; @@
->>> +@depends on patch@
->>> +expression E;
->>> +@@
->>>
->>> -- msecs_to_jiffies(C * MSEC_PER_SEC)
->>> -+ secs_to_jiffies(C)
->>> +-msecs_to_jiffies
->>> ++secs_to_jiffies
->>> + (E
->>> +- * \( 1000 \| MSEC_PER_SEC \)
->>> + )
->>
->> 1. I do not see a need to keep an SmPL rule for the handling of constan=
-ts
->>    (or literals) after the suggested extension for expressions.
->
-> Can you explain why? Would the expression rule also address the cases
-> where it's a constant or literal?
+在 2025/1/27 23:38, Eric Biggers 写道:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> The usual big endian convention of InfiniBand does not apply to the
+> ICRC field, whose transmission is specified in terms of the CRC32
+> polynomial coefficients.  The coefficients are transmitted in
+> descending order from the x^31 coefficient to the x^0 one.  When the
+> result is interpreted as a 32-bit integer using the required reverse
+> mapping between bits and polynomial coefficients, it's a __le32.
+> 
+> The code used __be32, but it did not actually do an endianness
+> conversion.  So it actually just used the CPU's native endianness,
+> making it comply with the spec on little endian systems only.
+> 
+> Fix the code to use __le32 and do the needed le32_to_cpu() and
+> cpu_to_le32() so that it complies with the spec on big endian systems.
+> 
+> Also update the lower-level helper functions to use u32, as they are
+> working with CPU native values.  This part does not change behavior.
+> 
+> Found through code review.  I don't know whether anyone is actually
+> using this code on big endian systems.  Probably not.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Probably, yes.
+In this commit, the little endian is used instead of big endian in the 
+rxe source code. To x86_64 architecture, I am fine with this commit.
 
+To other big endian architecture, e.g. ppc/ppc64, I do not have such 
+host, thus, I can not make tests on the big endian host.
 
->> 2. I find it nice that you indicate an attempt to make the shown SmPL c=
-ode
->>    a bit more succinct.
->>    Unfortunately, further constraints should be taken better into accou=
-nt
->>    for the current handling of isomorphisms (and corresponding SmPL dis=
-junctions).
->>    Thus I would find an SmPL rule (like the following) more appropriate=
-.
->>
->
-> Sorry, I couldn't follow your sentence construction or reasoning here.
-> I don't see how my patch is deficient, or different from your suggestion
-> below, especially given that it follows your feedback from part 1:
-> https://lore.kernel.org/all/9088f9a2-c4ab-4098-a255-25120df5c497@web.de/
+Thanks,
 
-I tend also to present possibilities for succinct SmPL code.
-Unfortunately, software dependencies can trigger corresponding target conf=
-licts.
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
+Zhu Yanjun
 
-> Can you point out specifically what SmPL isomorphisms or disjunctions
-> are broken with the patch in its current state?
-
-Please take another look at related information sources.
-Would you like to achieve any benefits from commutativity (for multiplicat=
-ions)?
-https://gitlab.inria.fr/coccinelle/coccinelle/-/blob/bd08cad3f802229dc629a=
-13eefef2018c620e905/standard.iso#L241
-https://github.com/coccinelle/coccinelle/blob/cca22217d1b4316224e80a18d0b0=
-8dd351234497/standard.iso#L241
-
-
-Regards,
-Markus
+> ---
+>   drivers/infiniband/sw/rxe/rxe_icrc.c | 41 +++++++++++++++-------------
+>   1 file changed, 22 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_icrc.c b/drivers/infiniband/sw/rxe/rxe_icrc.c
+> index fdf5f08cd8f17..ee417a0bbbdca 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_icrc.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_icrc.c
+> @@ -38,26 +38,26 @@ int rxe_icrc_init(struct rxe_dev *rxe)
+>    * @next: starting address of current segment
+>    * @len: length of current segment
+>    *
+>    * Return: the cumulative crc32 checksum
+>    */
+> -static __be32 rxe_crc32(struct rxe_dev *rxe, __be32 crc, void *next, size_t len)
+> +static u32 rxe_crc32(struct rxe_dev *rxe, u32 crc, void *next, size_t len)
+>   {
+> -	__be32 icrc;
+> +	u32 icrc;
+>   	int err;
+>   
+>   	SHASH_DESC_ON_STACK(shash, rxe->tfm);
+>   
+>   	shash->tfm = rxe->tfm;
+> -	*(__be32 *)shash_desc_ctx(shash) = crc;
+> +	*(u32 *)shash_desc_ctx(shash) = crc;
+>   	err = crypto_shash_update(shash, next, len);
+>   	if (unlikely(err)) {
+>   		rxe_dbg_dev(rxe, "failed crc calculation, err: %d\n", err);
+> -		return (__force __be32)crc32_le((__force u32)crc, next, len);
+> +		return crc32_le(crc, next, len);
+>   	}
+>   
+> -	icrc = *(__be32 *)shash_desc_ctx(shash);
+> +	icrc = *(u32 *)shash_desc_ctx(shash);
+>   	barrier_data(shash_desc_ctx(shash));
+>   
+>   	return icrc;
+>   }
+>   
+> @@ -67,18 +67,18 @@ static __be32 rxe_crc32(struct rxe_dev *rxe, __be32 crc, void *next, size_t len)
+>    * @skb: packet buffer
+>    * @pkt: packet information
+>    *
+>    * Return: the partial ICRC
+>    */
+> -static __be32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+> +static u32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+>   {
+>   	unsigned int bth_offset = 0;
+>   	struct iphdr *ip4h = NULL;
+>   	struct ipv6hdr *ip6h = NULL;
+>   	struct udphdr *udph;
+>   	struct rxe_bth *bth;
+> -	__be32 crc;
+> +	u32 crc;
+>   	int length;
+>   	int hdr_size = sizeof(struct udphdr) +
+>   		(skb->protocol == htons(ETH_P_IP) ?
+>   		sizeof(struct iphdr) : sizeof(struct ipv6hdr));
+>   	/* pseudo header buffer size is calculate using ipv6 header size since
+> @@ -89,11 +89,11 @@ static __be32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+>   		RXE_BTH_BYTES];
+>   
+>   	/* This seed is the result of computing a CRC with a seed of
+>   	 * 0xfffffff and 8 bytes of 0xff representing a masked LRH.
+>   	 */
+> -	crc = (__force __be32)0xdebb20e3;
+> +	crc = 0xdebb20e3;
+>   
+>   	if (skb->protocol == htons(ETH_P_IP)) { /* IPv4 */
+>   		memcpy(pshdr, ip_hdr(skb), hdr_size);
+>   		ip4h = (struct iphdr *)pshdr;
+>   		udph = (struct udphdr *)(ip4h + 1);
+> @@ -137,23 +137,27 @@ static __be32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+>    *
+>    * Return: 0 if the values match else an error
+>    */
+>   int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+>   {
+> -	__be32 *icrcp;
+> -	__be32 pkt_icrc;
+> -	__be32 icrc;
+> -
+> -	icrcp = (__be32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
+> -	pkt_icrc = *icrcp;
+> +	/*
+> +	 * The usual big endian convention of InfiniBand does not apply to the
+> +	 * ICRC field, whose transmission is specified in terms of the CRC32
+> +	 * polynomial coefficients.  The coefficients are transmitted in
+> +	 * descending order from the x^31 coefficient to the x^0 one.  When the
+> +	 * result is interpreted as a 32-bit integer using the required reverse
+> +	 * mapping between bits and polynomial coefficients, it's a __le32.
+> +	 */
+> +	__le32 *icrcp = (__le32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
+> +	u32 icrc;
+>   
+>   	icrc = rxe_icrc_hdr(skb, pkt);
+>   	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
+>   				payload_size(pkt) + bth_pad(pkt));
+>   	icrc = ~icrc;
+>   
+> -	if (unlikely(icrc != pkt_icrc))
+> +	if (unlikely(icrc != le32_to_cpu(*icrcp)))
+>   		return -EINVAL;
+>   
+>   	return 0;
+>   }
+>   
+> @@ -162,14 +166,13 @@ int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+>    * @skb: packet buffer
+>    * @pkt: packet information
+>    */
+>   void rxe_icrc_generate(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+>   {
+> -	__be32 *icrcp;
+> -	__be32 icrc;
+> +	__le32 *icrcp = (__le32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
+> +	u32 icrc;
+>   
+> -	icrcp = (__be32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
+>   	icrc = rxe_icrc_hdr(skb, pkt);
+>   	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
+>   				payload_size(pkt) + bth_pad(pkt));
+> -	*icrcp = ~icrc;
+> +	*icrcp = cpu_to_le32(~icrc);
+>   }
 
 
