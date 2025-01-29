@@ -1,159 +1,128 @@
-Return-Path: <linux-rdma+bounces-7299-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7300-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76BA0A217B4
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 07:27:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2D28A21959
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 09:49:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE0421888A54
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 06:27:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90D9C7A10E5
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 08:48:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B890C192B8A;
-	Wed, 29 Jan 2025 06:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C631A9B27;
+	Wed, 29 Jan 2025 08:49:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tYXlaTpf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D+6QRneb"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29842176FB0;
-	Wed, 29 Jan 2025 06:27:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19F62D627;
+	Wed, 29 Jan 2025 08:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738132063; cv=none; b=cniOJtudTc1YDj8AJ0wZ8nPqosoQs3jmcOw/QAlAE6Rdlpa0IoXe6rfjmQUsXGoIIMpKE5rB1/czlo68MvPhOAIA1ZvFWVTWCCaQS0miSngOB7m6LDlfFVpMBLM8xRqQylTB149/Z3MbfbQqxL08tfGndtqQFx47badtQg0X/tk=
+	t=1738140560; cv=none; b=dMzd52IIQTon1xJXbCdXqpfMDcWb2IeXuH9R1SgKanZxacguMprU/Hg7Ll5XYR4ivg3F+1Wv4+aQokMcFTAhcDq4d+nCOB+GPhKIr9OyAgUzDX1zwvcylPdEDf6K7+ZZGzDaSeP8oSXRTqSftjkJMNnYcr8F1auxuXh1eYeMYL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738132063; c=relaxed/simple;
-	bh=BcheDkbF7i4plK077EE5fx0I+7LaoMSZmCvmiRwCLWc=;
+	s=arc-20240116; t=1738140560; c=relaxed/simple;
+	bh=bkecGghn49Q0kcBr4/Q4RAYEqTU2lzStxg+kMBkUviM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qP+y1JYHovCjyi9sK70N/J1fhOdvICAJIL1jb+UZQNeAjCxsyv6OC13eWlgDMxi6rxthxaT6xMyn3Jgo/nFvO4dsDYAELRTfLDThRRor/9GAA4oDi9YI1oR54TmXx8qS9tnKAeWxz+rIb/Pu/08XMDUcySRe8nG9aUQAY5fML9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tYXlaTpf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E108EC4CED3;
-	Wed, 29 Jan 2025 06:27:29 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=EF0OhxvyF0kaEvrafy1BX3zzWeBuyJSo+qySUHfcv1VSkqFwetU/NmqcRTdUSpAfFwY+MEF00yXvJWaX+n8YqoVny+ir4VpKtsuf6BjmHCrLXTyravxLj1Ov8tO5WrOXCEBSoXa9YI4i3vBsifIaEYj1uHKWsH044/ity2GPCKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D+6QRneb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAFA1C4CED3;
+	Wed, 29 Jan 2025 08:49:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738132062;
-	bh=BcheDkbF7i4plK077EE5fx0I+7LaoMSZmCvmiRwCLWc=;
+	s=k20201202; t=1738140558;
+	bh=bkecGghn49Q0kcBr4/Q4RAYEqTU2lzStxg+kMBkUviM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tYXlaTpf1UHLxCOLY2b71oBs1Z8jmc+k88hDg4mxgy9BfVh5FaZFJ0sctqiMaUJa3
-	 0ERjR88O2sKxLaXENNFiYXgW5V6EWANwLybrlRdZ0uAueHnvFc/luTGhJJHi5qSyHf
-	 Qhwk4n5jqTURqvwR6zUdrtKBktKuVAQJmisiNKpSZSSK6LJmo4zYOOzg6tSFgxCsOc
-	 Qfzb+Ch4Hp08uSkL1c1h9vCW8n/kbD+KUJVXjOVTrDcLl+peTbMx/iozRX16+XGbqx
-	 LmxLOokGigU1zjIvh0goqBVkjBWqvL4YDcg+yxNUApdR5ACop75NXb+fT4J9+7jnPJ
-	 KRVcLrP4/YQHg==
-Date: Wed, 29 Jan 2025 07:27:24 +0100
-From: Carlos Maiolino <cem@kernel.org>
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Yaron Avizrat <yaron.avizrat@intel.com>, Oded Gabbay <ogabbay@kernel.org>, 
-	Julia Lawall <Julia.Lawall@inria.fr>, Nicolas Palix <nicolas.palix@imag.fr>, 
-	James Smart <james.smart@broadcom.com>, Dick Kennedy <dick.kennedy@broadcom.com>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Chris Mason <clm@fb.com>, 
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	Ilya Dryomov <idryomov@gmail.com>, Dongsheng Yang <dongsheng.yang@easystack.cn>, 
-	Jens Axboe <axboe@kernel.dk>, Xiubo Li <xiubli@redhat.com>, 
-	Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, 
-	"Darrick J. Wong" <djwong@kernel.org>, Sebastian Reichel <sre@kernel.org>, 
-	Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
-	Frank Li <Frank.Li@nxp.com>, Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, 
-	Hans de Goede <hdegoede@redhat.com>, Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, 
-	Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Selvin Xavier <selvin.xavier@broadcom.com>, 
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Leon Romanovsky <leon@kernel.org>, cocci@inria.fr, linux-kernel@vger.kernel.org, 
-	linux-scsi@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, linux-block@vger.kernel.org, 
-	linux-ide@vger.kernel.org, linux-xfs@vger.kernel.org, linux-pm@vger.kernel.org, 
-	linux-nvme@lists.infradead.org, linux-spi@vger.kernel.org, imx@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
-	ibm-acpi-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 09/16] xfs: convert timeouts to secs_to_jiffies()
-Message-ID: <kywszbmxtm27rlgaefr6xus6l4bpdiouqqe72px7ml72hh4ozc@5orjtzsbg75s>
-References: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
- <JZGx8kYNWP54f9cEViEKZlR6sGGADv31K4TOPtwvyeoDEFkRKICiFaQy04EvZtsQtc44Zozh76mkch2s8rz7mQ==@protonmail.internalid>
- <20250128-converge-secs-to-jiffies-part-two-v1-9-9a6ecf0b2308@linux.microsoft.com>
+	b=D+6QRnebTmdCsTn/fBIyawZ8F2h5FOi1VkBceKjrJE9gQqYhsE4MpI+DUnmOyvn9r
+	 jy2STn2XFJrPEPFrh+vO/ZWYbctxdvY6UR3Ry6YZK+y8a1MhcK6ynlBs1p1BMMkJ1P
+	 w6gLTDQPv35AYJJgnh4TzBlS6e9ascDPFne+p1YDjEpGVHG5PR2AxRH9J1o9Q9BPKi
+	 anvTB+Oa86UvplOCcaBDT4qhHCCSJO/P11ip4o+2DBjUNcnkNIz/KxsEnezLq+wofc
+	 pmlKCTkKHhEdUE5jBQ13DTAnVV4ZlV/QW5dr1RzqeBZB57C+fkYnuuFh6jqnxMpijz
+	 QxNX1fm0X2YKQ==
+Date: Wed, 29 Jan 2025 09:49:13 +0100
+From: Joel Granados <joel.granados@kernel.org>
+To: Paul Moore <paul@paul-moore.com>
+Cc: Matthew Wilcox <willy@infradead.org>, 
+	Jani Nikula <jani.nikula@intel.com>, Ard Biesheuvel <ardb@kernel.org>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
+	Kees Cook <kees@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	openipmi-developer@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	intel-xe@lists.freedesktop.org, linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org, 
+	xen-devel@lists.xenproject.org, linux-aio@kvack.org, linux-fsdevel@vger.kernel.org, 
+	netfs@lists.linux.dev, codalist@coda.cs.cmu.edu, linux-mm@kvack.org, 
+	linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev, fsverity@lists.linux.dev, 
+	linux-xfs@vger.kernel.org, io-uring@vger.kernel.org, bpf@vger.kernel.org, 
+	kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
+	keyrings@vger.kernel.org, Song Liu <song@kernel.org>, 
+	"Steven Rostedt (Google)" <rostedt@goodmis.org>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	"Darrick J. Wong" <djwong@kernel.org>, Corey Minyard <cminyard@mvista.com>
+Subject: Re: Re: Re: Re: Re: [PATCH v2] treewide: const qualify ctl_tables
+ where applicable
+Message-ID: <umk5gfo7iq7krppvqsal57hlzds26bdqd3g7kccjzuudjikdws@k2oknd6zx6g7>
+References: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
+ <Z4+jwDBrZNRgu85S@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <nslqrapp4v3rknjgtfk4cg64ha7rewrrg24aslo2e5jmxfwce5@t4chrpuk632k>
+ <CAMj1kXEZPe8zk7s67SADK9wVH3cfBup-sAZSC6_pJyng9QT7aw@mail.gmail.com>
+ <f4lfo2fb7ajogucsvisfd5sg2avykavmkizr6ycsllcrco4mo3@qt2zx4zp57zh>
+ <87jzag9ugx.fsf@intel.com>
+ <Z5epb86xkHQ3BLhp@casper.infradead.org>
+ <u2fwibsnbfvulxj6adigla6geiafh2vuve4hcyo4vmeytwjl7p@oz6xonrq5225>
+ <CAHC9VhQnB_bsQaezBfAcA0bE7Zoc99QXrvO1qjpHA-J8+_doYg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250128-converge-secs-to-jiffies-part-two-v1-9-9a6ecf0b2308@linux.microsoft.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHC9VhQnB_bsQaezBfAcA0bE7Zoc99QXrvO1qjpHA-J8+_doYg@mail.gmail.com>
 
-On Tue, Jan 28, 2025 at 06:21:54PM +0000, Easwar Hariharan wrote:
-> Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
-> secs_to_jiffies().  As the value here is a multiple of 1000, use
-> secs_to_jiffies() instead of msecs_to_jiffies to avoid the multiplication.
+On Tue, Jan 28, 2025 at 10:43:10AM -0500, Paul Moore wrote:
+> On Tue, Jan 28, 2025 at 6:22 AM Joel Granados <joel.granados@kernel.org> wrote:
+> > On Mon, Jan 27, 2025 at 03:42:39PM +0000, Matthew Wilcox wrote:
+> > > On Mon, Jan 27, 2025 at 04:55:58PM +0200, Jani Nikula wrote:
+> > > > You could have static const within functions too. You get the rodata
+> > > > protection and function local scope, best of both worlds?
+> > >
+> > > timer_active is on the stack, so it can't be static const.
+> > >
+> > > Does this really need to be cc'd to such a wide distribution list?
+> > That is a very good question. I removed 160 people from the original
+> > e-mail and left the ones that where previously involved with this patch
+> > and left all the lists for good measure. But it seems I can reduce it
+> > even more.
+> >
+> > How about this: For these treewide efforts I just leave the people that
+> > are/were involved in the series and add two lists: linux-kernel and
+> > linux-hardening.
+> >
+> > Unless someone screams, I'll try this out on my next treewide.
 > 
-> This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci with
-> the following Coccinelle rules:
-> 
-> @depends on patch@
-> expression E;
-> @@
-> 
-> -msecs_to_jiffies
-> +secs_to_jiffies
-> (E
-> - * \( 1000 \| MSEC_PER_SEC \)
-> )
-> 
-> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-> ---
->  fs/xfs/xfs_icache.c | 2 +-
->  fs/xfs/xfs_sysfs.c  | 7 +++----
->  2 files changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-> index 7b6c026d01a1fc020a41a678964cdbf7a8113323..7a1feb8dc21f6f71d04f88de866e5a95925e0c54 100644
-> --- a/fs/xfs/xfs_icache.c
-> +++ b/fs/xfs/xfs_icache.c
-> @@ -230,7 +230,7 @@ xfs_blockgc_queue(
->  	rcu_read_lock();
->  	if (radix_tree_tagged(&pag->pag_ici_root, XFS_ICI_BLOCKGC_TAG))
->  		queue_delayed_work(mp->m_blockgc_wq, &pag->pag_blockgc_work,
-> -				   msecs_to_jiffies(xfs_blockgc_secs * 1000));
-> +				   secs_to_jiffies(xfs_blockgc_secs));
->  	rcu_read_unlock();
->  }
-> 
-> diff --git a/fs/xfs/xfs_sysfs.c b/fs/xfs/xfs_sysfs.c
-> index 60cb5318fdae3cc246236fd988b4749df57f8bfc..eed0f28afe97ead762a9539e45f292db7d0d0c4a 100644
-> --- a/fs/xfs/xfs_sysfs.c
-> +++ b/fs/xfs/xfs_sysfs.c
-> @@ -568,8 +568,8 @@ retry_timeout_seconds_store(
->  	if (val == -1)
->  		cfg->retry_timeout = XFS_ERR_RETRY_FOREVER;
->  	else {
-> -		cfg->retry_timeout = msecs_to_jiffies(val * MSEC_PER_SEC);
-> -		ASSERT(msecs_to_jiffies(val * MSEC_PER_SEC) < LONG_MAX);
-> +		cfg->retry_timeout = secs_to_jiffies(val);
-> +		ASSERT(secs_to_jiffies(val) < LONG_MAX);
->  	}
->  	return count;
->  }
-> @@ -686,8 +686,7 @@ xfs_error_sysfs_init_class(
->  		if (init[i].retry_timeout == XFS_ERR_RETRY_FOREVER)
->  			cfg->retry_timeout = XFS_ERR_RETRY_FOREVER;
->  		else
-> -			cfg->retry_timeout = msecs_to_jiffies(
-> -					init[i].retry_timeout * MSEC_PER_SEC);
-> +			cfg->retry_timeout = secs_to_jiffies(init[i].retry_timeout);
->  	}
->  	return 0;
+> I'm not screaming about it :) but anything that touches the LSM,
+I'll consider it as a scream :) So I'll keep my previous approach of
+leaving only personal mails that are involved, but leaving all the lists
+that b4 suggests.
 
-Looks fine to me.
+> SELinux, or audit code (or matches the regex in MAINTAINERS) I would
+> prefer to see on the associated mailing list.
 
-Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
+General comment sent to the void:
+It is tricky to know exactly who wants to be informed of all this and
+who thinks its useless. I think that if we want more focus it should
+come from automated tools like b4. Maybe some string in MAINTAINERS
+stating that the list should not be used in cases of tree-wide commits?
 
-> 
-> 
-> --
-> 2.43.0
-> 
-> 
+Best
+
+-- 
+
+Joel Granados
 
