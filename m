@@ -1,160 +1,198 @@
-Return-Path: <linux-rdma+bounces-7306-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7307-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8360A21DA4
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 14:13:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0FE0A21DF3
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 14:39:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 855197A25AE
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 13:12:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD5F23A60F7
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 13:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 084A87E0FF;
-	Wed, 29 Jan 2025 13:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FD3A133987;
+	Wed, 29 Jan 2025 13:39:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SxBm5goJ"
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="LRbXARLx"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2E82CA9;
-	Wed, 29 Jan 2025 13:13:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769831BC20
+	for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2025 13:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738156389; cv=none; b=PyFzC6kJ0jFowwD0nfgvsJ7ZZYxmaOnstxAaMY7iyEboxMcQuTEAv9FOOTgaL3DqsiTonJ4J77pZa1hEjrBVvFJUfnpWJTjXWdqYRGALTgduEE5c85PDYxd/CoFojB03+0NNsqD97xzar5ptK2/oIZbc+QhIXqQEOXwsEBMOdmE=
+	t=1738157946; cv=none; b=JJ/S+9tdsehiI7n+Gm7viAP2b39Ueh7AbzAdY0w1phFjrUc285ms/8GHQ+TaBuOsyK12o4MP9jLKNfKi+oeM/dhZN/rwusrgHoOQaWBUq2IYw5/pAWzbIz8eT/bAxQi/wa9li7K/st3t1HCTM0mz59qDV5cJlDlmMRKF33ay5TM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738156389; c=relaxed/simple;
-	bh=uWLMAkjiPxmd0IZ1cdFsHKZZFguDfleylm6v197BRzQ=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ARMhNx1n9bES05kDWAepJ5y3q8rZYyi8p/4J8ZHrvQvT0EdpWvQfAQH1xqZo/87qDwRYT59eiSHTwVf7gcz2QxCNsu5Z7DxUThGsGNhsbMgLX+mswDSCUesSq1KyMaBY1fxIWD4dnZ7o/k0De5FAp3xhlzu4Ob1ycJU+VBKCveY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SxBm5goJ; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738156388; x=1769692388;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=uWLMAkjiPxmd0IZ1cdFsHKZZFguDfleylm6v197BRzQ=;
-  b=SxBm5goJ+drv5/j21Nr5L4bB4AiKSLqdl2lYsm1T+xntrZBkeN0w8M1G
-   F4+NyhAgrsl+fxFpq7CVKVv5bZ5TG8R2r9ALR7mZHn8ifAxDjViTWF9n2
-   Qfeq1wtGoBTmk2U4tQ7WMchq3EE+X/8v1H0sOUbLglOQs+gH1LZTe1tFI
-   rw9aLIelfb6Pk4CJOaoZdF+4IhUiy0K/KB7NE5qfaBpzkCHW714QRBeEk
-   Q+7U1kkK2AckCQsce2i90njW9G8nEXxHkKqoPxYUtVpVSotop9EE/u155
-   b1Aa+BuhHplKP3brftgSYN4fRO8fdv0S49WLNBP0cF4ag6En7yfknR6NS
-   A==;
-X-CSE-ConnectionGUID: Xq1YKzuARa+e19SIixMJMQ==
-X-CSE-MsgGUID: baOTcUmERJ+Zx4XQgK+dTw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11329"; a="56203313"
-X-IronPort-AV: E=Sophos;i="6.13,243,1732608000"; 
-   d="scan'208";a="56203313"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2025 05:13:06 -0800
-X-CSE-ConnectionGUID: VQdEsMXqR8qBKjmeEKbOAw==
-X-CSE-MsgGUID: O+KtZNkvRJq7JgLfGnW4VQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="113646751"
-Received: from ettammin-mobl2.ger.corp.intel.com (HELO localhost) ([10.245.245.222])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2025 05:12:52 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 29 Jan 2025 15:12:49 +0200 (EET)
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-cc: Andrew Morton <akpm@linux-foundation.org>, 
-    Yaron Avizrat <yaron.avizrat@intel.com>, Oded Gabbay <ogabbay@kernel.org>, 
-    Julia Lawall <Julia.Lawall@inria.fr>, 
-    Nicolas Palix <nicolas.palix@imag.fr>, 
-    James Smart <james.smart@broadcom.com>, 
-    Dick Kennedy <dick.kennedy@broadcom.com>, 
-    "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
-    "Martin K. Petersen" <martin.petersen@oracle.com>, 
-    Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-    Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-    David Sterba <dsterba@suse.com>, Ilya Dryomov <idryomov@gmail.com>, 
-    Dongsheng Yang <dongsheng.yang@easystack.cn>, Jens Axboe <axboe@kernel.dk>, 
-    Xiubo Li <xiubli@redhat.com>, Damien Le Moal <dlemoal@kernel.org>, 
-    Niklas Cassel <cassel@kernel.org>, Carlos Maiolino <cem@kernel.org>, 
-    "Darrick J. Wong" <djwong@kernel.org>, Sebastian Reichel <sre@kernel.org>, 
-    Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>, 
-    Sagi Grimberg <sagi@grimberg.me>, Frank Li <Frank.Li@nxp.com>, 
-    Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
-    Sascha Hauer <s.hauer@pengutronix.de>, 
-    Pengutronix Kernel Team <kernel@pengutronix.de>, 
-    Fabio Estevam <festevam@gmail.com>, 
-    Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, 
-    Hans de Goede <hdegoede@redhat.com>, 
-    Henrique de Moraes Holschuh <hmh@hmh.eng.br>, 
-    Selvin Xavier <selvin.xavier@broadcom.com>, 
-    Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, 
-    Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
-    cocci@inria.fr, LKML <linux-kernel@vger.kernel.org>, 
-    linux-scsi@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-    linux-sound@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-    ceph-devel@vger.kernel.org, linux-block@vger.kernel.org, 
-    linux-ide@vger.kernel.org, linux-xfs@vger.kernel.org, 
-    linux-pm@vger.kernel.org, linux-nvme@lists.infradead.org, 
-    linux-spi@vger.kernel.org, imx@lists.linux.dev, 
-    linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
-    ibm-acpi-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 14/16] platform/x86/amd/pmf: convert timeouts to
- secs_to_jiffies()
-In-Reply-To: <20250128-converge-secs-to-jiffies-part-two-v1-14-9a6ecf0b2308@linux.microsoft.com>
-Message-ID: <e8207616-6079-be0d-d482-6577616a4cc7@linux.intel.com>
-References: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com> <20250128-converge-secs-to-jiffies-part-two-v1-14-9a6ecf0b2308@linux.microsoft.com>
+	s=arc-20240116; t=1738157946; c=relaxed/simple;
+	bh=RxH/qA/BgpYkjBVmBtOP+Wt33+Id7p5IBZ1sJh+PVe8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MkVYKm47AvBuh7Wn4Uw0iy4RsnZfAAvB79pYaJxf8+6+QchZWwBKPMSjn4R7QhaNVhg85kSuoXzkNIU9yhF6rn3yxuKVocw+G53+HfaoWCh87W3L1jI6WRXee/EGqh0rdwAG0RIdcLXbweEdw2cfIuZ5bU8mAL7A9gmrN1kH0W4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=LRbXARLx; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-436281c8a38so48720385e9.3
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2025 05:39:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google; t=1738157942; x=1738762742; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ekPyuSS82CPNI1Lh/E6IsIbzoEEGT2LSw6fRdzUam+8=;
+        b=LRbXARLxcVlSVLOIW9nPwxiGleXpTsHVUK1xrS0UwYak72R+r5JA7lmqK8UxnnQHw+
+         hjfkoSJN3yj16qLBqvfCG4JqRqP92QoaOZ3ZY+1vjEGDAPpILcv+DlIlstdU29B49j00
+         9/MvPxpeF0nk8EcLadAsFREGfVtX/6b+FsBDM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738157942; x=1738762742;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:mail-followup-to:message-id:subject:cc:to
+         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ekPyuSS82CPNI1Lh/E6IsIbzoEEGT2LSw6fRdzUam+8=;
+        b=ItgwQKfs5hFHx2NedC2gCGKUdhPwkmYiVUcGQiX7ruEaCgBFHqU/GFncLVW3MYxVL1
+         75rhWw2q13DtYGkIGcS3di8vfQRoi7yv2PGNhELAQK9XMq2qLAdM9qDi99LtPs+nCIer
+         mV6rw4qKfGxamaDfqUkAyL59wu95P/2U5eM/N+mmrgKgMP9cU5SahLLGYphhkDCpqpKe
+         s4Jl+M1Vnj+5+4/8EhVriY6IZ5sltT6/IXn3cy1VxhY62kcHMgBlPEhDGdAUI6pSlI00
+         WxlmFNmkPwbvHruBMGCt60aCKiub27B9UnxsgGG9YLxh1Lod5yO4FYOznCJc5dBn95vg
+         H8cw==
+X-Forwarded-Encrypted: i=1; AJvYcCWVWVfKHAiNbwWggmB0M5aCAziBPWUeMumTI4ppXB5+hByh6iEAbGZZtMMXWla/cB4G1E0mh7jytYtI@vger.kernel.org
+X-Gm-Message-State: AOJu0YxiZw5j9vgxkvf+b2VtDatDeTKp/1QAfeEwyFrOUmUQNKJMvP7M
+	ips6YTIksDuo/b2NsChmMawK5gYaQDsVcw4B3tDzqGf9nRKqcDYFrb/k6adHL+4=
+X-Gm-Gg: ASbGncuo3CAjQ4Pul/h71j4m4eM8fcnewqjE+syeDN9SNqxnsgxr2n9dHvqoSIj6XHc
+	JzJminUrbpwIPCDbDIj3Ay81rMJOno7QkZXqNExlaJY5ipMxpwBS3KE+0RMYN42Wc6qH/+78//x
+	cpndKhXy+RnLvDHAPNyGSqK5j3fwCqtdnSJsCXJqZX95GD+cJRpBB5N5ZS/Q5HG4nCcNBAWlEdJ
+	S7Nj9nov1bhpMtlrsJtuz7hseEKk5vVhr2mSkPPpTBXwD18lT9iurh5AyIvByIQx7yD7d8V36CY
+	l0SVreGMONlVJGYb7OVR22plST0=
+X-Google-Smtp-Source: AGHT+IFp40yYl/FrcEC18d1HA1Wbr1YBHRju+Twtn7vgv1BIenNhcb0w0RrYUn5K84MH3BCfQBYGmw==
+X-Received: by 2002:a05:600c:5486:b0:433:c76d:d57e with SMTP id 5b1f17b1804b1-438dc3a40d3mr30211795e9.5.1738157942387;
+        Wed, 29 Jan 2025 05:39:02 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:5485:d4b2:c087:b497])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438dcc263f0sm23501465e9.9.2025.01.29.05.39.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jan 2025 05:39:01 -0800 (PST)
+Date: Wed, 29 Jan 2025 14:38:58 +0100
+From: Simona Vetter <simona.vetter@ffwll.ch>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	Yonatan Maman <ymaman@nvidia.com>, kherbst@redhat.com,
+	lyude@redhat.com, dakr@redhat.com, airlied@gmail.com,
+	simona@ffwll.ch, leon@kernel.org, jglisse@redhat.com,
+	akpm@linux-foundation.org, GalShalom@nvidia.com,
+	dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-mm@kvack.org, linux-tegra@vger.kernel.org
+Subject: Re: [RFC 1/5] mm/hmm: HMM API to enable P2P DMA for device private
+ pages
+Message-ID: <Z5ovcnX2zVoqdomA@phenom.ffwll.local>
+Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	Yonatan Maman <ymaman@nvidia.com>, kherbst@redhat.com,
+	lyude@redhat.com, dakr@redhat.com, airlied@gmail.com,
+	simona@ffwll.ch, leon@kernel.org, jglisse@redhat.com,
+	akpm@linux-foundation.org, GalShalom@nvidia.com,
+	dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-mm@kvack.org, linux-tegra@vger.kernel.org
+References: <20241201103659.420677-1-ymaman@nvidia.com>
+ <20241201103659.420677-2-ymaman@nvidia.com>
+ <7282ac68c47886caa2bc2a2813d41a04adf938e1.camel@linux.intel.com>
+ <20250128132034.GA1524382@ziepe.ca>
+ <de293a7e9b4c44eab8792b31a4605cc9e93b2bf5.camel@linux.intel.com>
+ <20250128151610.GC1524382@ziepe.ca>
+ <b78d32e13811ef1fa57b0535749c811f2afb4dcd.camel@linux.intel.com>
+ <20250128172123.GD1524382@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250128172123.GD1524382@ziepe.ca>
+X-Operating-System: Linux phenom 6.12.11-amd64 
 
-On Tue, 28 Jan 2025, Easwar Hariharan wrote:
+On Tue, Jan 28, 2025 at 01:21:23PM -0400, Jason Gunthorpe wrote:
+> On Tue, Jan 28, 2025 at 05:32:23PM +0100, Thomas Hellström wrote:
+> > > This series supports three case:
+> > > 
+> > >  1) pgmap->owner == range->dev_private_owner
+> > >     This is "driver private fast interconnect" in this case HMM
+> > > should
+> > >     immediately return the page. The calling driver understands the
+> > >     private parts of the pgmap and computes the private interconnect
+> > >     address.
+> > > 
+> > >     This requires organizing your driver so that all private
+> > >     interconnect has the same pgmap->owner.
+> > 
+> > Yes, although that makes this map static, since pgmap->owner has to be
+> > set at pgmap creation time. and we were during initial discussions
+> > looking at something dynamic here. However I think we can probably do
+> > with a per-driver owner for now and get back if that's not sufficient.
+> 
+> The pgmap->owner doesn't *have* to fixed, certainly during early boot before
+> you hand out any page references it can be changed. I wouldn't be
+> surprised if this is useful to some requirements to build up the
+> private interconnect topology?
 
-> Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
-> secs_to_jiffies().  As the value here is a multiple of 1000, use
-> secs_to_jiffies() instead of msecs_to_jiffies to avoid the multiplication.
-> 
-> This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci with
-> the following Coccinelle rules:
-> 
-> @depends on patch@
-> expression E;
-> @@
-> 
-> -msecs_to_jiffies
-> +secs_to_jiffies
-> (E
-> - * \( 1000 \| MSEC_PER_SEC \)
-> )
-> 
-> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-> ---
->  drivers/platform/x86/amd/pmf/acpi.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/amd/pmf/acpi.c b/drivers/platform/x86/amd/pmf/acpi.c
-> index dd5780a1d06e1dc979fcff5bafd6729bc4937eab..6b7effe80b78b7389b320ee65fa5d2373f782a2f 100644
-> --- a/drivers/platform/x86/amd/pmf/acpi.c
-> +++ b/drivers/platform/x86/amd/pmf/acpi.c
-> @@ -220,7 +220,8 @@ static void apmf_sbios_heartbeat_notify(struct work_struct *work)
->  	if (!info)
->  		return;
->  
-> -	schedule_delayed_work(&dev->heart_beat, msecs_to_jiffies(dev->hb_interval * 1000));
-> +	schedule_delayed_work(&dev->heart_beat,
-> +			      secs_to_jiffies(dev->hb_interval));
->  	kfree(info);
->  }
+The trouble I'm seeing is device probe and the fundemantal issue that you
+never know when you're done. And so if we entirely rely on pgmap->owner to
+figure out the driver private interconnect topology, that's going to be
+messy. That's why I'm also leaning towards both comparing owners and
+having an additional check whether the interconnect is actually there or
+not yet.
 
-Hi,
+You can fake that by doing these checks after hmm_range_fault returned,
+and if you get a bunch of unsuitable pages, toss it back to
+hmm_range_fault asking for an unconditional migration to system memory for
+those. But that's kinda not great and I think goes at least against the
+spirit of how you want to handle pci p2p in step 2 below?
 
-So you made the line shorter but still added the newline char for some 
-reason even if the original didn't have one?? Please don't enforce 80 
-chars limit with patches like this.
+Cheers, Sima
+
+> > >  2) The page is DEVICE_PRIVATE and get_dma_pfn_for_device() exists.
+> > >     The exporting driver has the option to return a P2P struct page
+> > >     that can be used for PCI P2P without any migration. In a PCI GPU
+> > >     context this means the GPU has mapped its local memory to a PCI
+> > >     address. The assumption is that P2P always works and so this
+> > >     address can be DMA'd from.
+> > 
+> > So do I understand it correctly, that the driver then needs to set up
+> > one device_private struct page and one pcie_p2p struct page for each
+> > page of device memory participating in this way?
+> 
+> Yes, for now. I hope to remove the p2p page eventually.
+> 
+> > > If you are just talking about your private multi-path, then that is
+> > > already handled..
+> > 
+> > No, the issue I'm having with this is really why would
+> > hmm_range_fault() need the new pfn when it could easily be obtained
+> > from the device-private pfn by the hmm_range_fault() caller? 
+> 
+> That isn't the API of HMM, the caller uses hmm to get PFNs it can use.
+> 
+> Deliberately returning PFNs the caller cannot use is nonsensical to
+> it's purpose :)
+> 
+> > So anyway what we'll do is to try to use an interconnect-common owner
+> > for now and revisit the problem if that's not sufficient so we can come
+> > up with an acceptable solution.
+> 
+> That is the intention for sure. The idea was that the drivers under
+> the private pages would somehow generate unique owners for shared
+> private interconnect segments.
+> 
+> I wouldn't say this is the end all of the idea, if there are better
+> ways to handle accepting private pages they can certainly be
+> explored..
+> 
+> Jason
 
 -- 
- i.
-
+Simona Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
