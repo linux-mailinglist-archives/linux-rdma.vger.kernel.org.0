@@ -1,128 +1,199 @@
-Return-Path: <linux-rdma+bounces-7300-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7301-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2D28A21959
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 09:49:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F8A1A21A0D
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 10:41:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90D9C7A10E5
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 08:48:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5A231886903
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2025 09:41:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C631A9B27;
-	Wed, 29 Jan 2025 08:49:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1731ACEDE;
+	Wed, 29 Jan 2025 09:40:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D+6QRneb"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ibsOXJKP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19F62D627;
-	Wed, 29 Jan 2025 08:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7A81917F9;
+	Wed, 29 Jan 2025 09:40:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738140560; cv=none; b=dMzd52IIQTon1xJXbCdXqpfMDcWb2IeXuH9R1SgKanZxacguMprU/Hg7Ll5XYR4ivg3F+1Wv4+aQokMcFTAhcDq4d+nCOB+GPhKIr9OyAgUzDX1zwvcylPdEDf6K7+ZZGzDaSeP8oSXRTqSftjkJMNnYcr8F1auxuXh1eYeMYL8=
+	t=1738143644; cv=none; b=Td7qm/3cZgwYjyMxLmZLmUO1zmIEGtxTN4ff9gVizbxnP/0VVz1ZyhefltpY+h5rdA2OQnhyHCVuUl2lFmxOqai7fe0Lc5GyF3cGrt6hifGySFdT5mnubViTT2WW++nEoaJEDCLUs/rVx8D8gJnfclVfVRPgP9oRitqyJsDb1Tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738140560; c=relaxed/simple;
-	bh=bkecGghn49Q0kcBr4/Q4RAYEqTU2lzStxg+kMBkUviM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EF0OhxvyF0kaEvrafy1BX3zzWeBuyJSo+qySUHfcv1VSkqFwetU/NmqcRTdUSpAfFwY+MEF00yXvJWaX+n8YqoVny+ir4VpKtsuf6BjmHCrLXTyravxLj1Ov8tO5WrOXCEBSoXa9YI4i3vBsifIaEYj1uHKWsH044/ity2GPCKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D+6QRneb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAFA1C4CED3;
-	Wed, 29 Jan 2025 08:49:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738140558;
-	bh=bkecGghn49Q0kcBr4/Q4RAYEqTU2lzStxg+kMBkUviM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D+6QRnebTmdCsTn/fBIyawZ8F2h5FOi1VkBceKjrJE9gQqYhsE4MpI+DUnmOyvn9r
-	 jy2STn2XFJrPEPFrh+vO/ZWYbctxdvY6UR3Ry6YZK+y8a1MhcK6ynlBs1p1BMMkJ1P
-	 w6gLTDQPv35AYJJgnh4TzBlS6e9ascDPFne+p1YDjEpGVHG5PR2AxRH9J1o9Q9BPKi
-	 anvTB+Oa86UvplOCcaBDT4qhHCCSJO/P11ip4o+2DBjUNcnkNIz/KxsEnezLq+wofc
-	 pmlKCTkKHhEdUE5jBQ13DTAnVV4ZlV/QW5dr1RzqeBZB57C+fkYnuuFh6jqnxMpijz
-	 QxNX1fm0X2YKQ==
-Date: Wed, 29 Jan 2025 09:49:13 +0100
-From: Joel Granados <joel.granados@kernel.org>
-To: Paul Moore <paul@paul-moore.com>
-Cc: Matthew Wilcox <willy@infradead.org>, 
-	Jani Nikula <jani.nikula@intel.com>, Ard Biesheuvel <ardb@kernel.org>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
-	Kees Cook <kees@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	openipmi-developer@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
-	intel-xe@lists.freedesktop.org, linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org, 
-	xen-devel@lists.xenproject.org, linux-aio@kvack.org, linux-fsdevel@vger.kernel.org, 
-	netfs@lists.linux.dev, codalist@coda.cs.cmu.edu, linux-mm@kvack.org, 
-	linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev, fsverity@lists.linux.dev, 
-	linux-xfs@vger.kernel.org, io-uring@vger.kernel.org, bpf@vger.kernel.org, 
-	kexec@lists.infradead.org, linux-trace-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
-	keyrings@vger.kernel.org, Song Liu <song@kernel.org>, 
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
-	"Darrick J. Wong" <djwong@kernel.org>, Corey Minyard <cminyard@mvista.com>
-Subject: Re: Re: Re: Re: Re: [PATCH v2] treewide: const qualify ctl_tables
- where applicable
-Message-ID: <umk5gfo7iq7krppvqsal57hlzds26bdqd3g7kccjzuudjikdws@k2oknd6zx6g7>
-References: <20250110-jag-ctl_table_const-v2-1-0000e1663144@kernel.org>
- <Z4+jwDBrZNRgu85S@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
- <nslqrapp4v3rknjgtfk4cg64ha7rewrrg24aslo2e5jmxfwce5@t4chrpuk632k>
- <CAMj1kXEZPe8zk7s67SADK9wVH3cfBup-sAZSC6_pJyng9QT7aw@mail.gmail.com>
- <f4lfo2fb7ajogucsvisfd5sg2avykavmkizr6ycsllcrco4mo3@qt2zx4zp57zh>
- <87jzag9ugx.fsf@intel.com>
- <Z5epb86xkHQ3BLhp@casper.infradead.org>
- <u2fwibsnbfvulxj6adigla6geiafh2vuve4hcyo4vmeytwjl7p@oz6xonrq5225>
- <CAHC9VhQnB_bsQaezBfAcA0bE7Zoc99QXrvO1qjpHA-J8+_doYg@mail.gmail.com>
+	s=arc-20240116; t=1738143644; c=relaxed/simple;
+	bh=f6YZi+aj3vtvGBm2x62fa1lw4+jY/LfPDrFJLCES+DY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qoMJCS+7sm0r3KwmP6/B8SishjWvXuQrJTfabMFowKWvxai/SNKa9e0kI69UqTAgPCetmcB55cd85FIz0UA5fNHXLv9e7Msr17x3wMvZgEgExTxVRmcOqqaDvJQzDcFX/iuoHckWXV+rry4BpimOE2B0Zsg3J7ZTJNbHIY7yMUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=ibsOXJKP; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1738143622; x=1738748422; i=markus.elfring@web.de;
+	bh=RmUlpFblDQ0X0FrPNxA6WyeicYW3HpJ3EyGlM0jP5z0=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=ibsOXJKPJKhZo8FqJFepmaYQoSFoyR2qxzl8lohWNNUQx+2NF2ManFbNjUNGq/F2
+	 gbw8iml79L7rvtKd56Ir7+yYHXrAe1EUIefoTtrBNrmtFI2yM2WYsLj1b568yC1rb
+	 SKGUWYn0X41jPRogXjuGLSd6Gt6171dGmUJ2Fp3bc0pBO92HArHd48fDFFdCCxzPK
+	 pf78m0ogusJQNS3QQ3zn1K/mM4iA6yn4B0KggTtABnb9cI7MMqnv247Vl4f+VntcE
+	 +DVoabadzyBcjKoDGRsAmxtyEkjkG+dxMfHbTqq28F/8W87L00uXvdFhKdqm9Gctj
+	 xUEgsrypLeLKtXHbAg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.93.19]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MG994-1tgKE62NvY-00Fdf6; Wed, 29
+ Jan 2025 10:40:22 +0100
+Message-ID: <9ca0337d-e378-4de5-99be-1dfa1d4f8cff@web.de>
+Date: Wed, 29 Jan 2025 10:40:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHC9VhQnB_bsQaezBfAcA0bE7Zoc99QXrvO1qjpHA-J8+_doYg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [01/16] coccinelle: misc: secs_to_jiffies: Patch expressions too
+To: Easwar Hariharan <eahariha@linux.microsoft.com>, cocci@inria.fr
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-ide@vger.kernel.org, linux-nvme@lists.infradead.org,
+ linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-sound@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-xfs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net,
+ imx@lists.linux.dev, kernel@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org,
+ Andrew Morton <akpm@linux-foundation.org>, Carlos Maiolino <cem@kernel.org>,
+ Chris Mason <clm@fb.com>, Christoph Hellwig <hch@lst.de>,
+ Damien Le Moal <dlemoal@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>,
+ David Sterba <dsterba@suse.com>, Dick Kennedy <dick.kennedy@broadcom.com>,
+ Dongsheng Yang <dongsheng.yang@easystack.cn>,
+ Fabio Estevam <festevam@gmail.com>, Frank Li <Frank.Li@nxp.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+ James Bottomley <James.Bottomley@HansenPartnership.com>,
+ James Smart <james.smart@broadcom.com>, Jaroslav Kysela <perex@perex.cz>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+ Josef Bacik <josef@toxicpanda.com>, Julia Lawall <Julia.Lawall@inria.fr>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Ilya Dryomov <idryomov@gmail.com>,
+ Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>,
+ Keith Busch <kbusch@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+ Mark Brown <broonie@kernel.org>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Nicolas Palix <nicolas.palix@imag.fr>, Niklas Cassel <cassel@kernel.org>,
+ Oded Gabbay <ogabbay@kernel.org>, Ricardo Ribalda <ribalda@google.com>,
+ Sagi Grimberg <sagi@grimberg.me>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Sebastian Reichel <sre@kernel.org>,
+ Selvin Xavier <selvin.xavier@broadcom.com>, Shawn Guo <shawnguo@kernel.org>,
+ Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, Takashi Iwai <tiwai@suse.com>,
+ Victor Gambier <victor.gambier@inria.fr>, Xiubo Li <xiubli@redhat.com>,
+ Yaron Avizrat <yaron.avizrat@intel.com>
+References: <20250128-converge-secs-to-jiffies-part-two-v1-1-9a6ecf0b2308@linux.microsoft.com>
+ <565fb1db-3618-4636-8820-1ca77dad07a2@web.de>
+ <2402812d-b818-4d1b-9653-767c9cd89dda@linux.microsoft.com>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <2402812d-b818-4d1b-9653-767c9cd89dda@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:VVUayMb32w7y67C7tTjgB5AAr0xhckczX0N8TokrIpC9jN6eUE9
+ EFsN7wRaBX0tQgtAxOLriEuyy3B/8avbPqaD1zz3GlxmzANwcYY0B13b3+dGcse9e29fR2B
+ x1FDILYMT0Hm6Op4dZPmgiuO2ynGivSf8q+hlfpEEa8MIXRg6GY1vfPop11AepKnCCaop1O
+ +p76d5j2Efo5XT3k24tTg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:tcxCLGC+RCc=;ey0yBxZW/tRSJQW6qo2D+Q6kDrW
+ B7ti/3QUhXC8WrcBjNzI4u6z+d1rV4adoqTUoUSMt/DqJcKI/DlrivOEoz806s/5+Kn56DDqL
+ LU9xtxxU9vsLyCTP7I8gL7dl6Qx1gz/cso735SydkffMPYwAsbCaRqy9WGoFqBlIQ9QCxafc3
+ W4RbDo3aQwMCu9VcGvB6j+H5tbohMyIwgg8IKKOqedJ1nboWwMgz4OIZ7EST+13jVvGHzPDUP
+ RMgEYGdAiBMWyxIajIWHh0tiMSE3p1A+yPFCKxzA51+Jsl4lqfDwp6i6xfZI0wLLB4pLlY9o9
+ 4q4fn10BcFNZy38f62U9iuLflyBSQy3IDj2SnmtLJbJzYINTq3rTIPHq21PIW76G8fDbFN0aG
+ 3ac6gqwYlxfQhltWeUu6Jf+r0y/8ZDSvg6BenYTc1SAFAqZHEM4upcrvZQorHyWClmJeL4R1d
+ pwRYkmLBgkDzN9R/bb0jfrgkgXUIzdRpQYEu62HTHwYHvlMnYXeCcivCQRHgqKox7R6hNuIrn
+ rxTrTFacoaE+vqTHL959kdf+7baowrszBGfdV4G67c90sFgZ24V7UDmogT/jAdPtbbKWpCJ3F
+ kMrOyabr3gWq6SX50hyVFHIUca6hdwNAbHNQqpbFNzCXjeuhFqIkBldPkgoHIWodZqGhWHxbJ
+ rh9yga8+A7Xz90bS7If3X8UB0JOiOJoqee5k8VuGqGUor7M8/IYAWxEzk0sfRhZN5x9gzYIwj
+ z5v+Opf6qMCYFMEpDc5oZNLzukYChx6b04HyYvuAIbzbqHM64L8pCx9PjiofRQqAAUENSsyVK
+ wSLOByWJNd0hj3dnFK4MWKIc72WDX2na+gBRF+CITUiUaTapl8UB+IMJ1+mNkz1dW85FtBpIj
+ tD/0moj9gcbkIb1LR6m5OI0uHLkCOXIBTrIfx3IHv6b13SsYXuqGkV/RzTBhQpQUsnir3VJIj
+ cVkG88L1qB1XMwvpL5WZaIlaVUahCedhQsFB49sgDWhVH58n5+/Z9aWfVKo9SGwG1/1EYyVhs
+ xdj7mKATCRxJL8YFYbK1K5zFB2c5chXeAOrRuI6GfbxLg4Jr5TwIV+gUIoOLkM9oBMdE3PZmY
+ FmuKpySVCwL9uRLQ0lYfPXIDXqcQix+7IQpKOnC7/mKJSccV7o1cXqpz0osAScgdxIeUIW7Oo
+ TT3dPmTAxqyMA5HLb2IdqDbNqBt78hG7Vp0fBYOvquK98imV2V34SSApTC+PTRD9nO5SEk1WD
+ M5c0DPUlZtR3e/lmnDioWB77iUkT5JV0a7FRF40QmlHGvbSs8vfTQg9ZFgjUq8jYaGVb32YjP
+ AEhromp4VpaoN9T5CJol8F+orrIemlZIcgjTh9W5NmdUN4pRCbHOUfJ/tbXwdPtCw5lPPfB1R
+ 5kdsgtTCg2hWVnV9uMjqAZCd/Sr1UngGlxpd0=
 
-On Tue, Jan 28, 2025 at 10:43:10AM -0500, Paul Moore wrote:
-> On Tue, Jan 28, 2025 at 6:22 AM Joel Granados <joel.granados@kernel.org> wrote:
-> > On Mon, Jan 27, 2025 at 03:42:39PM +0000, Matthew Wilcox wrote:
-> > > On Mon, Jan 27, 2025 at 04:55:58PM +0200, Jani Nikula wrote:
-> > > > You could have static const within functions too. You get the rodata
-> > > > protection and function local scope, best of both worlds?
-> > >
-> > > timer_active is on the stack, so it can't be static const.
-> > >
-> > > Does this really need to be cc'd to such a wide distribution list?
-> > That is a very good question. I removed 160 people from the original
-> > e-mail and left the ones that where previously involved with this patch
-> > and left all the lists for good measure. But it seems I can reduce it
-> > even more.
-> >
-> > How about this: For these treewide efforts I just leave the people that
-> > are/were involved in the series and add two lists: linux-kernel and
-> > linux-hardening.
-> >
-> > Unless someone screams, I'll try this out on my next treewide.
-> 
-> I'm not screaming about it :) but anything that touches the LSM,
-I'll consider it as a scream :) So I'll keep my previous approach of
-leaving only personal mails that are involved, but leaving all the lists
-that b4 suggests.
+>> =E2=80=A6
+>>> +++ b/scripts/coccinelle/misc/secs_to_jiffies.cocci
+>>> @@ -11,12 +11,22 @@
+>>>
+>>>  virtual patch
+>> =E2=80=A6
+>>> -@depends on patch@ constant C; @@
+>>> +@depends on patch@
+>>> +expression E;
+>>> +@@
+>>>
+>>> -- msecs_to_jiffies(C * MSEC_PER_SEC)
+>>> -+ secs_to_jiffies(C)
+>>> +-msecs_to_jiffies
+>>> ++secs_to_jiffies
+>>> + (E
+>>> +- * \( 1000 \| MSEC_PER_SEC \)
+>>> + )
+>>
+>> 1. I do not see a need to keep an SmPL rule for the handling of constan=
+ts
+>>    (or literals) after the suggested extension for expressions.
+>
+> Can you explain why? Would the expression rule also address the cases
+> where it's a constant or literal?
 
-> SELinux, or audit code (or matches the regex in MAINTAINERS) I would
-> prefer to see on the associated mailing list.
+Probably, yes.
 
-General comment sent to the void:
-It is tricky to know exactly who wants to be informed of all this and
-who thinks its useless. I think that if we want more focus it should
-come from automated tools like b4. Maybe some string in MAINTAINERS
-stating that the list should not be used in cases of tree-wide commits?
 
-Best
+>> 2. I find it nice that you indicate an attempt to make the shown SmPL c=
+ode
+>>    a bit more succinct.
+>>    Unfortunately, further constraints should be taken better into accou=
+nt
+>>    for the current handling of isomorphisms (and corresponding SmPL dis=
+junctions).
+>>    Thus I would find an SmPL rule (like the following) more appropriate=
+.
+>>
+>
+> Sorry, I couldn't follow your sentence construction or reasoning here.
+> I don't see how my patch is deficient, or different from your suggestion
+> below, especially given that it follows your feedback from part 1:
+> https://lore.kernel.org/all/9088f9a2-c4ab-4098-a255-25120df5c497@web.de/
 
--- 
+I tend also to present possibilities for succinct SmPL code.
+Unfortunately, software dependencies can trigger corresponding target conf=
+licts.
 
-Joel Granados
+
+> Can you point out specifically what SmPL isomorphisms or disjunctions
+> are broken with the patch in its current state?
+
+Please take another look at related information sources.
+Would you like to achieve any benefits from commutativity (for multiplicat=
+ions)?
+https://gitlab.inria.fr/coccinelle/coccinelle/-/blob/bd08cad3f802229dc629a=
+13eefef2018c620e905/standard.iso#L241
+https://github.com/coccinelle/coccinelle/blob/cca22217d1b4316224e80a18d0b0=
+8dd351234497/standard.iso#L241
+
+
+Regards,
+Markus
+
 
