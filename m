@@ -1,103 +1,102 @@
-Return-Path: <linux-rdma+bounces-7340-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7341-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4694A22DA6
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 14:23:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD0F3A22E3E
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 14:52:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1938816712E
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 13:23:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B1F9165B58
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 13:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB481E3DC9;
-	Thu, 30 Jan 2025 13:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42401E3775;
+	Thu, 30 Jan 2025 13:52:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="ABUEH9VS"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Cny256E3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D2B01BEF85
-	for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2025 13:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 116DC1D9320
+	for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2025 13:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738243401; cv=none; b=nQ7Vp2mEo72PQ3y5Yq1Lcj54neX6kJUTorEMbScEaTAPBtsig51UhojYgENLmqu9Vbpk/6o8Z0ZqwfPnbelyYyuT4KZPk7j3oQx/jmQM6QgFC6Dpnh1ipmiug9suF8wRxRSQP6QERJYEM5muUzM4JwLIVo6LzjMFNpktnPOW62E=
+	t=1738245145; cv=none; b=j5Snxq/X4aWb8yERMZrYjMnax660gnOZRCssyO4Nugat3D9KW+6VeNyuePipm3TfFqFl6umUpj4sr+dTP5gAFaXBWUc27X57pzjM6s3tgOkJrc+ZzOcifKa4sW1I0iY9EYumgJqig1wIAI7ngPQDtslntbWsqYGD0n07nfQhuSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738243401; c=relaxed/simple;
-	bh=p4tpidr02nY0Oi4LOQySSJVaWNlyV3JVNjJbzcvsD10=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ubk0lO2KmRsXf4nd1yyTmcq9qtuccMphpg68flnVN+nSPcYrptxEhXLnDr5ZDo7xuUp65kKt9ixckCkN3GXwmcRZpptYXm9bOLl4Llk+ggpohbguOhxnINBKL28yKlsDUdtZfvyzeuAiovRMyWeorg1sQJvYHOjpF89Xr0Btevc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=ABUEH9VS; arc=none smtp.client-ip=209.85.219.44
+	s=arc-20240116; t=1738245145; c=relaxed/simple;
+	bh=ls9P0i/GRWtBwGhsWvhdGH07tsy5ngv1cNRvnDQoBhM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZSFzTDydSphMRrdvDI+PZkJnP2Ox4VU9rThoJPwiuIx0J2k0LTvk9T6sp4eKhI1VuDMACWz6iMeSDZb0BbORL6fB/68Mq431G4qYYnfaGCimaX+LJYha0KgamdR2L+8shWS9+M96cIgw9Ut+HMfuZYVDjY7Ljl7HrjhmNlM0zRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Cny256E3; arc=none smtp.client-ip=209.85.222.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6dcd4f1aaccso10887386d6.2
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2025 05:23:19 -0800 (PST)
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7b6f95d2eafso86349085a.3
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2025 05:52:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1738243399; x=1738848199; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1738245143; x=1738849943; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z4xPSZzw/OoNchPOgrFnhgjUTxZA4+QRO6/LNv63tO8=;
-        b=ABUEH9VSNvxBTycE6cPxd5CFHhFWr3OnVrtW09pH0NCrw85ehnrDhJ7t9KYRHrxBir
-         5lB6RFeFMFwB6B7cUhxDgie6m1y9xYsXm0VJiW3AsgWmDyPVC8BCUl047JumBaET1BwS
-         NCRQLz3+BKocsfy34wavOdksK0Z/iWNtX8bw+EIW4NGrlFYb04swA4HZY0cJUbNNBJOw
-         oF8tWjyN2Hd8AjydptFOm2I1PMCAfe9MDuIMDYBPWGCfRTqkzW1jw+gPeRxG52+TCJgA
-         UAm4hkAe33gbY4mgEnorr3zH9DJQfxsiruTCtqNjS3ugbcMDGrJIxDikQ7/Qp4aSi2e1
-         Zxxg==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dronaurD70UfCsj5vY2MdRtwONKnWgd6meaR5gvRCPA=;
+        b=Cny256E33eSCjmKueOVCaei4LQffwLniRCGskAKXCobYZSkKy6JSlPBi/3fkpP87vB
+         ajQR5SD19O/NPmIxpfoIkOcPtpVVbFqw3IMlii/lSVRX/mWOOWi6WqZAMDfQ+y/WagL3
+         9sGWUcCEIu1ZvWiAVfVaIV7U5P2RCql3Nm6yk9OTn++vOB+nTPWivQraKVa0pDWxQmiv
+         c6FR8rK+YWFFRLF3u5D5W1G/z3ggOk3JLrKkUrwl+pGEha3MxHOeNeq54hYIRLl3FylO
+         TMaudGmU7/SVOggVLz7cFp6SJ6GjNSTFvmOYW8penCvZWp6TPilK8p1Zcgci8m6GdYwo
+         UKkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738243399; x=1738848199;
+        d=1e100.net; s=20230601; t=1738245143; x=1738849943;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z4xPSZzw/OoNchPOgrFnhgjUTxZA4+QRO6/LNv63tO8=;
-        b=S6IH5hZSbWkXHv7XmyqBJSZfU2R7PiY8tSv3e43wDWI5niBZwEHXafWfOTPuWYTnPw
-         nP1NKWvI2YSpBLxtzalNCHdrmkO3MOOhe4Kae0OaZQU/gpBMA1jexaTEX4OR36bnZubM
-         jA3U7fUMRRm8QkyoZYr7xrq9nIceKPMq+jnWzLUOiICRL3ME4LwaA+uUsrAXBOwjJqAQ
-         5/801NU+/bNwbK2hFGvnz7Ilrz5W5JJMDUnHbcYmVoaRqOGDktwAuh8eFdZITEDflNxT
-         BPFz5uLOYw7kNfQkc7Xn0HLiXiTWoteN0tAaagWURjObeurjXS9oRfRXdRkz0AvIVrVr
-         sgSA==
-X-Forwarded-Encrypted: i=1; AJvYcCU5SrdDwr2MmBvq5alMcqhHOxFJhRrtTW3MgpZmaDufcWfZl4g/rksOGA3STyNNmi8LP6ZpEq7zVwfa@vger.kernel.org
-X-Gm-Message-State: AOJu0YytUbsGQog51XjO5+BD4yhHDsqMWopgFKDVl3GBik0owbZm2IiS
-	Xugl9OQ27PECdqd3bwsR/SB2fWtRgwIDnYNUKjyXD1orRtBhxJTre5NRA+xTrlw=
-X-Gm-Gg: ASbGncsbUtsJCO72XtIjVoAAEd7vUlJNQ7FEr1bRuywPmmuTGW82AxRnsSQ2CouxiE/
-	jcEVKTdETSa7tr2s+mUKB3J1wV2n+hY7wDoWUbJx3lhSVSnSQG5vZiakd4+Iczq4IcTSTEXY9id
-	vY2v6mld0ZtMce8P/U4WPPSh3dv673l1FaqYA1d1kcc4N+5Gao3oqmpLucqqxpaAWx3d7gtdHUN
-	TNuOm/rm3VYA6cRe/AJ0aNZU+u9BwT8K1FsvzB0l08IiBHe3Y2wNGogACGhvMpCWnagR6MUZJI5
-	wmHFNEGyTlA3wDC8TDDpV2AjA9pe9yDJuh8o+FdsluJhLWK3pJ+qGsoX7UV9A9dk
-X-Google-Smtp-Source: AGHT+IGu3gG6c418DyCLyq64UOVytvPPjptyLj9HsxmCFyjptBXKcCidLbQRWokyMo3VhHjgkQmzrQ==
-X-Received: by 2002:ad4:5d63:0:b0:6d8:aa45:a8a2 with SMTP id 6a1803df08f44-6e243bbbb2bmr94974656d6.11.1738243398854;
-        Thu, 30 Jan 2025 05:23:18 -0800 (PST)
+        bh=dronaurD70UfCsj5vY2MdRtwONKnWgd6meaR5gvRCPA=;
+        b=Cb9ks0TvIHDJy9I7jA5FTHaB1yh+pRqX+sbhhEeXYaYlvVk63QEc5kQ8GTh9s7rjDh
+         AYFSCVfGJvkv7jezOt5dAQuyZW051IgsGueK2SkLqVqOiddAINV/9VGgl1A9oKx5NebB
+         uC+XG4gLNnPxCUmxyWQWS+wKRyN1d4W2CBRmB136Ty4pUVK6ZQ5qxjWWiwrpfMLsA1ox
+         vthWBgDK+ncpSL31cv+m3795fMRjHhZ/wKw6mVZ9mLX6wH/NL5YXsgja0EJeTJYv+vXa
+         znAYupolvKUgtWaxDUJbVN2iOen5RQIFMq6fzuPv3ZQLoIWlFiNc/oO5C+wdlkXd6sBv
+         Sjiw==
+X-Forwarded-Encrypted: i=1; AJvYcCWFGZadR0+OPcPKYxb28Bimh36rBonaPvziGT8AQNYcpaoXThrpoHrm5zfX4sK32rfHRNkk4746IJDs@vger.kernel.org
+X-Gm-Message-State: AOJu0YzNm5OyeK1AfH4sHU8vGP/9V4nDQtFyvLQ4PxT+yt5T8tARIxb2
+	0GTqhzxpQWv8RKQpKlck71lRGXsm0tCHpEMQwoj8gpX4q2kLILoCFE8vSQF01C0=
+X-Gm-Gg: ASbGncvaKBLZ5vyfg/IJnlfwPfBa39qYQ+RbajsmNChjMv5RI05VJcrlOwOjCzSkwBC
+	zs3Wqhg1tTwKpqoWLgV1xVoNbnknhIMXolpTT1B1Sq/uAPB1GZSDIg2t1xhJbfqa1GcYVrREo+O
+	2c/XZ7opS8qTAR74iToWxPg58omyLIdyIUa0KJipdKF2k0U2vTU2+KYNCASo0MFGEbYOwV2u7Kn
+	xziS6/HvctiK4nCjFsArdRyMHVjiqyeZLUSKFC8k3Mh4ZKsIEO+sDb9GiD979p5Lcsn44ZEWyOY
+	yFE2QH11rdp27hGFuiZQhbEUtvdV9MY79NecMLma8FSvxowaL/yct+FDJURDTGwq
+X-Google-Smtp-Source: AGHT+IFofaCbYRRD8xzlZNxnfbRD/rF9UdWbu/0/YCSq+I8ZkCQdGDfrRjYIkRD3w76XWM43R4/A8A==
+X-Received: by 2002:a05:620a:8f07:b0:7bf:ff64:336a with SMTP id af79cd13be357-7bfff643509mr655590485a.38.1738245143001;
+        Thu, 30 Jan 2025 05:52:23 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e2549222cesm6056236d6.83.2025.01.30.05.23.18
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c00a906518sm74801785a.84.2025.01.30.05.52.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jan 2025 05:23:18 -0800 (PST)
+        Thu, 30 Jan 2025 05:52:20 -0800 (PST)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1tdUVp-00000009YDe-2eaQ;
-	Thu, 30 Jan 2025 09:23:17 -0400
-Date: Thu, 30 Jan 2025 09:23:17 -0400
+	id 1tdUxv-00000009cxB-1aP1;
+	Thu, 30 Jan 2025 09:52:19 -0400
+Date: Thu, 30 Jan 2025 09:52:19 -0400
 From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
-	Yonatan Maman <ymaman@nvidia.com>, kherbst@redhat.com,
-	lyude@redhat.com, dakr@redhat.com, airlied@gmail.com,
-	simona@ffwll.ch, leon@kernel.org, jglisse@redhat.com,
-	akpm@linux-foundation.org, GalShalom@nvidia.com,
-	dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-mm@kvack.org, linux-tegra@vger.kernel.org
-Subject: Re: [RFC 1/5] mm/hmm: HMM API to enable P2P DMA for device private
- pages
-Message-ID: <20250130132317.GG2120662@ziepe.ca>
-References: <20241201103659.420677-2-ymaman@nvidia.com>
- <7282ac68c47886caa2bc2a2813d41a04adf938e1.camel@linux.intel.com>
- <20250128132034.GA1524382@ziepe.ca>
- <de293a7e9b4c44eab8792b31a4605cc9e93b2bf5.camel@linux.intel.com>
- <20250128151610.GC1524382@ziepe.ca>
- <b78d32e13811ef1fa57b0535749c811f2afb4dcd.camel@linux.intel.com>
- <20250128172123.GD1524382@ziepe.ca>
- <Z5ovcnX2zVoqdomA@phenom.ffwll.local>
- <20250129134757.GA2120662@ziepe.ca>
- <Z5tZc0OQukfZEr3H@phenom.ffwll.local>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Zhu Yanjun <yanjun.zhu@linux.dev>, linux-rdma@vger.kernel.org,
+	Mustafa Ismail <mustafa.ismail@intel.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Bernard Metzler <bmt@zurich.ibm.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] RDMA/rxe: handle ICRC correctly on big endian systems
+Message-ID: <20250130135219.GH2120662@ziepe.ca>
+References: <20250127223840.67280-2-ebiggers@kernel.org>
+ <ae41a37e-3ee4-484e-ba53-1cad9225df7a@linux.dev>
+ <20250129183009.GC2120662@ziepe.ca>
+ <20250129185115.GA2619178@google.com>
+ <20250129194344.GD2120662@ziepe.ca>
+ <20250129202537.GA66821@sol.localdomain>
+ <20250129211651.GE2120662@ziepe.ca>
+ <20250129222147.GC2619178@google.com>
+ <20250130012951.GF2120662@ziepe.ca>
+ <20250130020403.GC66821@sol.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -106,51 +105,17 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z5tZc0OQukfZEr3H@phenom.ffwll.local>
+In-Reply-To: <20250130020403.GC66821@sol.localdomain>
 
-On Thu, Jan 30, 2025 at 11:50:27AM +0100, Simona Vetter wrote:
-> On Wed, Jan 29, 2025 at 09:47:57AM -0400, Jason Gunthorpe wrote:
-> > On Wed, Jan 29, 2025 at 02:38:58PM +0100, Simona Vetter wrote:
-> > 
-> > > > The pgmap->owner doesn't *have* to fixed, certainly during early boot before
-> > > > you hand out any page references it can be changed. I wouldn't be
-> > > > surprised if this is useful to some requirements to build up the
-> > > > private interconnect topology?
-> > > 
-> > > The trouble I'm seeing is device probe and the fundemantal issue that you
-> > > never know when you're done. And so if we entirely rely on pgmap->owner to
-> > > figure out the driver private interconnect topology, that's going to be
-> > > messy. That's why I'm also leaning towards both comparing owners and
-> > > having an additional check whether the interconnect is actually there or
-> > > not yet.
-> > 
-> > Hoenstely, I'd rather invest more effort into being able to update
-> > owner for those special corner cases than to slow down the fast path
-> > in hmm_range_fault..
+On Wed, Jan 29, 2025 at 06:04:03PM -0800, Eric Biggers wrote:
+> > From a spec perspective is *total nonsense* to describe something the
+> > spec explicitly says is big endian as little endian.
 > 
-> I'm not sure how you want to make the owner mutable.
+> The spec also says "The least significant bit, most significant byte first
+> ordering of the packet does not apply to the ICRC field."
 
-You'd probably have to use a system where you never free them until
-all the page maps are destroyed.
-
-You could also use an integer instead of a pointer to indicate the
-cluster of interconnect, I think there are many options..
-
-> And I've looked at the lifetime fun of unregistering a dev_pagemap for
-> device hotunplug and pretty firmly concluded it's unfixable and that I
-> should run away to do something else :-P
-
-? It is supposed to work, it blocks until all the pages are freed, but
-AFAIK ther is no fundamental life time issue. The driver is
-responsible to free all its usage.
-
-> An optional callback is a lot less scary to me here (or redoing
-> hmm_range_fault or whacking the migration helpers a few times) looks a lot
-> less scary than making pgmap->owner mutable in some fashion.
-
-It extra for every single 4k page on every user :\
-
-And what are you going to do better inside this callback?
+I'm pretty sure this is text trying to explain the Remainder -> ICRC
+transformation in Figure 57.
 
 Jason
 
