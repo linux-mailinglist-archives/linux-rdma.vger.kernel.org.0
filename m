@@ -1,139 +1,80 @@
-Return-Path: <linux-rdma+bounces-7334-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7335-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 042A7A22A21
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 10:17:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A62AA22A64
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 10:37:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33E8A7A273C
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 09:16:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 158143A463D
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 09:36:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEE71ACEB3;
-	Thu, 30 Jan 2025 09:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0525319DFAB;
+	Thu, 30 Jan 2025 09:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qnbfDMAV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JD03vQCH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67602139B
-	for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2025 09:17:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE40B1553A7;
+	Thu, 30 Jan 2025 09:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738228655; cv=none; b=God5Upm6OSok42GXi/rIgRGQqb/sFPpZMcvnHQPpBulGRK7nhteq7cpR+uKX38PLKe66UzzgbhHJC0iZ4uzxnZC4vjeLBeGLi2D29ZT5VMSl7o+RIfaqaMKRwa2dUmOa2LJN+Aw3OBvJ1J2044dgTGgF37CFjF1IiVflkBJqhEY=
+	t=1738229816; cv=none; b=cpy6FzCWX0CTYZi5vAS4QZK0saiXr0KtEzo8BIBUI1bDu2YjIZHNCx05l3RYIeF5qwcRyX5ESdOiw0RPOCDZDpKkIvGNRtOyOrqfTBrdZuFoJOgIX3iY33aHM7Cdx9mskuKZkxFAkBOxBSqHOYF9goPnF6Jd632r9vgKMnpswAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738228655; c=relaxed/simple;
-	bh=4c+G/QXyXIyW+db+AzIawUuoUqLWZPB7WUowgajOpw8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L9DYm7nFLVHpnGvjLT1uiGjUXfLa/N9d/XIINXmtqIgBW2yTzLlZiojw/OvM9JA18QHWWsPDYyAchkxx2wFFbapA8Llfz958eCTRuW3PMHmtKQhKGftQk0onXGa8+MALJADPcj+gQmaiGLlsKjQJhP37Ly2tzfrZXZOi8vXJRJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qnbfDMAV; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <bb650c16-8d22-4527-9378-2025a6ad1cb3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738228641;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xKj8xiJaOUldXpOs/fuN9givLSKmgfZHEO8V0DKV1/I=;
-	b=qnbfDMAVXL64TU8kZRudE9HgUdUo3DqDEn/amkeKgJSTf97adcvPni2vA5tzPtYKWATcku
-	fVKLtdm25pbHRXg1y0zl5ZeTZHCFZ35eRw/qfz4YxVSjYP5BqRkEACwLUGX1zSx8jsCt8K
-	v6LS3yMTvgA3kpTDrS8SmQW6T1mcNeo=
-Date: Thu, 30 Jan 2025 10:17:17 +0100
+	s=arc-20240116; t=1738229816; c=relaxed/simple;
+	bh=V1cZUvvofTc/IT+RjEXFm3iwKdNneKAKmls5cWOk7j0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q5uCxvj0ffsIK3hPZh3EN9OF0FmkB+sg42zy/7+sftjEoQ7n7/tnWJhhreiZ9veh+ISH8xAbJdDLXhGogSu+4YsFP7ZqQSQCWc9F4Up21UYdvEz3bc4M70BF8m56eFpRKfVS27uxKxh5OIZVdVdj+KShJlie0uzoTrySp+cflps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JD03vQCH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E0A2C4CED2;
+	Thu, 30 Jan 2025 09:36:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738229816;
+	bh=V1cZUvvofTc/IT+RjEXFm3iwKdNneKAKmls5cWOk7j0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JD03vQCHrZfoIb/LQrzphrzv29e5sHlDEykWbZUyWJJLC3H2RfFNkPU8ZUPCB2A0X
+	 /abt6IOk14l2Bp1ua9FaZGzvkUBrX0tWEzgn6MeUQOREjBoUNLlv9Ne+2CFGXbtdPP
+	 O5G0XaiAD1bUzJ1HyBNLOjUo0fcW1YJipRdBexIxSAutFZGYHY4FpM0Rwan3tIzQBa
+	 h1TNiQVysf94tVFu6ol1bP5UYV3Ksu6WLk1WS+0iOkkyFqBBVHGOORk5xrbTgAmn/U
+	 bLQ5QLNjKokicOjoxYu7KUfaKwxR04uvlqvP9I9sy5Jo/mKgkk9R8oe2p8j7sZUyTG
+	 RJt8OHVItv7LQ==
+Date: Thu, 30 Jan 2025 09:36:51 +0000
+From: Simon Horman <horms@kernel.org>
+To: linux@treblig.org
+Cc: tariqt@nvidia.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	yishaih@nvidia.com, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next] mlx4: Remove unused functions
+Message-ID: <20250130093651.GB113107@kernel.org>
+References: <20250130013927.266260-1-linux@treblig.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/6] RDMA/rxe: handle ICRC correctly on big endian systems
-To: Jason Gunthorpe <jgg@ziepe.ca>, Eric Biggers <ebiggers@kernel.org>
-Cc: linux-rdma@vger.kernel.org, Mustafa Ismail <mustafa.ismail@intel.com>,
- Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
- Leon Romanovsky <leon@kernel.org>, Zhu Yanjun <zyjzyj2000@gmail.com>,
- Bernard Metzler <bmt@zurich.ibm.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20250127223840.67280-1-ebiggers@kernel.org>
- <20250127223840.67280-2-ebiggers@kernel.org>
- <ae41a37e-3ee4-484e-ba53-1cad9225df7a@linux.dev>
- <20250129183009.GC2120662@ziepe.ca> <20250129185115.GA2619178@google.com>
- <20250129194344.GD2120662@ziepe.ca>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250129194344.GD2120662@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250130013927.266260-1-linux@treblig.org>
 
-On 29.01.25 20:43, Jason Gunthorpe wrote:
-> On Wed, Jan 29, 2025 at 06:51:15PM +0000, Eric Biggers wrote:
->> Hi Jason,
->>
->> On Wed, Jan 29, 2025 at 02:30:09PM -0400, Jason Gunthorpe wrote:
->>> On Wed, Jan 29, 2025 at 10:44:39AM +0100, Zhu Yanjun wrote:
->>>> 在 2025/1/27 23:38, Eric Biggers 写道:
->>>>> From: Eric Biggers <ebiggers@google.com>
->>>>>
->>>>> The usual big endian convention of InfiniBand does not apply to the
->>>>> ICRC field, whose transmission is specified in terms of the CRC32
->>>>> polynomial coefficients.
->>>
->>> This patch is on to something but this is not a good explanation.
->>>
->>> The CRC32 in IB is stored as big endian and computed in big endian,
->>> the spec says so explicitly:
->>>
->>> 2) The CRC calculation is done in big endian byte order with the least
->>>     significant bit of the most significant byte being the first
->>>     bits in the CRC calculation.
->>
->> (2) just specifies the order in which the bits are passed to the CRC.  It says
->> nothing about how the CRC value is stored; that's in (4) instead.
+On Thu, Jan 30, 2025 at 01:39:27AM +0000, linux@treblig.org wrote:
+> From: "Dr. David Alan Gilbert" <linux@treblig.org>
 > 
-> It could be. The other parts of the spec are more definitive.
->   
->> The mention of "big endian" seems to refer to the bytes being passed
->> from first to last, which is the nearly universal convention.
+> The last use of mlx4_find_cached_mac() was removed in 2014 by
+> commit 2f5bb473681b ("mlx4: Add ref counting to port MAC table for RoCE")
 > 
-> The LFSR Figure 57 shows how the numerical representation the spec
-> uses (ie the 0x9625B75A) maps to the LFSR, and it could be called big
-> endian.
+> mlx4_zone_free_entries() was added in 2014 by
+> commit 7a89399ffad7 ("net/mlx4: Add mlx4_bitmap zone allocator")
+> but hasn't been used. (The _unique version is used)
 > 
-> Regardless, table 29 makes this crystal clear, it shows how the
-> numerical representation of 0x9625B75A is placed on the wire, it is
-> big endian as all IBTA values are - byte 52 is 0x96, byte 55 is 0x5A.
+> Remove them.
 > 
->> (I would not have used the term "big endian" here, as it's
->> confusing.)
-> 
-> It could be read as going byte-by-byte, or it could be referring to
-> the layout of the numerical representation..
-> 
->>> If you feed that to the CRC32 you should get 0x9625B75A in a CPU
->>> register u32.
->>>
->>> cpu_to_be32() will put it in the right order for on the wire.
->>
->> I think cpu_to_be32() would put it in the wrong order.  Refer to the following:
-> 
-> It is fully explicit in table 29, 0x9625B75A is stored in big
-> endian format starting at byte 52.
-> 
-> It is easy to answer without guessing, Zhu should just run the sample
-> packet through the new crc library code and determine what the u32
-> value is. It is either 0x9625B75A or swab(0x9625B75A) and that will
-> tell what the code should be.
+> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
 
-Got it. I will run the sample packet through the new crc library code 
-and determine what the u32 value is.
-
-Zhu Yanjun
-
-> 
-> Jason
+Reviewed-by: Simon Horman <horms@kernel.org>
 
 
