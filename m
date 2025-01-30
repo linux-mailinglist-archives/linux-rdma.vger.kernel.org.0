@@ -1,194 +1,239 @@
-Return-Path: <linux-rdma+bounces-7342-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7343-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67EE1A23187
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 17:09:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27707A2318D
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 17:10:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 435F73A709A
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 16:09:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 112961889A64
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 16:10:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CBC21EBA19;
-	Thu, 30 Jan 2025 16:09:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E23F1EC019;
+	Thu, 30 Jan 2025 16:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="kGtmDMmi"
+	dkim=pass (2048-bit key) header.d=ymail.com header.i=@ymail.com header.b="Unm25p2o"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from sonic320-23.consmr.mail.bf2.yahoo.com (sonic320-23.consmr.mail.bf2.yahoo.com [74.6.128.204])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B28FE1E8837
-	for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2025 16:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752081EBFE3
+	for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2025 16:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.6.128.204
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738253391; cv=none; b=Om6eTNsja2n0b6311wG3qqxC2P1fjBUjBKcu6ByDjN7KpMkBkqKIncV5OjuFcAXFZHZbr2jhgLl4FElVx1qPMtkxRKK21fa638wG+jTf3yAf4ub8YCzZyPns84v9Dj7PGlzNEEC80aUEY424Pa4M0Gy1MESaxQkTWlQhLFOK0W4=
+	t=1738253440; cv=none; b=ZDil0hhXmpN/AeOp6btlb8QrbKFF4De/fI39bcbgCkYeJeKMGaZi6YNNvZZkkx1kKg8QN2oSOUVauxO0aIlySmjVT+TcDhR31VIUAVmozxv80Kyetc9+P8sDFN3hbQyjjooXDtF85tWN99POdXEFTR8kECfjb7S2suSYezOt6tk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738253391; c=relaxed/simple;
-	bh=+YGWdOLH796KgtIQHApwLPR2A7IV2UrR8iSarAPSu9Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iCv7mnPfwcuBdmy7KEWbUlxRMyR2DQJ955BR1GMO/0dJ4MNlhb0oabCOCjKgrd++BpXBXdo+oE+0SyljNhOqWvzEqpw4aUmqTGLS6veGRx1Xvi78uR9zHMBCul5PalZFqLWamFQtHe74hp2x6j2G6y/5cxeSsP9UTiMHPOrVZ8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=kGtmDMmi; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-436a03197b2so7254125e9.2
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2025 08:09:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1738253388; x=1738858188; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DHjECDXWr9DtzEWz0JXb8DxrPMtRT+1WnFwQ9T4qTYY=;
-        b=kGtmDMmiKsOTTSd1nxMT6b/rVp8Z5iwuxjyUOhOlAE1wo+hzjW7SyxgXgNsvFmgv2G
-         SG8uYz0MzKEpLQfvxVsSTMoQarFpR45K09iAM3/J4AHh7uxrUpwJ1JNr4+kTjfVc7rDA
-         g5QKrnD707dqUeFathBYAk1d5nmn51t1dVDqY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738253388; x=1738858188;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DHjECDXWr9DtzEWz0JXb8DxrPMtRT+1WnFwQ9T4qTYY=;
-        b=qv8bsHHlHsbUPo4MfTjJ5SeMRffjFeZ1xBXwYtGb8nq9a8mWPAQq/snTaOR2eSqJ+C
-         NZGUiCQv/7BkHBMmAoPNIrCkVgJvcgkQxJfRaJdimATnGe4tC1il4RtkUJ7FpF0qK4Bs
-         DBorQYgaJWEjR6UIbmPFl859qD4T9icSEdTdflMlnS5rx0MAzrrFeJtCXnFi7mrI7NUx
-         MZXExOdokFx7s5QNa2TiRjH3sr8XHsMVh5kzAmGnEXBW1CwuPAzWzBbA3x7sGR4W58Um
-         EE+r+I87hFSE4aIz2EyoEJ1fSNZ0MN8hbci0Yu8Ox2zrBu/8JUst7CPSG1BKlQNpiG39
-         cz3g==
-X-Forwarded-Encrypted: i=1; AJvYcCV24EAiGXLen3vJ3fZJfCy2Sf6d9Hd1foN7C/7lr/GRkUqsgqekkK6R4h8yH7HS4sZQqQA8vaj7pGxL@vger.kernel.org
-X-Gm-Message-State: AOJu0YyFYO4INA8KTFe1cPsqbcmqHAuxn1PcNrV11WMV1VnBEansVQCr
-	TC1Ot41pzWGeLROhCCXfLCjdwUAPePQFQV2FZjCxtLGVxjulxPv/oeABlSFkvCM=
-X-Gm-Gg: ASbGncvQH7Q/NK9xEiTJoJxLvqasLuQF0757upiIJKRDGdwxcfSGrPbqmGvnzDurBVC
-	2p5yfVArZsW27LjO79grwJOR+fsh5VnDlH0kvjRj7pZHlh0i/FoKUTGfgLSCFgFINKoCENFiZNE
-	RW/90iPbGfktE/NsBhcT2k+qi92/OhmJmdAj6Ndd3EufImyA+CZbDb8JIpjbvAiHan9WTWBa1FE
-	cjRcUfCDiK792BXkYu8Atlv1+q9Ltz51AfvwKmhBRx6VciAVORloAr9X3cWj1iFpjfiBf26pgiX
-	1TwUiyg9M0v5lyBqSTolVsMSm4M=
-X-Google-Smtp-Source: AGHT+IHzkAlG33CPN/kMrEln846pAhOyRPiLkWV/nev8K+POyx7veXX/IQAiWwM1YsBE7oYiCeZW/A==
-X-Received: by 2002:a05:600c:1e0d:b0:436:f960:3427 with SMTP id 5b1f17b1804b1-438dc40ffbbmr65699075e9.22.1738253387756;
-        Thu, 30 Jan 2025 08:09:47 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:5485:d4b2:c087:b497])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438dcc2ef08sm64120395e9.22.2025.01.30.08.09.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jan 2025 08:09:46 -0800 (PST)
-Date: Thu, 30 Jan 2025 17:09:44 +0100
-From: Simona Vetter <simona.vetter@ffwll.ch>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	Yonatan Maman <ymaman@nvidia.com>, kherbst@redhat.com,
-	lyude@redhat.com, dakr@redhat.com, airlied@gmail.com,
-	simona@ffwll.ch, leon@kernel.org, jglisse@redhat.com,
-	akpm@linux-foundation.org, GalShalom@nvidia.com,
-	dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-mm@kvack.org, linux-tegra@vger.kernel.org
-Subject: Re: [RFC 1/5] mm/hmm: HMM API to enable P2P DMA for device private
- pages
-Message-ID: <Z5ukSNjvmQcXsZTm@phenom.ffwll.local>
-Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	Yonatan Maman <ymaman@nvidia.com>, kherbst@redhat.com,
-	lyude@redhat.com, dakr@redhat.com, airlied@gmail.com,
-	simona@ffwll.ch, leon@kernel.org, jglisse@redhat.com,
-	akpm@linux-foundation.org, GalShalom@nvidia.com,
-	dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-mm@kvack.org, linux-tegra@vger.kernel.org
-References: <7282ac68c47886caa2bc2a2813d41a04adf938e1.camel@linux.intel.com>
- <20250128132034.GA1524382@ziepe.ca>
- <de293a7e9b4c44eab8792b31a4605cc9e93b2bf5.camel@linux.intel.com>
- <20250128151610.GC1524382@ziepe.ca>
- <b78d32e13811ef1fa57b0535749c811f2afb4dcd.camel@linux.intel.com>
- <20250128172123.GD1524382@ziepe.ca>
- <Z5ovcnX2zVoqdomA@phenom.ffwll.local>
- <20250129134757.GA2120662@ziepe.ca>
- <Z5tZc0OQukfZEr3H@phenom.ffwll.local>
- <20250130132317.GG2120662@ziepe.ca>
+	s=arc-20240116; t=1738253440; c=relaxed/simple;
+	bh=R2yQezvccBYM6RvfCoKzI6+ahCKgrFYJnAwrGGVbFh4=;
+	h=Date:From:To:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=Z87Kxt/x5u7Xa2iaWbIdHonh4Mvvcs3gANNv3++HjlnljH+sa0cfsvol8nlPkdaEns89hAFdENKjvpb0Jpe71BdRPY5TtjdwWhaRtftlkgItiG4eMPDHpa06+KHmC5GqMZT7/txTt/Msf68NYNOKvoiKLiXZOFvKwdeaMizneaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ymail.com; spf=pass smtp.mailfrom=ymail.com; dkim=pass (2048-bit key) header.d=ymail.com header.i=@ymail.com header.b=Unm25p2o; arc=none smtp.client-ip=74.6.128.204
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ymail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ymail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ymail.com; s=s2048; t=1738253437; bh=R2yQezvccBYM6RvfCoKzI6+ahCKgrFYJnAwrGGVbFh4=; h=Date:From:To:In-Reply-To:References:Subject:From:Subject:Reply-To; b=Unm25p2oZIssa/kANyldSS23OSUCpdVabUF3hVrxQny0Rdxx21AbaAEC2Xj0DVc6MVdncWaeWqaYOW8yZm4y0UJhFA38w2aMsZjxjES0LA+jqqTknfuImBSSTb8/LAOc9ovtO0L14t3Sz52fozIkRc3erCQ/KoDv1tnzjik+8SLLOoowUztE5g4LspZUskK56JxXT/xidfXCSattmjLasZKrayt0RhfBXhRgtC4/+ZeudPp4qDUKn4O2pewkhsrMxuS56omXtC5U7H7oNQ9IZkg8dxbp2WYkNfdJQnlzQqPzOrq+dhdF5HQQEqcpxZRb2MYeLcpPcg89EtUrMNNQ4Q==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1738253437; bh=cc+lem81B5VXvozb5dfxkaHEcz7i3pH6DLmo6UB55cp=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=o/WepzXlKBNI2bjVs7l0kQA9IDlOqvlCUcZ5LgkKU48dRlH3aJv63ICdmDTx2LmHYQdJLSPSk31Ajax2PGtIG5FXwx1HxsHie+y33MitkMCQS7GheA3o7MuWdhF+HUDHjnvBd+s+wSMn52CWwGuCR716z2ABYZw6gwTBXk/SEAgkFfcTbELfZLux/LB0kM+KCgFdDI6tCFDk83AGSfIpxtJDocZAeBqJIZdndjgEVxxS1N6n0zL38/TyUnag2RAZmEtlyrLNwCAD1Bb78p52w+PNCNtjwsdZ6tVY03sBR89kVjRRW9DQdfxLQvpb5JieXTUfjCgkpDuBTCQ72bfdlg==
+X-YMail-OSG: dc0jZysVM1nn0NLzdEXuxC6xsC7T8HKfdAbvyxq1tD2kjHQsK_3RCTdDk_wVwUc
+ 4YZVsrwXboCh2s9.xYfB_Lq1S9H4tX2vpkLmQYhDOjB.t7IEpcL8QsXkYXG2lXjz6N78OPppdV3v
+ eKwP5xgcFE67_fKwqxBJJ_cm2CY_vIpoaUogSaIUo140H4SxsZo_8nrNvoN37Wm7eOcbMbedTsFl
+ cPp_1IllDfe1GOS4SEwYWr9GvTJNqO9_sLoQb9.4NKRO0rVhu1OYoMtNGuRQOLGitcwfxYgxKwT_
+ ZwPBTu58aCbI3JpJ.yjvO1EqH0TKlvqp1wrSjQrJyTN_3rmTH.w6MUyRy0rxf6Sh1dnM7BL5jtnw
+ DH9RpoS4Cl87RpU2oWfUPTJ6PireKgI15Rhsvsu7f.6Ai3_xXrwAyFHpS2s7uHcwpR5FEbb7we08
+ nhFWjPHoBB7vjZOtNGSFs5qQpiR02Zw_Q5kCPL_sDqZho8WrHjidpxHpw7irOTXF4mcEzjvXmMIj
+ Hq54cbxuc9tleShy4xQpm_2Z0EUI41vJ_6OlOS3zJc4gglCPPiTOpTI_EY6IuL_TqhFjsz3qTXMr
+ vJP3i4XhBi9gEIAPGiRpwuGBsP0j7mZ3y6vUj4hPLnu7mInkwWrYhYbP4AAVTcOvkVJZG6JrXhcl
+ up9vZoaskm7ynApNawBhJdUbgcXiS1Q6TifZ9WYrDdY.zMlZ_PLBDGAdpZbWMV0SzpulXAlbx4xA
+ 28ZS24JxctpAGKX3r4J8ahwjCoVzzrbNBq9rZ8PtANJPUSwfoRCFtz2HpLrmhuZ5_9nADRVnhQwD
+ zvwhdY6xuDUS5lFXLQIScCjJqTyJdP3z357D22.CForefpmH0Ck5yEn9to.t98Kv1xgWJu.mU2BS
+ AQSWC_rlRM2rH1w4drHoImbQf3diq4bDw0HVfvRuwRFG9vv6L9c25jVy5YxCGg2rNbES3SzAHEXH
+ 8BX1Bu9.vFsbxmf.2J_HUAE7yzGwPJUT1fTMUQBpfMY2nru00cbxQPqpWOEzEzwCwrQ7pzSH18LH
+ OHnMDCuMsaVFvjDbfZ67NwPNjNkwlQNZAt5TLfyAs3zaSxPk4TiO4xFrZBUC4wcH8NsxHbPxDUbe
+ J0Q45UX1PMU6gaG.QJxq96wR7J74RjghVsU5fRZALCws15Y01mmS3mRDIMSD_ynbmdd_EsoPLbsP
+ fBzxQQPc3BuE7NBnivT5M7_888kCrGPCPxBeKGSUVg08.az8dRLoGalfQ7MjTmmxv_iX9wY9xpxs
+ mzJKmu6uOV6wT8DIlvE_D1E6uCcYAtGgl4POajf33RmTdlXLLiArH3YI1iWskZ2ln5rFcSG1PeUR
+ 06Lho3BFZ.e4sFRkudkHSNP_nNIBrvxMmqOaWDdFK0AW9p3HK1l7c3iFsf9gXSv70q6UbiCymKje
+ DgIHgqMGK8yWXBAof6FNPJzLM0tel2uTR8Kw.7PIccRoRJbaS.vg1K5q4PbAtPl.UtXVNyz1no2J
+ RkKOFhnAW93RUj05ZaRTZ6W4B8uOBaU4IOZNF2HSFzsNSaWhOoi0d2vQmOmL1ksUg1IuD2bQcQ3m
+ .cdlYY4AJiDUHrajA04nMdc5lM7.BGtdLv9fMV58gsVB1hwXcGjygH53bDHeurs_MPb04BbUUUZX
+ 5ol9RUhxr7rknvfBYM4w5nkxRDAQQskXVH6lAEb1XITd.lsb6Yg7jCSLYZDotMoanfQZV0SQNYhp
+ NfisBqRUZl7FSPP8K7LWpNMtBMBDXIU3eYVk3rjg0Y5dYjvdcRnRbEIkKPX4lR0258jHPxGLvHR8
+ QZhtCbezREIp2zJLtl19KzE5lyn0Iml.IxKyIffHpGbzdcVO45lgGDpueTReetntemNmMr0.cpx0
+ 5HYpz1.LEltL5BVp58IkEG2bu_ZKBPSI_7x3Lq.gYjmm8hCO2NcvPnjoIJxDA.rjqT8Kmil9x2v9
+ g5UW0GlE1G.s0PWxWx0Si0X9Prusi9NFQ3P4WoARJgyDoyih8qff6S8gcVzJ_ykXIqAtoHUjLX6f
+ _gMAru18P.JZyZ12TKtjvtHjcSfNKWlC3c19dEg0QkmwjFcv611F1LAqUhmppKAV_b5uXsYf.xfL
+ 3EiGVvF72igfsCPkqWtp64ss8UeIGUEPLZd6wa1kPzMTF3raa4RWyAQqJ92vCRE02Dm9HFsq8Ayp
+ llRfFbPZCHkhje7HZd8IMOJDaoOxOJS.pvGEg63_8fht11aClR8hdTMq2FZek0.G.wvncCdDL871
+ P9QpbLSDxz32fBMurnRIvIXyfsXR6ADEI1efb_IACmojMA.JRrbMtw7nHvzqpC8d99hkBaA--
+X-Sonic-MF: <andrei_ss@ymail.com>
+X-Sonic-ID: 1c3eb710-83f8-45c1-ac01-75f7e7c796f6
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic320.consmr.mail.bf2.yahoo.com with HTTP; Thu, 30 Jan 2025 16:10:37 +0000
+Date: Thu, 30 Jan 2025 16:10:36 +0000 (UTC)
+From: "Andrei S." <andrei_ss@ymail.com>
+To: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Message-ID: <1820967876.3499649.1738253436582@mail.yahoo.com>
+In-Reply-To: <963276744.3495268.1738252591349@mail.yahoo.com>
+References: <614323370.3481698.1738248482448.ref@mail.yahoo.com> <614323370.3481698.1738248482448@mail.yahoo.com> <606461795.3488473.1738250979711@mail.yahoo.com> <963276744.3495268.1738252591349@mail.yahoo.com>
+Subject: Re: RDMA with IPv6 between 2 NICS on the same host is not working
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250130132317.GG2120662@ziepe.ca>
-X-Operating-System: Linux phenom 6.12.11-amd64 
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: WebService/1.1.23187 YMailNorrin
 
-On Thu, Jan 30, 2025 at 09:23:17AM -0400, Jason Gunthorpe wrote:
-> On Thu, Jan 30, 2025 at 11:50:27AM +0100, Simona Vetter wrote:
-> > On Wed, Jan 29, 2025 at 09:47:57AM -0400, Jason Gunthorpe wrote:
-> > > On Wed, Jan 29, 2025 at 02:38:58PM +0100, Simona Vetter wrote:
-> > > 
-> > > > > The pgmap->owner doesn't *have* to fixed, certainly during early boot before
-> > > > > you hand out any page references it can be changed. I wouldn't be
-> > > > > surprised if this is useful to some requirements to build up the
-> > > > > private interconnect topology?
-> > > > 
-> > > > The trouble I'm seeing is device probe and the fundemantal issue that you
-> > > > never know when you're done. And so if we entirely rely on pgmap->owner to
-> > > > figure out the driver private interconnect topology, that's going to be
-> > > > messy. That's why I'm also leaning towards both comparing owners and
-> > > > having an additional check whether the interconnect is actually there or
-> > > > not yet.
-> > > 
-> > > Hoenstely, I'd rather invest more effort into being able to update
-> > > owner for those special corner cases than to slow down the fast path
-> > > in hmm_range_fault..
-> > 
-> > I'm not sure how you want to make the owner mutable.
-> 
-> You'd probably have to use a system where you never free them until
-> all the page maps are destroyed.
-> 
-> You could also use an integer instead of a pointer to indicate the
-> cluster of interconnect, I think there are many options..
+Hi,
 
-Hm yeah I guess an integer allocater of the atomic_inc kind plus "surely
-32bit is enough" could work. But I don't think it's needed, if we can
-reliable just unregister the entire dev_pagemap and then just set up a new
-one. Plus that avoids thinking about which barriers we might need where
-exactly all over mm code that looks at the owner field.
+I've noticed that RDMA doesn't work on IPv6 between 2 NIC on the same host.
+I've tested with rping and=C2=A0ibv_rc_pingpong. Below you can find the com=
+mands and the behavior for each app.
 
-> > And I've looked at the lifetime fun of unregistering a dev_pagemap for
-> > device hotunplug and pretty firmly concluded it's unfixable and that I
-> > should run away to do something else :-P
-> 
-> ? It is supposed to work, it blocks until all the pages are freed, but
-> AFAIK ther is no fundamental life time issue. The driver is
-> responsible to free all its usage.
+rping test:=C2=A0
 
-Hm I looked at it again, and I guess with the fixes to make migration to
-system memory work reliable in Matt Brost's latest series it should indeed
-work reliable. The devm_ version still freaks me out because of how easily
-people misuse these for things that are memory allocations.
+> rping -s -a 2001:db8:153:1::10 -p 60009 -V -d=C2=A0// waits for a connect=
+ion
+> rping -c -a 2001:db8:153:1::10 -I 2001:db8:171:2::20 -p 60009 -V -d=C2=A0=
+//=C2=A0client waits indefinitely to connect to server
 
-> > An optional callback is a lot less scary to me here (or redoing
-> > hmm_range_fault or whacking the migration helpers a few times) looks a lot
-> > less scary than making pgmap->owner mutable in some fashion.
-> 
-> It extra for every single 4k page on every user :\
-> 
-> And what are you going to do better inside this callback?
+ibv_rc_pingpong test:
 
-Having more comfy illusions :-P
+> ibv_rc_pingpong -d mlx5_2 -g 5 // waits for a connection
+> ibv_rc_pingpong -d mlx5_3 -g 5 <IPv4 address>=C2=A0 //client throws timeo=
+ut error:
 
-Slightly more seriously, I can grab some locks and make life easier,
-whereas sprinkling locking or even barriers over pgmap->owner in core mm
-is not going to fly. Plus more flexibility, e.g. when the interconnect
-doesn't work for atomics or some other funny reason it only works for some
-of the traffic, where you need to more dynamically decide where memory is
-ok to sit. Or checking p2pdma connectivity and all that stuff.
+local address:=C2=A0 LID 0x0000, QPN 0x000150, PSN 0x23c9c7, GID 2001:db8:1=
+71:2::20
+remote address: LID 0x0000, QPN 0x00012e, PSN 0x96791a, GID 2001:db8:153:1:=
+:10
+Failed status transport retry counter exceeded (12) for wr_id 2
+parse WC failed 1
 
-But we can also do all that stuff by checking afterwards or migrating
-memory around as needed. At least for drivers who cooperate and all set
-the same owner, which I think is Thomas' current plan.
+What I have noticed with tcpdump on=C2=A0mlx5_3 is that the packets have So=
+urce MAC equal to Destination MAC, which is wrong!
+Also, I want to mention that both interfaces have also IPv4 addresses and i=
+f I'm using IPv4 everything works perfect!
 
-Also note that fundamentally you can't protect against the hotunplug or
-driver unload case for hardware access. So some access will go to nowhere
-when that happens, until we've torn down all the mappings and migrated
-memory out.
--Sima
--- 
-Simona Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Below you can find my setup:
+
+Ubuntu 22.0.4.5 (6.8.0-49-generic #49~22.04.1-Ubuntu) with 2 NICs connected=
+ via a switch.
+
+Network interfaces:
+
+enp153s0np0:=C2=A0
+...
+
+
+inet6 fe80::a288:c2ff:fe7d:a8ca=C2=A0 prefixlen 64=C2=A0 scopeid 0x20<link>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 inet6 2001:db8:153:1::10=C2=A0 prefixlen 64=C2=
+=A0 scopeid 0x0<global>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 ether a0:88:c2:7d:a8:ca=C2=A0 txqueuelen 1000=
+=C2=A0 (Ethernet)
+
+and=C2=A0
+
+enp171s0np0:
+...
+inet6 fe80::a288:c2ff:fe7d:a88a=C2=A0 prefixlen 64=C2=A0 scopeid 0x20<link>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 inet6 2001:db8:171:2::20=C2=A0 prefixlen 64=C2=
+=A0 scopeid 0x0<global>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 ether a0:88:c2:7d:a8:8a=C2=A0txqueuelen 1000=C2=
+=A0 (Ethernet)
+
+Here is the output of the ibv_devinfo:
+
+hca_id: mlx5_2
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 transport:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 InfiniBand (0)
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 fw_ver:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A028.39.1002
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 node_guid:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 a088:c203:007d:a8ca
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_image_guid:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0a088:c203:007d:a8ca
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 vendor_id:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x02c9
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 vendor_part_id:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A04129
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 hw_ver:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x0
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 board_id:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0MT_0000000838
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 phys_port_cnt:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 1
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 port:=C2=A0 =C2=A01
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 state:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 PORT_ACTIVE (4)
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 max_mtu:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+4096 (5)
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 active_mtu:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A01024 =
+(3)
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 sm_lid:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A00
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 port_lid:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+0
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 port_lmc:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+0x00
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 link_layer:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Ether=
+net
+
+hca_id: mlx5_3
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 transport:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 InfiniBand (0)
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 fw_ver:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A028.39.1002
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 node_guid:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 a088:c203:007d:a88a
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 sys_image_guid:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0a088:c203:007d:a88a
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 vendor_id:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x02c9
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 vendor_part_id:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A04129
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 hw_ver:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x0
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 board_id:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0MT_0000000838
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 phys_port_cnt:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 1
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 port:=C2=A0 =C2=A01
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 state:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 PORT_ACTIVE (4)
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 max_mtu:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+4096 (5)
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 active_mtu:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A01024 =
+(3)
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 sm_lid:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A00
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 port_lid:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+0
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 port_lmc:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+0x00
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 link_layer:=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Ether=
+net
+
+
+
+Thank you,
+Andrei=C2=A0
+
+
+
+
 
