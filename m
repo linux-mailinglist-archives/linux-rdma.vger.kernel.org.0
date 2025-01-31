@@ -1,181 +1,137 @@
-Return-Path: <linux-rdma+bounces-7344-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7345-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 003DDA23347
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 18:42:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A076CA23901
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jan 2025 03:42:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E0D51883328
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2025 17:42:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1002C168E0C
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jan 2025 02:42:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80FB91F03C4;
-	Thu, 30 Jan 2025 17:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421A745BEC;
+	Fri, 31 Jan 2025 02:42:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="LfsE6GDQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lY57fmAw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD901EF0A1
-	for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2025 17:42:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF052322E;
+	Fri, 31 Jan 2025 02:42:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738258941; cv=none; b=V37xPvUaIpjjYqb2B55eAcAznvUhtRJ6cUMFItu79JAp7xTi6ero9W4oPawlzuePuVaD/XUTd5iRUjSrqfIXAzPlpUwX+Sn/ubyuwsxDFdu0qke9JvY5pKoQIBzoiPNv0LsUcS391zDEHfzVx0RoW/trQZo5esXZg0sg2HRTYIo=
+	t=1738291364; cv=none; b=jC53KxUGY+doM30hLbCp5389xMfE33Redk78mb4le38O6g8+kyaMyg//Qcy0MWDciBh0Aur1uQ0HLnd/1UF8ydsTfkmGmoZDRDAx9e9csA7F+Yd7dijIq6zPj6q2XCl2bOguZBquAbSSo38K0mDJrYjuA2umEWbRm2KkgcYfT1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738258941; c=relaxed/simple;
-	bh=XtQCDwDTly37QPz8i9jNWoc4Mmbx4e+kSb49dC5tsSc=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SHg8nrbQSbkpPPxAk9tc17gEX/GOedqWyjkV0SbzeON+bbm8wRM+EWRW+cinrRKFi59QVKdwxpj51anvGMqTjBDg4mlcLM90ZDuzAEZjfMkldnpEXGDHBwicaxnWqPkBvQXEMMfB5Ew5lQ79di6JgpxrVAWonF16CrxfOkDXv5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=LfsE6GDQ; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-467918c360aso11074421cf.0
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2025 09:42:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1738258938; x=1738863738; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CVNKXypQwOopSf1xgwOwZSkCQwewZeK8ItDq6p8m+EY=;
-        b=LfsE6GDQbmYz3qyZKrOOziUjzv179Xd1geXzDq1D1pJ1I3nL4P/i9faJFv9Mafzuf/
-         XRNY3NccZdtAfzb19CipjL0ZlTTuj41b8kkLmh59wxXq7OwNlsA7NfYC2BfcpG6umeYg
-         30bih2wE91r8OTRvykqMRowpx4/Dzg4LgxeUuS9T/bMT/LUJcRBzJ3PgFfsL8ORdulNT
-         M5awNuStAudAyLBH9Mgkjc7PXFTkNUS+xMtRI2wtWmXPucEQThOrrlqKvbnQ4QvEyUMH
-         Qm8PlG/V7lW3XKxvJsTp9nco93OtVB8q7Uoa9c2xF1AQFDBp/hnCQe2wNcTaI+cWIv8P
-         caxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738258938; x=1738863738;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CVNKXypQwOopSf1xgwOwZSkCQwewZeK8ItDq6p8m+EY=;
-        b=tft96w+QeE6U2D/W3wgqI7Q6V8Z5XYR3sj3qgQKX3dUC9+uZ8WJDg5KNcj33xgU53w
-         bniJEG/rOZSakkVBuGvOtyPAo4brcr1AXmkDBTi0+Wf75gQbH6PV7jS7FHa8aPOnORUN
-         Wl1BLpnOaF8OHUwYM01JhymKeSMDvw/paBWuR1Dm6mMKzXf/uEtwWSnW2RuTldC/+j/V
-         l5ugS65JyqzguqV0M6cZsUvXSgO5i4uI+AISmP2eNpbK25X9O+gRq7KnPSP0QjpOlGOy
-         6lPBK1njsRiH1tEJd3oFtnmIab33JP8a8ght1cj0IH3jaNxsAejwuqTt90gemS98FEfZ
-         aASQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV5NdKxeeqLfLQp6cpYA+ejTJDCM3NZgNADrtubtrFhHhR6WX0fsWHaMKxHivGaqxtX0tObjVRbMC7Y@vger.kernel.org
-X-Gm-Message-State: AOJu0YzqkC1qij2purYNI6AQ0sF7kPWgAKW6bMpHeblFqGyXKnQ4YEHC
-	EF9L49LVyZC5uRdisX5J0X/Am7xYbAOLfkmstwi/ZFOiSXCbMYaChZTdIaoJwfw=
-X-Gm-Gg: ASbGnctuWIbNHOoulAFECZQ55N0XhO9IWLvxhRCyuZ6hTP4Qew6J2SGYu14wdfI9gfj
-	IxQbfJwmN5KlcjTGtbwJ6tzIl0M5PkWpXqBYIpa4yiQGoSaMChblAOk8lNLLAlNAdv+rvIv3oVy
-	5UyUEzPCc9SobXPGfRc78Fzq5F+fADi2weFsyrlnlsvGYw2aDj0GivZpR3DS7gAhCNMxUtcPzW8
-	2YwsJ3oSgX1wVYMptk2HQdm14tnIZt6eokdSP+tlqYl2Yze7452rKrhqqJn/6xMa1SbnKkpCDzG
-	ZiLFrCDV7cdgDzpp6hjdsBRzDXVsFqpfBvihmOrab5oO817c2c9G/87xc5IwUgmO
-X-Google-Smtp-Source: AGHT+IFnQ+3H7xNChFVcqgc9dwjk4L8UEnbD/nNL/ykdDG0Q22FK3UpLRKkWb0FWjYtvwvzMuLT+BQ==
-X-Received: by 2002:a05:622a:4296:b0:467:451b:eba3 with SMTP id d75a77b69052e-46fd0a7fe1dmr108793531cf.8.1738258938311;
-        Thu, 30 Jan 2025 09:42:18 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46fdf0ceacesm8793061cf.31.2025.01.30.09.42.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jan 2025 09:42:17 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1tdYYT-00000009ew4-0Jjs;
-	Thu, 30 Jan 2025 13:42:17 -0400
-Date: Thu, 30 Jan 2025 13:42:17 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
-	Yonatan Maman <ymaman@nvidia.com>, kherbst@redhat.com,
-	lyude@redhat.com, dakr@redhat.com, airlied@gmail.com,
-	simona@ffwll.ch, leon@kernel.org, jglisse@redhat.com,
-	akpm@linux-foundation.org, GalShalom@nvidia.com,
-	dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-mm@kvack.org, linux-tegra@vger.kernel.org
-Subject: Re: [RFC 1/5] mm/hmm: HMM API to enable P2P DMA for device private
- pages
-Message-ID: <20250130174217.GA2296753@ziepe.ca>
-References: <20250128132034.GA1524382@ziepe.ca>
- <de293a7e9b4c44eab8792b31a4605cc9e93b2bf5.camel@linux.intel.com>
- <20250128151610.GC1524382@ziepe.ca>
- <b78d32e13811ef1fa57b0535749c811f2afb4dcd.camel@linux.intel.com>
- <20250128172123.GD1524382@ziepe.ca>
- <Z5ovcnX2zVoqdomA@phenom.ffwll.local>
- <20250129134757.GA2120662@ziepe.ca>
- <Z5tZc0OQukfZEr3H@phenom.ffwll.local>
- <20250130132317.GG2120662@ziepe.ca>
- <Z5ukSNjvmQcXsZTm@phenom.ffwll.local>
+	s=arc-20240116; t=1738291364; c=relaxed/simple;
+	bh=J4HtwjCENVIAFWioYRKWDuFBJptAfdaYD93a5v9M3sU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QCSacLmeA0jKMLlEaKrRFi3vysqSnLnkp1HWZgAMqZmtEOWhnSMa4Tgvv5YnvlHLUaePzXxRjAz/MdefD8RBwSt8AU51ftoLkvFhQ/fHT+5b8oPkqwChKmeFzaRDB675pCl4uGZMRWiDRgOVI3jdVzvaPWvkD8ZMluMnUQTk80U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lY57fmAw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 172DAC4CED2;
+	Fri, 31 Jan 2025 02:42:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738291363;
+	bh=J4HtwjCENVIAFWioYRKWDuFBJptAfdaYD93a5v9M3sU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lY57fmAwMwLF8S/tJaVlm9trCYbbtYpSCgt5POCRRJgcXWK8BFOGH4XJAXU8p56A6
+	 LyzVYMIR3kD2OKUqRoGC1XhksyqOJAw2zxLjmx7IsAbDpEvNHIZq2YCtIp98t1dbKu
+	 HlhI2UwliLrs5w4u46uHgTer3r4ckmw4+bjQxjfAToPHGUIVsZjLsu7DQ0C99UVGYQ
+	 kdJ0WDOaI0So+1kwMS1ildpO2cMHyXcysIT3aTISif3BHWnbOZVWbcAerioS4f88yb
+	 4GCe1TtwSGZ02akKFOhWJYbKkhQ9kJZCTekU2ko9YkGi0TLgzupl8395bOJ7LGSgWy
+	 WNk+Yl5iD8huA==
+Date: Thu, 30 Jan 2025 18:42:41 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: linux-rdma@vger.kernel.org, Mustafa Ismail <mustafa.ismail@intel.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Bernard Metzler <bmt@zurich.ibm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/6] RDMA/rxe: consolidate code for calculating ICRC of
+ packets
+Message-ID: <20250131024241.GA1237@sol.localdomain>
+References: <20250127223840.67280-1-ebiggers@kernel.org>
+ <20250127223840.67280-3-ebiggers@kernel.org>
+ <048daa22-fdc6-4f5f-9fa3-e023dc421aab@linux.dev>
+ <20250130021526.GD66821@sol.localdomain>
+ <0043edb8-8bba-4675-b0b6-fdb70fb2e091@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Z5ukSNjvmQcXsZTm@phenom.ffwll.local>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0043edb8-8bba-4675-b0b6-fdb70fb2e091@linux.dev>
 
-On Thu, Jan 30, 2025 at 05:09:44PM +0100, Simona Vetter wrote:
-
-> > You could also use an integer instead of a pointer to indicate the
-> > cluster of interconnect, I think there are many options..
-> 
-> Hm yeah I guess an integer allocater of the atomic_inc kind plus "surely
-> 32bit is enough" could work. But I don't think it's needed, if we can
-> reliable just unregister the entire dev_pagemap and then just set up a new
-> one. Plus that avoids thinking about which barriers we might need where
-> exactly all over mm code that looks at the owner field.
-
-IMHO that is the best answer if it works for the driver.
-> > ? It is supposed to work, it blocks until all the pages are freed, but
-> > AFAIK ther is no fundamental life time issue. The driver is
-> > responsible to free all its usage.
-> 
-> Hm I looked at it again, and I guess with the fixes to make migration to
-> system memory work reliable in Matt Brost's latest series it should indeed
-> work reliable. The devm_ version still freaks me out because of how easily
-> people misuse these for things that are memory allocations.
-
-I also don't like the devm stuff, especially in costly places like
-this. Oh well.
-
-> > > An optional callback is a lot less scary to me here (or redoing
-> > > hmm_range_fault or whacking the migration helpers a few times) looks a lot
-> > > less scary than making pgmap->owner mutable in some fashion.
+On Thu, Jan 30, 2025 at 08:24:59AM +0100, Zhu Yanjun wrote:
+> 在 2025/1/30 3:15, Eric Biggers 写道:
+> > On Wed, Jan 29, 2025 at 07:11:35PM +0100, Zhu Yanjun wrote:
+> > > 在 2025/1/27 23:38, Eric Biggers 写道:
+> > > > From: Eric Biggers <ebiggers@google.com>
+> > > > 
+> > > > Since rxe_icrc_hdr() is always immediately followed by updating the CRC
+> > > > with the packet's payload, just rename it to rxe_icrc() and make it
+> > > > include the payload in the CRC, so it now handles the entire packet.
+> > > > 
+> > > > This is a refactor with no change in behavior.
+> > > 
+> > > In this commit, currently the entire packet are checked while the header is
+> > > checked in the original source code.
+> > > 
+> > > Now it can work between RXE <----> RXE.
+> > > I am not sure whether RXE <---> MLX can work or not.
+> > > 
+> > > If it can work well, I am fine with this patch.
+> > > 
+> > > Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> > > 
 > > 
-> > It extra for every single 4k page on every user :\
-> > 
-> > And what are you going to do better inside this callback?
+> > Both the header and payload are checksummed both before and after this patch.
+> > Can you elaborate on why you think this patch changed any behavior?
 > 
-> Having more comfy illusions :-P
+> From the source code, it seems that only the header is checked. And RXE can
+> connect to MLX RDMA NIC. That is, the CRC of the header can be verified both
+> in RXE and MLX RDMA NIC.
+> 
+> Now in your commit, the header and payload are checked. Thus, the CRC value
+> in RDMA header may be different from the CRC of the header(that CRC can be
+> verified in RXE and MLX RDMA NIC). Finally the CRC of the header and payload
+> will not be verified in MLX RDMA NIC?
+> 
+> IMO, after your patchset is applied, if RXE can connect to MLX RDMA NIC, I
+> am fine with it.
+> 
+> In the function rxe_rcv as below,
+> "
+> ...
+>     err = rxe_icrc_check(skb, pkt);
+>     if (unlikely(err))
+>         goto drop;
+> ...
+> "
+> rxe_icrc_check is called to check the RDMA packet. In your commit, the icrc
+> is changed. I am not sure whether this icrc can also be verified correctly
+> in MLX RDMA NIC or not.
+> 
+> Because RXE can connect to MLX RDMA NIC, after your patchset is applied,
+> hope that RXE can also connect to MLX RDMA NIC successfully.
+> 
+> Thanks,
+> Zhu Yanjun
 
-Exactly!
+Again, the payload was checksummed before too.  Please read the whole patch and
+not just part of it.  In particular, note that as the commit message points out,
+both of the calls to rxe_icrc_hdr() were immediately followed by updating the
+CRC with the packet's payload.
 
-> Slightly more seriously, I can grab some locks and make life easier,
+Anyway, I might just reduce the scope of this patchset to just the bare minimum
+changes needed to replace shash with the CRC library anyway, as it seems hard to
+get anything else fixed in this subsystem.
 
-Yes, but then see my concern about performance again. Now you are
-locking/unlocking every 4k? And then it still races since it can
-change after hmm_range_fault returns. That's not small, and not really
-better.
-
-> whereas sprinkling locking or even barriers over pgmap->owner in core mm
-> is not going to fly. Plus more flexibility, e.g. when the interconnect
-> doesn't work for atomics or some other funny reason it only works for some
-> of the traffic, where you need to more dynamically decide where memory is
-> ok to sit.
-
-Sure, an asymmetric mess could be problematic, and we might need more
-later, but lets get to that first..
-
-> Or checking p2pdma connectivity and all that stuff.
-
-Should be done in the core code, don't want drivers open coding this
-stuff.
-
-> Also note that fundamentally you can't protect against the hotunplug or
-> driver unload case for hardware access. So some access will go to nowhere
-> when that happens, until we've torn down all the mappings and migrated
-> memory out.
-
-I think a literal (safe!) hot unplug must always use the page map
-revoke, and that should be safely locked between hmm_range_fault and
-the notifier.
-
-If the underlying fabric is loosing operations during an unplanned hot
-unplug I expect things will need resets to recover..
-
-Jason
+- Eric
 
