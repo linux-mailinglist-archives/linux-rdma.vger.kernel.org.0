@@ -1,184 +1,126 @@
-Return-Path: <linux-rdma+bounces-7380-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7381-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1C67A26578
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2025 22:19:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D824A265EA
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2025 22:44:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8F973A3CD9
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2025 21:19:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA7677A1AB1
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2025 21:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E26520FA80;
-	Mon,  3 Feb 2025 21:19:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD8B20FA9A;
+	Mon,  3 Feb 2025 21:44:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z4DBgFuy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZcICLaZO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2E71D5159;
-	Mon,  3 Feb 2025 21:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8581E0B9C;
+	Mon,  3 Feb 2025 21:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738617576; cv=none; b=iXgQg4xCpSAd/QThsJFWPgvui3QkIawazEcq2cPLNpWZeWRuiqTzdeFcK/KKgXRmLN2Reoi53N9J4MRr92MqZWnAsZ7nqOdXIny2HtDpUJLHb7Z0nhK6vmhtJKhFLALHGu8hBOVvixK3Lir7if4Pb7SDEnaOLEPsivUrXVISNYw=
+	t=1738619047; cv=none; b=cYlEkpcc1TF/MNdTx3xD7TdZauqQpemFkXGfGhsW2K1HDSGAGK4Qgmg+gIKrHn8QFEZEVPAqMH5d6C50LdKId7mPzfuq4ArQFmqUGNvVBMWUzoSRS8EOOcARrwhoOSTaC2HQPLVknu+Uz37F09w3R5AVwV98jApbBl0tGUwlEM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738617576; c=relaxed/simple;
-	bh=ofj6JP1j6Y98Ose9xyS7S3SdHxczj7+yv4cnT8ALfhw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TKTuiuGpzVOBh1Dmzbws5NPGBxWbbUZoprisnpLR3uYp3J5NMmAra56Xptd067Un8wDa5HkgjpbPOA4VpC96wpfSArU1zBXTj3r2P1rd7lMh9BNRQ7ceVCJx2Ev0LklG/MV0VEqOL/xHjcxEJWirmZnMUoC+XXhCdCxUbM8DJbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z4DBgFuy; arc=none smtp.client-ip=209.85.216.46
+	s=arc-20240116; t=1738619047; c=relaxed/simple;
+	bh=kG5gWqhky0PrYjjLim/Ns9uwwVtbleCkG73Bv4Qq3fY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IAh7ZB1EQjUHyK2VJtV+nU34HFqxTmSMHKkO8WdKXJdbtPdDiTHxxDKyJl80SzyWkN6WMeutZx7nm481S2yFTBhgZ1VbMmWF4RNNtyQiCAt3Frh7KLWlsCf7SrUt2jWQadd6N4853ro4AlENCUYApr9omZ6RyDycGVYRhkVSALM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZcICLaZO; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2ee8aa26415so8446300a91.1;
-        Mon, 03 Feb 2025 13:19:34 -0800 (PST)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-ab2aea81cd8so883016966b.2;
+        Mon, 03 Feb 2025 13:44:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738617574; x=1739222374; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E1RprFycDuHJldRn/ezrS+F5IM4jHFkaXUl211fTz08=;
-        b=Z4DBgFuykrZqDu1upZJ84eRLEMqLfFKX/p8Ue4Bt3alKw64qkzVBSfgHnFDYNSR4Pm
-         Ttkm6F75KIX5misHMBY4EHbwf8BPPYI4IE06iCzFAQAZk8gPAigau7bDQmT70Ahcfbmh
-         qHl67eu/+a7nB1hBb9MyIENHHgOX5VKvDaUGaCTAZzuD7Cg+MIe9SB90dp6qXVovb0Gu
-         ymZswTHlpw75FlMKqwOfDUvos/aK3ZzSaPnodIcSmZtMj7GRectKgSmhphM+BqXcScm5
-         LjtP45aLtqdjsiKDE+AOV2Sj90RwMvWEZvH/qUMjb9vAaLbM+t+YUEr7eodgMh1bLeLo
-         J/GA==
+        d=gmail.com; s=20230601; t=1738619043; x=1739223843; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=A1HmWishDsJHQAxosiDTBvuraFyn2SxUqlCZ+p7ZrEE=;
+        b=ZcICLaZOmwvOJ0jf60VqNT/drm9clzk9p16gZChO5lcA5sE0kptlAn6Bjp0T3RX+F/
+         zY/diSevnfZSzS7ISnVcYi7w0H/zThB2JHXF8P5R9jJ6GQQztpBwNmjaSw2gpH4JhN7i
+         yn9rjlZZ+Nh1kGIZCpF/dsr0RSOz7ryIifc1PPQX4rwR9A1zDXo79f/X9xPXMHc3DpGe
+         5CzPw37qEl4ts9Oli7Df1Q8xG2q5T/Pe7Ws9mjQAp5YOqGkyEFeujLXjahSZ/GRgOQft
+         9mk2psoAPLw1OdTTbmVzVRUVrrwSu+xg344LK1PYQ7O/5Lwv9pKifSj1xSmtlUCa4j8x
+         2KLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738617574; x=1739222374;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E1RprFycDuHJldRn/ezrS+F5IM4jHFkaXUl211fTz08=;
-        b=jeO/QL3x+2GbXR984ZBzqVfLkyhNzyKQRvHIrODjUGlvICPSBETdt+rfABgo56y1gZ
-         r210AJbYDiUEHROM+9Ackp4Wf6LRQzOp3QPJ/8XIskx9qlyFaf4ooQ4t52OoBDX+K4sY
-         Fvfs/M3QGrSZL2DeZIkaIBVOwMSQBnBA6m3kMk1SUt0+sNmn2Oq8/NzgJF5J7vckJQ7H
-         ZaS8RUDxF320PujJOz6MqVU3J+WUTYmGNlB1ZFvn0YNx1BNBQHlO956NSwG6d3NEUZ1M
-         SjOWn3nM8ht2OoGq7LBgOkYCK4h7NB56lWN0MS4MPkxvFJ9j1YGLH+RA2CAXTGz6r7+w
-         JTww==
-X-Forwarded-Encrypted: i=1; AJvYcCUJpe3ycE+G6sip/Dz20D682kGflFR3mKSBiLkRiiVJastzU05Dg6Fa6hk2+JeIOz4YgFwN8mY5JhxnrMw=@vger.kernel.org, AJvYcCULfmGoMI0QBvWeqGZ5v1fbvZ/vnXU2xrODroYCp8rV4y8GaQIPWKI2MqT4PynvhFbLAVqn9gFET8Cp7A==@vger.kernel.org, AJvYcCUdekDuxZgEFzXSpphBDQRoPkkefDgZRqdEopSBOrBtFSTsp72lay3/c+/l5uM3p7vM4n71rrnvk8sQ8iA=@vger.kernel.org, AJvYcCV4bj0n81xB+tYZw/illWJdbRSNR2w83zW+KfPO7//S6JJl1Pj93eNg4m1GxztlOV5lV4vteNSQ7gZkNg==@vger.kernel.org, AJvYcCVFQyQj+7TEr7T+jZFoGcQyyXESPKljizShOBGfb0ypdnufH9VPZ7f6LUyC9JTvwEB9Ma6EjBo+WFGe@vger.kernel.org, AJvYcCVIqofbX745Us/vOLeigmClTYtKFg9STRQmzoW8SwOLkYxey7A82vktd/NEIVhye3c6+PMM++4AsjvmnSM=@vger.kernel.org, AJvYcCVmFm4MxsMoylNE4tKEPiU0fqaLiJRIp6AilynKGdZD9nTlbdo41UJ0UHYgVsm3qQ6a3GDng0vPt2XD@vger.kernel.org, AJvYcCWKVHdaVzta6WsTGcU4oNgTegxlD8TKP5zn9BK44Oxvm7cp8hFA8C0TqyN9XH08Z8TEtrhm27kUEQVd@vger.kernel.org, AJvYcCWmQQenG4bnnOcy3lVw+BxPBM7PKEv/F1UfPbcrKvu2gZ8wpuV7ltQEubyEN+FmsRLvmHqt4E1nMsI=@vger.kernel.org, AJvYcCX1aQy4lxshEe0P9tYftRsWGvTh
- JVX/ZMPMPpe6KxbceJUyAr50IONQNEYuLsMvVVoKso58+6ZPRTl8@vger.kernel.org, AJvYcCXBnWUGrvZZrWnUn2D0Rxg1t7fgp/ghTiHFlqKMSt0TCYPjvIeofyDG7/XC3Q7pXvOz01YDABprXOUK2MTZNSaeDu3l+A==@vger.kernel.org, AJvYcCXuNT1kngL+byCHKiB+uAy67tygETz8kqTV8QsTm0Zcc4TX9MhuGEhEZtOFihwchSPS/2YJGMheZErHqv/o@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYnCRY+jMAfk8JzXNQ5wlzlPfUIzlNI9tmNgFDz9glsQgIGziC
-	ChHolYga5JsbVztE4TFLnXnPzl6QsPL1s/sp+bzH8VXiMpmjn9wl/xQ8dE8iLENwxtzB668cgKu
-	wLDB8ZwS1gT4Kjwizv+XMURBFfLo=
-X-Gm-Gg: ASbGncvA4/hiQFF1O/D6wMn+3b4gKQaESvApR1hJ54ApFW85I6VQEzBvTbnR6gXuUMW
-	AY3/ewbQHwH5br3Yx9P7hfs58uY419Tr+wi3fTKQe54jqWcrlncvKtaxKsCGunFIeRb7wbbQv
-X-Google-Smtp-Source: AGHT+IG/z3EJhnf9SR0K4H9KlI981FGgmyEgJkvQWHpkkih0UJEnWjGg3KJxlOWE94AU8gGejkz3MNO9Uh3+nXXaTBI=
-X-Received: by 2002:a17:90b:5146:b0:2ea:3f34:f18d with SMTP id
- 98e67ed59e1d1-2f83abdebdfmr37965262a91.10.1738617574433; Mon, 03 Feb 2025
- 13:19:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1738619043; x=1739223843;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A1HmWishDsJHQAxosiDTBvuraFyn2SxUqlCZ+p7ZrEE=;
+        b=QeoLOfwggwW6aBG3Ve8ODLwky28gLJD3DDBEAPf++v3zq50so6zQIFxwcbkv37fRWc
+         yepm/G3WTyoJ5JOybmtaWyztotFispwG4crOBOYz/MaeYnTWeDe9w0Eh8BAcdpns63pK
+         WgJERA4K3RTboxVvso1DEWvohHkR/oHx7v7rfeCSBwtXh2bjf8CKxaXOE3w3hiUvuYyT
+         aqTxjdAcSF060EzQDZ0iHL7MFZd3Oneae2CKpukfGqknj+17lN4OFbut0KCORTfo75fz
+         5qRhTHZJ0UJsYvAzGOKnWOJEDUtZA7ORTtc7NkO6QgCEqPx4+/76ItvVe3xXCb4NottN
+         gtew==
+X-Forwarded-Encrypted: i=1; AJvYcCV0ilfLDtfmCYAmlb3s7RMHv9nm8aBL+mf5e6VbBiABObjZEbMe1GMty1cp1jKrJ8UcLafCl063zIKccw==@vger.kernel.org, AJvYcCW4dC59pziWmko3/R+WUFazm/Hrc/3MrgTxBM1FNMcZHdMzV0frxCcfvOU54DXNXp/eB55WTCNHZ8fr5lE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTqh7GJCXLP2vRZP3UyXA6xY5JTfrt1aoVyi4N04ppUZX2YJMD
+	a1SrRUSkJBTDYL8equgG9yCnqObIfdtnjSXbmQNoxOCstvlAh3+L
+X-Gm-Gg: ASbGncv9sCkMeWwY+BjQvmN1uHLYQX1OQ+Oi38FlrndnMxR6GZim+Ebpr4UpDS3mWRG
+	2w60HCR5pH73hZ0Y9mdq8zKxGmyJezXICPTJyCajESRWUwUENjGDBlQoBTmUjvWFLZUw/YX5yi/
+	gk8gJ0nEBSuN+vyNKhsqVDS26lSTsZyR1Vck3wbGAgxwcpYLFunWvTUmaAQUnX261VoEP+KUmx8
+	qVix/en3o7BkAQ4Aw6dChHkBlh7DpFiqeS58+fuFmDd2PhY/6zz+ttBKcQ4uHJyc1Hfi4yv28/O
+	bAELQ+b25mgraJmigPjHgNLFnzA82ZYZ+r0H
+X-Google-Smtp-Source: AGHT+IFuFbTSACYWjy5kMxtvtZWcUuiEE4RAYNbOEuQxZIzlPSBYkBdx9iOsXO5hO+XoOqvSelIgLQ==
+X-Received: by 2002:a17:907:3dab:b0:aa6:7091:1e91 with SMTP id a640c23a62f3a-ab6cfcc6f11mr2852771366b.11.1738619043245;
+        Mon, 03 Feb 2025 13:44:03 -0800 (PST)
+Received: from [172.27.33.160] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ab6e47cfb98sm819589066b.61.2025.02.03.13.44.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Feb 2025 13:44:02 -0800 (PST)
+Message-ID: <f25f3831-8e03-4225-8132-b486d989604e@gmail.com>
+Date: Mon, 3 Feb 2025 23:44:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
- <20250128-converge-secs-to-jiffies-part-two-v1-6-9a6ecf0b2308@linux.microsoft.com>
- <dd0358b1-7c8a-4c9e-88c5-2e1db69a3a35@linux.microsoft.com>
-In-Reply-To: <dd0358b1-7c8a-4c9e-88c5-2e1db69a3a35@linux.microsoft.com>
-From: Ilya Dryomov <idryomov@gmail.com>
-Date: Mon, 3 Feb 2025 22:19:23 +0100
-X-Gm-Features: AWEUYZmGyX5TH9PuhG1vFlJR4zNh-9wcNWLcslfb_ZiDi-fTNv4o-akZqj7ScMc
-Message-ID: <CAOi1vP_UTjuF5y5oEVquk45udBZ41WqxQpHufD5oK2wbQkobhA@mail.gmail.com>
-Subject: Re: [PATCH 06/16] rbd: convert timeouts to secs_to_jiffies()
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Dongsheng Yang <dongsheng.yang@easystack.cn>, 
-	Jens Axboe <axboe@kernel.dk>, ceph-devel@vger.kernel.org, linux-block@vger.kernel.org, 
-	Yaron Avizrat <yaron.avizrat@intel.com>, Oded Gabbay <ogabbay@kernel.org>, 
-	Julia Lawall <Julia.Lawall@inria.fr>, Nicolas Palix <nicolas.palix@imag.fr>, 
-	James Smart <james.smart@broadcom.com>, Dick Kennedy <dick.kennedy@broadcom.com>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	"Martin K. Petersen" <martin.petersen@oracle.com>, Jaroslav Kysela <perex@perex.cz>, 
-	Takashi Iwai <tiwai@suse.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-	David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>, 
-	Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, Carlos Maiolino <cem@kernel.org>, 
-	"Darrick J. Wong" <djwong@kernel.org>, Sebastian Reichel <sre@kernel.org>, Keith Busch <kbusch@kernel.org>, 
-	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Frank Li <Frank.Li@nxp.com>, 
-	Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, 
-	Hans de Goede <hdegoede@redhat.com>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Selvin Xavier <selvin.xavier@broadcom.com>, 
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Leon Romanovsky <leon@kernel.org>, cocci@inria.fr, linux-kernel@vger.kernel.org, 
-	linux-scsi@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linux-sound@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-ide@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-nvme@lists.infradead.org, 
-	linux-spi@vger.kernel.org, imx@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
-	ibm-acpi-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] mlx4: Remove unused functions
+To: linux@treblig.org, tariqt@nvidia.com, andrew+netdev@lunn.ch,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, yishaih@nvidia.com
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Simon Horman <horms@kernel.org>
+References: <20250203185229.204279-1-linux@treblig.org>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20250203185229.204279-1-linux@treblig.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 29, 2025 at 10:03=E2=80=AFPM Easwar Hariharan
-<eahariha@linux.microsoft.com> wrote:
->
-> On 1/28/2025 10:21 AM, Easwar Hariharan wrote:
-> > Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
-> > secs_to_jiffies().  As the value here is a multiple of 1000, use
-> > secs_to_jiffies() instead of msecs_to_jiffies to avoid the multiplicati=
-on.
-> >
-> > This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci w=
-ith
-> > the following Coccinelle rules:
-> >
-> > @depends on patch@
-> > expression E;
-> > @@
-> >
-> > -msecs_to_jiffies
-> > +secs_to_jiffies
-> > (E
-> > - * \( 1000 \| MSEC_PER_SEC \)
-> > )
-> >
-> > Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-> > ---
-> >  drivers/block/rbd.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
->
-> <snip>
->
-> > @@ -6283,9 +6283,9 @@ static int rbd_parse_param(struct fs_parameter *p=
-aram,
-> >               break;
-> >       case Opt_lock_timeout:
-> >               /* 0 is "wait forever" (i.e. infinite timeout) */
-> > -             if (result.uint_32 > INT_MAX / 1000)
-> > +             if (result.uint_32 > INT_MAX)
-> >                       goto out_of_range;
-> > -             opt->lock_timeout =3D msecs_to_jiffies(result.uint_32 * 1=
-000);
-> > +             opt->lock_timeout =3D secs_to_jiffies(result.uint_32);
-> >               break;
-> >       case Opt_pool_ns:
-> >               kfree(pctx->spec->pool_ns);
-> >
->
-> Hi Ilya, Dongsheng, Jens, others,
->
-> Could you please review this hunk and confirm the correct range check
-> here? I figure this is here because of the multiplier to
-> msecs_to_jiffies() and therefore unneeded after the conversion. If so, I
 
-Hi Easwar,
 
-I'm not sure why INT_MAX / 1000 was used for an option which is defined
-as fsparam_u32 and accessed through result.uint_32, but yes, this check
-appears to be unneeded after the conversion to me.
+On 03/02/2025 20:52, linux@treblig.org wrote:
+> From: "Dr. David Alan Gilbert" <linux@treblig.org>
+> 
+> The last use of mlx4_find_cached_mac() was removed in 2014 by
+> commit 2f5bb473681b ("mlx4: Add ref counting to port MAC table for RoCE")
+> 
+> mlx4_zone_free_entries() was added in 2014 by
+> commit 7a89399ffad7 ("net/mlx4: Add mlx4_bitmap zone allocator")
+> but hasn't been used. (The _unique version is used)
+> 
+> Remove them.
+> 
+> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+> Reviewed-by: Simon Horman <horms@kernel.org>
+> ---
+>   drivers/net/ethernet/mellanox/mlx4/alloc.c | 22 ----------------------
+>   drivers/net/ethernet/mellanox/mlx4/mlx4.h  |  6 ------
+>   drivers/net/ethernet/mellanox/mlx4/port.c  | 20 --------------------
+>   include/linux/mlx4/device.h                |  1 -
+>   4 files changed, 49 deletions(-)
+> 
 
-> noticed patch 07 has similar range checks that I neglected to fix and
-> can do in a v2.
+Thanks for your patch.
 
-Go ahead but note that two of them also reject 0 -- that part needs to
-stay ;)
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
-Thanks,
-
-                Ilya
+Tariq
 
