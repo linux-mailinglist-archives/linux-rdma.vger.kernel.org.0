@@ -1,70 +1,71 @@
-Return-Path: <linux-rdma+bounces-7393-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7394-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73E82A26D72
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 09:42:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2599FA26E43
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 10:27:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 688AE3A3C19
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 08:42:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C70B61666B6
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 09:27:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9DCC206F2E;
-	Tue,  4 Feb 2025 08:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01ECA207DE8;
+	Tue,  4 Feb 2025 09:26:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="RcJmWixH"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ap59NJaF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28508206F18
-	for <linux-rdma@vger.kernel.org>; Tue,  4 Feb 2025 08:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23D1207A1D
+	for <linux-rdma@vger.kernel.org>; Tue,  4 Feb 2025 09:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738658543; cv=none; b=A598fGY1pfdzwyD4TrexxRlmA9qPUeA1eXGBqRE44a/g+NsW8n9v5v01eJCY9cxD2IDDtySRF2qrWC2xzduzD5jLgsR7JFmbZED1gv0GnjoAnlgcsB+8dnYh6ITonW1jXinsBcPTZRATmM4FssBs5/0/9Z2afxPVk8sKw8frdZU=
+	t=1738661216; cv=none; b=k13svvksa7wJPXmuHGu6IDtiek6DWT4mZ2MBdPkhtd+hrAPEMnv4E/oEXfneno3Mp+THvAKug8S1RhqJ7skxM31bdjrUv8coLku5U8THBaLTJPdIhNWFDRuYxdf8qding7hB3s22pxmD+alHHo+sItKKmfIyGnpwIGv41z9t9RA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738658543; c=relaxed/simple;
-	bh=3e+i/8dxQ+ENphukw2p8Urc4mXA1jbuBeoaFRuOgPms=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=OaaawcUOe1MYXJyiGoSU8/tSzxmwC2onlCddTZAWBK3NlQzNFVg/vRZ/sgIzE9N8J0Zkpuxo/PerY1COc8wUhPHoTsGKbrgePPOHN+qDWotwBr9TpKn8olZKTnJbEijSiXxF1xDkuJs+6YxXjQ7bXVc7BinU7hg3zyZKoTebyTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=RcJmWixH; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1738661216; c=relaxed/simple;
+	bh=4vKMMrFsdXm0idFSPVYbYZbSyCTAoide7ejR3fJ8WTQ=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=UperoVCv/xHTK/b4ezU/HeS2sTOxLgroI+jdZCMPrVyi6zezmzrpOUx7pzlhNEoUn4VQvhRFHhBanwtEtuDs6DCUV3/9Qho81Lx5o3yhw7BVkdSnV/CuerkaJKq12fj0VE84TdFy2o2YyWZunF9kDXrJz4oOmsxHKWF52M5H7Mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=ap59NJaF; arc=none smtp.client-ip=209.85.160.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-216281bc30fso27653825ad.0
-        for <linux-rdma@vger.kernel.org>; Tue, 04 Feb 2025 00:42:21 -0800 (PST)
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-2aa17010cbcso2056292fac.3
+        for <linux-rdma@vger.kernel.org>; Tue, 04 Feb 2025 01:26:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1738658541; x=1739263341; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+J3q7sg0dOEVMNiRmZamY5toy7f04GTF5dJeUzdhtdI=;
-        b=RcJmWixHPQYrlURX17Dz8XKQK/pc1fgQxlR8XRlDhNeyqwB/4MwE6M0hoUoOQk/YuE
-         U7arVqQtZWzVX0LpKcG+uEAnRpRYeYbYD4ubR7zrVkfS1hmj2pDSCViE0zC57ycUSWvl
-         oeAyOJXJ2/3kqMsLqYRsptp9nkjSqf3+Mdjs8=
+        d=broadcom.com; s=google; t=1738661214; x=1739266014; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EwqxsDuT+F6TxjpPVMUt5abBCas35Hg0/oCZjbp7P9c=;
+        b=ap59NJaFLAbFbvFuB661IAoWxS8mCWyNG9HDQAKICNKDTBsoir99XEVgByq0o6D2fP
+         FoPtDWR2kAv3FYRZMebTqDKB0YYU5ysdYLNNNtiJzr2oJLBsXp0BiWJcWfrns1VtIwGr
+         kSw4ZQ2seI0jeACc+mGMSQoOx10IAqrf5Cy8A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738658541; x=1739263341;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+J3q7sg0dOEVMNiRmZamY5toy7f04GTF5dJeUzdhtdI=;
-        b=ocjX1n49go1q+hb2FlBIg4kCM88vkiXuJb3ftmRKC5rEWr6dRj9GWFa9ESWF44vGd7
-         mFntVrRvtHjM4HFuwBKr51moC4OH2x2d9RgyRdWsgFGDbyeSOza12M5V0SNCeDjgsxzh
-         Y2hLVuUCOKTl3AHN/nI4bMhkowZLkYWtyCpbRgaW23FWN52mIXyhDQPhjtj05a9KIFaU
-         G7r+fEP6cuWwZukVFvrwd8Olb1hMxvyR/hnih1ZGsq4tFbDcXqsqH2m7Lb+m2+KFuvXG
-         9nAznZMCBo89/7M9M2KB4CykQvIlxnHBb5tkgf1/0+tOw0XxPbJq0SfvqLnTX+ln0kHF
-         Iuxw==
-X-Gm-Message-State: AOJu0YwE0bE1zNFS9zAeq9MGXItfBLuCvUUbTmDoMW5ugBF0yFRVcORL
-	hzqAnrSVAUZcTDKB9bOav5x+kCjC+xtyMNf/osQZ52PV5gNt6mkbN/Cribhjtg==
-X-Gm-Gg: ASbGnctApcdJhjfG00/5tW9UqWTTeajOYnII4j8+S7J7Lgmrc4I6gn7FmviLUm7AJJf
-	EoO83tQiPE2jYIHkn0SFynN4/zlttNedciIhkUuhghdfcuV5txcvXfI0YKjlrKh41GFSBHCakza
-	+7UkbOVsnKz8vMAKx4/qD0DGqJGkgbwmFlJ334O2Xzj4m3FZKGI6QWHGdGt/EuN6SlchXgkbg7/
-	Yu2Oe9GXorTdrbsBP38bCcfDmx++eZ4qrshMyoFlr2We256JQI+B9tg1KvxntEA7GglxlGJKzVH
-	79LmiglBjF/N+J8rTsrploYP/T4Ktw1lIZagVY3uBn8i9YJCZOBmpQBifZ4m6pvBsSiG3Mg=
-X-Google-Smtp-Source: AGHT+IEDLE/nR0t63uvN7glzxWwF/B/tI4cPlMeyOm0g7Ak1FHiS2GDNPo3s87CUx3cKB6LXOsOu4A==
-X-Received: by 2002:a05:6a00:448a:b0:726:54f1:d133 with SMTP id d2e1a72fcca58-72fd0c2098amr37757604b3a.12.1738658541386;
-        Tue, 04 Feb 2025 00:42:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1738661214; x=1739266014;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EwqxsDuT+F6TxjpPVMUt5abBCas35Hg0/oCZjbp7P9c=;
+        b=biAyBYGNfrHSCKTGFHl/qLlt1krtFBRDYomfttd50eEjjy9hm9ZEP3OOBV6HoMhIua
+         h0niwiRidEhTDVzBwoqkfeLmSfRUFqsolUH5qv25FceuDs2T5kOCLG3oSFG+T3T1V4O9
+         9Sj09zI+WEVolyt+J6cfqKl1AZFxQPuRXZK1outUI+L7z4cC1T+5rzDMso8NeeXyTary
+         Vmj2/BpdoviezlbPjI1X64Re5u0lYlFDHnwE7MQX43pIoqDWeEb6rctzqTtlwkxdy/d+
+         oSitn6slqRchmAgreHcF9vtUyJAh/38IGFLds8jumObsgQH3258g6i7O8XOK+LU0LZAz
+         67KA==
+X-Gm-Message-State: AOJu0YyFrDdTtAJhnVhNFxGaEX1Zh5BMZq0VJ6yPlIeqEdY4t2C0ZVuY
+	gi5lKNuzZKgArQbUk0PTvSWpDY1AKruZLVbNpQovaw1MUxQ6k5FIupQQ1OvoggLXTYU1JH/L2MZ
+	TXQ==
+X-Gm-Gg: ASbGncvdPIN0WqhmUgGVOB0634jrQBZ2cui5yHIXlSsDmh/rK/TRQs15Aj7S9QLZLcT
+	3/O3fJP2/xFYF23wgxDg5N3NNyi9yVeVhB6NxrqJn4e4MPIMI+OamgxqU+IAV7zF9DKRodo89/2
+	fXs55XAnxDajAit4aLeMQYcCa0w66C2eVCCu93u1W35Cfw2QEbMc2P5y0YecNebLEREDpdd+4qc
+	S+3UGGshhLTnMCXN2XUPxDTZE+HoU0UzA+uwaOPoEKd6ISONsYjIt+B8p2Dv+bAdIbWqyjchPfZ
+	oPOdTCWl1IDyZmoKuFNo7Uqxb1r5B6afmJVmegne5jgm4fpaKDI/iaMAeMSL1iKo14d3odA=
+X-Google-Smtp-Source: AGHT+IG3AXQQGuMTAfMijWnrKWIHv4OdZwSXkRqW7mS+XNseQpnCvKDbOEJ4SPPBEbLJ3szZ34vitg==
+X-Received: by 2002:a05:6871:64cc:b0:29e:5dfd:1e17 with SMTP id 586e51a60fabf-2b32f089891mr13827738fac.23.1738661213873;
+        Tue, 04 Feb 2025 01:26:53 -0800 (PST)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72fe69cdce1sm9822069b3a.126.2025.02.04.00.42.19
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-2b3565b8120sm3901572fac.34.2025.02.04.01.26.51
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 04 Feb 2025 00:42:21 -0800 (PST)
+        Tue, 04 Feb 2025 01:26:53 -0800 (PST)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -72,63 +73,51 @@ Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH rdma-rc 4/4] RDMA/bnxt_re: Fix the statistics for Gen P7 VF
-Date: Tue,  4 Feb 2025 00:21:25 -0800
-Message-Id: <1738657285-23968-5-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH rdma-next] RDMA/bnxt_re: Fix the error due to the array depth
+Date: Tue,  4 Feb 2025 01:06:06 -0800
+Message-Id: <1738659966-26557-1-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1738657285-23968-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1738657285-23968-1-git-send-email-selvin.xavier@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-Gen P7 VF support the extended stats and is prevented
-by a VF check. Fix the check to issue the FW command
-for GenP7 VFs also.
+Fixing the issue reported by kernel test robot
 
-Fixes: 1801d87b3598 ("RDMA/bnxt_re: Support new 5760X P7 devices")
+drivers/infiniband/hw/bnxt_re/debugfs.h:34:40: error: variably modified 'gen0_parms' at file scope
+
+Using the fixed size depth for the array.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202502041114.K8XQYeJg-lkp@intel.com/
+Fixes: a3c71713d954 ("RDMA/bnxt_re: Congestion control settings using debugfs hook")
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/hw_counters.c | 4 ++--
- drivers/infiniband/hw/bnxt_re/qplib_res.h   | 8 ++++++++
- 2 files changed, 10 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/bnxt_re/debugfs.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/hw_counters.c b/drivers/infiniband/hw/bnxt_re/hw_counters.c
-index 3ac47f4..f039aef 100644
---- a/drivers/infiniband/hw/bnxt_re/hw_counters.c
-+++ b/drivers/infiniband/hw/bnxt_re/hw_counters.c
-@@ -348,8 +348,8 @@ int bnxt_re_ib_get_hw_stats(struct ib_device *ibdev,
- 			goto done;
- 		}
- 		bnxt_re_copy_err_stats(rdev, stats, err_s);
--		if (_is_ext_stats_supported(rdev->dev_attr->dev_cap_flags) &&
--		    !rdev->is_virtfn) {
-+		if (bnxt_ext_stats_supported(rdev->chip_ctx, rdev->dev_attr->dev_cap_flags,
-+					     rdev->is_virtfn)) {
- 			rc = bnxt_re_get_ext_stat(rdev, stats);
- 			if (rc) {
- 				clear_bit(BNXT_RE_FLAG_ISSUE_ROCE_STATS,
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-index be5d907..7119902 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-@@ -547,6 +547,14 @@ static inline bool _is_ext_stats_supported(u16 dev_cap_flags)
- 		CREQ_QUERY_FUNC_RESP_SB_EXT_STATS;
- }
+diff --git a/drivers/infiniband/hw/bnxt_re/debugfs.h b/drivers/infiniband/hw/bnxt_re/debugfs.h
+index 3374097..8f101df 100644
+--- a/drivers/infiniband/hw/bnxt_re/debugfs.h
++++ b/drivers/infiniband/hw/bnxt_re/debugfs.h
+@@ -21,7 +21,7 @@ void bnxt_re_unregister_debugfs(void);
+ #define CC_CONFIG_GEN_EXT(x, y)	(((x) << 16) | (y))
+ #define CC_CONFIG_GEN0_EXT0  CC_CONFIG_GEN_EXT(0, 0)
  
-+static inline int bnxt_ext_stats_supported(struct bnxt_qplib_chip_ctx *ctx,
-+					   u16 flags, bool virtfn)
-+{
-+	/* ext stats supported if cap flag is set AND is a PF OR a Thor2 VF */
-+	return (_is_ext_stats_supported(flags) &&
-+		((virtfn && bnxt_qplib_is_chip_gen_p7(ctx)) || (!virtfn)));
-+}
-+
- static inline bool _is_hw_retx_supported(u16 dev_cap_flags)
- {
- 	return dev_cap_flags &
+-#define BNXT_RE_CC_PARAM_GEN0	__ffs(CMDQ_MODIFY_ROCE_CC_MODIFY_MASK_INACTIVITY_CP)
++#define BNXT_RE_CC_PARAM_GEN0  14
+ 
+ struct bnxt_re_cc_param {
+ 	struct bnxt_re_dev *rdev;
+@@ -31,6 +31,6 @@ struct bnxt_re_cc_param {
+ };
+ 
+ struct bnxt_re_dbg_cc_config_params {
+-	struct bnxt_re_cc_param        gen0_parms[BNXT_RE_CC_PARAM_GEN0];
++	struct bnxt_re_cc_param	gen0_parms[BNXT_RE_CC_PARAM_GEN0];
+ };
+ #endif
 -- 
 2.5.5
 
