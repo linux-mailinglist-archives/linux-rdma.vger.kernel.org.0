@@ -1,95 +1,87 @@
-Return-Path: <linux-rdma+bounces-7408-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7409-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93F50A27E35
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 23:21:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EFA3A27E4F
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 23:35:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D717166E4D
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 22:21:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4FAB188522E
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 22:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D4A21D581;
-	Tue,  4 Feb 2025 22:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EE9921ADCB;
+	Tue,  4 Feb 2025 22:35:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQAKQAf9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YH6hCmsd"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF7B621C160;
-	Tue,  4 Feb 2025 22:20:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DFDB1FF7A5;
+	Tue,  4 Feb 2025 22:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738707623; cv=none; b=h0TpkIXBq8uWtsCKRnTQRNsZKga3P4ot4Yh2WTHAZXvy817zYrSeS+fBDXW3dLhXl1R1VASSVIuPN0pWbuI4wdqG9KVyQE1jo+qUnOmDFcW24MVV9PsbdVwMPBsFxtqOLYCCTo2CDvb6EbUPHbBwVjEull4yoMRwaLKJVWqk0Lw=
+	t=1738708521; cv=none; b=lNqcWBQOPJHeAymmaJSrrOvi+nqakrM4nU8AJikKJr54EZUhhW/RYZMIK8LMOmNRyHlnzHKVBpUYBm0DFwxWwWKLWPPooC9mXIpyDRcX5cpnCr9b7K71Poq+Vow6YeBLcYTYMGVF+Nf8wfcWMBoU4zVsFHqUgVREkwwt02S6nfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738707623; c=relaxed/simple;
-	bh=qU1SbJ9YmsXpzwJANU5KW+WfW5ZX0AyQzMbNExK2LV8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=shsOY8aWym6Y2sZ3mrQCfipLFjHm5VhNyBBOMbOp+Ol/ynfiImXHgP8GHoMKipEFyGww98C7jOpiYLvUkvHtZi0CNDpNfGv5L678zfs3XLxoYGeQL9G7rTINnRPbApiQt9QD8rLAfZAmK39McSX2yn/UbDDgUZx8IdHwhxKE3mA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LQAKQAf9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FD6BC4AF0B;
-	Tue,  4 Feb 2025 22:20:22 +0000 (UTC)
+	s=arc-20240116; t=1738708521; c=relaxed/simple;
+	bh=mI2V72X0a2VUbi0NqJ8QzQBM8+pbwjo+YnbCECgSDWE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OYJZbWbwWu2CrztRu0m8q5Mfo2l+c8aNX9mI6pJzvfto8EVH8w9UvN3dUKuK92dBrcn8sBQDp3I01Gw5ncaKMUgXSd0UrIf/whxQ1TtmSOaeSgv1pBsqMTsQLa8z0WzYiP0oR19Ub5yddUTKQHDzKNlrl124ThjmSiaVQX8ibhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YH6hCmsd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BF65C4CEDF;
+	Tue,  4 Feb 2025 22:35:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738707622;
-	bh=qU1SbJ9YmsXpzwJANU5KW+WfW5ZX0AyQzMbNExK2LV8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=LQAKQAf904dPgUV8WHXrSUPhKaKlu4FR8imYxFpxHXZSdrFDnjQZw0u7YnpvoUu/l
-	 XVT8cQ8KLLF9b9Urw/lsBLqHJAG2Hey348uu/NDnXiCivNPu0LYQkEOuLg39cAn9Se
-	 JhNIHrKDzLKSxHhdFeiFBBh1oTOa9p0PSApHxIw6t7yfJ3rFpA14TwV1A51aC/Mu1+
-	 ub5IqWGSoBfBvvgtDKKwNd39hHEtEQ0aobgKMGgnUvI801LQplM6+bw7nINP32d0cB
-	 w+v69ZuLTfIm/xuOjUwsYkOsPNM7Dotxp+kAoDHTti+C19TSHVwx3K8t+b1/fMkCPf
-	 Ft/7A/NVAyqnA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAEA8380AA7E;
-	Tue,  4 Feb 2025 22:20:50 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1738708520;
+	bh=mI2V72X0a2VUbi0NqJ8QzQBM8+pbwjo+YnbCECgSDWE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=YH6hCmsdpAQfWAPW5Ur+F34mn54gGCp3aEsgO0mVmbKTUzIRvphrHqo/NHUs2KK//
+	 wljj3Mx/3bcyp9gYw9HJ4NV9TUPyUGa0/6WgEV1aGaT8McBi3GTw+WT4M0iJkVp9mV
+	 UE4ZdFnWvwVi2M6gqw1Hdy9YE+JMElkK8nuEku+SUjWb65laDWMaWTnwT6f5tp25u2
+	 LmaDOzC27pWqrRjsyeM2U+m0RXjinG66HWshulbYMrl28+/UT3P4Cz6Gv9i+T4yC45
+	 EJvO+vOLdna2t6Lx+1qh4BzZb/1TFJQl2jFdFxbT/CfbvqfD6982FFs8LOT6gYjDru
+	 eeA0CXhZpBHQQ==
+Date: Tue, 4 Feb 2025 14:35:17 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc: davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
+ andrew+netdev@lunn.ch, netdev@vger.kernel.org, Michal Swiatkowski
+ <michal.swiatkowski@linux.intel.com>, sridhar.samudrala@intel.com,
+ jacob.e.keller@intel.com, pio.raczynski@gmail.com,
+ konrad.knitter@intel.com, marcin.szycik@intel.com,
+ nex.sw.ncis.nat.hpm.dev@intel.com, przemyslaw.kitszel@intel.com,
+ jiri@resnulli.us, horms@kernel.org, David.Laight@ACULAB.COM,
+ pmenzel@molgen.mpg.de, mschmidt@redhat.com, tatyana.e.nikolova@intel.com,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ linux-rdma@vger.kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org
+Subject: Re: [PATCH net-next 2/9] ice: devlink PF MSI-X max and min
+ parameter
+Message-ID: <20250204143518.1583217e@kernel.org>
+In-Reply-To: <20250203210940.328608-3-anthony.l.nguyen@intel.com>
+References: <20250203210940.328608-1-anthony.l.nguyen@intel.com>
+	<20250203210940.328608-3-anthony.l.nguyen@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] mlx4: Remove unused functions
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <173870764975.165851.12570827408207755201.git-patchwork-notify@kernel.org>
-Date: Tue, 04 Feb 2025 22:20:49 +0000
-References: <20250203185229.204279-1-linux@treblig.org>
-In-Reply-To: <20250203185229.204279-1-linux@treblig.org>
-To: Dr. David Alan Gilbert <linux@treblig.org>
-Cc: tariqt@nvidia.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, yishaih@nvidia.com,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, horms@kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On Mon,  3 Feb 2025 13:09:31 -0800 Tony Nguyen wrote:
+> +	if (val.vu32 > pf->hw.func_caps.common_cap.num_msix_vectors ||
+> +	    val.vu32 < pf->msix.min) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Value is invalid");
+> +		return -EINVAL;
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+> +	if (val.vu32 < ICE_MIN_MSIX || val.vu32 > pf->msix.max) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Value is invalid");
+> +		return -EINVAL;
 
-On Mon,  3 Feb 2025 18:52:29 +0000 you wrote:
-> From: "Dr. David Alan Gilbert" <linux@treblig.org>
-> 
-> The last use of mlx4_find_cached_mac() was removed in 2014 by
-> commit 2f5bb473681b ("mlx4: Add ref counting to port MAC table for RoCE")
-> 
-> mlx4_zone_free_entries() was added in 2014 by
-> commit 7a89399ffad7 ("net/mlx4: Add mlx4_bitmap zone allocator")
-> but hasn't been used. (The _unique version is used)
-> 
-> [...]
+Please follow up and either remove these extack messages, or make them
+more meaningful. The "value is invalid" is already expressed by EINVAL
 
-Here is the summary with links:
-  - [net-next] mlx4: Remove unused functions
-    https://git.kernel.org/netdev/net-next/c/2cf424f5ac01
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+The suggestion to set the values at once or as "pending" is a
+distraction IMO.
 
