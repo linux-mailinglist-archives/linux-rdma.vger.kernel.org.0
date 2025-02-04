@@ -1,110 +1,110 @@
-Return-Path: <linux-rdma+bounces-7387-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7388-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 976EEA26D23
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 09:20:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66745A26D2A
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 09:21:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C81A3A65F8
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 08:20:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7BBB3A8686
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 08:20:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E667D206F02;
-	Tue,  4 Feb 2025 08:20:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22C5B206F05;
+	Tue,  4 Feb 2025 08:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Ct8pUrAj"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="NzB9PKnj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BD12066E4
-	for <linux-rdma@vger.kernel.org>; Tue,  4 Feb 2025 08:20:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBAE02066D7
+	for <linux-rdma@vger.kernel.org>; Tue,  4 Feb 2025 08:20:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738657207; cv=none; b=pUqIcVTvqm46Up4lfEI2TPykgevZeckNAKhZVmYMgwhbp6g9zcvSiot3bMbOdP801laQpT7UVAutwWXrb8JHEc8/UJjvBauL4wOQViuGMc9dVK2rgagecwnnsCWLQcfOfn0nhjYIl0Xwrpw6x2mvzb9yLtZHHezPeOuug9aKiU0=
+	t=1738657247; cv=none; b=PmBVBkHsvsZrTgjl/0nbpyXNdVLZqYBlSxRBRAsgolWXU1VnTp5jLdK53VpClYAr4mHezna/KmW5S2MZbp1GD4j7PJ7uTTBodyjkSNw+dSF99HXSS2VJsY+kcdZs/k4km93vXwH8XgzotWI3Cte9qM3vYgf8K4TvaqlE+udIvYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738657207; c=relaxed/simple;
-	bh=oWfNzkSIF0hCwInHUMIfEwN8MHKsB+buuOo+X3eAouw=;
+	s=arc-20240116; t=1738657247; c=relaxed/simple;
+	bh=sSRCL4eKnp6wbQstkHxTRJp8AF7gUTZ+i9YuG2bIKuE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iXBdfdjejb/IHbvH+mqejjUiOVgGgl0EzhFcNFhyl19fGSsNrlI2qeyVUNW0gLN/cdgINAd+hC+doULKw/3YCR41TJpcS81p09qIY3mvuAtvczElP26h9CWLKKcjlHiHw8rbENIRiSrPyhZpV8UM1Rv5BkGDhAZ7A1xB5B30kKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Ct8pUrAj; arc=none smtp.client-ip=209.85.214.176
+	 To:Cc:Content-Type; b=ki18PQJCzeQagb/farN9sc8/7Taya3vnQmI2v59kKl6hkzqHuzkXOymMY2ARbIbHNGynitUQNcrEL4gRrdk6orcRpzZOdhxu5CnQmDcUqNGYd2S8q475p3GicwcmOxkT6Szi0gDI8W6LheI8Cgq6tfMElZMcVECHVU+EYP8E6G8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=NzB9PKnj; arc=none smtp.client-ip=209.85.216.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-21f01fe1ce8so6555845ad.2
-        for <linux-rdma@vger.kernel.org>; Tue, 04 Feb 2025 00:20:05 -0800 (PST)
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2ef72924e53so9177553a91.3
+        for <linux-rdma@vger.kernel.org>; Tue, 04 Feb 2025 00:20:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1738657205; x=1739262005; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1738657245; x=1739262045; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oWfNzkSIF0hCwInHUMIfEwN8MHKsB+buuOo+X3eAouw=;
-        b=Ct8pUrAjTbIYsG+RfPlSbCEqlH7g7czpt/PWADREYDBxDJHKkHY0cLQR0Gfgj2FHL3
-         CbNHE5rilpljPjnf4IoS7zA/soTaJrOtJvx5tSPDk2tpxUWrh0XBZFfA5adNS9O1sdIA
-         +nMduJgMdL0VCKeyg/6VdHYHJQYME0+VgjLtA=
+        bh=sSRCL4eKnp6wbQstkHxTRJp8AF7gUTZ+i9YuG2bIKuE=;
+        b=NzB9PKnjK/MNPLXqyYyVsMzGKywuHlQsOzDi14WqIJjgS2Yd+kryxM5KWsR+OxTTov
+         S/OfY91PJJyH123vJeRHWdlKJlIpc2DrLY6KrEW9yar0MfAe/vBF/fXXmGnn8jeT3caw
+         uS6Jizq/dee3uD3VUW37R+Uh/nkek1vCj4QnY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738657205; x=1739262005;
+        d=1e100.net; s=20230601; t=1738657245; x=1739262045;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=oWfNzkSIF0hCwInHUMIfEwN8MHKsB+buuOo+X3eAouw=;
-        b=RldWWzINr1ywyz/0CYeg08tSqxHBbRohXTNq54ydOyyyfOqEZGwEq5rijwTO1taHhI
-         VRsJvEL6XqmRQG2iXqBMjQAeM3PQHyVvF10HypO46FL0bQp50YQ1jlVekbr5xNklu82L
-         3cA8ZkVs3IQ/8FKUhhvRkjMaaRqdcrmlcWoFBPw9KWe0wsyhxptlWFe2fhyXpKD0o3Fj
-         3020tzRSgN5VsglJZ4pP6+KhN8+zcMbcC+gb7ukrfNqjbxMx0Lc0fGeH8n4XMLbdw7kY
-         U26r4mt6CKMtWvo49zmsmVvkfCiPU5136h9cRhOH4yyOtzh9QsWz44fw/hIEp/NmbWAV
-         woRA==
-X-Forwarded-Encrypted: i=1; AJvYcCW3BJZC3SY4uhz/x2fYIGnhSpkEkUcm3lkoa/F9JLgNMdLDqIByzZ2qLabOl6JoJcWj86NkwOStPNGM@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYBDsLru4R17cmIpXfZHlqDz6n+Tt3RpiE/iFsLrUCQCtufHmI
-	5EJ2eQR2rnQ3zmdCCLloDkmIrOJZNY7N6uWUW+pi7JcQuooPW0kvg0CpXpacn/nAqqqa6rPdQhx
-	+xUimo+zdufqKWyuburXi6Zz6b5nZV3eHyaNP
-X-Gm-Gg: ASbGncvp8eWGaLl+avj8f8BooOXbo9FYyiLWtumuTP8sYDQexDOT0TBtAGkXqxx76oe
-	3qLjj/NxIS04MbrEA4IRjnuqWkSrzGbX2Lh6VljZc4Ix2JMtA6PMrFC/MbnSrr8MZ+cJ349uxMg
+        bh=sSRCL4eKnp6wbQstkHxTRJp8AF7gUTZ+i9YuG2bIKuE=;
+        b=Rdr0/Pj++p85nVoI/M4Jmit79mw0LlKaIs62PTcaNzpw0QRcySxbcsGBkbrCH7eY3v
+         CZbGD55S+g9Ku6Ourjoquz2J3Smm4biSzEyn7Bb2yOn73ymJxsHL4suH04AtsyopAY8B
+         xRSebPUu55on193VhAh0f1TSVJSOL/5V2TUpsHHKeRAIc8xO90zJza1EquppwJPldS2G
+         I1uPBQL3CQrFTFki/r2oGUhBpmRza5dC4/CH3XDZvtLoMIWH6Q8CwhH+nj+GLRCLF52I
+         RZD+nK2ogqUz3rEu0u0bo3YhiuOEshrE1KyutzBnGM42R5hcNqre4HerGp/MWU+Io2dP
+         mDCw==
+X-Forwarded-Encrypted: i=1; AJvYcCW/XU4DZcPLuWzacj+zzlLgfVppZgyGCOYRoE13QSFiBtX2LgmgPkPfZ8PKJZrSF524WYhcfYBpMR3m@vger.kernel.org
+X-Gm-Message-State: AOJu0YxE9hGwbiQ2FDXFtBL+jDEQcACUaJz9jkFnqo20y/d5zcDIQFBk
+	C4BAFRSDJ5hacSaV4oSfV/eMTzWJz3cXTtoHHy3MO6pg8Zf9/8nypuk2s5DZT0eD6Qqlqivxcw4
+	mb141IWehmj3+eEpaWdbF6nih5G4iwSTJZeCK
+X-Gm-Gg: ASbGncvlDgzU37iRFq33LvXcDwQRJjw1gTjFrVY1wJH/zHHYHz+8eQPg1CJte921Lpx
+	0Gh2+Iem4/JXfwz/mxEdxR2kAWpeWRIJRAhrFPjSyWP2H7jG4wolE+RoRyoj6vJA1LZTFf4tO6g
 	==
-X-Google-Smtp-Source: AGHT+IFM0WKR2fD0loLuOOmO7XznnGK/raCZcSdUHbthpseIq16z4Gmp9VMLMGNQTFnXGz1sO73g03cwfQn/NaC1rW0=
-X-Received: by 2002:a62:f204:0:b0:72f:d7ce:5013 with SMTP id
- d2e1a72fcca58-72fd7ce50cdmr29365241b3a.24.1738657205242; Tue, 04 Feb 2025
- 00:20:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFxbhmXRavAe0L+0ctJigTEDkB5jFYt3PKhvc7fTBTfwj2e87debVpBVw0v/hgd9FQExy7yhXSPT/JzO+Nb3ro=
+X-Received: by 2002:a05:6a00:180b:b0:725:e499:5b86 with SMTP id
+ d2e1a72fcca58-72fd0c714abmr40134656b3a.20.1738657244903; Tue, 04 Feb 2025
+ 00:20:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250203185958.204794-1-linux@treblig.org>
-In-Reply-To: <20250203185958.204794-1-linux@treblig.org>
+References: <20250203185229.204279-1-linux@treblig.org>
+In-Reply-To: <20250203185229.204279-1-linux@treblig.org>
 From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Tue, 4 Feb 2025 13:49:52 +0530
-X-Gm-Features: AWEUYZmsksCNsPbzCMTALHqYJlhuTvcv8y0YkITgVcSGk23mn7ecPI-O71F1wKs
-Message-ID: <CAH-L+nNBhUdbv1nazYEb6eC+8Xb18nNt0HktKgzjg=Q1bH3Adg@mail.gmail.com>
-Subject: Re: [PATCH net-next] net/mlx5: Remove unused mlx5dr_domain_sync
+Date: Tue, 4 Feb 2025 13:50:32 +0530
+X-Gm-Features: AWEUYZns3V7t6dKjtJ_m_w4cCjAgqAohIkpYS5iV_RZ99M2bdt3jlRHzhse0dI4
+Message-ID: <CAH-L+nNpygfP9HZJ_4eLJY8gAQ8cpPHPR7V4+i1BOypsb-0UiA@mail.gmail.com>
+Subject: Re: [PATCH net-next] mlx4: Remove unused functions
 To: linux@treblig.org
-Cc: leon@kernel.org, saeedm@nvidia.com, tariqt@nvidia.com, 
-	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: tariqt@nvidia.com, andrew+netdev@lunn.ch, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, yishaih@nvidia.com, 
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Simon Horman <horms@kernel.org>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000020ab8f062d4cad6e"
+	boundary="0000000000007d3a1e062d4cafd0"
 
---00000000000020ab8f062d4cad6e
+--0000000000007d3a1e062d4cafd0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 4, 2025 at 12:30=E2=80=AFAM <linux@treblig.org> wrote:
+On Tue, Feb 4, 2025 at 12:22=E2=80=AFAM <linux@treblig.org> wrote:
 >
 > From: "Dr. David Alan Gilbert" <linux@treblig.org>
 >
-> mlx5dr_domain_sync() was added in 2019 by
-> commit 70605ea545e8 ("net/mlx5: DR, Expose APIs for direct rule managing"=
-)
-> but hasn't been used.
+> The last use of mlx4_find_cached_mac() was removed in 2014 by
+> commit 2f5bb473681b ("mlx4: Add ref counting to port MAC table for RoCE")
 >
-> Remove it.
+> mlx4_zone_free_entries() was added in 2014 by
+> commit 7a89399ffad7 ("net/mlx4: Add mlx4_bitmap zone allocator")
+> but hasn't been used. (The _unique version is used)
 >
-> mlx5dr_domain_sync() was the only user of
-> mlx5dr_send_ring_force_drain().
-> Remove it.
+> Remove them.
 >
 > Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+> Reviewed-by: Simon Horman <horms@kernel.org>
+
 LGTM,
 Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
@@ -113,7 +113,7 @@ Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Regards,
 Kalesh AP
 
---00000000000020ab8f062d4cad6e
+--0000000000007d3a1e062d4cafd0
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -185,14 +185,14 @@ a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
 x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
 VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
 bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEINtBY0ANqn+Q9OS8MFgx+LyZmziP86ScP1UppWE+5dQ0MBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDIwNDA4MjAwNVowaQYJKoZIhvcNAQkPMVwwWjAL
+AQkEMSIEIHIRVxrpHciYf4+CsIbv9BlTjlYBDPYYEpkjMBufF4byMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDIwNDA4MjA0NVowaQYJKoZIhvcNAQkPMVwwWjAL
 BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBGRiZOW97n
-M/jsXXAZhKz+X3bK9K1fY08/lKv5dpXdj/HaMT6ERKsrtkKbmil3omy/dXHfztaMQ4MUn1CA5D1O
-IFsr3nF4kAOkMV1DWZ/6b+xHNZkuSCverK0A35KEeHfVAagWXn/e7N/GrpM0feueqWvJaCVj+jxX
-HuOeZOxr4ZKy/jjAVK86ILZrGSVJpKt1My37dWEvt2Tsc/xqtlNyYGSHwmAYQ48q4RPzKTgpnNx7
-AQWaIjnkzscqnxZEQ2s8fgvn7yiNjvhNpJa0V9FMT/txkR+XOV/cR6vkowV8IUANlwkQ9ESin7FE
-FdmYWSv+9wa+BzDPVlfAtmnKpX9U
---00000000000020ab8f062d4cad6e--
+9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB7zFwaxYiJ
+FUJSVx0GiNfoOMqJsPxQ85bOMUDjgButGoV7BVJD5Dh423RopTodgrWaBvHBF0fZsU2loWpEqBnD
+JIf903A3t8rNXvXQtrVBPgF3tZM5agK/DLuF7HWXC6eSR9pAEDeSJEpK0GkQvCUny9HBE/ikf5V4
+XzFNzJxeblvVeDCtILUnlP4g3RIwLWTgzEhDZEKnn3Rpx8Z/hxfkCOyIMyEdLtFIB9ysg+W5SNXq
+LRhS2zVgYZr9s33U8LhBdpieWkGm3N14aW38pQ5Zh2adcQ9sMJJ6HeJnRnhzYOsTcSl83Xna7kix
+bKu2xbVlmx04RKP56GYK99IlgjqW
+--0000000000007d3a1e062d4cafd0--
 
