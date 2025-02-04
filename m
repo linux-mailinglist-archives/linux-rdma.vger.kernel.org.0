@@ -1,152 +1,154 @@
-Return-Path: <linux-rdma+bounces-7404-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7405-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BECB0A27A3C
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 19:41:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D875A27AFE
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 20:16:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C6EF1886126
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 18:41:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15AB01886E61
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 19:16:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16F792185B4;
-	Tue,  4 Feb 2025 18:41:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20119204F98;
+	Tue,  4 Feb 2025 19:16:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fgby/CT1"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="VV13Ud88"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3667120DD4B;
-	Tue,  4 Feb 2025 18:41:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6CB2036F0
+	for <linux-rdma@vger.kernel.org>; Tue,  4 Feb 2025 19:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738694486; cv=none; b=O6Xzx9G1FG7uFG8ohPgvIfDFRey0yAJInDQlp0Mx6BjvhUgz3zXvYGgmt2TWRkCswmOLKbI0MmULsMJgP/pySYM5IUf7cdT6q9WS8CPdaiDNkK4UOilzurKaypc7KaU96//8jnVMa8bS+qg9tLoKqOVE4ALDlkqb9EdSDcV8Nlw=
+	t=1738696565; cv=none; b=E4HwnER1pYZEoSdUY5JuhvuTpIXNOfHrCu+/O4FS7akWO7dNifeKJ7We/iMRKe6gO3/9Kcw0bZcdiPPI2UGjNc3DjDYDmfCvf7YXeA4973fxEEy4j3HiP9SASBy+5EgP4pUKayrlhHusZe9mPtvVaW9axmoTQfG27AGLWccyU8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738694486; c=relaxed/simple;
-	bh=BykhNrU5yb/xqnxH478PuhsPI4enRJ10a8mBBuIAm+k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iF2QwJ3n3NzlQ1JtomV8a2f+NfkTuWNFkGkN2jbEktMEqcuXe2DoarzfDbmQmvPVB1YVWDSu7XnwddIJ4yLkukrxxHoEjsyi4plIQkTyT3YIeq3h1xKUXdlteG3SZKXzfhfQbiJP/qtU3KDrY/dlL9fErtMcgDiPRLzIZtIkexk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fgby/CT1; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-38db104d35eso584863f8f.1;
-        Tue, 04 Feb 2025 10:41:24 -0800 (PST)
+	s=arc-20240116; t=1738696565; c=relaxed/simple;
+	bh=DnItlRYKz5NSnazVyRKSxC1u7AkupexFhmFvWYVnt70=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aNP4W0z9tOl+1J3V5AP/POveI5TLR1LUe1WKG5ORF5M5PC6nWgul3CoOCnSgKHo44zTcamSoFHkSzcWD2D1ucgn4L16rbEtW1Q4sKhiUOnmF04FvwRunmYuH0cs4Gs+XCZIEI7y5fv0L2o4Rl4SK6HlsaEtKuN2Z2S5BuWptZ18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=VV13Ud88; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7b9bc648736so581608185a.1
+        for <linux-rdma@vger.kernel.org>; Tue, 04 Feb 2025 11:16:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738694483; x=1739299283; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4898qSs9PnK6sao1kkrPVANsRxsn9Ys1yqup6ircsYk=;
-        b=fgby/CT1b6JuWCtd2as9m6qwhamkt3IfJO/hXlbfYIDm+QiKrOpEnpLJ0onkB3+YGG
-         R9a1GJol6oFczaGEIQsZuSj/Lx2LoJqCOEU1E3kuAbBSsFmFD0eajAA4L49KoNZ9pmwD
-         50GYN0GzZ+Utl/T5jlR6aJtvtVKrwhTE0C9W/+IC2P2LM3ZbleaBUdpluiCenaiZ2Evm
-         dH5tYexTX9hL60fKaoZcim6Qg7gqx4IakgZaWHIi7/SnHEFAaD/Ge9Ut8UyFrSZondzO
-         qoXDYe8yL1Wz2+/nXiuvvw4KVCwcA8CFtmqSBR76m19eKBeuqW8OF6u6A2F9Vg1AIhX2
-         O85g==
+        d=ziepe.ca; s=google; t=1738696563; x=1739301363; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RbSThg2+IgOzUPVYO+O03rGdKt6FNxSQQgDDlA3zKuo=;
+        b=VV13Ud88/a6ujOwmHv3p3i0jA+i42Sq+FdVg2G5tTjVoECcp5LzoJNFHeKqp4VTtBT
+         L6NWj5XBke0zfqU+ShCXAfYWe8iCKckF0eT51s1cFPTIqOy8+DEBmUjHLOsd98rgyqDM
+         iUi/oaiw4iGlRMbxjt1bXRKDKgtFovBVKiSyWwRdSBxe7fozuwwda1MGLVrpZsafLBbc
+         xyKjB8Jq3rli2rqxUZtvrtnCL5b2TtGEpckhFHPc3BhIOrxnoNFQC/DbTPwsMaqUQWQS
+         /0ER2z0ikptzv6IXcqft3LB20XjRzy3+aJYXjE1pdBowKTrL+VkV88H3/fcTyXes/POm
+         QT6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738694483; x=1739299283;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4898qSs9PnK6sao1kkrPVANsRxsn9Ys1yqup6ircsYk=;
-        b=Rs+SteLk4xgvzxEzH9w6qWGYPr8Uwo4hXE3NZNkntxCZF4BySZ5u5vqIft0tT7LAc8
-         OMPa3z29BHoo4V/K0vme8a2MQUXcPwYsj9pvbJe0FEcwqPzhGjsold0o3AmQ4b8NvVkh
-         UU6F2b+by+PktQkuuheWYxTDh2OInzQ4f1De110esPYxqUdBp4kxAu1S1xacrqeCt62N
-         rUJPtM3npp1Af0rlv0DCbS/wyeovV+tAJknK94BogLl+YUARWdyd2qBBwTheyCGT8Nd/
-         3QBZPyAoBhjs+/xJ3+qOR7nCP6RfbkTQUydiG819Gx/UkF8+ZIKx7FrqffZgK9wfbh2e
-         X2wg==
-X-Forwarded-Encrypted: i=1; AJvYcCU0nc4aHfnHiomsLuf4G9omM7q8cFdoTyr2f3opvIxbMv9PqMyte6LKjHnOtfr8nBqY/qkre//iWlao+A==@vger.kernel.org, AJvYcCVT7nPA5CkI76GyGA6sxw3q/uWbtGgzSpxm0a34FU+HZbWvexMSLGo1JJYTqeaw9sgl8DwFLjoq@vger.kernel.org, AJvYcCX9Shxq0TdA7F7L/57P7wtTc0lvn91Z/knfTgWyurACisrzIjU/7tY0x1EBavSj6W5jFsD2t0cySDg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzmFI6T8kwKWa4ES6Np4CSU37WOaNmomvSP+lNu67g5r3VP/kWB
-	g3F+t60Kv7+3y5g8DgbHqlIBAvikZgF0oYfGUw8DDucNKZxSO7+U
-X-Gm-Gg: ASbGncvpAbtxRBGYzhJy8NdZj2nDilsR4KX3JWqy/n9oUPim1TL5dffLwuD3uBo5Og3
-	U3L+2kUtESOBBNpzOZ+1Q0YXutsprCPmdbD7WcBuzVC2zWhwUVr01GsYkGZ1lD+Q722gNaVn1k8
-	IXXKyHSnLb3eBvXtX0J9a52494WnssmfxKs7HqVir/Ru/S0N+JABOMq0qgu58N9N93w8xPDK7ez
-	aTbXkXvUrC6xGk4bzIE+/7KlrkqD/x6CufPmP9amnDCThzrKnW10YQOLC9YXTTvD5dhoZWZTK9U
-	bzIWz8QViInNtWrVCTb9v+5UdRrlv931wRcQhlF1dtJ0NBd6aH3JSA==
-X-Google-Smtp-Source: AGHT+IGMukZOMOoqMJBYdI9wFhFfAKlkZp4ajbkSfhODZBJb/b8M/hgpAVxedM8x8xtUfaPTkcI0pQ==
-X-Received: by 2002:a05:6000:1fac:b0:38d:af14:cb1 with SMTP id ffacd0b85a97d-38daf140ef5mr3130992f8f.54.1738694483262;
-        Tue, 04 Feb 2025 10:41:23 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38c5c1d1d03sm16776348f8f.99.2025.02.04.10.41.22
+        d=1e100.net; s=20230601; t=1738696563; x=1739301363;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RbSThg2+IgOzUPVYO+O03rGdKt6FNxSQQgDDlA3zKuo=;
+        b=vOVsZ6JPDvbbQReqLjWp067i9DNrGQOcWOhHynk3ZoiXNa5oSi/EhNTUJvEIaXYDyG
+         Vt22RvB4ynIDA3efNc/Xq1pKCZeIiOjwXvY/XGe1CVy/Wgm/+PT7AMwP0bHfsLIVPwxL
+         xNN7kmsCYeOL1uMgCHF433Sx4pWxaLw5mr0BH6xT2hBibp4y/dL5PNDu8rhL1X9dFYDg
+         xZ/FQjgArpU7Pw2g7eHCEgua0D/IgYFjhtKTBIt+5Ev4DmHN20Au7x9VNzbOW18UmnrI
+         3zvbNofUHVrRoAx7mRZTU4S8bAnxsZfhPIlKZ+TaZ4Yy+g8E9+qxX2xDrSk3co/kaXi6
+         VrLw==
+X-Forwarded-Encrypted: i=1; AJvYcCXSgvEDFLFaDpn6YXV51GkWoniJ+tgxYFg95FAGspvJNoc5FANCdnUw7qitp1qFzD+i6kCPAQixX0nD@vger.kernel.org
+X-Gm-Message-State: AOJu0YyPPOieCM2D/rPHhSJa3NIc3M0B6GZA4GRXzl2TD3VImop8HExP
+	dBfS1yVWSFzJHUDKPCYFrQ0gsaGRIAPa0q64qKAFqVzlZnNuFZPjcLvEBSBxcxY=
+X-Gm-Gg: ASbGncu08gyGTgODuSAyV7K6mf537YoZU0rXclHil3JVvscEJ6qJmoGG9bE+DB8ZHs9
+	/jXSzwhqU9CTlv67hY35Ghw2Cpc0IYKydekn6vh1kRDN8cA6iUS2YktZw581tnbvCcliGOeC+Mg
+	FDINX3ppFCtwP3DzeyEKTVRxg/lkm4GJx1hY9E8ole487yO4h7ceuoSNAgThQiNjifqU5wU8a6m
+	nNVh+vbck4wXnyUItrmXYdf3+ENlrgA3JC/lpotIee1qlD0JK+2qB5hY6XFJ0EupFMyPmh6TA8B
+	Gnd8EUNzQh5Rezzd9fVFRu44tOUDsS/RKKckDuH7Z/DylIgkXwQcMIOpl9cMNBGV
+X-Google-Smtp-Source: AGHT+IFDaDGZr7b/tFbMEfs7niyU8J8dtoT91Z8F6Kt1MP6P2VK98JCkXIPoyuzy/DdpTLj+ZRuWhQ==
+X-Received: by 2002:a05:620a:2710:b0:7b6:ebc6:181a with SMTP id af79cd13be357-7bffcd9997amr4139068785a.41.1738696563125;
+        Tue, 04 Feb 2025 11:16:03 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c00a8d97c2sm670296085a.64.2025.02.04.11.16.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Feb 2025 10:41:22 -0800 (PST)
-Date: Tue, 4 Feb 2025 18:41:21 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, davem@davemloft.net,
- kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
- andrew+netdev@lunn.ch, netdev@vger.kernel.org, sridhar.samudrala@intel.com,
- jacob.e.keller@intel.com, pio.raczynski@gmail.com,
- konrad.knitter@intel.com, marcin.szycik@intel.com,
- nex.sw.ncis.nat.hpm.dev@intel.com, przemyslaw.kitszel@intel.com,
- jiri@resnulli.us, horms@kernel.org, David.Laight@aculab.com,
- pmenzel@molgen.mpg.de, mschmidt@redhat.com, tatyana.e.nikolova@intel.com,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- linux-rdma@vger.kernel.org, corbet@lwn.net, linux-doc@vger.kernel.org
-Subject: Re: [PATCH net-next 2/9] ice: devlink PF MSI-X max and min
- parameter
-Message-ID: <20250204184121.168eaba2@pumpkin>
-In-Reply-To: <Z6GuSJCshbWlkiLu@mev-dev.igk.intel.com>
-References: <20250203210940.328608-1-anthony.l.nguyen@intel.com>
-	<20250203210940.328608-3-anthony.l.nguyen@intel.com>
-	<20250203214808.129b75e5@pumpkin>
-	<Z6GuSJCshbWlkiLu@mev-dev.igk.intel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        Tue, 04 Feb 2025 11:16:01 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1tfOOv-0000000CUOy-1LgY;
+	Tue, 04 Feb 2025 15:16:01 -0400
+Date: Tue, 4 Feb 2025 15:16:01 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>
+Cc: Yonatan Maman <ymaman@nvidia.com>, kherbst@redhat.com, lyude@redhat.com,
+	dakr@redhat.com, airlied@gmail.com, simona@ffwll.ch,
+	leon@kernel.org, jglisse@redhat.com, akpm@linux-foundation.org,
+	GalShalom@nvidia.com, dri-devel@lists.freedesktop.org,
+	nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+	linux-tegra@vger.kernel.org
+Subject: Re: [RFC 1/5] mm/hmm: HMM API to enable P2P DMA for device private
+ pages
+Message-ID: <20250204191601.GK2296753@ziepe.ca>
+References: <20250129134757.GA2120662@ziepe.ca>
+ <Z5tZc0OQukfZEr3H@phenom.ffwll.local>
+ <20250130132317.GG2120662@ziepe.ca>
+ <Z5ukSNjvmQcXsZTm@phenom.ffwll.local>
+ <20250130174217.GA2296753@ziepe.ca>
+ <Z50BbuUQWIaDPRzK@phenom.ffwll.local>
+ <20250203150805.GC2296753@ziepe.ca>
+ <7b7a15fb1f59acc60393eb01cefddf4dc1f32c00.camel@linux.intel.com>
+ <20250204132615.GI2296753@ziepe.ca>
+ <3e96aef8009be69858a69d3e49a2bd7fc7d06f5f.camel@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3e96aef8009be69858a69d3e49a2bd7fc7d06f5f.camel@linux.intel.com>
 
-On Tue, 4 Feb 2025 07:06:00 +0100
-Michal Swiatkowski <michal.swiatkowski@linux.intel.com> wrote:
-
-> On Mon, Feb 03, 2025 at 09:48:08PM +0000, David Laight wrote:
-> > On Mon,  3 Feb 2025 13:09:31 -0800
-> > Tony Nguyen <anthony.l.nguyen@intel.com> wrote:
-> >   
-> > > From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+On Tue, Feb 04, 2025 at 03:29:48PM +0100, Thomas Hellström wrote:
+> On Tue, 2025-02-04 at 09:26 -0400, Jason Gunthorpe wrote:
+> > On Tue, Feb 04, 2025 at 10:32:32AM +0100, Thomas Hellström wrote:
 > > > 
-> > > Use generic devlink PF MSI-X parameter to allow user to change MSI-X
-> > > range.
-> > > 
-> > > Add notes about this parameters into ice devlink documentation.
-....
-> > Don't those checks make it difficult to set the min and max together?
-> > I think you need to create the new min/max pair and check they are
-> > valid together.
-> > Which probably requires one parameter with two values.
-> >   
+> > 
+> > > 1) Existing users would never use the callback. They can still rely
+> > > on
+> > > the owner check, only if that fails we check for callback
+> > > existence.
+> > > 2) By simply caching the result from the last checked dev_pagemap,
+> > > most
+> > > callback calls could typically be eliminated.
+> > 
+> > But then you are not in the locked region so your cache is racy and
+> > invalid.
 > 
-> I wanted to reuse exsisting parameter. The other user of it is bnxt
-> driver. In it there is a separate check for min "max" and max "max".
-> It is also problematic, because min can be set to value greater than
-> max (here it can happen when setting together to specific values).
-> I can do a follow up to this series and change this parameter as you
-> suggested. What do you think?
+> I'm not sure I follow? If a device private pfn handed back to the
+> caller is dependent on dev_pagemap A having a fast interconnect to the
+> client, then subsequent pfns in the same hmm_range_fault() call must be
+> able to make the same assumption (pagemap A having a fast
+> interconnect), else the whole result is invalid?
 
-Changing the way a parameter is used will break API compatibility.
-Perhaps you can get the generic parameter validation function to
-update a 'pending' copy, and then do the final min < max check after
-all the parameters have been processed before actually updating
-the live limits.
+But what is the receiver going to do with this device private page?
+Relock it again and check again if it is actually OK? Yuk.
 
-The other option is just not to check whether min < max and just
-document which takes precedence (and not use clamp()).
-
-It may even be worth saving the 'live limits' as 'hi << 16 | lo' so
-that then can be accessed atomically (with READ/WRITE_ONCE) to avoid
-anything looking at the limits getting confused.
-(Although maybe that doesn't matter here?)
-
-	David
-
+> > > 3) As mentioned before, a callback call would typically always be
+> > > followed by either migration to ram or a page-table update.
+> > > Compared to
+> > > these, the callback overhead would IMO be unnoticeable.
+> > 
+> > Why? Surely the normal case should be a callback saying the memory
+> > can
+> > be accessed?
 > 
-> Thanks,
-> Michal
+> Sure, but at least on the xe driver, that means page-table repopulation
+> since the hmm_range_fault() typically originated from a page-fault.
+
+Yes, I expect all hmm_range_fault()'s to be on page fault paths, and
+we'd like it to be as fast as we can in the CPU present case..
+
+Jason
 
