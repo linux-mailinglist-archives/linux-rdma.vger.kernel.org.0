@@ -1,70 +1,70 @@
-Return-Path: <linux-rdma+bounces-7390-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7391-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9550FA26D71
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C798A26D70
 	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 09:42:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 874FE7A27FA
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 08:41:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C40273A6998
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 08:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5A1206F25;
-	Tue,  4 Feb 2025 08:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E275B206F33;
+	Tue,  4 Feb 2025 08:42:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="RXlTe0/f"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="YOqktkUn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3E30206F2E
-	for <linux-rdma@vger.kernel.org>; Tue,  4 Feb 2025 08:42:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 374712066F8
+	for <linux-rdma@vger.kernel.org>; Tue,  4 Feb 2025 08:42:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738658536; cv=none; b=dwynoMcFeDRIo81G2Ko6cso3UoC4LAG9ou3yFr46lEo+HB6B9OkxYHaH5wNEUO/Y4QFhQ9ELgNuXvm6I9tSkuFBG/nKrEAofBdwJywcJd9eg1pKF/rDzbkhtjyUWJVzsRY3+xWOc0OOOo4llxuQKDFnUBTjBBuFke3BAhEWT9no=
+	t=1738658539; cv=none; b=rMXOAuFsXzjVa3aA/ZQn6qOZ8gv34PMftcV/HDEVdk8VNR2vVcgda4aHnvZtVQoPbizG97MLrS5Ull9MNifzAFRyoJ+U1gB5xIZvOMum7OWj5jpIAClBGhVXTcb6t/HgUn6q609hKx13elPz6HPsyf5XWcMFDbF8gRnuz9nxBvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738658536; c=relaxed/simple;
-	bh=9SRf0Vfvq4ecK6a/KtPvtMMy3lCByf3nPebhiOzmfno=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=OtIqYtXR4d9cDpDNAWhNjKkxd0mf53gRVFOiF8xK2JqxdOabR8big0nIa8Wdcke2ZVV2w5d/HXigeZpvDMxzZy1ocQABvJhSwydl6SX+Sam7qM8z69KaaVixK1tkQCSsuxoM8W11vZED3KuEucU8x44jr/2kbdSv7oHF960WvAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=RXlTe0/f; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1738658539; c=relaxed/simple;
+	bh=8K/eCaRYGoFH0a8ltqyuxrUpUrzwmATML6Qf0VtkubY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=kqQPWa1l/d0xcSNw38IFXom6vxVw7eyD/6IRc8Q6D037grc/EhhdwsEJnZjDunX0T8VPtbDYNqYoqadVOdJeyyKsm/yDiGArbkFX7U6ZxSC6+CZEsRYvR22AGUB+R1TtohPfvAAM+oY/MCtbLlKxwcAN1TfCMwQiRzgic31r1zw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=YOqktkUn; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2161eb95317so92392855ad.1
-        for <linux-rdma@vger.kernel.org>; Tue, 04 Feb 2025 00:42:14 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-21636268e43so118433035ad.2
+        for <linux-rdma@vger.kernel.org>; Tue, 04 Feb 2025 00:42:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1738658534; x=1739263334; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1738658536; x=1739263336; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=ac4Lr3e1wt/LQ5M2mGP00QCZgJxJqWPAchmBcL/5HPs=;
-        b=RXlTe0/fp5tsLCYYRke2eEYiJUxOsujC3yxZhukI2EJDncb26KCBDEUnzHU44M9Tia
-         y7fRBY/qXr36kp9EOL1Dd9W5EbIEYLlIfMstRPYp3fpng2TLlJhHmk/GO2HmFHFdkjXD
-         cxY6DIR8/pimVS+Yrv4txS24ZDMcb1FuDNg5A=
+        bh=stCS3soCP01KwHXtsBr/VGKntQgaKxLgPSgl7LlD+pM=;
+        b=YOqktkUnFxVQGTUrZOGu/2K/zx+skYHtL+OS892ZIqLmxpLxQMsSR1Dt9tieerr+Kz
+         OqO5viuZGuQotfaH24dSMLvnlqwWVCEn7Th2zBGT0NANlJmQrPsj+mV4t7XdHt3JrOfC
+         wO2FwD0yRX9CJG9mE1GqWWOLAGNPgOZXG44Jg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738658534; x=1739263334;
+        d=1e100.net; s=20230601; t=1738658536; x=1739263336;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ac4Lr3e1wt/LQ5M2mGP00QCZgJxJqWPAchmBcL/5HPs=;
-        b=mmTiLCVsoa5/gXGqaEUl/qEOMUU7chwFxjePkIp0RfmhHqfOwskmBOEoin3hfb2iEo
-         KzrRKnyh5fXY+2pJfAxNBCcGAook5YRUM8q1Dvwo8/3GcP0fPXini0IgQmm98KyO5l6L
-         tfYMbDTXztgUk7CCbkX1fLfl7/AEn3VqDpBctd2IxhjBnYqk1GCQk9x0MGAAfGlBHryS
-         IppZFiSqkaLEEtl06/g4rDTdIr4Tvqb2Egx//5LmvYKe17iMQ25olVC1dF465YCr3xq6
-         z0csGCdZPTifHtg2faJnY3SKbqVV+9BGudefWriOCVKSVVnChG0+wQoRV3uVFtkQelgQ
-         zuig==
-X-Gm-Message-State: AOJu0Yx3C6wsq+WBO9Pau/sAtlgHmcMPuiPTpogen08SL1ayOSkJduWp
-	kjaSvUzxY+hPDmBRUoFQUhwYbe4BFvi/rQioRQSpdEVijhr89vBIAh3MEcWy2Q==
-X-Gm-Gg: ASbGncuNlV9Bmq+vAOu4f6jGuZCuc1T6qIqY2b4733UxJu4foydk1X3zCPwFSDE4BqK
-	RoiZlVrdNaKw1xKWN6iUZRtDekbd3XPglQVtTogoLdrpVHABEppJPRWwzkt4yrKA7irGAWnFk3h
-	9zjhEzsnyGgxF6x+xoQJ4enxj5C0ndvW8HpSsTyKcIJgppHqyMQnTuDEsJn++ftStPIIGb/3pLA
-	xCE5hS28heYO5p1Zjb+e0z8grKYiWWFm2fkrAP/21kSCP3yxlyAdunflhK5rFabPi5+t6r+JxO4
-	A2cWz3bKTQsj9AV40KOiicDszkLAMv90vaZ8WA0h6TpK/DHhvcczgXERIOTpd+5+OSRTG+0=
-X-Google-Smtp-Source: AGHT+IFlzZwa3o9S6rtaiMe/OkQ7qEfaTyUNQFok0LxexmcQ6TSR+rELHbDrjBgCIvooe27QeSGXCw==
-X-Received: by 2002:a05:6a20:1590:b0:1e1:f281:8cfd with SMTP id adf61e73a8af0-1ed7a4c06e7mr39647906637.15.1738658534001;
-        Tue, 04 Feb 2025 00:42:14 -0800 (PST)
+        bh=stCS3soCP01KwHXtsBr/VGKntQgaKxLgPSgl7LlD+pM=;
+        b=O3PRA/ZcwIpRe85vo47Y7lSrfbbz2GFF+lUe3fU8olYTYJIGy0xYpe0wSLnNY1bOl8
+         F3Z8PUhQ6sYmfI42EtkxmAlkn2/H3xqRHLaLVbyoG+ialxZmkogjmZRqkJreltvfL6k+
+         Ir2p8Zo6HZ4h6XDl5AZdS4LJrIFfSC2Q9bcToTz+XXO2rcj2Tf0MQOw8BGoHqX2NFL5C
+         /Oo93huSDmFipCi/qCrSq+7I82Ex8qCFHf6e8xWNIY3xnHorvApihH1RN3e4q8G9ZsdE
+         ImAoIUjz1BI1iX0foDiLwnaDCCp23nZomLG5VvHAZ+BOj0HtBQFD5BP+EVpUVUyGVGKa
+         Sbsg==
+X-Gm-Message-State: AOJu0YwxULTYzwDU7SOuFiyAOWDa7shzIf4WvFxbDz/t2UqT7/VpLSNv
+	Axcf1HrtCow18oJXl9X9df53PDWppZy1Co+BOdibZKUPluR1nav+1XBAxsYtRA==
+X-Gm-Gg: ASbGncuDtz3LNfNUcsn/MR1cJQZDl6snWXnud0PzDAK5ThotaTcerjU8tSddsozm+q/
+	rqncosezSzq6Qirb8vVxCwLc0zlnDsOWK7/RA5dNpV/0WwsRGDYLbxxn18iQtblSIxOrww7lnyd
+	CODTbUVVEQtax/w6YuF8QPlkU4UPHhGxDM9u1w9IJUxLZCztreIc4PcyjPuf2+aG5w360iMPKxV
+	HvrClIU2bK9foy2R8wLpMUEom+C3sFUieYgVaeQaUsfWSTZLvIXYwrdbQblRHJIO4YA+xSUIZ9t
+	Mxy9VT+HT+mHSdBKrhAhsl/OmHvI8Q4wj3fA/Qyd6gKc8khuzENCYSzbQonCfsPonrmmvYI=
+X-Google-Smtp-Source: AGHT+IE15IxSbhXks7PCmiti6aVAPknsySU6gYT1XTsQqmpb5PCD1XJDRQCAVFJ+IaXZMUd3cxBDmA==
+X-Received: by 2002:a05:6a21:7016:b0:1e1:c748:13c1 with SMTP id adf61e73a8af0-1ed7a6c864emr41268161637.27.1738658536447;
+        Tue, 04 Feb 2025 00:42:16 -0800 (PST)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72fe69cdce1sm9822069b3a.126.2025.02.04.00.42.11
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72fe69cdce1sm9822069b3a.126.2025.02.04.00.42.14
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 04 Feb 2025 00:42:13 -0800 (PST)
+        Tue, 04 Feb 2025 00:42:16 -0800 (PST)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -72,9 +72,9 @@ Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH rdma-rc 1/4] RDMA/bnxt_re: Fix an issue in bnxt_re_async_notifier
-Date: Tue,  4 Feb 2025 00:21:22 -0800
-Message-Id: <1738657285-23968-2-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH rdma-rc 2/4] RDMA/bnxt_re: Add sanity checks on rdev validity
+Date: Tue,  4 Feb 2025 00:21:23 -0800
+Message-Id: <1738657285-23968-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1738657285-23968-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1738657285-23968-1-git-send-email-selvin.xavier@broadcom.com>
@@ -86,40 +86,48 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-In the bnxt_re_async_notifier() callback, the way driver retrieves
-rdev pointer is wrong. The rdev pointer should be parsed from
-adev pointer as while registering with the L2 for ULP, driver uses
-the aux device pointer for the handle.
+There is a possibility that ulp_irq_stop and ulp_irq_start
+callbacks will be called when the device is in detached state.
+This can cause a crash due to NULL pointer dereference as
+the rdev is already freed.
 
-Fixes: 7fea32784068 ("RDMA/bnxt_re: Add Async event handling support")
+Fixes: cc5b9b48d447 ("RDMA/bnxt_re: Recover the device when FW error is detected")
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/bnxt_re/main.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index e9e4da4..c4c3d67 100644
+index c4c3d67..89ac5c2 100644
 --- a/drivers/infiniband/hw/bnxt_re/main.c
 +++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -396,11 +396,16 @@ static void bnxt_re_dcb_wq_task(struct work_struct *work)
+@@ -438,6 +438,8 @@ static void bnxt_re_stop_irq(void *handle, bool reset)
+ 	int indx;
  
- static void bnxt_re_async_notifier(void *handle, struct hwrm_async_event_cmpl *cmpl)
- {
--	struct bnxt_re_dev *rdev = (struct bnxt_re_dev *)handle;
-+	struct bnxt_re_en_dev_info *en_info = auxiliary_get_drvdata(handle);
- 	struct bnxt_re_dcb_work *dcb_work;
-+	struct bnxt_re_dev *rdev;
- 	u32 data1, data2;
- 	u16 event_id;
- 
-+	rdev = en_info->rdev;
+ 	rdev = en_info->rdev;
 +	if (!rdev)
 +		return;
-+
- 	event_id = le16_to_cpu(cmpl->event_id);
- 	data1 = le32_to_cpu(cmpl->event_data1);
- 	data2 = le32_to_cpu(cmpl->event_data2);
+ 	rcfw = &rdev->rcfw;
+ 
+ 	if (reset) {
+@@ -466,6 +468,8 @@ static void bnxt_re_start_irq(void *handle, struct bnxt_msix_entry *ent)
+ 	int indx, rc;
+ 
+ 	rdev = en_info->rdev;
++	if (!rdev)
++		return;
+ 	msix_ent = rdev->nqr->msix_entries;
+ 	rcfw = &rdev->rcfw;
+ 	if (!ent) {
+@@ -2438,6 +2442,7 @@ static int bnxt_re_suspend(struct auxiliary_device *adev, pm_message_t state)
+ 	ibdev_info(&rdev->ibdev, "%s: L2 driver notified to stop en_state 0x%lx",
+ 		   __func__, en_dev->en_state);
+ 	bnxt_re_remove_device(rdev, BNXT_RE_PRE_RECOVERY_REMOVE, adev);
++	bnxt_re_update_en_info_rdev(NULL, en_info, adev);
+ 	mutex_unlock(&bnxt_re_mutex);
+ 
+ 	return 0;
 -- 
 2.5.5
 
