@@ -1,126 +1,169 @@
-Return-Path: <linux-rdma+bounces-7383-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7384-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C1BA2660B
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2025 22:49:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E50CA26A60
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 03:58:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B50053A3F13
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2025 21:49:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28A167A3074
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2025 02:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF2020F07C;
-	Mon,  3 Feb 2025 21:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B220F14B094;
+	Tue,  4 Feb 2025 02:57:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LHA/tLpU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uIAInkUL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A15D78F54;
-	Mon,  3 Feb 2025 21:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A5F25A634;
+	Tue,  4 Feb 2025 02:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738619377; cv=none; b=qzabtnbcdI/sVMrktpms9P0vpZedHIgjpUxWkfDC18o2F+GQY73kap7RSMmMXdYW59hJUVc0oQHr5XI/b/I5UOTQjv2S/KTEY8DGDm2RgUm0eVXbCTCOJgd768fVCP4Y9eYUDZgqJrXTgvgQI7K6uLmTcbeSH18sq5rlWb+4gp8=
+	t=1738637870; cv=none; b=sHgulA2r+FIinQpgdULOKAL73XIbphZ2jfUfLeMksvvWRvwUATlGN53/Ty5SUTParhuvjnt0vuzwlan7xZSdhu79iySV/SWUpJDFJ2ohTb3PSZi1rHQlxB2xLqbZUfps2sb6XGyEj8YflQ5t767p7ETY+eEQTNlIURAhEYVJnKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738619377; c=relaxed/simple;
-	bh=giYmMvQGmodVIsBV2FyAzuHCM2XEumayECjAxk6wMks=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Yt0L8UpMaAZk4pJEpAVQw0TG/9Xb/hF9AJcRQ6+xWoPng7IPsZDAIvKeBwOfOPxAEyZVX55/Amr71RFkqEOT9ez6OJ3EUtrHHDTTTA4UtUnt6cxPum/IKf/MHIOZ+GS2L7dB52X2eZ7iN7SjgptaWCxaFC87olytq8QCee2zMic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LHA/tLpU; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4361e89b6daso34062875e9.3;
-        Mon, 03 Feb 2025 13:49:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738619374; x=1739224174; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uwrjox93lk/WUq0j2CCvg8TL+f+jeBTC8HvZULmrJqA=;
-        b=LHA/tLpUTGEaA3uEs/RXiVds+eKVH9Yjda9+kUSlH2EQJYmbBxdMK9TlFNZStJRFUM
-         jOKGL3zolvQAEUzoD9rOjlW++hi44YgKzWw67Rjxa56Tv2+7n7uvqGWGkxoVaR8zP8c7
-         18mdJ5wx7o9uVTcJOJNsOBTrjpVU7g74RGNtuwIEeUjByhR3H8Pqr0/+71VUAXBrO9AY
-         E09D7AS2wp+FB33fOe95N/U/Rft4Bd374uCVuKX+8ow5xfjSQR7ePmhlgMTz61zWe0mp
-         TXiHZo6Gpqbh3VfJyJEquiDsQUC9+GDcMWF1upL2Z/tVD9UceWp3Mz+wbmfGfn0FLRHQ
-         HUWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738619374; x=1739224174;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uwrjox93lk/WUq0j2CCvg8TL+f+jeBTC8HvZULmrJqA=;
-        b=YBYhqwOy46rGPqMU9D8zyxPMD9u5d1PkV13QCmP1tr4B+dB1p4eawceRdhuVeiqJOq
-         lctZFbXY4/AAZRv/S7WYRX5rULBnnal4cPGKOPFeDFzNwenCcswDlFyDyloJBToQDFmR
-         HyxLD0yjXX8pJD+N52rksRrsK49dhd2dntQstqBKgRk94pLQ/dxbsr3G5iqrJXmkCPF5
-         jgu17/2gzpay/ydCUJcwumzibB323fFdaUpCKGjTPpfEydC+prRnPn9YwUkoXxkZYlpP
-         DM09JIpMM/aq1Yc6r7D3FqPIOhQtYCpeSOp84WCQMXAeFK5Biky1oSF++Cw/RCblTd3l
-         SdBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUsBY5M9YUW373xuchmphexUA/679XF2gYHV/hlmHNUZ0VJJ5t7u37KWvwbEfpHcZkNCi8tVAV5x6RjpBE=@vger.kernel.org, AJvYcCUvyGAMcxfbp6nz9XrN9JWT2ATMKaC5igANI+uJBKcE/sjjna0I+exM09COirgs1rOaUEOO5tjH1JUK0A==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJ1unnVNLx8Qywr8N0FvgiK9hhoF79jZnpqqVXoH9f1ZVIOyTF
-	yaVwqpT+c7jYZ5TvY/t4IFTd3UhtZVydmlKmuvgyqeQXBO54Wmto
-X-Gm-Gg: ASbGncumyQm7coxp+ja2mBWhZ1GZ2qWwOR7kI/IbPwlHaoJfhiaas0ckEN7ZHe+8CIz
-	lu2dbsSsjL5l9K6+WQ7iI7vfJnwQoZGxxwmlw0LmrM66KLLg734LROc8X30ShMg520anPDqZZGV
-	pUTI+U4cjJCU9MZ4y0ediNo8goEWP9j4z8KtjEJ21W1JfX7VS+5Im3vqexhMJsuTDSTpZoou1mh
-	N9Bf7OzLRqEq1y2mTBZZKPke7caMu6AYvTfNV8qIt74Al4L3eczcBXkob9+rMwgq6xBQR28Ov2F
-	fuNI84ni1dF8PSgkpTt9pe1r86y9CMzdnIs3
-X-Google-Smtp-Source: AGHT+IHigCdk9E3B1PblZOV5CluGEjbP+FByJtxOd06EfeqC8yMdoTWguI7Nxy/xEc3QX2T6/Qh3HQ==
-X-Received: by 2002:a05:600c:c87:b0:434:f1e9:afb3 with SMTP id 5b1f17b1804b1-438e0d879fdmr168579395e9.3.1738619373757;
-        Mon, 03 Feb 2025 13:49:33 -0800 (PST)
-Received: from [172.27.33.160] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-438dcc2f73asm205018125e9.24.2025.02.03.13.49.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Feb 2025 13:49:33 -0800 (PST)
-Message-ID: <8dafbbcb-2d29-4c1a-8afe-1c5fad3db3f1@gmail.com>
-Date: Mon, 3 Feb 2025 23:49:31 +0200
+	s=arc-20240116; t=1738637870; c=relaxed/simple;
+	bh=CszYs/LJUcQ5jw0qlgHashLCbJKeipVq4nzLbBwNyjI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=NgJhY1tr5dM159JojGI+xSBnk4Q7EUhjPIkVxFK/75hvqCmmwBh3vD/YsIgtxtbgdExbsUuEmvDBZHB7d6ghlyuW9xoUpTr8mdRqgYorfdi0g2d7nlqzukatz/8uTTEPimP80IdaAuotzXvXf/uazu1kXfnswbH6L7pk0Es6pYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uIAInkUL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A02FC4CEE0;
+	Tue,  4 Feb 2025 02:57:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1738637869;
+	bh=CszYs/LJUcQ5jw0qlgHashLCbJKeipVq4nzLbBwNyjI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=uIAInkULcB4ZqT8id7Ve+pfC1Pl5mWRvTOFpU49bVYCyvw92i2y0379QVAUT0Sm8W
+	 mqi5FMzB+qCUC3cI1ETkFuXT+wlTxPqXFrv0t8+JphZBkAoQkkNQ7QZ9yBqauo00Ee
+	 cFXzvjl1YfcOH/NQxIeR9TBuvvu2WgJpVwRlFzaleJfJEnQzoI3WEWecNQTjVH2/+7
+	 7AfmCxBQxA81E9e+0+QXdbmmZ3Y0rSw6ij45vxOGn4yFUyrUjJ6v3PhwSxCqWQj3wq
+	 p7myqBrCs8t8xYNA1mwCrccLMkGhk2XIh3YdwiAwl3Iwsm326k4lDpvNGxgnSVwH13
+	 c9uqJkQNKTtnA==
+Date: Tue, 4 Feb 2025 13:27:41 +1030
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH][next] net/mlx5e: Avoid a hundred
+ -Wflex-array-member-not-at-end warnings
+Message-ID: <Z6GCJY8G9EzASrwQ@kspp>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net/mlx5: Remove unused mlx5dr_domain_sync
-To: linux@treblig.org, leon@kernel.org, saeedm@nvidia.com, tariqt@nvidia.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250203185958.204794-1-linux@treblig.org>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20250203185958.204794-1-linux@treblig.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+-Wflex-array-member-not-at-end was introduced in GCC-14, and we are
+getting ready to enable it, globally.
 
+So, in order to avoid ending up with a flexible-array member in the
+middle of other structs, we use the `struct_group_tagged()` helper
+to create a new tagged `struct mlx5e_umr_wqe_hdr`. This structure
+groups together all the members of the flexible `struct mlx5e_umr_wqe`
+except the flexible array.
 
-On 03/02/2025 20:59, linux@treblig.org wrote:
-> From: "Dr. David Alan Gilbert" <linux@treblig.org>
-> 
-> mlx5dr_domain_sync() was added in 2019 by
-> commit 70605ea545e8 ("net/mlx5: DR, Expose APIs for direct rule managing")
-> but hasn't been used.
-> 
-> Remove it.
-> 
-> mlx5dr_domain_sync() was the only user of
-> mlx5dr_send_ring_force_drain().
-> Remove it.
-> 
-> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
-> ---
->   .../mlx5/core/steering/sws/dr_domain.c        | 24 --------------
->   .../mellanox/mlx5/core/steering/sws/dr_send.c | 33 -------------------
->   .../mlx5/core/steering/sws/dr_types.h         |  1 -
->   .../mellanox/mlx5/core/steering/sws/mlx5dr.h  |  2 --
->   4 files changed, 60 deletions(-)
-> 
+As a result, the array is effectively separated from the rest of the
+members without modifying the memory layout of the flexible structure.
+We then change the type of the middle struct member currently causing
+trouble from `struct mlx5e_umr_wqe` to `struct mlx5e_umr_wqe_hdr`.
 
-Thanks for your patch.
+We also want to ensure that when new members need to be added to the
+flexible structure, they are always included within the newly created
+tagged struct. For this, we use `static_assert()`. This ensures that the
+memory layout for both the flexible structure and the new tagged struct
+is the same after any changes.
 
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+This approach avoids having to implement `struct mlx5e_umr_wqe_hdr` as
+a completely separate structure, thus preventing having to maintain two
+independent but basically identical structures, closing the door to
+potential bugs in the future.
 
-Tariq.
+We also use `container_of()` whenever we need to retrieve a pointer to
+the flexible structure, through which we can access the flexible-array
+member, if necessary.
+
+So, with these changes, fix 124 of the following warnings:
+
+drivers/net/ethernet/mellanox/mlx5/core/en.h:664:48: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en.h      | 13 +++++++++----
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c |  4 +++-
+ 2 files changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+index 979fc56205e1..c30c64eb346f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+@@ -233,15 +233,20 @@ struct mlx5e_rx_wqe_cyc {
+ };
+ 
+ struct mlx5e_umr_wqe {
+-	struct mlx5_wqe_ctrl_seg       ctrl;
+-	struct mlx5_wqe_umr_ctrl_seg   uctrl;
+-	struct mlx5_mkey_seg           mkc;
++	/* New members MUST be added within the struct_group() macro below. */
++	struct_group_tagged(mlx5e_umr_wqe_hdr, hdr,
++		struct mlx5_wqe_ctrl_seg       ctrl;
++		struct mlx5_wqe_umr_ctrl_seg   uctrl;
++		struct mlx5_mkey_seg           mkc;
++	);
+ 	union {
+ 		DECLARE_FLEX_ARRAY(struct mlx5_mtt, inline_mtts);
+ 		DECLARE_FLEX_ARRAY(struct mlx5_klm, inline_klms);
+ 		DECLARE_FLEX_ARRAY(struct mlx5_ksm, inline_ksms);
+ 	};
+ };
++static_assert(offsetof(struct mlx5e_umr_wqe, inline_mtts) == sizeof(struct mlx5e_umr_wqe_hdr),
++	      "struct member likely outside of struct_group_tagged()");
+ 
+ enum mlx5e_priv_flag {
+ 	MLX5E_PFLAG_RX_CQE_BASED_MODER,
+@@ -660,7 +665,7 @@ struct mlx5e_rq {
+ 		} wqe;
+ 		struct {
+ 			struct mlx5_wq_ll      wq;
+-			struct mlx5e_umr_wqe   umr_wqe;
++			struct mlx5e_umr_wqe_hdr umr_wqe;
+ 			struct mlx5e_mpw_info *info;
+ 			mlx5e_fp_skb_from_cqe_mpwrq skb_from_cqe_mpwrq;
+ 			__be32                 umr_mkey_be;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index bd41b75d246e..4ff4ff2342cf 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -373,6 +373,8 @@ static void mlx5e_rq_shampo_hd_info_free(struct mlx5e_rq *rq)
+ 
+ static int mlx5e_rq_alloc_mpwqe_info(struct mlx5e_rq *rq, int node)
+ {
++	struct mlx5e_umr_wqe *umr_wqe =
++		container_of(&rq->mpwqe.umr_wqe, struct mlx5e_umr_wqe, hdr);
+ 	int wq_sz = mlx5_wq_ll_get_size(&rq->mpwqe.wq);
+ 	size_t alloc_size;
+ 
+@@ -393,7 +395,7 @@ static int mlx5e_rq_alloc_mpwqe_info(struct mlx5e_rq *rq, int node)
+ 		bitmap_fill(wi->skip_release_bitmap, rq->mpwqe.pages_per_wqe);
+ 	}
+ 
+-	mlx5e_build_umr_wqe(rq, rq->icosq, &rq->mpwqe.umr_wqe);
++	mlx5e_build_umr_wqe(rq, rq->icosq, umr_wqe);
+ 
+ 	return 0;
+ }
+-- 
+2.43.0
+
 
