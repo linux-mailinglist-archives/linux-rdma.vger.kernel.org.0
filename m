@@ -1,116 +1,93 @@
-Return-Path: <linux-rdma+bounces-7427-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7428-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19DD7A2881F
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 11:35:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B318AA288AD
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 12:00:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFDEC1887E84
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 10:35:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64B28167BA8
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 11:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DFA22B598;
-	Wed,  5 Feb 2025 10:35:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CC1922E412;
+	Wed,  5 Feb 2025 10:49:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="kExXA1f1"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="FE7dh2o3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD7C22A80B;
-	Wed,  5 Feb 2025 10:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7209222E411
+	for <linux-rdma@vger.kernel.org>; Wed,  5 Feb 2025 10:49:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738751723; cv=none; b=Cbx5rBUCibsf9U/vSmPa2XyRUPoknM4EndZGNqS0G9xkLrfs+Ir+1Epsly8N0QWaj1q3Qc3Mrd3WMlgrDewl4k+HCP6r4h1ZhQFW2trjiG6vCiEZGxdabhtNBXTxUjkAsfLIxOGxCHYdeVid9BO3emFaplnboF5RSrOnGVNjeeU=
+	t=1738752560; cv=none; b=ablHdxu/giQD5GfnseJ6+U8EosNB3aCujulMWEAejRdf1/X6zLAmWimmt+heRuCVBXq+K4ucOoOd/ChlSJ21APvTxdI2fj5Q15+b7KWTu3F5wOEBXwxH3n43PzXKSaYwgQRmX/wiW66fJbk5S1zkcZwLbllqYb88o7XFUeLcQdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738751723; c=relaxed/simple;
-	bh=Sho+agxWASg7IpR0l+ubU3+v0WDYiPyNp3M4L6etPeU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=C2yQUneYBahQKgour6Pc5G9+H75Rl8iFvidYXnLgJ9bAXwU1+a5Aufe6QJGvzdxjwjzdZsVaDsx2sJu2p2/5yNsSUqwdL7HcwVzaLJ9hfggYoLj59t3TbWVkVVGjZ//UVPEWdT4ucmAi8bPO92p+rYQst/EodgpqKoDGL9ANxQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=kExXA1f1; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 368BF203F58D;
-	Wed,  5 Feb 2025 02:35:22 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 368BF203F58D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1738751722;
-	bh=77FhRdIDsL5g3ceMt06aQ2NDVZCKk8/I8o+IzUgf4hs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kExXA1f1fxvjYP0RI31D2y5Sk/4FTgjzREWfOb3CoB6gv72EiJFUaRjQe0rjUini6
-	 yPVNUGG3DLRSeH1kZLwsXoIf3TbRgUp2sQiVeaJXNfeD+97eFBe2OKdgUrt0vTrzuO
-	 gnG2pdnGyA4hpIEohTrXAmrs75V0COlEn28g7WjU=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	shirazsaleem@microsoft.com,
-	sharmaajay@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next 2/2] RDMA/mana_ib: request error CQEs when supported
-Date: Wed,  5 Feb 2025 02:35:13 -0800
-Message-Id: <1738751713-16169-3-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1738751713-16169-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1738751713-16169-1-git-send-email-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1738752560; c=relaxed/simple;
+	bh=DtsuSDbEOKydq0UrN4JJjz8l/ExtbBGgA4ufHOinNcs=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=QSzm6RDbyioSXpIfbal3rsEnwluWdOQPLNXH7fXuVKl5u/18UMtEUx5hWm+25Jinzg3cmePyEIFT9n5a0q/p2HwaVmf52f2fAn6V85uwsNUPC1diSr79rF3O4fqYv5X4gTh7w0s2U6GwX1h+e8prPzDWKilk4HXp+6KezhtFxno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=FE7dh2o3; arc=none smtp.client-ip=185.125.188.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 1064444CC8
+	for <linux-rdma@vger.kernel.org>; Wed,  5 Feb 2025 10:49:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1738752551;
+	bh=DtsuSDbEOKydq0UrN4JJjz8l/ExtbBGgA4ufHOinNcs=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=FE7dh2o3l89mxdNG+UsUJrL2bg0A6cs86xDziqiH3jV5Q5iyrMK/siJgRSroUqQqR
+	 4sxKuOC/ywgimy7jXvsAaPpxdj4rggtnCUhs7/etc9qWta/NpIGvPNXldw+2BWmImv
+	 jYdoW3d58iSO4IZ04WFNVipWig/7zxH6OG/J3XHmiKYP9UEUa8X5Y238S+chc1Ehb5
+	 tl42XZOa0ePq48Fo+qEqXTgTT6R+b88qZLqaHnqt4wcet7f9u5QlZ60HvuhlihZSGD
+	 n6F214HDOxuASQg/RjuWWABehwVtGAk3iqAlc+K0fDjzYlacNn/mVOartdlVwLiJq9
+	 c0YSxI+aHCgUg==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+	by buildd-manager.lp.internal (Postfix) with ESMTP id EE18F7E24A
+	for <linux-rdma@vger.kernel.org>; Wed,  5 Feb 2025 10:49:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3849332] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <173875255097.1817859.1814628308987495147.launchpad@buildd-manager.lp.internal>
+Date: Wed, 05 Feb 2025 10:49:10 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="b13dacce4a364151a813e3cdd6940bbff676214a"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 8f0b5529898dcf81ccda5e22a88b227d16e2452d
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 4 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3849332/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-111
 
-Request an adapter with error CQEs when it is supported.
-
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- drivers/infiniband/hw/mana/main.c    | 3 +++
- drivers/infiniband/hw/mana/mana_ib.h | 8 ++++++++
- 2 files changed, 11 insertions(+)
-
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 3d4b8e2..e3230fe 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -794,6 +794,9 @@ int mana_ib_gd_create_rnic_adapter(struct mana_ib_dev *mdev)
- 	req.hdr.dev_id = gc->mana_ib.dev_id;
- 	req.notify_eq_id = mdev->fatal_err_eq->id;
- 
-+	if (mdev->adapter_caps.feature_flags & MANA_IB_FEATURE_CLIENT_ERROR_CQE_SUPPORT)
-+		req.feature_flags |= MANA_IB_FEATURE_CLIENT_ERROR_CQE_REQUEST;
-+
- 	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
- 	if (err) {
- 		ibdev_err(&mdev->ib_dev, "Failed to create RNIC adapter err %d", err);
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index baaeef0..ad716a9 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -211,6 +211,10 @@ struct mana_ib_query_adapter_caps_req {
- 	struct gdma_req_hdr hdr;
- }; /*HW Data */
- 
-+enum mana_ib_adapter_features {
-+	MANA_IB_FEATURE_CLIENT_ERROR_CQE_SUPPORT = BIT(4),
-+};
-+
- struct mana_ib_query_adapter_caps_resp {
- 	struct gdma_resp_hdr hdr;
- 	u32 max_sq_id;
-@@ -234,6 +238,10 @@ struct mana_ib_query_adapter_caps_resp {
- 	u64 feature_flags;
- }; /* HW Data */
- 
-+enum mana_ib_adapter_features_request {
-+	MANA_IB_FEATURE_CLIENT_ERROR_CQE_REQUEST = BIT(1),
-+}; /*HW Data */
-+
- struct mana_rnic_create_adapter_req {
- 	struct gdma_req_hdr hdr;
- 	u32 notify_eq_id;
--- 
-2.43.0
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3849332
+Your team Linux RDMA is the requester of the build.
 
 
