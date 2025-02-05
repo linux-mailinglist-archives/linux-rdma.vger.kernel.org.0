@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-7457-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7460-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF7FEA298AB
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 19:21:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85D81A298B5
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 19:21:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC1FF168518
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 18:20:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E555168DF8
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 18:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3CCC1779AE;
-	Wed,  5 Feb 2025 18:20:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACF1F1FE46C;
+	Wed,  5 Feb 2025 18:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T1iuvS49"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MYfe2IX4"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5571FCD1F;
-	Wed,  5 Feb 2025 18:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6180713D897;
+	Wed,  5 Feb 2025 18:20:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738779647; cv=none; b=HzgY+Q/gDyQAgkrp4VdGohx7pCx9YX8SmYtkgl0xlSozMzscDRy36PmOyJGdQZu1bB+2gcrStTW35hAijEFKqPdDVUHF2GoDmDBgk1e8i+ucLK2Uq6AYgvmske/EGROpDMyrXccZ+8LMkijK9PqrVTOyUb2fnddyiWhoOW7U/es=
+	t=1738779658; cv=none; b=L0P+oT+Izra/YNnXMM9jPzQsq/Rxr8mewt+g3sOHpjh58ywWpnhgJ5Pfq94dXYcVMBlyY5woDN/Cs7o+eLBry2mllOaPsN/HqeK3Sw0kEDN1X0Ufk9gKo4wVaoU60u4ZrmEmDDmikWFmPJpyUIRn2KK1x+6W3xpQj0w6meRtIAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738779647; c=relaxed/simple;
-	bh=SCHohVyocop9U+D74KyFZpzTnEVgZWU7PjsASmySSzQ=;
+	s=arc-20240116; t=1738779658; c=relaxed/simple;
+	bh=r597A/mrJflwwdNJJ4+diLkn7fbJg1NeWa572JQU1lw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=USEEMeZhC2Y35faEe8wL3mXOTOKNaYw/geIS7KaE/eSBW7UgRb0Wk1YD6JCjnxVwUzZ7pyIoHk5KB8D/Pooi3LuI6QqifyUEQoxsVDD4oUpvxqi6XBCX6SjKViQasENTWZjj70iskrFxKqRdppljRqBjuUEtf3gUaLs3mf+tYv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T1iuvS49; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 225E0C4CED1;
-	Wed,  5 Feb 2025 18:20:46 +0000 (UTC)
+	 MIME-Version; b=WUXezYm28VIRNSv5VIXofbfvOVqDjaS6CCY1AHSZmUuKTm+KT8eYtFO2lFqgez478T+LcAQ7oprSUOyy8UHLFh0caI0TP6oECtQnMy7Ixqy3RckYsT44ZUoZ8frottP8qVMnH1kFm+NjCIOqr3rMAdCyuMdrTNuD40JjhVhRNeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MYfe2IX4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22B24C4CED1;
+	Wed,  5 Feb 2025 18:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738779646;
-	bh=SCHohVyocop9U+D74KyFZpzTnEVgZWU7PjsASmySSzQ=;
+	s=k20201202; t=1738779657;
+	bh=r597A/mrJflwwdNJJ4+diLkn7fbJg1NeWa572JQU1lw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T1iuvS49G1SDbHxveO9HoPx5m3rmJtLOJdGmWJMQ9/21Hexh7fVrleuNrcgZ432uI
-	 YJEcoV8QE/Pp+pkCnfkcWIkEwojbWPXglG3/X2sRYOIqqIuEpiIgaUqrnDi5Iw9IRU
-	 29O/kwkv4enT7RceufiDOKsIKMqVOb7ruuTCK4UsMS5FpUZeB/Ug9fdqePEljqpTSe
-	 QGDaiAQUIffTuRcIUOuutEjTBpu3TTAXjEwx6ck1mX1iwCXGt7adTwgjPcUlrbZcCC
-	 j89PhLZE+CsL0cTzDa0PbRD8HzC3YvH8YXjXhwBYgupCGHXDd1GKGlXrF6wOA6sp9U
-	 5RRHAAYTvalNg==
+	b=MYfe2IX4HHbHPFfeTLqPwyEVtvpFDLtQ00dxIz1HjgifTX5I+ow4/9aoj5Q7bwSGw
+	 mc+2+jPV2QpDJtcj6EPEFG4kTsO1y2HN5YfDVQ7ZdVuk3umAK0mpzO7VhPz1fVGnwl
+	 UVG+SW389mHoZR649iKJxBV0xu2WinFdAIVeSj+EJeKtsANxOr2l0Vfsqqt670ttpK
+	 f2OE6CNM6O/JsY9XrN6k/Ja0YWNwG7Lu1oNMZe4ITunBeFS77VdjchkrLXqSEOadJ7
+	 eAuQ829nfbzkHAZu2M3RdiHZL5yoFzXOfDPrQfKsvy9P2/f1hYird3LIvLqhavDz+h
+	 pYaCG+Vj3IFDQ==
 From: Leon Romanovsky <leon@kernel.org>
 To: Steffen Klassert <steffen.klassert@secunet.com>
 Cc: Leon Romanovsky <leonro@nvidia.com>,
@@ -69,9 +69,9 @@ Cc: Leon Romanovsky <leonro@nvidia.com>,
 	Tariq Toukan <tariqt@nvidia.com>,
 	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	Ilia Lin <ilia.lin@kernel.org>
-Subject: [PATCH ipsec-next 2/5] xfrm: simplify SA initialization routine
-Date: Wed,  5 Feb 2025 20:20:21 +0200
-Message-ID: <dcadf7c144207017104657f85d512889a2d1a09e.1738778580.git.leon@kernel.org>
+Subject: [PATCH ipsec-next 3/5] xfrm: rely on XFRM offload
+Date: Wed,  5 Feb 2025 20:20:22 +0200
+Message-ID: <3de0445fa7bf53af388bb8d05faf60e3deb81dc2.1738778580.git.leon@kernel.org>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1738778580.git.leon@kernel.org>
 References: <cover.1738778580.git.leon@kernel.org>
@@ -85,96 +85,46 @@ Content-Transfer-Encoding: 8bit
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-SA replay mode is initialized differently for user-space and
-kernel-space users, but the call to xfrm_init_replay() existed in
-common path with boolean protection. That caused to situation where
-we have two different function orders.
-
-So let's rewrite the SA initialization flow to have same order for
-both in-kernel and user-space callers.
+After change of initialization of x->type_offload pointer to be valid
+only for offloaded SAs. There is no need to rely both on x->type_offload
+and x->xso.type to determine if SA is offloaded or not.
 
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- include/net/xfrm.h    |  3 +--
- net/xfrm/xfrm_state.c | 22 ++++++++++------------
- net/xfrm/xfrm_user.c  |  2 +-
- 3 files changed, 12 insertions(+), 15 deletions(-)
+ net/xfrm/xfrm_device.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/include/net/xfrm.h b/include/net/xfrm.h
-index 28355a5be5b9..58f8f7661ec4 100644
---- a/include/net/xfrm.h
-+++ b/include/net/xfrm.h
-@@ -1770,8 +1770,7 @@ void xfrm_spd_getinfo(struct net *net, struct xfrmk_spdinfo *si);
- u32 xfrm_replay_seqhi(struct xfrm_state *x, __be32 net_seq);
- int xfrm_init_replay(struct xfrm_state *x, struct netlink_ext_ack *extack);
- u32 xfrm_state_mtu(struct xfrm_state *x, int mtu);
--int __xfrm_init_state(struct xfrm_state *x, bool init_replay,
--		      struct netlink_ext_ack *extack);
-+int __xfrm_init_state(struct xfrm_state *x, struct netlink_ext_ack *extack);
- int xfrm_init_state(struct xfrm_state *x);
- int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type);
- int xfrm_input_resume(struct sk_buff *skb, int nexthdr);
-diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
-index 568fe8df7741..42799b0946a3 100644
---- a/net/xfrm/xfrm_state.c
-+++ b/net/xfrm/xfrm_state.c
-@@ -3120,8 +3120,7 @@ u32 xfrm_state_mtu(struct xfrm_state *x, int mtu)
+diff --git a/net/xfrm/xfrm_device.c b/net/xfrm/xfrm_device.c
+index e01a7f5a4c75..c3c170953bf9 100644
+--- a/net/xfrm/xfrm_device.c
++++ b/net/xfrm/xfrm_device.c
+@@ -420,13 +420,11 @@ bool xfrm_dev_offload_ok(struct sk_buff *skb, struct xfrm_state *x)
+ 	struct xfrm_dst *xdst = (struct xfrm_dst *)dst;
+ 	struct net_device *dev = x->xso.dev;
+ 
+-	if (!x->type_offload ||
+-	    (x->xso.type == XFRM_DEV_OFFLOAD_UNSPECIFIED && x->encap))
++	if (x->xso.type == XFRM_DEV_OFFLOAD_UNSPECIFIED)
+ 		return false;
+ 
+ 	if (x->xso.type == XFRM_DEV_OFFLOAD_PACKET ||
+-	    ((!dev || (dev == xfrm_dst_path(dst)->dev)) &&
+-	     !xdst->child->xfrm)) {
++	    ((dev == xfrm_dst_path(dst)->dev) && !xdst->child->xfrm)) {
+ 		mtu = xfrm_state_mtu(x, xdst->child_mtu_cached);
+ 		if (skb->len <= mtu)
+ 			goto ok;
+@@ -438,8 +436,8 @@ bool xfrm_dev_offload_ok(struct sk_buff *skb, struct xfrm_state *x)
+ 	return false;
+ 
+ ok:
+-	if (dev && dev->xfrmdev_ops && dev->xfrmdev_ops->xdo_dev_offload_ok)
+-		return x->xso.dev->xfrmdev_ops->xdo_dev_offload_ok(skb, x);
++	if (dev->xfrmdev_ops->xdo_dev_offload_ok)
++		return dev->xfrmdev_ops->xdo_dev_offload_ok(skb, x);
+ 
+ 	return true;
  }
- EXPORT_SYMBOL_GPL(xfrm_state_mtu);
- 
--int __xfrm_init_state(struct xfrm_state *x, bool init_replay,
--		      struct netlink_ext_ack *extack)
-+int __xfrm_init_state(struct xfrm_state *x, struct netlink_ext_ack *extack)
- {
- 	const struct xfrm_mode *inner_mode;
- 	const struct xfrm_mode *outer_mode;
-@@ -3188,12 +3187,6 @@ int __xfrm_init_state(struct xfrm_state *x, bool init_replay,
- 	}
- 
- 	x->outer_mode = *outer_mode;
--	if (init_replay) {
--		err = xfrm_init_replay(x, extack);
--		if (err)
--			goto error;
--	}
--
- 	if (x->nat_keepalive_interval) {
- 		if (x->dir != XFRM_SA_DIR_OUT) {
- 			NL_SET_ERR_MSG(extack, "NAT keepalive is only supported for outbound SAs");
-@@ -3225,11 +3218,16 @@ int xfrm_init_state(struct xfrm_state *x)
- {
- 	int err;
- 
--	err = __xfrm_init_state(x, true, NULL);
--	if (!err)
--		x->km.state = XFRM_STATE_VALID;
-+	err = __xfrm_init_state(x, NULL);
-+	if (err)
-+		return err;
- 
--	return err;
-+	err = xfrm_init_replay(x, NULL);
-+	if (err)
-+		return err;
-+
-+	x->km.state = XFRM_STATE_VALID;
-+	return 0;
- }
- 
- EXPORT_SYMBOL(xfrm_init_state);
-diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
-index 82a768500999..d1d422f68978 100644
---- a/net/xfrm/xfrm_user.c
-+++ b/net/xfrm/xfrm_user.c
-@@ -907,7 +907,7 @@ static struct xfrm_state *xfrm_state_construct(struct net *net,
- 			goto error;
- 	}
- 
--	err = __xfrm_init_state(x, false, extack);
-+	err = __xfrm_init_state(x, extack);
- 	if (err)
- 		goto error;
- 
 -- 
 2.48.1
 
