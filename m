@@ -1,63 +1,63 @@
-Return-Path: <linux-rdma+bounces-7463-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7464-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 351EEA29984
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 19:55:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 195E8A29986
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 19:55:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 665BE1883533
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B081162DD5
 	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 18:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2621FF7D2;
-	Wed,  5 Feb 2025 18:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E7D200111;
+	Wed,  5 Feb 2025 18:55:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YC56Xa0t"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jQDq64Hx"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D961FECBF;
-	Wed,  5 Feb 2025 18:55:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8B51FF617;
+	Wed,  5 Feb 2025 18:55:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738781727; cv=none; b=qs1JvIUFdvYqD3rxiSZD4/7cEnl16SLFWqEN681hBlAGW0Vq8G33KuaM2vN0RM3v9GFcXycBaz6JP6CUfRab7i18n0TmHVDwzrJ2qfoJqqEnA7Gzr1ZrT7jb5PZ+aeUzumFA8r33V/JZubcEvFa5w0f2fBJiVZbf52TNvn4zypU=
+	t=1738781729; cv=none; b=OD6+57jsx8ac9QV0JDnZ/RGo5MUJxYcoNU64o4tabqPBy0IrqizEk3ymAR5GsS++Oud2gxYaEWYU2JhaEjlyPFCJOwzcpqnWNv4M7v6ac14u2lalMCgO00Gb3dzgcOpKDi52SvqKgD6baJxtaUtHZctZOm1vr2HR2Tf7yZnnqNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738781727; c=relaxed/simple;
-	bh=OCyQW4vemfCtneuoZGxNjd2q1o6NN6ACNGwnOzRRSpw=;
+	s=arc-20240116; t=1738781729; c=relaxed/simple;
+	bh=48X4rBeutIO/ju6ogwYRP8iLyoRFxEKscfPZORbenLI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=INaqVTjlKfRKlM8IoCkNTqYoN2/AyZa65NIBVoCAvnh5u+w5mzEuPEQt6RL4iwez2H8aHxbCwbdHTajQEMTG6Ffjd6dUq0KsDaEJ2FsbMo8gedo/e+XKyvLJ+L0OMdbICQ1+S5UcMCBnCICI/1TBTdKkb5fa0CscLb01hLf+IJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YC56Xa0t; arc=none smtp.client-ip=198.175.65.9
+	 MIME-Version; b=WZRw48EVu+Wl2FEhucsUa5aFQs38KRjYdA5XDdwUPOY8DPE3gwbRR8apSr04ktiraI7vz47Va0He4XBjNnEMvi8AM/E/ZLs+DA1T5WDtymqC26oXhdOG/cqC2htYnmzRWV9z8kwxUdPWaC5ijZ3N+FXHZ9+NSPRsGkCYcKhtk50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jQDq64Hx; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738781726; x=1770317726;
+  t=1738781727; x=1770317727;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=OCyQW4vemfCtneuoZGxNjd2q1o6NN6ACNGwnOzRRSpw=;
-  b=YC56Xa0tK+/E4YwjQytFhoFuaBBmexyLJVmQaCVON2OKHgKbL9HNWmhZ
-   VSSdJho/BaxawEhSyrnas30eAQohf+ynpWc6gq6B5bUwIMohT0+k4U4dU
-   vLPFEioc7yjPAFsDNobGgPWUU9ZxMKyH980bFgwLjMFzw9PsHPDxYsr7F
-   4ATJY9Tmj2g5qah7/I5vmbXdw+PDZNuGRxqUQrt5uKlaTQsedY+7wYtbH
-   eBOu/wc/ruzZXySbtFlMNSZKTwYGGjQ76IeMsrCGMRcIqhiEq6f2qFfk8
-   hseSuBZLqI+JFGf6qGQ1Rx+ESmkvFzOVAGBpDpB2KDcKJL2IhlyXk9rvX
-   A==;
-X-CSE-ConnectionGUID: iYgzh6tYRC6/QLABXwTukg==
-X-CSE-MsgGUID: 6g9f8QElR7yJdSCo3Oubrg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="61834415"
+  bh=48X4rBeutIO/ju6ogwYRP8iLyoRFxEKscfPZORbenLI=;
+  b=jQDq64Hx9wMX8hb1J5dRnt8nT104WgUW9ukkj1tdX2UsPYa+HUCWINHk
+   DDz0FwUD+DPnySJEvTijVgY9Q4PmOPR+Jr6g/3YMJbT6h3b8fH3M5F8An
+   5qRXqxWpz6DbCSD0t7BG/yWDiNBjsnAPenki1+Ton5GdQ69p23xQzRp4W
+   glq7hxc7K99I+FlRKgpMhg+YyYm+VFzwdG71nxgVGA69Veuzcd1QewrjN
+   hDDaCHoO0zruzhD/PfuCZEYOofdbV4uhGVZqYOAr5TSyS/BH5tnnElTzF
+   gRG9DQrSzrnnvoV64FyFARPQlyVnKQwf8hB7xg+h5txTW97kcMGyoUazU
+   w==;
+X-CSE-ConnectionGUID: VDJXvC+lSq2MVeJTQKJeTg==
+X-CSE-MsgGUID: n16us0ZPSACBO3t2/ltiOg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="61834431"
 X-IronPort-AV: E=Sophos;i="6.13,262,1732608000"; 
-   d="scan'208";a="61834415"
+   d="scan'208";a="61834431"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2025 10:55:25 -0800
-X-CSE-ConnectionGUID: 3uPCKM6gQCyViJHy92m3FQ==
-X-CSE-MsgGUID: zm41Xx62Q+KLfAyFiVo1zw==
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2025 10:55:26 -0800
+X-CSE-ConnectionGUID: AXW+5iNwR6yoLsBloqVDAw==
+X-CSE-MsgGUID: Y1ek18puSB6ub9OPZnno1A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.13,262,1732608000"; 
-   d="scan'208";a="111515263"
+   d="scan'208";a="111515273"
 Received: from anguy11-upstream.jf.intel.com ([10.166.9.133])
-  by fmviesa010.fm.intel.com with ESMTP; 05 Feb 2025 10:55:23 -0800
+  by fmviesa010.fm.intel.com with ESMTP; 05 Feb 2025 10:55:25 -0800
 From: Tony Nguyen <anthony.l.nguyen@intel.com>
 To: davem@davemloft.net,
 	kuba@kernel.org,
@@ -82,12 +82,10 @@ Cc: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
 	tatyana.e.nikolova@intel.com,
 	Jason Gunthorpe <jgg@ziepe.ca>,
 	Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org,
-	corbet@lwn.net,
-	linux-doc@vger.kernel.org
-Subject: [PATCH net-next v2 2/9] ice: devlink PF MSI-X max and min parameter
-Date: Wed,  5 Feb 2025 10:55:02 -0800
-Message-ID: <20250205185512.895887-3-anthony.l.nguyen@intel.com>
+	linux-rdma@vger.kernel.org
+Subject: [PATCH net-next v2 3/9] ice: remove splitting MSI-X between features
+Date: Wed,  5 Feb 2025 10:55:03 -0800
+Message-ID: <20250205185512.895887-4-anthony.l.nguyen@intel.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250205185512.895887-1-anthony.l.nguyen@intel.com>
 References: <20250205185512.895887-1-anthony.l.nguyen@intel.com>
@@ -101,224 +99,232 @@ Content-Transfer-Encoding: 8bit
 
 From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
 
-Use generic devlink PF MSI-X parameter to allow user to change MSI-X
-range.
+With dynamic approach to alloc MSI-X there is no sense to statically
+split MSI-X between PF features.
 
-Add notes about this parameters into ice devlink documentation.
+Splitting was also calculating needed MSI-X. Move this part to separate
+function and use as max value.
 
+Remove ICE_ESWITCH_MSIX, as there is no need for additional MSI-X for
+switchdev.
+
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
 Tested-by: Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com>
 Signed-off-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 ---
- Documentation/networking/devlink/ice.rst      | 11 +++
- .../net/ethernet/intel/ice/devlink/devlink.c  | 81 +++++++++++++++++++
- drivers/net/ethernet/intel/ice/ice.h          |  7 ++
- drivers/net/ethernet/intel/ice/ice_irq.c      |  7 ++
- 4 files changed, 106 insertions(+)
+ drivers/net/ethernet/intel/ice/ice.h     |   2 -
+ drivers/net/ethernet/intel/ice/ice_irq.c | 172 +++--------------------
+ 2 files changed, 16 insertions(+), 158 deletions(-)
 
-diff --git a/Documentation/networking/devlink/ice.rst b/Documentation/networking/devlink/ice.rst
-index e3972d03cea0..792e9f8c846a 100644
---- a/Documentation/networking/devlink/ice.rst
-+++ b/Documentation/networking/devlink/ice.rst
-@@ -69,6 +69,17 @@ Parameters
- 
-        To verify that value has been set:
-        $ devlink dev param show pci/0000:16:00.0 name tx_scheduling_layers
-+   * - ``msix_vec_per_pf_max``
-+     - driverinit
-+     - Set the max MSI-X that can be used by the PF, rest can be utilized for
-+       SRIOV. The range is from min value set in msix_vec_per_pf_min to
-+       2k/number of ports.
-+   * - ``msix_vec_per_pf_min``
-+     - driverinit
-+     - Set the min MSI-X that will be used by the PF. This value inform how many
-+       MSI-X will be allocated statically. The range is from 2 to value set
-+       in msix_vec_per_pf_max.
-+
- .. list-table:: Driver specific parameters implemented
-     :widths: 5 5 90
- 
-diff --git a/drivers/net/ethernet/intel/ice/devlink/devlink.c b/drivers/net/ethernet/intel/ice/devlink/devlink.c
-index d116e2b10bce..81de5fbc130e 100644
---- a/drivers/net/ethernet/intel/ice/devlink/devlink.c
-+++ b/drivers/net/ethernet/intel/ice/devlink/devlink.c
-@@ -1202,6 +1202,25 @@ static int ice_devlink_set_parent(struct devlink_rate *devlink_rate,
- 	return status;
- }
- 
-+static void ice_set_min_max_msix(struct ice_pf *pf)
-+{
-+	struct devlink *devlink = priv_to_devlink(pf);
-+	union devlink_param_value val;
-+	int err;
-+
-+	err = devl_param_driverinit_value_get(devlink,
-+					      DEVLINK_PARAM_GENERIC_ID_MSIX_VEC_PER_PF_MIN,
-+					      &val);
-+	if (!err)
-+		pf->msix.min = val.vu32;
-+
-+	err = devl_param_driverinit_value_get(devlink,
-+					      DEVLINK_PARAM_GENERIC_ID_MSIX_VEC_PER_PF_MAX,
-+					      &val);
-+	if (!err)
-+		pf->msix.max = val.vu32;
-+}
-+
- /**
-  * ice_devlink_reinit_up - do reinit of the given PF
-  * @pf: pointer to the PF struct
-@@ -1217,6 +1236,9 @@ static int ice_devlink_reinit_up(struct ice_pf *pf)
- 		return err;
- 	}
- 
-+	/* load MSI-X values */
-+	ice_set_min_max_msix(pf);
-+
- 	err = ice_init_dev(pf);
- 	if (err)
- 		goto unroll_hw_init;
-@@ -1530,6 +1552,30 @@ static int ice_devlink_local_fwd_validate(struct devlink *devlink, u32 id,
- 	return 0;
- }
- 
-+static int
-+ice_devlink_msix_max_pf_validate(struct devlink *devlink, u32 id,
-+				 union devlink_param_value val,
-+				 struct netlink_ext_ack *extack)
-+{
-+	struct ice_pf *pf = devlink_priv(devlink);
-+
-+	if (val.vu32 > pf->hw.func_caps.common_cap.num_msix_vectors)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static int
-+ice_devlink_msix_min_pf_validate(struct devlink *devlink, u32 id,
-+				 union devlink_param_value val,
-+				 struct netlink_ext_ack *extack)
-+{
-+	if (val.vu32 < ICE_MIN_MSIX)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
- enum ice_param_id {
- 	ICE_DEVLINK_PARAM_ID_BASE = DEVLINK_PARAM_GENERIC_ID_MAX,
- 	ICE_DEVLINK_PARAM_ID_TX_SCHED_LAYERS,
-@@ -1547,6 +1593,15 @@ static const struct devlink_param ice_dvl_rdma_params[] = {
- 			      ice_devlink_enable_iw_validate),
- };
- 
-+static const struct devlink_param ice_dvl_msix_params[] = {
-+	DEVLINK_PARAM_GENERIC(MSIX_VEC_PER_PF_MAX,
-+			      BIT(DEVLINK_PARAM_CMODE_DRIVERINIT),
-+			      NULL, NULL, ice_devlink_msix_max_pf_validate),
-+	DEVLINK_PARAM_GENERIC(MSIX_VEC_PER_PF_MIN,
-+			      BIT(DEVLINK_PARAM_CMODE_DRIVERINIT),
-+			      NULL, NULL, ice_devlink_msix_min_pf_validate),
-+};
-+
- static const struct devlink_param ice_dvl_sched_params[] = {
- 	DEVLINK_PARAM_DRIVER(ICE_DEVLINK_PARAM_ID_TX_SCHED_LAYERS,
- 			     "tx_scheduling_layers",
-@@ -1648,6 +1703,7 @@ void ice_devlink_unregister(struct ice_pf *pf)
- int ice_devlink_register_params(struct ice_pf *pf)
- {
- 	struct devlink *devlink = priv_to_devlink(pf);
-+	union devlink_param_value value;
- 	struct ice_hw *hw = &pf->hw;
- 	int status;
- 
-@@ -1656,10 +1712,33 @@ int ice_devlink_register_params(struct ice_pf *pf)
- 	if (status)
- 		return status;
- 
-+	status = devl_params_register(devlink, ice_dvl_msix_params,
-+				      ARRAY_SIZE(ice_dvl_msix_params));
-+	if (status)
-+		goto unregister_rdma_params;
-+
- 	if (hw->func_caps.common_cap.tx_sched_topo_comp_mode_en)
- 		status = devl_params_register(devlink, ice_dvl_sched_params,
- 					      ARRAY_SIZE(ice_dvl_sched_params));
-+	if (status)
-+		goto unregister_msix_params;
-+
-+	value.vu32 = pf->msix.max;
-+	devl_param_driverinit_value_set(devlink,
-+					DEVLINK_PARAM_GENERIC_ID_MSIX_VEC_PER_PF_MAX,
-+					value);
-+	value.vu32 = pf->msix.min;
-+	devl_param_driverinit_value_set(devlink,
-+					DEVLINK_PARAM_GENERIC_ID_MSIX_VEC_PER_PF_MIN,
-+					value);
-+	return 0;
- 
-+unregister_msix_params:
-+	devl_params_unregister(devlink, ice_dvl_msix_params,
-+			       ARRAY_SIZE(ice_dvl_msix_params));
-+unregister_rdma_params:
-+	devl_params_unregister(devlink, ice_dvl_rdma_params,
-+			       ARRAY_SIZE(ice_dvl_rdma_params));
- 	return status;
- }
- 
-@@ -1670,6 +1749,8 @@ void ice_devlink_unregister_params(struct ice_pf *pf)
- 
- 	devl_params_unregister(devlink, ice_dvl_rdma_params,
- 			       ARRAY_SIZE(ice_dvl_rdma_params));
-+	devl_params_unregister(devlink, ice_dvl_msix_params,
-+			       ARRAY_SIZE(ice_dvl_msix_params));
- 
- 	if (hw->func_caps.common_cap.tx_sched_topo_comp_mode_en)
- 		devl_params_unregister(devlink, ice_dvl_sched_params,
 diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index 71e05d30f0fd..d041b04ff324 100644
+index d041b04ff324..c78bd45cf016 100644
 --- a/drivers/net/ethernet/intel/ice/ice.h
 +++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -542,6 +542,12 @@ struct ice_agg_node {
- 	u8 valid;
- };
- 
-+struct ice_pf_msix {
-+	u32 cur;
-+	u32 min;
-+	u32 max;
-+};
-+
- struct ice_pf {
- 	struct pci_dev *pdev;
- 	struct ice_adapter *adapter;
-@@ -612,6 +618,7 @@ struct ice_pf {
- 	struct msi_map ll_ts_irq;	/* LL_TS interrupt MSIX vector */
- 	u16 max_pf_txqs;	/* Total Tx queues PF wide */
- 	u16 max_pf_rxqs;	/* Total Rx queues PF wide */
-+	struct ice_pf_msix msix;
- 	u16 num_lan_msix;	/* Total MSIX vectors for base driver */
- 	u16 num_lan_tx;		/* num LAN Tx queues setup */
- 	u16 num_lan_rx;		/* num LAN Rx queues setup */
+@@ -98,8 +98,6 @@
+ #define ICE_MIN_MSIX		(ICE_MIN_LAN_TXRX_MSIX + ICE_MIN_LAN_OICR_MSIX)
+ #define ICE_FDIR_MSIX		2
+ #define ICE_RDMA_NUM_AEQ_MSIX	4
+-#define ICE_MIN_RDMA_MSIX	2
+-#define ICE_ESWITCH_MSIX	1
+ #define ICE_NO_VSI		0xffff
+ #define ICE_VSI_MAP_CONTIG	0
+ #define ICE_VSI_MAP_SCATTER	1
 diff --git a/drivers/net/ethernet/intel/ice/ice_irq.c b/drivers/net/ethernet/intel/ice/ice_irq.c
-index ad82ff7d1995..0659b96b9b8c 100644
+index 0659b96b9b8c..4a50a6dc817e 100644
 --- a/drivers/net/ethernet/intel/ice/ice_irq.c
 +++ b/drivers/net/ethernet/intel/ice/ice_irq.c
-@@ -254,6 +254,13 @@ int ice_init_interrupt_scheme(struct ice_pf *pf)
- 	int total_vectors = pf->hw.func_caps.common_cap.num_msix_vectors;
- 	int vectors, max_vectors;
+@@ -84,155 +84,11 @@ static struct ice_irq_entry *ice_get_irq_res(struct ice_pf *pf, bool dyn_only)
+ 	return entry;
+ }
  
-+	/* load default PF MSI-X range */
-+	if (!pf->msix.min)
-+		pf->msix.min = ICE_MIN_MSIX;
-+
-+	if (!pf->msix.max)
-+		pf->msix.max = total_vectors / 2;
-+
- 	vectors = ice_ena_msix_range(pf);
+-/**
+- * ice_reduce_msix_usage - Reduce usage of MSI-X vectors
+- * @pf: board private structure
+- * @v_remain: number of remaining MSI-X vectors to be distributed
+- *
+- * Reduce the usage of MSI-X vectors when entire request cannot be fulfilled.
+- * pf->num_lan_msix and pf->num_rdma_msix values are set based on number of
+- * remaining vectors.
+- */
+-static void ice_reduce_msix_usage(struct ice_pf *pf, int v_remain)
++static int ice_get_default_msix_amount(struct ice_pf *pf)
+ {
+-	int v_rdma;
+-
+-	if (!ice_is_rdma_ena(pf)) {
+-		pf->num_lan_msix = v_remain;
+-		return;
+-	}
+-
+-	/* RDMA needs at least 1 interrupt in addition to AEQ MSIX */
+-	v_rdma = ICE_RDMA_NUM_AEQ_MSIX + 1;
+-
+-	if (v_remain < ICE_MIN_LAN_TXRX_MSIX + ICE_MIN_RDMA_MSIX) {
+-		dev_warn(ice_pf_to_dev(pf), "Not enough MSI-X vectors to support RDMA.\n");
+-		clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
+-
+-		pf->num_rdma_msix = 0;
+-		pf->num_lan_msix = ICE_MIN_LAN_TXRX_MSIX;
+-	} else if ((v_remain < ICE_MIN_LAN_TXRX_MSIX + v_rdma) ||
+-		   (v_remain - v_rdma < v_rdma)) {
+-		/* Support minimum RDMA and give remaining vectors to LAN MSIX
+-		 */
+-		pf->num_rdma_msix = ICE_MIN_RDMA_MSIX;
+-		pf->num_lan_msix = v_remain - ICE_MIN_RDMA_MSIX;
+-	} else {
+-		/* Split remaining MSIX with RDMA after accounting for AEQ MSIX
+-		 */
+-		pf->num_rdma_msix = (v_remain - ICE_RDMA_NUM_AEQ_MSIX) / 2 +
+-				    ICE_RDMA_NUM_AEQ_MSIX;
+-		pf->num_lan_msix = v_remain - pf->num_rdma_msix;
+-	}
+-}
+-
+-/**
+- * ice_ena_msix_range - Request a range of MSIX vectors from the OS
+- * @pf: board private structure
+- *
+- * Compute the number of MSIX vectors wanted and request from the OS. Adjust
+- * device usage if there are not enough vectors. Return the number of vectors
+- * reserved or negative on failure.
+- */
+-static int ice_ena_msix_range(struct ice_pf *pf)
+-{
+-	int num_cpus, hw_num_msix, v_other, v_wanted, v_actual;
+-	struct device *dev = ice_pf_to_dev(pf);
+-	int err;
+-
+-	hw_num_msix = pf->hw.func_caps.common_cap.num_msix_vectors;
+-	num_cpus = num_online_cpus();
+-
+-	/* LAN miscellaneous handler */
+-	v_other = ICE_MIN_LAN_OICR_MSIX;
+-
+-	/* Flow Director */
+-	if (test_bit(ICE_FLAG_FD_ENA, pf->flags))
+-		v_other += ICE_FDIR_MSIX;
+-
+-	/* switchdev */
+-	v_other += ICE_ESWITCH_MSIX;
+-
+-	v_wanted = v_other;
+-
+-	/* LAN traffic */
+-	pf->num_lan_msix = num_cpus;
+-	v_wanted += pf->num_lan_msix;
+-
+-	/* RDMA auxiliary driver */
+-	if (ice_is_rdma_ena(pf)) {
+-		pf->num_rdma_msix = num_cpus + ICE_RDMA_NUM_AEQ_MSIX;
+-		v_wanted += pf->num_rdma_msix;
+-	}
+-
+-	if (v_wanted > hw_num_msix) {
+-		int v_remain;
+-
+-		dev_warn(dev, "not enough device MSI-X vectors. wanted = %d, available = %d\n",
+-			 v_wanted, hw_num_msix);
+-
+-		if (hw_num_msix < ICE_MIN_MSIX) {
+-			err = -ERANGE;
+-			goto exit_err;
+-		}
+-
+-		v_remain = hw_num_msix - v_other;
+-		if (v_remain < ICE_MIN_LAN_TXRX_MSIX) {
+-			v_other = ICE_MIN_MSIX - ICE_MIN_LAN_TXRX_MSIX;
+-			v_remain = ICE_MIN_LAN_TXRX_MSIX;
+-		}
+-
+-		ice_reduce_msix_usage(pf, v_remain);
+-		v_wanted = pf->num_lan_msix + pf->num_rdma_msix + v_other;
+-
+-		dev_notice(dev, "Reducing request to %d MSI-X vectors for LAN traffic.\n",
+-			   pf->num_lan_msix);
+-		if (ice_is_rdma_ena(pf))
+-			dev_notice(dev, "Reducing request to %d MSI-X vectors for RDMA.\n",
+-				   pf->num_rdma_msix);
+-	}
+-
+-	/* actually reserve the vectors */
+-	v_actual = pci_alloc_irq_vectors(pf->pdev, ICE_MIN_MSIX, v_wanted,
+-					 PCI_IRQ_MSIX);
+-	if (v_actual < 0) {
+-		dev_err(dev, "unable to reserve MSI-X vectors\n");
+-		err = v_actual;
+-		goto exit_err;
+-	}
+-
+-	if (v_actual < v_wanted) {
+-		dev_warn(dev, "not enough OS MSI-X vectors. requested = %d, obtained = %d\n",
+-			 v_wanted, v_actual);
+-
+-		if (v_actual < ICE_MIN_MSIX) {
+-			/* error if we can't get minimum vectors */
+-			pci_free_irq_vectors(pf->pdev);
+-			err = -ERANGE;
+-			goto exit_err;
+-		} else {
+-			int v_remain = v_actual - v_other;
+-
+-			if (v_remain < ICE_MIN_LAN_TXRX_MSIX)
+-				v_remain = ICE_MIN_LAN_TXRX_MSIX;
+-
+-			ice_reduce_msix_usage(pf, v_remain);
+-
+-			dev_notice(dev, "Enabled %d MSI-X vectors for LAN traffic.\n",
+-				   pf->num_lan_msix);
+-
+-			if (ice_is_rdma_ena(pf))
+-				dev_notice(dev, "Enabled %d MSI-X vectors for RDMA.\n",
+-					   pf->num_rdma_msix);
+-		}
+-	}
+-
+-	return v_actual;
+-
+-exit_err:
+-	pf->num_rdma_msix = 0;
+-	pf->num_lan_msix = 0;
+-	return err;
++	return ICE_MIN_LAN_OICR_MSIX + num_online_cpus() +
++	       (test_bit(ICE_FLAG_FD_ENA, pf->flags) ? ICE_FDIR_MSIX : 0) +
++	       (ice_is_rdma_ena(pf) ? num_online_cpus() + ICE_RDMA_NUM_AEQ_MSIX : 0);
+ }
  
- 	if (vectors < 0)
+ /**
+@@ -259,17 +115,21 @@ int ice_init_interrupt_scheme(struct ice_pf *pf)
+ 		pf->msix.min = ICE_MIN_MSIX;
+ 
+ 	if (!pf->msix.max)
+-		pf->msix.max = total_vectors / 2;
+-
+-	vectors = ice_ena_msix_range(pf);
++		pf->msix.max = min(total_vectors,
++				   ice_get_default_msix_amount(pf));
+ 
+-	if (vectors < 0)
+-		return -ENOMEM;
+-
+-	if (pci_msix_can_alloc_dyn(pf->pdev))
++	if (pci_msix_can_alloc_dyn(pf->pdev)) {
++		vectors = pf->msix.min;
+ 		max_vectors = total_vectors;
+-	else
++	} else {
++		vectors = pf->msix.max;
+ 		max_vectors = vectors;
++	}
++
++	vectors = pci_alloc_irq_vectors(pf->pdev, pf->msix.min, vectors,
++					PCI_IRQ_MSIX);
++	if (vectors < pf->msix.min)
++		return -ENOMEM;
+ 
+ 	ice_init_irq_tracker(pf, max_vectors, vectors);
+ 
 -- 
 2.47.1
 
