@@ -1,69 +1,69 @@
-Return-Path: <linux-rdma+bounces-7453-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7454-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FCD3A295FD
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 17:15:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0225A29610
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 17:20:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD9BC3A1458
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 16:15:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE80E7A32AD
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 16:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F55D194A44;
-	Wed,  5 Feb 2025 16:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD0F219FA93;
+	Wed,  5 Feb 2025 16:20:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="KrHqFn7d"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DzvK2G2X"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1003B154C1D
-	for <linux-rdma@vger.kernel.org>; Wed,  5 Feb 2025 16:15:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41DC2149C7B
+	for <linux-rdma@vger.kernel.org>; Wed,  5 Feb 2025 16:20:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738772126; cv=none; b=EuyZaKpY8j8Y0wB704g2LhXujtxFh4htf76ZX23MIkriHtp1uvcD8TWW3qj0I/CvzN+t38Cl+eoFHrco66mAMvULARzspuRWEefigKHNK1X82r/Vsh2Q1J+HfDugp2zJcpZbTuueejQzCPacb/v2jQTwiVAUQG75ehi98C1kaDw=
+	t=1738772447; cv=none; b=Qp1uuhmD/D1JcxkxYkwx4Asbi1uPM/vUlTaYPuZTzFRAofcZFtpVGk7JJTm2Sso5291DWmFbwxjo8BhMQ+DKo9X7OKrfbeen1gvouKsAO94W+qtrkgf/CC8tttYEt7lLoqh5n1XNqgXJ6PzPVgtsKrGxJrt0IUVW4sTUx/JPkmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738772126; c=relaxed/simple;
-	bh=u2L6qfnkY9mMLyLeQe5dey+6tW4UaIAGptLgNRFIBvA=;
+	s=arc-20240116; t=1738772447; c=relaxed/simple;
+	bh=ptS5pmYSoqa1sLa/8PDNNLMurnAZCFSSHhfCsR1fk8Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hxSvDt/3G/U6IyVMmg65eJ2y85IPK+PAwEQveNbW/NFAtHkonCzTY6hkqwbKjXzSCbTvDwq4OMz3jfP/ggjdOAVcOubOJL52HadQx0V/vtxRsNj+ft7RAYX31YC0ADbjS3B+PVn5kV24uNwV6XF0We+UzlgN/5PosRIQkd+H820=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=KrHqFn7d; arc=none smtp.client-ip=209.85.214.169
+	 To:Cc:Content-Type; b=VObH9mxjyqpTN53lM5A1m2kra6sfzNbni2MfAeWv4dpvQSUmQFcyEDaYiDtMyU01jxJ6BJot0Tx1grvRnoNT1UOy7mWYLXSAJSjtrDW3NA2iG3+77EQVx5HkfzHUFGRd8owEROey8jQyoEjMGYJgaAaItNqIayyTOuytDmjk0z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=DzvK2G2X; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-21c2f1b610dso10156515ad.0
-        for <linux-rdma@vger.kernel.org>; Wed, 05 Feb 2025 08:15:24 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-21f05693a27so27620675ad.2
+        for <linux-rdma@vger.kernel.org>; Wed, 05 Feb 2025 08:20:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1738772124; x=1739376924; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1738772445; x=1739377245; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VZsVPW3dTvr9/2B6fWitPdhK91iC5DSNGh6esbO6Id4=;
-        b=KrHqFn7dzQ6Xb6PATOuUA6lvAC1M+wOhrrxOFRhYy4wmWYTj2Y9IE39VQND02aHuLd
-         vtJGMsznXibFp02KuqbBpBkzFUwy1Rf6oY3TjC31T+D0KXB0Cr8ayWYKLZBOVG8JawGg
-         eJuogWTOw7iEXuXSc5DSsqeYd1pZQUxJJNspU=
+        bh=ptS5pmYSoqa1sLa/8PDNNLMurnAZCFSSHhfCsR1fk8Q=;
+        b=DzvK2G2Xtuvv9P5CRwTwIXC55QBn83SDX/GmdUcMsHbudjcfsOo/jG2y2RMERfAfcQ
+         1IF3mQ4yeRmPnW59au4kvDI8CKZRYRQ04CQA8vgIPQQdTkh8FYgADRkcOXMIR47bz7sM
+         bPSN2BAnm7+Eeg2oLBgycXZEQrhCALu8ry/hE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738772124; x=1739376924;
+        d=1e100.net; s=20230601; t=1738772445; x=1739377245;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VZsVPW3dTvr9/2B6fWitPdhK91iC5DSNGh6esbO6Id4=;
-        b=vFqj+Wp+4yye8SW6x4dGJvBJmIDQkle4nG7Sbnxsidw1GLT2tPQHNByPJzmUHzge0/
-         xQ6LD4Oc9nqrZ5XWBbjDOMk66isCVIjQRN5cP/aEQTs4r3urugHJLzDOgbGbaMDM/nyy
-         HReDcSmOQaU4rtlK6W7aE1wGpbwyLbq+pSmF0MwopzESMNQ7+jzW0P3LxM8PPCz1hMaQ
-         DtZIJVnJF647bQ9MPkJvFyhgbAepXMFGRhxFeqlDTEXI5a1rcxw/hRirptiakzSKhSxs
-         xSDxlac4DjsYhpbasc34aKaSA146xCIDT7zEx0cCG6nx1+U8u/Un/Fg8j+ZQckFV7l5w
-         I4iQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUtoc/JehHLWHw2Zo34FmFS4a70CI2jyQjrDjgudRwaMLedr10i2WTdekHBc3r7jNIqDMbTAL/m+ihI@vger.kernel.org
-X-Gm-Message-State: AOJu0YyyUAZxpg50CIkzNbX1wcWaozrwGO595E6n8LyPufkmfHb0O3yS
-	lP3Pupt9Iugi7tf1IxrYR0cr4M55tZBo8hwukW2UVwKNxHclk0olCui7qebI/kctsn2PbQ+0bW+
-	GS7mdphVA21yCNQhZVxOCWRvp11UxKNdpjf6+pyJHrRwQ3Ks=
-X-Gm-Gg: ASbGnctDSiK2kAK48h3l4kHHtVJ74wcnxS+YMeRGKW3Oygico4SrPOssGz1Z2SFaVFQ
-	1zRVob/P+BqXcLtjpyZG/UhCKa0/m0n3q7ubF93a6DaWqONeFkeamsINCv0IsRqaVPTlxqKkJGw
+        bh=ptS5pmYSoqa1sLa/8PDNNLMurnAZCFSSHhfCsR1fk8Q=;
+        b=kr4BFVa3cz4skG9JvRPcAhcnVH/3gp3DaWE64hF2XX2WeaDUIFkHj63bCK3NlaNtx+
+         XvqdoeyrOC4bTfihXkL4foS4P0Pj5NiODlgQ3jxFR0T/cb6SZmShMLS8YDKCIVjW+hSS
+         eJLubel3Ey83d8xuirf/pErrpjWGG+FKfpP38rq+rZvuSgP0J0hrSpS9zKDYUveicMX4
+         zQgkMu7hJqqiJ4nKQVWob2rkZ+UFHOPpiCmNJmgY0Uw7cbumdJB+GZv3KEwNhqlV3JLZ
+         jpSDT35cy2E8PE7oFF7gDRiPsiSWMG0rUA/wyCdwA4B6Qj6b4ROI6BRBxxQ1AvOMeTuR
+         Wllg==
+X-Forwarded-Encrypted: i=1; AJvYcCWgC/cC7WNaYj4qRoaIoE6ZfSKN3ivpjU/foK//zOJ5pTSvZvJ1XyQPYJKmJ42TZmJfbuORQaNEq55L@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz0b09O1H4v41bC2ghmxTx6lxNfZRetaabV35UTSv2TAYyi6/xu
+	xgq93nzpOJj1r0KudLlIY9D+dUEuheV3zAcyf+YLdcAanlmz+NYGK147Qb/PznT3FtOgp5+ahXQ
+	8aC3xzo2Nn2EaHXQPPC7n5Mh1g3II4cPWykHT
+X-Gm-Gg: ASbGncspzeDiuR1bH9mYqkZ1U9LkpuvmduRINh+xIgvxWC5LIWFbLOZmrR0EaA49+SR
+	X1GIui6YGTIEUU11jX7AAQFa/8zH9Omg5HGlECGD3X5UHVHNXjD+D0i20Cc+zGHSFbSoFhIe8Mg
 	==
-X-Google-Smtp-Source: AGHT+IFM45EdOG+3KvFP27I54THc8GRsqpnjUJDxasdPHScfLejR0NGxLz0HDpu68LqIHovjWAkRH9lHZUfruaB3XtQ=
-X-Received: by 2002:a05:6a00:ad8d:b0:730:1da:8824 with SMTP id
- d2e1a72fcca58-730351ec1d0mr5365830b3a.19.1738772124003; Wed, 05 Feb 2025
- 08:15:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEGmHYYwvDmnbxHBHD5qtzZsBqG+JLugSI/oZiQq3bmgNhBu3f+Tc1o9zNn7ba+P4Tnj4cFnPnKZDtCD9wwjHI=
+X-Received: by 2002:a05:6a00:851:b0:725:96f2:9e63 with SMTP id
+ d2e1a72fcca58-73035224858mr6949661b3a.24.1738772445492; Wed, 05 Feb 2025
+ 08:20:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -74,75 +74,27 @@ References: <1738657285-23968-1-git-send-email-selvin.xavier@broadcom.com>
  <1738657285-23968-3-git-send-email-selvin.xavier@broadcom.com>
  <20250204114400.GK74886@unreal> <CAH-L+nPzuSdKN=WQccTP2crfMp8hSLqq-uTXqw_Ck=sHtWbyEQ@mail.gmail.com>
  <20250205071747.GM74886@unreal> <CAH-L+nM6+-v6dvgzA6UDhgbhjysr55BJ859N5aWWXNEm4k+EDw@mail.gmail.com>
- <20250205095215.GN74886@unreal>
-In-Reply-To: <20250205095215.GN74886@unreal>
+ <20250205144724.GN2296753@ziepe.ca>
+In-Reply-To: <20250205144724.GN2296753@ziepe.ca>
 From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Wed, 5 Feb 2025 21:45:11 +0530
-X-Gm-Features: AWEUYZngdbOX0Kehi37BD6KT42fkEI9eApnmep7xwHFo-SLJ6w-XgqM2cbkufno
-Message-ID: <CAH-L+nP7MxtcVzAXK0q4V9qYZ-vf=vAbPW2fX2=V-yKE0VJyQA@mail.gmail.com>
+Date: Wed, 5 Feb 2025 21:50:33 +0530
+X-Gm-Features: AWEUYZl3WxpqmkvKtpd_dz8PyUZQOWJOiqqpKCMNfaxiPCYKXaxaoV7M1tVEwwc
+Message-ID: <CAH-L+nOrzmv5OU96pDnxUHD0+btMBf-_0_KOmZx0fFPowE2xYQ@mail.gmail.com>
 Subject: Re: [PATCH rdma-rc 2/4] RDMA/bnxt_re: Add sanity checks on rdev validity
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Selvin Xavier <selvin.xavier@broadcom.com>, jgg@ziepe.ca, linux-rdma@vger.kernel.org, 
-	andrew.gospodarek@broadcom.com
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>, Selvin Xavier <selvin.xavier@broadcom.com>, 
+	linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000d41d0f062d676e4b"
+	boundary="000000000000fa82a8062d6781cb"
 
---000000000000d41d0f062d676e4b
+--000000000000fa82a8062d6781cb
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Leon,
-
-On Wed, Feb 5, 2025 at 3:22=E2=80=AFPM Leon Romanovsky <leon@kernel.org> wr=
-ote:
+On Wed, Feb 5, 2025 at 8:17=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrote=
+:
 >
 > On Wed, Feb 05, 2025 at 01:54:14PM +0530, Kalesh Anakkur Purayil wrote:
-> > Hi Leon,
-> >
-> > On Wed, Feb 5, 2025 at 12:47=E2=80=AFPM Leon Romanovsky <leon@kernel.or=
-g> wrote:
-> > >
-> > > On Tue, Feb 04, 2025 at 10:10:38PM +0530, Kalesh Anakkur Purayil wrot=
-e:
-> > > > Hi Leon,
-> > > >
-> > > > On Tue, Feb 4, 2025 at 5:14=E2=80=AFPM Leon Romanovsky <leon@kernel=
-.org> wrote:
-> > > > >
-> > > > > On Tue, Feb 04, 2025 at 12:21:23AM -0800, Selvin Xavier wrote:
-> > > > > > From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> > > > > >
-> > > > > > There is a possibility that ulp_irq_stop and ulp_irq_start
-> > > > > > callbacks will be called when the device is in detached state.
-> > > > > > This can cause a crash due to NULL pointer dereference as
-> > > > > > the rdev is already freed.
-> > > > >
-> > > > > Description and code doesn't match. If "possibility" exists, ther=
-e is
-> > > > > no protection from concurrent detach and ulp_irq_stop. If there i=
-s such
-> > > > > protection, they can't race.
-> > > > >
-> > > > > The main idea of auxiliary bus is to remove the need to implement=
- driver
-> > > > > specific ops.
-> > > >
-> > > > There is no race condition here.
-> > > >
-> > > > Let me explain the scenario.
-> > > >
-> > > > User is doing a devlink reload reinit. As part of that, the Etherne=
-t
-> > > > driver first invokes the auxiliary bus suspend callback. The RDMA d=
-river
-> > > > will do the unwinding operation and hence rdev will be freed.
-> > > >
-> > > > After that, during the devlink sequence, Ethernet driver invokes th=
-e
-> > > > ulp_irq_stop() callback and this resulted in the NULL pointer
-> > > > dereference as the RDMA driver is in detached state and the rdev is
-> > > > already freed.
-> > >
 > > > Shouldn't devlink reload completely release all auxiliary drivers?
 > > > Why are you keeping BNXT RDMA driver during reload?
 > >
@@ -151,124 +103,29 @@ e
 > > a result, RDMA driver will remains loaded and remains registered with
 > > the Ethernet driver instance.
 >
-> This is wrong.
+> What is the difference between your suspend and reloading the driver??
+>
+> Do you keep the ib device registered during suspend and all uverbs
+> contexts open? How does that work???
 
-We understand that. BNXT core driver team has already started working
-on the auxiliary device removal instead of invoking auxdrv->suspend
-callback in the devlink relaod path. That will avoid these NULL checks
-in RDMA driver. for time being we need these NULL checks.
-That will be posted to net-next tree once internal testing and review is do=
-ne.
->
-> > > BNXT core driver controls reload, it shouldn't call to drivers which
-> > > doesn't exist.
-> > Since the RDMA driver instance is registered with Ethernet driver,
-> > core Ethernet driver invokes the callback.
-> > >
-> > > >
-> > > > We are trying to address the NULL pointer dereference issue here.
-> > >
-> > > You are hiding bugs and not fixing them.
-> >
-> > Yes, but this change is critical for the current design of the driver.
->
-> Please fix it once and for all by doing proper reload sequence.
-> I warned you that setting NULLs to pointers hide bugs.
-> https://lore.kernel.org/linux-rdma/20250114112555.GG3146852@unreal/
+We unregister the IB device in both cases.
+The only difference is in the suspend path, the communication channel
+with the Ethernet driver is still active. As a result, the ethernet
+driver may invoke ULP callbacks even though the IB device is removed.
 
-Yes, I understand. We will work on the suggestion that you had given
-based on the new design mentioned in last comment.
+As I mentioned in my last response to Leon, we are working on to
+improve this design to remove the auxiliary device completely instead
+of invoking auxdrv->suspend.
 >
-> Thanks
->
-> > >
-> > > >
-> > > > The driver specific ops, ulp_irq_stop and ulp_irq_start are require=
-d.
-> > > > Broadcom Ethernet and RDMA drivers are designed like that to manage
-> > > > IRQs between them.
-> > > >
-> > > > Hope this clarifies your question.
-> > > > >
-> > > > > >
-> > > > > > Fixes: cc5b9b48d447 ("RDMA/bnxt_re: Recover the device when FW =
-error is detected")
-> > > > > > Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> > > > > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > > > > > ---
-> > > > > >  drivers/infiniband/hw/bnxt_re/main.c | 5 +++++
-> > > > > >  1 file changed, 5 insertions(+)
-> > > > > >
-> > > > > > diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/inf=
-iniband/hw/bnxt_re/main.c
-> > > > > > index c4c3d67..89ac5c2 100644
-> > > > > > --- a/drivers/infiniband/hw/bnxt_re/main.c
-> > > > > > +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> > > > > > @@ -438,6 +438,8 @@ static void bnxt_re_stop_irq(void *handle, =
-bool reset)
-> > > > > >       int indx;
-> > > > > >
-> > > > > >       rdev =3D en_info->rdev;
-> > > > > > +     if (!rdev)
-> > > > > > +             return;
-> > > > >
-> > > > > This can be seen as an example why I'm so negative about assignin=
-g NULL
-> > > > > to the pointers after object is destroyed. Such assignment makes =
-layer
-> > > > > violation much easier job to do.
-> > > > >
-> > > > > Thanks
-> > > > >
-> > > > > >       rcfw =3D &rdev->rcfw;
-> > > > > >
-> > > > > >       if (reset) {
-> > > > > > @@ -466,6 +468,8 @@ static void bnxt_re_start_irq(void *handle,=
- struct bnxt_msix_entry *ent)
-> > > > > >       int indx, rc;
-> > > > > >
-> > > > > >       rdev =3D en_info->rdev;
-> > > > > > +     if (!rdev)
-> > > > > > +             return;
-> > > > > >       msix_ent =3D rdev->nqr->msix_entries;
-> > > > > >       rcfw =3D &rdev->rcfw;
-> > > > > >       if (!ent) {
-> > > > > > @@ -2438,6 +2442,7 @@ static int bnxt_re_suspend(struct auxilia=
-ry_device *adev, pm_message_t state)
-> > > > > >       ibdev_info(&rdev->ibdev, "%s: L2 driver notified to stop =
-en_state 0x%lx",
-> > > > > >                  __func__, en_dev->en_state);
-> > > > > >       bnxt_re_remove_device(rdev, BNXT_RE_PRE_RECOVERY_REMOVE, =
-adev);
-> > > > > > +     bnxt_re_update_en_info_rdev(NULL, en_info, adev);
-> > > > > >       mutex_unlock(&bnxt_re_mutex);
-> > > > > >
-> > > > > >       return 0;
-> > > > > > --
-> > > > > > 2.5.5
-> > > > > >
-> > > >
-> > > >
-> > > >
-> > > > --
-> > > > Regards,
-> > > > Kalesh AP
-> > >
-> > >
-> >
-> >
-> > --
-> > Regards,
-> > Kalesh AP
->
->
+> Jason
+
 
 
 --=20
 Regards,
 Kalesh AP
 
---000000000000d41d0f062d676e4b
+--000000000000fa82a8062d6781cb
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -340,14 +197,14 @@ a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
 x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
 VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
 bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEIALeyNy3/NMfufiSiUoAHnIaqsh4kHbZd+iieKJzVo1YMBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDIwNTE2MTUyNFowaQYJKoZIhvcNAQkPMVwwWjAL
+AQkEMSIEIKz79QpuKOeLzaRQwilBEaZELXDZOKsHqHVBkP1xtGaUMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDIwNTE2MjA0NVowaQYJKoZIhvcNAQkPMVwwWjAL
 BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC/uHcwn1qW
-chQSGush+SnoB0X3PZGKTICVm/YumMAtcduhIThQj8SDxG+1QFweGg26Iy0aUGYaO4kmOC+LZfjq
-YUlzw6GOrr51S18y99jC5ayi7xN6s69QomBtbKvD4ZjFLXWaKCxs6/Ji3fRoh5GuDuOD4OUiYsen
-9bh7OviYq9D+BT2ldHsFU6k1EknGc0MjP35hDc2ve927an40ygB13yJoKiykQ3arXsIvKolXNd6G
-56IechFRyH6N8P4AODeT+DIM70r8nRPK+45WeTPaDKBat8+wklp0sJBafukXlWPM+SytRDyG0V6k
-xqEQTiRLVPZpUOrsWtpgigarrk1G
---000000000000d41d0f062d676e4b--
+9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBC+qRjFiRP
+PdAQJRJEmun+rtk56QVICoz2zSMov+px9J1vtgZtYiB3cO2jEXugzRVklfo11FEUTHfFfR0DY8SC
+RPmSCdUMDML5ZQjqGB1senzMFlQ8RJYGo0rMS7dn7ZLuFLSPZ987HT2vInZfHe5MfQUZxUoy2cyv
+og7nbmt9u6dNlp+Muk9f6bl0dNZDn/vqKEeGA1zzQxP8EZvwJCzEanWo4t+6LRPaGxprl5H6Sb1o
+XkKZk2HMc6z7YxbBKhDkFeeZBTWi7vb13ra7eGufuAknC1D8FT8X23O+QQ4AEV6u+P6z/8TSYa6g
+RabC8+y01aDnP8moIduRpqcR7P5J
+--000000000000fa82a8062d6781cb--
 
