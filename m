@@ -1,147 +1,141 @@
-Return-Path: <linux-rdma+bounces-7418-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7419-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 877CFA28508
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 08:44:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E24A7A28535
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 09:02:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CBDD7A3666
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 07:43:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D7321681D9
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2025 08:02:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B1B2288EC;
-	Wed,  5 Feb 2025 07:44:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67721228C9E;
+	Wed,  5 Feb 2025 08:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lDg08iKy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E70ahhN0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A146138F82;
-	Wed,  5 Feb 2025 07:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8010F20F09B;
+	Wed,  5 Feb 2025 08:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738741448; cv=none; b=YRkq6FUAP+eO1QpBGPn0loLDeAdqdHMXM8+2SBboB7WzD3fJmHhWsR0DGFnGQ9+zX0GhpryFk8icSTZzRs54eY2u1Ox/k3wo9HKvovdhS1TIocygL4VF+8IM4CUG1u8FsXnfL9u8bNpEGjZm4b2/veeVqbsNB5aVomCUTxIkIl8=
+	t=1738742541; cv=none; b=QVRu+utl7UiZwZTHIFqWGAitworjSYTkqA47UoelA+oRDt8Tu4S2h7bublC4YWuYGfMzBmpGWSmu8wtWgB9q3f5RZs1Vnh4ljne3/H3ne7VkuFqNIk+wUISojzQKZS00D4kIqGPUczuM0qZZorTYSrBgmJFMz/nYDfhcFncI71Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738741448; c=relaxed/simple;
-	bh=BpS67GaUajKjTHome07KNAXrLsWfOkTNDhao5HwLCWU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dY5OONn5kCZEegwJOHGOXWoTDYR7r7VKKNQWGDdtfp7ot7FgKzQeBC6rOxJYxGXaAYJ6m+ZKcCcPyXj5M+hdmz/pPfyXxE0r1J7X6EWy2yb7ooXVTaYZgR6IeCGNrhSfXNKSItU+VqFiq16mkna+krUD2CsjZRyAeKPnx0msfLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lDg08iKy; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738741446; x=1770277446;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BpS67GaUajKjTHome07KNAXrLsWfOkTNDhao5HwLCWU=;
-  b=lDg08iKys6ZLRZXzX6u8/8cKW51/BnCp9E0pdm3k0S/tpFxIYhrkYI2m
-   sRdtq4awgeyrU5JoJF+3dJ2u4+0pNpfkatYvBU9humH7Yq0O0eip+A3Jt
-   z/pSKAoksvp90niZn1q8KfTVz94Fiv3oaxiOLSdZzWkb73zSKuefLllcC
-   tQSypg8JZJCE+/ErId9lut4tXa237R1gEc/YRX+mM6Gea+jfC3GJK4iV9
-   0cGD38y28HGZQxxMliENkreAvPqECDyoIebv0Td4NbOACSw7jyzjD51B/
-   zTWHagXmXeRSvEbn+c7SGx5b9fVTbmUwfRvG9MSLtz3T9nh0v2rkxATmL
-   Q==;
-X-CSE-ConnectionGUID: kX3WqZdfTAS7HxtUEygSFw==
-X-CSE-MsgGUID: RZSCYPepT+GBYEy08wSBLQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11336"; a="26897131"
-X-IronPort-AV: E=Sophos;i="6.13,260,1732608000"; 
-   d="scan'208";a="26897131"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2025 23:44:06 -0800
-X-CSE-ConnectionGUID: uBtXFELbQ+aSQJdQFlcA9g==
-X-CSE-MsgGUID: +zH4Yxk7QnmuVDaXzGls7Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,260,1732608000"; 
-   d="scan'208";a="110712993"
-Received: from mev-dev.igk.intel.com ([10.237.112.144])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2025 23:44:01 -0800
-Date: Wed, 5 Feb 2025 08:40:28 +0100
-From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To: David Laight <david.laight.linux@gmail.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, davem@davemloft.net,
-	kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
-	andrew+netdev@lunn.ch, netdev@vger.kernel.org,
-	sridhar.samudrala@intel.com, jacob.e.keller@intel.com,
-	pio.raczynski@gmail.com, konrad.knitter@intel.com,
-	marcin.szycik@intel.com, nex.sw.ncis.nat.hpm.dev@intel.com,
-	przemyslaw.kitszel@intel.com, jiri@resnulli.us, horms@kernel.org,
-	David.Laight@aculab.com, pmenzel@molgen.mpg.de, mschmidt@redhat.com,
-	tatyana.e.nikolova@intel.com, Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-	corbet@lwn.net, linux-doc@vger.kernel.org
-Subject: Re: [PATCH net-next 2/9] ice: devlink PF MSI-X max and min parameter
-Message-ID: <Z6MV7KY81S+/bGGY@mev-dev.igk.intel.com>
-References: <20250203210940.328608-1-anthony.l.nguyen@intel.com>
- <20250203210940.328608-3-anthony.l.nguyen@intel.com>
- <20250203214808.129b75e5@pumpkin>
- <Z6GuSJCshbWlkiLu@mev-dev.igk.intel.com>
- <20250204184121.168eaba2@pumpkin>
+	s=arc-20240116; t=1738742541; c=relaxed/simple;
+	bh=bajsZH221Y3VTUhidxd3s33nRkwjETf7ApGS19h9Ur4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D0P6LtfS0n1fbx+2eg8MpG9hMm5jC7vpLGXHeysZ+dIs2DH0bUJN/wFKJUWwhD8qKlPSKHi333/gRJYLtXD1yabnx6kyIoBkwluwBnuFCtKfwW5MO/Gcu1b835OsSEeFJuDlNn693Saeea9mnF+h9kxzcRBbn53qIZKhq4UQKXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E70ahhN0; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3863494591bso3270405f8f.1;
+        Wed, 05 Feb 2025 00:02:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738742538; x=1739347338; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rI0+KsZOu0kNMdDfrnhMO1ES+W3lHGiY/0iXGJPo704=;
+        b=E70ahhN0sn0fUvktJNzFiyN4x/ivAxUsezwxAY0aOIKgR7z7nmY0Hygk1wGEDcowIm
+         N9mH4fb9obqKipLc8Rsnd+WbeTbkJDB6F9Pljao0jQ9x4SzB4AHDIujJX7GR6TPjrCDM
+         yVkKgKfvdSmrHXjYPYADB5atkhchziuzE2jXy8DOXDQHH5iLgsBu6n6MEHblqTR7uh7M
+         frmvfy+oodxIAm3u2dgjGJyqYznac3b5uP9joGAzdHzMz7HUg0z8y02JVxq5m5x9IYVl
+         owBZB7eblibgtiFndH3J9IpyS0gcjMN+0taJ39+LuyOIvxdaBF3bFUJP4V7GN1IWKxoV
+         YUPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738742538; x=1739347338;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rI0+KsZOu0kNMdDfrnhMO1ES+W3lHGiY/0iXGJPo704=;
+        b=hFU/rduPmTGq5f3lBh4kShPm8kb5wOrFvD0aHLdzDJzy4HZDqZTopmWPd5ypinTzDi
+         NlRSt+WGYHQCrA8tVTapBVA5THPesrWu+LCwqmgucxJitlZ4CuW60LqPY7gIrn4L4rkC
+         Xgu/A3fAdEdVJsAJC3tBBHfRUdFUp0xlOq4Vrznw/73qjtXCK2Kkw9FRCy6fZ0a8VbG9
+         kyRDWwS6JkJr9tENru3w3kI1pjC0SqPKmOihIb3eaM2oYRytqFP3cmlMsPrj1Qpe8xLu
+         88HsKKSdyzM9Sc8L0TWTroIWfGAAtDMQj8/dT2WltONG6TT9aSsjyX5emdy0UncWCFMy
+         +ceg==
+X-Forwarded-Encrypted: i=1; AJvYcCUxceFcP3eZC+jocJHHmVSozi2DhFRe38Wamvo1b3WIEDSsCsDP4I6jTPm9UYiUoh2KlIfpNUz+@vger.kernel.org, AJvYcCV5zRjL8RGyY2h0RPPYKpLOPWrAQPIIiO54aNTxIvxwlkt+jFcvoc+bRl7vhV2S2cTdUR4gmIeit/P0@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywjo9wwLJM+sGKOJKtbsovePzs/oJHvFSK2EgLZMKw/3dAMGqT1
+	epo7cgiKo3P09JFJu/pCE/8IKCkN15LZAXMKU/CRQ7XP6+jCXyjL
+X-Gm-Gg: ASbGncvRMF4CSOb5V88VZnePvWn164FTVMmrHbyK8cxdloL9he647SH57ntsSCQHvNp
+	Uu/Az3bzL/xlRaKmt4WJXviumN8BAXOG5agxTIwLKUqbGxX1DLFma2LoQCeXnJfUNCAW6UIGUvh
+	Aq+7P0r5XsjQsa4aSQKPIoLqOIkvy2mwpMjskAa5XWRW8cvBeGwttRFNyelEVuc9RGK4fq7vj5O
+	+tTWHa8JdUyHnIJjwHtmkiEMYrnw8WaVcjSIWXjn0qeA5smNXelUOsupDYh90jq/4tY59d3fQcP
+	FesiLOWJnOiQbnx8G8ht9Gq7hZQPjqBMeDY2
+X-Google-Smtp-Source: AGHT+IET7oHad/XSXl54/XJZYNkUEmejP2EytknXBFj18L8f2jENtK49WUNEvn7mXKWnx3wjXSGqUg==
+X-Received: by 2002:a5d:4106:0:b0:38b:dbf0:34f2 with SMTP id ffacd0b85a97d-38db4921159mr892795f8f.52.1738742535807;
+        Wed, 05 Feb 2025 00:02:15 -0800 (PST)
+Received: from [172.27.21.225] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38da59470b2sm4505609f8f.40.2025.02.05.00.02.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Feb 2025 00:02:15 -0800 (PST)
+Message-ID: <9ef3beae-6de4-4d44-a1fd-d10bc8627e20@gmail.com>
+Date: Wed, 5 Feb 2025 10:02:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250204184121.168eaba2@pumpkin>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V5 07/11] devlink: Extend devlink rate API with
+ traffic classes bandwidth management
+To: Gal Pressman <gal@nvidia.com>, Tariq Toukan <ttoukan.linux@gmail.com>,
+ Jakub Kicinski <kuba@kernel.org>, Carolina Jubran <cjubran@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Leon Romanovsky <leonro@nvidia.com>, netdev@vger.kernel.org,
+ Saeed Mahameed <saeedm@nvidia.com>, linux-rdma@vger.kernel.org,
+ Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
+References: <20241204220931.254964-1-tariqt@nvidia.com>
+ <20241204220931.254964-8-tariqt@nvidia.com>
+ <20241206181056.3d323c0e@kernel.org>
+ <89652b98-65a8-4a97-a2e2-6c36acf7c663@gmail.com>
+ <20241209132734.2039dead@kernel.org>
+ <1e886aaf-e1eb-4f1a-b7ef-f63b350a3320@nvidia.com>
+ <20250120101447.1711b641@kernel.org>
+ <a76be788-a0ae-456a-9450-686e03209e84@nvidia.com>
+ <8dbc731c-2cff-4995-b579-badfc32584a1@nvidia.com>
+ <20250122063037.1f0b794a@kernel.org>
+ <0f3ac6e2-80be-4df2-9b4d-61433549cc2d@gmail.com>
+ <e1bc347a-a705-4518-a826-3a90c4c61f9a@nvidia.com>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <e1bc347a-a705-4518-a826-3a90c4c61f9a@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 04, 2025 at 06:41:21PM +0000, David Laight wrote:
-> On Tue, 4 Feb 2025 07:06:00 +0100
-> Michal Swiatkowski <michal.swiatkowski@linux.intel.com> wrote:
-> 
-> > On Mon, Feb 03, 2025 at 09:48:08PM +0000, David Laight wrote:
-> > > On Mon,  3 Feb 2025 13:09:31 -0800
-> > > Tony Nguyen <anthony.l.nguyen@intel.com> wrote:
-> > >   
-> > > > From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-> > > > 
-> > > > Use generic devlink PF MSI-X parameter to allow user to change MSI-X
-> > > > range.
-> > > > 
-> > > > Add notes about this parameters into ice devlink documentation.
-> ....
-> > > Don't those checks make it difficult to set the min and max together?
-> > > I think you need to create the new min/max pair and check they are
-> > > valid together.
-> > > Which probably requires one parameter with two values.
-> > >   
-> > 
-> > I wanted to reuse exsisting parameter. The other user of it is bnxt
-> > driver. In it there is a separate check for min "max" and max "max".
-> > It is also problematic, because min can be set to value greater than
-> > max (here it can happen when setting together to specific values).
-> > I can do a follow up to this series and change this parameter as you
-> > suggested. What do you think?
-> 
-> Changing the way a parameter is used will break API compatibility.
-> Perhaps you can get the generic parameter validation function to
-> update a 'pending' copy, and then do the final min < max check after
-> all the parameters have been processed before actually updating
-> the live limits.
-> 
-> The other option is just not to check whether min < max and just
-> document which takes precedence (and not use clamp()).
-> 
-> It may even be worth saving the 'live limits' as 'hi << 16 | lo' so
-> that then can be accessed atomically (with READ/WRITE_ONCE) to avoid
-> anything looking at the limits getting confused.
-> (Although maybe that doesn't matter here?)
-> 
-> 	David
 
-Right, I though it is better to have any additional validation for min >
-max cases, but it looks like it is more problematic. I can drop it to
-algin with the bnxt solution.
+
+On 05/02/2025 8:56, Gal Pressman wrote:
+> On 05/02/2025 8:22, Tariq Toukan wrote:
+>>
+>>
+>> On 22/01/2025 16:30, Jakub Kicinski wrote:
+>>> On Wed, 22 Jan 2025 14:48:55 +0200 Carolina Jubran wrote:
+>>>> Since this worked and the devlink patch now depends on it, would it be
+>>>> possible to include the top two patches
+>>>> https://github.com/kuba-moo/linux/tree/ynl-limits in the next submission
+>>>> of the devlink and mlx5 patches?
+>>>
+>>> I'll post the two patches right after the merge window.
+>>> They stand on their own, and we can keep your series short-ish.
+>>
+>> Hi Jakub,
+>>
+>> A kind reminder, as we have dependency on these.
+> 
+> They're submitted already:
+> https://lore.kernel.org/netdev/20250203215510.1288728-2-kuba@kernel.org/
+
+I see. Patch was renamed.
+I searched for the old name "don't output foreign constants".
+
+Great!
 
 Thanks,
-Michal
-
-> 
-> > 
-> > Thanks,
-> > Michal
+Tariq
 
