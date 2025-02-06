@@ -1,112 +1,93 @@
-Return-Path: <linux-rdma+bounces-7484-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7485-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A5D9A2A3E5
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2025 10:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AEED8A2A64A
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2025 11:47:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 503F3188798E
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2025 09:12:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAD331882F82
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2025 10:47:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93EC225A38;
-	Thu,  6 Feb 2025 09:12:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22EA225A35;
+	Thu,  6 Feb 2025 10:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QF01gPs0"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="bxGWqY4T"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5AA915B10D;
-	Thu,  6 Feb 2025 09:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4551F60A
+	for <linux-rdma@vger.kernel.org>; Thu,  6 Feb 2025 10:47:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738833128; cv=none; b=bwQjZ6hVnyK1m369jezj6/Dh/VUKy5ON3Gn5cZWAjYc2xx9cDvKSA01K580dTM6pdH2H77Qzb8yPp5NDzH6my2558oY+Ib47SIxG+wXz0qiFARfmBvj8V893IZX0YjTdFGGVvekqbJmihsqVSP7ehFKS6YsD60486uYcpCCpVPU=
+	t=1738838851; cv=none; b=aKwPNgYddPV9Ipwp0q6jH/L7zqXpi0J86QDly9Vl+yurmE/kDuUaZyhZvVvq56btjjJXdeGrup9ONQjmr6QkyB1EMADK++g7029b5M9/0S+tqG0dit8gxt6iyYVn35Nx5N6yMTa9SGgJKYssHleQ3xvT8Y/khgBfroEni1vhcOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738833128; c=relaxed/simple;
-	bh=HZ2BzLNJ9wGoyMfAgKKZJY98EFtz7L2cUvH+QTGuEVU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=WMj/iOE5k+NENqX/URVxWo9eTL5jZwUsX6gESh6wK8CBGQY6YG2yrKstM/hB1Jk6iuTWeN+jUmf+Oknzbx6ij6uQf9GHqpUa1MzW1dmgwVsCiZx5ceeYwRSArZygYAgEdlhZz7djt1F3ED9X5cpxn1fsh65cjFOGSCwYjnfw8n0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QF01gPs0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE243C4CEDD;
-	Thu,  6 Feb 2025 09:12:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738833128;
-	bh=HZ2BzLNJ9wGoyMfAgKKZJY98EFtz7L2cUvH+QTGuEVU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=QF01gPs0eleVb2WB9ZNncVGlGInP4Ie3xgm69dhuKjX3GXHwS+WyvKr+WbMkVcY6K
-	 RHPjL0e75bT8A1dKeg8jqLYMYdO+FCZzgHpEiWTb1luQloQnOSyhs25HbEEPyEeHM0
-	 ezPo9hb5VQv0Sgnz7pOyVnA5bWjOiNAzURXRXXmx008LN/VE1PtC2yrFrzYUnHdSZQ
-	 QLi3uAO4iB0iNjE5vRBl2TxtiSG+iMf19Pz1f/xzyWeVbj5EN65G4vuGJb3bk3JJjz
-	 kcCRGN1wvNMYVyAIkS93WyR6k1akwYORRfcN7+rcF2Wh8IUkOi5uGXcjfqXr43xthP
-	 9Lxxi7rTAmY6g==
-From: Leon Romanovsky <leon@kernel.org>
-To: kotaranov@microsoft.com, shirazsaleem@microsoft.com, 
- sharmaajay@microsoft.com, longli@microsoft.com, jgg@ziepe.ca, 
- Konstantin Taranov <kotaranov@linux.microsoft.com>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1738751527-15517-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1738751527-15517-1-git-send-email-kotaranov@linux.microsoft.com>
-Subject: Re: [PATCH rdma-next 1/1] RDMA/mana_ib: Add port statistics
- support
-Message-Id: <173883312475.839954.15938395488865633566.b4-ty@kernel.org>
-Date: Thu, 06 Feb 2025 04:12:04 -0500
+	s=arc-20240116; t=1738838851; c=relaxed/simple;
+	bh=RopAceXi9aHmprtKacEpSQc+T4UwwjYEGehCooy9m3I=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=eDiJNb2xeOFrAUupEvbZy0ZcgraMmpoihqNPj/BSiXrQFM6rf5BJ5ABUMcn8o5lMxfhIaB3mAc1AKItAcbcZxnyXuZGARLSgzXbY/x46Ho5tNIpjqsUu4khhFo2DBoIIOMPESMGhyW9k7xcQXthluYlZPhtIXb0ZkIb216djjSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=bxGWqY4T; arc=none smtp.client-ip=185.125.188.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 9140F4115F
+	for <linux-rdma@vger.kernel.org>; Thu,  6 Feb 2025 10:47:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1738838847;
+	bh=RopAceXi9aHmprtKacEpSQc+T4UwwjYEGehCooy9m3I=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=bxGWqY4TUG3tCBO6FMF+zh80Jev2wBQHm5e+PgqlS3FEo8vsWeE6yC9/h2Nsqq7Ad
+	 W3VEtw6sAjLIOkGcZ4j52cSxsKXhNCB+0qFBeLzcCiFEv5UBaSomVf/+Ggg1yAG6Ta
+	 KqtrXQ1wsU+WcNjDnQG4TQYPbpmzGeI4PrTA0L7h/Oadi2MWS7vu3xCbvu+jNsiFzF
+	 ZCp7VMj9hey+S/KfUJRdiCajxBcMtVXPIrlleH13PjfgSnbAcP4SfyI4m1Ad9aVU9s
+	 u3Im6edIgIXA9ogXerAk8Ymh15qcq+i2238LeicZ1JQlX01uApU6CCyhlHIf9S0Rm3
+	 XEiaiZmbrHIFw==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+	by buildd-manager.lp.internal (Postfix) with ESMTP id 876A67E248
+	for <linux-rdma@vger.kernel.org>; Thu,  6 Feb 2025 10:47:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3849775] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <173883884755.1817859.192559437389344980.launchpad@buildd-manager.lp.internal>
+Date: Thu, 06 Feb 2025 10:47:27 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="b13dacce4a364151a813e3cdd6940bbff676214a"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: f0a75a35b54633cf60ff3ace12c4909af07356e2
 
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 2 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3849775/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-044
 
-On Wed, 05 Feb 2025 02:32:07 -0800, Konstantin Taranov wrote:
-> Implement alloc_hw_port_stats and get_hw_stats APIs to support querying
-> MANA VF port level statistics from rdma stat tool.
-> 
-> Example output from rdma stat tool:
-> 
-> $rdma statistic show link mana_0/1 -p
-> link mana_0/1
->     requester_timeout 45
->     requester_oos_nak 0
->     requester_rnr_nak 0
->     responder_rnr_nak 0
->     responder_oos 0
->     responder_dup_request 0
->     requester_implicit_nak 0
->     requester_readresp_psn_mismatch 0
->     nak_inv_req 0
->     nak_access_error 0
->     nak_opp_error 0
->     nak_inv_read 0
->     responder_local_len_error 0
->     requestor_local_prot_error 0
->     responder_rem_access_error 0
->     responder_local_qp_error 0
->     responder_malformed_wqe 0
->     general_hw_error 6
->     requester_rnr_nak_retries_exceeded 0
->     requester_retries_exceeded 5
->     total_fatal_error 6
->     received_cnps 0
->     num_qps_congested 0
->     rate_inc_events 0
->     num_qps_recovered 0
->     current_rate 100000
-> 
-> [...]
-
-Applied, thanks!
-
-[1/1] RDMA/mana_ib: Add port statistics support
-      https://git.kernel.org/rdma/rdma/c/79bccd746132af
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3849775
+Your team Linux RDMA is the requester of the build.
 
 
