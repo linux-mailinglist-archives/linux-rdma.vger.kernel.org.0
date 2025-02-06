@@ -1,87 +1,230 @@
-Return-Path: <linux-rdma+bounces-7480-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7481-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A8BAA2A398
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2025 09:52:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25DFFA2A3AA
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2025 09:55:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 278F7188997A
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2025 08:52:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DD053A44D5
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2025 08:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE7E226541;
-	Thu,  6 Feb 2025 08:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB0E225795;
+	Thu,  6 Feb 2025 08:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RneaqjdJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wiu/wDul"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB931226539;
-	Thu,  6 Feb 2025 08:51:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909422248AF;
+	Thu,  6 Feb 2025 08:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738831890; cv=none; b=PCP/aPG10ZLbROUuaBZop+obR/9Q+hvbx+2JoMkz5B7/AzlopUJt3HuU6u3DVdl092thNWl7wXVnk4qInMQnHh9uF2Pn7UaLruwu1a0UaT4QnWwWDQ5wFx7MzE0yCid1g/56N1qCfR8KO8m8NPdTmfawX9vrWl/paPfBA/eRRQE=
+	t=1738832089; cv=none; b=CvR+4fZcT4n8E/dVyJmEbKMEkNl+fTK3+iMai9CXFIcSb8ZT5G/7VSzAcdBL+xBnDKmeqDIM9FEfMd3lj1GgcB7smCbvDBeRKFQzfQFg+QU9qvZwslBGWx/A69HDidagh4mMyYtO4V/fiHrb5ILipsPboQFYwg59Jp4q7TKhWc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738831890; c=relaxed/simple;
-	bh=iVHm9zQUOoRVdsuD789C7y5A49BuMQoE++HPOOn1fA0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=J8RLfwI9ABn6b5qRpPUAje78BJ9ArMAbnBBvL02ICQmpc3lDr8Eoju+THO3jy+Qgq89+vnPYKa4gJYfX9Uv+O8jeL0Uax0i7PsE7wxH8V0sy8YaQakjSvL85Gs36FPl869MZVivV1Aj82P4rkAxMP/3tCWsTvj4b0ysngKpr4LI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RneaqjdJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 990F7C4CEDD;
-	Thu,  6 Feb 2025 08:51:29 +0000 (UTC)
+	s=arc-20240116; t=1738832089; c=relaxed/simple;
+	bh=yULdxGqmQ06JbHuTh2NwOIHtkfoYPeXquDIDEV+zq3A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V8vcpOFLfS3S+rzt1EVeG/5UNiW1sJGx9nSnKOQzxafcMOum+PHvfExnf1grZ+h2jjv+1sqPUK23qw2kEOIFpWjQWdLbDcRE6ixwuiALiGqGDW8T0kIRCEHGanxhAZJbedw+tKk7byMolWZAU4T6ZZF+353T718R0BSKtdxfvlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wiu/wDul; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5944CC4CEDD;
+	Thu,  6 Feb 2025 08:54:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738831890;
-	bh=iVHm9zQUOoRVdsuD789C7y5A49BuMQoE++HPOOn1fA0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=RneaqjdJAmQ+9y2y+tm3RlMMTw8i3BgApUux8jPY4iXTX+KqHFvOTCpV+fZ0u5wMA
-	 r+hBgKa7Mn9UX8OcmusC5zn3TucAeR6GuOjgqMlM9jiCQD+oTqC3IT1Fk3wi/Z9uAp
-	 7GXo6386fXFxNhu2j50XaDL7LiJ4OkR2dq9N7/4RIyuTr9qoQNKI7HZrJ5TWnQox0T
-	 fGjZpa7RBZcKbHcr/xQeo3kSmABlAy0gXwCBG+tnHJOJdZt7gGCoV8yI4Haioj0R4D
-	 S3e5uZhaeHbQTt/7ZSum6+l/DH4YklQa6uwaTqWQa0ybmLmMbCI5yeC2FcFez/BCc9
-	 NPyqkp8dwmNHg==
+	s=k20201202; t=1738832089;
+	bh=yULdxGqmQ06JbHuTh2NwOIHtkfoYPeXquDIDEV+zq3A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Wiu/wDulu4gSCxASFwwD1coOYNpze48vT261YPsNdXwWfAtCOALgHZHXBNL+crSLH
+	 iGotaThdawnMRYinh/yaO/wm9kInQAifQaDwIu4+EROEmHS9rRFaMuAIjA4t5HjAv/
+	 KUGlw5pT+cgpcQGJw4pqHQZgCI5Rst/1Rgp/GSEYnxXAwyM0HS+aMRoTVzTG+DO9yM
+	 edZjU/8A8vCz2ntZxkRN+oXActOuYAXlENKVCsR6HxOkNUSERw1irTJRDvG0PJ57Wr
+	 hxDREJBYp0BlTflvZGI8439Ne0nKKUG0TJI9DfrIFxYcM+LOPmLRauyv1oAVewMNF6
+	 tUcfZMfg2pPFQ==
+Date: Thu, 6 Feb 2025 10:54:43 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: kotaranov@microsoft.com, shirazsaleem@microsoft.com, 
- sharmaajay@microsoft.com, longli@microsoft.com, jgg@ziepe.ca, 
- Konstantin Taranov <kotaranov@linux.microsoft.com>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1738751713-16169-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1738751713-16169-1-git-send-email-kotaranov@linux.microsoft.com>
-Subject: Re: [PATCH rdma-next 0/2] RDMA/mana_ib: enable error cqes
-Message-Id: <173883188698.837830.8549990389574218852.b4-ty@kernel.org>
-Date: Thu, 06 Feb 2025 03:51:26 -0500
+To: Bharat Bhushan <bharatb.linux@gmail.com>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Ayush Sawal <ayush.sawal@chelsio.com>,
+	Bharat Bhushan <bbhushan2@marvell.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Geetha sowjanya <gakula@marvell.com>,
+	hariprasad <hkelam@marvell.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
+	Jay Vosburgh <jv@jvosburgh.net>, Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
+	Louis Peens <louis.peens@corigine.com>, netdev@vger.kernel.org,
+	oss-drivers@corigine.com, Paolo Abeni <pabeni@redhat.com>,
+	Potnuri Bharat Teja <bharat@chelsio.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Subbaraya Sundeep <sbhatta@marvell.com>,
+	Sunil Goutham <sgoutham@marvell.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Ilia Lin <ilia.lin@kernel.org>
+Subject: Re: [PATCH ipsec-next 1/5] xfrm: delay initialization of offload
+ path till its actually requested
+Message-ID: <20250206085443.GO74886@unreal>
+References: <cover.1738778580.git.leon@kernel.org>
+ <e536ca28cd1686dfbb613de7ccfc01fbe5a734e4.1738778580.git.leon@kernel.org>
+ <CAAeCc_kfRt8LhKgRmLsaaSmJs94hjH85DxCjEnJA6OQc5S5XXw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAeCc_kfRt8LhKgRmLsaaSmJs94hjH85DxCjEnJA6OQc5S5XXw@mail.gmail.com>
 
-
-On Wed, 05 Feb 2025 02:35:11 -0800, Konstantin Taranov wrote:
-> From: Konstantin Taranov <kotaranov@microsoft.com>
+On Thu, Feb 06, 2025 at 02:16:08PM +0530, Bharat Bhushan wrote:
+> Hi Leon,
 > 
-> This patchset enables the mana_ib driver to query capabilities and
-> enable creation of error cqes.
+> On Wed, Feb 5, 2025 at 11:50 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> >
+> > XFRM offload path is probed even if offload isn't needed at all. Let's
+> > make sure that x->type_offload pointer stays NULL for such path to
+> > reduce ambiguity.
+> >
+> > Fixes: 9d389d7f84bb ("xfrm: Add a xfrm type offload.")
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >  include/net/xfrm.h     | 12 +++++++++++-
+> >  net/xfrm/xfrm_device.c | 14 +++++++++-----
+> >  net/xfrm/xfrm_state.c  | 22 +++++++++-------------
+> >  net/xfrm/xfrm_user.c   |  2 +-
+> >  4 files changed, 30 insertions(+), 20 deletions(-)
+
+<...>
+
+> > +       x->type_offload = xfrm_get_type_offload(x->id.proto, x->props.family);
+> > +       if (!x->type_offload) {
+
+<...>
+
+> > +               xfrm_put_type_offload(x->type_offload);
+> > +               x->type_offload = NULL;
 > 
-> Konstantin Taranov (1):
->   RDMA/mana_ib: request error CQEs when supported
+> We always set type_offload to NULL. Can we move type_offload = NULL in
+> xfrm_put_type_offload() ?
+
+We can, but it will require change to xfrm_get_type_offload() too,
+otherwise we will get asymmetrical get/put.
+
+Do you want something like that?
+int xfrm_get_type_offload(struct xfrm_state *x);
+void xfrm_put_type_offload(struct xfrm_state *x);
+
+Thansk
+
 > 
-> [...]
-
-Applied, thanks!
-
-[1/2] RDMA/mana_ib: Query feature_flags bitmask from FW
-      https://git.kernel.org/rdma/rdma/c/bad4480934c822
-[2/2] RDMA/mana_ib: request error CQEs when supported
-      https://git.kernel.org/rdma/rdma/c/cd3c5ddf823016
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+> Thanks
+> -Bharat
+> 
+> >                 /* User explicitly requested packet offload mode and configured
+> >                  * policy in addition to the XFRM state. So be civil to users,
+> >                  * and return an error instead of taking fallback path.
+> > diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
+> > index ad2202fa82f3..568fe8df7741 100644
+> > --- a/net/xfrm/xfrm_state.c
+> > +++ b/net/xfrm/xfrm_state.c
+> > @@ -424,11 +424,12 @@ void xfrm_unregister_type_offload(const struct xfrm_type_offload *type,
+> >  }
+> >  EXPORT_SYMBOL(xfrm_unregister_type_offload);
+> >
+> > -static const struct xfrm_type_offload *
+> > -xfrm_get_type_offload(u8 proto, unsigned short family, bool try_load)
+> > +const struct xfrm_type_offload *xfrm_get_type_offload(u8 proto,
+> > +                                                     unsigned short family)
+> >  {
+> >         const struct xfrm_type_offload *type = NULL;
+> >         struct xfrm_state_afinfo *afinfo;
+> > +       bool try_load = true;
+> >
+> >  retry:
+> >         afinfo = xfrm_state_get_afinfo(family);
+> > @@ -456,11 +457,7 @@ xfrm_get_type_offload(u8 proto, unsigned short family, bool try_load)
+> >
+> >         return type;
+> >  }
+> > -
+> > -static void xfrm_put_type_offload(const struct xfrm_type_offload *type)
+> > -{
+> > -       module_put(type->owner);
+> > -}
+> > +EXPORT_SYMBOL(xfrm_get_type_offload);
+> >
+> >  static const struct xfrm_mode xfrm4_mode_map[XFRM_MODE_MAX] = {
+> >         [XFRM_MODE_BEET] = {
+> > @@ -609,8 +606,6 @@ static void ___xfrm_state_destroy(struct xfrm_state *x)
+> >         kfree(x->coaddr);
+> >         kfree(x->replay_esn);
+> >         kfree(x->preplay_esn);
+> > -       if (x->type_offload)
+> > -               xfrm_put_type_offload(x->type_offload);
+> >         if (x->type) {
+> >                 x->type->destructor(x);
+> >                 xfrm_put_type(x->type);
+> > @@ -784,6 +779,9 @@ void xfrm_dev_state_free(struct xfrm_state *x)
+> >         struct xfrm_dev_offload *xso = &x->xso;
+> >         struct net_device *dev = READ_ONCE(xso->dev);
+> >
+> > +       xfrm_put_type_offload(x->type_offload);
+> > +       x->type_offload = NULL;
+> > +
+> >         if (dev && dev->xfrmdev_ops) {
+> >                 spin_lock_bh(&xfrm_state_dev_gc_lock);
+> >                 if (!hlist_unhashed(&x->dev_gclist))
+> > @@ -3122,7 +3120,7 @@ u32 xfrm_state_mtu(struct xfrm_state *x, int mtu)
+> >  }
+> >  EXPORT_SYMBOL_GPL(xfrm_state_mtu);
+> >
+> > -int __xfrm_init_state(struct xfrm_state *x, bool init_replay, bool offload,
+> > +int __xfrm_init_state(struct xfrm_state *x, bool init_replay,
+> >                       struct netlink_ext_ack *extack)
+> >  {
+> >         const struct xfrm_mode *inner_mode;
+> > @@ -3178,8 +3176,6 @@ int __xfrm_init_state(struct xfrm_state *x, bool init_replay, bool offload,
+> >                 goto error;
+> >         }
+> >
+> > -       x->type_offload = xfrm_get_type_offload(x->id.proto, family, offload);
+> > -
+> >         err = x->type->init_state(x, extack);
+> >         if (err)
+> >                 goto error;
+> > @@ -3229,7 +3225,7 @@ int xfrm_init_state(struct xfrm_state *x)
+> >  {
+> >         int err;
+> >
+> > -       err = __xfrm_init_state(x, true, false, NULL);
+> > +       err = __xfrm_init_state(x, true, NULL);
+> >         if (!err)
+> >                 x->km.state = XFRM_STATE_VALID;
+> >
+> > diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
+> > index 08c6d6f0179f..82a768500999 100644
+> > --- a/net/xfrm/xfrm_user.c
+> > +++ b/net/xfrm/xfrm_user.c
+> > @@ -907,7 +907,7 @@ static struct xfrm_state *xfrm_state_construct(struct net *net,
+> >                         goto error;
+> >         }
+> >
+> > -       err = __xfrm_init_state(x, false, attrs[XFRMA_OFFLOAD_DEV], extack);
+> > +       err = __xfrm_init_state(x, false, extack);
+> >         if (err)
+> >                 goto error;
+> >
+> > --
+> > 2.48.1
+> >
+> >
+> 
 
