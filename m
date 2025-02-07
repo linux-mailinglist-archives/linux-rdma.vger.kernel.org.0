@@ -1,296 +1,149 @@
-Return-Path: <linux-rdma+bounces-7519-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7520-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECD72A2C588
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 15:35:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B4E3A2C5BE
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 15:43:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 561561888629
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 14:35:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 712803A4506
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 14:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F3D623ED62;
-	Fri,  7 Feb 2025 14:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V0/Vu16A"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 416ED23ED7D;
+	Fri,  7 Feb 2025 14:42:57 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B35D23F277
-	for <linux-rdma@vger.kernel.org>; Fri,  7 Feb 2025 14:33:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC392206A0;
+	Fri,  7 Feb 2025 14:42:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738938837; cv=none; b=b97FxIQAP0YW9ByYNyBiFWqFqsAzyoY++XiFf/Tffj24BT2LyX973rxxwlMwowcgV4qIZBN20GPVZaf1Eu3+XnxJEd2I/yLgyQiP9sRqYaicEeCLoT0d+bJLfv+DI1pIvrtOaEUEyyd+1hMIGC8bqmu4brkEajljn/ayEtoGZ+w=
+	t=1738939377; cv=none; b=dsrlclBRtNO6x8OVIZi7dLtR+jhx+LGEjHLwniLX2MrLafR/YNwpvsM2kNfuE/3D6usO1I/Ab/T7R5/59lH/z/KpcK8N2EpieeqeXZxN4t2vztVeoqby7C8dZ7tpLxw8SMkNqtUunP3vhKrg2BQvtg2f3RzCQZ2HziJaZv4G2w8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738938837; c=relaxed/simple;
-	bh=OphVupRpdQvDbobZO1Cze3UnAcO67dyQhr+EMD1USEM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=loGvpPeijTlFH3yQ87Oo7sX9yhLQeab104dFOjCR0rJD6QShm83OD0cdKH+srAxDgQedatdxfJdMvLGUAVjnTDmM/bnAE0LuQg2/ohBGxKiqRhflp93supAgXSeS0gdHzmbQ0qcqRuiOrMmj59nyxPhsQ+3Mj+tRM7ZdklmSa0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V0/Vu16A; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ee76a5e5-1817-4ff5-8d00-ebc21a7ae6a4@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1738938833;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fvEEIW3VWGj6n/v/DtIx2EsXu27pra6OzAXx1kJuAGU=;
-	b=V0/Vu16AnQkUHmIVZ7JlRJn4bJduclDSbd1dAe+jQa/d3wwHzbTHb7LucEmliFn9Oiwt1B
-	by/sN9+IECboLnPmPlu4BFlk40qVhKk+uAOlIciHqLn+udaAAXNxcVQHpkquM6rUWIiCRI
-	qdzQnGFUGMxhZxgPbCV446vGJ/9uRN8=
-Date: Fri, 7 Feb 2025 15:33:51 +0100
+	s=arc-20240116; t=1738939377; c=relaxed/simple;
+	bh=hTAH9CDVAVmikUCkkTbmfxcvKGpyCVE3UYAyXb3D7BY=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iEj5tzbXalrKautnkCaIsRhzZ7PPrY3Ligz/nnhnTIlEeoPoXghBRfM8JIX1GYsKEEEwd3/wtr6ZehoAP7IsdCil/pAVp/CWVrTG8w5i2vy60NFsE8nDRopyMcWPwfuH54hj9musKNEwttljYB/g5XBDvz8yLdvOCWWu/YYofUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4YqGpZ1nVXz6L5CZ;
+	Fri,  7 Feb 2025 22:40:06 +0800 (CST)
+Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
+	by mail.maildlp.com (Postfix) with ESMTPS id 35F64140A30;
+	Fri,  7 Feb 2025 22:42:51 +0800 (CST)
+Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
+ (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 7 Feb
+ 2025 15:42:50 +0100
+Date: Fri, 7 Feb 2025 14:42:49 +0000
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+CC: Andy Gospodarek <andrew.gospodarek@broadcom.com>, Aron Silverton
+	<aron.silverton@oracle.com>, Dan Williams <dan.j.williams@intel.com>, Daniel
+ Vetter <daniel.vetter@ffwll.ch>, Dave Jiang <dave.jiang@intel.com>, David
+ Ahern <dsahern@kernel.org>, Andy Gospodarek <gospo@broadcom.com>, Christoph
+ Hellwig <hch@infradead.org>, Itay Avraham <itayavr@nvidia.com>, Jiri Pirko
+	<jiri@nvidia.com>, Jakub Kicinski <kuba@kernel.org>, Leonid Bloch
+	<lbloch@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
+	<linux-cxl@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<netdev@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, "Nelson,
+ Shannon" <shannon.nelson@amd.com>
+Subject: Re: [PATCH v4 06/10] fwctl: Add documentation
+Message-ID: <20250207144249.00000521@huawei.com>
+In-Reply-To: <6-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
+References: <0-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
+	<6-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] RDMA/rxe: switch to using the crc32 library
-To: Eric Biggers <ebiggers@kernel.org>, Zhu Yanjun <zyjzyj2000@gmail.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- linux-rdma@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-References: <20250207032316.53941-1-ebiggers@kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250207032316.53941-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-ClientProxiedBy: lhrpeml500011.china.huawei.com (7.191.174.215) To
+ frapeml500008.china.huawei.com (7.182.85.71)
 
-On 07.02.25 04:23, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Thu,  6 Feb 2025 20:13:28 -0400
+Jason Gunthorpe <jgg@nvidia.com> wrote:
+
+> Document the purpose and rules for the fwctl subsystem.
 > 
-> Now that the crc32_le() library function takes advantage of
-> architecture-specific optimizations, it is unnecessary to go through the
-> crypto API.  Just use crc32_le().  This is much simpler, and it improves
-> performance due to eliminating the crypto API overhead.
+> Link in kdocs to the doc tree.
 > 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Nacked-by: Jakub Kicinski <kuba@kernel.org>
+> Link: https://lore.kernel.org/r/20240603114250.5325279c@kernel.org
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> https://lore.kernel.org/r/ZrHY2Bds7oF7KRGz@phenom.ffwll.local
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+
+A few tiny things inline.
+
 > ---
+>  Documentation/userspace-api/fwctl/fwctl.rst | 285 ++++++++++++++++++++
+>  Documentation/userspace-api/fwctl/index.rst |  12 +
+>  Documentation/userspace-api/index.rst       |   1 +
+>  MAINTAINERS                                 |   2 +-
+>  4 files changed, 299 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/userspace-api/fwctl/fwctl.rst
+>  create mode 100644 Documentation/userspace-api/fwctl/index.rst
 > 
-> v2: Just do a minimal conversion to crc32_le().
+> diff --git a/Documentation/userspace-api/fwctl/fwctl.rst b/Documentation/userspace-api/fwctl/fwctl.rst
+> new file mode 100644
+> index 00000000000000..428f6f5bb9b4f9
+> --- /dev/null
+> +++ b/Documentation/userspace-api/fwctl/fwctl.rst
+> @@ -0,0 +1,285 @@
 
-Hi, Eric
+> +Operations exposed through fwctl's non-taining interfaces should be fully
+> +sharable with other users of the device. For instance exposing a RPC through
+> +fwctl should never prevent a kernel subsystem from also concurrently using that
+> +same RPC or hardware unit down the road. In such cases fwctl will be less
+> +important than proper kernel subsystems that eventually emerge. Mistakes in this
+> +area resulting in clashes will be resolved in favour of a kernel implementation.
+> +
+> +fwctl User API
+> +==============
+> +
+> +.. kernel-doc:: include/uapi/fwctl/fwctl.h
+> +.. kernel-doc:: include/uapi/fwctl/mlx5.h
 
-Thanks a lot for your commit.
+Doesn't exist yet...  I'm not sure if that actually causes a build issue
+or not but probably better to just slip this in later in the series.
 
-I have made tests with this commit. After this patch is applied,
-the following scenarios can work well via rping.
+> +Development and debugging focused RPCs under more permissive scopes can have
+> +less stablitiy if the tools using them are only run under exceptional
 
-RXE <---> RXE
+stability 
 
-crc32_le RXE <---> RXE with original icrc
+> +circumstances and not for every day use of the device. Debugging tools may even
+> +require exact version matching as they may require something similar to DWARF
+> +debug information from the FW binary.
+> +
 
-RXE <---> MLX5
+...
 
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 5f30adbe6c8521..319169f7cb7e1c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9561,7 +9561,7 @@ FWCTL SUBSYSTEM
+>  M:	Jason Gunthorpe <jgg@nvidia.com>
+>  M:	Saeed Mahameed <saeedm@nvidia.com>
+>  S:	Maintained
+> -F:	Documentation/userspace-api/fwctl.rst
+> +F:	Documentation/userspace-api/fwctl/
 
-Thanks,
-Zhu Yanjun
+Push back to patch 1 or introduce this here for the first time.
 
-> 
->   drivers/infiniband/sw/rxe/Kconfig     |  3 +-
->   drivers/infiniband/sw/rxe/rxe.c       |  3 --
->   drivers/infiniband/sw/rxe/rxe.h       |  1 -
->   drivers/infiniband/sw/rxe/rxe_icrc.c  | 40 +--------------------------
->   drivers/infiniband/sw/rxe/rxe_loc.h   |  1 -
->   drivers/infiniband/sw/rxe/rxe_req.c   |  1 -
->   drivers/infiniband/sw/rxe/rxe_verbs.c |  4 ---
->   drivers/infiniband/sw/rxe/rxe_verbs.h |  1 -
->   8 files changed, 2 insertions(+), 52 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/Kconfig b/drivers/infiniband/sw/rxe/Kconfig
-> index 06b8dc5093f77..c180e7ebcfc5b 100644
-> --- a/drivers/infiniband/sw/rxe/Kconfig
-> +++ b/drivers/infiniband/sw/rxe/Kconfig
-> @@ -2,12 +2,11 @@
->   config RDMA_RXE
->   	tristate "Software RDMA over Ethernet (RoCE) driver"
->   	depends on INET && PCI && INFINIBAND
->   	depends on INFINIBAND_VIRT_DMA
->   	select NET_UDP_TUNNEL
-> -	select CRYPTO
-> -	select CRYPTO_CRC32
-> +	select CRC32
->   	help
->   	This driver implements the InfiniBand RDMA transport over
->   	the Linux network stack. It enables a system with a
->   	standard Ethernet adapter to interoperate with a RoCE
->   	adapter or with another system running the RXE driver.
-> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-> index 1ba4a0c8726ae..f8ac79ef70143 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.c
-> +++ b/drivers/infiniband/sw/rxe/rxe.c
-> @@ -29,13 +29,10 @@ void rxe_dealloc(struct ib_device *ib_dev)
->   	rxe_pool_cleanup(&rxe->mr_pool);
->   	rxe_pool_cleanup(&rxe->mw_pool);
->   
->   	WARN_ON(!RB_EMPTY_ROOT(&rxe->mcg_tree));
->   
-> -	if (rxe->tfm)
-> -		crypto_free_shash(rxe->tfm);
-> -
->   	mutex_destroy(&rxe->usdev_lock);
->   }
->   
->   /* initialize rxe device parameters */
->   static void rxe_init_device_param(struct rxe_dev *rxe)
-> diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
-> index fe7f970667325..8db65731499d0 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.h
-> +++ b/drivers/infiniband/sw/rxe/rxe.h
-> @@ -19,11 +19,10 @@
->   #include <rdma/ib_pack.h>
->   #include <rdma/ib_smi.h>
->   #include <rdma/ib_umem.h>
->   #include <rdma/ib_cache.h>
->   #include <rdma/ib_addr.h>
-> -#include <crypto/hash.h>
->   
->   #include "rxe_net.h"
->   #include "rxe_opcode.h"
->   #include "rxe_hdr.h"
->   #include "rxe_param.h"
-> diff --git a/drivers/infiniband/sw/rxe/rxe_icrc.c b/drivers/infiniband/sw/rxe/rxe_icrc.c
-> index fdf5f08cd8f17..76d760fbe7ea5 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_icrc.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_icrc.c
-> @@ -7,32 +7,10 @@
->   #include <linux/crc32.h>
->   
->   #include "rxe.h"
->   #include "rxe_loc.h"
->   
-> -/**
-> - * rxe_icrc_init() - Initialize crypto function for computing crc32
-> - * @rxe: rdma_rxe device object
-> - *
-> - * Return: 0 on success else an error
-> - */
-> -int rxe_icrc_init(struct rxe_dev *rxe)
-> -{
-> -	struct crypto_shash *tfm;
-> -
-> -	tfm = crypto_alloc_shash("crc32", 0, 0);
-> -	if (IS_ERR(tfm)) {
-> -		rxe_dbg_dev(rxe, "failed to init crc32 algorithm err: %ld\n",
-> -			       PTR_ERR(tfm));
-> -		return PTR_ERR(tfm);
-> -	}
-> -
-> -	rxe->tfm = tfm;
-> -
-> -	return 0;
-> -}
-> -
->   /**
->    * rxe_crc32() - Compute cumulative crc32 for a contiguous segment
->    * @rxe: rdma_rxe device object
->    * @crc: starting crc32 value from previous segments
->    * @next: starting address of current segment
-> @@ -40,27 +18,11 @@ int rxe_icrc_init(struct rxe_dev *rxe)
->    *
->    * Return: the cumulative crc32 checksum
->    */
->   static __be32 rxe_crc32(struct rxe_dev *rxe, __be32 crc, void *next, size_t len)
->   {
-> -	__be32 icrc;
-> -	int err;
-> -
-> -	SHASH_DESC_ON_STACK(shash, rxe->tfm);
-> -
-> -	shash->tfm = rxe->tfm;
-> -	*(__be32 *)shash_desc_ctx(shash) = crc;
-> -	err = crypto_shash_update(shash, next, len);
-> -	if (unlikely(err)) {
-> -		rxe_dbg_dev(rxe, "failed crc calculation, err: %d\n", err);
-> -		return (__force __be32)crc32_le((__force u32)crc, next, len);
-> -	}
-> -
-> -	icrc = *(__be32 *)shash_desc_ctx(shash);
-> -	barrier_data(shash_desc_ctx(shash));
-> -
-> -	return icrc;
-> +	return (__force __be32)crc32_le((__force u32)crc, next, len);
->   }
->   
->   /**
->    * rxe_icrc_hdr() - Compute the partial ICRC for the network and transport
->    *		  headers of a packet.
-> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-> index ded46119151bb..c57ab8975c5d1 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-> @@ -166,11 +166,10 @@ int rxe_completer(struct rxe_qp *qp);
->   int rxe_requester(struct rxe_qp *qp);
->   int rxe_sender(struct rxe_qp *qp);
->   int rxe_receiver(struct rxe_qp *qp);
->   
->   /* rxe_icrc.c */
-> -int rxe_icrc_init(struct rxe_dev *rxe);
->   int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt);
->   void rxe_icrc_generate(struct sk_buff *skb, struct rxe_pkt_info *pkt);
->   
->   void rxe_resp_queue_pkt(struct rxe_qp *qp, struct sk_buff *skb);
->   
-> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-> index 87a02f0deb000..9d0392df8a92f 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_req.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-> @@ -3,11 +3,10 @@
->    * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
->    * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
->    */
->   
->   #include <linux/skbuff.h>
-> -#include <crypto/hash.h>
->   
->   #include "rxe.h"
->   #include "rxe_loc.h"
->   #include "rxe_queue.h"
->   
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> index 6152a0fdfc8ca..c05379f8b4f57 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> @@ -1531,14 +1531,10 @@ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name,
->   	ib_set_device_ops(dev, &rxe_dev_ops);
->   	err = ib_device_set_netdev(&rxe->ib_dev, ndev, 1);
->   	if (err)
->   		return err;
->   
-> -	err = rxe_icrc_init(rxe);
-> -	if (err)
-> -		return err;
-> -
->   	err = ib_register_device(dev, ibdev_name, NULL);
->   	if (err)
->   		rxe_dbg_dev(rxe, "failed with error %d\n", err);
->   
->   	/*
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index 6573ceec0ef58..6e31134a5fa5b 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -400,11 +400,10 @@ struct rxe_dev {
->   	u64			mmap_offset;
->   
->   	atomic64_t		stats_counters[RXE_NUM_OF_COUNTERS];
->   
->   	struct rxe_port		port;
-> -	struct crypto_shash	*tfm;
->   };
->   
->   static inline struct net_device *rxe_ib_device_get_netdev(struct ib_device *dev)
->   {
->   	return ib_device_get_netdev(dev, RXE_PORT);
-> 
-> base-commit: 2014c95afecee3e76ca4a56956a936e23283f05b
+>  F:	drivers/fwctl/
+>  F:	include/linux/fwctl.h
+>  F:	include/uapi/fwctl/
 
 
