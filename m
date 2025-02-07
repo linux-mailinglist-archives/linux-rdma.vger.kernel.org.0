@@ -1,85 +1,84 @@
-Return-Path: <linux-rdma+bounces-7509-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7510-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86184A2BEFB
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 10:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EF034A2BF05
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 10:17:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7AE13A7DFF
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 09:16:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8E0E3A9B09
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 09:16:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 351C61547C8;
-	Fri,  7 Feb 2025 09:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8765923644B;
+	Fri,  7 Feb 2025 09:16:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KwkS8JkA"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rEfuvVzJ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F8D1D63CD
-	for <linux-rdma@vger.kernel.org>; Fri,  7 Feb 2025 09:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 847B81DD529
+	for <linux-rdma@vger.kernel.org>; Fri,  7 Feb 2025 09:16:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738919771; cv=none; b=oG1nBsDrBEi/fsIu58SAKhXKXjxj9BRGPc/B8i86oKeEQQgwJ/HIYlnsOOBl7nzjC0UsN7SH59ezI/w+1dfMudRPQG7y7mQDYKr0BlT2FYG4MIc4OKfyPD2T30oezSkRkv1SjjPf+BYwgdtK5QZ0pYnBj/uLQTxCkxgEmySmzn8=
+	t=1738919786; cv=none; b=B88xhw2rSdnAt3pTzs1T4KYPkUfu2jJVUi/37VIdNRx2WHKFrjMNe+Ntr9MthiIjRVsfoCNouHbRZrsK+xOl2J9nPQXaqRRPXqN/4aKEGQFvDHl8nVP4QBtZ2AHQ6dsKNhKqPZ8psVBwlc39wdjJR9o7NfWHgD/aKhwEtgtUJ+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738919771; c=relaxed/simple;
-	bh=fLjMsIh/HJUQjg/hVkNg/XMCQsi3SepuuV9mpQx0YkA=;
+	s=arc-20240116; t=1738919786; c=relaxed/simple;
+	bh=8QyhjSt+PXmG79JqqMzYxvWUPvnaR1/TlhVoEt5+boM=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=JCPo/HZod4U4/uOUfsX0086T8ReZWNyMSpOtwI6tm+Umw2sH0KchXC44uQ0SwV5789pv4X7FkFv8VQifRCaJFkGjvGkwbLdPAvYuzgQXnmOcuzz9tq2MCPbKqzIrChlnQ5qRgpx4IgbCea01yTv7V7nAqxvZc8MePfRaS8XA7w8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KwkS8JkA; arc=none smtp.client-ip=209.85.221.52
+	 Content-Disposition; b=d+kqMSc3DvDvByra5Ue273e5IwMcr+N0tQ67SrJvcn6EL8DO0tMqrlbc8keZCGSSwHeWcPjfzmd6IJ+gHE3XY8GTfxdWVLVTOzJdK67u+IU0PGmrafjftxjkDdeZ7bfDxoO4eBcZ7Or0nPhNIsQOynFDn44pQnuBHEsknMLGxmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rEfuvVzJ; arc=none smtp.client-ip=209.85.221.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-38dcab4b0e1so334260f8f.0
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Feb 2025 01:16:08 -0800 (PST)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-38dcc6df5d3so218926f8f.0
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Feb 2025 01:16:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1738919767; x=1739524567; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1738919783; x=1739524583; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=j4lQXrAzi2rTihX6fV/JOGU2Qmj1GaTD2TDSWqFqUgQ=;
-        b=KwkS8JkAYngepUKakIgxlAw9ZJDEEqP0rlkd94WuzpQNTkw4VkenSSprCzNdsEWVPj
-         aln7f+bzBCPhfPrimocpSmnfSJPnwaVchfLWyD1SA5DS5ZhmhDJtB9t/kzVAf5KYfGhp
-         O0H8pvEAArWziNdwDT0loinNyRDacGGDxxXZs5ZUYxi+RESy4i3VCzLqA7MH9B8K7vKP
-         qml3rAWBIo6M9k77Ub3M5QSKkc+RRPXwRMHk33lPjH+fZtphJ2/P0P918/7LaIcxqa2v
-         UP0A78vXE+1YLWQ6hykfSALWIPcT+2dWNv/bx16e3VRyzQ/wocnSrVAiOheJmpSTGw0b
-         Y4EQ==
+        bh=vvLbUtxX6Is1AqBp8WxV0jhxtX114UxVQqr6c6sxU+8=;
+        b=rEfuvVzJaugBmbO1ALFHHOKtedha/I3DKWGnXzXrsyODjKqCWZlu28q9j8b4cyUpc9
+         b0leMaD7xx/qHCTYdURVKfF4E7/UtBJd4/eAC4UFFT9vbl2CrVu74q/Ks1iYUSHp4KZk
+         5XJJ0iKczoiohEHsDJnavZJKLIeCtJLZQQ1kRsxyreaysn3zoGMI5w5eQUzhB1d3Jfmp
+         +27hrAO18exGrdY0nIdnERfjHfTMCO1tfEKm7VKRkEzE58e1tl1RR5vlwQZZ4jMQiohN
+         xvOMQKX1KNigz25GtoQA74Pa3Tcro+vQvL9fZiSs5eli9585J/eTw067p6Ebxpm3Tfhw
+         Pq1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738919767; x=1739524567;
+        d=1e100.net; s=20230601; t=1738919783; x=1739524583;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j4lQXrAzi2rTihX6fV/JOGU2Qmj1GaTD2TDSWqFqUgQ=;
-        b=RO00YHJL9Chk7K7Ouziij5OAlfE1fHlntNgX+20/myvWIM7OQpS8PQ51wX8hzX1o1h
-         nz6FHDgFsYpMTtbMvpRYejSdh/r/T+ywNVRCC1woSIlZf6vPOpfQis8TvNyHUF5y0ndE
-         uJvYXZ44ENyswxkSs4UwYg6Vr636/ho0POxA6hYn9qzJOaWQxoseOCn3DhnRCvRVK3uG
-         glD3Ujrlnsl+IjW0PVr/4xIUSRmpCc54PJsig7x7pFi6d50UCmUk07/1eW0UX5NeduXv
-         /6+QlEL92m/KdRZZyjJoihA0HTco69lUUGFlc33OwUu3hYUchkgAc2PiSya4kuXn1U3+
-         isug==
-X-Forwarded-Encrypted: i=1; AJvYcCWe6tIEXDrqsGO4BMJ7eEJUKg4ngx6BXRBG7isMuSAZE1EARBSFMDqmMTCoDJn1ZIB61zoabkSP8Sk0@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTP5xSTHeLAXxA3IdmiMO3tuUp4U53IaAD0DkyOEJX+u0RJtxP
-	NcJfn65f5JAxG4bqA6UIZqTgRKgchfNlFJ9V3XWUINCB1Vlz8f8j8NH7IdLnZEk=
-X-Gm-Gg: ASbGncspfVWoFwV4EjSPOjhHUNViPxeb3PkzhkHnGPI2Zh3tJFzTg/Pm+chnEO5NvY3
-	G5PJEfJ+Zzg4PFaF4BDCO8Po8oA8aBWQjHOCENj1Ev5cqlbx0SC6SaRao+nxZ7jjvF7ebckXXYG
-	D/x9QN/lU0wk4NoA3N/aY8YAVGjI/CdItdaY3Pz071+wvWd7oHCxz1NLdEtk5MwtSMxq0/Kc8JM
-	RN+1j6Xc/MKD+ShWw/NfU9hGs1kg91u+939kgHBz2XxqyDocIGmWyuo0CZM/vPbKGeZ7FoYWxn8
-	ThI0ExtYPE3meWsSZde9
-X-Google-Smtp-Source: AGHT+IHqtqD6HtRJQqxarv4GMNZzNGdDdWvX5SgVvhPcMKn3XQ/iYaRb3DhRIJRCpWinxpVTMd6nJg==
-X-Received: by 2002:a05:6000:1448:b0:38d:c739:276e with SMTP id ffacd0b85a97d-38dc90ee4f9mr1602513f8f.26.1738919767387;
-        Fri, 07 Feb 2025 01:16:07 -0800 (PST)
+        bh=vvLbUtxX6Is1AqBp8WxV0jhxtX114UxVQqr6c6sxU+8=;
+        b=i/T/RToWrJPezcB5hmmluNF7IuxeQH8zTRTlsENOrXcp+hqpnl12t5QL6j7dcsPnTt
+         5dOr/IEGfMxcdh5ZRQsgfBjOGl8BMPPqMywuFvnTrSCEv12uRqxaCKllVQ0VD20fg/ZB
+         Pk6D+ewQlJOgN5rGUG6FG5Zw44sp8KQojZWCzHKArnaIteYK37SakWOx8wG0URZgS0co
+         COLrq1Q7pL4oWEDRwd3hgH30fBx1WS4aaHCewbrJ+YvCSwmMhJIyTaqgvWZ7cs0ynxCJ
+         58HwEc8fSR2LQliON7JTKNeBmxixFAF8wu25KBUr7fZdk39hApsf7W/kumdVWbr8RocJ
+         kA4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVr0oloWjz4vl5LoSQcMgaYMv+8Bo2bbGIoWzxJ9xWEkJO8yr3iUFtcq4DD30o/Sg6Hv9kzPmEr9lsU@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLp7Ux2SbVhDM0OtLDjsdKo1oYpAQyEBNcXdPCNTI5Eew0PB38
+	vR6LZhfV4jwfeHaPAMV0aAW9pFYUnK6QVL65/LT/IIHwiRZyV0/YNHSykekBuXo=
+X-Gm-Gg: ASbGncs5fXZ76YEBiMn5d5gO030TRH9ZPa6be0C2juMn6psMgCvFyB4Q7D3aNhSG+Wg
+	ScGLFftYU6n7BGZJg6OwZiEx8omQEotWiFLrT0yYNeg815H0zqpKPalqltZrSeLjGP05i3Bfzm7
+	SvhFwLtDQj3eBIcrna5oChtLwIQbGMC3lELBDjqFBX2znCxM3OIIIaKzEryoUhAuFl2osYWBp72
+	Alqvm+cVowDdq4Bh/IyUIRcE36UEHXSYGw2Vra1PwiaqNVE+jY5akES7citxHZQLx7tybPij5CF
+	7/6KzlnXMUi7PzD0QxuX
+X-Google-Smtp-Source: AGHT+IHzf8MzMXdkrcAtuah1r8BuF90slZNj+eI0Wnjcj38CkfEtHceBBNaIgCqFjXafoOn3pJtT+w==
+X-Received: by 2002:a5d:64c3:0:b0:38d:c58f:4cfd with SMTP id ffacd0b85a97d-38dc8914130mr1679493f8f.0.1738919783039;
+        Fri, 07 Feb 2025 01:16:23 -0800 (PST)
 Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-38dbdd1b9b3sm3974521f8f.13.2025.02.07.01.16.06
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-38dbdd5c87csm4012010f8f.52.2025.02.07.01.16.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Feb 2025 01:16:06 -0800 (PST)
-Date: Fri, 7 Feb 2025 12:16:03 +0300
+        Fri, 07 Feb 2025 01:16:22 -0800 (PST)
+Date: Fri, 7 Feb 2025 12:16:19 +0300
 From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Konstantin Taranov <kotaranov@microsoft.com>
-Cc: Long Li <longli@microsoft.com>, Ajay Sharma <sharmaajay@microsoft.com>,
+To: Selvin Xavier <selvin.xavier@broadcom.com>
+Cc: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
 	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Shiraz Saleem <shirazsaleem@microsoft.com>,
 	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
 	kernel-janitors@vger.kernel.org
-Subject: [PATCH next] RDMA/mana_ib: Fix error code in probe()
-Message-ID: <2bbe900e-18b3-46b5-a08c-42eb71886da6@stanley.mountain>
+Subject: [PATCH next] RDMA/bnxt_re: Fix buffer overflow in debugfs code
+Message-ID: <a6b081ab-55fe-4d0c-8f69-c5e5a59e9141@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -90,30 +89,30 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Mailer: git-send-email haha only kidding
 
-Return -ENOMEM if dma_pool_create() fails.  Don't return success.
+Add some bounds checking to prevent memory corruption in
+bnxt_re_cc_config_set().  This is debugfs code so the bug can only be
+triggered by root.
 
-Fixes: df91c470d9e5 ("RDMA/mana_ib: create/destroy AH")
+Fixes: 656dff55da19 ("RDMA/bnxt_re: Congestion control settings using debugfs hook")
 Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- drivers/infiniband/hw/mana/device.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/bnxt_re/debugfs.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index 0a7553f819ba..a17e7a6b0545 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -144,8 +144,10 @@ static int mana_ib_probe(struct auxiliary_device *adev,
+diff --git a/drivers/infiniband/hw/bnxt_re/debugfs.c b/drivers/infiniband/hw/bnxt_re/debugfs.c
+index f4dd2fb51867..d7354e7753fe 100644
+--- a/drivers/infiniband/hw/bnxt_re/debugfs.c
++++ b/drivers/infiniband/hw/bnxt_re/debugfs.c
+@@ -285,6 +285,9 @@ static ssize_t bnxt_re_cc_config_set(struct file *filp, const char __user *buffe
+ 	u32 val;
+ 	int rc;
  
- 	dev->av_pool = dma_pool_create("mana_ib_av", mdev->gdma_context->dev,
- 				       MANA_AV_BUFFER_SIZE, MANA_AV_BUFFER_SIZE, 0);
--	if (!dev->av_pool)
-+	if (!dev->av_pool) {
-+		ret = -ENOMEM;
- 		goto destroy_rnic;
-+	}
++	if (count >= sizeof(buf))
++		return -EINVAL;
++
+ 	if (copy_from_user(buf, buffer, count))
+ 		return -EFAULT;
  
- 	ret = ib_register_device(&dev->ib_dev, "mana_%d",
- 				 mdev->gdma_context->dev);
 -- 
 2.47.2
 
