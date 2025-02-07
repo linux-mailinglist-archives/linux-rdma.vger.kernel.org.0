@@ -1,62 +1,62 @@
-Return-Path: <linux-rdma+bounces-7490-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7488-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F31AA2B6FE
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 01:14:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63DB4A2B6F8
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 01:13:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53EF618894CC
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 00:14:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CD6B1889344
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 00:13:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D84B944E;
-	Fri,  7 Feb 2025 00:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F7481E;
+	Fri,  7 Feb 2025 00:13:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="V8zQRaT9"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ZdFc7OyO"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2045.outbound.protection.outlook.com [40.107.244.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3967128FF;
-	Fri,  7 Feb 2025 00:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 601BE7E1;
+	Fri,  7 Feb 2025 00:13:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.45
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738887226; cv=fail; b=mJTNZKxw0xs1rBPG4ECzlM16aKQVkj5wBhbce5pTMPidafOHnJ2sUs8zXV89gQa4BakjXDnwXtGhi0xctKAXKinU1rooy6zaxDNQ7O/YgStvaxT6UscOhvgqo6Tp3KuclQ3p+bpe4hiwWhE6ZlgnWUWAgsya088aGG0iTuFv84o=
+	t=1738887222; cv=fail; b=eYby06Y7US0/jv6yWd4WTuxQA2t0wR4e4O9FP+AG4D98TsgfPR3ShPsBIngFbxLx9sF/q7VUZaNWv+fuZ+aHju1RvzXMMvTHtcA1CTod80y9yKeE/ox7QymTjWPlYTAxNj3IcwZI49WNEdLcu3/C7zPLOHnZuuFnlB+BbvYs4d0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738887226; c=relaxed/simple;
-	bh=/bIQ9JCNzRm5c185xpE49RjExwCYcWIHYuD2iNmcN8g=;
+	s=arc-20240116; t=1738887222; c=relaxed/simple;
+	bh=kFWwKN2a31IpSOZzhB3Xx/RHgKuQXnwlHqSWoEMcokg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=l/M/LvWcC8xlaBf2xavVifKGt3CTnANiKD3DjuxD1AdTS3QrA/yP+ICppHJMuKdvpyEv1P/mSsEJj/wZONc43UF06wdDs4txW7tu5PMAw9qnuN9Ibz+muJfr2n0PGcN0qNZjxKq9ZYEYyGm7zk0ubhB0cvkWUOOaZyU+hEqFaAU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=V8zQRaT9; arc=fail smtp.client-ip=40.107.244.45
+	 Content-Type:MIME-Version; b=F9JAG9wJGOeX5IJBXwiuIR8oMBhx6JmPNtu8T95hZgzlXqI4LrUXakdoRZoGun2RU2Csi9I49/vzM8+YxA/pRhuITDsdNyyTIjTFFHMQvSSfTr9CaW+tZVVFqxZ7gJFlbAAOW0FKvzmN+J1is5LI02zbGeKusf4d9yXDTar9tF8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ZdFc7OyO; arc=fail smtp.client-ip=40.107.244.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=vQQ1hCQaP9YIS+MoimGr9A3j+eTRrviGOx4keNfUsVrS4B0HzVQm01ulG8QJA78u7vsICRIQKu7KbpTF8IBR2xbZNSlsW0CqxuxnASNpxus/IqMsggwIZP+PzwREbTbaKwYtLj98/7VXEuHXIOB2afwk5qPkQoLB/DWYMKrDOIAYTvWhlA2ndho9IVDGQV/nGRrOYgK5/0YA0nJYszXqsjnTHhN5bzPPfiH6nTuIuFybm8IVIpUeOZOitz9KjIjqEKxI7ha/26rwAticnlkgndJi34MHQj7uJLsr7DjwR/VkF+KQUSd+7FLPviFmYWBggvM6QCFczM00PZrik0YGcQ==
+ b=iz9nYY29yIBpCmLbVL/sReBj8PNJB66wdJpr1nF3K8jJn8FNKt3RqZ09daOREvCpSsAp/5B9Efqh9Me2K5dyBwF3WukaHcviLY4k7e7rWUcnw704pFAqs0UKfUHcWOhmJualxtIgF/xrjovbhrFR6ULdJnZap6xYhguNrF/BJEpRnVMZqJ/IsO2W8U1gRjvYFYDFtw+a0s0+ww9CHoKcfkeGL6pegYlOiQ8ZqEK+wNRSHdq7iWu59Db/E42+cScVUVbaMaKQmtyT51+QlxV1ZB2OI9JgjU3GL5xMSbCYtTMAs+1c6w2ZbSYhy+S1b6RFgfdM9KwgQzM9MKxNiy6+0Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=exWw1AGLH6g/QggMnI/SJaD276Y8ZCBmxZ7/J3ow7Ms=;
- b=n7fdFJbgajZOnRSQJam1HBDEbf93wmuqzXgAMd5A9iiQNbvUFJSUvx9r7C5SKj8tWbpQv/AMt+ecHdbA8k4IddUD6srqHOtp637oIGLHRDsE4IkczJAyv8xQ6r8mkvZpPiIejsE4t9X0bsQ8NqjY+5IDqHbYnN5gmgo9dDQbWoRKMT/xVPo0h8vMafdzRDBU9PrYN6GF3IJd5khmC1B7a0aBGYT1qTMEhrWN1lvmJZp1M+Ss2EExGyiaHhBY1t1pJfi644WDWhopCLqSu96i+/Fw6B1/qLuwVJSECsuQqoRswuLT7UrgHq38KcyM+H0+fmtFH4LxLX3c6h/HfSvmyw==
+ bh=uJP4O92zwVekjKWNGJ+pCivhdJA5kJyiRfrHLsYfbTg=;
+ b=PzRSpMpJyR1mt3C18XHGeT9sDDKVWZ/WLkxVHw3g1RkqFgDzRhrZATxS5SPjnb9CtJ5AOZeb41U/i+lZMCNUOA1Vkjib92kSYmrjouMDpaw++nkqDYz/TlBpSLe2Deau6zBcmkqqamkwMRvxq2djhh7aCKnX8RH3EjpJZ0hZudEKLUwDiUD7weWnx5ll46JXEWBvgFz8TwKf7pswhHamYr3x7esnjPEtRdLrBYynoIFm8cZjdpiJZ24uHzK/6rvpyENJZGypDfew44GXeJQ8mQTEQbjGc/kgkZT2UIJVAkYRMoV84qv9GZZkLg7xTIAJrlPH5/BgYusRqlTnyM79bA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=exWw1AGLH6g/QggMnI/SJaD276Y8ZCBmxZ7/J3ow7Ms=;
- b=V8zQRaT9PTGmi+MnUIxIr6ZAujzSI054WWAD1zE2JMAFEZno7HplMjBROmbVHKAL48G9A4MoB5ULkWrKa0F+uMUUlb5Bks/A+rX0LmKM2CnXQmS9cmLVjzqqHCg6dYkxjhIm9UOiajlv675iqI5sIOWB3iSUCHzDNkA1Gw2dt9f4Ja2+5R1RZpLzLF5+dobdmGF0om2e4E3TIvjSFjjdoImlGRnNMR0FKQ8QIMVmBOgBcX/b/rk2vpYx8L1ZLEYJIEUjvJE7iqkyyuwTm+kkWHrqxddNZLPFCBRfLQXXWts9/OYfyDKFj2McBFRXNNDq0ZTb3NUgiknV4znz6La3eA==
+ bh=uJP4O92zwVekjKWNGJ+pCivhdJA5kJyiRfrHLsYfbTg=;
+ b=ZdFc7OyONoBK7Js2Q01fKEdZIpqq2iRljPxILeKuVXnuBo64vQYSsYF3/IlYazCybb83AHTNsmrjN+RGy04+IV179nnDV+EwmiiEJP3h/G3xJ41ulF2PSxuDOlwe/8/Yg+sqhWapchxglEGM+bNdgIB1LdMVsKJzdzF1phW/gD6mH6GnzfrW4K8tjqH+zNPnqSpXBkzV+WXSpcZNwfsQmIhUX9lffePnf5bkboQpP/zA0Xj1emu24F5aWK4rwnmelo+0nxYeuQ33MN6k1nzY16Udje47L57iBARNWb80g/6n6/Pgz+p4V/u03O4IbeHts0FvdGkD+B0hrAB/VJ+nhg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
  by SN7PR12MB6885.namprd12.prod.outlook.com (2603:10b6:806:263::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8398.24; Fri, 7 Feb
- 2025 00:13:35 +0000
+ 2025 00:13:34 +0000
 Received: from CH3PR12MB8659.namprd12.prod.outlook.com
  ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
  ([fe80::6eb6:7d37:7b4b:1732%6]) with mapi id 15.20.8398.025; Fri, 7 Feb 2025
- 00:13:35 +0000
+ 00:13:34 +0000
 From: Jason Gunthorpe <jgg@nvidia.com>
 To:
 Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>,
@@ -78,15 +78,15 @@ Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>,
 	netdev@vger.kernel.org,
 	Saeed Mahameed <saeedm@nvidia.com>,
 	"Nelson, Shannon" <shannon.nelson@amd.com>
-Subject: [PATCH v4 09/10] fwctl/bnxt: Support communicating with bnxt fw
-Date: Thu,  6 Feb 2025 20:13:31 -0400
-Message-ID: <9-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
+Subject: [PATCH v4 10/10] bnxt: Create an auxiliary device for fwctl_bnxt
+Date: Thu,  6 Feb 2025 20:13:32 -0400
+Message-ID: <10-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
 In-Reply-To: <0-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
 References:
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: BN0PR02CA0016.namprd02.prod.outlook.com
- (2603:10b6:408:e4::21) To CH3PR12MB8659.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL1PR13CA0307.namprd13.prod.outlook.com
+ (2603:10b6:208:2c1::12) To CH3PR12MB8659.namprd12.prod.outlook.com
  (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -96,357 +96,309 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|SN7PR12MB6885:EE_
-X-MS-Office365-Filtering-Correlation-Id: 107eaeb6-86bf-4b57-72e0-08dd470c42bd
+X-MS-Office365-Filtering-Correlation-Id: 9f4250b2-7b83-4974-9c5b-08dd470c4287
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?32qvCs7+DjqIrH0SBHDsSF2QjoLCEnF1364i0go5V/2HbyBgpirNAs+qokRJ?=
- =?us-ascii?Q?TyT3makMPG6fRaMoLAdKq3NlFH8qFvW8jp958qwGLrmzdy8odGT+X0DaQvJ8?=
- =?us-ascii?Q?5WRraM2rygWTlu988pUAFSXDuITaK7/qwCFG8gy5NHz4sVhurS5OSac9KdcV?=
- =?us-ascii?Q?Vo2c8EzPiGT32OKYvny/jlgCK5aqG8H5u2py+qRKqVu3ugBI1cZoaEJU+46J?=
- =?us-ascii?Q?Tsb/q6clJ2i+GRddxHY76ucVhY3VpUahyrP6qWv8XnZc+eq2K9eaoSkgvXRx?=
- =?us-ascii?Q?UTfBZJy6Mt9bmKJ8EMsaG8Rz0zlPlIES0bpJQjqPic5O0Zonf42duJqLRwvW?=
- =?us-ascii?Q?yl1gyq7D49Cqpn17q4sOv5NoeNf003P986LMPQa78YWAEBeO81/IjOQebztp?=
- =?us-ascii?Q?TjWDltQVJuGGYrLBrCQ9dbdcNi8jP6yMf5UDmEammyRyWldiiLlS8OPkeJKt?=
- =?us-ascii?Q?I5fz1X9hOMe4XxqNTd6qYj80jyc50ZK5wyekEhott2Y6S11nAbt94DvJPB/P?=
- =?us-ascii?Q?j7fgOwQ0kjksIl5gvjsq+DUgOpaO0Q7ZKMlbUHjC8GE8JtNmJ5+aXq2+kedG?=
- =?us-ascii?Q?cx9Vdo9Faoge08+mVecDyFvY4zucPWCAUuB0eeGJhYtS55RzqWnp02GwlVaC?=
- =?us-ascii?Q?Efxqx2FBv/bzJg2kJza97YVul02OMQ1WHTAbfMTKztnAIDiec7E8ZzhUGBXW?=
- =?us-ascii?Q?vu1MMxIoX4UwwoihhIxbdLjT1uXxTw8CwHnUsp7o3eZlazgTHpm7gDtGtdBM?=
- =?us-ascii?Q?Cd2RC/kwaSduJxc1nc3XaZQfIW0Cm03TSZpWmu4tcf3WfseAADdyIRYZD9P/?=
- =?us-ascii?Q?PYHBxp1iwxSMQswWJjE1FGW5FKxTTkLs1Vj5qodDZQrMrOKhVIG+NW46Y9he?=
- =?us-ascii?Q?tk5sT+1mCvlSLtp7nyvx/zcRlHpUefXnhdixFgeynXC/iAVgXgNNRHC6VqsL?=
- =?us-ascii?Q?m4hXgYmyTie8xve6D+HIRFmvQNKXWc0cvj2t48/Omh5uvnNQqzvx18efBAKE?=
- =?us-ascii?Q?Uu/c16s2AT17ZhSZEQHSd+1qjuUoZCPhlX+G6hvXx6QBieNqFfRODS4TvESK?=
- =?us-ascii?Q?kAHJISi2aob/cGEKe00ec+nCF/ndg97Obje75gORlFx1JydwM9RLvdJSTZTv?=
- =?us-ascii?Q?0KAFxk8cxC4y+p38P4jQUqxVWbKWqucooYXWyB/ZggoEaX+p9x01HD/Mt11K?=
- =?us-ascii?Q?5mtHyYSrqmfQdu4boClOHMxvnZRiVtfnprb53HBBWw0XlvBi2Icq2jFuAURB?=
- =?us-ascii?Q?KYoJgT90Qij1Tg92TBnkw5FzmYaxiotvc+xO3ogaNwxNfLA4k1HDX58RSKET?=
- =?us-ascii?Q?QvBjrMOleR6dKS37PtRkvbZphTYk5RyuUPJ1kByngqLQzf5IDDKhZ1VSUsts?=
- =?us-ascii?Q?5swzOAvjFbJFw36fW+Lbp+YhkUWz?=
+	=?us-ascii?Q?DVLWNH2uJVbBWb6mrA1CtARKpICO1YtQHLrj+BeR8xhSe3ww98ldRZhKPlxG?=
+ =?us-ascii?Q?u2WP7MtePW2IOK6nNojNNyfDATQioNz40M/HJFQ8JH6Wj+Lsp2Nb/2dxhobR?=
+ =?us-ascii?Q?X8Ltr2c7mNO7nbhV+SGmj30WOk0Cfe/xf84Sg3QuAsZDFcnbp8tNV4KiXpA6?=
+ =?us-ascii?Q?7r1gn2rNS/sNifzuS3FW/oLKvatFgjlXoE4AWuRVeGOjMOb+agkWRHRJ0Hp3?=
+ =?us-ascii?Q?hEc+N0TQEnPAJGKvdQMiAcTL+VkyzE30xOUjL8Istt32NXwc0/1QC7nYI69v?=
+ =?us-ascii?Q?iftQQJ77foCRJAD6b0YEpmHU/DUQQeZOJZapBXfNVXWnqU+jlhqrThak6WAz?=
+ =?us-ascii?Q?ZGPFSdO1kNr1ABUnTVqAdOAwF/gzAtUq4I1B3VpvEa86zswGgdBhtmN0oZEo?=
+ =?us-ascii?Q?UiTHkiPPsqbO8cF5zPDQvdAJB1vOcH5IBnN9RCvj8a1onUC3qwO+6p7wgoZj?=
+ =?us-ascii?Q?Ipuqugh80FTMwjjbwB/Zne+noS05rLgy4gqmfUnpoIeVDih4DY+IcoPsN3yG?=
+ =?us-ascii?Q?K0ytRajhq2np6S3WnCE1VJI3s0If9Mslnwb5bTbswxIkdd1NebLwXXbILG9z?=
+ =?us-ascii?Q?sSinBRhpZvCpM3ssgPN+FLxt7kcd970eGEK6MSB0WJtJ8GqR66hzEJxSXG+E?=
+ =?us-ascii?Q?9nacJX6Ea8hHITN3HLFj0aOyemmmWEi//EsF46hRYGvAgS173P+TfBP0kl/r?=
+ =?us-ascii?Q?5HDjWBXZqAOvZgK+SHPuTMRtjTHddXwTOEm6+YZlFHCMlxI2iObBQk3SOKZF?=
+ =?us-ascii?Q?UBcj9PGAbodBo9ONpUbG77NeK13oxWrw5TLn79hBvHdTes+9WJmZQczkIf+/?=
+ =?us-ascii?Q?BXrgxChrAgNMQBP4QD+M8rUQjcAMc6KJnMZ2E7GUj0ZtbpDh+WgJtc0CDMR+?=
+ =?us-ascii?Q?XhZOJhMEPjzPwRfffZTGXKEO1+h+n8rE8LO+y4x8qulHMcwCijrRX1J9llzm?=
+ =?us-ascii?Q?SIdQc9OjhE2z4kvHlj2DaD2stVZdYhSF4rTejrCJVxtI5lbyzpJUnj2SQqnG?=
+ =?us-ascii?Q?58j/OqA6RF9IW6iRQm0qPsQEw1vWbifDJyeunYjb8RYpqZfOnl/ksVJ2/3/d?=
+ =?us-ascii?Q?Oy922TEgiDRy6Ewt/URwo67QJWAtmBy0oDrFk5Lkxv+HJa6vGXWF1oUUDx8d?=
+ =?us-ascii?Q?rkrf7cJBukwuN7yoEpHuxZkt6UOjc1WVRcLWl4aqa0ycZzM2/O4L+kWosM0g?=
+ =?us-ascii?Q?61xBlyTNf4Ru17Wp+5Dexb6PNf4FdN8Xw2mBzR0JK4JybWPtvKMWsOj1vpMn?=
+ =?us-ascii?Q?Y6o1FpBu14GSVcViuBtK0fiSDc/MLuQ9gFVDs88KwszIidr0E+1ZLWpG0u/e?=
+ =?us-ascii?Q?LMJF2nGUpMrLY+zg1nm/JlLjsSKSWNKiJzvy25sYdT7sNz8yTAH29YwBd68l?=
+ =?us-ascii?Q?XpSoNCmSMQnmVnvR3guCMufxdrte?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7416014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?MXhOj8zQQyLqg3rh+92OuZMrE42iz0j5a/xQ+XaRTQi0V74Jheu/H62VITRE?=
- =?us-ascii?Q?o9Ptru5cqfDvk6Ngvl9nc4mU+xgSzuTDd2LcLw+IGuw0o/u6Fhtl+0pIgYDq?=
- =?us-ascii?Q?Uyh11JEjq/3SI8TWncpCBE0Bc9EZZRq3iUoFQOG8ucga12ccugy/JyH9eUaH?=
- =?us-ascii?Q?NvXjOOAIsDaPgqk81moxyojykDnbfYvqS/SbiTqXfkHVv3xF+EwiWL/52+qe?=
- =?us-ascii?Q?SHei9JGEjf69bf4h4qOz6SzsEbP1n+ny3L3wy0weJl1s+dynzBsPahAgLZ1C?=
- =?us-ascii?Q?iy6SEyizg8UkriXk5qBT7VudhFMyuKmBOAm1PvNsPcxp96cN2/9fPklN9F7H?=
- =?us-ascii?Q?t8yUHWHxngr30EJ0EEn+8uHunSrIUc3umXN8V3u777w9Jl/5hdhjGkwL9gqc?=
- =?us-ascii?Q?dN8qW9L/ZATvmLjL0fqRhfcmX48nE+H4gubVfHBbpNqdDV7BX8YqbuFpKsMs?=
- =?us-ascii?Q?ryn6CMfreRb+HfV8+1d0LA9nRD7+YdWAMlam9tjbmMtQj9Gu3cjoC/r3IF/t?=
- =?us-ascii?Q?sNsSJuDWGwmzKFGE2ry/Q5LqKIfW2pm5Tyh1MyhUSKuCulfbB++A9lN31yaD?=
- =?us-ascii?Q?6Zp2qlDUBJlAJjiE3Tb5SyTGDDCk69SsHCvOsiyOk20yWahAfax6HCn4vnDg?=
- =?us-ascii?Q?MmdDv8J20MK3eLRu1r6b60OOWeYU0qKtQ8gXb3+eAV6DPKPZYisVkdrmfJU4?=
- =?us-ascii?Q?S4hhiIoQ0pIoYWGBPA+ThhsO/XeFrzzSir0r98GlgOGk69DhrixbbCupLwCo?=
- =?us-ascii?Q?EY2tjoOpt1zPzyFqnmwwG4hSR4FU9cpwxCD16Ip/zgB8hEsfr9c/XrEFBQmy?=
- =?us-ascii?Q?je0u728kA25qKaEWGOvklEE1k7yaF4v+fJXJwrQ2WjzWsdHP6tauRNRKSMiz?=
- =?us-ascii?Q?9U9noEySbVBtMxRKZQq1wsWlUhP8s/VU5CPgkrkb6huTMbD9xpMU7DFrdBso?=
- =?us-ascii?Q?m1uabD8OUcJTE2LyKfTbjZbOkkwPAj079XemBZzjjY2GyMJUYT0Jh4SLUFK4?=
- =?us-ascii?Q?Cq2hzG2R9VLFYHRMO+niyK3APAD3kBCOZSLfmRA8soAr57sZZDLMTHbPK+pQ?=
- =?us-ascii?Q?JEhXfqTKyO4doEvury2OFwQTUKt0Xt5i+0R49HIrPbBpqYvHSMgXW0fHy5ji?=
- =?us-ascii?Q?prex2JastL5aXB3xQ3NUuOkt6Ed/MRVs2irHdzf+IgtQXDEQVxqeyXsm87QW?=
- =?us-ascii?Q?ikbFkUTvZDFvT8f26spnnxwKlK/BOqdPljDlKsUVLM8DbxgX5jIdQL1LUf4W?=
- =?us-ascii?Q?T1+4GmvtJuUtLwYqc0Gyj+hSQehuWjCweCKtv0dj8lHkvuc6PWUu2Hf2+1ph?=
- =?us-ascii?Q?pnnTO7ZmlB+syMsux+1Hvm5+uHnFUsAB5Z2riLhuJ0OTnncKi13A8qj1eDQV?=
- =?us-ascii?Q?MDqL57wBxrtuMH7CZC7HZN6oOTx67ADZzckQmirQ0PiXs0ML3I2qpfNVpmAH?=
- =?us-ascii?Q?9D1KkupjtPWUXVDiy2Bp8rufq7dFjhEA5xBdDXl0syH/QUNz5GZ4zuoFtJQF?=
- =?us-ascii?Q?ht4Ey/WYpaKuI4tZlVht4VXPyrWyEyLHVov/ATvQAYr1riBeh4PqZHX58cml?=
- =?us-ascii?Q?FHZY/Kr1IYoXc9eFkkJmcazWRZK+V2Gl3PTlhdXo?=
+	=?us-ascii?Q?nWhB3eHrh6W25VACc4AncL/7azgb+DOC6jc75oV12s2CJ6pXblSnRr/3S59m?=
+ =?us-ascii?Q?havIF3dsU6NCGFD0FqVSmtI5KDwuD82osG/7UkE7yRm5E4MAoiAU9eouNsMz?=
+ =?us-ascii?Q?hvH+4OJyz5qu0LrGs1UHswd0Z5rvLT+2WWiDaUQ5KaoQonjG/X5729EDz1Se?=
+ =?us-ascii?Q?qcec0jNrV/wMGXbwRmueegBQ47gGlW0SGFj95CAhGDwaGlamqxXc2rMXeUt4?=
+ =?us-ascii?Q?Qxlx4UBJf/dClDERV4M2in2Bsyfa0PLDW4sJSQd7YHugGR4oN7H8IMaz8aj0?=
+ =?us-ascii?Q?ukhmA5uVYvm7Won6VNr1HARxMcuu8ZdJhpBzy/agQN6dyMlAkZTdJNcVN+Uu?=
+ =?us-ascii?Q?l0bGGP+jvwWcmmdr+smJLyVexpfJrEAxxR9VpURY31SqUjdT3sYKWbRnz9FR?=
+ =?us-ascii?Q?z9on1e1xDjIuU1VyRb1R4F4URUzlUICLva6aWZ6xTbsPs/hO3HsFQCrkLX6G?=
+ =?us-ascii?Q?KCNQmqLixcy20Oo44Y/O5oilXxcW6W+BUnxK46sY8Leb+AeWg7WO91eqx7Z9?=
+ =?us-ascii?Q?0uhlp6MxCTW0kaB6gOBhTJBIjjz5qDUwec15BM//VFbbycVvvkhsi+QlrFKF?=
+ =?us-ascii?Q?kSBJ/CMJqPx60mYjnA0C8bUrEtydMhuTHdVEm2R4XcoPD8pvY3rSh8gEVyAn?=
+ =?us-ascii?Q?g9vSHLNTAwrlPd60egpGHCytwWt3ffD2ru5aLExXHoUt0DOWmbCAf5ch9bvJ?=
+ =?us-ascii?Q?scRmSYdUs7Sl0/pXfHuc5SaDJK8xpU1B+ONL5BK8IVCBTWWp/ZFBfmlL+SCd?=
+ =?us-ascii?Q?uQEFckC+Povc49s7VUjFoGaKf8V/fH4X4nDLwfiok6NVDB76xc82QvKeYDTZ?=
+ =?us-ascii?Q?wjd3MkWfBhH0KZoYyAa180FOWFbVvE5/xNIG7LobVVKrX/pSd8c69zQoInwj?=
+ =?us-ascii?Q?l4yoppeugZDcCDw5vLyjJWVJ7rZ83se9CssPUClqizqC8bGabZV8nBWORFMT?=
+ =?us-ascii?Q?E2OleZA9t+akvO8vlH/869+lL8pTrMkaLHm/5+KtQI3axme3vV7p2uN1j/i2?=
+ =?us-ascii?Q?Apswi49g8i1FmLYFpz8d8Usy+UIIoyp53Ad/s2+SYq4nDK1xTO9d6Zc1L6eL?=
+ =?us-ascii?Q?1UwFUbXFShvfEmf7rTuiBomDLsdfPN2vp9RLx/cJITQrVyJQuhf5841V5SXN?=
+ =?us-ascii?Q?WZbzMs3hkgWxvS8ijngckuTgpVFpEUI9w2TB401jP+kf3jc9GnDW+8fsFY9Z?=
+ =?us-ascii?Q?H4jM2icejWtoh9bOzBJ+1/wASY+/60qtuLvxTsJfvNwQem/AuOSCICaBAh8a?=
+ =?us-ascii?Q?kXdnbjI1hGSTH46XQKbiETfZr+PrVDIS6OV5bCAurrNOwP6GCQ2VVoHWr8cV?=
+ =?us-ascii?Q?UdwluS7lLMGQ5/OW4TT1Olm0jlh+4U7iO2j57aoaVcfPjaBnjomAZw52XmSt?=
+ =?us-ascii?Q?giTxpHEMx1HB5xzAyUb03c0AXm54hI9o+k40qdwZ8NLTk4ksPTh59M43ZXbh?=
+ =?us-ascii?Q?TeZjvVIcsGlwmXxloBAiXmHgVxaRyEsUCzSOVj5XxLIFNKq+bqvDM7gWq6vu?=
+ =?us-ascii?Q?UbhU71PFzW2dFJE45R3COJbNkYvXnbd/aUgoNDL/CDG64xu9J0jg3Q3f7Ss9?=
+ =?us-ascii?Q?0bMWQ0tIDAsQN6eNz/MuXytTcEz4Rs2fWNI+yo8N?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 107eaeb6-86bf-4b57-72e0-08dd470c42bd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f4250b2-7b83-4974-9c5b-08dd470c4287
 X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2025 00:13:34.3239
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2025 00:13:34.0341
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eBwbxhGCmJdlViDncHGgmMAUI3Z7jP4LspXdkE66fHjTmZKgiNDbqGiqHhyBiwDY
+X-MS-Exchange-CrossTenant-UserPrincipalName: aXyOBfyQSL9UT7N8Wfsfwwzab9EkJOt8KKsVT8/bf04yxwsKqHUVvCfUI4qLoHt5
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6885
 
 From: Andy Gospodarek <gospo@broadcom.com>
 
-This patch adds basic support for the fwctl infrastructure.  With the
-approriate tool, the most basic RPC to the bnxt_en firmware can be
-called.
-
 Signed-off-by: Andy Gospodarek <gospo@broadcom.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- drivers/fwctl/Kconfig       |   9 ++
- drivers/fwctl/Makefile      |   1 +
- drivers/fwctl/bnxt/Makefile |   4 +
- drivers/fwctl/bnxt/bnxt.c   | 167 ++++++++++++++++++++++++++++++++++++
- include/uapi/fwctl/bnxt.h   |  27 ++++++
- include/uapi/fwctl/fwctl.h  |   1 +
- 6 files changed, 209 insertions(+)
- create mode 100644 drivers/fwctl/bnxt/Makefile
- create mode 100644 drivers/fwctl/bnxt/bnxt.c
- create mode 100644 include/uapi/fwctl/bnxt.h
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   3 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h     |   3 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c | 126 +++++++++++++++++-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |   4 +
+ 4 files changed, 132 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/fwctl/Kconfig b/drivers/fwctl/Kconfig
-index f802cf5d4951e8..0a542a247303d7 100644
---- a/drivers/fwctl/Kconfig
-+++ b/drivers/fwctl/Kconfig
-@@ -9,6 +9,15 @@ menuconfig FWCTL
- 	  fit neatly into an existing subsystem.
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 7b8b5b39c7bbe8..bf33e7f26b1fd2 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -16291,6 +16291,8 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	bnxt_init_ring_params(bp);
+ 	bnxt_set_ring_params(bp);
+ 	bnxt_rdma_aux_device_init(bp);
++	bnxt_fwctl_aux_device_init(bp);
++
+ 	rc = bnxt_set_dflt_rings(bp, true);
+ 	if (rc) {
+ 		if (BNXT_VF(bp) && rc == -ENODEV) {
+@@ -16353,6 +16355,7 @@ static int bnxt_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	bnxt_dl_fw_reporters_create(bp);
  
- if FWCTL
-+config FWCTL_BNXT
-+	tristate "bnxt control fwctl driver"
-+	depends on BNXT
-+	help
-+	  BNXT provides interface for the user process to access the debug and
-+	  configuration registers of the Broadcom NIC hardware family
-+
-+	  If you don't know what to do here, say N.
-+
- config FWCTL_MLX5
- 	tristate "mlx5 ConnectX control fwctl driver"
- 	depends on MLX5_CORE
-diff --git a/drivers/fwctl/Makefile b/drivers/fwctl/Makefile
-index 1c535f694d7fe4..5fb289243286ae 100644
---- a/drivers/fwctl/Makefile
-+++ b/drivers/fwctl/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_FWCTL) += fwctl.o
-+obj-$(CONFIG_FWCTL_BNXT) += bnxt/
- obj-$(CONFIG_FWCTL_MLX5) += mlx5/
+ 	bnxt_rdma_aux_device_add(bp);
++	bnxt_fwctl_aux_device_add(bp);
  
- fwctl-y += main.o
-diff --git a/drivers/fwctl/bnxt/Makefile b/drivers/fwctl/bnxt/Makefile
-new file mode 100644
-index 00000000000000..57c76e0e0c9ca7
---- /dev/null
-+++ b/drivers/fwctl/bnxt/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_FWCTL_BNXT) += bnxt_fwctl.o
+ 	bnxt_print_device_info(bp);
+ 
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
+index 2373f423a523ec..1951fdda8820d0 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
+@@ -30,6 +30,7 @@
+ #include <net/xdp.h>
+ #include <linux/dim.h>
+ #include <linux/io-64-nonatomic-lo-hi.h>
++#include "bnxt_hsi.h"
+ #ifdef CONFIG_TEE_BNXT_FW
+ #include <linux/firmware/broadcom/tee_bnxt_fw.h>
+ #endif
+@@ -2326,7 +2327,9 @@ struct bnxt {
+ 	(BNXT_CHIP_P3(bp) || BNXT_CHIP_P4(bp) || BNXT_CHIP_P5(bp))
+ 
+ 	struct bnxt_aux_priv	*aux_priv;
++	struct bnxt_aux_priv	*aux_priv_fwctl;
+ 	struct bnxt_en_dev	*edev;
++	struct bnxt_en_dev	*edev_fwctl;
+ 
+ 	struct bnxt_napi	**bnapi;
+ 
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+index e4a7f37036edba..7e39d9695af339 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+@@ -26,7 +26,8 @@
+ #include "bnxt_hwrm.h"
+ #include "bnxt_ulp.h"
+ 
+-static DEFINE_IDA(bnxt_aux_dev_ids);
++static DEFINE_IDA(bnxt_rdma_aux_dev_ids);
++static DEFINE_IDA(bnxt_fwctl_aux_dev_ids);
+ 
+ static void bnxt_fill_msix_vecs(struct bnxt *bp, struct bnxt_msix_entry *ent)
+ {
+@@ -413,7 +414,7 @@ static void bnxt_aux_dev_release(struct device *dev)
+ 		container_of(dev, struct bnxt_aux_priv, aux_dev.dev);
+ 	struct bnxt *bp = netdev_priv(aux_priv->edev->net);
+ 
+-	ida_free(&bnxt_aux_dev_ids, aux_priv->id);
++	ida_free(&bnxt_rdma_aux_dev_ids, aux_priv->id);
+ 	kfree(aux_priv->edev->ulp_tbl);
+ 	bp->edev = NULL;
+ 	kfree(aux_priv->edev);
+@@ -488,7 +489,7 @@ void bnxt_rdma_aux_device_init(struct bnxt *bp)
+ 	if (!aux_priv)
+ 		goto exit;
+ 
+-	aux_priv->id = ida_alloc(&bnxt_aux_dev_ids, GFP_KERNEL);
++	aux_priv->id = ida_alloc(&bnxt_rdma_aux_dev_ids, GFP_KERNEL);
+ 	if (aux_priv->id < 0) {
+ 		netdev_warn(bp->dev,
+ 			    "ida alloc failed for ROCE auxiliary device\n");
+@@ -504,7 +505,7 @@ void bnxt_rdma_aux_device_init(struct bnxt *bp)
+ 
+ 	rc = auxiliary_device_init(aux_dev);
+ 	if (rc) {
+-		ida_free(&bnxt_aux_dev_ids, aux_priv->id);
++		ida_free(&bnxt_rdma_aux_dev_ids, aux_priv->id);
+ 		kfree(aux_priv);
+ 		goto exit;
+ 	}
+@@ -536,3 +537,120 @@ void bnxt_rdma_aux_device_init(struct bnxt *bp)
+ exit:
+ 	bp->flags &= ~BNXT_FLAG_ROCE_CAP;
+ }
 +
-+bnxt_fwctl-y += bnxt.o
-diff --git a/drivers/fwctl/bnxt/bnxt.c b/drivers/fwctl/bnxt/bnxt.c
-new file mode 100644
-index 00000000000000..d2b9a64a1402bf
---- /dev/null
-+++ b/drivers/fwctl/bnxt/bnxt.c
-@@ -0,0 +1,167 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2024, Broadcom Corporation
-+ */
-+#include <linux/fwctl.h>
-+#include <linux/auxiliary_bus.h>
-+#include <linux/slab.h>
-+#include <linux/pci.h>
-+#include <uapi/fwctl/bnxt.h>
-+
-+/* FIXME need a include/linux header for the aux related definitions */
-+#include <../../../drivers/net/ethernet/broadcom/bnxt/bnxt.h>
-+#include <../../../drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h>
-+
-+struct bnxtctl_uctx {
-+	struct fwctl_uctx uctx;
-+	u32 uctx_caps;
-+};
-+
-+struct bnxtctl_dev {
-+	struct fwctl_device fwctl;
++void bnxt_fwctl_aux_device_uninit(struct bnxt *bp)
++{
 +	struct bnxt_aux_priv *aux_priv;
-+};
++	struct auxiliary_device *adev;
 +
-+DEFINE_FREE(bnxtctl, struct bnxtctl_dev *, if (_T) fwctl_put(&_T->fwctl))
++	/* Skip if no auxiliary device init was done. */
++	if (!bp->aux_priv_fwctl)
++		return;
 +
-+static int bnxtctl_open_uctx(struct fwctl_uctx *uctx)
-+{
-+	struct bnxtctl_uctx *bnxtctl_uctx =
-+		container_of(uctx, struct bnxtctl_uctx, uctx);
-+
-+	bnxtctl_uctx->uctx_caps = BIT(FWCTL_BNXT_QUERY_COMMANDS) |
-+				  BIT(FWCTL_BNXT_SEND_COMMAND);
-+	return 0;
++	aux_priv = bp->aux_priv_fwctl;
++	adev = &aux_priv->aux_dev;
++	auxiliary_device_uninit(adev);
 +}
 +
-+static void bnxtctl_close_uctx(struct fwctl_uctx *uctx)
++
++void bnxt_fwctl_aux_device_del(struct bnxt *bp)
 +{
++	if (!bp->edev_fwctl)
++		return;
++
++	auxiliary_device_delete(&bp->aux_priv_fwctl->aux_dev);
 +}
 +
-+static void *bnxtctl_info(struct fwctl_uctx *uctx, size_t *length)
++void bnxt_fwctl_aux_device_add(struct bnxt *bp)
 +{
-+	struct bnxtctl_uctx *bnxtctl_uctx =
-+		container_of(uctx, struct bnxtctl_uctx, uctx);
-+	struct fwctl_info_bnxt *info;
++	struct auxiliary_device *aux_dev;
++	int rc;
 +
-+	info = kzalloc(sizeof(*info), GFP_KERNEL);
-+	if (!info)
-+		return ERR_PTR(-ENOMEM);
++	if (!bp->edev_fwctl) {
++		printk(KERN_CRIT "edev_fwctl is NULL %s\n", __func__);
++		return;
++	}
 +
-+	info->uctx_caps = bnxtctl_uctx->uctx_caps;
-+
-+	*length = sizeof(*info);
-+	return info;
-+}
-+
-+/*
-+ * bnxt_fw_msg->msg has the whole command
-+ * the start of message is of type struct input
-+ * struct input {
-+ *         __le16  req_type;
-+ *         __le16  cmpl_ring;
-+ *         __le16  seq_id;
-+ *         __le16  target_id;
-+ *         __le64  resp_addr;
-+ * };
-+ * so the hwrm op should be (struct input *)(hwrm_in->msg)->req_type
-+ */
-+static bool bnxtctl_validate_rpc(struct fwctl_uctx *uctx,
-+				 struct bnxt_fw_msg *hwrm_in)
-+{
-+	struct input *req = (struct input *)hwrm_in->msg;
-+
-+	switch (req->req_type) {
-+	case HWRM_VER_GET:
-+		return true;
-+	default:
-+		return false;
++	aux_dev = &bp->aux_priv_fwctl->aux_dev;
++	rc = auxiliary_device_add(aux_dev);
++	if (rc) {
++		netdev_warn(bp->dev, "Failed to add auxiliary device for FWCTL\n");
++		auxiliary_device_uninit(aux_dev);
++		bp->flags &= ~BNXT_FLAG_ROCE_CAP;
++	} else {
++		netdev_warn(bp->dev, "Added auxiliary device for FWCTL!!!\n");
 +	}
 +}
 +
-+static void *bnxtctl_fw_rpc(struct fwctl_uctx *uctx, enum fwctl_rpc_scope scope,
-+			    void *in, size_t in_len, size_t *out_len)
-+{
-+	struct bnxtctl_dev *bnxtctl =
-+		container_of(uctx->fwctl, struct bnxtctl_dev, fwctl);
-+	struct bnxt_aux_priv *bnxt_aux_priv = bnxtctl->aux_priv;
-+	/* FIXME: Check me */
-+	struct bnxt_fw_msg rpc_in = {
-+		// FIXME: does bnxt_send_msg() copy?
-+		.msg = in,
-+		.msg_len = in_len,
-+		.resp = in,
-+		// FIXME: Dynamic memory for out_len
-+		.resp_max_len = in_len,
-+	};
-+	int rc;
-+
-+	if (!bnxtctl_validate_rpc(uctx, &rpc_in))
-+		return ERR_PTR(-EPERM);
-+
-+	rc = bnxt_send_msg(bnxt_aux_priv->edev, &rpc_in);
-+	if (!rc)
-+		return ERR_PTR(-EOPNOTSUPP);
-+	return in;
-+}
-+
-+static const struct fwctl_ops bnxtctl_ops = {
-+	.device_type = FWCTL_DEVICE_TYPE_BNXT,
-+	.uctx_size = sizeof(struct bnxtctl_uctx),
-+	.open_uctx = bnxtctl_open_uctx,
-+	.close_uctx = bnxtctl_close_uctx,
-+	.info = bnxtctl_info,
-+	.fw_rpc = bnxtctl_fw_rpc,
-+};
-+
-+static int bnxtctl_probe(struct auxiliary_device *adev,
-+			 const struct auxiliary_device_id *id)
++static void bnxt_fwctl_aux_dev_release(struct device *dev)
 +{
 +	struct bnxt_aux_priv *aux_priv =
-+		container_of(adev, struct bnxt_aux_priv, aux_dev);
-+	struct bnxtctl_dev *bnxtctl __free(bnxtctl) =
-+		fwctl_alloc_device(&aux_priv->edev->pdev->dev, &bnxtctl_ops,
-+				   struct bnxtctl_dev, fwctl);
++		container_of(dev, struct bnxt_aux_priv, aux_dev.dev);
++	struct bnxt *bp = netdev_priv(aux_priv->edev->net);
++
++	ida_free(&bnxt_fwctl_aux_dev_ids, aux_priv->id);
++	kfree(aux_priv->edev);
++	bp->edev_fwctl = NULL;
++	kfree(bp->aux_priv_fwctl);
++	bp->aux_priv_fwctl = NULL;
++}
++
++
++void bnxt_fwctl_aux_device_init(struct bnxt *bp)
++{
++	struct auxiliary_device *aux_dev;
++	struct bnxt_aux_priv *aux_priv;
++	struct bnxt_en_dev *edev;
++	struct bnxt_ulp *ulp;
 +	int rc;
 +
-+	if (!bnxtctl)
-+		return -ENOMEM;
++	aux_priv = kzalloc(sizeof(*bp->aux_priv), GFP_KERNEL);
++	if (!aux_priv)
++		return;
 +
-+	bnxtctl->aux_priv = aux_priv;
++	aux_priv->id = ida_alloc(&bnxt_fwctl_aux_dev_ids, GFP_KERNEL);
++	if (aux_priv->id < 0) {
++		netdev_warn(bp->dev,
++			    "ida alloc failed for FWCTL auxiliary device\n");
++		kfree(aux_priv);
++		return;
++	}
 +
-+	rc = fwctl_register(&bnxtctl->fwctl);
-+	if (rc)
-+		return rc;
++	aux_dev = &aux_priv->aux_dev;
++	aux_dev->id = aux_priv->id;
++	aux_dev->name = "fwctl";
++	aux_dev->dev.parent = &bp->pdev->dev;
++	aux_dev->dev.release = bnxt_fwctl_aux_dev_release;
 +
-+	auxiliary_set_drvdata(adev, no_free_ptr(bnxtctl));
-+	return 0;
++	rc = auxiliary_device_init(aux_dev);
++	if (rc) {
++		ida_free(&bnxt_fwctl_aux_dev_ids, aux_priv->id);
++		kfree(aux_priv);
++		return;
++	}
++	bp->aux_priv_fwctl = aux_priv;
++
++	/* From this point, all cleanup will happen via the .release callback &
++	 * any error unwinding will need to include a call to
++	 * auxiliary_device_uninit.
++	 */
++	edev = kzalloc(sizeof(*edev), GFP_KERNEL);
++	if (!edev)
++		goto aux_dev_uninit;
++
++	aux_priv->edev = edev;
++
++	ulp = kzalloc(sizeof(*ulp), GFP_KERNEL);
++	if (!ulp)
++		goto aux_dev_uninit;
++
++	edev->ulp_tbl = ulp;
++	bp->edev_fwctl = edev;
++	bnxt_set_edev_info(edev, bp);
++	/* bp->ulp_num_msix_want = bnxt_set_dflt_ulp_msix(bp); */
++	printk(KERN_CRIT "Made it %s\n", __func__);
++	return;
++
++aux_dev_uninit:
++	auxiliary_device_uninit(aux_dev);
 +}
-+
-+static void bnxtctl_remove(struct auxiliary_device *adev)
-+{
-+	struct bnxtctl_dev *ctldev = auxiliary_get_drvdata(adev);
-+
-+	fwctl_unregister(&ctldev->fwctl);
-+	fwctl_put(&ctldev->fwctl);
-+}
-+
-+static const struct auxiliary_device_id bnxtctl_id_table[] = {
-+	{ .name = "bnxt_en.fwctl", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(auxiliary, bnxtctl_id_table);
-+
-+static struct auxiliary_driver bnxtctl_driver = {
-+	.name = "bnxt_fwctl",
-+	.probe = bnxtctl_probe,
-+	.remove = bnxtctl_remove,
-+	.id_table = bnxtctl_id_table,
-+};
-+
-+module_auxiliary_driver(bnxtctl_driver);
-+
-+MODULE_IMPORT_NS(BNXT);
-+MODULE_IMPORT_NS(FWCTL);
-+MODULE_DESCRIPTION("BNXT fwctl driver");
-+MODULE_AUTHOR("Broadcom Corporation");
-+MODULE_LICENSE("GPL");
-diff --git a/include/uapi/fwctl/bnxt.h b/include/uapi/fwctl/bnxt.h
-new file mode 100644
-index 00000000000000..ea47fdbbf6ea3e
---- /dev/null
-+++ b/include/uapi/fwctl/bnxt.h
-@@ -0,0 +1,27 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * Copyright (c) 2024, Broadcom Corporation
-+ *
-+ */
-+#ifndef _UAPI_FWCTL_BNXT_H_
-+#define _UAPI_FWCTL_BNXT_H_
-+
-+#include <linux/types.h>
-+
-+enum fwctl_bnxt_commands {
-+	FWCTL_BNXT_QUERY_COMMANDS = 0,
-+	FWCTL_BNXT_SEND_COMMAND,
-+};
-+
-+/**
-+ * struct fwctl_info_bnxt - ioctl(FWCTL_INFO) out_device_data
-+ * @uctx_caps: The command capabilities driver accepts.
-+ *
-+ * Return basic information about the FW interface available.
-+ */
-+struct fwctl_info_bnxt {
-+	__u32 uctx_caps;
-+	__u32 reserved;
-+};
-+
-+#endif
-diff --git a/include/uapi/fwctl/fwctl.h b/include/uapi/fwctl/fwctl.h
-index 0790b8291ee1bd..518f054f02d2d8 100644
---- a/include/uapi/fwctl/fwctl.h
-+++ b/include/uapi/fwctl/fwctl.h
-@@ -43,6 +43,7 @@ enum {
- enum fwctl_device_type {
- 	FWCTL_DEVICE_TYPE_ERROR = 0,
- 	FWCTL_DEVICE_TYPE_MLX5 = 1,
-+	FWCTL_DEVICE_TYPE_BNXT = 3,
- };
- 
- /**
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
+index 7fa3b8d1ebd288..148e3eb32be001 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
+@@ -124,6 +124,10 @@ void bnxt_rdma_aux_device_uninit(struct bnxt *bp);
+ void bnxt_rdma_aux_device_del(struct bnxt *bp);
+ void bnxt_rdma_aux_device_add(struct bnxt *bp);
+ void bnxt_rdma_aux_device_init(struct bnxt *bp);
++void bnxt_fwctl_aux_device_uninit(struct bnxt *bp);
++void bnxt_fwctl_aux_device_del(struct bnxt *bp);
++void bnxt_fwctl_aux_device_add(struct bnxt *bp);
++void bnxt_fwctl_aux_device_init(struct bnxt *bp);
+ int bnxt_register_dev(struct bnxt_en_dev *edev, struct bnxt_ulp_ops *ulp_ops,
+ 		      void *handle);
+ void bnxt_unregister_dev(struct bnxt_en_dev *edev);
 -- 
 2.43.0
 
