@@ -1,333 +1,143 @@
-Return-Path: <linux-rdma+bounces-7506-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7507-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F520A2BA00
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 05:10:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33A78A2BAD0
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 06:45:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 071C31889696
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 04:10:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0527E3A7D44
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 05:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F54231CAE;
-	Fri,  7 Feb 2025 04:10:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rv4HfJ4U"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A0B1422A8;
+	Fri,  7 Feb 2025 05:45:25 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B2767E9;
-	Fri,  7 Feb 2025 04:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A4A1233D85
+	for <linux-rdma@vger.kernel.org>; Fri,  7 Feb 2025 05:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738901418; cv=none; b=IRBFCPr4zwnt/tmcWjq9ji3xdqjIr0CjW28KR1ZkmtPSeNN46fyx1bLOv98AvahE0uTkSz9rZUjmOhT3igAU2bfi7SK3eleRlPkDRwp7W6co+5+Ps26DF74+6n4zP65yMGf+zUpytMT1/ZTfgnfIv7Rpzzo0quK/Bx0oYbxnTF8=
+	t=1738907125; cv=none; b=d4XvnHmZfWY6UKtZ9dWptqliBCST8OiYqAGESkSbNskErpQ0osaGLpAyhm44Oh0/6UfDaTcJKpwWryX7kgnV3/K5+6hQkayCFfzzIhTffpT/tMqdUMJk1aHA1fliBa/Ob7XO88Oqsajr1CJBw988iXB8MkdTYGDhLKZk+6Idb3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738901418; c=relaxed/simple;
-	bh=HtCNjSH8Ryfa0ku1LVrTtGZFWTFYVMgJPQ0+bK607CE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bCGz2f73VxH97Ugi5MG6mSnFk+NnANInbL/St7gD/mYswbowFgUgVeC/3yUiSb+d1VLUjTMpnoHjGZB7hiDMjR4pOqFjUMdPm7+H8Yf5F59fMVVYOnkZTBL6nT9TQ5yO6cZitfvkVOFi4TF1jLmx3VLjYAaNN/XUeAJVxUFY4d0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rv4HfJ4U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CAE3C4CED1;
-	Fri,  7 Feb 2025 04:10:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1738901417;
-	bh=HtCNjSH8Ryfa0ku1LVrTtGZFWTFYVMgJPQ0+bK607CE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Rv4HfJ4U46+hO2PlImFD47ipe0JxNRBDA7sjqXZdFoMcs8zQtiVni7RGVtpaLIyUl
-	 4nQ3Al5+ijNirS7CB+1mQRkGdTgZDS0jZQB/3d3ETwN1zXVoN73ESN+DaTbVZeyWI/
-	 lNF13Lbh96S8Omb5qSkMUfGrTbyU8/mSRqT00QJKApbtNiABNof5fBoTGgxeJS2H2a
-	 uF0+OQECtuQGSfkJCIfAIrb2YCYpHKSg/oM7BP8d94JJAjx0VWezpuUWkVvbTaZoqW
-	 zIrfIyRSvkDiKH2cp0WtpeHn5euGaiRpCeOGn24gkvbhV9glK9Svifp+Osz9s7DRsc
-	 IYGJcfCakD7bQ==
-From: Eric Biggers <ebiggers@kernel.org>
-To: Mustafa Ismail <mustafa.ismail@intel.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH v3] RDMA/irdma: switch to using the crc32c library
-Date: Thu,  6 Feb 2025 20:08:16 -0800
-Message-ID: <20250207040816.69163-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.48.1
+	s=arc-20240116; t=1738907125; c=relaxed/simple;
+	bh=yNAklZeUoXRJTrPWxkmW/j1+cyi+Qc/2qy0zSBz6qMg=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=mCYwS2PBjharWhayD1wRp98r4XhrORf6r11NmKGW1qzqNP6PcdwRnUCYIlMA3Mn3UuOXx6MrqI6NWHq9clkC7xGj8bgao2tFwxiqQGvgq269Ui0RiKdmrbHg2mDgzXSMCkC/l6aT/q8EzI5/bID32f66m36kROxd9VSjplROhIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-849d26dd331so197454639f.1
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Feb 2025 21:45:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738907123; x=1739511923;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/aJk6I7huKkph+gkza4v3eeiMOL1KM+4rXTTfmnphr4=;
+        b=qAxeGTPx+31qTrApFkGByNPcBQSC2w9wEhOpB6DWIc3AVEhgfIMZHCQUfe/1/u0EPR
+         n05rCpnox100AvT0LhP6UgHxkjBfEjOysspSpbfYeM+hrrqp+Yxbz0IXpXveG5K27Hw+
+         3PqaCTfWhDSh+8r4Na4BeAdrRHlHl40bali8g+QSpihovGnqVMPel8aQnU1w0Vz0yNrb
+         5BYwsTm5HoKAhs8qYs/JmMWhM7EjYazwKT1t56529sqasuMOOpmfIU2RZfu2+53QoFBP
+         7GiG/wwtgNfAXDv58DhMhFbDrh72yGVcvQc4rC8NkWONSu3z8w0ovjGRMYRo0cScEqVM
+         3UMw==
+X-Forwarded-Encrypted: i=1; AJvYcCXXiPNkAJRkW7s65dHmBkSRtnDMPUSMNgk72nZXvOvZ2ui+N5WlxjK3mERd9KDJBoeGe5q92GD9HStj@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDzUcVndF/5VwfH2uxnttteFzqcWiTT7OjSwXjOA8lRM6Zzejh
+	1yqZjEpf0b9uiF3Qmzk2A7HqUYHakWxaxYW98QL/aXe0yM1LREptzkR90/NBAEKbLTInTFBmMCP
+	GxUyPiwjRyWD20/g/LviYia8VlYnJeUiYm4usDn/Ju6nidJn2ZtnY8lM=
+X-Google-Smtp-Source: AGHT+IGFIGmrTvw1U5QxWHgPk02dBW1cRvFUdYDrEASXoksl0fVn8jXzYyE8WJ+HzAkGg6+1iBYHsfaHo1/LhvYWBwas8BhadUaM
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1a01:b0:3a9:cde3:2ecc with SMTP id
+ e9e14a558f8ab-3d05a689690mr53786515ab.6.1738907123178; Thu, 06 Feb 2025
+ 21:45:23 -0800 (PST)
+Date: Thu, 06 Feb 2025 21:45:23 -0800
+In-Reply-To: <00000000000086d0e406184c8e78@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67a59df3.050a0220.2b1e6.0011.GAE@google.com>
+Subject: Re: [syzbot] [rdma?] WARNING in rxe_pool_cleanup
+From: syzbot <syzbot+221e213bf17f17e0d6cd@syzkaller.appspotmail.com>
+To: jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, yanjun.zhu@linux.dev, zyjzyj2000@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Eric Biggers <ebiggers@google.com>
+syzbot has found a reproducer for the following issue on:
 
-Now that the crc32c() library function directly takes advantage of
-architecture-specific optimizations, it is unnecessary to go through the
-crypto API.  Just use crc32c().  This is much simpler, and it improves
-performance due to eliminating the crypto API overhead.
+HEAD commit:    bb066fe812d6 Merge tag 'pci-v6.14-fixes-2' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16a973df980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1909f2f0d8e641ce
+dashboard link: https://syzkaller.appspot.com/bug?extid=221e213bf17f17e0d6cd
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a01df8580000
 
-Note that for crc32c the equivalent of crypto_shash_digest() is
-cpu_to_le32(~crc32c(~0, ...)), considering that crypto_shash_digest()
-had before and inversions as well as a cpu_to_le32() built-in.  This
-means that this driver is using u32 for fixed-endian types; this patch
-does not try to fix that but rather just keep the exact same behavior.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-bb066fe8.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ac7155966351/vmlinux-bb066fe8.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/92d6cbf35949/bzImage-bb066fe8.xz
 
-Link: https://lore.kernel.org/r/20250207033643.59904-1-ebiggers@kernel.org
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+221e213bf17f17e0d6cd@syzkaller.appspotmail.com
+
+smc: removing ib device syz0
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5645 at drivers/infiniband/sw/rxe/rxe_pool.c:116 rxe_pool_cleanup+0x47/0x50 drivers/infiniband/sw/rxe/rxe_pool.c:116
+Modules linked in:
+CPU: 0 UID: 0 PID: 5645 Comm: syz.0.16 Not tainted 6.14.0-rc1-syzkaller-00081-gbb066fe812d6 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:rxe_pool_cleanup+0x47/0x50 drivers/infiniband/sw/rxe/rxe_pool.c:116
+Code: 00 00 fc ff df 80 3c 08 00 74 08 48 89 df e8 10 aa 1a f9 48 83 3b 00 75 0b e8 95 11 b4 f8 5b c3 cc cc cc cc e8 8a 11 b4 f8 90 <0f> 0b 90 5b c3 cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc9000ce370e8 EFLAGS: 00010293
+RAX: ffffffff890b4c96 RBX: ffff888052855380 RCX: ffff88801f3e8000
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: ffff888052855300
+RBP: 0000000000000002 R08: ffffffff88e3bcc3 R09: 1ffff1100a50a8ee
+R10: dffffc0000000000 R11: ffffffff89096000 R12: dffffc0000000000
+R13: dffffc0000000000 R14: ffff888052854658 R15: dffffc0000000000
+FS:  00007fc32943e6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc32943dfe0 CR3: 00000000405a6000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ rxe_dealloc+0x33/0x100 drivers/infiniband/sw/rxe/rxe.c:24
+ ib_dealloc_device+0x50/0x200 drivers/infiniband/core/device.c:647
+ __ib_unregister_device+0x366/0x3d0 drivers/infiniband/core/device.c:1520
+ ib_unregister_device_and_put+0xb9/0xf0 drivers/infiniband/core/device.c:1567
+ nldev_dellink+0x2c6/0x310 drivers/infiniband/core/nldev.c:1825
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x6dd/0x9e0 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1322 [inline]
+ netlink_unicast+0x7f6/0x990 net/netlink/af_netlink.c:1348
+ netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1892
+ sock_sendmsg_nosec net/socket.c:713 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:728
+ ____sys_sendmsg+0x52a/0x7e0 net/socket.c:2568
+ ___sys_sendmsg net/socket.c:2622 [inline]
+ __sys_sendmsg+0x269/0x350 net/socket.c:2654
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fc32858cde9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc32943e038 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007fc3287a6160 RCX: 00007fc32858cde9
+RDX: 0000000020000000 RSI: 0000200000000000 RDI: 0000000000000004
+RBP: 00007fc32860e2a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007fc3287a6160 R15: 00007ffc02559df8
+ </TASK>
+
+
 ---
-
-v2: Resent as standalone patch and improved the commit message.
-v3: Added cpu_to_le32() to match the existing behavior exactly.
-
- drivers/infiniband/hw/irdma/Kconfig |  1 +
- drivers/infiniband/hw/irdma/main.h  |  1 -
- drivers/infiniband/hw/irdma/osdep.h |  6 +---
- drivers/infiniband/hw/irdma/puda.c  | 19 +++++-------
- drivers/infiniband/hw/irdma/puda.h  |  5 +--
- drivers/infiniband/hw/irdma/utils.c | 47 ++---------------------------
- 6 files changed, 12 insertions(+), 67 deletions(-)
-
-diff --git a/drivers/infiniband/hw/irdma/Kconfig b/drivers/infiniband/hw/irdma/Kconfig
-index b6f9c41bca51d..5f49a58590ed7 100644
---- a/drivers/infiniband/hw/irdma/Kconfig
-+++ b/drivers/infiniband/hw/irdma/Kconfig
-@@ -5,8 +5,9 @@ config INFINIBAND_IRDMA
- 	depends on IPV6 || !IPV6
- 	depends on PCI
- 	depends on ICE && I40E
- 	select GENERIC_ALLOCATOR
- 	select AUXILIARY_BUS
-+	select CRC32
- 	help
- 	  This is an Intel(R) Ethernet Protocol Driver for RDMA driver
- 	  that support E810 (iWARP/RoCE) and X722 (iWARP) network devices.
-diff --git a/drivers/infiniband/hw/irdma/main.h b/drivers/infiniband/hw/irdma/main.h
-index 9f0ed6e844711..0705ef3d72a93 100644
---- a/drivers/infiniband/hw/irdma/main.h
-+++ b/drivers/infiniband/hw/irdma/main.h
-@@ -28,11 +28,10 @@
- #ifndef CONFIG_64BIT
- #include <linux/io-64-nonatomic-lo-hi.h>
- #endif
- #include <linux/auxiliary_bus.h>
- #include <linux/net/intel/iidc.h>
--#include <crypto/hash.h>
- #include <rdma/ib_smi.h>
- #include <rdma/ib_verbs.h>
- #include <rdma/ib_pack.h>
- #include <rdma/rdma_cm.h>
- #include <rdma/iw_cm.h>
-diff --git a/drivers/infiniband/hw/irdma/osdep.h b/drivers/infiniband/hw/irdma/osdep.h
-index ddf02a462efa2..4b4f78288d12e 100644
---- a/drivers/infiniband/hw/irdma/osdep.h
-+++ b/drivers/infiniband/hw/irdma/osdep.h
-@@ -4,11 +4,10 @@
- #define IRDMA_OSDEP_H
- 
- #include <linux/pci.h>
- #include <linux/bitfield.h>
- #include <linux/net/intel/iidc.h>
--#include <crypto/hash.h>
- #include <rdma/ib_verbs.h>
- 
- #define STATS_TIMER_DELAY	60000
- 
- struct irdma_dma_info {
-@@ -41,19 +40,16 @@ struct ib_device *to_ibdev(struct irdma_sc_dev *dev);
- void irdma_ieq_mpa_crc_ae(struct irdma_sc_dev *dev, struct irdma_sc_qp *qp);
- enum irdma_status_code irdma_vf_wait_vchnl_resp(struct irdma_sc_dev *dev);
- bool irdma_vf_clear_to_send(struct irdma_sc_dev *dev);
- void irdma_add_dev_ref(struct irdma_sc_dev *dev);
- void irdma_put_dev_ref(struct irdma_sc_dev *dev);
--int irdma_ieq_check_mpacrc(struct shash_desc *desc, void *addr, u32 len,
--			   u32 val);
-+int irdma_ieq_check_mpacrc(const void *addr, u32 len, u32 val);
- struct irdma_sc_qp *irdma_ieq_get_qp(struct irdma_sc_dev *dev,
- 				     struct irdma_puda_buf *buf);
- void irdma_send_ieq_ack(struct irdma_sc_qp *qp);
- void irdma_ieq_update_tcpip_info(struct irdma_puda_buf *buf, u16 len,
- 				 u32 seqnum);
--void irdma_free_hash_desc(struct shash_desc *hash_desc);
--int irdma_init_hash_desc(struct shash_desc **hash_desc);
- int irdma_puda_get_tcpip_info(struct irdma_puda_cmpl_info *info,
- 			      struct irdma_puda_buf *buf);
- int irdma_cqp_sds_cmd(struct irdma_sc_dev *dev,
- 		      struct irdma_update_sds_info *info);
- int irdma_cqp_manage_hmc_fcn_cmd(struct irdma_sc_dev *dev,
-diff --git a/drivers/infiniband/hw/irdma/puda.c b/drivers/infiniband/hw/irdma/puda.c
-index 7e3f9bca2c235..694e5a9ed15d0 100644
---- a/drivers/infiniband/hw/irdma/puda.c
-+++ b/drivers/infiniband/hw/irdma/puda.c
-@@ -921,12 +921,10 @@ void irdma_puda_dele_rsrc(struct irdma_sc_vsi *vsi, enum puda_rsrc_type type,
- 		return;
- 	}
- 
- 	switch (rsrc->cmpl) {
- 	case PUDA_HASH_CRC_COMPLETE:
--		irdma_free_hash_desc(rsrc->hash_desc);
--		fallthrough;
- 	case PUDA_QP_CREATED:
- 		irdma_qp_rem_qos(&rsrc->qp);
- 
- 		if (!reset)
- 			irdma_puda_free_qp(rsrc);
-@@ -1093,19 +1091,16 @@ int irdma_puda_create_rsrc(struct irdma_sc_vsi *vsi,
- 	ret = irdma_puda_replenish_rq(rsrc, true);
- 	if (ret)
- 		goto error;
- 
- 	if (info->type == IRDMA_PUDA_RSRC_TYPE_IEQ) {
--		if (!irdma_init_hash_desc(&rsrc->hash_desc)) {
--			rsrc->check_crc = true;
--			rsrc->cmpl = PUDA_HASH_CRC_COMPLETE;
--			ret = 0;
--		}
-+		rsrc->check_crc = true;
-+		rsrc->cmpl = PUDA_HASH_CRC_COMPLETE;
- 	}
- 
- 	irdma_sc_ccq_arm(&rsrc->cq);
--	return ret;
-+	return 0;
- 
- error:
- 	irdma_puda_dele_rsrc(vsi, info->type, false);
- 
- 	return ret;
-@@ -1394,12 +1389,12 @@ static int irdma_ieq_handle_partial(struct irdma_puda_rsrc *ieq,
- 	irdma_ieq_update_tcpip_info(txbuf, fpdu_len, seqnum);
- 
- 	crcptr = txbuf->data + fpdu_len - 4;
- 	mpacrc = *(u32 *)crcptr;
- 	if (ieq->check_crc) {
--		status = irdma_ieq_check_mpacrc(ieq->hash_desc, txbuf->data,
--						(fpdu_len - 4), mpacrc);
-+		status = irdma_ieq_check_mpacrc(txbuf->data, fpdu_len - 4,
-+						mpacrc);
- 		if (status) {
- 			ibdev_dbg(to_ibdev(ieq->dev), "IEQ: error bad crc\n");
- 			goto error;
- 		}
- 	}
-@@ -1463,12 +1458,12 @@ static int irdma_ieq_process_buf(struct irdma_puda_rsrc *ieq,
- 			break;
- 		}
- 		crcptr = datap + fpdu_len - 4;
- 		mpacrc = *(u32 *)crcptr;
- 		if (ieq->check_crc)
--			ret = irdma_ieq_check_mpacrc(ieq->hash_desc, datap,
--						     fpdu_len - 4, mpacrc);
-+			ret = irdma_ieq_check_mpacrc(datap, fpdu_len - 4,
-+						     mpacrc);
- 		if (ret) {
- 			list_add(&buf->list, rxlist);
- 			ibdev_dbg(to_ibdev(ieq->dev),
- 				  "ERR: IRDMA_ERR_MPA_CRC\n");
- 			return -EINVAL;
-diff --git a/drivers/infiniband/hw/irdma/puda.h b/drivers/infiniband/hw/irdma/puda.h
-index bc6d9514c9c10..2fc638f2b1434 100644
---- a/drivers/infiniband/hw/irdma/puda.h
-+++ b/drivers/infiniband/hw/irdma/puda.h
-@@ -117,11 +117,10 @@ struct irdma_puda_rsrc {
- 	u64 *rq_wrid_array;
- 	u32 compl_rxwqe_idx;
- 	u32 rx_wqe_idx;
- 	u32 rxq_invalid_cnt;
- 	u32 tx_wqe_avail_cnt;
--	struct shash_desc *hash_desc;
- 	struct list_head txpend;
- 	struct list_head bufpool; /* free buffers pool list for recv and xmit */
- 	u32 alloc_buf_count;
- 	u32 avail_buf_count; /* snapshot of currently available buffers */
- 	spinlock_t bufpool_lock;
-@@ -161,14 +160,12 @@ int irdma_puda_poll_cmpl(struct irdma_sc_dev *dev, struct irdma_sc_cq *cq,
- 
- struct irdma_sc_qp *irdma_ieq_get_qp(struct irdma_sc_dev *dev,
- 				     struct irdma_puda_buf *buf);
- int irdma_puda_get_tcpip_info(struct irdma_puda_cmpl_info *info,
- 			      struct irdma_puda_buf *buf);
--int irdma_ieq_check_mpacrc(struct shash_desc *desc, void *addr, u32 len, u32 val);
--int irdma_init_hash_desc(struct shash_desc **desc);
-+int irdma_ieq_check_mpacrc(const void *addr, u32 len, u32 val);
- void irdma_ieq_mpa_crc_ae(struct irdma_sc_dev *dev, struct irdma_sc_qp *qp);
--void irdma_free_hash_desc(struct shash_desc *desc);
- void irdma_ieq_update_tcpip_info(struct irdma_puda_buf *buf, u16 len, u32 seqnum);
- int irdma_cqp_qp_create_cmd(struct irdma_sc_dev *dev, struct irdma_sc_qp *qp);
- int irdma_cqp_cq_create_cmd(struct irdma_sc_dev *dev, struct irdma_sc_cq *cq);
- int irdma_cqp_qp_destroy_cmd(struct irdma_sc_dev *dev, struct irdma_sc_qp *qp);
- void irdma_cqp_cq_destroy_cmd(struct irdma_sc_dev *dev, struct irdma_sc_cq *cq);
-diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
-index 0e594122baa78..e73b14fd95ef1 100644
---- a/drivers/infiniband/hw/irdma/utils.c
-+++ b/drivers/infiniband/hw/irdma/utils.c
-@@ -1271,62 +1271,19 @@ void irdma_ieq_mpa_crc_ae(struct irdma_sc_dev *dev, struct irdma_sc_qp *qp)
- 	info.ae_code = IRDMA_AE_LLP_RECEIVED_MPA_CRC_ERROR;
- 	info.ae_src = IRDMA_AE_SOURCE_RQ;
- 	irdma_gen_ae(rf, qp, &info, false);
- }
- 
--/**
-- * irdma_init_hash_desc - initialize hash for crc calculation
-- * @desc: cryption type
-- */
--int irdma_init_hash_desc(struct shash_desc **desc)
--{
--	struct crypto_shash *tfm;
--	struct shash_desc *tdesc;
--
--	tfm = crypto_alloc_shash("crc32c", 0, 0);
--	if (IS_ERR(tfm))
--		return -EINVAL;
--
--	tdesc = kzalloc(sizeof(*tdesc) + crypto_shash_descsize(tfm),
--			GFP_KERNEL);
--	if (!tdesc) {
--		crypto_free_shash(tfm);
--		return -EINVAL;
--	}
--
--	tdesc->tfm = tfm;
--	*desc = tdesc;
--
--	return 0;
--}
--
--/**
-- * irdma_free_hash_desc - free hash desc
-- * @desc: to be freed
-- */
--void irdma_free_hash_desc(struct shash_desc *desc)
--{
--	if (desc) {
--		crypto_free_shash(desc->tfm);
--		kfree(desc);
--	}
--}
--
- /**
-  * irdma_ieq_check_mpacrc - check if mpa crc is OK
-- * @desc: desc for hash
-  * @addr: address of buffer for crc
-  * @len: length of buffer
-  * @val: value to be compared
-  */
--int irdma_ieq_check_mpacrc(struct shash_desc *desc, void *addr, u32 len,
--			   u32 val)
-+int irdma_ieq_check_mpacrc(const void *addr, u32 len, u32 val)
- {
--	u32 crc = 0;
--
--	crypto_shash_digest(desc, addr, len, (u8 *)&crc);
--	if (crc != val)
-+	if ((__force u32)cpu_to_le32(~crc32c(~0, addr, len)) != val)
- 		return -EINVAL;
- 
- 	return 0;
- }
- 
-
-base-commit: 2014c95afecee3e76ca4a56956a936e23283f05b
--- 
-2.48.1
-
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
