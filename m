@@ -1,279 +1,163 @@
-Return-Path: <linux-rdma+bounces-7565-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7566-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B96A2D032
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 22:59:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5C1BA2D17C
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 00:29:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73E013A1859
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 21:58:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1089B16BC43
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 23:29:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E33E1B87C8;
-	Fri,  7 Feb 2025 21:58:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6EF01D90C5;
+	Fri,  7 Feb 2025 23:29:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GU+kVKud"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="LURJPCuy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86A4B1A9B52;
-	Fri,  7 Feb 2025 21:58:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0FBF1C700F
+	for <linux-rdma@vger.kernel.org>; Fri,  7 Feb 2025 23:29:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738965536; cv=none; b=Hcz/s4HoOjiCCA/2SB+mdtoq5Sz9XCTwP5yKRCUIEB4MMcUCXkAs9G9Ba3mAmMEJIVhn/BqHOhHouZOdCCrjxc/apaR2pHNEjhT9EsNsz7zYz6uzfAtPrC+ZZimd/Fz1pWLEdO4xNTYvSZgdc88AzmH3m/PykERgIEVNZweEbhY=
+	t=1738970969; cv=none; b=JFN/qiHRGIynSSuWJ+OXWFnl5pC8F9ftDcA9nmNObo7Q5d9x2theq+ylrhgI4c2+1wu/IJ9MgMTp3kK6RkHig0Do1jQpoCeSWBEs23hlh1r4EY9KbuvQSCTjtPrjdsiTVxKth2cN8KsCV6V0mNBxoYXRKYzHDTGAC1g4IIsyvkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738965536; c=relaxed/simple;
-	bh=XQs531thxZCJLRwyajyMcoSYZLq5HidXYiLmRJW0jbs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h+T1S8ckdINo+oU0J0ITtgISwoM8hlPmmkeIgN76E+SjSchqSNmFMngIbv145lWaNLhsqdkbPmz3eXRbG87mnA3sLsc2wa394QsnPh8ETEiKhin07JwvgbJTP9iaSscORe/LiDeqTfAHvXKghtIDaPC9qhrXghJTjQowbaKO/MA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GU+kVKud; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738965535; x=1770501535;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=XQs531thxZCJLRwyajyMcoSYZLq5HidXYiLmRJW0jbs=;
-  b=GU+kVKudswGF6SR41Fst71IvpQbthTuEszPiKRyYZfj7Nc+rkmeORZ1Z
-   yn/pIzlPL7lQgV24HC6+hnpB27rWrBoyv5BkNIsv33ji87VkwvdtT84kI
-   eka9DR6ErEqDs1h1L2BNqOWcV/1YIX0GNAEqpdHuAXlZF4V2QyT5jiWuw
-   ccEBokTN1wT2fcaobYChzvxkHE/pxHnRIUdLcrAdVJbL8C/PiUtp3YK9r
-   esr3lcMttGU8AEw0nV0SpVOkK2bIeWEh5Y829B6GlIt9N7wuyEhf8JNTS
-   I8CCVQQ6RkUjIR3qngh48wW/T88TT+uq+NnnbpbkDD71wqYFK2KcJJ6vq
-   g==;
-X-CSE-ConnectionGUID: GP2tb54BQ3WaFXn5HMFLcA==
-X-CSE-MsgGUID: 7E3/xtd0S6G1d5wczw2zCw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="39746199"
-X-IronPort-AV: E=Sophos;i="6.13,268,1732608000"; 
-   d="scan'208";a="39746199"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 13:58:54 -0800
-X-CSE-ConnectionGUID: /X1+MCPXRJKHjtnKvQoRLw==
-X-CSE-MsgGUID: T4xSSaO4T0iYC3Xc5CMZbQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="148843173"
-Received: from agladkov-desk.ger.corp.intel.com (HELO [10.125.111.68]) ([10.125.111.68])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 13:58:53 -0800
-Message-ID: <a0f1648f-eefb-455c-b264-169cb67a7486@intel.com>
-Date: Fri, 7 Feb 2025 14:58:51 -0700
+	s=arc-20240116; t=1738970969; c=relaxed/simple;
+	bh=LfbUpyjGHYX7RFAeqCfeoZO0Lm3old+X04Jmz2KNwmw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b4vFo9r/Zi8k5nLx6qJgxwun0DyzfMeaK4YAz4OYVf2O2z4IHA0KNi8Elg8yTVA+Yu0zv1UMdW4eue4CEXEa0cLBwSKCfAvedcWBpI9yvn/7Dvajo9tDgi2w6APeZuNRkHxKW14r5WIzqIhFFijf33saXCVydIDv3i87i7qncvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=LURJPCuy; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43635796b48so15726635e9.0
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Feb 2025 15:29:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1738970966; x=1739575766; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vxrq3y0zWcusMdm5gKmy0RSUVEtUhaV6df4ledtnR3g=;
+        b=LURJPCuyQgUJiHM0ekNEUJhwT9HGdVn/BUc86TurajLss3++4qObzPhdi9LtvDTAP3
+         /wOsmYOYVGbfzkm16YzzBm189BGGCJDAq3O08LesEsoNjPAClHMSdwSdWiSVAl7j1oxD
+         CNehSCZ80Xgpcm6wYuGExmnKY7ycOGYDWYf+Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738970966; x=1739575766;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vxrq3y0zWcusMdm5gKmy0RSUVEtUhaV6df4ledtnR3g=;
+        b=ceCfrPOeZbDb0sadKA0Ewr/vG517a5tswEVuS5JViR5Jb8xXjna6j0L3ASz0aSi5AP
+         vsyG6ERo60zZRV1OL4dcCnKBWXVr2rC5oMgL/GAuDzAoy+xHp5773M59uVuxS5ElPAyu
+         eGphLgr0t9B7OP0q2ZTzJ/CJVDNe4Ra2yc8qZkQcmK7smJTH8571jf//Rfo5EXSkGvzo
+         ocWew5BL2qLoo0bQqL5Fq4zIguXga0E/Vjdsr2EgHoqcVcXuVy1fp7qXvVUaVtqo6/To
+         D54YUUmhbBL6NW6uuAS7pw/0/ovPdssSxw+vTQ0BrRbOQnnWjx+WApuovRFv7NBpMea1
+         Jcmg==
+X-Forwarded-Encrypted: i=1; AJvYcCVw4VVti4CS2+DTeQatS61Mc14VI6J3wceqdvLAmAqpyOrMtrt5rb8u8blfcCPKzwZYpdRYQ7mtEviu@vger.kernel.org
+X-Gm-Message-State: AOJu0YyPH6bHsnBKlJKqYsC2RSjZVhRxdWd3+YVjn1vxPrh8PuActOcX
+	82ZkmaPFJckrGMByhKYUA6eDUkSilX9LTCwbXMfBgZTpiEGbzHsgPUAnqc0R5JJBm1CigU7Nlis
+	G5LE3qrqhys8b8jh3DraL2VPMtbuwHRSvnUam
+X-Gm-Gg: ASbGnctL+xdDRvuXzwrnvooQJASGaUFeQ89UYA0pHYmsbxux4y/6h7BVTTPDrqRasvv
+	p3fE395KI1i/8Tvgwl5ZnlxCwXmdPZHBwq+ayhYRCQHVujzO+Ns6w7zCe96ejFzhnCtPjPU57
+X-Google-Smtp-Source: AGHT+IHzbgTJPlwhp2rxVyfXTFAiBs82aNuiqx6uZAtVL2iql18//vPZ4iyLFNt7DsusmD2ZyYpKKa2AXyZ4gTFATlw=
+X-Received: by 2002:a05:600c:a47:b0:436:e3ea:64dd with SMTP id
+ 5b1f17b1804b1-43912d3ef4bmr72734975e9.11.1738970966099; Fri, 07 Feb 2025
+ 15:29:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/10] Introduce fwctl subystem
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>,
- Aron Silverton <aron.silverton@oracle.com>,
- Dan Williams <dan.j.williams@intel.com>,
- Daniel Vetter <daniel.vetter@ffwll.ch>, David Ahern <dsahern@kernel.org>,
- Andy Gospodarek <gospo@broadcom.com>, Christoph Hellwig <hch@infradead.org>,
- Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Jakub Kicinski <kuba@kernel.org>, Leonid Bloch <lbloch@nvidia.com>,
- Leon Romanovsky <leonro@nvidia.com>, linux-cxl@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
- Saeed Mahameed <saeedm@nvidia.com>, "Nelson, Shannon"
- <shannon.nelson@amd.com>
-References: <0-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
-Content-Language: en-US
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <0-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <0-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com> <10-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
+ <20250206164449.52b2dfef@kernel.org> <CACDg6nU_Dkte_GASNRpkvSSCihpg52FBqNr0KR3ud1YRvrRs3w@mail.gmail.com>
+ <20250207073648.1f0bad47@kernel.org>
+In-Reply-To: <20250207073648.1f0bad47@kernel.org>
+From: Andy Gospodarek <andrew.gospodarek@broadcom.com>
+Date: Fri, 7 Feb 2025 18:29:15 -0500
+X-Gm-Features: AWEUYZlrtI146fT0ZIPrxYebKfGyT2dPVkxZPcjyu29IMriUNecpOQzGJhSSMY8
+Message-ID: <CACDg6nWU7XXn4X3LGy=jxREYDDVaqy1Pq19kt93wQPn_US9iiQ@mail.gmail.com>
+Subject: Re: [PATCH v4 10/10] bnxt: Create an auxiliary device for fwctl_bnxt
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Jason Gunthorpe <jgg@nvidia.com>, Aron Silverton <aron.silverton@oracle.com>, 
+	Dan Williams <dan.j.williams@intel.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, 
+	Dave Jiang <dave.jiang@intel.com>, David Ahern <dsahern@kernel.org>, 
+	Andy Gospodarek <gospo@broadcom.com>, Christoph Hellwig <hch@infradead.org>, 
+	Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Leonid Bloch <lbloch@nvidia.com>, 
+	Leon Romanovsky <leonro@nvidia.com>, linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>, 
+	"Nelson, Shannon" <shannon.nelson@amd.com>, Michael Chan <michael.chan@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Feb 7, 2025 at 10:36=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> On Thu, 6 Feb 2025 22:17:58 -0500 Andy Gospodarek wrote:
+> > On Thu, Feb 6, 2025 at 7:44=E2=80=AFPM Jakub Kicinski <kuba@kernel.org>=
+ wrote:
+> > > On Thu,  6 Feb 2025 20:13:32 -0400 Jason Gunthorpe wrote:
+> > > > From: Andy Gospodarek <gospo@broadcom.com>
+> > > >
+> > > > Signed-off-by: Andy Gospodarek <gospo@broadcom.com>
+> > > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> > >
+> > > This is only needed for RDMA, why can't you make this part of bnxt_re=
+ ?
+> >
+> > This is not just needed for RDMA, so having the aux device for fwctl
+> > as part of the base driver is preferred.
+>
+> Please elaborate. As you well know I have experience using Broadcom
+> devices in large TCP/IP networks, without the need for proprietary
+> tooling.
 
+I totally get that.  As a user it is not satisfying to have to
+download and attempt to compile complicated proprietary tools to use
+hardware features that seem like they should just work.  I don't think
+fwctl should be used as a crutch to avoid doing the work that is
+needed to get support upstream.
 
-On 2/6/25 5:13 PM, Jason Gunthorpe wrote:
-> [
-> Many people were away around the holiday period, but work is back in full
-> swing now with Dave already at v3 on his CXL work over the past couple
-> weeks. We are looking at a good chance of reaching this merge window. I
-> will work out some shared branches with CXL and get it into linux-next
-> once all three drivers can be assembled and reviews seem to be concluding.
-> 
-> There are couple open notes
->  - Greg was interested in a new name, but nobody offered any bikesheds
->  - I would like a co-maintainer
+> Now, I understand that it may be expedient for Broadcom and nVidia
+> to skip the upstream process and ship "features" to customers using
+> DOCA and whatever you call your tooling. But let's be honest that
+> this is the motivation here. Unified support for proprietary tooling
+> across subsystems and product lines for a given vendor. This way
+> migrating from in-tree networking to proprietary IPU/DPU networking
+> is easier, while migrating to another vendor would require full tooling
+> replacement.
+>
+> I have nothing against RDMA and CXL subsystems adding whatever APIs
+> they want. But I don't understand why you think it's okay to force
+> this on normal networking, which does not need it.
+>
+> nVidia is already refusing to add basic minoring features to their
+> upstream driver, and keeps asking its customers to migrate to libdoca.
+> So the concern that merging this will negatively impact standard
+> tooling is no longer theoretical.
+>
+> Anyway, rant over. Give us some technical details.
 
-I volunteer as tribute. :) 
+The primary use-case that I find valuable is the ability to perform
+debug of different parts of a hardware pipeline when devices are
+already in the field.  This could be the standard ethernet pipeline,
+RoCE, crypto, etc.
 
-I got the CXL series rebased and tested on top of this series. So you can add
-Tested-by: Dave Jiang <dave.jiang@intel.com>
-for the core FWCTL bits in the series.
+We do have the ability to gather all the information we need via tools
+like ethtool and devlink, but there are cases where running a tool in
+real-time can help us know what is happening in a system on a per
+packet basis.  We actually did something like this this week.
 
-I'll post the CXL FWCTL series v4 shortly.
+When I look at fwctl, I don't see it as something that is valuable
+only today -- I see it as something that is valuable 2 years from now.
+When someone is still running v6.17 and we have discovered that a
+debug counter/infra that was added in v7.0, but they cannot use it
+without installing a new kernel or an OOB driver we don't have an
+option to easily help narrow down the problem.
 
-DJ
-
-> ]
-> 
-> fwctl is a new subsystem intended to bring some common rules and order to
-> the growing pattern of exposing a secure FW interface directly to
-> userspace. Unlike existing places like RDMA/DRM/VFIO/uacce that are
-> exposing a device for datapath operations fwctl is focused on debugging,
-> configuration and provisioning of the device. It will not have the
-> necessary features like interrupt delivery to support a datapath.
-> 
-> This concept is similar to the long standing practice in the "HW" RAID
-> space of having a device specific misc device to manage the RAID
-> controller FW. fwctl generalizes this notion of a companion debug and
-> management interface that goes along with a dataplane implemented in an
-> appropriate subsystem.
-> 
-> The need for this has reached a critical point as many users are moving to
-> run lockdown enabled kernels. Several existing devices have had long
-> standing tooling for management that relied on /sys/../resource0 or PCI
-> config space access which is not permitted in lockdown. A major point of
-> fwctl is to define and document the rules that a device must follow to
-> expose a lockdown compatible RPC.
-> 
-> Based on some discussion fwctl splits the RPCs into four categories
-> 
-> 	FWCTL_RPC_CONFIGURATION
-> 	FWCTL_RPC_DEBUG_READ_ONLY
-> 	FWCTL_RPC_DEBUG_WRITE
-> 	FWCTL_RPC_DEBUG_WRITE_FULL
-> 
-> Where the latter two trigger a new TAINT_FWCTL, and the final one requires
-> CAP_SYS_RAWIO - excluding it from lockdown. The device driver and its FW
-> would be responsible to restrict RPCs to the requested security scope,
-> while the core code handles the tainting and CAP checks.
-> 
-> For details see the final patch which introduces the documentation.
-> 
-> The CXL FWCTL driver is now in it own series on v3:
->  https://lore.kernel.org/r/20250204220430.4146187-1-dave.jiang@intel.com
-> 
-> I'm expecting a 3rd driver (from Shannon @ Pensando) to be posted right
-> away, the github version I saw looked good. I've got soft commitments for
-> about 6 drivers in total now.
-> 
-> There have been three LWN articles written discussing various aspects of
-> this proposal:
-> 
->  https://lwn.net/Articles/955001/
->  https://lwn.net/Articles/969383/
->  https://lwn.net/Articles/990802/
-> 
-> A really giant ksummit thread preceding a discussion at the Maintainer
-> Summit:
-> 
->  https://lore.kernel.org/ksummit/668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch/
-> 
-> Several have expressed general support for this concept:
-> 
->  AMD/Pensando - https://lore.kernel.org/linux-rdma/20241205222818.44439-1-shannon.nelson@amd.com
->  Broadcom Networking - https://lore.kernel.org/r/Zf2n02q0GevGdS-Z@C02YVCJELVCG
->  Christoph Hellwig - https://lore.kernel.org/r/Zcx53N8lQjkpEu94@infradead.org
->  Daniel Vetter - https://lore.kernel.org/r/ZrHY2Bds7oF7KRGz@phenom.ffwll.local
->  Enfabrica - https://lore.kernel.org/r/9cc7127f-8674-43bc-b4d7-b1c4c2d96fed@kernel.org
->  NVIDIA Networking
->  Oded Gabbay/Habana - https://lore.kernel.org/r/ZrMl1bkPP-3G9B4N@T14sgabbay.
->  Oracle Linux - https://lore.kernel.org/r/6lakj6lxlxhdgrewodvj3xh6sxn3d36t5dab6najzyti2navx3@wrge7cyfk6nq
->  SuSE/Hannes - https://lore.kernel.org/r/2fd48f87-2521-4c34-8589-dbb7e91bb1c8@suse.com
-> 
-> Work is ongoing for userspace, currently the mellanox tool suite has been
-> ported over:
->   https://github.com/Mellanox/mstflint
-> 
-> And a more simplified example how to use it:
->   https://github.com/jgunthorpe/mlx5ctl.git
-> 
-> This is on github: https://github.com/jgunthorpe/linux/commits/fwctl
-> 
-> v4:
->  - Rebase to v6.14-rc1
->  - Fine tune comments and rst documentatin
->  - Adjust cleanup.h usage - remove places that add more ofuscation than
->    value
->  - CXL is back to its own independent series
->  - Increase FWCTL_MAX_DEVICES to 4096, someone hit the limit
->  - Fix mlx5ctl_validate_rpc() logic around scope checking
->  - Disable mlx5ctl on SFs
-> v3: https://patch.msgid.link/r/0-v3-960f17f90f17+516-fwctl_jgg@nvidia.com
->  - Rebase to v6.11-rc4
->  - Add a squashed version of David's CXL series as the 2nd driver
->  - Add missing includes
->  - Improve comments based on feedback
->  - Use the kdoc format that puts the member docs inside the struct
->  - Rewrite fwctl_alloc_device() to be clearer
->  - Incorporate all remarks for the documentation
-> v2: https://lore.kernel.org/r/0-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com
->  - Rebase to v6.10-rc5
->  - Minor style changes
->  - Follow the style consensus for the guard stuff
->  - Documentation grammer/spelling
->  - Add missed length output for mlx5 get_info
->  - Add two more missed MLX5 CMD's
->  - Collect tags
-> v1: https://lore.kernel.org/r/0-v1-9912f1a11620+2a-fwctl_jgg@nvidia.com
-> 
-> Andy Gospodarek (2):
->   fwctl/bnxt: Support communicating with bnxt fw
->   bnxt: Create an auxiliary device for fwctl_bnxt
-> 
-> Jason Gunthorpe (6):
->   fwctl: Add basic structure for a class subsystem with a cdev
->   fwctl: Basic ioctl dispatch for the character device
->   fwctl: FWCTL_INFO to return basic information about the device
->   taint: Add TAINT_FWCTL
->   fwctl: FWCTL_RPC to execute a Remote Procedure Call to device firmware
->   fwctl: Add documentation
-> 
-> Saeed Mahameed (2):
->   fwctl/mlx5: Support for communicating with mlx5 fw
->   mlx5: Create an auxiliary device for fwctl_mlx5
-> 
->  Documentation/admin-guide/tainted-kernels.rst |   5 +
->  Documentation/userspace-api/fwctl/fwctl.rst   | 285 ++++++++++++
->  Documentation/userspace-api/fwctl/index.rst   |  12 +
->  Documentation/userspace-api/index.rst         |   1 +
->  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
->  MAINTAINERS                                   |  16 +
->  drivers/Kconfig                               |   2 +
->  drivers/Makefile                              |   1 +
->  drivers/fwctl/Kconfig                         |  32 ++
->  drivers/fwctl/Makefile                        |   6 +
->  drivers/fwctl/bnxt/Makefile                   |   4 +
->  drivers/fwctl/bnxt/bnxt.c                     | 167 +++++++
->  drivers/fwctl/main.c                          | 416 ++++++++++++++++++
->  drivers/fwctl/mlx5/Makefile                   |   4 +
->  drivers/fwctl/mlx5/main.c                     | 340 ++++++++++++++
->  drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   3 +
->  drivers/net/ethernet/broadcom/bnxt/bnxt.h     |   3 +
->  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c | 126 +++++-
->  drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |   4 +
->  drivers/net/ethernet/mellanox/mlx5/core/dev.c |   9 +
->  include/linux/fwctl.h                         | 135 ++++++
->  include/linux/panic.h                         |   3 +-
->  include/uapi/fwctl/bnxt.h                     |  27 ++
->  include/uapi/fwctl/fwctl.h                    | 140 ++++++
->  include/uapi/fwctl/mlx5.h                     |  36 ++
->  kernel/panic.c                                |   1 +
->  tools/debugging/kernel-chktaint               |   8 +
->  27 files changed, 1782 insertions(+), 5 deletions(-)
->  create mode 100644 Documentation/userspace-api/fwctl/fwctl.rst
->  create mode 100644 Documentation/userspace-api/fwctl/index.rst
->  create mode 100644 drivers/fwctl/Kconfig
->  create mode 100644 drivers/fwctl/Makefile
->  create mode 100644 drivers/fwctl/bnxt/Makefile
->  create mode 100644 drivers/fwctl/bnxt/bnxt.c
->  create mode 100644 drivers/fwctl/main.c
->  create mode 100644 drivers/fwctl/mlx5/Makefile
->  create mode 100644 drivers/fwctl/mlx5/main.c
->  create mode 100644 include/linux/fwctl.h
->  create mode 100644 include/uapi/fwctl/bnxt.h
->  create mode 100644 include/uapi/fwctl/fwctl.h
->  create mode 100644 include/uapi/fwctl/mlx5.h
-> 
-> 
-> base-commit: 2014c95afecee3e76ca4a56956a936e23283f05b
-
+If a fairly simple tool can help perform RPC to FW to glean some of
+this hardware information we save days of back and forth debugging
+with special drivers to try and help narrow down the issue.
 
