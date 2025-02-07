@@ -1,209 +1,204 @@
-Return-Path: <linux-rdma+bounces-7512-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7513-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A510FA2C2F6
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 13:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD8A6A2C2F7
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 13:47:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EFC93A0674
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 12:46:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1BD63A4918
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 12:47:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C424F1E04AD;
-	Fri,  7 Feb 2025 12:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501E51E00A0;
+	Fri,  7 Feb 2025 12:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OpUBZATo"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DBGczZCp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2080.outbound.protection.outlook.com [40.107.94.80])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03E49944E;
-	Fri,  7 Feb 2025 12:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.80
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738932390; cv=fail; b=O1ZTDruaz6cUlDLm3itwQntI1Xg/RLNsYecJtlU0pvEOSzliq4k+md+uAerhGZSVvNmkWX/BRdEhEzRQJ9LEfOP/WH35Kp3jVI0Dvvj+zhEWTbqHa2LlF2EnKI0GMA6SAqOUTRDMpy9RsJ8lnswBGLpzxMJkacyVQlqCLyAmX3s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738932390; c=relaxed/simple;
-	bh=9OKl7WsOAz6gNx27cUjylrkfwQQTarImZRLLchV2EtU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=bj1gNV5Gbx6LEsNxHFN89I4oHn9a3CXcWdl92USzMpbllEQu33aUQM5pm6zf+opy9bzHGOIwqFO9vsQuyVqyTrprdk9batRSqkn9wchouVdrTUBmasIwG+ifXOtCa+HIbzob4UvuF01F5s6UGu4k9X+sWiev/f2fgJy5Fjf3Cko=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OpUBZATo; arc=fail smtp.client-ip=40.107.94.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=qtSltzqGlzrux0HpyZdb4Knd90rjdumIhI1prXTVG/2tcePdn8lavhWSAjE98kQnrd4D6jU6zN1VmZFf/ruF7TQ9S+NfN0yHOFLSaL943klX01bT4KR4/12pPMznYuaoKx6MJBhRc9SInjCotziKxn/jz3jqEgBdeEayGsMWFoTDz38AYeGQAPM2LA3+RciaWhgwJllXXVPzu77ZXgFsHQM4nkOUrhvTuBOU6kQqxT8FCse2n68hI721JoyHUOgPexiN5jFyLoCQc+iKXyWHnXAuGdrDatplCR6+n6y18QbUY5NP/AgZtAP3yQG2ofGzcHofQxdPSnOOB3mZWdlpew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kC4Gnt9sj+tMLZtr5hpHtWytzWBgXbBPignuMv9hlDs=;
- b=ew2+UMd9ASduNxvzFnxGZeLgqSbsdZjvlaAdMOwGfgQ992fEAZktdZsGoMXYJqnON5+gt8Jja8GgyB/UwUHj1cwqyU3If4W5xRDRL0q/A/eWanCN2i5kOsvtMb5PVyj4J9S5XqdqbP4srRU+H9hsnKwVcjvU8dyU6TlDQa7w8D1JIAUbSk9k1ZPAwBBC77KnC9SSapOzz2yKlKHm5UZzhNaFdiu+cVdM58pirU3h7WlCPnz+QDF1z8lB+QJY420QPcdrlMC9YGwRuMpGcOWck/3TPywioswpDFukeRYPyQ9xcVyy4Q7P2g15Q9zfqto4sMdFc3/ysg35R0bcQZGOqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kC4Gnt9sj+tMLZtr5hpHtWytzWBgXbBPignuMv9hlDs=;
- b=OpUBZAToXEV40RolmkDo5pbi7BI3S7orDiOYyc8RTu/G/0SZfHGaqgRsl3CHgd7WT1MNwTzq9AzGTX9IM8SanFz207UT5B1IV3zaq+P66wih4DTdlIKahb/C6pLrEyKfwqrBYWqijOT0AjlLraOkaYy6t/8fLeSZ9TYzc0+vuzvgL8OTFh4dYRykT7PSsP4QbW85nglke0lILFzmKcb3n7m9Jcui5KSEoPaKUjexf2vqmx52/8nHhyjXPT8lURfz9dJH+EOMV/ySO3ZbMbEnFyds59tse+36Pi4T9gAINNQvXtc6PEWFiWTJSiZ9DDo1btSltyqwpkcjvmwwgrSZTg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
- by CH3PR12MB8512.namprd12.prod.outlook.com (2603:10b6:610:158::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.11; Fri, 7 Feb
- 2025 12:46:26 +0000
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732%6]) with mapi id 15.20.8422.011; Fri, 7 Feb 2025
- 12:46:26 +0000
-Date: Fri, 7 Feb 2025 08:46:24 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Andy Gospodarek <andrew.gospodarek@broadcom.com>
-Cc: Jakub Kicinski <kuba@kernel.org>,
-	Aron Silverton <aron.silverton@oracle.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Daniel Vetter <daniel.vetter@ffwll.ch>,
-	Dave Jiang <dave.jiang@intel.com>, David Ahern <dsahern@kernel.org>,
-	Andy Gospodarek <gospo@broadcom.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Leonid Bloch <lbloch@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>, linux-cxl@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	"Nelson, Shannon" <shannon.nelson@amd.com>,
-	Michael Chan <michael.chan@broadcom.com>
-Subject: Re: [PATCH v4 10/10] bnxt: Create an auxiliary device for fwctl_bnxt
-Message-ID: <20250207124624.GP2960738@nvidia.com>
-References: <0-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
- <10-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
- <20250206164449.52b2dfef@kernel.org>
- <CACDg6nU_Dkte_GASNRpkvSSCihpg52FBqNr0KR3ud1YRvrRs3w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACDg6nU_Dkte_GASNRpkvSSCihpg52FBqNr0KR3ud1YRvrRs3w@mail.gmail.com>
-X-ClientProxiedBy: BN0PR10CA0019.namprd10.prod.outlook.com
- (2603:10b6:408:143::8) To CH3PR12MB8659.namprd12.prod.outlook.com
- (2603:10b6:610:17c::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5802C1624D0
+	for <linux-rdma@vger.kernel.org>; Fri,  7 Feb 2025 12:47:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1738932465; cv=none; b=seCFOzqybOIm0rWta7acpi//IyfTSXI3e0qECgriaYtAtxh5aF7u7HI7QSO8Ck8ilcnT9mATXny09BEQT0PzJBVYjI2D6cz0bFxGi2FsUggfsr2p3nTK8Ah1JZXU5ZM6s33UNuDLuxPVMQrwe0qZ7DgcExJPeWtTsOXgHFd+IBs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1738932465; c=relaxed/simple;
+	bh=ffa/d4eb/sQGZFSMrug6DXLNNF+El+vTHXGJVysjvi0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q30n93AbPvwaGjfaqPInRSgGXYj5CAMqKDbdI7trcN0dQH1/3YgOhqG86bKPs/h8hbGmdpKvm09gds8vBHSG6gj5iQiciqcZWZ6akjH4aoBNIU7rVlNdfuC52jwUjxDue2oUXjIu2/urVDQEBJOgNXvEeP7N0gbrEFQXbLxU5D0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DBGczZCp; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1738932462;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Aisc3fRvKAqcLJAVV6uLqWitLc3/Yzy62i8C3NhDsMU=;
+	b=DBGczZCp06pF7YuLyppXSQv2czVjCdRfY5aLxlWzhyOXYwcDAT8GCv9KNAOHsu1e4a3fcz
+	C0cxGYKaVv106A4ocKgXRVWeSL0dQY1jDUAh007T0zaS3hajbWijIIEdC+aIgvottdt6KE
+	KN2IYBC34aBtPYrWpwmg8BpTLMQtYV4=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-665-UWmOV8dXMX28o8vg1eV_vw-1; Fri,
+ 07 Feb 2025 07:47:39 -0500
+X-MC-Unique: UWmOV8dXMX28o8vg1eV_vw-1
+X-Mimecast-MFC-AGG-ID: UWmOV8dXMX28o8vg1eV_vw
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 127E11809CA1;
+	Fri,  7 Feb 2025 12:47:37 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.158])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E6CAF1954233;
+	Fri,  7 Feb 2025 12:47:25 +0000 (UTC)
+Date: Fri, 7 Feb 2025 20:47:20 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+	"nbd@other.debian.org" <nbd@other.debian.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: blktests failures with v6.14-rc1 kernel
+Message-ID: <Z6YA2OakDUyI8Vmc@fedora>
+References: <uyijd3ufbrfbiyyaajvhyhdyytssubekvymzgyiqjqmkh33cmi@ksqjpewsqlvw>
+ <Z6XJuIz012XATr7h@fedora>
+ <ougniadskhks7uyxguxihgeuh2pv4yaqv4q3emo4gwuolgzdt6@brotly74p6bs>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|CH3PR12MB8512:EE_
-X-MS-Office365-Filtering-Correlation-Id: af5a0f4a-0941-493d-abc3-08dd47756f1b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?ZEZMNFVvOHRWT3pML2dOTndyK29zdWh0N0hSY3ZHc3hCMTgxSWZMaWhwMk9G?=
- =?utf-8?B?OFJ2KzhudlBpd0dqVUdPT2YvVktqd3BUeUkxeEdBSGNYMTY5VjMvaFk2R0to?=
- =?utf-8?B?eDllbXVaWEJDWFA2UlJabHF1UDMzdGZZZDNoekd4ZmpOb3JNUzdwdDA0cTB3?=
- =?utf-8?B?U2RpbXI5aVpIVFJFOWg5N2thdVZ4UERHRTZvZm1UMHdHYTJ1YndRYmxiQllI?=
- =?utf-8?B?dHZvQTlVTFNnSEYxeGtYdmwyazdwMnFVTVZldDNNRCtSMFA0cFlIMjNvcjBa?=
- =?utf-8?B?bGhTUkdQL0pqbUN5OEhrd1Q3Q0VKSXBIV29aYjNRSEpya2wrZ2xwUTFOS0Zq?=
- =?utf-8?B?N3J5dUR5MnE5QTF6S28zclJYOHk4WXVyY2V0QmoyS0o2R09xQmRqZkdwRkJt?=
- =?utf-8?B?YnduZ1JWc0tNUGJMVVR0RVlEVnAxTWVyYjFJYkRrdnZlMFFiSlgwdG45Y09u?=
- =?utf-8?B?TklvcGMvWkFiTnd0MnpCQ3ZyQXo3cnpoM2ZYTjdtRjc4eUNLVy9QbHFPUTl1?=
- =?utf-8?B?WjFnUkNNWmt2Qm15dzZlVE11V3VYNVRpbFN4SFQ2UmFzQXNCS0s1UjVFN2Uz?=
- =?utf-8?B?NHNQc1JIREszekVLTTNWQy9RYUNXdjhZd0toaXZ3N3BlYVV2MjIrMHhsaUNF?=
- =?utf-8?B?ZU5YN0hVTVp4akhhdUtMMkpBNXZ2QVZRSXdrUlFMcXE5WUxZa2diaDBwcjdV?=
- =?utf-8?B?QysvV28rVXUvOFFCdVlmSEFWOFFuM25UT1dWQjhlS2oyUUo0YTNzb3BqemY4?=
- =?utf-8?B?UmRLTWZlcmhuVTFLVFJmY1JKVjA4QXFmZUVjV2dva1pZTitGS0xqRzZBNHFq?=
- =?utf-8?B?R1NiOHJnZnoxKzhUVCt4YWkxVVIzK2paNHJ4aEJSOHM2YXdLaC8wQTFCcndF?=
- =?utf-8?B?UE9qZVJqZFA1dzc1S3FCQ2pxaFM5a1BNYk9ZbkRsSzFydW10TjdJbTd0YkJx?=
- =?utf-8?B?YkgzUWxWdFQ0dTJ6Q1l3Rkhjand5VEpiNm5ZOTdDU3Z3YUZDTmM5NDdzWFZj?=
- =?utf-8?B?YTVOV2lkcTlsUG4wNmxFU2lLQXBseHJUWnpnQ2NuUGN6S2ZGNEN1dkNlVnJF?=
- =?utf-8?B?cnFjZjFLdmptUzk4M0Z5U3FEQlRKU2pYNzFlYUI5Y2JkWS9yVE5paXhMemZx?=
- =?utf-8?B?T3VxSjlFa3RuaUh0S1p5cUh3Y0dHSGQyam1qb2NMdWUxVXFUWnJsLytCUGVt?=
- =?utf-8?B?b3BsVlBVT3MwNzk2OWhkSVFZMlRlVVRRb1d3aXdLdnFNbC9HZEhYc1E5NkdC?=
- =?utf-8?B?SWlidHltbkYrcWVJMEJtZldRMHRHWHRQWndvWC9yaHh4RDYzTlhNQk1meVNG?=
- =?utf-8?B?amdadWZJdDNQM2UxY0dQclRSYTBXNk42aWlTQkZkcXFzVWw2RnF1eXZ2dXBH?=
- =?utf-8?B?dTBQNFhJYjR0SW0zeFhTaWw5MVdNSkRMZ04weVZyMXpsSitOaHZoUGw5bkhj?=
- =?utf-8?B?eUptSHpYNjZla0xMcDMzTEJUM2h6S1hPMXpwd3VzOFltQ0NlZ0ZZcDZiT29C?=
- =?utf-8?B?UnBLTTBseWlRY25JdVNGVGRuYU4xNlczU1RUZTlLVVNyeFhHZ2xsQTFOOHow?=
- =?utf-8?B?RTJlNHBkQnJpZjAySDdZS25nQXg4QXNmSHJaOU1yVExBWnc1Q0ErU3Z3bHBq?=
- =?utf-8?B?ejhIcm45Ly9rakhETDVUN3RjeHk2c3VEN3ZrS1Y5WXlaRWY1d2FNdVc4YnNu?=
- =?utf-8?B?M3htdWxrOFBLNVRvNU11czV3aW1OdzdwYnVLOHNCaml1VXV0WXEvYUxVMjVv?=
- =?utf-8?B?cWkxWEdmSVNQcVU3V3IxV1lCOUwyNm9OejNZNjU4dnNyeTI2Y2J6QmprU2hp?=
- =?utf-8?B?eXVHZGhhSzNHY1A4U2ZpeFlwMHNJTmxVMDNETjFsRTdHK2R6RFN5YXQvcm9r?=
- =?utf-8?Q?w0zwpTFh0SuCh?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VjBoMEh0b2lSQVJDWjJXdFRBbkREOUpXRnFuVnNvQnV4MXJBVU82U3prRW81?=
- =?utf-8?B?UzVxWWZOZjNOb0VyRzMyZVpJdUEvRzhpM0JGcndidlo5ZTFjRW9tTzJpK2Nl?=
- =?utf-8?B?dHlQd2ZaYVlNUXZPaUtKLzAxSTdLenhkOEU5QjBXMnpONTVERUlzc3prZzJQ?=
- =?utf-8?B?ZktQcFQrVnROcldhQ0YwdHd1WkE4aGhuZ0lhaWJrR21zZ2JhLzFxVGdLT21x?=
- =?utf-8?B?V1ZPdGMxalVrZi91MWM5bDRETkFneDM1YmpyVHAwWE44aW5WQ3JKQjJQTGlF?=
- =?utf-8?B?MzF6ZEQzN3cydHJjT0pacElmT1dGaUxzTng3L1BYVTdmN05yVFNTYmg3cDdE?=
- =?utf-8?B?a21PMjRFUHlsUWhrRGFVTEJnK3BjMVdRM0g2cVBJVklROThkcmRjdEZJQ29C?=
- =?utf-8?B?bDExU284WkRGV0I1eHFFbllWc21lbnBNVmZpR2dRb0twaFhJa0dmamVyQ0tS?=
- =?utf-8?B?VGhQYUJ0YVp2OSs4R2xjZEk2YW5kOE9Vam0zWEJQaHFKY216blM5Q2Z5T1d4?=
- =?utf-8?B?NjQ0Q09MU0hUdjVNMkpaSWhkaDc1aEozN2RrdHgwaENKelpyT0w0UXVkL3NM?=
- =?utf-8?B?ZWJPSW8vWklQRnJKdnBMS0V6REdGdFBIZFF2M3l6bEFWd2Y1ajdwbGZxdUpG?=
- =?utf-8?B?c01XTHlaV1VaUVlqL2JqTG5aVDhjNmlaa2ZESmlKMXJIUzJaazBrYXVza1Yw?=
- =?utf-8?B?YXd6TE9nYSt6aGZmUHVKc2RsRjR3Q1ZZenA1QTk0T1lxL2hXYkZQRlJ3Sjhi?=
- =?utf-8?B?M2xhbmhtUUZrWjJMeXpuMWJWZkxrNW1jaDJlaG94dHdjVnB2eTgyUm8rQXlw?=
- =?utf-8?B?WEloMHRUNWpnd2lQeTM5SEZOQkdhMFZMVnM3YnNwMHpaMjdTbjNqYlFlS0dV?=
- =?utf-8?B?dUt3azNWM0EwM2M3SVJMaXZoZk51UlFDeXVBeUtYNVM5aGVyQ2dsVzREZ3R2?=
- =?utf-8?B?bnlQOTBucjlYVjgyZ2dVWERTbFA0UThDRTBNc3BrQ1ZvWFhMTm0wWFFwT2Jw?=
- =?utf-8?B?bHpMNVl1WStETjl3SkJDUGVkclRmTElDZXRBUjhseDIxSmxVbzVrVVQvelBy?=
- =?utf-8?B?dUU2UEFVZ1E2UDBkNTY4R2pjZHpsWUJaY21sZTA0S012cjV4MXlKbFVaTHA0?=
- =?utf-8?B?bzVvemZTdFA5NHlxbEx2QWpjd2x4TE9seXBOc0ViSmFVeERCdHVya3EwN1dl?=
- =?utf-8?B?KzVuak95Ri9zRlNPT1VmZVdLVnpPMW4reUJaOFBXS2tQR3M3ZEZSaWxFcnM5?=
- =?utf-8?B?a0p4dzZLbk1naGdxNzVEbklVNTFPVERMNEhqc0FsNVdzRDE1MDZXOFFSUUQ3?=
- =?utf-8?B?Z296T0Z6eFJQM2U4MjlJYU00S0RaY0dJOUMrajZHcDZDcjNHY3dUSWdiMkcz?=
- =?utf-8?B?QWZHcVE4dERranlMNHRVZFVucFZjZDBYV01zL1EzVERVcmNzUWE5Zjd3Q241?=
- =?utf-8?B?OGxqUTdFMERYVkhodzBYb1M5WFJrdFMvcEVzODVqYTRvL0hQOVlNTW9jVHVM?=
- =?utf-8?B?aWF0eGVMVE1BMTlIc2lVWkMza25kSVBaZWJzOXhoSlFLM0NvUGRlT3BmV04w?=
- =?utf-8?B?RURXcVlFRlVaaThQWDgvemRsNjhzVEQxZ21lbUxGaUcwZXBIZjRJTDlIT2xX?=
- =?utf-8?B?dTN4TjRmaCtwZUlMcWpDdjlmeGtZZ3Y5cFBpMHIvMTBsZU1kQmVCS1o2SUFs?=
- =?utf-8?B?QWxRS3R4VURacVd2cWxyMEhrZEc1aEhuMUM4QkwvODFCbDlweXBHZ1R5TExx?=
- =?utf-8?B?OWNRdlI4RXFsOUdVMXZMMklYYlQ4MGpzRndYRDN1T0daM3U4blUwemhwaEFG?=
- =?utf-8?B?RkRwcUdITmovWm94Q0UzRFA4dHkvd0ZYbVFCcnd1cUdKMDJJb0N4TG5uUTRT?=
- =?utf-8?B?bW02TjZid095NDhadDBWQzJoamZ6OU02RmlmVHdRQWxVcHdwaHhMTlFGR3F5?=
- =?utf-8?B?L2JPZ0YrS203NkEzTlJna21kd0V0OW5QTWk2d1o5TTJia2c2ZlFLOWNkbWlH?=
- =?utf-8?B?V1RKOGVLYmFhUEs3a0MrMUNkMzcrcU5BK2JaOVR1Zms1K2VHRXgzQTE3Rkht?=
- =?utf-8?B?bGVTa3hQWlhnMm1ZMWtsSjlaSGwvTVE0Q2U3UzNjOGg2R1g1N2xSZFI0K0Vp?=
- =?utf-8?Q?wGnc=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: af5a0f4a-0941-493d-abc3-08dd47756f1b
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2025 12:46:25.9643
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0E5+aMkuoX0k84mGVJfijimn+CtXli7rhsMRcTdO8ViMQf1vc9Wy8EvFxhqBFzDV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8512
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ougniadskhks7uyxguxihgeuh2pv4yaqv4q3emo4gwuolgzdt6@brotly74p6bs>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-On Thu, Feb 06, 2025 at 10:17:58PM -0500, Andy Gospodarek wrote:
-> On Thu, Feb 6, 2025 at 7:44 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > On Thu,  6 Feb 2025 20:13:32 -0400 Jason Gunthorpe wrote:
-> > > From: Andy Gospodarek <gospo@broadcom.com>
-> > >
-> > > Signed-off-by: Andy Gospodarek <gospo@broadcom.com>
-> > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> >
-> > This is only needed for RDMA, why can't you make this part of bnxt_re ?
+On Fri, Feb 07, 2025 at 12:22:32PM +0000, Shinichiro Kawasaki wrote:
+> On Feb 07, 2025 / 16:52, Ming Lei wrote:
+> > Hi Shinichiro,
 > 
-> This is not just needed for RDMA, so having the aux device for fwctl
-> as part of the base driver is preferred.
+> Hi Ming, thanks for the comments. Let me comment on the block/002 failure.
+> 
+> > > Failure description
+> > > ===================
+> > > 
+> > > #1: block/002
+> > > 
+> > >     This test case fails with a lockdep WARN "possible circular locking
+> > >     dependency detected". The lockdep splats shows q->q_usage_counter as one
+> > >     of the involved locks. It was observed with the v6.13-rc2 kernel [2], and
+> > >     still observed with v6.14-rc1 kernel. It needs further debug.
+> > > 
+> > >     [2] https://lore.kernel.org/linux-block/qskveo3it6rqag4xyleobe5azpxu6tekihao4qpdopvk44una2@y4lkoe6y3d6z/
+> > 
+> > [  342.568086][ T1023] -> #0 (&mm->mmap_lock){++++}-{4:4}:
+> > [  342.569658][ T1023]        __lock_acquire+0x2e8b/0x6010
+> > [  342.570577][ T1023]        lock_acquire+0x1b1/0x540
+> > [  342.571463][ T1023]        __might_fault+0xb9/0x120
+> > [  342.572338][ T1023]        _copy_from_user+0x34/0xa0
+> > [  342.573231][ T1023]        __blk_trace_setup+0xa0/0x140
+> > [  342.574129][ T1023]        blk_trace_ioctl+0x14e/0x270
+> > [  342.575033][ T1023]        blkdev_ioctl+0x38f/0x5c0
+> > [  342.575919][ T1023]        __x64_sys_ioctl+0x130/0x190
+> > [  342.576824][ T1023]        do_syscall_64+0x93/0x180
+> > [  342.577714][ T1023]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> > 
+> > The above dependency between ->mmap_lock and ->debugfs_mutex has been cut by
+> > commit b769a2f409e7 ("blktrace: move copy_[to|from]_user() out of ->debugfs_lock"),
+> > so I'd suggest to double check this one.
+> 
+> Thanks. I missed the fix. Said that, I do still see the lockdep WARN "possible
+> circular locking dependency detected" with the kernel v6.14-rc1. Then I guess
+> there are two problems and I confused them. One problem was fixed by the commit
+> b769a2f409e7, and the other problem that I still observe.
+> 
+> Please take a look in the kernel message below, which was observed at the
+> block/002 failure I have just recreated on my test node. The splat indicates the
+> dependency different from that observed with v6.13-rc2 kernel.
 
-Same for mlx5
+Yeah, indeed, thanks for sharing the log.
 
-I have to apologize, somehow the bnxt WIP patches got included here,
-I did not intend that, it was late and I'm juggling too many things
-this week.
+> 
+> 
+> [  165.526908] [   T1103] run blktests block/002 at 2025-02-07 21:02:22
+> [  165.814157] [   T1134] sd 9:0:0:0: [sdd] Synchronizing SCSI cache
+> [  166.031013] [   T1135] scsi_debug:sdebug_driver_probe: scsi_debug: trim poll_queues to 0. poll_q/nr_hw = (0/1)
+> [  166.031986] [   T1135] scsi host9: scsi_debug: version 0191 [20210520]
+>                             dev_size_mb=8, opts=0x0, submit_queues=1, statistics=0
+> [  166.035727] [   T1135] scsi 9:0:0:0: Direct-Access     Linux    scsi_debug       0191 PQ: 0 ANSI: 7
+> [  166.038449] [      C1] scsi 9:0:0:0: Power-on or device reset occurred
+> [  166.045105] [   T1135] sd 9:0:0:0: Attached scsi generic sg3 type 0
+> [  166.046426] [     T94] sd 9:0:0:0: [sdd] 16384 512-byte logical blocks: (8.39 MB/8.00 MiB)
+> [  166.048275] [     T94] sd 9:0:0:0: [sdd] Write Protect is off
+> [  166.048854] [     T94] sd 9:0:0:0: [sdd] Mode Sense: 73 00 10 08
+> [  166.051019] [     T94] sd 9:0:0:0: [sdd] Write cache: enabled, read cache: enabled, supports DPO and FUA
+> [  166.059601] [     T94] sd 9:0:0:0: [sdd] permanent stream count = 5
+> [  166.063623] [     T94] sd 9:0:0:0: [sdd] Preferred minimum I/O size 512 bytes
+> [  166.064329] [     T94] sd 9:0:0:0: [sdd] Optimal transfer size 524288 bytes
+> [  166.094781] [     T94] sd 9:0:0:0: [sdd] Attached SCSI disk
+> 
+> [  166.855819] [   T1161] ======================================================
+> [  166.856339] [   T1161] WARNING: possible circular locking dependency detected
+> [  166.856945] [   T1161] 6.14.0-rc1 #252 Not tainted
+> [  166.857292] [   T1161] ------------------------------------------------------
+> [  166.857874] [   T1161] blktrace/1161 is trying to acquire lock:
+> [  166.858310] [   T1161] ffff88811dbfe5e0 (&mm->mmap_lock){++++}-{4:4}, at: __might_fault+0x99/0x120
+> [  166.859053] [   T1161] 
+>                           but task is already holding lock:
+> [  166.859593] [   T1161] ffff8881082a1078 (&sb->s_type->i_mutex_key#3){++++}-{4:4}, at: relay_file_read+0xa3/0x8a0
+> [  166.860410] [   T1161] 
+>                           which lock already depends on the new lock.
+> 
+> [  166.861269] [   T1161] 
+>                           the existing dependency chain (in reverse order) is:
+> [  166.863693] [   T1161] 
+>                           -> #5 (&sb->s_type->i_mutex_key#3){++++}-{4:4}:
+> [  166.866064] [   T1161]        down_write+0x8d/0x200
+> [  166.867266] [   T1161]        start_creating.part.0+0x82/0x230
+> [  166.868544] [   T1161]        debugfs_create_dir+0x3a/0x4c0
+> [  166.869797] [   T1161]        blk_register_queue+0x12d/0x430
+> [  166.870986] [   T1161]        add_disk_fwnode+0x6b1/0x1010
+> [  166.872144] [   T1161]        sd_probe+0x94e/0xf30
+> [  166.873262] [   T1161]        really_probe+0x1e3/0x8a0
+> [  166.874372] [   T1161]        __driver_probe_device+0x18c/0x370
+> [  166.875544] [   T1161]        driver_probe_device+0x4a/0x120
+> [  166.876715] [   T1161]        __device_attach_driver+0x15e/0x270
+> [  166.877890] [   T1161]        bus_for_each_drv+0x114/0x1a0
+> [  166.878999] [   T1161]        __device_attach_async_helper+0x19c/0x240
+> [  166.880180] [   T1161]        async_run_entry_fn+0x96/0x4f0
+> [  166.881312] [   T1161]        process_one_work+0x85a/0x1460
+> [  166.882411] [   T1161]        worker_thread+0x5e2/0xfc0
+> [  166.883483] [   T1161]        kthread+0x39d/0x750
+> [  166.884548] [   T1161]        ret_from_fork+0x30/0x70
+> [  166.885629] [   T1161]        ret_from_fork_asm+0x1a/0x30
+> [  166.886728] [   T1161] 
+>                           -> #4 (&q->debugfs_mutex){+.+.}-{4:4}:
+> [  166.888799] [   T1161]        __mutex_lock+0x1aa/0x1360
+> [  166.889863] [   T1161]        blk_mq_init_sched+0x3b5/0x5e0
+> [  166.890907] [   T1161]        elevator_switch+0x149/0x4b0
+> [  166.891928] [   T1161]        elv_iosched_store+0x29f/0x380
+> [  166.892966] [   T1161]        queue_attr_store+0x313/0x480
+> [  166.893976] [   T1161]        kernfs_fop_write_iter+0x39e/0x5a0
+> [  166.895012] [   T1161]        vfs_write+0x5f9/0xe90
+> [  166.895970] [   T1161]        ksys_write+0xf6/0x1c0
+> [  166.896931] [   T1161]        do_syscall_64+0x93/0x180
+> [  166.897886] [   T1161]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
 
-Jason
+I think we can kill the above dependency, all debugfs API needn't to be
+protected by q->debugfs_mutex, which is supposed for covering block
+layer internal data structure update & query.
+
+I will try to cook patch for fixing this one.
+
+
+Thanks,
+Ming
+
 
