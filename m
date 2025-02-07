@@ -1,117 +1,139 @@
-Return-Path: <linux-rdma+bounces-7527-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7528-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43563A2CC2F
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 20:04:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98D50A2CC7D
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 20:24:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B96263A280F
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 19:04:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0D5A1886CFF
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 19:24:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1BEE19F416;
-	Fri,  7 Feb 2025 19:01:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D5531A3143;
+	Fri,  7 Feb 2025 19:24:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="W9a48pDC"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="sghWfaAk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13699188012
-	for <linux-rdma@vger.kernel.org>; Fri,  7 Feb 2025 19:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113AB19D072
+	for <linux-rdma@vger.kernel.org>; Fri,  7 Feb 2025 19:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738954916; cv=none; b=svg1IdhEczehLCmHL8fkXss/9Z9Lhr7GI8afchvHcGYux6XgwqFgg1ST4SR4OAte4gmRdeyJFJc/DO88l0WyCMseLiF6e6/XZKCkJ1OpGkeVdNKj1Zf+Kt1UJPkLH2TTVNpxtAI2RkNvNMcfoyUzZxOUEivRiupydiYc2HS+XJM=
+	t=1738956281; cv=none; b=qdLfkiE3pqAmZl79EoyLNGSQU8jMr7Sw/W+T/lPwDdXPdjQfmPl6jXso5CCmOzVgdKPpvN5HZKKvGTOuo/DY+nwxPjP+x52OB2Z4WM1YVObclPTgtZeUoAoHHmYRqPmDcv0om0VSfNG+IAGmabBLFMbGXoH1Yq5Fj/Tdw0ODEZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738954916; c=relaxed/simple;
-	bh=YPSaecsiFXwDzTGHAFZ+jSzAX3eweeruBqLKgpgEvCY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qdoRwWdw3w1473YD9Kj0lJmmeoGShhkhz13yvIrnvi0fpxtlkUoq5RuvLRj4mNEXJxF80o1tdzcnNPbp4yBe/u4eMAwCnxyXryA/wiU+kdEjg5u7vtRG1hqrKR5Cyb0vuj4c0R3pe8Dt8hFOB3QPAZF09f2z6ROvXQ3KmhQ2n/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=W9a48pDC; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7b6f53c12adso193997085a.1
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Feb 2025 11:01:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1738954914; x=1739559714; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jhHb/Iyzu9wCbvQ3EuxPsy9WEDtQ71gsxOEbCbrMAfg=;
-        b=W9a48pDCS4gt7FtBNlj7uKmO9Pm2RKBBxA9qICSurXf0AhrGc5f1hhwZGIeuFnT/Eh
-         QRcWjyALaxu8QteGT5B6VQVJ8ZXe5fLZMEBVDZk/rkDdtqRlF8HcrJjbCwN0QzQy78Ee
-         YLMOnUH7IylejaoHt3HLJRFJIc1zc9DZE8gSUYAnn0Rz7nNhc2JStbwQbbBl2/ZUmuXm
-         8CTNOlV1/pkv6WWuCp2aVNHycS9d9j9I0v4T6ZxqBCf4dyQ/QVJNNOkRZNvd5/v+tSMO
-         gaMmADwnAcZz7nWJziV7K77t6BnFs6Tap9R1Zwr+7tmnhHKX633UTaMlmk/MhKi/Q/Hi
-         ZdRQ==
+	s=arc-20240116; t=1738956281; c=relaxed/simple;
+	bh=vxU+tYVnh6kMXN1kCB92NtopAdH3cQ9eveg0cFzyLtc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m1e2UpZm1EUFDbmVvQzm/WtyZ4pC2Eo9qN6FmkUMFP9FJ8CJ2NS1LSG8rLxxM7UAkuFPmLu71LOJw5gM7oRysGITW4vtsBmwRsZbnPMPjyeadyaTEu9zCJ/jkMFw63osDsK32hXTTQeHANBIjbVv3z1ML1TUDkagy1R6GUpby0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=sghWfaAk; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 2D5123F866
+	for <linux-rdma@vger.kernel.org>; Fri,  7 Feb 2025 19:24:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1738956277;
+	bh=vxU+tYVnh6kMXN1kCB92NtopAdH3cQ9eveg0cFzyLtc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=sghWfaAkeYmtcePg+KTr9ukfvOSg5WANiPg9hZUaM3qhnTYuQ6mGce4gkWojSy13K
+	 22TEEi3vRPpJL/89/l+H0LpvhdVbkvN67bdgjKGCqfzfOxCOAfzIAJyNw+ID+1sbfl
+	 RjjBPHIKdmP6KNHrJi2CFZvXKfUQs3oMceFgKXy6S2lr4iIcdM3hmkovqnXk9626lJ
+	 4e6WecWg267A7dToqm1V7I0YA4bRpAf+gdLjdwukKoNppJhC0jQ4y2zzlu6CRLW0Vq
+	 h/7TuTIEnxzbXHuO1dyPOgEeMz4fDa8u8/9Lft/aOmo4cYP+MCfJFHQ0GI1uJO0gBl
+	 XUpqmttJ+CMbQ==
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-ab2b300e5daso249182066b.1
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Feb 2025 11:24:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738954914; x=1739559714;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jhHb/Iyzu9wCbvQ3EuxPsy9WEDtQ71gsxOEbCbrMAfg=;
-        b=WxUTTnFMZIIjlkdGEOgOH5ipAo/K6xKm+uM96d7ffXVdYfeka6vCICT7DUng1wlLDS
-         8zd6pV1zGhSIGn6tiAAJmHkRfVsU0V2DC0I4GhLv2oZyQ8/EPnd3rB/mQ4nU79z34RVY
-         obVkuKzgzP/2sO6AtOhTb2yoKryEcw478Bs2kpvdFjG/Gbmky5K1yQuOkEGAYDcocxr5
-         ykmeBwVTIu5TlqtTfKMG5FrGVAYLPlPZpbwVmAZzcCYLQlsqWhVmwM8z5vplPRBHpDfF
-         LCDa/GGI3GDHurUqZm2wa4yQyvWmemFkVwn/UW6T9JTSKuB5mlhWqYhXEftNPGmRX1TW
-         bikg==
-X-Forwarded-Encrypted: i=1; AJvYcCUuZ+uiBl9/WJl/7MLr/wZ+5t7oG5z9+K6hW1w8fMYE4ErpiUaVb/To0z0wJUVh6MLRTVCBvspVzPV3@vger.kernel.org
-X-Gm-Message-State: AOJu0YzP0Rk6qiconNkaDtN6tGIbcjHAf7A0QSIIFoEZ3wGzrmufVPRC
-	Ue4IhluEUKl8moq1j7Kyoy0tKYXxV6IWrIkS3sqmN1VHSdnxVypD2jr7qKNHoYA=
-X-Gm-Gg: ASbGncu4nmWHPCcX9TCyreczZZJIcN60Ezj23seBY76fYVKSg87rYWuOEzg3IyoYjb2
-	ZFEmEuO87mO1D5eCV4wdHphXrPWbjaHRM/r1mrtVVSoXvx6LmqtUDckuEcbdhDjAuUYwPCPYDfl
-	fICgS/r8fPBvCHNtNIahZg09SjLZV3aMP9P2n7+bKDE5vbA+67XvJHuAexI4A3DY1Z2wfOn2fuW
-	ypB0PRjrCFITbBud/8ou2tR74eTAuQTU8wXanYFB0LjOxtwdYWITd5gNKumbLdBfHnm4yE9zYaC
-	RMHm9aSDpQB3pnODbZDUJaCE3rewFtU4zchhIgk5Dd0V0x7jAgp1ZTZeT9n8tVbe
-X-Google-Smtp-Source: AGHT+IGI7NvAKLU4JsJOvorfEjiFHTyYvApddGJTHotUW76EJE4gTICxKMW+ZU1MxMaOyB1msPjlAw==
-X-Received: by 2002:a05:620a:2b99:b0:7b7:106a:1991 with SMTP id af79cd13be357-7c047bba9demr630217685a.16.1738954913493;
-        Fri, 07 Feb 2025 11:01:53 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-47153bc75aesm19533301cf.64.2025.02.07.11.01.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Feb 2025 11:01:53 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1tgTbs-0000000FUFC-1jHG;
-	Fri, 07 Feb 2025 15:01:52 -0400
-Date: Fri, 7 Feb 2025 15:01:52 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Mitchell Augustin <mitchell.augustin@canonical.com>
-Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
-	andrew+netdev@lunn.ch, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Talat Batheesh <talatb@nvidia.com>,
-	Feras Daoud <ferasda@nvidia.com>
-Subject: Re: modprobe mlx5_core on OCI bare-metal instance causes
- unrecoverable hang and I/O error
-Message-ID: <20250207190152.GA3665794@ziepe.ca>
-References: <CAHTA-uaH9w2LqQdxY4b=7q9WQsuA6ntg=QRKrsf=mPfNBmM5pw@mail.gmail.com>
- <20250207155456.GA3665725@ziepe.ca>
- <CAHTA-uasZ+ZkdzaSzz-QH=brD3PDb+wGfvE-k377SW7BCEi6hg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1738956276; x=1739561076;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vxU+tYVnh6kMXN1kCB92NtopAdH3cQ9eveg0cFzyLtc=;
+        b=TcoN0s0FB6qtiSMsYfNV2eGSqGOorA59l5BBDO9Ms4C5NC3MwAtCsbWSB+DioxiRLt
+         BzDEnO3VxeUkUIr3hl/Nq7yVaysjVI15gnqeg5SURtVwRSIYqD0fO21I6VYomIccBhWm
+         3JCOBqP0fsPSh4brOqC9hdeiRU+LhOSdqoEVXLUmzu5TdRzLp7fbhvLB9pakWb/4Nr2/
+         K3sl3s77YOWbIp0ZNwb8hcOMVOnwrJ3RHw7jGCytkH2wR26qaMOcbHuLA9QBfBIfuaKE
+         nV6vOGzbBeWygvuRBGzb1ottjj/wnOMcIcLs0bZUQaARIlnD88Q21Hf0H2R6rdXHIZk1
+         l4WA==
+X-Forwarded-Encrypted: i=1; AJvYcCXYtv3poecHaiCU3Ds76hGlnjfVSIXn938pu2jtvLD3MZLXRya65ZZfXEf2ESHTIoSA5Az06Tw4us+K@vger.kernel.org
+X-Gm-Message-State: AOJu0YyLbbjOdM97yDgIvis9YutqEGIkDHNMwbm3ek9N79iVe6kGDOpE
+	d7/SiOyLBtTz6mqvNNpXxp/vEtJCqyw/z9cW3gZc9UGbq3fjIwTin8KeT7bWb0rIz/ON+GbM44X
+	LfXJ3E1+ROoLEiTUFbRy+Xgm9jHs1H1PSLp1Ekg68EczLT6vbOe2X8v2JaWxPLd87k5asPzmDRf
+	yWsyzmuZsX/gTmF3gNdd+6akfHxnUx0SuLzCYO0srleXZMIHqC+Q==
+X-Gm-Gg: ASbGncsn5OyHUbMK9JKYpXA80B3htv1VdaaPWv9mAKe4bWls3ClvPJ8XPky74HN4LHf
+	p0g9ku/Texsnn/6Q40n7MmUwceH9eCZcbr1RAPK5w5hNb3HuROu9AfkexyfCS
+X-Received: by 2002:a17:906:6a29:b0:aa6:a572:49fd with SMTP id a640c23a62f3a-ab789ca2972mr420381766b.54.1738956276691;
+        Fri, 07 Feb 2025 11:24:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEW39V6vxQtVQ8dceJH6mGloMgI0XHnyBDpBS0JjWTn/3cHP5RLfgBQFsUPSHSqaPzI8YS3WFgZCGADlt7dVJo=
+X-Received: by 2002:a17:906:6a29:b0:aa6:a572:49fd with SMTP id
+ a640c23a62f3a-ab789ca2972mr420379566b.54.1738956276318; Fri, 07 Feb 2025
+ 11:24:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHTA-uasZ+ZkdzaSzz-QH=brD3PDb+wGfvE-k377SW7BCEi6hg@mail.gmail.com>
+References: <CAHTA-uaH9w2LqQdxY4b=7q9WQsuA6ntg=QRKrsf=mPfNBmM5pw@mail.gmail.com>
+ <20250207155456.GA3665725@ziepe.ca> <CAHTA-uasZ+ZkdzaSzz-QH=brD3PDb+wGfvE-k377SW7BCEi6hg@mail.gmail.com>
+ <20250207190152.GA3665794@ziepe.ca>
+In-Reply-To: <20250207190152.GA3665794@ziepe.ca>
+From: Mitchell Augustin <mitchell.augustin@canonical.com>
+Date: Fri, 7 Feb 2025 13:24:24 -0600
+X-Gm-Features: AWEUYZlr2pi0PkFPhk6g8C39Y1EN3TzUeAopLgpyoqvD13zRSg5s6jJmYOdIuQ4
+Message-ID: <CAHTA-uZMZ6qQZf_n55gNaTjQQ0j8nXdt1Yi_+8+-YUNhxcrs_A@mail.gmail.com>
+Subject: Re: modprobe mlx5_core on OCI bare-metal instance causes
+ unrecoverable hang and I/O error
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com, 
+	andrew+netdev@lunn.ch, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Talat Batheesh <talatb@nvidia.com>, 
+	Feras Daoud <ferasda@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 07, 2025 at 10:02:46AM -0600, Mitchell Augustin wrote:
-> > Is it using iscsi/srp/nfs/etc for any filesystems?
-> 
-> Yes, dev sda is using iSCSI:
+*facepalm*
 
-If you remove the driver that is providing transport for your
-filesystem the system will hang like you showed.
+Thanks, I can't believe that wasn't my first thought as soon as I
+learned these instances were using iSCSI. That's almost certainly what
+is happening on this OCI instance, since the host adapter for its
+iSCSI transport is a ConnectX card.
 
-It can be done, but the process sequencing the load/unload has to be
-entirely contained to a tmpfs so it doesn't become blocked on IO that
-cannot complete.
+The fact that I was able to see similar behavior once on a machine
+booted from a local disk (in the A100 test I mentioned) is still
+confusing though. I'll update this thread if I can figure out a
+reliable way to reproduce that behavior.
 
-Jason
+
+On Fri, Feb 7, 2025 at 1:01=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrote=
+:
+>
+> On Fri, Feb 07, 2025 at 10:02:46AM -0600, Mitchell Augustin wrote:
+> > > Is it using iscsi/srp/nfs/etc for any filesystems?
+> >
+> > Yes, dev sda is using iSCSI:
+>
+> If you remove the driver that is providing transport for your
+> filesystem the system will hang like you showed.
+>
+> It can be done, but the process sequencing the load/unload has to be
+> entirely contained to a tmpfs so it doesn't become blocked on IO that
+> cannot complete.
+>
+> Jason
+
+
+
+--=20
+Mitchell Augustin
+Software Engineer - Ubuntu Partner Engineering
 
