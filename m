@@ -1,34 +1,34 @@
-Return-Path: <linux-rdma+bounces-7551-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7552-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC7ADA2CD37
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 20:53:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A58C8A2CD39
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 20:53:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D9593AB88E
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 19:53:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 827763A19B1
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2025 19:53:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D99A51D9A49;
-	Fri,  7 Feb 2025 19:50:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D87D1DC04A;
+	Fri,  7 Feb 2025 19:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WwRwNN2W"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JLKCqBtB"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C241D5AC3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCC3E1D63C2;
 	Fri,  7 Feb 2025 19:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738957842; cv=none; b=Eqt++XVgbPyCD1LXZ0KOLndFRSOPwO6oMi9zDRSttvOBEh2n0Tv7y+oncw09CrKsodM8enRF8S+gKZ6F2Al0tXfnkq6pEwdI9siPSy0ZT7n29vk4udbwCwT1d4VWQuKOMUfsXANGzTvIk2pWiSlO74+/fKzMocgkokN4GdA3U+M=
+	t=1738957843; cv=none; b=qq5PaCKUX+4FUTAGoX2J1+0+Zj8WiWrzzseUlFhddJ0LzacV37Vl+HOonIEeWO6YFDEBHxqjijHPtQqlnrfNW/o9bIfXp2VfqNpwHpxTPLvnsbr8AHQ40Y+PJ36ExBB9733oxxvBxNhZp2BadBJSnYpeu7JkOxcGAo1+VGZ4raQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738957842; c=relaxed/simple;
-	bh=PU5qX6lVKW4ZEPGXs/JhKL9s1Bh/K5IXA7z4GW+xFnY=;
+	s=arc-20240116; t=1738957843; c=relaxed/simple;
+	bh=TaU3KiZeaz97WId/Ln8CJ2RevTmVCKyLDQIFOl15t0Q=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FEUJn2kYXrkvz31Ndkcanqk/CUIyAx7uI19+Za/6nayhF0g3AIPQwLi6CTtUKO7Q0fQqoiHV4NeodayPFmM7eWA1KbSBsCFZ4P/u9I5jjx5DMEkeUWfdEzob5PRHyK1olMgQDUbsvL/kXiML2mxjpXj8ySm/sEJ4s+6TpA+rfQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WwRwNN2W; arc=none smtp.client-ip=192.198.163.13
+	 MIME-Version; b=u57CLfc2Uxeg6wGWDo7kqHAT4xB43v70uRdPDRt4paUjMsdji6B8LUfnPVpAoTuwhi4+SXmQKZFUAWgFmUyN2NgCgtVvqr7YuzbZQYfmYHcvRmWyrHhV5wSlDoT1j+7+krkFyAZG1qdYTuotSe5IiN026SqMqwK57tkbKn64ZeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JLKCqBtB; arc=none smtp.client-ip=192.198.163.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
@@ -36,39 +36,39 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   t=1738957841; x=1770493841;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=PU5qX6lVKW4ZEPGXs/JhKL9s1Bh/K5IXA7z4GW+xFnY=;
-  b=WwRwNN2WpE+tOjRUOSLLTNhg5gVQlvfEKzNJp25raISXzi65430oBqF1
-   tLe3h/kbYZuvm7tkWb0HuQqX7upuxU92FmZfP2tbaNAILZ0O0j+9aPuno
-   6z205uaBWgnCWbJ59FHF+Hg+bq9kEYhXhgNhneXZYVH3oa0lGAe0xcv4Y
-   2VvJQ20USPE+3CqiUEwhXBKpHZRNWLkocRDYT+0sCWw06iRkhzwPpMYMI
-   DhjbC1jqLtzt5gJ6+fQ1IIhm8PYyNs9qoswNRIgl7iiigvrQAoRPRdWEV
-   fAzZmtlMZAkmo6os+9EmDbtVxgZX1cxu9Oz2pZgP+nPTG57S6qu6mo37S
+  bh=TaU3KiZeaz97WId/Ln8CJ2RevTmVCKyLDQIFOl15t0Q=;
+  b=JLKCqBtBLvEEIBBoidlWvvUJ5nG6CYvIja6+mBbfCoTfT5ssaFTaOK8C
+   xbi53MLz31Zjw8zue2FdXi+0HIHVXCRLibZq+wMdAbTIilBdE4I+KxRL0
+   dYCJ/ciP69niLTB66/1ySjX1xLaVPCrGh/HLxYrmBGASCZOVdoy9tb8Xv
+   YEJZNGLIXpb+tmQY4NXCTrn+84tJUa8vtL503kIT4YthxPS3XLPmkY4Ph
+   6UKbLu4vv3mFcJQyUJ5pheY8NWj9DEE0wVEQUzcXRTiRw2wmhl1ONWgj5
+   KHHgyUwPvgTPJLQF42yqLAKKzqikvmR6bieIFGPFWp1XFHsiPiRWNyDfQ
    g==;
-X-CSE-ConnectionGUID: tEpEP0zLRTiBTYntk9MvCA==
-X-CSE-MsgGUID: PwNmRnUTS7GUfiJHmIOV8w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="42451855"
+X-CSE-ConnectionGUID: LN4nhNd0R2WS3dHFvfOxrA==
+X-CSE-MsgGUID: SMx6IxMmSLSieCMbEw9CCw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="42451859"
 X-IronPort-AV: E=Sophos;i="6.13,268,1732608000"; 
-   d="scan'208";a="42451855"
+   d="scan'208";a="42451859"
 Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 11:50:34 -0800
-X-CSE-ConnectionGUID: g4BhQgTmSF6bLTsGgkIfwg==
-X-CSE-MsgGUID: qb49eQ2RQRehfeaNTRheiA==
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 11:50:35 -0800
+X-CSE-ConnectionGUID: WuFLaaxYSM+0y9KTb/qrEA==
+X-CSE-MsgGUID: U0qQtSFHSyGFN648A/OItw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.13,268,1732608000"; 
-   d="scan'208";a="112238288"
+   d="scan'208";a="112238305"
 Received: from tenikolo-mobl1.amr.corp.intel.com ([10.124.81.134])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 11:50:33 -0800
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 11:50:34 -0800
 From: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
 To: jgg@nvidia.com,
 	leon@kernel.org,
 	intel-wired-lan@lists.osuosl.org
 Cc: linux-rdma@vger.kernel.org,
 	netdev@vger.kernel.org,
-	Faisal Latif <faisal.latif@intel.com>,
+	Shiraz Saleem <shiraz.saleem@intel.com>,
 	Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-Subject: [rdma v3 21/24] RDMA/irdma: Add Atomic Operations support
-Date: Fri,  7 Feb 2025 13:49:28 -0600
-Message-Id: <20250207194931.1569-22-tatyana.e.nikolova@intel.com>
+Subject: [rdma v3 22/24] RDMA/irdma: Extend CQE Error and Flush Handling for GEN3 Devices
+Date: Fri,  7 Feb 2025 13:49:29 -0600
+Message-Id: <20250207194931.1569-23-tatyana.e.nikolova@intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20250207194931.1569-1-tatyana.e.nikolova@intel.com>
 References: <20250207194931.1569-1-tatyana.e.nikolova@intel.com>
@@ -80,457 +80,719 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Faisal Latif <faisal.latif@intel.com>
+From: Shiraz Saleem <shiraz.saleem@intel.com>
 
-Extend irdma to support atomic operations, namely Compare and Swap and
-Fetch and Add, for GEN3 devices.
+Enhance the CQE error and flush handling specific to GEN3 devices.
+Unlike GEN1/2 devices, which depend on software to generate completions
+in error, GEN3 devices leverage firmware to generate CQEs in error for
+all WQEs posted after a QP moves to an error state.
 
-Signed-off-by: Faisal Latif <faisal.latif@intel.com>
+Key changes include:
+- Updating the CQ poll logic to properly advance the CQ head in the
+event of a flush CQE.
+- Updating the flush logic for GEN3 to pass error WQE idx
+for SQ on an AE to flush out unprocessed WQEs in error.
+- Isolating the decoding of AE to flush codes into a separate routine
+irdma_ae_to_qp_err_code. This routine can now be leveraged to
+flush error CQEs on an AE and when error CQE is received for SRQ.
+
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
 Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
 ---
 
-v3: Check IRDMA_ATOMICS_ALLOWED_BIT after the feature info has been
-read from FW.
+v3:
+* Use irdma_aeqe_info to update QP err_rq_idx when setting
+the QP flush fields.
+* Remove the checks which prevented the use of the delayed
+flush worker thread for GEN3.
 
- drivers/infiniband/hw/irdma/ctrl.c       |  11 +++
- drivers/infiniband/hw/irdma/defs.h       |  10 ++-
- drivers/infiniband/hw/irdma/ig3rdma_hw.c |   3 -
- drivers/infiniband/hw/irdma/type.h       |   4 +
- drivers/infiniband/hw/irdma/uk.c         | 102 +++++++++++++++++++++++
- drivers/infiniband/hw/irdma/user.h       |  27 ++++++
- drivers/infiniband/hw/irdma/verbs.c      |  38 +++++++++
- drivers/infiniband/hw/irdma/verbs.h      |   6 ++
- 8 files changed, 197 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/irdma/ctrl.c  |   9 ++
+ drivers/infiniband/hw/irdma/defs.h  | 105 +--------------
+ drivers/infiniband/hw/irdma/hw.c    |  99 ++++----------
+ drivers/infiniband/hw/irdma/type.h  |  14 +-
+ drivers/infiniband/hw/irdma/uk.c    |  39 +++++-
+ drivers/infiniband/hw/irdma/user.h  | 194 +++++++++++++++++++++++++++-
+ drivers/infiniband/hw/irdma/verbs.c |  10 +-
+ 7 files changed, 280 insertions(+), 190 deletions(-)
 
 diff --git a/drivers/infiniband/hw/irdma/ctrl.c b/drivers/infiniband/hw/irdma/ctrl.c
-index c4da8f981dac..75411c4b68fb 100644
+index 75411c4b68fb..4158db00085f 100644
 --- a/drivers/infiniband/hw/irdma/ctrl.c
 +++ b/drivers/infiniband/hw/irdma/ctrl.c
-@@ -1110,6 +1110,8 @@ static void irdma_sc_qp_setctx_roce_gen_3(struct irdma_sc_qp *qp,
- 		      FIELD_PREP(IRDMAQPC_UDPRIVCQENABLE,
- 				 roce_info->udprivcq_en) |
- 		      FIELD_PREP(IRDMAQPC_PRIVEN, roce_info->priv_mode_en) |
-+		      FIELD_PREP(IRDMAQPC_REMOTE_ATOMIC_EN,
-+				 info->remote_atomics_en) |
- 		      FIELD_PREP(IRDMAQPC_TIMELYENABLE, roce_info->timely_en));
- 	set_64bit_val(qp_ctx, 168,
- 		      FIELD_PREP(IRDMAQPC_QPCOMPCTX, info->qp_compl_ctx));
-@@ -1490,6 +1492,8 @@ static int irdma_sc_alloc_stag(struct irdma_sc_dev *dev,
- 	      FIELD_PREP(IRDMA_CQPSQ_STAG_REMACCENABLED, info->remote_access) |
- 	      FIELD_PREP(IRDMA_CQPSQ_STAG_USEHMCFNIDX, info->use_hmc_fcn_index) |
- 	      FIELD_PREP(IRDMA_CQPSQ_STAG_USEPFRID, info->use_pf_rid) |
-+	      FIELD_PREP(IRDMA_CQPSQ_STAG_REMOTE_ATOMIC_EN,
-+			 info->remote_atomics_en) |
+@@ -2674,6 +2674,12 @@ int irdma_sc_qp_flush_wqes(struct irdma_sc_qp *qp,
+ 		info->ae_code | FIELD_PREP(IRDMA_CQPSQ_FWQE_AESOURCE,
+ 					   info->ae_src) : 0;
+ 	set_64bit_val(wqe, 8, temp);
++	if (cqp->dev->hw_attrs.uk_attrs.hw_rev >= IRDMA_GEN_3) {
++		set_64bit_val(wqe, 40,
++			      FIELD_PREP(IRDMA_CQPSQ_FWQE_ERR_SQ_IDX, info->err_sq_idx));
++		set_64bit_val(wqe, 48,
++			      FIELD_PREP(IRDMA_CQPSQ_FWQE_ERR_RQ_IDX, info->err_rq_idx));
++	}
+ 
+ 	hdr = qp->qp_uk.qp_id |
+ 	      FIELD_PREP(IRDMA_CQPSQ_OPCODE, IRDMA_CQP_OP_FLUSH_WQES) |
+@@ -2682,6 +2688,9 @@ int irdma_sc_qp_flush_wqes(struct irdma_sc_qp *qp,
+ 	      FIELD_PREP(IRDMA_CQPSQ_FWQE_FLUSHSQ, flush_sq) |
+ 	      FIELD_PREP(IRDMA_CQPSQ_FWQE_FLUSHRQ, flush_rq) |
  	      FIELD_PREP(IRDMA_CQPSQ_WQEVALID, cqp->polarity);
++	if (cqp->dev->hw_attrs.uk_attrs.hw_rev >= IRDMA_GEN_3)
++		hdr |= FIELD_PREP(IRDMA_CQPSQ_FWQE_ERR_SQ_IDX_VALID, info->err_sq_idx_valid) |
++		       FIELD_PREP(IRDMA_CQPSQ_FWQE_ERR_RQ_IDX_VALID, info->err_rq_idx_valid);
  	dma_wmb(); /* make sure WQE is written before valid bit is set */
  
-@@ -1582,6 +1586,8 @@ static int irdma_sc_mr_reg_non_shared(struct irdma_sc_dev *dev,
- 	      FIELD_PREP(IRDMA_CQPSQ_STAG_VABASEDTO, addr_type) |
- 	      FIELD_PREP(IRDMA_CQPSQ_STAG_USEHMCFNIDX, info->use_hmc_fcn_index) |
- 	      FIELD_PREP(IRDMA_CQPSQ_STAG_USEPFRID, info->use_pf_rid) |
-+	      FIELD_PREP(IRDMA_CQPSQ_STAG_REMOTE_ATOMIC_EN,
-+			 info->remote_atomics_en) |
- 	      FIELD_PREP(IRDMA_CQPSQ_WQEVALID, cqp->polarity);
- 	dma_wmb(); /* make sure WQE is written before valid bit is set */
- 
-@@ -1740,6 +1746,7 @@ int irdma_sc_mr_fast_register(struct irdma_sc_qp *qp,
- 	      FIELD_PREP(IRDMAQPSQ_READFENCE, info->read_fence) |
- 	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
- 	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
-+	      FIELD_PREP(IRDMAQPSQ_REMOTE_ATOMICS_EN, info->remote_atomics_en) |
- 	      FIELD_PREP(IRDMAQPSQ_VALID, qp->qp_uk.swqe_polarity);
- 	dma_wmb(); /* make sure WQE is written before valid bit is set */
- 
-@@ -5542,6 +5549,10 @@ int irdma_get_rdma_features(struct irdma_sc_dev *dev)
- 		}
- 		dev->feature_info[feat_type] = temp;
- 	}
-+
-+	if (dev->feature_info[IRDMA_FTN_FLAGS] & IRDMA_ATOMICS_ALLOWED_BIT)
-+		dev->hw_attrs.uk_attrs.feature_flags |= IRDMA_FEATURE_ATOMIC_OPS;
-+
- exit:
- 	dma_free_coherent(dev->hw->device, feat_buf.size, feat_buf.va,
- 			  feat_buf.pa);
+ 	set_64bit_val(wqe, 24, hdr);
 diff --git a/drivers/infiniband/hw/irdma/defs.h b/drivers/infiniband/hw/irdma/defs.h
-index 408058b6ba55..3b3680816a65 100644
+index 3b3680816a65..983b22d7ae23 100644
 --- a/drivers/infiniband/hw/irdma/defs.h
 +++ b/drivers/infiniband/hw/irdma/defs.h
-@@ -189,6 +189,8 @@ enum irdma_protocol_used {
- #define IRDMAQP_OP_RDMA_READ_LOC_INV		0x0b
- #define IRDMAQP_OP_NOP				0x0c
- #define IRDMAQP_OP_RDMA_WRITE_SOL		0x0d
-+#define IRDMAQP_OP_ATOMIC_FETCH_ADD		0x0f
-+#define IRDMAQP_OP_ATOMIC_COMPARE_SWAP_ADD	0x11
- #define IRDMAQP_OP_GEN_RTS_AE			0x30
+@@ -301,107 +301,6 @@ enum irdma_cqp_op_type {
+ #define IRDMA_CQP_OP_GATHER_STATS			0x2e
+ #define IRDMA_CQP_OP_UP_MAP				0x2f
  
- enum irdma_cqp_op_type {
-@@ -694,7 +696,8 @@ enum irdma_cqp_op_type {
- #define IRDMA_CQPSQ_STAG_USEPFRID BIT_ULL(61)
- 
- #define IRDMA_CQPSQ_STAG_PBA IRDMA_CQPHC_QPCTX
--#define IRDMA_CQPSQ_STAG_HMCFNIDX GENMASK_ULL(5, 0)
-+#define IRDMA_CQPSQ_STAG_HMCFNIDX GENMASK_ULL(15, 0)
-+#define IRDMA_CQPSQ_STAG_REMOTE_ATOMIC_EN BIT_ULL(61)
- 
- #define IRDMA_CQPSQ_STAG_FIRSTPMPBLIDX GENMASK_ULL(27, 0)
- #define IRDMA_CQPSQ_QUERYSTAG_IDX IRDMA_CQPSQ_STAG_IDX
-@@ -981,6 +984,9 @@ enum irdma_cqp_op_type {
- 
- #define IRDMAQPSQ_REMTO IRDMA_CQPHC_QPCTX
- 
-+#define IRDMAQPSQ_STAG GENMASK_ULL(31, 0)
-+#define IRDMAQPSQ_REMOTE_STAG GENMASK_ULL(31, 0)
+-/* Async Events codes */
+-#define IRDMA_AE_AMP_UNALLOCATED_STAG					0x0102
+-#define IRDMA_AE_AMP_INVALID_STAG					0x0103
+-#define IRDMA_AE_AMP_BAD_QP						0x0104
+-#define IRDMA_AE_AMP_BAD_PD						0x0105
+-#define IRDMA_AE_AMP_BAD_STAG_KEY					0x0106
+-#define IRDMA_AE_AMP_BAD_STAG_INDEX					0x0107
+-#define IRDMA_AE_AMP_BOUNDS_VIOLATION					0x0108
+-#define IRDMA_AE_AMP_RIGHTS_VIOLATION					0x0109
+-#define IRDMA_AE_AMP_TO_WRAP						0x010a
+-#define IRDMA_AE_AMP_FASTREG_VALID_STAG					0x010c
+-#define IRDMA_AE_AMP_FASTREG_MW_STAG					0x010d
+-#define IRDMA_AE_AMP_FASTREG_INVALID_RIGHTS				0x010e
+-#define IRDMA_AE_AMP_FASTREG_INVALID_LENGTH				0x0110
+-#define IRDMA_AE_AMP_INVALIDATE_SHARED					0x0111
+-#define IRDMA_AE_AMP_INVALIDATE_NO_REMOTE_ACCESS_RIGHTS			0x0112
+-#define IRDMA_AE_AMP_INVALIDATE_MR_WITH_BOUND_WINDOWS			0x0113
+-#define IRDMA_AE_AMP_MWBIND_VALID_STAG					0x0114
+-#define IRDMA_AE_AMP_MWBIND_OF_MR_STAG					0x0115
+-#define IRDMA_AE_AMP_MWBIND_TO_ZERO_BASED_STAG				0x0116
+-#define IRDMA_AE_AMP_MWBIND_TO_MW_STAG					0x0117
+-#define IRDMA_AE_AMP_MWBIND_INVALID_RIGHTS				0x0118
+-#define IRDMA_AE_AMP_MWBIND_INVALID_BOUNDS				0x0119
+-#define IRDMA_AE_AMP_MWBIND_TO_INVALID_PARENT				0x011a
+-#define IRDMA_AE_AMP_MWBIND_BIND_DISABLED				0x011b
+-#define IRDMA_AE_PRIV_OPERATION_DENIED					0x011c
+-#define IRDMA_AE_AMP_INVALIDATE_TYPE1_MW				0x011d
+-#define IRDMA_AE_AMP_MWBIND_ZERO_BASED_TYPE1_MW				0x011e
+-#define IRDMA_AE_AMP_FASTREG_INVALID_PBL_HPS_CFG			0x011f
+-#define IRDMA_AE_AMP_MWBIND_WRONG_TYPE					0x0120
+-#define IRDMA_AE_AMP_FASTREG_PBLE_MISMATCH				0x0121
+-#define IRDMA_AE_UDA_XMIT_DGRAM_TOO_LONG				0x0132
+-#define IRDMA_AE_UDA_XMIT_BAD_PD					0x0133
+-#define IRDMA_AE_UDA_XMIT_DGRAM_TOO_SHORT				0x0134
+-#define IRDMA_AE_UDA_L4LEN_INVALID					0x0135
+-#define IRDMA_AE_BAD_CLOSE						0x0201
+-#define IRDMA_AE_RDMAP_ROE_BAD_LLP_CLOSE				0x0202
+-#define IRDMA_AE_CQ_OPERATION_ERROR					0x0203
+-#define IRDMA_AE_RDMA_READ_WHILE_ORD_ZERO				0x0205
+-#define IRDMA_AE_STAG_ZERO_INVALID					0x0206
+-#define IRDMA_AE_IB_RREQ_AND_Q1_FULL					0x0207
+-#define IRDMA_AE_IB_INVALID_REQUEST					0x0208
+-#define IRDMA_AE_SRQ_LIMIT						0x0209
+-#define IRDMA_AE_WQE_UNEXPECTED_OPCODE					0x020a
+-#define IRDMA_AE_WQE_INVALID_PARAMETER					0x020b
+-#define IRDMA_AE_WQE_INVALID_FRAG_DATA					0x020c
+-#define IRDMA_AE_IB_REMOTE_ACCESS_ERROR					0x020d
+-#define IRDMA_AE_IB_REMOTE_OP_ERROR					0x020e
+-#define IRDMA_AE_SRQ_CATASTROPHIC_ERROR					0x020f
+-#define IRDMA_AE_WQE_LSMM_TOO_LONG					0x0220
+-#define IRDMA_AE_ATOMIC_ALIGNMENT					0x0221
+-#define IRDMA_AE_ATOMIC_MASK						0x0222
+-#define IRDMA_AE_INVALID_REQUEST					0x0223
+-#define IRDMA_AE_PCIE_ATOMIC_DISABLE					0x0224
+-#define IRDMA_AE_DDP_INVALID_MSN_GAP_IN_MSN				0x0301
+-#define IRDMA_AE_DDP_UBE_DDP_MESSAGE_TOO_LONG_FOR_AVAILABLE_BUFFER	0x0303
+-#define IRDMA_AE_DDP_UBE_INVALID_DDP_VERSION				0x0304
+-#define IRDMA_AE_DDP_UBE_INVALID_MO					0x0305
+-#define IRDMA_AE_DDP_UBE_INVALID_MSN_NO_BUFFER_AVAILABLE		0x0306
+-#define IRDMA_AE_DDP_UBE_INVALID_QN					0x0307
+-#define IRDMA_AE_DDP_NO_L_BIT						0x0308
+-#define IRDMA_AE_RDMAP_ROE_INVALID_RDMAP_VERSION			0x0311
+-#define IRDMA_AE_RDMAP_ROE_UNEXPECTED_OPCODE				0x0312
+-#define IRDMA_AE_ROE_INVALID_RDMA_READ_REQUEST				0x0313
+-#define IRDMA_AE_ROE_INVALID_RDMA_WRITE_OR_READ_RESP			0x0314
+-#define IRDMA_AE_ROCE_RSP_LENGTH_ERROR					0x0316
+-#define IRDMA_AE_ROCE_EMPTY_MCG						0x0380
+-#define IRDMA_AE_ROCE_BAD_MC_IP_ADDR					0x0381
+-#define IRDMA_AE_ROCE_BAD_MC_QPID					0x0382
+-#define IRDMA_AE_MCG_QP_PROTOCOL_MISMATCH				0x0383
+-#define IRDMA_AE_INVALID_ARP_ENTRY					0x0401
+-#define IRDMA_AE_INVALID_TCP_OPTION_RCVD				0x0402
+-#define IRDMA_AE_STALE_ARP_ENTRY					0x0403
+-#define IRDMA_AE_INVALID_AH_ENTRY					0x0406
+-#define IRDMA_AE_LLP_CLOSE_COMPLETE					0x0501
+-#define IRDMA_AE_LLP_CONNECTION_RESET					0x0502
+-#define IRDMA_AE_LLP_FIN_RECEIVED					0x0503
+-#define IRDMA_AE_LLP_RECEIVED_MARKER_AND_LENGTH_FIELDS_DONT_MATCH	0x0504
+-#define IRDMA_AE_LLP_RECEIVED_MPA_CRC_ERROR				0x0505
+-#define IRDMA_AE_LLP_SEGMENT_TOO_SMALL					0x0507
+-#define IRDMA_AE_LLP_SYN_RECEIVED					0x0508
+-#define IRDMA_AE_LLP_TERMINATE_RECEIVED					0x0509
+-#define IRDMA_AE_LLP_TOO_MANY_RETRIES					0x050a
+-#define IRDMA_AE_LLP_TOO_MANY_KEEPALIVE_RETRIES				0x050b
+-#define IRDMA_AE_LLP_DOUBT_REACHABILITY					0x050c
+-#define IRDMA_AE_LLP_CONNECTION_ESTABLISHED				0x050e
+-#define IRDMA_AE_LLP_TOO_MANY_RNRS					0x050f
+-#define IRDMA_AE_RESOURCE_EXHAUSTION					0x0520
+-#define IRDMA_AE_RESET_SENT						0x0601
+-#define IRDMA_AE_TERMINATE_SENT						0x0602
+-#define IRDMA_AE_RESET_NOT_SENT						0x0603
+-#define IRDMA_AE_LCE_QP_CATASTROPHIC					0x0700
+-#define IRDMA_AE_LCE_FUNCTION_CATASTROPHIC				0x0701
+-#define IRDMA_AE_LCE_CQ_CATASTROPHIC					0x0702
+-#define IRDMA_AE_REMOTE_QP_CATASTROPHIC					0x0703
+-#define IRDMA_AE_LOCAL_QP_CATASTROPHIC					0x0704
+-#define IRDMA_AE_RCE_QP_CATASTROPHIC					0x0705
+-#define IRDMA_AE_QP_SUSPEND_COMPLETE					0x0900
+-#define IRDMA_AE_CQP_DEFERRED_COMPLETE					0x0901
+-#define IRDMA_AE_ADAPTER_CATASTROPHIC					0x0B0B
+-
+ #define FLD_LS_64(dev, val, field)	\
+ 	(((u64)(val) << (dev)->hw_shifts[field ## _S]) & (dev)->hw_masks[field ## _M])
+ #define FLD_RS_64(dev, val, field)	\
+@@ -771,6 +670,10 @@ enum irdma_cqp_op_type {
+ #define IRDMA_CQPSQ_FWQE_USERFLCODE BIT_ULL(60)
+ #define IRDMA_CQPSQ_FWQE_FLUSHSQ BIT_ULL(61)
+ #define IRDMA_CQPSQ_FWQE_FLUSHRQ BIT_ULL(62)
++#define IRDMA_CQPSQ_FWQE_ERR_SQ_IDX_VALID BIT_ULL(42)
++#define IRDMA_CQPSQ_FWQE_ERR_SQ_IDX GENMASK_ULL(49, 32)
++#define IRDMA_CQPSQ_FWQE_ERR_RQ_IDX_VALID BIT_ULL(43)
++#define IRDMA_CQPSQ_FWQE_ERR_RQ_IDX GENMASK_ULL(46, 32)
+ #define IRDMA_CQPSQ_MAPT_PORT GENMASK_ULL(15, 0)
+ #define IRDMA_CQPSQ_MAPT_ADDPORT BIT_ULL(62)
+ #define IRDMA_CQPSQ_UPESD_SDCMD GENMASK_ULL(31, 0)
+diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
+index 4bc98fa2d3a5..6239205e09d0 100644
+--- a/drivers/infiniband/hw/irdma/hw.c
++++ b/drivers/infiniband/hw/irdma/hw.c
+@@ -135,76 +135,24 @@ static void irdma_process_ceq(struct irdma_pci_f *rf, struct irdma_ceq *ceq)
+ static void irdma_set_flush_fields(struct irdma_sc_qp *qp,
+ 				   struct irdma_aeqe_info *info)
+ {
++	struct qp_err_code qp_err;
 +
- #define IRDMAQPSQ_STAGRIGHTS GENMASK_ULL(52, 48)
- #define IRDMAQPSQ_VABASEDTO BIT_ULL(53)
- #define IRDMAQPSQ_MEMWINDOWTYPE BIT_ULL(54)
-@@ -991,6 +997,8 @@ enum irdma_cqp_op_type {
- 
- #define IRDMAQPSQ_BASEVA_TO_FBO IRDMA_CQPHC_QPCTX
- 
-+#define IRDMAQPSQ_REMOTE_ATOMICS_EN BIT_ULL(55)
+ 	qp->sq_flush_code = info->sq;
+ 	qp->rq_flush_code = info->rq;
+-	qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
+-
+-	switch (info->ae_id) {
+-	case IRDMA_AE_AMP_BOUNDS_VIOLATION:
+-	case IRDMA_AE_AMP_INVALID_STAG:
+-	case IRDMA_AE_AMP_RIGHTS_VIOLATION:
+-	case IRDMA_AE_AMP_UNALLOCATED_STAG:
+-	case IRDMA_AE_AMP_BAD_PD:
+-	case IRDMA_AE_AMP_BAD_QP:
+-	case IRDMA_AE_AMP_BAD_STAG_KEY:
+-	case IRDMA_AE_AMP_BAD_STAG_INDEX:
+-	case IRDMA_AE_AMP_TO_WRAP:
+-	case IRDMA_AE_PRIV_OPERATION_DENIED:
+-		qp->flush_code = FLUSH_PROT_ERR;
+-		qp->event_type = IRDMA_QP_EVENT_ACCESS_ERR;
+-		break;
+-	case IRDMA_AE_UDA_XMIT_BAD_PD:
+-	case IRDMA_AE_WQE_UNEXPECTED_OPCODE:
+-		qp->flush_code = FLUSH_LOC_QP_OP_ERR;
+-		qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
+-		break;
+-	case IRDMA_AE_UDA_XMIT_DGRAM_TOO_LONG:
+-	case IRDMA_AE_UDA_XMIT_DGRAM_TOO_SHORT:
+-	case IRDMA_AE_UDA_L4LEN_INVALID:
+-	case IRDMA_AE_DDP_UBE_INVALID_MO:
+-	case IRDMA_AE_DDP_UBE_DDP_MESSAGE_TOO_LONG_FOR_AVAILABLE_BUFFER:
+-		qp->flush_code = FLUSH_LOC_LEN_ERR;
+-		qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
+-		break;
+-	case IRDMA_AE_AMP_INVALIDATE_NO_REMOTE_ACCESS_RIGHTS:
+-	case IRDMA_AE_IB_REMOTE_ACCESS_ERROR:
+-		qp->flush_code = FLUSH_REM_ACCESS_ERR;
+-		qp->event_type = IRDMA_QP_EVENT_ACCESS_ERR;
+-		break;
+-	case IRDMA_AE_LLP_SEGMENT_TOO_SMALL:
+-	case IRDMA_AE_LLP_RECEIVED_MPA_CRC_ERROR:
+-	case IRDMA_AE_ROCE_RSP_LENGTH_ERROR:
+-	case IRDMA_AE_IB_REMOTE_OP_ERROR:
+-		qp->flush_code = FLUSH_REM_OP_ERR;
+-		qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
+-		break;
+-	case IRDMA_AE_LCE_QP_CATASTROPHIC:
+-		qp->flush_code = FLUSH_FATAL_ERR;
+-		qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
+-		break;
+-	case IRDMA_AE_IB_RREQ_AND_Q1_FULL:
+-		qp->flush_code = FLUSH_GENERAL_ERR;
+-		break;
+-	case IRDMA_AE_LLP_TOO_MANY_RETRIES:
+-		qp->flush_code = FLUSH_RETRY_EXC_ERR;
+-		qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
+-		break;
+-	case IRDMA_AE_AMP_MWBIND_INVALID_RIGHTS:
+-	case IRDMA_AE_AMP_MWBIND_BIND_DISABLED:
+-	case IRDMA_AE_AMP_MWBIND_INVALID_BOUNDS:
+-	case IRDMA_AE_AMP_MWBIND_VALID_STAG:
+-		qp->flush_code = FLUSH_MW_BIND_ERR;
+-		qp->event_type = IRDMA_QP_EVENT_ACCESS_ERR;
+-		break;
+-	case IRDMA_AE_IB_INVALID_REQUEST:
+-		qp->flush_code = FLUSH_REM_INV_REQ_ERR;
+-		qp->event_type = IRDMA_QP_EVENT_REQ_ERR;
+-		break;
+-	default:
+-		qp->flush_code = FLUSH_GENERAL_ERR;
+-		qp->event_type = IRDMA_QP_EVENT_CATASTROPHIC;
+-		break;
++	if (qp->qp_uk.uk_attrs->hw_rev >= IRDMA_GEN_3) {
++		if (info->sq) {
++			qp->err_sq_idx_valid = true;
++			qp->err_sq_idx = info->wqe_idx;
++		}
++		if (info->rq) {
++			qp->err_rq_idx_valid = true;
++			qp->err_rq_idx = info->wqe_idx;
++		}
+ 	}
 +
- #define IRDMAQPSQ_LOCSTAG GENMASK_ULL(31, 0)
- 
- #define IRDMAQPSQ_STAGKEY GENMASK_ULL(7, 0)
-diff --git a/drivers/infiniband/hw/irdma/ig3rdma_hw.c b/drivers/infiniband/hw/irdma/ig3rdma_hw.c
-index 2a3d7144c771..2e8bb475e22a 100644
---- a/drivers/infiniband/hw/irdma/ig3rdma_hw.c
-+++ b/drivers/infiniband/hw/irdma/ig3rdma_hw.c
-@@ -120,9 +120,6 @@ void ig3rdma_init_hw(struct irdma_sc_dev *dev)
- 	dev->hw_attrs.first_hw_vf_fpm_id = 0;
- 	dev->hw_attrs.max_hw_vf_fpm_id = IG3_MAX_APFS + IG3_MAX_AVFS;
- 	dev->hw_attrs.uk_attrs.feature_flags |= IRDMA_FEATURE_64_BYTE_CQE;
--	if (dev->feature_info[IRDMA_FTN_FLAGS] & IRDMA_ATOMICS_ALLOWED_BIT)
--		dev->hw_attrs.uk_attrs.feature_flags |=
--			IRDMA_FEATURE_ATOMIC_OPS;
- 	dev->hw_attrs.uk_attrs.feature_flags |= IRDMA_FEATURE_CQE_TIMESTAMPING;
- 
- 	dev->hw_attrs.uk_attrs.feature_flags |= IRDMA_FEATURE_SRQ;
-diff --git a/drivers/infiniband/hw/irdma/type.h b/drivers/infiniband/hw/irdma/type.h
-index fa1f7ea83186..8e7558cb7aa6 100644
---- a/drivers/infiniband/hw/irdma/type.h
-+++ b/drivers/infiniband/hw/irdma/type.h
-@@ -1087,6 +1087,7 @@ struct irdma_qp_host_ctx_info {
- 	u32 srq_id;
- 	u32 rem_endpoint_idx;
- 	u16 stats_idx;
-+	bool remote_atomics_en:1;
- 	bool srq_valid:1;
- 	bool tcp_info_valid:1;
- 	bool iwarp_info_valid:1;
-@@ -1127,6 +1128,7 @@ struct irdma_allocate_stag_info {
- 	bool use_hmc_fcn_index:1;
- 	bool use_pf_rid:1;
- 	bool all_memory:1;
-+	bool remote_atomics_en:1;
- 	u16 hmc_fcn_index;
- };
- 
-@@ -1155,6 +1157,7 @@ struct irdma_reg_ns_stag_info {
- 	u8 hmc_fcn_index;
- 	bool use_pf_rid:1;
- 	bool all_memory:1;
-+	bool remote_atomics_en:1;
- };
- 
- struct irdma_fast_reg_stag_info {
-@@ -1178,6 +1181,7 @@ struct irdma_fast_reg_stag_info {
- 	u8 hmc_fcn_index;
- 	bool use_pf_rid:1;
- 	bool defer_flag:1;
-+	bool remote_atomics_en:1;
- };
- 
- struct irdma_dealloc_stag_info {
-diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
-index e7ffde792781..fb944c49f864 100644
---- a/drivers/infiniband/hw/irdma/uk.c
-+++ b/drivers/infiniband/hw/irdma/uk.c
-@@ -337,6 +337,108 @@ int irdma_uk_rdma_write(struct irdma_qp_uk *qp, struct irdma_post_sq_info *info,
- 	return 0;
++	qp_err = irdma_ae_to_qp_err_code(info->ae_id);
++	qp->flush_code = qp_err.flush_code;
++	qp->event_type = qp_err.event_type;
  }
  
-+/**
-+ * irdma_uk_atomic_fetch_add - atomic fetch and add operation
-+ * @qp: hw qp ptr
-+ * @info: post sq information
-+ * @post_sq: flag to post sq
-+ */
-+int irdma_uk_atomic_fetch_add(struct irdma_qp_uk *qp,
-+			      struct irdma_post_sq_info *info, bool post_sq)
-+{
-+	struct irdma_atomic_fetch_add *op_info;
-+	u32 total_size = 0;
-+	u16 quanta = 2;
-+	u32 wqe_idx;
-+	__le64 *wqe;
-+	u64 hdr;
-+
-+	op_info = &info->op.atomic_fetch_add;
-+	wqe = irdma_qp_get_next_send_wqe(qp, &wqe_idx, quanta, total_size,
-+					 info);
-+	if (!wqe)
-+		return -ENOMEM;
-+
-+	set_64bit_val(wqe, 0, op_info->tagged_offset);
-+	set_64bit_val(wqe, 8,
-+		      FIELD_PREP(IRDMAQPSQ_STAG, op_info->stag));
-+	set_64bit_val(wqe, 16, op_info->remote_tagged_offset);
-+
-+	hdr = FIELD_PREP(IRDMAQPSQ_ADDFRAGCNT, 1) |
-+	      FIELD_PREP(IRDMAQPSQ_REMOTE_STAG, op_info->remote_stag) |
-+	      FIELD_PREP(IRDMAQPSQ_OPCODE, IRDMAQP_OP_ATOMIC_FETCH_ADD) |
-+	      FIELD_PREP(IRDMAQPSQ_READFENCE, info->read_fence) |
-+	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
-+	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
-+	      FIELD_PREP(IRDMAQPSQ_VALID, qp->swqe_polarity);
-+
-+	set_64bit_val(wqe, 32, op_info->fetch_add_data_bytes);
-+	set_64bit_val(wqe, 40, 0);
-+	set_64bit_val(wqe, 48, 0);
-+	set_64bit_val(wqe, 56,
-+		      FIELD_PREP(IRDMAQPSQ_VALID, qp->swqe_polarity));
-+
-+	dma_wmb(); /* make sure WQE is populated before valid bit is set */
-+
-+	set_64bit_val(wqe, 24, hdr);
-+
-+	if (post_sq)
-+		irdma_uk_qp_post_wr(qp);
-+
-+	return 0;
-+}
-+
-+/**
-+ * irdma_uk_atomic_compare_swap - atomic compare and swap operation
-+ * @qp: hw qp ptr
-+ * @info: post sq information
-+ * @post_sq: flag to post sq
-+ */
-+int irdma_uk_atomic_compare_swap(struct irdma_qp_uk *qp,
-+				 struct irdma_post_sq_info *info, bool post_sq)
-+{
-+	struct irdma_atomic_compare_swap *op_info;
-+	u32 total_size = 0;
-+	u16 quanta = 2;
-+	u32 wqe_idx;
-+	__le64 *wqe;
-+	u64 hdr;
-+
-+	op_info = &info->op.atomic_compare_swap;
-+	wqe = irdma_qp_get_next_send_wqe(qp, &wqe_idx, quanta, total_size,
-+					 info);
-+	if (!wqe)
-+		return -ENOMEM;
-+
-+	set_64bit_val(wqe, 0, op_info->tagged_offset);
-+	set_64bit_val(wqe, 8,
-+		      FIELD_PREP(IRDMAQPSQ_STAG, op_info->stag));
-+	set_64bit_val(wqe, 16, op_info->remote_tagged_offset);
-+
-+	hdr = FIELD_PREP(IRDMAQPSQ_ADDFRAGCNT, 1) |
-+	      FIELD_PREP(IRDMAQPSQ_REMOTE_STAG, op_info->remote_stag) |
-+	      FIELD_PREP(IRDMAQPSQ_OPCODE, IRDMAQP_OP_ATOMIC_COMPARE_SWAP_ADD) |
-+	      FIELD_PREP(IRDMAQPSQ_READFENCE, info->read_fence) |
-+	      FIELD_PREP(IRDMAQPSQ_LOCALFENCE, info->local_fence) |
-+	      FIELD_PREP(IRDMAQPSQ_SIGCOMPL, info->signaled) |
-+	      FIELD_PREP(IRDMAQPSQ_VALID, qp->swqe_polarity);
-+
-+	set_64bit_val(wqe, 32, op_info->swap_data_bytes);
-+	set_64bit_val(wqe, 40, op_info->compare_data_bytes);
-+	set_64bit_val(wqe, 48, 0);
-+	set_64bit_val(wqe, 56,
-+		      FIELD_PREP(IRDMAQPSQ_VALID, qp->swqe_polarity));
-+
-+	dma_wmb(); /* make sure WQE is populated before valid bit is set */
-+
-+	set_64bit_val(wqe, 24, hdr);
-+
-+	if (post_sq)
-+		irdma_uk_qp_post_wr(qp);
-+
-+	return 0;
-+}
-+
  /**
-  * irdma_uk_srq_post_receive - post a receive wqe to a shared rq
-  * @srq: shared rq ptr
+@@ -320,7 +268,6 @@ static void irdma_process_aeq(struct irdma_pci_f *rf)
+ 			if (info->ae_id != IRDMA_AE_QP_SUSPEND_COMPLETE)
+ 				iwqp->last_aeq = info->ae_id;
+ 			spin_unlock_irqrestore(&iwqp->lock, flags);
+-			ctx_info = &iwqp->ctx_info;
+ 		} else if (info->srq) {
+ 			if (info->ae_id != IRDMA_AE_SRQ_LIMIT)
+ 				continue;
+@@ -466,9 +413,11 @@ static void irdma_process_aeq(struct irdma_pci_f *rf)
+ 		default:
+ 			ibdev_err(&iwdev->ibdev, "abnormal ae_id = 0x%x bool qp=%d qp_id = %d, ae_src=%d\n",
+ 				  info->ae_id, info->qp, info->qp_cq_id, info->ae_src);
+-			if (rdma_protocol_roce(&iwdev->ibdev, 1)) {
+-				ctx_info->roce_info->err_rq_idx_valid = info->rq;
+-				if (info->rq) {
++			ctx_info = &iwqp->ctx_info;
++			if (rdma_protocol_roce(&iwqp->iwdev->ibdev, 1)) {
++				ctx_info->roce_info->err_rq_idx_valid =
++					ctx_info->srq_valid ? false : info->err_rq_idx_valid;
++				if (ctx_info->roce_info->err_rq_idx_valid) {
+ 					ctx_info->roce_info->err_rq_idx = info->wqe_idx;
+ 					irdma_sc_qp_setctx_roce(&iwqp->sc_qp, iwqp->host_ctx.va,
+ 								ctx_info);
+@@ -2832,7 +2781,9 @@ void irdma_flush_wqes(struct irdma_qp *iwqp, u32 flush_mask)
+ 	struct irdma_pci_f *rf = iwqp->iwdev->rf;
+ 	u8 flush_code = iwqp->sc_qp.flush_code;
+ 
+-	if (!(flush_mask & IRDMA_FLUSH_SQ) && !(flush_mask & IRDMA_FLUSH_RQ))
++	if ((!(flush_mask & IRDMA_FLUSH_SQ) &&
++	     !(flush_mask & IRDMA_FLUSH_RQ)) ||
++	    ((flush_mask & IRDMA_REFLUSH) && rf->rdma_ver >= IRDMA_GEN_3))
+ 		return;
+ 
+ 	/* Set flush info fields*/
+@@ -2845,6 +2796,10 @@ void irdma_flush_wqes(struct irdma_qp *iwqp, u32 flush_mask)
+ 	info.rq_major_code = IRDMA_FLUSH_MAJOR_ERR;
+ 	info.rq_minor_code = FLUSH_GENERAL_ERR;
+ 	info.userflushcode = true;
++	info.err_sq_idx_valid = iwqp->sc_qp.err_sq_idx_valid;
++	info.err_sq_idx = iwqp->sc_qp.err_sq_idx;
++	info.err_rq_idx_valid = iwqp->sc_qp.err_rq_idx_valid;
++	info.err_rq_idx = iwqp->sc_qp.err_rq_idx;
+ 
+ 	if (flush_mask & IRDMA_REFLUSH) {
+ 		if (info.sq)
+diff --git a/drivers/infiniband/hw/irdma/type.h b/drivers/infiniband/hw/irdma/type.h
+index 8e7558cb7aa6..665dc74cb10a 100644
+--- a/drivers/infiniband/hw/irdma/type.h
++++ b/drivers/infiniband/hw/irdma/type.h
+@@ -97,12 +97,6 @@ enum irdma_term_mpa_errors {
+ 	MPA_REQ_RSP = 0x04,
+ };
+ 
+-enum irdma_qp_event_type {
+-	IRDMA_QP_EVENT_CATASTROPHIC,
+-	IRDMA_QP_EVENT_ACCESS_ERR,
+-	IRDMA_QP_EVENT_REQ_ERR,
+-};
+-
+ enum irdma_hw_stats_index {
+ 	/* gen1 - 32-bit */
+ 	IRDMA_HW_STAT_INDEX_IP4RXDISCARD	= 0,
+@@ -565,6 +559,10 @@ struct irdma_sc_qp {
+ 	bool virtual_map:1;
+ 	bool flush_sq:1;
+ 	bool flush_rq:1;
++	bool err_sq_idx_valid:1;
++	bool err_rq_idx_valid:1;
++	u32 err_sq_idx;
++	u32 err_rq_idx;
+ 	bool sq_flush_code:1;
+ 	bool rq_flush_code:1;
+ 	u32 pkt_limit;
+@@ -1289,6 +1287,8 @@ struct irdma_cqp_manage_push_page_info {
+ };
+ 
+ struct irdma_qp_flush_info {
++	u32 err_sq_idx;
++	u32 err_rq_idx;
+ 	u16 sq_minor_code;
+ 	u16 sq_major_code;
+ 	u16 rq_minor_code;
+@@ -1299,6 +1299,8 @@ struct irdma_qp_flush_info {
+ 	bool rq:1;
+ 	bool userflushcode:1;
+ 	bool generate_ae:1;
++	bool err_sq_idx_valid:1;
++	bool err_rq_idx_valid:1;
+ };
+ 
+ struct irdma_gen_ae_info {
+diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
+index fb944c49f864..ce1ae10c30fc 100644
+--- a/drivers/infiniband/hw/irdma/uk.c
++++ b/drivers/infiniband/hw/irdma/uk.c
+@@ -1148,6 +1148,7 @@ int irdma_uk_cq_poll_cmpl(struct irdma_cq_uk *cq,
+ 	__le64 *cqe;
+ 	struct irdma_qp_uk *qp;
+ 	struct irdma_srq_uk *srq;
++	struct qp_err_code qp_err;
+ 	u8 is_srq;
+ 	struct irdma_ring *pring = NULL;
+ 	u32 wqe_idx;
+@@ -1233,16 +1234,35 @@ int irdma_uk_cq_poll_cmpl(struct irdma_cq_uk *cq,
+ 	if (info->error) {
+ 		info->major_err = FIELD_GET(IRDMA_CQ_MAJERR, qword3);
+ 		info->minor_err = FIELD_GET(IRDMA_CQ_MINERR, qword3);
+-		if (info->major_err == IRDMA_FLUSH_MAJOR_ERR) {
+-			info->comp_status = IRDMA_COMPL_STATUS_FLUSHED;
++		switch (info->major_err) {
++		case IRDMA_SRQFLUSH_RSVD_MAJOR_ERR:
++			qp_err = irdma_ae_to_qp_err_code(info->minor_err);
++			info->minor_err = qp_err.flush_code;
++			fallthrough;
++		case IRDMA_FLUSH_MAJOR_ERR:
+ 			/* Set the min error to standard flush error code for remaining cqes */
+ 			if (info->minor_err != FLUSH_GENERAL_ERR) {
+ 				qword3 &= ~IRDMA_CQ_MINERR;
+ 				qword3 |= FIELD_PREP(IRDMA_CQ_MINERR, FLUSH_GENERAL_ERR);
+ 				set_64bit_val(cqe, 24, qword3);
+ 			}
+-		} else {
+-			info->comp_status = IRDMA_COMPL_STATUS_UNKNOWN;
++			info->comp_status = IRDMA_COMPL_STATUS_FLUSHED;
++			break;
++		default:
++#define IRDMA_CIE_SIGNATURE 0xE
++#define IRDMA_CQMAJERR_HIGH_NIBBLE GENMASK(15, 12)
++			if (info->q_type == IRDMA_CQE_QTYPE_SQ &&
++			    qp->qp_type == IRDMA_QP_TYPE_ROCE_UD &&
++			    FIELD_GET(IRDMA_CQMAJERR_HIGH_NIBBLE, info->major_err)
++			    == IRDMA_CIE_SIGNATURE) {
++				info->error = 0;
++				info->major_err = 0;
++				info->minor_err = 0;
++				info->comp_status = IRDMA_COMPL_STATUS_SUCCESS;
++			} else {
++				info->comp_status = IRDMA_COMPL_STATUS_UNKNOWN;
++			}
++			break;
+ 		}
+ 	} else {
+ 		info->comp_status = IRDMA_COMPL_STATUS_SUCCESS;
+@@ -1251,7 +1271,6 @@ int irdma_uk_cq_poll_cmpl(struct irdma_cq_uk *cq,
+ 	get_64bit_val(cqe, 0, &qword0);
+ 	get_64bit_val(cqe, 16, &qword2);
+ 
+-	info->tcp_seq_num_rtt = (u32)FIELD_GET(IRDMACQ_TCPSEQNUMRTT, qword0);
+ 	info->qp_id = (u32)FIELD_GET(IRDMACQ_QPID, qword2);
+ 	info->ud_src_qpn = (u32)FIELD_GET(IRDMACQ_UDSRCQPN, qword2);
+ 
+@@ -1377,9 +1396,15 @@ int irdma_uk_cq_poll_cmpl(struct irdma_cq_uk *cq,
+ 	ret_code = 0;
+ 
+ exit:
+-	if (!ret_code && info->comp_status == IRDMA_COMPL_STATUS_FLUSHED)
++	if (!ret_code && info->comp_status == IRDMA_COMPL_STATUS_FLUSHED) {
+ 		if (pring && IRDMA_RING_MORE_WORK(*pring))
+-			move_cq_head = false;
++		/* Park CQ head during a flush to generate additional CQEs
++		 * from SW for all unprocessed WQEs. For GEN3 and beyond
++		 * FW will generate/flush these CQEs so move to the next CQE
++		 */
++			move_cq_head = qp->uk_attrs->hw_rev <= IRDMA_GEN_2 ?
++						false : true;
++	}
+ 
+ 	if (move_cq_head) {
+ 		IRDMA_RING_MOVE_HEAD_NOCHECK(cq->cq_ring);
 diff --git a/drivers/infiniband/hw/irdma/user.h b/drivers/infiniband/hw/irdma/user.h
-index cf324f1c539e..ed7ce98e887b 100644
+index ed7ce98e887b..ab57f689827a 100644
 --- a/drivers/infiniband/hw/irdma/user.h
 +++ b/drivers/infiniband/hw/irdma/user.h
-@@ -41,6 +41,8 @@
- #define IRDMA_OP_TYPE_INV_STAG			0x0a
- #define IRDMA_OP_TYPE_RDMA_READ_INV_STAG	0x0b
- #define IRDMA_OP_TYPE_NOP			0x0c
-+#define IRDMA_OP_TYPE_ATOMIC_FETCH_AND_ADD	0x0f
-+#define IRDMA_OP_TYPE_ATOMIC_COMPARE_AND_SWAP	0x11
+@@ -46,7 +46,109 @@
  #define IRDMA_OP_TYPE_REC	0x3e
  #define IRDMA_OP_TYPE_REC_IMM	0x3f
  
-@@ -205,6 +207,24 @@ struct irdma_bind_window {
- 	bool ena_writes:1;
- 	irdma_stag mw_stag;
- 	bool mem_window_type_1:1;
-+	bool remote_atomics_en:1;
+-#define IRDMA_FLUSH_MAJOR_ERR	1
++#define IRDMA_FLUSH_MAJOR_ERR 1
++#define IRDMA_SRQFLUSH_RSVD_MAJOR_ERR 0xfffe
++
++/* Async Events codes */
++#define IRDMA_AE_AMP_UNALLOCATED_STAG					0x0102
++#define IRDMA_AE_AMP_INVALID_STAG					0x0103
++#define IRDMA_AE_AMP_BAD_QP						0x0104
++#define IRDMA_AE_AMP_BAD_PD						0x0105
++#define IRDMA_AE_AMP_BAD_STAG_KEY					0x0106
++#define IRDMA_AE_AMP_BAD_STAG_INDEX					0x0107
++#define IRDMA_AE_AMP_BOUNDS_VIOLATION					0x0108
++#define IRDMA_AE_AMP_RIGHTS_VIOLATION					0x0109
++#define IRDMA_AE_AMP_TO_WRAP						0x010a
++#define IRDMA_AE_AMP_FASTREG_VALID_STAG					0x010c
++#define IRDMA_AE_AMP_FASTREG_MW_STAG					0x010d
++#define IRDMA_AE_AMP_FASTREG_INVALID_RIGHTS				0x010e
++#define IRDMA_AE_AMP_FASTREG_INVALID_LENGTH				0x0110
++#define IRDMA_AE_AMP_INVALIDATE_SHARED					0x0111
++#define IRDMA_AE_AMP_INVALIDATE_NO_REMOTE_ACCESS_RIGHTS			0x0112
++#define IRDMA_AE_AMP_INVALIDATE_MR_WITH_BOUND_WINDOWS			0x0113
++#define IRDMA_AE_AMP_MWBIND_VALID_STAG					0x0114
++#define IRDMA_AE_AMP_MWBIND_OF_MR_STAG					0x0115
++#define IRDMA_AE_AMP_MWBIND_TO_ZERO_BASED_STAG				0x0116
++#define IRDMA_AE_AMP_MWBIND_TO_MW_STAG					0x0117
++#define IRDMA_AE_AMP_MWBIND_INVALID_RIGHTS				0x0118
++#define IRDMA_AE_AMP_MWBIND_INVALID_BOUNDS				0x0119
++#define IRDMA_AE_AMP_MWBIND_TO_INVALID_PARENT				0x011a
++#define IRDMA_AE_AMP_MWBIND_BIND_DISABLED				0x011b
++#define IRDMA_AE_PRIV_OPERATION_DENIED					0x011c
++#define IRDMA_AE_AMP_INVALIDATE_TYPE1_MW				0x011d
++#define IRDMA_AE_AMP_MWBIND_ZERO_BASED_TYPE1_MW				0x011e
++#define IRDMA_AE_AMP_FASTREG_INVALID_PBL_HPS_CFG			0x011f
++#define IRDMA_AE_AMP_MWBIND_WRONG_TYPE					0x0120
++#define IRDMA_AE_AMP_FASTREG_PBLE_MISMATCH				0x0121
++#define IRDMA_AE_UDA_XMIT_DGRAM_TOO_LONG				0x0132
++#define IRDMA_AE_UDA_XMIT_BAD_PD					0x0133
++#define IRDMA_AE_UDA_XMIT_DGRAM_TOO_SHORT				0x0134
++#define IRDMA_AE_UDA_L4LEN_INVALID					0x0135
++#define IRDMA_AE_BAD_CLOSE						0x0201
++#define IRDMA_AE_RDMAP_ROE_BAD_LLP_CLOSE				0x0202
++#define IRDMA_AE_CQ_OPERATION_ERROR					0x0203
++#define IRDMA_AE_RDMA_READ_WHILE_ORD_ZERO				0x0205
++#define IRDMA_AE_STAG_ZERO_INVALID					0x0206
++#define IRDMA_AE_IB_RREQ_AND_Q1_FULL					0x0207
++#define IRDMA_AE_IB_INVALID_REQUEST					0x0208
++#define IRDMA_AE_SRQ_LIMIT						0x0209
++#define IRDMA_AE_WQE_UNEXPECTED_OPCODE					0x020a
++#define IRDMA_AE_WQE_INVALID_PARAMETER					0x020b
++#define IRDMA_AE_WQE_INVALID_FRAG_DATA					0x020c
++#define IRDMA_AE_IB_REMOTE_ACCESS_ERROR					0x020d
++#define IRDMA_AE_IB_REMOTE_OP_ERROR					0x020e
++#define IRDMA_AE_SRQ_CATASTROPHIC_ERROR					0x020f
++#define IRDMA_AE_WQE_LSMM_TOO_LONG					0x0220
++#define IRDMA_AE_ATOMIC_ALIGNMENT					0x0221
++#define IRDMA_AE_ATOMIC_MASK						0x0222
++#define IRDMA_AE_INVALID_REQUEST					0x0223
++#define IRDMA_AE_PCIE_ATOMIC_DISABLE					0x0224
++#define IRDMA_AE_DDP_INVALID_MSN_GAP_IN_MSN				0x0301
++#define IRDMA_AE_DDP_UBE_DDP_MESSAGE_TOO_LONG_FOR_AVAILABLE_BUFFER	0x0303
++#define IRDMA_AE_DDP_UBE_INVALID_DDP_VERSION				0x0304
++#define IRDMA_AE_DDP_UBE_INVALID_MO					0x0305
++#define IRDMA_AE_DDP_UBE_INVALID_MSN_NO_BUFFER_AVAILABLE		0x0306
++#define IRDMA_AE_DDP_UBE_INVALID_QN					0x0307
++#define IRDMA_AE_DDP_NO_L_BIT						0x0308
++#define IRDMA_AE_RDMAP_ROE_INVALID_RDMAP_VERSION			0x0311
++#define IRDMA_AE_RDMAP_ROE_UNEXPECTED_OPCODE				0x0312
++#define IRDMA_AE_ROE_INVALID_RDMA_READ_REQUEST				0x0313
++#define IRDMA_AE_ROE_INVALID_RDMA_WRITE_OR_READ_RESP			0x0314
++#define IRDMA_AE_ROCE_RSP_LENGTH_ERROR					0x0316
++#define IRDMA_AE_ROCE_EMPTY_MCG						0x0380
++#define IRDMA_AE_ROCE_BAD_MC_IP_ADDR					0x0381
++#define IRDMA_AE_ROCE_BAD_MC_QPID					0x0382
++#define IRDMA_AE_MCG_QP_PROTOCOL_MISMATCH				0x0383
++#define IRDMA_AE_INVALID_ARP_ENTRY					0x0401
++#define IRDMA_AE_INVALID_TCP_OPTION_RCVD				0x0402
++#define IRDMA_AE_STALE_ARP_ENTRY					0x0403
++#define IRDMA_AE_INVALID_AH_ENTRY					0x0406
++#define IRDMA_AE_LLP_CLOSE_COMPLETE					0x0501
++#define IRDMA_AE_LLP_CONNECTION_RESET					0x0502
++#define IRDMA_AE_LLP_FIN_RECEIVED					0x0503
++#define IRDMA_AE_LLP_RECEIVED_MARKER_AND_LENGTH_FIELDS_DONT_MATCH	0x0504
++#define IRDMA_AE_LLP_RECEIVED_MPA_CRC_ERROR				0x0505
++#define IRDMA_AE_LLP_SEGMENT_TOO_SMALL					0x0507
++#define IRDMA_AE_LLP_SYN_RECEIVED					0x0508
++#define IRDMA_AE_LLP_TERMINATE_RECEIVED					0x0509
++#define IRDMA_AE_LLP_TOO_MANY_RETRIES					0x050a
++#define IRDMA_AE_LLP_TOO_MANY_KEEPALIVE_RETRIES				0x050b
++#define IRDMA_AE_LLP_DOUBT_REACHABILITY					0x050c
++#define IRDMA_AE_LLP_CONNECTION_ESTABLISHED				0x050e
++#define IRDMA_AE_LLP_TOO_MANY_RNRS					0x050f
++#define IRDMA_AE_RESOURCE_EXHAUSTION					0x0520
++#define IRDMA_AE_RESET_SENT						0x0601
++#define IRDMA_AE_TERMINATE_SENT						0x0602
++#define IRDMA_AE_RESET_NOT_SENT						0x0603
++#define IRDMA_AE_LCE_QP_CATASTROPHIC					0x0700
++#define IRDMA_AE_LCE_FUNCTION_CATASTROPHIC				0x0701
++#define IRDMA_AE_LCE_CQ_CATASTROPHIC					0x0702
++#define IRDMA_AE_REMOTE_QP_CATASTROPHIC					0x0703
++#define IRDMA_AE_LOCAL_QP_CATASTROPHIC					0x0704
++#define IRDMA_AE_RCE_QP_CATASTROPHIC					0x0705
++#define IRDMA_AE_QP_SUSPEND_COMPLETE					0x0900
++#define IRDMA_AE_CQP_DEFERRED_COMPLETE					0x0901
++#define IRDMA_AE_ADAPTER_CATASTROPHIC					0x0B0B
+ 
+ enum irdma_device_caps_const {
+ 	IRDMA_WQE_SIZE =			4,
+@@ -109,6 +211,13 @@ enum irdma_flush_opcode {
+ 	FLUSH_RETRY_EXC_ERR,
+ 	FLUSH_MW_BIND_ERR,
+ 	FLUSH_REM_INV_REQ_ERR,
++	FLUSH_RNR_RETRY_EXC_ERR,
 +};
 +
-+struct irdma_atomic_fetch_add {
-+	u64 tagged_offset;
-+	u64 remote_tagged_offset;
-+	u64 fetch_add_data_bytes;
-+	u32 stag;
-+	u32 remote_stag;
-+};
-+
-+struct irdma_atomic_compare_swap {
-+	u64 tagged_offset;
-+	u64 remote_tagged_offset;
-+	u64 swap_data_bytes;
-+	u64 compare_data_bytes;
-+	u32 stag;
-+	u32 remote_stag;
++enum irdma_qp_event_type {
++	IRDMA_QP_EVENT_CATASTROPHIC,
++	IRDMA_QP_EVENT_ACCESS_ERR,
++	IRDMA_QP_EVENT_REQ_ERR,
  };
  
- struct irdma_inv_local_stag {
-@@ -223,6 +243,7 @@ struct irdma_post_sq_info {
- 	bool report_rtt:1;
- 	bool udp_hdr:1;
- 	bool defer_flag:1;
-+	bool remote_atomic_en:1;
- 	u32 imm_data;
- 	u32 stag_to_inv;
- 	union {
-@@ -231,6 +252,8 @@ struct irdma_post_sq_info {
- 		struct irdma_rdma_read rdma_read;
- 		struct irdma_bind_window bind_window;
- 		struct irdma_inv_local_stag inv_local_stag;
-+		struct irdma_atomic_fetch_add atomic_fetch_add;
-+		struct irdma_atomic_compare_swap atomic_compare_swap;
- 	} op;
- };
- 
-@@ -259,6 +282,10 @@ struct irdma_cq_poll_info {
+ enum irdma_cmpl_status {
+@@ -282,6 +391,11 @@ struct irdma_cq_poll_info {
  	bool imm_valid:1;
  };
  
-+int irdma_uk_atomic_compare_swap(struct irdma_qp_uk *qp,
-+				 struct irdma_post_sq_info *info, bool post_sq);
-+int irdma_uk_atomic_fetch_add(struct irdma_qp_uk *qp,
-+			      struct irdma_post_sq_info *info, bool post_sq);
- int irdma_uk_inline_rdma_write(struct irdma_qp_uk *qp,
- 			       struct irdma_post_sq_info *info, bool post_sq);
- int irdma_uk_inline_send(struct irdma_qp_uk *qp,
++struct qp_err_code {
++	enum irdma_flush_opcode flush_code;
++	enum irdma_qp_event_type event_type;
++};
++
+ int irdma_uk_atomic_compare_swap(struct irdma_qp_uk *qp,
+ 				 struct irdma_post_sq_info *info, bool post_sq);
+ int irdma_uk_atomic_fetch_add(struct irdma_qp_uk *qp,
+@@ -479,4 +593,82 @@ int irdma_get_rqdepth(struct irdma_uk_attrs *uk_attrs, u32 rq_size, u8 shift,
+ int irdma_get_srqdepth(struct irdma_uk_attrs *uk_attrs, u32 srq_size, u8 shift,
+ 		       u32 *srqdepth);
+ void irdma_clr_wqes(struct irdma_qp_uk *qp, u32 qp_wqe_idx);
++
++static inline struct qp_err_code irdma_ae_to_qp_err_code(u16 ae_id)
++{
++	struct qp_err_code qp_err = {};
++
++	switch (ae_id) {
++	case IRDMA_AE_AMP_BOUNDS_VIOLATION:
++	case IRDMA_AE_AMP_INVALID_STAG:
++	case IRDMA_AE_AMP_RIGHTS_VIOLATION:
++	case IRDMA_AE_AMP_UNALLOCATED_STAG:
++	case IRDMA_AE_AMP_BAD_PD:
++	case IRDMA_AE_AMP_BAD_QP:
++	case IRDMA_AE_AMP_BAD_STAG_KEY:
++	case IRDMA_AE_AMP_BAD_STAG_INDEX:
++	case IRDMA_AE_AMP_TO_WRAP:
++	case IRDMA_AE_PRIV_OPERATION_DENIED:
++		qp_err.flush_code = FLUSH_PROT_ERR;
++		qp_err.event_type = IRDMA_QP_EVENT_ACCESS_ERR;
++		break;
++	case IRDMA_AE_UDA_XMIT_BAD_PD:
++	case IRDMA_AE_WQE_UNEXPECTED_OPCODE:
++		qp_err.flush_code = FLUSH_LOC_QP_OP_ERR;
++		qp_err.event_type = IRDMA_QP_EVENT_CATASTROPHIC;
++		break;
++	case IRDMA_AE_UDA_XMIT_DGRAM_TOO_SHORT:
++	case IRDMA_AE_UDA_XMIT_DGRAM_TOO_LONG:
++	case IRDMA_AE_UDA_L4LEN_INVALID:
++	case IRDMA_AE_DDP_UBE_INVALID_MO:
++	case IRDMA_AE_DDP_UBE_DDP_MESSAGE_TOO_LONG_FOR_AVAILABLE_BUFFER:
++		qp_err.flush_code = FLUSH_LOC_LEN_ERR;
++		qp_err.event_type = IRDMA_QP_EVENT_CATASTROPHIC;
++		break;
++	case IRDMA_AE_AMP_INVALIDATE_NO_REMOTE_ACCESS_RIGHTS:
++	case IRDMA_AE_IB_REMOTE_ACCESS_ERROR:
++		qp_err.flush_code = FLUSH_REM_ACCESS_ERR;
++		qp_err.event_type = IRDMA_QP_EVENT_ACCESS_ERR;
++		break;
++	case IRDMA_AE_AMP_MWBIND_INVALID_RIGHTS:
++	case IRDMA_AE_AMP_MWBIND_BIND_DISABLED:
++	case IRDMA_AE_AMP_MWBIND_INVALID_BOUNDS:
++	case IRDMA_AE_AMP_MWBIND_VALID_STAG:
++		qp_err.flush_code = FLUSH_MW_BIND_ERR;
++		qp_err.event_type = IRDMA_QP_EVENT_ACCESS_ERR;
++		break;
++	case IRDMA_AE_LLP_TOO_MANY_RETRIES:
++		qp_err.flush_code = FLUSH_RETRY_EXC_ERR;
++		qp_err.event_type = IRDMA_QP_EVENT_CATASTROPHIC;
++		break;
++	case IRDMA_AE_IB_INVALID_REQUEST:
++		qp_err.flush_code = FLUSH_REM_INV_REQ_ERR;
++		qp_err.event_type = IRDMA_QP_EVENT_REQ_ERR;
++		break;
++	case IRDMA_AE_LLP_SEGMENT_TOO_SMALL:
++	case IRDMA_AE_LLP_RECEIVED_MPA_CRC_ERROR:
++	case IRDMA_AE_ROCE_RSP_LENGTH_ERROR:
++	case IRDMA_AE_IB_REMOTE_OP_ERROR:
++		qp_err.flush_code = FLUSH_REM_OP_ERR;
++		qp_err.event_type = IRDMA_QP_EVENT_CATASTROPHIC;
++		break;
++	case IRDMA_AE_LLP_TOO_MANY_RNRS:
++		qp_err.flush_code = FLUSH_RNR_RETRY_EXC_ERR;
++		qp_err.event_type = IRDMA_QP_EVENT_CATASTROPHIC;
++		break;
++	case IRDMA_AE_LCE_QP_CATASTROPHIC:
++	case IRDMA_AE_REMOTE_QP_CATASTROPHIC:
++	case IRDMA_AE_LOCAL_QP_CATASTROPHIC:
++	case IRDMA_AE_RCE_QP_CATASTROPHIC:
++		qp_err.flush_code = FLUSH_FATAL_ERR;
++		qp_err.event_type = IRDMA_QP_EVENT_CATASTROPHIC;
++		break;
++	default:
++		qp_err.flush_code = FLUSH_GENERAL_ERR;
++		qp_err.event_type = IRDMA_QP_EVENT_CATASTROPHIC;
++		break;
++	}
++
++	return qp_err;
++}
+ #endif /* IRDMA_USER_H */
 diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index fc5b9b629a51..d144d0a7fd3e 100644
+index d144d0a7fd3e..495fa34b77af 100644
 --- a/drivers/infiniband/hw/irdma/verbs.c
 +++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -60,6 +60,11 @@ static int irdma_query_device(struct ib_device *ibdev,
- 	props->max_srq = rf->max_srq - rf->used_srqs;
- 	props->max_srq_wr = IRDMA_MAX_SRQ_WRS;
- 	props->max_srq_sge = hw_attrs->uk_attrs.max_hw_wq_frags;
-+	if (hw_attrs->uk_attrs.feature_flags & IRDMA_FEATURE_ATOMIC_OPS)
-+		props->atomic_cap = IB_ATOMIC_HCA;
-+	else
-+		props->atomic_cap = IB_ATOMIC_NONE;
-+	props->masked_atomic_cap = props->atomic_cap;
- 	if (hw_attrs->uk_attrs.hw_rev >= IRDMA_GEN_3) {
- #define HCA_CORE_CLOCK_KHZ 1000000UL
- 		props->timestamp_mask = GENMASK(31, 0);
-@@ -1145,6 +1150,8 @@ static int irdma_get_ib_acc_flags(struct irdma_qp *iwqp)
- 			acc_flags |= IB_ACCESS_REMOTE_READ;
- 		if (iwqp->roce_info.bind_en)
- 			acc_flags |= IB_ACCESS_MW_BIND;
-+		if (iwqp->ctx_info.remote_atomics_en)
-+			acc_flags |= IB_ACCESS_REMOTE_ATOMIC;
+@@ -542,10 +542,10 @@ static int irdma_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 
+ 	iwqp->sc_qp.qp_uk.destroy_pending = true;
+ 
+-	if (iwqp->iwarp_state == IRDMA_QP_STATE_RTS)
++	if (iwqp->iwarp_state >= IRDMA_QP_STATE_IDLE)
+ 		irdma_modify_qp_to_err(&iwqp->sc_qp);
+ 
+-	if (!iwqp->user_mode)
++	if (iwdev->rf->rdma_ver <= IRDMA_GEN_2 && !iwqp->user_mode)
+ 		cancel_delayed_work_sync(&iwqp->dwork_flush);
+ 
+ 	if (!iwqp->user_mode) {
+@@ -4110,9 +4110,11 @@ static int irdma_post_send(struct ib_qp *ibqp,
+ 		spin_unlock_irqrestore(&iwqp->lock, flags);
  	} else {
- 		if (iwqp->iwarp_info.wr_rdresp_en) {
- 			acc_flags |= IB_ACCESS_LOCAL_WRITE;
-@@ -1152,6 +1159,8 @@ static int irdma_get_ib_acc_flags(struct irdma_qp *iwqp)
- 		}
- 		if (iwqp->iwarp_info.rd_en)
- 			acc_flags |= IB_ACCESS_REMOTE_READ;
-+		if (iwqp->ctx_info.remote_atomics_en)
-+			acc_flags |= IB_ACCESS_REMOTE_ATOMIC;
+ 		spin_unlock_irqrestore(&iwqp->lock, flags);
+-		mod_delayed_work(iwqp->iwdev->cleanup_wq, &iwqp->dwork_flush,
++		mod_delayed_work(iwqp->iwdev->cleanup_wq,
++				 &iwqp->dwork_flush,
+ 				 msecs_to_jiffies(IRDMA_FLUSH_DELAY_MS));
  	}
- 	return acc_flags;
- }
-@@ -1448,6 +1457,8 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 			roce_info->wr_rdresp_en = true;
- 		if (attr->qp_access_flags & IB_ACCESS_REMOTE_READ)
- 			roce_info->rd_en = true;
-+		if (attr->qp_access_flags & IB_ACCESS_REMOTE_ATOMIC)
-+			ctx_info->remote_atomics_en = true;
- 	}
++
+ 	if (err)
+ 		*bad_wr = ib_wr;
  
- 	wait_event(iwqp->mod_qp_waitq, !atomic_read(&iwqp->hw_mod_qp_pend));
-@@ -1778,6 +1789,8 @@ int irdma_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr, int attr_mask,
- 			offload_info->wr_rdresp_en = true;
- 		if (attr->qp_access_flags & IB_ACCESS_REMOTE_READ)
- 			offload_info->rd_en = true;
-+		if (attr->qp_access_flags & IB_ACCESS_REMOTE_ATOMIC)
-+			ctx_info->remote_atomics_en = true;
- 	}
- 
- 	if (ctx_info->iwarp_info_valid) {
-@@ -3250,6 +3263,7 @@ static int irdma_hwreg_mr(struct irdma_device *iwdev, struct irdma_mr *iwmr,
- 	stag_info->total_len = iwmr->len;
- 	stag_info->access_rights = irdma_get_mr_access(access,
- 						       iwdev->rf->sc_dev.hw_attrs.uk_attrs.hw_rev);
-+	stag_info->remote_atomics_en = (access & IB_ACCESS_REMOTE_ATOMIC) ? 1 : 0;
- 	stag_info->pd_id = iwpd->sc_pd.pd_id;
- 	stag_info->all_memory = pd->flags & IB_PD_UNSAFE_GLOBAL_RKEY;
- 	if (stag_info->access_rights & IRDMA_ACCESS_FLAGS_ZERO_BASED)
-@@ -3940,6 +3954,30 @@ static int irdma_post_send(struct ib_qp *ibqp,
- 		if (ib_wr->send_flags & IB_SEND_FENCE)
- 			info.read_fence = true;
- 		switch (ib_wr->opcode) {
-+		case IB_WR_ATOMIC_CMP_AND_SWP:
-+			info.op_type = IRDMA_OP_TYPE_ATOMIC_COMPARE_AND_SWAP;
-+			info.op.atomic_compare_swap.tagged_offset = ib_wr->sg_list[0].addr;
-+			info.op.atomic_compare_swap.remote_tagged_offset =
-+				atomic_wr(ib_wr)->remote_addr;
-+			info.op.atomic_compare_swap.swap_data_bytes = atomic_wr(ib_wr)->swap;
-+			info.op.atomic_compare_swap.compare_data_bytes =
-+				atomic_wr(ib_wr)->compare_add;
-+			info.op.atomic_compare_swap.stag = ib_wr->sg_list[0].lkey;
-+			info.op.atomic_compare_swap.remote_stag = atomic_wr(ib_wr)->rkey;
-+			err = irdma_uk_atomic_compare_swap(ukqp, &info, false);
-+			break;
-+		case IB_WR_ATOMIC_FETCH_AND_ADD:
-+			info.op_type = IRDMA_OP_TYPE_ATOMIC_FETCH_AND_ADD;
-+			info.op.atomic_fetch_add.tagged_offset = ib_wr->sg_list[0].addr;
-+			info.op.atomic_fetch_add.remote_tagged_offset =
-+				atomic_wr(ib_wr)->remote_addr;
-+			info.op.atomic_fetch_add.fetch_add_data_bytes =
-+				atomic_wr(ib_wr)->compare_add;
-+			info.op.atomic_fetch_add.stag = ib_wr->sg_list[0].lkey;
-+			info.op.atomic_fetch_add.remote_stag =
-+				atomic_wr(ib_wr)->rkey;
-+			err = irdma_uk_atomic_fetch_add(ukqp, &info, false);
-+			break;
- 		case IB_WR_SEND_WITH_IMM:
- 			if (ukqp->qp_caps & IRDMA_SEND_WITH_IMM) {
- 				info.imm_data_valid = true;
-diff --git a/drivers/infiniband/hw/irdma/verbs.h b/drivers/infiniband/hw/irdma/verbs.h
-index 2817122ba989..49972b0600a3 100644
---- a/drivers/infiniband/hw/irdma/verbs.h
-+++ b/drivers/infiniband/hw/irdma/verbs.h
-@@ -284,6 +284,12 @@ static inline void set_ib_wc_op_sq(struct irdma_cq_poll_info *cq_poll_info,
- 	case IRDMA_OP_TYPE_FAST_REG_NSMR:
- 		entry->opcode = IB_WC_REG_MR;
- 		break;
-+	case IRDMA_OP_TYPE_ATOMIC_COMPARE_AND_SWAP:
-+		entry->opcode = IB_WC_COMP_SWAP;
-+		break;
-+	case IRDMA_OP_TYPE_ATOMIC_FETCH_AND_ADD:
-+		entry->opcode = IB_WC_FETCH_ADD;
-+		break;
- 	case IRDMA_OP_TYPE_INV_STAG:
- 		entry->opcode = IB_WC_LOCAL_INV;
- 		break;
+@@ -4236,6 +4238,8 @@ static enum ib_wc_status irdma_flush_err_to_ib_wc_status(enum irdma_flush_opcode
+ 		return IB_WC_MW_BIND_ERR;
+ 	case FLUSH_REM_INV_REQ_ERR:
+ 		return IB_WC_REM_INV_REQ_ERR;
++	case FLUSH_RNR_RETRY_EXC_ERR:
++		return IB_WC_RNR_RETRY_EXC_ERR;
+ 	case FLUSH_FATAL_ERR:
+ 	default:
+ 		return IB_WC_FATAL_ERR;
 -- 
 2.37.3
 
