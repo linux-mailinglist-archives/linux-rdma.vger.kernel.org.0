@@ -1,65 +1,65 @@
-Return-Path: <linux-rdma+bounces-7570-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7571-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A879A2D1E4
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 01:08:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E8001A2D1E8
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 01:16:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D63F188F075
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 00:08:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57EC9188DD83
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 00:16:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D3A15C0;
-	Sat,  8 Feb 2025 00:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62ABDDDAD;
+	Sat,  8 Feb 2025 00:16:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H2/P+Bt9"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KvdsdY8y"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8624A23;
-	Sat,  8 Feb 2025 00:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D38E415C0;
+	Sat,  8 Feb 2025 00:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738973320; cv=none; b=N66x51xeHdu0iq2jd2IpxgdPucg2DBrbSynSoeb0JaEuHa6pGDRL6e+5pZcCTtgJ6xF+E6br++pt4qsdwJ+C4t0hIE+jJX7uetB3tB3q8qccwX8wK1DfiRx88Dw/nuJAQp5TmTpBAs1sGDGyK9NHqQyQgNY1aUjU4/a0HrneScA=
+	t=1738973777; cv=none; b=D/fbi5Nb6F9/8NR5dOyDUYTOIcqHs38A199mzA46gwlkQlpeFhdfm4uImD0wF8+Yn8JM1W7gmhTqw/0FTgmDl8RO8ufeQJMfMtrhjxhjW7kJ0J5sd9giSiD+kIZQ6Ox8sfBHh+T8bdooR47rBekFBZWrFYwOe9gspbDW14qVjQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738973320; c=relaxed/simple;
-	bh=CUrOTwdhAkpu9/t90RdwCXpIFBTgN2oISaf2ABYnLZs=;
+	s=arc-20240116; t=1738973777; c=relaxed/simple;
+	bh=GHUqBmHYBFAJQSuU2osCWImKdW75FVh2KEJlrFYl7vk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tWfmL1lmMfTIsZnCGMhINV7nXiDTZfsOWISI459/PIe3usBJl8RT1eKACcPnwvvSNSDvXf7E82J6ubl3juLge5ry8tsVmKgiLlChY/pnIZmI8SVr9YANjrukMhkK5DnCgpcGAhI2dac9awdgJ2sq/3+zCXgXHyJkqrGeDIQJkTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H2/P+Bt9; arc=none smtp.client-ip=192.198.163.7
+	 In-Reply-To:Content-Type; b=SO8cZoc9Iraht7u0AM4yK/tIi9u2Q0i7IRq2C2ITbTQ8DSIH37JdIBGtuACCSEaLx2vb/d3k+LZgTtgt8MsChSah6s0nkgsGhCJ8eA5qfjwDmqLcKZdXy/Zdcle3yhAUsAKIOUxy2f702n/R8FjfSgwtDeTcuf9Cc/MF9rS0PJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KvdsdY8y; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738973318; x=1770509318;
+  t=1738973775; x=1770509775;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=CUrOTwdhAkpu9/t90RdwCXpIFBTgN2oISaf2ABYnLZs=;
-  b=H2/P+Bt9dzJmHVaZjTouMHmVTz8ZZnRKxItGx0aNk7QPydKRY1/CI2hC
-   5BmBSEOcD52ovz7Xb3Ca8yM6OTXWSD9M24Ef9DwbtpjxnI6qKdoW2XOW1
-   W1SKwjn9wior7db8R1M0T+3uBl+f2vFUftdmbieUVv5DCaLPAEtvSyTx8
-   1qAO3KtEPZPJWClKGH2mCHTuUxuu5Sd+pTz5iXcetH7hRNPDUVE8elwNo
-   bZsggj2uKefVoQRwxL2acHpCEq9czVV8hRNm/FFOfJccmqSrHOWIbhFTz
-   1h7pmQV8BNNLAHpdwfukvlT3SqKLlMa6os6J4iIvdY2mqH/WkmjH/VYIW
-   g==;
-X-CSE-ConnectionGUID: kwG0BV1rR3CtBunBkaF+iA==
-X-CSE-MsgGUID: e/FFpJlHQe6qO1PGYO8eQg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="64983033"
+  bh=GHUqBmHYBFAJQSuU2osCWImKdW75FVh2KEJlrFYl7vk=;
+  b=KvdsdY8yJh6Cg4hPoTZi2A9K0ydrEkCfGkavCWVQc+O348mImB3TMjwM
+   NU/tuIxhVnPot8XbmAgODkgr2r/mOm93CyDFQsWj60vLKes7OXiA1Wasd
+   9IB1SJXD+ZI52gVWVy4GlCc75mBrT8m79713nbpZERQeNV/ADG7LNGly5
+   JZ0GymcvWpvS7x2gevDc5utLyyIUgvYotE3c4TPvOoIzQ7n+D04s4OoE2
+   iZ/jTAk9j7Hq/3GDYydOoBbERTVTXJKC0sPJiYNcQtC2SDcn/uEW8p1Uq
+   2dI5xtZVf1UzpiJfqTxafDuOXT/F3KH4rSQNKM24aMSQcXqR6v0pi9jXH
+   Q==;
+X-CSE-ConnectionGUID: +LELIfAuSfWkrWU+sZQcLw==
+X-CSE-MsgGUID: y8+WLlpJREGaupw/bZ2TyA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="62102948"
 X-IronPort-AV: E=Sophos;i="6.13,268,1732608000"; 
-   d="scan'208";a="64983033"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 16:08:37 -0800
-X-CSE-ConnectionGUID: jgys5A7uSEWRHEFcOI3MeA==
-X-CSE-MsgGUID: iALZ9CDzRrOUnM2Kw9NCHA==
+   d="scan'208";a="62102948"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 16:16:15 -0800
+X-CSE-ConnectionGUID: eFfIv1GhRSqeOZi5SdeTYw==
+X-CSE-MsgGUID: suWQrQnlRxSo/FYDvL4BWw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="112095641"
+   d="scan'208";a="111511641"
 Received: from agladkov-desk.ger.corp.intel.com (HELO [10.125.111.68]) ([10.125.111.68])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 16:08:35 -0800
-Message-ID: <3bcc562e-fae6-4237-9241-3ed7436ad469@intel.com>
-Date: Fri, 7 Feb 2025 17:08:34 -0700
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 16:16:13 -0800
+Message-ID: <4c636d2a-939b-47a9-8e60-e9e78d757fe3@intel.com>
+Date: Fri, 7 Feb 2025 17:16:12 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -67,8 +67,8 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 01/10] fwctl: Add basic structure for a class subsystem
- with a cdev
+Subject: Re: [PATCH v4 02/10] fwctl: Basic ioctl dispatch for the character
+ device
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>,
  Aron Silverton <aron.silverton@oracle.com>,
@@ -82,378 +82,407 @@ Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>,
  linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
  Saeed Mahameed <saeedm@nvidia.com>, "Nelson, Shannon"
  <shannon.nelson@amd.com>
-References: <1-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
+References: <2-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
 Content-Language: en-US
 From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <1-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
+In-Reply-To: <2-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
 
 On 2/6/25 5:13 PM, Jason Gunthorpe wrote:
-> Create the class, character device and functions for a fwctl driver to
-> un/register to the subsystem.
+> Each file descriptor gets a chunk of per-FD driver specific context that
+> allows the driver to attach a device specific struct to. The core code
+> takes care of the memory lifetime for this structure.
 > 
-> A typical fwctl driver has a sysfs presence like:
+> The ioctl dispatch and design is based on what was built for iommufd. The
+> ioctls have a struct which has a combined in/out behavior with a typical
+> 'zero pad' scheme for future extension and backwards compatibility.
 > 
-> $ ls -l /dev/fwctl/fwctl0
-> crw------- 1 root root 250, 0 Apr 25 19:16 /dev/fwctl/fwctl0
+> Like iommufd some shared logic does most of the ioctl marshalling and
+s/marshalling/marshaling/
+
+> compatibility work and tables diatches to some function pointers for
+
+s/diatches/dispatches/
+
+> each unique iotcl.
+
+s/iotcl/ioctl/
+
 > 
-> $ ls /sys/class/fwctl/fwctl0
-> dev  device  power  subsystem  uevent
+> This approach has proven to work quite well in the iommufd and rdma
+> subsystems.
 > 
-> $ ls /sys/class/fwctl/fwctl0/device/infiniband/
-> ibp0s10f0
-> 
-> $ ls /sys/class/infiniband/ibp0s10f0/device/fwctl/
-> fwctl0/
-> 
-> $ ls /sys/devices/pci0000:00/0000:00:0a.0/fwctl/fwctl0
-> dev  device  power  subsystem  uevent
-> 
-> Which allows userspace to link all the multi-subsystem driver components
-> together and learn the subsystem specific names for the device's
-> components.
+> Allocate an ioctl number space for the subsystem.
 > 
 > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 
 Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 
-
 > ---
->  MAINTAINERS            |   8 ++
->  drivers/Kconfig        |   2 +
->  drivers/Makefile       |   1 +
->  drivers/fwctl/Kconfig  |   9 +++
->  drivers/fwctl/Makefile |   4 +
->  drivers/fwctl/main.c   | 170 +++++++++++++++++++++++++++++++++++++++++
->  include/linux/fwctl.h  |  69 +++++++++++++++++
->  7 files changed, 263 insertions(+)
->  create mode 100644 drivers/fwctl/Kconfig
->  create mode 100644 drivers/fwctl/Makefile
->  create mode 100644 drivers/fwctl/main.c
->  create mode 100644 include/linux/fwctl.h
+>  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+>  MAINTAINERS                                   |   1 +
+>  drivers/fwctl/main.c                          | 145 +++++++++++++++++-
+>  include/linux/fwctl.h                         |  46 ++++++
+>  include/uapi/fwctl/fwctl.h                    |  38 +++++
+>  5 files changed, 226 insertions(+), 5 deletions(-)
+>  create mode 100644 include/uapi/fwctl/fwctl.h
 > 
+> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> index 6d1465315df328..3410b020a9d093 100644
+> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> @@ -331,6 +331,7 @@ Code  Seq#    Include File                                           Comments
+>  0x97  00-7F  fs/ceph/ioctl.h                                         Ceph file system
+>  0x99  00-0F                                                          537-Addinboard driver
+>                                                                       <mailto:buk@buks.ipn.de>
+> +0x9A  00-0F  include/uapi/fwctl/fwctl.h
+>  0xA0  all    linux/sdp/sdp.h                                         Industrial Device Project
+>                                                                       <mailto:kenji@bitgate.com>
+>  0xA1  0      linux/vtpm_proxy.h                                      TPM Emulator Proxy Driver
 > diff --git a/MAINTAINERS b/MAINTAINERS
-> index 896a307fa06545..ff418a77f39e4d 100644
+> index ff418a77f39e4d..5f30adbe6c8521 100644
 > --- a/MAINTAINERS
 > +++ b/MAINTAINERS
-> @@ -9557,6 +9557,14 @@ F:	kernel/futex/*
->  F:	tools/perf/bench/futex*
->  F:	tools/testing/selftests/futex/
+> @@ -9564,6 +9564,7 @@ S:	Maintained
+>  F:	Documentation/userspace-api/fwctl.rst
+>  F:	drivers/fwctl/
+>  F:	include/linux/fwctl.h
+> +F:	include/uapi/fwctl/
 >  
-> +FWCTL SUBSYSTEM
-> +M:	Jason Gunthorpe <jgg@nvidia.com>
-> +M:	Saeed Mahameed <saeedm@nvidia.com>
-> +S:	Maintained
-> +F:	Documentation/userspace-api/fwctl.rst
-> +F:	drivers/fwctl/
-> +F:	include/linux/fwctl.h
-> +
 >  GALAXYCORE GC0308 CAMERA SENSOR DRIVER
 >  M:	Sebastian Reichel <sre@kernel.org>
->  L:	linux-media@vger.kernel.org
-> diff --git a/drivers/Kconfig b/drivers/Kconfig
-> index 7bdad836fc6207..7c556c5ac4fddc 100644
-> --- a/drivers/Kconfig
-> +++ b/drivers/Kconfig
-> @@ -21,6 +21,8 @@ source "drivers/connector/Kconfig"
->  
->  source "drivers/firmware/Kconfig"
->  
-> +source "drivers/fwctl/Kconfig"
-> +
->  source "drivers/gnss/Kconfig"
->  
->  source "drivers/mtd/Kconfig"
-> diff --git a/drivers/Makefile b/drivers/Makefile
-> index 45d1c3e630f754..b5749cf67044ce 100644
-> --- a/drivers/Makefile
-> +++ b/drivers/Makefile
-> @@ -135,6 +135,7 @@ obj-y				+= ufs/
->  obj-$(CONFIG_MEMSTICK)		+= memstick/
->  obj-$(CONFIG_INFINIBAND)	+= infiniband/
->  obj-y				+= firmware/
-> +obj-$(CONFIG_FWCTL)		+= fwctl/
->  obj-$(CONFIG_CRYPTO)		+= crypto/
->  obj-$(CONFIG_SUPERH)		+= sh/
->  obj-y				+= clocksource/
-> diff --git a/drivers/fwctl/Kconfig b/drivers/fwctl/Kconfig
-> new file mode 100644
-> index 00000000000000..37147a695add9a
-> --- /dev/null
-> +++ b/drivers/fwctl/Kconfig
-> @@ -0,0 +1,9 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +menuconfig FWCTL
-> +	tristate "fwctl device firmware access framework"
-> +	help
-> +	  fwctl provides a userspace API for restricted access to communicate
-> +	  with on-device firmware. The communication channel is intended to
-> +	  support a wide range of lockdown compatible device behaviors including
-> +	  manipulating device FLASH, debugging, and other activities that don't
-> +	  fit neatly into an existing subsystem.
-> diff --git a/drivers/fwctl/Makefile b/drivers/fwctl/Makefile
-> new file mode 100644
-> index 00000000000000..1cad210f6ba580
-> --- /dev/null
-> +++ b/drivers/fwctl/Makefile
-> @@ -0,0 +1,4 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +obj-$(CONFIG_FWCTL) += fwctl.o
-> +
-> +fwctl-y += main.o
 > diff --git a/drivers/fwctl/main.c b/drivers/fwctl/main.c
-> new file mode 100644
-> index 00000000000000..34946bdc3bf3d7
-> --- /dev/null
+> index 34946bdc3bf3d7..d561deaf2b86d8 100644
+> --- a/drivers/fwctl/main.c
 > +++ b/drivers/fwctl/main.c
-> @@ -0,0 +1,170 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES
-> + */
-> +#define pr_fmt(fmt) "fwctl: " fmt
-> +#include <linux/fwctl.h>
+> @@ -10,6 +10,8 @@
+>  #include <linux/module.h>
+>  #include <linux/slab.h>
+>  
+> +#include <uapi/fwctl/fwctl.h>
 > +
-> +#include <linux/container_of.h>
-> +#include <linux/fs.h>
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +
-> +enum {
-> +	FWCTL_MAX_DEVICES = 4096,
-> +};
-> +static_assert(FWCTL_MAX_DEVICES < (1U << MINORBITS));
-> +
-> +static dev_t fwctl_dev;
-> +static DEFINE_IDA(fwctl_ida);
-> +
-> +static int fwctl_fops_open(struct inode *inode, struct file *filp)
-> +{
-> +	struct fwctl_device *fwctl =
-> +		container_of(inode->i_cdev, struct fwctl_device, cdev);
-> +
-> +	get_device(&fwctl->dev);
-> +	filp->private_data = fwctl;
-> +	return 0;
-> +}
-> +
-> +static int fwctl_fops_release(struct inode *inode, struct file *filp)
-> +{
-> +	struct fwctl_device *fwctl = filp->private_data;
-> +
-> +	fwctl_put(fwctl);
-> +	return 0;
-> +}
-> +
-> +static const struct file_operations fwctl_fops = {
-> +	.owner = THIS_MODULE,
-> +	.open = fwctl_fops_open,
-> +	.release = fwctl_fops_release,
+>  enum {
+>  	FWCTL_MAX_DEVICES = 4096,
+>  };
+> @@ -18,20 +20,128 @@ static_assert(FWCTL_MAX_DEVICES < (1U << MINORBITS));
+>  static dev_t fwctl_dev;
+>  static DEFINE_IDA(fwctl_ida);
+>  
+> +struct fwctl_ucmd {
+> +	struct fwctl_uctx *uctx;
+> +	void __user *ubuffer;
+> +	void *cmd;
+> +	u32 user_size;
 > +};
 > +
-> +static void fwctl_device_release(struct device *device)
-> +{
-> +	struct fwctl_device *fwctl =
-> +		container_of(device, struct fwctl_device, dev);
-> +
-> +	ida_free(&fwctl_ida, fwctl->dev.devt - fwctl_dev);
-> +	kfree(fwctl);
-> +}
-> +
-> +static char *fwctl_devnode(const struct device *dev, umode_t *mode)
-> +{
-> +	return kasprintf(GFP_KERNEL, "fwctl/%s", dev_name(dev));
-> +}
-> +
-> +static struct class fwctl_class = {
-> +	.name = "fwctl",
-> +	.dev_release = fwctl_device_release,
-> +	.devnode = fwctl_devnode,
+> +/* On stack memory for the ioctl structs */
+> +union ucmd_buffer {
 > +};
 > +
-> +static struct fwctl_device *
-> +_alloc_device(struct device *parent, const struct fwctl_ops *ops, size_t size)
+> +struct fwctl_ioctl_op {
+> +	unsigned int size;
+> +	unsigned int min_size;
+> +	unsigned int ioctl_num;
+> +	int (*execute)(struct fwctl_ucmd *ucmd);
+> +};
+> +
+> +#define IOCTL_OP(_ioctl, _fn, _struct, _last)                         \
+> +	[_IOC_NR(_ioctl) - FWCTL_CMD_BASE] = {                        \
+> +		.size = sizeof(_struct) +                             \
+> +			BUILD_BUG_ON_ZERO(sizeof(union ucmd_buffer) < \
+> +					  sizeof(_struct)),           \
+> +		.min_size = offsetofend(_struct, _last),              \
+> +		.ioctl_num = _ioctl,                                  \
+> +		.execute = _fn,                                       \
+> +	}
+> +static const struct fwctl_ioctl_op fwctl_ioctl_ops[] = {
+> +};
+> +
+> +static long fwctl_fops_ioctl(struct file *filp, unsigned int cmd,
+> +			       unsigned long arg)
 > +{
-> +	struct fwctl_device *fwctl __free(kfree) = kzalloc(size, GFP_KERNEL);
-> +	int devnum;
-> +
-> +	if (!fwctl)
-> +		return NULL;
-> +
-> +	fwctl->dev.class = &fwctl_class;
-> +	fwctl->dev.parent = parent;
-> +
-> +	devnum = ida_alloc_max(&fwctl_ida, FWCTL_MAX_DEVICES - 1, GFP_KERNEL);
-> +	if (devnum < 0)
-> +		return NULL;
-> +	fwctl->dev.devt = fwctl_dev + devnum;
-> +
-> +	device_initialize(&fwctl->dev);
-> +	return_ptr(fwctl);
-> +}
-> +
-> +/* Drivers use the fwctl_alloc_device() wrapper */
-> +struct fwctl_device *_fwctl_alloc_device(struct device *parent,
-> +					 const struct fwctl_ops *ops,
-> +					 size_t size)
-> +{
-> +	struct fwctl_device *fwctl __free(fwctl) =
-> +		_alloc_device(parent, ops, size);
-> +
-> +	if (!fwctl)
-> +		return NULL;
-> +
-> +	cdev_init(&fwctl->cdev, &fwctl_fops);
-> +	/*
-> +	 * The driver module is protected by fwctl_register/unregister(),
-> +	 * unregister won't complete until we are done with the driver's module.
-> +	 */
-> +	fwctl->cdev.owner = THIS_MODULE;
-> +
-> +	if (dev_set_name(&fwctl->dev, "fwctl%d", fwctl->dev.devt - fwctl_dev))
-> +		return NULL;
-> +
-> +	fwctl->ops = ops;
-> +	return_ptr(fwctl);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(_fwctl_alloc_device, "FWCTL");
-> +
-> +/**
-> + * fwctl_register - Register a new device to the subsystem
-> + * @fwctl: Previously allocated fwctl_device
-> + *
-> + * On return the device is visible through sysfs and /dev, driver ops may be
-> + * called.
-> + */
-> +int fwctl_register(struct fwctl_device *fwctl)
-> +{
-> +	return cdev_device_add(&fwctl->cdev, &fwctl->dev);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(fwctl_register, "FWCTL");
-> +
-> +/**
-> + * fwctl_unregister - Unregister a device from the subsystem
-> + * @fwctl: Previously allocated and registered fwctl_device
-> + *
-> + * Undoes fwctl_register(). On return no driver ops will be called. The
-> + * caller must still call fwctl_put() to free the fwctl.
-> + *
-> + * The design of fwctl allows this sort of disassociation of the driver from the
-> + * subsystem primarily by keeping memory allocations owned by the core subsytem.
-> + * The fwctl_device and fwctl_uctx can both be freed without requiring a driver
-> + * callback. This allows the module to remain unlocked while FDs are open.
-> + */
-> +void fwctl_unregister(struct fwctl_device *fwctl)
-> +{
-> +	cdev_device_del(&fwctl->cdev, &fwctl->dev);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(fwctl_unregister, "FWCTL");
-> +
-> +static int __init fwctl_init(void)
-> +{
+> +	struct fwctl_uctx *uctx = filp->private_data;
+> +	const struct fwctl_ioctl_op *op;
+> +	struct fwctl_ucmd ucmd = {};
+> +	union ucmd_buffer buf;
+> +	unsigned int nr;
 > +	int ret;
 > +
-> +	ret = alloc_chrdev_region(&fwctl_dev, 0, FWCTL_MAX_DEVICES, "fwctl");
+> +	nr = _IOC_NR(cmd);
+> +	if ((nr - FWCTL_CMD_BASE) >= ARRAY_SIZE(fwctl_ioctl_ops))
+> +		return -ENOIOCTLCMD;
+> +
+> +	op = &fwctl_ioctl_ops[nr - FWCTL_CMD_BASE];
+> +	if (op->ioctl_num != cmd)
+> +		return -ENOIOCTLCMD;
+> +
+> +	ucmd.uctx = uctx;
+> +	ucmd.cmd = &buf;
+> +	ucmd.ubuffer = (void __user *)arg;
+> +	ret = get_user(ucmd.user_size, (u32 __user *)ucmd.ubuffer);
 > +	if (ret)
 > +		return ret;
 > +
-> +	ret = class_register(&fwctl_class);
+> +	if (ucmd.user_size < op->min_size)
+> +		return -EINVAL;
+> +
+> +	ret = copy_struct_from_user(ucmd.cmd, op->size, ucmd.ubuffer,
+> +				    ucmd.user_size);
 > +	if (ret)
-> +		goto err_chrdev;
-> +	return 0;
+> +		return ret;
 > +
-> +err_chrdev:
-> +	unregister_chrdev_region(fwctl_dev, FWCTL_MAX_DEVICES);
-> +	return ret;
+> +	guard(rwsem_read)(&uctx->fwctl->registration_lock);
+> +	if (!uctx->fwctl->ops)
+> +		return -ENODEV;
+> +	return op->execute(&ucmd);
 > +}
 > +
-> +static void __exit fwctl_exit(void)
+>  static int fwctl_fops_open(struct inode *inode, struct file *filp)
+>  {
+>  	struct fwctl_device *fwctl =
+>  		container_of(inode->i_cdev, struct fwctl_device, cdev);
+> +	int ret;
+> +
+> +	guard(rwsem_read)(&fwctl->registration_lock);
+> +	if (!fwctl->ops)
+> +		return -ENODEV;
+> +
+> +	struct fwctl_uctx *uctx __free(kfree) =
+> +		kzalloc(fwctl->ops->uctx_size, GFP_KERNEL_ACCOUNT);
+> +	if (!uctx)
+> +		return -ENOMEM;
+> +
+> +	uctx->fwctl = fwctl;
+> +	ret = fwctl->ops->open_uctx(uctx);
+> +	if (ret)
+> +		return ret;
+> +
+> +	scoped_guard(mutex, &fwctl->uctx_list_lock) {
+> +		list_add_tail(&uctx->uctx_list_entry, &fwctl->uctx_list);
+> +	}
+>  
+>  	get_device(&fwctl->dev);
+> -	filp->private_data = fwctl;
+> +	filp->private_data = no_free_ptr(uctx);
+>  	return 0;
+>  }
+>  
+> +static void fwctl_destroy_uctx(struct fwctl_uctx *uctx)
 > +{
-> +	class_unregister(&fwctl_class);
-> +	unregister_chrdev_region(fwctl_dev, FWCTL_MAX_DEVICES);
+> +	lockdep_assert_held(&uctx->fwctl->uctx_list_lock);
+> +	list_del(&uctx->uctx_list_entry);
+> +	uctx->fwctl->ops->close_uctx(uctx);
 > +}
 > +
-> +module_init(fwctl_init);
-> +module_exit(fwctl_exit);
-> +MODULE_DESCRIPTION("fwctl device firmware access framework");
-> +MODULE_LICENSE("GPL");
+>  static int fwctl_fops_release(struct inode *inode, struct file *filp)
+>  {
+> -	struct fwctl_device *fwctl = filp->private_data;
+> +	struct fwctl_uctx *uctx = filp->private_data;
+> +	struct fwctl_device *fwctl = uctx->fwctl;
+>  
+> +	scoped_guard(rwsem_read, &fwctl->registration_lock) {
+> +		/*
+> +		 * fwctl_unregister() has already removed the driver and
+> +		 * destroyed the uctx.
+> +		 */
+> +		if (fwctl->ops) {
+> +			guard(mutex)(&fwctl->uctx_list_lock);
+> +			fwctl_destroy_uctx(uctx);
+> +		}
+> +	}
+> +
+> +	kfree(uctx);
+>  	fwctl_put(fwctl);
+>  	return 0;
+>  }
+> @@ -40,6 +150,7 @@ static const struct file_operations fwctl_fops = {
+>  	.owner = THIS_MODULE,
+>  	.open = fwctl_fops_open,
+>  	.release = fwctl_fops_release,
+> +	.unlocked_ioctl = fwctl_fops_ioctl,
+>  };
+>  
+>  static void fwctl_device_release(struct device *device)
+> @@ -48,6 +159,7 @@ static void fwctl_device_release(struct device *device)
+>  		container_of(device, struct fwctl_device, dev);
+>  
+>  	ida_free(&fwctl_ida, fwctl->dev.devt - fwctl_dev);
+> +	mutex_destroy(&fwctl->uctx_list_lock);
+>  	kfree(fwctl);
+>  }
+>  
+> @@ -71,14 +183,17 @@ _alloc_device(struct device *parent, const struct fwctl_ops *ops, size_t size)
+>  	if (!fwctl)
+>  		return NULL;
+>  
+> -	fwctl->dev.class = &fwctl_class;
+> -	fwctl->dev.parent = parent;
+> -
+>  	devnum = ida_alloc_max(&fwctl_ida, FWCTL_MAX_DEVICES - 1, GFP_KERNEL);
+>  	if (devnum < 0)
+>  		return NULL;
+>  	fwctl->dev.devt = fwctl_dev + devnum;
+>  
+> +	fwctl->dev.class = &fwctl_class;
+> +	fwctl->dev.parent = parent;
+> +	init_rwsem(&fwctl->registration_lock);
+> +	mutex_init(&fwctl->uctx_list_lock);
+> +	INIT_LIST_HEAD(&fwctl->uctx_list);
+> +
+>  	device_initialize(&fwctl->dev);
+>  	return_ptr(fwctl);
+>  }
+> @@ -129,6 +244,10 @@ EXPORT_SYMBOL_NS_GPL(fwctl_register, "FWCTL");
+>   * Undoes fwctl_register(). On return no driver ops will be called. The
+>   * caller must still call fwctl_put() to free the fwctl.
+>   *
+> + * Unregister will return even if userspace still has file descriptors open.
+> + * This will call ops->close_uctx() on any open FDs and after return no driver
+> + * op will be called. The FDs remain open but all fops will return -ENODEV.
+> + *
+>   * The design of fwctl allows this sort of disassociation of the driver from the
+>   * subsystem primarily by keeping memory allocations owned by the core subsytem.
+>   * The fwctl_device and fwctl_uctx can both be freed without requiring a driver
+> @@ -136,7 +255,23 @@ EXPORT_SYMBOL_NS_GPL(fwctl_register, "FWCTL");
+>   */
+>  void fwctl_unregister(struct fwctl_device *fwctl)
+>  {
+> +	struct fwctl_uctx *uctx;
+> +
+>  	cdev_device_del(&fwctl->cdev, &fwctl->dev);
+> +
+> +	/* Disable and free the driver's resources for any still open FDs. */
+> +	guard(rwsem_write)(&fwctl->registration_lock);
+> +	guard(mutex)(&fwctl->uctx_list_lock);
+> +	while ((uctx = list_first_entry_or_null(&fwctl->uctx_list,
+> +						struct fwctl_uctx,
+> +						uctx_list_entry)))
+> +		fwctl_destroy_uctx(uctx);
+> +
+> +	/*
+> +	 * The driver module may unload after this returns, the op pointer will
+> +	 * not be valid.
+> +	 */
+> +	fwctl->ops = NULL;
+>  }
+>  EXPORT_SYMBOL_NS_GPL(fwctl_unregister, "FWCTL");
+>  
 > diff --git a/include/linux/fwctl.h b/include/linux/fwctl.h
-> new file mode 100644
-> index 00000000000000..68ac2d5ab87481
-> --- /dev/null
+> index 68ac2d5ab87481..93b470efb9dbc3 100644
+> --- a/include/linux/fwctl.h
 > +++ b/include/linux/fwctl.h
-> @@ -0,0 +1,69 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES
-> + */
-> +#ifndef __LINUX_FWCTL_H
-> +#define __LINUX_FWCTL_H
-> +#include <linux/device.h>
-> +#include <linux/cdev.h>
-> +#include <linux/cleanup.h>
-> +
-> +struct fwctl_device;
-> +struct fwctl_uctx;
-> +
-> +struct fwctl_ops {
-> +};
-> +
+> @@ -11,7 +11,30 @@
+>  struct fwctl_device;
+>  struct fwctl_uctx;
+>  
 > +/**
-> + * struct fwctl_device - Per-driver registration struct
-> + * @dev: The sysfs (class/fwctl/fwctlXX) device
+> + * struct fwctl_ops - Driver provided operations
 > + *
-> + * Each driver instance will have one of these structs with the driver private
-> + * data following immediately after. This struct is refcounted, it is freed by
-> + * calling fwctl_put().
+> + * fwctl_unregister() will wait until all excuting ops are completed before it
+> + * returns. Drivers should be mindful to not let their ops run for too long as
+> + * it will block device hot unplug and module unloading.
 > + */
-> +struct fwctl_device {
-> +	struct device dev;
+>  struct fwctl_ops {
+> +	/**
+> +	 * @uctx_size: The size of the fwctl_uctx struct to allocate. The first
+> +	 * bytes of this memory will be a fwctl_uctx. The driver can use the
+> +	 * remaining bytes as its private memory.
+> +	 */
+> +	size_t uctx_size;
+> +	/**
+> +	 * @open_uctx: Called when a file descriptor is opened before the uctx
+> +	 * is ever used.
+> +	 */
+> +	int (*open_uctx)(struct fwctl_uctx *uctx);
+> +	/**
+> +	 * @close_uctx: Called when the uctx is destroyed, usually when the FD
+> +	 * is closed.
+> +	 */
+> +	void (*close_uctx)(struct fwctl_uctx *uctx);
+>  };
+>  
+>  /**
+> @@ -26,6 +49,15 @@ struct fwctl_device {
+>  	struct device dev;
+>  	/* private: */
+>  	struct cdev cdev;
+> +
+> +	/* Protect uctx_list */
+> +	struct mutex uctx_list_lock;
+> +	struct list_head uctx_list;
+> +	/*
+> +	 * Protect ops, held for write when ops becomes NULL during unregister,
+> +	 * held for read whenever ops is loaded or an ops function is running.
+> +	 */
+> +	struct rw_semaphore registration_lock;
+>  	const struct fwctl_ops *ops;
+>  };
+>  
+> @@ -66,4 +98,18 @@ DEFINE_FREE(fwctl, struct fwctl_device *, if (_T) fwctl_put(_T));
+>  int fwctl_register(struct fwctl_device *fwctl);
+>  void fwctl_unregister(struct fwctl_device *fwctl);
+>  
+> +/**
+> + * struct fwctl_uctx - Per user FD context
+> + * @fwctl: fwctl instance that owns the context
+> + *
+> + * Every FD opened by userspace will get a unique context allocation. Any driver
+> + * private data will follow immediately after.
+> + */
+> +struct fwctl_uctx {
+> +	struct fwctl_device *fwctl;
 > +	/* private: */
-> +	struct cdev cdev;
-> +	const struct fwctl_ops *ops;
+> +	/* Head at fwctl_device::uctx_list */
+> +	struct list_head uctx_list_entry;
 > +};
 > +
-> +struct fwctl_device *_fwctl_alloc_device(struct device *parent,
-> +					 const struct fwctl_ops *ops,
-> +					 size_t size);
-> +/**
-> + * fwctl_alloc_device - Allocate a fwctl
-> + * @parent: Physical device that provides the FW interface
-> + * @ops: Driver ops to register
-> + * @drv_struct: 'struct driver_fwctl' that holds the struct fwctl_device
-> + * @member: Name of the struct fwctl_device in @drv_struct
-> + *
-> + * This allocates and initializes the fwctl_device embedded in the drv_struct.
-> + * Upon success the pointer must be freed via fwctl_put(). Returns a 'drv_struct
-> + * \*' on success, NULL on error.
+>  #endif
+> diff --git a/include/uapi/fwctl/fwctl.h b/include/uapi/fwctl/fwctl.h
+> new file mode 100644
+> index 00000000000000..f4718a6240f281
+> --- /dev/null
+> +++ b/include/uapi/fwctl/fwctl.h
+> @@ -0,0 +1,38 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +/* Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES.
 > + */
-> +#define fwctl_alloc_device(parent, ops, drv_struct, member)               \
-> +	({                                                                \
-> +		static_assert(__same_type(struct fwctl_device,            \
-> +					  ((drv_struct *)NULL)->member)); \
-> +		static_assert(offsetof(drv_struct, member) == 0);         \
-> +		(drv_struct *)_fwctl_alloc_device(parent, ops,            \
-> +						  sizeof(drv_struct));    \
-> +	})
+> +#ifndef _UAPI_FWCTL_H
+> +#define _UAPI_FWCTL_H
 > +
-> +static inline struct fwctl_device *fwctl_get(struct fwctl_device *fwctl)
-> +{
-> +	get_device(&fwctl->dev);
-> +	return fwctl;
-> +}
-> +static inline void fwctl_put(struct fwctl_device *fwctl)
-> +{
-> +	put_device(&fwctl->dev);
-> +}
-> +DEFINE_FREE(fwctl, struct fwctl_device *, if (_T) fwctl_put(_T));
+> +#define FWCTL_TYPE 0x9A
 > +
-> +int fwctl_register(struct fwctl_device *fwctl);
-> +void fwctl_unregister(struct fwctl_device *fwctl);
+> +/**
+> + * DOC: General ioctl format
+> + *
+> + * The ioctl interface follows a general format to allow for extensibility. Each
+> + * ioctl is passed a structure pointer as the argument providing the size of
+> + * the structure in the first u32. The kernel checks that any structure space
+> + * beyond what it understands is 0. This allows userspace to use the backward
+> + * compatible portion while consistently using the newer, larger, structures.
+> + *
+> + * ioctls use a standard meaning for common errnos:
+> + *
+> + *  - ENOTTY: The IOCTL number itself is not supported at all
+> + *  - E2BIG: The IOCTL number is supported, but the provided structure has
+> + *    non-zero in a part the kernel does not understand.
+> + *  - EOPNOTSUPP: The IOCTL number is supported, and the structure is
+> + *    understood, however a known field has a value the kernel does not
+> + *    understand or support.
+> + *  - EINVAL: Everything about the IOCTL was understood, but a field is not
+> + *    correct.
+> + *  - ENOMEM: Out of memory.
+> + *  - ENODEV: The underlying device has been hot-unplugged and the FD is
+> + *            orphaned.
+> + *
+> + * As well as additional errnos, within specific ioctls.
+> + */
+> +enum {
+> +	FWCTL_CMD_BASE = 0,
+> +};
 > +
 > +#endif
 
