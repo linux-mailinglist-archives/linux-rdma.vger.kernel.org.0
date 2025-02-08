@@ -1,119 +1,129 @@
-Return-Path: <linux-rdma+bounces-7578-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7579-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38C6AA2D379
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 04:24:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93331A2D531
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 10:19:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F2773AB953
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 03:24:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAB7E188D6F0
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 09:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94BE31632CA;
-	Sat,  8 Feb 2025 03:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="gyu94s0l"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E3691AA1E8;
+	Sat,  8 Feb 2025 09:19:21 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA6429D05
-	for <linux-rdma@vger.kernel.org>; Sat,  8 Feb 2025 03:24:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06DAC6FBF
+	for <linux-rdma@vger.kernel.org>; Sat,  8 Feb 2025 09:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738985066; cv=none; b=rMczzTLJQkdTck7LLn/3pdPoYU2urDspXQPlI9jcS4v8cxPbaWa933/6T18Fkov+ETF4jqjbAj0588NZZNpFHavunvyHWt82NMDHK2Ps3uYyoYtQ+wH2mjm/gicfns6Nzg01rF7hnq56wqOQgl2F/ieyCB3fQ4L+MBXhW9kn6C4=
+	t=1739006361; cv=none; b=r4fUN+++hTcp8BEKitD4d8x0T8NU7sIChvcp7Mu+4YXH8cwwRAif5GnnDXnZ3UB4VhIIc8c0Xsw1jetkj4i1WoK6JuED/53CHD2t3JKhAq/tKHIHHX7H7p9STf17040yPK3NJZ73MeGFnfdBsdNW50JrzUH6ch5tkiDn0BssR6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738985066; c=relaxed/simple;
-	bh=Bg3OQ4u/q9PdnkN9l8oYbntB4/BsrRgui0pT0pdHJiw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NWF+wyQ6f5j7WBpemY2bMqPdZ3FUQIi3ukciUQfRx4CDLkv/2tLuCd/7YfZEl38j8uxik7GaK79xewfQvStK/jQ8hxNOBQdUu5HJiKUTvlmM45ZQ8wrHGbsLkcHJoAv7uPYbGJb8hNtJGi0y7I0fUXIEt+Yof9+nhcEot9g4V1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=gyu94s0l; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-38dc660b56cso1744879f8f.0
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Feb 2025 19:24:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1738985063; x=1739589863; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bg3OQ4u/q9PdnkN9l8oYbntB4/BsrRgui0pT0pdHJiw=;
-        b=gyu94s0lDtuZU6i/Dr+NKi9y1y+EDMmkPnayRDvSYJ382yB4EAkVuaW+EQ4/Iiu8Wp
-         9deJxvJhVe+bsfjC08bKP+zBNfME3TdzU5brq6qQ/l0UE0W4NdDVIpdlFqHX5Wc7IEri
-         8/poeC1Ekj74tzO7OckjzDvfO05U/VtQzh56g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738985063; x=1739589863;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bg3OQ4u/q9PdnkN9l8oYbntB4/BsrRgui0pT0pdHJiw=;
-        b=VWoZ02y8CzyLuESQV2yO1fgZU05Uf06teWnVLm6X5b54WZ+LY9fycpufpbgxjFH3Tp
-         aNBqkhRsmZjUVurMGY7quOkYbMCE87Rrb2hr5qGQuGPP9BqV3FfqNDOBByl/j/c/bF5k
-         lh1zbqX/3hG9ReLx/BCVw8NuB4UuWNs/JS9FJNS/GjbbefUYvVJtX+qxQWPsuXFdndl6
-         QLoXYKb6w+JUBYb82NAsnwb0vKcqtqZr/NzPJA6jLowijlfzPt9Ew1K60RBoQ7LmeFni
-         5kI2zIKPymO0aKc9CdztAP5AfIAlx96LbiJqRo89G2b2Jzi2vKMLBYOAX8IQ1yQjyGeW
-         wu+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV2mA+/zYUcxlKsAnmRubfUECldOZgRypxIng2opWiLi3I6nhG2ibJoDXL0Gg+M/nL/mtWy6FwhSW2U@vger.kernel.org
-X-Gm-Message-State: AOJu0YzISwAUawOe6UOdWYfNbuwggzdkN+712tvJlaNZfztCB8yD0G9v
-	FlzHY3aZ/C22aJag8d7Jws9LVXMM+zP41FbSCoZv4MjUzbH3yrjbYFeeheAN2qxYeBCuLqYBDjY
-	o1chXeR/Kn/7MSeJ7rYc2rlI3fpwSmeEKsU69
-X-Gm-Gg: ASbGncuH24L2O3MtCg3OSqhpvWxVHA5+VTsUzke0R+gAtC0BPc6uOMMzSFvTgK0GdoG
-	mhoo6Xol6QwjvkFgMZhha4BHsWg8u7dRtkq7u6EF+D5GRd1Tpfh4ZyLuQruufH6iHR7suTDGc
-X-Google-Smtp-Source: AGHT+IHVNfL+UbPR8r6YIkIAeXWNEW4gOAC+ilgLwizDADgYX4kQ+BV2BsgCSdE/lvi9D1W/g2gdhuhfsZtya/2NQx4=
-X-Received: by 2002:a05:6000:4021:b0:38d:c9da:d0d7 with SMTP id
- ffacd0b85a97d-38dc9dad258mr4248135f8f.2.1738985062707; Fri, 07 Feb 2025
- 19:24:22 -0800 (PST)
+	s=arc-20240116; t=1739006361; c=relaxed/simple;
+	bh=QErUXwoU3wN8HzSke3b5xGa49Q4/t42THZJZph/xb6A=;
+	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=RwOvmMOGS3EnStl6CXGHf+NaBXJwzu9AylbDXAYoWkPpmeQhou7Zs3ME6XivJOJ4MDZXagmukUy0rHmFMpD+3f+KZNF2EWb587lwT6YfW59xe64RW2FSApvJgXhOOyXmwzkEzAwmxVAGq9GpF5Hpffly3nkhUcKg2fG06AexNxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YqlYt6s2Wzbnsv;
+	Sat,  8 Feb 2025 17:15:46 +0800 (CST)
+Received: from kwepemd500026.china.huawei.com (unknown [7.221.188.35])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2F773140135;
+	Sat,  8 Feb 2025 17:19:15 +0800 (CST)
+Received: from [10.67.121.229] (10.67.121.229) by
+ kwepemd500026.china.huawei.com (7.221.188.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Sat, 8 Feb 2025 17:19:14 +0800
+Subject: Re: [PATCH for-next v2] RDMA/bnxt_re: Congestion control settings
+ using debugfs hook
+To: Selvin Xavier <selvin.xavier@broadcom.com>, <leon@kernel.org>,
+	<jgg@ziepe.ca>
+References: <1737301535-6599-1-git-send-email-selvin.xavier@broadcom.com>
+CC: <linux-rdma@vger.kernel.org>, <andrew.gospodarek@broadcom.com>,
+	<kalesh-anakkur.purayil@broadcom.com>
+From: Chengchang Tang <tangchengchang@huawei.com>
+Message-ID: <4fa11b0e-e838-bfc1-a9e1-80c4aefc728f@huawei.com>
+Date: Sat, 8 Feb 2025 17:19:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com> <10-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
- <20250206164449.52b2dfef@kernel.org> <CACDg6nU_Dkte_GASNRpkvSSCihpg52FBqNr0KR3ud1YRvrRs3w@mail.gmail.com>
- <20250207073648.1f0bad47@kernel.org> <Z6ZsOMLq7tt3ijX_@x130>
- <20250207135111.6e4e10b9@kernel.org> <20250208011647.GH3660748@nvidia.com>
-In-Reply-To: <20250208011647.GH3660748@nvidia.com>
-From: Andy Gospodarek <andrew.gospodarek@broadcom.com>
-Date: Fri, 7 Feb 2025 22:24:11 -0500
-X-Gm-Features: AWEUYZk3gk4vWfE5Xa1A63xy9j8Q_uI0hhFglszJkoyvnrcVpZjbm-6o_DTD9CY
-Message-ID: <CACDg6nX-W7hzDUFMDmEtaZGUJu5dnSzcZpTXpn__O1kEu0ddRQ@mail.gmail.com>
-Subject: Re: [PATCH v4 10/10] bnxt: Create an auxiliary device for fwctl_bnxt
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Aron Silverton <aron.silverton@oracle.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Daniel Vetter <daniel.vetter@ffwll.ch>, Dave Jiang <dave.jiang@intel.com>, 
-	David Ahern <dsahern@kernel.org>, Andy Gospodarek <gospo@broadcom.com>, 
-	Christoph Hellwig <hch@infradead.org>, Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Leonid Bloch <lbloch@nvidia.com>, 
-	Leon Romanovsky <leonro@nvidia.com>, linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	netdev@vger.kernel.org, "Nelson, Shannon" <shannon.nelson@amd.com>, 
-	Michael Chan <michael.chan@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1737301535-6599-1-git-send-email-selvin.xavier@broadcom.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemd500026.china.huawei.com (7.221.188.35)
 
-On Fri, Feb 7, 2025 at 8:16=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> wro=
-te:
->
-> On Fri, Feb 07, 2025 at 01:51:11PM -0800, Jakub Kicinski wrote:
->
-> > But if you agree the netdev doesn't need it seems like a fairly
-> > straightforward way to unblock your progress.
->
-> I'm trying to understand what you are suggesting here.
->
-> We have many scenarios where mlx5_core spawns all kinds of different
-> devices, including recovery cases where there is no networking at all
-> and only fwctl. So we can't just discard the aux dev or mlx5_core
-> triggered setup without breaking scenarios.
->
-> However, you seem to be suggesting that netdev-only configurations (ie
-> netdev loaded but no rdma loaded) should disable fwctl. Is that the
-> case? All else would remain the same. It is very ugly but I could see
-> a technical path to do it, and would consider it if that brings peace.
->
 
-We can probably live with that as well if it's required to keep fwctl
-in an RDMA driver and out of pure netdevs.
+
+On 2025/1/19 23:45, Selvin Xavier wrote:
+> Implements routines to set and get different settings  of
+> the congestion control. This will enable the users to modify
+> the settings according to their network.
+> 
+> Currently supporting only GEN 0 version of the parameters.
+> Reading these files queries the firmware and report the values
+> currently programmed. Writing to the files sends commands that
+> update the congestion control settings
+> 
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> ---
+> v1 -> v2:
+>   Addressed Leon's comments
+>      - rename debugfs file "g" to "run_avg_weight_g"
+>      - Fix the indentation errors
+>      - Remove the unnecessary error message during the read entry point
+>      - Fix the return value
+> 
+>  drivers/infiniband/hw/bnxt_re/bnxt_re.h |   2 +
+>  drivers/infiniband/hw/bnxt_re/debugfs.c | 212 +++++++++++++++++++++++++++++++-
+>  drivers/infiniband/hw/bnxt_re/debugfs.h |  15 +++
+>  3 files changed, 228 insertions(+), 1 deletion(-)
+> 
+
+...
+> +static const struct file_operations bnxt_re_cc_config_ops = {
+> +	.owner = THIS_MODULE,
+> +	.open = simple_open,
+> +	.read = bnxt_re_cc_config_get,
+> +	.write = bnxt_re_cc_config_set,
+> +};
+> +
+>  void bnxt_re_debugfs_add_pdev(struct bnxt_re_dev *rdev)
+>  {
+>  	struct pci_dev *pdev = rdev->en_dev->pdev;
+> +	struct bnxt_re_dbg_cc_config_params *cc_params;
+> +	int i;
+>  
+>  	rdev->dbg_root = debugfs_create_dir(dev_name(&pdev->dev), bnxt_re_debugfs_root);
+>  
+>  	rdev->qp_debugfs = debugfs_create_dir("QPs", rdev->dbg_root);
+> +	rdev->cc_config = debugfs_create_dir("cc_config", rdev->dbg_root);
+> +
+> +	rdev->cc_config_params = kzalloc(sizeof(*cc_params), GFP_KERNEL);
+> +
+> +	for (i = 0; i < BNXT_RE_CC_PARAM_GEN0; i++) {
+> +		struct bnxt_re_cc_param *tmp_params = &rdev->cc_config_params->gen0_parms[i];
+> +
+> +		tmp_params->rdev = rdev;
+> +		tmp_params->offset = i;
+> +		tmp_params->cc_gen = CC_CONFIG_GEN0_EXT0;
+> +		tmp_params->dentry = debugfs_create_file(bnxt_re_cc_gen0_name[i], 0400,
+
+Write operation doesn't seem to work?
+> +							 rdev->cc_config, tmp_params,
+> +							 &bnxt_re_cc_config_ops);
+> +	}
+>  }
+>  
+
 
