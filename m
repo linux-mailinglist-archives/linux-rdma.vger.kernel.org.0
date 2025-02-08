@@ -1,173 +1,131 @@
-Return-Path: <linux-rdma+bounces-7581-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7582-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 149FEA2D630
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 14:14:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E1B3A2D639
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 14:20:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B165C1662B9
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 13:14:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CFD3188CB5C
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 13:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53ADA24635D;
-	Sat,  8 Feb 2025 13:14:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03A062475FB;
+	Sat,  8 Feb 2025 13:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="aVKZye/j"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="TzQ0T7Cc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A5591A3157
-	for <linux-rdma@vger.kernel.org>; Sat,  8 Feb 2025 13:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE90246335
+	for <linux-rdma@vger.kernel.org>; Sat,  8 Feb 2025 13:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739020480; cv=none; b=bXn5VitJPoZA3o3m5ETDSZthVONlpOI+YLIvgZTQsk63Rx9XybO3lqOnFuqLYRzmApNonM62NUf+yq70cQaLFUkqBo6l9EeKWdGrwPC0wS9tB1OfJ8e8EbgR5PVftI3eAiG4hjzN+KidAFE7pXbZ/kqqwA7AGTcJiN/KERt7Gk0=
+	t=1739020809; cv=none; b=X/BmGR7oJiKAs2ypQJqj0tLz2oITeMDhjzzK2qwlADKSUHGK8+Sh5dfd+Jg6MtmspbIMruk6k619naf3T1GiR7mFZKm85OUEFG1pwt/rkTuZgAPqiUnBr3H/49fBpcwt3c43zhJ63t6HjKZckmDBcr75K+O+sNgMoixNqUT6b7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739020480; c=relaxed/simple;
-	bh=uDjfG29yrLrOBth96YkvqCba3Kt53EYMfU58RQ9e8Is=;
+	s=arc-20240116; t=1739020809; c=relaxed/simple;
+	bh=K+PPFqT4Z1Tl0aow70cM5PPoiReYXU5SnP4gY2fWhJk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eRrLA05aP8gQjBITGtoq26oCWyBMSVFdG8wJjnXI4cUtF5YEtRWrcEQUmxBsZeuTtf/xAvH6D1iDJroytFNT1GxB0z20TkoNNLsZoTUZbsqG8Ugrf8UoUbreizSkUZtaLrGcOJbJnzF1zYv1ebAyRcxkkM+rc1U9VqqAGfqr5sU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=aVKZye/j; arc=none smtp.client-ip=209.85.210.43
+	 To:Cc:Content-Type; b=P7nbYa4lUzajiu28Gdw27brfZpcBWKlWdlty2fyvbpKhF5GYennCZGBzHMTvHNrnAxQtgmhURsnND8lF9IaLtwEUkWBtuMWW2LeezYt1WJGkzoRpGw00Y6nr0AOfckYx+/kOWTzXs8AnZG+gSS7Q8KoU+9jWzu86PNOSYWRCe4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=TzQ0T7Cc; arc=none smtp.client-ip=209.85.160.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-71deb3745easo850020a34.3
-        for <linux-rdma@vger.kernel.org>; Sat, 08 Feb 2025 05:14:37 -0800 (PST)
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-2b1a9cbfc8dso909738fac.2
+        for <linux-rdma@vger.kernel.org>; Sat, 08 Feb 2025 05:20:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1739020477; x=1739625277; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1739020806; x=1739625606; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fFjnA1RKziN9HdPoCPh0+fPmpnWjnewYfiq2p+XYTH0=;
-        b=aVKZye/jD3EmdOnX7BUDJLYBZOZCot6ZRCbfhWsNOFARwICbRrRe+UM0PtRtstzZTv
-         Tc2UzjAflP02qipOtWzUaDj4ufsJdq00ZVuaPXlKZ0NQZ3Ggb2Ek/m59G6z3V/NgqDgr
-         uBkRoVyw+JMfqH7lm/mkRyPaFJmBSOABigxlM=
+        bh=C6gKgDb131cNc3fVL7l1EAwP1EB6XaufR4j+RwUQC+o=;
+        b=TzQ0T7CcJXjHV82iNO831ZF40g6klKU49RsRFMnuEecw+7jpk38ouDQrOrAAiTZuQw
+         TXxIca3QC3dcbvD2rWOia65deL+gO2P4dupfTq31HTE8gGCRnnd9divTHYGo9YVmuBjp
+         h6Nl9uaanBEBqTBE7c1ztPnzzqH3KluZ4Qggs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739020477; x=1739625277;
+        d=1e100.net; s=20230601; t=1739020806; x=1739625606;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fFjnA1RKziN9HdPoCPh0+fPmpnWjnewYfiq2p+XYTH0=;
-        b=NR3MCE6yKWWCsKrGEs+aZ7xy8IRT5K/oeWrTMmGdMh1ec0vXaFy6eAuV7BchnxXi7Z
-         2SInUWZz2olTBdR3ujlDqoW+M/mtZYVkKYMwVooKqDcM0eYO+7jLbS6r7i+UPATYWrAJ
-         CdFGPF8OSr0DfPDP4NHtuSiRQfXl/jm1Gf9Ub1jEGJNtS343CXEsdTFpyNbEyQOzWsy4
-         nsJBqjd9SQBj7l3U8y5zg2RQyvCgB5oz9JGZjDA9v0CORIip+aJjCRxhmyqzVWICiQo4
-         UFTbSCn3qaW39znQbrLGFhsXgy6lvBJ4vcspPs3HKXrGJmguY9MTP3ny+lCM8VUDkh4D
-         RkzA==
-X-Forwarded-Encrypted: i=1; AJvYcCUROBi4Se0L9h5K+xPLsAO/XYjizHcInzO7muQXWsWhLe4WOHh9DIjnO0pK5bVI9/4U08r0zCsmgoia@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw197Qr+pr6THRUoW89QfIgSkKfqXapE9ZSt1nlyVEVWSDGChf+
-	8nwUKzzqDkVv11LWBu44t8xh/tkj/+QXj5oSuJSCprs637HYPrsLdDXy3waalZviitFj3WdfoVj
-	FblL5NX4YNSPeCFqkogsLkHfu/vURHhBfoBbL
-X-Gm-Gg: ASbGncsu/zQfwYn8pVY3GbrV2O5QL5rCUtxJ49ZMUV4mON5zLK2bEYBInGL3iX8sCc8
-	Me03brwS2qY5KkJc1xmTmEjkmkOdXcQzGtt+VNeQacqY/pstsLg7GmkK8MfK8/RyJIIS/kIMv
-X-Google-Smtp-Source: AGHT+IGeCJ7wAxXz4nFY4wslIxlFX1NZaJXnFE/JCHWvybo8IspkQUgWdQV/ChBYB0pBBqPs07bbBsnKJJXf0cborlw=
-X-Received: by 2002:a05:6830:698f:b0:718:18d6:a447 with SMTP id
- 46e09a7af769-726b88a9e63mr4697337a34.24.1739020477141; Sat, 08 Feb 2025
- 05:14:37 -0800 (PST)
+        bh=C6gKgDb131cNc3fVL7l1EAwP1EB6XaufR4j+RwUQC+o=;
+        b=wHV1B/cXW1L7ZuIRYBp88+PE2T5cKZvvyO+nsr4Ccjm9Qc1+QaJhGEHrDMW043ND+J
+         i1eZF3OXWPDxdfTTbgb68+vHOcSrtqRrn4EaOR8kbIE/g095RVQwdE46aFelZdsqTFag
+         OHGpw7qw9ntDUGDNIEWNtGXWukrKSKduBA9o+PvhJZoV9xnDpONnzukcJcIIi3ZMw/4j
+         Z7hdyQOhzmPKKVpAJ77LhcW0eZpa6+5AaA90dlnd1FBVCLfrtHJ6pBZPjMhY00QmqR8P
+         pBJz7jl21Rusc3yvE3gEqZI6IzsfAi8t0HgRCzJ5Jxg+hhfe0vDRzctB7lPTnq8cc6/5
+         FCzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTS5jui6Wu43XFTljzyBTA5lJT9Nr/Q2g2l4a3jFhKaScUNcz3+IM+YtPrss7O+zeCnsvwsNxhBi+b@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzn5us49p6Htblces88fVRYlH38LzrKvRZQy6VsNBnLX2ZZDouc
+	rPpMDSHBddkSu/9TzBkU+QMiIKaSzzCwqWE6OWOtc+7JgKoPIjSEVXsWQzSwSTh3MxXw/iBkC5O
+	Fc5RXNfqrryVFLSYfV2nN4+XWPFj/PY/p1HfJ
+X-Gm-Gg: ASbGncu/XHL+yampiQ/I/yADtCIPFlRLPEbeuLJqzBfCR5+AfG3TujVM+sw+ALKGTIe
+	XjcuqxBUcO7A7dvBqdHh0k45l9xy2H0OnkmMKlZVyHi7uiSh2GrxJY77FaSEkyKzeeXJCEgzP
+X-Google-Smtp-Source: AGHT+IHUDMFMNeFfQLpuCIinoaH8vwun17sJr30ypK/Vql6OT2GgYZmfbd5kAWijhOAl1ZPv5BoaGZSk6pf/1izXE18=
+X-Received: by 2002:a05:6870:9d83:b0:2b7:fc95:66e1 with SMTP id
+ 586e51a60fabf-2b83eccb879mr3749132fac.19.1739020806030; Sat, 08 Feb 2025
+ 05:20:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1737301535-6599-1-git-send-email-selvin.xavier@broadcom.com> <4fa11b0e-e838-bfc1-a9e1-80c4aefc728f@huawei.com>
-In-Reply-To: <4fa11b0e-e838-bfc1-a9e1-80c4aefc728f@huawei.com>
+References: <a6b081ab-55fe-4d0c-8f69-c5e5a59e9141@stanley.mountain>
+In-Reply-To: <a6b081ab-55fe-4d0c-8f69-c5e5a59e9141@stanley.mountain>
 From: Selvin Xavier <selvin.xavier@broadcom.com>
-Date: Sat, 8 Feb 2025 18:44:23 +0530
-X-Gm-Features: AWEUYZliDnJR9Yo-tvdC1anGC984NA3J6DRU52GMF0zfsZNrV_MuknmIcleh9To
-Message-ID: <CA+sbYW0Lt1pyK7Z3BYUTrAs7x0rQfxmfj4VQG23Q7EGAnY-aig@mail.gmail.com>
-Subject: Re: [PATCH for-next v2] RDMA/bnxt_re: Congestion control settings
- using debugfs hook
-To: Chengchang Tang <tangchengchang@huawei.com>
-Cc: leon@kernel.org, jgg@ziepe.ca, linux-rdma@vger.kernel.org, 
-	andrew.gospodarek@broadcom.com, kalesh-anakkur.purayil@broadcom.com
+Date: Sat, 8 Feb 2025 18:49:53 +0530
+X-Gm-Features: AWEUYZnp-AswmT8TAXm8pvK2uC8j2IAW8B4F_BDv_oWdyoQAsMQ3lGMHqKJjoKw
+Message-ID: <CA+sbYW1L=RDfw2pgte5Ut6kHqrN_v1_h395+PYYroOpRM6Z3zg@mail.gmail.com>
+Subject: Re: [PATCH next] RDMA/bnxt_re: Fix buffer overflow in debugfs code
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000d1422b062da14144"
+	boundary="0000000000006aea98062da155b7"
 
---000000000000d1422b062da14144
+--0000000000006aea98062da155b7
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 8, 2025 at 2:49=E2=80=AFPM Chengchang Tang
-<tangchengchang@huawei.com> wrote:
+On Fri, Feb 7, 2025 at 2:46=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro.=
+org> wrote:
 >
+> Add some bounds checking to prevent memory corruption in
+> bnxt_re_cc_config_set().  This is debugfs code so the bug can only be
+> triggered by root.
 >
->
-> On 2025/1/19 23:45, Selvin Xavier wrote:
-> > Implements routines to set and get different settings  of
-> > the congestion control. This will enable the users to modify
-> > the settings according to their network.
-> >
-> > Currently supporting only GEN 0 version of the parameters.
-> > Reading these files queries the firmware and report the values
-> > currently programmed. Writing to the files sends commands that
-> > update the congestion control settings
-> >
-> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > ---
-> > v1 -> v2:
-> >   Addressed Leon's comments
-> >      - rename debugfs file "g" to "run_avg_weight_g"
-> >      - Fix the indentation errors
-> >      - Remove the unnecessary error message during the read entry point
-> >      - Fix the return value
-> >
-> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h |   2 +
-> >  drivers/infiniband/hw/bnxt_re/debugfs.c | 212 ++++++++++++++++++++++++=
-+++++++-
-> >  drivers/infiniband/hw/bnxt_re/debugfs.h |  15 +++
-> >  3 files changed, 228 insertions(+), 1 deletion(-)
-> >
->
-> ...
-> > +static const struct file_operations bnxt_re_cc_config_ops =3D {
-> > +     .owner =3D THIS_MODULE,
-> > +     .open =3D simple_open,
-> > +     .read =3D bnxt_re_cc_config_get,
-> > +     .write =3D bnxt_re_cc_config_set,
-> > +};
-> > +
-> >  void bnxt_re_debugfs_add_pdev(struct bnxt_re_dev *rdev)
-> >  {
-> >       struct pci_dev *pdev =3D rdev->en_dev->pdev;
-> > +     struct bnxt_re_dbg_cc_config_params *cc_params;
-> > +     int i;
-> >
-> >       rdev->dbg_root =3D debugfs_create_dir(dev_name(&pdev->dev), bnxt_=
-re_debugfs_root);
-> >
-> >       rdev->qp_debugfs =3D debugfs_create_dir("QPs", rdev->dbg_root);
-> > +     rdev->cc_config =3D debugfs_create_dir("cc_config", rdev->dbg_roo=
-t);
-> > +
-> > +     rdev->cc_config_params =3D kzalloc(sizeof(*cc_params), GFP_KERNEL=
-);
-> > +
-> > +     for (i =3D 0; i < BNXT_RE_CC_PARAM_GEN0; i++) {
-> > +             struct bnxt_re_cc_param *tmp_params =3D &rdev->cc_config_=
-params->gen0_parms[i];
-> > +
-> > +             tmp_params->rdev =3D rdev;
-> > +             tmp_params->offset =3D i;
-> > +             tmp_params->cc_gen =3D CC_CONFIG_GEN0_EXT0;
-> > +             tmp_params->dentry =3D debugfs_create_file(bnxt_re_cc_gen=
-0_name[i], 0400,
->
-> Write operation doesn't seem to work?
-right. I made a mistake in some code cleanup done just before posting
-this patch.
- I have a bug fix patch for this, will post it. Thanks.
+> Fixes: 656dff55da19 ("RDMA/bnxt_re: Congestion control settings using deb=
+ugfs hook")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Acked-by: Selvin Xavier <selvin.xavier@broadcom.com>
 
-> > +                                                      rdev->cc_config,=
- tmp_params,
-> > +                                                      &bnxt_re_cc_conf=
-ig_ops);
-> > +     }
-> >  }
-> >
+Thanks,
+Selvin
+> ---
+>  drivers/infiniband/hw/bnxt_re/debugfs.c | 3 +++
+>  1 file changed, 3 insertions(+)
 >
+> diff --git a/drivers/infiniband/hw/bnxt_re/debugfs.c b/drivers/infiniband=
+/hw/bnxt_re/debugfs.c
+> index f4dd2fb51867..d7354e7753fe 100644
+> --- a/drivers/infiniband/hw/bnxt_re/debugfs.c
+> +++ b/drivers/infiniband/hw/bnxt_re/debugfs.c
+> @@ -285,6 +285,9 @@ static ssize_t bnxt_re_cc_config_set(struct file *fil=
+p, const char __user *buffe
+>         u32 val;
+>         int rc;
+>
+> +       if (count >=3D sizeof(buf))
+> +               return -EINVAL;
+> +
+>         if (copy_from_user(buf, buffer, count))
+>                 return -EFAULT;
+>
+> --
+> 2.47.2
 >
 
---000000000000d1422b062da14144
+--0000000000006aea98062da155b7
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -238,15 +196,15 @@ j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
 9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
 hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
 IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPCzzxB7C6VW
-saarlVDmOHF6eSrfNzHDZ8zteMef46s4MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTI1MDIwODEzMTQzN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIKEvwiYAxzrt
+phzvga6/eHeL5LklF1Il+PwawEPiIk5NMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTI1MDIwODEzMjAwNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBaGsuxfR9ys/6HycpScZKA3prIL60k
-TsSoI7wSoVyy5fIv4+7biqhuE91FHdHsiFHDo49Fwl74seMvsOB4nm57yUWCM8Lbt7aoib1T9HpT
-dtYOA5+TxH/XogZbbkUQ6KWPijwUlK9Sm+Nm5KmYDnAnhG3jYB+G4HuNHcoF2Xztdk6SByxu1PDD
-JHm3vC8+hlPZTd0KqVKMkhTgx42bOPuM6x68BDJe5E0NDJ+B30U4sm3pwpEblucoOwx8vbpRdezc
-PT3cuuQeyPEnLgTv9RLNCTmBZatorrITab+WUxnIro77hUklfFAyWoCX3s34++vfPulLqeKtMvog
-xBQOLIth
---000000000000d1422b062da14144--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCWdp9QiJ5UM7EkqoS5t8kDgZ+P6/M2
+cnoVTc2ZyjjNsIVv4Sy/KQO6PAPSfkjU47Rv1Du2o3fGuPfIQqhAkwS86M/gI2aAdgHImDQ9VpFV
+6KskKVeO2wGrzQKLg0aodXK7H5AGlP5mCtm8JrtbJ9lNC05lhEL5wvtfYXgGZoL8ru4TpgQgqUxe
+12tgX56yeRBlxACJ1Wy7nZrEpoYYvH+0bSB7fa2c921Q3f20j3XUatcppnZqcsVYi6t57TvEUY2F
+JAtR3QkoWDxW1snT2lyibu6QasoFHp0UTEleZA616NhMkEjFavKHX0vLoMPeigODC6D2Ir1tEZN0
+y8Lor9To
+--0000000000006aea98062da155b7--
 
