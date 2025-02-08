@@ -1,65 +1,65 @@
-Return-Path: <linux-rdma+bounces-7573-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7574-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADEDAA2D1F2
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 01:24:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EA55A2D21C
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 01:29:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44C98169CF9
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 00:24:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 261CA3AA3F1
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2025 00:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4B7A937;
-	Sat,  8 Feb 2025 00:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1561ADDC1;
+	Sat,  8 Feb 2025 00:28:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HSN8vdJp"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hZVRcoIm"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70FFD528;
-	Sat,  8 Feb 2025 00:24:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8037DDBE;
+	Sat,  8 Feb 2025 00:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738974269; cv=none; b=FUCBZ+ltJHi3rLmH7PtWh422YHRojTdD6u2EoRjGlLTGQ86vuPKd1umUhEEHXxpmvMcP5swdprc7Djol49a0kGVhz8xGJiWdrCy0lcljrKWqjVarDSvJkzNwU+0TbWhqgb6zrjLsDy/bYtV4LCLSEcOBuEpejBfk4qsswp1zul8=
+	t=1738974521; cv=none; b=iOkGwJQbefAfKOb+QsgCqctZ5E4CnY39vdaUhiSapBcFP3WzuhJLBHwQTvPMoqDT8YeGLGwaZV2VIkLk+Dq7vQMBBXiHlVXRGynJDouXZI7fZ903PoprcpojjbxnNyFEl3pRQIo6ULsEkKVEtiD0eQaPGyK0dBdw+/OThegdf7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738974269; c=relaxed/simple;
-	bh=ahQj+V5er1m7Zc89Bojm87PqLdkX1UrTeL6qrBYoilU=;
+	s=arc-20240116; t=1738974521; c=relaxed/simple;
+	bh=8KpJIyELBLM0Zm/ekc+xVLqtmZ624tseAAI/DgbWJ7o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q9TSmaaXpqY7r6YFkgTwhEqTq9bHXlMXhW3Nk+tT3TNF2k3cqhtSR6NnHtskSfV6IsIWnmd46hVu6vIBZfec0Ir+PSEgBK7jZ1pFcIMW9B7TVKVNck00QHCYsC6tfmMzJgwV9gMkwC9kQs9RjHeUWz+7Z8fw2sungCkldZ8r4eA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HSN8vdJp; arc=none smtp.client-ip=198.175.65.11
+	 In-Reply-To:Content-Type; b=ucVVOnBHPU21IB0FNjwWc5VI/O45UgbCcB0N8YJsAm0wwiIXO7BfU7qS4CFGGpPYxXQXQ+Ft/IQEDt3gbYn2fj27TCfD70ht1/ZQ4zJ4alBLaSuVweu6vSVI/rQE0W+3PlIfLTp8qemJXvyEr1f08qHdCufIWR53NAfxx9XvUCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hZVRcoIm; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1738974267; x=1770510267;
+  t=1738974520; x=1770510520;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=ahQj+V5er1m7Zc89Bojm87PqLdkX1UrTeL6qrBYoilU=;
-  b=HSN8vdJpT7qoOKLFSK9AKnCnWdV9zg9vMesDcQ1lAIR1JTqUfFk5L5wL
-   thv17uqlS6z7D3YuAWE9/t8trjJ5M7cX5k+3wUnYjgqASKHAwhSirt/8J
-   XcRTmK8Tn3Nf2ivyIx+cfYiIVQTU6okVQraUq3ytyn61hKqvvGJsOfAVI
-   cpZjI2+XF2s9R06suEnP1nS9iYA6oK4tDcrj+7FiIgdPuJzVEE/U1+hI/
-   PPLneC1QmYcdrU15VyKIs/aN7gnK1GN1g9oL1lww1n54TPGk/AZZAHkVP
-   r/yLpHtIYuGtOxCfnXcKnXWuw8cAJTzmax/OvcWcM/l5cslo2+hXzWsr3
+  bh=8KpJIyELBLM0Zm/ekc+xVLqtmZ624tseAAI/DgbWJ7o=;
+  b=hZVRcoImJIKRomu2HW9fhR0quar3fr8Qifjp8YS8mOwRMKE1Vard9KFn
+   quwRZB4xkX8evCYB1xMM5sJp6y6m0UTEjHiVkOkSRHTGEdurMvHhuNFMP
+   adh5WDy8qC/P97RdWp53QZLZOs6OKA+j3Yl5z9mvq1luYCiBFbKlOVNWe
+   oQzrbo0Baj+MJjitnurTdVErkaAL+sB0qi6BSgLBKgT1oRDosbyrCTHGQ
+   KiWhQI9YIKfkbh8gYXL8vk2J0vFYgTbeeKX9ba7eFtMu1Djml2+2fT+rG
+   7ssZtFcuRHTdXBLjI6vmfXr/SdCT2f3MeFlLNJKdeB+UPLQo9L7An7FS8
    g==;
-X-CSE-ConnectionGUID: HyxGg9F6TBaN4jEDmRRe+Q==
-X-CSE-MsgGUID: ijqWwnV1TVCtK3NnFBDPsQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="49867994"
+X-CSE-ConnectionGUID: lwSBadX6QZi/SfVh9tkRhg==
+X-CSE-MsgGUID: GyEEnRCyTlKkVqhXLs6xyw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11338"; a="50267024"
 X-IronPort-AV: E=Sophos;i="6.13,268,1732608000"; 
-   d="scan'208";a="49867994"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 16:24:27 -0800
-X-CSE-ConnectionGUID: xfeSCHmOR3ikoIcfk1QtNA==
-X-CSE-MsgGUID: cUEFhb4NSfy9sJcyZw1fMQ==
+   d="scan'208";a="50267024"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 16:28:39 -0800
+X-CSE-ConnectionGUID: 92Ri3RWuSGiiX23OmfuVSQ==
+X-CSE-MsgGUID: +iUnNY97SeGa74brNARD9g==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,268,1732608000"; 
-   d="scan'208";a="112296017"
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="116269116"
 Received: from agladkov-desk.ger.corp.intel.com (HELO [10.125.111.68]) ([10.125.111.68])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 16:24:25 -0800
-Message-ID: <1dbc68d4-355f-4baa-bbef-1e023959032d@intel.com>
-Date: Fri, 7 Feb 2025 17:24:24 -0700
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2025 16:28:37 -0800
+Message-ID: <10a9bd55-c7fb-4acc-9d85-f972d1d22fbe@intel.com>
+Date: Fri, 7 Feb 2025 17:28:36 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -67,7 +67,8 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 04/10] taint: Add TAINT_FWCTL
+Subject: Re: [PATCH v4 05/10] fwctl: FWCTL_RPC to execute a Remote Procedure
+ Call to device firmware
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>,
  Aron Silverton <aron.silverton@oracle.com>,
@@ -81,96 +82,230 @@ Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>,
  linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
  Saeed Mahameed <saeedm@nvidia.com>, "Nelson, Shannon"
  <shannon.nelson@amd.com>
-References: <4-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
+References: <5-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
 Content-Language: en-US
 From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <4-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
+In-Reply-To: <5-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
 
 On 2/6/25 5:13 PM, Jason Gunthorpe wrote:
-> Requesting a fwctl scope of access that includes mutating device debug
-> data will cause the kernel to be tainted. Changing the device operation
-> through things in the debug scope may cause the device to malfunction in
-> undefined ways. This should be reflected in the TAINT flags to help any
-> debuggers understand that something has been done.
+> Add the FWCTL_RPC ioctl which allows a request/response RPC call to device
+> firmware. Drivers implementing this call must follow the security
+> guidelines under Documentation/userspace-api/fwctl.rst
 > 
+> The core code provides some memory management helpers to get the messages
+> copied from and back to userspace. The driver is responsible for
+> allocating the output message memory and delivering the message to the
+> device.
+> 
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+
 Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 
 > ---
->  Documentation/admin-guide/tainted-kernels.rst | 5 +++++
->  include/linux/panic.h                         | 3 ++-
->  kernel/panic.c                                | 1 +
->  tools/debugging/kernel-chktaint               | 8 ++++++++
->  4 files changed, 16 insertions(+), 1 deletion(-)
+>  drivers/fwctl/main.c       | 60 +++++++++++++++++++++++++++++++++
+>  include/linux/fwctl.h      |  8 +++++
+>  include/uapi/fwctl/fwctl.h | 68 ++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 136 insertions(+)
 > 
-> diff --git a/Documentation/admin-guide/tainted-kernels.rst b/Documentation/admin-guide/tainted-kernels.rst
-> index 700aa72eecb169..a0cc017e44246f 100644
-> --- a/Documentation/admin-guide/tainted-kernels.rst
-> +++ b/Documentation/admin-guide/tainted-kernels.rst
-> @@ -101,6 +101,7 @@ Bit  Log  Number  Reason that got the kernel tainted
->   16  _/X   65536  auxiliary taint, defined for and used by distros
->   17  _/T  131072  kernel was built with the struct randomization plugin
->   18  _/N  262144  an in-kernel test has been run
-> + 19  _/J  524288  userspace used a mutating debug operation in fwctl
->  ===  ===  ======  ========================================================
+> diff --git a/drivers/fwctl/main.c b/drivers/fwctl/main.c
+> index 4b6792f2031e86..a5e26944b830b5 100644
+> --- a/drivers/fwctl/main.c
+> +++ b/drivers/fwctl/main.c
+> @@ -8,17 +8,20 @@
+>  #include <linux/container_of.h>
+>  #include <linux/fs.h>
+>  #include <linux/module.h>
+> +#include <linux/sizes.h>
+>  #include <linux/slab.h>
 >  
->  Note: The character ``_`` is representing a blank in this table to make reading
-> @@ -184,3 +185,7 @@ More detailed explanation for tainting
->       build time.
+>  #include <uapi/fwctl/fwctl.h>
 >  
->   18) ``N`` if an in-kernel test, such as a KUnit test, has been run.
+>  enum {
+>  	FWCTL_MAX_DEVICES = 4096,
+> +	MAX_RPC_LEN = SZ_2M,
+>  };
+>  static_assert(FWCTL_MAX_DEVICES < (1U << MINORBITS));
+>  
+>  static dev_t fwctl_dev;
+>  static DEFINE_IDA(fwctl_ida);
+> +static unsigned long fwctl_tainted;
+>  
+>  struct fwctl_ucmd {
+>  	struct fwctl_uctx *uctx;
+> @@ -76,9 +79,65 @@ static int fwctl_cmd_info(struct fwctl_ucmd *ucmd)
+>  	return ucmd_respond(ucmd, sizeof(*cmd));
+>  }
+>  
+> +static int fwctl_cmd_rpc(struct fwctl_ucmd *ucmd)
+> +{
+> +	struct fwctl_device *fwctl = ucmd->uctx->fwctl;
+> +	struct fwctl_rpc *cmd = ucmd->cmd;
+> +	size_t out_len;
 > +
-> + 19) ``J`` if userpace opened /dev/fwctl/* and performed a FWTCL_RPC_DEBUG_WRITE
-> +     to use the devices debugging features. Device debugging features could
-> +     cause the device to malfunction in undefined ways.
-> diff --git a/include/linux/panic.h b/include/linux/panic.h
-> index 54d90b6c5f47bd..2494d51707ef42 100644
-> --- a/include/linux/panic.h
-> +++ b/include/linux/panic.h
-> @@ -74,7 +74,8 @@ static inline void set_arch_panic_timeout(int timeout, int arch_default_timeout)
->  #define TAINT_AUX			16
->  #define TAINT_RANDSTRUCT		17
->  #define TAINT_TEST			18
-> -#define TAINT_FLAGS_COUNT		19
-> +#define TAINT_FWCTL			19
-> +#define TAINT_FLAGS_COUNT		20
->  #define TAINT_FLAGS_MAX			((1UL << TAINT_FLAGS_COUNT) - 1)
->  
->  struct taint_flag {
-> diff --git a/kernel/panic.c b/kernel/panic.c
-> index d8635d5cecb250..0c55eec9e8744a 100644
-> --- a/kernel/panic.c
-> +++ b/kernel/panic.c
-> @@ -511,6 +511,7 @@ const struct taint_flag taint_flags[TAINT_FLAGS_COUNT] = {
->  	TAINT_FLAG(AUX,				'X', ' ', true),
->  	TAINT_FLAG(RANDSTRUCT,			'T', ' ', true),
->  	TAINT_FLAG(TEST,			'N', ' ', true),
-> +	TAINT_FLAG(FWCTL,			'J', ' ', true),
+> +	if (cmd->in_len > MAX_RPC_LEN || cmd->out_len > MAX_RPC_LEN)
+> +		return -EMSGSIZE;
+> +
+> +	switch (cmd->scope) {
+> +	case FWCTL_RPC_CONFIGURATION:
+> +	case FWCTL_RPC_DEBUG_READ_ONLY:
+> +		break;
+> +
+> +	case FWCTL_RPC_DEBUG_WRITE_FULL:
+> +		if (!capable(CAP_SYS_RAWIO))
+> +			return -EPERM;
+> +		fallthrough;
+> +	case FWCTL_RPC_DEBUG_WRITE:
+> +		if (!test_and_set_bit(0, &fwctl_tainted)) {
+> +			dev_warn(
+> +				&fwctl->dev,
+> +				"%s(%d): has requested full access to the physical device device",
+> +				current->comm, task_pid_nr(current));
+> +			add_taint(TAINT_FWCTL, LOCKDEP_STILL_OK);
+> +		}
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	void *inbuf __free(kvfree) = kvzalloc(cmd->in_len, GFP_KERNEL_ACCOUNT);
+> +	if (!inbuf)
+> +		return -ENOMEM;
+> +	if (copy_from_user(inbuf, u64_to_user_ptr(cmd->in), cmd->in_len))
+> +		return -EFAULT;
+> +
+> +	out_len = cmd->out_len;
+> +	void *outbuf __free(kvfree) = fwctl->ops->fw_rpc(
+> +		ucmd->uctx, cmd->scope, inbuf, cmd->in_len, &out_len);
+> +	if (IS_ERR(outbuf))
+> +		return PTR_ERR(outbuf);
+> +	if (outbuf == inbuf) {
+> +		/* The driver can re-use inbuf as outbuf */
+> +		inbuf = NULL;
+> +	}
+> +
+> +	if (copy_to_user(u64_to_user_ptr(cmd->out), outbuf,
+> +			 min(cmd->out_len, out_len)))
+> +		return -EFAULT;
+> +
+> +	cmd->out_len = out_len;
+> +	return ucmd_respond(ucmd, sizeof(*cmd));
+> +}
+> +
+>  /* On stack memory for the ioctl structs */
+>  union ucmd_buffer {
+>  	struct fwctl_info info;
+> +	struct fwctl_rpc rpc;
 >  };
 >  
->  #undef TAINT_FLAG
-> diff --git a/tools/debugging/kernel-chktaint b/tools/debugging/kernel-chktaint
-> index 279be06332be99..e7da0909d09707 100755
-> --- a/tools/debugging/kernel-chktaint
-> +++ b/tools/debugging/kernel-chktaint
-> @@ -204,6 +204,14 @@ else
->  	echo " * an in-kernel test (such as a KUnit test) has been run (#18)"
->  fi
+>  struct fwctl_ioctl_op {
+> @@ -99,6 +158,7 @@ struct fwctl_ioctl_op {
+>  	}
+>  static const struct fwctl_ioctl_op fwctl_ioctl_ops[] = {
+>  	IOCTL_OP(FWCTL_INFO, fwctl_cmd_info, struct fwctl_info, out_device_data),
+> +	IOCTL_OP(FWCTL_RPC, fwctl_cmd_rpc, struct fwctl_rpc, out),
+>  };
 >  
-> +T=`expr $T / 2`
-> +if [ `expr $T % 2` -eq 0 ]; then
-> +	addout " "
-> +else
-> +	addout "J"
-> +	echo " * fwctl's mutating debug interface was used (#19)"
-> +fi
+>  static long fwctl_fops_ioctl(struct file *filp, unsigned int cmd,
+> diff --git a/include/linux/fwctl.h b/include/linux/fwctl.h
+> index 9b6cc8ae1aa0ca..c2fcaa17a2bcd5 100644
+> --- a/include/linux/fwctl.h
+> +++ b/include/linux/fwctl.h
+> @@ -47,6 +47,14 @@ struct fwctl_ops {
+>  	 * ignore length on input, the core code will handle everything.
+>  	 */
+>  	void *(*info)(struct fwctl_uctx *uctx, size_t *length);
+> +	/**
+> +	 * @fw_rpc: Implement FWCTL_RPC. Deliver rpc_in/in_len to the FW and
+> +	 * return the response and set out_len. rpc_in can be returned as the
+> +	 * response pointer. Otherwise the returned pointer is freed with
+> +	 * kvfree().
+> +	 */
+> +	void *(*fw_rpc)(struct fwctl_uctx *uctx, enum fwctl_rpc_scope scope,
+> +			void *rpc_in, size_t in_len, size_t *out_len);
+>  };
+>  
+>  /**
+> diff --git a/include/uapi/fwctl/fwctl.h b/include/uapi/fwctl/fwctl.h
+> index ac66853200a5a8..7a21f2f011917a 100644
+> --- a/include/uapi/fwctl/fwctl.h
+> +++ b/include/uapi/fwctl/fwctl.h
+> @@ -67,4 +67,72 @@ struct fwctl_info {
+>  };
+>  #define FWCTL_INFO _IO(FWCTL_TYPE, FWCTL_CMD_INFO)
+>  
+> +/**
+> + * enum fwctl_rpc_scope - Scope of access for the RPC
+> + *
+> + * Refer to fwctl.rst for a more detailed discussion of these scopes.
+> + */
+> +enum fwctl_rpc_scope {
+> +	/**
+> +	 * @FWCTL_RPC_CONFIGURATION: Device configuration access scope
+> +	 *
+> +	 * Read/write access to device configuration. When configuration
+> +	 * is written to the device it remains in a fully supported state.
+> +	 */
+> +	FWCTL_RPC_CONFIGURATION = 0,
+> +	/**
+> +	 * @FWCTL_RPC_DEBUG_READ_ONLY: Read only access to debug information
+> +	 *
+> +	 * Readable debug information. Debug information is compatible with
+> +	 * kernel lockdown, and does not disclose any sensitive information. For
+> +	 * instance exposing any encryption secrets from this information is
+> +	 * forbidden.
+> +	 */
+> +	FWCTL_RPC_DEBUG_READ_ONLY = 1,
+> +	/**
+> +	 * @FWCTL_RPC_DEBUG_WRITE: Writable access to lockdown compatible debug information
+> +	 *
+> +	 * Allows write access to data in the device which may leave a fully
+> +	 * supported state. This is intended to permit intensive and possibly
+> +	 * invasive debugging. This scope will taint the kernel.
+> +	 */
+> +	FWCTL_RPC_DEBUG_WRITE = 2,
+> +	/**
+> +	 * @FWCTL_RPC_DEBUG_WRITE_FULL: Write access to all debug information
+> +	 *
+> +	 * Allows read/write access to everything. Requires CAP_SYS_RAW_IO, so
+> +	 * it is not required to follow lockdown principals. If in doubt
+> +	 * debugging should be placed in this scope. This scope will taint the
+> +	 * kernel.
+> +	 */
+> +	FWCTL_RPC_DEBUG_WRITE_FULL = 3,
+> +};
 > +
->  echo "For a more detailed explanation of the various taint flags see"
->  echo " Documentation/admin-guide/tainted-kernels.rst in the Linux kernel sources"
->  echo " or https://kernel.org/doc/html/latest/admin-guide/tainted-kernels.html"
+> +/**
+> + * struct fwctl_rpc - ioctl(FWCTL_RPC)
+> + * @size: sizeof(struct fwctl_rpc)
+> + * @scope: One of enum fwctl_rpc_scope, required scope for the RPC
+> + * @in_len: Length of the in memory
+> + * @out_len: Length of the out memory
+> + * @in: Request message in device specific format
+> + * @out: Response message in device specific format
+> + *
+> + * Deliver a Remote Procedure Call to the device FW and return the response. The
+> + * call's parameters and return are marshaled into linear buffers of memory. Any
+> + * errno indicates that delivery of the RPC to the device failed. Return status
+> + * originating in the device during a successful delivery must be encoded into
+> + * out.
+> + *
+> + * The format of the buffers matches the out_device_type from FWCTL_INFO.
+> + */
+> +struct fwctl_rpc {
+> +	__u32 size;
+> +	__u32 scope;
+> +	__u32 in_len;
+> +	__u32 out_len;
+> +	__aligned_u64 in;
+> +	__aligned_u64 out;
+> +};
+> +#define FWCTL_RPC _IO(FWCTL_TYPE, FWCTL_CMD_RPC)
+> +
+>  #endif
 
 
