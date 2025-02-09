@@ -1,81 +1,104 @@
-Return-Path: <linux-rdma+bounces-7586-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7587-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3340A2DBC8
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Feb 2025 10:25:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0BC5A2DBD4
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Feb 2025 10:45:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F4933A6F3D
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Feb 2025 09:24:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48F4B7A2E75
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Feb 2025 09:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8962514B092;
-	Sun,  9 Feb 2025 09:24:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61BF114A4E7;
+	Sun,  9 Feb 2025 09:45:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D2PXEBzF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BKbiPCj/"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3981A143723;
-	Sun,  9 Feb 2025 09:24:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112D014A91;
+	Sun,  9 Feb 2025 09:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739093099; cv=none; b=RdyNOaxbc0tyNXVctuwT87WSPnlzz2wrsZxQNU5oHML28rMOu2jLtC7w5oKVBa8F2TmznS0NsypPpXK1jHbFcIYFBDGzFOIz6wXqjXzZxv9RoItXQf2xhfYO7yhR0tmfgn1DhuHmf9GOtB+cfaGu6Hmd00ovOqTC6QJAx4ubOlY=
+	t=1739094333; cv=none; b=uBT6aq5Tr90LTges4XTkbYzvWHfSFwJhTiLePuBxpt60U/i0u0o/QySBDsN748IgejPYcesdGNst+BfwqPKOZjhX3tT8iq/X8BLs+95D4KgFICIEmsjhZuVAS6p3dO4wcKl3bVfRY8Pn0DlP+qfw5+7JgLi7ShfD5lkch6pNgrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739093099; c=relaxed/simple;
-	bh=ssQObEYlw8YT4fp9TnwZdyIO3kgihzlK1DnhYvED8kE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=NBbamSk2fb83IvR8cGv3EZtyng0sG63W6POaiE0nG21DUD5c1mYSwdm6T3hELQL7we/dhQ/OlmfnF60t0jTbRfulVFdiXfV5vW5HfhhIVnGU2e4HL1QtvJJoftHk5xCipeODr+1IiA9PPRRqPQ+//9zh5Cxrsr4Ku7J8jkA41S4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D2PXEBzF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0418DC4CEDD;
-	Sun,  9 Feb 2025 09:24:57 +0000 (UTC)
+	s=arc-20240116; t=1739094333; c=relaxed/simple;
+	bh=WcgMqs/ZwM9rIg7kqK/twtKrWUkfdn5EnRYbJxE9NiA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iyFmnZOnnGU2O15hvIJYnmXCweW1ZfMgwEufLzkdNRNk2V3bsElpcOWk2jlF9MYlwIa9aaNfPPvn64KIauMF6oWl7W6MuKljmFU1pghV+XzMyhX4pTKi620YAc4SkQmwtGfP9g9SlhH7P5lAUeDFxkMm+34mnodPUHG7/py6LEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BKbiPCj/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF9A3C4CEDD;
+	Sun,  9 Feb 2025 09:45:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739093098;
-	bh=ssQObEYlw8YT4fp9TnwZdyIO3kgihzlK1DnhYvED8kE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=D2PXEBzFn2b5wylIjH7TeTYgGZO4dXFM+PH7XjVKP8QxV6SzI3Y+NAEmzS6CpuW8z
-	 ubmWsK4vRtHByTLgg3swhZZ51iY8YMhxSFNj2YLsuDLsuekQrqVIkGccTcjfEbCKr0
-	 gAg40Q00z92Ybw0Dk3hTikrpzlTcs2VaraM0q8jDxsNfW6lEItC2UGSqCuxRxxbIAU
-	 qHeNosIOfOD2sopDQPrHLJrM6upEpBIpfQpKjVh8HfdwJixfbuIdVCaX9j5kpoBaMr
-	 IViQyzToVGB3Zn4w7UyLx4nMiMZb9kBF0O1L38MEehKjEmqwmRXVlFxeo8mjwX6/0m
-	 HJzkZyP3PynNQ==
+	s=k20201202; t=1739094332;
+	bh=WcgMqs/ZwM9rIg7kqK/twtKrWUkfdn5EnRYbJxE9NiA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BKbiPCj/bnlGorhgWoHY+EgObj2nir8+E7QW5MkGQOUMTEmHvM2N+dtFPBBYRQvcm
+	 OPjhYkD6NPdPp0lAxwPzZPGLIKV328kum/oDyYA5csdDanqK8N7Kz6O8ixLWpA1INj
+	 tGazUnO7nszkrdjYVA0RK5TgJ4e03JoWxUbnWCFodUgQsvHrvXyDZM1k6YTJaxRCDk
+	 iNxBEW9ncLl8dksuDg4Q9rTlywbhUMwDGW2M3U6fsbi+iXyCSIEJFiQOXPhhRyTGe9
+	 5cgrpd3Mlu55Y7ZIso38CLJNW8ZJDRQhi60e4ELE06WWbGMMD/3E3VIr56l3e/U3W8
+	 jFuMRfHpkh+Og==
+Date: Sun, 9 Feb 2025 11:45:28 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@microsoft.com>, 
- Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Long Li <longli@microsoft.com>, Ajay Sharma <sharmaajay@microsoft.com>, 
- Jason Gunthorpe <jgg@ziepe.ca>, Shiraz Saleem <shirazsaleem@microsoft.com>, 
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
- kernel-janitors@vger.kernel.org
-In-Reply-To: <2bbe900e-18b3-46b5-a08c-42eb71886da6@stanley.mountain>
-References: <2bbe900e-18b3-46b5-a08c-42eb71886da6@stanley.mountain>
-Subject: Re: [PATCH next] RDMA/mana_ib: Fix error code in probe()
-Message-Id: <173909309517.4223.3295047094322113196.b4-ty@kernel.org>
-Date: Sun, 09 Feb 2025 04:24:55 -0500
+To: longli@linuxonhyperv.com
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Ajay Sharma <sharmaajay@microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	Long Li <longli@microsoft.com>
+Subject: Re: [Patch v2 0/3] IB/core: Fix GID cache for bonded net devices
+Message-ID: <20250209094528.GB17863@unreal>
+References: <1738964178-18836-1-git-send-email-longli@linuxonhyperv.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1738964178-18836-1-git-send-email-longli@linuxonhyperv.com>
 
-
-On Fri, 07 Feb 2025 12:16:03 +0300, Dan Carpenter wrote:
-> Return -ENOMEM if dma_pool_create() fails.  Don't return success.
+On Fri, Feb 07, 2025 at 01:36:15PM -0800, longli@linuxonhyperv.com wrote:
+> From: Long Li <longli@microsoft.com>
 > 
+> When populating GID cache for net devices in a bonded setup, it should use the master device's
+> address whenever applicable.
 > 
+> The current code has some incorrect behaviors when dealing with bonded devices:
+> 1. It adds IP of bonded slave to the GID cache when the device is already bonded
+> 2. It adds IP of bonded slave to the GID cache when the device becomes bonded (via NETDEV_CHANGEUPPER notifier)
+> 3. When a bonded slave device is unbonded, it doesn't add its IP to the default table in GID cache.
 
-Applied, thanks!
+I took a look at the patches and would like to see the reasoning why
+current behaviour is incorrect and need to be changed. In addition,
+there is a need to add examples of what is "broken" now and will start
+to work after the fixes.
 
-[1/1] RDMA/mana_ib: Fix error code in probe()
-      https://git.kernel.org/rdma/rdma/c/607a7dcf2e9814
+Thanks
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
 
+> 
+> The patchset fixes those issues.
+> 
+> Changes log:
+> v2: Added cover letter explaining the overall problem and current behaviors.
+> 
+> Long Li (3):
+>   IB/core: Do not use netdev IP if it is a bonded slave
+>   IB/core: Use upper_device_filter to add upper ips
+>   IB/core: Add default IP when a slave is unlinked
+> 
+>  drivers/infiniband/core/roce_gid_mgmt.c | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
 
