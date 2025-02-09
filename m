@@ -1,109 +1,98 @@
-Return-Path: <linux-rdma+bounces-7609-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7610-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E70BBA2DEB8
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Feb 2025 16:11:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E74FA2DEDE
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Feb 2025 16:44:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 415B31887132
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Feb 2025 15:11:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2BFB7A2B6D
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Feb 2025 15:43:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E13AC1DF733;
-	Sun,  9 Feb 2025 15:11:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C2B1DF72E;
+	Sun,  9 Feb 2025 15:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="umvhQtFk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hlc9BCgF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mout.web.de (mout.web.de [217.72.192.78])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 048D6F9FE;
-	Sun,  9 Feb 2025 15:10:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C66199223;
+	Sun,  9 Feb 2025 15:44:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739113862; cv=none; b=H90strh/nGW9WtH9Vjnbo0ajq/RhjQhGt28mc7abuS88ontFocrZmxhyIxQrOFsXjiyU8kIowiA6Gq25KLUCXerZNRUgilZhY/0mX3VJd8vA1m5QO0Jm1Zm9rUQsC4lnZ+hSHlptKV4KFYVz66eHWURH9VvcEO4RNFGrc4jhpvo=
+	t=1739115858; cv=none; b=Bnwf4pmdA1dtaUB89YWYYM2hqYW7wCBwuLJNe2ssrd3QsZmeG0FBiL24vJT9hLfrKg6j/MC3YqpNphUwEQCy6yhzRmkcLO36ON27WcqokqrObDJBU93eLgA1TDqZYscijEJah4rV1hXl87jX15FurHG9IqDrZiFKrqx/joEnPuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739113862; c=relaxed/simple;
-	bh=Pw4A9EPtu6M+CznVZfsow6MTIebmDOlA4bH9NLWTaKc=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Cc:Content-Type; b=j+YGYHXVz31afHvkbYT9JAmCpmrIyYf3ZUjGXsvKDc7uua+nhTUpjPG9yNhTgPFfbZYVXkd9Lf3T7/QxwdtY8OTDUZq05QD/AMgbv+Q9nvHiAoFeQhXxq9+T7djhGff1oSdtV+FVuscIbJVjg+jR2cOl/nZ50YDefqqzlpQKxGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=umvhQtFk; arc=none smtp.client-ip=217.72.192.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1739113849; x=1739718649; i=markus.elfring@web.de;
-	bh=g+85RQ49D14pcg2rQ7TtGa2VAdHK1hPQ3J5/ITKF/WA=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
-	 Cc:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=umvhQtFkJKgEp7S9+0oDsmUmnjV+vi2ERNdv2wvGbItwxEeKfvUdPEwVKwoxd6sL
-	 01oEc35CzzQk/C2ZayrMW/d01J1Q/6Jumi53MO/gX5yLSIcfXZtvEISoRyKsnRR19
-	 Hav0HtDDG26Xrxh+zwiIemCxyUlDwN41sXkOy2ypAvbBkVzi2aN9znJcvtW48XHQq
-	 /HQzHkhc9Zo0NJLK+nVrcRVZ9kApA6WsXPzsXCZ5xo63UzCLJgaruqa2FTmBhEyY1
-	 tinTKK+zvmSBeqbnhiuNI6xqo2aAcxolUKtp9N27Nx098PtxZMcWp+BaY07XHXJhh
-	 yeTWntG8AR3Yj/GMoQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.70.5]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MkElP-1sx7su09tp-00cJ6d; Sun, 09
- Feb 2025 16:10:49 +0100
-Message-ID: <7692fda2-f9a5-4381-b1a8-f949543c0a89@web.de>
-Date: Sun, 9 Feb 2025 16:10:48 +0100
+	s=arc-20240116; t=1739115858; c=relaxed/simple;
+	bh=dGPpB9t+4RudLOtvR40Tcn15xSyprmOSWpFz5CYcR0o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KPhPcYejf58Pf+ui3fXkqPweHzPKYMoL1FNL1rXIlvpcDFT0mpmT9E4N7zH/DG+iJ2rw+ts5Jni2qmfxDk719a8+BqoTpmdfeJFay9wBJXU51elpDrAsOxF31WvIWbOynxnJdOI8/pjwb0O5qP7/szdJ+WWmbe/g9w9hfr1nPm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hlc9BCgF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B59EBC4CEDD;
+	Sun,  9 Feb 2025 15:44:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739115857;
+	bh=dGPpB9t+4RudLOtvR40Tcn15xSyprmOSWpFz5CYcR0o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Hlc9BCgFJfjwnjU/0v9DW0tP7/1WDWbvRt8ti/LqDQLSJjKPqoVFOwcsRB3DYrjbS
+	 gPhP+IV8CA3CNjyrnKutAqQrfXMOJZSutbaVKGhcITFEhfl4ZpgcOKwtTPpous0kbk
+	 dgIs6ZQ/6tdD6G8Ouh0/nbzyNn/sOpaoNU+tcX6zxBL5qqTYuXfAd4Nh627WZh8EoU
+	 QOHFa97jPzOxFCeLxsEzhB0vmtIrVwa4qj1KSDtsI4EhtX1R9QFmE26nWRLmtXVScu
+	 LH13mMdwU9z7nql+L4nhEg20kLuisAWsi6J/kdMw7U4YcwrUwYIIxZjnFXANEETVq3
+	 92Dlj92cXjd+Q==
+Date: Sun, 9 Feb 2025 07:44:16 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Mustafa Ismail <mustafa.ismail@intel.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] RDMA/irdma: switch to using the crc32c library
+Message-ID: <20250209154416.GA1230@sol.localdomain>
+References: <20250207033643.59904-1-ebiggers@kernel.org>
+ <20250207035750.GA43210@sol.localdomain>
+ <20250209091255.GA17863@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-rdma@vger.kernel.org, Cheng Xu <chengyou@linux.alibaba.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Kai Shen <kaishen@linux.alibaba.com>,
- Leon Romanovsky <leon@kernel.org>, Yang Li <yang.lee@linux.alibaba.com>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [RFC] RDMA/erdma: Avoid use-after-free in erdma_accept_newconn()
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:NA+UC7Qcrq9UtmA+RHMOp869eZiVVcuDInHKov2+UH89LDoaMyY
- u2e64DgcxrjjlYXhEOCevq4c6JvFdeOOv93jypj2l23DXZkK9ZYZ7xvWTXt+suR6wYPc2PN
- F46Sh9TaV6iO0pdDU6gwSm2W/ySNbho6AfgPjBnSf8E1roCvYLuNld8n5/puDK9LnZuurMP
- Ia9EaKnOFcp3FwjldGOdQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:18ZA4r85Zbo=;EwgIFKo/HgaCN4a56LVXXBTrez0
- ft7w01R5PC69J4Ey20IchS8+53f+3cCI2nj6sgfHogpdVsFSXtNv/hneDyra3j7KAz5GrLnOx
- W0anZV2/GtAAH/vYvaRkdzdzPK8PuofgedjsatB2po2yXV3TtzRrAcGR2cb9Tt68Vq3lN6myH
- cT5WMycl+q2ldPp8thcM+WW4ria2TE7p94fRzbZ5Zvxsv39QqBeKqCQij+gpfIHnD8+08bA87
- iC7mM1R5noTvsFsWYpt+kIoRkyPNwcBNPJVhChex+Z77RpYo0cqlcKtkNnMj6WIuhXa0qEbWe
- 4UmGppfBpzMst3it8E4cS9qKZ3AIXg4MGKfMSxgp/RnPo0waqUnkWK0mVjrRDgb2slTiZ/yz3
- UM6X8+Nt9PEyqOTUJ6HqKmhPSHyNCMe8WU67u6mtvT1SDaH/gsdaM9cG1fpV/dXvz0LyOMbsy
- gGT5hSKIULP9uUu7AHMAIvUoBaDtUZKgC5AZdxbCnC+P2I3Ndqh+lgzI8m9ntquk6043KL4Hy
- ul9YDY/GSxS3WezFKA+OVaigXK776OeS+sQ9IJEueYtV+aUgX7IDn0hp2ym4GB/U83YM8b7Wn
- BtFlkpBw+U1Ei7/gqWrUc1rRTWSdOlOFf38Gp4YvcRosLNi536cdoqSmXPJSHjAgzo31DOCFt
- Vw5l5mb4oiRvV4gGNwVsxK+VIDYSG9R34A0N6seXXA5l6gXHzwwonUNOE1JDzcjNJCaJ3nMbg
- FiYh+Fz3+y1T4HJQ8T3sC5vmOgwsuowTLpfgndAgiMOoGJTxLDYX5BVlE4a1TPn6KJHqKsS20
- dDCm9nm9CP+P620xeDk4wJqjnXK/ga9YFGaNwgpf/gNxWbglO0mLAgz/p1oI0X6Hog2PIduHP
- MFvhFWWqgHXmTDNVk9OL3Ej5713OjcrCBEChyo004QHNPxhT7JN7fad8sw5dJG/sUEEGGEIh+
- gTggLn6zoZz1GarO9a3sxDOLGEDX1izDOk76bZvU/mRlLibYK8Oh//DFmhxIUu/E/JC6YxAqy
- dfV6SBWIL+Y40aoT2nlERT61XREJLCtPCGtfDCK97X8Lg05bOZ6FvakZvaunb51b7MjxWHAHJ
- gqCc7ZnoN3hpJcz53OrjnNR+7IeUXiNn9Pf9VDli5sVR4WMP5pRVaxtAqEOaqAflxoJIrGR6M
- CXyx95XxwOsOQYQ7QyGJhKNUDEoKfYOLngt1YHo/enYOxQNYykJac/JSET7XnCSDhn7S60JIi
- hqPrS1UUVeWMceQ7up9DBHyVoiYBT/Gi4XMxPAaFN3PmfGAHohSnApz6JrTIIZxZAhLDDIyhY
- exC2G1RPdVIHnIJRaHAXTfWqzBA1oOQzXbTS/aW+znmllGLaKaRw1PUyO4l13577ec/utI/Zf
- ixNgRGgh4u0fTag/nFwlo1tby8w6t7494ypWXVGrVii8b7Mp6RqgvWJHsza5FOjth8gcUVG38
- /FPCR5N4WymtRnf+5IR4REQe6D54=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250209091255.GA17863@unreal>
 
-Cheng Xu pointed out that the following statement combination would be undesirable.
-https://lkml.org/lkml/2023/3/19/191
-https://lore.kernel.org/linux-rdma/167179d0-e1ea-39a8-4143-949ad57294c2@linux.alibaba.com/
-https://elixir.bootlin.com/linux/v6.13.1/source/drivers/infiniband/hw/erdma/erdma_cm.c#L707-L708
-		erdma_cep_put(new_cep);
-		new_cep->sock = NULL;
+On Sun, Feb 09, 2025 at 11:12:55AM +0200, Leon Romanovsky wrote:
+> On Thu, Feb 06, 2025 at 07:57:50PM -0800, Eric Biggers wrote:
+> > On Thu, Feb 06, 2025 at 07:36:43PM -0800, Eric Biggers wrote:
+> > > +int irdma_ieq_check_mpacrc(const void *addr, u32 len, u32 val)
+> > >  {
+> > > -	u32 crc = 0;
+> > > -
+> > > -	crypto_shash_digest(desc, addr, len, (u8 *)&crc);
+> > > -	if (crc != val)
+> > > +	if (~crc32c(~0, addr, len) != val)
+> > >  		return -EINVAL;
+> > >  
+> > >  	return 0;
+> > >  }
+> > 
+> > Sorry, I just realized this isn't actually equivalent on big endian CPUs, since
+> > the byte array produced by crypto_shash_digest() used little endian byte order,
+> > whereas crc32c() just returns a CPU endian value.
+> > 
+> > And of course this broken subsystem uses u32 for the little endian values
+> > instead of __le32 like the result of the kernel.
+> > 
+> > Not sure it's worth my time to continue to try to fix this subsystem properly.
+> 
+> There is no need to be such dramatic. You are not fixing anything by
+> switch to new APIs
 
-Are there contributors who would like to fix the commit 920d93eac8b97778fef48f34f10e58ddf870fc2a
-("RDMA/erdma: Add connection management (CM) support") from 2022-07-27 accordingly?
+Exactly.  That's because I dropped the patches that actually did fix real
+endianness bugs, because of the pointless pushback I received -- see
+https://lore.kernel.org/linux-rdma/20250127223840.67280-1-ebiggers@kernel.org/T/#u
 
-Regards,
-Markus
-
+- Eric
 
