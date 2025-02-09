@@ -1,61 +1,56 @@
-Return-Path: <linux-rdma+bounces-7588-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7589-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13AD0A2DBD9
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Feb 2025 10:47:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2374CA2DBE7
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Feb 2025 10:58:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C07B73A55C3
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Feb 2025 09:46:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC32C163FC0
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Feb 2025 09:58:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F4214EC5B;
-	Sun,  9 Feb 2025 09:46:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D9551509A0;
+	Sun,  9 Feb 2025 09:58:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p8AzZrEv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G1IQlq5m"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56793E57D;
-	Sun,  9 Feb 2025 09:46:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E83146D53
+	for <linux-rdma@vger.kernel.org>; Sun,  9 Feb 2025 09:58:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739094416; cv=none; b=BirrTQ1PzaT0SaN8QKU6wMkg85rY+6FqOxCUwFbDb+8XOJiVqc37eOTqA9kVvMKa3I400LN8yh1g2WuqP0AP8Efa8YPT2KPJMKL5Ruc8gwh4rq7zsJ1fgFjlM6qM3YXZEWcC2oEilmHrT/ZvWK5qsR68+p03FwJ7g9xUxDgdvWk=
+	t=1739095081; cv=none; b=uR0sArfaA0CcATg8UIw1ZjVwzUGYwgBuZixy3ZUurnG1XgwLpPTeIsL3aRpEbmUzYnN71vU7CAfP6loknuuBfuodb/RiEsbTpl0sBA8kB2XXIHpGFHXy+EYeBsaOSJWkNeXmI7VvPCkX7VfZnHuhVeqRVl+bh7BWVYbm+TK9xLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739094416; c=relaxed/simple;
-	bh=YA/WTmAdd+gegJ8AlmZln8OQb2ZI4OKXMQnRdTeThhc=;
+	s=arc-20240116; t=1739095081; c=relaxed/simple;
+	bh=YMkbRnTU1enxvYCVCwnwwoC1fiCruAx2WsRJ2d+pP1Q=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=NS2ON+pkOmINoAbgoT4RV0zw5Ny2hu8qir3y4Jn9XUajhuqaWdnXC6NeRDe7bJExjnFcUjOizeCDz6wACRf7kLee5gJxFyRJyeegihUQUcJyr7+/fhkL5no1+cAeN11P3UrvRZ4AWXlAwi1GTO4cEcAeAaSfzhQggLZuHh0i/IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p8AzZrEv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 360F8C4CEDD;
-	Sun,  9 Feb 2025 09:46:54 +0000 (UTC)
+	 MIME-Version:Content-Type; b=bOAUagcg9ylP6FY3sITA5Jqelu93W6er+Sj8cDC8+O6dCKsgxVR/P9sMUtu2OLfAVvWZvwRJ5Ur+jklyVbThEKS768WD813iL+qZRP9JrMYrG4jF5nOCVeJJE+HgOKYL9t9/gwJcRdd19aIQfjYVL0KZS2QGall9vgKmWGgdUUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G1IQlq5m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0B30C4CEDD;
+	Sun,  9 Feb 2025 09:57:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739094415;
-	bh=YA/WTmAdd+gegJ8AlmZln8OQb2ZI4OKXMQnRdTeThhc=;
+	s=k20201202; t=1739095080;
+	bh=YMkbRnTU1enxvYCVCwnwwoC1fiCruAx2WsRJ2d+pP1Q=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=p8AzZrEvMWIFh071DrlbP1Pj1czC/VlYs6bTRM+fH/y1bGZuC5YysPfPNX7t+oaRQ
-	 yb5URbxBX4l6CI6itnUHS34Zv6BSREZsRPfK7C872B8SQ95MW4d2K1LCHlVmEcVsCS
-	 SABTKrjwwg26MWsB57fTWwaLJ4dkpXQChpkKEz/NcO4d3BssmHBkLxHBKYYkoY/mOg
-	 uviFyewV/xed6riow3HPuWW13ZFYi2eOh36mmaimI6ex2yAC8wUGKvBeSBhgOdjnKd
-	 8ANU7MFcY+fqAZROxS0P30C1qtGfxggVA9KMhTvBD80ohQ21rfaEP5UH0eXr8BCk0V
-	 aiZ8C5YoV7OVQ==
+	b=G1IQlq5mySdzmlycCGEmnwjDZkokQuIhsw0qqE06yAmmCifLaLkGWpJlHdNF968ZS
+	 n3kyaK0UTzTHCLXwnBJC1s6qvYjxDgPZWnVwfxI83wJ+xKR1qdvVX0+/GMEPsAkzwu
+	 +bCctWQ4sPCS/74+Us0IUnbZdxrG2yd25i9/pQ3OoSFUDD6QcbO7rrhhF+0D4Ihm/O
+	 vgivNvEa2zWlcp403cHyZGEGSYWqMHab9BtA6OcZC2tm65AH/9/YMV2pg8qM4v9SXD
+	 kAt4+tV7MMuN3xNekGtaJCUErgZy1olMyn8PJwsues4NRA+qOumVt0U44eD7UBxHLe
+	 YEzqMdjg3AO6Q==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Ajay Sharma <sharmaajay@microsoft.com>, 
- Konstantin Taranov <kotaranov@microsoft.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- longli@linuxonhyperv.com
-Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, 
- Long Li <longli@microsoft.com>
-In-Reply-To: <1738964792-21140-1-git-send-email-longli@linuxonhyperv.com>
-References: <1738964792-21140-1-git-send-email-longli@linuxonhyperv.com>
-Subject: Re: [PATCH rdma-next] MAINTAINERS: update maintainer for Microsoft
- MANA RDMA driver
-Message-Id: <173909441228.5130.2489800826083268776.b4-ty@kernel.org>
-Date: Sun, 09 Feb 2025 04:46:52 -0500
+To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
+ tangchengchang@huawei.com
+In-Reply-To: <20250208105930.522796-1-huangjunxian6@hisilicon.com>
+References: <20250208105930.522796-1-huangjunxian6@hisilicon.com>
+Subject: Re: [PATCH v2 for-next] RDMA/hns: Fix mbox timing out by adding
+ retry mechanism
+Message-Id: <173909507691.39402.10463277555179910962.b4-ty@kernel.org>
+Date: Sun, 09 Feb 2025 04:57:56 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -67,21 +62,20 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
 
 
-On Fri, 07 Feb 2025 13:46:28 -0800, longli@linuxonhyperv.com wrote:
-> Ajay is no longer working on the MANA RDMA driver.
-> 
-> Konstantin Taranov has made significant contributions to implementing RC
-> QP in both kernel and user-mode.
-> 
-> He will take the responsibility of fixing bugs, reviewing patches and
-> developing new features for MANA RDMA driver.
+On Sat, 08 Feb 2025 18:59:30 +0800, Junxian Huang wrote:
+> If a QP is modified to error state and a flush CQE process is triggered,
+> the subsequent QP destruction mbox can still be successfully posted but
+> will be blocked in HW until the flush CQE process finishes. This causes
+> further mbox posting timeouts in driver. The blocking time is related
+> to QP depth. Considering an extreme case where SQ depth and RQ depth
+> are both 32K, the blocking time can reach about 135ms.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] MAINTAINERS: update maintainer for Microsoft MANA RDMA driver
-      https://git.kernel.org/rdma/rdma/c/ee9d1619ef6e4a
+[1/1] RDMA/hns: Fix mbox timing out by adding retry mechanism
+      https://git.kernel.org/rdma/rdma/c/9747c0c7791d4a
 
 Best regards,
 -- 
