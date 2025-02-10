@@ -1,146 +1,106 @@
-Return-Path: <linux-rdma+bounces-7645-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7646-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3EA1A2F5A9
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 18:47:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBE9BA2F63D
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 19:00:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D421D1694F3
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 17:46:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5480A188439C
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 18:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3941E255E4B;
-	Mon, 10 Feb 2025 17:45:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0A5255E42;
+	Mon, 10 Feb 2025 18:00:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A8PBU0H4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f3xzQ8S4"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE8F2500BA;
-	Mon, 10 Feb 2025 17:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F5624418C;
+	Mon, 10 Feb 2025 18:00:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739209508; cv=none; b=AOvBUbxZAlOE8ab7uy1MtRBDeraHjtiTNRi6hsOTydV+AzuK7tFSBWD6t6HkDWAqyfm/etkB2OSKzXB9AXJxcReQ3Dpowd1G9JZibumrnzl0HgZR6SdgbtlOLuPftqhyXFEKXfwpg+ZxGkMOnbGBgBd1Hhb+74sGCm7eSqGOHJk=
+	t=1739210407; cv=none; b=TYvH9nXa0b/B/UGYJ/c0CaP0XC/tGSMC3CK5LjOyvO5GfsdRePZHPbP6UHUjb6cEKnXBMWcP3wUnWMRazL1uyTN2lY3YVDDrkvrZeOWNDzDyrdR1EJsE4qxZeOeYGpeK65YEGMI9HKQbsmqWFgUZlfvq+7H2Qe6ZFc0of1ptMG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739209508; c=relaxed/simple;
-	bh=EkPg0iVWp2FJbeErYnYBxnLlulonUWK0FxLvxy3RRK4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eb4GB9yKwOvz3JR7C4qAgfgk9qLQ/kjtDHmwEfe0R8N+cV+0C0/I3F2CRyaG5vQN90TzooTdtQCKaEcTA1pyKuw/2H+/RqrxITi8lPKVSzTo3M40JRTOQs405cNq2ZK1CAlu4y3AKQMZ/V3p87pjmDBtKw1jCPolfeSWp+l7E00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A8PBU0H4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 567D9C4CEE5;
-	Mon, 10 Feb 2025 17:45:07 +0000 (UTC)
+	s=arc-20240116; t=1739210407; c=relaxed/simple;
+	bh=1sRd6SLf08idOZTnt/wPTPKpubV5V6E4Po7IfkUz+8Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NaevGlvYzYK/PFZRC+ZE8LuMn9iwiC+05JEVh3nqzIrKU75VmwCrYPRJQ7yNy4MOAXS163+fz8kgoeRqfwe2JWYBG1edj7X7NDO6T7WI/Udf7So8Q1Y/EKMDSeKOrfs8or1eAH9oUrPpZ86ttHIsxiRC5QDdpJHp6F4wy8JncUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f3xzQ8S4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3BD0C4CED1;
+	Mon, 10 Feb 2025 18:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739209507;
-	bh=EkPg0iVWp2FJbeErYnYBxnLlulonUWK0FxLvxy3RRK4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=A8PBU0H4UdGp7EEii9SVKDYE3xCTXFxnvsSm8n6vjdQKVpgfLVGBqMvwYcxapcqpG
-	 /e9WhuyHheagw0ggp5DGCOWc0AnApALJ0iW4WveKnDahwmH/3SJlhgo1lV/7jv8OUM
-	 9GU+cJNUit24AYXhDaBEmgBns7TT5XjQR3jrX52kpazd8M8GoYAfD8Up8/CBz6OHio
-	 evRcWwznTb4ubpjoL+hvA6H/uZIB7GRBQwh3/B28BQvPkoR7l1xCZJ/E2l5MKHCZlz
-	 vhHUHKstenVnlUZ9HBkO70ibzWQbihBg72d9QfAhGNuXuTc2MI/jcCN433DEyLGhd7
-	 oSogFORbTUGWQ==
-From: Kees Cook <kees@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Kees Cook <kees@kernel.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] net/mlx4_core: Avoid impossible mlx4_db_alloc() order value
-Date: Mon, 10 Feb 2025 09:45:05 -0800
-Message-Id: <20250210174504.work.075-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	s=k20201202; t=1739210407;
+	bh=1sRd6SLf08idOZTnt/wPTPKpubV5V6E4Po7IfkUz+8Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=f3xzQ8S4OvU62D3PyL1n9Bty9HiMFu2U/qRNCNnCpXIu3uAEl7BhnuXisblKVKdhH
+	 16/0JFfqI9+50Dt0nOc7d7cyhbIEIXXm/ECIJZXQl2cs+EpykoN2Tqy5s5QNW8kug2
+	 XtsCDh9elsA+zf4BNS4yeZ6eWCpCvQnxxU6KyC1EwgP1hOnPQisBWzJjmCg7fJ1DFy
+	 TUFjRVFpe7jNunbaiX1zqtSrvxsG3cFu4Ew6qu+IuhNGObjP7E+ElaHMeJvpX5UrgW
+	 CapbRj1L4bu/kHDZ0qFlnRkOBL5LQDMoasGpX8fIS48UBS2NnzdHqfUMhKN4Su1sKb
+	 fKD6u61u+dckw==
+Date: Mon, 10 Feb 2025 10:00:05 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Mustafa Ismail <mustafa.ismail@intel.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] RDMA/irdma: switch to using the crc32c library
+Message-ID: <20250210180005.GE1264@sol.localdomain>
+References: <20250207033643.59904-1-ebiggers@kernel.org>
+ <20250207035750.GA43210@sol.localdomain>
+ <20250209091255.GA17863@unreal>
+ <20250209154416.GA1230@sol.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3608; i=kees@kernel.org; h=from:subject:message-id; bh=EkPg0iVWp2FJbeErYnYBxnLlulonUWK0FxLvxy3RRK4=; b=owGbwMvMwCVmps19z/KJym7G02pJDOmrrBU+V3w5JxDieixNs3bKsg1HJS8/6yu7FMJesI1tm pLqtFOhHaUsDGJcDLJiiixBdu5xLh5v28Pd5yrCzGFlAhnCwMUpABP51MzI0MoVuTjI7V/Imin7 fz7hVjPYxvHm6E3Otf6rcjqulj8oZWFkWPLgkVkHT6j8q3Pf+ATFrK/NPaLA8+9Z9M87ipV2kz4 f4AQA
-X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250209154416.GA1230@sol.localdomain>
 
-GCC can see that the value range for "order" is capped, but this leads
-it to consider that it might be negative, leading to a false positive
-warning (with GCC 15 with -Warray-bounds -fdiagnostics-details):
+On Sun, Feb 09, 2025 at 07:44:18AM -0800, Eric Biggers wrote:
+> On Sun, Feb 09, 2025 at 11:12:55AM +0200, Leon Romanovsky wrote:
+> > On Thu, Feb 06, 2025 at 07:57:50PM -0800, Eric Biggers wrote:
+> > > On Thu, Feb 06, 2025 at 07:36:43PM -0800, Eric Biggers wrote:
+> > > > +int irdma_ieq_check_mpacrc(const void *addr, u32 len, u32 val)
+> > > >  {
+> > > > -	u32 crc = 0;
+> > > > -
+> > > > -	crypto_shash_digest(desc, addr, len, (u8 *)&crc);
+> > > > -	if (crc != val)
+> > > > +	if (~crc32c(~0, addr, len) != val)
+> > > >  		return -EINVAL;
+> > > >  
+> > > >  	return 0;
+> > > >  }
+> > > 
+> > > Sorry, I just realized this isn't actually equivalent on big endian CPUs, since
+> > > the byte array produced by crypto_shash_digest() used little endian byte order,
+> > > whereas crc32c() just returns a CPU endian value.
+> > > 
+> > > And of course this broken subsystem uses u32 for the little endian values
+> > > instead of __le32 like the result of the kernel.
+> > > 
+> > > Not sure it's worth my time to continue to try to fix this subsystem properly.
+> > 
+> > There is no need to be such dramatic. You are not fixing anything by
+> > switch to new APIs
+> 
+> Exactly.  That's because I dropped the patches that actually did fix real
+> endianness bugs, because of the pointless pushback I received -- see
+> https://lore.kernel.org/linux-rdma/20250127223840.67280-1-ebiggers@kernel.org/T/#u
 
-../drivers/net/ethernet/mellanox/mlx4/alloc.c:691:47: error: array subscript -1 is below array bounds of 'long unsigned int *[2]' [-Werror=array-bounds=]
-  691 |                 i = find_first_bit(pgdir->bits[o], MLX4_DB_PER_PAGE >> o);
-      |                                    ~~~~~~~~~~~^~~
-  'mlx4_alloc_db_from_pgdir': events 1-2
-  691 |                 i = find_first_bit(pgdir->bits[o], MLX4_DB_PER_PAGE >> o);                        |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |                     |                         |                                                   |                     |                         (2) out of array bounds here
-      |                     (1) when the condition is evaluated to true                             In file included from ../drivers/net/ethernet/mellanox/mlx4/mlx4.h:53,
-                 from ../drivers/net/ethernet/mellanox/mlx4/alloc.c:42:
-../include/linux/mlx4/device.h:664:33: note: while referencing 'bits'
-  664 |         unsigned long          *bits[2];
-      |                                 ^~~~
+Anyway, I already sent v3 of this patch that keeps the cpu_to_le32() to maintain
+the exact same behavior as the old code, so please consider that if you are
+interested.  Note that I had to add '(__force u32)' to be compatible with this
+driver's incorrect types, but that was effectively already there before, just
+hidden by writing bytes into a u32.
 
-Switch the argument to unsigned int, which removes the compiler needing
-to consider negative values.
-
-Signed-off-by: Kees Cook <kees@kernel.org>
----
-Cc: Tariq Toukan <tariqt@nvidia.com>
-Cc: Andrew Lunn <andrew+netdev@lunn.ch>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: Yishai Hadas <yishaih@nvidia.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org
----
- drivers/net/ethernet/mellanox/mlx4/alloc.c | 6 +++---
- include/linux/mlx4/device.h                | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx4/alloc.c b/drivers/net/ethernet/mellanox/mlx4/alloc.c
-index b330020dc0d6..f2bded847e61 100644
---- a/drivers/net/ethernet/mellanox/mlx4/alloc.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/alloc.c
-@@ -682,9 +682,9 @@ static struct mlx4_db_pgdir *mlx4_alloc_db_pgdir(struct device *dma_device)
- }
- 
- static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
--				    struct mlx4_db *db, int order)
-+				    struct mlx4_db *db, unsigned int order)
- {
--	int o;
-+	unsigned int o;
- 	int i;
- 
- 	for (o = order; o <= 1; ++o) {
-@@ -712,7 +712,7 @@ static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
- 	return 0;
- }
- 
--int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order)
-+int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned int order)
- {
- 	struct mlx4_priv *priv = mlx4_priv(dev);
- 	struct mlx4_db_pgdir *pgdir;
-diff --git a/include/linux/mlx4/device.h b/include/linux/mlx4/device.h
-index 27f42f713c89..86f0f2a25a3d 100644
---- a/include/linux/mlx4/device.h
-+++ b/include/linux/mlx4/device.h
-@@ -1135,7 +1135,7 @@ int mlx4_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
- int mlx4_buf_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
- 		       struct mlx4_buf *buf);
- 
--int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order);
-+int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned int order);
- void mlx4_db_free(struct mlx4_dev *dev, struct mlx4_db *db);
- 
- int mlx4_alloc_hwq_res(struct mlx4_dev *dev, struct mlx4_hwq_resources *wqres,
--- 
-2.34.1
-
+- Eric
 
