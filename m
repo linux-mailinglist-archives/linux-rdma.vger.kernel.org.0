@@ -1,146 +1,136 @@
-Return-Path: <linux-rdma+bounces-7624-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7625-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4DC4A2EAE7
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 12:17:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86656A2EB15
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 12:31:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82AA3162BBB
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 11:17:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7393E3A291E
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 11:31:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C4091B414F;
-	Mon, 10 Feb 2025 11:17:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402901CB31D;
+	Mon, 10 Feb 2025 11:31:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="mE9SnCYw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ghL2qOCS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6A619CC33;
-	Mon, 10 Feb 2025 11:17:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F318A1B87F1
+	for <linux-rdma@vger.kernel.org>; Mon, 10 Feb 2025 11:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739186227; cv=none; b=oAF63MIB0avXJ3HO7SsJlXq2OArJnOtPCClEinYlmj9VG1csUCFdCdzH2heTvpr8w7xh7fc/AtTqhsWW7dATpG2pKDoKeQAobFH13Ce5mKlVL+lQSdn/JQuBzaIDY8pcLcTv+f7a7Ko6Xvc/nneBWsWFIipjlr32N+myAzHJidA=
+	t=1739187080; cv=none; b=cii7bh8jYAeueIlvBgFMr10Nv637k4kNd+XIE50MWjxGk6r6Bf9BZpUnqbkeD/FsTbOy0PpY+P5LIDhwHf5v1citbkaUXzEqc7Z8y3cSOJ6TjP56szhvg9zSjvJbdeTApfIqELT9YPdQekFRcfo2V1Mob5kq91kbyxtGGkAJNqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739186227; c=relaxed/simple;
-	bh=mSkiGXTqHGYYLjplMNYod7sGEW6e2weQZ7cjuOsZaz4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=f4emNCJ/lSaWLys9kpzF1upE2OyrSJmW1cTN/kIBJfVpYaoahp2sEB2Mvc9J1dfcKOTpm5WUwwxL8mv7egDDWNWvLIDpitiiOSCFrpJGimX0Uhlquw+l42ISRvuvZnFDqYd0q8KwymLen0ukCf8AeZOhECTsR/pLtSjlazR/aPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=mE9SnCYw; arc=none smtp.client-ip=115.124.30.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1739186219; h=Message-ID:Date:MIME-Version:Subject:From:To:Content-Type;
-	bh=dmcnIETOkRmcLc2k59ZJrtg3E4RjzRzuJfuWKk05UZg=;
-	b=mE9SnCYwJRHxiEBu9mJNa6oBcFz+IoIFaDRytYWlITj1aAxOLGj4+gfGs4TZVQkmazzO0Zxl0dQylqlJ0kYDJLGqmqGzloAR6Z9hoVPIGl4WquKb7zVyrbo48xRlZuvTS3AEhEFPlnZ6xyxo8LedbLkOqVsdx+w4hJ4GHXOoxpQ=
-Received: from 30.221.98.157(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0WPAl8CS_1739186218 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 10 Feb 2025 19:16:59 +0800
-Message-ID: <4339aaa1-f2aa-4454-b5b1-6ffb6415f484@linux.alibaba.com>
-Date: Mon, 10 Feb 2025 19:16:57 +0800
+	s=arc-20240116; t=1739187080; c=relaxed/simple;
+	bh=qsIcbPg+b5rhReCuOmvcNBEywaHib4qwDy+eacFBf0k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SWP3okg4hofvKgYmBuIVOwZ/CnY9/gbmQJWDPpwgkXLUPT52zQ0g59kIlsJi0xLL7GDRCr2CCOXfy9SaJoYLh+Fc2xFdxvdKPL6wcS6YcpFkKRJZBps5YP6s7T8zEVNK9zjmpgnEBkXrpCMVf3JYuTQu1WBTn/BFIFYU2hGqZos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ghL2qOCS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0142FC4CED1;
+	Mon, 10 Feb 2025 11:31:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739187079;
+	bh=qsIcbPg+b5rhReCuOmvcNBEywaHib4qwDy+eacFBf0k=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ghL2qOCSL00wGRBzKxb9wHyB7EyKTuOisBBSJhUYZ63aYgc55TSnGt2MbIDJfbsAw
+	 /f1VXXK+tshbR3Edg+d8dqAynN0D7Ka2RbiuIOlZBB7aLVR6UbsYzx6loOpupURRFV
+	 buyxsoSgPN5dpA/4rudaB2me24cZX4Me0pWjF+JM9osTnN5FwpgZIGsZZle2orhnnu
+	 2jrI0DuDdsGpf3DWGXKVYRVlHB1z8kzFeTWxMPSYIUtnNPeb5qFj3Xs+crZN/NG3sp
+	 8sF0im4iRpyGqHdPgftnmxWxQpOKT1Kj3OpgVolGTkaUUQlDT0G/NOJWDkysOban1a
+	 TrTz8BlI/NXyQ==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Yishai Hadas <yishaih@nvidia.com>,
+	Artemy Kovalyov <artemyko@nvidia.com>,
+	linux-rdma@vger.kernel.org,
+	Patrisious Haddad <phaddad@nvidia.com>
+Subject: [PATCH rdma-rc] RDMA/mlx5: Fix implicit ODP hang on parent deregistration
+Date: Mon, 10 Feb 2025 13:31:11 +0200
+Message-ID: <80f2fcd19952dfa7d9981d93fd6359b4471f8278.1739186929.git.leon@kernel.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net/smc: use the correct ndev to find pnetid by
- pnetid table
-From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-To: Halil Pasic <pasic@linux.ibm.com>
-Cc: Paolo Abeni <pabeni@redhat.com>, wenjia@linux.ibm.com,
- jaka@linux.ibm.com, alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, horms@kernel.org, linux-rdma@vger.kernel.org,
- linux-s390@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Alexandra Winter <wintera@linux.ibm.com>
-References: <20241227040455.91854-1-guangguan.wang@linux.alibaba.com>
- <1f4a721f-fa23-4f1d-97a9-1b27bdcd1e21@redhat.com>
- <20250107203218.5787acb4.pasic@linux.ibm.com>
- <908be351-b4f8-4c25-9171-4f033e11ffc4@linux.alibaba.com>
- <20250109040429.350fdd60.pasic@linux.ibm.com>
- <b1053a92-3a3f-4042-9be9-60b94b97747d@linux.alibaba.com>
- <20250114130747.77a56d9a.pasic@linux.ibm.com>
- <3dc68650-904c-4a1d-adc4-172e771f640c@linux.alibaba.com>
-Content-Language: en-US
-In-Reply-To: <3dc68650-904c-4a1d-adc4-172e771f640c@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+From: Yishai Hadas <yishaih@nvidia.com>
 
+Fix the destroy_unused_implicit_child_mr() to prevent hanging during
+parent deregistration as of below [1].
 
-On 2025/1/15 19:53, Guangguan Wang wrote:
-> 
-> 
-> On 2025/1/14 20:07, Halil Pasic wrote:
->> On Fri, 10 Jan 2025 13:43:44 +0800
->> Guangguan Wang <guangguan.wang@linux.alibaba.com> wrote:
->>
->>>> I think I showed a valid and practical setup that would break with your
->>>> patch as is. Do you agree with that statement?  
->>> Did you mean
->>> "
->>> Now for something like a bond of two OSA
->>> interfaces, I would expect the two legs of the bond to probably have a
->>> "HW PNETID", but the netdev representing the bond itself won't have one
->>> unless the Linux admin defines a software PNETID, which is work, and
->>> can't have a HW PNETID because it is a software construct within Linux.
->>> Breaking for example an active-backup bond setup where the legs have
->>> HW PNETIDs and the admin did not bother to specify a PNETID for the bond
->>> is not acceptable.
->>> " ?
->>> If the legs have HW pnetids, add pnetid to bond netdev will fail as
->>> smc_pnet_add_eth will check whether the base_ndev already have HW pnetid.
->>>
->>> If the legs without HW pnetids, and admin add pnetids to legs through smc_pnet.
->>> Yes, my patch will break the setup. What Paolo suggests(both checking ndev and
->>> base_ndev, and replace || by && )can help compatible with the setup.
->>
->> I'm glad we agree on that part. Things are much more acceptable if we
->> are doing both base and ndev. 
-> It is also acceptable for me.
-> 
->> Nevertheless I would like to understand
->> your problem better, and talk about it to my team. I will also ask some
->> questions in another email.
-> Questions are welcome.
-> 
->>
->> That said having things work differently if there is a HW PNETID on
->> the base, and different if there is none is IMHO wonky and again
->> asymmetric.
->>
->> Imagine the following you have your nice little setup with a PNETID on
->> a non-leaf and a base_ndev that has no PNETID. Then your HW admin
->> configures a PNETID to your base_ndev, a different one. Suddenly
->> your ndev PNETID is ignored for reasons not obvious to you. Yes it is
->> similar to having a software PNETID on the base_ndev and getting it
->> overruled by a HW PNETID, but much less obvious IMHO. I am wondering if there are any scenarios that require setting different
-> pnetids for different net devices in one netdev hierarchy. If no, maybe
-> we should limit that only one pnetid can be set to one netdev hierarchy.
-> 
->> I also think
->> a software PNETID of the base should probably take precedence over over
->> the software pnetid of ndev.
-> Agree!
-> 
-> Thanks,
-> Guangguan Wang
->>
->> Regards,
->> Halil
+Upon entering destroy_unused_implicit_child_mr(), the reference count
+for the implicit MR parent is incremented using:
+refcount_inc_not_zero().
 
-Hi Halil,
+A corresponding decrement must be performed if
+free_implicit_child_mr_work() is not called.
 
-Are there any questions or further discussions about this patch? If no, I will
-send a v2 patch, in which software pnetid will be searched in both base_ndev and ndev,
-and base_ndev will take precedence over ndev.
+The code has been updated to properly manage the reference count that
+was incremented.
 
-Thanks,
-Guangguan Wang
+[1]
+INFO: task python3:2157 blocked for more than 120 seconds.
+Not tainted 6.12.0-rc7+ #1633
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:python3         state:D stack:0     pid:2157 tgid:2157  ppid:1685   flags:0x00000000
+Call Trace:
+<TASK>
+__schedule+0x420/0xd30
+schedule+0x47/0x130
+__mlx5_ib_dereg_mr+0x379/0x5d0 [mlx5_ib]
+? __pfx_autoremove_wake_function+0x10/0x10
+ib_dereg_mr_user+0x5f/0x120 [ib_core]
+? lock_release+0xc6/0x280
+destroy_hw_idr_uobject+0x1d/0x60 [ib_uverbs]
+uverbs_destroy_uobject+0x58/0x1d0 [ib_uverbs]
+uobj_destroy+0x3f/0x70 [ib_uverbs]
+ib_uverbs_cmd_verbs+0x3e4/0xbb0 [ib_uverbs]
+? __pfx_uverbs_destroy_def_handler+0x10/0x10 [ib_uverbs]
+? lock_acquire+0xc1/0x2f0
+? ib_uverbs_ioctl+0xcb/0x170 [ib_uverbs]
+? ib_uverbs_ioctl+0x116/0x170 [ib_uverbs]
+? lock_release+0xc6/0x280
+ib_uverbs_ioctl+0xe7/0x170 [ib_uverbs]
+? ib_uverbs_ioctl+0xcb/0x170 [ib_uverbs]
+ __x64_sys_ioctl+0x1b0/0xa70
+? kmem_cache_free+0x221/0x400
+do_syscall_64+0x6b/0x140
+entry_SYSCALL_64_after_hwframe+0x76/0x7e
+RIP: 0033:0x7f20f21f017b
+RSP: 002b:00007ffcfc4a77c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffcfc4a78d8 RCX: 00007f20f21f017b
+RDX: 00007ffcfc4a78c0 RSI: 00000000c0181b01 RDI: 0000000000000003
+RBP: 00007ffcfc4a78a0 R08: 000056147d125190 R09: 00007f20f1f14c60
+R10: 0000000000000001 R11: 0000000000000246 R12: 00007ffcfc4a7890
+R13: 000000000000001c R14: 000056147d100fc0 R15: 00007f20e365c9d0
+</TASK>
+
+Fixes: d3d930411ce3 ("RDMA/mlx5: Fix implicit ODP use after free")
+Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+Reviewed-by: Artemy Kovalyov <artemyko@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/odp.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+index 89057faf3bf4..a1f80e03c5d2 100644
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -254,6 +254,7 @@ static void destroy_unused_implicit_child_mr(struct mlx5_ib_mr *mr)
+ 	if (__xa_cmpxchg(&imr->implicit_children, idx, mr, NULL, GFP_KERNEL) !=
+ 	    mr) {
+ 		xa_unlock(&imr->implicit_children);
++		mlx5r_deref_odp_mkey(&imr->mmkey);
+ 		return;
+ 	}
+ 
+-- 
+2.48.1
 
 
