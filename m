@@ -1,190 +1,188 @@
-Return-Path: <linux-rdma+bounces-7619-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7618-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E194A2E835
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 10:51:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22661A2E829
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 10:48:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C35F1883A6D
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 09:51:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6B89164255
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 09:48:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52021C4A02;
-	Mon, 10 Feb 2025 09:51:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC4D1C5D6F;
+	Mon, 10 Feb 2025 09:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QWMoJ5gO"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Tb/FvzT/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 045742E628;
-	Mon, 10 Feb 2025 09:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0646D1BEF85;
+	Mon, 10 Feb 2025 09:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739181067; cv=none; b=rJb4nmAbfekHXNOZf3CjBHniI77uAxDnAUDVvS5iqRpv1pIEKHkW8s/jr0qff09JHyMyEVf6V6pDVVkpoJUlNFkffNrN6YIIAhHeZJwaNp13DE/WLOAhKmaYTduiL7qv12C/S4RPMFOM3FfkfGCa0x5RoHQtvn+Ll/0n/PhLAak=
+	t=1739180916; cv=none; b=VWskafoF6QKow/jFeZRTULaIhOAW/N/VfJlzYSj5wxBBelMn9PFksZ4FBkuj3RR5P/f1jrB+WOOHU/v0zeOISxz6Ad8KuuaslDBfA4SbwmMLHD+y5f1R2K++crOIl09h883Y1DKWdyg0RPpqHFexXcdG4w8OStLVV27NiCoNgXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739181067; c=relaxed/simple;
-	bh=L/47NT1D33AXwhb7bm+RpJCwbuPNbjYzSmLMznvjFWw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ObhMYx9gh23jvTv45/YpdxSGr2aU2ol5nMFxujV6WbMHKUzo6is4MPofJFYc9iI9+ZXBJJC26NDmJpxV/RZpfqv7krDSGIbpvyEqW/omlL3flt1jgeFABNdqIBk9baDvMlgHA4QzvFm/9RP7G1tLZ20ut6NGfFtr94bc5CLvHas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QWMoJ5gO; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1739181066; x=1770717066;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=L/47NT1D33AXwhb7bm+RpJCwbuPNbjYzSmLMznvjFWw=;
-  b=QWMoJ5gOmbr1ei3AfxJZ4WdPbw+/zj46qq2SJQzE77gqegORRziW9XSX
-   U9XsF4iJMNQ/DRQoiwzePgZenCMvdcub3rH0bZLmZ7JPwEaTYGNQz1l4T
-   QQrrLbiKfpd1VKfjnuEZf726n+5prXwYwiKOcHo0+JcYl5HeudUH0wPTI
-   brNxxrOksP7X1w/O9ggNNUlA5sBK3RmrVNosJfsZTZHOiAn+N3LSdGjVp
-   g7/CV9PbUqlND9uDLiq4nVT6NsaFEo3B45Z3c51YedstqJ2FmEiXLvpk2
-   kb7JkAqoe94c5qYXuRMM+YA0j6T51SfHeR0JPXBNWQJ6c4pggwmcknku0
-   Q==;
-X-CSE-ConnectionGUID: MykdgzrHTvirkLw2jCF5HQ==
-X-CSE-MsgGUID: B5JxyzdJTW2g8mTyNl9kEw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11340"; a="42595860"
-X-IronPort-AV: E=Sophos;i="6.13,274,1732608000"; 
-   d="scan'208";a="42595860"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2025 01:51:05 -0800
-X-CSE-ConnectionGUID: xmjUZU8AToy/ZXqkagaATg==
-X-CSE-MsgGUID: Q/eVqaqlQgO8mCvrCPpGMA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,274,1732608000"; 
-   d="scan'208";a="112777594"
-Received: from mev-dev.igk.intel.com ([10.237.112.144])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2025 01:51:00 -0800
-Date: Mon, 10 Feb 2025 10:47:26 +0100
-From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>, netdev@vger.kernel.org,
-	Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman <gal@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	Simon Horman <horms@kernel.org>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Jiri Pirko <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>,
-	Leon Romanovsky <leon@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	William Tu <witu@nvidia.com>
-Subject: Re: [PATCH net-next 06/15] net/mlx5e: reduce the max log mpwrq sz
- for ECPF and reps
-Message-ID: <Z6nLLsMa4njyLrIV@mev-dev.igk.intel.com>
-References: <20250209101716.112774-1-tariqt@nvidia.com>
- <20250209101716.112774-7-tariqt@nvidia.com>
+	s=arc-20240116; t=1739180916; c=relaxed/simple;
+	bh=QXxFLv/j55m3F1CLUx6V7C8gEfaBysmB9SNCjDd4q9E=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=kO6Nd5BABAFqo25lUlWmtPPW5//w9SpLIEX8gm8iZV1lOcob5XQylFJjjYnZyK2ujnNFX7/YB7P8j9p+kcAA/TafnQZfcHmQ6unbo6wETFWe5JbmreiVhnJu3JQ4etVUZMD4xL8hoO9iaXAAE01ljEv5x4enBMFoaZns7CvSwP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Tb/FvzT/; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 5B4BC203F58D;
+	Mon, 10 Feb 2025 01:48:34 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5B4BC203F58D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1739180914;
+	bh=d4GW/5n0ac9tJd9vAk0woPL3c0JLitEk6/+0bnQUBXY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Tb/FvzT/q3RCuflYnkOKs1dv55bUmngbXEEPWtOox6ri/vrzXNWeZbHwtcHrHxRgh
+	 af/k29L836NkZ3fC7uC3zXbu4OyRfjKeBqlXozt3IsXUO4SL2f5pGi8RBtrtsPTwxP
+	 mZ9S/MKHIudcugBJQODpZfNzqj+PvnNRB3A3hF4Q=
+From: Konstantin Taranov <kotaranov@linux.microsoft.com>
+To: kotaranov@microsoft.com,
+	shirazsaleem@microsoft.com,
+	sharmaajay@microsoft.com,
+	longli@microsoft.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH next 1/1] RDMA/mana_ib: implement reg_user_mr_dmabuf
+Date: Mon, 10 Feb 2025 01:48:28 -0800
+Message-Id: <1739180908-2833-1-git-send-email-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250209101716.112774-7-tariqt@nvidia.com>
 
-On Sun, Feb 09, 2025 at 12:17:07PM +0200, Tariq Toukan wrote:
-> From: William Tu <witu@nvidia.com>
-> 
-> For the ECPF and representors, reduce the max MPWRQ size from 256KB (18)
-> to 128KB (17). This prepares the later patch for saving representor
-> memory.
-> 
-> With Striding RQ, there is a minimum of 4 MPWQEs. So with 128KB of max
-> MPWRQ size, the minimal memory is 4 * 128KB = 512KB. When creating page
-> pool, consider 1500 mtu, the minimal page pool size will be 512KB/4KB =
-> 128 pages = 256 rx ring entries (2 entries per page).
-> 
-> Before this patch, setting RX ringsize (ethtool -G rx) to 256 causes
-> driver to allocate page pool size more than it needs due to max MPWRQ
-> is 256KB (18). Ex: 4 * 256KB = 1MB, 1MB/4KB = 256 pages, but actually
-> 128 pages is good enough. Reducing the max MPWRQ to 128KB fixes the
-> limitation.
-> 
-> Signed-off-by: William Tu <witu@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en.h      |  2 --
->  .../net/ethernet/mellanox/mlx5/core/en/params.c   | 15 +++++++++++----
->  2 files changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> index 979fc56205e1..534fdd27c8de 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-> @@ -95,8 +95,6 @@ struct page_pool;
->  #define MLX5_MPWRQ_DEF_LOG_STRIDE_SZ(mdev) \
->  	MLX5_MPWRQ_LOG_STRIDE_SZ(mdev, order_base_2(MLX5E_RX_MAX_HEAD))
->  
-> -#define MLX5_MPWRQ_MAX_LOG_WQE_SZ 18
-> -
->  /* Keep in sync with mlx5e_mpwrq_log_wqe_sz.
->   * These are theoretical maximums, which can be further restricted by
->   * capabilities. These values are used for static resource allocations and
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
-> index 64b62ed17b07..e37d4c202bba 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
-> @@ -10,6 +10,9 @@
->  #include <net/page_pool/types.h>
->  #include <net/xdp_sock_drv.h>
->  
-> +#define MLX5_MPWRQ_MAX_LOG_WQE_SZ 18
-> +#define MLX5_REP_MPWRQ_MAX_LOG_WQE_SZ 17
-> +
->  static u8 mlx5e_mpwrq_min_page_shift(struct mlx5_core_dev *mdev)
->  {
->  	u8 min_page_shift = MLX5_CAP_GEN_2(mdev, log_min_mkey_entity_size);
-> @@ -103,18 +106,22 @@ u8 mlx5e_mpwrq_log_wqe_sz(struct mlx5_core_dev *mdev, u8 page_shift,
->  			  enum mlx5e_mpwrq_umr_mode umr_mode)
->  {
->  	u8 umr_entry_size = mlx5e_mpwrq_umr_entry_size(umr_mode);
-> -	u8 max_pages_per_wqe, max_log_mpwqe_size;
-> +	u8 max_pages_per_wqe, max_log_wqe_size_calc;
-> +	u8 max_log_wqe_size_cap;
->  	u16 max_wqe_size;
->  
->  	/* Keep in sync with MLX5_MPWRQ_MAX_PAGES_PER_WQE. */
->  	max_wqe_size = mlx5e_get_max_sq_aligned_wqebbs(mdev) * MLX5_SEND_WQE_BB;
->  	max_pages_per_wqe = ALIGN_DOWN(max_wqe_size - sizeof(struct mlx5e_umr_wqe),
->  				       MLX5_UMR_FLEX_ALIGNMENT) / umr_entry_size;
-> -	max_log_mpwqe_size = ilog2(max_pages_per_wqe) + page_shift;
-> +	max_log_wqe_size_calc = ilog2(max_pages_per_wqe) + page_shift;
-> +
-> +	WARN_ON_ONCE(max_log_wqe_size_calc < MLX5E_ORDER2_MAX_PACKET_MTU);
->  
-> -	WARN_ON_ONCE(max_log_mpwqe_size < MLX5E_ORDER2_MAX_PACKET_MTU);
-> +	max_log_wqe_size_cap = mlx5_core_is_ecpf(mdev) ?
-> +			   MLX5_REP_MPWRQ_MAX_LOG_WQE_SZ : MLX5_MPWRQ_MAX_LOG_WQE_SZ;
->  
-> -	return min_t(u8, max_log_mpwqe_size, MLX5_MPWRQ_MAX_LOG_WQE_SZ);
-> +	return min_t(u8, max_log_wqe_size_calc, max_log_wqe_size_cap);
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-Changing the variable name looks like uneccessary complication, as it is
-still used for the same purpouse.
+Add support of dmabuf MRs to mana_ib.
 
-I remember there were some patches to devlink for supporting changing
-the representor parameters. Is it sth different or you decided to only
-change the default value to fix the memory problem? (sorry, maybe I miss
-the devlink series).
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+---
+ drivers/infiniband/hw/mana/device.c  |  1 +
+ drivers/infiniband/hw/mana/mana_ib.h |  4 ++
+ drivers/infiniband/hw/mana/mr.c      | 77 ++++++++++++++++++++++++++++
+ 3 files changed, 82 insertions(+)
 
-Anyway, looks fine, thanks:
-Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
+index cb8941a..34973ca 100644
+--- a/drivers/infiniband/hw/mana/device.c
++++ b/drivers/infiniband/hw/mana/device.c
+@@ -48,6 +48,7 @@ static const struct ib_device_ops mana_ib_dev_ops = {
+ 	.query_pkey = mana_ib_query_pkey,
+ 	.query_port = mana_ib_query_port,
+ 	.reg_user_mr = mana_ib_reg_user_mr,
++	.reg_user_mr_dmabuf = mana_ib_reg_user_mr_dmabuf,
+ 	.req_notify_cq = mana_ib_arm_cq,
+ 
+ 	INIT_RDMA_OBJ_SIZE(ib_ah, mana_ib_ah, ibah),
+diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
+index 9eaf983..bd47b7f 100644
+--- a/drivers/infiniband/hw/mana/mana_ib.h
++++ b/drivers/infiniband/hw/mana/mana_ib.h
+@@ -699,4 +699,8 @@ int mana_ib_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
+ 
+ int mana_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc);
+ int mana_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
++
++struct ib_mr *mana_ib_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start, u64 length,
++					 u64 iova, int fd, int mr_access_flags,
++					 struct uverbs_attr_bundle *attrs);
+ #endif
+diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
+index ac3041f..7a71607 100644
+--- a/drivers/infiniband/hw/mana/mr.c
++++ b/drivers/infiniband/hw/mana/mr.c
+@@ -186,6 +186,83 @@ err_free:
+ 	return ERR_PTR(err);
+ }
+ 
++struct ib_mr *mana_ib_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start, u64 length,
++					 u64 iova, int fd, int access_flags,
++					 struct uverbs_attr_bundle *attrs)
++{
++	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
++	struct gdma_create_mr_params mr_params = {};
++	struct ib_device *ibdev = ibpd->device;
++	struct ib_umem_dmabuf *umem_dmabuf;
++	struct mana_ib_dev *dev;
++	struct mana_ib_mr *mr;
++	u64 dma_region_handle;
++	int err;
++
++	dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
++
++	ibdev_dbg(ibdev,
++		  "dmabuf 0x%llx, iova 0x%llx length 0x%llx access_flags 0x%x",
++		  start, iova, length, access_flags);
++
++	access_flags &= ~IB_ACCESS_OPTIONAL;
++	if (access_flags & ~VALID_MR_FLAGS)
++		return ERR_PTR(-EOPNOTSUPP);
++
++	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
++	if (!mr)
++		return ERR_PTR(-ENOMEM);
++
++	umem_dmabuf = ib_umem_dmabuf_get_pinned(ibdev, start, length, fd, access_flags);
++	if (IS_ERR(umem_dmabuf)) {
++		err = PTR_ERR(umem_dmabuf);
++		ibdev_dbg(ibdev, "Failed to get dmabuf umem, %d\n", err);
++		goto err_free;
++	}
++
++	mr->umem = &umem_dmabuf->umem;
++
++	err = mana_ib_create_dma_region(dev, mr->umem, &dma_region_handle, iova);
++	if (err) {
++		ibdev_dbg(ibdev, "Failed create dma region for user-mr, %d\n",
++			  err);
++		goto err_umem;
++	}
++
++	ibdev_dbg(ibdev,
++		  "created dma region for user-mr 0x%llx\n",
++		  dma_region_handle);
++
++	mr_params.pd_handle = pd->pd_handle;
++	mr_params.mr_type = GDMA_MR_TYPE_GVA;
++	mr_params.gva.dma_region_handle = dma_region_handle;
++	mr_params.gva.virtual_address = iova;
++	mr_params.gva.access_flags =
++		mana_ib_verbs_to_gdma_access_flags(access_flags);
++
++	err = mana_ib_gd_create_mr(dev, mr, &mr_params);
++	if (err)
++		goto err_dma_region;
++
++	/*
++	 * There is no need to keep track of dma_region_handle after MR is
++	 * successfully created. The dma_region_handle is tracked in the PF
++	 * as part of the lifecycle of this MR.
++	 */
++
++	return &mr->ibmr;
++
++err_dma_region:
++	mana_gd_destroy_dma_region(mdev_to_gc(dev), dma_region_handle);
++
++err_umem:
++	ib_umem_release(mr->umem);
++
++err_free:
++	kfree(mr);
++	return ERR_PTR(err);
++}
++
+ struct ib_mr *mana_ib_get_dma_mr(struct ib_pd *ibpd, int access_flags)
+ {
+ 	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
+-- 
+2.43.0
 
->  }
->  
->  u8 mlx5e_mpwrq_pages_per_wqe(struct mlx5_core_dev *mdev, u8 page_shift,
-> -- 
-> 2.45.0
 
