@@ -1,54 +1,53 @@
-Return-Path: <linux-rdma+bounces-7625-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7626-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86656A2EB15
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 12:31:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E5BBA2EB29
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 12:32:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7393E3A291E
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 11:31:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 958D27A445F
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 11:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402901CB31D;
-	Mon, 10 Feb 2025 11:31:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09811957FF;
+	Mon, 10 Feb 2025 11:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ghL2qOCS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="USebTi4h"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F318A1B87F1
-	for <linux-rdma@vger.kernel.org>; Mon, 10 Feb 2025 11:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FEF8158538
+	for <linux-rdma@vger.kernel.org>; Mon, 10 Feb 2025 11:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739187080; cv=none; b=cii7bh8jYAeueIlvBgFMr10Nv637k4kNd+XIE50MWjxGk6r6Bf9BZpUnqbkeD/FsTbOy0PpY+P5LIDhwHf5v1citbkaUXzEqc7Z8y3cSOJ6TjP56szhvg9zSjvJbdeTApfIqELT9YPdQekFRcfo2V1Mob5kq91kbyxtGGkAJNqU=
+	t=1739187171; cv=none; b=lXsDuOyz0dcaJ7A/8uxwpzFeD9HgFEb5YXOImhgJ2G5fbVH77NNyeRObBFj66bKyjGXsHpvkcVuakliijJYdcUH68J2lfytZaOCw3JIGW/Ic+I5DGoTBZNb6krWRbpxwoHO2KrF3cgLpjZSJh6owLS90/DuJMoDOpKHMS0ZRNXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739187080; c=relaxed/simple;
-	bh=qsIcbPg+b5rhReCuOmvcNBEywaHib4qwDy+eacFBf0k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SWP3okg4hofvKgYmBuIVOwZ/CnY9/gbmQJWDPpwgkXLUPT52zQ0g59kIlsJi0xLL7GDRCr2CCOXfy9SaJoYLh+Fc2xFdxvdKPL6wcS6YcpFkKRJZBps5YP6s7T8zEVNK9zjmpgnEBkXrpCMVf3JYuTQu1WBTn/BFIFYU2hGqZos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ghL2qOCS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0142FC4CED1;
-	Mon, 10 Feb 2025 11:31:18 +0000 (UTC)
+	s=arc-20240116; t=1739187171; c=relaxed/simple;
+	bh=Q6sr3qmH3DVJ0Ivs5AodKQaq7twPqQLCyqbpAcZwQPk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kB2NyyitTc4c4aEOLIokyk97FzanH0tkNFBOCtlyV8ER4kT9SrxvhFQlh0onRziVw1oshz+5hstZvku/BjqZlEiZiF3t1/Rd8xxFCbEUpb+eo7JdLrCKo96cN3UkmcYtZliAlImxIuBxUmiA9vinbDg20nRcCV+935xWqYGQps4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=USebTi4h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F94FC4CED1;
+	Mon, 10 Feb 2025 11:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739187079;
-	bh=qsIcbPg+b5rhReCuOmvcNBEywaHib4qwDy+eacFBf0k=;
+	s=k20201202; t=1739187170;
+	bh=Q6sr3qmH3DVJ0Ivs5AodKQaq7twPqQLCyqbpAcZwQPk=;
 	h=From:To:Cc:Subject:Date:From;
-	b=ghL2qOCSL00wGRBzKxb9wHyB7EyKTuOisBBSJhUYZ63aYgc55TSnGt2MbIDJfbsAw
-	 /f1VXXK+tshbR3Edg+d8dqAynN0D7Ka2RbiuIOlZBB7aLVR6UbsYzx6loOpupURRFV
-	 buyxsoSgPN5dpA/4rudaB2me24cZX4Me0pWjF+JM9osTnN5FwpgZIGsZZle2orhnnu
-	 2jrI0DuDdsGpf3DWGXKVYRVlHB1z8kzFeTWxMPSYIUtnNPeb5qFj3Xs+crZN/NG3sp
-	 8sF0im4iRpyGqHdPgftnmxWxQpOKT1Kj3OpgVolGTkaUUQlDT0G/NOJWDkysOban1a
-	 TrTz8BlI/NXyQ==
+	b=USebTi4hp8zEm+Bggdw72Z81KAE3B1EyfItLvviyvc/xGMWyZ/vW7ma59XqhBm7S8
+	 F6EpL4p57zI9MDS5DZ0bF71Mc3odL+ddDL3mU5yHCvMveunK4844YCHoFZL5N+ZFOU
+	 BqdELAjs12Q8CqlGS8r/aI9eHFwzFnF79cO+c8d42LOPgV9oFSN9qEtFxNhPbif8T6
+	 Tn0SmMvzZPf7ujaaId4wdjZjsrENV0MFQ7LfCR5VYX/NcALQnNmI4RCxLTlGJTnIxd
+	 jDhL6kBLqfhhVtoRPgw5KHiMA8RtHlQN80NWxHWpAC4lD73+f5GWJmD/aEznXy8JwY
+	 HRZ/XrJR5LfAg==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Yishai Hadas <yishaih@nvidia.com>,
-	Artemy Kovalyov <artemyko@nvidia.com>,
+Cc: Patrisious Haddad <phaddad@nvidia.com>,
 	linux-rdma@vger.kernel.org,
-	Patrisious Haddad <phaddad@nvidia.com>
-Subject: [PATCH rdma-rc] RDMA/mlx5: Fix implicit ODP hang on parent deregistration
-Date: Mon, 10 Feb 2025 13:31:11 +0200
-Message-ID: <80f2fcd19952dfa7d9981d93fd6359b4471f8278.1739186929.git.leon@kernel.org>
+	Maor Gottlieb <maorg@nvidia.com>
+Subject: [PATCH rdma-rc] RDMA/mlx5: Fix AH static rate parsing
+Date: Mon, 10 Feb 2025 13:32:39 +0200
+Message-ID: <18ef4cc5396caf80728341eb74738cd777596f60.1739187089.git.leon@kernel.org>
 X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -58,78 +57,78 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Yishai Hadas <yishaih@nvidia.com>
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-Fix the destroy_unused_implicit_child_mr() to prevent hanging during
-parent deregistration as of below [1].
+Previously static rate wasn't translated according to our PRM but simply
+used the 4 lower bytes.
 
-Upon entering destroy_unused_implicit_child_mr(), the reference count
-for the implicit MR parent is incremented using:
-refcount_inc_not_zero().
+Correctly translate static rate value passed in AH creation attribute
+according to our PRM expected values.
 
-A corresponding decrement must be performed if
-free_implicit_child_mr_work() is not called.
+In addition change 800GB mapping to zero, which is the PRM
+specified value.
 
-The code has been updated to properly manage the reference count that
-was incremented.
-
-[1]
-INFO: task python3:2157 blocked for more than 120 seconds.
-Not tainted 6.12.0-rc7+ #1633
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:python3         state:D stack:0     pid:2157 tgid:2157  ppid:1685   flags:0x00000000
-Call Trace:
-<TASK>
-__schedule+0x420/0xd30
-schedule+0x47/0x130
-__mlx5_ib_dereg_mr+0x379/0x5d0 [mlx5_ib]
-? __pfx_autoremove_wake_function+0x10/0x10
-ib_dereg_mr_user+0x5f/0x120 [ib_core]
-? lock_release+0xc6/0x280
-destroy_hw_idr_uobject+0x1d/0x60 [ib_uverbs]
-uverbs_destroy_uobject+0x58/0x1d0 [ib_uverbs]
-uobj_destroy+0x3f/0x70 [ib_uverbs]
-ib_uverbs_cmd_verbs+0x3e4/0xbb0 [ib_uverbs]
-? __pfx_uverbs_destroy_def_handler+0x10/0x10 [ib_uverbs]
-? lock_acquire+0xc1/0x2f0
-? ib_uverbs_ioctl+0xcb/0x170 [ib_uverbs]
-? ib_uverbs_ioctl+0x116/0x170 [ib_uverbs]
-? lock_release+0xc6/0x280
-ib_uverbs_ioctl+0xe7/0x170 [ib_uverbs]
-? ib_uverbs_ioctl+0xcb/0x170 [ib_uverbs]
- __x64_sys_ioctl+0x1b0/0xa70
-? kmem_cache_free+0x221/0x400
-do_syscall_64+0x6b/0x140
-entry_SYSCALL_64_after_hwframe+0x76/0x7e
-RIP: 0033:0x7f20f21f017b
-RSP: 002b:00007ffcfc4a77c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffcfc4a78d8 RCX: 00007f20f21f017b
-RDX: 00007ffcfc4a78c0 RSI: 00000000c0181b01 RDI: 0000000000000003
-RBP: 00007ffcfc4a78a0 R08: 000056147d125190 R09: 00007f20f1f14c60
-R10: 0000000000000001 R11: 0000000000000246 R12: 00007ffcfc4a7890
-R13: 000000000000001c R14: 000056147d100fc0 R15: 00007f20e365c9d0
-</TASK>
-
-Fixes: d3d930411ce3 ("RDMA/mlx5: Fix implicit ODP use after free")
-Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-Reviewed-by: Artemy Kovalyov <artemyko@nvidia.com>
+Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/odp.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/hw/mlx5/ah.c | 3 ++-
+ drivers/infiniband/hw/mlx5/qp.c | 6 +++---
+ drivers/infiniband/hw/mlx5/qp.h | 1 +
+ 3 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 89057faf3bf4..a1f80e03c5d2 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -254,6 +254,7 @@ static void destroy_unused_implicit_child_mr(struct mlx5_ib_mr *mr)
- 	if (__xa_cmpxchg(&imr->implicit_children, idx, mr, NULL, GFP_KERNEL) !=
- 	    mr) {
- 		xa_unlock(&imr->implicit_children);
-+		mlx5r_deref_odp_mkey(&imr->mmkey);
- 		return;
+diff --git a/drivers/infiniband/hw/mlx5/ah.c b/drivers/infiniband/hw/mlx5/ah.c
+index 505bc47fd575..99036afb3aef 100644
+--- a/drivers/infiniband/hw/mlx5/ah.c
++++ b/drivers/infiniband/hw/mlx5/ah.c
+@@ -67,7 +67,8 @@ static void create_ib_ah(struct mlx5_ib_dev *dev, struct mlx5_ib_ah *ah,
+ 		ah->av.tclass = grh->traffic_class;
  	}
  
+-	ah->av.stat_rate_sl = (rdma_ah_get_static_rate(ah_attr) << 4);
++	ah->av.stat_rate_sl =
++		(mlx5r_ib_rate(dev, rdma_ah_get_static_rate(ah_attr)) << 4);
+ 
+ 	if (ah_attr->type == RDMA_AH_ATTR_TYPE_ROCE) {
+ 		if (init_attr->xmit_slave)
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index d0d877e1b499..1356f8fcd507 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -3449,11 +3449,11 @@ static int ib_to_mlx5_rate_map(u8 rate)
+ 	return 0;
+ }
+ 
+-static int ib_rate_to_mlx5(struct mlx5_ib_dev *dev, u8 rate)
++int mlx5r_ib_rate(struct mlx5_ib_dev *dev, u8 rate)
+ {
+ 	u32 stat_rate_support;
+ 
+-	if (rate == IB_RATE_PORT_CURRENT)
++	if (rate == IB_RATE_PORT_CURRENT || rate == IB_RATE_800_GBPS)
+ 		return 0;
+ 
+ 	if (rate < IB_RATE_2_5_GBPS || rate > IB_RATE_800_GBPS)
+@@ -3598,7 +3598,7 @@ static int mlx5_set_path(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
+ 		       sizeof(grh->dgid.raw));
+ 	}
+ 
+-	err = ib_rate_to_mlx5(dev, rdma_ah_get_static_rate(ah));
++	err = mlx5r_ib_rate(dev, rdma_ah_get_static_rate(ah));
+ 	if (err < 0)
+ 		return err;
+ 	MLX5_SET(ads, path, stat_rate, err);
+diff --git a/drivers/infiniband/hw/mlx5/qp.h b/drivers/infiniband/hw/mlx5/qp.h
+index b6ee7c3ee1ca..2530e7730635 100644
+--- a/drivers/infiniband/hw/mlx5/qp.h
++++ b/drivers/infiniband/hw/mlx5/qp.h
+@@ -56,4 +56,5 @@ int mlx5_core_xrcd_dealloc(struct mlx5_ib_dev *dev, u32 xrcdn);
+ int mlx5_ib_qp_set_counter(struct ib_qp *qp, struct rdma_counter *counter);
+ int mlx5_ib_qp_event_init(void);
+ void mlx5_ib_qp_event_cleanup(void);
++int mlx5r_ib_rate(struct mlx5_ib_dev *dev, u8 rate);
+ #endif /* _MLX5_IB_QP_H */
 -- 
 2.48.1
 
