@@ -1,69 +1,93 @@
-Return-Path: <linux-rdma+bounces-7615-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7616-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 005B8A2E2BC
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 04:28:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD679A2E69B
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 09:40:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F4591887961
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 03:28:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84EC13A608B
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 08:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D5F16F06B;
-	Mon, 10 Feb 2025 03:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED6F1B87F1;
+	Mon, 10 Feb 2025 08:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ocYKeccJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1533835957
-	for <linux-rdma@vger.kernel.org>; Mon, 10 Feb 2025 03:28:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD9157C93
+	for <linux-rdma@vger.kernel.org>; Mon, 10 Feb 2025 08:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739158089; cv=none; b=Lf9xdw1lzRMBcqsZBPOChdrQgmzwYX/i2iU2KHSZu90yVr1e8oSvKOFm9/vKKunXl4Lh7mbw9lZcqF0IHMF+4OQVoWUzmx2CxIjbafwrqW02ze5Zi+135feeGzVdePU/7vhbpvkMzOVC10ky831iFQAFLCe+0cnAHRLxsLj15/o=
+	t=1739176833; cv=none; b=H8m30W+Uck+FkWgH/V+41BauJgbrs5aTE6jH1xI1iJU1/jFQ3VdEh/cfJdEAINuKM97rHajiMpaUDhcs187Bt37/GPOfZ6Icu4VoaEddZTzod7VLSv9k4QgtKhGHo9TGfRb1ZUKU2uncz9VP/ev0eMycT4wV2o60bnVvIEQu7rM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739158089; c=relaxed/simple;
-	bh=68D/2O4zBuWzseOsqiEVzI22nK2g3Zks+RBr2A5v230=;
-	h=Message-ID:Date:MIME-Version:From:To:CC:Subject:Content-Type; b=IiD76DgLE5b4ef0X2hK9+XENfFsQI51yXUftJOh5l6M8OXTyUdlmNawE9ZuHe05KgFdxzd7mx5SXEDh8dqkcWAkmQQ3NuZEqagIiu6cnU8KquMTCl+Mtigybm8++p63NzWaMKdZBcVL0eaqdiEkKQ5NwWLR/x8DyVogwxPMeV9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YrqfY41GGz11Pvd;
-	Mon, 10 Feb 2025 11:23:33 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id C8F4C1400E3;
-	Mon, 10 Feb 2025 11:27:57 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 10 Feb 2025 11:27:57 +0800
-Message-ID: <b80b04df-ff75-9308-6d27-a8df9f6abca8@hisilicon.com>
-Date: Mon, 10 Feb 2025 11:27:56 +0800
+	s=arc-20240116; t=1739176833; c=relaxed/simple;
+	bh=NHvju3Nr3qOQr6/uMcpVsAGpqURlEd3jDO8l3IL24Jo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=twrPCmBwxmhGrf8f92B4ToJdJJz7qqY2z7HfW6EBP0REX7XFl7I7sntrUja5W8gKtpVfXI1oNDNA81W+QoyZuKMISLtC3XJgZf+Nk8zw6B5BJv9HxzACC6YpwfnM5GrNGBXXPIZIqXSgmVrGIqP4+1WSuNp3hbRLpQktm9MT+T0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ocYKeccJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41CBBC4CED1;
+	Mon, 10 Feb 2025 08:40:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1739176832;
+	bh=NHvju3Nr3qOQr6/uMcpVsAGpqURlEd3jDO8l3IL24Jo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ocYKeccJJysDrd9jloAWkh6NZBh/5silRI7PCYZBzf/mZ/JWUoiwNw8wwQaSX/lhz
+	 r/yI5lMStNGJWeURMQG8S1BKndApd7VsApSE1KT6y4WDAglgOuVGgVQfAsoec7jK0j
+	 uVMCufWRyb2LWDly639LV2UaFpxx7d/TabfsGl4442/YhNHLkRZPBfTMhvVmZew/vl
+	 29I5A72bs4PJCsMpdaX1IEC1wRKrwOwCwreYX7JpDI2EoYvgQj1VSFQ/GIGqRa2pju
+	 jl/dzqAFl4/1sNYvgB54B0agSVS3s4SNSrSpJzT1kIQsLtk4qwXZ0+jEHkRwRqyeF2
+	 J87ZbrE4Ztvkw==
+From: Leon Romanovsky <leon@kernel.org>
+To: jgg@ziepe.ca, Selvin Xavier <selvin.xavier@broadcom.com>
+Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
+ kalesh-anakkur.purayil@broadcom.com
+In-Reply-To: <1738657285-23968-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1738657285-23968-1-git-send-email-selvin.xavier@broadcom.com>
+Subject: Re: [PATCH rdma-rc 0/4] RDMA/bnxt_re: Bug fixes for 6.14
+Message-Id: <173917682914.177911.5626008545129675874.b4-ty@kernel.org>
+Date: Mon, 10 Feb 2025 03:40:29 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: linux-rdma <linux-rdma@vger.kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>
-CC: "huangjunxian (C)" <huangjunxian6@hisilicon.com>
-Subject: Question about ib_drain_sq()
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemf100018.china.huawei.com (7.202.181.17)
+X-Mailer: b4 0.15-dev-37811
 
-Hi all! A simple question about ib_drain_sq():
 
-Why are we posting a WRITE wr but not a SEND in ib_drain_sq()?
-This doesn't work with UD QPs.
+On Tue, 04 Feb 2025 00:21:21 -0800, Selvin Xavier wrote:
+> Includes some of the critical fixes found while testing
+> the 6.14 branch. Please review and apply.
+> 
+> Thanks,
+> Selvin
+> 
+> Kalesh AP (3):
+>   RDMA/bnxt_re: Fix an issue in bnxt_re_async_notifier
+>   RDMA/bnxt_re: Add sanity checks on rdev validity
+>   RDMA/bnxt_re: Fix issue in the unload path
+> 
+> [...]
 
-Thanks,
-Junxian
+Applied, thanks!
+
+[1/4] RDMA/bnxt_re: Fix an issue in bnxt_re_async_notifier
+      https://git.kernel.org/rdma/rdma/c/a27c6f46dcec8f
+[2/4] RDMA/bnxt_re: Add sanity checks on rdev validity
+      https://git.kernel.org/rdma/rdma/c/f0df225d12fcb0
+[3/4] RDMA/bnxt_re: Fix issue in the unload path
+      https://git.kernel.org/rdma/rdma/c/e2f105277411c4
+[4/4] RDMA/bnxt_re: Fix the statistics for Gen P7 VF
+      https://git.kernel.org/rdma/rdma/c/8238c7bd84209c
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
