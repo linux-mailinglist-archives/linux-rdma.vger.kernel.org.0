@@ -1,331 +1,223 @@
-Return-Path: <linux-rdma+bounces-7639-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7640-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B1E4A2EE4A
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 14:36:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E6F8A2EEE0
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 14:53:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52041168540
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 13:35:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D323A1885276
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 13:53:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC04F237186;
-	Mon, 10 Feb 2025 13:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4DA230998;
+	Mon, 10 Feb 2025 13:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nffdMbBG"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="TJr+InTy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0A022F391;
-	Mon, 10 Feb 2025 13:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705A721C9E0;
+	Mon, 10 Feb 2025 13:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739194320; cv=none; b=LiMp/ul9ghd8BpfBLLI0O3n2NFTiB7CQ9j2F59D48vlfN1CLN5OGxQaeXmR11xtlg3wES34m8H5dL+Ht/gWXQOdyHNV47X7iOKFEnBOFjtzUqn5FKrztUj+LCC1pp14Q/ZMREBsxYI9bFRH07IjsGMZQuOcW9/+cL3KESaK+1Ro=
+	t=1739195615; cv=none; b=Ps+xqloqrBfXga3+rpNiQKHHJSkB/8ySnMcnGCl1MhRHFYJxMjcY7nd0h7hIva5y8Wch/tDUIJ4I2KFwhIqD8gEq4ey7/LHvv3bRn1D2emp5Pbh3jfj9sChsF6nX+LdELVC02cZGW91oPful1Z8qGdjUJokHxzRYg1A5SnQS9Zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739194320; c=relaxed/simple;
-	bh=S62S2UlhWL8rb4qI3arpOLtfToV24VE5G0QJtgwZSd0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OQWXBtUbYnThfG/6OAitlzsAJkwhJMESV/xx0bHz9AhJD4/BcWDYvERLKeOUDXnuR7BIcDzeDmN+OW7Q5RPjlAGtE+nP/TnLEw3AjBMYcwHZ6jkWjINbOnXycgMllofNljnH1dy9hhfmBVX4mVSZQflgbqbQCRkIi4Agodxplfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nffdMbBG; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-21f2f386cbeso79691785ad.0;
-        Mon, 10 Feb 2025 05:31:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739194317; x=1739799117; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jk0dxyoWsu5lRO3R+Rz0JbRWJlXzABQyZSbO//NLaUs=;
-        b=nffdMbBGq5lRsBHSKBMadMqqfvyNNIlS/Cwc0MJ8f5IjZ0ZM8CJ7MDNWwGKkIkPLwD
-         sNoBNIOiI1IijsKGyf5LY6Y+C+5qhsDvy1UGnLTF/Duy4nMS5gddV4vec1jGHXSHWg6s
-         3lkEXfN8NNhZFk4QQ8s9Ih0qRK1w6wiyPMM2lXv4yuIgZaSKFo5iEJHrtjDTkvO/C1U+
-         zXGPLiaOJY3eCP0eey8tTDFg4SlZUIljtNUGx0ODDjT7JctZHM00Qnh0Mw2IxDxO1KEd
-         lFr7THRh2MguPSVDWqrG99FzeT6AqvaLCgEB5AhQFFU3ObQXPskEWG/qKj7xhKLf+0Zd
-         zoKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739194317; x=1739799117;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jk0dxyoWsu5lRO3R+Rz0JbRWJlXzABQyZSbO//NLaUs=;
-        b=Sh9kWjIkqyYtZ22e9ExP4Ov/74UYvtpEw1RZIRf/efSdISDm9H7v7rkFZocUtrqD38
-         uvkO7M+1rHAzW0I+76wsxAzKKrgmjhXLkFpIgp0BUEqju5/eLqGMo4UFUWvNQsx/iTSP
-         DsF5rE8MjuDH0uNH4KSibkyscog4TAbUgArFjBv35qrRImTwyTCCXhCKlxwQ1akRpU4H
-         gs58jqSuslrHYHPY9L5hFxS3crDMQZ6RohZQG92SfLpfGZr8mInwBc1jQEruIfWApRuO
-         cr1e7mqTBcnd4cE6r+Xzu/1shjut3znfcF14I/8+D4hqnGAC+5rOa2dYpNolENshCFn1
-         m+8g==
-X-Forwarded-Encrypted: i=1; AJvYcCUrK+VWuoYr6B/Ne4jB1R2ZUPbpyMS0YldA+a1u+J5VpPGZXAJBhWja8/HI8Ia2pNx6EFxFD2Mc+ARO@vger.kernel.org, AJvYcCVOJ61EGvPjXK6udrbZiqXTrfAYEOrXjv96hA887G1RS7DpzAUhibkPLparCSk2B/SGqSOTPu7YTvW//Ncokfn1@vger.kernel.org, AJvYcCW9QrpdJDp2XMn/coPc4/h0ex9HU6Ceq1AkVOSu2HP3mrRf4Dh6rEq2om4AdNyAIRA224U=@vger.kernel.org, AJvYcCWA3IQTOFw19Q6Id2o+2eyHuF2iWZmx+Wo7wsH4EeeTMeneszkBu7vAA5xVf/b/M4IbS3WzwyrMFXpnZQ==@vger.kernel.org, AJvYcCWRySya22sXNlPKrzo9fVmhjs9finoANLKgbAdaU0mS1AmJGQtTHe9HxDjU+DE8c7aJ4OKnQ1o0tVemaL9Y@vger.kernel.org, AJvYcCWrFw9uYdgUHpAZIWqjoQGokJGCysqoEcMAdbI8WoEcdbajJr6Ns3Ozh9Hia+d2NdJgEEaN48xj9kXmRw==@vger.kernel.org, AJvYcCX545YPGlgLOGcxOsqSPBvyB7I/8QklTCYXoCY8phm9K4fdAUWH2xftH8J99DgYr8zYqzG2PbOsrwP/lBsLt3k=@vger.kernel.org, AJvYcCXPM/5ENZCrCHopPOZDzn11LWCRT4ENN+T64+SDSTTGRExoTgY03cMmVqJWmQzpPUuMFpxvg3J1dgp4@vger.kernel.org
-X-Gm-Message-State: AOJu0YwlylsSwM8ldxxANAExZ339B+4vX1jUewGqZxYAv9gMlKDgKsGc
-	2jGBSZUdNyzQaefRl8IdsNmqeh3Po3Wk64YMWhdB/oMP0GyyxkuHorJPcQ34x7A=
-X-Gm-Gg: ASbGncsY6uiUeM/oeYV3ChmbIgycsUXFyrQrOlNhUOE6FWKtOsfQh8FHZ9qsiCmwrnS
-	ML4rm9MSF4kU92WVf/gy+ctkZP1vzU+qBMVbkZfQkuMag25JtCAUVfClMRJPG7JMDQWdROIgrbY
-	ZelWqnAvsFWlXMSJV7UrLE5z5ZF9bKjYWxpXycCRHftztss7OkvxcgY84Ysc7SRYe3m8vFNjx8a
-	CzmfrYymaX5FfwyPRk708YyJFDdN4BaoSk5mK0FH7pHuxLzh3Kh+RV7S5ATocB0RIeIYRrEWxZW
-	3ky8wQ==
-X-Google-Smtp-Source: AGHT+IFvHDtUC7UviecjfNl3hpHTbMhh0EOi41PhfMqFPmLkJsOvzu+7RGuTxjt6Zfs/TZjuhdiWxA==
-X-Received: by 2002:a17:902:f60a:b0:21e:feac:8b99 with SMTP id d9443c01a7336-21f4e10da1bmr232900525ad.0.1739194317162;
-        Mon, 10 Feb 2025 05:31:57 -0800 (PST)
-Received: from ws.. ([103.167.140.11])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21f3653af3bsm78799445ad.57.2025.02.10.05.31.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Feb 2025 05:31:56 -0800 (PST)
-From: Xiao Liang <shaw.leon@gmail.com>
-To: netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Simon Horman <horms@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	linux-rdma@vger.kernel.org,
-	linux-can@vger.kernel.org,
-	osmocom-net-gprs@lists.osmocom.org,
-	bpf@vger.kernel.org,
-	linux-ppp@vger.kernel.org,
-	wireguard@lists.zx2c4.com,
-	linux-wireless@vger.kernel.org,
-	b.a.t.m.a.n@lists.open-mesh.org,
-	bridge@lists.linux.dev,
-	linux-wpan@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v9 11/11] selftests: net: Add test cases for link and peer netns
-Date: Mon, 10 Feb 2025 21:30:02 +0800
-Message-ID: <20250210133002.883422-12-shaw.leon@gmail.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250210133002.883422-1-shaw.leon@gmail.com>
-References: <20250210133002.883422-1-shaw.leon@gmail.com>
+	s=arc-20240116; t=1739195615; c=relaxed/simple;
+	bh=+yxgt6+xyAp6s+YD52QMLqkv1qTdvCPj8HeHjseiZRs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=J5E54DTQnjd7fjulF1Ql76MLMRGilivYNqPPrntZVZEjItKh+QDUaVMxa/BJDYjTNDnMn05Fw5GHTCFm3D1nGk3YRj1SK8wy3h+5EgGNYr67Mkr6Q+kPjQqnefztjUN3pkCE1ahdofp4WK8+hQnRvlkb64RNogW6I5G7yEU7hgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=TJr+InTy; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51A7X6pI020862;
+	Mon, 10 Feb 2025 13:53:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=550vrO
+	d5X6IQBeVHaRhw+8u8h7h1HP+3g0ov9GC21RM=; b=TJr+InTyJZ9U4e04kJrytk
+	TwJ4Y2I0jSZ15emqC840+rzjNbytEVwEU/lt/wand0gR0BoviixxVOJpSaMhOlS8
+	y+ZMnkQk2SXAs5vTt8qoVZVnyTsjoTLo5Z3v//EyuBrn/tHRkUsoX3LrNGKq+R7Z
+	3BAMh3qft29S3lBHZPTZJBAsquinG36AT2IHK3WtaScwRr33w4TRy3RXfgA9IRnY
+	02PkVsED2of93IVp/NuX+5CxYQWlR6V/X4bGTsPTu9SyRXBWukzrz2i0V9ZBIbFG
+	I53vfu9U2395SU2cBG/5iRAx8lNk952FuWL9JzLr3ybAjPKQcjZQuWPlMCS+i1Zg
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44qd5nsq38-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 10 Feb 2025 13:53:15 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 51ADoGFH029176;
+	Mon, 10 Feb 2025 13:53:14 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44qd5nsq33-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 10 Feb 2025 13:53:14 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 51AC7PkY001051;
+	Mon, 10 Feb 2025 13:53:13 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 44pjkmxj66-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 10 Feb 2025 13:53:13 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 51ADrAVp14680354
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 10 Feb 2025 13:53:10 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 03057200F2;
+	Mon, 10 Feb 2025 13:53:10 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 137E9200F0;
+	Mon, 10 Feb 2025 13:53:09 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.22.27])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with SMTP;
+	Mon, 10 Feb 2025 13:52:58 +0000 (GMT)
+Date: Mon, 10 Feb 2025 14:52:55 +0100
+From: Halil Pasic <pasic@linux.ibm.com>
+To: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+Cc: Paolo Abeni <pabeni@redhat.com>, wenjia@linux.ibm.com, jaka@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, horms@kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexandra Winter <wintera@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH net] net/smc: use the correct ndev to find pnetid by
+ pnetid table
+Message-ID: <20250210145255.793e6639.pasic@linux.ibm.com>
+In-Reply-To: <b1053a92-3a3f-4042-9be9-60b94b97747d@linux.alibaba.com>
+References: <20241227040455.91854-1-guangguan.wang@linux.alibaba.com>
+	<1f4a721f-fa23-4f1d-97a9-1b27bdcd1e21@redhat.com>
+	<20250107203218.5787acb4.pasic@linux.ibm.com>
+	<908be351-b4f8-4c25-9171-4f033e11ffc4@linux.alibaba.com>
+	<20250109040429.350fdd60.pasic@linux.ibm.com>
+	<b1053a92-3a3f-4042-9be9-60b94b97747d@linux.alibaba.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: z7c8wxOxHz5HvQIUQRHj7y0YaOkhha7N
+X-Proofpoint-ORIG-GUID: 9lggT4HDYvzhX0pavHSmB7QoLTkpK_W8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-10_07,2025-02-10_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 phishscore=0 mlxscore=0 clxscore=1015 spamscore=0
+ mlxlogscore=999 suspectscore=0 malwarescore=0 impostorscore=0
+ lowpriorityscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2501170000 definitions=main-2502100113
 
- - Add test for creating link in another netns when a link of the same
-   name and ifindex exists in current netns.
- - Add test to verify that link is created in target netns directly -
-   no link new/del events should be generated in link netns or current
-   netns.
- - Add test cases to verify that link-netns is set as expected for
-   various drivers and combination of namespace-related parameters.
+On Fri, 10 Jan 2025 13:43:44 +0800
+Guangguan Wang <guangguan.wang@linux.alibaba.com> wrote:
 
-Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
----
- tools/testing/selftests/net/Makefile      |   1 +
- tools/testing/selftests/net/config        |   5 +
- tools/testing/selftests/net/link_netns.py | 141 ++++++++++++++++++++++
- tools/testing/selftests/net/netns-name.sh |  10 ++
- 4 files changed, 157 insertions(+)
- create mode 100755 tools/testing/selftests/net/link_netns.py
+> We want to use SMC in container on cloud environment, and encounter problem
+> when using smc_pnet with commit 890a2cb4a966. In container, there have choices
+> of different container network, such as directly using host network, virtual
+> network IPVLAN, veth, etc. Different choices of container network have different
+> netdev hierarchy. Examples of netdev hierarchy show below. (eth0 and eth1 in host
+> below is the netdev directly related to the physical device).
+>  _______________________________      ________________________________   
+> |   _________________           |     |   _________________           |  
+> |  |POD              |          |     |  |POD  __________  |          |  
+> |  |                 |          |     |  |    |upper_ndev| |          |  
+> |  | eth0_________   |          |     |  |eth0|__________| |          |  
+> |  |____|         |__|          |     |  |_______|_________|          |  
+> |       |         |             |     |          |lower netdev        |  
+> |       |         |             |     |        __|______              |  
+> |   eth1|base_ndev| eth0_______ |     |   eth1|         | eth0_______ |  
+> |       |         |    | RDMA  ||     |       |base_ndev|    | RDMA  ||  
+> | host  |_________|    |_______||     | host  |_________|    |_______||  
+> ———————————————————————————————-      ———————————————————————————————-    
+>  netdev hierarchy if directly          netdev hierarchy if using IPVLAN    
+>    using host network
+>  _______________________________
+> |   _____________________       |
+> |  |POD        _________ |      |
+> |  |          |base_ndev||      |
+> |  |eth0(veth)|_________||      |
+> |  |____________|________|      |
+> |               |pairs          |
+> |        _______|_              |
+> |       |         | eth0_______ |
+> |   veth|base_ndev|    | RDMA  ||
+> |       |_________|    |_______||
+> |        _________              |
+> |   eth1|base_ndev|             |
+> | host  |_________|             |
+>  ———————————————————————————————
+>   netdev hierarchy if using veth
+> 
+> Due to some reasons, the eth1 in host is not RDMA attached netdevice, pnetid
+> is needed to map the eth1(in host) with RDMA device so that POD can do SMC-R.
+> Because the eth1(in host) is managed by CNI plugin(such as Terway, network
+> management plugin in container environment), and in cloud environment the
+> eth(in host) can dynamically be inserted by CNI when POD create and dynamically
+> be removed by CNI when POD destroy and no POD related to the eth(in host)
+> anymore.
 
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 73ee88d6b043..df07a38f884f 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -35,6 +35,7 @@ TEST_PROGS += cmsg_so_mark.sh
- TEST_PROGS += cmsg_so_priority.sh
- TEST_PROGS += cmsg_time.sh cmsg_ipv6.sh
- TEST_PROGS += netns-name.sh
-+TEST_PROGS += link_netns.py
- TEST_PROGS += nl_netdev.py
- TEST_PROGS += srv6_end_dt46_l3vpn_test.sh
- TEST_PROGS += srv6_end_dt4_l3vpn_test.sh
-diff --git a/tools/testing/selftests/net/config b/tools/testing/selftests/net/config
-index 5b9baf708950..ab55270669ec 100644
---- a/tools/testing/selftests/net/config
-+++ b/tools/testing/selftests/net/config
-@@ -107,3 +107,8 @@ CONFIG_XFRM_INTERFACE=m
- CONFIG_XFRM_USER=m
- CONFIG_IP_NF_MATCH_RPFILTER=m
- CONFIG_IP6_NF_MATCH_RPFILTER=m
-+CONFIG_IPVLAN=m
-+CONFIG_CAN=m
-+CONFIG_CAN_DEV=m
-+CONFIG_CAN_VXCAN=m
-+CONFIG_NETKIT=y
-diff --git a/tools/testing/selftests/net/link_netns.py b/tools/testing/selftests/net/link_netns.py
-new file mode 100755
-index 000000000000..aab043c59d69
---- /dev/null
-+++ b/tools/testing/selftests/net/link_netns.py
-@@ -0,0 +1,141 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+import time
-+
-+from lib.py import ksft_run, ksft_exit, ksft_true
-+from lib.py import ip
-+from lib.py import NetNS, NetNSEnter
-+from lib.py import RtnlFamily
-+
-+
-+LINK_NETNSID = 100
-+
-+
-+def test_event() -> None:
-+    with NetNS() as ns1, NetNS() as ns2:
-+        with NetNSEnter(str(ns2)):
-+            rtnl = RtnlFamily()
-+
-+        rtnl.ntf_subscribe("rtnlgrp-link")
-+
-+        ip(f"netns set {ns2} {LINK_NETNSID}", ns=str(ns1))
-+        ip(f"link add netns {ns1} link-netnsid {LINK_NETNSID} dummy1 type dummy")
-+        ip(f"link add netns {ns1} dummy2 type dummy", ns=str(ns2))
-+
-+        ip("link del dummy1", ns=str(ns1))
-+        ip("link del dummy2", ns=str(ns1))
-+
-+        time.sleep(1)
-+        rtnl.check_ntf()
-+        ksft_true(rtnl.async_msg_queue.empty(),
-+                  "Received unexpected link notification")
-+
-+
-+def validate_link_netns(netns, ifname, link_netnsid) -> bool:
-+    link_info = ip(f"-d link show dev {ifname}", ns=netns, json=True)
-+    if not link_info:
-+        return False
-+    return link_info[0].get("link_netnsid") == link_netnsid
-+
-+
-+def test_link_net() -> None:
-+    configs = [
-+        # type, common args, type args, fallback to dev_net
-+        ("ipvlan", "link dummy1", "", False),
-+        ("macsec", "link dummy1", "", False),
-+        ("macvlan", "link dummy1", "", False),
-+        ("macvtap", "link dummy1", "", False),
-+        ("vlan", "link dummy1", "id 100", False),
-+        ("gre", "", "local 192.0.2.1", True),
-+        ("vti", "", "local 192.0.2.1", True),
-+        ("ipip", "", "local 192.0.2.1", True),
-+        ("ip6gre", "", "local 2001:db8::1", True),
-+        ("ip6tnl", "", "local 2001:db8::1", True),
-+        ("vti6", "", "local 2001:db8::1", True),
-+        ("sit", "", "local 192.0.2.1", True),
-+        ("xfrm", "", "if_id 1", True),
-+    ]
-+
-+    with NetNS() as ns1, NetNS() as ns2, NetNS() as ns3:
-+        net1, net2, net3 = str(ns1), str(ns2), str(ns3)
-+
-+        # prepare link netnsid  and a dummy link needed by certain drivers
-+        ip(f"netns set {net3} {LINK_NETNSID}", ns=str(net2))
-+        ip("link add dummy1 type dummy", ns=net3)
-+
-+        cases = [
-+            # source, "netns", "link-netns", expected link-netns
-+            (net3, None, None, None, None),
-+            (net3, net2, None, None, LINK_NETNSID),
-+            (net2, None, net3, LINK_NETNSID, LINK_NETNSID),
-+            (net1, net2, net3, LINK_NETNSID, LINK_NETNSID),
-+        ]
-+
-+        for src_net, netns, link_netns, exp1, exp2 in cases:
-+            tgt_net = netns or src_net
-+            for typ, cargs, targs, fb_dev_net in configs:
-+                cmd = "link add"
-+                if netns:
-+                    cmd += f" netns {netns}"
-+                if link_netns:
-+                    cmd += f" link-netns {link_netns}"
-+                cmd += f" {cargs} foo type {typ} {targs}"
-+                ip(cmd, ns=src_net)
-+                if fb_dev_net:
-+                    ksft_true(validate_link_netns(tgt_net, "foo", exp1),
-+                              f"{typ} link_netns validation failed")
-+                else:
-+                    ksft_true(validate_link_netns(tgt_net, "foo", exp2),
-+                              f"{typ} link_netns validation failed")
-+                ip(f"link del foo", ns=tgt_net)
-+
-+
-+def test_peer_net() -> None:
-+    types = [
-+        "vxcan",
-+        "netkit",
-+        "veth",
-+    ]
-+
-+    with NetNS() as ns1, NetNS() as ns2, NetNS() as ns3, NetNS() as ns4:
-+        net1, net2, net3, net4 = str(ns1), str(ns2), str(ns3), str(ns4)
-+
-+        ip(f"netns set {net3} {LINK_NETNSID}", ns=str(net2))
-+
-+        cases = [
-+            # source, "netns", "link-netns", "peer netns", expected
-+            (net1, None, None, None, None),
-+            (net1, net2, None, None, None),
-+            (net2, None, net3, None, LINK_NETNSID),
-+            (net1, net2, net3, None, None),
-+            (net2, None, None, net3, LINK_NETNSID),
-+            (net1, net2, None, net3, LINK_NETNSID),
-+            (net2, None, net2, net3, LINK_NETNSID),
-+            (net1, net2, net4, net3, LINK_NETNSID),
-+        ]
-+
-+        for src_net, netns, link_netns, peer_netns, exp in cases:
-+            tgt_net = netns or src_net
-+            for typ in types:
-+                cmd = "link add"
-+                if netns:
-+                    cmd += f" netns {netns}"
-+                if link_netns:
-+                    cmd += f" link-netns {link_netns}"
-+                cmd += f" foo type {typ}"
-+                if peer_netns:
-+                    cmd += f" peer netns {peer_netns}"
-+                ip(cmd, ns=src_net)
-+                ksft_true(validate_link_netns(tgt_net, "foo", exp),
-+                          f"{typ} peer_netns validation failed")
-+                ip(f"link del foo", ns=tgt_net)
-+
-+
-+def main() -> None:
-+    ksft_run([test_event, test_link_net, test_peer_net])
-+    ksft_exit()
-+
-+
-+if __name__ == "__main__":
-+    main()
-diff --git a/tools/testing/selftests/net/netns-name.sh b/tools/testing/selftests/net/netns-name.sh
-index 6974474c26f3..0be1905d1f2f 100755
---- a/tools/testing/selftests/net/netns-name.sh
-+++ b/tools/testing/selftests/net/netns-name.sh
-@@ -78,6 +78,16 @@ ip -netns $NS link show dev $ALT_NAME 2> /dev/null &&
-     fail "Can still find alt-name after move"
- ip -netns $test_ns link del $DEV || fail
- 
-+#
-+# Test no conflict of the same name/ifindex in different netns
-+#
-+ip -netns $NS link add name $DEV index 100 type dummy || fail
-+ip -netns $NS link add netns $test_ns name $DEV index 100 type dummy ||
-+    fail "Can create in netns without moving"
-+ip -netns $test_ns link show dev $DEV >> /dev/null || fail "Device not found"
-+ip -netns $NS link del $DEV || fail
-+ip -netns $test_ns link del $DEV || fail
-+
- echo -ne "$(basename $0) \t\t\t\t"
- if [ $RET_CODE -eq 0 ]; then
-     echo "[  OK  ]"
--- 
-2.48.1
+I'm pretty clueless when it comes to the details of CNI but I think
+I'm barely able to follow. Nevertheless if you have the feeling that
+my extrapolations are wrong, please do point it out.
 
+> It is hard for us to config the pnetid to the eth1(in host). So we
+> config the pnetid to the netdevice which can be seen in POD.
+
+Hm, this sounds like you could set PNETID on eth1 (in host) for each of
+the cases and everything would be cool (and would work), but because CNI
+and the environment do not support it, or supports it in a very
+inconvenient way, you are looking for a workaround where PNETID is set
+in the POD. Is that right? Or did I get something wrong?
+
+> When do SMC-R, both
+> the container directly using host network and the container using veth network
+> can successfully match the RDMA device, because the configured pnetid netdev is a
+> base_ndev. But the container using IPVLAN can not successfully match the RDMA
+> device and 0x03030000 fallback happens, because the configured pnetid netdev is
+> not a base_ndev. Additionally, if config pnetid to the eth1(in host) also can not
+> work for matching RDMA device when using veth network and doing SMC-R in POD.
+
+That I guess answers my question from the first paragraph. Setting
+PNETID on eth1 (host) would not be sufficient for veth. Right?
+
+Another silly question: is making the PNETID basically a part of the Pod
+definition shifting PNETID from the realm of infrastructure (i.e.
+configured by the cloud provider) to the ream of an application (i.e.
+configured by the tenant)?
+
+AFAIU veth (host) is bridged (or similar) to eth1 (host) and that is in
+the host, and this is where we make sure that the requirements for SMC-R
+are satisfied.
+
+But veth (host) could be attached to eth3 which is on a network not
+reachable via eth0 (host) or eth1 (host). In that case the pod could
+still set PNETID on veth (POD). Or?
+
+> 
+> My patch can resolve the problem we encountered and also can unify the pnetid setup
+> of different network choices list above, assuming the pnetid is not limited to
+> config to the base_ndev directly related to the physical device(indeed, the current
+> implementation has not limited it yet).
+
+I see some problems here, but I'm afraid we see different problems. For
+me not being able to set eth0 (veth/POD)'s PNEDID from the host is a
+problem. Please notice that with the current implementation users can
+only control the PNETID if infrastructure does not do so in the first
+place.
+
+
+Can you please help me reason about this? I'm unfortunately lacking
+Kubernetes skills here, and it is difficult for me to think along.
+
+Regards,
+Halil
 
