@@ -1,59 +1,89 @@
-Return-Path: <linux-rdma+bounces-7646-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7647-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBE9BA2F63D
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 19:00:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87B25A2FEB1
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2025 01:01:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5480A188439C
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2025 18:00:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2379416691A
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2025 00:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB0A5255E42;
-	Mon, 10 Feb 2025 18:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B12C374EA;
+	Tue, 11 Feb 2025 00:01:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f3xzQ8S4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iX5WbZS+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F5624418C;
-	Mon, 10 Feb 2025 18:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E1711CBA
+	for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2025 00:01:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739210407; cv=none; b=TYvH9nXa0b/B/UGYJ/c0CaP0XC/tGSMC3CK5LjOyvO5GfsdRePZHPbP6UHUjb6cEKnXBMWcP3wUnWMRazL1uyTN2lY3YVDDrkvrZeOWNDzDyrdR1EJsE4qxZeOeYGpeK65YEGMI9HKQbsmqWFgUZlfvq+7H2Qe6ZFc0of1ptMG8=
+	t=1739232078; cv=none; b=D1y7YAyE1cNa1E5JhdcK7/phpxrzR58490wqqjcsiTkdRigAFRxV2XDP5j9Y29B8qxHALz2fdc4rj4UiSWQdqh+t0GLOBlyA5aIXBov7nW+4fsPhIDcI0yA+CylyyVvEC0T5vd3cz/DC9UBenuTItbTWI5FPoq0W6imL3e5OcEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739210407; c=relaxed/simple;
-	bh=1sRd6SLf08idOZTnt/wPTPKpubV5V6E4Po7IfkUz+8Y=;
+	s=arc-20240116; t=1739232078; c=relaxed/simple;
+	bh=nJ6LzyoeCFVUzoZJxDKWwrZWehljrX0DhSYi/LN5Rh0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NaevGlvYzYK/PFZRC+ZE8LuMn9iwiC+05JEVh3nqzIrKU75VmwCrYPRJQ7yNy4MOAXS163+fz8kgoeRqfwe2JWYBG1edj7X7NDO6T7WI/Udf7So8Q1Y/EKMDSeKOrfs8or1eAH9oUrPpZ86ttHIsxiRC5QDdpJHp6F4wy8JncUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f3xzQ8S4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3BD0C4CED1;
-	Mon, 10 Feb 2025 18:00:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739210407;
-	bh=1sRd6SLf08idOZTnt/wPTPKpubV5V6E4Po7IfkUz+8Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f3xzQ8S4OvU62D3PyL1n9Bty9HiMFu2U/qRNCNnCpXIu3uAEl7BhnuXisblKVKdhH
-	 16/0JFfqI9+50Dt0nOc7d7cyhbIEIXXm/ECIJZXQl2cs+EpykoN2Tqy5s5QNW8kug2
-	 XtsCDh9elsA+zf4BNS4yeZ6eWCpCvQnxxU6KyC1EwgP1hOnPQisBWzJjmCg7fJ1DFy
-	 TUFjRVFpe7jNunbaiX1zqtSrvxsG3cFu4Ew6qu+IuhNGObjP7E+ElaHMeJvpX5UrgW
-	 CapbRj1L4bu/kHDZ0qFlnRkOBL5LQDMoasGpX8fIS48UBS2NnzdHqfUMhKN4Su1sKb
-	 fKD6u61u+dckw==
-Date: Mon, 10 Feb 2025 10:00:05 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Mustafa Ismail <mustafa.ismail@intel.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] RDMA/irdma: switch to using the crc32c library
-Message-ID: <20250210180005.GE1264@sol.localdomain>
-References: <20250207033643.59904-1-ebiggers@kernel.org>
- <20250207035750.GA43210@sol.localdomain>
- <20250209091255.GA17863@unreal>
- <20250209154416.GA1230@sol.localdomain>
+	 Content-Type:Content-Disposition:In-Reply-To; b=shrp6Sh/sJOmYEmY0SDdXiqGVzfrlwPRjDFM/UcN6IzGp/zCndtUgSOzanspwX9rW1NA7+UEISWKtiRUljRXgl/TxWr12padqIfTnQ5WElefXAYsIgOvojWIp7YtLJQ2QuknEs50KQTsOy5sncuSTsxmfjt/4LTCYyj+BJRX3Ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iX5WbZS+; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3cfeff44d94so14550505ab.0
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Feb 2025 16:01:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1739232076; x=1739836876; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=o+6VjZyKkm05cc5abGkcRCYDQiyuvjp7DI1YWDZerk8=;
+        b=iX5WbZS+JoAYBsgYxpl6YrW89+p70yhF992Vocgl1ivjdsv+Satdjm2HcL7lSdBpl7
+         SOEeJpC9dxduVk8eQbhzyGyfRtI84+H8+5zVdhqxsg8ct01aHL96fo5EfI4zNh2sqSHt
+         2ceVv45CI4Ub4aUp0R4dRks7NoYYo75pH8X8e8oERVapjcQAP8w2P6rkqKdcU30iASKB
+         bnkSFwH7cSU2GIkcpT4SWfGfI6lo2RC0NJIfZ7o47OQ1zbtdZk6/ElOdg9qhjGEr3pPw
+         OEvhYdS8nmV2sUGoqX5JwZAT7qFttafzr7Hzg/uuJ04wWSkdoY/dAKjaaLRal6NOeg2+
+         N7RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739232076; x=1739836876;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o+6VjZyKkm05cc5abGkcRCYDQiyuvjp7DI1YWDZerk8=;
+        b=b9ASoxNw/ybniWS7hzk0xWPmaQDXaM3Z6Cv3N0mMZ7eGjxUL7e7gys1t3aa1MsSpba
+         HT3ba4OPlckLzzAfc3FcL7IIPd2hhKEIdtK7PDa3MXYrKpDG+LZsQaNKNB3oFyusscpU
+         5Mjo+u8/WcKJxR8TpaPs7Uwt+uMNDgdI6f0h3PKgfDbDqC3imxnkVdMOHpGsENtNC3fX
+         mk/9fI5VaVqsS54fC4UcUlkZRfV3hgB2DJ5p0LW2QTWVnq9cwmUSqJZwnvnlejljZnUa
+         9lh5fjAB5GabVvDR4X9n7aTtPJVCjn7n4yY0avTqkNa40G4Vn+OHyBmoja/fgiROq5KX
+         rRyA==
+X-Forwarded-Encrypted: i=1; AJvYcCWu7S8Tq3VlbalfkOviaEU7f/lLSwwVgZBOhLcdlsO5GNOHoWgcqQFjqM5RNdR+in0S0ncSMQYh1v9Z@vger.kernel.org
+X-Gm-Message-State: AOJu0YzCp1hBBkwfqmHkPADaLV6/KtkdIaK899p0EjOuptLhR1ruvevr
+	bpOAidthZ3IF3Ytq8GbflGeeT4WpKbPLsHj1TXavZIm/v/e0C1WNiKu1Qpk8vQtMmcZBJhBxS/O
+	WrA==
+X-Gm-Gg: ASbGncsFDyrFq4UlhiHDusUwAtxqsr8GlqRXPODqyPWjG1RftOF5xm7jIFiUodl3e9N
+	eQXy5th//OjxqedSBf9+Smqaub9FcpyBLJi440/AhF7UFc+nFBluR3SUqXkdzYOSzfvp70+Tm/c
+	EDVpnscfTv5VEweU67dqLRdnE7EgcVpex8WWq9uaySttpDaSVV1gNc9+Gm66wrgFX28KJ9XM561
+	8m4V00tcPeq4uT0YWqdGREKJg64yTSkawdFAwWYd9+ecMw7m1qjPZHACkLPDt101t6gyiPU/7jo
+	ONOVafU9TCl4Q74xMVIuun2ZuhFrUpoEuUWgKSJ0mX1s7v61QpIhGpU=
+X-Google-Smtp-Source: AGHT+IEPW+Dnhu306cg6k4cp4JKL9h87jLz1ibbxMZeZMr5tSf0uulSyxZPsQKhKZyhcDka4DYJs9Q==
+X-Received: by 2002:a05:6e02:b43:b0:3d0:23ac:b29f with SMTP id e9e14a558f8ab-3d13dcee786mr134115905ab.1.1739232076020;
+        Mon, 10 Feb 2025 16:01:16 -0800 (PST)
+Received: from google.com (143.96.28.34.bc.googleusercontent.com. [34.28.96.143])
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4ecef0c9674sm1185594173.117.2025.02.10.16.01.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Feb 2025 16:01:15 -0800 (PST)
+Date: Mon, 10 Feb 2025 16:01:10 -0800
+From: Justin Stitt <justinstitt@google.com>
+To: Kees Cook <kees@kernel.org>
+Cc: Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Yishai Hadas <yishaih@nvidia.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] net/mlx4_core: Avoid impossible mlx4_db_alloc() order
+ value
+Message-ID: <3biiqfwwvlbkvo5tx56nmcl4rzbq5w7u3kxn5f5ctwsolxpubo@isskxigmypwz>
+References: <20250210174504.work.075-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,45 +92,92 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250209154416.GA1230@sol.localdomain>
+In-Reply-To: <20250210174504.work.075-kees@kernel.org>
 
-On Sun, Feb 09, 2025 at 07:44:18AM -0800, Eric Biggers wrote:
-> On Sun, Feb 09, 2025 at 11:12:55AM +0200, Leon Romanovsky wrote:
-> > On Thu, Feb 06, 2025 at 07:57:50PM -0800, Eric Biggers wrote:
-> > > On Thu, Feb 06, 2025 at 07:36:43PM -0800, Eric Biggers wrote:
-> > > > +int irdma_ieq_check_mpacrc(const void *addr, u32 len, u32 val)
-> > > >  {
-> > > > -	u32 crc = 0;
-> > > > -
-> > > > -	crypto_shash_digest(desc, addr, len, (u8 *)&crc);
-> > > > -	if (crc != val)
-> > > > +	if (~crc32c(~0, addr, len) != val)
-> > > >  		return -EINVAL;
-> > > >  
-> > > >  	return 0;
-> > > >  }
-> > > 
-> > > Sorry, I just realized this isn't actually equivalent on big endian CPUs, since
-> > > the byte array produced by crypto_shash_digest() used little endian byte order,
-> > > whereas crc32c() just returns a CPU endian value.
-> > > 
-> > > And of course this broken subsystem uses u32 for the little endian values
-> > > instead of __le32 like the result of the kernel.
-> > > 
-> > > Not sure it's worth my time to continue to try to fix this subsystem properly.
-> > 
-> > There is no need to be such dramatic. You are not fixing anything by
-> > switch to new APIs
+On Mon, Feb 10, 2025 at 09:45:05AM -0800, Kees Cook wrote:
+> GCC can see that the value range for "order" is capped, but this leads
+> it to consider that it might be negative, leading to a false positive
+> warning (with GCC 15 with -Warray-bounds -fdiagnostics-details):
 > 
-> Exactly.  That's because I dropped the patches that actually did fix real
-> endianness bugs, because of the pointless pushback I received -- see
-> https://lore.kernel.org/linux-rdma/20250127223840.67280-1-ebiggers@kernel.org/T/#u
+> ../drivers/net/ethernet/mellanox/mlx4/alloc.c:691:47: error: array subscript -1 is below array bounds of 'long unsigned int *[2]' [-Werror=array-bounds=]
+>   691 |                 i = find_first_bit(pgdir->bits[o], MLX4_DB_PER_PAGE >> o);
+>       |                                    ~~~~~~~~~~~^~~
+>   'mlx4_alloc_db_from_pgdir': events 1-2
+>   691 |                 i = find_first_bit(pgdir->bits[o], MLX4_DB_PER_PAGE >> o);                        |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>       |                     |                         |                                                   |                     |                         (2) out of array bounds here
+>       |                     (1) when the condition is evaluated to true                             In file included from ../drivers/net/ethernet/mellanox/mlx4/mlx4.h:53,
+>                  from ../drivers/net/ethernet/mellanox/mlx4/alloc.c:42:
+> ../include/linux/mlx4/device.h:664:33: note: while referencing 'bits'
+>   664 |         unsigned long          *bits[2];
+>       |                                 ^~~~
+> 
+> Switch the argument to unsigned int, which removes the compiler needing
+> to consider negative values.
+> 
+> Signed-off-by: Kees Cook <kees@kernel.org>
+> ---
+> Cc: Tariq Toukan <tariqt@nvidia.com>
+> Cc: Andrew Lunn <andrew+netdev@lunn.ch>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: Yishai Hadas <yishaih@nvidia.com>
+> Cc: netdev@vger.kernel.org
+> Cc: linux-rdma@vger.kernel.org
+> ---
+>  drivers/net/ethernet/mellanox/mlx4/alloc.c | 6 +++---
+>  include/linux/mlx4/device.h                | 2 +-
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/alloc.c b/drivers/net/ethernet/mellanox/mlx4/alloc.c
+> index b330020dc0d6..f2bded847e61 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/alloc.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/alloc.c
+> @@ -682,9 +682,9 @@ static struct mlx4_db_pgdir *mlx4_alloc_db_pgdir(struct device *dma_device)
+>  }
+>  
+>  static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
+> -				    struct mlx4_db *db, int order)
+> +				    struct mlx4_db *db, unsigned int order)
+>  {
+> -	int o;
+> +	unsigned int o;
+>  	int i;
+>  
+>  	for (o = order; o <= 1; ++o) {
 
-Anyway, I already sent v3 of this patch that keeps the cpu_to_le32() to maintain
-the exact same behavior as the old code, so please consider that if you are
-interested.  Note that I had to add '(__force u32)' to be compatible with this
-driver's incorrect types, but that was effectively already there before, just
-hidden by writing bytes into a u32.
+  ^ Knowing now that @order can only be 0 or 1 can this for loop (and
+  goto) be dropped entirely?
 
-- Eric
+  The code is already short and sweet so I don't feel strongly either
+  way.
+
+> @@ -712,7 +712,7 @@ static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
+>  	return 0;
+>  }
+>  
+> -int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order)
+> +int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned int order)
+>  {
+>  	struct mlx4_priv *priv = mlx4_priv(dev);
+>  	struct mlx4_db_pgdir *pgdir;
+> diff --git a/include/linux/mlx4/device.h b/include/linux/mlx4/device.h
+> index 27f42f713c89..86f0f2a25a3d 100644
+> --- a/include/linux/mlx4/device.h
+> +++ b/include/linux/mlx4/device.h
+> @@ -1135,7 +1135,7 @@ int mlx4_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
+>  int mlx4_buf_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
+>  		       struct mlx4_buf *buf);
+>  
+> -int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order);
+> +int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned int order);
+>  void mlx4_db_free(struct mlx4_dev *dev, struct mlx4_db *db);
+>  
+>  int mlx4_alloc_hwq_res(struct mlx4_dev *dev, struct mlx4_hwq_resources *wqres,
+> -- 
+> 2.34.1
+> 
+
+Justin
 
