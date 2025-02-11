@@ -1,231 +1,207 @@
-Return-Path: <linux-rdma+bounces-7657-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7660-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4860A3142B
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2025 19:36:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F4CBA319DC
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 00:50:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96B597A12CC
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2025 18:35:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFEFB1687C1
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2025 23:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3DC82512CC;
-	Tue, 11 Feb 2025 18:36:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF9226A1B1;
+	Tue, 11 Feb 2025 23:49:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="XjFcI5jC"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Isgx2YBC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2088.outbound.protection.outlook.com [40.107.93.88])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2085.outbound.protection.outlook.com [40.107.236.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52203BB54;
-	Tue, 11 Feb 2025 18:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D14E26B96B;
+	Tue, 11 Feb 2025 23:49:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.85
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739299005; cv=fail; b=rhTPkQMi3Z62og/j4Q5LumYMaWm+CBTPrytT8Qels2Swu4r1FrM7hmfAUnH6yFXyoQVh60TVNpViq5WM4Ob4bnGcEjzzQ7/kaoXtYKuk99vMIl3QE72qL8FBAoVXVrCfUUV6468FQ/JSI2XjD0F9decevgY47Z6ZB6uYK+NvxmM=
+	t=1739317765; cv=fail; b=oyUvBJsFF8wMqdud87KgesTf53qfDoq9ozz4LqA6jpqqo00xJ94fjEQZpxDbtxwaWL/qgLkyZFKCu3rMnk+hu6qTa0vqJZtRa0D3zOOyq1+EFXTXxdeGsNvsMkvAfrnQB0OowJSYmGsD6UMATkrZ7q6I1SjMb6CD4ImGapBRtCo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739299005; c=relaxed/simple;
-	bh=WcwfMrP3/+FIr5ys2G+JpzadWKA71N2qOuzU18i7Vww=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=u+GwXLOdmWs0kQ94ZwgnXyYVX5w9K7JU2obupA5AtxlsUbU58YisRfQsbMyFNAK4WZbg5Q7ZhVxtMOv2okSj+GUfC9oqxC0XG0e6CkfOAwm2+8oClfvVRAVVTa7vM0sGXAAVNExMSWvJe3Mm9naMJxtEsL1xnMNTVegHhrrrUBc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=XjFcI5jC; arc=fail smtp.client-ip=40.107.93.88
+	s=arc-20240116; t=1739317765; c=relaxed/simple;
+	bh=l6J0CrgQ/AyZqNVt/SefLdkaWvD+ClaBm0154bzFsts=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ed7iUrmXlILihHquZbtTVWDuKYXAi1Jcvvlxqnk5rdO+lqMLAdm/2VHFt31wssJpP27eY7FT8Bdm8EvgoLy72icDitVtY8PNXnMsBw5Dtrj5r3ZsWfrXDnvzoMiVbBldWDy6T1YHxHbvS+DkNgKGXnej85sbk0vOHSROxhTcWn4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Isgx2YBC; arc=fail smtp.client-ip=40.107.236.85
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ohwG7LVgvvXm6hyIEYZWBAGAdDv5Y2shB/zfnjQGv21XYyS1F/pG3unBGH1JAK/vnuE7cEOMhW/ZIjYXt2yZHJZULII+j5TLkpBeysWQoL02rzs23XB17PfAYfH5KKTPUvMfDGHeO0Q2pUKnZcWsAKBbu9qCc2PdIDVwwFWmh5v7OUN/mbot/K8j/wbTtHODvrGBIKGc1EPK/SWqq4xbukbJJDqhBiFENj1JZEjf0xxbY1QhnNy+voG4//hQCYsk2tj+RkhgOU64aHtvJl95RMFJ/Pw4dR3KVzeUSx4DSWFKkSWXCeIxbXPdl+a6ZUWH0c0oLdxp57V5Tig0fXIbSA==
+ b=cmuf133PJwqG5u076HC/Q7XOaV8gfQadJeSkJqWqklg4gva7wB25Pb0BU96ntoatb5l6R501JciwiBsvrSeWxmaumTgilvBXSvZi60tp5oG1bLmRl4v/y2FwEHWp9Y3JmHk5i4b/HB87iBKQ58UUKDzgT83q5o93Ze1jh+c+9XOnRFDPjreEAFO8JGg3CK4lZMypip8g7FlX8T94cueyIQKQsZm5kRzjEy15H14OaP5rLiBMuCiqlfpMf2KI6sFNIFFvkLXW36q4K8yvM293rBob6kMUxQjtnND5cuP2hQKV49QAQ9JKLVCWUdtQzwRLpX60TJfmLW2CgkD2lR4PXg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9S1V2QSiOsSSJOAAbm4cBA41rCRMuWsQsng6lUs1b68=;
- b=Zoem67qkP8FfiDq14w92TZ5SgbFVWalpG7dgf8PP+YyxQ8lzHJ9ngN7Ipc7/gBcWdyowBxpMQFqOvVxA3hq0IZQaUhdNjHSBmSP1G/8RqRuwOBZMamxE34PtTOCTqxUzjEp/PQrbmjMDNGzZvYWmUz1jedd571YW7tcNQuRYPBy9doyHacqSz7/ZEfB+W9nefVHkkgWlnA3eMaFmOrKUK3HlWeskCFG+voqc+egGiAWOw+0RC0RvNFnfxhMyGu5jNJffBhW8gWXQao2+chap2XzCfvGZHfwGm+tbFbRI47T+wqONohk2DLQ5iFtV8TGjtPPDIyLR7qO7G6F3tyBt0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+ bh=qw7qFxCV3mE2Hx5t3tQhcgdznqsutn6eFnz4LHZiaUI=;
+ b=kUfm4XYH3J8zP/Q+Eu6yX4+JG2OiJvImCiHbOb4TXgzJ6FVlsKpIuNiKBmj/TfYCAfkjE2UQq6/sjBlxR4YP5GHqynmuxFZ5PtDDwy+cJv0HX21LUUnHk7emgT0LBE4LbcYaT7qafFldcfvXG/kzcA2P4NlZ28OuecHUJ8ktq7Z1QJv05eQ+Y0msm/vLDJ9NA7nLFpu2kwokmLcAFpqv3x0rFTmwDkplCJ2Q8ZSfIfxaYrMJmhAvoCSSXn/BHDRgVwTSNB4to3m2aMxM4ze9l8DKZrwr3Lu02RLWokKrjXDcRumagLLKuZXbMTeBAzR0aMjLQj657GYmh5qcZdT9lw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=nvidia.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9S1V2QSiOsSSJOAAbm4cBA41rCRMuWsQsng6lUs1b68=;
- b=XjFcI5jCxdkgkH27iF/hBCokIPoatin+UT22W7jQJCzhVyXo2CkenBaeKfSIlS7DlWkpSWej0aV0G0KWpdwef+D9izpI7qStgtipa6SglKhJF8bhqRbgZ3zKFRqlD5pfTdISyM4s/T0Kx5IWxbKYJFy8nDHWcq55yWXiFuztFdM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
- DM4PR12MB6590.namprd12.prod.outlook.com (2603:10b6:8:8f::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8422.16; Tue, 11 Feb 2025 18:36:40 +0000
-Received: from DS0PR12MB6583.namprd12.prod.outlook.com
- ([fe80::c8a9:4b0d:e1c7:aecb]) by DS0PR12MB6583.namprd12.prod.outlook.com
- ([fe80::c8a9:4b0d:e1c7:aecb%5]) with mapi id 15.20.8445.008; Tue, 11 Feb 2025
- 18:36:40 +0000
-Message-ID: <b0395452-dc56-414d-950c-9d0c68cf0f4a@amd.com>
-Date: Tue, 11 Feb 2025 10:36:37 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 10/10] bnxt: Create an auxiliary device for fwctl_bnxt
-To: Leon Romanovsky <leon@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- Jason Gunthorpe <jgg@nvidia.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>,
- Andy Gospodarek <andrew.gospodarek@broadcom.com>,
- Aron Silverton <aron.silverton@oracle.com>,
- Dan Williams <dan.j.williams@intel.com>,
- Daniel Vetter <daniel.vetter@ffwll.ch>, Dave Jiang <dave.jiang@intel.com>,
- David Ahern <dsahern@kernel.org>, Andy Gospodarek <gospo@broadcom.com>,
- Christoph Hellwig <hch@infradead.org>, Itay Avraham <itayavr@nvidia.com>,
- Jiri Pirko <jiri@nvidia.com>, Jonathan Cameron
- <Jonathan.Cameron@huawei.com>, Leonid Bloch <lbloch@nvidia.com>,
- linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
- netdev@vger.kernel.org, Michael Chan <michael.chan@broadcom.com>
-References: <0-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
- <10-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
- <20250206164449.52b2dfef@kernel.org>
- <CACDg6nU_Dkte_GASNRpkvSSCihpg52FBqNr0KR3ud1YRvrRs3w@mail.gmail.com>
- <20250207073648.1f0bad47@kernel.org> <Z6ZsOMLq7tt3ijX_@x130>
- <20250207135111.6e4e10b9@kernel.org> <20250208011647.GH3660748@nvidia.com>
- <20250210170423.62a2f746@kernel.org> <20250211075553.GF17863@unreal>
-Content-Language: en-US
-From: "Nelson, Shannon" <shannon.nelson@amd.com>
-In-Reply-To: <20250211075553.GF17863@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0285.namprd03.prod.outlook.com
- (2603:10b6:a03:39e::20) To DS0PR12MB6583.namprd12.prod.outlook.com
- (2603:10b6:8:d1::12)
+ bh=qw7qFxCV3mE2Hx5t3tQhcgdznqsutn6eFnz4LHZiaUI=;
+ b=Isgx2YBCxQ4DkKumgwfn2MFO8Zw+E94rIzmNuFWPTlbMxq1gfXwokq8qJkaHocWMZvoJSImX0tk57q/h3KDdRMw/9eBVUN6AbMXq4RBW3ulIpiriK6wjx67biF8qfIMsMvGhWVMZlQeBU3L1yM9f5deZTQH+qOXsfJ05gj40L2Q=
+Received: from MW4P222CA0005.NAMP222.PROD.OUTLOOK.COM (2603:10b6:303:114::10)
+ by PH0PR12MB7485.namprd12.prod.outlook.com (2603:10b6:510:1e9::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.19; Tue, 11 Feb
+ 2025 23:49:13 +0000
+Received: from MWH0EPF000971E4.namprd02.prod.outlook.com
+ (2603:10b6:303:114:cafe::9f) by MW4P222CA0005.outlook.office365.com
+ (2603:10b6:303:114::10) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8398.31 via Frontend Transport; Tue,
+ 11 Feb 2025 23:49:13 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MWH0EPF000971E4.mail.protection.outlook.com (10.167.243.72) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.8445.10 via Frontend Transport; Tue, 11 Feb 2025 23:49:12 +0000
+Received: from driver-dev1.pensando.io (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Tue, 11 Feb
+ 2025 17:49:09 -0600
+From: Shannon Nelson <shannon.nelson@amd.com>
+To: <jgg@nvidia.com>, <andrew.gospodarek@broadcom.com>,
+	<aron.silverton@oracle.com>, <dan.j.williams@intel.com>,
+	<daniel.vetter@ffwll.ch>, <dave.jiang@intel.com>, <dsahern@kernel.org>,
+	<gospo@broadcom.com>, <hch@infradead.org>, <itayavr@nvidia.com>,
+	<jiri@nvidia.com>, <Jonathan.Cameron@huawei.com>, <kuba@kernel.org>,
+	<lbloch@nvidia.com>, <leonro@nvidia.com>, <saeedm@nvidia.com>,
+	<linux-cxl@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<netdev@vger.kernel.org>
+CC: <brett.creeley@amd.com>, Shannon Nelson <shannon.nelson@amd.com>
+Subject: [RFC PATCH fwctl 0/5] pds_fwctl: fwctl for AMD/Pensando core devices
+Date: Tue, 11 Feb 2025 15:48:49 -0800
+Message-ID: <20250211234854.52277-1-shannon.nelson@amd.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|DM4PR12MB6590:EE_
-X-MS-Office365-Filtering-Correlation-Id: c5485e2c-2205-462e-82c4-08dd4acb0683
+X-MS-TrafficTypeDiagnostic: MWH0EPF000971E4:EE_|PH0PR12MB7485:EE_
+X-MS-Office365-Filtering-Correlation-Id: 467f9783-b40e-4196-e56f-08dd4af6afd8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|1800799024|376014|82310400026|36860700013|921020|7053199007|13003099007;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?U1FNVHkrS1dZdmx6aHliVEI1azdOZ0NHQlBPb3pUanBGZ2I5M3F0bk1WZEpC?=
- =?utf-8?B?T3ZpYVhnMmVjN0Vland3bDFCOGcyZVJQMlh3MEROczQ5NWFrSGxpQ0w1aVBj?=
- =?utf-8?B?eG42NHpraVpJbDVpb0x2Nncyb0lhN29NMzRiWU9zejdXK3hQbXk5ZCsxWHZC?=
- =?utf-8?B?UVUxWGVCNXF3ay9ZVmNHdDR6L3k4OStZdldrdDFyTHRLZWo0L0VFd0VRZUp4?=
- =?utf-8?B?cWdPaVRwcXErK0ZVYXJwODhXUTZXdGR1Y0VWbTMxTFQ3Yk9Zakg3NTBLMGJZ?=
- =?utf-8?B?VkNXdzdtakcwc2RGMHdjeE5hU2tPa0NzYWtqY3NMekN0OTU4NldqU3lFb3BG?=
- =?utf-8?B?NzV3STBtbVVEOUcyOTZVVWQycmxWbjloVEVEbUpZTGt4UkxSSGVCaEcvNXN6?=
- =?utf-8?B?akl5MlJpUk5BNlVkWnlOSHhaZ05VbUJ5RVVCa3NpMTRCditwQi94Y0J1RTNQ?=
- =?utf-8?B?WXF0TktuQ25GQytEdnR3OGdBT0x1V2s5dlEvVTdxUk1KRHZMWDc0VG8yaDJr?=
- =?utf-8?B?c1hSNkxFTS9mYTlJZVZrMy9yZXhCOTl5NjhnRlBsaWVxbDY4ODkwamhNOUY3?=
- =?utf-8?B?U0FBMGdOSTU3YW9DNnc5YTlzSUxrbHNzcFRmNWticmRVMFIxZlcrMVM5NG03?=
- =?utf-8?B?Z3lHR0dsaG9aZGJ6T2hpbDBKZVdjQ3hLaU1aZHd5ZkNwQnNIRmVqSzJleUY3?=
- =?utf-8?B?Z3BxY3dWb01Cc01GYkhMc2tBSDN3dnh3aWhqbXY3NXZwTFQxOG5iVG8yODVJ?=
- =?utf-8?B?MUNjcHVvNjB2SUNQNTVZZDgrMTJubGhBQzBjUUFsdFhQMmwvUEJoVm9sdXhB?=
- =?utf-8?B?Tk9ncDA1RkdibVRyOFR1UTJlYTNoangybmMyS1pBYmR1SnBEU2dVWWowM3FV?=
- =?utf-8?B?bFBCelBFQ2ZPQWFBUUpCNGVFVDdjRm9SWStJUzJ0WWF3ZjM0bEZ1ZXFpVTJs?=
- =?utf-8?B?OHVUOVR4eWxBS1hnZzc5eWdLUjgvaGF0TStoQjcvZE9yc0MyV2EyeEJ2MzYz?=
- =?utf-8?B?MS9TSk1vcWJ5U3hIK2JjMlVZY3gwYXFaQlpKanlPZXdQSnRRbjFubGxXdU44?=
- =?utf-8?B?bEFNdks5RjZtU1luMVlQUFMzdHFpK3FjRkw1ZWErZmNoNnhkOHNhMUpxTUFN?=
- =?utf-8?B?WkNxOG0xa3NRcytOYSs3SmxpVVhYak5KcElkRS9TQm5tVWcvcGkydGYwNEY5?=
- =?utf-8?B?UWNKeTNsVjB6RFdQMHdIb2w0ODlmY3FzTTR1bDlGc3hySGc1RWlwczY2K3Fv?=
- =?utf-8?B?OUJqYWZDeHl4Z1g2dVJZVkEvOHNFVWxRa2JnQmp0RkZ3S3VBMmhwbDh6WnNH?=
- =?utf-8?B?ZnZ6cU1OMVNWRkhra2RqM1FQQWlEdU50VFYvUFNXT0lhTE1pVWQ5TWdYVmpN?=
- =?utf-8?B?SHhkYytYcmQrMURWV3lJNHM0cmh2WnVVRG83aWFrUlNaL3JZUVpaUXYxM1FQ?=
- =?utf-8?B?bnhnN3Zrd3RzOW5ERVJLWTE3Mk1rNjh0WGRLSlBpQjROUWdQaVNLSkJkQThn?=
- =?utf-8?B?TlpPMVBnRWhqRStKam9kd0QzQkZHV2lzbk8rTGg0ei92RU9ZMDM1L0h1VGZt?=
- =?utf-8?B?bFIwUUtydWxoYXlWSERFQUl1cW96cDFSZ3B2WitQVXJTbmZZRjNsK1VqcDh3?=
- =?utf-8?B?dzRRTVZzS0ZvMmJHMUZYSGNFYnNOQTFZUm0vTkZSV1JvcERTL1lIR29MUkRs?=
- =?utf-8?B?Y25tVDFKdVEwN0dCVWFqUmxGMFUwcStodm9MRjhpalZZMVU0d0tramJVS1Bi?=
- =?utf-8?B?c0NhMFRkcmk1SG5zZ2dTcUYvakdXV0NNT2JjQmQ4djZtMWE2cjJvMGxvRFp0?=
- =?utf-8?B?OG5DSS9rS1FUWnJMaHlxZkw0SE91c1hMK1p3VzlrVGxTRXFxU3A0TC9QeWRy?=
- =?utf-8?Q?UJdRDm4ApH0w2?=
+	=?us-ascii?Q?amB3ZPO6pwfQIknjSrDu8hRcbuhTeLDsYmO3GL+wQIwrD8gE5kLQBMbS8syS?=
+ =?us-ascii?Q?+mWQAMND1/FLJoWCUeACvM+T2Ibh2f4Rjmmpe7NmziKIRfOM85IPg4Q3ZZXy?=
+ =?us-ascii?Q?9j5Mw7QRSMyIRfHJRvUqBy7zQVzf0b8EZCubMklPjnE6DShBg4usJn14jcJp?=
+ =?us-ascii?Q?K00iLk9er4tfXeIcp33oJt+u/98sfHbgzTQFPSWvv3px3k83Nf8ePQuQMoTB?=
+ =?us-ascii?Q?zRfsZDuf48valkqpldk9F2BdhKQQ94YeDYLqOuc3QfHW38X4jNEZbnQjsVXt?=
+ =?us-ascii?Q?/xuZMIFmDcgk4GufmrwslaJW9iSjj8Os21nq8uqzHZ8UDCnp8hxT6ZP/bgpH?=
+ =?us-ascii?Q?gYPCRVNMTWVWwoxx95QiasE0nhB+nTtYByqF8+8teBXz2xpXFSN5gsxJPt66?=
+ =?us-ascii?Q?3f2xbwPpuio03zeDDT0c2Bz30TqGbQdCksrc1j54dYopw5A/DVkzkDCzfwLC?=
+ =?us-ascii?Q?UQF4JrLcxtfhqXqtY7Gp/Ia3y7vOcEKrFrf5OyBHwgzA44gwW789dvWVtlQs?=
+ =?us-ascii?Q?WFu+02gEXL6FDT9UeMQ/h11ye/5urzOe/LwPDD0fLRNoqs2UZeGBo4rgbpvL?=
+ =?us-ascii?Q?Egj5M0D4zKxCp+lbNjwOR+YVd6R3PBEok9H6F1zE5SpNtOBOTyM5LKxc/5JU?=
+ =?us-ascii?Q?SA1ImYthAWYbOQre0HpkwFQEDLU43uXGOfbZXpBUd3ok/S5jJf9XJQ6ItCBf?=
+ =?us-ascii?Q?9tuPC0P983Fwzh82lUmUHCLJMJGXMgob4dOANIWGkz8COZhjuI7hnMdERxyR?=
+ =?us-ascii?Q?NooorQhOkGqtOOcByXQZHelitKn6I4UpjDie1wWZ5/n1wReOLMVVGLjfe744?=
+ =?us-ascii?Q?Bkwb0LOil+Svyu91UBCJIN0SShfsev0o3map3KSjGWp8yOmFFHBhPoKyrKbj?=
+ =?us-ascii?Q?l1PhDJOOOWucYfU0YwECIq4FCbS7kpmMU2W2gfR/9pUWXZj7foEmCS7jYFof?=
+ =?us-ascii?Q?jQqWXaqzlmmkzSRYyXTuEsn1lkZuoCIPFiaz0jYGTEvRpIol5fcmNQUEcrdu?=
+ =?us-ascii?Q?sPzH1WAT6tYB/f20hMKKDQ+9RtRhisyCVnaUwRf71kWlilRm7ZODqnA7vBtu?=
+ =?us-ascii?Q?SJaFcIvWL4jYffUym6jWss4my2tyafeg5yJagKVJTjKpVkjk7HejGxHdyshV?=
+ =?us-ascii?Q?lxVchcJWzPyGpXtukRQgqD/tR2BtrLUwxIl455+xCi8pjXdGf5uVJMkTl0vh?=
+ =?us-ascii?Q?hQph/KCRQIBlDZJgjtUNs3vecdSEm4LgLIV2jjop5/OIZOHWNCPl2kcvch6V?=
+ =?us-ascii?Q?kxg8X8DFUdVJ7D43C12nLxvtwQGK3e+Cxu0IFw/NvmEN5W3uPYJxi2exhoSA?=
+ =?us-ascii?Q?qiwzrhVWgptxvYP7UKm3gs5vv+1HHEecNAhrk3y85/9KtUr3ZPtcl89zxCZK?=
+ =?us-ascii?Q?/kJcBmGVw9804unmPDONjWjosZKOBG/AKaTtNyW7RZ4VTedbV9OyhiAhWuTN?=
+ =?us-ascii?Q?UCTXUrA8+ebJpsnn5GrWkroWm4B+XTC9RHA3RPDY/JS+iaxIW+Qe7YU/RrKs?=
+ =?us-ascii?Q?vlst/sqmsy+ccTZxHWZB46ehf43X05ek2fFJ?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?eUl6TGxGY01XenpjVEllWTVMTUIxN0VqcnlXMGl6cTExZnN5VWVDWEJhd2N5?=
- =?utf-8?B?OW1DRkROeS96TXZPRjFhdHBNdTdIaS9LdjBCM25kSTdZL05PSUMwUFRNYktM?=
- =?utf-8?B?R2RldnFWdVhSdGtEaVhUVVh6elB5eURMaVZuSHk3RHR5ZWhFRi9vNXhPeVBL?=
- =?utf-8?B?U2t5elV5bTdVMjREcXQ3MjRpSlJvNG5yeHlSNURMVFZ5LzgrV0wvNmJGMmFo?=
- =?utf-8?B?QSs1TWdTTkZKUTJ1MkxqcExaWko0SG9EakhuYS8wUjl6b2V0OCsrNmcxUUgy?=
- =?utf-8?B?YkxaQnNsbUc4dGRmR2E2NHJheU1zcTU3enJ4aS9WZFFLc0UvSVZhYndkOHhj?=
- =?utf-8?B?azExa3d2RkFGdk5uMTN4YmszSkx2Vm01dGRCUERET2lkRWVWaTRzaWVJeGFP?=
- =?utf-8?B?b3E2MTBYaHFPeEFGMkdxK3piZ2xWSmVOcXc4TlJBeCt6MFhsWFhjL3JqRHo4?=
- =?utf-8?B?aFRkUjAyZHBqazM1QkMvOS9xYkpJWUZDWW1qa0RlT0hxSzd2YnNVNDMyNElQ?=
- =?utf-8?B?NFRRVlpMMTlDZ2FYRXBuVFdvRWo4MEhDdTYzWUpXNzB6WVpvTytsN1BZVjlR?=
- =?utf-8?B?b3B4YkRqM05hTmU1TUVGUjRMc3NRVTFLOE1McSswVmNycElXcEpFdG80eTh5?=
- =?utf-8?B?U25La0pOWWFUWGEwZ3R1M0ppSGRCcjZXa0RzVTZFaTNBZVJsODlLeGJOUUJo?=
- =?utf-8?B?djY0WkFlZTRESk5Nb29JY3I5d3Vyb3hNdkQzM3JuWDBzcmFheGkxczNTMksz?=
- =?utf-8?B?Vy9Bak4ycjJ4NHFKeTlmOFFvYTBsSWVQWU9RNFJ2ZTNHQWt4U081OGRjWlBC?=
- =?utf-8?B?SUFmQ05mbVF1RkVKMEJ0YytZNjhrc2l4UXBnTXpHSkl2TnZFT2JWK0VOaUtC?=
- =?utf-8?B?cVFEbm52ME94OXArTXlsTCsrSUxUTEZmMXZSd2J3MFdxTnRuZjV3WkQ1aEpl?=
- =?utf-8?B?UVJMYzcvMmVzckRZNy9lL1lSSEY0Y3pZVHNxL2VWS25KYVRhSjRsQ1ZnV01h?=
- =?utf-8?B?Ry8xekhOYVhCY0NlV0xxRGtyc25sY01yYjhjb012NTdIL2drTlRwN2s5cFg5?=
- =?utf-8?B?cG9FZmdMSjllblBFcWFyMWt6dzEzTnA3bHp6d2pIeFRoeGg3K3JlZTVOd2x6?=
- =?utf-8?B?VVpHV2ljazMrV1paMjZ0ZlNkbk5tK0ladGhNeS94K3dNRkdJRGhVRU85QXN6?=
- =?utf-8?B?ZkZhMGNnSzAzeFRTTHg1SmhOTEg4SWdPdkp1NGN5T256Qnh5MDFmUFd3Y2x5?=
- =?utf-8?B?ZVZNUFM5QzNxaFZKYWhiWm9ISkJJQktjbjc4dWRIdlNOc0ExU2JOOUY4N1kw?=
- =?utf-8?B?aVNkZEtBbEdQeXFqcDlVWi81eFFDSDdYNW1JSVd2SzJ0TEhFM1B5S2Zicmdx?=
- =?utf-8?B?cFVCVnpYSmJoWW1HSWpNN3U5Q1U3c2pxOWh1TEh2cGJ4a0ZUdXVVNmdXdW1o?=
- =?utf-8?B?dUM2b3FyMWE4ZVMvUVlkWmVOeklpb1pIb1BYcVpJYk9YQW1CRVhsK1hhNmhO?=
- =?utf-8?B?ZDVFRWNpRE5jaHRhcFZlT0V1bUF3UEJRekJzeGVoc3U5MVFXRnBNaHJRcFEw?=
- =?utf-8?B?Mk1yUk5ma0xYN21LL1QrU1M3dzZzRXk5cmw5NVhJYlpOZCtRbTY4ZzFsRno5?=
- =?utf-8?B?c01UMTUwTW4ydXE3MVRKdGdCeDBRSzVZazFkRGJFbGE2WTFoTU5XeUlWeTFi?=
- =?utf-8?B?Sk4rUG5vdmxZTllZdWphNElGcXY0SDFQZG5Kd0tRUHlCTy9GRmtmcFArWE1k?=
- =?utf-8?B?ZGJPeGlIRmNzNkRyLy9VdG5mWGx2NXp0UTY3WVJ6SFkvQ1RIKzFPRldDaUhm?=
- =?utf-8?B?aVJzdDNYbkR2eEpVaFo4ZFdHRHZHMENDQmxnbkwrVXd3Y1NUa21wWGh4eHhq?=
- =?utf-8?B?cTFnemRaUjdrT2pGeUNXOW1obWdIUFpabmQ3WHY0eS9Qb1BCMXJOZzRYT21L?=
- =?utf-8?B?ZmlWVlJiVlFzWmxLZVp6U1BKKzdoTC9sb05iN2ZRaE5Yb084a3hzQ1pldWEy?=
- =?utf-8?B?bnl2L3V5RSt0VXJIaEVlWGUzYi9VdUZ4Tzkwc20zQnNaTW01YzBxQ3hvNnB3?=
- =?utf-8?B?TFV0S0tYVGtqU2RNTHZ4Y09SZkpvMjBpMFo2cUJJS2FNa2hidnMvMDRlOUhR?=
- =?utf-8?Q?W5FtY4M3uZ7W5xdX2vr9W9s06?=
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(376014)(82310400026)(36860700013)(921020)(7053199007)(13003099007);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5485e2c-2205-462e-82c4-08dd4acb0683
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2025 18:36:40.6127
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2025 23:49:12.7397
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Network-Message-Id: 467f9783-b40e-4196-e56f-08dd4af6afd8
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ta2lFLw4vdaSKEh2gFFBiQvXaOVcvYd31skf6JYTo5odM2JnIfQYoofpSFa3zIddkEmRWOpvVnRu8+G2pekXHg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6590
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000971E4.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7485
 
-On 2/10/2025 11:55 PM, Leon Romanovsky wrote:
-> 
-> On Mon, Feb 10, 2025 at 05:04:23PM -0800, Jakub Kicinski wrote:
->> On Fri, 7 Feb 2025 21:16:47 -0400 Jason Gunthorpe wrote:
->>> On Fri, Feb 07, 2025 at 01:51:11PM -0800, Jakub Kicinski wrote:
->>>
->>>> But if you agree the netdev doesn't need it seems like a fairly
->>>> straightforward way to unblock your progress.
->>>
->>> I'm trying to understand what you are suggesting here.
->>>
->>> We have many scenarios where mlx5_core spawns all kinds of different
->>> devices, including recovery cases where there is no networking at all
->>> and only fwctl. So we can't just discard the aux dev or mlx5_core
->>> triggered setup without breaking scenarios.
->>>
->>> However, you seem to be suggesting that netdev-only configurations (ie
->>> netdev loaded but no rdma loaded) should disable fwctl. Is that the
->>> case? All else would remain the same. It is very ugly but I could see
->>> a technical path to do it, and would consider it if that brings peace.
->>
->> Yes, when RDMA driver is not loaded there should be no access to fwctl.
-> 
-> There are users mentioned in cover letter, which need FWCTL without RDMA.
-> https://lore.kernel.org/all/0-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com/
-> 
-> I want to suggest something different. What about to move all XXX_core
-> logic (mlx5_core, bnxt_core, e.t.c.) from netdev to some other dedicated
-> place?
-> 
-> There is no technical need to have PCI/FW logic inside networking stack.
-> 
-> Thanks
+Following along from Jason's work [1] we have our initial RFC patchset
+for pds_fwctl - an auxiliary_bus driver for supporting fwctl through the
+pds_core driver and its PDS core device.
 
-Our pds_core device fits this description as well: it is not an ethernet 
-PCI device, but helps manage the FW/HW for Eth and other things that are 
-separate PCI functions.  We ended up in the netdev arena because we 
-first went in as a support for vDPA VFs.
+The PDS core is PCI device that is separate and distinct from the
+ionic Eth device and from the other PCI devices that can be supported
+by the AMD/Pensando DSC.  It is used by pds_vdpa and pds_vfio_pci to
+coordinate/communicate with the FW for setting up their services.
 
-Should these 'core' devices live in linux-pci land?  Is it possible that 
-some 'core' things might be platform devices rather than PCI?
+Until now the DSC's basic configurations for defining what devices to
+support and for getting low-level device debug information have been
+through internal commands not available from the host side, requiring
+access into the DSC's own OS.  Adding the fwctl service allows us to start
+bringing these capabilities up into the host, but they don't replace the
+existing function-specific tools.  For example, these are things that make
+the Eth PCI device appear on the PCI bus, while the tuning of the specific
+Eth features still go through the standard ethtool/devlink/ip/etc tools.
 
-sln
+The first two patches add a new pds_core.fwctl auxiliary_device to the
+pds_core driver.  This is only supported by the pds_core PF and not on
+any VFs.
+
+The remaining patches add the pds_fwctl driver framework and then fill
+in the details for the fwctl services.
+
+[1] https://lore.kernel.org/netdev/0-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com/
+    [PATCH v4 00/10] Introduce fwctl subystem
+
+Brett Creeley (1):
+  pds_fwctl: add rpc and query support
+
+Shannon Nelson (4):
+  pds_core: specify auxiliary_device to be created
+  pds_core: add new fwctl auxilary_device
+  pds_fwctl: initial driver framework
+  pds_fwctl: add Documentation entries
+
+ Documentation/userspace-api/fwctl/fwctl.rst   |   1 +
+ Documentation/userspace-api/fwctl/index.rst   |   1 +
+ .../userspace-api/fwctl/pds_fwctl.rst         |  41 ++
+ MAINTAINERS                                   |   7 +
+ drivers/fwctl/Kconfig                         |  10 +
+ drivers/fwctl/Makefile                        |   1 +
+ drivers/fwctl/pds/Makefile                    |   4 +
+ drivers/fwctl/pds/main.c                      | 558 ++++++++++++++++++
+ drivers/net/ethernet/amd/pds_core/auxbus.c    |  44 +-
+ drivers/net/ethernet/amd/pds_core/core.c      |   7 +
+ drivers/net/ethernet/amd/pds_core/core.h      |   8 +-
+ drivers/net/ethernet/amd/pds_core/devlink.c   |   6 +-
+ drivers/net/ethernet/amd/pds_core/main.c      |  21 +-
+ include/linux/pds/pds_adminq.h                | 264 +++++++++
+ include/linux/pds/pds_common.h                |   2 +
+ include/uapi/fwctl/fwctl.h                    |   1 +
+ include/uapi/fwctl/pds.h                      |  43 ++
+ 17 files changed, 988 insertions(+), 31 deletions(-)
+ create mode 100644 Documentation/userspace-api/fwctl/pds_fwctl.rst
+ create mode 100644 drivers/fwctl/pds/Makefile
+ create mode 100644 drivers/fwctl/pds/main.c
+ create mode 100644 include/uapi/fwctl/pds.h
+
+-- 
+2.17.1
 
 
