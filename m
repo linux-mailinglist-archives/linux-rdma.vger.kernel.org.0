@@ -1,187 +1,210 @@
-Return-Path: <linux-rdma+bounces-7649-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7650-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D49FBA3023A
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2025 04:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11D5DA3024A
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2025 04:44:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64CC13A9613
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2025 03:38:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8E1C3A35F5
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2025 03:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BA461D5142;
-	Tue, 11 Feb 2025 03:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5404F1D5CF9;
+	Tue, 11 Feb 2025 03:44:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JonjxlPn"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="UpgJHSV7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 519DC257D
-	for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2025 03:38:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E87826BD9A;
+	Tue, 11 Feb 2025 03:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739245085; cv=none; b=f/lEuYJ9ohq7kloxfYuHFdY0wkpmmTCHcJvI1e38+csDnbqlxLNOS9e8oK4iM+BFHdN5hAkSk0Z1tzAgvoyAapa1DVRW65zu4t5nknL0oHyX7MN1EMuiyBPbyP6LrNPPt+ytjKlqE9KbI2hBjUB0RJwQubXPqBQUnE3woXI5yn0=
+	t=1739245490; cv=none; b=QyGEYBStcNuhzHPK5WF/NMjU05Hb8SFM30hdPBq6kheMWcZiIbi+JzgounOTJoQJAFNXAGkSmWT011azLEoosfGwTxks55xr04SFJA5naHCkx2kIckFdpOjKR6omW1dUM5wCGf3otCC/D3xdLtjGhTVXgTAabbxc7wOhNurQ5Vs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739245085; c=relaxed/simple;
-	bh=b2+QPgERRyiTlZRwX0Usul9Bh037v/uRVX2m875DNwU=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=SydftYBKJs55pGe9T1WwM23VYyHXceA8/xBqKfp0XsFUDcQaUa14wegGcYcoZUbPu3d6oy1GYWzJyrhLFqkgcF9Q6LaMFVI+aoarTKU/+a0YE7CPV9WBLhtKRHNQ3JoMBfitl3sTNT6i/1XCnoNZCxP36fUxcA3gMSEwe2GL/0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JonjxlPn; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1739245083; x=1770781083;
-  h=date:from:to:cc:subject:message-id;
-  bh=b2+QPgERRyiTlZRwX0Usul9Bh037v/uRVX2m875DNwU=;
-  b=JonjxlPnGd9FFaFDV1qroJiEfkl+916gRlG1tSPiqNI/4NG5XaUFb/yE
-   siYLZ7qpXXv/u1R4hIL89ifILgjQg9QUK7JTBDscUYNRbJAriaHG5jaxB
-   H7hKOaN6Qn1HYSqcud5KzXdBOh64MV080HniAImxA0EJ33R3mHRWC2BMN
-   90CI2uIo2V9Jl49+kEsKmhUPNkOm7uiini0w4lYCIapiPoVxl7+rPzd0M
-   0XQgAxijKA0IZUHCrzM/RmmFsS9GzHgHWB/qlrHYkueVWeXYetWr0DIwM
-   Yi0FWklQXk0wzrMOqEaq76wgqzarqx/OdULmgd/9F0W/lVXwch23BU43p
-   Q==;
-X-CSE-ConnectionGUID: y+eKoOBmS8yctaV1HghYag==
-X-CSE-MsgGUID: FAETKlpmR/qbjP3BpR8QTQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11341"; a="43778124"
-X-IronPort-AV: E=Sophos;i="6.13,276,1732608000"; 
-   d="scan'208";a="43778124"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2025 19:38:02 -0800
-X-CSE-ConnectionGUID: DpDQucIYRl+4aTLE0RaUFA==
-X-CSE-MsgGUID: kozLapdPS7CYDh1cVEiXTw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="117583869"
-Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 10 Feb 2025 19:38:01 -0800
-Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1thh5y-0013jD-2s;
-	Tue, 11 Feb 2025 03:37:58 +0000
-Date: Tue, 11 Feb 2025 11:37:08 +0800
-From: kernel test robot <lkp@intel.com>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-rc] BUILD SUCCESS
- 8238c7bd84209c8216b1381ab0dbe6db9e203769
-Message-ID: <202502111102.MmbhJXSf-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1739245490; c=relaxed/simple;
+	bh=cbZeyB2v5CBXKmD5Rwhbq7GfwJEO4Dq3/ysp8Gv1D+k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ABYWy5gZ1yEQOSGV2vxvAfTORCAzyZqaQ/UruqhopVFDXCBVGydGVZpWYQCScGP95hKwlr5hTWXxi9Ig08XL43gneHuqvL/fbZDsz8PZSXyXm9Z4vL4mHe5wf39uikHMT2usqPUbiOla+FTvHqn1qtzfyhw9L1CXHpnPCuUMv8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=UpgJHSV7; arc=none smtp.client-ip=115.124.30.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1739245475; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=vms42idQU2sl94ZqBjF5MJvW0dhT/Zg7Gq/ZK3nF0vk=;
+	b=UpgJHSV7gnVmMwkQZh/jbV12dCPzwx6IDespgfvE8Fi1YL+vK78A99ANBH9O8hYeqgmGEgzStXQWHcr+3SgLtNNQiLebpgQGvSOYM28SgMfBOXaCm9r64XIl53b+yeXYVsDV8lKOOarT0BHnoYOrBp4pEeJewrGrsiOhnX0mVtg=
+Received: from 30.221.99.7(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0WPFLNSe_1739245472 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 11 Feb 2025 11:44:33 +0800
+Message-ID: <4eb38707-1a93-4c5c-aa65-14adfd595d14@linux.alibaba.com>
+Date: Tue, 11 Feb 2025 11:44:32 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net/smc: use the correct ndev to find pnetid by
+ pnetid table
+To: Halil Pasic <pasic@linux.ibm.com>
+Cc: Paolo Abeni <pabeni@redhat.com>, wenjia@linux.ibm.com,
+ jaka@linux.ibm.com, alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+ guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, horms@kernel.org, linux-rdma@vger.kernel.org,
+ linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Alexandra Winter <wintera@linux.ibm.com>
+References: <20241227040455.91854-1-guangguan.wang@linux.alibaba.com>
+ <1f4a721f-fa23-4f1d-97a9-1b27bdcd1e21@redhat.com>
+ <20250107203218.5787acb4.pasic@linux.ibm.com>
+ <908be351-b4f8-4c25-9171-4f033e11ffc4@linux.alibaba.com>
+ <20250109040429.350fdd60.pasic@linux.ibm.com>
+ <b1053a92-3a3f-4042-9be9-60b94b97747d@linux.alibaba.com>
+ <20250210145255.793e6639.pasic@linux.ibm.com>
+Content-Language: en-US
+From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+In-Reply-To: <20250210145255.793e6639.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-rc
-branch HEAD: 8238c7bd84209c8216b1381ab0dbe6db9e203769  RDMA/bnxt_re: Fix the statistics for Gen P7 VF
 
-elapsed time: 1078m
 
-configs tested: 93
-configs skipped: 1
+On 2025/2/10 21:52, Halil Pasic wrote:
+> On Fri, 10 Jan 2025 13:43:44 +0800
+> Guangguan Wang <guangguan.wang@linux.alibaba.com> wrote:
+> 
+>> We want to use SMC in container on cloud environment, and encounter problem
+>> when using smc_pnet with commit 890a2cb4a966. In container, there have choices
+>> of different container network, such as directly using host network, virtual
+>> network IPVLAN, veth, etc. Different choices of container network have different
+>> netdev hierarchy. Examples of netdev hierarchy show below. (eth0 and eth1 in host
+>> below is the netdev directly related to the physical device).
+>>  _______________________________      ________________________________   
+>> |   _________________           |     |   _________________           |  
+>> |  |POD              |          |     |  |POD  __________  |          |  
+>> |  |                 |          |     |  |    |upper_ndev| |          |  
+>> |  | eth0_________   |          |     |  |eth0|__________| |          |  
+>> |  |____|         |__|          |     |  |_______|_________|          |  
+>> |       |         |             |     |          |lower netdev        |  
+>> |       |         |             |     |        __|______              |  
+>> |   eth1|base_ndev| eth0_______ |     |   eth1|         | eth0_______ |  
+>> |       |         |    | RDMA  ||     |       |base_ndev|    | RDMA  ||  
+>> | host  |_________|    |_______||     | host  |_________|    |_______||  
+>> ———————————————————————————————-      ———————————————————————————————-    
+>>  netdev hierarchy if directly          netdev hierarchy if using IPVLAN    
+>>    using host network
+>>  _______________________________
+>> |   _____________________       |
+>> |  |POD        _________ |      |
+>> |  |          |base_ndev||      |
+>> |  |eth0(veth)|_________||      |
+>> |  |____________|________|      |
+>> |               |pairs          |
+>> |        _______|_              |
+>> |       |         | eth0_______ |
+>> |   veth|base_ndev|    | RDMA  ||
+>> |       |_________|    |_______||
+>> |        _________              |
+>> |   eth1|base_ndev|             |
+>> | host  |_________|             |
+>>  ———————————————————————————————
+>>   netdev hierarchy if using veth
+>>
+>> Due to some reasons, the eth1 in host is not RDMA attached netdevice, pnetid
+>> is needed to map the eth1(in host) with RDMA device so that POD can do SMC-R.
+>> Because the eth1(in host) is managed by CNI plugin(such as Terway, network
+>> management plugin in container environment), and in cloud environment the
+>> eth(in host) can dynamically be inserted by CNI when POD create and dynamically
+>> be removed by CNI when POD destroy and no POD related to the eth(in host)
+>> anymore.
+> 
+> I'm pretty clueless when it comes to the details of CNI but I think
+> I'm barely able to follow. Nevertheless if you have the feeling that
+> my extrapolations are wrong, please do point it out.
+> 
+>> It is hard for us to config the pnetid to the eth1(in host). So we
+>> config the pnetid to the netdevice which can be seen in POD.
+> 
+> Hm, this sounds like you could set PNETID on eth1 (in host) for each of
+> the cases and everything would be cool (and would work), but because CNI
+> and the environment do not support it, or supports it in a very
+> inconvenient way, you are looking for a workaround where PNETID is set
+> in the POD. Is that right? Or did I get something wrong?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Right.
 
-tested configs:
-alpha                            allyesconfig    gcc-14.2.0
-arc                              allmodconfig    gcc-13.2.0
-arc                              allyesconfig    gcc-13.2.0
-arc                   randconfig-001-20250210    gcc-13.2.0
-arc                   randconfig-002-20250210    gcc-13.2.0
-arm                              allmodconfig    gcc-14.2.0
-arm                              allyesconfig    gcc-14.2.0
-arm                   randconfig-001-20250210    clang-16
-arm                   randconfig-002-20250210    gcc-14.2.0
-arm                   randconfig-003-20250210    clang-16
-arm                   randconfig-004-20250210    gcc-14.2.0
-arm64                            allmodconfig    clang-18
-arm64                 randconfig-001-20250210    gcc-14.2.0
-arm64                 randconfig-002-20250210    clang-21
-arm64                 randconfig-003-20250210    clang-21
-arm64                 randconfig-004-20250210    gcc-14.2.0
-csky                  randconfig-001-20250210    gcc-14.2.0
-csky                  randconfig-002-20250210    gcc-14.2.0
-hexagon                          allmodconfig    clang-21
-hexagon                          allyesconfig    clang-18
-hexagon               randconfig-001-20250210    clang-21
-hexagon               randconfig-002-20250210    clang-21
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20250210    gcc-12
-i386        buildonly-randconfig-002-20250210    gcc-12
-i386        buildonly-randconfig-003-20250210    clang-19
-i386        buildonly-randconfig-004-20250210    gcc-12
-i386        buildonly-randconfig-005-20250210    gcc-12
-i386        buildonly-randconfig-006-20250210    gcc-12
-i386                                defconfig    clang-19
-loongarch                        allmodconfig    gcc-14.2.0
-loongarch             randconfig-001-20250210    gcc-14.2.0
-loongarch             randconfig-002-20250210    gcc-14.2.0
-m68k                             allmodconfig    gcc-14.2.0
-m68k                              allnoconfig    gcc-14.2.0
-m68k                             allyesconfig    gcc-14.2.0
-microblaze                       allmodconfig    gcc-14.2.0
-microblaze                        allnoconfig    gcc-14.2.0
-microblaze                       allyesconfig    gcc-14.2.0
-mips                              allnoconfig    gcc-14.2.0
-nios2                             allnoconfig    gcc-14.2.0
-nios2                 randconfig-001-20250210    gcc-14.2.0
-nios2                 randconfig-002-20250210    gcc-14.2.0
-openrisc                         allyesconfig    gcc-14.2.0
-parisc                           allmodconfig    gcc-14.2.0
-parisc                           allyesconfig    gcc-14.2.0
-parisc                randconfig-001-20250210    gcc-14.2.0
-parisc                randconfig-002-20250210    gcc-14.2.0
-powerpc                          allmodconfig    gcc-14.2.0
-powerpc                          allyesconfig    clang-16
-powerpc               randconfig-001-20250210    clang-21
-powerpc               randconfig-002-20250210    clang-21
-powerpc               randconfig-003-20250210    gcc-14.2.0
-powerpc64             randconfig-001-20250210    gcc-14.2.0
-powerpc64             randconfig-002-20250210    gcc-14.2.0
-powerpc64             randconfig-003-20250210    gcc-14.2.0
-riscv                            allmodconfig    clang-21
-riscv                            allyesconfig    clang-21
-riscv                 randconfig-001-20250210    clang-21
-riscv                 randconfig-002-20250210    gcc-14.2.0
-s390                             allmodconfig    clang-19
-s390                             allyesconfig    gcc-14.2.0
-s390                  randconfig-001-20250210    gcc-14.2.0
-s390                  randconfig-002-20250210    clang-19
-sh                               allmodconfig    gcc-14.2.0
-sh                                allnoconfig    gcc-14.2.0
-sh                               allyesconfig    gcc-14.2.0
-sh                    randconfig-001-20250210    gcc-14.2.0
-sh                    randconfig-002-20250210    gcc-14.2.0
-sparc                            allmodconfig    gcc-14.2.0
-sparc                             allnoconfig    gcc-14.2.0
-sparc                 randconfig-001-20250210    gcc-14.2.0
-sparc                 randconfig-002-20250210    gcc-14.2.0
-sparc64               randconfig-001-20250210    gcc-14.2.0
-sparc64               randconfig-002-20250210    gcc-14.2.0
-um                               allmodconfig    clang-21
-um                               allyesconfig    gcc-12
-um                    randconfig-001-20250210    clang-18
-um                    randconfig-002-20250210    clang-16
-x86_64                            allnoconfig    clang-19
-x86_64                           allyesconfig    clang-19
-x86_64      buildonly-randconfig-001-20250210    clang-19
-x86_64      buildonly-randconfig-002-20250210    gcc-12
-x86_64      buildonly-randconfig-003-20250210    clang-19
-x86_64      buildonly-randconfig-004-20250210    clang-19
-x86_64      buildonly-randconfig-005-20250210    clang-19
-x86_64      buildonly-randconfig-006-20250210    clang-19
-x86_64                              defconfig    gcc-11
-xtensa                            allnoconfig    gcc-14.2.0
-xtensa                randconfig-001-20250210    gcc-14.2.0
-xtensa                randconfig-002-20250210    gcc-14.2.0
+> 
+>> When do SMC-R, both
+>> the container directly using host network and the container using veth network
+>> can successfully match the RDMA device, because the configured pnetid netdev is a
+>> base_ndev. But the container using IPVLAN can not successfully match the RDMA
+>> device and 0x03030000 fallback happens, because the configured pnetid netdev is
+>> not a base_ndev. Additionally, if config pnetid to the eth1(in host) also can not
+>> work for matching RDMA device when using veth network and doing SMC-R in POD.
+> 
+> That I guess answers my question from the first paragraph. Setting
+> PNETID on eth1 (host) would not be sufficient for veth. Right?
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Right. It is also one of the reasons for setting PNETID in POD.
+
+> 
+> Another silly question: is making the PNETID basically a part of the Pod
+> definition shifting PNETID from the realm of infrastructure (i.e.
+> configured by the cloud provider) to the ream of an application (i.e.
+> configured by the tenant)?
+
+No, application do not need to know the PNETID configuration. We have a plugin in
+Kubernetes. When deploying a POD, the plugin will automatically add an initContainer
+to the POD and automatically configure the PNETID in initContainer.
+
+> 
+> AFAIU veth (host) is bridged (or similar) to eth1 (host) and that is in
+> the host, and this is where we make sure that the requirements for SMC-R
+> are satisfied.
+> 
+> But veth (host) could be attached to eth3 which is on a network not
+> reachable via eth0 (host) or eth1 (host). In that case the pod could
+> still set PNETID on veth (POD). Or?
+> 
+
+Sorry, I forget to add a precondition, it is a single-tenant scenario, and all of the
+ethX in host are in the same VPC(A term in Cloud, can be simply understood as a private
+network domain). The ethX in the same VPC means they have the same network reachability.
+Therefore, in this scenario, we will not encounter the situation you mentioned.
+
+>>
+>> My patch can resolve the problem we encountered and also can unify the pnetid setup
+>> of different network choices list above, assuming the pnetid is not limited to
+>> config to the base_ndev directly related to the physical device(indeed, the current
+>> implementation has not limited it yet).
+> 
+> I see some problems here, but I'm afraid we see different problems. For
+> me not being able to set eth0 (veth/POD)'s PNEDID from the host is a
+> problem. Please notice that with the current implementation users can
+> only control the PNETID if infrastructure does not do so in the first
+> place.
+> 
+> 
+> Can you please help me reason about this? I'm unfortunately lacking
+> Kubernetes skills here, and it is difficult for me to think along.
+
+Yes, it is also a problem that not being able to set eth0 (veth/POD)'s PNEDID from the host.
+Even if the eth1(host) have hardware PNETID, the eth0 (veth/POD) can not search the hardware
+PNETID. Because the eth0 (veth/POD) and eth1(host) are not in one netdev hierarchy.
+But the two netdev hierarchies have relationship. Maybe search PNETID in all related netdev
+hierarchies can help resolve this. For example when finding the base_ndev, if the base_ndev
+is a netdev has relationship with other netdev(veth .etc) then jump to the related netdev
+hierarchy through the relationship to iteratively find the base_ndev.
+It is an idea now. I have not do any research about it yet and I am not sure if it is feasible.
+
+Thanks,
+Guangguan Wang
+
+> 
+> Regards,
+> Halil
+
 
