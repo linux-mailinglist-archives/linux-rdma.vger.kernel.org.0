@@ -1,21 +1,21 @@
-Return-Path: <linux-rdma+bounces-7669-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7670-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 110BFA3231E
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 11:04:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12F6DA32324
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 11:04:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BEEF7A4C64
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 10:03:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 874733A133F
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 10:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3CA206F2C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E1D22066FA;
 	Wed, 12 Feb 2025 10:03:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
 	dkim=pass (2048-bit key) header.d=keysight.com header.i=@keysight.com header.b="d6bYF4ZC";
 	dkim=pass (1024-bit key) header.d=keysight.com header.i=@keysight.com header.b="NV6L8411"
-X-Original-To: linux-rdma@vger.kernel.org
+X-Original-To: linux-rdma+owner@vger.kernel.org
 Received: from mx0a-003cac01.pphosted.com (mx0a-003cac01.pphosted.com [205.220.161.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
