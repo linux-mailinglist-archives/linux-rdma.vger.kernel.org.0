@@ -1,316 +1,201 @@
-Return-Path: <linux-rdma+bounces-7666-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7667-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AE7BA3223C
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 10:33:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB684A3230F
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 11:02:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25BC4165560
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 09:33:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3614C3A8780
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 10:01:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4F4207650;
-	Wed, 12 Feb 2025 09:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287A92080E8;
+	Wed, 12 Feb 2025 10:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=keysight.com header.i=@keysight.com header.b="VohMoZgn";
+	dkim=pass (1024-bit key) header.d=keysight.com header.i=@keysight.com header.b="Vf/ykP/U"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from mx0a-003cac01.pphosted.com (mx0a-003cac01.pphosted.com [205.220.161.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC7A2066E9;
-	Wed, 12 Feb 2025 09:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739352804; cv=none; b=MPMDlcgn8FOkqBZDXwMOAWa8yd0pBnXzJxfcq29hca/lFHAlOd63pcYTyT+BLKU24Bq6GsHC4RLGarhDWShUccNqzVOvHxX5KI7WptUKWWLhQe8pKCq6oWuz1QYJIwWEQEH4pk5Ck/7XnVw8G0sQndCc6yrUOAsVCllI8k5foKc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739352804; c=relaxed/simple;
-	bh=NZb4AN3SMujJSj2GZnvFhwIGtdSPgGTf0r3JSgwd9KE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Jcf0oaZ/vKu306WAr7E38kRPa8mrpZXCA/U99JxZoP2m0hz4S2DOwb6UL6JgOvYzdKpMlJQOVmpf6wylk+mlYGGcaaZ4k0iUk6fOpCd0DiNjUPblQaFulDXyrp8isZmtrc9ck9qbenJtIsWHPFgRRcLS4MoExqxg4s1guSMBg7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4YtChx2ffWz22n1N;
-	Wed, 12 Feb 2025 17:30:25 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 24B74140368;
-	Wed, 12 Feb 2025 17:33:18 +0800 (CST)
-Received: from localhost.localdomain (10.90.30.45) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 12 Feb 2025 17:33:17 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <zhangkun09@huawei.com>, <liuyonglong@huawei.com>,
-	<fanghaiqing@huawei.com>, Yunsheng Lin <linyunsheng@huawei.com>, Wei Fang
-	<wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
-	<xiaoning.wang@nxp.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet
-	<edumazet@google.com>, Jeroen de Borst <jeroendb@google.com>, Praveen
- Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
-	<przemyslaw.kitszel@intel.com>, Alexander Lobakin
-	<aleksander.lobakin@intel.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, Saeed Mahameed
-	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
-	<tariqt@nvidia.com>, Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi
-	<lorenzo@kernel.org>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
-	<shayne.chen@mediatek.com>, Sean Wang <sean.wang@mediatek.com>, Kalle Valo
-	<kvalo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Simon
- Horman <horms@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	<imx@lists.linux.dev>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
-	<bpf@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-wireless@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>
-Subject: [PATCH net-next v9 1/4] page_pool: introduce page_pool_get_pp() API
-Date: Wed, 12 Feb 2025 17:25:48 +0800
-Message-ID: <20250212092552.1779679-2-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20250212092552.1779679-1-linyunsheng@huawei.com>
-References: <20250212092552.1779679-1-linyunsheng@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FB972080CB;
+	Wed, 12 Feb 2025 10:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.161.93
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739354438; cv=fail; b=aiinT45h8grxxP27qVndpvRn0XqcaIhYncJcBqJba25rNM/VEV33yVutmXKfWKaiMPz0Y6oFxuUbauAu/VCvQT+ADtyL4kN6IpD45+wuM0ALxEixjmeBlibjaiI8LjBveVgXiVpB6WbvYrtyvdY5D7n3gQ7FpnRnVdG5bhq5dOU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739354438; c=relaxed/simple;
+	bh=hPlkGltt7+g9Kif32M/k6widfQ/0g2/qlywuCQo0y9k=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Vd+zjOtxzAumhoEAS5n3RKJHcbIJ4Z5DJ81e8rYAxEYtAmVzF2LYD9avzPCJj8Xba4Rf8+9/jp6U/NsoptMFOIUca7ZfcCYVpHaV10mB3SyFPxX2pIcM6I9V14So3/9QxtCBZmdqI4Pu5Uz82AW6Rk5qXI1BWEp2KimNFaIDN2g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=keysight.com; spf=pass smtp.mailfrom=keysight.com; dkim=pass (2048-bit key) header.d=keysight.com header.i=@keysight.com header.b=VohMoZgn; dkim=pass (1024-bit key) header.d=keysight.com header.i=@keysight.com header.b=Vf/ykP/U; arc=fail smtp.client-ip=205.220.161.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=keysight.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=keysight.com
+Received: from pps.filterd (m0187214.ppops.net [127.0.0.1])
+	by mx0b-003cac01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51BKct47008723;
+	Wed, 12 Feb 2025 02:00:36 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=keysight.com; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=ppfeb2020; bh=hPlkGltt7+g9Kif32M/k6w
+	idfQ/0g2/qlywuCQo0y9k=; b=VohMoZgngUaWtHKnmf4jtQkyO/LeLjO8Sef3uB
+	hP2muyR69nS8oKtm6xim5K08GwAU12R4RHXnXbVWF5Kd/SDu+J2ozBk9RqByuz7V
+	2FaWlnoRrBElJHaluiuaTYIWx22uuEPA0F3rID2Wgk/H5KH5TGs5iagRNEeCWjpZ
+	EXYB0Y2HhZK6B692MsyFLVbewxBKDvM5mRaDJ20qcp+eosm6Lzuv5D8T7L0X93WM
+	u1ET7E3ZeO3GlXFITb+KEmKy96ZvCrxERf0g4vvY1BorqcXWp20xccrj68gCbWHZ
+	t9OszfoKH0dSXZs+4UjDJEdFYgT+Ckl5nS7UNaQd3FuM3e+w==
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2048.outbound.protection.outlook.com [104.47.58.48])
+	by mx0b-003cac01.pphosted.com (PPS) with ESMTPS id 44p5exrafs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 12 Feb 2025 02:00:36 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=B9+3/DnhHFHc64eEEFu/YbmdW/lKadDzqfccp/ttBloeV0NRCqUvXLlWCscH2tW7C2ic8q5mFB+ZSxWmNmMaBate0ny7UP8grh4uMDATIJCkxCyYFm2bzvYsStO9zJ5ZGnRFaesO3XS4LQoTViEW1JSSgv2W4Kwcg0w7H83Y+qruZ3bgE5NANEClmCFQUoP9LQbvR/pW8uIb12gQtKtvIQfJxva63PfZ01lAI3Pxp884EaJiCT8iQVIYHFHOZrjgf0DJbfMqPQMOav3cDmptjwkaPYJ4nW8gYCg1ae28Hsh2RgE6fH8IBmWXcaCD3Bikb3S9psiMYsBfZp9kzlk4fg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hPlkGltt7+g9Kif32M/k6widfQ/0g2/qlywuCQo0y9k=;
+ b=eW+dwaTUp1XS3JlcM2bUPq81nTUxfmeVfojd9zzKmm/FBRr1FfxXPK0RbCyY9t+xcYcc8G1sKm7BTAYgzuK4WUkQNwAg2fqcdhWN0mesx2tLh0OgfaOeZSynXdfziUb/aAyT2Pk5p+DlqyAxrarLDIah/uNIDtIHUm/9eYVhtI6K+efY7m8tK/OMf/RMMjabUYNxosXLNnlpZ9NlVHlzhl7Jg7l9SqF0+HGuNIMwIGPqqyMNWp9csq/ueRoR+3vbsusxuEXghMsedQw/8wxUO4c7u/yMJRxWwaQQ/MvktvbH1y0ZJYRSQxVvELP6gkZbDXgQVvCKtazPxpE7Wp6bqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=keysight.com; dmarc=pass action=none header.from=keysight.com;
+ dkim=pass header.d=keysight.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=keysight.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hPlkGltt7+g9Kif32M/k6widfQ/0g2/qlywuCQo0y9k=;
+ b=Vf/ykP/UT3jh/urbMxUq9fx5NelSn6umnrWHVbKZBNEiqGakWF+lGX0bPPPxv9pnmwQ2RYyYaXHy6XYplye4zEecXPmjoXeVx/JqeA/hS8Nazak9V/gzwxfW60YbUScf56yMD/UgugeVUqD0QhVWk8t6OC8FgZUFx4s/fEzlmCU=
+Received: from SJ0PR17MB4581.namprd17.prod.outlook.com (2603:10b6:a03:35a::21)
+ by DM4PR17MB6245.namprd17.prod.outlook.com (2603:10b6:8:112::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.18; Wed, 12 Feb
+ 2025 10:00:33 +0000
+Received: from SJ0PR17MB4581.namprd17.prod.outlook.com
+ ([fe80::7f8e:cef4:46d:b3d7]) by SJ0PR17MB4581.namprd17.prod.outlook.com
+ ([fe80::7f8e:cef4:46d:b3d7%6]) with mapi id 15.20.8445.008; Wed, 12 Feb 2025
+ 10:00:33 +0000
+From: Andrei Sin <andrei.sin@keysight.com>
+To: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC: "linux-rdma+owner@vger.kernel.org" <linux-rdma+owner@vger.kernel.org>
+Subject: BUG: RDMA IPv6 loopback uses MAC source address for destination MAC
+Thread-Topic: BUG: RDMA IPv6 loopback uses MAC source address for destination
+ MAC
+Thread-Index: AQHbfTOKnshNc7YQvEGsvJTT7sF1cQ==
+Date: Wed, 12 Feb 2025 10:00:33 +0000
+Message-ID:
+ <SJ0PR17MB45817B76451A84002F01E681ECFC2@SJ0PR17MB4581.namprd17.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR17MB4581:EE_|DM4PR17MB6245:EE_
+x-ms-office365-filtering-correlation-id: fb68d0af-94ee-4fb9-f6a2-08dd4b4c16fb
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|366016|376014|38070700018;
+x-microsoft-antispam-message-info:
+ =?iso-8859-1?Q?hVfYx2aFVH52b3W9CrFmRXk/7GMgMatSLhL99nHl5LGQJxxQ6Z5mA0jTcY?=
+ =?iso-8859-1?Q?4VuVtAEH5vSuzZ+VjU05uhihgWlrrSTn5lxYAObFcoGUQQbe0zyfUGbr78?=
+ =?iso-8859-1?Q?aVraisu6JVB+jmpG0SOPk+9tWnsggDfU0F8qW6jhnMkJpFAmE7iy1wF1he?=
+ =?iso-8859-1?Q?0GPptWJzHdXGv8LO/xChljYG8pShUeieiiVzNIyjbnEH2wpC0FSHkVQuZ5?=
+ =?iso-8859-1?Q?jZ4faBZFlw9Po0fM++vrpGtrUhADFF3aRTWIfwJ8hN8PchPa1zzQcfVMyF?=
+ =?iso-8859-1?Q?mCMR2GxMWX7LIxGnOuOFnXioRtCvzdECYdt2vEMpZD7lvGWrvhj7RC6TFV?=
+ =?iso-8859-1?Q?OBEhaW/eeDuMwoQrVv9rCW+iI9aYiYbQLbnMjaxMIlBUmgsAHBmmCqPHgA?=
+ =?iso-8859-1?Q?WfEhFdCJV1zvkvG0Y1yGks3ZDcD5nRalPWimsL3TvyPBQI7DbGJbztRq1a?=
+ =?iso-8859-1?Q?i/BqL/wLr3g0eWmgXoPB/+zuc1Sryrn6F+K5kez/NINrkTKrq4+V4yEzAA?=
+ =?iso-8859-1?Q?v5O0m6mHYaXeQJSqDxBMKY28EvAM0kTMD9/FDny9MCc8qV/YXhXKboWoRU?=
+ =?iso-8859-1?Q?l9kobp2MnUjxI7G5uerDi3S9IYqJKKZKWNuGfBGbHOUYoMhPidAE1RkfV+?=
+ =?iso-8859-1?Q?X+vpmrtsS+enNZIhTSexRVrXA41PHGyMokTS3ckpfeSgsQaNU1hYemKbg/?=
+ =?iso-8859-1?Q?g+Q8jPuosGip8iSm1J9EYOnNSG+NIFpLYvY8tzEhSDhAvsguqib7rcDIUC?=
+ =?iso-8859-1?Q?a85dGDxDf1KmZAkwmg/g8isduoMYoh9S2BMXljAkcSUxUJ2ERS48GokQf0?=
+ =?iso-8859-1?Q?T0azMBBLGC/QMCE50G4vl2U2/aF16GuHSDjcsUK5r9ZKwvcWkQWgyIcodP?=
+ =?iso-8859-1?Q?TaOw+UwZE/RLnS3LpIs5uMSu4ExMzinuYqotJUWpqPklWFwSZ5dh0rTKrO?=
+ =?iso-8859-1?Q?LBUst9w8FtXpEklL7lJiipFL0ANXBDEnb0Tpx7pn/zCMAuWGLCPpUWmDio?=
+ =?iso-8859-1?Q?uWLxaFVH4Jkm7z+I88teVztodkGVk3FSKHf+x5nzwllUiMNaDIO5ToG4XU?=
+ =?iso-8859-1?Q?QPxPqT3cfZvbpLLBH0WwVi8lVUj1zBnaZwNZtk91JqNXvnCDx1InNkPFKH?=
+ =?iso-8859-1?Q?btGwimA5oOV9Z8lVlrhV9wkkJjNisl8SnZlDou4ukt1BXTbMBiH3ZRxaO7?=
+ =?iso-8859-1?Q?JdojDiSFYPXlf6MxqPUZzAzVuJJIbu4h4lJVlGy+KSWERHv1BuH9gBJjJI?=
+ =?iso-8859-1?Q?0ZtpNIjZbBeBUiAVO+5qpYZWZP/HCgoPBJYFEXA8xI+rI/yfpRGWYtxK6l?=
+ =?iso-8859-1?Q?a1G2xDirk5StFrKqXKm7tzK2OXdHvtbMjUVegoz/HCU7v5f57eVW6xDaek?=
+ =?iso-8859-1?Q?j6ntdACoyxbnPuVfmaitaHLzONvShNQ8mAqc7/pDrrRTmX4Cjhs7ZdhnX7?=
+ =?iso-8859-1?Q?VJREYcfve+t202RN?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB4581.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?PSXhd8bW+dPxMx5cuG3S2iTrkgOB9hKzIFkXnt63auh+RvHXY0/tUpq6sh?=
+ =?iso-8859-1?Q?V4qGnG9WPdsm+YBp00w+CiHQHmHUp+kqOi+x4lYeWJBKlI6dYcG4+NFKRX?=
+ =?iso-8859-1?Q?EkPtiW2cAN/2OXrQkqlgRADSc2ziTbdq/MuXxAW/hH34ONjd8qJW3gVzyy?=
+ =?iso-8859-1?Q?qJGaDCWaLkRqy5hY331gNzFbji3p+G2/XIJijlyJBP/kX411uqtAvDbeCa?=
+ =?iso-8859-1?Q?kGcyRjUKOVGPJeb7A9hAZzF0OdIsV5hly6sB6I9ucZuYdNX/0Y8+a0tKv2?=
+ =?iso-8859-1?Q?IP3jIxee8Y0Pj805iwONK3TK+wE/z1EhZEkKhqO9PaWL6WPJgbmzNbzTWi?=
+ =?iso-8859-1?Q?Niv0xmlKpb6kp+hdAyZUb6sx67tDb9dK68esAluHUZonKoWFE3ZdxNb3Ya?=
+ =?iso-8859-1?Q?2x9J2/oxu/aMoBRjwnH1Xi0RnU/FS3XUTcuGEpLGR5I78TT6HQKXpHXAot?=
+ =?iso-8859-1?Q?50yamjSwlvWYvyB/zfDTVXr1pa1i4Fw0dVIX7RUloJ+3FSfxnWIsrMEcpt?=
+ =?iso-8859-1?Q?Dbs/ri+01vAIOG6uy39KHoMmWmjLFzryUClKOSSbBQ+c2zYPEXXArZPw70?=
+ =?iso-8859-1?Q?O0NWIdTzFB03iLQ33hEaKAuyEQnFNxeCEW6HrXspymzVmDR+ng1/9WCS3j?=
+ =?iso-8859-1?Q?yp6tTRKAdulzzmWDB7iQtTJK8Z8SyfFpjlBhkdyJAib1QGvH5ja7PXZZ38?=
+ =?iso-8859-1?Q?/zPUf84ZyamMjGkXideLZZmOBwixsxSbD3ihAAh2vjcErxY05gpSosBRec?=
+ =?iso-8859-1?Q?mcU0vDKNuj6AKMe7tf+Y03r+P9RdZDi9322Yfg3D1uSuBwRdtcaLhdeUEC?=
+ =?iso-8859-1?Q?1GSO23PgbmK2fXngSVjhtZThoxDbZMcFeGV8hVDG0FKbuZW3XVzhaH1TYD?=
+ =?iso-8859-1?Q?aynuwlkakhbpkfPf5MHmQEhO1WtbHIra5afJAui7bnfGQ2kL4Inan+U5O0?=
+ =?iso-8859-1?Q?o8MtBc+rbB6M4kMKOceKeqshdEt68MN9Tr8afeOGi+zOocFWrxqUTBzzuZ?=
+ =?iso-8859-1?Q?THT7lH7PpewG+1wjElBBP228ku73cnc49f+D3UjG72J/xTRJYIZ1LQCtCh?=
+ =?iso-8859-1?Q?Irllsj3Z94IZTOqAEO61Kx0pjlgAIhlhZXFVDtbjNUK5TLvh/tFiB3wFzV?=
+ =?iso-8859-1?Q?HaAKEYibIHQWb1cy6wy2jkMd7rYp7jnwwWasqWGHC6mrD+XIYZp9BMFQsK?=
+ =?iso-8859-1?Q?gCIjjXG1dRiFrbyvBljJc8XZnG1K5TXeAiE97BNQX4hAtuiXUNQLwq6kD5?=
+ =?iso-8859-1?Q?SgAGxg6Ny/XDWAMneblEMB2CcsgJKdGvQ+w4r4ptZJApVDUtypRYz6Ngaz?=
+ =?iso-8859-1?Q?iYlT3Xfw/deyMI64Wkhw/GrxWT5dC4mfSIhXXOjM1jb5yWQfLrI2aeIXH8?=
+ =?iso-8859-1?Q?Ojm36Hy0wVsIOmbSHfumVOphf92mvmh/mCILJlvTBCvNDEl8DvXlMjPiY1?=
+ =?iso-8859-1?Q?nQbieuGhPvlnbWMlK41B+V3TiS2u5OVuAm7jAKRo97N6xM1P+YSrvExoS8?=
+ =?iso-8859-1?Q?wiqhpe7UWAmCeV81gqC20mepLXagYJsp5dg4AFRBDzoCOXS+0DITHkhcCO?=
+ =?iso-8859-1?Q?ADSjnZI12RaZjZRZgNvOpPylETAR5N9d2L+OCNCSM1/H9gM1WiMXjIXlu2?=
+ =?iso-8859-1?Q?lHbkH27zDIGyhfC/sXNhFmBQk8PCCo7Uag?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemf200006.china.huawei.com (7.185.36.61)
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	g0h+iSiKgzd0Vh6j6kzD+jf6pveGdJJZbPGUOVBR1j/gmUDxnPNU1SxTAD4p6p+yLA8q0ZE4svB0RKjwIgUmFJ1Hft+BWBApx6vH7BipxcXt1++XOodFiMoKOwmPdQ3rutPw/AnJD/3vAQl76FIpYKY7kNO0BATWnIfm9d96EGDpTrBFpRzzAOPXxM60jBassxCqDLtXUAlYVe7zVVtkVdY2Lkf1Baxf1Oz8zgEazu8b2le4MAES/PbqNRnyWFkccc1q1EdLBZH0+01pQOGhVsNiJyg3wfynCr7wIklqOQDHUu3qvrUOtxg6TJgvOXi46MFOf5156a0Z+ZeMqTy1G1vtPm5uJfrhKacI2AUInk9r9+hQKXuMwNEq5dhm/VCZorBuTV4rm2bJ2oFh4WejmebQVBJK2SZwwcDIvmkxVVHRBWtdJQrKnAeX66dm54VQYKXUJk77ofFDE/DxNabzOvgetXNpFAMPNpgIvYhZKs6kVdcm8ga/pMMeivAQEz6wJ70ZkoMKlmTKYIkh87juOCxMQfepEqorCpDAEfckhGUZVHx8igo+g3GbjKvW3zIERVFidr8a8rA4vverhV+BaD9XnwKyTyr/Q2isSizU/RAontZM/DiTenN7GxmNcZjo
+X-OriginatorOrg: keysight.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB4581.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb68d0af-94ee-4fb9-f6a2-08dd4b4c16fb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Feb 2025 10:00:33.1456
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 63545f27-3232-4d74-a44d-cdd457063402
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: H5A65MKBAlYmMn0M6hyJy1+GHJzTvTdfeHCtEO5Afag9FexLkWhOyBFZe/KCyS+fopiLeHuC/xGAo6P1TMrsMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR17MB6245
+X-Proofpoint-ORIG-GUID: M1UNqhaqePsUCIYJQdxOkMsU4JlKxWtr
+X-Proofpoint-GUID: M1UNqhaqePsUCIYJQdxOkMsU4JlKxWtr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-12_03,2025-02-11_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 priorityscore=1501 bulkscore=0 suspectscore=0
+ mlxlogscore=838 clxscore=1011 phishscore=0 mlxscore=0 impostorscore=0
+ malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2501170000 definitions=main-2502120076
 
-Introduce page_pool_get_pp() API to avoid caller accessing
-page->pp directly, in order to make the following patch more
-reviewable as the following patch will change page->pp to
-page->pp_item to fix the DMA API misuse problem.
-
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- drivers/net/ethernet/freescale/fec_main.c          |  8 +++++---
- .../net/ethernet/google/gve/gve_buffer_mgmt_dqo.c  |  2 +-
- drivers/net/ethernet/intel/iavf/iavf_txrx.c        |  6 ++++--
- drivers/net/ethernet/intel/idpf/idpf_txrx.c        | 14 +++++++++-----
- drivers/net/ethernet/intel/libeth/rx.c             |  2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c   |  3 ++-
- drivers/net/netdevsim/netdev.c                     |  6 ++++--
- drivers/net/wireless/mediatek/mt76/mt76.h          |  2 +-
- include/net/libeth/rx.h                            |  3 ++-
- include/net/page_pool/helpers.h                    |  5 +++++
- 10 files changed, 34 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index a86cfebedaa8..4ade1553557a 100644
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -1038,7 +1038,8 @@ static void fec_enet_bd_init(struct net_device *dev)
- 				struct page *page = txq->tx_buf[i].buf_p;
- 
- 				if (page)
--					page_pool_put_page(page->pp, page, 0, false);
-+					page_pool_put_page(page_pool_get_pp(page),
-+							   page, 0, false);
- 			}
- 
- 			txq->tx_buf[i].buf_p = NULL;
-@@ -1576,7 +1577,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
- 			xdp_return_frame_rx_napi(xdpf);
- 		} else { /* recycle pages of XDP_TX frames */
- 			/* The dma_sync_size = 0 as XDP_TX has already synced DMA for_device */
--			page_pool_put_page(page->pp, page, 0, true);
-+			page_pool_put_page(page_pool_get_pp(page), page, 0, true);
- 		}
- 
- 		txq->tx_buf[index].buf_p = NULL;
-@@ -3343,7 +3344,8 @@ static void fec_enet_free_buffers(struct net_device *ndev)
- 			} else {
- 				struct page *page = txq->tx_buf[i].buf_p;
- 
--				page_pool_put_page(page->pp, page, 0, false);
-+				page_pool_put_page(page_pool_get_pp(page),
-+						   page, 0, false);
- 			}
- 
- 			txq->tx_buf[i].buf_p = NULL;
-diff --git a/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c b/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
-index 403f0f335ba6..87422b8828ff 100644
---- a/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
-+++ b/drivers/net/ethernet/google/gve/gve_buffer_mgmt_dqo.c
-@@ -210,7 +210,7 @@ void gve_free_to_page_pool(struct gve_rx_ring *rx,
- 	if (!page)
- 		return;
- 
--	page_pool_put_full_page(page->pp, page, allow_direct);
-+	page_pool_put_full_page(page_pool_get_pp(page), page, allow_direct);
- 	buf_state->page_info.page = NULL;
- }
- 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_txrx.c b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
-index 26b424fd6718..e1bf5554f6e3 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_txrx.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
-@@ -1050,7 +1050,8 @@ static void iavf_add_rx_frag(struct sk_buff *skb,
- 			     const struct libeth_fqe *rx_buffer,
- 			     unsigned int size)
- {
--	u32 hr = rx_buffer->page->pp->p.offset;
-+	struct page_pool *pool = page_pool_get_pp(rx_buffer->page);
-+	u32 hr = pool->p.offset;
- 
- 	skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buffer->page,
- 			rx_buffer->offset + hr, size, rx_buffer->truesize);
-@@ -1067,7 +1068,8 @@ static void iavf_add_rx_frag(struct sk_buff *skb,
- static struct sk_buff *iavf_build_skb(const struct libeth_fqe *rx_buffer,
- 				      unsigned int size)
- {
--	u32 hr = rx_buffer->page->pp->p.offset;
-+	struct page_pool *pool = page_pool_get_pp(rx_buffer->page);
-+	u32 hr = pool->p.offset;
- 	struct sk_buff *skb;
- 	void *va;
- 
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-index 2fa9c36e33c9..04f2347716ca 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-@@ -385,7 +385,8 @@ static void idpf_rx_page_rel(struct libeth_fqe *rx_buf)
- 	if (unlikely(!rx_buf->page))
- 		return;
- 
--	page_pool_put_full_page(rx_buf->page->pp, rx_buf->page, false);
-+	page_pool_put_full_page(page_pool_get_pp(rx_buf->page), rx_buf->page,
-+				false);
- 
- 	rx_buf->page = NULL;
- 	rx_buf->offset = 0;
-@@ -3098,7 +3099,8 @@ idpf_rx_process_skb_fields(struct idpf_rx_queue *rxq, struct sk_buff *skb,
- void idpf_rx_add_frag(struct idpf_rx_buf *rx_buf, struct sk_buff *skb,
- 		      unsigned int size)
- {
--	u32 hr = rx_buf->page->pp->p.offset;
-+	struct page_pool *pool = page_pool_get_pp(rx_buf->page);
-+	u32 hr = pool->p.offset;
- 
- 	skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags, rx_buf->page,
- 			rx_buf->offset + hr, size, rx_buf->truesize);
-@@ -3130,8 +3132,10 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
- 	if (!libeth_rx_sync_for_cpu(buf, copy))
- 		return 0;
- 
--	dst = page_address(hdr->page) + hdr->offset + hdr->page->pp->p.offset;
--	src = page_address(buf->page) + buf->offset + buf->page->pp->p.offset;
-+	dst = page_address(hdr->page) + hdr->offset +
-+		page_pool_get_pp(hdr->page)->p.offset;
-+	src = page_address(buf->page) + buf->offset +
-+		page_pool_get_pp(buf->page)->p.offset;
- 	memcpy(dst, src, LARGEST_ALIGN(copy));
- 
- 	buf->offset += copy;
-@@ -3149,7 +3153,7 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
-  */
- struct sk_buff *idpf_rx_build_skb(const struct libeth_fqe *buf, u32 size)
- {
--	u32 hr = buf->page->pp->p.offset;
-+	u32 hr = page_pool_get_pp(buf->page)->p.offset;
- 	struct sk_buff *skb;
- 	void *va;
- 
-diff --git a/drivers/net/ethernet/intel/libeth/rx.c b/drivers/net/ethernet/intel/libeth/rx.c
-index 66d1d23b8ad2..8de0c3a3b146 100644
---- a/drivers/net/ethernet/intel/libeth/rx.c
-+++ b/drivers/net/ethernet/intel/libeth/rx.c
-@@ -207,7 +207,7 @@ EXPORT_SYMBOL_NS_GPL(libeth_rx_fq_destroy, "LIBETH");
-  */
- void libeth_rx_recycle_slow(struct page *page)
- {
--	page_pool_recycle_direct(page->pp, page);
-+	page_pool_recycle_direct(page_pool_get_pp(page), page);
- }
- EXPORT_SYMBOL_NS_GPL(libeth_rx_recycle_slow, "LIBETH");
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index 3cc4d55613bf..e5cc5af1b848 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -716,7 +716,8 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
- 				/* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
- 				 * as we know this is a page_pool page.
- 				 */
--				page_pool_recycle_direct(page->pp, page);
-+				page_pool_recycle_direct(page_pool_get_pp(page),
-+							 page);
- 			} while (++n < num);
- 
- 			break;
-diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netdev.c
-index 9b394ddc5206..917f987e89fa 100644
---- a/drivers/net/netdevsim/netdev.c
-+++ b/drivers/net/netdevsim/netdev.c
-@@ -817,7 +817,8 @@ nsim_pp_hold_write(struct file *file, const char __user *data,
- 		if (!ns->page)
- 			ret = -ENOMEM;
- 	} else {
--		page_pool_put_full_page(ns->page->pp, ns->page, false);
-+		page_pool_put_full_page(page_pool_get_pp(ns->page), ns->page,
-+					false);
- 		ns->page = NULL;
- 	}
- 
-@@ -1029,7 +1030,8 @@ void nsim_destroy(struct netdevsim *ns)
- 
- 	/* Put this intentionally late to exercise the orphaning path */
- 	if (ns->page) {
--		page_pool_put_full_page(ns->page->pp, ns->page, false);
-+		page_pool_put_full_page(page_pool_get_pp(ns->page), ns->page,
-+					false);
- 		ns->page = NULL;
- 	}
- 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76.h b/drivers/net/wireless/mediatek/mt76/mt76.h
-index 132148f7b107..11a88ecf8533 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt76.h
-@@ -1777,7 +1777,7 @@ static inline void mt76_put_page_pool_buf(void *buf, bool allow_direct)
- {
- 	struct page *page = virt_to_head_page(buf);
- 
--	page_pool_put_full_page(page->pp, page, allow_direct);
-+	page_pool_put_full_page(page_pool_get_pp(page), page, allow_direct);
- }
- 
- static inline void *
-diff --git a/include/net/libeth/rx.h b/include/net/libeth/rx.h
-index 43574bd6612f..f4ae75f9cc1b 100644
---- a/include/net/libeth/rx.h
-+++ b/include/net/libeth/rx.h
-@@ -137,7 +137,8 @@ static inline bool libeth_rx_sync_for_cpu(const struct libeth_fqe *fqe,
- 		return false;
- 	}
- 
--	page_pool_dma_sync_for_cpu(page->pp, page, fqe->offset, len);
-+	page_pool_dma_sync_for_cpu(page_pool_get_pp(page), page, fqe->offset,
-+				   len);
- 
- 	return true;
- }
-diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-index 582a3d00cbe2..ab91911af215 100644
---- a/include/net/page_pool/helpers.h
-+++ b/include/net/page_pool/helpers.h
-@@ -83,6 +83,11 @@ static inline u64 *page_pool_ethtool_stats_get(u64 *data, const void *stats)
- }
- #endif
- 
-+static inline struct page_pool *page_pool_get_pp(struct page *page)
-+{
-+	return page->pp;
-+}
-+
- /**
-  * page_pool_dev_alloc_pages() - allocate a page.
-  * @pool:	pool from which to allocate
--- 
-2.33.0
-
+Hello,=0A=
+=0A=
+I have a server with 2 NICs RDMA capable with IPv6. I've tried to rping one=
+ interface from the other but it does work.=0A=
+After some kernel debugging and some TCP dump I've noticed that packets lea=
+ve interface with destination MAC equal to source MAC!=0A=
+=0A=
+This happens here in kernel: https://elixir.bootlin.com/linux/v6.8/source/d=
+rivers/infiniband/core/addr.c#L464=0A=
+=0A=
+Let me know if this is the appropriate mailing list or if you want more det=
+ails how to reproduce it.=0A=
+=0A=
+Thank you,=0A=
+Andrei=
 
