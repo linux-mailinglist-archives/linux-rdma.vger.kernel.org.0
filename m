@@ -1,154 +1,272 @@
-Return-Path: <linux-rdma+bounces-7674-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7671-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFA5DA32594
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 13:06:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6464A3257C
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 12:57:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85429168BE1
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 12:06:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42A1D168029
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 11:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A73020B7EE;
-	Wed, 12 Feb 2025 12:06:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b="H8LhtKPM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6DCF20B203;
+	Wed, 12 Feb 2025 11:57:47 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx1.secunet.com (mx1.secunet.com [62.96.220.36])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2FD42B9BC;
-	Wed, 12 Feb 2025 12:05:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.96.220.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DF8E205AAF;
+	Wed, 12 Feb 2025 11:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739361962; cv=none; b=gIQ4TSq8/fqEo7P5mRIYPFsxGnqSfhhjlbcNvWC2QaEvp4E/jNH+EoDvH0nf75TAIDjwKULIfNTAYvO7zWX1CkzGM8rJEeXmU4svmFiqAOWNPXkCgD3LUv5VZBxZZZAUktIeY4UpCEelPXVVr3hvPBNTwpmLt3ANFygGoTl74QY=
+	t=1739361467; cv=none; b=d4H4ggYScW/UbCo+PAzqrdieZrT95aiKJvpNMjP33hUw3c4lnfgScHZLHRmDAgT0zM2sFldmDsAKpYVAj4x0fH7zjy+GiOak7NSvhhqVZqmvrbYd3LoQq7GJvo+FXn40TXUz/KTHQlU+w6tymeuJcOxS0OSh6AM2KICFp304+ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739361962; c=relaxed/simple;
-	bh=TI8/Q3t5v0VoV3IWR89k/0yjGP6TH8lHBsK3hpbcDe4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pFaT41r8/pnJkzqSBsRLzhAX2Uo3BrPObqj+OmXKoId+ZSS1S+JMbWCggR5krwOhGNO4uYawR1G9jAWzL9VQXgkzq6skDEY6UOHlPahloQxKdXUxK08JsgIrljqX/exNVbLwEvMoswfNgGFY/26aTf8+QA6mrsANFADW1/nVeHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=secunet.com; spf=pass smtp.mailfrom=secunet.com; dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b=H8LhtKPM; arc=none smtp.client-ip=62.96.220.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=secunet.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=secunet.com
-Received: from localhost (localhost [127.0.0.1])
-	by mx1.secunet.com (Postfix) with ESMTP id C5D8420764;
-	Wed, 12 Feb 2025 12:56:49 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from mx1.secunet.com ([127.0.0.1])
- by localhost (mx1.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id x6xrKQmUOPbC; Wed, 12 Feb 2025 12:56:49 +0100 (CET)
-Received: from cas-essen-01.secunet.de (rl1.secunet.de [10.53.40.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by mx1.secunet.com (Postfix) with ESMTPS id 1411420728;
-	Wed, 12 Feb 2025 12:56:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.secunet.com 1411420728
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secunet.com;
-	s=202301; t=1739361409;
-	bh=CnhdflWo6BOsOWBkNahHfp8/uF7zvZ4noMRNZpBJqbE=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-	b=H8LhtKPMeBJTKVru2BDAXXdyfOEwaUGkqH4JYXi0D5WgBLhPvP313J96qZT13qMW6
-	 QeFFlqbNsSSMOHZ3BoWTkXpe+MxB0sQijG2NE35tASEvSEGGFyNr24hm+YWWrL3PtV
-	 vHQcSK5B1vIzliTp6Jc4WckAvieZiGDESYm4+hNz7l3gCudLZv2A1J3VtJcjsvhcKL
-	 0DF2FxB9pm0WMZK76DEL2U9yd29dRQ3v8zofCDTZroZgQGRBxu4M9k3rGBEjf1opv7
-	 Y1BThxrk6/NZYsBa8fHnYG6w4/k6sHE+dLSuKU5fhDhU9bAL3r6zYkztA7nn3Lszjf
-	 VlkbL/wBIXR8Q==
-Received: from mbx-essen-02.secunet.de (10.53.40.198) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Wed, 12 Feb 2025 12:56:48 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
- (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 12 Feb
- 2025 12:56:48 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-	id 118F53182AB3; Wed, 12 Feb 2025 12:56:48 +0100 (CET)
-Date: Wed, 12 Feb 2025 12:56:48 +0100
-From: Steffen Klassert <steffen.klassert@secunet.com>
-To: Leon Romanovsky <leon@kernel.org>
-CC: Leon Romanovsky <leonro@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
-	Ayush Sawal <ayush.sawal@chelsio.com>, Bharat Bhushan
-	<bbhushan2@marvell.com>, Eric Dumazet <edumazet@google.com>, Geetha sowjanya
-	<gakula@marvell.com>, hariprasad <hkelam@marvell.com>, Herbert Xu
-	<herbert@gondor.apana.org.au>, <intel-wired-lan@lists.osuosl.org>, "Jakub
- Kicinski" <kuba@kernel.org>, Jay Vosburgh <jv@jvosburgh.net>, Jonathan Corbet
-	<corbet@lwn.net>, <linux-doc@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	Louis Peens <louis.peens@corigine.com>, <netdev@vger.kernel.org>,
-	<oss-drivers@corigine.com>, Paolo Abeni <pabeni@redhat.com>, "Potnuri Bharat
- Teja" <bharat@chelsio.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Saeed Mahameed <saeedm@nvidia.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
-	Sunil Goutham <sgoutham@marvell.com>, Tariq Toukan <tariqt@nvidia.com>, "Tony
- Nguyen" <anthony.l.nguyen@intel.com>, Ilia Lin <ilia.lin@kernel.org>
-Subject: Re: [PATCH ipsec-next 2/5] xfrm: simplify SA initialization routine
-Message-ID: <Z6yMgPSfPzgGHTkD@gauss3.secunet.de>
-References: <cover.1738778580.git.leon@kernel.org>
- <dcadf7c144207017104657f85d512889a2d1a09e.1738778580.git.leon@kernel.org>
+	s=arc-20240116; t=1739361467; c=relaxed/simple;
+	bh=JLcYrsxs5VQrFQ8zp3bYRSeJrYhvPjX8ki2I4JOySLc=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sjYTeogypNwv7G1Uyqs0cGy20JjhGPlNTme65e78XGJpgAobp10FjAuuaeVSzNvWxq8qj/Yugkfj4WV+eiyfekCPRPB+j3EWj4MPRnk26HnHaQq2QmzDFmwbkc6y1P0l8eGZ6+XODk3ilUjpcuVDMBWZojFGBtSSeEPnv7AdiJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4YtGxP4qGnz6HJc1;
+	Wed, 12 Feb 2025 19:56:25 +0800 (CST)
+Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
+	by mail.maildlp.com (Postfix) with ESMTPS id 291681401DC;
+	Wed, 12 Feb 2025 19:57:41 +0800 (CST)
+Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
+ (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 12 Feb
+ 2025 12:57:40 +0100
+Date: Wed, 12 Feb 2025 11:57:38 +0000
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Shannon Nelson <shannon.nelson@amd.com>
+CC: <jgg@nvidia.com>, <andrew.gospodarek@broadcom.com>,
+	<aron.silverton@oracle.com>, <dan.j.williams@intel.com>,
+	<daniel.vetter@ffwll.ch>, <dave.jiang@intel.com>, <dsahern@kernel.org>,
+	<gospo@broadcom.com>, <hch@infradead.org>, <itayavr@nvidia.com>,
+	<jiri@nvidia.com>, <kuba@kernel.org>, <lbloch@nvidia.com>,
+	<leonro@nvidia.com>, <saeedm@nvidia.com>, <linux-cxl@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<brett.creeley@amd.com>
+Subject: Re: [RFC PATCH fwctl 1/5] pds_core: specify auxiliary_device to be
+ created
+Message-ID: <20250212115738.0000161b@huawei.com>
+In-Reply-To: <20250211234854.52277-2-shannon.nelson@amd.com>
+References: <20250211234854.52277-1-shannon.nelson@amd.com>
+	<20250211234854.52277-2-shannon.nelson@amd.com>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <dcadf7c144207017104657f85d512889a2d1a09e.1738778580.git.leon@kernel.org>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-02.secunet.de (10.53.40.198)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100009.china.huawei.com (7.191.174.83) To
+ frapeml500008.china.huawei.com (7.182.85.71)
 
-On Wed, Feb 05, 2025 at 08:20:21PM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Tue, 11 Feb 2025 15:48:50 -0800
+Shannon Nelson <shannon.nelson@amd.com> wrote:
+
+> In preparation for adding a new auxiliary_device for the
+> PF, make the vif type an argument to pdsc_auxbus_dev_add().
+> We also now pass in the address to where we'll keep the new
+> padev pointer so that the caller can specify where to save it
+> but we can still change it under the mutex and keep the mutex
+> usage within the function.
 > 
-> SA replay mode is initialized differently for user-space and
-> kernel-space users, but the call to xfrm_init_replay() existed in
-> common path with boolean protection. That caused to situation where
-> we have two different function orders.
-> 
-> So let's rewrite the SA initialization flow to have same order for
-> both in-kernel and user-space callers.
-> 
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
+
+One trivial comment inline.
+
 > ---
->  include/net/xfrm.h    |  3 +--
->  net/xfrm/xfrm_state.c | 22 ++++++++++------------
->  net/xfrm/xfrm_user.c  |  2 +-
->  3 files changed, 12 insertions(+), 15 deletions(-)
+>  drivers/net/ethernet/amd/pds_core/auxbus.c  | 41 ++++++++++-----------
+>  drivers/net/ethernet/amd/pds_core/core.h    |  7 +++-
+>  drivers/net/ethernet/amd/pds_core/devlink.c |  6 ++-
+>  drivers/net/ethernet/amd/pds_core/main.c    | 11 ++++--
+>  4 files changed, 36 insertions(+), 29 deletions(-)
 > 
-> diff --git a/include/net/xfrm.h b/include/net/xfrm.h
-> index 28355a5be5b9..58f8f7661ec4 100644
-> --- a/include/net/xfrm.h
-> +++ b/include/net/xfrm.h
-> @@ -1770,8 +1770,7 @@ void xfrm_spd_getinfo(struct net *net, struct xfrmk_spdinfo *si);
->  u32 xfrm_replay_seqhi(struct xfrm_state *x, __be32 net_seq);
->  int xfrm_init_replay(struct xfrm_state *x, struct netlink_ext_ack *extack);
->  u32 xfrm_state_mtu(struct xfrm_state *x, int mtu);
-> -int __xfrm_init_state(struct xfrm_state *x, bool init_replay,
-> -		      struct netlink_ext_ack *extack);
-> +int __xfrm_init_state(struct xfrm_state *x, struct netlink_ext_ack *extack);
->  int xfrm_init_state(struct xfrm_state *x);
->  int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type);
->  int xfrm_input_resume(struct sk_buff *skb, int nexthdr);
-> diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
-> index 568fe8df7741..42799b0946a3 100644
-> --- a/net/xfrm/xfrm_state.c
-> +++ b/net/xfrm/xfrm_state.c
-> @@ -3120,8 +3120,7 @@ u32 xfrm_state_mtu(struct xfrm_state *x, int mtu)
+> diff --git a/drivers/net/ethernet/amd/pds_core/auxbus.c b/drivers/net/ethernet/amd/pds_core/auxbus.c
+> index 2babea110991..0a3035adda52 100644
+> --- a/drivers/net/ethernet/amd/pds_core/auxbus.c
+> +++ b/drivers/net/ethernet/amd/pds_core/auxbus.c
+> @@ -175,34 +175,37 @@ static struct pds_auxiliary_dev *pdsc_auxbus_dev_register(struct pdsc *cf,
+>  	return padev;
 >  }
->  EXPORT_SYMBOL_GPL(xfrm_state_mtu);
 >  
-> -int __xfrm_init_state(struct xfrm_state *x, bool init_replay,
-> -		      struct netlink_ext_ack *extack)
-> +int __xfrm_init_state(struct xfrm_state *x, struct netlink_ext_ack *extack)
+> -int pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf)
+> +int pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf,
+> +			struct pds_auxiliary_dev **pd_ptr)
+>  {
+>  	struct pds_auxiliary_dev *padev;
+> -	int err = 0;
+>  
+>  	if (!cf)
+>  		return -ENODEV;
+>  
+> +	if (!*pd_ptr)
+> +		return 0;
+> +
+>  	mutex_lock(&pf->config_lock);
+>  
+> -	padev = pf->vfs[cf->vf_id].padev;
+> -	if (padev) {
+> -		pds_client_unregister(pf, padev->client_id);
+> -		auxiliary_device_delete(&padev->aux_dev);
+> -		auxiliary_device_uninit(&padev->aux_dev);
+> -		padev->client_id = 0;
+> -	}
+> -	pf->vfs[cf->vf_id].padev = NULL;
+> +	padev = *pd_ptr;
+> +	pds_client_unregister(pf, padev->client_id);
+> +	auxiliary_device_delete(&padev->aux_dev);
+> +	auxiliary_device_uninit(&padev->aux_dev);
+> +	padev->client_id = 0;
+> +	*pd_ptr = NULL;
+>  
+>  	mutex_unlock(&pf->config_lock);
+> -	return err;
+> +
+> +	return 0;
 
-The whole point of having __xfrm_init_state was to
-sepatate codepaths that need init_replay and those
-who don't need it. That was a bandaid for something,
-unfortunately I don't remenber for what.
+If you are always going to return 0, maybe change the signature
+to not return anything?
 
-If we don't need that anymore, maybe we can merge
-__xfrm_init_state into xfrm_init_state, as it was
-before.
+Would require changing the ternary usage below, but perhaps
+it is worth it to remove the implication of failures being
+a possibility.
 
-The rest of the patchset looks OK to me.
+
+>  }
+>  
+> -int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
+> +int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf,
+> +			enum pds_core_vif_types vt,
+> +			struct pds_auxiliary_dev **pd_ptr)
+>  {
+>  	struct pds_auxiliary_dev *padev;
+>  	char devname[PDS_DEVNAME_LEN];
+> -	enum pds_core_vif_types vt;
+>  	unsigned long mask;
+>  	u16 vt_support;
+>  	int client_id;
+> @@ -211,6 +214,9 @@ int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
+>  	if (!cf)
+>  		return -ENODEV;
+>  
+> +	if (vt >= PDS_DEV_TYPE_MAX)
+> +		return -EINVAL;
+> +
+>  	mutex_lock(&pf->config_lock);
+>  
+>  	mask = BIT_ULL(PDSC_S_FW_DEAD) |
+> @@ -222,17 +228,10 @@ int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
+>  		goto out_unlock;
+>  	}
+>  
+> -	/* We only support vDPA so far, so it is the only one to
+> -	 * be verified that it is available in the Core device and
+> -	 * enabled in the devlink param.  In the future this might
+> -	 * become a loop for several VIF types.
+> -	 */
+> -
+>  	/* Verify that the type is supported and enabled.  It is not
+>  	 * an error if there is no auxbus device support for this
+>  	 * VF, it just means something else needs to happen with it.
+>  	 */
+> -	vt = PDS_DEV_TYPE_VDPA;
+>  	vt_support = !!le16_to_cpu(pf->dev_ident.vif_types[vt]);
+>  	if (!(vt_support &&
+>  	      pf->viftype_status[vt].supported &&
+> @@ -258,7 +257,7 @@ int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
+>  		err = PTR_ERR(padev);
+>  		goto out_unlock;
+>  	}
+> -	pf->vfs[cf->vf_id].padev = padev;
+> +	*pd_ptr = padev;
+>  
+>  out_unlock:
+>  	mutex_unlock(&pf->config_lock);
+> diff --git a/drivers/net/ethernet/amd/pds_core/core.h b/drivers/net/ethernet/amd/pds_core/core.h
+> index 14522d6d5f86..065031dd5af6 100644
+> --- a/drivers/net/ethernet/amd/pds_core/core.h
+> +++ b/drivers/net/ethernet/amd/pds_core/core.h
+> @@ -303,8 +303,11 @@ void pdsc_health_thread(struct work_struct *work);
+>  int pdsc_register_notify(struct notifier_block *nb);
+>  void pdsc_unregister_notify(struct notifier_block *nb);
+>  void pdsc_notify(unsigned long event, void *data);
+> -int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf);
+> -int pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf);
+> +int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf,
+> +			enum pds_core_vif_types vt,
+> +			struct pds_auxiliary_dev **pd_ptr);
+> +int pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf,
+> +			struct pds_auxiliary_dev **pd_ptr);
+>  
+>  void pdsc_process_adminq(struct pdsc_qcq *qcq);
+>  void pdsc_work_thread(struct work_struct *work);
+> diff --git a/drivers/net/ethernet/amd/pds_core/devlink.c b/drivers/net/ethernet/amd/pds_core/devlink.c
+> index 44971e71991f..c2f380f18f21 100644
+> --- a/drivers/net/ethernet/amd/pds_core/devlink.c
+> +++ b/drivers/net/ethernet/amd/pds_core/devlink.c
+> @@ -56,8 +56,10 @@ int pdsc_dl_enable_set(struct devlink *dl, u32 id,
+>  	for (vf_id = 0; vf_id < pdsc->num_vfs; vf_id++) {
+>  		struct pdsc *vf = pdsc->vfs[vf_id].vf;
+>  
+> -		err = ctx->val.vbool ? pdsc_auxbus_dev_add(vf, pdsc) :
+> -				       pdsc_auxbus_dev_del(vf, pdsc);
+> +		err = ctx->val.vbool ? pdsc_auxbus_dev_add(vf, pdsc, vt_entry->vif_id,
+> +							   &pdsc->vfs[vf_id].padev) :
+> +				       pdsc_auxbus_dev_del(vf, pdsc,
+> +						           &pdsc->vfs[vf_id].padev);
+>  	}
+>  
+>  	return err;
+> diff --git a/drivers/net/ethernet/amd/pds_core/main.c b/drivers/net/ethernet/amd/pds_core/main.c
+> index 660268ff9562..a3a68889137b 100644
+> --- a/drivers/net/ethernet/amd/pds_core/main.c
+> +++ b/drivers/net/ethernet/amd/pds_core/main.c
+> @@ -190,7 +190,8 @@ static int pdsc_init_vf(struct pdsc *vf)
+>  	devl_unlock(dl);
+>  
+>  	pf->vfs[vf->vf_id].vf = vf;
+> -	err = pdsc_auxbus_dev_add(vf, pf);
+> +	err = pdsc_auxbus_dev_add(vf, pf, PDS_DEV_TYPE_VDPA,
+> +				  &pf->vfs[vf->vf_id].padev);
+>  	if (err) {
+>  		devl_lock(dl);
+>  		devl_unregister(dl);
+> @@ -417,7 +418,7 @@ static void pdsc_remove(struct pci_dev *pdev)
+>  
+>  		pf = pdsc_get_pf_struct(pdsc->pdev);
+>  		if (!IS_ERR(pf)) {
+> -			pdsc_auxbus_dev_del(pdsc, pf);
+> +			pdsc_auxbus_dev_del(pdsc, pf, &pf->vfs[pdsc->vf_id].padev);
+>  			pf->vfs[pdsc->vf_id].vf = NULL;
+>  		}
+>  	} else {
+> @@ -482,7 +483,8 @@ static void pdsc_reset_prepare(struct pci_dev *pdev)
+>  
+>  		pf = pdsc_get_pf_struct(pdsc->pdev);
+>  		if (!IS_ERR(pf))
+> -			pdsc_auxbus_dev_del(pdsc, pf);
+> +			pdsc_auxbus_dev_del(pdsc, pf,
+> +					    &pf->vfs[pdsc->vf_id].padev);
+>  	}
+>  
+>  	pdsc_unmap_bars(pdsc);
+> @@ -527,7 +529,8 @@ static void pdsc_reset_done(struct pci_dev *pdev)
+>  
+>  		pf = pdsc_get_pf_struct(pdsc->pdev);
+>  		if (!IS_ERR(pf))
+> -			pdsc_auxbus_dev_add(pdsc, pf);
+> +			pdsc_auxbus_dev_add(pdsc, pf, PDS_DEV_TYPE_VDPA,
+> +					    &pf->vfs[pdsc->vf_id].padev);
+>  	}
+>  }
+>  
+
 
