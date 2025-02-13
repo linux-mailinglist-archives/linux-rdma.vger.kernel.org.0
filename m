@@ -1,175 +1,179 @@
-Return-Path: <linux-rdma+bounces-7705-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7706-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8825EA33B0F
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 10:22:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2DA8A33B8C
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 10:48:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF0031681E9
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 09:18:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 255E5188AD75
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 09:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0218B211715;
-	Thu, 13 Feb 2025 09:18:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B67F7211A07;
+	Thu, 13 Feb 2025 09:47:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PDS3twiU"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="GG1jFtVt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2078.outbound.protection.outlook.com [40.107.92.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2830220E718
-	for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2025 09:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739438283; cv=none; b=WornxETZr0IfdqzBhbwXiFQUMEwb7IWyeqYaSPE1ad6uF4vLGpw6rxFb4FfY9I0o3WCXHbBP03eS6HDLKra+1Rtpzs7d8nOmCMCoBrlVS4Qwceb0XZOv1HtFP0beo9iS3e9ggfHnm2lAF2QasfNA9vupKvI5ADzuA8ODlQwXz+Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739438283; c=relaxed/simple;
-	bh=tZFHp6UCOiU6zKu3uGe+iZ5zxsFxAKP2QH0K61+Dvo8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WQ3+h00fbd3/KdkEVgKMWEJoCAI4UfHL9Rq1CBzAmeJbN+0AAVkn31uKabgIvzBkDbfGZEGwm8qIEWZiUd/5Kk4h4FUm2n/K3DIHndA+GoXpFS0Fwro7cT0LIBwIN5+1QhkgCYSdx4zCKuBKHOYgQc3WJedkGGneB9pqFLYn/jc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PDS3twiU; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739438278;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gyhNP3qOlJ39umXMZfckH2nuz/m9WI3f5NG3i+yZUF4=;
-	b=PDS3twiUXT7kG3kZRHfQHEf3ZlRWS5CRBFp/KaL629RmVEHFAOi39oMMqTAXw00+/87XkL
-	jqd9hb7qGOVUwxhGwFxixjlfibJUbSlaRwFnzlHrHFvDAOXYtlqsyVj5J0uKHYdd9KF4Yy
-	6mOD3XvdCz9ORg3DRanl1O0iTpAVirs=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-526-yM7lofEZPYiZueGt_XAyhg-1; Thu, 13 Feb 2025 04:17:56 -0500
-X-MC-Unique: yM7lofEZPYiZueGt_XAyhg-1
-X-Mimecast-MFC-AGG-ID: yM7lofEZPYiZueGt_XAyhg
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4394b8bd4e1so3383275e9.0
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2025 01:17:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739438275; x=1740043075;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gyhNP3qOlJ39umXMZfckH2nuz/m9WI3f5NG3i+yZUF4=;
-        b=oPUBgxZcLVaT2OSwnZDcSRfQvFU7/3wZfMYy2EK/qStpHtre18xdtZ5zmbt5nwKFhH
-         nhn/qKcdRqhZgvToV0Ye510sCSxp2tXJshid0uXEcBHWV1/JQo4+qioIaUFzIO+OVIRM
-         5P3XrheoRysEPx2WDbx4QoO7beSiCP2ruR2mnnT27WtjEBlqfy1ZmWwLYjBQbTz9nXlt
-         pFSOxUhmZlPF8Yhq4o2s2Mf+sZzoE+FJRPJSEQletLEXTt598RW8iqqgqfA3kqQ9UHsA
-         EXA+oIcthdMfaBD+le7ILPpNpcmjvkswUQabT5jUPnwDUGChwU6SkolYM2kGKAhLWIuo
-         hPIg==
-X-Forwarded-Encrypted: i=1; AJvYcCX8OjpY8yUri+CBC4VdOini5iqhL9VsKJDOsSMHFctARRDnSImuG8D2I032G5IG75lS460RKI7618RP@vger.kernel.org
-X-Gm-Message-State: AOJu0YyAb+97DeNxWQ/+s962gYzKVSd+3EUAcfvNUmmTl8ppTLvAcJi8
-	b8hT0nOkyaCIBJ9AStpcTkF6g4bw1pxhdh6fOLVdpELkOWlnYILcx32nJX+d3UQJTZM8dsVTRYl
-	tp7ST5NcpVgHawYXgrq2G7yxoAm3vAWvDvvyKIVBxscl8SV/itckvKZVL/8k=
-X-Gm-Gg: ASbGncv1rYdYhAjINLep3/Qw6bv+vIAydOpJ5Urd6AkU2BTz8fkjJ3fwfUPLhq3kPaq
-	4eD8KDsBHhX/bPnkGAw2QzwK6Dm0xR8Y40J8GjAyFaJxB0BB5UpCL9EW1/zbk+C43bNq5Yui2zU
-	Nm++2aZKJtSQISn0hUmPkWQSecNW4crwdtfhdsvTTuQe4yc09hb3IMao79NxTPB2vrKZyDzhUou
-	nM/tRyXJKqW4nZV9G3/mTnq2eVJOAPTCZ+GUIDkMEv2Cd8H4gUWKuxR1iQQTD0athpynl52Ljz9
-	OFEW0TUxVQM66EZqbMMCvlgSo4C1vEJB4jU=
-X-Received: by 2002:a5d:59ad:0:b0:38d:d9bd:18a6 with SMTP id ffacd0b85a97d-38dea2e8252mr5537702f8f.42.1739438275349;
-        Thu, 13 Feb 2025 01:17:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEvdEpVIGWCwTdkiFI9VeLvCiv6OrrtGDZTcFYpY+kBOdDZTqd8HRvUuOkaOwq9itdXLKF4sg==
-X-Received: by 2002:a5d:59ad:0:b0:38d:d9bd:18a6 with SMTP id ffacd0b85a97d-38dea2e8252mr5537666f8f.42.1739438274976;
-        Thu, 13 Feb 2025 01:17:54 -0800 (PST)
-Received: from [192.168.88.253] (146-241-31-160.dyn.eolo.it. [146.241.31.160])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38f258cccdesm1314704f8f.26.2025.02.13.01.17.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Feb 2025 01:17:54 -0800 (PST)
-Message-ID: <2c294c0a-26c4-4ec5-992d-a2fd98829b16@redhat.com>
-Date: Thu, 13 Feb 2025 10:17:52 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEFF8211468;
+	Thu, 13 Feb 2025 09:47:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.78
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739440062; cv=fail; b=mVWApnW6g8mLWnLMA/gsKGq0UXExlLjZ/OjtW8VpFUHaqo0qITZCH1X9SDcfASXzkJ4TGw9gHLsD0iMURiJ05tnzmlVy4nyM7kIEZqkb4SCIXRgqLfTxqi7p3p3nu0DGZgGx2Rgf6vHE5+qtHGCYGGeyDrFafPLuaWl0Trd8U0k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739440062; c=relaxed/simple;
+	bh=FKG7InIs2ZUMpYYi59x0vFJ2xwpyT+Lepq6JgFgcetc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fg9rlmFf050XEYeMnAJAioVi6J6YJG6+dqO9YFaJ4Nbp6Rfe3UOj5j2Vr8ssZ/fO+aWySCydF23wDLoZS9IYUQkavyE3vA5wp2rUlYH7JrD/atw5AnAzYO0uvg/RLXEFYz31ZCOj2CxTHHGomkYJjAuq28VcmM71pnCuT8+tNjA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=GG1jFtVt; arc=fail smtp.client-ip=40.107.92.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=B9My4Fv/r/OLuYBHnP0JmYbM2Yoqw7/5Y+duBEbIk8po7RWada2HNnQg1UpADHwncqdDyg9JTGsIQgswBZZ/v5upFv3qWAlcKjkd4321hhuIq241KwLrgzDp7IGTXwHKezNQ4YOPee/6A3LROFXhcr9VLFl/PlZcTPzDgAEdNpUAEu/v0sTWmeX/1db+lGjvLsVVI743kmKVk5O7byAcSQ8Td83JaZolYdSal1SSOdcl0ytEH06GuoUcZZBfs+LYoYgam4ooiCF6pyNSRWvfeGo317z17nTohspo9SdMRq8tBDx+0FoCzHMqzAfd8/eJglZadD74GaVn/7gQw3bqTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vXTDt/Bd+ukODSiY+1VnI5b+T11S06mTbgCc2Ypw7Pk=;
+ b=UGxLufi3Ov7xHBt1EhEGVRi/fa18tOUzTIJ8zaYiPZiZZDbtZIxq2SP4oEtvogvZ8YtNpxDQxMeK6JYDnoHZUyJM76eaOLXK/aD9H60hrMBRj2RiTw1ExejiJYg3qs41I9ZQAW3BnR2fliSrO1+Ch0BwNwnPEl2JgDqhyvnvU+WC0YrE3JPKg09EbllQz9wa2yHzDq1nuDK6BUfCN2yKTNHRrAMlw2MuHKRwpUoavjHjSQyqEl7wy5RJnRn2uw0ntPRK0JG7zwezSkXz7llpjOHGWwFCDw4h4Tdqq/eDhWb+8GWIP0TjdJ4s4VkrRfbnArKGTraCPCj5oBPJdr8gKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vXTDt/Bd+ukODSiY+1VnI5b+T11S06mTbgCc2Ypw7Pk=;
+ b=GG1jFtVtjgkKsGhj7nyQiNB89HuD8j/4Mibi8zSuHXKB1fCBSB4Ml80LAhldJ8VGuWpEUqG4NL7yppnVF/VvD+7iFUwODg1yVcv3lWxrhMOD5XM2Ya5N4bC9fie8KICJtUA988vTfKPbbBLsxtr4f6r+14VX31PJyu/aqRHrsWTVodVg61+WkjI0ThVXFvA2AA/XLjHFJue0+G3NpffUsTgUz+mOtRHLTsb8k8Q62DufdOK9Qb7cCUlkbx+iFzb/U6dZvak9YBQIiKXJ1nnyrbuTb7VHdXAK5xk3sk+SRX5fK25fT5VdtZVIkeH7jgSy64mFHXVrSFxhTLs4o/g/EA==
+Received: from BYAPR07CA0012.namprd07.prod.outlook.com (2603:10b6:a02:bc::25)
+ by BL3PR12MB6521.namprd12.prod.outlook.com (2603:10b6:208:3bd::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.13; Thu, 13 Feb
+ 2025 09:47:36 +0000
+Received: from SJ1PEPF000023D0.namprd02.prod.outlook.com
+ (2603:10b6:a02:bc:cafe::63) by BYAPR07CA0012.outlook.office365.com
+ (2603:10b6:a02:bc::25) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8445.13 via Frontend Transport; Thu,
+ 13 Feb 2025 09:47:36 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ SJ1PEPF000023D0.mail.protection.outlook.com (10.167.244.4) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8445.10 via Frontend Transport; Thu, 13 Feb 2025 09:47:35 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 13 Feb
+ 2025 01:47:23 -0800
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Thu, 13 Feb 2025 01:47:22 -0800
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server id 15.2.1544.14 via Frontend
+ Transport; Thu, 13 Feb 2025 01:47:20 -0800
+From: Tariq Toukan <tariqt@nvidia.com>
+To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
+ Lunn" <andrew+netdev@lunn.ch>
+CC: Shahar Shitrit <shshitrit@nvidia.com>, Gal Pressman <gal@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, "Tariq
+ Toukan" <tariqt@nvidia.com>, <netdev@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next 0/4] mlx5: Add sensor name in temperature message
+Date: Thu, 13 Feb 2025 11:46:37 +0200
+Message-ID: <20250213094641.226501-1-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v9 02/11] rtnetlink: Pack newlink() params into
- struct
-To: Xiao Liang <shaw.leon@gmail.com>, Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: alex.aring@gmail.com, andrew+netdev@lunn.ch,
- b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org,
- bridge@lists.linux.dev, davem@davemloft.net, donald.hunter@gmail.com,
- dsahern@kernel.org, edumazet@google.com, herbert@gondor.apana.org.au,
- horms@kernel.org, kuba@kernel.org, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-ppp@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-wpan@vger.kernel.org,
- miquel.raynal@bootlin.com, netdev@vger.kernel.org,
- osmocom-net-gprs@lists.osmocom.org, shuah@kernel.org,
- stefan@datenfreihafen.org, steffen.klassert@secunet.com,
- wireguard@lists.zx2c4.com
-References: <20250210133002.883422-3-shaw.leon@gmail.com>
- <20250213065348.8507-1-kuniyu@amazon.com>
- <CABAhCOTw+CpiwwRGNtDS3gntTQe7XESNzzi6RXd9ju1xO_a5Hw@mail.gmail.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <CABAhCOTw+CpiwwRGNtDS3gntTQe7XESNzzi6RXd9ju1xO_a5Hw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: AnonymousSubmission
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF000023D0:EE_|BL3PR12MB6521:EE_
+X-MS-Office365-Filtering-Correlation-Id: 38558185-3c56-4325-6c81-08dd4c137201
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|82310400026|36860700013|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?c5iVMn7kQLdGhmnIzAc2DMvuRxPm5aH9OoKTOWoXxaSPgjMbOSGUPHlp0oi9?=
+ =?us-ascii?Q?wnG/PI6V7EUX3Fs0LKHcHbx+c6wSkkKkKOBlj41k//A99i8K+yfg2gonYSZL?=
+ =?us-ascii?Q?PAZ/FQM52peHcn+qvule6lya5h0Y2KaRz9LugoJJvHV6KIKp1AkDyrccPVEH?=
+ =?us-ascii?Q?d/KdbQRx7sAoMgMgqstzv+HIe/uo99AM5twZVlU7qVZdrYUv4zgdjlmsjWnS?=
+ =?us-ascii?Q?yGQ7qK2/d+w/UfieDcXa7/gAf1DwFQvjfB12e/nQOdR7LgbWBoSQuh/aXCKD?=
+ =?us-ascii?Q?Znpb2deQ6lBRSy/pqfu6PkPKs+edjTbBVkAzzW5PGN1You9wQGcw876X+dpE?=
+ =?us-ascii?Q?3OwuqQRAaUXx5R7IeT7bZeh1ajzgJTri3UJ4g54J4TH8t8HjBTomnYaFz1XS?=
+ =?us-ascii?Q?q/UoBXbzfUOKU26a95A8Dh36FfPeYOsq15RHto8B7a9+W2/cVZu36hCxwSLv?=
+ =?us-ascii?Q?d7SiQNdL+tojqglYRQ8UgSwyvoBQBjzIlkiayXSAz5MQpToV9P9Tom9nSFTc?=
+ =?us-ascii?Q?DZ+cznxsCVaSdlCOiLbeCkvBNvyuTeCikV1Ls5JpboVVfYXf3EVsMq+FRnbY?=
+ =?us-ascii?Q?LTj1q0IhZIhc+cKX8VSzBfNjDfwNv2x8P0xqVwAvFjeMEkLDyF+nVp1rk4U2?=
+ =?us-ascii?Q?bXY/V32CTcX/V46+P+npJwPxLE1xsc3UtzfseKd3P0M2A04kI4aepHhUC/Lf?=
+ =?us-ascii?Q?zsyf97v2fEnUXP2UEUxeLGX3HCL93OHVxXwFEGpbG2t0v8vKF5QUeTIABSAV?=
+ =?us-ascii?Q?nX3LhgiRs30F/bpIzac2+IEawCxj/DGI2fKVcZ+xsoJWcZv43AkJjqDv5keL?=
+ =?us-ascii?Q?IHwAB2idG6oL+EpSp/pR03UOilWLusz0Fk0JBqCotoKcXv32+QR1vQp0V6Fi?=
+ =?us-ascii?Q?fTIMqn/G7a/SXYvKgK0HG8WWT/Km6WUGNQfV3lTMISJegw0Z47f7mizMrVuL?=
+ =?us-ascii?Q?tXykcryXBG8E7POxY8Ncd1wof7PF2weyy51LoKzqHJGIK4Qch98i6nSZulWy?=
+ =?us-ascii?Q?MZ0tHoaTvdD2h5fdwhF1uBFo770Kew8Rfe6NFguQnYCxwh4J1sn1gBUyzLB/?=
+ =?us-ascii?Q?5dvPFMHKjWR1TBrEIxrXUdfT4GGKvTbs6aRbGZBGLhJK5sEGWd42FMpDsXOH?=
+ =?us-ascii?Q?+RyksUusHEVpPuf22ARdjcn7qe2/fXKMzhjUT71P/ohY98cK/JBagQV0RrL+?=
+ =?us-ascii?Q?RdKPlE0BUXZG1PxZ21FviaVKW/P4OOuREZoEaM6+YqG8cvtrJwbD2O3frVRA?=
+ =?us-ascii?Q?aCnihqkpfjnDuRTT+T7LCc0XEcPhNEFOSp1UMvnDDQmTFpr5O531npRbSdfQ?=
+ =?us-ascii?Q?qKJ4qxDKRLUPkJZ12bs2ggglJjN3JFcIzm9BOGyitASQV8bvUj/UqtC9PyLj?=
+ =?us-ascii?Q?eXKa19AmrxNzaQnBXm2acyvMgdCjgMxSEU0IpwcgUiRhFpwlNSLUV7J//nwC?=
+ =?us-ascii?Q?KeHYurpe2LdvIiPFX/jTP9NeBkLejim8WoRdiYHFKwaHX1jkVJ3AEj/MMPGd?=
+ =?us-ascii?Q?lG6zv9GVO5PT6So=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(82310400026)(36860700013)(1800799024);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2025 09:47:35.7107
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38558185-3c56-4325-6c81-08dd4c137201
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF000023D0.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6521
 
-On 2/13/25 9:36 AM, Xiao Liang wrote:
-> On Thu, Feb 13, 2025 at 2:54 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
-> [...]
->>> diff --git a/include/linux/if_macvlan.h b/include/linux/if_macvlan.h
->>> index 523025106a64..0f7281e3e448 100644
->>> --- a/include/linux/if_macvlan.h
->>> +++ b/include/linux/if_macvlan.h
->>> @@ -59,8 +59,10 @@ static inline void macvlan_count_rx(const struct macvlan_dev *vlan,
->>>
->>>  extern void macvlan_common_setup(struct net_device *dev);
->>>
->>> -extern int macvlan_common_newlink(struct net *src_net, struct net_device *dev,
->>> -                               struct nlattr *tb[], struct nlattr *data[],
->>> +struct rtnl_newlink_params;
->>
->> You can just include <net/rtnetlink.h> and remove it from .c
->> files, then this forward declaration will be unnecessary.
-> 
-> OK. Was not sure if it's desirable to include include/net files from
-> include/linux.
+Hi,
 
-I think we are better of with the forward declaration instead of adding
-more intra header dependencies, which will slow down the build and will
-produces artifacts in the CI runs (increases of reported warning in the
-incremental build, as any warns from the included header will be
-'propagated' to more files).
+This small series from Shahar adds the sensors names to the temperature
+event messages, in addition to the existing bitmap indicators.
+This improves human readability.
 
->>> +extern int macvlan_common_newlink(struct net_device *dev,
->>> +                               struct rtnl_newlink_params *params,
->>>                                 struct netlink_ext_ack *extack);
->>>
->>>  extern void macvlan_dellink(struct net_device *dev, struct list_head *head);
->>
->>
->> [...]
->>> diff --git a/include/net/rtnetlink.h b/include/net/rtnetlink.h
->>> index bc0069a8b6ea..00c086ca0c11 100644
->>> --- a/include/net/rtnetlink.h
->>> +++ b/include/net/rtnetlink.h
->>> @@ -69,6 +69,42 @@ static inline int rtnl_msg_family(const struct nlmsghdr *nlh)
->>>               return AF_UNSPEC;
->>>  }
->>>
->>> +/**
->>> + *   struct rtnl_newlink_params - parameters of rtnl_link_ops::newlink()
->>
->> The '\t' after '*' should be single '\s'.
->>
->> Same for lines below.
-> 
-> This is copied from other structs in the same file. Should I change it?
+Series starts with simple refactoring and modifications. The top patch
+adds the sensors names.
 
-https://elixir.bootlin.com/linux/v6.13.2/source/Documentation/process/maintainer-netdev.rst#L376
+Regards,
+Tariq
 
-In this series, just use the good formatting for the new code.
+Shahar Shitrit (4):
+  net/mlx5: Apply rate-limiting to high temperature warning
+  net/mlx5: Prefix temperature event bitmap with '0x' for clarity
+  net/mlx5: Modify LSB bitmask in temperature event to include only the
+    first bit
+  net/mlx5: Add sensor name to temperature event message
 
-Thanks,
+ .../net/ethernet/mellanox/mlx5/core/events.c  | 36 +++++++++++++++++--
+ .../net/ethernet/mellanox/mlx5/core/hwmon.c   |  5 +++
+ .../net/ethernet/mellanox/mlx5/core/hwmon.h   |  1 +
+ 3 files changed, 39 insertions(+), 3 deletions(-)
 
-Paolo
+
+base-commit: 8dbf0c7556454b52af91bae305ca71500c31495c
+-- 
+2.45.0
 
 
