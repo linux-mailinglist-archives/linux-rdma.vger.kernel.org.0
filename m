@@ -1,533 +1,218 @@
-Return-Path: <linux-rdma+bounces-7691-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7692-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDFF6A33355
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 00:26:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BBDFA333DD
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 01:11:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45F3C188B50F
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2025 23:26:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86BBD3A88AE
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 00:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5271020AF66;
-	Wed, 12 Feb 2025 23:26:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1CA4A01;
+	Thu, 13 Feb 2025 00:10:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gqgaaFDu"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EsMkzTfH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFCEC1ACEA7;
-	Wed, 12 Feb 2025 23:26:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A888BEE
+	for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2025 00:10:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739402779; cv=none; b=q+yMfXVRTNXo7XK3+n714Jaluxo/XQAnzIdl3Hv9cLdCDsxKLxDpV0ms8Y6Qfy7ssDTpsEFVzbnvVJuYYeVgJ/v2CwwZ049oLgKMkH7Oo81wYpGeVLEi5wo1/Xba+brP38GeKh/NpEgNhnkDjkl4S+a/9uF4Toozd75TsSBqPUw=
+	t=1739405455; cv=none; b=DHD01ov3Oei+CZ+5SNDhJRaXTQQjvke8KlGHZwgz1bHSmpeP3d4OrpjNMgxNnX/VDv6+m8653ug7lnGZMoP/714NHvxzwl0jQBG0RDvOc3HwwBCR2tCu5PWr4Nd7yGVZl+QVGwsuLTCBkjVccKsetEx0lF8Qgmlv4fUXUYtNI2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739402779; c=relaxed/simple;
-	bh=9O7Gk5TrP+PUUwLBe4CMD4+9NGJOxkwZXTPoQvTD1IQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MnVl6cwh1ZBH5wYqpI/NTJEWND8xJFFkIGmHQ9QVQ59lA1pfqgXnsPP4N6xB1LziPPlnfE4TWOPZ+481l5DGoVFeUC++fz0Wow4cM+iK3k0CjteHbcFkY7NkgucvqqsYSr538jk0XZF2vGcfC2OVce8Ott0G9J68bafZJiW15jU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gqgaaFDu; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1739402777; x=1770938777;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=9O7Gk5TrP+PUUwLBe4CMD4+9NGJOxkwZXTPoQvTD1IQ=;
-  b=gqgaaFDurv1mRGJIcQP0AYwydOLSScxGsufmg7pxmwhLBZBuyoOzXE3j
-   a25WKyRHg3/cW+ROfpe+IQKTL1mQF5M69C4beuWboVY6+DPbNXOOzLitN
-   XuExBHYW7PI4wkgv7M2kwv2BKhkPLI+k7NMSeJ2lVW+p69SW6gi/BGQyI
-   e/7OFvED8dMvHnLToObQRsSq/xsD2eS6eaGBtorwHI0eWHCPcMVyMhTDY
-   Pza084gAdX7U8YYYZEGjuKrWKReoSx1MC0FmXbxyrTkrb334PCwWekDoP
-   Y9tK3zfA+3PUMcMMm003sd/u1d8RNx1N1y4adayvCSI3ZDvXQYOLRQBxB
-   g==;
-X-CSE-ConnectionGUID: un99pE71TwiMzD0GxrV1og==
-X-CSE-MsgGUID: GjqvgdR2Rp6lWc2UiBbwVA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11343"; a="39269620"
-X-IronPort-AV: E=Sophos;i="6.13,281,1732608000"; 
-   d="scan'208";a="39269620"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2025 15:26:15 -0800
-X-CSE-ConnectionGUID: Msn8SwC2ROaid7HGnIyobw==
-X-CSE-MsgGUID: nm1IjSVATnKpoqMLUjj8gA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="113453224"
-Received: from dnelso2-mobl.amr.corp.intel.com (HELO [10.125.108.128]) ([10.125.108.128])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2025 15:26:13 -0800
-Message-ID: <4a862ed3-0959-42f6-8ae8-cf6176ff1742@intel.com>
-Date: Wed, 12 Feb 2025 16:26:12 -0700
+	s=arc-20240116; t=1739405455; c=relaxed/simple;
+	bh=SifCzjX4GY5GN2rUJ8a5yh5rfxDC24HGCOd98DeaIb4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t7AnC84eorpOEE3SBo84jnwAcZC9aQHxF4ywib7GUIOgnwSz+3dIH5KL+1xXDIckZOGeKbi87YeAk0obN5Ycjh88csusr4T8HXjx5Q2MzNAGyaTje8ifMV2iR20E9Do/g4BeErQcwl6eyLwZ6L3RAHVvPeUFesjx3DWOMzNeQGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EsMkzTfH; arc=none smtp.client-ip=209.85.217.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-4bb0e7e6cceso54541137.1
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Feb 2025 16:10:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1739405452; x=1740010252; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s+WfHu/v5u/KfWiPWoeUIJ/AgU1PcO3O1k2ZFWW7w5c=;
+        b=EsMkzTfHZfKB8K2EWd4Cf1dwoDqLwkqBc5i0SbeyEeZG4DMz20nWPT10xodcREXCQ5
+         NPaN9UGXB9apCvROxz8FfI8hptTTNaJtsu2Mjv8X6SVYoToUEWI2BckhaVyfze+1ukOF
+         6THGobEFoAZAMUD2vL/GiN2MReNLSzLJXtm2DZyOS1ulJTsbghlpMuOLPWdbCfkShKIC
+         CplAZGNVF8qBtslAkTifgMwcBQ+vzv3wo0vcTs9o30zD6bCN96K2uTIiHpIKKjwgEvsM
+         IEZnqoz8haawfWup/d/rrFIuHm65zYeKYsgS5QXrNRDHU812FFQwl1LqeifO6MzI8N1m
+         YKuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739405452; x=1740010252;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s+WfHu/v5u/KfWiPWoeUIJ/AgU1PcO3O1k2ZFWW7w5c=;
+        b=jhhCv2r6LLvSXQbd6oyuS8cLFsDGB/RM9un9FKzz5P4VzVBxhE6CsmjaY/IAUzspx0
+         ml+ECVgxXQLJonG38jBhy6CeIu2sNxGbJyuct+g/lGHitBkBiSn23CMYR3F5f1irpwzF
+         mDTQSk2uP2kyTXgppvQ28+eYzVuIA2yqsRyq21f7kGIePH/vFOTq0wg/BKl1C6EYd/ge
+         83DD1iv/c55SLXUVR5Xc+mcscQBGVsztQLmYMXnAUfCwsN4EUdkI74zIULC5R0rDfgtG
+         1BuWfI7RWSixhPdF0SCl14kp5dq9XL1gScaffYOmY7r9mKI7QuoNBLiP9J7N6DrPLNQd
+         l9Ug==
+X-Forwarded-Encrypted: i=1; AJvYcCWjV5OOHWpYIQT/mJaSJefGRCOHO4J3eVLRJyls/lM7ISbIstkizX5zCbvOv8QzQQAFOq7WEgE5ojHz@vger.kernel.org
+X-Gm-Message-State: AOJu0YyB3tBBaW7n2KW4EEZUlhPJJMlHVKr3HXT0ncFaNkJlLTu0MRY7
+	DLCGxnnC5QiOFJcv5G1EDKB7M2z400BYb8BqfFpzVvbjGa1+FQQkwCsJPqNLj1DndU2U/6BChMf
+	r2ev91ZEJPe2vZQXgnnmZZOTontlUFOu65PRt
+X-Gm-Gg: ASbGncuq0eLuDvBCFUNvitspWrXOPvkjDnAjghsKy2aIlDSMu4xk/NKBPFYuBWWFE0E
+	CVElI6aqDgHanvl4FIwu5NdLOH+jAbG97xVo7TB9RK8h0Vkue8uW6yGBlR2loAE5f4oMuk5jAU5
+	YN6R4Xe4W8J+3EX7kDoDnW9Fefzw==
+X-Google-Smtp-Source: AGHT+IEUmixnq02JlWKfwvEaLZDC3tHu+8a5G6UODHmdG4Lm1heidGpNx7OzILYgZRHUPwr+ZA1zRmmMlpPG+CZd8NQ=
+X-Received: by 2002:a05:6102:2ad4:b0:4bb:5d61:1288 with SMTP id
+ ada2fe7eead31-4bbf231f56fmr6157553137.23.1739405452181; Wed, 12 Feb 2025
+ 16:10:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH fwctl 3/5] pds_fwctl: initial driver framework
-To: Shannon Nelson <shannon.nelson@amd.com>, jgg@nvidia.com,
- andrew.gospodarek@broadcom.com, aron.silverton@oracle.com,
- dan.j.williams@intel.com, daniel.vetter@ffwll.ch, dsahern@kernel.org,
- gospo@broadcom.com, hch@infradead.org, itayavr@nvidia.com, jiri@nvidia.com,
- Jonathan.Cameron@huawei.com, kuba@kernel.org, lbloch@nvidia.com,
- leonro@nvidia.com, saeedm@nvidia.com, linux-cxl@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org
-Cc: brett.creeley@amd.com
-References: <20250211234854.52277-1-shannon.nelson@amd.com>
- <20250211234854.52277-4-shannon.nelson@amd.com>
-Content-Language: en-US
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20250211234854.52277-4-shannon.nelson@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20250210174504.work.075-kees@kernel.org> <3biiqfwwvlbkvo5tx56nmcl4rzbq5w7u3kxn5f5ctwsolxpubo@isskxigmypwz>
+ <d11de4d4-1205-43d0-8a7d-a43d55a4f3eb@gmail.com>
+In-Reply-To: <d11de4d4-1205-43d0-8a7d-a43d55a4f3eb@gmail.com>
+From: Justin Stitt <justinstitt@google.com>
+Date: Wed, 12 Feb 2025 16:10:40 -0800
+X-Gm-Features: AWEUYZktjfLB0-Uv9mkLV-i_REAZ7bFxF9SxqOc292IN5aDUReN9RqbNh26rT8M
+Message-ID: <CAFhGd8om_1W7inq+V4a4EP3e5y1y+qw7C3wi3DR4WpspYzZenQ@mail.gmail.com>
+Subject: Re: [PATCH] net/mlx4_core: Avoid impossible mlx4_db_alloc() order value
+To: Tariq Toukan <ttoukan.linux@gmail.com>
+Cc: Kees Cook <kees@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Yishai Hadas <yishaih@nvidia.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Feb 11, 2025 at 6:22=E2=80=AFAM Tariq Toukan <ttoukan.linux@gmail.c=
+om> wrote:
+>
+>
+>
+> On 11/02/2025 2:01, Justin Stitt wrote:
+> > On Mon, Feb 10, 2025 at 09:45:05AM -0800, Kees Cook wrote:
+> >> GCC can see that the value range for "order" is capped, but this leads
+> >> it to consider that it might be negative, leading to a false positive
+> >> warning (with GCC 15 with -Warray-bounds -fdiagnostics-details):
+> >>
+> >> ../drivers/net/ethernet/mellanox/mlx4/alloc.c:691:47: error: array sub=
+script -1 is below array bounds of 'long unsigned int *[2]' [-Werror=3Darra=
+y-bounds=3D]
+> >>    691 |                 i =3D find_first_bit(pgdir->bits[o], MLX4_DB_=
+PER_PAGE >> o);
+> >>        |                                    ~~~~~~~~~~~^~~
+> >>    'mlx4_alloc_db_from_pgdir': events 1-2
+> >>    691 |                 i =3D find_first_bit(pgdir->bits[o], MLX4_DB_=
+PER_PAGE >> o);                        |                     ^~~~~~~~~~~~~~=
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >>        |                     |                         |              =
+                                     |                     |               =
+          (2) out of array bounds here
+> >>        |                     (1) when the condition is evaluated to tr=
+ue                             In file included from ../drivers/net/etherne=
+t/mellanox/mlx4/mlx4.h:53,
+> >>                   from ../drivers/net/ethernet/mellanox/mlx4/alloc.c:4=
+2:
+> >> ../include/linux/mlx4/device.h:664:33: note: while referencing 'bits'
+> >>    664 |         unsigned long          *bits[2];
+> >>        |                                 ^~~~
+> >>
+> >> Switch the argument to unsigned int, which removes the compiler needin=
+g
+> >> to consider negative values.
+> >>
+> >> Signed-off-by: Kees Cook <kees@kernel.org>
+> >> ---
+> >> Cc: Tariq Toukan <tariqt@nvidia.com>
+> >> Cc: Andrew Lunn <andrew+netdev@lunn.ch>
+> >> Cc: "David S. Miller" <davem@davemloft.net>
+> >> Cc: Eric Dumazet <edumazet@google.com>
+> >> Cc: Jakub Kicinski <kuba@kernel.org>
+> >> Cc: Paolo Abeni <pabeni@redhat.com>
+> >> Cc: Yishai Hadas <yishaih@nvidia.com>
+> >> Cc: netdev@vger.kernel.org
+> >> Cc: linux-rdma@vger.kernel.org
+> >> ---
+> >>   drivers/net/ethernet/mellanox/mlx4/alloc.c | 6 +++---
+> >>   include/linux/mlx4/device.h                | 2 +-
+> >>   2 files changed, 4 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/drivers/net/ethernet/mellanox/mlx4/alloc.c b/drivers/net/=
+ethernet/mellanox/mlx4/alloc.c
+> >> index b330020dc0d6..f2bded847e61 100644
+> >> --- a/drivers/net/ethernet/mellanox/mlx4/alloc.c
+> >> +++ b/drivers/net/ethernet/mellanox/mlx4/alloc.c
+> >> @@ -682,9 +682,9 @@ static struct mlx4_db_pgdir *mlx4_alloc_db_pgdir(s=
+truct device *dma_device)
+> >>   }
+> >>
+> >>   static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
+> >> -                                struct mlx4_db *db, int order)
+> >> +                                struct mlx4_db *db, unsigned int orde=
+r)
+> >>   {
+> >> -    int o;
+> >> +    unsigned int o;
+> >>      int i;
+> >>
+> >>      for (o =3D order; o <=3D 1; ++o) {
+> >
+> >    ^ Knowing now that @order can only be 0 or 1 can this for loop (and
+> >    goto) be dropped entirely?
+> >
+>
+> Maybe I'm missing something...
+> Can you please explain why you think this can be dropped?
 
+I meant "rewritten to use two if statements" instead of "dropped". I
+think "replaced" or "refactored" was the word I wanted.
 
-On 2/11/25 4:48 PM, Shannon Nelson wrote:
-> Initial files for adding a new fwctl driver for the AMD/Pensando PDS
-> devices.  This sets up a simple auxiliary_bus driver that registers
-> with fwctl subsystem.  It expects that a pds_core device has set up
-> the auxiliary_device pds_core.fwctl
-> 
-> Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
-> ---
->  MAINTAINERS                    |   7 ++
->  drivers/fwctl/Kconfig          |  10 ++
->  drivers/fwctl/Makefile         |   1 +
->  drivers/fwctl/pds/Makefile     |   4 +
->  drivers/fwctl/pds/main.c       | 195 +++++++++++++++++++++++++++++++++
->  include/linux/pds/pds_adminq.h |  77 +++++++++++++
->  include/uapi/fwctl/fwctl.h     |   1 +
->  include/uapi/fwctl/pds.h       |  27 +++++
->  8 files changed, 322 insertions(+)
->  create mode 100644 drivers/fwctl/pds/Makefile
->  create mode 100644 drivers/fwctl/pds/main.c
->  create mode 100644 include/uapi/fwctl/pds.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 413ab79bf2f4..123f8a9c0b26 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9602,6 +9602,13 @@ T:	git git://linuxtv.org/media.git
->  F:	Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
->  F:	drivers/media/i2c/gc2145.c
->  
-> +FWCTL PDS DRIVER
-> +M:	Brett Creeley <brett.creeley@amd.com>
-> +R:	Shannon Nelson <shannon.nelson@amd.com>
-> +L:	linux-kernel@vger.kernel.org
-> +S:	Maintained
-> +F:	drivers/fwctl/pds/
-> +
->  GATEWORKS SYSTEM CONTROLLER (GSC) DRIVER
->  M:	Tim Harvey <tharvey@gateworks.com>
->  S:	Maintained
-> diff --git a/drivers/fwctl/Kconfig b/drivers/fwctl/Kconfig
-> index 0a542a247303..df87ce5bd8aa 100644
-> --- a/drivers/fwctl/Kconfig
-> +++ b/drivers/fwctl/Kconfig
-> @@ -28,5 +28,15 @@ config FWCTL_MLX5
->  	  This will allow configuration and debug tools to work out of the box on
->  	  mainstream kernel.
->  
-> +	  If you don't know what to do here, say N.
-> +
-> +config FWCTL_PDS
-> +	tristate "AMD/Pensando pds fwctl driver"
-> +	depends on PDS_CORE
-> +	help
-> +	  The pds_fwctl driver provides an fwctl interface for a user process
-> +	  to access the debug and configuration information of the AMD/Pensando
-> +	  DSC hardware family.
-> +
->  	  If you don't know what to do here, say N.
->  endif
-> diff --git a/drivers/fwctl/Makefile b/drivers/fwctl/Makefile
-> index 5fb289243286..692e4b8d7beb 100644
-> --- a/drivers/fwctl/Makefile
-> +++ b/drivers/fwctl/Makefile
-> @@ -2,5 +2,6 @@
->  obj-$(CONFIG_FWCTL) += fwctl.o
->  obj-$(CONFIG_FWCTL_BNXT) += bnxt/
->  obj-$(CONFIG_FWCTL_MLX5) += mlx5/
-> +obj-$(CONFIG_FWCTL_PDS) += pds/
->  
->  fwctl-y += main.o
-> diff --git a/drivers/fwctl/pds/Makefile b/drivers/fwctl/pds/Makefile
-> new file mode 100644
-> index 000000000000..c14cba128e3b
-> --- /dev/null
-> +++ b/drivers/fwctl/pds/Makefile
-> @@ -0,0 +1,4 @@
-> +# SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-> +obj-$(CONFIG_FWCTL_PDS) += pds_fwctl.o
-> +
-> +pds_fwctl-y += main.o
-> diff --git a/drivers/fwctl/pds/main.c b/drivers/fwctl/pds/main.c
-> new file mode 100644
-> index 000000000000..24979fe0deea
-> --- /dev/null
-> +++ b/drivers/fwctl/pds/main.c
-> @@ -0,0 +1,195 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-> +/* Copyright(c) Advanced Micro Devices, Inc */
-> +
-> +#include <linux/module.h>
-> +#include <linux/auxiliary_bus.h>
-> +#include <linux/pci.h>
-> +#include <linux/vmalloc.h>
-> +
-> +#include <uapi/fwctl/fwctl.h>
-> +#include <uapi/fwctl/pds.h>
-> +#include <linux/fwctl.h>
-> +
-> +#include <linux/pds/pds_common.h>
-> +#include <linux/pds/pds_core_if.h>
-> +#include <linux/pds/pds_adminq.h>
-> +#include <linux/pds/pds_auxbus.h>
-> +
-> +struct pdsfc_uctx {
-> +	struct fwctl_uctx uctx;
-> +	u32 uctx_caps;
-> +	u32 uctx_uid;
-> +};
-> +
-> +struct pdsfc_dev {
-> +	struct fwctl_device fwctl;
-> +	struct pds_auxiliary_dev *padev;
-> +	struct pdsc *pdsc;
-> +	u32 caps;
-> +	dma_addr_t ident_pa;
-> +	struct pds_fwctl_ident *ident;
-> +};
-> +DEFINE_FREE(pdsfc_dev, struct pdsfc_dev *, if (_T) fwctl_put(&_T->fwctl));
-> +
-> +static int pdsfc_open_uctx(struct fwctl_uctx *uctx)
-> +{
-> +	struct pdsfc_dev *pdsfc = container_of(uctx->fwctl, struct pdsfc_dev, fwctl);
-> +	struct pdsfc_uctx *pdsfc_uctx = container_of(uctx, struct pdsfc_uctx, uctx);
-> +	struct device *dev = &uctx->fwctl->dev;
-> +
-> +	dev_dbg(dev, "%s: caps = 0x%04x\n", __func__, pdsfc->caps);
-> +	pdsfc_uctx->uctx_caps = pdsfc->caps;
-> +
-> +	return 0;
-> +}
-> +
-> +static void pdsfc_close_uctx(struct fwctl_uctx *uctx)
-> +{
-> +}
-> +
-> +static void *pdsfc_info(struct fwctl_uctx *uctx, size_t *length)
-> +{
-> +	struct pdsfc_uctx *pdsfc_uctx = container_of(uctx, struct pdsfc_uctx, uctx);
-> +	struct fwctl_info_pds *info;
-> +
-> +	info = kzalloc(sizeof(*info), GFP_KERNEL);
-> +	if (!info)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	info->uctx_caps = pdsfc_uctx->uctx_caps;
-> +
-> +	return info;
-> +}
-> +
-> +static void pdsfc_free_ident(struct pdsfc_dev *pdsfc)
-> +{
-> +	struct device *dev = &pdsfc->fwctl.dev;
-> +
-> +	if (pdsfc->ident) {
-> +		dma_free_coherent(dev, sizeof(*pdsfc->ident),
-> +				  pdsfc->ident, pdsfc->ident_pa);
-> +		pdsfc->ident = NULL;
-> +		pdsfc->ident_pa = DMA_MAPPING_ERROR;
-> +	}
-> +}
-> +
-> +static int pdsfc_identify(struct pdsfc_dev *pdsfc)
-> +{
-> +	struct device *dev = &pdsfc->fwctl.dev;
-> +	union pds_core_adminq_comp comp = {0};
-> +	union pds_core_adminq_cmd cmd = {0};
-> +	struct pds_fwctl_ident *ident;
-> +	dma_addr_t ident_pa;
-> +	int err = 0;
-> +
-> +	ident = dma_alloc_coherent(dev->parent, sizeof(*ident), &ident_pa, GFP_KERNEL);
-> +	err = dma_mapping_error(dev->parent, ident_pa);
-> +	if (err) {
-> +		dev_err(dev, "Failed to map ident\n");
-> +		return err;
-> +	}
-> +
-> +	cmd.fwctl_ident.opcode = PDS_FWCTL_CMD_IDENT;
-> +	cmd.fwctl_ident.version = 0;
-> +	cmd.fwctl_ident.len = cpu_to_le32(sizeof(*ident));
-> +	cmd.fwctl_ident.ident_pa = cpu_to_le64(ident_pa);
-> +
-> +	err = pds_client_adminq_cmd(pdsfc->padev, &cmd, sizeof(cmd), &comp, 0);
-> +	if (err) {
-> +		dma_free_coherent(dev->parent, PAGE_SIZE, ident, ident_pa);
-> +		dev_err(dev, "Failed to send adminq cmd opcode: %u entity: %u err: %d\n",
-> +			cmd.fwctl_query.opcode, cmd.fwctl_query.entity, err);
-> +		return err;
-> +	}
-> +
-> +	pdsfc->ident = ident;
-> +	pdsfc->ident_pa = ident_pa;
-> +
-> +	dev_dbg(dev, "ident: version %u max_req_sz %u max_resp_sz %u max_req_sg_elems %u max_resp_sg_elems %u\n",
-> +		ident->version, ident->max_req_sz, ident->max_resp_sz,
-> +		ident->max_req_sg_elems, ident->max_resp_sg_elems);
-> +
-> +	return 0;
-> +}
-> +
-> +static void *pdsfc_fw_rpc(struct fwctl_uctx *uctx, enum fwctl_rpc_scope scope,
-> +			  void *in, size_t in_len, size_t *out_len)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static const struct fwctl_ops pdsfc_ops = {
-> +	.device_type = FWCTL_DEVICE_TYPE_PDS,
-> +	.uctx_size = sizeof(struct pdsfc_uctx),
-> +	.open_uctx = pdsfc_open_uctx,
-> +	.close_uctx = pdsfc_close_uctx,
-> +	.info = pdsfc_info,
-> +	.fw_rpc = pdsfc_fw_rpc,
-> +};
-> +
-> +static int pdsfc_probe(struct auxiliary_device *adev,
-> +		       const struct auxiliary_device_id *id)
-> +{
-> +	struct pdsfc_dev *pdsfc __free(pdsfc_dev);
-> +	struct pds_auxiliary_dev *padev;
-> +	struct device *dev = &adev->dev;
-> +	int err = 0;
-> +
-> +	padev = container_of(adev, struct pds_auxiliary_dev, aux_dev);
-> +	pdsfc = fwctl_alloc_device(&padev->vf_pdev->dev, &pdsfc_ops,
-> +				   struct pdsfc_dev, fwctl);
-
-The suggested formatting of using scope-based cleanup is to just declare the variable inline as you need it rather than split the cleanup vs the allocation.
-
-	struct pdsfc_dev *pdsfc __free(pdsfc_dev) =
-			fwctl_alloc_device(...); 
-
-> +	if (!pdsfc) {
-> +		dev_err(dev, "Failed to allocate fwctl device struct\n");
-> +		return -ENOMEM;
-> +	}
-> +	pdsfc->padev = padev;
-> +
-> +	err = pdsfc_identify(pdsfc);
-> +	if (err) {
-> +		dev_err(dev, "Failed to identify device, err %d\n", err);> +		return err;
-> +	}
-> +
-> +	err = fwctl_register(&pdsfc->fwctl);
-> +	if (err) {
-> +		dev_err(dev, "Failed to register device, err %d\n", err);
-
-Missing freeing of the 'ident' from dma_alloc_coherent. Although mixing gotos and __free() would get really messy in a hurry. I suggest you setup pdsfc_identify() like an allocation function with returning 'struct pds_fwctl_ident *' so you can utilize a custom __free() to free up the dma memory. and then you can do:
-pdsfc->ident = no_free_ptr(ident);
-pdsfc->ident_pa = ident_pa; /* ident_pa passed in as a ptr to pdsfc_identify() for write back */
-
-> +		return err;
-> +	}
-> +
-> +	auxiliary_set_drvdata(adev, no_free_ptr(pdsfc));
-> +
-> +	return 0;
-> +
-> +free_ident:
-
-nothing goes here.
-
-DJ
-
-> +	pdsfc_free_ident(pdsfc);
-> +	return err;
-> +}
-> +
-> +static void pdsfc_remove(struct auxiliary_device *adev)
-> +{
-> +	struct pdsfc_dev *pdsfc  __free(pdsfc_dev) = auxiliary_get_drvdata(adev);
-> +
-> +	fwctl_unregister(&pdsfc->fwctl);
-> +	pdsfc_free_ident(pdsfc);
-> +}
-> +
-> +static const struct auxiliary_device_id pdsfc_id_table[] = {
-> +	{.name = PDS_CORE_DRV_NAME "." PDS_DEV_TYPE_FWCTL_STR },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(auxiliary, pdsfc_id_table);
-> +
-> +static struct auxiliary_driver pdsfc_driver = {
-> +	.name = "pds_fwctl",
-> +	.probe = pdsfc_probe,
-> +	.remove = pdsfc_remove,
-> +	.id_table = pdsfc_id_table,
-> +};
-> +
-> +module_auxiliary_driver(pdsfc_driver);
-> +
-> +MODULE_IMPORT_NS(FWCTL);
-> +MODULE_DESCRIPTION("pds fwctl driver");
-> +MODULE_AUTHOR("Shannon Nelson <shannon.nelson@amd.com>");
-> +MODULE_AUTHOR("Brett Creeley <brett.creeley@amd.com>");
-> +MODULE_LICENSE("Dual BSD/GPL");
-> diff --git a/include/linux/pds/pds_adminq.h b/include/linux/pds/pds_adminq.h
-> index 4b4e9a98b37b..7fc353b63353 100644
-> --- a/include/linux/pds/pds_adminq.h
-> +++ b/include/linux/pds/pds_adminq.h
-> @@ -1179,6 +1179,78 @@ struct pds_lm_host_vf_status_cmd {
->  	u8     status;
->  };
->  
-> +enum pds_fwctl_cmd_opcode {
-> +	PDS_FWCTL_CMD_IDENT		= 70,
-> +};
-> +
-> +/**
-> + * struct pds_fwctl_cmd - Firmware control command structure
-> + * @opcode: Opcode
-> + * @rsvd:   Word boundary padding
-> + * @ep:     Endpoint identifier.
-> + * @op:     Operation identifier.
-> + */
-> +struct pds_fwctl_cmd {
-> +	u8     opcode;
-> +	u8     rsvd[3];
-> +	__le32 ep;
-> +	__le32 op;
-> +} __packed;
-> +
-> +/**
-> + * struct pds_fwctl_comp - Firmware control completion structure
-> + * @status:     Status of the firmware control operation
-> + * @rsvd:       Word boundary padding
-> + * @comp_index: Completion index in little-endian format
-> + * @rsvd2:      Word boundary padding
-> + * @color:      Color bit indicating the state of the completion
-> + */
-> +struct pds_fwctl_comp {
-> +	u8     status;
-> +	u8     rsvd;
-> +	__le16 comp_index;
-> +	u8     rsvd2[11];
-> +	u8     color;
-> +} __packed;
-> +
-> +/**
-> + * struct pds_fwctl_ident_cmd - Firmware control identification command structure
-> + * @opcode:   Operation code for the command
-> + * @rsvd:     Word boundary padding
-> + * @version:  Interface version
-> + * @rsvd2:    Word boundary padding
-> + * @len:      Length of the identification data
-> + * @ident_pa: Physical address of the identification data
-> + */
-> +struct pds_fwctl_ident_cmd {
-> +	u8     opcode;
-> +	u8     rsvd;
-> +	u8     version;
-> +	u8     rsvd2;
-> +	__le32 len;
-> +	__le64 ident_pa;
-> +} __packed;
-> +
-> +/**
-> + * struct pds_fwctl_ident - Firmware control identification structure
-> + * @features:    Supported features
-> + * @version:     Interface version
-> + * @rsvd:        Word boundary padding
-> + * @max_req_sz:  Maximum request size
-> + * @max_resp_sz: Maximum response size
-> + * @max_req_sg_elems:  Maximum number of request SGs
-> + * @max_resp_sg_elems: Maximum number of response SGs
-> + */
-> +struct pds_fwctl_ident {
-> +	__le64 features;
-> +	u8     version;
-> +	u8     rsvd[3];
-> +	__le32 max_req_sz;
-> +	__le32 max_resp_sz;
-> +	u8     max_req_sg_elems;
-> +	u8     max_resp_sg_elems;
-> +} __packed;
-> +
->  union pds_core_adminq_cmd {
->  	u8     opcode;
->  	u8     bytes[64];
-> @@ -1216,6 +1288,9 @@ union pds_core_adminq_cmd {
->  	struct pds_lm_dirty_enable_cmd	  lm_dirty_enable;
->  	struct pds_lm_dirty_disable_cmd	  lm_dirty_disable;
->  	struct pds_lm_dirty_seq_ack_cmd	  lm_dirty_seq_ack;
-> +
-> +	struct pds_fwctl_cmd		  fwctl;
-> +	struct pds_fwctl_ident_cmd	  fwctl_ident;
->  };
->  
->  union pds_core_adminq_comp {
-> @@ -1243,6 +1318,8 @@ union pds_core_adminq_comp {
->  
->  	struct pds_lm_state_size_comp	  lm_state_size;
->  	struct pds_lm_dirty_status_comp	  lm_dirty_status;
-> +
-> +	struct pds_fwctl_comp		  fwctl;
->  };
->  
->  #ifndef __CHECKER__
-> diff --git a/include/uapi/fwctl/fwctl.h b/include/uapi/fwctl/fwctl.h
-> index 518f054f02d2..a884e9f6dc2c 100644
-> --- a/include/uapi/fwctl/fwctl.h
-> +++ b/include/uapi/fwctl/fwctl.h
-> @@ -44,6 +44,7 @@ enum fwctl_device_type {
->  	FWCTL_DEVICE_TYPE_ERROR = 0,
->  	FWCTL_DEVICE_TYPE_MLX5 = 1,
->  	FWCTL_DEVICE_TYPE_BNXT = 3,
-> +	FWCTL_DEVICE_TYPE_PDS = 4,
->  };
->  
->  /**
-> diff --git a/include/uapi/fwctl/pds.h b/include/uapi/fwctl/pds.h
-> new file mode 100644
-> index 000000000000..a01b032cbdb1
-> --- /dev/null
-> +++ b/include/uapi/fwctl/pds.h
-> @@ -0,0 +1,27 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/* Copyright(c) Advanced Micro Devices, Inc */
-> +
-> +/*
-> + * fwctl interface info for pds_fwctl
-> + */
-> +
-> +#ifndef _UAPI_FWCTL_PDS_H_
-> +#define _UAPI_FWCTL_PDS_H_
-> +
-> +#include <linux/types.h>
-> +
-> +/*
-> + * struct fwctl_info_pds
-> + *
-> + * Return basic information about the FW interface available.
-> + */
-> +struct fwctl_info_pds {
-> +	__u32 uid;
-> +	__u32 uctx_caps;
-> +};
-> +
-> +enum pds_fwctl_capabilities {
-> +	PDS_FWCTL_QUERY_CAP = 0,
-> +	PDS_FWCTL_SEND_CAP,
-> +};
-> +#endif /* _UAPI_FWCTL_PDS_H_ */
-
+>
+>
+> >    The code is already short and sweet so I don't feel strongly either
+> >    way.
+> >
+> >> @@ -712,7 +712,7 @@ static int mlx4_alloc_db_from_pgdir(struct mlx4_db=
+_pgdir *pgdir,
+> >>      return 0;
+> >>   }
+> >>
+> >> -int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order=
+)
+> >> +int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned =
+int order)
+> >>   {
+> >>      struct mlx4_priv *priv =3D mlx4_priv(dev);
+> >>      struct mlx4_db_pgdir *pgdir;
+> >> diff --git a/include/linux/mlx4/device.h b/include/linux/mlx4/device.h
+> >> index 27f42f713c89..86f0f2a25a3d 100644
+> >> --- a/include/linux/mlx4/device.h
+> >> +++ b/include/linux/mlx4/device.h
+> >> @@ -1135,7 +1135,7 @@ int mlx4_write_mtt(struct mlx4_dev *dev, struct =
+mlx4_mtt *mtt,
+> >>   int mlx4_buf_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
+> >>                     struct mlx4_buf *buf);
+> >>
+> >> -int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order=
+);
+> >> +int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned =
+int order);
+> >>   void mlx4_db_free(struct mlx4_dev *dev, struct mlx4_db *db);
+> >>
+> >>   int mlx4_alloc_hwq_res(struct mlx4_dev *dev, struct mlx4_hwq_resourc=
+es *wqres,
+> >> --
+> >> 2.34.1
+> >>
+> >
+> > Justin
+> >
+>
 
