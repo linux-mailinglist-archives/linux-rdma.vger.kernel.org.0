@@ -1,241 +1,377 @@
-Return-Path: <linux-rdma+bounces-7694-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7695-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86A8BA33571
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 03:20:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4F57A33584
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 03:30:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07AA73A7D9F
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 02:20:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A6C57A2542
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 02:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899C61F8EF5;
-	Thu, 13 Feb 2025 02:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 974BA20371C;
+	Thu, 13 Feb 2025 02:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="Mm2wAI7n"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Tgm+Hml1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2116.outbound.protection.outlook.com [40.107.93.116])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2048.outbound.protection.outlook.com [40.107.223.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0A4C7082D;
-	Thu, 13 Feb 2025 02:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B92A35949;
+	Thu, 13 Feb 2025 02:30:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739413228; cv=fail; b=Q0qOXEOikaynMqTTsWNgeI+Go6OUaLHzOeB2N8KKMM7HIiR73gsaW97rstkixDOiUJoDX8xS7DWNyN8c2jCxa/1zGfBOFxASk/ixJJ08VFeJrhiN7X6yE1qoiMauwNBwMQdTcLeIyZquiYVnrVqusoNeotrGv+CRCfl2hylWRG0=
+	t=1739413849; cv=fail; b=L0G80zEGgFqD58WIT527EykF5KMq47vzTnHDvEowsP7NtV6F8UvW7/z0D9Sy9ctojO7LTmoDZryTKGKA9AHnh2dLBI2g2Nz8eeCpJOV/l96MC+2MnhPWfm2DP7glsAXgB8Y7GC4kByMfhJiCCvreG3qj0UstzoPwFeVh+vmTiUE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739413228; c=relaxed/simple;
-	bh=4I8dPKQ/9BSeBJeq+CJ5G3Pthk/mV4Q/8wNPxjO/VGU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=e49OONCEQQcHXHzQwx866eGVOmMc8OEq8lkw8L+pJi//8nzDmK2DFhVXR5yLWg2gBqS9Ycbiez1WLitfZpdFioHnx18c0twvPbGs9RNoXWnxIBUQwdKsNg9XhbBBtoW6KiezXXUZiiU0nYf36Q0GASymg2889dvWj8QZKH3A+Lg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=Mm2wAI7n; arc=fail smtp.client-ip=40.107.93.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+	s=arc-20240116; t=1739413849; c=relaxed/simple;
+	bh=Tjd9I/GWPYNzj2kdlD3OmwNtmOFC7HLm44TabC5Y+04=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=uRVgq2ahhNB3E9+kiv7YhY3JZi/T4Rk4EnC5FrVxeAIZCuVjXHxpUROCFzRDndK4HUV+HMwLbpeTzFPcBOUaGIHZrPjcATQIpKjsyH58WCIGFYYxfEd0t2yn69WvPIVuwmG3ZaW+/6bwA99GNRCg+7vJ1ugN6vfxOWcokHWr0Tw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Tgm+Hml1; arc=fail smtp.client-ip=40.107.223.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=QRLN8EIW0Bfk4zsodcno2VzWEnN9FfJgGBECyEqm/b/chZ1TaYAo4rlQVxqFIeJw0CFX8SSY3RJHsC/pPpjvmiEbflf7ipyQpJERG7BeJBlSEo1nxkjVLio8MKD6eqJyBYP2trZwAI+PoC5F8GZArxWDEgk57ZbAFKOsMDpMkVnXZdf+yD0bRvX72OU6cENTTlwa1kkbkxPyW03oqaNNt20IaVYszwaq9MMCXyqQuj4xWLKsvt7PvJQYhb4xWQOurufr5+fwrgjWvZQTpgw1bd/ygynotWKA8pro4PM4tbkOdkDrzs7Lj4gstZqQ8NW6hV75h4yN1OvXVhUYCDqCoA==
+ b=VtMB7Jf7DDT3lNuJM/KTEC+jUeeLNTdphhSo2tr3usjcwg3BFRehS3mrc67/tw5BmChZPQt/2uCLqwv+zFDfhgPHeNOGwbkCghi314G48hDIh/EEKkxtEiwJ1/xLgpFbUH5kEGxdFudypH5WCGBi9mFUMVBkhg0tRadnlqiKbUcN579kjU2LxILg9ns+IeiewYn19aD+J5/HCUail3VGo4HlYjStfCdMvvB3BY21h6vvgLBB1WTESEqghqjgCn0TeG7kwPvLBq05NexkpiNBi/wTQVccaNOI3GURI1mpjAtpjDOkAoLcAr4FrXyPx57SytXV7ECDA6sXnxTtQKfuJw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4I8dPKQ/9BSeBJeq+CJ5G3Pthk/mV4Q/8wNPxjO/VGU=;
- b=aZMOQxV8KC0c4wrhwcYYigRxrpOo9W1xF9OTusRJ82R1VfQBW353b/HzjTZE7xbHhmZmLQM9XPZ9KI/+tVA9nlPg5xzZffrteLgSade4P8nn79dRSR+RgNoFrLfrWZXArcCyDYgYvyyBd9wLuaiekvtuBKjzZApsAISPSKgg9vjKpY8CMnRuUhln/Cr4EeRR+lMmsMxAsHFO085fq/Uh32JurMI/eeJqVhuDdN8iE66YvbozsiSlQIDS1qNCuelMQry+/95rxz5FhY/iVSvYz7eLeaQX8OEFH/rxpRug8AtJ602hQYmcUDPP9csm8x+UZ6o6cXLvbShmX58X5Fwuyw==
+ bh=lbLWuxLPK155vpduSfyevOEUPs1kpXzrme4WSs7wD6I=;
+ b=KTKCMUwwEJibcGPma/xNzjNaBL+M93piBwaGevqveuDyGfnw8CgAGNxYXF0OBazBF9RfEGfS50dev2aQYgRCcGGDv2SYw/YNl9qPVRFL0gbA1z4HJnDChn0mOsMEH44ooS7pCQpSHl+efmq0cr03QilB2Y34PNCXeTRuJGJAJSl1CPuIUzLJhAh8F8d1fWGubmpH+7sPLQUS1Ur47wLwwJAiklcZDmpPgx1KNJCHSQi8j4dTtHTU3F35vWxlaOet27Vlo3jFvmg1trs/6csn/dF6sss8ll5pmzw2nbU6M3hhZaRLU2eqhzhq69aA0ra9Wv2eWt5hiEtjWOYAPQ++gQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4I8dPKQ/9BSeBJeq+CJ5G3Pthk/mV4Q/8wNPxjO/VGU=;
- b=Mm2wAI7nBXKb/aGXsOXdTB/GcM7edAS42Ptb40qR6GXRc/2UUrHq4xBUzWoPfxCFhVpMnNDdYe3qrI1kgO+SbKcBnkQfgjBEHP+a7leDqFAnIs7Q7gKHkpf63K82mTDAHTgwrKtMFN6QFH/21tx5o0dw/MlFpL3qCgY56jwty0M=
-Received: from SA6PR21MB4231.namprd21.prod.outlook.com (2603:10b6:806:412::20)
- by SA6PR21MB4230.namprd21.prod.outlook.com (2603:10b6:806:415::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.5; Thu, 13 Feb
- 2025 02:20:23 +0000
-Received: from SA6PR21MB4231.namprd21.prod.outlook.com
- ([fe80::5c62:d7c6:4531:3aff]) by SA6PR21MB4231.namprd21.prod.outlook.com
- ([fe80::5c62:d7c6:4531:3aff%4]) with mapi id 15.20.8466.004; Thu, 13 Feb 2025
- 02:20:23 +0000
-From: Long Li <longli@microsoft.com>
-To: Leon Romanovsky <leon@kernel.org>, "longli@linuxonhyperv.com"
-	<longli@linuxonhyperv.com>, Stephen Hemminger <stephen@networkplumber.org>
-CC: Jason Gunthorpe <jgg@ziepe.ca>, Ajay Sharma <sharmaajay@microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: RE: [EXTERNAL] Re: [Patch v2 0/3] IB/core: Fix GID cache for bonded
- net devices
-Thread-Topic: [EXTERNAL] Re: [Patch v2 0/3] IB/core: Fix GID cache for bonded
- net devices
-Thread-Index: AQHbetdgKRp079ZsDUmF8noRMO9zmbNEcZXw
-Date: Thu, 13 Feb 2025 02:20:23 +0000
-Message-ID:
- <SA6PR21MB42311935C1955034D9EDFF5ECEFF2@SA6PR21MB4231.namprd21.prod.outlook.com>
-References: <1738964178-18836-1-git-send-email-longli@linuxonhyperv.com>
- <20250209094528.GB17863@unreal>
-In-Reply-To: <20250209094528.GB17863@unreal>
-Accept-Language: en-US
+ bh=lbLWuxLPK155vpduSfyevOEUPs1kpXzrme4WSs7wD6I=;
+ b=Tgm+Hml16x+gfh1+LEDfmSCtOXc0d/S0HqY1H+mvRg6V8dzy55rX22pYgz8yn9B/y3uEtP8g8y9NjUvQW0BIh3vommo4kZ2RMQSjDaVwB++OxzZ0beHTpgJnbcL+m8hoCOlCIrmYx17hJIBX0O9HpE9DR9VhAe+T9QG1pwSnQ0M=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
+ SJ2PR12MB9086.namprd12.prod.outlook.com (2603:10b6:a03:55f::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8445.13; Thu, 13 Feb 2025 02:30:40 +0000
+Received: from DS0PR12MB6583.namprd12.prod.outlook.com
+ ([fe80::c8a9:4b0d:e1c7:aecb]) by DS0PR12MB6583.namprd12.prod.outlook.com
+ ([fe80::c8a9:4b0d:e1c7:aecb%5]) with mapi id 15.20.8445.008; Thu, 13 Feb 2025
+ 02:30:40 +0000
+Message-ID: <346ad61e-9cba-4915-8748-0b8119358d7a@amd.com>
+Date: Wed, 12 Feb 2025 18:30:38 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/10] Introduce fwctl subystem
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+ Aron Silverton <aron.silverton@oracle.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>, Dave Jiang <dave.jiang@intel.com>,
+ David Ahern <dsahern@kernel.org>, Andy Gospodarek <gospo@broadcom.com>,
+ Christoph Hellwig <hch@infradead.org>, Itay Avraham <itayavr@nvidia.com>,
+ Jiri Pirko <jiri@nvidia.com>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>, Jakub Kicinski <kuba@kernel.org>,
+ Leonid Bloch <lbloch@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
+ linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
+ netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
+References: <0-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
 Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=731106bf-25e9-4181-a21e-4b0f43a64082;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-02-13T01:07:21Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
- 3, 0, 1;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA6PR21MB4231:EE_|SA6PR21MB4230:EE_
-x-ms-office365-filtering-correlation-id: 38895db0-def0-4925-00d5-08dd4bd4f8f7
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|366016|376014|10070799003|7416014|38070700018;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?niIhuW5fCXa+9PBu28Ajo7HVVwGGmSV0kadXZ8MbAagyCcFMNhdEhJjfAKUg?=
- =?us-ascii?Q?ehP7D8O8Xz3mqEPsZHxF2pwIZ/DPPK3HlW34bzG+qOBJZ4WPLtBy1qI8Pwoj?=
- =?us-ascii?Q?2ZY8nAz6WIcGWT6qeDlZZYEowHLLSFusuA/sqN6ilExaOy3X8UuoaJK1mbVb?=
- =?us-ascii?Q?XAEadyRyQizILPFqyMNNpq8xXwv7+Pl+lJCxWvWkgr5NgvBSFC19sbrpreoD?=
- =?us-ascii?Q?+zElCUU3FlqYkTic5d5QK2Yu7I60RsuiRHz9NUITUw/Mu3OzozGhkqakpRep?=
- =?us-ascii?Q?ZAVTD4dmlxsDATjd7Qaf5nf+jnRTFczGWFaP3Rk0YIW0L7gniRE/cso7jTq9?=
- =?us-ascii?Q?iA71Sg3m7TqKUrySBmbM7QIoRS1CZmrkLiog0ZrupCAk6yitAVqftaNhDc+z?=
- =?us-ascii?Q?NygjfDsYmbkxqr6wYj3VcxvuQ/yBkgDgEq/kx+AWZn3dZi0mMxiJZF7v31WX?=
- =?us-ascii?Q?C74+RR6JnDtqWlcteIesZJr52q62877Dxm7NOlgvzFWnLxsut28UKAXI4IXL?=
- =?us-ascii?Q?4DcEqS6OaIywNKLNIf9qI1AnWMW37b98wq5OCjuLMW7eaTIjlHZ505oJ4iQz?=
- =?us-ascii?Q?vQOenFxYrBzX5IQFsOGxbAGRJf+6wjeJTWWZI0aySeCYN+2snzmSABkryTfx?=
- =?us-ascii?Q?j/YOjwJaabktd3ydRkVD4O7CszFNPzDtHaXvH41OwQr1bOOVkJ7W2nXAopXG?=
- =?us-ascii?Q?cKTo/tOG4tmSnsrlddr5/K8SvGOcLbXJ7ww7YFekX9fX8wfBr4QH87Y5SSlA?=
- =?us-ascii?Q?bVAujBbrxLUVQLIi42fOY3Yj5R20fOh9hPrxeuRexJmg3HvAy1/Sw2riVwC7?=
- =?us-ascii?Q?TtsBHgrS2wvYSZbmq4O0aTGXjsnza7Y7XGMl75hEMIUIpEiDpRpLBxdZpxB0?=
- =?us-ascii?Q?/wj19E3Yyn9STAZdlQR7sJCQgkAtKiulTjanaduJxfUi73p3GG8uw3JLUQTa?=
- =?us-ascii?Q?ClVN0oNuBzgaCtOJekwKGmdaFSdAwqTjYFhD44wbkmhKg7BFn4I/ABdPO6x2?=
- =?us-ascii?Q?dG8TDL2nqovYvy9BEKTymAuPO4z7/QDS1jsBq1NTN1wtH974+LFjS+Ny1y82?=
- =?us-ascii?Q?3qa/MPoqZQk97ccsgugE8x+CYMl6Zw4CtZGj0Lo7Xe20VZ0GxCEu9kkAQpmM?=
- =?us-ascii?Q?10rC61WfVB1IlM1b94GNqGCroft7gnYlJhpr5ZW7NbLEciY8Y3ZWHL4JBqal?=
- =?us-ascii?Q?HE89AiVC6WIJrhsAtSrfSDdC/dSl8FnWXHJRYmexMKfFD1KwvJUmG2eZKwou?=
- =?us-ascii?Q?naY//+Lq3HqY+SOfgeu4gW/BOE4AU/SY9ZhTPNudGrQcU0zPL2Vp17ZR+yHo?=
- =?us-ascii?Q?EX1OQbWAfmMFgfgakQE/auO4Dj+8dDZB3STEDbxU5CYAYm6U6rMAE8Yu1QFF?=
- =?us-ascii?Q?Dx+HTYUoK860ERZ1ZPfaxmZTWID16U6nfKWPAoIDPUVBZNWZKIln0bxC55nt?=
- =?us-ascii?Q?I2RRQ8CJ6cA65QSi7KHOS74clEy4XLTe?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA6PR21MB4231.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(10070799003)(7416014)(38070700018);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?ZL1+bfdlbak55ON3dw9Xi3WD7QNuko+U8FzGYrVJSMpwvMx8NlAm/zVB3cXz?=
- =?us-ascii?Q?K+ZFxtgvbBjWuhgN/Wh5x0L+FWvHe/NXtBXph7h7ao5OUAj9anxoeDfTUiZW?=
- =?us-ascii?Q?PX4hm4N/Yhm1E6FHXvASVmgveO/5hEvAIufSGdSYwnxDsH8yuGxizUR87Ylf?=
- =?us-ascii?Q?PYGEHLUINDxnXyBfzxQ8HQrpYJOX/WT24/aKY+a5iupTJpjiVRQGnKN7YtB9?=
- =?us-ascii?Q?6wbZR2x0wM1yekw0aoBtitmj46rKwtGHpDahiDhrxbaf2wlyuwTa/cNPNCgH?=
- =?us-ascii?Q?4TKZfUnDK4HG6k2CA/SPuzTdsD/IEAXkC17wCKQWCG5FJP6/T80KBEXF2UdL?=
- =?us-ascii?Q?ai05Lntc3AaSh8grkaOuS9IoPl8cZEOtuxJ4bUCy9NoMHkh+Yq6Syp1P+qCF?=
- =?us-ascii?Q?xkb8uRhOOH4iPz5TgR1gdHelPmeiBsW4AMl5UgfqVFhQ79tyf1HFqTMbmM5Q?=
- =?us-ascii?Q?q6H+nOWE9NPd7nuEnPg65WoJnjCOlnnuPbP6Ink3d/b7nxSsTmf31ShLcxR2?=
- =?us-ascii?Q?dQIEK4/BvJBDEyOGiZjyvVHlVelHNuLSR/Ofjy48J5hKW8ixEq/rPtcOr8hP?=
- =?us-ascii?Q?mYLQe8FlVdMon82zQgYgux19zTa3Gkxn1K21PIWjTzvD7iPUOIx9z+p2rk0q?=
- =?us-ascii?Q?gkJH9s8rnuC5Q69/GQD0/TwGf/xVGF09admk7OSu0PfrcZHF42adtSsad5P6?=
- =?us-ascii?Q?S41FF5TOyMMWT6qXAgX7C8VapCexLS/SCePWoGQRFW9FLYdg6tQ/RXYrrM8/?=
- =?us-ascii?Q?Usrz4QUSfhf20YaZFec+AjG8+cY/QqdGZUP+QSxWcfIuNbzYq5Sa9xEfzWjT?=
- =?us-ascii?Q?m0AlVxRlw+oZ2OznBXM+TukkvtfNOff/3ZfTk+5KMRFYpHXWRWThYnpmRz4m?=
- =?us-ascii?Q?pV2ck5Y4vEuZ9Hg/2FR4ZCNAKWQSqueTNd+xePDo9Ab9OHaBxh7u+p+QeFaA?=
- =?us-ascii?Q?dsxo/OQnHXotWrI5Zr3rlo5MaKgwtHgHMVzBEvktW1thRhqeGBHYEZ4Z0rzl?=
- =?us-ascii?Q?0HO4D+AS5GwXV1nTWH4CTKm4LqKEjnCIU2xNNhvOcm9h6qI6zBJlXhL32OZ8?=
- =?us-ascii?Q?N5zkvVGaoY/LnjvNykBGX+KDFN7lk//xbIdu3hMl2BnyapdwWE1dsesdNfvg?=
- =?us-ascii?Q?0gUb/y5gAZUrg1oLILrRbQG5wbKfYg8k6XT+fRg+IZRDNBlqHHHzA0+MIJqT?=
- =?us-ascii?Q?gyrv0vgOr3xh7ZPqPnHIXdY1KZpEwPUZPuEkbrG1DCUt++vTAEzitRe7xyPp?=
- =?us-ascii?Q?uf128GxJMG6KGgtIq0Az17SoSdW8N8BYsX3lNyQB2fgnx20grcSmJFxp4tmL?=
- =?us-ascii?Q?zBAbMS9xfvstB/MFGqDv8kig1hYKSw/oMkvKK4QMr77wObeX42nHopzssTnf?=
- =?us-ascii?Q?d2zgNgvqnCDpdt3lIWIM5S2foI5ZPRHccF7FDk2TWLn1I4Y/xuzY/Ej47O9G?=
- =?us-ascii?Q?f9lq9QwRKKObfWVWFuwGw82hnJJqdkvLEWlj7kbZ3x+CY5olg0st7bqxokAo?=
- =?us-ascii?Q?plMHf4eJ12W1R7CyjMeqOr31sjmt/ETVRRYOtWo6ahBRSaG3Q+DMCVkCH7Hm?=
- =?us-ascii?Q?jXcCLJ/Xxs1laHwRPUwXyHtiIhrZSY9fJhECCPyJ2gQXtSuYfXTPs7scriLB?=
- =?us-ascii?Q?2z41liMozrtfBav9EnI3B1dz7CvXGCBcAICWOGsDO84i?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+From: "Nelson, Shannon" <shannon.nelson@amd.com>
+In-Reply-To: <0-v4-0cf4ec3b8143+4995-fwctl_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR03CA0002.namprd03.prod.outlook.com
+ (2603:10b6:a02:a8::15) To DS0PR12MB6583.namprd12.prod.outlook.com
+ (2603:10b6:8:d1::12)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|SJ2PR12MB9086:EE_
+X-MS-Office365-Filtering-Correlation-Id: b72272a0-6383-4e55-5185-08dd4bd66884
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?QmhaSDRjQlpER3gzWXZUcm5nZ240NXpIbDNHWm9VSUg3ZjcyL29wM1dqVnZ6?=
+ =?utf-8?B?SkhvTFR1M2tEWjlkYVkwL1hHWk04MG54aWZoRDB4d2paVUU5blJGVHZBSEpL?=
+ =?utf-8?B?MklteWtzNWFTWUdFUGRZOGplY21CcERDUkpUWmtWUDNpejdUaW54TDVCZC9R?=
+ =?utf-8?B?S0VtUFNTeCtQbVRtZjlBZ3NXWXFUdktBWlBFbGpkaU9paENlYzUzTUlaQXZP?=
+ =?utf-8?B?SWJ0ZEp2YmJRMlpUS0p2T0R1L2NoQzFHYzFDYkliWGJGVWEvcVhwRncwaUh5?=
+ =?utf-8?B?VzVoQlR1a3pOVFlwS1NDRXV0UTJFczNmdEd0Z1ZHSUdJaU9YRnRyU1k2ZGpa?=
+ =?utf-8?B?ZDBnK1U0Q1dBdGJaSUdrK0N5VWE4TGp3VElQaUpBRmJWbVR6UlBXMnlySFpI?=
+ =?utf-8?B?VnZnM1Q5V3lNMUFqT1VHc2ZMbUVDcmF2QkJGbDRvUmVDd0NBczRxVzh2UGVk?=
+ =?utf-8?B?eVZlTGR0NU8wQjBscFhaT0dhZ1JUTmJCazdwS2dpWWU0Vzhsbk93YmQ3Y21o?=
+ =?utf-8?B?QmJiRmo0TzhYNnlrRUhFN1gwVzlwNGNkSFoyaGNkQ1g2SElYZVd3WGxGYUcy?=
+ =?utf-8?B?enFMb1plQTRSSXZmeWpwcldiTlEwZ1lMcm9INnNTdE1mUHJZMnFqQVFtR3hm?=
+ =?utf-8?B?RWFqckp1V0NjNzFRUEdseW5lS3hHSkpCK3RYWThLdFo0MHkxK2YyWGh6TDlB?=
+ =?utf-8?B?dnZ1S2pLNDlJTGgxVk5kYVFNZHgwVjFTWVU2MG9neTdqa0N0SWhQUVdOV3E5?=
+ =?utf-8?B?VnlZZm9saURGaEd5TVJSSUUwanB5QTJMS1hLSUhDcitWbUVWcEJJL0huY21p?=
+ =?utf-8?B?bHcxYUdrRjhXSExSZUZTbDNwQkJFam1ycW5MdW1abXMxbWlVdktaSUFla1R5?=
+ =?utf-8?B?QTN1Uzg1YW81SjRSa3lzcjBRNmF3QTVudk01cjdBNmxvM0FXQkZjYnl5TUU3?=
+ =?utf-8?B?QzZ6RkdhN3lhMHFCdjZ3Zm5qdXRuSFlCOHVLdmNzdUlqMjVrOGtKalhNWnM3?=
+ =?utf-8?B?UWtjRWQwVVAzL0JXL3JkWVJzK2NiR1phdlcvNVJsdE92TVlseWVxaGorclk3?=
+ =?utf-8?B?c1lVV0NneDNvb1RrV2xQUUVpWU1hOXRHSlMvclkyZEZmWTJEYVl3Z2lRajNx?=
+ =?utf-8?B?N09vVTloRzdzWTN1SHFBcWxyTmtNdG1xQlc5cXh4UlJ1WXpLemU3c3NzM3Vz?=
+ =?utf-8?B?ZHRwK1RnZTlTTWdHa3FJcjU2R3dhVythendUc0V0bjFSWHZTYjRTV1hLeTli?=
+ =?utf-8?B?citBT0VOT0NrQjlWdG1kbXB2NDNyTlcwbnpGUXo2ZjRodFlKT0ZSbnB5SHhp?=
+ =?utf-8?B?UnRXNlQ0b0hLbzREYzF5Q1k3dEJUaDV3Nkg5UWNvTmdjUFVTem4zN1VScTk0?=
+ =?utf-8?B?QTVrdURtcjNycjdPd1hWK0phWitseThDUks4S05QRko2dlBOMkc0bW1xZklE?=
+ =?utf-8?B?L1B1N0FWWmZTTURpckM2bmI0enhaekgvUWtxY1lSOVJDRUV4a3NlWEFraTNH?=
+ =?utf-8?B?ekNMV3lqNEhFNXloRzdXeWNPYkNPTFlsQVkzSFZnQm1Lcit6bHJjKzJxdmF1?=
+ =?utf-8?B?MGFGMmQ1RytWeWdaVVVETUQ0bzJLaXlrRFhPKzNLdXFmNGJQcXMvSDVnZ1Jm?=
+ =?utf-8?B?VjVNSGVpcWE3Sng1U1FCcXpjOXRFNWRnbTNhdW1WZ2dHeWxCR3Y1TVpoakpN?=
+ =?utf-8?B?dWo3OFR5NjJoMzBaREQ1R1FaOVdSSlFVb1c5OGt6d3B3RUJjZUR0WnRSOHE2?=
+ =?utf-8?B?SEFDaUw4RzFQSmV5QVlJR0o5MGI5TXFNN2JBMVVLSUhDWTRUQlpqeG45Tzdx?=
+ =?utf-8?B?cmpidTQ5ZVRvMEtKRGJRUT09?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?dVFMN1VnRXhPV0lEc2J6QkcycTRGTVFCbmVRSTd5L05TZFhCSC9QWnNtY2xQ?=
+ =?utf-8?B?QWRTSXJja2tkWFVsZS9zSXgyWjhZMzlDY1hoL3VES2lTaXI2aFhqd214U1pp?=
+ =?utf-8?B?WThFZDdDSjBobk9WYVFVbmlFeTNZK29UYUdMNmJmeVlnQXhNUzN2UmJYK2dF?=
+ =?utf-8?B?TWNsRUMyTjRacG5QR2l3OVN4VGl0ckRqaUNLVlJHdzZNUUFGS2RpNkJrQTY2?=
+ =?utf-8?B?M21yc3Uyb0FUSVlBRjlMbUJISnU4YkIwL2NOcDRTRlJ6a09Bd0dYb0JPUWk4?=
+ =?utf-8?B?aE95d2lNVC9zMy9VdVpMWDRMR3hVdUkzV2FwWWdOTzU4MWlEUXRxSkU4b1RC?=
+ =?utf-8?B?VEFJTzdOVm9HcjR3aldkMWtBbThwTTYrc01yNi9QcTZPUWVsR1VqS2ZtV0h5?=
+ =?utf-8?B?ak5vOVlUeDRFWUR5dzE2VjlRNWN4cDNUcTU3TG9yVW12eWpDcHNFSjZ2U202?=
+ =?utf-8?B?SXVlQWxBVndaN25uS3N5c1F6UEdNQWtwT205VWlKUnZOaUJOdXU2R3FiV0tx?=
+ =?utf-8?B?WGhKYUhDVHFDWHQ2clBmSTJyWGZydVBybCtzdk9BZVJ5bDdwSkR4NXRyajFq?=
+ =?utf-8?B?UjNpeE9BSm5JS0hueXZQeFhScEhZZ3ZIVjc4YVZzVzVuN2xPVVA5WUZuQzBM?=
+ =?utf-8?B?Y2JvZ2hWZDRFQnNHdG1YSFBGTU15aDBvU1krQ0JCMWNFZzlxTnQ5QndwRFpl?=
+ =?utf-8?B?ZzVKb21ka1FpYkdMWXV3dVIvYnpnRkVYWlZieWdzb0pLY0llUHBHNFkwckF1?=
+ =?utf-8?B?NVdLY2RMMG1RWXVCWWZPaTBsY1R3K0haUnFLeFBlRnM4RHZOakVCK0h4bkdC?=
+ =?utf-8?B?aVVDWnZJbGY2cS9FSzZzZGxITjJ4R2lIMW10NU1uNGJtZG5NM1BWVjNmZjhK?=
+ =?utf-8?B?WmdaR3lxNThVZkI2ZXJxaElYL04zWUE4djBXbmRybGtLNERkV0dPNHhzc0Qy?=
+ =?utf-8?B?RzV1TkJldU1KeWhwSXBzV2U0OVpFbkptUUVGOTZvZDlLUDByd2Y4NnByTFVP?=
+ =?utf-8?B?ZTJNSVZ3Sy9DZW1ZTzBVWHI4aXZyUkVldGw1ZkVITkUvcWRJRkRLeldoR0g5?=
+ =?utf-8?B?MTMrb1NJRkhoZ3lCdllSalhUTDBPc2FlQUpIK04xYlB0SVRDcE9LREp2cyt1?=
+ =?utf-8?B?ZXhlWFV5MXdFam9rUS9OUGpTdFQyYnZOblNqU3kwMmpqTTV4RWcrMkphTEhW?=
+ =?utf-8?B?ak9sang3dDhIU3ByTzdkcnNSK2JkRVRld0twVjBNQU1SNlZUVzFibis5a0tH?=
+ =?utf-8?B?WDhHaHZqTkZxUkovRXRyemhJMk4ybU81QVFWR0dYQVVpVVltSU5OM3FlN2M4?=
+ =?utf-8?B?QlF2eWx3RjJka0hqUHgwTHJTUGZIWTRnQVRTZXlEalEvV1FwaG9hUHRFYWNT?=
+ =?utf-8?B?aE5oSjRXNlZyWjFWK3NQYzBRaE9ncmk4SzZxdVgwMmtQVGpneURjbWVadVpr?=
+ =?utf-8?B?R0tSS3JURGczTkVyWGdMMnpaVTNLNzQzUTdrK1M3aEVReGx4LzNZNmkwMUEr?=
+ =?utf-8?B?RnRlMDk0dTg0WG5TaTlEQ3BnM0YvZmFaZUt2disvVzRobkZKdFNadk91WS9l?=
+ =?utf-8?B?QUpER1MzUWVOTTZqZGZCQmhVMHJaVUNOSHpidGdtN2MvVlJZeU52cS9xZVU3?=
+ =?utf-8?B?NHpOQ1BuSWVPZDJtS3o1YmNmVVNEcENpSDRsNjlzOGppb3RXRk53RE51Uk9p?=
+ =?utf-8?B?U0piMXYzYm4zeS95ajJjVWRPN3NpRWJOMURMVTlqNU45SnM1d2hrYzl5TWRR?=
+ =?utf-8?B?SG1nTG16S0V2RVFBMG82cnpUVXUzT1pqQytlS0xCeGNZeGt4NGhkcmk0MjFL?=
+ =?utf-8?B?RzVaRUJoMTE4RlYxK0FqTmhrUm1VRThiK2VGakhBZlQyUmlSUlZiL3VlZEZ6?=
+ =?utf-8?B?TVljWklYZHVzdUJvQXNJdHJkUzJ3c2JKRGJBNVVOeXZaZ2FKSUtqajBsSWM0?=
+ =?utf-8?B?S3dEbUFtY2JIRWxRNlZ5aXVQMjdrL1IvVXN5TzVMSjlHVlY1eCtpOVZjK2NR?=
+ =?utf-8?B?OHcyRmdTQjdwMG1XMHA4WUo5UzRFeFZWcDZGdThzZ2hFblFkWmNteTVpS3o2?=
+ =?utf-8?B?NmgzU2lHNzFiM1hGdXdaWHlsdHhBRUFjdVdHbUszcXhuN2tNRy8va0xaUy90?=
+ =?utf-8?Q?LLYsl35tIOLcfBlx4KXmGaUwM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b72272a0-6383-4e55-5185-08dd4bd66884
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA6PR21MB4231.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38895db0-def0-4925-00d5-08dd4bd4f8f7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Feb 2025 02:20:23.8270
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2025 02:30:40.7257
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: K7BHyYbPxGicfQl9y0iLVTZ1FlliG/7dmWSPmzL6gI4qS+7uAexs+jm8Zi7eUjd2qu/zHg8UlhAE4M3ygB3rAA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA6PR21MB4230
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NAkEbug8bdYsAvpUHYlf76SCvsZMAUyvXgPlVoONt3UAdM5rnrqzaopchdSi/MoO4zHhpGBzkf4a815sprn+yg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9086
 
-> Subject: [EXTERNAL] Re: [Patch v2 0/3] IB/core: Fix GID cache for bonded =
-net
-> devices
->=20
-> On Fri, Feb 07, 2025 at 01:36:15PM -0800, longli@linuxonhyperv.com wrote:
-> > From: Long Li <longli@microsoft.com>
-> >
-> > When populating GID cache for net devices in a bonded setup, it should
-> > use the master device's address whenever applicable.
-> >
-> > The current code has some incorrect behaviors when dealing with bonded
-> devices:
-> > 1. It adds IP of bonded slave to the GID cache when the device is
-> > already bonded 2. It adds IP of bonded slave to the GID cache when the
-> > device becomes bonded (via NETDEV_CHANGEUPPER notifier) 3. When a
-> bonded slave device is unbonded, it doesn't add its IP to the default tab=
-le in GID
-> cache.
->=20
-> I took a look at the patches and would like to see the reasoning why curr=
-ent
-> behaviour is incorrect and need to be changed. In addition, there is a ne=
-ed to add
-> examples of what is "broken" now and will start to work after the fixes.
->=20
-> Thanks
+On 2/6/2025 4:13 PM, Jason Gunthorpe wrote:
+> 
+> [
+> Many people were away around the holiday period, but work is back in full
+> swing now with Dave already at v3 on his CXL work over the past couple
+> weeks. We are looking at a good chance of reaching this merge window. I
+> will work out some shared branches with CXL and get it into linux-next
+> once all three drivers can be assembled and reviews seem to be concluding.
+> 
+> There are couple open notes
+>   - Greg was interested in a new name, but nobody offered any bikesheds
+>   - I would like a co-maintainer
+> ]
+> 
+> fwctl is a new subsystem intended to bring some common rules and order to
+> the growing pattern of exposing a secure FW interface directly to
+> userspace. Unlike existing places like RDMA/DRM/VFIO/uacce that are
+> exposing a device for datapath operations fwctl is focused on debugging,
+> configuration and provisioning of the device. It will not have the
+> necessary features like interrupt delivery to support a datapath.
+> 
+> This concept is similar to the long standing practice in the "HW" RAID
+> space of having a device specific misc device to manage the RAID
+> controller FW. fwctl generalizes this notion of a companion debug and
+> management interface that goes along with a dataplane implemented in an
+> appropriate subsystem.
+> 
+> The need for this has reached a critical point as many users are moving to
+> run lockdown enabled kernels. Several existing devices have had long
+> standing tooling for management that relied on /sys/../resource0 or PCI
+> config space access which is not permitted in lockdown. A major point of
+> fwctl is to define and document the rules that a device must follow to
+> expose a lockdown compatible RPC.
+> 
+> Based on some discussion fwctl splits the RPCs into four categories
+> 
+>          FWCTL_RPC_CONFIGURATION
+>          FWCTL_RPC_DEBUG_READ_ONLY
+>          FWCTL_RPC_DEBUG_WRITE
+>          FWCTL_RPC_DEBUG_WRITE_FULL
+> 
+> Where the latter two trigger a new TAINT_FWCTL, and the final one requires
+> CAP_SYS_RAWIO - excluding it from lockdown. The device driver and its FW
+> would be responsible to restrict RPCs to the requested security scope,
+> while the core code handles the tainting and CAP checks.
+> 
+> For details see the final patch which introduces the documentation.
+> 
+> The CXL FWCTL driver is now in it own series on v3:
+>   https://lore.kernel.org/r/20250204220430.4146187-1-dave.jiang@intel.com
+> 
+> I'm expecting a 3rd driver (from Shannon @ Pensando) to be posted right
+> away, the github version I saw looked good. I've got soft commitments for
+> about 6 drivers in total now.
 
+Hi Jason,
 
-Thanks for looking. I will work on another set of patches based on feedback=
- from:
-https://lore.kernel.org/lkml/20250211163735.18d0fd02@hermes.local/
+I've looked through the core code and didn't see anything that other 
+haven't already commented on.  I didn't go through the mlx5 or bnxt code 
+very carefully, but you can put my Reviewed-by on your first 6 patches.
 
-I have some questions on the RDMA GID cache code determining GID cache base=
-d on bonded device states. Please see following.
+We've been running successfully with an earlier version of the code, but 
+haven't set up our full test environment with this version yet.  Since 
+there doesn't seem to be much change here, you are welcome to my 
+Tested-by as well.
 
-For an IB device, the RDMA GID cache code (rdma_roce_rescan_device() in dri=
-vers/infiniband/core/roce_gid_mgmt.c) looks at the following devices for it=
-s default GIDs:
-1. This IB device if it is not a bonded slave (if this IB device is a slave=
- but not bonded, it will be used for default GIDs)
-2. This IB device's bonded master devices
-Please see is_ndev_for_default_gid_filter() as its filtering function
+For the first 6 patches:
+Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
+Tested-by: Shannon Nelson <shannon.nelson@amd.com>
 
-And for those devices for this IB device's non-default GIDs:
-1. An upper device to this IB device that is not bonded
-2. An upper device to this IB device that is bonded to this IB device, and =
-this IB device is the current active bonded slave
-3. This IB device if it's not a VLAN type
-See is_eth_port_of_netdev_filter() as its filtering function
+Cheers,
+sln
 
-To summarize, the GID caching behavior for an IB device which is also a sla=
-ve device, looks like below:
-1. It seems all upper devices (bonded or not) to this IB device will be use=
-d in the GID cache, but only its bonding master is used for the default GID=
- cache
-2. The IB device will not be used in default GID cache if it's bonded
-3. The IB device will always be used in non-default GID caches. (assuming i=
-t's not VLAN)
+> 
+> There have been three LWN articles written discussing various aspects of
+> this proposal:
+> 
+>   https://lwn.net/Articles/955001/
+>   https://lwn.net/Articles/969383/
+>   https://lwn.net/Articles/990802/
+> 
+> A really giant ksummit thread preceding a discussion at the Maintainer
+> Summit:
+> 
+>   https://lore.kernel.org/ksummit/668c67a324609_ed99294c0@dwillia2-xfh.jf.intel.com.notmuch/
+> 
+> Several have expressed general support for this concept:
+> 
+>   AMD/Pensando - https://lore.kernel.org/linux-rdma/20241205222818.44439-1-shannon.nelson@amd.com
+>   Broadcom Networking - https://lore.kernel.org/r/Zf2n02q0GevGdS-Z@C02YVCJELVCG
+>   Christoph Hellwig - https://lore.kernel.org/r/Zcx53N8lQjkpEu94@infradead.org
+>   Daniel Vetter - https://lore.kernel.org/r/ZrHY2Bds7oF7KRGz@phenom.ffwll.local
+>   Enfabrica - https://lore.kernel.org/r/9cc7127f-8674-43bc-b4d7-b1c4c2d96fed@kernel.org
+>   NVIDIA Networking
+>   Oded Gabbay/Habana - https://lore.kernel.org/r/ZrMl1bkPP-3G9B4N@T14sgabbay.
+>   Oracle Linux - https://lore.kernel.org/r/6lakj6lxlxhdgrewodvj3xh6sxn3d36t5dab6najzyti2navx3@wrge7cyfk6nq
+>   SuSE/Hannes - https://lore.kernel.org/r/2fd48f87-2521-4c34-8589-dbb7e91bb1c8@suse.com
+> 
+> Work is ongoing for userspace, currently the mellanox tool suite has been
+> ported over:
+>    https://github.com/Mellanox/mstflint
+> 
+> And a more simplified example how to use it:
+>    https://github.com/jgunthorpe/mlx5ctl.git
+> 
+> This is on github: https://github.com/jgunthorpe/linux/commits/fwctl
+> 
+> v4:
+>   - Rebase to v6.14-rc1
+>   - Fine tune comments and rst documentatin
+>   - Adjust cleanup.h usage - remove places that add more ofuscation than
+>     value
+>   - CXL is back to its own independent series
+>   - Increase FWCTL_MAX_DEVICES to 4096, someone hit the limit
+>   - Fix mlx5ctl_validate_rpc() logic around scope checking
+>   - Disable mlx5ctl on SFs
+> v3: https://patch.msgid.link/r/0-v3-960f17f90f17+516-fwctl_jgg@nvidia.com
+>   - Rebase to v6.11-rc4
+>   - Add a squashed version of David's CXL series as the 2nd driver
+>   - Add missing includes
+>   - Improve comments based on feedback
+>   - Use the kdoc format that puts the member docs inside the struct
+>   - Rewrite fwctl_alloc_device() to be clearer
+>   - Incorporate all remarks for the documentation
+> v2: https://lore.kernel.org/r/0-v2-940e479ceba9+3821-fwctl_jgg@nvidia.com
+>   - Rebase to v6.10-rc5
+>   - Minor style changes
+>   - Follow the style consensus for the guard stuff
+>   - Documentation grammer/spelling
+>   - Add missed length output for mlx5 get_info
+>   - Add two more missed MLX5 CMD's
+>   - Collect tags
+> v1: https://lore.kernel.org/r/0-v1-9912f1a11620+2a-fwctl_jgg@nvidia.com
+> 
+> Andy Gospodarek (2):
+>    fwctl/bnxt: Support communicating with bnxt fw
+>    bnxt: Create an auxiliary device for fwctl_bnxt
+> 
+> Jason Gunthorpe (6):
+>    fwctl: Add basic structure for a class subsystem with a cdev
+>    fwctl: Basic ioctl dispatch for the character device
+>    fwctl: FWCTL_INFO to return basic information about the device
+>    taint: Add TAINT_FWCTL
+>    fwctl: FWCTL_RPC to execute a Remote Procedure Call to device firmware
+>    fwctl: Add documentation
+> 
+> Saeed Mahameed (2):
+>    fwctl/mlx5: Support for communicating with mlx5 fw
+>    mlx5: Create an auxiliary device for fwctl_mlx5
+> 
+>   Documentation/admin-guide/tainted-kernels.rst |   5 +
+>   Documentation/userspace-api/fwctl/fwctl.rst   | 285 ++++++++++++
+>   Documentation/userspace-api/fwctl/index.rst   |  12 +
+>   Documentation/userspace-api/index.rst         |   1 +
+>   .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+>   MAINTAINERS                                   |  16 +
+>   drivers/Kconfig                               |   2 +
+>   drivers/Makefile                              |   1 +
+>   drivers/fwctl/Kconfig                         |  32 ++
+>   drivers/fwctl/Makefile                        |   6 +
+>   drivers/fwctl/bnxt/Makefile                   |   4 +
+>   drivers/fwctl/bnxt/bnxt.c                     | 167 +++++++
+>   drivers/fwctl/main.c                          | 416 ++++++++++++++++++
+>   drivers/fwctl/mlx5/Makefile                   |   4 +
+>   drivers/fwctl/mlx5/main.c                     | 340 ++++++++++++++
+>   drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   3 +
+>   drivers/net/ethernet/broadcom/bnxt/bnxt.h     |   3 +
+>   drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c | 126 +++++-
+>   drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h |   4 +
+>   drivers/net/ethernet/mellanox/mlx5/core/dev.c |   9 +
+>   include/linux/fwctl.h                         | 135 ++++++
+>   include/linux/panic.h                         |   3 +-
+>   include/uapi/fwctl/bnxt.h                     |  27 ++
+>   include/uapi/fwctl/fwctl.h                    | 140 ++++++
+>   include/uapi/fwctl/mlx5.h                     |  36 ++
+>   kernel/panic.c                                |   1 +
+>   tools/debugging/kernel-chktaint               |   8 +
+>   27 files changed, 1782 insertions(+), 5 deletions(-)
+>   create mode 100644 Documentation/userspace-api/fwctl/fwctl.rst
+>   create mode 100644 Documentation/userspace-api/fwctl/index.rst
+>   create mode 100644 drivers/fwctl/Kconfig
+>   create mode 100644 drivers/fwctl/Makefile
+>   create mode 100644 drivers/fwctl/bnxt/Makefile
+>   create mode 100644 drivers/fwctl/bnxt/bnxt.c
+>   create mode 100644 drivers/fwctl/main.c
+>   create mode 100644 drivers/fwctl/mlx5/Makefile
+>   create mode 100644 drivers/fwctl/mlx5/main.c
+>   create mode 100644 include/linux/fwctl.h
+>   create mode 100644 include/uapi/fwctl/bnxt.h
+>   create mode 100644 include/uapi/fwctl/fwctl.h
+>   create mode 100644 include/uapi/fwctl/mlx5.h
+> 
+> 
+> base-commit: 2014c95afecee3e76ca4a56956a936e23283f05b
+> --
+> 2.43.0
+> 
 
-My understanding is that the default GID cache will look for bonded master =
-when checking on a slave device and its upper devices. The non-default GID =
-cache just takes this IB device and all its upper devices.
-
-Why the default GID cache needs to check bonded devices?
-
-Thanks,
-Long
 
