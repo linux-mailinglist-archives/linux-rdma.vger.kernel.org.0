@@ -1,68 +1,69 @@
-Return-Path: <linux-rdma+bounces-7721-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7722-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA8A8A33F82
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 13:51:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27DFCA33F88
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 13:53:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60D853AA4E6
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 12:51:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25EF43A8E30
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 12:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E5121D3FC;
-	Thu, 13 Feb 2025 12:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A9B7221568;
+	Thu, 13 Feb 2025 12:53:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Px00ozmO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BdUN6iO7"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A16C961FFE
-	for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2025 12:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B89421D3FC
+	for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2025 12:53:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739451092; cv=none; b=dXpO2SvdONYTf3OLYxS511NVwpMZCIEl/orVYwYZysn9YMhtq6YSgz3Ot0C7uM9ajD1s4X2ukUC6/36fLk0q9v44FCXVK2EadRaPaOZgcEtbTzSVwjrfqR2MyhV7I2wy160vLdLMdabXRgRPINLoCi2gqGcLbk6nYFT03Olz1PI=
+	t=1739451228; cv=none; b=uLlwvQlVFzoEbqA1ll2MNNyD0yPc7PCSfXkff5fg7CN65q5KrlTH1TBAmEHddzCjIJeO29xCA+C+xAeOZcpr1ReLNag+G60S0MNrsuvqeoycDNkAWg+T0hf7CHCpa6TfmKtyAd+d/00EHGTfY7oNabGJl0STbspdHXz2IeZOD+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739451092; c=relaxed/simple;
-	bh=QwKjcl6WeUt0Jir9bSmUIs98fFrJ8werXFD9KZTMGfs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=agJaAh7xe0Nof1gOW+DKyOkDOvjITbmagxRZQBPWzAlsoZcLtcbgGS6LKYF8oKDOXiWOZ/PWj7cG/UrA+ncsRXpNFgsUeljRJrqH+wjiJpPyGUjhyl626sq48LNQa7vtlUHdrus8L9BZYQV1HCOBWYL9V8RqvBsfOdozVcFF06s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Px00ozmO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E870C4CED1;
-	Thu, 13 Feb 2025 12:51:31 +0000 (UTC)
+	s=arc-20240116; t=1739451228; c=relaxed/simple;
+	bh=mVYbnEVcC4WhFAGgqlkT3W/37DVT9Wa56hCF8LlNjxY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=X3LE16u50tNirrzShYkwVjge9sqSvkwg6XziihNUGL1vALda2rbNpwkGq37mndPxpoFTXzpBvLgVeDjTY7hm2JqX7uD+fvpQuKmQAwsxgDFVz6dU7A7YXeiormTUJv5t38yKCCOHazdTXvazSYamrrQgcVr6Dx2fLYb/gexs0YY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BdUN6iO7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11F67C4CEE7;
+	Thu, 13 Feb 2025 12:53:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739451092;
-	bh=QwKjcl6WeUt0Jir9bSmUIs98fFrJ8werXFD9KZTMGfs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Px00ozmOTG3BcdcnHRPhnvpKC4qRJ1ZCsLO866YayTrVsp/uZov/Eu6BXKXt9P1lS
-	 +KZNslrXrpOWpTac7lGxbUmr+NdBIL7LrknoDWloO3kyS0TlOKoFiCeGl6YVnQchEo
-	 zIWakg9tNben7r7vVjwbDK2JBAyOIaYvoKI1ThY0oZ8nh/BHeWEZ7DzLT1sp56KUBr
-	 0+7cgL8hNRVfSvnvNpueOthOnuvS3Lie/H5wLJLw2LLdEJr3tJyGRLQ8uQBbpOlajw
-	 e9XwyUljT9ba9DSUklx/2ft0i4LjgYaFQAG3rxavX7EOiO1Gvc1RCfyjsPz7opdInC
-	 Oo628VcXDH4zQ==
-Date: Thu, 13 Feb 2025 14:51:26 +0200
+	s=k20201202; t=1739451227;
+	bh=mVYbnEVcC4WhFAGgqlkT3W/37DVT9Wa56hCF8LlNjxY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=BdUN6iO7dvb4JaKLji0qUTwu3M7Wh/6YRi2jPm91J+siPlRuVPceM1x5QIVMVbgI+
+	 BqYSY2RS8Lq3BQ7Pqvi84Cm6rNYEGxVrLlmd0aVeo0ZA7RWQeGOPBRnswl7vLV3G++
+	 Z+mU/sJ4zlK1f+Z8baK8SbPun7zxd2nwXyUffzQP1P7IxneScD2y9P8+aVMOsyaU3W
+	 +YYcCnpaA3Ln7Pv1/eGMEdYtHD4EynGXuND/0WOdBHv9BjjBIB55ffoChfSKLUdXJb
+	 kr1nAiu5J62w28OheA96TxmNF7m4/g155f52Yz5SbhWSgVDrYC7TYOgXPDrR2aTLze
+	 1IRSQdVF8VzoA==
 From: Leon Romanovsky <leon@kernel.org>
-To: Michael Margolin <mrgolin@amazon.com>
-Cc: jgg@nvidia.com, linux-rdma@vger.kernel.org, sleybo@amazon.com,
-	matua@amazon.com, gal.pressman@linux.dev,
-	Firas Jahjah <firasj@amazon.com>,
-	Yonatan Nachum <ynachum@amazon.com>
+To: linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>, 
+ Michael Margolin <mrgolin@amazon.com>
+Cc: sleybo@amazon.com, matua@amazon.com, gal.pressman@linux.dev, 
+ Firas Jahjah <firasj@amazon.com>, Yonatan Nachum <ynachum@amazon.com>
+In-Reply-To: <20250209142608.21230-1-mrgolin@amazon.com>
+References: <20250209142608.21230-1-mrgolin@amazon.com>
 Subject: Re: [PATCH for-next] RDMA/core: Fix best page size finding when it
  can cross SG entries
-Message-ID: <20250213125126.GK17863@unreal>
-References: <20250209142608.21230-1-mrgolin@amazon.com>
+Message-Id: <173945122413.294504.1292933084740931802.b4-ty@kernel.org>
+Date: Thu, 13 Feb 2025 07:53:44 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250209142608.21230-1-mrgolin@amazon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-On Sun, Feb 09, 2025 at 02:26:08PM +0000, Michael Margolin wrote:
+
+On Sun, 09 Feb 2025 14:26:08 +0000, Michael Margolin wrote:
 > A single scatter-gather entry is limited by a 32 bits "length" field
 > that is practically 4GB - PAGE_SIZE. This means that even when the
 > memory is physically contiguous, we might need more than one entry to
@@ -72,44 +73,15 @@ On Sun, Feb 09, 2025 at 02:26:08PM +0000, Michael Margolin wrote:
 > For instance an SGT of 16GB GPU continuous memory might look like this:
 > (a real life example)
 > 
-> dma_address 34401400000, length fffff000
-> dma_address 345013ff000, length fffff000
-> dma_address 346013fe000, length fffff000
-> dma_address 347013fd000, length fffff000
-> dma_address 348013fc000, length 4000
-> 
-> Since ib_umem_find_best_pgsz works within SG entries, in the above case
-> we will result with the worst possible 4KB page size.
-> 
-> Fix this by taking into consideration only the alignment of addresses of
-> real discontinuity points rather than treating SG entries as such, and
-> adjust the page iterator to correctly handle cross SG entry pages.
-> 
-> There is currently an assumption that drivers do not ask for pages
-> bigger than maximal DMA size supported by their devices.
-> 
-> Reviewed-by: Firas Jahjah <firasj@amazon.com>
-> Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
-> Signed-off-by: Michael Margolin <mrgolin@amazon.com>
-> ---
->  drivers/infiniband/core/umem.c  | 34 +++++++++++++++++++++++----------
->  drivers/infiniband/core/verbs.c | 11 ++++++-----
->  2 files changed, 30 insertions(+), 15 deletions(-)
+> [...]
 
-Applied with the following change to prevent arithmetic overflow.
+Applied, thanks!
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index e7e428369159..63a92d6cfbc2 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -112,8 +112,7 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
-                /* If the current entry is physically contiguous with the previous
-                 * one, no need to take its start addresses into consideration.
-                 */
--               if (curr_base + curr_len != sg_dma_address(sg)) {
--
-+               if (curr_base != sg_dma_address(sg) - curr_len) {
-                        curr_base = sg_dma_address(sg);
-                        curr_len = 0;
- 
+[1/1] RDMA/core: Fix best page size finding when it can cross SG entries
+      https://git.kernel.org/rdma/rdma/c/a4b57de5dfef29
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
