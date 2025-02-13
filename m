@@ -1,83 +1,83 @@
-Return-Path: <linux-rdma+bounces-7748-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7749-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4F63A34CF3
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 19:06:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2FA3A34CFD
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 19:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4E0E188F1A0
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 18:05:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1B063AC711
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 18:05:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52A1266B64;
-	Thu, 13 Feb 2025 18:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 585F6266B74;
+	Thu, 13 Feb 2025 18:03:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="BTr7XhWu"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="swKtGxeo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2082.outbound.protection.outlook.com [40.107.243.82])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2080.outbound.protection.outlook.com [40.107.220.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0493266B51;
-	Thu, 13 Feb 2025 18:03:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.82
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B043266B57;
+	Thu, 13 Feb 2025 18:03:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.80
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739469795; cv=fail; b=SBn4KRN1vdbw/BUG1ip4Yhnp9RmuAiiEUPpPE04TBdQl0tke+Zfptv8Jbp09dcafuUeikFglhNnvI6jGFkuGE8/2E1BSI7r0JY/fw4dU7Cas1y7EEUUYywaITzho6Cy4DZbFjMlzGGPUMYFfp33/IJATzdYYgoU3g8uFpws+IwA=
+	t=1739469796; cv=fail; b=r8xib4SpwzpAeF3AezC6bso8GPqb2VL0fz+0afJ7ICdWpBr7+O2RZEt/8Yn2LsGioVxL/l9ZsqJump1lMcAkdTX+YizmlGM1kQe41I3lNjl1GncRcPPFYLfkYYMIDguClX6nHudWqDcFNUmXY0Fw2MYKL8y7JkntZvViXJb4ZLE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739469795; c=relaxed/simple;
-	bh=C83+eZf5KUuNCQScrqnktNXJKq6/WbImoXb5Nr+F0Ec=;
+	s=arc-20240116; t=1739469796; c=relaxed/simple;
+	bh=67X2KCCvD4r2yIJREe7iNyL0hMK+UcrZy+UUzbMpKco=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=g3ICFCHNkS/8ur2YmmNoqsPDQh70sujjuwP3Hk6BVaa5EMDwU0N/g0xvsPqWFe0YU/xLlHICtG2Z6QOAbhZI+qgw7YYC+OB2+yUuDwA8rZl/aKx8e8hxosEYfnng2qFlnOv5jZ5sq2p7jdIP7feycjzpgh2CS13MLtl8sm0mx1Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=BTr7XhWu; arc=fail smtp.client-ip=40.107.243.82
+	 MIME-Version:Content-Type; b=jEnDBirm1A8TL6LZpwAs5GxUlVHRbBsXYmKP9DcxMbgNci/lgBT2oXuYNtXlnaGkinAdEElegJgEPzVTCnzl+v2CEtWoRbTAkP+6rtlKqYy0J+enMtAIclZZsPeGtyfnSk33BTdJ6Aa5Txhk2+eFO5thukK5g12LJrl4z9v0UOM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=swKtGxeo; arc=fail smtp.client-ip=40.107.220.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=uEVWh0iYCcvYmn6edSIA4h7c2fmERoG1PADNBq6vNcR+8F+p66iCCWPoAOU6KJI1sl7P2PGkugqFmxUHJz7PlPTMyuqGGWalevSxL26Vc3nI3raKh339nRnd9rOFL9g9qJazLzrqxWbHpFhg4lSyHxavD/PoIMOoiVomo8z7SF0GySRw9Hdz/33beDa+nD3JdoiAyNtKCdYfNnb5Qx5i06mJHuxTrj0KFTXfJ1yY0snPT4xPQcXKemDMY2SvU8Gq/ie4aYDnA53CaS0DQyko0zLRGKchk4VJF/HMIb/+18ZH8tg48yHjE90WZaKuAqQtCt7SdbBBGOO1FAUSlT7vSA==
+ b=r9moTlLyF1aUgBztRw1fFcNIlnydLLV/tjtdO36+4HtSLcGvHMjYYeGUyzgdE6fMpykVJDyZF+WWaSU9EE4js9O5rrTvOdVDq5IlFFzR9svl6ZRnpSKiMsfRKvB75rnw6kCA4RjMGnXKXVzJRKzqLd2/k+CBiZRR3YHGVBiAR7vQAwRKY1MtyzXGCxPODtdG2J/oduE6y12v4rMpagPgpJwPzz6HWKczgsZ7DzTFf4nfb+wnariTyVS224BfvVfY3FsVw681e3iI2P+8OWlWCrgQR2f3dUCR/v0k8J4usWEaUHXKOEtGu26TiD+VJPJ8ccARpt6EptKZmQhgM1Qq2g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+eBV3PeVhl++UF3uYeqBLMNKZ6EeqSrm14B797LVSGU=;
- b=N6pfdYbYJPsRuBKBqdPE+ZncD/ICDJ/RD/oPM1kPiQPy0L4RINui0mh22ZpS8R2Hm25DtmyVk+c1XXlqyciF3tV4P9n/AwOeY/1LLARVIe7+vfSs8hZDmP+5sJxqYRPO7QdDvZDgfPlA9O7wmtqatRgWdCmFzK5QKlJRjYXnF4iO1f5/bI3N0yMKkYbOXsUGCZXUeKleU5agYaUMdrTfnR+S6/rp+zteSIu1eKBdd1S1XZ4VBzrv0jKA7Q09z/CiTp2Rk7jsQyA6xdVvXjUhX+2PpKtOcYueh5gvAszE3lbfHSWYr74HMZKNsVQ1gXC4ijVhQ/s05+/gRuVM7O/WaA==
+ bh=7qlEhmr/sRLGr0IOve+0Da9ekaqDij9SuQ08xeXPNnk=;
+ b=Hpd4F1v8yMJgjf6sHW9lV18/be9DA2eVXK8XEql78mEBleYO1KdmJ+c9F/FdXYKeoUpxg017VDMNKXgJtXyGh3HLZ5Ngb782SPd3hgHt2V+vuqRerjv2UrU3Bn94cHuEUjAhezvfsUJDxiibhd5dx4DDoDno67DL287ZEHxYfXRbfPyfJ3qMVGSZH5OoZE02mbNk6Qf1UIiWOoXm4cdObACPMV4zGzOm5upZyU8hjD7E2fqfPf1CQhxSP1tj/l6mhFjS0ccH0PEFneJCytRzANrRWP687+XxLk2QJHwd8XJKnGvtw3F9ZGAmf3EQf2SDDWZwe/y972JaHA9gmmTBLg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+eBV3PeVhl++UF3uYeqBLMNKZ6EeqSrm14B797LVSGU=;
- b=BTr7XhWuebpELzGbMxJigvqVAZDy0znN2EgZT/YvBpE+cApPB5+IXSAJmVKan/jIbZ3Is6Mbm8sVAPvfRiChvBuUgitlX28vr15L4pKHUNykRsWZ4yrEi5JfmJiEwpC1U4cTkbclopEcX3q+J4ht3VsrsGWZjybMskChd3U44SDu/ut22d1/4Hle1sBN+iB9HosUF8TOv9S02jvg5qQ+CfW7lfnwUZ24mwivh527aypdQRMRF5WBVzYPT3VD4mudGr0J8W2Hdypks2tazs/MD56+yqBkiotnY4+kJhxDv9J9/aCCAIYLi4JvY94Z/dtFpg19t/MEnyaPZUftjGhhWA==
-Received: from CH5P223CA0002.NAMP223.PROD.OUTLOOK.COM (2603:10b6:610:1f3::10)
- by BL1PR12MB5707.namprd12.prod.outlook.com (2603:10b6:208:386::10) with
+ bh=7qlEhmr/sRLGr0IOve+0Da9ekaqDij9SuQ08xeXPNnk=;
+ b=swKtGxeo+sSArabj/qPhQz3bfQeKjV50pCF0gutlxQRz1OEPHL3IcIgomfhcic3jpnaursFXiDBoUSqnRpl3iD25NU59cLKEbsRqTP6mcC4lMatIhaocf3mqfWl38Rh0HMSMcByt2/yqrGS9vAbwW8icq9+GPsPaN8Q69hYfOx1yvZDp0cqC9SI70LAU1rqsfzByvfOA5zrP7cIiuXQm6fhHQB/VX20VYC2r5E9gB0f4xhRYWAYIHm/TCf99tPlSTfBh2ePvK8m16poDz4XRw4sD131JnZv6ezQH05fWW7Ib4CcSry/7Xqt3scsZ4n5W7tYOV5UnpOpKv++rH2XS1Q==
+Received: from CH2PR08CA0007.namprd08.prod.outlook.com (2603:10b6:610:5a::17)
+ by MW6PR12MB8707.namprd12.prod.outlook.com (2603:10b6:303:241::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.13; Thu, 13 Feb
- 2025 18:03:06 +0000
-Received: from DS2PEPF00003447.namprd04.prod.outlook.com
- (2603:10b6:610:1f3:cafe::87) by CH5P223CA0002.outlook.office365.com
- (2603:10b6:610:1f3::10) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8445.15 via Frontend Transport; Thu,
- 13 Feb 2025 18:03:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.16; Thu, 13 Feb
+ 2025 18:03:11 +0000
+Received: from CH1PEPF0000AD80.namprd04.prod.outlook.com
+ (2603:10b6:610:5a:cafe::ce) by CH2PR08CA0007.outlook.office365.com
+ (2603:10b6:610:5a::17) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8445.13 via Frontend Transport; Thu,
+ 13 Feb 2025 18:03:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- DS2PEPF00003447.mail.protection.outlook.com (10.167.17.74) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CH1PEPF0000AD80.mail.protection.outlook.com (10.167.244.90) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8445.10 via Frontend Transport; Thu, 13 Feb 2025 18:03:05 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.8445.10 via Frontend Transport; Thu, 13 Feb 2025 18:03:11 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 13 Feb
- 2025 10:02:51 -0800
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 10:02:55 -0800
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 13 Feb
- 2025 10:02:50 -0800
+ 2025 10:02:55 -0800
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Thu, 13
- Feb 2025 10:02:46 -0800
+ Feb 2025 10:02:51 -0800
 From: Tariq Toukan <tariqt@nvidia.com>
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
@@ -89,9 +89,9 @@ CC: Cosmin Ratiu <cratiu@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>,
 	<leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
 	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-doc@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-Subject: [PATCH net-next 09/10] net/mlx5: qos: Init shared devlink rate domain
-Date: Thu, 13 Feb 2025 20:01:33 +0200
-Message-ID: <20250213180134.323929-10-tariqt@nvidia.com>
+Subject: [PATCH net-next 10/10] net/mlx5: Document devlink rates and cross-esw scheduling
+Date: Thu, 13 Feb 2025 20:01:34 +0200
+Message-ID: <20250213180134.323929-11-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20250213180134.323929-1-tariqt@nvidia.com>
 References: <20250213180134.323929-1-tariqt@nvidia.com>
@@ -106,95 +106,124 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: AnonymousSubmission
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003447:EE_|BL1PR12MB5707:EE_
-X-MS-Office365-Filtering-Correlation-Id: e3a3ca5c-f924-4cb7-18a9-08dd4c58aaae
+X-MS-TrafficTypeDiagnostic: CH1PEPF0000AD80:EE_|MW6PR12MB8707:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2600d30d-597e-4c54-0dc7-08dd4c58adcc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|1800799024|376014|7416014|82310400026;
+	BCL:0;ARA:13230040|7416014|376014|1800799024|36860700013|82310400026;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?RV+DvtWb/txInid3rOzHiR8FhgDJzhS/xqk7ggnJOI1eD1dw/geQ62c1Q3/q?=
- =?us-ascii?Q?rg8rFWwuIcrdJGHLV0xAuqYi1aCx46IBo9Nb+gqUUno/36MfA5ANH4vnnOTf?=
- =?us-ascii?Q?/QKD0xQjp60mtu3pITKbmJjSWIYG4xBgkfUYFU/xRnN9KpJdWSL6GGoe18Yr?=
- =?us-ascii?Q?R9L5BrQjXoB8kMYaXX4WEdisNqHITp10mQSOdupsHVV+/O5TFITigP0BIko4?=
- =?us-ascii?Q?vzALfeYF6RqNtZAHmFhIGbOPyfU49/o6o5oDezTvLXkUGRb6S+56128400e5?=
- =?us-ascii?Q?FJxtB/iuJ9FqsheUPq+naSLt32srAT4ZPD3gQBGqacmYpOMWges/RWpCbwsO?=
- =?us-ascii?Q?VmvY0WdVhuoMIDiIG2bfwGqOtINwzFhmEj53u/ZYKuWpZ4KBOT85+/Hnybcg?=
- =?us-ascii?Q?amHiQ6BVkIWZ5PnYTf9v4JwXLln5V6ogPNfr7FYiHYJ+m6H05EgvGlT8LiyL?=
- =?us-ascii?Q?wL8LJWaVGbYmRUSR5/HQWCkDFLGE0UlwRpAPfwRYjbGrAv/8kIGYai0BhMyk?=
- =?us-ascii?Q?5yhzy8NFxIksxALwhsVq/RmAFYX9upoDDdRcjVd5nweyZmnmX2G37sDn8mmi?=
- =?us-ascii?Q?aQNrx1PHcIB6nqK7UirB0n4XfTZZdcddQmREQktePmLlKBvsahmSKZl9Bc0f?=
- =?us-ascii?Q?7oA6qA+MpbkObIbVTqGc7tchmxOnyf1W6Rh2he0sQZQpw0sgzYBYMEV3tblB?=
- =?us-ascii?Q?rSxSdEgIzI2P56xLXal7O04ZxTRXQO4c3ueLP/82sVHJULR9C63nR8hKK51A?=
- =?us-ascii?Q?RcL2F7RG5Hhft5SZPeT7Ag9jEsQaSIboRTgwYy4EbFewy1ENXOTEueJ6Apqz?=
- =?us-ascii?Q?Dqx5XTgc7lb6aWssdmZMPhFAyI/+ayEv4aCYhEu7IRgY5JAd3+nw4cnT+pdV?=
- =?us-ascii?Q?rzmsaEyUJDK+C+UHDzSIDezUpMUp6he/SWsrXew6kV+1FtqB5I/Bq0ciI2IN?=
- =?us-ascii?Q?E2cNoREgnrdlPNPX3y62DfDJW98P5j75aZrbBQ5nAb9SjXv1mPcdcZNd9RWu?=
- =?us-ascii?Q?h9wqYjGS6nHeoTlMlHDxfF1sBq25QWMPAEoKre/+R684JSKFTm+rt2YQCcr5?=
- =?us-ascii?Q?RRiWVnBuGIteTNW+LJBVPzNNfbF58pLBRtXT8hoHHKNJPDakpoxivnV9s9te?=
- =?us-ascii?Q?gNn0kecv0zUBX4xOW61Sw5CDCKTEsEl6e2ah8v0Xo/ze1FzNN0XVIfu0mbdL?=
- =?us-ascii?Q?F5VFImenYLjc+tLZIa1SDKBi/VoknSEzSohqwZ3D74nwhH6e2xRU6mErni1D?=
- =?us-ascii?Q?qnMDGNxFnIEElUy5L/crl52tVs+bWIsptSdbqkdPJu5koCZe+60E2naMpY0e?=
- =?us-ascii?Q?7RsRGMy8akpgBVwHsZqnH6ojaiI6owyyfCLMkbFkXFUZvG5Zjt0Y92mjGF+D?=
- =?us-ascii?Q?jR4wRsnR4MB0THrE6ue8yoLgCxoVxssCUdwx9zyCvT8VaHXT0x2qGGvLs+c8?=
- =?us-ascii?Q?2if/BPcHMCaCw2tjn+ZZGtC8QkuGX76DV7E0MHCXW/crYQFzbjM6S9EaCL/J?=
- =?us-ascii?Q?OIMV4VfAhxMnW/g=3D?=
+	=?us-ascii?Q?Sewzt4lW7Q3JhIfF7JZQyg3tNXeN3E2d6JDyBfxGeI3gZ16xtsUUC/EFM6Ju?=
+ =?us-ascii?Q?5VPb1+5uwb8i4Sn7IxHQZeAMqSdAuaMlQRe4Y+nFL/sg+lzKqdHTVfyFQjpc?=
+ =?us-ascii?Q?vt2dJHkfqrd5BNUoXta32HF4vtKIvX/WTRqdC0RQYbJvS/XugMXhhui6hPs3?=
+ =?us-ascii?Q?XzjlMd9XCTFUJfLTeHG+40fUTV0MnHFEhpyo2fsv6zFK+Dt1AnuJtl+FJUzB?=
+ =?us-ascii?Q?dxilTpLokmSotXRdvH7Rvj0K4Cb+Iq5K1CCz8mG7aUA4k76l+7ADL50gZd/s?=
+ =?us-ascii?Q?2YDvpiRwQhrGqCvP4901riAqdWJQf7ZUZolNzkhuut3M08jrCpPyVvR8FC8z?=
+ =?us-ascii?Q?B6YRJDWnPzvIowexNPwlupPhqSbje/FcfnZ5u4WzUKXuhB2cpvzc2br8zi3W?=
+ =?us-ascii?Q?7ikGzf3NIVmOKTSJMXN7qteDK06p1vvShXgJvblLEkfdLCVzwh+RbAF6mbFf?=
+ =?us-ascii?Q?6Q89hyxozev36B+CZgZAz7YoetU4JZRKiNVjzoMF+wTiLpRjHTEckL1OkslG?=
+ =?us-ascii?Q?b+yBjHXWHTEldGvWbAalMp5KFrmba+LOKx5BJW2GDxr3BdZv0fmmQebBzdef?=
+ =?us-ascii?Q?GG/imV0KDflNWhxqBXOMVft1JUBRsTmPUG8nX4nQH9pxZX8gQGw2axQnwPVh?=
+ =?us-ascii?Q?xIIEJnfvv7Wwt0QCIcJnmCn8ZiqIqEC9PyA8d7Zbax4hmvjUPKCZkZ3lPb0C?=
+ =?us-ascii?Q?7QJzdSrCjXmbkC6ZTJKCl9nHg11+b4wtPjm8KRrwnmNZvPRyu21QroQHXjZO?=
+ =?us-ascii?Q?GjDWlDKYs14td1byryn9GkLgpgzXi5qLKJELENZAARM3rKFybcu8L9H8V6gP?=
+ =?us-ascii?Q?kQrrZ9MFc2IuFnhBaVttk2M2sU+G3O1L3w12N6N+ApoAVOpNtHvwTJC73yuL?=
+ =?us-ascii?Q?HRD2kJ8aDtXTsa7Kbit7W+o6Z8BPUMNV242tsf02HDri5QkuCsfKpc5J6uPl?=
+ =?us-ascii?Q?rtZKyaRfkO8/B2gCnsTSpJ1lffFxptSSoXPqDOKoSIuUfn9o2/WzIKmY5HkD?=
+ =?us-ascii?Q?NUYY/5adMCgDACHyCNjs8Am6ACpkh0RQXX3C9mUfiBq13czFT1toMs2LR0II?=
+ =?us-ascii?Q?UCfYmIjPGJiV2+eSy8pYN7ZOvfdVCLtvJFujVzvwyLC+rdvFltRVJ6dAq9dv?=
+ =?us-ascii?Q?YxBWy8sSKsnOIY6uFxAuoNXvLxyDe7ImQ32agebfqYKQ5Q5biJzM+NVP1xFg?=
+ =?us-ascii?Q?AW4DYeKy0a+QmiqTyLy76KAt5lFKuFMHdvNZvY7io9FSKspUZ7v9Xu0dmUPq?=
+ =?us-ascii?Q?6zg58aKdClGAbYZgRXFsKEPlDxXARv26YnUs2WZ08ZfEIczZ8gb74JL0hgjZ?=
+ =?us-ascii?Q?05XBhNMntQvf31978F9Zv6kaGxyGQ/aD3FTieUGPV6jcTmxi8e+OKyilqoBQ?=
+ =?us-ascii?Q?+JXhroqJf/e0jYdb+yr4ZZVI/NH4e494jgI9CSLo4GxOrUjd0LOmyCLc/Ekp?=
+ =?us-ascii?Q?ahRVJ0gfO+Co1fIblvyEG0Yk4ZVOie6LMoysKGvyTVt8xx4QYjB+NP/+2faG?=
+ =?us-ascii?Q?1sduXKp4y3HP3lw=3D?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(376014)(7416014)(82310400026);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(36860700013)(82310400026);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2025 18:03:05.9441
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2025 18:03:11.1892
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e3a3ca5c-f924-4cb7-18a9-08dd4c58aaae
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2600d30d-597e-4c54-0dc7-08dd4c58adcc
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF00003447.namprd04.prod.outlook.com
+	CH1PEPF0000AD80.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5707
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8707
 
 From: Cosmin Ratiu <cratiu@nvidia.com>
 
-If the device can do cross-esw scheduling, switch to using a shared rate
-domain so that devlink rate nodes can have parents from other functions
-of the same device.
+Extend the devlink-port documentation with a mention that parents can be
+from different devices.
 
-As a fallback mechanism, if switching to a shared rate domain failed, a
-warning is logged and the code proceeds with trying to use a private qos
-domain since cross-esw scheduling cannot be supported.
+It seems rates were not documented in the mlx5-specific file, so add
+examples on how to limit VFs and groups and also provide an example of
+the intended way to achieve cross-esw scheduling.
 
 Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
 Reviewed-by: Carolina Jubran <cjubran@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ .../networking/devlink/devlink-port.rst       |  2 ++
+ Documentation/networking/devlink/mlx5.rst     | 33 +++++++++++++++++++
+ 2 files changed, 35 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
-index e6dcfe348a7e..9af12ae98691 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
-@@ -899,6 +899,20 @@ int mlx5_esw_qos_init(struct mlx5_eswitch *esw)
- 	bool use_shared_domain = esw->mode == MLX5_ESWITCH_OFFLOADS &&
- 		MLX5_CAP_QOS(esw->dev, esw_cross_esw_sched);
+diff --git a/Documentation/networking/devlink/devlink-port.rst b/Documentation/networking/devlink/devlink-port.rst
+index 9d22d41a7cd1..1d9e5839eef4 100644
+--- a/Documentation/networking/devlink/devlink-port.rst
++++ b/Documentation/networking/devlink/devlink-port.rst
+@@ -417,6 +417,8 @@ API allows to configure following rate object's parameters:
+   Parent node name. Parent node rate limits are considered as additional limits
+   to all node children limits. ``tx_max`` is an upper limit for children.
+   ``tx_share`` is a total bandwidth distributed among children.
++  If the device supports cross-function scheduling, the parent can be from a
++  different function of the same underlying device.
  
-+	if (use_shared_domain) {
-+		u64 guid = mlx5_query_nic_system_image_guid(esw->dev);
-+		int err;
+ ``tx_priority`` and ``tx_weight`` can be used simultaneously. In that case
+ nodes with the same priority form a WFQ subgroup in the sibling group
+diff --git a/Documentation/networking/devlink/mlx5.rst b/Documentation/networking/devlink/mlx5.rst
+index 7febe0aecd53..61e76da36faf 100644
+--- a/Documentation/networking/devlink/mlx5.rst
++++ b/Documentation/networking/devlink/mlx5.rst
+@@ -298,3 +298,36 @@ User commands examples:
+ 
+ .. note::
+    This command can run over all interfaces such as PF/VF and representor ports.
 +
-+		err = devlink_shared_rate_domain_init(priv_to_devlink(esw->dev), guid);
-+		if (err) {
-+			/* On failure, issue a warning and switch to using a private domain. */
-+			esw_warn(esw->dev,
-+				 "Shared devlink rate domain init failed (err %d), cross-esw QoS not available",
-+				 err);
-+			use_shared_domain = false;
-+		}
-+	}
++Rates
++=====
 +
- 	if (esw->qos.domain) {
- 		if (esw->qos.domain->shared == use_shared_domain)
- 			return 0;  /* Nothing to change. */
++mlx5 devices can limit transmission of individual VFs or a group of them via
++the devlink-rate API in switchdev mode.
++
++User commands examples:
++
++- Print the existing rates::
++
++    $ devlink port function rate show
++
++- Set a max tx limit on traffic from VF0::
++
++    $ devlink port function rate set pci/0000:82:00.0/1 tx_max 10Gbit
++
++- Create a rate group with a max tx limit and adding two VFs to it::
++
++    $ devlink port function rate add pci/0000:82:00.0/group1 tx_max 10Gbit
++    $ devlink port function rate set pci/0000:82:00.0/1 parent group1
++    $ devlink port function rate set pci/0000:82:00.0/2 parent group1
++
++- Same scenario, with a min guarantee of 20% of the bandwidth for the first VFs::
++
++    $ devlink port function rate add pci/0000:82:00.0/group1 tx_max 10Gbit
++    $ devlink port function rate set pci/0000:82:00.0/1 parent group1 tx_share 2Gbit
++    $ devlink port function rate set pci/0000:82:00.0/2 parent group1
++
++- Cross-device scheduling::
++
++    $ devlink port function rate add pci/0000:82:00.0/group1 tx_max 10Gbit
++    $ devlink port function rate set pci/0000:82:00.1/32769 parent group1
 -- 
 2.45.0
 
