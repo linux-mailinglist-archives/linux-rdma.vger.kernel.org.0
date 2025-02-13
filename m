@@ -1,83 +1,83 @@
-Return-Path: <linux-rdma+bounces-7743-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7744-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E278A34CCD
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 19:04:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99C99A34CDF
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 19:05:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 540BB16C129
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 18:03:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ADA5188FFED
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 18:04:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 774ED24A046;
-	Thu, 13 Feb 2025 18:02:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5898924292E;
+	Thu, 13 Feb 2025 18:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="pUC9+w8a"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="uL5O9YoB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2064.outbound.protection.outlook.com [40.107.100.64])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2086.outbound.protection.outlook.com [40.107.223.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34202245B0A;
-	Thu, 13 Feb 2025 18:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 170DF24292A;
+	Thu, 13 Feb 2025 18:03:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.86
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739469773; cv=fail; b=T50z/GiQnGl5yTQF5k/s+QElu0rjx4ssXMIYYa7ayrdz8OdxeSzvALFrji2zFh5aRF11LF3qF3dBiJxSKFmvgDCj76ShoPaNeTcf8YQZNHHTu5PxtzdYDjFxHY8mlArxchOSVIQ2vypl357JoqFq7PgewtxZPGpKyTR09Lt2dUI=
+	t=1739469784; cv=fail; b=GVSNGu4pYsABaINJ10zODFvHwyLycxj4stk8NSfzQ9D3BDTpc1dgTBBlZLBa5mvoVqUK6SXkB11S2ugqaagHKEWkTyHEsvBTofm/LOXnaiIsiDp0L1wvyafqHIdLRxmFjMXgf/1ENyzyk/GQWXUlm6HAqlCIUkB0cSVma1NNyaU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739469773; c=relaxed/simple;
-	bh=JDdZxEL2Dk1D+Yd49KjG+qYggkE7GioW8jD4mMIeSkg=;
+	s=arc-20240116; t=1739469784; c=relaxed/simple;
+	bh=l+RFeF98hsmYMyhj2o/mtfYeRC4Pf36QPGXocLJCtfk=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pF7nAWTraYYb3gwugDMLPcLIUnGcC1K85ECi6ZsM1DFkjNmW/gWd9ZKy6YPxfo3TxnVmMd2r6mKw2ZPwcPLJBJUt4bwRCewaoUj1fzmWyU3vwGFmE+SYOUBjdIVKK1GqJ7atUps/gYz/rkzrpS9vPTOHNXLFhq2YH9pLJ1O2A7U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=pUC9+w8a; arc=fail smtp.client-ip=40.107.100.64
+	 MIME-Version:Content-Type; b=Zjl+Bh1/SqxoJPWBhVGz4Anw9e2vBoWEsdjB+o+TS0rq+7OdeOLwlL21hlsLNrV6WMXmg08oHv0OlHjCQwMfNrzMN3C8uA95wSQaCjof76vsoULSNWeyA+xeIN65x+zKSBTNT9pccHS5DPVelsNTm051hQ28jyau8LaxK0eQPQo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=uL5O9YoB; arc=fail smtp.client-ip=40.107.223.86
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=gf2BDT4CmT/k9SATKyABoZmIV/AMaZ7vB3BMlPP7ZSrFlkN7grxDU1K/TBoFpRlzq0DwoBfzCN2pFwhGzDlsMD0LS2vPGI1RRbuDqTDXibBzrd8RMGYY3pOYYq5uWzzYetBt2vBDVE/uGA3cDoagDxls5plEIkikninIJY4cT4gNnD5JvWCB1MEOWoFR8SeZZ4UXHWQtUrgYn9mJTCHZ51l1vNwF2gBionSMRVB0X1JjJbhVHsROBijzD2ruPEkSinGHLmF+8u7PT9enkiuFviEo+MQH/38L3lEDy5H6cH8pgnp9zYPXYaz3F/sijg06Z3poua3dGd/QmziSJqancw==
+ b=VwCns3oFUmI78VKHkwBHyPMftqtba3luE+kKZ1Ap/VkwMJ0PZeW3wqwSdNhf4LvorD6yFahIrXqP6eZNpnEGentzFzILQQFhg2xhJfepmzc28CrV2+4gZKJkQksxEMc1IsSlF/S2cDWcujSp+pj6xwTZ4vh8jvO82zvOFbxxMrfIZpEVy+Eio+ufuhXaLwpMtXfcfJaT4vLenEI2a9QiOnnc+tecByN7k1Ao5jflDmGeD34sCdWTQ2NNOB3ie5D1vVSUoeIEYokaEPKDxd2ycODRtwt8POwsYec1fyCVptKetesIcKnliLGy6X6j4xgJdIHT18wR0ZGQiIWfiX7leA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CxIEbbfgk6/pdgzha04CPEYMv2uUqhP5UfIjKKcBYM4=;
- b=pNabL2rcwVYg/NzqtLKGeyd9N4WBD9lsRtL1oewVeqO2qmf/+xAlYHqAGI9EWJYJfh9O03u7OQRqTa9Zu+kA3SNojUobDJPH84awU4jPfTkj1TiMtL4guybH55Fm79lsmRs666pcTQDeBOS7j6J1byeUMSMF87wT4fRZCZjIhtkSq7/LfSRqNC9GxdV+9ENhferb34SmPK2AtbG860e+2Io+l7HTXuH4iVOWsbHN2qqHEXTOBpzbzgEPdvsJy2rmlxRKxCfOKo3uPlTUFlQdQOf40oUopqQyRxmsbwHmcJJ80w+QvjlvIrG1/pNd0SlbR8C4AeupwCOzdup1D8azgg==
+ bh=LJA9WmaQT0Jbe7DCedFA8gxyY0GJ5FGvLgzw/cKptEE=;
+ b=ut9a1ci/kmCmqHz3UJ4XUJbiTPfre+j2hEkfOrcgctkgus2M+Odt+Z+l6GaLxK42Pv56lzwUqDjreFg3mNdwDsClQAO/hSSLgwUyx2ZQMoL/SwXhdr9ndcnacnn5hMkVTRdncZHv6NlyFcLskKUqREAma60D3UymB+B5MI1vCaemimMLKbakdbK5VpMxDXSZzlvSg3xaJ/4Ahc3Ay7QFHrLOgO71V9pBv+dmrjMeVBRMNCesOfLxPxyi9Tym3Vu8eFypqB23f07ifM0tslDxwjfjComsczbVwHVtnyRCwFx7GgBy9ooo4cThlpIZm5NmrGqlIHiPrPyHyzZNun3H4w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CxIEbbfgk6/pdgzha04CPEYMv2uUqhP5UfIjKKcBYM4=;
- b=pUC9+w8aVNLcbzOlZiFcJJEsqiVd86VESJdZd2kZ9LTTyAHX3knPOi2yi59CtRFSS6tk1TLtB307O/T5rph/K8yAnPyLGnX6cqLr4pe2sNYvbiHeq4nG+XZnOK3FEMOLk6ckdPlRjRmgfrYqm19ifzDTp4TXBX46tD9nVSw3Y+/Az9Dd0grjH16wvKGMVVbZErT8Ux+L0uWZ2dg0mABTV4BYilMP0US4MLy2PPm1t+ix3jIiMrVkUdwDC2SJMuQj9KaHrzrT1SrPEipFK3wy1MFs2i+GvGX26CtDC0l+COXUAgqs2pzgkYMFkb/GtsW/Ux2IXnaoMjbhY4nZrPIpeA==
-Received: from DS7PR03CA0225.namprd03.prod.outlook.com (2603:10b6:5:3ba::20)
- by DM6PR12MB4268.namprd12.prod.outlook.com (2603:10b6:5:223::15) with
+ bh=LJA9WmaQT0Jbe7DCedFA8gxyY0GJ5FGvLgzw/cKptEE=;
+ b=uL5O9YoBo3Dcnuj8ivUaZldVRssOnAnZqWyR3E8nDv0r7+b6AYg/GaiMSdkApqkdQ//rEE+m0X3D/ee5iQZf9IZJo5J845DIcGOF/dlGBfm+y6tBVXFjk2XLCkwAv5ocX4vO5YMfgRhKGSL7WWy4LTdGEHHx/jI9d5l2XKXTJOSTlmuqBBynY/RfzSWigzPbYwqaA933oKrRHLnRp/jZBqX4ANyBsIHVIUi/abXTIxnHSFhaL1Gy2ChlhuUt1Bnix7DWGXEUOo+GgnWhx17az7dd7x7yp76+fKOlXfT7Pb0sdlcB38hkV7sXt4MCZa135AufiCg7hjVvb47XUYXtMw==
+Received: from CH0P221CA0011.NAMP221.PROD.OUTLOOK.COM (2603:10b6:610:11c::28)
+ by PH0PR12MB7080.namprd12.prod.outlook.com (2603:10b6:510:21d::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.17; Thu, 13 Feb
- 2025 18:02:44 +0000
-Received: from DS2PEPF00003441.namprd04.prod.outlook.com
- (2603:10b6:5:3ba:cafe::2d) by DS7PR03CA0225.outlook.office365.com
- (2603:10b6:5:3ba::20) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.13; Thu, 13 Feb
+ 2025 18:02:56 +0000
+Received: from CH1PEPF0000AD7C.namprd04.prod.outlook.com
+ (2603:10b6:610:11c:cafe::24) by CH0P221CA0011.outlook.office365.com
+ (2603:10b6:610:11c::28) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.8445.13 via Frontend Transport; Thu,
- 13 Feb 2025 18:02:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ 13 Feb 2025 18:02:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- DS2PEPF00003441.mail.protection.outlook.com (10.167.17.68) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CH1PEPF0000AD7C.mail.protection.outlook.com (10.167.244.84) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8445.10 via Frontend Transport; Thu, 13 Feb 2025 18:02:43 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.8445.10 via Frontend Transport; Thu, 13 Feb 2025 18:02:54 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 13 Feb
- 2025 10:02:26 -0800
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 10:02:32 -0800
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 13 Feb
- 2025 10:02:26 -0800
+ 2025 10:02:31 -0800
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Thu, 13
- Feb 2025 10:02:22 -0800
+ Feb 2025 10:02:26 -0800
 From: Tariq Toukan <tariqt@nvidia.com>
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
@@ -89,9 +89,9 @@ CC: Cosmin Ratiu <cratiu@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>,
 	<leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
 	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linux-doc@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-Subject: [PATCH net-next 04/10] devlink: Introduce shared rate domains
-Date: Thu, 13 Feb 2025 20:01:28 +0200
-Message-ID: <20250213180134.323929-5-tariqt@nvidia.com>
+Subject: [PATCH net-next 05/10] devlink: Allow specifying parent device for rate commands
+Date: Thu, 13 Feb 2025 20:01:29 +0200
+Message-ID: <20250213180134.323929-6-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20250213180134.323929-1-tariqt@nvidia.com>
 References: <20250213180134.323929-1-tariqt@nvidia.com>
@@ -106,318 +106,414 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: AnonymousSubmission
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003441:EE_|DM6PR12MB4268:EE_
-X-MS-Office365-Filtering-Correlation-Id: a77181bd-571b-4295-2ec8-08dd4c589d93
+X-MS-TrafficTypeDiagnostic: CH1PEPF0000AD7C:EE_|PH0PR12MB7080:EE_
+X-MS-Office365-Filtering-Correlation-Id: f3dee10d-0891-4cf5-e822-08dd4c58a423
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|30052699003|82310400026|1800799024|7416014|376014|36860700013;
+	BCL:0;ARA:13230040|1800799024|36860700013|7416014|376014|82310400026;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?y0PZuCPwmN3j6U1ONKAb5ehTBETIdKshNIZ2m6ExMPowbS0O98wGs+pZI0U7?=
- =?us-ascii?Q?8vUq/0PpxBIlZ3AAHejtASbTiBbB5AJP8cZHWi7B6unCbIYyZX2W2TmjIgzK?=
- =?us-ascii?Q?eeFLqv+ncucjJf/dtRO7Cb1w20vNJCRqU5ph7+uXjddRv3LHlB1+d4nCTP9M?=
- =?us-ascii?Q?mt3A5l7hDeZa/V1rjmzNMSIZTxuOWFnSPCShLWcuOL+NLITaM0NjhFzMTFZ0?=
- =?us-ascii?Q?BXrZfekilt7sktBzpV/sIhuX/n9iS/12dNy1LytZ8sNe2nzIEy/0yzL2OusL?=
- =?us-ascii?Q?+bDCcQI4jqH9Oxy7g2goG91KktVGGR4LDhgEwGsMh4qgBgIe7JfxDwr+XWKu?=
- =?us-ascii?Q?9Yt1bS6cwJ7X50XRD2I3OUKydaVx07mdJqlA++Du0RLdC5xOpYCTqCU7/jbX?=
- =?us-ascii?Q?bLoO/r9gd++1WLrsgi9YWxHsu+2fuOmlhrY8U0di14b26DZDU+Yk4uBTTjSj?=
- =?us-ascii?Q?ugh86IgM/itKGxQWAOCIO2g08/fLHgUxU2DpAmgSvvgxGEQQuql80aqiZ097?=
- =?us-ascii?Q?GB7400P6tIKR34oUx1ExvJNNM3ySBUQ9kjnAOstbFJBJqT8L5Nk4kBgy3wnE?=
- =?us-ascii?Q?1iqaaduqQ/5mnZ0BA7V9WLOUwvzP0A6bbrp9ux6NINqfyPOAahtQZ3L4ljoU?=
- =?us-ascii?Q?o36OCJO2KvPr+zpCZVavf9IESITa3KU1+h1qTJKmLq9fMLWUQ2aD6Pr9Nvcw?=
- =?us-ascii?Q?FOEEDhlOJH8/AiQO0sFGSs0xo1lTkAT0bg8rDbAoveWgwOu5qrDs1aZnXIab?=
- =?us-ascii?Q?5N6yaXb9VqPiPcUcLX97b/hWpDKi0Phd/6/9fFsNMvtAd83VVS6J1/Jy3CzS?=
- =?us-ascii?Q?NjMF2yyefk4f5Xgdc4aZxHT58b8+5YpQkVMV8rmVHlspAwU6vxKbZbZ3iBi9?=
- =?us-ascii?Q?UmyISOAV+MJB9iDtgEG16SbCoAUcIczJosy9QxoMDPuhOd3BFP/OqRYgPdGB?=
- =?us-ascii?Q?6WW28fa8jeYitdc6Ldypymyz/Z/17ujGaLCVbXCCNkIa9lJbyuu5k9e4Rrw1?=
- =?us-ascii?Q?f5U8aObW4KmW2TaUpSPb4bPFE37PaPYWvZKotxnPweEaskQZB6aP9HJC2Maw?=
- =?us-ascii?Q?KdEpjiKLHVUPKvWoL/Q3AA0TI9LzGuiM9AyhVijCbe306+goqLIbuI1P777x?=
- =?us-ascii?Q?L+mL7QAHsSsDCWLjiA2KUgt/oyaKb22pwZni0sSW7/eJrOnY+wmvt1ZG4rcx?=
- =?us-ascii?Q?6dYqc3T0+SmwGcikGZcN5jP/+YZ3fCiaUid3RHR/+wZOKHjgKbzITDJVOKP7?=
- =?us-ascii?Q?27sRKtkcJH9JMkvFt+Fdi0u5yLWCnN1zBTMdSeG1rnTPj3Teseza2hszAFoX?=
- =?us-ascii?Q?0zYe5B4n8a9DdpPmyDpUi2e84RKqAmaIkQGFocowZioiIEGFpcZMRO4TvdVz?=
- =?us-ascii?Q?CEPBUTJga+NaOucfQzGJjd44O1cmYsUWjOH4mwgYmlhYxtX6q2wgumVudeXl?=
- =?us-ascii?Q?U0CbgIayxuaN6BTS+9vggt1chi/U1dyFbKWJCtdH69Zi27KSGvgbRcpo6Q5a?=
- =?us-ascii?Q?kpYTljwVI6BRVsg=3D?=
+	=?us-ascii?Q?4jU0UaI0o2jH1u3lCC4U9glI9gRpmgf5ol8fBwhsEUCIEtiiHZEFj/dUUhLY?=
+ =?us-ascii?Q?b28Lglw27+2uPQ366V6XBp2QbIJAqDftF+ozw0yWl9IlN7DeV/V8iRA6oEg/?=
+ =?us-ascii?Q?JqdyPEAqL7NBKwHrNEEIHR/bkL39K2KNceO9ZTnZrzFE3AV3qczXV3WSiFZd?=
+ =?us-ascii?Q?hJT08pvEAJKS73xrycnoTbXjvEvORxH1D000D/wUFkfxZYdgx3Iii/Eo/mV9?=
+ =?us-ascii?Q?7WaZMW9aWhAhXNOujY9oFJRxdwiTLkSfs7KEDocJMVeeyqa0zz3g8tAasDpc?=
+ =?us-ascii?Q?98n1+PWuWZmqomhxm3+ysCCOMD5LCbx8XFIx8shRpuoDSk7QIJW77eameM1r?=
+ =?us-ascii?Q?oTItBP5m4ikjrlQnRSUAxLNcF22H6Uc3C4NN722N95WUOL00p2/tnWbsBlNc?=
+ =?us-ascii?Q?Yxmw3zSWma3FJKQztpfz6rScWyk5yZrsvl4OEL57xzl6WTEuCIYs4fOQ4lWh?=
+ =?us-ascii?Q?/ARtRq1BPfdiXSLNaJ1d52dO7hle9mJti2W0/h9eE3d3tHMXDw++EQF7ojIL?=
+ =?us-ascii?Q?atD46KV0NCQ9c8k/sCSc59a/YF/TFzjjjymUrA4g9ZcAUzW99191D/D9ORpB?=
+ =?us-ascii?Q?EQ+0RrTH/L2wgsy2wOGhOkPm7BeLpQTAgHH9xBzwp86OHNTU4MpmQZdUzn3e?=
+ =?us-ascii?Q?p6v7O6HaP3N5hbcxgWPOrP7DOXUljtNqBEEPEDj971/YrUj5qXSJC5irf1bB?=
+ =?us-ascii?Q?ysE0/2ZDNK686M/jK10a5yENOOAGRipp8Y3J2L6NQAnGNlXL6Zin1x4+qiLq?=
+ =?us-ascii?Q?me5iqgRAklb6LaRmP29VnOBwduC/Q3kCotbA277nVMM4Bo2A46kgTzOYANwc?=
+ =?us-ascii?Q?R6leSDvdulSfaSfTFEMictwETe30MFtRD0/tX9QxrbPDZlX4PJ8dGPrL2Qfz?=
+ =?us-ascii?Q?j6Wjlgsj1OkITc8z/XHXlulw5whL8KZwECyFa+WTyzc37YKsdLdHjbFSHdAT?=
+ =?us-ascii?Q?0qLCEPLMuhxqSs9aVsCO4zRBM0NWIpzFJn2osCPMPihrlgaleiEdHNgwe/uJ?=
+ =?us-ascii?Q?tT9LhVpwWq9VizGm/f+fiW5Ibg2KJ7TiCdFAbkl7ZlX5jsjix6i6ZauJILzY?=
+ =?us-ascii?Q?Io+Jf3htFiWD4ZviTs2egi8wCjaiGiG3pWMk+ua/jiqBge/2kpZX0hmGT7FK?=
+ =?us-ascii?Q?x+v3pkhisD8qWkuc3lm+i/MBya8FqDNoRZbVMj8SgV08Uxs2xIkhiJmJX0C4?=
+ =?us-ascii?Q?rwsASZUlWKNM7c8c/WE+WhNIQYweCKRLPBpDPIfCM88Z//ilvcXCq8/i46FX?=
+ =?us-ascii?Q?W6utlvbJ52bjsS1XzGgUoxySPHoQYgYggadSTshHbbNUPWZhbbWZvkqFe4ml?=
+ =?us-ascii?Q?MD8g6jy2uFl98AbD2al47drX2ExOUoMkRlXRgzP4SuEb0C3CF+TLSzidRL2V?=
+ =?us-ascii?Q?fdp3la/B1gF2Sd0GNOzA529GzKaHyPHUeiMdMa9dJzNba7avQdsPIuuQsXlv?=
+ =?us-ascii?Q?Y42TP6LgI9NH8p8qJMKZcZ+W3b2NGbnrTEYhq6XVcW3zlBaLib7x0bXQtpvr?=
+ =?us-ascii?Q?RLpNA9tG5xthbQo=3D?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(30052699003)(82310400026)(1800799024)(7416014)(376014)(36860700013);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(7416014)(376014)(82310400026);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2025 18:02:43.9886
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2025 18:02:54.9409
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a77181bd-571b-4295-2ec8-08dd4c589d93
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3dee10d-0891-4cf5-e822-08dd4c58a423
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF00003441.namprd04.prod.outlook.com
+	CH1PEPF0000AD7C.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4268
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7080
 
 From: Cosmin Ratiu <cratiu@nvidia.com>
 
-The underlying idea is modeling a piece of hardware which:
-1. Exposes multiple functions as separate devlink objects.
-2. Is capable of instantiating a transmit scheduling tree spanning
-   multiple functions.
+Previously, the parent device was assumed to be the same one as one
+owning the rate node being manipulated.
 
-Modeling this requires devlink rate nodes with parents across other
-devlink objects. A naive approach that relies on the current
-one-lock-per-devlink model is impossible, as it would require in some
-cases acquiring multiple devlink locks in the correct order.
+This patch expands that by allowing rate commands to accept two
+additional arguments, the parent bus name and the parent dev name.
+Besides introducing these two attributes in the uapi, this patch:
+- adds plumbing in the 'rate-new' and 'rate-set' commands to access
+  these attributes.
+- extends devlink-nl-pre-doit with getting and saving a reference to the
+  parent dev in info->user_ptr[1].
+  The parent dev needs to exist and be registered and is then unlocked
+  but not put. This ensures that it will stay alive until the end of the
+  request.
+- changes devlink-nl-post-doit with putting the parent reference, if
+  obtained.
 
-Based on the preliminary patches in this series, this commit introduces
-the concept of a shared rate domain.
+Example usage with ynl:
+Setting parent to a rate node on another device
+./tools/net/ynl/cli.py --spec Documentation/netlink/specs/devlink.yaml \
+  --do rate-set --json '{ \
+    "bus-name": "pci", \
+    "dev-name": "0000:08:00.1", \
+    "port-index": 65537, \
+    "parent-dev-bus-name": "pci", \
+    "parent-dev-name": "0000:08:00.0", \
+    "rate-parent-node-name": "group1" \
+  }'
 
-1. A shared rate domain stores rate nodes for a piece of hardware that
-   has the properties described at the beginning.
-2. A shared rate domain is identified by the devlink operations pointer
-   (a proxy for the device type) and a unique u64 hardware identifier
-   provided by the driver.
-3. There is a global registry of reference counted shared rate domains.
-4. A devlink object starts out with a private rate domain, and can be
-   switched once to use a shared rate domain with
-   devlink_shared_rate_domain_init. Further calls do nothing.
-5. Shared rate domains have an additional mutex serializing access to
-   rate nodes, acquired by the previously introduced functions
-   devl_rate_domain_lock and devl_rate_domain_unlock.
+Getting the rate details:
+./tools/net/ynl/cli.py --spec Documentation/netlink/specs/devlink.yaml \
+  --do rate-get --json '{ \
+    "bus-name": "pci", \
+    "dev-name": "0000:08:00.1", \
+    "port-index": 65537 \
+  }'
 
-These new code paths are unused for now. A caller to
-devlink_shared_rate_domain_init will be added in a subsequent patch.
+Output:
+{'bus-name': 'pci',
+ 'dev-name': '0000:08:00.1',
+ 'parent-dev-bus-name': 'pci',
+ 'parent-dev-name': '0000:08:00.0',
+ 'port-index': 65537,
+ 'rate-parent-node-name': 'group1',
+ 'rate-tc-bws': <snipped for brevity>
+ 'rate-tx-max': 0,
+ 'rate-tx-priority': 0,
+ 'rate-tx-share': 0,
+ 'rate-tx-weight': 0,
+ 'rate-type': 'leaf'}
 
 Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
 Reviewed-by: Carolina Jubran <cjubran@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- include/net/devlink.h       |  8 ++++
- net/devlink/core.c          | 79 ++++++++++++++++++++++++++++++++++++-
- net/devlink/dev.c           |  2 +-
- net/devlink/devl_internal.h | 26 ++++++++++--
- net/devlink/rate.c          | 15 +++++++
- 5 files changed, 124 insertions(+), 6 deletions(-)
+ Documentation/netlink/specs/devlink.yaml | 18 ++++--
+ include/uapi/linux/devlink.h             |  3 +
+ net/devlink/netlink.c                    | 74 +++++++++++++++++++-----
+ net/devlink/netlink_gen.c                | 20 ++++---
+ net/devlink/netlink_gen.h                |  7 +++
+ 5 files changed, 95 insertions(+), 27 deletions(-)
 
-diff --git a/include/net/devlink.h b/include/net/devlink.h
-index b8783126c1ed..a9675c1810e6 100644
---- a/include/net/devlink.h
-+++ b/include/net/devlink.h
-@@ -1561,6 +1561,14 @@ void devlink_register(struct devlink *devlink);
- void devlink_unregister(struct devlink *devlink);
- void devlink_free(struct devlink *devlink);
+diff --git a/Documentation/netlink/specs/devlink.yaml b/Documentation/netlink/specs/devlink.yaml
+index 09fbb4c03fc8..252db0f080ba 100644
+--- a/Documentation/netlink/specs/devlink.yaml
++++ b/Documentation/netlink/specs/devlink.yaml
+@@ -820,6 +820,12 @@ attribute-sets:
+       -
+         name: region-direct
+         type: flag
++      -
++        name: parent-dev-bus-name
++        type: string
++      -
++        name: parent-dev-name
++        type: string
  
-+/* Can be used to tell devlink that shared rate domains are supported.
-+ * The same id needs to be provided for devlink objects that can share
-+ * rate nodes in hw (e.g. contain nodes with parents in other devlink objects).
-+ * This requires holding the devlink lock and can only be called once per object.
-+ * Rate node relationships across different rate domains are not supported.
-+ */
-+int devlink_shared_rate_domain_init(struct devlink *devlink, u64 id);
-+
- /**
-  * struct devlink_port_ops - Port operations
-  * @port_split: Callback used to split the port into multiple ones.
-diff --git a/net/devlink/core.c b/net/devlink/core.c
-index 06a2e2dce558..9d374d84225a 100644
---- a/net/devlink/core.c
-+++ b/net/devlink/core.c
-@@ -289,6 +289,80 @@ void devl_unlock(struct devlink *devlink)
- }
- EXPORT_SYMBOL_GPL(devl_unlock);
+   -
+     name: dl-dev-stats
+@@ -2137,8 +2143,8 @@ operations:
+       dont-validate: [ strict ]
+       flags: [ admin-perm ]
+       do:
+-        pre: devlink-nl-pre-doit
+-        post: devlink-nl-post-doit
++        pre: devlink-nl-pre-doit-parent-dev-optional
++        post: devlink-nl-post-doit-parent-dev-optional
+         request:
+           attributes:
+             - bus-name
+@@ -2149,6 +2155,8 @@ operations:
+             - rate-tx-priority
+             - rate-tx-weight
+             - rate-parent-node-name
++            - parent-dev-bus-name
++            - parent-dev-name
  
-+/* A global data struct with all shared rate domains. */
-+static struct {
-+	struct mutex lock;    /* Acquired after the devlink lock. */
-+	struct list_head rate_domains;
-+} devlink_rate_domains = {
-+	.lock = __MUTEX_INITIALIZER(devlink_rate_domains.lock),
-+	.rate_domains = LIST_HEAD_INIT(devlink_rate_domains.rate_domains),
-+};
+     -
+       name: rate-new
+@@ -2157,8 +2165,8 @@ operations:
+       dont-validate: [ strict ]
+       flags: [ admin-perm ]
+       do:
+-        pre: devlink-nl-pre-doit
+-        post: devlink-nl-post-doit
++        pre: devlink-nl-pre-doit-parent-dev-optional
++        post: devlink-nl-post-doit-parent-dev-optional
+         request:
+           attributes:
+             - bus-name
+@@ -2169,6 +2177,8 @@ operations:
+             - rate-tx-priority
+             - rate-tx-weight
+             - rate-parent-node-name
++            - parent-dev-bus-name
++            - parent-dev-name
+ 
+     -
+       name: rate-del
+diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
+index 9401aa343673..a7b62e53b7eb 100644
+--- a/include/uapi/linux/devlink.h
++++ b/include/uapi/linux/devlink.h
+@@ -614,6 +614,9 @@ enum devlink_attr {
+ 
+ 	DEVLINK_ATTR_REGION_DIRECT,		/* flag */
+ 
++	DEVLINK_ATTR_PARENT_DEV_BUS_NAME,	/* string */
++	DEVLINK_ATTR_PARENT_DEV_NAME,		/* string */
 +
-+static bool devlink_rate_domain_eq(struct devlink_rate_domain *rate_domain,
-+				   const struct devlink_ops *ops, u64 id)
-+{
-+	return rate_domain->ops == ops && rate_domain->id == id;
-+}
-+
-+int devlink_shared_rate_domain_init(struct devlink *devlink, u64 id)
-+{
-+	struct devlink_rate_domain *rate_domain;
-+	int err = 0;
-+
-+	devl_assert_locked(devlink);
-+
-+	if (devlink->rate_domain->shared) {
-+		if (devlink_rate_domain_eq(devlink->rate_domain, devlink->ops, id))
-+			return 0;
-+		return -EEXIST;
-+	}
-+	if (!list_empty(&devlink->rate_domain->rate_list))
-+		return -EINVAL;
-+
-+	mutex_lock(&devlink_rate_domains.lock);
-+	list_for_each_entry(rate_domain, &devlink_rate_domains.rate_domains, list) {
-+		if (devlink_rate_domain_eq(rate_domain, devlink->ops, id)) {
-+			refcount_inc(&rate_domain->refcount);
-+			goto replace_domain;
-+		}
-+	}
-+
-+	/* Shared domain not found, create one. */
-+	rate_domain = kvzalloc(sizeof(*rate_domain), GFP_KERNEL);
-+	if (!rate_domain) {
-+		err = -ENOMEM;
-+		goto unlock;
-+	}
-+	rate_domain->shared = true;
-+	rate_domain->ops = devlink->ops;
-+	rate_domain->id = id;
-+	mutex_init(&rate_domain->lock);
-+	INIT_LIST_HEAD(&rate_domain->rate_list);
-+	refcount_set(&rate_domain->refcount, 1);
-+	list_add_tail(&rate_domain->list, &devlink_rate_domains.rate_domains);
-+replace_domain:
-+	kvfree(devlink->rate_domain);
-+	devlink->rate_domain = rate_domain;
-+unlock:
-+	mutex_unlock(&devlink_rate_domains.lock);
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(devlink_shared_rate_domain_init);
-+
-+static void devlink_rate_domain_put(struct devlink_rate_domain *rate_domain)
-+{
-+	if (rate_domain->shared) {
-+		if (!refcount_dec_and_test(&rate_domain->refcount))
-+			return;
-+
-+		WARN_ON(!list_empty(&rate_domain->rate_list));
-+		mutex_lock(&devlink_rate_domains.lock);
-+		list_del(&rate_domain->list);
-+		mutex_unlock(&devlink_rate_domains.lock);
-+	}
-+	kvfree(rate_domain);
-+}
-+
- /**
-  * devlink_try_get() - try to obtain a reference on a devlink instance
-  * @devlink: instance to reference
-@@ -314,7 +388,7 @@ static void devlink_release(struct work_struct *work)
- 	mutex_destroy(&devlink->lock);
- 	lockdep_unregister_key(&devlink->lock_key);
- 	put_device(devlink->dev);
--	kvfree(devlink->rate_domain);
-+	devlink_rate_domain_put(devlink->rate_domain);
- 	kvfree(devlink);
+ 	/* Add new attributes above here, update the spec in
+ 	 * Documentation/netlink/specs/devlink.yaml and re-generate
+ 	 * net/devlink/netlink_gen.c.
+diff --git a/net/devlink/netlink.c b/net/devlink/netlink.c
+index 593605c1b1ef..d8e7e23afce2 100644
+--- a/net/devlink/netlink.c
++++ b/net/devlink/netlink.c
+@@ -12,6 +12,7 @@
+ #define DEVLINK_NL_FLAG_NEED_PORT		BIT(0)
+ #define DEVLINK_NL_FLAG_NEED_DEVLINK_OR_PORT	BIT(1)
+ #define DEVLINK_NL_FLAG_NEED_DEV_LOCK		BIT(2)
++#define DEVLINK_NL_FLAG_NEED_PARENT_DEV		BIT(3)
+ 
+ static const struct genl_multicast_group devlink_nl_mcgrps[] = {
+ 	[DEVLINK_MCGRP_CONFIG] = { .name = DEVLINK_GENL_MCGRP_CONFIG_NAME },
+@@ -177,20 +178,15 @@ int devlink_nl_msg_reply_and_new(struct sk_buff **msg, struct genl_info *info)
+ 	return 0;
  }
  
-@@ -428,6 +502,7 @@ struct devlink *devlink_alloc_ns(const struct devlink_ops *ops,
- 	devlink->rate_domain = kvzalloc(sizeof(*devlink->rate_domain), GFP_KERNEL);
- 	if (!devlink->rate_domain)
- 		goto err_rate_domain;
-+	devlink->rate_domain->shared = false;
- 	INIT_LIST_HEAD(&devlink->rate_domain->rate_list);
+-struct devlink *
+-devlink_get_from_attrs_lock(struct net *net, struct nlattr **attrs,
+-			    bool dev_lock)
++static struct devlink *
++devlink_get_lock(struct net *net, struct nlattr *bus_attr, struct nlattr *dev_attr, bool dev_lock)
+ {
++	char *busname, *devname;
+ 	struct devlink *devlink;
+ 	unsigned long index;
+-	char *busname;
+-	char *devname;
+-
+-	if (!attrs[DEVLINK_ATTR_BUS_NAME] || !attrs[DEVLINK_ATTR_DEV_NAME])
+-		return ERR_PTR(-EINVAL);
  
- 	ret = xa_alloc_cyclic(&devlinks, &devlink->index, devlink, xa_limit_31b,
-@@ -484,7 +559,7 @@ void devlink_free(struct devlink *devlink)
- 	WARN_ON(!list_empty(&devlink->resource_list));
- 	WARN_ON(!list_empty(&devlink->dpipe_table_list));
- 	WARN_ON(!list_empty(&devlink->sb_list));
--	WARN_ON(!list_empty(&devlink->rate_domain->rate_list));
-+	WARN_ON(devlink_rates_check(devlink));
- 	WARN_ON(!list_empty(&devlink->linecard_list));
- 	WARN_ON(!xa_empty(&devlink->ports));
+-	busname = nla_data(attrs[DEVLINK_ATTR_BUS_NAME]);
+-	devname = nla_data(attrs[DEVLINK_ATTR_DEV_NAME]);
++	busname = nla_data(bus_attr);
++	devname = nla_data(dev_attr);
  
-diff --git a/net/devlink/dev.c b/net/devlink/dev.c
-index c926c75cc10d..84353a85e8fe 100644
---- a/net/devlink/dev.c
-+++ b/net/devlink/dev.c
-@@ -434,7 +434,7 @@ static void devlink_reload_reinit_sanity_check(struct devlink *devlink)
- 	WARN_ON(!list_empty(&devlink->trap_list));
- 	WARN_ON(!list_empty(&devlink->dpipe_table_list));
- 	WARN_ON(!list_empty(&devlink->sb_list));
--	WARN_ON(!list_empty(&devlink->rate_domain->rate_list));
-+	WARN_ON(devlink_rates_check(devlink));
- 	WARN_ON(!list_empty(&devlink->linecard_list));
- 	WARN_ON(!xa_empty(&devlink->ports));
- }
-diff --git a/net/devlink/devl_internal.h b/net/devlink/devl_internal.h
-index fae81dd6953f..7401aab274e5 100644
---- a/net/devlink/devl_internal.h
-+++ b/net/devlink/devl_internal.h
-@@ -30,9 +30,20 @@ struct devlink_dev_stats {
- 	u32 remote_reload_stats[DEVLINK_RELOAD_STATS_ARRAY_SIZE];
- };
- 
--/* Stores devlink rates associated with a rate domain. */
-+/* Stores devlink rates associated with a rate domain.
-+ * Multiple devlink objects may share the same domain (when 'shared' is true)
-+ * and rate nodes can have members from multiple devices.
-+ */
- struct devlink_rate_domain {
-+	bool shared;
-+	struct list_head list;
- 	struct list_head rate_list;
-+	/* Fields below are only used for shared rate domains. */
-+	const struct devlink_ops *ops;
-+	u64 id;
-+	refcount_t refcount;
-+	/* Serializes access to rates. */
-+	struct mutex lock;
- };
- 
- struct devlink {
-@@ -121,9 +132,17 @@ static inline void devl_dev_unlock(struct devlink *devlink, bool dev_lock)
- 		device_unlock(devlink->dev);
+ 	devlinks_xa_for_each_registered_get(net, index, devlink) {
+ 		if (strcmp(devlink->dev->bus->name, busname) == 0 &&
+@@ -206,19 +202,45 @@ devlink_get_from_attrs_lock(struct net *net, struct nlattr **attrs,
+ 	return ERR_PTR(-ENODEV);
  }
  
--static inline void devl_rate_domain_lock(struct devlink *devlink) { }
-+static inline void devl_rate_domain_lock(struct devlink *devlink)
++struct devlink *
++devlink_get_from_attrs_lock(struct net *net, struct nlattr **attrs, bool dev_lock)
 +{
-+	if (devlink->rate_domain->shared)
-+		mutex_lock(&devlink->rate_domain->lock);
++	if (!attrs[DEVLINK_ATTR_BUS_NAME] || !attrs[DEVLINK_ATTR_DEV_NAME])
++		return ERR_PTR(-EINVAL);
++
++	return devlink_get_lock(net, attrs[DEVLINK_ATTR_BUS_NAME],
++				attrs[DEVLINK_ATTR_DEV_NAME], dev_lock);
 +}
++
+ static int __devlink_nl_pre_doit(struct sk_buff *skb, struct genl_info *info,
+ 				 u8 flags)
+ {
++	bool parent_dev = flags & DEVLINK_NL_FLAG_NEED_PARENT_DEV;
+ 	bool dev_lock = flags & DEVLINK_NL_FLAG_NEED_DEV_LOCK;
++	struct devlink *devlink, *parent_devlink = NULL;
++	struct nlattr **attrs = info->attrs;
+ 	struct devlink_port *devlink_port;
+-	struct devlink *devlink;
+ 	int err;
  
--static inline void devl_rate_domain_unlock(struct devlink *devlink) { }
-+static inline void devl_rate_domain_unlock(struct devlink *devlink)
-+{
-+	if (devlink->rate_domain->shared)
-+		mutex_unlock(&devlink->rate_domain->lock);
-+}
+-	devlink = devlink_get_from_attrs_lock(genl_info_net(info), info->attrs,
+-					      dev_lock);
+-	if (IS_ERR(devlink))
+-		return PTR_ERR(devlink);
++	if (parent_dev && attrs[DEVLINK_ATTR_PARENT_DEV_BUS_NAME] &&
++	    attrs[DEVLINK_ATTR_PARENT_DEV_NAME]) {
++		parent_devlink = devlink_get_lock(genl_info_net(info),
++						  attrs[DEVLINK_ATTR_PARENT_DEV_BUS_NAME],
++						  attrs[DEVLINK_ATTR_PARENT_DEV_NAME], dev_lock);
++		if (IS_ERR(parent_devlink))
++			return PTR_ERR(parent_devlink);
++		info->user_ptr[1] = parent_devlink;
++		/* Drop the parent devlink lock, but don't put it just yet.
++		 * This will keep it alive until the end of the request.
++		 */
++		devl_dev_unlock(parent_devlink, dev_lock);
++	}
  
- typedef void devlink_rel_notify_cb_t(struct devlink *devlink, u32 obj_index);
- typedef void devlink_rel_cleanup_cb_t(struct devlink *devlink, u32 obj_index,
-@@ -307,6 +326,7 @@ int devlink_resources_validate(struct devlink *devlink,
- 
- /* Rates */
- int devlink_rate_nodes_check(struct devlink *devlink, struct netlink_ext_ack *extack);
-+int devlink_rates_check(struct devlink *devlink);
- 
- /* Linecards */
- unsigned int devlink_linecard_index(struct devlink_linecard *linecard);
-diff --git a/net/devlink/rate.c b/net/devlink/rate.c
-index 54e6a9893e3d..38f18216eb80 100644
---- a/net/devlink/rate.c
-+++ b/net/devlink/rate.c
-@@ -621,6 +621,21 @@ int devlink_rate_nodes_check(struct devlink *devlink, struct netlink_ext_ack *ex
++	devlink = devlink_get_from_attrs_lock(genl_info_net(info), attrs, dev_lock);
++	if (IS_ERR(devlink)) {
++		err = PTR_ERR(devlink);
++		goto parent_put;
++	}
+ 	info->user_ptr[0] = devlink;
+ 	if (flags & DEVLINK_NL_FLAG_NEED_PORT) {
+ 		devlink_port = devlink_port_get_from_info(devlink, info);
+@@ -237,6 +259,9 @@ static int __devlink_nl_pre_doit(struct sk_buff *skb, struct genl_info *info,
+ unlock:
+ 	devl_dev_unlock(devlink, dev_lock);
+ 	devlink_put(devlink);
++parent_put:
++	if (parent_dev && parent_devlink)
++		devlink_put(parent_devlink);
  	return err;
  }
  
-+int devlink_rates_check(struct devlink *devlink)
+@@ -265,6 +290,13 @@ int devlink_nl_pre_doit_port_optional(const struct genl_split_ops *ops,
+ 	return __devlink_nl_pre_doit(skb, info, DEVLINK_NL_FLAG_NEED_DEVLINK_OR_PORT);
+ }
+ 
++int devlink_nl_pre_doit_parent_dev_optional(const struct genl_split_ops *ops,
++					    struct sk_buff *skb,
++					    struct genl_info *info)
 +{
-+	struct devlink_rate *devlink_rate;
-+	int err = 0;
-+
-+	devl_rate_domain_lock(devlink);
-+	list_for_each_entry(devlink_rate, &devlink->rate_domain->rate_list, list)
-+		if (devlink_rate->devlink == devlink) {
-+			err = -EBUSY;
-+			break;
-+		}
-+	devl_rate_domain_unlock(devlink);
-+	return err;
++	return __devlink_nl_pre_doit(skb, info, DEVLINK_NL_FLAG_NEED_PARENT_DEV);
 +}
 +
- /**
-  * devl_rate_node_create - create devlink rate node
-  * @devlink: devlink instance
+ static void __devlink_nl_post_doit(struct sk_buff *skb, struct genl_info *info,
+ 				   u8 flags)
+ {
+@@ -274,6 +306,10 @@ static void __devlink_nl_post_doit(struct sk_buff *skb, struct genl_info *info,
+ 	devlink = info->user_ptr[0];
+ 	devl_dev_unlock(devlink, dev_lock);
+ 	devlink_put(devlink);
++	if ((flags & DEVLINK_NL_FLAG_NEED_PARENT_DEV) && info->user_ptr[1]) {
++		devlink = info->user_ptr[1];
++		devlink_put(devlink);
++	}
+ }
+ 
+ void devlink_nl_post_doit(const struct genl_split_ops *ops,
+@@ -289,6 +325,14 @@ devlink_nl_post_doit_dev_lock(const struct genl_split_ops *ops,
+ 	__devlink_nl_post_doit(skb, info, DEVLINK_NL_FLAG_NEED_DEV_LOCK);
+ }
+ 
++void
++devlink_nl_post_doit_parent_dev_optional(const struct genl_split_ops *ops,
++					 struct sk_buff *skb,
++					 struct genl_info *info)
++{
++	__devlink_nl_post_doit(skb, info, DEVLINK_NL_FLAG_NEED_PARENT_DEV);
++}
++
+ static int devlink_nl_inst_single_dumpit(struct sk_buff *msg,
+ 					 struct netlink_callback *cb, int flags,
+ 					 devlink_nl_dump_one_func_t *dump_one,
+diff --git a/net/devlink/netlink_gen.c b/net/devlink/netlink_gen.c
+index f9786d51f68f..2dc82cc9a0b1 100644
+--- a/net/devlink/netlink_gen.c
++++ b/net/devlink/netlink_gen.c
+@@ -496,7 +496,7 @@ static const struct nla_policy devlink_rate_get_dump_nl_policy[DEVLINK_ATTR_DEV_
+ };
+ 
+ /* DEVLINK_CMD_RATE_SET - do */
+-static const struct nla_policy devlink_rate_set_nl_policy[DEVLINK_ATTR_RATE_TX_WEIGHT + 1] = {
++static const struct nla_policy devlink_rate_set_nl_policy[DEVLINK_ATTR_PARENT_DEV_NAME + 1] = {
+ 	[DEVLINK_ATTR_BUS_NAME] = { .type = NLA_NUL_STRING, },
+ 	[DEVLINK_ATTR_DEV_NAME] = { .type = NLA_NUL_STRING, },
+ 	[DEVLINK_ATTR_RATE_NODE_NAME] = { .type = NLA_NUL_STRING, },
+@@ -505,10 +505,12 @@ static const struct nla_policy devlink_rate_set_nl_policy[DEVLINK_ATTR_RATE_TX_W
+ 	[DEVLINK_ATTR_RATE_TX_PRIORITY] = { .type = NLA_U32, },
+ 	[DEVLINK_ATTR_RATE_TX_WEIGHT] = { .type = NLA_U32, },
+ 	[DEVLINK_ATTR_RATE_PARENT_NODE_NAME] = { .type = NLA_NUL_STRING, },
++	[DEVLINK_ATTR_PARENT_DEV_BUS_NAME] = { .type = NLA_NUL_STRING, },
++	[DEVLINK_ATTR_PARENT_DEV_NAME] = { .type = NLA_NUL_STRING, },
+ };
+ 
+ /* DEVLINK_CMD_RATE_NEW - do */
+-static const struct nla_policy devlink_rate_new_nl_policy[DEVLINK_ATTR_RATE_TX_WEIGHT + 1] = {
++static const struct nla_policy devlink_rate_new_nl_policy[DEVLINK_ATTR_PARENT_DEV_NAME + 1] = {
+ 	[DEVLINK_ATTR_BUS_NAME] = { .type = NLA_NUL_STRING, },
+ 	[DEVLINK_ATTR_DEV_NAME] = { .type = NLA_NUL_STRING, },
+ 	[DEVLINK_ATTR_RATE_NODE_NAME] = { .type = NLA_NUL_STRING, },
+@@ -517,6 +519,8 @@ static const struct nla_policy devlink_rate_new_nl_policy[DEVLINK_ATTR_RATE_TX_W
+ 	[DEVLINK_ATTR_RATE_TX_PRIORITY] = { .type = NLA_U32, },
+ 	[DEVLINK_ATTR_RATE_TX_WEIGHT] = { .type = NLA_U32, },
+ 	[DEVLINK_ATTR_RATE_PARENT_NODE_NAME] = { .type = NLA_NUL_STRING, },
++	[DEVLINK_ATTR_PARENT_DEV_BUS_NAME] = { .type = NLA_NUL_STRING, },
++	[DEVLINK_ATTR_PARENT_DEV_NAME] = { .type = NLA_NUL_STRING, },
+ };
+ 
+ /* DEVLINK_CMD_RATE_DEL - do */
+@@ -1160,21 +1164,21 @@ const struct genl_split_ops devlink_nl_ops[74] = {
+ 	{
+ 		.cmd		= DEVLINK_CMD_RATE_SET,
+ 		.validate	= GENL_DONT_VALIDATE_STRICT,
+-		.pre_doit	= devlink_nl_pre_doit,
++		.pre_doit	= devlink_nl_pre_doit_parent_dev_optional,
+ 		.doit		= devlink_nl_rate_set_doit,
+-		.post_doit	= devlink_nl_post_doit,
++		.post_doit	= devlink_nl_post_doit_parent_dev_optional,
+ 		.policy		= devlink_rate_set_nl_policy,
+-		.maxattr	= DEVLINK_ATTR_RATE_TX_WEIGHT,
++		.maxattr	= DEVLINK_ATTR_PARENT_DEV_NAME,
+ 		.flags		= GENL_ADMIN_PERM | GENL_CMD_CAP_DO,
+ 	},
+ 	{
+ 		.cmd		= DEVLINK_CMD_RATE_NEW,
+ 		.validate	= GENL_DONT_VALIDATE_STRICT,
+-		.pre_doit	= devlink_nl_pre_doit,
++		.pre_doit	= devlink_nl_pre_doit_parent_dev_optional,
+ 		.doit		= devlink_nl_rate_new_doit,
+-		.post_doit	= devlink_nl_post_doit,
++		.post_doit	= devlink_nl_post_doit_parent_dev_optional,
+ 		.policy		= devlink_rate_new_nl_policy,
+-		.maxattr	= DEVLINK_ATTR_RATE_TX_WEIGHT,
++		.maxattr	= DEVLINK_ATTR_PARENT_DEV_NAME,
+ 		.flags		= GENL_ADMIN_PERM | GENL_CMD_CAP_DO,
+ 	},
+ 	{
+diff --git a/net/devlink/netlink_gen.h b/net/devlink/netlink_gen.h
+index 8f2bd50ddf5e..dd402264a47f 100644
+--- a/net/devlink/netlink_gen.h
++++ b/net/devlink/netlink_gen.h
+@@ -27,12 +27,19 @@ int devlink_nl_pre_doit_dev_lock(const struct genl_split_ops *ops,
+ int devlink_nl_pre_doit_port_optional(const struct genl_split_ops *ops,
+ 				      struct sk_buff *skb,
+ 				      struct genl_info *info);
++int devlink_nl_pre_doit_parent_dev_optional(const struct genl_split_ops *ops,
++					    struct sk_buff *skb,
++					    struct genl_info *info);
+ void
+ devlink_nl_post_doit(const struct genl_split_ops *ops, struct sk_buff *skb,
+ 		     struct genl_info *info);
+ void
+ devlink_nl_post_doit_dev_lock(const struct genl_split_ops *ops,
+ 			      struct sk_buff *skb, struct genl_info *info);
++void
++devlink_nl_post_doit_parent_dev_optional(const struct genl_split_ops *ops,
++					 struct sk_buff *skb,
++					 struct genl_info *info);
+ 
+ int devlink_nl_get_doit(struct sk_buff *skb, struct genl_info *info);
+ int devlink_nl_get_dumpit(struct sk_buff *skb, struct netlink_callback *cb);
 -- 
 2.45.0
 
