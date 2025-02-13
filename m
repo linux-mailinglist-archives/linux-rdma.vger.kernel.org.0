@@ -1,179 +1,126 @@
-Return-Path: <linux-rdma+bounces-7733-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7734-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0442AA34C2B
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 18:41:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B82CA34C4D
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 18:46:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 141211886EF1
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 17:41:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E4163A35A8
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2025 17:45:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFDB82222D6;
-	Thu, 13 Feb 2025 17:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B39624168B;
+	Thu, 13 Feb 2025 17:45:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="j0+6lRmy"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="MqwOKrlM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2066.outbound.protection.outlook.com [40.107.92.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0392D2222A6
-	for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2025 17:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739468449; cv=fail; b=non6v6qOPdvPRnOFkSF9Exk1e4EzQ4+W1HOxjb/AhiK2M/zlkbZ9kInI22W5166PsYIJOBdijthYnd3veMJAB7mcLpoL40UTgbo+OvzXBS0vhTAcO6av1V/I0wtq/m/+4jDOZ4aVzHpvI84wM6WXfNc+nULvD1yG+Tn6g7z3MOI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739468449; c=relaxed/simple;
-	bh=aZHaxtIxYeTJ8zVz4pd88ViLwwmSDZR8vxKK8UmheSE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=X/gy69Fv7nRJDCv2GkjjD5qvHU3MzLSd6PLm9qjyNQMBE0dJb3qapkfIwAnH70DQwtlQxIOBy3o44fR50PRi47ZGG7upWmnqAzII9/5qg6ZXGBS2uHvlRQaDcGc7QhHUHhmD2gZqj3HU/iRnLVOutzGuu5qDBDR5DPg5fZiRz1E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=j0+6lRmy; arc=fail smtp.client-ip=40.107.92.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=aTE2S5sC88Uj7q4ycFsRGOyVagPsa6JIPjPCUclOTorNa+Sa4VSo+mRCHiUkBGMyA2jF1GcXqkB+wBXl6pHjXZEt9GDcZODNRbQL/Q282UVg+d4QWl2Bif7FPSB2F46VY+pUN5n7aCoKciw/WChCwMwOq0X4NKjHm+fHctyah9Tfyu/14q3Rav6xs0y+gXvyv07tSm4CBLcU9k7seyTbDnclKsjw5qPNSyDCuvL+jAiCmkbuzmwajKMyYqwz213xH+ACxTeztxjwkoiBp0DsSPIMTwQjasORXuw/6SImQxvSlpu3Rz/UOf5lLVSgbu7tvlqt9+6SgR3iPiA4T3g0mQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cWxKiFzUY963B85F3W87J1fcEyRLGS6PoN15H5V3lkw=;
- b=miZ15eQXix35644Z4EqTp/Y4OoF8FpO+0+BavUkI3JyVR6KzokIbUDLbSz1+5x1pggbDtpowdEmIImfxc6oo4MJunFdcLfN8YnXP51kcles3QEYz38Avmu4QbZ5Xh2frZgROqu6sa3MHtGe/6b3iR88MEcQAFM/TfVj3l63GfGQBPd9iRr38cnLVlijPR+whJa3u3NoUrL8m98/9iTkHMRzGC6YqEHQUvBoieVYfmk7V3EnjWW9wbxLlhxOOHZpgnspsUU2jdViry9gV9SHcuHx4gK5TRzNIJhQMh9rTgAF3wulPSwGe4I9TBeuqsnq25vZzZLBdPnJ4SwDVY4I3qg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cWxKiFzUY963B85F3W87J1fcEyRLGS6PoN15H5V3lkw=;
- b=j0+6lRmyLjfNH68I9gvUGRZ2E4W8GWb6IxuvqjiUwMNkICbgTudH3TzM3IeLgO9ajiVgEyML7ImH6KBpblVdpAtnXTQdQumWG7zBPA8U48B26PI6tlfBaNFtQxdj37TT+9jHL6pzWt/Lh7jIpQXXtHSxKAXR3Yt9ciui/42VVzm7aLQ2iRsTDyccq/xG6qs0nGzXDGdcQk2lHpxuwax2LTKSgoD4SUpEhF3a0ZSExq46OG+DIcEbTEsnZiqwaZ4Q6bVVJaQgB76oOQBht1uiLOowoijBmgBASRetgXuLt1uaFh+/tZh2Uyu8M0Oi46v1lQQaK7C8YEAM57wJR1INvg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
- by SJ1PR12MB6148.namprd12.prod.outlook.com (2603:10b6:a03:459::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8422.18; Thu, 13 Feb
- 2025 17:40:44 +0000
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732%6]) with mapi id 15.20.8445.013; Thu, 13 Feb 2025
- 17:40:44 +0000
-Date: Thu, 13 Feb 2025 13:40:43 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: "Margolin, Michael" <mrgolin@amazon.com>, linux-rdma@vger.kernel.org,
-	sleybo@amazon.com, matua@amazon.com, gal.pressman@linux.dev,
-	Firas Jahjah <firasj@amazon.com>,
-	Yonatan Nachum <ynachum@amazon.com>
-Subject: Re: [PATCH for-next] RDMA/core: Fix best page size finding when it
- can cross SG entries
-Message-ID: <20250213174043.GG3754072@nvidia.com>
-References: <20250209142608.21230-1-mrgolin@amazon.com>
- <20250213125126.GK17863@unreal>
- <20250213140421.GZ3754072@nvidia.com>
- <777e5518-3f0a-43e8-b80b-0a3ba4ecf5da@amazon.com>
- <20250213144219.GB3754072@nvidia.com>
- <20250213173510.GO17863@unreal>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250213173510.GO17863@unreal>
-X-ClientProxiedBy: BN9PR03CA0877.namprd03.prod.outlook.com
- (2603:10b6:408:13c::12) To CH3PR12MB8659.namprd12.prod.outlook.com
- (2603:10b6:610:17c::13)
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40ADA2040B7;
+	Thu, 13 Feb 2025 17:45:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739468744; cv=none; b=aLlTLwJHmY8nKXGKm/AlylExHNrctWj8TBzeVGJBy/8pl14xSdKhaDvVPHx3ceO6t6UkzGCgI+UPTMGBuj022y5G87uaEEaBstv7Tjjfw6umvNHfe25VRrs7Mvk+mvA4xFH6yg9jjcdlsSovncX6mtKmglc5WGcWmfGc8Jf2z7U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739468744; c=relaxed/simple;
+	bh=9g9XvpJ4vTHZRdoVn0NNOAe0M9fMrmh7qRY4E5RBo5I=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=JaRg7IidlKAQiBO4hGtq62ejHDNeya3befkWh7RYalf+92TzzDR2PJFtN6D3BKgVriWc/QsnRwtmnQLNK0gKn0wLnbvi/aHzIh+06UuPRUEPj1t96ZRi2b9Xbh6ZWGsb79MRdTILvmmMji50gKfCVYe8c/Ic2c+52AHMy5M/UDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=MqwOKrlM; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.65.1.94] (unknown [20.236.11.69])
+	by linux.microsoft.com (Postfix) with ESMTPSA id D7186203D61D;
+	Thu, 13 Feb 2025 09:45:40 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D7186203D61D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1739468742;
+	bh=CjdDB9uvZBBF3c03e9VylpCG5WkQPsjk1qSKlO3MQtE=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=MqwOKrlM0wNKTlUgCtpn9gJKIpfGiwVh9dHGNNF4ycPmXa/idcQ30iiksOd4FJJaH
+	 jrqNCD9r00CbzdjGOPFOZ+MnFU6woy29/+YEkOfP14iTKCcgK64o8pGQaLxlVNUpHe
+	 bIb4sXQD9rr6g8CsvFcC34/zgx+kxX5/LItW+SLg=
+Message-ID: <8f80b65e-724c-439c-a094-4bfbb1e296f1@linux.microsoft.com>
+Date: Thu, 13 Feb 2025 09:45:41 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|SJ1PR12MB6148:EE_
-X-MS-Office365-Filtering-Correlation-Id: 34f779bc-0e17-4eda-ce9a-08dd4c558ada
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?/+QiDf81dlJsYyzSLGygvtCp+MsbJVyjmJjC3ywrE9rpY5oXAmFTblMkEEeR?=
- =?us-ascii?Q?s8vZ8rB8Fmq9grT8w3hgHh3s9ttu/CWfdHFZNso+wsGhNnz2vq8sY7g7o/WS?=
- =?us-ascii?Q?kSiQex9QHFz4kmbBxiUenTAtX5T+uU8zcS+2lr3s3oDdX7Hw7WAnt7OMcE2C?=
- =?us-ascii?Q?TlLBPmmA6F9n3GQNE9RM4SSt7jxdFfjHzxNIRS9jJgGEoYQhupCwFtfKFlav?=
- =?us-ascii?Q?1dscH2MrIu8AAKVIYStwtUGjKEMQxcHEJF6v3Oamws3uNIbCutYr5MaXrBUj?=
- =?us-ascii?Q?uupWzHRatifNGEkCZUfCJ77csxRaTFHGcFwudHRNpibuFrUk/EwZ2+GJhIcB?=
- =?us-ascii?Q?K5+Dvg341prbtKciGkrHyUUsIt7UiJobKT1qS6DobHX1C4OlN39biDLPJ5sM?=
- =?us-ascii?Q?thpvMiDwxpKsX6LCcx9SdIKBPZAl44tO8StJvkT+YvGh+jM5eKljERct4CEV?=
- =?us-ascii?Q?J5D8k49RPN+8ZKp7chIjwWsyxDWVG4jdPIkuVnwPBDK80ld+9PW/I+0X4Lbr?=
- =?us-ascii?Q?AH0y1hAZiz8T+gqL2YcZBd6KIjhwlvawkicMHHXJFjZzdC6MjjN9nol59nzh?=
- =?us-ascii?Q?oUBQY3Oye0IretYq9/CHjHmPTHZpDlth3gq6sPZCjGL+hbH09zFWKBkGZPqL?=
- =?us-ascii?Q?kvyk+VrdH0Rym1ZeVZZwTNioJzNFKrEHtpZCGoTeS6lDlQFdENiLPx9iqnJy?=
- =?us-ascii?Q?FdN2/DpoRzs+qlXwrVu+4r0Ddv0oNL0y6RmljYygW1c/hhpIUWdUPDw/rYV8?=
- =?us-ascii?Q?+zz5f0NYA8rQ2T0/MScRguEuewoBTHddLpzGMpYbIXNDqnEmymsSpAJLmJcM?=
- =?us-ascii?Q?ipr2nnLxRqed5HXllS2i8wS5+swh5Y7YOBqg/g4JbFlE72n0lo8Y6qUg/shC?=
- =?us-ascii?Q?fXcRDnNN1jdvYFfass1pafmOp7k33GyVqh3CcYRtsrn/mIAbV1LBaI3nNQID?=
- =?us-ascii?Q?hINKL+JbibBPzjvfFuDEUFCtBx+jTlPpJoU2WS77f60scIHRrDFj4+nHG/Ct?=
- =?us-ascii?Q?7jQ2bQ08yV6ptD71VakdLAnd4f4WNT9A+6KrJmTCtMIzDvHWiZ40ReAjkGxE?=
- =?us-ascii?Q?oT4lrR0MuLNKLq50qPh6cbmea1ZhExYVeFFRHbPUY7zPT0zxjzboXAOs/Rqi?=
- =?us-ascii?Q?+J2/L736lUEjqiqJz8U2Rq7jav6WDzTCcgIeUJJrV0GnXMqpk6ilMF2AqeSn?=
- =?us-ascii?Q?ywPi1MmQXbVe2/yHJl9DNeAhX/5GYvCFX+NJy5pDzKKxHK/hkTjgn4PTmlB8?=
- =?us-ascii?Q?0CbEgrnYzuicFa5xnuK1JHjLijytJInHs6Ky0uC11QGBhzkrIQc+a5uG5y8L?=
- =?us-ascii?Q?K6A/sZGJ9iTo9HTMRyCvMdIq5SUVhnw7IfBZWadaxtF+n6mNFgHCn22FBfU+?=
- =?us-ascii?Q?PmIf/S/sd9bhBi35rj2Jrq7iw6tn?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?hkb4tp0aUI6LEZQpb6WoNBcBoAenGGQeWbYkz23q6/P/j3fAhixVW/lPjmLg?=
- =?us-ascii?Q?co/vTzlsnJoruZ8Ry/VDhKTAyvSU5Upg01VycfCx6CzNgNwsl2CLJD5ZHze2?=
- =?us-ascii?Q?e4UvH1sCkv5lOw1c+BlNJ3x3UTvvjLaDfPJRljJf39D2BSkPqqWQgPV73KIf?=
- =?us-ascii?Q?/XfVwOt09J0zvG7Y3azPZWpceLnZdXKTVP1Y10258HjdHkoGVt77A45+5Tof?=
- =?us-ascii?Q?Vf7agwr8gi35pvov2R+Hf5KHfZVcOvLZAre1AgQuBnyNpty+WuEjNUDRr2yS?=
- =?us-ascii?Q?Ik5S2IhP7ywYRHzYir3PlJFsHwJ2KpeTRn9CKJdJbmw8NfdXdpCI3ZI9Mwb1?=
- =?us-ascii?Q?yna8q3DDqKyl+MKes1GgO8V0d93TDDytMKZieU2T4ZWwsGd2/ImBEEVLl0yk?=
- =?us-ascii?Q?jRVJNS1FbeXl95HgA/O0rispdh/1mml7/CmbxKCMUipddLF+X1cwoEWdGc1r?=
- =?us-ascii?Q?3+ggjRlOzF3PR5xTWbwRZWVXmKWDLX6LUEge5Jmkia1Nok90TUGbMuC08dYL?=
- =?us-ascii?Q?Q3YKL2p8X+cSn/+C8ARcoiN8kwR9hPPugb2OTXaAiP052f5e8JK/VYsxV8n7?=
- =?us-ascii?Q?O4qZFiG+b4cGWxluBDLtalj3u0Lefg7bmp6gQjqLFuFug858Mw8sYO42CRZZ?=
- =?us-ascii?Q?hXNsSZhMl4JSX5OnVmqQPRlFL8OaIiJGRTDQOvxnu5/rVINriWZSWU6wYB5V?=
- =?us-ascii?Q?x7wXgySoh55kzSX6yluALYJpX6UkVIFMoKpSQmVrTDmUM6lCsj/Ytq7v4uLs?=
- =?us-ascii?Q?u8IlUW7kdkb9nlZmBcI6fmYkA1tnbeN9E6ZhaqcOhi31G82yJicWTd3FwCP3?=
- =?us-ascii?Q?plz3Ptk5AYYp4nhzbCJLQy353QQ51T8+4nd4Xf0/rszrZ98y5anXf0fyescA?=
- =?us-ascii?Q?4wy8FKL/gcpXWQ2Ij5u0vcc8v2ykQwHeNByUzvruhFm8m5gZlE88sZfzOUgS?=
- =?us-ascii?Q?Lzr1Z/xv7PgNsHqHhpyQ6l5hi0rLmi1zGRBhNvG/BoEhYZlDQykNi7Mgmd0r?=
- =?us-ascii?Q?EiWduo/k9lkRZ6cuK7M3KUXZARx5vTDaXusukKtMQUWzWmEvPN9tHYQjaWMW?=
- =?us-ascii?Q?eOFeVHIbNDiaCtZw7611UOKdwto2KrgOXRkhbg6ouVRt95iL1mRPgI09GNVc?=
- =?us-ascii?Q?rZicZwSyz6HDHug7lZ7L9vUB7g37Dc/engeE8l+lXuMt/TMIO6/t2QQ6xPa9?=
- =?us-ascii?Q?8SBTnQIulDG2Ik3Aoszff5jF/EqNXsgdvD5o97+LeZoo8Hwtg1YWAWi4voPc?=
- =?us-ascii?Q?dM2wCMHV2W7ZPg0w9/+cc8qGFrbpbmG2W3bFVxlXk5MZM0DhMkUpSCvqcq7j?=
- =?us-ascii?Q?AO76XiT8DeIVsr5nvHmbqHo53uf4KE5yqry2sip+YhDlLWoOVTp+OyE6WnRx?=
- =?us-ascii?Q?sIYcjJCkAiK2Y3xP1Hn5Ldzu4glnHpMwsfzUF20HYvT+Hl35C/LsS1hoPxeP?=
- =?us-ascii?Q?cp0hODSFzl74dGdkqiok48cY0TD1B+q/+yR1NZodloAFKdMGm9GL27pK+xAw?=
- =?us-ascii?Q?zBbtCNJUUCJNnBnvEnOcWDsBN4dFp9ZPqwgZF35w9O9qGNbks6t8uogu+TCD?=
- =?us-ascii?Q?iJcq/0BiXv1nNOdkf2bFfb5ZSRwkwf+4LsGq/DwF?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34f779bc-0e17-4eda-ce9a-08dd4c558ada
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Feb 2025 17:40:44.4025
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KnoYLGdLiL+bm7GHi1EugNlQFa3NpDK/DLKAqqkyhWdkA4EsHvJKWnqwLBDYu0cD
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6148
+User-Agent: Mozilla Thunderbird
+Cc: eahariha@linux.microsoft.com, Yaron Avizrat <yaron.avizrat@intel.com>,
+ Oded Gabbay <ogabbay@kernel.org>, Julia Lawall <Julia.Lawall@inria.fr>,
+ Nicolas Palix <nicolas.palix@imag.fr>, James Smart
+ <james.smart@broadcom.com>, Dick Kennedy <dick.kennedy@broadcom.com>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Ilya Dryomov <idryomov@gmail.com>,
+ Dongsheng Yang <dongsheng.yang@easystack.cn>, Jens Axboe <axboe@kernel.dk>,
+ Xiubo Li <xiubli@redhat.com>, Damien Le Moal <dlemoal@kernel.org>,
+ Niklas Cassel <cassel@kernel.org>, Carlos Maiolino <cem@kernel.org>,
+ "Darrick J. Wong" <djwong@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+ Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
+ Sagi Grimberg <sagi@grimberg.me>, Frank Li <Frank.Li@nxp.com>,
+ Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>,
+ Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+ Selvin Xavier <selvin.xavier@broadcom.com>,
+ Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ cocci@inria.fr, linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-nvme@lists.infradead.org, linux-spi@vger.kernel.org,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ platform-driver-x86@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net,
+ linux-rdma@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 00/16] Converge on using secs_to_jiffies() part two
+To: Andrew Morton <akpm@linux-foundation.org>
+References: <20250128-converge-secs-to-jiffies-part-two-v1-0-9a6ecf0b2308@linux.microsoft.com>
+ <20250128161643.289d9fe705ef2fdba0b82a52@linux-foundation.org>
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+Content-Language: en-US
+In-Reply-To: <20250128161643.289d9fe705ef2fdba0b82a52@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 13, 2025 at 07:35:10PM +0200, Leon Romanovsky wrote:
- 
-> Initially curr_base is 0xFF.....FF and curr_len is 0.
-
-curr base can't be so unaligned can it?
-
-> So if this "if ..." is skipped (not possible but static checkers don't know),
-> we will advance curr_len and curr_base + curr_len will overflow.
+On 1/28/2025 4:16 PM, Andrew Morton wrote:
+> On Tue, 28 Jan 2025 18:21:45 +0000 Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
 > 
-> I don't want to take original patch.
+>> This is the second series (part 1*) that converts users of msecs_to_jiffies() that
+>> either use the multiply pattern of either of:
+>> - msecs_to_jiffies(N*1000) or
+>> - msecs_to_jiffies(N*MSEC_PER_SEC)
+>>
+>> where N is a constant or an expression, to avoid the multiplication.
+>>
+>> The conversion is made with Coccinelle with the secs_to_jiffies() script
+>> in scripts/coccinelle/misc. Attention is paid to what the best change
+>> can be rather than restricting to what the tool provides.
+>>
+>> Andrew has kindly agreed to take the series through mm.git modulo the
+>> patches maintainers want to pick through their own trees.
+> 
+> I added patches 2-16 to mm.git.  If any of these later get merged into
+> a subsystem tree, Stephen will tell us and I'll drop the mm.git copy.
 
-Subtracting is no better, it will just randomly fail for low dma addrs
-instead of high.
+Hi Andrew, I don't see these in mm-nonmm-unstable. Did these get dropped in the confusion around
+casting secs_to_jiffies() to unsigned long[1]? That has since been merged in 6.14-rc2 via tglx' tree,
+and I have a v2 for just the ceph patches that needed some fixups at [2].
 
-You need to call check_add_overflow()
+[1] https://lore.kernel.org/all/20250130192701.99626-1-eahariha@linux.microsoft.com/
+[2] https://lore.kernel.org/all/20250203-converge-secs-to-jiffies-part-two-v2-0-d7058a01fd0e@linux.microsoft.com/
 
-Jason
+Thanks,
+Easwar (he/him)
 
