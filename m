@@ -1,139 +1,169 @@
-Return-Path: <linux-rdma+bounces-7771-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7772-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBE37A35DF8
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2025 13:56:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D9B8A35F79
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2025 14:53:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E060188C110
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2025 12:55:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F34016950A
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2025 13:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FB2263C7F;
-	Fri, 14 Feb 2025 12:54:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2AC3263F3D;
+	Fri, 14 Feb 2025 13:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="l9RDNYQW"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZUEf40c/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 303FB1EA91
-	for <linux-rdma@vger.kernel.org>; Fri, 14 Feb 2025 12:54:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C0015199D;
+	Fri, 14 Feb 2025 13:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739537698; cv=none; b=lEAR5prC6ArrRK1qoJyndCmHV0ZTLHhaFLjJHqG6IIYNCEn28tffVX6plsbT2dhkfbTIyolrpQjhyf8YebZDw42G9hYUN8Jh56DNHR4QCd3gohSacHdt4BouEXqO2q+qrz0woQLfT2sb3SxtPa4AEbuJWf8bZ1c+ASoKjChTmOA=
+	t=1739541215; cv=none; b=jrwB9FhIdf8JTXxoumiYUTa0r9WeXi+vLpYEbe4E0h0R1pnkz76xFfosa20AfnGZAAvn59QzNoK3dAuhB4w6IJGWZVf84Pzq5wm5z3JRijk5ZlJpkpMGrvsCciTXwjHF0DAdhU63wzmFMSi+xVpaBikTMMNE+YNb71OZdMyz09M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739537698; c=relaxed/simple;
-	bh=0mYcHvTTq+lgf1qomm4p1Qr7bp8yKjlUDa+0QhmoQaE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fvf3T/WpAjb8cmkiL4Uc1qAv4T5E9f2CSwPh/5Dms3Ghtyyx7RVRjdfpYj3b4M19t9YBJXswP4QzID5AnbHHAf/r4snHo6C5UInX3ctF6Z9SZ0NNIL+WKDbHTMRk0sV3wpekuFlnurRnk9Jp3kvTjwA4bJzZc61V6YYWlGLltJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=l9RDNYQW; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4395a917f33so17933265e9.1
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Feb 2025 04:54:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1739537694; x=1740142494; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1+lEmaDHN5QnNQZg6dCs36v4GP8d4TTbF6P3QQiuPAQ=;
-        b=l9RDNYQWjNIhbSF1bOL77lG+Xu/R8rt0bhOvuqx4U191NKle1j+tUzwvg8Z0WygHaO
-         1ZPGcUbiW4hi9bMdI3WjDbUdu5zhUw0/KL+dg54bxTSrSWi354QS/iYdEIUe/1kLFD/i
-         c71vhWDbAClalxsTyUAI3YpHv2Mo+9a1KO0Lx/yaQiov6KzW3VN9wi5LSAp8wVF39Q7y
-         vmhvbc4n6ADdW8392GcwMVt1UWQiTCev1M9lWy9q0D8ycszm3NXai2SqxTikMnTm19U4
-         GH0ZX3ctFLLGtCP5x52gQ4x6kEejF3WrIucOSrxnFjUw3Uu6Wtq9q+ZX/IHyWbNFXkmH
-         CzPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739537694; x=1740142494;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1+lEmaDHN5QnNQZg6dCs36v4GP8d4TTbF6P3QQiuPAQ=;
-        b=kMeGkIUpq/+B7eJudJ5GlEAwz7+CJDYcvAB1W2oNgoG6p94rI3BZCLfFbeHFPjAgdH
-         b0K683t0FjXpyoM7wSv4mLwDsSbLCr5UIikHG5AGyQ/d6TZPMoInGspxYCjQQwJq6w+9
-         jmuKDoqDreiKyqHTfz7iAW3dMlJr1PqY6VGjgLOzaKt82zKpO5Rx9sMeqCItag21Xx3h
-         uVTG6kSxZ3ohjGDXrlzk6QMPM8y4T24DLXtA081/eizjNQctOm/t0jc3o3pmNMAS3nDt
-         AjerRwCGxdebUcKohXzWe8qfCQ4Xp7f4Pc3ZLmP9xzeAmK4/j0J9WZh8bX090B1S8RPU
-         Rlvw==
-X-Forwarded-Encrypted: i=1; AJvYcCWhopShaIwU6iQwdRB9i9AIh+RIKdq6RoW8Zm/QUyATJBQjt49z2IbUe2U9kfiRD/5OG3OsOgr2MQ0l@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw0rSljjAgzCBlRGIpFndXs4PRK0pkLvZ0HmJk3QWXYAP3tHhpY
-	skrc2lM111qHR2/pZ7SmKdTB8BmeCPYc2+2kc9SRpizfUFLqR3TKPuLn5wE6RI8=
-X-Gm-Gg: ASbGncu5SalF87CTEnhC8bZAe+pWaDvWwvfDqkcCTzHh3ZgCGXB4XRYrJFvZHTv0lA7
-	QPsMm8bpzIGroAJFj8rkZnMZMATZ9G7MDlbtLSft8dB0KvC2wC5Z5mMbYsOZv87A6m3kcJ8+jAm
-	jcSdp+ux/7wHNPMRr1qrIigemL8OOXQzSqA7piVUaq+/KUUkxRYPatc708F5rOFap50kDcWNVnA
-	ZZODHKNWbbeQtpoc07ckrRRkK6FlTCaS8/3MjJwv8lr1inSdCx/0P15A7LgAMw4mic9cBGWg9xf
-	G6U8cJFMT8m00jCY2Xj2jSE=
-X-Google-Smtp-Source: AGHT+IEk52uqZohTXf0fCVa4pieNwKGseiJ6YLDBEGNj11Ir7TJrVFFZcb2vaITJ1n0RtedVoY/5lA==
-X-Received: by 2002:a5d:6d09:0:b0:38d:b349:2db2 with SMTP id ffacd0b85a97d-38f24f948bbmr9416003f8f.22.1739537694226;
-        Fri, 14 Feb 2025 04:54:54 -0800 (PST)
-Received: from jiri-mlt ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38f259d5ef9sm4545091f8f.76.2025.02.14.04.54.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Feb 2025 04:54:53 -0800 (PST)
-Date: Fri, 14 Feb 2025 13:54:43 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	Jiri Pirko <jiri@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, 
-	Carolina Jubran <cjubran@nvidia.com>, Gal Pressman <gal@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 03/10] devlink: Serialize access to rate domains
-Message-ID: <ieeem2dc5mifpj2t45wnruzxmo4cp35mbvrnsgkebsqpmxj5ib@hn7gphf6io7x>
-References: <20250213180134.323929-1-tariqt@nvidia.com>
- <20250213180134.323929-4-tariqt@nvidia.com>
+	s=arc-20240116; t=1739541215; c=relaxed/simple;
+	bh=t4t0GFjhp7gnA5t6SYamQkof+QYpu37Cw8BGFrVG6BI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t/6bM9zhUlHjGe7ahTEEOvk54y9nrkkqREPzX7dLb9fT1dqhIDdMH7x/WoFL/YkLNZvh/TJdQyhalShtsiTpB0cF/4uTqLn5CKL92PtWo+eSP+zQyC9rhhB4XRRIokzVqOqMlITq4gtCF6EbvlfhIk5hizgopJR2dggS7Jv4/cc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZUEf40c/; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1739541213; x=1771077213;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=t4t0GFjhp7gnA5t6SYamQkof+QYpu37Cw8BGFrVG6BI=;
+  b=ZUEf40c/ZHcMH3vBEz+5mVdQiVYJXmdakjNjsRzKvuqdRHQLs2cNblF5
+   Lk/EsCNXCY2i8nMkvmPicCOY7sal2cgfNl0wAFlZPx+zHvOfsRNAz8/ur
+   tYBz4kULFwK5TrINynhYp0CDqop1Nq7lITFN8p6+g2C12xpg9ZhHHv7gT
+   4qBI+FBfjAGu+wMOqxvXvRL5EFNntdSFUozsRtsYw3ZroIx3dinxi99Vf
+   85Z3N7oj0B4vg7QOaVH4f9IL3dq/OmNEivYrpVsx7d7lXlcs3ZSuwRT50
+   eH5jHZVCfi+cTCflyM3nvTE8TlrGcxs9kFmsePCw9zyUpg5YZ+hY9KvsS
+   A==;
+X-CSE-ConnectionGUID: hlpjKpenTZ+WefVbe4oXng==
+X-CSE-MsgGUID: HSyHk+anScqf5s/DgVJdEA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11345"; a="57822084"
+X-IronPort-AV: E=Sophos;i="6.13,286,1732608000"; 
+   d="scan'208";a="57822084"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2025 05:53:33 -0800
+X-CSE-ConnectionGUID: HhRJGfvKRgeb1WH95/VRzQ==
+X-CSE-MsgGUID: Z9fVTABAQZiaGkR39xK5iA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="150636991"
+Received: from gk3153-dr2-r750-36946.igk.intel.com ([10.102.20.192])
+  by orviesa001.jf.intel.com with ESMTP; 14 Feb 2025 05:53:31 -0800
+From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To: intel-wired-lan@lists.osuosl.org
+Cc: netdev@vger.kernel.org,
+	marcin.szycik@linux.intel.com,
+	mustafa.ismail@intel.com,
+	tatyana.e.nikolova@intel.com,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	jacob.e.keller@intel.com,
+	anthony.l.nguyen@intel.com,
+	linux-rdma@vger.kernel.org,
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+Subject: [PATCH iwl-next v1] irdma: free iwdev->rf after removing MSI-X
+Date: Fri, 14 Feb 2025 14:53:22 +0100
+Message-ID: <20250214135322.4999-1-michal.swiatkowski@linux.intel.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250213180134.323929-4-tariqt@nvidia.com>
+Content-Transfer-Encoding: 8bit
 
-Thu, Feb 13, 2025 at 07:01:27PM +0100, tariqt@nvidia.com wrote:
->From: Cosmin Ratiu <cratiu@nvidia.com>
->
->Access to rates in a rate domain should be serialized.
->
->This commit introduces two new functions, devl_rate_domain_lock and
->devl_rate_domain_unlock, and uses them whenever serial access to a rate
->domain is needed. For now, they are no-ops since access to a rate domain
->is protected by the devlink lock.
->
->Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
->Reviewed-by: Carolina Jubran <cjubran@nvidia.com>
->Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
->---
-> net/devlink/devl_internal.h |   4 ++
-> net/devlink/rate.c          | 114 +++++++++++++++++++++++++++---------
-> 2 files changed, 89 insertions(+), 29 deletions(-)
->
->diff --git a/net/devlink/devl_internal.h b/net/devlink/devl_internal.h
->index 209b4a4c7070..fae81dd6953f 100644
->--- a/net/devlink/devl_internal.h
->+++ b/net/devlink/devl_internal.h
->@@ -121,6 +121,10 @@ static inline void devl_dev_unlock(struct devlink *devlink, bool dev_lock)
-> 		device_unlock(devlink->dev);
-> }
-> 
->+static inline void devl_rate_domain_lock(struct devlink *devlink) { }
->+
->+static inline void devl_rate_domain_unlock(struct devlink *devlink) { }
+Currently iwdev->rf is allocated in irdma_probe(), but free in
+irdma_ib_dealloc_device(). It can be misleading. Move the free to
+irdma_remove() to be more obvious.
 
+Freeing in irdma_ib_dealloc_device() leads to KASAN use-after-free
+issue. Which can also lead to NULL pointer dereference. Fix this.
 
-For the record, I'm still not convinced that introducing this kind of
-shared inter-devlink lock is good idea. We spent quite a bit of painful
-times getting rid of global devlink_mutex and making devlink locking
-scheme nice and simple as it currently is.
+irdma_deinit_interrupts() can't be moved before freeing iwdef->rf,
+because in this case deinit interrupts will be done before freeing irqs.
+The simplest solution is to move kfree(iwdev->rf) to irdma_remove().
 
-But at the same time I admit I can't think of any other nicer solution
-to the problem this patchset is trying to solve.
+Reproducer:
+  sudo rmmod irdma
 
-Jakub, any thoughts?
+Minified splat(s):
+  BUG: KASAN: use-after-free in irdma_remove+0x257/0x2d0 [irdma]
+  Call Trace:
+   <TASK>
+   ? __pfx__raw_spin_lock_irqsave+0x10/0x10
+   ? kfree+0x253/0x450
+   ? irdma_remove+0x257/0x2d0 [irdma]
+   kasan_report+0xed/0x120
+   ? irdma_remove+0x257/0x2d0 [irdma]
+   irdma_remove+0x257/0x2d0 [irdma]
+   auxiliary_bus_remove+0x56/0x80
+   device_release_driver_internal+0x371/0x530
+   ? kernfs_put.part.0+0x147/0x310
+   driver_detach+0xbf/0x180
+   bus_remove_driver+0x11b/0x2a0
+   auxiliary_driver_unregister+0x1a/0x50
+   irdma_exit_module+0x40/0x4c [irdma]
+
+  Oops: general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
+  KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+  RIP: 0010:ice_free_rdma_qvector+0x2a/0xa0 [ice]
+  Call Trace:
+   ? ice_free_rdma_qvector+0x2a/0xa0 [ice]
+   irdma_remove+0x179/0x2d0 [irdma]
+   auxiliary_bus_remove+0x56/0x80
+   device_release_driver_internal+0x371/0x530
+   ? kobject_put+0x61/0x4b0
+   driver_detach+0xbf/0x180
+   bus_remove_driver+0x11b/0x2a0
+   auxiliary_driver_unregister+0x1a/0x50
+   irdma_exit_module+0x40/0x4c [irdma]
+
+Reported-by: Marcin Szycik <marcin.szycik@linux.intel.com>
+Closes: https://lore.kernel.org/netdev/8e533834-4564-472f-b29b-4f1cb7730053@linux.intel.com/
+Fixes: 3e0d3cb3fbe0 ("ice, irdma: move interrupts code to irdma")
+Reviewed-by: Marcin Szycik <marcin.szycik@linux.intel.com>
+Signed-off-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+---
+Fix to net-next instead of net, because the commit isn't yet in net
+tree.
+---
+ drivers/infiniband/hw/irdma/main.c  | 2 ++
+ drivers/infiniband/hw/irdma/verbs.c | 1 -
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/irdma/main.c b/drivers/infiniband/hw/irdma/main.c
+index 1ee8969595d3..d10fd16dcec3 100644
+--- a/drivers/infiniband/hw/irdma/main.c
++++ b/drivers/infiniband/hw/irdma/main.c
+@@ -255,6 +255,8 @@ static void irdma_remove(struct auxiliary_device *aux_dev)
+ 	ice_rdma_update_vsi_filter(pf, iwdev->vsi_num, false);
+ 	irdma_deinit_interrupts(iwdev->rf, pf);
+ 
++	kfree(iwdev->rf);
++
+ 	pr_debug("INIT: Gen2 PF[%d] device remove success\n", PCI_FUNC(pf->pdev->devfn));
+ }
+ 
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index eeb932e58730..1e8c92826de2 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -4871,5 +4871,4 @@ void irdma_ib_dealloc_device(struct ib_device *ibdev)
+ 
+ 	irdma_rt_deinit_hw(iwdev);
+ 	irdma_ctrl_deinit_hw(iwdev->rf);
+-	kfree(iwdev->rf);
+ }
+-- 
+2.42.0
+
 
