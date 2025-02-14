@@ -1,169 +1,186 @@
-Return-Path: <linux-rdma+bounces-7772-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7773-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D9B8A35F79
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2025 14:53:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C8CAA361C7
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2025 16:34:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F34016950A
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2025 13:53:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DFB1170113
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2025 15:33:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2AC3263F3D;
-	Fri, 14 Feb 2025 13:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0A1266B64;
+	Fri, 14 Feb 2025 15:33:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZUEf40c/"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ADX0lQY8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2071.outbound.protection.outlook.com [40.107.93.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C0015199D;
-	Fri, 14 Feb 2025 13:53:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739541215; cv=none; b=jrwB9FhIdf8JTXxoumiYUTa0r9WeXi+vLpYEbe4E0h0R1pnkz76xFfosa20AfnGZAAvn59QzNoK3dAuhB4w6IJGWZVf84Pzq5wm5z3JRijk5ZlJpkpMGrvsCciTXwjHF0DAdhU63wzmFMSi+xVpaBikTMMNE+YNb71OZdMyz09M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739541215; c=relaxed/simple;
-	bh=t4t0GFjhp7gnA5t6SYamQkof+QYpu37Cw8BGFrVG6BI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t/6bM9zhUlHjGe7ahTEEOvk54y9nrkkqREPzX7dLb9fT1dqhIDdMH7x/WoFL/YkLNZvh/TJdQyhalShtsiTpB0cF/4uTqLn5CKL92PtWo+eSP+zQyC9rhhB4XRRIokzVqOqMlITq4gtCF6EbvlfhIk5hizgopJR2dggS7Jv4/cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZUEf40c/; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1739541213; x=1771077213;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=t4t0GFjhp7gnA5t6SYamQkof+QYpu37Cw8BGFrVG6BI=;
-  b=ZUEf40c/ZHcMH3vBEz+5mVdQiVYJXmdakjNjsRzKvuqdRHQLs2cNblF5
-   Lk/EsCNXCY2i8nMkvmPicCOY7sal2cgfNl0wAFlZPx+zHvOfsRNAz8/ur
-   tYBz4kULFwK5TrINynhYp0CDqop1Nq7lITFN8p6+g2C12xpg9ZhHHv7gT
-   4qBI+FBfjAGu+wMOqxvXvRL5EFNntdSFUozsRtsYw3ZroIx3dinxi99Vf
-   85Z3N7oj0B4vg7QOaVH4f9IL3dq/OmNEivYrpVsx7d7lXlcs3ZSuwRT50
-   eH5jHZVCfi+cTCflyM3nvTE8TlrGcxs9kFmsePCw9zyUpg5YZ+hY9KvsS
-   A==;
-X-CSE-ConnectionGUID: hlpjKpenTZ+WefVbe4oXng==
-X-CSE-MsgGUID: HSyHk+anScqf5s/DgVJdEA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11345"; a="57822084"
-X-IronPort-AV: E=Sophos;i="6.13,286,1732608000"; 
-   d="scan'208";a="57822084"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Feb 2025 05:53:33 -0800
-X-CSE-ConnectionGUID: HhRJGfvKRgeb1WH95/VRzQ==
-X-CSE-MsgGUID: Z9fVTABAQZiaGkR39xK5iA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="150636991"
-Received: from gk3153-dr2-r750-36946.igk.intel.com ([10.102.20.192])
-  by orviesa001.jf.intel.com with ESMTP; 14 Feb 2025 05:53:31 -0800
-From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To: intel-wired-lan@lists.osuosl.org
-Cc: netdev@vger.kernel.org,
-	marcin.szycik@linux.intel.com,
-	mustafa.ismail@intel.com,
-	tatyana.e.nikolova@intel.com,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	jacob.e.keller@intel.com,
-	anthony.l.nguyen@intel.com,
-	linux-rdma@vger.kernel.org,
-	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-Subject: [PATCH iwl-next v1] irdma: free iwdev->rf after removing MSI-X
-Date: Fri, 14 Feb 2025 14:53:22 +0100
-Message-ID: <20250214135322.4999-1-michal.swiatkowski@linux.intel.com>
-X-Mailer: git-send-email 2.42.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DD425A2AD
+	for <linux-rdma@vger.kernel.org>; Fri, 14 Feb 2025 15:33:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1739547229; cv=fail; b=c8rvWFNygOpft1TCGx2BHdcz8/7/y0JNUuEbW3pmnscDbFdBrjsVbPPC7dWDTX26LqgFawyopgT0FCTQD3aRPMfEv1Lvyu0jzp3CUioDTpjpHpczmLnk/vBsIjJimKyNgBd6sgh0nzc9oA22xB7Gq8VVlSKVcVCt6IkZHKLC4/M=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1739547229; c=relaxed/simple;
+	bh=U8Mn8y93Ye0P2IntchvgcrWjp1V+4Ueh0ndFPEA2brA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=hMKh2JRORAZ8HdbhlwocUDYBnpyczvWkZbd5qS+HI2cN8LCnDvUqkHwyFdXbY6fKXkRMQZv9U7COvsnpygujMWdFgpw9PDA7jcTvgG3tiNsXnpZQ6CPWGIkRjbIXQLU8kptK8A9cbZHHvEYKgXyDQrT7KWBDGjZLBbOgAC+cpqk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ADX0lQY8; arc=fail smtp.client-ip=40.107.93.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=m5cIyJbnWU3AJPv9pqkR5CRMs70JsW+hvkz0k43G5n5DUBz/ALyd3t9aZ8LZ/O+DcsQWpOjt2DOOPw2ps6Kw056wkc2bpJIjCRhPLhnHRRG348IJ2SOZB8kJZcZiwdkmpBH1B9zS1WoKZqzSuVKI7I9HQitB+ZjtA5GfAm8BERouBhDXGWPMAONicgdzBTjAN7NJC85W6zs4RnHpxfVBSB2U6juXbGU9Zkw8bNAAUl6FvWFtt6tnc6e4mE5tcmlLKa4Ek/z9lBTda11MuvmkuOHBAbc43aDBqvMancwl6/FkkU7vEC1dmrJn7jmU4cKBN4Ku/4eXMoKtPri04N0TKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0MVEkZPQbP9GtePI5fWiEy53JsdX51vnRpmGbmzRGpQ=;
+ b=Rk0eewP3Lm95zqDf0CcVj2AaPebgFtgcSdmPdra4oOnCU8SjP74w3O7DpDx+9cKMgV05aNLCfwa15oByMy7wNxh3RghwzW7x3R0k4lnlrZY7nciF6cy51bgwLhMf3aOJMtxiKqS0zKWN3RUOyurkM0MeGPb/3M3J9+qIu3xeAIt4eXjhV3LFAdNSVXy83bfRhFwASUHQWU2cnpV0fiSVEi99e/lm8lgnLr1+Tr3RITM1YSWtPzxJeIoEDTI6RwsvE0QSfOirObr7JQvRGAfHu9LrE7zIcGc+avQm8PD08QpXe2HFv1yCEPrzKkG3IWyj+/P8CZqVbaPr9MBkcf/KvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0MVEkZPQbP9GtePI5fWiEy53JsdX51vnRpmGbmzRGpQ=;
+ b=ADX0lQY8SXhSruMloCv/dTQ0/gg8EXsaexdLWQyaKdwpitdDrauvm8f0Vpawll3jEJ4Oms1h1Q+dYssMfu5z2vhfNxUNGGJPXTu1uKbh4WzJnOTOZKGiXCA/afXQ2HdzVe45be/GgQAzKM87BY8idHlZpct0v/tiVsMANxzIIjSK9L6/abGEesZhyF5/qd3qdjbKuEs/Xhbt8TvRtg4StanXDyeVMdYPomqhytlruMlsob08V7YFQdKahNUPaHxPXY2GdUVAbVaU26Vwr5QrSf+OF913jRUdscchk/H7XxyqXiyhP6WtxjyZ0WfOI2CdeKNsHaKKA82agE6oNSU7nQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by IA1PR12MB6067.namprd12.prod.outlook.com (2603:10b6:208:3ed::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8445.14; Fri, 14 Feb
+ 2025 15:33:42 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%6]) with mapi id 15.20.8445.013; Fri, 14 Feb 2025
+ 15:33:41 +0000
+Date: Fri, 14 Feb 2025 11:33:40 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: "Margolin, Michael" <mrgolin@amazon.com>, linux-rdma@vger.kernel.org,
+	sleybo@amazon.com, matua@amazon.com, gal.pressman@linux.dev,
+	Firas Jahjah <firasj@amazon.com>,
+	Yonatan Nachum <ynachum@amazon.com>
+Subject: Re: [PATCH for-next] RDMA/core: Fix best page size finding when it
+ can cross SG entries
+Message-ID: <20250214153340.GG3886819@nvidia.com>
+References: <20250209142608.21230-1-mrgolin@amazon.com>
+ <20250213125126.GK17863@unreal>
+ <20250213140421.GZ3754072@nvidia.com>
+ <777e5518-3f0a-43e8-b80b-0a3ba4ecf5da@amazon.com>
+ <20250213144219.GB3754072@nvidia.com>
+ <20250213173510.GO17863@unreal>
+ <20250213174043.GG3754072@nvidia.com>
+ <20250213175517.GP17863@unreal>
+ <20250213181242.GF3885104@nvidia.com>
+ <20250214055511.GQ17863@unreal>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250214055511.GQ17863@unreal>
+X-ClientProxiedBy: BN1PR14CA0030.namprd14.prod.outlook.com
+ (2603:10b6:408:e3::35) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|IA1PR12MB6067:EE_
+X-MS-Office365-Filtering-Correlation-Id: a3f4a84f-0d57-4711-d955-08dd4d0cf5ce
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?FTIZlcEb42I5kIRQ8dKzq+yrboEeIUDhk/9eEeaxkHeA+oPp90Imu4E+Ii4l?=
+ =?us-ascii?Q?nc2wbg6ZWhGxL2qJ8StGyYjnGdPpTxdzR6uoqqLDqtfdnYlwnm6myV68BhQ2?=
+ =?us-ascii?Q?M/PUni4Egfp8/DNzt9RKfw5t/Eb7KDMI03YFlrfHHDTEgWld9R2lSkYHYpEF?=
+ =?us-ascii?Q?sp3dYef7v0WSXzCvrBkcgNniHZm/L8+l1lCHhLd+fOcUqWmNadPy26J8FEkO?=
+ =?us-ascii?Q?e1X2n3Re1kqnXWV0lazJhYV3cWvrdnNsFUrEkFJV7ahPH84+PnrkchcMaEN4?=
+ =?us-ascii?Q?dSyc3uYnuZHBaIDgVQol31PdEjOJOsyZcpCHXElZhL7K4b0Wkfkh2GR5IVEb?=
+ =?us-ascii?Q?GCHFgj8+dI2D2ZtGGBsfJixZWs3P4USFSZtZfUYKRFenOSWbwVBWnyoLQvBB?=
+ =?us-ascii?Q?fkLak9dhB0ut5UPrhGBZRw1SgZZ10MMdlVEDAlWYeIJ8G8gw/T7e9adtO2ng?=
+ =?us-ascii?Q?cjz9BvzncqLihi9IgSmXhT9IK2e2qjdlUfYZ4HyaCA1wQQYXnMKCtdojJa0G?=
+ =?us-ascii?Q?9lFhErAZkXx5fx8hydpGh0dBs2lg+J/VxlD80B0lpJJB/Kecj3CUyFVntn+h?=
+ =?us-ascii?Q?Ajo1pBwtQZZI/wZS7C+iuBk+UMSNXjfSX6XRh4z1IjbNraV35d0uZkMCts7i?=
+ =?us-ascii?Q?/rb4BsiPKimNcumzK2KQEL0AwBiQXU13KDWLXak9OixKmKk1ROXVqBJs4Ckg?=
+ =?us-ascii?Q?D68RcVwJgvPoC/MlQr669b+JPEuPUL618KiE+d+Su79Cpfuya+0Cb+LGaUJe?=
+ =?us-ascii?Q?5HVWTCc73z1snDGt+ovdqmmEnTLrBRsNTUx9yFo/vAjYyMCvfQMJDLogz1M0?=
+ =?us-ascii?Q?DhU/dAiLN1hRDWYhSzwij0rZ8YvkQCFsenlzfyBrbVM9xS+J6d/NkatFb/vm?=
+ =?us-ascii?Q?55LiAJTjel3EPYMdvjozMAHf1QIBjkxikHQl6VqNfbLuCtqBHkmtmBeYajFS?=
+ =?us-ascii?Q?XmYzL718PrS1NjnU+0mCnjbn4D4mBb5+VfP5Jwkvr+39NPhLtF9u5E4XJxd2?=
+ =?us-ascii?Q?tD2h5+HTz+7wL8mKMtQhQCA6Tkn0RvYHsnOPljCMlbdN9pKmU46BGL6wX71r?=
+ =?us-ascii?Q?CfrzTHxV26cgCQ5Zz5aDRWysxuVyntYnjOkqPNt2gWs+8VTo0Y23WID2+Cw1?=
+ =?us-ascii?Q?ezJRqsiQOclnE3B7amOFUvgCIuRguGN9URjQ7PXnPw+04ACd3apwfPUKiFLB?=
+ =?us-ascii?Q?7UmCLRKlgsHDzQFuDQTCz9Exh5Tb9qvtSIRWWKHitoqCl8VuTGM0TYprF4vL?=
+ =?us-ascii?Q?3VW8zkTGC2ydbTpIi7nbTaIGQDaN0WiMgdY3xX2ezXXnkCcwHoO3StM3SrL1?=
+ =?us-ascii?Q?YKyF98W6JPwcLrTLJGOCu+ew26TDvRncEx5T40waM0P8X6Q8gk5rEe4m9tyG?=
+ =?us-ascii?Q?X55TsdRdINm8v6Pz3EfOKstJ9xlk?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?G7NyYbfjZ7FLFjgCebLlRH1qBzISkSpuAxhSAWVgvc116VyoPso/FgJce/fM?=
+ =?us-ascii?Q?q47WdKCgHXWIUOyf89Rduf2L+blafU5PBxCU8zpD1x0tHthPi1ECZIdvI5Br?=
+ =?us-ascii?Q?pOcm25MsawXYiHdFONvtvcXlisMQ4eJhAmuNe2kA10l3EA+3/Vm1fYQDkvkN?=
+ =?us-ascii?Q?Tj3gLmvq9B8Pkw6G1oYUk27WvtaVXp51FWMWOlRrrDwctkO+nTl5vFwCx5cV?=
+ =?us-ascii?Q?BKzSxUghtMTfcfb7Wikc5YIZVXbumz41HdJ3exT7ahFzNdD0+1pbq4ioPFs3?=
+ =?us-ascii?Q?HfNKv7nDxB/CYpVYLTRVyzDmZggcFOPOCoGXAKtSU3tqEyAEugJtWZWI/dTv?=
+ =?us-ascii?Q?St7HtxGSvX+Wa/cVNXw5cLQHzsmm8GHhgHqazgA/x1g9Yn/x71EOLze2sR2V?=
+ =?us-ascii?Q?a0AFXKTHRXnxYDnLmNS+9dBRI7fuEo6I0d3B1wg35cu/s9sGkQHkn3+CFSGi?=
+ =?us-ascii?Q?u0qN3G7aLig9bJg6V2Pjl3WX4ztHTqiKTJYVLx+7sk7gM5nJPVzdUBf3BboJ?=
+ =?us-ascii?Q?MUIgWdBjBhNnyVlTDj9aW3C4aqN6F+VodCHZFFw1AwBJctDaT718CTMyh3HJ?=
+ =?us-ascii?Q?xTRGhOp4MGU8GunQv7iwLDLVIXLangSOoIeDRN9RSPJTsIgScwbsWAfpXCuo?=
+ =?us-ascii?Q?ospxNUF7Fw3aEqOXJ2mojzw6pCAgqNS0uy6FGO5td4pz/AmjluBr62RTn/si?=
+ =?us-ascii?Q?SFmP48MQNv8+rgjrMPAgTFOWJAXUYo3EUc7hbZXknDlS7HKLivtcYsTyzEbJ?=
+ =?us-ascii?Q?4DOuEmieYaiK+r8uc0+N+re8sIq8JKfSNvsy3YukITXJiuK8mrxT91bkprCt?=
+ =?us-ascii?Q?H8rfMrQzKbBsBu3sWrqQ6HXPzRrsoLr6YUl93CtYI7/JbfVPPZHzMZR3VRLe?=
+ =?us-ascii?Q?bqVocVFbfJqNdd/4JmroAHS83yxbK74BGE4kqWEw1RTc09VDs78cPn8QDDNw?=
+ =?us-ascii?Q?/DikJn+T0F3OKtmRJ6IsXf0EE8rUbyZNRmE99YqK625eDWCYskSa5NiXCH17?=
+ =?us-ascii?Q?Gfr9CxWv3GIP3m+6R1V1AmJ7pX7YfpubBPPWMvXV1wx67xyvS1j+mAOerSqP?=
+ =?us-ascii?Q?xGMAFb7MedcfULa+VHwZ2QPTgthMbZwAuAUIEo6UwUyxMlE2vlaz+NdDJVnJ?=
+ =?us-ascii?Q?6R3d/ucrlhCBKQAKFaXMpzam2RRpqyhUjk7XSKjPObrxKwa/vnFCvLATFt/t?=
+ =?us-ascii?Q?BBpcKGsZjGax6PUy0mIA/wdmSSi5OdOqKpttztUzyD0iVJFamPXF+rXD1KOH?=
+ =?us-ascii?Q?IQ6iqiuUT4t4SzPOgCbk9zc2N/M/9I4dB3o6yn7bh6auHFBZ8hZl/9mBI536?=
+ =?us-ascii?Q?//R4Sqf2/2IDQasxEBnmRGIDy+Un5HkBK91+I5ad5oWjeSh3uy2GAcqzCPeg?=
+ =?us-ascii?Q?z6zfyscgsq2q3hgjQZMJdxsStwGiYd0F/xrjMMShVH39n21VrCmfsHSSc3Nd?=
+ =?us-ascii?Q?NSPddYlTV3EzChN3bnGooOMnBmCwo+nOjDtw2bZXZDQ9PJGKuP44Q3Y5Sfnl?=
+ =?us-ascii?Q?hwKakYsgLyhE/NDho5onf3QiwlDdY+5XAizi5RfsZ00Ng+zImL/p4ebZzCMj?=
+ =?us-ascii?Q?FohJVoabtVjxqalTws2pTdU2QnPtuDF3nYUAdYPz?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3f4a84f-0d57-4711-d955-08dd4d0cf5ce
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2025 15:33:41.7604
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QJjpJpoieIm0IkAny34cduNRrsUnGlfRv7ZlmK96fhDvRQh8FpczhJLGwYyraCgo
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6067
 
-Currently iwdev->rf is allocated in irdma_probe(), but free in
-irdma_ib_dealloc_device(). It can be misleading. Move the free to
-irdma_remove() to be more obvious.
+On Fri, Feb 14, 2025 at 07:55:11AM +0200, Leon Romanovsky wrote:
 
-Freeing in irdma_ib_dealloc_device() leads to KASAN use-after-free
-issue. Which can also lead to NULL pointer dereference. Fix this.
+> > The point is to detect cases where they happen to be in order because
+> > they were split up due to the 32 bit limit in the sgl.
+> 
+> There is no promise that this split will create consecutive SG entries
+> and iterator will fetch them in that order too.
 
-irdma_deinit_interrupts() can't be moved before freeing iwdef->rf,
-because in this case deinit interrupts will be done before freeing irqs.
-The simplest solution is to move kfree(iwdev->rf) to irdma_remove().
+Yes, that is guarenteed, if the memory is contiguous and split then
+the SG entries have to be consecutive and the sg iterator has to go in
+order.
 
-Reproducer:
-  sudo rmmod irdma
+Otherwise the DMA transfer would be scrambled.
 
-Minified splat(s):
-  BUG: KASAN: use-after-free in irdma_remove+0x257/0x2d0 [irdma]
-  Call Trace:
-   <TASK>
-   ? __pfx__raw_spin_lock_irqsave+0x10/0x10
-   ? kfree+0x253/0x450
-   ? irdma_remove+0x257/0x2d0 [irdma]
-   kasan_report+0xed/0x120
-   ? irdma_remove+0x257/0x2d0 [irdma]
-   irdma_remove+0x257/0x2d0 [irdma]
-   auxiliary_bus_remove+0x56/0x80
-   device_release_driver_internal+0x371/0x530
-   ? kernfs_put.part.0+0x147/0x310
-   driver_detach+0xbf/0x180
-   bus_remove_driver+0x11b/0x2a0
-   auxiliary_driver_unregister+0x1a/0x50
-   irdma_exit_module+0x40/0x4c [irdma]
+In normal cases we except the SGL to already be fully aggregated so
+all SGL boundaries also have a dma_addr discontinuity. This special
+case of exceeding the 32 bit limit is the only time we should have
+consecutive sgls that are dma_addr contiguous.
 
-  Oops: general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
-  KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-  RIP: 0010:ice_free_rdma_qvector+0x2a/0xa0 [ice]
-  Call Trace:
-   ? ice_free_rdma_qvector+0x2a/0xa0 [ice]
-   irdma_remove+0x179/0x2d0 [irdma]
-   auxiliary_bus_remove+0x56/0x80
-   device_release_driver_internal+0x371/0x530
-   ? kobject_put+0x61/0x4b0
-   driver_detach+0xbf/0x180
-   bus_remove_driver+0x11b/0x2a0
-   auxiliary_driver_unregister+0x1a/0x50
-   irdma_exit_module+0x40/0x4c [irdma]
-
-Reported-by: Marcin Szycik <marcin.szycik@linux.intel.com>
-Closes: https://lore.kernel.org/netdev/8e533834-4564-472f-b29b-4f1cb7730053@linux.intel.com/
-Fixes: 3e0d3cb3fbe0 ("ice, irdma: move interrupts code to irdma")
-Reviewed-by: Marcin Szycik <marcin.szycik@linux.intel.com>
-Signed-off-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
----
-Fix to net-next instead of net, because the commit isn't yet in net
-tree.
----
- drivers/infiniband/hw/irdma/main.c  | 2 ++
- drivers/infiniband/hw/irdma/verbs.c | 1 -
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/irdma/main.c b/drivers/infiniband/hw/irdma/main.c
-index 1ee8969595d3..d10fd16dcec3 100644
---- a/drivers/infiniband/hw/irdma/main.c
-+++ b/drivers/infiniband/hw/irdma/main.c
-@@ -255,6 +255,8 @@ static void irdma_remove(struct auxiliary_device *aux_dev)
- 	ice_rdma_update_vsi_filter(pf, iwdev->vsi_num, false);
- 	irdma_deinit_interrupts(iwdev->rf, pf);
- 
-+	kfree(iwdev->rf);
-+
- 	pr_debug("INIT: Gen2 PF[%d] device remove success\n", PCI_FUNC(pf->pdev->devfn));
- }
- 
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index eeb932e58730..1e8c92826de2 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -4871,5 +4871,4 @@ void irdma_ib_dealloc_device(struct ib_device *ibdev)
- 
- 	irdma_rt_deinit_hw(iwdev);
- 	irdma_ctrl_deinit_hw(iwdev->rf);
--	kfree(iwdev->rf);
- }
--- 
-2.42.0
-
+Jason
 
