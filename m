@@ -1,129 +1,91 @@
-Return-Path: <linux-rdma+bounces-7786-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7787-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17301A37B0A
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Feb 2025 06:44:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0752A37BD9
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Feb 2025 08:09:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 843CF188BD3F
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Feb 2025 05:44:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C14FE7A249A
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Feb 2025 07:08:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2160D188006;
-	Mon, 17 Feb 2025 05:44:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="PX8QS+JK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A46D193084;
+	Mon, 17 Feb 2025 07:08:52 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D95E2137750;
-	Mon, 17 Feb 2025 05:44:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84A32183098
+	for <linux-rdma@vger.kernel.org>; Mon, 17 Feb 2025 07:08:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739771066; cv=none; b=VbmruGqpg5D2TLi6lh3BmzjnBYCU+HCkelmIrjUTqyL8EaNEyswr0Egm2fVu3BkS0Pc+6IDWwxEGIw2GwioGYebzm0iElC57pc5aTaH+Kz4jQvpfKh7R+fE3vWBBie9Lc58foCdkC0s+1NhO51A3y58tnOKXPs8q42mqxHGEp80=
+	t=1739776132; cv=none; b=XxSd7X9ycZGAcawp98ZP+H89KjZOuZs3bJ4+SbGIIgjuIutgDzTeMwe4he/K3G6Y3ksmbZyq9kqAClv74K2KDxZozO9i6BiDI0lk7Gi0l89nNBQI3peAUkGoijOWS5hMc3kc8pSzkjfYV9j5OOU7EBr2LFSh6VgOr0nG86zzDe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739771066; c=relaxed/simple;
-	bh=Z86hbm+AyS40zmwoHV2FxJBl2pnWWB7QD1M0ZpXBWRc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pRn//c5MIslQi8MwyQhsvhE1+E50Cn5G+ZwfL7JAS10sbq2lDl7qDp2uI0c6vGCnmODDgr+P0OoPYTk8uNj4/c1HU/7lMAMsoab4zgs6PdOo7HIpWHnjlmlRTq3ZmXZpZfK1AE/kr5I/wRnzCNbE2kE3JSZqvjURjkDD3uaWYUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=PX8QS+JK; arc=none smtp.client-ip=115.124.30.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1739771059; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=UDJBPz4tDQX1n8wj6sZdtoJl0cQHrWxiQmekpH9nHDc=;
-	b=PX8QS+JK30jhN347gQJ5PMYByXClopS5qYi68KvwJpPusxRcBW3lFF2Fhdt8FZApH4hMWht478CMmrUsr1f3xWZsvZDvUzhmbpRSlp449CSMF+36RKlKgVxAoNHCw/fnrk/J2NEXjR2PK/KtnYN4PRH7njh7pIseqdJa7DHozhM=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WPZCnV4_1739771057 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 17 Feb 2025 13:44:17 +0800
-Date: Mon, 17 Feb 2025 13:44:17 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: "D. Wythe" <alibuda@linux.alibaba.com>, jaka@linux.ibm.com,
-	kgraul@linux.ibm.com, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, pabeni@redhat.com,
-	song@kernel.org, sdf@google.com, haoluo@google.com, yhs@fb.com,
-	edumazet@google.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-	jolsa@kernel.org, guwen@linux.alibaba.com, kuba@kernel.org,
-	davem@davemloft.net, netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v7 0/6] net/smc: Introduce smc_ops
-Message-ID: <20250217054417.GA91494@j66a10360.sqa.eu95>
-References: <20250123015942.94810-1-alibuda@linux.alibaba.com>
- <20250214092209.GA88970@j66a10360.sqa.eu95>
- <2ae65126-73a3-4c18-bef5-d4067c727cf5@linux.ibm.com>
+	s=arc-20240116; t=1739776132; c=relaxed/simple;
+	bh=5ZJpsM/7AqdnPCNn8MBS6VMH9OoVlmhSV+xcW0lk7Ls=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=GN+bZuuSfuWf8QqVw8YCXb4krAUfDdIRSx4IcQ4YkDyBgRgYWfqUWSxfDeQsgTEeKSUYh/A2mu6C6YHJ6Obi5Ga57bwGSjjJs3ly4JpUY/x1EcFue0vcpdvBilV2SuG90915G+P6RZYb8jaxvAj+pLGvTYMUR22Wxco5WImJybY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4YxDCw6xR8z11VXs;
+	Mon, 17 Feb 2025 15:04:12 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7E3481401F2;
+	Mon, 17 Feb 2025 15:08:46 +0800 (CST)
+Received: from localhost.localdomain (10.90.30.45) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 17 Feb 2025 15:08:45 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<huangjunxian6@hisilicon.com>, <tangchengchang@huawei.com>
+Subject: [PATCH for-next 0/4] RDMA/hns: Introduce delay-destruction mechanism
+Date: Mon, 17 Feb 2025 15:01:19 +0800
+Message-ID: <20250217070123.3171232-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2ae65126-73a3-4c18-bef5-d4067c727cf5@linux.ibm.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-On Fri, Feb 14, 2025 at 12:37:55PM +0100, Wenjia Zhang wrote:
-> 
-> 
-> On 14.02.25 10:22, D. Wythe wrote:
-> >On Thu, Jan 23, 2025 at 09:59:36AM +0800, D. Wythe wrote:
-> >>This patch aims to introduce BPF injection capabilities for SMC and
-> >>includes a self-test to ensure code stability.
-> >>
-> >>Since the SMC protocol isn't ideal for every situation, especially
-> >>short-lived ones, most applications can't guarantee the absence of
-> >>such scenarios. Consequently, applications may need specific strategies
-> >>to decide whether to use SMC. For example, an application might limit SMC
-> >>usage to certain IP addresses or ports.
-> >>
-> >>To maintain the principle of transparent replacement, we want applications
-> >>to remain unaffected even if they need specific SMC strategies. In other
-> >>words, they should not require recompilation of their code.
-> >>
-> >>Additionally, we need to ensure the scalability of strategy implementation.
-> >>While using socket options or sysctl might be straightforward, it could
-> >>complicate future expansions.
-> >>
-> >>Fortunately, BPF addresses these concerns effectively. Users can write
-> >>their own strategies in eBPF to determine whether to use SMC, and they can
-> >>easily modify those strategies in the future.
-> >
-> >Hi smc folks, @Wenjia @Ian
-> >
-> >Is there any feedback regarding this patches ? This series of code has
-> >gone through multiple rounds of community reviews. However, the parts
-> >related to SMC, including the new sysctl and ops name, really needs
-> >your input and acknowledgment.
-> >
-> >Additionally, this series includes a bug fix for SMC, which is easily
-> >reproducible in the BPF CI tests.
-> >
-> >Thanks,
-> >D. Wythe
-> >
-> Hi D.Wythe,
-> 
-> Thanks for the reminder! I have a few higher-priority tasks to
-> handle first, but I’ll get back to you as soon as I can—hopefully
-> next week.
-> 
-> Thanks,
-> Wenjia
+When mailboxes for resource(QP/CQ/SRQ) destruction fail, it's unable
+to notify HW about the destruction. In this case, driver will still
+free the resources, while HW may still access them, thus leading to
+a UAF.
 
-Hi Wenjia,
+This series introduces delay-destruction mechanism to fix such HW UAF,
+including thw HW CTX and doorbells.
 
-Thank you for your reply and explanation! I completely understand that
-you have higher-priority tasks to handle right now. I just wanted to
-ensure that this patch isn't overlooked, as it contains important
-changes and fixes related to SMC.
+Junxian Huang (2):
+  RDMA/hns: Change mtr member to pointer in hns QP/CQ/MR/SRQ/EQ struct
+  RDMA/hns: Fix HW doorbell UAF by adding delay-destruction mechanism
 
-Best wishes,
-D. Wythe
+wenglianfa (2):
+  RDMA/hns: Fix HW CTX UAF by adding delay-destruction mechanism
+  Revert "RDMA/hns: Do not destroy QP resources in the hw resetting
+    phase"
+
+ drivers/infiniband/hw/hns/hns_roce_cq.c       |  34 +++--
+ drivers/infiniband/hw/hns/hns_roce_db.c       |  91 ++++++++++----
+ drivers/infiniband/hw/hns/hns_roce_device.h   |  73 ++++++++---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c    |  97 +++++++--------
+ drivers/infiniband/hw/hns/hns_roce_main.c     |  13 ++
+ drivers/infiniband/hw/hns/hns_roce_mr.c       | 117 ++++++++++++++----
+ drivers/infiniband/hw/hns/hns_roce_qp.c       |  30 +++--
+ drivers/infiniband/hw/hns/hns_roce_restrack.c |   4 +-
+ drivers/infiniband/hw/hns/hns_roce_srq.c      |  45 ++++---
+ 9 files changed, 348 insertions(+), 156 deletions(-)
+
+--
+2.33.0
 
 
