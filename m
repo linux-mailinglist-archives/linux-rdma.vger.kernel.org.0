@@ -1,85 +1,101 @@
-Return-Path: <linux-rdma+bounces-7800-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7801-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29C20A38FEA
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2025 01:27:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D7C5A39004
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2025 01:40:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D7F77A1BE0
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2025 00:26:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12994171DE1
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2025 00:40:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2F0B660;
-	Tue, 18 Feb 2025 00:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 416F545945;
+	Tue, 18 Feb 2025 00:40:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u5eFKvk+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PXZoI8h8"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F118F40;
-	Tue, 18 Feb 2025 00:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4FB28373;
+	Tue, 18 Feb 2025 00:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739838442; cv=none; b=dnmG6XJV4wt813oLx5KTTgeReH7tXfhgfXCYLyNk+Me4lxGeNYrbc0CoUxUEoPRWGU7KzL9adts9ORf1SPk7yxZCxDYK/6JyDSNTUIDp8iNkyKbUwXrEJb+nKuGT+YD9ILYroehiGeglzQri6zL0p+TGIZunfftGDuI2frdGw6E=
+	t=1739839208; cv=none; b=O/jdi8IVvIN4lx2rggaTbxE7jFxW2QKH3/Xlor/SCZPtpbKE6v9tiis0r7QKHeNbVz1aCxryKaMwdDxOcNuoJoTO83Hv3i9Wx+RudU44T5htBubn4ynrQhdJRKhQWO2XZtK25i/ja2RbvAmf3HNv25yWZ5JEP8s6uP/qZXjlOmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739838442; c=relaxed/simple;
-	bh=ZEgQ//xY50OgJZV1eRCl9eh/0wLOmAsMyto2nZFDG54=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZNbSlajQWmOoyMywrUmq8tDvWHQJ2wWFxeSTj9jneFsj6HQgbC/lAgmu9vURK4HJvXIr++CpquEral1MuuPAHcpCtdVH4AMAKb/2iYO2Tbo9INKPfOh0tFyipnVaFGNRoKislE0qxyB0hir9/uXBJ5aPYt5hjiPxEy5+j9izhrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u5eFKvk+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0EF9C4CED1;
-	Tue, 18 Feb 2025 00:27:20 +0000 (UTC)
+	s=arc-20240116; t=1739839208; c=relaxed/simple;
+	bh=AO9yO00MduwbUcjO+Ez3Ys6EHCh5XVjfuxn8kmtTN8A=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=rHH2c3/YF22i0gk6781EPjd1TY5+lhvqzEBFu4p6FHZ+mjAize3Fboila/RT9bbOh2852aZeAEdupN/k9qkl5wUFLyE8fnggkCaX8kmOtL608jJq6LP79RPzloufjOkyDBYUX5VLg9sLwvKQLGR04dyPtLS/UFndnyz3tMnAL7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PXZoI8h8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51BF3C4CED1;
+	Tue, 18 Feb 2025 00:40:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739838441;
-	bh=ZEgQ//xY50OgJZV1eRCl9eh/0wLOmAsMyto2nZFDG54=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=u5eFKvk+tEJ0RtnV3TxJZH1RWD+mRL31B51pjjQG5O/76GYTF1HreYcas+MpFE6gN
-	 bKjF5dELIvC0Z00buSSBPMaLGsPTpGb7ADtF/Vp7XrWJGhndxqBfq3NkKSL6bxrda9
-	 LUmNdsGYkzSlZ++2UTYwsdsxlva4902XRS3uMpelwrBf1kSUhdXSvuoIbrYbFnfsKS
-	 pEtVUesbixbPzraXvoAmI0ELHOsIR2g0yjbhB0iX80z9ck7tiMEzEJEYZd8mkqXthH
-	 4Kbc5L1frOvDas9EmcuslJUvCbFiIbJIzmcBZahbmtBTDHU6OlcIlSWKSMDN+r1BqV
-	 WfaXQ8bh/61vg==
-Date: Mon, 17 Feb 2025 16:27:19 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Simon Horman <horms@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, Eric Dumazet
- <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Shahar Shitrit
- <shshitrit@nvidia.com>, Gal Pressman <gal@nvidia.com>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, Carolina Jubran <cjubran@nvidia.com>
-Subject: Re: [PATCH net-next 4/4] net/mlx5: Add sensor name to temperature
- event message
-Message-ID: <20250217162719.1e20afac@kernel.org>
-In-Reply-To: <20250215192935.GU1615191@kernel.org>
-References: <20250213094641.226501-1-tariqt@nvidia.com>
-	<20250213094641.226501-5-tariqt@nvidia.com>
-	<20250215192935.GU1615191@kernel.org>
+	s=k20201202; t=1739839207;
+	bh=AO9yO00MduwbUcjO+Ez3Ys6EHCh5XVjfuxn8kmtTN8A=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=PXZoI8h8CgWv+d+6SzGbE6ZGE296iUWLINsALeHxnAifXZ3L8mUo3sBWP7HpPupZH
+	 dfmJISIe2PsOMMkgKP5xh+19XpVw/iiBr9/iKwTpX3sNkqITGeaoZWwSriWqW/1b8o
+	 H1NfyEvMym1YoG3l2ms1HLSEMhar8Ef9mVqF3ddC0fnax2Y3xzXKXrJ7r/j/iDqIRg
+	 jMvDmyQCQPa8d1735nlTqQzXrCLEKk44jx+jQIdubc6MT9B8Kp43Yx1Li4e3LBb6fO
+	 eqUwwX2FWCCw+PHseKGRJyHoufsRACfkIudRNuHph0U/yxQgBLG5BTtQmfCQA+ygzI
+	 yDBgRgQ0PbNFQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE734380CEE2;
+	Tue, 18 Feb 2025 00:40:38 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/4] mlx5: Add sensor name in temperature message
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <173983923749.3583210.12936325771072711787.git-patchwork-notify@kernel.org>
+Date: Tue, 18 Feb 2025 00:40:37 +0000
+References: <20250213094641.226501-1-tariqt@nvidia.com>
+In-Reply-To: <20250213094641.226501-1-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, andrew+netdev@lunn.ch, shshitrit@nvidia.com,
+ gal@nvidia.com, saeedm@nvidia.com, leon@kernel.org, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Sat, 15 Feb 2025 19:29:35 +0000 Simon Horman wrote:
-> > +	for_each_set_bit(i, bit_set_ptr, num_bits) {
-> > +		const char *sensor_name = hwmon_get_sensor_name(hwmon, i + bit_set_offset);
-> > +
-> > +		mlx5_core_warn(dev, "Sensor name[%d]: %s\n", i + bit_set_offset, sensor_name);
-> > +	}
-> > +}  
-> 
-> nit:
-> 
-> If you have to respin for some other reason, please consider limiting lines
-> to 80 columns wide or less here and elsewhere in this patch where it
-> doesn't reduce readability (subjective I know).
+Hello:
 
-+1, please try to catch such situations going forward
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Thu, 13 Feb 2025 11:46:37 +0200 you wrote:
+> Hi,
+> 
+> This small series from Shahar adds the sensors names to the temperature
+> event messages, in addition to the existing bitmap indicators.
+> This improves human readability.
+> 
+> Series starts with simple refactoring and modifications. The top patch
+> adds the sensors names.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/4] net/mlx5: Apply rate-limiting to high temperature warning
+    https://git.kernel.org/netdev/net-next/c/9dd3d5d258ac
+  - [net-next,2/4] net/mlx5: Prefix temperature event bitmap with '0x' for clarity
+    https://git.kernel.org/netdev/net-next/c/b9b72ce0f5f4
+  - [net-next,3/4] net/mlx5: Modify LSB bitmask in temperature event to include only the first bit
+    https://git.kernel.org/netdev/net-next/c/633f16d7e07c
+  - [net-next,4/4] net/mlx5: Add sensor name to temperature event message
+    https://git.kernel.org/netdev/net-next/c/46fd50cfcc12
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
