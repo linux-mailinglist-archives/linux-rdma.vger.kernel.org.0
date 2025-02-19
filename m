@@ -1,87 +1,100 @@
-Return-Path: <linux-rdma+bounces-7834-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7835-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 649DBA3BDE7
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2025 13:19:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27B32A3BE17
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2025 13:31:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AF503B1EED
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2025 12:18:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A0F71893D5C
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2025 12:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CDA81D8A16;
-	Wed, 19 Feb 2025 12:18:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C621E131B;
+	Wed, 19 Feb 2025 12:31:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kcQ+pOuZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SE+Bpsw3"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D226A28629B
-	for <linux-rdma@vger.kernel.org>; Wed, 19 Feb 2025 12:18:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA451E0E0A;
+	Wed, 19 Feb 2025 12:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739967517; cv=none; b=tDbnRdC5v30Hg3PSpu8T78l46IR43xVIDy8n26logQCpGaBISjYNo3MlK+2dF6ricWTUbzI/gDCi30/dCf8IPhmlsMXNm1EraAjD+5rK7adFnFpkQ8jXotz9xUSPFyeZ5hsDoowwjkY7h6dg0/Yn35LJL9CfslimgjbbOx4J9YE=
+	t=1739968263; cv=none; b=bvpvxqtfZcLv0pwuJ3G1YML2xFHGkscAwXpt2L1blpRvkzpmqTfegXFm2CseEDd5qZmOG6Woo33VkfbEaTNdWTNj7iQwlGgb/RL2hShc/UVDLNdi85APSROXfQhBCLqFbqNWFav4gyjYIjePwz0ssam82dn1RHDnhry3rOFJZy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739967517; c=relaxed/simple;
-	bh=ekzJkM7+bsYaYbFc5lQ9oTAiYX7qh84Mbs8pszP5ZN8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=Q+hz3hXG0wXmvq2Eh66CC+dtcYrEuQ+61csrngXL86tPpMF7nhiibn2X8bSGeOFp08srgL3LWX35xRrvct9GAegdndYui/Rj31y9GK3JsTSri+6v7xha2oncAZoPAZrIRCNXiFcv+PjlIj47GUVx2D3Wv/MRNn1z+SBY4yjYAZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kcQ+pOuZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3758C4CED1;
-	Wed, 19 Feb 2025 12:18:36 +0000 (UTC)
+	s=arc-20240116; t=1739968263; c=relaxed/simple;
+	bh=N127fdTUboMPXuJ362+JGpLt7EcgMa+g6C8TmK2MXBc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FwSDsPY/08L8h3/0t7owGfEc2ZLy3OX0chARpF16AZq4Yg2PNwPVAFO6gsHyXX5vwFdPoxGsV3ABlJ0ot2ioBiL5Dv6ff8fzFe/Hb86U7nVWbKvgETbpTiNpQNfHMZTjCK0y3yHwCqK4J+j1EuXgY2H8nYTJEI0MKDW23L9jGyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SE+Bpsw3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D688DC4CED1;
+	Wed, 19 Feb 2025 12:31:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739967517;
-	bh=ekzJkM7+bsYaYbFc5lQ9oTAiYX7qh84Mbs8pszP5ZN8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=kcQ+pOuZqCKPMrTZdF7KtIwIHBAOV5GmxBVTdhTghYaIfQ6NlLsFBTb+WxcETk9VS
-	 DUZ8wgX+nKoXoCEdzrzetROcPRFM1BKNnacbbYa4NLXUe9SELZMhNaSyDHr2QdaJ5R
-	 MjlqeTceO7FSLqyzrBuPtTL38YtOdxUxyOQzIl9wCN/DkzZKz3c1iv/AEOzQsgyey4
-	 qa/5j3hXMnS6P8eaZZ1zI7JtT99BkaHwyAgFcvAoLlqIHoNJpjAgfMqRow8Q9/Y3+O
-	 T5eznMe3l+89Y2rLUeLZq3gVh9QcPC9TrQaPv/8JR191xuEQAuco7L9r3n65dTqJT4
-	 uSEDgIFyREvCA==
+	s=k20201202; t=1739968262;
+	bh=N127fdTUboMPXuJ362+JGpLt7EcgMa+g6C8TmK2MXBc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SE+Bpsw3ZkRmPo8/ZeJCgBP7lN7a+beE2wSqBGg5xUslnPJ4Bm3pPK+1ZRYf/FrVU
+	 r3yPik7sW/eYuCsNbplRwS7jdVDHN7m//uQG23yajxfsaDyiUCW+YwFXJvO3R7nv/L
+	 6+7wSBxGWQMGfP2341pGY+j23H90kr1VstsdzzGrfwGAB4MLiAkKIftt3dE6x9F1Zy
+	 7Gm/WqtilJT/EsxRp5ftv6x90f1npyRC8tRPHfXM/NvvJD61iSQlUxObr2B8U8j3vv
+	 pSo8x4VDq+e83n1xlhOt3peJ/lYQBgZOyvhxqk6dY7xp49conQm3bOpMiuuJpGy8TR
+	 42b8JJCBXwrBA==
+Date: Wed, 19 Feb 2025 14:30:57 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>, 
- Michael Margolin <mrgolin@amazon.com>
-Cc: sleybo@amazon.com, matua@amazon.com, gal.pressman@linux.dev, 
- Firas Jahjah <firasj@amazon.com>, Yonatan Nachum <ynachum@amazon.com>
-In-Reply-To: <20250217141623.12428-1-mrgolin@amazon.com>
-References: <20250217141623.12428-1-mrgolin@amazon.com>
-Subject: Re: [PATCH for-next v2] RDMA/core: Fix best page size finding when
- it can cross SG entries
-Message-Id: <173996751414.370165.3325983349340524956.b4-ty@kernel.org>
-Date: Wed, 19 Feb 2025 07:18:34 -0500
+To: Haoxiang Li <haoxiang_li2024@163.com>
+Cc: jgg@ziepe.ca, sd@queasysnail.net, phaddad@nvidia.com,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] mlx5: Add check for get_macsec_device()
+Message-ID: <20250219123057.GF53094@unreal>
+References: <20250218100200.2535141-1-haoxiang_li2024@163.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250218100200.2535141-1-haoxiang_li2024@163.com>
 
-
-On Mon, 17 Feb 2025 14:16:23 +0000, Michael Margolin wrote:
-> A single scatter-gather entry is limited by a 32 bits "length" field
-> that is practically 4GB - PAGE_SIZE. This means that even when the
-> memory is physically contiguous, we might need more than one entry to
-> represent it. Additionally when using dmabuf, the sg_table might be
-> originated outside the subsystem and optimized for other needs.
+On Tue, Feb 18, 2025 at 06:02:00PM +0800, Haoxiang Li wrote:
+> Add check for the return value of get_macsec_device() in
+> mlx5r_del_gid_macsec_operations() to prevent null pointer
+> dereference.
 > 
-> For instance an SGT of 16GB GPU continuous memory might look like this:
-> (a real life example)
+> Fixes: 58dbd6428a68 ("RDMA/mlx5: Handles RoCE MACsec steering rules addition and deletion")
+> Cc: stable@vger.kernel.org
+
+Definitely not.
+
+> Signed-off-by: Haoxiang Li <haoxiang_li2024@163.com>
+> ---
+>  drivers/infiniband/hw/mlx5/macsec.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> [...]
+> diff --git a/drivers/infiniband/hw/mlx5/macsec.c b/drivers/infiniband/hw/mlx5/macsec.c
+> index 3c56eb5eddf3..623b0a58f721 100644
+> --- a/drivers/infiniband/hw/mlx5/macsec.c
+> +++ b/drivers/infiniband/hw/mlx5/macsec.c
+> @@ -354,6 +354,11 @@ void mlx5r_del_gid_macsec_operations(const struct ib_gid_attr *attr)
+>  		}
+>  	}
+>  	macsec_device = get_macsec_device(ndev, &dev->macsec.macsec_devices_list);
 
-Applied, thanks!
+At this stage macsec_device is valid.
 
-[1/1] RDMA/core: Fix best page size finding when it can cross SG entries
-      https://git.kernel.org/rdma/rdma/c/486055f5e09df9
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+> +	if (!macsec_device) {
+> +		dev_put(ndev);
+> +		mutex_unlock(&dev->macsec.lock);
+> +		return;
+> +	}
+>  	mlx5_macsec_del_roce_rule(attr->index, dev->mdev->macsec_fs,
+>  				  &macsec_device->tx_rules_list, &macsec_device->rx_rules_list);
+>  	mlx5_macsec_del_roce_gid(macsec_device, attr->index);
+> -- 
+> 2.25.1
+> 
 
