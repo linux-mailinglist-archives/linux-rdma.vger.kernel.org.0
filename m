@@ -1,92 +1,123 @@
-Return-Path: <linux-rdma+bounces-7819-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7820-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2AE4A3AF8C
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2025 03:23:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6332A3B395
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2025 09:24:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20DDD1898C79
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2025 02:21:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B9781896545
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2025 08:24:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4BE176ADE;
-	Wed, 19 Feb 2025 02:21:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0328D1BD9C7;
+	Wed, 19 Feb 2025 08:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UyuuiCyr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S+lW5BTM"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F9435953;
-	Wed, 19 Feb 2025 02:21:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE15E42A93;
+	Wed, 19 Feb 2025 08:24:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739931692; cv=none; b=CyL5hXY7iede0i3+dhhptH99iX/5FWvyXXnfYBGsJWfOkSpB5ZHWBKD+7POeeJIYpgX0NMHysgqB3S54DQDuu69hwM9sjPDAU9trb12EnIXZHlH9sQxXAE8rjISnM74SEmD7hm9mxMT1nx7cR6c8nNU7QbTnhMHlfq3pH3LtvVo=
+	t=1739953450; cv=none; b=qbKmClz2zwH0zUCr1OJHabzYjr18yJ4SYvPXWbfUcTEVzUTZvR0a4h8UAncBZg8OljvIf3QoGpLyeasMk0AuKrpzsRujIcMud1B2doDCpGESPbr9/nh7UfgGsKh9zftgTmFWv7uLJInHk3BKZHCj5WG2EJE3UYckh0AXundCvL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739931692; c=relaxed/simple;
-	bh=XCg+HFXg8G/7UErPkHwbpxI9yQdsASnPzjA2vlPAjG0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SVRYtZgnspuby1sK0znrg8j4LnpUTN6XyI69dlzuQkeMtE/4GG4Cjp/VLbm/CkgHPLKUitqtpbD7jMR3RG4mZ06vsg1HkHaUygw5J1PPACCAUzmFp6Z9921D2hwtXyqmMMBav0cRGtu7uxGYPoGY4jWNQboonr03omt8ZsBsKeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UyuuiCyr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BC6CC4CEE2;
-	Wed, 19 Feb 2025 02:21:31 +0000 (UTC)
+	s=arc-20240116; t=1739953450; c=relaxed/simple;
+	bh=95w7EDKsRDoPuqJHls8uz2vABQ/9pubYzApPmVZyK9Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WbkghH3FwUfVjBo297+eXtYnKJ10Ob+djzM7YL8cKDmmRKU9V0k5Q7otm+64b/VEtZRG+ox/ZvvSX1jxs5SfiVTLnQQvxMDSSXA+lP7r4aRBtAwjN7zD6bAP8wpfDPCHrf5iuofV2rHCqMw+LoKjChlLHP36t9csUEqniiwOU/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S+lW5BTM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85824C4CED1;
+	Wed, 19 Feb 2025 08:24:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739931692;
-	bh=XCg+HFXg8G/7UErPkHwbpxI9yQdsASnPzjA2vlPAjG0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=UyuuiCyraaJ3RBFeLCP7vqL8tYaTdXcF7MHcbSiI9SJPa6BDPCUIu1i80BW4gcF4+
-	 9yOB4ZdardNg9zjt4R8Kmr4gzT5KtK0rGS93utfj/xVSOfp0dTnjT43nuD610wtRdR
-	 QfAZvAFvOuOgYLaJtFHvTWQEBiJVvic4kYUy8Fmw4Px9MBSaIrlHM1v2yic20CUcMl
-	 CTpkZxSxtljvQN/PtOpQsAzW5O2ZHYOUMiarGqc0PUSZsvRsHxEXur49lQTWCGR6zX
-	 KTi4Wo2UodccJOtN6SEWoTqF9cZQWMez6dBmCLZVxrGM/Bsym6WOYk3M3iIU1Ffq3m
-	 2MYdVReOFY36g==
-Date: Tue, 18 Feb 2025 18:21:30 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: Tariq Toukan <tariqt@nvidia.com>, "David S. Miller"
- <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, Eric Dumazet
- <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Jiri Pirko
- <jiri@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Carolina Jubran
- <cjubran@nvidia.com>, Gal Pressman <gal@nvidia.com>, Mark Bloch
- <mbloch@nvidia.com>, Donald Hunter <donald.hunter@gmail.com>, Jonathan
- Corbet <corbet@lwn.net>, Saeed Mahameed <saeedm@nvidia.com>, Leon
- Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 03/10] devlink: Serialize access to rate
- domains
-Message-ID: <20250218182130.757cc582@kernel.org>
-In-Reply-To: <ieeem2dc5mifpj2t45wnruzxmo4cp35mbvrnsgkebsqpmxj5ib@hn7gphf6io7x>
-References: <20250213180134.323929-1-tariqt@nvidia.com>
-	<20250213180134.323929-4-tariqt@nvidia.com>
-	<ieeem2dc5mifpj2t45wnruzxmo4cp35mbvrnsgkebsqpmxj5ib@hn7gphf6io7x>
+	s=k20201202; t=1739953450;
+	bh=95w7EDKsRDoPuqJHls8uz2vABQ/9pubYzApPmVZyK9Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S+lW5BTMOsXNLjh6MhoTEk1UwpgvNBdB+52zr5MEKW5pVwVOVlJsCU9zEHuYGfnas
+	 KewSBy+Dmk/b0UcSa6ixr/u/MoB7tbbNk4lY+HdKIALro9wuHcbLVnqvYOAIfj1syz
+	 SIWdNJCeVxw+7iRNFz16F4Cjoy927VyfOoOFfBtwqTy1iwyS/UbrAZPowhBkbuWxTC
+	 IXWcxWL/t4EzeJSTaykBK4mLOHm3+QaeFG0qhxoSg2YNnjlM1+/QqOgDkovGiyKcnt
+	 5ESXiU1hAPlfMQGvbDNQGnk27Dmy54KHuhljlAU34ATb51wbcUTktustIFMMoOb2je
+	 RR1VJ3KRM/0NA==
+Date: Wed, 19 Feb 2025 10:24:05 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: "Nelson, Shannon" <shannon.nelson@amd.com>
+Cc: jgg@nvidia.com, andrew.gospodarek@broadcom.com,
+	aron.silverton@oracle.com, dan.j.williams@intel.com,
+	daniel.vetter@ffwll.ch, dave.jiang@intel.com, dsahern@kernel.org,
+	gospo@broadcom.com, hch@infradead.org, itayavr@nvidia.com,
+	jiri@nvidia.com, Jonathan.Cameron@huawei.com, kuba@kernel.org,
+	lbloch@nvidia.com, saeedm@nvidia.com, linux-cxl@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	brett.creeley@amd.com
+Subject: Re: [RFC PATCH fwctl 2/5] pds_core: add new fwctl auxilary_device
+Message-ID: <20250219082405.GC53094@unreal>
+References: <20250211234854.52277-1-shannon.nelson@amd.com>
+ <20250211234854.52277-3-shannon.nelson@amd.com>
+ <20250218192822.GA53094@unreal>
+ <604b058d-88e8-436d-abf7-229a624d9386@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <604b058d-88e8-436d-abf7-229a624d9386@amd.com>
 
-On Fri, 14 Feb 2025 13:54:43 +0100 Jiri Pirko wrote:
-> For the record, I'm still not convinced that introducing this kind of
-> shared inter-devlink lock is good idea. We spent quite a bit of painful
-> times getting rid of global devlink_mutex and making devlink locking
-> scheme nice and simple as it currently is.
->=20
-> But at the same time I admit I can't think of any other nicer solution
-> to the problem this patchset is trying to solve.
->=20
-> Jakub, any thoughts?
+On Tue, Feb 18, 2025 at 12:00:52PM -0800, Nelson, Shannon wrote:
+> On 2/18/2025 11:28 AM, Leon Romanovsky wrote:
+> > 
+> > On Tue, Feb 11, 2025 at 03:48:51PM -0800, Shannon Nelson wrote:
+> > > Add support for a new fwctl-based auxiliary_device for creating a
+> > > channel for fwctl support into the AMD/Pensando DSC.
+> > > 
+> > > Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
+> > > ---
+> > >   drivers/net/ethernet/amd/pds_core/auxbus.c |  3 +--
+> > >   drivers/net/ethernet/amd/pds_core/core.c   |  7 +++++++
+> > >   drivers/net/ethernet/amd/pds_core/core.h   |  1 +
+> > >   drivers/net/ethernet/amd/pds_core/main.c   | 10 ++++++++++
+> > >   include/linux/pds/pds_common.h             |  2 ++
+> > >   5 files changed, 21 insertions(+), 2 deletions(-)
+> > 
+> > <...>
+> > 
+> > My comment is only slightly related to the patch itself, but worth to
+> > write it anyway.
+> > 
+> > > diff --git a/include/linux/pds/pds_common.h b/include/linux/pds/pds_common.h
+> > > index 5802e1deef24..b193adbe7cc3 100644
+> > > --- a/include/linux/pds/pds_common.h
+> > > +++ b/include/linux/pds/pds_common.h
+> > > @@ -29,6 +29,7 @@ enum pds_core_vif_types {
+> > >        PDS_DEV_TYPE_ETH        = 3,
+> > >        PDS_DEV_TYPE_RDMA       = 4,
+> > >        PDS_DEV_TYPE_LM         = 5,
+> > > +     PDS_DEV_TYPE_FWCTL      = 6,
+> > 
+> > This enum and defines below should be cleaned from unsupported types.
+> > I don't see any code for RDMA, LM and ETH.
+> > 
+> > Thanks
+> 
+> I've looked at those a few times over the life of this code, but I continue
+> to leave them there because they are part of the firmware interface
+> definition, whether we use them or not.
 
-The problem comes from having a devlink instance per function /
-port rather than for the ASIC. Spawn a single instance and the
-problem will go away =F0=9F=A4=B7=EF=B8=8F
+How? You are passing some number which FW is not aware of it. You can
+pass any number you want there. Even it is not true, you can
+PDS_DEV_TYPE_FWCTL = 6 here, but remove rest of enums and *_STR defines.
 
-I think we talked about this multiple times, I think at least
-once with Jake, too. Not that I remember all the details now..
---=20
-pw-bot: cr
+> 
+> You're right, there is no ETH or RDMA type code, they exist as historical
+> artifacts of the early interface design.
+
+This make me wonder why netdev merged this code which has nothing to do
+with netdev subsystem at all.
+
+Thanks
 
