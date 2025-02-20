@@ -1,117 +1,126 @@
-Return-Path: <linux-rdma+bounces-7873-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7874-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8723AA3CFB4
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 03:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E16C2A3D025
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 04:49:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4B72189D1A7
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 02:57:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D1A8188B831
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 03:49:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAFE91DC05F;
-	Thu, 20 Feb 2025 02:57:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CBDwQpZk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4253919F13C;
+	Thu, 20 Feb 2025 03:49:02 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B8621D8DE4;
-	Thu, 20 Feb 2025 02:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0117235958
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 03:48:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740020224; cv=none; b=aCjZL/oG3NRnWLs9Ag0AQwtWO//mYd3gZyuSBpVBPzrI3KGdCZtxvPJFWC4DsQawR+AEKdZXvircARYUQvt2RXlCTqnnhc+YDetmMeej0czQhHwgF+hMgQWCzMDzEYkQnTz9iScP3oqHFa6aMkMNTLPAA/xRpFPZHXvuoNrFhdw=
+	t=1740023342; cv=none; b=RCaWRKXcKDe0qD7u4Rukszsw9n4BYHKCL4hTtmiBzgfeqK+khZq89jVv+zlZ+DMuftY91Ajq4etmKqIbqQqJS568zKfp6ek0kEMvMwFnmB+FgXRbDcIBY8HpNKnhzabBMa1RjwARGVuc9xuZCVdMrrOxjljz39YdWZrnbsnK8Fs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740020224; c=relaxed/simple;
-	bh=zVgovuXVZ4q88QdyAkhcTS22Eyu+EFR2/CUYe3ib2Yo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ws7JnK2UWltmlimAuX4AawqdIQ/vQoRcxoTrhMOtpBhh1dynzsUFCnEfhRLouUYxReFGqlcqadoKs6x6kM5FHClTd5mQvKdtm1Xw16cYGV/iSu390YUMJB8ToLAaWNdNO4JDfthxJVBjF86RDd9upuCglqlhoQdGQ1cYl/rtQzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CBDwQpZk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD6A7C4CED1;
-	Thu, 20 Feb 2025 02:57:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740020223;
-	bh=zVgovuXVZ4q88QdyAkhcTS22Eyu+EFR2/CUYe3ib2Yo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CBDwQpZk0/WQCm0LwestZJXWcJ2/fpBma3zlL4bttI3M56xlVAwPKPCXcXzbGP1vS
-	 ldHiUHnri9YU+/oiAaGFOKK3AV96xuhL/Ym3pzn+2HmDWfe+/hYn2DLAc3u4Ojeson
-	 toK1B7bpX9WXxXhnEmBlw9r+kzhYKinHwb2ROKCwCnA9PS9iDeU/7TLHqtJ8iUC5xT
-	 qMLsfrGu2pCHhT0I/Uzq9noSus8SXV2sCiJ/0a/dNmabh3WjeeG8ZlDHV9pWDXrYBL
-	 gyEwU07tKH61Gj73V866rO5ga3l01bBbCb7/yZVJZ4R1NqMwHKUH0lEN4FFEaP6MXV
-	 /4x+iHXm3Kydg==
-Date: Wed, 19 Feb 2025 18:57:01 -0800
-From: Kees Cook <kees@kernel.org>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Allison Henderson <allison.henderson@oracle.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, linux-hardening@vger.kernel.org,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net/rds: Replace deprecated strncpy() with
- strscpy_pad()
-Message-ID: <202502191855.C9B9A7AA@keescook>
-References: <20250219224730.73093-2-thorsten.blum@linux.dev>
+	s=arc-20240116; t=1740023342; c=relaxed/simple;
+	bh=YToeL2UZnCRVElzT80HLru65DMqEi07kRoVP8QEnIT0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ebGJr0Fqkgvcpb2/w1dzHPSIaXXeaAJPvsifA4l6gkNZlxASJZNkXAUIYcSzXqpiOuENKofyxIL2cd7luBOAmgrjWikhbyLBQ9qZen3zF8vFAVVVjQmbTg0nTk7hAKV9jrQkhtgBYly+dF0tDN0GeaD3q42FFEZGE2JSMPdgQuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Yyzfs3SghzkXL4;
+	Thu, 20 Feb 2025 11:45:09 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 64224140337;
+	Thu, 20 Feb 2025 11:48:50 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 20 Feb 2025 11:48:49 +0800
+Message-ID: <e8e09f3e-a8f9-429a-ac60-272db35f25fb@hisilicon.com>
+Date: Thu, 20 Feb 2025 11:48:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250219224730.73093-2-thorsten.blum@linux.dev>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH for-next 0/4] RDMA/hns: Introduce delay-destruction
+ mechanism
+Content-Language: en-US
+To: Leon Romanovsky <leon@kernel.org>
+CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<tangchengchang@huawei.com>
+References: <20250217070123.3171232-1-huangjunxian6@hisilicon.com>
+ <20250219121454.GE53094@unreal>
+ <bb0a621e-78e1-c030-f8f6-e175978acf0f@hisilicon.com>
+ <20250219143523.GH53094@unreal>
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20250219143523.GH53094@unreal>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-On Wed, Feb 19, 2025 at 11:47:31PM +0100, Thorsten Blum wrote:
-> strncpy() is deprecated for NUL-terminated destination buffers. Use
-> strscpy_pad() instead and remove the manual NUL-termination.
 
-When doing these conversions, please describe two aspects of
-conversions:
 
-- Why is it safe to be NUL terminated
-- Why is it safe to be/not-be NUL-padded
-
-In this case, the latter needs examination. Looking at how ctr is used,
-it is memcpy()ed later, which means this string MUST be NUL padded or it
-will leak stack memory contents.
-
-So, please use strscpy_pad() here. :)
-
--Kees
-
+On 2025/2/19 22:35, Leon Romanovsky wrote:
+> On Wed, Feb 19, 2025 at 09:07:36PM +0800, Junxian Huang wrote:
+>>
+>>
+>> On 2025/2/19 20:14, Leon Romanovsky wrote:
+>>> On Mon, Feb 17, 2025 at 03:01:19PM +0800, Junxian Huang wrote:
+>>>> When mailboxes for resource(QP/CQ/SRQ) destruction fail, it's unable
+>>>> to notify HW about the destruction. In this case, driver will still
+>>>> free the resources, while HW may still access them, thus leading to
+>>>> a UAF.
+>>>
+>>>> This series introduces delay-destruction mechanism to fix such HW UAF,
+>>>> including thw HW CTX and doorbells.
+>>>
+>>> And why can't you fix FW instead?
+>>>
+>>
+>> The key is the failure of mailbox, and there are some cases that would
+>> lead to it, which we don't really consider as FW bugs.
+>>
+>> For example, when some random fatal error like RAS error occurs in FW,
+>> our FW will be reset. Driver's mailbox will fail during the FW reset.
 > 
-> Compile-tested only.
-> 
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> ---
->  net/rds/stats.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/net/rds/stats.c b/net/rds/stats.c
-> index 9e87da43c004..cb2e3d2cdf73 100644
-> --- a/net/rds/stats.c
-> +++ b/net/rds/stats.c
-> @@ -89,8 +89,7 @@ void rds_stats_info_copy(struct rds_info_iterator *iter,
->  
->  	for (i = 0; i < nr; i++) {
->  		BUG_ON(strlen(names[i]) >= sizeof(ctr.name));
-> -		strncpy(ctr.name, names[i], sizeof(ctr.name) - 1);
-> -		ctr.name[sizeof(ctr.name) - 1] = '\0';
-> +		strscpy_pad(ctr.name, names[i]);
->  		ctr.value = values[i];
->  
->  		rds_info_copy(iter, &ctr, sizeof(ctr));
-> -- 
-> 2.48.1
-> 
+> I don't understand this scenario. You said at the beginning that HW can
+> access host memory and this triggers UAF. However now, you are presenting 
+> case where driver tries to access mailbox.
 > 
 
--- 
-Kees Cook
+No, I'm saying that mailbox errors are the reason of HW UAF. Let me
+explain this scenario in more detail.
+
+Driver notifies HW about the memory release with mailbox. The procedure
+of a mailbox is:
+	a) driver posts the mailbox to FW
+	b) FW writes the mailbox data into HW
+
+In this scenario, step a) will fail due to the FW reset, HW won't get
+notified and thus may lead to UAF.
+
+Junxian
+
+>>
+>> Another case is the mailbox timeout when FW is under heavy load, as it is
+>> shared by multi-functions.
+> 
+> It is not different from any other mailbox errors. FW needs to handle
+> these cases.
+> 
+> Thanks
+> 
+>>
+>> Thanks,
+>> Junxian
+>>
+>>> Thanks
 
