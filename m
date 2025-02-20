@@ -1,85 +1,113 @@
-Return-Path: <linux-rdma+bounces-7876-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7877-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF3D9A3D178
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 07:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C7F25A3D187
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 07:47:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5244D3BA5E9
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 06:42:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A20243BBD01
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 06:47:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0BC1E3785;
-	Thu, 20 Feb 2025 06:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3C51E04A9;
+	Thu, 20 Feb 2025 06:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aA18Qw0E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LXIRhtl2"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28C681E25F4
-	for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 06:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 460CA1DFE3A
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 06:47:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740033749; cv=none; b=mj/BccoAMiskjRYkIbdzcE4RlwyXs5309Y+Ebo7lxDR9DX0lqKuatTdgpgUqMBuF81Oaa9B3YQVaiZPyBmVa9U+uHuBfp73pnpNjNDL9bkUIUsmNVbDscp35/75KY8zk9wdQJ4uqnAsOy/KnJxlLQgPkvQ2cAktL+Y9F2xZfM/A=
+	t=1740034039; cv=none; b=P26qDIa79AGtuCh+SeT6tzUYuJIinb7bkcLy7sQbU7cuY0eTAYaiajPuxwwdc9zvDpNpuliDQMUAPsl4X9cFsjRCqRjJ7sXi95za7jUhmR7oK6HbGx1AMD2odVZit+fP5iJ6oHrpLZZWMoNNk3OfTgEGjvdZzymV5mhem3wlLN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740033749; c=relaxed/simple;
-	bh=xowMXrFRYNngbSsVQTUhXjVJz7iCsGKLBSDYLanIZ18=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=KGHsMsDYvVW01cDaFuHebirNLiHeyJSQOz7XrBEuEFbS/VQVI7bi3jDLikON+vEdXonfEBJWAlPrAEKFduMDCRjxbkCrwquio+NcVQMX6lCv+2H0JY2hy2+BhoPoe29yi9QKdLEcXCEiDQm5VbTMDLzXmq9eIG++wc3Kv/S7VxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aA18Qw0E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 359B9C4CED1;
-	Thu, 20 Feb 2025 06:42:28 +0000 (UTC)
+	s=arc-20240116; t=1740034039; c=relaxed/simple;
+	bh=rUWSYNNauNeIAZr9PHzQQoL/vFLLYj9ijLUsuS5iJyU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dO14+8S1AIVidqb5/zIU3QoD61C5x5PemJ/FvSAvDulE/w9Hg3HzAg8hkHfMqGWVUZYrP76/NE34wUVs7iwph1n24TY7jbNJT/PreRaf4DxDUSQDj86sHiTbV80WFz2n8hPlRTlibVdJyaFIPtcDVvpLiqz1fxHz+bTLTKaPoGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LXIRhtl2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28B85C4CED1;
+	Thu, 20 Feb 2025 06:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740033748;
-	bh=xowMXrFRYNngbSsVQTUhXjVJz7iCsGKLBSDYLanIZ18=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=aA18Qw0E+Fwbr7C7DaRSrgPOfZrxuipValTJe3g1cbozC886+lFQT5No116YHTDLr
-	 DhDr3rasECt/OZwNCJ/GW1IWIxoNAZQ3qrA/slVakB3MSTQ+zMmGXOeY8kCC7gsrv3
-	 7lv80xiDDYRp5eW239hDY4IJvMOoHdj5PhuIvTu7jGruJoQoEKSy4npQ+SugacM2bx
-	 HkY4emEgYw314i46MhcBtNP8LSZR10b5txWQZFRhxXuPeKSEF2BlAlO3SXME9gGcSV
-	 oi+SRoGQgmfY+Hy+6fFSExgK4KQ+mifDZvWgEJaB9657RjXjouJWZ3QPH2ZrVFAMmw
-	 uUQqdS73fbbHw==
+	s=k20201202; t=1740034038;
+	bh=rUWSYNNauNeIAZr9PHzQQoL/vFLLYj9ijLUsuS5iJyU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=LXIRhtl2m/bHxP7OXYzjGs/ngUTP4g+uZQ8iaCOC7ivgqgHl6hm5OFYI36OSVTakC
+	 EdDbnJssfVd+QeHH6nnA2/+NsCyMhZIKobzxK94iQtdMUgqDCRivlD+v1HHblxkevT
+	 xhDj5yGVWmyTssPAhQHERfz/KHpI/CSuyE4I9U2UlBNIqJM434rEOuh7NvWB9xVJ44
+	 vhLuEQ71QFIlZKKxGRjly2NWemR7PqnNS6OtGGgYY+KBR5ZTXqqNl6JU50nsb5HVaJ
+	 4OGE30xrcjzhqKw6eizUXTTvGZ3dKGbIPck+AbbgCQPDywmIOeXeO0YKkdyvBcODcZ
+	 6EHs+EvfRKGaA==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Patrisious Haddad <phaddad@nvidia.com>, linux-rdma@vger.kernel.org, 
- Maor Gottlieb <maorg@nvidia.com>
-In-Reply-To: <18ef4cc5396caf80728341eb74738cd777596f60.1739187089.git.leon@kernel.org>
-References: <18ef4cc5396caf80728341eb74738cd777596f60.1739187089.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Fix AH static rate parsing
-Message-Id: <174003374559.429204.2312293951806016385.b4-ty@kernel.org>
-Date: Thu, 20 Feb 2025 01:42:25 -0500
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Patrisious Haddad <phaddad@nvidia.com>,
+	linux-rdma@vger.kernel.org,
+	Mark Zhang <markzhang@nvidia.com>
+Subject: [PATCH rdma-rc] RDMA/mlx5: Fix bind QP error cleanup flow
+Date: Thu, 20 Feb 2025 08:47:10 +0200
+Message-ID: <25dfefddb0ebefa668c32e06a94d84e3216257cf.1740033937.git.leon@kernel.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Transfer-Encoding: 8bit
 
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-On Mon, 10 Feb 2025 13:32:39 +0200, Leon Romanovsky wrote:
-> Previously static rate wasn't translated according to our PRM but simply
-> used the 4 lower bytes.
-> 
-> Correctly translate static rate value passed in AH creation attribute
-> according to our PRM expected values.
-> 
-> In addition change 800GB mapping to zero, which is the PRM
-> specified value.
-> 
-> [...]
+When there is a failure during bind QP, the cleanup flow destroys the
+counter regardless if it is the one that created it or not, which is
+problematic since if it isn't the one that created it, that counter could
+still be in use.
 
-Applied, thanks!
+Fix that by destroying the counter only if it was created during this call.
 
-[1/1] RDMA/mlx5: Fix AH static rate parsing
-      https://git.kernel.org/rdma/rdma/c/a91d5a250bd78e
+Fixes: 45842fc627c7 ("IB/mlx5: Support statistic q counter configuration")
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Reviewed-by: Mark Zhang <markzhang@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/counters.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Best regards,
+diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
+index 4f6c1968a2ee..81cfa74147a1 100644
+--- a/drivers/infiniband/hw/mlx5/counters.c
++++ b/drivers/infiniband/hw/mlx5/counters.c
+@@ -546,6 +546,7 @@ static int mlx5_ib_counter_bind_qp(struct rdma_counter *counter,
+ 				   struct ib_qp *qp)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(qp->device);
++	bool new = false;
+ 	int err;
+ 
+ 	if (!counter->id) {
+@@ -560,6 +561,7 @@ static int mlx5_ib_counter_bind_qp(struct rdma_counter *counter,
+ 			return err;
+ 		counter->id =
+ 			MLX5_GET(alloc_q_counter_out, out, counter_set_id);
++		new = true;
+ 	}
+ 
+ 	err = mlx5_ib_qp_set_counter(qp, counter);
+@@ -569,8 +571,10 @@ static int mlx5_ib_counter_bind_qp(struct rdma_counter *counter,
+ 	return 0;
+ 
+ fail_set_counter:
+-	mlx5_ib_counter_dealloc(counter);
+-	counter->id = 0;
++	if (new) {
++		mlx5_ib_counter_dealloc(counter);
++		counter->id = 0;
++	}
+ 
+ 	return err;
+ }
 -- 
-Leon Romanovsky <leon@kernel.org>
+2.48.1
 
 
