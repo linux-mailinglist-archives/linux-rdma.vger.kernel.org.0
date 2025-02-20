@@ -1,93 +1,117 @@
-Return-Path: <linux-rdma+bounces-7872-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7873-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 000A0A3CEDF
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 02:46:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8723AA3CFB4
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 03:58:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE4993B15A4
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 01:46:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4B72189D1A7
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 02:57:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EC51C1F02;
-	Thu, 20 Feb 2025 01:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAFE91DC05F;
+	Thu, 20 Feb 2025 02:57:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ObMTd2Zl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CBDwQpZk"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C90314D29B;
-	Thu, 20 Feb 2025 01:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B8621D8DE4;
+	Thu, 20 Feb 2025 02:57:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740015991; cv=none; b=BlkUE2B2NbLHSKZgvVRxjxxhi0GVDBgshdFqXoF76HC6pzRrRmFTmikdiCUbrEVNJN8yQuV9SqTbjo6vD9EHbmkuAsCXQbmEppDSp2rYRP67cxecfxv7JYi+tW/i652tQowNPMjBtj0t84VmXemnnRkgV3jGy47OafWecNVR8Ik=
+	t=1740020224; cv=none; b=aCjZL/oG3NRnWLs9Ag0AQwtWO//mYd3gZyuSBpVBPzrI3KGdCZtxvPJFWC4DsQawR+AEKdZXvircARYUQvt2RXlCTqnnhc+YDetmMeej0czQhHwgF+hMgQWCzMDzEYkQnTz9iScP3oqHFa6aMkMNTLPAA/xRpFPZHXvuoNrFhdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740015991; c=relaxed/simple;
-	bh=lOCIKrG4fnWuEnXHjMyM7hZ4f/XNChZyeVKyouzur8U=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KhV8SsbkseTU4I907DX4MRnQXgs9pkRaGAoeRpZyX3UqxpHZut378Tpj72phlbnCzQceFR2asFN11yoE0J6uiBzmCur0r+o4JBhQ0Xl0GGJ9xhxfzaAu1hL5wvwjr8GA47zQb5uKsnWOdH3Tmkcl8HPvYEgNrqWgiOgExTxT4Wg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ObMTd2Zl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CF1FC4CED1;
-	Thu, 20 Feb 2025 01:46:30 +0000 (UTC)
+	s=arc-20240116; t=1740020224; c=relaxed/simple;
+	bh=zVgovuXVZ4q88QdyAkhcTS22Eyu+EFR2/CUYe3ib2Yo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ws7JnK2UWltmlimAuX4AawqdIQ/vQoRcxoTrhMOtpBhh1dynzsUFCnEfhRLouUYxReFGqlcqadoKs6x6kM5FHClTd5mQvKdtm1Xw16cYGV/iSu390YUMJB8ToLAaWNdNO4JDfthxJVBjF86RDd9upuCglqlhoQdGQ1cYl/rtQzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CBDwQpZk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD6A7C4CED1;
+	Thu, 20 Feb 2025 02:57:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740015990;
-	bh=lOCIKrG4fnWuEnXHjMyM7hZ4f/XNChZyeVKyouzur8U=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ObMTd2ZlVJylLtds82Kj4tPBl7X05QL/6o7/5QbYWay8BODTX+lznxpN9Kcgb6+7s
-	 hsgwbKYz7r8cbVecsZpuQ/9GzIbob7O2fQPzKYixARFQvqy7sbKj4tLsorT+etfov8
-	 byOnVueq/JcSIPGCn6hJmmYWi61P//ft6gReLVDo8tDaRSGIhkVTnyA7Ht2YeWFBeQ
-	 bEmN2XLYG5fzGT6bkLxtWcFeQK+Bsv4xta0FuaEQ//WIiAglqSUNQRNPKMPgaxvUFL
-	 ufDMBU3qQ+bP1VPEF5T5y421nDEeDDXu2alyUMBGnH0Dcszqydt5XYrliCpKLP/57d
-	 RwvI7WDsJvOcw==
-Date: Wed, 19 Feb 2025 17:46:29 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <ttoukan.linux@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, "Gustavo A. R. Silva"
- <gustavo@embeddedor.com>, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] net/mlx5e: Avoid a hundred
- -Wflex-array-member-not-at-end warnings
-Message-ID: <20250219174629.4791c1e9@kernel.org>
-In-Reply-To: <99543a40-2a57-4c10-8876-cde08cb15199@gmail.com>
-References: <Z6GCJY8G9EzASrwQ@kspp>
-	<4e556977-c7b9-4d37-b874-4f3d60d54429@embeddedor.com>
-	<8d06f07c-5bb4-473d-90af-5f57ce2b068f@gmail.com>
-	<7ce8d318-584f-42c2-b88a-2597acd67029@embeddedor.com>
-	<5f2ca37f-3f6d-44d2-9821-7d6b0655937d@gmail.com>
-	<36ab1f42-b492-497f-a1dc-34631f594da6@lunn.ch>
-	<59b075bc-f6e6-42f0-bc01-c8921922299d@gmail.com>
-	<20250218131345.6bd558cb@kernel.org>
-	<99543a40-2a57-4c10-8876-cde08cb15199@gmail.com>
+	s=k20201202; t=1740020223;
+	bh=zVgovuXVZ4q88QdyAkhcTS22Eyu+EFR2/CUYe3ib2Yo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CBDwQpZk0/WQCm0LwestZJXWcJ2/fpBma3zlL4bttI3M56xlVAwPKPCXcXzbGP1vS
+	 ldHiUHnri9YU+/oiAaGFOKK3AV96xuhL/Ym3pzn+2HmDWfe+/hYn2DLAc3u4Ojeson
+	 toK1B7bpX9WXxXhnEmBlw9r+kzhYKinHwb2ROKCwCnA9PS9iDeU/7TLHqtJ8iUC5xT
+	 qMLsfrGu2pCHhT0I/Uzq9noSus8SXV2sCiJ/0a/dNmabh3WjeeG8ZlDHV9pWDXrYBL
+	 gyEwU07tKH61Gj73V866rO5ga3l01bBbCb7/yZVJZ4R1NqMwHKUH0lEN4FFEaP6MXV
+	 /4x+iHXm3Kydg==
+Date: Wed, 19 Feb 2025 18:57:01 -0800
+From: Kees Cook <kees@kernel.org>
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Allison Henderson <allison.henderson@oracle.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, linux-hardening@vger.kernel.org,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net/rds: Replace deprecated strncpy() with
+ strscpy_pad()
+Message-ID: <202502191855.C9B9A7AA@keescook>
+References: <20250219224730.73093-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250219224730.73093-2-thorsten.blum@linux.dev>
 
-On Wed, 19 Feb 2025 14:14:35 +0200 Tariq Toukan wrote:
-> On 18/02/2025 23:13, Jakub Kicinski wrote:
-> > On Tue, 18 Feb 2025 17:53:14 +0200 Tariq Toukan wrote:  
-> >> Maybe it wasn't clear enough.
-> >> We prefer the original patch, and provided the Reviewed-by tag for it.  
-> > 
-> > Can you explain what do you mean by "cleaner"?
-> > I like the alternative much more.  
+On Wed, Feb 19, 2025 at 11:47:31PM +0100, Thorsten Blum wrote:
+> strncpy() is deprecated for NUL-terminated destination buffers. Use
+> strscpy_pad() instead and remove the manual NUL-termination.
+
+When doing these conversions, please describe two aspects of
+conversions:
+
+- Why is it safe to be NUL terminated
+- Why is it safe to be/not-be NUL-padded
+
+In this case, the latter needs examination. Looking at how ctr is used,
+it is memcpy()ed later, which means this string MUST be NUL padded or it
+will leak stack memory contents.
+
+So, please use strscpy_pad() here. :)
+
+-Kees
+
 > 
-> Cleaner in the sense that it doesn't touch existing code in en_rx.c 
-> (datapath), and has shorter dereferences for the inner umr_wqe fields, like:
-> umr_wqe->ctrl
-> vs.
-> umr_wqe->hdr.ctrl
+> Compile-tested only.
+> 
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> ---
+>  net/rds/stats.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/net/rds/stats.c b/net/rds/stats.c
+> index 9e87da43c004..cb2e3d2cdf73 100644
+> --- a/net/rds/stats.c
+> +++ b/net/rds/stats.c
+> @@ -89,8 +89,7 @@ void rds_stats_info_copy(struct rds_info_iterator *iter,
+>  
+>  	for (i = 0; i < nr; i++) {
+>  		BUG_ON(strlen(names[i]) >= sizeof(ctr.name));
+> -		strncpy(ctr.name, names[i], sizeof(ctr.name) - 1);
+> -		ctr.name[sizeof(ctr.name) - 1] = '\0';
+> +		strscpy_pad(ctr.name, names[i]);
+>  		ctr.value = values[i];
+>  
+>  		rds_info_copy(iter, &ctr, sizeof(ctr));
+> -- 
+> 2.48.1
+> 
+> 
 
-IMO that's minor, not sufficient to justify struct_group_tagged()
+-- 
+Kees Cook
 
