@@ -1,99 +1,73 @@
-Return-Path: <linux-rdma+bounces-7879-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7880-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C3A8A3D1BD
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 08:06:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41CF4A3D1C1
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 08:07:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 020093AACC1
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 07:04:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22FCD160A22
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 07:07:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8103C1E3780;
-	Thu, 20 Feb 2025 07:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F00EB1E3DEF;
+	Thu, 20 Feb 2025 07:07:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iQ1FTqfM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WA8BV9iX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287861B4145
-	for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 07:04:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9AA442C;
+	Thu, 20 Feb 2025 07:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740035077; cv=none; b=CUX0DprwLyptsCUHlCmVZxEBcPA1Hw2kM8B1OLtSMukoAfjdDJAbJaOkX5L85OeFWotWJkIyQgsWc4heHt+qrIgK0TLg6rGnuA084kenGVD4HtyDKoCbD447lCeWuy+24eujQozAYXQj6KooNbNFQKgJe7TzDhxINtyZlvqD9ns=
+	t=1740035254; cv=none; b=cSH0TWvqxSsfwCVKmOrIND31y1kd6cvXf7b5ALJL3ipDitzNzccTFppGpRt1YliY90tOevDhhLLFb800aaHO1tDgr6G77ZYsEBkuKvU4fV/kbiDnY7BitO5DALRCrmmeArug0aw+PdIJ4I+oWMRDlG+HBjR/prZJbcSaaBOrv6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740035077; c=relaxed/simple;
-	bh=lJIoqdUy4V0zIzen2mVuEfwtyWVyy02G6Fbphz11x3g=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=sL7K8Grq0WzMK5MMiz9fOqP9CJwGy8RNvHd1pYjfAZ2YnXqiRndhiXrwtBygGCG1cFpqg69J1ApsnDkfQzfTe49Sm+DT3IVC0MsGLfk4BwiatstJqkSe/Ck04KbYU9vfLnQS87954j5WUk94IGUmxwblbnWhKAYwiRr6g/fvXyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iQ1FTqfM; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740035071;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TcOrIhUgSKoUIoZfwA21I+o8wG81FXhX6ssan37TXl0=;
-	b=iQ1FTqfMeQMLUvl3u3ZXWWI+ZrbjDcedqusjY44u3pVLlITtEl4DM2/S4kIJgPh7ykNfL7
-	0K613d7SITLI64xmLceP97Y1p/xJwtyY6QGrAjNmjaoFsKoaHc91ewg/80qJBbyoNFcqcj
-	NiN/1Yi005+d3fw0vze8Vo20o6Q0TNI=
+	s=arc-20240116; t=1740035254; c=relaxed/simple;
+	bh=PEqaQq3z7OYwiHe4pXAOBQKVNqOKwupXRK90MFiAV7k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JRltElAUEq50EHjAnZPDH+IDbs4etFACxFMFgeH1+tNJx7ZYdoFNuZp9Rk/oxGyA07fpds+qsZJ6kHswhQA/PVa12dKpyKOrMJ5i0PlYkY1l79JoZlJQ67oCnOuqCfoFhgK635BNkDz/pATXyc+CIRioed8WSniuPWut1E/VHKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WA8BV9iX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A98F8C4CEE3;
+	Thu, 20 Feb 2025 07:07:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740035254;
+	bh=PEqaQq3z7OYwiHe4pXAOBQKVNqOKwupXRK90MFiAV7k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WA8BV9iXAxJpm2EtzQ8UMvgeOTiZHOCvhdwc8arrRxBTgoOMzm+oCRbBNMUGS5P9y
+	 8LUlHLoY2V9O7N8FuwLZTMaxfAi6om1B0F7DM/Iy3LrX2XSyOIhaeqvNae5YFqOfzf
+	 DTNeg/4HdzQuy+Bl0DEVgMmvZRfcAxkZ6SB8PzTXi+pHMp5Alytm3yiun684I+sU8P
+	 qsxhMo8MiiDlHwJXx2Z2lkj9lFXo5DtS8Q6lKObkV3vpz+9Ogr3u5togN1CQqJXHve
+	 fjpDwX/P4n4qfwLAFQLtYu6KaJ0GlgVLFuxcKaJ0J7cFiRlY7YkgVJ4pfuN7ZbSOFZ
+	 mO8tFLmHRj/dw==
+Date: Thu, 20 Feb 2025 09:07:29 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>
+Cc: Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] rdma: Converge on using secs_to_jiffies()
+Message-ID: <20250220070729.GK53094@unreal>
+References: <20250219-rdma-secs-to-jiffies-v1-0-b506746561a9@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51.11.1\))
-Subject: Re: [PATCH net-next] net/rds: Replace deprecated strncpy() with
- strscpy_pad()
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Thorsten Blum <thorsten.blum@linux.dev>
-In-Reply-To: <202502191855.C9B9A7AA@keescook>
-Date: Thu, 20 Feb 2025 08:04:18 +0100
-Cc: Allison Henderson <allison.henderson@oracle.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>,
- linux-hardening@vger.kernel.org,
- netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org,
- rds-devel@oss.oracle.com,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <08A0C3AE-A255-467F-A007-5584E8E44517@linux.dev>
-References: <20250219224730.73093-2-thorsten.blum@linux.dev>
- <202502191855.C9B9A7AA@keescook>
-To: Kees Cook <kees@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250219-rdma-secs-to-jiffies-v1-0-b506746561a9@linux.microsoft.com>
 
-On 20. Feb 2025, at 03:57, Kees Cook wrote:
-> On Wed, Feb 19, 2025 at 11:47:31PM +0100, Thorsten Blum wrote:
->> strncpy() is deprecated for NUL-terminated destination buffers. Use
->> strscpy_pad() instead and remove the manual NUL-termination.
+On Wed, Feb 19, 2025 at 09:36:38PM +0000, Easwar Hariharan wrote:
+> This series converts users of msecs_to_jiffies() that either use the
+> multiply pattern of either of:
+> - msecs_to_jiffies(N*1000) or
+> - msecs_to_jiffies(N*MSEC_PER_SEC)
 > 
-> When doing these conversions, please describe two aspects of
-> conversions:
-> 
-> - Why is it safe to be NUL terminated
-> - Why is it safe to be/not-be NUL-padded
-> 
-> In this case, the latter needs examination. Looking at how ctr is used,
-> it is memcpy()ed later, which means this string MUST be NUL padded or it
-> will leak stack memory contents.
-> 
-> So, please use strscpy_pad() here. :)
+> where N is a constant or an expression, to avoid the multiplication.
 
-I am using strscpy_pad() here already because of the NUL-padding.
+Can you please provide justification for that? What is wrong with current code?
 
-Did you just miss that?
-
-Thanks,
-Thorsten
+Thanks
 
