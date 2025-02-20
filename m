@@ -1,135 +1,186 @@
-Return-Path: <linux-rdma+bounces-7899-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7900-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A692A3E2C1
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 18:43:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F39D8A3E323
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 18:56:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E0A07A96A8
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 17:38:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02851189E3AA
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 17:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A652144C3;
-	Thu, 20 Feb 2025 17:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB5F42139DB;
+	Thu, 20 Feb 2025 17:56:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WzgGs4Tm"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HHpp8ChP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from mail-qk1-f202.google.com (mail-qk1-f202.google.com [209.85.222.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C2C2135C1
-	for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 17:38:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE04213E9C
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 17:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740073092; cv=none; b=rZroM/mUab9NGNjoKNk2AiFxzrKf1KbVD+QfDo/Ud7RAvn4d43H+ybkJmcwfi913Yfiscq1ZhD7QgF6f65tip2GEEAUGA/BqiUXFKCgD2R1/OvuVkw9ujF1xT+2KuLQ2TFvvpuVBR5nuZs/kg972CixQKpHdhu1gkgNZ6bjRYEY=
+	t=1740074182; cv=none; b=DSLakCxxoa4U+qnbNOkNQs5nAOjdFT5tysrW+X68xVCtq7ldeeT4DznUaaqDd7U3oHfCZPy497DnRlmjC4a65twjt5e4hhVVM7mwu6OnaxRDHS6CVT6FwBdJV4FhoL4oLOVPWtk6nhU8oMTKTfDW2WBuBLdLkKtb82aaBW6m4oM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740073092; c=relaxed/simple;
-	bh=m996q6vO0iXzWxDYY2qrv07uM0l28IGHtkDBWQCmh2s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QtoDNZv7qVzGg0sMcbLfaSoCVDJFozgENWnXTVRxs3bZprcOK2eEvdNo7bVW0yx8jARlQQOoXs0v42xoPggSijubp9MOiIJJVaMf4hh7L2MXIbxvgnN7C9a7Mgr5sIcXg2edOSG/i2xxMo7JtgYwvrxcUh8ae/p5RX8qh+R3ycY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WzgGs4Tm; arc=none smtp.client-ip=209.85.208.44
+	s=arc-20240116; t=1740074182; c=relaxed/simple;
+	bh=G6vB9gcijeH3Lhb7cMd814srsxu9iv+Gk09PHvZZXC4=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=dkk8s5zQrD6bcm6l3Ymcvm9xHmpZbys9RzpHBN356oXeue5f4/ppgiL94w3xzU3uyqwiOtgfaAYdhYiim3yrbzTc0A0nVU+u9h7zKxqa0IhiOl41qhsbIjGZ/jWgaBURxg3WMcJqbuTsfSSMqhocDbT8TJ4RuQ/B5R3LyazZHSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HHpp8ChP; arc=none smtp.client-ip=209.85.222.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5debbced002so2285837a12.1
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 09:38:09 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com
+Received: by mail-qk1-f202.google.com with SMTP id af79cd13be357-7c0bb434620so176910085a.3
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 09:56:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1740073088; x=1740677888; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PMF86dvJYSnQvAJgZO/5z/ZtNfskKAeOlzNKthxOi2U=;
-        b=WzgGs4TmLROKdXXgITQf4YPUxp17+JLm9IH0nNbEosptmlu4Wt3tYm4W0e4MIVMG/i
-         rzgzspXvAQqSwZyq9zQm4ae+APaA2PMCd5GN0bs4Dd0ZfSE9UUEYP3Y4uEIMu2zmYd05
-         DAnV+LKOUtTo79vhe2DeRH0g0yPsqKzllYcbkXjpvn75cRYV5aAjGZhcIDQR7+H6aU6q
-         EyHLM0DCuIOvbg/0GwdHP9w+lzmCOIpbo+nKhowe1qWpI3UAQ/H5Atjh8hdzagiTa9B4
-         ESy3y4JSB1UDMbMujWTXL7vLhmIDZUNmgdJvfRBHmA5teAzwR5ZrF4Rli02Hk4CjChad
-         hNhg==
+        d=google.com; s=20230601; t=1740074180; x=1740678980; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+sc+fmJYIJboHhQ6A/akvF820PWgLsmVwEFqfkM50F0=;
+        b=HHpp8ChPNDbNA4zyDzejTUa+Opq2Egq9dVM4Z5jiSPDy2VSNzOookyIOTNmUGQFtVJ
+         qfQ0Dz28VrxKutx1Xnpxpy6N7YFy+z1wk7SG+wGaKiMyak4+IqToQvEXN/Sd/5skj61t
+         jSxe1x0ZJ5NeRnnXCqn4w4RpKOkSlZdfGSARi4TjxNveuLdQWOBTfUHalzpLTVJFWoU0
+         6qx8XzTFg8G2CV9Qx0PLQaugCINDT+HkNEQmkGS11XZTUPpOwvye693V9tcSPBsLD4yW
+         TLK8yQZSWWRonwK9/gjQorAtBDqR3n5am4BCHXljFzLpVN50z3/zZR55OyK4DY8ScgTu
+         nO8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740073088; x=1740677888;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PMF86dvJYSnQvAJgZO/5z/ZtNfskKAeOlzNKthxOi2U=;
-        b=nngC3yYITl+s/UYzRiVKKVLrNh50VlQKa+db5YVqlzABTXf5deAChWAduhTwDY2ov8
-         60q+JXyFNmO2YT/Xh1HNHcHkfgmn1utuOt2QzdileaESFGEkyeHLoPyGD1SPt/V7CMhe
-         foewiKf2+Wr3mmJ/6JESaRJfAQLEHAjgay3JX8KLGA0k7gafbdVzUkfMv0EuJ+tefcla
-         HHdT8yvRHkx+GBItfWq6NpR2NQi9xLfC07Cit9u38vQBxTixpCJIVoHJSDV5lOQ3J60w
-         AAFvXMrzhX9JefG8Z2ztSHbXa7MCUYxpR6PRZnzLlktTqi31hAy486oCyYzd2sVT0VvN
-         ogdA==
-X-Forwarded-Encrypted: i=1; AJvYcCWDj9qz15hteEOLuhLobQT66Mvi/IGnGkE90i9WwX8cB8Pm8jhn26X6nO75p3hGcg835bKZ88p30fcA@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCHG5BA97gIFJlxMPfS1s2EQbrCCSGcPyKlimN9sPR/Odm0Fuq
-	uB76SJHYl8DmLL/tfO10ci2XLSwKi4Acauaq5Rszk63Nr0AQxHFp+lAR/WOex/Kl45rpJKOd3XM
-	wGOgm1DAR+z1/a5JMa/tvBSNVfqWNbNqo9i0D
-X-Gm-Gg: ASbGncsctT/a6QwgWNwBmrRluxLCz97VxiLMxC2YJV94xoZcEL9a0AqfLeiA5kxT57c
-	rLisooiRKG0v4/8xj9ydF3EwE/hwKyZ7+W+VdMh22m9eS3rloMoUNv2TiojQ7dKULRM5yajvu4s
-	9tYr7TY/13dgZz1rgbcEZr/K/qRFOYUQ==
-X-Google-Smtp-Source: AGHT+IHCTQyVqQ19w+hCnVON2vFH4ZvpncAf5AfsNmNbx7pLFmxcDw88MHH7wkCjdUrHoR/4Ui6EZ/cpFTAp0EQKMkw=
-X-Received: by 2002:a05:6402:2103:b0:5de:5939:6c34 with SMTP id
- 4fb4d7f45d1cf-5e0a12d7bf1mr4209102a12.15.1740073087606; Thu, 20 Feb 2025
- 09:38:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740074180; x=1740678980;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+sc+fmJYIJboHhQ6A/akvF820PWgLsmVwEFqfkM50F0=;
+        b=MShBRDDh2X2PLhWCouwf31pLr74iS1Ji9QwxUl5i/d08dm03Cl0jHJZ9b0N49UEeNS
+         +3sTt9wYJnAaTLVR6ubKGtIFlQUBkFvb00s2E77djR/zm8PBR25kci3RZ9x6VCBAYLss
+         8qRT7hR0o8pJZrm3Swv4jAkz8jGI/y9tJ6uKItJrlUwDj3ssiCFL3+GV8W/RlclxE5Zo
+         TKozWeb2HB2Pq4cPxKMJEEChGM3kJGSQM9tzM8ASkgIKUTVFCx6TFyoWwXisQdmOYUGX
+         cqsbWjGybpvU9MY72ah5vHcgWEmSfEb0c79+UfGSVwWG/VBUNmyEuQjl3PfjEgq3Aj2b
+         /kmg==
+X-Gm-Message-State: AOJu0YzlHe1pA8hZzrBT83eZxT92S7ztYn9BEF1unwJsnVjNPElKDlMb
+	/np1HtRmFQlSrtG9+A6GRFYs3qeQch6T7icYR/5/aPg1WYPL4EgoWJ2pMQe7zoGgwl0Aeh5ig/3
+	wYene6A==
+X-Google-Smtp-Source: AGHT+IEf+qel04YzloqoCBYrIsaHw1EpGoAjytQmR58Hbp+aKicJg+IofZOJyctbjzk5TjEE2x8JqnrOw30K
+X-Received: from qkap13.prod.google.com ([2002:a05:620a:a90d:b0:7c0:a1c2:ac34])
+ (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:a05:620a:462c:b0:7c0:c3ea:696d
+ with SMTP id af79cd13be357-7c0cef7bef2mr20633085a.55.1740074179796; Thu, 20
+ Feb 2025 09:56:19 -0800 (PST)
+Date: Thu, 20 Feb 2025 17:56:12 +0000
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CAHYDg1Sdi0UZXzMzWo=HkWzJx9jp6HF23oGSO_kgobs0=JyEcw@mail.gmail.com>
-In-Reply-To: <CAHYDg1Sdi0UZXzMzWo=HkWzJx9jp6HF23oGSO_kgobs0=JyEcw@mail.gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 20 Feb 2025 18:37:56 +0100
-X-Gm-Features: AWEUYZm64lSun7GoGyYp7OuLmL9vU-HmA9llCnEvCX7S5b498mJ7bVR2zsCWJIw
-Message-ID: <CANn89iJWoeXaUVWUx_b_SWUR+e9du2oyjpGTnLYhddV0FtgVxw@mail.gmail.com>
-Subject: Re: [PATCH] IB/cm: use rwlock for MAD agent lock
-To: Jacob Moroni <jmoroni@google.com>
-Cc: jgg@ziepe.ca, leon@kernel.org, markzhang@nvidia.com, 
-	linux-rdma@vger.kernel.org
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.48.1.601.g30ceb7b040-goog
+Message-ID: <20250220175612.2763122-1-jmoroni@google.com>
+Subject: [PATCH] IB/cm: use rwlock for MAD agent lock
+From: Jacob Moroni <jmoroni@google.com>
+To: jgg@ziepe.ca, leon@kernel.org, markzhang@nvidia.com
+Cc: linux-rdma@vger.kernel.org, edumazet@google.com, 
+	Jacob Moroni <jmoroni@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 20, 2025 at 6:05=E2=80=AFPM Jacob Moroni <jmoroni@google.com> w=
-rote:
->
-> In workloads where there are many processes establishing
-> connections using RDMA CM in parallel (large scale MPI),
-> there can be heavy contention for mad_agent_lock in
-> cm_alloc_msg.
->
-> This contention can occur while inside of a spin_lock_irq
-> region, leading to interrupts being disabled for extended
-> durations on many cores. Furthermore, it leads to the
-> serialization of rdma_create_ah calls, which has negative
-> performance impacts for NICs which are capable of processing
-> multiple address handle creations in parallel.
->
-> The end result is the machine becoming unresponsive, hung
-> task warnings, netdev TX timeouts, etc.
->
-> Since the lock appears to be only for protection from
-> cm_remove_one, it can be changed to a rwlock to resolve
-> these issues.
->
-> Reproducer:
->
-> Server:
->   for i in $(seq 1 512); do
->     ucmatose -c 32 -p $((i + 5000)) &
->   done
->
-> Client:
->   for i in $(seq 1 512); do
->     ucmatose -c 32 -p $((i + 5000)) -s 10.2.0.52 &
->   done
->
-> Fixes: 76039ac9095f5ee5 ("IB/cm: Protect cm_dev, cm_ports and
-> mad_agent with kref and lock")
+In workloads where there are many processes establishing
+connections using RDMA CM in parallel (large scale MPI),
+there can be heavy contention for mad_agent_lock in
+cm_alloc_msg.
 
-Fixes: tag should be on a single line.
+This contention can occur while inside of a spin_lock_irq
+region, leading to interrupts being disabled for extended
+durations on many cores. Furthermore, it leads to the
+serialization of rdma_create_ah calls, which has negative
+performance impacts for NICs which are capable of processing
+multiple address handle creations in parallel.
 
-> Signed-off-by: Jacob Moroni <jmoroni@google.com>
-> ---
+The end result is the machine becoming unresponsive, hung
+task warnings, netdev TX timeouts, etc.
 
-It seems your patch is mangled.
+Since the lock appears to be only for protection from
+cm_remove_one, it can be changed to a rwlock to resolve
+these issues.
 
-Can you use "git send-email" to resend it ?
+Reproducer:
+
+Server:
+  for i in $(seq 1 512); do
+    ucmatose -c 32 -p $((i + 5000)) &
+  done
+
+Client:
+  for i in $(seq 1 512); do
+    ucmatose -c 32 -p $((i + 5000)) -s 10.2.0.52 &
+  done
+
+Fixes: 76039ac9095f5ee5 ("IB/cm: Protect cm_dev, cm_ports and mad_agent with kref and lock")
+Signed-off-by: Jacob Moroni <jmoroni@google.com>
+---
+ drivers/infiniband/core/cm.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 142170473e75..effa53dd6800 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -167,7 +167,7 @@ struct cm_port {
+ struct cm_device {
+ 	struct kref kref;
+ 	struct list_head list;
+-	spinlock_t mad_agent_lock;
++	rwlock_t mad_agent_lock;
+ 	struct ib_device *ib_device;
+ 	u8 ack_delay;
+ 	int going_down;
+@@ -285,7 +285,7 @@ static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
+ 	if (!cm_id_priv->av.port)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	spin_lock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
++	read_lock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
+ 	mad_agent = cm_id_priv->av.port->mad_agent;
+ 	if (!mad_agent) {
+ 		m = ERR_PTR(-EINVAL);
+@@ -311,7 +311,7 @@ static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
+ 	m->ah = ah;
+ 
+ out:
+-	spin_unlock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
++	read_unlock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
+ 	return m;
+ }
+ 
+@@ -1297,10 +1297,10 @@ static __be64 cm_form_tid(struct cm_id_private *cm_id_priv)
+ 	if (!cm_id_priv->av.port)
+ 		return cpu_to_be64(low_tid);
+ 
+-	spin_lock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
++	read_lock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
+ 	if (cm_id_priv->av.port->mad_agent)
+ 		hi_tid = ((u64)cm_id_priv->av.port->mad_agent->hi_tid) << 32;
+-	spin_unlock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
++	read_unlock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
+ 	return cpu_to_be64(hi_tid | low_tid);
+ }
+ 
+@@ -4378,7 +4378,7 @@ static int cm_add_one(struct ib_device *ib_device)
+ 		return -ENOMEM;
+ 
+ 	kref_init(&cm_dev->kref);
+-	spin_lock_init(&cm_dev->mad_agent_lock);
++	rwlock_init(&cm_dev->mad_agent_lock);
+ 	cm_dev->ib_device = ib_device;
+ 	cm_dev->ack_delay = ib_device->attrs.local_ca_ack_delay;
+ 	cm_dev->going_down = 0;
+@@ -4494,9 +4494,9 @@ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
+ 		 * The above ensures no call paths from the work are running,
+ 		 * the remaining paths all take the mad_agent_lock.
+ 		 */
+-		spin_lock(&cm_dev->mad_agent_lock);
++		write_lock(&cm_dev->mad_agent_lock);
+ 		port->mad_agent = NULL;
+-		spin_unlock(&cm_dev->mad_agent_lock);
++		write_unlock(&cm_dev->mad_agent_lock);
+ 		ib_unregister_mad_agent(mad_agent);
+ 		ib_port_unregister_client_groups(ib_device, i,
+ 						 cm_counter_groups);
+-- 
+2.48.1.601.g30ceb7b040-goog
+
 
