@@ -1,109 +1,99 @@
-Return-Path: <linux-rdma+bounces-7878-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7879-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFBF2A3D198
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 07:59:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C3A8A3D1BD
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 08:06:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA3BF171871
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 06:59:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 020093AACC1
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 07:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 969D81E3DD3;
-	Thu, 20 Feb 2025 06:59:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8103C1E3780;
+	Thu, 20 Feb 2025 07:04:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PCOY6ECb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iQ1FTqfM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54FA11DEFF7
-	for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 06:59:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287861B4145
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 07:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740034783; cv=none; b=iDQxCBou3m7wT4aab0jl6QGvbcjkxmo/H2tqP5dOeyxNZU2l8j0TwAvlYcrxUda6IpnQu1e8rCnwAkHiUsChxMo/HYdvUjX0K6eL8IdRqGhm5M0HMrJGIL+Lv1gth5vzDSd1fOgUUeBReJqWXiMOHdc/D4EdhxiU+/XiwuJj2S0=
+	t=1740035077; cv=none; b=CUX0DprwLyptsCUHlCmVZxEBcPA1Hw2kM8B1OLtSMukoAfjdDJAbJaOkX5L85OeFWotWJkIyQgsWc4heHt+qrIgK0TLg6rGnuA084kenGVD4HtyDKoCbD447lCeWuy+24eujQozAYXQj6KooNbNFQKgJe7TzDhxINtyZlvqD9ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740034783; c=relaxed/simple;
-	bh=uG7LaI+TRR7IELw2RW5kzC+aR6xsdvj6roGkBnpZPEI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aJajkVkwtlFshjLzFN7tmMzdsDUPfmUCL4LxyzLA6BT5bvfO/ky9nXRM5ndFgUJMfYYZjLy7Cnxwtn9vyFajFW4FgR+A+drIDSSn9akIrfACH3pu1tDthQH93UHC49FIrKfYi4/l99dII71ulyGePVc8ZWr0HouEwg7gXWWiXKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PCOY6ECb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B8E2C4CED1;
-	Thu, 20 Feb 2025 06:59:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740034782;
-	bh=uG7LaI+TRR7IELw2RW5kzC+aR6xsdvj6roGkBnpZPEI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PCOY6ECbH//nMHZDSyStIaD4lscvC+cDz/DxuvIUdLjYKPVRnlnYeRJt5dv2v82t8
-	 5QUdJS6h/f2w4/emunCCpwhrkR+V8cm7grI8hAeGBDbhbcl9mco7s5xHd4SwJP3QEF
-	 wb63LiNfM11DnjUulMjupwByu0sirOXSXkTty4GgQK3czNYYoXrWnUo+dwiMU1QCX6
-	 vlOM1vO8iqp3eX58Qy3U4RJh5+BhZzZx+x2kAnvDbRQ1WSwSNAg8qxUJkVY7uiD2R+
-	 HWr6hIQmk3qp0dnRt7ZsZxc3/14H6u6uwEBO9pE6e2YjLSGqFDyCdD5+MGD59xp9Kk
-	 ROoTP22euJbPQ==
-Date: Thu, 20 Feb 2025 08:59:38 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Maher Sanalla <msanalla@nvidia.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/uverbs: Propagate errors from
- rdma_lookup_get_uobject()
-Message-ID: <20250220065938.GJ53094@unreal>
-References: <520b83c80829714cebc3c99b8ea370a039f6144c.1739973096.git.leon@kernel.org>
- <20250219144616.GO4183890@nvidia.com>
- <20250219155647.GI53094@unreal>
- <20250219175335.GA28076@nvidia.com>
+	s=arc-20240116; t=1740035077; c=relaxed/simple;
+	bh=lJIoqdUy4V0zIzen2mVuEfwtyWVyy02G6Fbphz11x3g=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=sL7K8Grq0WzMK5MMiz9fOqP9CJwGy8RNvHd1pYjfAZ2YnXqiRndhiXrwtBygGCG1cFpqg69J1ApsnDkfQzfTe49Sm+DT3IVC0MsGLfk4BwiatstJqkSe/Ck04KbYU9vfLnQS87954j5WUk94IGUmxwblbnWhKAYwiRr6g/fvXyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iQ1FTqfM; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740035071;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TcOrIhUgSKoUIoZfwA21I+o8wG81FXhX6ssan37TXl0=;
+	b=iQ1FTqfMeQMLUvl3u3ZXWWI+ZrbjDcedqusjY44u3pVLlITtEl4DM2/S4kIJgPh7ykNfL7
+	0K613d7SITLI64xmLceP97Y1p/xJwtyY6QGrAjNmjaoFsKoaHc91ewg/80qJBbyoNFcqcj
+	NiN/1Yi005+d3fw0vze8Vo20o6Q0TNI=
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250219175335.GA28076@nvidia.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51.11.1\))
+Subject: Re: [PATCH net-next] net/rds: Replace deprecated strncpy() with
+ strscpy_pad()
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Thorsten Blum <thorsten.blum@linux.dev>
+In-Reply-To: <202502191855.C9B9A7AA@keescook>
+Date: Thu, 20 Feb 2025 08:04:18 +0100
+Cc: Allison Henderson <allison.henderson@oracle.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>,
+ linux-hardening@vger.kernel.org,
+ netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org,
+ rds-devel@oss.oracle.com,
+ linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <08A0C3AE-A255-467F-A007-5584E8E44517@linux.dev>
+References: <20250219224730.73093-2-thorsten.blum@linux.dev>
+ <202502191855.C9B9A7AA@keescook>
+To: Kees Cook <kees@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 19, 2025 at 01:53:35PM -0400, Jason Gunthorpe wrote:
-> On Wed, Feb 19, 2025 at 05:56:47PM +0200, Leon Romanovsky wrote:
-> > On Wed, Feb 19, 2025 at 10:46:16AM -0400, Jason Gunthorpe wrote:
-> > > On Wed, Feb 19, 2025 at 03:52:05PM +0200, Leon Romanovsky wrote:
-> > > > From: Maher Sanalla <msanalla@nvidia.com>
-> > > > 
-> > > > Currently, the IB uverbs API calls uobj_get_uobj_read(), which in turn
-> > > > uses the rdma_lookup_get_uobject() helper to retrieve user objects.
-> > > > In case of failure, uobj_get_uobj_read() returns NULL, overriding the
-> > > > error code from rdma_lookup_get_uobject(). The IB uverbs API then
-> > > > translates this NULL to -EINVAL, masking the actual error and
-> > > > complicating debugging.
-> > > 
-> > > This may have been deliberate as this old stuff is not supposed to be
-> > > returning weird error codes.
-> > 
-> > I assumed that this was the reason for such overwrite in the past, but
-> > is this continue to be true in 2025?
+On 20. Feb 2025, at 03:57, Kees Cook wrote:
+> On Wed, Feb 19, 2025 at 11:47:31PM +0100, Thorsten Blum wrote:
+>> strncpy() is deprecated for NUL-terminated destination buffers. Use
+>> strscpy_pad() instead and remove the manual NUL-termination.
 > 
-> Maybe, it is ABI that leaks out libiverbs
+> When doing these conversions, please describe two aspects of
+> conversions:
 > 
-> But also, maybe nobody cares. There is a small chance places are
-> relying on detecting certain errnos.
+> - Why is it safe to be NUL terminated
+> - Why is it safe to be/not-be NUL-padded
 > 
-> > > What error code are you missing here?
-> > 
-> > Error returned from modify QP was masked by setting real error to be -EINVAL.
+> In this case, the latter needs examination. Looking at how ctr is used,
+> it is memcpy()ed later, which means this string MUST be NUL padded or it
+> will leak stack memory contents.
 > 
-> What errno was it though? What other errors are there that are now no
-> longer supressed?
+> So, please use strscpy_pad() here. :)
 
-Mainly -EBUSY from FW command interface, so users can safely call again
-to modify QP.
+I am using strscpy_pad() here already because of the NUL-padding.
 
-> 
-> I think the commit message needs a deeper analysis to be convincing
-> the ABI break is low risk
+Did you just miss that?
 
-No problem, we will update commit message.
-
-Thanks
-
-> 
-> Jason
+Thanks,
+Thorsten
 
