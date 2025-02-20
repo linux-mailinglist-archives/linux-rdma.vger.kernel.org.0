@@ -1,111 +1,123 @@
-Return-Path: <linux-rdma+bounces-7890-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7891-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA284A3D984
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 13:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C23B4A3DA02
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 13:29:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 790AD3BC786
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 12:07:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37E38860992
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 12:24:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C731F472E;
-	Thu, 20 Feb 2025 12:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB8431F4639;
+	Thu, 20 Feb 2025 12:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MakxyYfT"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pT5D4IxO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 093611F150B;
-	Thu, 20 Feb 2025 12:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1661C1F1521
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 12:23:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740053281; cv=none; b=pIpKYK1AbzchkF1ZXow+yeG1NarmEJGUCJIHSPWPJ4uj9EwXfCr7IxmWUH+k2Bs6QtdIsnQB1WBu7gAV3zmQsCQlBRdKvI2z/GxznqhobWEqSy3Zh1i/txGuBPsN2DL0/fqyCCBiJlwNFDlavaCOXqjgPncWqYc55LWHMRhbOhk=
+	t=1740054227; cv=none; b=noBAJ/A9lkDSoVa6bjegmddH5A/ppGCet4AGuL3xHRTRLU52CO1aZb7WYZ46yVQydr2o2700pWFJwPpCtEWmGLo2yeVecaYA4SC7R00/4ek+mnYFne1X7XlT514M49PjIvirwj4aOrggh9O6Zp9c5HafIiRVtWJPmBiNbdEhK1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740053281; c=relaxed/simple;
-	bh=9HcC0esz/V2Cjf8y6+3DBCrJDA/xx71PfPOHMhe2QY4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z0euuW9krex5Q8A89VgEBBDK/4KUAIDryOXrYNt8aNor8KLPfqvXVV3nx7TAaqJXxHVbp1A95q1RGRvuQ7DkkgTkn4OsBDR98ZeBiQd9IGSj0nmIrgntUEX4k2obZMao8dKIOKcLUHSarLncXrHz9YcTySPp7ZUDiFfETvPYXdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MakxyYfT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9EAFC4CED1;
-	Thu, 20 Feb 2025 12:07:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740053280;
-	bh=9HcC0esz/V2Cjf8y6+3DBCrJDA/xx71PfPOHMhe2QY4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MakxyYfTR1Og50oDtWPfvUVbmUkr+jGFF0oPFn+rNmO3Mppx/rW0pTIWfIr2iz5gi
-	 ptNLfvzVXqDxJWeg0w0I6LqiGvu+HlEKu278leZcCHSuxm12heSNc9H4b/83E6l28m
-	 hYoCFB51DOR12Z6S0Yz0oYgmkZAU7psBmq3ucsE+I9rngZd0301sUCyDiuxLOav50Z
-	 GSOXNurrnnc7aScKnsHpFmqN+YWlxpltK13QJ+ySMPQ+FI2fjyxmMuAS6r0W3GwhC+
-	 IDIbizkX290MxMNOiJqEYGhIozAfSIrTXakKnOJoRYsiQjl4B9UrK/6vU16ejf4LL4
-	 +GVkgo1vsnwrw==
-Date: Thu, 20 Feb 2025 14:07:54 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Jacob Keller <jacob.e.keller@intel.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Yevgeny Kliteynik <kliteyn@nvidia.com>,
-	Mark Bloch <mbloch@nvidia.com>, Itamar Gozlan <igozlan@nvidia.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5: Use secs_to_jiffies() instead of
- msecs_to_jiffies()
-Message-ID: <20250220120754.GQ53094@unreal>
-References: <20250219205012.28249-2-thorsten.blum@linux.dev>
- <48456fc0-7832-4df1-8177-4346f74d3ccc@intel.com>
- <20250220071327.GL53094@unreal>
- <9694B455-87B0-4A70-93C0-93FE77E3CD17@linux.dev>
+	s=arc-20240116; t=1740054227; c=relaxed/simple;
+	bh=Nxf/JaItaX+CDnIA1dz1p0Zl1+osaRZpQ0okTYK0Wwc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GwDJsbEGIKzSRbIM9X6woZ0iJdC3e3if0bzN95sCFT0+nzbm/pSOnTeBl1KvRTSJTS/iiyCOStagF/Uc3hEqY13Gl4wK/wpNtMBJz5pEYpyRjxPkGnr7uFB8ESwpn2pGiwoz4pOb8u32SwN50WiWgK+5VbR53bsFwtSHmZ4JA0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pT5D4IxO; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <1229cbb2-b7b9-4b47-8276-62bd9c79a7ce@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740054222;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SXhJMxvhrKPneluOHj8hPStthqxFTOVnuw1AoXjOvhE=;
+	b=pT5D4IxOi03Shu+7BePGEp6KG+K9nHFVQLXM0zqW4s2C+jYgBE+plRrkRkdAL/HtUTfgHa
+	le6m0YZLJQZzvyasmgXwosz3jzDH6VhJymAusKIRdAvDEq+d49RcY/F7yc50u8HTKNSaXo
+	2FZ79SnzfCWJ35wrO9zDNPfBhyfrLaA=
+Date: Thu, 20 Feb 2025 13:23:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9694B455-87B0-4A70-93C0-93FE77E3CD17@linux.dev>
+Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Fix bind QP error cleanup flow
+To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
+Cc: Patrisious Haddad <phaddad@nvidia.com>, linux-rdma@vger.kernel.org,
+ Mark Zhang <markzhang@nvidia.com>
+References: <25dfefddb0ebefa668c32e06a94d84e3216257cf.1740033937.git.leon@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <25dfefddb0ebefa668c32e06a94d84e3216257cf.1740033937.git.leon@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Feb 20, 2025 at 12:08:07PM +0100, Thorsten Blum wrote:
-> On 20. Feb 2025, at 08:13, Leon Romanovsky wrote:
-> > On Wed, Feb 19, 2025 at 03:45:02PM -0800, Jacob Keller wrote:
-> >> On 2/19/2025 12:49 PM, Thorsten Blum wrote:
-> >>> Use secs_to_jiffies() and simplify the code.
-> >>> 
-> >>> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> >> 
-> >> nit: this is a cleanup which should have the net-next prefix applied,
-> >> since this doesn't fix any user visible behavior.
-> >> 
-> >> Otherwise, seems like an ok change.
-> > 
-> > IMHO, completely useless change for old code. I can see a value in new
-> > secs_to_jiffies() function for new code, but not for old code. I want
-> > to believe that people who write kernel patches aware that 1000 msec
-> > equal to 1 sec.
+在 2025/2/20 7:47, Leon Romanovsky 写道:
+> From: Patrisious Haddad <phaddad@nvidia.com>
 > 
-> Using secs_to_jiffies() is shorter and requires less cognitive load to
-> read imo. Plus, it now fits within the preferred 80 columns limit.
-
-Unfortunately, I see this change as a churn and not an improvement.
-
+> When there is a failure during bind QP, the cleanup flow destroys the
+> counter regardless if it is the one that created it or not, which is
+> problematic since if it isn't the one that created it, that counter could
+> still be in use.
 > 
-> This "old code" was added in d74ee6e197a2c ("net/mlx5: HWS, set timeout
-> on polling for completion") in January 2025.
-
-I got same conversion patches for RDMA.
-https://lore.kernel.org/all/20250219-rdma-secs-to-jiffies-v1-0-b506746561a9@linux.microsoft.com
-
-Thanks
-
+> Fix that by destroying the counter only if it was created during this call.
 > 
-> Thanks,
-> Thorsten
+> Fixes: 45842fc627c7 ("IB/mlx5: Support statistic q counter configuration")
+> Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+> Reviewed-by: Mark Zhang <markzhang@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>   drivers/infiniband/hw/mlx5/counters.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
 > 
+> diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
+> index 4f6c1968a2ee..81cfa74147a1 100644
+> --- a/drivers/infiniband/hw/mlx5/counters.c
+> +++ b/drivers/infiniband/hw/mlx5/counters.c
+> @@ -546,6 +546,7 @@ static int mlx5_ib_counter_bind_qp(struct rdma_counter *counter,
+>   				   struct ib_qp *qp)
+>   {
+>   	struct mlx5_ib_dev *dev = to_mdev(qp->device);
+> +	bool new = false;
+>   	int err;
+>   
+>   	if (!counter->id) {
+> @@ -560,6 +561,7 @@ static int mlx5_ib_counter_bind_qp(struct rdma_counter *counter,
+>   			return err;
+>   		counter->id =
+>   			MLX5_GET(alloc_q_counter_out, out, counter_set_id);
+> +		new = true;
+It seems that there is no other better method except that a new bool 
+variable is used. IMO, this method can fix this problem.
+
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+
+Zhu Yanjun
+
+>   	}
+>   
+>   	err = mlx5_ib_qp_set_counter(qp, counter);
+> @@ -569,8 +571,10 @@ static int mlx5_ib_counter_bind_qp(struct rdma_counter *counter,
+>   	return 0;
+>   
+>   fail_set_counter:
+> -	mlx5_ib_counter_dealloc(counter);
+> -	counter->id = 0;
+> +	if (new) {
+> +		mlx5_ib_counter_dealloc(counter);
+> +		counter->id = 0;
+> +	}
+>   
+>   	return err;
+>   }
+
 
