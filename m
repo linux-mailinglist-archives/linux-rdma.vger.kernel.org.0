@@ -1,125 +1,85 @@
-Return-Path: <linux-rdma+bounces-7896-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7897-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B2B0A3DC3F
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 15:13:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C8DA3E059
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 17:21:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0DE57A8640
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 14:12:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF23C3A9FF0
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2025 16:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58851EEA27;
-	Thu, 20 Feb 2025 14:13:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420E820B1FD;
+	Thu, 20 Feb 2025 16:17:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="F2E3alSy"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="M9vRRCbA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBE6433BE
-	for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 14:13:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 845D31FF5FE;
+	Thu, 20 Feb 2025 16:17:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740060830; cv=none; b=IDwhQUN4s+rAceDInZ6la5cct6WDI5qsFkTsycr4BXo20opvZCFKKfioPNnifFChuGbR00VLtFt8boMSzP4cTWg8QAj5Z5PiZeOvvTEXlOaUVQCFrXLe/mFbnaUCA3NbqC615rivp3r6i9a1ZdO3LRJwVtseNNkc2fKTOu61oj0=
+	t=1740068253; cv=none; b=GP1gizp5nR4jQdIwykO7NXNhOw4qUGrp8EWrEQGUlcHStrWZO4+QcPHEtrdgjtWG5sAUPbFsZu2e6cUdp99b5Zd3qTq4F60FKcDffqAMs5D2b7lpQ9nMDCr0nmal4YaLxCBo6CihZfkTNU4RM0qJMeQL7ny6fOaLb/9Ide9RHjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740060830; c=relaxed/simple;
-	bh=Hm2J6WxKpWskBe1jvIPWfwmfW6yTavCvRkoDXkvOrkc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qNAkDV5YeNFA2LDzrcfNgchtpZ6L3ImxicCnzCfn0hmuw8NKD8Xfj3ScQKFlEvHczrxrKUv9+Rz/Sbo813C53Bf7Wj1RNwBx1lV5OhdhAop5crmiolZj0UzwVjtvlokQ83e3tRahZOxEkRlmxsLBJBjZgzzRogZvKJQp1Z7y/zU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=F2E3alSy; arc=none smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-46c8474d8f6so8552941cf.3
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2025 06:13:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1740060828; x=1740665628; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hm2J6WxKpWskBe1jvIPWfwmfW6yTavCvRkoDXkvOrkc=;
-        b=F2E3alSymk3Pkctk07uV++KvxfXyxvR2pL2D5Ls3z/2S4XB14S0rSIr3AHf0RzhTwS
-         dI2WhlG0esjb+N8HVo/zUaRkfZfv6I/O27T6tUE8KMh6Vo0txQGd/VV8Jq3/KkO36J8W
-         kZjh0f4y0JbIxqusgEAp+FpGKM4SPfssDjSDAUvPkpzMIipgrP+Ry3FBVarrVUANAOS9
-         nzIqx3DEf0rDFN1e8gr3fr2bwyPadU4K+ilC0Ej5L8nhAGgsONbYNpqRU+JpfhgIlIAG
-         X3B1ZL7UxfmMNjhb3V4ykwK/JxIvdE8YXwHQycOu6OnxIciL1OdzmOmpk+ll0SLhrDTt
-         CW2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740060828; x=1740665628;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hm2J6WxKpWskBe1jvIPWfwmfW6yTavCvRkoDXkvOrkc=;
-        b=CEQox9MbLD6YgWSppKN7i7m/k/IevZu9PQDtHS3rykbws4nEcW52QUQtk8GcJg5vNm
-         1RMdiftGR+h61C03HMpEY3lOg5LyTYXJQcYLkOEDm+NYnzbrq9xccoXZU+Vyvqg9qvdO
-         A8o2ZwWhE519JlifPNIjFItIMC1Vfw6UlKtbwwBRGS1yInRFXNcU6Yv1I52R2HPduF21
-         sCncESBKcP4YfEauT6+JmnQoPfA5iGQhO/FNnQh/2Lh+IZhUOA0ZO3kJ1uKZAsqKMxbs
-         OuAZs4NX50b6cSWHRSmO+GhSUUQ5p4ktdLf29/z5AISZ4WD8t5trb+rgQNj4uLl40lsG
-         /kRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXb2z9Yj+CPfyWvvF51aa69pGOGsVpO4Baj3jWYOmk5y+8yVtWITNZ1Hw9o7HxV3rT2OXn+Js/Y4q2x@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywi9nbHMQcjsoLflXLO0QQ7kcZe1lDlLkFAMq4IgT6RVvDvJRJP
-	PXb6G4Y+bhSvFk9KwN09zKxLM+P7Aq68AaPD1cfvFYkKhJnnqoahi6FE/UyN7ZNwRMtSA/ux7c5
-	l
-X-Gm-Gg: ASbGnct+7gVfjl7Zgu3Ywis1x/8RxsYlqojKBsE3PWMkGVKNePhmG8lRyVkyzvZhqKE
-	G2L/vsZM07oHa8BZEK4qbYiWKoUPJ1pdkJXgBfdPQ2B6bGinmI9HInZRtJo5uLoZXAOVmnYtEoq
-	LHXQtaFcasmAbHets2OkWkWR6pXQG50/06JUP0yLZSWtZWKj4Ei4g6NmAKOJ5edfotXaHt+3Xod
-	gfAqMJoUXwNE9mK85AczBpX2T0Jcbs8Z6o3UNUEX2OsJJjOoSsYUIEU8vOqw/yomX2d2UDzYaF8
-	Pk4nFwBUBdxvguMmu67DD3Kp6yfJKDC4J/V8eQAbDX6dIXsbY2nubbJLqv7RH2fo
-X-Google-Smtp-Source: AGHT+IFrVPgabU1QBj05zoABA4W6iGWcBtFmdw8G4qL/eEsKlhYA+5GhZnKfQJdsKExW0woWzlR+EA==
-X-Received: by 2002:a05:6214:f09:b0:6e6:6697:5a28 with SMTP id 6a1803df08f44-6e6a4c17270mr41026856d6.36.1740060827936;
-        Thu, 20 Feb 2025 06:13:47 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e65d785c14sm86213166d6.40.2025.02.20.06.13.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2025 06:13:47 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1tl7JC-00000000Gkz-3xn4;
-	Thu, 20 Feb 2025 10:13:46 -0400
-Date: Thu, 20 Feb 2025 10:13:46 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-	linuxarm@huawei.com, tangchengchang@huawei.com
-Subject: Re: [PATCH for-next 0/4] RDMA/hns: Introduce delay-destruction
- mechanism
-Message-ID: <20250220141346.GW3696814@ziepe.ca>
-References: <20250217070123.3171232-1-huangjunxian6@hisilicon.com>
- <20250219121454.GE53094@unreal>
- <bb0a621e-78e1-c030-f8f6-e175978acf0f@hisilicon.com>
- <20250219143523.GH53094@unreal>
- <e8e09f3e-a8f9-429a-ac60-272db35f25fb@hisilicon.com>
- <20250220073217.GM53094@unreal>
- <bdc9cae7-4d8c-4294-18a5-687e9b7edac8@hisilicon.com>
- <20250220090856.GO53094@unreal>
- <542860d8-34a9-b109-2a85-794149df1fe3@hisilicon.com>
+	s=arc-20240116; t=1740068253; c=relaxed/simple;
+	bh=S2Cp2QeCTboIPkqp369Oo0lo+0M7cZnbKd+wHZSVx9k=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=TEth15fjnl2V4FdWB7oQSKrbB6NI5j6HU5js2Unj3262HcTOkwvvO8bxeMsklZZol/+MUEaDFpSGcy2ZVlQepmVa4bxKyQVrJ2Q/z8Eum9jFVjb5eNCDVI5vviDyd0Jro4wzH5k02e6SgwIYRSQxaWmCnlPnC3D4RLebrpshd30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=M9vRRCbA; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [192.168.35.166] (c-24-22-154-137.hsd1.wa.comcast.net [24.22.154.137])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 9D0E220376CD;
+	Thu, 20 Feb 2025 08:17:30 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9D0E220376CD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1740068250;
+	bh=GkPk3vpo3fjZ76nSYEcI8RaFBSu99lnwsP2xmX+YLqI=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=M9vRRCbA4t8agc57RtPDTlFanjsd1kyMTIKmtK0WIEi0jKc0MN5zrDxWFmqHcc2tN
+	 QxaJA7UOEH+zXoIs/YyoFF9eyPOwTmc4dCP8PHrdqd0QLuLGdNEYqNV675HZa6V7S4
+	 JGi5ZSgtld/s2UCGDlFjmzsQK/iWwwlNhfL2haSc=
+Message-ID: <bfd711f3-2de6-44d0-afe9-e24470448011@linux.microsoft.com>
+Date: Thu, 20 Feb 2025 08:17:31 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <542860d8-34a9-b109-2a85-794149df1fe3@hisilicon.com>
+User-Agent: Mozilla Thunderbird
+Cc: eahariha@linux.microsoft.com, Yishai Hadas <yishaih@nvidia.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] rdma: Converge on using secs_to_jiffies()
+To: Leon Romanovsky <leon@kernel.org>
+References: <20250219-rdma-secs-to-jiffies-v1-0-b506746561a9@linux.microsoft.com>
+ <20250220070729.GK53094@unreal>
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+Content-Language: en-US
+In-Reply-To: <20250220070729.GK53094@unreal>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 20, 2025 at 07:05:06PM +0800, Junxian Huang wrote:
+On 2/19/2025 11:07 PM, Leon Romanovsky wrote:
+> On Wed, Feb 19, 2025 at 09:36:38PM +0000, Easwar Hariharan wrote:
+>> This series converts users of msecs_to_jiffies() that either use the
+>> multiply pattern of either of:
+>> - msecs_to_jiffies(N*1000) or
+>> - msecs_to_jiffies(N*MSEC_PER_SEC)
+>>
+>> where N is a constant or an expression, to avoid the multiplication.
+> 
+> Can you please provide justification for that? What is wrong with current code?
+> 
 
-> Mailbox carries information of the specific resource (QP/CQ/SRQ/MR)
-> that are being destroyed. It's impossible for FW to predict which
-> QP/CQ/SRQ/MR will be destroyed by driver during reset before the
-> reset starts.
+There is nothing specifically wrong with the current code, it just does an unnecessary
+multiplication for what it does, as the cover letter mentions. IMHO, it's also more readable
+to just see secs_to_jiffies(30) and understand that it's a 30 second timeout.
 
-That doesn't make any sense, the device reset is supposed to clean up
-everything. It doesn't matter what the mailbox was doing, after the
-reset finishes it is no longer necessary because the reset was the
-thing that cleaned it up.
+Thanks,
+Easwar (he/him)
 
-You need a way to track the reset completion and cancel all
-outstanding commands with a reset failure so cleanup can
-happen. Combined with disassociate and some other locking you need to
-create a strong fence across the reset where there is no leakage of
-'before' and 'after' reset objects and kernel state.
 
-Jason
 
