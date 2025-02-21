@@ -1,183 +1,132 @@
-Return-Path: <linux-rdma+bounces-7942-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7943-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B97BA3EBFD
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 05:50:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40F44A3ED47
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 08:21:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ABFD702934
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 04:50:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6489E19C0B7B
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 07:20:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3BC1E7C0B;
-	Fri, 21 Feb 2025 04:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92701FF1A6;
+	Fri, 21 Feb 2025 07:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="M4BXBTjo"
+	dkim=pass (2048-bit key) header.d=crpt.ru header.i=@crpt.ru header.b="uLFS1n03"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from mail.crpt.ru (mail.crpt.ru [91.236.205.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084A21FBC8D
-	for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2025 04:49:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687E11FBCBD;
+	Fri, 21 Feb 2025 07:19:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.236.205.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740113398; cv=none; b=lNTRwn8gkkLHqGiVfkhGojVFTIQlj50iQpCTUgGnYyL5ShNCyQSaV5VRDuJA1wE11cDrmgQ30lim2pgpdBRX1U1ZL//gzJyqWuG44VyKkcUzU/tZ0sodNjiIONYnT9s0ZYQ/8lS1LFmgEJqrATo6fnzuywiyST84uMRiBfs2UaA=
+	t=1740122391; cv=none; b=OZg0VyEQkivibJDF+YklEeYApE464RvhxDQT/G6pBwX6Pf6Z+wuMS567usKXnmd8EyqiVdUkP+p40g/KhJ3aOIhaPzR8B+/vMOX9Pww52BSLjX8AKXQ2SQ6DA/5IrgBswuZvh6Tb9piriZpA9y/6wxvuNnv+smsBfh/R6jHJ2n0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740113398; c=relaxed/simple;
-	bh=fn6SPHX/tcnnve4tTFK8cDxojPBkNX1AWRBMvSARYew=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D9XAp/ajyKWwFO9WGrc1sCqRVZ6GvCK6jEw1YHy87UUPlDRUCOA9nRfD4zsFlInvFV5wYVEwKApoHBAVq7SVkpfwvHfgbqG8ixcujHNWQ/Sec/Z7OkZyjLXcmyr1kT0caJwJ1Dr6OsiFBoqaroDIgYV7jpvxG3l13VMBBM2BkbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=M4BXBTjo; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 21 Feb 2025 04:49:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740113383;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9MC9KUOR9F3fzdshxIn31GmmTBR4r7x740xG42mMsfI=;
-	b=M4BXBTjoV0yly7UQeNRdlaQjH5INvV4HEbKP9CMh2iWrVB2zc+eYEeyCmYONp//0pw/FXE
-	4gyHJw2UQrO8TTaV70ymx5bNklWGCY6AqeFclYkq2YVDXS0pvLsohRKJHsjn2E5LPrl5Rs
-	F4XdXCNzW6NllbD6ELT5iQ1CLIz4b3U=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Parav Pandit <parav@mellanox.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Maher Sanalla <msanalla@nvidia.com>,
+	s=arc-20240116; t=1740122391; c=relaxed/simple;
+	bh=sObIvvCiUAn9qXnHNJpDFM36vWf1/wfpwgBNnrtetPc=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=lOvuQDQuoeoAh00/ZzXoj7/QJC26mCsCUBdkjkB4ACdbJCJ8soc2cjRMDzxrjrInQteSwloB2P7ct2yXsCzfX/4RR7AC2WZtWv6JOhnha2iOyUOS8PcqZZKwmmbAEAetdW+ojzFgT2d8B1mehvYkmDixRYXLJWyEDzX88z4Xzq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=crpt.ru; spf=pass smtp.mailfrom=crpt.ru; dkim=pass (2048-bit key) header.d=crpt.ru header.i=@crpt.ru header.b=uLFS1n03; arc=none smtp.client-ip=91.236.205.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=crpt.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crpt.ru
+Received: from mail.crpt.ru ([192.168.60.3])
+	by mail.crpt.ru  with ESMTP id 51L73AUP029765-51L73AUR029765
+	(version=TLSv1.2 cipher=AES256-SHA256 bits=256 verify=OK);
+	Fri, 21 Feb 2025 10:03:10 +0300
+Received: from EX02-PR-BO.crpt.local (10.200.60.52) by ex1.crpt.local
+ (192.168.60.3) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.44; Fri, 21 Feb
+ 2025 10:03:09 +0300
+Received: from EX1.crpt.local (192.168.60.3) by EX02-PR-BO.crpt.local
+ (10.200.60.52) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Fri, 21 Feb
+ 2025 10:03:09 +0300
+Received: from EX1.crpt.local ([192.168.60.3]) by EX1.crpt.local
+ ([192.168.60.3]) with mapi id 15.01.2507.044; Fri, 21 Feb 2025 10:03:09 +0300
+From: =?koi8-r?B?98HUz9LP0MnOIOHOxNLFyg==?= <a.vatoropin@crpt.ru>
+To: Kai Shen <kaishen@linux.alibaba.com>
+CC: =?koi8-r?B?98HUz9LP0MnOIOHOxNLFyg==?= <a.vatoropin@crpt.ru>, "Jason
+ Gunthorpe" <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Wei Yongjun
+	<weiyongjun1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>,
 	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] RDMA/core: fix a NULL-pointer dereference in
- hw_stat_device_show()
-Message-ID: <Z7gF3UC7PvVxeRcq@google.com>
-References: <20250221020555.4090014-1-roman.gushchin@linux.dev>
- <CY8PR12MB71958C150D7604EAD4463F4ADCC72@CY8PR12MB7195.namprd12.prod.outlook.com>
- <Z7gARTF0mpbOj7gN@google.com>
- <CY8PR12MB7195F3ACB8CFA05C4B8D26D3DCC72@CY8PR12MB7195.namprd12.prod.outlook.com>
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: [PATCH] RDMA/erdma: handle ib_umem_find_best_pgsz() return value
+Thread-Topic: [PATCH] RDMA/erdma: handle ib_umem_find_best_pgsz() return value
+Thread-Index: AQHbhC6pbGv+eguF8Uexqo4ANK64zw==
+Date: Fri, 21 Feb 2025 07:03:09 +0000
+Message-ID: <20250221070301.18010-1-a.vatoropin@crpt.ru>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-kse-serverinfo: EX02-PR-BO.crpt.local, 9
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: Clean, bases: 17.02.2025 9:52:00
+x-kse-attachment-filter-triggered-rules: Clean
+x-kse-attachment-filter-triggered-filters: Clean
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY8PR12MB7195F3ACB8CFA05C4B8D26D3DCC72@CY8PR12MB7195.namprd12.prod.outlook.com>
-X-Migadu-Flow: FLOW_OUT
+X-KSE-ServerInfo: EX1.crpt.local, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-FEAS-Client-IP: 192.168.60.3
+X-FE-Policy-ID: 2:4:0:SYSTEM
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=crpt.ru; s=crpt.ru; c=relaxed/relaxed;
+ h=from:to:cc:subject:date:message-id:content-type:mime-version;
+ bh=rM29OcfKSzG0Xvr/iq7K+TDmsX7muLKw5JXGtiH19iw=;
+ b=uLFS1n03admF9tfidPvwn/BC2su4qLerS0j6nq2kVEW4Rh6wuJffcft7mwqJOfXDiyVMznpqIdot
+	MYEa2W2q8lHL1hXKKf4BH9v6tVBnMUE3tw2TfmfVaDCv4sdT++cdnMkvX15S3H/kfQxWveB8LSyr
+	AytOu8sHwIiswjrAhOQQe/Nj+I2UXM/fteRoeqPdI6ohHHeqYagELhOeyPYcLjxRLu8GN8iosYxU
+	730s1r442jxwxo1HZsuAkUP5P972SKZR0sfMr/4FKVpn7S2hBloYImDj2/Akd0ShDAxzSnnweZD2
+	x200rurhsv+7QZooGg3xMjRI80u2al9D6LWTjQ==
 
-On Fri, Feb 21, 2025 at 04:34:25AM +0000, Parav Pandit wrote:
-> 
-> > From: Roman Gushchin <roman.gushchin@linux.dev>
-> > Sent: Friday, February 21, 2025 9:56 AM
-> > 
-> > On Fri, Feb 21, 2025 at 03:14:16AM +0000, Parav Pandit wrote:
-> > >
-> > > > From: Roman Gushchin <roman.gushchin@linux.dev>
-> > > > Sent: Friday, February 21, 2025 7:36 AM
-> > > >
-> > > > Commit 54747231150f ("RDMA: Introduce and use
-> > > > rdma_device_to_ibdev()") introduced rdma_device_to_ibdev() helper
-> > > > which has to be used to obtain an ib_device pointer from a device pointer.
-> > > >
-> > >
-> > > > hw_stat_device_show() and hw_stat_device_store() were missed.
-> > > >
-> > > > It causes a NULL pointer dereference panic on an attempt to read hw
-> > > > counters from a namespace, when the device structure is not embedded
-> > > > into the ib_device structure.
-> > > Do you mean net namespace other than default init_net?
-> > > Assuming the answer is yes, some question below.
-> > >
-> > > > In this case casting the device pointer into the ib_device pointer
-> > > > using container_of() is wrong.
-> > > > Instead, rdma_device_to_ibdev() should be used, which uses the back-
-> > > > reference (container_of(device, struct ib_core_device, dev))->owner.
-> > > >
-> > > > [42021.807566] BUG: kernel NULL pointer dereference, address:
-> > > > 0000000000000028 [42021.814463] #PF: supervisor read access in
-> > > > kernel mode [42021.819549] #PF: error_code(0x0000) - not-present
-> > > > page [42021.824636] PGD 0 P4D 0 [42021.827145] Oops: 0000 [#1] SMP
-> > > > PTI [42021.830598] CPU: 82 PID: 2843922 Comm: switchto-defaul Kdump:
-> > loaded
-> > > > Tainted: G S      W I        XXX
-> > > > [42021.841697] Hardware name: XXX
-> > > > [42021.849619] RIP: 0010:hw_stat_device_show+0x1e/0x40 [ib_core]
-> > > > [42021.855362] Code: 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa
-> > > > 0f 1f
-> > > > 44 00 00 49 89 d0 4c 8b 5e 20 48 8b 8f b8 04 00 00 48 81 c7 f0 fa ff
-> > > > ff <48> 8b
-> > > > 41 28 48 29 ce 48 83 c6 d0 48 c1 ee 04 69 d6 ab aa aa aa 48
-> > > > [42021.873931]
-> > > > RSP: 0018:ffff97fe90f03da0 EFLAGS: 00010287 [42021.879108] RAX:
-> > > > ffff9406988a8c60 RBX: ffff940e1072d438 RCX: 0000000000000000
-> > > > [42021.886169] RDX: ffff94085f1aa000 RSI: ffff93c6cbbdbcb0 RDI:
-> > > > ffff940c7517aef0 [42021.893230] RBP: ffff97fe90f03e70 R08:
-> > > > ffff94085f1aa000 R09: 0000000000000000 [42021.900294] R10:
-> > > > ffff94085f1aa000 R11: ffffffffc0775680 R12: ffffffff87ca2530
-> > > > [42021.907355]
-> > > > R13: ffff940651602840 R14: ffff93c6cbbdbcb0 R15: ffff94085f1aa000
-> > > > [42021.914418] FS:  00007fda1a3b9700(0000)
-> > GS:ffff94453fb80000(0000)
-> > > > knlGS:0000000000000000 [42021.922423] CS:  0010 DS: 0000 ES: 0000
-> > CR0:
-> > > > 0000000080050033 [42021.928130] CR2: 0000000000000028 CR3:
-> > > > 00000042dcfb8003 CR4: 00000000003726f0 [42021.935194] DR0:
-> > > > 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > > [42021.942257] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-> > > > 0000000000000400 [42021.949324] Call Trace:
-> > > > [42021.951756]  <TASK>
-> > > > [42021.953842]  [<ffffffff86c58674>] ? show_regs+0x64/0x70
-> > > > [42021.959030] [<ffffffff86c58468>] ? __die+0x78/0xc0 [42021.963874]
-> > [<ffffffff86c9ef75>] ?
-> > > > page_fault_oops+0x2b5/0x3b0 [42021.969749]  [<ffffffff87674b92>] ?
-> > > > exc_page_fault+0x1a2/0x3c0 [42021.975549]  [<ffffffff87801326>] ?
-> > > > asm_exc_page_fault+0x26/0x30 [42021.981517]  [<ffffffffc0775680>] ?
-> > > > __pfx_show_hw_stats+0x10/0x10 [ib_core] [42021.988482]
-> > > > [<ffffffffc077564e>] ? hw_stat_device_show+0x1e/0x40 [ib_core]
-> > > > [42021.995438]  [<ffffffff86ac7f8e>] dev_attr_show+0x1e/0x50
-> > > > [42022.000803]  [<ffffffff86a3eeb1>] sysfs_kf_seq_show+0x81/0xe0
-> > > > [42022.006508]  [<ffffffff86a11134>] seq_read_iter+0xf4/0x410
-> > > > [42022.011954]  [<ffffffff869f4b2e>] vfs_read+0x16e/0x2f0
-> > > > [42022.017058] [<ffffffff869f50ee>] ksys_read+0x6e/0xe0
-> > > > [42022.022073]  [<ffffffff8766f1ca>]
-> > > > do_syscall_64+0x6a/0xa0 [42022.027441]  [<ffffffff8780013b>]
-> > > > entry_SYSCALL_64_after_hwframe+0x78/0xe2
-> > > >
-> > > > Fixes: 54747231150f ("RDMA: Introduce and use
-> > > > rdma_device_to_ibdev()")
-> > > Commit eb15c78b05bd9 eliminated hw_counters sysfs directory into the
-> > net namespace.
-> > > I don't see it created in any other net ns other than init_net with kernel
-> > 6.12+.
-> > >
-> > > I am puzzled. Can you please explain/share the reproduction steps for
-> > generating above call trace?
-> > 
-> > Hi Parav!
-> > 
-> > This bug was spotted in the production on a small number of machines. They
-> > were running a 6.6-based kernel (with no changes around this code). I don't
-> > have a reproducer (and there is no simple way for me to reproduce the
-> > problem), but I've several core dumps and from inspecting them it was clear
-> > that a ib_device pointer obtained in hw_stat_device_show() was wrong. At
-> > the same time the ib_pointer obtained in the way rdma_device_to_ibdev()
-> > works was correct.
-> > 
-> I just tried reproducing now on 6.12+ kernel manually.
+From: Andrey Vatoropin <a.vatoropin@crpt.ru>
 
-Can you, please, share your steps? Or try the 6.6 kernel?
+The ib_umem_find_best_pgsz function is necessary for obtaining the optimal
+hardware page size. In the comment above, function has statement:=20
+"Drivers always supporting PAGE_SIZE or smaller will never see a 0 result."
 
-> It appears impossible to reach flow to me as intended in the commit I listed.
-> And the call trace shows opposite.
-> So please gather the information from the production system on reproducing it or configuration wise.
-> We still need to block the hw counters from net ns and will have to generate different fix if it was reached somehow.
+But it's hard to prove this holds true for the erdma driver.
 
-I'll try, but it'll take a lot of time - I'm very limited in terms of what I can
-do because it's a production workload.
+Similar to other drivers that use ib_umem_find_best_pgsz, it is essential=20
+to add an error handler to manage potential error situations in the future.
 
-So if you have any suggestions on where to look at or what to try, I'll
-appreciate it.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Thanks!
+Fixes: 155055771704 ("RDMA/erdma: Add verbs implementation")
+Signed-off-by: Andrey Vatoropin <a.vatoropin@crpt.ru>
+---
+ drivers/infiniband/hw/erdma/erdma_verbs.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband=
+/hw/erdma/erdma_verbs.c
+index 51d619edb6c5..7ad38fb84661 100644
+--- a/drivers/infiniband/hw/erdma/erdma_verbs.c
++++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
+@@ -781,6 +781,10 @@ static int get_mtt_entries(struct erdma_dev *dev, stru=
+ct erdma_mem *mem,
+ 	mem->page_size =3D ib_umem_find_best_pgsz(mem->umem, req_page_size, virt)=
+;
++	if (!mem->page_size) {
++		ret =3D -EINVAL;
++		goto error_ret;
++	}
+ 	mem->page_offset =3D start & (mem->page_size - 1);
+ 	mem->mtt_nents =3D ib_umem_num_dma_blocks(mem->umem, mem->page_size);
+ 	mem->page_cnt =3D mem->mtt_nents;
+ 	mem->mtt =3D erdma_create_mtt(dev, MTT_SIZE(mem->page_cnt),
+ 				    force_continuous);
+--=20
+2.43.0
 
