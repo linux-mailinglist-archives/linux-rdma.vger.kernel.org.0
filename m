@@ -1,204 +1,158 @@
-Return-Path: <linux-rdma+bounces-7978-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7979-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09A15A3FCD6
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 18:07:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E302A3FD36
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 18:17:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5D867A9845
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 17:03:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27A35864E9B
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 17:11:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 311FC2475C8;
-	Fri, 21 Feb 2025 17:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A756C24E4AE;
+	Fri, 21 Feb 2025 17:10:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jeH5YS+U"
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="i/XNE0eY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA687246325
-	for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2025 17:04:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A229824C69C
+	for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2025 17:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740157451; cv=none; b=YhLRw4tkQmxkxqqs2xrJFUikXXGYfraHizC0xZJPWlYtdb4wGQv8NY3U+8pnyTqPeP6cNHsyTC7r2MK2inDvUxbUbEKtKTTRq2gHAaqaoR3BTwVM9byQ4rwANFfyCGpSmvyFcGCNABJCOYkDbF/4RJiJS6PsCgAj7jeY3pfKJNU=
+	t=1740157857; cv=none; b=i6rFQHpspT8pAP0q9a2EuqA4DEM71DYbgZTEulPVOqCT8LomaN3m8z0gCWtvHLC4yBsRFusekn7upF2lbfuBHneh/CWfd+woq+WvDMegSL+eR1FLvainkWNUDQnlsqDg2ogpkN1yT0OlIuFoqnwrsGgtj+05MIKNTsEAQPILwzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740157451; c=relaxed/simple;
-	bh=oHjbmru2QQsuHj6N6JXRu2GEOFcK9yNuDxoXnx9CeRM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uZQwqn5BeehNMueg3JDlDlRueDByHolgNiarLh+nQUdutazXUIGXybyjA5vZNi76GV49Qy5TgNNT191DaQtyFqsldjyTDl6gaeXbXt7hJHUKqwxPUPD/pfUTuHHTmA+XcUKvVAwXsqqLaNxCUzHrB66VxLiiuLnYdZi/I3JDxQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jeH5YS+U; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <838a95a2-f286-4f94-8667-2da8ba330c47@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740157444;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GqkeLl4edF4Abj4+G0T6cEX5+oLzQ4akTCIi4bYHP/U=;
-	b=jeH5YS+Uzt+v/9+tGV7z38jRVej745cuayfW1layp3p+kpPIDPOPs86cwmMloApHqEJ7C1
-	/INL/AUCemJCCbJlFqHr2pk2/k7AWSIoaeq0jqpBPlMZH7qiCK5ljND4yMXjPOd3CVpN/B
-	elpu1NQdK2YfJ4b9FcvzTZhkGOqzF30=
-Date: Fri, 21 Feb 2025 18:03:59 +0100
+	s=arc-20240116; t=1740157857; c=relaxed/simple;
+	bh=IFPPg7unvgRYJmnnyZpxqCXIrbhuOjl7IA1H9/KVlcw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dcyUKtEAE1P5GRESvtJsY6WZ9BXs4gblGpcvlbnoP8UL/hix9KVPWeBODHQm4lDDysYvw1MQlhT6GZqVHXiAFKUzRdk4UGgqowck4b9nfOLreHp0YFk18kKGYRUJXsMLH5BKR2u2By3ULbmTTo7GgjHGd/Yxa4Za5S+c5z7q7xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=i/XNE0eY; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-7c0ac2f439eso244546085a.0
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2025 09:10:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1740157854; x=1740762654; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D9v3Cbrwcv78yvNxb7YB7JB27GakVZt75JxjiAlrK5Q=;
+        b=i/XNE0eY0qJv/Ue6874doU0sJpsBqUwL8Vhacs3iUBgOGwbnxPP1wUYqOPRSUaXvet
+         U1JLGxIdKNvtVyAX+zpW0S4mWVNO6sW6XfL5ppi6fPPGaAW0L+O2zZcHObProdNZK0wp
+         Ep1GSLfRcXKUuVran28bW/eRXA1wIqh478pow=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740157854; x=1740762654;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D9v3Cbrwcv78yvNxb7YB7JB27GakVZt75JxjiAlrK5Q=;
+        b=tJbtig37BKlOqMwH4JQapuqasrMbG3EXAOde7bOEpJCc3LF84Cs4IEMsPbyw9vrF8Z
+         LaAFC5dGh2SWh0gULfrU+6xfXGdymH/Pwjr2oifqbqo2s8taIMmOZbLRdwGx/XjKl4KJ
+         47J7Jb8u81HGasViTfDXcehMet3YwBWo4Yl+wAphaJSR2VF0n5t72IqvFGgb0DsJBxeK
+         fjpsMSDU5Bg253SE8Lf3+J8vl008or0J0sCueX5I9qGvzzFn+9OVmWZU3CjAn5SjLuES
+         KjF1vRQLdp+p2rF2lUk8hGyNGdaFJhgFbTa6bEsoWlJ9m3G+LlCoCXF6M37c+E6BHEcc
+         /YSA==
+X-Gm-Message-State: AOJu0YxgKkbhkQDII5KcgNIBacQsaZAnDWatxWNjLXqr4V9miRq8nXC6
+	YXE6pgbnhKT7bNyI4YKozj5usHyvRyX70hmigl/FyewaWdDaQD6OBsEakgdkfZA=
+X-Gm-Gg: ASbGncvKMF2gepHn29RaWE9rXb85d8nSV84Ikh/18MFO9q+EuIFyeaBMPUesu7MqRoi
+	eYPzfwmp5PT8xjSrSKaF0JPIQBQd9iQLg0gLvHFzRKDfYGgXb2ngLvdFGaw6n37ZHC72XBeNESB
+	fZpdQhNiE5eQdG+FKZapNMPiGF3YzQ8m/zhtFNSL22HIIbv+V1IgQevYKrQCjWUkBcSZNfBIixS
+	9sjlCZsKapLJic59EAZps2yET8Wn9zkA70I1ZOrBzIQslLX2qfnNYlfcl2SlRyGIr7dNaBy45oV
+	dQeYfThzVV1vUZi0DqVpaYy/khtdXZLYAqqFZPB5KD/5tioGBTrj1frBlL5uGrkv
+X-Google-Smtp-Source: AGHT+IGIaZsOI/NgG7xLu4tpdCyFiQnFknmoXIk5Ui/7ePCNWWqG90QxAzqloaFAiU0KRpUiR+zBKw==
+X-Received: by 2002:a05:620a:1707:b0:7c0:a70e:b91f with SMTP id af79cd13be357-7c0ceee6424mr721462185a.8.1740157854374;
+        Fri, 21 Feb 2025 09:10:54 -0800 (PST)
+Received: from LQ3V64L9R2 (ool-44c5a22e.dyn.optonline.net. [68.197.162.46])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c0b368d200sm397346285a.99.2025.02.21.09.10.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Feb 2025 09:10:54 -0800 (PST)
+Date: Fri, 21 Feb 2025 12:10:51 -0500
+From: Joe Damato <jdamato@fastly.com>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Saeed Mahameed <saeedm@nvidia.com>, Simon Horman <horms@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>
+Subject: Re: [PATCH net-next 0/2] page_pool: Convert stats to u64_stats_t.
+Message-ID: <Z7izmyDRvTmKpN4-@LQ3V64L9R2>
+Mail-Followup-To: Joe Damato <jdamato@fastly.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Saeed Mahameed <saeedm@nvidia.com>, Simon Horman <horms@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>
+References: <20250221115221.291006-1-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] IB/cm: use rwlock for MAD agent lock
-To: Jacob Moroni <jmoroni@google.com>, jgg@ziepe.ca, leon@kernel.org,
- markzhang@nvidia.com
-Cc: linux-rdma@vger.kernel.org, edumazet@google.com
-References: <20250220175612.2763122-1-jmoroni@google.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250220175612.2763122-1-jmoroni@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250221115221.291006-1-bigeasy@linutronix.de>
 
-On 20.02.25 18:56, Jacob Moroni wrote:
-> In workloads where there are many processes establishing
-> connections using RDMA CM in parallel (large scale MPI),
-> there can be heavy contention for mad_agent_lock in
-> cm_alloc_msg.
+On Fri, Feb 21, 2025 at 12:52:19PM +0100, Sebastian Andrzej Siewior wrote:
+> This is a follow-up on
+> 	https://lore.kernel.org/all/20250213093925.x_ggH1aj@linutronix.de/
 > 
-> This contention can occur while inside of a spin_lock_irq
-> region, leading to interrupts being disabled for extended
-> durations on many cores. Furthermore, it leads to the
-> serialization of rdma_create_ah calls, which has negative
-> performance impacts for NICs which are capable of processing
-> multiple address handle creations in parallel.
+> to convert the page_pool statistics to u64_stats_t to avoid u64 related
+> problems on 32bit architectures.
+> While looking over it, the comment for recycle_stat_inc() says that it
+> is safe to use in preemptible context.
 
-In the link: 
-https://www.cs.columbia.edu/~jae/4118-LAST/L12-interrupt-spinlock.html
-"
-...
-spin_lock() / spin_unlock()
+I wrote that comment because it's an increment of a per-cpu counter.
 
-must not lose CPU while holding a spin lock, other threads will wait for 
-the lock for a long time
+The documentation in Documentation/core-api/this_cpu_ops.rst
+explains in more depth, but this_cpu_inc is safe to use without
+worrying about pre-emption and interrupts.
 
-spin_lock() prevents kernel preemption by ++preempt_count in 
-uniprocessor, that’s all spin_lock() does
+> The 32bit update is split into two 32bit writes and if we get
+> preempted in the middle and another one makes an update then the
+> value gets inconsistent and the previous update can overwrite the
+> following. (Rare but still).
 
-must NOT call any function that can potentially sleep
-ex) kmalloc, copy_from_user
+Have you seen this? Can you show the generated assembly which
+suggests that this occurs? It would be helpful if you could show the
+before and after 32-bit assembly code.
 
-hardware interrupt is ok unless the interrupt handler may try to lock 
-this spin lock
-spin lock not recursive: same thread locking twice will deadlock
+I am asking because in arch/x86/include/asm/percpu.h a lot of care
+is taken to generate the correct assembly for various sizes and I
+am skeptical that this_cpu_inc behaves correctly on 64bit but
+incorrectly on 32bit x86. It's certainly possible, but IMHO, we
+should be sure that this is the case.
 
-keep the critical section as small as possible
-...
-"
-And from the source code, it seems that spin_lock/spin_unlock are not 
-related with interrupts.
+If you could show that the generated assembly on 32bit was not
+prempt/irq safe then probably we'd also want to update the
+this_cpu_ops documentation?
 
-I wonder why "leading to interrupts being disabled for extended 
-durations on many cores" with spin_lock/spin_unlock?
+> I don't know if it is ensured that only *one* update can happen because
+> the stats are per-CPU and per NAPI device. But there will be now a
+> warning on 32bit if this is really attempted in preemptible context.
 
-I am not against this commit. I am just obvious why 
-spin_lock/spin_unlock are related with "interrupts being disabled".
+Please see Documentation/core-api/this_cpu_ops.rst for a more
+detailed explanation.
 
-Thanks a lot.
-Zhu Yanjun
-
-> 
-> The end result is the machine becoming unresponsive, hung
-> task warnings, netdev TX timeouts, etc.
-> 
-> Since the lock appears to be only for protection from
-> cm_remove_one, it can be changed to a rwlock to resolve
-> these issues.
-> 
-> Reproducer:
-> 
-> Server:
->    for i in $(seq 1 512); do
->      ucmatose -c 32 -p $((i + 5000)) &
->    done
-> 
-> Client:
->    for i in $(seq 1 512); do
->      ucmatose -c 32 -p $((i + 5000)) -s 10.2.0.52 &
->    done
-> 
-> Fixes: 76039ac9095f5ee5 ("IB/cm: Protect cm_dev, cm_ports and mad_agent with kref and lock")
-> Signed-off-by: Jacob Moroni <jmoroni@google.com>
-> ---
->   drivers/infiniband/core/cm.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-> index 142170473e75..effa53dd6800 100644
-> --- a/drivers/infiniband/core/cm.c
-> +++ b/drivers/infiniband/core/cm.c
-> @@ -167,7 +167,7 @@ struct cm_port {
->   struct cm_device {
->   	struct kref kref;
->   	struct list_head list;
-> -	spinlock_t mad_agent_lock;
-> +	rwlock_t mad_agent_lock;
->   	struct ib_device *ib_device;
->   	u8 ack_delay;
->   	int going_down;
-> @@ -285,7 +285,7 @@ static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
->   	if (!cm_id_priv->av.port)
->   		return ERR_PTR(-EINVAL);
->   
-> -	spin_lock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
-> +	read_lock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
->   	mad_agent = cm_id_priv->av.port->mad_agent;
->   	if (!mad_agent) {
->   		m = ERR_PTR(-EINVAL);
-> @@ -311,7 +311,7 @@ static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
->   	m->ah = ah;
->   
->   out:
-> -	spin_unlock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
-> +	read_unlock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
->   	return m;
->   }
->   
-> @@ -1297,10 +1297,10 @@ static __be64 cm_form_tid(struct cm_id_private *cm_id_priv)
->   	if (!cm_id_priv->av.port)
->   		return cpu_to_be64(low_tid);
->   
-> -	spin_lock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
-> +	read_lock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
->   	if (cm_id_priv->av.port->mad_agent)
->   		hi_tid = ((u64)cm_id_priv->av.port->mad_agent->hi_tid) << 32;
-> -	spin_unlock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
-> +	read_unlock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
->   	return cpu_to_be64(hi_tid | low_tid);
->   }
->   
-> @@ -4378,7 +4378,7 @@ static int cm_add_one(struct ib_device *ib_device)
->   		return -ENOMEM;
->   
->   	kref_init(&cm_dev->kref);
-> -	spin_lock_init(&cm_dev->mad_agent_lock);
-> +	rwlock_init(&cm_dev->mad_agent_lock);
->   	cm_dev->ib_device = ib_device;
->   	cm_dev->ack_delay = ib_device->attrs.local_ca_ack_delay;
->   	cm_dev->going_down = 0;
-> @@ -4494,9 +4494,9 @@ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
->   		 * The above ensures no call paths from the work are running,
->   		 * the remaining paths all take the mad_agent_lock.
->   		 */
-> -		spin_lock(&cm_dev->mad_agent_lock);
-> +		write_lock(&cm_dev->mad_agent_lock);
->   		port->mad_agent = NULL;
-> -		spin_unlock(&cm_dev->mad_agent_lock);
-> +		write_unlock(&cm_dev->mad_agent_lock);
->   		ib_unregister_mad_agent(mad_agent);
->   		ib_port_unregister_client_groups(ib_device, i,
->   						 cm_counter_groups);
-
+At a high level, only one per-cpu counter is incremented. The
+individual per-cpu counters don't mean anything on their own
+(because the increment could happen on any CPU); the sum of the
+values is what has meaning.
 
