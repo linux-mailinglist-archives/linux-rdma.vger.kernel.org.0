@@ -1,93 +1,92 @@
-Return-Path: <linux-rdma+bounces-7992-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7993-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81E3BA402FF
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 23:49:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BE03A403B9
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 00:48:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F32EE4264BD
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 22:49:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23B527ADB57
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 23:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAFFE205AB3;
-	Fri, 21 Feb 2025 22:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0283D254B1E;
+	Fri, 21 Feb 2025 23:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="gy6GjHdI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KM/ZfJRW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E538D2054E5
-	for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2025 22:49:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8791220AF8E;
+	Fri, 21 Feb 2025 23:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740178177; cv=none; b=W3MhaSx9VnL28JC0QDG93YqhvmOJ2g5/s5p85d6SsawvV7pDdLPT7jg6cgTSW8bvdNf4ARsjE8sWzh8eXKpJLOe0QD4WWhFn4bhmeK5Py9JSV+03BsiFWbFMWlHfJgtOxFm7fo2WzRhP0xUb4rUWFiCxPSkVyHAxlS33G+vEO2o=
+	t=1740181674; cv=none; b=L6RVtffEbeBy4sOI8DYVq/j4eDlIulX9+i5RoXWdDsNZXfrIDRAwnwzhzSEjH1rO6QMARcF5NZUdwV7UMPJH3HxTDHfxPc3kpfnRoBnVeJJxwl9N5kJWspDiIiq3Iu3NMw0aULHcF1eFEqXxuqQWH0jYDGreR9twn/WVk5/Wt6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740178177; c=relaxed/simple;
-	bh=EEnEB/C72SjAWinYPRUnDFCJ65ajL0HY9Nz9Iu/tRXU=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=iYZDaRmFdYclj3+HL0xx8pVKuJxZkzDHRemcp2IliImocp5++TSa8nVVBBydKGIx5cdzR3NnfImcUiP6Ao4ic18NhHzWS9Gtm66CkJ9DePoaLOnyEaFIzbiEHx7iAkyn8mnhWKPMhXD3yXRHNnHsaYqCdHV1LvmQoYbB0/s5ppU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=gy6GjHdI; arc=none smtp.client-ip=185.125.188.251
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 1052D40D2D
-	for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2025 22:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1740178173;
-	bh=EEnEB/C72SjAWinYPRUnDFCJ65ajL0HY9Nz9Iu/tRXU=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=gy6GjHdIHVq0ukHCr/csydlUgn5k93NMdkYmZJndPncMrXkw0oyN2AB3PuLnStTfb
-	 g364b3cidQFAnmFOomp2R4cYz9WQJ5FL3p7BBGisBan0EdiZwZdtseEhjQjioWIt4K
-	 zAdsMQq9hVCZJnrvaXnbP7b2/ey+CWKtUEtVow9lEPr+1pyUXrCFsFcNWCanANqVER
-	 YetxSMkcCW3LaURu0O8RgRSPvBB0ydPbic/SdpupPtRERiMi9ehUfof+WxpmBEpihw
-	 OAj6CJVnzQLzFrGAkCLNmn4RTxmbbau2lwJvnhP7AunlAyCborLwKjo1vHrP1Y/9b9
-	 GizAJu0vVM7vg==
-Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
-	by buildd-manager.lp.internal (Postfix) with ESMTP id EFAD17E244
-	for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2025 22:49:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1740181674; c=relaxed/simple;
+	bh=YpqZyI6XQkE+I/cz0HVGo821pG3xUv+i2G8tH9sw4Ck=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UUMzq3OCOo3uSMiOn2/HZRqHWoOU8FUHE+iHE0nXy3/pNG5H9hF+ZgsaRcjmnmTAufq6JvmUhRXlMnEhEHEUY8SJAab14l2FmY2yhq9p1GtwG1sowqb7JIG2tS73tB6Ef3M7cRhLGIJCGHuxJDYNLZqrF7yJ39tmHv2Zzwl+9Is=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KM/ZfJRW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 305A7C4CED6;
+	Fri, 21 Feb 2025 23:47:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740181673;
+	bh=YpqZyI6XQkE+I/cz0HVGo821pG3xUv+i2G8tH9sw4Ck=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=KM/ZfJRW4Ao62YReF/CByxvaytS6eCg7A62ykfem1F7ZlcxARc/ttMS+Eo7QSiRoC
+	 L/Yjcd2caMn4ObZZCnCGyEuo9xgC6WZot/rpFAy5wigXVK3ut+VHILxglTeHRYA9kk
+	 k60pF94LnYZ/h3hrEAauaHfon//iQu4AioNB3aq2W2kbk7oEuocz2/ygkH/nvqljBK
+	 2J+2++rVJPifxTn81/PKTdrWtLY/Om1L+itbDoBh6z+E8Cwe1RdbvdUeamo4+pUpWj
+	 /c4yBKxGb0jQHXag71qQxP+sWONgV0p8K4pbQVmHScKyB2/E2s11Z7gaJWVk4E/s5B
+	 mJf6Xz30VzUiw==
+Date: Fri, 21 Feb 2025 15:47:51 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Xiao Liang <shaw.leon@gmail.com>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, Kuniyuki
+ Iwashima <kuniyu@amazon.com>, "David S. Miller" <davem@davemloft.net>,
+ David Ahern <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Simon
+ Horman <horms@kernel.org>, Shuah Khan <shuah@kernel.org>, Donald Hunter
+ <donald.hunter@gmail.com>, Alexander Aring <alex.aring@gmail.com>, Stefan
+ Schmidt <stefan@datenfreihafen.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Steffen Klassert
+ <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
+ osmocom-net-gprs@lists.osmocom.org, bpf@vger.kernel.org,
+ linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+ linux-wireless@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
+ bridge@lists.linux.dev, linux-wpan@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v10 00/13] net: Improve netns handling in
+ rtnetlink
+Message-ID: <20250221154751.54318ae5@kernel.org>
+In-Reply-To: <20250219125039.18024-1-shaw.leon@gmail.com>
+References: <20250219125039.18024-1-shaw.leon@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: MANUALDEPWAIT
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: noreply@launchpad.net
-Subject: [recipe build #3857650] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <174017817297.1613549.18051176831177200752.launchpad@buildd-manager.lp.internal>
-Date: Fri, 21 Feb 2025 22:49:32 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="78860d903de6d6d7dd5a0ade63efaca45d3467e2"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: 1f4d9c5fa9357ff9963fa46ff5752c7cdc79f916
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 4 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/3857650/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-118
+On Wed, 19 Feb 2025 20:50:26 +0800 Xiao Liang wrote:
+> Patch 01 avoids link name conflict in different netns.
+> 
+> To achieve 2), there're mainly 3 steps:
+> 
+>  - Patch 02 packs newlink() parameters into a struct, including
+>    the original "src_net" along with more netns context. No semantic
+>    changes are introduced.
+>  - Patch 03 ~ 09 converts device drivers to use the explicit netns
+>    extracted from params.
+>  - Patch 10 ~ 11 removes the old netns parameter, and converts
+>    rtnetlink to create device in target netns directly.
+> 
+> Patch 12 ~ 13 adds some tests for link name and link netns.
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/3857650
-Your team Linux RDMA is the requester of the build.
-
+Nice work, thank you!
 
