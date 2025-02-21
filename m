@@ -1,135 +1,100 @@
-Return-Path: <linux-rdma+bounces-7947-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7948-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EE2CA3EEA2
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 09:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 086BBA3EF94
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 10:09:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A40C7A7703
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 08:22:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 405797A9B36
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 09:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE09E1FF1D4;
-	Fri, 21 Feb 2025 08:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D946200110;
+	Fri, 21 Feb 2025 09:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m0LSJYU5"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RWpNzL91"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75BE22AEF1;
-	Fri, 21 Feb 2025 08:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A461FF1CB
+	for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2025 09:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740126200; cv=none; b=GHt4KwOFOeguwBV1IwaW4v3G8ys6lZP79kMI8d4azgDiR0Fx5vYF6Ieip50DgVpLYe8Bdk+PLvNiN7BzaESE8PeRW2dfRGV2/Ejj84GlAaaW++PmBQMhCFgHb47fbbyisDphoR+k3R2WBn8pTeH+1ZBNVxe6k2D7DYeRAJVbcNg=
+	t=1740128865; cv=none; b=D8SgydUrAP9IjdjB/rxHjUfoE1ynei8O04cloGo48uXHVMgDTfE7BvaL40HEwxfOoD/PSkEQFArCXs7w46ixmR+0DSKTD1OcuPe23mYBE4tfS/t01Ifx7moK6kPKxOjxGZfoh5D22E6nNveyEKtMTXPNSN8ZL69Su65T+ygjWHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740126200; c=relaxed/simple;
-	bh=rfDIIQH5mrDRATR5TGl8kCDlcFHPJIwo/TE0dNwgcqw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eQi1RRS8V23kWquzhUzu+heRA2x8ic+m6J0SgqzDkf1V3HcKMdLoqnW9xP53qzPIMyEeMY5uRs8mDl7Wdz44BNHXyIb4Ka6YdBZQdEEtJRZivXdpuQLHO9HIBGes2mUN/vJ8Lc+JNuzMTDO5nkuHc11LW8APPA/tdMs+8nJ2Opw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m0LSJYU5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B689C4CED6;
-	Fri, 21 Feb 2025 08:23:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740126199;
-	bh=rfDIIQH5mrDRATR5TGl8kCDlcFHPJIwo/TE0dNwgcqw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m0LSJYU5KyWZzwrQDlUAUR1+8PdJD+JaUQ+RLHCwHnImb/aTfszjDTaUmt201JjQq
-	 3NSxzfU1CmNjl0LDjhcjrM1Rrwm/4QMYSfHwN0G/QTNX89WIPkfon9hKuX6Ht7F5Mm
-	 zaYOVfJcV2g0J8ojXaojC2FZrHA/SkmbWC4d1Y3C+C3RjCIno5WK6acxsxs6MX02qS
-	 JRqXk9WvCkGis8RAaDwX7YXG+B+rFn3G86rUyzPhJyzUx4jhoEOvIUf6KFH48J/CZz
-	 Hmctg7CCe/8hgZINR8gwlxcOqQnb13s8DsCpP3TVIeFJ1onvx9Kt5NSk2yCKY/VU5U
-	 FuL78IkEAbnaA==
-Date: Fri, 21 Feb 2025 09:23:14 +0100
-From: Joel Granados <joel.granados@kernel.org>
-To: nicolas.bouchinet@clip-os.org
-Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-scsi@vger.kernel.org, codalist@coda.cs.cmu.edu, linux-nfs@vger.kernel.org, 
-	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, 
-	Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>, Joel Granados <j.granados@samsung.com>, 
-	Bart Van Assche <bvanassche@acm.org>, Leon Romanovsky <leon@kernel.org>, 
-	Zhu Yanjun <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v1 0/9] Fixes multiple sysctl bound checks
-Message-ID: <d56pptdshudhgubqmgcag5gwfadwzntg2tz3av6wfijn77lvui@dxtbse27guev>
-References: <20250127142014.37834-1-nicolas.bouchinet@clip-os.org>
+	s=arc-20240116; t=1740128865; c=relaxed/simple;
+	bh=ZoewP+I7MPJSYwRR1gmRB8PDPc9ZAqkchO++ck4YW7w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aS3MMASguNTa4PW1UkJFeSmB1c+qfPUv5rYxxmigqbx5iCQHzCN8Ph1zFkvAtHuyZiU09xpM/jkTuprBRSLRu+TweiGXQLA/kI9S4mpFFJ+gJOvTn8l1zjgtA/SP9CZVdWthCnioH8w0+mMbeD1kDozHKEG//g+Hwl/KveXBBS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RWpNzL91; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740128860;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wprGiDaMDqnJuc56NWAkjn4Xo990TLMpiIEvRYQHvNA=;
+	b=RWpNzL91fOV76E4FT0Qg1C1hW03gGljtkq+1rcl4o1rRdp8vAwk2Q3E5EhojRW8NAMhROb
+	B4mqaqvylpwrNmXriJqprBcMf3Kg690gJS8tS8Dt/IwPPFWgibki9ZwbfcZjPFL5ccqWZe
+	cROndeaTRWEenWJIUJbVqOww26KKyLo=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Yevgeny Kliteynik <kliteyn@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>,
+	Itamar Gozlan <igozlan@nvidia.com>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	Jacob Keller <jacob.e.keller@intel.com>,
+	Saeed Mahameed <saeed@kernel.org>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH net-next] net/mlx5: Use secs_to_jiffies() instead of msecs_to_jiffies()
+Date: Fri, 21 Feb 2025 09:53:22 +0100
+Message-ID: <20250221085350.198024-3-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250127142014.37834-1-nicolas.bouchinet@clip-os.org>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jan 27, 2025 at 03:19:57PM +0100, nicolas.bouchinet@clip-os.org wrote:
-> From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
-> 
-> Hi,
-> 
-> This patchset adds some bound checks to sysctls to avoid negative
-> value writes.
-> 
-> The patched sysctls were storing the result of the proc_dointvec
-> proc_handler into an unsigned int data. proc_dointvec being able to
-> parse negative value, and it return value being a signed int, this could
-> lead to undefined behaviors.
-> This has led to kernel crash in the past as described in commit
-> 3b3376f222e3 ("sysctl.c: fix underflow value setting risk in vm_table")
-> 
-> Most of them are now bounded between SYSCTL_ZERO and SYSCTL_INT_MAX.
-> nf_conntrack_expect_max is bounded between SYSCTL_ONE and SYSCTL_INT_MAX
-> as defined by its documentation.
-> 
-> This patchset has been written over sysctl-testing branch [1].
-> See [2] for similar sysctl fixes currently in review.
-> 
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/log/?h=sysctl-testing
-> [2]: https://lore.kernel.org/all/20250115132211.25400-1-nicolas.bouchinet@clip-os.org/
-> 
-> Best regards,
-> 
-> Nicolas
-I see that you have received several reviews suggesting that you post
-some of the patches in this series separately. Please remove these for
-your V2 so we do not duplicate efforts.
+Use secs_to_jiffies() and simplify the code.
 
-Thx
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Reviewed-by: Saeed Mahameed <saeed@kernel.org>
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+Resend with "net-next" in the title as suggested by Jacob and Saeed.
+---
+ drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> ---
-> 
-> Nicolas Bouchinet (9):
->   sysctl: Fixes nf_conntrack_max bounds
->   sysctl: Fixes nf_conntrack_expect_max bounds
->   sysctl: Fixes gc_thresh bounds
->   sysctl: Fixes idmap_cache_timeout bounds
->   sysctl: Fixes nsm_local_state bounds
->   sysctl/coda: Fixes timeout bounds
->   sysctl: Fixes scsi_logging_level bounds
->   sysctl/infiniband: Fixes infiniband sysctl bounds
->   sysctl: Fixes max-user-freq bounds
-> 
->  drivers/char/hpet.c                     |  4 +++-
->  drivers/infiniband/core/iwcm.c          |  4 +++-
->  drivers/infiniband/core/ucma.c          |  4 +++-
->  drivers/scsi/scsi_sysctl.c              |  4 +++-
->  fs/coda/sysctl.c                        |  4 +++-
->  fs/lockd/svc.c                          |  4 +++-
->  fs/nfs/nfs4sysctl.c                     |  4 +++-
->  net/ipv4/route.c                        |  4 +++-
->  net/ipv6/route.c                        |  4 +++-
->  net/ipv6/xfrm6_policy.c                 |  4 +++-
->  net/netfilter/nf_conntrack_standalone.c | 12 +++++++++---
->  11 files changed, 39 insertions(+), 13 deletions(-)
-> 
-> -- 
-> 2.48.1
-> 
-
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c
+index 3dbd4efa21a2..19dce1ba512d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c
+@@ -220,7 +220,7 @@ static int hws_bwc_queue_poll(struct mlx5hws_context *ctx,
+ 			      bool drain)
+ {
+ 	unsigned long timeout = jiffies +
+-				msecs_to_jiffies(MLX5HWS_BWC_POLLING_TIMEOUT * MSEC_PER_SEC);
++				secs_to_jiffies(MLX5HWS_BWC_POLLING_TIMEOUT);
+ 	struct mlx5hws_flow_op_result comp[MLX5HWS_BWC_MATCHER_REHASH_BURST_TH];
+ 	u16 burst_th = hws_bwc_get_burst_th(ctx, queue_id);
+ 	bool got_comp = *pending_rules >= burst_th;
 -- 
+2.48.1
 
-Joel Granados
 
