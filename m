@@ -1,202 +1,127 @@
-Return-Path: <linux-rdma+bounces-7970-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7971-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41DBEA3F572
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 14:15:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3F01A3F58C
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 14:17:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B05E319E05E8
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 13:12:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE868440394
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 13:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9BF7223336;
-	Fri, 21 Feb 2025 13:05:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE37720E033;
+	Fri, 21 Feb 2025 13:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fj5Rr2Gq"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="ocs8BcLD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1647F22331E;
-	Fri, 21 Feb 2025 13:05:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E37220D50F
+	for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2025 13:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740143153; cv=none; b=a+gfDdZEt5JvXaWk4Z8L8j1nNdaQyxoD2+QefaO1+xI2TGzjO3TFGTTeQTG3PvF+J5THrve/znuOGrp3BkbwMadQLlbfBh/mBA68wY4jQ8oiOmGPqRrNe5WcJPM2Hd92dKqZrpx8vVKUAFDLmoKZ748SydEohoOdd7gmpsOIKC8=
+	t=1740143199; cv=none; b=anIRptZIW0OlYSedWTlAenHDWcw/zm0owRgGSBMVJ/K9hqdnQPnpy2MpX/CD3FuvAjJenXHQeyVdC9f9MNgoUJumGmkoMZys3KN57vREiOpjM+CekOUjRb3RiI4Euv/QoOyb1xgLyX7qEJfMNhYw+vlcafrzSNPjqEWN+0QtXC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740143153; c=relaxed/simple;
-	bh=/I6J3/xUjow+0WgP+TVAWOTlXqQ0okRRsj40L7zjJwg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=EQBPFUGW1lh2vtZGb4YuMhOA/sbwFsxl1VATC+7YMvGes5b5rIO2l/+QsUnYMkQiqcZSzYuMKR2G5U8x6nOPTfe8J10mVcWWBIUnN7uvCPmPesNqveUro3Y3An0WLCqm8LBPrITvHw/FyWxRT42E4FVwrVEV8OEjBJpjPC6Ng4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fj5Rr2Gq; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51L6IIic018792;
-	Fri, 21 Feb 2025 13:02:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	Tm0Zt0Z5RF7rdSISUfZdhv6NUQ6vAdfywek+iOtN6ys=; b=fj5Rr2GqOR7fi3FG
-	fjsXss2q2XoaUgou8BqAEeuLk62qi3JZ4uNEICFBcHVUhQgKhMH8iqNcQ+14OsDI
-	3D8JYvyo18EgihIddxyPogVOfhf+IguAN7tT+m9DJTvKNDYweVPExp19+qrKn5lb
-	hJeVgUYsrkGHEsc8mTukuCQ/wQiA7crqrDWy327ibsMuw7PvZxg3Vz/wURGUYS/7
-	43fQHWlJsBBU6V8nSV8AvPbYEQEkm40tUJfw5Vefj3GBZpSSPnlVT4BnsMrqvN8J
-	daY07Suy0b7Bz+hzpkbQ5CZ24JJJhm+4rTFweOuxERxbV2XKM1wQxCv0ZMX/FHir
-	v8rajQ==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 44xm3rhaak-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 21 Feb 2025 13:02:44 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 51LD2h8q028033
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 21 Feb 2025 13:02:43 GMT
-Received: from hu-zijuhu-lv.qualcomm.com (10.49.16.6) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 21 Feb 2025 05:02:42 -0800
-From: Zijun Hu <quic_zijuhu@quicinc.com>
-Date: Fri, 21 Feb 2025 05:02:23 -0800
-Subject: [PATCH *-next 18/18] mtd: nand: Do not return void function in
- void function
+	s=arc-20240116; t=1740143199; c=relaxed/simple;
+	bh=GY4Bqjj3jHuhIZ/yUC1V1L2T+Ec/puqWZDF72o9O3bU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KNfWIUuEdK9Ey051eXLnM1iYHmlZ4wFwKvm5PYkn6IHnneBUyhLEOLZKeSsKzOCh2CPed/6Iu7Wznu4doXVkdjb1gYueCZQ0TUTN0Uxc4MhjG7mLkRXe8vBr5ugy2OxGQlZH9jLplTq9HpG6qlG3Gp1kHsMLroQWTQoClYPInWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=ocs8BcLD; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5452e6f2999so2167488e87.3
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2025 05:06:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1740143195; x=1740747995; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GY4Bqjj3jHuhIZ/yUC1V1L2T+Ec/puqWZDF72o9O3bU=;
+        b=ocs8BcLDVX0cFE4GS7mdtoyTmdq7ov0aDknHxHtvq9pyWd+CzzxiSTj0LDGbCb+O2y
+         IjEppM3n5enmNQpEeHa2spfrTWNe6L51o8MBwFqRm2r5bp6uWo7nIwTSxWFeEZVKb06j
+         qBZWHdVKsdcaIx5WmsjZknBd+np0SH4ChBYDnpyBg9iRPhRhLgTs1mrUMTVrlzJ3HaWQ
+         qlOaX5DLH3FRuWJpD9RL+PkuyZrD+QMVkTrFaJxVMC365ur2kVbzf11ksEdOkjVm10Hd
+         zdx8/zMhfRIvLwT74dGk5Szikj2e9IoTiLl9yVtNpAq9mkf0Kn1BZLOF2OjzqzG1D3z8
+         3mSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740143195; x=1740747995;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GY4Bqjj3jHuhIZ/yUC1V1L2T+Ec/puqWZDF72o9O3bU=;
+        b=W1UkEpJe8cSiLb8wo3kNVMVGD7EmnnW9XXqvj1FTrRym+xZccyql4+MWRl9CJl3zVu
+         ljLAY+i1p/FzZ4KeXj4DYeOY3Ru3FPGp2OhEM5ZPXEn2gxtANP8syXWtgpfFgToHoMhC
+         hVQTSsqWcMv2XswtKKz26WxLjrSPh8vnuyUzXkHs7eC1cqwe5UEflcLjKVNXSRQw6OBL
+         RVHlDXjGafqEt7j+qZhYhLoyttm7otTKIKnr3dG0b9s//UIUkGCZynne9RMwLjELYYM+
+         YOUM6NbfBcBijYn39zo1iYDsjDXqjFCjcml9WwtTOiocKYLmVSP8WsVWMugwZw/HYQVR
+         ZokQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXkoxth4rc5Zbc7KJVF/i1X2nzoaJd5CeZ9ZN9umcLv6Rl12Q8uzVC1bCEF8mPhlsiNvuEUbIlxQ+Q4@vger.kernel.org
+X-Gm-Message-State: AOJu0YxhQGA+Bhh3V/gM609ihZXaXQi3hT4/Omd8gjQJGHmqSjiq/KC/
+	tZhLyL7sFkHxviGic+pETU4CpeLojV54v7n8ZZ6iGSD0hM+Qb+5AdI7rzas36Vxie23iqq5iXvY
+	AfHe3c27yLpgUuC4MOiN8S/KfU5uoumPDHTJ/uw==
+X-Gm-Gg: ASbGnctExijMR3O8gBkXabVH5JSegIhj9weWz7x1x0JBmuIdreU7jHnqkAHBcM7bLBe
+	5AKZXvkgW9DqpNM2slXUZGw8XgIN1h/273uuQ3krGm5TsB4to84/Gv9jP2DuGebvpEroz8CrxRC
+	atvNdeuuxNjuillDlKWLrLXCKDyPv1X/+GghcpbQw=
+X-Google-Smtp-Source: AGHT+IGvF+qVoZb/YNG1V1s6uhLH0tipo14kcVPCZjvopoT6AHOJ53n961FIS1cHHYi7UkY/30eVAcyuJ5RU22yTz1g=
+X-Received: by 2002:a05:6512:230a:b0:545:17b:3cf9 with SMTP id
+ 2adb3069b0e04-54838f5c910mr1152614e87.48.1740143195091; Fri, 21 Feb 2025
+ 05:06:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20250221-rmv_return-v1-18-cc8dff275827@quicinc.com>
-References: <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com>
-In-Reply-To: <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon
-	<will@kernel.org>,
-        Aneesh Kumar K.V <aneesh.kumar@kernel.org>,
-        Andrew Morton
-	<akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra
-	<peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner
-	<tglx@linutronix.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S.
- Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Danilo Krummrich" <dakr@kernel.org>,
-        Eric Dumazet <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Simon
- Horman <horms@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "Jamal
- Hadi Salim" <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>, Jiri
- Pirko <jiri@resnulli.us>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky
-	<leon@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Bartosz
- Golaszewski" <brgl@bgdev.pl>, Lee Jones <lee@kernel.org>,
-        Thomas Graf
-	<tgraf@suug.ch>, Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski
-	<m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Miquel
- Raynal" <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC: Zijun Hu <zijun_hu@icloud.com>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <iommu@lists.linux.dev>, <linux-mtd@lists.infradead.org>,
-        Zijun Hu
-	<quic_zijuhu@quicinc.com>
-X-Mailer: b4 0.14.1
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: SV8SpptYSPEhBGh6-hClx7JhQY8AZVMI
-X-Proofpoint-GUID: SV8SpptYSPEhBGh6-hClx7JhQY8AZVMI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-21_04,2025-02-20_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- suspectscore=0 mlxlogscore=763 phishscore=0 bulkscore=0 lowpriorityscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 adultscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2502100000 definitions=main-2502210095
+References: <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com> <20250221-rmv_return-v1-13-cc8dff275827@quicinc.com>
+In-Reply-To: <20250221-rmv_return-v1-13-cc8dff275827@quicinc.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Fri, 21 Feb 2025 14:06:23 +0100
+X-Gm-Features: AWEUYZkXE5OFXjjPS11KVvHprrUdePtYS343T04IUIfa13H27L0Aw2Tb2OnslNQ
+Message-ID: <CAMRc=McG2xLUcE_yHq4MiFnm665riHHuHjk0GJE4cFV_gGU90Q@mail.gmail.com>
+Subject: Re: [PATCH *-next 13/18] gpiolib: Remove needless return in two void APIs
+To: Zijun Hu <quic_zijuhu@quicinc.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Will Deacon <will@kernel.org>, 
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Thomas Gleixner <tglx@linutronix.de>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	"David S. Miller" <davem@davemloft.net>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Danilo Krummrich <dakr@kernel.org>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Johannes Berg <johannes@sipsolutions.net>, Jamal Hadi Salim <jhs@mojatatu.com>, 
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
+	Lee Jones <lee@kernel.org>, Thomas Graf <tgraf@suug.ch>, Christoph Hellwig <hch@lst.de>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, Zijun Hu <zijun_hu@icloud.com>, linux-arch@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In the following three void APIs:
+On Fri, Feb 21, 2025 at 2:02=E2=80=AFPM Zijun Hu <quic_zijuhu@quicinc.com> =
+wrote:
+>
+> Remove needless 'return' in the following void APIs:
+>
+> gpio_set_value_cansleep()
+> gpio_set_value()
+>
+> Since both the API and callee involved are void functions.
+>
+> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+> ---
 
-	nanddev_pos_next_lun()
-	nanddev_pos_next_eraseblock()
-	nanddev_pos_next_page()
+That would normally make sense but we're getting that reworked[1] in
+this very cycle so please drop this patch from your series.
 
-For void function void func(...), convert weird statement:
-	return func(...);
-"to":
-	func(...);
-	return;
+Bart
 
-Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
----
- include/linux/mtd/nand.h | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 0e2f228e8b4a..8e3f6cca0b24 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -863,8 +863,10 @@ static inline void nanddev_pos_next_target(struct nand_device *nand,
- static inline void nanddev_pos_next_lun(struct nand_device *nand,
- 					struct nand_pos *pos)
- {
--	if (pos->lun >= nand->memorg.luns_per_target - 1)
--		return nanddev_pos_next_target(nand, pos);
-+	if (pos->lun >= nand->memorg.luns_per_target - 1) {
-+		nanddev_pos_next_target(nand, pos);
-+		return;
-+	}
- 
- 	pos->lun++;
- 	pos->page = 0;
-@@ -883,8 +885,10 @@ static inline void nanddev_pos_next_lun(struct nand_device *nand,
- static inline void nanddev_pos_next_eraseblock(struct nand_device *nand,
- 					       struct nand_pos *pos)
- {
--	if (pos->eraseblock >= nand->memorg.eraseblocks_per_lun - 1)
--		return nanddev_pos_next_lun(nand, pos);
-+	if (pos->eraseblock >= nand->memorg.eraseblocks_per_lun - 1) {
-+		nanddev_pos_next_lun(nand, pos);
-+		return;
-+	}
- 
- 	pos->eraseblock++;
- 	pos->page = 0;
-@@ -902,8 +906,10 @@ static inline void nanddev_pos_next_eraseblock(struct nand_device *nand,
- static inline void nanddev_pos_next_page(struct nand_device *nand,
- 					 struct nand_pos *pos)
- {
--	if (pos->page >= nand->memorg.pages_per_eraseblock - 1)
--		return nanddev_pos_next_eraseblock(nand, pos);
-+	if (pos->page >= nand->memorg.pages_per_eraseblock - 1) {
-+		nanddev_pos_next_eraseblock(nand, pos);
-+		return;
-+	}
- 
- 	pos->page++;
- }
-
--- 
-2.34.1
-
+[1] https://lore.kernel.org/linux-gpio/20250220-gpio-set-retval-v2-0-bc4cfd=
+38dae3@linaro.org/
 
