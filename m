@@ -1,202 +1,209 @@
-Return-Path: <linux-rdma+bounces-7990-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7991-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A1B8A4004E
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 21:03:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C921DA4011D
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 21:36:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8210C7A79DB
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 20:02:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 607A71707EA
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2025 20:35:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19838252914;
-	Fri, 21 Feb 2025 20:02:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A1A254B17;
+	Fri, 21 Feb 2025 20:34:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BkLBWBkR"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="Xpv5bxvI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from CY4PR05CU001.outbound.protection.outlook.com (mail-westcentralusazon11020087.outbound.protection.outlook.com [40.93.198.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E13E1FCD0B
-	for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2025 20:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740168173; cv=none; b=W0ZScaNisyYwbhbVswrcCvX6ihMWam33cHqsULEuFraznxudBUerrDPTgLKtK7Ivg9btq0x7PdJIVwl3U87v7VY7Zf+1tOFQPbw6b60zY7sriwblKuBLjKhIo08zuZu2WI8No4/a5ME01kNW3kUAQUPzjb0ffYsIVqT8eQUoHdw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740168173; c=relaxed/simple;
-	bh=ziCuF3Qs14VwHWFz3orte9U/36adlwGkxjDaRih0Y9c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YL6mgPaHU9tUZ/ttRyFHcDbu4jCO7RYyNMwEHtAKRztKY8O3OgKbREvQNkNFMfl5mRHWYZQCq1sI8lUhr3kwQ41DywpJuOUwaNnks3Dv/KojbIUDEZqOPF9XEFQF16jAiYFXyfZrJ1im5SJOKpUdhCvgajBJIwRZ5HeCK+CHSvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BkLBWBkR; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 21 Feb 2025 20:02:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740168154;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iDf9NdwllYzQWciAD/0BNA+3WkLMBQpFcChpqNa5lto=;
-	b=BkLBWBkRjFNUbYJnDydCMl/9jPwqyth7FM+4ZmQLoyiTx6KhfLBFVO8Bjk92YaWOIbB5M6
-	zwxlCoOAoh3/JPdhXy3AG6q4nZr+WefQ7BOsWz8s87bJyIXiGZd38ClLEFOGecrCh9JDfV
-	QdphBi4ruYjp45OQpO4hQd0cXb/5iys=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Parav Pandit <parav@mellanox.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	Maher Sanalla <msanalla@nvidia.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E1C254AF6;
+	Fri, 21 Feb 2025 20:34:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.198.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1740170088; cv=fail; b=i6Ujd3jKJ13NyE9w8Ceq2qHru++yVaq601c5dsbrkGmzN9HBImI6cZnUu5dpbKoAQ3MLSxfNo/4CzfTnqcslWNBWQ72TRtzBRrn0TBfXse9ffY9I/uMlVF5aHM79l25R9AcX43gGRu4/oPjx/Immgc465JgBCqKPgtTW8Szv3tA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1740170088; c=relaxed/simple;
+	bh=TV5eDWzrRodHTVgikpvQwhi/f/mMZGRw06+XwSgKFuU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=SkBi8SUB9thL9Yt3nuMQmItsjCF2gH7iCWnenlGSwvXXuRQYMnfFXvvuWadzMmJORc52Jd+z5XnZDKdpIwphHtW87ZftQUo0oVtZseFZEjrzenjme/kywVeXFyz+H8o/BsedZ2b/SY7zdev9M2hDSjTsc0CIB8GrT0GW00hz+AA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=Xpv5bxvI; arc=fail smtp.client-ip=40.93.198.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=cwq/nXkIboc503ELWBtPake4+wJf77W1oeGSkQQgG5qZ48aBKs1E/PwRKDtGDKEbWyfJ/mGehsxklDT/8QzC7qnDPMAujbWUuROXPQlaq2cOO7VyUrEkMqCPlQcgZcUmI/6EtxbW32IxqTXbB4PtouG/Bsh9oKXGpeO01WiSR3cRJmoFX53sQII8CbfeWdrtg6jkmJGnyJkpN8jv53T5gGkBmT2xtyOKvXkyIrQDKDC2Z/ueXZxF2zE3gVVp/81vTMIEbRqCmuV5Pxt5MNi4n80vPsFD2fZhAgr8hIxgE2DWyGW7JcxCgpKWa5M7R/XtxtbJmAWf2kt1g37HVpPAow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=chun3cK4KSsrZKWkUkzYKZwrMgOTK8i7R5jO9MwCSpQ=;
+ b=prkCcHW6bAXdseyAvN09kAid81HzbtO2WehpkAfzElNfTtEbFMmjvctYSqet3VlyNybIGikAn4sDyes000tzjbEPS+v0klJl609ypVbC4V3oYWJKK2YCgGtQ17HMUcAj3X8g+ZE+t+cPeLCnH+iFi1xvqDpjC7LSBdQCs8ApLYWofAg5kxPy/pwAnwBFHxqoF4Sp/EneuWLwe5O3nKaVQE4c8LknnENB/D9oAC6arP8oJjbEWB3YrdZaC0AMc8WSaPE5yxY1UO6Fbl6N+Zh+10xOIVa4gPKCqgduY+LN+C0Y7VLx476wXFbRs/cFauDQ0C7b1EjHTp5ISsmphhPnsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=chun3cK4KSsrZKWkUkzYKZwrMgOTK8i7R5jO9MwCSpQ=;
+ b=Xpv5bxvIeT/Nh9ehrjSPvgTU3GAlA3SsTAPrVhuk+AL3gx8VyKBeqKrfZuSAHq/HIflORQAPcMpQkempBiNBOOJ863KT6AXXkqDELjy3zJMqaTOlTsr/ZkzKOKAmqARF1q5S0UuuWclYmxhVUb+HF2tMpsgQg6cgLpsL+CFIq0w=
+Received: from SA6PR21MB4231.namprd21.prod.outlook.com (2603:10b6:806:412::20)
+ by SA1PR21MB2067.namprd21.prod.outlook.com (2603:10b6:806:1c2::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.9; Fri, 21 Feb
+ 2025 20:34:43 +0000
+Received: from SA6PR21MB4231.namprd21.prod.outlook.com
+ ([fe80::5c62:d7c6:4531:3aff]) by SA6PR21MB4231.namprd21.prod.outlook.com
+ ([fe80::5c62:d7c6:4531:3aff%4]) with mapi id 15.20.8489.010; Fri, 21 Feb 2025
+ 20:34:43 +0000
+From: Long Li <longli@microsoft.com>
+To: Kees Bakker <kees@ijzerbout.nl>, Konstantin Taranov
+	<kotaranov@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky
+	<leon@kernel.org>
+CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] RDMA/core: fix a NULL-pointer dereference in
- hw_stat_device_show()
-Message-ID: <Z7jb1z8WSllnFFyX@google.com>
-References: <20250221020555.4090014-1-roman.gushchin@linux.dev>
- <CY8PR12MB71958C150D7604EAD4463F4ADCC72@CY8PR12MB7195.namprd12.prod.outlook.com>
- <Z7gARTF0mpbOj7gN@google.com>
- <CY8PR12MB7195F3ACB8CFA05C4B8D26D3DCC72@CY8PR12MB7195.namprd12.prod.outlook.com>
- <Z7gF3UC7PvVxeRcq@google.com>
- <CY8PR12MB7195D93F387845E0A7314C34DCC72@CY8PR12MB7195.namprd12.prod.outlook.com>
+Subject: RE: [EXTERNAL] [PATCH] RDMA/mana_ib: Ensure variable err is
+ initialized
+Thread-Topic: [EXTERNAL] [PATCH] RDMA/mana_ib: Ensure variable err is
+ initialized
+Thread-Index: AQHbhJr/8Lryl8mBg0+HEUlqi4JsJLNSNp7Q
+Date: Fri, 21 Feb 2025 20:34:43 +0000
+Message-ID:
+ <SA6PR21MB4231810186481AF0A68AAC6ECEC72@SA6PR21MB4231.namprd21.prod.outlook.com>
+References: <20250221195833.7516C16290A@bout3.ijzerbout.nl>
+In-Reply-To: <20250221195833.7516C16290A@bout3.ijzerbout.nl>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b66b7baf-60e6-4867-96e4-0a8946a7d9d2;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-02-21T20:33:50Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA6PR21MB4231:EE_|SA1PR21MB2067:EE_
+x-ms-office365-filtering-correlation-id: c4b4b409-1d56-4bfb-8e67-08dd52b72c87
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|10070799003|1800799024|366016|7053199007|38070700018;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?Kh0jTzh6rPsjsKVbhmYPNEpd0u22fs/7YAfOXIa0thjRq0zBu1tLY9wvORbg?=
+ =?us-ascii?Q?pszLQ9BEwVumLg+IySMkp1LJheIxrjTKmlVpoxYbDmOvC5GoLQ6u5MJsm06w?=
+ =?us-ascii?Q?YAWZYgV9eTgbHyCuJ60Enxnj8vHbtepNFbqq67262diWEZYkr1p/k0Mj2xLp?=
+ =?us-ascii?Q?bLVs5noF4lYhbauZS41tTv9F6glnOu1hVNTJXtvarlJU+Hkwclui0csNIMed?=
+ =?us-ascii?Q?MVkT+fFYaMxZIHxjMzn++/57LeOd+kliCZG8FccEPs5c/1bscPH+sRf+M0TM?=
+ =?us-ascii?Q?PAPDTCNcds5vAdN25bBioP1SnnqSga41Dni5kF8F/gFxtMpJT2BbNHfnRLhB?=
+ =?us-ascii?Q?D/UV7tWxHFjfGlCn6sEXRUFvZi7RCphCdeYUTTxYc+UZ0Dk26bvR4C0pudff?=
+ =?us-ascii?Q?EGVC0iIZ3UZXwp6h2tw7TxMJiwqLu50afnYwQe6htNDbGlek4ZaCKQW5RaEc?=
+ =?us-ascii?Q?Pu3l7ng/5IUiZgLaY+/8B7xXsBwYmyld5xR3hBZ2jbXogdMf96ResR5zPNT/?=
+ =?us-ascii?Q?Rp1BeAincVnpWAH/MP6oNW8tJQmP6YpfR7MQLXyO6/f38KTKOpPo3mLjvmpM?=
+ =?us-ascii?Q?wK4hga+NubtFO8k50H4rO1rs/6qHzaipUYBIH7t3SThAFQeNVF/AlXDL5WUV?=
+ =?us-ascii?Q?sUNuzJ4EEmtzjoP0FQMAMkxIMiyuHvxH20rO5t/7kDzR1hBtk3TOsdEnOsD0?=
+ =?us-ascii?Q?o9gvdmL5z8ArHz5vNaa4zR0zlkh4FLURaDaYvpU+/e9+fWxbDjRgtMRBx1Tj?=
+ =?us-ascii?Q?JhxTptw8kr30iW6rfQUbylkBz45PKXqnapO18Zgl7PDO2tug3tSJtmD55KtQ?=
+ =?us-ascii?Q?cC6uTj46uQnN7sVniVxnYeogV8eoNnGBQTDx0i7PwtSpJsVi0gr2gclVfEdn?=
+ =?us-ascii?Q?ICgKVkO+FxJODYhw9TnI+kiGKrSbnE8b7CYlxqfUSBXTmJRWIUage7PPjgiA?=
+ =?us-ascii?Q?WxEEU9UJ1Ul2s8U10R0z7hVNK2ndRGY7fLoYKaydgivHsvWni290eVCHhIWH?=
+ =?us-ascii?Q?fj6gTde+qZLx8LTYgRdMai1FoclnWHZO8yAePPgPqWunPG4DrSVukaf8X9n6?=
+ =?us-ascii?Q?DYg/0I3wqIG6jQIOmmbXs9SubPHDcH1WF1hOLSE7Hy3dRf+IvDMgWKaOuET9?=
+ =?us-ascii?Q?JbusGOhpfS3CJ8kWyrUTBBaPdnRRomWpMU8Kitu2VIbXk8OI2Hlfm2RWbM5s?=
+ =?us-ascii?Q?JujhlPEu7ZkTREch9AoQIqPalpmTLRPv8W1wh/DBgJAUEKI71SH2ANms1Jcb?=
+ =?us-ascii?Q?WDJPTaDSyL4oS9Gp5Ck6H8TFIja1/Yz+8m3Hta9Cvtr2DkLhjP9f+wXWBtPX?=
+ =?us-ascii?Q?qzKd6MsjnUVChWs/rkbIFmavmQV4ihnn3iDJeRdlGJUNKqx1704NBffQyOhR?=
+ =?us-ascii?Q?29hUmozuvdWwEDrCGWSXL1cpBl6HcwVVhq8WXIYNnRXXJy/5tgYQKvnwK1JZ?=
+ =?us-ascii?Q?1U3lSpBKLimstC3sBJvV89ZHN6+yqXg8?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA6PR21MB4231.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(10070799003)(1800799024)(366016)(7053199007)(38070700018);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?Ftqtr0hjVol0XtZTLpcRigqK4+sE7fL3yuqb6jgqIPTFFlixdgb7ZmVV59Y3?=
+ =?us-ascii?Q?1PUYnzfFThMV1LCfagu9yhQ9PBLf/TaorNVfZOgMQMYz+p4ABwgIK2sS/Tgh?=
+ =?us-ascii?Q?Q3BrpPsyhM0Jj3ZGc2MMmuQ/iGnuVmsJxCl9xmW1cTbUrXkMGULG2yTpvwnn?=
+ =?us-ascii?Q?iHEcft0wzUToJffr+8ZLqRgX/17onkRH6tiu2Pux6fUoyTVFSNXf6UWEVPSe?=
+ =?us-ascii?Q?mltr0/0PpqxQKwF6MUiihfXzYs7Untb3uDBSphkbfaIB1TmnXY5H0hpFccam?=
+ =?us-ascii?Q?EyucZN4NBH+nsGcw0A920oU+IlmjM0WTWDXOzejnZ19dDifjQj5DtIZiiIqg?=
+ =?us-ascii?Q?Ving2RW8/wds7nd9SxXdfgo0QE9Y8ZpPMHJzDo9w0+nHVl8k7qfApngu3hDn?=
+ =?us-ascii?Q?7oo4g3ro1bvySdv4KJNyBuQAYFPN75oM05wL1Z1DXTZ35iI28zpZ9iFvm5g7?=
+ =?us-ascii?Q?UhXruvnHn2iJY1dSiSXrH6crl5CenSMsBzENU7kkmKouGIoTmVR8LmrSguzb?=
+ =?us-ascii?Q?QMHdAqYz/7OXZyTJrzaRITBtMWI3hJIbshSaL/ByHPofpq24l/vwuX1LIYzz?=
+ =?us-ascii?Q?/QefBHyZazOq7gvUbtXOKNWfs8F/eGmYdrBd0w1gKkKPh1CsOu9lGFyDh3Tf?=
+ =?us-ascii?Q?AqCk2tTsnGas1msruYJ9HW8usOW7xaewHVXKHFyjUOA75MNUFBmOkeKU3p8r?=
+ =?us-ascii?Q?oGm6mVYNkeLdWImBemH+KlSpleN7UjB/fjAAb0AiGV4qt7ae6qStZiNd4eCD?=
+ =?us-ascii?Q?7lKIET76WaMwTbtgQcc1ybImEqm0EDZK5ARJ1pnnO0CjiqfKCMBFCF8tYJ9b?=
+ =?us-ascii?Q?PH+bTS4RCmqvU51B5j9JtiFGIYMT24jOaFaM4GdG9dPyXuURhW6dris1TjwA?=
+ =?us-ascii?Q?IL8kB0+CvxHHnaJKHe8/aDePYHUVDzcYi93GzKfEIx4NEd4XeiQjs2zEmycX?=
+ =?us-ascii?Q?siqqQASeZmRZVC9sQZjAf5gsM05Hhd1JA2Q7cQceUdL7eGzqYQCeh6K8RlQs?=
+ =?us-ascii?Q?7x1izRE7oO3HiWtNjM9TzylaE+EJfu5LVb7qs1R91ylHaNPD9ZeJ24WlUKzV?=
+ =?us-ascii?Q?GLlg7M2sgj2de2Wa4gviO1Y7dp8wILGqhri61iHNr4sT7yAGblb1T1hUxQEm?=
+ =?us-ascii?Q?/KU+IYw1EOPiYH0ZyhnDd4Snz1/9HzAhB+deXE1MWUiqac6VUcRZL2Rp8B5+?=
+ =?us-ascii?Q?Wf4gtPGkVIjngHRo14YyviZqhNT1hDX4yOOcry7geXoeR+ZnlfpmY6coRfHH?=
+ =?us-ascii?Q?6ImHzwFFRMiRSwjIKexS31MOdHM3BWxFwkBjNUuT2m+OmmEq3sZcmGlcQ5qr?=
+ =?us-ascii?Q?JJR0ai1tzTjHcKOEu3ThrD69y0lsdrjIOU1CuMeLhT74DMcGCZ3aXgleRVAE?=
+ =?us-ascii?Q?6BWkt8kzJX/gS+53LJc/dZTYlDhFlLlnLIanyAsPRkIRKZ8DoO1IML77svw+?=
+ =?us-ascii?Q?nGrRaZFptrTwZ8XOzYZdXyCX8LCJwNAz9t2Frass2nQ+b/CpykxS12XF/dky?=
+ =?us-ascii?Q?eRPdm0Zo32XywWjlVhG3eOIz4Bonyv8mFDEheUpmlJ6q13UPqndrI6UaGNzk?=
+ =?us-ascii?Q?ENUFatNi6EdFT9HCNddo1jMQ30Qnt2BMV4vNg5VwaGGd8AoiKHRUskU78F6c?=
+ =?us-ascii?Q?6i76sVL6zVSY/nusb541WoOjFAJd7BcUH5JIVPAk3Rgr?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY8PR12MB7195D93F387845E0A7314C34DCC72@CY8PR12MB7195.namprd12.prod.outlook.com>
-X-Migadu-Flow: FLOW_OUT
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA6PR21MB4231.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c4b4b409-1d56-4bfb-8e67-08dd52b72c87
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2025 20:34:43.6011
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: P2ahIzyd+xEdoeZcLn2wXw5J8+3I2PUuXWyHhFjGjYvwrVWsA6m6i7A7+ATLjkKJ+v8ND9SXgU9OdtNogqNRXg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR21MB2067
 
-On Fri, Feb 21, 2025 at 08:03:33AM +0000, Parav Pandit wrote:
-> > From: Roman Gushchin <roman.gushchin@linux.dev>
-> > Sent: Friday, February 21, 2025 10:20 AM
-> > 
-> > On Fri, Feb 21, 2025 at 04:34:25AM +0000, Parav Pandit wrote:
-> > >
-> > > > From: Roman Gushchin <roman.gushchin@linux.dev>
-> > > > Sent: Friday, February 21, 2025 9:56 AM
-> > > >
-> > > > On Fri, Feb 21, 2025 at 03:14:16AM +0000, Parav Pandit wrote:
-> > > > >
-> > > > > > From: Roman Gushchin <roman.gushchin@linux.dev>
-> > > > > > Sent: Friday, February 21, 2025 7:36 AM
-> > > > > >
-> > > > > > Commit 54747231150f ("RDMA: Introduce and use
-> > > > > > rdma_device_to_ibdev()") introduced rdma_device_to_ibdev()
-> > > > > > helper which has to be used to obtain an ib_device pointer from a
-> > device pointer.
-> > > > > >
-> > > > >
-> > > > > > hw_stat_device_show() and hw_stat_device_store() were missed.
-> > > > > >
-> > > > > > It causes a NULL pointer dereference panic on an attempt to read
-> > > > > > hw counters from a namespace, when the device structure is not
-> > > > > > embedded into the ib_device structure.
-> > > > > Do you mean net namespace other than default init_net?
-> > > > > Assuming the answer is yes, some question below.
-> > > > >
-> > > > > > In this case casting the device pointer into the ib_device
-> > > > > > pointer using container_of() is wrong.
-> > > > > > Instead, rdma_device_to_ibdev() should be used, which uses the
-> > > > > > back- reference (container_of(device, struct ib_core_device, dev))-
-> > >owner.
-> > > > > >
-> > > > > > [42021.807566] BUG: kernel NULL pointer dereference, address:
-> > > > > > 0000000000000028 [42021.814463] #PF: supervisor read access in
-> > > > > > kernel mode [42021.819549] #PF: error_code(0x0000) - not-present
-> > > > > > page [42021.824636] PGD 0 P4D 0 [42021.827145] Oops: 0000 [#1]
-> > > > > > SMP PTI [42021.830598] CPU: 82 PID: 2843922 Comm: switchto-
-> > defaul Kdump:
-> > > > loaded
-> > > > > > Tainted: G S      W I        XXX
-> > > > > > [42021.841697] Hardware name: XXX [42021.849619] RIP:
-> > > > > > 0010:hw_stat_device_show+0x1e/0x40 [ib_core] [42021.855362]
-> > > > > > Code: 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f
-> > > > > > 44 00 00 49 89 d0 4c 8b 5e 20 48 8b 8f b8 04 00 00 48 81 c7 f0
-> > > > > > fa ff ff <48> 8b
-> > > > > > 41 28 48 29 ce 48 83 c6 d0 48 c1 ee 04 69 d6 ab aa aa aa 48
-> > > > > > [42021.873931]
-> > > > > > RSP: 0018:ffff97fe90f03da0 EFLAGS: 00010287 [42021.879108] RAX:
-> > > > > > ffff9406988a8c60 RBX: ffff940e1072d438 RCX: 0000000000000000
-> > > > > > [42021.886169] RDX: ffff94085f1aa000 RSI: ffff93c6cbbdbcb0 RDI:
-> > > > > > ffff940c7517aef0 [42021.893230] RBP: ffff97fe90f03e70 R08:
-> > > > > > ffff94085f1aa000 R09: 0000000000000000 [42021.900294] R10:
-> > > > > > ffff94085f1aa000 R11: ffffffffc0775680 R12: ffffffff87ca2530
-> > > > > > [42021.907355]
-> > > > > > R13: ffff940651602840 R14: ffff93c6cbbdbcb0 R15:
-> > > > > > ffff94085f1aa000 [42021.914418] FS:  00007fda1a3b9700(0000)
-> > > > GS:ffff94453fb80000(0000)
-> > > > > > knlGS:0000000000000000 [42021.922423] CS:  0010 DS: 0000 ES:
-> > > > > > 0000
-> > > > CR0:
-> > > > > > 0000000080050033 [42021.928130] CR2: 0000000000000028 CR3:
-> > > > > > 00000042dcfb8003 CR4: 00000000003726f0 [42021.935194] DR0:
-> > > > > > 0000000000000000 DR1: 0000000000000000 DR2:
-> > 0000000000000000
-> > > > > > [42021.942257] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-> > > > > > 0000000000000400 [42021.949324] Call Trace:
-> > > > > > [42021.951756]  <TASK>
-> > > > > > [42021.953842]  [<ffffffff86c58674>] ? show_regs+0x64/0x70
-> > > > > > [42021.959030] [<ffffffff86c58468>] ? __die+0x78/0xc0
-> > > > > > [42021.963874]
-> > > > [<ffffffff86c9ef75>] ?
-> > > > > > page_fault_oops+0x2b5/0x3b0 [42021.969749]  [<ffffffff87674b92>] ?
-> > > > > > exc_page_fault+0x1a2/0x3c0 [42021.975549]  [<ffffffff87801326>] ?
-> > > > > > asm_exc_page_fault+0x26/0x30 [42021.981517]  [<ffffffffc0775680>]
-> > ?
-> > > > > > __pfx_show_hw_stats+0x10/0x10 [ib_core] [42021.988482]
-> > > > > > [<ffffffffc077564e>] ? hw_stat_device_show+0x1e/0x40 [ib_core]
-> > > > > > [42021.995438]  [<ffffffff86ac7f8e>] dev_attr_show+0x1e/0x50
-> > > > > > [42022.000803]  [<ffffffff86a3eeb1>] sysfs_kf_seq_show+0x81/0xe0
-> > > > > > [42022.006508]  [<ffffffff86a11134>] seq_read_iter+0xf4/0x410
-> > > > > > [42022.011954]  [<ffffffff869f4b2e>] vfs_read+0x16e/0x2f0
-> > > > > > [42022.017058] [<ffffffff869f50ee>] ksys_read+0x6e/0xe0
-> > > > > > [42022.022073]  [<ffffffff8766f1ca>]
-> > > > > > do_syscall_64+0x6a/0xa0 [42022.027441]  [<ffffffff8780013b>]
-> > > > > > entry_SYSCALL_64_after_hwframe+0x78/0xe2
-> > > > > >
-> > > > > > Fixes: 54747231150f ("RDMA: Introduce and use
-> > > > > > rdma_device_to_ibdev()")
-> > > > > Commit eb15c78b05bd9 eliminated hw_counters sysfs directory into
-> > > > > the
-> > > > net namespace.
-> > > > > I don't see it created in any other net ns other than init_net
-> > > > > with kernel
-> > > > 6.12+.
-> > > > >
-> > > > > I am puzzled. Can you please explain/share the reproduction steps
-> > > > > for
-> > > > generating above call trace?
-> > > >
-> > > > Hi Parav!
-> > > >
-> > > > This bug was spotted in the production on a small number of
-> > > > machines. They were running a 6.6-based kernel (with no changes
-> > > > around this code). I don't have a reproducer (and there is no simple
-> > > > way for me to reproduce the problem), but I've several core dumps
-> > > > and from inspecting them it was clear that a ib_device pointer
-> > > > obtained in hw_stat_device_show() was wrong. At the same time the
-> > > > ib_pointer obtained in the way rdma_device_to_ibdev() works was
-> > correct.
-> > > >
-> > > I just tried reproducing now on 6.12+ kernel manually.
-> > 
-> > Can you, please, share your steps? Or try the 6.6 kernel?
-> >
-> $ rdma system show to display 'netns shared'.
-> $ ip netns add foo
-> $ ip netns exec foo bash
-> $ attempt to access the hw counters from the foo net namespace.
+> Subject: [EXTERNAL] [PATCH] RDMA/mana_ib: Ensure variable err is initiali=
+zed
+>=20
+> [Some people who received this message don't often get email from
+> kees@ijzerbout.nl. Learn why this is important at
+> https://aka.ms/LearnAboutSenderIdentification ]
+>=20
+> In the function mana_ib_gd_create_dma_region if there are no dma blocks t=
+o
+> process the variable `err` remains uninitialized.
+>=20
+> Fixes: 0266a177631d ("RDMA/mana_ib: Add a driver for Microsoft Azure
+> Network Adapter")
+> Signed-off-by: Kees Bakker <kees@ijzerbout.nl>
 
-Ok, it worked well. The following commands
+I think it's an impossible condition, but the patch looks good to me.
 
-  $ ip netns add foo
-  $ ip netns exec foo bash
-  $ cat /sys/class/infiniband/mlx4_0/hw_counters/*
+Reviewed-by: Long Li <longli@microsoft.com>
 
-cause a panic on a vanilla v6.12.9 without my changes
-and work perfectly fine with my patch.
+> ---
+>  drivers/infiniband/hw/mana/main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/infiniband/hw/mana/main.c
+> b/drivers/infiniband/hw/mana/main.c
+> index 114ca8c509ce..eda9c5b971de 100644
+> --- a/drivers/infiniband/hw/mana/main.c
+> +++ b/drivers/infiniband/hw/mana/main.c
+> @@ -384,7 +384,7 @@ static int mana_ib_gd_create_dma_region(struct
+> mana_ib_dev *dev, struct ib_umem
+>         unsigned int tail =3D 0;
+>         u64 *page_addr_list;
+>         void *request_buf;
+> -       int err;
+> +       int err =3D 0;
+>=20
+>         gc =3D mdev_to_gc(dev);
+>         hwc =3D gc->hwc.driver_data;
+> --
+> 2.48.1
 
-Thanks!
 
