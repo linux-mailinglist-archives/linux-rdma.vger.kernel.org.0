@@ -1,148 +1,153 @@
-Return-Path: <linux-rdma+bounces-8002-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8003-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FB06A40764
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 11:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E233CA40779
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 11:39:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CD3119C5E4B
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 10:32:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9E2219C6751
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 10:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3687207E09;
-	Sat, 22 Feb 2025 10:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41A92080C1;
+	Sat, 22 Feb 2025 10:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cRTK47HF"
+	dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b="yYDN+E04"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from pv50p00im-ztdg10012001.me.com (pv50p00im-ztdg10012001.me.com [17.58.6.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE761FCF53
-	for <linux-rdma@vger.kernel.org>; Sat, 22 Feb 2025 10:31:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1720207E0F
+	for <linux-rdma@vger.kernel.org>; Sat, 22 Feb 2025 10:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.6.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740220317; cv=none; b=Bo4dr6nwzwx2dssyGslFNDkFADZvxaI1Kze5+guG4LEhM4ytcHldHtff573h/YDn7238pYSG8C4lH9hEgjLOj5hMPHkt2MKR9wJ/fnQFKe/UuxYteUIe7j04WtC22g9Nfcr25ng86IPX8rUWfqSIetAusRBw6o+t0QG5L6yPHKI=
+	t=1740220781; cv=none; b=aT9OqjzqLMfQUnNLNwZFJhtEmumut1VN2os0gXh9XYLH7SUvcCu6KKX7+nHdozw2JVwvq6fVICU5V/dvbZcOwT3TyWswGxElgxY8aJONIxcbWY3pD0nPrSzHwt7GhG/wHozqa6wcSDIbzr5TX+x1VbxG7aLx2sk4vjzBnYfV4cI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740220317; c=relaxed/simple;
-	bh=1nemJPfOBc+DyKKbr3dZNsvhmBGiNJGGb1PZCRzeMB0=;
+	s=arc-20240116; t=1740220781; c=relaxed/simple;
+	bh=+MM+Sj3Py0FG+77MBxvX9ur6eehoj2ClCYpV/HT4iwI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CFfz9H6tfkd74FiJEB9oQgR1i7cMnpXJ9E135tnL8e9DzhdkaWpmrBn2WBJ+SYZYnT1kpABiiWXjNKtLJTfN3r7BKuI8KxoLY1T6Y+74qJph/iIefWgfdgcQvGPOAdc/+Wd0eRyZLcPWab3zZQhhe9KCewoyk6IqQuxpV96Rly0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cRTK47HF; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b7921ac7-574d-461f-9e1d-8c3faff86edc@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740220312;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T+dSUch04llgwodXedh8z35HEIIawbLP2kHpdTFBGog=;
-	b=cRTK47HF1hpNgEyNuctu66DpJlb66ryEMai6KhWmAvoaHE7jgLBg0PF5uu4ScmuSaMlqX+
-	I+9W8T4JErFLakmx5wouNmjDbUnp/RCglDGGY3g/4occAaqnORCUYL+SYtAIurxyeTj7Es
-	Uh4+eYOX8+kXXAwmc5nX/u+DMiFcES0=
-Date: Sat, 22 Feb 2025 11:31:45 +0100
+	 In-Reply-To:Content-Type; b=k1mg1Ec8Q82HQHFGCBJ72IkFlZC2eOiMsZNFJXIB/MMGYu862+7Dqzs6n/zghuxpOEDNLU+I5ULUTW1XMNv7xtSdrkGvsiJkOybFq0DeqNTCkzFrjXkYTbjLOOv65e7IHlz3IyrU3O/r95YI+XhD3V7GoSTX5GIpIYp/LzEm+JI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com; spf=pass smtp.mailfrom=icloud.com; dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b=yYDN+E04; arc=none smtp.client-ip=17.58.6.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icloud.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+	s=1a1hai; bh=mbxficQPTzs09LWwBbFhdunStNbxz1Db5LUu+U2NlSw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:x-icloud-hme;
+	b=yYDN+E04f3AdizaUiroUuQGY41SPVVZcRqALdOpH6NFQhX3QCjWpHGcmHdHvZgXyw
+	 lY1ddO0XjuI5jwoyQLYS2xsXRa555rOew3qMgB02ajNFY2naY0JiMg3EzOtw/vDBsm
+	 rNcbU3RkjyAdmQBUnnLpBha3Hg45RvWSCLNO8oK0o5dE+ouOgYdV9O7OaddprvalcC
+	 F7e6FcKQyQxquf6C4CR09WnXr4uHh4OXsP+wDyxaBcn55oVkRsljjd3IOmoDXx5njY
+	 kMIwNWVp9xmRX9kyVkPTFuHEolnlCaw5jRp5Hj9sFk69BnUaESstfS78tB+JnoKuuq
+	 DJolzLt315u8g==
+Received: from [192.168.1.26] (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
+	by pv50p00im-ztdg10012001.me.com (Postfix) with ESMTPSA id 00694A0092;
+	Sat, 22 Feb 2025 10:38:11 +0000 (UTC)
+Message-ID: <732f9f29-f794-4491-b942-45ad01b01db5@icloud.com>
+Date: Sat, 22 Feb 2025 18:38:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] IB/cm: use rwlock for MAD agent lock
-To: Eric Dumazet <edumazet@google.com>
-Cc: Jacob Moroni <jmoroni@google.com>, jgg@ziepe.ca, leon@kernel.org,
- markzhang@nvidia.com, linux-rdma@vger.kernel.org
-References: <20250220175612.2763122-1-jmoroni@google.com>
- <838a95a2-f286-4f94-8667-2da8ba330c47@linux.dev>
- <CANn89iKSUZxfCm9rqEykZtzEAsu1F0dpooh1iih_RwRMHjpGNg@mail.gmail.com>
- <31fe1fe8-0f8f-4781-9ac1-2c0bb347d1b5@linux.dev>
- <CANn89i+52deipLpK4jPiQmM4kZk6gfhHBOt91j2vXZCd2GG8DA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <CANn89i+52deipLpK4jPiQmM4kZk6gfhHBOt91j2vXZCd2GG8DA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH *-next 00/18] Remove weird and needless 'return' for void
+ APIs
+To: Arnd Bergmann <arnd@arndb.de>, Zijun Hu <quic_zijuhu@quicinc.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Will Deacon <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Nicholas Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>,
+ "Rafael J . Wysocki" <rafael@kernel.org>, Danilo Krummrich
+ <dakr@kernel.org>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, Johannes Berg <johannes@sipsolutions.net>,
+ Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>,
+ Jiri Pirko <jiri@resnulli.us>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Lee Jones <lee@kernel.org>,
+ Thomas Graf <tgraf@suug.ch>, Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>
+Cc: Linux-Arch <linux-arch@vger.kernel.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+ Netdev <netdev@vger.kernel.org>, linux-wireless@vger.kernel.org,
+ linux-rdma@vger.kernel.org,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ linux-pm@vger.kernel.org, iommu@lists.linux.dev,
+ linux-mtd@lists.infradead.org
+References: <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com>
+ <5d662c4c-76f7-4e5c-82f3-2aeeaf9e3311@app.fastmail.com>
+Content-Language: en-US
+From: Zijun Hu <zijun_hu@icloud.com>
+In-Reply-To: <5d662c4c-76f7-4e5c-82f3-2aeeaf9e3311@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: 5BaBpFy7OfeZq74ITSrzTheUfV5JFE1_
+X-Proofpoint-ORIG-GUID: 5BaBpFy7OfeZq74ITSrzTheUfV5JFE1_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-22_04,2025-02-20_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
+ mlxlogscore=999 suspectscore=0 bulkscore=0 clxscore=1011 phishscore=0
+ malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2308100000 definitions=main-2502220085
 
-在 2025/2/22 8:38, Eric Dumazet 写道:
-> On Sat, Feb 22, 2025 at 7:21 AM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+On 2025/2/21 23:40, Arnd Bergmann wrote:
+>> This patch series is to remove weird and needless 'return' for
+>> void APIs under include/ with the following pattern:
 >>
->> 在 2025/2/21 18:32, Eric Dumazet 写道:
->>> On Fri, Feb 21, 2025 at 6:04 PM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
->>>>
->>>> On 20.02.25 18:56, Jacob Moroni wrote:
->>>>> In workloads where there are many processes establishing
->>>>> connections using RDMA CM in parallel (large scale MPI),
->>>>> there can be heavy contention for mad_agent_lock in
->>>>> cm_alloc_msg.
->>>>>
->>>>> This contention can occur while inside of a spin_lock_irq
->>>>> region, leading to interrupts being disabled for extended
->>>>> durations on many cores. Furthermore, it leads to the
->>>>> serialization of rdma_create_ah calls, which has negative
->>>>> performance impacts for NICs which are capable of processing
->>>>> multiple address handle creations in parallel.
->>>>
->>>> In the link:
->>>> https://www.cs.columbia.edu/~jae/4118-LAST/L12-interrupt-spinlock.html
->>>> "
->>>> ...
->>>> spin_lock() / spin_unlock()
->>>>
->>>> must not lose CPU while holding a spin lock, other threads will wait for
->>>> the lock for a long time
->>>>
->>>> spin_lock() prevents kernel preemption by ++preempt_count in
->>>> uniprocessor, that’s all spin_lock() does
->>>>
->>>> must NOT call any function that can potentially sleep
->>>> ex) kmalloc, copy_from_user
->>>>
->>>> hardware interrupt is ok unless the interrupt handler may try to lock
->>>> this spin lock
->>>> spin lock not recursive: same thread locking twice will deadlock
->>>>
->>>> keep the critical section as small as possible
->>>> ...
->>>> "
->>>> And from the source code, it seems that spin_lock/spin_unlock are not
->>>> related with interrupts.
->>>>
->>>> I wonder why "leading to interrupts being disabled for extended
->>>> durations on many cores" with spin_lock/spin_unlock?
->>>>
->>>> I am not against this commit. I am just obvious why
->>>> spin_lock/spin_unlock are related with "interrupts being disabled".
->>>
->>> Look at drivers/infiniband/core/cm.c
->>>
->>> spin_lock_irqsave(&cm_id_priv->lock, flags);
+>> api_header.h:
 >>
->> Thanks a lot. spin_lock_irq should be spin_lock_irqsave?
+>> void api_func_a(...);
+>>
+>> static inline void api_func_b(...)
+>> {
+>> 	return api_func_a(...);
+>> }
+>>
+>> Remove the needless 'return' in api_func_b().
+>>
+>> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+> I have no objection to the changes, but I think you should
+> describe the motivation for them beyond them being 'weird'.
 > 
-> Both spin_lock_irq and spin_lock_irqsave are masking all interrupts.
 
-Maybe the commit log should be written clearly. Thanks.
+yes. C spec such as C17 have this description about return
+statement:
 
-Zhu Yanjun
+6.8.6.4:
+A return statement with an expression shall not appear in a function
+whose return type is void. A return statement without an expression
+shall only appear in a function whose return type is void.
 
-> 
-> 
-> 
->>
->> Follow the steps of reproducer, I can not reproduce this problem on
->> KVMs. Maybe I need a powerful host.
->>
->> Anyway, read_lock should be a lighter lock than spin_lock.
->>
->> Thanks,
->> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->>
->> Zhu Yanjun
->>
->>>
->>> -> Then call cm_alloc_msg() while hard IRQ are masked.
->>
+do we need to treat below return statement as bad code style ?
+
+void api_func_a(...);
+void api_func_b(...) {
+...
+	return api_func_a(...); // return void function in void func
+...
+}
+
+> Do these 'return' statements get in the way of some other
+> work you are doing? Is there a compiler warning you want
+> to enable to ensure they don't come back? Is this all of
+> the instances in the kernel or just the ones you found by
+> inspection?
+
+actually, i find this weird return usage by reading code by accident
+in driver core firstly:
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=driver-core-testing&id=a44073c28bc6d4118891d61e31c9fa9dc4333dc0
+
+then i check folder include/ and work out this patch series.
+
+not sure if there are still such instances in current kernel tree.
 
 
