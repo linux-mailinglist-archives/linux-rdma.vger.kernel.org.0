@@ -1,97 +1,84 @@
-Return-Path: <linux-rdma+bounces-7995-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7996-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 039E2A403E3
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 01:10:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6FEFA40408
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 01:21:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E9133BCA76
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 00:10:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD5B919C20AE
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 00:21:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67AC31372;
-	Sat, 22 Feb 2025 00:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C4435949;
+	Sat, 22 Feb 2025 00:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i7DHbKB6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EbIP3G9O"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17B7BEC4;
-	Sat, 22 Feb 2025 00:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F82022331;
+	Sat, 22 Feb 2025 00:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740183005; cv=none; b=erYr7rmbhVhvBMHOke6Ci3W6jLi1C6pShYnNYTt7q+gr42eV3Bo9UOoSYppT7iW3hYjWofElBbiDixexHR3szPCqNVL1MOq9ZIGlNOK3Nsm0a01MHDET1dTFOvkZXBfKsXAto0GT1tfnTva2aozjRiTQfjqAkcKlLl2J6Ya44XE=
+	t=1740183669; cv=none; b=Z0W31Sz6BYkA35liBL65Uu0HiIww0bbIHPy2qBffrCxpyJZSpKrigflZkBI0e7tzo2iqAwy53FxQ44j3hZOoj/+Jy+Acs0U/sTFHMcyauGa2oCbHCTKU0R8QCP5DbxtA5KKca61tjBZex69ucYeYEBiLuc+b+3836VM1wsR6KSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740183005; c=relaxed/simple;
-	bh=ufqPbEn1WJmaUW/hr5sj7ngYgOO92iLyjzLVnXeK+9g=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=ta5gwhKEYUz7PevU3EJggS9ba4k1yxs9rJaGUeuyxr10lmbCnYNx8DQhVGYTvBlnQrfaTaD+4igEtAtiLiZBUdAcYqOm/0qIj+CsktLzkI7ehqC1QamccSANJSHFRwpRjPNXOBXFzR3LT42ZsRjPH8mVYf3hdurpDIC/Uaulkhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i7DHbKB6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 819CAC4CED6;
-	Sat, 22 Feb 2025 00:10:04 +0000 (UTC)
+	s=arc-20240116; t=1740183669; c=relaxed/simple;
+	bh=w5Us4co0IXc6Eag9FCitU+k7PuUF/LaAJBwnhy4KrFg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UvS/z38/8LByvGHbca4JC15NKuPqsncTF4//JlJsncBNXPX2tH5bCGxABB4p8nuHNYp+W2DUVUb0HjmGvKQs6M/knhadUKu8jS24Z6TSU0mKvXSpDKW4PnFbbP56br7VmEZafNDuZBZvPSs5LlhZoXDLYvtP5vrR0kuoZ2ob3Sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EbIP3G9O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83BDCC4CED6;
+	Sat, 22 Feb 2025 00:21:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740183004;
-	bh=ufqPbEn1WJmaUW/hr5sj7ngYgOO92iLyjzLVnXeK+9g=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=i7DHbKB6NFWygo4TyWoeniWsCe3QpzanpPp6KSZkZYZnghds+qGQkDCnaNyMk0pF4
-	 C1LzeG73BfzVjBQmtFtkyvVUSZMzyd2SqLSqVoyiJgao59IK3XOwgZvrU8yU+69Fbe
-	 OxpvUo07WUEKjl6cRSZeFj30YX7taXyju+4vKrXuxWyQvNRTH8dP9PbAYAdyTJkR6E
-	 m5m3A80pzEZECJjZL0nwxWb46Gmg/SKAKWIdp+bqhCQRRxQfPSI4KpsI266D73bthx
-	 0YPk8H4z7VKWEFwPOwfmUSyWUuQbvL6JtgduxsZ6T7NWleyTONXWwGRn/1SPpMzvUk
-	 UmVvO0l0ySymw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE070380CEEC;
-	Sat, 22 Feb 2025 00:10:36 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1740183669;
+	bh=w5Us4co0IXc6Eag9FCitU+k7PuUF/LaAJBwnhy4KrFg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=EbIP3G9O9yne8m8kctpmELSYvahL8VNQjPBG/auPmdUcMfnRVXrBClf9Lx9JhZ2Rh
+	 Vm1x++1/CvmPW//TgHcaaV4fsS/VfaaZutcmIVscrbHXs084fycNBRUcRc4KWm0ezB
+	 6izPJgz78/KUSfvfzRLqJAqeGyL9k1Bxqh0gwpbKryd+PfyWG1l4399o3ip7RybjIW
+	 ilKEynnkEeRtuFLyb4RTXmWxeawXmP/7aiUcceAM9FB2FJuJMP1Vv1J5KlTsH/IF2m
+	 yjopxA+OSZ+rB52Zyxi9oLqU8GguJencwzPQtT0QpAviuhcBFr5wy5CQRA5Gjqn5Rv
+	 3+IQkZ4SwhKlA==
+Date: Fri, 21 Feb 2025 16:21:07 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>
+Cc: Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
+ "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
+ Wen Gu <guwen@linux.alibaba.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon
+ Horman <horms@kernel.org>, Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef
+ Kadlecsik <kadlec@netfilter.org>, David Ahern <dsahern@kernel.org>,
+ linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Subject: Re: [PATCH net-next 0/3] Converge on using secs_to_jiffies() part
+ two
+Message-ID: <20250221162107.409ae333@kernel.org>
+In-Reply-To: <20250219-netdev-secs-to-jiffies-part-2-v1-0-c484cc63611b@linux.microsoft.com>
+References: <20250219-netdev-secs-to-jiffies-part-2-v1-0-c484cc63611b@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net/rds: Replace deprecated strncpy() with
- strscpy_pad()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174018303525.2244175.8423041588413050651.git-patchwork-notify@kernel.org>
-Date: Sat, 22 Feb 2025 00:10:35 +0000
-References: <20250219224730.73093-2-thorsten.blum@linux.dev>
-In-Reply-To: <20250219224730.73093-2-thorsten.blum@linux.dev>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: allison.henderson@oracle.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
- linux-hardening@vger.kernel.org, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 19 Feb 2025 23:47:31 +0100 you wrote:
-> strncpy() is deprecated for NUL-terminated destination buffers. Use
-> strscpy_pad() instead and remove the manual NUL-termination.
+On Wed, 19 Feb 2025 20:30:35 +0000 Easwar Hariharan wrote:
+> The conversion is made with Coccinelle with the secs_to_jiffies() script
+> in scripts/coccinelle/misc. Attention is paid to what the best change
+> can be rather than restricting to what the tool provides.
 > 
-> Compile-tested only.
-> 
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> 
-> [...]
+> The non-netdev patches that include the update to secs_to_jiffies.cocci to address
+> expressions are here: https://lore.kernel.org/all/20250203-converge-secs-to-jiffies-part-two-v2-0-d7058a01fd0e@linux.microsoft.com
 
-Here is the summary with links:
-  - [net-next] net/rds: Replace deprecated strncpy() with strscpy_pad()
-    https://git.kernel.org/netdev/net-next/c/c451715d78e3
+Can the secs_to_jiffies cocci check script finally run in report mode?
 
-You are awesome, thank you!
+I think that needs to be fixed first, before we start "cleaning up"
+existing code under net.
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+pw-bot: defer
 
