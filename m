@@ -1,63 +1,58 @@
-Return-Path: <linux-rdma+bounces-7996-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-7997-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6FEFA40408
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 01:21:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E3E7A40450
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 01:40:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD5B919C20AE
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 00:21:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08DC6420070
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 00:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C4435949;
-	Sat, 22 Feb 2025 00:21:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E7B4120B;
+	Sat, 22 Feb 2025 00:40:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EbIP3G9O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X1J2by09"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F82022331;
-	Sat, 22 Feb 2025 00:21:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E4144644E;
+	Sat, 22 Feb 2025 00:40:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740183669; cv=none; b=Z0W31Sz6BYkA35liBL65Uu0HiIww0bbIHPy2qBffrCxpyJZSpKrigflZkBI0e7tzo2iqAwy53FxQ44j3hZOoj/+Jy+Acs0U/sTFHMcyauGa2oCbHCTKU0R8QCP5DbxtA5KKca61tjBZex69ucYeYEBiLuc+b+3836VM1wsR6KSY=
+	t=1740184833; cv=none; b=TzdfiBYB0jdz9zAFgal9a7RJJBxhtAgyX24LPkBuaaShimq4s/8vLG7kVbCqmTW8P/o50Id4gc26yOlxsUvjDh/duoZeGgfObulbP7K3JaG7U6srMrdcN268S4PHE+JK51js3eCQCblnXNaAFeMu2+V6DA2Z1ae6yU5uURBKO4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740183669; c=relaxed/simple;
-	bh=w5Us4co0IXc6Eag9FCitU+k7PuUF/LaAJBwnhy4KrFg=;
+	s=arc-20240116; t=1740184833; c=relaxed/simple;
+	bh=1uhGdL1pKC7eKDLGos5wy9wNRiP6RsMLiAQJ9lOSo7Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UvS/z38/8LByvGHbca4JC15NKuPqsncTF4//JlJsncBNXPX2tH5bCGxABB4p8nuHNYp+W2DUVUb0HjmGvKQs6M/knhadUKu8jS24Z6TSU0mKvXSpDKW4PnFbbP56br7VmEZafNDuZBZvPSs5LlhZoXDLYvtP5vrR0kuoZ2ob3Sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EbIP3G9O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83BDCC4CED6;
-	Sat, 22 Feb 2025 00:21:08 +0000 (UTC)
+	 MIME-Version:Content-Type; b=m3qp+COFqpy/hbcNeB/v/+vrZWksUcTpkYXpbhgnZlAQ6oz3mnBgGuE2C6cgv+omen4KYXHGpy4GvnR/3h1Lja4Tyon7kuue8pOUV7w6/QZNR9jkYbQnqjUQSbeUNzsu56YelSIbkj6clp+ACvRSj1hb4/G+qqLJaXiHxHfjDWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X1J2by09; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6A41C4CED6;
+	Sat, 22 Feb 2025 00:40:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740183669;
-	bh=w5Us4co0IXc6Eag9FCitU+k7PuUF/LaAJBwnhy4KrFg=;
+	s=k20201202; t=1740184833;
+	bh=1uhGdL1pKC7eKDLGos5wy9wNRiP6RsMLiAQJ9lOSo7Q=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EbIP3G9O9yne8m8kctpmELSYvahL8VNQjPBG/auPmdUcMfnRVXrBClf9Lx9JhZ2Rh
-	 Vm1x++1/CvmPW//TgHcaaV4fsS/VfaaZutcmIVscrbHXs084fycNBRUcRc4KWm0ezB
-	 6izPJgz78/KUSfvfzRLqJAqeGyL9k1Bxqh0gwpbKryd+PfyWG1l4399o3ip7RybjIW
-	 ilKEynnkEeRtuFLyb4RTXmWxeawXmP/7aiUcceAM9FB2FJuJMP1Vv1J5KlTsH/IF2m
-	 yjopxA+OSZ+rB52Zyxi9oLqU8GguJencwzPQtT0QpAviuhcBFr5wy5CQRA5Gjqn5Rv
-	 3+IQkZ4SwhKlA==
-Date: Fri, 21 Feb 2025 16:21:07 -0800
+	b=X1J2by09HXI0PGm6JH1Ho1fKg41i3c53pm89BFC4yv+NyC+E53qo1iw4Ncc+xtTB/
+	 1yB+f2TGC36nrC5xhIOhP8ivD581ed90Xyvec4rwYuF+rePwYLX2BB6YEVQSCohdDV
+	 NBUwGHWaGZCfXp37A9qu89OsvZdg4Vsv/rhuBYaZ6KqtjtUp4w38AORNKklvshvfxZ
+	 n/XkMvLAnB6mk9eBBsTruECKmwNeZpaXd+Qj9SMRXZP0F23AggXPPmprVvP2n1LnMF
+	 eNUGvj9cvAeGL4OR5txHLl8H2had5uxXuCMlYavANIetNB5iuymrRhw7q4zYcTvnNP
+	 6EfpzUqwOFytg==
+Date: Fri, 21 Feb 2025 16:40:32 -0800
 From: Jakub Kicinski <kuba@kernel.org>
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
- "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
- Wen Gu <guwen@linux.alibaba.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon
- Horman <horms@kernel.org>, Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef
- Kadlecsik <kadlec@netfilter.org>, David Ahern <dsahern@kernel.org>,
- linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [PATCH net-next 0/3] Converge on using secs_to_jiffies() part
- two
-Message-ID: <20250221162107.409ae333@kernel.org>
-In-Reply-To: <20250219-netdev-secs-to-jiffies-part-2-v1-0-c484cc63611b@linux.microsoft.com>
-References: <20250219-netdev-secs-to-jiffies-part-2-v1-0-c484cc63611b@linux.microsoft.com>
+To: Selvin Xavier <selvin.xavier@broadcom.com>
+Cc: leon@kernel.org, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+ andrew.gospodarek@broadcom.com, kalesh-anakkur.purayil@broadcom.com,
+ netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ abeni@redhat.com, horms@kernel.org, michael.chan@broadcom.com
+Subject: Re: [PATCH rdma-next 5/9] bnxt_en: Introduce ULP coredump callbacks
+Message-ID: <20250221164032.2cc01348@kernel.org>
+In-Reply-To: <1740076496-14227-6-git-send-email-selvin.xavier@broadcom.com>
+References: <1740076496-14227-1-git-send-email-selvin.xavier@broadcom.com>
+	<1740076496-14227-6-git-send-email-selvin.xavier@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -67,18 +62,17 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 19 Feb 2025 20:30:35 +0000 Easwar Hariharan wrote:
-> The conversion is made with Coccinelle with the secs_to_jiffies() script
-> in scripts/coccinelle/misc. Attention is paid to what the best change
-> can be rather than restricting to what the tool provides.
+On Thu, 20 Feb 2025 10:34:52 -0800 Selvin Xavier wrote:
+> From: Michael Chan <michael.chan@broadcom.com>
 > 
-> The non-netdev patches that include the update to secs_to_jiffies.cocci to address
-> expressions are here: https://lore.kernel.org/all/20250203-converge-secs-to-jiffies-part-two-v2-0-d7058a01fd0e@linux.microsoft.com
+> Add .ulp_get_dump_info() and .ulp_get_dump_data() callbacks to
+> struct bnxt_ulp_ops.  When ethtool -w is invoked to get the coredump,
+> these 2 callbacks to the bnxt_re auxbus driver will be called if
+> they are populated by the bnxt_re driver.  The first callback gets
+> the number of coredump segments and the size of each coredump
+> segment.  The 2nd callback copies the coredump data for each segment.
 
-Can the secs_to_jiffies cocci check script finally run in report mode?
-
-I think that needs to be fixed first, before we start "cleaning up"
-existing code under net.
+Acked-by: Jakub Kicinski <kuba@kernel.org>
 -- 
-pw-bot: defer
+pw-bot: nap
 
