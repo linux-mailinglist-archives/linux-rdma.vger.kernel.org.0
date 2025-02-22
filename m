@@ -1,126 +1,141 @@
-Return-Path: <linux-rdma+bounces-8005-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8006-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDC88A407C5
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 12:01:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 217CAA4098B
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 16:41:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA05E425687
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 11:01:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C36A703D66
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Feb 2025 15:41:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CAFB20A5C2;
-	Sat, 22 Feb 2025 11:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4091A19E83E;
+	Sat, 22 Feb 2025 15:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b="HhStBCZN"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="RmXkZKyJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from pv50p00im-ztdg10021801.me.com (pv50p00im-ztdg10021801.me.com [17.58.6.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C2220767B
-	for <linux-rdma@vger.kernel.org>; Sat, 22 Feb 2025 11:00:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.6.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EABC13224
+	for <linux-rdma@vger.kernel.org>; Sat, 22 Feb 2025 15:41:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740222055; cv=none; b=gFx+Z68FAE9yv2sfU6gKclmIOtRzQZ9TGSVmKDSxSVBztmL2ZXtfJt3gf8yO13U8Y24BG5kNdHZV9oFRpWHn9lMQM8G8F83VvP/MjRQBaCVR/nR7npZwSeWHlrbr3zln5boDRtQkDFWTAWUUMzTtxwzMID4fgD19X11JX8EnaBg=
+	t=1740238872; cv=none; b=lTxp8kMUWkTFo8KXP9nRNviWVMUoBQ5gxB+86PzP7RwGlu6DTVO1llHzKAP0Ato2+yzStoJsPvRQAJfmfKoQ2/NnKRRy3Y0q3FBnv4lzhUmedkmd/jciCajHB1P+5MRxhPEqUKSQ8xxSWIQQbEiEg5k3X3Ksd+1s48fYN9Q3xMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740222055; c=relaxed/simple;
-	bh=s5PMq4K2vUmCJ7mWo835mcJtSukLKOG4lecc2nZmroI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qTjnA98nYQvX3BVm8uaLrFNPv06CcThv6gZjXsemvJSt5Rixsbd/g6zfCduQPa+EdyqYojzqD1InRC1EGhN3+NAVyqyeX9exR85IdmM23HLnQm/w7ykjwMR296q2jz/47NV7qtAe96vJFEPvaIicpvmXlrA/TUZ5r9YZOLj+LJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com; spf=pass smtp.mailfrom=icloud.com; dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b=HhStBCZN; arc=none smtp.client-ip=17.58.6.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icloud.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-	s=1a1hai; bh=UhO/oKP5iMw5fHjgaGRWOOpphrslB5BPutH1Bqw2Dkg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:x-icloud-hme;
-	b=HhStBCZN3rVcd9EC6oBRvG6abifGqlnPtcBVpdm6i/PmmBuQa0QJPHyLR1FLsYmXk
-	 MvvGwxnVyjgIAQUePoznfvb7VEqM2/2CzwoYBfpUQAlvZbnYih/hmf83Ex5BvNFrdQ
-	 PbfYoJ6GNXR9EuX2Q1IkypReed+wxDFG/c9O7uFQFsKRQdeX9qYk5H4Dvd9QURFidN
-	 MaOu/D4ITgbWB/BaBzseWqBas93vN7EeBu7C7tTfSVogYryn4akeV915HBecUZbsev
-	 T9vaSLH2CkX0yMcrX7poOXKdwAfoNE9h2RgWTSTlng3BI8SOCu2qBQQAo94LS+WVDT
-	 77yqa5YwGC84Q==
-Received: from [192.168.1.26] (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-	by pv50p00im-ztdg10021801.me.com (Postfix) with ESMTPSA id C1B66201011A;
-	Sat, 22 Feb 2025 11:00:33 +0000 (UTC)
-Message-ID: <8f36be7c-6052-4c5d-85ff-0eed27cf1456@icloud.com>
-Date: Sat, 22 Feb 2025 19:00:28 +0800
+	s=arc-20240116; t=1740238872; c=relaxed/simple;
+	bh=CxnJ+cLDrs1GWdACj/sh5n+0ega05QWaoQOM1Z7fzaI=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=j4exlGJrjJpBtdSaC4yisOkYRixu+UZNzNDpGumC0d2JjZt7r75GuJ+k6MUUdfldTDJ+t/7oq58b389hDYl7uWuy1KzawF8GPHoHYdbDORq666rHE2mtLE6hIoxOL6PIYM97ujCcKZtr1g0BB2kQoXdi5UW7kN6RToFN4mWygwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=RmXkZKyJ; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-220bfdfb3f4so70238295ad.2
+        for <linux-rdma@vger.kernel.org>; Sat, 22 Feb 2025 07:41:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1740238868; x=1740843668; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sF/1GgURP63gEPCw/gqMqwGGh9udgVEoAQeBeUkEpl8=;
+        b=RmXkZKyJsRRQNEIKttXDIw4ZwY0ze/438adNjZSgHTMQyieG3Ejuh2F8wiPVxAPhZg
+         2UwrZPqRYZw8JKHZUd4PhQOE380hQ5wrB8qyLAtTfcDLOF+h+LXUu71uq/wqri64Wpuk
+         h0WgZT7V3D0r5mFoPFTYCjefSjSuRmwGF9DU4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740238868; x=1740843668;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sF/1GgURP63gEPCw/gqMqwGGh9udgVEoAQeBeUkEpl8=;
+        b=jfEmpLpElMQ+XX8ZpFhGnOsVQkNoby2nyIZbCJGg9V3aTzs7U93GXtL2n2blzJ9sQo
+         r5GhB8ZwDtHmSh00/b11rOVw90qjzt3FER1ETn++hWAEAh/ZnebTl3AfO9HDud1YOrDU
+         6bBSDW+Z8l+YXF5wXH/66ZMr/YX+gCkfCNBHEkTLVVDIojle2qy0CX7juiurt5BhXSfZ
+         u1I+aRe92N7COsz4KzhA+u0+CsgXt6FuPDaOxpjc6NZyiWBt5tUwMwcxwBcSFPMtNWWn
+         XCd+RrxZgK9U1cGXnh2yqpXFN6zZz2k+hTRg5sHu8dIexHcQPDNVnBD/7Id/pUOgjYog
+         PoYg==
+X-Gm-Message-State: AOJu0Yy64XFUUeKKXA7XBoL02HQCvyj/ZYPXAOrx6nYbCshQDQu+1nU5
+	ZgbwaYrVsnB0pEApNUBDnE/yADZZbPx+OIPNKX2dtJDsvioXtMxdDNW3ke/03Q==
+X-Gm-Gg: ASbGncs8KIFNcwAxIm0grKVBRPUXu9dfepfUNSe5LP+Yic5rqILH0+TcmS18kllX/zN
+	4HXQGzo0GXKMXeUOr5mbOt5vn2+Zz4I+ioI3HIXkjlyxdIx6kJTVspYrUh4ffirPEuviWSNowZT
+	+FVsl7lpvGys3wCVOH1844/mHGkWWsKl/ek5NEJ7CzspGfE+DHEWAdBL4egIF6LpwtLUuJXOP1S
+	zVPqUfLG8qtWnTE3XSqD1LlryudOnXblRWatyT5Cog4jFb7LXX1vUjHwFw8cDEyHUxS2NuZyA0y
+	UYxlqSxFCb9Qf8Oreehle7+dFAwVzd82Er0zi+pJFbqXm9647eS9UG6ilioa/tU/H3RgGZDxGPO
+	W6cbrlA==
+X-Google-Smtp-Source: AGHT+IGDpeSEEtT7mfcqtsOU5yefyBhMVdmKytaGWTqDGk35NZrYUWgoAg1Z65BQpIFYI3gEvVuk5g==
+X-Received: by 2002:a05:6a00:c92:b0:732:1840:8382 with SMTP id d2e1a72fcca58-73426ae9b30mr9960144b3a.0.1740238868145;
+        Sat, 22 Feb 2025 07:41:08 -0800 (PST)
+Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7340751558dsm6723327b3a.162.2025.02.22.07.41.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 22 Feb 2025 07:41:07 -0800 (PST)
+From: Selvin Xavier <selvin.xavier@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com,
+	Kashyap Desai <kashyap.desai@broadcom.com>,
+	Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH rdma-rc] RDMA/bnxt_re : Fix the page details for the srq created by Kernel consumers
+Date: Sat, 22 Feb 2025 07:20:21 -0800
+Message-Id: <1740237621-29291-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH *-next 01/18] mm/mmu_gather: Remove needless return in
- void API tlb_remove_page()
-To: Peter Zijlstra <peterz@infradead.org>, Zijun Hu <quic_zijuhu@quicinc.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Will Deacon <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Nick Piggin <npiggin@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Danilo Krummrich <dakr@kernel.org>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Johannes Berg <johannes@sipsolutions.net>,
- Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>,
- Jiri Pirko <jiri@resnulli.us>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Lee Jones <lee@kernel.org>,
- Thomas Graf <tgraf@suug.ch>, Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Robin Murphy <robin.murphy@arm.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-arch@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-pm@vger.kernel.org, iommu@lists.linux.dev,
- linux-mtd@lists.infradead.org
-References: <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com>
- <20250221-rmv_return-v1-1-cc8dff275827@quicinc.com>
- <20250221200137.GH7373@noisy.programming.kicks-ass.net>
-Content-Language: en-US
-From: Zijun Hu <zijun_hu@icloud.com>
-In-Reply-To: <20250221200137.GH7373@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: xYMDZO87E-9u-9wzotp6QmCV6S-rGtqV
-X-Proofpoint-ORIG-GUID: xYMDZO87E-9u-9wzotp6QmCV6S-rGtqV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-22_04,2025-02-20_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 adultscore=0
- suspectscore=0 spamscore=0 malwarescore=0 phishscore=0 mlxlogscore=885
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2502220088
 
-On 2025/2/22 04:01, Peter Zijlstra wrote:
->>   */
->>  static inline void tlb_remove_page(struct mmu_gather *tlb, struct page *page)
->>  {
->> -	return tlb_remove_page_size(tlb, page, PAGE_SIZE);
->> +	tlb_remove_page_size(tlb, page, PAGE_SIZE);
->>  }
-> So I don't mind removing it, but note that that return enforces
-> tlb_remove_page_size() has void return type.
->
+From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-tlb_remove_page_size() is void function already. (^^)
+While using nvme target with use_srq on, below kernel panic is noticed.
 
-> It might not be your preferred coding style, but it is not completely
-> pointless.
+[  549.698111] bnxt_en 0000:41:00.0 enp65s0np0: FEC autoneg off encoding: Clause 91 RS(544,514)
+[  566.393619] Oops: divide error: 0000 [#1] PREEMPT SMP NOPTI
+..
+[  566.393799]  <TASK>
+[  566.393807]  ? __die_body+0x1a/0x60
+[  566.393823]  ? die+0x38/0x60
+[  566.393835]  ? do_trap+0xe4/0x110
+[  566.393847]  ? bnxt_qplib_alloc_init_hwq+0x1d4/0x580 [bnxt_re]
+[  566.393867]  ? bnxt_qplib_alloc_init_hwq+0x1d4/0x580 [bnxt_re]
+[  566.393881]  ? do_error_trap+0x7c/0x120
+[  566.393890]  ? bnxt_qplib_alloc_init_hwq+0x1d4/0x580 [bnxt_re]
+[  566.393911]  ? exc_divide_error+0x34/0x50
+[  566.393923]  ? bnxt_qplib_alloc_init_hwq+0x1d4/0x580 [bnxt_re]
+[  566.393939]  ? asm_exc_divide_error+0x16/0x20
+[  566.393966]  ? bnxt_qplib_alloc_init_hwq+0x1d4/0x580 [bnxt_re]
+[  566.393997]  bnxt_qplib_create_srq+0xc9/0x340 [bnxt_re]
+[  566.394040]  bnxt_re_create_srq+0x335/0x3b0 [bnxt_re]
+[  566.394057]  ? srso_return_thunk+0x5/0x5f
+[  566.394068]  ? __init_swait_queue_head+0x4a/0x60
+[  566.394090]  ib_create_srq_user+0xa7/0x150 [ib_core]
+[  566.394147]  nvmet_rdma_queue_connect+0x7d0/0xbe0 [nvmet_rdma]
+[  566.394174]  ? lock_release+0x22c/0x3f0
+[  566.394187]  ? srso_return_thunk+0x5/0x5f
 
-based on below C spec such as C17 description. i guess language C does
-not like this usage "return void function in void function";
+Page size and shift info is set only for the user space SRQs.
+Set page size and page shift for kernel space SRQs also.
 
-C spec such as C17 have this description about return
-statement:
-6.8.6.4:
-A return statement with an expression shall not appear in a function
-whose return type is void. A return statement without an expression
-shall only appear in a function whose return type is void.
+Fixes: 0c4dcd602817 ("RDMA/bnxt_re: Refactor hardware queue memory allocation")
+Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 2de101d..6f5db32 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -1870,6 +1870,8 @@ int bnxt_re_create_srq(struct ib_srq *ib_srq,
+ 	srq->qplib_srq.threshold = srq_init_attr->attr.srq_limit;
+ 	srq->srq_limit = srq_init_attr->attr.srq_limit;
+ 	srq->qplib_srq.eventq_hw_ring_id = rdev->nqr->nq[0].ring_id;
++	srq->qplib_srq.sg_info.pgsize = PAGE_SIZE;
++	srq->qplib_srq.sg_info.pgshft = PAGE_SHIFT;
+ 	nq = &rdev->nqr->nq[0];
+ 
+ 	if (udata) {
+-- 
+2.5.5
+
 
