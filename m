@@ -1,89 +1,126 @@
-Return-Path: <linux-rdma+bounces-8024-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8025-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 853F8A40F1E
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Feb 2025 14:35:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAA5CA411F9
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Feb 2025 22:56:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A2A518982E2
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Feb 2025 13:35:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C6011703ED
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Feb 2025 21:56:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295D720764C;
-	Sun, 23 Feb 2025 13:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8255A1FF7D0;
+	Sun, 23 Feb 2025 21:55:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O3lnN2Co"
+	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="Wjpcj9RH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4F1C204F92;
-	Sun, 23 Feb 2025 13:35:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EF9E2AF11;
+	Sun, 23 Feb 2025 21:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740317701; cv=none; b=MXPhgMh1Ma0IIy5KDQxVB7OZpRaekseqUjclaKMbiQzZJ4M/kHjvgWBMTGf9JX8fnjEkWyEw8dK/yweHacbnEA5eJk0nuI1pi/qipPpLXDRoYPLCxg+9E5FI7Yu6B+0aLPa1F6PJPIUUd7Wkyb55odJBGbxsQrtLbz8QKHV7ys8=
+	t=1740347755; cv=none; b=ljJRVmr/XVljg2eB6QEV4ORA2Z5j/fkO18g+9AThqq4xJIy+ovLiAgf6fl5Saon6Ou6WKo0wizFcT2SMxQL30FANhlbgJIy8ftDHQs5DOWgaQknLr1W+juHSUCoF27WVp3JO0MBX40CWxdnyvfpQAYVGEaCwhjEMaU0kLHvX698=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740317701; c=relaxed/simple;
-	bh=74Cc+0R0bITAwz4r/9tbjxRHeduVzR4HH5WQ0M1yIv8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qwiXtzNwYnt/px8wLAvyfM29+HyeyVXiae0cSyy0Ywu4RwbSuYkORhjYIO0xA+/iDw+uieigCAplTU1ov3HpJrDMa1DJnr8vFXxrZNi0Yjkn04rBj6K8HPyXhCOBleW3pQPcxPcac+uHXr/YgDaQlyG/wVuCTjIQaGj2H2RrjJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O3lnN2Co; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 734B6C4CEDD;
-	Sun, 23 Feb 2025 13:35:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740317701;
-	bh=74Cc+0R0bITAwz4r/9tbjxRHeduVzR4HH5WQ0M1yIv8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O3lnN2CouiVwA2zmHrG/VZU0Z+5lmKLmzUBSaIPpiGxYDvcW2mwQmE15xLJV60zJB
-	 xuyKYk892LGBH7TkfQnCjMB0MfbtAlFD8Ec2Vn88NCx9jv/zSFu6J2jCyArWreaZXd
-	 m+9O8s/oIiUOIJKH53DfdA3Zr0fjhsHl40Sr0t+ePAc24/XrrbiGkAWmablG99fruY
-	 DR0Rozwf+tVKpYo28aOJfkliwRR3NH6F8h9xQwVG87/ZpieDk7Y1WTks8UoGUBm/2l
-	 m5fY9x1ujahS9cGO5s1L07VFsbEa0MSDiQJJpM1fqF0Sj7MgPwmo7Eh0RgHL/cUnRn
-	 GY7MpErmIZ2vw==
-Date: Sun, 23 Feb 2025 15:34:56 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com, kalesh-anakkur.purayil@broadcom.com,
-	netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, abeni@redhat.com, horms@kernel.org,
-	michael.chan@broadcom.com
-Subject: Re: [PATCH rdma-next 0/9] RDMA/bnxt_re: Driver Debug Enhancements
-Message-ID: <20250223133456.GA53094@unreal>
-References: <1740076496-14227-1-git-send-email-selvin.xavier@broadcom.com>
+	s=arc-20240116; t=1740347755; c=relaxed/simple;
+	bh=tX0kc8X39jQdhSp33iWrQ3o4fa8zDm23gPF0qSCxCis=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lH1iYcG6bzCOhZzS6NkgCEu+8z5rrNBoNWsZQbyeQwdT18zZDokl2+sSSOSexb0mrFvZdN70xKPUNdTKE6PZOTxieXkH5zsGSUo4G71yN5yq0s5mGI75FUFar5qFWVTzEJz9iHM+U0bypksEQzfdVRulVW605RWQ07gx3SF3yG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=Wjpcj9RH; arc=none smtp.client-ip=46.235.229.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+	; s=bytemarkmx; h=MIME-Version:Message-ID:Date:Subject:From:Content-Type:From
+	:Subject; bh=TmzNnu9QaYnb7f5vbT+kfkDJykW1ytVc4VptMubFhK4=; b=Wjpcj9RHKpa/JK4F
+	UqiWn6ghsiQPbJJycoT2igtU2cTyv/XwdfJ9I0TwXqV/ThBUlc2SecISL9A0V/JhH8EdzvrpzVIHG
+	cN5eH78Solz11u8aFLV8EIlK+C0jlvHg8tdUgVko5FQYZnyqAEbqrZUOgGEiPKtzYqlMHvhnyN0Yl
+	K4US3UfD0L4E1iVlNuroNgvNLLnpyzf/VXh4PGSKVTo5bf5iewFZUV+srgxZmU8wp0CVxTRZgJo+T
+	WUSHqwHakEpboUMlHRflnS1ts/rogyrx7yStOu2GjuCgKFhpeSEtUKByVRkgBD84UcxXaR3u7W3+a
+	nI+H62uTIWQX3V7Q/A==;
+Received: from localhost ([127.0.0.1] helo=dalek.home.treblig.org)
+	by mx.treblig.org with esmtp (Exim 4.96)
+	(envelope-from <linux@treblig.org>)
+	id 1tmJwv-000DvC-34;
+	Sun, 23 Feb 2025 21:55:45 +0000
+From: linux@treblig.org
+To: dennis.dalessandro@cornelisnetworks.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Dr. David Alan Gilbert" <linux@treblig.org>
+Subject: [PATCH] RDMA/hfi1: Remove unused one_qsfp_write
+Date: Sun, 23 Feb 2025 21:55:43 +0000
+Message-ID: <20250223215543.153312-1-linux@treblig.org>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1740076496-14227-1-git-send-email-selvin.xavier@broadcom.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 20, 2025 at 10:34:47AM -0800, Selvin Xavier wrote:
-> For debugging issues in the field, we need to track some of
-> the resources destroyed in the past. This is primarily required
-> for tracking certain QPs that encountered errors, leading to
-> application exits. A framework has been implemented to
-> save this information and retrieve it during coredump collection.
-> 
-> The Broadcom bnxt L2 driver supports collecting driver dumps
-> using the ethtool -w option. This feature now also supports
-> collecting coredump information from the bnxt_re auxiliary driver.
-> Two new callbacks have been implemented to exchange dump
-> information supported by the auxbus bnxt_re driver.
-> 
-> The bnxt_re driver caches certain hardware information before
-> resources are destroyed in the HW.
+From: "Dr. David Alan Gilbert" <linux@treblig.org>
 
-Unfortunately, no. The idea that you will cache kernel objects and they
-live beyond their HW counterpart doesn't fit RDMA object model.
+The last use of one_qsfp_write() was removed in 2016's
+commit 145dd2b39958 ("IB/hfi1: Always turn on CDRs for low power QSFP
+modules")
 
-I'm aware that you are not keeping objects itself, but their shadow
-copy. So if you want, your FW can store these failed objects and you
-will retrieve them through existing netdev side (ethtool -w ...).
+Remove it.
 
-Thanks
+Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+---
+ drivers/infiniband/hw/hfi1/qsfp.c | 20 --------------------
+ drivers/infiniband/hw/hfi1/qsfp.h |  2 --
+ 2 files changed, 22 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/qsfp.c b/drivers/infiniband/hw/hfi1/qsfp.c
+index 52cce1c8b76a..3b7842a7f634 100644
+--- a/drivers/infiniband/hw/hfi1/qsfp.c
++++ b/drivers/infiniband/hw/hfi1/qsfp.c
+@@ -404,26 +404,6 @@ int qsfp_write(struct hfi1_pportdata *ppd, u32 target, int addr, void *bp,
+ 	return count;
+ }
+ 
+-/*
+- * Perform a stand-alone single QSFP write.  Acquire the resource, do the
+- * write, then release the resource.
+- */
+-int one_qsfp_write(struct hfi1_pportdata *ppd, u32 target, int addr, void *bp,
+-		   int len)
+-{
+-	struct hfi1_devdata *dd = ppd->dd;
+-	u32 resource = qsfp_resource(dd);
+-	int ret;
+-
+-	ret = acquire_chip_resource(dd, resource, QSFP_WAIT);
+-	if (ret)
+-		return ret;
+-	ret = qsfp_write(ppd, target, addr, bp, len);
+-	release_chip_resource(dd, resource);
+-
+-	return ret;
+-}
+-
+ /*
+  * Access page n, offset m of QSFP memory as defined by SFF 8636
+  * by reading @addr = ((256 * n) + m)
+diff --git a/drivers/infiniband/hw/hfi1/qsfp.h b/drivers/infiniband/hw/hfi1/qsfp.h
+index df1389bad86b..5c59d53fcb63 100644
+--- a/drivers/infiniband/hw/hfi1/qsfp.h
++++ b/drivers/infiniband/hw/hfi1/qsfp.h
+@@ -195,8 +195,6 @@ int qsfp_write(struct hfi1_pportdata *ppd, u32 target, int addr, void *bp,
+ 	       int len);
+ int qsfp_read(struct hfi1_pportdata *ppd, u32 target, int addr, void *bp,
+ 	      int len);
+-int one_qsfp_write(struct hfi1_pportdata *ppd, u32 target, int addr, void *bp,
+-		   int len);
+ int one_qsfp_read(struct hfi1_pportdata *ppd, u32 target, int addr, void *bp,
+ 		  int len);
+ struct hfi1_asic_data;
+-- 
+2.48.1
+
 
