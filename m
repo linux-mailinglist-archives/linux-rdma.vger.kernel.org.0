@@ -1,161 +1,263 @@
-Return-Path: <linux-rdma+bounces-8027-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8028-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12EA9A4158A
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2025 07:38:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 04CAEA416AF
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2025 08:51:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20414188EA2B
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2025 06:37:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51DB01893E1E
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2025 07:51:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4BE1D63C3;
-	Mon, 24 Feb 2025 06:37:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374E11D8E01;
+	Mon, 24 Feb 2025 07:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OC/RdXQH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934991AB531;
-	Mon, 24 Feb 2025 06:37:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F3218B464
+	for <linux-rdma@vger.kernel.org>; Mon, 24 Feb 2025 07:51:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740379038; cv=none; b=naKswtc94TFUl/5w0PhCFjzcCwAvXWAi1crFLUo5vRoi2WHI/UhCC2SZ+ATC1bRkgRvBv0IDUGVq6Mu8ue6NzpCJL/dGt9H8M+I9P0VwzjarAO9o2EZ88on8E6PNFmZG4WxoMxp5c44JhqAOjz/Jfg22+IX5Nza5P1cpbvM2Jog=
+	t=1740383477; cv=none; b=W4BtuBu7MgInEpTmBJV67VUD2THTKpb6J6jubJy7fXvQyb1Rfy0I8B6mkHgGc/F9uuLlbyWFDu1IrNddisGfC2QXQRmpwh5V6U1peV7ZghYwb5xoyB/YicNVleVYdPseuXao08TZvgbJD+4YOsSHxnJTMRkAu+3L1ElVEkG3S24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740379038; c=relaxed/simple;
-	bh=Jc+2WNUmjLGHyuFYszJFy8/ImzfdaZ4fJ76+p/vwYoc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kqb845et3U3BmdG+RyCM+3o5iU3wn3mnbI/XJCEnb0WUE1yuZmH59KDQcrmT5v2x4eNAMO36/7P2glvI3EIZURw1nx0pivF10uW/VHCJh0ptLVqV3ETg9nMF6tLA8XRWVtb4coqZYDyROeQbeaZ0lbGSjIxo9x3ZwP7T6aTy+vA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.166.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51O5C2RX002897;
-	Sun, 23 Feb 2025 22:36:55 -0800
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 44yar7hp93-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Sun, 23 Feb 2025 22:36:54 -0800 (PST)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.43; Sun, 23 Feb 2025 22:36:54 -0800
-Received: from pek-lpg-core1.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.43 via Frontend Transport; Sun, 23 Feb 2025 22:36:50 -0800
-From: <jianqi.ren.cn@windriver.com>
-To: <stable@vger.kernel.org>
-CC: <cratiu@nvidia.com>, <saeedm@nvidia.com>, <leon@kernel.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <roid@nvidia.com>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dtatulea@nvidia.com>, <tariqt@nvidia.com>, <zhe.he@windriver.com>
-Subject: [PATCH 6.6.y] net/mlx5e: Don't call cleanup on profile rollback failure
-Date: Mon, 24 Feb 2025 14:36:50 +0800
-Message-ID: <20250224063650.2397912-1-jianqi.ren.cn@windriver.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1740383477; c=relaxed/simple;
+	bh=mIw+aNu4XNEcrrnnHjrKudGrTc8ITon7JNLYHgb3VL8=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=QmhlVUEqqsdJx0H150anUMtqupU/6Uq8xnQdbF7aCbEycDZhVln7IUoYg13NyPuuzM91d6hn8ND4W37ZfkjXZ2w5+g3rjvsgl/mIH/CjyPKY3ydTsO1U98wsiDIEITVPz4OgdZ8Ct/6zjr+EkHWKdu+kuBBMsWhlzi64iT7xH5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OC/RdXQH; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1740383475; x=1771919475;
+  h=date:from:to:cc:subject:message-id;
+  bh=mIw+aNu4XNEcrrnnHjrKudGrTc8ITon7JNLYHgb3VL8=;
+  b=OC/RdXQHLc3Dwy+GQQY+KN1s4+R9aao+skektIeJdyoovTKXnTdWo+P1
+   QEiVwIZD8eJV01QkA/UUjD8uAAqZwa3npWuC6nfBYNg0uyc/fR8EfYLug
+   HbOmlmjOmp1xQRMq57vW/IwAmjHY0vQDjzVqLLXJ2Zp/MxoHybbSsboIj
+   3GMWEostLK4SMAxTuIA1rkp2zFz4lfjZC9SXl5oj0wHS5BO6CcLQ1hgqK
+   a8Pkr2Jey8nUFRM7uezExRokCop0LqgEJJd/RbCB0Tlzt6ZPQ/mjVP5t/
+   CkBqq/Reoh6QzQDHn5HxAGddmYNcmmOuk4T2vekIrTUNkMAUr4foVQbiR
+   Q==;
+X-CSE-ConnectionGUID: IaKqv7ubSGOojciKIdGWtQ==
+X-CSE-MsgGUID: 54B71LNWRj6D6yI/WQld8A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11354"; a="58544376"
+X-IronPort-AV: E=Sophos;i="6.13,309,1732608000"; 
+   d="scan'208";a="58544376"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2025 23:51:14 -0800
+X-CSE-ConnectionGUID: /lIk80lyRMCJ+ZQMB3Dy4Q==
+X-CSE-MsgGUID: AyzFR9IwS6KqRUH+IXFqpw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="121252634"
+Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
+  by orviesa005.jf.intel.com with ESMTP; 23 Feb 2025 23:51:11 -0800
+Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tmTF8-00080g-0v;
+	Mon, 24 Feb 2025 07:51:10 +0000
+Date: Mon, 24 Feb 2025 15:50:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-rc] BUILD SUCCESS
+ b66535356a4834a234f99e16a97eb51f2c6c5a7d
+Message-ID: <202502241537.exHPhiMF-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: woJEHtJ8A_wJquBsPPk-rp0fIpslxwCZ
-X-Authority-Analysis: v=2.4 cv=Be0i0qt2 c=1 sm=1 tr=0 ts=67bc1386 cx=c_pps a=K4BcnWQioVPsTJd46EJO2w==:117 a=K4BcnWQioVPsTJd46EJO2w==:17 a=T2h4t0Lz3GQA:10 a=Ikd4Dj_1AAAA:8 a=20KFwNOVAAAA:8 a=t7CeM3EgAAAA:8 a=Ba9Sw2FB-nAdYA35_e8A:9 a=FdTzh2GWekK77mhwV6Dw:22
-X-Proofpoint-GUID: woJEHtJ8A_wJquBsPPk-rp0fIpslxwCZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-24_02,2025-02-20_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- phishscore=0 suspectscore=0 spamscore=0 impostorscore=0 mlxscore=0
- malwarescore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1015
- bulkscore=0 classifier=spam authscore=0 authtc=n/a authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.21.0-2502100000
- definitions=main-2502240047
 
-From: Cosmin Ratiu <cratiu@nvidia.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-rc
+branch HEAD: b66535356a4834a234f99e16a97eb51f2c6c5a7d  RDMA/bnxt_re: Fix the page details for the srq created by kernel consumers
 
-[ Upstream commit 4dbc1d1a9f39c3711ad2a40addca04d07d9ab5d0 ]
+elapsed time: 1128m
 
-When profile rollback fails in mlx5e_netdev_change_profile, the netdev
-profile var is left set to NULL. Avoid a crash when unloading the driver
-by not calling profile->cleanup in such a case.
+configs tested: 169
+configs skipped: 6
 
-This was encountered while testing, with the original trigger that
-the wq rescuer thread creation got interrupted (presumably due to
-Ctrl+C-ing modprobe), which gets converted to ENOMEM (-12) by
-mlx5e_priv_init, the profile rollback also fails for the same reason
-(signal still active) so the profile is left as NULL, leading to a crash
-later in _mlx5e_remove.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
- [  732.473932] mlx5_core 0000:08:00.1: E-Switch: Unload vfs: mode(OFFLOADS), nvfs(2), necvfs(0), active vports(2)
- [  734.525513] workqueue: Failed to create a rescuer kthread for wq "mlx5e": -EINTR
- [  734.557372] mlx5_core 0000:08:00.1: mlx5e_netdev_init_profile:6235:(pid 6086): mlx5e_priv_init failed, err=-12
- [  734.559187] mlx5_core 0000:08:00.1 eth3: mlx5e_netdev_change_profile: new profile init failed, -12
- [  734.560153] workqueue: Failed to create a rescuer kthread for wq "mlx5e": -EINTR
- [  734.589378] mlx5_core 0000:08:00.1: mlx5e_netdev_init_profile:6235:(pid 6086): mlx5e_priv_init failed, err=-12
- [  734.591136] mlx5_core 0000:08:00.1 eth3: mlx5e_netdev_change_profile: failed to rollback to orig profile, -12
- [  745.537492] BUG: kernel NULL pointer dereference, address: 0000000000000008
- [  745.538222] #PF: supervisor read access in kernel mode
-<snipped>
- [  745.551290] Call Trace:
- [  745.551590]  <TASK>
- [  745.551866]  ? __die+0x20/0x60
- [  745.552218]  ? page_fault_oops+0x150/0x400
- [  745.555307]  ? exc_page_fault+0x79/0x240
- [  745.555729]  ? asm_exc_page_fault+0x22/0x30
- [  745.556166]  ? mlx5e_remove+0x6b/0xb0 [mlx5_core]
- [  745.556698]  auxiliary_bus_remove+0x18/0x30
- [  745.557134]  device_release_driver_internal+0x1df/0x240
- [  745.557654]  bus_remove_device+0xd7/0x140
- [  745.558075]  device_del+0x15b/0x3c0
- [  745.558456]  mlx5_rescan_drivers_locked.part.0+0xb1/0x2f0 [mlx5_core]
- [  745.559112]  mlx5_unregister_device+0x34/0x50 [mlx5_core]
- [  745.559686]  mlx5_uninit_one+0x46/0xf0 [mlx5_core]
- [  745.560203]  remove_one+0x4e/0xd0 [mlx5_core]
- [  745.560694]  pci_device_remove+0x39/0xa0
- [  745.561112]  device_release_driver_internal+0x1df/0x240
- [  745.561631]  driver_detach+0x47/0x90
- [  745.562022]  bus_remove_driver+0x84/0x100
- [  745.562444]  pci_unregister_driver+0x3b/0x90
- [  745.562890]  mlx5_cleanup+0xc/0x1b [mlx5_core]
- [  745.563415]  __x64_sys_delete_module+0x14d/0x2f0
- [  745.563886]  ? kmem_cache_free+0x1b0/0x460
- [  745.564313]  ? lockdep_hardirqs_on_prepare+0xe2/0x190
- [  745.564825]  do_syscall_64+0x6d/0x140
- [  745.565223]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
- [  745.565725] RIP: 0033:0x7f1579b1288b
+tested configs:
+alpha                             allnoconfig    gcc-14.2.0
+alpha                            allyesconfig    gcc-14.2.0
+alpha                               defconfig    gcc-14.2.0
+arc                              allmodconfig    gcc-13.2.0
+arc                               allnoconfig    gcc-13.2.0
+arc                              allyesconfig    gcc-13.2.0
+arc                          axs103_defconfig    gcc-13.2.0
+arc                                 defconfig    gcc-13.2.0
+arc                   randconfig-001-20250223    gcc-13.2.0
+arc                   randconfig-001-20250224    gcc-13.2.0
+arc                   randconfig-002-20250223    gcc-13.2.0
+arc                   randconfig-002-20250224    gcc-13.2.0
+arm                              alldefconfig    gcc-14.2.0
+arm                              allmodconfig    gcc-14.2.0
+arm                               allnoconfig    clang-17
+arm                              allyesconfig    gcc-14.2.0
+arm                      footbridge_defconfig    clang-17
+arm                   randconfig-001-20250223    gcc-14.2.0
+arm                   randconfig-001-20250224    gcc-14.2.0
+arm                   randconfig-002-20250223    clang-21
+arm                   randconfig-002-20250224    gcc-14.2.0
+arm                   randconfig-003-20250223    clang-19
+arm                   randconfig-003-20250224    gcc-14.2.0
+arm                   randconfig-004-20250223    gcc-14.2.0
+arm                   randconfig-004-20250224    gcc-14.2.0
+arm                         socfpga_defconfig    gcc-14.2.0
+arm                        vexpress_defconfig    gcc-14.2.0
+arm64                            allmodconfig    clang-18
+arm64                             allnoconfig    gcc-14.2.0
+arm64                 randconfig-001-20250223    clang-21
+arm64                 randconfig-001-20250224    gcc-14.2.0
+arm64                 randconfig-002-20250223    gcc-14.2.0
+arm64                 randconfig-002-20250224    clang-21
+arm64                 randconfig-003-20250223    clang-21
+arm64                 randconfig-003-20250224    gcc-14.2.0
+arm64                 randconfig-004-20250223    clang-21
+arm64                 randconfig-004-20250224    gcc-14.2.0
+csky                              allnoconfig    gcc-14.2.0
+csky                  randconfig-001-20250223    gcc-14.2.0
+csky                  randconfig-001-20250224    gcc-14.2.0
+csky                  randconfig-002-20250223    gcc-14.2.0
+csky                  randconfig-002-20250224    gcc-14.2.0
+hexagon                          allmodconfig    clang-21
+hexagon                           allnoconfig    clang-21
+hexagon                          allyesconfig    clang-18
+hexagon               randconfig-001-20250223    clang-21
+hexagon               randconfig-001-20250224    clang-21
+hexagon               randconfig-002-20250223    clang-16
+hexagon               randconfig-002-20250224    clang-21
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250223    clang-19
+i386        buildonly-randconfig-002-20250223    gcc-11
+i386        buildonly-randconfig-003-20250223    gcc-12
+i386        buildonly-randconfig-004-20250223    clang-19
+i386        buildonly-randconfig-005-20250223    gcc-12
+i386        buildonly-randconfig-006-20250223    gcc-11
+i386                                defconfig    clang-19
+loongarch                        allmodconfig    gcc-14.2.0
+loongarch                         allnoconfig    gcc-14.2.0
+loongarch                 loongson3_defconfig    gcc-14.2.0
+loongarch             randconfig-001-20250223    gcc-14.2.0
+loongarch             randconfig-001-20250224    gcc-14.2.0
+loongarch             randconfig-002-20250223    gcc-14.2.0
+loongarch             randconfig-002-20250224    gcc-14.2.0
+m68k                             allmodconfig    gcc-14.2.0
+m68k                              allnoconfig    gcc-14.2.0
+m68k                             allyesconfig    gcc-14.2.0
+microblaze                        allnoconfig    gcc-14.2.0
+microblaze                       allyesconfig    gcc-14.2.0
+mips                              allnoconfig    gcc-14.2.0
+mips                           ip22_defconfig    gcc-14.2.0
+nios2                             allnoconfig    gcc-14.2.0
+nios2                 randconfig-001-20250223    gcc-14.2.0
+nios2                 randconfig-001-20250224    gcc-14.2.0
+nios2                 randconfig-002-20250223    gcc-14.2.0
+nios2                 randconfig-002-20250224    gcc-14.2.0
+openrisc                          allnoconfig    gcc-14.2.0
+openrisc                         allyesconfig    gcc-14.2.0
+openrisc                            defconfig    gcc-14.2.0
+parisc                           allmodconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                           allyesconfig    gcc-14.2.0
+parisc                              defconfig    gcc-14.2.0
+parisc                randconfig-001-20250223    gcc-14.2.0
+parisc                randconfig-001-20250224    gcc-14.2.0
+parisc                randconfig-002-20250223    gcc-14.2.0
+parisc                randconfig-002-20250224    gcc-14.2.0
+powerpc                     akebono_defconfig    clang-21
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc                          allyesconfig    clang-16
+powerpc                       holly_defconfig    clang-21
+powerpc                  mpc866_ads_defconfig    clang-21
+powerpc               randconfig-001-20250223    gcc-14.2.0
+powerpc               randconfig-001-20250224    gcc-14.2.0
+powerpc               randconfig-002-20250223    clang-17
+powerpc               randconfig-002-20250224    gcc-14.2.0
+powerpc               randconfig-003-20250223    gcc-14.2.0
+powerpc               randconfig-003-20250224    gcc-14.2.0
+powerpc                     tqm5200_defconfig    gcc-14.2.0
+powerpc64             randconfig-001-20250223    gcc-14.2.0
+powerpc64             randconfig-002-20250223    clang-21
+powerpc64             randconfig-002-20250224    clang-18
+powerpc64             randconfig-003-20250223    gcc-14.2.0
+powerpc64             randconfig-003-20250224    gcc-14.2.0
+riscv                            allmodconfig    clang-21
+riscv                             allnoconfig    gcc-14.2.0
+riscv                            allyesconfig    clang-21
+riscv                               defconfig    clang-19
+riscv                 randconfig-001-20250223    clang-17
+riscv                 randconfig-001-20250224    gcc-14.2.0
+riscv                 randconfig-002-20250223    gcc-14.2.0
+riscv                 randconfig-002-20250224    clang-18
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-15
+s390                             allyesconfig    gcc-14.2.0
+s390                          debug_defconfig    gcc-14.2.0
+s390                                defconfig    clang-15
+s390                  randconfig-001-20250223    clang-18
+s390                  randconfig-001-20250224    gcc-14.2.0
+s390                  randconfig-002-20250223    clang-16
+s390                  randconfig-002-20250224    clang-17
+sh                               allmodconfig    gcc-14.2.0
+sh                                allnoconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                                  defconfig    gcc-14.2.0
+sh                        edosk7760_defconfig    gcc-14.2.0
+sh                          landisk_defconfig    gcc-14.2.0
+sh                    randconfig-001-20250223    gcc-14.2.0
+sh                    randconfig-001-20250224    gcc-14.2.0
+sh                    randconfig-002-20250223    gcc-14.2.0
+sh                    randconfig-002-20250224    gcc-14.2.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                             allnoconfig    gcc-14.2.0
+sparc                 randconfig-001-20250223    gcc-14.2.0
+sparc                 randconfig-001-20250224    gcc-14.2.0
+sparc                 randconfig-002-20250223    gcc-14.2.0
+sparc                 randconfig-002-20250224    gcc-14.2.0
+sparc64                             defconfig    gcc-14.2.0
+sparc64               randconfig-001-20250223    gcc-14.2.0
+sparc64               randconfig-001-20250224    gcc-14.2.0
+sparc64               randconfig-002-20250223    gcc-14.2.0
+sparc64               randconfig-002-20250224    gcc-14.2.0
+um                               allmodconfig    clang-21
+um                                allnoconfig    clang-18
+um                               allyesconfig    gcc-12
+um                                  defconfig    clang-21
+um                             i386_defconfig    gcc-12
+um                    randconfig-001-20250223    clang-21
+um                    randconfig-001-20250224    gcc-12
+um                    randconfig-002-20250223    gcc-12
+um                    randconfig-002-20250224    gcc-12
+um                           x86_64_defconfig    clang-15
+x86_64                            allnoconfig    clang-19
+x86_64                           allyesconfig    clang-19
+x86_64      buildonly-randconfig-001-20250223    clang-19
+x86_64      buildonly-randconfig-002-20250223    gcc-12
+x86_64      buildonly-randconfig-003-20250223    gcc-12
+x86_64      buildonly-randconfig-004-20250223    gcc-12
+x86_64      buildonly-randconfig-005-20250223    gcc-12
+x86_64      buildonly-randconfig-006-20250223    gcc-12
+x86_64                              defconfig    gcc-11
+xtensa                            allnoconfig    gcc-14.2.0
+xtensa                randconfig-001-20250223    gcc-14.2.0
+xtensa                randconfig-001-20250224    gcc-14.2.0
+xtensa                randconfig-002-20250223    gcc-14.2.0
+xtensa                randconfig-002-20250224    gcc-14.2.0
+xtensa                    smp_lx200_defconfig    gcc-14.2.0
 
-Fixes: 3ef14e463f6e ("net/mlx5e: Separate between netdev objects and mlx5e profiles initialization")
-Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Jianqi Ren <jianqi.ren.cn@windriver.com>
-Signed-off-by: He Zhe <zhe.he@windriver.com>
----
-Verified the build test.
----
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 6e431f587c23..b34f57ab9755 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -6110,7 +6110,9 @@ static void mlx5e_remove(struct auxiliary_device *adev)
- 	mlx5e_dcbnl_delete_app(priv);
- 	unregister_netdev(priv->netdev);
- 	mlx5e_suspend(adev, state);
--	priv->profile->cleanup(priv);
-+	/* Avoid cleanup if profile rollback failed. */
-+	if (priv->profile)
-+		priv->profile->cleanup(priv);
- 	mlx5e_destroy_netdev(priv);
- 	mlx5e_devlink_port_unregister(mlx5e_dev);
- 	mlx5e_destroy_devlink(mlx5e_dev);
--- 
-2.25.1
-
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
