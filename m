@@ -1,133 +1,83 @@
-Return-Path: <linux-rdma+bounces-8041-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8042-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BF0CA4248E
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2025 15:58:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58D0CA425EE
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2025 16:16:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CB563BCC36
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2025 14:48:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BE96167EF3
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2025 15:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B713319C54F;
-	Mon, 24 Feb 2025 14:46:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1191519B0;
+	Mon, 24 Feb 2025 15:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b="QlrLaWEd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GSCIV7cj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from pv50p00im-ztdg10021801.me.com (pv50p00im-ztdg10021801.me.com [17.58.6.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7161D16F0FE
-	for <linux-rdma@vger.kernel.org>; Mon, 24 Feb 2025 14:46:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.6.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 777EB74BE1;
+	Mon, 24 Feb 2025 15:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740408372; cv=none; b=Hn+PfC9nhYKGrSGVfRv37UWTOWTDIzNVEzTegYbSudI621okHry2dw5wiKngHmqshjKQFzF51o6gKXrQvnXVeRETZpxY2ed4G5TsEfw07hDAEu1cEGFk6+VVQpBaEUsuKWu7ACAu7OpQ0jZ2+ZEWjtcxrC2oQztg9c8Q9p9dehc=
+	t=1740409573; cv=none; b=bIiRACBeN0YSE1XQbkT8QChoy0EIXvY3hSYY3e1Vuh6Y75H+P3a+xgWasR9QMsGVLj14xLWVL34VxzSJD5lSgS9RkVher3tkhZIAFEobKOpT+rlKvDwSSHmggFjJG1qnD26cdsQ7Cr36yIuXwOuV9zRiVjJlS2DIDH9RSAJaNX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740408372; c=relaxed/simple;
-	bh=fxHn5PpLrOvrhy3T9+DU0/Qq00yPM+Mp8t95xmMWsSI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ppREOxntXM4gV6nKSftPh4K3ywf56l/61J0pDsgXD9QSUDRp0WKVO6uh7NQfuVkJXLCLuc400wfwEvzJJj4ZtAqIYX1r8XWpEhKoHkEGKb5E1r9WsIAKmGmoFZ1GwL9dnOYj6/5wmEqfrn0QFOVyJ/aw13ZBCF4jseOwLvaI7Lw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com; spf=pass smtp.mailfrom=icloud.com; dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b=QlrLaWEd; arc=none smtp.client-ip=17.58.6.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icloud.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-	s=1a1hai; bh=SxARc5+mPnL0BjR2iW5rWJ4TF8233iOHpKnJbbHiSqw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:x-icloud-hme;
-	b=QlrLaWEdYFkfsu8fuz6nbUdcj79Q8tJSmKk2HA1yeaCmsuHQSOTGqxvHL7yUmSH26
-	 akU6WkcZrQNFnHq+BJaLeGPq0iB3wrn9quZ3+XX7TL6W2416KdFvIkp5eq2vQ9b1mC
-	 1W3KDPpIj0DisqfGR5RfGhPUGajT30GJk6SpSRctraMh5Bn8xJKesYr+HLgu8FHVrW
-	 5Dfwx7CMvdnY4JwcEN6gg2auvHgazI6WEAwJkihz3N6RwdjmSunhSudO5G6dDlNdEp
-	 B1QbwPUm6oUVtf0ONAKjCUdMnGgia+x/d6OTzrZdtjaV4ethm0Xnv3yRyjfFnT2Mpt
-	 tk5oRw9q9GBwg==
-Received: from [192.168.1.26] (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-	by pv50p00im-ztdg10021801.me.com (Postfix) with ESMTPSA id 01FF82010282;
-	Mon, 24 Feb 2025 14:45:49 +0000 (UTC)
-Message-ID: <a28f04e5-ccde-4a08-b8fa-a9fa685240b1@icloud.com>
-Date: Mon, 24 Feb 2025 22:45:44 +0800
+	s=arc-20240116; t=1740409573; c=relaxed/simple;
+	bh=aZ8mtV+yUUdjH+pnqsTQ+U1j4atH+9ZFjq+4VLYh7xI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=aTXre05OrUjISoTfa/8LIxqjHp/WR+OCgBQYrTpJbpol2dXVg/lDIOnRGW85bKvwx7VRA0iNs6nulkExJS7F976MAKzEpSGWPko9HyiXCa0RjQ93C4vtXyH41ftzFWIb0OtuWC64MSVB6iFl7lUxmpvx4/EmahvGkRNIKlb2QTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GSCIV7cj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57BF9C4CED6;
+	Mon, 24 Feb 2025 15:06:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740409573;
+	bh=aZ8mtV+yUUdjH+pnqsTQ+U1j4atH+9ZFjq+4VLYh7xI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=GSCIV7cjhGdO1iqhqCYOMsY5LCa+qa9EHoL7eeaW27ExkL08iMY5Ij5GFrEUic0SQ
+	 8L8iSkHIB1sI80Mau57XfxOwbof+m/UYn7zHEn+b2hu7bTGnkG6g5oNmPKuwivYLlA
+	 I/DdKunS3Btg9L01PWUXVrljfYEalZyzRjvCAh+JPaVYEmhPisbLOpsuSddsEwnZep
+	 UNp2WpsIthqPBzUFkTKnQi/fXbBCsh6eDM6Vd0M3zkj+t5DvQMhyp3Y0JAGmZ3Zbiu
+	 AE6tDr3qMhM4wlBwaEBiT5tRj3jjOjAYxV5W21NdvewwmXjnpMp3FNh4svobEDgmGO
+	 zYnEHXIkFqOuA==
+From: Leon Romanovsky <leon@kernel.org>
+To: dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca, 
+ linux@treblig.org
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20250223215543.153312-1-linux@treblig.org>
+References: <20250223215543.153312-1-linux@treblig.org>
+Subject: Re: [PATCH] RDMA/hfi1: Remove unused one_qsfp_write
+Message-Id: <174040956963.506540.14094629062693367105.b4-ty@kernel.org>
+Date: Mon, 24 Feb 2025 10:06:09 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH *-next 01/18] mm/mmu_gather: Remove needless return in
- void API tlb_remove_page()
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Zijun Hu <quic_zijuhu@quicinc.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Will Deacon <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Nick Piggin <npiggin@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Danilo Krummrich <dakr@kernel.org>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Johannes Berg <johannes@sipsolutions.net>,
- Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>,
- Jiri Pirko <jiri@resnulli.us>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Lee Jones <lee@kernel.org>,
- Thomas Graf <tgraf@suug.ch>, Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Robin Murphy <robin.murphy@arm.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-arch@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-pm@vger.kernel.org, iommu@lists.linux.dev,
- linux-mtd@lists.infradead.org
-References: <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com>
- <20250221-rmv_return-v1-1-cc8dff275827@quicinc.com>
- <20250221200137.GH7373@noisy.programming.kicks-ass.net>
- <8f36be7c-6052-4c5d-85ff-0eed27cf1456@icloud.com>
- <20250224132354.GC11590@noisy.programming.kicks-ass.net>
-Content-Language: en-US
-From: Zijun Hu <zijun_hu@icloud.com>
-In-Reply-To: <20250224132354.GC11590@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: rwcKYw_iCScrLPUxt294xX4BCs8xvrO1
-X-Proofpoint-GUID: rwcKYw_iCScrLPUxt294xX4BCs8xvrO1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-02-24_06,2025-02-24_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=911 mlxscore=0 bulkscore=0
- adultscore=0 spamscore=0 malwarescore=0 phishscore=0 suspectscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2502240105
+X-Mailer: b4 0.15-dev-37811
 
-On 2025/2/24 21:23, Peter Zijlstra wrote:
-> On Sat, Feb 22, 2025 at 07:00:28PM +0800, Zijun Hu wrote:
->> On 2025/2/22 04:01, Peter Zijlstra wrote:
->>>>   */
->>>>  static inline void tlb_remove_page(struct mmu_gather *tlb, struct page *page)
->>>>  {
->>>> -	return tlb_remove_page_size(tlb, page, PAGE_SIZE);
->>>> +	tlb_remove_page_size(tlb, page, PAGE_SIZE);
->>>>  }
->>> So I don't mind removing it, but note that that return enforces
->>> tlb_remove_page_size() has void return type.
->>>
->>
->> tlb_remove_page_size() is void function already. (^^)
+
+On Sun, 23 Feb 2025 21:55:43 +0000, linux@treblig.org wrote:
+> The last use of one_qsfp_write() was removed in 2016's
+> commit 145dd2b39958 ("IB/hfi1: Always turn on CDRs for low power QSFP
+> modules")
 > 
-> Yes, but if you were to change that, the above return would complain.
+> Remove it.
 > 
->>> It might not be your preferred coding style, but it is not completely
->>> pointless.
->>
->> based on below C spec such as C17 description. i guess language C does
->> not like this usage "return void function in void function";
 > 
-> This is GNU extension IIRC. Note kernel uses GNU11, not C11
+> [...]
 
-any link to share about GNU11's description for this aspect ? (^^)
+Applied, thanks!
 
+[1/1] RDMA/hfi1: Remove unused one_qsfp_write
+      https://git.kernel.org/rdma/rdma/c/ba7fbaa6a83e5c
 
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
 
 
