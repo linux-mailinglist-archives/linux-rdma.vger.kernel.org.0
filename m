@@ -1,93 +1,115 @@
-Return-Path: <linux-rdma+bounces-8045-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8046-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C522EA4286B
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2025 17:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96517A4302B
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2025 23:35:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD43F3AF953
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2025 16:54:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D34C3A8836
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2025 22:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E50E263C73;
-	Mon, 24 Feb 2025 16:54:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B7221F1312;
+	Mon, 24 Feb 2025 22:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="TFJM+6cc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PJEj6Wri"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28B041917F1
-	for <linux-rdma@vger.kernel.org>; Mon, 24 Feb 2025 16:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39002571B2;
+	Mon, 24 Feb 2025 22:34:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740416051; cv=none; b=VALZXpq4peNsur6ApdDjJQbHOst2qdp1nmEw48mZ1v1pRci7F+VO4dNw3Nb/RHhEWpKLsTtaiZ1qNNrcDJqbVQKXDNQvY/m1uCXsF8ZQJNQZWNqS6IMuyyr5lwcnbxPWr6gE/ulnjs9W0McfYRLrMYKxmbKlS4M935n39/EXZRY=
+	t=1740436486; cv=none; b=sGmikj96rb+MIGcJLao4ELZM+uYpg9F3+GsEE0K2qVUgPNKAo9+bH5ltDF/04xBSo5G3H8GsF0MPtYX6xKpTXKIE3gbUf2WEdse5Z0eeKmnrQV/lsTTLTsrFKuLjP94aWcMFbyho5j+/0unIZy2m67oQfrzSSIDLOgjrMpsbqbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740416051; c=relaxed/simple;
-	bh=jziQ7Xw4+4L6I+Xu9BCu8ezIJZDuVqrKD+VJG3Jj5qs=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=fEcHIGAVw4saYRQ0UlE2bZCO5iytIeNVlEaQSOQeugY93ADPD98kfuLTpPLxQu29l6LlT4ayp1uUvpd1/2xBx0QW+BMoNbzJ4mjsK2BRQtFX+rDt0MJ4vg95X8q/++yHRB5UEuJW+WDMWkFYF3umq0Dc/Ag4hDi3SrOLXRM2EaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=TFJM+6cc; arc=none smtp.client-ip=185.125.188.250
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id B475343725
-	for <linux-rdma@vger.kernel.org>; Mon, 24 Feb 2025 16:46:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1740415598;
-	bh=jziQ7Xw4+4L6I+Xu9BCu8ezIJZDuVqrKD+VJG3Jj5qs=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=TFJM+6cc80eYpnS77vHoLJW9N1LpiMUy1/LFFrQ0DrJCq9S/geaMYQ8Ljxor3jjEj
-	 YjTbQpsDF9gRL9CIxXyNMFOWistwSHIGVstHGrfaU7PLgoFCLkLo3u0lL9EbZ0XJCo
-	 KrmB3R/buk3TNbdSoY5nusvfmgnQB55j0eehZirDN+04ggTKMSHIyk0mwwTg6JEitQ
-	 wDuPBEK/qgy4XdrNmZ6+6HX6BYmqJC1pg49wA7S4wefEp7qx13af72UyU9/8sptOGN
-	 a+ZA9Az5Nsd1vs9Dlx4TPrTvo2JKKo1s+UjcbFnp8Xc690nkiCF3CR/dsc8a9kHWat
-	 gr/+qyLMZXXOA==
-Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
-	by buildd-manager.lp.internal (Postfix) with ESMTP id AAF327E259
-	for <linux-rdma@vger.kernel.org>; Mon, 24 Feb 2025 16:46:38 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1740436486; c=relaxed/simple;
+	bh=9UzjkUJJ6ahaV2ilmu37ZIHZwB37SMdQMRt71KBRxAY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j4AVCs5oEVGmaAv830IfYLXLUAzFqwAGmYin9udtlErqi76voFnthtVARSHH2YaC36kgZ+ipx17vSY9xuERTGvDmUqi43U8r3ZYjCWd7SDpWRxP4aKEOr3q7Y0J7BmkYtDjZJxJs40ncx4dmlg51Hy/Bxvn0yWDCygTmrv4QVGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PJEj6Wri; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 314AFC4CED6;
+	Mon, 24 Feb 2025 22:34:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740436482;
+	bh=9UzjkUJJ6ahaV2ilmu37ZIHZwB37SMdQMRt71KBRxAY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PJEj6WriSN4ss2MJnIpX3EY9nDWMtyz/RwrgaVsRroWKzVDeI1+dh44RMz71W4gGo
+	 xpCWIzTSBYWjQMDKlXXYPghNfOrvPCumO9fvvUsBGcjXehHuL27WmfoarX+l+whg4v
+	 52nmqzreQaStCmHSBaUTudNJv3nsY9LDNh+EzLoUrk8NdlEaXB4l7Ui/oTdgmw451R
+	 9XK7Jv1Kj/zG0PCoXVwU60OCXw9c/xJe3dB01b4PYl936zNjkhhnfw5uzF2lncKoQi
+	 cwYgllTcbWPZnIm6IeQpkYQCVWdzVm6W074ctUrXrQ/y+DoLFoM9sxOoHRKRTb8GGw
+	 sHqh0Cf3d4MoQ==
+Date: Mon, 24 Feb 2025 14:34:40 -0800
+From: Saeed Mahameed <saeed@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: David Ahern <dsahern@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Daniel Vetter <daniel.vetter@ffwll.ch>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Andy Gospodarek <gospo@broadcom.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Leonid Bloch <lbloch@nvidia.com>,
+	Leon Romanovsky <leonro@nvidia.com>, linux-cxl@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	"Nelson, Shannon" <shannon.nelson@amd.com>,
+	Michael Chan <michael.chan@broadcom.com>
+Subject: Re: [PATCH v4 10/10] bnxt: Create an auxiliary device for fwctl_bnxt
+Message-ID: <Z7z0ADkimCkhr7Xz@x130>
+References: <CACDg6nU_Dkte_GASNRpkvSSCihpg52FBqNr0KR3ud1YRvrRs3w@mail.gmail.com>
+ <20250207073648.1f0bad47@kernel.org>
+ <Z6ZsOMLq7tt3ijX_@x130>
+ <20250207135111.6e4e10b9@kernel.org>
+ <20250208011647.GH3660748@nvidia.com>
+ <20250210170423.62a2f746@kernel.org>
+ <a74484b3-9f69-45ef-a040-a46fbc2607d6@kernel.org>
+ <20250218200520.GI4183890@nvidia.com>
+ <532d2530-5c12-43b7-973f-ce43dbc36e67@kernel.org>
+ <20250218153110.0c10e72c@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: MANUALDEPWAIT
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: noreply@launchpad.net
-Subject: [recipe build #3858863] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <174041559869.3550923.2516672767562734745.launchpad@buildd-manager.lp.internal>
-Date: Mon, 24 Feb 2025 16:46:38 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="aa29ae0fff49e4e804b39147c9f259d2fb023199"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: 697c8cd8b4f918d569fc9f539c2edce1c2d0e92c
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20250218153110.0c10e72c@kernel.org>
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 1 minute
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/3858863/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-088
+On 18 Feb 15:31, Jakub Kicinski wrote:
+>On Tue, 18 Feb 2025 14:42:48 -0700 David Ahern wrote:
+>> On 2/18/25 1:05 PM, Jason Gunthorpe wrote:
+>> > On Tue, Feb 11, 2025 at 09:24:35AM -0700, David Ahern wrote:
+>> >
+>> >> "Any resources in use by the netdev stack can only be created and
+>> >> modified by established netdev tools."
+>> >
+>> > That is already a restriction described in the doc, not just netdev,
+>> > but any kernel driver running with any kernel owned resource. You
+>> > can't reach in and change kernel owned objects.
+>>
+>> ok, then Jakub's concerns should be met.
+>
+>I appreciate the doc, but no, it's not enough. The fwctl interface must
+>not be exposed if RDMA is disabled or driver not loaded.
+>
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/3858863
-Your team Linux RDMA is the requester of the build.
+Jason's proposal was completely different, he asked that if only netdev is
+present then we can explicitly block fwctl. Tying fwctl to RDMA makes no
+sense for most of the drivers that will be using it, so I don't support
+such suggestion not even blocking fwctl for netdev only systems, if one
+can load RDMA and still can control the device, then Jakub's concerns are
+not met, so what's the point?
+
+The whole Idea of blocking fwctl in specific configurations has no
+technical merit, if someone doesn't want fwctl in their system, then let's
+implement a devlink knob like we have for all ulps.
+  
 
 
