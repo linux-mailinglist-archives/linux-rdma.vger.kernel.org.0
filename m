@@ -1,127 +1,147 @@
-Return-Path: <linux-rdma+bounces-8065-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8066-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCB63A43892
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2025 10:03:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49318A43BF8
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2025 11:42:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F416C1685A1
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2025 09:03:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 104EF165356
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2025 10:38:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874F2267F7B;
-	Tue, 25 Feb 2025 08:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C830266B63;
+	Tue, 25 Feb 2025 10:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b="O884BqCB"
+	dkim=pass (2048-bit key) header.d=clip-os.org header.i=@clip-os.org header.b="lCgQQNZx"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx1.secunet.com (mx1.secunet.com [62.96.220.36])
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88A0F267B9E;
-	Tue, 25 Feb 2025 08:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.96.220.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F2C0260A26;
+	Tue, 25 Feb 2025 10:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740473870; cv=none; b=Ofoh7SFobBcU9kJJuID0kSJF2ed733A8mlY87tNJUDV3OJOOjXDB3SQoO30RnEFpzGm89f8rOoqjUbToG3mA0OxJ7h7ZQDotyt0Fml6FYC1bosn5iymAOdha29bhtLxHJ63IjjTpGv81YgzaBA66NRTk7znH02m+c7FlGfulcP0=
+	t=1740479894; cv=none; b=nk4YoyNut7Pz86r4E7X12hGb737VJpEx420OgEJjUCxyvchTT5X3SQOw/KDQEgxpxg1IjUbhAVbzCjmup+d2CygGsHi851fLrSdcf72mTnI7pyYNfYF1Bq8zvZ1eVY1rzATIdf/XiQiedyLpqw+p4cVPKs8HLMF2wqF8ILcwVMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740473870; c=relaxed/simple;
-	bh=eYZp9i5fVrw5bx7U2Td0qHV1PiM1BEYZra34O9ZwKMA=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vEa4YgMOBgJdf/jiGhbWiBBeOC9NpVbF1hf3FdpsbYmwnB2QE3IhxlUqqRGGOuCK5EJ1QmbeTDjtYxzZo4gDmyY6xoJBv0JGFw5nnMEcSjMFx0B2YcMhpvDQPxmnxGqhcCOqL+MU+MXwBo+rijSi0gH5Ak75xuATyNlGPoeQvgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=secunet.com; spf=pass smtp.mailfrom=secunet.com; dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b=O884BqCB; arc=none smtp.client-ip=62.96.220.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=secunet.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=secunet.com
-Received: from localhost (localhost [127.0.0.1])
-	by mx1.secunet.com (Postfix) with ESMTP id 6477B20799;
-	Tue, 25 Feb 2025 09:57:45 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from mx1.secunet.com ([127.0.0.1])
- by localhost (mx1.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 2Xi-FHaOAzru; Tue, 25 Feb 2025 09:57:44 +0100 (CET)
-Received: from cas-essen-02.secunet.de (rl2.secunet.de [10.53.40.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by mx1.secunet.com (Postfix) with ESMTPS id 8DFC32050A;
-	Tue, 25 Feb 2025 09:57:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.secunet.com 8DFC32050A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secunet.com;
-	s=202301; t=1740473864;
-	bh=KO8QT1Iud2j7VddE/JgWZ6zVDpqfkHfxQ9iGzJdyXlA=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-	b=O884BqCB+2PDt7/FG+IfXb4WPIOnChiGWm5WWq+2pT+Rqlscx5O7PCQNReE6yHd+t
-	 wVUcFru8nNgtg9SCQPFh3Q+13UNXJ1bWkPTI6h2B3nP01iSw3AY89yd4tagjbTLRXs
-	 Sc9amBwHuomP2H4FXE9Ir/89yOFheh98Yu4pfP2sShIbKXDpggGQYGRbpUI1U3GydN
-	 uNeLSwvDk7AOb04jwK3ouTeVvOQGL31nXhWNvcPS60c1/mw8BmV5b4d1h8dWBvZWF8
-	 nU0rGs4im59pTYSOEqWM0oErNGY3SATZQK6RnHO4SjY2whOmEd/6lC+P3obB1Yy3+D
-	 0IRRrKP9gVtDg==
-Received: from mbx-essen-02.secunet.de (10.53.40.198) by
- cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 25 Feb 2025 09:57:44 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
- (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Tue, 25 Feb
- 2025 09:57:43 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-	id 4C09F3182E64; Tue, 25 Feb 2025 09:57:43 +0100 (CET)
-Date: Tue, 25 Feb 2025 09:57:43 +0100
-From: Steffen Klassert <steffen.klassert@secunet.com>
-To: Leon Romanovsky <leon@kernel.org>
-CC: Andrew Lunn <andrew+netdev@lunn.ch>, Ayush Sawal
-	<ayush.sawal@chelsio.com>, Bharat Bhushan <bbhushan2@marvell.com>, "Eric
- Dumazet" <edumazet@google.com>, Geetha sowjanya <gakula@marvell.com>,
-	hariprasad <hkelam@marvell.com>, Herbert Xu <herbert@gondor.apana.org.au>,
-	<intel-wired-lan@lists.osuosl.org>, Jakub Kicinski <kuba@kernel.org>, "Jay
- Vosburgh" <jv@jvosburgh.net>, Jonathan Corbet <corbet@lwn.net>,
-	<linux-doc@vger.kernel.org>, <linux-rdma@vger.kernel.org>, Louis Peens
-	<louis.peens@corigine.com>, <netdev@vger.kernel.org>,
-	<oss-drivers@corigine.com>, Paolo Abeni <pabeni@redhat.com>, "Potnuri Bharat
- Teja" <bharat@chelsio.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Saeed Mahameed <saeedm@nvidia.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
-	Sunil Goutham <sgoutham@marvell.com>, Tariq Toukan <tariqt@nvidia.com>, "Tony
- Nguyen" <anthony.l.nguyen@intel.com>, Zhu Yanjun <yanjun.zhu@linux.dev>,
-	Bharat Bhushan <bharatb.linux@gmail.com>
-Subject: Re: [PATCH ipsec-next v1 0/5] Support PMTU in tunnel mode for packet
- offload
-Message-ID: <Z72GB6wIUgDqunsQ@gauss3.secunet.de>
-References: <cover.1739972570.git.leon@kernel.org>
+	s=arc-20240116; t=1740479894; c=relaxed/simple;
+	bh=nmaIuLRIXhpvBAWF936BZrE5FfGSBBkqykB3EbSstac=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dNZ0U25NCF0t3y9u0aFBDDH8fgIw7WqBv12a1qjAgkbt++ch1qvwhX1iRmAHuM72JJWyBfoKfbwI1SfrkcVDWWihazfvU4TgTBcjd+Jfk/PWGzhjAB3rqmvwdLBbuUYwP14TqJoaCFIdpNpuPqT57FAz6PXSlZcoQ0DVulPp4MM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=clip-os.org; spf=pass smtp.mailfrom=clip-os.org; dkim=pass (2048-bit key) header.d=clip-os.org header.i=@clip-os.org header.b=lCgQQNZx; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=clip-os.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=clip-os.org
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3B271204D4;
+	Tue, 25 Feb 2025 10:37:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=clip-os.org; s=gm1;
+	t=1740479884;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Wt3UxvctVd0CM5VFAarheDiBUupuORfHc7HMZ4s/FLg=;
+	b=lCgQQNZxgWHBrWHRXrEHHn19LxurT/Plb8hRCvHTTWige0RFmZ/KJOTYVNyKDpDb6AJ4K4
+	nYFvnl11++m+d/uqjmxPOu/xMzyhRFpSv4O4ECi8FpgR3UWUQ/DcLoXv/EPudBIR4UFxL2
+	BzzhDlxbasTrOu9sZiVpkF7Wmt8FkYZgTM+8PuFyLSF+VNqTYalQ11fnprlOwCIUw0xJvd
+	COFFHYosuNm7nUlxHvl3WqywBR+W3Itsq6DvwDY93XvF18WP2jxD86glHZDDI5LzP1E64R
+	esdbFQCIQ8uAff9pRqX6LaIfKnRKKCpVkild1mAomruSExHmuhbtbrfZ6ElHGQ==
+Message-ID: <ac5742e1-7a2b-4d74-889c-0a0c434c16e5@clip-os.org>
+Date: Tue, 25 Feb 2025 11:37:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <cover.1739972570.git.leon@kernel.org>
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-02.secunet.de (10.53.40.198)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/6] sysctl: Fixes nsm_local_state bounds
+To: Chuck Lever <chuck.lever@oracle.com>, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+ codalist@coda.cs.cmu.edu, linux-nfs@vger.kernel.org
+Cc: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>,
+ Joel Granados <j.granados@samsung.com>, Clemens Ladisch
+ <clemens@ladisch.de>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Jan Harkes <jaharkes@cs.cmu.edu>, Jeff Layton <jlayton@kernel.org>,
+ Neil Brown <neilb@suse.de>, Olga Kornievskaia <okorniev@redhat.com>,
+ Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+ Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
+ Bart Van Assche <bvanassche@acm.org>, Zhu Yanjun <yanjun.zhu@linux.dev>,
+ Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
+References: <20250224095826.16458-1-nicolas.bouchinet@clip-os.org>
+ <20250224095826.16458-3-nicolas.bouchinet@clip-os.org>
+ <da418443-a98b-4b08-ad44-7d45d89b4173@oracle.com>
+Content-Language: en-US
+From: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>
+In-Reply-To: <da418443-a98b-4b08-ad44-7d45d89b4173@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdekudegjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpefpihgtohhlrghsuceuohhutghhihhnvghtuceonhhitgholhgrshdrsghouhgthhhinhgvthestghlihhpqdhoshdrohhrgheqnecuggftrfgrthhtvghrnheptdfggeejjefhleeuffetueektefhledukeegvefgteeugeeuhfekudffleehgfetnecukfhppeeltddrieefrddvgeeirddukeejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepledtrdeifedrvdegiedrudekjedphhgvlhhopegludelvddrudeikedrfeefrdeihegnpdhmrghilhhfrhhomhepnhhitgholhgrshdrsghouhgthhhinhgvthestghlihhpqdhoshdrohhrghdpnhgspghrtghpthhtohepvdejpdhrtghpthhtoheptghhuhgtkhdrlhgvvhgvrhesohhrrggtlhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrhgumhgrsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqshgtshhisehvghgvrhdrkhgvrhhnvghlrdhor
+ hhgpdhrtghpthhtoheptghouggrlhhishhtsegtohgurgdrtghsrdgtmhhurdgvughupdhrtghpthhtoheplhhinhhugidqnhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehnihgtohhlrghsrdgsohhutghhihhnvghtsehsshhirdhgohhuvhdrfhhrpdhrtghpthhtohepjhdrghhrrghnrgguohhssehsrghmshhunhhgrdgtohhm
+X-GND-Sasl: nicolas.bouchinet@clip-os.org
 
-On Wed, Feb 19, 2025 at 03:50:56PM +0200, Leon Romanovsky wrote:
-> Changelog:
-> v1:
->  * Changed signature and names of functions which set and clear type_offload
->  * Fixed typos
->  * Add Zhu's ROB tag
-> v0: https://lore.kernel.org/all/cover.1738778580.git.leon@kernel.org
-> 
-> Hi,
-> 
-> This series refactors the xdo_dev_offload_ok() to be global place for
-> drivers to check if their offload can perform encryption for xmit
-> packets.
-> 
-> Such common place gives us an option to check MTU and PMTU at one place.
-> 
-> Thanks
-> 
-> Leon Romanovsky (5):
->   xfrm: delay initialization of offload path till its actually requested
->   xfrm: simplify SA initialization routine
->   xfrm: rely on XFRM offload
->   xfrm: provide common xdo_dev_offload_ok callback implementation
->   xfrm: check for PMTU in tunnel mode for packet offload
 
-Series applied, thanks a lot Leon!
+On 2/24/25 15:38, Chuck Lever wrote:
+> On 2/24/25 4:58 AM, nicolas.bouchinet@clip-os.org wrote:
+>> From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
+>>
+>> Bound nsm_local_state sysctl writings between SYSCTL_ZERO
+>> and SYSCTL_INT_MAX.
+>>
+>> The proc_handler has thus been updated to proc_dointvec_minmax.
+>>
+>> Signed-off-by: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
+>> ---
+>>   fs/lockd/svc.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/lockd/svc.c b/fs/lockd/svc.c
+>> index 2c8eedc6c2cc9..984ab233af8b6 100644
+>> --- a/fs/lockd/svc.c
+>> +++ b/fs/lockd/svc.c
+>> @@ -461,7 +461,9 @@ static const struct ctl_table nlm_sysctls[] = {
+>>   		.data		= &nsm_local_state,
+>>   		.maxlen		= sizeof(int),
+>>   		.mode		= 0644,
+>> -		.proc_handler	= proc_dointvec,
+>> +		.proc_handler	= proc_dointvec_minmax,
+>> +		.extra1		= SYSCTL_ZERO,
+>> +		.extra2		= SYSCTL_INT_MAX,
+>>   	},
+>>   };
+>>   
+> Hi Nicolas -
+>
+> nsm_local_state is an unsigned 32-bit integer. The type of that value is
+> defined by spec, because this value is exchanged between peers on the
+> network.
+>
+> Perhaps this patch should replace proc_dointvec with proc_douintvec
+> instead.
+>
+>
+
+Hi Chuck,
+
+Thank's for your review.
+
+If `nsm_local_state` should be set to the
+full range of an uint32_t by a user writing in the sysctl, then yes it 
+should
+use `proc_douintvec` instead of limiting it to SYSCTL_INT_MAX value 
+(INT_MAX).
+
+I've used `proc_dointvec_minmax` since it already used `proc_dointvec` 
+and thus
+was already capped at INT_MAX.
+
+Best regards,
+
+Nicolas
+
 
