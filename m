@@ -1,134 +1,133 @@
-Return-Path: <linux-rdma+bounces-8071-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8072-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12184A440FD
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2025 14:38:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51781A44422
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2025 16:18:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 964977A7B6F
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2025 13:35:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6EBB1899F0F
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2025 15:18:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89B2269831;
-	Tue, 25 Feb 2025 13:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A29C26E147;
+	Tue, 25 Feb 2025 15:18:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="zKBcbCuE"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AwmSELce"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 955F32690F8
-	for <linux-rdma@vger.kernel.org>; Tue, 25 Feb 2025 13:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0117526BDA4
+	for <linux-rdma@vger.kernel.org>; Tue, 25 Feb 2025 15:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740490574; cv=none; b=qM1us4Z/u9l76LjtWUd7Ic1RYlw7jU7eE8GXcX//JTrsuB4yZjY+AKIz/dS2dGeywLjp5+v2crIp+Fa58aY17w156Ly/3EdpFHTgN15luqwnP9vEJuLzogFtzYzX9o8u5IJ5qcAMj1aTX5i8UMXBsNeV8vq5NcuP/hs8eLsVaV4=
+	t=1740496681; cv=none; b=aOEyEnnlQhx0EHOex6jH6JzeHGq5/dxAvgSItSPrXMFwzdzQQZhyZOxNwYDb8KnASx6TJaN8MnNphvZiQhBf0cBEeC5oU/fMLge5KScCfcqVJueWPpkuq3kCv9/3+m34kFjx6CfRZjC/iPHmxE83IBogcYK1CY2H7/zyA4YEtrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740490574; c=relaxed/simple;
-	bh=6zIDGY7o8wonG5XSWfvfNzMNhLDCQ4e5sFlmf6YJhHg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZTL1T6VKnnvRVSitzriIURu7JnRwYGvWdEt3ETX3DqIyvWfVnsytLoHhr4/GSvSbUQ2WL7+endbLOimL+1Vsrkb3HftVhgH+S10nEWY9wEFKhaYgf3X/mYZKMz1CSs6JAimCB4VJIZ43OrVA3SQ6k/BIO3rTm2Oe1vrzUpq2+uU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=zKBcbCuE; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-aaedd529ba1so654367566b.1
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Feb 2025 05:36:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1740490571; x=1741095371; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AZPYRoqfrPagvwL/VaIj4ZSda7O5NYpHMyVSIETeVto=;
-        b=zKBcbCuET1NBYuwsZqMtPPNWwln0LKbAGf9DiFhMvxHo3ePFgv2ZRwHQ1m+/X3IXF0
-         /0SyQqa7PogVHz8goMiWLt/TcbuRvjr61hXI6Yae2IYtOQ8Qc2PTJ6GeOKMcJm07Lj1S
-         7OKvrE31v1Jg1a7dgnH6XD2udWEbDnBhB3JWSufEr3izLLu6QVF4woo+GD4kOay2Dbxx
-         6+6LshdWjmMXJiGBnp8jmvL4CP1ppPdxBwzFEiVr32IaTGIAk0VIHGawXnTF4Ng7F7Mp
-         Nv8dajrEdryY97lRYRzVO5k7lLkXEGcYFFF+DloGD19YYuiCmIjxymramJBqepcGpBQY
-         zHOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740490571; x=1741095371;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AZPYRoqfrPagvwL/VaIj4ZSda7O5NYpHMyVSIETeVto=;
-        b=BIs490yX5kr4HSq83023anSCPHoW8mmXQT2q6i4wHuiEaRI2EqvWFTk2yNGgf2GjRN
-         v36tzdt4lHXyz7Z7PPobXw+IRz2n6IYdtjVJbuaHemCwsnOiQJfBjcIrQhXaG+sajNDk
-         MUoi5g2wJallMBLHkfO+SMFfi9/kqTvgYz4fuPbeJ1xgBkYNEFJ3CUW04+nBWCwySvLF
-         WAroz9+mR/O9DVL+gHHT0BBYsnEMwj3fQ+Phs9Eziu5CXeYDAjOFQGodNHSlZTRVy7+n
-         l1YxBRtID4bXnPF2miJwlzfhAeRHUv/7pIEdAfM02ACb0HYzRZZopFKZ856WkaBb80GV
-         F0zA==
-X-Forwarded-Encrypted: i=1; AJvYcCVsD2AAn9h7eLrolmUKVV76mhjzJ91s4ZVKHdXArTEUvVuqneU8LqJ5PL9bxwvVGjrxhMFmFcEE6JZG@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbFh+olsw+obPPrN/ZyIQwZzgW+qNhob0+51nvXUkqkWegbJsL
-	uW5FnXEJ2KhGytmPPWiauIZrhkB9oyXoiuAP+P1TXwN7WHzFa1QZctL4a4RwkbA=
-X-Gm-Gg: ASbGncsfaKX0xFSR0Le+FT6gbBX0R/IJ5aqnr6w2KMsqs3fKNE0Hv0KhXI1DssAyGZw
-	RqIw9/KjU7mj8KlKg9ySAHZ32lr0A4MqemDNlaWk3aNj543+euG9h7q7n6egR2mDSPJPnLecwOh
-	149qt1ndlGnfXzH2DZj7h0METeadRdCeRhvRib6w0Peag69ilgvBnu8dM6OLHEF3RW6Iww6IBTn
-	gwG5gPNl00QRzBu5z3CiYobWp6bgfmdAwhaqkM1FgB1pXHPK7IifTYrn2vHXGBWNijZJBS6KEfU
-	vBuideVbuC+E/OSGRqQA80oIvRQ6/GfnXjLLCUvgQKiquIWTehNlcw==
-X-Google-Smtp-Source: AGHT+IGwZxstsJgbZbrGjWctQYTkmnZEeqGMf6YIvXycHvPmwGPJt3l7AO/RiG5BKR9nAP88NqhdmQ==
-X-Received: by 2002:a05:6402:4604:b0:5e0:7cc4:ec57 with SMTP id 4fb4d7f45d1cf-5e44bb37281mr6445272a12.31.1740490570625;
-        Tue, 25 Feb 2025 05:36:10 -0800 (PST)
-Received: from jiri-mlt.client.nvidia.com ([140.209.217.212])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abed2057276sm143453466b.142.2025.02.25.05.36.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Feb 2025 05:36:10 -0800 (PST)
-Date: Tue, 25 Feb 2025 14:36:07 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Tariq Toukan <tariqt@nvidia.com>, 
-	"David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, 
-	Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	Jiri Pirko <jiri@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, 
-	Carolina Jubran <cjubran@nvidia.com>, Gal Pressman <gal@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 03/10] devlink: Serialize access to rate domains
-Message-ID: <qaznnl77zg24zh72axtv7vhbfdbxnzmr73bqr7qir5wu2r6n52@ob25uqzyxytm>
-References: <20250213180134.323929-1-tariqt@nvidia.com>
- <20250213180134.323929-4-tariqt@nvidia.com>
- <ieeem2dc5mifpj2t45wnruzxmo4cp35mbvrnsgkebsqpmxj5ib@hn7gphf6io7x>
- <20250218182130.757cc582@kernel.org>
+	s=arc-20240116; t=1740496681; c=relaxed/simple;
+	bh=rALszVeWffksEsP/Rrj6WAtB7agsaUXOmR/msDwji8U=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=aKqXfs13OxAFWtMhnqn55yGsZsFNrk2Lv0pkWtRKsy5pa3y/M/Rojr6jjWYcXNDWCERIvlUq1P856tRJOQNRus0/TQqAmOsJ6kYHkMr6X0yvRS82A+b5Xd6LRDd8jjKiNfAIDrn4qI1m6UtFOFa3KCRGCKlq1nknftRQ0fCLNdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AwmSELce; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1740496679;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+QyH+Q7MigOrd7puvdyRTTPCeyR6wog0WvQSvTNgWAg=;
+	b=AwmSELce/se5XCG6C4yYekqzrZR8iqgqdc5M+hHw6o4/TVpFVFgpnelVQ1gfK6pOYZo0Ri
+	JlWeCBqJ2Rd0xw2inIefQyk3uYU+biEeUsMdFzQ4ih85kaMg7mxlQ78cA02Dw1jmyOrxrp
+	tLlAgYAIjV/MOKxLO1Vtt26jQ89ZbPQ=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-184-q8YtqpU0OC6xToOGXJ3YDQ-1; Tue,
+ 25 Feb 2025 10:17:53 -0500
+X-MC-Unique: q8YtqpU0OC6xToOGXJ3YDQ-1
+X-Mimecast-MFC-AGG-ID: q8YtqpU0OC6xToOGXJ3YDQ_1740496667
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1840F1A24789;
+	Tue, 25 Feb 2025 15:16:53 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.9])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A8A29180194B;
+	Tue, 25 Feb 2025 15:16:37 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <8f36be7c-6052-4c5d-85ff-0eed27cf1456@icloud.com>
+References: <8f36be7c-6052-4c5d-85ff-0eed27cf1456@icloud.com> <20250221-rmv_return-v1-0-cc8dff275827@quicinc.com> <20250221-rmv_return-v1-1-cc8dff275827@quicinc.com> <20250221200137.GH7373@noisy.programming.kicks-ass.net>
+To: Zijun Hu <zijun_hu@icloud.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+    Will Deacon <will@kernel.org>,
+    "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+    Andrew Morton <akpm@linux-foundation.org>,
+    Nick Piggin <npiggin@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+    Thomas Gleixner <tglx@linutronix.de>,
+    Herbert Xu <herbert@gondor.apana.org.au>,
+    "David S. Miller" <davem@davemloft.net>,
+    "Rafael J. Wysocki" <rafael@kernel.org>,
+    Danilo Krummrich <dakr@kernel.org>,
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+    Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+    Johannes Berg <johannes@sipsolutions.net>,
+    Jamal Hadi Salim <jhs@mojatatu.com>,
+    Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+    Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+    Linus Walleij <linus.walleij@linaro.org>,
+    Bartosz Golaszewski <brgl@bgdev.pl>, Lee Jones <lee@kernel.org>,
+    Thomas Graf <tgraf@suug.ch>, Christoph Hellwig <hch@lst.de>,
+    Marek Szyprowski <m.szyprowski@samsung.com>,
+    Robin Murphy <robin.murphy@arm.com>,
+    Miquel Raynal <miquel.raynal@bootlin.com>,
+    Richard Weinberger <richard@nod.at>,
+    Vignesh Raghavendra <vigneshr@ti.com>, linux-arch@vger.kernel.org,
+    linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+    linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+    linux-wireless@vger.kernel.org, linux-rdma@vger.kernel.org,
+    linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
+    iommu@lists.linux.dev, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH *-next 01/18] mm/mmu_gather: Remove needless return in void API tlb_remove_page()
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250218182130.757cc582@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2298250.1740496596.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 25 Feb 2025 15:16:36 +0000
+Message-ID: <2298251.1740496596@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-Wed, Feb 19, 2025 at 03:21:30AM +0100, kuba@kernel.org wrote:
->On Fri, 14 Feb 2025 13:54:43 +0100 Jiri Pirko wrote:
->> For the record, I'm still not convinced that introducing this kind of
->> shared inter-devlink lock is good idea. We spent quite a bit of painful
->> times getting rid of global devlink_mutex and making devlink locking
->> scheme nice and simple as it currently is.
->> 
->> But at the same time I admit I can't think of any other nicer solution
->> to the problem this patchset is trying to solve.
->> 
->> Jakub, any thoughts?
->
->The problem comes from having a devlink instance per function /
->port rather than for the ASIC. Spawn a single instance and the
->problem will go away 🤷️
+Zijun Hu <zijun_hu@icloud.com> wrote:
 
-Yeah, we currently have VF devlink ports created under PF devlink instance.
-That is aligned with PCI geometry. If we have a single per-ASIC parent
-devlink, this does not change and we still need to configure cross
-PF devlink instances.
+> >>  static inline void tlb_remove_page(struct mmu_gather *tlb, struct pa=
+ge *page)
+> >>  {
+> >> -	return tlb_remove_page_size(tlb, page, PAGE_SIZE);
+> >> +	tlb_remove_page_size(tlb, page, PAGE_SIZE);
+> >>  }
+> > So I don't mind removing it, but note that that return enforces
+> > tlb_remove_page_size() has void return type.
+> >
+> =
 
-The only benefit I see is that we don't need rate domain, but
-we can use parent devlink instance lock instead. The locking ordering
-might be a bit tricky to fix though.
+> tlb_remove_page_size() is void function already. (^^)
 
+That may be true... for now.  But if that is changed in the future, then y=
+ou
+will get an error indicating something you need to go and look at... so in
+that regard, it's *better* to do this ;-)
 
->
->I think we talked about this multiple times, I think at least
->once with Jake, too. Not that I remember all the details now..
->-- 
->pw-bot: cr
+David
+
 
