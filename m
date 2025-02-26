@@ -1,96 +1,195 @@
-Return-Path: <linux-rdma+bounces-8118-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8119-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECBB8A45A87
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 10:46:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAFE6A45B8B
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 11:18:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A02891894122
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 09:46:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC1DC17203F
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 10:18:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD78E226CFD;
-	Wed, 26 Feb 2025 09:46:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7293D1A2C0E;
+	Wed, 26 Feb 2025 10:18:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hMk4kOfd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C572459C5
-	for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2025 09:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B48258CDE
+	for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2025 10:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740563181; cv=none; b=RkqDF4mb1DC+HqG+1TGlFsaXlgo5+VpSiYEozQ7ZVz2iG3OhI7Fa8x4+5cm9kI3+gPYgiry0LB5O9nGdgIT9vfCwY9lr3dXK7oA6JYObEnNuwN53QFCgFhL1Lk9Zx+UQPi2BCnVDzFj6a1J5+arEZMMTUqwbG6W7OeLECM8qqsE=
+	t=1740565123; cv=none; b=lZ7o2Nipn4CgkkzQJoxsEq7uU2Yh1hapsHinXm19xtrxGe6Xl9vAqfRoUkZ7YcIcQZmrasthiIjQ7Sdw3Q3+MBr7+I9mP2kh5SCU9LZyv9YEcLalsfZbzRumuW3ITotyxKNPoWBZwURowmIREh8YnXPKnSpxLpoA0fDx1LVZk1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740563181; c=relaxed/simple;
-	bh=oKRHSPmQbACsec7UgJDZXf0zbgWRqVfOOdWHDp8POEI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=gUoXFI5LTR+iwB+OpePY4EtSiUiikaTmXl/O6+UEnnP8g4ChO4uUcxsYIyi7iOqATLm8S/5K+ljnIlZcgUlw77kp159OBD3POU7GuTR2V0csvUUX++EgNE1hbGCsZ+4C9lTSC6/3O2wBbeD5BoJhKWrUJLqTmT4J8d07wlDYt3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Z2qPM0PQ7z17NVc;
-	Wed, 26 Feb 2025 17:46:47 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id C8AC6140451;
-	Wed, 26 Feb 2025 17:46:14 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 26 Feb 2025 17:46:13 +0800
-Message-ID: <f5e1b589-d9a6-04c4-dffd-9aa3d2e77ab1@hisilicon.com>
-Date: Wed, 26 Feb 2025 17:46:12 +0800
+	s=arc-20240116; t=1740565123; c=relaxed/simple;
+	bh=EHyhmS7wFa6Z+CGsYQ8a2YyZ6q30+DI+UWL6O9iXZ98=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=ftnc1iUP0Kv7dRg627ZIh8g51q4wrlofRi1VVnCPPjVfVwDxccVfNgEmh2HzccTVyu+8mCo/UHmUwOVIRqvcxCJfOCDmyNx1AydpQJqm3xSjiJ3qgWrvY10b5+t8+dyyQGiffj5ylDcQ/Ulco9qDqs6cbHoXMPL6+Yyi/4B1xlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hMk4kOfd; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1740565121; x=1772101121;
+  h=date:from:to:cc:subject:message-id;
+  bh=EHyhmS7wFa6Z+CGsYQ8a2YyZ6q30+DI+UWL6O9iXZ98=;
+  b=hMk4kOfdeHd/5V++G9aSNmvNqMyYRvzQXsghmBqztyQ2H8D4bi81b0In
+   vW/MKIFJDZMruRaCouZshHut6op9ltR79Sdjdg7wiRIgufM15pN/xZMIm
+   FRo5MUU3i2ZEomgYL9eudPsmHmrYHC01aWteY93l/nV8Cxumh9aWeL47z
+   S48TuFrOvlg72YHcrJQH6RChUdapm0ni9NKKUrsDabJXVAvz2Tx/VIMEs
+   F9iA3fO5y5xpJuga25Qxhxr11vT6LMAE1Fbmd4lQuLgqGZj1+fASAJUsk
+   /Mx/CsBl88KxWXLbr2pqosnDzANoiqcyNPDiMojh4j9p2gN1g1QBlPiO5
+   A==;
+X-CSE-ConnectionGUID: eii0S5GQQ2Wd1ZICAEgsTg==
+X-CSE-MsgGUID: QJHtzsDpTJGYVYIYSBMerg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11356"; a="41655975"
+X-IronPort-AV: E=Sophos;i="6.13,316,1732608000"; 
+   d="scan'208";a="41655975"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2025 02:18:40 -0800
+X-CSE-ConnectionGUID: KdWJi+NBSGy4GzYA+WZDug==
+X-CSE-MsgGUID: 90tsxnK6TIGKYriTYwrDzQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,316,1732608000"; 
+   d="scan'208";a="121273814"
+Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
+  by fmviesa005.fm.intel.com with ESMTP; 26 Feb 2025 02:18:39 -0800
+Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tnEUu-000BX2-2r;
+	Wed, 26 Feb 2025 10:18:36 +0000
+Date: Wed, 26 Feb 2025 18:17:50 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:for-next] BUILD SUCCESS
+ ba7fbaa6a83e5c68124cc943ba96a95b528bc253
+Message-ID: <202502261844.0fPar9Nt-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH for-next 0/4] RDMA/hns: Introduce delay-destruction
- mechanism
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@ziepe.ca>
-CC: Leon Romanovsky <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linuxarm@huawei.com>, <tangchengchang@huawei.com>
-References: <20250217070123.3171232-1-huangjunxian6@hisilicon.com>
- <20250219121454.GE53094@unreal>
- <bb0a621e-78e1-c030-f8f6-e175978acf0f@hisilicon.com>
- <20250219143523.GH53094@unreal>
- <e8e09f3e-a8f9-429a-ac60-272db35f25fb@hisilicon.com>
- <20250220141059.GV3696814@ziepe.ca>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20250220141059.GV3696814@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemf100018.china.huawei.com (7.202.181.17)
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: ba7fbaa6a83e5c68124cc943ba96a95b528bc253  RDMA/hfi1: Remove unused one_qsfp_write
 
+elapsed time: 2545m
 
-On 2025/2/20 22:10, Jason Gunthorpe wrote:
-> On Thu, Feb 20, 2025 at 11:48:49AM +0800, Junxian Huang wrote:
-> 
->> Driver notifies HW about the memory release with mailbox. The procedure
->> of a mailbox is:
->> 	a) driver posts the mailbox to FW
->> 	b) FW writes the mailbox data into HW
->>
->> In this scenario, step a) will fail due to the FW reset, HW won't get
->> notified and thus may lead to UAF.
-> 
-> That's just wrong, a FW reset must fully stop and sanitize the HW as
-> well. You can't have HW running rouge with no way for FW to control it
-> anymore.
-> 
+configs tested: 101
+configs skipped: 6
 
-I agree, but there is a small time gap between the start of FW reset
-and the stop of HW. Please see my earlier reply today.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
-Junxian
+tested configs:
+alpha                             allnoconfig    gcc-14.2.0
+alpha                            allyesconfig    gcc-14.2.0
+arc                              allmodconfig    gcc-13.2.0
+arc                               allnoconfig    gcc-13.2.0
+arc                              allyesconfig    gcc-13.2.0
+arc                   randconfig-001-20250225    gcc-13.2.0
+arc                   randconfig-002-20250225    gcc-13.2.0
+arm                              allmodconfig    gcc-14.2.0
+arm                               allnoconfig    clang-17
+arm                              allyesconfig    gcc-14.2.0
+arm                   randconfig-001-20250225    gcc-14.2.0
+arm                   randconfig-002-20250225    gcc-14.2.0
+arm                   randconfig-003-20250225    gcc-14.2.0
+arm                   randconfig-004-20250225    clang-15
+arm64                            allmodconfig    clang-18
+arm64                             allnoconfig    gcc-14.2.0
+arm64                 randconfig-001-20250225    clang-19
+arm64                 randconfig-002-20250225    clang-17
+arm64                 randconfig-003-20250225    clang-15
+arm64                 randconfig-004-20250225    clang-21
+csky                              allnoconfig    gcc-14.2.0
+csky                  randconfig-001-20250225    gcc-14.2.0
+csky                  randconfig-002-20250225    gcc-14.2.0
+hexagon                          allmodconfig    clang-21
+hexagon                           allnoconfig    clang-21
+hexagon                          allyesconfig    clang-18
+hexagon               randconfig-001-20250225    clang-21
+hexagon               randconfig-002-20250225    clang-21
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250225    clang-19
+i386        buildonly-randconfig-002-20250225    gcc-11
+i386        buildonly-randconfig-003-20250225    clang-19
+i386        buildonly-randconfig-004-20250225    clang-19
+i386        buildonly-randconfig-005-20250225    gcc-12
+i386        buildonly-randconfig-006-20250225    clang-19
+i386                                defconfig    clang-19
+loongarch                         allnoconfig    gcc-14.2.0
+loongarch             randconfig-001-20250225    gcc-14.2.0
+loongarch             randconfig-002-20250225    gcc-14.2.0
+m68k                              allnoconfig    gcc-14.2.0
+microblaze                        allnoconfig    gcc-14.2.0
+mips                              allnoconfig    gcc-14.2.0
+nios2                             allnoconfig    gcc-14.2.0
+nios2                 randconfig-001-20250225    gcc-14.2.0
+nios2                 randconfig-002-20250225    gcc-14.2.0
+openrisc                          allnoconfig    gcc-14.2.0
+openrisc                         allyesconfig    gcc-14.2.0
+parisc                           allmodconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                           allyesconfig    gcc-14.2.0
+parisc                randconfig-001-20250225    gcc-14.2.0
+parisc                randconfig-002-20250225    gcc-14.2.0
+powerpc                          allmodconfig    gcc-14.2.0
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc                          allyesconfig    clang-16
+powerpc               randconfig-001-20250225    gcc-14.2.0
+powerpc               randconfig-002-20250225    clang-19
+powerpc               randconfig-003-20250225    clang-21
+powerpc64             randconfig-001-20250225    gcc-14.2.0
+powerpc64             randconfig-002-20250225    gcc-14.2.0
+powerpc64             randconfig-003-20250225    gcc-14.2.0
+riscv                            allmodconfig    clang-21
+riscv                             allnoconfig    gcc-14.2.0
+riscv                            allyesconfig    clang-21
+riscv                 randconfig-001-20250225    clang-15
+riscv                 randconfig-002-20250225    clang-21
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-15
+s390                             allyesconfig    gcc-14.2.0
+s390                  randconfig-001-20250225    clang-15
+s390                  randconfig-002-20250225    gcc-14.2.0
+sh                               allmodconfig    gcc-14.2.0
+sh                                allnoconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                    randconfig-001-20250225    gcc-14.2.0
+sh                    randconfig-002-20250225    gcc-14.2.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                             allnoconfig    gcc-14.2.0
+sparc                 randconfig-001-20250225    gcc-14.2.0
+sparc                 randconfig-002-20250225    gcc-14.2.0
+sparc64               randconfig-001-20250225    gcc-14.2.0
+sparc64               randconfig-002-20250225    gcc-14.2.0
+um                               allmodconfig    clang-21
+um                                allnoconfig    clang-18
+um                               allyesconfig    gcc-12
+um                    randconfig-001-20250225    clang-21
+um                    randconfig-002-20250225    gcc-12
+x86_64                            allnoconfig    clang-19
+x86_64                           allyesconfig    clang-19
+x86_64      buildonly-randconfig-001-20250225    gcc-12
+x86_64      buildonly-randconfig-002-20250225    clang-19
+x86_64      buildonly-randconfig-003-20250225    clang-19
+x86_64      buildonly-randconfig-004-20250225    gcc-11
+x86_64      buildonly-randconfig-005-20250225    gcc-12
+x86_64      buildonly-randconfig-006-20250225    clang-19
+x86_64                              defconfig    gcc-11
+xtensa                            allnoconfig    gcc-14.2.0
+xtensa                randconfig-001-20250225    gcc-14.2.0
+xtensa                randconfig-002-20250225    gcc-14.2.0
 
-> Jason
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
