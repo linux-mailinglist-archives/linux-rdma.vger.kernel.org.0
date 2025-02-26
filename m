@@ -1,352 +1,164 @@
-Return-Path: <linux-rdma+bounces-8133-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8134-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75645A45DC2
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 12:52:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD078A45DF7
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 12:56:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6DAC1898D47
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 11:51:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7629D3A3048
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 11:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26DF4221F3B;
-	Wed, 26 Feb 2025 11:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B123F21CC48;
+	Wed, 26 Feb 2025 11:55:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="e4b+4n/g"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="FgF5BQbo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2060.outbound.protection.outlook.com [40.107.92.60])
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16516221DBD;
-	Wed, 26 Feb 2025 11:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.60
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740570548; cv=fail; b=t81YHF3FHw0xs4gTWgvaLdF7IDP9SqYT1uQ5EP90Z9h2UlUKvmtF6VqPXrde7N+fcPjNlsLhAs07uzDdbPqfctSdMMHNMxYEJCcTvOeE6WAotLEa5TGzpCuz/eUvZr02swoxE0mCO36DHuLKjKOXP33C9BXHx46Py0NqAVdM0W8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740570548; c=relaxed/simple;
-	bh=/g6jTL2adeVjGCMS4kIFiFEnN6YDGZUYlEUt3MhdFY8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oi3wi8kg2j87tai6Un9VcB5Xn2de16+9VnKpnCfi+9BjBCAVKjTAoIdMmKQuDefB8JgDIy740ckgFfyUUzoB+QKIwDf5Vgp6ZUPYl6yzeKrAY3Qai1Z6cvhRANTgzVQ2pPxowvJ2jR5bMuhChWdXYTZXTshrBDDQL27MnlAzh6A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=e4b+4n/g; arc=fail smtp.client-ip=40.107.92.60
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=V0YEeI3NSGQAqFZxmM6U9s/kiBnJnagumJ1INNOuLSA86y/fsQ/VgwyD+71bUKUPlSBYlLL4IDooTwva4l0fTEoTuM2vmJ2XmHlpGVG1iTNl/1q7gs7xOuR/lf6tzHBOgVH7o2WYINkM0GtdhNag316QnXagRab5bLmJUnQx3dP5xRk7Z9j70TH7+Y0+XQHKDDouNyCi3Khe1RGnSzqnKoUsSu/cDpcuxAVKJCWC0/XPVpNF172ueWBfIcUg2fnCEAy79T0LLoq9WSPxE1ud3x5dE6LMpyqvGoSr00p5zq+fwugqvpRS980K3VbIUPa7zVqOw17fX82ruSBVnZjdzg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=spTsY7bKjVPHS7Z4ve7fdJL9M7Yb0Fy0vW+OO5nooqw=;
- b=BgHa+0NrA8df16/1iRr7T48jd91/DYH4cvEoXDjZaiZz1ZTdg7vD8tA/nhlnZSdd0iP4NMCeLL8vkFGX3ns4OXwzobIoECK7SWNT2cJliMjGutb3Ta/90MtfhNT1jic+tM4XUN5D1nE/jxBdNse3EI+hmDY5OhP5S5YclsMIph8Np1HIqfTJQlobiJJb/wbPl2ncaxgoGhJ/a5nv+Y78If3x5wb3cXTU/dofk8cjABCmBNzi+Gem0NizwIPNj8tomdBGKT5nHWRpMU7Kr6bUEVu+rNFqCdk8Ni3OJI7/QfYYiHUYzHeJ01EpDBFnOAjXQMxnIoy82u7XUzwPYhSGmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=spTsY7bKjVPHS7Z4ve7fdJL9M7Yb0Fy0vW+OO5nooqw=;
- b=e4b+4n/gw2sqp2uwBVqm9i3Cce5Exf7K+VACg1ymrU225ucIrmmIGaQ2YSy2TlQLyDpTN7+AnYqtYahIAkbHMNZpCYRSNFYCyjP0L8ZRJ2XTgruhbiOuu+F47uIx5AwlJIMhMtgnvQxfxVVNtnmaLeQ616JPty6x+pv5UdiWM64vYuj9Ii1Lvu/m8wljRl/6JSDCxaZvAIynfnpV1Co1O9XIk0jUHN6pg7v/K9GSBeLfTJQY539Z/JiRu7AO71kvgTI/K+sQnhJHZ1dLs5Nhwi2xg7UFCPEjWyDqc/GV+c9I0/0XHT7Ps+jxNCQUOfY27fmJxXVRL/4cnb26ebRs+Q==
-Received: from SA0PR11CA0166.namprd11.prod.outlook.com (2603:10b6:806:1bb::21)
- by MN2PR12MB4207.namprd12.prod.outlook.com (2603:10b6:208:1d9::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.19; Wed, 26 Feb
- 2025 11:49:01 +0000
-Received: from SA2PEPF00003AE9.namprd02.prod.outlook.com
- (2603:10b6:806:1bb:cafe::6a) by SA0PR11CA0166.outlook.office365.com
- (2603:10b6:806:1bb::21) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8466.20 via Frontend Transport; Wed,
- 26 Feb 2025 11:49:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SA2PEPF00003AE9.mail.protection.outlook.com (10.167.248.9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8489.16 via Frontend Transport; Wed, 26 Feb 2025 11:49:00 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 26 Feb
- 2025 03:48:45 -0800
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 26 Feb
- 2025 03:48:44 -0800
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.6)
- with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Wed, 26
- Feb 2025 03:48:41 -0800
-From: Tariq Toukan <tariqt@nvidia.com>
-To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
- Lunn" <andrew+netdev@lunn.ch>
-CC: Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman <gal@nvidia.com>, "Leon
- Romanovsky" <leonro@nvidia.com>, Leon Romanovsky <leon@kernel.org>, "Tariq
- Toukan" <tariqt@nvidia.com>, <netdev@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next 6/6] net/mlx5e: Properly match IPsec subnet addresses
-Date: Wed, 26 Feb 2025 13:47:52 +0200
-Message-ID: <20250226114752.104838-7-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.45.0
-In-Reply-To: <20250226114752.104838-1-tariqt@nvidia.com>
-References: <20250226114752.104838-1-tariqt@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D68A20FA9B;
+	Wed, 26 Feb 2025 11:55:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1740570951; cv=none; b=djoU+Ez3jXe53heNODomC8SP4TxyZeG97U29DdVBHDA/wHexMs0r/UHmtmhefMKOkmta7p4nV5UNChXQnS2C8JConPe150MmhI4VH6Fo3kGzMTqivoZqLsWhDrYlkzVzkNf5LoT/qiBShHrpeWdrmcbPMAzr5mZyoajHugejlEk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1740570951; c=relaxed/simple;
+	bh=sTX8xi6LRWxYofvmbcRQIPwzk4BhNjim5Kc1TZCgi5I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=oa2f+uIviei+UOpW+FvaORTW8H79sCtzIO5I5byYm/xMmFhRB06NmNmIMpFHLZ5g7SYpxD20t5wzXBUmB5WX3Wki+KWapLdJ7T0ElsFMCIBwu28Tr5V7FAO4ed1Qb7ErD0b4Ge8+HchhElsDbUJnKLtKc21GyT3ZujrMLYjlJKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=FgF5BQbo; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1740570931; x=1741175731; i=markus.elfring@web.de;
+	bh=sTX8xi6LRWxYofvmbcRQIPwzk4BhNjim5Kc1TZCgi5I=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:Cc:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=FgF5BQbol86RnWL2Sk24p7qdL5tQLOeT6f07Kvxk4P0VuErz4WgTRL7pn6j/9HBZ
+	 z+cak2KgFRXeyXt7h/+BTqXGvv0hTXqqct+9+hLjPcNj3botKQ3pCtj1zGcH4ifEh
+	 yFa3sBuphYKHeZZwVQaSV3wyFrLsvWanJ3Z6ukLmBSFQ8+HjJKTN807sEt43aEoUg
+	 HbB2HsK30RgebgKAq9z+FLUxZ7GFREklxLf4JkReYQU8HhTTePiNS5BpbM3Q4Iq3/
+	 /8xzXq7fVNqYLas56fa9vFIZ5anQ0OIXKnqjBE+M5zkQbuCHIU124L0CnFIHiM9E2
+	 ngho7wBag929Q1fQLw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.70.43]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M604f-1tfrLt2zXv-00E5Ph; Wed, 26
+ Feb 2025 12:55:30 +0100
+Message-ID: <5495665a-774b-4bc5-8eb2-a9680d09b0be@web.de>
+Date: Wed, 26 Feb 2025 12:55:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: AnonymousSubmission
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00003AE9:EE_|MN2PR12MB4207:EE_
-X-MS-Office365-Filtering-Correlation-Id: 43bc5d86-da56-4c36-a720-08dd565b8f36
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|1800799024|82310400026|36860700013;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?xsgHdkmv9LNJs3Vkvrr4Hi5T8iDtTDBwiqM7c6JTOBLkTJxLpIgISqN6baDg?=
- =?us-ascii?Q?dEeTo0zWFSvBzsWriL7uzVTuOT/aGZ+2YL+lrWjJ5LE6jvoy7W21NorW2QQ5?=
- =?us-ascii?Q?ElIMVIIZXLLjc9YsDH9zmXBCKortTsic4pwSZ8ynIUQM5ccfyIykapkxFhgt?=
- =?us-ascii?Q?y7NydZGWA1hcwLCsKC3etRuaiYCAuWHrlwqaUMwDjLSOpiC4O1H3On9f8NsU?=
- =?us-ascii?Q?rw/FWDTVbMRvRTjQhbrQLk1PskWTyL3gDGAc5mgaY5jj/FJlTzcKgKiNBiHE?=
- =?us-ascii?Q?oMuFTV3uJbuV9XD5RowdoRzjuV0Qy2JaQskgdaaaF4MDbcACdK2WbaH2Bkcm?=
- =?us-ascii?Q?BhujzbdWvVfkrkuktgerbwAax3iNBaWTTi0GZJY/GfP5vXlMkW9tkfsxBN1s?=
- =?us-ascii?Q?60hv2GKl48HOnRRowWqQJLy4i4vPYU2LmjFlLNF83nr0xp9bf9xc1mASpIhJ?=
- =?us-ascii?Q?4093uaU2FR9Xj4Yu0FjOsd38IOpWIctQP9Otx2azbPm9x9p2Z4137pmCsqcV?=
- =?us-ascii?Q?9Rtus6I3MnhKr3CqBzvqA/OoaxSlir5Gb7YkRyq1See6VxYmPN8qvkcdWWig?=
- =?us-ascii?Q?/HVY0jOsuTQ/W+hbLng4JF+dZUZ0n4uiQHAqSro4ssdbymUWnJOHaRA3Ohvq?=
- =?us-ascii?Q?ZqD/N5yb1k1BuDmofDv+CQTwC/qgo02EBuB1FOJWeCA2o6pvCwjjm+q71euF?=
- =?us-ascii?Q?mxHsEw+MlCTmHOYSgZ+A+yEO++894NzJuptUbpYzOFLB+RBR+90GZlVrtg1v?=
- =?us-ascii?Q?fd6s+K8hXc+e9N0HDJpH695gPDD5eF//9j2StlNIyxcP8lK+mDzJxdcL0Lif?=
- =?us-ascii?Q?383HzvXfINBS1AU2vGeKmiWSV5+ncLUQbnSL35FK+Yjh2+7Q66tdodSyAy4N?=
- =?us-ascii?Q?UBDH4HVKud+m6uQYIU04OyszqE6gPjPNOJ7+0Wu88CF5+JiOQRBCr4ZhbXVI?=
- =?us-ascii?Q?CQkfHxuL0kn2rpEWQxVQPvZueGJ7knsuXvI/T1YflN0/VGWmIXs31WhbVgR1?=
- =?us-ascii?Q?UsElX8o1K4LsLF+RAncxJ8/HeM+JQIxWZ/yE4AvxB9oHnGGA+d0w/Z/hdLeD?=
- =?us-ascii?Q?kCdQLts2vdN09vaH79lHWfVyQIMKDz9hhRCRhxn/42D+dcrTV0QmIQpl6m/p?=
- =?us-ascii?Q?PACD14zKl6dLbEAaklgaespYJeN98oSjX+ztdoGTOi17mQZnELyi3fYevqlY?=
- =?us-ascii?Q?nXwpG840qhp43ljfZ3dyh0PdGf572eyonvvnoslalFqYOsgIyv8vxEF7TPGK?=
- =?us-ascii?Q?vZfPc7oo81s2e1nB6w9+Ja/WXDVBdeUMbfM7Tjm4t3S5tN9Qoc4JURIrr4rr?=
- =?us-ascii?Q?ul2a42svGvFFfpJbmi9o9R17109B4qFUJQgorAaU3US1MUlzE2gSCzwyeKwg?=
- =?us-ascii?Q?tXNxvpRlEs6F/3cQB/xhmsL0LYrHNdP7dG+DRoLjmB17c5/zICXsAdtiM4xp?=
- =?us-ascii?Q?bofqp0tkgglBvxvySOM/p2RkY1AiZ6vjtgZbi7tzSvyrwF2JEQqkyIqKIUrx?=
- =?us-ascii?Q?67W55zQSKdEQQ54=3D?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(1800799024)(82310400026)(36860700013);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2025 11:49:00.0121
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43bc5d86-da56-4c36-a720-08dd565b8f36
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF00003AE9.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4207
+User-Agent: Mozilla Thunderbird
+Subject: Re: [cocci] [PATCH v3 04/16] ALSA: ac97: convert timeouts to
+ secs_to_jiffies()
+To: Easwar Hariharan <eahariha@linux.microsoft.com>, cocci@inria.fr,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Yaron Avizrat <yaron.avizrat@intel.com>, Oded Gabbay <ogabbay@kernel.org>,
+ Julia Lawall <Julia.Lawall@inria.fr>, Nicolas Palix <nicolas.palix@imag.fr>,
+ James Smart <james.smart@broadcom.com>,
+ Dick Kennedy <dick.kennedy@broadcom.com>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Ilya Dryomov <idryomov@gmail.com>,
+ Dongsheng Yang <dongsheng.yang@easystack.cn>, Jens Axboe <axboe@kernel.dk>,
+ Xiubo Li <xiubli@redhat.com>, Damien Le Moal <dlemoal@kernel.org>,
+ Niklas Cassel <cassel@kernel.org>, Carlos Maiolino <cem@kernel.org>,
+ "Darrick J. Wong" <djwong@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+ Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
+ Sagi Grimberg <sagi@grimberg.me>, Frank Li <Frank.Li@nxp.com>,
+ Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>,
+ Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+ Selvin Xavier <selvin.xavier@broadcom.com>,
+ Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
+ <20250225-converge-secs-to-jiffies-part-two-v3-4-a43967e36c88@linux.microsoft.com>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+Cc: linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-ide@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-nvme@lists.infradead.org, linux-spi@vger.kernel.org,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ platform-driver-x86@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net,
+ linux-rdma@vger.kernel.org, kernel@pengutronix.de,
+ Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <20250225-converge-secs-to-jiffies-part-two-v3-4-a43967e36c88@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ucYXuYgBQVTEWaObV/mFjtsvpzQ/KO5i5l5ZjdohfyGQ4hlxvcY
+ sTVdlsTl9fld7Rgr2WyDph9nJLEmgybCGSVtuMLyhQK485ALORk88bsJZJIOfByFUNZedr7
+ Tig7GhQucLbNWxtaLBapV3p7oWArgHdIII/eRzvvtip6IPoz+StdW8P4rzipPjdrxqJNq7V
+ w9kH46OLKD2fAu1DJ4I4g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:NqOsrw7wXz4=;wwgFpUfWgrNKqonaHrxuK0zBMVo
+ mDjqDBwUTGC2TEakQ0FQpQb+jPeq8+VUsHA9FysNiUMcu9jvRYzUnVW/cePngei1HuxUi+9jB
+ gzwpaGWWDjDgiqloN8NkKw7fK1k9aiq9WO2QV+FahFVJxKCiEOht1QwMKGQlNmk9KSfqrx+xY
+ /ZLupqHBoI8IrXEf4BLPHHel92dIDpHQKboSzjjYqqe+D17jNVvkdG6fNPyA61KaW3VNs4cNO
+ VvTz7objQwY3sXV9VVKfi5xn57PHN9mTjtQuIqd+Fkmo2WDIvSm1qZXwIHn3nMByQ+tt7svzC
+ Q8spwoR/tPpS2RHogJczvjm/AJwifCv3M4zmOA7P6thgwODVRmcvR/4vF01uKQLuK9qMgFlyc
+ bcgjRUxbqZme7tOe+3/skv2xiRyQEbhJKJtGN5D+YuDiSWxugE0waVrKszeAKPmktude+e3Wm
+ hb6pdZnYZCt8B9GbDEP5Vb/mlwKymujzJht1qssYcn8d3Ml1SMkSc3vuwSRHDX6T7apEaslxL
+ H1ldZBfcHAqqxfpa5LbXdHASW4m4p3H0K1hJHORXZqCUnOEcZxDWNffnSEspRVYifgrFqGv4y
+ Kj26KhRIVUoBKuigt9Q2mdl8jTmWXytY3VzlUIiR7tUQHVdIIbUdCyTnywoOmuD6VO0yepr5x
+ bLQ4dW/TIsHMfmgenog//zbU7q2CO3bneqDQJPNt+SnDmx59ilBfNjed2YgZwvn4cQlSdaI0L
+ F6NIFthjhreE3/Mi2NLvYEGxVUZoOMS2U7r5bxeagKeTc2gxxXa1GQVKaGa4DKQrDpFctrZO+
+ VgS1EfusE5lk8m0igJwjGV8T5jJ4yK8zBmXHUgf2B7xsqbzIVsymf73VTGRYna5d8fpSlwFol
+ Z7qd+KqzL47eifD09GmZjoE4UJBGc7zuzHDS6dRLZAuI/Zl84ps/Ym32YxhbN/YAsutAmmp+v
+ TOkjv6MdafHxETdnQKdh/rPigxuHdcazx7XB6EEgDKbDg3iSQfzRgSR4xQ4NJ8AZ2iLg0mWum
+ 0vXgI8wXv34gMt9O2p3er2RQWDsVcZ08cX04PIZdsztxTjwu0CPkBaXXuUyTd+ZnGMu5xuqJ6
+ NVigR36nr3N2Z8mQFMK5WqrimZH+EH+M90+yC79G0/T7t0PPocKOZnJL41HJTo+LovTIveleV
+ HWrp9ctFsgjPDj6UJNJTykjtt8NgQ82/CLAEHggdCeEf/T9E6KPlLG59U+DvbDeDV1a/KcYk6
+ oIKY/n0w1wj9RkAu6PcR+vZ6tUptSyjIto4BLBRON4Vu2xjOkAgT2n2QCgRNb4wktwpFOdB2t
+ dil/Pn0qWsKxuLlEMj/YzfiGEHQVObo/J888IPK+k+5H0DLKihuIJZ57xoknHewbhE68lpmcV
+ rG+nfMuo4dycdcDOCDQ3IWqIkBsiusNZFDRDG0JStERTtnEkvLAd8i/CYVJdEg4hKBw+fpLvN
+ wNpIdlENtYji5zVvncyHslb0goYM=
 
-From: Leon Romanovsky <leonro@nvidia.com>
+=E2=80=A6
+> This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci wi=
+th
+> the following Coccinelle rules:
 
-Existing match criteria didn't allow to match whole subnet and
-only by specific addresses only. This caused to tunnel mode do not
-forward such traffic through relevant SA.
+Is only a single SmPL script rule relevant here?
 
-In tunnel mode, policies look like this:
-src 192.169.0.0/16 dst 192.169.0.0/16
-        dir out priority 383615 ptype main
-        tmpl src 192.169.101.2 dst 192.169.101.1
-                proto esp spi 0xc5141c18 reqid 1 mode tunnel
-        crypto offload parameters: dev eth2 mode packet
 
-In this case, the XFRM core code handled all subnet calculations and
-forwarded network address to the drivers e.g. 192.169.0.0.
+> @depends on patch@
+> expression E;
+> @@
+>
+> -msecs_to_jiffies
+> +secs_to_jiffies
+> (E
+> - * \( 1000 \| MSEC_PER_SEC \)
+> )
 
-For mlx5 devices, there is a need to set relevant prefix e.g. 0xFFFF00
-to perform flow steering match operation.
+I would miss two space characters in the first text column.
+Please avoid typos also in such SmPL code.
+Would you like to compare your contributions with a previous change sugges=
+tion
+like =E2=80=9C[PATCH v3 03/16] accel/habanalabs: convert timeouts to secs_=
+to_jiffies()=E2=80=9D
+once more?
+https://lore.kernel.org/cocci/20250225-converge-secs-to-jiffies-part-two-v=
+3-3-a43967e36c88@linux.microsoft.com/
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
----
- .../mellanox/mlx5/core/en_accel/ipsec.c       | 49 +++++++++++++++++++
- .../mellanox/mlx5/core/en_accel/ipsec.h       |  9 +++-
- .../mellanox/mlx5/core/en_accel/ipsec_fs.c    | 20 +++++---
- 3 files changed, 69 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
-index beb7275d721a..782f6d51434d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
-@@ -303,6 +303,16 @@ static void mlx5e_ipsec_init_macs(struct mlx5e_ipsec_sa_entry *sa_entry,
- 	neigh_release(n);
- }
- 
-+static void mlx5e_ipsec_state_mask(struct mlx5e_ipsec_addr *addrs)
-+{
-+	/*
-+	 * State doesn't have subnet prefixes in outer headers.
-+	 * The match is performed for exaxt source/destination addresses.
-+	 */
-+	memset(addrs->smask.m6, 0xFF, sizeof(__be32) * 4);
-+	memset(addrs->dmask.m6, 0xFF, sizeof(__be32) * 4);
-+}
-+
- void mlx5e_ipsec_build_accel_xfrm_attrs(struct mlx5e_ipsec_sa_entry *sa_entry,
- 					struct mlx5_accel_esp_xfrm_attrs *attrs)
- {
-@@ -378,6 +388,7 @@ void mlx5e_ipsec_build_accel_xfrm_attrs(struct mlx5e_ipsec_sa_entry *sa_entry,
- 	       sizeof(attrs->addrs.saddr));
- 	memcpy(&attrs->addrs.daddr, x->id.daddr.a6, sizeof(attrs->addrs.daddr));
- 	attrs->addrs.family = x->props.family;
-+	mlx5e_ipsec_state_mask(&attrs->addrs);
- 	attrs->type = x->xso.type;
- 	attrs->reqid = x->props.reqid;
- 	attrs->upspec.dport = ntohs(x->sel.dport);
-@@ -1046,6 +1057,43 @@ static void mlx5e_xfrm_update_stats(struct xfrm_state *x)
- 	x->curlft.bytes += success_bytes - headers * success_packets;
- }
- 
-+static __be32 word_to_mask(int prefix)
-+{
-+	if (prefix < 0)
-+		return 0;
-+
-+	if (!prefix || prefix > 31)
-+		return cpu_to_be32(0xFFFFFFFF);
-+
-+	return cpu_to_be32(((1U << prefix) - 1) << (32 - prefix));
-+}
-+
-+static void mlx5e_ipsec_policy_mask(struct mlx5e_ipsec_addr *addrs,
-+				    struct xfrm_selector *sel)
-+{
-+	int i;
-+
-+	if (addrs->family == AF_INET) {
-+		addrs->smask.m4 = word_to_mask(sel->prefixlen_s);
-+		addrs->saddr.a4 &= addrs->smask.m4;
-+		addrs->dmask.m4 = word_to_mask(sel->prefixlen_d);
-+		addrs->daddr.a4 &= addrs->dmask.m4;
-+		return;
-+	}
-+
-+	for (i = 0; i < 4; i++) {
-+		if (sel->prefixlen_s != 32 * i)
-+			addrs->smask.m6[i] =
-+				word_to_mask(sel->prefixlen_s - 32 * i);
-+		addrs->saddr.a6[i] &= addrs->smask.m6[i];
-+
-+		if (sel->prefixlen_d != 32 * i)
-+			addrs->dmask.m6[i] =
-+				word_to_mask(sel->prefixlen_d - 32 * i);
-+		addrs->daddr.a6[i] &= addrs->dmask.m6[i];
-+	}
-+}
-+
- static int mlx5e_xfrm_validate_policy(struct mlx5_core_dev *mdev,
- 				      struct xfrm_policy *x,
- 				      struct netlink_ext_ack *extack)
-@@ -1121,6 +1169,7 @@ mlx5e_ipsec_build_accel_pol_attrs(struct mlx5e_ipsec_pol_entry *pol_entry,
- 	memcpy(&attrs->addrs.saddr, sel->saddr.a6, sizeof(attrs->addrs.saddr));
- 	memcpy(&attrs->addrs.daddr, sel->daddr.a6, sizeof(attrs->addrs.daddr));
- 	attrs->addrs.family = sel->family;
-+	mlx5e_ipsec_policy_mask(&attrs->addrs, sel);
- 	attrs->dir = x->xdo.dir;
- 	attrs->action = x->action;
- 	attrs->type = XFRM_DEV_OFFLOAD_PACKET;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.h b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.h
-index 37ef1e331135..a63c2289f8af 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.h
-@@ -81,11 +81,18 @@ struct mlx5e_ipsec_addr {
- 		__be32 a4;
- 		__be32 a6[4];
- 	} saddr;
--
-+	union {
-+		__be32 m4;
-+		__be32 m6[4];
-+	} smask;
- 	union {
- 		__be32 a4;
- 		__be32 a6[4];
- 	} daddr;
-+	union {
-+		__be32 m4;
-+		__be32 m6[4];
-+	} dmask;
- 	u8 family;
- };
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
-index 23b63dea2f7f..98b6a3a623f9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
-@@ -1488,7 +1488,9 @@ static void setup_fte_addr4(struct mlx5_flow_spec *spec,
- 			    struct mlx5e_ipsec_addr *addrs)
- {
- 	__be32 *saddr = &addrs->saddr.a4;
-+	__be32 *smask = &addrs->smask.m4;
- 	__be32 *daddr = &addrs->daddr.a4;
-+	__be32 *dmask = &addrs->dmask.m4;
- 
- 	if (!*saddr && !*daddr)
- 		return;
-@@ -1501,15 +1503,15 @@ static void setup_fte_addr4(struct mlx5_flow_spec *spec,
- 	if (*saddr) {
- 		memcpy(MLX5_ADDR_OF(fte_match_param, spec->match_value,
- 				    outer_headers.src_ipv4_src_ipv6.ipv4_layout.ipv4), saddr, 4);
--		MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria,
--				 outer_headers.src_ipv4_src_ipv6.ipv4_layout.ipv4);
-+		memcpy(MLX5_ADDR_OF(fte_match_param, spec->match_criteria,
-+				    outer_headers.src_ipv4_src_ipv6.ipv4_layout.ipv4), smask, 4);
- 	}
- 
- 	if (*daddr) {
- 		memcpy(MLX5_ADDR_OF(fte_match_param, spec->match_value,
- 				    outer_headers.dst_ipv4_dst_ipv6.ipv4_layout.ipv4), daddr, 4);
--		MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria,
--				 outer_headers.dst_ipv4_dst_ipv6.ipv4_layout.ipv4);
-+		memcpy(MLX5_ADDR_OF(fte_match_param, spec->match_criteria,
-+				    outer_headers.dst_ipv4_dst_ipv6.ipv4_layout.ipv4), dmask, 4);
- 	}
- }
- 
-@@ -1517,7 +1519,9 @@ static void setup_fte_addr6(struct mlx5_flow_spec *spec,
- 			    struct mlx5e_ipsec_addr *addrs)
- {
- 	__be32 *saddr = addrs->saddr.a6;
-+	__be32 *smask = addrs->smask.m6;
- 	__be32 *daddr = addrs->daddr.a6;
-+	__be32 *dmask = addrs->dmask.m6;
- 
- 	if (addr6_all_zero(saddr) && addr6_all_zero(daddr))
- 		return;
-@@ -1530,15 +1534,15 @@ static void setup_fte_addr6(struct mlx5_flow_spec *spec,
- 	if (!addr6_all_zero(saddr)) {
- 		memcpy(MLX5_ADDR_OF(fte_match_param, spec->match_value,
- 				    outer_headers.src_ipv4_src_ipv6.ipv6_layout.ipv6), saddr, 16);
--		memset(MLX5_ADDR_OF(fte_match_param, spec->match_criteria,
--				    outer_headers.src_ipv4_src_ipv6.ipv6_layout.ipv6), 0xff, 16);
-+		memcpy(MLX5_ADDR_OF(fte_match_param, spec->match_criteria,
-+				    outer_headers.src_ipv4_src_ipv6.ipv6_layout.ipv6), dmask, 16);
- 	}
- 
- 	if (!addr6_all_zero(daddr)) {
- 		memcpy(MLX5_ADDR_OF(fte_match_param, spec->match_value,
- 				    outer_headers.dst_ipv4_dst_ipv6.ipv6_layout.ipv6), daddr, 16);
--		memset(MLX5_ADDR_OF(fte_match_param, spec->match_criteria,
--				    outer_headers.dst_ipv4_dst_ipv6.ipv6_layout.ipv6), 0xff, 16);
-+		memcpy(MLX5_ADDR_OF(fte_match_param, spec->match_criteria,
-+				    outer_headers.dst_ipv4_dst_ipv6.ipv6_layout.ipv6), smask, 16);
- 	}
- }
- 
--- 
-2.45.0
-
+Regards,
+Markus
 
