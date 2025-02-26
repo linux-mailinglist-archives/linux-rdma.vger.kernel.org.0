@@ -1,157 +1,79 @@
-Return-Path: <linux-rdma+bounces-8098-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8099-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AABEAA4511D
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 01:02:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AF4AA4515B
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 01:20:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7AB917F611
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 00:02:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89E1C189CD7B
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 00:20:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B80A24A32;
-	Wed, 26 Feb 2025 00:02:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E515940C03;
+	Wed, 26 Feb 2025 00:20:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="HuaKl3qd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ec+JTauw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02E528E8;
-	Wed, 26 Feb 2025 00:02:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1AF047F4A;
+	Wed, 26 Feb 2025 00:20:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740528167; cv=none; b=opcS9GhYrIJbKaAGKePEeT8lAG1Fmj2jmWI+SKlYvw3RhcKYs4tg69X9sDdIC85PwihLFu4tyd4h0UZggVswkUDBUSxb8Szp4RhieeCR1YRbJs/QgOM9d6zlln1/W/z/T+Qvbu2YoOm0wK1W/Xs+SnLDN4fpc27zWpdIs2cr6xk=
+	t=1740529202; cv=none; b=XsEqXwTcC5V4n3Nfeth++qVakS+gLV96puzyE2zbcP5wBAS/Uua4lC4EpOq8QLVcklwGTvCACZxyT6glJYDOvXO/YKlULdqC8eDrbdjJcZt33Dg39u9zLe/Nc16d190uoEOFBCutayDRuYbyDSnZ+S9pPSvGDurf0sJPrD8sVA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740528167; c=relaxed/simple;
-	bh=SQMRA5N+jXvNo2T5JsKh4b8XY33eotbHHZmlw5h9oWs=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=RaBKuWdhwuSRseaF1F6MRy511PlfcfVr5Drz+DAm9GV/YqASfOZ83zAEwdCKinSCLUH9z/JC85EqFdMOgpEcFYPiVFmPdKc+/VID7jAEt5ozcOhnuHgBYhqo5E5zPx7b2a318ahFro9DKBdoo3CssxEYC3b6bGgSjtEBHBwcH64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=HuaKl3qd; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.65.162.92] (unknown [20.236.10.206])
-	by linux.microsoft.com (Postfix) with ESMTPSA id A62F5203CDFE;
-	Tue, 25 Feb 2025 16:02:43 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A62F5203CDFE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1740528165;
-	bh=BFPE5nqMT5TV/F32YTt+Q2sFqdqX3HzV4emGmVK7HJw=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=HuaKl3qdKUi413qXmLg1j75aNN8MijOcIeKtJu18EQJFDjoRXls3deulMv1TJVsSW
-	 65ILxLiYMFv1sS1yCqPvEvTeMb7w5g4ew6OAxy2dKtMZrrLZYy7Kf0E371zAONpm5r
-	 c4JAQrpBSBxtsQowW5sxR9dgfpM5kWSNcx4MfN/8=
-Message-ID: <df0c2400-147c-4104-a2e6-d1038ff31524@linux.microsoft.com>
-Date: Tue, 25 Feb 2025 16:02:42 -0800
+	s=arc-20240116; t=1740529202; c=relaxed/simple;
+	bh=R5w9HSa8JfJx6MrcgY+bd5/ecukvj/vwIuqQFd4C4YI=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=V3sXXjN1Ux4MbcvxZvpsjhXatgiRpFAtoiwMMNGTxm0xFalWAmsq/0Lajb+ca9cDvYYOD88uRFDsE5ma17xT8GDjEzMCx4gCXsxyTxi1k2pZjQ3ofrSA7zig7+HP/YMr+/jGo1fuVhiltYdHW1gG5t/XAYpLPbISowHpISTk3fU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ec+JTauw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F76DC4CEDD;
+	Wed, 26 Feb 2025 00:20:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740529202;
+	bh=R5w9HSa8JfJx6MrcgY+bd5/ecukvj/vwIuqQFd4C4YI=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=Ec+JTauw7/ZPFNbxzGtrg5NfoKgrgsgiI38fXLNOP13uyiUp2maIxSYccs0k/4Jo0
+	 3Q80AUU9DyBMThdGKjP3GBtZKRS1ar5TzDlJ6+vumRjGXSa0ahGA3ybDtRNXK2z41R
+	 mz+Utq/m5Yk2lLwocssjpRukhrUXRUSbGB3p5EzbcoWi9mPHIbB6JTFFlQJaW131Z+
+	 qAmtlFYmtlAB+2Cu9vVJfGPNcuUyD9uZg2oErlFcFFZkwoJSD283sgyohngB66xPgZ
+	 xRt88AIN4vsMYHr4O4g4wH57cDF0Nbb5VvxnMt2Zm1quqJ99KCu8SbbvijpXo/E3pt
+	 TkIfEmlX+Zoug==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70EFF380CFDC;
+	Wed, 26 Feb 2025 00:20:35 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20250225192249.GA637700@nvidia.com>
+References: <20250225192249.GA637700@nvidia.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20250225192249.GA637700@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: b66535356a4834a234f99e16a97eb51f2c6c5a7d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: ac9c34d1e45a4c25174ced4fc0cfc33ff3ed08c7
+Message-Id: <174052923404.175592.14963006876546718593.pr-tracker-bot@kernel.org>
+Date: Wed, 26 Feb 2025 00:20:34 +0000
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: eahariha@linux.microsoft.com, Frank.Li@nxp.com,
- James.Bottomley@HansenPartnership.com, Julia.Lawall@inria.fr,
- Shyam-sundar.S-k@amd.com, akpm@linux-foundation.org, axboe@kernel.dk,
- broonie@kernel.org, cassel@kernel.org, cem@kernel.org,
- ceph-devel@vger.kernel.org, clm@fb.com, cocci@inria.fr,
- dick.kennedy@broadcom.com, djwong@kernel.org, dlemoal@kernel.org,
- dongsheng.yang@easystack.cn, dri-devel@lists.freedesktop.org,
- dsterba@suse.com, festevam@gmail.com, hch@lst.de, hdegoede@redhat.com,
- hmh@hmh.eng.br, ibm-acpi-devel@lists.sourceforge.net, idryomov@gmail.com,
- ilpo.jarvinen@linux.intel.com, imx@lists.linux.dev,
- james.smart@broadcom.com, jgg@ziepe.ca, josef@toxicpanda.com,
- kalesh-anakkur.purayil@broadcom.com, kbusch@kernel.org,
- kernel@pengutronix.de, leon@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-ide@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
- linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-sound@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-xfs@vger.kernel.org,
- martin.petersen@oracle.com, nicolas.palix@imag.fr, ogabbay@kernel.org,
- perex@perex.cz, platform-driver-x86@vger.kernel.org, s.hauer@pengutronix.de,
- sagi@grimberg.me, selvin.xavier@broadcom.com, shawnguo@kernel.org,
- sre@kernel.org, tiwai@suse.com, xiubli@redhat.com, yaron.avizrat@intel.com
-Subject: Re: [PATCH v3 06/16] rbd: convert timeouts to secs_to_jiffies()
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
- <20250225-converge-secs-to-jiffies-part-two-v3-6-a43967e36c88@linux.microsoft.com>
- <e53d7586-b278-4338-95a2-fa768d5d8b5e@wanadoo.fr>
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-Content-Language: en-US
-In-Reply-To: <e53d7586-b278-4338-95a2-fa768d5d8b5e@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On 2/25/2025 1:09 PM, Christophe JAILLET wrote:
-> Le 25/02/2025 à 21:17, Easwar Hariharan a écrit :
->> Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
->> secs_to_jiffies().  As the value here is a multiple of 1000, use
->> secs_to_jiffies() instead of msecs_to_jiffies() to avoid the multiplication
->>
->> This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci with
->> the following Coccinelle rules:
->>
->> @depends on patch@ expression E; @@
->>
->> -msecs_to_jiffies(E * 1000)
->> +secs_to_jiffies(E)
->>
->> @depends on patch@ expression E; @@
->>
->> -msecs_to_jiffies(E * MSEC_PER_SEC)
->> +secs_to_jiffies(E)
->>
->> While here, remove the no-longer necessary check for range since there's
->> no multiplication involved.
-> 
-> I'm not sure this is correct.
-> Now you multiply by HZ and things can still overflow.
-> 
-> 
-> Hoping I got casting right:
-> 
-> #define MSEC_PER_SEC    1000L
-> #define HZ 100
-> 
-> 
-> #define secs_to_jiffies(_secs) (unsigned long)((_secs) * HZ)
-> 
-> static inline unsigned long _msecs_to_jiffies(const unsigned int m)
-> {
->     return (m + (MSEC_PER_SEC / HZ) - 1) / (MSEC_PER_SEC / HZ);
-> }
-> 
-> int main() {
-> 
->     int n = INT_MAX - 5;
-> 
->     printf("res  = %ld\n", secs_to_jiffies(n));
->     printf("res  = %ld\n", _msecs_to_jiffies(1000 * n));
-> 
->     return 0;
-> }
-> 
-> 
-> gives :
-> 
-> res  = -600
-> res  = 429496130
-> 
-> with msec, the previous code would catch the overflow, now it overflows silently.
-> 
-> untested, but maybe:
->     if (result.uint_32 > INT_MAX / HZ)
->         goto out_of_range;
-> 
-> ?
-> 
-> CJ
-> 
+The pull request you sent on Tue, 25 Feb 2025 15:22:49 -0400:
 
-Thanks for the review! I was able to replicate your results, I'll try this range check
-and get back.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-Thanks,
-Easwar (he/him)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/ac9c34d1e45a4c25174ced4fc0cfc33ff3ed08c7
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
