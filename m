@@ -1,201 +1,123 @@
-Return-Path: <linux-rdma+bounces-8172-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8173-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDB06A46A8C
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 20:02:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C86E2A46C95
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 21:39:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C276B16DC15
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 19:02:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96D283AEFC1
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 20:38:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4F9621E096;
-	Wed, 26 Feb 2025 19:02:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58BB238D39;
+	Wed, 26 Feb 2025 20:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kq10u50m"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="fV8iNAC7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F09183CCA
-	for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2025 19:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1552827561C;
+	Wed, 26 Feb 2025 20:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740596551; cv=none; b=LAsTN7bIjdD9owaPys6JXVCt8DqrqmRfTEZRKb/tCciLBjLTqgEz2QeLIFU5lChl11KfG98DJDhYo+INeVycto2kAklCKeCRliVYe/ADaqmY0n0uIvAx11kcnAAE7pjddd5+lYrt4fV70N98hbZcf7hcWDDwGT7p90eWScEE49w=
+	t=1740602334; cv=none; b=WQ4PmwmEnNIRTGDpcRIBQXd7wchdvHqpnXQJKsJBoFIxAJuz1qAd8tFYa0SJakHfdyIaBacXEo4G19eyT/sUjw0vSn3xf0Ypxg4beIUkVACZQZ4JS9mwNVpth8ciyTcMJOE1FLjneSPooaYdXb7clMXOYtPFJNpbm5PLFpV4PsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740596551; c=relaxed/simple;
-	bh=PM0iuxwTwKVQ3swVnaNNb9FnzSTV4LJEdk9/RWpvUhA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XJNcO2Xy+gl9mjeJQ6lih/DqvNWwukbgiPIvkvr483L5yXvYQ5RIXnSFuviCOonCyNskuxr4OGlS67IW6eGHHp+buMF2cG83/xAGg/rCTwdz29YgfD8Kv/HX1av4x4WUgtttyKeTO5+bj+hAkZ/9t2k2UZKByAX4cC+o6o+wBb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Kq10u50m; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740596547;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=9tJLIQTRQrVy89QFp2mFby5PtzlOdWSIBKGKAYQp2dc=;
-	b=Kq10u50mNH3nFKGWMVqtFui3JJT0HEVvDxVzBEYzBZVt5B4ALEqfK4w2H/eaLTEgDBrqLo
-	akw7lr71jW/Vp3pDFjCfU+b5MPHyxjq1GnHsY1P1SOc8nKe4hQJOtG4oENMcghTk3hC5v9
-	uWldEdhJHncAcv1yUlJgfIZgH16Kjz8=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>,
-	Leon Romanovsky <leon@kernel.org>,
-	Maher Sanalla <msanalla@nvidia.com>,
-	Parav Pandit <parav@mellanox.com>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] RDMA/core: don't expose hw_counters outside of init net namespace
-Date: Wed, 26 Feb 2025 19:02:14 +0000
-Message-ID: <20250226190214.3093336-1-roman.gushchin@linux.dev>
+	s=arc-20240116; t=1740602334; c=relaxed/simple;
+	bh=7XYXLxmDs/g+GFsdMP00ShC9As4ZJdRFjOnafekKWK4=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=WgKiS3Iqan7ZZIsHFJI/HVGDUAWTs2KgNl4AJzVxc3fZwliMwyIOG7gEG8w8heSViu3Y9XlnSJztXB/IxcrsFZXY/wksy8RcAFA36vzq5g9lu+IKYEJMD1c6HhC9jI4k1cAeQvtMlv02GxEdrcPpMcsEba8BjgbzgzzGB3qyAv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=fV8iNAC7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6862C4CED6;
+	Wed, 26 Feb 2025 20:38:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1740602333;
+	bh=7XYXLxmDs/g+GFsdMP00ShC9As4ZJdRFjOnafekKWK4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fV8iNAC7l4sOXlbbBPxr62ebH5w2CCdPAcSqIvutoYztu5oPQJIO+VleFuSaNJwgu
+	 4XgUTLEITbZ/EXzbMYjOUaYvhSzh8lkiZR+OX0Og6mdEO8tbUqzELkCgiiGXTD8w+8
+	 VA5I1aWrxf8HjtmXFunV8nM5CekAUj0+LkOLORow=
+Date: Wed, 26 Feb 2025 12:38:51 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Easwar Hariharan <eahariha@linux.microsoft.com>, Yaron Avizrat
+ <yaron.avizrat@intel.com>, Oded Gabbay <ogabbay@kernel.org>, Julia Lawall
+ <Julia.Lawall@inria.fr>, Nicolas Palix <nicolas.palix@imag.fr>, James Smart
+ <james.smart@broadcom.com>, Dick Kennedy <dick.kennedy@broadcom.com>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Ilya
+ Dryomov <idryomov@gmail.com>, Dongsheng Yang <dongsheng.yang@easystack.cn>,
+ Jens Axboe <axboe@kernel.dk>, Xiubo Li <xiubli@redhat.com>, Damien Le Moal
+ <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, Carlos Maiolino
+ <cem@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>, Sebastian Reichel
+ <sre@kernel.org>, Keith Busch <kbusch@kernel.org>, Christoph Hellwig
+ <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Frank Li
+ <Frank.Li@nxp.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
+ <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, Shyam Sundar S K
+ <Shyam-sundar.S-k@amd.com>, Hans de Goede <hdegoede@redhat.com>, Ilpo
+ =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>, Henrique de
+ Moraes Holschuh <hmh@hmh.eng.br>, Selvin Xavier
+ <selvin.xavier@broadcom.com>, Kalesh AP
+ <kalesh-anakkur.purayil@broadcom.com>, Jason Gunthorpe <jgg@ziepe.ca>, Leon
+ Romanovsky <leon@kernel.org>, cocci@inria.fr, linux-kernel@vger.kernel.org,
+ linux-scsi@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-sound@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-ide@vger.kernel.org, linux-xfs@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-nvme@lists.infradead.org,
+ linux-spi@vger.kernel.org, imx@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+ ibm-acpi-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org, Takashi
+ Iwai <tiwai@suse.de>, Carlos Maiolino <cmaiolino@redhat.com>
+Subject: Re: [PATCH v3 00/16] Converge on using secs_to_jiffies() part two
+Message-Id: <20250226123851.a50e727d0a1bfe639ece4a72@linux-foundation.org>
+In-Reply-To: <79b24031-5776-4eb3-960b-32b0530647fb@sirena.org.uk>
+References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
+	<79b24031-5776-4eb3-960b-32b0530647fb@sirena.org.uk>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Commit 5fd8529350f0 ("RDMA/core: fix a NULL-pointer dereference in
-hw_stat_device_show()") accidentally almost exposed hw counters
-to non-init net namespaces. It didn't expose them fully, as an attempt
-to read any of those counters leads to a crash like this one:
+On Wed, 26 Feb 2025 11:29:53 +0000 Mark Brown <broonie@kernel.org> wrote:
 
-[42021.807566] BUG: kernel NULL pointer dereference, address: 0000000000000028
-[42021.814463] #PF: supervisor read access in kernel mode
-[42021.819549] #PF: error_code(0x0000) - not-present page
-[42021.824636] PGD 0 P4D 0
-[42021.827145] Oops: 0000 [#1] SMP PTI
-[42021.830598] CPU: 82 PID: 2843922 Comm: switchto-defaul Kdump: loaded Tainted: G S      W I        XXX
-[42021.841697] Hardware name: XXX
-[42021.849619] RIP: 0010:hw_stat_device_show+0x1e/0x40 [ib_core]
-[42021.855362] Code: 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 49 89 d0 4c 8b 5e 20 48 8b 8f b8 04 00 00 48 81 c7 f0 fa ff ff <48> 8b 41 28 48 29 ce 48 83 c6 d0 48 c1 ee 04 69 d6 ab aa aa aa 48
-[42021.873931] RSP: 0018:ffff97fe90f03da0 EFLAGS: 00010287
-[42021.879108] RAX: ffff9406988a8c60 RBX: ffff940e1072d438 RCX: 0000000000000000
-[42021.886169] RDX: ffff94085f1aa000 RSI: ffff93c6cbbdbcb0 RDI: ffff940c7517aef0
-[42021.893230] RBP: ffff97fe90f03e70 R08: ffff94085f1aa000 R09: 0000000000000000
-[42021.900294] R10: ffff94085f1aa000 R11: ffffffffc0775680 R12: ffffffff87ca2530
-[42021.907355] R13: ffff940651602840 R14: ffff93c6cbbdbcb0 R15: ffff94085f1aa000
-[42021.914418] FS:  00007fda1a3b9700(0000) GS:ffff94453fb80000(0000) knlGS:0000000000000000
-[42021.922423] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[42021.928130] CR2: 0000000000000028 CR3: 00000042dcfb8003 CR4: 00000000003726f0
-[42021.935194] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[42021.942257] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[42021.949324] Call Trace:
-[42021.951756]  <TASK>
-[42021.953842]  [<ffffffff86c58674>] ? show_regs+0x64/0x70
-[42021.959030]  [<ffffffff86c58468>] ? __die+0x78/0xc0
-[42021.963874]  [<ffffffff86c9ef75>] ? page_fault_oops+0x2b5/0x3b0
-[42021.969749]  [<ffffffff87674b92>] ? exc_page_fault+0x1a2/0x3c0
-[42021.975549]  [<ffffffff87801326>] ? asm_exc_page_fault+0x26/0x30
-[42021.981517]  [<ffffffffc0775680>] ? __pfx_show_hw_stats+0x10/0x10 [ib_core]
-[42021.988482]  [<ffffffffc077564e>] ? hw_stat_device_show+0x1e/0x40 [ib_core]
-[42021.995438]  [<ffffffff86ac7f8e>] dev_attr_show+0x1e/0x50
-[42022.000803]  [<ffffffff86a3eeb1>] sysfs_kf_seq_show+0x81/0xe0
-[42022.006508]  [<ffffffff86a11134>] seq_read_iter+0xf4/0x410
-[42022.011954]  [<ffffffff869f4b2e>] vfs_read+0x16e/0x2f0
-[42022.017058]  [<ffffffff869f50ee>] ksys_read+0x6e/0xe0
-[42022.022073]  [<ffffffff8766f1ca>] do_syscall_64+0x6a/0xa0
-[42022.027441]  [<ffffffff8780013b>] entry_SYSCALL_64_after_hwframe+0x78/0xe2
+> On Tue, Feb 25, 2025 at 08:17:14PM +0000, Easwar Hariharan wrote:
+> > This is the second series (part 1*) that converts users of msecs_to_jiffies() that
+> > either use the multiply pattern of either of:
+> > - msecs_to_jiffies(N*1000) or
+> > - msecs_to_jiffies(N*MSEC_PER_SEC)
+> > 
+> > where N is a constant or an expression, to avoid the multiplication.
+> 
+> Please don't combine patches for multiple subsystems into a single
+> series if there's no dependencies between them, it just creates
+> confusion about how things get merged, problems for tooling and makes
+> everything more noisy.  It's best to split things up per subsystem in
+> that case.
 
-The problem can be reproduced using the following steps:
-  ip netns add foo
-  ip netns exec foo bash
-  cat /sys/class/infiniband/mlx4_0/hw_counters/*
+I asked for this.  I'll merge everything, spend a few weeks gathering
+up maintainer acks.  Anything which a subsystem maintainer merges will
+be reported by Stephen and I'll drop that particular patch.
 
-The panic occurs because of casting the device pointer into an
-ib_device pointer using container_of() in hw_stat_device_show() is
-wrong and leads to a memory corruption.
+This way, nothing gets lost.  I take this approach often and it works.
 
-However the real problem is that hw counters should never been exposed
-outside of the non-init net namespace.
+If these were sent as a bunch of individual patches then it would be up
+to the sender to keep track of what has been merged and what hasn't. 
+That person will be resending some stragglers many times.  Until they
+give up and some patches get permanently lost.
 
-Fix this by saving the index of the corresponding attribute group
-(it might be 1 or 2 depending on the presence of driver-specific
-attributes) and zeroing the pointer to hw_counters group for compat
-devices during the initialization.
-
-With this fix applied hw_counters are not available in a non-init
-net namespace:
-  find /sys/class/infiniband/mlx4_0/ -name hw_counters
-    /sys/class/infiniband/mlx4_0/ports/1/hw_counters
-    /sys/class/infiniband/mlx4_0/ports/2/hw_counters
-    /sys/class/infiniband/mlx4_0/hw_counters
-
-  ip netns add foo
-  ip netns exec foo bash
-  find /sys/class/infiniband/mlx4_0/ -name hw_counters
-
-Fixes: 467f432a521a ("RDMA/core: Split port and device counter sysfs attributes")
-Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: Maher Sanalla <msanalla@nvidia.com>
-Cc: Parav Pandit <parav@mellanox.com>
-Cc: linux-rdma@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- drivers/infiniband/core/device.c | 9 +++++++++
- drivers/infiniband/core/sysfs.c  | 1 +
- include/rdma/ib_verbs.h          | 1 +
- 3 files changed, 11 insertions(+)
-
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 0ded91f056f3..8feb22089cbb 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -528,6 +528,8 @@ static struct class ib_class = {
- static void rdma_init_coredev(struct ib_core_device *coredev,
- 			      struct ib_device *dev, struct net *net)
- {
-+	bool is_full_dev = &dev->coredev == coredev;
-+
- 	/* This BUILD_BUG_ON is intended to catch layout change
- 	 * of union of ib_core_device and device.
- 	 * dev must be the first element as ib_core and providers
-@@ -539,6 +541,13 @@ static void rdma_init_coredev(struct ib_core_device *coredev,
- 
- 	coredev->dev.class = &ib_class;
- 	coredev->dev.groups = dev->groups;
-+
-+	/*
-+	 * Don't expose hw counters outside of the init namespace.
-+	 */
-+	if (!is_full_dev && dev->hw_stats_attr_index)
-+		coredev->dev.groups[dev->hw_stats_attr_index] = NULL;
-+
- 	device_initialize(&coredev->dev);
- 	coredev->owner = dev;
- 	INIT_LIST_HEAD(&coredev->port_list);
-diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
-index 7491328ca5e6..0ed862b38b44 100644
---- a/drivers/infiniband/core/sysfs.c
-+++ b/drivers/infiniband/core/sysfs.c
-@@ -976,6 +976,7 @@ int ib_setup_device_attrs(struct ib_device *ibdev)
- 	for (i = 0; i != ARRAY_SIZE(ibdev->groups); i++)
- 		if (!ibdev->groups[i]) {
- 			ibdev->groups[i] = &data->group;
-+			ibdev->hw_stats_attr_index = i;
- 			return 0;
- 		}
- 	WARN(true, "struct ib_device->groups is too small");
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index b59bf30de430..a5761038935d 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2767,6 +2767,7 @@ struct ib_device {
- 	 * It is a NULL terminated array.
- 	 */
- 	const struct attribute_group	*groups[4];
-+	u8				hw_stats_attr_index;
- 
- 	u64			     uverbs_cmd_mask;
- 
--- 
-2.48.1.711.g2feabab25a-goog
+Scale all that across many senders and the whole process becomes costly
+and unreliable.  Whereas centralizing it on akpm is more efficient,
+more reliable, more scalable, lower latency and less frustrating for
+senders.
 
 
