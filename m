@@ -1,166 +1,156 @@
-Return-Path: <linux-rdma+bounces-8120-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8121-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6145A45BB1
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 11:25:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CA86A45BB6
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 11:27:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA2AC3A8E63
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 10:25:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8CE67A9998
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 10:26:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0202D23814F;
-	Wed, 26 Feb 2025 10:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A366E2459D4;
+	Wed, 26 Feb 2025 10:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PSDOTZpz"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iTSGAAcQ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="a0zv25Vy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADD61E1DE1
-	for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2025 10:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6097212FB0;
+	Wed, 26 Feb 2025 10:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740565543; cv=none; b=SEkdzQ42+QaXnee6QkP9q0tk0Uv/nW4TKXx3SHZTGsDhDz3U9HSWTd7Z4ivBYCs+m4Jjqtc5qAA3rcMlDZzrdOLTxCl6E5wn99RTAaN3ePF1cdcfBw4v5w0XU5dNHEspjBmUzBBI3snjdjwjvhUqb7aH1tcG8zCcqMaIyYu1Cp0=
+	t=1740565628; cv=none; b=OEJZGCLjaGP8jzVKer2x/0COGMFRAc00bRJAKznmkTIXJqEu98cfBjsfzYbHnwaIqaZyf0+j1LowOSqjPLCcJwI0O3l1BT1dA0HfA5bocZwRRdxQoKVzPNnCbs2I4SxpdDHGclzpKqckZhi/hQfjRpKo3FfoYlxlFbO2kXj262Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740565543; c=relaxed/simple;
-	bh=F/dE/LFm/7jPW1xImPqbF5HnD0qKO1cK8qpryimOKNY=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=K79/5HB0tAp1lcyD5Dh03UgwhWJjn7r7TNImNyGCYLtq1eu/Kb/fKVA4EGFcuquJTxYULuEZ8yKyG9r3D5pkVgpTEoyMmqUHNfKwnvJZT2nDVsf39A/lC9IjKpadHUgqBaxMjobJDQpufBqPiLRN+Q/jXkRC0UeqT/oD1dAi0x4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PSDOTZpz; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740565542; x=1772101542;
-  h=date:from:to:cc:subject:message-id;
-  bh=F/dE/LFm/7jPW1xImPqbF5HnD0qKO1cK8qpryimOKNY=;
-  b=PSDOTZpzAqXvs4EDjWk2ULfguyahm4s0G7rMqcuwlr3EbBcpt3m5ysom
-   z1S1seIgNyBM9UqGIBKTQgKxYUBiAEnBVDmklq0C/+Et/f1Wgc+ZMobFM
-   4MtAEBshTjtKNzkBw/vtfBK/dB/QdCV95OseNYHEES4fsHZCmjKWbp/yh
-   tasnL5jK+kGT63MZrGiRnfLrDvmCP+YWpOHjbXs3r/Fw+Zoz7evr9joGv
-   QGX1a3HSt+LQmrx2qIEe7S1aJKiE4aeQKBaSsHbLn/K+T/jSTcAM6J1jz
-   OubJcPZtpLW4gm6aA/yHB7Gw/UczrMz+TBQeq/sqrjD5EPuJqnsF8zVa4
-   g==;
-X-CSE-ConnectionGUID: zVqgAVMxSHKEko43snrlrQ==
-X-CSE-MsgGUID: a81Aq2AUSGSAVjpLkgLcRA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11356"; a="40586121"
-X-IronPort-AV: E=Sophos;i="6.13,316,1732608000"; 
-   d="scan'208";a="40586121"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2025 02:25:41 -0800
-X-CSE-ConnectionGUID: +GI13F6sSBugEDfk0HO+7A==
-X-CSE-MsgGUID: xPIa8IWsRkCe/lNTgEgkvg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,316,1732608000"; 
-   d="scan'208";a="116856561"
-Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
-  by fmviesa008.fm.intel.com with ESMTP; 26 Feb 2025 02:25:40 -0800
-Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tnEbh-000BXb-1w;
-	Wed, 26 Feb 2025 10:25:37 +0000
-Date: Wed, 26 Feb 2025 18:25:08 +0800
-From: kernel test robot <lkp@intel.com>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 230804a89319a76c6e653caadc98a870877548cc
-Message-ID: <202502261802.9GxVJZNc-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1740565628; c=relaxed/simple;
+	bh=ibiAbM7U15d81SL+9NxE2cVChkopyMlETlRnbQEzLJ4=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BjawZMW1QJIvTNFbIuy26pGHkUHqzWqLu+hTiAXh7sgHmlnSl6Y72E1me74uci6bGtwM0k9PkrNc/w2qqc4kWsrH5M+gxMxp3QsjW2Zhz5oJ6bKoWfh/nLzpJ6oTpxmg3q9wKmK0+3hz3cxvEl18RotGCO8BZL0rKd7BEkH/ukI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iTSGAAcQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=a0zv25Vy; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 26 Feb 2025 11:27:03 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1740565625;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cKDCuHoBotGYfLtjr4AigiHbn1F5VHyjfxr3ba2FbSk=;
+	b=iTSGAAcQgUNMfXp2gfLmraOB0EER6og8UbOP04DUwDwSUP4m1Rk2hw4ca9H2XHUEQPLhz1
+	zyf2vt8aeiEpjY8S19BuZlC9Px9P0s1MOs3NwLNxvJda+McmqJdZu4+0gbRprGVQxr/xib
+	EQxu5rV8U52ooCUqbtsGlU8LoplaCVHd7zqWhK853HQN8weEbC2sDFnjZRe7nwZ6sAwaFp
+	fq5gdm85MPQLP/1yS8Fd28LCVfNPyEMlwoT9voxWXkKCbOUrs625i0OKmiJhO7pxKm3mfA
+	qXDXn7ckSikJww32ICRif+N8xVOQOG3oS2mZc07XgIjp+iqQ75OQbAyO5l7liw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1740565625;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cKDCuHoBotGYfLtjr4AigiHbn1F5VHyjfxr3ba2FbSk=;
+	b=a0zv25VyDv4YPbXuTuw8QlRnZSM+n0+dV3TEhjzD/o89/3ZQTdm25/9KDS2gGfqQIuGB6M
+	yDq5QY/PLO0Tp/Dg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Joe Damato <jdamato@fastly.com>, linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Saeed Mahameed <saeedm@nvidia.com>, Simon Horman <horms@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>
+Subject: Re: [PATCH net-next 0/2] page_pool: Convert stats to u64_stats_t.
+Message-ID: <20250226102703.3F7Aa2oK@linutronix.de>
+References: <20250221115221.291006-1-bigeasy@linutronix.de>
+ <Z7izmyDRvTmKpN4-@LQ3V64L9R2>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <Z7izmyDRvTmKpN4-@LQ3V64L9R2>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 230804a89319a76c6e653caadc98a870877548cc  Merge branch 'mlx5-next' into wip/leon-for-next
+On 2025-02-21 12:10:51 [-0500], Joe Damato wrote:
+> On Fri, Feb 21, 2025 at 12:52:19PM +0100, Sebastian Andrzej Siewior wrote:
+> > This is a follow-up on
+> > 	https://lore.kernel.org/all/20250213093925.x_ggH1aj@linutronix.de/
+> >=20
+> > to convert the page_pool statistics to u64_stats_t to avoid u64 related
+> > problems on 32bit architectures.
+> > While looking over it, the comment for recycle_stat_inc() says that it
+> > is safe to use in preemptible context.
+>=20
+> I wrote that comment because it's an increment of a per-cpu counter.
+>=20
+> The documentation in Documentation/core-api/this_cpu_ops.rst
+> explains in more depth, but this_cpu_inc is safe to use without
+> worrying about pre-emption and interrupts.
 
-elapsed time: 1449m
+I don't argue that it is not safe to use in preemptible context. I am
+just saying that it is not safe after the rework. If it is really used
+like that, then it is no longer safe to do so (after the rework).
 
-configs tested: 72
-configs skipped: 1
+> > The 32bit update is split into two 32bit writes and if we get
+> > preempted in the middle and another one makes an update then the
+> > value gets inconsistent and the previous update can overwrite the
+> > following. (Rare but still).
+>=20
+> Have you seen this? Can you show the generated assembly which
+> suggests that this occurs? It would be helpful if you could show the
+> before and after 32-bit assembly code.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+=E2=80=A6
 
-tested configs:
-alpha                           allyesconfig    gcc-14.2.0
-arc                             allmodconfig    gcc-13.2.0
-arc                             allyesconfig    gcc-13.2.0
-arc                  randconfig-001-20250225    gcc-13.2.0
-arc                  randconfig-002-20250225    gcc-13.2.0
-arm                             allyesconfig    gcc-14.2.0
-arm                  randconfig-001-20250225    gcc-14.2.0
-arm                  randconfig-002-20250225    gcc-14.2.0
-arm                  randconfig-003-20250225    gcc-14.2.0
-arm                  randconfig-004-20250225    clang-15
-arm64                           allmodconfig    clang-18
-arm64                randconfig-001-20250225    clang-19
-arm64                randconfig-002-20250225    clang-17
-arm64                randconfig-003-20250225    clang-15
-arm64                randconfig-004-20250225    clang-21
-csky                 randconfig-001-20250225    gcc-14.2.0
-csky                 randconfig-002-20250225    gcc-14.2.0
-hexagon                         allmodconfig    clang-21
-hexagon                         allyesconfig    clang-18
-hexagon              randconfig-001-20250225    clang-21
-hexagon              randconfig-002-20250225    clang-21
-i386                             allnoconfig    gcc-12
-i386                            allyesconfig    gcc-12
-i386       buildonly-randconfig-001-20250225    clang-19
-i386       buildonly-randconfig-002-20250225    gcc-11
-i386       buildonly-randconfig-003-20250225    clang-19
-i386       buildonly-randconfig-004-20250225    clang-19
-i386       buildonly-randconfig-005-20250225    gcc-12
-i386       buildonly-randconfig-006-20250225    clang-19
-i386                               defconfig    clang-19
-loongarch            randconfig-001-20250225    gcc-14.2.0
-loongarch            randconfig-002-20250225    gcc-14.2.0
-nios2                randconfig-001-20250225    gcc-14.2.0
-nios2                randconfig-002-20250225    gcc-14.2.0
-parisc               randconfig-001-20250225    gcc-14.2.0
-parisc               randconfig-002-20250225    gcc-14.2.0
-powerpc              randconfig-001-20250225    gcc-14.2.0
-powerpc              randconfig-002-20250225    clang-19
-powerpc              randconfig-003-20250225    clang-21
-powerpc64            randconfig-001-20250225    gcc-14.2.0
-powerpc64            randconfig-002-20250225    gcc-14.2.0
-powerpc64            randconfig-003-20250225    gcc-14.2.0
-riscv                randconfig-001-20250225    clang-15
-riscv                randconfig-002-20250225    clang-21
-s390                            allmodconfig    clang-19
-s390                            allyesconfig    gcc-14.2.0
-s390                 randconfig-001-20250225    clang-15
-s390                 randconfig-002-20250225    gcc-14.2.0
-sh                              allmodconfig    gcc-14.2.0
-sh                              allyesconfig    gcc-14.2.0
-sh                   randconfig-001-20250225    gcc-14.2.0
-sh                   randconfig-002-20250225    gcc-14.2.0
-sparc                           allmodconfig    gcc-14.2.0
-sparc                randconfig-001-20250225    gcc-14.2.0
-sparc                randconfig-002-20250225    gcc-14.2.0
-sparc64              randconfig-001-20250225    gcc-14.2.0
-sparc64              randconfig-002-20250225    gcc-14.2.0
-um                              allmodconfig    clang-21
-um                              allyesconfig    gcc-12
-um                   randconfig-001-20250225    clang-21
-um                   randconfig-002-20250225    gcc-12
-x86_64                           allnoconfig    clang-19
-x86_64                          allyesconfig    clang-19
-x86_64     buildonly-randconfig-001-20250225    gcc-12
-x86_64     buildonly-randconfig-002-20250225    clang-19
-x86_64     buildonly-randconfig-003-20250225    clang-19
-x86_64     buildonly-randconfig-004-20250225    gcc-11
-x86_64     buildonly-randconfig-005-20250225    gcc-12
-x86_64     buildonly-randconfig-006-20250225    clang-19
-x86_64                             defconfig    gcc-11
-xtensa               randconfig-001-20250225    gcc-14.2.0
-xtensa               randconfig-002-20250225    gcc-14.2.0
+So there are two things:
+First we have alloc_stat_inc(), which does
+	#define alloc_stat_inc(pool, __stat)    (pool->alloc_stats.__stat++)
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+so on x86 32bit this turns into
+|        addl    $1, 120(%ebx)   #, pool_15(D)->alloc_stats.fast
+|        adcl    $0, 124(%ebx)   #, pool_15(D)->alloc_stats.fast
+
+So the lower 4 byte are incremented before the higher 4 byte are.
+
+recycle_stat_inc() is using this_cpu_inc() and performs a similar
+update. On x86-32 it turns into
+|         movl    836(%ebx), %eax # pool_15(D)->recycle_stats, s
+|         pushf ; pop %edx        # flags
+|         cli
+|         movl    %fs:this_cpu_off, %ecx  # *_20,
+|         addl    %ecx, %eax      #, _42
+|         addl    $1, (%eax)      #, *_42
+|         adcl    $0, 4(%eax)     #, *_42
+|         testb   $2, %dh #, flags
+|         je      .L508   #,
+|         sti
+|.L508:
+
+so the update can be performed safely in preemptible context as the CPU
+is determined within the IRQ-off section and so is the increment itself
+performed. It updates always the local value belonging to the CPU.
+
+Reading the values locally (on the CPU that is doing the update) is okay
+but reading the value from a remote CPU while an update might be done
+can result in reading the lower 4 bytes before the upper 4 bytes are
+visible.
+This can lead to an inconsistent value on 32bit which is likely
+"corrected" on the next read.
+Thus my initial question: Do we care? If so, I suggest to use u64_stats
+like most of the networking stack. However if we do so, the update must
+be performed with disabled-BH as I assume the updates are done in
+softirq context. It must be avoided that one update preempts another.
+
+Sebastian
 
