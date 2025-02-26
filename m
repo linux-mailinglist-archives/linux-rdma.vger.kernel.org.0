@@ -1,55 +1,47 @@
-Return-Path: <linux-rdma+bounces-8097-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8098-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF63A44EC9
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2025 22:26:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AABEAA4511D
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 01:02:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0675D189490B
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2025 21:26:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7AB917F611
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 00:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB9A212B09;
-	Tue, 25 Feb 2025 21:26:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B80A24A32;
+	Wed, 26 Feb 2025 00:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="siYU52+w"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="HuaKl3qd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-71.smtpout.orange.fr [80.12.242.71])
-	(using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F4320D513;
-	Tue, 25 Feb 2025 21:26:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.71
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02E528E8;
+	Wed, 26 Feb 2025 00:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740518769; cv=none; b=K2XBLsaMFGr69Gd50SMpcToi3ovwV74tYkqFZAg6Jxv6k49cndqDdvcuvXlnFpbfzOdDzGWEp+GNNd9N2iHXB0d8msDq6Ll46lE6jp36YgykWKnnprBSaADuoa1HJy08bq/7Xx+d7Y8cKpiG5TOYC6r+sxh7hu70yB0C8WE4fZ8=
+	t=1740528167; cv=none; b=opcS9GhYrIJbKaAGKePEeT8lAG1Fmj2jmWI+SKlYvw3RhcKYs4tg69X9sDdIC85PwihLFu4tyd4h0UZggVswkUDBUSxb8Szp4RhieeCR1YRbJs/QgOM9d6zlln1/W/z/T+Qvbu2YoOm0wK1W/Xs+SnLDN4fpc27zWpdIs2cr6xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740518769; c=relaxed/simple;
-	bh=pyuUKKIK/oqDwIAa4v1WeQ0xbo398GEv1psrnk7fMjY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CSYtzlNPG/uxjKGROYZKov/fs5BZippQgLF/3+StNMqQgXF4DpRPRup1aaWoPmeNPfqb9HR/q9f4Ca7HqBu6skGE+hBoovEY6VahB7ttC7RmbFFYg09DUON/+aYLY+FegjFMuvI8YbuTfNrLG5vXjqW8XSXTXZlMbFR/x4f+jcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=siYU52+w; arc=none smtp.client-ip=80.12.242.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.37] ([90.11.132.44])
-	by smtp.orange.fr with ESMTPA
-	id n2R0tkeFQ4iG7n2R3t60Fm; Tue, 25 Feb 2025 22:25:57 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1740518758;
-	bh=CDOnVbuHRa5TlckniZ+QbcxrKwAHtppPzAjAscxNHSY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=siYU52+wZ9L1fww+iQDN9rtYX6/aPczL9atUE2l26+nq1Ri8dh3TYGdKOZSOl8FUk
-	 XrbU+P2TpuXPZmylEcNVhm7IGsserFCZYBNjOT562ZUYjLqKjMa1SJH893MOHidh6R
-	 OQATR7VDki3fiHZfHEF2JqtwL04PZvB0Oj0pypFUs2f2NaghtKWNKg5zY+oKMy9gx3
-	 hJDV0lXDGXzAw1PjH65vHLOKoP3lFuSvJzAbZkaII3cDH1jfDHrdCDL8+lHftSY/+S
-	 CY90Fz3FaFYxcLZzbR4khlsrjLfgaLUxO0uOmAn+6ltyDhAKQJ99yzzK2ZVeFXSo2U
-	 OrHC+r+ja1CFQ==
-X-ME-Helo: [192.168.1.37]
-X-ME-Auth: bWFyaW9uLmphaWxsZXRAd2FuYWRvby5mcg==
-X-ME-Date: Tue, 25 Feb 2025 22:25:58 +0100
-X-ME-IP: 90.11.132.44
-Message-ID: <44dd2b5b-d91c-4daf-ab75-ed4030180028@wanadoo.fr>
-Date: Tue, 25 Feb 2025 22:25:45 +0100
+	s=arc-20240116; t=1740528167; c=relaxed/simple;
+	bh=SQMRA5N+jXvNo2T5JsKh4b8XY33eotbHHZmlw5h9oWs=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=RaBKuWdhwuSRseaF1F6MRy511PlfcfVr5Drz+DAm9GV/YqASfOZ83zAEwdCKinSCLUH9z/JC85EqFdMOgpEcFYPiVFmPdKc+/VID7jAEt5ozcOhnuHgBYhqo5E5zPx7b2a318ahFro9DKBdoo3CssxEYC3b6bGgSjtEBHBwcH64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=HuaKl3qd; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.65.162.92] (unknown [20.236.10.206])
+	by linux.microsoft.com (Postfix) with ESMTPSA id A62F5203CDFE;
+	Tue, 25 Feb 2025 16:02:43 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A62F5203CDFE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1740528165;
+	bh=BFPE5nqMT5TV/F32YTt+Q2sFqdqX3HzV4emGmVK7HJw=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=HuaKl3qdKUi413qXmLg1j75aNN8MijOcIeKtJu18EQJFDjoRXls3deulMv1TJVsSW
+	 65ILxLiYMFv1sS1yCqPvEvTeMb7w5g4ew6OAxy2dKtMZrrLZYy7Kf0E371zAONpm5r
+	 c4JAQrpBSBxtsQowW5sxR9dgfpM5kWSNcx4MfN/8=
+Message-ID: <df0c2400-147c-4104-a2e6-d1038ff31524@linux.microsoft.com>
+Date: Tue, 25 Feb 2025 16:02:42 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -57,11 +49,10 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 07/16] libceph: convert timeouts to secs_to_jiffies()
-To: Easwar Hariharan <eahariha@linux.microsoft.com>
-Cc: Frank.Li@nxp.com, James.Bottomley@HansenPartnership.com,
- Julia.Lawall@inria.fr, Shyam-sundar.S-k@amd.com, akpm@linux-foundation.org,
- axboe@kernel.dk, broonie@kernel.org, cassel@kernel.org, cem@kernel.org,
+Cc: eahariha@linux.microsoft.com, Frank.Li@nxp.com,
+ James.Bottomley@HansenPartnership.com, Julia.Lawall@inria.fr,
+ Shyam-sundar.S-k@amd.com, akpm@linux-foundation.org, axboe@kernel.dk,
+ broonie@kernel.org, cassel@kernel.org, cem@kernel.org,
  ceph-devel@vger.kernel.org, clm@fb.com, cocci@inria.fr,
  dick.kennedy@broadcom.com, djwong@kernel.org, dlemoal@kernel.org,
  dongsheng.yang@easystack.cn, dri-devel@lists.freedesktop.org,
@@ -81,133 +72,86 @@ Cc: Frank.Li@nxp.com, James.Bottomley@HansenPartnership.com,
  perex@perex.cz, platform-driver-x86@vger.kernel.org, s.hauer@pengutronix.de,
  sagi@grimberg.me, selvin.xavier@broadcom.com, shawnguo@kernel.org,
  sre@kernel.org, tiwai@suse.com, xiubli@redhat.com, yaron.avizrat@intel.com
+Subject: Re: [PATCH v3 06/16] rbd: convert timeouts to secs_to_jiffies()
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
- <20250225-converge-secs-to-jiffies-part-two-v3-7-a43967e36c88@linux.microsoft.com>
-Content-Language: en-US, fr-FR
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20250225-converge-secs-to-jiffies-part-two-v3-7-a43967e36c88@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <20250225-converge-secs-to-jiffies-part-two-v3-6-a43967e36c88@linux.microsoft.com>
+ <e53d7586-b278-4338-95a2-fa768d5d8b5e@wanadoo.fr>
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+Content-Language: en-US
+In-Reply-To: <e53d7586-b278-4338-95a2-fa768d5d8b5e@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Le 25/02/2025 à 21:17, Easwar Hariharan a écrit :
-> Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
-> secs_to_jiffies().  As the value here is a multiple of 1000, use
-> secs_to_jiffies() instead of msecs_to_jiffies() to avoid the multiplication
+On 2/25/2025 1:09 PM, Christophe JAILLET wrote:
+> Le 25/02/2025 à 21:17, Easwar Hariharan a écrit :
+>> Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
+>> secs_to_jiffies().  As the value here is a multiple of 1000, use
+>> secs_to_jiffies() instead of msecs_to_jiffies() to avoid the multiplication
+>>
+>> This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci with
+>> the following Coccinelle rules:
+>>
+>> @depends on patch@ expression E; @@
+>>
+>> -msecs_to_jiffies(E * 1000)
+>> +secs_to_jiffies(E)
+>>
+>> @depends on patch@ expression E; @@
+>>
+>> -msecs_to_jiffies(E * MSEC_PER_SEC)
+>> +secs_to_jiffies(E)
+>>
+>> While here, remove the no-longer necessary check for range since there's
+>> no multiplication involved.
 > 
-> This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci with
-> the following Coccinelle rules:
+> I'm not sure this is correct.
+> Now you multiply by HZ and things can still overflow.
 > 
-> @depends on patch@ expression E; @@
 > 
-> -msecs_to_jiffies(E * 1000)
-> +secs_to_jiffies(E)
+> Hoping I got casting right:
 > 
-> @depends on patch@ expression E; @@
+> #define MSEC_PER_SEC    1000L
+> #define HZ 100
 > 
-> -msecs_to_jiffies(E * MSEC_PER_SEC)
-> +secs_to_jiffies(E)
 > 
-> While here, remove the no-longer necessary checks for range since there's
-> no multiplication involved.
-
-No sure it is correct.
-
-Same comment as on patch 06/16, available at [1].
-
-CJ
-
-[1]: 
-https://lore.kernel.org/linux-kernel/e53d7586-b278-4338-95a2-fa768d5d8b5e@wanadoo.fr/
-
+> #define secs_to_jiffies(_secs) (unsigned long)((_secs) * HZ)
 > 
-> Acked-by: Ilya Dryomov <idryomov@gmail.com>
-> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-> ---
->   include/linux/ceph/libceph.h | 12 ++++++------
->   net/ceph/ceph_common.c       | 18 ++++++------------
->   net/ceph/osd_client.c        |  3 +--
->   3 files changed, 13 insertions(+), 20 deletions(-)
+> static inline unsigned long _msecs_to_jiffies(const unsigned int m)
+> {
+>     return (m + (MSEC_PER_SEC / HZ) - 1) / (MSEC_PER_SEC / HZ);
+> }
 > 
-> diff --git a/include/linux/ceph/libceph.h b/include/linux/ceph/libceph.h
-> index 733e7f93db66a7a29a4a8eba97e9ebf2c49da1f9..5f57128ef0c7d018341c15cc59288aa47edec646 100644
-> --- a/include/linux/ceph/libceph.h
-> +++ b/include/linux/ceph/libceph.h
-> @@ -72,15 +72,15 @@ struct ceph_options {
->   /*
->    * defaults
->    */
-> -#define CEPH_MOUNT_TIMEOUT_DEFAULT	msecs_to_jiffies(60 * 1000)
-> -#define CEPH_OSD_KEEPALIVE_DEFAULT	msecs_to_jiffies(5 * 1000)
-> -#define CEPH_OSD_IDLE_TTL_DEFAULT	msecs_to_jiffies(60 * 1000)
-> +#define CEPH_MOUNT_TIMEOUT_DEFAULT	secs_to_jiffies(60)
-> +#define CEPH_OSD_KEEPALIVE_DEFAULT	secs_to_jiffies(5)
-> +#define CEPH_OSD_IDLE_TTL_DEFAULT	secs_to_jiffies(60)
->   #define CEPH_OSD_REQUEST_TIMEOUT_DEFAULT 0  /* no timeout */
->   #define CEPH_READ_FROM_REPLICA_DEFAULT	0  /* read from primary */
->   
-> -#define CEPH_MONC_HUNT_INTERVAL		msecs_to_jiffies(3 * 1000)
-> -#define CEPH_MONC_PING_INTERVAL		msecs_to_jiffies(10 * 1000)
-> -#define CEPH_MONC_PING_TIMEOUT		msecs_to_jiffies(30 * 1000)
-> +#define CEPH_MONC_HUNT_INTERVAL		secs_to_jiffies(3)
-> +#define CEPH_MONC_PING_INTERVAL		secs_to_jiffies(10)
-> +#define CEPH_MONC_PING_TIMEOUT		secs_to_jiffies(30)
->   #define CEPH_MONC_HUNT_BACKOFF		2
->   #define CEPH_MONC_HUNT_MAX_MULT		10
->   
-> diff --git a/net/ceph/ceph_common.c b/net/ceph/ceph_common.c
-> index 4c6441536d55b6323f4b9d93b5d4837cd4ec880c..c2a2c3bcc4e91a628c99bd1cef1211d54389efa2 100644
-> --- a/net/ceph/ceph_common.c
-> +++ b/net/ceph/ceph_common.c
-> @@ -527,29 +527,23 @@ int ceph_parse_param(struct fs_parameter *param, struct ceph_options *opt,
->   
->   	case Opt_osdkeepalivetimeout:
->   		/* 0 isn't well defined right now, reject it */
-> -		if (result.uint_32 < 1 || result.uint_32 > INT_MAX / 1000)
-> +		if (result.uint_32 < 1)
->   			goto out_of_range;
-> -		opt->osd_keepalive_timeout =
-> -		    msecs_to_jiffies(result.uint_32 * 1000);
-> +		opt->osd_keepalive_timeout = secs_to_jiffies(result.uint_32);
->   		break;
->   	case Opt_osd_idle_ttl:
->   		/* 0 isn't well defined right now, reject it */
-> -		if (result.uint_32 < 1 || result.uint_32 > INT_MAX / 1000)
-> +		if (result.uint_32 < 1)
->   			goto out_of_range;
-> -		opt->osd_idle_ttl = msecs_to_jiffies(result.uint_32 * 1000);
-> +		opt->osd_idle_ttl = secs_to_jiffies(result.uint_32);
->   		break;
->   	case Opt_mount_timeout:
->   		/* 0 is "wait forever" (i.e. infinite timeout) */
-> -		if (result.uint_32 > INT_MAX / 1000)
-> -			goto out_of_range;
-> -		opt->mount_timeout = msecs_to_jiffies(result.uint_32 * 1000);
-> +		opt->mount_timeout = secs_to_jiffies(result.uint_32);
->   		break;
->   	case Opt_osd_request_timeout:
->   		/* 0 is "wait forever" (i.e. infinite timeout) */
-> -		if (result.uint_32 > INT_MAX / 1000)
-> -			goto out_of_range;
-> -		opt->osd_request_timeout =
-> -		    msecs_to_jiffies(result.uint_32 * 1000);
-> +		opt->osd_request_timeout = secs_to_jiffies(result.uint_32);
->   		break;
->   
->   	case Opt_share:
-> diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
-> index b24afec241382b60d775dd12a6561fa23a7eca45..ba61a48b4388c2eceb5b7a299906e7f90191dd5d 100644
-> --- a/net/ceph/osd_client.c
-> +++ b/net/ceph/osd_client.c
-> @@ -4989,8 +4989,7 @@ int ceph_osdc_notify(struct ceph_osd_client *osdc,
->   	linger_submit(lreq);
->   	ret = linger_reg_commit_wait(lreq);
->   	if (!ret)
-> -		ret = linger_notify_finish_wait(lreq,
-> -				 msecs_to_jiffies(2 * timeout * MSEC_PER_SEC));
-> +		ret = linger_notify_finish_wait(lreq, secs_to_jiffies(2 * timeout));
->   	else
->   		dout("lreq %p failed to initiate notify %d\n", lreq, ret);
->   
+> int main() {
+> 
+>     int n = INT_MAX - 5;
+> 
+>     printf("res  = %ld\n", secs_to_jiffies(n));
+>     printf("res  = %ld\n", _msecs_to_jiffies(1000 * n));
+> 
+>     return 0;
+> }
+> 
+> 
+> gives :
+> 
+> res  = -600
+> res  = 429496130
+> 
+> with msec, the previous code would catch the overflow, now it overflows silently.
+> 
+> untested, but maybe:
+>     if (result.uint_32 > INT_MAX / HZ)
+>         goto out_of_range;
+> 
+> ?
+> 
+> CJ
 > 
 
+Thanks for the review! I was able to replicate your results, I'll try this range check
+and get back.
+
+Thanks,
+Easwar (he/him)
 
