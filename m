@@ -1,57 +1,61 @@
-Return-Path: <linux-rdma+bounces-8147-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8149-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01C74A45FFA
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 14:02:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED475A45FFF
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 14:02:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C7FE177F32
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 13:01:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D4A8177BCE
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 13:02:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53CB621884A;
-	Wed, 26 Feb 2025 13:01:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38BFF21C19B;
+	Wed, 26 Feb 2025 13:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QRnuafyE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cU7SlpPb"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104A576035;
-	Wed, 26 Feb 2025 13:01:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E501221C177;
+	Wed, 26 Feb 2025 13:01:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740574899; cv=none; b=hjqa9MBkduVsuystcBPjz+57GNtFNKtZlYO+066/xE7uM1HdnZSWHwrUlZFXU5m+90JkGGnTaWwurjh9XPpkeXcfGVnxj+pQmrjWKnIrtvCG4znim6k2XAu3GNVWXaM3DWYw1GUYMbKTjHiGHg5Ce3NwgdxYI7u6cW6SV2muqDY=
+	t=1740574909; cv=none; b=m3E7yFXEb/rQ2sPHEMb7nDA5YbakDHxRPkzBWmWCC/pFThZDZv9nQoy6wdMnaTnczTnPYfG6BXdihpjsDdJ83qjs+NRz6w+P1A8FrFaydVdxV1nefPp3Bp4X9FQaLCgw9K2uKSgkGv08t+Wfa1h+SaTgAVQmk96QDrJtHZR/4EE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740574899; c=relaxed/simple;
-	bh=V7a7tW5zyMDWmz+fgaPP7yrvrVUcpG6OC5kD4ULtQgM=;
+	s=arc-20240116; t=1740574909; c=relaxed/simple;
+	bh=quP7fx/zgxWVwFd4/AVhRpxYL+EUfx6plsoSV5h1Rhc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B3GZ1rtP0fMX2lwetmb9sBu+S9OWt4UvUP2UT0clMiAHb+em/q0lsvmp+nHTdz2Yhv31HZ2dw8vn3q64ILT+jS69BJ3McQsLQHFDCQRMn6eXg0Z7NbxEdtECfSjqR14ayKLbKLLr2dVKhuC0oW9h2EIDLtdxiv7G7knNT7MeeII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QRnuafyE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBFF4C4CEE4;
-	Wed, 26 Feb 2025 13:01:37 +0000 (UTC)
+	 MIME-Version; b=IozlM2B4YkO22NUkyQC8pki0PRrWt+UPiC6prQqmwldgJwxqtQlDQc/dKqWZJu7mEJIjrMM1m0rmM5OUtyc+99LSjUckSXY6/93U9yd3/LUugL1dXpSGL6++gREHBRjZH2nWRRRvH6PaduqivTRYV8y707jlwkEdoxWIDiIjQ8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cU7SlpPb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3667C4CEE8;
+	Wed, 26 Feb 2025 13:01:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740574898;
-	bh=V7a7tW5zyMDWmz+fgaPP7yrvrVUcpG6OC5kD4ULtQgM=;
+	s=k20201202; t=1740574908;
+	bh=quP7fx/zgxWVwFd4/AVhRpxYL+EUfx6plsoSV5h1Rhc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QRnuafyElJSpiMJDlU/zNen2PenJjoA97jVrDlnM3NUD+XkywjPpMIl6Am8Q158e1
-	 wqfxQFlC74Ys8/5wXQMtj5iMNhzEQgswGXtJ9uIi2/6/L/L75JY6li7W8+Fo1XasEh
-	 5XRqCI3x1R9xkLtw4OzuuRJylJgp5eKbLfceNnzKFpIkbZjWtYMP6I6cuKyrDVTLaj
-	 EVSO3Qjriba72dzJ9mEWspmlbEnoQdJ5EfEueRlzIDZdpQ7bV0s+G1EX4HKJdgtvJr
-	 YUG7vWWlW2Qf1c2yBQdiFMn1jam43Pn4XkaTyd75lRIKC5fVWDrvd+BkppEReQctGZ
-	 W0wg6S+Dnu2Ww==
+	b=cU7SlpPbrrLa4IzfQ2uY8G0CNbqhlOicMfle763ixG6Sy10YxAbjJSSSi2dEu+gYK
+	 vzIBu/xkhRTsACw7o5aerHFKThMdujYtT2Dj+jXjWIYUK3AK19ihbA2tOw0CCVpJJv
+	 rSLQUQt0r4usKc8MF2sMZmCsV+x1Kml2MDRcaD1lmbA2dx3U5z4AU+pOewb+pOamUw
+	 NDe3Qr3QUqJ2A8X9aZ8suMhjnFgGKkJvNC9/NwiduWlLiXJvv+1ZXTpCPl5PeISQmC
+	 qOn8RJIUL85BxtQBqnaLXO+zQ/8k3FsEeUm5V42Icbo5lWf44sLVb8hr5I1BNvZl8D
+	 pEft89BXCjP8w==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Chiara Meiohas <cmeiohas@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	linux-rdma@vger.kernel.org,
 	Moshe Shemesh <moshe@nvidia.com>,
 	netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>,
 	Saeed Mahameed <saeedm@nvidia.com>,
 	Tariq Toukan <tariqt@nvidia.com>
-Subject: [PATCH mlx5-next 1/5] net/mlx5: Add RDMA_CTRL HW capabilities
-Date: Wed, 26 Feb 2025 15:01:05 +0200
-Message-ID: <ef7eb24be9a6f247ab52e8b4480350072e5182f5.1740574103.git.leon@kernel.org>
+Subject: [PATCH mlx5-next 2/5] net/mlx5: Allow the throttle mechanism to be more dynamic
+Date: Wed, 26 Feb 2025 15:01:06 +0200
+Message-ID: <055d975edeb816ac4c0fd1e665c6157d11947d26.1740574103.git.leon@kernel.org>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1740574103.git.leon@kernel.org>
 References: <cover.1740574103.git.leon@kernel.org>
@@ -65,56 +69,132 @@ Content-Transfer-Encoding: 8bit
 
 From: Chiara Meiohas <cmeiohas@nvidia.com>
 
-Add RDMA_CTRL UCTX capabilities and add the RDMA_CTRL general object
-type in hca_cap_2.
+Previously, throttle commands were identified and limited based on
+opcode. These commands were limited to half the command slots using a
+semaphore, and callback commands checked the opcode to determine
+semaphore release.
 
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+To allow exceptions, we introduce a variable to indicate when the
+throttle lock is held. This allows scenarios where throttle commands
+are not limited. Callback functions use this variable to determine
+if the throttle semaphore needs to be released.
+
+This patch contains no functional changes. It's a preparation for the
+next patch.
+
 Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- include/linux/mlx5/mlx5_ifc.h | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 43 +++++++++++++------
+ include/linux/mlx5/driver.h                   |  1 +
+ 2 files changed, 32 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-index cc2875e843f7..3b3d88ffcacc 100644
---- a/include/linux/mlx5/mlx5_ifc.h
-+++ b/include/linux/mlx5/mlx5_ifc.h
-@@ -1570,6 +1570,8 @@ enum {
- enum {
- 	MLX5_UCTX_CAP_RAW_TX = 1UL << 0,
- 	MLX5_UCTX_CAP_INTERNAL_DEV_RES = 1UL << 1,
-+	MLX5_UCTX_CAP_RDMA_CTRL = 1UL << 3,
-+	MLX5_UCTX_CAP_RDMA_CTRL_OTHER_VHCA = 1UL << 4,
- };
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+index e733b81e18a2..19c0c15c7e08 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -1881,7 +1881,7 @@ static int cmd_exec(struct mlx5_core_dev *dev, void *in, int in_size, void *out,
+ {
+ 	struct mlx5_cmd_msg *inb, *outb;
+ 	u16 opcode = in_to_opcode(in);
+-	bool throttle_op;
++	bool throttle_locked = false;
+ 	int pages_queue;
+ 	gfp_t gfp;
+ 	u8 token;
+@@ -1890,12 +1890,12 @@ static int cmd_exec(struct mlx5_core_dev *dev, void *in, int in_size, void *out,
+ 	if (mlx5_cmd_is_down(dev) || !opcode_allowed(&dev->cmd, opcode))
+ 		return -ENXIO;
  
- #define MLX5_FC_BULK_SIZE_FACTOR 128
-@@ -2140,7 +2142,8 @@ struct mlx5_ifc_cmd_hca_cap_2_bits {
- 	u8	   log_min_mkey_entity_size[0x5];
- 	u8	   reserved_at_1b0[0x10];
+-	throttle_op = mlx5_cmd_is_throttle_opcode(opcode);
+-	if (throttle_op) {
+-		if (callback) {
+-			if (down_trylock(&dev->cmd.vars.throttle_sem))
+-				return -EBUSY;
+-		} else {
++	if (!callback) {
++		/* The semaphore is already held for callback commands. It was
++		 * acquired in mlx5_cmd_exec_cb()
++		 */
++		if (mlx5_cmd_is_throttle_opcode(opcode)) {
++			throttle_locked = true;
+ 			down(&dev->cmd.vars.throttle_sem);
+ 		}
+ 	}
+@@ -1941,7 +1941,7 @@ static int cmd_exec(struct mlx5_core_dev *dev, void *in, int in_size, void *out,
+ out_in:
+ 	free_msg(dev, inb);
+ out_up:
+-	if (throttle_op)
++	if (throttle_locked)
+ 		up(&dev->cmd.vars.throttle_sem);
+ 	return err;
+ }
+@@ -2104,17 +2104,17 @@ static void mlx5_cmd_exec_cb_handler(int status, void *_work)
+ 	struct mlx5_async_work *work = _work;
+ 	struct mlx5_async_ctx *ctx;
+ 	struct mlx5_core_dev *dev;
+-	u16 opcode;
++	bool throttle_locked;
  
--	u8	   reserved_at_1c0[0x60];
-+	u8	   general_obj_types_127_64[0x40];
-+	u8	   reserved_at_200[0x20];
- 
- 	u8	   reserved_at_220[0x1];
- 	u8	   sw_vhca_id_valid[0x1];
-@@ -12494,6 +12497,10 @@ enum {
- 	MLX5_HCA_CAP_GENERAL_OBJECT_TYPES_FLOW_METER_ASO = BIT_ULL(0x24),
- };
- 
-+enum {
-+	MLX5_HCA_CAP_2_GENERAL_OBJECT_TYPES_RDMA_CTRL = BIT_ULL(0x13),
-+};
+ 	ctx = work->ctx;
+ 	dev = ctx->dev;
+-	opcode = work->opcode;
++	throttle_locked = work->throttle_locked;
+ 	status = cmd_status_err(dev, status, work->opcode, work->op_mod, work->out);
+ 	work->user_callback(status, work);
+ 	/* Can't access "work" from this point on. It could have been freed in
+ 	 * the callback.
+ 	 */
+-	if (mlx5_cmd_is_throttle_opcode(opcode))
++	if (throttle_locked)
+ 		up(&dev->cmd.vars.throttle_sem);
+ 	if (atomic_dec_and_test(&ctx->num_inflight))
+ 		complete(&ctx->inflight_done);
+@@ -2131,11 +2131,30 @@ int mlx5_cmd_exec_cb(struct mlx5_async_ctx *ctx, void *in, int in_size,
+ 	work->opcode = in_to_opcode(in);
+ 	work->op_mod = MLX5_GET(mbox_in, in, op_mod);
+ 	work->out = out;
++	work->throttle_locked = false;
+ 	if (WARN_ON(!atomic_inc_not_zero(&ctx->num_inflight)))
+ 		return -EIO;
 +
- enum {
- 	MLX5_GENERAL_OBJECT_TYPES_ENCRYPTION_KEY = 0xc,
- 	MLX5_GENERAL_OBJECT_TYPES_IPSEC = 0x13,
-@@ -12501,6 +12508,7 @@ enum {
- 	MLX5_GENERAL_OBJECT_TYPES_FLOW_METER_ASO = 0x24,
- 	MLX5_GENERAL_OBJECT_TYPES_MACSEC = 0x27,
- 	MLX5_GENERAL_OBJECT_TYPES_INT_KEK = 0x47,
-+	MLX5_GENERAL_OBJECT_TYPES_RDMA_CTRL = 0x53,
- 	MLX5_GENERAL_OBJECT_TYPES_FLOW_TABLE_ALIAS = 0xff15,
++	if (mlx5_cmd_is_throttle_opcode(in_to_opcode(in))) {
++		if (down_trylock(&ctx->dev->cmd.vars.throttle_sem)) {
++			ret = -EBUSY;
++			goto dec_num_inflight;
++		}
++		work->throttle_locked = true;
++	}
++
+ 	ret = cmd_exec(ctx->dev, in, in_size, out, out_size,
+ 		       mlx5_cmd_exec_cb_handler, work, false);
+-	if (ret && atomic_dec_and_test(&ctx->num_inflight))
++	if (ret)
++		goto sem_up;
++
++	return 0;
++
++sem_up:
++	if (work->throttle_locked)
++		up(&ctx->dev->cmd.vars.throttle_sem);
++dec_num_inflight:
++	if (atomic_dec_and_test(&ctx->num_inflight))
+ 		complete(&ctx->inflight_done);
+ 
+ 	return ret;
+diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
+index af86097641b0..876d6b03a87a 100644
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -989,6 +989,7 @@ struct mlx5_async_work {
+ 	mlx5_async_cbk_t user_callback;
+ 	u16 opcode; /* cmd opcode */
+ 	u16 op_mod; /* cmd op_mod */
++	u8 throttle_locked:1;
+ 	void *out; /* pointer to the cmd output buffer */
  };
  
 -- 
