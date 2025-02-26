@@ -1,68 +1,69 @@
-Return-Path: <linux-rdma+bounces-8108-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8109-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88C24A4541E
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 04:43:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D793A4542E
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 04:55:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0CFA172A6E
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 03:43:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35C483A999E
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 03:55:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC5025A65A;
-	Wed, 26 Feb 2025 03:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62467266F16;
+	Wed, 26 Feb 2025 03:55:42 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2054.outbound.protection.outlook.com [40.107.223.54])
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2061.outbound.protection.outlook.com [40.107.95.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1BD925A347;
-	Wed, 26 Feb 2025 03:43:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A92DE218821;
+	Wed, 26 Feb 2025 03:55:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.61
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740541413; cv=fail; b=VMpFIVp6msra1Spw5d94kIsPFZ6BZY2My7DR3K3KO+YoToZjeytPoBIgRgQHcxadpXxEkw+25SQKwUmeZ6G859XH8Rmj3qavc9WpH7cSgDezCLu4QS5bR8h35hhJ5d2aD1Xbb51pzyGXLvBDD0HQc7jJBLEyzzbwOoowQrquSPw=
+	t=1740542142; cv=fail; b=PsEFAB8qif1S/Ux1kx1GT8YyA/je+GdF2cNom5phBuSG9h8ZMD9c5NYS1CDeWe+wiAPZBOwhxfyToosQpKwQspgUCMAwiPcViHk+q+lLQ+2/Vehi8ZXOYOGdBvs6wXy8k5IIVjPNpDxDoo5TurLZMEq+i0JXQ1O4X7Py7DbcVeI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740541413; c=relaxed/simple;
-	bh=bpFGaTa4qYjVkjzWgnwpXR35JXr6jgzE1dSFsTgJOlE=;
+	s=arc-20240116; t=1740542142; c=relaxed/simple;
+	bh=CTPV7tJIMxI3OVFLb5B0VP3DJ1qe+SjuLjpvUwNeXV8=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Dwo/oIEGX4a8taH0vcw+PuZnTMRlIYZGCaMZI6A3TQtnigCYM6XqSCJpsAgBGGGuWTOjXiCaIpYFWueUHk4WULjfBqOQX57sTBTJfUgGi5bh80zhN08eb9C+wGeZ6DdqjNCN6ffY7AL+KxgW6fWnfbX60ISV6KYOZ9rJhg4/QQA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mellanox.com; spf=pass smtp.mailfrom=mellanox.com; arc=fail smtp.client-ip=40.107.223.54
+	 Content-Type:MIME-Version; b=qcXJR16CTUmESW4avM42dvkERlqfSh//ql7EoJavWS3JobnOlV9HGT3EKALGjkr7yjENzLHMK4QJZDHynkHTWaa9ejvfe0QWuexslmX7RwtSUEE8AJZR/xcGvZ0CAAdpa/lzyC+BbR90csuoqzouCYx6Ct5sPkurO6dCp0gyXhI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mellanox.com; spf=pass smtp.mailfrom=mellanox.com; arc=fail smtp.client-ip=40.107.95.61
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mellanox.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mellanox.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KpsS5XaexiGjPuqqkaqIDdLAIkbvllNtuhBzT8HaObkeR0oIeH8/jb0QHk9p3nQ0te9JyVbga/lr3TsmEJc0yXs976Nwd8V9Gx6Dv6I9T1ZVdMdGISv7mlporeowKJyfkJPhcDjU8kOEqWUEZXJph0HpzI2wEd5YhUdEqvE2v6Fm1tUnbzt+cB3qJcV3qyDPS2v18Wg/4aTq3yJVWDBiFEC8ul2KP6GbWCWmHJLNlma4GdTorWu0MR72cDyE/vshP4r8lqXJcMd1wGsWsQWI5etbraQb0RcIJejsFi3zuNsFCc5wRae+pdrNbPV+0JmZLmDxixX4/DBG0gAzGWYXcw==
+ b=e0Q8/T+YzmiyRU5gPPpFlEg8ppyzfICAwVHqYE8kR0FBaDXoxq7B5FyPGFLKv5FGCgMceV8AqyQBeD9Qfk31dilUJsOvzXmBB46mQz5n/mDXbtr4ldN2y6oBQv1B/ycbrI3/0Z1iHZCTaxd4RIEdRSSaSyA0+T7Qqx5+OyHErKaPgHfvS+L7LBsa8lNUm0rUlPACks3OIv28IOWbehXD8i0q6eD75Ru51BeeiSew7xD2ke7CRdo+lEvBUFZdDvPgRdMaXzjBBvK2UFM9TSEU3ECsqjPh+RZO05Pe07D9dCU6msAaNplRVBWEAZ4fPiKteqO8hNzcgaza6NkP5BjUVA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xoiaR9+4OY/Xp6AXfFmHdmWrkJ5RV8ETzxqHeFch8ts=;
- b=qiemX4Ax34vaI+8bWlnVvvjkZsvye3o0ZWOtF9JdpLQtc+HI/Ke/sRSoanPN6k8EVdUIK1oYe2EqGLnL0JAKt0LjvdocLVN4R2/Qon8u5XLm972a3O17p2/RSeA8nYPWRNYM5ljlPOHaEqh3x8ET4/0RXHBmlPe1XtEB836DfUFdtP80oeZdiCXPYlCmiEJCvyppQJzt5PreyZvqblDANu77iThcTMSHi3e26H97qHKpDac/UHld4jy6JuVSYupr2ovRsltk132aebRGzLLntuNis+6frOhuyvnPRwxj+62MikcA4OYVVXtn9hZW78KYO1FgtIvOkmRlz9P2uTjA7w==
+ bh=k+NvoGXWfS1BvOMnxhSXwhXqZ+3KFH+cM1NKLtUagx8=;
+ b=rT1rof5cBVQRLmcDCBAa9K9lKkbvypeVmmhTTIAd6pMtb0j7zjklNQj62Ih9PpMsKB9mmZ5LEuEmnlhJkDWD7CvYPFPw/q/Ld7RK71uVAH0McdlIMlb0WyrkuB+2ugMEmtoMJiwh9PPmyl3r2DRPiAMlKN4eJ34VEKhJM4iHn+tPatLGMkSSYRswOUXH9W9w8yrPB1KYyWSaDP4h0eJF5fX5xaSuOFz1HGUHtW5PNici8lEkA5aFyI7B7xuXF04KvBx4x8C6NMjzIznyP28WVyE9SwHkZ47ILrOhCJByVJ6JBuAF07xBWKaqiuswDSN6OLPkcRrSWkE9urtiUg1LLQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 Received: from CY8PR12MB7195.namprd12.prod.outlook.com (2603:10b6:930:59::11)
- by DM4PR12MB8560.namprd12.prod.outlook.com (2603:10b6:8:189::20) with
+ by MW4PR12MB6827.namprd12.prod.outlook.com (2603:10b6:303:20b::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.19; Wed, 26 Feb
- 2025 03:43:28 +0000
+ 2025 03:55:37 +0000
 Received: from CY8PR12MB7195.namprd12.prod.outlook.com
  ([fe80::c06c:905a:63f8:9cd]) by CY8PR12MB7195.namprd12.prod.outlook.com
  ([fe80::c06c:905a:63f8:9cd%3]) with mapi id 15.20.8466.013; Wed, 26 Feb 2025
- 03:43:28 +0000
+ 03:55:37 +0000
 From: Parav Pandit <parav@mellanox.com>
 To: Roman Gushchin <roman.gushchin@linux.dev>, Jason Gunthorpe <jgg@ziepe.ca>
 CC: Leon Romanovsky <leon@kernel.org>, Maher Sanalla <msanalla@nvidia.com>,
 	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/2] net: RDMA: explicitly enumerate ib_device attribute
- groups
-Thread-Topic: [PATCH 1/2] net: RDMA: explicitly enumerate ib_device attribute
- groups
-Thread-Index: AQHbh/+CvuJVsLrwDkKPRUnWvKj21LNY8CSg
-Date: Wed, 26 Feb 2025 03:43:28 +0000
+Subject: RE: [PATCH 2/2] net: RDMA: don't expose hw_stats into non-init net
+ namespaces
+Thread-Topic: [PATCH 2/2] net: RDMA: don't expose hw_stats into non-init net
+ namespaces
+Thread-Index: AQHbh/+DjPTHv3+fbEeq4dTuvuU+87NY8fLQ
+Date: Wed, 26 Feb 2025 03:55:37 +0000
 Message-ID:
- <CY8PR12MB7195D37C2E3D6DF02B7AAA8ADCC22@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <CY8PR12MB71954B7C87C0667B57A29207DCC22@CY8PR12MB7195.namprd12.prod.outlook.com>
 References: <20250226033526.2769817-1-roman.gushchin@linux.dev>
-In-Reply-To: <20250226033526.2769817-1-roman.gushchin@linux.dev>
+ <20250226033526.2769817-2-roman.gushchin@linux.dev>
+In-Reply-To: <20250226033526.2769817-2-roman.gushchin@linux.dev>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach:
@@ -71,68 +72,68 @@ authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=mellanox.com;
 x-ms-exchange-messagesentrepresentingtype: 1
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY8PR12MB7195:EE_|DM4PR12MB8560:EE_
-x-ms-office365-filtering-correlation-id: 9c83e5c0-6fa3-4eb6-c841-08dd5617bb6f
+x-ms-traffictypediagnostic: CY8PR12MB7195:EE_|MW4PR12MB6827:EE_
+x-ms-office365-filtering-correlation-id: c20cbc03-e4f5-43af-91f0-08dd56196db7
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;ARA:13230040|376014|1800799024|366016|38070700018;
 x-microsoft-antispam-message-info:
- =?us-ascii?Q?PF+2XRJlxKrpmDaFPkMD853D+/LjxAhqcskeomMklrZnuP1SlaTRJ/ci2QEq?=
- =?us-ascii?Q?vjfpVsov/heuui+VBnn312IS34XkU3G1HN6lZTwVw9pWxcQZR5ZigsOPHsEg?=
- =?us-ascii?Q?/kxLH+gKHFABHuE6v2ypi6QWVrmcfaWi95QzDbYP774a3uPm+Tya5ayzM4DV?=
- =?us-ascii?Q?X5Rv3do+/ttZKOM+Ouozmi1jZ9aY9c96QtyIj8sdByOrV0iawZiLl+eRoK84?=
- =?us-ascii?Q?FsSfBrZY/CxgOWIUq0oDsAky2+iTf9OD7Jjx8qhMQE75uRn+3GpQZjMElfkm?=
- =?us-ascii?Q?F0nHGSJX+6k4zP950f6XK8neCZGPvYGM7mq0Ne/8/TGgXrqNI4+KWv5653iL?=
- =?us-ascii?Q?n6v1ak4JdwFFa/hu/Op1seBL2yexPYnw2EzSugpWL2GwWKeQT+mdn3sTo9QP?=
- =?us-ascii?Q?G7rzRA9kXGAFcyJJ5dWuE3kj78XcDwsJErdxrGNhJ9jGCo3CmVF3KebP69oU?=
- =?us-ascii?Q?9DA80ztytKif0J72I6MRicUsAaOmj06M5hmXjVgHshUqAV0oN5PsBjsQJiFf?=
- =?us-ascii?Q?EXJOcGKjbEBWq6DkGYOcXecLf/67lxyGMEDly4b2/BDPZnvrrcz4oW4wu3+i?=
- =?us-ascii?Q?GBVwdlXsNFADflBhPMFgkw4sYTR0FMEqik2MibcASzzzfKS1WdWDaeqsK2va?=
- =?us-ascii?Q?aqB2cx2EKVRhqe/epAL1Mfs5VaDQEBdkwukWOotbnAdWHNMC5Qw+JCICnYST?=
- =?us-ascii?Q?3qc8TWt4cWXJkB2B3E1WcaDqdczPQpjxANsahxILAwoqKQTw6weY8tjaiqj/?=
- =?us-ascii?Q?mXz5nkIQeZ97zrAi82UdExESaxd7fCXhQOJsjB9dVswOyeL5FuFTppGOokIw?=
- =?us-ascii?Q?FqLG2U35lI5o+JbHBiKiI9zeVaBkyTwP3wVAdDvcS3BzzAW1w3sTMWcPgtxt?=
- =?us-ascii?Q?ANqPmVBJ6laJmPKpmFhd4hzBEOSHbSVGD9q8/WkjL+WMdmCZJKe+q8Y/IJet?=
- =?us-ascii?Q?SQconEBUXhTexaIi26R0cellvn+n4mf3I4W9Y0wv7oPCyKwtfczyYRvEJRzR?=
- =?us-ascii?Q?zqf96GN30Y2VCrAcCSVOfeYe1gbaXsqGhpqD+0OWlYg6WBiSTBWkp0jXOxVH?=
- =?us-ascii?Q?dleCZzOFut6Fcg9SWgJHMfX1rdRQKEbdqcIXy/z9xAutk8RErsQOJ2RMsMXn?=
- =?us-ascii?Q?hjh+0YMz5BENc9DcCkjMpltdnGiAS1yORJerZcFWT8gVq2EBHplwuEaPXd7W?=
- =?us-ascii?Q?qpSuzkzJLeR0SXLQ70+XsiZK/c7RIjyX9lzXm7Z6V5EeI9aVuJOtBHfBTjet?=
- =?us-ascii?Q?nPeLKGAqpAbesMfIO6Fh/wKDrCKQf8K/7rYGQ8F+POB5ahThuggmn79ND47d?=
- =?us-ascii?Q?fGM/vpSETOEYWH4PX8crOJkUQ0OcHVHW04JEarj6zBmXirdTuvkuVywkImbi?=
- =?us-ascii?Q?E+Lt2rzodDGhQAwjh2+LtbuLDyrT2SXye4UMS6SAc9rWT/SrxC+CnV0V/sC0?=
- =?us-ascii?Q?8b/g6f5kpZszlBZCjEf0/nEbs+CmoK16?=
+ =?us-ascii?Q?HZnxkAkjByYX+riDA5E1iEPHkvP2BGmnJfKTp5SteT6cKgGYula2YeMxbKCE?=
+ =?us-ascii?Q?uBBf/qOGJJQLpO/0JNO+9AQ8I0rrrBROaLCgxFFjtcbTXNu1iu+DuaMZdYRj?=
+ =?us-ascii?Q?yGsUTt8Z4nSGxpefLprsStYXASvvVQI7sdaPddmFtscIbQirFg2NU6tRABBU?=
+ =?us-ascii?Q?OE+lJ7Un4BcmZTH0dX1BDZXj0jCBC93LzCIOE5W7ICB15DwJaFx2uLVsW9A3?=
+ =?us-ascii?Q?1+8QSkSDA4JkFfJNo2uW60N7fLE0pt7go06vkFuc1OFpFFmpN+cZ5XUE77B+?=
+ =?us-ascii?Q?MmC/FP+RC1SNznipDYdCYO9SIVyYk78aEEUo5YEKFVgXK3DO0XZpjX6yZe4j?=
+ =?us-ascii?Q?wkf8CRCOzWLfuowqedKgmSzzvNjhrMvxCqgNLwhhpcFPB+loZQ40P4xiGx4c?=
+ =?us-ascii?Q?7NvFyTs42urUe5+HuxTZnMFixVZ1dlGHnxGbcAN03sDC8rEfqh3IeX+O1mWH?=
+ =?us-ascii?Q?foZqSZsHNvx+rC7qLiSZtzWBaLt8BiVm6hAOMFKyxmKEub/P8EBL9TnJdjWp?=
+ =?us-ascii?Q?vYIZHqxVr/mRbcMRZzcNLSC0hKTW5826Xt+WujhRqbcZx8WRGDZKKB5PBSYc?=
+ =?us-ascii?Q?cCfP6xDe9UFEx6QSbT7QhSg4IxXo/PKNLKmVFOhFMtcaJ20c9mFYxxGeDrYC?=
+ =?us-ascii?Q?MQUMYuKJijvMMcEgCb/OA5B8miPj81AkmrGPMTCB8c23ApSkJ2D1eE6lJdjr?=
+ =?us-ascii?Q?U6ZSL3DRSQSKC+kQXsp3ovVUPArDJbAFoxmqSLunpYcSs2dOzHNRxzuYx4So?=
+ =?us-ascii?Q?ynP+C4R88tyf34e1TS3uJ25wvBHvbvHxD3RPWPliyPHRcWkKwAF5/HdeBDyx?=
+ =?us-ascii?Q?7mgmDaqgcPDM3wWh7d6ik1bwu1riL245sGsq7huH0dDZBDes76GsjJcsIXv2?=
+ =?us-ascii?Q?DRFsELkHRi6CRmfx9UpSTrCJV2stS/kwWS6ZvtfKa4F3PN/RjmT/CpWBBjso?=
+ =?us-ascii?Q?DIvubvk90U69CIVkLcFySARFojLXkFNBEtj/HeondMCvbf+xHEKJM0Tt//uk?=
+ =?us-ascii?Q?KFF8yQCfirWYU4Kxl1+uIn/tUVi4si2Pf+K0+mJ1dGObP2RyNRqpCMLKVNic?=
+ =?us-ascii?Q?dxefKhSWxS41ufsZUlpFlhOGqJQWbLBhNATAPlvzwjI144UWCB+e2GtqdNX7?=
+ =?us-ascii?Q?Az+u2GaJbJhYZWGzbW60y5L6D5NGtgVhNtJQXjGezsAYW3iB0L+xidCBJtEn?=
+ =?us-ascii?Q?oaYdAXzqQ+vCrjAK+yTwwZsdqE4xVXlCIypvMjK75zTDjNlo8mplXDlnPnJY?=
+ =?us-ascii?Q?SgwA/XfZrxsS1CIYBerSZmxetT/C4Bk6+r51VvDR9DVC1qb8wjpwxdQ2iI1b?=
+ =?us-ascii?Q?ih/g3Jb5Z2oyvKzWkxGM3MBzB39/fYIuOcXvDbx7x60dSZeUB9clYS1QIPeU?=
+ =?us-ascii?Q?54Y8D0VMX02vf/rJ3h1s1coa/gI1cRF3m4zUBi/cN7fVr7hpTboGNB1FqnfR?=
+ =?us-ascii?Q?Ng2j8mVcyJhIc5qGGiozoCq02FLvABF5?=
 x-forefront-antispam-report:
  CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR12MB7195.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(38070700018);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
 x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?rFytIonhyi1SFw5/8lofxKxcEkT2rrfU9IQh/h9oEkCQ3zls9z0yfPPS4VnQ?=
- =?us-ascii?Q?FCq4ElGOfbzeB7uJXd9bvs3mupyPffI81lXVm3cM3cQVLMjXvWcEBxwgD2Th?=
- =?us-ascii?Q?NqUJkOnAVvUiBOy5UGn8bUw+UqXKUeetew9jwR9mQaRHkGygIhbk7OWFIDjI?=
- =?us-ascii?Q?oChdBHVWAutPD9gyIpnBdoq8Gw0CtR0iyUAkfwvKcCEfuHqq2ub2jJDNo2BO?=
- =?us-ascii?Q?X+ylMXf6129iskBLQaLzCVsIi2PyXsmBsCdrnkeh9cEokDA8fBYr9zorefF2?=
- =?us-ascii?Q?vTyxVa8PRqW/n8rx3NV4vDZk00hPRCKK1PxsOXFpqxfzw9eb7BdmY2N4JVuy?=
- =?us-ascii?Q?7zcZ1pVt2Pls9EFG2IGR1tdD7PlQwyECflpv224sv5pkX5GvdwXMPbGWsEVK?=
- =?us-ascii?Q?VJYQ/Pot6a2/kggkc/eGqoY3S93zz/Zw3EdasNvLP+BesEVnBOfU/ja+4DmP?=
- =?us-ascii?Q?KsVuqbl4fm0Oy6Dosa3GJ1lYn5A6DP/R2x4aeh3O3G3xOpmtg3Enlh6SdfBg?=
- =?us-ascii?Q?6/KeAn6Oggllg0RX041be73p5YjTJ3UV6fFC8YS708JLcqOh5XZcOYUYAF6d?=
- =?us-ascii?Q?2ypT4Jk/T2lo9NN4+VZw5n/dnAHK6jLPySjSRcIojeDvRm9VGhf4OgJ+2SLO?=
- =?us-ascii?Q?uS1V+R9VZ11vZZDfTogBj9Sh64Byzc2zPPksLGn06vK5o3I4YHDbGi/F6x6y?=
- =?us-ascii?Q?xxKDdm6YQ4Ym6B9H3/lzBt5gKXLslS6iS+bBHYLbVBXvqTNSH3Bcq+y6t0Uq?=
- =?us-ascii?Q?2KoZmjZSAfyTcp2GhrxoLxSHiTRi9ybS24YrPdnltUCSPiXhS9uze5h1Qj0A?=
- =?us-ascii?Q?N7MdOjocHQAOt7yYdgVXEWk4PsHyJXzerNPcd9QuWxBMTN62cmHRh62pmomP?=
- =?us-ascii?Q?t0LoE5TTR2kZgKErQiu7JjyvCkRZSPJxXHX9nujL4C7Ti5qFLPsoqo1pvuIx?=
- =?us-ascii?Q?GH3ZfZK069m0s1uLXiuQZjbuCaSE5/h2JJJCzu4CiqGzGschmhLZnNzMg9dM?=
- =?us-ascii?Q?GUlchRvl+OQ/7ESN3uc2V2lwi66IF3o6GyHHjb38mJQRTrmA+qyI1vw69dkZ?=
- =?us-ascii?Q?dJkzc8OR9c+zXGpRraF0FlY2ECjDj8YGbTwCyo92eLpQUvwl7ZBMRx8jeBkI?=
- =?us-ascii?Q?fMi7A4IaBE/8TyvnvL7BW/68T1J+3eBVkVDXuwXtTZe6wLGHLVYRYvkFLMtP?=
- =?us-ascii?Q?OkqoktGwjwHz4G8ms/pkC4a3t8vk6xvLUsYsacc6FRAu2lJue9dON4seGBVb?=
- =?us-ascii?Q?vODjjREYvsVUtiuoUSSys05aYhjqKysaXtbznu0+SUIkyO5+Tsr/5mxctMiD?=
- =?us-ascii?Q?cO9Axg/vGDBCVnPrIWgcoxaMm0f2LvsWtFRrpFER7FJ6xvwcJKVByDchwQrX?=
- =?us-ascii?Q?YxJnXz+2y+FrsSLuQHcY5s0Iuiv943+7E9HjA6AyqjK0F66p84kwpKP0PGh3?=
- =?us-ascii?Q?OcEHwPOK6pkO//N1Zp/UzeKRg/PnFPQaV0wj+Cikgqoo6ecZWN0V4raH+/ap?=
- =?us-ascii?Q?jKRYw5rsob99PC0K5A1LoZ9yBlxx0HdATchifE4qDOAcCzV2QuR7RwgewF1X?=
- =?us-ascii?Q?PL2LJ6RViWWEt/D9iZA=3D?=
+ =?us-ascii?Q?eaLd4QAEmW4E4rHtyCurrmjG0N3BObCphKTdNUOsHympDMjnk0hgmdjAEMZ6?=
+ =?us-ascii?Q?NIhZDJx3BqoDsx/RxZfhuGkL1t33h0TPwInwsdKWtFo19bc2bT9oZ+AZGnrn?=
+ =?us-ascii?Q?jMxCAeEf13K/avP15UmzuVYVlW50989kD3+KlyGBVtZ3HMJ94ChfL/2lU2ZR?=
+ =?us-ascii?Q?q1+/sNRDkt95uE68rLiGviimkI/00Vh4Z9U69P2ho/NNfEtOpxhFJJouWSNk?=
+ =?us-ascii?Q?ihnV1UatNCwMG2XFghZE6qrOQNNKskAlA3N6Tuka68xNioPWHV7lFr4wyu6V?=
+ =?us-ascii?Q?WjgaBg4mpzzoxg1buq+poDEgB1ugzrPmBOIGk2xXzps+DIkX9yX4SlbCNTWv?=
+ =?us-ascii?Q?jmzRyWzQYXxgtJakWWw02wD0kQxNxK2ky8KIR2uyewE57foKt7EHrADGcz5K?=
+ =?us-ascii?Q?BGoW2Jm/twmuM8bJ/6UzrOWo7rqhaEBj8W6UikCLMxueOPSL6z1zAs/5VIo4?=
+ =?us-ascii?Q?Cj4jdDL+RLOhdsqeJVN/zlIG6OJ5OYBTbBsdsBdQEmi3OSwQnFP/PyRNxDn+?=
+ =?us-ascii?Q?zKrBX7GJXj/DW+5LoJB+fUNIXVyADgKySyGfZKFzr6FCTsXCpfHMicW7frSO?=
+ =?us-ascii?Q?eR458xSz5IMJjIUX7puSmfun6lGMghAEH+0cyvo/NYQ0HHXXGMZWvPERYqiz?=
+ =?us-ascii?Q?Nqar0qDZjhnMDbCFnzZLjYYRrmvKaw0dJg7UO6k7sscmMoM8LhttYa/Qy8fr?=
+ =?us-ascii?Q?KWZLZLUlhGXeJDTAwAoWItAFB1bSRFAfw3Np2J0LZBXVLKyw0XcxcEotFpTF?=
+ =?us-ascii?Q?Z0lPoU2np1quO8UOLjnp6QsT0loHSCWRsCqPk+SeTTByV/5BhU6gX6EZNp+/?=
+ =?us-ascii?Q?yeIZ/ZxGZWohPBbJHi6A/Tjj8TgST3PYT7u++xSsXM7nxbUbhIhucyiLFt5v?=
+ =?us-ascii?Q?QpG+RFmEfZ2jTgzHrPYYeaqThtza447KwOVi56n+R+zilYAigLQCN4sBDx1u?=
+ =?us-ascii?Q?NILg8CPZHr+CsMBjKTq0Q3O42xairyk+1AW5OtZEIzaaocbyuqZMHK9RHeMc?=
+ =?us-ascii?Q?ORa2+ggmNluOajmi8gH1ACVYPKeLIe5QcmBhETk4TdhkhR84Yw6osYIA02HE?=
+ =?us-ascii?Q?HWiFgdODFAiF4QrljwidWZiqIqjxTHiMkuUsF8xweI6KKFxbmNVl772Hgo/R?=
+ =?us-ascii?Q?qvTI8nOtgDrKwDFghi8x/mdRl9zZkz1kguSp9bUa+VWFUT+dmDcVhzIWv4+i?=
+ =?us-ascii?Q?Z1DMmXJXhBczQEUWQwKnFt+j7k0bxixIE6oYgYFPtUoloFa1KnJVEBWURQvL?=
+ =?us-ascii?Q?2IoLiHT3KomcL9E1kPSJ5h+8Big9Arfvz3dpKslCHg9JFM7AvQfNtLK37g3d?=
+ =?us-ascii?Q?rZenFowTYYuidptWZaXfQLUseeckFyp/ISAhHZYemG4SHXl3BhSWWQnwjGOG?=
+ =?us-ascii?Q?cVslp/x3yTrHrtnsGvDY6WVQqo/RQyuOv3LhjNoZKxTzIjYfEhUdUKeUBlKZ?=
+ =?us-ascii?Q?gfd/nSR4mc/LV0xvbDB9eiFG6Is+C8pZHzGIiN5IDt3m6e7cKiDFHxgZysk4?=
+ =?us-ascii?Q?jkGvIoG/7+7HolWTTwRnhAzGbORE7/jsE9yAP2JavaghGYpyOc6t+frFSya3?=
+ =?us-ascii?Q?qDis+GikT9OBh6f6jYs=3D?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -144,22 +145,27 @@ MIME-Version: 1.0
 X-OriginatorOrg: mellanox.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: CY8PR12MB7195.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c83e5c0-6fa3-4eb6-c841-08dd5617bb6f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Feb 2025 03:43:28.4975
+X-MS-Exchange-CrossTenant-Network-Message-Id: c20cbc03-e4f5-43af-91f0-08dd56196db7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Feb 2025 03:55:37.0864
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: F9WPx31j4H+NiK37VzBZM6BEh2AOj0q6tWdDQqApBA2fOKYLS/7/ze5tc9X9r0u5t3cRmf6UTXpYgQLY+kBIjw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB8560
-
+X-MS-Exchange-CrossTenant-userprincipalname: lEwVU+UMe7R161xilai+sFN3mARMHPzlOw6fVLte/zqrRz+2iWpP+kmA99ddTXO1+dXz4GlYz0AjhlD6UuUZRA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6827
 
 
 > From: Roman Gushchin <roman.gushchin@linux.dev>
 > Sent: Wednesday, February 26, 2025 9:05 AM
 >=20
-> Explicitly enumerate ib_device's attribute groups.
+> Commit 467f432a521a ("RDMA/core: Split port and device counter sysfs
+> attributes") accidentally exposed hw_counters to non-init net namespaces.
 >=20
+> Fix this by hiding the IB_ATTR_GROUP_HW_STATS group when initializing a
+> non-init rdma device.
+>=20
+> Fixes: 467f432a521a ("RDMA/core: Split port and device counter sysfs
+> attributes")
 > Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
 > Cc: Jason Gunthorpe <jgg@ziepe.ca>
 > Cc: Leon Romanovsky <leon@kernel.org>
@@ -168,70 +174,55 @@ X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB8560
 > Cc: linux-rdma@vger.kernel.org
 > Cc: linux-kernel@vger.kernel.org
 > ---
->  drivers/infiniband/core/device.c |  4 ++--
->  include/rdma/ib_verbs.h          | 14 ++++++++------
->  2 files changed, 10 insertions(+), 8 deletions(-)
+>  drivers/infiniband/core/device.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >=20
 > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/d=
 evice.c
-> index 0ded91f056f3..8dea307addf1 100644
+> index 8dea307addf1..bf4a016ccb9d 100644
 > --- a/drivers/infiniband/core/device.c
 > +++ b/drivers/infiniband/core/device.c
-> @@ -1404,8 +1404,8 @@ int ib_register_device(struct ib_device *device,
-> const char *name,
->  		return ret;
->  	}
->=20
-> -	device->groups[0] =3D &ib_dev_attr_group;
-> -	device->groups[1] =3D device->ops.device_group;
-> +	device->groups[IB_ATTR_GROUP_DEV_ATTR] =3D &ib_dev_attr_group;
-> +	device->groups[IB_ATTR_GROUP_DRIVER_ATTR] =3D device-
-> >ops.device_group;
->  	ret =3D ib_setup_device_attrs(device);
-This function may initialize the hw_stats at the index IB_ATTR_GROUP_DRIVER=
-_ATTR when it is optional.
-It runs through a for loop to find the first free entry.
-This needs to be captured in the comment above, and it will have effect on =
-your next fix patch.
-
->  	if (ret)
->  		goto cache_cleanup;
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h index
-> b59bf30de430..9c4c4238e6fc 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -2728,6 +2728,13 @@ struct ib_core_device {
->  	struct ib_device *owner; /* reach back to owner ib_device */  };
->=20
-> +enum ib_device_attr_group {
-> +	IB_ATTR_GROUP_DEV_ATTR =3D 0,	/* Device attributes */
-> +	IB_ATTR_GROUP_DRIVER_ATTR =3D 1,	/* Driver-provided attributes
-> */
-> +	IB_ATTR_GROUP_HW_STATS =3D 2,	/* hw_stats */
-> +	IB_ATTR_GROUP_LAST,		/* NULL pointer terminating array */
-> +};
+> @@ -528,6 +528,8 @@ static struct class ib_class =3D {  static void
+> rdma_init_coredev(struct ib_core_device *coredev,
+>  			      struct ib_device *dev, struct net *net)  {
+> +	bool is_full_dev =3D net_eq(net, &init_net);
 > +
->  struct rdma_restrack_root;
->  struct ib_device {
->  	/* Do not access @dma_device directly from ULP nor from HW
-> drivers. */ @@ -2761,12 +2768,7 @@ struct ib_device {
->  		struct ib_core_device	coredev;
->  	};
->=20
-> -	/* First group is for device attributes,
-> -	 * Second group is for driver provided attributes (optional).
-This text 'optional' is missing in above enums, please add it.
-Also please add the optional text comment for hw_stats too, as its optional=
- too.
+Instead of it, below is more elegant check because=20
+a. its limited to do comparison on core dev area and other generic structur=
+e.
+b. reuses the infra used in sysfs.c to detect coredev.
+c. in upcoming future, I plan to expand device creation in non init ns too,=
+ where it still will be coredev.
+And this conficts with that idea, hinting that comparing in below manner is=
+ still more elegant.
 
-> -	 * Third group is for the hw_stats
-> -	 * It is a NULL terminated array.
-> -	 */
-> -	const struct attribute_group	*groups[4];
-> +	const struct attribute_group	*groups[IB_ATTR_GROUP_LAST + 1];
+bool is_full_dev =3D &device->coredev =3D=3D coredev;=20
+
+>  	/* This BUILD_BUG_ON is intended to catch layout change
+>  	 * of union of ib_core_device and device.
+>  	 * dev must be the first element as ib_core and providers @@ -539,6
+> +541,10 @@ static void rdma_init_coredev(struct ib_core_device *coredev,
 >=20
->  	u64			     uverbs_cmd_mask;
->=20
+>  	coredev->dev.class =3D &ib_class;
+>  	coredev->dev.groups =3D dev->groups;
+> +
+> +	if (!is_full_dev)
+> +		coredev->dev.groups[IB_ATTR_GROUP_HW_STATS] =3D NULL;
+> +
+Static hard coding to HW_STATS enum is not enough because when IB_ATTR_GROU=
+P_DRIVER_ATTR group is not used,=20
+ib_setup_device_attrs() will initialize HW_STATS at index =3D DRIVER_ATTR.
+So you need to store the index of hw_stats group in the ib_device struct, s=
+o you can make it null for non_core_dev.
+
+And if that can be done without introducing the new enums, applying the fix=
+ on previous stable kernels will be easy.
+Otherwise, this patch needs to do to -rc and other previous patch to -next =
+and its difficult.
+
+>  	device_initialize(&coredev->dev);
+>  	coredev->owner =3D dev;
+>  	INIT_LIST_HEAD(&coredev->port_list);
 > --
 > 2.48.1.658.g4767266eb4-goog
 
