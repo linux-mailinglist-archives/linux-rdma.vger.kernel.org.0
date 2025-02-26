@@ -1,201 +1,258 @@
-Return-Path: <linux-rdma+bounces-8110-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8111-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70C1FA454EF
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 06:40:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA490A456A6
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 08:29:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC3C116E989
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 05:40:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10A141895B5D
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 07:29:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22893259499;
-	Wed, 26 Feb 2025 05:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DADDC26BD89;
+	Wed, 26 Feb 2025 07:29:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="eQeQPWQx"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DPnzDNfL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A58B191499
-	for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2025 05:40:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE9E269B1C
+	for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2025 07:29:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740548409; cv=none; b=tNaNpiMAXk7t4e2v94jUiZ3ZxN14KCcirgT2QlE+7oDR7xvfMnlzOSU3lzcdVQwddk+2xj9COlN9VYelpYl1sWvP5JYrRwh5fdyKYykyKjkryGSGdxBQp6kpAAisiU1C9sgCbwKQbPv7GtOlGHgP90Ps3yEE7NiqAUG68dk2l5E=
+	t=1740554943; cv=none; b=aS5v9LmFhHq6dHLMLXZ+UoN0N6Qb8BfmEQtTiPFq68LDM+qOg2RaE8nBIOF5XRgABpEDr33d5XQw2X0wisxHKtSwnQFRobmiyBW+x0sTnyTLR95BWRoLZmwfhIqOpOPrfkn5eRtmUP+LkZBAJo8wKVTP3Y/sFCtQ3/g8DZMRIII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740548409; c=relaxed/simple;
-	bh=JU4WnLqGgepHX4UF5oFzNUslNOz3Wk6b1aJDX0Rwa3A=;
+	s=arc-20240116; t=1740554943; c=relaxed/simple;
+	bh=6zbN5jOaaksOEj+lbfcyYF58FVbBR2uEiZ1U9Xm0Q7A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U49g9qG6gmCNPb3jMWKRdkXakNH90X4NCaRVS5WXjdhrS75z54GXhqcijH8Ngak9NjdIE2Rm55jMTXltQpm6Sz7I7atthfq3v5iSdcUt6qrMa5XIrZspHMXJMzetA4BR61eOg6O/omNnN3r+CTvkML0je4hpNA8rERD8Mb8xO2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=eQeQPWQx; arc=none smtp.client-ip=209.85.167.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3f41091f7c5so3071095b6e.3
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Feb 2025 21:40:08 -0800 (PST)
+	 To:Cc:Content-Type; b=MKtw7E30jVvebcV3AEZTQS9lWypdu075VOwLJLeMjV+8LCnebNupyuaGEegmr6xBE1po0MkQB8BAcsOUgvSOqdEPRvuIpjnH+dHqf6jfFO8cJE2ZScq6L3cf9y8rkroxBoHb1ZROyfw/sGKvZLKc8ldgy/FVnOY+Q+CNtAUpSPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DPnzDNfL; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5e0b70fb1daso8735482a12.1
+        for <linux-rdma@vger.kernel.org>; Tue, 25 Feb 2025 23:29:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1740548407; x=1741153207; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7MoI2OiNMa0xctpxnpHVT4MY3IzFbt2wKNsPUwYzRy8=;
-        b=eQeQPWQxhXSsZqWLQe+RcFR3qO3o4EtyKk2PYVE8lkdPJeXhagtGIxh+Kkp85fH7dV
-         k1tqjdDKVL26XD3C/mAU5q1PRf8W9C68MY6H34KjmZsDNA+TLxnVwihcsQjaq7A8YLoR
-         lBZy6klH57k0BoYFi5HrCWOb+YNu2GKfep6is=
+        d=suse.com; s=google; t=1740554939; x=1741159739; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jy5UzyKzocsSx5cSXomfjfFL//CTemBkcuebkephmC0=;
+        b=DPnzDNfLR7XZTTtbDw+DuW1lx1StRSsipS09fizN5cRrJGW7tcTHqO5NSG7xYdoHX2
+         o6tzx9bfAow0wJAO8wvFqoZHbs4mPyUkYNJ6p4x4X2XVpneFKc09+/l/Yb7I0rXWNvZf
+         59PADbwRVs1Z2Ld7EANg+3GvujiSVL9sTJFNAfRUgh+fg6qGE9wORi/b9D6BsDA1wVBw
+         nERAEUIHLAgGAaFUFnLURjg/tr13IDXYc82dy/A6pzvk+xS3FFlJBWRs/jLhn1DVfYvd
+         oBGL2zkNNM7XMhVb58ZA7Zr8kDt7ripM7lDqQoP5adxc4THLPzMH4Ps/LDy2jBnSEDqQ
+         ZvWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740548407; x=1741153207;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7MoI2OiNMa0xctpxnpHVT4MY3IzFbt2wKNsPUwYzRy8=;
-        b=hE/R1FOJKXtGIgpNhVzngeLVhCJpQtflOLhI9DF/tL6hqVG0I5tLE97C6JYQmKIDWm
-         g6XKaUhq2EhZFVUjslW7EoqXo92trLgGFOc8Xy1aQ1C/KqmiBZvt6uN8WgXXx6OuuZTH
-         B9Us7NwjMWLw4WO4Pe9un4mRSPrTG8+Zy76WTri0qHDFQb/V+1Koxz+8Y2A58c9P1OLH
-         zhNUf7KxQQpHNE82GOjij9doELbHLBEaqduvPF/SVlnFpfvANNvxluOy5HuQWV+uA5u9
-         ql+guPqfKdrDqQ6PAgziGh8sFp/DmmATKAr6VE1ZF0FCpoiJ8Q1UnhJDU+GMy3wKwB2i
-         qEOg==
-X-Forwarded-Encrypted: i=1; AJvYcCWhwd5ulaZ7xI87FzEHpm7PwkvZHYbx5G1YcngpisjgEbIlqt3fDPaUW5mLf2cPxYR2NRMM4YHRsCOR@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLUGgtgKWODfDOYYOgeRfOSVjFMRscTwxkLqp+qblzWDZHQN/K
-	Wn89nuOnnPHW+4ZwvEL7UDG8qpQl3NybV/TjORU9wGi5RIHOSsRi9j8K8GCcYKF3iginAZv9+fj
-	ghbqyAf2fTSpjD+Toa/y2QCW0/TLjhqCvLv1PXujyAa8QTws=
-X-Gm-Gg: ASbGnctZubxkkXJ7F/Ma6LPmJOuxM3O/mHcE582XTi1MQxDCl5xizdffBrRoY2A5zF5
-	Y9cyPcNyVzeWbbtQZgurckUjrpkyHaMsQGPku3nqOzfha7RTB4A5jEWHOeqTGnne9Ds9jS7YnNV
-	Dj0Q9DHhQO
-X-Google-Smtp-Source: AGHT+IHl0rqdw+yMdJsfw+xDa1pgMmlX+6Peh16wQ1q7uTGflRazjPphd7msYwtDnIVnxZqExbctcgPnkCPFvhlkIe8=
-X-Received: by 2002:a05:6808:3a06:b0:3f4:1738:f804 with SMTP id
- 5614622812f47-3f425a5a053mr16856519b6e.4.1740548407313; Tue, 25 Feb 2025
- 21:40:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740554939; x=1741159739;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jy5UzyKzocsSx5cSXomfjfFL//CTemBkcuebkephmC0=;
+        b=VHPqQ47xTT08FAZSBfeT0n4Vg8uz6T11d1YNcTEJ19CE28Tv1o18yo2G45b4j1kgAU
+         nXI/LaM0VBnhhQFCgyrQ4yPtuqAGjQjVFGubgkYPDg45XmZhMS3TKs60ZniY5ItopDRW
+         nHaKi75ZZhfin4ST6KW5pTCkQBx0FWtB9M6UWdSFyAQgTVQTQwdLhby35tgxGHTO8ScU
+         9HXr9zYycbzScCH/pgwBE8jsbzuTHDbJitz6DMO1Lc91+xMA9xwgHgK55LtlxOz2xpWH
+         LOA7MRCstw9hiCIcdom60s9P3i1ZSgZP/7Rly6jOpvUd/U96VwVSaE51KFrtg2ah8nJd
+         w2sA==
+X-Forwarded-Encrypted: i=1; AJvYcCVaGbNBKOmPorQMSSBg1fSo1MtQY8QJZeFj8uPUcftIljv9HHHHmPljYMzXPeEFUD5e1J91NlMHKnNe@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz+0vfxw5uXNcjddP5myxzUH8lluACjGI25rsCNXjHtnNjfd5Yw
+	e2M/94NMAH6zLAMXGPuOVy4GvBtNaEXs6+Zz8ISuvPGpkcf/AXjAGeQOmHtY5c+91xpK8yrhMD6
+	Iz/oPUtGR2szf2L7oUxXMMoCVOuRxpSjzMKpMzQ==
+X-Gm-Gg: ASbGncsrXkfylrgLOdKfao0IFMQSLw3THGyFKUKK5U4YvAXca3cOWZO+3bvBKzl/AEc
+	T9i0JDpwrkmTozZA0gflf0JoDyy0UzT89w64CPPoso/0No3NYEiCkt/YcJld2MWlupea+RoBrI2
+	JJxeaQDw==
+X-Google-Smtp-Source: AGHT+IFYP8Tba+z3P6zhrfLVohTtXs/BwRHQBKKRVXu59ZSzqEPbWtjoPmnK2n59Ee5Tugvqu0RIdPnu12lt6iEjWaU=
+X-Received: by 2002:a17:906:18b1:b0:ab6:ed8a:601f with SMTP id
+ a640c23a62f3a-abeeed1123amr202024966b.12.1740554939189; Tue, 25 Feb 2025
+ 23:28:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1738657285-23968-1-git-send-email-selvin.xavier@broadcom.com>
- <1738657285-23968-4-git-send-email-selvin.xavier@broadcom.com> <20250225184249.GA609904@nvidia.com>
-In-Reply-To: <20250225184249.GA609904@nvidia.com>
-From: Selvin Xavier <selvin.xavier@broadcom.com>
-Date: Wed, 26 Feb 2025 11:09:55 +0530
-X-Gm-Features: AWEUYZn79K30dEmzKw5I-0kMo6YeBN-qFhMIym--h66M8ybQ25eSlUPZa2eDDlw
-Message-ID: <CA+sbYW3BfuQe5XUHjksT7WpPrU-sVRm=-gdOZb=Vsr0SbMxMwA@mail.gmail.com>
-Subject: Re: [PATCH rdma-rc 3/4] RDMA/bnxt_re: Fix issue in the unload path
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org, 
-	andrew.gospodarek@broadcom.com, kalesh-anakkur.purayil@broadcom.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000008c0819062f050183"
-
---0000000000008c0819062f050183
+References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
+ <20250225-converge-secs-to-jiffies-part-two-v3-6-a43967e36c88@linux.microsoft.com>
+ <e53d7586-b278-4338-95a2-fa768d5d8b5e@wanadoo.fr>
+In-Reply-To: <e53d7586-b278-4338-95a2-fa768d5d8b5e@wanadoo.fr>
+From: Daniel Vacek <neelx@suse.com>
+Date: Wed, 26 Feb 2025 08:28:48 +0100
+X-Gm-Features: AQ5f1JpekOKemtGu2BHsnbGs6fr563e7jHjxxRB5HZ2bESNce9YNZRbPCIKk9Cc
+Message-ID: <CAPjX3Fcr+BoMRgZGbqqgpF+w-sHU+SqGT8QJ3QCp8uvJbnaFsQ@mail.gmail.com>
+Subject: Re: [PATCH v3 06/16] rbd: convert timeouts to secs_to_jiffies()
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Easwar Hariharan <eahariha@linux.microsoft.com>, Frank.Li@nxp.com, 
+	James.Bottomley@hansenpartnership.com, Julia.Lawall@inria.fr, 
+	Shyam-sundar.S-k@amd.com, akpm@linux-foundation.org, axboe@kernel.dk, 
+	broonie@kernel.org, cassel@kernel.org, cem@kernel.org, 
+	ceph-devel@vger.kernel.org, clm@fb.com, cocci@inria.fr, 
+	dick.kennedy@broadcom.com, djwong@kernel.org, dlemoal@kernel.org, 
+	dongsheng.yang@easystack.cn, dri-devel@lists.freedesktop.org, 
+	dsterba@suse.com, festevam@gmail.com, hch@lst.de, hdegoede@redhat.com, 
+	hmh@hmh.eng.br, ibm-acpi-devel@lists.sourceforge.net, idryomov@gmail.com, 
+	ilpo.jarvinen@linux.intel.com, imx@lists.linux.dev, james.smart@broadcom.com, 
+	jgg@ziepe.ca, josef@toxicpanda.com, kalesh-anakkur.purayil@broadcom.com, 
+	kbusch@kernel.org, kernel@pengutronix.de, leon@kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-ide@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, 
+	linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-scsi@vger.kernel.org, linux-sound@vger.kernel.org, 
+	linux-spi@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	martin.petersen@oracle.com, nicolas.palix@imag.fr, ogabbay@kernel.org, 
+	perex@perex.cz, platform-driver-x86@vger.kernel.org, s.hauer@pengutronix.de, 
+	sagi@grimberg.me, selvin.xavier@broadcom.com, shawnguo@kernel.org, 
+	sre@kernel.org, tiwai@suse.com, xiubli@redhat.com, yaron.avizrat@intel.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 26, 2025 at 12:13=E2=80=AFAM Jason Gunthorpe <jgg@nvidia.com> w=
-rote:
+On Tue, 25 Feb 2025 at 22:10, Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
 >
-> On Tue, Feb 04, 2025 at 12:21:24AM -0800, Selvin Xavier wrote:
-> > From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> Le 25/02/2025 =C3=A0 21:17, Easwar Hariharan a =C3=A9crit :
+> > Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
+> > secs_to_jiffies().  As the value here is a multiple of 1000, use
+> > secs_to_jiffies() instead of msecs_to_jiffies() to avoid the multiplica=
+tion
 > >
-> > The cited comment removed the netdev notifier register call
-> > from the driver. But, it did not remove the cleanup code from
-> > the unload path. As a result, driver unload is not clean and
-> > resulted in undesired behaviour.
+> > This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci w=
+ith
+> > the following Coccinelle rules:
+> >
+> > @depends on patch@ expression E; @@
+> >
+> > -msecs_to_jiffies(E * 1000)
+> > +secs_to_jiffies(E)
+> >
+> > @depends on patch@ expression E; @@
+> >
+> > -msecs_to_jiffies(E * MSEC_PER_SEC)
+> > +secs_to_jiffies(E)
+> >
+> > While here, remove the no-longer necessary check for range since there'=
+s
+> > no multiplication involved.
 >
-> Please don't use vauge generic commit titles:
->
->  RDMA/bnxt_re: Fix issue in the unload path
->
-> Be specific and exact, there are several cases like this in this
-> series and I'm actively wondering if Linus will object to this for rc
-> patches.
->
->  RDMA/bnxt_re: Fix missed call to ib_unregister_device()
->
->  Since rdev->nb.notifier_call is always NULL the actual work in
->  bnxt_re_remove_device() was skipped
+> I'm not sure this is correct.
+> Now you multiply by HZ and things can still overflow.
 
-Sure. will try to be  specific in the commit messages in future.  thanks
+This does not deal with any additional multiplications. If there is an
+overflow, it was already there before to begin with, IMO.
+
+> Hoping I got casting right:
+
+Maybe not exactly? See below...
+
+> #define MSEC_PER_SEC    1000L
+> #define HZ 100
 >
-> Jason
+>
+> #define secs_to_jiffies(_secs) (unsigned long)((_secs) * HZ)
+>
+> static inline unsigned long _msecs_to_jiffies(const unsigned int m)
+> {
+>         return (m + (MSEC_PER_SEC / HZ) - 1) / (MSEC_PER_SEC / HZ);
+> }
+>
+> int main() {
+>
+>         int n =3D INT_MAX - 5;
+>
+>         printf("res  =3D %ld\n", secs_to_jiffies(n));
+>         printf("res  =3D %ld\n", _msecs_to_jiffies(1000 * n));
 
---0000000000008c0819062f050183
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+I think the format should actually be %lu giving the below results:
 
-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
-FYMZp2DojLAq9f4Oi2OBetbnWxo0WGycXpmq/jC4PUx2u9mazQ79i80VLagGRshWniESXuf+SYG8
-+zBimjld9ZZnwm7itHAZdtme4YYFxx+EHa4PUxPV8t+hPHhsiIjirPa1pVXPbQIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU3TaH
-dsgUhTW3LwObmZ20fj+8Xj8wDQYJKoZIhvcNAQELBQADggEBAAbt6Sptp6ZlTnhM2FDhkVXks68/
-iqvfL/e8wSPVdBxOuiP+8EXGLV3E72KfTTJXMbkcmFpK2K11poBDQJhz0xyOGTESjXNnN6Eqq+iX
-hQtF8xG2lzPq8MijKI4qXk5Vy5DYfwsVfcF0qJw5AhC32nU9uuIPJq8/mQbZfqmoanV/yadootGr
-j1Ze9ndr+YDXPpCymOsynmmw0ErHZGGW1OmMpAEt0A+613glWCURLDlP8HONi1wnINV6aDiEf0ad
-9NMGxDsp+YWiRXD3txfo2OMQbpIxM90QfhKKacX8t1J1oAAWxDrLVTJBXBNvz5tr+D1sYwuye93r
-hImmkM1unboxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxy+Cu4x/7lM0zxY7cwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIoPvX3Zrndy
-h4QI8UWTuCirhs3cNczuLb7KlIhTQUd0MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTI1MDIyNjA1NDAwN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCcJ6bc6omIEPdaLa1jwKyxHC22X9HY
-adoJAxFBVOE75UMbnKrwdwYA4g3npfxGpnbqsv2MAssI8DaM6ackJCk2Dm/nP23eVsO2G0kBSGVv
-N/GFgqQicMKg0ksqk3/ice+0C5fALHaw7qXwWj670PmJ/pdzgoSOVBSqfUxoTzIw4VrkE3gDYWzn
-E6XU4Ql5BxWtyJg8OsDBYyE1a3WqDyPcfc8Xpnx5+UZRDwnUJV5oW3uUgnwBErWCe9wjlkzI+I8n
-je22B6SaSCvde4U0O1LtDkTc5yX9MtS/W3AbN9RUerkhCkDVqnXD8Ads9WvxqQPlnM2zzotkJbwO
-Q3GeRneu
---0000000000008c0819062f050183--
+res  =3D 18446744073709551016
+res  =3D 429496130
+
+Which is still wrong nonetheless. But here, *both* results are wrong
+as the expected output should be 214748364200 which you'll get with
+the correct helper/macro.
+
+But note another thing, the 1000 * (INT_MAX - 5) already overflows
+even before calling _msecs_to_jiffies(). See?
+
+Now, you'll get that mentioned correct result with:
+
+#define secs_to_jiffies(_secs) ((unsigned long)(_secs) * HZ)
+
+Still, why unsigned? What if you wanted to convert -5 seconds to jiffies?
+
+>         return 0;
+> }
+>
+>
+> gives :
+>
+> res  =3D -600
+> res  =3D 429496130
+>
+> with msec, the previous code would catch the overflow, now it overflows
+> silently.
+
+What compiler options are you using? I'm not getting any warnings.
+
+> untested, but maybe:
+>         if (result.uint_32 > INT_MAX / HZ)
+>                 goto out_of_range;
+>
+> ?
+>
+> CJ
+>
+>
+> >
+> > Acked-by: Ilya Dryomov <idryomov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.or=
+g>
+> > Signed-off-by: Easwar Hariharan <eahariha-1pm0nblsJy7Jp67UH1NAhkEOCMrvL=
+tNR@public.gmane.org>
+> > ---
+> >   drivers/block/rbd.c | 8 +++-----
+> >   1 file changed, 3 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
+> > index faafd7ff43d6ef53110ab3663cc7ac322214cc8c..41207133e21e9203192adf3=
+b92390818e8fa5a58 100644
+> > --- a/drivers/block/rbd.c
+> > +++ b/drivers/block/rbd.c
+> > @@ -108,7 +108,7 @@ static int atomic_dec_return_safe(atomic_t *v)
+> >   #define RBD_OBJ_PREFIX_LEN_MAX      64
+> >
+> >   #define RBD_NOTIFY_TIMEOUT  5       /* seconds */
+> > -#define RBD_RETRY_DELAY              msecs_to_jiffies(1000)
+> > +#define RBD_RETRY_DELAY              secs_to_jiffies(1)
+> >
+> >   /* Feature bits */
+> >
+> > @@ -4162,7 +4162,7 @@ static void rbd_acquire_lock(struct work_struct *=
+work)
+> >               dout("%s rbd_dev %p requeuing lock_dwork\n", __func__,
+> >                    rbd_dev);
+> >               mod_delayed_work(rbd_dev->task_wq, &rbd_dev->lock_dwork,
+> > -                 msecs_to_jiffies(2 * RBD_NOTIFY_TIMEOUT * MSEC_PER_SE=
+C));
+> > +                 secs_to_jiffies(2 * RBD_NOTIFY_TIMEOUT));
+> >       }
+> >   }
+> >
+> > @@ -6283,9 +6283,7 @@ static int rbd_parse_param(struct fs_parameter *p=
+aram,
+> >               break;
+> >       case Opt_lock_timeout:
+> >               /* 0 is "wait forever" (i.e. infinite timeout) */
+> > -             if (result.uint_32 > INT_MAX / 1000)
+> > -                     goto out_of_range;
+> > -             opt->lock_timeout =3D msecs_to_jiffies(result.uint_32 * 1=
+000);
+> > +             opt->lock_timeout =3D secs_to_jiffies(result.uint_32);
+> >               break;
+> >       case Opt_pool_ns:
+> >               kfree(pctx->spec->pool_ns);
+> >
+>
+>
 
