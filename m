@@ -1,188 +1,201 @@
-Return-Path: <linux-rdma+bounces-8171-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8172-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B680CA46A29
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 19:50:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDB06A46A8C
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 20:02:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C1BB16C7BC
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 18:50:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C276B16DC15
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2025 19:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16605233140;
-	Wed, 26 Feb 2025 18:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4F9621E096;
+	Wed, 26 Feb 2025 19:02:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O+4/s9Lh"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kq10u50m"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E9823372B;
-	Wed, 26 Feb 2025 18:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F09183CCA
+	for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2025 19:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740595827; cv=none; b=keBNO0XJmHAZlgJtlUbJV0AVvCfrhpKbqgcc3fI85XSKz2p+KpK0ZuLqoQXXCsxqBIyvbK7IKC8igTuDpsllgjy1uT99jprh0vagtazTd0Razb01y7lPOIwkToI6D25BanGL80dLBE+vFYTS7aWyRwYIKmEQifu9MjGdyR2/jSg=
+	t=1740596551; cv=none; b=LAsTN7bIjdD9owaPys6JXVCt8DqrqmRfTEZRKb/tCciLBjLTqgEz2QeLIFU5lChl11KfG98DJDhYo+INeVycto2kAklCKeCRliVYe/ADaqmY0n0uIvAx11kcnAAE7pjddd5+lYrt4fV70N98hbZcf7hcWDDwGT7p90eWScEE49w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740595827; c=relaxed/simple;
-	bh=GAlBE1MxBLfuNJIdhoKlRlj8/U0KvapKDVttTpAWkto=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rus+tEedpumj0GiHDoqPOWRga+GcrY+LX7Mtvgd75EJbMRr7DxnwGrellJbB5y4Gk4wfXO2InV3WXH0upoESYASBXLrOcDdOxGnLECM7z8fsnSKlrVWDFYTpBFBN2EpXZyzsJYhY14GBTIAADvgcyNsdnDRffkpvHMFOaR+cED0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O+4/s9Lh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAB18C4CED6;
-	Wed, 26 Feb 2025 18:50:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740595827;
-	bh=GAlBE1MxBLfuNJIdhoKlRlj8/U0KvapKDVttTpAWkto=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O+4/s9LhDb3+Glvl+MPUJGDHbmTaCE5lHu8qIRVou/5uMi4gLs+UsT45p/eEplF13
-	 X6+GbdS5V8QvUDsV1RYxM6s86Z7YRDs3bHSwEI9iMzoEAZxGs1F+fO/qoeo+Sy9+7e
-	 ah3TfR5ac/wpSWNargdVhkYDiz+jljWsfwnoIe4VcaLJU2MVYTL2UCTlXKvzVuHQCf
-	 4+5sX7Kb3qe311nMoFcvPRYbmG/9eypEHJYoCIkEwtbVxPMy6/vXZmltChkJuei9Uu
-	 Y1oStQ5jFCVLR4QsvoDvq9vj1QLyvljO07AT5MvdvcV+500o3dnfPEXtQk33vP0UZA
-	 lxWmXMOf2I8YA==
-Date: Wed, 26 Feb 2025 20:50:22 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: "Ertman, David M" <david.m.ertman@intel.com>
-Cc: "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
-	"jgg@nvidia.com" <jgg@nvidia.com>,
-	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [iwl-next v4 1/1] iidc/ice/irdma: Update IDC to support multiple
- consumers
-Message-ID: <20250226185022.GM53094@unreal>
-References: <20250225050428.2166-1-tatyana.e.nikolova@intel.com>
- <20250225050428.2166-2-tatyana.e.nikolova@intel.com>
- <20250225075530.GD53094@unreal>
- <IA1PR11MB61944C74491DECA111E84021DDC22@IA1PR11MB6194.namprd11.prod.outlook.com>
+	s=arc-20240116; t=1740596551; c=relaxed/simple;
+	bh=PM0iuxwTwKVQ3swVnaNNb9FnzSTV4LJEdk9/RWpvUhA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XJNcO2Xy+gl9mjeJQ6lih/DqvNWwukbgiPIvkvr483L5yXvYQ5RIXnSFuviCOonCyNskuxr4OGlS67IW6eGHHp+buMF2cG83/xAGg/rCTwdz29YgfD8Kv/HX1av4x4WUgtttyKeTO5+bj+hAkZ/9t2k2UZKByAX4cC+o6o+wBb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Kq10u50m; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740596547;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=9tJLIQTRQrVy89QFp2mFby5PtzlOdWSIBKGKAYQp2dc=;
+	b=Kq10u50mNH3nFKGWMVqtFui3JJT0HEVvDxVzBEYzBZVt5B4ALEqfK4w2H/eaLTEgDBrqLo
+	akw7lr71jW/Vp3pDFjCfU+b5MPHyxjq1GnHsY1P1SOc8nKe4hQJOtG4oENMcghTk3hC5v9
+	uWldEdhJHncAcv1yUlJgfIZgH16Kjz8=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>,
+	Leon Romanovsky <leon@kernel.org>,
+	Maher Sanalla <msanalla@nvidia.com>,
+	Parav Pandit <parav@mellanox.com>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/core: don't expose hw_counters outside of init net namespace
+Date: Wed, 26 Feb 2025 19:02:14 +0000
+Message-ID: <20250226190214.3093336-1-roman.gushchin@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <IA1PR11MB61944C74491DECA111E84021DDC22@IA1PR11MB6194.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 26, 2025 at 05:36:44PM +0000, Ertman, David M wrote:
-> > -----Original Message-----
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Monday, February 24, 2025 11:56 PM
-> > To: Nikolova, Tatyana E <tatyana.e.nikolova@intel.com>
-> > Cc: jgg@nvidia.com; intel-wired-lan@lists.osuosl.org; linux-
-> > rdma@vger.kernel.org; netdev@vger.kernel.org; Ertman, David M
-> > <david.m.ertman@intel.com>
-> > Subject: Re: [iwl-next v4 1/1] iidc/ice/irdma: Update IDC to support multiple
-> > consumers
-> > 
-> > On Mon, Feb 24, 2025 at 11:04:28PM -0600, Tatyana Nikolova wrote:
-> > > From: Dave Ertman <david.m.ertman@intel.com>
-> > >
-> > > To support RDMA for E2000 product, the idpf driver will use the IDC
-> > > interface with the irdma auxiliary driver, thus becoming a second
-> > > consumer of it. This requires the IDC be updated to support multiple
-> > > consumers. The use of exported symbols no longer makes sense because it
-> > > will require all core drivers (ice/idpf) that can interface with irdma
-> > > auxiliary driver to be loaded even if hardware is not present for those
-> > > drivers.
-> > 
-> > In auxiliary bus world, the code drivers (ice/idpf) need to created
-> > auxiliary devices only if specific device present. That auxiliary device
-> > will trigger the load of specific module (irdma in our case).
-> > 
-> > EXPORT_SYMBOL won't trigger load of irdma driver, but the opposite is
-> > true, load of irdma will trigger load of ice/idpf drivers (depends on
-> > their exported symbol).
-> > 
-> > >
-> > > To address this, implement an ops struct that will be universal set of
-> > > naked function pointers that will be populated by each core driver for
-> > > the irdma auxiliary driver to call.
-> > 
-> > No, we worked very hard to make proper HW discovery and driver autoload,
-> > let's not return back. For now, it is no-go.
-> 
-> Hi Leon,
-> 
-> I am a little confused about what the problem here is.  The main issue I pull
-> from your response is: Removing exported symbols will stop ice/idpf from
-> autoloading when irdma loads.  Is this correct or did I miss your point?
+Commit 5fd8529350f0 ("RDMA/core: fix a NULL-pointer dereference in
+hw_stat_device_show()") accidentally almost exposed hw counters
+to non-init net namespaces. It didn't expose them fully, as an attempt
+to read any of those counters leads to a crash like this one:
 
-It is one of the main points.
+[42021.807566] BUG: kernel NULL pointer dereference, address: 0000000000000028
+[42021.814463] #PF: supervisor read access in kernel mode
+[42021.819549] #PF: error_code(0x0000) - not-present page
+[42021.824636] PGD 0 P4D 0
+[42021.827145] Oops: 0000 [#1] SMP PTI
+[42021.830598] CPU: 82 PID: 2843922 Comm: switchto-defaul Kdump: loaded Tainted: G S      W I        XXX
+[42021.841697] Hardware name: XXX
+[42021.849619] RIP: 0010:hw_stat_device_show+0x1e/0x40 [ib_core]
+[42021.855362] Code: 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 49 89 d0 4c 8b 5e 20 48 8b 8f b8 04 00 00 48 81 c7 f0 fa ff ff <48> 8b 41 28 48 29 ce 48 83 c6 d0 48 c1 ee 04 69 d6 ab aa aa aa 48
+[42021.873931] RSP: 0018:ffff97fe90f03da0 EFLAGS: 00010287
+[42021.879108] RAX: ffff9406988a8c60 RBX: ffff940e1072d438 RCX: 0000000000000000
+[42021.886169] RDX: ffff94085f1aa000 RSI: ffff93c6cbbdbcb0 RDI: ffff940c7517aef0
+[42021.893230] RBP: ffff97fe90f03e70 R08: ffff94085f1aa000 R09: 0000000000000000
+[42021.900294] R10: ffff94085f1aa000 R11: ffffffffc0775680 R12: ffffffff87ca2530
+[42021.907355] R13: ffff940651602840 R14: ffff93c6cbbdbcb0 R15: ffff94085f1aa000
+[42021.914418] FS:  00007fda1a3b9700(0000) GS:ffff94453fb80000(0000) knlGS:0000000000000000
+[42021.922423] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[42021.928130] CR2: 0000000000000028 CR3: 00000042dcfb8003 CR4: 00000000003726f0
+[42021.935194] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[42021.942257] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[42021.949324] Call Trace:
+[42021.951756]  <TASK>
+[42021.953842]  [<ffffffff86c58674>] ? show_regs+0x64/0x70
+[42021.959030]  [<ffffffff86c58468>] ? __die+0x78/0xc0
+[42021.963874]  [<ffffffff86c9ef75>] ? page_fault_oops+0x2b5/0x3b0
+[42021.969749]  [<ffffffff87674b92>] ? exc_page_fault+0x1a2/0x3c0
+[42021.975549]  [<ffffffff87801326>] ? asm_exc_page_fault+0x26/0x30
+[42021.981517]  [<ffffffffc0775680>] ? __pfx_show_hw_stats+0x10/0x10 [ib_core]
+[42021.988482]  [<ffffffffc077564e>] ? hw_stat_device_show+0x1e/0x40 [ib_core]
+[42021.995438]  [<ffffffff86ac7f8e>] dev_attr_show+0x1e/0x50
+[42022.000803]  [<ffffffff86a3eeb1>] sysfs_kf_seq_show+0x81/0xe0
+[42022.006508]  [<ffffffff86a11134>] seq_read_iter+0xf4/0x410
+[42022.011954]  [<ffffffff869f4b2e>] vfs_read+0x16e/0x2f0
+[42022.017058]  [<ffffffff869f50ee>] ksys_read+0x6e/0xe0
+[42022.022073]  [<ffffffff8766f1ca>] do_syscall_64+0x6a/0xa0
+[42022.027441]  [<ffffffff8780013b>] entry_SYSCALL_64_after_hwframe+0x78/0xe2
 
-> 
-> But, if there is an ice or idpf supported device present in the system, the
-> appropriate driver will have already been loaded anyway (and gone through its
-> probe flow to create auxiliary devices).  If it is not loaded, then the system owner
-> has either unloaded it manually or blacklisted it.  This would not cause an issue
-> anyway, since irdma and ice/idpf can load in any order.
+The problem can be reproduced using the following steps:
+  ip netns add foo
+  ip netns exec foo bash
+  cat /sys/class/infiniband/mlx4_0/hw_counters/*
 
-There are two assumptions above, which both not true.
-1. Users never issue "modprobe irdma" command alone and always will call
-to whole chain "modprobe ice ..." before.
-2. You open-code module subsystem properly with reference counters,
-ownership and locks to protect from function pointers to be set/clear
-dynamically.
+The panic occurs because of casting the device pointer into an
+ib_device pointer using container_of() in hw_stat_device_show() is
+wrong and leads to a memory corruption.
 
-> 
-> > 
-> > <...>
-> > 
-> > > +/* Following APIs are implemented by core PCI driver */
-> > > +struct idc_rdma_core_ops {
-> > > +	int (*vc_send_sync)(struct idc_rdma_core_dev_info *cdev_info, u8
-> > *msg,
-> > > +			    u16 len, u8 *recv_msg, u16 *recv_len);
-> > > +	int (*vc_queue_vec_map_unmap)(struct idc_rdma_core_dev_info
-> > *cdev_info,
-> > > +				      struct idc_rdma_qvlist_info *qvl_info,
-> > > +				      bool map);
-> > > +	/* vport_dev_ctrl is for RDMA CORE driver to indicate it is either
-> > ready
-> > > +	 * for individual vport aux devices, or it is leaving the state where it
-> > > +	 * can support vports and they need to be downed
-> > > +	 */
-> > > +	int (*vport_dev_ctrl)(struct idc_rdma_core_dev_info *cdev_info,
-> > > +			      bool up);
-> > > +	int (*request_reset)(struct idc_rdma_core_dev_info *cdev_info,
-> > > +			     enum idc_rdma_reset_type reset_type);
-> > > +};
-> > 
-> > Core driver can call to callbacks in irdma, like you already have for
-> > irdma_iidc_event_handler(), but all calls from irdma to core driver must
-> > be through exported symbols. It gives us race-free world in whole driver
-> > except one very specific place (irdma_iidc_event_handler).
-> 
-> I am confused here as well.  Calling a function through an exported symbol,
-> or calling the same function from a function pointer should not affect the
-> generation of a race condition, as the same function is being called.
-> What is inherently better about an exported symbol versus a function
-> pointer when considering race conditions?
+However the real problem is that hw counters should never been exposed
+outside of the non-init net namespace.
 
-Exported symbol guarantees that function exists in core module. Module
-subsystem will ensure that core module is impossible to unload until all
-users are gone. Function pointer has no such guarantees.
+Fix this by saving the index of the corresponding attribute group
+(it might be 1 or 2 depending on the presence of driver-specific
+attributes) and zeroing the pointer to hw_counters group for compat
+devices during the initialization.
 
-> 
-> Also, why is calling a function pointer from the irdma module ok, but calling
-> one from the core module not?
+With this fix applied hw_counters are not available in a non-init
+net namespace:
+  find /sys/class/infiniband/mlx4_0/ -name hw_counters
+    /sys/class/infiniband/mlx4_0/ports/1/hw_counters
+    /sys/class/infiniband/mlx4_0/ports/2/hw_counters
+    /sys/class/infiniband/mlx4_0/hw_counters
 
-Because we need to make sure that core module doesn't disappear while
-irdma executes its flow. The opposite is not true because core module
-controls irdma devices and aware than irdma module is loaded/unloaded.
+  ip netns add foo
+  ip netns exec foo bash
+  find /sys/class/infiniband/mlx4_0/ -name hw_counters
 
-Thanks
+Fixes: 467f432a521a ("RDMA/core: Split port and device counter sysfs attributes")
+Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: Maher Sanalla <msanalla@nvidia.com>
+Cc: Parav Pandit <parav@mellanox.com>
+Cc: linux-rdma@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/infiniband/core/device.c | 9 +++++++++
+ drivers/infiniband/core/sysfs.c  | 1 +
+ include/rdma/ib_verbs.h          | 1 +
+ 3 files changed, 11 insertions(+)
 
-> 
-> Again - Thank you for the review, and if I completely missed your points, please let me know!
-> 
-> Thanks
-> DaveE
-> 
-> > 
-> > Thanks
-> 
-> 
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 0ded91f056f3..8feb22089cbb 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -528,6 +528,8 @@ static struct class ib_class = {
+ static void rdma_init_coredev(struct ib_core_device *coredev,
+ 			      struct ib_device *dev, struct net *net)
+ {
++	bool is_full_dev = &dev->coredev == coredev;
++
+ 	/* This BUILD_BUG_ON is intended to catch layout change
+ 	 * of union of ib_core_device and device.
+ 	 * dev must be the first element as ib_core and providers
+@@ -539,6 +541,13 @@ static void rdma_init_coredev(struct ib_core_device *coredev,
+ 
+ 	coredev->dev.class = &ib_class;
+ 	coredev->dev.groups = dev->groups;
++
++	/*
++	 * Don't expose hw counters outside of the init namespace.
++	 */
++	if (!is_full_dev && dev->hw_stats_attr_index)
++		coredev->dev.groups[dev->hw_stats_attr_index] = NULL;
++
+ 	device_initialize(&coredev->dev);
+ 	coredev->owner = dev;
+ 	INIT_LIST_HEAD(&coredev->port_list);
+diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+index 7491328ca5e6..0ed862b38b44 100644
+--- a/drivers/infiniband/core/sysfs.c
++++ b/drivers/infiniband/core/sysfs.c
+@@ -976,6 +976,7 @@ int ib_setup_device_attrs(struct ib_device *ibdev)
+ 	for (i = 0; i != ARRAY_SIZE(ibdev->groups); i++)
+ 		if (!ibdev->groups[i]) {
+ 			ibdev->groups[i] = &data->group;
++			ibdev->hw_stats_attr_index = i;
+ 			return 0;
+ 		}
+ 	WARN(true, "struct ib_device->groups is too small");
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index b59bf30de430..a5761038935d 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -2767,6 +2767,7 @@ struct ib_device {
+ 	 * It is a NULL terminated array.
+ 	 */
+ 	const struct attribute_group	*groups[4];
++	u8				hw_stats_attr_index;
+ 
+ 	u64			     uverbs_cmd_mask;
+ 
+-- 
+2.48.1.711.g2feabab25a-goog
+
 
