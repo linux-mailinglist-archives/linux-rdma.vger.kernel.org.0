@@ -1,80 +1,81 @@
-Return-Path: <linux-rdma+bounces-8182-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8183-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED579A475B0
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2025 07:00:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3133A4788F
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2025 10:03:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1AD93AB2C8
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2025 06:00:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 900AD7A3FE9
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2025 09:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A3721B9F0;
-	Thu, 27 Feb 2025 06:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3320227BA6;
+	Thu, 27 Feb 2025 09:03:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F0YN2OtI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nLspYqEw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C626321B9DD;
-	Thu, 27 Feb 2025 06:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4BA22576C;
+	Thu, 27 Feb 2025 09:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740636035; cv=none; b=tG5v+Tk2evrPYGOruozB6qwAaM+tSjXRheCD9cU2gf7KfdL4Dn3S2olHqzE0csxpiKfsJId82ArkYdWK2jlgTD646omdBffJ0OnjFQyvoBrXZmb3VOc9/iqdAApMPR1n+AtqGRrRYIX1ZQyJrSa6zN4W8PjuY+CIUrWlRq2KdSQ=
+	t=1740646985; cv=none; b=SXR8cJvgeK28GNoIUbBSC2CPnlCrYcK/9dVqrQpjDaOGIlyGtuwOtFQzhJipfNsUeKFa/BIMsHrA1G2R803n1cQaxQVYJz9d+QJehmR/Yf+HaVqdBnH8oJyFsNBBR3+r4BDXyug7fcHXuRTj/6ijAVIDeeyMWCfqhxBC2jokAUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740636035; c=relaxed/simple;
-	bh=wghXbd5IbpTMH6PzuvfZWZWny5yH0iTqVnlU3Razxj8=;
+	s=arc-20240116; t=1740646985; c=relaxed/simple;
+	bh=NVCpCk+nbSUsNJ/EU7EEuGOPqCNbb7okhZbn+Sil+6M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CnIu8e4qaZSZyPFiCBDlnmQ1QhV4fk+rouN+0vTY1+xv9AvwPgCS5a/OPA7rcnNkykB/7z/UDF6/GHxaDzlcjsnRYadH0XYp51xtyOhAmVooSH64Td+CgIy8FMQwaToyYKAT9quaLdYNqCTEKdFiqK8DU+hbo9N6/cjeUgqPXMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F0YN2OtI; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740636034; x=1772172034;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wghXbd5IbpTMH6PzuvfZWZWny5yH0iTqVnlU3Razxj8=;
-  b=F0YN2OtI50FOUioZ28r4RCf+Xytmjy82+mBMfPeytXqU9tahYG04wFZ9
-   EMfQdiXPqlaAVfZoiakmkuN8+IP/h86fMZIvSIusAcfKJoQSST/tgY8Sm
-   W/+D3d8g3BEA9SE/faE5rYIindLNxA23a1zaChPBycFKmZLKDhIUJns5c
-   7Y5DY2FV3frDkf3G+21dBXOJUiOdYX4rQy78kPaREhpMcmrOST1Up7q+2
-   aX3psAHbddFLfOqEln9ePoeEM5b2188Lc3NTh92gQC7fLt2rzTexWcEuv
-   qdsnCZkXqzBH3I56ijaGVBmRh35BuOqxmLC8eW9ROZ2CX24EZCUjXCaps
-   w==;
-X-CSE-ConnectionGUID: 3/e05AYDTTizWMmtuN2xDA==
-X-CSE-MsgGUID: tQH+W898TSa+RUgBRmopdw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11357"; a="52149070"
-X-IronPort-AV: E=Sophos;i="6.13,319,1732608000"; 
-   d="scan'208";a="52149070"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2025 22:00:26 -0800
-X-CSE-ConnectionGUID: tzi6/lT1TmCx8F+X9J7WyA==
-X-CSE-MsgGUID: 8rgcTR3WTLO693wDEZ0llA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,319,1732608000"; 
-   d="scan'208";a="116719266"
-Received: from mev-dev.igk.intel.com ([10.237.112.144])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2025 22:00:22 -0800
-Date: Thu, 27 Feb 2025 06:56:39 +0100
-From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman <gal@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Shahar Shitrit <shshitrit@nvidia.com>,
-	Moshe Shemesh <moshe@nvidia.com>
-Subject: Re: [PATCH net-next 3/4] net/mlx5: Expose crr in health buffer
-Message-ID: <Z7/+lxTndCRC6OtE@mev-dev.igk.intel.com>
-References: <20250226122543.147594-1-tariqt@nvidia.com>
- <20250226122543.147594-4-tariqt@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tiKcbViOayNAePsy0pUklxZwqZAKz5ZhJDjiW/QdW5lHGaxT+Vo5tfm0VqNhLPVFOMwAeAQi6wKqh5GEy+E3dflZVAGVaC6KcIWdzpA9FRLlTu4DM+sBdi+mk0OWcEJ+q7823JMaOAgky+oPyeIZyWfWStoybPumk/gacdR9Byw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nLspYqEw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B7E3C4CEDD;
+	Thu, 27 Feb 2025 09:02:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740646984;
+	bh=NVCpCk+nbSUsNJ/EU7EEuGOPqCNbb7okhZbn+Sil+6M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nLspYqEw609cIT0ad0o594ZSe9+944oOqgtsX4PvzoyBCh2CjxvcaZKHcRlfZbkg3
+	 o98sgutNPNtNQvtB1V2TWfdkxk0jvPKNau6dHa8OKjnpZRzHC9C6ErL5o2r0XNXfYe
+	 ynD51HJPuofVM3zovm3pWhAZDAaeGPoIRj6tCVyu8o4t7sFTQlvipwFQwyRdAzsR2d
+	 B6voWJuIrlI+Cf1lPSYN2ZjYhqS7rvygaip7lyyFeeh6HBrO8Q/DpezIvl2iQUtyVl
+	 OXwKmfMuglQQ5kuzM1Q6kxE36HyfrIokC3I3woeNs2DsuZou71wXc13B0RkvyLg9Ys
+	 NykE1mhZbbdJQ==
+Date: Thu, 27 Feb 2025 10:02:45 +0100
+From: Carlos Maiolino <cem@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mark Brown <broonie@kernel.org>, 
+	Easwar Hariharan <eahariha@linux.microsoft.com>, Yaron Avizrat <yaron.avizrat@intel.com>, 
+	Oded Gabbay <ogabbay@kernel.org>, Julia Lawall <Julia.Lawall@inria.fr>, 
+	Nicolas Palix <nicolas.palix@imag.fr>, James Smart <james.smart@broadcom.com>, 
+	Dick Kennedy <dick.kennedy@broadcom.com>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+	David Sterba <dsterba@suse.com>, Ilya Dryomov <idryomov@gmail.com>, 
+	Dongsheng Yang <dongsheng.yang@easystack.cn>, Jens Axboe <axboe@kernel.dk>, Xiubo Li <xiubli@redhat.com>, 
+	Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, 
+	"Darrick J. Wong" <djwong@kernel.org>, Sebastian Reichel <sre@kernel.org>, 
+	Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
+	Frank Li <Frank.Li@nxp.com>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, 
+	Hans de Goede <hdegoede@redhat.com>, Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, 
+	Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Selvin Xavier <selvin.xavier@broadcom.com>, 
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Leon Romanovsky <leon@kernel.org>, cocci@inria.fr, linux-kernel@vger.kernel.org, 
+	linux-scsi@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-sound@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, linux-block@vger.kernel.org, 
+	linux-ide@vger.kernel.org, linux-xfs@vger.kernel.org, linux-pm@vger.kernel.org, 
+	linux-nvme@lists.infradead.org, linux-spi@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
+	ibm-acpi-devel@lists.sourceforge.net, linux-rdma@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, 
+	Carlos Maiolino <cmaiolino@redhat.com>
+Subject: Re: [PATCH v3 00/16] Converge on using secs_to_jiffies() part two
+Message-ID: <3apo7evpkvcy5mafw7zdatr3n7lytugvfmumq2zou4nifyptnc@ucbu4c5g5jrq>
+References: <20250225-converge-secs-to-jiffies-part-two-v3-0-a43967e36c88@linux.microsoft.com>
+ <79b24031-5776-4eb3-960b-32b0530647fb@sirena.org.uk>
+ <hJl1qb89zCHWejINoRSGGIO0m7NNi3wAmY9N_VC7royLnZoyL-ZozLkmLO-vCPlYc55-IPh76PIB_2_aKKjp1A==@protonmail.internalid>
+ <20250226123851.a50e727d0a1bfe639ece4a72@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,61 +84,45 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250226122543.147594-4-tariqt@nvidia.com>
+In-Reply-To: <20250226123851.a50e727d0a1bfe639ece4a72@linux-foundation.org>
 
-On Wed, Feb 26, 2025 at 02:25:42PM +0200, Tariq Toukan wrote:
-> From: Shahar Shitrit <shshitrit@nvidia.com>
+On Wed, Feb 26, 2025 at 12:38:51PM -0800, Andrew Morton wrote:
+> On Wed, 26 Feb 2025 11:29:53 +0000 Mark Brown <broonie@kernel.org> wrote:
 > 
-> Expose crr bit in struct health buffer. When set, it indicates that
-> the error cannot be recovered without flow involving a cold reset.
-> Add its value to the health buffer info log.
+> > On Tue, Feb 25, 2025 at 08:17:14PM +0000, Easwar Hariharan wrote:
+> > > This is the second series (part 1*) that converts users of msecs_to_jiffies() that
+> > > either use the multiply pattern of either of:
+> > > - msecs_to_jiffies(N*1000) or
+> > > - msecs_to_jiffies(N*MSEC_PER_SEC)
+> > >
+> > > where N is a constant or an expression, to avoid the multiplication.
+> >
+> > Please don't combine patches for multiple subsystems into a single
+> > series if there's no dependencies between them, it just creates
+> > confusion about how things get merged, problems for tooling and makes
+> > everything more noisy.  It's best to split things up per subsystem in
+> > that case.
 > 
-> Signed-off-by: Shahar Shitrit <shshitrit@nvidia.com>
-> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/health.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> I asked for this.  I'll merge everything, spend a few weeks gathering
+> up maintainer acks.  Anything which a subsystem maintainer merges will
+> be reported by Stephen and I'll drop that particular patch.
+
+I'm removing this from my queue then and let it go through your tree.
+Cheers,
+
+Carlos
+
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> index 665cbce89175..c7ff646e0865 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-> @@ -96,6 +96,11 @@ static int mlx5_health_get_rfr(u8 rfr_severity)
->  	return rfr_severity >> MLX5_RFR_BIT_OFFSET;
->  }
->  
-> +static int mlx5_health_get_crr(u8 rfr_severity)
-> +{
-> +	return (rfr_severity >> MLX5_CRR_BIT_OFFSET) & 0x01;
-> +}
-> +
->  static bool sensor_fw_synd_rfr(struct mlx5_core_dev *dev)
->  {
->  	struct mlx5_core_health *health = &dev->priv.health;
-> @@ -442,12 +447,15 @@ static void print_health_info(struct mlx5_core_dev *dev)
->  	mlx5_log(dev, severity, "time %u\n", ioread32be(&h->time));
->  	mlx5_log(dev, severity, "hw_id 0x%08x\n", ioread32be(&h->hw_id));
->  	mlx5_log(dev, severity, "rfr %d\n", mlx5_health_get_rfr(rfr_severity));
-> +	mlx5_log(dev, severity, "crr %d\n", mlx5_health_get_crr(rfr_severity));
->  	mlx5_log(dev, severity, "severity %d (%s)\n", severity, mlx5_loglevel_str(severity));
->  	mlx5_log(dev, severity, "irisc_index %d\n", ioread8(&h->irisc_index));
->  	mlx5_log(dev, severity, "synd 0x%x: %s\n", ioread8(&h->synd),
->  		 hsynd_str(ioread8(&h->synd)));
->  	mlx5_log(dev, severity, "ext_synd 0x%04x\n", ioread16be(&h->ext_synd));
->  	mlx5_log(dev, severity, "raw fw_ver 0x%08x\n", ioread32be(&h->fw_ver));
-> +	if (mlx5_health_get_crr(rfr_severity))
-> +		mlx5_core_warn(dev, "Cold reset is required\n");
-I wonder if it shouldn't be right after the print about crr value to
-tell the user that cold reset is required because of that value.
-
-Patch looks fine, thanks.
-Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-
->  }
-
->  
->  static int
-> -- 
-> 2.45.0
+> This way, nothing gets lost.  I take this approach often and it works.
+> 
+> If these were sent as a bunch of individual patches then it would be up
+> to the sender to keep track of what has been merged and what hasn't.
+> That person will be resending some stragglers many times.  Until they
+> give up and some patches get permanently lost.
+> 
+> Scale all that across many senders and the whole process becomes costly
+> and unreliable.  Whereas centralizing it on akpm is more efficient,
+> more reliable, more scalable, lower latency and less frustrating for
+> senders.
+> 
 
