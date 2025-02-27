@@ -1,166 +1,137 @@
-Return-Path: <linux-rdma+bounces-8184-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8185-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34C8FA47A62
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2025 11:35:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2DC0A47D87
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2025 13:23:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8432E3B38A1
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2025 10:34:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30EC33A2FB0
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2025 12:22:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0206A22839A;
-	Thu, 27 Feb 2025 10:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849B422CBC8;
+	Thu, 27 Feb 2025 12:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ijhtaovO"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="1dU9vfX3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0148021C18F;
-	Thu, 27 Feb 2025 10:34:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7178D225A22
+	for <linux-rdma@vger.kernel.org>; Thu, 27 Feb 2025 12:22:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740652489; cv=none; b=r6fWML+xDfvUlM2cBqp5Nb40J0brW6WaIZ5VgINz9rsBbQRGlOsMIB7GyrEC1Tw7EY4xUEgOya1/FhhCs9qMwgYjZ6IeUwMzjA1R4JyRHHCt2BvLbjtqwh6gc0T6wZFOTNZUnOf0z801/8Of5FiQi18foNl4TdFWICVD0lo2ILY=
+	t=1740658954; cv=none; b=UEsXvrSOyxd0sDEiUF5jQDwuIhKBWyMbIVf8O4Tug2rz9/2VFklHLTRDKQXYP+QsH7apA/1SWOQOTjr6BJdl0WIAeBjuuHuQc8aPL2D/jRBYbL/n1TchuYdgyvrkP1wTPrFE+jcuJsTBUu0oUg+yuyhBmtHhWJuXpMBI+W1yZyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740652489; c=relaxed/simple;
-	bh=YJKmHFUcVEtxuOOaxd/RpiuUqI9ez1eSLQC9p5kpvjU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ovz0R2/8QQ5WQ8mv681hitG0rHDgfACc36WSFeJoHZEGHf7tpdP+tRFhdwAz6tLJA59Vy/qjhIGimf/fqxUePqioX2P3Uf4DFxWetW1XanW2LlQpExmx+8YhICn17kGKdrW2DPYqyzu4S222jMk4Z8ewOk670Fj7YX6GOnDp5AY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ijhtaovO; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5ded6c31344so966558a12.1;
-        Thu, 27 Feb 2025 02:34:47 -0800 (PST)
+	s=arc-20240116; t=1740658954; c=relaxed/simple;
+	bh=8xMy4hdNTAdiolk+YAG/ZLMRZgXFoXuyYcYFEWFfQoM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ktP0Y7i5jw9O6GShu+y6DFTaRqQha2MrGmFKJoEnqEg0mt9gPhEfjnKs+YriUJuxLhfd1UKvE3g8GtYNwPzb1iiFjqAE4kgk2yj0KlmVjRMPMFw1CwbU897dNBMRQuZHe5qF+mtopb7Qs2LhG/beqSH/WL2RSnTJSt1XI66aQZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=1dU9vfX3; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-abb7a6ee2deso131014866b.0
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Feb 2025 04:22:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740652486; x=1741257286; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8F+iHOkiCbQfBJ8Gfn9W0Ck6s4OTNsybtRyz6gEBB30=;
-        b=ijhtaovOUqX4y8Jq0PL+uBHv6gUur6ai1CH4FMTtmd8ktoqeEh2/MhNUDb0mdEsJZr
-         ogZaJum8IiRyOWgZn8TtZgkF6qama5xIaSaGECAuAEJWY3VyzWLgbaOziSzGnGt1EJaE
-         uoQ2+r1w1jyI1wY1Z3mzPtcXW0rzeA6/BjPkuxaB4DfjoV7yg2yrjJ/GBUHmtQhkyonG
-         nN3/bQgNnOTBQgIyViYrongx6UXqWosET8ADY9tN2mvEKv4WpY6VJOrxEEuf38BXR7HO
-         mbW9ihJErb9O7LrDIMEj4h3lPs3u1iqPF4psYFd2W3SZK5smUTCwjsmR75/y9nfaNs91
-         LYfQ==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1740658950; x=1741263750; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rYOTm+6jHAEQKMi6xNvlm2nNMaMBH7Q2Y4qbi1PxB2w=;
+        b=1dU9vfX3g3bVHWM+cctcvNWp7y/4FKuP6rFLzSYNBpNeH03tffh5XBtfqV6179BjI5
+         vjTjtlhY/cwqag1y5g4thXgGfn+ggpIs8Teoeb8xCLBLfETJghQ1pBxS5wZOFBtTaE+Q
+         C+nD+W4GXgTw2jJ7t9E1gGr724Iu3Q/6N2z71hO7qMbefCC65r/lxdN6Uptk2y56C9uu
+         eNexfemcF6kY6n5T9Z/iJ+1FFhSYQqhC6hIroV3/JAbVDAFcj76cZYpTFn2uH0RYfdfg
+         T/8tY049ApSj4dPuqdbkMGIyz1sD96Fd799pALXiy4wDewfUpaEvQJVOjUeQyF1z/SJJ
+         aBFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740652486; x=1741257286;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8F+iHOkiCbQfBJ8Gfn9W0Ck6s4OTNsybtRyz6gEBB30=;
-        b=L1nTY3nytVlL51IOA7Ae85T4jBlrbzeMJ7bO0dKh+eO8U2LPXO4n75g5I4edhh9cHd
-         YSWCfYVaig//2ZW9+EL2X4u7G0dny8g40m/dRZ+w8FtlfCJIaumV743ryxWLjJajBZoE
-         1gIgKhSwINhl7cn0bGObgghXqu9B5IlcvXJ8mXkpneJoOyJC4JYqJfyG85Whm6hDXBeT
-         XASNKwi4ILVVotmw1KV4I+lawa8vT/WYiMugaRXQrUSziUy7MBg3vgOBwlzMKyy28qum
-         F8QdybuM0xb7m54v7nx4iq8v3AN9b9R/p8FF36LDAde/NqZO8gXigmsPyAZfFAyEP7KN
-         y+1A==
-X-Forwarded-Encrypted: i=1; AJvYcCULlBD0JK25b23IufI+1YQ1atuPj7IogEW9N+liBl30F6KnavM42Wc1rMqHnjTHOHI68sGKTF+Kq/EY9Xo=@vger.kernel.org, AJvYcCWYDLltmP8T8GA5JRKEihd2wADL4lDxVQHrzDTQR8VB4HbtTMjHBXvpTsl29jmLyw5tQnT6UHGC0+Pnvw==@vger.kernel.org, AJvYcCWmwdWuK4xhCRNyQ71kxiAKOO0Vee8ye4j3Lv2FFSMzQOnM+mpOLOPn6pdullBiUSJh/x2w2Dru@vger.kernel.org
-X-Gm-Message-State: AOJu0YzPKva88GCKQhc2zfiy3gS95UGn/ZjXlYMlmhp/4afPWSwudZob
-	Jvr5qF61hOYbzXjVIWB0AVNpvghT91NTIH5LD9Mov/Y7dDOsDtoz
-X-Gm-Gg: ASbGnctfJFRj+sAcTYQFZaeDndrSOh/JuGY8fMY3ALV5440EmtjWIOaGO3FND+OaO+U
-	S06lDPMqhhFHrzZYsnLAePN1DuPxiSRuHvPFz8KF9M7JQWhNCIi0AkPUzI+XV9Vt4deGjhAV9cK
-	Oxhd5t/vOlm7Xu2e+muUVrJl2DQqhhr3qbs51m0X+iepyysnBfw+KCPdbnyfEXFRv2JdQCrCdRY
-	+NKOPLCi5VsMSWVtVuFadTVvNmS65egIKuXSWsxBpcYwIpc0ZWLMYfJq2NLKezQErf8Z6X/c305
-	9U60I9ngE/y2Rky2kJccjlv8s7p8mRBjDq69Nt+BVNOTrfM=
-X-Google-Smtp-Source: AGHT+IHXv8U7mkW1xq4Vnant0P7iLY68e80NUqnP+Id7Fkl+D0OacWn2R65BtGAAnIPruizAgHDIWA==
-X-Received: by 2002:a05:6402:2690:b0:5de:a6a8:5ec6 with SMTP id 4fb4d7f45d1cf-5e4455c2f52mr28423477a12.10.1740652485728;
-        Thu, 27 Feb 2025 02:34:45 -0800 (PST)
-Received: from [172.27.50.139] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e4c43a6f2bsm878709a12.75.2025.02.27.02.34.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Feb 2025 02:34:44 -0800 (PST)
-Message-ID: <3c8badc3-2f1e-4877-a770-ad133f69f14a@gmail.com>
-Date: Thu, 27 Feb 2025 12:34:41 +0200
+        d=1e100.net; s=20230601; t=1740658950; x=1741263750;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rYOTm+6jHAEQKMi6xNvlm2nNMaMBH7Q2Y4qbi1PxB2w=;
+        b=EhsSaGeFozx6XU7PnrZBBT2nZHjxTNt7ehrxtdoEXAf20XoNbm3wFaoRh0roDiXLaW
+         HoOawO9v6if9Kckq6Pcag3G6T9tTCIgyBIm089ok41TQs2iFRixSMd5sqjQLL2lh/3Gw
+         GM3wwlSlJSQznv5DTUSeCYZOhJLl1SaVp0c2k7TKmWo0pxtswyJP0EgkDBYImJ8rzbu8
+         jijlD0+XUxwl09vanikiXs2Vn79TpeO9WKC2Ht+wvRhRLNZFTg7/2Xf+stZAFuJFhL2H
+         dfBuonFpcaNPrl5KGK4H/q1t5oJpzyVdRfQOwm75sVmpQnINbpEWbzsi7onXGKGMIEPZ
+         yEWw==
+X-Forwarded-Encrypted: i=1; AJvYcCVSqTwKDywu2wI50SleIgx2AZXui0SsSyNnLRoaVFVbDR7JLtNOxxvrN3sLd2eR5Lw88RwEwJAhA9vG@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFyfnxag/x3R6bDyj2C05vzKcryr4yBpsEk2c5ppyIGxbtzBSq
+	g+oHR7AvXMqdNXUEd4GwXxxiYtsIyjIEyqRMnDivxx8MNovjKEG3d/GsUpS10CU=
+X-Gm-Gg: ASbGncu3V/PY0PlSNsjS61o4AZ6QlIv4dKfit2JiL6RN4z9y0rD96GupYwRVHM2lvCH
+	lk9Pei+H9RBXA2HkqAp2RN9YB85ieE1Uj67IreeEWs5fz7avLuQSt0zzLQlulgHZb0eRjeoWfqR
+	nNVphp2uYi3v/fc8rrjd13tbu2u9jdc7RKdYXhiGYiGzlE7sdUEYIT/nR/li0AiXmN4RkdY/WLp
+	VXAqYqI6sFr2rD7Rh9KCT6isso2c41tDB2gBK2dY2fYBvs9rDYq7O05At7DEGPmEXxr3prwWnxO
+	fXFJ0ekfc62R9cioZaWh+tJNvUB3LwRLrKUviHM+utgU/V1EW8RO
+X-Google-Smtp-Source: AGHT+IEUS1ErRHCieUA4KP9jo36VNA+6eC7KANGzDb6TJHoqoC05Nj4oxB1TboeC1Qn+fVY5Mtzo1Q==
+X-Received: by 2002:a17:906:7954:b0:abf:38a:6498 with SMTP id a640c23a62f3a-abf038a920cmr513452866b.55.1740658950370;
+        Thu, 27 Feb 2025 04:22:30 -0800 (PST)
+Received: from jiri-mlt.client.nvidia.com ([140.209.217.212])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abf0c0b99a6sm117424466b.13.2025.02.27.04.22.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Feb 2025 04:22:29 -0800 (PST)
+Date: Thu, 27 Feb 2025 13:22:25 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Tariq Toukan <tariqt@nvidia.com>, 
+	"David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, 
+	Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	Jiri Pirko <jiri@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, 
+	Carolina Jubran <cjubran@nvidia.com>, Gal Pressman <gal@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
+	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next 03/10] devlink: Serialize access to rate domains
+Message-ID: <kmjgcuyao7a7zb2u4554rj724ucpd2xqmf5yru4spdqim7zafk@2ry67hbehjgx>
+References: <20250213180134.323929-1-tariqt@nvidia.com>
+ <20250213180134.323929-4-tariqt@nvidia.com>
+ <ieeem2dc5mifpj2t45wnruzxmo4cp35mbvrnsgkebsqpmxj5ib@hn7gphf6io7x>
+ <20250218182130.757cc582@kernel.org>
+ <qaznnl77zg24zh72axtv7vhbfdbxnzmr73bqr7qir5wu2r6n52@ob25uqzyxytm>
+ <20250225174005.189f048d@kernel.org>
+ <wgbtvsogtf4wgxyz7q4i6etcvlvk6oi3xyckie2f7mwb3gyrl4@m7ybivypoojl>
+ <20250226185310.42305482@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 3/4] net/mlx5: Expose crr in health buffer
-To: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
- Tariq Toukan <tariqt@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman <gal@nvidia.com>,
- Leon Romanovsky <leonro@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, Shahar Shitrit <shshitrit@nvidia.com>,
- Moshe Shemesh <moshe@nvidia.com>
-References: <20250226122543.147594-1-tariqt@nvidia.com>
- <20250226122543.147594-4-tariqt@nvidia.com>
- <Z7/+lxTndCRC6OtE@mev-dev.igk.intel.com>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <Z7/+lxTndCRC6OtE@mev-dev.igk.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250226185310.42305482@kernel.org>
+
+Thu, Feb 27, 2025 at 03:53:10AM +0100, kuba@kernel.org wrote:
+>On Wed, 26 Feb 2025 15:44:35 +0100 Jiri Pirko wrote:
+>> > Why would there still be PF instances? I'm not suggesting that you
+>> > create a hierarchy of instances.  
+>> 
+>> I'm not sure how you imagine getting rid of them. One PCI PF
+>> instantiates one devlink now. There are lots of configuration (e.g. params)
+>> that is per-PF. You need this instance for that, how else would you do
+>> per-PF things on shared ASIC instance?
+>
+>There are per-PF ports, right?
+
+Depends. On normal host sr-iov, no. On smartnic where you have PF in
+host, yes.
 
 
+>
+>> Creating SFs is per-PF operation for example. I didn't to thorough
+>> analysis, but I'm sure there are couple of per-PF things like these.
+>
+>Seems like adding a port attribute to SF creation would be a much
+>smaller extension than adding a layer of objects.
+>
+>> Also not breaking the existing users may be an argument to keep per-PF
+>> instances.
+>
+>We're talking about multi-PF devices only. Besides pretty sure we 
+>moved multiple params and health reporters to be per port, so IDK 
+>what changed now.
 
-On 27/02/2025 7:56, Michal Swiatkowski wrote:
-> On Wed, Feb 26, 2025 at 02:25:42PM +0200, Tariq Toukan wrote:
->> From: Shahar Shitrit <shshitrit@nvidia.com>
->>
->> Expose crr bit in struct health buffer. When set, it indicates that
->> the error cannot be recovered without flow involving a cold reset.
->> Add its value to the health buffer info log.
->>
->> Signed-off-by: Shahar Shitrit <shshitrit@nvidia.com>
->> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
->> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
->> ---
->>   drivers/net/ethernet/mellanox/mlx5/core/health.c | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
->> index 665cbce89175..c7ff646e0865 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
->> @@ -96,6 +96,11 @@ static int mlx5_health_get_rfr(u8 rfr_severity)
->>   	return rfr_severity >> MLX5_RFR_BIT_OFFSET;
->>   }
->>   
->> +static int mlx5_health_get_crr(u8 rfr_severity)
->> +{
->> +	return (rfr_severity >> MLX5_CRR_BIT_OFFSET) & 0x01;
->> +}
->> +
->>   static bool sensor_fw_synd_rfr(struct mlx5_core_dev *dev)
->>   {
->>   	struct mlx5_core_health *health = &dev->priv.health;
->> @@ -442,12 +447,15 @@ static void print_health_info(struct mlx5_core_dev *dev)
->>   	mlx5_log(dev, severity, "time %u\n", ioread32be(&h->time));
->>   	mlx5_log(dev, severity, "hw_id 0x%08x\n", ioread32be(&h->hw_id));
->>   	mlx5_log(dev, severity, "rfr %d\n", mlx5_health_get_rfr(rfr_severity));
->> +	mlx5_log(dev, severity, "crr %d\n", mlx5_health_get_crr(rfr_severity));
->>   	mlx5_log(dev, severity, "severity %d (%s)\n", severity, mlx5_loglevel_str(severity));
->>   	mlx5_log(dev, severity, "irisc_index %d\n", ioread8(&h->irisc_index));
->>   	mlx5_log(dev, severity, "synd 0x%x: %s\n", ioread8(&h->synd),
->>   		 hsynd_str(ioread8(&h->synd)));
->>   	mlx5_log(dev, severity, "ext_synd 0x%04x\n", ioread16be(&h->ext_synd));
->>   	mlx5_log(dev, severity, "raw fw_ver 0x%08x\n", ioread32be(&h->fw_ver));
->> +	if (mlx5_health_get_crr(rfr_severity))
->> +		mlx5_core_warn(dev, "Cold reset is required\n");
-> I wonder if it shouldn't be right after the print about crr value to
-> tell the user that cold reset is required because of that value.
-> 
-
-I think it's fine here, to not interfere the mlx5_log sequence.
-Also, in the future we might have multiple cold reset reasons, 
-generating the same single print.
-
-I'll keep it as-is.
-
-> Patch looks fine, thanks.
-> Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-> 
-
-Thanks for your review.
+Looks like pretty much all current NICs are multi-PFs, aren't they?
 
 
