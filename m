@@ -1,167 +1,109 @@
-Return-Path: <linux-rdma+bounces-8208-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8209-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCFF2A4A32B
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2025 20:55:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED534A4A5DE
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2025 23:27:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4473F189BDF3
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2025 19:55:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB1143AE643
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2025 22:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715EC27CCF8;
-	Fri, 28 Feb 2025 19:54:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFF61DE8B5;
+	Fri, 28 Feb 2025 22:25:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxonhyperv.com header.i=@linuxonhyperv.com header.b="e+S8EPIK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBF2A27CCE4;
-	Fri, 28 Feb 2025 19:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B5BA1DE88B;
+	Fri, 28 Feb 2025 22:25:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740772460; cv=none; b=bTh0z0Us2A43lhUHFqOb8gmOd/umFsk/1qK8giDQkAE41HecBz7jt290zVaw2LVHO6BhWFxsFOfdIDb9eL0KYfumIuNwPC/9MEKmTqPM1zqR1C7wsSjgFolg+Zi4XqJZUpl9IdFZczfdDvz4eCidVOSMIVokV99Z4xB8sAo67o8=
+	t=1740781523; cv=none; b=dmwSeRoC9beCiD+FqUTKmSUgdfF04diph2oGPFPV//zG5JWBNntRH/b+pCz6Q1DbFD5rx37U/LGQidrmDmsdxz4va3lT7LlZ6/gkMm3Tf0WjJ4TlY3ueH17CGlKbvTO3yXQg+t70+IGszmKrkFIJo4pu6dY1cX+7VYSwuutWpO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740772460; c=relaxed/simple;
-	bh=4GkfnwNsKbq/mr/Mi22ZRxvnkRGN0lE29AmS6GLzr1M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CYkmiscU+rREnarNSDMsqQ/T2WS9+lBP/0A5XHgNuMyv4UZrorpRqTRpsHyZa3kABXgKOEpomrHXyhhU0RoiwmUFfA7lI8Zl/DDcOIcvfyaFnunZFlVlWz+h+UXoCNExg4brBPpnaJn/qpxE5GGR2Z4/1YEe/VDhKHHE9b8smP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DD0F150C;
-	Fri, 28 Feb 2025 11:54:32 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 53B2F3F7D8;
-	Fri, 28 Feb 2025 11:54:13 -0800 (PST)
-Message-ID: <1166a5f5-23cc-4cce-ba40-5e10ad2606de@arm.com>
-Date: Fri, 28 Feb 2025 19:54:11 +0000
+	s=arc-20240116; t=1740781523; c=relaxed/simple;
+	bh=1obOMr1Rmb8R+h1EQDNEXYfeQUcnlviZ5c7bzgYHXOM=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=t5Ug91PDwhbPemoPsng4tayxzqjAl787kBTMYBfGxtZ+l5/K1bnuefBJudDRymxyUmNk9XDniPvyr5mJNN2DWQFnZN3KOzqol3FFKwYKcTb88up3qXj0a0twAwDNUrLdCjEhL9wSODjbx7EyVKR1x98ZPMBNSgmPXSU6dWBEHnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxonhyperv.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linuxonhyperv.com header.i=@linuxonhyperv.com header.b=e+S8EPIK; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxonhyperv.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1202)
+	id C7544210D0EB; Fri, 28 Feb 2025 14:25:21 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C7544210D0EB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+	s=default; t=1740781521;
+	bh=gckZXDWAjiG2ABDpx5tWE9GOBieJFQc592HWfvAcwyE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=e+S8EPIKSTxcKfVTfs45fE8DXvCE5wLn8L7ydpmmJVRfahBF40Q4FNvCqeUFbYFGI
+	 sGLAC2/bgQh1hTP31vyloJ8N4IRyKLWqnfmlQ77KT4s/E+2HtqBwPWDD6vo0o+8tGS
+	 NZYDdk066vEo8fewWUpSuXaCjGj4fP/pb2Zwn3ng=
+From: longli@linuxonhyperv.com
+To: "K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Erick Archer <erick.archer@outlook.com>,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Long Li <longli@microsoft.com>
+Subject: [PATCH] hv_netvsc: set device master/slave flags on bonding
+Date: Fri, 28 Feb 2025 14:25:13 -0800
+Message-Id: <1740781513-10090-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 00/17] Provide a new two step DMA mapping API
-To: Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>,
- Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Jens Axboe <axboe@kernel.dk>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
- Keith Busch <kbusch@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Logan Gunthorpe <logang@deltatee.com>, Yishai Hadas <yishaih@nvidia.com>,
- Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
- Kevin Tian <kevin.tian@intel.com>,
- Alex Williamson <alex.williamson@redhat.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, Jonathan Corbet <corbet@lwn.net>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
- iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
- linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
- Randy Dunlap <rdunlap@infradead.org>
-References: <cover.1738765879.git.leonro@nvidia.com>
- <20250220124827.GR53094@unreal>
-From: Robin Murphy <robin.murphy@arm.com>
-Content-Language: en-GB
-In-Reply-To: <20250220124827.GR53094@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 20/02/2025 12:48 pm, Leon Romanovsky wrote:
-> On Wed, Feb 05, 2025 at 04:40:20PM +0200, Leon Romanovsky wrote:
->> From: Leon Romanovsky <leonro@nvidia.com>
->>
->> Changelog:
->> v7:
->>   * Rebased to v6.14-rc1
-> 
-> <...>
-> 
->> Christoph Hellwig (6):
->>    PCI/P2PDMA: Refactor the p2pdma mapping helpers
->>    dma-mapping: move the PCI P2PDMA mapping helpers to pci-p2pdma.h
->>    iommu: generalize the batched sync after map interface
->>    iommu/dma: Factor out a iommu_dma_map_swiotlb helper
->>    dma-mapping: add a dma_need_unmap helper
->>    docs: core-api: document the IOVA-based API
->>
->> Leon Romanovsky (11):
->>    iommu: add kernel-doc for iommu_unmap and iommu_unmap_fast
->>    dma-mapping: Provide an interface to allow allocate IOVA
->>    dma-mapping: Implement link/unlink ranges API
->>    mm/hmm: let users to tag specific PFN with DMA mapped bit
->>    mm/hmm: provide generic DMA managing logic
->>    RDMA/umem: Store ODP access mask information in PFN
->>    RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page
->>      linkage
->>    RDMA/umem: Separate implicit ODP initialization from explicit ODP
->>    vfio/mlx5: Explicitly use number of pages instead of allocated length
->>    vfio/mlx5: Rewrite create mkey flow to allow better code reuse
->>    vfio/mlx5: Enable the DMA link API
->>
->>   Documentation/core-api/dma-api.rst   |  70 ++++
->   drivers/infiniband/core/umem_odp.c   | 250 +++++---------
->>   drivers/infiniband/hw/mlx5/mlx5_ib.h |  12 +-
->>   drivers/infiniband/hw/mlx5/odp.c     |  65 ++--
->>   drivers/infiniband/hw/mlx5/umr.c     |  12 +-
->>   drivers/iommu/dma-iommu.c            | 468 +++++++++++++++++++++++----
->>   drivers/iommu/iommu.c                |  84 ++---
->>   drivers/pci/p2pdma.c                 |  38 +--
->>   drivers/vfio/pci/mlx5/cmd.c          | 375 +++++++++++----------
->>   drivers/vfio/pci/mlx5/cmd.h          |  35 +-
->>   drivers/vfio/pci/mlx5/main.c         |  87 +++--
->>   include/linux/dma-map-ops.h          |  54 ----
->>   include/linux/dma-mapping.h          |  85 +++++
->>   include/linux/hmm-dma.h              |  33 ++
->>   include/linux/hmm.h                  |  21 ++
->>   include/linux/iommu.h                |   4 +
->>   include/linux/pci-p2pdma.h           |  84 +++++
->>   include/rdma/ib_umem_odp.h           |  25 +-
->>   kernel/dma/direct.c                  |  44 +--
->>   kernel/dma/mapping.c                 |  18 ++
->>   mm/hmm.c                             | 264 +++++++++++++--
->>   21 files changed, 1435 insertions(+), 693 deletions(-)
->>   create mode 100644 include/linux/hmm-dma.h
-> 
-> Kind reminder.
+From: Long Li <longli@microsoft.com>
 
-...that you've simply reposted the same thing again? Without doing 
-anything to address the bugs, inconsistencies, fundamental design flaws 
-in claiming to be something it cannot possibly be, the egregious abuse 
-of DMA_ATTR_SKIP_CPU_SYNC proudly highlighting how unfit-for-purpose the 
-most basic part of the whole idea is, nor *still* the complete lack of 
-any demonstrable justification of how callers who supposedly can't use 
-the IOMMU API actually benefit from adding all the complexity of using 
-the IOMMU API in a hat but also still the streaming DMA API as well?
+Currently netvsc only sets the SLAVE flag on VF netdev when it's bonded. It
+should also set the MASTER flag on itself and clear all those flags when
+the VF is unbonded.
 
-Yeah, consider me reminded.
+Signed-off-by: Long Li <longli@microsoft.com>
+---
+ drivers/net/hyperv/netvsc_drv.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index d6c4abfc3a28..7ac18fede2f3 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -2204,6 +2204,7 @@ static int netvsc_vf_join(struct net_device *vf_netdev,
+ 		goto rx_handler_failed;
+ 	}
+ 
++	ndev->flags |= IFF_MASTER;
+ 	ret = netdev_master_upper_dev_link(vf_netdev, ndev,
+ 					   NULL, NULL, NULL);
+ 	if (ret != 0) {
+@@ -2484,7 +2485,12 @@ static int netvsc_unregister_vf(struct net_device *vf_netdev)
+ 
+ 	reinit_completion(&net_device_ctx->vf_add);
+ 	netdev_rx_handler_unregister(vf_netdev);
++
++	/* Unlink the slave device and clear flag */
++	vf_netdev->flags &= ~IFF_SLAVE;
++	ndev->flags &= ~IFF_MASTER;
+ 	netdev_upper_dev_unlink(vf_netdev, ndev);
++
+ 	RCU_INIT_POINTER(net_device_ctx->vf_netdev, NULL);
+ 	dev_put(vf_netdev);
+ 
+-- 
+2.34.1
 
-
-In case I need to make it any more explicit, NAK to this not-generic 
-not-DMA-mapping API, until you can come up with either something which 
-*can* actually work in any kind of vaguely generic manner as claimed, or 
-instead settle on a reasonable special-case solution for justifiable 
-special cases. Bikeshedding and rebasing through half a dozen versions, 
-while ignoring fundamental issues I've been pointing out from the very 
-beginning, has not somehow magically made this series mature and 
-acceptable to merge.
-
-Honestly, given certain other scenarios we may also end up having to 
-deal with, if by the time everything broken is taken away, it were to 
-end up stripped all the way back to something well-reasoned like:
-
-"Some drivers want more control of their DMA buffer layout than the 
-general-purpose IOVA allocator is able to provide though the DMA mapping 
-APIs, but also would rather not have to deal with managing an entire 
-IOMMU domain and address space, making MSIs work, etc. Expose 
-iommu_dma_alloc_iova() and some trivial IOMMU API wrappers to allow 
-drivers of coherent devices to claim regions of the default domain 
-wherein they can manage their own mappings directly."
-
-...I wouldn't necessarily disagree.
-
-Thanks,
-Robin.
 
