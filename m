@@ -1,62 +1,62 @@
-Return-Path: <linux-rdma+bounces-8198-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8201-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83A38A48D3B
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2025 01:27:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6588BA48D40
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2025 01:27:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22E5B1890DF0
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2025 00:27:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3CDB7A5CAF
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2025 00:26:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42C0E2C6A3;
-	Fri, 28 Feb 2025 00:26:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C5B12CD8B;
+	Fri, 28 Feb 2025 00:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Vy3mDget"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Ltns9TMn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2083.outbound.protection.outlook.com [40.107.243.83])
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2085.outbound.protection.outlook.com [40.107.100.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64A59460;
-	Fri, 28 Feb 2025 00:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.83
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 704634594A;
+	Fri, 28 Feb 2025 00:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.85
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740702409; cv=fail; b=Q/wJjrAU+7XNQOiG2PAvwnfhzCArQnyJ7LZkUnM/r9fykK5KrTkGkpVz288jARfCna+kGm3gKKDarcTIWeIKa0uQWF01hJHxtq2ZeMSw7L2f95dxtf5gaFejFIALezc8fq3VQwe1dntFB9kDsLkTI/RArc90mLQmJ3uCNjcfI94=
+	t=1740702412; cv=fail; b=qfVRfTAZQmOAgYO1n3f6rLL/SfkM2CYNZei+uFLN01LmDJRUPzVrr2dFb1vs1QFK3XvXbXZn+x2Uf8w+ydJLUsXtPs+GHY4yy4ToJW9DGaAd0ECQvbfzBNlN/iwzPTfd/7QfAvnPh2W0zcaVVeyFJOsCYUOmXmUsUlDsH6PvxfY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740702409; c=relaxed/simple;
-	bh=UJhXBDRqKue3clJjUG+NBNqL/yi9puPG2onsIo+dTuk=;
+	s=arc-20240116; t=1740702412; c=relaxed/simple;
+	bh=zPDlt66290RQrsa07QpU4y1B92rNq3BfAjS8/p5Qkrg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Tbl6LfmBVsnnmwUWkhLNZmzECvOf8Hvhm14m+C83zLpUBNc4cmcmdggTqblfLgi9eScjEydEJNODPNFwCgYpCsneFEznCuR942no+/QhBHzRTa325csf+xfdA0hU8tGgMget052fBl0WhJuJzMEqDeNLzUdlUwVrcXWUdJVa+bg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Vy3mDget; arc=fail smtp.client-ip=40.107.243.83
+	 Content-Type:MIME-Version; b=jvupSxqIpeHCSHZ8Adg8a9w+ZgTlgjObxzaKQz1wU7jmIzv3Cacm0czKQekLizD2K54f6edL0U76odnZCqZpVif6w9f0ZFFvaUmcbzrQo4Flar0xlZAj2iKvGMYoE3cISqFDoFbtsX/f0jJTDJ37scTRVSewBTQaeLsBtbvW1gA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Ltns9TMn; arc=fail smtp.client-ip=40.107.100.85
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=TSd6R/HTx7lGlpetZZvNKcqMFjHYJQgCZ6etKSUvkjh8NMXWkNFcg3gb4SAw4uwYlnw4OSDjj1GVnmpFuRxXYWU4SKUZhpTmneilqmqAIJOwrJepui4ENA9VMklD0TWQ+X//2pAEVEqD0Aoe0QlIKYFmVzuN5jbYe+oH6XN8MbFbX7cegyUL/HFmCP+Fq+tP3yozS+WroR98PTuhlxXkJ0JfEO56TU11ci/uAqvOdTOCFRlWgDmTo7BP0WiOi0Y/gqJbF01IwBYHmGfdU6cfstx2ZD9oHiYIsfz+Yl24Xumdx+6qMcP1MkN7cuXO25YnAk6lm+PDUe5o8dPM4hFp2Q==
+ b=zQecEkZeeR2BhHbQI7p/bfWceVVPM3gUKTGttiDHh3cFm3YqAeUTmS//+GaFOqMPBqcxEhWAZDeIdaqYaoABsH1EWmjw/h4nnZnwiOpjpfGraD0xSFz2SbsGxBh6erBsVb5NItMhciHiwjfGFqj2+FzI+ZHnLRJnQ4fzZ/EETvqeKmlir5a0ivZOvmU9kw2rSECucb0FqcHsKO3f3zTEWmlroJ1RW5CcRr+mx1O2nPCsNsHuZ7ewyNURhSgahMNFLsHZmh/EESF5fUdjALoVGjmTe6VfKWyXDMG3wlpUEvOEhJFXPF86793p0/TJF7tC93J+0WbPqq5lt+ou7NhCoA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=swA/0qCB+HeSTiTet2Z1sahb9NsBq3Fepnkx+x7B5Rw=;
- b=j02Teksi+k/aTnYUd890KYiJ2PwwNntXgXVwHy4/dgeW2IJXYxv7aVyfSgid+UUkwAo1pRHumCEStvxjbz8aoCd7y0lckhc8NasSGT5ipl688LQ/QsIj8NB/R8Ub97gCPBJ+SEYBSLOs01Mf6YCYCvNUfXZL4yJb4q4t5QSvMYYoYHfvQGaacsfdKK48M3i8/YElgmCd1jXVjPu/B4eAkmfskVDX1JEjagMgEG2c5B9YQL3nvNu9iaxKtcMbIcn5Bu1KJuxhHIoCrLDZgCEwOILQ5+oP1SBVVN1wmrHkCZqLqzPXDcBcUl62nv+iCYAaXzcOECArICZA8TLAuQneNQ==
+ bh=DwrkauMdLyp+SEB8N1rLfRWdcPZN+EeY335rLBfeGm4=;
+ b=rXCRbUoLNn76ujVQNHuO1dKOVLlEKTFE85EToHNGcGkbezwIhpWQNZ9TInQS151os72W75Lpr74up8F3Gc8wL2epKm1zsV3I+XHuidnI9XvLOCG4IfG1kJCTNTsOxdvGEabZP1q5LlN/di6d6bEYmvMAtvLArYlGZ4pX36JEfEC2U5Gk0aQn+SvOle2fhluhHP3QboU2wCssOvjGO/XcV3uvNUznDCT17VB+9MT1CkA4uFzMMwHqarsqB5Nbzgh93F2eS0K7E80PEDtnsq1JVyiSKNb8dCQsqn8IM7F9lbR+ReFowSkFBvEkHEZkbBqWFN3ICIjVXrLhhG7hQVAY8Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=swA/0qCB+HeSTiTet2Z1sahb9NsBq3Fepnkx+x7B5Rw=;
- b=Vy3mDget2yQmz2cJe6KlOUbmK8cTDdWMXdyK1OayN/RG5ivY0WCm6Ctk/BELOVY+D2hNN/aNDdP8ZP1ImAF+YdUYWqSBYstFFMUUvixi7Usat0aDqDxKjAEaHIcKNtTfSMinsNOvf7g721HDoPJ1LcAbychF+taCVs9m+nHESEdTNIkG/FYuOELZ+OIT5qZDiumgGQ2B7Zzb+til8HaH0CNchlK1h8jrj37GCnBRYpTXQ+fo5YscZbAcnStwmI5FtMx4lebRvi7gY/tpaRNaXp9Mrsk3F9kTe/XhrlmJJb5X3/OZ+j+xn7qPoCVI5IQgemjOdeY8fWVyqd3BzGUv8w==
+ bh=DwrkauMdLyp+SEB8N1rLfRWdcPZN+EeY335rLBfeGm4=;
+ b=Ltns9TMnVQFDDSr8TiY2ZsenxQs4O/zSXrP7gyLtwBpjaV5mQnXOxAnr8dwU6UwKLt8RV1WtePaMKZMPOa0c7v1tPHl+koKMQGHJXw7gYwaJp87KAYxaem0r/+dG0gr05KKkdcuCc17IUsURH9jby+Jf3O4n9I6KXapUBKyeH84UWupHIwZTV/c2x08HNIrmy7MY5O9QB7V6usavDBjmDdy7kPgev+zqo66AmOPKN7qh3zphsqtpPAhf+ZSV0imcrZqja+ZjaENHW2bmyXjQFKEF/S6R5ED+3L0NqO2bikzQBiA4Vjz829O+Lo/2DBEHalQgERwCd1/4/g8bmXjq5Q==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
- by IA1PR12MB6529.namprd12.prod.outlook.com (2603:10b6:208:3a6::16) with
+ by CY8PR12MB7433.namprd12.prod.outlook.com (2603:10b6:930:53::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8466.26; Fri, 28 Feb
- 2025 00:26:40 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.18; Fri, 28 Feb
+ 2025 00:26:39 +0000
 Received: from CH3PR12MB8659.namprd12.prod.outlook.com
  ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
  ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8489.021; Fri, 28 Feb 2025
- 00:26:39 +0000
+ 00:26:38 +0000
 From: Jason Gunthorpe <jgg@nvidia.com>
 To:
 Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>,
@@ -78,15 +78,15 @@ Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>,
 	netdev@vger.kernel.org,
 	Saeed Mahameed <saeedm@nvidia.com>,
 	"Nelson, Shannon" <shannon.nelson@amd.com>
-Subject: [PATCH v5 6/8] fwctl: Add documentation
-Date: Thu, 27 Feb 2025 20:26:34 -0400
-Message-ID: <6-v5-642aa0c94070+4447f-fwctl_jgg@nvidia.com>
+Subject: [PATCH v5 7/8] fwctl/mlx5: Support for communicating with mlx5 fw
+Date: Thu, 27 Feb 2025 20:26:35 -0400
+Message-ID: <7-v5-642aa0c94070+4447f-fwctl_jgg@nvidia.com>
 In-Reply-To: <0-v5-642aa0c94070+4447f-fwctl_jgg@nvidia.com>
 References:
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MN2PR17CA0015.namprd17.prod.outlook.com
- (2603:10b6:208:15e::28) To CH3PR12MB8659.namprd12.prod.outlook.com
+Content-Type: text/plain
+X-ClientProxiedBy: BN0PR04CA0132.namprd04.prod.outlook.com
+ (2603:10b6:408:ed::17) To CH3PR12MB8659.namprd12.prod.outlook.com
  (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -95,449 +95,690 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|IA1PR12MB6529:EE_
-X-MS-Office365-Filtering-Correlation-Id: 961d272e-9fee-41a1-1bd6-08dd578e90c0
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|CY8PR12MB7433:EE_
+X-MS-Office365-Filtering-Correlation-Id: d9a1513f-42be-4dcb-d4b6-08dd578e906f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?MFdmQ20zTGhCN0FmL0tjV3JYdUZhYmN4K09ybWRPcmlYS0NZdlAvRlB1UU1U?=
- =?utf-8?B?SWpuRXVOQndXQk1BZ0VXbjBHcWREdnNpNTJMOEwzanlWYTBIQzdJeWZhUnR4?=
- =?utf-8?B?dGlvQk4xa2FCdmF2RnFPWnlhTzRaYWRCbm51R2w2TFUvdksrZEJ5SWxha1R1?=
- =?utf-8?B?bkJMYkNRVDNKdFpLY0tpa0gveGFuSVFjRVZIOWE0WEU0VkRDNHlmZFU5dXph?=
- =?utf-8?B?c0R6LzF5cWszQjRnMk1QMVdiZTBhTVJOM0tpNTZIdUlDSGJ0enJ5TUN4S2Y4?=
- =?utf-8?B?SEx3dGNYSzZNd0NaQ0NESGxSZVF5bDFWTXVDVm1ER2YvdUFoSzN2UkVSb09D?=
- =?utf-8?B?S1JJb0dTYWMwOTJmSDFsZTN2Q05LaCttUUluTEZ3ajFkQVdLM1ZvbjJjaFRt?=
- =?utf-8?B?RFZsOE1qMWpqYVphdlVZdjRCbkNsYlNiaU1FQkw0MDZydWZQK0cwQ2Qra2x0?=
- =?utf-8?B?STBhZ2tkUmlpK1Z3dHJ1RWE2TXpIdU1MQzcvTEtWT3ZJd1VTSGZQS3pEajRY?=
- =?utf-8?B?aXErbmk0bVNpN0ZOT1B2Qno3TjJXTHVyV3VEbW9lZ3VYOUxHcmpDdlZPckJB?=
- =?utf-8?B?UXNnakF1VXZ0R1ZSaTNDcDBJS1lFUEN6TUExMXB6TGp0aURERGw5cGhtVnhZ?=
- =?utf-8?B?VG9mcGRYd1VpWVpyMU9JQkxWODM2cEJYRnpSMU15RTNRZ3l1eldVTTR6ZEdz?=
- =?utf-8?B?ZzU5MkVCalhoNjAxaFFtcnpUN3hvcDl6eVI0RFVGa0lvUHRNSmNPbEdNMjNi?=
- =?utf-8?B?MW1SRFRPNWI3TmJXL2trc0RpVzJEc0l4U1MwbXJ1Tld3V1k0ZjdJdmoxOWZS?=
- =?utf-8?B?MVByMU9kd1N2SGdCbXE2Y1lBZTVqaXZPK0hzV1c1ZDVKcGVOUFpKM2NDM1hS?=
- =?utf-8?B?bFdnZWtpaVFYeDZhV05mUHVWdE9vMEloai9PeUxaUHZSSEcvRlE5UVZEbFdl?=
- =?utf-8?B?WHJtTHZCdWJ3Z2hwVGp3WEtoUXJMM0VRK3VFcEFhWWVha2xNUnpIdWpLa3Jm?=
- =?utf-8?B?aWMxMTJ3WTRTNVp3TGR5SlRJckVjRmVVOHRONEpXN244MmlNY21ia1RTaXlj?=
- =?utf-8?B?UXJuMHl2WVUrYk5VMjdDMHRRSXBlYjBBRjZ3WTZERzNMdWpVdkZwTFNkaDQ1?=
- =?utf-8?B?ZGMvTUxOdlo5TTJRWHlkV0E3aVEzdVhSMkkxc1owbks2OGNzaWxWSUk2Nzg1?=
- =?utf-8?B?T052aXJMN0JlYnFPK0U5Nm5ocjZDd2JLUHEwa1hhajVVaHFyMHExZENEZUlu?=
- =?utf-8?B?U1MzSGtOWmtERmV6YlFmRTVhcHd5bzJ1VUJoc1E5bUovWlpKdGpjNE43UDNU?=
- =?utf-8?B?ZUtscHcrTWVJemx3YStmRUFmMW1jdkgyOWE1TE5VdC9aa2gxdFZZY09JQWtB?=
- =?utf-8?B?UlFwSFVHdzFqOGRsUUt6T1pudi9MbEE1aGo5Z0UwUTdudHBweEY5Znc2QVBD?=
- =?utf-8?B?d1pTUmVaNE9PUldCQzNHeGpFUml5QTZJaWl5Mk1wUlNnUmlWMmIyaWM2UU0r?=
- =?utf-8?B?TEtoT0xhalJvVTJPQkxZV2lMUTBpaEcycVQyaWNiOHNFUzZtTDZHbE1LbUlD?=
- =?utf-8?B?aHlUVk9GYThMZ1M0U1RtQ1IvT2NCVTBLQVNxMC8vZnpWY2d2YjlmUC9jZTU4?=
- =?utf-8?B?ZXZsNUpldXp5dmtVekhMakRCVVZkdzRDd2ZBMnNjNlNoUFAyQlVpQjY2MU5l?=
- =?utf-8?B?aWhHQldXOE45L21ZR0tIS1V4WWV6TExzaWthWjUyd2xHWmlaUnRvOUxzUEVT?=
- =?utf-8?B?UWszUHZHMWVLaDhSSGlpSkxDeXY1NjF2WXRQTW8rYldhUXhWYk0vNmNuaDQ2?=
- =?utf-8?B?Y3JaVERkRTgxRTlyTkZqMERqemRUUXVpN1Y5UXJxR0VIbnc3RHp0MU1iWFpt?=
- =?utf-8?Q?OtM15SL5L59GC?=
+	=?us-ascii?Q?warq1BruJPLMKhh7kZqsUr2z6+HUYBCqdjhQe6NbH9IPxQ6A5mk8ofiCZgvB?=
+ =?us-ascii?Q?khWhHySPrxgo7QOZpHUeAPPo4F5u5s/c6JXcLUrVkEagtL1AAAY/06ziIPT7?=
+ =?us-ascii?Q?HVGGBIcEmLq1IrS6WbpJZf5kZCXwv4BzFpZ5mfG2/sJeVd9qpBWjVOacWWVb?=
+ =?us-ascii?Q?cKRlIlIeBkcHvzxGcDU/TXy7OlbsmRmtLPNDHR+nPCTGQbaLfWN9Beu1h69B?=
+ =?us-ascii?Q?+t0gOZ+HQsizHAHci6ZyHDWXEHh45ZbNrqphBjpHVJTBKoCd8nNnRD+TX4/m?=
+ =?us-ascii?Q?Vfc6w7HS5/Yj9xJMZtbTyAP7kCtxF85QfJx6Poyvnb1+Q2ShVNOfCL4dl4Zg?=
+ =?us-ascii?Q?3WBpz0zvi9ApbuxtBvORt8o7c7XJJ0+9GRVJhin/1DELIg06gkvxFoY0fGUW?=
+ =?us-ascii?Q?VJLxQzISCC8dwlgNZTjjxrLI5VxGsI3qcOuicwP8ySdeZ2qdotKiZ4cX8moK?=
+ =?us-ascii?Q?3V5FtB2C52zBTJSK+wL3e0OiTz7227qW0ZxMcIgAXyp9T4/jlrdAR/h6oDZy?=
+ =?us-ascii?Q?SbQ06pANgjWV0QI7jVrMScbe2dNzTRYXBQOZvNAm8uLBZcXOeFBgA33v25jQ?=
+ =?us-ascii?Q?ibrF8geXyQsgsvd2IopTsNWBy7T/Wubp8tQTSTfNPRzgnlNxdgSLxoJJGILh?=
+ =?us-ascii?Q?oi4cst8y+TIgvHwSt7yWmLBDdJTdve/je1dPByw6f1vse+6J4px0PUEKwVuy?=
+ =?us-ascii?Q?jvQqHwIAOKw5d0SfVxG/oskvnSN3v0jje6jqU8LnrmkHW5nLRYme1D3ShDl4?=
+ =?us-ascii?Q?eCHdLt2/wH7NcISVKF8SkcHl/iYeNJq1kj1dgcLVzNxVVFj3EXmbOW21IEuV?=
+ =?us-ascii?Q?LhQJFjEQdRlEF63leKfXZ5ZiWuQOltPiDU/Aa55OcgUy7ZyFxl6wSK8lJXH+?=
+ =?us-ascii?Q?DQqv3swlOQgb4f3e59sa50kFQclwIi6rS1mOMmMjcWb6+lpxoWHhqBlswJ8J?=
+ =?us-ascii?Q?FeuqfYZyujyvMz3vVIk5LBzV9oKE/srWTJogVcRnojMLzrgDrb4pWWsldZe3?=
+ =?us-ascii?Q?B0D7P9BcerjeVpzVF2stMpj7LuJsI5uRA1nNWKSCDrXIZTrLflWfNM5Titbh?=
+ =?us-ascii?Q?1kTd2/IIVbPE+8YnL0Hr6NjV1VM7J+EWzdLjSCrxaw03n5uX6IfLQy06aJJa?=
+ =?us-ascii?Q?S12JT1tUKC1d62VMOp+tiyBklZF2y2yeo+mn+d10/lSJ6is6XSfjpjwiWn+k?=
+ =?us-ascii?Q?K4mMSNqpexwO9CpdNc4FYVgePsOKMBF2SFHD38BFfx+hP3LjKsD4dxw3Tfxh?=
+ =?us-ascii?Q?qlK4zwJVJ1IiHdritF8S67QJVd1C8olgzeTAC+JiA1Oa6fQhmMOy7+Gd56RZ?=
+ =?us-ascii?Q?UulguAinw0Q+m9lX9Cimx+i9zLmTZorO07Q/kuBhCGOvJ2YsZuPvEGXETAJ1?=
+ =?us-ascii?Q?lwNDDYsrllI9H7y3eM9dP88eckSZ?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TE1oc3lqSno2MkRLck5RTjN3UEpTSTlJVWlXUUdqVnluc09MbmU2amlna05i?=
- =?utf-8?B?ano1L0pZYkxqWXFDTDVaN3pmZ0ljS0VCRTBjaUNvNTEzdmh6bFlvSDNpalFs?=
- =?utf-8?B?TGFHbjhFdUZlQk9QV2puNFpSdmVaVS9qUzc0VVBRY2dVcEZwK1NCbHhQVUlD?=
- =?utf-8?B?OWcwbk4wcWZRSDhFOXZWSURZZXBFSTE1UU43TVdwZXZLMDVYazJZRjZnQS8x?=
- =?utf-8?B?dHVlODhobUoyTXE0N3FEcDl5dS9IeCsxZFZnOGYyS2JhaHJDdFZKV0hJWHd3?=
- =?utf-8?B?MTYwR3oyQnlvN0NNbHNoTTNUU3FYaHZpdU8wQnVsZU5mWlprQnE0SW5IL0xU?=
- =?utf-8?B?MzhuOWdleXJRZWtPcWpoVXlyR0lteS92NzBlLzdkOTRsYlI3UWJ5d0ZHYVV1?=
- =?utf-8?B?SWkzNDJ4NjZwcGhFaUZVWndBbDFydmVYODJVR0pLWTdGSTY2RjVBdDRnZzVY?=
- =?utf-8?B?anJ1NDhzVVJBUHZ3dC84L3MxTGZ5emVmZXBWZkhJU0czbUxpV3RyOW95dzVu?=
- =?utf-8?B?bHJWdndtdzlsRU9mVFVuZENNUWdrR0svTE1BR2F6bzZNUEpKUk4vRDJ0Mm5s?=
- =?utf-8?B?a2VGL2ZIdUcyaXd1cGhXbTlGYTkxU0JQcHBXNW9rWFJOOURkUTQ3R2lYNXN5?=
- =?utf-8?B?OWN1WVB0UHR0ZHA0MWJiR2l4Wkt4RmxJam9JakkwSVd1YUZQcC9ZakFLVHNl?=
- =?utf-8?B?dlo3NzhtNjlONVQxZHdkTGpQaCtUMzZ6M0QranZjaVAweGlTN3FZOHl0TW9B?=
- =?utf-8?B?YmJqVnVWYjdueHQ5M251bzJPOCsrZCtKY3NISDl1WW9aZVo5aE9PMnNReDVK?=
- =?utf-8?B?SlJmMnBWTVdXaVE5RjBvS0MwU1p6OVFyS2RWSzRRVTVkMHZjM00zdDVDRjA3?=
- =?utf-8?B?QmlEdndNcm9VcE8rdVhKQjVtRURSTnJNQ3hsNUEzSnJ2YWFLNnJQR2MxdHo0?=
- =?utf-8?B?OXdOcU5VVXZUZjFCcUV4TEZBYWZsQlRsTXpHVUxBRW5ZSkhyemU0UlpBOG9w?=
- =?utf-8?B?YmxMdnZSWC9OYzRwaTB3am1VaEw2NnRzSE01cGlVZXVjUFNzb2VnRHZkR2Z4?=
- =?utf-8?B?bllMQktkNWtoR1lIR1RCZzdtNHB6aTcyVno0aExBT1lYbHdOMEtpNjNqTjVn?=
- =?utf-8?B?cEQ2RkYxMmNzZ2RIMmdKOEJ0Y3dLa281OEVJblFZajBQbjQ2aGJQVzZqVVdB?=
- =?utf-8?B?QjhnQ1lZdzlNSldHQkhwK01ncU5wd2ZVb3dycjBWS0NpR2NBdE0rNEVsWE03?=
- =?utf-8?B?VGgrTjBsODJ0a0Z3V0tRMHIxRURSa0RETVN4UHpkaUptdVROY3pMbUFOWHhu?=
- =?utf-8?B?aUNSdmxIazVVM1A3S0tiNkFnaDJ1ckgybld3ZHFxaFBHV0dZdS92RjNVNGx3?=
- =?utf-8?B?SEJxTjZrZ2JzNTdGZm1LREJqTjQwY1hQWDBmSjJYVlViaGFWNWtTck9ZSUJL?=
- =?utf-8?B?dW01eE9zL0FRZlU4T3pGbWtMREpDR3pvU3B5OHNnVlNxRWFOcE95Yll1dzBk?=
- =?utf-8?B?SEVCc01mSVhaT2VBUGtsb1JtQzI5K0xRTG5mUHNDcWEwLy9kSjZRSVdpdHVG?=
- =?utf-8?B?Q25KeVF6dHlzWnpVV3dNNTRra0w0UGFhUnR6YTJ2bll2cTF3TFVOUUdGUFYz?=
- =?utf-8?B?UHBUQjFKaVhQaTNBSkVHWXRtZUREMUdGazV2THN5bGVoTGh6ZXdyRndWM0pI?=
- =?utf-8?B?YWM2QnY4allTVEVZekw4WkhHaEw0aEZOdnJXSFdTMFh3UGlneXZFcDFJT256?=
- =?utf-8?B?RkRzYVlSQmxBSmNjNDUya3NWOElUanBSZzJHUFZnVzVTSEN0elRwRDdIQ285?=
- =?utf-8?B?WVduYVF0ZEhQRzF2SHdVSU1DTnlaS0lRK01lVEFib1B4a1Y1c0dlQzc4a2dw?=
- =?utf-8?B?cStxUnNRUXBieVdPU0xLVFZ5azMwMXhpNEV3M3IzenRodEpkWktCN2ptYTFP?=
- =?utf-8?B?cUtpemRzWVMzREFERDZpTkNPMkRjbU1oc0FMa3Z5cHRRY0lmRnVJS1hSYTJQ?=
- =?utf-8?B?ZnJpUWxERVlZZmdIQU1iS1VBNkNGS1R0aU9DcjA3QzE3eDRxVDRKRHE2bm1j?=
- =?utf-8?B?ODdpTndPcGs5L0hBejNSL2xoUzRrMXcrOVZBZUk1UG0waHZMeTJWSWlIN3Nq?=
- =?utf-8?Q?hn9yjBrde2T7lcE5iThhmbkbB?=
+	=?us-ascii?Q?aGU64VxmnVf8CVWzM8uPdGdsVEST2P+CkKm8kpbIZtzp48QgzyrRMUCNLwk7?=
+ =?us-ascii?Q?3eSkZbpBj1o3PkLs2ymwbHrZH0XcPXKavjX3fT5jfD+RIrWCJ9NZ3y0du2cH?=
+ =?us-ascii?Q?RK0aKHpmL/45N09kcp6QNJoehLSwcuwwyijIB9SPnh3WvqCpyStBDmyUj+xi?=
+ =?us-ascii?Q?f23hGGKf70c03dLOBBWA5M/3y7My6ls2Pvm/FmaU/uBGb5znfDzYoPYJdgN+?=
+ =?us-ascii?Q?R6AqcOZ3OQ2vyLgHjmvIZFMZqgO4zT55PY8+sPWDbC+Tz5sCcJYgjTr69AG6?=
+ =?us-ascii?Q?oyHtHe8iN4fVJ7T7rHS78OhaXPelni/1OsD6dXJTzfhX5zMbYuXu5tRjRSfY?=
+ =?us-ascii?Q?LHTYPzo7wMynpWV4QZY6t8Fhz4tI4/5hdmf6QatPJh9f3cWvmamrfjq1Y/rQ?=
+ =?us-ascii?Q?z2w+1Q58gv9j5n/OMmlU9BHS6pDicH/kZnvRxjFJU4S8pyV6S3++U7+4vrr7?=
+ =?us-ascii?Q?tFddhaHd9QA/iabV62Zicos4cyBxYjVAw0nO5Xu7nh+847eOpVVhF2ZG3QUJ?=
+ =?us-ascii?Q?SJYERWHPHE/4Thrn8XNZ6ncrFFhyejv9TFlEBT788bvwitkenYHtI3KvHe06?=
+ =?us-ascii?Q?VJ0HQRbeEFoBOwCWR3iwMKAt+ZIhTJ3yl3t3c5JT6alGjf842jFzfhABND14?=
+ =?us-ascii?Q?JEQ3jXiHMJTe9vxL0/jj6oZYs0y8xFow7fjhxZHrRdpmtlqZyoeHER4iheZL?=
+ =?us-ascii?Q?HQvnfgxKZlm+bYT121DKvt4QTovCmbzT34CQ+M4VKscKXzoOOefZwr7mLMWj?=
+ =?us-ascii?Q?3512CWLjYHCfd1Gbr3UStrpS2lC4bNmswo3Vo1rFrT6i6AxUuhjQU9AnSo93?=
+ =?us-ascii?Q?WSz8xzUJkAThqVdiqpQc7CsTL06VUhYhJY6lVfAKu37Pn8Web9HvlgsIXEOl?=
+ =?us-ascii?Q?GSfIMULn4de4vm8xBpglQUS4vc/mbnm6AmybZ31oOqYdnG6ARt6FnrLXPLUe?=
+ =?us-ascii?Q?Xm1xOgnbJgsHeADzhWqPFBKWbyHDxL1JytwINYvcZRDhWTxeOGlnsWz3fa42?=
+ =?us-ascii?Q?toKsEFUo4UmBt4EXa3D5pYEOHmoBfdAjsF+PngoI+rkjEwHYPIPIMqXYFAI8?=
+ =?us-ascii?Q?Ky0jgTTong0LKYGGW0ESZ3Tr1ueo7S8JpnebJb35NrXhiWlHP7VrhBMmEl+r?=
+ =?us-ascii?Q?Q5awLEdZBaFfTYRLQupEl2uy0VimwrOUbBmPsmwcbaHkY3d0IxTRJKY+iO2L?=
+ =?us-ascii?Q?HBssQKG/YRf3uLOjPhVYsMQEIjzSpqxx1a/IEmFj43v4zkIF2QC0wAl40HuQ?=
+ =?us-ascii?Q?2gNOblO+7ZdNrW2WLvZ1kS72AtlefsFNUpMYpPGmCN6+hY1x35LI5aubdzGg?=
+ =?us-ascii?Q?cusi4oNVSdVnR2BAIJCC82l/OmpU2onPn3DlfZpQ7KV/FiwM618GBwIpP51z?=
+ =?us-ascii?Q?rqNP+FJu/QH/pT4KJYtLU4NXhqsIzfs8AdjSrD5UfW+DNzo3b3lKQvAYekV3?=
+ =?us-ascii?Q?zr/KMKakT8cWHv0Zl6fSpO703aam6ImepCiJMhnbJMv/cd233VgNBcHFOjbq?=
+ =?us-ascii?Q?AsAk1qXuwwKqaopi+jOtYjQTD8KtB8+JHkp5g6aQb+dZjCtnXlxupEMvrZw8?=
+ =?us-ascii?Q?bZCTB44llEZlgh11u6XlKNdgOuBdU4NjkOZkyEOU?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 961d272e-9fee-41a1-1bd6-08dd578e90c0
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9a1513f-42be-4dcb-d4b6-08dd578e906f
 X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2025 00:26:38.5704
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2025 00:26:37.9702
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F1t93RsQFLa7YOz0wxJZv/WctBboLqs7ZCKP5+kl0XdRhgbCh8maLS9LJcc/Q8Dg
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6529
+X-MS-Exchange-CrossTenant-UserPrincipalName: khG8AiIz/g++bQkjb3PwTeJ6AaJZjoMdRtoQflAqFw4Q14+TZzGvC4+0flgTOAuv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7433
 
-Document the purpose and rules for the fwctl subsystem.
+From: Saeed Mahameed <saeedm@nvidia.com>
 
-Link in kdocs to the doc tree.
+mlx5 FW has a built in security context called UID. Each UID has a set of
+permissions controlled by the kernel when it is created and every command
+is tagged by the kernel with a particular UID. In general commands cannot
+reach objects outside of their UID and commands cannot exceed their UID's
+permissions. These restrictions are enforced by FW.
 
-Nacked-by: Jakub Kicinski <kuba@kernel.org>
-Link: https://lore.kernel.org/r/20240603114250.5325279c@kernel.org
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-https://lore.kernel.org/r/ZrHY2Bds7oF7KRGz@phenom.ffwll.local
+This mechanism has long been used in RDMA for the devx interface where
+RDMA will sent commands directly to the FW and the UID limitations
+restrict those commands to a ib_device/verbs security domain. For instance
+commands that would effect other VFs, or global device resources. The
+model is suitable for unprivileged userspace to operate the RDMA
+functionality.
+
+The UID has been extended with a "tools resources" permission which allows
+additional commands and sub-commands that are intended to match with the
+scope limitations set in FWCTL. This is an alternative design to the
+"command intent log" where the FW does the enforcement rather than having
+the FW report the enforcement the kernel should do.
+
+Consistent with the fwctl definitions the "tools resources" security
+context is limited to the FWCTL_RPC_CONFIGURATION,
+FWCTL_RPC_DEBUG_READ_ONLY, FWCTL_RPC_DEBUG_WRITE, and
+FWCTL_RPC_DEBUG_WRITE_FULL security scopes.
+
+Like RDMA devx, each opened fwctl file descriptor will get a unique UID
+associated with each file descriptor.
+
+The fwctl driver is kept simple and we reject commands that can create
+objects as the UID mechanism relies on the kernel to track and destroy
+objects prior to detroying the UID. Filtering into fwctl sub scopes is
+done inside the driver with a switch statement. This substantially limits
+what is possible to primarily query functions ad a few limited set
+operations.
+
+mlx5 already has a robust infrastructure for delivering RPC messages to
+fw. Trivially connect fwctl's RPC mechanism to mlx5_cmd_do(). Enforce the
+User Context ID in every RPC header accepted from the FD so the FW knows
+the security context of the issuing ID.
+
 Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 ---
- Documentation/userspace-api/fwctl/fwctl.rst | 284 ++++++++++++++++++++
- Documentation/userspace-api/fwctl/index.rst |  12 +
- Documentation/userspace-api/index.rst       |   1 +
- MAINTAINERS                                 |   1 +
- 4 files changed, 298 insertions(+)
- create mode 100644 Documentation/userspace-api/fwctl/fwctl.rst
- create mode 100644 Documentation/userspace-api/fwctl/index.rst
+ Documentation/userspace-api/fwctl/fwctl.rst |   1 +
+ MAINTAINERS                                 |   9 +
+ drivers/fwctl/Kconfig                       |  14 +
+ drivers/fwctl/Makefile                      |   1 +
+ drivers/fwctl/mlx5/Makefile                 |   4 +
+ drivers/fwctl/mlx5/main.c                   | 411 ++++++++++++++++++++
+ include/uapi/fwctl/fwctl.h                  |   1 +
+ include/uapi/fwctl/mlx5.h                   |  36 ++
+ 8 files changed, 477 insertions(+)
+ create mode 100644 drivers/fwctl/mlx5/Makefile
+ create mode 100644 drivers/fwctl/mlx5/main.c
+ create mode 100644 include/uapi/fwctl/mlx5.h
 
 diff --git a/Documentation/userspace-api/fwctl/fwctl.rst b/Documentation/userspace-api/fwctl/fwctl.rst
-new file mode 100644
-index 00000000000000..8c586a8f677d5b
---- /dev/null
+index 8c586a8f677d5b..04ad78a7cd48bb 100644
+--- a/Documentation/userspace-api/fwctl/fwctl.rst
 +++ b/Documentation/userspace-api/fwctl/fwctl.rst
-@@ -0,0 +1,284 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===============
-+fwctl subsystem
-+===============
-+
-+:Author: Jason Gunthorpe
-+
-+Overview
-+========
-+
-+Modern devices contain extensive amounts of FW, and in many cases, are largely
-+software-defined pieces of hardware. The evolution of this approach is largely a
-+reaction to Moore's Law where a chip tape out is now highly expensive, and the
-+chip design is extremely large. Replacing fixed HW logic with a flexible and
-+tightly coupled FW/HW combination is an effective risk mitigation against chip
-+respin. Problems in the HW design can be counteracted in device FW. This is
-+especially true for devices which present a stable and backwards compatible
-+interface to the operating system driver (such as NVMe).
-+
-+The FW layer in devices has grown to incredible size and devices frequently
-+integrate clusters of fast processors to run it. For example, mlx5 devices have
-+over 30MB of FW code, and big configurations operate with over 1GB of FW managed
-+runtime state.
-+
-+The availability of such a flexible layer has created quite a variety in the
-+industry where single pieces of silicon are now configurable software-defined
-+devices and can operate in substantially different ways depending on the need.
-+Further, we often see cases where specific sites wish to operate devices in ways
-+that are highly specialized and require applications that have been tailored to
-+their unique configuration.
-+
-+Further, devices have become multi-functional and integrated to the point they
-+no longer fit neatly into the kernel's division of subsystems. Modern
-+multi-functional devices have drivers, such as bnxt/ice/mlx5/pds, that span many
-+subsystems while sharing the underlying hardware using the auxiliary device
-+system.
-+
-+All together this creates a challenge for the operating system, where devices
-+have an expansive FW environment that needs robust device-specific debugging
-+support, and FW-driven functionality that is not well suited to “generic”
-+interfaces. fwctl seeks to allow access to the full device functionality from
-+user space in the areas of debuggability, management, and first-boot/nth-boot
-+provisioning.
-+
-+fwctl is aimed at the common device design pattern where the OS and FW
-+communicate via an RPC message layer constructed with a queue or mailbox scheme.
-+In this case the driver will typically have some layer to deliver RPC messages
-+and collect RPC responses from device FW. The in-kernel subsystem drivers that
-+operate the device for its primary purposes will use these RPCs to build their
-+drivers, but devices also usually have a set of ancillary RPCs that don't really
-+fit into any specific subsystem. For example, a HW RAID controller is primarily
-+operated by the block layer but also comes with a set of RPCs to administer the
-+construction of drives within the HW RAID.
-+
-+In the past when devices were more single function, individual subsystems would
-+grow different approaches to solving some of these common problems. For instance
-+monitoring device health, manipulating its FLASH, debugging the FW,
-+provisioning, all have various unique interfaces across the kernel.
-+
-+fwctl's purpose is to define a common set of limited rules, described below,
-+that allow user space to securely construct and execute RPCs inside device FW.
-+The rules serve as an agreement between the operating system and FW on how to
-+correctly design the RPC interface. As a uAPI the subsystem provides a thin
-+layer of discovery and a generic uAPI to deliver the RPCs and collect the
-+response. It supports a system of user space libraries and tools which will
-+use this interface to control the device using the device native protocols.
-+
-+Scope of Action
-+---------------
-+
-+fwctl drivers are strictly restricted to being a way to operate the device FW.
-+It is not an avenue to access random kernel internals, or other operating system
-+SW states.
-+
-+fwctl instances must operate on a well-defined device function, and the device
-+should have a well-defined security model for what scope within the physical
-+device the function is permitted to access. For instance, the most complex PCIe
-+device today may broadly have several function-level scopes:
-+
-+ 1. A privileged function with full access to the on-device global state and
-+    configuration
-+
-+ 2. Multiple hypervisor functions with control over itself and child functions
-+    used with VMs
-+
-+ 3. Multiple VM functions tightly scoped within the VM
-+
-+The device may create a logical parent/child relationship between these scopes.
-+For instance a child VM's FW may be within the scope of the hypervisor FW. It is
-+quite common in the VFIO world that the hypervisor environment has a complex
-+provisioning/profiling/configuration responsibility for the function VFIO
-+assigns to the VM.
-+
-+Further, within the function, devices often have RPC commands that fall within
-+some general scopes of action (see enum fwctl_rpc_scope):
-+
-+ 1. Access to function & child configuration, FLASH, etc. that becomes live at a
-+    function reset. Access to function & child runtime configuration that is
-+    transparent or non-disruptive to any driver or VM.
-+
-+ 2. Read-only access to function debug information that may report on FW objects
-+    in the function & child, including FW objects owned by other kernel
-+    subsystems.
-+
-+ 3. Write access to function & child debug information strictly compatible with
-+    the principles of kernel lockdown and kernel integrity protection. Triggers
-+    a kernel Taint.
-+
-+ 4. Full debug device access. Triggers a kernel Taint, requires CAP_SYS_RAWIO.
-+
-+User space will provide a scope label on each RPC and the kernel must enforce the
-+above CAPs and taints based on that scope. A combination of kernel and FW can
-+enforce that RPCs are placed in the correct scope by user space.
-+
-+Denied behavior
-+---------------
-+
-+There are many things this interface must not allow user space to do (without a
-+Taint or CAP), broadly derived from the principles of kernel lockdown. Some
-+examples:
-+
-+ 1. DMA to/from arbitrary memory, hang the system, compromise FW integrity with
-+    untrusted code, or otherwise compromise device or system security and
-+    integrity.
-+
-+ 2. Provide an abnormal “back door” to kernel drivers. No manipulation of kernel
-+    objects owned by kernel drivers.
-+
-+ 3. Directly configure or otherwise control kernel drivers. A subsystem kernel
-+    driver can react to the device configuration at function reset/driver load
-+    time, but otherwise must not be coupled to fwctl.
-+
-+ 4. Operate the HW in a way that overlaps with the core purpose of another
-+    primary kernel subsystem, such as read/write to LBAs, send/receive of
-+    network packets, or operate an accelerator's data plane.
-+
-+fwctl is not a replacement for device direct access subsystems like uacce or
-+VFIO.
-+
-+Operations exposed through fwctl's non-taining interfaces should be fully
-+sharable with other users of the device. For instance exposing a RPC through
-+fwctl should never prevent a kernel subsystem from also concurrently using that
-+same RPC or hardware unit down the road. In such cases fwctl will be less
-+important than proper kernel subsystems that eventually emerge. Mistakes in this
-+area resulting in clashes will be resolved in favour of a kernel implementation.
-+
-+fwctl User API
-+==============
-+
-+.. kernel-doc:: include/uapi/fwctl/fwctl.h
-+
-+sysfs Class
-+-----------
-+
-+fwctl has a sysfs class (/sys/class/fwctl/fwctlNN/) and character devices
-+(/dev/fwctl/fwctlNN) with a simple numbered scheme. The character device
-+operates the iotcl uAPI described above.
-+
-+fwctl devices can be related to driver components in other subsystems through
-+sysfs::
-+
-+    $ ls /sys/class/fwctl/fwctl0/device/infiniband/
-+    ibp0s10f0
-+
-+    $ ls /sys/class/infiniband/ibp0s10f0/device/fwctl/
-+    fwctl0/
-+
-+    $ ls /sys/devices/pci0000:00/0000:00:0a.0/fwctl/fwctl0
-+    dev  device  power  subsystem  uevent
-+
-+User space Community
-+--------------------
-+
-+Drawing inspiration from nvme-cli, participating in the kernel side must come
-+with a user space in a common TBD git tree, at a minimum to usefully operate the
-+kernel driver. Providing such an implementation is a pre-condition to merging a
-+kernel driver.
-+
-+The goal is to build user space community around some of the shared problems
-+we all have, and ideally develop some common user space programs with some
-+starting themes of:
-+
-+ - Device in-field debugging
-+
-+ - HW provisioning
-+
-+ - VFIO child device profiling before VM boot
-+
-+ - Confidential Compute topics (attestation, secure provisioning)
-+
-+that stretch across all subsystems in the kernel. fwupd is a great example of
-+how an excellent user space experience can emerge out of kernel-side diversity.
-+
-+fwctl Kernel API
-+================
-+
-+.. kernel-doc:: drivers/fwctl/main.c
-+   :export:
-+.. kernel-doc:: include/linux/fwctl.h
-+
-+fwctl Driver design
-+-------------------
-+
-+In many cases a fwctl driver is going to be part of a larger cross-subsystem
-+device possibly using the auxiliary_device mechanism. In that case several
-+subsystems are going to be sharing the same device and FW interface layer so the
-+device design must already provide for isolation and cooperation between kernel
-+subsystems. fwctl should fit into that same model.
-+
-+Part of the driver should include a description of how its scope restrictions
-+and security model work. The driver and FW together must ensure that RPCs
-+provided by user space are mapped to the appropriate scope. If the validation is
-+done in the driver then the validation can read a 'command effects' report from
-+the device, or hardwire the enforcement. If the validation is done in the FW,
-+then the driver should pass the fwctl_rpc_scope to the FW along with the command.
-+
-+The driver and FW must cooperate to ensure that either fwctl cannot allocate
-+any FW resources, or any resources it does allocate are freed on FD closure.  A
-+driver primarily constructed around FW RPCs may find that its core PCI function
-+and RPC layer belongs under fwctl with auxiliary devices connecting to other
-+subsystems.
-+
-+Each device type must be mindful of Linux's philosophy for stable ABI. The FW
-+RPC interface does not have to meet a strictly stable ABI, but it does need to
-+meet an expectation that userspace tools that are deployed and in significant
-+use don't needlessly break. FW upgrade and kernel upgrade should keep widely
-+deployed tooling working.
-+
-+Development and debugging focused RPCs under more permissive scopes can have
-+less stabilitiy if the tools using them are only run under exceptional
-+circumstances and not for every day use of the device. Debugging tools may even
-+require exact version matching as they may require something similar to DWARF
-+debug information from the FW binary.
-+
-+Security Response
-+=================
-+
-+The kernel remains the gatekeeper for this interface. If violations of the
-+scopes, security or isolation principles are found, we have options to let
-+devices fix them with a FW update, push a kernel patch to parse and block RPC
-+commands or push a kernel patch to block entire firmware versions/devices.
-+
-+While the kernel can always directly parse and restrict RPCs, it is expected
-+that the existing kernel pattern of allowing drivers to delegate validation to
-+FW to be a useful design.
-+
-+Existing Similar Examples
-+=========================
-+
-+The approach described in this document is not a new idea. Direct, or near
-+direct device access has been offered by the kernel in different areas for
-+decades. With more devices wanting to follow this design pattern it is becoming
-+clear that it is not entirely well understood and, more importantly, the
-+security considerations are not well defined or agreed upon.
-+
-+Some examples:
-+
-+ - HW RAID controllers. This includes RPCs to do things like compose drives into
-+   a RAID volume, configure RAID parameters, monitor the HW and more.
-+
-+ - Baseboard managers. RPCs for configuring settings in the device and more
-+
-+ - NVMe vendor command capsules. nvme-cli provides access to some monitoring
-+   functions that different products have defined, but more exist.
-+
-+ - CXL also has a NVMe-like vendor command system.
-+
-+ - DRM allows user space drivers to send commands to the device via kernel
-+   mediation
-+
-+ - RDMA allows user space drivers to directly push commands to the device
-+   without kernel involvement
-+
-+ - Various “raw” APIs, raw HID (SDL2), raw USB, NVMe Generic Interface, etc.
-+
-+The first 4 are examples of areas that fwctl intends to cover. The latter three
-+are examples of denied behavior as they fully overlap with the primary purpose
-+of a kernel subsystem.
-+
-+Some key lessons learned from these past efforts are the importance of having a
-+common user space project to use as a pre-condition for obtaining a kernel
-+driver. Developing good community around useful software in user space is key to
-+getting companies to fund participation to enable their products.
-diff --git a/Documentation/userspace-api/fwctl/index.rst b/Documentation/userspace-api/fwctl/index.rst
-new file mode 100644
-index 00000000000000..06959fbf154743
---- /dev/null
-+++ b/Documentation/userspace-api/fwctl/index.rst
-@@ -0,0 +1,12 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Firmware Control (FWCTL) Userspace API
-+======================================
-+
-+A framework that define a common set of limited rules that allows user space
-+to securely construct and execute RPCs inside device firmware.
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   fwctl
-diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
-index b1395d94b3fd0a..e8e861f767fd5c 100644
---- a/Documentation/userspace-api/index.rst
-+++ b/Documentation/userspace-api/index.rst
-@@ -45,6 +45,7 @@ Devices and I/O
+@@ -149,6 +149,7 @@ fwctl User API
+ ==============
  
-    accelerators/ocxl
-    dma-buf-alloc-exchange
-+   fwctl/index
-    gpio/index
-    iommufd
-    media/index
+ .. kernel-doc:: include/uapi/fwctl/fwctl.h
++.. kernel-doc:: include/uapi/fwctl/mlx5.h
+ 
+ sysfs Class
+ -----------
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 1bc1f97934b6b8..319169f7cb7e1c 100644
+index 319169f7cb7e1c..93e64a54c56f37 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -9561,6 +9561,7 @@ FWCTL SUBSYSTEM
+@@ -9558,14 +9558,23 @@ F:	tools/perf/bench/futex*
+ F:	tools/testing/selftests/futex/
+ 
+ FWCTL SUBSYSTEM
++M:	Dave Jiang <dave.jiang@intel.com>
  M:	Jason Gunthorpe <jgg@nvidia.com>
  M:	Saeed Mahameed <saeedm@nvidia.com>
++R:	Jonathan Cameron <Jonathan.Cameron@huawei.com>
  S:	Maintained
-+F:	Documentation/userspace-api/fwctl/
+ F:	Documentation/userspace-api/fwctl/
  F:	drivers/fwctl/
  F:	include/linux/fwctl.h
  F:	include/uapi/fwctl/
+ 
++FWCTL MLX5 DRIVER
++M:	Saeed Mahameed <saeedm@nvidia.com>
++R:	Itay Avraham <itayavr@nvidia.com>
++L:	linux-kernel@vger.kernel.org
++S:	Maintained
++F:	drivers/fwctl/mlx5/
++
+ GALAXYCORE GC0308 CAMERA SENSOR DRIVER
+ M:	Sebastian Reichel <sre@kernel.org>
+ L:	linux-media@vger.kernel.org
+diff --git a/drivers/fwctl/Kconfig b/drivers/fwctl/Kconfig
+index 37147a695add9a..f802cf5d4951e8 100644
+--- a/drivers/fwctl/Kconfig
++++ b/drivers/fwctl/Kconfig
+@@ -7,3 +7,17 @@ menuconfig FWCTL
+ 	  support a wide range of lockdown compatible device behaviors including
+ 	  manipulating device FLASH, debugging, and other activities that don't
+ 	  fit neatly into an existing subsystem.
++
++if FWCTL
++config FWCTL_MLX5
++	tristate "mlx5 ConnectX control fwctl driver"
++	depends on MLX5_CORE
++	help
++	  MLX5 provides interface for the user process to access the debug and
++	  configuration registers of the ConnectX hardware family
++	  (NICs, PCI switches and SmartNIC SoCs).
++	  This will allow configuration and debug tools to work out of the box on
++	  mainstream kernel.
++
++	  If you don't know what to do here, say N.
++endif
+diff --git a/drivers/fwctl/Makefile b/drivers/fwctl/Makefile
+index 1cad210f6ba580..1c535f694d7fe4 100644
+--- a/drivers/fwctl/Makefile
++++ b/drivers/fwctl/Makefile
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_FWCTL) += fwctl.o
++obj-$(CONFIG_FWCTL_MLX5) += mlx5/
+ 
+ fwctl-y += main.o
+diff --git a/drivers/fwctl/mlx5/Makefile b/drivers/fwctl/mlx5/Makefile
+new file mode 100644
+index 00000000000000..139a23e3c7c517
+--- /dev/null
++++ b/drivers/fwctl/mlx5/Makefile
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
++obj-$(CONFIG_FWCTL_MLX5) += mlx5_fwctl.o
++
++mlx5_fwctl-y += main.o
+diff --git a/drivers/fwctl/mlx5/main.c b/drivers/fwctl/mlx5/main.c
+new file mode 100644
+index 00000000000000..f93aa0cecdb978
+--- /dev/null
++++ b/drivers/fwctl/mlx5/main.c
+@@ -0,0 +1,411 @@
++// SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0
++/*
++ * Copyright (c) 2024-2025, NVIDIA CORPORATION & AFFILIATES
++ */
++#include <linux/fwctl.h>
++#include <linux/auxiliary_bus.h>
++#include <linux/mlx5/device.h>
++#include <linux/mlx5/driver.h>
++#include <uapi/fwctl/mlx5.h>
++
++#define mlx5ctl_err(mcdev, format, ...) \
++	dev_err(&mcdev->fwctl.dev, format, ##__VA_ARGS__)
++
++#define mlx5ctl_dbg(mcdev, format, ...)                             \
++	dev_dbg(&mcdev->fwctl.dev, "PID %u: " format, current->pid, \
++		##__VA_ARGS__)
++
++struct mlx5ctl_uctx {
++	struct fwctl_uctx uctx;
++	u32 uctx_caps;
++	u32 uctx_uid;
++};
++
++struct mlx5ctl_dev {
++	struct fwctl_device fwctl;
++	struct mlx5_core_dev *mdev;
++};
++DEFINE_FREE(mlx5ctl, struct mlx5ctl_dev *, if (_T) fwctl_put(&_T->fwctl));
++
++struct mlx5_ifc_mbox_in_hdr_bits {
++	u8 opcode[0x10];
++	u8 uid[0x10];
++
++	u8 reserved_at_20[0x10];
++	u8 op_mod[0x10];
++
++	u8 reserved_at_40[0x40];
++};
++
++struct mlx5_ifc_mbox_out_hdr_bits {
++	u8 status[0x8];
++	u8 reserved_at_8[0x18];
++
++	u8 syndrome[0x20];
++
++	u8 reserved_at_40[0x40];
++};
++
++enum {
++	MLX5_UCTX_OBJECT_CAP_TOOLS_RESOURCES = 0x4,
++};
++
++enum {
++	MLX5_CMD_OP_QUERY_DRIVER_VERSION = 0x10c,
++	MLX5_CMD_OP_QUERY_OTHER_HCA_CAP = 0x10e,
++	MLX5_CMD_OP_QUERY_RDB = 0x512,
++	MLX5_CMD_OP_QUERY_PSV = 0x602,
++	MLX5_CMD_OP_QUERY_DC_CNAK_TRACE = 0x716,
++	MLX5_CMD_OP_QUERY_NVMF_BACKEND_CONTROLLER = 0x722,
++	MLX5_CMD_OP_QUERY_NVMF_NAMESPACE_CONTEXT = 0x728,
++	MLX5_CMD_OP_QUERY_BURST_SIZE = 0x813,
++	MLX5_CMD_OP_QUERY_DIAGNOSTIC_PARAMS = 0x819,
++	MLX5_CMD_OP_SET_DIAGNOSTIC_PARAMS = 0x820,
++	MLX5_CMD_OP_QUERY_DIAGNOSTIC_COUNTERS = 0x821,
++	MLX5_CMD_OP_QUERY_DELAY_DROP_PARAMS = 0x911,
++	MLX5_CMD_OP_QUERY_AFU = 0x971,
++	MLX5_CMD_OP_QUERY_CAPI_PEC = 0x981,
++	MLX5_CMD_OP_QUERY_UCTX = 0xa05,
++	MLX5_CMD_OP_QUERY_UMEM = 0xa09,
++	MLX5_CMD_OP_QUERY_NVMF_CC_RESPONSE = 0xb02,
++	MLX5_CMD_OP_QUERY_EMULATED_FUNCTIONS_INFO = 0xb03,
++	MLX5_CMD_OP_QUERY_REGEXP_PARAMS = 0xb05,
++	MLX5_CMD_OP_QUERY_REGEXP_REGISTER = 0xb07,
++	MLX5_CMD_OP_USER_QUERY_XRQ_DC_PARAMS_ENTRY = 0xb08,
++	MLX5_CMD_OP_USER_QUERY_XRQ_ERROR_PARAMS = 0xb0a,
++	MLX5_CMD_OP_ACCESS_REGISTER_USER = 0xb0c,
++	MLX5_CMD_OP_QUERY_EMULATION_DEVICE_EQ_MSIX_MAPPING = 0xb0f,
++	MLX5_CMD_OP_QUERY_MATCH_SAMPLE_INFO = 0xb13,
++	MLX5_CMD_OP_QUERY_CRYPTO_STATE = 0xb14,
++	MLX5_CMD_OP_QUERY_VUID = 0xb22,
++	MLX5_CMD_OP_QUERY_DPA_PARTITION = 0xb28,
++	MLX5_CMD_OP_QUERY_DPA_PARTITIONS = 0xb2a,
++	MLX5_CMD_OP_POSTPONE_CONNECTED_QP_TIMEOUT = 0xb2e,
++	MLX5_CMD_OP_QUERY_EMULATED_RESOURCES_INFO = 0xb2f,
++	MLX5_CMD_OP_QUERY_RSV_RESOURCES = 0x8000,
++	MLX5_CMD_OP_QUERY_MTT = 0x8001,
++	MLX5_CMD_OP_QUERY_SCHED_QUEUE = 0x8006,
++};
++
++static int mlx5ctl_alloc_uid(struct mlx5ctl_dev *mcdev, u32 cap)
++{
++	u32 out[MLX5_ST_SZ_DW(create_uctx_out)] = {};
++	u32 in[MLX5_ST_SZ_DW(create_uctx_in)] = {};
++	void *uctx;
++	int ret;
++	u16 uid;
++
++	uctx = MLX5_ADDR_OF(create_uctx_in, in, uctx);
++
++	mlx5ctl_dbg(mcdev, "%s: caps 0x%x\n", __func__, cap);
++	MLX5_SET(create_uctx_in, in, opcode, MLX5_CMD_OP_CREATE_UCTX);
++	MLX5_SET(uctx, uctx, cap, cap);
++
++	ret = mlx5_cmd_exec(mcdev->mdev, in, sizeof(in), out, sizeof(out));
++	if (ret)
++		return ret;
++
++	uid = MLX5_GET(create_uctx_out, out, uid);
++	mlx5ctl_dbg(mcdev, "allocated uid %u with caps 0x%x\n", uid, cap);
++	return uid;
++}
++
++static void mlx5ctl_release_uid(struct mlx5ctl_dev *mcdev, u16 uid)
++{
++	u32 in[MLX5_ST_SZ_DW(destroy_uctx_in)] = {};
++	struct mlx5_core_dev *mdev = mcdev->mdev;
++	int ret;
++
++	MLX5_SET(destroy_uctx_in, in, opcode, MLX5_CMD_OP_DESTROY_UCTX);
++	MLX5_SET(destroy_uctx_in, in, uid, uid);
++
++	ret = mlx5_cmd_exec_in(mdev, destroy_uctx, in);
++	mlx5ctl_dbg(mcdev, "released uid %u %pe\n", uid, ERR_PTR(ret));
++}
++
++static int mlx5ctl_open_uctx(struct fwctl_uctx *uctx)
++{
++	struct mlx5ctl_uctx *mfd =
++		container_of(uctx, struct mlx5ctl_uctx, uctx);
++	struct mlx5ctl_dev *mcdev =
++		container_of(uctx->fwctl, struct mlx5ctl_dev, fwctl);
++	int uid;
++
++	/*
++	 * New FW supports the TOOLS_RESOURCES uid security label
++	 * which allows commands to manipulate the global device state.
++	 * Otherwise only basic existing RDMA devx privilege are allowed.
++	 */
++	if (MLX5_CAP_GEN(mcdev->mdev, uctx_cap) &
++	    MLX5_UCTX_OBJECT_CAP_TOOLS_RESOURCES)
++		mfd->uctx_caps |= MLX5_UCTX_OBJECT_CAP_TOOLS_RESOURCES;
++
++	uid = mlx5ctl_alloc_uid(mcdev, mfd->uctx_caps);
++	if (uid < 0)
++		return uid;
++
++	mfd->uctx_uid = uid;
++	return 0;
++}
++
++static void mlx5ctl_close_uctx(struct fwctl_uctx *uctx)
++{
++	struct mlx5ctl_dev *mcdev =
++		container_of(uctx->fwctl, struct mlx5ctl_dev, fwctl);
++	struct mlx5ctl_uctx *mfd =
++		container_of(uctx, struct mlx5ctl_uctx, uctx);
++
++	mlx5ctl_release_uid(mcdev, mfd->uctx_uid);
++}
++
++static void *mlx5ctl_info(struct fwctl_uctx *uctx, size_t *length)
++{
++	struct mlx5ctl_uctx *mfd =
++		container_of(uctx, struct mlx5ctl_uctx, uctx);
++	struct fwctl_info_mlx5 *info;
++
++	info = kzalloc(sizeof(*info), GFP_KERNEL);
++	if (!info)
++		return ERR_PTR(-ENOMEM);
++
++	info->uid = mfd->uctx_uid;
++	info->uctx_caps = mfd->uctx_caps;
++	*length = sizeof(*info);
++	return info;
++}
++
++static bool mlx5ctl_validate_rpc(const void *in, enum fwctl_rpc_scope scope)
++{
++	u16 opcode = MLX5_GET(mbox_in_hdr, in, opcode);
++	u16 op_mod = MLX5_GET(mbox_in_hdr, in, op_mod);
++
++	/*
++	 * Currently the driver can't keep track of commands that allocate
++	 * objects in the FW, these commands are safe from a security
++	 * perspective but nothing will free the memory when the FD is closed.
++	 * For now permit only query commands and set commands that don't alter
++	 * objects. Also the caps for the scope have not been defined yet,
++	 * filter commands manually for now.
++	 */
++	switch (opcode) {
++	case MLX5_CMD_OP_POSTPONE_CONNECTED_QP_TIMEOUT:
++	case MLX5_CMD_OP_QUERY_ADAPTER:
++	case MLX5_CMD_OP_QUERY_ESW_FUNCTIONS:
++	case MLX5_CMD_OP_QUERY_HCA_CAP:
++	case MLX5_CMD_OP_QUERY_HCA_VPORT_CONTEXT:
++	case MLX5_CMD_OP_QUERY_OTHER_HCA_CAP:
++	case MLX5_CMD_OP_QUERY_ROCE_ADDRESS:
++	case MLX5_CMD_OPCODE_QUERY_VUID:
++	/*
++	 * FW limits SET_HCA_CAP on the tools UID to only the other function
++	 * mode which is used for function pre-configuration
++	 */
++	case MLX5_CMD_OP_SET_HCA_CAP:
++		return true; /* scope >= FWCTL_RPC_CONFIGURATION; */
++
++	case MLX5_CMD_OP_FPGA_QUERY_QP_COUNTERS:
++	case MLX5_CMD_OP_FPGA_QUERY_QP:
++	case MLX5_CMD_OP_NOP:
++	case MLX5_CMD_OP_QUERY_AFU:
++	case MLX5_CMD_OP_QUERY_BURST_SIZE:
++	case MLX5_CMD_OP_QUERY_CAPI_PEC:
++	case MLX5_CMD_OP_QUERY_CONG_PARAMS:
++	case MLX5_CMD_OP_QUERY_CONG_STATISTICS:
++	case MLX5_CMD_OP_QUERY_CONG_STATUS:
++	case MLX5_CMD_OP_QUERY_CQ:
++	case MLX5_CMD_OP_QUERY_CRYPTO_STATE:
++	case MLX5_CMD_OP_QUERY_DC_CNAK_TRACE:
++	case MLX5_CMD_OP_QUERY_DCT:
++	case MLX5_CMD_OP_QUERY_DELAY_DROP_PARAMS:
++	case MLX5_CMD_OP_QUERY_DIAGNOSTIC_COUNTERS:
++	case MLX5_CMD_OP_QUERY_DIAGNOSTIC_PARAMS:
++	case MLX5_CMD_OP_QUERY_DPA_PARTITION:
++	case MLX5_CMD_OP_QUERY_DPA_PARTITIONS:
++	case MLX5_CMD_OP_QUERY_DRIVER_VERSION:
++	case MLX5_CMD_OP_QUERY_EMULATED_FUNCTIONS_INFO:
++	case MLX5_CMD_OP_QUERY_EMULATED_RESOURCES_INFO:
++	case MLX5_CMD_OP_QUERY_EMULATION_DEVICE_EQ_MSIX_MAPPING:
++	case MLX5_CMD_OP_QUERY_EQ:
++	case MLX5_CMD_OP_QUERY_ESW_VPORT_CONTEXT:
++	case MLX5_CMD_OP_QUERY_FLOW_COUNTER:
++	case MLX5_CMD_OP_QUERY_FLOW_GROUP:
++	case MLX5_CMD_OP_QUERY_FLOW_TABLE_ENTRY:
++	case MLX5_CMD_OP_QUERY_FLOW_TABLE:
++	case MLX5_CMD_OP_QUERY_GENERAL_OBJECT:
++	case MLX5_CMD_OP_QUERY_HCA_VPORT_GID:
++	case MLX5_CMD_OP_QUERY_HCA_VPORT_PKEY:
++	case MLX5_CMD_OP_QUERY_ISSI:
++	case MLX5_CMD_OP_QUERY_L2_TABLE_ENTRY:
++	case MLX5_CMD_OP_QUERY_LAG:
++	case MLX5_CMD_OP_QUERY_MAD_DEMUX:
++	case MLX5_CMD_OP_QUERY_MATCH_SAMPLE_INFO:
++	case MLX5_CMD_OP_QUERY_MKEY:
++	case MLX5_CMD_OP_QUERY_MODIFY_HEADER_CONTEXT:
++	case MLX5_CMD_OP_QUERY_MTT:
++	case MLX5_CMD_OP_QUERY_NIC_VPORT_CONTEXT:
++	case MLX5_CMD_OP_QUERY_NVMF_BACKEND_CONTROLLER:
++	case MLX5_CMD_OP_QUERY_NVMF_CC_RESPONSE:
++	case MLX5_CMD_OP_QUERY_NVMF_NAMESPACE_CONTEXT:
++	case MLX5_CMD_OP_QUERY_PACKET_REFORMAT_CONTEXT:
++	case MLX5_CMD_OP_QUERY_PAGES:
++	case MLX5_CMD_OP_QUERY_PSV:
++	case MLX5_CMD_OP_QUERY_Q_COUNTER:
++	case MLX5_CMD_OP_QUERY_QP:
++	case MLX5_CMD_OP_QUERY_RATE_LIMIT:
++	case MLX5_CMD_OP_QUERY_RDB:
++	case MLX5_CMD_OP_QUERY_REGEXP_PARAMS:
++	case MLX5_CMD_OP_QUERY_REGEXP_REGISTER:
++	case MLX5_CMD_OP_QUERY_RMP:
++	case MLX5_CMD_OP_QUERY_RQ:
++	case MLX5_CMD_OP_QUERY_RQT:
++	case MLX5_CMD_OP_QUERY_RSV_RESOURCES:
++	case MLX5_CMD_OP_QUERY_SCHED_QUEUE:
++	case MLX5_CMD_OP_QUERY_SCHEDULING_ELEMENT:
++	case MLX5_CMD_OP_QUERY_SF_PARTITION:
++	case MLX5_CMD_OP_QUERY_SPECIAL_CONTEXTS:
++	case MLX5_CMD_OP_QUERY_SQ:
++	case MLX5_CMD_OP_QUERY_SRQ:
++	case MLX5_CMD_OP_QUERY_TIR:
++	case MLX5_CMD_OP_QUERY_TIS:
++	case MLX5_CMD_OP_QUERY_UCTX:
++	case MLX5_CMD_OP_QUERY_UMEM:
++	case MLX5_CMD_OP_QUERY_VHCA_MIGRATION_STATE:
++	case MLX5_CMD_OP_QUERY_VHCA_STATE:
++	case MLX5_CMD_OP_QUERY_VNIC_ENV:
++	case MLX5_CMD_OP_QUERY_VPORT_COUNTER:
++	case MLX5_CMD_OP_QUERY_VPORT_STATE:
++	case MLX5_CMD_OP_QUERY_WOL_ROL:
++	case MLX5_CMD_OP_QUERY_XRC_SRQ:
++	case MLX5_CMD_OP_QUERY_XRQ_DC_PARAMS_ENTRY:
++	case MLX5_CMD_OP_QUERY_XRQ_ERROR_PARAMS:
++	case MLX5_CMD_OP_QUERY_XRQ:
++	case MLX5_CMD_OP_USER_QUERY_XRQ_DC_PARAMS_ENTRY:
++	case MLX5_CMD_OP_USER_QUERY_XRQ_ERROR_PARAMS:
++		return scope >= FWCTL_RPC_DEBUG_READ_ONLY;
++
++	case MLX5_CMD_OP_SET_DIAGNOSTIC_PARAMS:
++		return scope >= FWCTL_RPC_DEBUG_WRITE;
++
++	case MLX5_CMD_OP_ACCESS_REG:
++	case MLX5_CMD_OP_ACCESS_REGISTER_USER:
++		if (op_mod == 0) /* write */
++			return true; /* scope >= FWCTL_RPC_CONFIGURATION; */
++		return scope >= FWCTL_RPC_DEBUG_READ_ONLY;
++	default:
++		return false;
++	}
++}
++
++static void *mlx5ctl_fw_rpc(struct fwctl_uctx *uctx, enum fwctl_rpc_scope scope,
++			    void *rpc_in, size_t in_len, size_t *out_len)
++{
++	struct mlx5ctl_dev *mcdev =
++		container_of(uctx->fwctl, struct mlx5ctl_dev, fwctl);
++	struct mlx5ctl_uctx *mfd =
++		container_of(uctx, struct mlx5ctl_uctx, uctx);
++	void *rpc_out;
++	int ret;
++
++	if (in_len < MLX5_ST_SZ_BYTES(mbox_in_hdr) ||
++	    *out_len < MLX5_ST_SZ_BYTES(mbox_out_hdr))
++		return ERR_PTR(-EMSGSIZE);
++
++	mlx5ctl_dbg(mcdev, "[UID %d] cmdif: opcode 0x%x inlen %zu outlen %zu\n",
++		    mfd->uctx_uid, MLX5_GET(mbox_in_hdr, rpc_in, opcode),
++		    in_len, *out_len);
++
++	if (!mlx5ctl_validate_rpc(rpc_in, scope))
++		return ERR_PTR(-EBADMSG);
++
++	/*
++	 * mlx5_cmd_do() copies the input message to its own buffer before
++	 * executing it, so we can reuse the allocation for the output.
++	 */
++	if (*out_len <= in_len) {
++		rpc_out = rpc_in;
++	} else {
++		rpc_out = kvzalloc(*out_len, GFP_KERNEL);
++		if (!rpc_out)
++			return ERR_PTR(-ENOMEM);
++	}
++
++	/* Enforce the user context for the command */
++	MLX5_SET(mbox_in_hdr, rpc_in, uid, mfd->uctx_uid);
++	ret = mlx5_cmd_do(mcdev->mdev, rpc_in, in_len, rpc_out, *out_len);
++
++	mlx5ctl_dbg(mcdev,
++		    "[UID %d] cmdif: opcode 0x%x status 0x%x retval %pe\n",
++		    mfd->uctx_uid, MLX5_GET(mbox_in_hdr, rpc_in, opcode),
++		    MLX5_GET(mbox_out_hdr, rpc_out, status), ERR_PTR(ret));
++
++	/*
++	 * -EREMOTEIO means execution succeeded and the out is valid,
++	 * but an error code was returned inside out. Everything else
++	 * means the RPC did not make it to the device.
++	 */
++	if (ret && ret != -EREMOTEIO) {
++		if (rpc_out != rpc_in)
++			kfree(rpc_out);
++		return ERR_PTR(ret);
++	}
++	return rpc_out;
++}
++
++static const struct fwctl_ops mlx5ctl_ops = {
++	.device_type = FWCTL_DEVICE_TYPE_MLX5,
++	.uctx_size = sizeof(struct mlx5ctl_uctx),
++	.open_uctx = mlx5ctl_open_uctx,
++	.close_uctx = mlx5ctl_close_uctx,
++	.info = mlx5ctl_info,
++	.fw_rpc = mlx5ctl_fw_rpc,
++};
++
++static int mlx5ctl_probe(struct auxiliary_device *adev,
++			 const struct auxiliary_device_id *id)
++
++{
++	struct mlx5_adev *madev = container_of(adev, struct mlx5_adev, adev);
++	struct mlx5_core_dev *mdev = madev->mdev;
++	struct mlx5ctl_dev *mcdev __free(mlx5ctl) = fwctl_alloc_device(
++		&mdev->pdev->dev, &mlx5ctl_ops, struct mlx5ctl_dev, fwctl);
++	int ret;
++
++	if (!mcdev)
++		return -ENOMEM;
++
++	mcdev->mdev = mdev;
++
++	ret = fwctl_register(&mcdev->fwctl);
++	if (ret)
++		return ret;
++	auxiliary_set_drvdata(adev, no_free_ptr(mcdev));
++	return 0;
++}
++
++static void mlx5ctl_remove(struct auxiliary_device *adev)
++{
++	struct mlx5ctl_dev *mcdev = auxiliary_get_drvdata(adev);
++
++	fwctl_unregister(&mcdev->fwctl);
++	fwctl_put(&mcdev->fwctl);
++}
++
++static const struct auxiliary_device_id mlx5ctl_id_table[] = {
++	{.name = MLX5_ADEV_NAME ".fwctl",},
++	{}
++};
++MODULE_DEVICE_TABLE(auxiliary, mlx5ctl_id_table);
++
++static struct auxiliary_driver mlx5ctl_driver = {
++	.name = "mlx5_fwctl",
++	.probe = mlx5ctl_probe,
++	.remove = mlx5ctl_remove,
++	.id_table = mlx5ctl_id_table,
++};
++
++module_auxiliary_driver(mlx5ctl_driver);
++
++MODULE_IMPORT_NS("FWCTL");
++MODULE_DESCRIPTION("mlx5 ConnectX fwctl driver");
++MODULE_AUTHOR("Saeed Mahameed <saeedm@nvidia.com>");
++MODULE_LICENSE("Dual BSD/GPL");
+diff --git a/include/uapi/fwctl/fwctl.h b/include/uapi/fwctl/fwctl.h
+index 0bec798790a67a..584a5ea8ecee11 100644
+--- a/include/uapi/fwctl/fwctl.h
++++ b/include/uapi/fwctl/fwctl.h
+@@ -42,6 +42,7 @@ enum {
+ 
+ enum fwctl_device_type {
+ 	FWCTL_DEVICE_TYPE_ERROR = 0,
++	FWCTL_DEVICE_TYPE_MLX5 = 1,
+ };
+ 
+ /**
+diff --git a/include/uapi/fwctl/mlx5.h b/include/uapi/fwctl/mlx5.h
+new file mode 100644
+index 00000000000000..625819180ac6b8
+--- /dev/null
++++ b/include/uapi/fwctl/mlx5.h
+@@ -0,0 +1,36 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * Copyright (c) 2024-2025, NVIDIA CORPORATION & AFFILIATES
++ *
++ * These are definitions for the command interface for mlx5 HW. mlx5 FW has a
++ * User Context mechanism which allows the FW to understand a security scope.
++ * FWCTL binds each FD to a FW user context and then places the User Context ID
++ * (UID) in each command header. The created User Context has a capability set
++ * that is appropriate for FWCTL's security model.
++ *
++ * Command formation should use a copy of the structs in mlx5_ifc.h following
++ * the Programmers Reference Manual. A open release is available here:
++ *
++ *  https://network.nvidia.com/files/doc-2020/ethernet-adapters-programming-manual.pdf
++ *
++ * The device_type for this file is FWCTL_DEVICE_TYPE_MLX5.
++ */
++#ifndef _UAPI_FWCTL_MLX5_H
++#define _UAPI_FWCTL_MLX5_H
++
++#include <linux/types.h>
++
++/**
++ * struct fwctl_info_mlx5 - ioctl(FWCTL_INFO) out_device_data
++ * @uid: The FW UID this FD is bound to. Each command header will force
++ *	this value.
++ * @uctx_caps: The FW capabilities that are enabled for the uid.
++ *
++ * Return basic information about the FW interface available.
++ */
++struct fwctl_info_mlx5 {
++	__u32 uid;
++	__u32 uctx_caps;
++};
++
++#endif
 -- 
 2.43.0
 
