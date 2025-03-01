@@ -1,61 +1,60 @@
-Return-Path: <linux-rdma+bounces-8216-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8217-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95D7AA4A77B
-	for <lists+linux-rdma@lfdr.de>; Sat,  1 Mar 2025 02:37:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17691A4A77E
+	for <lists+linux-rdma@lfdr.de>; Sat,  1 Mar 2025 02:37:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F474189C8F7
-	for <lists+linux-rdma@lfdr.de>; Sat,  1 Mar 2025 01:37:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79B4816E5CB
+	for <lists+linux-rdma@lfdr.de>; Sat,  1 Mar 2025 01:37:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BE77082E;
-	Sat,  1 Mar 2025 01:37:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2898E13DBB1;
+	Sat,  1 Mar 2025 01:37:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="x/JM0p5C"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="iFfbl4uj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2059.outbound.protection.outlook.com [40.107.223.59])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2049.outbound.protection.outlook.com [40.107.93.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362CAB676;
-	Sat,  1 Mar 2025 01:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350253EA83;
+	Sat,  1 Mar 2025 01:37:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.49
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740793029; cv=fail; b=Rs6YAYCvN9nRgMAgX689EeK4FRERe1XHgM5IqfTxOhcN5gUKaU4ksbmebm8D2SWkQcAIxuIrSQnVVk63XqjTVL85w+4EajthDb3jLhw1VwPNyMSTtnG5/aG86Y5cCVLewI8YKRjOJniKiL0X7jUAerFunqHXFZ485wvlbtYifuw=
+	t=1740793030; cv=fail; b=SqxEe5XH/qGbKDOx4m6gaxQJMHdgivEbK23kkEqlapeCgzkUNRe3gxpKh9kDgHVAmHYW2wb80hxFEfQhCBVFdY48Z9b+tfwa97ZXKzF57e3fHQlnuk7AbH1oNoL2o+5RJMDeLMH/ATnWumCi4tvdIvpMbj2dhq/ZKpbZYHr57PQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740793029; c=relaxed/simple;
-	bh=KzbuNZ/0Za0zdLRZCLKpXE0+zihQIgNbkJ2CHAIInXI=;
+	s=arc-20240116; t=1740793030; c=relaxed/simple;
+	bh=kPcqmdqYVZiHfGRts1Jq0/rtxjzGObBRWganL6IYEic=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MRSWA5jlytWfVb8skGvh2BrOF7+Y9oT85AAJqvD2Kd4UtmAi2tOAoOZUVE6/rZ/+ZyoQ2uxsCK3xdeXH3fZI6AKQ1i+il8pztpBnv58Hwr8rZsw1TOCphQE3Wp4k2RO9wWENYmZazizQHgxd7a8/zHqujGLxS3t3Iv9xivRgsco=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=x/JM0p5C; arc=fail smtp.client-ip=40.107.223.59
+	 MIME-Version:Content-Type; b=b8nLxTf9Br0WWQHtDwX1RHeUeRaysEUFaJqE4zaib2wH2UiKllr9gvNP5U6b4B4K9fOWGpBp7suIv1aWtnljZWQq/b0VfqpOvqwcBY6LKUYVVQmg5cUqzu3Y+3n8dFra9La0FpPv4EDjiNLkRM4S0IhjZqgPLvv0o7QPR9l3gLs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=iFfbl4uj; arc=fail smtp.client-ip=40.107.93.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=sYzbt6vCZno5PwQv5UPfs9//Y6VEgETjPUCzQCnUDTHXrhEaLIG5cH8v2RBO4V1QgdOC4bs7o6Jxd4PbXyhoXii6EkMDVb2nbkKAQmuSiUugqw2Zdkz1dmurOhVc8Lnllfq8PuRFD9Be5mX30Y4z8P0fGP/Rx2ioDfGQZOOGDYDiCvlGfXF2mYOcl0qRnCksmWuC/FWgneCJ5kYlsPmCw1lZgVBJAv6PzOY44Oe4KJMN9PwtkBdxvOpZnEvmizPKeOSZ9D4wtAsSJODXBOUJwC6ceJQLAMnrMEbw+oE+3NaEjRQdeeFNcUdlPx/HzzkkQqxHLF+3Aat16VJzymW4rg==
+ b=ciq7omZZBUKV8zwmT78i6Eqp6AvCH5rNFDJXTvWY+TAIAKLpmmgr3qtRHFVO+Z2PagQeCp9A/41MoczNuPOWutOGbzGNkfqBvCadaEXlydKps4KMyZMnt/jbigOdDByeZT4YDVtlKrJTI0Gw/IU7I91M0N+91iGVp5FxVzC0lCDnFHSwE9MED52POIGdmlJgJXMmp96mqqP+6GsRpYWCoAYt6HZcy5dd90IfyH34cDNM9+9bhTUuKapjyCR5igrvbH6BUrWZWu8eBDIsfX6ywdysxLwYdKHC+RuABK9Tjd7OQgmFxefYFm0a5j3gewo/YQzCVXP1mob+XWL3XXru1g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jgMcuvs5RUw5JjOTIa4NKzWNtTbTXgjyDUbajiUwinA=;
- b=OnYK4OxRbRCdNmIAQmxzCCwtniEiRh+FNxkq4oJRRPW/aJcn+/wIUXl8hwcmFa4gi45cleSTlmswU1u2CdIisTRTNJ2KTp6p51WfsGuuWSqcRHe1X+Jvypv4N+beRMR06MHO9VcxBkrsE7AK8rsNAnhmCTUceC8JBxDOTtdhXceiFCoe8RyxFJwsP7ghmyLhjDJM3PlWTENhXCLR2xEp3GMRh+Kaa2EsZqE/K+pVj0v8GZaa9mEGPUjXFmJDgfUfGUL46EJnfXUkmtN0PJpQZfvv1vf07agdJuwUiQCcPn77ontpHNnoNPL4MVyD/PWCfllSZ+xNNJEl5uUrdX7qxw==
+ bh=w8kk36rj6OwE+deFnJBKav+O7cx8pClWxkagblUyr7A=;
+ b=cniUtZpBEmZmgAaHvzBoTQJ6RFecu3KfrCl8tRU27CTY9EN70bHf9/uQxgo7F5jsgbFdSjk9KQqAxHYT2UX69PnBPi3+fOgw01bexy9mOI7z6Xu6rYb77I487LtsEiA+soOOtTmD+42V3M2i4pN3DQm+Spd3mfP1b2pjFq3s5jMIHPLkEzP/lD62p8wVfiAXztlIEggxI8KpjfUkbKlYx2Y+GA8BY6mUcw3jylaLPLLPIJXknn+VGOjCX1oM3PliQx4f2JPcY5p+tKQPyWSECIqJr5NoD7OSSl6HNOp/bwanyg/Xf4IxMRqYpv/mxKI7fQuLec2KrE80S8F+UNUn9g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=nvidia.com smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jgMcuvs5RUw5JjOTIa4NKzWNtTbTXgjyDUbajiUwinA=;
- b=x/JM0p5CZvrMtQ1ynOUSYXiv3qIm1l1VY6NX1YIQCbxO5NSnASIZF3BY78cUIauQF1KmQ2wPC6g2wX2G9ANGIOoR7muIKuiLv/fyIBJe4mZQyjkhrElRO1nTcD3tKK8iODxqUgny1eqvTnctCNJSAtNTaQff8lNboXW6i99lkzk=
-Received: from SJ0PR05CA0106.namprd05.prod.outlook.com (2603:10b6:a03:334::21)
- by DM4PR12MB7693.namprd12.prod.outlook.com (2603:10b6:8:103::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.22; Sat, 1 Mar
- 2025 01:37:02 +0000
-Received: from SJ5PEPF000001E8.namprd05.prod.outlook.com
- (2603:10b6:a03:334:cafe::cb) by SJ0PR05CA0106.outlook.office365.com
- (2603:10b6:a03:334::21) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8511.10 via Frontend Transport; Sat,
- 1 Mar 2025 01:37:02 +0000
+ bh=w8kk36rj6OwE+deFnJBKav+O7cx8pClWxkagblUyr7A=;
+ b=iFfbl4ujM9gQfxieLQwo/Eg31tu7xdS03mQCtaCEIN64IhWuzprR5lxr+MeayIOXYXteMuytP25yrMV8ofpjrtyvYCvOFr7EQqLcj9gy9qprhVyeIEBj9SyGaxB6oZenBL30cdmLoBv7Mw16uNnjRxIWU6DQxPXlzR9yboUpchU=
+Received: from BYAPR01CA0045.prod.exchangelabs.com (2603:10b6:a03:94::22) by
+ SA0PR12MB4461.namprd12.prod.outlook.com (2603:10b6:806:9c::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8489.25; Sat, 1 Mar 2025 01:37:04 +0000
+Received: from SJ5PEPF000001EB.namprd05.prod.outlook.com
+ (2603:10b6:a03:94:cafe::e) by BYAPR01CA0045.outlook.office365.com
+ (2603:10b6:a03:94::22) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8489.22 via Frontend Transport; Sat,
+ 1 Mar 2025 01:37:04 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -63,13 +62,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SJ5PEPF000001E8.mail.protection.outlook.com (10.167.242.196) with Microsoft
+ SJ5PEPF000001EB.mail.protection.outlook.com (10.167.242.199) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.8489.16 via Frontend Transport; Sat, 1 Mar 2025 01:37:02 +0000
+ 15.20.8489.16 via Frontend Transport; Sat, 1 Mar 2025 01:37:03 +0000
 Received: from driver-dev1.pensando.io (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Fri, 28 Feb
- 2025 19:36:59 -0600
+ 2025 19:37:01 -0600
 From: Shannon Nelson <shannon.nelson@amd.com>
 To: <jgg@nvidia.com>, <andrew.gospodarek@broadcom.com>,
 	<aron.silverton@oracle.com>, <dan.j.williams@intel.com>,
@@ -79,9 +78,9 @@ To: <jgg@nvidia.com>, <andrew.gospodarek@broadcom.com>,
 	<lbloch@nvidia.com>, <leonro@nvidia.com>, <linux-cxl@vger.kernel.org>,
 	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, <saeedm@nvidia.com>
 CC: <brett.creeley@amd.com>, Shannon Nelson <shannon.nelson@amd.com>
-Subject: [PATCH v2 1/6] pds_core: make pdsc_auxbus_dev_del() void
-Date: Fri, 28 Feb 2025 17:35:49 -0800
-Message-ID: <20250301013554.49511-2-shannon.nelson@amd.com>
+Subject: [PATCH v2 2/6] pds_core: specify auxiliary_device to be created
+Date: Fri, 28 Feb 2025 17:35:50 -0800
+Message-ID: <20250301013554.49511-3-shannon.nelson@amd.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20250301013554.49511-1-shannon.nelson@amd.com>
 References: <20250301013554.49511-1-shannon.nelson@amd.com>
@@ -96,120 +95,232 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001E8:EE_|DM4PR12MB7693:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3e4b7bc1-c225-43df-6306-08dd586190e6
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001EB:EE_|SA0PR12MB4461:EE_
+X-MS-Office365-Filtering-Correlation-Id: 33aa4081-5173-4e98-0c99-08dd586191d8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|1800799024|36860700013|82310400026|921020;
+	BCL:0;ARA:13230040|36860700013|1800799024|82310400026|7416014|376014|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?0fS9s5diWRWPlMkIG6fHEjXm4KGcWZ14W1m7FqfaflXimqIhQqy+JXu8m38J?=
- =?us-ascii?Q?LfcyxG/cwBGn1uXymVgNkIRC3LJzN4AfTpBkQlK6b+/B/45gEkirIJ/F7D8y?=
- =?us-ascii?Q?c1q9f+qJnygKrDFud/FGYbNFK71LS5hryDoYnqa1brcxI+MZprGYgx24rLfq?=
- =?us-ascii?Q?HmGp3t4UyZt8evpMd/7VtgMnRkv0leK40FWZrBM9GIkBZAvc+jGQhbrNuRAD?=
- =?us-ascii?Q?9EWy2SvRZf26FRix2nUoED2L8L+ghnZEDyUAtuOyabciIskMv+Z6RkI4Y5s0?=
- =?us-ascii?Q?+33TggSfw7e7oO3xW5XpD7N5ShuVWkZi9XJQY9q0niV+cBA8BXfhZmn4oMju?=
- =?us-ascii?Q?0I/1zA3i9AoKleVnaA0j12SqJKu73OlCX5IlRFYBr0PgPpjch9CVq7t4ns8o?=
- =?us-ascii?Q?iZjft94c+UJTI/yEh5G2+MrnYymWDuDtvBvpPRETB86SM2oLiylmtc0/5nm1?=
- =?us-ascii?Q?LYrx90BhGCAmRYPjEH8p+TpOQxvrGYfoy7KFK1XSMYoa6G2N4A4quBmCXPMX?=
- =?us-ascii?Q?iNyjnIf+yxam50Mj8kCNPTqnEU0lZNyYO8x+vrHkrVX59ylANS0auH3ILDMy?=
- =?us-ascii?Q?eLYJUm53u0u87DMf5Cu7YtDh9tNzAHNUTywYdiMkg5jdXuHjs+cUOzDo8a9A?=
- =?us-ascii?Q?JFHvimVPopbVbU60dlmVfCUn4cLKXOYvHcxI+nZxB63shwavAmpxQehjKCva?=
- =?us-ascii?Q?KQqSM+6jyy33YrGSrA2mUSVXQ48bFKCY+/EahJJM7U/UkawwW7xdpQmipBDv?=
- =?us-ascii?Q?A8UGuUe1uCtFIHTNcqeOmQBB3DwaeuaHYAuZunj/LrKllM5hIr/Xyc5UAL0M?=
- =?us-ascii?Q?qiGkGnX5IL7Srq42Qn2aRlJi7jXTArElNmBlVvirxlh+MwPBD1ecxUbdoSgE?=
- =?us-ascii?Q?t+4PhWnno6k1tbWfX6AbwR7lVQbwNqlslQqAsp6PQl2t/F5XfeWxMoGyrj6S?=
- =?us-ascii?Q?orvfcBG05FEeGbS4IfyTGBEco7rUnl828jbJsKhJVMCVo5I0eWopnQzjtX+E?=
- =?us-ascii?Q?RHoFfiqy+pGA7EcesS8PIdrfHfM8xDT+2z7qSsA2iQMETYlnanj9w2C7nRka?=
- =?us-ascii?Q?mk5tkoZ2ccNZ/S5mCvSCEff6attsJxJnY+WEt+ESoV8q461thxmFlxFWaPGh?=
- =?us-ascii?Q?ryrKLdPXPEOAA15NGympO+bwLQk+JR1nJ1dZNlH9lEOtgLY985c445OQbYp8?=
- =?us-ascii?Q?MelTVMyUNsKjxbQBSA48yW+x5jIF1FhBfD6dSYrawpLjMrau1qtErX9XQGcD?=
- =?us-ascii?Q?4pZEjNbu40Ceg7Pg+3bozfl+A9cVCcDdRZ/CqzEEM/jfK4vhQrTw3GIJNL3b?=
- =?us-ascii?Q?oyte3dO5yBV4EIDTYthhuo2SDfanIMuqcK6iEyp2bLxfFA1X3qlFCBfwZLzO?=
- =?us-ascii?Q?sl8f4HrAgnLOCZQ7MUa+EuH2ZDC/5vj0Fn/hKKsoP4VkqGNb0jpH9En8iESG?=
- =?us-ascii?Q?4z4eq6Dpe+ZKb0Ywd8UXZrEpaRK4dRFbs3QzVMFfEXUOgX5yVslz+AY/B+JD?=
- =?us-ascii?Q?a50sgf/Jc2D7Be+iqi1uwnanOZJEo4EMXXNz?=
+	=?us-ascii?Q?64oEQ5OSYzdEMnxnKSUbSBr6fgLFVklMa2ev6DAY5tLbJzkI0nZk+WI0NvCL?=
+ =?us-ascii?Q?JFBNwdG1NQ8wbIDWeiI2hm6fcf84OPRM7vg5+homqL/MxSLoNU8PwJ001Gt5?=
+ =?us-ascii?Q?itkM3CHiL2fUaD/8Xs6OZ13Pg50wUp1ab7PQCr4/Zso95EdWgV63fC1XAYrC?=
+ =?us-ascii?Q?+fiE3ixRw5wYWrldrTCbXcytNX3JXJk3Vd29F9ioWnDac0JDwWNgrH7QWbzs?=
+ =?us-ascii?Q?xe8TrRPLIpmCFYJOaGC5KwIVRv6P2+Hs/6SiNalqWi7idFX5rmFOaFpWEGAn?=
+ =?us-ascii?Q?E1Cw0Pn777htDvOkD4mk7C4f5H0ueEef3PIwOmTGU3QStBRt+WoeLDWit4dc?=
+ =?us-ascii?Q?99lC96RBZHK2ZlhcLkLmEdKuYNlalC+L5ukb1H9skYIglQhpiNU7WGVqko6x?=
+ =?us-ascii?Q?aA1zneXvx4eyypMFqG0k7yV2DaMCebfaI+iX3ebZWm4ikCUKzEDNCY5yMiWy?=
+ =?us-ascii?Q?cZP8Cb4PKQCotWvmHed6VzqTHgUjapd6Kh5DI80d5d/nMoUwQAvmywpFK34D?=
+ =?us-ascii?Q?fqGv4zWwg6ux/svqKEpNkYZLWGIOfrNefU9Ss38sLXQNonwfa19KUIqlFSi+?=
+ =?us-ascii?Q?i5aYtiwoCZFSfn0BrDYY6dVIgjJDnliXSmBOuC/0aOCFulQdin4Ge6+/qxu3?=
+ =?us-ascii?Q?OULpNQ5qkcCbCggLEw/UyL5rh7mpQ29DR65c3Os0TodtC1RR++nX1qfbTOdm?=
+ =?us-ascii?Q?6sQnryz/KWfjkKCErveVNjaEk2y0EKPGEgz1FmLU+PghQIpHrl/u4kVD3YjW?=
+ =?us-ascii?Q?1muvdY2arIRSz7ZdTYuIhGCBp3TJhyGvOWsv1yizWsQltemh2SicQ9oOUdKb?=
+ =?us-ascii?Q?Eghbc8UobhBcXN/Q2xziCcMp6/gPaPYcQ2QsGaibCec2ixuof5B1Dk38HYuS?=
+ =?us-ascii?Q?3EyQhovOVHVtSQfEwm1WVP7JjpjBb6eomcZifiJH3RSASBb+vLzkHOkHEofW?=
+ =?us-ascii?Q?FGDmr6fkRoDjxSPotfQVCT8ZeWwvpj7f/KriQWFR2HTls4oM9naGLD1rXjpp?=
+ =?us-ascii?Q?hjWKppa3s7f8JYwHFN3UkbP98cv9RygI+hHA/Ol4zrvGrQssfgyD5g3gT4J4?=
+ =?us-ascii?Q?XW1AcGtKohNLr/6Qt6WNLQwU2tAtcYXVwqoasYvyJIuz/CbbJNR5jNSm22Er?=
+ =?us-ascii?Q?0nhCuJqcBBb1/2Nkwuti9XWK+jBSM9l+VQxmynIFIYCUHcm5a/RLXx75yM/S?=
+ =?us-ascii?Q?ve3VVlJ/ZM2K1VQ2KytLkcIbAlQuvayzvqLUsz7MlBzOtk4D6/PIaS9wpxSh?=
+ =?us-ascii?Q?hqsVDIND5LA1aWfdtLsLyFyMwIx4gve7+2BISNjtMw4Vs3CgLmzIVoJ3VlTK?=
+ =?us-ascii?Q?XcgdLYvkfGyH/9QeBFN7Inhxx+moYeKQtKF+b8qvWVhXV61qvNnTyl+H5U1v?=
+ =?us-ascii?Q?6YOsWC4jVF59YMd4oSS1ueZ2lkYOqSuSq6o71xWlUiPMPnCwVssEOBQcZdby?=
+ =?us-ascii?Q?O+7F8zxWKEVMJK3FsSaOXiCH2NhHWAeNMBzWIBRZO03Hn0eTZw6Pz87ywu27?=
+ =?us-ascii?Q?8ZAmlDfG5Ip1tMk=3D?=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(36860700013)(82310400026)(921020);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(82310400026)(7416014)(376014)(921020);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2025 01:37:02.1004
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2025 01:37:03.6687
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e4b7bc1-c225-43df-6306-08dd586190e6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 33aa4081-5173-4e98-0c99-08dd586191d8
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SJ5PEPF000001E8.namprd05.prod.outlook.com
+	SJ5PEPF000001EB.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7693
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4461
 
-Since there really is no useful return, advertising a return value
-is rather misleading.  Make pdsc_auxbus_dev_del() a void function.
+In preparation for adding a new auxiliary_device for the
+PF, make the vif type an argument to pdsc_auxbus_dev_add().
+We also now pass in the address to where we'll keep the new
+padev pointer so that the caller can specify where to save it
+but we can still change it under the mutex and keep the mutex
+usage within the function.
 
 Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
 ---
- drivers/net/ethernet/amd/pds_core/auxbus.c  | 8 ++------
- drivers/net/ethernet/amd/pds_core/core.h    | 2 +-
- drivers/net/ethernet/amd/pds_core/devlink.c | 6 ++++--
- 3 files changed, 7 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/amd/pds_core/auxbus.c  | 37 ++++++++++-----------
+ drivers/net/ethernet/amd/pds_core/core.h    |  7 ++--
+ drivers/net/ethernet/amd/pds_core/devlink.c |  5 +--
+ drivers/net/ethernet/amd/pds_core/main.c    | 11 +++---
+ 4 files changed, 33 insertions(+), 27 deletions(-)
 
 diff --git a/drivers/net/ethernet/amd/pds_core/auxbus.c b/drivers/net/ethernet/amd/pds_core/auxbus.c
-index 2babea110991..b1fab95f7eeb 100644
+index b1fab95f7eeb..db950a9c9d30 100644
 --- a/drivers/net/ethernet/amd/pds_core/auxbus.c
 +++ b/drivers/net/ethernet/amd/pds_core/auxbus.c
-@@ -175,13 +175,9 @@ static struct pds_auxiliary_dev *pdsc_auxbus_dev_register(struct pdsc *cf,
+@@ -175,30 +175,33 @@ static struct pds_auxiliary_dev *pdsc_auxbus_dev_register(struct pdsc *cf,
  	return padev;
  }
  
--int pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf)
-+void pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf)
+-void pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf)
++void pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf,
++			 struct pds_auxiliary_dev **pd_ptr)
  {
  	struct pds_auxiliary_dev *padev;
--	int err = 0;
--
--	if (!cf)
--		return -ENODEV;
  
++	if (!*pd_ptr)
++		return;
++
  	mutex_lock(&pf->config_lock);
  
-@@ -195,7 +191,6 @@ int pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf)
- 	pf->vfs[cf->vf_id].padev = NULL;
+-	padev = pf->vfs[cf->vf_id].padev;
+-	if (padev) {
+-		pds_client_unregister(pf, padev->client_id);
+-		auxiliary_device_delete(&padev->aux_dev);
+-		auxiliary_device_uninit(&padev->aux_dev);
+-		padev->client_id = 0;
+-	}
+-	pf->vfs[cf->vf_id].padev = NULL;
++	padev = *pd_ptr;
++	pds_client_unregister(pf, padev->client_id);
++	auxiliary_device_delete(&padev->aux_dev);
++	auxiliary_device_uninit(&padev->aux_dev);
++	padev->client_id = 0;
++	*pd_ptr = NULL;
  
  	mutex_unlock(&pf->config_lock);
--	return err;
+ 	return;
  }
  
- int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
+-int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
++int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf,
++			enum pds_core_vif_types vt,
++			struct pds_auxiliary_dev **pd_ptr)
+ {
+ 	struct pds_auxiliary_dev *padev;
+ 	char devname[PDS_DEVNAME_LEN];
+-	enum pds_core_vif_types vt;
+ 	unsigned long mask;
+ 	u16 vt_support;
+ 	int client_id;
+@@ -207,6 +210,9 @@ int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
+ 	if (!cf)
+ 		return -ENODEV;
+ 
++	if (vt >= PDS_DEV_TYPE_MAX)
++		return -EINVAL;
++
+ 	mutex_lock(&pf->config_lock);
+ 
+ 	mask = BIT_ULL(PDSC_S_FW_DEAD) |
+@@ -218,17 +224,10 @@ int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
+ 		goto out_unlock;
+ 	}
+ 
+-	/* We only support vDPA so far, so it is the only one to
+-	 * be verified that it is available in the Core device and
+-	 * enabled in the devlink param.  In the future this might
+-	 * become a loop for several VIF types.
+-	 */
+-
+ 	/* Verify that the type is supported and enabled.  It is not
+ 	 * an error if there is no auxbus device support for this
+ 	 * VF, it just means something else needs to happen with it.
+ 	 */
+-	vt = PDS_DEV_TYPE_VDPA;
+ 	vt_support = !!le16_to_cpu(pf->dev_ident.vif_types[vt]);
+ 	if (!(vt_support &&
+ 	      pf->viftype_status[vt].supported &&
+@@ -254,7 +253,7 @@ int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
+ 		err = PTR_ERR(padev);
+ 		goto out_unlock;
+ 	}
+-	pf->vfs[cf->vf_id].padev = padev;
++	*pd_ptr = padev;
+ 
+ out_unlock:
+ 	mutex_unlock(&pf->config_lock);
 diff --git a/drivers/net/ethernet/amd/pds_core/core.h b/drivers/net/ethernet/amd/pds_core/core.h
-index 14522d6d5f86..631a59cfdd7e 100644
+index 631a59cfdd7e..f075e68c64db 100644
 --- a/drivers/net/ethernet/amd/pds_core/core.h
 +++ b/drivers/net/ethernet/amd/pds_core/core.h
-@@ -304,7 +304,7 @@ int pdsc_register_notify(struct notifier_block *nb);
+@@ -303,8 +303,11 @@ void pdsc_health_thread(struct work_struct *work);
+ int pdsc_register_notify(struct notifier_block *nb);
  void pdsc_unregister_notify(struct notifier_block *nb);
  void pdsc_notify(unsigned long event, void *data);
- int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf);
--int pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf);
-+void pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf);
+-int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf);
+-void pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf);
++int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf,
++			enum pds_core_vif_types vt,
++			struct pds_auxiliary_dev **pd_ptr);
++void pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf,
++			 struct pds_auxiliary_dev **pd_ptr);
  
  void pdsc_process_adminq(struct pdsc_qcq *qcq);
  void pdsc_work_thread(struct work_struct *work);
 diff --git a/drivers/net/ethernet/amd/pds_core/devlink.c b/drivers/net/ethernet/amd/pds_core/devlink.c
-index 44971e71991f..4e2b92ddef6f 100644
+index 4e2b92ddef6f..c5c787df61a4 100644
 --- a/drivers/net/ethernet/amd/pds_core/devlink.c
 +++ b/drivers/net/ethernet/amd/pds_core/devlink.c
-@@ -56,8 +56,10 @@ int pdsc_dl_enable_set(struct devlink *dl, u32 id,
- 	for (vf_id = 0; vf_id < pdsc->num_vfs; vf_id++) {
+@@ -57,9 +57,10 @@ int pdsc_dl_enable_set(struct devlink *dl, u32 id,
  		struct pdsc *vf = pdsc->vfs[vf_id].vf;
  
--		err = ctx->val.vbool ? pdsc_auxbus_dev_add(vf, pdsc) :
--				       pdsc_auxbus_dev_del(vf, pdsc);
-+		if (ctx->val.vbool)
-+			err = pdsc_auxbus_dev_add(vf, pdsc);
-+		else
-+			pdsc_auxbus_dev_del(vf, pdsc);
+ 		if (ctx->val.vbool)
+-			err = pdsc_auxbus_dev_add(vf, pdsc);
++			err = pdsc_auxbus_dev_add(vf, pdsc, vt_entry->vif_id,
++						  &pdsc->vfs[vf_id].padev);
+ 		else
+-			pdsc_auxbus_dev_del(vf, pdsc);
++			pdsc_auxbus_dev_del(vf, pdsc, &pdsc->vfs[vf_id].padev);
  	}
  
  	return err;
+diff --git a/drivers/net/ethernet/amd/pds_core/main.c b/drivers/net/ethernet/amd/pds_core/main.c
+index 660268ff9562..a3a68889137b 100644
+--- a/drivers/net/ethernet/amd/pds_core/main.c
++++ b/drivers/net/ethernet/amd/pds_core/main.c
+@@ -190,7 +190,8 @@ static int pdsc_init_vf(struct pdsc *vf)
+ 	devl_unlock(dl);
+ 
+ 	pf->vfs[vf->vf_id].vf = vf;
+-	err = pdsc_auxbus_dev_add(vf, pf);
++	err = pdsc_auxbus_dev_add(vf, pf, PDS_DEV_TYPE_VDPA,
++				  &pf->vfs[vf->vf_id].padev);
+ 	if (err) {
+ 		devl_lock(dl);
+ 		devl_unregister(dl);
+@@ -417,7 +418,7 @@ static void pdsc_remove(struct pci_dev *pdev)
+ 
+ 		pf = pdsc_get_pf_struct(pdsc->pdev);
+ 		if (!IS_ERR(pf)) {
+-			pdsc_auxbus_dev_del(pdsc, pf);
++			pdsc_auxbus_dev_del(pdsc, pf, &pf->vfs[pdsc->vf_id].padev);
+ 			pf->vfs[pdsc->vf_id].vf = NULL;
+ 		}
+ 	} else {
+@@ -482,7 +483,8 @@ static void pdsc_reset_prepare(struct pci_dev *pdev)
+ 
+ 		pf = pdsc_get_pf_struct(pdsc->pdev);
+ 		if (!IS_ERR(pf))
+-			pdsc_auxbus_dev_del(pdsc, pf);
++			pdsc_auxbus_dev_del(pdsc, pf,
++					    &pf->vfs[pdsc->vf_id].padev);
+ 	}
+ 
+ 	pdsc_unmap_bars(pdsc);
+@@ -527,7 +529,8 @@ static void pdsc_reset_done(struct pci_dev *pdev)
+ 
+ 		pf = pdsc_get_pf_struct(pdsc->pdev);
+ 		if (!IS_ERR(pf))
+-			pdsc_auxbus_dev_add(pdsc, pf);
++			pdsc_auxbus_dev_add(pdsc, pf, PDS_DEV_TYPE_VDPA,
++					    &pf->vfs[pdsc->vf_id].padev);
+ 	}
+ }
+ 
 -- 
 2.17.1
 
