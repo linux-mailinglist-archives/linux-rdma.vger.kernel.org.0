@@ -1,83 +1,103 @@
-Return-Path: <linux-rdma+bounces-8241-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8242-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6ECDA4B531
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Mar 2025 23:05:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45B75A4B550
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Mar 2025 23:37:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74DEE16C961
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Mar 2025 22:05:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58F0E1890CD5
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Mar 2025 22:37:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27651EE7BE;
-	Sun,  2 Mar 2025 22:05:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="tDc5EHvS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2286D1EEA4A;
+	Sun,  2 Mar 2025 22:37:24 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4332AE96;
-	Sun,  2 Mar 2025 22:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C8941E7C32
+	for <linux-rdma@vger.kernel.org>; Sun,  2 Mar 2025 22:37:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740953123; cv=none; b=EVpA+i2trFsVW9PACJYqZ05OKXFqYWRfKSpRBrFVKMQDIFLX+0oq+Avhvc4beiosVzQUrbeXezXmzGwrmrkkpt66TRkQoTi+kVKC5LS3ZokKQ1mvdUtY/ylzYUualnIn5JOAwaL5bvCuR1HMDxYMd6+5622AeukzGHtUDa5hwC0=
+	t=1740955044; cv=none; b=L4tE30lmCjtoJz//7RdjCmNbjR+xbCpvwMsy3u3YwLUbs/lFd/aGf34b0X+2XnkfCWhxgJRoekvZWIBlVKhGaVkC0d9VYbLIxyv9AKSP8iaW10Bqsv7QoaPckwBqFOlgKcJKlDLCzSIehe+5VxhxXeeTRW1fyxlgHKuJ/ag/8kE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740953123; c=relaxed/simple;
-	bh=n3s8L5mM1PgkAxQbvIo8KUEt03A6+9fhM7TH5IBuB4U=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=tN7MqJGaw+OlPVVDIieWjDOUVL40TIhTo7ucoc5i2srNdHOl8yrTqPdHl4rIMSn/Yc81h5/S2HxQ7H2nskLNxrLEb6W3CeKZurj+t6ERxgDrJfgxzN8mykSx47qN8UqyIhlbpwygQHmJF3zeeJ4TILC9mYH6qTlCz+NN/iKkE6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=tDc5EHvS; arc=none smtp.client-ip=46.235.229.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-	; s=bytemarkmx; h=Content-Type:MIME-Version:Message-ID:Subject:From:Date:From
-	:Subject; bh=eoJEBuDIa3WCsnTjIXl5Vo6lm+iEz4qqSRLteoz5dMQ=; b=tDc5EHvSydJ7KnP1
-	tcBaKLkOYCSYzMXaV/FvtgNXZA0S7TsX8c70KsC5ugzY0RtYPTuFr5R0OhRbMVpLGvoRwEVDHHsX0
-	bkizDpTQjmklaz7g8HfQ1vErKzreYYEygBX1NkXDgdrAnXdGtX0qcv0aIr4DrFAahho9j+awZix59
-	8UfIG3RvQWbR6lzzZtF79iBPN9mQagXWkyOiP6pGvEC1vc5yZTGEQiH+LGZwI6MkLJ9+kfNS5VwdL
-	vRfq/cAdmOk+LwOT25or6LBgNBG2K+5m5LRkkoz6tQz7Oky2TbPpI0MJHrzVvIMZ0TsigZIt6hW5q
-	2f3fDadw2qt/ym+Z2Q==;
-Received: from dg by mx.treblig.org with local (Exim 4.96)
-	(envelope-from <dg@treblig.org>)
-	id 1torQt-001z5E-3C;
-	Sun, 02 Mar 2025 22:05:11 +0000
-Date: Sun, 2 Mar 2025 22:05:11 +0000
-From: "Dr. David Alan Gilbert" <linux@treblig.org>
-To: bryan-bt.tan@broadcom.com, vishnu.dasa@broadcom.com, jgg@ziepe.ca,
-	leon@kernel.org
-Cc: bcm-kernel-feedback-list@broadcom.com, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Unwired pvrdma_modify_device ?
-Message-ID: <Z8TWF6coBUF3l_jk@gallifrey>
+	s=arc-20240116; t=1740955044; c=relaxed/simple;
+	bh=0DwsUAsSJO5UQn4bmGPqqVWlWH5R2lmMZ64UhyrEuAE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=c9VHViG/cSQoMYUtH/LzMeNf0BnvECdRHX1WbAO90j69ONgXFxL8lJTCQHHrp/ZT5H412ggL01pA1+JrrewyE67y5sTKuoU6/Tlq+aDHUM1SOzvOJuSLtbT0rNreYU2qlChBtq7ZM7I75WYa+8b7U0Vx3lxqCOFac2nRu/1OWBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-84cdb5795b0so326445639f.2
+        for <linux-rdma@vger.kernel.org>; Sun, 02 Mar 2025 14:37:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740955041; x=1741559841;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=utamXc6I+xnosmBsdnrUmah40k48pr1hjvzaM3mHGis=;
+        b=eTyw4QyNZBE9yzEUECdSuI4O5uR0wg5Hpqh1TA/KidZBwlkzT7r93SEZ+h9yu36Zpy
+         6XNLhOQYFsqUXqfmF3oJlPrmmWujg3aZ4dPAnxt+mq/zyJ5jTjhgbRFHSraH/y2HMkYP
+         104CE/AYU0bpy4VUGgrXjnFcKvJdHOG5xjzcU0CirPHUnJQQQ9ngY6ODg6Y4oqDJEP3+
+         SbWWTDgSV/fCFMUxz/DvnGU5+9U6s5KYbR1ttdzyZzo+trKHZqOSI9SuO3t1o7Z+kfOD
+         zKCzrq+BAUYIJ9S5qp0YwnmEsFGb7d+r4gKE8viJPBIcU3PM4EqfXLGn8x0snpkJV70f
+         1CDg==
+X-Forwarded-Encrypted: i=1; AJvYcCWJDqMXdJaA35V44uSTaYf8NJb5/z2Esg3Teg30M0X4tyC7PCv5xfnjBM4AndNyFOAEAE7VXUqggJcE@vger.kernel.org
+X-Gm-Message-State: AOJu0YzsBeRKFmxox/nGofa9/XQRFsQrIK7YYAgOoSE1d0XeLYIJ+Wk8
+	jL6EmeiJuXh2joONxyowM/mi2vKZ6x61CGJypYqU2tx5vNclMXznjh1zRX8YeADHWAdpw+3sfx6
+	D/sEO7UqQFkHknITjAWO5tryUa02a+eB6DbDcWLlPVfqc4R59+NmkYxc=
+X-Google-Smtp-Source: AGHT+IGg5TxX+8ogMdxKRe/mR0oKCCW7kVQPBosty+8SM4ulIsEmTFJiDcgxtPaN1YTH2wFl/E8vYvuxOyzrsGbXTQRfUSpa5b0U
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/6.1.0-21-amd64 (x86_64)
-X-Uptime: 22:01:01 up 298 days,  9:15,  1 user,  load average: 0.01, 0.01,
- 0.00
-User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Received: by 2002:a92:c24c:0:b0:3d3:d067:7409 with SMTP id
+ e9e14a558f8ab-3d3e6e940ddmr103456735ab.11.1740955041629; Sun, 02 Mar 2025
+ 14:37:21 -0800 (PST)
+Date: Sun, 02 Mar 2025 14:37:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67c4dda1.050a0220.1dee4d.009e.GAE@google.com>
+Subject: [syzbot] Monthly rdma report (Mar 2025)
+From: syzbot <syzbot+listc59baa9b4f1dc791b29d@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
-  I noticed that pvrdma_modify_device() in
-   drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c
-isn't called anywhere; shouldn't it be wired up in pvrdma_dev_ops ?
+Hello rdma maintainers/developers,
 
-(I've not got VMWare anywhere to try it on, and don't know the innards
-of RDMA drivers; so can't really test it).
+This is a 31-day syzbot report for the rdma subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/rdma
 
-Dave
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 10 issues are still open and 62 have already been fixed.
 
--- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 309     No    INFO: task hung in rdma_dev_change_netns
+                  https://syzkaller.appspot.com/bug?extid=73c5eab674c7e1e7012e
+<2> 155     Yes   WARNING in rxe_pool_cleanup
+                  https://syzkaller.appspot.com/bug?extid=221e213bf17f17e0d6cd
+<3> 78      Yes   possible deadlock in sock_set_reuseaddr
+                  https://syzkaller.appspot.com/bug?extid=af5682e4f50cd6bce838
+<4> 66      No    INFO: task hung in add_one_compat_dev (3)
+                  https://syzkaller.appspot.com/bug?extid=6dee15fdb0606ef7b6ba
+<5> 45      No    INFO: task hung in rdma_dev_exit_net (6)
+                  https://syzkaller.appspot.com/bug?extid=3658758f38a2f0f062e7
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
