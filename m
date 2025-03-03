@@ -1,220 +1,207 @@
-Return-Path: <linux-rdma+bounces-8244-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8245-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6FD0A4B822
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Mar 2025 08:11:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65A1AA4B853
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Mar 2025 08:28:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46F483A731C
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Mar 2025 07:11:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C49816A655
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Mar 2025 07:28:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD701E5B72;
-	Mon,  3 Mar 2025 07:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16C51E9B25;
+	Mon,  3 Mar 2025 07:27:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MsoOHFec"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hQZcxHSK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7C664C85
-	for <linux-rdma@vger.kernel.org>; Mon,  3 Mar 2025 07:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 503F21E8327
+	for <linux-rdma@vger.kernel.org>; Mon,  3 Mar 2025 07:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740985907; cv=none; b=Mq4MKgy3wXDWbfDhjaCmcTgphQQCpqwfy0wSzDt1Rl50S5u6GOZBM2a5jb3LTy76I0ruCdY8+gXPfBKevX8+ukBjGVVhHW2ESZePhcqAVIQnz3OlXop5+jKxUrAW7JF4/6NNQ4+B55zBOnwIXbEE2R4hzGa9HajbU6Us9+ar1wU=
+	t=1740986877; cv=none; b=putovJ0TToHLvkOT1SuzUqFm4tTFz2w9wfJXD4bZxby1N8JvveyGW86L02Y0Sc6pxcmmfbuDk8GU7PHVeLay/DWXCoB0A+LBhW7gKk3qUiV95gVMYk4iOWRztpFYz8AeSQIVWzjNuHrgKmAW+NsxDie/YHU8r5GvEq6aKGHMNIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740985907; c=relaxed/simple;
-	bh=vZN+6gdgVyFJLk5ZtMJpu9CCEzB+fMtXjQiBDCSUdyc=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=GXp+kBvK9R1WRsFNxZviGezVIC/kVxAvzjYtbEHe6/c6IG7/GQmVCBAHcyikiqglUnUyUMOIGON2S/YZU59W4JFQSQpjZZ2Gi6REFjRXg112d0ZCwleZO109/8P3uIz9LaYry0JJfn+pgiofpwCdm9Hv/n9G5GnLtTZ25Pi6gzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MsoOHFec; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1740985905; x=1772521905;
-  h=date:from:to:cc:subject:message-id;
-  bh=vZN+6gdgVyFJLk5ZtMJpu9CCEzB+fMtXjQiBDCSUdyc=;
-  b=MsoOHFecFtWLkfXSXtVnxMnx/MsS2u3aGHCcqH9iFHjL3CFBQMaoxKB0
-   FIYHHkthAWb2amSnBFXHbVdTgNQTzWqh/bRZOkX+CARRUq5mpesG0hDCI
-   hp8TIFkGhYhEE640gRLhAdei7/KUmwTjI5Qzx49PHzWKz9p5ycKBV8IKD
-   C72s280k+GVBLK2VtPvu7uvQ1kMy7/PpuQHqA1ZR6S+dhSsBJvUw5hREJ
-   ir0YpAczqQ9/U80KUHv/iAsW0Yg5dASskNo33S5ycMvExvmGYuksYtcHy
-   oHnPCRo8XhT5Xc4vBp7sl6gA0F7a1ynH3uq1i0MZtkmH1TMwOjF9pOyxO
-   A==;
-X-CSE-ConnectionGUID: jbgKZxmuRIq1ydME5OQajA==
-X-CSE-MsgGUID: +mF3RCIwT6S9dq1IyI/L/w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11361"; a="41551264"
-X-IronPort-AV: E=Sophos;i="6.13,329,1732608000"; 
-   d="scan'208";a="41551264"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2025 23:11:44 -0800
-X-CSE-ConnectionGUID: GVSZPb2QQFeLr58heC0Vhw==
-X-CSE-MsgGUID: O29Qi+D9TsyZPUOYcNhaHA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="117773858"
-Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
-  by orviesa010.jf.intel.com with ESMTP; 02 Mar 2025 23:11:42 -0800
-Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tozxk-000I8p-1s;
-	Mon, 03 Mar 2025 07:11:40 +0000
-Date: Mon, 03 Mar 2025 15:11:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 57b9340c0728b060a795180d2dbb823ebd87d787
-Message-ID: <202503031559.WSuv8h0a-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1740986877; c=relaxed/simple;
+	bh=6cbzXu5TS0Lmf8vH8HMuPDygk7pRj6xr/pBs17lrS34=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=lFAO8rpnrT/RwYrjJF57azVD/uHoeW58VoXGJESXSrCPWKhXJVp3cu5wqK77bsZo3P4mnBff8IehEXuwUpvLmfm8K2OjNF8huBPtQOA9TP9PrnYdA6t66IMQxXR4EC5B0SUC2B57FBID3HRQ0eZ5hPvUfeR2smrAjRBjdHSGN5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hQZcxHSK; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <afc3067b-afca-4ece-9655-ace0d82b6468@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740986872;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C4d5LGoQtwsoDWxzohPzKRQaNJ/Oj2osqp+x/cduhF8=;
+	b=hQZcxHSKgYJEtE+r1DX74fMwAnnR0QTyvkVLn/g8Nc0SZIdc3QcyfqZiVFsfgWmX8qGf+O
+	4DNn0qUoso0muyaC3qgFwrxU1smowyfy3Qmqyf3TnWux24M9c8WGZ0f2GVTN3GhDzublsD
+	OeeUxNx4RToblUGdJEXTbByZlxC8DPw=
+Date: Mon, 3 Mar 2025 08:27:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Subject: Re: [PATCH rdma-rc 1/1] RDMA/rxe: Fix the failure of
+ ibv_query_device() and ibv_query_device_ex() tests
+To: "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+ "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>, "jgg@ziepe.ca"
+ <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20250302215444.3742072-1-yanjun.zhu@linux.dev>
+ <OS3PR01MB98654DABDD313E46C2727774E5C92@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <OS3PR01MB98654DABDD313E46C2727774E5C92@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 57b9340c0728b060a795180d2dbb823ebd87d787  RDMA/core: Don't expose hw_counters outside of init net namespace
+在 2025/3/3 5:21, Daisuke Matsuda (Fujitsu) 写道:
+> On Mon, March 3, 2025 6:55 AM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+>>
+>> In rdma-core, the following failures appear.
+>>
+>> "
+>> $ ./build/bin/run_tests.py -k device
+>> ssssssss....FF........s
+>> ======================================================================
+>> FAIL: test_query_device (tests.test_device.DeviceTest.test_query_device)
+>> Test ibv_query_device()
+>> ----------------------------------------------------------------------
+>> Traceback (most recent call last):
+>>     File "/home/ubuntu/rdma-core/tests/test_device.py", line 63, in
+>>     test_query_device
+>>       self.verify_device_attr(attr, dev)
+>>     File "/home/ubuntu/rdma-core/tests/test_device.py", line 200, in
+>>     verify_device_attr
+>>       assert attr.sys_image_guid != 0
+>>              ^^^^^^^^^^^^^^^^^^^^^^^^
+>> AssertionError
+>>
+>> ======================================================================
+>> FAIL: test_query_device_ex (tests.test_device.DeviceTest.test_query_device_ex)
+>> Test ibv_query_device_ex()
+>> ----------------------------------------------------------------------
+>> Traceback (most recent call last):
+>>     File "/home/ubuntu/rdma-core/tests/test_device.py", line 222, in
+>>     test_query_device_ex
+>>       self.verify_device_attr(attr_ex.orig_attr, dev)
+>>     File "/home/ubuntu/rdma-core/tests/test_device.py", line 200, in
+>>     verify_device_attr
+>>       assert attr.sys_image_guid != 0
+>>              ^^^^^^^^^^^^^^^^^^^^^^^^
+>> AssertionError
+>> "
+>>
+>> The root cause is: before a net device is set with rxe, this net device
+>> is used to generate a sys_image_guid.
+> 
+> I have tested this patch, and the problem I reported last week is now gone.
+> The fix looks good. Thanks!
 
-elapsed time: 1131m
+Thanks a lot.
 
-configs tested: 126
-configs skipped: 7
+Zhu Yanjun
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> 
+> Tested-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+> Reviewed-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+> 
+>>
+>> Fixes: 2ac5415022d1 ("RDMA/rxe: Remove the direct link to net_device")
+>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>> ---
+>>   drivers/infiniband/sw/rxe/rxe.c | 25 ++++++-------------------
+>>   1 file changed, 6 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+>> index 1ba4a0c8726a..e27478fe9456 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe.c
+>> @@ -38,10 +38,8 @@ void rxe_dealloc(struct ib_device *ib_dev)
+>>   }
+>>
+>>   /* initialize rxe device parameters */
+>> -static void rxe_init_device_param(struct rxe_dev *rxe)
+>> +static void rxe_init_device_param(struct rxe_dev *rxe, struct net_device *ndev)
+>>   {
+>> -	struct net_device *ndev;
+>> -
+>>   	rxe->max_inline_data			= RXE_MAX_INLINE_DATA;
+>>
+>>   	rxe->attr.vendor_id			= RXE_VENDOR_ID;
+>> @@ -74,15 +72,9 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
+>>   	rxe->attr.max_pkeys			= RXE_MAX_PKEYS;
+>>   	rxe->attr.local_ca_ack_delay		= RXE_LOCAL_CA_ACK_DELAY;
+>>
+>> -	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
+>> -	if (!ndev)
+>> -		return;
+>> -
+>>   	addrconf_addr_eui48((unsigned char *)&rxe->attr.sys_image_guid,
+>>   			ndev->dev_addr);
+>>
+>> -	dev_put(ndev);
+>> -
+>>   	rxe->max_ucontext			= RXE_MAX_UCONTEXT;
+>>   }
+>>
+>> @@ -115,18 +107,13 @@ static void rxe_init_port_param(struct rxe_port *port)
+>>   /* initialize port state, note IB convention that HCA ports are always
+>>    * numbered from 1
+>>    */
+>> -static void rxe_init_ports(struct rxe_dev *rxe)
+>> +static void rxe_init_ports(struct rxe_dev *rxe, struct net_device *ndev)
+>>   {
+>>   	struct rxe_port *port = &rxe->port;
+>> -	struct net_device *ndev;
+>>
+>>   	rxe_init_port_param(port);
+>> -	ndev = rxe_ib_device_get_netdev(&rxe->ib_dev);
+>> -	if (!ndev)
+>> -		return;
+>>   	addrconf_addr_eui48((unsigned char *)&port->port_guid,
+>>   			    ndev->dev_addr);
+>> -	dev_put(ndev);
+>>   	spin_lock_init(&port->port_lock);
+>>   }
+>>
+>> @@ -144,12 +131,12 @@ static void rxe_init_pools(struct rxe_dev *rxe)
+>>   }
+>>
+>>   /* initialize rxe device state */
+>> -static void rxe_init(struct rxe_dev *rxe)
+>> +static void rxe_init(struct rxe_dev *rxe, struct net_device *ndev)
+>>   {
+>>   	/* init default device parameters */
+>> -	rxe_init_device_param(rxe);
+>> +	rxe_init_device_param(rxe, ndev);
+>>
+>> -	rxe_init_ports(rxe);
+>> +	rxe_init_ports(rxe, ndev);
+>>   	rxe_init_pools(rxe);
+>>
+>>   	/* init pending mmap list */
+>> @@ -184,7 +171,7 @@ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int ndev_mtu)
+>>   int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name,
+>>   			struct net_device *ndev)
+>>   {
+>> -	rxe_init(rxe);
+>> +	rxe_init(rxe, ndev);
+>>   	rxe_set_mtu(rxe, mtu);
+>>
+>>   	return rxe_register_device(rxe, ibdev_name, ndev);
+>> --
+>> 2.34.1
+>>
+> 
 
-tested configs:
-alpha                             allnoconfig    gcc-14.2.0
-alpha                            allyesconfig    gcc-14.2.0
-arc                              allmodconfig    gcc-13.2.0
-arc                               allnoconfig    gcc-13.2.0
-arc                              allyesconfig    gcc-13.2.0
-arc                   randconfig-001-20250302    gcc-13.2.0
-arc                   randconfig-002-20250302    gcc-13.2.0
-arm                               allnoconfig    clang-17
-arm                              allyesconfig    gcc-14.2.0
-arm                            mps2_defconfig    clang-15
-arm                        multi_v7_defconfig    gcc-14.2.0
-arm                        mvebu_v7_defconfig    clang-15
-arm                            qcom_defconfig    clang-17
-arm                   randconfig-001-20250302    gcc-14.2.0
-arm                   randconfig-002-20250302    clang-21
-arm                   randconfig-003-20250302    gcc-14.2.0
-arm                   randconfig-004-20250302    clang-21
-arm64                            allmodconfig    clang-18
-arm64                             allnoconfig    gcc-14.2.0
-arm64                 randconfig-001-20250302    clang-18
-arm64                 randconfig-002-20250302    gcc-14.2.0
-arm64                 randconfig-003-20250302    gcc-14.2.0
-arm64                 randconfig-004-20250302    clang-16
-csky                              allnoconfig    gcc-14.2.0
-csky                  randconfig-001-20250302    gcc-14.2.0
-csky                  randconfig-002-20250302    gcc-14.2.0
-hexagon                          allmodconfig    clang-21
-hexagon                           allnoconfig    clang-21
-hexagon                          allyesconfig    clang-18
-hexagon               randconfig-001-20250302    clang-21
-hexagon               randconfig-002-20250302    clang-21
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20250302    gcc-12
-i386        buildonly-randconfig-002-20250302    clang-19
-i386        buildonly-randconfig-003-20250302    gcc-12
-i386        buildonly-randconfig-004-20250302    gcc-12
-i386        buildonly-randconfig-005-20250302    gcc-12
-i386        buildonly-randconfig-006-20250302    gcc-12
-i386                                defconfig    clang-19
-loongarch                        alldefconfig    gcc-14.2.0
-loongarch                        allmodconfig    gcc-14.2.0
-loongarch                         allnoconfig    gcc-14.2.0
-loongarch             randconfig-001-20250302    gcc-14.2.0
-loongarch             randconfig-002-20250302    gcc-14.2.0
-m68k                             allmodconfig    gcc-14.2.0
-m68k                              allnoconfig    gcc-14.2.0
-m68k                             allyesconfig    gcc-14.2.0
-m68k                          hp300_defconfig    gcc-14.2.0
-microblaze                       allmodconfig    gcc-14.2.0
-microblaze                        allnoconfig    gcc-14.2.0
-microblaze                       allyesconfig    gcc-14.2.0
-mips                              allnoconfig    gcc-14.2.0
-mips                          eyeq6_defconfig    clang-21
-mips                           ip30_defconfig    gcc-14.2.0
-mips                       rbtx49xx_defconfig    gcc-14.2.0
-nios2                             allnoconfig    gcc-14.2.0
-nios2                 randconfig-001-20250302    gcc-14.2.0
-nios2                 randconfig-002-20250302    gcc-14.2.0
-openrisc                          allnoconfig    gcc-14.2.0
-openrisc                         allyesconfig    gcc-14.2.0
-openrisc                            defconfig    gcc-14.2.0
-parisc                           allmodconfig    gcc-14.2.0
-parisc                            allnoconfig    gcc-14.2.0
-parisc                           allyesconfig    gcc-14.2.0
-parisc                              defconfig    gcc-14.2.0
-parisc                generic-32bit_defconfig    gcc-14.2.0
-parisc                randconfig-001-20250302    gcc-14.2.0
-parisc                randconfig-002-20250302    gcc-14.2.0
-powerpc                          allmodconfig    gcc-14.2.0
-powerpc                           allnoconfig    gcc-14.2.0
-powerpc                          allyesconfig    clang-16
-powerpc                 mpc832x_rdb_defconfig    gcc-14.2.0
-powerpc               randconfig-001-20250302    gcc-14.2.0
-powerpc               randconfig-002-20250302    gcc-14.2.0
-powerpc               randconfig-003-20250302    clang-16
-powerpc                     redwood_defconfig    clang-21
-powerpc64             randconfig-001-20250302    gcc-14.2.0
-powerpc64             randconfig-002-20250302    gcc-14.2.0
-powerpc64             randconfig-003-20250302    gcc-14.2.0
-riscv                            allmodconfig    clang-21
-riscv                             allnoconfig    gcc-14.2.0
-riscv                            allyesconfig    clang-21
-riscv                               defconfig    clang-19
-riscv                 randconfig-001-20250302    clang-21
-riscv                 randconfig-002-20250302    clang-16
-s390                             allmodconfig    clang-19
-s390                              allnoconfig    clang-15
-s390                             allyesconfig    gcc-14.2.0
-s390                                defconfig    clang-15
-s390                  randconfig-001-20250302    clang-17
-s390                  randconfig-002-20250302    clang-19
-sh                               allmodconfig    gcc-14.2.0
-sh                                allnoconfig    gcc-14.2.0
-sh                               allyesconfig    gcc-14.2.0
-sh                                  defconfig    gcc-14.2.0
-sh                    randconfig-001-20250302    gcc-14.2.0
-sh                    randconfig-002-20250302    gcc-14.2.0
-sparc                            allmodconfig    gcc-14.2.0
-sparc                             allnoconfig    gcc-14.2.0
-sparc                 randconfig-001-20250302    gcc-14.2.0
-sparc                 randconfig-002-20250302    gcc-14.2.0
-sparc64                             defconfig    gcc-14.2.0
-sparc64               randconfig-001-20250302    gcc-14.2.0
-sparc64               randconfig-002-20250302    gcc-14.2.0
-um                               allmodconfig    clang-21
-um                                allnoconfig    clang-18
-um                               allyesconfig    gcc-12
-um                                  defconfig    clang-21
-um                             i386_defconfig    gcc-12
-um                    randconfig-001-20250302    gcc-12
-um                    randconfig-002-20250302    clang-16
-um                           x86_64_defconfig    clang-15
-x86_64                            allnoconfig    clang-19
-x86_64                           allyesconfig    clang-19
-x86_64      buildonly-randconfig-001-20250302    clang-19
-x86_64      buildonly-randconfig-002-20250302    clang-19
-x86_64      buildonly-randconfig-003-20250302    gcc-12
-x86_64      buildonly-randconfig-004-20250302    gcc-12
-x86_64      buildonly-randconfig-005-20250302    gcc-12
-x86_64      buildonly-randconfig-006-20250302    gcc-12
-x86_64                              defconfig    gcc-11
-xtensa                            allnoconfig    gcc-14.2.0
-xtensa                          iss_defconfig    gcc-14.2.0
-xtensa                randconfig-001-20250302    gcc-14.2.0
-xtensa                randconfig-002-20250302    gcc-14.2.0
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
