@@ -1,71 +1,72 @@
-Return-Path: <linux-rdma+bounces-8257-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8258-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7416A4C9A8
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Mar 2025 18:34:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25234A4CA82
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Mar 2025 18:57:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC00C7A657F
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Mar 2025 17:32:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F7753B94E9
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Mar 2025 17:33:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11FFC2376FF;
-	Mon,  3 Mar 2025 17:20:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B8A7237707;
+	Mon,  3 Mar 2025 17:20:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="CMdi8ycS"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="NPAnb59W"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2002A237185
-	for <linux-rdma@vger.kernel.org>; Mon,  3 Mar 2025 17:20:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8703237185
+	for <linux-rdma@vger.kernel.org>; Mon,  3 Mar 2025 17:20:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741022430; cv=none; b=SDreDBxT4FAiRu1qBhw/10BMV7XZewzzlYRMSHAesKED72IaQ9AKjwfGTBgWCM0odnVfBdMc2G8WpUX2kHp3gh3qfGMoKySD41+TYWhVe5WxpA7wYqWcCzYJ/7RFwXE7ESXUjJQJnQYTrykW9guJlp72UKvvfkfyXo5gp/tLE9Q=
+	t=1741022433; cv=none; b=B3EPw9tdCFEKfJg5/2J0dD5YqTVl63Uasi4Zv+PWfhpAFeQmvMMwa7vLFNX5WtUxH3bGzYPkIFVQyV4NPKkSYQmaYjDXyg3optxuNI0Qlrl/ENTQ38X6KKJ/pYaoojNrVJCSovzgN288M74GaLbBg9b51svo1Th2V10PNb/BAI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741022430; c=relaxed/simple;
-	bh=SRMeekkHFINuKETaLwWPKzOXMvVxS5buF37I9gRkfoU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=rLjH8WNTtzm0BjDFfVVKmq4g81EAFEn/vg/UzOjuSu6YfZyGJ3EaPlupioTihxp5stiOVJn63k4Hxj7QryV13Ebml4m+zryYeTb0ZodwSqsMLLWIIJciwNlL9IHBXGa8FcyT33hotKgdT6r8RFgI3K7OPaVGVVp0QPNl7wGpkTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=CMdi8ycS; arc=none smtp.client-ip=209.85.214.181
+	s=arc-20240116; t=1741022433; c=relaxed/simple;
+	bh=jZ47TOc6677Xks4eZF5q07FNEsntlHJb+nVJad7NcW8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=EP5e0oWRsvE+7Rq2kgD+O74+Iuf3ts65hJM5ez33MEpLcREAgYezvTdTrHSZ9dQs6P1jpdkt+/7Zj5gHpwpWMCfX5BqdtKKUQhex6n5rPl/qWnkDzcceCFi1TVRRJzeFfNPGVRDVE1W25qYTuxSrPwv6CLFAHw9d+EzW+e3PD58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=NPAnb59W; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-219f8263ae0so87152135ad.0
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Mar 2025 09:20:28 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-22113560c57so89934575ad.2
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Mar 2025 09:20:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1741022428; x=1741627228; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1741022431; x=1741627231; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=q5r60x8U1KMD7QvNIJnmpfUQ3XnTP4HocbHUY+glfl0=;
-        b=CMdi8ycSdwMXFDrYGuS/8CFzbGgszh0sfVRxcd1umTQC6B0Pmi9Tn+30in5gunk/sH
-         UUdivQJk2h1GUI9VHs8xsKA/va2lFoCAXepOX/FYfzQx9IhacvIrUCqar42/MyRh+b+l
-         QnJeRCpo9xecrDoJtr5IykO0vEkrWC1jIxvSU=
+        bh=Q6pu0AQJnWJ52XSSatM5tShnmQ55U0ikR45Fn+oMjy0=;
+        b=NPAnb59WWxBnZ9TV7e2PMrYiJ5JDnisjtg7d6rthRr71OiB3VBtzbsgWkwn9Np7FSt
+         xUevpOUzN/xBH3CVsptwS+D0HXKODJQQzA+Rttdoge2BOBPwnL1kF7SFMINZxdJUBoWk
+         IaBWldgE0UaDfPQ7LMW7nQwan4LWaaGWun4LY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741022428; x=1741627228;
+        d=1e100.net; s=20230601; t=1741022431; x=1741627231;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q5r60x8U1KMD7QvNIJnmpfUQ3XnTP4HocbHUY+glfl0=;
-        b=Mgb+LtAK9A20IspyNDQBG+Xxf9ZRIlDDzP6sM3JSX/i0I0i6PP8EkbzLuPOJDUAMwu
-         4ULT2pKnLQd89C5Syt5kqqOxCP3c3hHPVEwlEwyCeOOR4kOhuHTd1I8fNgNuNZ9xm5Fa
-         dv3L3zE7eXL/aHuE7ds1lS6FvXS36forxRL2+C9zCRm7oK2TFYLOvIjOdMwk0enkaFkD
-         VEPaFy3g/J3yb5irNzO7zTrpEmCLEA/3X2jt/kivedwRshDRsonf3LR70kZzLt8y0tl9
-         SXS5e3dKUDZl75CSGW7ZGbgIdYYtseYNVjG0olZNl+0E51HbKyJOkkzNS2mChqqIj+W0
-         016w==
-X-Gm-Message-State: AOJu0YyxacH2O789ax7/UJ4dGKU7L6g6xJokcBSohxIARSFvz88Wf+9U
-	UFz940se5THGcyzu4yLT1Ms8gMvGBtH+2cpx6kRCmZ3loS/FADrtgVRxbC7+HA==
-X-Gm-Gg: ASbGnctHHr3Bz5QAaDexNOC1zjtQR/IT80g75AlNfJhtCp/q4wao72yiZKKMCJIJ+pf
-	5b2t6Z54byAKJKL8VKjX6Jzhz7H8WC3MM8uWjaYvwg+OOtQ/G613mbQL2cmUQo+BEUNHPJZoUOH
-	V5CnQa9AeGp+h5Muuqu0DsC7zpritdyLViCozV4yxnTsv3Vi52Z5J9+9XuFQqSHP3Bi3GE7Hb7O
-	Hq02A6U9yLOV+6Ms5EaBxKhs48nnQOAGNjbO812hSa3jqu2hhoV+RIetgcQFkdI1nOozSh/7cBc
-	ZFJLGNMnfR6J88RbZX8FDrpw/g72o6vsuLZ/NM6kwpmkSe2bVw3JgwnR66b1OinzRtZRkRQh9Ww
-	76E5ASmCVSTJV7su7IJb7yno8
-X-Google-Smtp-Source: AGHT+IHTrMdOgg9FI3+16gXsuKXeROmEoz2qOq/swkCsenKerfi22G5hiKLCmVdyPS6FcRkV1+YCKg==
-X-Received: by 2002:a05:6a00:2348:b0:736:35d4:f048 with SMTP id d2e1a72fcca58-73635d50046mr12344193b3a.9.1741022428236;
-        Mon, 03 Mar 2025 09:20:28 -0800 (PST)
+        bh=Q6pu0AQJnWJ52XSSatM5tShnmQ55U0ikR45Fn+oMjy0=;
+        b=Q+4D+20dGAkB8D0lOArmMWMNqtmQM8m4+zTVKSom+DuYLhd5nKdkdWPXNpM48bi5Ku
+         d2bRiZiNBttYpEf45L8/ZyCLICF+O9PQ7WXHTVStDO61T8+sr8eYQFcv4DYZ0sfaszDb
+         CqZDMiMNA+d7LNQhX5pvfL1gJkZnusAkthYSqI/4GIGjgZt6ALCmfu88BDcFlZwaQ6+8
+         61S6ZOlEQ4/CSw0rSZU3mDlG6WOrPuBz9/kiDrfjJ2RWqA3GMPcTbKJ6WVHUc+BHDMd5
+         Wde3R5DWLIJtZmZekErd38nl+J2/zDK3/KTEgfy1kiBvs/cNSFxbjuGJchL2v4Ykf8/y
+         hSNg==
+X-Gm-Message-State: AOJu0YyxjsNCeXM1ftnqfwcs6gdoNdfQLz237/WmLfspxqEZVRN8gEaW
+	jOJ2jPgR+F6mmteC2pWAnWHHIP6yv4Lj5xn7MFzFZvWka1eSplb+cfIL+9wlyoZxFDbCTj6dOAM
+	=
+X-Gm-Gg: ASbGnct+tcFq1xa/IVX8rUqTbgB2VUKArKpZ7gsUiAtnOg+rEcGR9hGnPvc6v7E6XaZ
+	BwxgbkmyE+ctIi2b+x00tifwiqoiZEKNrl6cJV25HW0wWClUF+/LAvsdYOEyEK6osbBekhOAD5R
+	hthiHkBMOt7FrdP6J9yAuXz3cYvVKT/XrhfKr1renihpYGPaseQqHCs9F9ymc3yP3HKR2+UbMoZ
+	Ox7M6pbCDybIT2AVoJYj7/gHbFgBNT/XiZhJ8HCbWFofjSQlX2uOcS7GopCNsJ1sWNIaBCrm52z
+	ztYpk2t5rgLM8bpbaqxJ/GvwS9SYmQmGzqIxgABzenN0chVx25AWvZDlJkqw87Q7JP21sefH4Hs
+	7toCKmI+3LqorxdGJPimJUKzE
+X-Google-Smtp-Source: AGHT+IEtPwGFxIbqid/LdCiL+AadS+R1UrzUpbVwsEFgKQDop8Du2e8nYYeHJp3uRbTbcK1mgd5DTQ==
+X-Received: by 2002:a05:6a00:8d0:b0:736:6d4d:ffa6 with SMTP id d2e1a72fcca58-7366d4e0079mr444692b3a.15.1741022430890;
+        Mon, 03 Mar 2025 09:20:30 -0800 (PST)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7364ba1371asm3064917b3a.5.2025.03.03.09.20.25
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7364ba1371asm3064917b3a.5.2025.03.03.09.20.28
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 03 Mar 2025 09:20:27 -0800 (PST)
+        Mon, 03 Mar 2025 09:20:30 -0800 (PST)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -74,9 +75,9 @@ Cc: linux-rdma@vger.kernel.org,
 	kalesh-anakkur.purayil@broadcom.com,
 	Kashyap Desai <kashyap.desai@broadcom.com>,
 	Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH rdma-rc 1/3] RDMA/bnxt_re: Fix allocation of QP table
-Date: Mon,  3 Mar 2025 08:59:36 -0800
-Message-Id: <1741021178-2569-2-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH rdma-rc 2/3] RDMA/bnxt_re: Add missing paranthesis in map_qp_id_to_tbl_indx
+Date: Mon,  3 Mar 2025 08:59:37 -0800
+Message-Id: <1741021178-2569-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1741021178-2569-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1741021178-2569-1-git-send-email-selvin.xavier@broadcom.com>
@@ -88,160 +89,33 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
 From: Kashyap Desai <kashyap.desai@broadcom.com>
 
-Driver is creating QP table too early while probing before
-querying firmware capabilities. Driver currently is using
-a hard coded values of 64K as size while creating QP table.
-This resulted in a crash when firmwre supported QP count is
-more than 64K.
+The modulo operation returns wrong result without the
+paranthesis and that resulted in wrong QP table indexing.
 
-To fix the issue, move the QP tabel creation after the firmware
-capabilities are queried. Use the firmware returned maximum value
-of QPs while creating the QP table.
-
-Fixes: b1b66ae094cd ("bnxt_en: Use FW defined resource limits for RoCE")
+Fixes: 84cf229f4001 ("RDMA/bnxt_re: Fix the qp table indexing")
 Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/bnxt_re.h    |  6 ------
- drivers/infiniband/hw/bnxt_re/main.c       |  3 +--
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 10 +---------
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  3 +--
- drivers/infiniband/hw/bnxt_re/qplib_res.c  |  9 +++++++++
- drivers/infiniband/hw/bnxt_re/qplib_res.h  |  7 +++++++
- 6 files changed, 19 insertions(+), 19 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index 3721446..502a791 100644
---- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-+++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -53,12 +53,6 @@
- #define BNXT_RE_MAX_MR_SIZE_HIGH	BIT_ULL(39)
- #define BNXT_RE_MAX_MR_SIZE		BNXT_RE_MAX_MR_SIZE_HIGH
- 
--#define BNXT_RE_MAX_QPC_COUNT		(64 * 1024)
--#define BNXT_RE_MAX_MRW_COUNT		(64 * 1024)
--#define BNXT_RE_MAX_SRQC_COUNT		(64 * 1024)
--#define BNXT_RE_MAX_CQ_COUNT		(64 * 1024)
--#define BNXT_RE_MAX_MRW_COUNT_64K	(64 * 1024)
--#define BNXT_RE_MAX_MRW_COUNT_256K	(256 * 1024)
- 
- /* Number of MRs to reserve for PF, leaving remainder for VFs */
- #define BNXT_RE_RESVD_MR_FOR_PF         (32 * 1024)
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index a94c8c5..4659a2f 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -2130,8 +2130,7 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
- 	 * memory for the function and all child VFs
- 	 */
- 	rc = bnxt_qplib_alloc_rcfw_channel(&rdev->qplib_res, &rdev->rcfw,
--					   &rdev->qplib_ctx,
--					   BNXT_RE_MAX_QPC_COUNT);
-+					   &rdev->qplib_ctx);
- 	if (rc) {
- 		ibdev_err(&rdev->ibdev,
- 			  "Failed to allocate RCFW Channel: %#x\n", rc);
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 17e62f2..d230743 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -915,7 +915,6 @@ int bnxt_qplib_init_rcfw(struct bnxt_qplib_rcfw *rcfw,
- 
- void bnxt_qplib_free_rcfw_channel(struct bnxt_qplib_rcfw *rcfw)
- {
--	kfree(rcfw->qp_tbl);
- 	kfree(rcfw->crsqe_tbl);
- 	bnxt_qplib_free_hwq(rcfw->res, &rcfw->cmdq.hwq);
- 	bnxt_qplib_free_hwq(rcfw->res, &rcfw->creq.hwq);
-@@ -924,8 +923,7 @@ void bnxt_qplib_free_rcfw_channel(struct bnxt_qplib_rcfw *rcfw)
- 
- int bnxt_qplib_alloc_rcfw_channel(struct bnxt_qplib_res *res,
- 				  struct bnxt_qplib_rcfw *rcfw,
--				  struct bnxt_qplib_ctx *ctx,
--				  int qp_tbl_sz)
-+				  struct bnxt_qplib_ctx *ctx)
- {
- 	struct bnxt_qplib_hwq_attr hwq_attr = {};
- 	struct bnxt_qplib_sg_info sginfo = {};
-@@ -969,12 +967,6 @@ int bnxt_qplib_alloc_rcfw_channel(struct bnxt_qplib_res *res,
- 	if (!rcfw->crsqe_tbl)
- 		goto fail;
- 
--	/* Allocate one extra to hold the QP1 entries */
--	rcfw->qp_tbl_size = qp_tbl_sz + 1;
--	rcfw->qp_tbl = kcalloc(rcfw->qp_tbl_size, sizeof(struct bnxt_qplib_qp_node),
--			       GFP_KERNEL);
--	if (!rcfw->qp_tbl)
--		goto fail;
- 	spin_lock_init(&rcfw->tbl_lock);
- 
- 	rcfw->max_timeout = res->cctx->hwrm_cmd_max_timeout;
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-index 88814cb..30e5e18 100644
+index 30e5e18..ff873c5 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
-@@ -262,8 +262,7 @@ static inline void bnxt_qplib_fill_cmdqmsg(struct bnxt_qplib_cmdqmsg *msg,
- void bnxt_qplib_free_rcfw_channel(struct bnxt_qplib_rcfw *rcfw);
- int bnxt_qplib_alloc_rcfw_channel(struct bnxt_qplib_res *res,
- 				  struct bnxt_qplib_rcfw *rcfw,
--				  struct bnxt_qplib_ctx *ctx,
--				  int qp_tbl_sz);
-+				  struct bnxt_qplib_ctx *ctx);
- void bnxt_qplib_rcfw_stop_irq(struct bnxt_qplib_rcfw *rcfw, bool kill);
- void bnxt_qplib_disable_rcfw_channel(struct bnxt_qplib_rcfw *rcfw);
- int bnxt_qplib_rcfw_start_irq(struct bnxt_qplib_rcfw *rcfw, int msix_vector,
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-index 02922a0..6cd0520 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
-@@ -871,6 +871,7 @@ int bnxt_qplib_init_res(struct bnxt_qplib_res *res)
- 
- void bnxt_qplib_free_res(struct bnxt_qplib_res *res)
- {
-+	kfree(res->rcfw->qp_tbl);
- 	bnxt_qplib_free_sgid_tbl(res, &res->sgid_tbl);
- 	bnxt_qplib_free_pd_tbl(&res->pd_tbl);
- 	bnxt_qplib_free_dpi_tbl(res, &res->dpi_tbl);
-@@ -878,12 +879,20 @@ void bnxt_qplib_free_res(struct bnxt_qplib_res *res)
- 
- int bnxt_qplib_alloc_res(struct bnxt_qplib_res *res, struct net_device *netdev)
- {
-+	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
- 	struct bnxt_qplib_dev_attr *dev_attr;
- 	int rc;
- 
- 	res->netdev = netdev;
- 	dev_attr = res->dattr;
- 
-+	/* Allocate one extra to hold the QP1 entries */
-+	rcfw->qp_tbl_size = max_t(u32, BNXT_RE_MAX_QPC_COUNT + 1, dev_attr->max_qp);
-+	rcfw->qp_tbl = kcalloc(rcfw->qp_tbl_size, sizeof(struct bnxt_qplib_qp_node),
-+			       GFP_KERNEL);
-+	if (!rcfw->qp_tbl)
-+		return -ENOMEM;
+@@ -284,9 +284,10 @@ int bnxt_qplib_deinit_rcfw(struct bnxt_qplib_rcfw *rcfw);
+ int bnxt_qplib_init_rcfw(struct bnxt_qplib_rcfw *rcfw,
+ 			 struct bnxt_qplib_ctx *ctx, int is_virtfn);
+ void bnxt_qplib_mark_qp_error(void *qp_handle);
 +
- 	rc = bnxt_qplib_alloc_sgid_tbl(res, &res->sgid_tbl, dev_attr->max_sgid);
- 	if (rc)
- 		goto fail;
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-index 7119902..2fb540f 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-@@ -49,6 +49,13 @@ extern const struct bnxt_qplib_gid bnxt_qplib_gid_zero;
- #define CHIP_NUM_58818          0xd818
- #define CHIP_NUM_57608          0x1760
- 
-+#define BNXT_RE_MAX_QPC_COUNT		(64 * 1024)
-+#define BNXT_RE_MAX_MRW_COUNT		(64 * 1024)
-+#define BNXT_RE_MAX_SRQC_COUNT		(64 * 1024)
-+#define BNXT_RE_MAX_CQ_COUNT		(64 * 1024)
-+#define BNXT_RE_MAX_MRW_COUNT_64K	(64 * 1024)
-+#define BNXT_RE_MAX_MRW_COUNT_256K	(256 * 1024)
-+
- #define BNXT_QPLIB_DBR_VALID		(0x1UL << 26)
- #define BNXT_QPLIB_DBR_EPOCH_SHIFT	24
- #define BNXT_QPLIB_DBR_TOGGLE_SHIFT	25
+ static inline u32 map_qp_id_to_tbl_indx(u32 qid, struct bnxt_qplib_rcfw *rcfw)
+ {
+ 	/* Last index of the qp_tbl is for QP1 ie. qp_tbl_size - 1*/
+-	return (qid == 1) ? rcfw->qp_tbl_size - 1 : qid % rcfw->qp_tbl_size - 2;
++	return (qid == 1) ? rcfw->qp_tbl_size - 1 : (qid % (rcfw->qp_tbl_size - 2));
+ }
+ #endif /* __BNXT_QPLIB_RCFW_H__ */
 -- 
 2.5.5
 
