@@ -1,90 +1,91 @@
-Return-Path: <linux-rdma+bounces-8270-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8271-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A2D0A4CBE8
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Mar 2025 20:19:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E52FA4CD17
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Mar 2025 21:57:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 058A77A315C
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Mar 2025 19:17:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB9427A4796
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Mar 2025 20:56:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EA4E148316;
-	Mon,  3 Mar 2025 19:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FD342356AB;
+	Mon,  3 Mar 2025 20:57:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c5xge0eq"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="WFd+7kVM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE91E33F6
-	for <linux-rdma@vger.kernel.org>; Mon,  3 Mar 2025 19:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EA3A11CA9;
+	Mon,  3 Mar 2025 20:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741029510; cv=none; b=kd1Fy5wxfAV8pGB0d3Lgaq+Fwr92MXkhTRn9ni2cIJAsXBLuVEQyFjPA7/X72WwASIdPftvw9TIHrvHLUt9hhTQzLDnFHeTcLP8jcryvomqdBrlClw/Bfq9TGspyNt0TXHFgXKbmhxXFxLNTvrxKNvfkt/Xj4KgewoY/fgs38WU=
+	t=1741035426; cv=none; b=jeYpJ0liGmJ1vE4D5caevM3EhV/8OGY8pUMPITOb5hRDGKCVGl6YwZpj4iqJTbe3sB0+vT5G2SFBdnyw9NLRF+rC0xjOZvav6a0r9ir/gc/aUpyIpGOODCxzYOZklZSXifHG1Fs4OkKAhafCoBF5k5hvhGZbd/AxcKi9SKaoBi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741029510; c=relaxed/simple;
-	bh=pYi7u8DW0nQlCdhhJRJU4NP2X1BCjv/nknhLOql1XPM=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=Tg83jAtXPg9umsOOPT5wLCh7fBGvjJw3biqiz+BJovRifXAhQ+q/yZ71F3jnUGi9WUVI4Tfq8VtnuOwcyUqItdhOSak2v9IPYC8eNDDxmRIKqZvmFELJ6nv3vuj0yv6s6eNGdDS3ZtKBc6ub/ELH91KBWjDrYYssWnew6/JEH1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c5xge0eq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3D2AC4CED6;
-	Mon,  3 Mar 2025 19:18:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741029510;
-	bh=pYi7u8DW0nQlCdhhJRJU4NP2X1BCjv/nknhLOql1XPM=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=c5xge0eqHUfwhwUx9WboFVCR6Qr2mpJ443BBFGIEiIvCZkwobtPBub4maWkTjdQ2r
-	 NoscYJz2RIfNLI3n88A0Hka9zbjlJSfduykvSThTsJAXvOfI88qj8ylhY/1+tjKiQy
-	 vSS+cWjX8wiDitBVDriSPBkeA01xvbmyeSdrx+nLD+kHlsVy+E0y8h5/vsYYSIwGhI
-	 HTHIpYWa86uzg+uIKVGadpdcPRMikgiuu20e3axJB6Bi/D/6JHqoav9V7k0qKaO3rk
-	 oYvLAWdgXlLaBYgZeT1QikjcnOwPKufh2wR96PAqTOo6hvVY/oGVTH50DtSy2qKcuU
-	 uayrM+lDqUysg==
-From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
- kalesh-anakkur.purayil@broadcom.com
-In-Reply-To: <1741021178-2569-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1741021178-2569-1-git-send-email-selvin.xavier@broadcom.com>
-Subject: Re: [PATCH rdma-rc 0/3] RDMA/bnxt_re: Bug fixes
-Message-Id: <174102950710.42942.6950220751217847963.b4-ty@kernel.org>
-Date: Mon, 03 Mar 2025 14:18:27 -0500
+	s=arc-20240116; t=1741035426; c=relaxed/simple;
+	bh=wkPrI5PI4gOi80WWVhId6dzA8Q9owv5JCghvbzkIVPM=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=n3JG0wtFH7R04RvBbbe2Lan+zeQvGgYpxE6cf61o7ycytzdSj80DvaQNBGewJLGpDbW5Ai8XJpHgedJ29J+KA+kDstjKoza3UENdFAuXvnEXN9Ozapd4lZSc67ZngS6Uh1WwN026hXZX+QNTRSA5bhmBfmTrswRnrjjiUhGldrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=WFd+7kVM; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [192.168.35.166] (c-24-22-154-137.hsd1.wa.comcast.net [24.22.154.137])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 860C12110483;
+	Mon,  3 Mar 2025 12:57:04 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 860C12110483
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1741035424;
+	bh=3qh+61wOXo3xnM/WVr1EaxpXDMg9Qc5SkS1wS9/KCaA=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=WFd+7kVMwb8m/yRhGu82uGV6e/HKaH3YScqYDNg3VqULYlWwhYN1W/EwkQ+KpHk2M
+	 B+UrWMeoRFcHhvu9/IkXdfvLFS9RIsO/J8jsCs0ntQiYwMGh95feOKPx7lgiJPPiC7
+	 /EfD2TyFRiTmU900qpo0PnuB9Rpe0/+ft8U6VJfk=
+Message-ID: <f0fa9bc3-159a-413f-a957-0298a55cf728@linux.microsoft.com>
+Date: Mon, 3 Mar 2025 12:57:09 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Cc: eahariha@linux.microsoft.com, Wenjia Zhang <wenjia@linux.ibm.com>,
+ Jan Karcher <jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>,
+ Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Pablo Neira Ayuso <pablo@netfilter.org>,
+ Jozsef Kadlecsik <kadlec@netfilter.org>, David Ahern <dsahern@kernel.org>,
+ linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Subject: Re: [PATCH net-next 0/3] Converge on using secs_to_jiffies() part two
+To: Jakub Kicinski <kuba@kernel.org>
+References: <20250219-netdev-secs-to-jiffies-part-2-v1-0-c484cc63611b@linux.microsoft.com>
+ <20250221162107.409ae333@kernel.org>
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+Content-Language: en-US
+In-Reply-To: <20250221162107.409ae333@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
 
-
-On Mon, 03 Mar 2025 08:59:35 -0800, Selvin Xavier wrote:
-> Includes some of the critical fixes found while testing
-> with increased resource limits. Please review and apply.
+On 2/21/2025 4:21 PM, Jakub Kicinski wrote:
+> On Wed, 19 Feb 2025 20:30:35 +0000 Easwar Hariharan wrote:
+>> The conversion is made with Coccinelle with the secs_to_jiffies() script
+>> in scripts/coccinelle/misc. Attention is paid to what the best change
+>> can be rather than restricting to what the tool provides.
+>>
+>> The non-netdev patches that include the update to secs_to_jiffies.cocci to address
+>> expressions are here: https://lore.kernel.org/all/20250203-converge-secs-to-jiffies-part-two-v2-0-d7058a01fd0e@linux.microsoft.com
 > 
-> Thanks,
-> Selvin Xavier
+> Can the secs_to_jiffies cocci check script finally run in report mode?
 > 
-> Kashyap Desai (2):
->   RDMA/bnxt_re: Fix allocation of QP table
->   RDMA/bnxt_re: Add missing paranthesis in map_qp_id_to_tbl_indx
-> 
-> [...]
+> I think that needs to be fixed first, before we start "cleaning up"
+> existing code under net.
 
-Applied, thanks!
+It does not, yet. I'm not ignoring this feedback, it's just taking a bit
+of wall clock time between commercial commitments. :) 
 
-[1/3] RDMA/bnxt_re: Fix allocation of QP table
-      https://git.kernel.org/rdma/rdma/c/82f1f575aa13a6
-[2/3] RDMA/bnxt_re: Add missing paranthesis in map_qp_id_to_tbl_indx
-      https://git.kernel.org/rdma/rdma/c/67ee8d496511ad
-[3/3] RDMA/bnxt_re: Fix reporting maximum SRQs on P7 chips
-      https://git.kernel.org/rdma/rdma/c/e8e6087c2f7407
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+Thanks,
+Easwar (he/him)
 
