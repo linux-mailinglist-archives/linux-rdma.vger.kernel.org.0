@@ -1,153 +1,132 @@
-Return-Path: <linux-rdma+bounces-8285-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8286-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73862A4D3FC
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 07:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EBF7A4D4BA
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 08:20:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 668B6188F17E
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 06:40:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3728B18911DC
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 07:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448981F4E47;
-	Tue,  4 Mar 2025 06:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2736F1FC7F2;
+	Tue,  4 Mar 2025 07:16:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="ShSP2F4X"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TuO/UDwO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5FE1EF390;
-	Tue,  4 Mar 2025 06:40:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1304B1FBEB3;
+	Tue,  4 Mar 2025 07:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741070404; cv=none; b=Jxh4DbnNDgtIN/P9DrtGMaGr7l706/IpVE/bHDTjeXyGaTet9jiOcgEIEk/k9/x3HlRyIAOdShXMGqo37UQPC/PoQ2DvV3zBfWTM8iH9MwFcddaUW5M5QhTvZinsES9jPe1uUihx+XrxtN23wU+Rfm3B88er0LhFZWn5ekqX6Ko=
+	t=1741072585; cv=none; b=r6WS2AaAIXRnoWoGftfmOCvLjLJF7Nn0h/Vrzr5Ag+DuO87d+Qest5niy71rK44jCzpBwwlwUIIQVwLyZvjmWqJHMQ/86ZhfnVCYtMGurkAaKh+j1OVs4IeRUQtu4FqwRLZ9FFdfrbwDMiOCxtwlQXuNkg7hQSThfOjkNpiJ4h0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741070404; c=relaxed/simple;
-	bh=L6Kn7/pcyX4sixRSMwjPYfWPrrukaks09cKCzVtg2Ko=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oS2xMXRETjDVsmxC0KsHXKZnId+YfcWLOghFYe12Yufuj24wxqm7LNzzogCOR5DUgb4DmwxvGe8qp5jeOXtvjXvpFjU98fF+u8fOZ5B+cdo3Tamd6FWpD4g48Wb4zH99tWKVQiXkDcgd3W1HTOkabWB21F5v4b+KUU/6S6FkpTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=ShSP2F4X; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0431384.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 523MkFcv014013;
-	Mon, 3 Mar 2025 22:39:47 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	cc:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pfpt0220; bh=IN6vN4UD4bD2YhMl6yv2TFyow
-	tG7VQ1DGZOuXkEAjjU=; b=ShSP2F4XfOkh487S+Hmq8lcGVdoa8yjC2EMxoZFJJ
-	OVCFNeTUrL6RrZ7azqzNHctZUNBtgfK9YH60x1UCYsWPFYP1WS4v2GvY+hv3TthA
-	xFlGiNB0HgilTFwgLFlrdgDctYdh1vn2chEIWu78i6XHhBxM0xQ58zu3nSiynXZ+
-	He5qaARmyLiHcGWU0xMMQCU9k//L7sUpKZ3KgiRfUQIP4TKn8sJpMy+17uD0IIl8
-	70CuRvWhWF1A8MK2Wo+P6gBr06EvbctFmIypXfwYwW2Et4cq6g0QLjpFkEM8zHrD
-	RvnMbfTj4jZwlrSTydkIRiNjuwTPU3IgVXlJ1c3EG/M6g==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 454qcfc89y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 03 Mar 2025 22:39:47 -0800 (PST)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Mon, 3 Mar 2025 22:39:45 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Mon, 3 Mar 2025 22:39:45 -0800
-Received: from maili.marvell.com (unknown [10.28.36.165])
-	by maili.marvell.com (Postfix) with SMTP id 042693F707B;
-	Mon,  3 Mar 2025 22:39:41 -0800 (PST)
-Date: Tue, 4 Mar 2025 12:09:40 +0530
-From: Ratheesh Kannoth <rkannoth@marvell.com>
-To: <longli@linuxonhyperv.com>
-CC: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Konstantin Taranov <kotaranov@microsoft.com>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-hyperv@vger.kernel.org>, Long Li
-	<longli@microsoft.com>
-Subject: Re: [Patch rdma-next] RDMA/mana_ib: handle net event for pointing to
- the current netdev
-Message-ID: <20250304063940.GA2702870@maili.marvell.com>
-References: <1740782519-13485-1-git-send-email-longli@linuxonhyperv.com>
+	s=arc-20240116; t=1741072585; c=relaxed/simple;
+	bh=vA1PHVGyKBsZXGTUFJhLoHOtf7WUBd9NEZ6psAdExJo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FzfzCurRN7DaGwJ4u6Vx/Q17FVBFwa5uO/SrQ67cwvZovV+x4yAfmPmN4Cm58oYU9NfUl/KD3PQ0WG31vX0hEgCht7rJ4TJjQOgO4lHHAkWMHnGbG/7GG+Uxx5eECz9IcoODviQPseWMWxVMfX0aINJ8EhPSKGaBHt+RE6iQAY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TuO/UDwO; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741072584; x=1772608584;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vA1PHVGyKBsZXGTUFJhLoHOtf7WUBd9NEZ6psAdExJo=;
+  b=TuO/UDwO7TDlfSQdj6WYQehiVCSkfRA4ISXOJVnPhJTxs8o8oedJCgYG
+   pc4CJysAlN8WTjt62OjwafW6ffkKSju5KAzBhx8NKdohe4rdD+3+wGoEV
+   bMChCTpKAeIXGxAt/bUs6kc0Ikdmj2DzvQC+eEoN1KvDI2mZo6uuEb6nW
+   KwUiTxNQkvae4xEV9dkL0hc8RB5yAnJWn/VQrbBXLSVlkPLIcMvM77rA1
+   IdEXgXGlaairSie+ygUNnh3fP7DjQxzqL4zJqFJ2CChtaMUp01OtD+HpT
+   H4s+fAxQ5lrd1rGoO9gwqIzfKNGGCgyyadTnYb5OalMlEgFESTUZSIOLv
+   w==;
+X-CSE-ConnectionGUID: iYFu+B1sRkmUWH7cub0c7Q==
+X-CSE-MsgGUID: 5niIKDU+T+yhRdVBpmMAtQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11362"; a="44784277"
+X-IronPort-AV: E=Sophos;i="6.13,331,1732608000"; 
+   d="scan'208";a="44784277"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2025 23:16:23 -0800
+X-CSE-ConnectionGUID: ErItsbA0TaGriciw0SFmDg==
+X-CSE-MsgGUID: TbASbV78QoSmaKexCGnnIg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.13,331,1732608000"; 
+   d="scan'208";a="118447613"
+Received: from mev-dev.igk.intel.com ([10.237.112.144])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2025 23:16:20 -0800
+Date: Tue, 4 Mar 2025 08:12:32 +0100
+From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman <gal@nvidia.com>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Amir Tzin <amirtz@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
+Subject: Re: [PATCH net-next 4/6] net/mlx5: Lag, Enable Multiport E-Switch
+ offloads on 8 ports LAG
+Message-ID: <Z8an4KmSILuK4mmv@mev-dev.igk.intel.com>
+References: <20250226114752.104838-1-tariqt@nvidia.com>
+ <20250226114752.104838-5-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1740782519-13485-1-git-send-email-longli@linuxonhyperv.com>
-X-Authority-Analysis: v=2.4 cv=VaMNPEp9 c=1 sm=1 tr=0 ts=67c6a033 cx=c_pps a=rEv8fa4AjpPjGxpoe8rlIQ==:117 a=rEv8fa4AjpPjGxpoe8rlIQ==:17 a=KPitI-3vFcalBia9:21 a=kj9zAlcOel0A:10 a=Vs1iUdzkB0EA:10 a=Odnh0R2cAAAA:8 a=yMhMjlubAAAA:8 a=WLnx8VTwFErqAH7yV0kA:9
- a=CjuIK1q_8ugA:10 a=lNAA6UHySJB7qmBR1x20:22
-X-Proofpoint-ORIG-GUID: TP3-lmfRf75I-umk3i7iCl3RY8Wv3Jv6
-X-Proofpoint-GUID: TP3-lmfRf75I-umk3i7iCl3RY8Wv3Jv6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-04_03,2025-03-03_04,2024-11-22_01
+In-Reply-To: <20250226114752.104838-5-tariqt@nvidia.com>
 
-On 2025-03-01 at 04:11:59, longli@linuxonhyperv.com (longli@linuxonhyperv.com) wrote:
-> From: Long Li <longli@microsoft.com>
->
-> When running under Hyper-V, the master device to the RDMA device is always
-> bonded to this RDMA device if it's present in the kernel. This is not
-> user-configurable.
->
-> The master device can be unbind/bind from the kernel. During those events,
-> the RDMA device should set to the current netdev to relect the change of
-> master device from those events.
->
-> Signed-off-by: Long Li <longli@microsoft.com>
+On Wed, Feb 26, 2025 at 01:47:50PM +0200, Tariq Toukan wrote:
+> From: Amir Tzin <amirtz@nvidia.com>
+> 
+> Patch [1] added mlx5 driver support for 8 ports HCAs which are available
+> since ConnectX-8. Now that Multiport E-Switch is tested, we can enable
+> it by removing flag MLX5_LAG_MPESW_OFFLOADS_SUPPORTED_PORTS.
+> 
+> [1]
+> commit e0e6adfe8c20 ("net/mlx5: Enable 8 ports LAG")
+> 
+> Signed-off-by: Amir Tzin <amirtz@nvidia.com>
+> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 > ---
->  drivers/infiniband/hw/mana/device.c  | 35 ++++++++++++++++++++++++++++
->  drivers/infiniband/hw/mana/mana_ib.h |  1 +
->  2 files changed, 36 insertions(+)
->
-> diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-> index 3416a85f8738..3e4f069c2258 100644
-> --- a/drivers/infiniband/hw/mana/device.c
-> +++ b/drivers/infiniband/hw/mana/device.c
-> @@ -51,6 +51,37 @@ static const struct ib_device_ops mana_ib_dev_ops = {
->  			   ib_ind_table),
->  };
->
-> +static int mana_ib_netdev_event(struct notifier_block *this,
-> +				unsigned long event, void *ptr)
-> +{
-> +	struct mana_ib_dev *dev = container_of(this, struct mana_ib_dev, nb);
-> +	struct net_device *event_dev = netdev_notifier_info_to_dev(ptr);
-> +	struct gdma_context *gc = dev->gdma_dev->gdma_context;
-> +	struct mana_context *mc = gc->mana.driver_data;
-> +	struct net_device *ndev;
-> +
-> +	if (event_dev != mc->ports[0])
-> +		return NOTIFY_DONE;
-> +
-> +	switch (event) {
-> +	case NETDEV_CHANGEUPPER:
-> +		rcu_read_lock();
-> +		ndev = mana_get_primary_netdev_rcu(mc, 0);
-> +		rcu_read_unlock();
-...
-> +
-> +		/*
-> +		 * RDMA core will setup GID based on updated netdev.
-> +		 * It's not possible to race with the core as rtnl lock is being
-> +		 * held.
-> +		 */
-> +		ib_device_set_netdev(&dev->ib_dev, ndev, 1);
-rcu_read_unlock() should be here, right ?
-> +
-> +		return NOTIFY_OK;
-> +	default:
-> +		return NOTIFY_DONE;
-> +	}
-> +}
-> +
->
+>  drivers/net/ethernet/mellanox/mlx5/core/lag/mpesw.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/mpesw.c b/drivers/net/ethernet/mellanox/mlx5/core/lag/mpesw.c
+> index ffac0bd6c895..cbde54324059 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/lag/mpesw.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/mpesw.c
+> @@ -65,7 +65,6 @@ static int mlx5_mpesw_metadata_set(struct mlx5_lag *ldev)
+>  	return err;
+>  }
+>  
+> -#define MLX5_LAG_MPESW_OFFLOADS_SUPPORTED_PORTS 4
+>  static int enable_mpesw(struct mlx5_lag *ldev)
+>  {
+>  	int idx = mlx5_lag_get_dev_index_by_seq(ldev, MLX5_LAG_P1);
+> @@ -77,9 +76,6 @@ static int enable_mpesw(struct mlx5_lag *ldev)
+>  		return -EINVAL;
+>  
+>  	dev0 = ldev->pf[idx].dev;
+> -	if (ldev->ports > MLX5_LAG_MPESW_OFFLOADS_SUPPORTED_PORTS)
+> -		return -EOPNOTSUPP;
+> -
+>  	if (mlx5_eswitch_mode(dev0) != MLX5_ESWITCH_OFFLOADS ||
+>  	    !MLX5_CAP_PORT_SELECTION(dev0, port_select_flow_table) ||
+>  	    !MLX5_CAP_GEN(dev0, create_lag_when_not_master_up) ||
+
+Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+
+> -- 
+> 2.45.0
 
