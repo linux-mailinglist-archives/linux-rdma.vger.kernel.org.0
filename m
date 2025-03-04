@@ -1,826 +1,217 @@
-Return-Path: <linux-rdma+bounces-8312-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8314-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F24AA4E07F
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 15:18:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A5A9A4E110
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 15:35:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C1801887240
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 14:16:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8786C189ABCB
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 14:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EE420551D;
-	Tue,  4 Mar 2025 14:16:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCED220E012;
+	Tue,  4 Mar 2025 14:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KwPD8XgW"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="eZ4eBIQ4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2047.outbound.protection.outlook.com [40.107.243.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88699205518;
-	Tue,  4 Mar 2025 14:16:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741097766; cv=none; b=PPlF9uV+IB3eBZvZoyFD05Mj/MNVpxMluzXpKOyAMLVrDo6p0L8z/BTHhTHwA191IrkCggSGDLqv/m4MjY8e4hREnUGpdk+yXS6jk+PRcdqy88Kbel1Y3GIA2ZC4JuN8+7lUyIet3jWARJsir9qKmjEzXkmByx6NNBHQpjCOt10=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741097766; c=relaxed/simple;
-	bh=sN0DLmvq/imr6sTeAr1Tu9Tpft4mYmIThOllTYwmeYo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E0gZP7vu6HBmk+K7lklXVbOjmceXNzjj+8ljdfQ0PKq0QSejSBrHtcM9ec6ckuViTKniJH6hTAJ8c4L2Hy9PdTQwEXMNZPzzSfTXaFD5thaKIghyVnfE+PJH5vg3MBZHkTRAgfYITcARUQxNRco24ODPNM0ua+ISvz+H/C36izs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KwPD8XgW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44796C4CEE5;
-	Tue,  4 Mar 2025 14:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741097766;
-	bh=sN0DLmvq/imr6sTeAr1Tu9Tpft4mYmIThOllTYwmeYo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KwPD8XgWv5sv8aa2tNM5imMTWzShrzRc2jRUU2udGwVH7gi1I5ZddaUFbxQyIYHSu
-	 m/kGfLEdnr35VvsLWguklsN1eU607ZhLxTNN7Ye8gWf3uXjuWSlKqWc7rq9yuLJaRF
-	 PyF8vlCorg9UMty4FdHANhjvdvf8GOCRXF0C15fv+Tms8hWx0XFXS6fYnAOASqSrBU
-	 nqka2ivVYjejAGxW5dSzxQfj8+lzb2n9BrTU7Tv+358nDDj4iCPOVeQgoSkDQJWjaJ
-	 W5FbsgP3X4bzGRpD0Wei0Jwfq0SrBDD1/+2L90uRw2TIQhpcAZEll7YpCLzud0BKdZ
-	 Zkr30hA8xjYOw==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Patrisious Haddad <phaddad@nvidia.com>,
-	linux-rdma@vger.kernel.org,
-	Mark Bloch <mbloch@nvidia.com>,
-	netdev@vger.kernel.org,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>
-Subject: [PATCH mlx5-next 5/5] RDMA/mlx5: Support optional-counters binding for QPs
-Date: Tue,  4 Mar 2025 16:15:29 +0200
-Message-ID: <b89d216c34ab8d2b4e81bcb78e6983c3f4be1d0d.1741097408.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <cover.1741097408.git.leonro@nvidia.com>
-References: <cover.1741097408.git.leonro@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E61C2512E9;
+	Tue,  4 Mar 2025 14:29:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.47
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741098595; cv=fail; b=HdIl6+BGgpb8lD7Ia2HO99B7ytLnJO8OnNKce+8bI/oarbrejqZ3ZG9MguCMPS0flnvUYVq85ec4murACvPjEkWd0gYf9laqz/9c1qBfptZqgvfG9vE0aRb6/xq0LV6mEkzJ4sjxUvzIpu9rdqF70KbLLShjSkAG+w5CjmJ3ndU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741098595; c=relaxed/simple;
+	bh=AWmXeP637apDnYFTNHjK1EtRSH7kFMGVBmjjpC8N2tM=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=fhQlJDZ1ajNRzJl70+/jTk6wqXhVLpuG6gLZ1Vkv5V/8gH5KVHUW7y7VeEttrYcE/+3D3zHWwCl/VyejOgnfiK5XLLGmV7Aa5pwz/VyORNFa+Fl/KyKv8xU65vZbq8pJO+D2954CyeUPv/OaYgzynbdzFqyWYHHnToi5+jdIg1Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=eZ4eBIQ4; arc=fail smtp.client-ip=40.107.243.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=AnzVKE3hlb81L+ii68KRyyep8+5bJuE1r7qKEBUruOTZbnBy0ZBxgFK7ahP8WYSLx/behv6TKSN8J0eTScoisUPwsGnA49tHDcYqeAsLwdcUb/SHM/MxFfEJ5aGbRI5iANtdw/bgBVkB7L8BzAgeFJtoIkTQ3oJRiXodEeWOS6N/b3t8wzb3lLFAjxyXuajO4SnpKJ6J59CUZXLz/s+8INe33jVmXLkXSxV9koHRalD33A2iv2XVR+Qlz39juDmGQ0nFs/u0Tmst7sz4tuZzgqjdYLI45RrtyWZCe565I6/CN2fFjL9pYbsheu31Bqu1xZ0q+SXR/MQDjliR9nNQBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AWmXeP637apDnYFTNHjK1EtRSH7kFMGVBmjjpC8N2tM=;
+ b=YqvUxcfStzCoLDRRTpL9lPfIsm78TiOFaYJ2ltMcPIDTpCrjJxkN1LJZ6pycDPVEwMoe2ZzkqlNMMghU4z3sVj/Nk/lrJHknsJrm8Odx8oWhoN5ZgATwJ3DFqG9CTj7zxrHAAJkFABX+F7T9aQElnwjPzyUynZCFC8e7oGikOG5oP2QlPS4h4ugkkoaoS69nUvnMMvfr/oKLerNqx5TR2tJlOGJvs72dtgya8KliNLGzTCwWedJ9rp41/NKZrXQmEsMdvtUynVpx9d0p/Yo1unDCz95oo/96S2TW/bbec7+k4Ms/lkh/3PsRC4BNfkXBmDyfsjKmJy3qXAp94oIvgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AWmXeP637apDnYFTNHjK1EtRSH7kFMGVBmjjpC8N2tM=;
+ b=eZ4eBIQ4IeAT4QpUGtyQiYAFMgxdQOV9Kg8fn73RjkniV4MNr+wMGBCBcI9oYk/ntHHqccIj3kVelZIcApgyjtoh9ydzClgH3AEOTF8GZW8rR2BKgM0NVYhae/xXW9VBat4tlReOraZ6/9xw5FlRjJl9uBdfiJ+bT6+mBHhvJus=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by MW4PR12MB6731.namprd12.prod.outlook.com (2603:10b6:303:1eb::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.25; Tue, 4 Mar
+ 2025 14:29:49 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::46fb:96f2:7667:7ca5%5]) with mapi id 15.20.8489.025; Tue, 4 Mar 2025
+ 14:29:49 +0000
+Message-ID: <0d471fca-b64c-4392-88ee-d26dbfe3cf2d@amd.com>
+Date: Tue, 4 Mar 2025 15:29:42 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/4] cover-letter: Allow MMIO regions to be exported
+ through dmabuf
+To: Jason Gunthorpe <jgg@nvidia.com>,
+ "Kasireddy, Vivek" <vivek.kasireddy@intel.com>
+Cc: Wei Lin Guay <wguay@meta.com>,
+ "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ Dag Moxnes <dagmoxnes@meta.com>, "kbusch@kernel.org" <kbusch@kernel.org>,
+ Nicolaas Viljoen <nviljoen@meta.com>, Oded Gabbay <ogabbay@kernel.org>,
+ Simona Vetter <simona.vetter@ffwll.ch>, Leon Romanovsky <leon@kernel.org>,
+ Maor Gottlieb <maorg@nvidia.com>
+References: <20241216095920.237117-1-wguay@fb.com>
+ <IA0PR11MB7185FDD56CFDD0A2B8D21468F83B2@IA0PR11MB7185.namprd11.prod.outlook.com>
+ <924671F4-E8B5-4007-BE5D-29ED58B95F46@meta.com>
+ <IA0PR11MB71858B2E59D3A9F58CEE83DCF8052@IA0PR11MB7185.namprd11.prod.outlook.com>
+ <61DF4F0E-D947-436B-9160-A40079DB9085@meta.com>
+ <IA0PR11MB7185E7DBB9E959A2F40D4170F8C22@IA0PR11MB7185.namprd11.prod.outlook.com>
+ <20250226133822.GA28425@nvidia.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20250226133822.GA28425@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0187.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:ab::17) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|MW4PR12MB6731:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2ff19752-da2c-42df-ae7c-08dd5b29051d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?VU1VQktJcUhvMU9HYms5WU5XTDc3NFFuQXp0VUwxS2hNNTJNaFRiejV4S1I0?=
+ =?utf-8?B?QmtPT05hdS9BZW9hOFhqU3YwQ1FTd2NwR01qZ0xUc0tWSkd4SkZXMm03d1ho?=
+ =?utf-8?B?K2RaK29OMmFCMy9ZdWhHeVhqVjc3TUlWcWhNWFo4eXNTZWZubi80SHlxOFdl?=
+ =?utf-8?B?KzFzbTVkTFI3ZWVjTng3UmIyK2RSV1ZUMjI5TFBoeWlLcG84K1Q1WW1tVE9w?=
+ =?utf-8?B?N1Nob1Vvc3B2VDFUUlZCRzU0ZGZCRFFVaDhjS2lseHdvZVU0TnU5OFdJK1kr?=
+ =?utf-8?B?WTRVUEtkU3ZRRkJIYzcvUkJqQlA3TENFSmpOdVhuRCtINDBYQW5xMnNFMkI5?=
+ =?utf-8?B?dWNpV21RWVBnTTVaaUoxczVicDF2SHRMNkJIZnV6bDBCb3FLUHA2ajhBa0ov?=
+ =?utf-8?B?YndLM0ppSWRacnY3NGJSa2JuQjJtcTlHdnNFTU5CaVBRakgvbFdvMVhlWFFH?=
+ =?utf-8?B?MWhHU3BaOEhXeDkxN0VFTDVtZWU3aVE3bytCTzhMR1BRaTBsaFVHSldTQ2ly?=
+ =?utf-8?B?emJUMko4dk10eDhGeFhkZ3FmM3hyWlFqbkw2Vkt1VWhVYWZBZFIvbnl0K0lD?=
+ =?utf-8?B?T3RIM3FLWmtnQU5IcmZqRENCeXByYUk1YnU0bGJtallQdTZVNE9VdHdwR2JC?=
+ =?utf-8?B?R01GQ0FRVGtlYzEwaUFsRjEreTRuSlROWk44amNVQU90NzUyR2J1WnFBekpG?=
+ =?utf-8?B?QVlXdkplcHgyQURrN2s2ZVliOUZxZnFqbUlIRXhkUlh0bmw4NnQ3MGpyRUp5?=
+ =?utf-8?B?b1ZxZFUxQ2ZUeVNuaVBpZGpoUjZrK0l6TWVGbnZyeTJUR0k0bVo2WllJa3By?=
+ =?utf-8?B?NjczV2J2dFFUL0VoQkVXc1NOaWVGWEVkc3J3UFljdEUyc1lXYmRBbEFocEFC?=
+ =?utf-8?B?MVY1anUxaU16MUJPQzJ5UVI2KzZJUU9tSUxobjVRUTlrM1RPdGh6ak9iZ3ho?=
+ =?utf-8?B?WVNsZEdrTXpIcGtyK29ValpwUkdFNUpla3g0Ni9jWTVoR0VUVFErZGEzNVBx?=
+ =?utf-8?B?VHZxMmlVbE1lbFpMUTIrVFhkOWYzaWpkTU1hRTNVSE54Wm5SYUh3Ny9xdllP?=
+ =?utf-8?B?dEFIQXYzWFhLQXN6N3pEMTdWRnVQV2RTUGVXQVp4dGo4Uk9DUFFuQ2YwVFBT?=
+ =?utf-8?B?MFhmSy9ZUHphdDRUTE5iZlpiNWF1VXVQREFkVnlCMGRwQ0YraWdIMXROckV1?=
+ =?utf-8?B?QU43cGN1clRINnZIelZONFVYTElBb0FOV21oYTRBZHl5ODE3T2Myd0wwMHlM?=
+ =?utf-8?B?U0dIdU1JM29yaUR5TXU3KzE5eFRMRWFDOUl1blJ3S2lmdTU2TVpVbVhpeEpZ?=
+ =?utf-8?B?TUpzRkcrRnVseno3S0J0ekFGRm84SFRCQW9ycmRRdXJlY1JQNUZaN2ZIU3Nq?=
+ =?utf-8?B?TWJkeXFpWC92M01zc1JoT05JanZhRVRtTDFUMkY4ZzZnN2g3R2hjZ0V0NUxh?=
+ =?utf-8?B?UXBHU1djZTFzYkt5em1ETGVwYmxxUzk5NnN1TG9hakdydEN3RkZoa0h0ZCtZ?=
+ =?utf-8?B?QjFjR0Y4OTkydmkzODREYlNQTE9KYkVNRGxvY0FFd01MdWo1eElneGI2cHZZ?=
+ =?utf-8?B?TDRvdnlGSEVHaFJScHdwM3JyaTJHcVhKbU9zOUFlQ2QwWktWMHBKYVRtL2ZV?=
+ =?utf-8?B?TlpoQWxvTEJrcFprUm1FS0x2UGVXT0V6dWR6a1VOZXMyUjZJRm1yU0ViOE5S?=
+ =?utf-8?B?YUZRYzFLVW9KZjN4WFhmbElFamVhR3IzWE5oU2lhckY2NFUwNldNdXFNSjNT?=
+ =?utf-8?B?cTZ1NHRocS9lTjNzUmlzUkYxc1gzdHE5YnN0YlluWmt2TU81R0Zzd2xKUzhI?=
+ =?utf-8?B?VW9ScWE3enpkd0hPSXZ3ZGwyS3g1anJ5a0l4bmpETHh4MlgraVdMaWhTVzdE?=
+ =?utf-8?Q?qJOgt2rhdDazJ?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?VUFBUmNqZTdZMjcyMW5NSmtUc3RZdktseHNydkdqQURvL3ZyRGgrMm9hd3FT?=
+ =?utf-8?B?WklTR1dNYkQxdjh2alpra2RXeExEeE5jT3RSQ0hQOE9MSGp6NkY4WE1HUDlT?=
+ =?utf-8?B?M3dvODNIek5kWVA5dG1naTYwMWtQazhjaVltR3AxaHFEdUQvWlRDRm8vR1U0?=
+ =?utf-8?B?NEthZGwwVEZlTjRyY3N0K1pqdzhFRTV4ZkFOOWFGTTdFWE5QeHNvYzFicnJD?=
+ =?utf-8?B?RjJTMERRYm8wbFRiYW1UN2RsMFk5NlJJNVdRVVVpUUFnWGhmdEZYc1N4ZUt6?=
+ =?utf-8?B?bkRRd2I4QkxycUgrR08vWGJCdTVmS3cxVDJUMUZ4Q1NET2Nua3BTZit1SDg4?=
+ =?utf-8?B?a0xyY3R5SHNIUUNBR2tBcDRRZXhFMC9adTN6VnYxcmdyY1NyRWdzOXVUNXlT?=
+ =?utf-8?B?N3BzSTZBUXBvRnZ3UnBDMUE5dStlVDRjVk95T0VGbnZVdDUzblFGRkJPNG1L?=
+ =?utf-8?B?c3FyTnE4dTBWQ2RxVjRNTHR6a2ZpUDVYZy9FcTBpVUpGR1NScGNsMkp1ekh2?=
+ =?utf-8?B?Y2FRc2tVL2hxWkhMYTBKMEs5U1BMNGZNUkYvTmV3NjJpYVY1MUFMb3dtU1F3?=
+ =?utf-8?B?djlpZ3N3SGtwdFAwdGdIRUpGT2M3WjNNVzJFaUhsbUxSblBmdFY3Nzl2WWts?=
+ =?utf-8?B?K05JOW1UUjJUem9qb21zM09KcEFMZlkxNm5nemMrUzhIY0tueEhHak5YOFEv?=
+ =?utf-8?B?YnlVYlJaZ2xaY0tISVVBdnpDWTk4a2ZBSGZKemxnUHIzWG5jYk5QcmNvWFZt?=
+ =?utf-8?B?bHdXREc3ekNQRDR4dkRiVVlFN21sTWVnekFITXFFUm1iaHl1Q0lsU1NKTDdz?=
+ =?utf-8?B?V2Q2SU5SZnJ2U2Vrb0tvRU5jSGt6MW92blFvRGgwSHFuT0tGNW1XVmRWbGtv?=
+ =?utf-8?B?RzhPck51SlVId2FUWkp1RDJnNmIrYjVDWE0ybTViRExJM2JxVDRwK0pCKytk?=
+ =?utf-8?B?VW5vZ0dZYmhWL2ZzY3AydEhNNkQ3OVNFNk1XODZUcGJ1NTdTVWdDL01KK3No?=
+ =?utf-8?B?UjJrWmsxNlZJZVNqaWY5QXU4ZGMrV3ZoM1l6WVJLUWxLaGp6TUJ5QnZTQU5X?=
+ =?utf-8?B?NUM5blpLaTlvOUFSZG51MzFWRWFmSml1cU9DSVQrSXFXZnVvcndpNHhoSlpi?=
+ =?utf-8?B?RU5qeXVVRjM4OSs0dGhwNEE0VVVHVnNJQlJoQmdpNGpaM093SVBRSGF2M1M4?=
+ =?utf-8?B?NU90a0Z1cTYzLzQrZW8yaG0zaDBJN0s5ekRNZm9WOVh5TnA1dXBMdnpiTnpa?=
+ =?utf-8?B?bnh4NFVueDlIQW5VZG15eVNERmRHbTdUa2ZKVnE4b29uZTBNR01uRzlWQVFP?=
+ =?utf-8?B?OVpXM29TR01CcHpKWmlKOFhmVHVXekg5U2sxQU9wSmpBeDBRZk1IbXdkMHMx?=
+ =?utf-8?B?bThRdktHSDlETks5Zzd3NnNJdm1NRmU0VmhwWFFWaC9hZDM4d2g4VUlBaEND?=
+ =?utf-8?B?OElWdXYxSEhVallCdFJ5a1p6S21meDZKWUF5Y3BpQSs5WFhxRzlDM0tLc3dV?=
+ =?utf-8?B?ZHdpYm1vd2NVWDY0OTNkV2c5eFdMc082T0pTZ0x5OFZTUmZlSkZMeE9memc1?=
+ =?utf-8?B?SzhTRWczT0lpTHpoM1VHQjlUUzA0ajBub0djbWFwblJERXhtQjczNWRUWHc5?=
+ =?utf-8?B?RGsyZG0vYTRuWXArTGdTVGQrTTh5T2Mwb0FOcVVpOXNiZ05KaWJFODArQlhk?=
+ =?utf-8?B?ZFpseTErYXBqeTNGeDdYRWhuZjZWQmlGTStNbXhPQ3lock92ejEvczhNeDJV?=
+ =?utf-8?B?dEZrZkZMRHBmT25xUUZOdWcwem1IbzhPNXF4M2t1L0x0VEdsYXFRM2ZGRGFS?=
+ =?utf-8?B?bVdFT3J4RGVZcWFpNTVaSHdRcGVtU2I1SHBhdVNsNTIrNlNDY1JlQkltVTQz?=
+ =?utf-8?B?ZXArSThFUGRZS2hscTZlenAwQnNwVndxZ2VGemJKa01yVzRBbGFzblVxZ0RR?=
+ =?utf-8?B?UUgzZFhFZFJWUWFzRHJRSU5zYVRsbzhSOGpqUEIvYWpPaUIvTDVsUlVPQXR3?=
+ =?utf-8?B?aTJCakphTDhHUGpTNG9zNEpDd2Z3SDByRGpMTkk4ZGpPT0M1STRyeE5mRVk0?=
+ =?utf-8?B?QXQwdS93V3M1Q29tUlZ2Mi9xSU1qZjREV0EzMmJzQkhqNHhMSjF1dE5JM201?=
+ =?utf-8?Q?UrBupBy6lrgRgrwbtoe5eUQkT?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ff19752-da2c-42df-ae7c-08dd5b29051d
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2025 14:29:49.5426
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WcEHna2B0GPLqp/zZYck3ipWdM1kqzz3nG+MEi1+lZNGqp/upadorRxC7oC2PvPw
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6731
 
-From: Patrisious Haddad <phaddad@nvidia.com>
+Am 26.02.25 um 14:38 schrieb Jason Gunthorpe:
+> On Wed, Feb 26, 2025 at 07:55:07AM +0000, Kasireddy, Vivek wrote:
+>
+>>> Is there any update or ETA for the v3? Are there any ways we can help?
+>> I believe Leon's series is very close to getting merged. Once it
+>> lands, this series can be revived.
+> The recent drama has made what happens next unclear.
+>
+> I would like it if interested parties could contribute reviews to
+> Leon's v7 series to help it along.
 
-Add support to allow optional-counters binding to a QP, whereas when
-a bind operation is requested depending on the counter optional-counter
-binding state the driver will determine if to also add optional-counters
-to this QP binding.
+I think demonstrating how any new interface would work with the existing importers/exporters would help.
 
-The optional-counter binding is done by simply adding a steering
-rule for the specific optional-counter condition with the additional
-match over that QP number.
+> We may want to start considering pushing ahead with this patch series
+> and using the usual hack of abusing the scatterlist in the mean time.
 
-Note that optional-counters per QP rules are handled on an earlier prio
-than per device counters, and per device counter correctness is maintained
-by core whereas it is responsible to sum active counters when checking device
-counter and to add them to history count when they are deallocated.
+That works for me as well.
 
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/counters.c |  99 +++++-
- drivers/infiniband/hw/mlx5/counters.h |   9 +
- drivers/infiniband/hw/mlx5/fs.c       | 428 +++++++++++++++++++++++++-
- drivers/infiniband/hw/mlx5/mlx5_ib.h  |  16 +
- include/linux/mlx5/device.h           |   4 +-
- 5 files changed, 545 insertions(+), 11 deletions(-)
+I think when we should get away from scatterlist then that should be a separate set of patches or maybe call it a separate project to get done for all DMA-buf parties.
 
-diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
-index d826f03b6ec5..7d32b8c6c1a5 100644
---- a/drivers/infiniband/hw/mlx5/counters.c
-+++ b/drivers/infiniband/hw/mlx5/counters.c
-@@ -437,12 +437,49 @@ static int do_get_hw_stats(struct ib_device *ibdev,
- static bool is_rdma_bytes_counter(u32 type)
- {
- 	if (type == MLX5_IB_OPCOUNTER_RDMA_TX_BYTES ||
--	    type == MLX5_IB_OPCOUNTER_RDMA_RX_BYTES)
-+	    type == MLX5_IB_OPCOUNTER_RDMA_RX_BYTES ||
-+	    type == MLX5_IB_OPCOUNTER_RDMA_TX_BYTES_PER_QP ||
-+	    type == MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP)
- 		return true;
- 
- 	return false;
- }
- 
-+static int do_per_qp_get_op_stat(struct rdma_counter *counter)
-+{
-+	struct mlx5_ib_dev *dev = to_mdev(counter->device);
-+	const struct mlx5_ib_counters *cnts = get_counters(dev, counter->port);
-+	struct mlx5_rdma_counter *mcounter = to_mcounter(counter);
-+	int i, ret, index, num_hw_counters;
-+	u64 packets = 0, bytes = 0;
-+
-+	for (i = MLX5_IB_OPCOUNTER_CC_RX_CE_PKTS_PER_QP;
-+	     i <= MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP; i++) {
-+		if (!mcounter->fc[i])
-+			continue;
-+
-+		ret = mlx5_fc_query(dev->mdev, mcounter->fc[i],
-+				    &packets, &bytes);
-+		if (ret)
-+			return ret;
-+
-+		num_hw_counters = cnts->num_q_counters +
-+				  cnts->num_cong_counters +
-+				  cnts->num_ext_ppcnt_counters;
-+
-+		index = i - MLX5_IB_OPCOUNTER_CC_RX_CE_PKTS_PER_QP +
-+			num_hw_counters;
-+
-+		if (is_rdma_bytes_counter(i))
-+			counter->stats->value[index] = bytes;
-+		else
-+			counter->stats->value[index] = packets;
-+
-+		clear_bit(index, counter->stats->is_disabled);
-+	}
-+	return 0;
-+}
-+
- static int do_get_op_stat(struct ib_device *ibdev,
- 			  struct rdma_hw_stats *stats,
- 			  u32 port_num, int index)
-@@ -542,19 +579,30 @@ static int mlx5_ib_counter_update_stats(struct rdma_counter *counter)
- {
- 	struct mlx5_ib_dev *dev = to_mdev(counter->device);
- 	const struct mlx5_ib_counters *cnts = get_counters(dev, counter->port);
-+	int ret;
-+
-+	ret = mlx5_ib_query_q_counters(dev->mdev, cnts, counter->stats,
-+				       counter->id);
-+	if (ret)
-+		return ret;
-+
-+	if (!counter->mode.bind_opcnt)
-+		return 0;
- 
--	return mlx5_ib_query_q_counters(dev->mdev, cnts,
--					counter->stats, counter->id);
-+	return do_per_qp_get_op_stat(counter);
- }
- 
- static int mlx5_ib_counter_dealloc(struct rdma_counter *counter)
- {
-+	struct mlx5_rdma_counter *mcounter = to_mcounter(counter);
- 	struct mlx5_ib_dev *dev = to_mdev(counter->device);
- 	u32 in[MLX5_ST_SZ_DW(dealloc_q_counter_in)] = {};
- 
- 	if (!counter->id)
- 		return 0;
- 
-+	WARN_ON(!xa_empty(&mcounter->qpn_opfc_xa));
-+	mlx5r_fs_destroy_fcs(dev, counter);
- 	MLX5_SET(dealloc_q_counter_in, in, opcode,
- 		 MLX5_CMD_OP_DEALLOC_Q_COUNTER);
- 	MLX5_SET(dealloc_q_counter_in, in, counter_set_id, counter->id);
-@@ -585,8 +633,14 @@ static int mlx5_ib_counter_bind_qp(struct rdma_counter *counter,
- 	if (err)
- 		goto fail_set_counter;
- 
-+	err = mlx5r_fs_bind_op_fc(qp, counter, port);
-+	if (err)
-+		goto fail_bind_op_fc;
-+
- 	return 0;
- 
-+fail_bind_op_fc:
-+	mlx5_ib_qp_set_counter(qp, NULL);
- fail_set_counter:
- 	mlx5_ib_counter_dealloc(counter);
- 	counter->id = 0;
-@@ -596,7 +650,20 @@ static int mlx5_ib_counter_bind_qp(struct rdma_counter *counter,
- 
- static int mlx5_ib_counter_unbind_qp(struct ib_qp *qp, u32 port)
- {
--	return mlx5_ib_qp_set_counter(qp, NULL);
-+	struct rdma_counter *counter = qp->counter;
-+	int err;
-+
-+	mlx5r_fs_unbind_op_fc(qp, counter);
-+
-+	err = mlx5_ib_qp_set_counter(qp, NULL);
-+	if (err)
-+		goto fail_set_counter;
-+
-+	return 0;
-+
-+fail_set_counter:
-+	mlx5r_fs_bind_op_fc(qp, counter, port);
-+	return err;
- }
- 
- static void mlx5_ib_fill_counters(struct mlx5_ib_dev *dev,
-@@ -789,9 +856,8 @@ static int __mlx5_ib_alloc_counters(struct mlx5_ib_dev *dev,
-  * was already created, if both conditions are met return true and the counter
-  * else return false.
-  */
--static bool mlx5r_is_opfc_shared_and_in_use(struct mlx5_ib_op_fc *opfcs,
--					    u32 type,
--					    struct mlx5_ib_op_fc **opfc)
-+bool mlx5r_is_opfc_shared_and_in_use(struct mlx5_ib_op_fc *opfcs, u32 type,
-+				     struct mlx5_ib_op_fc **opfc)
- {
- 	u32 shared_fc_type;
- 
-@@ -808,6 +874,18 @@ static bool mlx5r_is_opfc_shared_and_in_use(struct mlx5_ib_op_fc *opfcs,
- 	case MLX5_IB_OPCOUNTER_RDMA_RX_BYTES:
- 		shared_fc_type = MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS;
- 		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_TX_PACKETS_PER_QP:
-+		shared_fc_type = MLX5_IB_OPCOUNTER_RDMA_TX_BYTES_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_TX_BYTES_PER_QP:
-+		shared_fc_type = MLX5_IB_OPCOUNTER_RDMA_TX_PACKETS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS_PER_QP:
-+		shared_fc_type = MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP:
-+		shared_fc_type = MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS_PER_QP;
-+		break;
- 	default:
- 		return false;
- 	}
-@@ -1105,7 +1183,12 @@ static int mlx5_ib_modify_stat(struct ib_device *device, u32 port,
- 	return 0;
- }
- 
--static void mlx5_ib_counter_init(struct rdma_counter *counter) {}
-+static void mlx5_ib_counter_init(struct rdma_counter *counter)
-+{
-+	struct mlx5_rdma_counter *mcounter = to_mcounter(counter);
-+
-+	xa_init(&mcounter->qpn_opfc_xa);
-+}
- 
- static const struct ib_device_ops hw_stats_ops = {
- 	.alloc_hw_port_stats = mlx5_ib_alloc_hw_port_stats,
-diff --git a/drivers/infiniband/hw/mlx5/counters.h b/drivers/infiniband/hw/mlx5/counters.h
-index f153901a43be..4c2421bcf876 100644
---- a/drivers/infiniband/hw/mlx5/counters.h
-+++ b/drivers/infiniband/hw/mlx5/counters.h
-@@ -9,8 +9,15 @@
- #include "mlx5_ib.h"
- 
- 
-+struct mlx5_per_qp_opfc {
-+	struct mlx5_ib_op_fc opfcs[MLX5_IB_OPCOUNTER_MAX];
-+};
-+
- struct mlx5_rdma_counter {
- 	struct rdma_counter rdma_counter;
-+
-+	struct mlx5_fc *fc[MLX5_IB_OPCOUNTER_MAX];
-+	struct xarray qpn_opfc_xa;
- };
- 
- static inline struct mlx5_rdma_counter *
-@@ -25,4 +32,6 @@ void mlx5_ib_counters_clear_description(struct ib_counters *counters);
- int mlx5_ib_flow_counters_set_data(struct ib_counters *ibcounters,
- 				   struct mlx5_ib_create_flow *ucmd);
- u16 mlx5_ib_get_counters_id(struct mlx5_ib_dev *dev, u32 port_num);
-+bool mlx5r_is_opfc_shared_and_in_use(struct mlx5_ib_op_fc *opfcs, u32 type,
-+				     struct mlx5_ib_op_fc **opfc);
- #endif /* _MLX5_IB_COUNTERS_H */
-diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
-index 93b229e9aab3..3069090874a1 100644
---- a/drivers/infiniband/hw/mlx5/fs.c
-+++ b/drivers/infiniband/hw/mlx5/fs.c
-@@ -800,12 +800,17 @@ static struct mlx5_ib_flow_prio *get_flow_table(struct mlx5_ib_dev *dev,
- }
- 
- enum {
-+	RDMA_RX_ECN_OPCOUNTER_PER_QP_PRIO,
-+	RDMA_RX_CNP_OPCOUNTER_PER_QP_PRIO,
-+	RDMA_RX_PKTS_BYTES_OPCOUNTER_PER_QP_PRIO,
- 	RDMA_RX_ECN_OPCOUNTER_PRIO,
- 	RDMA_RX_CNP_OPCOUNTER_PRIO,
- 	RDMA_RX_PKTS_BYTES_OPCOUNTER_PRIO,
- };
- 
- enum {
-+	RDMA_TX_CNP_OPCOUNTER_PER_QP_PRIO,
-+	RDMA_TX_PKTS_BYTES_OPCOUNTER_PER_QP_PRIO,
- 	RDMA_TX_CNP_OPCOUNTER_PRIO,
- 	RDMA_TX_PKTS_BYTES_OPCOUNTER_PRIO,
- };
-@@ -887,6 +892,12 @@ static struct mlx5_ib_flow_prio *get_opfc_prio(struct mlx5_ib_dev *dev,
- 	case MLX5_IB_OPCOUNTER_RDMA_RX_BYTES:
- 		prio_type = MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS;
- 		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_TX_BYTES_PER_QP:
-+		prio_type = MLX5_IB_OPCOUNTER_RDMA_TX_PACKETS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP:
-+		prio_type = MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS_PER_QP;
-+		break;
- 	default:
- 		prio_type = type;
- 	}
-@@ -894,6 +905,315 @@ static struct mlx5_ib_flow_prio *get_opfc_prio(struct mlx5_ib_dev *dev,
- 	return &dev->flow_db->opfcs[prio_type];
- }
- 
-+static void put_per_qp_prio(struct mlx5_ib_dev *dev,
-+			    enum mlx5_ib_optional_counter_type type)
-+{
-+	enum mlx5_ib_optional_counter_type per_qp_type;
-+	struct mlx5_ib_flow_prio *prio;
-+
-+	switch (type) {
-+	case MLX5_IB_OPCOUNTER_CC_RX_CE_PKTS:
-+		per_qp_type = MLX5_IB_OPCOUNTER_CC_RX_CE_PKTS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_CC_RX_CNP_PKTS:
-+		per_qp_type = MLX5_IB_OPCOUNTER_CC_RX_CNP_PKTS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_CC_TX_CNP_PKTS:
-+		per_qp_type = MLX5_IB_OPCOUNTER_CC_TX_CNP_PKTS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_TX_PACKETS:
-+		per_qp_type = MLX5_IB_OPCOUNTER_RDMA_TX_PACKETS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_TX_BYTES:
-+		per_qp_type = MLX5_IB_OPCOUNTER_RDMA_TX_BYTES_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS:
-+		per_qp_type = MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_RX_BYTES:
-+		per_qp_type = MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP;
-+		break;
-+	default:
-+		return;
-+	}
-+
-+	prio = get_opfc_prio(dev, per_qp_type);
-+	put_flow_table(dev, prio, true);
-+}
-+
-+static int get_per_qp_prio(struct mlx5_ib_dev *dev,
-+			   enum mlx5_ib_optional_counter_type type)
-+{
-+	enum mlx5_ib_optional_counter_type per_qp_type;
-+	enum mlx5_flow_namespace_type fn_type;
-+	struct mlx5_flow_namespace *ns;
-+	struct mlx5_ib_flow_prio *prio;
-+	int priority;
-+
-+	switch (type) {
-+	case MLX5_IB_OPCOUNTER_CC_RX_CE_PKTS:
-+		fn_type = MLX5_FLOW_NAMESPACE_RDMA_RX_COUNTERS;
-+		priority = RDMA_RX_ECN_OPCOUNTER_PER_QP_PRIO;
-+		per_qp_type = MLX5_IB_OPCOUNTER_CC_RX_CE_PKTS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_CC_RX_CNP_PKTS:
-+		fn_type = MLX5_FLOW_NAMESPACE_RDMA_RX_COUNTERS;
-+		priority = RDMA_RX_CNP_OPCOUNTER_PER_QP_PRIO;
-+		per_qp_type = MLX5_IB_OPCOUNTER_CC_RX_CNP_PKTS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_CC_TX_CNP_PKTS:
-+		fn_type = MLX5_FLOW_NAMESPACE_RDMA_TX_COUNTERS;
-+		priority = RDMA_TX_CNP_OPCOUNTER_PER_QP_PRIO;
-+		per_qp_type = MLX5_IB_OPCOUNTER_CC_TX_CNP_PKTS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_TX_PACKETS:
-+		fn_type = MLX5_FLOW_NAMESPACE_RDMA_TX_COUNTERS;
-+		priority = RDMA_TX_PKTS_BYTES_OPCOUNTER_PER_QP_PRIO;
-+		per_qp_type = MLX5_IB_OPCOUNTER_RDMA_TX_PACKETS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_TX_BYTES:
-+		fn_type = MLX5_FLOW_NAMESPACE_RDMA_TX_COUNTERS;
-+		priority = RDMA_TX_PKTS_BYTES_OPCOUNTER_PER_QP_PRIO;
-+		per_qp_type = MLX5_IB_OPCOUNTER_RDMA_TX_BYTES_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS:
-+		fn_type = MLX5_FLOW_NAMESPACE_RDMA_RX_COUNTERS;
-+		priority = RDMA_RX_PKTS_BYTES_OPCOUNTER_PER_QP_PRIO;
-+		per_qp_type = MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_RX_BYTES:
-+		fn_type = MLX5_FLOW_NAMESPACE_RDMA_RX_COUNTERS;
-+		priority = RDMA_RX_PKTS_BYTES_OPCOUNTER_PER_QP_PRIO;
-+		per_qp_type = MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	ns = mlx5_get_flow_namespace(dev->mdev, fn_type);
-+	if (!ns)
-+		return -EOPNOTSUPP;
-+
-+	prio = get_opfc_prio(dev, per_qp_type);
-+	if (prio->flow_table)
-+		return 0;
-+
-+	prio = _get_prio(dev, ns, prio, priority, MLX5_FS_MAX_POOL_SIZE, 1, 0, 0);
-+	if (IS_ERR(prio))
-+		return PTR_ERR(prio);
-+
-+	prio->refcount = 1;
-+
-+	return 0;
-+}
-+
-+static struct mlx5_per_qp_opfc *
-+get_per_qp_opfc(struct mlx5_rdma_counter *mcounter, u32 qp_num, bool *new)
-+{
-+	struct mlx5_per_qp_opfc *per_qp_opfc;
-+
-+	*new = false;
-+
-+	per_qp_opfc = xa_load(&mcounter->qpn_opfc_xa, qp_num);
-+	if (per_qp_opfc)
-+		return per_qp_opfc;
-+	per_qp_opfc = kzalloc(sizeof(*per_qp_opfc), GFP_KERNEL);
-+
-+	if (!per_qp_opfc)
-+		return NULL;
-+
-+	*new = true;
-+	return per_qp_opfc;
-+}
-+
-+static int add_op_fc_rules(struct mlx5_ib_dev *dev,
-+			   struct mlx5_rdma_counter *mcounter,
-+			   struct mlx5_per_qp_opfc *per_qp_opfc,
-+			   struct mlx5_ib_flow_prio *prio,
-+			   enum mlx5_ib_optional_counter_type type,
-+			   u32 qp_num, u32 port_num)
-+{
-+	struct mlx5_ib_op_fc *opfc = &per_qp_opfc->opfcs[type], *in_use_opfc;
-+	struct mlx5_flow_act flow_act = {};
-+	struct mlx5_flow_destination dst;
-+	struct mlx5_flow_spec *spec;
-+	int i, err, spec_num;
-+	bool is_tx;
-+
-+	if (opfc->fc)
-+		return -EEXIST;
-+
-+	if (mlx5r_is_opfc_shared_and_in_use(per_qp_opfc->opfcs, type,
-+					    &in_use_opfc)) {
-+		opfc->fc = in_use_opfc->fc;
-+		opfc->rule[0] = in_use_opfc->rule[0];
-+		return 0;
-+	}
-+
-+	opfc->fc = mcounter->fc[type];
-+
-+	spec = kcalloc(MAX_OPFC_RULES, sizeof(*spec), GFP_KERNEL);
-+	if (!spec) {
-+		err = -ENOMEM;
-+		goto null_fc;
-+	}
-+
-+	switch (type) {
-+	case MLX5_IB_OPCOUNTER_CC_RX_CE_PKTS_PER_QP:
-+		if (set_ecn_ce_spec(dev, port_num, &spec[0],
-+				    MLX5_FS_IPV4_VERSION) ||
-+		    set_ecn_ce_spec(dev, port_num, &spec[1],
-+				    MLX5_FS_IPV6_VERSION)) {
-+			err = -EOPNOTSUPP;
-+			goto free_spec;
-+		}
-+		spec_num = 2;
-+		is_tx = false;
-+
-+		MLX5_SET_TO_ONES(fte_match_param, spec[1].match_criteria,
-+				 misc_parameters.bth_dst_qp);
-+		MLX5_SET(fte_match_param, spec[1].match_value,
-+			 misc_parameters.bth_dst_qp, qp_num);
-+		spec[1].match_criteria_enable |= MLX5_MATCH_MISC_PARAMETERS;
-+		break;
-+	case MLX5_IB_OPCOUNTER_CC_RX_CNP_PKTS_PER_QP:
-+		if (!MLX5_CAP_FLOWTABLE(
-+			    dev->mdev,
-+			    ft_field_support_2_nic_receive_rdma.bth_opcode) ||
-+		    set_cnp_spec(dev, port_num, &spec[0])) {
-+			err = -EOPNOTSUPP;
-+			goto free_spec;
-+		}
-+		spec_num = 1;
-+		is_tx = false;
-+		break;
-+	case MLX5_IB_OPCOUNTER_CC_TX_CNP_PKTS_PER_QP:
-+		if (!MLX5_CAP_FLOWTABLE(
-+			    dev->mdev,
-+			    ft_field_support_2_nic_transmit_rdma.bth_opcode) ||
-+		    set_cnp_spec(dev, port_num, &spec[0])) {
-+			err = -EOPNOTSUPP;
-+			goto free_spec;
-+		}
-+		spec_num = 1;
-+		is_tx = true;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_TX_PACKETS_PER_QP:
-+	case MLX5_IB_OPCOUNTER_RDMA_TX_BYTES_PER_QP:
-+		spec_num = 1;
-+		is_tx = true;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS_PER_QP:
-+	case MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP:
-+		spec_num = 1;
-+		is_tx = false;
-+		break;
-+	default:
-+		err = -EINVAL;
-+		goto free_spec;
-+	}
-+
-+	if (is_tx) {
-+		MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria,
-+				 misc_parameters.source_sqn);
-+		MLX5_SET(fte_match_param, spec->match_value,
-+			 misc_parameters.source_sqn, qp_num);
-+	} else {
-+		MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria,
-+				 misc_parameters.bth_dst_qp);
-+		MLX5_SET(fte_match_param, spec->match_value,
-+			 misc_parameters.bth_dst_qp, qp_num);
-+	}
-+
-+	spec->match_criteria_enable |= MLX5_MATCH_MISC_PARAMETERS;
-+
-+	dst.type = MLX5_FLOW_DESTINATION_TYPE_COUNTER;
-+	dst.counter = opfc->fc;
-+
-+	flow_act.action =
-+		MLX5_FLOW_CONTEXT_ACTION_COUNT | MLX5_FLOW_CONTEXT_ACTION_ALLOW;
-+
-+	for (i = 0; i < spec_num; i++) {
-+		opfc->rule[i] = mlx5_add_flow_rules(prio->flow_table, &spec[i],
-+						    &flow_act, &dst, 1);
-+		if (IS_ERR(opfc->rule[i])) {
-+			err = PTR_ERR(opfc->rule[i]);
-+			goto del_rules;
-+		}
-+	}
-+	prio->refcount += spec_num;
-+
-+	err = xa_err(xa_store(&mcounter->qpn_opfc_xa, qp_num, per_qp_opfc,
-+			      GFP_KERNEL));
-+	if (err)
-+		goto del_rules;
-+
-+	kfree(spec);
-+
-+	return 0;
-+
-+del_rules:
-+	while (i--)
-+		mlx5_del_flow_rules(opfc->rule[i]);
-+	put_flow_table(dev, prio, false);
-+free_spec:
-+	kfree(spec);
-+null_fc:
-+	opfc->fc = NULL;
-+	return err;
-+}
-+
-+static bool is_fc_shared_and_in_use(struct mlx5_rdma_counter *mcounter,
-+				    u32 type, struct mlx5_fc **fc)
-+{
-+	u32 shared_fc_type;
-+
-+	switch (type) {
-+	case MLX5_IB_OPCOUNTER_RDMA_TX_PACKETS_PER_QP:
-+		shared_fc_type = MLX5_IB_OPCOUNTER_RDMA_TX_BYTES_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_TX_BYTES_PER_QP:
-+		shared_fc_type = MLX5_IB_OPCOUNTER_RDMA_TX_PACKETS_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS_PER_QP:
-+		shared_fc_type = MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP;
-+		break;
-+	case MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP:
-+		shared_fc_type = MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS_PER_QP;
-+		break;
-+	default:
-+		return false;
-+	}
-+
-+	*fc = mcounter->fc[shared_fc_type];
-+	if (!(*fc))
-+		return false;
-+
-+	return true;
-+}
-+
-+void mlx5r_fs_destroy_fcs(struct mlx5_ib_dev *dev,
-+			  struct rdma_counter *counter)
-+{
-+	struct mlx5_rdma_counter *mcounter = to_mcounter(counter);
-+	struct mlx5_fc *in_use_fc;
-+	int i;
-+
-+	for (i = MLX5_IB_OPCOUNTER_CC_RX_CE_PKTS_PER_QP;
-+	     i <= MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP; i++) {
-+		if (!mcounter->fc[i])
-+			continue;
-+
-+		if (is_fc_shared_and_in_use(mcounter, i, &in_use_fc)) {
-+			mcounter->fc[i] = NULL;
-+			continue;
-+		}
-+
-+		mlx5_fc_destroy(dev->mdev, mcounter->fc[i]);
-+		mcounter->fc[i] = NULL;
-+	}
-+}
-+
- int mlx5_ib_fs_add_op_fc(struct mlx5_ib_dev *dev, u32 port_num,
- 			 struct mlx5_ib_op_fc *opfc,
- 			 enum mlx5_ib_optional_counter_type type)
-@@ -975,11 +1295,15 @@ int mlx5_ib_fs_add_op_fc(struct mlx5_ib_dev *dev, u32 port_num,
- 
- 	prio = get_opfc_prio(dev, type);
- 	if (!prio->flow_table) {
-+		err = get_per_qp_prio(dev, type);
-+		if (err)
-+			goto free;
-+
- 		prio = _get_prio(dev, ns, prio, priority,
- 				 dev->num_ports * MAX_OPFC_RULES, 1, 0, 0);
- 		if (IS_ERR(prio)) {
- 			err = PTR_ERR(prio);
--			goto free;
-+			goto put_prio;
- 		}
- 	}
- 
-@@ -1006,6 +1330,8 @@ int mlx5_ib_fs_add_op_fc(struct mlx5_ib_dev *dev, u32 port_num,
- 	for (i -= 1; i >= 0; i--)
- 		mlx5_del_flow_rules(opfc->rule[i]);
- 	put_flow_table(dev, prio, false);
-+put_prio:
-+	put_per_qp_prio(dev, type);
- free:
- 	kfree(spec);
- 	return err;
-@@ -1024,6 +1350,106 @@ void mlx5_ib_fs_remove_op_fc(struct mlx5_ib_dev *dev,
- 		mlx5_del_flow_rules(opfc->rule[i]);
- 		put_flow_table(dev, prio, true);
- 	}
-+
-+	put_per_qp_prio(dev, type);
-+}
-+
-+void mlx5r_fs_unbind_op_fc(struct ib_qp *qp, struct rdma_counter *counter)
-+{
-+	struct mlx5_rdma_counter *mcounter = to_mcounter(counter);
-+	struct mlx5_ib_dev *dev = to_mdev(counter->device);
-+	struct mlx5_per_qp_opfc *per_qp_opfc;
-+	struct mlx5_ib_op_fc *in_use_opfc;
-+	struct mlx5_ib_flow_prio *prio;
-+	int i, j;
-+
-+	per_qp_opfc = xa_load(&mcounter->qpn_opfc_xa, qp->qp_num);
-+	if (!per_qp_opfc)
-+		return;
-+
-+	for (i = MLX5_IB_OPCOUNTER_CC_RX_CE_PKTS_PER_QP;
-+	     i <= MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP; i++) {
-+		if (!per_qp_opfc->opfcs[i].fc)
-+			continue;
-+
-+		if (mlx5r_is_opfc_shared_and_in_use(per_qp_opfc->opfcs, i,
-+						    &in_use_opfc)) {
-+			per_qp_opfc->opfcs[i].fc = NULL;
-+			continue;
-+		}
-+
-+		for (j = 0; j < MAX_OPFC_RULES; j++) {
-+			if (!per_qp_opfc->opfcs[i].rule[j])
-+				continue;
-+			mlx5_del_flow_rules(per_qp_opfc->opfcs[i].rule[j]);
-+			prio = get_opfc_prio(dev, i);
-+			put_flow_table(dev, prio, true);
-+		}
-+		per_qp_opfc->opfcs[i].fc = NULL;
-+	}
-+
-+	kfree(per_qp_opfc);
-+	xa_erase(&mcounter->qpn_opfc_xa, qp->qp_num);
-+}
-+
-+int mlx5r_fs_bind_op_fc(struct ib_qp *qp, struct rdma_counter *counter,
-+			u32 port)
-+{
-+	struct mlx5_rdma_counter *mcounter = to_mcounter(counter);
-+	struct mlx5_ib_dev *dev = to_mdev(qp->device);
-+	struct mlx5_per_qp_opfc *per_qp_opfc;
-+	struct mlx5_ib_flow_prio *prio;
-+	struct mlx5_ib_counters *cnts;
-+	struct mlx5_ib_op_fc *opfc;
-+	struct mlx5_fc *in_use_fc;
-+	int i, err, per_qp_type;
-+	bool new;
-+
-+	if (!counter->mode.bind_opcnt)
-+		return 0;
-+
-+	cnts = &dev->port[port - 1].cnts;
-+
-+	for (i = 0; i <= MLX5_IB_OPCOUNTER_RDMA_RX_BYTES; i++) {
-+		opfc = &cnts->opfcs[i];
-+		if (!opfc->fc)
-+			continue;
-+
-+		per_qp_type = i + MLX5_IB_OPCOUNTER_CC_RX_CE_PKTS_PER_QP;
-+		prio = get_opfc_prio(dev, per_qp_type);
-+		WARN_ON(!prio->flow_table);
-+
-+		if (is_fc_shared_and_in_use(mcounter, per_qp_type, &in_use_fc))
-+			mcounter->fc[per_qp_type] = in_use_fc;
-+
-+		if (!mcounter->fc[per_qp_type]) {
-+			mcounter->fc[per_qp_type] = mlx5_fc_create(dev->mdev,
-+								   false);
-+			if (IS_ERR(mcounter->fc[per_qp_type]))
-+				return PTR_ERR(mcounter->fc[per_qp_type]);
-+		}
-+
-+		per_qp_opfc = get_per_qp_opfc(mcounter, qp->qp_num, &new);
-+		if (!per_qp_opfc) {
-+			err = -ENOMEM;
-+			goto free_fc;
-+		}
-+		err = add_op_fc_rules(dev, mcounter, per_qp_opfc, prio,
-+				      per_qp_type, qp->qp_num, port);
-+		if (err)
-+			goto del_rules;
-+	}
-+
-+	return 0;
-+
-+del_rules:
-+	mlx5r_fs_unbind_op_fc(qp, counter);
-+	if (new)
-+		kfree(per_qp_opfc);
-+free_fc:
-+	if (xa_empty(&mcounter->qpn_opfc_xa))
-+		mlx5r_fs_destroy_fcs(dev, counter);
-+	return err;
- }
- 
- static void set_underlay_qp(struct mlx5_ib_dev *dev,
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 24b18942762c..84a1f07d46a7 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -299,6 +299,14 @@ enum mlx5_ib_optional_counter_type {
- 	MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS,
- 	MLX5_IB_OPCOUNTER_RDMA_RX_BYTES,
- 
-+	MLX5_IB_OPCOUNTER_CC_RX_CE_PKTS_PER_QP,
-+	MLX5_IB_OPCOUNTER_CC_RX_CNP_PKTS_PER_QP,
-+	MLX5_IB_OPCOUNTER_CC_TX_CNP_PKTS_PER_QP,
-+	MLX5_IB_OPCOUNTER_RDMA_TX_PACKETS_PER_QP,
-+	MLX5_IB_OPCOUNTER_RDMA_TX_BYTES_PER_QP,
-+	MLX5_IB_OPCOUNTER_RDMA_RX_PACKETS_PER_QP,
-+	MLX5_IB_OPCOUNTER_RDMA_RX_BYTES_PER_QP,
-+
- 	MLX5_IB_OPCOUNTER_MAX,
- };
- 
-@@ -891,6 +899,14 @@ void mlx5_ib_fs_remove_op_fc(struct mlx5_ib_dev *dev,
- 			     struct mlx5_ib_op_fc *opfc,
- 			     enum mlx5_ib_optional_counter_type type);
- 
-+int mlx5r_fs_bind_op_fc(struct ib_qp *qp, struct rdma_counter *counter,
-+			u32 port);
-+
-+void mlx5r_fs_unbind_op_fc(struct ib_qp *qp, struct rdma_counter *counter);
-+
-+void mlx5r_fs_destroy_fcs(struct mlx5_ib_dev *dev,
-+			  struct rdma_counter *counter);
-+
- struct mlx5_ib_multiport_info;
- 
- struct mlx5_ib_multiport {
-diff --git a/include/linux/mlx5/device.h b/include/linux/mlx5/device.h
-index 63f0d9fb94b4..344124644697 100644
---- a/include/linux/mlx5/device.h
-+++ b/include/linux/mlx5/device.h
-@@ -1532,8 +1532,8 @@ static inline u16 mlx5_to_sw_pkey_sz(int pkey_sz)
- 	return MLX5_MIN_PKEY_TABLE_SIZE << pkey_sz;
- }
- 
--#define MLX5_RDMA_RX_NUM_COUNTERS_PRIOS 3
--#define MLX5_RDMA_TX_NUM_COUNTERS_PRIOS 2
-+#define MLX5_RDMA_RX_NUM_COUNTERS_PRIOS 6
-+#define MLX5_RDMA_TX_NUM_COUNTERS_PRIOS 4
- #define MLX5_BY_PASS_NUM_REGULAR_PRIOS 16
- #define MLX5_BY_PASS_NUM_DONT_TRAP_PRIOS 16
- #define MLX5_BY_PASS_NUM_MULTICAST_PRIOS 1
--- 
-2.48.1
+E.g. propose something like an iterator based interface and demonstrate that V4L and a DRM driver can live with that and that this approach works like expected.
+
+Regards,
+Christian.
+
+
+>
+> Thanks,
+> Jason
 
 
