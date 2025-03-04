@@ -1,277 +1,198 @@
-Return-Path: <linux-rdma+bounces-8342-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8343-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D14D9A4F16D
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 00:25:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 594E9A4F185
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 00:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28D673A7195
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 23:25:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 780C616683A
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 23:33:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E166E278164;
-	Tue,  4 Mar 2025 23:25:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF4571FE476;
+	Tue,  4 Mar 2025 23:33:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="g3Mks4v1"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="At2yUsQd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32487279323
-	for <linux-rdma@vger.kernel.org>; Tue,  4 Mar 2025 23:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1318E1FCFF5
+	for <linux-rdma@vger.kernel.org>; Tue,  4 Mar 2025 23:32:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741130741; cv=none; b=qbAJ6As/Apwg8LYhQhr+reoqNViijcMvGCtkKr3j83e7H2Y429Wo6Extfezd8BXoZAC8k9P5lyG+kBwNxAGV1Dspfc2DImGR7YYNnIEWXEkD22TbeJhtDWgF+OWhz3DghNb4pXa/rM6RNuoNh5ZKB4ZaZX1NyRiGYD1oAI0rLL4=
+	t=1741131180; cv=none; b=KbTFS9+KFPzol49d2B730Mzrx4uRTRzC9zpmtPtxxAcu+xdI5IfbJor99ZBe9TkK4VfPwVmfJ53Bqoz8drvxxCU2jWpiYqMzqEe7Nn55WzFWLO0/tbR+OMFupgsl1sqOnAQn65ah8KyKOjNxhQHAwiBvoHuMP/YPdHaoAhVp0X4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741130741; c=relaxed/simple;
-	bh=0MhscJNdgK/nO4irVp8TKNWgZvQBPC55DhL9aXetpBE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WqXCKHq4VD4jSwIiOFWjG0B7QTSEoq2faO3QHHhaiCRlVYzWIgRgcG5X331mkz3kE0vO6QrvW2xMQodT10hYSLAk+w5kAf2pwEwRuk2i1OtMz0BNPWMwowKidk00hjrwuRmf8LuFNge0e2of/V+fzutzQz7snYiQAdRs4ylT1/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=g3Mks4v1; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2235908a30aso107366025ad.3
-        for <linux-rdma@vger.kernel.org>; Tue, 04 Mar 2025 15:25:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1741130739; x=1741735539; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jfIRs/XUAGHlzQWOR+4dExx8qQyrMFHEg6u+kDd6WDQ=;
-        b=g3Mks4v1CeFiDey/R3y8qI4VPMd1uiWRKW87eKq53BZrYp5cQw/yblKIsZYkJ0uhY5
-         7RpBvbzwcpDX4ksozezObQv9WQGGKLSaB7JjSZkZrAUrkTojoPeibx0IjIbMfvImOm4+
-         Txa9UtkT34PnDOgklQiUWjBxE1RQH1Nkxk45g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741130739; x=1741735539;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jfIRs/XUAGHlzQWOR+4dExx8qQyrMFHEg6u+kDd6WDQ=;
-        b=Ni4P7PfNp89hg0SxitcM7UHmIRdODmFsX7qFY6gtsfluTf8UEeSnTf6lfatLfPB6uA
-         cPKXJmEn9PIbcWQBzSnBF13lJkl56bk3I7SYkcBfvAXBNIo4jClQTtNw7VtD05IUdlKK
-         GqLUuZ5O0iKZKNNFbJPZJq3wgwCGtqsPX26F7pukG2UC0kqT6JZ3G645OqK3XcfqG5Ef
-         564NJNe73UbM+Gma0tEvzOpF/pBAwgQtY1sP0FydpVfuAcRgSFe8rrr9D6Z0gbPx5o/A
-         2iF9IeVPLwABxyt9bwRDhD5fts316udARbwMme9xUn+4ZCC7j5RyeVQfmPC/DE2RAF3p
-         Wt8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXZh4D2EsUqOWKTYSVCnbTayqdauWD/ZOrzvlLMuhoT6MlH9MwTW6YOU/fNTtaHAbwkMxvsA/cXG/+v@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPPT5eP5XgZV60p5+qWCEzCqgvhPnKlEMrMye/t8u8qP34Obr9
-	/i7/pvvWAXFshvgZxGTTgkIhkYpfmuA35aIAojV18c+9RsBD8Au2hx/3sVoVJ4TFro25kw3J5Fb
-	xfDBqdAm98Y+TxPruvfw+9fQrsF9+WzDm8rc=
-X-Gm-Gg: ASbGncvjLsvC5rQh+AL/JmddPCcsK1X6MFtUgHRkn0YItvfV9DDCEDTKpYg9Bq1717/
-	PmLJk81WfwcXu+rlHg/7mFPmu5juo5e5xTfVZwkvQ4X+pKn5FcPdniBKvincCyKATD00IUHjxQe
-	24RJoPkCBDZQ/1WcPjcTi6Is0VvLt7LMPbD2iCve9ebbldDLKqQ006a/Sbfg==
-X-Google-Smtp-Source: AGHT+IEznYceGsjjTiB88T6Jrdmo0BdN0iShKH5S68YVElUCr8WM6U09nAFI/eguF9xsQVmCsMKMr2ItgVP8iPjd6qU=
-X-Received: by 2002:a17:902:e541:b0:220:f449:7419 with SMTP id
- d9443c01a7336-223f1c66c97mr15866225ad.7.1741130739540; Tue, 04 Mar 2025
- 15:25:39 -0800 (PST)
+	s=arc-20240116; t=1741131180; c=relaxed/simple;
+	bh=AGChIRAm2PHdvyAWN7Kn1cbcmtqj0eKBjdwS7NQYAQs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JSbg8EKgDI/RlDNqaWn4wtV7ef+dEbcr0D97NV4uZlIJofOa0aPJlb52lmXKylevX43ntsvlpv1di5hpB8WazdQrw6m4LpKPZ0tUK6NOVp3go2E0iTzCMTI+Tbg+POZDQeGLJv2GSbknWnfUZ3P4Of7J2SNsc4Xl4ex9P7KYNrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=At2yUsQd; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 524KfgVL020217;
+	Tue, 4 Mar 2025 23:32:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	corp-2023-11-20; bh=B5EtGq50VUCHD0TlmNBG/qgSWHH2qqKdY3ozxxRWB3w=; b=
+	At2yUsQdknBa4Dk7umJcp3ghmsj0Cz+pKHcAu3U3qGZe0oEMiq3o/lEBbEXB3/mN
+	uYiWOZuLjZaZ4Q6w7U6gYt8g2kZdgMsH8V+jkIUHbxqjXJ9kJvbrjUCVzAuL5L0A
+	RBih3D6BWJrKjH9GIQmz7S3Ml6nKH4/eSiqLd6bSsF04s1iUaT9SpkrvtiBaDl49
+	bsnmBKVludUiTdxd8hxfo3DoRGCgmb8Lj+EGEGpgXHI4/OpuT5E/o+gK4kYSkokp
+	Hf8ctoYqoTcBzBnt5g4k684Po4CZT6aKgkuIppzNBRaZOHfRTyC44SJtmEwF6cfL
+	4Vm1qUECtMw/Z0tyYAv0Rw==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 453ub76c0c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 04 Mar 2025 23:32:36 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 524NP5qZ003198;
+	Tue, 4 Mar 2025 23:32:35 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 453rp9nq71-1;
+	Tue, 04 Mar 2025 23:32:35 +0000
+From: Sherry Yang <sherry.yang@oracle.com>
+To: leon@kernel.org, kashyap.desai@broadcom.com, mheib@redhat.com,
+        selvin.xavier@broadcom.com
+Cc: linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] Fix bnxt_re crash in bnxt_qplib_process_qp_event
+Date: Tue,  4 Mar 2025 15:31:51 -0800
+Message-ID: <20250304233233.799662-1-sherry.yang@oracle.com>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20241125072215.GF160612@unreal>
+References: <20241125072215.GF160612@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250304215637.68559-1-linux@treblig.org>
-In-Reply-To: <20250304215637.68559-1-linux@treblig.org>
-From: Vishnu Dasa <vishnu.dasa@broadcom.com>
-Date: Tue, 4 Mar 2025 15:25:28 -0800
-X-Gm-Features: AQ5f1JqBPSpYq0BUOw62xgw4nLMhNrYoD47X9UE-6-hfoK2kNdY06lYEgiYfNOE
-Message-ID: <CAF+opq3UOEAJvjT1rvwkqX5MYNbaxksSU0Dtg+jXgE5u9DH0=g@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/vmw_pvrdma: Remove unused pvrdma_modify_device
-To: linux@treblig.org
-Cc: bryan-bt.tan@broadcom.com, jgg@ziepe.ca, leon@kernel.org, 
-	bcm-kernel-feedback-list@broadcom.com, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000040f35c062f8c97c2"
-
---00000000000040f35c062f8c97c2
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-04_09,2025-03-04_02,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 spamscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2502100000
+ definitions=main-2503040188
+X-Proofpoint-GUID: SfmzEC8vHMuCycqW3GbdUcQlRsXtfbUl
+X-Proofpoint-ORIG-GUID: SfmzEC8vHMuCycqW3GbdUcQlRsXtfbUl
 
-On Tue, Mar 4, 2025 at 1:56=E2=80=AFPM <linux@treblig.org> wrote:
->
-> From: "Dr. David Alan Gilbert" <linux@treblig.org>
->
-> pvrdma_modify_device() was added in 2016 as part of
-> commit 29c8d9eba550 ("IB: Add vmw_pvrdma driver")
-> but accidentally it was never wired into the device_ops struct.
->
-> After some discussion the best course seems to be just to remove it,
-> see discussion at:
-> https://lore.kernel.org/all/Z8TWF6coBUF3l_jk@gallifrey/
->
-> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+Hi All,
 
-Acked-by: Vishnu Dasa <vishnu.dasa@broadcom.com>
+I encountered a similar issue with the bnxt_re driver from Linux 6.12 to 6.=
+14
+where a KVM host kernel crash occurs in bnxt_qplib_process_qp_event due to =
+a=20
+write access to an invalid memory address (ffff9f058cedbb10) after performi=
+ng
+few SRIOV operations on the guest. It doesn=E2=80=99t happen on Linux 6.11.=
+ It can=E2=80=99t be=20
+reproduced consistently, happens 2 out of 5 times.
 
-> ---
->  .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.c   | 28 -------------------
->  .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   |  2 --
->  2 files changed, 30 deletions(-)
->
-> diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c b/drivers/in=
-finiband/hw/vmw_pvrdma/pvrdma_verbs.c
-> index 9f54aa90a35a..bcd43dc30e21 100644
-> --- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c
-> +++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.c
-> @@ -237,34 +237,6 @@ enum rdma_link_layer pvrdma_port_link_layer(struct i=
-b_device *ibdev,
->         return IB_LINK_LAYER_ETHERNET;
->  }
->
-> -int pvrdma_modify_device(struct ib_device *ibdev, int mask,
-> -                        struct ib_device_modify *props)
-> -{
-> -       unsigned long flags;
-> -
-> -       if (mask & ~(IB_DEVICE_MODIFY_SYS_IMAGE_GUID |
-> -                    IB_DEVICE_MODIFY_NODE_DESC)) {
-> -               dev_warn(&to_vdev(ibdev)->pdev->dev,
-> -                        "unsupported device modify mask %#x\n", mask);
-> -               return -EOPNOTSUPP;
-> -       }
-> -
-> -       if (mask & IB_DEVICE_MODIFY_NODE_DESC) {
-> -               spin_lock_irqsave(&to_vdev(ibdev)->desc_lock, flags);
-> -               memcpy(ibdev->node_desc, props->node_desc, 64);
-> -               spin_unlock_irqrestore(&to_vdev(ibdev)->desc_lock, flags)=
-;
-> -       }
-> -
-> -       if (mask & IB_DEVICE_MODIFY_SYS_IMAGE_GUID) {
-> -               mutex_lock(&to_vdev(ibdev)->port_mutex);
-> -               to_vdev(ibdev)->sys_image_guid =3D
-> -                       cpu_to_be64(props->sys_image_guid);
-> -               mutex_unlock(&to_vdev(ibdev)->port_mutex);
-> -       }
-> -
-> -       return 0;
-> -}
-> -
->  /**
->   * pvrdma_modify_port - modify device port attributes
->   * @ibdev: the device to modify
-> diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h b/drivers/in=
-finiband/hw/vmw_pvrdma/pvrdma_verbs.h
-> index 4b9edc03d73d..fd47b0b1df5c 100644
-> --- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
-> +++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
-> @@ -356,8 +356,6 @@ int pvrdma_query_pkey(struct ib_device *ibdev, u32 po=
-rt,
->                       u16 index, u16 *pkey);
->  enum rdma_link_layer pvrdma_port_link_layer(struct ib_device *ibdev,
->                                             u32 port);
-> -int pvrdma_modify_device(struct ib_device *ibdev, int mask,
-> -                        struct ib_device_modify *props);
->  int pvrdma_modify_port(struct ib_device *ibdev, u32 port,
->                        int mask, struct ib_port_modify *props);
->  int pvrdma_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)=
-;
-> --
-> 2.48.1
->
+System details:
+- NIC: Broadcom BCM57417 NetXtreme-E 10Gb/25Gb RDMA Ethernet Controller
 
---00000000000040f35c062f8c97c2
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+The crash trace is as follows:
+[ 6882.739369] BUG: unable to handle page fault for address: ffff9f058cedbb=
+10
+[ 6882.739771] #PF: supervisor write access in kernel mode
+[ 6882.740127] #PF: error_code(0x0002) - not-present page
+[ 6882.740417] PGD 100000067 P4D 100000067 PUD 1002e3067 PMD 107b10067 PTE 0
+[ 6882.740696] Oops: Oops: 0002 [#1] PREEMPT SMP PTI
+[ 6882.740971] CPU: 23 UID: 0 PID: 0 Comm: swapper/23 Kdump: loaded Not tai=
+nted 6.12.0-0.16.14.el9uek.x86_64 #1
+[ 6882.741528] RIP: 0010:bnxt_qplib_process_qp_event.isra.0+0xa5/0x323 [bnx=
+t_re]
+[ 6882.741827] Code: 74 0d 80 7d 01 00 75 07 f0 ff 8b d0 02 00 00 41 80 7f =
+11 00 0f 84 87 00 00 00 49 8b 17 48 85 d2 0f 84 0e 02 00 00 48 8b 4d 00 <48=
+> 89 0a 48 8b 4d 08 48 89 4a 08 44 0f bf e0 41 8b 47 08 41 c7 47
+[ 6882.742434] RSP: 0018:ffff9f058cf1ce88 EFLAGS: 00010282
+[ 6882.742754] RAX: 0000000000000000 RBX: ffff904ceb600c80 RCX: 00000000000=
+00338
+[ 6882.743078] RDX: ffff9f058cedbb10 RSI: 0000000000000000 RDI: 00000000000=
+00000
+[ 6882.743395] RBP: ffff9044dc5bd660 R08: 0000000000000000 R09: 00000000000=
+00000
+[ 6882.743705] R10: 0000000000000000 R11: 0000000000000000 R12: ffff90434b3=
+f8000
+[ 6882.743987] R13: ffff9f058cf1cf14 R14: ffff904ceb600c98 R15: ffff90444df=
+40000
+[ 6882.744272] FS:  0000000000000000(0000) GS:ffff908180e80000(0000) knlGS:=
+0000000000000000
+[ 6882.744556] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 6882.744839] CR2: ffff9f058cedbb10 CR3: 0000001773e38001 CR4: 00000000007=
+726f0
+[ 6882.745125] PKRU: 55555554
+[ 6882.745406] Call Trace:
+[ 6882.745686]  <IRQ>
+[ 6882.745964]  ? show_trace_log_lvl+0x1b0/0x300
+[ 6882.746247]  ? show_trace_log_lvl+0x1b0/0x300
+[ 6882.746529]  ? bnxt_qplib_service_creq+0x16a/0x236 [bnxt_re]
+[ 6882.746821]  ? __die_body.cold+0x8/0x17
+[ 6882.747099]  ? page_fault_oops+0x162/0x16d
+[ 6882.747397]  ? exc_page_fault+0x16d/0x180
+[ 6882.747700]  ? asm_exc_page_fault+0x26/0x30
+[ 6882.747975]  ? bnxt_qplib_process_qp_event.isra.0+0xa5/0x323 [bnxt_re]
+[ 6882.748250]  ? bnxt_qplib_process_qp_event.isra.0+0x43/0x323 [bnxt_re]
+[ 6882.748518]  bnxt_qplib_service_creq+0x16a/0x236 [bnxt_re]
+[ 6882.748785]  tasklet_action_common+0xca/0x240
+[ 6882.749042]  handle_softirqs+0xe1/0x2ac
+[ 6882.749295]  __irq_exit_rcu+0xab/0xd0
+[ 6882.749571]  common_interrupt+0x85/0xa0
+[ 6882.749835]  </IRQ>
+[ 6882.750094]  <TASK>
+[ 6882.750350]  asm_common_interrupt+0x26/0x40
+[ 6882.750622] RIP: 0010:cpuidle_enter_state+0xc6/0x430
+[ 6882.750870] Code: 00 00 e8 dd 82 23 ff e8 38 f1 ff ff 49 89 c5 0f 1f 44 =
+00 00 31 ff e8 79 f2 21 ff 45 84 ff 0f 85 b8 01 00 00 fb 0f 1f 44 00 00 <45=
+> 85 f6 0f 88 92 01 00 00 49 63 d6 48 8d 04 52 48 8d 04 82 49 8d
+[ 6882.751411] RSP: 0018:ffff9f05807dfe70 EFLAGS: 00000246
+[ 6882.751698] RAX: 0000000000000000 RBX: 0000000000000003 RCX: 00000000000=
+00000
+[ 6882.751990] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000=
+00000
+[ 6882.752281] RBP: ffff908180ec4f68 R08: 0000000000000000 R09: 00000000000=
+00000
+[ 6882.752598] R10: 0000000000000000 R11: 0000000000000000 R12: ffffffff89c=
+e0900
+[ 6882.752989] R13: 00000642833badfd R14: 0000000000000003 R15: 00000000000=
+00000
+[ 6882.753373]  cpuidle_enter+0x2d/0x50
+[ 6882.753701]  cpuidle_idle_call+0xfd/0x170
+[ 6882.754049]  do_idle+0x7b/0xc0
+[ 6882.754333]  cpu_startup_entry+0x29/0x30
+[ 6882.754597]  start_secondary+0x11e/0x140
+[ 6882.754856]  common_startup_64+0x13e/0x141
+[ 6882.755114]  </TASK>
+[ 6882.755357] Modules linked in: vfio_pci vfio_pci_core vhost_net vhost vh=
+ost_iotlb tap xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nft_compat =
+nf_nat_tftp nf_conntrack_tftp tun nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nf=
+t_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_c=
+hain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 rfkill ip_set su=
+nrpc vfat fat intel_rapl_msr intel_rapl_common intel_uncore_frequency intel=
+_uncore_frequency_common skx_edac skx_edac_common nfit libnvdimm x86_pkg_te=
+mp_thermal intel_powerclamp coretemp kvm_intel bnxt_re iTCO_wdt ipmi_ssif i=
+TCO_vendor_support ib_uverbs kvm pcspkr acpi_ipmi ib_core ipmi_si i2c_i801 =
+lpc_ich i2c_smbus ipmi_devintf ioatdma intel_pch_thermal wmi ipmi_msghandle=
+r fuse xfs qla2xxx sd_mod nvme_fc mgag200 sg drm_shmem_helper nvme_fabrics =
+ahci crct10dif_pclmul crc32_pclmul drm_kms_helper nvme libahci nvme_keyring=
+ ghash_clmulni_intel i40e drm sha512_ssse3 sha256_ssse3 nvme_core bnxt_en i=
+gb libata megaraid_sas scsi_transport_fc sha1_ssse3 nvme_auth
+[ 6882.755442]  libie dca i2c_algo_bit dm_mirror dm_region_hash dm_log dm_m=
+od aesni_intel gf128mul crypto_simd cryptd
+[ 6882.758069] CR2: ffff9f058cedbb10
 
-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
-R/NZ5tTafc0SyuWmEVyFR825FbSoi1HwMkY1/lsU/2Ny0PK1+9WamuvV11QKd2dN0bYDXrT9uWC/
-Cw+IDnr+5S21lWL9xM3S7htf+QjbSezM58DicE0QLGoXIYZ98zGOum91sMMgq2YfQKCVeOcD/7SL
-0tftIn9SftUtPTeRab5qssPI8Aqo18uk3WxLqQRQv57jHWDis/0CAwEAAaOCAdkwggHVMA4GA1Ud
-DwEB/wQEAwIFoDCBkwYIKwYBBQUHAQEEgYYwgYMwRgYIKwYBBQUHMAKGOmh0dHA6Ly9zZWN1cmUu
-Z2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjZzbWltZWNhMjAyMy5jcnQwOQYIKwYBBQUHMAGG
-LWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjZzbWltZWNhMjAyMzBlBgNVHSAEXjBc
-MAkGB2eBDAEFAwEwCwYJKwYBBAGgMgEoMEIGCisGAQQBoDIKAwIwNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBBBgNVHR8EOjA4
-MDagNKAyhjBodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjZzbWltZWNhMjAyMy5jcmww
-IwYDVR0RBBwwGoEYdmlzaG51LmRhc2FAYnJvYWRjb20uY29tMBMGA1UdJQQMMAoGCCsGAQUFBwME
-MB8GA1UdIwQYMBaAFAApNp5ceroPry1QLdugI4UYsKCSMB0GA1UdDgQWBBSDkmQlbsGdC/WLbyB/
-f4VlMvD+ozANBgkqhkiG9w0BAQsFAAOCAgEAYv4/sGMrazXrWECSGMFJ6YIDir3jLsYCcD/xTMfS
-bXSiWFQ/ZiFLbxfVV9JJKkkKR29ow0Eo1fBaZMCDhnax7746XJn6qJ0Iz5MyLKFB2DKt3UO2q1PB
-+wh73XKXTx6FDnbFRDjtyam6uKjknIMrZcFVTyFwUiY9zKz5pK40OPx4ZzdWxOCKMnCblGOiqvS+
-gHpKXHRfCd9Ul1teGR1+muz+L7fJfrx9WUBNDFFIhwZEevLSVo7wIoyT2PG0fIk2yjKCFOT3CVVy
-E5LT/kzQHjq7Y36GeUxozu21FbrNYm4Ivlh1OV9suNl/3iN1j9kFAdgg/8QXh9USKmg2zaS/S9lc
-1YYUOS+Epg0WBwhAwWtVym636KWqu4Esgz2XWX1260rHG0sIxkdxzvBwsUYpf3e1axBlOHHr1Jz+
-vDtQVeBUS7fBAVDWnBJrKNn+jseGnpcqBDQSSNq1kB44XhKZFApne6lKSCqYkE3qXnr7Dp0CXm+G
-pPoyxqxotis4l4Dl4A3btCkYLp/dzOS00M71f185BKufW7S/16rj/jVUzgz2AjGvM/OC0SWvGoB2
-tDdyBMmW1/0xK5rKGnmfM07/k8agfS2J6eI1iWB35m1Ni2SoCoLGoLlvUA4OhexyRqMTTjyllKtA
-0Z9TF7kzBYUx8Qa7zfaTaIsVorChiSjphpgxggJXMIICUwIBATBiMFIxCzAJBgNVBAYTAkJFMRkw
-FwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSgwJgYDVQQDEx9HbG9iYWxTaWduIEdDQyBSNiBTTUlN
-RSBDQSAyMDIzAgwcY9XKjV0+TQvViOkwDQYJYIZIAWUDBAIBBQCggccwLwYJKoZIhvcNAQkEMSIE
-IIkZW/ay5R2BRdPYdYCTgj/Q0oWEWJDud1nXBaXlo2mvMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0B
-BwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDMwNDIzMjUzOVowXAYJKoZIhvcNAQkPMU8wTTALBglghkgB
-ZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQcw
-CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAKNvILpFGrWFuY6R37ghd7uPLjy9LGp/UrPE
-POPnobHqS3ujMlEmSoRfr2yxscgcawXmGbzY3ULBZOxNrEJ394M1MF9BIz+1TbY6VaVyogbEGSBM
-VlyVl3k/56iR8TL5jfgwj/YE/Ux3Q6m3FCl63NBkktg45btli84W3EF6HhsdSdm32e4Prpa0AeMa
-IpmuAIj/GN2YgH1CDFL3Jlm4atz3e9MQ2OZKTTF8oDUol8nNhCwbFUcNCbRXXux245kgwLeISZF/
-A5MtgPXt9YQoiAIRw+k1gO9cNaNdbs530qTmavnNDLiA5WBDdLQhxd+4PLOglQblIk+aQg4bz3Ht
-R9Y=
---00000000000040f35c062f8c97c2--
+I would like to know what=E2=80=99s going on with this issue or if there ar=
+e any=20
+workarounds available. Please let me know if further debugging=20
+logs or tests are needed.
+
+Thanks,
+Sherry
+
 
