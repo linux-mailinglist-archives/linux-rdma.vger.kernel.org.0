@@ -1,144 +1,87 @@
-Return-Path: <linux-rdma+bounces-8298-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8300-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B2DCA4D964
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 10:56:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 194DEA4DE1D
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 13:38:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 847DD7A24B3
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 09:55:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE0FF3B3501
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 12:38:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92651FCFE6;
-	Tue,  4 Mar 2025 09:56:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89920202C48;
+	Tue,  4 Mar 2025 12:38:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ps19xneF"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="VkRhwj8h"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE92A1FCFCC;
-	Tue,  4 Mar 2025 09:56:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3160D2036F5;
+	Tue,  4 Mar 2025 12:38:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741082163; cv=none; b=iklqVengusQBaCe3m+vOcLg9YkfCoUT2E80OrYnJ2aP3Lg8qFn2BVslNOIa+bnwrgPViETlMnawTcX4bFmvZLCbYpyYbVBNZvZ6jheQTQ7IqD5g4U/Y03bK0ihHga4+eSZnADfAom7vruRlVvFa0EfrywA35vES25EBd3gd3xXE=
+	t=1741091914; cv=none; b=KAbyjrBZNZEpZq60LKvdXC3eJKT2Sgf04sQhtZZVCMsLYZQaSC15wZkCWOAnlEBfPCbl7P+yYwcru2akAYixdGOlgOQYS3fZw+oWYDaILVGrLu4FqE/f6jGCGVg5Adz4BjbHzjOdSjEfKFv4/RuCPJOvf+o6YnUhXN3KOBdCfAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741082163; c=relaxed/simple;
-	bh=o51jYiIjJ7Hl+a6ZtvtnyQKJHKFVcGivr4VSA+BfR1A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X9zhnNNVz+ndTDef9LeVdLu42W2s+1YiszfFc/BzbQvFIo2yaJrcYUY/Cyf5vjNm24PNE1EsMGlaJ66zXwDQ5SETZ5hmX0GTLZtmCgts67coIHT8p6CQ6Jhn2qj/R5grOC2nS5xLqEwJ5/jYzQnkh3XIDajkJAw6hK+10ZvAkJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ps19xneF; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741082162; x=1772618162;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=o51jYiIjJ7Hl+a6ZtvtnyQKJHKFVcGivr4VSA+BfR1A=;
-  b=Ps19xneF4D3M6cdUHBwSS+SYYl53IciSEvEWKQXVYu3aCDUh3RLnS8QY
-   0pe0O5CRMl3UV8eHpPzEUhUu+tfJeALFgFxJIGaoTeuWQtmLBmAE4dhnD
-   DYqvCPd0wuXC71RAsfZ9RWeRos8j2IyewvAZSweg/kUCI7UzQeFzIJzio
-   qPfHnqhypzE3B5BAFB4A6igpEiOAWw3+eeH+M3toUZLrJAA9dpPsAKE2y
-   QyqH+RB4PuBa1LCF90TyZdk9ThVDvY+W3LiEZaWmBDtyM0yylMxsKTsJf
-   APiifh0mzdbtmMuVdy92jM8v3vq9Ymy07dHgRmD6J8I36w9YbjsNlBEvh
-   A==;
-X-CSE-ConnectionGUID: 7pgFDQdxTzmqFAFM+f8FkA==
-X-CSE-MsgGUID: FlAd9TfXS0m4fU0rJSW1lQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11362"; a="45767245"
-X-IronPort-AV: E=Sophos;i="6.13,331,1732608000"; 
-   d="scan'208";a="45767245"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2025 01:56:02 -0800
-X-CSE-ConnectionGUID: 9/id7rMqQ4+3Zhh40VmpKg==
-X-CSE-MsgGUID: ljCGWTOARy6fccCifDPeXg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="118840957"
-Received: from mev-dev.igk.intel.com ([10.237.112.144])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2025 01:55:58 -0800
-Date: Tue, 4 Mar 2025 10:51:57 +0100
-From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To: Leon Romanovsky <leonro@nvidia.com>
-Cc: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman <gal@nvidia.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 6/6] net/mlx5e: Properly match IPsec subnet
- addresses
-Message-ID: <Z8bNPRtzOBZ7LdGJ@mev-dev.igk.intel.com>
-References: <20250226114752.104838-1-tariqt@nvidia.com>
- <20250226114752.104838-7-tariqt@nvidia.com>
- <Z8aw1gn5iFNiSxd3@mev-dev.igk.intel.com>
- <20250304080543.GD1955273@unreal>
+	s=arc-20240116; t=1741091914; c=relaxed/simple;
+	bh=3YlAxAE2YbWWJgC7s273kR+6UMcvkOwkPhMJ4M16UsE=;
+	h=From:To:Subject:Mime-Version:Content-Type:Date:Message-ID; b=uDgQvbzzdNz/T0MwWq+jOu0ekdGCLCagZoMZ/zZw+277yeHgnI4iBB0Px4tWB0a96gpCCecjHE7jn2iRWECQd3lIcy6+aZ35dearHvRNS+vSF28uKK/VUflasmIidW+mThRL9b2zrx8pCdWJcyX7pBir2nER/jMOBkAAiqhPsrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=VkRhwj8h; arc=none smtp.client-ip=162.62.58.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1741091600; bh=3YlAxAE2YbWWJgC7s273kR+6UMcvkOwkPhMJ4M16UsE=;
+	h=From:To:Subject:Date;
+	b=VkRhwj8hdle73Ia6fl9FIHsXLKzfF7fp+jafQxL0qpROXw3zr5T3ymctRVYhqsFau
+	 8yjpWLf6xgAYhNp6EkSYDu4X/xcHvux5ovVoOydu/UUEICqgsCxMSgW8E+vxZ2UiKI
+	 zEvEpFUx7w0ZYtNpMFVgZb8C4/sGVo8K96SJ8Yms=
+X-QQ-FEAT: oHWrrGTW1dCni6VLWI7Xi3lwP5c1dnPf
+X-QQ-SSF: 00000000000000F0000000000000
+X-QQ-XMRINFO: MFuljud3PUW4EHVQZqpniSQ=
+X-QQ-XMAILINFO: N6tmAlkxtqcd1RYE7ZiLzY7Lw6tRdpXhVk9+Hz77o1EVYTKrnqC6hUqHe2CZh1
+	 C6Zrom9b5pps1iDsmsJpAVXvUET82apKru9S7YqrNm4/BMD5dt85BFCjuFno+IqKTfLYl/U1dAX/R
+	 +TcrQCxibq1CvqQFcy8WPooIbI9eCvANi3rwO7h0baIgtrfHauNVltdQ0us2Q0ETeMAF8spFJGQUj
+	 I2STjzrQXTwgNqNrEKWZluMA92/4CjrUKIFNvUMO/i69YJHk/tf0T3RexRirrIbRYRxhEDsAjPDn+
+	 gB0OagWGkRAC2YIl1ZSdRSIaMuiI+mChGsCWLO1Tn/sSRXD6mu0Xs7AiPJs395Dth/WcIzgG50PFd
+	 ocACv4SI7+38GhFyXJmLMpwRVPaPE3+IIivtxZF5ErKldVEf63hInfI9HWwFQi7RPEyuBjexcFZE0
+	 E4cRIlfg2UBE0OCgLDdxm1O3IVqx64q2DIoa2iYrOkOyidCXTveOMvpaW6uMHXcaVaUiHnpgKeRDh
+	 LSqCkmvQQnxxIED+7s9U83K+y+yR29tcMs+80DHMOAh0zI3q+8OuzhkunmHArLXL7w+D21APrDfqJ
+	 tYeHrO9fJEbTFX7/+BT2mMo0kdcrIfioGUCUWxgEhRVO4yufczcvwPI8YkeUlhFK+lPb9UVTKKuxd
+	 fG/JSPtEMUZNO/G/HON8EpenWq+57LVDFsUU0Ko8KOZ51SVAReIP0xNiis5npZrq/ch2XdovuftlJ
+	 2ecEdDrFlkVaWMAsnMNHnkV1yYB96KTob31lYLg+StQ2asByiITbbb2l5mulMuOACyVIwgvHk1UTw
+	 ECwW/U3AbcOJyWHNcgS9101KDr5SJURCfVwGL56ff+heovlB6FW0y0HjdTT1HeWWTkpvMDH6rn+Si
+	 1dRJZTUOkbQKvTQJRCnjSwdJL2LLkkQarZ9mQfBjCAC69Mmo0J59x5GJquSdeOaaQvLhnvnMZUQTO
+	 wQxKDTI2jtpsfh5PpLaGx78mfmOUTg+fi6hNhEgDH2RydK2i3gLlqkVFRsUdA=
+X-HAS-ATTACH: no
+X-QQ-BUSINESS-ORIGIN: 2
+X-QQ-STYLE: 
+X-QQ-mid: webmail284t1741091598t3256532
+From: "=?gb18030?B?ZmZoZ2Z2?=" <744439878@qq.com>
+To: "=?gb18030?B?d2Vuamlh?=" <wenjia@linux.ibm.com>, "=?gb18030?B?amFrYQ==?=" <jaka@linux.ibm.com>, "=?gb18030?B?YWxpYnVkYQ==?=" <alibuda@linux.alibaba.com>, "=?gb18030?B?dG9ueWx1?=" <tonylu@linux.alibaba.com>, "=?gb18030?B?Z3V3ZW4=?=" <guwen@linux.alibaba.com>, "=?gb18030?B?ZGF2ZW0=?=" <davem@davemloft.net>, "=?gb18030?B?ZWR1bWF6ZXQ=?=" <edumazet@google.com>, "=?gb18030?B?a3ViYQ==?=" <kuba@kernel.org>, "=?gb18030?B?cGFiZW5p?=" <pabeni@redhat.com>, "=?gb18030?B?aG9ybXM=?=" <horms@kernel.org>, "=?gb18030?B?bGludXgtcmRtYQ==?=" <linux-rdma@vger.kernel.org>, "=?gb18030?B?bGludXgtczM5MA==?=" <linux-s390@vger.kernel.org>, "=?gb18030?B?bmV0ZGV2?=" <netdev@vger.kernel.org>, "=?gb18030?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>
+Subject: =?gb18030?B?QWRkaXRpb25hbCBkZXNjcmlwdGlvbiBhYm91dCBi?=
+ =?gb18030?B?dWc6IKGwS0FTQU46IG51bGwtcHRyLWRlcmVmIFJl?=
+ =?gb18030?B?YWQgaW4gc21jX3RjcF9zeW5fcmVjdl9zb2NrobE=?=
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250304080543.GD1955273@unreal>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="gb18030"
+Content-Transfer-Encoding: base64
+Date: Tue, 4 Mar 2025 07:33:18 -0500
+X-Priority: 3
+Message-ID: <tencent_DB489820B9DDDC69F6AFCC12649BDADE7808@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
 
-On Tue, Mar 04, 2025 at 10:05:43AM +0200, Leon Romanovsky wrote:
-> On Tue, Mar 04, 2025 at 08:50:46AM +0100, Michal Swiatkowski wrote:
-> > On Wed, Feb 26, 2025 at 01:47:52PM +0200, Tariq Toukan wrote:
-> > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > 
-> > > Existing match criteria didn't allow to match whole subnet and
-> > > only by specific addresses only. This caused to tunnel mode do not
-> > > forward such traffic through relevant SA.
-> > > 
-> > > In tunnel mode, policies look like this:
-> > > src 192.169.0.0/16 dst 192.169.0.0/16
-> > >         dir out priority 383615 ptype main
-> > >         tmpl src 192.169.101.2 dst 192.169.101.1
-> > >                 proto esp spi 0xc5141c18 reqid 1 mode tunnel
-> > >         crypto offload parameters: dev eth2 mode packet
-> > > 
-> > > In this case, the XFRM core code handled all subnet calculations and
-> > > forwarded network address to the drivers e.g. 192.169.0.0.
-> > > 
-> > > For mlx5 devices, there is a need to set relevant prefix e.g. 0xFFFF00
-> > > to perform flow steering match operation.
-> > > 
-> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> > > ---
-> > >  .../mellanox/mlx5/core/en_accel/ipsec.c       | 49 +++++++++++++++++++
-> > >  .../mellanox/mlx5/core/en_accel/ipsec.h       |  9 +++-
-> > >  .../mellanox/mlx5/core/en_accel/ipsec_fs.c    | 20 +++++---
-> > >  3 files changed, 69 insertions(+), 9 deletions(-)
-> > > 
-> > 
-> > [...]
-> > 
-> > >  
-> > > +static __be32 word_to_mask(int prefix)
-> > > +{
-> > > +	if (prefix < 0)
-> > > +		return 0;
-> > > +
-> > > +	if (!prefix || prefix > 31)
-> > > +		return cpu_to_be32(0xFFFFFFFF);
-> > > +
-> > > +	return cpu_to_be32(((1U << prefix) - 1) << (32 - prefix));
-> > 
-> > Isn't it GENMASK(31, 32 - prefix)? I don't know if it is preferable to
-> > use this macro in such place.
-> 
-> GENMASK(a, b) expects "b" to be const type, see
-> #define GENMASK_INPUT_CHECK(h, l) BUILD_BUG_ON_ZERO(const_true((l) > (h)))
-> 
+U29ycnkgYWJvdXQgdGhlIGJ1ZzogobBLQVNBTjogbnVsbC1wdHItZGVyZWYgUmVhZCBpbiBz
+bWNfdGNwX3N5bl9yZWN2X3NvY2uhsCBpbiBteSBsYXN0IGVtYWlsIGFib3V0IHRoZSBidWcn
+cyBzdWJzeXN0ZW0gZGVzY3JpcHRpb24gZXJyb3IgKG1pc3Rha2VubHkgd3JpdHRlbiBhcyBi
+Y2FjaGVmcyBmaWxlIHN5c3RlbSksIGl0IHNob3VsZCBhY3R1YWxseSBiZSByZWxhdGVkIHRv
+IHRoZSBTTUMgc3Vic3lzdGVtLg==
 
-Sorry, I didn't know that, thanks.
-
-> Thanks
 
