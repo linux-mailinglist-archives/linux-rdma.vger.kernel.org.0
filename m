@@ -1,193 +1,153 @@
-Return-Path: <linux-rdma+bounces-8284-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8285-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A667A4D260
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 05:10:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73862A4D3FC
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 07:40:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD8393ADF7D
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 04:10:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 668B6188F17E
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 06:40:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F0201F4E30;
-	Tue,  4 Mar 2025 04:09:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448981F4E47;
+	Tue,  4 Mar 2025 06:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="iPpL7HKd"
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="ShSP2F4X"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 141BB1F4193
-	for <linux-rdma@vger.kernel.org>; Tue,  4 Mar 2025 04:09:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5FE1EF390;
+	Tue,  4 Mar 2025 06:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741061365; cv=none; b=sspNStw2ZkLcvKffkqcvVa/5g2RsDz01x6jm1kf52bCX0vy0SvmgrbHhmZKVSM7h22EJHteAGcgWZahXijJXS3nJNCPcMwyhI+D5bRdxM+gMJPUjdlOUHc4AkD7Or/WJVppbohuFw8KKVknHV7PW6jakgL1XmlwsyYf3b5mrlw8=
+	t=1741070404; cv=none; b=Jxh4DbnNDgtIN/P9DrtGMaGr7l706/IpVE/bHDTjeXyGaTet9jiOcgEIEk/k9/x3HlRyIAOdShXMGqo37UQPC/PoQ2DvV3zBfWTM8iH9MwFcddaUW5M5QhTvZinsES9jPe1uUihx+XrxtN23wU+Rfm3B88er0LhFZWn5ekqX6Ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741061365; c=relaxed/simple;
-	bh=s90yqhvk4pfs86DfjXjh+9L0K4GJRP2qX5zSXavoo3E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QqR5SV3UdLWLqpxLMRhesQwMcKvYMKYFzB6YHtsZkzFpJoqEl7rNnpTg319alpd/WP+espk2/Oa0SqHBrjka/aSv+Bvk+6njEFARQxVqcrmiV2PCTPdHe87UgfLW9JvVXBIRLgBnF+NkrgmTgENTbHXWvZwu/8nFN2onK5QuLTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=iPpL7HKd; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2232b12cd36so69481165ad.0
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Mar 2025 20:09:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1741061361; x=1741666161; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=q+V3PUWzWkMSxMibzVA8wRpul1QqqMCYlxDxIwkJQK4=;
-        b=iPpL7HKdSGBZgTMK0YssGOHs/ol3laoztiQurJZkgbbeDuzru2MTC1GtZOp1qFYAgF
-         snm6kuuF8Be6LFmA5GdfKFuEM/kUqcVdPh7xuAh1HwgXgu7UEZi94tn1ysMfhEZgh8fT
-         u9ZRh47EiJlGp8vBwYf8vxZw3toyPEzXXE5xA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741061361; x=1741666161;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=q+V3PUWzWkMSxMibzVA8wRpul1QqqMCYlxDxIwkJQK4=;
-        b=OV0d3QzEDhpQQTGXP9lNTqANZkeyEzNC++urgHn2w6RgSJ5ATjXtK5c+Hu6i4SDNNB
-         +vbv+g3vPy/s9nfDXak+ptvp8ucdPquEAavKaCxc9NGNHtNop5raDpxegqyluXXMA/eC
-         Ewk2DkqSEqQn+vszBfHu1nXO46c3e/ETTop2AUy3xHIZyeRz5o88jLEboDsknO9KTBeu
-         2V0qyQUeJrBtiRUmM4vt2+txpc3qamYDvkr/EpmeMDY5MmkpEiatJkoF+BNNUuJERgca
-         Cdro7o39sgCoKo2HGAb4yRhJ7GRFr03YWJbfnC/Ws94Dtngsw392rhzC8h+zmNrxwuze
-         ZB2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVV0uP9BmSzTlq/rkmwVivwrO76hvAKsEITGF/ke0BJGPrjs+MIf6knnQBWqFqBtbZlCjeHXqFeHz9C@vger.kernel.org
-X-Gm-Message-State: AOJu0YzV2mNEG2f0tWJZ5GXRjWfKYj/q0Q5agwe+umq0DeS/s+PI1zPx
-	AEmA1ErhOvz7P7loNE37EZ1C3ntHFKzxfFIwTFMCGOAWRr5bfP9yNXHud3dVtCIyA8nIXpl3cQU
-	UVgQtDkt59t3IkDV6B9rmLK/VcfH6KWE7iefO
-X-Gm-Gg: ASbGncuYQsybwMW7yT/3N8ABcFtc8VP7KUBM022LV8qftOSf/yXnpB9c92W8AE5lM2d
-	iHGw5lvMn8iKM1M26tQ2JefQToFbv4ViGwmrQrRj2R8QNYkq2fACfMZI/Lk73c2lZUZJQTVdNra
-	fMNYYELaZkTW0Qq4c2zLmipzqfLhw=
-X-Google-Smtp-Source: AGHT+IHcNAQsOxbzkZGxJnhIcK7u+onVFDJnK6m9kuGARZDWfbmSJhhiwsuxmC981I1RSjRF2l0oOGA9H8OYf0Dx1Nc=
-X-Received: by 2002:a17:903:17c6:b0:223:669f:ca2d with SMTP id
- d9443c01a7336-223691f8e93mr270196835ad.35.1741061361328; Mon, 03 Mar 2025
- 20:09:21 -0800 (PST)
+	s=arc-20240116; t=1741070404; c=relaxed/simple;
+	bh=L6Kn7/pcyX4sixRSMwjPYfWPrrukaks09cKCzVtg2Ko=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oS2xMXRETjDVsmxC0KsHXKZnId+YfcWLOghFYe12Yufuj24wxqm7LNzzogCOR5DUgb4DmwxvGe8qp5jeOXtvjXvpFjU98fF+u8fOZ5B+cdo3Tamd6FWpD4g48Wb4zH99tWKVQiXkDcgd3W1HTOkabWB21F5v4b+KUU/6S6FkpTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=ShSP2F4X; arc=none smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0431384.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 523MkFcv014013;
+	Mon, 3 Mar 2025 22:39:47 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	cc:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pfpt0220; bh=IN6vN4UD4bD2YhMl6yv2TFyow
+	tG7VQ1DGZOuXkEAjjU=; b=ShSP2F4XfOkh487S+Hmq8lcGVdoa8yjC2EMxoZFJJ
+	OVCFNeTUrL6RrZ7azqzNHctZUNBtgfK9YH60x1UCYsWPFYP1WS4v2GvY+hv3TthA
+	xFlGiNB0HgilTFwgLFlrdgDctYdh1vn2chEIWu78i6XHhBxM0xQ58zu3nSiynXZ+
+	He5qaARmyLiHcGWU0xMMQCU9k//L7sUpKZ3KgiRfUQIP4TKn8sJpMy+17uD0IIl8
+	70CuRvWhWF1A8MK2Wo+P6gBr06EvbctFmIypXfwYwW2Et4cq6g0QLjpFkEM8zHrD
+	RvnMbfTj4jZwlrSTydkIRiNjuwTPU3IgVXlJ1c3EG/M6g==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 454qcfc89y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 03 Mar 2025 22:39:47 -0800 (PST)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Mon, 3 Mar 2025 22:39:45 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Mon, 3 Mar 2025 22:39:45 -0800
+Received: from maili.marvell.com (unknown [10.28.36.165])
+	by maili.marvell.com (Postfix) with SMTP id 042693F707B;
+	Mon,  3 Mar 2025 22:39:41 -0800 (PST)
+Date: Tue, 4 Mar 2025 12:09:40 +0530
+From: Ratheesh Kannoth <rkannoth@marvell.com>
+To: <longli@linuxonhyperv.com>
+CC: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Konstantin Taranov <kotaranov@microsoft.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hyperv@vger.kernel.org>, Long Li
+	<longli@microsoft.com>
+Subject: Re: [Patch rdma-next] RDMA/mana_ib: handle net event for pointing to
+ the current netdev
+Message-ID: <20250304063940.GA2702870@maili.marvell.com>
+References: <1740782519-13485-1-git-send-email-longli@linuxonhyperv.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250301013554.49511-1-shannon.nelson@amd.com> <20250301013554.49511-2-shannon.nelson@amd.com>
-In-Reply-To: <20250301013554.49511-2-shannon.nelson@amd.com>
-From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Tue, 4 Mar 2025 09:39:09 +0530
-X-Gm-Features: AQ5f1Jra6vvO4sHKI1wUhLk8TXEUUc3XxLUkj3q7dfMKoz-YcJjIAJpY7FpGqCk
-Message-ID: <CAH-L+nOOBWksbbPedFdJz+4_t7vfDajCXvdp6gxiXHbvKedEdA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] pds_core: make pdsc_auxbus_dev_del() void
-To: Shannon Nelson <shannon.nelson@amd.com>
-Cc: jgg@nvidia.com, andrew.gospodarek@broadcom.com, aron.silverton@oracle.com, 
-	dan.j.williams@intel.com, daniel.vetter@ffwll.ch, dave.jiang@intel.com, 
-	dsahern@kernel.org, gregkh@linuxfoundation.org, hch@infradead.org, 
-	itayavr@nvidia.com, jiri@nvidia.com, Jonathan.Cameron@huawei.com, 
-	kuba@kernel.org, lbloch@nvidia.com, leonro@nvidia.com, 
-	linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
-	saeedm@nvidia.com, brett.creeley@amd.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000fdb8f4062f7c6f6a"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1740782519-13485-1-git-send-email-longli@linuxonhyperv.com>
+X-Authority-Analysis: v=2.4 cv=VaMNPEp9 c=1 sm=1 tr=0 ts=67c6a033 cx=c_pps a=rEv8fa4AjpPjGxpoe8rlIQ==:117 a=rEv8fa4AjpPjGxpoe8rlIQ==:17 a=KPitI-3vFcalBia9:21 a=kj9zAlcOel0A:10 a=Vs1iUdzkB0EA:10 a=Odnh0R2cAAAA:8 a=yMhMjlubAAAA:8 a=WLnx8VTwFErqAH7yV0kA:9
+ a=CjuIK1q_8ugA:10 a=lNAA6UHySJB7qmBR1x20:22
+X-Proofpoint-ORIG-GUID: TP3-lmfRf75I-umk3i7iCl3RY8Wv3Jv6
+X-Proofpoint-GUID: TP3-lmfRf75I-umk3i7iCl3RY8Wv3Jv6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-04_03,2025-03-03_04,2024-11-22_01
 
---000000000000fdb8f4062f7c6f6a
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Mar 1, 2025 at 7:07=E2=80=AFAM Shannon Nelson <shannon.nelson@amd.c=
-om> wrote:
+On 2025-03-01 at 04:11:59, longli@linuxonhyperv.com (longli@linuxonhyperv.com) wrote:
+> From: Long Li <longli@microsoft.com>
 >
-> Since there really is no useful return, advertising a return value
-> is rather misleading.  Make pdsc_auxbus_dev_del() a void function.
+> When running under Hyper-V, the master device to the RDMA device is always
+> bonded to this RDMA device if it's present in the kernel. This is not
+> user-configurable.
 >
-> Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
-
-LGTM,
-Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-
-
---=20
-Regards,
-Kalesh AP
-
---000000000000fdb8f4062f7c6f6a
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBWowggRSoAMCAQICDDfBRQmwNSI92mit0zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODI5NTZaFw0yNTA5MTAwODI5NTZaMIGi
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xHzAdBgNVBAMTFkthbGVzaCBBbmFra3VyIFB1cmF5aWwxMjAw
-BgkqhkiG9w0BCQEWI2thbGVzaC1hbmFra3VyLnB1cmF5aWxAYnJvYWRjb20uY29tMIIBIjANBgkq
-hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxnv1Reaeezfr6NEmg3xZlh4cz9m7QCN13+j4z1scrX+b
-JfnV8xITT5yvwdQv3R3p7nzD/t29lTRWK3wjodUd2nImo6vBaH3JbDwleIjIWhDXLNZ4u7WIXYwx
-aQ8lYCdKXRsHXgGPY0+zSx9ddpqHZJlHwcvas3oKnQN9WgzZtsM7A8SJefWkNvkcOtef6bL8Ew+3
-FBfXmtsPL9I2vita8gkYzunj9Nu2IM+MnsP7V/+Coy/yZDtFJHp30hDnYGzuOhJchDF9/eASvE8T
-T1xqJODKM9xn5xXB1qezadfdgUs8k8QAYyP/oVBafF9uqDudL6otcBnziyDBQdFCuAQN7wIDAQAB
-o4IB5DCCAeAwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZC
-aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJj
-YTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3Iz
-cGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcC
-ARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNV
-HR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNp
-Z24yY2EyMDIwLmNybDAuBgNVHREEJzAlgSNrYWxlc2gtYW5ha2t1ci5wdXJheWlsQGJyb2FkY29t
-LmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGP
-zzAdBgNVHQ4EFgQUI3+tdStI+ABRGSqksMsiCmO9uDAwDQYJKoZIhvcNAQELBQADggEBAGfe1o9b
-4wUud0FMjb/FNdc433meL15npjdYWUeioHdlCGB5UvEaMGu71QysfoDOfUNeyO9YKp0h0fm7clvo
-cBqeWe4CPv9TQbmLEtXKdEpj5kFZBGmav69mGTlu1A9KDQW3y0CDzCPG2Fdm4s73PnkwvemRk9E2
-u9/kcZ8KWVeS+xq+XZ78kGTKQ6Wii3dMK/EHQhnDfidadoN/n+x2ySC8yyDNvy81BocnblQzvbuB
-a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
-x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
-VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
-bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
-AQkEMSIEIFNDFvW/lt+zCVIPMc685lsdky82/JdtrUsxZ2jzgxm8MBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDMwNDA0MDkyMVowaQYJKoZIhvcNAQkPMVwwWjAL
-BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB3Ey/v8FYL
-CFUjcge+1Fvs2QIxJrzp3KUysjOc9GJHjkI5B+WjrIvNWhxou+KMxNMjNcx4PEtLLHumkLnrijdm
-N2J+Gg8roQMwNn5E1WukzRnlfAJhBOsmv0MePi5Oq1cWN8KCHrkJ/LpNA5BPiv5Hp2bY2RleS5Xw
-yD8DzY+aGIMtM/6i6F+az8K9cYwEovBkwqWJfRlmKJZ79yNXPsjFV+yEfLA4vMxbFMyK5O2DmAPB
-6QQD2YoRW6ziIe5PEiVLQREJI38IodukUeaT0R6iRiXswaY7SA3iNCjp9XPX6nMWxDagESdgDbwI
-ZVyv6DHr4bLnlPGAitA6SX3AAaNq
---000000000000fdb8f4062f7c6f6a--
+> The master device can be unbind/bind from the kernel. During those events,
+> the RDMA device should set to the current netdev to relect the change of
+> master device from those events.
+>
+> Signed-off-by: Long Li <longli@microsoft.com>
+> ---
+>  drivers/infiniband/hw/mana/device.c  | 35 ++++++++++++++++++++++++++++
+>  drivers/infiniband/hw/mana/mana_ib.h |  1 +
+>  2 files changed, 36 insertions(+)
+>
+> diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
+> index 3416a85f8738..3e4f069c2258 100644
+> --- a/drivers/infiniband/hw/mana/device.c
+> +++ b/drivers/infiniband/hw/mana/device.c
+> @@ -51,6 +51,37 @@ static const struct ib_device_ops mana_ib_dev_ops = {
+>  			   ib_ind_table),
+>  };
+>
+> +static int mana_ib_netdev_event(struct notifier_block *this,
+> +				unsigned long event, void *ptr)
+> +{
+> +	struct mana_ib_dev *dev = container_of(this, struct mana_ib_dev, nb);
+> +	struct net_device *event_dev = netdev_notifier_info_to_dev(ptr);
+> +	struct gdma_context *gc = dev->gdma_dev->gdma_context;
+> +	struct mana_context *mc = gc->mana.driver_data;
+> +	struct net_device *ndev;
+> +
+> +	if (event_dev != mc->ports[0])
+> +		return NOTIFY_DONE;
+> +
+> +	switch (event) {
+> +	case NETDEV_CHANGEUPPER:
+> +		rcu_read_lock();
+> +		ndev = mana_get_primary_netdev_rcu(mc, 0);
+> +		rcu_read_unlock();
+...
+> +
+> +		/*
+> +		 * RDMA core will setup GID based on updated netdev.
+> +		 * It's not possible to race with the core as rtnl lock is being
+> +		 * held.
+> +		 */
+> +		ib_device_set_netdev(&dev->ib_dev, ndev, 1);
+rcu_read_unlock() should be here, right ?
+> +
+> +		return NOTIFY_OK;
+> +	default:
+> +		return NOTIFY_DONE;
+> +	}
+> +}
+> +
+>
 
