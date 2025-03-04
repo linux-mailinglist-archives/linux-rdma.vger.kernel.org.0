@@ -1,176 +1,148 @@
-Return-Path: <linux-rdma+bounces-8301-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8302-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6670A4DE29
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 13:43:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7699BA4DEFB
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 14:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C98C3AF6E7
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 12:43:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 680FE7A32C6
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 13:11:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501EF202C52;
-	Tue,  4 Mar 2025 12:43:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A5F204873;
+	Tue,  4 Mar 2025 13:11:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="BYi1lU9i"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="z+bptIGK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B981FDE05;
-	Tue,  4 Mar 2025 12:43:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F252046AA
+	for <linux-rdma@vger.kernel.org>; Tue,  4 Mar 2025 13:11:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741092205; cv=none; b=WnivOzIyawbjXQoPCrMA7Dlh+Ybwlc8oXJtbMPvhMlLe3MR4ybtyDlY2JD2HkTib6OuTGNHiFMviARjxH5GvGe+Mp4lYwq+5ty9gJBET+sguPDrjk3cTRWrxH5N4CrIkwyv3FZFwurZnTZzbt0OC+eO2Joe931A/DY33WQN5ao4=
+	t=1741093908; cv=none; b=ZPDSHXcsO1aDcmuGgRy0WeoezQczDZeEFOrDRAbovvT4nQIIg/3JrMZHlJ713biPSyevO4MgLBluROEnszm/mkUv8FNPo9IL5yDK+IbmotHGCmj5GXEq+o5DKJ52j1Flgn12b+z5eXCO+Hyn55tD/KxCplqvBqI0xCtMzaFWbRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741092205; c=relaxed/simple;
-	bh=xHheJxk9MPOwMJe3gJyARK3kWzh1maczaHnY4ttiy6U=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c/iw2bmRk0Tmzis9pB9uKQCGVEq9tX8Vyfhf3gsxyqfo1c0FhRJrWBJkHWEqMMjy4w/tk+YIyHntuM5cDVcpTh4RDwWajD5T8hogJx+umaS5xwQ7+WVH1YGrH1uu1HHSzSRlUcPktddSYi4zFPQ0Q5iH3PkpyDEeTYsOTbBTliA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=BYi1lU9i; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1741092191; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=kIBxrLXVX5Go0KqRs9bm+++JgxHYhnl8q+HXTDClonc=;
-	b=BYi1lU9iZu9280PYF4WK0v/v0S8CulVv4Q5A6aCjlJhwhpYCavtYlkcoYY9seLeXtq2qcc4uAjWg4kxOY+mEM05tZoA6MwB6cykMUM7TXuGSVDjex9w60QbNWU78MgtI2L0aLGgqlmOkxIVw3xMBbetEe1W0HHFXB4OPYRF4Fd8=
-Received: from localhost.localdomain(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0WQiJ44j_1741092189 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 04 Mar 2025 20:43:10 +0800
-From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-To: wenjia@linux.ibm.com,
-	pasic@linux.ibm.com,
-	jaka@linux.ibm.com,
-	alibuda@linux.alibaba.com,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2] net/smc: use the correct ndev to find pnetid by pnetid table
-Date: Tue,  4 Mar 2025 20:43:04 +0800
-Message-Id: <20250304124304.13732-1-guangguan.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+	s=arc-20240116; t=1741093908; c=relaxed/simple;
+	bh=tDgS2N+oEjaE59AQhUdYRwDy42rEFkMF2eAp3yg7I+M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VUVtE9UUi5MNaO9jfs+JgMKev8cT8n28EsOwAweLPFuN9KAIAjesF+JGERMBCeypqZBbX2H2EG5bp+wzlpW24nMDD/Gn1g/EJXQW2p6AOwfo5tIUOk08fEwtwBXRWBVNXrCA1tdZdXx9gJ9l9XTq8rK4ErEqMvBRtkW5Dw9U1bk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=z+bptIGK; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4394a0c65fcso60050795e9.1
+        for <linux-rdma@vger.kernel.org>; Tue, 04 Mar 2025 05:11:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1741093904; x=1741698704; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6csbr7N97SmUY46nLkO7qroozpuU+v+KaDyJZFwj+a0=;
+        b=z+bptIGKYTFqpnYASRCYsa5mu+t7ujC8SOc/BuPePLwFLqEuJQVQtFcXWHetVGqeBG
+         OMuLd6vnEa9/jmmCgmPkiH4RQMVgrNmrOFY7zCmp7XwNB1tXzXajjINANg1AmhQZVJbb
+         /qjChC/PGSXdl1CiDolpw2OtFJUsgNRKcDly5rfJgPBX+0od9dIPVv9J3UIN8zHsgVYx
+         ERHhVi9fyQi8U+zunuvBwyJwsspKpzXZfdSYRlpVlqnlgZ8nNCOWRF3ha8vySZ0LcwLm
+         p/P/2Ks3ajlFFpbBN2GVuv04jyQfjVXdrqS3BcTxtLrIdizOr6gewomyh9GeC7TRXqzj
+         oIkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741093904; x=1741698704;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6csbr7N97SmUY46nLkO7qroozpuU+v+KaDyJZFwj+a0=;
+        b=hCVb+WNOP0ikPF/MmJK4m0X9UF0LovF7cTMLjwwkaDQFsCTkuarQC4V3yAL1cjXiJZ
+         7RH/OznvMt9ao57x9uuNPOywrITOLzn8U/qN2f5DHGWRiNORCeFOUhSdfErKjbp7vfgb
+         k2NyTxu/wm8uvYts96q2zvrTcWwDrrSac4SBnfgECaJy2VAJagHP4SBVpPqM0u1ChqbY
+         zEgapx2WcKlHKwo8Ie1a4XoBdqS6WRsygIuad0CeDOfOL4Vf0l3nOHTRH8Hws3iXDke8
+         HgqAq0W02tHT/IE/1VXXLqQzUos3E/o66gZ7eOSjhqHTyhfbX3x7rpj5NU1xM5HUPgyj
+         xDeg==
+X-Forwarded-Encrypted: i=1; AJvYcCVv9CTaB3tug73kj7BwRiYLrJxjBaAoyTwy6rk1UC5kp5Ajxf7xnVeyq7CDENRHJSHrJH0nNVZh3j2K@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzb9EXimNFSej8e69j7TJ2vH0K+YoByM3x/WEw5qXRkWW8MGfeC
+	VktjFEU0X1pLRLXAcmbdi24/1tbRur+PNQke82AUdT5F7MZ2RiRiMSxCS5+Zypo=
+X-Gm-Gg: ASbGnctBPXaorehdHkj5vongNNQZHpivbFmHFPqNlxtRvI9oLGIxDKlfqO89Pf2RRmB
+	04uGxizsiAsF6bkisdG3JiO7PM5aOToxaBq2YAp0pC2DGjAJ2ad7JKM5uF+GkbqHqx2gt5qC0pS
+	T/NYb7fERBu4fxoa8QWuU4Qxdeyy5aN3tsLMsdsoFrRCs41c2hCOAA2iXDQpjibMYusmpeOwFQB
+	T9hAMui2ISTtexHG+g1ZkvPVCUllCRDkF+Ye4oACsgyCv/4J7GNR7YWzM2V7cbavk7GmwicshmU
+	EaUc7BMXo9sigrvPRogomdPWZYD0DKSPesxiznLw7MEjYTVb6jVlRCJvH+cT59AXQtoV65sR
+X-Google-Smtp-Source: AGHT+IEoaw6OyEzUKOB9UT6taJ+N313+wMgHvOG7uqiuGpJnD+3ybJTiUnotZ/4iv4k8s+zpwaLR9g==
+X-Received: by 2002:a5d:60c2:0:b0:38f:3245:21fc with SMTP id ffacd0b85a97d-390eca257e4mr13870699f8f.50.1741093904421;
+        Tue, 04 Mar 2025 05:11:44 -0800 (PST)
+Received: from jiri-mlt.client.nvidia.com ([140.209.217.212])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43bc88f3a2esm46697415e9.27.2025.03.04.05.11.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Mar 2025 05:11:43 -0800 (PST)
+Date: Tue, 4 Mar 2025 14:11:40 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Tariq Toukan <tariqt@nvidia.com>, 
+	"David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, 
+	Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	Jiri Pirko <jiri@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, 
+	Carolina Jubran <cjubran@nvidia.com>, Gal Pressman <gal@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
+	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next 03/10] devlink: Serialize access to rate domains
+Message-ID: <ytupptfmds5nptspek6qvraotyzrky3gzjhzkuvt7magplva4f@dpusiuluch3a>
+References: <20250213180134.323929-1-tariqt@nvidia.com>
+ <20250213180134.323929-4-tariqt@nvidia.com>
+ <ieeem2dc5mifpj2t45wnruzxmo4cp35mbvrnsgkebsqpmxj5ib@hn7gphf6io7x>
+ <20250218182130.757cc582@kernel.org>
+ <qaznnl77zg24zh72axtv7vhbfdbxnzmr73bqr7qir5wu2r6n52@ob25uqzyxytm>
+ <20250225174005.189f048d@kernel.org>
+ <wgbtvsogtf4wgxyz7q4i6etcvlvk6oi3xyckie2f7mwb3gyrl4@m7ybivypoojl>
+ <20250226185310.42305482@kernel.org>
+ <kmjgcuyao7a7zb2u4554rj724ucpd2xqmf5yru4spdqim7zafk@2ry67hbehjgx>
+ <20250303140623.5df9f990@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250303140623.5df9f990@kernel.org>
 
-When using smc_pnet in SMC, it will only search the pnetid in the
-base_ndev of the netdev hierarchy(both HW PNETID and User-defined
-sw pnetid). This may not work for some scenarios when using SMC in
-container on cloud environment.
-In container, there have choices of different container network,
-such as directly using host network, virtual network IPVLAN, veth,
-etc. Different choices of container network have different netdev
-hierarchy. Examples of netdev hierarchy show below. (eth0 and eth1
-in host below is the netdev directly related to the physical device).
-            _______________________________
-           |   _________________           |
-           |  |POD              |          |
-           |  |                 |          |
-           |  | eth0_________   |          |
-           |  |____|         |__|          |
-           |       |         |             |
-           |       |         |             |
-           |   eth1|base_ndev| eth0_______ |
-           |       |         |    | RDMA  ||
-           | host  |_________|    |_______||
-           ---------------------------------
-     netdev hierarchy if directly using host network
-           ________________________________
-           |   _________________           |
-           |  |POD  __________  |          |
-           |  |    |upper_ndev| |          |
-           |  |eth0|__________| |          |
-           |  |_______|_________|          |
-           |          |lower netdev        |
-           |        __|______              |
-           |   eth1|         | eth0_______ |
-           |       |base_ndev|    | RDMA  ||
-           | host  |_________|    |_______||
-           ---------------------------------
-            netdev hierarchy if using IPVLAN
-            _______________________________
-           |   _____________________       |
-           |  |POD        _________ |      |
-           |  |          |base_ndev||      |
-           |  |eth0(veth)|_________||      |
-           |  |____________|________|      |
-           |               |pairs          |
-           |        _______|_              |
-           |       |         | eth0_______ |
-           |   veth|base_ndev|    | RDMA  ||
-           |       |_________|    |_______||
-           |        _________              |
-           |   eth1|base_ndev|             |
-           | host  |_________|             |
-           ---------------------------------
-             netdev hierarchy if using veth
-Due to some reasons, the eth1 in host is not RDMA attached netdevice,
-pnetid is needed to map the eth1(in host) with RDMA device so that POD
-can do SMC-R. Because the eth1(in host) is managed by CNI plugin(such
-as Terway, network management plugin in container environment), and in
-cloud environment the eth(in host) can dynamically be inserted by CNI
-when POD create and dynamically be removed by CNI when POD destroy and
-no POD related to the eth(in host) anymore. It is hard to config the
-pnetid to the eth1(in host). But it is easy to config the pnetid to the
-netdevice which can be seen in POD. When do SMC-R, both the container
-directly using host network and the container using veth network can
-successfully match the RDMA device, because the configured pnetid netdev
-is a base_ndev. But the container using IPVLAN can not successfully
-match the RDMA device and 0x03030000 fallback happens, because the
-configured pnetid netdev is not a base_ndev. Additionally, if config
-pnetid to the eth1(in host) also can not work for matching RDMA device
-when using veth network and doing SMC-R in POD.
+Mon, Mar 03, 2025 at 11:06:23PM +0100, kuba@kernel.org wrote:
+>On Thu, 27 Feb 2025 13:22:25 +0100 Jiri Pirko wrote:
+>> >> I'm not sure how you imagine getting rid of them. One PCI PF
+>> >> instantiates one devlink now. There are lots of configuration (e.g. params)
+>> >> that is per-PF. You need this instance for that, how else would you do
+>> >> per-PF things on shared ASIC instance?  
+>> >
+>> >There are per-PF ports, right?  
+>> 
+>> Depends. On normal host sr-iov, no. On smartnic where you have PF in
+>> host, yes.
+>
+>Yet another "great choice" in mlx5 other drivers have foreseen
+>problems with and avoided.
 
-To resolve the problems list above, this patch extends to search user
--defined sw pnetid in the clc handshake ndev when no pnetid can be found
-in the base_ndev, and the base_ndev take precedence over ndev for backward
-compatibility. This patch also can unify the pnetid setup of different
-network choices list above in container(Config user-defined sw pnetid in
-the netdevice can be seen in POD).
+What do you mean? How else to model it? Do you suggest having PF devlink
+port for the PF that instantiates? That would sound like Uroboros to me.
 
-Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
----
- net/smc/smc_pnet.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
-index 716808f374a8..b391c2ef463f 100644
---- a/net/smc/smc_pnet.c
-+++ b/net/smc/smc_pnet.c
-@@ -1079,14 +1079,16 @@ static void smc_pnet_find_roce_by_pnetid(struct net_device *ndev,
- 					 struct smc_init_info *ini)
- {
- 	u8 ndev_pnetid[SMC_MAX_PNETID_LEN];
-+	struct net_device *base_ndev;
- 	struct net *net;
- 
--	ndev = pnet_find_base_ndev(ndev);
-+	base_ndev = pnet_find_base_ndev(ndev);
- 	net = dev_net(ndev);
--	if (smc_pnetid_by_dev_port(ndev->dev.parent, ndev->dev_port,
-+	if (smc_pnetid_by_dev_port(base_ndev->dev.parent, base_ndev->dev_port,
- 				   ndev_pnetid) &&
-+	    smc_pnet_find_ndev_pnetid_by_table(base_ndev, ndev_pnetid) &&
- 	    smc_pnet_find_ndev_pnetid_by_table(ndev, ndev_pnetid)) {
--		smc_pnet_find_rdma_dev(ndev, ini);
-+		smc_pnet_find_rdma_dev(base_ndev, ini);
- 		return; /* pnetid could not be determined */
- 	}
- 	_smc_pnet_find_roce_by_pnetid(ndev_pnetid, ini, NULL, net);
--- 
-2.24.3 (Apple Git-128)
+>
+>> >> Creating SFs is per-PF operation for example. I didn't to thorough
+>> >> analysis, but I'm sure there are couple of per-PF things like these.  
+>> >
+>> >Seems like adding a port attribute to SF creation would be a much
+>> >smaller extension than adding a layer of objects.
+>> >  
+>> >> Also not breaking the existing users may be an argument to keep per-PF
+>> >> instances.  
+>> >
+>> >We're talking about multi-PF devices only. Besides pretty sure we 
+>> >moved multiple params and health reporters to be per port, so IDK 
+>> >what changed now.  
+>> 
+>> Looks like pretty much all current NICs are multi-PFs, aren't they?
+>
+>Not in a way which requires cross-port state sharing, no.
+>You should know this.
+
+This is not about cross-port state sharing. This is about per-PF
+configuration. What am I missing?
 
 
