@@ -1,92 +1,79 @@
-Return-Path: <linux-rdma+bounces-8278-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8279-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5A82A4D143
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 02:54:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F7E5A4D14C
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 02:57:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD9B77A744A
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 01:53:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B8243ACB31
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 01:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24B713B58C;
-	Tue,  4 Mar 2025 01:54:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UuQy3rXN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D156F149C64;
+	Tue,  4 Mar 2025 01:57:18 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A699286359;
-	Tue,  4 Mar 2025 01:54:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3766113B58C;
+	Tue,  4 Mar 2025 01:57:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741053240; cv=none; b=S9S5x4eR5Le/cGiKkN1o1er0kykEKt1Ccp5Apv/4bHtKMdITk3B83hlJcPT5+WOQGzgy6/3L43wv4oOINADgP+J94BDmeogaDKvVeAoFxbhfFFoMMIcioObYvOPHOUAq9VnkCru017DJglwV7Tq8jP74MaqBIVupRZvnKCHrjq4=
+	t=1741053438; cv=none; b=njWkGUkxEd/XmdaYvMvNBWLbAaa8hwGIZrSiOl89ISQDXExExo151dd0CaApAbXWURXM3VQlvSE8LEjt+fDXBoXuvC/1qXKJnFq0X8LuMLq7XRRgTLrVlJucQ2xyRXE0+yHrZfdPAnhAcIMaWqX2JXie483keK6xJ1mUVUS9jF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741053240; c=relaxed/simple;
-	bh=vOBtcO7BUDYYfaSWV47VlqyBHkJCqACzFydEcJw2Ntk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AHAHV9tIrJgfLu6UHnPco/qn3ff3XhSDopDuZO2wQWGD68jWp7pjapGWU2Onb5+AMAFlil6UBZRlTg2lI3MOZMVVRMwIpz3l+TzdrhIANQskR7j9HSqL/0TKTepq78tYXG3mlgD0N6ilvuZFAUHKrhVyNOIeHuEzl24fVeEAip4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UuQy3rXN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84FE6C4CEE4;
-	Tue,  4 Mar 2025 01:53:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741053240;
-	bh=vOBtcO7BUDYYfaSWV47VlqyBHkJCqACzFydEcJw2Ntk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=UuQy3rXNDuM/qY9D81GwMkmmunQH0flv8m+4EvTB3KTAdDCb99wwcI2B28/AtxbSU
-	 SlN5YCHjymEmrYY3AhCUEf8JeAwGQMm9AvI/WK3VW5Tw8wQ6vFigZl4b6qcMXqb0dk
-	 9lbMkX8c4ofgl4znJu9Fu0ACRfQrsFfkmRhOos7CV5qZzBm2Btqq6CLg6ONPE579Bh
-	 parZfI56L3XGiWo5VYRgd77vmxSz4eUql4mMdW07W1xGv2EQ18cVuRz0llMT++VVWs
-	 UDvCciSuL84WcI54cdt1+T/LtQCgnRxss53awyi0wlo63mWJ4X8fGS1GlWtglm8ieV
-	 tMxHq+NllyLZg==
-Date: Mon, 3 Mar 2025 17:53:58 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>
-Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>, Aron Silverton
- <aron.silverton@oracle.com>, Dan Williams <dan.j.williams@intel.com>,
- Daniel Vetter <daniel.vetter@ffwll.ch>, Dave Jiang <dave.jiang@intel.com>,
- David Ahern <dsahern@kernel.org>, Christoph Hellwig <hch@infradead.org>,
- Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Jonathan
- Cameron <Jonathan.Cameron@huawei.com>, Leonid Bloch <lbloch@nvidia.com>,
- Leon Romanovsky <leonro@nvidia.com>, linux-cxl@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org, Saeed Mahameed
- <saeedm@nvidia.com>, "Nelson, Shannon" <shannon.nelson@amd.com>
-Subject: Re: [PATCH v5 0/8] Introduce fwctl subystem
-Message-ID: <20250303175358.4e9e0f78@kernel.org>
-In-Reply-To: <0-v5-642aa0c94070+4447f-fwctl_jgg@nvidia.com>
-References: <0-v5-642aa0c94070+4447f-fwctl_jgg@nvidia.com>
+	s=arc-20240116; t=1741053438; c=relaxed/simple;
+	bh=lqmeCo1Qeo7qXgF8Hg0DRegCJevGjd3CucNZZdfkHWk=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Lduwmrul63AB7yyHmFkRgr3ZxL8+jobTXqW+ZkChvyfMqPBy0zHl6D26iNnBT29NAqTUUCrVYvmGvRjVcPWrqgw6hUF1N/erhLC78E/orLOiarWnDGXu11S0tD6GO3aS0QbaZagmc3GHB5uTk9tnlEQkqibLh4icntz5ar+Y9M8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Z6JfG6Q7tz6K9Zn;
+	Tue,  4 Mar 2025 09:55:02 +0800 (CST)
+Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2464B140A79;
+	Tue,  4 Mar 2025 09:57:14 +0800 (CST)
+Received: from localhost (10.96.237.92) by frapeml500008.china.huawei.com
+ (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Tue, 4 Mar
+ 2025 02:57:07 +0100
+Date: Tue, 4 Mar 2025 09:57:02 +0800
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Shannon Nelson <shannon.nelson@amd.com>
+CC: <jgg@nvidia.com>, <andrew.gospodarek@broadcom.com>,
+	<aron.silverton@oracle.com>, <dan.j.williams@intel.com>,
+	<daniel.vetter@ffwll.ch>, <dave.jiang@intel.com>, <dsahern@kernel.org>,
+	<gregkh@linuxfoundation.org>, <hch@infradead.org>, <itayavr@nvidia.com>,
+	<jiri@nvidia.com>, <kuba@kernel.org>, <lbloch@nvidia.com>,
+	<leonro@nvidia.com>, <linux-cxl@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, <saeedm@nvidia.com>,
+	<brett.creeley@amd.com>
+Subject: Re: [PATCH v2 1/6] pds_core: make pdsc_auxbus_dev_del() void
+Message-ID: <20250304095702.00007d19@huawei.com>
+In-Reply-To: <20250301013554.49511-2-shannon.nelson@amd.com>
+References: <20250301013554.49511-1-shannon.nelson@amd.com>
+	<20250301013554.49511-2-shannon.nelson@amd.com>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100009.china.huawei.com (7.191.174.83) To
+ frapeml500008.china.huawei.com (7.182.85.71)
 
-On Thu, 27 Feb 2025 20:26:28 -0400 Jason Gunthorpe wrote:
-> v5:
->  - Move hunks between patches to make more sense
->  - Rename ucmd_buffer to fwctl_ucmd_buffer
->  - Update comments and commit messages
->  - Copyright to 2025
->  - Drop bxnt WIP patches
->  - Allow a NULL ops->info
->  - Decode more op codes for mlx5 and the sub-operation for
->    MLX5_CMD_OP_ACCESS_REG/_USER
+On Fri, 28 Feb 2025 17:35:49 -0800
+Shannon Nelson <shannon.nelson@amd.com> wrote:
 
-Did you address my feedback? I asked for the mlx5 support to only be
-enabled in RDMA is in use. Saeed who wrote the mlx5 parts of this
-patchset clearly admitted on v4:
-
-  As explained above, netdev doesn't need it
-
-https://lore.kernel.org/all/Z6ZsOMLq7tt3ijX_@x130/
-
-Greg, I've been asking for this interface to be scoped to when RDMA
-(/CXL/storage) is in enabled on these NICs since pretty much the first
-RFC. Do I need to keep responding?
+> Since there really is no useful return, advertising a return value
+> is rather misleading.  Make pdsc_auxbus_dev_del() a void function.
+> 
+> Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
+LGTM
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
