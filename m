@@ -1,167 +1,180 @@
-Return-Path: <linux-rdma+bounces-8291-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8292-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C5AFA4D571
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 08:55:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDC43A4D5A5
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 09:04:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5293C7A1A45
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 07:54:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F557188D06C
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Mar 2025 08:04:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE99E1FA14B;
-	Tue,  4 Mar 2025 07:54:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="El2Q9IsP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 669B71FA164;
+	Tue,  4 Mar 2025 08:03:37 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D670A1F583B;
-	Tue,  4 Mar 2025 07:54:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA2A1F941B;
+	Tue,  4 Mar 2025 08:03:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741074879; cv=none; b=SR9Tmr0xNZrCIxiAdkwp6K8N3bS9F1vkhoGb8BbNiTqk0rBJPXPLfvXYm1U6uW4ZoRLHw1LpFuSJcRkR3a1VvxdRCG86RK/UtwkqF91otU07hT6PWsQn6+841KzQl3Xxs00hxAaCdXUXKyV35YWdXP1YqzDwFWIFgn20Zq7Kp0Y=
+	t=1741075417; cv=none; b=DlLfOG/9CjKFD0/fvgs/DqAOc/xe49idr6feP3iNDT0Y8lwPTpMeeQZucZU2llVOy3BC0JlSScP3/MT+j7sIlPDveUskS+0jcfFyvKH+BM/4nXxIa96Ee43jchoSUvULNHXZYVfMnTMEf2pYoNxUXJBGuxoV7vf6WWyuoV1LcA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741074879; c=relaxed/simple;
-	bh=bakggjADoge3PlUC06WHqCG9hdUKEoVxgs+5cA5dUIc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aaRKAKlMGdGCzE4fFh8gdhApDl+rm+3s5bDT20DHMIDikaFUtvslK8P3j8T7pZgGYThnsgAMCte6JgQFB3FBL/YLjWAwAl8F8JS7q/9O9rDHTnb24QnMoNHSRrVav+06mXqlHDncioA/hVQoqJKK1Vlxa2zWDYbpwbhOo1/CjMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=El2Q9IsP; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741074877; x=1772610877;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bakggjADoge3PlUC06WHqCG9hdUKEoVxgs+5cA5dUIc=;
-  b=El2Q9IsPb3kNhN6Y8wy+bIBApFqCPKcy+bd6SRE+0ypEw7vkdEV9ehEw
-   8upl+TfLVJB+H+d+sZZAANJ63FWzsPYtsC6Q0o4j3ZMYKTqsJN/0Uz/pb
-   PGh2F+UDvkmtyI18E/oSV92VKAo3SxnOOkTVZvJoYQImDOJp+ltxlu/TP
-   lw54Q9simdFrAcCqIOf3jePNdEVn6oZRnt6bp9ivSzhC+yexVa04cJaVE
-   7/kjF2ugPkaQCoc9QrqF7hzJMin70a1rDp5NBmzeh7zm6cKF18FSNKrWB
-   8kVFL0ylTsESiIun4UvFCeysVYNOUg/F6Cx+JQ8egTAzCte7ZsQU9Gs8W
-   Q==;
-X-CSE-ConnectionGUID: hcMK4nukRdaAyc733scfwQ==
-X-CSE-MsgGUID: AWLJ0/aOSDKnxPK43Jodvw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11362"; a="41874283"
-X-IronPort-AV: E=Sophos;i="6.13,331,1732608000"; 
-   d="scan'208";a="41874283"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2025 23:54:36 -0800
-X-CSE-ConnectionGUID: P0BmQndnQL6qmYHE58fIeQ==
-X-CSE-MsgGUID: f/KuNc03TBqeFuq5Hib8YQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,331,1732608000"; 
-   d="scan'208";a="149098853"
-Received: from mev-dev.igk.intel.com ([10.237.112.144])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2025 23:54:33 -0800
-Date: Tue, 4 Mar 2025 08:50:46 +0100
-From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Saeed Mahameed <saeedm@nvidia.com>, Gal Pressman <gal@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 6/6] net/mlx5e: Properly match IPsec subnet
- addresses
-Message-ID: <Z8aw1gn5iFNiSxd3@mev-dev.igk.intel.com>
-References: <20250226114752.104838-1-tariqt@nvidia.com>
- <20250226114752.104838-7-tariqt@nvidia.com>
+	s=arc-20240116; t=1741075417; c=relaxed/simple;
+	bh=n752P0g5Sm3IR1OpdadRyVcB7ffSL2HcHGRDkS8Vi2I=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=j+TyA5rPM72X1GrRRB8aV9lKLFnX6brUKY3jvmdcpV3XdEZMiFmvHD3VPfsM1Efwjw8LaJEv6c481W6kthVxGZdKJMn0a1MfUTxtungKrqcj0fGi/nk7jdYjSdj/z/W/DsW4r3CPlnxfq7OQw4Vfwmc5tPDWabgqJTQ++gfUZk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Z6Smv4h0kz6D8r5;
+	Tue,  4 Mar 2025 16:01:19 +0800 (CST)
+Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7999514039E;
+	Tue,  4 Mar 2025 16:03:31 +0800 (CST)
+Received: from localhost (10.96.237.92) by frapeml500008.china.huawei.com
+ (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Tue, 4 Mar
+ 2025 09:03:25 +0100
+Date: Tue, 4 Mar 2025 16:03:21 +0800
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Shannon Nelson <shannon.nelson@amd.com>
+CC: <jgg@nvidia.com>, <andrew.gospodarek@broadcom.com>,
+	<aron.silverton@oracle.com>, <dan.j.williams@intel.com>,
+	<daniel.vetter@ffwll.ch>, <dave.jiang@intel.com>, <dsahern@kernel.org>,
+	<gregkh@linuxfoundation.org>, <hch@infradead.org>, <itayavr@nvidia.com>,
+	<jiri@nvidia.com>, <kuba@kernel.org>, <lbloch@nvidia.com>,
+	<leonro@nvidia.com>, <linux-cxl@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, <saeedm@nvidia.com>,
+	<brett.creeley@amd.com>
+Subject: Re: [PATCH v2 3/6] pds_core: add new fwctl auxiliary_device
+Message-ID: <20250304160321.000038a0@huawei.com>
+In-Reply-To: <20250301013554.49511-4-shannon.nelson@amd.com>
+References: <20250301013554.49511-1-shannon.nelson@amd.com>
+	<20250301013554.49511-4-shannon.nelson@amd.com>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250226114752.104838-7-tariqt@nvidia.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500011.china.huawei.com (7.191.174.215) To
+ frapeml500008.china.huawei.com (7.182.85.71)
 
-On Wed, Feb 26, 2025 at 01:47:52PM +0200, Tariq Toukan wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Fri, 28 Feb 2025 17:35:51 -0800
+Shannon Nelson <shannon.nelson@amd.com> wrote:
+
+> Add support for a new fwctl-based auxiliary_device for creating a
+> channel for fwctl support into the AMD/Pensando DSC.
 > 
-> Existing match criteria didn't allow to match whole subnet and
-> only by specific addresses only. This caused to tunnel mode do not
-> forward such traffic through relevant SA.
-> 
-> In tunnel mode, policies look like this:
-> src 192.169.0.0/16 dst 192.169.0.0/16
->         dir out priority 383615 ptype main
->         tmpl src 192.169.101.2 dst 192.169.101.1
->                 proto esp spi 0xc5141c18 reqid 1 mode tunnel
->         crypto offload parameters: dev eth2 mode packet
-> 
-> In this case, the XFRM core code handled all subnet calculations and
-> forwarded network address to the drivers e.g. 192.169.0.0.
-> 
-> For mlx5 devices, there is a need to set relevant prefix e.g. 0xFFFF00
-> to perform flow steering match operation.
-> 
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
+Hi Shannon,
+
+A few really minor comments inline from a fresh read through.
+
+Thanks,
+
+Jonathan
+
 > ---
->  .../mellanox/mlx5/core/en_accel/ipsec.c       | 49 +++++++++++++++++++
->  .../mellanox/mlx5/core/en_accel/ipsec.h       |  9 +++-
->  .../mellanox/mlx5/core/en_accel/ipsec_fs.c    | 20 +++++---
->  3 files changed, 69 insertions(+), 9 deletions(-)
+>  drivers/net/ethernet/amd/pds_core/auxbus.c |  3 +--
+>  drivers/net/ethernet/amd/pds_core/core.c   |  7 +++++++
+>  drivers/net/ethernet/amd/pds_core/core.h   |  1 +
+>  drivers/net/ethernet/amd/pds_core/main.c   | 11 +++++++++++
+>  include/linux/pds/pds_common.h             |  2 ++
+>  5 files changed, 22 insertions(+), 2 deletions(-)
 > 
-
-[...]
-
+> diff --git a/drivers/net/ethernet/amd/pds_core/auxbus.c b/drivers/net/ethernet/amd/pds_core/auxbus.c
+> index db950a9c9d30..ac6f76c161f2 100644
+> --- a/drivers/net/ethernet/amd/pds_core/auxbus.c
+> +++ b/drivers/net/ethernet/amd/pds_core/auxbus.c
+> @@ -225,8 +225,7 @@ int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf,
+>  	}
 >  
-> +static __be32 word_to_mask(int prefix)
-> +{
-> +	if (prefix < 0)
-> +		return 0;
-> +
-> +	if (!prefix || prefix > 31)
-> +		return cpu_to_be32(0xFFFFFFFF);
-> +
-> +	return cpu_to_be32(((1U << prefix) - 1) << (32 - prefix));
+>  	/* Verify that the type is supported and enabled.  It is not
+> -	 * an error if there is no auxbus device support for this
+> -	 * VF, it just means something else needs to happen with it.
+> +	 * an error if there is no auxbus device support.
 
-Isn't it GENMASK(31, 32 - prefix)? I don't know if it is preferable to
-use this macro in such place.
+Comment feels a bit general. Is this no auxbus support for this device
+or none at all in the kernel?
 
-> +}
-> +
-> +static void mlx5e_ipsec_policy_mask(struct mlx5e_ipsec_addr *addrs,
-> +				    struct xfrm_selector *sel)
-> +{
-> +	int i;
-> +
-> +	if (addrs->family == AF_INET) {
-> +		addrs->smask.m4 = word_to_mask(sel->prefixlen_s);
-> +		addrs->saddr.a4 &= addrs->smask.m4;
-> +		addrs->dmask.m4 = word_to_mask(sel->prefixlen_d);
-> +		addrs->daddr.a4 &= addrs->dmask.m4;
-> +		return;
-> +	}
-> +
-> +	for (i = 0; i < 4; i++) {
-> +		if (sel->prefixlen_s != 32 * i)
-> +			addrs->smask.m6[i] =
-> +				word_to_mask(sel->prefixlen_s - 32 * i);
-> +		addrs->saddr.a6[i] &= addrs->smask.m6[i];
-> +
-> +		if (sel->prefixlen_d != 32 * i)
-> +			addrs->dmask.m6[i] =
-> +				word_to_mask(sel->prefixlen_d - 32 * i);
-> +		addrs->daddr.a6[i] &= addrs->dmask.m6[i];
-> +	}
-> +}
-> +
+>  	 */
+>  	vt_support = !!le16_to_cpu(pf->dev_ident.vif_types[vt]);
+>  	if (!(vt_support &&
 
-[...]
+> diff --git a/drivers/net/ethernet/amd/pds_core/main.c b/drivers/net/ethernet/amd/pds_core/main.c
+> index a3a68889137b..41575c7a148d 100644
+> --- a/drivers/net/ethernet/amd/pds_core/main.c
+> +++ b/drivers/net/ethernet/amd/pds_core/main.c
+> @@ -265,6 +265,10 @@ static int pdsc_init_pf(struct pdsc *pdsc)
+>  
+>  	mutex_unlock(&pdsc->config_lock);
+>  
+> +	err = pdsc_auxbus_dev_add(pdsc, pdsc, PDS_DEV_TYPE_FWCTL, &pdsc->padev);
+> +	if (err)
+> +		goto err_out_stop;
+> +
+>  	dl = priv_to_devlink(pdsc);
+>  	devl_lock(dl);
+>  	err = devl_params_register(dl, pdsc_dl_params,
+> @@ -297,6 +301,7 @@ static int pdsc_init_pf(struct pdsc *pdsc)
+>  	devlink_params_unregister(dl, pdsc_dl_params,
+>  				  ARRAY_SIZE(pdsc_dl_params));
+>  err_out_stop:
+> +	pdsc_auxbus_dev_del(pdsc, pdsc, &pdsc->padev);
 
-Looks fine,
-Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+This doesn't smell right (by which I mean I had to go look at the
+implementation to be sure it wasn't a bug) In my ideal
+world that should be obvious on a more local basis.
+I'd expect a new label here. pdsc_auxbus_dev_add() should be and is
+side effect free if it fails. That is it should not make sense
+to call pdsc_auxbus_dev_del() if it fails.
 
-Thanks
+It isn't a bug today as that becomes a noop due to
+&pdsc->padev being NULL but that is a detail I shouldn't
+ideally need to know when reading this code.
+
+I'd put err_out_stop label here and rename previous
+one to err_out_auxbus_del + replace the existing
+goto err_out_stop; 
+with
+goto err_out_auxbus_del;
+
+>  	pdsc_stop(pdsc);
+>  err_out_teardown:
+>  	pdsc_teardown(pdsc, PDSC_TEARDOWN_REMOVING);
+> @@ -427,6 +432,7 @@ static void pdsc_remove(struct pci_dev *pdev)
+>  		 * shut themselves down.
+>  		 */
+>  		pdsc_sriov_configure(pdev, 0);
+> +		pdsc_auxbus_dev_del(pdsc, pdsc, &pdsc->padev);
+>  
+>  		timer_shutdown_sync(&pdsc->wdtimer);
+>  		if (pdsc->wq)
+> @@ -485,6 +491,8 @@ static void pdsc_reset_prepare(struct pci_dev *pdev)
+>  		if (!IS_ERR(pf))
+>  			pdsc_auxbus_dev_del(pdsc, pf,
+>  					    &pf->vfs[pdsc->vf_id].padev);
+> +	} else {
+> +		pdsc_auxbus_dev_del(pdsc, pdsc, &pdsc->padev);
+>  	}
+>  
+>  	pdsc_unmap_bars(pdsc);
+> @@ -531,6 +539,9 @@ static void pdsc_reset_done(struct pci_dev *pdev)
+>  		if (!IS_ERR(pf))
+>  			pdsc_auxbus_dev_add(pdsc, pf, PDS_DEV_TYPE_VDPA,
+>  					    &pf->vfs[pdsc->vf_id].padev);
+> +	} else {
+> +		pdsc_auxbus_dev_add(pdsc, pdsc, PDS_DEV_TYPE_FWCTL,
+> +				    &pdsc->padev);
+>  	}
+>  }
+
 
