@@ -1,70 +1,67 @@
-Return-Path: <linux-rdma+bounces-8364-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8365-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74A3CA50298
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 15:48:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DD02A502BA
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 15:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E94CF175CEA
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 14:45:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ED033A6CE7
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 14:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0374524E4A8;
-	Wed,  5 Mar 2025 14:45:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9D324C66B;
+	Wed,  5 Mar 2025 14:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SAGrGH9O"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YOdXTj3H"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F8A248885;
-	Wed,  5 Mar 2025 14:45:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4321B248863;
+	Wed,  5 Mar 2025 14:47:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741185901; cv=none; b=izJ+1BERUQ5ZSLjYmQgp7XcklutbPlU7E35wRpO8gqFux8Qa0XMKZTqvXlYicQP4Q8y86VGqPGkiaKOIp1Y38p/4/GNYekKIAhqetjFTPfeK7dcDxhUD7u7c17Y21OYjH6SIfkvahOIVKr1eTY6Dh35f52dG2JmYCSNI5CzY+ZE=
+	t=1741186064; cv=none; b=WrUUoquAUMsMyF+BR1L+AgL5pZzfePVQdPF3ANvglmYhX79skSCFVv6Zr7NNcPFJ7hnYmvgHzc1pZr1u9jEmsY5MNnlq3/1dTI0IFTsX/ZUttbfbf8zG/Mfn8D+9muq/y0BBFiBPKKQ3ZQIYNyCoiYzjLC69ETI0RS8ud1aAbLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741185901; c=relaxed/simple;
-	bh=7ASHfawryKHf3PEPpBd0pHmfcg7rVi91rbNSa2ZTzBA=;
+	s=arc-20240116; t=1741186064; c=relaxed/simple;
+	bh=0nKpmpCNxYH8Z+0rlZ74ZK5vY3M1YKDKBq8UNZOSqbw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VLi9WWh1Nyw9zk0M8Nm8bp6Si8IP/N+8j65fKKrg0oKgJaR6t38SiSah48DRVakVM4oEmkfvSFwZmuOWD1pI8OjmXFxc5Jl78d/t/xV7SQ5nPY0AWtC0OSpyztPczWSE6BHwNTECR2MfocYwL24gFOMHzDiZaFEqYzSzpztvlGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SAGrGH9O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4061C4CED1;
-	Wed,  5 Mar 2025 14:45:00 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=O5CQ6YYajVwWaggBOn4Z0oAkLtmCrERg5eK+rDtArqv40MOWUvfPKCVn6U57+P0Y4ZsIGbhAFrDXWPMFeDvFiuAyRNJ6Dg25ddak/WNR3nGP9QCT+qZWgDbrve+D+v7bB1/ymf8TctcctoRrYPEtTV0MgRB7U6PkqRN/WYMH9I8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YOdXTj3H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37A65C4CED1;
+	Wed,  5 Mar 2025 14:47:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741185901;
-	bh=7ASHfawryKHf3PEPpBd0pHmfcg7rVi91rbNSa2ZTzBA=;
+	s=k20201202; t=1741186063;
+	bh=0nKpmpCNxYH8Z+0rlZ74ZK5vY3M1YKDKBq8UNZOSqbw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SAGrGH9ObtVWKX3e7bD2yu25LK/nLOfizTQ/iTNjT19pub2TX11fojTHUclJi0Maw
-	 XiShJOndCK3ebVQNwkDAdBHkuY7oXVOC1kZMOrzpN6QnkFuFEF5U8LomKPSJ5KY/v1
-	 iqu3cPbA4Q+WuUKgCITReQabZcnF/Q6b+BKIkgTXKsceR09scb9ykO+1jItzYskhcl
-	 38XzwEzzpjkcgqJpLPkmGqFWsZrHyBSxzImdXrr9roAFUu+WmW6WK8Z6sBHDP4o9Xn
-	 mST6U9k7/MWqfRPPOw2Pa0sJYTdE5jLJxi7VH+noKRBRKxC1CwWrTy8RRDaz7q301K
-	 j0XVvbAwwtzgQ==
-Date: Wed, 5 Mar 2025 15:44:56 +0100
+	b=YOdXTj3H2plhn/BST20bnDuxSY0RJXeFrcQ+3aimzVjoikkWSpG4KPnwlAGy/Q2Ds
+	 bcl6/jUFIbhI+klJk8IGwwlXaXnuot8803FSwmKJtc/iF9huCwhzhmrzzreYYDLiAm
+	 Q7dZghjwPCIhzy0BjCxU4KEzueELzuipHClRssnK+eGFdxQF7wLkGWZHbR92iNYRLx
+	 IYDw/MfgKjHu1J4QjnLUZu15e55b0xIJlsBCOXd94J/HqWvoLgvPqi2ZnkxARWyEQn
+	 vn0QVhAeaX/w7+5njaRddoNM87jv95lSBy5QauWLw3L7xENZZe4ZuIgVdnR3fBfLy6
+	 qRcCn9RO/FN6A==
+Date: Wed, 5 Mar 2025 15:47:39 +0100
 From: Joel Granados <joel.granados@kernel.org>
-To: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Nicolas Bouchinet <nicolas.bouchinet@clip-os.org>, 
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	codalist@coda.cs.cmu.edu, linux-nfs@vger.kernel.org, 
+To: Jan Harkes <jaharkes@cs.cmu.edu>
+Cc: nicolas.bouchinet@clip-os.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org, linux-nfs@vger.kernel.org, 
 	Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>, Joel Granados <j.granados@samsung.com>, 
 	Clemens Ladisch <clemens@ladisch.de>, Arnd Bergmann <arnd@arndb.de>, 
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
 	Leon Romanovsky <leon@kernel.org>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Jan Harkes <jaharkes@cs.cmu.edu>, Chuck Lever <chuck.lever@oracle.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Chuck Lever <chuck.lever@oracle.com>, 
 	Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
 	Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
 	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
 	Bart Van Assche <bvanassche@acm.org>, Zhu Yanjun <yanjun.zhu@linux.dev>, 
 	Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v2 4/6] sysctl: Fixes scsi_logging_level bounds
-Message-ID: <oy2jkeisvm7edg7zrohp6iipvnktj5o3sw5hxksoxgorppoj6r@hubn7cifqdxl>
+Subject: Re: [PATCH v2 3/6] sysctl/coda: Fixes timeout bounds
+Message-ID: <ukkrk6tcf4peempwyutpruupqjkyrbeizrqz2ymjsjpmj6tds5@zb5vp5rh7qoe>
 References: <20250224095826.16458-1-nicolas.bouchinet@clip-os.org>
- <20250224095826.16458-5-nicolas.bouchinet@clip-os.org>
- <yq1y0xubz40.fsf@ca-mkp.ca.oracle.com>
- <0a9869e0-d091-4568-a6e7-8d7d72b296a9@clip-os.org>
- <rgh2ffvmp2wlyupv6vw5s3qexuipgu6vdr2qsitgnbn6syk6ye@ln74xh26jdwp>
- <yq134ftv8h4.fsf@ca-mkp.ca.oracle.com>
+ <20250224095826.16458-4-nicolas.bouchinet@clip-os.org>
+ <u7q5rpzw6mohtnnhpa2j3u4photckmgllsl3noafnyfttepbui@rzmndu533xcv>
+ <20250303143937.etzv7idjbenugsgw@cs.cmu.edu>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -73,33 +70,41 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <yq134ftv8h4.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <20250303143937.etzv7idjbenugsgw@cs.cmu.edu>
 
-On Mon, Mar 03, 2025 at 09:24:43PM -0500, Martin K. Petersen wrote:
+On Mon, Mar 03, 2025 at 09:39:37AM -0500, Jan Harkes wrote:
+> On Mon, Mar 03, 2025 at 09:16:10AM -0500, Joel Granados wrote:
+> > On Mon, Feb 24, 2025 at 10:58:18AM +0100, nicolas.bouchinet@clip-os.org wrote:
+> > > From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
+> > > 
+> > > Bound coda timeout sysctl writings between SYSCTL_ZERO
+> > > and SYSCTL_INT_MAX.
+> > > 
+> > > The proc_handler has thus been updated to proc_dointvec_minmax.
+> > > 
+> > > Signed-off-by: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
+> > > ---
+> > >  fs/coda/sysctl.c | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/coda/sysctl.c b/fs/coda/sysctl.c
+> > > index 0df46f09b6cc5..d6f8206c51575 100644
+> > > --- a/fs/coda/sysctl.c
+> > > +++ b/fs/coda/sysctl.c
+> > > @@ -20,7 +20,9 @@ static const struct ctl_table coda_table[] = {
+> > >  		.data		= &coda_timeout,
+> > I noticed that coda_timeout is an unsigned long. With that in mind I
+> > would change it to unsigned int. It seems to be a value that can be
+> > ranged within [0,INT_MAX]
 > 
-> Joel,
+> That seems fine by me.
 > 
-> > 1. Having the upper bound be SYSCTL_INT_MAX is not necessary (as it is
-> >    silently capped by proc_dointvec_minmax, but it is good to have as it
-> >    adds to the understanding on what the range of the values are.
-> >
-> > 2. Having the lower bound capped by SYSCTL_ZERO is needed as it will
-> >    prevent ppl trying to assigning negative values to the unsigned integer
-> >
-> > Let me know if you take this through the scsi subsystem so I know to
-> > drop it from sysctl 
+> It is a timeout in seconds and it is typically set to some value well
+> under a minute.
 > 
-> Applied to 6.15/scsi-staging, thanks!
-Thx!!
 
-@Nicolas: Please take this out of your next version as it is already
-going upstream.
-
+Thx for the confirmation. I'll let nicolas take care of the change
 Best
-
-> 
-> -- 
-> Martin K. Petersen	Oracle Linux Engineering
 
 -- 
 
