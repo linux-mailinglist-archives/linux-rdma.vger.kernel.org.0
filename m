@@ -1,124 +1,135 @@
-Return-Path: <linux-rdma+bounces-8380-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8381-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C0DFA50C64
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 21:21:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE3A5A50CAF
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 21:41:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49A6D3B0A5E
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 20:21:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 192D716FA2A
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 20:41:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE238254878;
-	Wed,  5 Mar 2025 20:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BADC4254AEC;
+	Wed,  5 Mar 2025 20:41:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2ibt5x9I";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="y1haZ0ox"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GqVQF5do"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5AFE2459FC;
-	Wed,  5 Mar 2025 20:21:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715F216426;
+	Wed,  5 Mar 2025 20:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741206068; cv=none; b=N2qPH3D8x5sYV0+ZmroD26jrK7cHUQvDBPFQBv+QVqu9oE+nRQ/yhVGzmu/Nv5Wi8huN/2qGJFAOow5pO5xVuk2kPPBYCL4xEoKbxz3saoEhaj+B8BbqqMyWB0wGG3OzCcXJE2l/9DL+Gc3KAMkKFHU/LXK01vArXbg1jFVsiig=
+	t=1741207297; cv=none; b=VaIqJByYeGQ6+R8IUKm3ju1/4t6SryA8bo/bh1bq6P+2BATPGc+D5L0+0uwnbwcDT19gGZPk/KAiNGx/a8oEAAzsEJv8Hb1I5YlUqE8w4ocFPM9+QmlYqpc9OXVhhLTblUlA3Xea//nHAdDhEXDXnNJpXS1oamzqu6tTgYxXxOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741206068; c=relaxed/simple;
-	bh=5QhY5f3kf2O/mUI5KeGQzo1tJMrcLmCDJcEng4FRJnI=;
+	s=arc-20240116; t=1741207297; c=relaxed/simple;
+	bh=A39m//OQ/IH5GlT3VMR17M5XQFlQF1vBGczLPvzKayo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DXEgyGRxnWISIw/kB3aQtDvN8zn7Utv6npx070Neu8uCTGIes7wM+dnRQkY8H4kNcMSzosF9APNGWGfrs2D3wO4CAoGNlDEmoqngI3vG7YilMniqBXxzEA5JFIo8GO7id8US0oxoz1xjEQNcPSY2r/nXADjg0f8PvY+HS6maxEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2ibt5x9I; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=y1haZ0ox; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 5 Mar 2025 21:20:55 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1741206057;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cUNfCA8pHf+83tsUMHJzb2XKVvK6o+uPQfq7/hnMo4A=;
-	b=2ibt5x9IH67QyZtBFRdvYg6tPvzMHBzxKK8sCLbUqlEV2p1dT5OE4f76qjCLScvce5GytI
-	ZPQG3KT3rrJvuBp3kxHS34ip02UOsw+fB2V9cgd5QeaLSQg6R6OZcIkaJh1InZ+Cl7Yt4s
-	4UqzJXZ0nvISNa4LC7ZnytfwEYNzf8jr0uXVyvXy1EDsTGI4l4BKUR8LFup/VF/gnHcPpd
-	lh2lG1kVl2f1vDAgSlPY2Il7UldWMj2u+vyU9iB3koemu65NAW4DEzHD2LpOhgled5Wltp
-	M5u6qihR54pWFBb64QJsqYqxlvqnIh/cXWewsnJpkdyj+3jUwPZlk+mSBYS3Mg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1741206057;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cUNfCA8pHf+83tsUMHJzb2XKVvK6o+uPQfq7/hnMo4A=;
-	b=y1haZ0oxtYCDB88gRYk0otrAmy6FfzsHrC8MXDoH3GpDC9mFD8mb+r0QoybLFlLj6qS1HJ
-	OcFQ0mY7tHnJEWDA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Tariq Toukan <ttoukan.linux@gmail.com>
-Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Joe Damato <jdamato@fastly.com>,
-	Leon Romanovsky <leon@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=U6yaP3q0QK+UUdew+/fIXYnyIH6cIoTEJuvhzzTZ2Owj1UHoU/jroyrflimul3uYrxllz3b0AnptWAP40tfqn029rnM5S3hAcbGALflR0ewg3vR7MRSNVLhK55EYNmdiNM0TmOZBBUkcyoKZUHKHu8wUqKmfLC5QwOJrsPiAnfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GqVQF5do; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCE03C4CED1;
+	Wed,  5 Mar 2025 20:41:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741207296;
+	bh=A39m//OQ/IH5GlT3VMR17M5XQFlQF1vBGczLPvzKayo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GqVQF5do4DlvHhKJWfrfVYRi2pyew+zez5m3e0KrRDJsb5NdEzuRzMxn0GQrrMERn
+	 hK5AQy74UQuvl2p4fqJsxARf2D0VXYVxhqiAPyNnCk6QT8U+Zqssszb6bVSYG6EW3r
+	 lc2y33HPiTj+ZROEiS/8CSHhLddi/0fC7QrWA8oy1fUSwUZqkkM8kPy4tfbIV9eono
+	 gc5AgIbV+pKCDx3ONBdl7Nb5jXwnBTUqsKyON/vzB+/XeTCC58xyjKw1iNlJ+QQPvK
+	 9QlnDwFqkV2ydVJjporDzGUkDQZeo+OHgTid/20aLHTESgG2SFzIYJ0B9ztzcZR7Pp
+	 gprr9JI/pgmYg==
+Date: Wed, 5 Mar 2025 12:41:35 -0800
+From: Saeed Mahameed <saeed@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: David Ahern <dsahern@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+	Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Daniel Vetter <daniel.vetter@ffwll.ch>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Leonid Bloch <lbloch@nvidia.com>, linux-cxl@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
 	Saeed Mahameed <saeedm@nvidia.com>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH net-next] net/mlnx5: Use generic code for page_pool
- statistics.
-Message-ID: <20250305202055.MHFrfQRO@linutronix.de>
-References: <20250305121420.kFO617zQ@linutronix.de>
- <8168a8ee-ad2f-46c5-b48e-488a23243b3d@gmail.com>
+	"Nelson, Shannon" <shannon.nelson@amd.com>
+Subject: Re: [PATCH v5 0/8] Introduce fwctl subystem
+Message-ID: <Z8i2_9G86z14KbpB@x130>
+References: <0-v5-642aa0c94070+4447f-fwctl_jgg@nvidia.com>
+ <20250303175358.4e9e0f78@kernel.org>
+ <20250304140036.GK133783@nvidia.com>
+ <20250304164203.38418211@kernel.org>
+ <20250305133254.GV133783@nvidia.com>
+ <mxw4ngjokr3vumdy5fp2wzxpocjkitputelmpaqo7ungxnhnxp@j4yn5tdz3ief>
+ <bcafcf60-47a8-4faf-bea3-19cf0cbc4e08@kernel.org>
+ <20250305182853.GO1955273@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <8168a8ee-ad2f-46c5-b48e-488a23243b3d@gmail.com>
+In-Reply-To: <20250305182853.GO1955273@unreal>
 
-On 2025-03-05 21:44:23 [+0200], Tariq Toukan wrote:
-> Hi,
+On 05 Mar 20:28, Leon Romanovsky wrote:
+>On Wed, Mar 05, 2025 at 11:17:19AM -0700, David Ahern wrote:
+>> On 3/5/25 8:08 AM, Jiri Pirko wrote:
+>> > Wed, Mar 05, 2025 at 02:32:54PM +0100, jgg@nvidia.com wrote:
+>> >> On Tue, Mar 04, 2025 at 04:42:03PM -0800, Jakub Kicinski wrote:
+>> >>> I thought you were arguing that me opposing the addition was
+>> >>> "maintainer overreach". As in me telling other parts of the kernel
+>> >>> what is and isn't allowed. Do I not get a say what gets merged under
+>> >>> drivers/net/ now?
+>> >>
+>> >> The PCI core drivers are a shared resource jointly maintained by all
+>> >> the subsytems that use them. They are maintained by their respective
+>> >> maintainers. Saeed/etc in this case.
+>> >>
+>> >> It would be inappropriate for your preferences to supersede Saeed's
+>> >> when he is a maintainer of the mlx5_core driver and fwctl. Please try
+>> >> and get Saeed on board with your plan.
+>> >>
+>> >> If the placement under drivers/net makes this confusing then we can
+>> >> certainly change the directory names.
+>> >
+>> > According to how mlx5 driver is structured, and the rest of the advanced
+>> > drivers in the same area are becoming as well, it would make sense to me
+>> > to have mlx5 core in separate core directory, maintained directly by driver
+>> > maintainer:
+>> > drivers/core/mlx5/
+>> > then each of the protocol auxiliary device lands in appropriate
+>> > subsystem directory.
+>>
+>> +1
+>>
+>> This is how I have structured our drivers -- core driver for owning the
+>> PCI device and hosting the APIs to communicate with hardware, an aux bus
+>> and then smaller subsystem focused drivers for the aux devices that make
+>> the device usable from different contexts.
+>>
+>> I think we are ready to start upstreaming, but I am waiting to see how
+>> this falls out - to see if our core driver can land in a non-subsystem
+>> specific location (e.g., drivers/core) or if it needs to go with fwctl
+>> as a generic location.
+>
+>Do it right, and push it to drivers/core. I'm aware of at least one
+>driver from huge company (not Nvidia) which is in preparation phase
+>before upstreaming, and will fit nicely into this model.
+>
 
-Hi,
+How do you imagine this driver/core structure should look like? Who will be
+the top dir maintainer? It should be something that is tightly coupled with
+aux, currently aux is under drivers/base/auxiliary.c I think it should move 
+to drivers/aux/auxiliary.c and device drivers should implement their own
+aux buses, WH access APIs and probing/init logic under that directory
+e.g: drivers/aux/mlx5/..
 
-> Thanks for your patch.
-> 
-> IIUC you remove here the per-ring page_pool stats, and keep only the summed
-> stats.
-> 
-> I guess the reason for this is that the page_pool strings have no per-ring
-> variants.
-> 
->   59 static const char pp_stats[][ETH_GSTRING_LEN] = {
->   60         "rx_pp_alloc_fast",
->   61         "rx_pp_alloc_slow",
->   62         "rx_pp_alloc_slow_ho",
->   63         "rx_pp_alloc_empty",
->   64         "rx_pp_alloc_refill",
->   65         "rx_pp_alloc_waive",
->   66         "rx_pp_recycle_cached",
->   67         "rx_pp_recycle_cache_full",
->   68         "rx_pp_recycle_ring",
->   69         "rx_pp_recycle_ring_full",
->   70         "rx_pp_recycle_released_ref",
->   71 };
-> 
-> Is this the only reason?
-
-Yes. I haven't seen any reason to keep it. It is only copied around.
-
-> I like the direction of this patch, but we won't give up the per-ring
-> counters. Please keep them.
-
-Hmm. Okay. I guess I could stuff a struct there. But it really looks
-like waste since it is not used.
-
-> I can think of a new "customized page_pool counters strings" API, where the
-> strings prefix is provided by the driver, and used to generate the per-pool
-> strings.
-
-Okay. So I make room for it and you wire it up ;)
-
-Sebastian
 
