@@ -1,321 +1,192 @@
-Return-Path: <linux-rdma+bounces-8359-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8360-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49D0FA4FE56
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 13:14:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CC61A50099
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 14:33:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5A7F7A676D
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 12:13:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78FAB1626F1
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 13:33:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E13724291B;
-	Wed,  5 Mar 2025 12:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D151B24501D;
+	Wed,  5 Mar 2025 13:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TpXXvArQ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8S3xDu+0"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="JWBcn9os"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2052.outbound.protection.outlook.com [40.107.236.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5968C1624CB;
-	Wed,  5 Mar 2025 12:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741176866; cv=none; b=hn3ryFnuIX/ElRufqavPriqJ/QUsPTGNkc/ZToo3MvVrEAU2v2MPd6b/G5sL4u3WoJpAhMxivGpmrJ17fdaA0DyeelPIpCuisJ+luEzA2iKm1ssaJqn7CjRgBJaoiB27l1w1hIjgJl4WnEoJwX/OobRhQPDloTKjhWwxueuTdUQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741176866; c=relaxed/simple;
-	bh=Vm8/vF3GHAjrFRuGuYRGpAgXCDGs1L83qf6XFXS1Zws=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=DSq5JC2Q9j2Tu/EQHOjopn0DxnnzMgNI1TtiP65XJ5ZNYKMbvwq8alD8q3izzLU8dP09mHKmE5QYnwNpjBbIiEr4KwKRVIExoe3Mdq6tGziIYtoswmkHsqP4vBYx9iBK2zO944RdHDF3BzchSgL1XRCsWbbmQA5go7nGCh846Ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TpXXvArQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=8S3xDu+0; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 5 Mar 2025 13:14:20 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1741176862;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=/5eInyNCcAb93ovt2g/g2kWQONI+z/Aql3dPfD3A2XU=;
-	b=TpXXvArQeak3eNj3Z9l4BuLbL9j13ydkZRGgVfGxe+g+pAfqR/QDV19nGliGWGQ/Q5R+HN
-	eIuERA/Xb3fAs4CGo2305t3ZM5mGqGCVwwDduWDKHRJE6K9PamObCzUQ/PBU7Iws3qaNck
-	cc4wqtpOqV9Q7VjrtjvWgKtqOMOEBXBlz9EVwGNeFDYYATiXFz2pqrGzZHDAjU1fj9MpfN
-	RHH0lHmBBnAX0xJV1FhWR/zXsJWdwbboiUw+yCcnL2fPYqPRx5wB4YKrbVhGdhRvGvzi49
-	BVWB4QjTZnIdMr66d87+fgsLAwwR3dqcAJWHtP25tVJq1IM2Fww7prlG63gYAw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1741176862;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=/5eInyNCcAb93ovt2g/g2kWQONI+z/Aql3dPfD3A2XU=;
-	b=8S3xDu+0E8v4wYNQ2Yy+Bc+U8Wn/6qNfpE/A5+O9IzLqpVjjwXbXWKg9zYCeJgQjWUm487
-	2o4VxQccQten1FBA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: linux-rdma@vger.kernel.org, netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Joe Damato <jdamato@fastly.com>,
-	Leon Romanovsky <leon@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F0A134D4;
+	Wed,  5 Mar 2025 13:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741181582; cv=fail; b=j1X6DXs1/rJjzimEK6Ou4E4tXeVppW4bKSgjqDdF9RaGMxvyZ59G1yhpNN9dhpjGUudMLKawWuVuSIOWdGjm3nOF8USRQABwSCRZWABvdtKdxTYsoLchrBq1/s5og08hfvqS+7UHK6cD8EKzEzyHITzbFDP1dWxFP9toy4VtFlI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741181582; c=relaxed/simple;
+	bh=L7tubID7JzqhOX/HGnR9OvZE2JE3n/14EfbkGiumylo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=DIS4zApupYG6USQzl3bsPlJu8UTJfN5Oy8k/A3fSl8sKw5nfOHQhZ+3II1URvkqBP3T6gqpNF/G7COBqg4kUX7Uu9PNQhZruUGBoM88wiC6yYATjkqLozC8UzSXZFgtowMZFwJa/323j+GLZuKjORKYrEe/XyOjrgoTq6B/NGOE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=JWBcn9os; arc=fail smtp.client-ip=40.107.236.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=CrWdEvyXchg81si5i8pNKDcOv4GXDtqC/SJQYZroiZV9ujB8SYVHldNOx1z3HKZ+WfG/qlv04IK0BCggk7eXI2fLhd3S/VZx2THNZeSMOTRaV7N2luop7SHgLwqlXadPwvS4H//Q7orSVIJOLsVaWeeyZMDgHvXlEIIE5onAEvL9ZEQeazdOh+zcKsTEtxe0SW1Qz+4TlDZGpp8unFRJ7s4oT08C4+pmIyXaHWUY9FrDoInGl+TEFIF5xOG9hVF8sWcN1qjvSLdVCICriPb+J3Vsc1aETK7DaqjkgL5uFNFwlcFcy179KsccoFXv/Zk/fwIZ3R7I3AccUbPbqq34dQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2S7Dqk717M/ObJzyDAnglC+ODC2gK2h3zOEWlchfgsQ=;
+ b=NX3D9MsFLao5XIxnJCvr9dyXUzzmUB89+nVJ3CvYHhUaJcOjS7aZlf1+V3LAkvtmxRatT4rCKOwcf1c6msNwMMwlmhbfKl6jqbrEg7iGFBJuw8UKyIwZ7PNLGor6r3tm7xvbwPoTWHesidMJcYwPvNWPi1L2rlEw8+pxt064QtKMqOcIRj4J3/BspbVkEpsgBjzS6TUxSJZj+judOXBEPFJ+vfBx1oUm3Zc4dgqaDA1znt9lpG0U0JbKErFJa0h70S4XHi1NV8rrj/y/2ebXD1SQk9QEVYzPzdjwRdaYseLlc7JZSDh9WBdJPIahvUJRvcW9egbNS5JUVWqGG4lXbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2S7Dqk717M/ObJzyDAnglC+ODC2gK2h3zOEWlchfgsQ=;
+ b=JWBcn9osBM7sX5hYCFOCwgomiKw2JtUuBF5RO1ip1MTindI8UlXtZuw9l0WPArCKj39hGCnn+wa+cyPD1lXVDgLrwlezusAbodsfmtpR5BpocdqZXZSTiI0ExVk6LgP0Gaor/vzEI9PxjhOYooqRENQH0cxqJT662ArmSuUar3zDDw7OH/jCiYhJbuLWCMtwGLrgbEPZSLg1BjMFgWW/Wt02IZrAegpJUSOn66jD1FyE3oKYBVkwsaXCctavr3pigw81Gn9/o8FOauQORTjYCmc17AZJaDjvzTScMduuTxfl27jds2rZPm1Bwicq2xK0GCX5J591IrjKkS9y397Z9g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by PH7PR12MB5904.namprd12.prod.outlook.com (2603:10b6:510:1d8::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.29; Wed, 5 Mar
+ 2025 13:32:56 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8511.017; Wed, 5 Mar 2025
+ 13:32:55 +0000
+Date: Wed, 5 Mar 2025 09:32:54 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Daniel Vetter <daniel.vetter@ffwll.ch>,
+	Dave Jiang <dave.jiang@intel.com>, David Ahern <dsahern@kernel.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Leonid Bloch <lbloch@nvidia.com>,
+	Leon Romanovsky <leonro@nvidia.com>, linux-cxl@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
 	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH net-next] net/mlnx5: Use generic code for page_pool
- statistics.
-Message-ID: <20250305121420.kFO617zQ@linutronix.de>
+	"Nelson, Shannon" <shannon.nelson@amd.com>
+Subject: Re: [PATCH v5 0/8] Introduce fwctl subystem
+Message-ID: <20250305133254.GV133783@nvidia.com>
+References: <0-v5-642aa0c94070+4447f-fwctl_jgg@nvidia.com>
+ <20250303175358.4e9e0f78@kernel.org>
+ <20250304140036.GK133783@nvidia.com>
+ <20250304164203.38418211@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250304164203.38418211@kernel.org>
+X-ClientProxiedBy: YQBPR0101CA0096.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:4::29) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|PH7PR12MB5904:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4904f7d2-b5db-4511-0197-08dd5bea3cb4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|366016|1800799024|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?+Ef32AQxC2h3UfonQ3+HTNHz5w4h0H5fyvXbvzAd2gR7rU3yHSct835PtJRD?=
+ =?us-ascii?Q?U6YvCmoV7o0NyNdrXPSOvy4XPE+Ro3WWXMWAuqEB6PAPWc6HOeyC88KjWYYn?=
+ =?us-ascii?Q?ylkrsw5aGhkC8TLowrBqKOTkLuv4R3jIASCHom3KTwQNWWo0ROn78sMRBlwM?=
+ =?us-ascii?Q?mWWX9mFXww3uEW4uL5R/C8hOv0FrUIaNCRI+q9qIN6OvrEUsCWyuKs1VOBIf?=
+ =?us-ascii?Q?xbjmeqN5w7jt2nhsTZUhHeZFYDuLhovgfUp6uxFNojSII0fq/xT4ChfSCn03?=
+ =?us-ascii?Q?MOoK0HCgZ0+sqZrNE55ftKfs4KBoRW2d7t2Us+vVMaazzRHkswiYJOJZOIO/?=
+ =?us-ascii?Q?VVZBfUGkCO3I8zdaiC42dn9FFhNXwR0zTZZxu6cpQmBigIiNsgzqUSOQdXG2?=
+ =?us-ascii?Q?QVkHD3D/EQzIPZPVwS75oRAusWEsyBzYSbdrH1qAeohqx7ENOc04zM8M/BBQ?=
+ =?us-ascii?Q?veXbXLwqqDWJfrBVsPjcfhUvV7uvD1zEomLnKyh3ged7GTcXmi8KxonmJ2YT?=
+ =?us-ascii?Q?cjVyrl4UobP3/wvODnyBHRMngsFaO/jL7Cd7sDOfRcACXl6kgL32IDZq6xoQ?=
+ =?us-ascii?Q?jbJYQNg9veR3lKz4tFP80JYc9R6K+gE3ZZ3cf8H42DcOB5xcXe+2OR161oyN?=
+ =?us-ascii?Q?JDh+uCstB8KSet7lGj0Wkvf00mZ1k5kw5veLMtqy4YacIQUkuSRnaFsCArEj?=
+ =?us-ascii?Q?Vd+Bq6Ua8WVU9gvwkocc32kSJ5n4qrogO0uXjr67pFgSQs4d3K+vWWTlGukK?=
+ =?us-ascii?Q?1BbNCvOMQwglFQWI2uK+SUT3TSsXjuR6Ufsd+/ROpQ1pcwynDrGiXMnt5mjx?=
+ =?us-ascii?Q?AN+7RyOc/QGPUyUGCYtDSj9P4Auiy175rhgG1OP+HApbXUY8F+jkP+hyLatw?=
+ =?us-ascii?Q?NW7Pe+SfhHHMO4KDcbPkBQIWn0h41E/VoHI79J8X0U7cskjue3ZqCgywrvY+?=
+ =?us-ascii?Q?R7+yal/vRDfBrOH+45Z8u8HtrF6T6T1tJ8DVHwfBf0mPNBYkbGAXjlWK8YEJ?=
+ =?us-ascii?Q?NO4HcuWBnizNNiANMxuzCcV50COXsfJaexYGFybzCI0xLWW1iZYDx11C0GuI?=
+ =?us-ascii?Q?4w34HIiWhp/9XD5O3X9rSufS06PzmSDs4Els02M3MMj/4/mLewqyY7Qb/OTt?=
+ =?us-ascii?Q?T/wr//J2DYMJfYZB0Gtv2H3DVsvWoLsTxT74qNoDy6n9rxq6OFRvjH3re5A0?=
+ =?us-ascii?Q?rR34qpNXpIhqRk5oUArQ6tfF8zT4IftRyc/x9QDm2xOnwokrE85jJ7S3+9KY?=
+ =?us-ascii?Q?GhxgVexARQ//D3iET8sFjFhUfoX/DR19g1FBH0WLDD3i0q8/W9X18b2cOT35?=
+ =?us-ascii?Q?QN5GDtBgLoYP+sQC31Tib4wC7sgFijVjGRyC9ZfJpVucjmYyrFStrzcsDsP/?=
+ =?us-ascii?Q?v0eKVmPzpG/pbiTHlpi8yITMi9x0?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?RbZ5vnV+3dxbJuaunisWcQI+F0xEqE33QDWLg83i3nLCyZtAMr+e/39dWLzs?=
+ =?us-ascii?Q?obBZL35z/fiO7+eo7j0VRtpnr3mw/s2fKrMEnN5xeClFt4nmuOTz8p3mGRvG?=
+ =?us-ascii?Q?A6I4Q8h8nUjdsqPnX2STFcqGYEpuLAKMRJFiV/pQNM/UbSAuB3La2LnMC6X6?=
+ =?us-ascii?Q?gG3IvzSZ7coS0hxwIDEW9vXdrXVySz7q7lkRlZBan8ht8MF3THAT/GzhpG97?=
+ =?us-ascii?Q?DtHH1aVtmyPCwZt1f3echcFlQw4/60F4VFePDTT4wJjWObS9PYEP3Qaspe2z?=
+ =?us-ascii?Q?mrVtXKknmC2BJpICD6XHUHtADKc3fVXTS9h461Y6TdpdvL3OHYthYIICmuFN?=
+ =?us-ascii?Q?NiVz0ozBi/JCaWl79hJHzvZMD2T30qG2GvLwrBob/jiJy24yCgmao2g7Q90J?=
+ =?us-ascii?Q?9UHWyoa/zmHCpKuFTSxFgGQEb7Dno+APsXGHhYpzHo6CBis4WmWYUBezxQXL?=
+ =?us-ascii?Q?Crxd4w+N0a4CevX7EmfIU9bQC5mIMA4kpxwAkwBc6/6e+3dEFi8SVomz9dZj?=
+ =?us-ascii?Q?d3j+E7PeQ6vDNWEcGoyINTln0IqGC284ZiBmpMtXaot6NxIuVQEG3VVHxGts?=
+ =?us-ascii?Q?UofEEkeEd8//avx9O3UTuOYdRk5u4cAXfTnxipfCT7Yq91Cy+OnRYHdAmBy4?=
+ =?us-ascii?Q?s1Z/iIWR/uUnU9r8WKtXrS5kIoffKbqQ0WdkVq43Ti3XUNch3WexhNGMWRk+?=
+ =?us-ascii?Q?nhj9FCgepOmu8sUxsjhl5lx6pyvUQsrOr6+ux9d1M2+MrCDUqZmzvsdSS+W4?=
+ =?us-ascii?Q?fPvV5t9EAV9Ql7wyYMcaizT2VHTII5hQMuA/ix589QxppB6KlbhP/swSYeLj?=
+ =?us-ascii?Q?RIjHZMKg6gml99+Sqy1N0FYkixmbudlC+jUwMAZk5oP77sNMx12TiycdmtMD?=
+ =?us-ascii?Q?4yrXMRK0XtGc/1kXcQie/Vyvjki9p06KHjEPIDKCatQ++RbgGNQ7UX0PWRWL?=
+ =?us-ascii?Q?sLDCGWUwZv/UT7hH2JKnUYu3/pqglHUvHKsjCd323UXqi2UJXLuCkyMhLlzd?=
+ =?us-ascii?Q?SohFJtuLGn9vxQ51dnOCNQ528PKGWQzLyJc+C9j6HxMoWzWGAEmqc3VaKn+t?=
+ =?us-ascii?Q?BMVOq2poyHCAP29cyB+ebIbKFho9AjNo0P2aEsHsGO2FrxE3Mrb2LqK/dOuE?=
+ =?us-ascii?Q?AM/hB77Rr02cp0Q6uSvwA9aSS4sP31NtOMvjbn9Z2ecrbxdgpm3xXqTehwD0?=
+ =?us-ascii?Q?VNePlzPHk8g5l3yf62ZDHJZCIvl+GYI/8Qgn+WILWdke+fPdEQYaAjsADfFU?=
+ =?us-ascii?Q?PpY8l8POsiTbIK7IwXVMyGmJPCgE5SfDymtBTA14nh4yCIZ3DYuGF5X3NYcZ?=
+ =?us-ascii?Q?fW/c1YMYqYpBN3023EP8RzAw2yBa9My49EKyO61rwNls+9dMEMSROaYJ7z+5?=
+ =?us-ascii?Q?wVDvmOsQanrZ+2m+sxlJLU4fIAQYymrabG9RVu/sCjg4oxLxB9oiab3a/aY7?=
+ =?us-ascii?Q?rIVsSrU6ExFdTy4iS8U2EXT9XibDTuRz0Oi3c51PdMgY3DmwyVFyQIqSq3MP?=
+ =?us-ascii?Q?G5axDFmTbdoCnAI3nh0qJ3aKuF+80Fg3ZUNifP1pK9Vfx2mAzqxDTDHFvtH7?=
+ =?us-ascii?Q?GPQIZnpzuESTdCVzHplAPNM0whQjKRaOVKSj1UqC?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4904f7d2-b5db-4511-0197-08dd5bea3cb4
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2025 13:32:55.7525
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xcz3WxfWDsFvooc9pZJ3riPBn1t3ehwk7A+SzUo23ylbPdyp5GSx6HKXJo6wszTm
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5904
 
-The statistics gathering code for page_pool statistics has multiple
-steps:
-- gather statistics from a channel via page_pool_get_stats() to an
-  on-stack structure.
-- copy this data to dedicated rq_stats.
-- copy the data from rq_stats global mlx5e_sw_stats structure, and merge
-  per-queue statistics into one counter.
-- Finally copy the data the specific order for the ethtool query.
+On Tue, Mar 04, 2025 at 04:42:03PM -0800, Jakub Kicinski wrote:
+> On Tue, 4 Mar 2025 10:00:36 -0400 Jason Gunthorpe wrote:
+> > I never agreed to that formulation. I suggested that perhaps runtime
+> > configurations where netdev is the only driver using the HW could be
+> > disabled (ie a netdev exclusion, not a rdma inclusion).
+> 
+> I thought you were arguing that me opposing the addition was
+> "maintainer overreach". As in me telling other parts of the kernel
+> what is and isn't allowed. Do I not get a say what gets merged under
+> drivers/net/ now?
 
-The downside here is that the individual counter types are expected to
-be u64 and if something changes, the code breaks. Also if additional
-counter are added to struct page_pool_stats then they are not
-automtically picked up by the driver but need to be manually added in
-all four spots.
+The PCI core drivers are a shared resource jointly maintained by all
+the subsytems that use them. They are maintained by their respective
+maintainers. Saeed/etc in this case.
 
-Remove the page_pool_stats fields from rq_stats_desc and use instead
-page_pool_ethtool_stats_get_count() for the number of files and
-page_pool_ethtool_stats_get_strings() for the strings which are added at
-the end.
-Remove page_pool_stats members from all structs and add the struct to
-mlx5e_sw_stats where the data is gathered directly for all channels.
-At the end, use page_pool_ethtool_stats_get() to copy the data to the
-output buffer.
+It would be inappropriate for your preferences to supersede Saeed's
+when he is a maintainer of the mlx5_core driver and fwctl. Please try
+and get Saeed on board with your plan.
 
-Suggested-by: Joe Damato <jdamato@fastly.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
+If the placement under drivers/net makes this confusing then we can
+certainly change the directory names.
 
-diffstat wise, this looks nice. I hope I didn't break anything.
-Providing an empty struct page_pool_stats in the !CONFIG_PAGE_POOL_STATS
-case should eliminate a few additional ifdefs.
-
- .../ethernet/mellanox/mlx5/core/en_stats.c    | 78 +++----------------
- .../ethernet/mellanox/mlx5/core/en_stats.h    | 27 +------
- 2 files changed, 15 insertions(+), 90 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-index 611ec4b6f3709..ae4d51f11fc5d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-@@ -37,9 +37,7 @@
- #include "en/ptp.h"
- #include "en/port.h"
- 
--#ifdef CONFIG_PAGE_POOL_STATS
- #include <net/page_pool/helpers.h>
--#endif
- 
- void mlx5e_ethtool_put_stat(u64 **data, u64 val)
- {
-@@ -196,19 +194,6 @@ static const struct counter_desc sw_stats_desc[] = {
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_arfs_err) },
- #endif
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_recover) },
--#ifdef CONFIG_PAGE_POOL_STATS
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_fast) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_slow) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_slow_high_order) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_empty) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_refill) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_waive) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_cached) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_cache_full) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_ring) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_ring_full) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_released_ref) },
--#endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_tls_decrypted_packets) },
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_tls_decrypted_bytes) },
-@@ -257,7 +242,7 @@ static const struct counter_desc sw_stats_desc[] = {
- 
- static MLX5E_DECLARE_STATS_GRP_OP_NUM_STATS(sw)
- {
--	return NUM_SW_COUNTERS;
-+	return NUM_SW_COUNTERS + page_pool_ethtool_stats_get_count();
- }
- 
- static MLX5E_DECLARE_STATS_GRP_OP_FILL_STRS(sw)
-@@ -266,6 +251,8 @@ static MLX5E_DECLARE_STATS_GRP_OP_FILL_STRS(sw)
- 
- 	for (i = 0; i < NUM_SW_COUNTERS; i++)
- 		ethtool_puts(data, sw_stats_desc[i].format);
-+
-+	*data = page_pool_ethtool_stats_get_strings(*data);
- }
- 
- static MLX5E_DECLARE_STATS_GRP_OP_FILL_STATS(sw)
-@@ -276,6 +263,9 @@ static MLX5E_DECLARE_STATS_GRP_OP_FILL_STATS(sw)
- 		mlx5e_ethtool_put_stat(data,
- 				       MLX5E_READ_CTR64_CPU(&priv->stats.sw,
- 							    sw_stats_desc, i));
-+#ifdef CONFIG_PAGE_POOL_STATS
-+	*data = page_pool_ethtool_stats_get(*data, &priv->stats.sw.page_pool_stats);
-+#endif
- }
- 
- static void mlx5e_stats_grp_sw_update_stats_xdp_red(struct mlx5e_sw_stats *s,
-@@ -377,19 +367,6 @@ static void mlx5e_stats_grp_sw_update_stats_rq_stats(struct mlx5e_sw_stats *s,
- 	s->rx_arfs_err                += rq_stats->arfs_err;
- #endif
- 	s->rx_recover                 += rq_stats->recover;
--#ifdef CONFIG_PAGE_POOL_STATS
--	s->rx_pp_alloc_fast          += rq_stats->pp_alloc_fast;
--	s->rx_pp_alloc_slow          += rq_stats->pp_alloc_slow;
--	s->rx_pp_alloc_empty         += rq_stats->pp_alloc_empty;
--	s->rx_pp_alloc_refill        += rq_stats->pp_alloc_refill;
--	s->rx_pp_alloc_waive         += rq_stats->pp_alloc_waive;
--	s->rx_pp_alloc_slow_high_order		+= rq_stats->pp_alloc_slow_high_order;
--	s->rx_pp_recycle_cached			+= rq_stats->pp_recycle_cached;
--	s->rx_pp_recycle_cache_full		+= rq_stats->pp_recycle_cache_full;
--	s->rx_pp_recycle_ring			+= rq_stats->pp_recycle_ring;
--	s->rx_pp_recycle_ring_full		+= rq_stats->pp_recycle_ring_full;
--	s->rx_pp_recycle_released_ref		+= rq_stats->pp_recycle_released_ref;
--#endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	s->rx_tls_decrypted_packets   += rq_stats->tls_decrypted_packets;
- 	s->rx_tls_decrypted_bytes     += rq_stats->tls_decrypted_bytes;
-@@ -497,30 +474,14 @@ static void mlx5e_stats_grp_sw_update_stats_qos(struct mlx5e_priv *priv,
- }
- 
- #ifdef CONFIG_PAGE_POOL_STATS
--static void mlx5e_stats_update_stats_rq_page_pool(struct mlx5e_channel *c)
-+static void mlx5e_stats_update_stats_rq_page_pool(struct mlx5e_sw_stats *s,
-+						  struct mlx5e_channel *c)
- {
--	struct mlx5e_rq_stats *rq_stats = c->rq.stats;
--	struct page_pool *pool = c->rq.page_pool;
--	struct page_pool_stats stats = { 0 };
--
--	if (!page_pool_get_stats(pool, &stats))
--		return;
--
--	rq_stats->pp_alloc_fast = stats.alloc_stats.fast;
--	rq_stats->pp_alloc_slow = stats.alloc_stats.slow;
--	rq_stats->pp_alloc_slow_high_order = stats.alloc_stats.slow_high_order;
--	rq_stats->pp_alloc_empty = stats.alloc_stats.empty;
--	rq_stats->pp_alloc_waive = stats.alloc_stats.waive;
--	rq_stats->pp_alloc_refill = stats.alloc_stats.refill;
--
--	rq_stats->pp_recycle_cached = stats.recycle_stats.cached;
--	rq_stats->pp_recycle_cache_full = stats.recycle_stats.cache_full;
--	rq_stats->pp_recycle_ring = stats.recycle_stats.ring;
--	rq_stats->pp_recycle_ring_full = stats.recycle_stats.ring_full;
--	rq_stats->pp_recycle_released_ref = stats.recycle_stats.released_refcnt;
-+	page_pool_get_stats(c->rq.page_pool, &s->page_pool_stats);
- }
- #else
--static void mlx5e_stats_update_stats_rq_page_pool(struct mlx5e_channel *c)
-+static void mlx5e_stats_update_stats_rq_page_pool(struct mlx5e_sw_stats *s,
-+						  struct mlx5e_channel *c)
- {
- }
- #endif
-@@ -532,15 +493,13 @@ static MLX5E_DECLARE_STATS_GRP_OP_UPDATE_STATS(sw)
- 
- 	memset(s, 0, sizeof(*s));
- 
--	for (i = 0; i < priv->channels.num; i++) /* for active channels only */
--		mlx5e_stats_update_stats_rq_page_pool(priv->channels.c[i]);
--
- 	for (i = 0; i < priv->stats_nch; i++) {
- 		struct mlx5e_channel_stats *channel_stats =
- 			priv->channel_stats[i];
- 
- 		int j;
- 
-+		mlx5e_stats_update_stats_rq_page_pool(s, priv->channels.c[i]);
- 		mlx5e_stats_grp_sw_update_stats_rq_stats(s, &channel_stats->rq);
- 		mlx5e_stats_grp_sw_update_stats_xdpsq(s, &channel_stats->rq_xdpsq);
- 		mlx5e_stats_grp_sw_update_stats_ch_stats(s, &channel_stats->ch);
-@@ -2086,19 +2045,6 @@ static const struct counter_desc rq_stats_desc[] = {
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, arfs_err) },
- #endif
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, recover) },
--#ifdef CONFIG_PAGE_POOL_STATS
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_fast) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_slow) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_slow_high_order) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_empty) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_refill) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_waive) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_cached) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_cache_full) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_ring) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_ring_full) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_released_ref) },
--#endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, tls_decrypted_packets) },
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, tls_decrypted_bytes) },
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h
-index 5961c569cfe01..f6a186e293c4c 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h
-@@ -33,6 +33,8 @@
- #ifndef __MLX5_EN_STATS_H__
- #define __MLX5_EN_STATS_H__
- 
-+#include <net/page_pool/types.h>
-+
- #define MLX5E_READ_CTR64_CPU(ptr, dsc, i) \
- 	(*(u64 *)((char *)ptr + dsc[i].offset))
- #define MLX5E_READ_CTR64_BE(ptr, dsc, i) \
-@@ -216,17 +218,7 @@ struct mlx5e_sw_stats {
- 	u64 ch_force_irq;
- 	u64 ch_eq_rearm;
- #ifdef CONFIG_PAGE_POOL_STATS
--	u64 rx_pp_alloc_fast;
--	u64 rx_pp_alloc_slow;
--	u64 rx_pp_alloc_slow_high_order;
--	u64 rx_pp_alloc_empty;
--	u64 rx_pp_alloc_refill;
--	u64 rx_pp_alloc_waive;
--	u64 rx_pp_recycle_cached;
--	u64 rx_pp_recycle_cache_full;
--	u64 rx_pp_recycle_ring;
--	u64 rx_pp_recycle_ring_full;
--	u64 rx_pp_recycle_released_ref;
-+	struct page_pool_stats page_pool_stats;
- #endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	u64 tx_tls_encrypted_packets;
-@@ -381,19 +373,6 @@ struct mlx5e_rq_stats {
- 	u64 arfs_err;
- #endif
- 	u64 recover;
--#ifdef CONFIG_PAGE_POOL_STATS
--	u64 pp_alloc_fast;
--	u64 pp_alloc_slow;
--	u64 pp_alloc_slow_high_order;
--	u64 pp_alloc_empty;
--	u64 pp_alloc_refill;
--	u64 pp_alloc_waive;
--	u64 pp_recycle_cached;
--	u64 pp_recycle_cache_full;
--	u64 pp_recycle_ring;
--	u64 pp_recycle_ring_full;
--	u64 pp_recycle_released_ref;
--#endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	u64 tls_decrypted_packets;
- 	u64 tls_decrypted_bytes;
--- 
-2.47.2
-
+Jason
 
