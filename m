@@ -1,140 +1,134 @@
-Return-Path: <linux-rdma+bounces-8362-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8363-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9EFCA501C3
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 15:23:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AF36A5028F
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 15:47:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 048B63B102E
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 14:22:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 861AA18875C6
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 14:44:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC6C024CEE2;
-	Wed,  5 Mar 2025 14:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A2124EF65;
+	Wed,  5 Mar 2025 14:43:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="OlThstys"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VL8phBxE"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC09924BC18;
-	Wed,  5 Mar 2025 14:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B72E24EA9D;
+	Wed,  5 Mar 2025 14:43:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741184452; cv=none; b=Alp6AqohuF0yaYyqoOpibynLW5EX2pS4SGsgpb80z7qWbCJCkkKpar1xwprwaHplQ1eU0hkdPIwCL9Qg1NRIioO5k4cN/h4J3Hn0qvIxA0FOkzVXYRiTciRWA2qm3fIvi7QC5Be/wdjTN6LxyuyCSUWm+x3pGzlEFxYERQ8AW8k=
+	t=1741185833; cv=none; b=qTQUQSuuBn0ERTbBB0SmUsUojA+CfTFxDdXt9oJe7wu523ENWoi6SLCw+Ca5PlZbtfUHODNpGk6Wie5yWdkaTPFCKeHB5+4EgB/t2EtmeI+RyYrY/62K5Z5PrgoiVVsuvgGd9eIECu9CGClyhVCbBfPB+M1lZ5oe5rLr5x00T98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741184452; c=relaxed/simple;
-	bh=xpcQbs4tyQQ+SW3I3wZ517Ns00JpxHyOOR9gZd4k3L4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mMkS7Y2wL+xiZrlprRuWCwkG7dE6laCuUaT7zn3br6H35B5BXW0QrmSVq5ZiLXCOyGfei9gNPS4VMy9owiNGS3gcLL1wfTpqqIrZcFH2nRGlzEUYhpvArgNga72oqipUaq4NBpXOL6Z8xWoODTsjAnzeahJMmTCzfo63t/5NZr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=OlThstys; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1741184442; x=1741789242; i=markus.elfring@web.de;
-	bh=C1xWGzwYPulTit0Q4OqYEAYIGUZud3a18Yr5KId4AB8=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=OlThstys6j83TWzkyFcMswl/GOTcM3VEpAu3qt2qK287aJw8yBDslqMH3mQ/imIc
-	 ynQHBbnKQG5Ku/za3XWJ5+m3vA/mZH4zv/KYgsSIHBDHSgA7/u7mxkHI9WuyaXFH+
-	 uCOkNJq52SDtbgZ/26funprLFb4NWXM8wuA3/+OQHNl5A9761SFHclRVPxQflTdws
-	 4RMzskm0NStsYCiPDTo/wZlPopdK1S+5b+wDDYy8uD2xPyKTJXaSkF3TmeymsJi8C
-	 w8WQEPCUwEB9J04At8isQwHb9dQy6u8ztBApGfpf4LXZyixHJC30zN1OWrm/jnAZt
-	 sMqhz2G6D4M2sdfkXQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.70.10]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MN6Fj-1tZX9L08H7-00I6c4; Wed, 05
- Mar 2025 15:20:42 +0100
-Message-ID: <20a1a47c-8906-44e8-92e6-9b3e698b1491@web.de>
-Date: Wed, 5 Mar 2025 15:20:41 +0100
+	s=arc-20240116; t=1741185833; c=relaxed/simple;
+	bh=q0jxvZ22iaWtq6NXJfvioYNnCp9yCTO3f0Gdzs+gwAA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u4NQmQkMiFG6x0LY6309d5GHHmu95+XE50KDjkNXGy2OJbEEssiekahxHmPTM4gEX5dKXNgbGzU0gGiGv/E32mRpYlvXz4Jt1/FAqczZZza82b6WhU8sBJ0bTf+pDF0yhMOdPaSauj0MwWZfZJNGm106FllJ6r/3SxfBuDICOv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VL8phBxE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B1D4C4CEEA;
+	Wed,  5 Mar 2025 14:43:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741185832;
+	bh=q0jxvZ22iaWtq6NXJfvioYNnCp9yCTO3f0Gdzs+gwAA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VL8phBxEFd5Fj6YetuiSBuA7/2QNGmEqIVa74UvUIYW80vX0LG79IILjPHeitzW0G
+	 kKgSxMzYiq0Y0dhIUiFAvFEmNQf5v5zlg8hR5+CAwnF7LKb6VLYrlpDkZ70FBzg+cP
+	 Mm45tEh6W6do3V+ZD485y4tIequsew05viWenFmNBPlgwerdWL+k8H/sRuEwZdSAbc
+	 uhKP8OFJIs49UDkeinedf+FZJIxeoWkxY1nYoStB94ZbJfOA7SycLFJW2K9rrlv3or
+	 OaJC15q8Dv7EEM3le6UMkrtmoYYbMrMgMIaY0WCc6H+v0xY66aS5CuM3eOxDUFycbm
+	 rYfVb1j4UicFQ==
+Date: Wed, 5 Mar 2025 15:43:47 +0100
+From: Joel Granados <joel.granados@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: nicolas.bouchinet@clip-os.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org, codalist@coda.cs.cmu.edu, 
+	linux-nfs@vger.kernel.org, Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>, 
+	Joel Granados <j.granados@samsung.com>, Clemens Ladisch <clemens@ladisch.de>, 
+	Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Jan Harkes <jaharkes@cs.cmu.edu>, 
+	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
+	Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
+	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
+	Bart Van Assche <bvanassche@acm.org>, Zhu Yanjun <yanjun.zhu@linux.dev>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v2 5/6] sysctl/infiniband: Fixes infiniband sysctl bounds
+Message-ID: <i4x736hwah7vc7mjjooxyeo3t73wzcm365mah3qganrs6x6l2d@khb2a6uggrop>
+References: <20250224095826.16458-1-nicolas.bouchinet@clip-os.org>
+ <20250224095826.16458-6-nicolas.bouchinet@clip-os.org>
+ <20250224134105.GC53094@unreal>
+ <6obp2rythrcvlknqsczvxmhenhvxsosobc4cwx36iinyjjj5mr@b227ysqvp5vh>
+ <20250303185309.GA1955273@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH] RDMA/erdma: Prevent use-after-free in erdma_accept_newconn()
-To: kernel-janitors@vger.kernel.org, linux-rdma@vger.kernel.org,
- Cheng Xu <chengyou@linux.alibaba.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Kai Shen <kaishen@linux.alibaba.com>, Leon Romanovsky <leon@kernel.org>,
- Yang Li <yang.lee@linux.alibaba.com>
-Cc: cocci@inria.fr, LKML <linux-kernel@vger.kernel.org>
-References: <f9303bdc-b1a7-be5e-56c6-dfa8232b8b55@web.de>
- <f0f96f74-21d1-f5bf-1086-1c3ce0ea18f5@web.de>
- <167179d0-e1ea-39a8-4143-949ad57294c2@linux.alibaba.com>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <167179d0-e1ea-39a8-4143-949ad57294c2@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:K5YWpl1afCIz0GSstMdQrjpKFA5E9zL+d6oUnGlMOn9oeASRXMM
- cxOSbYvrdMcL5omgjTJmGrvhAgOtgemjkpRpepr+oDPbfmNlOhHZBpyRHqrh7cZ7doD1Ioy
- EiDLvYTClCslBiG7DVhc9QPEG9vvNLD9gmYVv1EgQCmnXuJaR/anSsQ/o/eDgMZV1CRGZay
- k0BnV2DvSPWrF3Z170RuA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:gkDAiXcZH1k=;xz6JkpFjlNnnbsnyId4VAAQBYB9
- gj4Beb6FayFHM+1bAX90V/bSG3/gQmPupHRKxKzdED9+llmecmGpdQnrUTdasLiJ7oQ/8PEaQ
- zn+NaH5ZETr5WC0U47QwQQFrwZn/poog0ZDEUs2AKFsHlyMGMQ6sO2pYhHXbQsWZZ4qXIiyhv
- bgKWlf1CJPC/2AuLxrk0WZWIBF6Hs0yG68fbjCFl1o8KXdutMD/LufdhzdhZdjdZaNnAWU2QJ
- yWyFLulaOpFNT0fHwx+AgrGJbEKigSIPLM3Du9kYJYBy3h9rQDjdx9vQGClDCs9Q0BiVoxVH+
- 85AGZPGzYGhK8kgZuaO02XX8WaP4Rsf9WZpc4weY0A5Hw+atGKJnJUQ4nSMLnZLO6qFOfz/Zc
- 1Nx6ezUnWDFFyQffJOKJJpX6R0RA2IrMjXvvojeJAKytVrk8nx+c/9rKw/LQmOnLYKts+lo9B
- /Uc1aLKXi6oaHYE/XaMG5cuLyrwUwVBVrE7UH2J1eoF8wNsQDWRYYSj03nw5yaPivMsTPX/sE
- EGuhlXedguV7tvfa4yS5LQDZc6XlGWcxEOFFpTmxhHUCygUr002AQtANhzNA7TfytfSP0Sk0H
- qrQpVo6c8qNk/TyARLXSwrFOs/cq0Idb86qSZjD/OK5x/VlKCGyDuZrkhBdTGC9uUKj4UgU2C
- h8XYp0qRz/hpf7mmgEHR50eiBnG4AFCzZ3rNRvrOhONSOvkIlvW5JO/UH/Bp3ySsMWRVcGHqT
- wgIFVGOUrCdB1tErrx5DBJ+aruL7TQhouko8vWxlz5r7tvyD84TFi8B/PneQEc6MTIskZm9Xs
- o4vL91KQ/rqLx0e2aKQyLHVEV6wkRwfx0nha+UF//r9sXleqZ+0bmUZm+WDRSo/5xg9vUt0FQ
- +0k9RUnnpILrviowSwiwSQ8vqHAd2ZyLAWSigXVca6ZC3ZI/JekwWPSAhdmzO89j/k6wLV+5F
- iPmj4Ud9diSnNOqarGsbbTJo4oR1UlgIm34w2aaAdEnAhbNcBmKLtZCpH2g8ZhiGBSRmY5/M5
- lnsTAGHxnIISkPnULX/RcI8UlS47DRqE+WVky3nRng1SGq3V8tM0ibq7QgnAOtq48L3tIpOPm
- xBjJXJp28BArO2+pkH+SVh45iDfnzwQfqjNuFPEfxK66aK5RaNb1+QvTL3L78DDj9/+LMSdi8
- KbL8JvI8pa0CDu6YxCRBcK71mnnhq0i/LuLMATBifXFX6UAfGDcTpkAXcfMFsQqOcLlgErtqx
- t3Mt9dbeEQe4YZnomN9dKlTX2QE+r8aneg8h7XiRCjEItR9Itp2UYgqA65mRuIe547q0/fAz9
- go/TF8a/wRy7S89tN567WnVAp08wKSMMPcJFL/lw2s6UyuEvq8SnApJJDLt31+AmWV71H3XdP
- FHtEE/450w7P9JH+VL220PGPgt6m2BkYgMYmWUOwBSaKYmj6V87D/NO7OiZwNsDvrJJ/5d0Kw
- sw0WY6+fVlliAzq2pP77dif5eDBk=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250303185309.GA1955273@unreal>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 5 Mar 2025 15:07:51 +0100
+On Mon, Mar 03, 2025 at 08:53:09PM +0200, Leon Romanovsky wrote:
+> On Mon, Mar 03, 2025 at 02:57:29PM +0100, Joel Granados wrote:
+> > On Mon, Feb 24, 2025 at 03:41:05PM +0200, Leon Romanovsky wrote:
+> > > On Mon, Feb 24, 2025 at 10:58:20AM +0100, nicolas.bouchinet@clip-os.org wrote:
+> > > > From: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
+> > > > 
+> > > > Bound infiniband iwcm and ucma sysctl writings between SYSCTL_ZERO
+> > > > and SYSCTL_INT_MAX.
+> > > > 
+> > > > The proc_handler has thus been updated to proc_dointvec_minmax.
+> > > > 
+> > > > Signed-off-by: Nicolas Bouchinet <nicolas.bouchinet@ssi.gouv.fr>
+> > > > ---
+> > > >  drivers/infiniband/core/iwcm.c | 4 +++-
+> > > >  drivers/infiniband/core/ucma.c | 4 +++-
+> > > >  2 files changed, 6 insertions(+), 2 deletions(-)
+> > > > 
+> > > 
+> > > Acked-by: Leon Romanovsky <leon@kernel.org>
+> > > 
+> > > How do you want to proceed from here? Should I take to RDMA repository?
+> > > 
+> > > Thanks
+> > It would be great if we push this through RDMA. Here are a few comments:
+> > 1. Having the upper bound be SYSCTL_INT_MAX is not necessary (as it is
+> >    silently capped by proc_dointvec_minmax, but it is good to have as it
+> >    gives understanding on what the spread of the values are.
+> > 
+> > 2. Having the lower bound capped by SYSCTL_ZERO is needed as it will
+> >    prevent ppl trying to assing negative values to the unsigned integers
+> > 
+> > Please let me know if you will push this through RDMA, so I know to
+> > remove it from sysctl.
+> 
+> Applied to RDMA tree.
+> https://web.git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/?h=wip/leon-for-next&id=f33cd9b3fd03a791296ab37550ffd26213a90c4e
+Perfect. Thx.
 
-The implementation of the function =E2=80=9Cerdma_accept_newconn=E2=80=9D =
-contained
-still the statement =E2=80=9Cnew_cep->sock =3D NULL=E2=80=9D after
-the function call =E2=80=9Cerdma_cep_put(new_cep)=E2=80=9D.
-Thus delete an inappropriate reset action.
+@Nicolas: pls take this one out of your next version as it is
+already on its way upstrea.
 
-Reported-by: Cheng Xu <chengyou@linux.alibaba.com>
-Link: https://lore.kernel.org/cocci/167179d0-e1ea-39a8-4143-949ad57294c2@l=
-inux.alibaba.com/
-Link: https://lkml.org/lkml/2023/3/19/191
-Fixes: 920d93eac8b9 ("RDMA/erdma: Add connection management (CM) support")
-Cc: stable@vger.kernel.org
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/infiniband/hw/erdma/erdma_cm.c | 1 -
- 1 file changed, 1 deletion(-)
+Best
+> 
+> > 
+> > Best
+> > 
+> > Reviewed-by: Joel Granados <joel.granados@kernel.org>
+> 
+> Thanks
+> 
+> > 
+> > -- 
+> > 
+> > Joel Granados
 
-diff --git a/drivers/infiniband/hw/erdma/erdma_cm.c b/drivers/infiniband/h=
-w/erdma/erdma_cm.c
-index 1b23c698ec25..e0acc185e719 100644
-=2D-- a/drivers/infiniband/hw/erdma/erdma_cm.c
-+++ b/drivers/infiniband/hw/erdma/erdma_cm.c
-@@ -709,7 +709,6 @@ static void erdma_accept_newconn(struct erdma_cep *cep=
-)
- 		erdma_cancel_mpatimer(new_cep);
+-- 
 
- 		erdma_cep_put(new_cep);
--		new_cep->sock =3D NULL;
- 	}
-
- 	if (new_s) {
-=2D-
-2.48.1
-
+Joel Granados
 
