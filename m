@@ -1,119 +1,119 @@
-Return-Path: <linux-rdma+bounces-8372-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8373-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72D37A506A3
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 18:43:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E019A5097F
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 19:20:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A085316F1E2
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 17:43:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D89013A6E53
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 18:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B21F1AAE2E;
-	Wed,  5 Mar 2025 17:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24B6F253B6E;
+	Wed,  5 Mar 2025 18:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="LxeE6+Z7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U6zIwFjV"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3035761FFE;
-	Wed,  5 Mar 2025 17:43:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F4E253344;
+	Wed,  5 Mar 2025 18:17:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741196625; cv=none; b=g4io12F+RLW7PAWpAuFNQucR/8RorUiYqJA7MfX9jyaoHvkTWjlvLg0ZOg3nwmAc2+RyTCOSpbQIEDhyEDAAlm3CMsPiyqtPQ2YeSJAFUhDzNH1vp1JNdMF8NNNUfx9Lr54B0pXfHBIzi0VCytFqMKK2CeLhdjCJ/dgk89Ns90g=
+	t=1741198641; cv=none; b=e1mnLNcoJxhDv1xLoJm3lbQuYiCRUKx393Bpe1krPn2MbBFpbXkP2FEkRxz8WHTB5AGpzW8gd/4eJQkgFQrde35bBgHko8VB6zVvZ1Oc4tfPU3doFzxGNNzS7lXFl3alIEASaGZuhGDQWW5LNkQsHQrURMKKpnXt03+xm+xcb30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741196625; c=relaxed/simple;
-	bh=BULtslcAgRtkIcgu5k0uwjHwL3Dn0IoM6+GCN9lRF9c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gYERgJ9eSvQF9hEVVCvt6KXzqkN7yX48ceSrCl5I3JVmAY7zDzMPpsxzv5wnpCBi9Qt84VUDSpkLNvgY6PE7bVNNthtnLaAETAST3IthvRY3oT0T/+nLYZgitNZ1F2Yx/6qC+bUgDthRr/PpnSRG9qcyH4On2EgGAj6tCPmu6RQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=LxeE6+Z7; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=/iA2dVyhk+69gnf3UVI0x/ZxghoxWkLPj4jz9pqw4ys=; b=LxeE6+Z7uUV4cusCkF6VLd9LlI
-	Zzku4m+NQQyy5RfixukDCmLouf7G7BpNBBTfLsnR/VApMww/jjq+w6wH8Xf3/Roz9B7zKPcVBXQpZ
-	1wp2KTh2UzDithOLZ+Z/rggExwtRoVGbDHwM25K7FfGGMyisVEhFQZESShRjGReHeRmQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1tpsmR-002Y8C-VW; Wed, 05 Mar 2025 18:43:39 +0100
-Date: Wed, 5 Mar 2025 18:43:39 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Joe Damato <jdamato@fastly.com>,
-	Leon Romanovsky <leon@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH net-next] net/mlnx5: Use generic code for page_pool
- statistics.
-Message-ID: <86aaf4f3-9792-4d70-a16b-2f5fc7ce63a3@lunn.ch>
-References: <20250305121420.kFO617zQ@linutronix.de>
- <433b43b1-0a42-4606-b919-3429c36aa934@lunn.ch>
- <20250305162636.cQf23qHf@linutronix.de>
+	s=arc-20240116; t=1741198641; c=relaxed/simple;
+	bh=GPQLv6kstfDvBboWvitF+UykNqX7q2xOlqE2DA/uovQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dCL4DP6ZQ+3ZPcgGvZQF540HT/u/dupkgHro4MkNp864bI1p0zJqVQxVmxgCMFZq7lDcaMdrB+0x+4vCRlYRubNChnSgna9ulHz7uukHoZT0eNnR2vuG2OjYz5iCR/CritsHZ3bSgaG7FMxHFdFiF80YytuLEbn15SLYZLbR8EA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U6zIwFjV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA041C4CED1;
+	Wed,  5 Mar 2025 18:17:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741198641;
+	bh=GPQLv6kstfDvBboWvitF+UykNqX7q2xOlqE2DA/uovQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=U6zIwFjV5wqtixzdkKTpofFlbyP4Wj/W5GyYH3vn6Uh5c9DxDzrOl/AUy5WGi9KpZ
+	 GXB51LqG/zPrfGGexpxHjQNgOej69OcOLaeKONElxEBadn+wnFkTsSXUh05t9+ni5p
+	 K+kPIUONnYLKUl9cpwyVLfznGBUYgmPhG3P8k30nSAHYSj5b2tORNaCOumZkDbAeHf
+	 xovtvCTARGEAK2MeOJTtj/lDATryLC2tpWQo5QDkuShAKybwootirwCnRYy1y2vHXB
+	 hlS2Cz2HnBVVC+zMprgNaNYw+UgkESQR5ojk3DQTwG0cfikMY96Dsx14+7dFn/OwgP
+	 C98mI27Gt5iww==
+Message-ID: <bcafcf60-47a8-4faf-bea3-19cf0cbc4e08@kernel.org>
+Date: Wed, 5 Mar 2025 11:17:19 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250305162636.cQf23qHf@linutronix.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/8] Introduce fwctl subystem
+Content-Language: en-US
+To: Jiri Pirko <jiri@resnulli.us>, Jason Gunthorpe <jgg@nvidia.com>
+Cc: Jakub Kicinski <kuba@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+ Aron Silverton <aron.silverton@oracle.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>, Dave Jiang <dave.jiang@intel.com>,
+ Christoph Hellwig <hch@infradead.org>, Itay Avraham <itayavr@nvidia.com>,
+ Jiri Pirko <jiri@nvidia.com>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>, Leonid Bloch <lbloch@nvidia.com>,
+ Leon Romanovsky <leonro@nvidia.com>, linux-cxl@vger.kernel.org,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+ Saeed Mahameed <saeedm@nvidia.com>, "Nelson, Shannon"
+ <shannon.nelson@amd.com>
+References: <0-v5-642aa0c94070+4447f-fwctl_jgg@nvidia.com>
+ <20250303175358.4e9e0f78@kernel.org> <20250304140036.GK133783@nvidia.com>
+ <20250304164203.38418211@kernel.org> <20250305133254.GV133783@nvidia.com>
+ <mxw4ngjokr3vumdy5fp2wzxpocjkitputelmpaqo7ungxnhnxp@j4yn5tdz3ief>
+From: David Ahern <dsahern@kernel.org>
+In-Reply-To: <mxw4ngjokr3vumdy5fp2wzxpocjkitputelmpaqo7ungxnhnxp@j4yn5tdz3ief>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 05, 2025 at 05:26:36PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2025-03-05 17:21:56 [+0100], Andrew Lunn wrote:
-> > > @@ -276,6 +263,9 @@ static MLX5E_DECLARE_STATS_GRP_OP_FILL_STATS(sw)
-> > >  		mlx5e_ethtool_put_stat(data,
-> > >  				       MLX5E_READ_CTR64_CPU(&priv->stats.sw,
-> > >  							    sw_stats_desc, i));
-> > > +#ifdef CONFIG_PAGE_POOL_STATS
-> > > +	*data = page_pool_ethtool_stats_get(*data, &priv->stats.sw.page_pool_stats);
-> > > +#endif
-> > >  }
-> > 
-> > Are these #ifdef required? include/net/page_pool/helpers.h:
-> > 
-> > static inline u64 *page_pool_ethtool_stats_get(u64 *data, const void *stats)
-> > {
-> > 	return data;
-> > }
-> > 
-> > Seems silly to have a stub if it cannot be used.
+On 3/5/25 8:08 AM, Jiri Pirko wrote:
+> Wed, Mar 05, 2025 at 02:32:54PM +0100, jgg@nvidia.com wrote:
+>> On Tue, Mar 04, 2025 at 04:42:03PM -0800, Jakub Kicinski wrote:
+>>> I thought you were arguing that me opposing the addition was
+>>> "maintainer overreach". As in me telling other parts of the kernel
+>>> what is and isn't allowed. Do I not get a say what gets merged under
+>>> drivers/net/ now?
+>>
+>> The PCI core drivers are a shared resource jointly maintained by all
+>> the subsytems that use them. They are maintained by their respective
+>> maintainers. Saeed/etc in this case.
+>>
+>> It would be inappropriate for your preferences to supersede Saeed's
+>> when he is a maintainer of the mlx5_core driver and fwctl. Please try
+>> and get Saeed on board with your plan.
+>>
+>> If the placement under drivers/net makes this confusing then we can
+>> certainly change the directory names.
 > 
-> As I mentioned in the diffstat section, if we add the snippet below then
-> it would work. Because the struct itself is not there.
-> 
-> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-> index f45d55e6e8643..78984b9286c6b 100644
-> --- a/include/net/page_pool/types.h
-> +++ b/include/net/page_pool/types.h
-> @@ -143,10 +143,14 @@ struct page_pool_recycle_stats {
->   */
->  struct page_pool_stats {
->  	struct page_pool_alloc_stats alloc_stats;
->  	struct page_pool_recycle_stats recycle_stats;
->  };
-> +
-> +#else /* !CONFIG_PAGE_POOL_STATS */
-> +
-> +struct page_pool_stats { };
->  #endif
-  
-Please do add this, in a separate patch. But i wounder how other
-drivers handle this. Do they also have #ifdef?
+> According to how mlx5 driver is structured, and the rest of the advanced
+> drivers in the same area are becoming as well, it would make sense to me
+> to have mlx5 core in separate core directory, maintained directly by driver
+> maintainer:
+> drivers/core/mlx5/
+> then each of the protocol auxiliary device lands in appropriate
+> subsystem directory.
 
-    Andrew
++1
 
----
-pw-bot: cr
+This is how I have structured our drivers -- core driver for owning the
+PCI device and hosting the APIs to communicate with hardware, an aux bus
+and then smaller subsystem focused drivers for the aux devices that make
+the device usable from different contexts.
+
+I think we are ready to start upstreaming, but I am waiting to see how
+this falls out - to see if our core driver can land in a non-subsystem
+specific location (e.g., drivers/core) or if it needs to go with fwctl
+as a generic location.
+
+
+
 
