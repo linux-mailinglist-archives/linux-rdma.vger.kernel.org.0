@@ -1,189 +1,132 @@
-Return-Path: <linux-rdma+bounces-8353-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8354-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A63F2A4FB4F
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 11:09:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A865CA4FD04
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 11:59:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B3D57A910C
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 10:08:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F251316BC0F
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Mar 2025 10:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 308DC2063DA;
-	Wed,  5 Mar 2025 10:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D59A21D3C8;
+	Wed,  5 Mar 2025 10:59:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Eg4Er2oB"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DJ0NhOzr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3D6205AD0
-	for <linux-rdma@vger.kernel.org>; Wed,  5 Mar 2025 10:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C83214A95
+	for <linux-rdma@vger.kernel.org>; Wed,  5 Mar 2025 10:59:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741169354; cv=none; b=Mx2T8JSeGqA10n8/vu7XkOc+dmePoz0yIJjFqTfjjupXNHKE3k9lEI/N3JPflXxiiil82e9DFaa6Ykz71n+jyVEyhs6UBRvlNJXdD7TF6ibAcPi2oLHcRSj/J1dSOyMBejCHjQljLMSMMm2xnv+Z4Q6OVjff4vtdXN0GJXrTVyc=
+	t=1741172361; cv=none; b=ExAE+QC9vGiFvetS/G7ZBaGam6gucmyQFHK1wVfGRE3/PceB5EWTM4TlMt1Y1jnNjVHoz7JMKEoBJlv8dV3CsUOx5lt1xKbVc5iAHpoA4rrdGvmgnzT9QI51vwd7gDhxBeUm4/KkU1Nz4jRnPPsCWhr/3TaU9RaQTG064sPSk9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741169354; c=relaxed/simple;
-	bh=TSC0xlF44ssF1eVZcwE/uhvMqu3hNDU7ZYZ8ljxfqHg=;
+	s=arc-20240116; t=1741172361; c=relaxed/simple;
+	bh=8XD0fONGWIzRbalkgMuvl4q79+Ksya8HUcied26vHuA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UUELZPT8Y7ZIXPxTgpUgrOMdjNZ+YifeO+bv5+6JSzAKPfmwkhpMFbTZt06kkV2cYVozJm8GO6PDXlvYJQwNOn63KTmBSozBrybmCQTysI0GhG62DF9h41Qn98qTXp9GJ0fTniJ7XmLJQ5MH31z+99tDC9qLy15tKda26uwW37c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Eg4Er2oB; arc=none smtp.client-ip=209.85.214.176
+	 To:Cc:Content-Type; b=KLcJyL+w7RY1ndQ0XDlYJP8oYWM2DVwypckjcUoHfyvPIRahoBQakSLS3fJDvUXziTB42sVeLjb2fUGRIEMElWpkIl02qnRdgp35RaPqcQqq0TCrJ+RiVPd0bNwKbQ9gSZxMQeM8lq8E8AirHlH6XquXySzQXR762lhO6LvCgPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=DJ0NhOzr; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2234bec7192so117874485ad.2
-        for <linux-rdma@vger.kernel.org>; Wed, 05 Mar 2025 02:09:12 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-abf615d5f31so715754366b.2
+        for <linux-rdma@vger.kernel.org>; Wed, 05 Mar 2025 02:59:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1741169352; x=1741774152; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1741172358; x=1741777158; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1T5dSp14bIekjGfd0E0y4TxzY9jLeDNYJDAOe0bDeGo=;
-        b=Eg4Er2oB9Ovf3Rm+ZNvSlpjXqjFQHEYM9BV7ZAgFXBwwTo4Wmed8sbnwtGPHRL5zs2
-         X32aVW2T21n40yLEsQzNxXU5cgGWcER10rJ4fKNPxw2cLa7PQvOXPoqLf6iswhqW7ox2
-         2vjtXJ2U3+Nuy0fQjlbC1AvVtKaVtN/uLhUgw=
+        bh=8XD0fONGWIzRbalkgMuvl4q79+Ksya8HUcied26vHuA=;
+        b=DJ0NhOzrMeNEEshlmkS5PN3jvOOZUe5PmedYKFymoMgDIBou2UeARgYY+o6cz0RGHm
+         LW8sTYzkCdF8ccAvPc0CeJ+2BtcjqGro6ldokZyRdhl41L8dmIrKTnr7n3a2D3k5xGpF
+         SOYDWtueoeTP5W6Q9wmF3A3IszIRq/i3nxBR8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741169352; x=1741774152;
+        d=1e100.net; s=20230601; t=1741172358; x=1741777158;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=1T5dSp14bIekjGfd0E0y4TxzY9jLeDNYJDAOe0bDeGo=;
-        b=SHRXvKJfNgJPkM9ekqvUZ3GJk91aM9tAhBZi9IErlgMo/G0SoeJwK6l1EZ3TuYRsus
-         lal0J398SLsFn/aOY4QeMklkG93mn6cI/04XsgTXJvenEGKeaxrgsjeSLUQAHezIJGqF
-         Z2Nzy4KgrxYygOE6/Hzk/XH6XEvZgYfeZJfj5j6wu7fYYUJcRJUTzwxKhd7QkxDJlG7n
-         dDwd+/8YY1ykbtdyvCP0pvnoaADfunR0F+TOmVc6jl/aqGiXI6bP/u9SHVtKjM4JBmmf
-         4vwxhc5If6G1OrUbkmzWt7bCbZQHiqcBA+OI8E74f3nHf6T+nEYcZ+mhVruGJFysXkzQ
-         BLhg==
-X-Forwarded-Encrypted: i=1; AJvYcCW+oOCOd/sw116dlacCQDQOuuk+iekpZZaMTM5BCZwjaWcPw84u3KGkXA4Zg8JPFPXYV5JLnaxxxkMY@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxz5xSH/oBGqgca4fgp+ubapKldS9Yp9mfPUjwRdgtyx549zYFV
-	GNdF9/g4Q8GxJDSQn3q8SM2ujtZZgtqyFScEFPZGj8aSLgMz0IGx/+D6etr5uWZn8Csny11dwmb
-	BIv2YiFdqn1hyewx9AYOFUXQG9hlX3LdNP5CP
-X-Gm-Gg: ASbGncskRtB137gE4OcxkCiTpdvm5bsyfqQ+UmMM+z2wJwL34BBWScw8fNWWiyAZ6D1
-	+1XXo1JGnJbaKtCvOp8P1FLkF9g+eG5ftXJWhUlPnC8yo9epVdkjisM9Nn4hhLiE7WrfUCdHUAZ
-	2fYRbYtzWzgBbWUkcSOhENZ/55xcY=
-X-Google-Smtp-Source: AGHT+IH24vbxw+ivmGO2YHNZrEktM6vQpjz5JA9Z65jkWmTKXBfwf/phMv2Hsh+a2j9cPPanUMnfEEJB5OlWSOostTg=
-X-Received: by 2002:a17:903:230b:b0:21f:8677:5961 with SMTP id
- d9443c01a7336-223f1cf4883mr44621575ad.34.1741169352419; Wed, 05 Mar 2025
- 02:09:12 -0800 (PST)
+        bh=8XD0fONGWIzRbalkgMuvl4q79+Ksya8HUcied26vHuA=;
+        b=rGxlZmJ2zGss1x8at6sP0YjXY5KZyZDaJLRC5sIC8eVSmdrXSLFrCxhvuLNLdZoPJJ
+         BOQUi16S80m/TGBgT1DwQ2jS4GoOFnxRl9+M97o+Mt6lXQdudYn6YpVC/bVixf+4AoWQ
+         BriUk5jz/t16IaGA5F6L8ay4wVCEbrlnf3Cfm2Bv3yae/nZeO1Y9BnGJk8vl8tYstnDL
+         SkFiJ0K+X0vlJnF9SgKpIUp7lbvBQ3QUyeBmGUuwX33mnfIoieJVvfPQ56Nt9nTROGui
+         x1H87M9CmZMXi6Lsfrtcp14/asfbo4J1vXWnmLCbFYQHblcPcyRHTMjhiFxl4U0bBXJV
+         ylRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVwZJ+3TpFFN2bwAHkOae/EfVu/LkqP67mG3hysitu1TYXe5ckhh8Uz3poYjdJP2YPu49YBeXR+CxyI@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQtqxthaKSd5RZbi0P/GHOX0GGMDpAmBej4N0aQ+p4OtWOSSOu
+	fIZuE9YfeiXML2fjpyVRtjs4uNCjZKwp4i2cPE1s9BzqxLuET3zBEuF2vyCd/5jjkTbDIHCnq3a
+	Rb+yU0sjgeqWRsvpMVkFMbbKUAYhL4uf9D9KbJbdae/m/UV1v5Q==
+X-Gm-Gg: ASbGncuihMKB6ah4beJop+mxwrNFXKYN+1fgrz4o1OHTbPdgLkkgxj+A2D8G/EEOmtl
+	pv8o2inH5rnaKs/jO1wlQKQ5ThZpXM26dAgPu/UKBRjiii1gpaCUWZ+91SIA3xuLhHchZo9gs79
+	gGxlL7+pSupKmHnHse0ghrNEQtNrHD
+X-Google-Smtp-Source: AGHT+IHq/4z9aO8x3vTI4sYleR0vUhG984PS1EiPk29BlyIkoU28xtfEOUasqzdHEoYJfje0qt4vEzYz788o/+2ANpg=
+X-Received: by 2002:a17:907:c48c:b0:ac1:f6ba:3b18 with SMTP id
+ a640c23a62f3a-ac20dadcb0cmr247972066b.44.1741172357685; Wed, 05 Mar 2025
+ 02:59:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1740574943.git.leon@kernel.org> <558b28bc07d2067478ec638da87e01a551caa367.1740574943.git.leon@kernel.org>
- <CAH-L+nPoVOMHq-hzAVBXa5-8Ehc75qg0pP4mBnYtT8qH7zNUpg@mail.gmail.com> <20250305095511.GI1955273@unreal>
-In-Reply-To: <20250305095511.GI1955273@unreal>
-From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Wed, 5 Mar 2025 15:38:59 +0530
-X-Gm-Features: AQ5f1JpPAc2w8IbOYQ2peMfTuX_09-YvMGltmhKjm397cWNjzOCRX_S-QIq0qoE
-Message-ID: <CAH-L+nOA-fS3M+X0vBqJ960nshaSKKQdy0wHR4O2iRLtZpC1wg@mail.gmail.com>
-Subject: Re: [PATCH rdma-next 1/6] RDMA/uverbs: Introduce UCAP (User
- CAPabilities) API
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Jason Gunthorpe <jgg@nvidia.com>, Chiara Meiohas <cmeiohas@nvidia.com>, linux-rdma@vger.kernel.org, 
-	Yishai Hadas <yishaih@nvidia.com>
+References: <20241125072215.GF160612@unreal> <20250304233233.799662-1-sherry.yang@oracle.com>
+In-Reply-To: <20250304233233.799662-1-sherry.yang@oracle.com>
+From: Kashyap Desai <kashyap.desai@broadcom.com>
+Date: Wed, 5 Mar 2025 16:29:05 +0530
+X-Gm-Features: AQ5f1JoLWau-T_d62RkDxDYoslR5V5hT-w79uHxeHxFQ7NyQo-64R9FXvEIszak
+Message-ID: <CAHsXFKHMPLceijak_uWeRv-8Xs7cyqMfqLr=DnSWxChAzN2TSA@mail.gmail.com>
+Subject: Re: [PATCH] Fix bnxt_re crash in bnxt_qplib_process_qp_event
+To: Sherry Yang <sherry.yang@oracle.com>
+Cc: leon@kernel.org, mheib@redhat.com, selvin.xavier@broadcom.com, 
+	linux-rdma@vger.kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000c39fd0062f9594b0"
+	boundary="000000000000e6810e062f964781"
 
---000000000000c39fd0062f9594b0
+--000000000000e6810e062f964781
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 5, 2025 at 3:25=E2=80=AFPM Leon Romanovsky <leon@kernel.org> wr=
-ote:
+On Wed, Mar 5, 2025 at 5:02=E2=80=AFAM Sherry Yang <sherry.yang@oracle.com>=
+ wrote:
 >
-> On Wed, Mar 05, 2025 at 02:01:13PM +0530, Kalesh Anakkur Purayil wrote:
-> > On Wed, Feb 26, 2025 at 7:50=E2=80=AFPM Leon Romanovsky <leon@kernel.or=
-g> wrote:
-> > >
-> > > From: Chiara Meiohas <cmeiohas@nvidia.com>
-> > >
-> > > Implement a new User CAPabilities (UCAP) API to provide fine-grained
-> > > control over specific firmware features.
-> > >
-> > > This approach offers more granular capabilities than the existing Lin=
-ux
-> > > capabilities, which may be too generic for certain FW features.
-> > >
-> > > This mechanism represents each capability as a character device with
-> > > root read-write access. Root processes can grant users special
-> > > privileges by allowing access to these character devices (e.g., using
-> > > chown).
-> > >
-> > > UCAP character devices are located in /dev/infiniband and the class p=
-ath
-> > > is /sys/class/infiniband_ucaps.
-> > >
-> > > Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
-> > > Reviewed-by: Yishai Hadas <yishaih@nvidia.com>
-> > > Signed-off-by: Leon Romanovsky <leon@kernel.org>
-> > > ---
-> > >  drivers/infiniband/core/Makefile      |   3 +-
-> > >  drivers/infiniband/core/ucaps.c       | 255 ++++++++++++++++++++++++=
-++
-> > >  drivers/infiniband/core/uverbs_main.c |   2 +
-> > >  include/rdma/ib_ucaps.h               |  25 +++
-> > >  4 files changed, 284 insertions(+), 1 deletion(-)
-> > >  create mode 100644 drivers/infiniband/core/ucaps.c
-> > >  create mode 100644 include/rdma/ib_ucaps.h
+> Hi All,
 >
-> <...>
+> I encountered a similar issue with the bnxt_re driver from Linux 6.12 to =
+6.14
+> where a KVM host kernel crash occurs in bnxt_qplib_process_qp_event due t=
+o a
+> write access to an invalid memory address (ffff9f058cedbb10) after perfor=
+ming
+> few SRIOV operations on the guest. It doesn=E2=80=99t happen on Linux 6.1=
+1. It can=E2=80=99t be
+> reproduced consistently, happens 2 out of 5 times.
 >
-> > > +       device_initialize(&ucap->dev);
-> > > +       ucap->dev.class =3D &ucaps_class;
-> > > +       ucap->dev.devt =3D MKDEV(MAJOR(ucaps_base_dev), type);
-> > > +       ucap->dev.release =3D ucap_dev_release;
-> > > +       dev_set_name(&ucap->dev, ucap_names[type]);
-> > > +
-> > > +       cdev_init(&ucap->cdev, &ucaps_cdev_fops);
-> > > +       ucap->cdev.owner =3D THIS_MODULE;
-> > > +
-> > > +       ret =3D cdev_device_add(&ucap->cdev, &ucap->dev);
-> > > +       if (ret)
-> > > +               goto err_device;
-> > Memory leak in the error path, need to free ucap here?
->
-> It is done through call to put_device(&ucap->dev) below.
-> This is how device is freed after device_initialize().
 
-Got it, missed the ucap_dev_release() part.
-Sorry for the confusion.
->
-> <...>
->
-> > > +err_device:
-> > > +       put_device(&ucap->dev);
-> > > +unlock:
-> > > +       mutex_unlock(&ucaps_mutex);
-> > > +       return ret;
-> > > +}
-> > > +EXPORT_SYMBOL(ib_create_ucap);
->
-> <...>
->
-> > > +       ucaps_list[type] =3D NULL;
-> > > +       cdev_device_del(&ucap->cdev, &ucap->dev);
-> > > +       put_device(&ucap->dev);
-> > need to free ucap here
->
-> Same as above.
->
-> Thanks
+Below controller supports experiment level RDMA functionality.
+We recommend using the next generation controller for RDAM
+functionality but not the below one.
+Broadcom BCM57417 NetXtreme-E 10Gb/25Gb RDMA Ethernet Controller
 
+We have seen panic like you mentioned in our testing. Some of them are
+Firmware issues.
+Not a straightforward driver fix. If you do not have any use case of
+RDMA on this controller, disable the RDMA feature on it.
 
+Kashyap
 
---=20
-Regards,
-Kalesh AP
+> System details:
+> - NIC: Broadcom BCM57417 NetXtreme-E 10Gb/25Gb RDMA Ethernet Controller
+>
 
---000000000000c39fd0062f9594b0
+--000000000000e6810e062f964781
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Description: S/MIME Cryptographic Signature
 
-MIIQfgYJKoZIhvcNAQcCoIIQbzCCEGsCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg3iMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+MIIQYwYJKoZIhvcNAQcCoIIQVDCCEFACAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg3HMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
 VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
 AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
 AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
@@ -221,41 +164,40 @@ M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
 Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
 14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
 a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBWowggRSoAMCAQICDDfBRQmwNSI92mit0zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+XzCCBU8wggQ3oAMCAQICDBDKv3KBdfCuDuqmHjANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
 RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODI5NTZaFw0yNTA5MTAwODI5NTZaMIGi
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwOTIwMDZaFw0yNTA5MTAwOTIwMDZaMIGQ
 MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xHzAdBgNVBAMTFkthbGVzaCBBbmFra3VyIFB1cmF5aWwxMjAw
-BgkqhkiG9w0BCQEWI2thbGVzaC1hbmFra3VyLnB1cmF5aWxAYnJvYWRjb20uY29tMIIBIjANBgkq
-hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxnv1Reaeezfr6NEmg3xZlh4cz9m7QCN13+j4z1scrX+b
-JfnV8xITT5yvwdQv3R3p7nzD/t29lTRWK3wjodUd2nImo6vBaH3JbDwleIjIWhDXLNZ4u7WIXYwx
-aQ8lYCdKXRsHXgGPY0+zSx9ddpqHZJlHwcvas3oKnQN9WgzZtsM7A8SJefWkNvkcOtef6bL8Ew+3
-FBfXmtsPL9I2vita8gkYzunj9Nu2IM+MnsP7V/+Coy/yZDtFJHp30hDnYGzuOhJchDF9/eASvE8T
-T1xqJODKM9xn5xXB1qezadfdgUs8k8QAYyP/oVBafF9uqDudL6otcBnziyDBQdFCuAQN7wIDAQAB
-o4IB5DCCAeAwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZC
-aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJj
-YTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3Iz
-cGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcC
-ARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNV
-HR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNp
-Z24yY2EyMDIwLmNybDAuBgNVHREEJzAlgSNrYWxlc2gtYW5ha2t1ci5wdXJheWlsQGJyb2FkY29t
-LmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGP
-zzAdBgNVHQ4EFgQUI3+tdStI+ABRGSqksMsiCmO9uDAwDQYJKoZIhvcNAQELBQADggEBAGfe1o9b
-4wUud0FMjb/FNdc433meL15npjdYWUeioHdlCGB5UvEaMGu71QysfoDOfUNeyO9YKp0h0fm7clvo
-cBqeWe4CPv9TQbmLEtXKdEpj5kFZBGmav69mGTlu1A9KDQW3y0CDzCPG2Fdm4s73PnkwvemRk9E2
-u9/kcZ8KWVeS+xq+XZ78kGTKQ6Wii3dMK/EHQhnDfidadoN/n+x2ySC8yyDNvy81BocnblQzvbuB
-a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
-x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJgMIICXAIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
-VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
-bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggccwLwYJKoZIhvcN
-AQkEMSIEIMtQKlD3ca17ZfWOuM1Bs+tshuR2ISfCPYKNuNHUEmLZMBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDMwNTEwMDkxMlowXAYJKoZIhvcNAQkPMU8wTTAL
-BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAHd9YxZeDNf5K5yDhZXpW4o0vHcU
-EObCTj7xzsQg5Ozq+Z8MGU1NKu8GWiO8VTDYJM+kAntdj55DyIM6pVjfKuebwWoqdxOBh260HxpP
-JWfNZGWaePs2h2Ap87/KYc+U6ST13xzu9o8IG3wZ2Xf0JOUnIbUZe5dN+3xn07xQ9tAOHPXbAIV8
-D6BGQaxFK525teJLzD6NG8nnKcdykH06ZNHNrzoeZT03bFdPEtR1AGDYgc/P9yKw49BE4FFUeSWc
-zVssLIpCAwST32GjqmBOZ9iFZuD5ZIVJ29Qwozfhf+AFvyN/lns4SY2PYMr8sFeMqxiDdqbyww6f
-QbBHSLuvEW4=
---000000000000c39fd0062f9594b0--
+BgNVBAoTDUJyb2FkY29tIEluYy4xFjAUBgNVBAMTDUthc2h5YXAgRGVzYWkxKTAnBgkqhkiG9w0B
+CQEWGmthc2h5YXAuZGVzYWlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+CgKCAQEAx4y6EDDsd1q6Hqzl3y+CGGSAmgN90cNu25Rm1sM0npSqG3MJ7NAXz5XlFHvsjB4XHSxy
+jDGdF8BeKHjKuvvkngvAQxEJaq4t9/EYXFCRUX1QGu2lEhAtvsX2E5tms7q7sk3DRafuxj1oJUpJ
+V6Ow9XC8sPcxI+/maWeEuJ+ViAR9N++kRfsAO3iVLq+0CLWQbADqcgvrnKV+PLI3nCOQlln6rAyJ
+//gyd5clTejfGxz7u6TjAKPT7G/PY9BaxKSEf8zLsYtlHAJMVeCFF20jzwQHb5/L+5h2CkPOrrSB
+JSieWyW6UjDpmJdXnnM3sqAtuQHYoZ76TqNQWkummLSqMwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRprYXNoeWFwLmRlc2FpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUuFb0TqXOZcrcNo5g7TmU
+kbW0uVQwDQYJKoZIhvcNAQELBQADggEBAEpkK1pEFLXwM8dPS+Y+gSbbTOhzvfHfnB1tKMepSjVT
+Sh0CvvfRgpBkaqZJv2+/9W5dfZejA+3xFc/G/lurpofq2yVp2Zik+RbO/FjpFfg24MHjkSr2foJm
+RImddZVt810u7w3qtY2pQQ/QHCS9fHkLtz5dKfmePAebpPuX2BJ+FmPfFZyHLpLHr4CJwUU9ETgH
+GRRQamqDhA+VgD34fZSymk33umJA6SDgqaX9pDs276nwbY0g8TSOZwohc/6eTzU0Gsl1jSuJezXm
+/bctt3Fx6+DwYeO9905PrJUE+iBLLHPm5cHBNF9yWCy/FrP9ZMFvsUvcPiWyEWFPYhsVxAMxggJg
+MIICXAIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwQyr9ygXXwrg7q
+ph4wDQYJYIZIAWUDBAIBBQCggccwLwYJKoZIhvcNAQkEMSIEIEuJitZdKmyCvB123MThH01nssHi
+2t/+9XMEWAI/IFMSMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1
+MDMwNTEwNTkxOFowXAYJKoZIhvcNAQkPMU8wTTALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3
+DQEBAQUABIIBAEfkc7+fVrVMKkprCVQZ9ac40PHXYJvJVYWEHCoHXIjuNMxjljjKNsRyp2a0/KwM
+ZtJZpkyVEKWnuI1xnTfsFImfTADDBiDWx5T2WHf7FEN/yLIYWPF0kgvIwC5p6dArvV/uMkaDc8j1
+sfrPgQjlP2FaGcQPhNhmCOxn5ea/rX5HCuU6vEundp2jP5emVnZ5FcZKW74WX33wR5pDdNxIs25M
+rTS7353rZ7dkeanoZhr3VfAP5p7evlomwfAkOALI5o7gpDZuO/wtS1Ki+NPwpgbSfiS76gLi36DK
+U45ktOfTPIEdvWlqnrglxTMuL6OJA3zAUnHZBE8lGfQbS5lHDDE=
+--000000000000e6810e062f964781--
 
