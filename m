@@ -1,83 +1,83 @@
-Return-Path: <linux-rdma+bounces-8395-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8396-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6834A54031
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 02:57:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D76AA54037
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 03:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1A8616DEBC
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 01:57:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51E7218911C5
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 02:02:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 506B018C903;
-	Thu,  6 Mar 2025 01:57:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59EA5768FD;
+	Thu,  6 Mar 2025 02:02:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="e7LDaDDC"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="vmhBAIBL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2048.outbound.protection.outlook.com [40.107.101.48])
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2056.outbound.protection.outlook.com [40.107.101.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A35E179A3;
-	Thu,  6 Mar 2025 01:57:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93CF0EEC5;
+	Thu,  6 Mar 2025 02:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.56
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741226224; cv=fail; b=HY9MEc9TZpLI6bY1ajRKzI8J69oenDaSrqQgUe2In8OAEP9O1HA1uDN8YrQHtnZ50qZohMl2WajnM3bJFIDHB5F76HlBgCQq6wJuGRueQ5Yhq9FGKZ3gd1nPiMTIfe7TjCVYDnU/XIvXQcm5UZzactfqyGFg2Qif8xnZBDBu0eQ=
+	t=1741226549; cv=fail; b=PoLMRMnv88VM88exxwdiDpoU1jFZBBjmAwf3vEGYhf38l/TvOb8USH0ZO7HVKrRM/+MKKlSjxfYaPnkc6hpxM7Qe5G9L+b9Jhxb2bm2pT7kWiNJm2bJK1nx0cyrA1p8XHWJ+ybzussW7xnDPQh/duIUp4ymPT9dhLOTaNrhnnqE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741226224; c=relaxed/simple;
-	bh=yoj0YsT6weG6KKE5nbZAisF181v8x/kttvcXh3puRAc=;
+	s=arc-20240116; t=1741226549; c=relaxed/simple;
+	bh=3CEAAQVmGZrvx+XgTBRMnQ9hHZFOWJO1XDehGLvRrQE=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=nEmaMwvxe4SW68Cp2D8Bmm79EawOuOIZGCoTZUmUKomHkj+pvzAwwfXgkpSRqxR+JbhYgmHNhIKn0TSQueCdQgeS4OIkGG/9K13mWUcGg3/vPklP8fWM3ttKptENkmi1NZ7taz5jyYRGTT2FVDijALzbKTtobY8vZjSiiu0IQBg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=e7LDaDDC; arc=fail smtp.client-ip=40.107.101.48
+	 Content-Type:MIME-Version; b=tE7msjsDbkUtHbJEcmo6m3WGuXI6Y/e9pWsljL2rcA/e5BjWGEbdOYC4xrFG4vAH83Q2b7f7SdYdHBbqRpE85Qc3vsDpMr4VgjCrhzD6zLDq3mhWetwTdhpbQUT4FGApGGfR7HskfVSPkGFUHYMKXAWJIyJVWk0keAactJAqZ9M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=vmhBAIBL; arc=fail smtp.client-ip=40.107.101.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KNRg8mD3YeC+SQkNfrHf5uqs7I8dmlxc+kVF3isbUf4ONrfXqe+eLodqMiAhtouaVvNbJ49rOim2c0qlugdUOnAOKl2KPHd0t0DfNL7M+r3c9gjy+EwyzsAdlCR/kCRRguQYHicS4TViy3BYCJyfVCrrU23zqulojotwyXUo/Dlz2VrVjqLODyZRhxVIUEfuW32YwJOAL4NkAlnFVpJVBjS6ZwGZ3Stf6Te7/vLZk8Mu0Kcccy8IlZ6037doaW/kpA6RLqiMVF2wv/aaF2icLCaI+ojA7L0hs70cpwLQsiGuzYHrSYDp7MBOZaLaVRbKmSci9DMIsQfHbMW7tJQBAA==
+ b=cYDNQVZWIMyTlNYbe7qs7dzVYB4ZL/tZSZn+kmrpGNh/yG+2NyG4CRy1SoFEc2bmBU3mfd8+0AJqezRBw6FfzcOt6IWLFY0MUCNBGctEb95z0Teo6AJ3Th6c4bLHGpTtPz+lHDRtVPvgB1tqdU8vuZTMQVsD9i/yFmOfdB3NE6NjPbB2OiXI3qTUnHGBLGV5jeFJ3bFM+nilmCFu23MDOKmqvyzkfyVmmebnlI8iucSLkfF/JcGCkjX4o51W0Qq8VXi+TwBdvVyijudMSZBAXtEzVldjvxx41CO3/AXkbB6zy5WnBGUEFkbZW+Xpdj7uYBj44oWUNFLmbymmwrFd3A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4U0mGZJl+C5fEg0lRIyVTzvp6eOOJffLmlluFsEmesM=;
- b=RMj+zYUqDnIUSsVevGk4B/B/2sTVW+RaDUcLT9RzbWgGwOiBeaFSajgcQ3zCjpfSoQEABDb+cNNK6o0rvG0n2rzfLI58MxnCvcpTdk4OcQdHJnm6ufawHs0/+oB1Q3zy9h5Sx9P8KmiUphJRBTV9QGY2mZYC5x+uFCGanVmv1zTlLSpsuRxSROxW90EsfbqTIhu6Q3b0ubMf33ix0XQ6FetUI7+2zFpt8W04focSsUbd2HDHci+r0GVhBH9O5CioxsS+ugEOoF9FRYJeWwEH8mL5Ew9EMpfcL2nhIJr+p87VNOCQMHIJhO0GvPh9FM6ZLaLkcgRuRFi4g+L5FNjncg==
+ bh=PCX57wbcuz2TlvqCNv0/zSrliSubNeC7loq6sg+/L8M=;
+ b=t4T1M9MVMFmNjduugzqzsuAFjWcYfem3wjQn6RVCSWByEetEmDgID0AOnnIjM6VL4ArK/zmzNKT8yU+NgrSl+D2Eb1YZ2xkDumYK8TxnXEveBdDhfgBKI+JZSomtBGXqA15HvjfEq5TRin0teXEXkPcXfEiBYXdbTT/w/yyOUToWcvMTzice5V2NL7pLHSLt/+5i8D201te9D02GHpuG0G8q3DKkNv8eXrZRMgW4qtRoYcv5heUm/iNmO8CqRTKvqMbkrOG517KbwrdG1obFWJGie9QbOO1cfUZ+0Eof651PHCmNTr5yY+8/cbQNpST3qZN7fTzkg8lj5qKndzl9ug==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4U0mGZJl+C5fEg0lRIyVTzvp6eOOJffLmlluFsEmesM=;
- b=e7LDaDDCzB1mCEs+fCzf8Ht5mK772H5knamamUuvA3tHD3r34VH579bib06OsEgSPJpMIniyxjtTLa9mtjMTI3Ky06H/Uk3MF2PulRoW1/Q8hFrJL3A1zveBavtAflsli/4BaPXUibMRdMSPojYJIXI9RRhYloMLJHJpq7Nz7Mw=
+ bh=PCX57wbcuz2TlvqCNv0/zSrliSubNeC7loq6sg+/L8M=;
+ b=vmhBAIBLERtIlMFskV7RVAP15DyYdHoS+N+85k8xLPSF6aAgWHqOaMQZy0HxzrQ60dH1FDWqoQDvrmZ8cWt5+5I7Lu6h7K6fsPVSkSPnr9iqG6Ds5IMreSnalQqRSNrU81Ui86ka/ig8+sgyjlEmrNKas+P2ptkvn413fFlet4s=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
  SJ0PR12MB6783.namprd12.prod.outlook.com (2603:10b6:a03:44e::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8489.25; Thu, 6 Mar
- 2025 01:57:00 +0000
+ 2025 02:02:25 +0000
 Received: from DS0PR12MB6583.namprd12.prod.outlook.com
  ([fe80::c8a9:4b0d:e1c7:aecb]) by DS0PR12MB6583.namprd12.prod.outlook.com
  ([fe80::c8a9:4b0d:e1c7:aecb%5]) with mapi id 15.20.8511.015; Thu, 6 Mar 2025
- 01:57:00 +0000
-Message-ID: <513e5e75-e55b-4379-ad8c-59e630fb4b99@amd.com>
-Date: Wed, 5 Mar 2025 17:56:58 -0800
+ 02:02:25 +0000
+Message-ID: <5b3a256b-7dd1-48bd-ba11-4766180ba0e3@amd.com>
+Date: Wed, 5 Mar 2025 18:02:22 -0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/6] pds_fwctl: add Documentation entries
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: jgg@nvidia.com, andrew.gospodarek@broadcom.com,
- aron.silverton@oracle.com, dan.j.williams@intel.com, daniel.vetter@ffwll.ch,
- dave.jiang@intel.com, dsahern@kernel.org, gregkh@linuxfoundation.org,
- hch@infradead.org, itayavr@nvidia.com, jiri@nvidia.com, kuba@kernel.org,
- lbloch@nvidia.com, leonro@nvidia.com, linux-cxl@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org, saeedm@nvidia.com,
- brett.creeley@amd.com
+Subject: Re: [PATCH v2 5/6] pds_fwctl: add rpc and query support
+To: Jason Gunthorpe <jgg@nvidia.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: andrew.gospodarek@broadcom.com, aron.silverton@oracle.com,
+ dan.j.williams@intel.com, daniel.vetter@ffwll.ch, dave.jiang@intel.com,
+ dsahern@kernel.org, gregkh@linuxfoundation.org, hch@infradead.org,
+ itayavr@nvidia.com, jiri@nvidia.com, kuba@kernel.org, lbloch@nvidia.com,
+ leonro@nvidia.com, linux-cxl@vger.kernel.org, linux-rdma@vger.kernel.org,
+ netdev@vger.kernel.org, saeedm@nvidia.com, brett.creeley@amd.com
 References: <20250301013554.49511-1-shannon.nelson@amd.com>
- <20250301013554.49511-7-shannon.nelson@amd.com>
- <20250304171230.00007a5e@huawei.com>
+ <20250301013554.49511-6-shannon.nelson@amd.com>
+ <20250304170808.0000451d@huawei.com> <20250304172412.GO133783@nvidia.com>
 Content-Language: en-US
 From: "Nelson, Shannon" <shannon.nelson@amd.com>
-In-Reply-To: <20250304171230.00007a5e@huawei.com>
+In-Reply-To: <20250304172412.GO133783@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0180.namprd13.prod.outlook.com
- (2603:10b6:a03:2c7::35) To DS0PR12MB6583.namprd12.prod.outlook.com
+X-ClientProxiedBy: PH7PR13CA0002.namprd13.prod.outlook.com
+ (2603:10b6:510:174::6) To DS0PR12MB6583.namprd12.prod.outlook.com
  (2603:10b6:8:d1::12)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -87,200 +87,173 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|SJ0PR12MB6783:EE_
-X-MS-Office365-Filtering-Correlation-Id: 508e5624-eebd-4e94-4228-08dd5c522eee
+X-MS-Office365-Filtering-Correlation-Id: 9b177850-4ca8-4e3f-0ac7-08dd5c52f0aa
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?WG1tQ0UvVmtHUjRVVVhxRlN6L0RWUFRvYVJIR1hCQTVIaDFXamIySk9lRUQz?=
- =?utf-8?B?M2IrUkhhRjhidi9vSVFRM0F1U2c1MXJyb0tuazhiSE5KYWZhazIxVTF4Zmda?=
- =?utf-8?B?ZnJLU0xzMFQ2ekgxa3BxQlBpWDZXdjBseHh0QVgvSmtCajhVT2Q1TG50em12?=
- =?utf-8?B?YzBxTGFRWDFabzVjV3JtUWFqNlcwRjJvS1RNRVZiQ25MOXFjaE5Kd0svY3VB?=
- =?utf-8?B?eUtaNTlGRlFiNnpFSUdqQWp1UFcxaHZoazI3ZW0zUnJWd1Z2MldFc0wrZ0li?=
- =?utf-8?B?VUV2NWQ1SnNRTVBEdzJhVkhiclVYTExVQVN3ZTFnWVIydlpxRzVSVjk0TFNo?=
- =?utf-8?B?T0duL1Aza2ZFblJreDBaV1BJWUpyb2ZreVNOQXV6dkdNVlJPWXFSNUtRL0ha?=
- =?utf-8?B?WGlFWHpmYUhJckxNdTNmbVZEMW12WVAzbUFDMFh4Y2FEL2VMOHREYTAzTk1D?=
- =?utf-8?B?UHMrUURiRStxdysyTm5WbVM0cnZuQWlobW1remQ1dldDZDNIeWlRRHpEZkY3?=
- =?utf-8?B?bm03dEVXa1I5Uld5dDB0dzhYeGUxeHl4dk1sVnlGS2dVdzBwdlQ3YzhJVmFK?=
- =?utf-8?B?Vk5WalphU3l4N1VhUmdQN1NaVVBDMjhpem14U0hid0lOQWY1RkNYelJSQVAy?=
- =?utf-8?B?K3JHU25aVjVFb2lzbU9OM1o4UWtjYjdEV2lqRVM2WXc5WmVPdG1Fc1VVTnJG?=
- =?utf-8?B?QWtidFBOMGNzUEVhbVBiZ3YySmVyT01PNUVVVWdUQXF4WTNKZ1JTcFowVE11?=
- =?utf-8?B?ZFZNT1FneFNudE9aVTJsbEU1SzNwZUhLT3Y0dTFiTWJTZVEyR1ZnQkdRclRZ?=
- =?utf-8?B?YU9VNGtUUU9Obm10d0pCcGtTMUFiNHdaWWE3VndqS05aNVlhYjY1QXR3NTN2?=
- =?utf-8?B?eEV0Sm9rMEVDTjhxa3Q5cldKSWVKc1lrUVloYW10d3k3akt3VmFyQTMzelc5?=
- =?utf-8?B?QjVxWnVWcklLWXNUOEowZzlpNXR5NDBDRC9zN3VDVWs2M3h5aGozaDlhNU9j?=
- =?utf-8?B?YmN4Qkc5dDlOTGpWVFRXZy95cVV3V1RjTHA4dzlvSGdUZ0RLYVl2eDNQaWZZ?=
- =?utf-8?B?MC9YeFJBV0J1NW5mVStZYjFMUTBEQnBkTFRPQTlUR3dzSVlUM2xweHd6bHRH?=
- =?utf-8?B?VGx5QnlkS1BLcysxRHBUYW9BdkRkYmpDY3RJSEhzTTBGTzBtU3N2K0l3MVRE?=
- =?utf-8?B?V1dsZ3llYUViQ2V6MnlZVEhzMjhKVlk3NlVQWEdPU1ZJM2g5dXNMSy80My96?=
- =?utf-8?B?KzYwTDNTOS9Id1crSlNCMWViOHpEckVIODVxUEsya0kvOGx0SVlqeGFoRzZr?=
- =?utf-8?B?WFpBOEtqaVE5WmVzaWNHUGkxZy9nWWhjaUlvSkc1Mi9jWHhxb3l5dUh1ZUZs?=
- =?utf-8?B?WEI0YVNDb2xPWFBkUmRsbkhITnVOUU1xbWcyQ084OWt6Y3BiNUY5d2U3UW1i?=
- =?utf-8?B?WlBUOVZrdTNuV2wyRTRRb01XVEdRcVJ0R1dIdStxMWpFVGVVa29rZFVRWXJz?=
- =?utf-8?B?SStDZ3BVMGxvYlJTTmg0QldVbEdaTi9lRFJOUmQ5RHpSZVpwZEord0QrL2Ft?=
- =?utf-8?B?QjdTaFlLalRGWGlWNmtRUDlPc0lVdzV2OUQ3SzRJWXhPMEE2N3huaXdVazJx?=
- =?utf-8?B?aTlFTnE3blZUQzFJamZOVzZBUnpHTmJ6dTB0U0NVcXZiWGRSU0pXT0ExQkxX?=
- =?utf-8?B?SThoNGNLYng0cVAycVoxWGdXYk1rQVk2K1FHNHVhREZqQ0U2TDZGOWhmbEcz?=
- =?utf-8?B?clB3UHljN2kzWlRNVjZJbElBSzl3bUlwS3JNRFpnRHJtNWhMTEhlUVdBbFU3?=
- =?utf-8?B?YlcxSGF3SC9pZ1VXLy9QYXpTY05XNUJFb0EvYnR2dGNHTHZhMmVkWTY3S3E2?=
- =?utf-8?Q?aw87KoGwWuLXP?=
+	=?utf-8?B?bkpEeU0vTVlWVXNDeVRrUi9KRjNzTEhzZ0lxM3R4YVFZMisxVkM4dlJ6UkNU?=
+ =?utf-8?B?TmVEeVU5QUc5Sng4d0xkSnNXR29FcVFPY2RLTGt0dU5GMDJDNXQ0bGl1OTAx?=
+ =?utf-8?B?WWpmUUs0V0VkSGNBeVpMNVVOcEUyMFNxdXJieTIvOEo2RjFONWljelF2VzJX?=
+ =?utf-8?B?VXBzRThwY2w1a0Vua01IZjFYYlhZMEVrMnF4NVpWQlluUEJ0eS9KSlVzdTZi?=
+ =?utf-8?B?S3ErdWQ1SFRCVy9PQlhuQjBWS1F2bnVxQ2dJTHJOZDI5clRBa29NS000S0kx?=
+ =?utf-8?B?S2dCV0drT1Rqd1lUaWVQSlREZlNhVlRob2JWR0tzcUd4S2lrdm51THZaZk9R?=
+ =?utf-8?B?ZzQ2OEdxNEpWZUZVb3Q4SWZCOVIxazdVM3VsRzFvcitieEtYeGhZWDIwSCtI?=
+ =?utf-8?B?a2MyajM4WWFEODZEcFJkOEtiK1o3a2N5OUVCcFh6V0U3WFc4cTMvcHJBeWtM?=
+ =?utf-8?B?R3ZqU2J1SHhpakdvNmQ5REducThaV3Z4amZqY0ZRbTB6N2xIcml5bGxFamcv?=
+ =?utf-8?B?M3FqRVpMT3pVYmwxMVBBeXk3VDB4TWpIZHVSNDNvcE5nOTd6cnBQQms1NXpH?=
+ =?utf-8?B?VUlWTFBkUGZWY2lVd2lEYWc3RUVDbzNKUTUrUEF5bnc1OWhWQTh4azUzYkd6?=
+ =?utf-8?B?NXVsd052ZkZua0h5ckZSY2w3MktVZXhIaW0zNjV1WVQzaUtwWkI4WXhhRSsx?=
+ =?utf-8?B?L1FVZUJUb0JUSDlpQ1NrMExCWHRVbzNFTGczc1hnUjZxMHRlb2NFeUJOM1Zk?=
+ =?utf-8?B?ZXdFR3hnNXA2eFdtVTVQRDZWNHU5Q1QxOC95TGdKNklyUnl6U3RoUFFTWS85?=
+ =?utf-8?B?VFI4MHR4RWMvYjFZb2p6OG1VVklXdC9Db2JRRVZhTkFYTXhZUm0ybWNxM1dk?=
+ =?utf-8?B?anlxS1dsd3hXR2R5b0JmalBtbk1EcHBScVVHY1F6ZVE0RmxsZ3o4My9SYzdK?=
+ =?utf-8?B?ZCtDUFJGZzRkeUp6L2RPQlZDWlpQOEdFSk9TdTZmOGhUVm5lSHMxeFUzWFli?=
+ =?utf-8?B?UkJxRy8vejVmTm45ZzE1RG0vNWc2c0ZBVTM1Q1QzM0Z2OWtlUk03SndkWGFD?=
+ =?utf-8?B?WVNITG9KclIxYk5pdEg5NWRDQ3ZrUG5ZNjVPUjIySWp0WGZ3Y0xJRmpWSmhE?=
+ =?utf-8?B?YkZ2V1NHNzlGT21aWHdSR2xYeElMRXk3THA2VjFFZFJYUGhlbG10dFBiWVZ1?=
+ =?utf-8?B?SHFRd1hhajFFckNVcnZIZlRuVDhlNkp1N0liZ0JZdUpKaFdhdUxPSFgrZEYv?=
+ =?utf-8?B?UUd2bkNyRlJFaVFhUTZxYzI3NXVHalcvK2c0dzFsUFFqVlNBQ1d4MnFmRGd4?=
+ =?utf-8?B?UDlZZDZNcytMamJFMzhDNTg0VjdiTmJBcnBvbXJpakJsVHgzVTFxVUh6WjNx?=
+ =?utf-8?B?M3dyZ0tvT0pORmRqQzE1QWJ4NHkxaXR2cU5MZVBXRkZ1R1NWSzk0bEhYRWtn?=
+ =?utf-8?B?TEpvTHJFbFRMQi9yUE5zYWc3WFpzSUhkSmZlMVdnakxjeElrZWpyd0VxMU5K?=
+ =?utf-8?B?V3hQRmhWaFJ5QkJCVXZYNHhPeFZRK1oyK0hJelUvbE1FMFB0ZVAyMjhqQ3BG?=
+ =?utf-8?B?Qk5RZXhISjFZWXBIUzhITTh5ZXY5b1RIbmRPYTJubUZXZzRIei8vSGU3bzVa?=
+ =?utf-8?B?TVV1VXhzSk40Nlp4ZDZtMGV4aWRtTkpIUUhXdC95VzlnR3d6bVN4T1FmUDZW?=
+ =?utf-8?B?c1dtelpQZEJxTUJQTzhtck5kWUNYMlZtSk16aWY3NG5QNmlvcTZtTUUxNzMv?=
+ =?utf-8?B?c1pWVXlSQ0x2Z0xMUnE5MzAyRTdkUmtkUk9INzR4V3V1ZTdPT0JlL2NSZ1lu?=
+ =?utf-8?B?ZjgwQUdIcU1aWWpJZW0wWHNyY2NFZVJ0OHB4aTdQVW5zNG9Gd1JvUndQOE9K?=
+ =?utf-8?Q?WKMRJFLgkioK+?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?V2NrNGI4T0NSTGdHWUhxU3ZvUVdwSHVrMTZKWkIzODVKdTMwMmVQbTJKbTVj?=
- =?utf-8?B?eEFRcEZoL2M0R1V3ZE4rOHFLNWVzYWt3Z2JWa0l5LzNUNEVNWk1NMDVEWUhK?=
- =?utf-8?B?YWNMNndkSXpLWkJYREt2b0FtdGNhT09Od3A0RS9mU3Jsdm8xQnl1MFEybWFw?=
- =?utf-8?B?UFRDVWhETFFBWW5MOVN4cjI0UU01TkVXRU1NbGFua2tBaWtkcEVOQjBENGxQ?=
- =?utf-8?B?MTFVMG9NbWVZSllpczBQVGlheXNPVkxyMzliRmpaNkNnRVNaMXc0S2tLNmpB?=
- =?utf-8?B?TUs0MytEcnlUYk9tM2pVbmdibUNSQW1tMzdURG1HczUvVm01QllRZmVEYkZB?=
- =?utf-8?B?MVZlNXp2bXBYb1djWnAvZEdudExub1dxMTB2cHllVmJFUmJSY3NSS1JJa3By?=
- =?utf-8?B?Si9DcW9vWU5aOEs3VnpDaHhDdHV4dGdKVTFRWHNrSHZscTNiZHB5TnBxalI4?=
- =?utf-8?B?dWJEL1hoZzNFb2sxRmxqSkFqc2gwTlNCd3lRL3I3UjkvQ3dxd2xqMzE4MWln?=
- =?utf-8?B?dU9saDF3K3NpdlFDcUJGbGxGbTdpNTN0WGN0Vk9jTDJpdUJrTlJiY2trcmcv?=
- =?utf-8?B?eXZlWjJtTjhEUTU4djUzZEhPdlY5YVJyR1FhMEh3dk0wR25TRWszVHpTVitP?=
- =?utf-8?B?YmRPdXdyV1dhY2RPZTFBcTBod2ZyMDRqTXhyRUpXaEtGdzUyUnk1MWxnaUNz?=
- =?utf-8?B?eHVmZE5JT0JyemM4VytPUnpjM2gxa2krMWR5aDYvQWgxV1B0SCtreFV3c2dU?=
- =?utf-8?B?QWs3ekNSb1J6WTJRWCtsYkR4WS96Rjd3QkdYM3FjZkpTNW9PRGJOd0ZwOFJr?=
- =?utf-8?B?bUU4dHZxbXYrbzBCT3RDelF6R3VocDFheXhhN1JsMk54MUFLYU9DSzZ1cDNT?=
- =?utf-8?B?TUFld2Vjd0xDa3dxbVF6MFo0UUV2U0VaMElkcHJEVkpmc29EKzA3cFk0TWRQ?=
- =?utf-8?B?Zk5XRzVzM1plbkNWTzlqdHh4TVM5SGlQdnZoUHF2U204eHhHejFsc05HQzho?=
- =?utf-8?B?YW5MWVkzRktXZjgzckQ4YXAwUHJUcGxWMWlRRUtpNlJselFjUkNTTGJJUFNz?=
- =?utf-8?B?b0ltUlZMb3J4cldjLzhCMTRtUTc1K3grQkVvUTBzZDZQZ0wrQ25HWldUTWFW?=
- =?utf-8?B?SGJPSFYzejU4cmtNS2FvdHIzTGwwT3dMenZrTStxaTJPcHBpUmVuZENweGl0?=
- =?utf-8?B?M3AyemUvcFBGZzNDdlV3djJOaDNrS21oNThEb2QyVjZFY1RzbUhLbENOWDZS?=
- =?utf-8?B?cHk0UjRyNk9ZRmkxVHdTRE8xV1RsL09hTzhiR2hQdGtkK1diUy82TFczM0Qv?=
- =?utf-8?B?SnJETC9hY1JXS3NlYmtybU81MGoyTEJZZXovV0RhdW9NWjFjcUl5T1N4QllC?=
- =?utf-8?B?NWJ0aW94NUZmeVFscEZxaWQvTVdHeVdLQXkraU9tT1hwcDZ3ZW1mbFlMaGRp?=
- =?utf-8?B?ZHFnZldVN2dwczdINCtjd3NWTWk3MFp5NkdWL0FtSzhYcTNybVE1c1M4bkVV?=
- =?utf-8?B?c2tJbHFtSUFDWHlmc251ZUFrOTZReFk4WWZwUENoWVV5T05IcTRQSVZsSVNr?=
- =?utf-8?B?L1NlT1IybUVUSXlnSExhWFl6Y0c4NkNPVjZ2V0EwUW9JUGR0QS9MWGx3a0Rw?=
- =?utf-8?B?eTFUbU5mMW02bW9sTEh3bm1OeTQrYmZCVVRTSlY0NTBvKzhzWGJlMjBXV1Js?=
- =?utf-8?B?L3lheVI4b0U0RzFMLzdreHJkbWgwSjE3dUhjbWNic3JGS29QM3ZZUUZDSG1X?=
- =?utf-8?B?NmJBRzlKNUhFdWtqL2c2cDcxcjlVakkxVlNWT29HYlNVbSs5Sm9Ub2UwcHh0?=
- =?utf-8?B?ZWJ6RFFrbzUzNzN6YTdOc2JCV1VraE1CY2ViVUZoZkxpOEp3K0pDMC9iTWF5?=
- =?utf-8?B?RGJCM1BhZHVnYlAxOUNQMGh4bFVxc2tMclhReTc5a2hxVzdLSEx0UTFoQ2NX?=
- =?utf-8?B?QVlLU2JJYkc3b2wwYjFMbFU4bEljeUFJZm84TUdiZ2JHSlJ1MjJyZzh2YnNp?=
- =?utf-8?B?eXp0cDEyYldTeUZMNkNKZ3VCZ241aFZpNnFNR2xoUlJHZVZKUTRPOGNjSlht?=
- =?utf-8?B?M2lEOWpNOUc0ZGhBWlNleThIc2x3cndwUG12ejU0NWc4Y2JKeXFFbUo2eWc4?=
- =?utf-8?Q?wNhXqKkVnsy6Syahh8uEFX9K3?=
+	=?utf-8?B?RDZrSFF0N1Z0dWxrNmRzZmFBQmdYbUZFRkp3TW5PY005V0hLTXROK0JhNmNU?=
+ =?utf-8?B?TUtRbnZEb3NZOW5NZHMyZ1ZzM0xQVVlNMUNTZElVUm01SERJdE5vWjE2NXVi?=
+ =?utf-8?B?VTNMYWZuVDZHU0VLakdxV0crR3V4WXhKU1p1REIvM2hXMFpzZVhvZXE4V3Zt?=
+ =?utf-8?B?dWl5MmNjNWhIMlpiRWFtZjJXTGgraWJGVVNrbnNBbXJkRHZibStyNkkrRFYw?=
+ =?utf-8?B?dXlCQWd2Y0p3ZlpRK2Z3Q1FGM3JmV21vb3ZFRjR3L1pla2JFdWhzRFIzOTJk?=
+ =?utf-8?B?N05MREdsS2U1dU9BTlQyajMyMXh0RzEzTTg2ekVVenNCZDRYZ1J3azhFdlEy?=
+ =?utf-8?B?VGxrMUY5NHpEWkxXL1BxZ2dneENjNnRRdzB1UUwzcW1aRUdxUG40MER6S3Y4?=
+ =?utf-8?B?aENqUnkzb21yc1NnR3cyckd5L043T0xkcjd1dVZ0TlFWVysrNjdxcnlRZUpV?=
+ =?utf-8?B?QUZzQUtQSlArMU9aTXBSK0I2S0NCMjVJRHhXTFhwdlBUU1NGc3N1OHd2RDM4?=
+ =?utf-8?B?a1plZXpRMG1WalIxcmZJbUY1M3FXa2doOU82UkljeGFIQzVYYjR2c1hjakRU?=
+ =?utf-8?B?azVRbzZvcFBpVm9jaktqcTFhdnB5S1Y1WExYZm9uUGQwa3psZk95YTMzeDJ3?=
+ =?utf-8?B?UXkwdnYvZEN5bXNBR0JMUDdmZC9uSkJ3N1BRRlRTU3pPQnFRYlgyOTJ3bUoy?=
+ =?utf-8?B?VDk0d1UvVzBpek9rYVMvU3RlSVJxL3d0dytJS1haaG5uOGVXK2dTWUluQTMy?=
+ =?utf-8?B?ZVB1WEpoMGNISUFRei9RckdWbDdURGpwYklyYVRLaTY3Rk43SU1UTDc2cDlw?=
+ =?utf-8?B?NVhENmlsejdhb3V0V05mOGtIQ0x1QWNNY25xWUZDeHV0bnAwOHNESFpoWXc1?=
+ =?utf-8?B?TXdVYUMyM2d6WkMzWGhIWW9HL2hzU2FOelFPR1BQWWVlQlJqQjMzM1pFZEN6?=
+ =?utf-8?B?MnB4SCtMcmFkU2JwdWJsbzVFdE5mR1V4em5qRkNSaTQxNmg0OFZscWNvQTk2?=
+ =?utf-8?B?am4xZ0llRzFRdnJPZWR3ZnJkRmw3dm9Sc0ZXSHNYQWJYKy9kV2NaQTc1MG9K?=
+ =?utf-8?B?UDVxbDhmSkZic2dLMTlBS2w1cG1PcVlqbzg3eGJZVXZSKzlwdFF0OXVDcGZU?=
+ =?utf-8?B?K2QySmxHZ3N5cExMN0lScGtYSWQrZjN3TlpSSVFoNlptQzN1TzRjN3RaT3VO?=
+ =?utf-8?B?cy81WU5LR0taeHkveEY2cW14SEN0VFp6ZUx0NE1GNE43Qm1wVnlqYXEyMmlj?=
+ =?utf-8?B?NkVxbUcxZGsra00vVWVtbFI4ZUdJcDBqQzh6S2pTTUI1dkNtVk9PTXdmQXRF?=
+ =?utf-8?B?K2JLWmYxbkVwWVBKbEdkMXB1b2pFWWVQL2loTWtJTlpSMW9QNktvN3kzUDRz?=
+ =?utf-8?B?V295eWxydzIyVldpVW1qdnZzZHpIRE5JcFlYU0JDa241YUJobUZsYlFxa2lP?=
+ =?utf-8?B?Mzdlb2tpcnpoTTFOVjhxdWNZNXV6STc3ckFGa2RmYWpBa001bTFVbjFnelRP?=
+ =?utf-8?B?ZmRaRzdOQXFob3NBaHdxa2JNMG1yZmliN3liTGhFKzJSaFIzQ1FkV1Fmdms5?=
+ =?utf-8?B?dFFNWnRHYnd4RW1sblpZZ2pWTFpLWEZsYU5BTWZjbnNrTzFxRDJpM2xLQ05S?=
+ =?utf-8?B?ckQ1eUpxMmUza1ltNGNaRGJmMmI2K3hCZGZKVjE5bnhtSzV2SlFlTVB0QmZG?=
+ =?utf-8?B?SnNPZWdsTmJoZU9nWGtqeUJjQjZIVHFML2FxcmVUckl3bm5zUW53RU1ja3hl?=
+ =?utf-8?B?SVR3QTVia3ByUUZSejh1Qm9GMVYzUmYwdTR3dnI2c2lnNmZTRU9RaHQyMjdH?=
+ =?utf-8?B?OVlLU1lLQlVPT29WTVYvN05VcGpNaldtZ0RvV3MzSTN0SzYyTFcyRXZTVG5V?=
+ =?utf-8?B?a0xFVjY2RkJ1a3drdkVTUy9mbW9CYlA3bldsWVVHazNCVkx0SUttME9aTTZT?=
+ =?utf-8?B?bHdMUm9kYUYvYkdEMk4wcFJmQjV5Z2JJZ3JmdFU3K2c3Wi9ZTkYvekFhMGNL?=
+ =?utf-8?B?MklRaURzTkFxR2phSlNIdmg1RjZ2dEUyQ1hid21WdTIzNk0ySFJoQUMrcnY3?=
+ =?utf-8?B?YzhmL05vTmFIbHpXTGFKVnVVdFBieVEzZklsRjVWSlBLUFhtczlWdXlnUEYz?=
+ =?utf-8?Q?sOXc2GHhHBDj15UpZHoXQ0f5u?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 508e5624-eebd-4e94-4228-08dd5c522eee
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b177850-4ca8-4e3f-0ac7-08dd5c52f0aa
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2025 01:57:00.2213
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2025 02:02:25.2545
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HLZeMLYC+fI7fOuhfzNz8Qst60rhf2aFRYeUJP8wLzUUCaPB1Etgq5POxKjVlcTIkTFfaGIIcusoFkmpfNd5vw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: RSrE7OoeXCcA0nPAmboOW/aGZt8ig8bS3gLKkXDmHS/2yGyhRwHiDe05m1rFDiXILDBBwd/Bk/ENVfPx7TBrWA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6783
 
-On 3/4/2025 1:12 AM, Jonathan Cameron wrote:
-> On Fri, 28 Feb 2025 17:35:54 -0800
-> Shannon Nelson <shannon.nelson@amd.com> wrote:
-> 
->> Add pds_fwctl to the driver and fwctl documentation pages.
+On 3/4/2025 9:24 AM, Jason Gunthorpe wrote:
+> On Tue, Mar 04, 2025 at 05:08:08PM +0800, Jonathan Cameron wrote:
+>>> +   dev_err(dev, "Invalid operation %d for endpoint %d\n", rpc->in.op, rpc->in.ep);
 >>
->> Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
-> Really minor stuff inline.
+>> Perhaps a little noisy as I think userspace can trigger this easily.  dev_dbg()
+>> might be better.  -EINVAL should be all userspace needs under most circumstances.
 > 
-> Thanks,
-> 
-> Jonathan
-> 
->> ---
->>   Documentation/userspace-api/fwctl/fwctl.rst   |  1 +
->>   Documentation/userspace-api/fwctl/index.rst   |  1 +
->>   .../userspace-api/fwctl/pds_fwctl.rst         | 41 +++++++++++++++++++
->>   3 files changed, 43 insertions(+)
->>   create mode 100644 Documentation/userspace-api/fwctl/pds_fwctl.rst
->>
->> diff --git a/Documentation/userspace-api/fwctl/fwctl.rst b/Documentation/userspace-api/fwctl/fwctl.rst
->> index 428f6f5bb9b4..72853b0d3dc8 100644
->> --- a/Documentation/userspace-api/fwctl/fwctl.rst
->> +++ b/Documentation/userspace-api/fwctl/fwctl.rst
->> @@ -150,6 +150,7 @@ fwctl User API
->>
->>   .. kernel-doc:: include/uapi/fwctl/fwctl.h
->>   .. kernel-doc:: include/uapi/fwctl/mlx5.h
->> +.. kernel-doc:: include/uapi/fwctl/pds.h
->>
->>   sysfs Class
->>   -----------
->> diff --git a/Documentation/userspace-api/fwctl/index.rst b/Documentation/userspace-api/fwctl/index.rst
->> index 06959fbf1547..12a559fcf1b2 100644
->> --- a/Documentation/userspace-api/fwctl/index.rst
->> +++ b/Documentation/userspace-api/fwctl/index.rst
->> @@ -10,3 +10,4 @@ to securely construct and execute RPCs inside device firmware.
->>      :maxdepth: 1
->>
->>      fwctl
->> +   pds_fwctl
->> diff --git a/Documentation/userspace-api/fwctl/pds_fwctl.rst b/Documentation/userspace-api/fwctl/pds_fwctl.rst
->> new file mode 100644
->> index 000000000000..f34645dbf5ea
->> --- /dev/null
->> +++ b/Documentation/userspace-api/fwctl/pds_fwctl.rst
->> @@ -0,0 +1,40 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +================
->> +fwctl pds driver
->> +================
->> +
->> +:Author: Shannon Nelson
->> +
->> +Overview
->> +========
->> +
->> +The PDS Core device makes an fwctl service available through an
->> +auxiliary_device named pds_core.fwctl.N.  The pds_fwctl driver binds
->> +to this device and registers itself with the fwctl bus.  The resulting
-> 
-> fwctl is a class not a bus though here I'd be tempted to say subsystem.
+> Yes, please remove or degrade to dbg all the prints that userspace
+> could trigger.
 
-Subsystem works for me, unless Jason has any preference.
+Sure
 
 > 
->> +userspace interface is used by an application that is a part of the
->> +AMD/Pensando software package for the Distributed Service Card (DSC).
->> +
->> +The pds_fwctl driver has little knowledge of the firmware's internals,
->> +only knows how to send commands through pds_core's message queue to the
->> +firmware for fwctl requests.  The set of operations available through this
->> +interface depends on the firmware in the DSC, and the userspace application
->> +version must match the firmware so that they can talk to each other.
->> +
->> +This set of available operations is not known to the pds_fwctl driver.
->> +When a connection is created the pds_fwctl driver requests from the
->> +firmware list of endpoints and a list of operations for each endpoint.
-> requests from the firmware both a list of endpoints and a list of operations for
-> each endpoint.
+>>> +   if (rpc->in.len > 0) {
+>>> +           in_payload = kzalloc(rpc->in.len, GFP_KERNEL);
+>>> +           if (!in_payload) {
+>>> +                   dev_err(dev, "Failed to allocate in_payload\n");
 > 
-> As currently written the sentence suggest that we are asking for something
-> unspecified from the "firmware list of endpoints..."
+> kzalloc is already super noisy if it fails
 
-I'll clean this up.
+I know ... I get dinged on this all the time, but I still add these 
+because there are multiple allocs in this one function and it isn't 
+immediately obvious in the trace which alloc failed.  I could push each 
+alloc off to separate functions to get that info in the trace, but it 
+seems to me that's extra unnecessary code to get the same one more line.
+
+
+> 
+>>> +                   out = ERR_PTR(-ENOMEM);
+>>> +                   goto done;
+>>> +           }
+>>> +
+>>> +           if (copy_from_user(in_payload, u64_to_user_ptr(rpc->in.payload),
+>>> +                              rpc->in.len)) {
+>>> +                   dev_err(dev, "Failed to copy in_payload from user\n");
+>>> +                   out = ERR_PTR(-EFAULT);
+>>> +                   goto done;
+>>> +           }
+>>> +
+>>> +           in_payload_dma_addr = dma_map_single(dev->parent, in_payload,
+>>> +                                                rpc->in.len, DMA_TO_DEVICE);
+>>> +           err = dma_mapping_error(dev->parent, in_payload_dma_addr);
+>>> +           if (err) {
+>>> +                   dev_err(dev, "Failed to map in_payload\n");
+>>> +                   in_payload_dma_addr = 0;
+> 
+> etc
+> 
+>>> +   err = pds_client_adminq_cmd(pdsfc->padev, &cmd, sizeof(cmd), &comp, 0);
+>>> +   if (err) {
+>>> +           dev_err(dev, "%s: ep %d op %x req_pa %llx req_sz %d req_sg %d resp_pa %llx resp_sz %d resp_sg %d err %d\n",
+>>> +                   __func__, rpc->in.ep, rpc->in.op,
+>>> +                   cmd.fwctl_rpc.req_pa, cmd.fwctl_rpc.req_sz, cmd.fwctl_rpc.req_sg_elems,
+>>> +                   cmd.fwctl_rpc.resp_pa, cmd.fwctl_rpc.resp_sz, cmd.fwctl_rpc.resp_sg_elems,
+>>> +                   err);
+> 
+> Triggerable by a malformed RPC?
+
+That or misbehaving firmware.
+
+> 
+>>> +           out = ERR_PTR(err);
+>>> +           goto done;
+>>> +   }
+>>> +
+>>> +   dynamic_hex_dump("out ", DUMP_PREFIX_OFFSET, 16, 1, out_payload, rpc->out.len, true);
+>>> +
+>>> +   if (copy_to_user(u64_to_user_ptr(rpc->out.payload), out_payload, rpc->out.len)) {
+>>> +           dev_err(dev, "Failed to copy out_payload to user\n");
+> 
+> Triggerable by a malformed user provided pointer
+
+yes
+
+> 
+> Jason
 
 Thanks,
 sln
-
-> 
->> +This list of operations includes a minimum scope level that the pds_fwctl
->> +driver can use for filtering privilege levels.
->> +
->> +pds_fwctl User API
->> +==================
->> +
->> +.. kernel-doc:: include/uapi/fwctl/pds.h
->> +
->> +Each RPC request includes the target endpoint and the operation id, and in
->> +and out buffer lengths and pointers.  The driver verifies the existence
->> +of the requested endpoint and operations, then checks the current scope
->> +against the required scope of the operation.  The request is then put
->> +together with the request data and sent through pds_core's message queue
->> +to the firmware, and the results are returned to the caller.
-> 
 
 
