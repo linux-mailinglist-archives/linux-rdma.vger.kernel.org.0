@@ -1,147 +1,128 @@
-Return-Path: <linux-rdma+bounces-8400-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8401-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64188A54316
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 07:50:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D442A543B2
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 08:29:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDD411893FAC
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 06:50:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7A213AFF1F
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 07:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4E51A238E;
-	Thu,  6 Mar 2025 06:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720DD1DDC18;
+	Thu,  6 Mar 2025 07:29:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mtm5cz4P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TZF1LCtK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B3236D;
-	Thu,  6 Mar 2025 06:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2894F1DC98B;
+	Thu,  6 Mar 2025 07:29:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741243802; cv=none; b=m+vE8BPlXguBX7JulDOPnfQ0ppIXAv3wPzywjk9rO+o0tVcuL8BuoWvDSPslWL0ayhgQbsV/MMbGHKBL8D2gEw3195T+pyKePIp0u319he1WKlXdbvshkS1aL2MpF/whY3iS/wTKY1Rtt0i+rQ7e2/eMFJd1fsoSyDuv7Yn1c7E=
+	t=1741246160; cv=none; b=HnYntg1vocZ0XwWnvP/7hJr6onrt3z8cspZVRWxl0dzFoz9v6KtCPnYxma425CeiTMDCkErvSr24LGRMeCJ2Xh6AWamiigDwt7hjX6SFDGKGpUGX6+ItFZvA+YqYms5xfQy8xEa2ICPlXrt+Px5WYzHKkf7pl5CFtB9KsGL7Jqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741243802; c=relaxed/simple;
-	bh=DNyhLOFCR0nOb4YtJNu7m7m7eynTT/M43+g30DXMdQw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U1l2vTMh8v5E6KN1eD9mR/rPF9tRnXWMO2uW9RsRnaHuwKvjsDpAtoaDHFWkbLOFnBPPHo+uCyqymSAiA76okz37bJnt1xBCE2c8IMf6Iit/njzBduHppj46FM0xy8XelEGW4pI8CAXFNIYBeQ6ZPacJgupAVjdKHtqxHWzojrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mtm5cz4P; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-43948021a45so2128685e9.1;
-        Wed, 05 Mar 2025 22:50:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741243799; x=1741848599; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IJM8Wqvc3FFacyQPJ9/a7tZRu0GBZ9xmP0ZyEVFzhhA=;
-        b=mtm5cz4P3rTV6ZmzGnM56z9MU8zic3Dw1574SswvPPeZ6eWcXuODfD7Zlfyt+azyIt
-         sBLLluxLYKU8942gfvVVV2tSX5uklRHSwlk1WyxVaj/8e55bup6mGc2KaDwoICxZK5rq
-         n74JMM6TmtFSkM/SpyX7fpl9h4FF6a4d9K3DeTO7tw6YOJomPCM+P3pDGv2IwSp9nl+R
-         XaBjFDrXGwCuUi2lff8Y6HNWHxr27pRkEeLdB8UHv8GEsC3mN5e+yxinynvOZqKXjh9C
-         uyS65YGtXXWl3c41w6GmFyXMlKktRiqOWndORshHZzNpftS4e9VVhEBK+RjdLg3rMfvM
-         z22A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741243799; x=1741848599;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IJM8Wqvc3FFacyQPJ9/a7tZRu0GBZ9xmP0ZyEVFzhhA=;
-        b=mbf9NX+zelmNkwM4db/e0792qX9GwLaraAOwJOyLcWPJBiJ7lZ3WtGldd/AFcY3R9X
-         Eg9imOauDD9dW+tAqfVYSFbP0NS4/OeniH1XeLIJG47zil8ibLB8WdUV2J8s0Y07YJdX
-         2i5t4Oakww/7TUsvHH/DVi8+K1yfJGuynbiwm9tdZ5rYNyqnrqwXMiAByDgL8cIBb5BZ
-         M+rObHVLXSyOnxFIICanHH0A2Xp3d8em8Z53TFdjHYzRk/pJ7X6H5gHL9HMylmIa8PSA
-         sltGXEEtMsC5WOFHhw8rL/XuWwg06j16frU/fFe4++Nxu/IcAiPKe8uK8b0opARBS/8k
-         eQ/A==
-X-Forwarded-Encrypted: i=1; AJvYcCVABKtPHBDsFK4U5gHkYHNbxYq7BxJXoPWd/rAtne0MmDRw7cPkYu2CtlG7kfaEy6niBmpSEus=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxmObjMT0dg/2fxNLfb5PFMXP6SHNEna7aXjJ/FKkCCq1gJ0WAq
-	H5oRXe86qU9gDAQ+D6XfNGUE2+lpfqW1KCJW7pu1kHima8gmCp4T
-X-Gm-Gg: ASbGncupL+OM32xGTP1s/u/MIwPNaZo4SMzPUphjHMmcr8V12FPPQFj9MHk0PPhEY0K
-	IXfjkRyMa6MKtm3tVPu23y0beZqWBQThN7BR+zDtOboydSVKepSHOejok6bWUUAc7yiHhPIgRcN
-	1jqKCb6kRLkuF9ORq11hzNQAGnftPjUVmu/aZye+ek/FftOsgdatJaFM+pAlfLkhlU0mLc4T2ns
-	iWHFgFAeWGI9zFDTzm/BxG/mlwE9m6E7YDz8ZjEzbsMC9+KNbpzQiegBhib1kCs+H3pHdbxeLGV
-	swcVCOdOB4OWpH98+UZaDermwh5WP4sOzQi5hHeggwDsCVCBFtFz2cz5DUEhK6Cdyg==
-X-Google-Smtp-Source: AGHT+IGuIoMtFEaomgnriGTy1PbBYViKYMAZJEpjVNEbd4cVLUlDcOtUeIrwEc/GAZSfDJX4U73Bow==
-X-Received: by 2002:a05:6000:1f82:b0:38f:231a:635e with SMTP id ffacd0b85a97d-3911f746668mr4565424f8f.25.1741243798781;
-        Wed, 05 Mar 2025 22:49:58 -0800 (PST)
-Received: from [172.27.49.130] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912c0e1476sm971790f8f.70.2025.03.05.22.49.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Mar 2025 22:49:58 -0800 (PST)
-Message-ID: <42892aa7-f7a9-4227-9f3f-24a0f1c96992@gmail.com>
-Date: Thu, 6 Mar 2025 08:49:55 +0200
+	s=arc-20240116; t=1741246160; c=relaxed/simple;
+	bh=ZNaVEPVAXCzdL9St42uwm7LoXpS2rX6afC6PTXfNAK0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BtUOYd2zcsNgWdU++8Ct7fiAPU7pGrWkxZlQM3uj3LktgeWQAt0j3Hr3HmQfQ0iiuaWpJ4P+xQboN+NhadzNtoKTqodfRXXELeB+Jxit69D2PFomu5ibXLkm/p8tZb22c4PSoTnvfyTKeRxUgheKYWI6d9lREDUTJZN2srpRSJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TZF1LCtK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14202C4CEE0;
+	Thu,  6 Mar 2025 07:29:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741246160;
+	bh=ZNaVEPVAXCzdL9St42uwm7LoXpS2rX6afC6PTXfNAK0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TZF1LCtKBFC9ylRr9B71V4vKBBglWxRMWez0za7qNmcMKiuAEKv/VUP08VrhxdLEI
+	 SVkrpND+ODsVlh6oRfVzk1BewPHa4LdERkwhReCVDlQodjqVHs84GkWF7o1bYrkYjK
+	 qETAhSIyM4Z9SmJjCbEp8qXXrMNt9s9HmYTHGeZQNAmy1k6+aLTiq24TmsOMHEa2Gk
+	 aOsqbe9YFy614aR2KLScLPuI/SDDnybS0pw4I8yZXl4vb0u0PWZkGI+8pvL4+UBauU
+	 r7U60zuyPZt2JYgW8Mbn5br2O9jbnBKCahp7DoD3b+gPcbTe3PukA6deUqq8/Jynqq
+	 MoeA/fTtBGQvw==
+Date: Thu, 6 Mar 2025 09:29:16 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Saeed Mahameed <saeed@kernel.org>, David Ahern <dsahern@kernel.org>,
+	Jiri Pirko <jiri@resnulli.us>, Jakub Kicinski <kuba@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Daniel Vetter <daniel.vetter@ffwll.ch>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Leonid Bloch <lbloch@nvidia.com>, linux-cxl@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	"Nelson, Shannon" <shannon.nelson@amd.com>
+Subject: Re: [PATCH v5 0/8] Introduce fwctl subystem
+Message-ID: <20250306072916.GQ1955273@unreal>
+References: <0-v5-642aa0c94070+4447f-fwctl_jgg@nvidia.com>
+ <20250303175358.4e9e0f78@kernel.org>
+ <20250304140036.GK133783@nvidia.com>
+ <20250304164203.38418211@kernel.org>
+ <20250305133254.GV133783@nvidia.com>
+ <mxw4ngjokr3vumdy5fp2wzxpocjkitputelmpaqo7ungxnhnxp@j4yn5tdz3ief>
+ <bcafcf60-47a8-4faf-bea3-19cf0cbc4e08@kernel.org>
+ <20250305182853.GO1955273@unreal>
+ <Z8i2_9G86z14KbpB@x130>
+ <20250305232154.GB354511@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net/mlnx5: Use generic code for page_pool
- statistics.
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, Andrew Lunn
- <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Joe Damato <jdamato@fastly.com>,
- Leon Romanovsky <leon@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Thomas Gleixner <tglx@linutronix.de>,
- Tariq Toukan <tariqt@nvidia.com>
-References: <20250305121420.kFO617zQ@linutronix.de>
- <8168a8ee-ad2f-46c5-b48e-488a23243b3d@gmail.com>
- <20250305202055.MHFrfQRO@linutronix.de>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20250305202055.MHFrfQRO@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250305232154.GB354511@nvidia.com>
 
+On Wed, Mar 05, 2025 at 07:21:54PM -0400, Jason Gunthorpe wrote:
+> On Wed, Mar 05, 2025 at 12:41:35PM -0800, Saeed Mahameed wrote:
+> 
+> > How do you imagine this driver/core structure should look like? Who
+> > will be the top dir maintainer?
+> 
+> I would set something like this up more like DRM. Every driver
+> maintainer gets commit rights, some rules about no uAPIs, or at least
+> other acks before merging uAPI. Use the tree for staging shared
+> branches.
+> 
+> Driver maintainers with the most commits per cycle does the PR or
+> something like that.
+> 
+> There is no subsystem or cross-driver entanglement so there is no real
+> need for gatekeeping.
 
+Yes, it can be structured like you proposed too or/and combined with my
+idea https://lore.kernel.org/netdev/20250303150015.GA1926949@unreal/
 
-On 05/03/2025 22:20, Sebastian Andrzej Siewior wrote:
-> On 2025-03-05 21:44:23 [+0200], Tariq Toukan wrote:
->> Hi,
-> 
-> Hi,
-> 
->> Thanks for your patch.
->>
->> IIUC you remove here the per-ring page_pool stats, and keep only the summed
->> stats.
->>
->> I guess the reason for this is that the page_pool strings have no per-ring
->> variants.
->>
->>    59 static const char pp_stats[][ETH_GSTRING_LEN] = {
->>    60         "rx_pp_alloc_fast",
->>    61         "rx_pp_alloc_slow",
->>    62         "rx_pp_alloc_slow_ho",
->>    63         "rx_pp_alloc_empty",
->>    64         "rx_pp_alloc_refill",
->>    65         "rx_pp_alloc_waive",
->>    66         "rx_pp_recycle_cached",
->>    67         "rx_pp_recycle_cache_full",
->>    68         "rx_pp_recycle_ring",
->>    69         "rx_pp_recycle_ring_full",
->>    70         "rx_pp_recycle_released_ref",
->>    71 };
->>
->> Is this the only reason?
-> 
-> Yes. I haven't seen any reason to keep it. It is only copied around.
-> 
->> I like the direction of this patch, but we won't give up the per-ring
->> counters. Please keep them.
-> 
-> Hmm. Okay. I guess I could stuff a struct there. But it really looks
-> like waste since it is not used.
-> 
+The most important part is that it needs to be group of maintainers.
 
-Of course they are used.
-Per-ring (per-pool) counters are exposed via ethtool -S.
+> 
+> It would be a good opportunity to help more people engage with the
+> kernel process and learn the full maintainer flow.
+> 
+> > It should be something that is tightly coupled with aux, currently
+> > aux is under drivers/base/auxiliary.c I think it should move to
+> > drivers/aux/auxiliary.c and device drivers should implement their
+> > own aux buses, WH access APIs and probing/init logic under that
+> > directory e.g: drivers/aux/mlx5/..
+> 
+> That makes sense to me. I would expect everything in this collection
+> to be PCI drivers spawing aux devices.
+> 
+> drivers/aux_core/ or something like that, perhaps?
 
+I like Saeed's proposal "drivers/aux/", it is more short and catchy.
+
+Thanks
+
+> 
+> Jason
+> 
 
