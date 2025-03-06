@@ -1,135 +1,133 @@
-Return-Path: <linux-rdma+bounces-8433-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8434-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CD7AA556ED
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 20:38:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0EC7A55716
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 20:49:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 457E37A53C7
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 19:37:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A4AB18890BE
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 19:49:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D740F2702DB;
-	Thu,  6 Mar 2025 19:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0659E270EA5;
+	Thu,  6 Mar 2025 19:49:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Is6E4Hs0"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AVyteuIh"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A7DE26FDB4;
-	Thu,  6 Mar 2025 19:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F7A26FA7D
+	for <linux-rdma@vger.kernel.org>; Thu,  6 Mar 2025 19:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741289916; cv=none; b=JubVqBT/E9K2Tu58hKX38vSxBS51HCpw/flQDErnMma7zwkm9VF5InyKEwC8mPCnk6GnQagWPXXB2QlCg1FO3R/53iWP3QF+6EXOdf/fXsvEyvxCJEuhZyGQ+oPfl0Z4+/f+a3S1GQuWAuojGkEUzy97PslReXVyASLTSqqk+Kc=
+	t=1741290554; cv=none; b=KQp7NJVBm6ScS5cCJKDRwD5RuuaDq7am3PURblktjbW2thMQh0V/F1JbsKUUsIjVIHr0aLDUj8oYBWiP2p1NOjtuWs7PVBRFJuQnsYfETMjwpgSPQM6TmTCGv48/akWmFKr1pN9xJDS4+KcIs3aqq2XCi4cJJKkaLHowm8QS85E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741289916; c=relaxed/simple;
-	bh=nOtK01glKrGG8fuEMZiCN8DLp0nf98FDqZ183uM/Bss=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I+A8F4EFnP1Q6TMyP7dYa4jslcxuCuxHB4Twt6Flj2UQVOcXc/NDI36DyG4PUs9cdvtEtLS4pSsM4DGhXNyXDyzYGZJWVNqp4M1IOgiShFf1Me48rFqA0lISSAZr/4xB6BcUeKQa7pCEeM6JOknWuZlx8P91GTUzpLSiR7nyOV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Is6E4Hs0; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-43948021a45so9571795e9.1;
-        Thu, 06 Mar 2025 11:38:33 -0800 (PST)
+	s=arc-20240116; t=1741290554; c=relaxed/simple;
+	bh=XJfj2IjX+cfbBfCUZB15uM51uhBAxMUtheYDfRvrsG0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=H2oyjEGc96jiJ/G4M4Z6z/fzrL3F3LZ6bydMFmcHn/70i5P+kLgFmo1Vi8jugH8mv3ELl5tuNAu8Pxar1aH92XjnMQyAS5EWAZaYTJeAgO+dDt555PRdqzYzNmcB1Ja90wJwBWMtlIUbNZuFyHMDwSRW5NN23EhL0I4f2Nl6eok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AVyteuIh; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3912c09bea5so829977f8f.1
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Mar 2025 11:49:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741289912; x=1741894712; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1741290551; x=1741895351; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=CGMiB37BFnD1cTo/Z8BxHm2wPrhG5rwdIKGIZoCVwxw=;
-        b=Is6E4Hs0Y9kqEd+7kzu9BaCSmiUQ49H8qgs4k7XOyKCsr7V8ZwNgXypVnspqr27PTa
-         OOSOI6oZcByZ9bjUsazxA5/FwWdVtHIPAEKTbSdQDP9ON9O81ti/B7YgT3BmMHZdZ3cg
-         Oya67Kfckm6vyufeSKVRs3mA8uOFpDI1Usp2wcVGWkOsxomjqnAxaYB0p6ZU1TrdzTeT
-         IR4HTn0XkcBkh2pOkQGAV7QZAh+tG/S+uDujA/4bPVOj6SOnY1ITdILRiFBqtijb4Bt7
-         VbvLRCGkL/+R/CKeHbnIqiKp91GwtbzeJul4dN3fnhNq1D+JmvxGr5YVfywP3i2UHA6C
-         Mqtw==
+        bh=12HOUV0N5LQ2gOm+72FrFChkl6gwbWnu1Vh8fRPsrGk=;
+        b=AVyteuIhnvCmOWtB8xDnGN7AoQjB/ZixK8AXKWqiBM49ds/a59/XAWlGmALEwapeAV
+         XH0w3zJtNUtGOA4kWDnAckb1EdkT9gjoNH8TH1XC7UuszbDgWeDkLppRxPkYC9+a9M0v
+         ldwxyvkCV7w6Xooj0+pfe6bw68tOX251ygnZcH/7Fq//9A27s4L2mQYUCMSE8vruSURC
+         fUNoU/ZSI9OpM3dsoXTguVtw87ngXax+OEkNNTbzYzV1sLLmLaay6NkTrlDKOFicdhAG
+         o0C7h6XjuQzUhzhKoOeA5Z9693rXZz6IDJQ6SdCTf8KJsaNK2KNOnftwxpMbyvOhyYw7
+         qV5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741289912; x=1741894712;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1741290551; x=1741895351;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CGMiB37BFnD1cTo/Z8BxHm2wPrhG5rwdIKGIZoCVwxw=;
-        b=ogiFFIOq7yZ4md/RCsLYtr3v8cO+h8SOaqc5Ar5f2YTetba8lPqUco68hUPbFSttzL
-         OxlbR0Wmf6iZ8Ww1a/f9+siutVIAIUTOLltjW0Iy0ZozDZGkarjxqAmNkn4NXdJ3y3AK
-         09mw+qxHb3JPYTRBFHd8eBDJEeC2M873oWNHg1LuYtk81imFsTkqyp9TNLZBQ+96t5SZ
-         WICuZ4GngB9bTG/70DyORHMv9bqBJJP0jApgxUTmhik7wpJyY1CCj/Rs3iFbDYNXn7Qt
-         ao4VK4CiW8m/QSU1dYfrHIgENmAOlYm4mWi2ewP+fbLSHw5q6CPOjQ0b6bA6+Li2/QPs
-         4e4A==
-X-Forwarded-Encrypted: i=1; AJvYcCUD5Jhq6tTgh2rLW8fMd/yenhNUUDnny2BJIxMug/t6mLH1rZ2HRJB7J49nCVg9T70RsJSAql8YjZNWWh0=@vger.kernel.org, AJvYcCUqLnB9s7ztpsdJgK8oHE8ubnc6PCo7mcAbRiP6TVE44BAWSg1yL3V+mixo8F+82AZ4k0mjaTXmd+X6sA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLHtZMktk2WKsWswwcmXepJ1wRY6ftgbfg93XGD2b9unbl9tLL
-	HMoJYQEg5IhmTz1XlVlTWji+grWa9TivQs5lCZj65f74ZrUBZA3b
-X-Gm-Gg: ASbGncsx7Oi2OZ1CDvpI0x2ardZfq4eHtMDrCo4dG8W+yYuAcMn0n90yAU5v+hXbYzL
-	85hnpjXK+YZC/YAwsA9dYWOGlemqFV6PSGF4ibJTZ/98hLgh5HD1LdosQdFfh3tpsIEv0RNcDQA
-	+NvDYXaQJGaugukIBAfk/U3crNVCR501hGoVmUa1hmN5PCsBcryIbMxiV9z+d83WDko23RjSzXx
-	rQk0hHp9kGvKEvtxcA/z6vgh3UB6NuUaRxkfJu+sPP6sQzFTKBRjP4xZ0uNPDHU4B/L+m5wLvXD
-	cx9QyoBmFRFaX9mkvuPMfOCbvGiPDESueP7buKSU9GC78bDVfKx2rGLW2+h591W/nA==
-X-Google-Smtp-Source: AGHT+IGD/0SyHrWKAspEG39gZ6q7sFCG09cAYiqP92WJT//Fk9Phl43SI1M/Va8OZeVnbOyMgmj6uQ==
-X-Received: by 2002:a05:600c:3553:b0:439:8bc3:a698 with SMTP id 5b1f17b1804b1-43c601cdc45mr6119185e9.6.1741289911674;
-        Thu, 06 Mar 2025 11:38:31 -0800 (PST)
-Received: from [172.27.49.130] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43bdd8c3d3esm28587725e9.16.2025.03.06.11.38.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Mar 2025 11:38:31 -0800 (PST)
-Message-ID: <a1e7b180-a3f8-4faf-8815-4b9a76fe2e4f@gmail.com>
-Date: Thu, 6 Mar 2025 21:38:29 +0200
+        bh=12HOUV0N5LQ2gOm+72FrFChkl6gwbWnu1Vh8fRPsrGk=;
+        b=AyfCwDbSGvmgAhICQ9VzCX6sqbRDleuo6Co6t6qUHTooAb0Os/x3A/CUwyFAIkmTtk
+         Jl8jv6GJ2QHdQRfJbj/2ccI1fJ8ZuD53HlKt/Sqn2/4pui6Ol+lS6hhQENxDEnRt79iL
+         hmGTNqoTRiVrE/3vCLclgBV4OWK9N5yMW2nHFt7ynsJyY6ZqmMDMjm/GIzd0dSUjDCBZ
+         mS4froVcOhQ/CLZz6859kGyqKix1ilOsvMN8zB7llWVDq0bVyFoEzhN0/+s54MNP9Ljv
+         Q8pUfsCSNHyA+0Rj1ABMn6XmjTX7BOv+tkJH5E7dwsfDIZ7aH237RVO7DxUCW21mOOR5
+         LZ6A==
+X-Forwarded-Encrypted: i=1; AJvYcCU4LSUw9BM9D3sC7KTGTxZ7x6b9LjLDcMDYHg1un2jpZXmyf0ABHd4E3DU6Iry9OFDUhuDCVuP6f7b6@vger.kernel.org
+X-Gm-Message-State: AOJu0YykDj9JcTMCx/qQQNwcyRerCNEo6vdmYGr1/G6SSLnmJZ1c5C6U
+	8SbMavbTA5bhISWcO+6yDj2DnCLzEvs9zKHHAhwE3prkQnv5Cwyeu9shZZ18BMY=
+X-Gm-Gg: ASbGnctCy+l+lVlhiOuGk0q4q7L5IXmyJmulAP4+6b04UEUd/7GDAmZTmjE7SYnjAB3
+	Oe0fcUASXOkDgCQvoDq4aBA2cLmgBZZh9b6sw04KvzvoXaYqxh0ZjI+G2v3rzfAxu81ypNlv/hN
+	ENQLEqJhZw5BKUIJvTrpY2JAOD2ztN287XIWVfJRYZrgJ62xDwfEo1FKAyOQN2SWpg2iX4y0h0P
+	pymWj3vqyrw4Nwem4rvKbJ0XdF/GIVZFP5EL9/1BuSjQIB07y2ZVaSy7W+ICWhKpmZI33INbxEO
+	BsNLg3ubE0+X3SDoO38iMq9MWNJRJkrj7XwZIqq8qLVTT4yGmA==
+X-Google-Smtp-Source: AGHT+IGs4Yei7Uj3yACj+GZktDDXIAXgpcENDsnATVmO5YWfHDh8m1kzphPMYmCnef1sPY9l6157dQ==
+X-Received: by 2002:a5d:6d09:0:b0:38f:4d20:4a17 with SMTP id ffacd0b85a97d-39132d1f8acmr264061f8f.13.1741290551233;
+        Thu, 06 Mar 2025 11:49:11 -0800 (PST)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-3912bfdff72sm3009082f8f.36.2025.03.06.11.49.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Mar 2025 11:49:10 -0800 (PST)
+Date: Thu, 6 Mar 2025 22:49:06 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Konstantin Taranov <kotaranov@microsoft.com>
+Cc: Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Shiraz Saleem <shirazsaleem@microsoft.com>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH next] RDMA/mana_ib: Use safer allocation function()
+Message-ID: <58439ac0-1ee5-4f96-a595-7ab83b59139b@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] net/mlx5: handle errors in mlx5_chains_create_table()
-To: Wentao Liang <vulab@iscas.ac.cn>, saeedm@nvidia.com, leon@kernel.org,
- tariqt@nvidia.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250306104337.2581-1-vulab@iscas.ac.cn>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20250306104337.2581-1-vulab@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
+My static checker says this multiplication can overflow.  I'm not an
+expert in this code but the call tree would be:
 
+ib_uverbs_handler_UVERBS_METHOD_QP_CREATE() <- reads cap from the user
+-> ib_create_qp_user()
+   -> create_qp()
+      -> mana_ib_create_qp()
+         -> mana_ib_create_ud_qp()
+            -> create_shadow_queue()
 
-On 06/03/2025 12:43, Wentao Liang wrote:
-> In mlx5_chains_create_table(), the return value of mlx5_get_fdb_sub_ns()
-> and mlx5_get_flow_namespace() must be checked to prevent NULL pointer
-> dereferences. If either function fails, the function should log error
-> message with mlx5_core_warn() and return error pointer.
-> 
-> Fixes: 39ac237ce009 ("net/mlx5: E-Switch, Refactor chains and priorities")
-> Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
+It can't hurt to use safer interfaces.
 
-You totally dropped the change log, and the branch target.
-Other than that, the patch itself LGTM.
+Cc: stable@vger.kernel.org
+Fixes: c8017f5b4856 ("RDMA/mana_ib: UD/GSI work requests")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+There seems to be another integer overflow bug in mana_ib_queue_size() as
+well?  It's basically the exact same issue.  Maybe we could put a cap on
+attr->cap.max_send/recv_wr at a lower level.  Maybe there already is some
+bounds checking that I have missed...
 
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+ drivers/infiniband/hw/mana/shadow_queue.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
-> index a80ecb672f33..711d14dea248 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
-> @@ -196,6 +196,11 @@ mlx5_chains_create_table(struct mlx5_fs_chains *chains,
->   		ns = mlx5_get_flow_namespace(chains->dev, chains->ns);
->   	}
->   
-> +	if (!ns) {
-> +		mlx5_core_warn(chains->dev, "Failed to get flow namespace\n");
-> +		return ERR_PTR(-EOPNOTSUPP);
-> +	}
-> +
->   	ft_attr.autogroup.num_reserved_entries = 2;
->   	ft_attr.autogroup.max_num_groups = chains->group_num;
->   	ft = mlx5_create_auto_grouped_flow_table(ns, &ft_attr);
+diff --git a/drivers/infiniband/hw/mana/shadow_queue.h b/drivers/infiniband/hw/mana/shadow_queue.h
+index d8bfb4c712d5..a4b3818f9c39 100644
+--- a/drivers/infiniband/hw/mana/shadow_queue.h
++++ b/drivers/infiniband/hw/mana/shadow_queue.h
+@@ -40,7 +40,7 @@ struct shadow_queue {
+ 
+ static inline int create_shadow_queue(struct shadow_queue *queue, uint32_t length, uint32_t stride)
+ {
+-	queue->buffer = kvmalloc(length * stride, GFP_KERNEL);
++	queue->buffer = kvmalloc_array(length, stride, GFP_KERNEL);
+ 	if (!queue->buffer)
+ 		return -ENOMEM;
+ 
+-- 
+2.47.2
 
 
