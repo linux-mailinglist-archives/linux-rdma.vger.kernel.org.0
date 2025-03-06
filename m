@@ -1,77 +1,77 @@
-Return-Path: <linux-rdma+bounces-8444-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8445-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D23BBA55A8A
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 00:04:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1E8FA55A89
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 00:04:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 978B618986EF
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 23:04:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9D863B2F87
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 23:04:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C463C27E1BA;
-	Thu,  6 Mar 2025 23:04:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BDA527E1DA;
+	Thu,  6 Mar 2025 23:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=enfabrica.net header.i=@enfabrica.net header.b="XCcg56bW"
+	dkim=pass (2048-bit key) header.d=enfabrica.net header.i=@enfabrica.net header.b="asfu8MdV"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A3B27D791
-	for <linux-rdma@vger.kernel.org>; Thu,  6 Mar 2025 23:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBF871FBEA6
+	for <linux-rdma@vger.kernel.org>; Thu,  6 Mar 2025 23:04:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741302246; cv=none; b=YN31jQlJnvSdGTbwkb6BzsWlSqZ+N/YStuSqT9dqSlQH6VjNSzr8muuWeb53G6pICZ3ou2AZ2jAzdsAjs/xJZ1ga8REM+T0N/32D8xQGsNn656cwXdAGE5bwTSkuMXSyBB4PV91Ekmc3Ks6Sp+pEU5kErp1SEOkH65bsfJeeJDQ=
+	t=1741302249; cv=none; b=ogyHWCS2wIFrryegoVPqYTu4Vy+TrN+GJ+vE62buIzmVRrfgTbxcpf2bGgi6ptOPzb+9/nNDeoWwt6SaMruwBbycE6V0VCKFjvk7gxdylRupIn3fG/uKV+I8RfD23pSRblgiD35Md3AIu1lMj4aqZ7w8i59t4F2fgBLATHsXizk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741302246; c=relaxed/simple;
-	bh=9t+BWyeKo3lXUFD7OKztQ3S+oioUT+EA4xokMzKS89o=;
+	s=arc-20240116; t=1741302249; c=relaxed/simple;
+	bh=wYg6lFDju4MwSCX2v7KdEDVQKw2PzFuai0DklCho61I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=onTe0my18Yf//L2xr6AMOTxJrRyZljKBdHCqERzab/56jHWd9GQXJ32XjPUA2yMDvMuuWoOea1eD7QjZA+e8BB+Q0IieKPRjYLRLvra2aD8ntNy6s/spGMmiS45oJR8+kDn7l7CHoMq+GltBD6H9CJRmdDX3WOLW9qyecMyIsI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enfabrica.net; spf=pass smtp.mailfrom=enfabrica.net; dkim=pass (2048-bit key) header.d=enfabrica.net header.i=@enfabrica.net header.b=XCcg56bW; arc=none smtp.client-ip=209.85.222.181
+	 MIME-Version; b=bTm3tNPQmejumkIA26WAidzbjlZEggegZjERvsg/NMCyStJyc8lbu0oN7GAG7QrrYiEsT/gSv1D9u2gX1LUeRa+90gsKEcPKfA36Wa8v5o29ueJkOhuOqu3RiUlUksX60Vb09+hJ7VacMQGL/zYd1gd74e09FK5+KP3GBvzL8ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enfabrica.net; spf=pass smtp.mailfrom=enfabrica.net; dkim=pass (2048-bit key) header.d=enfabrica.net header.i=@enfabrica.net header.b=asfu8MdV; arc=none smtp.client-ip=209.85.222.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enfabrica.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enfabrica.net
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-7c3d1664ed5so145626085a.2
-        for <linux-rdma@vger.kernel.org>; Thu, 06 Mar 2025 15:04:04 -0800 (PST)
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7c081915cf3so164073085a.1
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Mar 2025 15:04:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=enfabrica.net; s=google; t=1741302243; x=1741907043; darn=vger.kernel.org;
+        d=enfabrica.net; s=google; t=1741302246; x=1741907046; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tI+QptX8aFaKo9m7kn+rX3JmnFQXDEQcbJWxJ5w+bWw=;
-        b=XCcg56bWKC6CfmsWUU6oxSXDVohNRQlgqwOoFOwOW3Yhqcl/XXmJr6r4X6xgSce+yM
-         j0i785+r+ohA9d5FDMiyJ1SjGJtJH3uHd7oBINhMt3T00mt4POBSmu9b9K3QJ3vOyFRU
-         7FV4FXIwfh7qIjY5xPUPgnAMUa5zmJf+FgmMjYrh3l09ckcKs4hWVPxriYsQRfuSomYJ
-         g9xN8lzHWlv3uf1ZVGctQEyP91CF5QE9teXsahWEiVpTQH4m5XA1okEZUp+CwH4IJOhJ
-         YmX922QmpIz8KWWzMRxoO+mAGOWxC3U/64nRz0DjXuf6+s+WhQURiQG1W7XB3h9PoWCl
-         4yRg==
+        bh=XROOKg8tgS+XFar/TPgH4HyrmnuBnyWnrGnnHBmR0+U=;
+        b=asfu8MdV4U0vs8mt/5845HUv7BqLf1xfFRBTkuwTx81Xa3MtolnPDlNBXJgz5amQhz
+         YCAldIoEPfafMvB6BvSabMmJB9BHns1AOH/pNmox/4GWgu+9McyslSMdcSRo2e5ibxCf
+         VGSHgShYY1unLtlgikS/jlMxu2fDlLDF/DZeJ8nSB1IwzGUcUwfUlV4jwG4D9iU0Ff9r
+         s+Rnx10E8NPPiLLui5KqoO+bxxISTOPIXGwbnzhi8MguRIp+mpk9L6pjvNREFdJLkncA
+         chsp+F51TP9runxJ390wqzx9ayeXdVGi/TYHIIyj8zHwf75V4E/XyINn/CYFpyc6WPdl
+         0B1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741302243; x=1741907043;
+        d=1e100.net; s=20230601; t=1741302246; x=1741907046;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tI+QptX8aFaKo9m7kn+rX3JmnFQXDEQcbJWxJ5w+bWw=;
-        b=IzFhDPYP3l1IcoU6zbMq/jOiDZ7VxS7qlKbGTIPHCDsIGb02qeokJDzl+9pV1Lj2Yp
-         CRQWzxeQU0XrasvTaVezsZxKs6l9DXFl/uftMg18f6+zRJ9pLGrLWRGTGOkakhDNPy8E
-         7Jo4ld9gRxPuf5hgu0zQL9d1U7JGALgvSXGWbPmdjfSK2YUYyKdbosAFE4Sd+LunyfQA
-         5WlOl786IIU0RJC8iX0LVQkdWci19soqGLH6XroMHda5nAupwdvegEFCgQJxcly+R57e
-         uBQr4887UK5z1Pvw8QHyP/agaTV0sxtA5jYv7ynegIonZ4iHSeqzmm776h5BmW8hjSXy
-         6AIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU1LO4ZTaGUmKuTNpyyFQDW1NtOvnHPN53MGbt+reborHnn7DXAeuS04SNXn0zU3v/UjOdEXs69+Lyy@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywm5WlaSl/edlpzUbDfNTTrB35KIIX99o3aGYKkWBo0I+mPJQC3
-	1oNlMVFFxNrlgDrwwJrF12uxGQuTwp+fdugcLriTdH7tAhpLNO00WFf8w9fKqQk=
-X-Gm-Gg: ASbGncsZNnnIviv1SLaQ/IzayJs4/xk4HM3DjaSszS88e/kIwoV7cv2hu2rK8vsdDGx
-	7K5jwkfMO5N0CkpISLIWCa6Pu22hP4cqVQQnb0ftzBEnD7chvBkUb6gWAKbWXN1M9GEY4Coj5Ua
-	iHxzmIdfduLZ0hotYW5Ejd/T8IGyYrJ41dHG4qeiYJwIyLBiRDQFAhgD1n+ORMkZlz15bKhOBj1
-	Ii9jSqD/pd2zPUFPzx5WWIapWk7NhgOBeI1pPUjvRFiksxLSa829grv9YylOin9NzonQSqSqYRE
-	g/qMAj08bD6OWWOdCMgyVIWYV+miACjbVaka5pJg6jRy90Klr0lNGBCy3TTtjgm1jH0i
-X-Google-Smtp-Source: AGHT+IHYhgnp81nqwMBCWbPMWFBfzmSZkACfQ2sKTr2EMOGmU8XQOZdZtUBPiAChJ7TPftti0v9yCg==
-X-Received: by 2002:a05:620a:2608:b0:7c0:b0b7:493f with SMTP id af79cd13be357-7c4e617614bmr171776485a.37.1741302243486;
-        Thu, 06 Mar 2025 15:04:03 -0800 (PST)
+        bh=XROOKg8tgS+XFar/TPgH4HyrmnuBnyWnrGnnHBmR0+U=;
+        b=JHcYihtsS+XTfuDSOZkdiFyBYjGKe2joFl8eYp2Flwc099Y3GogRxetUXnghzIpCvB
+         t5k59FbuQcVoVgYbwVYvpWgi5QQ9JUMFaJCajfXKqNBHo9mtnjp8t+HB5yEUxsqa0YsM
+         F+OoRtpu9B+LXJyB2o3I/MEoPcTA6YBpGVx977rgsnp6H2aM/MawMpe/9/bSild/Mcib
+         8Vf8Ke6SldbDDz0YXC+EVN8XtFd03qHi5OSDJazMLh4OIv4rN9qqgZE88RYBUtgYMDDM
+         EvHfq91O/v1DiR3/yy8Llv9XtPZhr/MafjhADOV+r+h27tWLeArjzUoLBEGxSUX2HZmL
+         bRXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUebS68B4l93dAzl9PAvdeXIqmzy0A1JgBYqCRo7HJm0iUuU9+Jxkq68pb2efcWtDykPQ6El+LWvjaS@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz6nQyn9fKiRjbn33OBI/56b4uWS5jMF/QJwjpF1cGel/Yg/6Qu
+	uuJouEPut1mjTFLaL9DV1QJ3TGqC8hD+08Fw5mch8VjVcVrK7ksoABCADTdfFe0=
+X-Gm-Gg: ASbGncvsH5LCyMFIefsdK4XUBxZKK8bclcnQ+1oiSX2wgibUJFpjg+j4MkLl8tpjwBA
+	T8WRLZRZpSWYrme2F0f/HtfBVoFTDwY5srHAdVLD8RpfjNvU3uZkJJDyNGfqwsa9e08TOTt9GCb
+	YuelbFQ79+My/xvPQe4TFfi3llZRJuzFiAozS0K67h90NA2sMZFAOnwUS4yYVaMmD06gO8GIg2G
+	IKrNrbNQRoxliUG8BCSUItWFqyJYf5Xdk4JCXu/zeLh+LJ1DdvEVXHCKieA85x9mYc/oSSt+1Ej
+	+f1KzkIFroVeRthUjEokTgguDIOON2o42CdnpdNRxqhsDFkbC4YyLGDJm+HPjVSfKy24
+X-Google-Smtp-Source: AGHT+IHABfobyGcfE7W8wGZq5vTIyQjIr95DOZim/xF7tcvT96CCCt+5Wdl6Y0QxBg1dfm/gwpPW9w==
+X-Received: by 2002:a05:620a:47a4:b0:7c3:bdce:d1f7 with SMTP id af79cd13be357-7c4e8dd2430mr121616285a.58.1741302245496;
+        Thu, 06 Mar 2025 15:04:05 -0800 (PST)
 Received: from debil.. (78-154-15-142.ip.btc-net.bg. [78.154.15.142])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac256654fa6sm14971966b.93.2025.03.06.15.04.01
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac256654fa6sm14971966b.93.2025.03.06.15.04.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Mar 2025 15:04:03 -0800 (PST)
+        Thu, 06 Mar 2025 15:04:04 -0800 (PST)
 From: Nikolay Aleksandrov <nikolay@enfabrica.net>
 To: netdev@vger.kernel.org
 Cc: shrijeet@enfabrica.net,
@@ -95,9 +95,9 @@ Cc: shrijeet@enfabrica.net,
 	linux-rdma@vger.kernel.org,
 	kuba@kernel.org,
 	pabeni@redhat.com
-Subject: [RFC PATCH 03/13] drivers: ultraeth: add new genl family
-Date: Fri,  7 Mar 2025 01:01:53 +0200
-Message-ID: <20250306230203.1550314-4-nikolay@enfabrica.net>
+Subject: [RFC PATCH 04/13] drivers: ultraeth: add job support
+Date: Fri,  7 Mar 2025 01:01:54 +0200
+Message-ID: <20250306230203.1550314-5-nikolay@enfabrica.net>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250306230203.1550314-1-nikolay@enfabrica.net>
 References: <20250306230203.1550314-1-nikolay@enfabrica.net>
@@ -109,339 +109,1046 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The UE genl family is described by ynl spec in
-Documentation/netlink/specs/ultraeth.yaml. It supports context list, create
-and delete.
-
-The corresponding files are auto-generated by ynl:
-     drivers/ultraeth/uet_netlink.c
-     drivers/ultraeth/uet_netlink.h
-     include/uapi/linux/ultraeth_nl.h
+A UE job identifies an application that a communicating process belongs
+to within a distributed parallel application. Jobs are assigned to the
+initiating process and are a part of addressing, they are present in all
+packets. Jobs are supposed to be assigned by a provisioning system. Job
+ids must be globally unique within a UE context. Every UE context
+contains a job registry with all current jobs, regardless if they're
+associated with a fabric endpoint (FEP) or not. The Ultra Ethernet
+netlink spec is updated with job support to create, delete and list jobs.
 
 Signed-off-by: Nikolay Aleksandrov <nikolay@enfabrica.net>
 Signed-off-by: Alex Badea <alex.badea@keysight.com>
 ---
- Documentation/netlink/specs/ultraeth.yaml | 56 ++++++++++++++++++
- drivers/ultraeth/Makefile                 |  2 +-
- drivers/ultraeth/uet_context.c            | 72 +++++++++++++++++++++++
- drivers/ultraeth/uet_main.c               |  5 +-
- drivers/ultraeth/uet_netlink.c            | 54 +++++++++++++++++
- drivers/ultraeth/uet_netlink.h            | 21 +++++++
- include/uapi/linux/ultraeth_nl.h          | 35 +++++++++++
- 7 files changed, 243 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/netlink/specs/ultraeth.yaml
- create mode 100644 drivers/ultraeth/uet_netlink.c
- create mode 100644 drivers/ultraeth/uet_netlink.h
- create mode 100644 include/uapi/linux/ultraeth_nl.h
+ Documentation/netlink/specs/ultraeth.yaml | 147 +++++++
+ drivers/ultraeth/Makefile                 |   2 +-
+ drivers/ultraeth/uet_context.c            |   7 +
+ drivers/ultraeth/uet_job.c                | 455 ++++++++++++++++++++++
+ drivers/ultraeth/uet_netlink.c            |  59 +++
+ drivers/ultraeth/uet_netlink.h            |   8 +
+ include/net/ultraeth/uet_context.h        |   3 +
+ include/net/ultraeth/uet_job.h            |  78 ++++
+ include/uapi/linux/ultraeth.h             |  44 +++
+ include/uapi/linux/ultraeth_nl.h          |  76 ++++
+ 10 files changed, 878 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/ultraeth/uet_job.c
+ create mode 100644 include/net/ultraeth/uet_job.h
+ create mode 100644 include/uapi/linux/ultraeth.h
 
 diff --git a/Documentation/netlink/specs/ultraeth.yaml b/Documentation/netlink/specs/ultraeth.yaml
-new file mode 100644
-index 000000000000..55ab4d9b82a9
---- /dev/null
+index 55ab4d9b82a9..e95c73a36892 100644
+--- a/Documentation/netlink/specs/ultraeth.yaml
 +++ b/Documentation/netlink/specs/ultraeth.yaml
-@@ -0,0 +1,56 @@
-+# SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
-+
-+name: ultraeth
-+protocol: genetlink
-+uapi-header: linux/ultraeth_nl.h
-+
-+doc: Ultra Ethernet driver genetlink operations
-+
-+attribute-sets:
+@@ -24,6 +24,119 @@ attribute-sets:
+         type: nest
+         nested-attributes: context
+         multi-attr: true
 +  -
-+    name: context
++    name: fep-in-addr
++    attributes:
++      -
++        name: ip
++        type: binary
++        display-hint: ipv4
++      -
++        name: ip6
++        type: binary
++        byte-order: big-endian
++        display-hint: ipv6
++      -
++        name: family
++        type: u16
++  -
++    name: fep-address
++    attributes:
++      -
++        name: in-address
++        type: nest
++        nested-attributes: fep-in-addr
++      -
++        name: flags
++        type: u16
++      -
++        name: caps
++        type: u16
++      -
++        name: start-resource-index
++        type: u16
++      -
++        name: num-resource-indices
++        type: u16
++      -
++        name: initiator-id
++        type: u32
++      -
++        name: pid-on-fep
++        type: u16
++      -
++        name: padding
++        type: u16
++      -
++        name: version
++        type: u8
++  -
++    name: fep-entry
++    attributes:
++      -
++        name: address
++        type: nest
++        nested-attributes: fep-address
++  -
++    name: flist
++    attributes:
++      -
++        name: fep
++        type: nest
++        multi-attr: true
++        nested-attributes: fep-entry
++  -
++    name: job-req
++    attributes:
++      -
++        name: context-id
++        type: s32
++      -
++        name: id
++        type : u32
++      -
++        name: address
++        type: nest
++        nested-attributes: fep-address
++      -
++        name: service-name
++        type: string
++  -
++    name: job
 +    attributes:
 +      -
 +        name: id
-+        type: s32
-+        checks:
-+          min: 0
-+          max: 255
++        type : u32
++      -
++        name: address
++        type: nest
++        nested-attributes: fep-address
++      -
++        name: service-name
++        type: string
++      -
++        name: flist
++        type: nest
++        nested-attributes: flist
++        multi-attr: true
 +  -
-+    name: contexts
++    name: jlist
 +    attributes:
 +      -
-+        name: context
++        name: job
 +        type: nest
-+        nested-attributes: context
++        nested-attributes: job
 +        multi-attr: true
-+
-+operations:
-+  name-prefix: ultraeth-cmd-
-+  list:
++  -
++    name: jobs
++    attributes:
++      -
++        name: context-id
++        type: s32
++      -
++        name: jlist
++        type: nest
++        nested-attributes: jlist
+ 
+ operations:
+   name-prefix: ultraeth-cmd-
+@@ -54,3 +167,37 @@ operations:
+         request:
+           attributes:
+             - id
 +    -
-+      name: context-get
-+      doc: dump ultraeth context information
-+      attribute-set: context
++      name: job-get
++      doc: dump uecon context jobs
++      attribute-set: jobs
 +      dump:
++        request:
++          attributes:
++            - context-id
 +        reply:
-+          attributes: &all-context-attrs
-+            - id
++          attributes:
++            - context-id
++            - jlist
 +    -
-+      name: context-new
-+      doc: add new ultraeth context
-+      attribute-set: context
++      name: job-new
++      doc: add a new job to uecon context
++      attribute-set: job-req
 +      flags: [ admin-perm ]
 +      do:
 +        request:
 +          attributes:
++            - context-id
 +            - id
++            - address
++            - service-name
 +    -
-+      name: context-del
-+      doc: delete ultraeth context
-+      attribute-set: context
++      name: job-del
++      doc: delete a job in uecon context
++      attribute-set: job-req
 +      flags: [ admin-perm ]
 +      do:
 +        request:
 +          attributes:
++            - context-id
 +            - id
 diff --git a/drivers/ultraeth/Makefile b/drivers/ultraeth/Makefile
-index dc0c07eeef65..599d91d205c1 100644
+index 599d91d205c1..bf41a62273f9 100644
 --- a/drivers/ultraeth/Makefile
 +++ b/drivers/ultraeth/Makefile
 @@ -1,3 +1,3 @@
  obj-$(CONFIG_ULTRAETH) += ultraeth.o
  
--ultraeth-objs := uet_main.o uet_context.o
-+ultraeth-objs := uet_main.o uet_context.o uet_netlink.o
+-ultraeth-objs := uet_main.o uet_context.o uet_netlink.o
++ultraeth-objs := uet_main.o uet_context.o uet_netlink.o uet_job.o
 diff --git a/drivers/ultraeth/uet_context.c b/drivers/ultraeth/uet_context.c
-index 1c74cd8bbd56..2444fa3f35cd 100644
+index 2444fa3f35cd..3d738c02e992 100644
 --- a/drivers/ultraeth/uet_context.c
 +++ b/drivers/ultraeth/uet_context.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
+@@ -102,10 +102,16 @@ int uet_context_create(int id)
+ 		goto ctx_id_err;
+ 	}
  
- #include <net/ultraeth/uet_context.h>
-+#include "uet_netlink.h"
++	err = uet_jobs_init(&ctx->job_reg);
++	if (err)
++		goto ctx_jobs_err;
++
+ 	uet_context_link(ctx);
  
- #define MAX_CONTEXT_ID 256
- static DECLARE_BITMAP(uet_context_ids, MAX_CONTEXT_ID);
-@@ -147,3 +148,74 @@ void uet_context_destroy_all(void)
- 	WARN_ON(!list_empty(&uet_context_list));
- 	mutex_unlock(&uet_context_lock);
+ 	return 0;
+ 
++ctx_jobs_err:
++	uet_context_put_id(ctx);
+ ctx_id_err:
+ 	kfree(ctx);
+ 
+@@ -115,6 +121,7 @@ int uet_context_create(int id)
+ static void __uet_context_destroy(struct uet_context *ctx)
+ {
+ 	uet_context_unlink(ctx);
++	uet_jobs_uninit(&ctx->job_reg);
+ 	uet_context_put_id(ctx);
+ 	kfree(ctx);
  }
+diff --git a/drivers/ultraeth/uet_job.c b/drivers/ultraeth/uet_job.c
+new file mode 100644
+index 000000000000..3a55a0f70749
+--- /dev/null
++++ b/drivers/ultraeth/uet_job.c
+@@ -0,0 +1,455 @@
++// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
 +
-+static int __nl_ctx_fill_one(struct sk_buff *skb,
-+				const struct uet_context *ctx,
-+				int cmd, u32 flags, u32 seq, u32 portid)
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/bug.h>
++#include <net/ipv6.h>
++#include <net/ultraeth/uet_context.h>
++
++#include "uet_netlink.h"
++
++static const struct rhashtable_params uet_job_registry_rht_params = {
++	.head_offset = offsetof(struct uet_job, rht_node),
++	.key_offset = offsetof(struct uet_job, id),
++	.key_len = sizeof(u32),
++	.nelem_hint = 128,
++	.automatic_shrinking = true,
++};
++
++int uet_jobs_init(struct uet_job_registry *jreg)
 +{
-+	void *hdr;
++	int ret;
 +
-+	hdr = genlmsg_put(skb, portid, seq, &ultraeth_nl_family, flags, cmd);
-+	if (!hdr)
-+		return -EMSGSIZE;
++	mutex_init(&jreg->jobs_lock);
 +
-+	if (nla_put_s32(skb, ULTRAETH_A_CONTEXT_ID, ctx->id))
-+		goto out_err;
++	ret = rhashtable_init(&jreg->jobs_hash, &uet_job_registry_rht_params);
++	if (ret)
++		mutex_destroy(&jreg->jobs_lock);
 +
-+	genlmsg_end(skb, hdr);
-+	return 0;
-+
-+out_err:
-+	genlmsg_cancel(skb, hdr);
-+	return -EMSGSIZE;
++	return ret;
 +}
 +
-+int ultraeth_nl_context_get_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
++static int __job_associate(struct uet_job *job, struct uet_fep *fep)
 +{
++	lockdep_assert_held_once(&job->jreg->jobs_lock);
++
++	if (rcu_access_pointer(job->fep))
++		return -EBUSY;
++
++	WRITE_ONCE(fep->job_id, job->id);
++	rcu_assign_pointer(job->fep, fep);
++
++	return 0;
++}
++
++/* disassociate and close all PDCs related to the job */
++static void __job_disassociate(struct uet_job *job)
++{
++	struct uet_fep *fep;
++
++	fep = rcu_dereference_check(job->fep,
++				    lockdep_is_held(&job->jreg->jobs_lock));
++	if (!fep)
++		return;
++
++	WRITE_ONCE(fep->job_id, 0);
++	RCU_INIT_POINTER(job->fep, NULL);
++	synchronize_rcu();
++}
++
++struct uet_job *uet_job_find(struct uet_job_registry *jreg, u32 id)
++{
++	return rhashtable_lookup_fast(&jreg->jobs_hash, &id,
++				      uet_job_registry_rht_params);
++}
++
++static struct uet_job *uet_job_find_svc_name(struct uet_job_registry *jreg,
++					     char *service_name)
++{
++	struct uet_job *job;
++
++	lockdep_assert_held_once(&jreg->jobs_lock);
++
++	hlist_for_each_entry(job, &jreg->jobs_list, hnode) {
++		if (!strcmp(job->service_name, service_name))
++			return job;
++	}
++
++	return NULL;
++}
++
++static void __uet_job_remove(struct uet_job *job)
++{
++	struct uet_job_registry *jreg = job->jreg;
++
++	__job_disassociate(job);
++	hlist_del_init_rcu(&job->hnode);
++	rhashtable_remove_fast(&jreg->jobs_hash, &job->rht_node,
++			       uet_job_registry_rht_params);
++	kfree_rcu(job, rcu);
++}
++
++bool uet_job_remove(struct uet_job_registry *jreg, u32 job_id)
++{
++	bool removed = false;
++	struct uet_job *job;
++
++	mutex_lock(&jreg->jobs_lock);
++	job = uet_job_find(jreg, job_id);
++	if (job) {
++		__uet_job_remove(job);
++		removed = true;
++	}
++	mutex_unlock(&jreg->jobs_lock);
++
++	return removed;
++}
++
++void uet_jobs_uninit(struct uet_job_registry *jreg)
++{
++	struct hlist_node *tmp;
++	struct uet_job *job;
++
++	mutex_lock(&jreg->jobs_lock);
++	hlist_for_each_entry_safe(job, tmp, &jreg->jobs_list, hnode)
++		__uet_job_remove(job);
++	mutex_unlock(&jreg->jobs_lock);
++
++	rhashtable_destroy(&jreg->jobs_hash);
++	rcu_barrier();
++	mutex_destroy(&jreg->jobs_lock);
++}
++
++struct uet_job *uet_job_create(struct uet_job_registry *jreg,
++			       struct uet_job_ctrl_addr_req *job_req)
++{
++	struct uet_job *job;
++	int ret;
++
++	if (job_req->job_id == 0)
++		return ERR_PTR(-EINVAL);
++
++	mutex_lock(&jreg->jobs_lock);
++	if (uet_job_find_svc_name(jreg, job_req->service_name)) {
++		mutex_unlock(&jreg->jobs_lock);
++		return ERR_PTR(-EEXIST);
++	}
++
++	job = kzalloc(sizeof(*job), GFP_KERNEL);
++	if (!job)
++		return ERR_PTR(-ENOMEM);
++
++	job->jreg = jreg;
++	job->id = job_req->job_id;
++	strscpy(job->service_name, job_req->service_name, sizeof(job->service_name));
++
++	ret = rhashtable_lookup_insert_fast(&jreg->jobs_hash, &job->rht_node,
++					    uet_job_registry_rht_params);
++	if (ret) {
++		kfree_rcu(job, rcu);
++		mutex_unlock(&jreg->jobs_lock);
++		return ERR_PTR(ret);
++	}
++	hlist_add_head_rcu(&job->hnode, &jreg->jobs_list);
++	mutex_unlock(&jreg->jobs_lock);
++
++	return job;
++}
++
++int uet_job_reg_associate(struct uet_job_registry *jreg, struct uet_fep *fep,
++			  char *service_name)
++{
++	struct uet_job *job;
++	int ret = -ENOENT;
++
++	mutex_lock(&jreg->jobs_lock);
++	job = uet_job_find_svc_name(jreg, service_name);
++	if (job)
++		ret = __job_associate(job, fep);
++	mutex_unlock(&jreg->jobs_lock);
++
++	return ret;
++}
++
++void uet_job_reg_disassociate(struct uet_job_registry *jreg, u32 job_id)
++{
++	struct uet_job *job;
++
++	mutex_lock(&jreg->jobs_lock);
++	job = uet_job_find(jreg, job_id);
++	if (job)
++		__job_disassociate(job);
++	mutex_unlock(&jreg->jobs_lock);
++}
++
++/* returns <0 (error) or 1 (queued the skb) */
++int uet_job_fep_queue_skb(struct uet_context *ctx,
++			  u32 job_id, struct sk_buff *skb,
++			  __be32 remote_fep_addr)
++{
++	struct uet_job *job = uet_job_find(&ctx->job_reg, job_id);
++	struct uet_fep *fep;
++
++	if (!job)
++		return -ENOENT;
++
++	fep = rcu_dereference(job->fep);
++	if (!fep)
++		return -ENODEV;
++
++	skb_dst_drop(skb);
++	skb_queue_tail(&fep->rxq, skb);
++
++	return 1;
++}
++
++static int __nl_fep_addr_fill_one(struct sk_buff *skb,
++				  const struct fep_in_address *fep_addr,
++				  int fep_attr)
++{
++	struct nlattr *nest;
++	int attr, len;
++
++	if (!fep_addr->family)
++		return 0;
++
++	nest = nla_nest_start(skb, fep_attr);
++	if (!nest)
++		return -EMSGSIZE;
++
++	switch (fep_addr->family) {
++	case AF_INET:
++		attr = ULTRAETH_A_FEP_IN_ADDR_IP;
++		len = sizeof(fep_addr->ip);
++		break;
++	case AF_INET6:
++		attr = ULTRAETH_A_FEP_IN_ADDR_IP6;
++		len = sizeof(fep_addr->ip6);
++		break;
++	default:
++		WARN_ON_ONCE(1);
++		nla_nest_cancel(skb, nest);
++		return 0;
++	}
++
++	if (nla_put(skb, attr, len, &fep_addr->ip) ||
++	    nla_put_u16(skb, ULTRAETH_A_FEP_IN_ADDR_FAMILY, fep_addr->family)) {
++		nla_nest_cancel(skb, nest);
++		return -EMSGSIZE;
++	}
++
++	nla_nest_end(skb, nest);
++
++	return 0;
++}
++
++static int __nl_uet_addr_fill_one(struct sk_buff *skb,
++				    const struct fep_address *addr, int attr)
++{
++	struct nlattr *nest;
++
++	nest = nla_nest_start(skb, attr);
++	if (!nest)
++		return -EMSGSIZE;
++	if (__nl_fep_addr_fill_one(skb, &addr->in_address,
++				   ULTRAETH_A_FEP_ADDRESS_IN_ADDRESS) ||
++	    nla_put_u16(skb, ULTRAETH_A_FEP_ADDRESS_FLAGS, addr->flags) ||
++	    nla_put_u16(skb, ULTRAETH_A_FEP_ADDRESS_CAPS, addr->fep_caps) ||
++	    nla_put_u16(skb, ULTRAETH_A_FEP_ADDRESS_START_RESOURCE_INDEX,
++			addr->start_resource_index) ||
++	    nla_put_u16(skb, ULTRAETH_A_FEP_ADDRESS_NUM_RESOURCE_INDICES,
++			addr->num_resource_indices) ||
++	    nla_put_u32(skb, ULTRAETH_A_FEP_ADDRESS_INITIATOR_ID,
++			addr->initiator_id) ||
++	    nla_put_u16(skb, ULTRAETH_A_FEP_ADDRESS_PID_ON_FEP,
++			addr->pid_on_fep) ||
++	    nla_put_u8(skb, ULTRAETH_A_FEP_ADDRESS_VERSION, addr->version)) {
++		nla_nest_cancel(skb, nest);
++		return -EMSGSIZE;
++	}
++	nla_nest_end(skb, nest);
++
++	return 0;
++}
++
++static int __nl_fep_fill_one(struct sk_buff *skb,
++			     const struct uet_fep *fep, int attr)
++{
++	struct nlattr *nest;
++
++	nest = nla_nest_start(skb, attr);
++	if (!nest)
++		return -EMSGSIZE;
++	if (__nl_uet_addr_fill_one(skb, &fep->addr, ULTRAETH_A_FEP_ENTRY_ADDRESS)) {
++		nla_nest_cancel(skb, nest);
++		return -EMSGSIZE;
++	}
++	nla_nest_end(skb, nest);
++
++	return 0;
++}
++
++static int __nl_job_feps_fill(struct sk_buff *skb, const struct uet_fep *fep)
++{
++	struct nlattr *nest;
++
++	nest = nla_nest_start(skb, ULTRAETH_A_JOB_FLIST);
++	if (!nest)
++		return -EMSGSIZE;
++	if (fep && __nl_fep_fill_one(skb, fep, ULTRAETH_A_FLIST_FEP)) {
++		nla_nest_cancel(skb, nest);
++		return -EMSGSIZE;
++	}
++	nla_nest_end(skb, nest);
++
++	return 0;
++}
++
++static int __nl_job_fill_one(struct sk_buff *skb, const struct uet_job *job)
++{
++	struct nlattr *nest;
++
++	nest = nla_nest_start(skb, ULTRAETH_A_JLIST_JOB);
++	if (!nest)
++		return -EMSGSIZE;
++
++	if (__nl_uet_addr_fill_one(skb, &job->addr, ULTRAETH_A_JOB_ADDRESS) ||
++	    nla_put_u32(skb, ULTRAETH_A_JOB_ID, job->id) ||
++	    nla_put_string(skb, ULTRAETH_A_JOB_SERVICE_NAME, job->service_name) ||
++	    __nl_job_feps_fill(skb, rcu_dereference(job->fep))) {
++		nla_nest_cancel(skb, nest);
++		return -EMSGSIZE;
++	}
++
++	nla_nest_end(skb, nest);
++	return 0;
++}
++
++int ultraeth_nl_job_get_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
++{
++	const struct genl_info *info = genl_info_dump(cb);
 +	int idx = 0, s_idx = cb->args[0], err;
 +	struct uet_context *ctx;
++	struct uet_job *job;
++	struct nlattr *nest;
++	int context_id;
++	void *hdr;
 +
-+	mutex_lock(&uet_context_lock);
-+	list_for_each_entry(ctx, &uet_context_list, list) {
++	if (!info->attrs[ULTRAETH_A_JOBS_CONTEXT_ID]) {
++		NL_SET_ERR_MSG(info->extack, "context id must be specified");
++		return -EINVAL;
++	}
++
++	context_id = nla_get_s32(info->attrs[ULTRAETH_A_JOBS_CONTEXT_ID]);
++	ctx = uet_context_get_by_id(context_id);
++	if (!ctx) {
++		NL_SET_ERR_MSG(info->extack, "context doesn't exist");
++		return -ENOENT;
++	}
++
++	/* filled all, return 0 */
++	if (s_idx == atomic_read(&ctx->job_reg.jobs_hash.nelems))
++		goto out_put;
++
++	err = -EMSGSIZE;
++	hdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
++			  &ultraeth_nl_family, NLM_F_MULTI, ULTRAETH_CMD_JOB_GET);
++	if (!hdr)
++		goto out_put;
++	if (nla_put_s32(skb, ULTRAETH_A_JOBS_CONTEXT_ID, ctx->id))
++		goto out_end;
++	nest = nla_nest_start(skb, ULTRAETH_A_JOBS_JLIST);
++	if (!nest)
++		goto out_end;
++	err = 0;
++	rcu_read_lock();
++	hlist_for_each_entry_rcu(job, &ctx->job_reg.jobs_list, hnode) {
 +		if (idx < s_idx) {
 +			idx++;
 +			continue;
 +		}
-+		err = __nl_ctx_fill_one(skb, ctx, ULTRAETH_CMD_CONTEXT_GET,
-+					  NLM_F_MULTI, cb->nlh->nlmsg_seq,
-+					  NETLINK_CB(cb->skb).portid);
++		err = __nl_job_fill_one(skb, job);
 +		if (err)
 +			break;
 +		idx++;
 +	}
 +	cb->args[0] = idx;
-+	mutex_unlock(&uet_context_lock);
++	rcu_read_unlock();
++	nla_nest_end(skb, nest);
++out_end:
++	genlmsg_end(skb, hdr);
++out_put:
++	uet_context_put(ctx);
 +
 +	return err ? err : skb->len;
 +}
 +
-+int ultraeth_nl_context_new_doit(struct sk_buff *skb, struct genl_info *info)
++int ultraeth_nl_job_new_doit(struct sk_buff *skb, struct genl_info *info)
 +{
-+	int id = -1;
++	struct uet_job_ctrl_addr_req jreq;
++	struct uet_context *ctx;
++	int context_id, job_id;
++	struct uet_job *job;
++	char *service_name;
++	int ret = 0;
 +
-+	if (info->attrs[ULTRAETH_A_CONTEXT_ID])
-+		id = nla_get_s32(info->attrs[ULTRAETH_A_CONTEXT_ID]);
-+
-+	return uet_context_create(id);
-+}
-+
-+int ultraeth_nl_context_del_doit(struct sk_buff *skb, struct genl_info *info)
-+{
-+	bool destroyed = false;
-+	int id;
-+
-+	if (!info->attrs[ULTRAETH_A_CONTEXT_ID]) {
-+		NL_SET_ERR_MSG(info->extack, "UET context id must be specified");
++	if (!info->attrs[ULTRAETH_A_JOB_REQ_CONTEXT_ID]) {
++		NL_SET_ERR_MSG(info->extack, "context id must be specified");
 +		return -EINVAL;
 +	}
++	if (!info->attrs[ULTRAETH_A_JOB_REQ_ID]) {
++		NL_SET_ERR_MSG(info->extack, "Job id must be specified");
++		return -EINVAL;
++	}
++	if (!info->attrs[ULTRAETH_A_JOB_REQ_SERVICE_NAME]) {
++		NL_SET_ERR_MSG(info->extack, "Job service name must be specified");
++		return -EINVAL;
++	}
++	service_name = nla_data(info->attrs[ULTRAETH_A_JOB_REQ_SERVICE_NAME]);
++	job_id = nla_get_u32(info->attrs[ULTRAETH_A_JOB_REQ_ID]);
++	context_id = nla_get_s32(info->attrs[ULTRAETH_A_JOB_REQ_CONTEXT_ID]);
++	ctx = uet_context_get_by_id(context_id);
++	if (!ctx) {
++		NL_SET_ERR_MSG(info->extack, "context doesn't exist");
++		return -ENOENT;
++	}
 +
-+	id = nla_get_s32(info->attrs[ULTRAETH_A_CONTEXT_ID]);
-+	destroyed = uet_context_destroy(id);
++	memset(&jreq, 0, sizeof(jreq));
++	jreq.job_id = job_id;
++	strscpy(jreq.service_name, service_name, sizeof(jreq.service_name));
++	job = uet_job_create(&ctx->job_reg, &jreq);
++	if (IS_ERR(job))
++		ret = PTR_ERR(job);
++
++	uet_context_put(ctx);
++
++	return ret;
++}
++
++int ultraeth_nl_job_del_doit(struct sk_buff *skb, struct genl_info *info)
++{
++	struct uet_context *ctx;
++	bool destroyed = false;
++	int context_id, job_id;
++
++	if (!info->attrs[ULTRAETH_A_JOB_REQ_CONTEXT_ID]) {
++		NL_SET_ERR_MSG(info->extack, "context id must be specified");
++		return -EINVAL;
++	}
++	if (!info->attrs[ULTRAETH_A_JOB_REQ_ID]) {
++		NL_SET_ERR_MSG(info->extack, "Job id must be specified");
++		return -EINVAL;
++	}
++	job_id = nla_get_u32(info->attrs[ULTRAETH_A_JOB_REQ_ID]);
++	context_id = nla_get_s32(info->attrs[ULTRAETH_A_JOB_REQ_CONTEXT_ID]);
++	ctx = uet_context_get_by_id(context_id);
++	if (!ctx) {
++		NL_SET_ERR_MSG(info->extack, "context doesn't exist");
++		return -ENOENT;
++	}
++
++	destroyed = uet_job_remove(&ctx->job_reg, job_id);
++	uet_context_put(ctx);
 +
 +	return destroyed ? 0 : -ENOENT;
 +}
-diff --git a/drivers/ultraeth/uet_main.c b/drivers/ultraeth/uet_main.c
-index 0f8383c6aba0..0ec1dc74abbb 100644
---- a/drivers/ultraeth/uet_main.c
-+++ b/drivers/ultraeth/uet_main.c
-@@ -5,13 +5,16 @@
- #include <linux/types.h>
- #include <net/ultraeth/uet_context.h>
- 
-+#include "uet_netlink.h"
-+
- static int __init uet_init(void)
- {
--	return 0;
-+	return genl_register_family(&ultraeth_nl_family);
- }
- 
- static void __exit uet_exit(void)
- {
-+	genl_unregister_family(&ultraeth_nl_family);
- 	uet_context_destroy_all();
- }
- 
 diff --git a/drivers/ultraeth/uet_netlink.c b/drivers/ultraeth/uet_netlink.c
-new file mode 100644
-index 000000000000..39e4aa6092a9
---- /dev/null
+index 39e4aa6092a9..7fdaf15e43e3 100644
+--- a/drivers/ultraeth/uet_netlink.c
 +++ b/drivers/ultraeth/uet_netlink.c
-@@ -0,0 +1,54 @@
-+// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
-+/* Do not edit directly, auto-generated from: */
-+/*	Documentation/netlink/specs/ultraeth.yaml */
-+/* YNL-GEN kernel source */
-+
-+#include <net/netlink.h>
-+#include <net/genetlink.h>
-+
-+#include "uet_netlink.h"
-+
-+#include <uapi/linux/ultraeth_nl.h>
-+
-+/* ULTRAETH_CMD_CONTEXT_NEW - do */
-+static const struct nla_policy ultraeth_context_new_nl_policy[ULTRAETH_A_CONTEXT_ID + 1] = {
-+	[ULTRAETH_A_CONTEXT_ID] = NLA_POLICY_RANGE(NLA_S32, 0, 255),
+@@ -10,6 +10,25 @@
+ 
+ #include <uapi/linux/ultraeth_nl.h>
+ 
++/* Common nested types */
++const struct nla_policy ultraeth_fep_address_nl_policy[ULTRAETH_A_FEP_ADDRESS_VERSION + 1] = {
++	[ULTRAETH_A_FEP_ADDRESS_IN_ADDRESS] = NLA_POLICY_NESTED(ultraeth_fep_in_addr_nl_policy),
++	[ULTRAETH_A_FEP_ADDRESS_FLAGS] = { .type = NLA_U16, },
++	[ULTRAETH_A_FEP_ADDRESS_CAPS] = { .type = NLA_U16, },
++	[ULTRAETH_A_FEP_ADDRESS_START_RESOURCE_INDEX] = { .type = NLA_U16, },
++	[ULTRAETH_A_FEP_ADDRESS_NUM_RESOURCE_INDICES] = { .type = NLA_U16, },
++	[ULTRAETH_A_FEP_ADDRESS_INITIATOR_ID] = { .type = NLA_U32, },
++	[ULTRAETH_A_FEP_ADDRESS_PID_ON_FEP] = { .type = NLA_U16, },
++	[ULTRAETH_A_FEP_ADDRESS_PADDING] = { .type = NLA_U16, },
++	[ULTRAETH_A_FEP_ADDRESS_VERSION] = { .type = NLA_U8, },
 +};
 +
-+/* ULTRAETH_CMD_CONTEXT_DEL - do */
-+static const struct nla_policy ultraeth_context_del_nl_policy[ULTRAETH_A_CONTEXT_ID + 1] = {
-+	[ULTRAETH_A_CONTEXT_ID] = NLA_POLICY_RANGE(NLA_S32, 0, 255),
++const struct nla_policy ultraeth_fep_in_addr_nl_policy[ULTRAETH_A_FEP_IN_ADDR_FAMILY + 1] = {
++	[ULTRAETH_A_FEP_IN_ADDR_IP] = { .type = NLA_BINARY, },
++	[ULTRAETH_A_FEP_IN_ADDR_IP6] = { .type = NLA_BINARY, },
++	[ULTRAETH_A_FEP_IN_ADDR_FAMILY] = { .type = NLA_U16, },
 +};
 +
-+/* Ops table for ultraeth */
-+static const struct genl_split_ops ultraeth_nl_ops[] = {
+ /* ULTRAETH_CMD_CONTEXT_NEW - do */
+ static const struct nla_policy ultraeth_context_new_nl_policy[ULTRAETH_A_CONTEXT_ID + 1] = {
+ 	[ULTRAETH_A_CONTEXT_ID] = NLA_POLICY_RANGE(NLA_S32, 0, 255),
+@@ -20,6 +39,25 @@ static const struct nla_policy ultraeth_context_del_nl_policy[ULTRAETH_A_CONTEXT
+ 	[ULTRAETH_A_CONTEXT_ID] = NLA_POLICY_RANGE(NLA_S32, 0, 255),
+ };
+ 
++/* ULTRAETH_CMD_JOB_GET - dump */
++static const struct nla_policy ultraeth_job_get_nl_policy[ULTRAETH_A_JOBS_CONTEXT_ID + 1] = {
++	[ULTRAETH_A_JOBS_CONTEXT_ID] = { .type = NLA_S32, },
++};
++
++/* ULTRAETH_CMD_JOB_NEW - do */
++static const struct nla_policy ultraeth_job_new_nl_policy[ULTRAETH_A_JOB_REQ_SERVICE_NAME + 1] = {
++	[ULTRAETH_A_JOB_REQ_CONTEXT_ID] = { .type = NLA_S32, },
++	[ULTRAETH_A_JOB_REQ_ID] = { .type = NLA_U32, },
++	[ULTRAETH_A_JOB_REQ_ADDRESS] = NLA_POLICY_NESTED(ultraeth_fep_address_nl_policy),
++	[ULTRAETH_A_JOB_REQ_SERVICE_NAME] = { .type = NLA_NUL_STRING, },
++};
++
++/* ULTRAETH_CMD_JOB_DEL - do */
++static const struct nla_policy ultraeth_job_del_nl_policy[ULTRAETH_A_JOB_REQ_ID + 1] = {
++	[ULTRAETH_A_JOB_REQ_CONTEXT_ID] = { .type = NLA_S32, },
++	[ULTRAETH_A_JOB_REQ_ID] = { .type = NLA_U32, },
++};
++
+ /* Ops table for ultraeth */
+ static const struct genl_split_ops ultraeth_nl_ops[] = {
+ 	{
+@@ -41,6 +79,27 @@ static const struct genl_split_ops ultraeth_nl_ops[] = {
+ 		.maxattr	= ULTRAETH_A_CONTEXT_ID,
+ 		.flags		= GENL_ADMIN_PERM | GENL_CMD_CAP_DO,
+ 	},
 +	{
-+		.cmd	= ULTRAETH_CMD_CONTEXT_GET,
-+		.dumpit	= ultraeth_nl_context_get_dumpit,
-+		.flags	= GENL_CMD_CAP_DUMP,
++		.cmd		= ULTRAETH_CMD_JOB_GET,
++		.dumpit		= ultraeth_nl_job_get_dumpit,
++		.policy		= ultraeth_job_get_nl_policy,
++		.maxattr	= ULTRAETH_A_JOBS_CONTEXT_ID,
++		.flags		= GENL_CMD_CAP_DUMP,
 +	},
 +	{
-+		.cmd		= ULTRAETH_CMD_CONTEXT_NEW,
-+		.doit		= ultraeth_nl_context_new_doit,
-+		.policy		= ultraeth_context_new_nl_policy,
-+		.maxattr	= ULTRAETH_A_CONTEXT_ID,
++		.cmd		= ULTRAETH_CMD_JOB_NEW,
++		.doit		= ultraeth_nl_job_new_doit,
++		.policy		= ultraeth_job_new_nl_policy,
++		.maxattr	= ULTRAETH_A_JOB_REQ_SERVICE_NAME,
 +		.flags		= GENL_ADMIN_PERM | GENL_CMD_CAP_DO,
 +	},
 +	{
-+		.cmd		= ULTRAETH_CMD_CONTEXT_DEL,
-+		.doit		= ultraeth_nl_context_del_doit,
-+		.policy		= ultraeth_context_del_nl_policy,
-+		.maxattr	= ULTRAETH_A_CONTEXT_ID,
++		.cmd		= ULTRAETH_CMD_JOB_DEL,
++		.doit		= ultraeth_nl_job_del_doit,
++		.policy		= ultraeth_job_del_nl_policy,
++		.maxattr	= ULTRAETH_A_JOB_REQ_ID,
 +		.flags		= GENL_ADMIN_PERM | GENL_CMD_CAP_DO,
 +	},
-+};
-+
-+struct genl_family ultraeth_nl_family __ro_after_init = {
-+	.name		= ULTRAETH_FAMILY_NAME,
-+	.version	= ULTRAETH_FAMILY_VERSION,
-+	.netnsok	= true,
-+	.parallel_ops	= true,
-+	.module		= THIS_MODULE,
-+	.split_ops	= ultraeth_nl_ops,
-+	.n_split_ops	= ARRAY_SIZE(ultraeth_nl_ops),
-+};
+ };
+ 
+ struct genl_family ultraeth_nl_family __ro_after_init = {
 diff --git a/drivers/ultraeth/uet_netlink.h b/drivers/ultraeth/uet_netlink.h
-new file mode 100644
-index 000000000000..9dd9df24513a
---- /dev/null
+index 9dd9df24513a..6e7226f39ddf 100644
+--- a/drivers/ultraeth/uet_netlink.h
 +++ b/drivers/ultraeth/uet_netlink.h
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/* Do not edit directly, auto-generated from: */
-+/*	Documentation/netlink/specs/ultraeth.yaml */
-+/* YNL-GEN kernel header */
+@@ -11,10 +11,18 @@
+ 
+ #include <uapi/linux/ultraeth_nl.h>
+ 
++/* Common nested types */
++extern const struct nla_policy ultraeth_fep_address_nl_policy[ULTRAETH_A_FEP_ADDRESS_VERSION + 1];
++extern const struct nla_policy ultraeth_fep_in_addr_nl_policy[ULTRAETH_A_FEP_IN_ADDR_FAMILY + 1];
 +
-+#ifndef _LINUX_ULTRAETH_GEN_H
-+#define _LINUX_ULTRAETH_GEN_H
+ int ultraeth_nl_context_get_dumpit(struct sk_buff *skb,
+ 				   struct netlink_callback *cb);
+ int ultraeth_nl_context_new_doit(struct sk_buff *skb, struct genl_info *info);
+ int ultraeth_nl_context_del_doit(struct sk_buff *skb, struct genl_info *info);
++int ultraeth_nl_job_get_dumpit(struct sk_buff *skb,
++			       struct netlink_callback *cb);
++int ultraeth_nl_job_new_doit(struct sk_buff *skb, struct genl_info *info);
++int ultraeth_nl_job_del_doit(struct sk_buff *skb, struct genl_info *info);
+ 
+ extern struct genl_family ultraeth_nl_family;
+ 
+diff --git a/include/net/ultraeth/uet_context.h b/include/net/ultraeth/uet_context.h
+index 150ad2c9b456..7638c768597e 100644
+--- a/include/net/ultraeth/uet_context.h
++++ b/include/net/ultraeth/uet_context.h
+@@ -9,12 +9,15 @@
+ #include <linux/mutex.h>
+ #include <linux/refcount.h>
+ #include <linux/wait.h>
++#include <net/ultraeth/uet_job.h>
+ 
+ struct uet_context {
+ 	int id;
+ 	refcount_t refcnt;
+ 	wait_queue_head_t refcnt_wait;
+ 	struct list_head list;
 +
-+#include <net/netlink.h>
-+#include <net/genetlink.h>
-+
-+#include <uapi/linux/ultraeth_nl.h>
-+
-+int ultraeth_nl_context_get_dumpit(struct sk_buff *skb,
-+				   struct netlink_callback *cb);
-+int ultraeth_nl_context_new_doit(struct sk_buff *skb, struct genl_info *info);
-+int ultraeth_nl_context_del_doit(struct sk_buff *skb, struct genl_info *info);
-+
-+extern struct genl_family ultraeth_nl_family;
-+
-+#endif /* _LINUX_ULTRAETH_GEN_H */
-diff --git a/include/uapi/linux/ultraeth_nl.h b/include/uapi/linux/ultraeth_nl.h
++	struct uet_job_registry job_reg;
+ };
+ 
+ struct uet_context *uet_context_get_by_id(int id);
+diff --git a/include/net/ultraeth/uet_job.h b/include/net/ultraeth/uet_job.h
 new file mode 100644
-index 000000000000..f3bdf8111623
+index 000000000000..fac1f0752a78
 --- /dev/null
-+++ b/include/uapi/linux/ultraeth_nl.h
-@@ -0,0 +1,35 @@
++++ b/include/net/ultraeth/uet_job.h
+@@ -0,0 +1,78 @@
 +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/* Do not edit directly, auto-generated from: */
-+/*	Documentation/netlink/specs/ultraeth.yaml */
-+/* YNL-GEN uapi header */
 +
-+#ifndef _UAPI_LINUX_ULTRAETH_NL_H
-+#define _UAPI_LINUX_ULTRAETH_NL_H
++#ifndef _UET_JOB_H
++#define _UET_JOB_H
 +
-+#define ULTRAETH_FAMILY_NAME	"ultraeth"
-+#define ULTRAETH_FAMILY_VERSION	1
++#include <linux/types.h>
++#include <linux/rhashtable.h>
++#include <linux/skbuff.h>
++#include <linux/mutex.h>
++#include <uapi/linux/ultraeth.h>
++
++struct uet_context;
++
++struct uet_job_registry {
++	struct mutex jobs_lock;
++	struct hlist_head jobs_list;
++	struct rhashtable jobs_hash;
++};
++
++struct uet_fep {
++	struct uet_context *context;
++	struct sk_buff_head rxq;
++	struct fep_address addr;
++	u32 job_id;
++};
++
++/**
++ * struct uet_job - single job
++ *
++ * @rht_node: link into the job registry's job hash table
++ * @hnode: link into the job registry's list
++ * @jreg: pointer to job registry (owner)
++ * @service_name: service name used for lookups on address req
++ * @addr: job specific address (XXX)
++ * @job_id: unique job id
++ * @rcu: used for freeing
++ *
++ * if @fep is set then the job is considered associated, i.e. there is
++ * an fd for the context's character device which is bound to this
++ * job (FEP)
++ */
++struct uet_job {
++	struct rhash_head rht_node;
++	struct hlist_node hnode;
++
++	struct uet_job_registry *jreg;
++
++	char service_name[UET_SVC_MAX_LEN];
++
++	struct fep_address addr;
++	struct uet_fep __rcu *fep;
++
++	u32 id;
++
++	struct rcu_head rcu;
++};
++
++struct uet_job_ctrl_addr_req {
++	char service_name[UET_SVC_MAX_LEN];
++	struct fep_in_address address;
++	__u32 job_id;
++	__u32 os_pid;
++	__u8 flags;
++};
++
++int uet_jobs_init(struct uet_job_registry *jreg);
++void uet_jobs_uninit(struct uet_job_registry *jreg);
++
++struct uet_job *uet_job_create(struct uet_job_registry *jreg,
++			       struct uet_job_ctrl_addr_req *job_req);
++bool uet_job_remove(struct uet_job_registry *jreg, u32 job_id);
++struct uet_job *uet_job_find(struct uet_job_registry *jreg, u32 id);
++void uet_job_reg_disassociate(struct uet_job_registry *jreg, u32 job_id);
++int uet_job_reg_associate(struct uet_job_registry *jreg, struct uet_fep *fep,
++			  char *service_name);
++int uet_job_fep_queue_skb(struct uet_context *ctx, u32 job_id,
++			  struct sk_buff *skb, __be32 remote_fep_addr);
++#endif /* _UET_JOB_H */
+diff --git a/include/uapi/linux/ultraeth.h b/include/uapi/linux/ultraeth.h
+new file mode 100644
+index 000000000000..a6f244de6d75
+--- /dev/null
++++ b/include/uapi/linux/ultraeth.h
+@@ -0,0 +1,44 @@
++/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
++
++#ifndef _UAPI_LINUX_ULTRAETH_H
++#define _UAPI_LINUX_ULTRAETH_H
++
++#include <asm/byteorder.h>
++#include <linux/types.h>
++
++#define UET_SVC_MAX_LEN 64
 +
 +enum {
-+	ULTRAETH_A_CONTEXT_ID = 1,
++	UET_ADDR_F_VALID_FEP_CAP	= (1 << 0),
++	UET_ADDR_F_VALID_ADDR		= (1 << 1),
++	UET_ADDR_F_VALID_PID_ON_FEP	= (1 << 2),
++	UET_ADDR_F_VALID_RI		= (1 << 3),
++	UET_ADDR_F_VALID_INIT_ID	= (1 << 4),
++	UET_ADDR_F_ADDRESS_MODE		= (1 << 5),
++	UET_ADDR_F_ADDRESS_TYPE		= (1 << 6),
++	UET_ADDR_F_MTU_LIMITED		= (1 << 7),
++};
 +
-+	__ULTRAETH_A_CONTEXT_MAX,
-+	ULTRAETH_A_CONTEXT_MAX = (__ULTRAETH_A_CONTEXT_MAX - 1)
++#define UET_ADDR_FLAG_IP_VER (1 << 6)
++
++struct fep_in_address {
++	union {
++		__be32 ip;
++		__u8 ip6[16];
++	};
++	__u16 family;
++};
++
++struct fep_address {
++	struct fep_in_address in_address;
++
++	__u16 flags;
++	__u16 fep_caps;
++	__u16 start_resource_index;
++	__u16 num_resource_indices;
++	__u32 initiator_id;
++	__u16 pid_on_fep;
++	__u16 padding;
++	__u8 version;
++};
++#endif /* _UAPI_LINUX_ULTRAETH_H */
+diff --git a/include/uapi/linux/ultraeth_nl.h b/include/uapi/linux/ultraeth_nl.h
+index f3bdf8111623..d65521de196a 100644
+--- a/include/uapi/linux/ultraeth_nl.h
++++ b/include/uapi/linux/ultraeth_nl.h
+@@ -23,10 +23,86 @@ enum {
+ 	ULTRAETH_A_CONTEXTS_MAX = (__ULTRAETH_A_CONTEXTS_MAX - 1)
+ };
+ 
++enum {
++	ULTRAETH_A_FEP_IN_ADDR_IP = 1,
++	ULTRAETH_A_FEP_IN_ADDR_IP6,
++	ULTRAETH_A_FEP_IN_ADDR_FAMILY,
++
++	__ULTRAETH_A_FEP_IN_ADDR_MAX,
++	ULTRAETH_A_FEP_IN_ADDR_MAX = (__ULTRAETH_A_FEP_IN_ADDR_MAX - 1)
 +};
 +
 +enum {
-+	ULTRAETH_A_CONTEXTS_CONTEXT = 1,
++	ULTRAETH_A_FEP_ADDRESS_IN_ADDRESS = 1,
++	ULTRAETH_A_FEP_ADDRESS_FLAGS,
++	ULTRAETH_A_FEP_ADDRESS_CAPS,
++	ULTRAETH_A_FEP_ADDRESS_START_RESOURCE_INDEX,
++	ULTRAETH_A_FEP_ADDRESS_NUM_RESOURCE_INDICES,
++	ULTRAETH_A_FEP_ADDRESS_INITIATOR_ID,
++	ULTRAETH_A_FEP_ADDRESS_PID_ON_FEP,
++	ULTRAETH_A_FEP_ADDRESS_PADDING,
++	ULTRAETH_A_FEP_ADDRESS_VERSION,
 +
-+	__ULTRAETH_A_CONTEXTS_MAX,
-+	ULTRAETH_A_CONTEXTS_MAX = (__ULTRAETH_A_CONTEXTS_MAX - 1)
++	__ULTRAETH_A_FEP_ADDRESS_MAX,
++	ULTRAETH_A_FEP_ADDRESS_MAX = (__ULTRAETH_A_FEP_ADDRESS_MAX - 1)
 +};
 +
 +enum {
-+	ULTRAETH_CMD_CONTEXT_GET = 1,
-+	ULTRAETH_CMD_CONTEXT_NEW,
-+	ULTRAETH_CMD_CONTEXT_DEL,
++	ULTRAETH_A_FEP_ENTRY_ADDRESS = 1,
 +
-+	__ULTRAETH_CMD_MAX,
-+	ULTRAETH_CMD_MAX = (__ULTRAETH_CMD_MAX - 1)
++	__ULTRAETH_A_FEP_ENTRY_MAX,
++	ULTRAETH_A_FEP_ENTRY_MAX = (__ULTRAETH_A_FEP_ENTRY_MAX - 1)
 +};
 +
-+#endif /* _UAPI_LINUX_ULTRAETH_NL_H */
++enum {
++	ULTRAETH_A_FLIST_FEP = 1,
++
++	__ULTRAETH_A_FLIST_MAX,
++	ULTRAETH_A_FLIST_MAX = (__ULTRAETH_A_FLIST_MAX - 1)
++};
++
++enum {
++	ULTRAETH_A_JOB_REQ_CONTEXT_ID = 1,
++	ULTRAETH_A_JOB_REQ_ID,
++	ULTRAETH_A_JOB_REQ_ADDRESS,
++	ULTRAETH_A_JOB_REQ_SERVICE_NAME,
++
++	__ULTRAETH_A_JOB_REQ_MAX,
++	ULTRAETH_A_JOB_REQ_MAX = (__ULTRAETH_A_JOB_REQ_MAX - 1)
++};
++
++enum {
++	ULTRAETH_A_JOB_ID = 1,
++	ULTRAETH_A_JOB_ADDRESS,
++	ULTRAETH_A_JOB_SERVICE_NAME,
++	ULTRAETH_A_JOB_FLIST,
++
++	__ULTRAETH_A_JOB_MAX,
++	ULTRAETH_A_JOB_MAX = (__ULTRAETH_A_JOB_MAX - 1)
++};
++
++enum {
++	ULTRAETH_A_JLIST_JOB = 1,
++
++	__ULTRAETH_A_JLIST_MAX,
++	ULTRAETH_A_JLIST_MAX = (__ULTRAETH_A_JLIST_MAX - 1)
++};
++
++enum {
++	ULTRAETH_A_JOBS_CONTEXT_ID = 1,
++	ULTRAETH_A_JOBS_JLIST,
++
++	__ULTRAETH_A_JOBS_MAX,
++	ULTRAETH_A_JOBS_MAX = (__ULTRAETH_A_JOBS_MAX - 1)
++};
++
+ enum {
+ 	ULTRAETH_CMD_CONTEXT_GET = 1,
+ 	ULTRAETH_CMD_CONTEXT_NEW,
+ 	ULTRAETH_CMD_CONTEXT_DEL,
++	ULTRAETH_CMD_JOB_GET,
++	ULTRAETH_CMD_JOB_NEW,
++	ULTRAETH_CMD_JOB_DEL,
+ 
+ 	__ULTRAETH_CMD_MAX,
+ 	ULTRAETH_CMD_MAX = (__ULTRAETH_CMD_MAX - 1)
 -- 
 2.48.1
 
