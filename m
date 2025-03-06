@@ -1,128 +1,100 @@
-Return-Path: <linux-rdma+bounces-8401-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8402-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D442A543B2
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 08:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC93EA543CE
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 08:39:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7A213AFF1F
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 07:29:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D01FF3AE418
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 07:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720DD1DDC18;
-	Thu,  6 Mar 2025 07:29:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B8C1AAE13;
+	Thu,  6 Mar 2025 07:38:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TZF1LCtK"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zw4s+xf5";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZK9UfUwb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2894F1DC98B;
-	Thu,  6 Mar 2025 07:29:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE85184E;
+	Thu,  6 Mar 2025 07:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741246160; cv=none; b=HnYntg1vocZ0XwWnvP/7hJr6onrt3z8cspZVRWxl0dzFoz9v6KtCPnYxma425CeiTMDCkErvSr24LGRMeCJ2Xh6AWamiigDwt7hjX6SFDGKGpUGX6+ItFZvA+YqYms5xfQy8xEa2ICPlXrt+Px5WYzHKkf7pl5CFtB9KsGL7Jqw=
+	t=1741246735; cv=none; b=cKNY2EbyG0sBncXKBGPjwj8y5CyvA/eK2JEyUVPR5MrfpVfiwHxAlwjK1Jj2gOiRnxIzcQdIu/EKhRsNn5D4aEKSwTufLlx/5lUPaNjSSDgqgt9V7iTEi5Jrbqlz7W3SDcHgxhcjYn85L+YghzJapOA9ZH3N01YphTJt3ZmtezQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741246160; c=relaxed/simple;
-	bh=ZNaVEPVAXCzdL9St42uwm7LoXpS2rX6afC6PTXfNAK0=;
+	s=arc-20240116; t=1741246735; c=relaxed/simple;
+	bh=hNwFeJd87ylqxeZqYsq4ZSvBei/DfdwstfqBdRI/zTQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BtUOYd2zcsNgWdU++8Ct7fiAPU7pGrWkxZlQM3uj3LktgeWQAt0j3Hr3HmQfQ0iiuaWpJ4P+xQboN+NhadzNtoKTqodfRXXELeB+Jxit69D2PFomu5ibXLkm/p8tZb22c4PSoTnvfyTKeRxUgheKYWI6d9lREDUTJZN2srpRSJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TZF1LCtK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14202C4CEE0;
-	Thu,  6 Mar 2025 07:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741246160;
-	bh=ZNaVEPVAXCzdL9St42uwm7LoXpS2rX6afC6PTXfNAK0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TZF1LCtKBFC9ylRr9B71V4vKBBglWxRMWez0za7qNmcMKiuAEKv/VUP08VrhxdLEI
-	 SVkrpND+ODsVlh6oRfVzk1BewPHa4LdERkwhReCVDlQodjqVHs84GkWF7o1bYrkYjK
-	 qETAhSIyM4Z9SmJjCbEp8qXXrMNt9s9HmYTHGeZQNAmy1k6+aLTiq24TmsOMHEa2Gk
-	 aOsqbe9YFy614aR2KLScLPuI/SDDnybS0pw4I8yZXl4vb0u0PWZkGI+8pvL4+UBauU
-	 r7U60zuyPZt2JYgW8Mbn5br2O9jbnBKCahp7DoD3b+gPcbTe3PukA6deUqq8/Jynqq
-	 MoeA/fTtBGQvw==
-Date: Thu, 6 Mar 2025 09:29:16 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Saeed Mahameed <saeed@kernel.org>, David Ahern <dsahern@kernel.org>,
-	Jiri Pirko <jiri@resnulli.us>, Jakub Kicinski <kuba@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
-	Aron Silverton <aron.silverton@oracle.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Daniel Vetter <daniel.vetter@ffwll.ch>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Leonid Bloch <lbloch@nvidia.com>, linux-cxl@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	 Content-Type:Content-Disposition:In-Reply-To; b=uIyVxfNawcaJHEcOc/HMD8j8S09WkgDtNTcxZxl4/QfEUilAjBqXY/V33b7c/ZOYpD6hsOmTVW40C29FK35ZDjAB4VeWUiaIn4j3+6GYOEYwdZ3B9XSSyAzQAXHS0930Wy15/z4ln9mRrscr8uzAU4q3HEyb1EG39ah/cXl5jqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zw4s+xf5; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZK9UfUwb; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 6 Mar 2025 08:38:50 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1741246731;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nS6P45mUCMn1oxPskIVg60Xol7SNa+58TiakbC7+hHg=;
+	b=zw4s+xf5dsyadrhmnGzHbAKgd/t3uO0oPcc9Ux9SE1moOH0muQErKQA+gQBTnRDXHSqIv9
+	5/0ZbPWOg863g4f45010u+US00oYD/ZqMg6AzmU5X0fCMfs/vqbTlg9CTY4KSJnYLRznEO
+	g30StBN+jzlF5MS3LcxB7cx7FimhQ+n3Ymbjrse95aZ4dGP6GKAbkq6kR+JJre3osYCkYF
+	mmjh4xmpSr42IDcqqrtwO95KD3jLFjYq/uiIPqM+U/z+JDoBwAGVpXtYRNjtV6hC9TOT5s
+	SbuSgHR4NUzmdPu1gS/D5dr3Bs0LcB708PiUa53oGK+HHVLJUcpAJciHU74HHQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1741246731;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nS6P45mUCMn1oxPskIVg60Xol7SNa+58TiakbC7+hHg=;
+	b=ZK9UfUwb8ysLQcbN0g8kGRBKKqnokQHjSmyWWh210PgArkq7Vn5WiieXj8eoAHcRTOnHhx
+	hI3sdQrL7IBJ30CQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Tariq Toukan <ttoukan.linux@gmail.com>
+Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Joe Damato <jdamato@fastly.com>,
+	Leon Romanovsky <leon@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	Saeed Mahameed <saeedm@nvidia.com>,
-	"Nelson, Shannon" <shannon.nelson@amd.com>
-Subject: Re: [PATCH v5 0/8] Introduce fwctl subystem
-Message-ID: <20250306072916.GQ1955273@unreal>
-References: <0-v5-642aa0c94070+4447f-fwctl_jgg@nvidia.com>
- <20250303175358.4e9e0f78@kernel.org>
- <20250304140036.GK133783@nvidia.com>
- <20250304164203.38418211@kernel.org>
- <20250305133254.GV133783@nvidia.com>
- <mxw4ngjokr3vumdy5fp2wzxpocjkitputelmpaqo7ungxnhnxp@j4yn5tdz3ief>
- <bcafcf60-47a8-4faf-bea3-19cf0cbc4e08@kernel.org>
- <20250305182853.GO1955273@unreal>
- <Z8i2_9G86z14KbpB@x130>
- <20250305232154.GB354511@nvidia.com>
+	Thomas Gleixner <tglx@linutronix.de>,
+	Tariq Toukan <tariqt@nvidia.com>
+Subject: Re: [PATCH net-next] net/mlnx5: Use generic code for page_pool
+ statistics.
+Message-ID: <20250306073850.yA23Fs1V@linutronix.de>
+References: <20250305121420.kFO617zQ@linutronix.de>
+ <8168a8ee-ad2f-46c5-b48e-488a23243b3d@gmail.com>
+ <20250305202055.MHFrfQRO@linutronix.de>
+ <42892aa7-f7a9-4227-9f3f-24a0f1c96992@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250305232154.GB354511@nvidia.com>
+In-Reply-To: <42892aa7-f7a9-4227-9f3f-24a0f1c96992@gmail.com>
 
-On Wed, Mar 05, 2025 at 07:21:54PM -0400, Jason Gunthorpe wrote:
-> On Wed, Mar 05, 2025 at 12:41:35PM -0800, Saeed Mahameed wrote:
+On 2025-03-06 08:49:55 [+0200], Tariq Toukan wrote:
+> > > I like the direction of this patch, but we won't give up the per-ring
+> > > counters. Please keep them.
+> > 
+> > Hmm. Okay. I guess I could stuff a struct there. But it really looks
+> > like waste since it is not used.
+> > 
 > 
-> > How do you imagine this driver/core structure should look like? Who
-> > will be the top dir maintainer?
-> 
-> I would set something like this up more like DRM. Every driver
-> maintainer gets commit rights, some rules about no uAPIs, or at least
-> other acks before merging uAPI. Use the tree for staging shared
-> branches.
-> 
-> Driver maintainers with the most commits per cycle does the PR or
-> something like that.
-> 
-> There is no subsystem or cross-driver entanglement so there is no real
-> need for gatekeeping.
+> Of course they are used.
+> Per-ring (per-pool) counters are exposed via ethtool -S.
 
-Yes, it can be structured like you proposed too or/and combined with my
-idea https://lore.kernel.org/netdev/20250303150015.GA1926949@unreal/
+That is true for some stats and they are prefixed with a number for the
+individual ring. In case of page_pool_stats they are not exposed
+individually. The individual page_pool_stats counters from each ring are
+merged into one counter and as exposed as one (not per ring).
 
-The most important part is that it needs to be group of maintainers.
-
-> 
-> It would be a good opportunity to help more people engage with the
-> kernel process and learn the full maintainer flow.
-> 
-> > It should be something that is tightly coupled with aux, currently
-> > aux is under drivers/base/auxiliary.c I think it should move to
-> > drivers/aux/auxiliary.c and device drivers should implement their
-> > own aux buses, WH access APIs and probing/init logic under that
-> > directory e.g: drivers/aux/mlx5/..
-> 
-> That makes sense to me. I would expect everything in this collection
-> to be PCI drivers spawing aux devices.
-> 
-> drivers/aux_core/ or something like that, perhaps?
-
-I like Saeed's proposal "drivers/aux/", it is more short and catchy.
-
-Thanks
-
-> 
-> Jason
-> 
+Sebastian
 
