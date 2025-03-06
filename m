@@ -1,115 +1,139 @@
-Return-Path: <linux-rdma+bounces-8407-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8408-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43964A5456E
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 09:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D5BBA545BB
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 10:01:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5334E16B4B6
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 08:54:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3748116460A
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 09:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B436B2080C5;
-	Thu,  6 Mar 2025 08:54:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC5619D880;
+	Thu,  6 Mar 2025 09:01:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ih3EFOfC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79EA419D880;
-	Thu,  6 Mar 2025 08:54:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D20C8828
+	for <linux-rdma@vger.kernel.org>; Thu,  6 Mar 2025 09:01:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741251282; cv=none; b=ZxwM72sZfwiOkzAe5b40/Z5311/9DxhvnjlxPw6qH/AxNSFBFKRQXKNDOKGic//QJ/C6IJtNwikVq6MgRyIzCundQvn7K2TxCR6ScRoOtk4bf/V8iKbYfL38GGG76c/0nuHiyFdZVWqNo7eavL1ZFak/ieiSdQDYXAKyZWwRVLo=
+	t=1741251690; cv=none; b=k8Yaeemi57Nk2c2j9bE+ze+RbLmSiPytBApr2u0JMXbswjmk+LjDaqKAJc86ec6khjJqS1czQcLqv9D0y8x3pHEvRoea2RfFwlEJh+RAHhbBPgEzhEsEMi1fiX835rRxI0ClU3ExKJXU9+K/C/6We9xlf51XR1DyxpWOsYzfbWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741251282; c=relaxed/simple;
-	bh=z+5bi7SD0bIYCytkWGPKBvO5E5BY+L+MovmKBcXEvro=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=k1K3hD9foZoQxxSrsfu/XoKlFmkHn/SvJ5okiijh9V3SADGsGa7Z2FHjjG0JNwe+mLe+SAR2/zjYckShIikMqmg3KeWc/XWtzBbc6z59B/wgGMCHQTuCLNyvesB6dRSMVdIr/X3CzjrtUEIKbhS5MD0ydIvwd8zUx+eRieGof0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost.localdomain (unknown [124.16.141.245])
-	by APP-03 (Coremail) with SMTP id rQCowAA3Mzi7YslnWAnCEg--.26277S2;
-	Thu, 06 Mar 2025 16:54:21 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: saeedm@nvidia.com,
-	leon@kernel.org,
-	tariqt@nvidia.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH net v2] net/mlx5: handle errors in mlx5_chains_create_table()
-Date: Thu,  6 Mar 2025 16:54:02 +0800
-Message-ID: <20250306085402.2503-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.42.0.windows.2
+	s=arc-20240116; t=1741251690; c=relaxed/simple;
+	bh=r53vPphmVgfRN06v87WMtmffReHf5dKoVcuwNBKgtlk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u5jhEDbnM8S+SSG9l9YTfai0XPpFsD+3+2HO75VOf5kqh+nCjHxEFctx6ghsC9y0ES5GXQJe3RVfzN/1fVa40EKsGBhP5zEuMoXMDt0/KkuTEEQ7r3GA3Y00q5/Isej6YOE1t1tCRmP4NQCcz4AS9E81JnaV2gAQcVCcHmhAoBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ih3EFOfC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18070C4CEE0;
+	Thu,  6 Mar 2025 09:01:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741251689;
+	bh=r53vPphmVgfRN06v87WMtmffReHf5dKoVcuwNBKgtlk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ih3EFOfCOUorP4uXAw48G5s94s9G0ROF4JDJrQNBirGEoCG3VpKmLCF0KROTfChvn
+	 +vqt960yFaSOXwWQHn3UJJ6dja6byOLH9MYK6MbAghQc4gUp+9EjPrynRt+3IKjSCv
+	 ROFUWgwqdDJhXv5YChGJakv/cWJNpcpjBkzDU59Pxll2RVfwUA4wyJXy642uUXILxl
+	 Sp2MDvkrvs9rKX8oTKUuaUZuw+D9Ejie84t6S4UP3BlT8Q4lnH58QxFefZAYnwwNre
+	 ooXKV/fuZdw0Dia3rMlekz1SOcid+yYEBoNn7jlBfcR6iMYE8ypecTMaw/TjdskUUO
+	 eScY1wXdnVAIg==
+Date: Thu, 6 Mar 2025 11:01:25 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Konstantin Taranov <kotaranov@microsoft.com>,
+	linux-rdma@vger.kernel.org
+Subject: Re: [bug report] RDMA/mana_ib: implement uapi for creation of rnic cq
+Message-ID: <20250306090125.GS1955273@unreal>
+References: <26f9cf15-2446-4a73-bc34-5d07dfcfa751@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:rQCowAA3Mzi7YslnWAnCEg--.26277S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF17XFyfCw1xGryxZFW5KFg_yoW8Xr4kpF
-	47AryDWrZ5J348J34UZrWFv34rua1kKayY9F4fKw4fZwnrX3ZrAr1rG3yakr40krW5G3y3
-	tFn8A3WUZFZxC3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-	xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
-	8cxan2IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFV
-	Cjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWl
-	x4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r
-	1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_
-	JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbGQ6JUUUUU==
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiDAgNA2fJRYWZ8gAAsP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <26f9cf15-2446-4a73-bc34-5d07dfcfa751@stanley.mountain>
 
-In mlx5_chains_create_table(), the return value of mlx5_get_fdb_sub_ns()
-and mlx5_get_flow_namespace() must be checked to prevent NULL pointer
-dereferences. If either function fails, the function should log error
-message with mlx5_core_warn() and return error pointer.
+On Wed, Mar 05, 2025 at 10:57:49PM +0300, Dan Carpenter wrote:
+> Hello Konstantin Taranov,
+> 
+> Commit 44b607ad4cdf ("RDMA/mana_ib: implement uapi for creation of
+> rnic cq") from Apr 26, 2024 (linux-next), leads to the following
+> Smatch static checker warning:
+> 
+> 	drivers/infiniband/hw/mana/cq.c:48 mana_ib_create_cq()
+> 	warn: potential user controlled sizeof overflow 'cq->cqe * 64' 's32min-s32max * 64'
+> 
+> drivers/infiniband/hw/mana/cq.c
+>     8 int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+>     9                       struct uverbs_attr_bundle *attrs)
+>     10 {
+>     11         struct ib_udata *udata = &attrs->driver_udata;
+>     12         struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
+>     13         struct mana_ib_create_cq_resp resp = {};
+>     14         struct mana_ib_ucontext *mana_ucontext;
+>     15         struct ib_device *ibdev = ibcq->device;
+>     16         struct mana_ib_create_cq ucmd = {};
+>     17         struct mana_ib_dev *mdev;
+>     18         struct gdma_context *gc;
+>     19         bool is_rnic_cq;
+>     20         u32 doorbell;
+>     21         u32 buf_size;
+>     22         int err;
+>     23 
+>     24         mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+>     25         gc = mdev_to_gc(mdev);
+>     26 
+>     27         cq->comp_vector = attr->comp_vector % ibdev->num_comp_vectors;
+>     28         cq->cq_handle = INVALID_MANA_HANDLE;
+>     29 
+>     30         if (udata) {
+>     31                 if (udata->inlen < offsetof(struct mana_ib_create_cq, flags))
+>     32                         return -EINVAL;
+>     33 
+>     34                 err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata->inlen));
+>                                                  ^^^^
+> ucmd.flags is set by the user here.
+> 
+>     35                 if (err) {
+>     36                         ibdev_dbg(ibdev, "Failed to copy from udata for create cq, %d\n", err);
+>     37                         return err;
+>     38                 }
+>     39 
+>     40                 is_rnic_cq = !!(ucmd.flags & MANA_IB_CREATE_RNIC_CQ);
+>     41 
+>     42                 if (!is_rnic_cq && attr->cqe > mdev->adapter_caps.max_qp_wr) {
+>                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> attr->cqe used to be bounds checked every time, but now the user can
+> skip setting the flag for bounds checking.
+> 
+>     43                         ibdev_dbg(ibdev, "CQE %d exceeding limit\n", attr->cqe);
+>     44                         return -EINVAL;
+>     45                 }
+>     46 
+>     47                 cq->cqe = attr->cqe;
+> --> 48                 err = mana_ib_create_queue(mdev, ucmd.buf_addr, cq->cqe * COMP_ENTRY_SIZE,
+>                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> This can lead to integer wrapping.
+> 
+> The call tree is:
+> 
+> ib_uverbs_create_cq() <- copies cmd.cqe from the user
+>   -> create_cq() calls (struct ib_device_ops)->create_cq()
+>      -> mana_ib_create_cq()
+> 
+> I'm not sure if this integer overflow has any negative effects.  I think
+> it's probably fine?
 
-[v1]->[v2]:
-Add Fixes tag.
-Target patch to net.
-Change return value from NULL to ERR_PTR(-EOPNOTSUPP)
+It is not nice and worth to be fixed, but technically it looks like size
+(cq->cqe * COMP_ENTRY_SIZE) is used to get UMEM memory, so we will allocate
+less than driver would like to.
 
-Fixes: ae430332557a ("net/mlx5: Refactor multi chains and prios support")
-Cc: stable@vger.kernel.org # 5.10+
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
----
- drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
-index a80ecb672f33..711d14dea248 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
-@@ -196,6 +196,11 @@ mlx5_chains_create_table(struct mlx5_fs_chains *chains,
- 		ns = mlx5_get_flow_namespace(chains->dev, chains->ns);
- 	}
- 
-+	if (!ns) {
-+		mlx5_core_warn(chains->dev, "Failed to get flow namespace\n");
-+		return ERR_PTR(-EOPNOTSUPP);
-+	}
-+
- 	ft_attr.autogroup.num_reserved_entries = 2;
- 	ft_attr.autogroup.max_num_groups = chains->group_num;
- 	ft = mlx5_create_auto_grouped_flow_table(ns, &ft_attr);
--- 
-2.42.0.windows.2
-
+Thanks
 
