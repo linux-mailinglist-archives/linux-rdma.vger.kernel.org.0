@@ -1,117 +1,119 @@
-Return-Path: <linux-rdma+bounces-8427-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8428-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C875A54B45
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 13:56:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25DCAA54BDC
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 14:18:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0942A7A50C7
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 12:55:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F592174E3D
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Mar 2025 13:17:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E89720C02E;
-	Thu,  6 Mar 2025 12:56:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73243212FAA;
+	Thu,  6 Mar 2025 13:16:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="puFo5LP1"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cs1bm37P";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AHoNv05/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.14])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3178D20C005;
-	Thu,  6 Mar 2025 12:56:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 765CE211A14;
+	Thu,  6 Mar 2025 13:16:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741265782; cv=none; b=jRnV74NAwrZbpUbM5UOuayf0bkYraM634aXfEOw45V3fdZz97U4EjUWtJnw9mZpiis0dfa8cqi8JS2Hj170URPeW9k0Zeh27+RIRaSEh39NDMtt0/FoenHlBLkQNZd1pu++Tl5nGGg9cm+SVk1ZWGmKHtN8rX4n5+pssXfK06Cs=
+	t=1741266986; cv=none; b=JtstYELaWze/ECDVLJPtPuKuHzq2OQPbbfZms/y7cEAwrJs3W9SP19e2XGbyxgSWyngVh9OvXKuSogYcSFpEjlUCJqvu4rG9Fgicioox+3CNR+j7wj8JRSaa7uQW+P6ydW0+QaporI0Co7zdVh8VxDoqC0xsO0fgbrFK032j3iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741265782; c=relaxed/simple;
-	bh=f2QtvPy6r04TsWQAZ7fY9Nfn8lhUfdUSIfPRUOUAA2U=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=LBWfSBQlVx9WxzzLgDySfkErGOuNBnGEk7nKrHvhw8siEz5LcLVZGVesP1ZOwpdi6lDfKIARkwVnq3hrr6oXuHcwUuARZjfH4TOcsh6DY3b7lHMlxjB9GcabFMSQc6W/XNoRPaJhrySzav08VWfAczUO9ji8s64AvakF2tc18oU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=puFo5LP1; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1741265767; x=1741870567; i=markus.elfring@web.de;
-	bh=lEO/H7U6mflERQ8ZtSb9y/xEZwt5K4DW1neaihbZZT4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=puFo5LP1f2bRljUx7EVazQ5Yw8M5e0ZG4ogCQOMPPfyFrmPQjvrJOk4ukdsHFEZq
-	 mVA1a3OG9LLt6OX8lWkk7D0YgHbv3V3TK7e+S44VLgowincXqIReR+yR/jiNJ3ZMW
-	 q5r6MZLSSSQ8WFHRoNSWTddupeVsWW0kELHG8NZ/5Ip70XoWabvtH8r4fveGwsi1X
-	 Sz7t3jnUR44RW1DH9hLG+lUkMtYfiDRmXL1j0exicEV2IxqmRUkeR+q4XhDWUD9ke
-	 mK+2j+xca+nHga2HFLwgtY8y16oavECBRAFmmjeyJueW+7tMjOrN7Pb38N0RllhXR
-	 ONtsArI2BkiB+rFLyg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.93.2]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MK574-1tY5O501Lq-00QpQ1; Thu, 06
- Mar 2025 13:56:07 +0100
-Message-ID: <ad735fa0-2352-4905-b8a6-a1404db08b9e@web.de>
-Date: Thu, 6 Mar 2025 13:56:05 +0100
+	s=arc-20240116; t=1741266986; c=relaxed/simple;
+	bh=cjdfNIp25fnNmbsaWwbjSisi5TEcnV+fllrx2J8xHh0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=irZOicfq01xMdf2DMcnqrlHPRMy35aBgrk6PHubwUgepky2Adu1fksvwK3sLQYRYsNP6SfiMOLxTVBOrp1eCDUSXEMVoLiTjpH5+CcWwuR2w03wd4jM3vGsvwlWDjJi2K50orrVSgMYKSqcTAMTZmtFmX2kzN5fkkA+AF6Ez2Fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cs1bm37P; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AHoNv05/; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 6 Mar 2025 14:16:20 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1741266982;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aCX/Mg+p1+rYS3wGtMpI0H2PIPYPLjGUvCzoulyosOQ=;
+	b=cs1bm37PqFMun5TFC2G3C5nC5zaib9Du/2kfLG/+t3XywICa4kchAcZ67dC2R0dwzc9hq0
+	wQTEo1EHoai7+t30G68x2QLDI06UDLGKD+Hm5cYsvsuziWdfOiOwkfntwu+NCysNwzqTXI
+	jYmQA19ZCVbbjgdtlC/6F4Shgo/fO0p+KK0AptNBumv1oS5mB28SWr15sfSsnFQ+tbZAmU
+	sD8xQifOIcfEyt6JqVyQrI1pKrL1ab3r3jKdGnG//BxoSlywDfFDntHbcqTTqjWYWhJoUS
+	pKBd+1ybxJWq+awBI8irV7aRFcTA7ec4RshV1v8+hD0m2Or0Kl/BX2ZdJepTgA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1741266982;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aCX/Mg+p1+rYS3wGtMpI0H2PIPYPLjGUvCzoulyosOQ=;
+	b=AHoNv05/3WRXAkxt/d8bpx7cKEHDLrk2gM689B8Ge74bIvBHUgtdGPt2hFIrJ4NUHi+1vM
+	NpeuQUKywMZp/KDA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Tariq Toukan <ttoukan.linux@gmail.com>
+Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Joe Damato <jdamato@fastly.com>,
+	Leon Romanovsky <leon@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Tariq Toukan <tariqt@nvidia.com>
+Subject: Re: [PATCH net-next] net/mlnx5: Use generic code for page_pool
+ statistics.
+Message-ID: <20250306131620.LvXx2kNB@linutronix.de>
+References: <20250305121420.kFO617zQ@linutronix.de>
+ <8168a8ee-ad2f-46c5-b48e-488a23243b3d@gmail.com>
+ <20250305202055.MHFrfQRO@linutronix.de>
+ <20250306083258.0pqISYSF@linutronix.de>
+ <042d8459-e5be-4935-a688-9fe18b16afa1@gmail.com>
+ <20250306095639.HpT1e8jH@linutronix.de>
+ <59987f5c-daa1-4063-9781-ac50f7eabb6c@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cheng Xu <chengyou@linux.alibaba.com>, linux-rdma@vger.kernel.org,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org,
- Kai Shen <KaiShen@linux.alibaba.com>
-References: <20250306120440.72792-1-chengyou@linux.alibaba.com>
-Subject: Re: [PATCH for-next] RDMA/erdma: Prevent use-after-free in
- erdma_accept_newconn()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20250306120440.72792-1-chengyou@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:IVhrD0F1k4zaNs9E3KnMn5Yc2YYOK5Wse+hGYaaSweIjdFC6pfp
- +stD+fbBdrQmTktuk35mgku5VYzlTOoTcbrMBbaD2ysaHzHWQBaDw8tHPfmURg+BBHVFYBk
- qulXVyu822C+rE1tLBqB/1hcVl3G8ovGXtG02eAD+4HINkXl2ArBiukCv1a7mDrW90tTfOS
- PJ54Ej88FEUwCMpyzzeqw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:LbNJ6i1pJ0M=;s2tJIblZYmsoXA3jLF2eLxLV5iJ
- zlb4nCov9pw90zwt1AsLNn247qGj177u03eWF81ez1zXzA3haKpJ9Q9MXUuopVGQxFRoDTG49
- 1ly9zqTX1fgxiK/Z88ESppFNiR+SDPB5nbNNfs7eScnK88tML2YnncQSsbdF/coUak7XwUSCi
- 5HBlGW8r4/ztdhJIv/73Uifo14zjrbee5Duy1kM14TcHf7JpAfExMlkGa+mxhtLtoj/nSFUgE
- G04SydSSzKQmLeKZGdfsB3FEslS6rtOFDYouZF1f+JPTILnxrInqD8yqXznGgQoLel77OwYkG
- nJUZHttVXIMX6sTlCC8giiT0HwrsLUOzUm1rY3iTzSdJ5VOaGBbPunB0FIYGdfV5itoarz0jZ
- VD6TgFYJrH04u9PnHym6BTfJ3OjI80ethjgnWvZqbBvSc0hNJ7CN7xtvpwZdC0qHdQqKUAJVm
- LlUvrGUjXytKuyF7uCO/pvIg68I3kPcMAEBccxB13ZicT3kgp9lUiyP3R1V/91pA0JNuj2vMF
- b0h0pvmli4iRvklx/ikuJ0/AB7EtOfG7wUNPQLpoiuD1s+dFpVvXzMUxejQHj6eNtJMCuPjbv
- xKHfDYOE6bSKoZvt7zOm9chM2rEtr5Z309PEnRB6Jbf4VLQL95enGEPO1rldvx517vIy3bzCg
- 6VRiOzOPd4BwWCRIENuyhAXtQ0AQ4k9jZ+9X2X3YGEAZwCmURe5NbbjxkUoUPTv2m+EZ336uS
- kVSzlSrTDctM79ezc1EwliTsMtSdo2+EtmkF5z2f8Gg/nZRxrR1Acr+4tArw9arLXD1ToWJuh
- KtL+qrTCiN1NRFYJg0NPtfrkgARHk87OF16xUVp1AAWNWnPRAQ52rPtOBVTfN/n5c7R/Re1bP
- tG0Lb1AmYkwlI8C/sPn4tp1rOBGk1MncBLih8A7IITrz+rom7GkY933LQ5hmKCWiFDZRIMWJJ
- x56J21PZcip4/8LxuRSeur+z1jYRll5MI7qZk2dyLB1byJWG4IJjnJwy1VaQLiYOiLb+MwdpI
- u3FemPqvvc3lflx654dKrugyZUV/4v5Mbobl/S6K+uYsIpx+i1fllRhNH0o/e1uzWbaKC0P2W
- 8SwfB0xQKtz1/0qu8YzvZJiNNky+SwLdDJxx6sCp9esCV3AyCpsakjOu3X0+7hJtZaWDfNkaR
- LAWf+in1Lj8os2oSNdQyl+CfTe2/DgLuzu1kThQkAHK2fE1bOvoUN03s4tsMoTNLGH2upR9EG
- zyH2NcW/aSda07FFmUGSg2/Cjxj2Uk2zNJK6P1rdu6bs+zuabnh4KnEc2jwHQXnQXOvuah08O
- mbXnzqmEOaMJ6npsB7O+4odg4+RFwldCrqh+YnSTcS+fjNJJjUXm3L+fwqsawBia09GBmagXp
- dqQsUsjWs2ti2x89FjZIzS+x1lmZhMGUgC7pBNXeWmB+4ZV5Qsewnhf8oQWNpyxUNZ9f0Xqf0
- LPPP2Ww==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <59987f5c-daa1-4063-9781-ac50f7eabb6c@gmail.com>
 
-> After the erdma_cep_put(new_cep) being called, new_cep will be freed,
-> and the following dereference will cause a UAF problem. Fix this issue.
+On 2025-03-06 13:10:12 [+0200], Tariq Toukan wrote:
+>=20
+>=20
+> On 06/03/2025 11:56, Sebastian Andrzej Siewior wrote:
+> > On 2025-03-06 11:50:27 [+0200], Tariq Toukan wrote:
+> > > On 06/03/2025 10:32, Sebastian Andrzej Siewior wrote:
+> > > > Could I keep it as-is for now with the removal of the counter from =
+the
+> > > > RQ since we don't have the per-queue/ ring API for it now?
+> > >=20
+> > > I'm fine with transition to generic APIs, as long as we get no regres=
+sion.
+> > > We must keep the per-ring counters exposed.
+> >=20
+> > I don't see a regression.
+> > Could you please show me how per-ring counters for page_pool_stats are
+> > exposed at the moment? Maybe I am missing something important.
+> >=20
+>=20
+> What do you see in your ethtool -S?
 
-* Would a change description be nicer without an abbreviation?
+Now, after comparing it again I noticed that there is
+|  rx_pp_alloc_fast: 27783
+|  rx0_pp_alloc_fast: 441
+|  rx1_pp_alloc_fast: 441
 
-* Will any additional tags become helpful?
+which I didn't noticed earlier. I didn't rx0,1,=E2=80=A6 for pp_alloc_fast.
+Thanks.
 
-  + https://web.git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.14-rc5#n539
-
-  + See also:
-    https://lore.kernel.org/cocci/20a1a47c-8906-44e8-92e6-9b3e698b1491@web.de/
-    https://sympa.inria.fr/sympa/arc/cocci/2025-03/msg00075.html
-    https://lkml.org/lkml/2025/3/5/1100
-
-
-Regards,
-Markus
+Sebastian
 
