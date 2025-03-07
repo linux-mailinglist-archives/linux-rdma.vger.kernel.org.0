@@ -1,173 +1,228 @@
-Return-Path: <linux-rdma+bounces-8463-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8465-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 909BCA56550
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 11:29:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BF70A5673F
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 12:57:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F5C617791E
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 10:29:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A81A0178205
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 11:57:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A329C212FB0;
-	Fri,  7 Mar 2025 10:29:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCFD21883E;
+	Fri,  7 Mar 2025 11:57:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="B9wZSuE2"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="F6Ki8ji5";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XY89h6Uj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A590C20E70B;
-	Fri,  7 Mar 2025 10:29:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4271221859D;
+	Fri,  7 Mar 2025 11:57:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741343373; cv=none; b=sxWyV3lULyCTUr851kTTENWXNC4kQ92D1HXozK6yAa49yyTn6GWNPbQCg/pHFMwGdQfwDQK3n0EBQlJbmPIYd/NKkIfETOP89IyBhgskmncbzKiX+jEXeqJaGMlDhjv84pXxeqfDwsrilhFrXHEIYxYH3CXhIzC4mP1WvTG+k3k=
+	t=1741348652; cv=none; b=GJhMRxnvVOTk/e6rUD88A2iZH0yDYRKMTjMqmfCKbnqJPEgLT3D2UGX+aYewh4U4yaHCXV2Vy43k1lx3MeKV2srEwbqpZcd1bKt4rcCrkOBqhPlyDtnxnRbL38XzIGRS5DgHelXWbs66jeunAw8uPppAjyM4nP5J0Cx4E8ZhrUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741343373; c=relaxed/simple;
-	bh=tYxJZJX1pI5K8wuGH/dKzuf43ukR/Ftn3/DZih3kce0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FWUGVECo5P3aBFMN0R5PaqMKby22nEOZ085g37IjvvV8lCjh0mQIdFzF4yGZvsyp5eLf6eKsWKMRJYN+Ue2OGqGjsVjIjAJifKomYicxLgQiYheDm2Z/kkIhUdfdRePakVHNhxcA4mp2dUw9ntJGW7RjMl7I61o+QwlGLKlxX/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=B9wZSuE2; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id F38862038F2B; Fri,  7 Mar 2025 02:29:29 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F38862038F2B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1741343370;
-	bh=ZLRe45/BtNn0ARC6EnETrMfwdNw8kA9gyMB/wm3koXM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B9wZSuE2kzmUxireaWKyvy5UKChwThSlRZubsF9gBfpmi53lZEe37WpfRI+SoXT65
-	 WPQ9BJpyQg4GNw46xfuqWdUVYdiElM4jiSt0b8UmTRcH8Z3Owpsi83CKdnFtWn9c8H
-	 cHefJlMZgampk2OjFnv61yfu4AI9gh8CJitpl4KM=
-Date: Fri, 7 Mar 2025 02:29:29 -0800
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
-	paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
-	davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
-	longli@microsoft.com, ssengar@linux.microsoft.com,
-	linux-rdma@vger.kernel.org, daniel@iogearbox.net,
-	john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
-	hawk@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH net] net: mana: Support holes in device list reply msg
-Message-ID: <20250307102929.GA21981@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1741211181-6990-1-git-send-email-haiyangz@microsoft.com>
+	s=arc-20240116; t=1741348652; c=relaxed/simple;
+	bh=W/Wpv0jBnU3yLXstWDnFlAxNk4PTPAPOKzn4/w5N6EA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nAS6IH1DYplVArAKRlfqv82uXr1LUpthVsFToCar6Jo63w+DfYZZP5bA0V+n2dthPtsX4Jfvtdh9VDx2O76zUnBVwXouB34KazSoOc9+n2LGQWsg7IlzyqhRt9AKODH/QHROlCC9Yz47uO/sZbd4oGMKnmgYDspLEJJE/Xs2Bx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=F6Ki8ji5; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XY89h6Uj; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1741348648;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=o4NxQAuqs6oBuFAFcLsKPdXIysiB9HWSf5wYtY9oykU=;
+	b=F6Ki8ji5Cg7Cj5X+mkT5v2bBhMT4pWociDFqEgs07rCBVmBn3oP9jiPt6BY+4YNererklD
+	+fyhDtxCnC2Kq+MrPjTLDBjnzRGg4DE0U3blTDed/sHvGPYWumvU0oSWXXS3hypaG2AKqO
+	xbYDGEZgolW7Dg4iHuYCaoffbBoQlrolMzRXHi9oywHzgotxcZU5DTcpvzsZBH5303YI44
+	M0qDWKksqH50yh0+hTk+tONNiGrbUy+75L++h8N+DTqlOjsGTKrxzR4ubHtb5gCAb4qsR1
+	iJymH3B6YAtBKZWbfkvlOk02x2CfBKk32tMsdCM+/esedJNBnRRTD72AK39cwQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1741348648;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=o4NxQAuqs6oBuFAFcLsKPdXIysiB9HWSf5wYtY9oykU=;
+	b=XY89h6Uj7aaea+5yESF2BR1vWA+BpH/4D4ulpTHAzM9GreXt3JIyF4MrmF2avKEIsSYTyD
+	akccuyCNTbmqnUCA==
+To: linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Joe Damato <jdamato@fastly.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Simon Horman <horms@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH net-next v2 0/5] page_pool: Convert stats to u64_stats_t.
+Date: Fri,  7 Mar 2025 12:57:17 +0100
+Message-ID: <20250307115722.705311-1-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1741211181-6990-1-git-send-email-haiyangz@microsoft.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 05, 2025 at 01:46:21PM -0800, Haiyang Zhang wrote:
-> According to GDMA protocol, holes (zeros) are allowed at the beginning
-> or middle of the gdma_list_devices_resp message. The existing code
-> cannot properly handle this, and may miss some devices in the list.
-> 
-> To fix, scan the entire list until the num_of_devs are found, or until
-> the end of the list.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> 
-> ---
->  drivers/net/ethernet/microsoft/mana/gdma_main.c | 16 ++++++++++++----
->  include/net/mana/gdma.h                         | 11 +++++++----
->  2 files changed, 19 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> index c15a5ef4674e..df3ab31974b1 100644
-> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> @@ -134,9 +134,10 @@ static int mana_gd_detect_devices(struct pci_dev *pdev)
->  	struct gdma_list_devices_resp resp = {};
->  	struct gdma_general_req req = {};
->  	struct gdma_dev_id dev;
-> -	u32 i, max_num_devs;
-> +	int found_dev = 0;
->  	u16 dev_type;
->  	int err;
-> +	u32 i;
->  
->  	mana_gd_init_req_hdr(&req.hdr, GDMA_LIST_DEVICES, sizeof(req),
->  			     sizeof(resp));
-> @@ -148,12 +149,19 @@ static int mana_gd_detect_devices(struct pci_dev *pdev)
->  		return err ? err : -EPROTO;
->  	}
->  
-> -	max_num_devs = min_t(u32, MAX_NUM_GDMA_DEVICES, resp.num_of_devs);
-> -
-> -	for (i = 0; i < max_num_devs; i++) {
-> +	for (i = 0; i < GDMA_DEV_LIST_SIZE &&
-> +		found_dev < resp.num_of_devs; i++) {
->  		dev = resp.devs[i];
->  		dev_type = dev.type;
->  
-> +		/* Skip empty devices */
-> +		if (dev.as_uint32 == 0)
-> +			continue;
-> +
-> +		found_dev++;
-> +		dev_info(gc->dev, "Got devidx:%u, type:%u, instance:%u\n", i,
-> +			 dev.type, dev.instance);
-> +
->  		/* HWC is already detected in mana_hwc_create_channel(). */
->  		if (dev_type == GDMA_DEVICE_HWC)
->  			continue;
-> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-> index 90f56656b572..62e9d7673862 100644
-> --- a/include/net/mana/gdma.h
-> +++ b/include/net/mana/gdma.h
-> @@ -408,8 +408,6 @@ struct gdma_context {
->  	struct gdma_dev		mana_ib;
->  };
->  
-> -#define MAX_NUM_GDMA_DEVICES	4
-> -
->  static inline bool mana_gd_is_mana(struct gdma_dev *gd)
->  {
->  	return gd->dev_id.type == GDMA_DEVICE_MANA;
-> @@ -556,11 +554,15 @@ enum {
->  #define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG BIT(3)
->  #define GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT BIT(5)
->  
-> +/* Driver can handle holes (zeros) in the device list */
-> +#define GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP BIT(11)
-> +
->  #define GDMA_DRV_CAP_FLAGS1 \
->  	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
->  	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
->  	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG | \
-> -	 GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT)
-> +	 GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT | \
-> +	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP)
->  
->  #define GDMA_DRV_CAP_FLAGS2 0
->  
-> @@ -621,11 +623,12 @@ struct gdma_query_max_resources_resp {
->  }; /* HW DATA */
->  
->  /* GDMA_LIST_DEVICES */
-> +#define GDMA_DEV_LIST_SIZE 64
->  struct gdma_list_devices_resp {
->  	struct gdma_resp_hdr hdr;
->  	u32 num_of_devs;
->  	u32 reserved;
-> -	struct gdma_dev_id devs[64];
-> +	struct gdma_dev_id devs[GDMA_DEV_LIST_SIZE];
->  }; /* HW DATA */
->  
->  /* GDMA_REGISTER_DEVICE */
+This is a follow-up on
+        https://lore.kernel.org/all/20250213093925.x_ggH1aj@linutronix.de/
 
-Reviewed-by: Shradha Gupta <shradhagupta@microsoft.com>
-> -- 
-> 2.34.1
+to convert the page_pool statistics to u64_stats_t to avoid u64 related
+problems on 32bit architectures.
+While looking over it, the comment for recycle_stat_inc() says that it
+is safe to use in preemptible context. The 32bit update is split into
+two 32bit writes. This is "okay" if the value observed from the current
+CPU but cross CPU reads may observe inconsistencies if the lower part
+overflows and the upper part is not yet written.
+I explained this and added x86-32 assembly in
+	https://lore.kernel.org/all/20250226102703.3F7Aa2oK@linutronix.de/
+
+I don't know if it is ensured that only *one* update can happen because
+the stats are per-CPU and per NAPI device. But there will be now a
+warning on 32bit if this is really attempted in preemptible context.
+
+The placement of the counters is not affected by this change except on
+32bit where an additional sync member is added. For 64bit pahole output
+changes from
+| struct page_pool_recycle_stats {
+|         u64                        cached;               /*     0     8 */
+|         u64                        cache_full;           /*     8     8 */
+|         u64                        ring;                 /*    16     8 */
+|         u64                        ring_full;            /*    24     8 */
+|         u64                        released_refcnt;      /*    32     8 */
+|=20
+|         /* size: 40, cachelines: 1, members: 5 */
+|         /* last cacheline: 40 bytes */
+| };
+
+to
+| struct page_pool_recycle_stats {
+|         struct u64_stats_sync      syncp;                /*     0     0 */
+|         u64_stats_t                cached;               /*     0     8 */
+|         u64_stats_t                cache_full;           /*     8     8 */
+|         u64_stats_t                ring;                 /*    16     8 */
+|         u64_stats_t                ring_full;            /*    24     8 */
+|         u64_stats_t                released_refcnt;      /*    32     8 */
+|=20
+|         /* size: 40, cachelines: 1, members: 6 */
+|         /* last cacheline: 40 bytes */
+| };
+
+On 32bit struct u64_stats_sync grows by 4 bytes (plus addiional 20 with
+lockdep).
+
+For bench_page_pool_simple.ko loops=3D600000000 I neded up with, before:
+
+| time_bench: Type:for_loop Per elem: 1 cycles(tsc) 0.501 ns (step:0)
+| time_bench: Type:atomic_inc Per elem: 6 cycles(tsc) 3.303 ns (step:0)
+| time_bench: Type:lock Per elem: 28 cycles(tsc) 14.038 ns (step:0)
+| time_bench: Type:u64_stats_inc Per elem: 1 cycles(tsc) 0.565 ns (step:0)
+| time_bench: Type:this_cpu_inc Per elem: 1 cycles(tsc) 0.503 ns (step:0)
+|=20
+| bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use pa=
+ge_pool fast-path
+| time_bench: Type:no-softirq-page_pool01 Per elem: 19 cycles(tsc) 9.526 ns=
+ (step:0)
+| bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use pag=
+e_pool fast-path
+| time_bench: Type:no-softirq-page_pool02 Per elem: 46 cycles(tsc) 23.501 n=
+s (step:0)
+| bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_po=
+ol fast-path
+| time_bench: Type:no-softirq-page_pool03 Per elem: 121 cycles(tsc) 60.697 =
+ns (step:0)
+| bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+| bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_so=
+ftirq fast-path
+| time_bench: Type:tasklet_page_pool01_fast_path Per elem: 19 cycles(tsc) 9=
+.531 ns (step:0)
+| bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_sof=
+tirq fast-path
+| time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 45 cycles(tsc) 22=
+.594 ns (step:0)
+| bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq=
+ fast-path
+| time_bench: Type:tasklet_page_pool03_slow Per elem: 123 cycles(tsc) 61.96=
+9 ns (step:0)
+
+after:
+| time_bench: Type:for_loop Per elem: 1 cycles(tsc) 0.501 ns (step:0)
+| time_bench: Type:atomic_inc Per elem: 6 cycles(tsc) 3.324 ns (step:0)
+| time_bench: Type:lock Per elem: 28 cycles(tsc) 14.038 ns (step:0)
+| time_bench: Type:u64_stats_inc Per elem: 1 cycles(tsc) 0.565 ns (step:0)
+| time_bench: Type:this_cpu_inc Per elem: 1 cycles(tsc) 0.506 ns (step:0)
+|=20
+| bench_page_pool_simple: time_bench_page_pool01_fast_path(): Cannot use pa=
+ge_pool fast-path
+| time_bench: Type:no-softirq-page_pool01 Per elem: 18 cycles(tsc) 9.028 ns=
+ (step:0)
+| bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): Cannot use pag=
+e_pool fast-path
+| time_bench: Type:no-softirq-page_pool02 Per elem: 45 cycles(tsc) 22.714 n=
+s (step:0)
+| bench_page_pool_simple: time_bench_page_pool03_slow(): Cannot use page_po=
+ol fast-path
+| time_bench: Type:no-softirq-page_pool03 Per elem: 120 cycles(tsc) 60.428 =
+ns (step:0)
+| bench_page_pool_simple: pp_tasklet_handler(): in_serving_softirq fast-path
+| bench_page_pool_simple: time_bench_page_pool01_fast_path(): in_serving_so=
+ftirq fast-path
+| time_bench: Type:tasklet_page_pool01_fast_path Per elem: 18 cycles(tsc) 9=
+.024 ns (step:0)
+| bench_page_pool_simple: time_bench_page_pool02_ptr_ring(): in_serving_sof=
+tirq fast-path
+| time_bench: Type:tasklet_page_pool02_ptr_ring Per elem: 43 cycles(tsc) 22=
+.028 ns (step:0)
+| bench_page_pool_simple: time_bench_page_pool03_slow(): in_serving_softirq=
+ fast-path
+| time_bench: Type:tasklet_page_pool03_slow Per elem: 121 cycles(tsc) 60.73=
+6 ns (step:0)
+
+v1=E2=80=A6v2: https://lore.kernel.org/all/20250221115221.291006-1-bigeasy@=
+linutronix.de
+  - Clarified the cover mail, added stat for pahole and from bench_page_poo=
+l_simple.ko
+  - Corrected page_pool_alloc_stats vs page_pool_recycle_stats type in
+    the last patch.
+  - Copy the counter values outside of the do {} while loop and add them
+    later.
+  - Redid the mlnx5 patch to make it use generic infrastructure which is
+    now extended as part of this series.
+
+Sebastian Andrzej Siewior (5):
+  page_pool: Provide an empty page_pool_stats for disabled stats.
+  page_pool: Add per-queue statistics.
+  mlx5: Use generic code for page_pool statistics.
+  page_pool: Convert page_pool_recycle_stats to u64_stats_t.
+  page_pool: Convert page_pool_alloc_stats to u64_stats_t.
+
+ Documentation/networking/page_pool.rst        |   6 +-
+ .../ethernet/mellanox/mlx5/core/en_stats.c    |  87 +++----------
+ .../ethernet/mellanox/mlx5/core/en_stats.h    |  30 +----
+ include/linux/u64_stats_sync.h                |   5 +
+ include/net/page_pool/helpers.h               |  11 ++
+ include/net/page_pool/types.h                 |  31 +++--
+ net/core/page_pool.c                          | 122 ++++++++++++++----
+ net/core/page_pool_user.c                     |  22 ++--
+ 8 files changed, 163 insertions(+), 151 deletions(-)
+
+--=20
+2.47.2
+
 
