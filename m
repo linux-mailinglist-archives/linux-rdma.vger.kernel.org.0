@@ -1,35 +1,35 @@
-Return-Path: <linux-rdma+bounces-8467-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8468-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20256A56746
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 12:58:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CFC7A56745
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 12:58:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 997787A65E6
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 11:56:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A85DD18995F0
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 11:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 308D1218E8B;
-	Fri,  7 Mar 2025 11:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84DD92192EC;
+	Fri,  7 Mar 2025 11:57:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YUKGvG81";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="A0qpAypK"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kns1fqqO";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="FVDTnrGU"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB032185A3;
-	Fri,  7 Mar 2025 11:57:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E8F21885D;
+	Fri,  7 Mar 2025 11:57:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741348653; cv=none; b=furfHKX4og8FVbZypFJwNktUhS2ufYxOARXdatdZt6ObSJTd9O5O2PMb+mWrzvi9gc4CGkc7/XomSzTbD+FSNCmyhjL4KQbTZun78xzTmN7GEwXWPilqO4EJGefDUWMyc5XIkzip/J8ECnxpRHt4zhlXWVlrOfmj7daRZOr1sbo=
+	t=1741348654; cv=none; b=RxgHRtOuOhv962fFbusQ5Z8CWWyzw5TxCX5u2SYVz6TeP0kkhuK7GtNCrp5Sc3/fTb8C4MyK6oMjZRtjU3MVyssr/H51UQZ7dRUGRxYiEnQpxiLdXY2CPyOIrzfQ5lH++cvuOXnVUuZezU2wzIRG2RntXb2Xb/McAaA4CNmK8ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741348653; c=relaxed/simple;
-	bh=dljZ4cOb8/GOgkgZ2/1rvIfgX3pFCFsNtfibBTQntao=;
+	s=arc-20240116; t=1741348654; c=relaxed/simple;
+	bh=SGFIqls0s7Q+ZnLVrG3OonJaUsvj9jbcFUBkAx+fHz0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IEJnrV2fsvipfMeyaIERRTGlIpafVCg0s8nFygzo9PDX1qa1j1W1bj2Y/vy+kBKrRmJmmTDRLNCOdNvvrUVyBzP4sPKwGxXAaaJvzQoo9lPvdgP1kCXboKDYae7hYAaqpUWQhJVql6jusoBubjxFGD90twBedMK64pI3PcJR0hM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YUKGvG81; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=A0qpAypK; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=WqofvZXQ3abAt7fFgvv6GYnJD4WUuf8wZnOVEaFvz6+qv8FhZH01CLxOSPVDtNFzZKKSKpNliGmzdBdVvukRXcyGy4imuWmwyNsK/cBU34i5in5R5hISXrrYPCQRmdSbAoFMNUgVd74mZpmh7iV0gsQZ5Gv6tnfaF1YceDwGqvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kns1fqqO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=FVDTnrGU; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
@@ -39,21 +39,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9bKr3vCDKW7xcTLcHLP/2rkXN4326kqV+J1MZCmHiEM=;
-	b=YUKGvG81vEfE/IFx5Kj6BtN2d8TI8hwY+7LC0dFyjM/HOCorYjvaBW0rMLW+8Uhy8bOcaU
-	hEzbVAkSr/FzD7mxcB51VeWTzzpmyiAnOQN0sWVoXXm1n6EvYZgJGRrJY0CsfX4V0tWca1
-	sQ079I4Q4yVgXRukwSpcY7O9jbi5lbhgQ1mJOjPGJdppeCzsUox128WpBwJFcq84ZCaQez
-	P7y6hSPz8B1JnCHZVd5+pafmZuoZ7NTYyy7Ly6qLJfjdNG7YoVgDA8BUPY7/q9kMVsc1Yj
-	6+FB+NyZt+d8Tub4kH0akKNKNp30ht7PoixPqQud7GijDGLN3fC32t0oOfxPFw==
+	bh=RYo/FLo9hs1YKyzHeLhHqmwOWRKzqs+oW8a/uV1uk1A=;
+	b=kns1fqqO8GbYVQ5Ym4FyKmC+YAw0KZdLIc9+Kk43iEBjVLRO6zIGFAmIZqJvGiTW9MVk7e
+	3Tr8GepLrYesU3U90nMLvb5MMSfGL9qsMDPGfx+Lhg5JIUIbXGGHSUYlKK8sOxj8r7pPMo
+	uaOjL3A24tbNcaJnagRYGlhqKKF/pCX6AhQqnddC/tZDbc60iZ2MpqGA8RlPxK3mi0Y7//
+	tJLRbRnYI6cSDhuq9ms2I5KrIRan7iwZETWVSkaNUP0mAtQzS+47oCHyayDzEe34qURde0
+	ifZGVw0GxJx0RXWB7nK4iqwXUeYF/J2ZBJUNeACoPWGDzgPHyB6CykkI1HtXtg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1741348649;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9bKr3vCDKW7xcTLcHLP/2rkXN4326kqV+J1MZCmHiEM=;
-	b=A0qpAypKvOBqj9YNN14vSmnGLkpSrvya3YG2GrbEP3HexuMOHiAt9feGsR3G/zxrBngkCJ
-	brHHyabYEJWTGIDA==
+	bh=RYo/FLo9hs1YKyzHeLhHqmwOWRKzqs+oW8a/uV1uk1A=;
+	b=FVDTnrGUyN0mpj/QQutxwIRGj3WTQO/DjVeJMysVJkCqW+Apqboc8875Meh/O2uhfdp4hK
+	z4fbOvTmlPNWsHAA==
 To: linux-rdma@vger.kernel.org,
 	netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -71,9 +71,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Yunsheng Lin <linyunsheng@huawei.com>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH net-next v2 3/5] mlx5: Use generic code for page_pool statistics.
-Date: Fri,  7 Mar 2025 12:57:20 +0100
-Message-ID: <20250307115722.705311-4-bigeasy@linutronix.de>
+Subject: [PATCH net-next v2 4/5] page_pool: Convert page_pool_recycle_stats to u64_stats_t.
+Date: Fri,  7 Mar 2025 12:57:21 +0100
+Message-ID: <20250307115722.705311-5-bigeasy@linutronix.de>
 In-Reply-To: <20250307115722.705311-1-bigeasy@linutronix.de>
 References: <20250307115722.705311-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -84,294 +84,244 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-The statistics gathering code for page_pool statistics has multiple
-steps:
-- gather statistics from a channel via page_pool_get_stats() to an
-  on-stack structure.
-- copy this data to dedicated rq_stats.
-- copy the data from rq_stats global mlx5e_sw_stats structure, and merge
-  per-queue statistics into one counter.
-- Finally copy the data in specific order for the ethtool query (both
-  per queue and all queues summed up).
+Using u64 for statistics can lead to inconsistency on 32bit because an
+update and a read requires to access two 32bit values.
+This can be avoided by using u64_stats_t for the counters and
+u64_stats_sync for the required synchronisation on 32bit platforms. The
+synchronisation is a NOP on 64bit architectures.
 
-The downside here is that the individual counter types are expected to
-be u64 and if something changes, the code breaks. Also if additional
-counter are added to struct page_pool_stats then they are not
-automtically picked up by the driver but need to be manually added in
-all four spots.
+Use u64_stats_t for the counters in page_pool_recycle_stats.
+Add U64_STATS_ZERO, a static initializer for u64_stats_t.
 
-Remove the page_pool_stats related description from sw_stats_desc and
-rq_stats_desc.
-Replace the counters in mlx5e_sw_stats and mlx5e_rq_stats with struct
-page_pool_stats. This one will be empty if page_pool_stats is disabled.
-Let mlx5e_stats_update_stats_rq_page_pool() fetch the stats for
-page_pool twice: One for the summed up data, one for the individual
-queue.
-Publish the strings via page_pool_ethtool_stats_get_strings() and
-page_pool_ethtool_stats_get_strings_mq().
-Publish the counter via page_pool_ethtool_stats_get().
-
-Suggested-by: Joe Damato <jdamato@fastly.com>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- .../ethernet/mellanox/mlx5/core/en_stats.c    | 87 ++++---------------
- .../ethernet/mellanox/mlx5/core/en_stats.h    | 30 +------
- 2 files changed, 19 insertions(+), 98 deletions(-)
+ Documentation/networking/page_pool.rst |  6 +--
+ include/linux/u64_stats_sync.h         |  5 +++
+ include/net/page_pool/types.h          | 13 ++++---
+ net/core/page_pool.c                   | 52 ++++++++++++++++++--------
+ net/core/page_pool_user.c              | 10 ++---
+ 5 files changed, 58 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c b/drivers/n=
-et/ethernet/mellanox/mlx5/core/en_stats.c
-index 611ec4b6f3709..f99c5574b79b9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-@@ -37,9 +37,7 @@
- #include "en/ptp.h"
- #include "en/port.h"
+diff --git a/Documentation/networking/page_pool.rst b/Documentation/network=
+ing/page_pool.rst
+index 9d958128a57cb..5215fd51a334a 100644
+--- a/Documentation/networking/page_pool.rst
++++ b/Documentation/networking/page_pool.rst
+@@ -181,11 +181,11 @@ Stats
 =20
--#ifdef CONFIG_PAGE_POOL_STATS
- #include <net/page_pool/helpers.h>
--#endif
-=20
- void mlx5e_ethtool_put_stat(u64 **data, u64 val)
- {
-@@ -196,19 +194,6 @@ static const struct counter_desc sw_stats_desc[] =3D {
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_arfs_err) },
- #endif
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_recover) },
--#ifdef CONFIG_PAGE_POOL_STATS
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_fast) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_slow) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_slow_high_order) =
-},
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_empty) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_refill) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_waive) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_cached) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_cache_full) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_ring) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_ring_full) },
--	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_released_ref) },
--#endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_tls_decrypted_packets) },
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_tls_decrypted_bytes) },
-@@ -257,7 +242,7 @@ static const struct counter_desc sw_stats_desc[] =3D {
-=20
- static MLX5E_DECLARE_STATS_GRP_OP_NUM_STATS(sw)
- {
--	return NUM_SW_COUNTERS;
-+	return NUM_SW_COUNTERS + page_pool_ethtool_stats_get_count();
- }
-=20
- static MLX5E_DECLARE_STATS_GRP_OP_FILL_STRS(sw)
-@@ -266,6 +251,7 @@ static MLX5E_DECLARE_STATS_GRP_OP_FILL_STRS(sw)
-=20
- 	for (i =3D 0; i < NUM_SW_COUNTERS; i++)
- 		ethtool_puts(data, sw_stats_desc[i].format);
-+	*data =3D page_pool_ethtool_stats_get_strings(*data);
- }
-=20
- static MLX5E_DECLARE_STATS_GRP_OP_FILL_STATS(sw)
-@@ -276,6 +262,7 @@ static MLX5E_DECLARE_STATS_GRP_OP_FILL_STATS(sw)
- 		mlx5e_ethtool_put_stat(data,
- 				       MLX5E_READ_CTR64_CPU(&priv->stats.sw,
- 							    sw_stats_desc, i));
-+	*data =3D page_pool_ethtool_stats_get(*data, &priv->stats.sw.page_pool_st=
-ats);
- }
-=20
- static void mlx5e_stats_grp_sw_update_stats_xdp_red(struct mlx5e_sw_stats =
-*s,
-@@ -377,19 +364,6 @@ static void mlx5e_stats_grp_sw_update_stats_rq_stats(s=
-truct mlx5e_sw_stats *s,
- 	s->rx_arfs_err                +=3D rq_stats->arfs_err;
- #endif
- 	s->rx_recover                 +=3D rq_stats->recover;
--#ifdef CONFIG_PAGE_POOL_STATS
--	s->rx_pp_alloc_fast          +=3D rq_stats->pp_alloc_fast;
--	s->rx_pp_alloc_slow          +=3D rq_stats->pp_alloc_slow;
--	s->rx_pp_alloc_empty         +=3D rq_stats->pp_alloc_empty;
--	s->rx_pp_alloc_refill        +=3D rq_stats->pp_alloc_refill;
--	s->rx_pp_alloc_waive         +=3D rq_stats->pp_alloc_waive;
--	s->rx_pp_alloc_slow_high_order		+=3D rq_stats->pp_alloc_slow_high_order;
--	s->rx_pp_recycle_cached			+=3D rq_stats->pp_recycle_cached;
--	s->rx_pp_recycle_cache_full		+=3D rq_stats->pp_recycle_cache_full;
--	s->rx_pp_recycle_ring			+=3D rq_stats->pp_recycle_ring;
--	s->rx_pp_recycle_ring_full		+=3D rq_stats->pp_recycle_ring_full;
--	s->rx_pp_recycle_released_ref		+=3D rq_stats->pp_recycle_released_ref;
--#endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	s->rx_tls_decrypted_packets   +=3D rq_stats->tls_decrypted_packets;
- 	s->rx_tls_decrypted_bytes     +=3D rq_stats->tls_decrypted_bytes;
-@@ -496,34 +470,14 @@ static void mlx5e_stats_grp_sw_update_stats_qos(struc=
-t mlx5e_priv *priv,
- 	}
- }
-=20
--#ifdef CONFIG_PAGE_POOL_STATS
--static void mlx5e_stats_update_stats_rq_page_pool(struct mlx5e_channel *c)
-+static void mlx5e_stats_update_stats_rq_page_pool(struct mlx5e_sw_stats *s,
-+						  struct mlx5e_channel *c)
- {
- 	struct mlx5e_rq_stats *rq_stats =3D c->rq.stats;
--	struct page_pool *pool =3D c->rq.page_pool;
+ 	#ifdef CONFIG_PAGE_POOL_STATS
+ 	/* retrieve stats */
 -	struct page_pool_stats stats =3D { 0 };
++	struct page_pool_stats stats =3D { };
+ 	if (page_pool_get_stats(page_pool, &stats)) {
+ 		/* perhaps the driver reports statistics with ethool */
+-		ethtool_print_allocation_stats(&stats.alloc_stats);
+-		ethtool_print_recycle_stats(&stats.recycle_stats);
++		ethtool_print_allocation_stats(u64_stats_read(&stats.alloc_stats));
++		ethtool_print_recycle_stats(u64_stats_read(&stats.recycle_stats));
+ 	}
+ 	#endif
 =20
--	if (!page_pool_get_stats(pool, &stats))
--		return;
--
--	rq_stats->pp_alloc_fast =3D stats.alloc_stats.fast;
--	rq_stats->pp_alloc_slow =3D stats.alloc_stats.slow;
--	rq_stats->pp_alloc_slow_high_order =3D stats.alloc_stats.slow_high_order;
--	rq_stats->pp_alloc_empty =3D stats.alloc_stats.empty;
--	rq_stats->pp_alloc_waive =3D stats.alloc_stats.waive;
--	rq_stats->pp_alloc_refill =3D stats.alloc_stats.refill;
--
--	rq_stats->pp_recycle_cached =3D stats.recycle_stats.cached;
--	rq_stats->pp_recycle_cache_full =3D stats.recycle_stats.cache_full;
--	rq_stats->pp_recycle_ring =3D stats.recycle_stats.ring;
--	rq_stats->pp_recycle_ring_full =3D stats.recycle_stats.ring_full;
--	rq_stats->pp_recycle_released_ref =3D stats.recycle_stats.released_refcnt;
-+	page_pool_get_stats(c->rq.page_pool, &s->page_pool_stats);
-+	page_pool_get_stats(c->rq.page_pool, &rq_stats->page_pool_stats);
- }
--#else
--static void mlx5e_stats_update_stats_rq_page_pool(struct mlx5e_channel *c)
--{
--}
--#endif
-=20
- static MLX5E_DECLARE_STATS_GRP_OP_UPDATE_STATS(sw)
- {
-@@ -532,15 +486,13 @@ static MLX5E_DECLARE_STATS_GRP_OP_UPDATE_STATS(sw)
-=20
- 	memset(s, 0, sizeof(*s));
-=20
--	for (i =3D 0; i < priv->channels.num; i++) /* for active channels only */
--		mlx5e_stats_update_stats_rq_page_pool(priv->channels.c[i]);
--
- 	for (i =3D 0; i < priv->stats_nch; i++) {
- 		struct mlx5e_channel_stats *channel_stats =3D
- 			priv->channel_stats[i];
-=20
- 		int j;
-=20
-+		mlx5e_stats_update_stats_rq_page_pool(s, priv->channels.c[i]);
- 		mlx5e_stats_grp_sw_update_stats_rq_stats(s, &channel_stats->rq);
- 		mlx5e_stats_grp_sw_update_stats_xdpsq(s, &channel_stats->rq_xdpsq);
- 		mlx5e_stats_grp_sw_update_stats_ch_stats(s, &channel_stats->ch);
-@@ -2086,19 +2038,6 @@ static const struct counter_desc rq_stats_desc[] =3D=
- {
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, arfs_err) },
- #endif
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, recover) },
--#ifdef CONFIG_PAGE_POOL_STATS
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_fast) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_slow) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_slow_high_order) =
-},
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_empty) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_refill) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_waive) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_cached) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_cache_full) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_ring) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_ring_full) },
--	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_released_ref) },
--#endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, tls_decrypted_packets) },
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, tls_decrypted_bytes) },
-@@ -2446,7 +2385,8 @@ static MLX5E_DECLARE_STATS_GRP_OP_NUM_STATS(channels)
- 	       (NUM_RQ_XDPSQ_STATS * max_nch) +
- 	       (NUM_XDPSQ_STATS * max_nch) +
- 	       (NUM_XSKRQ_STATS * max_nch * priv->xsk.ever_used) +
--	       (NUM_XSKSQ_STATS * max_nch * priv->xsk.ever_used);
-+	       (NUM_XSKSQ_STATS * max_nch * priv->xsk.ever_used) +
-+	       page_pool_ethtool_stats_get_count() * max_nch;
+diff --git a/include/linux/u64_stats_sync.h b/include/linux/u64_stats_sync.h
+index 457879938fc19..086bd4a51cfe9 100644
+--- a/include/linux/u64_stats_sync.h
++++ b/include/linux/u64_stats_sync.h
+@@ -94,6 +94,8 @@ static inline void u64_stats_inc(u64_stats_t *p)
+ 	local64_inc(&p->v);
  }
 =20
- static MLX5E_DECLARE_STATS_GRP_OP_FILL_STRS(channels)
-@@ -2462,6 +2402,7 @@ static MLX5E_DECLARE_STATS_GRP_OP_FILL_STRS(channels)
- 	for (i =3D 0; i < max_nch; i++) {
- 		for (j =3D 0; j < NUM_RQ_STATS; j++)
- 			ethtool_sprintf(data, rq_stats_desc[j].format, i);
-+		page_pool_ethtool_stats_get_strings_mq(data, i);
- 		for (j =3D 0; j < NUM_XSKRQ_STATS * is_xsk; j++)
- 			ethtool_sprintf(data, xskrq_stats_desc[j].format, i);
- 		for (j =3D 0; j < NUM_RQ_XDPSQ_STATS; j++)
-@@ -2496,11 +2437,13 @@ static MLX5E_DECLARE_STATS_GRP_OP_FILL_STATS(channe=
-ls)
- 					      ch_stats_desc, j));
-=20
- 	for (i =3D 0; i < max_nch; i++) {
-+		struct mlx5e_rq_stats *rq_stats =3D &priv->channel_stats[i]->rq;
++#define U64_STATS_ZERO(_member, _name)	{}
 +
- 		for (j =3D 0; j < NUM_RQ_STATS; j++)
- 			mlx5e_ethtool_put_stat(
--				data, MLX5E_READ_CTR64_CPU(
--					      &priv->channel_stats[i]->rq,
-+				data, MLX5E_READ_CTR64_CPU(rq_stats,
- 					      rq_stats_desc, j));
-+		*data =3D page_pool_ethtool_stats_get(*data, &rq_stats->page_pool_stats);
- 		for (j =3D 0; j < NUM_XSKRQ_STATS * is_xsk; j++)
- 			mlx5e_ethtool_put_stat(
- 				data, MLX5E_READ_CTR64_CPU(
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h b/drivers/n=
-et/ethernet/mellanox/mlx5/core/en_stats.h
-index 5961c569cfe01..aebf4838a76c9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h
-@@ -33,6 +33,8 @@
- #ifndef __MLX5_EN_STATS_H__
- #define __MLX5_EN_STATS_H__
+ static inline void u64_stats_init(struct u64_stats_sync *syncp) { }
+ static inline void __u64_stats_update_begin(struct u64_stats_sync *syncp) =
+{ }
+ static inline void __u64_stats_update_end(struct u64_stats_sync *syncp) { }
+@@ -141,6 +143,9 @@ static inline void u64_stats_inc(u64_stats_t *p)
+ 		seqcount_init(&__s->seq);		\
+ 	} while (0)
 =20
-+#include <net/page_pool/types.h>
++#define U64_STATS_ZERO(_member, _name)			\
++	_member.seq	=3D SEQCNT_ZERO(#_name#_member.seq)
 +
- #define MLX5E_READ_CTR64_CPU(ptr, dsc, i) \
- 	(*(u64 *)((char *)ptr + dsc[i].offset))
- #define MLX5E_READ_CTR64_BE(ptr, dsc, i) \
-@@ -215,19 +217,7 @@ struct mlx5e_sw_stats {
- 	u64 ch_aff_change;
- 	u64 ch_force_irq;
- 	u64 ch_eq_rearm;
--#ifdef CONFIG_PAGE_POOL_STATS
--	u64 rx_pp_alloc_fast;
--	u64 rx_pp_alloc_slow;
--	u64 rx_pp_alloc_slow_high_order;
--	u64 rx_pp_alloc_empty;
--	u64 rx_pp_alloc_refill;
--	u64 rx_pp_alloc_waive;
--	u64 rx_pp_recycle_cached;
--	u64 rx_pp_recycle_cache_full;
--	u64 rx_pp_recycle_ring;
--	u64 rx_pp_recycle_ring_full;
--	u64 rx_pp_recycle_released_ref;
--#endif
-+	struct page_pool_stats page_pool_stats;
- #ifdef CONFIG_MLX5_EN_TLS
- 	u64 tx_tls_encrypted_packets;
- 	u64 tx_tls_encrypted_bytes;
-@@ -381,19 +371,7 @@ struct mlx5e_rq_stats {
- 	u64 arfs_err;
- #endif
- 	u64 recover;
--#ifdef CONFIG_PAGE_POOL_STATS
--	u64 pp_alloc_fast;
--	u64 pp_alloc_slow;
--	u64 pp_alloc_slow_high_order;
--	u64 pp_alloc_empty;
--	u64 pp_alloc_refill;
--	u64 pp_alloc_waive;
--	u64 pp_recycle_cached;
--	u64 pp_recycle_cache_full;
--	u64 pp_recycle_ring;
--	u64 pp_recycle_ring_full;
--	u64 pp_recycle_released_ref;
--#endif
-+	struct page_pool_stats page_pool_stats;
- #ifdef CONFIG_MLX5_EN_TLS
- 	u64 tls_decrypted_packets;
- 	u64 tls_decrypted_bytes;
+ static inline void __u64_stats_update_begin(struct u64_stats_sync *syncp)
+ {
+ 	preempt_disable_nested();
+diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
+index 6d55e6cf5d0db..daf989d01436e 100644
+--- a/include/net/page_pool/types.h
++++ b/include/net/page_pool/types.h
+@@ -6,6 +6,7 @@
+ #include <linux/dma-direction.h>
+ #include <linux/ptr_ring.h>
+ #include <linux/types.h>
++#include <linux/u64_stats_sync.h>
+ #include <net/netmem.h>
+=20
+ #define PP_FLAG_DMA_MAP		BIT(0) /* Should page_pool do the DMA
+@@ -114,6 +115,7 @@ struct page_pool_alloc_stats {
+=20
+ /**
+  * struct page_pool_recycle_stats - recycling (freeing) statistics
++ * @syncp:	synchronisations point for updates.
+  * @cached:	recycling placed page in the page pool cache
+  * @cache_full:	page pool cache was full
+  * @ring:	page placed into the ptr ring
+@@ -121,11 +123,12 @@ struct page_pool_alloc_stats {
+  * @released_refcnt:	page released (and not recycled) because refcnt > 1
+  */
+ struct page_pool_recycle_stats {
+-	u64 cached;
+-	u64 cache_full;
+-	u64 ring;
+-	u64 ring_full;
+-	u64 released_refcnt;
++	struct u64_stats_sync syncp;
++	u64_stats_t cached;
++	u64_stats_t cache_full;
++	u64_stats_t ring;
++	u64_stats_t ring_full;
++	u64_stats_t released_refcnt;
+ };
+=20
+ /**
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index 2290d80443d1e..312bdc5b5a8bf 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -37,21 +37,27 @@ DEFINE_STATIC_KEY_FALSE(page_pool_mem_providers);
+ #define BIAS_MAX	(LONG_MAX >> 1)
+=20
+ #ifdef CONFIG_PAGE_POOL_STATS
+-static DEFINE_PER_CPU(struct page_pool_recycle_stats, pp_system_recycle_st=
+ats);
++static DEFINE_PER_CPU(struct page_pool_recycle_stats, pp_system_recycle_st=
+ats) =3D {
++	U64_STATS_ZERO(.syncp, pp_system_recycle_stats),
++};
+=20
+ /* alloc_stat_inc is intended to be used in softirq context */
+ #define alloc_stat_inc(pool, __stat)	(pool->alloc_stats.__stat++)
+ /* recycle_stat_inc is safe to use when preemption is possible. */
+ #define recycle_stat_inc(pool, __stat)							\
+ 	do {										\
+-		struct page_pool_recycle_stats __percpu *s =3D pool->recycle_stats;	\
+-		this_cpu_inc(s->__stat);						\
++		struct page_pool_recycle_stats *s =3D this_cpu_ptr(pool->recycle_stats);=
+	\
++		u64_stats_update_begin(&s->syncp);					\
++		u64_stats_inc(&s->__stat);						\
++		u64_stats_update_end(&s->syncp);					\
+ 	} while (0)
+=20
+ #define recycle_stat_add(pool, __stat, val)						\
+ 	do {										\
+-		struct page_pool_recycle_stats __percpu *s =3D pool->recycle_stats;	\
+-		this_cpu_add(s->__stat, val);						\
++		struct page_pool_recycle_stats *s =3D this_cpu_ptr(pool->recycle_stats);=
+	\
++		u64_stats_update_begin(&s->syncp);					\
++		u64_stats_add(&s->__stat, val);						\
++		u64_stats_update_end(&s->syncp);					\
+ 	} while (0)
+=20
+ static const char pp_stats[][ETH_GSTRING_LEN] =3D {
+@@ -96,6 +102,7 @@ static const char pp_stats_mq[][ETH_GSTRING_LEN] =3D {
+ bool page_pool_get_stats(const struct page_pool *pool,
+ 			 struct page_pool_stats *stats)
+ {
++	unsigned int start;
+ 	int cpu =3D 0;
+=20
+ 	if (!stats)
+@@ -110,14 +117,24 @@ bool page_pool_get_stats(const struct page_pool *pool,
+ 	stats->alloc_stats.waive +=3D pool->alloc_stats.waive;
+=20
+ 	for_each_possible_cpu(cpu) {
++		u64 cached, cache_full, ring, ring_full, released_refcnt;
+ 		const struct page_pool_recycle_stats *pcpu =3D
+ 			per_cpu_ptr(pool->recycle_stats, cpu);
+=20
+-		stats->recycle_stats.cached +=3D pcpu->cached;
+-		stats->recycle_stats.cache_full +=3D pcpu->cache_full;
+-		stats->recycle_stats.ring +=3D pcpu->ring;
+-		stats->recycle_stats.ring_full +=3D pcpu->ring_full;
+-		stats->recycle_stats.released_refcnt +=3D pcpu->released_refcnt;
++		do {
++			start =3D u64_stats_fetch_begin(&pcpu->syncp);
++			cached =3D u64_stats_read(&pcpu->cached);
++			cache_full =3D u64_stats_read(&pcpu->cache_full);
++			ring =3D u64_stats_read(&pcpu->ring);
++			ring_full =3D u64_stats_read(&pcpu->ring_full);
++			released_refcnt =3D u64_stats_read(&pcpu->released_refcnt);
++		} while (u64_stats_fetch_retry(&pcpu->syncp, start));
++
++		u64_stats_add(&stats->recycle_stats.cached, cached);
++		u64_stats_add(&stats->recycle_stats.cache_full, cache_full);
++		u64_stats_add(&stats->recycle_stats.ring, ring);
++		u64_stats_add(&stats->recycle_stats.ring_full, ring_full);
++		u64_stats_add(&stats->recycle_stats.released_refcnt, released_refcnt);
+ 	}
+=20
+ 	return true;
+@@ -162,11 +179,11 @@ u64 *page_pool_ethtool_stats_get(u64 *data, const voi=
+d *stats)
+ 	*data++ =3D pool_stats->alloc_stats.empty;
+ 	*data++ =3D pool_stats->alloc_stats.refill;
+ 	*data++ =3D pool_stats->alloc_stats.waive;
+-	*data++ =3D pool_stats->recycle_stats.cached;
+-	*data++ =3D pool_stats->recycle_stats.cache_full;
+-	*data++ =3D pool_stats->recycle_stats.ring;
+-	*data++ =3D pool_stats->recycle_stats.ring_full;
+-	*data++ =3D pool_stats->recycle_stats.released_refcnt;
++	*data++ =3D u64_stats_read(&pool_stats->recycle_stats.cached);
++	*data++ =3D u64_stats_read(&pool_stats->recycle_stats.cache_full);
++	*data++ =3D u64_stats_read(&pool_stats->recycle_stats.ring);
++	*data++ =3D u64_stats_read(&pool_stats->recycle_stats.ring_full);
++	*data++ =3D u64_stats_read(&pool_stats->recycle_stats.released_refcnt);
+=20
+ 	return data;
+ }
+@@ -270,9 +287,14 @@ static int page_pool_init(struct page_pool *pool,
+=20
+ #ifdef CONFIG_PAGE_POOL_STATS
+ 	if (!(pool->slow.flags & PP_FLAG_SYSTEM_POOL)) {
++		unsigned int cpu;
++
+ 		pool->recycle_stats =3D alloc_percpu(struct page_pool_recycle_stats);
+ 		if (!pool->recycle_stats)
+ 			return -ENOMEM;
++
++		for_each_possible_cpu(cpu)
++			u64_stats_init(&per_cpu_ptr(pool->recycle_stats, cpu)->syncp);
+ 	} else {
+ 		/* For system page pool instance we use a singular stats object
+ 		 * instead of allocating a separate percpu variable for each
+diff --git a/net/core/page_pool_user.c b/net/core/page_pool_user.c
+index 6677e0c2e2565..0d038c0c8996d 100644
+--- a/net/core/page_pool_user.c
++++ b/net/core/page_pool_user.c
+@@ -149,15 +149,15 @@ page_pool_nl_stats_fill(struct sk_buff *rsp, const st=
+ruct page_pool *pool,
+ 	    nla_put_uint(rsp, NETDEV_A_PAGE_POOL_STATS_ALLOC_WAIVE,
+ 			 stats.alloc_stats.waive) ||
+ 	    nla_put_uint(rsp, NETDEV_A_PAGE_POOL_STATS_RECYCLE_CACHED,
+-			 stats.recycle_stats.cached) ||
++			 u64_stats_read(&stats.recycle_stats.cached)) ||
+ 	    nla_put_uint(rsp, NETDEV_A_PAGE_POOL_STATS_RECYCLE_CACHE_FULL,
+-			 stats.recycle_stats.cache_full) ||
++			 u64_stats_read(&stats.recycle_stats.cache_full)) ||
+ 	    nla_put_uint(rsp, NETDEV_A_PAGE_POOL_STATS_RECYCLE_RING,
+-			 stats.recycle_stats.ring) ||
++			 u64_stats_read(&stats.recycle_stats.ring)) ||
+ 	    nla_put_uint(rsp, NETDEV_A_PAGE_POOL_STATS_RECYCLE_RING_FULL,
+-			 stats.recycle_stats.ring_full) ||
++			 u64_stats_read(&stats.recycle_stats.ring_full)) ||
+ 	    nla_put_uint(rsp, NETDEV_A_PAGE_POOL_STATS_RECYCLE_RELEASED_REFCNT,
+-			 stats.recycle_stats.released_refcnt))
++			 u64_stats_read(&stats.recycle_stats.released_refcnt)))
+ 		goto err_cancel_msg;
+=20
+ 	genlmsg_end(rsp, hdr);
 --=20
 2.47.2
 
