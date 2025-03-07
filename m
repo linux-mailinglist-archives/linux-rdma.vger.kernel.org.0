@@ -1,166 +1,117 @@
-Return-Path: <linux-rdma+bounces-8472-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8473-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FC62A5692E
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 14:43:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEF1CA56946
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 14:46:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 503E4188D0F6
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 13:43:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFC703B24D4
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Mar 2025 13:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDF7621A42B;
-	Fri,  7 Mar 2025 13:43:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DA91219A79;
+	Fri,  7 Mar 2025 13:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GiwRX6Vh"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="vrtbW5Tf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1B7EBE
-	for <linux-rdma@vger.kernel.org>; Fri,  7 Mar 2025 13:43:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB6C2581;
+	Fri,  7 Mar 2025 13:46:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741355024; cv=none; b=iGmM3Ln1PZpPH5SG3vC5UGFxPpecTSesPeQncI8jrVuk6LKBOqVf7FFAqt+twYdW2XQcCGSaER/A3a7O0h+qpB0dHH22Kp41ESCF7sF7EwzLXRoMyvM3vx4B2WCPEz2gRUdjFulOq52n4mwLIIozVuj7OtAisCIyVILqB3fkKvM=
+	t=1741355187; cv=none; b=qAxw9NBrzGysULXewhoF8aHGdde1nLIF4daMPDXJBHEEv8gGKbchMkk0axpYv6w3vJaOpJMcat9pIhFwCSe6k2vR9h7+R3FmlwJsw09JVAA2TFiZ1iy4vQ76+HDaRsKhkxD6Lsw8cAoJ41jipQJQUMp2kTaUK7N+8PS2J60EUt8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741355024; c=relaxed/simple;
-	bh=RMX6yGqcHOhsgOCJ6x/F+StW/OYEZ90JZEE/qB4ymTs=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=HTdEH1MzA3eYzlVnrkFzeLSQaPZeROA9WCvGjlYZ4m3x6mtihGYTAEWW5y+FjrfOVt+WXSfqT+2IWgFdP1h0tXiSYPlscDSBc1NPVQHDcG/MmS3RRHZxbWyEwwmxcxiL+S6FZhTSIP/MqcSG/9sRiUt9gJmJbsooZ54HUdCzYfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GiwRX6Vh; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741355024; x=1772891024;
-  h=date:from:to:cc:subject:message-id;
-  bh=RMX6yGqcHOhsgOCJ6x/F+StW/OYEZ90JZEE/qB4ymTs=;
-  b=GiwRX6VhS5CwzqYIjvON+dTPql+xJapMEFiUSHhHlojeldQuuTinAc9/
-   scpeUZPV4a9wIcmS7iIu5Ip1cLtjjcKq3JaQONgjg9DqtZa/8rZTeLlmB
-   IGu55KVL7tn9dNfzjPYIa/4E293n/G/uHNF0LhfOhUW4UaaUHbc9wJRix
-   HVn4YiQxGs81P6n8mCtq6QV0tnexdPhEpD3yg+K4ndZon+cu8gJePZgTz
-   biG0Mk7MC00LcUC0DTDpzY+NF+ZARePLuE+2w6B8/1WCpracfbxbGgTOd
-   SKFu5oW8Ph/wo5Saw2qNURFAtD+ud+Eh8tSTr929ZH0zN3vXo5EMFUt8x
-   A==;
-X-CSE-ConnectionGUID: hDgpuHFjRtSeGe2zxtMT9w==
-X-CSE-MsgGUID: 70MTKL2QQGqG30E2fo+zMg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11365"; a="42437779"
-X-IronPort-AV: E=Sophos;i="6.14,229,1736841600"; 
-   d="scan'208";a="42437779"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2025 05:43:43 -0800
-X-CSE-ConnectionGUID: eDPlRjsRQrS4F5qo2Wpm0g==
-X-CSE-MsgGUID: EwZJL2rFQMq2QRklIxL0Uw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,229,1736841600"; 
-   d="scan'208";a="120018162"
-Received: from lkp-server02.sh.intel.com (HELO a4747d147074) ([10.239.97.151])
-  by fmviesa009.fm.intel.com with ESMTP; 07 Mar 2025 05:43:41 -0800
-Received: from kbuild by a4747d147074 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tqXzG-0000XB-37;
-	Fri, 07 Mar 2025 13:43:38 +0000
-Date: Fri, 07 Mar 2025 21:42:43 +0800
-From: kernel test robot <lkp@intel.com>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- 83437689249e6a17b25e27712fbee292e42e7855
-Message-ID: <202503072136.K5NpiyVj-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1741355187; c=relaxed/simple;
+	bh=xe3dq1lMwCjuvas4NThUEA2HM04dL8I/ZpvWQshvHDk=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=jU4019+fDR2xM0MoZt3QU9izQlwkqlSdmoVu56iTFBUXGGXwtkR/zuEMD288yTCu5YUMXR1hTGMH+lzvMoIxem/8CxIAu/1v0Aw8xmHsilt3gQWAHLzjfA1IC8krga3Igd3+RnBos2plJ73zIl99Da7UIuJcI9bLrJ5gFC/OgeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=vrtbW5Tf; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1741355149; x=1741959949; i=markus.elfring@web.de;
+	bh=xe3dq1lMwCjuvas4NThUEA2HM04dL8I/ZpvWQshvHDk=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=vrtbW5TfKJndneNcCEsATPw+2baTk8MpsW2GdZwgiY7A5P6n4RIEVv5mFz87p0vj
+	 Oge8j2btcIQr+M3yGxbxHBzUK3SAL+R+xtF5zU/s0gYOnRzQT5ahcdM/irLWhfv73
+	 pYRR5NgP2kGtjigBBfGV0MOiQvCkxXWWUm9S7Io3omPiRdeD1Js/B245Opgu4qKdd
+	 OUAj4mXW2quI66zdQ+pzAS/E7G3a+qxIJdD7nlfw4wigURiT8lLYBK3Eg46+wvP8H
+	 6sLlcsB2S01UWlrXexTgdIpLoM8LsgRQ3LMRJStn3oSpDmkF8WAEfrMOrlIbVV8UC
+	 ZTHy9DogR9ibU1FoBA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.70.70]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MN6FV-1taGDp47oj-00NlvY; Fri, 07
+ Mar 2025 14:45:49 +0100
+Message-ID: <153efbda-0e3c-493a-bbb1-a60341acb557@web.de>
+Date: Fri, 7 Mar 2025 14:45:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: vulab@iscas.ac.cn, linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>,
+ Tariq Toukan <tariqt@nvidia.com>
+References: <20250307021820.2646-1-vulab@iscas.ac.cn>
+Subject: Re: [PATCH net v4?] net/mlx5: handle errors in
+ mlx5_chains_create_table()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20250307021820.2646-1-vulab@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:tmYN2Pjofv/eiFN8bLxU4cNyOa4V1SX0XeJ73cPWkyyhv2sJ43M
+ iJae9DYN8uWgVwUGhoSESz1uk+EEbybfaSwQUIIdd44iYGr5etE5upuzx0A1Bp6441ggAlA
+ M9QJRVr4jWahZLO5F9TaAZIxiYLzaAtgDh/qTl5zhlmwiXXpME2FvU1Je5oRAdwRGuYuI1a
+ iz/l4A5b0DBDDLdhtST5w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:jYSBPqJ6fR8=;G4NRJm53FT3Ae4/aC4bR2KlNT/0
+ l/apEsQ/2l57MUGUXpGDaERnaq1AOf2v3OVHtD0vKBgiJLE4pqHe6i3FM+Okzwvcy1dQTBIO0
+ /Z/IxFewHKFbi+6BAhJ1GWDOZt0wmn3jHo2GSGzghEe3+B9nnGKcylpvhDEFPc4BJGD+zYOkj
+ WzAOYo/X3/tw63S0pmalZ21qEuw91cHgUp4LEHVMI4tX1odUAu2DCixbYNq/N6YaRQeZbVESs
+ Nf3/8pnN4+SrTu7DJQrSQOMavEpYFpXVV3HM0encZ6n4t6ymaaO/wU7JE4FyMFiaABysgRl/Y
+ v7QSkBghO2d89NH4ONvcMkPWnLD0Myu0OP7n7EfOgOfSeq9KK4DCvFJmVLkiVoXg4sj1yxl41
+ eopPLWOTqzG1yGd6WKf6simSY8YmZxN7lNbGYjFfvgMP7t5iAr/CdFcOWm7u4/69X9D3qk89Y
+ o8Vecf/1xGPnPYR3HgFuwXzkvt0JgXbJ7p2xx+hgeMIpDrBxLHbaZyF9+7LgcoSJO4RrCKE6D
+ sVka5CXqSrsx2j5FzOAuXd1iJWkFR4x+/gqA7AcGa/KLD2/8uhhpd+4taZk8nmILC2AKI3Nhk
+ DmYaM4bsFp9q0kssRBsIbHvqxUEotKaP77KzOTtqRqxTRLswi9MPOV3/VC6Qv5PtZK9eXH1LS
+ +bXHXIdVj56SDCwYZ9hnBSThuNhA/eGRFfM//9XFK6dZmGhd77BsvbjHn0ifTe+wBslZZ0ZxI
+ pVBHitdpcbwQEXPSqAugahpnEG9g8ACfyunh9yRH9ItLLiLJmA94ZrDkL6bxhqm9Sx6IdEPT8
+ UNCV+iWXKk52+BsS4Ly8yIXneiWU3wA69RjYPRb7q0WdaiQFfFTrHokr65HKQCqQrby26FtM5
+ e6ROzd5kfm1QPteOpDYtmO3lEMEsmXfR1aZZj/eKN5kkiSP4U7yCQ9+w1QM2KOyvxxpSdE3C+
+ 6J+5OFYGAYaSRkFBMpzJWaSPL2ctO7LybahJprJl8zaHegoQPhjbw7P1lcVrvshsHJ6Xv6HcC
+ 1DWanzhP/69Y26NawIRIfGbRA7HmkZAsTgzB5CTLd1WMrxLBtue3mRPUO21z1SSRmL4n57OEX
+ hj2q877lDSQebXMLSOsfWC0ZRjIOKE4U1eGoLTJTMjoy6xwm6KQCL1zyHR5ecTp6w613kGAfy
+ AsLmuyt0d/+ihX1pnF9gBjB5p7EkSYDz9fcvLDnr2dzZXb6nL/GgqINidrKCnBY7Ek0d17jjp
+ bDw5xy370+9DaXm7aY4qK92TXMOzWiDEh74e/BQ64BtUU/lsbNVu4rIptOUu0rsRNbTO2KkNA
+ NcFKFwjMyxdyVnhFaE58lrZ6zEBhFPN+/+dXS32nk3jSI/hfnxVNlBYEwXCsmFBalGdAumyS0
+ 5hFJ73QGYvQTJV4M2T3nZWvuDFHKrjBg/r0vNI2lG3zGnl+B1SUW4SsSRokDe48VhSVV/lMsd
+ qFJHeiw==
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: 83437689249e6a17b25e27712fbee292e42e7855  RDMA/erdma: Prevent use-after-free in erdma_accept_newconn()
+I suggest to reconsider the patch version number selection once more.
 
-elapsed time: 1449m
 
-configs tested: 72
-configs skipped: 1
+> In mlx5_chains_create_table(), the return value of mlx5_get_fdb_sub_ns()
+> and mlx5_get_flow_namespace() must be checked to prevent NULL pointer
+> dereferences. If either function fails, the function should log error
+> message with mlx5_core_warn() and return error pointer.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Please improve such a change description another bit.
 
-tested configs:
-alpha                            allnoconfig    gcc-14.2.0
-arc                              allnoconfig    gcc-13.2.0
-arc                  randconfig-001-20250306    gcc-13.2.0
-arc                  randconfig-002-20250306    gcc-13.2.0
-arm                              allnoconfig    clang-17
-arm                  randconfig-001-20250306    gcc-14.2.0
-arm                  randconfig-002-20250306    gcc-14.2.0
-arm                  randconfig-003-20250306    gcc-14.2.0
-arm                  randconfig-004-20250306    clang-18
-arm64                            allnoconfig    gcc-14.2.0
-arm64                randconfig-001-20250306    gcc-14.2.0
-arm64                randconfig-002-20250306    gcc-14.2.0
-arm64                randconfig-003-20250306    gcc-14.2.0
-arm64                randconfig-004-20250306    gcc-14.2.0
-csky                             allnoconfig    gcc-14.2.0
-csky                 randconfig-001-20250307    gcc-14.2.0
-csky                 randconfig-002-20250307    gcc-14.2.0
-hexagon                          allnoconfig    clang-21
-hexagon              randconfig-001-20250307    clang-21
-hexagon              randconfig-002-20250307    clang-21
-i386       buildonly-randconfig-001-20250306    clang-19
-i386       buildonly-randconfig-002-20250306    clang-19
-i386       buildonly-randconfig-003-20250306    clang-19
-i386       buildonly-randconfig-004-20250306    gcc-12
-i386       buildonly-randconfig-005-20250306    gcc-12
-i386       buildonly-randconfig-006-20250306    clang-19
-loongarch                        allnoconfig    gcc-14.2.0
-loongarch            randconfig-001-20250307    gcc-14.2.0
-loongarch            randconfig-002-20250307    gcc-14.2.0
-nios2                randconfig-001-20250307    gcc-14.2.0
-nios2                randconfig-002-20250307    gcc-14.2.0
-openrisc                         allnoconfig    gcc-14.2.0
-parisc                           allnoconfig    gcc-14.2.0
-parisc               randconfig-001-20250307    gcc-14.2.0
-parisc               randconfig-002-20250307    gcc-14.2.0
-powerpc                          allnoconfig    gcc-14.2.0
-powerpc              randconfig-001-20250307    gcc-14.2.0
-powerpc              randconfig-002-20250307    clang-21
-powerpc              randconfig-003-20250307    clang-19
-powerpc64            randconfig-001-20250307    clang-21
-powerpc64            randconfig-002-20250307    gcc-14.2.0
-powerpc64            randconfig-003-20250307    gcc-14.2.0
-riscv                            allnoconfig    gcc-14.2.0
-riscv                randconfig-001-20250306    clang-18
-riscv                randconfig-002-20250306    gcc-14.2.0
-s390                            allmodconfig    clang-19
-s390                             allnoconfig    clang-15
-s390                            allyesconfig    gcc-14.2.0
-s390                 randconfig-001-20250306    gcc-14.2.0
-s390                 randconfig-002-20250306    clang-19
-sh                              allmodconfig    gcc-14.2.0
-sh                              allyesconfig    gcc-14.2.0
-sh                   randconfig-001-20250306    gcc-14.2.0
-sh                   randconfig-002-20250306    gcc-14.2.0
-sparc                           allmodconfig    gcc-14.2.0
-sparc                randconfig-001-20250306    gcc-14.2.0
-sparc                randconfig-002-20250306    gcc-14.2.0
-sparc64              randconfig-001-20250306    gcc-14.2.0
-sparc64              randconfig-002-20250306    gcc-14.2.0
-um                               allnoconfig    clang-18
-um                   randconfig-001-20250306    gcc-12
-um                   randconfig-002-20250306    clang-16
-x86_64                           allnoconfig    clang-19
-x86_64     buildonly-randconfig-001-20250306    gcc-11
-x86_64     buildonly-randconfig-002-20250306    clang-19
-x86_64     buildonly-randconfig-003-20250306    clang-19
-x86_64     buildonly-randconfig-004-20250306    clang-19
-x86_64     buildonly-randconfig-005-20250306    clang-19
-x86_64     buildonly-randconfig-006-20250306    gcc-12
-x86_64                             defconfig    gcc-11
-xtensa               randconfig-001-20250306    gcc-14.2.0
-xtensa               randconfig-002-20250306    gcc-14.2.0
+See also:
+https://web.git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.14-rc5#n94
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+Markus
 
