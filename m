@@ -1,448 +1,146 @@
-Return-Path: <linux-rdma+bounces-8492-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8493-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CA2AA578E7
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Mar 2025 08:26:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14F44A57A0B
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Mar 2025 13:01:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C21FD18961BA
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Mar 2025 07:26:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D443A7A7E92
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Mar 2025 12:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F1FC185920;
-	Sat,  8 Mar 2025 07:26:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gd0kE3MI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A51AD1B4235;
+	Sat,  8 Mar 2025 12:01:25 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF131392
-	for <linux-rdma@vger.kernel.org>; Sat,  8 Mar 2025 07:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC360250F8
+	for <linux-rdma@vger.kernel.org>; Sat,  8 Mar 2025 12:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741418766; cv=none; b=b0WGsGD+zl9emSzr7D51YR8NIoV16/pmLmqBY53zev20CTiiLcpl3BGAA36GcJFObBSYIEGp+nX7ysZhSBC8yFkK9VC628Zl5FiTXFqCs4thc/4sStiCn2BR2bJV/mFRVZl0uOc0HnY1YWEzx1Ze8i9XbOZCpJJg14mDoUzawnQ=
+	t=1741435285; cv=none; b=Gf8RgjGcOtPp9KV4F2Tm9TsMLHkeXOgXwbjOqg6RmZ+BDp4+NJUGLKVxZJuNOsytZ62w58tMt4naHdVjqxJfn4MliUB38J1niD0E+a6v9DtmGnTdIoH6Ye7Bd4uvHlvoDE6RspOgUnjJjl6XrV+9s2pJtoD8JiAAl5yyhB+3i80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741418766; c=relaxed/simple;
-	bh=7Yx9NVg4q+F5rMeYsV8iL5A/aZrfoVgg5O9NCK+fEUM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g3CBOZCmOvdI0kxsrlMBHhRTjnSu/WbS4E315zwJvhWDNoBXxi3T0ZMx1YOWi1lHPr+uMSKkeUMj1ouGrx1kEr1C17D726V5dNwWa+8XMrG2gJEbk4N5TtCNafHKRSSpZ1u7EvLbB1Yf1L33Ye8ePB2rGc0A8vQR8RdBlSZgdJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gd0kE3MI; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <42bdf595-4b4d-475f-9dcf-13176bdaa1ea@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1741418758;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3Lq0P8k2WN/MSEFqOAOYjrB/rOM/TpIBK6qJn6iA+qc=;
-	b=gd0kE3MI0QWgcwXRp1Rqm2KD1y+N0O6Ymp0MdCJmZ5TOmtj/2lQvplluLd8/lK/+samr+i
-	19bNswKqN6rFY9WFXgxjaBGXPuTEOS8QKM5Xzqhe66TgV9+Fty+xNyPbuFWBQmA6H8yLp/
-	recn0EsUzqG/Ft8b30atiOqyuLTzZKA=
-Date: Sat, 8 Mar 2025 08:25:55 +0100
+	s=arc-20240116; t=1741435285; c=relaxed/simple;
+	bh=oEMB7zmAPtFyW+y3RmDNJpKUSGwYxKw5LrT/CvzxVaY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=m/sRqqHKEew6V5EdJZ1POW/1We2ocYBABg9cVre6rAuEG0XEfE7KfGsCISkkoXYI7FjQv0T2jKLafs6OBwdyMxDOGHEd76tnoqipQgwvB2qed24+DFaBslUIPkWWqjVhT9u9T8537ALU2ExBlgVIvF8WUxPtHeN1VfJWbu2cQBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3d438be189bso23862445ab.3
+        for <linux-rdma@vger.kernel.org>; Sat, 08 Mar 2025 04:01:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741435283; x=1742040083;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FezIzjeURwhhJLh5k3k/9R0bmC8nS2tunASdakojAms=;
+        b=dPfSNrG5kZa0T5whmXiCnBrpkVCYw7nUj8SruuDBMV8cbwvJaIfjTGjyHiU4l9hDXL
+         QZdMTplhIvs99UTolEDYTfM1GpYfONTHO/Ld0eiGsjE7FfKXtTnicLwSCynUS8Yh9W5e
+         lamhbpS3vW8kM/AkIczMiwla5OK431johWXkUM7rSALOFjNWH9Y0wd7xgg2lnaeR+ZdH
+         nfJ/ggwZV0ydypD9HZgwTZ4qGDb3m/TWdsSxDFPnK/+gM/ljGObjjhfFi3uszO2bkSni
+         myzG5CLiv0wj9YzEV+IlgJE8UXJNIMT+/0+CthAhdCKNqfwidWvj6rQSyGhpKpDjBFv1
+         NOIg==
+X-Forwarded-Encrypted: i=1; AJvYcCV1N2kgxJuVouVE29Sn2gcDiVIuL/Hp6oK4qQ1+1vyEL15rekz9VgfjzWUOjJcsgq6IkRF46+PruhSt@vger.kernel.org
+X-Gm-Message-State: AOJu0YzgZaHpKPJifDdGCu4PZK4f3c4CimwCr2V9GulJZF5tvY/nxDgK
+	+PZkxC02bImk6Y60AP4lxsgGpxe6a2+lwDDUnot/KukeM3vA/VORO1RVwx5rTpH2es9c5fz7iD7
+	TCzafZONkh/aKLEBOtUYrKsPNZCNctXQ+PSPMM8nUp9+LpAP/XbsD/+k=
+X-Google-Smtp-Source: AGHT+IHGhbdI4YkXP/VSzNO8c99jmeV/l6LSj9wSD+cDKlAvDa70YmN+4NCf7kxdzUb+uT3zQLRGN1oag5Ez4eSg633/AfxaHry2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH rdma-next v1 1/6] RDMA/uverbs: Introduce UCAP (User
- CAPabilities) API
-To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
-Cc: Chiara Meiohas <cmeiohas@nvidia.com>, linux-rdma@vger.kernel.org,
- Yishai Hadas <yishaih@nvidia.com>
-References: <cover.1741261611.git.leon@kernel.org>
- <5a1379187cd21178e8554afc81a3c941f21af22f.1741261611.git.leon@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <5a1379187cd21178e8554afc81a3c941f21af22f.1741261611.git.leon@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6e02:17cc:b0:3d4:3ac3:4ca2 with SMTP id
+ e9e14a558f8ab-3d44196ea56mr76108955ab.16.1741435283065; Sat, 08 Mar 2025
+ 04:01:23 -0800 (PST)
+Date: Sat, 08 Mar 2025 04:01:23 -0800
+In-Reply-To: <00000000000086d0e406184c8e78@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67cc3193.050a0220.14db68.001e.GAE@google.com>
+Subject: Re: [syzbot] [rdma?] WARNING in rxe_pool_cleanup
+From: syzbot <syzbot+221e213bf17f17e0d6cd@syzkaller.appspotmail.com>
+To: jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, yanjun.zhu@linux.dev, zyjzyj2000@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-在 2025/3/6 12:51, Leon Romanovsky 写道:
-> From: Chiara Meiohas <cmeiohas@nvidia.com>
-> 
-> Implement a new User CAPabilities (UCAP) API to provide fine-grained
-> control over specific firmware features.
-> 
-> This approach offers more granular capabilities than the existing Linux
-> capabilities, which may be too generic for certain FW features.
-> 
-> This mechanism represents each capability as a character device with
-> root read-write access. Root processes can grant users special
-> privileges by allowing access to these character devices (e.g., using
-> chown).
+syzbot has found a reproducer for the following issue on:
 
-Hi, Chiara
+HEAD commit:    21e4543a2e2f Merge tag 'slab-for-6.14-rc5' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15db14b7980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2040405600e83619
+dashboard link: https://syzkaller.appspot.com/bug?extid=221e213bf17f17e0d6cd
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14819878580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13db14b7980000
 
-I read this patch-set carefully. If I get this patch-set correctly, this 
-patch-set introduces a new User CAPabilities API to control specific 
-firmware feature.
-Do we have a user guide to use this UCAP? For example, we suspect that a 
-Firmware problem will occur in production environment, how can we use 
-this UCAP to debug this Firmware problem?
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-21e4543a.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/65830427be5d/vmlinux-21e4543a.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d0e255ba87f2/bzImage-21e4543a.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/cd82bec15deb/mount_0.gz
+  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=12dfaa64580000)
 
-Thanks.
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+221e213bf17f17e0d6cd@syzkaller.appspotmail.com
 
-Zhu Yanjun
+smc: removing ib device syz0
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5401 at drivers/infiniband/sw/rxe/rxe_pool.c:116 rxe_pool_cleanup+0x47/0x50 drivers/infiniband/sw/rxe/rxe_pool.c:116
+Modules linked in:
+CPU: 0 UID: 0 PID: 5401 Comm: syz-executor270 Not tainted 6.14.0-rc5-syzkaller-00214-g21e4543a2e2f #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:rxe_pool_cleanup+0x47/0x50 drivers/infiniband/sw/rxe/rxe_pool.c:116
+Code: 00 00 fc ff df 80 3c 08 00 74 08 48 89 df e8 c0 6b 11 f9 48 83 3b 00 75 0b e8 b5 2f aa f8 5b c3 cc cc cc cc e8 aa 2f aa f8 90 <0f> 0b 90 5b c3 cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc9000d63f0e8 EFLAGS: 00010293
+RAX: ffffffff8917af46 RBX: ffff88804bc69380 RCX: ffff8880002f8000
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: ffff88804bc69300
+RBP: 0000000000000002 R08: ffffffff88f02df3 R09: 1ffff1100978d0ee
+R10: dffffc0000000000 R11: ffffffff8915c190 R12: dffffc0000000000
+R13: dffffc0000000000 R14: ffff88804bc68658 R15: dffffc0000000000
+FS:  00007fdbc26506c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000004bbba000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ rxe_dealloc+0x33/0x100 drivers/infiniband/sw/rxe/rxe.c:24
+ ib_dealloc_device+0x50/0x200 drivers/infiniband/core/device.c:647
+ __ib_unregister_device+0x366/0x3d0 drivers/infiniband/core/device.c:1520
+ ib_unregister_device_and_put+0xb9/0xf0 drivers/infiniband/core/device.c:1567
+ nldev_dellink+0x2c6/0x310 drivers/infiniband/core/nldev.c:1825
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x6dd/0x9e0 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x7f6/0x990 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x8de/0xcb0 net/netlink/af_netlink.c:1882
+ sock_sendmsg_nosec net/socket.c:718 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:733
+ ____sys_sendmsg+0x53a/0x860 net/socket.c:2573
+ ___sys_sendmsg net/socket.c:2627 [inline]
+ __sys_sendmsg+0x269/0x350 net/socket.c:2659
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fdbc26a2489
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 1a 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fdbc2650168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007fdbc272f4c8 RCX: 00007fdbc26a2489
+RDX: 0000000020000000 RSI: 00004000000002c0 RDI: 0000000000000005
+RBP: 00007fdbc272f4c0 R08: 00007fdbc26506c0 R09: 0000000000000000
+R10: 00007fdbc26506c0 R11: 0000000000000246 R12: 00007fdbc272f4cc
+R13: 0000000000000006 R14: 00007ffd776089d0 R15: 00007ffd77608ab8
+ </TASK>
 
-> 
-> UCAP character devices are located in /dev/infiniband and the class path
-> is /sys/class/infiniband_ucaps.
-> 
-> Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
-> Reviewed-by: Yishai Hadas <yishaih@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leon@kernel.org>
-> ---
->   drivers/infiniband/core/Makefile      |   3 +-
->   drivers/infiniband/core/ucaps.c       | 267 ++++++++++++++++++++++++++
->   drivers/infiniband/core/uverbs_main.c |   2 +
->   include/rdma/ib_ucaps.h               |  25 +++
->   4 files changed, 296 insertions(+), 1 deletion(-)
->   create mode 100644 drivers/infiniband/core/ucaps.c
->   create mode 100644 include/rdma/ib_ucaps.h
-> 
-> diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
-> index 8ab4eea5a0a5..d49ded7e95f0 100644
-> --- a/drivers/infiniband/core/Makefile
-> +++ b/drivers/infiniband/core/Makefile
-> @@ -39,6 +39,7 @@ ib_uverbs-y :=			uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
->   				uverbs_std_types_async_fd.o \
->   				uverbs_std_types_srq.o \
->   				uverbs_std_types_wq.o \
-> -				uverbs_std_types_qp.o
-> +				uverbs_std_types_qp.o \
-> +				ucaps.o
->   ib_uverbs-$(CONFIG_INFINIBAND_USER_MEM) += umem.o umem_dmabuf.o
->   ib_uverbs-$(CONFIG_INFINIBAND_ON_DEMAND_PAGING) += umem_odp.o
-> diff --git a/drivers/infiniband/core/ucaps.c b/drivers/infiniband/core/ucaps.c
-> new file mode 100644
-> index 000000000000..6853c6d078f9
-> --- /dev/null
-> +++ b/drivers/infiniband/core/ucaps.c
-> @@ -0,0 +1,267 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-> +/*
-> + * Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved
-> + */
-> +
-> +#include <linux/kref.h>
-> +#include <linux/cdev.h>
-> +#include <linux/mutex.h>
-> +#include <linux/file.h>
-> +#include <linux/fs.h>
-> +#include <rdma/ib_ucaps.h>
-> +
-> +#define RDMA_UCAP_FIRST RDMA_UCAP_MLX5_CTRL_LOCAL
-> +
-> +static DEFINE_MUTEX(ucaps_mutex);
-> +static struct ib_ucap *ucaps_list[RDMA_UCAP_MAX];
-> +static bool ucaps_class_is_registered;
-> +static dev_t ucaps_base_dev;
-> +
-> +struct ib_ucap {
-> +	struct cdev cdev;
-> +	struct device dev;
-> +	struct kref ref;
-> +};
-> +
-> +static const char *ucap_names[RDMA_UCAP_MAX] = {
-> +	[RDMA_UCAP_MLX5_CTRL_LOCAL] = "mlx5_perm_ctrl_local",
-> +	[RDMA_UCAP_MLX5_CTRL_OTHER_VHCA] = "mlx5_perm_ctrl_other_vhca"
-> +};
-> +
-> +static char *ucaps_devnode(const struct device *dev, umode_t *mode)
-> +{
-> +	if (mode)
-> +		*mode = 0600;
-> +
-> +	return kasprintf(GFP_KERNEL, "infiniband/%s", dev_name(dev));
-> +}
-> +
-> +static const struct class ucaps_class = {
-> +	.name = "infiniband_ucaps",
-> +	.devnode = ucaps_devnode,
-> +};
-> +
-> +static const struct file_operations ucaps_cdev_fops = {
-> +	.owner = THIS_MODULE,
-> +	.open = simple_open,
-> +};
-> +
-> +/**
-> + * ib_cleanup_ucaps - cleanup all API resources and class.
-> + *
-> + * This is called once, when removing the ib_uverbs module.
-> + */
-> +void ib_cleanup_ucaps(void)
-> +{
-> +	mutex_lock(&ucaps_mutex);
-> +	if (!ucaps_class_is_registered) {
-> +		mutex_unlock(&ucaps_mutex);
-> +		return;
-> +	}
-> +
-> +	for (int i = RDMA_UCAP_FIRST; i < RDMA_UCAP_MAX; i++)
-> +		WARN_ON(ucaps_list[i]);
-> +
-> +	class_unregister(&ucaps_class);
-> +	ucaps_class_is_registered = false;
-> +	unregister_chrdev_region(ucaps_base_dev, RDMA_UCAP_MAX);
-> +	mutex_unlock(&ucaps_mutex);
-> +}
-> +
-> +static int get_ucap_from_devt(dev_t devt, u64 *idx_mask)
-> +{
-> +	for (int type = RDMA_UCAP_FIRST; type < RDMA_UCAP_MAX; type++) {
-> +		if (ucaps_list[type] && ucaps_list[type]->dev.devt == devt) {
-> +			*idx_mask |= 1 << type;
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
-> +static int get_devt_from_fd(unsigned int fd, dev_t *ret_dev)
-> +{
-> +	struct file *file;
-> +
-> +	file = fget(fd);
-> +	if (!file)
-> +		return -EBADF;
-> +
-> +	*ret_dev = file_inode(file)->i_rdev;
-> +	fput(file);
-> +	return 0;
-> +}
-> +
-> +/**
-> + * ib_ucaps_init - Initialization required before ucap creation.
-> + *
-> + * Return: 0 on success, or a negative errno value on failure
-> + */
-> +static int ib_ucaps_init(void)
-> +{
-> +	int ret = 0;
-> +
-> +	if (ucaps_class_is_registered)
-> +		return ret;
-> +
-> +	ret = class_register(&ucaps_class);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = alloc_chrdev_region(&ucaps_base_dev, 0, RDMA_UCAP_MAX,
-> +				  ucaps_class.name);
-> +	if (ret < 0) {
-> +		class_unregister(&ucaps_class);
-> +		return ret;
-> +	}
-> +
-> +	ucaps_class_is_registered = true;
-> +
-> +	return 0;
-> +}
-> +
-> +static void ucap_dev_release(struct device *device)
-> +{
-> +	struct ib_ucap *ucap = container_of(device, struct ib_ucap, dev);
-> +
-> +	kfree(ucap);
-> +}
-> +
-> +/**
-> + * ib_create_ucap - Add a ucap character device
-> + * @type: UCAP type
-> + *
-> + * Creates a ucap character device in the /dev/infiniband directory. By default,
-> + * the device has root-only read-write access.
-> + *
-> + * A driver may call this multiple times with the same UCAP type. A reference
-> + * count tracks creations and deletions.
-> + *
-> + * Return: 0 on success, or a negative errno value on failure
-> + */
-> +int ib_create_ucap(enum rdma_user_cap type)
-> +{
-> +	struct ib_ucap *ucap;
-> +	int ret;
-> +
-> +	if (type >= RDMA_UCAP_MAX)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&ucaps_mutex);
-> +	ret = ib_ucaps_init();
-> +	if (ret)
-> +		goto unlock;
-> +
-> +	ucap = ucaps_list[type];
-> +	if (ucap) {
-> +		kref_get(&ucap->ref);
-> +		mutex_unlock(&ucaps_mutex);
-> +		return 0;
-> +	}
-> +
-> +	ucap = kzalloc(sizeof(*ucap), GFP_KERNEL);
-> +	if (!ucap) {
-> +		ret = -ENOMEM;
-> +		goto unlock;
-> +	}
-> +
-> +	device_initialize(&ucap->dev);
-> +	ucap->dev.class = &ucaps_class;
-> +	ucap->dev.devt = MKDEV(MAJOR(ucaps_base_dev), type);
-> +	ucap->dev.release = ucap_dev_release;
-> +	ret = dev_set_name(&ucap->dev, ucap_names[type]);
-> +	if (ret)
-> +		goto err_device;
-> +
-> +	cdev_init(&ucap->cdev, &ucaps_cdev_fops);
-> +	ucap->cdev.owner = THIS_MODULE;
-> +
-> +	ret = cdev_device_add(&ucap->cdev, &ucap->dev);
-> +	if (ret)
-> +		goto err_device;
-> +
-> +	kref_init(&ucap->ref);
-> +	ucaps_list[type] = ucap;
-> +	mutex_unlock(&ucaps_mutex);
-> +
-> +	return 0;
-> +
-> +err_device:
-> +	put_device(&ucap->dev);
-> +unlock:
-> +	mutex_unlock(&ucaps_mutex);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(ib_create_ucap);
-> +
-> +static void ib_release_ucap(struct kref *ref)
-> +{
-> +	struct ib_ucap *ucap = container_of(ref, struct ib_ucap, ref);
-> +	enum rdma_user_cap type;
-> +
-> +	for (type = RDMA_UCAP_FIRST; type < RDMA_UCAP_MAX; type++) {
-> +		if (ucaps_list[type] == ucap)
-> +			break;
-> +	}
-> +	WARN_ON(type == RDMA_UCAP_MAX);
-> +
-> +	ucaps_list[type] = NULL;
-> +	cdev_device_del(&ucap->cdev, &ucap->dev);
-> +	put_device(&ucap->dev);
-> +}
-> +
-> +/**
-> + * ib_remove_ucap - Remove a ucap character device
-> + * @type: User cap type
-> + *
-> + * Removes the ucap character device according to type. The device is completely
-> + * removed from the filesystem when its reference count reaches 0.
-> + */
-> +void ib_remove_ucap(enum rdma_user_cap type)
-> +{
-> +	struct ib_ucap *ucap;
-> +
-> +	mutex_lock(&ucaps_mutex);
-> +	ucap = ucaps_list[type];
-> +	if (WARN_ON(!ucap))
-> +		goto end;
-> +
-> +	kref_put(&ucap->ref, ib_release_ucap);
-> +end:
-> +	mutex_unlock(&ucaps_mutex);
-> +}
-> +EXPORT_SYMBOL(ib_remove_ucap);
-> +
-> +/**
-> + * ib_get_ucaps - Get bitmask of ucap types from file descriptors
-> + * @fds: Array of file descriptors
-> + * @fd_count: Number of file descriptors in the array
-> + * @idx_mask: Bitmask to be updated based on the ucaps in the fd list
-> + *
-> + * Given an array of file descriptors, this function returns a bitmask of
-> + * the ucaps where a bit is set if an FD for that ucap type was in the array.
-> + *
-> + * Return: 0 on success, or a negative errno value on failure
-> + */
-> +int ib_get_ucaps(int *fds, int fd_count, uint64_t *idx_mask)
-> +{
-> +	int ret = 0;
-> +	dev_t dev;
-> +
-> +	*idx_mask = 0;
-> +	mutex_lock(&ucaps_mutex);
-> +	for (int i = 0; i < fd_count; i++) {
-> +		ret = get_devt_from_fd(fds[i], &dev);
-> +		if (ret)
-> +			goto end;
-> +
-> +		ret = get_ucap_from_devt(dev, idx_mask);
-> +		if (ret)
-> +			goto end;
-> +	}
-> +
-> +end:
-> +	mutex_unlock(&ucaps_mutex);
-> +	return ret;
-> +}
-> diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-> index 85cfc790a7bb..973fe2c7ef53 100644
-> --- a/drivers/infiniband/core/uverbs_main.c
-> +++ b/drivers/infiniband/core/uverbs_main.c
-> @@ -52,6 +52,7 @@
->   #include <rdma/ib.h>
->   #include <rdma/uverbs_std_types.h>
->   #include <rdma/rdma_netlink.h>
-> +#include <rdma/ib_ucaps.h>
->   
->   #include "uverbs.h"
->   #include "core_priv.h"
-> @@ -1345,6 +1346,7 @@ static void __exit ib_uverbs_cleanup(void)
->   				 IB_UVERBS_NUM_FIXED_MINOR);
->   	unregister_chrdev_region(dynamic_uverbs_dev,
->   				 IB_UVERBS_NUM_DYNAMIC_MINOR);
-> +	ib_cleanup_ucaps();
->   	mmu_notifier_synchronize();
->   }
->   
-> diff --git a/include/rdma/ib_ucaps.h b/include/rdma/ib_ucaps.h
-> new file mode 100644
-> index 000000000000..8f0552a2b2b0
-> --- /dev/null
-> +++ b/include/rdma/ib_ucaps.h
-> @@ -0,0 +1,25 @@
-> +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
-> +/*
-> + * Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved
-> + */
-> +
-> +#ifndef _IB_UCAPS_H_
-> +#define _IB_UCAPS_H_
-> +
-> +#define UCAP_ENABLED(ucaps, type) (!!((ucaps) & (1U << (type))))
-> +
-> +enum rdma_user_cap {
-> +	RDMA_UCAP_MLX5_CTRL_LOCAL,
-> +	RDMA_UCAP_MLX5_CTRL_OTHER_VHCA,
-> +	RDMA_UCAP_MAX
-> +};
-> +
-> +void ib_cleanup_ucaps(void);
-> +
-> +int ib_create_ucap(enum rdma_user_cap type);
-> +
-> +void ib_remove_ucap(enum rdma_user_cap type);
-> +
-> +int ib_get_ucaps(int *fds, int fd_count, uint64_t *idx_mask);
-> +
-> +#endif /* _IB_UCAPS_H_ */
 
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
