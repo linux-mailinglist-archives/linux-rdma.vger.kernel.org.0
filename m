@@ -1,174 +1,190 @@
-Return-Path: <linux-rdma+bounces-8494-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8495-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AB22A57C95
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Mar 2025 19:04:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51343A57CA2
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Mar 2025 19:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DA4D1891CA7
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Mar 2025 18:04:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A7EC7A6DFA
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Mar 2025 18:05:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD711EB5C5;
-	Sat,  8 Mar 2025 18:04:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B49E1E25F7;
+	Sat,  8 Mar 2025 18:06:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bALZpQ3l"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="tuj3+/w4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2066.outbound.protection.outlook.com [40.107.236.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E02A1F16B
-	for <linux-rdma@vger.kernel.org>; Sat,  8 Mar 2025 18:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741457052; cv=none; b=LJiytvE27/VA3ZlzCm/S7Z765N6jTbFVB7nKrXynAKfb1NUVP7GdK4tMpPiyUQU2Da+wDSyOPUl1QlB6Ll0OrhVXTwL9rnWIDTsdz3oK3YTdiycKGZtC85roR7aqp3UkZBFV0MxiHsd5NnNkl5Yeu3Uwo84wIfUYuDHpgeXK4xE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741457052; c=relaxed/simple;
-	bh=nTe/1FKrZ61wPMXwoiIXUSHwUYTDM2kvMZA2ZukMWhY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=JKuNJDwc86yBDxb666jrs2J90kWKwbgecVzoYDyJlxVBDNo+ICr+Ctg3K3Ti2uiQsYKzCHvi3ccZCsxfwCJmyGAJINyFCffyFmLAPudaIJ/zZ2cePjen9k83hktPfu9N6gEBa/EnMUJ9aLSAFPimXOzYExluET2w5Jf9uznboks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bALZpQ3l; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <662c734d-6b5a-4435-8eb4-4d912ba37cf6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1741457037;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NmpQgy86E1gD6AfEtQJs4ondCL2qcMbQBKlrVz00Ka0=;
-	b=bALZpQ3lifquJythjAjppqtV99PwvNHvVJKB+Wv80juisPtGtPzG1oQ8YLY9UfldNm2fPO
-	UrmC+N3GAUn0mOfPl8Jv+5uYlI9/b8RQM07tBoHeRGbXvkC50H5iu57nHKbcH30TLk5Eaz
-	KVNeUYMbm0zZPK3dZcjP54OdOBGMNUE=
-Date: Sat, 8 Mar 2025 19:03:52 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3601DE2AA;
+	Sat,  8 Mar 2025 18:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741457193; cv=fail; b=S60nsU0nuhSLGcLbruOkLzucjkR0RclKFmbIozkat7Ukc9cdrNiUb83kUo4ihqeObEG6GbKulUXxs60s2OFqlF3uEOz/ruwJkdpzfoHf5ulrRfT4qxBf81CngidqHCbuWg0HwEnk4GBshGmgykYftZ56ImpYdiGKhKTZ14ZCgIY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741457193; c=relaxed/simple;
+	bh=tet0mrLOE43Yv6Zabb94f2b0+v113wzaAaRJp1BHEY4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oZ8f/HnKavNYcHqyJPOO42/wt0/f5anKSOyrgOVOjoXrsxpRWhiquUElpLVRd8ZeH9ehcMIWgrncjhnvVMO0iaksR+i45bL+LABgAnFzW6Ha7pKeX1Bj6/iuhgZm6Q7PNiguIt+9y/uBwY8x1yJamSBL0LypCHQs4aal6BtL3Pc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=tuj3+/w4; arc=fail smtp.client-ip=40.107.236.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=lUVKyWNh+YSfXSp1kfhKRBQ9REoe5FuofbPjECoR2TUi2Qrf73Y0jpFNfMTSuJ8woDU/dkB3jDa3Di5r5s/RTBEnPvVz1gx/HSgi7ZZGJjlPswiAyKgDd6Hkqprdon/IgZdPublg2N37d7x1r18saviu8BpfnsMzAzrLSnrRR90Ylz0wwYVsDkgb7OyZqW4HjAQnML6vF6D1irlLqy13NcFh4ThaXG0TuBr+iHsl72qaBafU4fZ9vFrBaX1TAkA2QMSltND/magCKZXOMa0eONf2YQAYMLWf5jTdW+n4LIllSn4HH/ysDzmTuyNzTtbZ58XjQuXkFmUHV55JGx84Gw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o1medgm5reqhvzPIuzfqZ1D+yg5lK4XtPffDVdRzmps=;
+ b=MPEsBrYAPy1PWBhQx76s55mcSbrrIZG71qfMvIJpxUk3KHWU6PoURvM26fc7tBGCePrXlEz4QOW7SYoxAZKmwccGHqIIqsD3s6B2LxfGMro+Y6hnIZ+l5kohyJvrDvG/b47kAy56X0Bq5U6OwDOThHxmIEXVbJtBDV/OwQo9xr07FKI3TnYFiA/1Ol+dk9ufNqHJBVgu7uTC2lPtYN1p+jdrKqAhH/M32jg7EO6b6CYzUzYYJ0rHPkhA9OjyYO7e1cl4zxPTjw9S6CZLf5A/22eWpis+JtR7IQFNDG0PUw2pqdOxb2LzogqJRmcsZ5RgI0rPZRp5++eTvfC9k+uKyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o1medgm5reqhvzPIuzfqZ1D+yg5lK4XtPffDVdRzmps=;
+ b=tuj3+/w41AvVnhe/MQbtR+tDyQ2z7eF7Ur9Ijt59v0TgyDCkHncTIHH2Y0+dsJf+LX2vOF+Y+IWPuigctEVjLlYv9q2tzxAxFlrmTsdYhff8rUEMNTiQ1D48OhmZJez7tUg0OW9A/FbIR+JBaUoq+zOBazp57vLhHd29mUGDXZneoauLCqDvcTP01P1aFMUXuAkBJrkOxf+O5h9StB7jWmsnwNY/1BOodyuug5vCJypxqlJUU7c0p+n2USAWU/bOLP3SobDhh5ss0g3Lew2AGpt6nFPtzv+h5e0QLrsUYEAd6fO9nwSQUsXmqd2q04ez445gcNs1VaNiTkxj3Y6ObQ==
+Received: from DM6PR02CA0106.namprd02.prod.outlook.com (2603:10b6:5:1f4::47)
+ by CYXPR12MB9388.namprd12.prod.outlook.com (2603:10b6:930:e8::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8511.24; Sat, 8 Mar
+ 2025 18:06:27 +0000
+Received: from DS3PEPF000099DD.namprd04.prod.outlook.com
+ (2603:10b6:5:1f4:cafe::b0) by DM6PR02CA0106.outlook.office365.com
+ (2603:10b6:5:1f4::47) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8511.24 via Frontend Transport; Sat,
+ 8 Mar 2025 18:06:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ DS3PEPF000099DD.mail.protection.outlook.com (10.167.17.199) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8511.15 via Frontend Transport; Sat, 8 Mar 2025 18:06:27 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Sat, 8 Mar 2025
+ 10:06:17 -0800
+Received: from sw-mtx-036.mtx.nbulabs.nvidia.com (10.126.231.35) by
+ rnnvmail201.nvidia.com (10.129.68.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Sat, 8 Mar 2025 10:06:17 -0800
+From: Parav Pandit <parav@nvidia.com>
+To: <linux-rdma@vger.kernel.org>, <linux-security-module@vger.kernel.org>
+CC: <ebiederm@xmission.com>, Parav Pandit <parav@nvidia.com>
+Subject: [PATCH] RDMA/uverbs: Fix CAP_NET_RAW check for flow create in user namespace
+Date: Sat, 8 Mar 2025 20:06:02 +0200
+Message-ID: <20250308180602.129663-1-parav@nvidia.com>
+X-Mailer: git-send-email 2.26.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [syzbot] [rdma?] WARNING in rxe_pool_cleanup
-To: syzbot <syzbot+221e213bf17f17e0d6cd@syzkaller.appspotmail.com>,
- jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
- syzkaller-bugs@googlegroups.com, zyjzyj2000@gmail.com
-References: <67a59df3.050a0220.2b1e6.0011.GAE@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <67a59df3.050a0220.2b1e6.0011.GAE@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099DD:EE_|CYXPR12MB9388:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1e3850c7-63f4-4a0a-9c11-08dd5e6bf223
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|376014|36860700013|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?/bHy3rqE9qKP9HB/i0gfJmLBbPSREE2mCidNkAc5YxXSToOuz8+nJTI812On?=
+ =?us-ascii?Q?7VNn5dDUsIixKn/c7Uba8Dj3h+XkeDAUK0AP9MDCXG1wRAJqcaL50gXqw9uF?=
+ =?us-ascii?Q?u5uZjMMKnjD9+TrzN9bQh5VYfs4BwDrwdHasSgdyG07PbJIVv1fkWklbeF4j?=
+ =?us-ascii?Q?J9NPSVSV/aulu8HuHWQ7AnTWpZDhGPS4vEGYkeXwAChcv1RiD7mTOX4pU2Mz?=
+ =?us-ascii?Q?pJbnO16hwFYH6p0EobzAyjs2HMX5jgP1Q7HnSe1yoaUXm5GGMiZqNqV+YnHK?=
+ =?us-ascii?Q?kZsiwUIrTXjY6WEa0cpUduunMJpSGS7eYHeN9NGWO2Lrcmzeq7VOGl2RdlES?=
+ =?us-ascii?Q?VWoiLYFiz6dMMPhRvd5OLwRuxl5S/IkgZ0j4deQAf9rEAuBxVCbmN0UavmiL?=
+ =?us-ascii?Q?WuOmL5kKjYXt/kz3lWsvkN9wdk+ofuLKiQGynvMkrEp+WPe0CcjsD+4wS9ee?=
+ =?us-ascii?Q?yL0fxm0OYH/9fNcboLsFrEXX6IaG7z8sCx9g00rDEw4yBevANbffsGCB9yul?=
+ =?us-ascii?Q?+Z9zr5ItY0HqbT+ecMUheFd8cIsnIvelcGdi2CPvi1/T1wXy3kHFNZNQtj3k?=
+ =?us-ascii?Q?sGOokD5reMig4HMwoTQYGH2ccHfNA+btOlXPlj7bd8WN1dH5jBFHyu8vfWhJ?=
+ =?us-ascii?Q?8M2Zt5tmUDAuWsIFxNGUqSXvaEgPOngTVmONg9nF6EPkE3xa30PNbS1CfiLk?=
+ =?us-ascii?Q?5zPmK3b3OhxdFmALdDk7Z4wIAtpvJRpu+qVwI2z2gxpGKjI50VMVLun7Krlx?=
+ =?us-ascii?Q?2TYkJcXw5a9Uk8zpwp7n/jcD5g+eG6+RGsYv6A5toljrkqbKltKXZRxbprEg?=
+ =?us-ascii?Q?HfSUlxC9Sf7f1E/91ondl7Vx0LUJQWUdNIOqXjpoqdM3qEoxyL3b/vszbaiX?=
+ =?us-ascii?Q?7p93toG8t5Mj0z0UzLfuL9L1gEE2Q/j+3bCswPOggya0bHEKIjj/97JI093O?=
+ =?us-ascii?Q?cej51/aLHm0SyUZZzqWwWFEjV/pTv+Q0rqnQDS93wty/Rhb7JpkiMu1eKPL1?=
+ =?us-ascii?Q?94zGc4AfcSKIOqvI9wNVdjxWCYYN4lMlJZeTT1/1hji05Q/JFoD0ZF7E0slg?=
+ =?us-ascii?Q?9E/ulu3ekwgPFlIgmXcbMPiL00Ww7uYWOvhUQBPtp4r5VBxCrZcxN5hoUwp7?=
+ =?us-ascii?Q?YhlXO/KJgQRMRgRGsWZUtM9ua7c7Pa4pfucRpEJuRJr2EANf+anCzg/zf3LH?=
+ =?us-ascii?Q?rcRA/sYjzU449NQEndLOomDvXaLko2aGef6VyUuh+4d2ctJG/8z46O9izCUj?=
+ =?us-ascii?Q?tcOhetsAHCwbJ9ZW1npU0auryjIv2HKVXPrBJqXgs0VVAi7AMDUMs35P7x1n?=
+ =?us-ascii?Q?D3o8GLa+9IuNdrrT/8QiYWYxHAimLk6LouCMD/uirWCaRiYXuh6kmuodUeMl?=
+ =?us-ascii?Q?G3B9Wi6vTyZburUVRGLleaJujjkuLW6zCMfjyT8ZWw+Rf+TboB1yznSbdCLW?=
+ =?us-ascii?Q?eyFZID+7koInR71pA4ofBtPjM9BQLw8t8doYogw3fldbbcrGILSUwA=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(376014)(36860700013)(1800799024);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2025 18:06:27.1847
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e3850c7-63f4-4a0a-9c11-08dd5e6bf223
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS3PEPF000099DD.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR12MB9388
 
-在 2025/2/7 6:45, syzbot 写道:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    bb066fe812d6 Merge tag 'pci-v6.14-fixes-2' of git://git.ke..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16a973df980000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=1909f2f0d8e641ce
-> dashboard link: https://syzkaller.appspot.com/bug?extid=221e213bf17f17e0d6cd
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a01df8580000
-> 
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-bb066fe8.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/ac7155966351/vmlinux-bb066fe8.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/92d6cbf35949/bzImage-bb066fe8.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+221e213bf17f17e0d6cd@syzkaller.appspotmail.com
-> 
-> smc: removing ib device syz0
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 5645 at drivers/infiniband/sw/rxe/rxe_pool.c:116 rxe_pool_cleanup+0x47/0x50 drivers/infiniband/sw/rxe/rxe_pool.c:116
+A process running in a non-init user namespace possesses the
+CAP_NET_RAW capability. However, the patch cited in the fixes
+tag checks the capability in the default init user namespace.
+Because of this, when the process was started by Podman in a
+non-default user namespace, the flow creation failed.
 
-Hi, all
+Fix this issue by checking the CAP_NET_RAW networking capability
+in the owner user namespace that created the network namespace.
 
-I delved into this problem. I found the following in the link 
-https://syzkaller.appspot.com/x/log.txt?x=16a973df980000
+This change is similar to the following cited patches.
 
-"
-[   73.687051][ T5401] infiniband syz0: set active
-[   73.688993][ T5401] infiniband syz0: added bond0
-[   73.724619][ T5401] RDS/IB: syz0: added 
-   < --- It seems that RDS also used this rxe device in this test.
-[   73.726492][ T5401] smc: adding ib device syz0 with port count 1
-[   73.729145][ T5401] smc:    ib device syz0 port 1 has pnetid
-"
+commit 5e1fccc0bfac ("net: Allow userns root control of the core of the network stack.")
+commit 52e804c6dfaa ("net: Allow userns root to control ipv4")
+commit 59cd7377660a ("net: openvswitch: allow conntrack in non-initial user namespace")
+commit 0a3deb11858a ("fs: Allow listmount() in foreign mount namespace")
+commit dd7cb142f467 ("fs: relax permissions for listmount()")
 
-But when smc releases rxe device, RDS does not release rxe device.
+Fixes: c938a616aadb ("IB/core: Add raw packet QP type")
+Signed-off-by: Parav Pandit <parav@nvidia.com>
 
-The logs are as below
-"
-[   76.652232][ T5401] smc: removing ib device syz0
-[   76.952936][ T5401] ------------[ cut here ]------------
-[   76.955199][ T5401] WARNING: CPU: 0 PID: 5401 at 
-drivers/infiniband/sw/rxe/rxe_pool.c:116 rxe_pool_cleanup+0x47/0x50
-"
-I have no idea about the whole test script. So I just suggest whether 
-this test script remove this RDS initialization because RDS does not do 
-any work in this script.
+---
+I would like to have feedback from the LSM experts to make sure this
+fix is correct. Given the widespread usage of the capable() call,
+it makes me wonder if the patch right.
 
-Or before smc removes ib device syz0, let RDS also release rxe device.
+Secondly, I wasn't able to determine which primary namespace (such as
+mount or IPC, etc.) to consider for the CAP_IPC_LOCK capability.
+(not directly related to this patch, but as concept)
+---
+ drivers/infiniband/core/uverbs_cmd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Then let us know whether this problem still occur or not.
-
-Thanks a lot.
-Zhu Yanjun
-
-> Modules linked in:
-> CPU: 0 UID: 0 PID: 5645 Comm: syz.0.16 Not tainted 6.14.0-rc1-syzkaller-00081-gbb066fe812d6 #0
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-> RIP: 0010:rxe_pool_cleanup+0x47/0x50 drivers/infiniband/sw/rxe/rxe_pool.c:116
-> Code: 00 00 fc ff df 80 3c 08 00 74 08 48 89 df e8 10 aa 1a f9 48 83 3b 00 75 0b e8 95 11 b4 f8 5b c3 cc cc cc cc e8 8a 11 b4 f8 90 <0f> 0b 90 5b c3 cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 90 90
-> RSP: 0018:ffffc9000ce370e8 EFLAGS: 00010293
-> RAX: ffffffff890b4c96 RBX: ffff888052855380 RCX: ffff88801f3e8000
-> RDX: 0000000000000000 RSI: 0000000000000002 RDI: ffff888052855300
-> RBP: 0000000000000002 R08: ffffffff88e3bcc3 R09: 1ffff1100a50a8ee
-> R10: dffffc0000000000 R11: ffffffff89096000 R12: dffffc0000000000
-> R13: dffffc0000000000 R14: ffff888052854658 R15: dffffc0000000000
-> FS:  00007fc32943e6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fc32943dfe0 CR3: 00000000405a6000 CR4: 0000000000352ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   rxe_dealloc+0x33/0x100 drivers/infiniband/sw/rxe/rxe.c:24
->   ib_dealloc_device+0x50/0x200 drivers/infiniband/core/device.c:647
->   __ib_unregister_device+0x366/0x3d0 drivers/infiniband/core/device.c:1520
->   ib_unregister_device_and_put+0xb9/0xf0 drivers/infiniband/core/device.c:1567
->   nldev_dellink+0x2c6/0x310 drivers/infiniband/core/nldev.c:1825
->   rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
->   rdma_nl_rcv+0x6dd/0x9e0 drivers/infiniband/core/netlink.c:259
->   netlink_unicast_kernel net/netlink/af_netlink.c:1322 [inline]
->   netlink_unicast+0x7f6/0x990 net/netlink/af_netlink.c:1348
->   netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1892
->   sock_sendmsg_nosec net/socket.c:713 [inline]
->   __sock_sendmsg+0x221/0x270 net/socket.c:728
->   ____sys_sendmsg+0x52a/0x7e0 net/socket.c:2568
->   ___sys_sendmsg net/socket.c:2622 [inline]
->   __sys_sendmsg+0x269/0x350 net/socket.c:2654
->   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->   do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
->   entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7fc32858cde9
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fc32943e038 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 00007fc3287a6160 RCX: 00007fc32858cde9
-> RDX: 0000000020000000 RSI: 0000200000000000 RDI: 0000000000000004
-> RBP: 00007fc32860e2a0 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 0000000000000000 R14: 00007fc3287a6160 R15: 00007ffc02559df8
->   </TASK>
-> 
-> 
-> ---
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 5ad14c39d48c..8d6615f390f5 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -3198,7 +3198,7 @@ static int ib_uverbs_ex_create_flow(struct uverbs_attr_bundle *attrs)
+ 	if (cmd.comp_mask)
+ 		return -EINVAL;
+ 
+-	if (!capable(CAP_NET_RAW))
++	if (!ns_capable(current->nsproxy->net_ns->user_ns, CAP_NET_RAW))
+ 		return -EPERM;
+ 
+ 	if (cmd.flow_attr.flags >= IB_FLOW_ATTR_FLAGS_RESERVED)
+-- 
+2.26.2
 
 
