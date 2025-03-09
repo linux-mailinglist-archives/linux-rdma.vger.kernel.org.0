@@ -1,94 +1,137 @@
-Return-Path: <linux-rdma+bounces-8506-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8507-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAACDA583CB
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 12:29:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92193A583D6
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 12:43:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 450A47A4DE7
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 11:28:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE1A516B5AA
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 11:43:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C141C84C3;
-	Sun,  9 Mar 2025 11:29:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB9B1C3029;
+	Sun,  9 Mar 2025 11:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Wag6z+xR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aNXbnjar"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634851C760A;
-	Sun,  9 Mar 2025 11:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555D62F2A;
+	Sun,  9 Mar 2025 11:43:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741519759; cv=none; b=VpHZjnYKpv1TWWwSVjBfvNQmGBPFFYqWhH4Iz7+Q2jTjZSBOvI+HQLvco7ajJ5oxmZrtngA6mlTPHxqOBlDzeHC//Wwa0Jl2ks9x2vSLb3dc+SKLGLSwJCKOP8xCHGEw9CRuEp3s70ygWN7HvPnXTIfWq5o4lNyFIlX9K/GSkMA=
+	t=1741520626; cv=none; b=IyylbTr84KKQg8zuCM0rNH63Fb+BKFV1W8zZb62g8Do1JEmwM/yi6YFFiHqbxL55KEHCA4K0KvDG4nStCdsFSzrS8v0xnfIXgZ6OuqiVBMpobRjA6zB4jsLiIWQ1R6m77O5rchQB5hIVFiYpiBeNgDQDVaoO9/ymWn7fo9d/zOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741519759; c=relaxed/simple;
-	bh=gjmBtwkxraqEUHtHWraa+U7E9VcknomSTbZ+eqKIuUo=;
-	h=In-Reply-To:References:From:To:Subject:Mime-Version:Content-Type:
-	 Date:Message-ID; b=VtoeNwiaPm70b9Rr52SGD/kqhvMW3tLGHzr8eN97YnPLJ9/DUO3LXsZsPWYtrn0Md5P5y7Culf/2WBCHmAqycAS6/POJHxNxx1M0bS/fNcda3r9bSICdq/6ekVbyXWRLF6K4SLyXTg8F7NFCHxYaF1HCWF4dcTI16quWvPIPTu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Wag6z+xR; arc=none smtp.client-ip=43.163.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1741519747; bh=gjmBtwkxraqEUHtHWraa+U7E9VcknomSTbZ+eqKIuUo=;
-	h=In-Reply-To:References:From:To:Subject:Date;
-	b=Wag6z+xR6iIOtebSitjxmKNIAKth0ToBQXxaIozDUu7Djq4h1KMLGwkKP5oMYHeYy
-	 rfdLhI5tuDGtZb9Qk3Et/qUJuvficupeV07u4caF8ZdFIwzcagkLbOv+5DvJFCEvnt
-	 CigGG5EeSbtOBxnLh2wqY7TIeQEZI+QiU0m/Cvjk=
-X-QQ-FEAT: oHWrrGTW1dCGJEu1CuC8+nIWkvSYK6n9
-X-QQ-SSF: 00000000000000F0000000000000
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-X-QQ-XMAILINFO: NjvKFBGFVoSKRtubLSRFl91sHy8fFFpoEZkZpYqL1Ar7TWS6S38NTr3Ti7OnPw
-	 5Y+T1DJGxFGK6ee4LuQQVGsciJEznk1PVzQxdtvqgOscg6ry5DCLvn4xAI2fbAgyeyDsWfVQ3BGfb
-	 hiM4PLW9EdWpy/02pIMVObGjmO2NFRDhjzT6wUSjoRvdZoyvbp4E/kK7T55mQB1TUIZtxoJ4VPaO4
-	 vbbxj2B2QDiPPBiM2OS9H7c9H0FwUpTfaInwdc/KhoPtcEsIr/TYXBsh2dkr/VNtVFLyRpGw8Hbhh
-	 7ivUt2PBsX31q+KhSyAPa4JDOh0thX05XVBugEHsYtRghPowaUuc9vJ8cL7no/OnCUUXcWtoXJecE
-	 HB+4io7/IARPOPy4jgMO+w5DYjLUfZ8I1zW354S2YR81Hg+qLWRUmeJGYdaAm1/qEENAruopqGJmY
-	 0cc/L3DM7i0mvsvaiHAcGdAzk188JP6UhaiZInWAGla8vhubJG712D/b1JYL7tZNd5IKLb46701mA
-	 jkvh/Jp05OE2tJlEKBqVQkVTqpzB/YRnjq6jbkNv53hNuEppFbPZTCvD4tNd8Qe6FOarBdA7yAydz
-	 kjwep/+jn9X1z4hp2k79PU2vp/PH6tCh6IS37WWBtDMOO+FQFJNE0skDbbzfadC5nodWouPtzl/ze
-	 QgtOoiTC/mn64PAf6mkVS1TUebcqqWT1YBNqIFVkhMWDZdHEjVuzIuqP+te7OczryKhFSZ4Pa8spM
-	 KbmlPv/zSOzO3a928mNUWvX0DgQ3jnI8JpHMaIcrY436w3S0khU96fAiIgqjquv/dVZN577Bo16Ov
-	 D4aDaxzwJL7/UVB47AlsZaaYrxK68xbibjZX+268Mj300pFnJ9jTM6Z5rvSd5WyEmJSxT6ULudaAM
-	 /bdY1ni9vpVdzn66g03pbqNoRLhEE0dLCYP2MIzd12U1BpKYse8T/iv4AQvc5llNhsYZW9F39gKoz
-	 OlDkA2Kz1jPCuPETR7T8V3af8APlk=
-X-HAS-ATTACH: no
-X-QQ-BUSINESS-ORIGIN: 2
-In-Reply-To: <tencent_990EBC6CCCD75C06EE08FB64E67D322AED07@qq.com>
-References: <tencent_990EBC6CCCD75C06EE08FB64E67D322AED07@qq.com>
-X-QQ-STYLE: 
-X-QQ-mid: webmail284t1741519736t2275304
-From: "=?ISO-8859-1?B?ZmZoZ2Z2?=" <744439878@qq.com>
-To: "=?ISO-8859-1?B?amdn?=" <jgg@ziepe.ca>, "=?ISO-8859-1?B?bGVvbg==?=" <leon@kernel.org>, "=?ISO-8859-1?B?Y21laW9oYXM=?=" <cmeiohas@nvidia.com>, "=?ISO-8859-1?B?bWljaGFlbGd1cg==?=" <michaelgur@nvidia.com>, "=?ISO-8859-1?B?aHVhbmdqdW54aWFuNg==?=" <huangjunxian6@hisilicon.com>, "=?ISO-8859-1?B?bGl5dXl1Ng==?=" <liyuyu6@huawei.com>, "=?ISO-8859-1?B?cGhhZGRhZA==?=" <phaddad@nvidia.com>, "=?ISO-8859-1?B?bGludXg=?=" <linux@treblig.org>, "=?ISO-8859-1?B?bWFya3poYW5n?=" <markzhang@nvidia.com>, "=?ISO-8859-1?B?amJpLm9jdGF2ZQ==?=" <jbi.octave@gmail.com>, "=?ISO-8859-1?B?ZHNhaGVybg==?=" <dsahern@kernel.org>, "=?ISO-8859-1?B?bGludXgtcmRtYQ==?=" <linux-rdma@vger.kernel.org>, "=?ISO-8859-1?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>
-Subject: Re:kernel bug found and root cause analysis
+	s=arc-20240116; t=1741520626; c=relaxed/simple;
+	bh=2sv+Z6u0e63RMs+eEz2YCcrjaLa9sh0py9xQ9g7VzTM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XbavF3MBzKbc/4LlBMhtTw/y4NOgdAG7ON5eZXp0JnJ4tbtBJ+rlfWWd2F7Nx03l7X8jPfPhzGnRSbcUjQD1dfuH8WFeLGFoyYv/vczum/zYOXOgj9X9jDq/FnpGkFOMy5LJoio5/YPGA98dxKisDK+sm1wIUIi+vcIOISvfN8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aNXbnjar; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5e66407963fso776555a12.2;
+        Sun, 09 Mar 2025 04:43:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741520623; x=1742125423; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p2Foe3XwhvNs3FCKXrg4j2vvhvp7L38WiHksGts8MLY=;
+        b=aNXbnjartxx66eSX5hpxdMNJDvTqkvlBna3b4MKELTNHj71K5rInqGWeFhPDrAFBVQ
+         y6CdTnbfrv0Tovc5JxJcsmFmKa6S5qc6azUt7Ktbnr2s7NTJBTCZ4T8w07CKTsPRhIf+
+         PrHg7WUjbLeTqOg5hJHjecyw3BhwabcF2D/pQnoO+yMLI+4nvJl6Wizz9tdkbRTtePwu
+         PchsnTIWr4PpgI7MWJFQzS0U83OOxyCJfKE2iTvD/a0VTTeh87zK5ZBOw/kG4QHClUft
+         wQ3GMcRFCbaHk4ERYoTxkFhf9SiwylPw4GsEC9Bn/lXY9BTspQ/pEaOWR8YUM9gD3j5/
+         LlcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741520623; x=1742125423;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p2Foe3XwhvNs3FCKXrg4j2vvhvp7L38WiHksGts8MLY=;
+        b=WJYGTmdiXVsA/8DC7k0pKlj6QxUW2sFmnUrwlKs1RcmXAML+WIDhTJXoFieiqYYu3h
+         dqBlz1bElhBtoSnOPOl9onXBEzOMQS4KCbDNa/IWRIvLG5tL5byx0AUTApEEKxh9zfsg
+         XyD1TgEdz74hVQFmv2g3Ania26dfzNuWkpbzUXy3m/eq3o0fhuNEhHTLwlyC2pcPorFY
+         LW/0lH3NjQpqlWP66xiZ1RA2lJ/v/AhBYovCYDui3XlooAKyE4bjeiA7ZKlSjcKxA+w2
+         QJEhk9X6bc9mSCKSZtXZR0ER8xthVJ15s+BaJyLDS7Bn5dJ91NH4JxLdOYc2mRkPqV+k
+         QY1A==
+X-Forwarded-Encrypted: i=1; AJvYcCVXRgylh7vyzKiswjv3+Fb0T9in7WPTPaBOqwkPRrXd5LgaGaysIO1xasHAr3CtnGgBy1L+uNAL@vger.kernel.org, AJvYcCWwL9u6OkVlssNuZuCOZn7eD2Ews1IZKE+KaKlrQCf0nY9hHP3cLWFESlNJi847GcXtUr+sM8Ec0YBB@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzt3hhhqfXHN997mth0DGPxj7VeG3OzMmReGI11ZVog/CRZe+Uq
+	KwDSuzqfneAVZBV/hmNdo6ojbHaIajnOYbb+cJ3n4fDqe02+4cot
+X-Gm-Gg: ASbGncv5698k4aO5goLkocRKcGTxIcr7BQr3bs6PYH2U5ux870OgE+IDEZfRbG14AAM
+	lO96qerhlIUmm3EO0cNMhoxgi+VeTzGjihY4/+l9uP8WEof2T9LRzBKAE/gwtx2c6UWrLAxws5U
+	hLBNC44tY6jdU5I2aCM/XRn/Xk5PXCd0YeuIQ4vNW7eD+AAvTkuSDu7S0sVGfJgfVAIwNTNZIUo
+	isJHu29Yz79AvaT3DhvrcatQum7dzt7h7Lr8qOiPF2cxLe5Efc1ZV+r53Mu/DSQJ3o2KZXiI0Qm
+	Zm0dXlB0e8Fo68WXnXbK6ucMO8SepVN8K/s6og3KwnMf7bVyRuV+q2NyQYDHmd3NtQ==
+X-Google-Smtp-Source: AGHT+IGCkQvpCYvt8DAq7HNsPYTi3N6A3lqWQRF/jPpIMAUqN8kHt8G03ChJPrJbXKeLJIlJ8+vj8w==
+X-Received: by 2002:a05:6402:50c9:b0:5e5:db72:122a with SMTP id 4fb4d7f45d1cf-5e5e24d6e07mr10815399a12.20.1741520622082;
+        Sun, 09 Mar 2025 04:43:42 -0700 (PDT)
+Received: from [172.27.60.223] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5e5c768fa17sm5153804a12.72.2025.03.09.04.43.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 09 Mar 2025 04:43:41 -0700 (PDT)
+Message-ID: <fd6b1fef-8854-451f-9b7a-94df82adebc4@gmail.com>
+Date: Sun, 9 Mar 2025 13:43:37 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
-Content-Transfer-Encoding: base64
-Date: Sun, 9 Mar 2025 07:28:56 -0400
-X-Priority: 3
-Message-ID: <tencent_E59865C88AB5A1F1683137721DB9A1ED2B09@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net/mlx5: Avoid unnecessary use of comma
+ operator
+To: Simon Horman <horms@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+ Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org, llvm@lists.linux.dev
+References: <20250307-mlx5-comma-v1-1-934deb6927bb@kernel.org>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20250307-mlx5-comma-v1-1-934deb6927bb@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-c29ycnksIHRoZSBidWcgdGl0bGUgdW5kZXIgImN1dCBoZXJlIiB3YXMgbWlzdGFrZW5seSB3
-cml0dGVuIGFzICJCVUc6IGNvcnJ1cHRlZCBsaXN0IGluIGZpeF9mdWxsbmVzc19ncm91cCIs
-IHdoaWNoIHNob3VsZCBiZSAiSU5GTzogdGFzayBodW5nIGluIGliX2VudW1fYWxsX3JvY2Vf
-bmV0ZGV2cyIKCgombmJzcDsKCgoKCi0tLS0tLS0tLS0tLS0tLS0tLSZuYnNwO09yaWdpbmFs
-Jm5ic3A7LS0tLS0tLS0tLS0tLS0tLS0tCgoKLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQlVHOiBjb3JydXB0ZWQg
-bGlzdCBpbiBmaXhfZnVsbG5lc3NfZ3JvdXAKPT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CklORk86IHRhc2sga3dv
-cmtlci91ODo1OjEyNjE4IGJsb2NrZWQgZm9yIG1vcmUgdGhhbiAxNDMgc2Vjb25kcy4KJm5i
-c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IE5vdCB0YWludGVkIDYuMTQuMC1yYzUtZGly
-dHkgIzI=
 
+
+On 07/03/2025 14:39, Simon Horman wrote:
+> Although it does not seem to have any untoward side-effects,
+> the use of ';' to separate to assignments seems more appropriate than ','.
+> 
+> Flagged by clang-19 -Wcomma
+> 
+> No functional change intended.
+> Compile tested only.
+> 
+> Signed-off-by: Simon Horman <horms@kernel.org>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
+> index c862dd28c466..e8cc91a9bd82 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
+> @@ -700,7 +700,7 @@ mlx5_chains_create_global_table(struct mlx5_fs_chains *chains)
+>   		goto err_ignore;
+>   	}
+>   
+> -	chain = mlx5_chains_get_chain_range(chains),
+> +	chain = mlx5_chains_get_chain_range(chains);
+>   	prio = mlx5_chains_get_prio_range(chains);
+>   	level = mlx5_chains_get_level_range(chains);
+>   
+> 
+> 
+
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+
+Thanks.
 
