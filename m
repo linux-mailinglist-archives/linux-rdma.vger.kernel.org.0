@@ -1,59 +1,59 @@
-Return-Path: <linux-rdma+bounces-8511-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8512-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E1BDA58508
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 15:48:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D347A58511
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 15:50:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A18D18806DB
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 14:48:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0033C7A697D
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 14:47:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46CD81F0998;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B05341DE3DC;
 	Sun,  9 Mar 2025 14:47:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="b4k0GYge";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qZ4Amo/H"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OACsY6l9";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ix7/O3Cy"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 729CD1E521D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC0DA1E98F8;
 	Sun,  9 Mar 2025 14:47:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741531638; cv=none; b=efwWDVqoySPw24NoqXJxXUXF1ifeVuQupXWwTMSCZGr77CAurkucz4NzFAdPhFfwOK4sVPAFTuzZWZV5qnfeDoBN5StwQlnLghLhf4oQCl/ZY4ioWACiay6LezvzveVuLTBZNS0xdEW3RAGMDSAD7tMlpiBvumXhp0JlOqsxM0E=
+	t=1741531638; cv=none; b=FH69F8/E7KTHTPA954BuvzCc2dI/svc8rEnshOrVsWSaruYclU207towOKKdptgmz/SNJ63bFGiCNnTJTtYZCPu3MYSzfxkQEkruWiGjDwi3xzwwcYW/YR3iw2ejVaGC4HxPzmFlG64iE6ZiaomRqnrVFeGauZmK8Qd1Mln2lvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1741531638; c=relaxed/simple;
-	bh=alvzr3rmRIJs8SYMbjK6X1RfWDp0ICwIjcxZCSinOLU=;
+	bh=EM/uznQ2YZTtHd2PJqyOgtHEa7X0gpcWflzaAAZAoes=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jQ2BPaTYEfgHAzCTVAyiUCxFdFRBAD2n7tC2dgglSIsBNd1qzX8i1Fx9T3rixPlSj6CafkYVuZN60rKZUYYHHHZ+Yk8f7Tx+f4LcIrtasuctaYz09EDQmYH5LvfC/ilgFyf6ohSs/dZ3vyZVHjut6HuVdqRQN/vo9A94ypU28D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=b4k0GYge; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qZ4Amo/H; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=n1Cl7A+HpEhSzisCR40nwovk3YxWIPMQHWHznhhDCW7aIVEwZ+TxB3TSqWhVmIZjnkBQH7CUVxtBoahIhFxu47FBdQxjMwUtUvKZOkSkoUaoDwjLW0nwq4tIqde1nWqB17M4P0XeskMN8SuC61+Bv6X3+Ze4x+1sUBTIvcP2CGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OACsY6l9; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ix7/O3Cy; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1741531632;
+	s=2020; t=1741531633;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QvIeJeOhBJ2MlknP0xO1PybUxd0Jemlt2VLER5LrqDY=;
-	b=b4k0GYgefgxyxAJjh4MU39+73tYHC9owGD7B5c6QytvgXG6giRVS/Z/Fz7KWxk6ZxoAfLj
-	7f5ZtqXMTCR2IK88afKn2KpAwcgC9YVLnOV28o+1vg61bMoYUdW4SDB++JelXdhIopFODk
-	1NcB1d4gym92K5RqoautjBGKW/CLR49uPsMXLTuCOEzx1nctWBUekIT9bzQohAd7Ja2vft
-	+hi7xbgm26H/0eypIFG6vPlNYavAJLMi3JCURbAX5N3ETx6fGCUKFmd30UnCYf4V8OQKzh
-	Q/J+HNwB8fDZTvBpIBjLBxwxTVqLSXAdiQAYrJB0AfKgHoIb9nRIBj0Lxl/mIw==
+	bh=ILRU884p1OAoaunx4VDmaSDgJgpHGl18bni0vDofXnE=;
+	b=OACsY6l9XCBNmnz8p2IxMspoNEZ+22tc4fkJIUoq8KCksZe+eu5ShFI6kD2CPfOjZ8z6Z7
+	zi0gr988bG9nd1r8vjnAjEfSpkPsFdWH2k8aDtQUocAZrlky7tdsY1Y0Kbur2GF63PPbay
+	lyXXgBa4tsQ2tQ9kz4XJhT5Uoximfli4JMRLi7fVt4iyoe/9WRiveVwhECk9Qlj01btE24
+	gXxBhcMeWZ0fMOnbhKnsGFyrym1qP/5xqFMiZHNgFMwffLNZ/kR4+Wd63z6m5Wa693J9se
+	B6DDduKN+lZX/ejgIyHrgnrGTCvFM9esUPWzMQceX34PKp/efy66b3KFHhUYpQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1741531632;
+	s=2020e; t=1741531633;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QvIeJeOhBJ2MlknP0xO1PybUxd0Jemlt2VLER5LrqDY=;
-	b=qZ4Amo/Hf+Eg2+oaw+s1iSO+6i/Qt5b/dWs8SxfvTyDeLmhT/P17iKwUiB3tC27H1kY4hZ
-	XHSQdjCFeFQTI+AQ==
+	bh=ILRU884p1OAoaunx4VDmaSDgJgpHGl18bni0vDofXnE=;
+	b=Ix7/O3CyoYpZV7DwZk0ANGxA/wE9TXlnVQP3wfC3y5a0xK+i8ISaBE5PoyXK/0tIVlumix
+	e9lpnZtl2Yx2ZXBQ==
 To: netdev@vger.kernel.org,
 	linux-rt-devel@lists.linux.dev
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -65,9 +65,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	Allison Henderson <allison.henderson@oracle.com>,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next 17/18] rds: Acquire per-CPU pointer within BH disabled section.
-Date: Sun,  9 Mar 2025 15:46:52 +0100
-Message-ID: <20250309144653.825351-18-bigeasy@linutronix.de>
+Subject: [PATCH net-next 18/18] rds: Use nested-BH locking for rds_page_remainder.
+Date: Sun,  9 Mar 2025 15:46:53 +0100
+Message-ID: <20250309144653.825351-19-bigeasy@linutronix.de>
 In-Reply-To: <20250309144653.825351-1-bigeasy@linutronix.de>
 References: <20250309144653.825351-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -78,60 +78,75 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-rds_page_remainder_alloc() obtains the current CPU with get_cpu() while
-disabling preemption. Then the CPU number is used to access the per-CPU
-data structure via per_cpu().
+rds_page_remainder is a per-CPU variable and relies on disabled BH for its
+locking. Without per-CPU locking in local_bh_disable() on PREEMPT_RT
+this data structure requires explicit locking.
 
-This can be optimized by relying on local_bh_disable() to provide a
-stable CPU number/ avoid migration and then using this_cpu_ptr() to
-retrieve the data structure.
+Add a local_lock_t to the data structure and use
+local_lock_nested_bh() for locking. This change adds only lockdep
+coverage and does not alter the functional behaviour for !PREEMPT_RT.
 
 Cc: Allison Henderson <allison.henderson@oracle.com>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- net/rds/page.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ net/rds/page.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/net/rds/page.c b/net/rds/page.c
-index e0dd4f62ea47a..58a8548a915a9 100644
+index 58a8548a915a9..afb151eac271c 100644
 --- a/net/rds/page.c
 +++ b/net/rds/page.c
-@@ -86,8 +86,8 @@ int rds_page_remainder_alloc(struct scatterlist *scat, un=
+@@ -40,10 +40,12 @@
+ struct rds_page_remainder {
+ 	struct page	*r_page;
+ 	unsigned long	r_offset;
++	local_lock_t	bh_lock;
+ };
+=20
+-static
+-DEFINE_PER_CPU_SHARED_ALIGNED(struct rds_page_remainder, rds_page_remainde=
+rs);
++static DEFINE_PER_CPU_SHARED_ALIGNED(struct rds_page_remainder, rds_page_r=
+emainders) =3D {
++	.bh_lock =3D INIT_LOCAL_LOCK(bh_lock),
++};
+=20
+ /**
+  * rds_page_remainder_alloc - build up regions of a message.
+@@ -87,6 +89,7 @@ int rds_page_remainder_alloc(struct scatterlist *scat, un=
 signed long bytes,
- 		goto out;
  	}
 =20
--	rem =3D &per_cpu(rds_page_remainders, get_cpu());
  	local_bh_disable();
-+	rem =3D this_cpu_ptr(&rds_page_remainders);
++	local_lock_nested_bh(&rds_page_remainders.bh_lock);
+ 	rem =3D this_cpu_ptr(&rds_page_remainders);
 =20
  	while (1) {
- 		/* avoid a tiny region getting stuck by tossing it */
-@@ -116,12 +116,11 @@ int rds_page_remainder_alloc(struct scatterlist *scat=
+@@ -115,11 +118,13 @@ int rds_page_remainder_alloc(struct scatterlist *scat=
 , unsigned long bytes,
+ 		}
 =20
  		/* alloc if there is nothing for us to use */
++		local_unlock_nested_bh(&rds_page_remainders.bh_lock);
  		local_bh_enable();
--		put_cpu();
 =20
  		page =3D alloc_page(gfp);
 =20
--		rem =3D &per_cpu(rds_page_remainders, get_cpu());
  		local_bh_disable();
-+		rem =3D this_cpu_ptr(&rds_page_remainders);
++		local_lock_nested_bh(&rds_page_remainders.bh_lock);
+ 		rem =3D this_cpu_ptr(&rds_page_remainders);
 =20
  		if (!page) {
- 			ret =3D -ENOMEM;
-@@ -140,7 +139,6 @@ int rds_page_remainder_alloc(struct scatterlist *scat, =
+@@ -138,6 +143,7 @@ int rds_page_remainder_alloc(struct scatterlist *scat, =
 unsigned long bytes,
+ 		rem->r_offset =3D 0;
  	}
 =20
++	local_unlock_nested_bh(&rds_page_remainders.bh_lock);
  	local_bh_enable();
--	put_cpu();
  out:
  	rdsdebug("bytes %lu ret %d %p %u %u\n", bytes, ret,
- 		 ret ? NULL : sg_page(scat), ret ? 0 : scat->offset,
 --=20
 2.47.2
 
