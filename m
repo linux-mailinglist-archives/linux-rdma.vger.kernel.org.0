@@ -1,153 +1,132 @@
-Return-Path: <linux-rdma+bounces-8512-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8513-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D347A58511
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 15:50:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6604CA5869E
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 18:58:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0033C7A697D
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 14:47:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A112F166F1E
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 17:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B05341DE3DC;
-	Sun,  9 Mar 2025 14:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E23C51EF392;
+	Sun,  9 Mar 2025 17:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OACsY6l9";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ix7/O3Cy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MyHKyj43"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC0DA1E98F8;
-	Sun,  9 Mar 2025 14:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5910D1EF37C;
+	Sun,  9 Mar 2025 17:57:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741531638; cv=none; b=FH69F8/E7KTHTPA954BuvzCc2dI/svc8rEnshOrVsWSaruYclU207towOKKdptgmz/SNJ63bFGiCNnTJTtYZCPu3MYSzfxkQEkruWiGjDwi3xzwwcYW/YR3iw2ejVaGC4HxPzmFlG64iE6ZiaomRqnrVFeGauZmK8Qd1Mln2lvE=
+	t=1741543076; cv=none; b=IwZ/s/myk48EoFEznbvLoZPzYS8sZlyHCt2YK+eUD4clF2IGMv9IDstC8mVe7R+F+yUVjNlePCyh1m7or5YryE+s5Ew8pNxl25LVouat6Jal9cMpYfXdk9sYJgeigVj8YFqNnycA0viKZfkTxHAqcfTF13GLkybezbcDlSVZYpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741531638; c=relaxed/simple;
-	bh=EM/uznQ2YZTtHd2PJqyOgtHEa7X0gpcWflzaAAZAoes=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n1Cl7A+HpEhSzisCR40nwovk3YxWIPMQHWHznhhDCW7aIVEwZ+TxB3TSqWhVmIZjnkBQH7CUVxtBoahIhFxu47FBdQxjMwUtUvKZOkSkoUaoDwjLW0nwq4tIqde1nWqB17M4P0XeskMN8SuC61+Bv6X3+Ze4x+1sUBTIvcP2CGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OACsY6l9; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ix7/O3Cy; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1741531633;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ILRU884p1OAoaunx4VDmaSDgJgpHGl18bni0vDofXnE=;
-	b=OACsY6l9XCBNmnz8p2IxMspoNEZ+22tc4fkJIUoq8KCksZe+eu5ShFI6kD2CPfOjZ8z6Z7
-	zi0gr988bG9nd1r8vjnAjEfSpkPsFdWH2k8aDtQUocAZrlky7tdsY1Y0Kbur2GF63PPbay
-	lyXXgBa4tsQ2tQ9kz4XJhT5Uoximfli4JMRLi7fVt4iyoe/9WRiveVwhECk9Qlj01btE24
-	gXxBhcMeWZ0fMOnbhKnsGFyrym1qP/5xqFMiZHNgFMwffLNZ/kR4+Wd63z6m5Wa693J9se
-	B6DDduKN+lZX/ejgIyHrgnrGTCvFM9esUPWzMQceX34PKp/efy66b3KFHhUYpQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1741531633;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ILRU884p1OAoaunx4VDmaSDgJgpHGl18bni0vDofXnE=;
-	b=Ix7/O3CyoYpZV7DwZk0ANGxA/wE9TXlnVQP3wfC3y5a0xK+i8ISaBE5PoyXK/0tIVlumix
-	e9lpnZtl2Yx2ZXBQ==
-To: netdev@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next 18/18] rds: Use nested-BH locking for rds_page_remainder.
-Date: Sun,  9 Mar 2025 15:46:53 +0100
-Message-ID: <20250309144653.825351-19-bigeasy@linutronix.de>
-In-Reply-To: <20250309144653.825351-1-bigeasy@linutronix.de>
-References: <20250309144653.825351-1-bigeasy@linutronix.de>
+	s=arc-20240116; t=1741543076; c=relaxed/simple;
+	bh=IcDiQbjK7QkOUtwcahlljvJSSFMJ7nHeE1X6Y+ZDf/w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c3WD/hcyYpv3TN+IG5esSLhZI7/gyDXQpxCR1P39Z6fce8BNsCpdNs9c36YT/JERNmiB59pxAEGSYZe85qyT51wR2g/WmSM1oYX0gMqNpg6T1xDZ3CP0QbIAq83uFsD3bNTlvaAyr+e/3fZPoOmWRhnsRGr8Rze7OOKrpMfnsOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MyHKyj43; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-22438c356c8so29971475ad.1;
+        Sun, 09 Mar 2025 10:57:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741543074; x=1742147874; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+ShW+R2fg4UIDkgDliCZ19ugTtc1H63Gcayp71fy27U=;
+        b=MyHKyj43uXGVB4Bi+RGt1D4cJ7ASY95xRWcAbziYKFf3084EQcwulfu1EVlws3k55z
+         0urCLACm4g2aSkVlQYYGFVrYa0KoknyHkvlc/JAlkgFDgNj9wJn0TJ8N8+CvL6GI4M1F
+         Ucyjmj7m0UI+1G3wv3PTnI5ZN1yuSz70scjk53IwKGCI3lLd2GhnAKGOVF/j1ahIBapm
+         o9ieSd92fYTevp4ZNxJbMju6L0NLcGUke8LfrLCFaAt9VQ5hN7dfPSIKQq/2exeADXsO
+         ljflwljHpmaMNjctrkGUeEeg9K9gfH3E4SHwpKqr8x7kx5ttUelF0FJAnKMlaUeyHiio
+         MvmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741543074; x=1742147874;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+ShW+R2fg4UIDkgDliCZ19ugTtc1H63Gcayp71fy27U=;
+        b=o0lFBw45OXZZ/L3Kuc1xSP/Oy4BeT1EV/Y+HxWPReC4XOr2/UPjboXQuSnUKSFnmNb
+         YiS9PkEJVJfkkhZGHaM3vQLib3J8CXYuXo0MXYOYIXQsOzjiOrmU4x7ObU7RAHIKX7nq
+         /hEmUpb9Rp7eqn79ASmhFINk6vST7Dml2uSqNGatviooJfpnsESI3JRijQbEmM4hY5JT
+         VU/7Hul4HYHdEZuxR6o4eUufRqE5YtpYWfNbT5zDnFoX+lwAPWbHVII6v5ekyiJyW9Yc
+         1jmuvXc0RV4RcUmsz7mRPWx+Iv/eFlXMJbuVX9pMKLst7MhFv9LfC/eseA714yATzjWf
+         dPYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUlSjLlnymAfUm0TNQ5u4XECCoXHMlRoLj93PIe11irnOXMocdkE4kyVHKDpjYLz+/74xX1X6woquFR5+E=@vger.kernel.org
+X-Gm-Message-State: AOJu0YymOxdyB+zCrWUDDB6TS/YQnSC3sUpHfa/33JwMWJkwbm4dR6b+
+	phRiHhFy6yVqlrUgCf2BkUnk8puAIG3RKGfvvHKi3GmB7q5msmDdRGgAqRBRAsM=
+X-Gm-Gg: ASbGncsW3sH+x6LtRliQYKLfk940BBgAbzZ37aNOHj9A6f17Zb/LkM+sR8qrh60H6Ls
+	G22rqR55XWwd46/6zE5XuoMfOexNxxgQ7vTFx8AAu8LTDzog2lro6z61cEKZ9r06XbW01VJvv+q
+	3Vu6WjBcOkQf3bWVysNaru5jTuOTLtf33/WnhnajDwgB8/cOOk6y9Q64VK0WtkY1OGqP3lNEc5U
+	cobDtmvcePdtGXRLPB/PwMZna7XYOXsAbSt62OFJ2jdxJy5vUcfdPo4avsaDDtg5LXoMhVF4AEr
+	rfmARE3fS1MEZiZpWf+xRWbg77GZiqiKSE0MkDu2FAMjsPFiGg+0NFM=
+X-Google-Smtp-Source: AGHT+IGBozFibCaSqkZ66LWvTrvLy45EL4JsTX508qnHiaChaQeNrguJ7G1t9sZHiCE9u0fIYS2xqg==
+X-Received: by 2002:a05:6a00:4b4a:b0:736:339b:8296 with SMTP id d2e1a72fcca58-736aaabaedcmr18333823b3a.18.1741543074450;
+        Sun, 09 Mar 2025 10:57:54 -0700 (PDT)
+Received: from dev0.. ([49.43.168.202])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73698206989sm6713019b3a.21.2025.03.09.10.57.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 Mar 2025 10:57:53 -0700 (PDT)
+From: Abhinav Jain <jain.abhinav177@gmail.com>
+To: jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Abhinav Jain <jain.abhinav177@gmail.com>
+Subject: [PATCH] RDMA/core: Publish node GUID with the uevent for ib_device
+Date: Sun,  9 Mar 2025 17:57:31 +0000
+Message-Id: <20250309175731.7185-1-jain.abhinav177@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-rds_page_remainder is a per-CPU variable and relies on disabled BH for its
-locking. Without per-CPU locking in local_bh_disable() on PREEMPT_RT
-this data structure requires explicit locking.
+As per the comment, modify ib_device_uevent to publish the node
+GUID alongside device name, upon device state change.
 
-Add a local_lock_t to the data structure and use
-local_lock_nested_bh() for locking. This change adds only lockdep
-coverage and does not alter the functional behaviour for !PREEMPT_RT.
+Have compiled the file manually to ensure that it builds. Do not have
+a readily available IB hardware to test. Confirmed with checkpatch
+that the patch has no errors/warnings.
 
-Cc: Allison Henderson <allison.henderson@oracle.com>
-Cc: linux-rdma@vger.kernel.org
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Abhinav Jain <jain.abhinav177@gmail.com>
 ---
- net/rds/page.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/infiniband/core/device.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/net/rds/page.c b/net/rds/page.c
-index 58a8548a915a9..afb151eac271c 100644
---- a/net/rds/page.c
-+++ b/net/rds/page.c
-@@ -40,10 +40,12 @@
- struct rds_page_remainder {
- 	struct page	*r_page;
- 	unsigned long	r_offset;
-+	local_lock_t	bh_lock;
- };
-=20
--static
--DEFINE_PER_CPU_SHARED_ALIGNED(struct rds_page_remainder, rds_page_remainde=
-rs);
-+static DEFINE_PER_CPU_SHARED_ALIGNED(struct rds_page_remainder, rds_page_r=
-emainders) =3D {
-+	.bh_lock =3D INIT_LOCAL_LOCK(bh_lock),
-+};
-=20
- /**
-  * rds_page_remainder_alloc - build up regions of a message.
-@@ -87,6 +89,7 @@ int rds_page_remainder_alloc(struct scatterlist *scat, un=
-signed long bytes,
- 	}
-=20
- 	local_bh_disable();
-+	local_lock_nested_bh(&rds_page_remainders.bh_lock);
- 	rem =3D this_cpu_ptr(&rds_page_remainders);
-=20
- 	while (1) {
-@@ -115,11 +118,13 @@ int rds_page_remainder_alloc(struct scatterlist *scat=
-, unsigned long bytes,
- 		}
-=20
- 		/* alloc if there is nothing for us to use */
-+		local_unlock_nested_bh(&rds_page_remainders.bh_lock);
- 		local_bh_enable();
-=20
- 		page =3D alloc_page(gfp);
-=20
- 		local_bh_disable();
-+		local_lock_nested_bh(&rds_page_remainders.bh_lock);
- 		rem =3D this_cpu_ptr(&rds_page_remainders);
-=20
- 		if (!page) {
-@@ -138,6 +143,7 @@ int rds_page_remainder_alloc(struct scatterlist *scat, =
-unsigned long bytes,
- 		rem->r_offset =3D 0;
- 	}
-=20
-+	local_unlock_nested_bh(&rds_page_remainders.bh_lock);
- 	local_bh_enable();
- out:
- 	rdsdebug("bytes %lu ret %d %p %u %u\n", bytes, ret,
---=20
-2.47.2
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 0ded91f056f3..1812038f1a91 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -499,12 +499,17 @@ static void ib_device_release(struct device *device)
+ static int ib_device_uevent(const struct device *device,
+ 			    struct kobj_uevent_env *env)
+ {
+-	if (add_uevent_var(env, "NAME=%s", dev_name(device)))
++	const struct ib_device *dev =
++		container_of(device, struct ib_device, dev);
++
++	if (add_uevent_var(env, "NAME=%s", dev_name(&dev->dev)))
+ 		return -ENOMEM;
+ 
+-	/*
+-	 * It would be nice to pass the node GUID with the event...
+-	 */
++	__be64 node_guid_be = dev->node_guid;
++	u64 node_guid = be64_to_cpu(node_guid_be);
++
++	if (add_uevent_var(env, "NODE_GUID=0x%llx", node_guid))
++		return -ENOMEM;
+ 
+ 	return 0;
+ }
+-- 
+2.34.1
 
 
