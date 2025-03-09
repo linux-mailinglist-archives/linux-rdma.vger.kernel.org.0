@@ -1,135 +1,124 @@
-Return-Path: <linux-rdma+bounces-8508-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8509-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D91DFA583D9
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 12:46:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53E01A584EC
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 15:32:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 700DC1895619
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 11:46:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD0E47A58E3
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Mar 2025 14:31:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790FF1C4A13;
-	Sun,  9 Mar 2025 11:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48C51CAA85;
+	Sun,  9 Mar 2025 14:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kukRWH4K"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RbHBkzWJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 468FD137E;
-	Sun,  9 Mar 2025 11:46:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9FD1C2DC8
+	for <linux-rdma@vger.kernel.org>; Sun,  9 Mar 2025 14:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741520786; cv=none; b=h6DpZSVWsrcYhm+qR1Kgwi4LjR7PRCD3dX9j9V8KzBwUWEdWmaQBLhqu6xBb+y6BT9kQn/LfHFQ/19ir50p7rutgtcTJMJfOsDnqJT5VHYvH1hcfC7Zz8lCwW3TWkCAZK+jekUoM8trbQZFFlMmYMnHIJqGz9NXnM1GjckLZ2jo=
+	t=1741530728; cv=none; b=kzXMrXX6Ww7PtV61crgixj0v0qGbu8yTmQ/C2KjazFc+psrVb3T82OSfWTGeQdYSI4dh1L4oY5ITORjbmJYPFVyZaNFrQVAmfUrtEjstPxOXg94NOqg8dL2n0C7XcAH/NgP4aD8NBCd3++59bqhcbTT3qSBqGIP7JgCritmY1Ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741520786; c=relaxed/simple;
-	bh=bSXg2zabw7qKisgsVgjD6bCGbNw/2WZDn8ufJFEDH14=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ijaO1+FKlFHvXHcuIoWGwaSUjejSOapWQDGzVL5RtfSGx0KQwkNDSmxAMh6aoAAPSMFA3tuBzD+jnEb4zLmKiaUDufA6LWg7fIGs9y93P5jwNu1ErCBFF07lVmJHvI+rTQJpmQYwO0m4QFrk2+IO2fsWqPkufcdn692JG31hIWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kukRWH4K; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-aaf900cc7fbso678014766b.3;
-        Sun, 09 Mar 2025 04:46:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741520782; x=1742125582; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OCu0vN4H8XwwS+13HQgSYHgbkhWHfbQF4cgbHHPiSUw=;
-        b=kukRWH4KyzJD+fXLrWzXaXd2VSXRq9GVPDAtL9DxEbdqN10bMsDYhj0ufcNnDyjbmm
-         UiaMjC6t8OEEdB/j6wcVydjBk5QFARfsWBb3Ugpap3P/IG79galfFSanHa7jin1X9hQV
-         tGH5nJltMJkgcNGNZ6zM6C2Hlj0JoWJyj7W1h4cgr5XxnFGY89j2jW1iLFbmtAAXQCGx
-         cV8bDCdoJH7n2w57WGRBzvMVCovPk/cg/OBJlrtHIeI0hlNnpycmVvqJAxF9Z+st15GU
-         DbbvpT+0lOJQ5ziQTqwPdp5k8tgReP7blmhv0IECVEHNkQN5RTclLWspQHcr6m/QYhGH
-         DVqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741520782; x=1742125582;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OCu0vN4H8XwwS+13HQgSYHgbkhWHfbQF4cgbHHPiSUw=;
-        b=GOU6t1+Dc13+y5ydrY1hKqiW5WDN7PWaWbS8Mnc5aDQ9v8n1PhleaJIcIw7VGiQ/ho
-         UVEYPy0Ulj627EDd4e6SuHJNGDlZlTE5JxKaoz4YVJutUgdZXt50dU+MugaRgbloPrkv
-         xRc6OVckUdduitQWtRMeK7lh7ys5JQUUMPcwWt8mSqxtjRJy1t7oqucQO8ZwW2mHS8rK
-         Ftm4QvhZUK7oymWyGPToAL+BeW9M6IcOkj70dMCG9ICAM923HD3sr8rGgThVxM4lJ122
-         MPsfBDQ5VXVjhqtPQ/ZsV44kC8WDCATbmxOxzYV5Wsv/rp0womQ6cEn9bZTS8/V1On10
-         nZJw==
-X-Forwarded-Encrypted: i=1; AJvYcCWS8xO9aVQ95zP3afwOZ7kDQlZ5d+plCd5Rf/VFbfl03FVL+Qc8O77sJiZRl4H1yYusgO4+/ltmxC2Ezw==@vger.kernel.org, AJvYcCXMWzDxj2CNZG+nraP4yezf7QtSlvOC8XdHg1We0nntR6nY8A4cQi+09jqHTOAzk1OAeqJ71yuuxBnUIyg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxSohCrImdlDPLRdhR7TbtnHrLMOp7/vpMJHM6uw/bgjhslJLcN
-	xsMdbeygDiRyKn65wP8WiWnFWKUsdcEKgYlg6bZr66OWyrub+mAb
-X-Gm-Gg: ASbGnctKOgE8gP5xalYcuBGK0uot119Y44rB5GF/Pi89E9c9TN8RyfFZUAAkG1ZCMML
-	QVsmcNrBrrEbfICr2aTzkyT9P87CylQ8Aw9ifG0xreLEFyPvBoJO9/ok2wKTNo32ee9KJERraTH
-	n4rufX8jrYoBtXKSc8cAvuHlHC9PM/cdrBL6trX9+pau+/aHeGMrPLYQv2P9HbAoOKl24ddL61+
-	ZuJ5j16Fe/0hEAMcKaHz4HSqI84L/XdlXjY2SZEngS5Im5F2p8mjEt/Bn0mAOeiKF1nQHZQRQ2g
-	fwnd2PET7awYGJERN0OoVGgyevqJNR+0ylC4Xw8U2g7GgEqoLRn4yQDNKPav3Z5gvg==
-X-Google-Smtp-Source: AGHT+IFbrSPJmJebinSVh5WJ3B/eEqdgNq4/X/xaPiP+Hd/vZ5pL3AqNBcKkELkot7YrNNw06xoQaA==
-X-Received: by 2002:a17:907:3f2a:b0:abf:7a26:c47e with SMTP id a640c23a62f3a-ac252e9e7cfmr1088030666b.43.1741520782067;
-        Sun, 09 Mar 2025 04:46:22 -0700 (PDT)
-Received: from [172.27.60.223] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac2811e5b32sm187067666b.159.2025.03.09.04.46.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 09 Mar 2025 04:46:21 -0700 (PDT)
-Message-ID: <d415dada-f1cb-486d-b018-171777bfaab6@gmail.com>
-Date: Sun, 9 Mar 2025 13:46:19 +0200
+	s=arc-20240116; t=1741530728; c=relaxed/simple;
+	bh=rf7ClRPwbXBSePW2jK3Cp73RMSU8ntYf25KwZNIqRWY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=XDq9D7X63x6rbW+PDvs2SXlnug9XZGmMBPq/K+1RIdDaXR7vXOHG4j0H83ZAFldUvmKj1L64lgQOq46DNORLfdjvI7J8ktCIbXRa+Eo8js3t5TTPzYpqqkDg49NY9ijDlb/jRtCFMM4TM5qPrV5kUOWut8eHJBHoAcN8ToHX31I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RbHBkzWJ; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741530727; x=1773066727;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=rf7ClRPwbXBSePW2jK3Cp73RMSU8ntYf25KwZNIqRWY=;
+  b=RbHBkzWJ1Ef7lDXWj0LCfNyhZaEXS7fy+EIjuSdmxBLIV3wh2sggp93v
+   kB++7mP3Qgf1v7pvWvhgEPyeiOR1g6kBBeiDnDzws0T06d53Op+FRBFTv
+   wpueBESQGODIXtAe+suSR2yfTZQxdKMbhZT4369TmASPWi2CWqnr8khVz
+   5BArWZFVd3xEjFMqX/7Bd6WfIJYgiLjoxwRpzAci9y3ShFYFDV8mSftXD
+   B+zwdZE+OOFxveNldBQbzmgqs3UaqgGYOrZB0nIz0x4VWWXMGFG16+Rgz
+   9+oQQaYlArYedqQsq0KzqfB8VA+bCtH6naGoIod3gFy7f9jrJ6gwh/Fgk
+   Q==;
+X-CSE-ConnectionGUID: GBtuOiEJROqT55MvLYcyog==
+X-CSE-MsgGUID: xYkRZBJjSIGnYXCcjO5cuQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11368"; a="53157490"
+X-IronPort-AV: E=Sophos;i="6.14,234,1736841600"; 
+   d="scan'208";a="53157490"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2025 07:32:06 -0700
+X-CSE-ConnectionGUID: Mz38SZ9bTuOQheLpz9LDzA==
+X-CSE-MsgGUID: ewQXqTkbScu1LfchR0THwg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,234,1736841600"; 
+   d="scan'208";a="120480757"
+Received: from lkp-server02.sh.intel.com (HELO a4747d147074) ([10.239.97.151])
+  by fmviesa009.fm.intel.com with ESMTP; 09 Mar 2025 07:32:04 -0700
+Received: from kbuild by a4747d147074 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1trHhC-0003BQ-0S;
+	Sun, 09 Mar 2025 14:32:02 +0000
+Date: Sun, 9 Mar 2025 22:31:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: Chiara Meiohas <cmeiohas@nvidia.com>
+Cc: oe-kbuild-all@lists.linux.dev, Doug Ledford <dledford@redhat.com>,
+	Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org,
+	Leon Romanovsky <leon@kernel.org>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: [rdma:wip/leon-for-next 19/29] include/rdma/ib_ucaps.h:19:18:
+ warning: extra tokens at end of #ifdef directive
+Message-ID: <202503092207.3Ho0hd5Q-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3] net/mlx5: handle errors in
- mlx5_chains_create_table()
-To: Wentao Liang <vulab@iscas.ac.cn>, saeedm@nvidia.com, leon@kernel.org,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, Tariq Toukan <tariqt@nvidia.com>
-References: <20250307021820.2646-1-vulab@iscas.ac.cn>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20250307021820.2646-1-vulab@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+head:   b064e7b61e82e48d030582eb1d3701b31c2b16c8
+commit: 548599879c3a640b3893070a1739624bcfdb968d [19/29] RDMA/uverbs: Introduce UCAP (User CAPabilities) API
+config: csky-randconfig-002-20250309 (https://download.01.org/0day-ci/archive/20250309/202503092207.3Ho0hd5Q-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250309/202503092207.3Ho0hd5Q-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202503092207.3Ho0hd5Q-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from drivers/infiniband/core/ucaps.c:11:
+>> include/rdma/ib_ucaps.h:19:18: warning: extra tokens at end of #ifdef directive
+      19 | #ifdef IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
+         |                  ^
 
 
+vim +19 include/rdma/ib_ucaps.h
 
-On 07/03/2025 4:18, Wentao Liang wrote:
-> In mlx5_chains_create_table(), the return value of mlx5_get_fdb_sub_ns()
-> and mlx5_get_flow_namespace() must be checked to prevent NULL pointer
-> dereferences. If either function fails, the function should log error
-> message with mlx5_core_warn() and return error pointer.
-> 
-> Fixes: 39ac237ce009 ("net/mlx5: E-Switch, Refactor chains and priorities")
-> Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
-> ---
-> [v1]->[v2]: Add Fixes tag and branch target. Change return value.
-> [v2]->[v3]: Change Fixes tag. Move change history.
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
-> index a80ecb672f33..711d14dea248 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
-> @@ -196,6 +196,11 @@ mlx5_chains_create_table(struct mlx5_fs_chains *chains,
->   		ns = mlx5_get_flow_namespace(chains->dev, chains->ns);
->   	}
->   
-> +	if (!ns) {
-> +		mlx5_core_warn(chains->dev, "Failed to get flow namespace\n");
-> +		return ERR_PTR(-EOPNOTSUPP);
-> +	}
-> +
->   	ft_attr.autogroup.num_reserved_entries = 2;
->   	ft_attr.autogroup.max_num_groups = chains->group_num;
->   	ft = mlx5_create_auto_grouped_flow_table(ns, &ft_attr);
+    16	
+    17	void ib_cleanup_ucaps(void);
+    18	int ib_get_ucaps(int *fds, int fd_count, uint64_t *idx_mask);
+  > 19	#ifdef IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
+    20	int ib_create_ucap(enum rdma_user_cap type);
+    21	void ib_remove_ucap(enum rdma_user_cap type);
+    22	#else
+    23	static inline int ib_create_ucap(enum rdma_user_cap type)
+    24	{
+    25		return -EOPNOTSUPP;
+    26	}
+    27	static inline void ib_remove_ucap(enum rdma_user_cap type) {}
+    28	#endif /* CONFIG_INFINIBAND_USER_ACCESS */
+    29	
 
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-
-Thanks.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
