@@ -1,181 +1,197 @@
-Return-Path: <linux-rdma+bounces-8539-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8541-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D24D4A5A4ED
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 21:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A6682A5A633
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 22:29:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47FCA1891693
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 20:27:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEC891889DF2
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 21:29:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8A71DE4CC;
-	Mon, 10 Mar 2025 20:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142531E3787;
+	Mon, 10 Mar 2025 21:28:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BxelR1C/"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="bqk/hUtR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2051.outbound.protection.outlook.com [40.107.237.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73BF1DDA09;
-	Mon, 10 Mar 2025 20:27:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741638442; cv=none; b=jceEnBtV78JrQjFkycYj0ohvLjT0lkkQLacZS2RSn12uOP5yTTW3OKIF2sxforrXhWyaRw1KuE8xu8QB27/BSUCXNxNAv/LhRdsRdFGxaqM3Xjv0otGYH6R9eYGGrVhn3yuM+aWzBCdYZTbGdn6PCET4VSMaqhdDjlzsDlLdP+Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741638442; c=relaxed/simple;
-	bh=/kz9J001nUCJ1TInU9c7H+CswaI1MEjTlNKpcpq1z8c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BqqBqRULpAVDb+IO0Jlg/ZleblMPfmxQr65gX0yupm9rgPY5uCFUBpGnM2Gv0dfsUpPVpJmcQeXSR5qqxeWYmm3VZhDuXwNDoFZ+26bDL8uAJevJlPeHiv4SCejBjl3bPlp46hY6YzMTvhlYHkoCYU4vbsa5vn1H5OYzSZ+U6oI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BxelR1C/; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741638441; x=1773174441;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=/kz9J001nUCJ1TInU9c7H+CswaI1MEjTlNKpcpq1z8c=;
-  b=BxelR1C/ZHf6LRuNYI6EyIV7au6yFfmNZfvNjNJzAtkQ57MyiryLh9s8
-   vo/v5ua6KUqaGbQBmQZYAjQ97fyJfdjV50o5sO4CGTGiFL0S2EaKmKfxR
-   XXLnQINeZxObhLMWuoRdlKuFGSyDhwjRcfcpZKcxx7stPACLJg/PNtqB8
-   a7yqtdmxQa0oesll6HOgDdxeG0yvDwmMGvebFTSA/lJfuXgrcufGr5UsC
-   P6ra92NU6iRWtzDI9B0QCjLQ4rwkZY6kvOviJ2NZy/80U6azI+1P6IYQj
-   14l2V6GuZ5ENj2kKqcpkMRftlazkASYT2SdH/pAqxI5OT0wY8CDRV1oI0
-   g==;
-X-CSE-ConnectionGUID: 8FfhGRwzQEWGEUaHa/P9og==
-X-CSE-MsgGUID: PKe7omp8Qt6mZjeaYmu3RA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11369"; a="30229720"
-X-IronPort-AV: E=Sophos;i="6.14,237,1736841600"; 
-   d="scan'208";a="30229720"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2025 13:27:19 -0700
-X-CSE-ConnectionGUID: GHxaZoHHRsKjuwlzRHBtxw==
-X-CSE-MsgGUID: uk8CqsdMSyeoXL2SGEupmg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,237,1736841600"; 
-   d="scan'208";a="120988504"
-Received: from dnelso2-mobl.amr.corp.intel.com (HELO [10.125.111.63]) ([10.125.111.63])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2025 13:27:19 -0700
-Message-ID: <ce0c9c98-c507-40c1-8bd5-5fe37ba624f6@intel.com>
-Date: Mon, 10 Mar 2025 13:27:17 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401DD1E5B84;
+	Mon, 10 Mar 2025 21:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741642102; cv=fail; b=f+uCvw+tGltUoEiIuVKB7fqW9D3JwjcQeHMZW0qlekB8NbMVkBGHExCIGFzIWNtgSY0qEkUQr18SQGKAACRdlX/Lm4qovxwcAP9IDDIqLpzivHTyHxhMzZIj9ULqLi4FRBNv0rMOspw8DpmGKo944IxoH0RIjgHK4U312S8eBnw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741642102; c=relaxed/simple;
+	bh=DluEhYQt31UAc108j2cfIPwZ37bBCAk4qQAwDR7VyD8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LVtNe5Ta7ayhawYJowcxLciQRY6kz9aqBEjO4OIRxfC2YRpUCs9auf9GhuayAFpK7AaZOx02LgCW6ypewIvwtrGF2YWQ5g3naO9g+P1nvWQnoyEhq5jiwkUtuKLwXwy86VQpKDPg/mEc562/UQla6lfszcI6zcWXQg5/VNdTgSE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=bqk/hUtR; arc=fail smtp.client-ip=40.107.237.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=UpnEVuIEircbql/xfbYhGJtQA5m/+5NSmME2/00H7EYmM3Mp7mgakph2H0JT7NpUUXKYCmqoHmhn0Ja+v/WyBRueCpcoJ4y1eaZZWOPsJ7qTuCcowVNBjxduOztctIa8NPW9dbv264QUpd408VqEY2SsiMqF9ODLM7UDJGkbXFNRzveWAl/jWyV5N0Jv1YOTltgJZNtqRHE3bxyq4KwlJztEC2Xqjd/lTxoQmBTk2aO+UT6L/h7VVJuT4CIBoqp5D625e7eM9mSwPczpyTgaLSN0pSZr7z0kdgZnXkPL8yvGk5CiQBWe01XKXd9V9VHqlrHOOQfzFnagmzXmG8/C/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=J6J7XsBVEikYPTbh7AockGOO6zNvNZtEWNUZsM61hHk=;
+ b=vCdQ7wi7SnO0qcVamNO4pIvUz7VWNLV4lqXk0cd/sa/FOU2RVtIDYydqag2Y5FDvOHn0tvnYqxG/AwmDWVl+w+TRKuKDQaNeCiD81SkZvDgjbSag36itu8dOXeNaMJs5AEYW3VS1CK/iN4mQEwT/fIRGDAaIwO8ybzY5kP7kb/HB7GgjAveDTlDDupmDp3h7dxcIorNDARVX29aT7OpoeXjqQ3z0eO/HTcXm6X+RhVB5jwN8sovlmfxBIw452gCF/tYEAYBrVJI4HMSUW8d6glZ9H90lEeAXDjSs8QagLBFkf668cxlBVRi+GwLqEkAgkFC3w2O3CPYCSKT9og3IhQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J6J7XsBVEikYPTbh7AockGOO6zNvNZtEWNUZsM61hHk=;
+ b=bqk/hUtRwq5CX3JBz33fa1AQNpvyAr45RInC44DgXYzC8DPG7zDDLWlbJjV+wxlLLKxUEhWb40eqbOY5Tb57lGCa+3egkLYZQCUoTXxRlFA5j2nGe1eP64UzHilphKvwIEDrrnfOoGbMswQ65L754yd3fVhfdWgkwjOCX21qhOKqMo4CBicHisBrWFP+hY8ZV71lpI6NEoYiMdyXOv6YXVpoNl2UuILuGU9LfBW0r5TuiC7IZXXYmGq6RFgMIY7K9E02fu0zyBx/BraaaxwXml3E0KdDZeQEu0zeuSApn6sbbw5Olh9xw4FYa+PrSPan5hS/Ydu8mcOXluKcJhU7qA==
+Received: from BN7PR06CA0043.namprd06.prod.outlook.com (2603:10b6:408:34::20)
+ by DS7PR12MB8251.namprd12.prod.outlook.com (2603:10b6:8:e3::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8511.27; Mon, 10 Mar 2025 21:28:16 +0000
+Received: from BL6PEPF00022571.namprd02.prod.outlook.com
+ (2603:10b6:408:34:cafe::7e) by BN7PR06CA0043.outlook.office365.com
+ (2603:10b6:408:34::20) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8511.26 via Frontend Transport; Mon,
+ 10 Mar 2025 21:28:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ BL6PEPF00022571.mail.protection.outlook.com (10.167.249.39) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8534.20 via Frontend Transport; Mon, 10 Mar 2025 21:28:15 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 10 Mar
+ 2025 14:27:50 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Mon, 10 Mar 2025 14:27:49 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server id 15.2.1544.14 via Frontend
+ Transport; Mon, 10 Mar 2025 14:27:45 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>
+CC: Gal Pressman <gal@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, "Moshe
+ Shemesh" <moshe@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, "Leon
+ Romanovsky" <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Carolina Jubran <cjubran@nvidia.com>, "Cosmin
+ Ratiu" <cratiu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
+Subject: [PATCH net-next 0/4] mlx5: Support setting a parent for a devlink rate node
+Date: Mon, 10 Mar 2025 23:26:52 +0200
+Message-ID: <1741642016-44918-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 6/6] pds_fwctl: add Documentation entries
-To: Shannon Nelson <shannon.nelson@amd.com>, jgg@nvidia.com,
- andrew.gospodarek@broadcom.com, aron.silverton@oracle.com,
- dan.j.williams@intel.com, daniel.vetter@ffwll.ch, dsahern@kernel.org,
- gregkh@linuxfoundation.org, hch@infradead.org, itayavr@nvidia.com,
- jiri@nvidia.com, Jonathan.Cameron@huawei.com, kuba@kernel.org,
- lbloch@nvidia.com, leonro@nvidia.com, linux-cxl@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org, saeedm@nvidia.com
-Cc: brett.creeley@amd.com
-References: <20250307185329.35034-1-shannon.nelson@amd.com>
- <20250307185329.35034-7-shannon.nelson@amd.com>
-Content-Language: en-US
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20250307185329.35034-7-shannon.nelson@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-NV-OnPremToCloud: AnonymousSubmission
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF00022571:EE_|DS7PR12MB8251:EE_
+X-MS-Office365-Filtering-Correlation-Id: 08ba7f13-88f2-4e6e-4381-08dd601a7866
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|376014|36860700013|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?ZzFabkZUL3dUMEp4b0ZNUG5YejlOS0NkcmJQdWJTRkZOM1V0bGh3MGFPQ1ZZ?=
+ =?utf-8?B?NkZhY2trd1ZIYjRwWjlGRDVvVWlJN3RrMU5ReE9Xb01vRmNrRmQ2M0Uwb3Ft?=
+ =?utf-8?B?TG1rKzFZTDhISys0NWZnbUZETlJ0STJxUUgxa3NrV01YQWVJN0dHeUNGK2dv?=
+ =?utf-8?B?K0tsTzhHeVJxWktEMWJkOGt0UjdhVHVVb1VDYThLUUhtVXZtbEcyUERlU1dQ?=
+ =?utf-8?B?Nm5KUHlRY2h6Y2srdi9iRzZ5cG5xRzNvanJTaEtiSjVSWHI2cmNlQjJ3WEpV?=
+ =?utf-8?B?MExVOU9IYXdXM0hadUdDRFBpVmhGMUFLV1E5UnkzNThERE9JRmtRZ2pEUnJW?=
+ =?utf-8?B?a3QwbVVMeUg1aXdDODBNSVZLMFdMdklMc09nTE5TSDN0Q1NKTlNmSDVVWkd6?=
+ =?utf-8?B?M0wxdDNKeTRLdmh2dzZvWEN1RkJlcDllY1dqWHJRdERKWHd2MkhrV2JLcHVw?=
+ =?utf-8?B?ZTJQVVRRR05EcEN1MGVQOEtFNktubTJ6bXREa0FwQlhIbkc3OWJKYktDd0xD?=
+ =?utf-8?B?dDZnVGJ6V1BFWHU0d3lvL3RGYk05d2dkSDVKYzRXTFNjQWRVM0FEZDlNUUJ6?=
+ =?utf-8?B?WFBqTVdZOTVuTUs3cHNjTE52UGd0UXg1M2NHZ25DRDJlQ29raWtTTlJuMThX?=
+ =?utf-8?B?R3NBd1I1cDJwOEJJdjhIUURpRGtoenJreDBBeTNTZkNPSEdwZ25IczJ5WlJU?=
+ =?utf-8?B?OVZmTmFuVWVUV0pTS2dJcEh3TmVnK204MzdlY0xjbXVkdWk1Z2sySjN1aDlp?=
+ =?utf-8?B?MlJQbEkzYnhmaXFnRDVJREFrVTZVOEpzRU8zTWpYVGd5QjhsRnR4N0R6aXdh?=
+ =?utf-8?B?ZU9iV1Y1Z3RpajcvdUMyQVVHNGZ6bExGMmpCbUoyQml5SGRXQUtscVc1c0pJ?=
+ =?utf-8?B?aFFPaW9YY3NOa1ZNOEpzYlZXc29QTXR2SEI4Sy8wTFhlWlE3WTh1WCttakJ0?=
+ =?utf-8?B?dFNrWUkxWnRPK2wvL3pVOCtwV2tEZ1pFU1pMVkxYTTJyWEplNi9zclIwYUpO?=
+ =?utf-8?B?Qml1azgxQVRqNE1WZHlQZlhEOURydDJYaEFVclc5Tk5HbGw1R3VFVTU3NDBM?=
+ =?utf-8?B?Y3pqTmVVb0tRS0pDUzZ1eWlxMU9VMWxXSC9ZYnNJZkFoVm1WaDhMYWh1eWg2?=
+ =?utf-8?B?UGRwZFIyZ0VDb25rMWtaaXQwa1FZWEdHZmdvK0tMMEZQQUt0QkIwQWJoNUth?=
+ =?utf-8?B?Nk9kT3JwUDB6cW5tS3lqKzI3d21NQ04rbEdFWHpseE5iTFRtMUZiZU40WDdL?=
+ =?utf-8?B?NkFia0FHVFFVdVBpQ2I4ZGpGUFY0UUFaTE1ocmFKbUtJbmNZTVVyQTJ1MlVW?=
+ =?utf-8?B?WVdsZk15aE9KUlRwbFczU2RGTmgxTFBJUmdmbnZvSFJ5UjZsNzVZdzFGOGQv?=
+ =?utf-8?B?dGNCbzRRaXZrMEdyT2pjbkJYeTZFc05Cem1WUXZTeTlteTI0S0NkUDRzekhT?=
+ =?utf-8?B?djR3bENvTzc2NlFBQlV4RWcrMlFaMEo5SndNbmM5aU9GQUhPenF6T1liei9n?=
+ =?utf-8?B?V0t0WHN0cVBza0JRZVAvbVFsbXFYMVhSaUsvUnp5dnZocUN0S0IxM0wwZSta?=
+ =?utf-8?B?eGJUcWtETmM0V0Y2QTRDTm55cTU5WFBVUE96MTRjNXRjNWZRdFBYMk5wc21J?=
+ =?utf-8?B?cHZkb0JxUENXUy9zVHNFTG5QV05YMFNqRU9oLzVkMXZJV0o5MG9IUys4bXVV?=
+ =?utf-8?B?aE50RVB6RWNJMTJiTmRSa3NIL1VUd3VCcUxzK3lqSnN3Q0QzMjQzK2FweU5S?=
+ =?utf-8?B?akxCN05FUmczOWtrd1ZKWm9pYStSZWdzUjlSYUIxNHNLZ2dNSUtOZllYczJQ?=
+ =?utf-8?B?MUNSZ20xd0ZLSjErRUVTQTZweW1vTzVkZ1Bhc1MxTXF4NjdBQUVHTnNHV2xE?=
+ =?utf-8?B?VFZMY0s5T3UvMmJrT3FXMnRVSEY0bGtEekgyMVRLMm1kL0JmemVLc25FMU9k?=
+ =?utf-8?B?MXQ3QmdLSnYrbFR4OEJHdWFKZ2IzWUppR1p1a2V5NlpkUk53NWVkQUExc3Fi?=
+ =?utf-8?B?c01EOXFwNGFBPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(376014)(36860700013)(1800799024);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2025 21:28:15.9987
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08ba7f13-88f2-4e6e-4381-08dd601a7866
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF00022571.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8251
+
+Hi,
+
+This series by Carolina adds mlx5 support for the setting of a parent to
+devlink rate nodes.
+
+By introducing a hierarchical level to scheduling nodes, these changes
+allow for more granular control over bandwidth allocation and isolation
+of Virtual Functions.
+
+Function renaming for parent setting on leafs:
+- net/mlx5: Rename devlink rate parent set function for leaf nodes
+
+Add support for hierarchy level tracking:
+- net/mlx5: Introduce hierarchy level tracking on scheduling nodes
+- net/mlx5: Preserve rate settings when creating a rate node
+
+Support setting parent for rate nodes:
+- net/mlx5: Add support for setting parent of nodes
+
+Regards,
+Tariq
+
+Carolina Jubran (4):
+  net/mlx5: Rename devlink rate parent set function for leaf nodes
+  net/mlx5: Introduce hierarchy level tracking on scheduling nodes
+  net/mlx5: Preserve rate settings when creating a rate node
+  net/mlx5: Add support for setting parent of nodes
+
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |   3 +-
+ .../net/ethernet/mellanox/mlx5/core/esw/qos.c | 146 ++++++++++++++++--
+ .../net/ethernet/mellanox/mlx5/core/esw/qos.h |  12 +-
+ 3 files changed, 143 insertions(+), 18 deletions(-)
 
 
-
-On 3/7/25 11:53 AM, Shannon Nelson wrote:
-> Add pds_fwctl to the driver and fwctl documentation pages.
-> 
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
-> ---
->  Documentation/userspace-api/fwctl/fwctl.rst   |  1 +
->  Documentation/userspace-api/fwctl/index.rst   |  1 +
->  .../userspace-api/fwctl/pds_fwctl.rst         | 40 +++++++++++++++++++
->  3 files changed, 42 insertions(+)
->  create mode 100644 Documentation/userspace-api/fwctl/pds_fwctl.rst
-> 
-> diff --git a/Documentation/userspace-api/fwctl/fwctl.rst b/Documentation/userspace-api/fwctl/fwctl.rst
-> index 04ad78a7cd48..fdcfe418a83f 100644
-> --- a/Documentation/userspace-api/fwctl/fwctl.rst
-> +++ b/Documentation/userspace-api/fwctl/fwctl.rst
-> @@ -150,6 +150,7 @@ fwctl User API
->  
->  .. kernel-doc:: include/uapi/fwctl/fwctl.h
->  .. kernel-doc:: include/uapi/fwctl/mlx5.h
-> +.. kernel-doc:: include/uapi/fwctl/pds.h
->  
->  sysfs Class
->  -----------
-> diff --git a/Documentation/userspace-api/fwctl/index.rst b/Documentation/userspace-api/fwctl/index.rst
-> index d9d40a468a31..316ac456ad3b 100644
-> --- a/Documentation/userspace-api/fwctl/index.rst
-> +++ b/Documentation/userspace-api/fwctl/index.rst
-> @@ -11,3 +11,4 @@ to securely construct and execute RPCs inside device firmware.
->  
->     fwctl
->     fwctl-cxl
-> +   pds_fwctl
-> diff --git a/Documentation/userspace-api/fwctl/pds_fwctl.rst b/Documentation/userspace-api/fwctl/pds_fwctl.rst
-> new file mode 100644
-> index 000000000000..e8a63d4215d0
-> --- /dev/null
-> +++ b/Documentation/userspace-api/fwctl/pds_fwctl.rst
-> @@ -0,0 +1,40 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +================
-> +fwctl pds driver
-> +================
-> +
-> +:Author: Shannon Nelson
-> +
-> +Overview
-> +========
-> +
-> +The PDS Core device makes an fwctl service available through an
-
-s/an fwctl/a fwctl/
-
-> +auxiliary_device named pds_core.fwctl.N.  The pds_fwctl driver binds to
-> +this device and registers itself with the fwctl subsystem.  The resulting
-> +userspace interface is used by an application that is a part of the
-> +AMD/Pensando software package for the Distributed Service Card (DSC).
-> +
-> +The pds_fwctl driver has little knowledge of the firmware's internals,
-> +only knows how to send commands through pds_core's message queue to the
-s/ , only/. It only/
-
-> +firmware for fwctl requests.  The set of fwctl operations available
-> +depends on the firmware in the DSC, and the userspace application
-> +version must match the firmware so that they can talk to each other.
-> +
-> +When a connection is created the pds_fwctl driver requests from the
-> +firmware a list of firmware object endpoints, and for each endpoint the
-> +driver requests a list of operations for the endpoint.  Each operation
-> +description includes a minimum scope level that the pds_fwctl driver can
-> +use for filtering privilege levels.
-
-Maybe a bit more details on the privilege levels?
-
-> +
-> +pds_fwctl User API
-> +==================
-> +
-> +.. kernel-doc:: include/uapi/fwctl/pds.h
-> +
-> +Each RPC request includes the target endpoint and the operation id, and in
-> +and out buffer lengths and pointers.  The driver verifies the existence
-> +of the requested endpoint and operations, then checks the current scope
-s/then/and then it/
-
-> +against the required scope of the operation.  The request is then put
-> +together with the request data and sent through pds_core's message queue
-> +to the firmware, and the results are returned to the caller.
-
-May be a good idea to touch on each of the ioctls being exported as well as maybe provide some sample user code on how to perform the RPCs. This documentation should serve as a guide to an application programmer on how to write the user application that accesses the fwctl char dev. 
+base-commit: 8ef890df4031121a94407c84659125cbccd3fdbe
+-- 
+2.31.1
 
 
