@@ -1,86 +1,233 @@
-Return-Path: <linux-rdma+bounces-8524-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8525-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E64CA58E86
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 09:47:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC5F8A590D4
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 11:14:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 747483AB73E
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 08:47:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECE9416C1A1
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 10:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD21522423A;
-	Mon, 10 Mar 2025 08:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 135DC225A5D;
+	Mon, 10 Mar 2025 10:14:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CrMMhx6I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EEj596gf"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91876221F13;
-	Mon, 10 Mar 2025 08:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15AB225A3B;
+	Mon, 10 Mar 2025 10:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741596457; cv=none; b=aFRxctyTD1yL3erqmai2EJauG92PBriljVWTs/0mZXekZjCs10cjbQYHHW2kBGzN/BEIavVoRGipgKOpdtEEOWWL05vwwSW7EAdvrvO5H2Q/IZSmVUSCIn5LvT7XRW86q3MLvWFLX0kCvq8mg8zXbOJVx2oLBTG1zauv4C6qhaM=
+	t=1741601656; cv=none; b=NA824xekdqC66eo9fABR8Ed3ayKC59upLwccLOAlIW3P06DDdu6tvcwzcrA+2ek5vGEm5MVUXt+jvL07OEQnHOyJnmbxpTzTZos5fuFcpDOtgNJARQ3oDjqmMKUjP/3yDJaiweglZUBDASEYH+RTi5fdvvJVIWl4mjmaQFrzx/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741596457; c=relaxed/simple;
-	bh=LbhKqE9ARKxh5Om8xA8bVJLhSQJDq+eo4FUOXoer76Y=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=TgxV+ulNNIq5eF8ts++ZWvP+sOPtVODCFdXfGVakpZxtUUnmI+msPcWh+IOIlcmDhgecY/x1ZwHFjYscIL4P9ru5VQ74BLVQ8ujMysU8ld4P9u2F00JJ53gQR86Ql/+hWV6AoGN+X4vLYpsaOaKdcb+hiUncUUyRTrVTJkvOmjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CrMMhx6I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77E7FC4CEE5;
-	Mon, 10 Mar 2025 08:47:36 +0000 (UTC)
+	s=arc-20240116; t=1741601656; c=relaxed/simple;
+	bh=jqHouoL7QIIxHNjU/qxXvVvxBuUIK/Is63SGCToqjVA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VzecQ8kX61+sws74lBUptyhC4KzQ4m4qIBNQMpbSC1ZTk8ZdpM/4GNuxjoaDnUX9LpoEg0wWA1u7mijv1ak8TajVnpGIcxOG8ynJBSyHltff74DVsL2wMh2gqS9+QzfBUEAP7KvwaJKwp8seV1R7lPjEMSUfr7nrE0rm7PPDmh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EEj596gf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CCFBC4CEEC;
+	Mon, 10 Mar 2025 10:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741596457;
-	bh=LbhKqE9ARKxh5Om8xA8bVJLhSQJDq+eo4FUOXoer76Y=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=CrMMhx6IQoxI3nez2E7ZpKbWicXf/UbZ7Pk6EE63+zgZoOb4Ss9Eza95FjqbVoPJp
-	 5mTk6/Yra6xbJK86/DP1KAQUHi+s98bZlJjniKw+0ZuxDJ9ko+DsY+Z3IE1ZVZlgLe
-	 66W9vCxB3ylExfEPG5uIKS7cqGosmqqMPZkLu6Eb/bQItPBsYeAuQq2eB7u7+3iRK7
-	 ehwPCAygY2+Rj4JdUAOqy398XkvTjDYvTbTtLj1tj+uiP7MTTLTtGNS0PDAbotplM8
-	 5bLm+OJ0psm9TpGS2Sq+EQKGqubUJ+xYe6JpSUyHaftidePr8mV5OrjWubQ4AQzQ9C
-	 +WhzWtYP0nPgg==
+	s=k20201202; t=1741601655;
+	bh=jqHouoL7QIIxHNjU/qxXvVvxBuUIK/Is63SGCToqjVA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EEj596gfUsNaICz4Pgu+ukAVnXesoRI4xXXA+hcwpqJPgW34mV79HSo/EB0GnwgD9
+	 Rn3yL7GdNz8s01n3Q09XMgjml7M2JKxQ1b89bVcDLoSVDKyTOXepfeb+UyT88IG5FD
+	 cPiIX2fezE5hlSiR2Dyuwa77UewHkNuyX6ry/NRDnFjKmG67QGE2ujoSQ3fyJBij6N
+	 UAcXeX2o35fKTO1LEfo+BZR7Y7qtHjafwp+eShz93ijjQDn8aD5AHceAYQ4SfL1HsK
+	 /AL6kZaA2voywq/oFiwu5pWcUa4MxkxWXiEr2UhLyK22E9MtIvNhfCakHAWTZBDv6P
+	 1uP+ikpC8zlFQ==
+Date: Mon, 10 Mar 2025 12:14:10 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
-Cc: Gal Pressman <gal@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
- Moshe Shemesh <moshe@nvidia.com>, linux-rdma@vger.kernel.org, 
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Andrew Lunn <andrew+netdev@lunn.ch>, Cosmin Ratiu <cratiu@nvidia.com>, 
- Yael Chemla <ychemla@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-In-Reply-To: <1741545697-23041-1-git-send-email-tariqt@nvidia.com>
-References: <1741545697-23041-1-git-send-email-tariqt@nvidia.com>
-Subject: Re: [PATCH mlx5-next] net/mlx5: Add IFC bits for PPCNT recovery
- counters group
-Message-Id: <174159645340.444856.147815401586670383.b4-ty@kernel.org>
-Date: Mon, 10 Mar 2025 04:47:33 -0400
+To: Wang Liang <wangliang74@huawei.com>
+Cc: jgg@ziepe.ca, cmeiohas@nvidia.com, michaelgur@nvidia.com,
+	huangjunxian6@hisilicon.com, liyuyu6@huawei.com,
+	markzhang@nvidia.com, linux@treblig.org, jbi.octave@gmail.com,
+	dsahern@kernel.org, yuehaibing@huawei.com,
+	zhangchangzhong@huawei.com, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] infiniband: fix use-after-free when rename device
+ name
+Message-ID: <20250310101410.GB7027@unreal>
+References: <20250310064516.3633612-1-wangliang74@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20250310064516.3633612-1-wangliang74@huawei.com>
 
+On Mon, Mar 10, 2025 at 02:45:16PM +0800, Wang Liang wrote:
+> Syzbot reported a slab-use-after-free with the following call trace:
+>=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> BUG: KASAN: slab-use-after-free in nla_put+0xd3/0x150 lib/nlattr.c:1099
+> Read of size 5 at addr ffff888140ea1c60 by task syz.0.988/10025
+>=20
+> CPU: 0 UID: 0 PID: 10025 Comm: syz.0.988 Not tainted 6.14.0-rc4-syzkaller=
+-00859-gf77f12010f67 #0
+> Hardware name: Google Compute Engine, BIOS Google 02/12/2025
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:94 [inline]
+>  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+>  print_address_description mm/kasan/report.c:408 [inline]
+>  print_report+0x16e/0x5b0 mm/kasan/report.c:521
+>  kasan_report+0x143/0x180 mm/kasan/report.c:634
+>  kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
+>  __asan_memcpy+0x29/0x70 mm/kasan/shadow.c:105
+>  nla_put+0xd3/0x150 lib/nlattr.c:1099
+>  nla_put_string include/net/netlink.h:1621 [inline]
+>  fill_nldev_handle+0x16e/0x200 drivers/infiniband/core/nldev.c:265
+>  rdma_nl_notify_event+0x561/0xef0 drivers/infiniband/core/nldev.c:2857
+>  ib_device_notify_register+0x22/0x230 drivers/infiniband/core/device.c:13=
+44
+>  ib_register_device+0x1292/0x1460 drivers/infiniband/core/device.c:1460
+>  rxe_register_device+0x233/0x350 drivers/infiniband/sw/rxe/rxe_verbs.c:15=
+40
+>  rxe_net_add+0x74/0xf0 drivers/infiniband/sw/rxe/rxe_net.c:550
+>  rxe_newlink+0xde/0x1a0 drivers/infiniband/sw/rxe/rxe.c:212
+>  nldev_newlink+0x5ea/0x680 drivers/infiniband/core/nldev.c:1795
+>  rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+>  rdma_nl_rcv+0x6dd/0x9e0 drivers/infiniband/core/netlink.c:259
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1313 [inline]
+>  netlink_unicast+0x7f6/0x990 net/netlink/af_netlink.c:1339
+>  netlink_sendmsg+0x8de/0xcb0 net/netlink/af_netlink.c:1883
+>  sock_sendmsg_nosec net/socket.c:709 [inline]
+>  __sock_sendmsg+0x221/0x270 net/socket.c:724
+>  ____sys_sendmsg+0x53a/0x860 net/socket.c:2564
+>  ___sys_sendmsg net/socket.c:2618 [inline]
+>  __sys_sendmsg+0x269/0x350 net/socket.c:2650
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7f42d1b8d169
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 ...
+> RSP: 002b:00007f42d2960038 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 00007f42d1da6320 RCX: 00007f42d1b8d169
+> RDX: 0000000000000000 RSI: 00004000000002c0 RDI: 000000000000000c
+> RBP: 00007f42d1c0e2a0 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 0000000000000000 R14: 00007f42d1da6320 R15: 00007ffe399344a8
+>  </TASK>
+>=20
+> Allocated by task 10025:
+>  kasan_save_stack mm/kasan/common.c:47 [inline]
+>  kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+>  poison_kmalloc_redzone mm/kasan/common.c:377 [inline]
+>  __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:394
+>  kasan_kmalloc include/linux/kasan.h:260 [inline]
+>  __do_kmalloc_node mm/slub.c:4294 [inline]
+>  __kmalloc_node_track_caller_noprof+0x28b/0x4c0 mm/slub.c:4313
+>  __kmemdup_nul mm/util.c:61 [inline]
+>  kstrdup+0x42/0x100 mm/util.c:81
+>  kobject_set_name_vargs+0x61/0x120 lib/kobject.c:274
+>  dev_set_name+0xd5/0x120 drivers/base/core.c:3468
+>  assign_name drivers/infiniband/core/device.c:1202 [inline]
+>  ib_register_device+0x178/0x1460 drivers/infiniband/core/device.c:1384
+>  rxe_register_device+0x233/0x350 drivers/infiniband/sw/rxe/rxe_verbs.c:15=
+40
+>  rxe_net_add+0x74/0xf0 drivers/infiniband/sw/rxe/rxe_net.c:550
+>  rxe_newlink+0xde/0x1a0 drivers/infiniband/sw/rxe/rxe.c:212
+>  nldev_newlink+0x5ea/0x680 drivers/infiniband/core/nldev.c:1795
+>  rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+>  rdma_nl_rcv+0x6dd/0x9e0 drivers/infiniband/core/netlink.c:259
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1313 [inline]
+>  netlink_unicast+0x7f6/0x990 net/netlink/af_netlink.c:1339
+>  netlink_sendmsg+0x8de/0xcb0 net/netlink/af_netlink.c:1883
+>  sock_sendmsg_nosec net/socket.c:709 [inline]
+>  __sock_sendmsg+0x221/0x270 net/socket.c:724
+>  ____sys_sendmsg+0x53a/0x860 net/socket.c:2564
+>  ___sys_sendmsg net/socket.c:2618 [inline]
+>  __sys_sendmsg+0x269/0x350 net/socket.c:2650
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>=20
+> Freed by task 10035:
+>  kasan_save_stack mm/kasan/common.c:47 [inline]
+>  kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+>  kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:576
+>  poison_slab_object mm/kasan/common.c:247 [inline]
+>  __kasan_slab_free+0x59/0x70 mm/kasan/common.c:264
+>  kasan_slab_free include/linux/kasan.h:233 [inline]
+>  slab_free_hook mm/slub.c:2353 [inline]
+>  slab_free mm/slub.c:4609 [inline]
+>  kfree+0x196/0x430 mm/slub.c:4757
+>  kobject_rename+0x38f/0x410 lib/kobject.c:524
+>  device_rename+0x16a/0x200 drivers/base/core.c:4525
+>  ib_device_rename+0x270/0x710 drivers/infiniband/core/device.c:402
+>  nldev_set_doit+0x30e/0x4c0 drivers/infiniband/core/nldev.c:1146
+>  rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+>  rdma_nl_rcv+0x6dd/0x9e0 drivers/infiniband/core/netlink.c:259
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1313 [inline]
+>  netlink_unicast+0x7f6/0x990 net/netlink/af_netlink.c:1339
+>  netlink_sendmsg+0x8de/0xcb0 net/netlink/af_netlink.c:1883
+>  sock_sendmsg_nosec net/socket.c:709 [inline]
+>  __sock_sendmsg+0x221/0x270 net/socket.c:724
+>  ____sys_sendmsg+0x53a/0x860 net/socket.c:2564
+>  ___sys_sendmsg net/socket.c:2618 [inline]
+>  __sys_sendmsg+0x269/0x350 net/socket.c:2650
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>=20
+> This is because if rename device happens, the old name is freed in
+> ib_device_rename() with lock, but fill_nldev_handle() may visit the dev
+> name locklessly triggered by rxe_newlink().
+>=20
+> Fix this by add lock around rdma_nl_notify_event() in
+> ib_device_notify_register().
+>=20
+> Reported-by: syzbot+f60349ba1f9f08df349f@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=3D25bc6f0ed2b88b9eb9b8
+> Fixes: 9cbed5aab5ae ("RDMA/nldev: Add support for RDMA monitoring")
+> Signed-off-by: Wang Liang <wangliang74@huawei.com>
+> ---
+>  drivers/infiniband/core/device.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/d=
+evice.c
+> index 0ded91f056f3..4536621ada0d 100644
+> --- a/drivers/infiniband/core/device.c
+> +++ b/drivers/infiniband/core/device.c
+> @@ -1341,7 +1341,9 @@ static void ib_device_notify_register(struct ib_dev=
+ice *device)
+>  	u32 port;
+>  	int ret;
+> =20
+> +	down_write(&devices_rwsem);
 
-On Sun, 09 Mar 2025 20:41:37 +0200, Tariq Toukan wrote:
-> Add recovery counters group layout of PPCNT (Ports Performance Counters
-> Register). This group counts recovery events per link. Also add the
-> corresponding bit in PCAM to indicate this group is supported.
-> 
-> 
+The analysis looks correct to me, however this should be down_read(&devices=
+_rwsem)
+together with comment about possible race with RDMA netlink, which can chan=
+ge
+internals of struct ib_device.
 
-Applied, thanks!
+I wonder if this read semaphore should be hold for whole
+ib_device_notify_register() function and not only for RDMA_REGISTER_EVENT e=
+vent.
 
-[1/1] net/mlx5: Add IFC bits for PPCNT recovery counters group
-      https://git.kernel.org/rdma/rdma/c/f550694e88b7b1
+Thanks
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+>  	ret =3D rdma_nl_notify_event(device, 0, RDMA_REGISTER_EVENT);
+> +	up_write(&devices_rwsem);
+>  	if (ret)
+>  		return;
+> =20
+> --=20
+> 2.34.1
+>=20
+>=20
 
