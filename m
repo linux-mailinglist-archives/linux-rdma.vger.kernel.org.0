@@ -1,260 +1,505 @@
-Return-Path: <linux-rdma+bounces-8536-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8537-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E639A5A1D4
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 19:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CA78FA5A2E9
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 19:28:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D90013AEF46
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 18:13:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DACC3ADD40
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 18:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2506233721;
-	Mon, 10 Mar 2025 18:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FAFA234978;
+	Mon, 10 Mar 2025 18:28:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eo51pVEE"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out01.mta.xmission.com (out01.mta.xmission.com [166.70.13.231])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A24B922FF4E;
-	Mon, 10 Mar 2025 18:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.70.13.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4214622DFAA;
+	Mon, 10 Mar 2025 18:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741630441; cv=none; b=GqbVBl2M/Gc0QcjezOYYYVbCm3H8nt1ApKNDzEUQ+MIwBkzNOu+u+Yr3fOiYcbrFsbho/I6YpGKveSmMRTHLQa9QRI3OWETkkgkQsQZdcINVAs07yNQoBhLYThs6iVUCPT+VBUSZ+xVobWp+F5LjuL9+rpz7h7DRDtJij4a9Ng4=
+	t=1741631308; cv=none; b=BAJx7/NYF9NJQbMtgxcpQ+/jwS/7Lr7qyOgcfDSNM9BMMfUTWSEBpm7qzC9dCbU/lh/muX5mHUlF4YXygjWEy0J8rHo5nLNrRLb36EliMruZHeNBti948NTkOZX1LRkgltRMmk7R7bJlIZL0otXYECHmW8wdN5rb8j9OH/eVxKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741630441; c=relaxed/simple;
-	bh=9bh2JNFFHz0JRbysQXTvCMFdfKTtKbs/sMlwHye0JzY=;
-	h=From:To:Cc:References:Date:In-Reply-To:Message-ID:MIME-Version:
-	 Content-Type:Subject; b=j6bOlSgUABjYDmOmVGHhe1mzX5fgxJUqeeKlJ3CWLlxd148BkDB1YBDkgfgMXXndWsf0b2f8EpLimMEPKPD37FNIq+y5VwU0imiUG/IWVDKuN4XGRv9pn63VBfZkoiloQ1Ui/eCsS9CV5ClxN5s8P87C60q2hACMYwhxyAKLPaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com; spf=pass smtp.mailfrom=xmission.com; arc=none smtp.client-ip=166.70.13.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xmission.com
-Received: from in01.mta.xmission.com ([166.70.13.51]:34004)
-	by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1trhdQ-00GHKY-Gb; Mon, 10 Mar 2025 12:13:52 -0600
-Received: from ip72-198-198-28.om.om.cox.net ([72.198.198.28]:39900 helo=email.froward.int.ebiederm.org.xmission.com)
-	by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1trhdP-009nsv-6N; Mon, 10 Mar 2025 12:13:52 -0600
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-To: Parav Pandit <parav@nvidia.com>
-Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-  "linux-security-module@vger.kernel.org"
- <linux-security-module@vger.kernel.org>
-References: <20250308180602.129663-1-parav@nvidia.com>
-	<87ecz4q27k.fsf@email.froward.int.ebiederm.org>
-	<CY8PR12MB71959E6A56DACD7D1DC72AC8DCD62@CY8PR12MB7195.namprd12.prod.outlook.com>
-Date: Mon, 10 Mar 2025 13:13:45 -0500
-In-Reply-To: <CY8PR12MB71959E6A56DACD7D1DC72AC8DCD62@CY8PR12MB7195.namprd12.prod.outlook.com>
-	(Parav Pandit's message of "Mon, 10 Mar 2025 17:48:32 +0000")
-Message-ID: <87msdsoism.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1741631308; c=relaxed/simple;
+	bh=WN9gP5Aw/arF+ZuJdWRA+y8xB6kB6OmkY3uMuaop8Xk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tWLNhdjevIdMf9QCp6ns+X2O67hQ1r/4n0St2XvVQ3BXlR9rV5xnCm65eTVLSH7Zn4mUj4ogO67/ThcXLLNPc7h+vNURHOffMX/DiMZmouzJUvGYAhOQW+43eHejqrXu2sUkJN2V7PHRFkQRuos0B7AsY7D4A0VxM77MpR4kl+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eo51pVEE; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741631306; x=1773167306;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=WN9gP5Aw/arF+ZuJdWRA+y8xB6kB6OmkY3uMuaop8Xk=;
+  b=eo51pVEEWszyUO2dnMGfX7+OCG+JDs6d3UM3+1/n7PpkWwJpC3SbUsHJ
+   MYLtvfXt4Ul/NrAxfowZ2do93rHDtiLaWBBSHNyIwBroiPnFrrXUR5WjE
+   EES5ajEkMmZ059gci6KEn62ZShu60mzvpdUZE7bI8rLU5qCat4V7Gm8tN
+   9NtbrlyXX078YTaWrWaKgY5wOZfC4WTePFg8SAb4gVqKjI3fBvLO6DRaa
+   hxuRONl3lPIGot1yXRs7+kXk467TNZySGkBx6AzLNVazy9u8khq4UWC8i
+   PUbWQiO0V7dIIqMwF76ra/3jxTz5ssmrQz3DphVaClqsNIG+2u+f6G6kZ
+   g==;
+X-CSE-ConnectionGUID: IIOp3qL/Qp2qtn0b8Xf13Q==
+X-CSE-MsgGUID: he7DC3AqSqaAKLYfPbB5mw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11369"; a="42775203"
+X-IronPort-AV: E=Sophos;i="6.14,236,1736841600"; 
+   d="scan'208";a="42775203"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2025 11:28:25 -0700
+X-CSE-ConnectionGUID: 7wgKKWYRTC693PR9ydLnIw==
+X-CSE-MsgGUID: kdZHiZVuTlWzzikodWuqPg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,236,1736841600"; 
+   d="scan'208";a="150870063"
+Received: from dnelso2-mobl.amr.corp.intel.com (HELO [10.125.111.63]) ([10.125.111.63])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2025 11:28:24 -0700
+Message-ID: <d1c78d12-854f-48e7-a588-4e6cf0991156@intel.com>
+Date: Mon, 10 Mar 2025 11:28:23 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1trhdP-009nsv-6N;;;mid=<87msdsoism.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=72.198.198.28;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX19q1558Ve6heZBOBj7k/D89Q0HPMO5dSho=
-X-Spam-Level: *****
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	*  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-	*      [score: 0.4999]
-	*  0.7 XMSubLong Long Subject
-	*  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-	*  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-	* -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-	*      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-	*  0.0 T_TooManySym_01 4+ unique symbols in subject
-	*  0.0 XM_B_AI_SPAM_COMBINATION Email matches multiple AI-related
-	*      patterns
-	*  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-	*  1.0 XM_B_Phish_Phrases Commonly used Phishing Phrases
-	*  1.5 TR_AI_Phishing Email matches multiple AI-related patterns
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *****;Parav Pandit <parav@nvidia.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 737 ms - load_scoreonly_sql: 0.13 (0.0%),
-	signal_user_changed: 11 (1.5%), b_tie_ro: 10 (1.3%), parse: 1.28
-	(0.2%), extract_message_metadata: 20 (2.8%), get_uri_detail_list: 4.3
-	(0.6%), tests_pri_-2000: 26 (3.5%), tests_pri_-1000: 2.5 (0.3%),
-	tests_pri_-950: 1.30 (0.2%), tests_pri_-900: 1.03 (0.1%),
-	tests_pri_-90: 88 (11.9%), check_bayes: 86 (11.7%), b_tokenize: 13
-	(1.8%), b_tok_get_all: 13 (1.8%), b_comp_prob: 4.5 (0.6%),
-	b_tok_touch_all: 51 (7.0%), b_finish: 0.99 (0.1%), tests_pri_0: 562
-	(76.3%), check_dkim_signature: 0.77 (0.1%), check_dkim_adsp: 3.0
-	(0.4%), poll_dns_idle: 1.12 (0.2%), tests_pri_10: 3.3 (0.4%),
-	tests_pri_500: 16 (2.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] RDMA/uverbs: Fix CAP_NET_RAW check for flow create in
- user namespace
-X-SA-Exim-Connect-IP: 166.70.13.51
-X-SA-Exim-Rcpt-To: linux-security-module@vger.kernel.org, linux-rdma@vger.kernel.org, parav@nvidia.com
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-SA-Exim-Scanned: No (on out01.mta.xmission.com); SAEximRunCond expanded to false
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/6] pds_fwctl: initial driver framework
+To: Shannon Nelson <shannon.nelson@amd.com>, jgg@nvidia.com,
+ andrew.gospodarek@broadcom.com, aron.silverton@oracle.com,
+ dan.j.williams@intel.com, daniel.vetter@ffwll.ch, dsahern@kernel.org,
+ gregkh@linuxfoundation.org, hch@infradead.org, itayavr@nvidia.com,
+ jiri@nvidia.com, Jonathan.Cameron@huawei.com, kuba@kernel.org,
+ lbloch@nvidia.com, leonro@nvidia.com, linux-cxl@vger.kernel.org,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org, saeedm@nvidia.com
+Cc: brett.creeley@amd.com
+References: <20250307185329.35034-1-shannon.nelson@amd.com>
+ <20250307185329.35034-5-shannon.nelson@amd.com>
+Content-Language: en-US
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20250307185329.35034-5-shannon.nelson@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Parav Pandit <parav@nvidia.com> writes:
 
->> From: Eric W. Biederman <ebiederm@xmission.com>
->> Sent: Monday, March 10, 2025 9:59 PM
->> 
->> Parav Pandit <parav@nvidia.com> writes:
->> 
->> > A process running in a non-init user namespace possesses the
->> > CAP_NET_RAW capability. However, the patch cited in the fixes tag
->> > checks the capability in the default init user namespace.
->> > Because of this, when the process was started by Podman in a
->> > non-default user namespace, the flow creation failed.
->> 
->> This change isn't a bug fix.  This change is a relaxation of permissions and it
->> would be very good if this change description described why it is in fact safe.
-> As you explained below, it is not safe enough. :)
-> I will improve the change description to reflect as I follow your good suggestions below.
->
->> 
->> Many parts of the kernel are not safe for arbitrary users
->> to use.   In those cases an ordinary capable like you found
->> is used.
->> 
-> Understood now.
->
->> > Fix this issue by checking the CAP_NET_RAW networking capability in
->> > the owner user namespace that created the network namespace.
->> >
->> > This change is similar to the following cited patches.
->> >
->> > commit 5e1fccc0bfac ("net: Allow userns root control of the core of
->> > the network stack.") commit 52e804c6dfaa ("net: Allow userns root to
->> > control ipv4") commit 59cd7377660a ("net: openvswitch: allow conntrack
->> > in non-initial user namespace") commit 0a3deb11858a ("fs: Allow
->> > listmount() in foreign mount namespace") commit dd7cb142f467 ("fs:
->> > relax permissions for listmount()")
->> 
->> It is different in that hardware is involved.  There is a fair amount of kernel
->> bypass allowed by design in infiniband so this may indeed be safe to allow
->> any user on the system to do.  Still for someone who isn't intimate with
->> infiniband this isn't clear.
->> 
->> > Fixes: c938a616aadb ("IB/core: Add raw packet QP type")
->> > Signed-off-by: Parav Pandit <parav@nvidia.com>
->> >
->> > ---
->> > I would like to have feedback from the LSM experts to make sure this
->> > fix is correct. Given the widespread usage of the capable() call, it
->> > makes me wonder if the patch right.
->> >
->> > Secondly, I wasn't able to determine which primary namespace (such as
->> > mount or IPC, etc.) to consider for the CAP_IPC_LOCK capability.
->> > (not directly related to this patch, but as concept)
->> 
->> I took a quick look and it appears that no one figures any of the
->> CAP_IPC_LOCK capability checks are safe for anyone except the global root
->> user.
->> 
->> Allowing an arbitrary user to lock all of memory seems to defeat all of the
->> safeguards that are in place to limiting memory locking.
->> 
->> It looks like RLIMIT_MEMLOCK has been updated to be per user namespace
->> (with hierachical limits), so I expect the most reasonable thing to do is to
->> simply ensure the process that creates the user namespace has a large
->> enough RLIMIT_MEMLOCK when the user namespace is created.
-> Ok, but if infiniband code does capable(), it is going to check the limit outside of the user namespace, and the call will still fails.
-> Isn't it?
 
-It depends on how the check is implemented.  My point is that
-RLIMIT_MEMLOCK has all of the knobs you might need to do something.
+On 3/7/25 11:53 AM, Shannon Nelson wrote:
+> Initial files for adding a new fwctl driver for the AMD/Pensando PDS
+> devices.  This sets up a simple auxiliary_bus driver that registers
+> with fwctl subsystem.  It expects that a pds_core device has set up
+> the auxiliary_device pds_core.fwctl
+> 
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
 
-I don't know if the checks you are concerned about allow using
-RLIMIT_MEMLOCK.  Given that some of them require having root in
-the initial user namespace they might make a lot of assumptions.
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 
-But rlimits are related to but separate from capabilities.
+minor comment below.
+> ---
+>  MAINTAINERS                    |   7 ++
+>  drivers/fwctl/Kconfig          |  10 ++
+>  drivers/fwctl/Makefile         |   1 +
+>  drivers/fwctl/pds/Makefile     |   4 +
+>  drivers/fwctl/pds/main.c       | 169 +++++++++++++++++++++++++++++++++
+>  include/linux/pds/pds_adminq.h |  83 ++++++++++++++++
+>  include/uapi/fwctl/fwctl.h     |   1 +
+>  include/uapi/fwctl/pds.h       |  26 +++++
+>  8 files changed, 301 insertions(+)
+>  create mode 100644 drivers/fwctl/pds/Makefile
+>  create mode 100644 drivers/fwctl/pds/main.c
+>  create mode 100644 include/uapi/fwctl/pds.h
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3381e41dcf37..c63fd76a3684 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9576,6 +9576,13 @@ L:	linux-kernel@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/fwctl/mlx5/
+>  
+> +FWCTL PDS DRIVER
+> +M:	Brett Creeley <brett.creeley@amd.com>
+> +R:	Shannon Nelson <shannon.nelson@amd.com>
+> +L:	linux-kernel@vger.kernel.org
+> +S:	Maintained
+> +F:	drivers/fwctl/pds/
+> +
+>  GALAXYCORE GC0308 CAMERA SENSOR DRIVER
+>  M:	Sebastian Reichel <sre@kernel.org>
+>  L:	linux-media@vger.kernel.org
+> diff --git a/drivers/fwctl/Kconfig b/drivers/fwctl/Kconfig
+> index f802cf5d4951..b5583b12a011 100644
+> --- a/drivers/fwctl/Kconfig
+> +++ b/drivers/fwctl/Kconfig
+> @@ -19,5 +19,15 @@ config FWCTL_MLX5
+>  	  This will allow configuration and debug tools to work out of the box on
+>  	  mainstream kernel.
+>  
+> +	  If you don't know what to do here, say N.
+> +
+> +config FWCTL_PDS
+> +	tristate "AMD/Pensando pds fwctl driver"
+> +	depends on PDS_CORE
+> +	help
+> +	  The pds_fwctl driver provides an fwctl interface for a user process
+> +	  to access the debug and configuration information of the AMD/Pensando
+> +	  DSC hardware family.
+> +
+>  	  If you don't know what to do here, say N.
+>  endif
+> diff --git a/drivers/fwctl/Makefile b/drivers/fwctl/Makefile
+> index 1c535f694d7f..c093b5f661d6 100644
+> --- a/drivers/fwctl/Makefile
+> +++ b/drivers/fwctl/Makefile
+> @@ -1,5 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_FWCTL) += fwctl.o
+>  obj-$(CONFIG_FWCTL_MLX5) += mlx5/
+> +obj-$(CONFIG_FWCTL_PDS) += pds/
+>  
+>  fwctl-y += main.o
+> diff --git a/drivers/fwctl/pds/Makefile b/drivers/fwctl/pds/Makefile
+> new file mode 100644
+> index 000000000000..cc2317c07be1
+> --- /dev/null
+> +++ b/drivers/fwctl/pds/Makefile
+> @@ -0,0 +1,4 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +obj-$(CONFIG_FWCTL_PDS) += pds_fwctl.o
+> +
+> +pds_fwctl-y += main.o
+> diff --git a/drivers/fwctl/pds/main.c b/drivers/fwctl/pds/main.c
+> new file mode 100644
+> index 000000000000..27942315a602
+> --- /dev/null
+> +++ b/drivers/fwctl/pds/main.c
+> @@ -0,0 +1,169 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright(c) Advanced Micro Devices, Inc */
+> +
+> +#include <linux/module.h>
+> +#include <linux/auxiliary_bus.h>
+> +#include <linux/pci.h>
+> +#include <linux/vmalloc.h>
+> +
+> +#include <uapi/fwctl/fwctl.h>
+> +#include <uapi/fwctl/pds.h>
+> +#include <linux/fwctl.h>
+> +
+> +#include <linux/pds/pds_common.h>
+> +#include <linux/pds/pds_core_if.h>
+> +#include <linux/pds/pds_adminq.h>
+> +#include <linux/pds/pds_auxbus.h>
+> +
+> +struct pdsfc_uctx {
+> +	struct fwctl_uctx uctx;
+> +	u32 uctx_caps;
+> +};
+> +
+> +struct pdsfc_dev {
+> +	struct fwctl_device fwctl;
+> +	struct pds_auxiliary_dev *padev;
+> +	u32 caps;
+> +	struct pds_fwctl_ident ident;
+> +};
+> +
+> +static int pdsfc_open_uctx(struct fwctl_uctx *uctx)
+> +{
+> +	struct pdsfc_dev *pdsfc = container_of(uctx->fwctl, struct pdsfc_dev, fwctl);
+> +	struct pdsfc_uctx *pdsfc_uctx = container_of(uctx, struct pdsfc_uctx, uctx);
+> +
+> +	pdsfc_uctx->uctx_caps = pdsfc->caps;
+> +
+> +	return 0;
+> +}
+> +
+> +static void pdsfc_close_uctx(struct fwctl_uctx *uctx)
+> +{
+> +}
+> +
+> +static void *pdsfc_info(struct fwctl_uctx *uctx, size_t *length)
+> +{
+> +	struct pdsfc_uctx *pdsfc_uctx = container_of(uctx, struct pdsfc_uctx, uctx);
+> +	struct fwctl_info_pds *info;
+> +
+> +	info = kzalloc(sizeof(*info), GFP_KERNEL);
+> +	if (!info)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	info->uctx_caps = pdsfc_uctx->uctx_caps;
+> +
+> +	return info;
+> +}
+> +
+> +static int pdsfc_identify(struct pdsfc_dev *pdsfc)
+> +{
+> +	struct device *dev = &pdsfc->fwctl.dev;
+> +	union pds_core_adminq_comp comp = {0};
+> +	union pds_core_adminq_cmd cmd;
+> +	struct pds_fwctl_ident *ident;
+> +	dma_addr_t ident_pa;
+> +	int err;
+> +
+> +	ident = dma_alloc_coherent(dev->parent, sizeof(*ident), &ident_pa, GFP_KERNEL);
+> +	err = dma_mapping_error(dev->parent, ident_pa);
+> +	if (err) {
+> +		dev_err(dev, "Failed to map ident buffer\n");
+> +		return err;
+> +	}
+> +
+> +	cmd = (union pds_core_adminq_cmd) {
+> +		.fwctl_ident = {
+> +			.opcode = PDS_FWCTL_CMD_IDENT,
+> +			.version = 0,
+> +			.len = cpu_to_le32(sizeof(*ident)),
+> +			.ident_pa = cpu_to_le64(ident_pa),
+> +		}
+> +	};
+> +
+> +	err = pds_client_adminq_cmd(pdsfc->padev, &cmd, sizeof(cmd), &comp, 0);
+> +	if (err)
+> +		dev_err(dev, "Failed to send adminq cmd opcode: %u err: %d\n",
+> +			cmd.fwctl_ident.opcode, err);
+> +	else
+> +		pdsfc->ident = *ident;
+> +
+> +	dma_free_coherent(dev->parent, sizeof(*ident), ident, ident_pa);
+> +
+> +	return err;
+> +}
+> +
+> +static void *pdsfc_fw_rpc(struct fwctl_uctx *uctx, enum fwctl_rpc_scope scope,
+> +			  void *in, size_t in_len, size_t *out_len)
+> +{
+> +	return NULL;
+> +}
+> +
+> +static const struct fwctl_ops pdsfc_ops = {
+> +	.device_type = FWCTL_DEVICE_TYPE_PDS,
+> +	.uctx_size = sizeof(struct pdsfc_uctx),
+> +	.open_uctx = pdsfc_open_uctx,
+> +	.close_uctx = pdsfc_close_uctx,
+> +	.info = pdsfc_info,
+> +	.fw_rpc = pdsfc_fw_rpc,
+> +};
+> +
+> +static int pdsfc_probe(struct auxiliary_device *adev,
+> +		       const struct auxiliary_device_id *id)
+> +{
+> +	struct pds_auxiliary_dev *padev =
+> +			container_of(adev, struct pds_auxiliary_dev, aux_dev);
+> +	struct device *dev = &adev->dev;
+> +	struct pdsfc_dev *pdsfc;
+> +	int err;
+> +
+> +	pdsfc = fwctl_alloc_device(&padev->vf_pdev->dev, &pdsfc_ops,
+> +				   struct pdsfc_dev, fwctl);
+> +	if (!pdsfc)
+> +		return dev_err_probe(dev, -ENOMEM, "Failed to allocate fwctl device struct\n");
+> +	pdsfc->padev = padev;
+> +
+> +	err = pdsfc_identify(pdsfc);
+> +	if (err) {
+> +		fwctl_put(&pdsfc->fwctl);
+> +		return dev_err_probe(dev, err, "Failed to identify device\n");
+> +	}
+> +
+> +	err = fwctl_register(&pdsfc->fwctl);
+> +	if (err) {
+> +		fwctl_put(&pdsfc->fwctl);
+> +		return dev_err_probe(dev, err, "Failed to register device\n");
+> +	}
+> +
+> +	auxiliary_set_drvdata(adev, pdsfc);
+> +
+> +	return 0;
+> +}
+> +
+> +static void pdsfc_remove(struct auxiliary_device *adev)
+> +{
+> +	struct pdsfc_dev *pdsfc = auxiliary_get_drvdata(adev);
+> +
+> +	fwctl_unregister(&pdsfc->fwctl);
+> +	fwctl_put(&pdsfc->fwctl);
+> +}
+> +
+> +static const struct auxiliary_device_id pdsfc_id_table[] = {
+> +	{.name = PDS_CORE_DRV_NAME "." PDS_DEV_TYPE_FWCTL_STR },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(auxiliary, pdsfc_id_table);
+> +
+> +static struct auxiliary_driver pdsfc_driver = {
+> +	.name = "pds_fwctl",
+> +	.probe = pdsfc_probe,
+> +	.remove = pdsfc_remove,
+> +	.id_table = pdsfc_id_table,
+> +};
+> +
+> +module_auxiliary_driver(pdsfc_driver);
+> +
+> +MODULE_IMPORT_NS("FWCTL");
+> +MODULE_DESCRIPTION("pds fwctl driver");
+> +MODULE_AUTHOR("Shannon Nelson <shannon.nelson@amd.com>");
+> +MODULE_AUTHOR("Brett Creeley <brett.creeley@amd.com>");
+> +MODULE_LICENSE("GPL");
+> diff --git a/include/linux/pds/pds_adminq.h b/include/linux/pds/pds_adminq.h
+> index 4b4e9a98b37b..22c6d77b3dcb 100644
+> --- a/include/linux/pds/pds_adminq.h
+> +++ b/include/linux/pds/pds_adminq.h
+> @@ -1179,6 +1179,84 @@ struct pds_lm_host_vf_status_cmd {
+>  	u8     status;
+>  };
+>  
+> +enum pds_fwctl_cmd_opcode {
+> +	PDS_FWCTL_CMD_IDENT = 70,
+> +};
+> +
+> +/**
+> + * struct pds_fwctl_cmd - Firmware control command structure
+> + * @opcode: Opcode
+> + * @rsvd:   Reserved
+> + * @ep:     Endpoint identifier
+> + * @op:     Operation identifier
+> + */
+> +struct pds_fwctl_cmd {
+> +	u8     opcode;
+> +	u8     rsvd[3];
+> +	__le32 ep;
+> +	__le32 op;
+> +} __packed;
+> +
+> +/**
+> + * struct pds_fwctl_comp - Firmware control completion structure
+> + * @status:     Status of the firmware control operation
+> + * @rsvd:       Reserved
+> + * @comp_index: Completion index in little-endian format
+> + * @rsvd2:      Reserved
+> + * @color:      Color bit indicating the state of the completion
+> + */
+> +struct pds_fwctl_comp {
+> +	u8     status;
+> +	u8     rsvd;
+> +	__le16 comp_index;
+> +	u8     rsvd2[11];
+> +	u8     color;
+> +} __packed;
+> +
+> +/**
+> + * struct pds_fwctl_ident_cmd - Firmware control identification command structure
+> + * @opcode:   Operation code for the command
+> + * @rsvd:     Reserved
+> + * @version:  Interface version
+> + * @rsvd2:    Reserved
+> + * @len:      Length of the identification data
+> + * @ident_pa: Physical address of the identification data
+> + */
+> +struct pds_fwctl_ident_cmd {
+> +	u8     opcode;
+> +	u8     rsvd;
+> +	u8     version;
+> +	u8     rsvd2;
+> +	__le32 len;
+> +	__le64 ident_pa;
+> +} __packed;
+> +
+> +/* future feature bits here
+> + * enum pds_fwctl_features {
+> + * };
+> + * (compilers don't like empty enums)
+> + */
+> +
+> +/**
+> + * struct pds_fwctl_ident - Firmware control identification structure
+> + * @features:    Supported features (enum pds_fwctl_features)
+> + * @version:     Interface version
+> + * @rsvd:        Reserved
+> + * @max_req_sz:  Maximum request size
+> + * @max_resp_sz: Maximum response size
+> + * @max_req_sg_elems:  Maximum number of request SGs
+> + * @max_resp_sg_elems: Maximum number of response SGs
+> + */
+> +struct pds_fwctl_ident {
+> +	__le64 features;
+> +	u8     version;
+> +	u8     rsvd[3];
+> +	__le32 max_req_sz;
+> +	__le32 max_resp_sz;
+> +	u8     max_req_sg_elems;
+> +	u8     max_resp_sg_elems;
+> +} __packed;
+> +
+>  union pds_core_adminq_cmd {
+>  	u8     opcode;
+>  	u8     bytes[64];
+> @@ -1216,6 +1294,9 @@ union pds_core_adminq_cmd {
+>  	struct pds_lm_dirty_enable_cmd	  lm_dirty_enable;
+>  	struct pds_lm_dirty_disable_cmd	  lm_dirty_disable;
+>  	struct pds_lm_dirty_seq_ack_cmd	  lm_dirty_seq_ack;
+> +
+> +	struct pds_fwctl_cmd		  fwctl;
+> +	struct pds_fwctl_ident_cmd	  fwctl_ident;
+>  };
+>  
+>  union pds_core_adminq_comp {
+> @@ -1243,6 +1324,8 @@ union pds_core_adminq_comp {
+>  
+>  	struct pds_lm_state_size_comp	  lm_state_size;
+>  	struct pds_lm_dirty_status_comp	  lm_dirty_status;
+> +
+> +	struct pds_fwctl_comp		  fwctl;
+>  };
+>  
+>  #ifndef __CHECKER__
+> diff --git a/include/uapi/fwctl/fwctl.h b/include/uapi/fwctl/fwctl.h
+> index c2d5abc5a726..716ac0eee42d 100644
+> --- a/include/uapi/fwctl/fwctl.h
+> +++ b/include/uapi/fwctl/fwctl.h
+> @@ -44,6 +44,7 @@ enum fwctl_device_type {
+>  	FWCTL_DEVICE_TYPE_ERROR = 0,
+>  	FWCTL_DEVICE_TYPE_MLX5 = 1,
+>  	FWCTL_DEVICE_TYPE_CXL = 2,
+> +	FWCTL_DEVICE_TYPE_PDS = 4,
+>  };
+>  
+>  /**
+> diff --git a/include/uapi/fwctl/pds.h b/include/uapi/fwctl/pds.h
+> new file mode 100644
+> index 000000000000..558e030b7583
+> --- /dev/null
+> +++ b/include/uapi/fwctl/pds.h
+> @@ -0,0 +1,26 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +/* Copyright(c) Advanced Micro Devices, Inc */
+> +
+> +/*
+> + * fwctl interface info for pds_fwctl
+> + */
+> +
+> +#ifndef _UAPI_FWCTL_PDS_H_
+> +#define _UAPI_FWCTL_PDS_H_
+> +
+> +#include <linux/types.h>
+> +
+> +/*
+> + * struct fwctl_info_pds
+> + *
+> + * Return basic information about the FW interface available.
+> + */
 
-> May be the users in non init user ns must run their infiniband application without pinning the memory.
-> Aka ODP in infiniband world.
+Please use proper kdoc formatting for the comment block.
 
-That sounds right.  I don't remember enough about infiniband to say for
-certain.
+> +struct fwctl_info_pds {
+> +	__u32 uctx_caps;
+> +};
+> +
+> +enum pds_fwctl_capabilities {
+> +	PDS_FWCTL_QUERY_CAP = 0,
+> +	PDS_FWCTL_SEND_CAP,
+> +};
+> +#endif /* _UAPI_FWCTL_PDS_H_ */
 
-Basically anything that uses ns_capable should be treated as something
-any user can do, and so you need to watch out for hostile users.
-
->> > ---
->> >  drivers/infiniband/core/uverbs_cmd.c | 2 +-
->> >  1 file changed, 1 insertion(+), 1 deletion(-)
->> >
->> > diff --git a/drivers/infiniband/core/uverbs_cmd.c
->> > b/drivers/infiniband/core/uverbs_cmd.c
->> > index 5ad14c39d48c..8d6615f390f5 100644
->> > --- a/drivers/infiniband/core/uverbs_cmd.c
->> > +++ b/drivers/infiniband/core/uverbs_cmd.c
->> > @@ -3198,7 +3198,7 @@ static int ib_uverbs_ex_create_flow(struct
->> uverbs_attr_bundle *attrs)
->> >  	if (cmd.comp_mask)
->> >  		return -EINVAL;
->> >
->> > -	if (!capable(CAP_NET_RAW))
->> > +	if (!ns_capable(current->nsproxy->net_ns->user_ns, CAP_NET_RAW))
->> >  		return -EPERM;
->> 
->> Looking at the code in drivers/infiniband/core/uverbs_cmd.c
->> I don't think original capable call is actually correct.
->> 
->> The problem is that infiniband runs commands through a file descriptor.
->> Which means that anyone who can open the file descriptor and then obtain a
->> program that will work like a suid cat can bypass the current permission
->> check.
->> 
->> Before we relax any checks that test needs to be:
->> file_ns_capable(file, &init_user_ns, CAP_NET_RAW);
->> 
->
->> Similarly the network namespace you are talking about in those infiniband
->> commands really needs to be derived from the file descriptor instead of
->> current.
->> 
-> This now start making sense to me.
-> When the file descriptor is open, I need to record the net ns and use it for rest of the life cycle of the process (even if unshare(CLONE_NEWNET) is called) after opening the file.
-
-For the rest of the life cycle of the file descriptor.  Don't forget
-that file descriptors can be passed between processes.
-
-> Something like how sk_alloc() does sock_net_set(sk, net);
->
-> Do I understand you correctly?
-
-Yes.
-
-But first.  The permission checks need to be fixed to use the cred
-cached on the file descriptor.  So that the permission checks are
-not against the current process, but are against the process
-that opened the file descriptor.
-
-Otherwise a non-privileged process can open the file descriptor and
-trick another process with more permissions to write the values it wants
-to have written to the file descriptor.  Usually that is accomplished by
-tricking some privileged application to write to stderr (that is passed
-from the attacker).
-
-Most of the time you can fix things like that using file_ns_capable.
-Other times you encounter a userspace program that breaks and something
-else needs to happen.
-
->> Those kinds of bugs seem very easy to find in the infiniband code so I have a
->> hunch that the infiniband code needs some tender loving care before it is safe
->> for unprivileged users to be able to do anything with it.
->> 
-> Well, started to improve now...
-
-No fault if you haven't lots of code that only root could use no one
-takes seriously with respect to security issues, so it tends to be
-buggy.  I have cleaned up a lot of code over the years before I have
-relaxed the permissions.
-
-Eric
 
