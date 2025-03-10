@@ -1,152 +1,113 @@
-Return-Path: <linux-rdma+bounces-8522-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8523-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E579A58C67
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 08:02:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FF91A58D53
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 08:54:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 266837A1682
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 07:01:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 453D516A783
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Mar 2025 07:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7520D1C9B62;
-	Mon, 10 Mar 2025 07:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E85BB223320;
+	Mon, 10 Mar 2025 07:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EXywG4TB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nZVJ33TS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56D13208;
-	Mon, 10 Mar 2025 07:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A28E7222568;
+	Mon, 10 Mar 2025 07:54:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741590124; cv=none; b=nVFSQissU7iRIBtS6nTWRCF8bv0g9YpLG1oNXKcbYb4SSBVI84FvTHsLT3XEJCF4/DGF4dhCpLwFzMEFilMwCss3o57+/Z9KBnVRsUJV4TfTeKcvV5oFegYDIHbIzLdon8dkORZOgnzoufFE7zzDSrPGc+veRddtC8/yHrbqJFM=
+	t=1741593261; cv=none; b=CZ77AGwK5l93qsm6707NkL6dQpVzuG4ScHgWQO5tq2FgBnKdfHDvsZ5X5J3DKlHBugIdHC5kR9Q+Glgs11/cpUroKbcw3ZqdgNIlaR/HK1Nl4ZDrTIDB1cc6vydHpguQX+9DyN3jt7im3Gg7Gsyb5pPZbQqnqA6hrhu6jmRzppE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741590124; c=relaxed/simple;
-	bh=7ucsPrVIHaYhcCD0/wI12KA0NKzasjhda2jaVqHkqd0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lsNPLVvmloto5nWskjN7a07YFtFx+ywVDDPNrRG7gFZ4PAtgEoLHoC6TRnT/RTkuRvsGakFs1s23fMLPZELTK0VuICrIQGHCll46JU+N+B7o3/hMA4rl+PSlicEkdsurHjHA+HlFQMi/0x7IC1EjrcP4KfCJwUCTp/dw0sbV0xU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EXywG4TB; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-22438c356c8so36312115ad.1;
-        Mon, 10 Mar 2025 00:02:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741590122; x=1742194922; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7ftUF1HT5WFbBrDyGxswMLPBXuZHgKRdwf2S8NVL46M=;
-        b=EXywG4TBIcZ3tmFnubtYqYKb1YZAoOv9jdPmOz8Nq5dvU5O9D+tOMr5gxjkDAWdCGB
-         5rf5cB40uN43rjnp1c72lqaSR93ot+066kCjMCos/Sz1TynCrEKOkV9NfNVf+K+/3aob
-         zCSNVTFAIuGkr5NRsJXLNPevKBVYU4kJ2bu5o/iavpVAKKbtODq9jHE04Bu/XhjhDvLb
-         SoHMUstMtfJMYCt/PpDeaRTCwfqvtFI4k7PIu1hV/jcurFunmMpDO2fY1BjU6AUUu4nd
-         u/igcn6/9O9Ee2mAIg6bukKX4pz7QTZit17dWtXkWmeXtEQX6EWcFrmHtA2u0vuBUgSt
-         4EqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741590122; x=1742194922;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7ftUF1HT5WFbBrDyGxswMLPBXuZHgKRdwf2S8NVL46M=;
-        b=SpelVvx62+60n4zgB65BlezrAnuyaoNT6OlNc95Z7XcSCD3LihZK3QSkCBMHh2FvNW
-         l9iOFKnv62LZvexx0sr3XZISxjo1HR0k0TBALYwk8lhjGH9JiVvNo/hEYAGxLXPrFL40
-         ve3U+cia2mK892cat9bc2IDZP6angkaAU82ZrJi7mYDh2Cmi4tcB42zKhRZMVllSO0DS
-         XXGKlnimPpwJk0m/AWZj9lJb1WXCuKdGCzIMrZKwcC9obrw2yLzskj3yeg2YhbsHXdGO
-         HKUE9ETp9N2aRT39+cVlnIud8LN0jSeWWAiLuyaeqDjGMHPr5WU+DKLEJ8f5YpnG71BB
-         pTnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUruSOfW3BpeJJFRyD3dSoGO41B27FWbRH9Xp859QqdqXEu1jcCsoZGLz8F1xfn2/r3+31HhdZZkhlwwA==@vger.kernel.org, AJvYcCVZC6Y19i+6m4Pt7xB4JRJ/9+5yjTSfsRAzVvtYY98J0fKvNLVlU7GHBJhcmAe/tp+vNrvTLKuZ44DF7h0=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw98I8hvoAv1Pac/18gCgbPdLZpaHJfX9dWCL4cu6lGqBm763Og
-	8WAw+tsR0DaLqark0fb/X8klc7UKJ6itlvlcCBOfAAKv6Xd2q83BLsfu/Jk6DwA=
-X-Gm-Gg: ASbGncv30+spmwNREc3IOOrkO4gA2TEzhCfV5uqry3R3GU4EJ0UqSM7jy4/FW179Mmb
-	HPIv68KsYqKxtUlszLBwvaBzjWWjO0IAm2TTSP5yUbuHZHA9vVQWk6kcuy5X1RvtgIqbSjrFEH/
-	V/dfcW2rZN2SYcwkeu7+/1IT3ywTrAvA48nAAKX/prKAmXWJfl7Um0+Sja2Z1FRj/6ztlIsbmR8
-	pii6vz9C8ovxv1VhkUqEFHYQBcn5QCDGKovLUZcU8x4gMbh9hyngSNz+qjuNW+puqGvZogyjyQY
-	iGDyadSEBQWtQBHmiBz9pJZSj/wKXsAb/r9Ts2cxAeiv
-X-Google-Smtp-Source: AGHT+IGINiIRnipScagDgoAw078UJsTXfi7udyqPOfceY//1UyRlBtfDJPRKd5DHngNJ9vLU7KtDbA==
-X-Received: by 2002:a17:902:f786:b0:224:c47:b6c3 with SMTP id d9443c01a7336-2242887ecefmr181042285ad.6.1741590121929;
-        Mon, 10 Mar 2025 00:02:01 -0700 (PDT)
-Received: from dev0.. ([49.43.168.202])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22410a91c8fsm70080295ad.191.2025.03.10.00.01.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Mar 2025 00:02:01 -0700 (PDT)
-From: Abhinav Jain <jain.abhinav177@gmail.com>
-To: leon@kernel.org
-Cc: jain.abhinav177@gmail.com,
-	jgg@ziepe.ca,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] RDMA/core: Publish node GUID with the uevent for ib_device
-Date: Mon, 10 Mar 2025 07:01:56 +0000
-Message-Id: <20250310070156.8068-1-jain.abhinav177@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250309192751.GA7027@unreal>
-References: <20250309192751.GA7027@unreal>
+	s=arc-20240116; t=1741593261; c=relaxed/simple;
+	bh=rJQ24rCYvqInoPy14R5oWwnZjuDlsDS3MJ8/SPtukVE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oWfCbz8J4A4qZ6h+CW86ydJnduJa0BFd2bqQVTibVKBQASSXP1UXUVhBLL0X8DdXtqfH9DMTIpEp/es6DMO7MRJJFxk+TlgspwAqQHrKWWd/Q49YmBmDYJ5+dcuHRWqKQG0GoKDh+2LnGa2CiI2CTWYNvRgK51GMA4uHPgCfIkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nZVJ33TS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0CE3C4CEEC;
+	Mon, 10 Mar 2025 07:54:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741593261;
+	bh=rJQ24rCYvqInoPy14R5oWwnZjuDlsDS3MJ8/SPtukVE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nZVJ33TS+qOVWtKqKl8dB1A1ENhbVt1l1hQJuQvhz132vRoreTDJG/3mKtbtNkweg
+	 Cy+6gqYpZSl/9rbYj6fJA2wfp2BXeDnaeZrpozU9WFYb5XztYRuSA231cupJuKtDnK
+	 zXMOqyEql3Z69HZgxvJY604wgauAMqurJ9BTF5IBpzCp2LJR8u3e7lo6iJ8vzeOWXc
+	 XKFNPuG4Y7/fxUTv4q+Pl4MIG4JToQzvI7s6AupKaZ0fypVG1W2t4ac+OjerCBmaEs
+	 KFjlKlEKr8v/yX1g54RrQ0/6PHwurAcWXfQOvbec7UmzwAP2z4CE2ESy+lwVEbgPZv
+	 nr2lw6jYZYOTg==
+Date: Mon, 10 Mar 2025 09:54:15 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Patrisious Haddad <phaddad@nvidia.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+	Mark Bloch <mbloch@nvidia.com>, netdev@vger.kernel.org,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>
+Subject: Re: [PATCH rdma-next 0/5] Add optional-counters binding support
+Message-ID: <20250310075415.GA505188@unreal>
+References: <cover.1741097408.git.leonro@nvidia.com>
+ <174146229393.310407.731855525292951254.b4-ty@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <174146229393.310407.731855525292951254.b4-ty@kernel.org>
 
-On Sun, 9 Mar 2025 21:27:51 +0200, Leon Romanovsky wrote:
->On Sun, Mar 09, 2025 at 05:57:31PM +0000, Abhinav Jain wrote:
->> As per the comment, modify ib_device_uevent to publish the node
->> GUID alongside device name, upon device state change.
->> 
->> Have compiled the file manually to ensure that it builds. Do not have
->> a readily available IB hardware to test. Confirmed with checkpatch
->> that the patch has no errors/warnings.
->
->I'm missing motivation for this patch. Why is this change needed?
->
->Thanks
+On Sat, Mar 08, 2025 at 02:31:33PM -0500, Leon Romanovsky wrote:
+>=20
+> On Tue, 04 Mar 2025 16:15:24 +0200, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> >=20
+> > From Patrisious,
+> >=20
+> > Add optional-counters binding support together with new packets/bytes
+> > counters. Previously optional-counters were on a per link basis, this
+> > series allows users to bind optional-counters to a specific counter,
+> > which allows tracking optional-counter over a specific QP group.
+> >=20
+> > [...]
+>=20
+> Applied, thanks!
+>=20
+> [1/5] RDMA/mlx5: Add optional counters for RDMA_TX/RX_packets/bytes
+>       https://git.kernel.org/rdma/rdma/c/30c77a88e3ffe9
+> [2/5] RDMA/core: Create and destroy rdma_counter using rdma_zalloc_drv_ob=
+j()
+>       https://git.kernel.org/rdma/rdma/c/3644e21c005fcf
+> [3/5] RDMA/core: Add support to optional-counters binding configuration
+>       https://git.kernel.org/rdma/rdma/c/df5f4ff6319a6f
+> [4/5] RDMA/core: Pass port to counter bind/unbind operations
+>       https://git.kernel.org/rdma/rdma/c/d73531da19eb56
+> [5/5] RDMA/mlx5: Support optional-counters binding for QPs
+>       https://git.kernel.org/rdma/rdma/c/7bcd537adb21b5a
 
-Originally, I was looking at this function in order to solve a syzkaller
-bug. I noticed this comment from Jason and I assumed that the motivation
-would be to identify the node on which the event is happening.
+Unfortunately, but I need to drop this series from our wip branches.
+The reason to it is patch #5 which has layer violation of bringing
+RDMA counters logic into flow steering code.
 
-With the name, users can identify nodes however Subnet Manager uses
-node_guid for discovery and configuration of the nodes. To conclude, I
-think just using the node name might not be sufficient for unambiguous
-and reliable device management in the network.
+As such it caused to multiple kbuild errors, because fs.c is available
+only when CONFIG_INFINIBAND_USER_ACCESS is set, while counters and
+rdmatool (bind/unbind logic) is not limited to user space verbs only.
 
->> 
->> Signed-off-by: Abhinav Jain <jain.abhinav177@gmail.com>
->> ---
->>  drivers/infiniband/core/device.c | 13 +++++++++----
->>  1 file changed, 9 insertions(+), 4 deletions(-)
->> 
->> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
->> index 0ded91f056f3..1812038f1a91 100644
->> --- a/drivers/infiniband/core/device.c
->> +++ b/drivers/infiniband/core/device.c
->> @@ -499,12 +499,17 @@ static void ib_device_release(struct device *device)
->>  static int ib_device_uevent(const struct device *device,
->>  			    struct kobj_uevent_env *env)
->>  {
->> -	if (add_uevent_var(env, "NAME=%s", dev_name(device)))
->> +	const struct ib_device *dev =
->> +		container_of(device, struct ib_device, dev);
->> +
->> +	if (add_uevent_var(env, "NAME=%s", dev_name(&dev->dev)))
->>  		return -ENOMEM;
->>  
->> -	/*
->> -	 * It would be nice to pass the node GUID with the event...
->> -	 */
->> +	__be64 node_guid_be = dev->node_guid;
->> +	u64 node_guid = be64_to_cpu(node_guid_be);
->> +
->> +	if (add_uevent_var(env, "NODE_GUID=0x%llx", node_guid))
->> +		return -ENOMEM;
->>  
->>  	return 0;
->>  }
->> -- 
->> 2.34.1
->> 
+This series needs to be fixed:
+1. RDMA counters logic need to stay in counter.c
+2. Optional counters need to work on all type of QPs.
+
+Thanks
+
+>=20
+> Best regards,
+> --=20
+> Leon Romanovsky <leon@kernel.org>
+>=20
 
