@@ -1,223 +1,234 @@
-Return-Path: <linux-rdma+bounces-8574-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8575-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E061A5BB90
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Mar 2025 10:02:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B31BAA5BD30
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Mar 2025 11:05:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 446BA3B1A7C
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Mar 2025 09:01:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45AC21895017
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Mar 2025 10:06:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6890235362;
-	Tue, 11 Mar 2025 09:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361C022DF8F;
+	Tue, 11 Mar 2025 10:05:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UsXMH6ys"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="UJnp/zaE"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2112.outbound.protection.outlook.com [40.107.22.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBED4235364
-	for <linux-rdma@vger.kernel.org>; Tue, 11 Mar 2025 09:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741683604; cv=none; b=kuUbP0trJHC8+CP4yMqZJxCE/3EAgW2LaG6U0t7uD0hp1kTMDlcv8pXL1p0wtkwulpQB5X9Nk5kDoFJikAgaoxdQAAo3G4k/qZeBq50XIG6hqvYBJqxDq1bCnaFKhwB0GGO+tTVv0TT/hNFa3oIgHUfMHDlHgpLVIzZo/mDj78Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741683604; c=relaxed/simple;
-	bh=iA6mnCj7Qy5YCe/bg0WzxBq0xFn9tOEWd8Sg/pfOH78=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SxBkluZGUj9gtZAl4o0NqzKnPdoXxD31JoqzzM95F1PpE7TdqHLG6C5EOrJNbtUgHH0K4qt9qQlCImU3d9p68q/BRzvJJvFmZomjfeDYvey4r9LuNHTahs+qzUlZPJCis1oqJmtZnuzGq3v1tvasTpHOPVcJOgPNSsEW7IYdYBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UsXMH6ys; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741683601;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KqnlKZZInNbUMVaxemGpweqmwSoqd9viWeAicyRcRjo=;
-	b=UsXMH6ysSveBHi/k+wHxKFKboC0MSZ7WzpPPG2y1L3ePMoZDcpGFuNUXQl1HCv3RCt4NHG
-	OBqgM3ZKsBW+afUtalDr4WECXD7LnwvIHPXBwIbygY2dY3vT1megtDzWVENaMeSG5JUu/a
-	KiZCpcdyhVdF0J7qNy9ct5jxLEN3hCw=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-546-FP5qCIBtOIKau4PuYPAwwg-1; Tue, 11 Mar 2025 04:59:54 -0400
-X-MC-Unique: FP5qCIBtOIKau4PuYPAwwg-1
-X-Mimecast-MFC-AGG-ID: FP5qCIBtOIKau4PuYPAwwg_1741683593
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-43cf3168b87so11529915e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Mar 2025 01:59:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741683593; x=1742288393;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KqnlKZZInNbUMVaxemGpweqmwSoqd9viWeAicyRcRjo=;
-        b=EBv3mzbNABvzZN698OMovfzylK1KKcMRSOS3K4587hBU7/BQSNdX1qVqR90S00XKdp
-         zUn/dHi3VUQNLApFLfRAk1ekEEi5qzegroFomNsdwojAzn6U6qi6dXDGhA/ulUFEwZmF
-         p7PGvtsN8shEjuL7KOq0bRyA2MsfsMXI/hlITP8qIxVCrfLnV55j2b36LrAefTxpQQTJ
-         S1WmEwl6CSR5QtqbmAZqEVbiOmGPtHhqACpow9KkOhbsY9YdNBc6yjH4pD1nJm67Ut5Y
-         SRpp4SFOWpiwPLrnNt6DJ2Oh/T6sBXlq099wS8Sqjcf/rAVeLbGRWTyZoniS9ukmT97C
-         4+9w==
-X-Forwarded-Encrypted: i=1; AJvYcCXAWjw2G2WxjrTOKveF5EwOE44l1dJqxdv8NcNFsiVC4T3pJE53GDWZARpGuUOg1Sv8nI2DCS2lmuwi@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyoz9bR/nbArI6/C9eFy6qO/IFNlaIhUHH7YWzb+F+s7V8+DKlH
-	l4dmtRlK+LuhVzRlRhUdswMhLcwNwuI3BeW4yd0rWfOpuIcIiu92lQjMvpPM3coyEx+qeoIwy/d
-	b8hrkGgbptnrb7TNu9oehFLKKwqAssuP5MW3/45CdrWoeGu/SJ0q2JpDng5w=
-X-Gm-Gg: ASbGnctY57mY2D2AloSL1WyVPb2laXOmlFdwkop5bAd4SvbzjsWv3AuNr6ujGuefmRz
-	XvVMuSy0hrm2MD0GGWfeH2jg+V46slL0zGLUhLw22/hJ/498d5sE1L5lgjAlqwkNUwOOeS/t2df
-	G/OhNK7oTCYbM+jhPj8UEF6SfC61Na74oat9bLG2SbQ1hD2q7D3fpOTdJfYywsjEn/XQb49W1rb
-	tjHEtvQKq9WfvbJLfkifL8kCGLUZQyEEzg/SvhzdoZEzQKsU9VfXMZHmBf26EQVmTutv2EwhE/Y
-	a45geVemPr8PagJAF7mnPus3y/z1sJ0zBmVi/70Hf6mPVg==
-X-Received: by 2002:a05:600c:3542:b0:43c:ec4c:25b4 with SMTP id 5b1f17b1804b1-43d01bdbc01mr40750275e9.10.1741683593082;
-        Tue, 11 Mar 2025 01:59:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGZ5AVycEeQIEPH/bGBFOO7jW/oC4hoyt2MafohO5QdfjBwnRvqtWeJdoi9Lli+bBR0MxeIMA==
-X-Received: by 2002:a05:600c:3542:b0:43c:ec4c:25b4 with SMTP id 5b1f17b1804b1-43d01bdbc01mr40750015e9.10.1741683592688;
-        Tue, 11 Mar 2025 01:59:52 -0700 (PDT)
-Received: from [192.168.88.253] (146-241-12-146.dyn.eolo.it. [146.241.12.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3912bfb79cfsm17510326f8f.10.2025.03.11.01.59.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Mar 2025 01:59:52 -0700 (PDT)
-Message-ID: <2c9accbd-fd6f-421c-9d00-1f36a6152b8d@redhat.com>
-Date: Tue, 11 Mar 2025 09:59:50 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E33022B8A7;
+	Tue, 11 Mar 2025 10:05:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.112
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741687553; cv=fail; b=cSD0NpXnYrxbs9kxQnGx5yUm/YOC5YFyw8Ru+EIPMO1Gms0MbN895zRngFlPkwvPTJKHcS3e0yj8db8LxPPhUh0QP5khBBij+aT+LsKbJmbgF1oCpeNQ50bz5DLC+ZvhRn9+71WXiv3Vn9CFaIQ57oq4fhZHNGlkn/KrPdRlzMQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741687553; c=relaxed/simple;
+	bh=COErFOxQ6OttuY/lQ00AVvXyclQ4gdKhl9wLcWMumpk=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=C3JuMFmQ8dDkZ0179On6+RN/xjlXetS0k2/6XYA4p2l4clOqSIl/d10hhOWmq+KTEITbXoxZjYeHnaB8NJa7FEbJ8WeBXS3n4x1ooA7pmYqoLt6ZmZKXpOUu25o9BkqKAl/fGoW+acavQIuoflLlcEFtIWS3/BXfHiQr+srhBas=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=UJnp/zaE; arc=fail smtp.client-ip=40.107.22.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=V4SIIFvn0dZ0eHV11ZPnt7ped4DBDEJL+a7C8BqCKgRlZdW6XaeuYx7GfXWNUN+V8+tqovDv6PNj5lvqDyQc9nRNtO08CwOQCLvaK7v1iSnMlKK6ygW3z+LV6au1WvAq3tQTJzx3w77j4LNos4tzoNkF+8MfyRBDoQyOWl24BsUfUYKa77io1mpq89Oj1jJmpiE4mheSj1wXp2XrWBXJs0fY/xfuIH9imEPit77TeyR1Rf9bELdzsWtXTAuu2VR9n3KpwfI9fldMy/F2lQ1lSQqcvVFhSwL3GBOW88BQse/iTZbrScF0xRyZpkbz7HoY54FonMBoVPjXliGmLe5N8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=COErFOxQ6OttuY/lQ00AVvXyclQ4gdKhl9wLcWMumpk=;
+ b=JHlvE6u0BJV1QLgfPGPG7w/BuBQBcMi5QhXJ9gfw07W5453llTBhK1uXJY3FI5rBmgNonIbA2s1SiB1T+ehe3WS5zcGi7eCtGS83a0WJweATgj5BNSyr636kO+m2mgqwr6cJZ/4lNkW3JNHUH4iJN4cIgTKA9xaxnqr80jUwcTkIns+42As4wKXZatNBZm/wLFKBHCxLWIyadLYOoWPVPApIZmoQ9M36tHrguG0A6J+dZgHb2TVeDOYyqoYA5VLPzcACgp/OSVFMrAYwDW80lNlJHUzYwEeAJnu4rcnaucIJ4vgr57eFkSIPLRTxkYJDdmrpVx/hS/ABn0bnohVQHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=COErFOxQ6OttuY/lQ00AVvXyclQ4gdKhl9wLcWMumpk=;
+ b=UJnp/zaE9cM46Bvn6H6FJYhILjjnBN3eG75rPSMCSZ3O+Vu6HZaoVDYwAFV4Y8C6qDWAGv/K7Xh6/iEM+1tpd7ndN8h4aL+WShJh/BNkFhv0bKHSQLztieLwr1I5YvqYRbbFkYUCC+lLVMIdWHo6XlTISnKhPlfYKR2oSfSoxn8=
+Received: from PA1PR83MB0662.EURPRD83.prod.outlook.com (2603:10a6:102:44c::19)
+ by AS4PR83MB0546.EURPRD83.prod.outlook.com (2603:10a6:20b:4f0::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8558.2; Tue, 11 Mar
+ 2025 10:05:47 +0000
+Received: from PA1PR83MB0662.EURPRD83.prod.outlook.com
+ ([fe80::3c3d:5eeb:9d38:3fa4]) by PA1PR83MB0662.EURPRD83.prod.outlook.com
+ ([fe80::3c3d:5eeb:9d38:3fa4%5]) with mapi id 15.20.8534.010; Tue, 11 Mar 2025
+ 10:05:47 +0000
+From: Konstantin Taranov <kotaranov@microsoft.com>
+To: Long Li <longli@microsoft.com>, Konstantin Taranov
+	<kotaranov@linux.microsoft.com>, Shiraz Saleem <shirazsaleem@microsoft.com>,
+	"jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>
+CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH rdma-next 1/1] RDMA/mana_ib: Fix integer overflow during
+ queue creation
+Thread-Topic: [PATCH rdma-next 1/1] RDMA/mana_ib: Fix integer overflow during
+ queue creation
+Thread-Index: AQHbjspA9eqL3gkH0kq12lo3pLVCOLNmlSmAgAcldLA=
+Date: Tue, 11 Mar 2025 10:05:47 +0000
+Message-ID:
+ <PA1PR83MB0662C52043DE3FA1F2EFBCA0B4D12@PA1PR83MB0662.EURPRD83.prod.outlook.com>
+References: <1741287713-13812-1-git-send-email-kotaranov@linux.microsoft.com>
+ <SA6PR21MB423152087DEEDD4254C414BBCECA2@SA6PR21MB4231.namprd21.prod.outlook.com>
+In-Reply-To:
+ <SA6PR21MB423152087DEEDD4254C414BBCECA2@SA6PR21MB4231.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=ff3bf60f-4213-4abb-bdf0-dbf4741973e5;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-03-06T20:40:27Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PA1PR83MB0662:EE_|AS4PR83MB0546:EE_
+x-ms-office365-filtering-correlation-id: f508ed68-7d8e-46ab-203a-08dd60844b90
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|366016|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?TnUrWktqc1V2SnR4ZjJqM0J1UGxtZStRc3RnOXJWWnZndFo0WE8yS2ptQnMx?=
+ =?utf-8?B?eFdCOTVSQkpBeVRiZHVkYkRsdm1ld2J6dXI2RjNHaGhyMTlTaFJoZGt2VFRO?=
+ =?utf-8?B?SG8rUGpvQ2lCM3FRanY5UWNsM1VIRXBSRU5zcDdnakdvMEJsRllZZk54K2xz?=
+ =?utf-8?B?cmVCU2t0amtYbkhMUldkWjNDWEhIRWRVYnFuTnk1OUdab09TdVdFZHdEQzNm?=
+ =?utf-8?B?dkNoa21JQit3dlRJM21QeUlSNHFXY0wvcXdVVGp5dUsyNzJ4RE9xK0hReDRh?=
+ =?utf-8?B?a1NCTGtkSS8wemRJK3BFa2tGN0w0bzNhL0pDZHdVM3JDUGJQL2poOC8rN3lD?=
+ =?utf-8?B?amJKaWV2eUFJbndBSFZydE50b05IVFFXS0ZyLzc1YjNsRmpZa1hnb01MTE9l?=
+ =?utf-8?B?cytuZFMyVVRJYzMvcVQxUVF6ak1ka1ZEMVJOTXYvQVZPVUNNMGhiOFdVNkdh?=
+ =?utf-8?B?SUUzMUFrd1I3NE05ZVN5UDZtTkkzSDlUeVhjNDV1V0RlQkMwMGR4S0NOZGxQ?=
+ =?utf-8?B?ZEZ1UVErMWJNUjY1dlVxZWZMSERBMUswV2ZoOVp1WkkzR1JNVmgxSnJkK0lZ?=
+ =?utf-8?B?d29xUm9HVkpxYkdPVzl1R2VXMHNRRnFSQVBlQ2hYU3B5S3k1Z1p1d1BNRHh5?=
+ =?utf-8?B?bktaZG1BUWJUanVpaVhUMXhoRnBFQlY1TFR2TXBFWlZuQ1plTTJvZzNNbkNL?=
+ =?utf-8?B?Ulc2MnBPODBrZGJvbmMyZHBDaXRmc2J6MUkveGxIcEMrVkl4MjlVSDNQLzUw?=
+ =?utf-8?B?STRZdS96Vzk1VjhGUCswbjVrWmdWVkNRV2puVkJ4UHFySUs4R3YrcldxeHh1?=
+ =?utf-8?B?a0Nqa0d1dFg1MHNQM2paQk5CSDVOclg3SUFYMWR3dDZ1ZlBJbGpZTXRsQm45?=
+ =?utf-8?B?NXdWZFZBUVljeENkcGZSbE1MUmYzTERqZE11eW9ISGc4dld5Z0VWZHhZY1hH?=
+ =?utf-8?B?QkoyQmxoNTBFdlBFcHkrdEhHQ1l0Ky93b09NUmpOR3BFdzhlaGNOWEV0ZjJr?=
+ =?utf-8?B?RXVJbDBvellXRjUvTjdVZjhCYWtlM251bTdSTEQ2N3Q1bXJWRXJaY0NVVUF1?=
+ =?utf-8?B?N2hUS1FYWnRBWFNKUVhpRFdMc3lPYUR4aFpKVUx6MFNlVC9PbW1RK2hUQjB6?=
+ =?utf-8?B?TjR1d0JiYUpERkFmOG1RQlc1ZEplczA5U2pBNW1QZWNnOXBKUGVWZ1J2aTZL?=
+ =?utf-8?B?U0FtZVVHWk1iZ3JnMW9uRzVBbmFsUnp0NXIrQ0NTdjluUTV0OENNODB5YWEw?=
+ =?utf-8?B?VGg1U1RZdTZFenRjUzgrOE9oMm9VQnZ5MU9tSEtYOUNlaXNUWjM3bjliakVz?=
+ =?utf-8?B?TjJROXdjVWRMa2RpOE15eGdPVWpWdGozR1hJK3RMOEZaVXM2ZFRqMTBxb2pS?=
+ =?utf-8?B?OGdidEJtRmw5Vi9oeDFreGRacGRWSnNrZ0djc2NkdExqYkFzY1liWENmL0VG?=
+ =?utf-8?B?cllWMXZHdEpYK2hOd2ZJRzZGbkpNbEppZjJ5VVpxTllGVlBRbFdkY0F3QjNm?=
+ =?utf-8?B?ZDhLQTI2aktPZk5MbllhdFMzQlhXVUlpRFZQbmR1WTV6WklwV2ZaTWtYQzBP?=
+ =?utf-8?B?SzNHSllqL01LTnFyQTRNdFE0TVlmUko2bm1hZDgwUHpqdlNhQnN2U20rK0lQ?=
+ =?utf-8?B?di9rU1B2Rit6WGhKdjEzb1daV2IrUGhwTmFUU1ZTVWsraE1CYml0eDJJeHV3?=
+ =?utf-8?B?UVpkb3I0SXNIRnlpaDRlaTZIYUw0TmVJckpVVG5lMlpqQlBVTHJObXV2UGto?=
+ =?utf-8?B?VXZwSFNFSTZUb01oczEyRFZSMngvNmZ0SjA4bE1RRHZqREZZSDJjak9qaGd6?=
+ =?utf-8?B?TytjT2xjeGtSbmdVL0p3OVdmeG9lTVZPQitUNEFXSmpBdnJ4S3VBVGt6UDJq?=
+ =?utf-8?B?N2U1eDViK05zZEp0ZGFtYkNwTE1sZ1YrazdvendOaGZUTTZaY1pNMWVEb2cv?=
+ =?utf-8?Q?mQ/YB7iCFgPKhlR5gTvezzB25AGr2EhN?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA1PR83MB0662.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?ZXlaN3EwaW5SUk1NdS95U0xwUVdXMTNDQ1M5dnZZT1VVUGpCMXh6R0ZLa2lX?=
+ =?utf-8?B?bUdYdVRhUytNY1dpbkwrOFZuYXM1ckZ4SUtNRGZ1ZFlLdzJSMWZUdTBYY21r?=
+ =?utf-8?B?MnRRQ24xK1RHbHpmbVZ1VGZpVEdZelR6cTZ0UzdqQ2Z5bzVPVUM3anN4elRo?=
+ =?utf-8?B?TDZ4aHBYOTMvTFg4NHQrVmQrUlJyMzdzYWhqUWxFSE9aMUhaeWVBNGxpUjFi?=
+ =?utf-8?B?b1ZBVnMvdzRzUzByaVVqcks4SDdMNVdEL1dvWlA2VUZpYzNlRVhnN3pPeWpx?=
+ =?utf-8?B?QWlSRVp0bjA5NjFmUWw5QWUwRnh1Nm1leWhFS0NZY1pNU1V1dDUybzNPbmdK?=
+ =?utf-8?B?d1c1bUlrZFhvOGd5TmtuRE9CdnFuOFJoRlNJcDh6bnplbkNkTm9FMVVxdkVN?=
+ =?utf-8?B?MGx2TDk5RW1DaGVHT0JsM2s0YzA5aGZOM2Z0U2NjcVZWdURuakoya0NzVjhR?=
+ =?utf-8?B?bXVMbDVqdERYckZ0aTYyM3hPTWpOQnlUNlIyekxmK3dReGsvWkdyRi9LdlMr?=
+ =?utf-8?B?SXpIbkxCaFRNMWpiamZEQU5meXZlRnlWS201aUorUGpCbXJYT3ZtQ3FRMmI0?=
+ =?utf-8?B?T1Y1V3ZGbDUwam9yNUNKZldHYk12R2lEV0xsa0ZHVFlENUp0MDYvWGg4NHhF?=
+ =?utf-8?B?MjR2ZXpjTUhOa3A5RjJjN2FMQU4yaGFGR0RYemhIbjdPVHhRMjV1dHpkZlQx?=
+ =?utf-8?B?emkrQ2w0MG5uZHBXYWIzTVltRlIxZXhxVlArUW9hNEZrK3gvZ0ROR1pKTzF4?=
+ =?utf-8?B?cktaU1lvYnNrVGFKY2x4RnF3YS9BNVhTSlRKY2F4UFB2eDVXUFgwa28ydzY4?=
+ =?utf-8?B?V01hbkQ1aVE0R2dpM1N3MStKTUpPUHk0K3U2VWhPTTFucUh5LzB1K01QNzNV?=
+ =?utf-8?B?QjQrMTk2d3l2SFI0dEhTUlpreVNkeVpPU3NoczNyRHR1N0F0Z3UyVnBFUVZ0?=
+ =?utf-8?B?NWtBMy9tVm5tY0VzNnhQVFNKU3lYVFdQU2FUVzJ2ZCtzZXdEZzJWYmd0TXBE?=
+ =?utf-8?B?OUk5VjdabDF6QXZWNkx4bGsyRDZZb3BzMy94dGlyVmxiSCtNUGhZR0laSzNV?=
+ =?utf-8?B?V2VIQVRnYWpydjAyc2pGV1RCQ2pnRnpjSFJHZ2ZXT1hKWGVjcFU2c25UbXIv?=
+ =?utf-8?B?TklSQkxhMUxMWGVTWlVrYUhzZ3dJMUtqcDJ2dTBqT2F1VDBrSEdOOHFlakt3?=
+ =?utf-8?B?SUl3Q05tT3NFY2Ird1U0T2J5TUlEbFJlaWJtL0lLbG5QdDdFcUxyN2Nqdjdq?=
+ =?utf-8?B?ZWdoWW1Jbno0K25RdHdLN0hPRU5wNnpOVG9SNkZSZWYwS1B0clNzRWZOdU52?=
+ =?utf-8?B?aGxTQzAwNWpVTzJ6bzBVTEg4aTJqT3lhRHlmYko2K0tIaDBqaXhsTDhKZFBy?=
+ =?utf-8?B?NU83czl6MmdxNksxdlBKeUVlNENWZmJjVWUzaDBIdVUvdWl0bHJ5dkRwYUxF?=
+ =?utf-8?B?NjB1N2lZUGpYYmVPRk0xcWxNSTY5YlFqSFpBUDFrRm0xTFhTWW4vTG5ZSlFG?=
+ =?utf-8?B?azM4L2RKblQ0Q2tkWDNaMlI5d0VFMmw4bGwzcmpMMVNuWktJQk96S0doYXoy?=
+ =?utf-8?B?dWQyM0h6My9BeldXODJiV1F2WDBTVUNkOSt6Q2tnVjJsZ2xleXV2ZGRua2d6?=
+ =?utf-8?B?cEFvaDBFS0VJOXZFZFkrNzBpVXFSbzBKOVkzcFV2M1phdVNpS1pNdjc3bEx3?=
+ =?utf-8?B?NkJtUFFEWUJCYjQvb2RVQStsc2Y0bWE3cFNkWkg5SWpUZVh2QTU4M1ArdEdo?=
+ =?utf-8?B?cGxHdTZYajVpbVJZZHErT0Q1V3JQUlVDT0lKQ1FrSExsWEFBcDdQNEg0MXM4?=
+ =?utf-8?B?MjBaektGSDZ1NE9SVHdqNjczUmp5eFFCN2NOUm1wU1dwYWR0NUoyL29leWRu?=
+ =?utf-8?B?bmZsOEhMMzNieldIVXp4cDFWZ1VkL21WdFM5bThrSzBmK1FwWHduSXA3NndK?=
+ =?utf-8?B?dnpJOEJ5eDFmKy9Lb2tYSjRkbUhaV09iQ1dBdDRrck5MQ1RyOGpxU0tqeGhh?=
+ =?utf-8?B?Z0Vqb01TVWtMcDNmOGRmMkJ5YkxNMVBjblBSMlVNOWJ6ZXVOUFVYY0F6MUZ5?=
+ =?utf-8?Q?ZTAHhq?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2] net/smc: use the correct ndev to find pnetid
- by pnetid table
-To: Guangguan Wang <guangguan.wang@linux.alibaba.com>, wenjia@linux.ibm.com,
- pasic@linux.ibm.com, jaka@linux.ibm.com, alibuda@linux.alibaba.com,
- tonylu@linux.alibaba.com, guwen@linux.alibaba.com
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- horms@kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250304124304.13732-1-guangguan.wang@linux.alibaba.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250304124304.13732-1-guangguan.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PA1PR83MB0662.EURPRD83.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f508ed68-7d8e-46ab-203a-08dd60844b90
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Mar 2025 10:05:47.5963
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: j6PJIN2r4W+A6jdmM5CvnQ16esaw55mahe1nje1qO/Mys8W1LwcvHD1Xh4ISNpSsEeFKvNQeFQNZYu4+beQ8Sg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR83MB0546
 
-On 3/4/25 1:43 PM, Guangguan Wang wrote:
-> When using smc_pnet in SMC, it will only search the pnetid in the
-> base_ndev of the netdev hierarchy(both HW PNETID and User-defined
-> sw pnetid). This may not work for some scenarios when using SMC in
-> container on cloud environment.
-> In container, there have choices of different container network,
-> such as directly using host network, virtual network IPVLAN, veth,
-> etc. Different choices of container network have different netdev
-> hierarchy. Examples of netdev hierarchy show below. (eth0 and eth1
-> in host below is the netdev directly related to the physical device).
->             _______________________________
->            |   _________________           |
->            |  |POD              |          |
->            |  |                 |          |
->            |  | eth0_________   |          |
->            |  |____|         |__|          |
->            |       |         |             |
->            |       |         |             |
->            |   eth1|base_ndev| eth0_______ |
->            |       |         |    | RDMA  ||
->            | host  |_________|    |_______||
->            ---------------------------------
->      netdev hierarchy if directly using host network
->            ________________________________
->            |   _________________           |
->            |  |POD  __________  |          |
->            |  |    |upper_ndev| |          |
->            |  |eth0|__________| |          |
->            |  |_______|_________|          |
->            |          |lower netdev        |
->            |        __|______              |
->            |   eth1|         | eth0_______ |
->            |       |base_ndev|    | RDMA  ||
->            | host  |_________|    |_______||
->            ---------------------------------
->             netdev hierarchy if using IPVLAN
->             _______________________________
->            |   _____________________       |
->            |  |POD        _________ |      |
->            |  |          |base_ndev||      |
->            |  |eth0(veth)|_________||      |
->            |  |____________|________|      |
->            |               |pairs          |
->            |        _______|_              |
->            |       |         | eth0_______ |
->            |   veth|base_ndev|    | RDMA  ||
->            |       |_________|    |_______||
->            |        _________              |
->            |   eth1|base_ndev|             |
->            | host  |_________|             |
->            ---------------------------------
->              netdev hierarchy if using veth
-> Due to some reasons, the eth1 in host is not RDMA attached netdevice,
-> pnetid is needed to map the eth1(in host) with RDMA device so that POD
-> can do SMC-R. Because the eth1(in host) is managed by CNI plugin(such
-> as Terway, network management plugin in container environment), and in
-> cloud environment the eth(in host) can dynamically be inserted by CNI
-> when POD create and dynamically be removed by CNI when POD destroy and
-> no POD related to the eth(in host) anymore. It is hard to config the
-> pnetid to the eth1(in host). But it is easy to config the pnetid to the
-> netdevice which can be seen in POD. When do SMC-R, both the container
-> directly using host network and the container using veth network can
-> successfully match the RDMA device, because the configured pnetid netdev
-> is a base_ndev. But the container using IPVLAN can not successfully
-> match the RDMA device and 0x03030000 fallback happens, because the
-> configured pnetid netdev is not a base_ndev. Additionally, if config
-> pnetid to the eth1(in host) also can not work for matching RDMA device
-> when using veth network and doing SMC-R in POD.
-> 
-> To resolve the problems list above, this patch extends to search user
-> -defined sw pnetid in the clc handshake ndev when no pnetid can be found
-> in the base_ndev, and the base_ndev take precedence over ndev for backward
-> compatibility. This patch also can unify the pnetid setup of different
-> network choices list above in container(Config user-defined sw pnetid in
-> the netdevice can be seen in POD).
-> 
-> Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-> ---
->  net/smc/smc_pnet.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
-> index 716808f374a8..b391c2ef463f 100644
-> --- a/net/smc/smc_pnet.c
-> +++ b/net/smc/smc_pnet.c
-> @@ -1079,14 +1079,16 @@ static void smc_pnet_find_roce_by_pnetid(struct net_device *ndev,
->  					 struct smc_init_info *ini)
->  {
->  	u8 ndev_pnetid[SMC_MAX_PNETID_LEN];
-> +	struct net_device *base_ndev;
->  	struct net *net;
->  
-> -	ndev = pnet_find_base_ndev(ndev);
-> +	base_ndev = pnet_find_base_ndev(ndev);
->  	net = dev_net(ndev);
-> -	if (smc_pnetid_by_dev_port(ndev->dev.parent, ndev->dev_port,
-> +	if (smc_pnetid_by_dev_port(base_ndev->dev.parent, base_ndev->dev_port,
->  				   ndev_pnetid) &&
-> +	    smc_pnet_find_ndev_pnetid_by_table(base_ndev, ndev_pnetid) &&
->  	    smc_pnet_find_ndev_pnetid_by_table(ndev, ndev_pnetid)) {
-> -		smc_pnet_find_rdma_dev(ndev, ini);
-> +		smc_pnet_find_rdma_dev(base_ndev, ini);
->  		return; /* pnetid could not be determined */
->  	}
->  	_smc_pnet_find_roce_by_pnetid(ndev_pnetid, ini, NULL, net);
-
-I understand Wenjia opposed to this solution as it may create invalid
-topologies ?!?
-
-https://lore.kernel.org/netdev/08cd6e15-3f8c-47a0-8490-103d59abf910@linux.ibm.com/#t
-
-Wenjia, could you please confirm?
-
-Thanks,
-
-Paolo
-
+PiA+IFN1YmplY3Q6IFtQQVRDSCByZG1hLW5leHQgMS8xXSBSRE1BL21hbmFfaWI6IEZpeCBpbnRl
+Z2VyIG92ZXJmbG93DQo+ID4gZHVyaW5nIHF1ZXVlIGNyZWF0aW9uDQo+ID4NCj4gPiBGcm9tOiBL
+b25zdGFudGluIFRhcmFub3YgPGtvdGFyYW5vdkBtaWNyb3NvZnQuY29tPg0KPiA+DQo+ID4gVXNl
+IHNpemVfdCBpbnN0ZWFkIG9mIHUzMiBpbiBoZWxwZXJzIGZvciBxdWV1ZSBjcmVhdGlvbnMgdG8g
+ZGV0ZWN0DQo+ID4gb3ZlcmZsb3cgb2YgcXVldWUgc2l6ZS4gVGhlIHF1ZXVlIHNpemUgY2Fubm90
+IGV4Y2VlZCBzaXplIG9mIHUzMi4NCj4gPg0KPiA+IEZpeGVzOiBiZDRlZTcwMDg3MGEgKCJSRE1B
+L21hbmFfaWI6IFVEL0dTSSBRUCBjcmVhdGlvbiBmb3Iga2VybmVsIikNCj4gPiBTaWduZWQtb2Zm
+LWJ5OiBLb25zdGFudGluIFRhcmFub3YgPGtvdGFyYW5vdkBtaWNyb3NvZnQuY29tPg0KPiA+IC0t
+LQ0KPiA+ICBkcml2ZXJzL2luZmluaWJhbmQvaHcvbWFuYS9jcS5jICAgICAgfCAgOSArKysrKy0t
+LS0NCj4gPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21hbmEvbWFpbi5jICAgIHwgMTUgKysrKysr
+KysrKysrKy0tDQo+ID4gIGRyaXZlcnMvaW5maW5pYmFuZC9ody9tYW5hL21hbmFfaWIuaCB8ICA0
+ICsrLS0NCj4gPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21hbmEvcXAuYyAgICAgIHwgMTEgKysr
+KysrLS0tLS0NCj4gPiAgNCBmaWxlcyBjaGFuZ2VkLCAyNiBpbnNlcnRpb25zKCspLCAxMyBkZWxl
+dGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWFu
+YS9jcS5jDQo+ID4gYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWFuYS9jcS5jIGluZGV4IDVjMzI1
+ZWYuLjA3Yjk3ZGEgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L21hbmEv
+Y3EuYw0KPiA+ICsrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9tYW5hL2NxLmMNCj4gPiBAQCAt
+MTgsNyArMTgsNyBAQCBpbnQgbWFuYV9pYl9jcmVhdGVfY3Eoc3RydWN0IGliX2NxICppYmNxLCBj
+b25zdA0KPiA+IHN0cnVjdCBpYl9jcV9pbml0X2F0dHIgKmF0dHIsDQo+ID4gIAlzdHJ1Y3QgZ2Rt
+YV9jb250ZXh0ICpnYzsNCj4gPiAgCWJvb2wgaXNfcm5pY19jcTsNCj4gPiAgCXUzMiBkb29yYmVs
+bDsNCj4gPiAtCXUzMiBidWZfc2l6ZTsNCj4gPiArCXNpemVfdCBidWZfc2l6ZTsNCj4gPiAgCWlu
+dCBlcnI7DQo+ID4NCj4gPiAgCW1kZXYgPSBjb250YWluZXJfb2YoaWJkZXYsIHN0cnVjdCBtYW5h
+X2liX2RldiwgaWJfZGV2KTsgQEAgLTQ1LDcNCj4gPiArNDUsOCBAQCBpbnQgbWFuYV9pYl9jcmVh
+dGVfY3Eoc3RydWN0IGliX2NxICppYmNxLCBjb25zdCBzdHJ1Y3QNCj4gPiAraWJfY3FfaW5pdF9h
+dHRyDQo+ID4gKmF0dHIsDQo+ID4gIAkJfQ0KPiA+DQo+ID4gIAkJY3EtPmNxZSA9IGF0dHItPmNx
+ZTsNCj4gPiAtCQllcnIgPSBtYW5hX2liX2NyZWF0ZV9xdWV1ZShtZGV2LCB1Y21kLmJ1Zl9hZGRy
+LCBjcS0+Y3FlDQo+ICoNCj4gPiBDT01QX0VOVFJZX1NJWkUsDQo+ID4gKwkJYnVmX3NpemUgPSAo
+c2l6ZV90KWNxLT5jcWUgKiBDT01QX0VOVFJZX1NJWkU7DQo+ID4gKwkJZXJyID0gbWFuYV9pYl9j
+cmVhdGVfcXVldWUobWRldiwgdWNtZC5idWZfYWRkciwgYnVmX3NpemUsDQo+ID4gIAkJCQkJICAg
+JmNxLT5xdWV1ZSk7DQo+ID4gIAkJaWYgKGVycikgew0KPiA+ICAJCQlpYmRldl9kYmcoaWJkZXYs
+ICJGYWlsZWQgdG8gY3JlYXRlIHF1ZXVlIGZvciBjcmVhdGUNCj4gY3EsICVkXG4iLA0KPiA+IGVy
+cik7IEBAIC01Nyw4ICs1OCw4IEBAIGludCBtYW5hX2liX2NyZWF0ZV9jcShzdHJ1Y3QgaWJfY3Eg
+KmliY3EsDQo+ID4gY29uc3Qgc3RydWN0IGliX2NxX2luaXRfYXR0ciAqYXR0ciwNCj4gPiAgCQlk
+b29yYmVsbCA9IG1hbmFfdWNvbnRleHQtPmRvb3JiZWxsOw0KPiA+ICAJfSBlbHNlIHsNCj4gPiAg
+CQlpc19ybmljX2NxID0gdHJ1ZTsNCj4gPiAtCQlidWZfc2l6ZSA9IE1BTkFfUEFHRV9BTElHTihy
+b3VuZHVwX3Bvd19vZl90d28oYXR0ci0NCj4gPmNxZQ0KPiA+ICogQ09NUF9FTlRSWV9TSVpFKSk7
+DQo+ID4gLQkJY3EtPmNxZSA9IGJ1Zl9zaXplIC8gQ09NUF9FTlRSWV9TSVpFOw0KPiA+ICsJCWNx
+LT5jcWUgPSBhdHRyLT5jcWU7DQo+ID4gKwkJYnVmX3NpemUgPQ0KPiA+IE1BTkFfUEFHRV9BTElH
+Tihyb3VuZHVwX3Bvd19vZl90d28oKHNpemVfdClhdHRyLT5jcWUgKg0KPiA+ICtDT01QX0VOVFJZ
+X1NJWkUpKTsNCj4gDQo+IFdoeSBub3QgZG8gYSBjaGVjayBsaWtlOg0KPiBJZiAoYXR0ci0+Y3Fl
+ID4gVTMyX01BWC9DT01QX0VOVFJZX1NJWkUpDQo+IAlyZXR1cm4gLUVJTlZBTDsNCj4gDQo+IEFu
+ZCB5b3UgZG9u4oCZdCBuZWVkIHRvIGNoZWNrIHRoZW0gaW4gbWFuYV9pYl9jcmVhdGVfa2VybmVs
+X3F1ZXVlKCkgYW5kDQo+IG1hbmFfaWJfY3JlYXRlX3F1ZXVlKCkuDQo+IA0KDQpZZXMsIEkgd2Fz
+IGluaXRpYWxseSB0aGlua2luZyBhYm91dCB0aGUgc21hbGwgZml4IGFzIHlvdSBwcm9wb3NlZCBh
+bmQgdGhlbiBlbmRlZCB1cA0KYWRkaW5nIGNoZWNrcyB0byBhbGwgcGF0aHMuIEFzIEkgc2VlIHRo
+ZSBzYW1lIGNhbiBoYXBwZW4gaWYgYSB1c2VyIGFza3MgZm9yIGEgbGFyZ2UgV1Egb2YgUkMuDQpJ
+IGJlbGlldmUgYSBrZXJuZWwgY2xpZW50IGNhbiBhbHNvIGNhdXNlIHRoaXMgb3ZlcmZsb3cuIFdl
+IHBsYW4gdG8gYWRkIGtlcm5lbCBSQyBzb29uIGFuZCwNCmFzIGZhciBhcyBJIHVuZGVyc3RhbmQs
+IGEga2VybmVsIHVzZXIgY2FuIGFsc28gYXNrIHRvIGNyZWF0ZSBhIGxhcmdlIENRIHJlc3VsdGlu
+ZyBpbiBzaW1pbGFyIG92ZXJmbG93Lg0KDQotIEtvbnN0YW50aW4NCg==
 
