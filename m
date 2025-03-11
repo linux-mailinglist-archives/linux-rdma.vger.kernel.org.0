@@ -1,40 +1,40 @@
-Return-Path: <linux-rdma+bounces-8569-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8571-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6525A5BB45
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Mar 2025 09:57:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0F9FA5BB44
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Mar 2025 09:57:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5C371896437
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Mar 2025 08:57:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 132A1171979
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Mar 2025 08:57:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7455F22CBE9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2E8422DFAD;
 	Tue, 11 Mar 2025 08:56:38 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401D822ACDC
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4017622ACCE
 	for <linux-rdma@vger.kernel.org>; Tue, 11 Mar 2025 08:56:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741683398; cv=none; b=evZ7SvyYrzIFbMWHj3O4eiYfDd4fYPiaVCkqCwSa0aYKLnhA7XXlkWJ0fmTZRMdoh1Pa1892yL+j4tn5nz1Ho9/o6yJA9cbBXIOhZNpjN6lOsBZSSKTrcDwOc8iSVm54X4SGZzcKwGGs/xXkrc40h66zjEIEtQu4ZonKCJKeZXk=
+	t=1741683398; cv=none; b=rYJ8Cbh4ZR2ya9CVLnEIUPY/a/JZTV3EKidezZNkYDpU5HX7swucY6bNmSF5nNkTsiWP4r9j+19ZuLY3WpaXFQmYXYursQBRk5MNdON0gN9UZ93rCH/u2ExWyKF1vRVA/wuY9OP/tz6dRBlgX/yM9BzR8MxFUqMpmFHYz2vjqho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1741683398; c=relaxed/simple;
-	bh=TO1Q8vT8+yhGMcwMDgOP7WVVe6y6Gzr9tzJOfl24xeg=;
+	bh=gmKKtIEoHgi2LwTKj/itaEtyoU2v3CV+/sSaHtzMgfc=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EX81X9JHhVr59RIbjyk3+fQwmD4BiRE7qeoqKIXWRbPl+PAU24fUvXWNEmNoL96+M6ICds8VxpenpNj9Ya9Sf6/x3Jmnk0mYhmifjtavvzMKektKL/DHTK3rOxhNQLqojZImgqFSLIDbNY11TZQLb6dHjSZHAfZOt6nyxnGmqvw=
+	 MIME-Version:Content-Type; b=UvoPP+XajcUQh2d0lX5xXlmsNoE4fgVHrET4RSFx0h13XfVRdEfUS8dS6TCHe4BF2bapHEmT2MvznU7SX5DDzmQFCPQq+ueSofTXPci7hoNcZdtYwohdywhNsmabmHgDu5kNFb22ZblHlmDqHptluk7AIDhCtubYDh99+M5RoJE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ZBnbk28Wyz2CcGj;
-	Tue, 11 Mar 2025 16:53:22 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ZBnZN5jV0z2RTJL;
+	Tue, 11 Mar 2025 16:52:12 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9E96D140109;
-	Tue, 11 Mar 2025 16:56:32 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 00D5E1402CD;
+	Tue, 11 Mar 2025 16:56:33 +0800 (CST)
 Received: from localhost.localdomain (10.90.30.45) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -43,9 +43,9 @@ From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<huangjunxian6@hisilicon.com>, <tangchengchang@huawei.com>
-Subject: [PATCH for-rc 2/7] RDMA/hns: Fix soft lockup during bt pages loop
-Date: Tue, 11 Mar 2025 16:48:52 +0800
-Message-ID: <20250311084857.3803665-3-huangjunxian6@hisilicon.com>
+Subject: [PATCH for-rc 3/7] RDMA/hns: Fix unmatched condition in error path of alloc_user_qp_db()
+Date: Tue, 11 Mar 2025 16:48:53 +0800
+Message-ID: <20250311084857.3803665-4-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20250311084857.3803665-1-huangjunxian6@hisilicon.com>
 References: <20250311084857.3803665-1-huangjunxian6@hisilicon.com>
@@ -60,91 +60,55 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemf100018.china.huawei.com (7.202.181.17)
 
-Driver runs a for-loop when allocating bt pages and mapping them with
-buffer pages. When a large buffer (e.g. MR over 100GB) is being allocated,
-it may require a considerable loop count. This will lead to soft lockup:
+Currently the condition of unmapping sdb in error path is not exactly
+the same as the condition of mapping in alloc_user_qp_db(). This may
+cause a problem of unmapping an unmapped db in some case, such as
+when the QP is XRC TGT. Unified the two conditions.
 
-        watchdog: BUG: soft lockup - CPU#27 stuck for 22s!
-        ...
-        Call trace:
-         hem_list_alloc_mid_bt+0x124/0x394 [hns_roce_hw_v2]
-         hns_roce_hem_list_request+0xf8/0x160 [hns_roce_hw_v2]
-         hns_roce_mtr_create+0x2e4/0x360 [hns_roce_hw_v2]
-         alloc_mr_pbl+0xd4/0x17c [hns_roce_hw_v2]
-         hns_roce_reg_user_mr+0xf8/0x190 [hns_roce_hw_v2]
-         ib_uverbs_reg_mr+0x118/0x290
-
-        watchdog: BUG: soft lockup - CPU#35 stuck for 23s!
-        ...
-        Call trace:
-         hns_roce_hem_list_find_mtt+0x7c/0xb0 [hns_roce_hw_v2]
-         mtr_map_bufs+0xc4/0x204 [hns_roce_hw_v2]
-         hns_roce_mtr_create+0x31c/0x3c4 [hns_roce_hw_v2]
-         alloc_mr_pbl+0xb0/0x160 [hns_roce_hw_v2]
-         hns_roce_reg_user_mr+0x108/0x1c0 [hns_roce_hw_v2]
-         ib_uverbs_reg_mr+0x120/0x2bc
-
-Add a cond_resched() to fix soft lockup during these loops. In order not
-to affect the allocation performance of normal-size buffer, set the loop
-count of a 100GB MR as the threshold to call cond_resched().
-
-Fixes: 38389eaa4db1 ("RDMA/hns: Add mtr support for mixed multihop addressing")
+Fixes: 90ae0b57e4a5 ("RDMA/hns: Combine enable flags of qp")
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hem.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_qp.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
-index 605562122ecc..ca0798224e56 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hem.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
-@@ -1361,6 +1361,11 @@ static int hem_list_alloc_root_bt(struct hns_roce_dev *hr_dev,
- 	return ret;
- }
- 
-+/* This is the bottom bt pages number of a 100G MR on 4K OS, assuming
-+ * the bt page size is not expanded by cal_best_bt_pg_sz()
-+ */
-+#define RESCHED_LOOP_CNT_THRESHOLD_ON_4K 12800
-+
- /* construct the base address table and link them by address hop config */
- int hns_roce_hem_list_request(struct hns_roce_dev *hr_dev,
- 			      struct hns_roce_hem_list *hem_list,
-@@ -1369,6 +1374,7 @@ int hns_roce_hem_list_request(struct hns_roce_dev *hr_dev,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index ccfef673a976..70a38bf2bd86 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -868,12 +868,14 @@ static int alloc_user_qp_db(struct hns_roce_dev *hr_dev,
+ 			    struct hns_roce_ib_create_qp *ucmd,
+ 			    struct hns_roce_ib_create_qp_resp *resp)
  {
- 	const struct hns_roce_buf_region *r;
- 	int ofs, end;
-+	int loop;
- 	int unit;
++	bool has_sdb = user_qp_has_sdb(hr_dev, init_attr, udata, resp, ucmd);
+ 	struct hns_roce_ucontext *uctx = rdma_udata_to_drv_context(udata,
+ 		struct hns_roce_ucontext, ibucontext);
++	bool has_rdb = user_qp_has_rdb(hr_dev, init_attr, udata, resp);
+ 	struct ib_device *ibdev = &hr_dev->ib_dev;
  	int ret;
- 	int i;
-@@ -1386,7 +1392,10 @@ int hns_roce_hem_list_request(struct hns_roce_dev *hr_dev,
- 			continue;
  
- 		end = r->offset + r->count;
--		for (ofs = r->offset; ofs < end; ofs += unit) {
-+		for (ofs = r->offset, loop = 1; ofs < end; ofs += unit, loop++) {
-+			if (!(loop % RESCHED_LOOP_CNT_THRESHOLD_ON_4K))
-+				cond_resched();
-+
- 			ret = hem_list_alloc_mid_bt(hr_dev, r, unit, ofs,
- 						    hem_list->mid_bt[i],
- 						    &hem_list->btm_bt);
-@@ -1443,9 +1452,14 @@ void *hns_roce_hem_list_find_mtt(struct hns_roce_dev *hr_dev,
- 	struct list_head *head = &hem_list->btm_bt;
- 	struct hns_roce_hem_item *hem, *temp_hem;
- 	void *cpu_base = NULL;
-+	int loop = 1;
- 	int nr = 0;
+-	if (user_qp_has_sdb(hr_dev, init_attr, udata, resp, ucmd)) {
++	if (has_sdb) {
+ 		ret = hns_roce_db_map_user(uctx, ucmd->sdb_addr, &hr_qp->sdb);
+ 		if (ret) {
+ 			ibdev_err(ibdev,
+@@ -884,7 +886,7 @@ static int alloc_user_qp_db(struct hns_roce_dev *hr_dev,
+ 		hr_qp->en_flags |= HNS_ROCE_QP_CAP_SQ_RECORD_DB;
+ 	}
  
- 	list_for_each_entry_safe(hem, temp_hem, head, sibling) {
-+		if (!(loop % RESCHED_LOOP_CNT_THRESHOLD_ON_4K))
-+			cond_resched();
-+		loop++;
-+
- 		if (hem_list_page_is_in_range(hem, offset)) {
- 			nr = offset - hem->start;
- 			cpu_base = hem->addr + nr * BA_BYTE_LEN;
+-	if (user_qp_has_rdb(hr_dev, init_attr, udata, resp)) {
++	if (has_rdb) {
+ 		ret = hns_roce_db_map_user(uctx, ucmd->db_addr, &hr_qp->rdb);
+ 		if (ret) {
+ 			ibdev_err(ibdev,
+@@ -898,7 +900,7 @@ static int alloc_user_qp_db(struct hns_roce_dev *hr_dev,
+ 	return 0;
+ 
+ err_sdb:
+-	if (hr_qp->en_flags & HNS_ROCE_QP_CAP_SQ_RECORD_DB)
++	if (has_sdb)
+ 		hns_roce_db_unmap_user(uctx, &hr_qp->sdb);
+ err_out:
+ 	return ret;
 -- 
 2.33.0
 
