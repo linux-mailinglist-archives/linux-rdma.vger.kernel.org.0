@@ -1,225 +1,309 @@
-Return-Path: <linux-rdma+bounces-8609-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8610-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1942A5DCDC
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Mar 2025 13:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94618A5DE02
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Mar 2025 14:30:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93278178DAC
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Mar 2025 12:41:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7E6116C7CD
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Mar 2025 13:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0521C24337B;
-	Wed, 12 Mar 2025 12:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91BDC12FF69;
+	Wed, 12 Mar 2025 13:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P/XC9opL"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="xjNCMxKe"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E11EC24167F;
-	Wed, 12 Mar 2025 12:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741783262; cv=fail; b=DPAv4Qr43jv+bAarWfp5hgkY63YymkZYMuZ529HYRrvS83uXpMwct7vF9E0vWfg5rN9gs5n3BS1vTgNovv+qN9aT33dHtLkdQAKyv8yxIzQYSKPsqMWkp7whmZnaso5AqQscDZArwYcSkpZWwYv9WdDE91B3ZSCOH93qn/EPPRY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741783262; c=relaxed/simple;
-	bh=iMuy6uERJsvdUcwb9y6LB2xOzMYQkSKz9D8ONJgxXm0=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=uYV4MTajxNO4qukvDE/xCq/K7NdBdYrs1ebZZQZlmYRWnBAz/ziwVeQItmGpK9pIIsl9ECe5gZVC8jdawKn2Kb0uyfP29Sia1DLrxNCwDNUfCl/szdLpCrM5441Nja96jbCZQt+o8D9StSRYmNR4HxJz87+3ijfGRmmzZIwkqMA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P/XC9opL; arc=fail smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741783261; x=1773319261;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=iMuy6uERJsvdUcwb9y6LB2xOzMYQkSKz9D8ONJgxXm0=;
-  b=P/XC9opL7X+x7zYZ6T6to3KKmG1SKTaLJMW55an8VmEbynEFf1llKIjC
-   QMZ0ikfsHWIqyq/VzpVPBwc9AitN/ZYk4T8yPmJRNP4GVEDWwkuSFRnth
-   Zh0Q3Mn0LgB/r6BuT/GdcT4feMuA4T3hq321qoC40kD22gNnmGV0hCCUb
-   3Dorm9qkwoW2Rr6LbeNRCsn/thhfmzYwbL0pA5mvpBuXwt99M6bqILIhV
-   obUVLUFKUJk7KvI2/Mx2SBzju4PRp0BZlJs1ahLpxvYjcLMRMw9vv95a9
-   /clC4R+/TnJa4BrFcYuETs8y4wwxtXiuUBzQlFpabbe+iKFR2iAdLe0KT
-   g==;
-X-CSE-ConnectionGUID: Q29m0guzRK6t+ISW16a6Rw==
-X-CSE-MsgGUID: n9p04qcZTxeEya0XsKb/Rg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11370"; a="42769976"
-X-IronPort-AV: E=Sophos;i="6.14,241,1736841600"; 
-   d="scan'208";a="42769976"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2025 05:41:00 -0700
-X-CSE-ConnectionGUID: uLPJ6Gl3TOybJkMEw+oouw==
-X-CSE-MsgGUID: T/j/fRhERr+3c+5lpd2O7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,241,1736841600"; 
-   d="scan'208";a="151437494"
-Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
-  by orviesa002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2025 05:41:00 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.14; Wed, 12 Mar 2025 05:40:59 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44 via Frontend Transport; Wed, 12 Mar 2025 05:40:59 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.176)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Wed, 12 Mar 2025 05:40:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=kPbgGnHpfLQ+prKhO6Gjpi9v2n5N6UFI8S/GZIjfNQ08vZ+fEuyM9vT/0/3WUoa4aqPX0s/QLACN+YN3JwELly8wjMXFFCSGW6MXtNWDjhiMplOp/7PEFPtN6YYmIOMXpATH5tSJksD7YirjVkROTbDCmFACO1g8yjn1GyXKear7t/dOplC3vDXTrEPjUTxoay1TWLpl5vfWYARoqv0qomvQYeFwUh9QX63YHlhoE7WrloMOHIcXQMr/ReQDK3KS/aqGQ6eaX2JCJstESqadCvh3SpNwf1O9vpEUTQpKCXCVYW3nD3QXxz9QINfLs41Q4gUgAMMjM62mmUScIFZPrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BSzWb99kiXoDQZxpjq/YQwtsic0lYf+UzgTpIx9MvIc=;
- b=mtqUjbxyefwUYXvQY47/lw2+ToDQEpgb8YCDNEBnJp3xdXNm/kDrxM0vfAfwuV95c+sKBQc+P+O7OWarOcaUOd1djE828ytL5/0RqWP5Vlh8VM44dhgrCQemSwqAclPCjFUpFFCpfoWnFwTwRiRa34RvqrS//WbAsfxZxNJYMsGnKhM+t3eOhFN2f+MldxWyFMBctFNzSGATdzJJoX+AV/gXb4baUQfeUFRRSm31jAu2ucK4HnZtVKOGUFt1HWq2Ui4BM+7W4gamNVxUJMiizKl3AJ7MBOTZE7NaFpS2d7oJ36SYu/44tZ4gNzoGe0SPJGwSkdIlT37jE4q03sARHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB8665.namprd11.prod.outlook.com (2603:10b6:8:1b8::6) by
- DS0PR11MB6352.namprd11.prod.outlook.com (2603:10b6:8:cb::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8511.27; Wed, 12 Mar 2025 12:40:29 +0000
-Received: from DS0PR11MB8665.namprd11.prod.outlook.com
- ([fe80::8e7e:4f8:f7e4:3955]) by DS0PR11MB8665.namprd11.prod.outlook.com
- ([fe80::8e7e:4f8:f7e4:3955%4]) with mapi id 15.20.8511.026; Wed, 12 Mar 2025
- 12:40:28 +0000
-Date: Wed, 12 Mar 2025 13:40:17 +0100
-From: Michal Kubiak <michal.kubiak@intel.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-CC: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Gal Pressman
-	<gal@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Moshe Shemesh
-	<moshe@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
-	<leon@kernel.org>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 0/3] net/mlx5: HW Steering cleanups
-Message-ID: <Z9GAsQQT+1RjXZeH@localhost.localdomain>
-References: <1741780194-137519-1-git-send-email-tariqt@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1741780194-137519-1-git-send-email-tariqt@nvidia.com>
-X-ClientProxiedBy: ZR0P278CA0151.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:41::12) To DS0PR11MB8665.namprd11.prod.outlook.com
- (2603:10b6:8:1b8::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 996A72AD21;
+	Wed, 12 Mar 2025 13:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741786230; cv=none; b=nZoO2OZVVi1XIjTTxZJ5OxfQxE5Bdb5P4uefFXEOqnrJYMcLaQTg+avZmmYp1trLEvQjcifbLrixX0Md8B7O/NTEw/tcWwdwnMbtzHta/WdKludmdyKc9H9oe5y1q9huDqMEBxWuwykPPLrp5BrYQkZUb/qR10aKQt9ghhiyc0E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741786230; c=relaxed/simple;
+	bh=4KZAmteVCiPQZKXa6RixXdbPA2A1lVG6qAGUPw9jYGY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=J8l5mX1/xKFtJtba+apDelSNEQKA5drvA+qZwiQZvnXexUyH9vYTeS7ceYjaWG0ihDeLLbXF3fPq/DxW3HuZoWiuggFnArWL6Icr3VYKDxXUm1WiYNNC0DAv8LbCeGYOHnzv+VV1PIbj2YXJz1o5UTfIbjca+XlDVtjOeomnjoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=xjNCMxKe; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1741786220; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=snu8++Ueu+hpkYG+qKz0qWfUxpdd8LRIN9HJR73fE80=;
+	b=xjNCMxKecAjZ+9Hs47+vPxdqOZmmu52PbLse0zFDFckZpSCjYOdtptTf7BgJTTUGduHJqoIFBN00ZhxSYfudR5BfPS83I8v7hlos7I28xmc10KJPJkRXfLpkF2v3WlqJipL5sddwbHbQ3GgOY2Sdzdcu4sIhxg+1bwIXazrd6Yw=
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WRD.2t6_1741786214 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 12 Mar 2025 21:30:20 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: kgraul@linux.ibm.com,
+	wenjia@linux.ibm.com,
+	jaka@linux.ibm.com,
+	wintera@linux.ibm.com,
+	guwen@linux.alibaba.com
+Cc: kuba@kernel.org,
+	davem@davemloft.net,
+	netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	tonylu@linux.alibaba.com,
+	pabeni@redhat.com,
+	edumazet@google.com
+Subject: [RFC PATCH net-next] net/smc: avoid conflict with sockmap after fallback
+Date: Wed, 12 Mar 2025 21:30:14 +0800
+Message-ID: <20250312133014.35775-1-alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB8665:EE_|DS0PR11MB6352:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3712145b-7eae-44e8-7ddb-08dd616311f6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?MRz9GxVHGE3wkj7CYDD96ih49rj0mWvgoirxT4NNEWLb3DUtpS5scCmXke4Y?=
- =?us-ascii?Q?yMPx0ZkXqfbJE3b0I6v/QBVXUvyh6kmUtWE1NFGd4mGBkLaw3+Ef4kYMBaib?=
- =?us-ascii?Q?I/g7pLgKyBhXtRLdUnY3KLJY12nvxYK/C+3A22Dm1UPFMCXOrsmzVgjEjoli?=
- =?us-ascii?Q?6UZKn/ejzZovvoQjGDO7bXQrnCC6S9poPr9buR4KPbkvuISYnGb1jISiSiFM?=
- =?us-ascii?Q?Ohi1Z3cmDhrhGt9xkfGhx3DOyYT6lwFZpIjN4UCBZ59A6643zBy4/RuYJzRz?=
- =?us-ascii?Q?1MCxznsv1WATEqSKl8p3d4wV8cx/241cZSkNVCSu7kAQKqM4CUH8Hb9p8Rof?=
- =?us-ascii?Q?plFY5KY7WGywSr+RsdMD5AnfvKkI9ZY43WJevAJsnEsCP252g1N+jsurKJBt?=
- =?us-ascii?Q?nh5Oe1YCQZnhLRS2tIKUK0bCdDQ/c5DC4tzLtVtegTxofYcgOunh2KE92ctG?=
- =?us-ascii?Q?Y5CPs3olG+nQsf2P/IflftgLm7V/VrTEgByYsXK2zjsOrnekvENi1FndpAV5?=
- =?us-ascii?Q?qgTWGG45SN/9uqe+RAnmjRBChVLS3JoRNM/IvxdeeON3k0BCMMwHUbDb+ERp?=
- =?us-ascii?Q?QKY2zUeZF3AOo9oyjj2azdjnBr2fqCfZwyucEI6isgwzrctO8+HFVLdNCh0a?=
- =?us-ascii?Q?Os1f+wI+IHmW0wqfbOIM4x79hdJ46mas5q+wWd2sSkrUxGKhOhYHsWcdso9o?=
- =?us-ascii?Q?k25uAtVrRzFcwMOpgfVZG7FI+qFHqx/LTQVw9cJUzDWPheD4i+hlGzmPF8r1?=
- =?us-ascii?Q?7DDyPxqSX6gol8PyDSOMc5Z9vKQ03sNAa3dMNTrUwe974Rhsn4xofqgDHpcz?=
- =?us-ascii?Q?UCAP3iv4Tq4YjSiUjzDiBfeiWrwPIeN3xGKWhSX8O6uvQO1gFTBW7ABL/oaR?=
- =?us-ascii?Q?BYJpGjpGiv8ts1RQob3V1NykMoSsYoj8EcfQlN8jJAiSVd8DaxaP9H8QQgVU?=
- =?us-ascii?Q?gA9zIx5c6XCRagVJSz6t58ebNPzNEGiqGVDP+XaDjjthYwbDCXV9ICzd7fmQ?=
- =?us-ascii?Q?dOf6BGOFBnHfnGqD/zWtlBl6pm5ML6fO3IY4OebsffDNTz4YxRXv/s+R3k17?=
- =?us-ascii?Q?Z5SAPLD/edhcBYjeTN4UgtWU3QCogNCW4iqLEBoD883nY1CX8FpjzKmEmLX4?=
- =?us-ascii?Q?U+CiYwXLgZxikNAKeOnTisF0/XGbrXOCnBmEMf0xwStsMWZ39bjbmEsoJROE?=
- =?us-ascii?Q?96wjbZK/djaj4fQqe9aIosyan9wOCcCJlBtAOMdKKHYaeQWdis5k8k83d8sL?=
- =?us-ascii?Q?oJMW4tCK5lRtvGE0XoZZclyU8eohqAce8Xigx5h962Tr5DmfmuCKabv5fbeB?=
- =?us-ascii?Q?C8HIme473iUcRkjbuekYw534ecszA4uoJU6OGxahUdfE2ljldiEAIfH9Nakh?=
- =?us-ascii?Q?igaK9s6tWrCDe9clC66sRGKcTG2x?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8665.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0DFkqDAJjy1Ro5q/vsMaFdKyai4bEtKbrq9r3HIy5oXlP/du9ZkDlHIYTjEk?=
- =?us-ascii?Q?zRbdc2PWwO+W3Cgrx4rnh/PCchbDNQU+bdNs4G2Y83F1jLowdQ/rGNAGu+I6?=
- =?us-ascii?Q?0NfxxPIzYLflSR0mYz6zmQl9fMScW1a2JM9RPv/5qCOBfLJP/0D4TlHUf6Fp?=
- =?us-ascii?Q?Kq9hM7Oqg8DR/ps/YKsoF5DDjzngOvmqv/Uu3Q/OxoHKaHJcgHos63Uc6Zst?=
- =?us-ascii?Q?YGMRQXFWTg8uZaWVm0IvGfrv+FrgW0mr+PTyLjs5gKLypgPcBwxa59tp0h56?=
- =?us-ascii?Q?sDTXfp74t5hidVA7ULsHW4jEW5SEyMForRUqwUl/0IAUjpY81CubX2kwoWRR?=
- =?us-ascii?Q?GDTNb4zWqNuOgcVPEVjaTK+f08Nyon4gY+JbsG3Kbb102ib3RKYUy3I7Xqb4?=
- =?us-ascii?Q?Mh1Kob2qDSBrOyr+g+2rmEyZ5ExK1R7Ojf1mCFMMa5Vs5/f0E5EMAlosn9Au?=
- =?us-ascii?Q?tQM9Xi8fqj2+HZtPDS//4m4Bsk4+Pgc7AY3y9OgWGDkbLKHnsJUiyI2Uf/IC?=
- =?us-ascii?Q?aHjlru0uTFwmQo743/UOAnu/pyFzaOJ+3IeoLrb+Ur1TS8nR8MtSA3xJsvob?=
- =?us-ascii?Q?egDywCJwX8a1IBc3UrquhgcQ9auSYo8lz5raQYSg9jZ0Qtku9KPkKsraiika?=
- =?us-ascii?Q?ithvKX13DYIyGvyrFu0PshpIbUMbQrPByCSWE5woyLKmm3i4ok62deN/yHGR?=
- =?us-ascii?Q?ISljNTbk0XEs+xfTo15DYUgoTmdbeUs7H8LlhuDD1aOOOt/Qw6BXlWxCQV+z?=
- =?us-ascii?Q?ThEPrj9iQLvfKMobC8axmYMNBLszoFF7KiTjWikHWaqPMAEXrVB0A1iDpkIT?=
- =?us-ascii?Q?SeZjHXBqI767g2/Hc4dPEjV+j3VWN1M4V+A/3iRJ22KfdQ+gf3qvHnc8KyeE?=
- =?us-ascii?Q?s9tRClIFf0dl8walazfKSmDH+fBOIi6mumOSk4lqjUuDiDZq3oSaQmBea48t?=
- =?us-ascii?Q?TCV00JYcOFpMaaALEsw1L790J/mc8M96xswxBu+97gYvJ1LBPTd5WoB3/htJ?=
- =?us-ascii?Q?ssYL3DSpZDKx/x1pknzOuzPfZ1Sb9fY/DgvyyKyMyRsZVqXXZrlsJvK2n6zq?=
- =?us-ascii?Q?qWtLeCdnnF66oru5Ct1L5qD5gs/GZ0ayKivsWlh+/df1x2QuMLnmRt76K/g/?=
- =?us-ascii?Q?Zgitn8UXmxxchb4jNz0f+jY3nQ6jkYtae8C/U76YK/wDbGc9uzdrgGLh51IW?=
- =?us-ascii?Q?dcLKhOI/XvG7uozIPZNY9+TkG+yPeni6NtZcv6rVKxqW3RRBe84RpN7kEVp4?=
- =?us-ascii?Q?8W8uHjeDxikf/0sY3ywox4E7kl6BlVA00AjIgzA1jJrIrsC3nQ8zmXs8r/Gd?=
- =?us-ascii?Q?aGS1GZpPd9Am1xDDIOyc/Wwt3iCJHTI4iJSvXYzJvDfS7cvB3LEblhzTj4Pr?=
- =?us-ascii?Q?hY5IsyU3A7H8VzwRdRdn4dPlP2C/ZLzZ6GZt4cu2fIBwfxS+69+lflf6Jh/E?=
- =?us-ascii?Q?BT89FG83yNQhdYZZSjpeU9cXGc+2u5LDKS87ahiZxHnQCcuBKHEid7Guc2Hf?=
- =?us-ascii?Q?b8iTJ1vjpHwxqC9OM248mKF43UdaopLCB18gYy1g7x/EvDlFiQr3mc1pS60C?=
- =?us-ascii?Q?h2FV3dVva3Hvy4EDGbUoNwQwvW6A4uaKu0qfTJ2Fd7tGqwhe2D3H1pu8sfot?=
- =?us-ascii?Q?pA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3712145b-7eae-44e8-7ddb-08dd616311f6
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8665.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2025 12:40:28.8867
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8UmDu+pNh1c39iafuiFiFe0XAVogy0hceZqDHXBSKCuOv21RlYq1eJoG3WcV0eXwhpph2qfZEoP3ttPGm4V6vw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6352
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 12, 2025 at 01:49:51PM +0200, Tariq Toukan wrote:
-> This short series by Yevgeny contains several small HW Steering cleanups:
-> 
-> - Patch 1: removing unused FW commands
-> - Patch 2: using list_move() instead of list_del/add
-> - Patch 3: printing the unsupported combination of match fields
-> 
-> Regards,
-> Tariq
-> 
-> Yevgeny Kliteynik (3):
->   net/mlx5: HWS, remove unused code for alias flow tables
->   net/mlx5: HWS, use list_move() instead of del/add
->   net/mlx5: HWS, log the unsupported mask in definer
-> 
->  drivers/net/ethernet/mellanox/mlx5/core/steering/hws/cmd.c  | 6 ------
->  drivers/net/ethernet/mellanox/mlx5/core/steering/hws/cmd.h  | 3 ---
->  .../net/ethernet/mellanox/mlx5/core/steering/hws/definer.c  | 6 +++---
->  .../net/ethernet/mellanox/mlx5/core/steering/hws/pat_arg.c  | 3 +--
->  4 files changed, 4 insertions(+), 14 deletions(-)
-> 
-> 
-> base-commit: 0ea09cbf8350b70ad44d67a1dcb379008a356034
-> -- 
-> 2.31.1
-> 
-> 
+Currently, after fallback, SMC will occupy the sk_user_data of the TCP sock(clcsk) to
+forward events. As a result, we cannot use sockmap after that, since sockmap also
+requires the use of the sk_user_data. Even more, in some cases, this may result in
+abnormal panic.
 
-The series looks OK.
+To enable sockmap after SMC fallback , we need to avoid using sk_user_data and
+instead introduce an additional smc_ctx in tcp_sock to index from TCP sock to SMC sock.
 
-Thanks,
-Michal
+Additionally, we bind the lifecycle of the SMC sock to that of the TCP sock, ensuring
+that the indexing to the SMC sock remains valid throughout the lifetime of the TCP sock.
 
-For the series:
-Reviewed-by: Michal Kubiak <michal.kubiak@intel.com>
+One key reason is that SMC overrides inet_connection_sock_af_ops, which introduces
+potential dependencies. We must ensure that the af_ops remain visible throughout the
+lifecycle of the TCP socket. In addition, this also resolves potential issues in some
+scenarios where the SMC sock might be invalid.
+
+Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+---
+ include/linux/tcp.h |  1 +
+ net/smc/af_smc.c    | 53 ++++++++++++++++++++++-----------------------
+ net/smc/smc.h       |  8 +++----
+ net/smc/smc_close.c |  1 -
+ 4 files changed, 30 insertions(+), 33 deletions(-)
+
+diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+index f88daaa76d83..f2223b1cc0d0 100644
+--- a/include/linux/tcp.h
++++ b/include/linux/tcp.h
+@@ -478,6 +478,7 @@ struct tcp_sock {
+ #if IS_ENABLED(CONFIG_SMC)
+ 	bool	syn_smc;	/* SYN includes SMC */
+ 	bool	(*smc_hs_congested)(const struct sock *sk);
++	void	*smc_ctx;
+ #endif
+ 
+ #if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index bc356f77ff1d..d434105639c1 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -127,7 +127,7 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+ 	struct smc_sock *smc;
+ 	struct sock *child;
+ 
+-	smc = smc_clcsock_user_data(sk);
++	smc = smc_sk_from_clcsk(sk);
+ 
+ 	if (READ_ONCE(sk->sk_ack_backlog) + atomic_read(&smc->queued_smc_hs) >
+ 				sk->sk_max_ack_backlog)
+@@ -143,8 +143,6 @@ static struct sock *smc_tcp_syn_recv_sock(const struct sock *sk,
+ 					       own_req);
+ 	/* child must not inherit smc or its ops */
+ 	if (child) {
+-		rcu_assign_sk_user_data(child, NULL);
+-
+ 		/* v4-mapped sockets don't inherit parent ops. Don't restore. */
+ 		if (inet_csk(child)->icsk_af_ops == inet_csk(sk)->icsk_af_ops)
+ 			inet_csk(child)->icsk_af_ops = smc->ori_af_ops;
+@@ -161,10 +159,7 @@ static bool smc_hs_congested(const struct sock *sk)
+ {
+ 	const struct smc_sock *smc;
+ 
+-	smc = smc_clcsock_user_data(sk);
+-
+-	if (!smc)
+-		return true;
++	smc = smc_sk_from_clcsk(sk);
+ 
+ 	if (workqueue_congested(WORK_CPU_UNBOUND, smc_hs_wq))
+ 		return true;
+@@ -250,7 +245,6 @@ static void smc_fback_restore_callbacks(struct smc_sock *smc)
+ 	struct sock *clcsk = smc->clcsock->sk;
+ 
+ 	write_lock_bh(&clcsk->sk_callback_lock);
+-	clcsk->sk_user_data = NULL;
+ 
+ 	smc_clcsock_restore_cb(&clcsk->sk_state_change, &smc->clcsk_state_change);
+ 	smc_clcsock_restore_cb(&clcsk->sk_data_ready, &smc->clcsk_data_ready);
+@@ -832,11 +826,10 @@ static void smc_fback_forward_wakeup(struct smc_sock *smc, struct sock *clcsk,
+ 
+ static void smc_fback_state_change(struct sock *clcsk)
+ {
+-	struct smc_sock *smc;
++	struct smc_sock *smc = smc_sk_from_clcsk(clcsk);
+ 
+ 	read_lock_bh(&clcsk->sk_callback_lock);
+-	smc = smc_clcsock_user_data(clcsk);
+-	if (smc)
++	if (smc->clcsk_state_change)
+ 		smc_fback_forward_wakeup(smc, clcsk,
+ 					 smc->clcsk_state_change);
+ 	read_unlock_bh(&clcsk->sk_callback_lock);
+@@ -844,11 +837,10 @@ static void smc_fback_state_change(struct sock *clcsk)
+ 
+ static void smc_fback_data_ready(struct sock *clcsk)
+ {
+-	struct smc_sock *smc;
++	struct smc_sock *smc = smc_sk_from_clcsk(clcsk);
+ 
+ 	read_lock_bh(&clcsk->sk_callback_lock);
+-	smc = smc_clcsock_user_data(clcsk);
+-	if (smc)
++	if (smc->clcsk_data_ready)
+ 		smc_fback_forward_wakeup(smc, clcsk,
+ 					 smc->clcsk_data_ready);
+ 	read_unlock_bh(&clcsk->sk_callback_lock);
+@@ -856,11 +848,10 @@ static void smc_fback_data_ready(struct sock *clcsk)
+ 
+ static void smc_fback_write_space(struct sock *clcsk)
+ {
+-	struct smc_sock *smc;
++	struct smc_sock *smc = smc_sk_from_clcsk(clcsk);
+ 
+ 	read_lock_bh(&clcsk->sk_callback_lock);
+-	smc = smc_clcsock_user_data(clcsk);
+-	if (smc)
++	if (smc->clcsk_write_space)
+ 		smc_fback_forward_wakeup(smc, clcsk,
+ 					 smc->clcsk_write_space);
+ 	read_unlock_bh(&clcsk->sk_callback_lock);
+@@ -868,11 +859,10 @@ static void smc_fback_write_space(struct sock *clcsk)
+ 
+ static void smc_fback_error_report(struct sock *clcsk)
+ {
+-	struct smc_sock *smc;
++	struct smc_sock *smc = smc_sk_from_clcsk(clcsk);
+ 
+ 	read_lock_bh(&clcsk->sk_callback_lock);
+-	smc = smc_clcsock_user_data(clcsk);
+-	if (smc)
++	if (smc->clcsk_error_report)
+ 		smc_fback_forward_wakeup(smc, clcsk,
+ 					 smc->clcsk_error_report);
+ 	read_unlock_bh(&clcsk->sk_callback_lock);
+@@ -883,7 +873,6 @@ static void smc_fback_replace_callbacks(struct smc_sock *smc)
+ 	struct sock *clcsk = smc->clcsock->sk;
+ 
+ 	write_lock_bh(&clcsk->sk_callback_lock);
+-	clcsk->sk_user_data = (void *)((uintptr_t)smc | SK_USER_DATA_NOCOPY);
+ 
+ 	smc_clcsock_replace_cb(&clcsk->sk_state_change, smc_fback_state_change,
+ 			       &smc->clcsk_state_change);
+@@ -2602,11 +2591,10 @@ static void smc_tcp_listen_work(struct work_struct *work)
+ 
+ static void smc_clcsock_data_ready(struct sock *listen_clcsock)
+ {
+-	struct smc_sock *lsmc;
++	struct smc_sock *lsmc = smc_sk_from_clcsk(listen_clcsock);
+ 
+ 	read_lock_bh(&listen_clcsock->sk_callback_lock);
+-	lsmc = smc_clcsock_user_data(listen_clcsock);
+-	if (!lsmc)
++	if (!lsmc->clcsk_data_ready)
+ 		goto out;
+ 	lsmc->clcsk_data_ready(listen_clcsock);
+ 	if (lsmc->sk.sk_state == SMC_LISTEN) {
+@@ -2648,8 +2636,6 @@ int smc_listen(struct socket *sock, int backlog)
+ 	 * smc-specific sk_data_ready function
+ 	 */
+ 	write_lock_bh(&smc->clcsock->sk->sk_callback_lock);
+-	smc->clcsock->sk->sk_user_data =
+-		(void *)((uintptr_t)smc | SK_USER_DATA_NOCOPY);
+ 	smc_clcsock_replace_cb(&smc->clcsock->sk->sk_data_ready,
+ 			       smc_clcsock_data_ready, &smc->clcsk_data_ready);
+ 	write_unlock_bh(&smc->clcsock->sk->sk_callback_lock);
+@@ -2670,7 +2656,6 @@ int smc_listen(struct socket *sock, int backlog)
+ 		write_lock_bh(&smc->clcsock->sk->sk_callback_lock);
+ 		smc_clcsock_restore_cb(&smc->clcsock->sk->sk_data_ready,
+ 				       &smc->clcsk_data_ready);
+-		smc->clcsock->sk->sk_user_data = NULL;
+ 		write_unlock_bh(&smc->clcsock->sk->sk_callback_lock);
+ 		goto out;
+ 	}
+@@ -3323,6 +3308,15 @@ static const struct proto_ops smc_sock_ops = {
+ 	.splice_read	= smc_splice_read,
+ };
+ 
++static void smc_clcsk_destruct(struct sock *clcsk)
++{
++	struct smc_sock *smc = smc_sk_from_clcsk(clcsk);
++
++	clcsk->sk_destruct = smc->clcsk_destruct;
++	clcsk->sk_destruct(clcsk);
++	sock_put(&smc->sk); /* hold in smc_create_clcsk() */
++}
++
+ int smc_create_clcsk(struct net *net, struct sock *sk, int family)
+ {
+ 	struct smc_sock *smc = smc_sk(sk);
+@@ -3343,6 +3337,11 @@ int smc_create_clcsk(struct net *net, struct sock *sk, int family)
+ 	sk->sk_net_refcnt = 1;
+ 	get_net_track(net, &sk->ns_tracker, GFP_KERNEL);
+ 	sock_inuse_add(net, 1);
++
++	tcp_sk(sk)->smc_ctx = &smc->sk;
++	sock_hold(&smc->sk); /* put in smc_clcsk_destruct() */
++	smc->clcsk_destruct = sk->sk_destruct;
++	sk->sk_destruct = smc_clcsk_destruct;
+ 	return 0;
+ }
+ 
+diff --git a/net/smc/smc.h b/net/smc/smc.h
+index 78ae10d06ed2..940b040ee9e8 100644
+--- a/net/smc/smc.h
++++ b/net/smc/smc.h
+@@ -296,6 +296,8 @@ struct smc_sock {				/* smc sock container */
+ 						/* original write_space fct. */
+ 	void			(*clcsk_error_report)(struct sock *sk);
+ 						/* original error_report fct. */
++	void			(*clcsk_destruct)(struct sock *sk);
++						/* original destruct fct. */
+ 	struct smc_connection	conn;		/* smc connection */
+ 	struct smc_sock		*listen_smc;	/* listen parent */
+ 	struct work_struct	connect_work;	/* handle non-blocking connect*/
+@@ -340,11 +342,7 @@ static inline void smc_init_saved_callbacks(struct smc_sock *smc)
+ 	smc->clcsk_error_report	= NULL;
+ }
+ 
+-static inline struct smc_sock *smc_clcsock_user_data(const struct sock *clcsk)
+-{
+-	return (struct smc_sock *)
+-	       ((uintptr_t)clcsk->sk_user_data & ~SK_USER_DATA_NOCOPY);
+-}
++#define smc_sk_from_clcsk(sk)	(tcp_sk(sk)->smc_ctx)
+ 
+ /* save target_cb in saved_cb, and replace target_cb with new_cb */
+ static inline void smc_clcsock_replace_cb(void (**target_cb)(struct sock *),
+diff --git a/net/smc/smc_close.c b/net/smc/smc_close.c
+index 10219f55aad1..a6aa0f8a99e2 100644
+--- a/net/smc/smc_close.c
++++ b/net/smc/smc_close.c
+@@ -218,7 +218,6 @@ int smc_close_active(struct smc_sock *smc)
+ 			write_lock_bh(&smc->clcsock->sk->sk_callback_lock);
+ 			smc_clcsock_restore_cb(&smc->clcsock->sk->sk_data_ready,
+ 					       &smc->clcsk_data_ready);
+-			smc->clcsock->sk->sk_user_data = NULL;
+ 			write_unlock_bh(&smc->clcsock->sk->sk_callback_lock);
+ 			rc = kernel_sock_shutdown(smc->clcsock, SHUT_RDWR);
+ 		}
+-- 
+2.45.0
+
 
