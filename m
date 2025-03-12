@@ -1,115 +1,79 @@
-Return-Path: <linux-rdma+bounces-8607-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8608-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28D30A5DCB9
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Mar 2025 13:32:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2135AA5DCC6
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Mar 2025 13:36:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0A5D3A404A
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Mar 2025 12:32:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 464137A40E4
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Mar 2025 12:35:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D5024291E;
-	Wed, 12 Mar 2025 12:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IRks0Wav"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20FC02417F0;
+	Wed, 12 Mar 2025 12:36:50 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5C4B1E4A9;
-	Wed, 12 Mar 2025 12:32:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+Received: from sgoci-sdnproxy-4.icoremail.net (sgoci-sdnproxy-4.icoremail.net [129.150.39.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AD161E489
+	for <linux-rdma@vger.kernel.org>; Wed, 12 Mar 2025 12:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.150.39.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741782737; cv=none; b=UeX+c5AvhcEedYUO/9riwcb2d/F1kKjqw9MrybSbsutGq8yuT5j7GyEo0pNOFs8dR3d+R6Lw8DTryVlu9/Ew5eUoOq6kbllMnaPDyxRMkpobxJZiA/DgGC5XpdLRMYtLHWDeKTQ+i/KuHqrelUVAxhlLQjk1SJT5abbcpN2S9AM=
+	t=1741783010; cv=none; b=DHqHArdg+aTAYrFpMtoXUSNkUclPb3LLbRXdoPcQvDL4JCNR90e+faw+jmvb9/C8seCc5Svg/vCiV0C370rr2mCIcMj7U1F4ZJHRImCu8iPhPobc0e34Ie3C7tX8IQpQb49ZKqvJFPolhe1t9acivbDoVjxSdD8S5gCF/1oUQTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741782737; c=relaxed/simple;
-	bh=6PfBLti2GCLyhb5+n+egYTKW5V8tKOVfCwhp5cNmf/8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MMYiDB6FH1XDUr0ROJo63Ez8Z9Vb+aj85SseP46HK6Xu46viP9o/JyPocqy3F8nq+bHDvnMMi3p5NH9O3Wz22EJSG8hev9ijZGCeUbwxQEHifh4f29AnypXLAEHDL/L3oU0go+EF/9Vx9BjXWeSug/7jmIV4afwxQLIebV1V9ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IRks0Wav; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1741782736; x=1773318736;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6PfBLti2GCLyhb5+n+egYTKW5V8tKOVfCwhp5cNmf/8=;
-  b=IRks0WavRT05K58iiqVo9bPcLoPNOv57Kqc7btp9miCtZhfvlO0CAN3N
-   wbnm16FGmjTLwVuE52lH1adEgGkGk2bRj37ybTNSBJ33dYqKLg50te/OR
-   355UPlTpoWJRhD4hna3ZQUYTEiAUbRFNER5rwquEOgQwAtG+oYU5O+vTI
-   IDmwA+q2Da/XgNmFBQVP/34TUQnATRGX8D0ieUQrpwSslZgDwh1Yh5x0A
-   84Yrd6uHIwszYWl674fyyYMQvGlhQpBgAlQOHXmpumLoFf0QCfmLTAWOH
-   BIvO6lkZbp2Sb5RNRzRtR4sBzuA/ca01vKhwJjkVN1eHUjts+b4ihS41e
-   g==;
-X-CSE-ConnectionGUID: 49yItcRcRbOuAgIC2VTfjQ==
-X-CSE-MsgGUID: Yf8kgAuPQsG7HBiW2ZHrAA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11370"; a="43038352"
-X-IronPort-AV: E=Sophos;i="6.14,241,1736841600"; 
-   d="scan'208";a="43038352"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2025 05:32:15 -0700
-X-CSE-ConnectionGUID: wKwWVNBrTja/NwUNPTtyEg==
-X-CSE-MsgGUID: Lv2rZVgETySZXTKDLNe8kQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,241,1736841600"; 
-   d="scan'208";a="120325899"
-Received: from soc-5cg4396xfb.clients.intel.com (HELO [172.28.180.56]) ([172.28.180.56])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Mar 2025 05:32:11 -0700
-Message-ID: <7d4ee477-f7e9-41b3-ab22-3af71054c60a@linux.intel.com>
-Date: Wed, 12 Mar 2025 13:32:07 +0100
+	s=arc-20240116; t=1741783010; c=relaxed/simple;
+	bh=iGEgBM9qNIGiSJKIHvOybyEbLXkfR46zI4ncPUc0P8A=;
+	h=Date:From:To:Subject:Content-Type:MIME-Version:Message-ID; b=BciwPnT1ZOlIGFehQUXWaczC0XsP6KpSVmHN4Kye0KNyFe9eat+MZH4rxyrzOnweOea82rVbyEftBG+BbTkVNGBWfgnfpeCLYI7Zc5J5nM/ZVNLR8AJ8rwuMuULtR1FOZV5v4IQWuJ/20G5NbhJSSO7exiX30NRL2kuD8ZDIjuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=129.150.39.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from zju.edu.cn (unknown [101.68.65.66])
+	by mtasvr (Coremail) with SMTP id _____wBXUA_Mf9FnUAgCAA--.4273S3;
+	Wed, 12 Mar 2025 20:36:28 +0800 (CST)
+Received: from johnpub$zju.edu.cn ( [101.68.65.66] ) by
+ ajax-webmail-mail-app1 (Coremail) ; Wed, 12 Mar 2025 20:36:27 +0800
+ (GMT+08:00)
+Date: Wed, 12 Mar 2025 20:36:27 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: johnpub@zju.edu.cn
+To: linux-rdma@vger.kernel.org
+Subject: 
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2024.2-cmXT6 build
+ 20241206(f7804f05) Copyright (c) 2002-2025 www.mailtech.cn zju.edu.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 0/3] net/mlx5: HW Steering cleanups
-To: Tariq Toukan <tariqt@nvidia.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>
-Cc: Gal Pressman <gal@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
- Moshe Shemesh <moshe@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1741780194-137519-1-git-send-email-tariqt@nvidia.com>
-Content-Language: pl, en-US
-From: Dawid Osuchowski <dawid.osuchowski@linux.intel.com>
-In-Reply-To: <1741780194-137519-1-git-send-email-tariqt@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <1ef366c4.35f.1958a5b3474.Coremail.johnpub@zju.edu.cn>
+X-Coremail-Locale: en_US
+X-CM-TRANSID:yy_KCgBXNTTLf9FnrHICAA--.660W
+X-CM-SenderInfo: hmrk01dxe66yvxohv3gofq/1tbiBgwDC2fRbDEIVwADs1
+X-CM-DELIVERINFO: =?B?6wcflgXKKxbFmtjJiESix3B1w3v8ArY0zD5Ym3O7o+uypcQ7kdKjAbvXvwwp90u/ZQ
+	NZz+aZyuFe2qaqXnIX7saLUHh1k4s8eDdoYYt43zr+QQeC+Sfh/WHUdRYdet5v7cuvdIuH
+	1rHax31u3gJPQ+XyFYryRfHUv9Ky9c2hCPDWW8DrjWuII7MTFLJmvUVXv6duKg==
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+	ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
+	BjDU0xBIdaVrnRJUUUGGb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
+	xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
+	j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxV
+	AFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x02
+	67AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI
+	0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280
+	aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0Y48Icx
+	kI7VAKI48G6xCjnVAKz4kxM4xvF2IEb7IF0Fy264kE64k0F24lFcxC0VAYjxAxZF0Ex2Iq
+	xwACY4xI67k04243AVC20s0264xvF2IEb7IF0Fy264kE64k0F2IE4x8a64kEw2IEx4CE17
+	CEb7AF67AKxVWUJVWUXwACY4xI67k04243AVC20s026xCjnVAKz4kI6I8E67AF67kF1VAF
+	wI0_Jr0_Jrylw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+	1j6r4UMxCIbckI1I0E14v26Fy26r43JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jr0_JrylIxkGc2Ij64vIr41lIxAIcVC0I7
+	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k2
+	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+	AFwI0_Jr0_Gr1l6VACY4xI67k04243AbIYCTnIWIevJa73UjIFyTuYvjxUV1CGUUUUU
 
-On 2025-03-12 12:49 PM, Tariq Toukan wrote:
-> This short series by Yevgeny contains several small HW Steering cleanups:
-> 
-> - Patch 1: removing unused FW commands
-> - Patch 2: using list_move() instead of list_del/add
-> - Patch 3: printing the unsupported combination of match fields
-> 
-> Regards,
-> Tariq
-> 
-> Yevgeny Kliteynik (3):
->    net/mlx5: HWS, remove unused code for alias flow tables
->    net/mlx5: HWS, use list_move() instead of del/add
->    net/mlx5: HWS, log the unsupported mask in definer
-> 
->   drivers/net/ethernet/mellanox/mlx5/core/steering/hws/cmd.c  | 6 ------
->   drivers/net/ethernet/mellanox/mlx5/core/steering/hws/cmd.h  | 3 ---
->   .../net/ethernet/mellanox/mlx5/core/steering/hws/definer.c  | 6 +++---
->   .../net/ethernet/mellanox/mlx5/core/steering/hws/pat_arg.c  | 3 +--
->   4 files changed, 4 insertions(+), 14 deletions(-)
-> 
-> 
-> base-commit: 0ea09cbf8350b70ad44d67a1dcb379008a356034
-
-Hi, thanks for the submission!
-
-Reviewed-by: Dawid Osuchowski <dawid.osuchowski@linux.intel.com>
-for the whole series
+dW5zdWJzY3JpYmUgbGludXgtcmRtYQo=
 
 
