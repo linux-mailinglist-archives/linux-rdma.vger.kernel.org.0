@@ -1,104 +1,85 @@
-Return-Path: <linux-rdma+bounces-8651-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8652-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40CAFA5F418
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 13:20:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 948B5A5F452
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 13:27:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3897189EE89
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 12:20:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A50CD7A4CEA
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 12:26:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4352C266599;
-	Thu, 13 Mar 2025 12:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B0B266B71;
+	Thu, 13 Mar 2025 12:27:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eP310P8n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FE/pZsoM"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05DDFC0B;
-	Thu, 13 Mar 2025 12:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D332571BF
+	for <linux-rdma@vger.kernel.org>; Thu, 13 Mar 2025 12:27:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741868409; cv=none; b=rbGEh3WW4p+bLPG+nfXMFiqGEP6A9jdYX2GQ08c27fzJjB9FGONvOYht4SWIEuAXu7Z1KPpfg6WWRrq2Op9tJTLdsci1MWCcP2I96idhTRHAYm66bBr6jv41+NvslqAGEKTN0+Rm7nU5yFCiloUoNqlu8gBaYbhNGIsIWXTZxl8=
+	t=1741868821; cv=none; b=lk4GsT4y4d1JlSfacK9YAfjQulM42oiFgj7AnNlwRhne2NbgOoMYzRBkly4hu2GtWgSt6swhymcNOF39+UlLqXHTa8i0lljvf1/iIcHx3LN9kos5Ju8wQuaJRTzNq+skX0hO1NWV0kt7SWQAyK1qYN34CfHoulf4dVd2zFtnumw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741868409; c=relaxed/simple;
-	bh=uqFaBSHIs6hkpHAepTQUQWUex2GHDEOlYVmk4sFY0oE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=IModOGShfQkU3aRrOvbvMbmCW+pxnFUg4Vlcc5EaQS3rScC+U+dgCA3bVJTbm6KibzQVGMKpYdk9S6rMbCeahUDCBfRXEnNhd91w6udzrL5U5veNsmFSq42NhNK3t9W96fsLHp5ZgaZY9NMiV917KQNbG/ZZ7DAcgWXS/lqfV5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eP310P8n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65E75C4CEDD;
-	Thu, 13 Mar 2025 12:20:08 +0000 (UTC)
+	s=arc-20240116; t=1741868821; c=relaxed/simple;
+	bh=imRqnKhrNLEGe+gUjVAPUyEmHvQ8+pyD/yro6HPUT1M=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=fiIlEX2jomxz1+jlP6G5nafx2sPT+Ve1+1dL4X7+I8gpngLDfWggWInmbuM2jqWKKPJ6JWALN+Gr/TRqALUvFK+2jcQtAAirP8AbeWGBQcl0LP2f9IB8RzaC3pomgijbQ9zZFcqcmwwANnk2ufuGN3T5UXhQWpI1LmrjOzyWi2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FE/pZsoM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42909C4CEDD;
+	Thu, 13 Mar 2025 12:27:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741868408;
-	bh=uqFaBSHIs6hkpHAepTQUQWUex2GHDEOlYVmk4sFY0oE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=eP310P8nPsrfZu0rtZD6xG7FK3e5o9rKliwQp1gQBO339+T1RqyCDZD2G0LD5wcud
-	 JhmyGLFWYuvN/qsevv8ocEQX/oYzpUJONLlxxAMSnTSvodyjcSTmGOJekTwxgNk+Ix
-	 lBCly7Niqz+ZyQcm1Fqv31PXDVgDuKgCPja0kMNx5ThAqqPw1oylMUrMbCcoaAAkNQ
-	 jPsg9JnSI9G0grfDBs2e2TXNdhZVFAapmZRMfIrAdHwPEw2jXu5KBZItRiYIaRxvxx
-	 SGxJbh/UHQGuIEogUns6zc/S+YOSdS6nuBQ5KPqAzUYEsDrGsT+Vd/EqHFyHb7EbsP
-	 pKZ3McP8B/oCg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D543806651;
-	Thu, 13 Mar 2025 12:20:44 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1741868821;
+	bh=imRqnKhrNLEGe+gUjVAPUyEmHvQ8+pyD/yro6HPUT1M=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=FE/pZsoMypQbGb/8VTfGsOpKPmNZSNQo4eQTCBbQpnNoIClZqXDaVjK0zdl8M39I+
+	 VvZVyyZE0Yd4skopmQ90JbqdD8X7XkWqIH23ysuRxjqODF1WG+nLt2Gx6gqlELcdl+
+	 VBp24VHRir6FQvoVulYMZ+PHOOhDYWup4yfq6h0AF5ZBC7hGFzj9LKpWG8Y7vG4KqP
+	 3ctz1PWD2vx5ionvPvEr5on9Rgfiow4v4++nbEZ2pLIVR8p/Kh46tyg19qJ7voxOhV
+	 DBqZ5Z7ZmM2eYnJxj0M+NGfltm2e8AyNiHDvs8g1YkALri/vbuLyy5LmwY/AVVHvBw
+	 TG14AHV2wvCig==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc: Maher Sanalla <msanalla@nvidia.com>, linux-rdma@vger.kernel.org
+In-Reply-To: <64f9d3711b183984e939962c2f83383904f97dfb.1740577869.git.leon@kernel.org>
+References: <64f9d3711b183984e939962c2f83383904f97dfb.1740577869.git.leon@kernel.org>
+Subject: Re: [PATCH rdma-next v1] RDMA/uverbs: Propagate errors from
+ rdma_lookup_get_uobject()
+Message-Id: <174186881737.533355.13926406691275120339.b4-ty@kernel.org>
+Date: Thu, 13 Mar 2025 08:26:57 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/6] mlx5 misc fixes 2025-03-10
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174186844301.1489828.15120756086422441476.git-patchwork-notify@kernel.org>
-Date: Thu, 13 Mar 2025 12:20:43 +0000
-References: <1741644104-97767-1-git-send-email-tariqt@nvidia.com>
-In-Reply-To: <1741644104-97767-1-git-send-email-tariqt@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, andrew+netdev@lunn.ch, gal@nvidia.com, mbloch@nvidia.com,
- moshe@nvidia.com, saeedm@nvidia.com, leon@kernel.org, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-Hello:
 
-This series was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Tue, 11 Mar 2025 00:01:38 +0200 you wrote:
-> Hi,
-> 
-> This patchset provides misc bug fixes from the team to the mlx5 core and
-> Eth drivers.
-> 
-> Thanks,
-> Tariq.
+On Wed, 26 Feb 2025 15:54:13 +0200, Leon Romanovsky wrote:
+> Currently, the IB uverbs API calls uobj_get_uobj_read(), which in turn
+> uses the rdma_lookup_get_uobject() helper to retrieve user objects.
+> In case of failure, uobj_get_uobj_read() returns NULL, overriding the
+> error code from rdma_lookup_get_uobject(). The IB uverbs API then
+> translates this NULL to -EINVAL, masking the actual error and
+> complicating debugging. For example, applications calling ibv_modify_qp
+> that fails with EBUSY when retrieving the QP uobject will see the
+> overridden error code EINVAL instead, masking the actual error.
 > 
 > [...]
 
-Here is the summary with links:
-  - [net,1/6] net/mlx5: DR, use the right action structs for STEv3
-    https://git.kernel.org/netdev/net/c/03ebae199255
-  - [net,2/6] net/mlx5: HWS, Rightsize bwc matcher priority
-    https://git.kernel.org/netdev/net/c/521992337f67
-  - [net,3/6] net/mlx5: Fix incorrect IRQ pool usage when releasing IRQs
-    https://git.kernel.org/netdev/net/c/32d2724db5b2
-  - [net,4/6] net/mlx5: Lag, Check shared fdb before creating MultiPort E-Switch
-    https://git.kernel.org/netdev/net/c/32966984bee1
-  - [net,5/6] net/mlx5: Bridge, fix the crash caused by LAG state check
-    https://git.kernel.org/netdev/net/c/4b8eeed4fb10
-  - [net,6/6] net/mlx5e: Prevent bridge link show failure for non-eswitch-allowed devices
-    https://git.kernel.org/netdev/net/c/e92df790d07a
+Applied, thanks!
 
-You are awesome, thank you!
+[1/1] RDMA/uverbs: Propagate errors from rdma_lookup_get_uobject()
+      https://git.kernel.org/rdma/rdma/c/81f8f7454ad9e0
+
+Best regards,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Leon Romanovsky <leon@kernel.org>
 
 
