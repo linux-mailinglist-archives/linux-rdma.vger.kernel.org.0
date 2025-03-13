@@ -1,54 +1,53 @@
-Return-Path: <linux-rdma+bounces-8664-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8667-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AD10A5F76D
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 15:19:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6560FA5F7B3
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 15:20:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4552A179533
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 14:19:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 777DF3BF1E2
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 14:20:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E209267AFF;
-	Thu, 13 Mar 2025 14:19:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2875267B96;
+	Thu, 13 Mar 2025 14:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cg3Xe/dZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kSZG61E3"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F85842077
-	for <linux-rdma@vger.kernel.org>; Thu, 13 Mar 2025 14:19:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F7C267B86
+	for <linux-rdma@vger.kernel.org>; Thu, 13 Mar 2025 14:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741875549; cv=none; b=e2Sk8GVuOAIGftpqo10H7fQME+TvQZw6UoG/pRqBsbFA+QAwkvfzH+HvraVxa5/X9/EjwanrY/ez5c6+twU3rWzuj9eWODr+TeDUZ6mm5GfqVYfoqpbOTn4hNyShXFBt4wJ4KdNOzWrX8Nw3q8tibaZIksSjQtG+F86jtgeh0CY=
+	t=1741875562; cv=none; b=oAKkoyuGuAsJCMnEAd9edn8QXSjE0sDBCy5iDCI/8Rp/WRSViJ4r2APnAlSS2t9A9ZUIiaIn9i14QOx+D+Drkta8NbwpGE0Te7NqPk91N2NGEzICj0dSnR3zA3KKwPaEnqg6pbt8AdjH7N8lgvAFvq46AVENa/PrcGQlrYOdcdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741875549; c=relaxed/simple;
-	bh=SWEIC7EiNX5inIciHZWEAlcmYHAsZ94otUJW5QwN/UE=;
+	s=arc-20240116; t=1741875562; c=relaxed/simple;
+	bh=5rX874PAJj0q/YZ4X8UkekYUkCpd5KipjFb5/csv5bA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gS0PEp1/IgPP9vc7cbhEqaQTDFuUX/0w65UB/NCNEju9QeIFrH99AvxJM2pDfz16HSJUU2Ft4G9G8Pdh8xLcMTAEIs8evnw8pOnvCEJaKmr1sM7j50cfeF3GlgCq4LpR79AkzVGsVkEpSiyYcYZqm1oGy48mfqf+pITuQuBjpBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cg3Xe/dZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 159FEC4CEEA;
-	Thu, 13 Mar 2025 14:19:07 +0000 (UTC)
+	 MIME-Version; b=IWOGSaYKxVu0AUna4MtkLHK468AQM2YnUQUzs77VG7pnCEDTnzsXY0ieYJBr1uxyKcjx/OOmW2sjl7siWGq/FTuoaj+r+S+Hcnn1vJIpyvRKM4N9QpuYKSg75xZ8ZN2Q3SgifTF0H/6Af3gsKDmb3nWdKqXyPaHKzirz/0DU7iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kSZG61E3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71C2AC4CEE5;
+	Thu, 13 Mar 2025 14:19:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741875548;
-	bh=SWEIC7EiNX5inIciHZWEAlcmYHAsZ94otUJW5QwN/UE=;
+	s=k20201202; t=1741875561;
+	bh=5rX874PAJj0q/YZ4X8UkekYUkCpd5KipjFb5/csv5bA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cg3Xe/dZzrqfIX46La3UCMvL11iYwiQmoiWlT9qstd+tXoI5riCfSAD9kBCWydfWP
-	 vHC9ig9Mj2AVyjf5c05ti4G9AcckK1eZuodgxPSzPqA+AHmBCmFxMC4rXe7hT7skau
-	 Va6zCFFJ1S4WSJ1vtoooUXgUk5c4d2Ybus2SPr76HFkP9oILjp1PJFGPIgCcNcjLn9
-	 fYu3lDdb/7kvs/DjOdN9mhcCpOKZ3w3RiHol8V1NYIVuF1Y2ejZseXRmgQb6OcnRqE
-	 hhrN2OOta0dTUgvlMJLFbCtv/eRhxcKPQeXYkeEzktieHriuLVPzMpgb9eSldkc8kI
-	 ewYh0Em6UHW2Q==
+	b=kSZG61E3A5ITaJustqdBjbNwmnkjNkKUXBtOBxdttw1OjwVFJk0fjCT34XE1/ED04
+	 mPVp/8P6dYGOICNSdtAH8KM+xRC6blDSO05KzQr+DNIcSEGwjaYxNP6w0sAaXMkLbU
+	 2rGksuDXRSmlAecf/vpB/t5K6ziQOOAAbLCxd0KDqUGkEkZZc6d42/UTH7fgHEZIHo
+	 gmmqLObPsK7DlpAuIT1bkLgAQsaxQNF17WfnN1SYjRMbGbACCoGX5WjM8enU42u31c
+	 CV/OiV7U6qzMeUjqo9f1rhSFTDTpi4sz4TAefTgLXA6pPjF0dzVD6pORWRQCbAv5rH
+	 JTfIYG6hgKNgQ==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Patrisious Haddad <phaddad@nvidia.com>,
-	linux-rdma@vger.kernel.org,
-	Mark Bloch <mbloch@nvidia.com>
-Subject: [PATCH rdma-next v1 4/6] RDMA/core: Pass port to counter bind/unbind operations
-Date: Thu, 13 Mar 2025 16:18:44 +0200
-Message-ID: <b6f6797844acbd517358e8d2a270ea9b3e6ecba1.1741875070.git.leon@kernel.org>
+	linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next v1 5/6] RDMA/mlx5: Compile fs.c regardless of INFINIBAND_USER_ACCESS config
+Date: Thu, 13 Mar 2025 16:18:45 +0200
+Message-ID: <b8dd220456a91538b22c3aff150ab021d7b9e1bf.1741875070.git.leon@kernel.org>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <cover.1741875070.git.leon@kernel.org>
 References: <cover.1741875070.git.leon@kernel.org>
@@ -62,185 +61,123 @@ Content-Transfer-Encoding: 8bit
 
 From: Patrisious Haddad <phaddad@nvidia.com>
 
-This will be useful for the next patches in the series since port number
-is needed for optional counters binding and unbinding.
+Change mlx5 Makefile, fs.c and fs.h to support fs compilation regardless
+of INFINIBAND_USER_ACCESS config.
 
-Note that this change is needed since when the operation is done qp->port
-isn't necessarily initialized yet and can't be used.
+In addition allow optional counters support regardless of the config.
 
 Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/counters.c    | 20 ++++++++++----------
- drivers/infiniband/core/verbs.c       |  2 +-
- drivers/infiniband/hw/mlx5/counters.c |  4 ++--
- include/rdma/ib_verbs.h               |  5 +++--
- include/rdma/rdma_counter.h           |  2 +-
- 5 files changed, 17 insertions(+), 16 deletions(-)
+ drivers/infiniband/hw/mlx5/Makefile   |  2 +-
+ drivers/infiniband/hw/mlx5/counters.c |  8 +++-----
+ drivers/infiniband/hw/mlx5/fs.c       |  4 +++-
+ drivers/infiniband/hw/mlx5/fs.h       | 15 ---------------
+ 4 files changed, 7 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-index b270a208214e..e6ec7b7a40af 100644
---- a/drivers/infiniband/core/counters.c
-+++ b/drivers/infiniband/core/counters.c
-@@ -93,7 +93,7 @@ static void auto_mode_init_counter(struct rdma_counter *counter,
- }
- 
- static int __rdma_counter_bind_qp(struct rdma_counter *counter,
--				  struct ib_qp *qp)
-+				  struct ib_qp *qp, u32 port)
- {
- 	int ret;
- 
-@@ -104,7 +104,7 @@ static int __rdma_counter_bind_qp(struct rdma_counter *counter,
- 		return -EOPNOTSUPP;
- 
- 	mutex_lock(&counter->lock);
--	ret = qp->device->ops.counter_bind_qp(counter, qp);
-+	ret = qp->device->ops.counter_bind_qp(counter, qp, port);
- 	mutex_unlock(&counter->lock);
- 
- 	return ret;
-@@ -196,7 +196,7 @@ static struct rdma_counter *alloc_and_bind(struct ib_device *dev, u32 port,
- 	kref_init(&counter->kref);
- 	mutex_init(&counter->lock);
- 
--	ret = __rdma_counter_bind_qp(counter, qp);
-+	ret = __rdma_counter_bind_qp(counter, qp, port);
- 	if (ret)
- 		goto err_mode;
- 
-@@ -247,7 +247,7 @@ static bool auto_mode_match(struct ib_qp *qp, struct rdma_counter *counter,
- 	return match;
- }
- 
--static int __rdma_counter_unbind_qp(struct ib_qp *qp)
-+static int __rdma_counter_unbind_qp(struct ib_qp *qp, u32 port)
- {
- 	struct rdma_counter *counter = qp->counter;
- 	int ret;
-@@ -256,7 +256,7 @@ static int __rdma_counter_unbind_qp(struct ib_qp *qp)
- 		return -EOPNOTSUPP;
- 
- 	mutex_lock(&counter->lock);
--	ret = qp->device->ops.counter_unbind_qp(qp);
-+	ret = qp->device->ops.counter_unbind_qp(qp, port);
- 	mutex_unlock(&counter->lock);
- 
- 	return ret;
-@@ -348,7 +348,7 @@ int rdma_counter_bind_qp_auto(struct ib_qp *qp, u32 port)
- 
- 	counter = rdma_get_counter_auto_mode(qp, port);
- 	if (counter) {
--		ret = __rdma_counter_bind_qp(counter, qp);
-+		ret = __rdma_counter_bind_qp(counter, qp, port);
- 		if (ret) {
- 			kref_put(&counter->kref, counter_release);
- 			return ret;
-@@ -368,7 +368,7 @@ int rdma_counter_bind_qp_auto(struct ib_qp *qp, u32 port)
-  * @force:
-  *   true - Decrease the counter ref-count anyway (e.g., qp destroy)
-  */
--int rdma_counter_unbind_qp(struct ib_qp *qp, bool force)
-+int rdma_counter_unbind_qp(struct ib_qp *qp, u32 port, bool force)
- {
- 	struct rdma_counter *counter = qp->counter;
- 	int ret;
-@@ -376,7 +376,7 @@ int rdma_counter_unbind_qp(struct ib_qp *qp, bool force)
- 	if (!counter)
- 		return -EINVAL;
- 
--	ret = __rdma_counter_unbind_qp(qp);
-+	ret = __rdma_counter_unbind_qp(qp, port);
- 	if (ret && !force)
- 		return ret;
- 
-@@ -523,7 +523,7 @@ int rdma_counter_bind_qpn(struct ib_device *dev, u32 port,
- 		goto err_task;
- 	}
- 
--	ret = __rdma_counter_bind_qp(counter, qp);
-+	ret = __rdma_counter_bind_qp(counter, qp, port);
- 	if (ret)
- 		goto err_task;
- 
-@@ -614,7 +614,7 @@ int rdma_counter_unbind_qpn(struct ib_device *dev, u32 port,
- 		goto out;
- 	}
- 
--	ret = rdma_counter_unbind_qp(qp, false);
-+	ret = rdma_counter_unbind_qp(qp, port, false);
- 
- out:
- 	rdma_restrack_put(&qp->res);
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index dc40001072a5..c5e78bbefbd0 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -2105,7 +2105,7 @@ int ib_destroy_qp_user(struct ib_qp *qp, struct ib_udata *udata)
- 	if (!qp->uobject)
- 		rdma_rw_cleanup_mrs(qp);
- 
--	rdma_counter_unbind_qp(qp, true);
-+	rdma_counter_unbind_qp(qp, qp->port, true);
- 	ret = qp->device->ops.destroy_qp(qp, udata);
- 	if (ret) {
- 		if (sec)
+diff --git a/drivers/infiniband/hw/mlx5/Makefile b/drivers/infiniband/hw/mlx5/Makefile
+index b38961f5058e..11878ddf7cc7 100644
+--- a/drivers/infiniband/hw/mlx5/Makefile
++++ b/drivers/infiniband/hw/mlx5/Makefile
+@@ -9,6 +9,7 @@ mlx5_ib-y := ah.o \
+ 	     data_direct.o \
+ 	     dm.o \
+ 	     doorbell.o \
++	     fs.o \
+ 	     gsi.o \
+ 	     ib_virt.o \
+ 	     mad.o \
+@@ -26,7 +27,6 @@ mlx5_ib-y := ah.o \
+ mlx5_ib-$(CONFIG_INFINIBAND_ON_DEMAND_PAGING) += odp.o
+ mlx5_ib-$(CONFIG_MLX5_ESWITCH) += ib_rep.o
+ mlx5_ib-$(CONFIG_INFINIBAND_USER_ACCESS) += devx.o \
+-					    fs.o \
+ 					    qos.o \
+ 					    std_types.o
+ mlx5_ib-$(CONFIG_MLX5_MACSEC) += macsec.o
 diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
-index 018bb96bdbf4..d826f03b6ec5 100644
+index d826f03b6ec5..542f591d73e0 100644
 --- a/drivers/infiniband/hw/mlx5/counters.c
 +++ b/drivers/infiniband/hw/mlx5/counters.c
-@@ -562,7 +562,7 @@ static int mlx5_ib_counter_dealloc(struct rdma_counter *counter)
- }
+@@ -849,9 +849,8 @@ static void mlx5_ib_dealloc_counters(struct mlx5_ib_dev *dev)
+ 				    dev->port[i].cnts.opfcs, j, &in_use_opfc))
+ 				goto skip;
  
- static int mlx5_ib_counter_bind_qp(struct rdma_counter *counter,
--				   struct ib_qp *qp)
-+				   struct ib_qp *qp, u32 port)
+-			if (IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS))
+-				mlx5_ib_fs_remove_op_fc(dev,
+-					&dev->port[i].cnts.opfcs[j], j);
++			mlx5_ib_fs_remove_op_fc(dev,
++						&dev->port[i].cnts.opfcs[j], j);
+ 			mlx5_fc_destroy(dev->mdev,
+ 					dev->port[i].cnts.opfcs[j].fc);
+ skip:
+@@ -1115,8 +1114,7 @@ static const struct ib_device_ops hw_stats_ops = {
+ 	.counter_dealloc = mlx5_ib_counter_dealloc,
+ 	.counter_alloc_stats = mlx5_ib_counter_alloc_stats,
+ 	.counter_update_stats = mlx5_ib_counter_update_stats,
+-	.modify_hw_stat = IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS) ?
+-			  mlx5_ib_modify_stat : NULL,
++	.modify_hw_stat = mlx5_ib_modify_stat,
+ 	.counter_init = mlx5_ib_counter_init,
+ 
+ 	INIT_RDMA_OBJ_SIZE(rdma_counter, mlx5_rdma_counter, rdma_counter),
+diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
+index 93b229e9aab3..71a47821a564 100644
+--- a/drivers/infiniband/hw/mlx5/fs.c
++++ b/drivers/infiniband/hw/mlx5/fs.c
+@@ -679,7 +679,7 @@ enum flow_table_type {
+ #define MLX5_FS_MAX_TYPES	 6
+ #define MLX5_FS_MAX_ENTRIES	 BIT(16)
+ 
+-static bool mlx5_ib_shared_ft_allowed(struct ib_device *device)
++static bool __maybe_unused mlx5_ib_shared_ft_allowed(struct ib_device *device)
  {
- 	struct mlx5_ib_dev *dev = to_mdev(qp->device);
- 	int err;
-@@ -594,7 +594,7 @@ static int mlx5_ib_counter_bind_qp(struct rdma_counter *counter,
- 	return err;
- }
+ 	struct mlx5_ib_dev *dev = to_mdev(device);
  
--static int mlx5_ib_counter_unbind_qp(struct ib_qp *qp)
-+static int mlx5_ib_counter_unbind_qp(struct ib_qp *qp, u32 port)
+@@ -3030,6 +3030,7 @@ DECLARE_UVERBS_NAMED_OBJECT(
+ 	&UVERBS_METHOD(MLX5_IB_METHOD_STEERING_ANCHOR_DESTROY));
+ 
+ const struct uapi_definition mlx5_ib_flow_defs[] = {
++#if IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
+ 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(
+ 		MLX5_IB_OBJECT_FLOW_MATCHER),
+ 	UAPI_DEF_CHAIN_OBJ_TREE(
+@@ -3040,6 +3041,7 @@ const struct uapi_definition mlx5_ib_flow_defs[] = {
+ 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(
+ 		MLX5_IB_OBJECT_STEERING_ANCHOR,
+ 		UAPI_DEF_IS_OBJ_SUPPORTED(mlx5_ib_shared_ft_allowed)),
++#endif
+ 	{},
+ };
+ 
+diff --git a/drivers/infiniband/hw/mlx5/fs.h b/drivers/infiniband/hw/mlx5/fs.h
+index 0516555eb1c1..2ebe86e5be10 100644
+--- a/drivers/infiniband/hw/mlx5/fs.h
++++ b/drivers/infiniband/hw/mlx5/fs.h
+@@ -8,23 +8,8 @@
+ 
+ #include "mlx5_ib.h"
+ 
+-#if IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
+ int mlx5_ib_fs_init(struct mlx5_ib_dev *dev);
+ void mlx5_ib_fs_cleanup_anchor(struct mlx5_ib_dev *dev);
+-#else
+-static inline int mlx5_ib_fs_init(struct mlx5_ib_dev *dev)
+-{
+-	dev->flow_db = kzalloc(sizeof(*dev->flow_db), GFP_KERNEL);
+-
+-	if (!dev->flow_db)
+-		return -ENOMEM;
+-
+-	mutex_init(&dev->flow_db->lock);
+-	return 0;
+-}
+-
+-inline void mlx5_ib_fs_cleanup_anchor(struct mlx5_ib_dev *dev) {}
+-#endif
+ 
+ static inline void mlx5_ib_fs_cleanup(struct mlx5_ib_dev *dev)
  {
- 	return mlx5_ib_qp_set_counter(qp, NULL);
- }
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 90e93297d59e..d42eae69d9a8 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2644,12 +2644,13 @@ struct ib_device_ops {
- 	 * @counter - The counter to be bound. If counter->id is zero then
- 	 *   the driver needs to allocate a new counter and set counter->id
- 	 */
--	int (*counter_bind_qp)(struct rdma_counter *counter, struct ib_qp *qp);
-+	int (*counter_bind_qp)(struct rdma_counter *counter, struct ib_qp *qp,
-+			       u32 port);
- 	/**
- 	 * counter_unbind_qp - Unbind the qp from the dynamically-allocated
- 	 *   counter and bind it onto the default one
- 	 */
--	int (*counter_unbind_qp)(struct ib_qp *qp);
-+	int (*counter_unbind_qp)(struct ib_qp *qp, u32 port);
- 	/**
- 	 * counter_dealloc -De-allocate the hw counter
- 	 */
-diff --git a/include/rdma/rdma_counter.h b/include/rdma/rdma_counter.h
-index 74e635409ff7..4204d08a010a 100644
---- a/include/rdma/rdma_counter.h
-+++ b/include/rdma/rdma_counter.h
-@@ -51,7 +51,7 @@ int rdma_counter_set_auto_mode(struct ib_device *dev, u32 port,
- 			       bool bind_opcnt,
- 			       struct netlink_ext_ack *extack);
- int rdma_counter_bind_qp_auto(struct ib_qp *qp, u32 port);
--int rdma_counter_unbind_qp(struct ib_qp *qp, bool force);
-+int rdma_counter_unbind_qp(struct ib_qp *qp, u32 port, bool force);
- 
- int rdma_counter_query_stats(struct rdma_counter *counter);
- u64 rdma_counter_get_hwstat_value(struct ib_device *dev, u32 port, u32 index);
 -- 
 2.48.1
 
