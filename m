@@ -1,85 +1,93 @@
-Return-Path: <linux-rdma+bounces-8652-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8653-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 948B5A5F452
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 13:27:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DEEBA5F485
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 13:32:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A50CD7A4CEA
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 12:26:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 519E6173AEF
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 12:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B0B266B71;
-	Thu, 13 Mar 2025 12:27:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D84562673B5;
+	Thu, 13 Mar 2025 12:30:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FE/pZsoM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MwsTv77n"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D332571BF
-	for <linux-rdma@vger.kernel.org>; Thu, 13 Mar 2025 12:27:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 979491EEA59
+	for <linux-rdma@vger.kernel.org>; Thu, 13 Mar 2025 12:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741868821; cv=none; b=lk4GsT4y4d1JlSfacK9YAfjQulM42oiFgj7AnNlwRhne2NbgOoMYzRBkly4hu2GtWgSt6swhymcNOF39+UlLqXHTa8i0lljvf1/iIcHx3LN9kos5Ju8wQuaJRTzNq+skX0hO1NWV0kt7SWQAyK1qYN34CfHoulf4dVd2zFtnumw=
+	t=1741869042; cv=none; b=cyOxxNTenePen/oE10DUKVII0mkxTDzXuVcnRLXDU3gVLVNDGg4+D2eoYNPP52/POLbezeiI51vg4JzY5+HX1p2Go0DGhhF9S6l8ydVp5d41dZLKK0KZh2rZ8ai0CPJpNG10/ZDrbk+vl059gBE/CJrwtWhBwMQgYcdCPnmplmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741868821; c=relaxed/simple;
-	bh=imRqnKhrNLEGe+gUjVAPUyEmHvQ8+pyD/yro6HPUT1M=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=fiIlEX2jomxz1+jlP6G5nafx2sPT+Ve1+1dL4X7+I8gpngLDfWggWInmbuM2jqWKKPJ6JWALN+Gr/TRqALUvFK+2jcQtAAirP8AbeWGBQcl0LP2f9IB8RzaC3pomgijbQ9zZFcqcmwwANnk2ufuGN3T5UXhQWpI1LmrjOzyWi2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FE/pZsoM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42909C4CEDD;
-	Thu, 13 Mar 2025 12:27:01 +0000 (UTC)
+	s=arc-20240116; t=1741869042; c=relaxed/simple;
+	bh=EnhTGsB0GEtdWZ535UcAN5y4TH4ZZmw8k8nH7MAVNO8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QmHtLUPNrdsg7Sm7NiM6G1zVeeht/DTNK+L23oG/aZDXbBM6CF3rpjm/21OdIcwhs0TmTIjcoNRtmlxRlaBSA91DDJXRz2AK92aA1852NHCIJKWzTwIdR7tLt6RDEGg0DH670f/q1hN2UfSGs0qQaDnt4K7Z1OrcOuurFtXHZt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MwsTv77n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45AFCC4CEDD;
+	Thu, 13 Mar 2025 12:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741868821;
-	bh=imRqnKhrNLEGe+gUjVAPUyEmHvQ8+pyD/yro6HPUT1M=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=FE/pZsoMypQbGb/8VTfGsOpKPmNZSNQo4eQTCBbQpnNoIClZqXDaVjK0zdl8M39I+
-	 VvZVyyZE0Yd4skopmQ90JbqdD8X7XkWqIH23ysuRxjqODF1WG+nLt2Gx6gqlELcdl+
-	 VBp24VHRir6FQvoVulYMZ+PHOOhDYWup4yfq6h0AF5ZBC7hGFzj9LKpWG8Y7vG4KqP
-	 3ctz1PWD2vx5ionvPvEr5on9Rgfiow4v4++nbEZ2pLIVR8p/Kh46tyg19qJ7voxOhV
-	 DBqZ5Z7ZmM2eYnJxj0M+NGfltm2e8AyNiHDvs8g1YkALri/vbuLyy5LmwY/AVVHvBw
-	 TG14AHV2wvCig==
+	s=k20201202; t=1741869040;
+	bh=EnhTGsB0GEtdWZ535UcAN5y4TH4ZZmw8k8nH7MAVNO8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MwsTv77nE7pMq19/5IRJEL/WGXIiPNham6XldIIaLG8Pd+GDR4pu7HE9yA73NhCQH
+	 1HWYvgF2VH7NrZa8dLoSPhidx3krbbIxIsCAz618Y1H90/6RLcxRq6QGSASjHe8v6o
+	 kr+L1cGcDa+lGIrKH+5kV4oY7CCCMKNSNtvOZF1Pvf12yjkz9YiFq32SBTuNvYCfu+
+	 XtOYqRErE5/j1SDOp93SbARIrYHdTTQSUlj6RkD0oiRMb4e7ZgloyZUEglljYd6JjA
+	 3t79BBKYyJtSvQyZSvq0TJCykbv3vTVfvYDZb6aMCaZktG0Yhl4Ag090SsaNLN1HCQ
+	 jQTFWN0IEEXgg==
+Date: Thu, 13 Mar 2025 14:30:34 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Maher Sanalla <msanalla@nvidia.com>, linux-rdma@vger.kernel.org
-In-Reply-To: <64f9d3711b183984e939962c2f83383904f97dfb.1740577869.git.leon@kernel.org>
-References: <64f9d3711b183984e939962c2f83383904f97dfb.1740577869.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next v1] RDMA/uverbs: Propagate errors from
- rdma_lookup_get_uobject()
-Message-Id: <174186881737.533355.13926406691275120339.b4-ty@kernel.org>
-Date: Thu, 13 Mar 2025 08:26:57 -0400
+To: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>, zyjzyj2000@gmail.com
+Cc: linux-rdma@vger.kernel.org, jgg@ziepe.ca
+Subject: Re: [PATCH for-next] RDMA/rxe: Fix incorrect return value of
+ rxe_odp_atomic_op()
+Message-ID: <20250313123034.GL1322339@unreal>
+References: <20250313064540.2619115-1-matsuda-daisuke@fujitsu.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250313064540.2619115-1-matsuda-daisuke@fujitsu.com>
 
-
-On Wed, 26 Feb 2025 15:54:13 +0200, Leon Romanovsky wrote:
-> Currently, the IB uverbs API calls uobj_get_uobj_read(), which in turn
-> uses the rdma_lookup_get_uobject() helper to retrieve user objects.
-> In case of failure, uobj_get_uobj_read() returns NULL, overriding the
-> error code from rdma_lookup_get_uobject(). The IB uverbs API then
-> translates this NULL to -EINVAL, masking the actual error and
-> complicating debugging. For example, applications calling ibv_modify_qp
-> that fails with EBUSY when retrieving the QP uobject will see the
-> overridden error code EINVAL instead, masking the actual error.
+On Thu, Mar 13, 2025 at 03:45:40PM +0900, Daisuke Matsuda wrote:
+> rxe_mr_do_atomic_op() returns enum resp_states numbers, so the ODP
+> counterpart must not return raw errno codes.
 > 
-> [...]
+> Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_odp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
+> index 94f7bbe14981..9f6e2bb2a269 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+> @@ -316,7 +316,7 @@ int rxe_odp_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
+>  	err = rxe_odp_map_range_and_lock(mr, iova, sizeof(char),
+>  					 RXE_PAGEFAULT_DEFAULT);
+>  	if (err < 0)
+> -		return err;
+> +		return RESPST_ERR_RKEY_VIOLATION;
 
-Applied, thanks!
+I applied this patch for now, but please work to remove enum
+resp_states. It is very bad practice to hide original in-kernel errors.
 
-[1/1] RDMA/uverbs: Propagate errors from rdma_lookup_get_uobject()
-      https://git.kernel.org/rdma/rdma/c/81f8f7454ad9e0
+thanks
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+>  
+>  	err = rxe_odp_do_atomic_op(mr, iova, opcode, compare, swap_add,
+>  				   orig_val);
+> -- 
+> 2.43.0
+> 
 
