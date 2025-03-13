@@ -1,55 +1,56 @@
-Return-Path: <linux-rdma+bounces-8634-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8635-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E3E6A5EA8B
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 05:27:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3884EA5EA98
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 05:30:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 366841896BB0
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 04:27:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A71853B97D9
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Mar 2025 04:30:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2228113E898;
-	Thu, 13 Mar 2025 04:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D0D14900B;
+	Thu, 13 Mar 2025 04:30:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="v7xtbCv0"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="HkwK9EnP"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AEC578F37;
-	Thu, 13 Mar 2025 04:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE2B1386DA;
+	Thu, 13 Mar 2025 04:30:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741840027; cv=none; b=a7jWUW9CzPEUEESKHq3RHRFld0Aj8M8zf1jqATt6LWJkIwX5I6eDyIejTeIoVaaz8DsAXAz+htoDHQayyI84kK2PyOxmwLIu8dT7FnDhclLqg/ZRcnjfEZUqKx6i1srqi28aPKzdU46rCPoF3qa7RzfONlzhIXbX9y0kwm4DAQ0=
+	t=1741840223; cv=none; b=hg3x6FGm1Rk9LuGLAdEFIdkLcv8dzFCq6AeQMd5hum/eVe+6Lt6CAhhjFMQP79gMGAkWyM262vU8eFg8Efq1RV3HjsJd9ToUHedIgclFZ2gmPE3c4mo5lBIbGP54mMy3vI/u4QxS0ZNy4hmVoeS5kwww0JCJpc5xthm+boJPeNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741840027; c=relaxed/simple;
-	bh=rut1C+qOPz/OOsfkYwpouylVxN8Fb+VEbGFwtPL4v2I=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=X9UIARRTK8VgIXR8JYkwuw7pxIrfneuVtqcPTMHi6Jk9AU4ySGeygt6vX3hDr/yfvk869YWXcQKR1rginLHwUjxQaC0Hf9SS4ANrg6ssqZFiFgGW03ZzvBynuXemZPPREEUUUCu1aoBJGHY51SpLMw+svvrheMxt1S1MLV+ZZZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=v7xtbCv0; arc=none smtp.client-ip=62.89.141.173
+	s=arc-20240116; t=1741840223; c=relaxed/simple;
+	bh=+eIHF7nusOT6vkHRkV5HmWigcK0e1K7mHyfI6uS0j5c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oNlu/P/DmkxEiyC5CAVl2D9SoVbHwlIGOPq3OXa3UcevopD8swNHia6m5+Wxt4Tdt1atFsaJYeydIpD5lK0rP44F3cbq3IDmjeP9h/jtyLAITz5s4LlEVnV7b0pZJ+J6+hE588++wMZRdVquV6knUvayEutnLtsRPWP2VuYkaxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=HkwK9EnP; arc=none smtp.client-ip=62.89.141.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Type:MIME-Version:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=jg+w1DC3NQVP4ft2a9Cfe6VN/QxEpG/4sB4ypk7l1R0=; b=v7xtbCv0cy23zBEBdI0h5zQrQN
-	W7x5zdfl3quqyCOJESo8Edy7IJEKoFWyCOD6PErkiaW/V7nUb9lfyGGVyiCkIr6pJiM01y7sqmrCQ
-	1uqA5Pg4mt7GaGPuZgH6HsO37Bpo7gXq2VAFG/Gtjd4seO3eMcpuYcD+4Rmwf0vKUE3RURn4TTGzM
-	KgeJr8nDtNdFmIlPl1YLZkf6XKdDRUFWMd0BmnSBXJYJAgHAumN46Yle62DTqWW4TBvXkuJpNUAS8
-	pJmnFpW2AzdDNFdw+8x+Uc99Lr1PjyZ0A+yRIKfNd880Z9WPVDg3bEtaohhKa8hKytkPiMDaCgrjB
-	3HZLkp6A==;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=JGDZKjK6OCs68zG/tr6xM+cq3fLRGiU5AsrbLJq3hy0=; b=HkwK9EnP5vbTyY+IQ4Ts3B8yEt
+	cMFsHQrQ9zON/qh8NEEuPZqS2c6Lb0iVW//HoNU/rtS7Z1mZIbRESC4btevcOK6oi6hSAt3jKf3rj
+	w5wJ3KLN03oxyrtz62SPyVrDhIDWXNGoRK9YMYV5xhT1+PfT/AmBl/CPI4IHZdef72P2cqxI3Yymp
+	D3evmXAi63k5BToVAZKto0VLJUz9wrJWnVmffK1+cZQ8iHTtO4gkb2Ezj+nd/BZp67Tmij5OBHXEi
+	Myd+uunLSoVESuDxXeSbOEXgaEmSeWSM6I9csAHxXBt612qWT5qb+s+7zKQlr5U3zn/ZMgMPuUgMI
+	B14QSTXg==;
 Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1tsa9u-00000008uSX-0UTc;
-	Thu, 13 Mar 2025 04:27:02 +0000
-Date: Thu, 13 Mar 2025 04:27:02 +0000
+	id 1tsaD6-00000008uvz-2NjH;
+	Thu, 13 Mar 2025 04:30:20 +0000
+Date: Thu, 13 Mar 2025 04:30:20 +0000
 From: Al Viro <viro@zeniv.linux.org.uk>
 To: linux-fsdevel@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org, linux-rdma@vger.kernel.org
-Subject: [PATCHES] several fixes from tree-in-dcache stuff
-Message-ID: <20250313042702.GU2023217@ZenIV>
+Cc: linux-rdma@vger.kernel.org
+Subject: [PATCH 4/4] qibfs: fix _another_ leak
+Message-ID: <20250313043020.GD2123707@ZenIV>
+References: <20250313042702.GU2023217@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -58,11 +59,33 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20250313042702.GU2023217@ZenIV>
 Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Several fixes for fairly old crap - qibfs leak, a couple
-of spufs ones and a spufs double-dput() memory corruptor.
+failure to allocate inode => leaked dentry...
 
-This stuff sits in viro/vfs.git#fixes; individual patches
-in followups.  Review would be very welcome.
+this one had been there since the initial merge; to be fair,
+if we are that far OOM, the odds of failing at that particular
+allocation are low...
+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ drivers/infiniband/hw/qib/qib_fs.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/infiniband/hw/qib/qib_fs.c b/drivers/infiniband/hw/qib/qib_fs.c
+index b27791029fa9..b9f4a2937c3a 100644
+--- a/drivers/infiniband/hw/qib/qib_fs.c
++++ b/drivers/infiniband/hw/qib/qib_fs.c
+@@ -55,6 +55,7 @@ static int qibfs_mknod(struct inode *dir, struct dentry *dentry,
+ 	struct inode *inode = new_inode(dir->i_sb);
+ 
+ 	if (!inode) {
++		dput(dentry);
+ 		error = -EPERM;
+ 		goto bail;
+ 	}
+-- 
+2.39.5
+
 
