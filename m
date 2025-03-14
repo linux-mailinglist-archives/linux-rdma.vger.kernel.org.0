@@ -1,67 +1,76 @@
-Return-Path: <linux-rdma+bounces-8708-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8709-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EE57A61923
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Mar 2025 19:13:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 609D9A619A6
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Mar 2025 19:39:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6262C3B514E
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Mar 2025 18:12:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C774616AB9E
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Mar 2025 18:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FF72045A2;
-	Fri, 14 Mar 2025 18:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B74FC204845;
+	Fri, 14 Mar 2025 18:39:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZZ7zmc3U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IbgS9NGq"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ECD01FAC34;
-	Fri, 14 Mar 2025 18:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6554B1519BB;
+	Fri, 14 Mar 2025 18:39:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741975955; cv=none; b=Hfd/yLYOeEQRNGhioIO8g0dq+WYTqDi3hCXr0BhloVyxZBlTLBvnvAc5Jy9AvGoeifO8JvgFViut6FkzxWMvZziIQbhR/ez1jzaNkpe0UYbJG7OuLRk2s7jAX3UyaPPXniZ9n7oMdMyc9qVA0Q+HiB+dGVDaFxRJiNCEPxjRodc=
+	t=1741977583; cv=none; b=C2vqYdXV0gNfW0d47SQXxts3pgaTe3jlsMeOpedELV2nfGsq5AaB05R+VuvTpddcBN5C99lB7tPMpqP2kk3yRgliwW6G7fybwzIG+l7w/LE0qEHVK+hFPaP8VdeRMEepq5tetnSQ+KDbJYbGM8+Rb9mRa88VgnS6GiNv38YtsS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741975955; c=relaxed/simple;
-	bh=lhJDeX49+5aiNltJ7ikw4MoRh8myuWlXfEQi8+HVDNU=;
+	s=arc-20240116; t=1741977583; c=relaxed/simple;
+	bh=7zgCguAftdxNdNej2Op3CC4ec5C8VrxqTWVT3fgVgIc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r2wmUM4Ya/1zA5yJe/M3kk7ZjybQrFWp8DMzSHVdOkXRoFnEwRYGreoxOc5P+0/Kv7DxduhD/yY5KjNscHjAtMSqrrMilQiwuh5fK3W+lRqdZZFH1fYQ1mPigbaa8W5APqqQWcYvQ+gWE1s/DA4UDBw6ifouZdGp6/p/N8k415Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZZ7zmc3U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 913F5C4CEE3;
-	Fri, 14 Mar 2025 18:12:34 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=lanJMvb4ZSPa+vt+Kyb4qaIvBthwnFu5sN/pDTYx8ATxUdxjqMsF+D7pkvYCbmgNNsBufrEyuAykNmSsf/G8iMTUSiW+abjM0Ap7ERH5m34MKgAWki+fvMNbqH54z4KZBFboftCxwZz7qu4MIKFOd2JfxpjAg2IfTBbaQpUXWVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IbgS9NGq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5548EC4CEE3;
+	Fri, 14 Mar 2025 18:39:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741975955;
-	bh=lhJDeX49+5aiNltJ7ikw4MoRh8myuWlXfEQi8+HVDNU=;
+	s=k20201202; t=1741977582;
+	bh=7zgCguAftdxNdNej2Op3CC4ec5C8VrxqTWVT3fgVgIc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZZ7zmc3UuUHq80xn+QmY6UGtc6zc8u26BpKN10Ds35Zu0b1OICd+uIteduEYFPqYq
-	 4Pn9fFBa2MT/YyTPBL64M5TVEIm8EJT9+YN3ra5VEGEw65aAVFDNPZBsHTHEqk9LbI
-	 yU6KUG8AcgkDhhebFPbgKrO9A45m0jFMcCs2TVD8mCSaYAXGA8V77G/5xIS+tlJRLO
-	 GTN7xYkZeQFr4YxHrb4gCgrCwF/lPtqj/upERBNNqzhRngq8gIt8CKj7ecmMsd2gG5
-	 Lvw3/XXnjZkZh36GP4JJi7PLSt3huGmE5iZFXwoLiW/ipStaGp06zE3mj+dw5tKkig
-	 TvhOX0UW9LBDA==
-Date: Fri, 14 Mar 2025 20:12:30 +0200
+	b=IbgS9NGqN1xC7ev8qTLYsOBm/63Fb2yxIZ5wBeaQKsxS4X3du6COqd1Uro0XgRoyE
+	 yDQHxrVL+RW9exEI8hYxtoD/oQbh8Trne23aNws7MV9L+7JhreEU5PTTZPhLa4WTp7
+	 erugyyHCOgwXzMZtJOWKEEwe3FZ3iKZ3jxmXkOOeNkw8tJ9LFZO+/jA1frQdiyiTNw
+	 SFuI+OhYZwrLeDe+24+D4zyc/OQUy9/datHtDZQxpvANyI3UWIWrR0S+M/Ou4Zd5Cl
+	 7Y51K8xSkrNCskSVc9d0rhQZV4H1IHWzKTIX6+MwXnd1Lnu1mvELYP2VGjRM90+2yk
+	 H2JcOh1ls0tKA==
+Date: Fri, 14 Mar 2025 20:39:38 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
-Cc: "Ertman, David M" <david.m.ertman@intel.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
-	"jgg@nvidia.com" <jgg@nvidia.com>,
-	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [Intel-wired-lan] [iwl-next v4 1/1] iidc/ice/irdma: Update IDC
- to support multiple consumers
-Message-ID: <20250314181230.GP1322339@unreal>
-References: <20250225050428.2166-1-tatyana.e.nikolova@intel.com>
- <20250225050428.2166-2-tatyana.e.nikolova@intel.com>
- <20250225075530.GD53094@unreal>
- <IA1PR11MB61944C74491DECA111E84021DDC22@IA1PR11MB6194.namprd11.prod.outlook.com>
- <20250226185022.GM53094@unreal>
- <IA1PR11MB6194C8F265D13FE65EA006C2DDC22@IA1PR11MB6194.namprd11.prod.outlook.com>
- <20250302082623.GN53094@unreal>
- <07e75573-9fd0-4de1-ac44-1f6a5461a6b8@intel.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: "Nelson, Shannon" <shannon.nelson@amd.com>,
+	David Ahern <dsahern@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+	Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Daniel Vetter <daniel.vetter@ffwll.ch>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Leonid Bloch <lbloch@nvidia.com>, linux-cxl@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	"Sinyuk, Konstantin" <konstantin.sinyuk@intel.com>
+Subject: Re: [PATCH v5 0/8] Introduce fwctl subystem
+Message-ID: <20250314183938.GQ1322339@unreal>
+References: <20250304140036.GK133783@nvidia.com>
+ <20250304164203.38418211@kernel.org>
+ <20250305133254.GV133783@nvidia.com>
+ <mxw4ngjokr3vumdy5fp2wzxpocjkitputelmpaqo7ungxnhnxp@j4yn5tdz3ief>
+ <bcafcf60-47a8-4faf-bea3-19cf0cbc4e08@kernel.org>
+ <20250305182853.GO1955273@unreal>
+ <dc72c6fe-4998-4dba-9442-73ded86470f5@kernel.org>
+ <20250313124847.GM1322339@unreal>
+ <54781c0c-a1e7-4e97-acf1-1fc5a2ee548c@amd.com>
+ <2025031408-frequency-oxidant-287f@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -70,154 +79,43 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <07e75573-9fd0-4de1-ac44-1f6a5461a6b8@intel.com>
+In-Reply-To: <2025031408-frequency-oxidant-287f@gregkh>
 
-On Thu, Mar 13, 2025 at 04:38:39PM -0700, Samudrala, Sridhar wrote:
-> 
-> 
-> On 3/2/2025 12:26 AM, Leon Romanovsky wrote:
-> > On Wed, Feb 26, 2025 at 11:01:52PM +0000, Ertman, David M wrote:
-> > > 
-> > > 
-> > > > -----Original Message-----
-> > > > From: Leon Romanovsky <leon@kernel.org>
-> > > > Sent: Wednesday, February 26, 2025 10:50 AM
-> > > > To: Ertman, David M <david.m.ertman@intel.com>
-> > > > Cc: Nikolova, Tatyana E <tatyana.e.nikolova@intel.com>; jgg@nvidia.com;
-> > > > intel-wired-lan@lists.osuosl.org; linux-rdma@vger.kernel.org;
-> > > > netdev@vger.kernel.org
-> > > > Subject: Re: [iwl-next v4 1/1] iidc/ice/irdma: Update IDC to support multiple
-> > > > consumers
-> > > > 
-> > > > On Wed, Feb 26, 2025 at 05:36:44PM +0000, Ertman, David M wrote:
-> > > > > > -----Original Message-----
-> > > > > > From: Leon Romanovsky <leon@kernel.org>
-> > > > > > Sent: Monday, February 24, 2025 11:56 PM
-> > > > > > To: Nikolova, Tatyana E <tatyana.e.nikolova@intel.com>
-> > > > > > Cc: jgg@nvidia.com; intel-wired-lan@lists.osuosl.org; linux-
-> > > > > > rdma@vger.kernel.org; netdev@vger.kernel.org; Ertman, David M
-> > > > > > <david.m.ertman@intel.com>
-> > > > > > Subject: Re: [iwl-next v4 1/1] iidc/ice/irdma: Update IDC to support
-> > > > multiple
-> > > > > > consumers
-> > > > > > 
-> > > > > > On Mon, Feb 24, 2025 at 11:04:28PM -0600, Tatyana Nikolova wrote:
-> > > > > > > From: Dave Ertman <david.m.ertman@intel.com>
-> > > > > > > 
-> > > > > > > To support RDMA for E2000 product, the idpf driver will use the IDC
-> > > > > > > interface with the irdma auxiliary driver, thus becoming a second
-> > > > > > > consumer of it. This requires the IDC be updated to support multiple
-> > > > > > > consumers. The use of exported symbols no longer makes sense
-> > > > because it
-> > > > > > > will require all core drivers (ice/idpf) that can interface with irdma
-> > > > > > > auxiliary driver to be loaded even if hardware is not present for those
-> > > > > > > drivers.
-> > > > > > 
-> > > > > > In auxiliary bus world, the code drivers (ice/idpf) need to created
-> > > > > > auxiliary devices only if specific device present. That auxiliary device
-> > > > > > will trigger the load of specific module (irdma in our case).
-> > > > > > 
-> > > > > > EXPORT_SYMBOL won't trigger load of irdma driver, but the opposite is
-> > > > > > true, load of irdma will trigger load of ice/idpf drivers (depends on
-> > > > > > their exported symbol).
-> > > > > > 
-> > > > > > > 
-> > > > > > > To address this, implement an ops struct that will be universal set of
-> > > > > > > naked function pointers that will be populated by each core driver for
-> > > > > > > the irdma auxiliary driver to call.
-> > > > > > 
-> > > > > > No, we worked very hard to make proper HW discovery and driver
-> > > > autoload,
-> > > > > > let's not return back. For now, it is no-go.
-> > > > > 
-> > > > > Hi Leon,
-> > > > > 
-> > > > > I am a little confused about what the problem here is.  The main issue I pull
-> > > > > from your response is: Removing exported symbols will stop ice/idpf from
-> > > > > autoloading when irdma loads.  Is this correct or did I miss your point?
-> > > > 
-> > > > It is one of the main points.
-> > > > 
-> > > > > 
-> > > > > But, if there is an ice or idpf supported device present in the system, the
-> > > > > appropriate driver will have already been loaded anyway (and gone
-> > > > through its
-> > > > > probe flow to create auxiliary devices).  If it is not loaded, then the system
-> > > > owner
-> > > > > has either unloaded it manually or blacklisted it.  This would not cause an
-> > > > issue
-> > > > > anyway, since irdma and ice/idpf can load in any order.
-> > > > 
-> > > > There are two assumptions above, which both not true.
-> > > > 1. Users never issue "modprobe irdma" command alone and always will call
-> > > > to whole chain "modprobe ice ..." before.
-> > > > 2. You open-code module subsystem properly with reference counters,
-> > > > ownership and locks to protect from function pointers to be set/clear
-> > > > dynamically.
-> > > 
-> > > Ah, I see your reasoning now.  Our goal was to make the two modules independent,
-> > > with no prescribed load order mandated, and utilize the auxiliary bus and device subsystem
-> > > to handle load order and unload of one or the other module.  The auxiliary device only has
-> > > the lifespan of the core PCI driver, so if the core driver unloads, then the auxiliary device gets
-> > > destroyed, and the associated link based off it will be gone.  We wanted to be able to unload
-> > > and reload either of the modules (core or irdma) and have the interaction be able to restart with a
-> > > new probe.  All our inter-driver function calls are protected by device lock on the auxiliary
-> > > device for the duration of the call.
+On Fri, Mar 14, 2025 at 06:37:11AM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Mar 13, 2025 at 12:59:16PM -0700, Nelson, Shannon wrote:
+> > On 3/13/2025 5:48 AM, Leon Romanovsky wrote:
+> > > On Thu, Mar 13, 2025 at 01:30:52PM +0100, David Ahern wrote:
 > > 
-> > Yes, you are trying to return to pre-aux era.
+> > 
+> > > > So that means 3 different vendors and 3 different devices looking for a
+> > > > similar auxbus based hierarchy with a core driver not buried within one
+> > > > of the subsystems.
+> > > > 
+> > > > I guess at this point we just need to move forward with the proposal and
+> > > > start sending patches.
+> > > > 
+> > > > Seems like drivers/core is the consensus for the core driver?
+> > > 
+> > > Yes, anything that is not aux_core is fine by me.
+> > > 
+> > > drivers/core or drivers/aux.
+> > 
+> > Between the two of these I prefer drivers/core - I don't want to see this
+> > tied to aux for the same reasons we don't want it tied to pci or net.
 > 
+> Decades ago we tried to add drivers/core/ but I think tools really
+> didn't like to see "core" as a directory name.  Hopefully you all don't
+> run into that issue here as well :)
 > 
-> The main motivation to go with callbacks to the parent driver instead of
-> using exported symbols is to allow loading only the parent driver required
-> for a particular deployment. irdma is a common rdma auxilary driver that
-> supports multiple parent pci drivers(ice, idpf, i40e, iavf). If we use
-> exported symbols, all these modules will get loaded even on a system with
-> only idpf device.
+> Anyway, if you all want me to run that tree as a "neutral" third-party,
+> I'll be glad to do so.
 
-It is not how kernel works. IRDMA doesn't call to all exported symbols
-of all these modules. It will call to only one exported symbol and that
-module will be loaded.
-
-> 
-> The documentation for auxiliary bus
-> 	https://docs.kernel.org/driver-api/auxiliary_bus.html
-> shows an example on how shared data/callbacks can be used to establish
-> connection with the parent.
-
-I'm aware of this documentation, it is incorrect. You can find the
-explanation why this documentation exists in habanalabs discussion.
-
-> 
-> Auxiliary devices are created and registered by a subsystem-level core
-> device that needs to break up its functionality into smaller fragments. One
-> way to extend the scope of an auxiliary_device is to encapsulate it within a
-> domain-specific structure defined by the parent device. This structure
-> contains the auxiliary_device and any associated shared data/callbacks
-> needed to establish the connection with the parent.
-> 
-> An example is:
-> 
->  struct foo {
->       struct auxiliary_device auxdev;
->       void (*connect)(struct auxiliary_device *auxdev);
->       void (*disconnect)(struct auxiliary_device *auxdev);
->       void *data;
-> };
-> 
-> This example clearly shows that it is OK to use callbacks from the aux
-> driver. The aux driver is dependent on the parent driver and the parent
-> driver will guarantee that it will not get unloaded until all the auxiliary
-> devices are destroyed.
-> 
-> Hopefully you will understand our motivation of going with this design and
-> not force us to go with a solution that is not optimal.
-
-Feel free to fix documentation.
+Thanks for readiness, we will definitely be glad to see you on board.
 
 Thanks
 
 > 
-> Thanks
-> Sridhar
+> thanks,
 > 
+> greg k-h
 
