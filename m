@@ -1,216 +1,116 @@
-Return-Path: <linux-rdma+bounces-8710-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8711-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13C81A619CD
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Mar 2025 19:49:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6382A61A0F
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Mar 2025 20:05:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50587882E58
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Mar 2025 18:49:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 138A93B587C
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Mar 2025 19:05:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 091B5204C0D;
-	Fri, 14 Mar 2025 18:49:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01AC4204C10;
+	Fri, 14 Mar 2025 19:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rQVmjcjZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GNNSxyCF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F39913A26D;
-	Fri, 14 Mar 2025 18:49:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64B0204875
+	for <linux-rdma@vger.kernel.org>; Fri, 14 Mar 2025 19:05:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741978157; cv=none; b=Rfwp00l7YChLwnfv2D+qvaSMdEVw1AreDkDDDNwQzwyC2a345rvLAWq8TG9Dywqhqyw98QPazUfpYgeY9Al0JzksAc4Mwk44OIfneIJeJUKTsNPLYy4w1zRBPftr5mKlafeLRX7/Qjz5VX8o7Dj9ndpXiatN1qg96M52qDxwdRQ=
+	t=1741979120; cv=none; b=bldaqp8XA/opCVW7f6wEy+3hX4CvGUGltNo+NAmCJHC/HOSeLfXssiQiPZLbwmOZka8YI6uK/PQ6vFPKdXZkumvjodiOvFIyrHFyMu36FDj2ACFVw3v4T9Ly/Tkka1wj0o4I1YTjOMg0jamDPQUewY9OkhRzdQa4BEBzimqpbfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741978157; c=relaxed/simple;
-	bh=O6TQHcNZOIDORUQUex99gbjkbXRSAsx+LziCN6QYCcQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XRiC/ALWiGdDRnu3t9+TNmp2WE4FzEkuuQpnHJWJ1ue3RLEWuflPvd+mKPiw+yQRyhtZvud2ba2W8pNmOZxDsOJtB8ilWir8dyaU/ycLGwPBAqtl/3Y3JXfH9BKmC1ybq0dn3NNPjGFSytbWyfTDFZFpjRluh1ptVui85nhswDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rQVmjcjZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C4A3C4CEE9;
-	Fri, 14 Mar 2025 18:49:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741978156;
-	bh=O6TQHcNZOIDORUQUex99gbjkbXRSAsx+LziCN6QYCcQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rQVmjcjZhe/sj5yONxV2qVxL98CsQ/XLSI8I1aZI9aDjryLW+sVGMqcfI9Bca9bOS
-	 BjeRuzyi8Km8hWOU7pWxLh0zSj3Q5xmQc8mdYFqkiDMoJN2jPM4GlDtxa49auZ9+wv
-	 o4Atu8WInpcl8PAepC/fXyU6iiNJ15uue0LdQRbYK1nJzWh83j90x9tnoa0sRasVK1
-	 38iJcCj/HUFJNu/wqR3UGB0O36uPS2R51CHZ5YoiakTWuHP1tXd0Pvob4wtZn293CI
-	 sVep3kKdHjc3A4MK0/PKcdqXaMCX1hnu3s63bSmSw7dabMqNw6WwX2YJoxC1T+nsVF
-	 6r+AVkQEbO0Yg==
-Date: Fri, 14 Mar 2025 20:49:11 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig <hch@lst.de>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v7 00/17] Provide a new two step DMA mapping API
-Message-ID: <20250314184911.GR1322339@unreal>
-References: <cover.1738765879.git.leonro@nvidia.com>
- <20250220124827.GR53094@unreal>
- <CGME20250228195423eucas1p221736d964e9aeb1b055d3ee93a4d2648@eucas1p2.samsung.com>
- <1166a5f5-23cc-4cce-ba40-5e10ad2606de@arm.com>
- <d408b1c7-eabf-4a1e-861c-b2ddf8bf9f0e@samsung.com>
- <20250312193249.GI1322339@unreal>
- <adb63b87-d8f2-4ae6-90c4-125bde41dc29@samsung.com>
+	s=arc-20240116; t=1741979120; c=relaxed/simple;
+	bh=mNbAchN1lXxcQc1ZqEfr3YObwWcpu2VRpWedwwzGL68=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JkY5yqGKYKX9XPOz/9a87S/apcz6mR4Fs8qNPjgdJaZsmjwek/LBHZvCujFsmtzdoWsmo+cjoEuKcElsfWx4eM8Sh9iwIttylKWH4FwkLIs0er9lAQR8tOcyGqmEOcYDgKOZiDduBO0AzXwv+n6w9SUtNto2PxCBWVCTbMpWDJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GNNSxyCF; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0bd7d8ff-dcc4-43a5-862f-52e23106565c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1741979112;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yO7hrg04c2brk4CRwpEawF3Xt7L9HsDayWH+Cn7fBl8=;
+	b=GNNSxyCFGZt8rvhwBcDdH+Ogew7IVN+7VO1xe6SYtWv6ZhiZsSYYEqR8q/6TKhIwSwtNrM
+	9yMlvNXkz2FVfpMLWdZ4VP26aKWY0PoiIiVog/ma5Vug5eNeXTnpnPQ5fvMQ6cO0rhe2EL
+	NiV3INkL1AUeNDXYXBY9IdsdNklVTcI=
+Date: Fri, 14 Mar 2025 20:05:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Subject: Re: [PATCH] inifiniband: ucaps: avoid format-security warning
+To: Arnd Bergmann <arnd@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>, Yishai Hadas <yishaih@nvidia.com>,
+ Chiara Meiohas <cmeiohas@nvidia.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250314155721.264083-1-arnd@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20250314155721.264083-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <adb63b87-d8f2-4ae6-90c4-125bde41dc29@samsung.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Mar 14, 2025 at 11:52:58AM +0100, Marek Szyprowski wrote:
-> On 12.03.2025 20:32, Leon Romanovsky wrote:
-> > On Wed, Mar 12, 2025 at 10:28:32AM +0100, Marek Szyprowski wrote:
-> >> Hi Robin
-> >>
-> >> On 28.02.2025 20:54, Robin Murphy wrote:
-> >>> On 20/02/2025 12:48 pm, Leon Romanovsky wrote:
-> >>>> On Wed, Feb 05, 2025 at 04:40:20PM +0200, Leon Romanovsky wrote:
-> >>>>> From: Leon Romanovsky <leonro@nvidia.com>
-> >>>>>
-> >>>>> Changelog:
-> >>>>> v7:
-> >>>>>    * Rebased to v6.14-rc1
-> >>>> <...>
-> >>>>
-> >>>>> Christoph Hellwig (6):
-> >>>>>     PCI/P2PDMA: Refactor the p2pdma mapping helpers
-> >>>>>     dma-mapping: move the PCI P2PDMA mapping helpers to pci-p2pdma.h
-> >>>>>     iommu: generalize the batched sync after map interface
-> >>>>>     iommu/dma: Factor out a iommu_dma_map_swiotlb helper
-> >>>>>     dma-mapping: add a dma_need_unmap helper
-> >>>>>     docs: core-api: document the IOVA-based API
-> >>>>>
-> >>>>> Leon Romanovsky (11):
-> >>>>>     iommu: add kernel-doc for iommu_unmap and iommu_unmap_fast
-> >>>>>     dma-mapping: Provide an interface to allow allocate IOVA
-> >>>>>     dma-mapping: Implement link/unlink ranges API
-> >>>>>     mm/hmm: let users to tag specific PFN with DMA mapped bit
-> >>>>>     mm/hmm: provide generic DMA managing logic
-> >>>>>     RDMA/umem: Store ODP access mask information in PFN
-> >>>>>     RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page
-> >>>>>       linkage
-> >>>>>     RDMA/umem: Separate implicit ODP initialization from explicit ODP
-> >>>>>     vfio/mlx5: Explicitly use number of pages instead of allocated
-> >>>>> length
-> >>>>>     vfio/mlx5: Rewrite create mkey flow to allow better code reuse
-> >>>>>     vfio/mlx5: Enable the DMA link API
-> >>>>>
-> >>>>>    Documentation/core-api/dma-api.rst   |  70 ++++
-> >>>>    drivers/infiniband/core/umem_odp.c   | 250 +++++---------
-> >>>>>    drivers/infiniband/hw/mlx5/mlx5_ib.h |  12 +-
-> >>>>>    drivers/infiniband/hw/mlx5/odp.c     |  65 ++--
-> >>>>>    drivers/infiniband/hw/mlx5/umr.c     |  12 +-
-> >>>>>    drivers/iommu/dma-iommu.c            | 468
-> >>>>> +++++++++++++++++++++++----
-> >>>>>    drivers/iommu/iommu.c                |  84 ++---
-> >>>>>    drivers/pci/p2pdma.c                 |  38 +--
-> >>>>>    drivers/vfio/pci/mlx5/cmd.c          | 375 +++++++++++----------
-> >>>>>    drivers/vfio/pci/mlx5/cmd.h          |  35 +-
-> >>>>>    drivers/vfio/pci/mlx5/main.c         |  87 +++--
-> >>>>>    include/linux/dma-map-ops.h          |  54 ----
-> >>>>>    include/linux/dma-mapping.h          |  85 +++++
-> >>>>>    include/linux/hmm-dma.h              |  33 ++
-> >>>>>    include/linux/hmm.h                  |  21 ++
-> >>>>>    include/linux/iommu.h                |   4 +
-> >>>>>    include/linux/pci-p2pdma.h           |  84 +++++
-> >>>>>    include/rdma/ib_umem_odp.h           |  25 +-
-> >>>>>    kernel/dma/direct.c                  |  44 +--
-> >>>>>    kernel/dma/mapping.c                 |  18 ++
-> >>>>>    mm/hmm.c                             | 264 +++++++++++++--
-> >>>>>    21 files changed, 1435 insertions(+), 693 deletions(-)
-> >>>>>    create mode 100644 include/linux/hmm-dma.h
-> >>>> Kind reminder.
-> > <...>
-> >
-> >> Removing the need for scatterlists was advertised as the main goal of
-> >> this new API, but it looks that similar effects can be achieved with
-> >> just iterating over the pages and calling page-based DMA API directly.
-> > Such iteration can't be enough because P2P pages don't have struct pages,
-> > so you can't use reliably and efficiently dma_map_page_attrs() call.
-> >
-> > The only way to do so is to use dma_map_sg_attrs(), which relies on SG
-> > (the one that we want to remove) to map P2P pages.
-> 
-> That's something I don't get yet. How P2P pages can be used with 
-> dma_map_sg_attrs(), but not with dma_map_page_attrs()? Both operate 
-> internally on struct page pointer.
 
-Yes, and no.
-See users of is_pci_p2pdma_page(...) function. In dma_*_sg() APIs, there
-is a real check and support for p2p. In dma_map_page_attrs() variants,
-this support is missing (ignored, or error is returned).
+åœ¨ 2025/3/14 16:57, Arnd Bergmann å†™é“:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Passing a non-constant format string to dev_set_name causes a warning:
+>
+> drivers/infiniband/core/ucaps.c:173:33: error: format string is not a string literal (potentially insecure) [-Werror,-Wformat-security]
+>    173 |         ret = dev_set_name(&ucap->dev, ucap_names[type]);
+>        |                                        ^~~~~~~~~~~~~~~~
+> drivers/infiniband/core/ucaps.c:173:33: note: treat the string as an argument to avoid this
+>    173 |         ret = dev_set_name(&ucap->dev, ucap_names[type]);
+>        |                                        ^
+>        |                                        "%s",
+>
+> Turn the name into thet %s argument as suggested by gcc.
+>
+> Fixes: 61e51682816d ("RDMA/uverbs: Introduce UCAP (User CAPabilities) API")
 
-> 
-> >> Maybe I missed something. I still see some advantages in this DMA API
-> >> extension, but I would also like to see the clear benefits from
-> >> introducing it, like perf logs or other benchmark summary.
-> > We didn't focus yet on performance, however Christoph mentioned in his
-> > block RFC [1] that even simple conversion should improve performance as
-> > we are performing one P2P lookup per-bio and not per-SG entry as was
-> > before [2]. In addition it decreases memory [3] too.
-> >
-> > [1] https://lore.kernel.org/all/cover.1730037261.git.leon@kernel.org/
-> > [2] https://lore.kernel.org/all/34d44537a65aba6ede215a8ad882aeee028b423a.1730037261.git.leon@kernel.org/
-> > [3] https://lore.kernel.org/all/383557d0fa1aa393dbab4e1daec94b6cced384ab.1730037261.git.leon@kernel.org/
-> >
-> > So clear benefits are:
-> > 1. Ability to use native for subsystem structure, e.g. bio for block,
-> > umem for RDMA, dmabuf for DRM, e.t.c. It removes current wasteful
-> > conversions from and to SG in order to work with DMA API.
-> > 2. Batched request and iotlb sync optimizations (perform only once).
-> > 3. Avoid very expensive call to pgmap pointer.
-> > 4. Expose MMIO over VFIO without hacks (PCI BAR doesn't have struct pages).
-> > See this series for such a hack
-> > https://lore.kernel.org/all/20250307052248.405803-1-vivek.kasireddy@intel.com/
-> 
-> I see those benefits and I admit that for typical DMA-with-IOMMU case it 
-> would improve some things. I think that main concern from Robin was how 
-> to handle it for the cases without an IOMMU.
+This patch should be for linux-next. In the subject, linux-next should 
+be added.
 
-In such case, we fallback to non-IOMMU flow (old, well-established one).
-See this HMM patch as an example https://lore.kernel.org/all/a796da065fa8a9cb35d591ce6930400619572dcc.1738765879.git.leonro@nvidia.com/
-+dma_addr_t hmm_dma_map_pfn(struct device *dev, struct hmm_dma_map *map,
-+			   size_t idx,
-+			   struct pci_p2pdma_map_state *p2pdma_state)
-...
-+	if (dma_use_iova(state)) {
-...
-+	} else {
-...
-+		dma_addr = dma_map_page(dev, page, 0, map->dma_entry_size,
-+					DMA_BIDIRECTIONAL);
+Except the above, I am fine with this commit.
 
-Thanks
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-> 
-> Best regards
-> -- 
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
-> 
+Zhu Yanjun
+
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/infiniband/core/ucaps.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/infiniband/core/ucaps.c b/drivers/infiniband/core/ucaps.c
+> index 6853c6d078f9..de5cb8bf0a61 100644
+> --- a/drivers/infiniband/core/ucaps.c
+> +++ b/drivers/infiniband/core/ucaps.c
+> @@ -170,7 +170,7 @@ int ib_create_ucap(enum rdma_user_cap type)
+>   	ucap->dev.class = &ucaps_class;
+>   	ucap->dev.devt = MKDEV(MAJOR(ucaps_base_dev), type);
+>   	ucap->dev.release = ucap_dev_release;
+> -	ret = dev_set_name(&ucap->dev, ucap_names[type]);
+> +	ret = dev_set_name(&ucap->dev, "%s", ucap_names[type]);
+>   	if (ret)
+>   		goto err_device;
+>   
+
+-- 
+Best Regards,
+Yanjun.Zhu
+
 
