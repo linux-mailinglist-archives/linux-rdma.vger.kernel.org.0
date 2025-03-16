@@ -1,342 +1,186 @@
-Return-Path: <linux-rdma+bounces-8725-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8726-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D5B2A63458
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Mar 2025 07:45:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22447A63482
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Mar 2025 08:34:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63C1E166657
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Mar 2025 06:45:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 199CB1891096
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Mar 2025 07:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB5A156F45;
-	Sun, 16 Mar 2025 06:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9CD218BC3B;
+	Sun, 16 Mar 2025 07:34:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="o3ZVMgy3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fwpvwc6u"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FEEEBE
-	for <linux-rdma@vger.kernel.org>; Sun, 16 Mar 2025 06:45:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2391F170A26;
+	Sun, 16 Mar 2025 07:34:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742107552; cv=none; b=MxqMrAvNPvz/B3bTSb2f5p/uLKom66ctDbKOk1tWd6QW9OCvutoC6pnaYPYEKrViPwxQ2tXreR3Hz1iLuNz1CwQSFpQS/kBP0jZz2KGkqpQNtz5s8AVLdA4gZnbR8boHa7d+r+Xf9bTDGcH9/t6+XTF1DSpdTkAjoMC8KkEYcE0=
+	t=1742110473; cv=none; b=qOcQk9yAjlx62hmHSnwO+pQqKLtjesoOJASKhkKF2mGxNPw/1d/MH32bUYelSCC71GW5pvM3Tl9JPDxUk3v2m5sVwQ4Fl3mXC0xlTMdfxmjKqV66Z4wZ8HAR1fV23Zhm/9/h/FsfC7yjg2ufGttTqNbkkAmbsOHINq1W+oJ7DLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742107552; c=relaxed/simple;
-	bh=+d0oTpnUrMnN/+Kw1JCCAqOLhSgpfsHid4FheD/iFzc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oqO8iJUaE6de/9Nx05lJgQV/6pl0uEa3zUUo/cqysald+NdiofDMT2KjqhpKsvq0sKv8FBLORwbz2+oe92G1SQFgktG7IxY+joybWZSSp1uSeQ1TdRH1c9Qzp7wNorDaJCmaDDmw9s7KqKf0n81DFukll+LKqqXLrEwkmlcPK/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=o3ZVMgy3; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <814d34c6-9bdc-4b84-be46-49d6be6dc5b0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1742107547;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TlNCjBgzBUI6Y5ksORqGi+SC09GLFs8L4qaMdOCCh30=;
-	b=o3ZVMgy3SeQoZdFLwVJGRfRrlOSWIcPdNk7raHl8I26WdGiDD6Dear3lNfsrLID2gxNQBx
-	5syK7QmiUfuT1UgAZXE+kTuJ1LYCai4GmqdSK8k33j9jwl8EuL2hX98Zkq0AeIR6gADgYK
-	MgFCsOInSe2GkS7O2Si3GA0BXNyO4GM=
-Date: Sun, 16 Mar 2025 07:45:44 +0100
+	s=arc-20240116; t=1742110473; c=relaxed/simple;
+	bh=Z9wPWp6+P2sAIkQ+dPlfUdBxy9fqCl3k28djjN/AVTU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=re6lylAIUK8NA9ex6ZFMGOkQWRGKqi95sfaRV7xCUfRBQ8BIjgU35mgFv2St7BZsm1gDt+Ar02Svo5ZNXh7G4o+feGskbsPe7M9x1vc00CsJEDftY7tQMMhwR9z2IbZPbn2bKf3HIDv/4zW3nhBbvFOpGPJ/VoOWmoMo2uTNfEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fwpvwc6u; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-224341bbc1dso62612685ad.3;
+        Sun, 16 Mar 2025 00:34:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742110470; x=1742715270; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=E+gozQzsknkpf8jQFSMMeHCraSNuUy0stS4Y3VFb4FQ=;
+        b=Fwpvwc6u6Q15wd+7BnAkIgMmRpcBRFcn9wFic22sNMEMBWefqO9SSsU6/PccUIlnAr
+         VpmY5DsIXjM8N6mM5v7jvncDCpQXbHIOF9zt4duTXEqoVf56xk7n9oA0nEsBQIrmPCzR
+         6jFkCI6iJuYBse0oulMN7aS6yDnz/m6bx1S9Xg7ArtEMd6JsDHYal2zzT4bhEorBxfaq
+         sbIa8y9KBjYg/edX+zKlKIe67EPu7eE6V7EdJETgR7BVUCBqpAjjr4p3jCz3PTMniLg1
+         hpg2aWUrTsXckjEm+E2U7ZtXjkVh1cnWRTJFHf4zEffZLjkUS5dw55d8F2Ut3JXNeYb/
+         eQvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742110470; x=1742715270;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E+gozQzsknkpf8jQFSMMeHCraSNuUy0stS4Y3VFb4FQ=;
+        b=DcOtB3FT8Wx9uC7IO57z41lZllLRO7x/hhNRJqcnyPW3w/ISOMmen4uBryl5NKpv3a
+         RlMz1Xji5yK2d1KCH9iyxvl0utmnc5SZUxZ8XiMQBSTwaAI0NyCwHwQHoRPIOpPC9zqs
+         KwSUv00gbl6BWFJpBNX4I+PimOGfxGLG1e1RSGMqnyo2Owursb25EIZL3la9zA+yadm5
+         sHld7gZgtUrn14SJVh4Kkczb5ibiubGIPOlbgvUiCf4mBn0eKZ+i6SJafWp+PG31U6x+
+         jrBx6an96ETHe/9ThtyFcAjfWb8dTR0iCIVnNjlx/mx/fc+4thaM+PIhmLHw3LHOql4S
+         ts4A==
+X-Forwarded-Encrypted: i=1; AJvYcCUUHxRbIgThVFILKYnnWT7aU1ckGGIgGwYxXg4UEwoEw3l0DErPxfC1q9fPhPnQmvfin18h6HKIF5Wcog==@vger.kernel.org, AJvYcCUo0M6eS9L/Y8zJ1lWQGsPGtzE1+ZDw2RtT/C0zum870LEpwbONvHLNHUCgM6WNhGTLOF6+o1iL@vger.kernel.org, AJvYcCUvbyKizCLZd0J7wWnF+J5mKvcGKL1HC8uHDDwwHOwDAv8AiyTm6ibaNvqxr1rnAGgdCZ+CkSZ8kzw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLKXb+L3s4ppz8nFOemWoBpW0TZVdSFa5som6BZna6IJPBsseW
+	EedqMUbuy57akCH2fiYwjtR5nbKpt2BJdujzSjY/Do1SuZwp+XU=
+X-Gm-Gg: ASbGncuAn98mTRoIzeTEkQljXDD/0WUZ1G6MxeDZryznXvDeaJWTvuRdWfalsW371cW
+	chv56JytnH9Ry8kD0AQqma2aJctzczD4eNcKVIR+gORyVAjW7RLLycfBBUeeV98oOoGfRbDgW0P
+	K2oWL702CBntl4mu0tWErNmI6n+RIRoX4LKpephYgEk+/z7zVaF5Yt6E01qaq5BTwyn1GgsCcY5
+	zEv2NralOcfTW48grTVht57fMkJr03cgGZThovpLwspZNi58xeDqHHz2/1+N2UkV6Vv6Qup6JaS
+	UswRf8CoJt1Y0k49ymf4MosnAt6C67TjACmwWnyT8zSF
+X-Google-Smtp-Source: AGHT+IE5vLbTjYBfblWOIuX+QWW+b07Y4rCAaXiimUw+vC72ThBiuU6sW4iz0gpXG5qpZIbbGmW3Kg==
+X-Received: by 2002:a17:902:e88a:b0:224:c46:d167 with SMTP id d9443c01a7336-225e0a4fca6mr103698895ad.16.1742110470149;
+        Sun, 16 Mar 2025 00:34:30 -0700 (PDT)
+Received: from localhost ([2601:646:9e00:f56e:2844:3d8f:bf3e:12cc])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-225c6bd4df4sm53754055ad.240.2025.03.16.00.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Mar 2025 00:34:29 -0700 (PDT)
+Date: Sun, 16 Mar 2025 00:34:28 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: David Ahern <dsahern@kernel.org>
+Cc: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
+	Saeed Mahameed <saeed@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Daniel Vetter <daniel.vetter@ffwll.ch>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Leonid Bloch <lbloch@nvidia.com>, linux-cxl@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	"Nelson, Shannon" <shannon.nelson@amd.com>
+Subject: Re: [PATCH v5 0/8] Introduce fwctl subystem
+Message-ID: <Z9Z_BC4GBTiFsONJ@mini-arch>
+References: <mxw4ngjokr3vumdy5fp2wzxpocjkitputelmpaqo7ungxnhnxp@j4yn5tdz3ief>
+ <bcafcf60-47a8-4faf-bea3-19cf0cbc4e08@kernel.org>
+ <20250305182853.GO1955273@unreal>
+ <Z8i2_9G86z14KbpB@x130>
+ <20250305232154.GB354511@nvidia.com>
+ <6af1429e-c36a-459c-9b35-6a9f55c3b2ac@kernel.org>
+ <20250311135921.GF7027@unreal>
+ <4c55e1ae-8cc1-463e-b81f-2bbae4ae4eed@kernel.org>
+ <Z9FjJAgdmWcepxkg@mini-arch>
+ <553dff52-f61a-4f16-af4c-72d2d2c6bc3d@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: When upgrading to kernel 6.12.4, I got the following error with
- rdma_rxe module.
-To: Yiyi Hu <yiyihu@gmail.com>
-Cc: linux-rdma@vger.kernel.org
-References: <CA+-1TMMRS7C7015ZSCJ1zXCWenqxskzNONZdsSVW9TmFPDXBYA@mail.gmail.com>
- <a4b877ca-acbd-4c7a-9d32-00ee56ea6cf0@linux.dev>
- <CA+-1TMMBVoVcnsg9dV-bpBTzTTx0r=bas9w6tNcVh4_KfB6BEw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <CA+-1TMMBVoVcnsg9dV-bpBTzTTx0r=bas9w6tNcVh4_KfB6BEw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <553dff52-f61a-4f16-af4c-72d2d2c6bc3d@kernel.org>
 
+On 03/14, David Ahern wrote:
+> On 3/12/25 11:34 AM, Stanislav Fomichev wrote:
+> >> More specifically, I do not see netdev APIs ever recognizing RDMA
+> >> concepts like domains and memory regions. For us, everything is relative
+> >> to a domain and a region - e.g., whether a queue is created for a netdev
+> >> device or an IB QP both use the same common internal APIs.  I would
+> >> prefer not to use fwctl for something so basic.
+> > 
+> > What specifically do you mean here by 'memory regions'? Ne
+> 
+> netdev queues and flows are a subset of RDMA operations, so I mean MRs
+> as in:
+> 
+> IBV_REG_MR(3)  Libibverbs Programmer's Manual
+> 
+> 
+> NAME
+>        ibv_reg_mr, ibv_reg_mr_iova, ibv_reg_dmabuf_mr, ibv_dereg_mr -
+> register or deregister a memory region (MR)
+> 
+> SYNOPSIS
+>        #include <infiniband/verbs.h>
+> 
+>        struct ibv_mr *ibv_reg_mr(struct ibv_pd *pd, void *addr,
+>                                  size_t length, int access);
+> 
+>        struct ibv_mr *ibv_reg_mr_iova(struct ibv_pd *pd, void *addr,
+>                                       size_t length, uint64_t hca_va,
+>                                       int access);
+> 
+>        struct ibv_mr *ibv_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset,
+>                                         size_t length, uint64_t iova,
+>                                         int fd, int access);
+> 
+>        int ibv_dereg_mr(struct ibv_mr *mr);
+> 
+> DESCRIPTION
+>        ibv_reg_mr() registers a memory region (MR) associated with the
+> protection domain pd.  The MR's starting address is addr and its size is
+> length.  The argument access describes the desired mem‐
+>        ory protection attributes; it is either 0 or the bitwise OR of
+> one or more of the following flags:
+> 
+> ...
 
-在 2025/3/16 2:02, Yiyi Hu 写道:
-> Hi, (Sorry to repost, Clicked "Reply" instead of "Reply to all")
+Sure, and netdev has:
 
-Thanks for reporting this problem. I have already replied this problem 
-in another mail thread.
+    -
+      name: bind-rx
+      doc: Bind dmabuf to netdev
+      attribute-set: dmabuf
+      flags: [ admin-perm ]
+      do:
+        request:
+          attributes:
+            - ifindex
+            - fd
+            - queues
+        reply:
+          attributes:
+            - id
 
-Best Regards,
+Which accepts dmabuf fd. Looks very similar to ibv_reg_dmabuf_mr to me.
+And I think we can safely ignore ibv_reg_mr_iova which needs things
+like proprietary nvidia-peermem to function.
 
-Zhu Yanjun
-
->
-> I don't use 'git bisect' for now, Will report back when I have
-> enough time to setup a separate host for 'git bisect',
-> According to new observations, It seems it's triggered when user tries
-> to use the rdma link over the veth pair,
-> I see the same issue with different NIC, The network is something like
->   veth-port-a  <--> br-with-vlan-filtering[veth-port-ap, other-phy-ports]
-> The error are as almost same follows:
->
-> [657667.100894] ------------[ cut here ]------------
-> [657667.100909] WARNING: CPU: 0 PID: 738197 at
-> drivers/infiniband/sw/rxe/rxe_net.c:357 rxe_skb_tx_dtor+0xbc/0x110
-> [rdma_rxe]
-> [657667.100952] Modules linked in: rdma_rxe xt_addrtype xt_mark
-> xt_comment macvtap macvlan overlay iscsi_target_mod target_core_user
-> uio target_core_pscsi target_core_file target_core_iblock
-> target_core_mod nvmet_tcp brd xt_tcpudp xt_nat xt_multiport
-> xt_conntrack xt_set ip_set bcache pppoe pppox ppp_generic slhc nbd
-> zram virtio_vdpa vduse vdpa nvme_rdma nvmet_rdma nvmet nvme_tcp
-> nvme_fabrics nvme_keyring msr thermal rt2800usb rt2x00usb rt2800lib
-> rt2x00lib mac80211 nf_nat_pptp nf_conntrack_pptp nf_conntrack_tftp
-> nf_conntrack_netbios_ns nf_conntrack_broadcast nf_nat_ftp
-> nf_conntrack_ftp nct6775 nct6775_core hwmon_vid vhost_net tun vhost
-> vhost_iotlb tap k10temp iptable_nat xt_MASQUERADE rpcsec_gss_krb5
-> iptable_filter ip_tables x_tables tcp_diag inet_diag wireguard
-> curve25519_x86_64 libcurve25519_generic libchacha20poly1305
-> chacha_x86_64 poly1305_x86_64 ip6_udp_tunnel udp_tunnel libchacha
-> nfsv4 nfs netfs veth bridge bonding tls nft_nat nft_masq nft_chain_nat
-> nf_nat nft_ct nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 cfg80211
-> [657667.101117]  nf_tables rfkill 8021q garp mrp stp llc rpcrdma
-> rdma_ucm ib_iser ib_umad rdma_cm ib_ipoib iw_cm ib_cm coretemp
-> intel_uncore_frequency intel_uncore_frequency_common ee1004 evdev
-> mxm_wmi x86_pkg_temp_thermal kvm_intel kvm rapl intel_cstate i2c_i801
-> intel_uncore i2c_mux pcspkr i2c_smbus i915 rtc_cmos intel_gtt
-> i2c_algo_bit drm_buddy video drm_display_helper intel_pmc_core wmi ttm
-> intel_vsec cec pmt_telemetry drm_kms_helper pmt_class button acpi_pad
-> mlx4_ib ib_uverbs ib_core nfsd sch_fq_codel auth_rpcgss nfs_acl lockd
-> grace sunrpc drm fuse loop dm_snapshot raid0 dm_cache_smq dm_cache
-> dm_persistent_data dm_bio_prison dm_bufio mlx4_en sd_mod
-> crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel
-> sha512_ssse3 sha256_ssse3 sha1_ssse3 nvme ahci ixgbe libahci mdio
-> mdio_devres nvme_core libphy e1000e hwmon aesni_intel crypto_simd
-> xhci_pci ptp i2c_core nvme_auth libata mlx4_core xhci_hcd dm_mirror
-> dm_region_hash dm_log be2iscsi iscsi_tcp libiscsi_tcp libiscsi
-> scsi_transport_iscsi dm_multipath dm_mod efivarfs
-> [657667.101341]  dmi_sysfs
-> [657667.101392] CPU: 0 UID: 0 PID: 738197 Comm: kworker/u9:2 Tainted:
-> G        W I        6.12.18-gentoo #2
-> [657667.101409] Tainted: [W]=WARN, [I]=FIRMWARE_WORKAROUND
-> [657667.101415] Hardware name: To Be Filled By O.E.M. To Be Filled By
-> O.E.M./B150A-X1/Hyper, BIOS P7.20 11/18/2016
-> [657667.101425] RIP: 0010:rxe_skb_tx_dtor+0xbc/0x110 [rdma_rxe]
-> [657667.101449] Code: 00 f0 0f c1 87 80 00 00 00 83 f8 01 74 3a 85 c0
-> 7f 96 5b be 03 00 00 00 5d 48 89 d7 41 5c e9 cb 4a 95 df 41 f6 04 24
-> 01 75 27 <0f> 0b 5b 5d 41 5c c3 83 e8 01 83 f8 0f 77 a3 49 8d bc 24 d8
-> 03 00
-> [657667.101464] RSP: 0018:ffffc90000003d60 EFLAGS: 00010246
-> [657667.101474] RAX: 0000000000000000 RBX: ffff8881033dde00 RCX:
-> 0000000000000000
-> [657667.101482] RDX: ffff888233873d00 RSI: 000000000000000e RDI:
-> ffff888233873d00
-> [657667.101490] RBP: 0000000000000000 R08: 004041d5d8b05506 R09:
-> f96183f30388e37b
-> [657667.101498] R10: 0000000000000000 R11: ffff888101b70980 R12:
-> ffff888101b70000
-> [657667.101506] R13: ffff88810704ca40 R14: 00000000fffffea4 R15:
-> ffff88810034ca40
-> [657667.101514] FS:  0000000000000000(0000) GS:ffff888463c00000(0000)
-> knlGS:0000000000000000
-> [657667.101523] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [657667.101530] CR2: 00007fb41fadd7e0 CR3: 00000001c52fa005 CR4:
-> 00000000003726f0
-> [657667.101539] Call Trace:
-> [657667.101546]  <IRQ>
-> [657667.101551]  ? rxe_skb_tx_dtor+0xbc/0x110 [rdma_rxe]
-> [657667.101572]  ? __warn.cold+0x93/0xed
-> [657667.101590]  ? rxe_skb_tx_dtor+0xbc/0x110 [rdma_rxe]
-> [657667.101609]  ? report_bug+0xe2/0x170
-> [657667.101622]  ? handle_bug+0x4f/0x90
-> [657667.101632]  ? exc_invalid_op+0x13/0x60
-> [657667.101641]  ? asm_exc_invalid_op+0x16/0x20
-> [657667.101656]  ? rxe_skb_tx_dtor+0xbc/0x110 [rdma_rxe]
-> [657667.101675]  skb_release_head_state+0x20/0x90
-> [657667.101685]  napi_consume_skb+0x3e/0x100
-> [657667.101696]  ixgbe_poll+0x21c/0x1210 [ixgbe]
-> [657667.101740]  __napi_poll+0x25/0x150
-> [657667.101753]  net_rx_action+0x301/0x370
-> [657667.101767]  ? wakeup_preempt+0x2f/0x60
-> [657667.101775]  ? __raise_softirq_irqoff+0x16/0x70
-> [657667.101787]  ? ixgbe_msix_clean_rings+0x39/0x40 [ixgbe]
-> [657667.101812]  handle_softirqs+0xf1/0x2b0
-> [657667.101825]  irq_exit_rcu+0x74/0xd0
-> [657667.101835]  common_interrupt+0xb8/0xd0
-> [657667.101846]  </IRQ>
-> [657667.101850]  <TASK>
-> [657667.101855]  asm_common_interrupt+0x22/0x40
-> [657667.101867] RIP: 0010:finish_task_switch.isra.0+0xdc/0x2e0
-> [657667.101881] Code: 01 00 00 f0 41 ff 4d 00 0f 84 60 01 00 00 81 7d
-> d4 80 00 00 00 0f 84 60 01 00 00 48 83 c4 08 5b 41 5c 41 5d 41 5e 41
-> 5f 5d c3 <49> 8b 9e 00 03 00 00 48 85 db 74 bb 48 8b 43 10 48 89 df 65
-> 8b 35
-> [657667.101895] RSP: 0018:ffffc9000607fda8 EFLAGS: 00000282
-> [657667.101903] RAX: 0000000080000001 RBX: ffff888463c33940 RCX:
-> 0000000000000000
-> [657667.101910] RDX: 0000000000000002 RSI: ffffffff8214864a RDI:
-> 00000000ffffffff
-> [657667.101918] RBP: ffffc9000607fdd8 R08: 00000000000162ad R09:
-> ffff8881bbef2dc0
-> [657667.101925] R10: ffff888103b9b510 R11: 0000000000000000 R12:
-> ffff8881bbef2dc0
-> [657667.101932] R13: 0000000000000000 R14: ffff888233873d00 R15:
-> 0000000000000000
-> [657667.101944]  ? finish_task_switch.isra.0+0xa0/0x2e0
-> [657667.101957]  __schedule+0x3dd/0x14d0
-> [657667.101966]  ? flush_delayed_work+0x40/0x40
-> [657667.101982]  schedule+0x26/0xf0
-> [657667.101989]  worker_thread+0x209/0x430
-> [657667.102002]  ? _raw_spin_lock_irqsave+0x17/0x40
-> [657667.102014]  ? flush_delayed_work+0x40/0x40
-> [657667.102026]  kthread+0xda/0x110
-> [657667.102036]  ? kthread_park+0x80/0x80
-> [657667.102046]  ret_from_fork+0x2d/0x50
-> [657667.102054]  ? kthread_park+0x80/0x80
-> [657667.102064]  ret_from_fork_asm+0x11/0x20
-> [657667.102079]  </TASK>
-> [657667.102083] ---[ end trace 0000000000000000 ]---
->
-> On Thu, Dec 26, 2024 at 7:50 AM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
->> 在 2024/12/25 21:04, Yiyi Hu 写道:
->>> Hi, I'm using 6.6.x kernel, after I upgraded to kernel 6.12.x for my
->>> home server, I got the following error. Which causes soft rdma doesn't
->>> work for 6.12.x with my setup.
->> I read this bug descriptions for several times. To be honest, I am also
->> confused with this problem.
->>
->> It seems that with 6.6.x kernel, it can work well. And with 6.12.x, it
->> can not work.
->>
->> So maybe "git bisect" is a good tool to find the commit that causes this
->> problems.
->>
->> Zhu Yanjun
->>
->>> The kernel warning is:
->>>
->>> # [  134.041117] ------------[ cut here ]------------
->>> # [  134.041120] WARNING: CPU: 9 PID: 0 at
->>> drivers/infiniband/sw/rxe/rxe_net.c:357 rxe_skb_tx_dtor+0xbc/0x110
->>> [rdma_rxe]
->>> # [  134.041128] Modules linked in: dm_cache_smq dm_cache
->>> dm_persistent_data dm_bio_prison 8021q garp mrp macvtap macvlan veth
->>> dummy bridge stp llc nft_ct nf_tables sch_fq_codel virtio_vdpa vduse
->>> vdpa rdma_rxe ip6_udp_tunnel udp_tunnel nvme_rdma nvmet_rdma raid456
->>> async_raid6_recov async_memcpy async_pq async_xor async_tx xor
->>> raid6_pq raid1 raid0 bcache nvmet nvme_auth dm_writecache msr thermal
->>> rpcrdma rdma_ucm ib_iser ib_umad rdma_cm ib_ipoib iw_cm ib_cm
->>> rt2800usb rt2x00usb rt2800lib rt2x00lib ee1004 wmi_bmof mxm_wmi evdev
->>> mac80211 snd_hda_codec_realtek snd_hda_codec_generic
->>> snd_hda_scodec_component cfg80211 rfkill snd_hda_intel
->>> snd_intel_dspcfg nf_conntrack_tftp snd_intel_sdw_acpi
->>> nf_conntrack_netbios_ns nf_conntrack_broadcast nf_nat_ftp
->>> nf_conntrack_ftp nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4
->>> snd_hda_codec nct6775 snd_hda_core nct6775_core snd_hwdep hwmon_vid
->>> vhost_net snd_pcm mlx4_ib tun kvm_amd snd_timer vhost gpio_amdpt
->>> ib_uverbs vhost_iotlb i2c_piix4 snd tap rapl pcspkr soundcore
->>> i2c_smbus rtc_cmos wmi
->>> # [  134.041242]  button gpio_generic ib_core kvm k10temp drm fuse
->>> loop dmi_sysfs dm_snapshot dm_bufio mlx4_en sd_mod nvme_tcp
->>> nvme_fabrics nvme ixgbe crct10dif_pclmul mdio crc32_pclmul mdio_devres
->>> crc32c_intel igb ghash_clmulni_intel i2c_algo_bit sha512_ssse3 libphy
->>> nvme_core sha256_ssse3 ptp sha1_ssse3 hwmon xhci_pci aesni_intel ahci
->>> mlx4_core crypto_simd libahci xhci_hcd libata i2c_core sunrpc
->>> dm_mirror dm_region_hash dm_log be2iscsi iscsi_tcp libiscsi_tcp
->>> libiscsi scsi_transport_iscsi dm_multipath dm_mod efivarfs
->>> # [  134.041324] CPU: 9 UID: 0 PID: 0 Comm: swapper/9 Tainted: G
->>>    W          6.12.4-gentoo #2
->>> # [  134.041329] Tainted: [W]=WARN
->>> # [  134.041331] Hardware name: To Be Filled By O.E.M. X370 Killer
->>> SLI/X370 Killer SLI, BIOS P10.31 08/23/2024
->>> # [  134.041335] RIP: 0010:rxe_skb_tx_dtor+0xbc/0x110 [rdma_rxe]
->>> # [  134.041342] Code: 00 f0 0f c1 87 80 00 00 00 83 f8 01 74 39 85 c0
->>> 7f 96 5b 5d be 03 00 00 00 48 89 d7 41 5c e9 7b 43 39 e0 41 f6 04 24
->>> 01 75 26 <0f> 0b 5b 5d 41 5c c3 ff c8 83 f8 0f 77 a4 49 8d bc 24 d8 03
->>> 00 00
->>> # [  134.041347] RSP: 0018:ffffc90000338d20 EFLAGS: 00010246
->>> # [  134.041352] RAX: 0000000000000000 RBX: ffff888101b38200 RCX:
->>> 0000000000000000
->>> # [  134.041355] RDX: ffff88810092de80 RSI: 000000000000000e RDI:
->>> ffff88810092de80
->>> # [  134.041358] RBP: 0000000000000000 R08: ffff8881253b0000 R09:
->>> 0000000000000001
->>> # [  134.041360] R10: ffff8881251fac00 R11: 0000000000000080 R12:
->>> ffff888125220000
->>> # [  134.041364] R13: 0000000000000056 R14: 0000000000010000 R15:
->>> ffff888101b38200
->>> # [  134.041367] FS:  0000000000000000(0000) GS:ffff889fbee40000(0000)
->>> knlGS:0000000000000000
->>> # [  134.041370] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> # [  134.041373] CR2: 000055ec3e726750 CR3: 000000000341b000 CR4:
->>> 0000000000350ef0
->>> # [  134.041376] Call Trace:
->>> # [  134.041379]  <IRQ>
->>> # [  134.041381]  ? rxe_skb_tx_dtor+0xbc/0x110 [rdma_rxe]
->>> # [  134.041388]  ? __warn.cold+0x93/0xed
->>> # [  134.041392]  ? rxe_skb_tx_dtor+0xbc/0x110 [rdma_rxe]
->>> # [  134.041398]  ? report_bug+0xe2/0x170
->>> # [  134.041402]  ? handle_bug+0x4f/0x90
->>> # [  134.041405]  ? exc_invalid_op+0x13/0x60
->>> # [  134.041409]  ? asm_exc_invalid_op+0x16/0x20
->>> # [  134.041413]  ? rxe_skb_tx_dtor+0xbc/0x110 [rdma_rxe]
->>> # [  134.041420]  skb_release_head_state+0x20/0x90
->>> # [  134.041424]  napi_consume_skb+0x3e/0x100
->>> # [  134.041428]  mlx4_en_free_tx_desc+0x11d/0x200 [mlx4_en]
->>> # [  134.041433]  mlx4_en_process_tx_cq+0x182/0x560 [mlx4_en]
->>> # [  134.041439]  mlx4_en_poll_tx_cq+0x28/0x70 [mlx4_en]
->>> # [  134.041443]  __napi_poll+0x25/0x150
->>> # [  134.041447]  net_rx_action+0x300/0x370
->>> # [  134.041452]  ? mlx4_msi_x_interrupt+0xd/0x20 [mlx4_core]
->>> # [  134.041465]  handle_softirqs+0xf0/0x2a0
->>> # [  134.041469]  irq_exit_rcu+0x74/0xd0
->>> # [  134.041473]  common_interrupt+0xb8/0xd0
->>> # [  134.041476]  </IRQ>
->>> # [  134.041478]  <TASK>
->>> # [  134.041480]  asm_common_interrupt+0x22/0x40
->>> # [  134.041484] RIP: 0010:cpuidle_enter_state+0xaf/0x410
->>> # [  134.041488] Code: de 01 00 00 e8 d2 9c 5f ff e8 dd f2 ff ff 49 89
->>> c5 0f 1f 44 00 00 31 ff e8 9e bd 5e ff 45 84 ff 0f 85 b0 01 00 00 fb
->>> 45 85 f6 <0f> 88 88 01 00 00 48 8b 04 24 49 63 ce 4c 89 ea 48 6b f1 68
->>> 48 29
->>> # [  134.041492] RSP: 0018:ffffc9000013be78 EFLAGS: 00000202
->>> # [  134.041496] RAX: ffff889fbee40000 RBX: ffff888104c68400 RCX:
->>> 0000000000000000
->>> # [  134.041500] RDX: 0000001f357196a8 RSI: ffffffff82142fc3 RDI:
->>> ffffffff82146c8f
->>> # [  134.041503] RBP: 0000000000000002 R08: 0000000000000002 R09:
->>> 0000000000000000
->>> # [  134.041506] R10: 0000000000000018 R11: ffff889fbee72144 R12:
->>> ffffffff824dfd40
->>> # [  134.041509] R13: 0000001f357196a8 R14: 0000000000000002 R15:
->>> 0000000000000000
->>> # [  134.041513]  ? cpuidle_enter_state+0xa2/0x410
->>> # [  134.041517]  cpuidle_enter+0x29/0x40
->>> # [  134.041520]  do_idle+0x19a/0x200
->>> # [  134.041524]  cpu_startup_entry+0x25/0x30
->>> # [  134.041527]  start_secondary+0xfe/0x120
->>> # [  134.041530]  common_startup_64+0x13e/0x141
->>> # [  134.041535]  </TASK>
->>> # [  134.041537] ---[ end trace 0000000000000000 ]---
->>>
->>> the system has a "Hewlett-Packard Company InfiniBand FDR/Ethernet
->>> 10Gb/40Gb 2-port 544+FLR-QSFP Adapter"
->>> I created a software bridge named br-fp and bridge 2 ports on this adapter,
->>> I also created a veth pair (venfp <-> venfpbr), venfpbr is connected
->>> to bridge br-fp.
->>> then I do 'rdma link add rxe_venfp type rxe netdev venfp', If I try to
->>> do rdma connect to remote storge, the error occurs.
->>>
->>> if you need other info, Please tell me.
->>>
->>> Thanks.
-
--- 
-Best Regards,
-Yanjun.Zhu
-
+My point is: I don't think netdev is as opposed to memory regions as
+you think it is. As long as you come up with sensible new UAPI and
+as long as everything is in the open, it's up for discussion.
 
