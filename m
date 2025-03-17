@@ -1,64 +1,64 @@
-Return-Path: <linux-rdma+bounces-8760-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8761-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25F22A661AA
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 23:31:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47905A661C5
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 23:38:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BF233A990D
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 22:31:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB4881899196
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 22:38:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84717205ABB;
-	Mon, 17 Mar 2025 22:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DC71202F60;
+	Mon, 17 Mar 2025 22:38:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="OBiZbwbH"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="h8zQ8NPM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2065.outbound.protection.outlook.com [40.107.212.65])
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2078.outbound.protection.outlook.com [40.107.94.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE6A1CEAB2;
-	Mon, 17 Mar 2025 22:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 885671DDC16;
+	Mon, 17 Mar 2025 22:38:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.78
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742250654; cv=fail; b=E1oOV0U84ggfkkwH21S6ofZWn5jhIE66wOc0nTMTyJ5QyhlrQpc8ldtJExl2q6Neu9PVyfPPCZiXpPXZHmjEVIOQgIivgOWaggx7TnkGEfcFKh83MwXxsq4c49VJ3ajMWphhoaM1H+7fFJKHLGcHG0AP5KrejPpxHbsmQcSewRI=
+	t=1742251089; cv=fail; b=jGHOjtWw0eQxA3An2S0852yC5C8oo3AJsfegclpoh5hky6TlzkSgzRrj/XrlDsApewKMZPuUeRI8nxlC43VHDvKm1S1+Rf5CY+4j62xds+rTufjS76EqJfamt7LAb+A3e78j5x6KT0Sq+tErpSLjXZPzmbFt/pzsOMFB1Dzat94=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742250654; c=relaxed/simple;
-	bh=u9kMa1C0L5Cl7fCoNqAJRxEjvGU1RfP2lpFhkqcUhi0=;
+	s=arc-20240116; t=1742251089; c=relaxed/simple;
+	bh=V1CO9yZYpdJsrvPsF30w860ND8BiLYW/Lp2PX2UrUJY=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=p5049sHl/mf0eDjW5F2NA9qnX6mrsX7obZmpWup3eHnnFVGxBflvtaO4G/AZFwrANIq2RdMOIHhC44dN7DUgo6lVaWCK2MpIhh0KNoAki4sYRw1rxXEZORcnDvf6ojbgHa5zcxTLGKbWnHGKnzm6aY11kf15qQAGQX92Ho2TN4Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=OBiZbwbH; arc=fail smtp.client-ip=40.107.212.65
+	 Content-Type:MIME-Version; b=LxAACq0hjvevzmfPHecycEjSIKVsNf8gjg8R5kuZe5FIICX2n+DjwN227smNTbRMTtkw0JGSK4ba+CF/xaOUwl/YQr6Vjrd6azBASJFXqX8QsGf3W/YONFu8lhdTJFw8Yt4YTL4VKa/lWmItcR1ak2mxWnj1f7MQaWsEb+Uw3hI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=h8zQ8NPM; arc=fail smtp.client-ip=40.107.94.78
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=uo9sTiIee5I8w0vGltOv8U1pzjXTWq/ISRiP7etoXHjYo4XjGGZ6HPE+vQ8gqrQgSYEX3Cxvt/clFnVZsRCr0TXGe16Y/9BeJqQ97xmH37qRBL5VqWdy5c8t+sboIwQ1SnOaedMXebyG9OYz/UxmFu6UQpu7Lw2fnjOn129Qu7Ue3ev2cBcAoD4Y7f/v3k/7lpFj9CUxl6Gl8y2lFwKP7ktUjlODQoOWmFFm1uBl+IX8rfjQjvMztkpHzTUA6m5OVbw4pmRUNoLS5cP26yMlOIkFVM/FjORMMWMF0eiqPyy4+XuIPWC1lxNbdlEfguTV07Q56TFFrAOwEnmbEN4ORQ==
+ b=pNxlvyXOnItZc0rmbBv8kP024UPrgGivMk5gnPngXzK9W/UdAXAm7gC55iVOCo9i60Yfeso7iDT1y1kKsEskByV+4US8GdGVRlQlXuHWpwWvufT2cLWdQYWvbybhqTx9qyrXyNicKAoOjPT88aqib44ZtUBxlyGfK7+rnW+f1dZl4i5iKnh6EgpNzqrsc2dQcqdsMElB4tCpTD72kC1p877nFZnxpLJE2YnRPkz03WGRmlWLYSFI/b8kyBVAllLWfbCTxveWp95oeI45ffTD5s6x6/MxALkwnA/jG2ammT1JuAjmahbDU0I7fTTQ7g6vu9Ag0BvJPte2Qkl9+DXJUA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=w1EOVWKrre7p3b6SCwPI832E48TFEZesilW0X64S1r8=;
- b=ojAzoV8O8492WwfeipI34cVQQAX1XRpnPgENrdh/9qPRrMFhilYW5l+vYyF5irqG5ePukgAUxjH/Y3FxWBM4bmcy0U++iFx9Fp4pdWzGkl61IVNFDKgQwTDdEtsSMLJk/tlyAMDqt/3rpg5m/e9uYbstokH1l4GDA3VqXIM9NtRA0mjE5AtaSJXiEyx7dz+tQxtBCN77HSeNKcIEFl+rliW8uhpRFiu2r5F/vD0lX/3d+SYG/5Ty6Ql5CnciIkbNyMBhQtA0j61XHeyH3Syra4RcLpYf2+VgGVsRth00lJPGAX3aa2ZhjX1LJei6X72F/0Up4RlcrBwuY9P119m9YA==
+ bh=/adQLZBSfS7BcGlmbT5oC6jaZUaOc5dUxNFxEQgqrIQ=;
+ b=i6MjT7WQak+ToMZNbbSEZ2JKXDjEW3pqHubu3ybo5eBrpGyWASH5fTaYV6pZJWkxGwmFt28nTFzZslxmDefNIXrThpfqW9S9uQZRFTQzvv/2k+qSQ/THfZOhW1sUk+MLZtkXR74nYlg5kpJhYb1ySPJK6PWx1CnHkO19jS2jPJH5+ZCpi1164wpIjP4BJj5rysYp3cQKSaht9CBXDGITvt/9Cu7RGh/yIZc4g5Ye9UbWQu6COIAk6LAYQM0Xp5TsKhaNli8fmPhheuj7djFQV0qA0R7TTItamUvSWX1XJsdzLmKCDKoC/OApIlPJYrpSMz4PtLlAiT6Qof3dn7Ijew==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w1EOVWKrre7p3b6SCwPI832E48TFEZesilW0X64S1r8=;
- b=OBiZbwbHGt/D7ND0jox3b9e0rbmG033Qerwj2IfjEVt81bDPuKGcEf8mi6H0Ift8Agh2gExa2bvdj8lgrTelDM1Az8lIug9eMd9QxX9MiORhtit/op27dtMkHiS/yMN18sVuAc3xzrP/70XKJWJHRp3g5vXbjXN3LUNP0MNuovk=
+ bh=/adQLZBSfS7BcGlmbT5oC6jaZUaOc5dUxNFxEQgqrIQ=;
+ b=h8zQ8NPMabMlEwYdNnoXbwEvfd6nHJtKZaqlpElDMNF6Iabl6wzUKPF739Ojd44gTYCOghuTtiFcBEtHrYfY9L0MYK1h8N0phreDL5ezr3/p3vYXGmHaONWxL6ezPw2vrR8VasEmqAgR0fn9Q7r8gZ7kpwvWGa17TYFg7S2mUR4=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
- BL1PR12MB5779.namprd12.prod.outlook.com (2603:10b6:208:392::9) with Microsoft
+ DM4PR12MB7551.namprd12.prod.outlook.com (2603:10b6:8:10d::12) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8534.33; Mon, 17 Mar 2025 22:30:46 +0000
+ 15.20.8534.33; Mon, 17 Mar 2025 22:38:01 +0000
 Received: from DS0PR12MB6583.namprd12.prod.outlook.com
  ([fe80::c8a9:4b0d:e1c7:aecb]) by DS0PR12MB6583.namprd12.prod.outlook.com
  ([fe80::c8a9:4b0d:e1c7:aecb%5]) with mapi id 15.20.8534.031; Mon, 17 Mar 2025
- 22:30:46 +0000
-Message-ID: <6dc6a934-e896-45c3-b74d-6adf0ba1e258@amd.com>
-Date: Mon, 17 Mar 2025 15:30:43 -0700
+ 22:38:01 +0000
+Message-ID: <70e61c29-cad4-4463-9d13-2cc2ca97862f@amd.com>
+Date: Mon, 17 Mar 2025 15:37:39 -0700
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/6] pds_core: specify auxiliary_device to be created
+Subject: Re: [PATCH v3 3/6] pds_core: add new fwctl auxiliary_device
 To: Dave Jiang <dave.jiang@intel.com>, jgg@nvidia.com,
  andrew.gospodarek@broadcom.com, aron.silverton@oracle.com,
  dan.j.williams@intel.com, daniel.vetter@ffwll.ch, dsahern@kernel.org,
@@ -68,15 +68,15 @@ To: Dave Jiang <dave.jiang@intel.com>, jgg@nvidia.com,
  linux-rdma@vger.kernel.org, netdev@vger.kernel.org, saeedm@nvidia.com
 Cc: brett.creeley@amd.com
 References: <20250307185329.35034-1-shannon.nelson@amd.com>
- <20250307185329.35034-3-shannon.nelson@amd.com>
- <68c66882-3a91-4843-b08e-2f9d5d2d0290@intel.com>
+ <20250307185329.35034-4-shannon.nelson@amd.com>
+ <d63a0509-404a-4abd-90b9-d5ebb408ce98@intel.com>
 Content-Language: en-US
 From: "Nelson, Shannon" <shannon.nelson@amd.com>
-In-Reply-To: <68c66882-3a91-4843-b08e-2f9d5d2d0290@intel.com>
+In-Reply-To: <d63a0509-404a-4abd-90b9-d5ebb408ce98@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR16CA0030.namprd16.prod.outlook.com
- (2603:10b6:a03:1a0::43) To DS0PR12MB6583.namprd12.prod.outlook.com
+X-ClientProxiedBy: BYAPR07CA0106.namprd07.prod.outlook.com
+ (2603:10b6:a03:12b::47) To DS0PR12MB6583.namprd12.prod.outlook.com
  (2603:10b6:8:d1::12)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -85,297 +85,262 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|BL1PR12MB5779:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8cf5cc07-e896-48a6-cfc0-08dd65a35c84
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|DM4PR12MB7551:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4c393fe0-ad70-44b3-7113-08dd65a4546e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|921020|7053199007;
+	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|921020|7053199007;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?azJnT1YxVnpkT0hnS2x4Y3N5MDNSTTlybHg0V2xyd2YwMGR4RTJuT2krclNv?=
- =?utf-8?B?aWhnWjl1QU56MzY4WTQwa2hubjB6N1pPNmxuMmQ4Y3JXa2dOZEZUUHdUamNt?=
- =?utf-8?B?VFFkUW1wbnUzY0REUXZXWVp1ODJsSFUxemNxZE5vNjlJT1dvR3Y2VS9ET0U2?=
- =?utf-8?B?TjMrcmkxQVVkblRSRHEwOENxc2lHSEdIczdvNEJYWmU0UGw4c0dFK0gvNUpI?=
- =?utf-8?B?UExtL1NFTVFYSFkxMjFpeGZMbzJtTTI5QXdZUTRRTmhtYm1ZNFpiL0tjWFNo?=
- =?utf-8?B?R0NLcWtmcXhkNGZoRExYZzlVcTV3WDlWN1JNVGJXRVQ5R3F4ZUN4RFlITDRZ?=
- =?utf-8?B?bFJubnRuYXJPdE5obkFsZUxsRExSUFNxVVlQOFA3eVEwUVM5Qy9hWUJweVk2?=
- =?utf-8?B?NDZQKzUyN0Jubis1bnZkZzU4R1ovYzdTRmFOYWpjcmErZXlHZlV6SEFIeFF6?=
- =?utf-8?B?dVZGRnFjKy9LL1F1Y1FCaGlFV0diY3d0NHg1RGtQWWVwd2R2eTRJU3NwVkhT?=
- =?utf-8?B?V25xRGFHZWY2YzBQWVlVQUcycHE0SjNaUU5jdmgvczREZ3NtZGtKTkxVRlVt?=
- =?utf-8?B?OUZ6djdURWZvK3V2ZFZkNlNJYTRqcUxMZml5dmZTcWpxS0RZekNpMDNITDZF?=
- =?utf-8?B?bHE3Z0xPNmJlbm9FWUd0SjJFM3VQdkpZUU9QeFlqWGFyVCsweWgvSXZvMk5G?=
- =?utf-8?B?N1Zab3J0QkdHWnNIR3lzQU1kQnJUQjQ2S0kwYXRvRlhvaDIvTU9tRUF2enIz?=
- =?utf-8?B?V1AvaTdoRlRuMkJQejBNczgxcXZpa2ltVlpRYXV6OXlSMkpRZU0zdXBaTG9L?=
- =?utf-8?B?VFBIbnRKYi9pVW5uYU5PM0RVZitYdWxhTTlibjlmZktFR1RIREtxWlBOQStF?=
- =?utf-8?B?aVhNb1hYOFQvWUszU0RteUxwNUJiS1ZjMlhHVWZ5SWtGTHIzRUp4UFFOQjZN?=
- =?utf-8?B?M1JLRGVqU1hFcEVHejZyWlVjZndkZUZKVnBlNDNrZWJtYnlOVndLdTZnSG1a?=
- =?utf-8?B?MmZIRWs4MWU0ZW9tSjNkZVQ3cFk0K0JMYW13bWJ0U2xJOG9wQU85S0hxMmhz?=
- =?utf-8?B?eTZpVldCSkpRMGlVNlZkdDJleEI1cXMzOVBqR2VnTzl5NmZHN3k2Q2k3MTl1?=
- =?utf-8?B?RTFkSWl4ekp0eEZwN24wK0Q5TW91ZllEYnNmd0ozSUlDZkpmSTh5YjNwTmRC?=
- =?utf-8?B?ZEZJanZMNFJCa241MkNMdkNmT1V6blBPa2RmWSs5THRsalcxemFCOUUxcVYx?=
- =?utf-8?B?dGhXaUxkMGsvSVVCZndDSm95SkhQWlVsVFJidFF1TTJwZE9NUjdYQ2JXaTJH?=
- =?utf-8?B?aXNEVndnelFYUmNZa0hPK0ZCTURYYzUwYllDcTdzSG9xWWpXS0Z6Rm9GQk4w?=
- =?utf-8?B?NkswUVBYZEtxWGlhVmo5aXVXMkhyOGdKME9MUGg4UTEvK0tRYm5vek5MVkZn?=
- =?utf-8?B?MFM2NEFVaTVrY2puNkpuTFV2OWlyZ2R1OWtNVndvQlU5dUFjV25jb0FZSlhI?=
- =?utf-8?B?R2dFYjFnLzF2SFFaMmdyTWZqcWgvK1VoblhUbzhGVkZ1dmNOQ0RhVW9OamNu?=
- =?utf-8?B?bW1pMEhBVncrQkRBcTh6OXV2OTRlMS9pTi82bzZGb2NnNEMwT1BnNThLcDIv?=
- =?utf-8?B?eVVpVnkxdXEweW1CUk5GTjU4UFBzMUFMWGpPcnArenczRERENGI0R3BJRzNo?=
- =?utf-8?B?YVZ4TWZCditBWlBGelR2SFpueUxHVXF6dkFlRkI2S3BQRmd2Qnc0TGxYQUIv?=
- =?utf-8?B?M0NoRkpHbmxuL1NERERxeHU2NDBlT2p6QzVhNkRDckoyck9Fb1A4S0lTMW8v?=
- =?utf-8?B?T1hmMkd2Nzh0dUFtM1B3WWtXbW85TzArZiszRXRBMTVFaUFiYWFsWks0Umxx?=
- =?utf-8?Q?w8DRSQuUlFpTe?=
+	=?utf-8?B?QmJ0Z3psa2lJSnptVzFiMlp3bFRMTXd1MVNsUTI5U2tFRHpyem5DSWNqN2lQ?=
+ =?utf-8?B?Rll5VkdBQTk2TkcxamNZb2Nibk1HSXdxYWFmc1NzRjh3ck9YYzZqVGdBSDFr?=
+ =?utf-8?B?OU9kZDJuUUZoT294K1cxMWJhQXJuMHJucmVVS1dQZnNrUTF5NzlGNWw4OGJu?=
+ =?utf-8?B?bXZmQTNMZ2UyMUJjZ1dtYU5Xek4wM1dSaFRoY1hoQXJuUFpZNGhUQkUzTDBW?=
+ =?utf-8?B?ZjJGSkcxRC90d1l4dzlNdXVUWUcxckdQa1Y0c0tVZEtYWktiVitnN1BoYWE1?=
+ =?utf-8?B?TU9hbkVTZEtBRUNMeEZyN1o1M2wrek85S1RhcWpXOWRjVnRRczNLZUZPT2t1?=
+ =?utf-8?B?QzhsOUt6YUp6Y3ZyeDFRQ0xCaTlFbGZxT2o0N0g1VnB5VklQZnlRekg4c0dl?=
+ =?utf-8?B?K0JHYS9BY3lKNXFGM09tL3kzMWY0ZURadStoM2xSUklSUGt0YlNSWWhqQVhj?=
+ =?utf-8?B?OW50TWlhU016QW92MDUzK1dxSzBGN09YWGUyK3JDbEVzWDJqemR2ZEY3NEw2?=
+ =?utf-8?B?OHI0dnpLL2tXcXRRWllNdytxSFoxOWFteXh6bDliUlZ5VUt1QnZ3OTFQa3hk?=
+ =?utf-8?B?L3lPSHEzd3laS3pqT2J5Z1JmQ0RFMDV3cjJZM1AvYStZOFFlcVNHZURzSGVC?=
+ =?utf-8?B?ZW1qdUhnKzM4d2htRnU1c0hPNUwwWkxoWUJ1ak5MdktpeEZMUmdRQnp3YXFH?=
+ =?utf-8?B?NjVjcjl6b0V4UW8xelNIQVlqVE9NUzVMZ1RJRXlNSG1LZ3pJQ2JOOE9ISjZy?=
+ =?utf-8?B?MWx3UDhjcnd1N003NFZRcTdwc3ZiVXVVV0kyY1liS3Ftb3dxMytpdlN2V2xn?=
+ =?utf-8?B?LzJ1ZXBmWk1HUS9IVDRINkpFTDFFK3h1aDRGVERUejgxVE9MbGxwa3V6aFNq?=
+ =?utf-8?B?cGJ4YzA5NEZSWVp1RU51bklKOGhOUmFieU9laHl5OFlKYk5jY0ovMk1RREM5?=
+ =?utf-8?B?aHRlczFQQm1DdFZhMzA5SWFqOExWblFhbEFDUW5oUWdwODZpODh2VHg3NGRl?=
+ =?utf-8?B?YmwrcFhEbkhsTm9qNFNiQXBQNHhISGxOMnFrKzVhNGUrTzgxdzV4Z2w4Tmhh?=
+ =?utf-8?B?QVdrUjV2Y3dmYStNbTdXWEoxZ3A0aUgzaDhEVDlIWVNVaVRKQ0hXQm1ieUk3?=
+ =?utf-8?B?RFlONHRVYk5mTSsya0VnRW94d3Y1R3o4akNXdzhiUDRVbTlYVXh3dStUZ2kx?=
+ =?utf-8?B?QVN6bnhPL2MxakNHbTNCSTdGU3VFUWNBT2RQVU5Na1plNk5ZZmxibk9uRm0r?=
+ =?utf-8?B?UHRsL3lRQTVBL0U2eXdjdmZEc0w5WnFNZkhNTlR1Sy91N0laT2VKN2Q0RjFp?=
+ =?utf-8?B?cFdIc1MybWRxWlBWYXkxTUNvcnJ0aFh1YWhIRWNKdmdLODA2aXZ2RGEwaWZI?=
+ =?utf-8?B?WTVyenMrRms2aUFVYXhiUWdTREl6b2EzMjdiQTJRVWkvZHcrUWdkbDlRem1J?=
+ =?utf-8?B?SVYxN0VRM1AzUVJGMm5VRnVGY1FVUitkMnFPSkR4M1VubWVOZTZUSkZPbDdt?=
+ =?utf-8?B?ZS8yYjB1QzVDTkhFY3pUOGRDWmtvTWdDMUVlMGNrUHNoOHF6U3Z2VWVhVUhq?=
+ =?utf-8?B?VkxUdW56ZVBvRmFGOTVZUVk3bUhSc2JvUTAxRVZRSjFCbTBCR2U3TzNiSk1B?=
+ =?utf-8?B?UmJCKzBObDlWWlM0K0ZGcE43bXFubm1MQ052TEtwZUNmODQySHoxM3FzYmJB?=
+ =?utf-8?B?S1JHaDk2V0V4SjE5dmkvbUFqNWpZaTNNOHYvUWRtNHN2Sm0xc2djdVJ4aVI0?=
+ =?utf-8?B?UkFNcVNELytJbmtDMllhUGtBQVRwYzNQaTM0d3hkMkxYOGFsUlNXM3BrTVR3?=
+ =?utf-8?B?NUdoTUlKbnRZcVB5bU9LT1R0S0tFU3lQbXNIVUdodFV1ZFd4UWZ5SkhhL0w5?=
+ =?utf-8?B?c3RxaHdLcEtJN2VVMkZMaUFlMlVIS0hpb2szL1hWV1MzVVhiaHp0OFBlcEJ0?=
+ =?utf-8?Q?66shkGCWvDs=3D?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(921020)(7053199007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(921020)(7053199007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VzNZL3IzVUx6SDZRaDRHdVlaeU9LWk9vc2U5dHFtNThhM0JvRVNRTUxDbExX?=
- =?utf-8?B?eC9vQStqeXk4M09na0dDdHJrWHRKaGNxd1MvSGJJMm1IMTJOMDZrZW1rbGRw?=
- =?utf-8?B?R2RyVVFRcHJ0T2hON3l6WUdUc29ub21TTldHbUlqalc3MzM3eG5JOVU5RjJH?=
- =?utf-8?B?cG0xUzhPSnJIQ2VNOCtzMzdMZGJ2eVRNWWVsZ1o2TFRDSDBHc0tMcG1aOU5U?=
- =?utf-8?B?Ti9xbnFGSGk3RXdoNStMVFhyYnI0S1lCVEV5RVBpdVVQendBTjlQeTVKTS9n?=
- =?utf-8?B?YWk2UVJWZ3RraDhsV1l1eWkxaTh0V1I1eU5sMytmYUp1NjNyU3ZWbVZzMTdD?=
- =?utf-8?B?WFVwM0pnWWVWVkJwelJpZWN0OXZFbXFMWk5MckJPSmdRbXh6YUNHbTJYNFUv?=
- =?utf-8?B?R1pTb3p3VU5PQ1NrWGZkMlQvb0Mrbkw4Q1hHSkoxcFFNeWcyR2l4b3c3Sisv?=
- =?utf-8?B?dHFJdDk4elNzV0NoT1RkUWVBQ1djRys2dG5WV09kOTBpN2Fzb3RjK3JxUnpi?=
- =?utf-8?B?dlRaV05ZdWJxL1pjaEdNUjFQOGtPamVsZ2FmTTFPVXM4cmsyYldXVHpLdkFl?=
- =?utf-8?B?dkRvbFpNME9kQ01BaUF2WElPQ0pGNUtwVEkrdDJ2c21XckFYZy93UFB1aXA3?=
- =?utf-8?B?K0tNcW5IaUE1OWRGNlR5clBKOWdEZzFuNldaaWVCdW52ZW5hNDAzZVE5VXZi?=
- =?utf-8?B?eGxxZ1B0U3Z3VkllWWZDcEdkRWdzTUtsbXQvY1owL0xZL2EvV05QWjdqbVoy?=
- =?utf-8?B?WmNGdFB0OFRqVTNsVzBiOEU5Y1NFUGZHckcwLzJ2dWl2Rk1RN2Y2ZUFpNkZn?=
- =?utf-8?B?bzN2Rm9TbnY5VVY2NUdSQUpKQTUrODBWRktsN0ZIUUdvTXBVbWh2OUVlZFM4?=
- =?utf-8?B?YkMwZzlnUUFMaXVaQlRMNmk4emhscTFHYllOb1hmRUFSVmQ4T0gzODgxbHpU?=
- =?utf-8?B?M0t4cFUxSExHM0U0dlB4SWhvT2drbHR0UndpUFJwQmxoaFR0cGVVekNaTGZa?=
- =?utf-8?B?NmhkMVc1QmpabUo2TlBRN0VJblZzK01BTy9BR1NzMmh6bTAzY2VIK3M4UTFy?=
- =?utf-8?B?c3orSDlTaDZYSHBQRENURFhkUHBwR1I3b2Q1YldxQ04wUDRTT0tpd1NabmVX?=
- =?utf-8?B?R01sWXNRVXVTMFJudUZDMUptenlzTUdiRmE3aWVKUEZLQi8vQUlTNUtpZ0NX?=
- =?utf-8?B?TDVXeGJmYTcwUnhNOVNuTnB5M0N2b25heXREVU8rYVdWNVl1RE1nTWtIS3ZK?=
- =?utf-8?B?Z1pkSGc0aU9PZnR0NlJKNVU4SzAvWEtCUThlZGhRQWYzMVZSYTg3MzlFc3Nj?=
- =?utf-8?B?QUpBSjM0dFJSWDZwekZqYUtBb1lBRE1SY3lHMjlVdDdKdGV6bEtSaCt5Wktr?=
- =?utf-8?B?R21ZUXRTZ0Fta1dhSWI4d0hZaGZ5ZnNLMDVCcDZWQmRxZm82d1RWTkxxa000?=
- =?utf-8?B?UStoaEQ5bmxkUmNBTjByNi9kbW1oeitNZGVxdGFNeXRuY3NMcUdzWU5rS3cy?=
- =?utf-8?B?RzZMTjk1dlgybkxWbEtsRXFNNTU0aXRqKzRzbU5Kb3ArUGhmejlVcTZjbXBG?=
- =?utf-8?B?YWpOOTRKSkFjSkxxT3dVemwwblp1SUlRSDdsa1lLTXk1Y3FqMnlTMzdmNlJZ?=
- =?utf-8?B?YTV6ekpvTHBYVmNDYm1xdmRPN3d2UDFLdG1DUkxYVHV4UCtHR1FqTmYwQzF4?=
- =?utf-8?B?cWt0N1pWR2JoNC8rOU15ZGZhaWw0Q2hocHd4ODRjY25EN200V0Y4RVZZejRQ?=
- =?utf-8?B?UGdJUURucFY5aVM4bDBHQkVHQlFWNnVlZ0NIaml5cW9NZmNHNDZtTGVEMm5E?=
- =?utf-8?B?T1RmMnRlUzB5QXVGTXZ6UXNnZ0FqWEtmT09yVGJhT3RkMDJ4N1hCcUZiZ0ZH?=
- =?utf-8?B?STlFcWwvNEFwZzN2UWVYUEhvNWNmbFp3ODYyQ0V4RzVDeWVhNWcwTG5QZnJ4?=
- =?utf-8?B?SlNCS25mejhzQnFMTnlyUnpNRm1iZDFZejFRQjVReklHdTJrS3FoZUVWcjlQ?=
- =?utf-8?B?bEhGcDVSZC9NZXZhZFV1Y3dYaHd3NnMzWExaTlNleitNcHBNeDFlQWJqMGRN?=
- =?utf-8?B?cW0ydHd1VDk2Qjd5S0RiYU9NNjlSaHJQVjFaRFZtVi9KRmlYdFJRbzNydGRz?=
- =?utf-8?Q?/QvqY1P7i+DY5p27wFwFW2JuV?=
+	=?utf-8?B?VGJ0eGJxZytIcTR5RWZWU2VoTW1TVm9GcXFmR0s0MWFDQmxlWHdHSkl3dFN1?=
+ =?utf-8?B?Tzc1b3piN2dtT2M5dHQ2RkdVdkc3eEphZnR3VU5QT0FkOVBjbHF0TklmSFBG?=
+ =?utf-8?B?bHRpakgyV1A4eFBEdnBqdVQxR25ia2VJclZTeTlXcFp5bFBtby9MbVpjd3du?=
+ =?utf-8?B?TnFDaVpybnNkT1FzVG9GUmlhUWNmR0Jwd0M0SkY4bE9XTVZZbnVXTFVObWpF?=
+ =?utf-8?B?TnNXS0pNM05tRmlWRzZFb1M2NFlPaCtueUcrSmh4OWx6eTAwclVXTk1sOFli?=
+ =?utf-8?B?cXI4MDRFbjFNU3F2OGhCU3FJLzVMbmYwc0d0bjZnRzI1UDl2SVB5OHZCMkZw?=
+ =?utf-8?B?Q1pkT0lJREFkYUNXeWE5RlQyVHZiTGsxMmlZTk15TFJwS21obWVsL09LeWZu?=
+ =?utf-8?B?ZUlBODh4SkFFSDVwSy9wbHhQeTErTFVIUmxDbHFKejVjUStudDZBd2lUYkE0?=
+ =?utf-8?B?b3lFQndvUVNWd3JRa1h3QlVIbVp4RVI1b0t4dVNXOTNaREtvVEVLalJRUDZC?=
+ =?utf-8?B?S3NPTHFDd3FIdUJDUHpPN1FNbGJjRFl0QlBEVmthUmVtZjJWdEhBWk14RTlx?=
+ =?utf-8?B?Y0VYUVdZSlMvYXZlUWYwR3N1RCt0WHhCYkMwQ1hmbmJrV0JONUx0RFNNd0ZS?=
+ =?utf-8?B?aVZHS2pqL280Y2t4MzNOaXg2cnlDZVEzUkR0eldoU1RTMDNsMkQ0aDVyQmh4?=
+ =?utf-8?B?SDVrOW1KLzh5TE1ZajRtQzZSRTdmQUlrUmZqcVdaTXFhZUM5Y1FoTlcwN2pM?=
+ =?utf-8?B?Yjd5S1pBQkdMRWUyV1FPTDU1NURDcTlpTFVBcCtqaHBmdDlXQnBMOVI5Smdx?=
+ =?utf-8?B?STFUdkhaWHVhK29RWUNTK1F4RUJGQWI2eUd3N3lia1hWRHB0MWZPK29mWWFN?=
+ =?utf-8?B?SXlwYVlXRmoyOTBZZWZMd0tOU3JLaFVJNHFScDMwMVJMOXMxNFEwaWcrbTVJ?=
+ =?utf-8?B?SXUvbCszczF5QWpWNFVwbkZTU2VlSjU3cHBGelVjcHBBMUNtdnQySEYxVEdU?=
+ =?utf-8?B?cloxOU1PS3ZLZGppTUFJWEw2eHpCTHdWRjhWemVZODNoRzNXVms3MTVqYjIy?=
+ =?utf-8?B?OEtvN2dSVGdEN1c4SXIxVTV0bzZ6NWF6dlRxK09RZ0pLdHNBN0Q1bDJoQVVW?=
+ =?utf-8?B?VHdwNE9ETktDNW1oSWxOcmp4QWFCK3VGSlUyYTVSaFVrWkQybHJsblpwOFBH?=
+ =?utf-8?B?bXA4SUQ4SmMyazUzTGpRR3NoMGVjSktMbEVWOHA3VFRJQmhiWGxKbmFMUEVo?=
+ =?utf-8?B?S0htNlZScGN4Vk1zZXk0Nk5mY21iRlNGbmk0ZnpWLzZuVStkMlRnZUpWRENp?=
+ =?utf-8?B?UWZhanRZY1Zud2c1ZUZ5bERGYlB2TmkyWnVJaFFpMkx6cEpaR2xiSE5kZDRU?=
+ =?utf-8?B?eTVRY0p0dnF5R1Q3T3k0b01od2psVlNvWmR6cVRTa20zbjcrd0xSd1l4Mm1w?=
+ =?utf-8?B?VnVjaGlaako4dUxiZi9iSHFjZER4NTQrQ2lVSHBoWGZqcUNhajA0ZFpPVlZj?=
+ =?utf-8?B?eU8ra2VtY25WbFZ6MFpPNjMyNHJvdkNZV0x1MjJNcnFxeEFVdUdtajVaN0Fv?=
+ =?utf-8?B?bld4bDFPUGRiTzh5YmJQSndjWmRqbjQwamp6V0dtSE1pcG9LNk96UXA4SkZx?=
+ =?utf-8?B?emQ2M0pUc3llNURaM3hhSW1VNWdWWkN2cnMxdGNQK3RnOUNSRktaelUrc1Nk?=
+ =?utf-8?B?RVVvMURod3A4SEFySFBBYlRBMjhhS3pFTFRFUGpMVlozVEhETWRScVMzdVBZ?=
+ =?utf-8?B?OUIyU3dLS1JyVkxRalRzK0JUa1JldHNSa1BySWR1V2RXRFlRQlZrV0tPU1JD?=
+ =?utf-8?B?M0hpUkc5TjMyMFF3dkQyUGNOZ2Q3bVpuSjIvbVNsZWgyajlKU25QWDNVRTVN?=
+ =?utf-8?B?ejkxWkJORUFNWjQ3RitVSUZiQjl0Y2R1OXdjRG1NZUF6S0N2THNKK2JRajQ3?=
+ =?utf-8?B?QXZkWmtPdEFnUVVTMWlZUWEvTUR4UXN2UlhadGc1cDc2TEwvQS9NN0JZQjcv?=
+ =?utf-8?B?azBMc2RNNU1qNXZvR2hINU1UNTNnN3BQUkpmVlRVMGtoMGdKYlBPUStpV3JI?=
+ =?utf-8?B?dU9mNDNlYWRiUE9KcmN5M25NaHlzTC9UbHVCdVZFUTVhZXNZa2kxZDhORVhO?=
+ =?utf-8?Q?zqLcWrMeERc74hdQ41vAfWPWw?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8cf5cc07-e896-48a6-cfc0-08dd65a35c84
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c393fe0-ad70-44b3-7113-08dd65a4546e
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2025 22:30:46.4996
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2025 22:37:42.3561
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GIUlBe8jEyYHZCDxQcNaS4HxpW1cNZkEfKM+/iduRNZqP38RbeCgSXN5LrbNWUgB/fn2NbgHofRO2PajDKVUMg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5779
+X-MS-Exchange-CrossTenant-UserPrincipalName: dg/htAIBqZmZVSjAaeidlTm0uA4er2E8LTPOq4Xd9YyWTJbo21+C35XvPH3C7CPz22SVQVmXK5L+SZ/0H5QDSQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7551
 
-On 3/10/2025 10:26 AM, Dave Jiang wrote:
+On 3/10/2025 10:33 AM, Dave Jiang wrote:
 > 
 > On 3/7/25 11:53 AM, Shannon Nelson wrote:
->> In preparation for adding a new auxiliary_device for the
->> PF, make the vif type an argument to pdsc_auxbus_dev_add().
-> 
->> We also now pass in the address to where we'll keep the new
->> padev pointer so that the caller can specify where to save it
->> but we can still change it under the mutex and keep the mutex
->> usage within the function.
-> 
-> Please consider changing the commit log to use imperative language and avoid using pronouns such as "we".
-> 
-> https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#describe-your-changes
-> https://kernelnewbies.org/PatchPhilosophy#:~:text=Please%20read%20that%20whole%20section,it%20into%20the%20git%20history.
-> 
-> Maybe something like:
-> Pass in the address of the padev pointer so the caller can specify where to save it. ...
-
-Done - thanks,
-sln
-
-> 
+>> Add support for a new fwctl-based auxiliary_device for creating a
+>> channel for fwctl support into the AMD/Pensando DSC.
 >>
 >> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
->> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 >> Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
 > 
 > Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 > 
+> minor comment below
+> 
 >> ---
->>   drivers/net/ethernet/amd/pds_core/auxbus.c  | 37 ++++++++++-----------
->>   drivers/net/ethernet/amd/pds_core/core.h    |  7 ++--
->>   drivers/net/ethernet/amd/pds_core/devlink.c |  5 +--
->>   drivers/net/ethernet/amd/pds_core/main.c    | 11 +++---
->>   4 files changed, 33 insertions(+), 27 deletions(-)
+>>   drivers/net/ethernet/amd/pds_core/auxbus.c |  4 ++--
+>>   drivers/net/ethernet/amd/pds_core/core.c   |  7 +++++++
+>>   drivers/net/ethernet/amd/pds_core/core.h   |  1 +
+>>   drivers/net/ethernet/amd/pds_core/main.c   | 14 +++++++++++++-
+>>   include/linux/pds/pds_common.h             |  2 ++
+>>   5 files changed, 25 insertions(+), 3 deletions(-)
 >>
 >> diff --git a/drivers/net/ethernet/amd/pds_core/auxbus.c b/drivers/net/ethernet/amd/pds_core/auxbus.c
->> index 78fba368e797..563de9e7ce0a 100644
+>> index 563de9e7ce0a..c9aeb56e8174 100644
 >> --- a/drivers/net/ethernet/amd/pds_core/auxbus.c
 >> +++ b/drivers/net/ethernet/amd/pds_core/auxbus.c
->> @@ -175,29 +175,32 @@ static struct pds_auxiliary_dev *pdsc_auxbus_dev_register(struct pdsc *cf,
->>        return padev;
->>   }
->>
->> -void pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf)
->> +void pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf,
->> +                      struct pds_auxiliary_dev **pd_ptr)
->>   {
->>        struct pds_auxiliary_dev *padev;
->>
->> +     if (!*pd_ptr)
->> +             return;
->> +
->>        mutex_lock(&pf->config_lock);
->>
->> -     padev = pf->vfs[cf->vf_id].padev;
->> -     if (padev) {
->> -             pds_client_unregister(pf, padev->client_id);
->> -             auxiliary_device_delete(&padev->aux_dev);
->> -             auxiliary_device_uninit(&padev->aux_dev);
->> -             padev->client_id = 0;
->> -     }
->> -     pf->vfs[cf->vf_id].padev = NULL;
->> +     padev = *pd_ptr;
->> +     pds_client_unregister(pf, padev->client_id);
->> +     auxiliary_device_delete(&padev->aux_dev);
->> +     auxiliary_device_uninit(&padev->aux_dev);
->> +     padev->client_id = 0;
->> +     *pd_ptr = NULL;
->>
->>        mutex_unlock(&pf->config_lock);
->>   }
->>
->> -int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
->> +int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf,
->> +                     enum pds_core_vif_types vt,
->> +                     struct pds_auxiliary_dev **pd_ptr)
->>   {
->>        struct pds_auxiliary_dev *padev;
->>        char devname[PDS_DEVNAME_LEN];
->> -     enum pds_core_vif_types vt;
->>        unsigned long mask;
->>        u16 vt_support;
->>        int client_id;
->> @@ -206,6 +209,9 @@ int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
->>        if (!cf)
->>                return -ENODEV;
->>
->> +     if (vt >= PDS_DEV_TYPE_MAX)
->> +             return -EINVAL;
->> +
->>        mutex_lock(&pf->config_lock);
->>
->>        mask = BIT_ULL(PDSC_S_FW_DEAD) |
->> @@ -217,17 +223,10 @@ int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
->>                goto out_unlock;
+>> @@ -224,8 +224,8 @@ int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf,
 >>        }
 >>
->> -     /* We only support vDPA so far, so it is the only one to
->> -      * be verified that it is available in the Core device and
->> -      * enabled in the devlink param.  In the future this might
->> -      * become a loop for several VIF types.
->> -      */
->> -
 >>        /* Verify that the type is supported and enabled.  It is not
->>         * an error if there is no auxbus device support for this
->>         * VF, it just means something else needs to happen with it.
+>> -      * an error if there is no auxbus device support for this
+>> -      * VF, it just means something else needs to happen with it.
+>> +      * an error if the firmware doesn't support the feature, we
+>> +      * just won't set up an auxiliary_device for it.
+> 
+> s/, we just/; the driver/
+
+Got it, thanks,
+sln
+
+> 
+> DJ
+> 
+> 
+> 
 >>         */
->> -     vt = PDS_DEV_TYPE_VDPA;
 >>        vt_support = !!le16_to_cpu(pf->dev_ident.vif_types[vt]);
 >>        if (!(vt_support &&
->>              pf->viftype_status[vt].supported &&
->> @@ -253,7 +252,7 @@ int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf)
->>                err = PTR_ERR(padev);
->>                goto out_unlock;
->>        }
->> -     pf->vfs[cf->vf_id].padev = padev;
->> +     *pd_ptr = padev;
+>> diff --git a/drivers/net/ethernet/amd/pds_core/core.c b/drivers/net/ethernet/amd/pds_core/core.c
+>> index 536635e57727..1eb0d92786f7 100644
+>> --- a/drivers/net/ethernet/amd/pds_core/core.c
+>> +++ b/drivers/net/ethernet/amd/pds_core/core.c
+>> @@ -402,6 +402,9 @@ static int pdsc_core_init(struct pdsc *pdsc)
+>>   }
 >>
->>   out_unlock:
->>        mutex_unlock(&pf->config_lock);
+>>   static struct pdsc_viftype pdsc_viftype_defaults[] = {
+>> +     [PDS_DEV_TYPE_FWCTL] = { .name = PDS_DEV_TYPE_FWCTL_STR,
+>> +                              .vif_id = PDS_DEV_TYPE_FWCTL,
+>> +                              .dl_id = -1 },
+>>        [PDS_DEV_TYPE_VDPA] = { .name = PDS_DEV_TYPE_VDPA_STR,
+>>                                .vif_id = PDS_DEV_TYPE_VDPA,
+>>                                .dl_id = DEVLINK_PARAM_GENERIC_ID_ENABLE_VNET },
+>> @@ -428,6 +431,10 @@ static int pdsc_viftypes_init(struct pdsc *pdsc)
+>>
+>>                /* See what the Core device has for support */
+>>                vt_support = !!le16_to_cpu(pdsc->dev_ident.vif_types[vt]);
+>> +
+>> +             if (vt == PDS_DEV_TYPE_FWCTL)
+>> +                     pdsc->viftype_status[vt].enabled = true;
+>> +
+>>                dev_dbg(pdsc->dev, "VIF %s is %ssupported\n",
+>>                        pdsc->viftype_status[vt].name,
+>>                        vt_support ? "" : "not ");
 >> diff --git a/drivers/net/ethernet/amd/pds_core/core.h b/drivers/net/ethernet/amd/pds_core/core.h
->> index 631a59cfdd7e..f075e68c64db 100644
+>> index f075e68c64db..0bf320c43083 100644
 >> --- a/drivers/net/ethernet/amd/pds_core/core.h
 >> +++ b/drivers/net/ethernet/amd/pds_core/core.h
->> @@ -303,8 +303,11 @@ void pdsc_health_thread(struct work_struct *work);
->>   int pdsc_register_notify(struct notifier_block *nb);
->>   void pdsc_unregister_notify(struct notifier_block *nb);
->>   void pdsc_notify(unsigned long event, void *data);
->> -int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf);
->> -void pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf);
->> +int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf,
->> +                     enum pds_core_vif_types vt,
->> +                     struct pds_auxiliary_dev **pd_ptr);
->> +void pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf,
->> +                      struct pds_auxiliary_dev **pd_ptr);
->>
->>   void pdsc_process_adminq(struct pdsc_qcq *qcq);
->>   void pdsc_work_thread(struct work_struct *work);
->> diff --git a/drivers/net/ethernet/amd/pds_core/devlink.c b/drivers/net/ethernet/amd/pds_core/devlink.c
->> index 4e2b92ddef6f..c5c787df61a4 100644
->> --- a/drivers/net/ethernet/amd/pds_core/devlink.c
->> +++ b/drivers/net/ethernet/amd/pds_core/devlink.c
->> @@ -57,9 +57,10 @@ int pdsc_dl_enable_set(struct devlink *dl, u32 id,
->>                struct pdsc *vf = pdsc->vfs[vf_id].vf;
->>
->>                if (ctx->val.vbool)
->> -                     err = pdsc_auxbus_dev_add(vf, pdsc);
->> +                     err = pdsc_auxbus_dev_add(vf, pdsc, vt_entry->vif_id,
->> +                                               &pdsc->vfs[vf_id].padev);
->>                else
->> -                     pdsc_auxbus_dev_del(vf, pdsc);
->> +                     pdsc_auxbus_dev_del(vf, pdsc, &pdsc->vfs[vf_id].padev);
->>        }
->>
->>        return err;
+>> @@ -156,6 +156,7 @@ struct pdsc {
+>>        struct dentry *dentry;
+>>        struct device *dev;
+>>        struct pdsc_dev_bar bars[PDS_CORE_BARS_MAX];
+>> +     struct pds_auxiliary_dev *padev;
+>>        struct pdsc_vf *vfs;
+>>        int num_vfs;
+>>        int vf_id;
 >> diff --git a/drivers/net/ethernet/amd/pds_core/main.c b/drivers/net/ethernet/amd/pds_core/main.c
->> index 660268ff9562..a3a68889137b 100644
+>> index a3a68889137b..4843f9249a31 100644
 >> --- a/drivers/net/ethernet/amd/pds_core/main.c
 >> +++ b/drivers/net/ethernet/amd/pds_core/main.c
->> @@ -190,7 +190,8 @@ static int pdsc_init_vf(struct pdsc *vf)
->>        devl_unlock(dl);
+>> @@ -265,6 +265,10 @@ static int pdsc_init_pf(struct pdsc *pdsc)
 >>
->>        pf->vfs[vf->vf_id].vf = vf;
->> -     err = pdsc_auxbus_dev_add(vf, pf);
->> +     err = pdsc_auxbus_dev_add(vf, pf, PDS_DEV_TYPE_VDPA,
->> +                               &pf->vfs[vf->vf_id].padev);
->>        if (err) {
->>                devl_lock(dl);
->>                devl_unregister(dl);
->> @@ -417,7 +418,7 @@ static void pdsc_remove(struct pci_dev *pdev)
+>>        mutex_unlock(&pdsc->config_lock);
 >>
->>                pf = pdsc_get_pf_struct(pdsc->pdev);
->>                if (!IS_ERR(pf)) {
->> -                     pdsc_auxbus_dev_del(pdsc, pf);
->> +                     pdsc_auxbus_dev_del(pdsc, pf, &pf->vfs[pdsc->vf_id].padev);
->>                        pf->vfs[pdsc->vf_id].vf = NULL;
->>                }
->>        } else {
->> @@ -482,7 +483,8 @@ static void pdsc_reset_prepare(struct pci_dev *pdev)
+>> +     err = pdsc_auxbus_dev_add(pdsc, pdsc, PDS_DEV_TYPE_FWCTL, &pdsc->padev);
+>> +     if (err)
+>> +             goto err_out_stop;
+>> +
+>>        dl = priv_to_devlink(pdsc);
+>>        devl_lock(dl);
+>>        err = devl_params_register(dl, pdsc_dl_params,
+>> @@ -273,7 +277,7 @@ static int pdsc_init_pf(struct pdsc *pdsc)
+>>                devl_unlock(dl);
+>>                dev_warn(pdsc->dev, "Failed to register devlink params: %pe\n",
+>>                         ERR_PTR(err));
+>> -             goto err_out_stop;
+>> +             goto err_out_del_dev;
+>>        }
 >>
->>                pf = pdsc_get_pf_struct(pdsc->pdev);
+>>        hr = devl_health_reporter_create(dl, &pdsc_fw_reporter_ops, 0, pdsc);
+>> @@ -296,6 +300,8 @@ static int pdsc_init_pf(struct pdsc *pdsc)
+>>   err_out_unreg_params:
+>>        devlink_params_unregister(dl, pdsc_dl_params,
+>>                                  ARRAY_SIZE(pdsc_dl_params));
+>> +err_out_del_dev:
+>> +     pdsc_auxbus_dev_del(pdsc, pdsc, &pdsc->padev);
+>>   err_out_stop:
+>>        pdsc_stop(pdsc);
+>>   err_out_teardown:
+>> @@ -427,6 +433,7 @@ static void pdsc_remove(struct pci_dev *pdev)
+>>                 * shut themselves down.
+>>                 */
+>>                pdsc_sriov_configure(pdev, 0);
+>> +             pdsc_auxbus_dev_del(pdsc, pdsc, &pdsc->padev);
+>>
+>>                timer_shutdown_sync(&pdsc->wdtimer);
+>>                if (pdsc->wq)
+>> @@ -485,6 +492,8 @@ static void pdsc_reset_prepare(struct pci_dev *pdev)
 >>                if (!IS_ERR(pf))
->> -                     pdsc_auxbus_dev_del(pdsc, pf);
->> +                     pdsc_auxbus_dev_del(pdsc, pf,
->> +                                         &pf->vfs[pdsc->vf_id].padev);
+>>                        pdsc_auxbus_dev_del(pdsc, pf,
+>>                                            &pf->vfs[pdsc->vf_id].padev);
+>> +     } else {
+>> +             pdsc_auxbus_dev_del(pdsc, pdsc, &pdsc->padev);
 >>        }
 >>
 >>        pdsc_unmap_bars(pdsc);
->> @@ -527,7 +529,8 @@ static void pdsc_reset_done(struct pci_dev *pdev)
->>
->>                pf = pdsc_get_pf_struct(pdsc->pdev);
+>> @@ -531,6 +540,9 @@ static void pdsc_reset_done(struct pci_dev *pdev)
 >>                if (!IS_ERR(pf))
->> -                     pdsc_auxbus_dev_add(pdsc, pf);
->> +                     pdsc_auxbus_dev_add(pdsc, pf, PDS_DEV_TYPE_VDPA,
->> +                                         &pf->vfs[pdsc->vf_id].padev);
+>>                        pdsc_auxbus_dev_add(pdsc, pf, PDS_DEV_TYPE_VDPA,
+>>                                            &pf->vfs[pdsc->vf_id].padev);
+>> +     } else {
+>> +             pdsc_auxbus_dev_add(pdsc, pdsc, PDS_DEV_TYPE_FWCTL,
+>> +                                 &pdsc->padev);
 >>        }
 >>   }
 >>
+>> diff --git a/include/linux/pds/pds_common.h b/include/linux/pds/pds_common.h
+>> index 5802e1deef24..b193adbe7cc3 100644
+>> --- a/include/linux/pds/pds_common.h
+>> +++ b/include/linux/pds/pds_common.h
+>> @@ -29,6 +29,7 @@ enum pds_core_vif_types {
+>>        PDS_DEV_TYPE_ETH        = 3,
+>>        PDS_DEV_TYPE_RDMA       = 4,
+>>        PDS_DEV_TYPE_LM         = 5,
+>> +     PDS_DEV_TYPE_FWCTL      = 6,
+>>
+>>        /* new ones added before this line */
+>>        PDS_DEV_TYPE_MAX        = 16   /* don't change - used in struct size */
+>> @@ -40,6 +41,7 @@ enum pds_core_vif_types {
+>>   #define PDS_DEV_TYPE_ETH_STR "Eth"
+>>   #define PDS_DEV_TYPE_RDMA_STR        "RDMA"
+>>   #define PDS_DEV_TYPE_LM_STR  "LM"
+>> +#define PDS_DEV_TYPE_FWCTL_STR       "fwctl"
+>>
+>>   #define PDS_VDPA_DEV_NAME    PDS_CORE_DRV_NAME "." PDS_DEV_TYPE_VDPA_STR
+>>   #define PDS_VFIO_LM_DEV_NAME PDS_CORE_DRV_NAME "." PDS_DEV_TYPE_LM_STR "." PDS_DEV_TYPE_VFIO_STR
 > 
 
 
