@@ -1,64 +1,64 @@
-Return-Path: <linux-rdma+bounces-8761-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8762-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47905A661C5
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 23:38:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FC9CA661DB
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 23:40:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB4881899196
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 22:38:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80F04189AF61
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 22:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DC71202F60;
-	Mon, 17 Mar 2025 22:38:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F506204851;
+	Mon, 17 Mar 2025 22:40:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="h8zQ8NPM"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="dUgE/HYc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2078.outbound.protection.outlook.com [40.107.94.78])
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2048.outbound.protection.outlook.com [40.107.212.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 885671DDC16;
-	Mon, 17 Mar 2025 22:38:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60CFC1EB5F0;
+	Mon, 17 Mar 2025 22:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742251089; cv=fail; b=jGHOjtWw0eQxA3An2S0852yC5C8oo3AJsfegclpoh5hky6TlzkSgzRrj/XrlDsApewKMZPuUeRI8nxlC43VHDvKm1S1+Rf5CY+4j62xds+rTufjS76EqJfamt7LAb+A3e78j5x6KT0Sq+tErpSLjXZPzmbFt/pzsOMFB1Dzat94=
+	t=1742251222; cv=fail; b=W3yGD4g+bpQS0RpO3KzruzU53CFdtGQdH5PxwOaOjRaCdy7UPRPUkT1sO37To2TzTkfVPpwyE+3BMhJDTQW1MpBPOka9TSBFDcBeC0lqPTvjKZceQccGtvrOop+Bdnb4N8YPCJP84TSMIjs4pnsen8k5UkBTG8eQQZYl+8zZTOw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742251089; c=relaxed/simple;
-	bh=V1CO9yZYpdJsrvPsF30w860ND8BiLYW/Lp2PX2UrUJY=;
+	s=arc-20240116; t=1742251222; c=relaxed/simple;
+	bh=sAKtzyHMWpmQuzndQcVKOgMFu6RCnyiXIVzyaplIHRg=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=LxAACq0hjvevzmfPHecycEjSIKVsNf8gjg8R5kuZe5FIICX2n+DjwN227smNTbRMTtkw0JGSK4ba+CF/xaOUwl/YQr6Vjrd6azBASJFXqX8QsGf3W/YONFu8lhdTJFw8Yt4YTL4VKa/lWmItcR1ak2mxWnj1f7MQaWsEb+Uw3hI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=h8zQ8NPM; arc=fail smtp.client-ip=40.107.94.78
+	 Content-Type:MIME-Version; b=ee/+FGcuzrysrt1v/wwpnX5/di9rGJOUOsyDQe61cY0MEo/Bt5X3uT+H39282qMSiWHJCvAdvCpRGcqd1UVeanqz1Z4HBVcGfyyoA8CNFVwIhz5fQl4etEb8RUfFD2FzkxQdc2Pl941G6GAVV3oChCD1MglY++khwAdO1KR9/gI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=dUgE/HYc; arc=fail smtp.client-ip=40.107.212.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=pNxlvyXOnItZc0rmbBv8kP024UPrgGivMk5gnPngXzK9W/UdAXAm7gC55iVOCo9i60Yfeso7iDT1y1kKsEskByV+4US8GdGVRlQlXuHWpwWvufT2cLWdQYWvbybhqTx9qyrXyNicKAoOjPT88aqib44ZtUBxlyGfK7+rnW+f1dZl4i5iKnh6EgpNzqrsc2dQcqdsMElB4tCpTD72kC1p877nFZnxpLJE2YnRPkz03WGRmlWLYSFI/b8kyBVAllLWfbCTxveWp95oeI45ffTD5s6x6/MxALkwnA/jG2ammT1JuAjmahbDU0I7fTTQ7g6vu9Ag0BvJPte2Qkl9+DXJUA==
+ b=cZHIQ4nwShwbRggiion6PyXHuaQkdZt92PLFGfYmCrBXxJFfLtm8ODHGuRgbToRUvKuBNs+dnPZ1AOhYpig0VS2FCRz5RS9HZiND7WZAlDZNOTURCpNIsJ3oiKyritm2YD1cE9D3lK5tYuQordYmYtzsEK5YkC4KADWui0M2AsGytiV/Dwsk474OAWZSWn2dxoA1iw9luzBfm0JkEPVKIro5pSoj3GnjJQRGKAmIucGTmFLYUdkAAodkAx33jzfyUPzag8GxCbeKBtjjBnq2LLGNhkCbathHmRifb511tVm4h4CjinJ61+aSzpjJWAwyKdG6scq/FkCXJ/S0h9vzVw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/adQLZBSfS7BcGlmbT5oC6jaZUaOc5dUxNFxEQgqrIQ=;
- b=i6MjT7WQak+ToMZNbbSEZ2JKXDjEW3pqHubu3ybo5eBrpGyWASH5fTaYV6pZJWkxGwmFt28nTFzZslxmDefNIXrThpfqW9S9uQZRFTQzvv/2k+qSQ/THfZOhW1sUk+MLZtkXR74nYlg5kpJhYb1ySPJK6PWx1CnHkO19jS2jPJH5+ZCpi1164wpIjP4BJj5rysYp3cQKSaht9CBXDGITvt/9Cu7RGh/yIZc4g5Ye9UbWQu6COIAk6LAYQM0Xp5TsKhaNli8fmPhheuj7djFQV0qA0R7TTItamUvSWX1XJsdzLmKCDKoC/OApIlPJYrpSMz4PtLlAiT6Qof3dn7Ijew==
+ bh=iPJFBWBvS+oBvmfwmTlYB+fXrx//OfqiAB1frl44fyw=;
+ b=etonyY1ThjUalpzm4eRtGiX1BgMt/X501JGqJD61vqxRHqv6JXfLsHUEdIYprBaDLv0hVMMDGYEHCKImtH6fV9gCp3qVXJV9C+l7JuPp38zKE/iYSxzNwC61SThJEDeMkWa6mWCAhYRhaceG0B+O67pTHaVH9gfNYwLpGEPT68yV/pTM0Xn5fAhDWual8kbEQuai0EvOkavocaWywrGC52/bi6bQZt9jX9+J71KAvR529Up3ghQlytpQCzEV7yR8D1sAjKFK7BbBhacnZgqqoyQSE01x8jcpeDC4LUFO8rZGUyRRzpXRngTq9shSdtNWnO87+T3NcSN4Ror6XvlPbw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/adQLZBSfS7BcGlmbT5oC6jaZUaOc5dUxNFxEQgqrIQ=;
- b=h8zQ8NPMabMlEwYdNnoXbwEvfd6nHJtKZaqlpElDMNF6Iabl6wzUKPF739Ojd44gTYCOghuTtiFcBEtHrYfY9L0MYK1h8N0phreDL5ezr3/p3vYXGmHaONWxL6ezPw2vrR8VasEmqAgR0fn9Q7r8gZ7kpwvWGa17TYFg7S2mUR4=
+ bh=iPJFBWBvS+oBvmfwmTlYB+fXrx//OfqiAB1frl44fyw=;
+ b=dUgE/HYchlVUoE1wegCSz3YTwAlRf/cX9NaRetM3f9UFnKkbcdq7m8znorfsDw3OfMAnU28OIzgTyVBfMN7NSXEjOGsDzu5aOvlLE27pfIOLGaRqRPUjzhw55E3oPDOoSOPJPRJSsk/5kySHNB299t6O3ZgsxIDLUwMysiUzJoY=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
  DM4PR12MB7551.namprd12.prod.outlook.com (2603:10b6:8:10d::12) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8534.33; Mon, 17 Mar 2025 22:38:01 +0000
+ 15.20.8534.33; Mon, 17 Mar 2025 22:40:16 +0000
 Received: from DS0PR12MB6583.namprd12.prod.outlook.com
  ([fe80::c8a9:4b0d:e1c7:aecb]) by DS0PR12MB6583.namprd12.prod.outlook.com
  ([fe80::c8a9:4b0d:e1c7:aecb%5]) with mapi id 15.20.8534.031; Mon, 17 Mar 2025
- 22:38:01 +0000
-Message-ID: <70e61c29-cad4-4463-9d13-2cc2ca97862f@amd.com>
-Date: Mon, 17 Mar 2025 15:37:39 -0700
+ 22:40:16 +0000
+Message-ID: <be93d39e-a24c-440e-ae17-27c285ce2077@amd.com>
+Date: Mon, 17 Mar 2025 15:40:11 -0700
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/6] pds_core: add new fwctl auxiliary_device
+Subject: Re: [PATCH v3 4/6] pds_fwctl: initial driver framework
 To: Dave Jiang <dave.jiang@intel.com>, jgg@nvidia.com,
  andrew.gospodarek@broadcom.com, aron.silverton@oracle.com,
  dan.j.williams@intel.com, daniel.vetter@ffwll.ch, dsahern@kernel.org,
@@ -68,15 +68,15 @@ To: Dave Jiang <dave.jiang@intel.com>, jgg@nvidia.com,
  linux-rdma@vger.kernel.org, netdev@vger.kernel.org, saeedm@nvidia.com
 Cc: brett.creeley@amd.com
 References: <20250307185329.35034-1-shannon.nelson@amd.com>
- <20250307185329.35034-4-shannon.nelson@amd.com>
- <d63a0509-404a-4abd-90b9-d5ebb408ce98@intel.com>
+ <20250307185329.35034-5-shannon.nelson@amd.com>
+ <d1c78d12-854f-48e7-a588-4e6cf0991156@intel.com>
 Content-Language: en-US
 From: "Nelson, Shannon" <shannon.nelson@amd.com>
-In-Reply-To: <d63a0509-404a-4abd-90b9-d5ebb408ce98@intel.com>
+In-Reply-To: <d1c78d12-854f-48e7-a588-4e6cf0991156@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR07CA0106.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::47) To DS0PR12MB6583.namprd12.prod.outlook.com
+X-ClientProxiedBy: BN0PR04CA0063.namprd04.prod.outlook.com
+ (2603:10b6:408:ea::8) To DS0PR12MB6583.namprd12.prod.outlook.com
  (2603:10b6:8:d1::12)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -86,261 +86,518 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|DM4PR12MB7551:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4c393fe0-ad70-44b3-7113-08dd65a4546e
+X-MS-Office365-Filtering-Correlation-Id: 7ac1baf2-d973-4f88-2c59-08dd65a4b042
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|921020|7053199007;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?QmJ0Z3psa2lJSnptVzFiMlp3bFRMTXd1MVNsUTI5U2tFRHpyem5DSWNqN2lQ?=
- =?utf-8?B?Rll5VkdBQTk2TkcxamNZb2Nibk1HSXdxYWFmc1NzRjh3ck9YYzZqVGdBSDFr?=
- =?utf-8?B?OU9kZDJuUUZoT294K1cxMWJhQXJuMHJucmVVS1dQZnNrUTF5NzlGNWw4OGJu?=
- =?utf-8?B?bXZmQTNMZ2UyMUJjZ1dtYU5Xek4wM1dSaFRoY1hoQXJuUFpZNGhUQkUzTDBW?=
- =?utf-8?B?ZjJGSkcxRC90d1l4dzlNdXVUWUcxckdQa1Y0c0tVZEtYWktiVitnN1BoYWE1?=
- =?utf-8?B?TU9hbkVTZEtBRUNMeEZyN1o1M2wrek85S1RhcWpXOWRjVnRRczNLZUZPT2t1?=
- =?utf-8?B?QzhsOUt6YUp6Y3ZyeDFRQ0xCaTlFbGZxT2o0N0g1VnB5VklQZnlRekg4c0dl?=
- =?utf-8?B?K0JHYS9BY3lKNXFGM09tL3kzMWY0ZURadStoM2xSUklSUGt0YlNSWWhqQVhj?=
- =?utf-8?B?OW50TWlhU016QW92MDUzK1dxSzBGN09YWGUyK3JDbEVzWDJqemR2ZEY3NEw2?=
- =?utf-8?B?OHI0dnpLL2tXcXRRWllNdytxSFoxOWFteXh6bDliUlZ5VUt1QnZ3OTFQa3hk?=
- =?utf-8?B?L3lPSHEzd3laS3pqT2J5Z1JmQ0RFMDV3cjJZM1AvYStZOFFlcVNHZURzSGVC?=
- =?utf-8?B?ZW1qdUhnKzM4d2htRnU1c0hPNUwwWkxoWUJ1ak5MdktpeEZMUmdRQnp3YXFH?=
- =?utf-8?B?NjVjcjl6b0V4UW8xelNIQVlqVE9NUzVMZ1RJRXlNSG1LZ3pJQ2JOOE9ISjZy?=
- =?utf-8?B?MWx3UDhjcnd1N003NFZRcTdwc3ZiVXVVV0kyY1liS3Ftb3dxMytpdlN2V2xn?=
- =?utf-8?B?LzJ1ZXBmWk1HUS9IVDRINkpFTDFFK3h1aDRGVERUejgxVE9MbGxwa3V6aFNq?=
- =?utf-8?B?cGJ4YzA5NEZSWVp1RU51bklKOGhOUmFieU9laHl5OFlKYk5jY0ovMk1RREM5?=
- =?utf-8?B?aHRlczFQQm1DdFZhMzA5SWFqOExWblFhbEFDUW5oUWdwODZpODh2VHg3NGRl?=
- =?utf-8?B?YmwrcFhEbkhsTm9qNFNiQXBQNHhISGxOMnFrKzVhNGUrTzgxdzV4Z2w4Tmhh?=
- =?utf-8?B?QVdrUjV2Y3dmYStNbTdXWEoxZ3A0aUgzaDhEVDlIWVNVaVRKQ0hXQm1ieUk3?=
- =?utf-8?B?RFlONHRVYk5mTSsya0VnRW94d3Y1R3o4akNXdzhiUDRVbTlYVXh3dStUZ2kx?=
- =?utf-8?B?QVN6bnhPL2MxakNHbTNCSTdGU3VFUWNBT2RQVU5Na1plNk5ZZmxibk9uRm0r?=
- =?utf-8?B?UHRsL3lRQTVBL0U2eXdjdmZEc0w5WnFNZkhNTlR1Sy91N0laT2VKN2Q0RjFp?=
- =?utf-8?B?cFdIc1MybWRxWlBWYXkxTUNvcnJ0aFh1YWhIRWNKdmdLODA2aXZ2RGEwaWZI?=
- =?utf-8?B?WTVyenMrRms2aUFVYXhiUWdTREl6b2EzMjdiQTJRVWkvZHcrUWdkbDlRem1J?=
- =?utf-8?B?SVYxN0VRM1AzUVJGMm5VRnVGY1FVUitkMnFPSkR4M1VubWVOZTZUSkZPbDdt?=
- =?utf-8?B?ZS8yYjB1QzVDTkhFY3pUOGRDWmtvTWdDMUVlMGNrUHNoOHF6U3Z2VWVhVUhq?=
- =?utf-8?B?VkxUdW56ZVBvRmFGOTVZUVk3bUhSc2JvUTAxRVZRSjFCbTBCR2U3TzNiSk1B?=
- =?utf-8?B?UmJCKzBObDlWWlM0K0ZGcE43bXFubm1MQ052TEtwZUNmODQySHoxM3FzYmJB?=
- =?utf-8?B?S1JHaDk2V0V4SjE5dmkvbUFqNWpZaTNNOHYvUWRtNHN2Sm0xc2djdVJ4aVI0?=
- =?utf-8?B?UkFNcVNELytJbmtDMllhUGtBQVRwYzNQaTM0d3hkMkxYOGFsUlNXM3BrTVR3?=
- =?utf-8?B?NUdoTUlKbnRZcVB5bU9LT1R0S0tFU3lQbXNIVUdodFV1ZFd4UWZ5SkhhL0w5?=
- =?utf-8?B?c3RxaHdLcEtJN2VVMkZMaUFlMlVIS0hpb2szL1hWV1MzVVhiaHp0OFBlcEJ0?=
- =?utf-8?Q?66shkGCWvDs=3D?=
+	=?utf-8?B?K1hhdEM1Q295M2JWV3lLZXY1ZS8rTjV5dzhLMFFteVpTcG9OejhpTXZYMXJP?=
+ =?utf-8?B?MGViNjhoYkhPREpJWFoxQzZKekd6TGZHdkR1WFJoYjNzS21id1hrMEVRTGFK?=
+ =?utf-8?B?dFBTVHVZd1Qrck9STEhEME9QaEpORS9CVWcxd1R2L2NzN1NaZzA3ODcrUTY5?=
+ =?utf-8?B?Q08zYnk5TjdzbWMyeU4zU1QyUmZTT1ZheHVGVU5saTFFeEZySGw2TTdWd0JM?=
+ =?utf-8?B?eTE5R0xBdGtLd0VxOFA0eWRkMlNlQm00cTdkVE0weW83WjJOM1FjbXE0T2VX?=
+ =?utf-8?B?T1h4dllUaTZyNzlmcEE5Q3VHZ1cvdjZXbTJnVXBZempKbHl3eVJNYUh4WGRk?=
+ =?utf-8?B?eGxNTzNQOTV2OVdqL0NneHdmQUpKaE1vYmdUODkvODFxQ0FFZzFOVmxvUzNS?=
+ =?utf-8?B?dmdKd2FNb1dXLy9nRlNTNFBRVzJaYUNIZlMyQmp0anhNbnJEVTFvbHUyZVlj?=
+ =?utf-8?B?R28reEpxc3R4M2E4ZXFBUGhPeXdZSHNta2dwTzJOV0JiOU1YY1JxVjVlc21x?=
+ =?utf-8?B?YnR0eG5Kdm9RejVsdzUwdVhadU5mbnRMY0Y5ZjM3T1ZtQ1FkaUJsbS9kV2Z3?=
+ =?utf-8?B?UmhORXZLbUgvbENBRnA2bWhKcTZ5aVdGdTB4dXhSMkdWR1NtUnp4dkQzeWVt?=
+ =?utf-8?B?S1RVeEhuMlZPL3pPL1NaaXhVME1FOHJoajU4YzNiR3NiNXNLbTBlVllHUFBv?=
+ =?utf-8?B?eUFRU3FGbCtvTEg5MWtiVktpZSt6NzRQQUx4S2ZUalhFV3pCRXlTNXNNNUYz?=
+ =?utf-8?B?WUhraDdyV2ZyRVhVM2I5dTZjaHYwcGFUdXFsOTNjZHRXZXlMRDY4eVhVZEdF?=
+ =?utf-8?B?dFQyMVMyem5TenBJSkM0cU4ySlpIeUtpWGpUSDJJazJmb0lxQ1J0THhNWXdS?=
+ =?utf-8?B?YTRjaFFCRDlCZXlTaFMvU3ZHSmd6cXBJeHpqK21MVFRETVBHamhBTkMxNTYy?=
+ =?utf-8?B?dXNBd2xkZ3NQUjVMUmNqV2RHeTRCVlprb3pmUnFhV01tbjE4WUk0alN4d09I?=
+ =?utf-8?B?SUgyU3VibUgxUmVMTDVEQ2VCL3AyVjFsbDh2ZDE1bDczeHkxU0hTUlJtU2ha?=
+ =?utf-8?B?cnNEV1A0dVRtdURnL1pnYU9XTko0RWphNDVaTVhudnluOXJ0TGRRQm9QdzNy?=
+ =?utf-8?B?K0xKaktxekF1R1NQS3B5eFBFY05pMWVBUDJRSStuczJ5amhHY3BGSGdoY1NC?=
+ =?utf-8?B?MTY3RlRSQTNSSThjQ0dPdUZzR1R2MVBtWmpkZ2psNVJ3U2dGcmpROVNLQ3lh?=
+ =?utf-8?B?dVVVdXhuQ0wzMjl2MGZXY3lpRHNZTXZQcWJDUkoyRlAvVnUza0Vnc2lxR2V1?=
+ =?utf-8?B?Zlh6RExnV1lzeFVSNUhBUjBXSXVabThFUDF6MUxqWVI1S2pwS25Va0orM2U5?=
+ =?utf-8?B?U2JUUHk4TUlOWks0TXFKdThnSE5mSnZYWWtzSTJGNDUvWmRvZjNxdGEvZURu?=
+ =?utf-8?B?OFAvUC8xUm9ObWZrbkVKYldxR2FoVkROZ0NyeDNPcTBIZ0lIL3ZwNmJaQkl3?=
+ =?utf-8?B?WEJIaDJSZEs2Ym5JbENuVFlEZUFQTUVxL1N2Qm5YNmY5cFZnNkluOUxta3Ir?=
+ =?utf-8?B?RFZSQlUwMnFRVitJQjdjN3lPTzhwd0pLSzFLMEFXNXdOYWhBbTJhamVabzdv?=
+ =?utf-8?B?ekoxK3VncXJzVUFhQjFFb21iR3RtblNkWC9nUUFkVkxkQXFLM2l1eXE1M21P?=
+ =?utf-8?B?MS9yUjByVzlieW4wbGFDdkRkZDFGZnRUczdFUUordzhrVm00djdzWFNndWVo?=
+ =?utf-8?B?NWhYb3d0cGJJYzdtOHp1Um5kL0hPQ1ZrR0lXQ0FtWkY3WlNoK2x4OWZxOUhU?=
+ =?utf-8?B?L3BVTmthOG1zZVVFSFpTZWgwWGtOZjdLSjNaZXFJVlhuME1VSTZPNERJQkEy?=
+ =?utf-8?B?ak1GZEJjZGd6WVAwRGNscG12VExtMkdPMDJIRXk0TXI1MFkwTHAvb2pUdFJi?=
+ =?utf-8?Q?7hKBJtK/qeQ=3D?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(921020)(7053199007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VGJ0eGJxZytIcTR5RWZWU2VoTW1TVm9GcXFmR0s0MWFDQmxlWHdHSkl3dFN1?=
- =?utf-8?B?Tzc1b3piN2dtT2M5dHQ2RkdVdkc3eEphZnR3VU5QT0FkOVBjbHF0TklmSFBG?=
- =?utf-8?B?bHRpakgyV1A4eFBEdnBqdVQxR25ia2VJclZTeTlXcFp5bFBtby9MbVpjd3du?=
- =?utf-8?B?TnFDaVpybnNkT1FzVG9GUmlhUWNmR0Jwd0M0SkY4bE9XTVZZbnVXTFVObWpF?=
- =?utf-8?B?TnNXS0pNM05tRmlWRzZFb1M2NFlPaCtueUcrSmh4OWx6eTAwclVXTk1sOFli?=
- =?utf-8?B?cXI4MDRFbjFNU3F2OGhCU3FJLzVMbmYwc0d0bjZnRzI1UDl2SVB5OHZCMkZw?=
- =?utf-8?B?Q1pkT0lJREFkYUNXeWE5RlQyVHZiTGsxMmlZTk15TFJwS21obWVsL09LeWZu?=
- =?utf-8?B?ZUlBODh4SkFFSDVwSy9wbHhQeTErTFVIUmxDbHFKejVjUStudDZBd2lUYkE0?=
- =?utf-8?B?b3lFQndvUVNWd3JRa1h3QlVIbVp4RVI1b0t4dVNXOTNaREtvVEVLalJRUDZC?=
- =?utf-8?B?S3NPTHFDd3FIdUJDUHpPN1FNbGJjRFl0QlBEVmthUmVtZjJWdEhBWk14RTlx?=
- =?utf-8?B?Y0VYUVdZSlMvYXZlUWYwR3N1RCt0WHhCYkMwQ1hmbmJrV0JONUx0RFNNd0ZS?=
- =?utf-8?B?aVZHS2pqL280Y2t4MzNOaXg2cnlDZVEzUkR0eldoU1RTMDNsMkQ0aDVyQmh4?=
- =?utf-8?B?SDVrOW1KLzh5TE1ZajRtQzZSRTdmQUlrUmZqcVdaTXFhZUM5Y1FoTlcwN2pM?=
- =?utf-8?B?Yjd5S1pBQkdMRWUyV1FPTDU1NURDcTlpTFVBcCtqaHBmdDlXQnBMOVI5Smdx?=
- =?utf-8?B?STFUdkhaWHVhK29RWUNTK1F4RUJGQWI2eUd3N3lia1hWRHB0MWZPK29mWWFN?=
- =?utf-8?B?SXlwYVlXRmoyOTBZZWZMd0tOU3JLaFVJNHFScDMwMVJMOXMxNFEwaWcrbTVJ?=
- =?utf-8?B?SXUvbCszczF5QWpWNFVwbkZTU2VlSjU3cHBGelVjcHBBMUNtdnQySEYxVEdU?=
- =?utf-8?B?cloxOU1PS3ZLZGppTUFJWEw2eHpCTHdWRjhWemVZODNoRzNXVms3MTVqYjIy?=
- =?utf-8?B?OEtvN2dSVGdEN1c4SXIxVTV0bzZ6NWF6dlRxK09RZ0pLdHNBN0Q1bDJoQVVW?=
- =?utf-8?B?VHdwNE9ETktDNW1oSWxOcmp4QWFCK3VGSlUyYTVSaFVrWkQybHJsblpwOFBH?=
- =?utf-8?B?bXA4SUQ4SmMyazUzTGpRR3NoMGVjSktMbEVWOHA3VFRJQmhiWGxKbmFMUEVo?=
- =?utf-8?B?S0htNlZScGN4Vk1zZXk0Nk5mY21iRlNGbmk0ZnpWLzZuVStkMlRnZUpWRENp?=
- =?utf-8?B?UWZhanRZY1Zud2c1ZUZ5bERGYlB2TmkyWnVJaFFpMkx6cEpaR2xiSE5kZDRU?=
- =?utf-8?B?eTVRY0p0dnF5R1Q3T3k0b01od2psVlNvWmR6cVRTa20zbjcrd0xSd1l4Mm1w?=
- =?utf-8?B?VnVjaGlaako4dUxiZi9iSHFjZER4NTQrQ2lVSHBoWGZqcUNhajA0ZFpPVlZj?=
- =?utf-8?B?eU8ra2VtY25WbFZ6MFpPNjMyNHJvdkNZV0x1MjJNcnFxeEFVdUdtajVaN0Fv?=
- =?utf-8?B?bld4bDFPUGRiTzh5YmJQSndjWmRqbjQwamp6V0dtSE1pcG9LNk96UXA4SkZx?=
- =?utf-8?B?emQ2M0pUc3llNURaM3hhSW1VNWdWWkN2cnMxdGNQK3RnOUNSRktaelUrc1Nk?=
- =?utf-8?B?RVVvMURod3A4SEFySFBBYlRBMjhhS3pFTFRFUGpMVlozVEhETWRScVMzdVBZ?=
- =?utf-8?B?OUIyU3dLS1JyVkxRalRzK0JUa1JldHNSa1BySWR1V2RXRFlRQlZrV0tPU1JD?=
- =?utf-8?B?M0hpUkc5TjMyMFF3dkQyUGNOZ2Q3bVpuSjIvbVNsZWgyajlKU25QWDNVRTVN?=
- =?utf-8?B?ejkxWkJORUFNWjQ3RitVSUZiQjl0Y2R1OXdjRG1NZUF6S0N2THNKK2JRajQ3?=
- =?utf-8?B?QXZkWmtPdEFnUVVTMWlZUWEvTUR4UXN2UlhadGc1cDc2TEwvQS9NN0JZQjcv?=
- =?utf-8?B?azBMc2RNNU1qNXZvR2hINU1UNTNnN3BQUkpmVlRVMGtoMGdKYlBPUStpV3JI?=
- =?utf-8?B?dU9mNDNlYWRiUE9KcmN5M25NaHlzTC9UbHVCdVZFUTVhZXNZa2kxZDhORVhO?=
- =?utf-8?Q?zqLcWrMeERc74hdQ41vAfWPWw?=
+	=?utf-8?B?OGNYL0E0VlVUR0xiU3NqdnJFQ0JTRmw0QWNzaFIrZ2N4VTdWeW9YQ2tYWFRp?=
+ =?utf-8?B?SGxpR1VqdFF4dTFXb2svcWlIWEx6NGRpOENKa3BPTGRjTm9vVTZWamVNRmhL?=
+ =?utf-8?B?ZkpnZmt0aFhZODVyOGlaenVsd09SZ1lJU1dpREs4L015RkFDZWFyeUUreUlp?=
+ =?utf-8?B?dFpHdDcrbmEySEpSeXNPTFNjd2NFNXBvdXRqQ1Rod3Rhc3V0S2lXRUJJU096?=
+ =?utf-8?B?SFUwUk5iOWtGZHZ1WXFTb01XRXVUVkJ1SzVQM1VxZ0Z5ZWRGSHVSWHhTcDcy?=
+ =?utf-8?B?c2IxTWpsdm1HTk50NXlsYlV3SnFYZmRqVnVwU2FHbHJyRWQxdUNOQmp0azEx?=
+ =?utf-8?B?V3VqZlFWeU9xa25YeVplbGdLOE1oNjY0S1c1WFN6MU5mK1RkK2JTazVnelRO?=
+ =?utf-8?B?U1lBZHNuQlhhY3FqamQ5bXBBZ0ZWb1VUTFQ0SVBFMENQclNOL2p6QjBrK2dp?=
+ =?utf-8?B?N2RXRTl4U2NDUHkza25IdnVja1ZsVVloR3dDci9EQmNWNFBaM0JsUVlTSHhF?=
+ =?utf-8?B?UzVKTCtFV2RZdzIvNHRZNlpVbHJjNHdhTlZsYjd1TFZ6ZmltSjdsVitOR042?=
+ =?utf-8?B?bm5CUUc4SzlhYlhmTzkwL2hURXFLZmhIbXUvSTBJWnQ1cjYwQXRNTjViMmNR?=
+ =?utf-8?B?eGNzT3p2YW0raXl0VS9oV2RIUWtjQU02bHNibnRybTd0V0VDUDFQVXlEUU5a?=
+ =?utf-8?B?YTk2dkl4dG4zK1JXZ1EzTHhjcWxHd1psVGRhdUpwazVFbnJnTFNEQmFycG5p?=
+ =?utf-8?B?UkRpaEFpNXJKUVFWMXJxaTdYV1BiQTdmZXhWajR6cnhxbzcyZ3J2S2kzME0z?=
+ =?utf-8?B?bDZCTjl4b2ZyRkNBc1E4Uy94OWgyVUlUU0oxakJyb2E2ZFVvNWJGdzRNTnY3?=
+ =?utf-8?B?Y3F6TW8vNXRRTHBMR2JkdGFtTmlFMHRGMXNVYWpublpkM09aK3poRyt2Wmxz?=
+ =?utf-8?B?eGNvbnV1d2ZnTWJ4d0ttWVBUNFZzYld5NDdWMTFNa0lxOXZRZktCcDRGOHdm?=
+ =?utf-8?B?Vmc0Ynl2QmRobjZNNW9jY1RkOS8rZm12b2g4MUZmekJHK2JlaGdCSzlqa3F1?=
+ =?utf-8?B?TEcxd01sRWhtM1BmRUVQUGZpUmpiZS9XMkhSU0hJVmZSNVdneEJHcDhJRng4?=
+ =?utf-8?B?bThIWG9XQnJiOTV5Nk1qUXRCL1FOZ1Q3R21yeGQ0UkNYcUlWeFdLcFVSemdT?=
+ =?utf-8?B?NlNTWjUvVUNoN2FqM3o4c2tpenZUMSt0Z2F1aHdGZHhhQS9FRVR5MEtjek9U?=
+ =?utf-8?B?V0hJMU1uMm93UUxTMUlpblEwZlZuQVY0cmRvNko2WTBzZFM2Ylo0VXNDZHFV?=
+ =?utf-8?B?aHdKb21ZajBTRlEzd1o1N2JoL0hxQUJxUDZNTFVXRmlyaVhOcnpyVTlXVWlN?=
+ =?utf-8?B?RlhkS1psb1JsWkI3ZUw3WXQzakgvQVVmeWhsSFNrZWxTcEJEMzVtV0dLSVZV?=
+ =?utf-8?B?Mk1BSnBUNzNVSXVqOUcvSmU1dDhxNDRSd3pDRmdhb1VnMXNKSU9sTEFIdlFI?=
+ =?utf-8?B?ZHdiM1pQWVUrZ0QwcU5rMjI1Zm03MVpXWCs3c2J0MUxTR1Ayc0JTZks0TDhK?=
+ =?utf-8?B?YmludVNFSy9Vc3A5ZWRqcEdzWlQ2bFlCUzl5eithS0drY1dmTnBxT2hCR2dN?=
+ =?utf-8?B?SmIwb0c2ZGVndlpIbU9KeVo4N2hJL0l0R2ZOcVFlYXlVUFlEWEIrNnVvTXZS?=
+ =?utf-8?B?R0lsdVFHblI3ejdCZG1iNFc2dG1TQWlhSnZubmhaY3N2SGxNS0dsWEk2alJq?=
+ =?utf-8?B?dll4RnJYUDFSQVExVFM3bENSSDNKT3hNTHljTjg4TXV3ZTd3OHFvV0FVVnZV?=
+ =?utf-8?B?azROdVdTZkIxU2N0OWNRanJzcStoMkEvSkNoQUZwTUVsUTVYcEZmZTM2dFJz?=
+ =?utf-8?B?TXhUNFYvZDdLYXJLZG0yeGJZd3dCMnBPNGVRZlZ0TTVWQ1FEZUx0Tk5BTmp0?=
+ =?utf-8?B?dksrV1hvMlNkSEEyTC9RNU01Vlo3cU03amQwQmY0RGtrSEZTOUtEWVdGWE4y?=
+ =?utf-8?B?eFAyS1FzeDVPVlZiK2RSblRCendjbmRtL2ZmVklrR05pcTQrQ2JPcUNjTFQ1?=
+ =?utf-8?B?dDI0dElrVEJiaFRrejRHYlJ1NXpxdHFmbVlMYjc4MGZYaUZMbFdVRXdCUitv?=
+ =?utf-8?Q?D4RJw1P+cFnfnAxIWGdXDkpBx?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c393fe0-ad70-44b3-7113-08dd65a4546e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ac1baf2-d973-4f88-2c59-08dd65a4b042
 X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2025 22:37:42.3561
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2025 22:40:16.4077
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dg/htAIBqZmZVSjAaeidlTm0uA4er2E8LTPOq4Xd9YyWTJbo21+C35XvPH3C7CPz22SVQVmXK5L+SZ/0H5QDSQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: mT6kHxvatDdpR1ZKMlhe1W3CmVblycz+zhXYZ/WHx8OAqMxEImHkoYOUA0oPvLmtGFkEDkLrMaV+W4Hb729JfQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7551
 
-On 3/10/2025 10:33 AM, Dave Jiang wrote:
+On 3/10/2025 11:28 AM, Dave Jiang wrote:
 > 
 > On 3/7/25 11:53 AM, Shannon Nelson wrote:
->> Add support for a new fwctl-based auxiliary_device for creating a
->> channel for fwctl support into the AMD/Pensando DSC.
+>> Initial files for adding a new fwctl driver for the AMD/Pensando PDS
+>> devices.  This sets up a simple auxiliary_bus driver that registers
+>> with fwctl subsystem.  It expects that a pds_core device has set up
+>> the auxiliary_device pds_core.fwctl
 >>
 >> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 >> Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
 > 
 > Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 > 
-> minor comment below
-> 
+> minor comment below.
 >> ---
->>   drivers/net/ethernet/amd/pds_core/auxbus.c |  4 ++--
->>   drivers/net/ethernet/amd/pds_core/core.c   |  7 +++++++
->>   drivers/net/ethernet/amd/pds_core/core.h   |  1 +
->>   drivers/net/ethernet/amd/pds_core/main.c   | 14 +++++++++++++-
->>   include/linux/pds/pds_common.h             |  2 ++
->>   5 files changed, 25 insertions(+), 3 deletions(-)
+>>   MAINTAINERS                    |   7 ++
+>>   drivers/fwctl/Kconfig          |  10 ++
+>>   drivers/fwctl/Makefile         |   1 +
+>>   drivers/fwctl/pds/Makefile     |   4 +
+>>   drivers/fwctl/pds/main.c       | 169 +++++++++++++++++++++++++++++++++
+>>   include/linux/pds/pds_adminq.h |  83 ++++++++++++++++
+>>   include/uapi/fwctl/fwctl.h     |   1 +
+>>   include/uapi/fwctl/pds.h       |  26 +++++
+>>   8 files changed, 301 insertions(+)
+>>   create mode 100644 drivers/fwctl/pds/Makefile
+>>   create mode 100644 drivers/fwctl/pds/main.c
+>>   create mode 100644 include/uapi/fwctl/pds.h
 >>
->> diff --git a/drivers/net/ethernet/amd/pds_core/auxbus.c b/drivers/net/ethernet/amd/pds_core/auxbus.c
->> index 563de9e7ce0a..c9aeb56e8174 100644
->> --- a/drivers/net/ethernet/amd/pds_core/auxbus.c
->> +++ b/drivers/net/ethernet/amd/pds_core/auxbus.c
->> @@ -224,8 +224,8 @@ int pdsc_auxbus_dev_add(struct pdsc *cf, struct pdsc *pf,
->>        }
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 3381e41dcf37..c63fd76a3684 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -9576,6 +9576,13 @@ L:     linux-kernel@vger.kernel.org
+>>   S:   Maintained
+>>   F:   drivers/fwctl/mlx5/
 >>
->>        /* Verify that the type is supported and enabled.  It is not
->> -      * an error if there is no auxbus device support for this
->> -      * VF, it just means something else needs to happen with it.
->> +      * an error if the firmware doesn't support the feature, we
->> +      * just won't set up an auxiliary_device for it.
+>> +FWCTL PDS DRIVER
+>> +M:   Brett Creeley <brett.creeley@amd.com>
+>> +R:   Shannon Nelson <shannon.nelson@amd.com>
+>> +L:   linux-kernel@vger.kernel.org
+>> +S:   Maintained
+>> +F:   drivers/fwctl/pds/
+>> +
+>>   GALAXYCORE GC0308 CAMERA SENSOR DRIVER
+>>   M:   Sebastian Reichel <sre@kernel.org>
+>>   L:   linux-media@vger.kernel.org
+>> diff --git a/drivers/fwctl/Kconfig b/drivers/fwctl/Kconfig
+>> index f802cf5d4951..b5583b12a011 100644
+>> --- a/drivers/fwctl/Kconfig
+>> +++ b/drivers/fwctl/Kconfig
+>> @@ -19,5 +19,15 @@ config FWCTL_MLX5
+>>          This will allow configuration and debug tools to work out of the box on
+>>          mainstream kernel.
+>>
+>> +       If you don't know what to do here, say N.
+>> +
+>> +config FWCTL_PDS
+>> +     tristate "AMD/Pensando pds fwctl driver"
+>> +     depends on PDS_CORE
+>> +     help
+>> +       The pds_fwctl driver provides an fwctl interface for a user process
+>> +       to access the debug and configuration information of the AMD/Pensando
+>> +       DSC hardware family.
+>> +
+>>          If you don't know what to do here, say N.
+>>   endif
+>> diff --git a/drivers/fwctl/Makefile b/drivers/fwctl/Makefile
+>> index 1c535f694d7f..c093b5f661d6 100644
+>> --- a/drivers/fwctl/Makefile
+>> +++ b/drivers/fwctl/Makefile
+>> @@ -1,5 +1,6 @@
+>>   # SPDX-License-Identifier: GPL-2.0
+>>   obj-$(CONFIG_FWCTL) += fwctl.o
+>>   obj-$(CONFIG_FWCTL_MLX5) += mlx5/
+>> +obj-$(CONFIG_FWCTL_PDS) += pds/
+>>
+>>   fwctl-y += main.o
+>> diff --git a/drivers/fwctl/pds/Makefile b/drivers/fwctl/pds/Makefile
+>> new file mode 100644
+>> index 000000000000..cc2317c07be1
+>> --- /dev/null
+>> +++ b/drivers/fwctl/pds/Makefile
+>> @@ -0,0 +1,4 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +obj-$(CONFIG_FWCTL_PDS) += pds_fwctl.o
+>> +
+>> +pds_fwctl-y += main.o
+>> diff --git a/drivers/fwctl/pds/main.c b/drivers/fwctl/pds/main.c
+>> new file mode 100644
+>> index 000000000000..27942315a602
+>> --- /dev/null
+>> +++ b/drivers/fwctl/pds/main.c
+>> @@ -0,0 +1,169 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright(c) Advanced Micro Devices, Inc */
+>> +
+>> +#include <linux/module.h>
+>> +#include <linux/auxiliary_bus.h>
+>> +#include <linux/pci.h>
+>> +#include <linux/vmalloc.h>
+>> +
+>> +#include <uapi/fwctl/fwctl.h>
+>> +#include <uapi/fwctl/pds.h>
+>> +#include <linux/fwctl.h>
+>> +
+>> +#include <linux/pds/pds_common.h>
+>> +#include <linux/pds/pds_core_if.h>
+>> +#include <linux/pds/pds_adminq.h>
+>> +#include <linux/pds/pds_auxbus.h>
+>> +
+>> +struct pdsfc_uctx {
+>> +     struct fwctl_uctx uctx;
+>> +     u32 uctx_caps;
+>> +};
+>> +
+>> +struct pdsfc_dev {
+>> +     struct fwctl_device fwctl;
+>> +     struct pds_auxiliary_dev *padev;
+>> +     u32 caps;
+>> +     struct pds_fwctl_ident ident;
+>> +};
+>> +
+>> +static int pdsfc_open_uctx(struct fwctl_uctx *uctx)
+>> +{
+>> +     struct pdsfc_dev *pdsfc = container_of(uctx->fwctl, struct pdsfc_dev, fwctl);
+>> +     struct pdsfc_uctx *pdsfc_uctx = container_of(uctx, struct pdsfc_uctx, uctx);
+>> +
+>> +     pdsfc_uctx->uctx_caps = pdsfc->caps;
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +static void pdsfc_close_uctx(struct fwctl_uctx *uctx)
+>> +{
+>> +}
+>> +
+>> +static void *pdsfc_info(struct fwctl_uctx *uctx, size_t *length)
+>> +{
+>> +     struct pdsfc_uctx *pdsfc_uctx = container_of(uctx, struct pdsfc_uctx, uctx);
+>> +     struct fwctl_info_pds *info;
+>> +
+>> +     info = kzalloc(sizeof(*info), GFP_KERNEL);
+>> +     if (!info)
+>> +             return ERR_PTR(-ENOMEM);
+>> +
+>> +     info->uctx_caps = pdsfc_uctx->uctx_caps;
+>> +
+>> +     return info;
+>> +}
+>> +
+>> +static int pdsfc_identify(struct pdsfc_dev *pdsfc)
+>> +{
+>> +     struct device *dev = &pdsfc->fwctl.dev;
+>> +     union pds_core_adminq_comp comp = {0};
+>> +     union pds_core_adminq_cmd cmd;
+>> +     struct pds_fwctl_ident *ident;
+>> +     dma_addr_t ident_pa;
+>> +     int err;
+>> +
+>> +     ident = dma_alloc_coherent(dev->parent, sizeof(*ident), &ident_pa, GFP_KERNEL);
+>> +     err = dma_mapping_error(dev->parent, ident_pa);
+>> +     if (err) {
+>> +             dev_err(dev, "Failed to map ident buffer\n");
+>> +             return err;
+>> +     }
+>> +
+>> +     cmd = (union pds_core_adminq_cmd) {
+>> +             .fwctl_ident = {
+>> +                     .opcode = PDS_FWCTL_CMD_IDENT,
+>> +                     .version = 0,
+>> +                     .len = cpu_to_le32(sizeof(*ident)),
+>> +                     .ident_pa = cpu_to_le64(ident_pa),
+>> +             }
+>> +     };
+>> +
+>> +     err = pds_client_adminq_cmd(pdsfc->padev, &cmd, sizeof(cmd), &comp, 0);
+>> +     if (err)
+>> +             dev_err(dev, "Failed to send adminq cmd opcode: %u err: %d\n",
+>> +                     cmd.fwctl_ident.opcode, err);
+>> +     else
+>> +             pdsfc->ident = *ident;
+>> +
+>> +     dma_free_coherent(dev->parent, sizeof(*ident), ident, ident_pa);
+>> +
+>> +     return err;
+>> +}
+>> +
+>> +static void *pdsfc_fw_rpc(struct fwctl_uctx *uctx, enum fwctl_rpc_scope scope,
+>> +                       void *in, size_t in_len, size_t *out_len)
+>> +{
+>> +     return NULL;
+>> +}
+>> +
+>> +static const struct fwctl_ops pdsfc_ops = {
+>> +     .device_type = FWCTL_DEVICE_TYPE_PDS,
+>> +     .uctx_size = sizeof(struct pdsfc_uctx),
+>> +     .open_uctx = pdsfc_open_uctx,
+>> +     .close_uctx = pdsfc_close_uctx,
+>> +     .info = pdsfc_info,
+>> +     .fw_rpc = pdsfc_fw_rpc,
+>> +};
+>> +
+>> +static int pdsfc_probe(struct auxiliary_device *adev,
+>> +                    const struct auxiliary_device_id *id)
+>> +{
+>> +     struct pds_auxiliary_dev *padev =
+>> +                     container_of(adev, struct pds_auxiliary_dev, aux_dev);
+>> +     struct device *dev = &adev->dev;
+>> +     struct pdsfc_dev *pdsfc;
+>> +     int err;
+>> +
+>> +     pdsfc = fwctl_alloc_device(&padev->vf_pdev->dev, &pdsfc_ops,
+>> +                                struct pdsfc_dev, fwctl);
+>> +     if (!pdsfc)
+>> +             return dev_err_probe(dev, -ENOMEM, "Failed to allocate fwctl device struct\n");
+>> +     pdsfc->padev = padev;
+>> +
+>> +     err = pdsfc_identify(pdsfc);
+>> +     if (err) {
+>> +             fwctl_put(&pdsfc->fwctl);
+>> +             return dev_err_probe(dev, err, "Failed to identify device\n");
+>> +     }
+>> +
+>> +     err = fwctl_register(&pdsfc->fwctl);
+>> +     if (err) {
+>> +             fwctl_put(&pdsfc->fwctl);
+>> +             return dev_err_probe(dev, err, "Failed to register device\n");
+>> +     }
+>> +
+>> +     auxiliary_set_drvdata(adev, pdsfc);
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +static void pdsfc_remove(struct auxiliary_device *adev)
+>> +{
+>> +     struct pdsfc_dev *pdsfc = auxiliary_get_drvdata(adev);
+>> +
+>> +     fwctl_unregister(&pdsfc->fwctl);
+>> +     fwctl_put(&pdsfc->fwctl);
+>> +}
+>> +
+>> +static const struct auxiliary_device_id pdsfc_id_table[] = {
+>> +     {.name = PDS_CORE_DRV_NAME "." PDS_DEV_TYPE_FWCTL_STR },
+>> +     {}
+>> +};
+>> +MODULE_DEVICE_TABLE(auxiliary, pdsfc_id_table);
+>> +
+>> +static struct auxiliary_driver pdsfc_driver = {
+>> +     .name = "pds_fwctl",
+>> +     .probe = pdsfc_probe,
+>> +     .remove = pdsfc_remove,
+>> +     .id_table = pdsfc_id_table,
+>> +};
+>> +
+>> +module_auxiliary_driver(pdsfc_driver);
+>> +
+>> +MODULE_IMPORT_NS("FWCTL");
+>> +MODULE_DESCRIPTION("pds fwctl driver");
+>> +MODULE_AUTHOR("Shannon Nelson <shannon.nelson@amd.com>");
+>> +MODULE_AUTHOR("Brett Creeley <brett.creeley@amd.com>");
+>> +MODULE_LICENSE("GPL");
+>> diff --git a/include/linux/pds/pds_adminq.h b/include/linux/pds/pds_adminq.h
+>> index 4b4e9a98b37b..22c6d77b3dcb 100644
+>> --- a/include/linux/pds/pds_adminq.h
+>> +++ b/include/linux/pds/pds_adminq.h
+>> @@ -1179,6 +1179,84 @@ struct pds_lm_host_vf_status_cmd {
+>>        u8     status;
+>>   };
+>>
+>> +enum pds_fwctl_cmd_opcode {
+>> +     PDS_FWCTL_CMD_IDENT = 70,
+>> +};
+>> +
+>> +/**
+>> + * struct pds_fwctl_cmd - Firmware control command structure
+>> + * @opcode: Opcode
+>> + * @rsvd:   Reserved
+>> + * @ep:     Endpoint identifier
+>> + * @op:     Operation identifier
+>> + */
+>> +struct pds_fwctl_cmd {
+>> +     u8     opcode;
+>> +     u8     rsvd[3];
+>> +     __le32 ep;
+>> +     __le32 op;
+>> +} __packed;
+>> +
+>> +/**
+>> + * struct pds_fwctl_comp - Firmware control completion structure
+>> + * @status:     Status of the firmware control operation
+>> + * @rsvd:       Reserved
+>> + * @comp_index: Completion index in little-endian format
+>> + * @rsvd2:      Reserved
+>> + * @color:      Color bit indicating the state of the completion
+>> + */
+>> +struct pds_fwctl_comp {
+>> +     u8     status;
+>> +     u8     rsvd;
+>> +     __le16 comp_index;
+>> +     u8     rsvd2[11];
+>> +     u8     color;
+>> +} __packed;
+>> +
+>> +/**
+>> + * struct pds_fwctl_ident_cmd - Firmware control identification command structure
+>> + * @opcode:   Operation code for the command
+>> + * @rsvd:     Reserved
+>> + * @version:  Interface version
+>> + * @rsvd2:    Reserved
+>> + * @len:      Length of the identification data
+>> + * @ident_pa: Physical address of the identification data
+>> + */
+>> +struct pds_fwctl_ident_cmd {
+>> +     u8     opcode;
+>> +     u8     rsvd;
+>> +     u8     version;
+>> +     u8     rsvd2;
+>> +     __le32 len;
+>> +     __le64 ident_pa;
+>> +} __packed;
+>> +
+>> +/* future feature bits here
+>> + * enum pds_fwctl_features {
+>> + * };
+>> + * (compilers don't like empty enums)
+>> + */
+>> +
+>> +/**
+>> + * struct pds_fwctl_ident - Firmware control identification structure
+>> + * @features:    Supported features (enum pds_fwctl_features)
+>> + * @version:     Interface version
+>> + * @rsvd:        Reserved
+>> + * @max_req_sz:  Maximum request size
+>> + * @max_resp_sz: Maximum response size
+>> + * @max_req_sg_elems:  Maximum number of request SGs
+>> + * @max_resp_sg_elems: Maximum number of response SGs
+>> + */
+>> +struct pds_fwctl_ident {
+>> +     __le64 features;
+>> +     u8     version;
+>> +     u8     rsvd[3];
+>> +     __le32 max_req_sz;
+>> +     __le32 max_resp_sz;
+>> +     u8     max_req_sg_elems;
+>> +     u8     max_resp_sg_elems;
+>> +} __packed;
+>> +
+>>   union pds_core_adminq_cmd {
+>>        u8     opcode;
+>>        u8     bytes[64];
+>> @@ -1216,6 +1294,9 @@ union pds_core_adminq_cmd {
+>>        struct pds_lm_dirty_enable_cmd    lm_dirty_enable;
+>>        struct pds_lm_dirty_disable_cmd   lm_dirty_disable;
+>>        struct pds_lm_dirty_seq_ack_cmd   lm_dirty_seq_ack;
+>> +
+>> +     struct pds_fwctl_cmd              fwctl;
+>> +     struct pds_fwctl_ident_cmd        fwctl_ident;
+>>   };
+>>
+>>   union pds_core_adminq_comp {
+>> @@ -1243,6 +1324,8 @@ union pds_core_adminq_comp {
+>>
+>>        struct pds_lm_state_size_comp     lm_state_size;
+>>        struct pds_lm_dirty_status_comp   lm_dirty_status;
+>> +
+>> +     struct pds_fwctl_comp             fwctl;
+>>   };
+>>
+>>   #ifndef __CHECKER__
+>> diff --git a/include/uapi/fwctl/fwctl.h b/include/uapi/fwctl/fwctl.h
+>> index c2d5abc5a726..716ac0eee42d 100644
+>> --- a/include/uapi/fwctl/fwctl.h
+>> +++ b/include/uapi/fwctl/fwctl.h
+>> @@ -44,6 +44,7 @@ enum fwctl_device_type {
+>>        FWCTL_DEVICE_TYPE_ERROR = 0,
+>>        FWCTL_DEVICE_TYPE_MLX5 = 1,
+>>        FWCTL_DEVICE_TYPE_CXL = 2,
+>> +     FWCTL_DEVICE_TYPE_PDS = 4,
+>>   };
+>>
+>>   /**
+>> diff --git a/include/uapi/fwctl/pds.h b/include/uapi/fwctl/pds.h
+>> new file mode 100644
+>> index 000000000000..558e030b7583
+>> --- /dev/null
+>> +++ b/include/uapi/fwctl/pds.h
+>> @@ -0,0 +1,26 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>> +/* Copyright(c) Advanced Micro Devices, Inc */
+>> +
+>> +/*
+>> + * fwctl interface info for pds_fwctl
+>> + */
+>> +
+>> +#ifndef _UAPI_FWCTL_PDS_H_
+>> +#define _UAPI_FWCTL_PDS_H_
+>> +
+>> +#include <linux/types.h>
+>> +
+>> +/*
+>> + * struct fwctl_info_pds
+>> + *
+>> + * Return basic information about the FW interface available.
+>> + */
 > 
-> s/, we just/; the driver/
+> Please use proper kdoc formatting for the comment block.
 
-Got it, thanks,
+Will do, thanks,
 sln
 
 > 
-> DJ
-> 
-> 
-> 
->>         */
->>        vt_support = !!le16_to_cpu(pf->dev_ident.vif_types[vt]);
->>        if (!(vt_support &&
->> diff --git a/drivers/net/ethernet/amd/pds_core/core.c b/drivers/net/ethernet/amd/pds_core/core.c
->> index 536635e57727..1eb0d92786f7 100644
->> --- a/drivers/net/ethernet/amd/pds_core/core.c
->> +++ b/drivers/net/ethernet/amd/pds_core/core.c
->> @@ -402,6 +402,9 @@ static int pdsc_core_init(struct pdsc *pdsc)
->>   }
->>
->>   static struct pdsc_viftype pdsc_viftype_defaults[] = {
->> +     [PDS_DEV_TYPE_FWCTL] = { .name = PDS_DEV_TYPE_FWCTL_STR,
->> +                              .vif_id = PDS_DEV_TYPE_FWCTL,
->> +                              .dl_id = -1 },
->>        [PDS_DEV_TYPE_VDPA] = { .name = PDS_DEV_TYPE_VDPA_STR,
->>                                .vif_id = PDS_DEV_TYPE_VDPA,
->>                                .dl_id = DEVLINK_PARAM_GENERIC_ID_ENABLE_VNET },
->> @@ -428,6 +431,10 @@ static int pdsc_viftypes_init(struct pdsc *pdsc)
->>
->>                /* See what the Core device has for support */
->>                vt_support = !!le16_to_cpu(pdsc->dev_ident.vif_types[vt]);
+>> +struct fwctl_info_pds {
+>> +     __u32 uctx_caps;
+>> +};
 >> +
->> +             if (vt == PDS_DEV_TYPE_FWCTL)
->> +                     pdsc->viftype_status[vt].enabled = true;
->> +
->>                dev_dbg(pdsc->dev, "VIF %s is %ssupported\n",
->>                        pdsc->viftype_status[vt].name,
->>                        vt_support ? "" : "not ");
->> diff --git a/drivers/net/ethernet/amd/pds_core/core.h b/drivers/net/ethernet/amd/pds_core/core.h
->> index f075e68c64db..0bf320c43083 100644
->> --- a/drivers/net/ethernet/amd/pds_core/core.h
->> +++ b/drivers/net/ethernet/amd/pds_core/core.h
->> @@ -156,6 +156,7 @@ struct pdsc {
->>        struct dentry *dentry;
->>        struct device *dev;
->>        struct pdsc_dev_bar bars[PDS_CORE_BARS_MAX];
->> +     struct pds_auxiliary_dev *padev;
->>        struct pdsc_vf *vfs;
->>        int num_vfs;
->>        int vf_id;
->> diff --git a/drivers/net/ethernet/amd/pds_core/main.c b/drivers/net/ethernet/amd/pds_core/main.c
->> index a3a68889137b..4843f9249a31 100644
->> --- a/drivers/net/ethernet/amd/pds_core/main.c
->> +++ b/drivers/net/ethernet/amd/pds_core/main.c
->> @@ -265,6 +265,10 @@ static int pdsc_init_pf(struct pdsc *pdsc)
->>
->>        mutex_unlock(&pdsc->config_lock);
->>
->> +     err = pdsc_auxbus_dev_add(pdsc, pdsc, PDS_DEV_TYPE_FWCTL, &pdsc->padev);
->> +     if (err)
->> +             goto err_out_stop;
->> +
->>        dl = priv_to_devlink(pdsc);
->>        devl_lock(dl);
->>        err = devl_params_register(dl, pdsc_dl_params,
->> @@ -273,7 +277,7 @@ static int pdsc_init_pf(struct pdsc *pdsc)
->>                devl_unlock(dl);
->>                dev_warn(pdsc->dev, "Failed to register devlink params: %pe\n",
->>                         ERR_PTR(err));
->> -             goto err_out_stop;
->> +             goto err_out_del_dev;
->>        }
->>
->>        hr = devl_health_reporter_create(dl, &pdsc_fw_reporter_ops, 0, pdsc);
->> @@ -296,6 +300,8 @@ static int pdsc_init_pf(struct pdsc *pdsc)
->>   err_out_unreg_params:
->>        devlink_params_unregister(dl, pdsc_dl_params,
->>                                  ARRAY_SIZE(pdsc_dl_params));
->> +err_out_del_dev:
->> +     pdsc_auxbus_dev_del(pdsc, pdsc, &pdsc->padev);
->>   err_out_stop:
->>        pdsc_stop(pdsc);
->>   err_out_teardown:
->> @@ -427,6 +433,7 @@ static void pdsc_remove(struct pci_dev *pdev)
->>                 * shut themselves down.
->>                 */
->>                pdsc_sriov_configure(pdev, 0);
->> +             pdsc_auxbus_dev_del(pdsc, pdsc, &pdsc->padev);
->>
->>                timer_shutdown_sync(&pdsc->wdtimer);
->>                if (pdsc->wq)
->> @@ -485,6 +492,8 @@ static void pdsc_reset_prepare(struct pci_dev *pdev)
->>                if (!IS_ERR(pf))
->>                        pdsc_auxbus_dev_del(pdsc, pf,
->>                                            &pf->vfs[pdsc->vf_id].padev);
->> +     } else {
->> +             pdsc_auxbus_dev_del(pdsc, pdsc, &pdsc->padev);
->>        }
->>
->>        pdsc_unmap_bars(pdsc);
->> @@ -531,6 +540,9 @@ static void pdsc_reset_done(struct pci_dev *pdev)
->>                if (!IS_ERR(pf))
->>                        pdsc_auxbus_dev_add(pdsc, pf, PDS_DEV_TYPE_VDPA,
->>                                            &pf->vfs[pdsc->vf_id].padev);
->> +     } else {
->> +             pdsc_auxbus_dev_add(pdsc, pdsc, PDS_DEV_TYPE_FWCTL,
->> +                                 &pdsc->padev);
->>        }
->>   }
->>
->> diff --git a/include/linux/pds/pds_common.h b/include/linux/pds/pds_common.h
->> index 5802e1deef24..b193adbe7cc3 100644
->> --- a/include/linux/pds/pds_common.h
->> +++ b/include/linux/pds/pds_common.h
->> @@ -29,6 +29,7 @@ enum pds_core_vif_types {
->>        PDS_DEV_TYPE_ETH        = 3,
->>        PDS_DEV_TYPE_RDMA       = 4,
->>        PDS_DEV_TYPE_LM         = 5,
->> +     PDS_DEV_TYPE_FWCTL      = 6,
->>
->>        /* new ones added before this line */
->>        PDS_DEV_TYPE_MAX        = 16   /* don't change - used in struct size */
->> @@ -40,6 +41,7 @@ enum pds_core_vif_types {
->>   #define PDS_DEV_TYPE_ETH_STR "Eth"
->>   #define PDS_DEV_TYPE_RDMA_STR        "RDMA"
->>   #define PDS_DEV_TYPE_LM_STR  "LM"
->> +#define PDS_DEV_TYPE_FWCTL_STR       "fwctl"
->>
->>   #define PDS_VDPA_DEV_NAME    PDS_CORE_DRV_NAME "." PDS_DEV_TYPE_VDPA_STR
->>   #define PDS_VFIO_LM_DEV_NAME PDS_CORE_DRV_NAME "." PDS_DEV_TYPE_LM_STR "." PDS_DEV_TYPE_VFIO_STR
+>> +enum pds_fwctl_capabilities {
+>> +     PDS_FWCTL_QUERY_CAP = 0,
+>> +     PDS_FWCTL_SEND_CAP,
+>> +};
+>> +#endif /* _UAPI_FWCTL_PDS_H_ */
 > 
 
 
