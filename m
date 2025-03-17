@@ -1,95 +1,109 @@
-Return-Path: <linux-rdma+bounces-8751-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8752-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A842A651F5
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 14:57:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EE02A6547A
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 15:56:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 142257A6DC4
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 13:56:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDC7A7A488C
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 14:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6082B241669;
-	Mon, 17 Mar 2025 13:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F5F424888F;
+	Mon, 17 Mar 2025 14:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="N9Ic8yF1"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M6VW8HI4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93336241129;
-	Mon, 17 Mar 2025 13:57:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4715E2459DC
+	for <linux-rdma@vger.kernel.org>; Mon, 17 Mar 2025 14:55:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742219836; cv=none; b=XAicYnvG0PFNaaHPD4SX/pf8oVs295vZjSsYlXE282XeT+zhFbMYiWsK2jGaazeOXDLNQkVzXlIUwJsFjsk5Eq0aNLtqCWjmYOJR6IJBeXstVP//nlK28WIk6lpztfeRl1K9Rav/Nf5bh6WKrJLragqNt6YwUdCv8o+YS2Goqi0=
+	t=1742223328; cv=none; b=HnV4gf/wT6bemrvH/0vzl5mPLj+R/JIKy/BDdpslNT5fEoDPY6q6I6zJqz7fsjmwIny0znXwrFfcevmkm90jA6k6jmz1xAeDKkyJTAHjka0IF9DHWmPtstO+eWGg+PGm5Jk5XEdJwFG2OBCoNWv3ki+JbJvFRv4P/lmpWhRt2Wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742219836; c=relaxed/simple;
-	bh=sSjPqbu9OFPuvQnENGQoGhHTGaKcRFEGnMtAb/gleBA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g8isn9OSlw9M5w9si5h0zEv0w4eiaaJdKxHdGU3IYY1qfB+6SvIi5UtU5ysWWnYEDTfjV87kcbYGjwwO6GoFcOQ7WTqTOyOpmuHazMxf0j6RQTjPKiSWIljlJv/GNuUvj1rHcvTP8zKhY5GKw4g6ZC3X1W7tx8ZiF0uWJSXHtbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=N9Ic8yF1; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52HDa3Zn018184;
-	Mon, 17 Mar 2025 13:57:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=GUH8cm
-	mKancpQH41aPR1l9wcULwXArnAHaNi/ZU5n4c=; b=N9Ic8yF13L5elng7ZY/pKj
-	Nuw0eIJsxnhhHCew2nnnm9/iYnfYoOxLaAA7eTSbUoRmjsRmRYyCiQv97CPlt4D3
-	b/AwoqOUIBO/hZ3mRbfDvz8YqE+cRlqFdqu8Q2qkIPXIgJWmYdbMOyjX5KTBxxQZ
-	5Bo4VFC2966+tYGVgnIHoYfjYdJ864lDLFWOmFFRSobFOAOxdsyCpTt5RV3CxZgC
-	NDxF+Q87J3lw7xm91xzgFq5EDnlCU8E6PxIjoZQ1CkaChJjtk4nyGPG8JEezQnJ4
-	GLsWGPnRn6BRzSdQMaJpA2ICrC2azsCmJWR7jL2KJd03gbic3Mnl1nU4vq1s7D7A
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45e5v03rfw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 17 Mar 2025 13:57:05 +0000 (GMT)
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 52HDa4dE018418;
-	Mon, 17 Mar 2025 13:57:04 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45e5v03rec-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 17 Mar 2025 13:57:04 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52HDqkRI005742;
-	Mon, 17 Mar 2025 13:56:37 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 45dpk264tc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 17 Mar 2025 13:56:37 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52HDuYWO52101546
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 17 Mar 2025 13:56:34 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2222820049;
-	Mon, 17 Mar 2025 13:56:34 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 289F72004B;
-	Mon, 17 Mar 2025 13:56:33 +0000 (GMT)
-Received: from osiris (unknown [9.179.24.138])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 17 Mar 2025 13:56:33 +0000 (GMT)
-Date: Mon, 17 Mar 2025 14:56:31 +0100
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: I Hsin Cheng <richard120310@gmail.com>, alibuda@linux.alibaba.com,
-        jaka@linux.ibm.com, mjambigi@linux.ibm.com, sidraya@linux.ibm.com,
-        tonylu@linux.alibaba.com, guwen@linux.alibaba.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        horms@kernel.org, linux-rdma@vger.kernel.org,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        jserv@ccns.ncku.edu.tw, linux-kernel-mentees@lists.linux.dev
-Subject: Re: [PATCH] net/smc: Reduce size of smc_wr_tx_tasklet_fn
-Message-ID: <20250317135631.21754E85-hca@linux.ibm.com>
-References: <20250315062516.788528-1-richard120310@gmail.com>
- <66ce34a0-b79d-4ef0-bdd5-982e139571f1@linux.ibm.com>
+	s=arc-20240116; t=1742223328; c=relaxed/simple;
+	bh=xNnWO/K1u8WG4XUZJxS4WUVdfdhF3mjZ+5wwJk9E/4M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=XBkIcntVZehSJNS8zS37TxDC0ERs1PDkVqzqWNfwC+kUWz/staI9Nda0ce45mSIMv1eoYo9HQuf/tPAJADvZe2ZjCID0xil+UImN9I8Rm8E629MMW/z9p/t5jxkVrlCCaGhZCE1VijY8Pi3xSqSGQinUEDtWH9LmNP4epnGQ8BI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M6VW8HI4; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1742223325;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xNnWO/K1u8WG4XUZJxS4WUVdfdhF3mjZ+5wwJk9E/4M=;
+	b=M6VW8HI4VWEWTe/ynqN6bORakSLTwXTWIa7ZpOIF4q+WJtyNBmyIofLhGhwqSEJkDxBwj9
+	Dz5BNlIUyT01shAFRD54DkqrXP1+9+BxvNbg5aswVKdjQgBukobmBQqYXZ9Ejeh5mK6huR
+	rCByUPmFovAvKn0nDnf5IpCW0LtT9Hs=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-569-nHF7escEOU-cW1RmKj2Iqg-1; Mon, 17 Mar 2025 10:55:23 -0400
+X-MC-Unique: nHF7escEOU-cW1RmKj2Iqg-1
+X-Mimecast-MFC-AGG-ID: nHF7escEOU-cW1RmKj2Iqg_1742223322
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-54996792145so2009187e87.1
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Mar 2025 07:55:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742223322; x=1742828122;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xNnWO/K1u8WG4XUZJxS4WUVdfdhF3mjZ+5wwJk9E/4M=;
+        b=wh8uOls+a6sVzRdW1Ksc+aK0fAv2eNquiCh0ySFUj4zhvh3OvNxzeRupqvek1FF8VA
+         /AcPl34B36rPoUszWOmP5OVJWWOpDooP7Eo+uujZe60U2L9RUfmO3v0Jeak7eXEVMlAT
+         PggPFcif9YFCpaG3wGOU5o2FIKLPt4PfexJTtpjG7XKiGl4zbcAWsLLTpkxIs1cz8uX6
+         ZyfbVHAYhShCgTeGhtFUSp15s3diU2Eqadd8C/vzG07l0fXYhSMBrjSIPdMPo9EIjQY0
+         PHTcpx2zO85GJxWIW5qgOA7uJAV6+/awAZ+YRFuay99v3j8N0A3P6M6//LzbcvcAlQyz
+         syBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW8LpGcFF7xP0Kp1AGzfXxNl5PO0X7u1PnybovUItRYaYj9NfBGJrd3gkhSNqcOpmjwMP73W1Ja0958@vger.kernel.org
+X-Gm-Message-State: AOJu0YwwnG7a4aB+JTzQKRdfTriJSppJRFQ5htqqvQzCGMTHzyqB37yE
+	rVHGQ0EZ04oeaAtwYRzhilvftTiSiB2S1wivBLrYBwc61dh9+F7YU6JBrQwZWXranRpdOHGy+gl
+	gRX+Ecj4mvRpMoSocwIxWun36AiUJZH+t84fVKWUYV3PnTxlHZimYAKNzeRU=
+X-Gm-Gg: ASbGncv+VuujqHsQsnS7A13+OkhxoKWvtz/ecAAuU5GeQZQB9FsG25HMvcGovSwxtAh
+	+D3Y0DY8LmjvNg9uVldAZTdi69J2Pmk03LB7wd1tfG9CWCYTzkwQuU6vPLKEaJEw19Ir++YiB4N
+	MpC0+nbmc2C9WCF60o4K6y8ButMVXOunsGHUNGZz9qJ09eynDlSQwYEM575RT13o62rZ9QLjI7k
+	eURM+3NqKjBVpA7soYPUz+tRcp5lBAi7A37KPsVReYF+TGjExpf7WvoITsmbaVKHD/FcTb+ohpr
+	Y+kYwavLe+yj
+X-Received: by 2002:a05:6512:2256:b0:545:2eca:863 with SMTP id 2adb3069b0e04-54a03cf6675mr26262e87.42.1742223322297;
+        Mon, 17 Mar 2025 07:55:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEkU4EGv0nYoD/ziKJsZtzUZRRSbpyRPe5/A4qyQD074afFL4/ETFCYpbFS8GyZgIxIK6weCA==
+X-Received: by 2002:a05:6512:2256:b0:545:2eca:863 with SMTP id 2adb3069b0e04-54a03cf6675mr26237e87.42.1742223321810;
+        Mon, 17 Mar 2025 07:55:21 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-549ba7a86c1sm1374403e87.21.2025.03.17.07.55.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Mar 2025 07:55:20 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id B523218FAEC4; Mon, 17 Mar 2025 15:55:18 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Yunsheng Lin <yunshenglin0825@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon
+ Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew
+ Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Simon Horman <horms@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Mina Almasry <almasrymina@google.com>,
+ Yonglong Liu <liuyonglong@huawei.com>, Yunsheng Lin
+ <linyunsheng@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>, Matthew
+ Wilcox <willy@infradead.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-mm@kvack.org
+Subject: Re: [PATCH net-next 2/3] page_pool: Turn dma_sync and dma_sync_cpu
+ fields into a bitmap
+In-Reply-To: <b0636b00-e721-4f21-b1c5-74391a36a3be@gmail.com>
+References: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com>
+ <20250314-page-pool-track-dma-v1-2-c212e57a74c2@redhat.com>
+ <b0636b00-e721-4f21-b1c5-74391a36a3be@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Mon, 17 Mar 2025 15:55:18 +0100
+Message-ID: <87msdjhfl5.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -97,51 +111,29 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <66ce34a0-b79d-4ef0-bdd5-982e139571f1@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: NSqFDVsAl9mx0PzomBeGQR0XnQ_batOr
-X-Proofpoint-GUID: NSIGZDVbzXe3CNF4ynR9y7mDwn94_QbP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-03-17_05,2025-03-17_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- impostorscore=0 adultscore=0 mlxscore=0 spamscore=0 phishscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=979
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2502280000 definitions=main-2503170101
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 17, 2025 at 12:22:46PM +0100, Wenjia Zhang wrote:
-> 
-> 
-> On 15.03.25 07:25, I Hsin Cheng wrote:
-> > The variable "polled" in smc_wr_tx_tasklet_fn is a counter to determine
-> > whether the loop has been executed for the first time. Refactor the type
-> > of "polled" from "int" to "bool" can reduce the size of generated code
-> > size by 12 bytes shown with the test below
-> > 
-> > $ ./scripts/bloat-o-meter vmlinux_old vmlinux_new
-> > add/remove: 0/0 grow/shrink: 0/1 up/down: 0/-12 (-12)
-> > Function                                     old     new   delta
-> > smc_wr_tx_tasklet_fn                        1076    1064     -12
-> > Total: Before=24795091, After=24795079, chg -0.00%
-> > 
-> > In some configuration, the compiler will complain this function for
-> > exceeding 1024 bytes for function stack, this change can at least reduce
-> > the size by 12 bytes within manner.
-> > 
-> The code itself looks good. However, I’m curious about the specific
-> situation where the compiler complained. Also, compared to exceeding the
-> function stack limit by 1024 bytes, I don’t see how saving 12 bytes would
-> bring any significant benefit.
+Yunsheng Lin <yunshenglin0825@gmail.com> writes:
 
-The patch description doesn't make sense: bloat-a-meter prints the _text
-size_ difference of two kernels, which really has nothing to do with
-potential stack size savings.
+> On 3/14/2025 6:10 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Change the single-bit booleans for dma_sync into an unsigned long with
+>> BIT() definitions so that a subsequent patch can write them both with a
+>> singe WRITE_ONCE() on teardown. Also move the check for the sync_cpu
+>> side into __page_pool_dma_sync_for_cpu() so it can be disabled for
+>> non-netmem providers as well.
+>
+> I guess this patch is for the preparation of disabling the
+> page_pool_dma_sync_for_cpu() related API on teardown?
+>
+> It seems unnecessary that page_pool_dma_sync_for_cpu() related API need
+> to be disabled on teardown as page_pool_dma_sync_for_cpu() has the same
+> calling assumption as the alloc API, which is not supposed to be called
+> by the drivers when page_pool_destroy() is called.
 
-If there are any changes in stack size with this patch is unknown; at least
-if you rely only on the patch description.
+Sure, we could keep it to the dma_sync_for_dev() direction only, but
+making both directions use the same variable to store the state, and
+just resetting it at once, seemed simpler and more consistent.
 
-You may want to have a look at scripts/stackusage and scripts/stackdelta.
+-Toke
+
 
