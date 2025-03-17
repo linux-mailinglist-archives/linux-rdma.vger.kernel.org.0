@@ -1,127 +1,117 @@
-Return-Path: <linux-rdma+bounces-8732-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8733-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0035A63A6F
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 02:34:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE201A63AF9
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 03:03:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2C8E3A7AD1
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 01:34:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E48016CFA5
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 02:03:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859FF137742;
-	Mon, 17 Mar 2025 01:34:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="PapciGaU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7661013C8EA;
+	Mon, 17 Mar 2025 02:03:02 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52F0405F7;
-	Mon, 17 Mar 2025 01:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8118F66;
+	Mon, 17 Mar 2025 02:02:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742175283; cv=none; b=X1WyzUlizEP47Mb55yqBKXsO7URdPLoFRBN7Sh1SGWD7TTm6wba7Qi0JRJRwCJo4ogZZL3UcVgcsyhX5DZVpO1m9c/2QmU0GencPF9bzVSL6vz3ydhYP5rjTZLgBPR53RYp7porWKWogJXeESmjozk/mayqYhtLfx7z6JQ6xhUk=
+	t=1742176982; cv=none; b=apwNk1yH1/Xf611o9iXmH0W4jF6PC+Ti/8myDmmk9PH/bKY+eRtE7SJdVz+7SVm64C98mqcUdYAMpnHAVBD0lK3vsGlnrKmFoQsIWt01Pg6rl8IYQxBoJn1Ppz5yHSeJ3xqq8iBs71f6idgNdSFo9PFpknOnrbW4scMCOEIkHeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742175283; c=relaxed/simple;
-	bh=eT6MFakubGkmnBAAqo9NAtgD4qcjFA/LrKjlIPZyI2I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n3yiqxXkwIt0MNOxVdxgg2zvwwXGd+8T2+OCHDUxTw9O2OcfIP7v3zxUQcQFGhrGKO9raE3S9PWB8BUvMsYc6GTO/mpCqVMgmWZhlYYUVR7bzgzP15uf4ZQKBqjOqz59opN4z5hBT1xD99W+j/lePYGfLRmZML/Di7d12N/TknM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=PapciGaU; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1742175271; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=OWGQO/XmAgafV+pvwHl30RyH+rk+S5XjfM5aTrOYSKc=;
-	b=PapciGaUveJuicEJOX20kqEohwePbt3PERnn3y7mWmQ2uE7/M3hHvMrobGL4tJhmParVqN4jE4ZeQ8TBUNOl3zeMKeVSBimFIzu3vQoFRVLkGQ1RIMJGjYS5z2lFv/svy5uEsU5cVTQHrwZOCp4mEwszyq6AxVSdxTRlP4R7+XI=
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0WRXPGg2_1742175268 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 17 Mar 2025 09:34:29 +0800
-Date: Mon, 17 Mar 2025 09:34:28 +0800
-From: Dust Li <dust.li@linux.alibaba.com>
-To: I Hsin Cheng <richard120310@gmail.com>, alibuda@linux.alibaba.com
-Cc: wenjia@linux.ibm.com, jaka@linux.ibm.com, tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org, jserv@ccns.ncku.edu.tw,
-	linux-kernel-mentees@lists.linux.dev
-Subject: Re: [PATCH] net/smc: Reduce size of smc_wr_tx_tasklet_fn
-Message-ID: <20250317013428.GC56800@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20250315062516.788528-1-richard120310@gmail.com>
+	s=arc-20240116; t=1742176982; c=relaxed/simple;
+	bh=yYHXnIYsaqcS+6IhtWhRNwEkzZ0hyG20mSczIi+VzjI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=j7B4Gb9h8TPG334CSIqvogAF7gwFGKNhHe0oLpQg/DsP7RlmVptSPXfSjCm35LU/KKmY13DQO+LTiAYTejVrI0IKCZHT0QtXVWa4Mw5PxpYZt0fdoYJSPp7bhAI7auHFpA0DL7W4NzsB6QGVDmDJ5cA2vurRgmyZLsHKfvg69u4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4ZGJ9Y4JKwztQmx;
+	Mon, 17 Mar 2025 10:01:21 +0800 (CST)
+Received: from kwepemf200007.china.huawei.com (unknown [7.202.181.233])
+	by mail.maildlp.com (Postfix) with ESMTPS id E9F83140391;
+	Mon, 17 Mar 2025 10:02:49 +0800 (CST)
+Received: from [10.67.121.184] (10.67.121.184) by
+ kwepemf200007.china.huawei.com (7.202.181.233) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 17 Mar 2025 10:02:48 +0800
+Message-ID: <80bb0e6c-99eb-4c8f-ac00-0c048ec7bbb1@huawei.com>
+Date: Mon, 17 Mar 2025 10:02:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250315062516.788528-1-richard120310@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 0/3] Fix late DMA unmap crash for page pool
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, "David S.
+ Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon
+ Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
+	<andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+	<pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
+ Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
+ Almasry <almasrymina@google.com>, Yunsheng Lin <linyunsheng@huawei.com>,
+	Pavel Begunkov <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>
+CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>, Qiuling Ren
+	<qren@redhat.com>, Yuying Ma <yuma@redhat.com>
+References: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com>
+Content-Language: en-US
+From: Yonglong Liu <liuyonglong@huawei.com>
+In-Reply-To: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemf200007.china.huawei.com (7.202.181.233)
 
-On 2025-03-15 14:25:16, I Hsin Cheng wrote:
->The variable "polled" in smc_wr_tx_tasklet_fn is a counter to determine
->whether the loop has been executed for the first time. Refactor the type
->of "polled" from "int" to "bool" can reduce the size of generated code
->size by 12 bytes shown with the test below
->
->$ ./scripts/bloat-o-meter vmlinux_old vmlinux_new
->add/remove: 0/0 grow/shrink: 0/1 up/down: 0/-12 (-12)
->Function                                     old     new   delta
->smc_wr_tx_tasklet_fn                        1076    1064     -12
->Total: Before=24795091, After=24795079, chg -0.00%
->
->In some configuration, the compiler will complain this function for
->exceeding 1024 bytes for function stack, this change can at least reduce
->the size by 12 bytes within manner.
->
->Signed-off-by: I Hsin Cheng <richard120310@gmail.com>
+I know this solution is still under discussion, but anyway, I tested the
+scenarios I reported in:
 
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+[0]https://lore.kernel.org/lkml/8067f204-1380-4d37-8ffd-007fc6f26738@kernel.org/T/
 
-Best regards,
-Dust
+It seems the problem has been solved. Thanks!
 
->---
-> net/smc/smc_wr.c | 8 ++++----
-> 1 file changed, 4 insertions(+), 4 deletions(-)
+
+Tested-by: Yonglong Liu<liuyonglong@huawei.com>
+
+On 2025/3/14 18:10, Toke Høiland-Jørgensen wrote:
+> This series fixes the late dma_unmap crash for page pool first reported
+> by Yonglong Liu in [0]. It is an alternative approach to the one
+> submitted by Yunsheng Lin, most recently in [1]. The first two commits
+> are small refactors of the page pool code, in preparation of the main
+> change in patch 3. See the commit message of patch 3 for the details.
 >
->diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
->index b04a21b8c511..3cc435ed7fde 100644
->--- a/net/smc/smc_wr.c
->+++ b/net/smc/smc_wr.c
->@@ -138,14 +138,14 @@ static void smc_wr_tx_tasklet_fn(struct tasklet_struct *t)
-> 	struct smc_ib_device *dev = from_tasklet(dev, t, send_tasklet);
-> 	struct ib_wc wc[SMC_WR_MAX_POLL_CQE];
-> 	int i = 0, rc;
->-	int polled = 0;
->+	bool polled = false;
-> 
-> again:
->-	polled++;
->+	polled = !polled;
-> 	do {
-> 		memset(&wc, 0, sizeof(wc));
-> 		rc = ib_poll_cq(dev->roce_cq_send, SMC_WR_MAX_POLL_CQE, wc);
->-		if (polled == 1) {
->+		if (polled) {
-> 			ib_req_notify_cq(dev->roce_cq_send,
-> 					 IB_CQ_NEXT_COMP |
-> 					 IB_CQ_REPORT_MISSED_EVENTS);
->@@ -155,7 +155,7 @@ static void smc_wr_tx_tasklet_fn(struct tasklet_struct *t)
-> 		for (i = 0; i < rc; i++)
-> 			smc_wr_tx_process_cqe(&wc[i]);
-> 	} while (rc > 0);
->-	if (polled == 1)
->+	if (polled)
-> 		goto again;
-> }
-> 
->-- 
->2.43.0
+> -Toke
+>
+> [0] https://lore.kernel.org/lkml/8067f204-1380-4d37-8ffd-007fc6f26738@kernel.org/T/
+> [1] https://lore.kernel.org/r/20250307092356.638242-1-linyunsheng@huawei.com
+>
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> ---
+> Toke Høiland-Jørgensen (3):
+>        page_pool: Move pp_magic check into helper functions
+>        page_pool: Turn dma_sync and dma_sync_cpu fields into a bitmap
+>        page_pool: Track DMA-mapped pages and unmap them when destroying the pool
+>
+>   drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |  4 +-
+>   include/net/page_pool/helpers.h                  |  6 +-
+>   include/net/page_pool/types.h                    | 54 +++++++++++++++-
+>   mm/page_alloc.c                                  |  9 +--
+>   net/core/devmem.c                                |  3 +-
+>   net/core/netmem_priv.h                           | 33 +++++++++-
+>   net/core/page_pool.c                             | 81 ++++++++++++++++++++----
+>   net/core/skbuff.c                                | 16 +----
+>   net/core/xdp.c                                   |  4 +-
+>   9 files changed, 164 insertions(+), 46 deletions(-)
+> ---
+> base-commit: 8ef890df4031121a94407c84659125cbccd3fdbe
+> change-id: 20250310-page-pool-track-dma-0332343a460e
+>
 >
 
