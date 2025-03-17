@@ -1,137 +1,147 @@
-Return-Path: <linux-rdma+bounces-8750-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8751-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0924BA6518A
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 14:44:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A842A651F5
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 14:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76C391886D28
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 13:45:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 142257A6DC4
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 13:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7ED23F296;
-	Mon, 17 Mar 2025 13:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6082B241669;
+	Mon, 17 Mar 2025 13:57:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ILjGPW3O"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="N9Ic8yF1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 364618F5E;
-	Mon, 17 Mar 2025 13:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93336241129;
+	Mon, 17 Mar 2025 13:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742219084; cv=none; b=Ict+NBx8MfG2IOxsg9gxld0xhoxSEnRuwujxxkj59ctSMP2ykcOr+RL+oM37/NEDl0JoKSJ39x7Sd4zXeNvTx2ATXOXCb2Hp+bV4zBDK8TapgGR4e3kzbU9MvQVgW07PlIdnM3SjK9eNan8uASqCfHxkBrdhiZ7KUDu6oGom0/U=
+	t=1742219836; cv=none; b=XAicYnvG0PFNaaHPD4SX/pf8oVs295vZjSsYlXE282XeT+zhFbMYiWsK2jGaazeOXDLNQkVzXlIUwJsFjsk5Eq0aNLtqCWjmYOJR6IJBeXstVP//nlK28WIk6lpztfeRl1K9Rav/Nf5bh6WKrJLragqNt6YwUdCv8o+YS2Goqi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742219084; c=relaxed/simple;
-	bh=Nivyt0eviFTvQGhEOEf8ZZpxVSrnlmwhnY5tRfaE3Wg=;
+	s=arc-20240116; t=1742219836; c=relaxed/simple;
+	bh=sSjPqbu9OFPuvQnENGQoGhHTGaKcRFEGnMtAb/gleBA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kAAzZwriSWF2xspYOIdgiKAIl8KIw/qPbtnxUo4iNFnC5QUvVUu582nm2/bigPaoHY/gnqbSloez+a63ieHD1aFaoEUdEGbbQplflBmFS5FNaXaldcXIMXc4EEzZ7p0Wws3yiaKWKXNg0sUesReEMg1b7uDvn3hJnj+E8j8+ybQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ILjGPW3O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE2E6C4CEE3;
-	Mon, 17 Mar 2025 13:44:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742219083;
-	bh=Nivyt0eviFTvQGhEOEf8ZZpxVSrnlmwhnY5tRfaE3Wg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ILjGPW3OLQcmOrkMv5AH8aq1hrAnpRAPMTAQgLR7RHFsJF2bLoRw3BTOgmHBq56Li
-	 RCNNwy/ccowtgdxyVVPCv0ACNvWo78Z/Cvu5jcsLgefi4PUDEch8eU1Oviz3EuYzg5
-	 XUIEGSx2UA3cLHJWgIltL+b6l4V15ww+2bB6RDXFXhGG+65hftuhRbA0B/Wi3ffTrq
-	 1vQsHc29chbUvptRWKtzZwyE1x1581v27MnBNJCKTXUw8791ZidkW0v3U8o4LXMJS3
-	 W5yBnsLldEWaxyxVsmdLLyDaZrnHRHhHavJ+TGx31Iv9mQtnnuwHaY0Ofdxp9EFxBU
-	 dA3ZPdJHhLs9A==
-Date: Mon, 17 Mar 2025 15:44:39 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Niklas Schnelle <schnelle@linux.ibm.com>
-Cc: Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Robin Murphy <robin.murphy@arm.com>, Jens Axboe <axboe@kernel.dk>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v7 03/17] iommu: generalize the batched sync after map
- interface
-Message-ID: <20250317134439.GX1322339@unreal>
-References: <cover.1738765879.git.leonro@nvidia.com>
- <ad8b0dc927ea21238457a47537d39cd746751f4b.1738765879.git.leonro@nvidia.com>
- <d83afae060351f49fe0ba661f69c1d0b00538a35.camel@linux.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=g8isn9OSlw9M5w9si5h0zEv0w4eiaaJdKxHdGU3IYY1qfB+6SvIi5UtU5ysWWnYEDTfjV87kcbYGjwwO6GoFcOQ7WTqTOyOpmuHazMxf0j6RQTjPKiSWIljlJv/GNuUvj1rHcvTP8zKhY5GKw4g6ZC3X1W7tx8ZiF0uWJSXHtbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=N9Ic8yF1; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 52HDa3Zn018184;
+	Mon, 17 Mar 2025 13:57:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=GUH8cm
+	mKancpQH41aPR1l9wcULwXArnAHaNi/ZU5n4c=; b=N9Ic8yF13L5elng7ZY/pKj
+	Nuw0eIJsxnhhHCew2nnnm9/iYnfYoOxLaAA7eTSbUoRmjsRmRYyCiQv97CPlt4D3
+	b/AwoqOUIBO/hZ3mRbfDvz8YqE+cRlqFdqu8Q2qkIPXIgJWmYdbMOyjX5KTBxxQZ
+	5Bo4VFC2966+tYGVgnIHoYfjYdJ864lDLFWOmFFRSobFOAOxdsyCpTt5RV3CxZgC
+	NDxF+Q87J3lw7xm91xzgFq5EDnlCU8E6PxIjoZQ1CkaChJjtk4nyGPG8JEezQnJ4
+	GLsWGPnRn6BRzSdQMaJpA2ICrC2azsCmJWR7jL2KJd03gbic3Mnl1nU4vq1s7D7A
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45e5v03rfw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 17 Mar 2025 13:57:05 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 52HDa4dE018418;
+	Mon, 17 Mar 2025 13:57:04 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45e5v03rec-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 17 Mar 2025 13:57:04 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 52HDqkRI005742;
+	Mon, 17 Mar 2025 13:56:37 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 45dpk264tc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 17 Mar 2025 13:56:37 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 52HDuYWO52101546
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 17 Mar 2025 13:56:34 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2222820049;
+	Mon, 17 Mar 2025 13:56:34 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 289F72004B;
+	Mon, 17 Mar 2025 13:56:33 +0000 (GMT)
+Received: from osiris (unknown [9.179.24.138])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 17 Mar 2025 13:56:33 +0000 (GMT)
+Date: Mon, 17 Mar 2025 14:56:31 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Wenjia Zhang <wenjia@linux.ibm.com>
+Cc: I Hsin Cheng <richard120310@gmail.com>, alibuda@linux.alibaba.com,
+        jaka@linux.ibm.com, mjambigi@linux.ibm.com, sidraya@linux.ibm.com,
+        tonylu@linux.alibaba.com, guwen@linux.alibaba.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        horms@kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        jserv@ccns.ncku.edu.tw, linux-kernel-mentees@lists.linux.dev
+Subject: Re: [PATCH] net/smc: Reduce size of smc_wr_tx_tasklet_fn
+Message-ID: <20250317135631.21754E85-hca@linux.ibm.com>
+References: <20250315062516.788528-1-richard120310@gmail.com>
+ <66ce34a0-b79d-4ef0-bdd5-982e139571f1@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d83afae060351f49fe0ba661f69c1d0b00538a35.camel@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <66ce34a0-b79d-4ef0-bdd5-982e139571f1@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: NSqFDVsAl9mx0PzomBeGQR0XnQ_batOr
+X-Proofpoint-GUID: NSIGZDVbzXe3CNF4ynR9y7mDwn94_QbP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-17_05,2025-03-17_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
+ impostorscore=0 adultscore=0 mlxscore=0 spamscore=0 phishscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=979
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502280000 definitions=main-2503170101
 
-On Mon, Mar 17, 2025 at 10:52:11AM +0100, Niklas Schnelle wrote:
-> On Wed, 2025-02-05 at 16:40 +0200, Leon Romanovsky wrote:
-> > From: Christoph Hellwig <hch@lst.de>
-> > 
-> > For the upcoming IOVA-based DMA API we want to use the interface batch the
-> > sync after mapping multiple entries from dma-iommu without having a
-> > scatterlist.
-> > 
-> > For that move more sanity checks from the callers into __iommu_map and
-> > make that function available outside of iommu.c as iommu_map_nosync.
-> > 
-> > Add a wrapper for the map_sync as iommu_sync_map so that callers don't
-> > need to poke into the methods directly.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > Acked-by: Will Deacon <will@kernel.org>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  drivers/iommu/iommu.c | 65 +++++++++++++++++++------------------------
-> >  include/linux/iommu.h |  4 +++
-> >  2 files changed, 33 insertions(+), 36 deletions(-)
-> > 
-> > 
-> --- snip ---
-> > +
-> >  	return mapped;
-> >  
-> >  out_err:
-> > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> > index 38c65e92ecd0..7ae9aa3a1894 100644
-> > --- a/include/linux/iommu.h
-> > +++ b/include/linux/iommu.h
-> > @@ -857,6 +857,10 @@ extern struct iommu_domain *iommu_get_domain_for_dev(struct device *dev);
-> >  extern struct iommu_domain *iommu_get_dma_domain(struct device *dev);
-> >  extern int iommu_map(struct iommu_domain *domain, unsigned long iova,
-> >  		     phys_addr_t paddr, size_t size, int prot, gfp_t gfp);
-> > +int iommu_map_nosync(struct iommu_domain *domain, unsigned long iova,
-> > +		phys_addr_t paddr, size_t size, int prot, gfp_t gfp);
-> > +int iommu_sync_map(struct iommu_domain *domain, unsigned long iova,
-> > +		size_t size);
+On Mon, Mar 17, 2025 at 12:22:46PM +0100, Wenjia Zhang wrote:
 > 
-> There are two different word orders in the function names.
-> iommu_sync_map() vs iommu_map_nosync(). I'd prefer to be consistent
-> with e.g. iommu_map_sync() vs iommu_map_nosync().
-
-The naming came from refactoring different functions, one was simple *_map() and
-another was iotlb_*_sync(), but yes we can name it consistently.
-
-Thanks
-
 > 
-> >  extern size_t iommu_unmap(struct iommu_domain *domain, unsigned long iova,
-> >  			  size_t size);
-> >  extern size_t iommu_unmap_fast(struct iommu_domain *domain,
-> 
+> On 15.03.25 07:25, I Hsin Cheng wrote:
+> > The variable "polled" in smc_wr_tx_tasklet_fn is a counter to determine
+> > whether the loop has been executed for the first time. Refactor the type
+> > of "polled" from "int" to "bool" can reduce the size of generated code
+> > size by 12 bytes shown with the test below
+> > 
+> > $ ./scripts/bloat-o-meter vmlinux_old vmlinux_new
+> > add/remove: 0/0 grow/shrink: 0/1 up/down: 0/-12 (-12)
+> > Function                                     old     new   delta
+> > smc_wr_tx_tasklet_fn                        1076    1064     -12
+> > Total: Before=24795091, After=24795079, chg -0.00%
+> > 
+> > In some configuration, the compiler will complain this function for
+> > exceeding 1024 bytes for function stack, this change can at least reduce
+> > the size by 12 bytes within manner.
+> > 
+> The code itself looks good. However, I’m curious about the specific
+> situation where the compiler complained. Also, compared to exceeding the
+> function stack limit by 1024 bytes, I don’t see how saving 12 bytes would
+> bring any significant benefit.
+
+The patch description doesn't make sense: bloat-a-meter prints the _text
+size_ difference of two kernels, which really has nothing to do with
+potential stack size savings.
+
+If there are any changes in stack size with this patch is unknown; at least
+if you rely only on the patch description.
+
+You may want to have a look at scripts/stackusage and scripts/stackdelta.
 
