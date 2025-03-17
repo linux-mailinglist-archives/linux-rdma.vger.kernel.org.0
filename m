@@ -1,117 +1,106 @@
-Return-Path: <linux-rdma+bounces-8733-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8734-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE201A63AF9
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 03:03:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E1BEA63B8F
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 03:27:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E48016CFA5
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 02:03:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F5563AE132
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Mar 2025 02:27:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7661013C8EA;
-	Mon, 17 Mar 2025 02:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F1C31527B4;
+	Mon, 17 Mar 2025 02:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="qLF6FJz4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8118F66;
-	Mon, 17 Mar 2025 02:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDE451C5A;
+	Mon, 17 Mar 2025 02:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742176982; cv=none; b=apwNk1yH1/Xf611o9iXmH0W4jF6PC+Ti/8myDmmk9PH/bKY+eRtE7SJdVz+7SVm64C98mqcUdYAMpnHAVBD0lK3vsGlnrKmFoQsIWt01Pg6rl8IYQxBoJn1Ppz5yHSeJ3xqq8iBs71f6idgNdSFo9PFpknOnrbW4scMCOEIkHeM=
+	t=1742178468; cv=none; b=Ze/ZUeFJMIH/PF4SaoM8syLnk1Sw7jU4x9QDXfvO38MlJHm+ANLk165zGZfuxnaUt6bjb35XFQN1V50AmQsCutwOR+kjv0kkNlnFAGemwaVdZHlKUlYeeczdW33fJbKaA4itQsXKm4hBScdN0EL8mgyi2onYK9K0MuNyPGFbFMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742176982; c=relaxed/simple;
-	bh=yYHXnIYsaqcS+6IhtWhRNwEkzZ0hyG20mSczIi+VzjI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=j7B4Gb9h8TPG334CSIqvogAF7gwFGKNhHe0oLpQg/DsP7RlmVptSPXfSjCm35LU/KKmY13DQO+LTiAYTejVrI0IKCZHT0QtXVWa4Mw5PxpYZt0fdoYJSPp7bhAI7auHFpA0DL7W4NzsB6QGVDmDJ5cA2vurRgmyZLsHKfvg69u4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4ZGJ9Y4JKwztQmx;
-	Mon, 17 Mar 2025 10:01:21 +0800 (CST)
-Received: from kwepemf200007.china.huawei.com (unknown [7.202.181.233])
-	by mail.maildlp.com (Postfix) with ESMTPS id E9F83140391;
-	Mon, 17 Mar 2025 10:02:49 +0800 (CST)
-Received: from [10.67.121.184] (10.67.121.184) by
- kwepemf200007.china.huawei.com (7.202.181.233) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 17 Mar 2025 10:02:48 +0800
-Message-ID: <80bb0e6c-99eb-4c8f-ac00-0c048ec7bbb1@huawei.com>
-Date: Mon, 17 Mar 2025 10:02:47 +0800
+	s=arc-20240116; t=1742178468; c=relaxed/simple;
+	bh=mUzG+ik7zIOlXc8Gp465g6xDPDL5Ez55ulzZYdJhjHc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TV6VTroD4odZCQ+HkBzFs1lI+qO/OBMc2q1GzJ7FUNZ5zdM3C6PcEz48EbIFQt4D8J4Adw2UzaDhIwvbE8KZOykimw2SLUJGJqbUwGsJv+qs37W6bvj6DHQ7U2sT2yQ2G1X3w8LYalVmJKYEC8/c1u3gatmuepDgq26hq7nCEnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=qLF6FJz4; arc=none smtp.client-ip=115.124.30.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1742178454; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=EJ8I6/uv4gDuHu2hvbLCTYuIGGwSQNob954hSFwxMc0=;
+	b=qLF6FJz40MncyjKiyeTOctQcBe9lw6wNbxfVXX5WmU1DW+eR3w0WtQK73jk15YE0r83aTvIWxT/TV8VmueBEEvP5V0tPK+v7qLMztzQeUyUgVGIJW8iT5yS4zLe9dRvj0lTGU8IRx68yTAQbed59/knRH09Yx5n4u81Y+xyvqwQ=
+Received: from 30.221.64.192(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0WRXrLf._1742178452 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Mon, 17 Mar 2025 10:27:33 +0800
+Message-ID: <67a12e7e-51ff-36bf-a575-b77c09b56110@linux.alibaba.com>
+Date: Mon, 17 Mar 2025 10:27:32 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 0/3] Fix late DMA unmap crash for page pool
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, "David S.
- Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon
- Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
-	<andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
-	<pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
- Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
- Almasry <almasrymina@google.com>, Yunsheng Lin <linyunsheng@huawei.com>,
-	Pavel Begunkov <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>
-CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>, Qiuling Ren
-	<qren@redhat.com>, Yuying Ma <yuma@redhat.com>
-References: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v2] RDMA/erdma: Fix exception handling in
+ erdma_accept_newconn()
 Content-Language: en-US
-From: Yonglong Liu <liuyonglong@huawei.com>
-In-Reply-To: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Markus Elfring <Markus.Elfring@web.de>, linux-rdma@vger.kernel.org,
+ Jason Gunthorpe <jgg@ziepe.ca>, Kai Shen <kaishen@linux.alibaba.com>,
+ Leon Romanovsky <leon@kernel.org>, Yang Li <yang.lee@linux.alibaba.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+References: <2e9ae1d6-4bbb-470f-957f-bb6ea2e0829e@web.de>
+From: Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <2e9ae1d6-4bbb-470f-957f-bb6ea2e0829e@web.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemf200007.china.huawei.com (7.202.181.233)
-
-I know this solution is still under discussion, but anyway, I tested the
-scenarios I reported in:
-
-[0]https://lore.kernel.org/lkml/8067f204-1380-4d37-8ffd-007fc6f26738@kernel.org/T/
-
-It seems the problem has been solved. Thanks!
 
 
-Tested-by: Yonglong Liu<liuyonglong@huawei.com>
 
-On 2025/3/14 18:10, Toke Høiland-Jørgensen wrote:
-> This series fixes the late dma_unmap crash for page pool first reported
-> by Yonglong Liu in [0]. It is an alternative approach to the one
-> submitted by Yunsheng Lin, most recently in [1]. The first two commits
-> are small refactors of the page pool code, in preparation of the main
-> change in patch 3. See the commit message of patch 3 for the details.
->
-> -Toke
->
-> [0] https://lore.kernel.org/lkml/8067f204-1380-4d37-8ffd-007fc6f26738@kernel.org/T/
-> [1] https://lore.kernel.org/r/20250307092356.638242-1-linyunsheng@huawei.com
->
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+On 3/13/25 8:10 PM, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Thu, 13 Mar 2025 11:44:50 +0100
+> 
+> The label “error” was used to jump to another pointer check despite of
+> the detail in the implementation of the function “erdma_accept_newconn”
+> that it was determined already that corresponding variables contained
+> still null pointers.
+> 
+> 1. Thus return directly if
+>    * the cep state is not the value “ERDMA_EPSTATE_LISTENING”
+>      or
+>    * a call of the function “erdma_cep_alloc” failed.
+> 
+> 2. Use more appropriate labels instead.
+> 
+> 3. Delete two questionable checks.
+> 
+> 4. Omit extra initialisations (for the variables “new_cep”, “new_s” and “ret”)
+>    which became unnecessary with this refactoring.
+> 
+> 
+> This issue was detected by using the Coccinelle software.
+> 
+> Fixes: 920d93eac8b9 ("RDMA/erdma: Add connection management (CM) support")
+
+
+I think this patch does not fix issues, so fix line is not needed.
+
+Thanks,
+Cheng Xu
+
+
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 > ---
-> Toke Høiland-Jørgensen (3):
->        page_pool: Move pp_magic check into helper functions
->        page_pool: Turn dma_sync and dma_sync_cpu fields into a bitmap
->        page_pool: Track DMA-mapped pages and unmap them when destroying the pool
->
->   drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |  4 +-
->   include/net/page_pool/helpers.h                  |  6 +-
->   include/net/page_pool/types.h                    | 54 +++++++++++++++-
->   mm/page_alloc.c                                  |  9 +--
->   net/core/devmem.c                                |  3 +-
->   net/core/netmem_priv.h                           | 33 +++++++++-
->   net/core/page_pool.c                             | 81 ++++++++++++++++++++----
->   net/core/skbuff.c                                | 16 +----
->   net/core/xdp.c                                   |  4 +-
->   9 files changed, 164 insertions(+), 46 deletions(-)
-> ---
-> base-commit: 8ef890df4031121a94407c84659125cbccd3fdbe
-> change-id: 20250310-page-pool-track-dma-0332343a460e
->
->
+
+<...>
+
 
