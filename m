@@ -1,104 +1,98 @@
-Return-Path: <linux-rdma+bounces-8777-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8778-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9943A67146
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Mar 2025 11:29:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E57BA67193
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Mar 2025 11:40:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF2AF7A8717
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Mar 2025 10:28:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19AEF19A270E
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Mar 2025 10:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D08A207A1F;
-	Tue, 18 Mar 2025 10:29:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E913B2080D6;
+	Tue, 18 Mar 2025 10:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ikPPE2Lf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KDkPUGRi"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C7302040B3
-	for <linux-rdma@vger.kernel.org>; Tue, 18 Mar 2025 10:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E59935957;
+	Tue, 18 Mar 2025 10:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742293751; cv=none; b=fp4zrnjssMmwRn1O4o2BFjo87+zqllm+Ui/6H5DVpoyYHROua9gp4/CEzk7KzfM62URoPJCyp2wBcEz+gHsGiFUqb4ZGMcIWfGIS7JNqaNXoBhg+gsjuAqR9V0qfJpdvTPhTmKz8cBxGtjs659TuRkJr+zvUHlrlZNchM+XAtsY=
+	t=1742294398; cv=none; b=QYvnu/X2l11fBACk2YsAhufCd5BN4O16WvVTP+Vg1BC2fMUEZ0IkVy0sMjIPgvIDORxr91IiMja0ZFXdloR368hh47B5XrKvNGh7PxO3EavnLwNonsrXFb9b9XA4JeePNXa74iH70VqZK2uGT/pPaglA8IoVIUfrAokKho2FjQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742293751; c=relaxed/simple;
-	bh=LrZDP1v1jCQddl22CkSTmARifhQsfH8zHGYANxlSsa8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t3bfHWon9S8jbjWWI8CEhpJq8I5tyxr0xFXhdo+Gw9f4fTON2hyh2qtyY602S8TQZ+JbUWta6+ndoHUGqrvX+54MEuzPHlsebBbOTpRcO8fZhAIpmcGAGP1PZYkLoZ5z63CT+nnDefTv5S33GIh7ZpxEiKW5zE1JJ/n67xXAxi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ikPPE2Lf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6807BC4CEDD;
-	Tue, 18 Mar 2025 10:29:10 +0000 (UTC)
+	s=arc-20240116; t=1742294398; c=relaxed/simple;
+	bh=yc7zqx+OxHv/IMqY+YNnetE41OylMpiIkl27mOUynxk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=gvwZ6gY4m9v5Xknz1bS45DmKL0cD2VvQ4tS23GKxQSCt/x+cBGnxm5LFElRa1Wg7ARt1LY1nalRQVxGVjQ3NpXc617hFYYu1b71/jrcPxCyJuQhRfDuXpXVZnrOGL4+JyU2m4BbEyeEHxEPuiGOtDPvKWDwLT3kPS47aS0plmPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KDkPUGRi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0897AC4CEDD;
+	Tue, 18 Mar 2025 10:39:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742293750;
-	bh=LrZDP1v1jCQddl22CkSTmARifhQsfH8zHGYANxlSsa8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ikPPE2LfQV6wV0044MPeDo73rifEksQ+DDsM97XnQG4DDZekw250wlCbqrCrMINS5
-	 3MW1a07TSZq9I/PZOnkuNzn8Doo9BlI5typkRaMnCKvqMyEiYYufzZEaJNCfFLtdjV
-	 dB9mnrM1QjslqAtSrvkDa+FR3P7bUzv8sVXRYPs5hjlMAxD1pKZDa23uv2nBtnDbqM
-	 SnAO2RvXaDhtkdlJwMhIkilHL20Na9dJpmX5h1tS4jleEPfSG6gLzkvhjPvU9JzDAQ
-	 KBac4FvUpPysYZyrA5ycB8S+qTrJYq1jl7xa51rksqtB2sOoEJuaZBhQzw+WYzsaJb
-	 O5wJnNBhlfo1A==
-Date: Tue, 18 Mar 2025 12:29:07 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Chiara Meiohas <cmeiohas@nvidia.com>,
-	Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	Or Har-Toov <ohartoov@nvidia.com>,
-	Patrisious Haddad <phaddad@nvidia.com>,
-	Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH rdma-next 0/7] Batch of mlx5_ib fixes
-Message-ID: <20250318102907.GC1322339@unreal>
-References: <cover.1741875692.git.leon@kernel.org>
+	s=k20201202; t=1742294398;
+	bh=yc7zqx+OxHv/IMqY+YNnetE41OylMpiIkl27mOUynxk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=KDkPUGRiJ1Z1Z4939QldG0X+WQJ32AAH8VVKBRgDn7GS5TEL+Vk5TzHy02/y2y2MW
+	 lo4V13l4jzCvbF7Oz6vre7pTrZK+ma463zONSqpo1GuDk74YtXww/kiz/zXataRUN3
+	 2cOXu1mI2e2wKePXUzCc7krtViYPza3X90ajyJwEljbOLz8swOyWtFSiAKMr8tFwep
+	 B8HNZiISLOqWRThdQDp4WT+pdZF90CbDR2XY3UPJOhIW0/8+vRZvjWIeVu967d/NC1
+	 +4UrvaS0zWZi/fFmfCNSs0yUI37ohbhJijVQ03m49B5Qqj77eCgfeLk2itb1eB5bQU
+	 Sr+QZuSWfDLiw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADCFE380DBE8;
+	Tue, 18 Mar 2025 10:40:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1741875692.git.leon@kernel.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net, v2] net: mana: Support holes in device list reply msg
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174229443352.4121686.16390383301229886639.git-patchwork-notify@kernel.org>
+Date: Tue, 18 Mar 2025 10:40:33 +0000
+References: <1741723974-1534-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1741723974-1534-1-git-send-email-haiyangz@microsoft.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, decui@microsoft.com,
+ stephen@networkplumber.org, kys@microsoft.com, paulros@microsoft.com,
+ olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+ longli@microsoft.com, ssengar@linux.microsoft.com,
+ linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
+ shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
 
-On Thu, Mar 13, 2025 at 04:29:47PM +0200, Leon Romanovsky wrote:
-> Hi,
-> 
-> This is batch of various fixes to mlx5_ib driver.
-> 
-> Thanks
-> 
-> Chiara Meiohas (1):
->   RDMA/mlx5: Fix calculation of total invalidated pages
-> 
-> Michael Guralnik (5):
->   RDMA/mlx5: Fix MR cache initialization error flow
->   RDMA/mlx5: Fix cache entry update on dereg error
->   RDMA/mlx5: Drop access_flags from _mlx5_mr_cache_alloc()
->   RDMA/mlx5: Fix page_size variable overflow
+Hello:
 
-Applied.
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
->   RDMA/mlx5: Align cap check of mkc page size to device specification
+On Tue, 11 Mar 2025 13:12:54 -0700 you wrote:
+> According to GDMA protocol, holes (zeros) are allowed at the beginning
+> or middle of the gdma_list_devices_resp message. The existing code
+> cannot properly handle this, and may miss some devices in the list.
+> 
+> To fix, scan the entire list until the num_of_devs are found, or until
+> the end of the list.
+> 
+> [...]
 
-I was asked offline to drop it for now.
+Here is the summary with links:
+  - [net,v2] net: mana: Support holes in device list reply msg
+    https://git.kernel.org/netdev/net/c/2fc8a346625e
 
-Thanks
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> 
-> Patrisious Haddad (1):
->   RDMA/mlx5: Fix mlx5_poll_one() cur_qp update flow
-> 
->  drivers/infiniband/hw/mlx5/cq.c      |  2 +-
->  drivers/infiniband/hw/mlx5/mlx5_ib.h | 23 ++++++++++---
->  drivers/infiniband/hw/mlx5/mr.c      | 50 +++++++++++++++++-----------
->  drivers/infiniband/hw/mlx5/odp.c     | 10 +++---
->  4 files changed, 56 insertions(+), 29 deletions(-)
-> 
-> -- 
-> 2.48.1
-> 
-> 
+
 
