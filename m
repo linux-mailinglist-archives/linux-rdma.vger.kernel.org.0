@@ -1,308 +1,249 @@
-Return-Path: <linux-rdma+bounces-8799-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8800-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABD0AA67E53
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Mar 2025 21:55:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3630CA67F5E
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Mar 2025 23:11:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 789A33AA1DF
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Mar 2025 20:55:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C49D8189CEBB
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Mar 2025 22:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 945E82135A5;
-	Tue, 18 Mar 2025 20:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8674920FAAB;
+	Tue, 18 Mar 2025 22:07:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h+XCk5YC"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PcWOMt53"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7500220468F
-	for <linux-rdma@vger.kernel.org>; Tue, 18 Mar 2025 20:55:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742331329; cv=none; b=Oezik6GbKLgDFyIkrvPnV/pgHBsHPZG+z5d/xq2E7mDvbu0kVMsWVCm4yy1i2j3zhfbazYCHEtLq7Tcaz6GutO54ZoY51ZavZ52YZTRXmTwY0JcgCT/mTKOtbBV1fGIc2gD9kDMVsGrEPfQqdqUGWHKyqgeoYBr2nV/GDxSfps4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742331329; c=relaxed/simple;
-	bh=Vo1yrDeXj6NDj4SV3WNY+ktW88KCtSaA8UZmOawRlg4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=cJp3YBpm/L5GQMPsvQ8eBqzEXD6cDzWmuOQWoQHynAYIq5iHnB4a6WT1Z/ythcWidAAbf7KZBL2Z0CaxZB1rb9Z1m5cf8HRyTmonZfnIuCxbMlvWIhK3R8ZWBNJ8Kmwddos0ZNenrEuPeXvkaJJ3jBvksO9jF5XvuKS8IhGxdBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h+XCk5YC; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1742331326;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=47f/ey+Rw47qKqlvyNz3Y2mw/kjp4yg5557bp9nPawQ=;
-	b=h+XCk5YCztksLgLRtuvWVgUpx5ECZhxZThhNU4nLPSpOLGTfzkPVy1Ez88LZnYc3/Uy+U8
-	t3POB3zKG3nGDP5RZRvQR1fydnUEjKDsQ67K+ezsUvu/cN0PoO+ZAKfUbqlWg4Js6IAXFM
-	zbNeTvc4wJ36h7bk95bD34cC+lXuQuI=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-82-T_K4xARMORWNADgBrj5mQQ-1; Tue, 18 Mar 2025 16:55:25 -0400
-X-MC-Unique: T_K4xARMORWNADgBrj5mQQ-1
-X-Mimecast-MFC-AGG-ID: T_K4xARMORWNADgBrj5mQQ_1742331323
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-30bf4297559so33444941fa.2
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Mar 2025 13:55:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742331323; x=1742936123;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=47f/ey+Rw47qKqlvyNz3Y2mw/kjp4yg5557bp9nPawQ=;
-        b=KVA0n3pXgJEiZTALUhddsUmfXS1VxYaxlnKUVF3bQEBIgHu4sbg6LbXO6y02Ka/imY
-         Iqe0o/sYtIDW2WWwH320IE6lo6Cq7Q4x79HL0cDHBXlj7e7egjq5bM5Xl15/QISLwzla
-         GiooidxNYc+oPb0Q5MDBzKLTTDmJBor5tmDEmxD9UXuhPucSRBFjYbpZg1GDq9k8m9eD
-         PTZHblVoHoqZN3K/n2bQVT+wvfTA29ynW+iJc8BVnCI5Eic3kwFEBGw7khnK7W4NjAm/
-         ww7dqwVdcfPZMMg5KS2SGWS4xLrE1CZ6CDpj8lmCleIKo2WcutWq2BUDY0BQQ6y8KkTz
-         uNWA==
-X-Forwarded-Encrypted: i=1; AJvYcCUDsjc1J6oVrPxw5yuBpYAqBYqmNfEV+b8Q494v4P1gQt4vg3aSLoJg29fk9I6YVXg4MUCmJjRTBIFC@vger.kernel.org
-X-Gm-Message-State: AOJu0YxW0zWH3obwtWdTO5DOYzWSYXVolOaTffL6pS12hBz2vGAntzxs
-	0f/UPnkdDtqdBeIUUByZeQQt1ZrdjRHBPyWcEwctok2ONWLVegyGv234qbRDQ9iThXnaf1wrKa5
-	IUXIEsw9fHCVv3G7+Yi/X6c67ZcGlI6xVSY1Gc3NZM/1jdCm591KBHC6dCYc=
-X-Gm-Gg: ASbGncsK5Auf+x3DGw60uuYr5WiCRUbcGRZRWFoTSBRT74xk+e2tWEccjAQ9fW9gQ5Q
-	Al1O2ff13gkozzSPn+oKx7wzsnVx0llJ8rCF9BKmeaFq9kRypzaXTuYDmsbSzC9QkHhGwOpIzT4
-	0urXXawPxJ05+/ydp+Sgfmvus9IDTypVRkFY1QTJFZ5N4bZ/yRiSGdxfEzoHBiAiYIbx/Qs2GJc
-	11mIYDjPVU00y9lkobmwjizDbEPZw36420b+fr4S7gGYknN2oWtbYVnHn9xGi4DjAN6qkY9G6P3
-	0NE1UJD/0Vd0
-X-Received: by 2002:a05:6512:2351:b0:542:91a5:2478 with SMTP id 2adb3069b0e04-54acb200b32mr9399e87.32.1742331323207;
-        Tue, 18 Mar 2025 13:55:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGv32MD9rYrAaB4w0H+GGjiPxz+dxQSbBbZExsG4PudOWzTXu9r6mA2Br+a28dY1YTqZpmi5w==
-X-Received: by 2002:a05:6512:2351:b0:542:91a5:2478 with SMTP id 2adb3069b0e04-54acb200b32mr9386e87.32.1742331322568;
-        Tue, 18 Mar 2025 13:55:22 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-549ba7a81basm1814300e87.28.2025.03.18.13.55.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Mar 2025 13:55:21 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id C778D18FB055; Tue, 18 Mar 2025 21:55:20 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Yunsheng Lin <linyunsheng@huawei.com>, Yunsheng Lin
- <yunshenglin0825@gmail.com>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
- <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
- Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
- Almasry <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>,
- Pavel Begunkov <asml.silence@gmail.com>, Matthew Wilcox
- <willy@infradead.org>, Robin Murphy <robin.murphy@arm.com>, IOMMU
- <iommu@lists.linux.dev>, segoon@openwall.com, solar@openwall.com
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>, Yuying Ma
- <yuma@redhat.com>
-Subject: Re: [PATCH net-next 3/3] page_pool: Track DMA-mapped pages and
- unmap them when destroying the pool
-In-Reply-To: <7a76908d-5be2-43f1-a8e2-03b104165a29@huawei.com>
-References: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com>
- <20250314-page-pool-track-dma-v1-3-c212e57a74c2@redhat.com>
- <db813035-fb38-4fc3-b91e-d1416959db13@gmail.com> <87jz8nhelh.fsf@toke.dk>
- <7a76908d-5be2-43f1-a8e2-03b104165a29@huawei.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Tue, 18 Mar 2025 21:55:20 +0100
-Message-ID: <87wmcmhxdz.fsf@toke.dk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977D22066F1;
+	Tue, 18 Mar 2025 22:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742335669; cv=fail; b=Y8uT6A7GOy1ILxEs53DTlenzLqImUQKFhsUM8KeX7FNS2SMqP1vOuSHT12y5GU5XRFl5dccBMXjySt/Gm7LCuby+wTl7epwMnGnhSZsfb9F15wF/lCtMu+tIjTsBioCLfNd67IxpKmw3Es+Z4QQurr46SZZmSSFhMeBwW55cbIs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742335669; c=relaxed/simple;
+	bh=i0I4NldoK3PuXx52ay8rfpN4+4C/w3OraTewQ61zpfQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=WhHy3R/bZXVckwQNfIoso4AFCXwtaWpkJZbm8MYEUGUWJHc5442jI/QgWdNlR6YglCDCfEgXsqgHOhsUwQAAt7vwepaPzvFmglDvlRzZ1WL2Ti2rkNyArBtlm1XXoVUgEXqRLfh71F+6PlSCCZ1dfISEsXOp2ak5ALPu7Ak8XhU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PcWOMt53; arc=fail smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1742335668; x=1773871668;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=i0I4NldoK3PuXx52ay8rfpN4+4C/w3OraTewQ61zpfQ=;
+  b=PcWOMt532rh3jbVMQZicWLJFdLvFkpIVqhZ1qPFGgPaue5C/Ukf9PrcJ
+   Toxm7wmOmLIl/9r4imlZN1vpshUfDFEV/nuAIe2JZ/8wm+GOWeZjh4d/r
+   GXKnxoxBVbkQBHAfbHpevgAt4BB53ED5tGccQ1cR1rRQvmFHt97uTxi5I
+   ZizDAuyV/nF/e7cFMq7bRnUYdz5bD5zxpad3rER965Idh1MGwI3ecX//6
+   agmOFoTdjDqOzpQ6ABCKfhUTZO6K08wiJM5B7tIIGRuEPs3HpigkEqDZB
+   KzbAcxFfgL8umQUl/ElvcAJcpIWkMgc62lsE9yQVSU5ce6+g13r+KEWmX
+   g==;
+X-CSE-ConnectionGUID: 6xgmuXv1T+GYsCjJgh/Q6A==
+X-CSE-MsgGUID: xUavT9ycRNyDX8Xtw90ojA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11377"; a="54495803"
+X-IronPort-AV: E=Sophos;i="6.14,258,1736841600"; 
+   d="scan'208";a="54495803"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2025 15:07:45 -0700
+X-CSE-ConnectionGUID: ICbE+oKYQuGpWAVjtuI0Cg==
+X-CSE-MsgGUID: 8JhKLLqATR2+2x2+Us51GQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,258,1736841600"; 
+   d="scan'208";a="122409799"
+Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2025 15:07:44 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1544.14; Tue, 18 Mar 2025 15:07:43 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.44 via Frontend Transport; Tue, 18 Mar 2025 15:07:43 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.49) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.44; Tue, 18 Mar 2025 15:07:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=O9SCYAWlZ6Y0L/Z9iGAfuXZJca0d5tTThHeWyPLifpI+gBi4wg0KuTXoVJYErJ3JQE0iMQRGejtAannJ/Upvw5ejK56jggFswUb35+ecoIDyFNeKZG4qKywbiJI8czYNGZeNlcetgSoguxypvIplWIMwZsBFLdz8EcfJChCXqFLABD0MxBPVkveqTuVTYoq20tbAp9i6Sv68nLcrAbQB1rBUBJVhSRpdWQGWa2O8Vka1eeJ7E93PywmMLtUKrGVIGWW8URUIqN+fUf4UMV5QZd7sR1k/KKP6WN1ZjWhwdDj8LmWGiczo3ar/SDEuGNCfTB/Gake9TkSIHXB6zahntA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HVHNG68gYd02E005f2+fGZ6TRvA39fSN36d+1xUn87w=;
+ b=e2e+fME3khmNCkF0C18tez63XxTDxIDemBXvoeUMBXZlgrDOQgyoq5DjEPJMFoi72EVPZt12oD/yg8A+FvgBvdRC3LflKHKOhY31442MLR2Hz2yP8fqakLyr+HS+H5kAxOvhSoHT2o09LPIXgEUzSMxHJSpgRYbjHxpHH4MAW9Da8D7O+wMT10Bx/Cvjksls0q8suIvm9IBbNGVEJKpQzT8jDLHlMDHht737SL+SGCe4b/a2gjgLCdek22+BsU/y55XB22Ooa6ZLrDE5QdFZ0qu58leuP3A1NLy6lUdbvac5hfgjHDm/Btu/siiwzLlAjD74A/3aODq4wCItZJmB2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by PH0PR11MB5901.namprd11.prod.outlook.com (2603:10b6:510:143::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.33; Tue, 18 Mar
+ 2025 22:07:00 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::7de8:e1b1:a3b:b8a8]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::7de8:e1b1:a3b:b8a8%4]) with mapi id 15.20.8534.034; Tue, 18 Mar 2025
+ 22:07:00 +0000
+From: "Keller, Jacob E" <jacob.e.keller@intel.com>
+To: Jason Gunthorpe <jgg@nvidia.com>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>
+CC: David Ahern <dsahern@kernel.org>, "Nelson, Shannon"
+	<shannon.nelson@amd.com>, Leon Romanovsky <leon@kernel.org>, Jiri Pirko
+	<jiri@resnulli.us>, Jakub Kicinski <kuba@kernel.org>, Andy Gospodarek
+	<andrew.gospodarek@broadcom.com>, Aron Silverton <aron.silverton@oracle.com>,
+	"Williams, Dan J" <dan.j.williams@intel.com>, Daniel Vetter
+	<daniel.vetter@ffwll.ch>, "Jiang, Dave" <dave.jiang@intel.com>, "Christoph
+ Hellwig" <hch@infradead.org>, Itay Avraham <itayavr@nvidia.com>, Jiri Pirko
+	<jiri@nvidia.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, "Leonid
+ Bloch" <lbloch@nvidia.com>, "linux-cxl@vger.kernel.org"
+	<linux-cxl@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, "Sinyuk,
+ Konstantin" <konstantin.sinyuk@intel.com>
+Subject: RE: [PATCH v5 0/8] Introduce fwctl subystem
+Thread-Topic: [PATCH v5 0/8] Introduce fwctl subystem
+Thread-Index: AQHbiXePa8N9PItF+EWGRwtFqKO2hLNiPacAgADLBACAALM5gIAA118AgAAaqYCAADTOgIAAAzuAgAwuoACAAAUBgIAAeEcAgAFzvoCABFkNgIAAbCyAgAAZqnCAARmvgIAAAVEAgACRemA=
+Date: Tue, 18 Mar 2025 22:07:00 +0000
+Message-ID: <CO1PR11MB5089FED1E4623016EC9E0126D6DE2@CO1PR11MB5089.namprd11.prod.outlook.com>
+References: <bcafcf60-47a8-4faf-bea3-19cf0cbc4e08@kernel.org>
+ <20250305182853.GO1955273@unreal>
+ <dc72c6fe-4998-4dba-9442-73ded86470f5@kernel.org>
+ <20250313124847.GM1322339@unreal>
+ <54781c0c-a1e7-4e97-acf1-1fc5a2ee548c@amd.com>
+ <d0e95c47-c812-4aa8-812f-f5d7f6abbbb1@intel.com>
+ <20250317123333.GB9311@nvidia.com>
+ <1eae139c-f678-4b28-a466-5c47967b5d13@kernel.org>
+ <CO1PR11MB5089AB36220DFEACBF7A5D1CD6DF2@CO1PR11MB5089.namprd11.prod.outlook.com>
+ <2025031840-phrasing-rink-c7bb@gregkh> <20250318132528.GR9311@nvidia.com>
+In-Reply-To: <20250318132528.GR9311@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CO1PR11MB5089:EE_|PH0PR11MB5901:EE_
+x-ms-office365-filtering-correlation-id: 29cb9dc6-03f5-41a8-e16d-08dd66693509
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|376014|366016|7416014|38070700018;
+x-microsoft-antispam-message-info: =?us-ascii?Q?biTXH82icej4ds2YI7s9JnJfog3zFeKXExdQrpveUb/uRhUOLMEMuwkJtK9B?=
+ =?us-ascii?Q?3y0eVkU3LXZQRvVqVjH+qIi5swzpNQm08yGQX9NIdI4dFokmvcjd1uc/FNKX?=
+ =?us-ascii?Q?FABQTH1Tc1OSYgJ1N7TyONo/CdPemLeaZSmGkoHgpyI8zo/pNx5THpu9gwAS?=
+ =?us-ascii?Q?Juemf6TGK66PP0qGMAYP1nSiLl3E6POHSEEQ9D7dAc/0jzyx03TlJhjM8G8w?=
+ =?us-ascii?Q?uPh0Bj+5b7zUidoCxwD0fu9b3OjQ/XBclnQUIeqLC2kNO+4/T3WnxH+yezCs?=
+ =?us-ascii?Q?AV9Ng7dQPwgM+/HJy54jJRJL1s/X6Goy7G3WA4WRD0eFNO7Wd1fp191ITWCg?=
+ =?us-ascii?Q?XlD2teysI90BAO4UsoEiKbuRf1nREDLjOIlpedq1A+cpGQjttIDTLfwAKOa4?=
+ =?us-ascii?Q?lMu2uiB/tWopWypgcKD8TOYuFHk0JAYkAS79U91IDdlQ7YWKllgrxyEb0kGc?=
+ =?us-ascii?Q?PHDq76sn8HZZuDT67QXvxPSdgAYqtQDbFI3kI7JWzeT/BdP8DpQvEvQT2Lya?=
+ =?us-ascii?Q?xHnyuNNwc3/nogpQykLdoj/arG3hlANRH5d0tx7TIEzpih5WU/UY1ycqfqIz?=
+ =?us-ascii?Q?W/zTEJ6n/rkZalDmoqQbdzUXquytyg45qvLgv+ho6kHQqVTll3VBsiekHX+Z?=
+ =?us-ascii?Q?5bJBtQBYM4fM3S7GumUyXRHJyzVzOI3J84cvkRzsoz3y+zRqL5tlP2cLCN19?=
+ =?us-ascii?Q?mShTPBCAirLVgWxAEJp2bSWGqnrpJDQjn/8OLQisWP7XR4+LF3gLnFk7yrO6?=
+ =?us-ascii?Q?sP7qQwaJCv5TtwG0o/YRmsBHAHmHQ3/I5szFmoqaQ9khKOPJ1cPODOPz/lRe?=
+ =?us-ascii?Q?HESsIermYbe7O4WNLjd7e0c6c5zH/cN/DZYi14X52MTLPrMRemCMMowKWL3h?=
+ =?us-ascii?Q?cl8fdeG6flc9ntAZdchOrzeJStwcyt1XWUlUwRV3LmuQp4eNnoUmOMo1XdWq?=
+ =?us-ascii?Q?mlJULgvB8Ili2fkyQDoTdXBtxseZBKzNw71EzFlcCq5TsABfT9NSgp+5auMK?=
+ =?us-ascii?Q?vm1jGOZuCn9fzXl9u8G5haBZWTKEs8MEwXDnAcrBOsV/ih9O/tQZBHN9ildU?=
+ =?us-ascii?Q?qUav+gV+huJwCljgtF/Y0o6wgrsIlTgbl/IzvYJB+oQsd5AImGtowmC/nudO?=
+ =?us-ascii?Q?pRtMkn9okdl8Ue9CpFNgUQHaa7r7BP/iDoPMg+R4mb9xKRpZbVrmXNKxKIPQ?=
+ =?us-ascii?Q?+khRGNLpsHslAnne9Jl76s6YD/Qs9f1OlO4EcUs5VOeSZvjivsx1+t2enOcg?=
+ =?us-ascii?Q?7zmT4odyYy6phBIWH6bP5TJmSdx0ADQmScfV/THBM4XX6Z/yE7374dR+8d8U?=
+ =?us-ascii?Q?GoHrtBWUWrb/S3m2rDYK1A4Cwioe02gG1RUL7abwb8cSH8LeKUliFRq5Mmlc?=
+ =?us-ascii?Q?UAVnf6pqAmUZoh1W7Mt/09E+Vbc7rCCORzvXRAbsUAk6Fb/gWfu1NRwhgWt7?=
+ =?us-ascii?Q?PEQp3NU5Rs2Kiucl5BcPsqoXxxePysr0?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(7416014)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Gz6rothpOvaUplf4Y0od+v/Fp73CE/9MnsL5MSqFUHwQTlDmjqKzlxB7rqUm?=
+ =?us-ascii?Q?p/IfyIFvlnYBpBZjRkqc+KBch+vaBT+lv6q2ODHaO3woSPZNVFz6W0teuquM?=
+ =?us-ascii?Q?/RVNfGKOkWf4/0Hee3ib4ehu/YagNvrTg9WiDArtrAurXqqkW5kE3tHu2jT5?=
+ =?us-ascii?Q?W5iUCphFR4Bd6Tr0o+KhjUE3G8Kop7KfaHT26wWoT8Eug32vFojfwdsys7L+?=
+ =?us-ascii?Q?TYvTCtkmscg8/i+qMpQefBb+dgdFVmE53qVHeBSTvaRZx2INIGJ2SDK4IvGr?=
+ =?us-ascii?Q?GtmWEeG/HZICIorovDr4O2sJZrs8jW+EcCvL3/3QmUD0Pei959ZjH5GvI9yK?=
+ =?us-ascii?Q?ZjBEGClLvvEXMslqXc7tghiB30fPPzP76F+Ge+NaUef8bOCA5Rucmogg8A9K?=
+ =?us-ascii?Q?bhIiLQDHsL62bmLUbUWGsp3HboxqcFmajLhHlSbvBT3TNHxkrKb03do0ab3l?=
+ =?us-ascii?Q?EGevCNlkuidzMjkiAfBz2zl+5OM6CGEBWkqf85sAV326AgQ87lLp4KiwSDEe?=
+ =?us-ascii?Q?eDNmNX/npr+Gspn5VnZhPQPjbZDqhqh3IjTs4O95WwZz9T0HtSWFTPCXinVY?=
+ =?us-ascii?Q?dJsYoLpL9lbNCt4bWPRics3+sDpB4Z6/WbgvcwvRILBtrbtTpKgiJnZSGxj6?=
+ =?us-ascii?Q?Xnw0YthmHmthSvLdcTsVY9bVuzJ1xzFa8UcoBMPQaV+r9WtKaiOF+fi/qdqS?=
+ =?us-ascii?Q?l9m5AsL2XNPkqjBZPhTjncLCbZ32AbS9aXrXFhUpkQ4rXphBzCMAytFzngQz?=
+ =?us-ascii?Q?GeKultK5ykz+2HSzvJ+fS5uXS17rDbnhPUp9mY6Lie+AudMWdO7gYqKchrnv?=
+ =?us-ascii?Q?IUjiWkR5/W1SchaqNUXi6W1xZwRGuA8O9RhmVRD18I10eIEmFuclvQqFKAp8?=
+ =?us-ascii?Q?bPQ3QxzPfaB0gbz2/0616OsF45AsQND9x1pCsIYofgR192seaHeXmJ+hcDNa?=
+ =?us-ascii?Q?tEs32g4HGmkoo5QvFspquycPYShzprbPGXlOpL5AyE5GSHsUp2ybYm6rjEop?=
+ =?us-ascii?Q?a+qrShlOGdJv0EobOFEnOXVzxsT44Lbp8UF77zTM6HVCFpisZGTmJZvX7e3u?=
+ =?us-ascii?Q?3UHu7+IYhf1aG5y2VOQzRQhGEs1iQHKCVQ+84ts3DuanEbKjXA+nhQBLKoXz?=
+ =?us-ascii?Q?obTMNHqScUdMJzIcUJhRgOCJvg+mNV/Jy0NAUPUKpPPP1rYCtrPp1iZGGtgp?=
+ =?us-ascii?Q?l0EG4Rwt4v/7wFoAGwhy+KruGY+a4t6rNl0pqDxoSzrgKoJI0nHK+wu18wui?=
+ =?us-ascii?Q?LC5/bzmQrxhfqz430ovT1LifJK2EZtSyHXed5WUylJkaRRViTONUhu5qh+c6?=
+ =?us-ascii?Q?1iLC02XLMrr47AdGG1gEMXMPeUoLmp3Chs1xaZy5WQqGyrIqpj7h4YlJpA6t?=
+ =?us-ascii?Q?FOHQLFI2BOIn9+igfjvsOX96O6fUWATknV9J+7aS4toXShBnc+RGwYcsVxVw?=
+ =?us-ascii?Q?p05yL1vjgO5b6kuy5FDps3Jmza0qEAlTvH3baLpjzoMYqEDxD635pNezolk7?=
+ =?us-ascii?Q?S8DCOg9/HcbNZLkfyEI2IZpAkXPhcwphc5172Ptrm8mNYvx4kyIeT5CaBYsm?=
+ =?us-ascii?Q?7ffkiwL//Fd8pX8Cn+mPnuTkboW6ViaS+rj+mz9O?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29cb9dc6-03f5-41a8-e16d-08dd66693509
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Mar 2025 22:07:00.3573
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yiFwbcLV9jFkf1qMicnf2rr5XYHVrsyy+5cRHoCHdrJxJTQalmMCrIVbcwp1hKDalyFWtGF2D+pIe0V5iCNpWWF1s0bfYFI+gusLP/+ptT4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5901
+X-OriginatorOrg: intel.com
 
-Yunsheng Lin <linyunsheng@huawei.com> writes:
 
-> On 2025/3/17 23:16, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Yunsheng Lin <yunshenglin0825@gmail.com> writes:
->>=20
->>> On 3/14/2025 6:10 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>
->>> ...
->>>
->>>>
->>>> To avoid having to walk the entire xarray on unmap to find the page
->>>> reference, we stash the ID assigned by xa_alloc() into the page
->>>> structure itself, using the upper bits of the pp_magic field. This
->>>> requires a couple of defines to avoid conflicting with the
->>>> POINTER_POISON_DELTA define, but this is all evaluated at compile-time,
->>>> so does not affect run-time performance. The bitmap calculations in th=
-is
->>>> patch gives the following number of bits for different architectures:
->>>>
->>>> - 24 bits on 32-bit architectures
->>>> - 21 bits on PPC64 (because of the definition of ILLEGAL_POINTER_VALUE)
->>>> - 32 bits on other 64-bit architectures
->>>
->>>  From commit c07aea3ef4d4 ("mm: add a signature in struct page"):
->>> "The page->signature field is aliased to page->lru.next and
->>> page->compound_head, but it can't be set by mistake because the
->>> signature value is a bad pointer, and can't trigger a false positive
->>> in PageTail() because the last bit is 0."
->>>
->>> And commit 8a5e5e02fc83 ("include/linux/poison.h: fix LIST_POISON{1,2}=
-=20
->>> offset"):
->>> "Poison pointer values should be small enough to find a room in
->>> non-mmap'able/hardly-mmap'able space."
->>>
->>> So the question seems to be:
->>> 1. Is stashing the ID causing page->pp_magic to be in the mmap'able/
->>>     easier-mmap'able space? If yes, how can we make sure this will not
->>>     cause any security problem?
->>> 2. Is the masking the page->pp_magic causing a valid pionter for
->>>     page->lru.next or page->compound_head to be treated as a vaild
->>>     PP_SIGNATURE? which might cause page_pool to recycle a page not
->>>     allocated via page_pool.
->>=20
->> Right, so my reasoning for why the defines in this patch works for this
->> is as follows: in both cases we need to make sure that the ID stashed in
->> that field never looks like a valid kernel pointer. For 64-bit arches
->> (where CONFIG_ILLEGAL_POINTER_VALUE), we make sure of this by never
->> writing to any bits that overlap with the illegal value (so that the
->> PP_SIGNATURE written to the field keeps it as an illegal pointer value).
->> For 32-bit arches, we make sure of this by making sure the top-most bit
->> is always 0 (the -1 in the define for _PP_DMA_INDEX_BITS) in the patch,
->> which puts it outside the range used for kernel pointers (AFAICT).
->
-> Is there any season you think only kernel pointer is relevant here?
 
-Yes. Any pointer stored in the same space as pp_magic by other users of
-the page will be kernel pointers (as they come from page->lru.next). The
-goal of PP_SIGNATURE is to be able to distinguish pages allocated by
-page_pool, so we don't accidentally recycle a page from somewhere else.
-That's the goal of the check in page_pool_page_is_pp():
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Tuesday, March 18, 2025 6:25 AM
+> To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Keller, Jacob E <jacob.e.keller@intel.com>; David Ahern
+> <dsahern@kernel.org>; Nelson, Shannon <shannon.nelson@amd.com>; Leon
+> Romanovsky <leon@kernel.org>; Jiri Pirko <jiri@resnulli.us>; Jakub Kicins=
+ki
+> <kuba@kernel.org>; Andy Gospodarek <andrew.gospodarek@broadcom.com>;
+> Aron Silverton <aron.silverton@oracle.com>; Williams, Dan J
+> <dan.j.williams@intel.com>; Daniel Vetter <daniel.vetter@ffwll.ch>; Jiang=
+, Dave
+> <dave.jiang@intel.com>; Christoph Hellwig <hch@infradead.org>; Itay Avrah=
+am
+> <itayavr@nvidia.com>; Jiri Pirko <jiri@nvidia.com>; Jonathan Cameron
+> <Jonathan.Cameron@huawei.com>; Leonid Bloch <lbloch@nvidia.com>; linux-
+> cxl@vger.kernel.org; linux-rdma@vger.kernel.org; netdev@vger.kernel.org; =
+Saeed
+> Mahameed <saeedm@nvidia.com>; Sinyuk, Konstantin
+> <konstantin.sinyuk@intel.com>
+> Subject: Re: [PATCH v5 0/8] Introduce fwctl subystem
+>=20
+> On Tue, Mar 18, 2025 at 02:20:45PM +0100, Greg Kroah-Hartman wrote:
+>=20
+> > Yes, note, the issue came up in the 2.5.x kernel days, _WAY_ before we
+> > had git, so this wasn't a git issue.  I'm all for "drivers/core/" but
+> > note, that really looks like "the driver core" area of the kernel, so
+> > maybe pick a different name?
+>=20
+> Yeah, +1. We have lots of places calling what is in drivers/base 'core'.
+>=20
+> Jason
 
-(page->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE
+Core is quite often used like "the core of the kernel that is non-driver st=
+uff", i.e. "the networking core", "the PTP core", etc.
 
-To achieve this, we must ensure that the check above never returns true
-for any value another page user could have written into the same field
-(i.e., into page->lru.next). For 64-bit arches, POISON_POINTER_DELTA
-serves this purpose. For 32-bit arches, we can leave the top-most bits
-out of PP_MAGIC_MASK, to make sure that any valid pointer value will
-fail the check above.
-
-> It seems it is not really only about kernel pointers as round_hint_to_min=
-()
-> in mm/mmap.c suggests and the commit log in the above commit 8a5e5e02fc83
-> if I understand it correctly:
-> "Given unprivileged users cannot mmap anything below mmap_min_addr, it
-> should be safe to use poison pointers lower than mmap_min_addr."
->
-> And the above "making sure the top-most bit is always 0" doesn't seems to
-> ensure page->signature to be outside the range used for kernel pointers
-> for 32-bit arches with VMSPLIT_1G defined, see arch/arm/Kconfig, there
-> is a similar config for x86 too:
->        prompt "Memory split"
->        depends on MMU
->        default VMSPLIT_3G
->        help
->          Select the desired split between kernel and user memory.
->
->          If you are not absolutely sure what you are doing, leave this
->          option alone!
->
->        config VMSPLIT_3G
->               bool "3G/1G user/kernel split"
->        config VMSPLIT_3G_OPT
->              depends on !ARM_LPAE
->               bool "3G/1G user/kernel split (for full 1G low memory)"
->        config VMSPLIT_2G
->               bool "2G/2G user/kernel split"
->        config VMSPLIT_1G
->               bool "1G/3G user/kernel split"
-
-Ah, interesting, didn't know this was configurable. Okay, so AFAICT, the
-lowest value of PAGE_OFFSET is 0x40000000 (for VMSPLIT_1G), so we need
-to leave two bits off at the top instead of just one. Will update this,
-and try to explain the logic better in the comment.
-
-> IMHO, even if some trick like above is really feasible, it may be
-> adding some limitation or complexity to the ARCH and MM subsystem, for
-> example, stashing the ID in page->signature may cause 0x*40 signature
-> to be unusable for other poison pointer purpose, it makes more sense to
-> make it obvious by doing the above trick in some MM header file like
-> poison.h instead of in the page_pool subsystem.
-
-AFAIU, PP_SIGNATURE is used for page_pool to be able to distinguish its
-own pages from those allocated elsewhere (cf the description above).
-Which means that these definitions are logically page_pool-internal, and
-thus it makes the most sense to keep them in the page pool headers. The
-only bits the mm subsystem cares about in that field are the bottom two
-(for pfmemalloc pages and compound pages).
-
->>>> Since all the tracking is performed on DMA map/unmap, no additional co=
-de
->>>> is needed in the fast path, meaning the performance overhead of this
->>>> tracking is negligible. A micro-benchmark shows that the total overhead
->>>> of using xarray for this purpose is about 400 ns (39 cycles(tsc) 395.2=
-18
->>>> ns; sum for both map and unmap[1]). Since this cost is only paid on DMA
->>>> map and unmap, it seems like an acceptable cost to fix the late unmap
->>>
->>> For most use cases when PP_FLAG_DMA_MAP is set and IOMMU is off, the
->>> DMA map and unmap operation is almost negligible as said below, so the
->>> cost is about 200% performance degradation, which doesn't seems like an
->>> acceptable cost.
->>=20
->> I disagree. This only impacts the slow path, as long as pages are
->> recycled there is no additional cost. While your patch series has
->> demonstrated that it is *possible* to reduce the cost even in the slow
->> path, I don't think the complexity cost of this is worth it.
->
-> It is still the datapath otherwise there isn't a specific testing
-> for that use case, more than 200% performance degradation is too much
-> IHMO.
-
-Do you have a real-world use case (i.e., a networking benchmark, not a
-micro-benchmark of the allocation function) where this change has a
-measurable impact on performance? If so, please do share the numbers!
-
-I very much doubt it will be anything close to that magnitude, but I'm
-always willing to be persuaded by data :)
-
-> Let aside the above severe performance degradation, reusing space in
-> page->signature seems to be a tradeoff between adding complexity in
-> page_pool subsystem and in VM/ARCH subsystem as mentioned above.
-
-I think you are overstating the impact on other MM users; this is all
-mostly page_pool-internal logic, cf the explanation above.
-
->>=20
->> [...]
->>=20
->>>> The extra memory needed to track the pages is neatly encapsulated insi=
-de
->>>> xarray, which uses the 'struct xa_node' structure to track items. This
->>>> structure is 576 bytes long, with slots for 64 items, meaning that a
->>>> full node occurs only 9 bytes of overhead per slot it tracks (in
->>>> practice, it probably won't be this efficient, but in any case it shou=
-ld
->>>
->>> Is there any debug infrastructure to know if it is not this efficient?
->>> as there may be 576 byte overhead for a page for the worst case.
->>=20
->> There's an XA_DEBUG define which enables some dump functions, but I
->> don't think there's any API to inspect the memory usage. I guess you
->> could attach a BPF program and walk the structure, or something?
->>=20
->
-> It seems the XA_DEBUG is not defined in production environment.
-> And I am not familiar enough with BPF program to understand if the
-> BPF way is feasiable in production environment.
-> Any example for the above BPF program and how to attach it?
-
-Hmm, no, not really, sorry :(
-
-I *think* it should be possible to write a bpftrace script that walks
-the internal xarray tree and counts the nodes along the way, but it's
-not trivial to do, and I haven't tried.
-
--Toke
-
+Naming things is indeed hard.
 
