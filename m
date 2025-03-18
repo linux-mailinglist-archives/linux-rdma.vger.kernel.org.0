@@ -1,96 +1,127 @@
-Return-Path: <linux-rdma+bounces-8775-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8776-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F497A6710D
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Mar 2025 11:19:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40A2FA67144
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Mar 2025 11:29:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7279A19A03F1
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Mar 2025 10:19:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1522F3BAFA8
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Mar 2025 10:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B9C3204F7E;
-	Tue, 18 Mar 2025 10:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6550F207E0F;
+	Tue, 18 Mar 2025 10:28:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="joRrQ25A"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SNKyTDRt"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA506169AE6;
-	Tue, 18 Mar 2025 10:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B7E20767B
+	for <linux-rdma@vger.kernel.org>; Tue, 18 Mar 2025 10:28:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742293175; cv=none; b=GbbUV2DN4GNqP+TvojlLMVPI1R6+FiUOqww87CyZNdHxUwiOYX4Mif7Hdkri7gI5z/CsmI0msf0msN4BdbRsIbqXmW1o66GoRsIrheDCKxTMLZJn44XKgfnGbe7qdUrzl49FJgOZkDj9o/cvDE3XtsGusz2Ul3IBjE+odj0KafI=
+	t=1742293724; cv=none; b=TR3vyGSkUX29Y8l2Ln3XZMuTPF/GZwK0xVjUfWdY7wne0iB89g4FLypXMJuxKCDq4pBg41EIOn3MrPovsUHLoPPs/osev9Wr3t7ljrwEOVKz0mnWaFn4FY4y/CTyrfEYUVpCrGVAUqQb97k3Qn+dNY6XtFaa1w3luVw26EgsMGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742293175; c=relaxed/simple;
-	bh=njKqtxkqzWwiu8RDMpY+iXZo7MtsjtAiZwHijw43jz8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=PmrdW5ejouiESwnmNtWgMY9G6N9srfYS0WCuDEwM/A67zbObiO5dXzzGPWIjtcOtTt7afkkyUsYp7Ht6ZT8ML7219aLvK0w5BYF8paqU1ErHqafEdOWUC95QgYq3bjCF4Ha/w/QdS84ctjX3WkgAJcTj05VJZnrw2oHxO5YuC+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=joRrQ25A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06715C4CEE3;
-	Tue, 18 Mar 2025 10:19:33 +0000 (UTC)
+	s=arc-20240116; t=1742293724; c=relaxed/simple;
+	bh=ElucD+4LqHN6FFKbwLV16ZYRgETSZ8PgHslxVeuZ4Xw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lXbc7TihZutrzMcPrjDKFhYBLOCegDzt5kWGdhMTGql8d8ZfmotCCYlYUtcWcTwVpRcdxoQ1ZLTwUvIQvgfvH9S/MPJm/WdrAfHpFm7VJOIqT+bMTnfL5I6Fuon0y1HpTEVBDgoYt6FhuX5gt5QSjeVTRG6UO664UpyDWqPeO8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SNKyTDRt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30DFFC4CEDD;
+	Tue, 18 Mar 2025 10:28:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742293174;
-	bh=njKqtxkqzWwiu8RDMpY+iXZo7MtsjtAiZwHijw43jz8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=joRrQ25AXBUoT+dK0sOv5KkcU/6zsikgut+9JGFafbL5AD0jxmTcflN7mpm2IKVag
-	 P4rzQjbJ1DPLzKaFGmkKVsxF7Ng5BRZIb/HqgYSsUyz3nqLCgps4dCVfPy9q88GGzP
-	 3DB3yE2CzSJzr3x0ZHrDoZLC84rubSuo3wkG2s0zYDA15J/GXigx8GQ173TYtyRL0S
-	 XNfRMCVUc1DwrXOsg8dFWpgVPB/zY+Cb04HH8E93ylTVBsO3zKwe6a3ZgjIOEMFdRC
-	 v0zDmtOB9Ozpx6xDiH059uwOcu47AC+PjlA54yQ2s4MTNObIZ1hB6S65aP6+4rRsvS
-	 alm5HX+4btLBg==
+	s=k20201202; t=1742293723;
+	bh=ElucD+4LqHN6FFKbwLV16ZYRgETSZ8PgHslxVeuZ4Xw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SNKyTDRtSdYiWTrIzFZzGR/0+O08WL5giA24vZOZjlVETe49HyBbaA4DkmKKaQFXR
+	 HSUnJ/S5sqeywlPhTdgDgacEez7sZaoFz2g3Boqn0xxRA8vPZHwN29WfEB73ndYC4Y
+	 WSS8VskYcDDk7hbM/RWuTdtAByW7Di/mVgK7p2mpXHovLXTFLOCEETqAdEZ0kL95Em
+	 o3z/CKE55HkmjfyXfft6kHYXvnwqNMobfsgMyOcfhAbJ3jPuSBV86ae7hBktN5tpVo
+	 3TGoD/wB5XosnWsDAAu4Xx6OjAbwqk7hX/w+pXyx1aPD6jLHlOLSKQSuu5KifuZ4yK
+	 Prwnjg9Jx+tHw==
+Date: Tue, 18 Mar 2025 12:28:39 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>, 
- netdev@vger.kernel.org, Patrisious Haddad <phaddad@nvidia.com>, 
- Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
-In-Reply-To: <cover.1741875070.git.leon@kernel.org>
-References: <cover.1741875070.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next v1 0/6] Add optional-counters binding support
-Message-Id: <174229317080.141803.10081314337429150468.b4-ty@kernel.org>
-Date: Tue, 18 Mar 2025 06:19:30 -0400
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Michael Guralnik <michaelgur@nvidia.com>, linux-rdma@vger.kernel.org,
+	Or Har-Toov <ohartoov@nvidia.com>,
+	Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH rdma-next 2/7] RDMA/mlx5: Fix cache entry update on dereg
+ error
+Message-ID: <20250318102839.GB1322339@unreal>
+References: <cover.1741875692.git.leon@kernel.org>
+ <97e979dff636f232ff4c83ce709c17c727da1fdb.1741875692.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <97e979dff636f232ff4c83ce709c17c727da1fdb.1741875692.git.leon@kernel.org>
 
-
-On Thu, 13 Mar 2025 16:18:40 +0200, Leon Romanovsky wrote:
-> Changelog:
-> v1:
->  * Added new patch which removed dependency of
->    CONFIG_INFINIBAND_USER_ACCESS fron fs.c
-> v0: https://lore.kernel.org/linux-rdma/cover.1741097408.git.leonro@nvidia.com/
+On Thu, Mar 13, 2025 at 04:29:49PM +0200, Leon Romanovsky wrote:
+> From: Michael Guralnik <michaelgur@nvidia.com>
 > 
-> --------------------------------------------------------------------------------
-> From Patrisious,
+> Fix double decrement of 'in_use' counter on push_mkey_locked() failure
+> while deregistering an MR.
+> If we fail to return an mkey to the cache in cache_ent_find_and_store()
+> it'll update the 'in_use' counter. Its caller, revoke_mr(), also updates
+> it, thus having double decrement.
 > 
-> [...]
+> Wrong value of 'in_use' counter will be exposed through debugfs and can
+> also cause wrong resizing of the cache when users try to set cache
+> entry size using the 'size' debugfs.
+> 
+> To address this issue, the 'in_use' counter is now decremented within
+> mlx5_revoke_mr() also after a successful call to
+> cache_ent_find_and_store() and not within cache_ent_find_and_store().
+> Other success or failure flows remains unchanged where it was also
+> decremented.
+> 
+> Fixes: 8c1185fef68c ("RDMA/mlx5: Change check for cacheable mkeys")
+> Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
+> Reviewed-by: Yishai Hadas <yishaih@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/infiniband/hw/mlx5/mr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied, thanks!
+<...>
 
-[1/6] RDMA/mlx5: Add optional counters for RDMA_TX/RX_packets/bytes
-      https://git.kernel.org/rdma/rdma/c/d375db42a8effd
-[2/6] RDMA/core: Create and destroy rdma_counter using rdma_zalloc_drv_obj()
-      https://git.kernel.org/rdma/rdma/c/7e53b31acc7f97
-[3/6] RDMA/core: Add support to optional-counters binding configuration
-      https://git.kernel.org/rdma/rdma/c/da3711074f5252
-[4/6] RDMA/core: Pass port to counter bind/unbind operations
-      https://git.kernel.org/rdma/rdma/c/88ae02feda84f0
-[5/6] RDMA/mlx5: Compile fs.c regardless of INFINIBAND_USER_ACCESS config
-      https://git.kernel.org/rdma/rdma/c/36e0d433672f1e
-[6/6] RDMA/mlx5: Support optional-counters binding for QPs
-      https://git.kernel.org/rdma/rdma/c/fd24c9ef6c8f12
+> @@ -2042,6 +2041,7 @@ static int mlx5_revoke_mr(struct mlx5_ib_mr *mr)
+>  		ent = mr->mmkey.cache_ent;
+>  		/* upon storing to a clean temp entry - schedule its cleanup */
+>  		spin_lock_irq(&ent->mkeys_queue.lock);
+> +		ent->in_use--;
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+This needs slightly different fix, fixed it locally.
+@@ -2033,6 +2032,7 @@ static int mlx5_revoke_mr(struct mlx5_ib_mr *mr)
+        struct mlx5_ib_dev *dev = to_mdev(mr->ibmr.device);
+        struct mlx5_cache_ent *ent = mr->mmkey.cache_ent;
+        bool is_odp = is_odp_mr(mr);
++       bool from_cache = !!ent;
+        int ret = 0;
 
+        if (is_odp)
+@@ -2042,6 +2042,8 @@ static int mlx5_revoke_mr(struct mlx5_ib_mr *mr)
+                ent = mr->mmkey.cache_ent;
+                /* upon storing to a clean temp entry - schedule its cleanup */
+                spin_lock_irq(&ent->mkeys_queue.lock);
++               if (from_cache)
++                       ent->in_use--;
+                if (ent->is_tmp && !ent->tmp_cleanup_scheduled) {
+                        mod_delayed_work(ent->dev->cache.wq, &ent->dwork,
+                                         msecs_to_jiffies(30 * 1000));
+
+
+>  		if (ent->is_tmp && !ent->tmp_cleanup_scheduled) {
+>  			mod_delayed_work(ent->dev->cache.wq, &ent->dwork,
+>  					 msecs_to_jiffies(30 * 1000));
+> -- 
+> 2.48.1
+> 
+> 
 
