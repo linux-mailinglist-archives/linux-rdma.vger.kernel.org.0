@@ -1,245 +1,303 @@
-Return-Path: <linux-rdma+bounces-8818-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8819-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E1B1A689E9
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 11:46:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F1D5A68B1F
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 12:18:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D28CD19C2CAA
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 10:46:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7DF01666BC
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 11:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68D69253B48;
-	Wed, 19 Mar 2025 10:46:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nIytO01w"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F5E256C92;
+	Wed, 19 Mar 2025 11:07:09 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6A022F19;
-	Wed, 19 Mar 2025 10:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.13
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742381189; cv=fail; b=i3+QyTkW44evbN2g3Te/YtVMgnHYsBCHT7CVMy9r7UZA3cw5sovyrdomzJN70UHi/dUeiBHgeYn/w/WHG0qR11vGnmCTR9nRLk2Mea7+S38jY/s4NctTmY8ZXYInd8Stt3tjwpEZrYR87D8hxLSPje6i/rBqI1qEfQnteysOez8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742381189; c=relaxed/simple;
-	bh=dEnXFD3SF3+zr1vNvUDTUiNCiQAPcHm/BAEpjvBIwuI=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=NRT0iATdAmLkc4XkvSBVuiMO+qOZi0NcsJu5wtgEiTj2Wx5giy5e/rS4cCYUIfDoe/9IPUQ/Tk5PdA6A7eCkrhQYNlXSsmBsYnyd8otjnb5htt0Oh6lh1Ust9AzbxSrTttrGPP5kJqjo3nO6DtcqWIjB2zQC84you/ADnE6Sw1Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nIytO01w; arc=fail smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1742381188; x=1773917188;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=dEnXFD3SF3+zr1vNvUDTUiNCiQAPcHm/BAEpjvBIwuI=;
-  b=nIytO01wwKrmN+botnE4eiBN7dK7TIU9/ffQwhQnZUQdsJFbdgr1t6oK
-   PHQDhlQZqrpjO89Fmh4YvOV2NNKgUzaJIONiF3LHK3/TXGxx46uG7s/dT
-   JRqCiFZnaGYfVHcEqLRh+gSxhTQn9H55ASgFcv4sSmZHoFNfP4jJ4+nya
-   QCTvjRGcY+x5WkbUiMbnGo8NgDaVzErxW+EKrxuLx3EbZnJBXrqXXCLIV
-   leSKQHW0MBM/zhD22xkX+rowkQdmrO9Yba6fiyoKyfzYc3SsRkpIstU2I
-   FDgFVgwTtNs1amEN3ruw/xeDvnO4XZ+po08Nt0P3Y2JtDItgHrvdpHC5i
-   w==;
-X-CSE-ConnectionGUID: oVHrgz6OTeSpZNMVcYwvng==
-X-CSE-MsgGUID: R7xwdM3SSDqvuVHosITBzQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11377"; a="54557872"
-X-IronPort-AV: E=Sophos;i="6.14,259,1736841600"; 
-   d="scan'208";a="54557872"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2025 03:46:27 -0700
-X-CSE-ConnectionGUID: tVcCutgfQPOcbW2qeKFoyQ==
-X-CSE-MsgGUID: 8AMekW+OR/qB4BnQGqwpcA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,259,1736841600"; 
-   d="scan'208";a="122586644"
-Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
-  by fmviesa007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2025 03:46:26 -0700
-Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
- ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB582254B0A;
+	Wed, 19 Mar 2025 11:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742382429; cv=none; b=pgu8xBuSmF2REb/fvne7qlT9EFT/hkfd8gmwPdgLMkZfUC5fnf977zBFRcSQRAgnLEuj1qmXaltSvsT0I0WqJ8oK++IbRgmKQ6xeMw7VMk1ZYBRaX6jz3ziHNPTGmFB2Zb3u0lj3NETJ41sPCYdlhF+b9MQEB38Qs9CqoksJlLQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742382429; c=relaxed/simple;
+	bh=uk6sv1Pw3BLBBGqjIqGPQ4yzGT4R7eLdgEn/GG6R3Hw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=oIP6wxcLhQ6V+k0bElC4AvLcfZPEHgdTILU3dM2xJq2R5r+5vzV/PdhPnLPkC/xcLhnBrX/zyp0ecPKRcwFQDHW+9jVsqb5jp772jXrUIe1ZBHPRGJxhv8W3o13J2Q/a2Zpom8LOyGA93KwDzoDoh9vu/kF+qAQwbbCXZqEnUdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4ZHm620lK9zCsGW;
+	Wed, 19 Mar 2025 19:03:22 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0AFCC1800CD;
+	Wed, 19 Mar 2025 19:06:58 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14; Wed, 19 Mar 2025 03:46:25 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14 via Frontend Transport; Wed, 19 Mar 2025 03:46:25 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.170)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Wed, 19 Mar 2025 03:46:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=avxCZDHzyEKsPLip+m84L6jww4hp3V94bmhL1mrrXKBtsR0H3MPVh4dyX8DKIZ2B/Ga+M+j2mtdWxkjEgRxtA12eWAHRLnx2mmnnx7DXaJC1f0b/2VhQ/YHz4pqALfyi+5ymABj+cQFox+E76NnvnUfRIgJJPzkGkoPKZMFKWlFetAd1Y++EhzQsVPieRhmp6zlSAXhjJDMtBo3fBObHHYN4eoAPySnROinOuK+E7LXLoMUztYnAc045toOXlgka0rhe6+xYY1UF5Em/fCTZT5t0DEmFMJdblclBpXDsDA7aZ7/R2eRbB02o8GFoXVibeU9cYIu8b51xJpqLaFhPtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dEnXFD3SF3+zr1vNvUDTUiNCiQAPcHm/BAEpjvBIwuI=;
- b=YZP1obBxp5jK39pLcinZhEyYdOLqzfSajtuBICS1Qo8bVsuNlpyg7Ubg6u8w9zKccJJz+FgRs042+pFu9BZfnUQa7T/+gxbYZm9UIU+RAIyxHGWL77APMSbo6x8QEMdLv/xFpiIjesOPZKlJlYIBqCYCjbMbLVff4Slc1ZUZgC4K4RG7O7ZKtJjbvBQ97vSzAJv5x5MjWdlCKTmmu6TiBcYZG83HM74nqxBoXP78dWmSNxWZMOw0jg3taH/KpbsGCvjMzKi6oZS1h2SLyXf87bGvLRyrFI3FJIeQFJFqg3S1k/zF+w0/HxKML2mU8BRgGLkK5F01HmZzmPTk6iqjmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN6PR11MB8102.namprd11.prod.outlook.com (2603:10b6:208:46d::9)
- by BL3PR11MB6361.namprd11.prod.outlook.com (2603:10b6:208:3b4::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.34; Wed, 19 Mar
- 2025 10:46:23 +0000
-Received: from MN6PR11MB8102.namprd11.prod.outlook.com
- ([fe80::15b2:ee05:2ae7:cfd6]) by MN6PR11MB8102.namprd11.prod.outlook.com
- ([fe80::15b2:ee05:2ae7:cfd6%5]) with mapi id 15.20.8534.031; Wed, 19 Mar 2025
- 10:46:22 +0000
-Message-ID: <81005d10-15ae-4d85-bf67-9362a2169151@intel.com>
-Date: Wed, 19 Mar 2025 11:46:15 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/8] Introduce fwctl subystem
-To: Leon Romanovsky <leon@kernel.org>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jason Gunthorpe
-	<jgg@nvidia.com>, Dave Jiang <dave.jiang@intel.com>, "Keller, Jacob E"
-	<jacob.e.keller@intel.com>, David Ahern <dsahern@kernel.org>, "Nelson,
- Shannon" <shannon.nelson@amd.com>, Jiri Pirko <jiri@resnulli.us>, "Jakub
- Kicinski" <kuba@kernel.org>, Andy Gospodarek
-	<andrew.gospodarek@broadcom.com>, Aron Silverton <aron.silverton@oracle.com>,
-	"Williams, Dan J" <dan.j.williams@intel.com>, Daniel Vetter
-	<daniel.vetter@ffwll.ch>, "Christoph Hellwig" <hch@infradead.org>, Itay
- Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Jonathan Cameron
-	<Jonathan.Cameron@huawei.com>, "Leonid Bloch" <lbloch@nvidia.com>,
-	"linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, Saeed Mahameed
-	<saeedm@nvidia.com>, "Sinyuk, Konstantin" <konstantin.sinyuk@intel.com>
-References: <54781c0c-a1e7-4e97-acf1-1fc5a2ee548c@amd.com>
- <d0e95c47-c812-4aa8-812f-f5d7f6abbbb1@intel.com>
- <20250317123333.GB9311@nvidia.com>
- <1eae139c-f678-4b28-a466-5c47967b5d13@kernel.org>
- <CO1PR11MB5089AB36220DFEACBF7A5D1CD6DF2@CO1PR11MB5089.namprd11.prod.outlook.com>
- <2025031840-phrasing-rink-c7bb@gregkh> <20250318132528.GR9311@nvidia.com>
- <9e3019af-7817-49db-a293-3242e2962c22@intel.com>
- <2025031836-monastery-imaginary-7f5e@gregkh>
- <95da9782-7c46-4ddc-8d7e-ffb3db31ebc3@intel.com>
- <20250319081416.GE1322339@unreal>
-From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Content-Language: en-US
-In-Reply-To: <20250319081416.GE1322339@unreal>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: WA1P291CA0007.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:19::11) To MN6PR11MB8102.namprd11.prod.outlook.com
- (2603:10b6:208:46d::9)
+ 15.2.1544.11; Wed, 19 Mar 2025 19:06:57 +0800
+Message-ID: <ce6ca18b-0eda-4d62-b1d3-e101fe6dcd4e@huawei.com>
+Date: Wed, 19 Mar 2025 19:06:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN6PR11MB8102:EE_|BL3PR11MB6361:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2e6d5ab0-9844-41c8-dd2c-08dd66d34a56
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?S2FEREhRVmUwVTV1N040MGV1ZFBlUCtrQzlVcmVoMTNrY0huTy9WUE5WTTRG?=
- =?utf-8?B?cjltUGFIZG9ldVROYnpieGNjcG5tamhnekM4YWRzRDFiR081dTFaV2JTUTdK?=
- =?utf-8?B?dTdCSDBVWEl6cHVNZFdpc2NFMUw4ZUVNcG5sRXNIVGJwLzBkWEVsNWlqSlN1?=
- =?utf-8?B?WC9EdmU0aTRJOTlha3FrcFZuVGNqWjhVSW1KLzMraGVGVGxhYTFUeDRQM29P?=
- =?utf-8?B?bHYvaHlGd1lFeGZ3aDJlVnFHZnBoQmlKME5KaCs0OEdYMERHRTRzdUhGa1k1?=
- =?utf-8?B?cXJmcFhWc3lzMjk1eGZhOFUxRWdoem9vZndSbTZFYXJ6STM0NXBTOUYwRVVW?=
- =?utf-8?B?RGp5UTd1MlN0WVgwS3FNamtEL2RnYXpJbndyb2NDS3ZFYVk4YUxYc25sRTRv?=
- =?utf-8?B?ODBTckhCM3E2QlovWFlTeXN6UUtvTmlNU0s1cy83MnRXZGhxd0p1clhUaWRJ?=
- =?utf-8?B?OFhWVzhkTXJWd2F6b2RqNUdzaEhuVFQrcWVsQ2ExakxOMlRiTThhNVg3TWdR?=
- =?utf-8?B?TUxtNTA5NnIxcVViMXV5VkwzNUtnMC9DWHlabFhLRk5TV3hWWUdPbXpjc2JV?=
- =?utf-8?B?aUt3QWl5Qys4RWhadTNlMXdqRWpWQWIvc1Z1MkVtOENwalFBYkVua0tieTJL?=
- =?utf-8?B?R1VISVRLNzVzSkZjaTh0aEJQZngxbm9rTFNmUDhoV1U3Y04zYmVkQVJuOHRT?=
- =?utf-8?B?MVZHNEIvck1nUnJlRHU4VkVVTFJWTjJ5S0RzSVBJNHhJa2gzTUlXOHFhZ3JE?=
- =?utf-8?B?cjEwZ2pmSnVqRk5YRlBmNjYvWStFWml2Ui9RU2xUTkpQd3gwZUNQN0ZiWTEv?=
- =?utf-8?B?N1gxN1Nad2x6dlNzMDRBZGtDZVNONXFLWUVTU2R1Y3FrMGkwSlBUeDhuRUh5?=
- =?utf-8?B?MDIvSGZaZFhQbkswRzlmYUcrVmhxSE5vSVpaT255M2YyTDNaOEs1Q0hpN0Fh?=
- =?utf-8?B?ajRzOHEzSFVpeXBZRndiZDA5SStnSTJSQzBnYjlkWVgvY3Fwai9wRytoM1Y4?=
- =?utf-8?B?YlhzRmJrWUNYZVNtVzhWS0Z4QituT3N1Wkt1U0wycVU1a3ZKdFN6cmR3V0Yz?=
- =?utf-8?B?eVRFekppZzhFNDgrbXFlYllZWWhTOUlCZ3psNEdQeWVQbmdGN2hEOUM3c0tu?=
- =?utf-8?B?cDNUZTVSTStBa0lwZ2VzdGZxdTlyNmltTDNESFhheUVwakhMbGY5MGtsWVNL?=
- =?utf-8?B?dlJMajZHeXB3TXcxekhJZFpsWFVBZHp3eElSNnkzSkJCU0RxN2p3b0FMVklJ?=
- =?utf-8?B?ZkF1cXNMbDZFUXRkVVJjZEwzVkg0WnA4QUp6cXUzOVZxOEZVU2VSQU82WVI4?=
- =?utf-8?B?NXM1Zk9wOW5veUVkV09iTFFMNDAxODVOYWRndTVPSnBjN21iZHdQTDBPeUVB?=
- =?utf-8?B?elhnOFd4UWh0NEhNQTAwWlFubUNDVGJxb2tHTFVFNWk5b0lmMmZtQ3JyY1F2?=
- =?utf-8?B?T0RyUjFYWXNyalFnRlJidXBRNWFiaE1zSEdoSHVsWk9YQWdRSmg0QytuMDVn?=
- =?utf-8?B?VWs5MzNLbEdnaHlHNEFqWkRvdllscDY0YStMSWRpTnNLcllZTC9TZzAySzJV?=
- =?utf-8?B?Mm1NdExNRktmUmlUdTlzeFArby9lWGlaUS9mZXg5T0NIdnRveUJMWnMxWUJS?=
- =?utf-8?B?UUw5KzE4V3hxMDZ6VWc5QWJiWXJwWnJEOWJCRXNsM0Vqa1FVMGJPYnlUcTVX?=
- =?utf-8?B?cm1RSllvOFNxRUhQOG5XTkFJUjFhODdOZVowUzBMbU5nU2N2S2VhYUM5eU1w?=
- =?utf-8?B?dXVJTE9vMGJ4Z3dSR3FoRFBBTWtKaE03bWdZdFhwVUtMOHJCeHA3N2E4d3Nn?=
- =?utf-8?B?VkdzRXJtZTBSZ3VXMDVEUXhhU2hudk5vdEwzYjlqMWtoam05NGFUNFRpMXhi?=
- =?utf-8?Q?9EMs5yxyo9V1Z?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN6PR11MB8102.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TC9TTXQveHpWajJxbmZ0ZE9wdXdORUE0OGhZbUJhRUJmbDJOcEM2Q3Jwc2Jq?=
- =?utf-8?B?SWZsVUZocGpUakhDelVadDFaYWJOaDMwTkx0VU03TUZLcjU5Um96Z2pQS1Zi?=
- =?utf-8?B?ZWhSWGtVUnAydFBweFpPQWVsUXZtWXM0MmQ2ako3bG41YWFOS2h6UXIxbVNs?=
- =?utf-8?B?WG91d3hJbjR2ZFhZT1JnMmEzNVVhYUFzZ28vMC90aUtwdUVtRC9JTWdHNDhl?=
- =?utf-8?B?RlJkbEN0Z1JxT0t6Wk5XdUJRTi9OZElwTjJ1VDVzb3ZoWlUwT2l2M0RGazFN?=
- =?utf-8?B?RngrcmFOVHNGTENXOFNFSTNGeGx3d2cvM09OM0FZU1JpeklGYXEwSS9hVUZK?=
- =?utf-8?B?OHZhZFJ5Tk1QQWNPL0ZSOGZrQnhKdDBma1lVdmNLSHJvbFppalFKaElTSWJ5?=
- =?utf-8?B?bXJSckRqRFVZTjQwaUdRRzJadXBBVE1FUFRmQUlEY1l6bmRMN0lNV1JkajVh?=
- =?utf-8?B?ZEhtYXhOSEdYcVBKdk5JQy8rK0dnUWVnUnh5bldwN2U3eWtxdjRCU2hZdnFS?=
- =?utf-8?B?TWViQWVMM3l3Q2pIV0JNZktYUExIMXJZMDYwMkZZbjRNcUxsMURLRUhqOUox?=
- =?utf-8?B?SEtlaHNpdU9YRkVmV3Q2ZXNqbkxuOVk0WUU0MHhKNEs3a3liSC9vY21McWV0?=
- =?utf-8?B?cUJydFhXU1JpY3BBdFVpYi93ZWErRVUwZmx5SVFDdDZvak5mR05oMDhpRzZh?=
- =?utf-8?B?SGZUMWlmUElvV1FvZURZc3VBQXNDRnJwTWt4WXZteFdYMEwzWFIzU0R4ZTJK?=
- =?utf-8?B?dWU3MkdCcW9MM2tQcE0xNUlHOXI4TzNmVVhnY0lzUWROcmY1Rm5FcjJza0Jv?=
- =?utf-8?B?NGdlQi8waUtqeGY2b0RCS0pWcFc4MzN2TUVoOC9FbmZ1THNhM0p5VEEyZTl4?=
- =?utf-8?B?cmFzSXBwOFZYbG1EVVFkM09naElLUFUwY3QwVEx0VVlWckR5LzBZVk9Ud2dV?=
- =?utf-8?B?dkx5L3R4RlNKVVVmVXRURnIzTG8zdVQ5VDZucUh2UTBqNHVGOE1xYnAyb3J2?=
- =?utf-8?B?Sk5NcTM0djJON2JaZVFlRU0xeUVvOGJtRmhrczBsNy9XRTM5dE9EaklZTWN6?=
- =?utf-8?B?R0dkbXdPTUFQZXpRbWNaZSsrb0lxYUhXT0x0THppUDA4a1NkSFFNeVU3eFhS?=
- =?utf-8?B?M3pZcm1WdUZsZE8vdUF6TEEzU3BqQ2duR1pUQWRHVE1idE0yK2UrWGV6MnFW?=
- =?utf-8?B?RGxHRDNINnBLV0xBUGZzV1J6STdxd3FWWUJHMHFxVG1SdUpYcWlQc2RHRnF1?=
- =?utf-8?B?OSttQy9SbHVVWEltSVVwMENITkxMVnlMT1o2NUFRdjM3cm9ENnpmWVdsSVhO?=
- =?utf-8?B?Vy9tc3UvQ3VqTHQwNlBvb2hOcHlHQ2dDZnplZkI5OFZXd05FNEtlbHBqMC9j?=
- =?utf-8?B?WVNKb1ZNcmVGSStqVDF5eDBJSFYwR2JrbU4zZmdvYVJ0UVM4eEZnaWk5WlFq?=
- =?utf-8?B?eDFyWUo5cld1ZmNhZm5mZkx1NmZTVklYT2NvTkNQS2Fyc3VvN1VRbFdNTUlE?=
- =?utf-8?B?OVRrV3ZmbXBsaElnUnh6V08wQnJ0UWNtR0taWlJPd1AzQnRGWENQeVVxblNE?=
- =?utf-8?B?enNUUmFaVlRoayt1UktEZGRvUUdUSEhvcWk3Qi9pUU5GNHRZQjBSU1RLbHRm?=
- =?utf-8?B?QUV5M0g5YnJUYXVnYWczdStBUnBZR2xBdXhIRi9EWGtibThldlQxUWRSeHVp?=
- =?utf-8?B?T3QyZ0FOMjQrMkpQeWpvMWhtdmpEdWZuK2Z4cFV1dEFXYURiSGxOeHVqTkRx?=
- =?utf-8?B?d1F1Szd4Ujk3UDF6RlNXNjdqK0FSOWZjTWpWUHN3OEJ6TEk5eXEvNzlwT0cw?=
- =?utf-8?B?VTVDWVdtd3MzL3cvMWttSGdTUjJVYmlBcTBJRUh5ZlNHd2M5VnFzMkRqd1h2?=
- =?utf-8?B?eEptYVlCSUdWd3k1MW9MWDFCSm5MY285U0lxUGxxa2paQTFCTnZqK2JhTzF4?=
- =?utf-8?B?VmUralZwQTlmcUxPL1lPVmZ3cUxHSWdKT3hKa3NqVWx0Y2M0R3luY1lISkxy?=
- =?utf-8?B?cmk3TUtzaTBQTklhVzg3TWhDME1xR0thYmdVRG9qUGxaQW51UXNHaGhuUnYv?=
- =?utf-8?B?aWRQMlkySnBWZXNtb0FZU0J1QVo1WkJlQjF6c0pjSE4vZXVZOUYrcW1HdFMz?=
- =?utf-8?B?a2R1MXQwU2RQb2NQQTRqSkFmU0FzRFE3dy9vL3doK2dQakdFd3FNQnUraFVZ?=
- =?utf-8?B?dEE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e6d5ab0-9844-41c8-dd2c-08dd66d34a56
-X-MS-Exchange-CrossTenant-AuthSource: MN6PR11MB8102.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2025 10:46:22.9062
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6AuOyBJi5j8k4a6hnnOiyAmimnmb2PAZcr1O1qzoVRWYp8Jimj0JIk/yktP2WsG+N27nvWwAD8fkiVPUCFLCGUIvEHpl2IOvA7EiznurFts=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR11MB6361
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 3/3] page_pool: Track DMA-mapped pages and unmap
+ them when destroying the pool
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, Yunsheng
+ Lin <yunshenglin0825@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq
+ Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet
+	<edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ilias Apalodimas
+	<ilias.apalodimas@linaro.org>, Simon Horman <horms@kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>, Mina Almasry <almasrymina@google.com>, Yonglong
+ Liu <liuyonglong@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>, Robin Murphy <robin.murphy@arm.com>,
+	IOMMU <iommu@lists.linux.dev>, <segoon@openwall.com>, <solar@openwall.com>,
+	<oss-security@lists.openwall.com>, <kernel-hardening@lists.openwall.com>
+CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>, Qiuling Ren
+	<qren@redhat.com>, Yuying Ma <yuma@redhat.com>
+References: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com>
+ <20250314-page-pool-track-dma-v1-3-c212e57a74c2@redhat.com>
+ <db813035-fb38-4fc3-b91e-d1416959db13@gmail.com> <87jz8nhelh.fsf@toke.dk>
+ <7a76908d-5be2-43f1-a8e2-03b104165a29@huawei.com> <87wmcmhxdz.fsf@toke.dk>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <87wmcmhxdz.fsf@toke.dk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
+
+On 2025/3/19 4:55, Toke Høiland-Jørgensen wrote:
+> Yunsheng Lin <linyunsheng@huawei.com> writes:
+> 
+>> On 2025/3/17 23:16, Toke Høiland-Jørgensen wrote:
+>>> Yunsheng Lin <yunshenglin0825@gmail.com> writes:
+>>>
+>>>> On 3/14/2025 6:10 PM, Toke Høiland-Jørgensen wrote:
+>>>>
+>>>> ...
+>>>>
+>>>>>
+>>>>> To avoid having to walk the entire xarray on unmap to find the page
+>>>>> reference, we stash the ID assigned by xa_alloc() into the page
+>>>>> structure itself, using the upper bits of the pp_magic field. This
+>>>>> requires a couple of defines to avoid conflicting with the
+>>>>> POINTER_POISON_DELTA define, but this is all evaluated at compile-time,
+>>>>> so does not affect run-time performance. The bitmap calculations in this
+>>>>> patch gives the following number of bits for different architectures:
+>>>>>
+>>>>> - 24 bits on 32-bit architectures
+>>>>> - 21 bits on PPC64 (because of the definition of ILLEGAL_POINTER_VALUE)
+>>>>> - 32 bits on other 64-bit architectures
+>>>>
+>>>>  From commit c07aea3ef4d4 ("mm: add a signature in struct page"):
+>>>> "The page->signature field is aliased to page->lru.next and
+>>>> page->compound_head, but it can't be set by mistake because the
+>>>> signature value is a bad pointer, and can't trigger a false positive
+>>>> in PageTail() because the last bit is 0."
+>>>>
+>>>> And commit 8a5e5e02fc83 ("include/linux/poison.h: fix LIST_POISON{1,2} 
+>>>> offset"):
+>>>> "Poison pointer values should be small enough to find a room in
+>>>> non-mmap'able/hardly-mmap'able space."
+>>>>
+>>>> So the question seems to be:
+>>>> 1. Is stashing the ID causing page->pp_magic to be in the mmap'able/
+>>>>     easier-mmap'able space? If yes, how can we make sure this will not
+>>>>     cause any security problem?
+>>>> 2. Is the masking the page->pp_magic causing a valid pionter for
+>>>>     page->lru.next or page->compound_head to be treated as a vaild
+>>>>     PP_SIGNATURE? which might cause page_pool to recycle a page not
+>>>>     allocated via page_pool.
+>>>
+>>> Right, so my reasoning for why the defines in this patch works for this
+>>> is as follows: in both cases we need to make sure that the ID stashed in
+>>> that field never looks like a valid kernel pointer. For 64-bit arches
+>>> (where CONFIG_ILLEGAL_POINTER_VALUE), we make sure of this by never
+>>> writing to any bits that overlap with the illegal value (so that the
+>>> PP_SIGNATURE written to the field keeps it as an illegal pointer value).
+>>> For 32-bit arches, we make sure of this by making sure the top-most bit
+>>> is always 0 (the -1 in the define for _PP_DMA_INDEX_BITS) in the patch,
+>>> which puts it outside the range used for kernel pointers (AFAICT).
+>>
+>> Is there any season you think only kernel pointer is relevant here?
+> 
+> Yes. Any pointer stored in the same space as pp_magic by other users of
+> the page will be kernel pointers (as they come from page->lru.next). The
+> goal of PP_SIGNATURE is to be able to distinguish pages allocated by
+> page_pool, so we don't accidentally recycle a page from somewhere else.
+> That's the goal of the check in page_pool_page_is_pp():
+> 
+> (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE
+> 
+> To achieve this, we must ensure that the check above never returns true
+> for any value another page user could have written into the same field
+> (i.e., into page->lru.next). For 64-bit arches, POISON_POINTER_DELTA
+
+POISON_POINTER_DELTA is defined according to CONFIG_ILLEGAL_POINTER_VALUE,
+if CONFIG_ILLEGAL_POINTER_VALUE is not defined yet, POISON_POINTER_DELTA
+is defined to zero.
+
+It seems only the below 64-bit arches define CONFIG_ILLEGAL_POINTER_VALUE
+through grepping:
+a29815a333c6 core, x86: make LIST_POISON less deadly
+5c178472af24 riscv: define ILLEGAL_POINTER_VALUE for 64bit
+f6853eb561fb powerpc/64: Define ILLEGAL_POINTER_VALUE for 64-bit
+bf0c4e047324 arm64: kconfig: Move LIST_POISON to a safe value
+
+The below 64-bit arches don't seems to define the above config yet:
+MIPS64, SPARC64, System z(S390X),loongarch
+
+Does ID stashing cause problem for the above arches?
+
+> serves this purpose. For 32-bit arches, we can leave the top-most bits
+> out of PP_MAGIC_MASK, to make sure that any valid pointer value will
+> fail the check above.
+
+The above mainly explained how to ensure page_pool_page_is_pp() will
+not return false positive result from the page_pool perspective.
+
+From MM/security perspective, most of the commits quoted above seem
+to suggest that poison pointer should be in the non-mmap'able or
+hardly-mmap'able space, otherwise userspace can arrange for those
+pointers to actually be dereferencable, potentially turning an oops
+to an expolit, more detailed example in the below paper, which explains
+how to exploit a vulnerability which hardened by the 8a5e5e02fc83 commit:
+https://www.usenix.org/system/files/conference/woot15/woot15-paper-xu.pdf
+
+ID stashing seems to cause page->lru.next (aliased to page->pp_magic) to
+be in the mmap'able space for some arches.
 
 
-> We are discussing where to move XXX_core drivers which historically were
-> located in drivers/net/ethernet/XXX/, see this idea https://lore.kernel.org/all/20250211075553.GF17863@unreal/
+> 
+>> It seems it is not really only about kernel pointers as round_hint_to_min()
+>> in mm/mmap.c suggests and the commit log in the above commit 8a5e5e02fc83
+>> if I understand it correctly:
+>> "Given unprivileged users cannot mmap anything below mmap_min_addr, it
+>> should be safe to use poison pointers lower than mmap_min_addr."
+>>
+>> And the above "making sure the top-most bit is always 0" doesn't seems to
+>> ensure page->signature to be outside the range used for kernel pointers
+>> for 32-bit arches with VMSPLIT_1G defined, see arch/arm/Kconfig, there
+>> is a similar config for x86 too:
 
-yes, I know
+...
 
-> FWCTL is unrelated to this discussion and
+> 
+> Ah, interesting, didn't know this was configurable. Okay, so AFAICT, the
+> lowest value of PAGE_OFFSET is 0x40000000 (for VMSPLIT_1G), so we need
+> to leave two bits off at the top instead of just one. Will update this,
+> and try to explain the logic better in the comment.
 
-it is related,
-I see the move as a workaround for "netdev maintainer complains more
-than I would like", sorry :P
+It seems there was attempt of doing 4G/4G split too, and that is the kind
+of limitation or complexity added to the ARCH and MM subsystem by doing the
+ID stashing I mentioned earlier.
+https://lore.kernel.org/lkml/Pine.LNX.4.44.0307082332450.17252-100000@localhost.localdomain/
 
-> you are not forced to use it
-> if you don't like it.
+> 
+>> IMHO, even if some trick like above is really feasible, it may be
+>> adding some limitation or complexity to the ARCH and MM subsystem, for
+>> example, stashing the ID in page->signature may cause 0x*40 signature
+>> to be unusable for other poison pointer purpose, it makes more sense to
+>> make it obvious by doing the above trick in some MM header file like
+>> poison.h instead of in the page_pool subsystem.
+> 
+> AFAIU, PP_SIGNATURE is used for page_pool to be able to distinguish its
+> own pages from those allocated elsewhere (cf the description above).
+> Which means that these definitions are logically page_pool-internal, and
+> thus it makes the most sense to keep them in the page pool headers. The
+> only bits the mm subsystem cares about in that field are the bottom two
+> (for pfmemalloc pages and compound pages).
 
-I know, time will tell if I would be forced to use it to don't
-let competitors to make a short term advantage by going by the
-"who cares, we have fwctl" route.
+All I asked is about moving PP_MAGIC_MASK macro into poison.h if you
+still want to proceed with reusing the page->pp_magic as the masking and
+the signature to be masked seems reasonable to be in the same file.
 
+> 
+>>>>> Since all the tracking is performed on DMA map/unmap, no additional code
+>>>>> is needed in the fast path, meaning the performance overhead of this
+>>>>> tracking is negligible. A micro-benchmark shows that the total overhead
+>>>>> of using xarray for this purpose is about 400 ns (39 cycles(tsc) 395.218
+>>>>> ns; sum for both map and unmap[1]). Since this cost is only paid on DMA
+>>>>> map and unmap, it seems like an acceptable cost to fix the late unmap
+>>>>
+>>>> For most use cases when PP_FLAG_DMA_MAP is set and IOMMU is off, the
+>>>> DMA map and unmap operation is almost negligible as said below, so the
+>>>> cost is about 200% performance degradation, which doesn't seems like an
+>>>> acceptable cost.
+>>>
+>>> I disagree. This only impacts the slow path, as long as pages are
+>>> recycled there is no additional cost. While your patch series has
+>>> demonstrated that it is *possible* to reduce the cost even in the slow
+>>> path, I don't think the complexity cost of this is worth it.
+>>
+>> It is still the datapath otherwise there isn't a specific testing
+>> for that use case, more than 200% performance degradation is too much
+>> IHMO.
+> 
+> Do you have a real-world use case (i.e., a networking benchmark, not a
+> micro-benchmark of the allocation function) where this change has a
+> measurable impact on performance? If so, please do share the numbers!
+
+I don't have one yet.
+
+> 
+> I very much doubt it will be anything close to that magnitude, but I'm
+> always willing to be persuaded by data :)
+> 
+>> Let aside the above severe performance degradation, reusing space in
+>> page->signature seems to be a tradeoff between adding complexity in
+>> page_pool subsystem and in VM/ARCH subsystem as mentioned above.
+> 
+> I think you are overstating the impact on other MM users; this is all
+> mostly page_pool-internal logic, cf the explanation above.
+
+To be honest, I am not that familiar with the pointer poison mechanism.
+But through some researching and analyzing, it makes sense to overstate
+it a little as it seems to be security-related.
+Cc'ed some security-related experts and ML to see if there is some
+clarifying from them.
+
+> 
+>>>
+>>> [...]
+>>>
+>>>>> The extra memory needed to track the pages is neatly encapsulated inside
+>>>>> xarray, which uses the 'struct xa_node' structure to track items. This
+>>>>> structure is 576 bytes long, with slots for 64 items, meaning that a
+>>>>> full node occurs only 9 bytes of overhead per slot it tracks (in
+>>>>> practice, it probably won't be this efficient, but in any case it should
+>>>>
+>>>> Is there any debug infrastructure to know if it is not this efficient?
+>>>> as there may be 576 byte overhead for a page for the worst case.
+>>>
+>>> There's an XA_DEBUG define which enables some dump functions, but I
+>>> don't think there's any API to inspect the memory usage. I guess you
+>>> could attach a BPF program and walk the structure, or something?
+>>>
+>>
+>> It seems the XA_DEBUG is not defined in production environment.
+>> And I am not familiar enough with BPF program to understand if the
+>> BPF way is feasiable in production environment.
+>> Any example for the above BPF program and how to attach it?
+> 
+> Hmm, no, not really, sorry :(
+> 
+> I *think* it should be possible to write a bpftrace script that walks
+> the internal xarray tree and counts the nodes along the way, but it's
+> not trivial to do, and I haven't tried.
+> 
+> -Toke
+> 
+> 
 
