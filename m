@@ -1,183 +1,220 @@
-Return-Path: <linux-rdma+bounces-8838-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8839-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 806ABA6974E
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 19:01:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0168DA697E4
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 19:22:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 292C88A4139
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 17:59:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 657361B63C9E
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 18:21:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D657211488;
-	Wed, 19 Mar 2025 17:58:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B306720AF71;
+	Wed, 19 Mar 2025 18:21:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="JswssZao"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="IwdnQzDj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF88F20AF71
-	for <linux-rdma@vger.kernel.org>; Wed, 19 Mar 2025 17:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FDC1DF996
+	for <linux-rdma@vger.kernel.org>; Wed, 19 Mar 2025 18:21:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742407124; cv=none; b=h9txkqDhJVRwLw5Yk/aFFUl91qujHyfH8xj4U3qFYCBuxlvDmazwiRhPDrdp5rmuf81sLU4p9tsAA/sXqiEaGcPXGsnPBhOuhvzprHAyCw75ltovXTQhxsTpv0agv63SPTBK66WBym4oKspDyA5AXPNnj82l+ygl7SFimahrmj0=
+	t=1742408496; cv=none; b=rkd+82auCHfiVHKnbBgTCzDnaacElRsN6BfXu7bgDYgW00NPE2RAGXRVKaLllrYA/d55pFIdatd+3GDCOo0Ug7pTmbrnyskFLjGnpZAIfjLQ6YpppRjUmNyGwW+uhXg2osoYdPHqWfmkJa66lcfOSA5ytijoztUhNujYpez8Lqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742407124; c=relaxed/simple;
-	bh=O1aeb0KFlrkj4Yiw1nWYiPzizeq56+6Mn3GDJKk7WrE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DqSCf9xEfppRrlgkAIbht10ur8YDrOCIp9gQdzD7GnCTG4kwCWlyFhDRi1bW2asPsGAJhi9A7DbZ+gvcGZZ4Mufru+nl5J/f8NscXBwBFI3up8f3d5d8alFvTzvmOApqnY/kxeFZIbd9BVqfor21hQfGziHpmqSZcW6in6Yv9B0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=JswssZao; arc=none smtp.client-ip=209.85.222.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7c55500d08cso602914885a.0
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Mar 2025 10:58:42 -0700 (PDT)
+	s=arc-20240116; t=1742408496; c=relaxed/simple;
+	bh=NtDAWduIJ0DMkA5XmREwx3R7wbLxEkO24PD+uuiHALU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tHoUIrhg3zm6eyzve+XztaLWug5KaShn2YMImySXfDWVb5HM0+fMMAteCFAbCEKM9p7AsPn0sRQtwcnaKRUUPqoEOfjq8ugMDC3PDco4RcVn6QsPw4r5yRh8JWiS+KnaNXa7JYyiy0gYmW7JU2ra6EA8D+b+vP2Vs91wWNIRyq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=IwdnQzDj; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-22398e09e39so162274785ad.3
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Mar 2025 11:21:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1742407121; x=1743011921; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tk5ycb3N9meE73NCm46CD0AtZuFHAdivFMZfwt24RPU=;
-        b=JswssZaoSvcGZ3Nb3HuBG6yTTepkbVvops9jz8GX0QPSsMZFW5TAmeqJyqUmyrXh5e
-         9yd0D5+xit2h+NbfDPGcgydDHXSJ2ZawWNZlNKWiPsbscwgJO3I/D/ccaEd6sXaQefXL
-         P8IaxLiPCwfg4vuJ9yijo8Qifjg8jhUnuqW3o6y37oeE1UjF0yLhoJ0ffNsqWWhVLzbx
-         03eQ6VGcXdRNbfKzRLeEWywvgzyxONJ2hS86uSYluPzy0M0PxKuFPIYJfQH/xuM5OYQ5
-         s5XDR6OMjA+U7S70WxOERiIXTMPnvEsyw3TOvGC0iyLiroIrIpuMe5vEkwUAUWF5OZqs
-         GzCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742407121; x=1743011921;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1742408494; x=1743013294; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tk5ycb3N9meE73NCm46CD0AtZuFHAdivFMZfwt24RPU=;
-        b=h8QBsZh26saOPQd25OrG3rMQ77iKUJ881v6aeEUP5K4p++fwsnOhg97qI1/N0IPvVj
-         5aZlOw/wStOFnvzDhNYg20Qme85/XSIdguSPtEfyixEu+JDpBuoWPiCgrsTltxNGvFY/
-         aSX1mTJ5qyuLUQynkDm+dByxNSsovDjRPYWifmq4943UPNgAwMQpECIzh8FdqQ37Kg7L
-         PeUDgoxPwRjrnJBua5FQZmmZj+Se11/dyfPG3aoYYHRpgFNQ8K2LBL4rFZNnD3hj7CKp
-         K37Je+sL7QodPdCp1GNdtPCfCRDF65rUioanh/YpNdHMm4sa+tV0xPYFA5xovfE06kPW
-         w0bQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW3kw2/Bckv7db08Zkf4R4VcublnM/f53V503ATWIEPlZ5QtdeGR4Tx9z0m6GmkPRSaHzH6+ZiO0r1N@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw01fVuLvB/zGUSep3v5cJpKBZidJhgANIVKwhfCmk48JQ5TdP/
-	heIqHx9QwXG0v6XW0jJdpK2K4zYYlzxJUHA8AmmD/IFESUsYNhndtxu6u4wDTf4=
-X-Gm-Gg: ASbGnctXFwRgGMvp+pedrC2U8w4q55f4EXygU8mJTprNSVLnp7RMO/TrItF53FB4Ud2
-	r3JRzrHgRCijTcYO2xXNnyiMXecDlCfZk3xok16i0QKfB6E5jw0tXDr/0MG7i+6iLIib958dDUx
-	tYv1IcrsD+kOajv9/fGx4C2W98D7LeUtp+SWaJBq+Wj/WRNFCDcAJlZ2h9VNkAKnZB111PaYnQe
-	H++3MLy0jXjC04Ku3glnbZ/WwCC8pjCc7X7aKtDKVuPs6TmKzHe0eF27wdicPcZuKGeOkkbayWP
-	GV3Fqra6Fom6MGP38s0m4Dk2JhpzjRsYDZchEhyyfkf/IRYDLY11xJIDKeGElH67aYmd7uui7FN
-	HIS8V9IwrjDKhfh2wBA==
-X-Google-Smtp-Source: AGHT+IH//pIx1EBbRFqDU6QPhXC6odo+Ppd2dshOt/mNgQMR0e3nRHsssO7Vo2UonDgQd/fB3+YCbw==
-X-Received: by 2002:a05:620a:3189:b0:7c5:5154:cb2 with SMTP id af79cd13be357-7c5a839688cmr568357985a.15.1742407121681;
-        Wed, 19 Mar 2025 10:58:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-128-5.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.128.5])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c573d8a62asm885096585a.96.2025.03.19.10.58.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Mar 2025 10:58:40 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1tuxge-00000000Wns-1mXJ;
-	Wed, 19 Mar 2025 14:58:40 -0300
-Date: Wed, 19 Mar 2025 14:58:40 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Leon Romanovsky <leon@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v7 00/17] Provide a new two step DMA mapping API
-Message-ID: <20250319175840.GG10600@ziepe.ca>
-References: <cover.1738765879.git.leonro@nvidia.com>
- <20250220124827.GR53094@unreal>
- <CGME20250228195423eucas1p221736d964e9aeb1b055d3ee93a4d2648@eucas1p2.samsung.com>
- <1166a5f5-23cc-4cce-ba40-5e10ad2606de@arm.com>
- <d408b1c7-eabf-4a1e-861c-b2ddf8bf9f0e@samsung.com>
- <20250312193249.GI1322339@unreal>
- <adb63b87-d8f2-4ae6-90c4-125bde41dc29@samsung.com>
+        bh=NtDAWduIJ0DMkA5XmREwx3R7wbLxEkO24PD+uuiHALU=;
+        b=IwdnQzDjyArzY1vKPKagKLRwOvf+eWfEea9MZ1vLhlsRZOkUrYSPSf2f4XM5zzGYHQ
+         TlMZ2MjZ+4nvaW6jhouAuGZjNu8aC5cKC5/K94JOw6Q9jpEfuOny6kXw9qWoaPSSwaAb
+         NkzpxT6/WCwPv3O3XFl91Gc8f/8qrFpFz6JXemNLD4RFH+PySw6Ffr3CDOOzEvYWwzvi
+         cR06WtXOlJ4HTBz7NqfW/HKPuz1JU5NV+AEdxgvvdmnQf50G/IATYQfeSxAX+8DQXQYv
+         3/Khe4AF7BDb9P0taTs7agdXAmxLOwZSFI8kfNExiyR/ZyksusYPzAj2h0XYYDx2KG+v
+         Qs2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742408494; x=1743013294;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NtDAWduIJ0DMkA5XmREwx3R7wbLxEkO24PD+uuiHALU=;
+        b=h8CU9f+W8LlRRo3AB/l+Qw4oDqjLoPL2VxRvwW1etqfslq1Uxyxk3fhsrO05oXRLbK
+         IeGUMPyMvPzfX9u6j8QKBWAoDmYCnjqUEVGvi8vHHd6HSEdGJXfF0Hng245JyR6ANnaO
+         GdH6wM5MNP5oxXCwWppeM1zVJjdT3sGSTVl8xAHzmuJGI/GaVZZvsnY0SGh0Z9gRdOkE
+         HJU12aKAWfOvf3dAhQagBsgbFhtTWTzV9ThTuZQsALGXqSFT2/2B6EVwxCxjl85Wm9cK
+         vimPN8bulm2UKAprpt8IlgAp/FlEIXbLT8d990jw+Aj5pJSuc0lLQWIYM4jYS2eI/+xe
+         JXQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUQH8IFKii7OZAppok20XBGZWUxdXVXFpbnHovWo6r3G+mylzPlHl2iSpCKpAHsQw+ZQcTqZbV3I7cu@vger.kernel.org
+X-Gm-Message-State: AOJu0YxcTJh18m+8lxfEm5EXBMWeoWWTGDZBN5MxOPeRuPBCsLL++B2n
+	Y1lxqRJkh4FeDC/Sl9ljSscm9kSBZP9JlzLQYf+NaTv1mOOnqZxnPLgJ9jJe5KXtef8/y4VsEo+
+	dPizBYZQg5jezFMfj4yACM9Uflzopq3V8r5Jm
+X-Gm-Gg: ASbGncshl6JLJQf0bBH851/+lj1qxAxmJaYiqK9EBP6NiN7/uDpVyXroj0wnwqw+csa
+	AtDLaxnkRQZqd0yrVWukZejYcszg2+L6bpxfepnqjuLfR/VXEkqXDppiodhRyUlFrfBg8gAlC+A
+	I/1zCWvBKH8riITnAtvJjahrJS9Q==
+X-Google-Smtp-Source: AGHT+IFopH9nZEZbQV7g62Dl17S0T6JheQrT+60dYsze0ZA1ycT5mvCSw+Ck4ZiinMyRDNO0eI3ozdD24VPjVb5R3VQ=
+X-Received: by 2002:a05:6a00:18a7:b0:736:51a6:78af with SMTP id
+ d2e1a72fcca58-7377a86691emr353303b3a.12.1742408494111; Wed, 19 Mar 2025
+ 11:21:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <adb63b87-d8f2-4ae6-90c4-125bde41dc29@samsung.com>
+References: <20250306230203.1550314-1-nikolay@enfabrica.net>
+ <20250308184650.GV1955273@unreal> <2f06a40d-2f14-439a-9c95-0231dce5772d@enfabrica.net>
+ <20250312112921.GA1322339@unreal> <86af1a4b-e988-4402-aed2-60609c319dc1@enfabrica.net>
+ <20250312151037.GE1322339@unreal> <CAM0EoMnJW7zJ2_DBm2geTpTnc5ZenNgvcXkLn1eXk4Tu0H0R+A@mail.gmail.com>
+ <20250318224912.GB9311@nvidia.com>
+In-Reply-To: <20250318224912.GB9311@nvidia.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Wed, 19 Mar 2025 14:21:23 -0400
+X-Gm-Features: AQ5f1JpdU2ST-7Y6BksQjQ1exxLJY-6SC-lNCemGdebRpu7wkl_hr1UWdWM55xE
+Message-ID: <CAM0EoMkVz8HfEUg33hptE91nddSrao7=6BzkUS-3YDyHQeOhVw@mail.gmail.com>
+Subject: Re: Netlink vs ioctl WAS(Re: [RFC PATCH 00/13] Ultra Ethernet driver introduction
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>, Nikolay Aleksandrov <nikolay@enfabrica.net>, 
+	Linux Kernel Network Developers <netdev@vger.kernel.org>, Shrijeet Mukherjee <shrijeet@enfabrica.net>, alex.badea@keysight.com, 
+	eric.davis@broadcom.com, rip.sohan@amd.com, David Ahern <dsahern@kernel.org>, 
+	bmt@zurich.ibm.com, roland@enfabrica.net, 
+	Winston Liu <winston.liu@keysight.com>, dan.mihailescu@keysight.com, kheib@redhat.com, 
+	parth.v.parikh@keysight.com, davem@redhat.com, ian.ziemba@hpe.com, 
+	andrew.tauferner@cornelisnetworks.com, welch@hpe.com, 
+	rakhahari.bhunia@keysight.com, kingshuk.mandal@keysight.com, 
+	linux-rdma@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 14, 2025 at 11:52:58AM +0100, Marek Szyprowski wrote:
+On Tue, Mar 18, 2025 at 6:49=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> wr=
+ote:
+>
+> On Sat, Mar 15, 2025 at 04:49:20PM -0400, Jamal Hadi Salim wrote:
+>
+> > On "unreliable": This is typically a result of some request response
+> > (or a subscribed to event) whose execution has failed to allocate
+> > memory in the kernel or overrun some buffers towards user space;
+> > however, any such failures are signalled to user space and can be
+> > recovered from.
+>
+> No, they can't be recovered from in all cases.
+> Randomly failing system
+> calls because of memory pressure is a horrible foundation to build
+> what something like RDMA needs. It is not acceptable that something
+> like a destroy system call would just randomly fail because the kernel
+> is OOMing. There is no recovery from this beyond leaking memory - the
+> opposite of what you want in an OOM situation.
+>
 
-> > The only way to do so is to use dma_map_sg_attrs(), which relies on SG
-> > (the one that we want to remove) to map P2P pages.
-> 
-> That's something I don't get yet. How P2P pages can be used with 
-> dma_map_sg_attrs(), but not with dma_map_page_attrs()? Both operate 
-> internally on struct page pointer.
+Curious how you guarantee that a "destroy" will not fail under OOM. Do
+you have pre-allocated memory?
+Note: Basic request-response netlink messaging like a destroy which
+merely returns you a success/fail indication _should not fail_ once
+that message hits the kernel consumer (example tc subsystem). A
+request to destroy or create something in the kernel for example would
+be a fit.
+Things that may fail because of memory pressure are requests that
+solicit data(typically lots of data) from the kernel, example if you
+dump a large kernel table that wont fit in one netlink message, it
+will be sent to you/user in multiple messages; somewhere after the
+first chunk gets sent your way we may hit an oom issue. For these
+sorts of message types, user space will be signalled so it can
+recover. "Recover" could be to issue another message to continue where
+we left off....
 
-It is a bit subtle, I ran in to this when exploring enabling proper
-P2P for dma_map_resource() too.
+> > ioctl is synchronous which gives it the "reliability" and "speed".
+> > iirc, if memory failure was to happen on ioctl it will block until it
+> > is successful?
+>
+> It would fail back to userspace and unwind whatever it did.
+>
 
-The API signatures are:
+Very similar with netlink.
 
-dma_addr_t dma_map_page_attrs(struct device *dev, struct page *page,
-		size_t offset, size_t size, enum dma_data_direction dir,
-		unsigned long attrs);
-void dma_unmap_page_attrs(struct device *dev, dma_addr_t addr, size_t size,
-		enum dma_data_direction dir, unsigned long attrs);
+> The unwinding is tricky and RDMA's infrastructure has alot of support
+> to make it easier for driver writers to get this right in all the
+> different error cases.
+>
+> Overall systems calls here should either succeed or fail and be the
+> same as a NOP. No failure that actually did something and then creates
+> some resource leak or something because userspace didn't know about
+> it.
+>
 
-The thing to notice immediately is that the unmap path does not get
-passed a struct page.
+Yes, this is how netlink works as well. If a failure to delete an
+object occurs then every transient state gets restored. This is always
+the case for simple requests(a delete/create/update). For requests
+that batch multiple objects there are cases where there is no
+unwinding. Example you could send a request to create a bunch of
+objects in the kernel and half way through the kernel fails for
+whatever and has to bail out.
+Most of the subsystems i have seen as such return a "success", even
+though they only succeeded on the first half. Some return a success
+with a count of how many objects were created.
+It is feasible on a per subsystem level to set flags which would
+instruct the kernel of which mode to use, etc.
 
-So, lets think about the flow when the iommu is turned on. 
+> > Extensibility: ioctl take binary structs which make it much harder to
+> > extend but adds to that "speed". Once you pick your struct, you are
+> > stuck with it - as opposed to netlink which uses very extensible
+> > formally defined TLVs that makes it highly extensible.
+>
+> RDMA uses TLVs now too. It has one of the largest uAPI surfaces in the
+> kernel, TLVs were introduced for the same reason netlink uses them.
+>
 
-For normal struct page memory:
+Makes sense. So ioctls with TLVs ;->
+I am suspecting you don't have concepts of TLVs inside TLVs for
+hierarchies within objects.
 
- - dma_map_page_attrs() allocates some IOVA and returns it in the
-   dma_addr_t and then maps the struct page to the iommu page table
+> RDMA also has special infrastructure to split up the TLV space between
+> core code and HW driver code which is a key feature and necessary part
+> of how you'd build a user/kernel split driver.
+>
 
- - dma_unmap_page_attrs() frees the IOVA from the given dma_addr_t
- 
-If we think about P2P now:
+The T namespace is split between core code and driver code?
+I can see that as being useful for debugging maybe? What else?
 
- - dma_map_page_attrs() can inspect the struct page and determine it
-   is P2P. It computes a bus address which is not an IOVA, and does
-   not transit through the IOMMU. No IOVA allocation is performed. the
-   bus address is returned as the dma_addr_t
+> > - And as Nik mentioned: The new (yaml)model-to-generatedcode approach
+> > that is now common in generic netlink highly reduces developer effort.
+> > Although in my opinion we really need this stuff integrated into tools
+> > like iproute2..
+>
+> RDMA also has a DSL like scheme for defining schema, and centralized
+> parsing and validation. IMHO it's capability falls someplace between
+> the old netlink policy stuff and the new YAML stuff.
+>
 
- - dma_unmap_page_attrs() ... is impossible. We just get this
-   dma_addr_t that doesn't have enough information to tell anymore if
-   the address is a P2P bus address or not, so we can't tell if we
-   should unmap an iova from the dma_addr_t :\
+I meant the ability to start with a data model and generate code as
+being useful.
+Where can i find the RDMA DSL?
 
-The sg path fixes this because it introduced a new flag in the
-scatterlist, SG_DMA_BUS_ADDRESS, that allows the sg map path to record
-the information for the unmap path so it can do the right thing.
+> But just focusing on schema and TLVs really undersells all the
+> specialized infrastructure that exists for managing objects, security,
+> HW pass through and other infrastructure things unique to RDMA.
+>
 
-Leon's approach fixes this by putting an overarching transaction state
-around the DMA operation so that map and unmap operations can look in
-the state and determine if this is a P2P or non P2P map and then know
-how to unmap.
+I dont know enough about RDMA infra to comment but iiuc, you are
+saying that it is the control infrastructure (that sits in
+userspace?), that does all those things you mention, that is more
+important.
+IMO, when you start building complex systems that's always the case
+(the "mechanism vs. policy" principle).
 
-For some background here, Christoph gave me this idea back at LSF/MM
-in Vancouver (two years ago now). At the time I was looking at
-replacing scatterlist and giving new DMA API ops to operate on a
-"scatterlist v2" structure.
 
-Christoph's vision was to make a performance DMA API path that could
-be used to implement any scatterlist-like data structure very
-efficiently without having to teach the DMA API about all sorts of 
-scatterlist-like things.
-
-Jason
+cheers,
+jamal
 
