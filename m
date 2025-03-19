@@ -1,322 +1,229 @@
-Return-Path: <linux-rdma+bounces-8812-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8813-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82049A686BA
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 09:26:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63D93A686D1
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 09:31:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 660AE17835F
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 08:26:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BB0A3A80B8
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 08:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A012512EF;
-	Wed, 19 Mar 2025 08:25:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36FB7251791;
+	Wed, 19 Mar 2025 08:31:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="U9nvzwBD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k/ZmCalc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2073.outbound.protection.outlook.com [40.107.101.73])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F405A250C1B;
-	Wed, 19 Mar 2025 08:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.73
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742372759; cv=fail; b=HRox5/uXT7ZPQ1MFecRwvO0jOQMvs10LQF3eBfLuX4G/wbA6h3NkQD6dFQppj93jam0sbqSGE8otPMU4bDlMM8GO5IiX9CXjS5+dSEbycMI7P7HQwIVyk8ruSz/uhC/eJVRlOh8lfOke2ebUZwCldunLwTEYC/gOe61Jfqg0RbM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742372759; c=relaxed/simple;
-	bh=tfGWtadPK8LMvP+WRH55EPqWutKekk91WqJRI4aZBU8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u5M74bdp1jwX7qTCYY/bX21eF4zourP5tzfJc0691xccsitHS6RWh62r9N0PwqjDYDvuIjwq3R/ndzcJin0DbBNKmW4AFQccF8k72NokjvRvdCW8xgE6ZmK+RoZJ7nN8zVyEoGAQcw63un+QTltZBLxPXRxB6i5/GXQ8Eu74TEs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=U9nvzwBD; arc=fail smtp.client-ip=40.107.101.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=MSRa+sHte0MaPRD+ZDAidzwx4Q4o4CCKh9ZWHzWUZkUzOthkdW1csfJBvi7JVWP9J9wLq/fjS7THn8cOeLMMXLU5Bo0ezMVbnBrD2/vthUnVJqjekW8ocQFwuoZlPDOOdY7J+N4O60fUNEJsOKZj1QDGSjCY3jdu0cQhvyakbhmOBshUN+wI/6TUrIoswlkLlfV1MIjxtEcdM+syxdGhPZADr9opb30oRlWl0AcBUROXqX/FOpNbPSqYnxVn/d8QUlMWxUd3afRU69BKyK+m3UvRv2aIGljSBoDwzolLFg7AVcEIH49BML4R/5m65GIlzjkkQWg9nEHLc3S5mIa3KA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y7vCV7+OsUltXOkyJyEX4OaAL2krjryTS02ZFkLTxZE=;
- b=lCA9X//LFR/uHvU2ouMD69W7ZddvXl1eRSDs6d1RP6HZ6hrJwWr8AsUQRhOKqiwXUT43lwG7DaHop6qZNtdvBnPoPcIBf0jY86sKgesB4uFgXqOlcpRnRAq4MXbEOf6lcjuodobxc27u60Cz/sVHn1DnLBU4B2udAHot+t/Ue5S/sungUGDljEXsuBIPKWsKHu86x7Ar5csKYMd8XaRdOOCA93poxwDptxeAZtLb40rXYbfLjb3fNhJhJmbKTZQV6AKgqFODHQNGnOtYgfy5G1bwIjhG6rPrXsReX88DJ2vXi9LJkEDFhCj24gISWhXDT06JI451FvwnCCmNwPRTjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y7vCV7+OsUltXOkyJyEX4OaAL2krjryTS02ZFkLTxZE=;
- b=U9nvzwBDGB2oV+thvHXG/4nmIAhqdiKY+oR+MR43hQ33B405a/OKcXkby6sxYb/0b2/u4e4QLUX55gN+oRUzrFAK6jVLv2FuuPpD2/W49b3GwDUiflJrH6S8kjGuk3x/gStKv1twXbKQiw6zNzj3UtHjEYeQvg098Q5GifjzCIkL3J0gfxjOGsL+oQrq9mvzXpVVml2ogP629IRaaqsDLBi6KQfUv3F22IHToGUhVJgcTG3fmuCV90ix1+7YZljzg99hdvr4b7DF9G5IZKmH1kAJAVRvrpeSKH57S8Lo/1u6z5J/10ZgwWMIwTon/hsN6gTLZWRowSecza4jBszQtQ==
-Received: from PH7P220CA0075.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:32c::11)
- by SJ5PPF28EF61683.namprd12.prod.outlook.com (2603:10b6:a0f:fc02::98e) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.33; Wed, 19 Mar
- 2025 08:25:53 +0000
-Received: from SN1PEPF000397B3.namprd05.prod.outlook.com
- (2603:10b6:510:32c:cafe::9b) by PH7P220CA0075.outlook.office365.com
- (2603:10b6:510:32c::11) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8534.31 via Frontend Transport; Wed,
- 19 Mar 2025 08:25:53 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- SN1PEPF000397B3.mail.protection.outlook.com (10.167.248.57) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8534.20 via Frontend Transport; Wed, 19 Mar 2025 08:25:53 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 19 Mar
- 2025 01:25:40 -0700
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14; Wed, 19 Mar 2025 01:25:40 -0700
-Received: from vdi.nvidia.com (10.127.8.11) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server id 15.2.1544.14 via Frontend
- Transport; Wed, 19 Mar 2025 01:25:38 -0700
-From: Patrisious Haddad <phaddad@nvidia.com>
-To: <leon@kernel.org>, <dsahern@gmail.com>, <stephen@networkplumber.org>
-CC: Patrisious Haddad <phaddad@nvidia.com>, <netdev@vger.kernel.org>,
-	<jgg@nvidia.com>, <linux-rdma@vger.kernel.org>, Mark Bloch
-	<mbloch@nvidia.com>
-Subject: [PATCH iproute2-next 2/2] rdma: Add optional-counter option to rdma stat bind commands
-Date: Wed, 19 Mar 2025 10:25:26 +0200
-Message-ID: <20250319082529.287168-3-phaddad@nvidia.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20250319082529.287168-1-phaddad@nvidia.com>
-References: <20250319082529.287168-1-phaddad@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C994D20F091;
+	Wed, 19 Mar 2025 08:31:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742373064; cv=none; b=RzdkwKfac6Rf+c9N9OBTOIuZiLPR4sBUmgcHPxk72VnU/5NutxShNmzge43QSrV3vvdEktIhE2ri81Y1nbdvTBZpSyjNW/vgS8PL/A9NYTrhpae/kgu7+eLemU5GkIzWddUQ6uEGjQwu8DZS/C+H1UotPz6s931hb8TuF5CFDdY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742373064; c=relaxed/simple;
+	bh=w3JmB7o8CKormT/Akok+UN9U+U8VYEVmbKd3okiCYoE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WcgP+Rt+xPObIsmt1BqHd3kuIvYuVeA+JzlrwHBTJngo8cyeE61nA38kDLiV+xG6gNN1eG/sT+YCRh7/yn+BKu2pG3h0MnAqWDOD0mSfrL+Lt8Sa7Al9oLz1f8aVVDhO2E1wUo4FW4mnQhyivBvyDGOtJB972JsS+wlirjcumWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k/ZmCalc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96DF5C4CEE9;
+	Wed, 19 Mar 2025 08:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742373063;
+	bh=w3JmB7o8CKormT/Akok+UN9U+U8VYEVmbKd3okiCYoE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=k/ZmCalc1dPOZG6tOAhA+Vbavt7ywew9AlCIx2pzmLHVBTMjREfKHqE2Yum/A2k90
+	 Mgo+utD6esZ3GSzapnLqbyG8yVsrTWUf4LItvlOCrYiiwuNO3yR2hQSEZpAOU6nnCo
+	 ZQRiEYn2mZ5bFSK8HEji2pCWj4CLMwBv5PoBA514qIBaTnW4NxRHmPJsRxHz6F9LM6
+	 DEj4Vkpkiz3HR+9d8OInlfDxTa9WdUELXV90gpobKxd8KKBd5UGsQL7y13D0qR11Xw
+	 1V/5hXHr1Z4zSHswxS63wOUI6bDFZ2FK5D8dKbOltHWG9ThPOmE1f0m3YkoTz1ruoI
+	 rs/FbXe+RBpfw==
+Date: Wed, 19 Mar 2025 10:30:58 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig <hch@lst.de>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v7 00/17] Provide a new two step DMA mapping API
+Message-ID: <20250319083058.GG1322339@unreal>
+References: <cover.1738765879.git.leonro@nvidia.com>
+ <20250220124827.GR53094@unreal>
+ <CGME20250228195423eucas1p221736d964e9aeb1b055d3ee93a4d2648@eucas1p2.samsung.com>
+ <1166a5f5-23cc-4cce-ba40-5e10ad2606de@arm.com>
+ <d408b1c7-eabf-4a1e-861c-b2ddf8bf9f0e@samsung.com>
+ <20250312193249.GI1322339@unreal>
+ <adb63b87-d8f2-4ae6-90c4-125bde41dc29@samsung.com>
+ <20250314184911.GR1322339@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: AnonymousSubmission
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF000397B3:EE_|SJ5PPF28EF61683:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7768a39f-307a-4f7a-bfd0-08dd66bfa9e1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|82310400026|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?5AKBGH4xf98NpLHJuJ4fClRJgeCa0pbhArlLVnabf3JpOOKTv6S/w3313NIa?=
- =?us-ascii?Q?v1/BVkj0SN5HmGpCrVpwJMkxD7wus3gaielmRp2v4Kas5ioq9LP1iYgtb3k8?=
- =?us-ascii?Q?QMTfc454ebMIW38hhcS2Ce8bI6K62Sdv2giI7DZ75qobKse7Xw1S2NOzcXdq?=
- =?us-ascii?Q?MwavsRS/As7x4VRlqN6rM1SF8hR/UVtFsfOcCwlOb1fZ6QXt+E7BOjKyxVW9?=
- =?us-ascii?Q?3IV+PFsgc5vIxuyWDqJP/2K5tdXqlBlbO9Oc4ySfXvNpBfD3ndASz30OtGzq?=
- =?us-ascii?Q?wc4U3I6xeViHmInoIqmidhgC64l3RdE8hpB3wKKFinEbEk3DcV7CObYvdDda?=
- =?us-ascii?Q?Etop0OM5MuJnbhsO8oYUWW/L9+I84uQA6N0LWepJal+j7fpdkrgkRPdraR4q?=
- =?us-ascii?Q?JU0m0uAKQkmTnQgEu8jdMf/bF8qpnR8VGNcm1CjcwJZPQXi7YxRvqTDHaeW6?=
- =?us-ascii?Q?ctUyY2ZBZzuOG6pKKna3aPdZJOHmhQ1C/8lk63zO2YL3+M2KIP9b+5I2qrLy?=
- =?us-ascii?Q?MBSBYpnJPBNxM/RwCM338cuANKDpOYPRiuoP06qOgj6kK4v5xB0/BGnb0JnW?=
- =?us-ascii?Q?b53Vq3QnpIkRflQ6eruztBaSudYypUog8HKo7D8VQDXuzO3KQ+1Iz8FSPUoH?=
- =?us-ascii?Q?2eEaN8XFqEOYispb51qWmsklOJOdfEqeVcEiHOCiHxnkuwEEm46VLQt/C24e?=
- =?us-ascii?Q?indlFOvnflwaivkAWMLPrhUYF74zImo6GM5WDIX/JXorWmRjTqjY0+fm1t+M?=
- =?us-ascii?Q?3XXVawN30UHrfA6oyFVxd8vOvPE9iE7OyQsPgnnjyBC4eH7jHi3sFCy6cKrZ?=
- =?us-ascii?Q?S8lGY/dcGKZUmjxTPFd/8Hu1ezRh68vkmPm3S8jUj65Ham5loKkYUIBi8jRQ?=
- =?us-ascii?Q?zefP8E2dr9NoXi5o2LnKEqxT43jTlFCwP09FmJe6+27XdcK8j19oBu7wv54n?=
- =?us-ascii?Q?tP7232UuSzITra6Kvs/mLvo/FV1IezYnBVarcmrrhPZnPlQmuLmhjjR/gf+M?=
- =?us-ascii?Q?5NQlcATQausL4Bw51SlvV6sQtumnwSela2Qs33933VGMLcMDT48oLDOBA3Zz?=
- =?us-ascii?Q?KQppqbmWT6GCIHe1TsBMOvJ/xkaVmJ0CDjuT9eb5nQUKBo+RSWQVNmZrXoiZ?=
- =?us-ascii?Q?zIdMV/ZNPFbCtBsfpZ/5HveNU+yipPe7x5lwr0YyRkS0AiCrrzTGADPN7hIk?=
- =?us-ascii?Q?0XqRyaztIi1hlU7cug3jWZZPilMI8LosjAu/cLEjEwWIIUrlql0V0TJ3Iagp?=
- =?us-ascii?Q?crUU9O3PBbuXUaSuaueYq0Bc6rpcYuL5zehIksFeJsJ7AcipWrSM5VqztMVB?=
- =?us-ascii?Q?rG4Xv5C/FYZzzav20i/El4ahd+NoU596gPQnlQ8MMYAVmQaS+RSA7HxmkLH7?=
- =?us-ascii?Q?cgG1l378MAS7/VeyscgrrQjq+giVDhLrd3SJPLdt7w0Rcd6HzWd9vGlbN8eo?=
- =?us-ascii?Q?FqJD+ceFCdDTnNb5VNy4VJBt6CjG6hIl/DeQPR55o8yv7xvKhXTYOtj2gPDx?=
- =?us-ascii?Q?fJakmuCWmtfSe94=3D?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(82310400026)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2025 08:25:53.0003
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7768a39f-307a-4f7a-bfd0-08dd66bfa9e1
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF000397B3.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ5PPF28EF61683
+In-Reply-To: <20250314184911.GR1322339@unreal>
 
-Add a new optional filter named optional-counter to commands:
-rdma stat qp set link [link_name] auto
+On Fri, Mar 14, 2025 at 08:49:11PM +0200, Leon Romanovsky wrote:
+> On Fri, Mar 14, 2025 at 11:52:58AM +0100, Marek Szyprowski wrote:
+> > On 12.03.2025 20:32, Leon Romanovsky wrote:
+> > > On Wed, Mar 12, 2025 at 10:28:32AM +0100, Marek Szyprowski wrote:
+> > >> Hi Robin
+> > >>
+> > >> On 28.02.2025 20:54, Robin Murphy wrote:
+> > >>> On 20/02/2025 12:48 pm, Leon Romanovsky wrote:
+> > >>>> On Wed, Feb 05, 2025 at 04:40:20PM +0200, Leon Romanovsky wrote:
+> > >>>>> From: Leon Romanovsky <leonro@nvidia.com>
+> > >>>>>
+> > >>>>> Changelog:
+> > >>>>> v7:
+> > >>>>>    * Rebased to v6.14-rc1
+> > >>>> <...>
+> > >>>>
+> > >>>>> Christoph Hellwig (6):
+> > >>>>>     PCI/P2PDMA: Refactor the p2pdma mapping helpers
+> > >>>>>     dma-mapping: move the PCI P2PDMA mapping helpers to pci-p2pdma.h
+> > >>>>>     iommu: generalize the batched sync after map interface
+> > >>>>>     iommu/dma: Factor out a iommu_dma_map_swiotlb helper
+> > >>>>>     dma-mapping: add a dma_need_unmap helper
+> > >>>>>     docs: core-api: document the IOVA-based API
+> > >>>>>
+> > >>>>> Leon Romanovsky (11):
+> > >>>>>     iommu: add kernel-doc for iommu_unmap and iommu_unmap_fast
+> > >>>>>     dma-mapping: Provide an interface to allow allocate IOVA
+> > >>>>>     dma-mapping: Implement link/unlink ranges API
+> > >>>>>     mm/hmm: let users to tag specific PFN with DMA mapped bit
+> > >>>>>     mm/hmm: provide generic DMA managing logic
+> > >>>>>     RDMA/umem: Store ODP access mask information in PFN
+> > >>>>>     RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page
+> > >>>>>       linkage
+> > >>>>>     RDMA/umem: Separate implicit ODP initialization from explicit ODP
+> > >>>>>     vfio/mlx5: Explicitly use number of pages instead of allocated
+> > >>>>> length
+> > >>>>>     vfio/mlx5: Rewrite create mkey flow to allow better code reuse
+> > >>>>>     vfio/mlx5: Enable the DMA link API
+> > >>>>>
+> > >>>>>    Documentation/core-api/dma-api.rst   |  70 ++++
+> > >>>>    drivers/infiniband/core/umem_odp.c   | 250 +++++---------
+> > >>>>>    drivers/infiniband/hw/mlx5/mlx5_ib.h |  12 +-
+> > >>>>>    drivers/infiniband/hw/mlx5/odp.c     |  65 ++--
+> > >>>>>    drivers/infiniband/hw/mlx5/umr.c     |  12 +-
+> > >>>>>    drivers/iommu/dma-iommu.c            | 468
+> > >>>>> +++++++++++++++++++++++----
+> > >>>>>    drivers/iommu/iommu.c                |  84 ++---
+> > >>>>>    drivers/pci/p2pdma.c                 |  38 +--
+> > >>>>>    drivers/vfio/pci/mlx5/cmd.c          | 375 +++++++++++----------
+> > >>>>>    drivers/vfio/pci/mlx5/cmd.h          |  35 +-
+> > >>>>>    drivers/vfio/pci/mlx5/main.c         |  87 +++--
+> > >>>>>    include/linux/dma-map-ops.h          |  54 ----
+> > >>>>>    include/linux/dma-mapping.h          |  85 +++++
+> > >>>>>    include/linux/hmm-dma.h              |  33 ++
+> > >>>>>    include/linux/hmm.h                  |  21 ++
+> > >>>>>    include/linux/iommu.h                |   4 +
+> > >>>>>    include/linux/pci-p2pdma.h           |  84 +++++
+> > >>>>>    include/rdma/ib_umem_odp.h           |  25 +-
+> > >>>>>    kernel/dma/direct.c                  |  44 +--
+> > >>>>>    kernel/dma/mapping.c                 |  18 ++
+> > >>>>>    mm/hmm.c                             | 264 +++++++++++++--
+> > >>>>>    21 files changed, 1435 insertions(+), 693 deletions(-)
+> > >>>>>    create mode 100644 include/linux/hmm-dma.h
+> > >>>> Kind reminder.
+> > > <...>
+> > >
+> > >> Removing the need for scatterlists was advertised as the main goal of
+> > >> this new API, but it looks that similar effects can be achieved with
+> > >> just iterating over the pages and calling page-based DMA API directly.
+> > > Such iteration can't be enough because P2P pages don't have struct pages,
+> > > so you can't use reliably and efficiently dma_map_page_attrs() call.
+> > >
+> > > The only way to do so is to use dma_map_sg_attrs(), which relies on SG
+> > > (the one that we want to remove) to map P2P pages.
+> > 
+> > That's something I don't get yet. How P2P pages can be used with 
+> > dma_map_sg_attrs(), but not with dma_map_page_attrs()? Both operate 
+> > internally on struct page pointer.
+> 
+> Yes, and no.
+> See users of is_pci_p2pdma_page(...) function. In dma_*_sg() APIs, there
+> is a real check and support for p2p. In dma_map_page_attrs() variants,
+> this support is missing (ignored, or error is returned).
+> 
+> > 
+> > >> Maybe I missed something. I still see some advantages in this DMA API
+> > >> extension, but I would also like to see the clear benefits from
+> > >> introducing it, like perf logs or other benchmark summary.
+> > > We didn't focus yet on performance, however Christoph mentioned in his
+> > > block RFC [1] that even simple conversion should improve performance as
+> > > we are performing one P2P lookup per-bio and not per-SG entry as was
+> > > before [2]. In addition it decreases memory [3] too.
+> > >
+> > > [1] https://lore.kernel.org/all/cover.1730037261.git.leon@kernel.org/
+> > > [2] https://lore.kernel.org/all/34d44537a65aba6ede215a8ad882aeee028b423a.1730037261.git.leon@kernel.org/
+> > > [3] https://lore.kernel.org/all/383557d0fa1aa393dbab4e1daec94b6cced384ab.1730037261.git.leon@kernel.org/
+> > >
+> > > So clear benefits are:
+> > > 1. Ability to use native for subsystem structure, e.g. bio for block,
+> > > umem for RDMA, dmabuf for DRM, e.t.c. It removes current wasteful
+> > > conversions from and to SG in order to work with DMA API.
+> > > 2. Batched request and iotlb sync optimizations (perform only once).
+> > > 3. Avoid very expensive call to pgmap pointer.
+> > > 4. Expose MMIO over VFIO without hacks (PCI BAR doesn't have struct pages).
+> > > See this series for such a hack
+> > > https://lore.kernel.org/all/20250307052248.405803-1-vivek.kasireddy@intel.com/
+> > 
+> > I see those benefits and I admit that for typical DMA-with-IOMMU case it 
+> > would improve some things. I think that main concern from Robin was how 
+> > to handle it for the cases without an IOMMU.
+> 
+> In such case, we fallback to non-IOMMU flow (old, well-established one).
+> See this HMM patch as an example https://lore.kernel.org/all/a796da065fa8a9cb35d591ce6930400619572dcc.1738765879.git.leonro@nvidia.com/
+> +dma_addr_t hmm_dma_map_pfn(struct device *dev, struct hmm_dma_map *map,
+> +			   size_t idx,
+> +			   struct pci_p2pdma_map_state *p2pdma_state)
+> ...
+> +	if (dma_use_iova(state)) {
+> ...
+> +	} else {
+> ...
+> +		dma_addr = dma_map_page(dev, page, 0, map->dma_entry_size,
+> +					DMA_BIDIRECTIONAL);
+> 
+> Thanks
 
-The new filter value can be either on or off and it must be the last
-provided filter in the command, not providing it would be the same as off.
+Marek,
 
-It indicates that when binding counters to a QP we also want the
-currently enabled optional-counters on the link to be bound as well.
+Did it answer your concerns?
 
-In addition Adjust rdma statistic man page to reflect the new
-optional-counter changes.
+How can we progress here? As you can see, the chances to get meaningful
+response to your review request and my questions are not high.
 
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
----
- man/man8/rdma-statistic.8 |  6 +++++
- rdma/stat.c               | 50 +++++++++++++++++++++++++++++++++++++--
- rdma/utils.c              |  1 +
- 3 files changed, 55 insertions(+), 2 deletions(-)
+Thanks
 
-diff --git a/man/man8/rdma-statistic.8 b/man/man8/rdma-statistic.8
-index 7dd2b02c..337e31ef 100644
---- a/man/man8/rdma-statistic.8
-+++ b/man/man8/rdma-statistic.8
-@@ -39,6 +39,7 @@ rdma-statistic \- RDMA statistic counter configuration
- .B auto
- .RI "{ " CRITERIA " | "
- .BR off " }"
-+.B [ optional-counters | on/off ]
- 
- .ti -8
- .B rdma statistic
-@@ -180,6 +181,11 @@ rdma statistic qp set link mlx5_2/1 auto type on
- On device mlx5_2 port 1, for each new user QP bind it with a counter automatically. Per counter for QPs with same qp type.
- .RE
- .PP
-+rdma statistic qp set link mlx5_2/1 auto type on optional-counters on
-+.RS 4
-+On device mlx5_2 port 1, for each new user QP bind it with a counter automatically. Per counter for QPs with same qp type. Whilst also binding the currently enabled optional-counters.
-+.RE
-+.PP
- rdma statistic qp set link mlx5_2/1 auto pid on
- .RS 4
- On device mlx5_2 port 1, for each new user QP bind it with a counter automatically. Per counter for QPs with same pid.
-diff --git a/rdma/stat.c b/rdma/stat.c
-index bf78f7cc..2c1bf68e 100644
---- a/rdma/stat.c
-+++ b/rdma/stat.c
-@@ -7,6 +7,7 @@
- #include "rdma.h"
- #include "res.h"
- #include "stat.h"
-+#include "utils.h"
- #include <inttypes.h>
- 
- static int stat_help(struct rd *rd)
-@@ -62,7 +63,8 @@ static struct counter_param auto_params[] = {
- 	{ NULL },
- };
- 
--static int prepare_auto_mode_str(uint32_t mask, char *output, int len)
-+static int prepare_auto_mode_str(uint32_t mask, bool opcnt, char *output,
-+				 int len)
- {
- 	char s[] = "qp auto";
- 	int i, outlen = strlen(s);
-@@ -90,6 +92,10 @@ static int prepare_auto_mode_str(uint32_t mask, char *output, int len)
- 		if (outlen + strlen(" on") >= len)
- 			return -EINVAL;
- 		strcat(output, " on");
-+
-+		strcat(output, " optional-counters ");
-+		strcat(output, (opcnt) ? "on" : "off");
-+
- 	} else {
- 		if (outlen + strlen(" off") >= len)
- 			return -EINVAL;
-@@ -104,6 +110,7 @@ static int qp_link_get_mode_parse_cb(const struct nlmsghdr *nlh, void *data)
- 	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
- 	uint32_t mode = 0, mask = 0;
- 	char output[128] = {};
-+	bool opcnt = false;
- 	uint32_t idx, port;
- 	const char *name;
- 
-@@ -126,7 +133,10 @@ static int qp_link_get_mode_parse_cb(const struct nlmsghdr *nlh, void *data)
- 		if (!tb[RDMA_NLDEV_ATTR_STAT_AUTO_MODE_MASK])
- 			return MNL_CB_ERROR;
- 		mask = mnl_attr_get_u32(tb[RDMA_NLDEV_ATTR_STAT_AUTO_MODE_MASK]);
--		prepare_auto_mode_str(mask, output, sizeof(output));
-+		if (tb[RDMA_NLDEV_ATTR_STAT_OPCOUNTER_ENABLED])
-+			opcnt = mnl_attr_get_u8(
-+				tb[RDMA_NLDEV_ATTR_STAT_OPCOUNTER_ENABLED]);
-+		prepare_auto_mode_str(mask, opcnt, output, sizeof(output));
- 	} else {
- 		snprintf(output, sizeof(output), "qp auto off");
- 	}
-@@ -351,6 +361,7 @@ static const struct filters stat_valid_filters[MAX_NUMBER_OF_FILTERS] = {
- 	{ .name = "lqpn", .is_number = true },
- 	{ .name = "pid", .is_number = true },
- 	{ .name = "qp-type", .is_number = false },
-+	{ .name = "optional-counters", .is_number = false },
- };
- 
- static int stat_qp_show_one_link(struct rd *rd)
-@@ -395,9 +406,37 @@ static int stat_qp_show(struct rd *rd)
- 	return rd_exec_cmd(rd, cmds, "parameter");
- }
- 
-+static bool stat_get_on_off(struct rd *rd, const char *arg, int *ret)
-+{
-+	bool value = false;
-+
-+	if (strcmpx(rd_argv(rd), arg) != 0) {
-+		*ret = -EINVAL;
-+		return false;
-+	}
-+
-+	rd_arg_inc(rd);
-+
-+	if (rd_is_multiarg(rd)) {
-+		pr_err("The parameter %s shouldn't include range\n", arg);
-+		*ret = EINVAL;
-+		return false;
-+	}
-+
-+	value = parse_on_off(arg, rd_argv(rd), ret);
-+	if (*ret)
-+		return false;
-+
-+	rd_arg_inc(rd);
-+
-+	return value;
-+}
-+
- static int stat_qp_set_link_auto_sendmsg(struct rd *rd, uint32_t mask)
- {
- 	uint32_t seq;
-+	bool opcnt;
-+	int ret;
- 
- 	rd_prepare_msg(rd, RDMA_NLDEV_CMD_STAT_SET,
- 		       &seq, (NLM_F_REQUEST | NLM_F_ACK));
-@@ -408,6 +447,13 @@ static int stat_qp_set_link_auto_sendmsg(struct rd *rd, uint32_t mask)
- 	mnl_attr_put_u32(rd->nlh, RDMA_NLDEV_ATTR_STAT_MODE,
- 			 RDMA_COUNTER_MODE_AUTO);
- 	mnl_attr_put_u32(rd->nlh, RDMA_NLDEV_ATTR_STAT_AUTO_MODE_MASK, mask);
-+	if (rd_argc(rd)) {
-+		opcnt = stat_get_on_off(rd, "optional-counters", &ret);
-+		if (ret)
-+			return ret;
-+		mnl_attr_put_u8(rd->nlh, RDMA_NLDEV_ATTR_STAT_OPCOUNTER_ENABLED,
-+				opcnt);
-+	}
- 
- 	return rd_sendrecv_msg(rd, seq);
- }
-diff --git a/rdma/utils.c b/rdma/utils.c
-index 07cb0224..87003b2c 100644
---- a/rdma/utils.c
-+++ b/rdma/utils.c
-@@ -479,6 +479,7 @@ static const enum mnl_attr_data_type nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_PARENT_NAME] = MNL_TYPE_STRING,
- 	[RDMA_NLDEV_ATTR_EVENT_TYPE] = MNL_TYPE_U8,
- 	[RDMA_NLDEV_SYS_ATTR_MONITOR_MODE] = MNL_TYPE_U8,
-+	[RDMA_NLDEV_ATTR_STAT_OPCOUNTER_ENABLED] = MNL_TYPE_U8,
- };
- 
- static int rd_attr_check(const struct nlattr *attr, int *typep)
--- 
-2.47.0
-
+> 
+> > 
+> > Best regards
+> > -- 
+> > Marek Szyprowski, PhD
+> > Samsung R&D Institute Poland
+> > 
+> 
 
