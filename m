@@ -1,82 +1,83 @@
-Return-Path: <linux-rdma+bounces-8821-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8822-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5335A68BDC
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 12:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96E30A68BE0
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 12:39:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26DB5188946D
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 11:36:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59911188856E
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 11:37:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E87E8254AFC;
-	Wed, 19 Mar 2025 11:36:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB88254AEC;
+	Wed, 19 Mar 2025 11:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="M9j1ZFl7"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ZJi1cMRc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC6E253F1F
-	for <linux-rdma@vger.kernel.org>; Wed, 19 Mar 2025 11:36:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90237253F25
+	for <linux-rdma@vger.kernel.org>; Wed, 19 Mar 2025 11:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742384168; cv=none; b=jXMBe/ljKvkDim8cXIGRJrbOKttvPM1bWIv7PGQ5XYNSPtnW51HP4iuxXyoLtBZP+KiIWnqJ7BLqiXXymy1L+buUrCwkVHbuZJQ/XguZa2qW5QEQwuzmc93JzDzcGZtbbQpKjwvRMKH2ONYFKafB25nkBFm25icNLhIJICkdFDA=
+	t=1742384211; cv=none; b=puS4juG3GIu5jzoc2Ytl6hyzofLFVaYOmyQArg2FRqbU5YUuHG7X3a+qNHrJtY+Cl/RXBIXQm2UPTPhKDLFJ532mrm3aFG0bNhEDu+cktz6mOAxLQRIdd31MRl9gI/rSlULVj7foIfw60cJFFupId6qdG/bwnQEmUzeKZTJ/PFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742384168; c=relaxed/simple;
-	bh=lGBffndVyXZXc20ff/djLPzzRXqDdg37GAQup4jq+nM=;
+	s=arc-20240116; t=1742384211; c=relaxed/simple;
+	bh=gHOkJKtIyY+RPTu/wnWjr7axrgYHCRtVqGizXCxXUXc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Aua168wPRQzEER2wHKK5/oqgdchli/Tax6hks8yyJisQwEf30YPVq17P2rd/LozuWh75dIe3NAN2kaMxptjJXDYNMW/CjLQyC3okyKWmZzRwMbDWn6miLVzqh5+hH8QxpSENC3VL44ACjHleEwO+r3OITjUCP6mz7Uz+7l6/QZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=M9j1ZFl7; arc=none smtp.client-ip=209.85.214.169
+	 To:Cc:Content-Type; b=nY3c3oljbFuAq8QzPnolm9DQHko8v2ttg7cFSahRQsUVygvGdPcDMX3VjylGMHip25JZbsBLJfHUUOYXhQGfyKnMBykMIGV5MpoU2BobLw5J46iir8HZQfJomMm5dfUGoNFMik1eWtoH63rDJHOC+Ug735zgY8xx1gX29B1h+HI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=ZJi1cMRc; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-224191d92e4so129380895ad.3
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Mar 2025 04:36:05 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-22398e09e39so144142585ad.3
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Mar 2025 04:36:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1742384165; x=1742988965; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1742384209; x=1742989009; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lGBffndVyXZXc20ff/djLPzzRXqDdg37GAQup4jq+nM=;
-        b=M9j1ZFl7XRq1H3XhCZnr5i8pssAy25Sa3vBqIFUY9zvgDHp9CEarDhxAdEFyuKxohx
-         J8Yp8ZVHAzq7YEWjKT6LcW9vTpYQbIxNRYBrN8L/0+VPn9PMd7vJbVW7U9UqGfR0N7lP
-         D5q4a4HLC6cuxoueXfCfPZd1r5AOvnzhUwQqE=
+        bh=gHOkJKtIyY+RPTu/wnWjr7axrgYHCRtVqGizXCxXUXc=;
+        b=ZJi1cMRckUfKo0yMHL8DEb/pWX7VJ0Z3PhUHeIBcqXs/eT8GHbrtiaW1qffLW9u7NT
+         YRkXFW9XBOE9Dosu6COsKOFjGNE//pxqhp+9jU/FF1LNzUQGqUkLQirRT4f3PqIQb+Iv
+         qpKkbONshIWJ3rXfTT9/nS01mwhLvV4Y+dFVk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742384165; x=1742988965;
+        d=1e100.net; s=20230601; t=1742384209; x=1742989009;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=lGBffndVyXZXc20ff/djLPzzRXqDdg37GAQup4jq+nM=;
-        b=ZkbuFUA9IxbrTxI1D9rZeNJssJJspYJ3z1km3+6a1Q3m12mSleUQ2QIqOhVoEPXtpM
-         q19+z84wih9m7sqmIm1mxpG9mZg6K8DuRepGPctrGOWxEOxtW/12XGnbpf7n74b7E2c4
-         DfBHFgtuM7h5Qj1QgPmx9xruCuGoz7gIfLov4nf6qn3SsDubHFiWOS+ukcrkUzhsY3ON
-         CJfpZQ0UQRdHK0tTXGzHVA0pbdwpT+byLkU1zFyoTF9jE4I8T347OVtRjqmb0MGoPXWF
-         9cWJEQDsNHforExrAhqrhjn/9HmTR/PXJKUWUV3DRQ8iT8AFDt0YNfEmJ6p8HdPFSYvl
-         EBZA==
-X-Forwarded-Encrypted: i=1; AJvYcCWKxv13DknNjxFfgwnmyWHSUH7LJhMO5aVN123OcMiVdN40UYuFMvs7aeLO+/OCkdz54CqlNS7GMejB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/hvDZuKlvwvgeI3wGwANMrUqeNA0VihVbZC2ntjbNCIO1fALu
-	Eq4FDS/OCoaLK8aurgyY12AKrlW1mPH7K8gelCASH80XbzdpI/vzR4tzpknApAUaebDvQNEoad/
-	aHChvpsglGodI78xDh0Xc5VPuYZNaO56KbZDd
-X-Gm-Gg: ASbGncv7BVrtvfZDT5aSh3m5zT1YFvrJG45Yjj1CmDHNKaBfCLq/MUWA6nLqstg3gTv
-	/SRUTzEhRn+kcbdk5KYarZ9bXVEMqBzPc2r2GB3kiuVakrIFaq0yrwwzMPi4FhtGgJxZyHphzdf
-	BI38oqHsrat11LDODSoPPYDS4jTA==
-X-Google-Smtp-Source: AGHT+IGgDKDLYaSaVEGK3/8DfjapRI3dOy3PCclB8OD7cr9jTt5jZybQdHDica0kyTzHaUgC1EE9p83iSpM5TrXrFOA=
-X-Received: by 2002:a05:6a00:2d97:b0:736:3449:f8ee with SMTP id
- d2e1a72fcca58-7376d5f118bmr3832426b3a.4.1742384165131; Wed, 19 Mar 2025
- 04:36:05 -0700 (PDT)
+        bh=gHOkJKtIyY+RPTu/wnWjr7axrgYHCRtVqGizXCxXUXc=;
+        b=f/v3O8aJcImJlnI0PChALGPal2P3gdOM4XZ5ExlYY7z/EfdxrunvlmK5+UsWIY6tMc
+         oijkdM8P5erkWAGOp9lJVg2RBSwisebREYD2Fly4DrlJcDGoIjzltn+Rcm+iqANqCtqY
+         9al3duCYmnHAq46y3oeoOsJ5+rM7LWtpMZvFlmAmq0+CbFU36Lyg1eZXfPrISxZjiBBG
+         E4ef5AIdI5oX1BamxlVJNZjgE5+kSTyOrRQn7s1UCldBqbvzHbw+N41q4n6S++TfCt4J
+         prJuGpfJYPPaWnrZQIj9iP1qJPtBWFbn3l8kevODXm+LFuJ16Bm4lMaSTL4XVQx4jh3Q
+         n48w==
+X-Forwarded-Encrypted: i=1; AJvYcCUwcXlZ9l+mmVTS0t/rYoscrHmznnJTV+iaoLdnW+7Y89D7io+V1+Af23h9UbPJAJpdyTGJMvAAcp10@vger.kernel.org
+X-Gm-Message-State: AOJu0YxRp+5+DIh5EKv8fjYOQMOu7PXNBgbtk1Q54r7Q6oMRDEdXG5oU
+	LoHMUcbMmaffkY4eLaFdHQHB7znKNWGIrTdnls/DH5MuzFTvw6wja5u6qJqU+6EMNG1qDBHbKQR
+	U3SSVpC5ZBtNhtJ5kz1iuKZEQweaXFQTMY/MU
+X-Gm-Gg: ASbGnct7pxepvHQV2cLIAHifU3MOT5NLEr3D5neaDTDUvdaoDKYHcCANiMTMsDGu+15
+	ejPSz7CBoFT8GGob9r5IC7351pSFCZJ43ND0v0JsW+bCkb3NzyqNdBNg/ThJiFI0/FJAhtdJ+0r
+	EQAI4vE5j+Bd3MLBYG/rOg6sfmNA==
+X-Google-Smtp-Source: AGHT+IEvUNfk4untvDjvzrddl/Cg8sEuxCkgLiEu0Xo4RfgfqadwH5qtf5AeFevKdihCOAHA+gDGdYwIW2EeNAHtZpQ=
+X-Received: by 2002:a05:6a20:1587:b0:1f5:706b:5410 with SMTP id
+ adf61e73a8af0-1fbed314eefmr4586403637.38.1742384208875; Wed, 19 Mar 2025
+ 04:36:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1742331077-102038-1-git-send-email-tariqt@nvidia.com> <1742331077-102038-3-git-send-email-tariqt@nvidia.com>
-In-Reply-To: <1742331077-102038-3-git-send-email-tariqt@nvidia.com>
+References: <1742331077-102038-1-git-send-email-tariqt@nvidia.com> <1742331077-102038-2-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1742331077-102038-2-git-send-email-tariqt@nvidia.com>
 From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Wed, 19 Mar 2025 17:05:55 +0530
-X-Gm-Features: AQ5f1JojIjCjaHsEo8MNOANh6g-MTO8MK71GRINPzmFHTWHgnNsq6GwXi_ogcZo
-Message-ID: <CAH-L+nNQdkBytWAQKkFLRDBgdpJqV_-NW_OD+hVNLHEv7d0dFg@mail.gmail.com>
-Subject: Re: [PATCH net 2/2] net/mlx5: Start health poll after enable hca
+Date: Wed, 19 Mar 2025 17:06:39 +0530
+X-Gm-Features: AQ5f1JqSCsE-q2gU6xsZ3IGwi5QMA31Loawbo6te8IEjaaAO1sYjVprBuZDKA0w
+Message-ID: <CAH-L+nNT=Wgj7KHiPUxW6YAoWAAn2wWBv34W5PKoYanF21gTYA@mail.gmail.com>
+Subject: Re: [PATCH net 1/2] net/mlx5: LAG, reload representors on LAG
+ creation failure
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
 	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, 
@@ -86,35 +87,35 @@ Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
 	linux-kernel@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>, 
 	Mark Bloch <mbloch@nvidia.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000003ed0200630b06dc5"
+	boundary="000000000000d9e8540630b06f63"
 
---0000000000003ed0200630b06dc5
+--000000000000d9e8540630b06f63
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Wed, Mar 19, 2025 at 2:22=E2=80=AFAM Tariq Toukan <tariqt@nvidia.com> wr=
 ote:
 >
-> From: Moshe Shemesh <moshe@nvidia.com>
+> From: Mark Bloch <mbloch@nvidia.com>
 >
-> The health poll mechanism performs periodic checks to detect firmware
-> errors. One of the checks verifies the function is still enabled on
-> firmware side, but the function is enabled only after enable_hca command
-> completed. Start health poll after enable_hca command to avoid a race
-> between function enabled and first health polling.
+> When LAG creation fails, the driver reloads the RDMA devices. If RDMA
+> representors are present, they should also be reloaded. This step was
+> missed in the cited commit.
 >
-> Fixes: 9b98d395b85d ("net/mlx5: Start health poll at earlier stage of dri=
-ver load")
-> Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
+> Fixes: 598fe77df855 ("net/mlx5: Lag, Create shared FDB when in switchdev =
+mode")
+> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
 > Reviewed-by: Shay Drori <shayd@nvidia.com>
 > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 
 Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+
+
 --=20
 Regards,
 Kalesh AP
 
---0000000000003ed0200630b06dc5
+--000000000000d9e8540630b06f63
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -186,14 +187,14 @@ a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
 x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJgMIICXAIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
 VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
 bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggccwLwYJKoZIhvcN
-AQkEMSIEIIm5X5LSNJ7xa1JtYEHnHfuEkjwF0zmCuXa94ZvEBFzlMBgGCSqGSIb3DQEJAzELBgkq
-hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDMxOTExMzYwNVowXAYJKoZIhvcNAQkPMU8wTTAL
+AQkEMSIEIOo4QAgPzvHYJuusuCQpf5ApIpUcWEu7FnLe+mJwYzJdMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDMxOTExMzY0OVowXAYJKoZIhvcNAQkPMU8wTTAL
 BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
-9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAHx+z6cpzOyJndJomL7/6ZSptquC
-IjhXmbCzDH57sqw7qbhKSd9075bu2oSNaiFCfdwKHm02frJilmOXauYIP2G8BXXAv0+vayRo+4hC
-2pg26z5BeshiMrKVqGb+7NW2yz6rfpT1soM3+ZDN/m2ISLMhUoW739QNgS9vq9iHhexMZIlA3ZSF
-1iBp1T+bS/4a8P/sFNdrsowR3Aszb2Jmx5K9YOvmLg+b4QKaHvL9/DEYlUtqmhOSPToZMVOgITHQ
-vlDQjCb5EBdWLNcSK81w0wISBAiyyl5AMGbJasK8Ylui8eEjDAaARh7THx9enC+C0k16T9JIoAxV
-ehfY0lJmqYg=
---0000000000003ed0200630b06dc5--
+9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAMHYWdFCvFTGVD83THX3di7pJT00
+PzFmFCFC7LBvUZzPgn8WsRwkf8prYLQyxoNGw1zuNkieMzowy1y5wMMy9OeGplqByNi9B1mP6Mud
+GjGVMNTUUMvVkbKES5OTIDv/+OwNNONP6V786m9jPbj8GtWrzVR6r3EqivjB1miIHHZgUx6hGf9a
+2/xjHF4Uc5P3XCHW2VYphORFqtl0qLQXifzOIw34gQyBUOlv2cELWi0ghlbcSsL0ixlrvkVAv9kQ
+mBwLKxVMv71qJR7biF5+DpFExOlDlQatlKsm0TSRLEMm+hatNBcYW96yflCvswFanP4SVhDQAwyv
+o2cHSETTcPU=
+--000000000000d9e8540630b06f63--
 
