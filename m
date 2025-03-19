@@ -1,60 +1,79 @@
-Return-Path: <linux-rdma+bounces-8816-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8817-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DA18A68756
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 09:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4870CA688A7
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 10:50:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 783693B75BE
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 08:58:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83C3D3AA64E
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 09:45:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFEA725179D;
-	Wed, 19 Mar 2025 08:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D89255221;
+	Wed, 19 Mar 2025 09:41:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lURGKeQm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UxRpwZqr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07C92505C7
-	for <linux-rdma@vger.kernel.org>; Wed, 19 Mar 2025 08:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB85A253F09;
+	Wed, 19 Mar 2025 09:41:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742374710; cv=none; b=STE8o7tDUG2Hopw/9wkRqf2tLAJi77i+dD2j/oXf3+Bq1gq1LUdlUdDvi5G4uwHZx2Ivtr7Rxw6sRpCQ19+SrSF/toAfO6f6k+8N4oRhDnkKlLOHfzyF2ez09hqvcUWp5nbhlXorw4LNBL6epM2Q5DS2v0q+j8CuC3YcYFJCVc8=
+	t=1742377269; cv=none; b=nB2eUyF4uEtpEIXJyKs3rRqhj3FeoiumPeKihvfobpdF/xn6otLqkwA3JpAykYtuYRGoFagrPNzApM1GXpD27+HjDaoJ2iZoIc/31Dc8z3U3or/qyB1pE3QPpOUEPsXB7fRwLmEi4+K6OK9DwpuKUMEdV4e6gjeNSlfb1KtBAB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742374710; c=relaxed/simple;
-	bh=6zyS6bBaDd6mQ4XtILWYsdlboN5l+xKCa8PtMxxKapk=;
+	s=arc-20240116; t=1742377269; c=relaxed/simple;
+	bh=PJ7H4hxlsVt4HnZ26XPNszbRIKovfbpjMkYUm9hcA2w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ONLXjMZ7iugspMp7BpTyf2Vx7m/bnBw32/CKn+3FLxXKGY8ZVHc+rqL1CKdDQ7N0SJy/J0rCfWXusqSwAwia9JoCLTghxIgHdCH8gYihYBFbjHUgafrQiiY1fkGkp2Za4fW8iAHLlkgO292ptlhNNepyTpGwhkHoKo+t4TAGElY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lURGKeQm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74F41C4CEE9;
-	Wed, 19 Mar 2025 08:58:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742374710;
-	bh=6zyS6bBaDd6mQ4XtILWYsdlboN5l+xKCa8PtMxxKapk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lURGKeQmDB3IIObmcY671hLbkSc6TrjvjHfcZyZUPjdtdRy0Tj4bX/PuS630LBzB9
-	 B1cH/P8GxMO7mKbSJreU0RHklo7zgwR+qDeIATMy1Npo0yyog+BYohe+XSkN/YQxiT
-	 NLpzKHkS/+Sn4aE/ZPTWAy4Kh9bKOoHy3BDWlTqzKvAg+BWm4A1iga5tkcx+UV3i9N
-	 OSFHzKhCx0Hb/u3pPNrUZh509AYPbsSl04F34PzQLF+nWfaWZijqcDt4DCBDCaPUxF
-	 HycZJC7NZTytRVhjeDXDvvI0PdoAv53d0D7/XkRVeRNdl7rmOdVT+VT5PPYDqQrOFR
-	 yX+87CBwNgdSg==
-Date: Wed, 19 Mar 2025 10:58:25 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>
-Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-	"Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
-Subject: Re: [PATCH for-next v2 2/2] RDMA/rxe: Enable ODP in ATOMIC WRITE
- operation
-Message-ID: <20250319085825.GH1322339@unreal>
-References: <20250318094932.2643614-1-matsuda-daisuke@fujitsu.com>
- <20250318094932.2643614-3-matsuda-daisuke@fujitsu.com>
- <20250318101014.GA1322339@unreal>
- <OS3PR01MB98651EE8E000B0682056B381E5D92@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tLjWKomYCLthUm3LtK5ERMsGsKl7IcL/6CvER3JQiVzagrxh14SgC9q1an9bk0HHIK0fDGg7BVDRU3DMsI4jDJ0gCHXybyEmHWdJxYtShNI3juPMycXb/OuWQpMVWPWG389kyZLlrZcKkYxFk+MQZoWGEaD+lWQihaXfDPYfAhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UxRpwZqr; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1742377268; x=1773913268;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PJ7H4hxlsVt4HnZ26XPNszbRIKovfbpjMkYUm9hcA2w=;
+  b=UxRpwZqrYw/XaJeNnoWUPe8fQO/h3GcmlqixiEN68KYwiPa/AfdYwRnB
+   jaZhgcfaO+RMGHTThE4qJ5ZZSHYl0iZ9O2O4+nZJ2tMieU8vvE1vV3jx2
+   SICtP17AE762gAB1wP+DUR6QZLvRdb6CSCUVInEp6LPZ96DAJhOhwVCCu
+   szp4vhbQzpzqpUa9/kkJCbM16oAwfsg6exVI/d6wAmUy/zKST8GBsSq8u
+   U4b6hAEwnT33RzRmvN9MzSBvZTcYgTRLNNWxE0SR6dmOjVmoYbfE4HYhe
+   nuv+qYATaEPnm8whj2ooze7gXvA1nOgXBMx2WpmdFG60lVteGyGfpZn3u
+   w==;
+X-CSE-ConnectionGUID: mFJ8xhVqQz6SkEOLf1Dk6A==
+X-CSE-MsgGUID: gp5wc2QXSpiVKSZWpTFn5Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11377"; a="43658684"
+X-IronPort-AV: E=Sophos;i="6.14,259,1736841600"; 
+   d="scan'208";a="43658684"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2025 02:40:56 -0700
+X-CSE-ConnectionGUID: 5D0h7bGjRNGNDKS2yrwXHg==
+X-CSE-MsgGUID: ZwOtwQZVQCSFoVZm2GVxWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,259,1736841600"; 
+   d="scan'208";a="122545409"
+Received: from mev-dev.igk.intel.com ([10.237.112.144])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2025 02:40:53 -0700
+Date: Wed, 19 Mar 2025 10:36:53 +0100
+From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>, Gal Pressman <gal@nvidia.com>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
+Subject: Re: [PATCH net 2/2] net/mlx5: Start health poll after enable hca
+Message-ID: <Z9qQNe/M7IAkpR33@mev-dev.igk.intel.com>
+References: <1742331077-102038-1-git-send-email-tariqt@nvidia.com>
+ <1742331077-102038-3-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -63,82 +82,84 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <OS3PR01MB98651EE8E000B0682056B381E5D92@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+In-Reply-To: <1742331077-102038-3-git-send-email-tariqt@nvidia.com>
 
-On Wed, Mar 19, 2025 at 02:58:51AM +0000, Daisuke Matsuda (Fujitsu) wrote:
-> On Tue, Mar 18, 2025 7:10 PM Leon Romanovsky wrote:
-> > On Tue, Mar 18, 2025 at 06:49:32PM +0900, Daisuke Matsuda wrote:
-> > 
-> > <...>
-> > 
-> > > +static inline int rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
-> > > +{
-> > > +	return RESPST_ERR_UNSUPPORTED_OPCODE;
-> > > +}
-> > >  #endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
-> > 
-> > You are returning "enum resp_states", while function expects to return "int". You should return -EOPNOTSUPP.
+On Tue, Mar 18, 2025 at 10:51:17PM +0200, Tariq Toukan wrote:
+> From: Moshe Shemesh <moshe@nvidia.com>
 > 
-> Other than my patches, there are some functions that do the same thing.
+> The health poll mechanism performs periodic checks to detect firmware
+> errors. One of the checks verifies the function is still enabled on
+> firmware side, but the function is enabled only after enable_hca command
+> completed. Start health poll after enable_hca command to avoid a race
+> between function enabled and first health polling.
+> 
+> Fixes: 9b98d395b85d ("net/mlx5: Start health poll at earlier stage of driver load")
+> Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
+> Reviewed-by: Shay Drori <shayd@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/main.c | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> index ec956c4bcebd..7c3312d6aed9 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> @@ -1205,24 +1205,24 @@ static int mlx5_function_enable(struct mlx5_core_dev *dev, bool boot, u64 timeou
+>  	dev->caps.embedded_cpu = mlx5_read_embedded_cpu(dev);
+>  	mlx5_cmd_set_state(dev, MLX5_CMDIF_STATE_UP);
+>  
+> -	mlx5_start_health_poll(dev);
+> -
+>  	err = mlx5_core_enable_hca(dev, 0);
+>  	if (err) {
+>  		mlx5_core_err(dev, "enable hca failed\n");
+> -		goto stop_health_poll;
+> +		goto err_cmd_cleanup;
+>  	}
+>  
+> +	mlx5_start_health_poll(dev);
+> +
+>  	err = mlx5_core_set_issi(dev);
+>  	if (err) {
+>  		mlx5_core_err(dev, "failed to set issi\n");
+> -		goto err_disable_hca;
+> +		goto stop_health_poll;
+>  	}
+>  
+>  	err = mlx5_satisfy_startup_pages(dev, 1);
+>  	if (err) {
+>  		mlx5_core_err(dev, "failed to allocate boot pages\n");
+> -		goto err_disable_hca;
+> +		goto stop_health_poll;
+>  	}
+>  
+>  	err = mlx5_tout_query_dtor(dev);
+> @@ -1235,10 +1235,9 @@ static int mlx5_function_enable(struct mlx5_core_dev *dev, bool boot, u64 timeou
+>  
+>  reclaim_boot_pages:
+>  	mlx5_reclaim_startup_pages(dev);
+> -err_disable_hca:
+> -	mlx5_core_disable_hca(dev, 0);
+>  stop_health_poll:
+>  	mlx5_stop_health_poll(dev, boot);
+> +	mlx5_core_disable_hca(dev, 0);
+>  err_cmd_cleanup:
+>  	mlx5_cmd_set_state(dev, MLX5_CMDIF_STATE_DOWN);
+>  	mlx5_cmd_disable(dev);
+> @@ -1249,8 +1248,8 @@ static int mlx5_function_enable(struct mlx5_core_dev *dev, bool boot, u64 timeou
+>  static void mlx5_function_disable(struct mlx5_core_dev *dev, bool boot)
+>  {
+>  	mlx5_reclaim_startup_pages(dev);
+> -	mlx5_core_disable_hca(dev, 0);
+>  	mlx5_stop_health_poll(dev, boot);
+> +	mlx5_core_disable_hca(dev, 0);
+>  	mlx5_cmd_set_state(dev, MLX5_CMDIF_STATE_DOWN);
+>  	mlx5_cmd_disable(dev);
+>  }
 
-Yes, but you are adding new code and in the new code you should try to
-have correlated function declaration and returned values.
+Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
 
-> I would like to post a patch to make them consistent, but I think we need
-> reach an agreement on the design of rxe responder before taking up.
-> Please see my opinion below.
-> 
-> > 
-> > >
-> > >  #endif /* RXE_LOC_H */
-> 
-> <...>
-> 
-> > > diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-> > > index 9a9aae967486..f3443c604a7f 100644
-> > > --- a/drivers/infiniband/sw/rxe/rxe_odp.c
-> > > +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-> > > @@ -378,3 +378,56 @@ int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
-> > >
-> > >  	return 0;
-> > >  }
-> > > +
-> > > +#if defined CONFIG_64BIT
-> > > +/* only implemented or called for 64 bit architectures */
-> > > +int rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
-> > > +{
-> > > +	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
-> > > +	unsigned int page_offset;
-> > > +	unsigned long index;
-> > > +	struct page *page;
-> > > +	int err;
-> > > +	u64 *va;
-> > > +
-> > > +	/* See IBA oA19-28 */
-> > > +	err = mr_check_range(mr, iova, sizeof(value));
-> > > +	if (unlikely(err)) {
-> > > +		rxe_dbg_mr(mr, "iova out of range\n");
-> > > +		return RESPST_ERR_RKEY_VIOLATION;
-> > 
-> > Please don't redefine returned errors.
-> 
-> As a general principle, I think your comment is totally correct.
-> The problem is that rxe_receiver(), the responder of rxe, is originally designed
-> as a state machine, and the returned values of "enum resp_states" are used
-> to specify the next state.
-> 
-> One thing to note is that rxe_receiver() run solely in workqueue, so the errors
-> generated in the bottom half context are never returned to userspace. In that regard,
-> I think redefining the error codes with different enum values can be justified.
-
-In places where rxe_odp_do_atomic_write() respond is important, you can
-write something like:
-err = rxe_odp_do_atomic_write(...)
-if (err == -EPERM)
-   state = RESPST_ERR_RKEY_VIOLATION
-...
-
-or declare rxe_odp_do_atomic_write() to return enum resp_state.
-
-Thanks
+> -- 
+> 2.31.1
 
