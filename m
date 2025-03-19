@@ -1,80 +1,69 @@
-Return-Path: <linux-rdma+bounces-8806-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8807-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B478A685AA
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 08:17:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8A59A68661
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 09:05:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8ABD179E99
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 07:17:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2931B880E8E
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 08:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1338120E31B;
-	Wed, 19 Mar 2025 07:17:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF423251788;
+	Wed, 19 Mar 2025 08:04:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W40kJmi/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A9bN8+Po"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385B222094;
-	Wed, 19 Mar 2025 07:17:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0582512FD;
+	Wed, 19 Mar 2025 08:04:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742368664; cv=none; b=WkjPPbEVqGfl578VpkoXL7pKofIbXrWkCr9OPaqEgHYK1u7/4FGmff3l+0HuWPQmSa1/6VSya1hM0d/qNcHLElMfReThB/xW+FqJ+K1o0/DvORI5LCoXiaK0tWcNjwntQRBDjupxAR59Q8hoz0kful8V66b8Mr0pVRX8KSswoAM=
+	t=1742371498; cv=none; b=VzAn8r+tZz6cFGn6fhrBYXBEaZ5fs9ixF1zCXHuU+e64iZcniO6FM0MHLmi9X4UziV+YwPlN+FK8aM0U0DXaCHn+hllTdZFaPD5mDl36VImKjl3D3NYipqxliVKE30posrcm7Yytj+EqAZtTkcB/MB9B83J4ZTpUT7u2VJzDSzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742368664; c=relaxed/simple;
-	bh=r9UE/8PziKGr+LZNll1AVokZJ3AjvWGm29slTNTelVw=;
+	s=arc-20240116; t=1742371498; c=relaxed/simple;
+	bh=5c9Wsoq1MqSD3TR0ypeiF676vfndF7v+iU5L7FrV9Fw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xs+96AMzI5TZx8zMTFDXX7qYQ0rL69r9XmdPR9Vw9OS5oMa6V1JMzzDOy18+z8qyGsPl+QXpaTVEQ3np5kZccMl5GvyDH5zzMnFqMnozgVeY7acuBlhsOJ1hdsyxYynM+zKbFvwor6QihKOfq2Ie3APg+CmH3x5labr+boFpDsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W40kJmi/; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1742368663; x=1773904663;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=r9UE/8PziKGr+LZNll1AVokZJ3AjvWGm29slTNTelVw=;
-  b=W40kJmi/tDeZ9zqUnQR1Q+SitOFrZeDo3c6Lky1IRVtoZWjioNlXxxTI
-   njdh71QRVeHdojMsyPwvAFrWfgEzzxxUfupGzVSc60beobIB/nSYhZnPr
-   gS4Dm5LV4LJSFRJPqGMtjbFKm7GxD8a/BpeTI80NwRK2eETC4cCM2hgF0
-   YUptPhXS64qzrTL2PZR7CuhI3fApkuAq3s/p1cqGxP6Pw1AYR5rzOAizd
-   Mcm118j33VZr39P0064o4R1GY4Mgv5tOGVVOba/Cz9UgvZlQwf10dnsFt
-   ZT27TMRpqL50iGJdSjgI3JBAj1pGY4ALfCZANa7Cy7rRAJR0hHe0L36fH
-   g==;
-X-CSE-ConnectionGUID: 2yFjDwlkRQ2v8R4Ly7EYcg==
-X-CSE-MsgGUID: eVG/+coSSTW687+gQjI21w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11377"; a="47188154"
-X-IronPort-AV: E=Sophos;i="6.14,259,1736841600"; 
-   d="scan'208";a="47188154"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2025 00:17:41 -0700
-X-CSE-ConnectionGUID: jQRGYjyKT22VKSCU5Qukcg==
-X-CSE-MsgGUID: lhPi0grLSiaCNRNQFl+6jw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.14,259,1736841600"; 
-   d="scan'208";a="122663228"
-Received: from mev-dev.igk.intel.com ([10.237.112.144])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2025 00:17:38 -0700
-Date: Wed, 19 Mar 2025 08:13:43 +0100
-From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>, Gal Pressman <gal@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
-Subject: Re: [PATCH net 1/2] net/mlx5: LAG, reload representors on LAG
- creation failure
-Message-ID: <Z9pupzJz9ArXrtrt@mev-dev.igk.intel.com>
-References: <1742331077-102038-1-git-send-email-tariqt@nvidia.com>
- <1742331077-102038-2-git-send-email-tariqt@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gxQAMfuOnjHYUGGb78fZ/qPixOGTTIl/sNGzOXFAZQse+Ubo//A70ClQ42xAaR3INsgriFjmAjJsYiT3drMmmHVJqbYkDij925maWDlKBQQzkGHaJWjrK6kdWQHbozuD+2jMUpDFEFM2ynTZdZLPk46YfaN3hgVWrnX7E7CHMjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A9bN8+Po; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75431C4CEEA;
+	Wed, 19 Mar 2025 08:04:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742371498;
+	bh=5c9Wsoq1MqSD3TR0ypeiF676vfndF7v+iU5L7FrV9Fw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=A9bN8+Po8pf/YBZL3DmN75kiDB/zybI3lKt4MKgau/Jaw95AJ0MC0ZyPns5+jy04i
+	 3xVLjpQrS4QHwzTdeTF7nrRX+O5/yU6dT+OrXk6jHf6U5QzjJi6C8DcjqjelKROV06
+	 VnzJfdNEKfvAqYjpKKnj0LtYxIkg6iv41m/Gj+GownLOdoO3QCkG8qPMwUYVzyNRn7
+	 6eTrpLkAYq9D0FJI15Lj9g2K9Gx7SlYcB8zj0lQSyxjxKx7xjR8CLPOUo32FbGDrrr
+	 sDdiN7YFLrpYigm/nGvynKUDU82fNJf0JMv7167anBCguZx90ND2PniDOJ9/ExmjaM
+	 SGRqDtK4fNrpg==
+Date: Wed, 19 Mar 2025 10:04:53 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
+	Jason Gunthorpe <jgg@nvidia.com>
+Cc: "Ertman, David M" <david.m.ertman@intel.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	"Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [Intel-wired-lan] [iwl-next v4 1/1] iidc/ice/irdma: Update IDC
+ to support multiple consumers
+Message-ID: <20250319080453.GD1322339@unreal>
+References: <20250226185022.GM53094@unreal>
+ <IA1PR11MB6194C8F265D13FE65EA006C2DDC22@IA1PR11MB6194.namprd11.prod.outlook.com>
+ <20250302082623.GN53094@unreal>
+ <07e75573-9fd0-4de1-ac44-1f6a5461a6b8@intel.com>
+ <20250314181230.GP1322339@unreal>
+ <8b4868dd-f615-4049-a885-f2f95a3e7a54@intel.com>
+ <20250317115728.GT1322339@unreal>
+ <dc96e73c-391a-4d54-84db-ece96939d45d@intel.com>
+ <20250318172026.GA9311@nvidia.com>
+ <2e29a3f3-1c74-461a-a7ae-efe6c429fa1f@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,41 +72,56 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1742331077-102038-2-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <2e29a3f3-1c74-461a-a7ae-efe6c429fa1f@intel.com>
 
-On Tue, Mar 18, 2025 at 10:51:16PM +0200, Tariq Toukan wrote:
-> From: Mark Bloch <mbloch@nvidia.com>
+On Tue, Mar 18, 2025 at 12:45:48PM -0700, Samudrala, Sridhar wrote:
 > 
-> When LAG creation fails, the driver reloads the RDMA devices. If RDMA
-> representors are present, they should also be reloaded. This step was
-> missed in the cited commit.
 > 
-> Fixes: 598fe77df855 ("net/mlx5: Lag, Create shared FDB when in switchdev mode")
-> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-> Reviewed-by: Shay Drori <shayd@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> On 3/18/2025 10:20 AM, Jason Gunthorpe wrote:
+> > On Tue, Mar 18, 2025 at 10:01:36AM -0700, Samudrala, Sridhar wrote:
+> > 
+> > > Yes. Today irdma uses exported symbols from i40e and ice and loading irdma
+> > > results in both modules to be loaded even when only type of NIC is present
+> > > on a system. This series is trying to remove that dependency by using
+> > > callbacks.
+> > 
+> > If you really have two different core drivers that can provide the
+> > same API then I think you are stuck with function pointers :\
+> > 
+> > It is really weird though, why are their two core drivers that can
+> > provide the same API? Is this because intel keeps rewriting their
+> > driver stack every few years?
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-> index ed2ba272946b..6c9737c53734 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-> @@ -1052,6 +1052,10 @@ static void mlx5_do_bond(struct mlx5_lag *ldev)
->  		if (err) {
->  			if (shared_fdb || roce_lag)
->  				mlx5_lag_add_devices(ldev);
-> +			if (shared_fdb) {
-> +				mlx5_ldev_for_each(i, 0, ldev)
-> +					mlx5_eswitch_reload_ib_reps(ldev->pf[i].dev->priv.eswitch);
-> +			}
->  
->  			return;
->  		} else if (roce_lag) {
-> -- 
+> This is a known issue due to HW/FW interface changes across multiple
+> generations of the NICs forcing us to go with separate core drivers.
+> 
+> We are working with HW/FW teams to avoid this in future and going forward we
+> expect to have idpf/ixd as the 2 drivers (idpf providing the data path
+> functionality and ixd as the control/data/switchdev port-rep driver) for all
+> our future FNICs/IPUs.
+> 
+> Leon, Could you approve the callbacks approach considering that irdma needs
+> to support multiple intel nic core drivers. We would really appreciate it.
 
-Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+I'm not approving or denying anything. I just expressed my view on the
+idea to reinvent wheel. It is not HW bug which prevents from you to use
+Intel HW, but some bad architecture decision. This decision leads to
+extra memory waste and nothing more.
 
-> 2.31.1
+If I remember correctly, the use of "i40e and ice" at the same time is an outcome
+of Intel's decision to keep (and rename) old driver which supported iWARP only
+to support both iWARP and RoCE.
+
+Even then, that architecture decision wasn't well received.
+
+RDMA subsystem has another maintainer, who can and should have different
+opinions from me, you can try to convince him that function pointers is
+the right approach here. I think that it is not, extra waste of memory
+is a small price to pay for such architecture decision.
+
+Thanks
+
+> 
+> -SridharW
+> 
 
