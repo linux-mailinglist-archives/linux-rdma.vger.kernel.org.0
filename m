@@ -1,69 +1,80 @@
-Return-Path: <linux-rdma+bounces-8807-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8808-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8A59A68661
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 09:05:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E864A68675
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 09:14:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2931B880E8E
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 08:05:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0983C178BC0
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 08:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF423251788;
-	Wed, 19 Mar 2025 08:04:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B022505CE;
+	Wed, 19 Mar 2025 08:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A9bN8+Po"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JHfI3kGz"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0582512FD;
-	Wed, 19 Mar 2025 08:04:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A71720C46B;
+	Wed, 19 Mar 2025 08:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742371498; cv=none; b=VzAn8r+tZz6cFGn6fhrBYXBEaZ5fs9ixF1zCXHuU+e64iZcniO6FM0MHLmi9X4UziV+YwPlN+FK8aM0U0DXaCHn+hllTdZFaPD5mDl36VImKjl3D3NYipqxliVKE30posrcm7Yytj+EqAZtTkcB/MB9B83J4ZTpUT7u2VJzDSzI=
+	t=1742372061; cv=none; b=kLE6RmgStHIjh+tUalrnxB9lXTkUsVL8oPK0OdZVcorg2/wbuuDLx280dpVpoo0CdlB1OpXq/W+ny73K2UhhzTTE6iEpxiw9Pnc6pEiXhVfV4BEQ0npl4KEdJnYEoIkGRWHvZM0rzIl+XUizbuA0fOR82oKwBkr1wtEpr+ukIR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742371498; c=relaxed/simple;
-	bh=5c9Wsoq1MqSD3TR0ypeiF676vfndF7v+iU5L7FrV9Fw=;
+	s=arc-20240116; t=1742372061; c=relaxed/simple;
+	bh=ViOjQcPrdThusEfVI9+zUSE7Ys40h43nRiiim9Jk2SE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gxQAMfuOnjHYUGGb78fZ/qPixOGTTIl/sNGzOXFAZQse+Ubo//A70ClQ42xAaR3INsgriFjmAjJsYiT3drMmmHVJqbYkDij925maWDlKBQQzkGHaJWjrK6kdWQHbozuD+2jMUpDFEFM2ynTZdZLPk46YfaN3hgVWrnX7E7CHMjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A9bN8+Po; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75431C4CEEA;
-	Wed, 19 Mar 2025 08:04:57 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=BtE2V4Ns5PR+Pkkf7ueV/zYh954UL25vr5UjtA7yb+GkIBka7cA1SbP8tLEHuooQVu7wbkAEN6kgkKoYUVSel8pKno3l+GwDdQClTmDFB5xArTFVxWK/TSTiRvD5qyj+QUEuvbo5KiFtaUUTJnbC7bfPX6fOBNaeIl4AjatTj5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JHfI3kGz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 546D2C4CEE9;
+	Wed, 19 Mar 2025 08:14:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742371498;
-	bh=5c9Wsoq1MqSD3TR0ypeiF676vfndF7v+iU5L7FrV9Fw=;
+	s=k20201202; t=1742372061;
+	bh=ViOjQcPrdThusEfVI9+zUSE7Ys40h43nRiiim9Jk2SE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A9bN8+Po8pf/YBZL3DmN75kiDB/zybI3lKt4MKgau/Jaw95AJ0MC0ZyPns5+jy04i
-	 3xVLjpQrS4QHwzTdeTF7nrRX+O5/yU6dT+OrXk6jHf6U5QzjJi6C8DcjqjelKROV06
-	 VnzJfdNEKfvAqYjpKKnj0LtYxIkg6iv41m/Gj+GownLOdoO3QCkG8qPMwUYVzyNRn7
-	 6eTrpLkAYq9D0FJI15Lj9g2K9Gx7SlYcB8zj0lQSyxjxKx7xjR8CLPOUo32FbGDrrr
-	 sDdiN7YFLrpYigm/nGvynKUDU82fNJf0JMv7167anBCguZx90ND2PniDOJ9/ExmjaM
-	 SGRqDtK4fNrpg==
-Date: Wed, 19 Mar 2025 10:04:53 +0200
+	b=JHfI3kGzcFamkD+KUuXJP1L9EcCzuaz6b951lGEjbzlrMD7fEvT6WoKXUe9HCD1+p
+	 YvknrSjlySYsF72xxuGP2/CQLKCRIJD+XwV6FLr3cui/pjcgK/S8Poifg+kPbmmz5S
+	 Weqk6ThfLyskhUjlVF8ANMQLVS/0KfuLsH5OxjtIcUVke3Pq+CQKgYH/jctFC0z2jr
+	 VDtHtFiGr3tF3Tt91G9BhHl6CsKRig41NbQQK1duaMaKfI88gMuNG+O1mKbgnL8P6m
+	 wWVTFRxzcsR+pMamj9BCsSHW0VWRRXG+SzA9wvylN2xgoJ90VVb0gFwmNs3h9Q883Y
+	 009bj84Rd8Jkw==
+Date: Wed, 19 Mar 2025 10:14:16 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
-	Jason Gunthorpe <jgg@nvidia.com>
-Cc: "Ertman, David M" <david.m.ertman@intel.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
-	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+To: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jason Gunthorpe <jgg@nvidia.com>, Dave Jiang <dave.jiang@intel.com>,
+	"Keller, Jacob E" <jacob.e.keller@intel.com>,
+	David Ahern <dsahern@kernel.org>,
+	"Nelson, Shannon" <shannon.nelson@amd.com>,
+	Jiri Pirko <jiri@resnulli.us>, Jakub Kicinski <kuba@kernel.org>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	"Williams, Dan J" <dan.j.williams@intel.com>,
+	Daniel Vetter <daniel.vetter@ffwll.ch>,
+	Christoph Hellwig <hch@infradead.org>,
+	Itay Avraham <itayavr@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Leonid Bloch <lbloch@nvidia.com>,
+	"linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
 	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [Intel-wired-lan] [iwl-next v4 1/1] iidc/ice/irdma: Update IDC
- to support multiple consumers
-Message-ID: <20250319080453.GD1322339@unreal>
-References: <20250226185022.GM53094@unreal>
- <IA1PR11MB6194C8F265D13FE65EA006C2DDC22@IA1PR11MB6194.namprd11.prod.outlook.com>
- <20250302082623.GN53094@unreal>
- <07e75573-9fd0-4de1-ac44-1f6a5461a6b8@intel.com>
- <20250314181230.GP1322339@unreal>
- <8b4868dd-f615-4049-a885-f2f95a3e7a54@intel.com>
- <20250317115728.GT1322339@unreal>
- <dc96e73c-391a-4d54-84db-ece96939d45d@intel.com>
- <20250318172026.GA9311@nvidia.com>
- <2e29a3f3-1c74-461a-a7ae-efe6c429fa1f@intel.com>
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	"Sinyuk, Konstantin" <konstantin.sinyuk@intel.com>
+Subject: Re: [PATCH v5 0/8] Introduce fwctl subystem
+Message-ID: <20250319081416.GE1322339@unreal>
+References: <54781c0c-a1e7-4e97-acf1-1fc5a2ee548c@amd.com>
+ <d0e95c47-c812-4aa8-812f-f5d7f6abbbb1@intel.com>
+ <20250317123333.GB9311@nvidia.com>
+ <1eae139c-f678-4b28-a466-5c47967b5d13@kernel.org>
+ <CO1PR11MB5089AB36220DFEACBF7A5D1CD6DF2@CO1PR11MB5089.namprd11.prod.outlook.com>
+ <2025031840-phrasing-rink-c7bb@gregkh>
+ <20250318132528.GR9311@nvidia.com>
+ <9e3019af-7817-49db-a293-3242e2962c22@intel.com>
+ <2025031836-monastery-imaginary-7f5e@gregkh>
+ <95da9782-7c46-4ddc-8d7e-ffb3db31ebc3@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -72,56 +83,53 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2e29a3f3-1c74-461a-a7ae-efe6c429fa1f@intel.com>
+In-Reply-To: <95da9782-7c46-4ddc-8d7e-ffb3db31ebc3@intel.com>
 
-On Tue, Mar 18, 2025 at 12:45:48PM -0700, Samudrala, Sridhar wrote:
-> 
-> 
-> On 3/18/2025 10:20 AM, Jason Gunthorpe wrote:
-> > On Tue, Mar 18, 2025 at 10:01:36AM -0700, Samudrala, Sridhar wrote:
+On Wed, Mar 19, 2025 at 06:48:48AM +0100, Przemek Kitszel wrote:
+> On 3/18/25 17:06, Greg Kroah-Hartman wrote:
+> > On Tue, Mar 18, 2025 at 08:39:50AM -0700, Dave Jiang wrote:
+> > > 
+> > > 
+> > > On 3/18/25 6:25 AM, Jason Gunthorpe wrote:
+> > > > On Tue, Mar 18, 2025 at 02:20:45PM +0100, Greg Kroah-Hartman wrote:
+> > > > 
+> > > > > Yes, note, the issue came up in the 2.5.x kernel days, _WAY_ before we
+> > > > > had git, so this wasn't a git issue.  I'm all for "drivers/core/" but
+> > > > > note, that really looks like "the driver core" area of the kernel, so
+> > > > > maybe pick a different name?
+> > > > 
+> > > > Yeah, +1. We have lots of places calling what is in drivers/base 'core'.
+> > > 
+> > > just throwing in my 2c
+> > > 
+> > > drivers/main
 > > 
-> > > Yes. Today irdma uses exported symbols from i40e and ice and loading irdma
-> > > results in both modules to be loaded even when only type of NIC is present
-> > > on a system. This series is trying to remove that dependency by using
-> > > callbacks.
+> > Implies the "driver core"
 > > 
-> > If you really have two different core drivers that can provide the
-> > same API then I think you are stuck with function pointers :\
+> > > drivers/common
 > > 
-> > It is really weird though, why are their two core drivers that can
-> > provide the same API? Is this because intel keeps rewriting their
-> > driver stack every few years?
+> > lib/ maybe?
+> > 
+> > > drivers/primary
+> > 
+> > It's not going to be the primary drivers for my laptop :)
+> > 
+> > Naming is hard.  Let's see some code first...
+> > 
+> > greg k-h
+> > 
 > 
-> This is a known issue due to HW/FW interface changes across multiple
-> generations of the NICs forcing us to go with separate core drivers.
+> "platfrom" would also suggest a wider thing, so:
+> "complex"?
 > 
-> We are working with HW/FW teams to avoid this in future and going forward we
-> expect to have idpf/ixd as the 2 drivers (idpf providing the data path
-> functionality and ixd as the control/data/switchdev port-rep driver) for all
-> our future FNICs/IPUs.
-> 
-> Leon, Could you approve the callbacks approach considering that irdma needs
-> to support multiple intel nic core drivers. We would really appreciate it.
+> anyway, I don't like fwctl, so maybe "fwctl" to at least reveal the real
+> reason :P
 
-I'm not approving or denying anything. I just expressed my view on the
-idea to reinvent wheel. It is not HW bug which prevents from you to use
-Intel HW, but some bad architecture decision. This decision leads to
-extra memory waste and nothing more.
-
-If I remember correctly, the use of "i40e and ice" at the same time is an outcome
-of Intel's decision to keep (and rename) old driver which supported iWARP only
-to support both iWARP and RoCE.
-
-Even then, that architecture decision wasn't well received.
-
-RDMA subsystem has another maintainer, who can and should have different
-opinions from me, you can try to convince him that function pointers is
-the right approach here. I think that it is not, extra waste of memory
-is a small price to pay for such architecture decision.
+We are discussing where to move XXX_core drivers which historically were
+located in drivers/net/ethernet/XXX/, see this idea https://lore.kernel.org/all/20250211075553.GF17863@unreal/
+FWCTL is unrelated to this discussion and you are not forced to use it
+if you don't like it.
 
 Thanks
 
-> 
-> -SridharW
-> 
 
