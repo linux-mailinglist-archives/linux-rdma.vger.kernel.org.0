@@ -1,97 +1,87 @@
-Return-Path: <linux-rdma+bounces-8845-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8847-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E016AA69933
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 20:27:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD4DFA69AE8
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 22:33:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 848EE486465
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 19:26:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFE6A189DB6E
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Mar 2025 21:33:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96520214A69;
-	Wed, 19 Mar 2025 19:24:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD89921A43B;
+	Wed, 19 Mar 2025 21:33:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="CfGX3ztX"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="lfPVerk7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2076.outbound.protection.outlook.com [40.107.244.76])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2085.outbound.protection.outlook.com [40.107.92.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE10621ABBC;
-	Wed, 19 Mar 2025 19:24:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19BF214801;
+	Wed, 19 Mar 2025 21:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.85
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742412296; cv=fail; b=Gwvzj+XpE+7seokxL+7C7x3g+ZTU0aac2TAv9F15j/n2HTqMo4+krg2xy/5kSSkONqy/3mIYSq/aLQpJnCaP6yPQiKJeMlb81TOxt8ZImtKaLPwFfbS64TKpXY6DCnhRUFXS9hJayK64ldumqdg/TKpuOMqL/swwPw4E9Moxyno=
+	t=1742419983; cv=fail; b=OL/MynoWBexrlWKF4T0DOkHp9J/eiBbD1j23XqLtdWxoV5fG5SD6cRgmfLKAf+t295/qSYJP/+bvddO7FMdHnUAhgdVBT2jEUaFk2SomHQRm9Da032Y5yfgkAi5MlA69lY9THeOsVwKt5aIUoGm5d9nSPwWLHvf+ZfZGHgh3f80=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742412296; c=relaxed/simple;
-	bh=Xiw7tN5oeXt0qNWHJnmIFxACUC2NEa8vyII3DpubpZI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tudf8sJArIow88P8AahqNMGxhgwTdBHG61UfCfhLqU7SNJ4/of+10utGrFfU9swzd8AuQJ1UeB9QCxnyAfPshoC33SEl0h4iUXhYhLF7lHCZpGxOCzIinDYcAl0G8653gDSMK+XJZTnNkpUw9PFVf8mUU7JwoN6LFKwHm2J3YNg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=CfGX3ztX; arc=fail smtp.client-ip=40.107.244.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	s=arc-20240116; t=1742419983; c=relaxed/simple;
+	bh=u3NEa5+H3CwPb5pvPzBomkkm3euLBj3e1Z+PYRsu3Pk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Gu0ElWoHoajAW5dWQxvLPapuUCrvRNwgXCZUKhp0jEcjR5CF3Q5oyevb1RkJcLRuknWwAlYJVt7ckylyrqCOuI6m7wEXezNCrSFtjRLyRvKBS1WbphebifKJ3HwvoRjnTwnrWOzeWSQJc1FgZpagqJARDdXkE+XASVZxAiXlcjE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=lfPVerk7; arc=fail smtp.client-ip=40.107.92.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=de5/HDmorzza+ZPOufKukWUrCDI/o15pPHKrXhsxCLaidgkmGgz9hSWa9F4y6nR41q7X2eHr3yy8Gam+Odb5TlQV2DvyCAVcnEZm/sLfNIvAruM4YQphax4/nxpbHr9NIarFmxSwLC6arHqwCBq04w5mFwBzLNP3i9qukD/rYOQB93NSx2+jLwRgR1sX5I4cclwvnjxsIaIIZmS6+R/XyWPBO6R+J5A0KM3DQOD2jL2S9uW+SBHk2FbRJ2b1f69+4jke0JQU3netdl+YZXHYu3E76SIMtss/i9l/cF25x2erJthJn8/o/mGlKHEmbg3tZdq3HWfte0Lczk3Jwam/yg==
+ b=qCsXSwphaRWo5rxLiak7O18Xh3X9GUi9wPhm9hE26lWZ7bbJ5jlLFvJ6I9fd4EbFt0afsTGJyAOokfGH3f+P1PEfoxf8pDwMf/59+gmf5maYfCY1RG47SGE/M1hIbApNVF5LHCi8ghmgePGRehWS0bDooJjsTIaePlRCpTm+qOIMDkpRUHk0uGnnNsaM4DVYVT1CSELod83VTThYisvWD01yR/KSzo0ThKWp9TbB5ugmP/nrPFWhQ7nCzbbooCdafwEsJGLnnr3ErR6leP51ifwQ3t6OfVUbvPUimTxDtpyrfDu52k+/xzJ0QoSacKicGtFcU9TLrgxzurt1B2cdvw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5DNaG5uPEuAxV64NB0r+y7JCjICnAGQ7jACDFPDriew=;
- b=TnxekDHZ+Mcq9AXy5mUMYMuDvDz86Yv5VF3JEB9GZ1Lncd8sv7vj6Ne5+6C6hdbweRi9gbKuXdIFlkrvPfNfTP1jSlN3aRdgjlI74lVEmpsNcMsGmhB7WUjXgnSAdHUbWfLyo+K95z+yqfLF0TzP+SiW7nMuA0EcQOx/XVYoS1WerFgH0iXNCAtgpITxdATPknTHKO10D4JWhiqF8dXQ0aRizF+us26JY8UwUB+fMmAcKpseglrbdhG7jDQQCumzvGWiErnJe9fUHsjSShlgWY3Iwe1rebMkU4Ko2llIWkeTw1Cyq5+d9TBN760qs0PzRsuWv3zOMuvUF9KbGRgVsg==
+ bh=4OessLv+FDjZDvWkRMC6hSJMW1OgCCrwaGRcVezHDzs=;
+ b=BBs3f4QRNbddccamxDdHATN3/w4+AUppJJaDN40Fp0P+XXLK78kZylqN55vyXdj1/E1wWbtuyZPv8b+6Eph0cgXckCbRBKCp2CgTxnRBWO6aHtCURzduNew0PVaWNg2H3gFA+D3iVTPmYRGu0THCNnUMoKonynKRJr4qykK9zNfCIBtY+LPtShmHFRMHEBF0mCHQ+47XQBh3nytl3cMKZUCY8zXtmYxIuifJM0RPz3rvZXnI5Mbb0TMIdaFRWy/w1Di2aWUzgodE20TogYbyBM2OGv20y2xpGrd9OELWuvmvp78/nxZU6MitWz9XVFwdVhtDCvP74NXxRtlTaSxUVg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ 165.204.84.17) smtp.rcpttodomain=nvidia.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5DNaG5uPEuAxV64NB0r+y7JCjICnAGQ7jACDFPDriew=;
- b=CfGX3ztXAlsU18CZHozoY/VkyKdDI2cZpbjvR6jk38ae7vSQ9WqlT7wimKn2sMeYw4YpGvjZbzFP77XPeV5e3sQQ8xnLrsSSVPlabTcyXPSe6hMb5MZYBV3rByuPTpjxexS65y5roJ2GEGpluV6WNdPFKIphxXpAYrPRXRm7XUchnxYSZV9sPxWP7uPpU6PrsRWUabxiWiWr+d/uCgfFmsIJD11BDb/jrFVzLbn1WuyYVcpvNOaApHNVTjWZSPLvV9WPeH24knHg7ihiQaa2wLuA9I5/k6dOXHrMX73eT94gJJYR/m0nehWkaMNAhgG3g78+usj/3Hzd/ua5UjyxKQ==
-Received: from MN2PR01CA0047.prod.exchangelabs.com (2603:10b6:208:23f::16) by
- MW4PR12MB8611.namprd12.prod.outlook.com (2603:10b6:303:1ed::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8534.34; Wed, 19 Mar 2025 19:24:50 +0000
-Received: from BL6PEPF00020E62.namprd04.prod.outlook.com
- (2603:10b6:208:23f:cafe::30) by MN2PR01CA0047.outlook.office365.com
- (2603:10b6:208:23f::16) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8534.34 via Frontend Transport; Wed,
- 19 Mar 2025 19:24:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BL6PEPF00020E62.mail.protection.outlook.com (10.167.249.23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8534.20 via Frontend Transport; Wed, 19 Mar 2025 19:24:48 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 19 Mar
- 2025 12:24:37 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 19 Mar
- 2025 12:24:37 -0700
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.6)
- with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Wed, 19
- Mar 2025 12:24:33 -0700
-From: Tariq Toukan <tariqt@nvidia.com>
-To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
- Lunn" <andrew+netdev@lunn.ch>
-CC: Gal Pressman <gal@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>, "Saeed
- Mahameed" <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq
- Toukan <tariqt@nvidia.com>, <netdev@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Moshe Shemesh
-	<moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
-Subject: [PATCH net-next 3/3] net/mlx5e: Always select CONFIG_PAGE_POOL_STATS
-Date: Wed, 19 Mar 2025 21:23:19 +0200
-Message-ID: <1742412199-159596-4-git-send-email-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.8.0
-In-Reply-To: <1742412199-159596-1-git-send-email-tariqt@nvidia.com>
-References: <1742412199-159596-1-git-send-email-tariqt@nvidia.com>
+ bh=4OessLv+FDjZDvWkRMC6hSJMW1OgCCrwaGRcVezHDzs=;
+ b=lfPVerk7+r52+c3RgUVYJJaYRUigIh8eBO38O+Yz0rFU4f9W6jN9aamURIJzHYhwsHl1jN05L3GZ6ILqmPBF+0x9oG+GYwNm6SsPbITI9X85KpeA+hw6R8v6U8GuEUDR0GWGgkKCafMb+ONSK7GY7aYnD7/lHcyCTdw1t9RaLLc=
+Received: from BYAPR05CA0019.namprd05.prod.outlook.com (2603:10b6:a03:c0::32)
+ by SA3PR12MB7782.namprd12.prod.outlook.com (2603:10b6:806:31c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.33; Wed, 19 Mar
+ 2025 21:32:54 +0000
+Received: from SJ1PEPF000023DA.namprd21.prod.outlook.com
+ (2603:10b6:a03:c0:cafe::11) by BYAPR05CA0019.outlook.office365.com
+ (2603:10b6:a03:c0::32) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8534.33 via Frontend Transport; Wed,
+ 19 Mar 2025 21:32:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ1PEPF000023DA.mail.protection.outlook.com (10.167.244.75) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.8583.3 via Frontend Transport; Wed, 19 Mar 2025 21:32:54 +0000
+Received: from driver-dev1.pensando.io (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 19 Mar
+ 2025 16:32:51 -0500
+From: Shannon Nelson <shannon.nelson@amd.com>
+To: <jgg@nvidia.com>, <andrew.gospodarek@broadcom.com>,
+	<aron.silverton@oracle.com>, <dan.j.williams@intel.com>,
+	<daniel.vetter@ffwll.ch>, <dave.jiang@intel.com>, <dsahern@kernel.org>,
+	<gregkh@linuxfoundation.org>, <hch@infradead.org>, <itayavr@nvidia.com>,
+	<jiri@nvidia.com>, <Jonathan.Cameron@huawei.com>, <kuba@kernel.org>,
+	<lbloch@nvidia.com>, <leonro@nvidia.com>, <linux-cxl@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>, <saeedm@nvidia.com>
+CC: <brett.creeley@amd.com>, Shannon Nelson <shannon.nelson@amd.com>
+Subject: [PATCH v4 0/6] pds_fwctl: fwctl for AMD/Pensando core devices
+Date: Wed, 19 Mar 2025 14:32:31 -0700
+Message-ID: <20250319213237.63463-1-shannon.nelson@amd.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -99,200 +89,166 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-NV-OnPremToCloud: AnonymousSubmission
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF00020E62:EE_|MW4PR12MB8611:EE_
-X-MS-Office365-Filtering-Correlation-Id: 91e7c57e-ed06-4b06-e40c-08dd671bb6d0
+X-MS-TrafficTypeDiagnostic: SJ1PEPF000023DA:EE_|SA3PR12MB7782:EE_
+X-MS-Office365-Filtering-Correlation-Id: 98724419-20bc-4cdc-9993-08dd672d9bcc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|82310400026|376014|1800799024;
+	BCL:0;ARA:13230040|376014|7416014|1800799024|82310400026|36860700013|921020|13003099007|7053199007;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?g5Qj1Bq05wYx8Wj9Ux90XWmLYAwe3aaeo1mB9+vvg6Kk6yvu82rI2pF/nyKV?=
- =?us-ascii?Q?rtHBv1Jn19jDLvbfvNK80UpcMGs7mFk2ErPcUp94YEW4EnOD+E244Im9RLPp?=
- =?us-ascii?Q?aCDechoeKA8de4zyIxNLAtmacf0FqN6koumicE7krjBOFOfezzcRtaVFcJfE?=
- =?us-ascii?Q?kdypegfv8yI8c3bPTRs3F3XYNif6reA/rk/xtk4jqNp1ISDHTKMgRgP1vUHs?=
- =?us-ascii?Q?OUMUWbsKgB0jezjkGt55qdURqYsiS8CBb9/4dPPqWWqYiVqLl01zmXIvDM3n?=
- =?us-ascii?Q?MscSLj7VAmixuV7GSpB82KvuGrG1sd4hwDZYm5wcemmadjqC1bwWgnGlEsZE?=
- =?us-ascii?Q?e66+91oGj+JeG4F9LMZJ367ULIZw2DX+dn3W/t3CAjVitD2oowf9X70dWkz9?=
- =?us-ascii?Q?se5s7gjTwLOoHepf0uV5GCINsjLfYyCjOcylTO8ZzduXS/JLTVjMCWU/SMPu?=
- =?us-ascii?Q?GCrK7sY0CHiAqXOWQAhX/53IJ3nHG3JkA42jY/0nae3kD6W+3XW/CGIT89Cz?=
- =?us-ascii?Q?0BK/q9/XoBkeXaHjLW3T7CzAJ3EwDZ4mTkp3TU+R/LBCovDDa3af6HyoC2un?=
- =?us-ascii?Q?qVaCLOcP/Xga2qgVCFstaTn+gQsTB1FodK70p0JN29oNtEmC3D9sE4ydJj14?=
- =?us-ascii?Q?PfZDMuW1hu7HHcW2IS6cITxbW0NjpfF2uRBZVtqq31rAJHFC5yfcnravcWmg?=
- =?us-ascii?Q?f8QUmoDCoDsw2xxVVGq3suK+zNCVB6dEMjwYhHvD3r/UxqCfp1lML6Y4b+2W?=
- =?us-ascii?Q?YAXtzOp+bSu7BQ15k2BYGa70qPEer+nbel/A1SZe/QO5eA3CAvju3yDIm+/i?=
- =?us-ascii?Q?LobcVa7Dp7DfAdYCzhgoxuOrYq6q29vArUh8p72f8JDV2r6A/FKg7CNpVO0O?=
- =?us-ascii?Q?03qOKlkxmR8fwTthVu144eqKmbrbgXGsRsCJboLPRNlYfPE6PaP98CQOVuR2?=
- =?us-ascii?Q?b+stkoAw068Cdi4dCRJc4+mqO4agt6z1h1W+K13FI7QITaPVKXdF3p+lDHU/?=
- =?us-ascii?Q?zwHKyYDIlpAWZG3AdblkTg0UFSKAekLjaskZayvKRzXNcSrzLMCV2C2+M6/C?=
- =?us-ascii?Q?Qiq2q5dOUyrC43q14EWFM/q035wXnLGCrhkH6fwL4lBY8HMcb/TnJgnHOT1u?=
- =?us-ascii?Q?Uy6gaTmoIKr+uVKRkU/8GLrWaD+Kp5IHVlYaopBJMkvG2Vtx4NjhxmNmeLrq?=
- =?us-ascii?Q?12bcSe5pC+V5Bz57vr4TfDK3GHDUDXj6frJJkXBalogRqVb8HYale7Ylmvmg?=
- =?us-ascii?Q?YMHb2hQEKjerb5Ih5i166soPhPq7+bbSMmEgLm6LYimOdJWvbDDKs4xoyDh0?=
- =?us-ascii?Q?LfKt1hOI/86PHLhzd4uYOpJcmfBXEUqU5tmsYWvfSvO+i2IgHqpNyKshgTJt?=
- =?us-ascii?Q?rf/KpjdocaBPvpv+lxs/8HHnCS/PS9QC6HlmCu5fiV9bRv6dbxlFVcwryX1V?=
- =?us-ascii?Q?PJmBJSV/Y+pbxtsZoRMq8tzs+j1t5I9JSiAZI7np8+rAWwH54NT6bWEm7BeC?=
- =?us-ascii?Q?6mBOtcOel9D2ePM=3D?=
+	=?us-ascii?Q?EhXlSII8wWGOe8O1Nco6afxJI2mUMJKmzOJTbjhKaDbdXPU8Gm6k6DTCpbFJ?=
+ =?us-ascii?Q?jCrODJ38CnVcMRYRl9M66/w0ZdDJ1liJ2dOANljzYv37hYoDCRmY7VGIGXVi?=
+ =?us-ascii?Q?x7Ja7PYAwUd2Cb08kWYPVcbcmgvAfOCFRHB6fTo/jxzu6kJvE1uZrUJelf1Z?=
+ =?us-ascii?Q?uiL/VW7jYAIFYJadFzkCWG645VLcKwhDlt4MfM7BK1TTyvMOGSDStCidmyDe?=
+ =?us-ascii?Q?33RYWNVnqhMCr9mhgw7GHEeM6wqdMcNYkbhCe6NjYa5vvzs2TvBtntKcI2is?=
+ =?us-ascii?Q?Yu0QMoC2Qkc1/87el71iHK5xnQ7RQozo3xLlDo/bOc+481IPkxU7yuSr5vzP?=
+ =?us-ascii?Q?XG4mUYUgWMm4K+9SU1b9bB6aktOy6JixTLI8IruUobcp1XMLRJBwwGknskPa?=
+ =?us-ascii?Q?gaSdoQ3bIYrAD0TA63W3eOmQ2WUrQvJ+lsZ0TosHNUEerlYMukYBR/5ByT/x?=
+ =?us-ascii?Q?xJ08gGV2uc9ulQkq76uwESnO3bRsImoevIWMMpj2Zn3Y2qjG+IEbVvSGJCUS?=
+ =?us-ascii?Q?PCgkulCRWs81N5afZHLjYgONt1bdsYYcev+lj099MMIlaQr2Ao0wjlzo76UG?=
+ =?us-ascii?Q?ODfUSrbhULpyUOKrj1ZQtUf3qGxIv7ZHIV6+tx/S+gMQNa+mCKeROXuhTI8p?=
+ =?us-ascii?Q?n+3WuFD8Tw4oUhjmSiq/1Kfca56RGOfUcFn8kfZamkUaIfBMinYl89sn7rPX?=
+ =?us-ascii?Q?/xelEajv0BjQeghipMVfrqrDsRGXk3YojIR5PFad2ehht+HkNr+KmXX3Esr4?=
+ =?us-ascii?Q?l29obEH56fbdLdKK7em2/JYqvll90Ed/fjdO8uoC2TMUgAr8cEukKO/ARQht?=
+ =?us-ascii?Q?KvItWdYRaBCq1x3Xh/zgA5DY2a5/322LjYwM3263kaTsccN6UOEcprUuMkZB?=
+ =?us-ascii?Q?3eLfGj8CzblV2z6aWrb51wgWsKanFim2pEz5A4DXi6I8ovrCivhmefvSAgqo?=
+ =?us-ascii?Q?CxDUoNBNnKJa1A7nyDCbaa9IKJTvCaEPh0bgu/cauecCNGtScMggqdIGjCBO?=
+ =?us-ascii?Q?/v6Ro6MC+jjhjr20X+B5cwxXUhEAOyn+boWRtaCKG1B8wgip/9kRsrdiRdvz?=
+ =?us-ascii?Q?g8nBhFQ59EezQKZKF7MypPX2Io99ST/8vYY8n9OMGQPGoDeE4h4+y3ZLbGyA?=
+ =?us-ascii?Q?tQBhQWMKzoGWpd9DksthuSUvTwCp1zBBb7a5b05c1vlyb9DFk1rwFBU4sAPm?=
+ =?us-ascii?Q?c40yLOiXlpMlzWNREOXONm3ur9LapYmfys2ghQH+DEYW6fZlkxftbWW4UOHT?=
+ =?us-ascii?Q?rdjES2l5S2D0z+v0htJcweygkNv1KuOe3kq/B20pXY+nDI6shNWPn+GeVLmI?=
+ =?us-ascii?Q?oqU2vc4MrQCROH9ejGN2G3If3HgRpnqgrKgyMoQKycQMxzD/w6L38rpJvv/5?=
+ =?us-ascii?Q?aB550hCghvbkpaQAop5H3j5qLqD/jpNluhB+1xOyUUTbcE52ivHd1jfXiO25?=
+ =?us-ascii?Q?gvChUEPKgPwk/jqOku0o21uH92ZnNeq8FophP8TgILLC3U5B+cwY/w0f6a4W?=
+ =?us-ascii?Q?/hW32r4+Z3t5zDLyaSIgfK2jWp1VCd5hucgy?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(82310400026)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2025 19:24:48.3368
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(82310400026)(36860700013)(921020)(13003099007)(7053199007);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2025 21:32:54.0138
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91e7c57e-ed06-4b06-e40c-08dd671bb6d0
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98724419-20bc-4cdc-9993-08dd672d9bcc
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF00020E62.namprd04.prod.outlook.com
+	SJ1PEPF000023DA.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB8611
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7782
 
-Always set PAGE_POOL_STATS in mlx5 Eth driver.
-Cleanup the corresponding #ifdefs.
+Following along from Jason's work [1] we have our initial patchset
+for pds_fwctl - an auxiliary_bus driver for supporting fwctl through the
+pds_core driver and its PDS core device.
 
-Page pool stats are essential to monitor and analyze RX performance.
+The PDS core is PCI device that is separate and distinct from the
+ionic Eth device and from the other PCI devices that can be supported
+by the AMD/Pensando DSC.  It is used by pds_vdpa and pds_vfio_pci to
+coordinate/communicate with the FW for setting up their services.
 
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Reviewed-by: Gal Pressman <gal@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/Kconfig    |  1 +
- drivers/net/ethernet/mellanox/mlx5/core/en_stats.c | 14 --------------
- drivers/net/ethernet/mellanox/mlx5/core/en_stats.h |  4 ----
- 3 files changed, 1 insertion(+), 18 deletions(-)
+Until now the DSC's basic configurations for defining what devices to
+support and for getting low-level device debug information have been
+through internal commands not available from the host side, requiring
+access into the DSC's own OS.  Adding the fwctl service allows us to start
+bringing these capabilities up into the host, but they don't replace the
+existing function-specific tools.  For example, these are things that make
+the Eth PCI device appear on the PCI bus, while the tuning of the specific
+Eth features still go through the standard ethtool/devlink/ip/etc tools.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-index bf4015a12b41..6ec7d6e0181d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
-@@ -31,6 +31,7 @@ config MLX5_CORE_EN
- 	bool "Mellanox 5th generation network adapters (ConnectX series) Ethernet support"
- 	depends on NETDEVICES && ETHERNET && INET && PCI && MLX5_CORE
- 	select PAGE_POOL
-+	select PAGE_POOL_STATS
- 	select DIMLIB
- 	help
- 	  Ethernet support in Mellanox Technologies ConnectX-4 NIC.
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-index 611ec4b6f370..386f231e642e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-@@ -37,9 +37,7 @@
- #include "en/ptp.h"
- #include "en/port.h"
- 
--#ifdef CONFIG_PAGE_POOL_STATS
- #include <net/page_pool/helpers.h>
--#endif
- 
- void mlx5e_ethtool_put_stat(u64 **data, u64 val)
- {
-@@ -196,7 +194,6 @@ static const struct counter_desc sw_stats_desc[] = {
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_arfs_err) },
- #endif
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_recover) },
--#ifdef CONFIG_PAGE_POOL_STATS
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_fast) },
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_slow) },
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_alloc_slow_high_order) },
-@@ -208,7 +205,6 @@ static const struct counter_desc sw_stats_desc[] = {
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_ring) },
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_ring_full) },
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_pp_recycle_released_ref) },
--#endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_tls_decrypted_packets) },
- 	{ MLX5E_DECLARE_STAT(struct mlx5e_sw_stats, rx_tls_decrypted_bytes) },
-@@ -377,7 +373,6 @@ static void mlx5e_stats_grp_sw_update_stats_rq_stats(struct mlx5e_sw_stats *s,
- 	s->rx_arfs_err                += rq_stats->arfs_err;
- #endif
- 	s->rx_recover                 += rq_stats->recover;
--#ifdef CONFIG_PAGE_POOL_STATS
- 	s->rx_pp_alloc_fast          += rq_stats->pp_alloc_fast;
- 	s->rx_pp_alloc_slow          += rq_stats->pp_alloc_slow;
- 	s->rx_pp_alloc_empty         += rq_stats->pp_alloc_empty;
-@@ -389,7 +384,6 @@ static void mlx5e_stats_grp_sw_update_stats_rq_stats(struct mlx5e_sw_stats *s,
- 	s->rx_pp_recycle_ring			+= rq_stats->pp_recycle_ring;
- 	s->rx_pp_recycle_ring_full		+= rq_stats->pp_recycle_ring_full;
- 	s->rx_pp_recycle_released_ref		+= rq_stats->pp_recycle_released_ref;
--#endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	s->rx_tls_decrypted_packets   += rq_stats->tls_decrypted_packets;
- 	s->rx_tls_decrypted_bytes     += rq_stats->tls_decrypted_bytes;
-@@ -496,7 +490,6 @@ static void mlx5e_stats_grp_sw_update_stats_qos(struct mlx5e_priv *priv,
- 	}
- }
- 
--#ifdef CONFIG_PAGE_POOL_STATS
- static void mlx5e_stats_update_stats_rq_page_pool(struct mlx5e_channel *c)
- {
- 	struct mlx5e_rq_stats *rq_stats = c->rq.stats;
-@@ -519,11 +512,6 @@ static void mlx5e_stats_update_stats_rq_page_pool(struct mlx5e_channel *c)
- 	rq_stats->pp_recycle_ring_full = stats.recycle_stats.ring_full;
- 	rq_stats->pp_recycle_released_ref = stats.recycle_stats.released_refcnt;
- }
--#else
--static void mlx5e_stats_update_stats_rq_page_pool(struct mlx5e_channel *c)
--{
--}
--#endif
- 
- static MLX5E_DECLARE_STATS_GRP_OP_UPDATE_STATS(sw)
- {
-@@ -2086,7 +2074,6 @@ static const struct counter_desc rq_stats_desc[] = {
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, arfs_err) },
- #endif
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, recover) },
--#ifdef CONFIG_PAGE_POOL_STATS
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_fast) },
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_slow) },
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_alloc_slow_high_order) },
-@@ -2098,7 +2085,6 @@ static const struct counter_desc rq_stats_desc[] = {
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_ring) },
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_ring_full) },
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, pp_recycle_released_ref) },
--#endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, tls_decrypted_packets) },
- 	{ MLX5E_DECLARE_RX_STAT(struct mlx5e_rq_stats, tls_decrypted_bytes) },
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h
-index 5961c569cfe0..8e3344e8eadb 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h
-@@ -215,7 +215,6 @@ struct mlx5e_sw_stats {
- 	u64 ch_aff_change;
- 	u64 ch_force_irq;
- 	u64 ch_eq_rearm;
--#ifdef CONFIG_PAGE_POOL_STATS
- 	u64 rx_pp_alloc_fast;
- 	u64 rx_pp_alloc_slow;
- 	u64 rx_pp_alloc_slow_high_order;
-@@ -227,7 +226,6 @@ struct mlx5e_sw_stats {
- 	u64 rx_pp_recycle_ring;
- 	u64 rx_pp_recycle_ring_full;
- 	u64 rx_pp_recycle_released_ref;
--#endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	u64 tx_tls_encrypted_packets;
- 	u64 tx_tls_encrypted_bytes;
-@@ -381,7 +379,6 @@ struct mlx5e_rq_stats {
- 	u64 arfs_err;
- #endif
- 	u64 recover;
--#ifdef CONFIG_PAGE_POOL_STATS
- 	u64 pp_alloc_fast;
- 	u64 pp_alloc_slow;
- 	u64 pp_alloc_slow_high_order;
-@@ -393,7 +390,6 @@ struct mlx5e_rq_stats {
- 	u64 pp_recycle_ring;
- 	u64 pp_recycle_ring_full;
- 	u64 pp_recycle_released_ref;
--#endif
- #ifdef CONFIG_MLX5_EN_TLS
- 	u64 tls_decrypted_packets;
- 	u64 tls_decrypted_bytes;
+The first two patches are a bit of clean up for pds_core's add and delete
+of auxiliary_devices.  Those are followed by a patch to add the new
+pds_core.fwctl auxiliary_device.  This is only supported by the pds_core
+PF and not on any VFs.
+
+The remaining patches add the pds_fwctl driver framework and then fill
+in the details for the fwctl services.
+
+[1] https://lore.kernel.org/netdev/0-v5-642aa0c94070+4447f-fwctl_jgg@nvidia.com/
+
+v4:
+  - fix commit description for better imperative (David)
+  - fix comment wording (David)
+  - add kdoc comment on struct fwctl_info_pds (David)
+  - #include <linux/bitfield.h>  (Jason)
+  - fix for error pointer check in pdsfc_validate_rpc() (Brett and Dan)
+  - initialize pdsfc->caps
+  - add translation of FW opcode scope to fwctl scope
+  - several doc edits (David)
+  - added received Reviewd-by tags
+
+v3: Lots of little cleaning tweaks
+https://lore.kernel.org/netdev/20250307185329.35034-1-shannon.nelson@amd.com/
+  - rebase on Jason's tree
+  - better comment on "an error if there is no auxbus device support" (Jonathan)
+  - don't call pdsc_auxbus_dev_del() if pdsc_auxbus_dev_add() failed (Jonathan)
+  - struct pdsc *pdsc; is unnecessary in struct pdsfc_dev (Jonathan)
+  - remove unused UID field in pdsfc_info (Jonathan, Jason)
+  - change "Word boundary padding" to "Reserved" (Jonathan)
+  - remove the remaining use of cleanup pattern
+  - don't lose err from pds_client_adminq_cmd() in pdsfc_identify() (Jason)
+  - comment on pds_fwctl_ident.features (Jonathan)
+  - change noisy dev_errs to dev_dbg and remove a couple unnecessary ones (Jonathan, Jason)
+  - no cast needed on struct fwctl_rpc_pds *rpc = (struct fwctl_rpc_pds *)in (Jonathan)
+  - more labels and reverse order for cleanup in pdsfc_fw_rpc  (Jonathan)
+  - __counted_by_le() on struct pds_fwctl_query_data (Jonathan)
+  - other comment comments on new structs (Jonathan)
+  - use FIELD_GET (Jason)
+  - Use __aligned_u64 in the uapi headers (Jason)
+  - call fwctl a subsystem in Docs (Jonathan)
+  - clean up text around endpoints in Docs (Jonathan)
+
+v2: https://lore.kernel.org/netdev/20250301013554.49511-1-shannon.nelson@amd.com/
+  - removed the RFC tag
+  - add a patch to make pdsc_auxbus_dev_del() a void type (Jonathan)
+  - fix up error handling if pdsc_auxbus_dev_add() fails in probe (Jonathan)
+  - fix auxiliary spelling in commit subject header (Jonathan)
+  - clean up of code around use of __free() gizmo (Jonathan, David)
+  - removed extra whitespace and dev_xxx() calls (Leon)
+  - copy ident info from DMA and release DMA memory in probe (Jonathan)
+  - use dev_err_probe() (Jonathan)
+  - add counted_by_le(num_entries) (Jonathan, David)
+  - convert num_entries from __le32 to host in get_endpoints() (Jonathan)
+  - remove unnecessary variable inits (Jonathan, Leon)
+
+v1: https://lore.kernel.org/netdev/20250211234854.52277-1-shannon.nelson@amd.com/
+
+Brett Creeley (1):
+  pds_fwctl: add rpc and query support
+
+Shannon Nelson (5):
+  pds_core: make pdsc_auxbus_dev_del() void
+  pds_core: specify auxiliary_device to be created
+  pds_core: add new fwctl auxiliary_device
+  pds_fwctl: initial driver framework
+  pds_fwctl: add Documentation entries
+
+ Documentation/userspace-api/fwctl/fwctl.rst   |   1 +
+ Documentation/userspace-api/fwctl/index.rst   |   1 +
+ .../userspace-api/fwctl/pds_fwctl.rst         |  48 ++
+ MAINTAINERS                                   |   7 +
+ drivers/fwctl/Kconfig                         |  10 +
+ drivers/fwctl/Makefile                        |   1 +
+ drivers/fwctl/pds/Makefile                    |   4 +
+ drivers/fwctl/pds/main.c                      | 538 ++++++++++++++++++
+ drivers/net/ethernet/amd/pds_core/auxbus.c    |  44 +-
+ drivers/net/ethernet/amd/pds_core/core.c      |   7 +
+ drivers/net/ethernet/amd/pds_core/core.h      |   8 +-
+ drivers/net/ethernet/amd/pds_core/devlink.c   |   7 +-
+ drivers/net/ethernet/amd/pds_core/main.c      |  25 +-
+ include/linux/pds/pds_adminq.h                | 277 +++++++++
+ include/linux/pds/pds_common.h                |   2 +
+ include/uapi/fwctl/fwctl.h                    |   1 +
+ include/uapi/fwctl/pds.h                      |  60 ++
+ 17 files changed, 1007 insertions(+), 34 deletions(-)
+ create mode 100644 Documentation/userspace-api/fwctl/pds_fwctl.rst
+ create mode 100644 drivers/fwctl/pds/Makefile
+ create mode 100644 drivers/fwctl/pds/main.c
+ create mode 100644 include/uapi/fwctl/pds.h
+
 -- 
-2.31.1
+2.17.1
 
 
