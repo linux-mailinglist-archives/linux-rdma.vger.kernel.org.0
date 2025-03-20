@@ -1,53 +1,100 @@
-Return-Path: <linux-rdma+bounces-8872-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8873-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05442A6A978
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Mar 2025 16:12:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A947A6A9B1
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Mar 2025 16:23:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2A22483A6F
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Mar 2025 15:12:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51EA618820E5
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Mar 2025 15:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 597501E47DD;
-	Thu, 20 Mar 2025 15:11:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F181EB1BB;
+	Thu, 20 Mar 2025 15:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SteFs34T"
+	dkim=pass (2048-bit key) header.d=queasysnail.net header.i=@queasysnail.net header.b="auvP1+io";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YJLxRiH0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C6A1C3BE0;
-	Thu, 20 Mar 2025 15:11:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB783158DAC;
+	Thu, 20 Mar 2025 15:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742483515; cv=none; b=L+K62egblUlDNuViauFivIJE/f3dmxI/YnZiIMDWyi1stiQiEb0jwWFXHopatIBvcnXvau0NOizZ6JrtZHuodQD/cRm6fzNYLKlRI+btq2i25uvG5c33i1PSUFr+oK8Io16OqW9FD8CLAPr5zMFZhbtsyVmnoSfdjnqaomg8OMI=
+	t=1742484177; cv=none; b=pZrbaDvNS91jbHT9DNN2Z4nYajtdbWMXokiXxTQ8ikyHVB66pPUL/lezrecmr09VsVGk6blRmyQ68nOs/GXXyVQn/y4c8nPWj++N5NmtF2n6T1SoxXyDxa4SEom8etpnjN5ZdusGd/QKYL/e03IaMajko4oLepe0VxuAUFZgHdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742483515; c=relaxed/simple;
-	bh=HE2gVIgnjqZQt7uJAsIDKomHav/Xt6O+RoZZznVFzJo=;
+	s=arc-20240116; t=1742484177; c=relaxed/simple;
+	bh=usqPczUWqAeUvF8y2TUUqp9JaaDMbCssooMMouP13fo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ccjk6p4TRDpNIYXdKePPS286k3mPJGEWh3+LpNmR1e1h/3qNQswYAAlVXDISMeEF48Pnqj7yz/2KV+Ij7dGgnbBwGYpZaxciTC77Etw9TTtKZcHdkN63P/Ltak2zRd35oSB8r2lTnqrsY6b0Z05M8gcuGzQtCzVGOxnls3H43DE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SteFs34T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07AF9C4CEDD;
-	Thu, 20 Mar 2025 15:11:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742483514;
-	bh=HE2gVIgnjqZQt7uJAsIDKomHav/Xt6O+RoZZznVFzJo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SteFs34ToSTjbTI5sPTnWqoBRqIfqTxcL02QYF66vNqboe4eTZsDvNj02Ozc3FhY1
-	 F2qYz4kxFT3dw4iFFCoaNBgsqLxzHb1v1FRn9n+o9/Ip4EWij//FolAFvELS6jn4+H
-	 quKlbsTQywaEuMKO8ii1qyY+nPbgcgnXXkZH6eRKK6vUmgT2Hue7eoSl6Xly9yybPf
-	 TuoyIVCcwsiLLTFuI73YyOnfmWGkStRBgyS2+bdb4Vl76svTJ/4byCjK4/3WEFpLMq
-	 CO9jBZq+zx7t/aMcqChHD2G7Cmm9J4FGoNPdvDUoG+Jr1+7kjo/r5pooklBxiq23gd
-	 rtTP9fFdq43RA==
-Date: Thu, 20 Mar 2025 15:11:50 +0000
-From: Simon Horman <horms@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sS+U5/fo4EEFDafLADNAH5SY2BuoNYh6cdR4L6dJs6IDooOKfVBkNPAVdBi73YDwYlMPw2858Ndvizfw/HjfPcuKkljKnmIlQt6RkVYsOskXR0lsyJhqqYhdOtr6Hlq+Elhv0U+RCRAksR8oe0npmSQ8EXil7JCZDGZUmrI4Jcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net; spf=pass smtp.mailfrom=queasysnail.net; dkim=pass (2048-bit key) header.d=queasysnail.net header.i=@queasysnail.net header.b=auvP1+io; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YJLxRiH0; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=queasysnail.net
+Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
+	by mailfout.phl.internal (Postfix) with ESMTP id 9B6D81383586;
+	Thu, 20 Mar 2025 11:22:53 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-09.internal (MEProxy); Thu, 20 Mar 2025 11:22:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=queasysnail.net;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm2; t=1742484173; x=
+	1742570573; bh=0KAhEWkVsl0NNYwVCjx4tb9wuCsNpgOLyHLfIJZaooQ=; b=a
+	uvP1+ioPRrUL5kIUpiPHMAxA0f9GfoqDYLA1skSnGtZLZv2Df+OgIN7BfHoy7Gp0
+	KiFAMpBl+3YAHU9Y/p4vmx/o4Sbnzkd40xpldT0DppaIlMztrEMDS+0xO08I3yRX
+	eUm2BOJTKpGPGN4rDX+KTWGHHTwT4v7OPDENmO5xmbDD2FImqKLZ9JZHgdg367gU
+	Ml5HwgzCRebBIZSTVbyiTM+huvtxqdv2WNLqq8j5264j0xxnykzDsCgYqxt4LZEZ
+	TrkIon/943IAzgwCJ2KLq9EA5ONADVI0FQG0XTmHYNbPT77534dtg/afcUfSS9m6
+	d1NBFkFxg/SkOimUh5zUA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1742484173; x=1742570573; bh=0KAhEWkVsl0NNYwVCjx4tb9wuCsNpgOLyHL
+	fIJZaooQ=; b=YJLxRiH0wamVaogDcklYvcE38boSL647501/bB8sWWCoLRXNGTc
+	Dgyu6LxPqRuT+0UaQBhZvNkkkczeS4iuYk3AKfa84ZYEbODjkTm6CzbpgkecVg7W
+	MYFCe5Tv367rCiNOzmOSo1QqgggMx6apf5XpF7WjkwlGcftOcu5K5nAXYEDxRWQ9
+	sLZSEifhCMwtP+MlN7O32vLDEgQSiyff7q0zOfvBZWHwIgUon3jGDvbtwZElxtX8
+	bV8tzxdW2AYko3xmkk1hYC5z2ebxzsvAClftwNUl/tpUm6NCi6IAXb68AfbE9x8b
+	jVH9WQkQUVWUEww30n/rhaq9utGSEBSDJlQ==
+X-ME-Sender: <xms:zTLcZ45o82NpMk3GWJ3OSlTkdhOwYfTTyRVCwpO2YKZI8xOi8MEcAw>
+    <xme:zTLcZ540cQ31-XEi6DH5M453iPc8qthh8S8zfGy8MPs6Wyapsj9Nr_K5ZcuXnIGo1
+    rx3MhgrOZ_6RQjOdfE>
+X-ME-Received: <xmr:zTLcZ3ezgeuLGacO9zGqn6IeL_8YLa0v8rRXto64SnygmdP6XpDOKwMNgiWA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddugeekheeiucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
+    jeenucfhrhhomhepufgrsghrihhnrgcuffhusghrohgtrgcuoehsugesqhhuvggrshihsh
+    hnrghilhdrnhgvtheqnecuggftrfgrthhtvghrnheptddtgedufedvtefftddtleehteef
+    ieffgeetueeliefhfeegleffvddtvdefiedvnecuffhomhgrihhnpehqvghmuhdrohhrgh
+    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsuges
+    qhhuvggrshihshhnrghilhdrnhgvthdpnhgspghrtghpthhtohepudefpdhmohguvgepsh
+    hmthhpohhuthdprhgtphhtthhopehmsghlohgthhesnhhvihguihgrrdgtohhmpdhrtghp
+    thhtohepuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopegvughumh
+    griigvthesghhoohhglhgvrdgtohhmpdhrtghpthhtohepkhhusggrsehkvghrnhgvlhdr
+    ohhrghdprhgtphhtthhopehprggsvghnihesrhgvughhrghtrdgtohhmpdhrtghpthhtoh
+    ephhhorhhmsheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhhunhhihihusegrmhgr
+    iihonhdrtghomhdprhgtphhtthhopehlvghonheskhgvrhhnvghlrdhorhhgpdhrtghpth
+    htohepughsrghhvghrnheskhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:zTLcZ9K_DbZDPmeMuOe6QuWxr2JByyNfLGp9LM2imT8x3jFA_FNJIA>
+    <xmx:zTLcZ8IcDQwsow2oRjSAqudUCyOa1AgrN__olXCnGF-FNzCNdfBsuQ>
+    <xmx:zTLcZ-wmKikH3su011YyUna3z1azQb_n3urrskkS-5dddJy6WsCqsA>
+    <xmx:zTLcZwIsGGLMI_tbcH7qiBenDlAjgNo_ZxOBxnG7zWKVbZObSXtIjg>
+    <xmx:zTLcZ_aKQhXnz9vDbMbn2Ib_46AfkUSmfq3U_K_WcFb23vQwMT1DjUTI>
+Feedback-ID: i934648bf:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 20 Mar 2025 11:22:52 -0400 (EDT)
+Date: Thu, 20 Mar 2025 16:22:50 +0100
+From: Sabrina Dubroca <sd@queasysnail.net>
 To: Mark Bloch <mbloch@nvidia.com>
 Cc: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Sabrina Dubroca <sd@queasysnail.net>,
+	Simon Horman <horms@kernel.org>,
 	Kuniyuki Iwashima <kuniyu@amazon.com>,
 	Leon Romanovsky <leon@kernel.org>, David Ahern <dsahern@kernel.org>,
 	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
@@ -55,7 +102,7 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Maher Sanalla <msanalla@nvidia.com>
 Subject: Re: [PATCH net] rtnetlink: Allocate vfinfo size for VF GUIDs when
  supported
-Message-ID: <20250320151150.GC889584@horms.kernel.org>
+Message-ID: <Z9wyyqTSPOiekIbX@krikkit>
 References: <20250317102419.573846-1-mbloch@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -63,11 +110,11 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <20250317102419.573846-1-mbloch@nvidia.com>
 
-On Mon, Mar 17, 2025 at 12:24:19PM +0200, Mark Bloch wrote:
+2025-03-17, 12:24:19 +0200, Mark Bloch wrote:
 > From: Mark Zhang <markzhang@nvidia.com>
 > 
 > Commit 30aad41721e0 ("net/core: Add support for getting VF GUIDs")
@@ -82,7 +129,10 @@ On Mon, Mar 17, 2025 at 12:24:19PM +0200, Mark Bloch wrote:
 >  Cannot send link get request: Message too long
 > 
 > Kernel warning:
-> 
+
+nit: that trace could be trimmed a bit while still keeping all the
+relevant information to explain the problem
+
 >  ------------[ cut here ]------------
 >  WARNING: CPU: 2 PID: 1930 at net/core/rtnetlink.c:4151 rtnl_getlink+0x586/0x5a0
 >  Modules linked in: xt_conntrack xt_MASQUERADE nfnetlink xt_addrtype iptable_nat nf_nat br_netfilter overlay mlx5_ib macsec mlx5_core tls rpcrdma rdma_ucm ib_uverbs ib_iser libiscsi scsi_transport_iscsi ib_umad rdma_cm iw_cm ib_ipoib fuse ib_cm ib_core
@@ -130,67 +180,7 @@ On Mon, Mar 17, 2025 at 12:24:19PM +0200, Mark Bloch wrote:
 >   ? lock_acquire+0xd5/0x410
 >   ? rcu_is_watching+0x34/0x60
 >   netlink_rcv_skb+0xe0/0x210
->   ? __pfx_rtnetlink_rcv_msg+0x10/0x10
->   ? __pfx_netlink_rcv_skb+0x10/0x10
->   ? rcu_is_watching+0x34/0x60
->   ? __pfx___netlink_lookup+0x10/0x10
->   ? lock_release+0x62/0x200
->   ? netlink_deliver_tap+0xfd/0x290
->   ? rcu_is_watching+0x34/0x60
->   ? lock_release+0x62/0x200
->   ? netlink_deliver_tap+0x95/0x290
->   netlink_unicast+0x31f/0x480
->   ? __pfx_netlink_unicast+0x10/0x10
->   ? rcu_is_watching+0x34/0x60
->   ? lock_acquire+0xd5/0x410
->   netlink_sendmsg+0x369/0x660
->   ? lock_release+0x62/0x200
->   ? __pfx_netlink_sendmsg+0x10/0x10
->   ? import_ubuf+0xb9/0xf0
->   ? __import_iovec+0x254/0x2b0
->   ? lock_release+0x62/0x200
->   ? __pfx_netlink_sendmsg+0x10/0x10
->   ____sys_sendmsg+0x559/0x5a0
->   ? __pfx_____sys_sendmsg+0x10/0x10
->   ? __pfx_copy_msghdr_from_user+0x10/0x10
->   ? rcu_is_watching+0x34/0x60
->   ? do_read_fault+0x213/0x4a0
->   ? rcu_is_watching+0x34/0x60
->   ___sys_sendmsg+0xe4/0x150
->   ? __pfx____sys_sendmsg+0x10/0x10
->   ? do_fault+0x2cc/0x6f0
->   ? handle_pte_fault+0x2e3/0x3d0
->   ? __pfx_handle_pte_fault+0x10/0x10
->   ? preempt_count_sub+0x14/0xc0
->   ? __down_read_trylock+0x150/0x270
->   ? __handle_mm_fault+0x404/0x8e0
->   ? __pfx___handle_mm_fault+0x10/0x10
->   ? lock_release+0x62/0x200
->   ? __rcu_read_unlock+0x65/0x90
->   ? rcu_is_watching+0x34/0x60
->   __sys_sendmsg+0xd5/0x150
->   ? __pfx___sys_sendmsg+0x10/0x10
->   ? __up_read+0x192/0x480
->   ? lock_release+0x62/0x200
->   ? __rcu_read_unlock+0x65/0x90
->   ? rcu_is_watching+0x34/0x60
->   do_syscall_64+0x6d/0x140
->   entry_SYSCALL_64_after_hwframe+0x76/0x7e
->  RIP: 0033:0x7f63a5b13367
->  Code: 0e 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b9 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 89 54 24 1c 48 89 74 24 10
->  RSP: 002b:00007fff8c726bc8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
->  RAX: ffffffffffffffda RBX: 0000000067b687c2 RCX: 00007f63a5b13367
->  RDX: 0000000000000000 RSI: 00007fff8c726c30 RDI: 0000000000000004
->  RBP: 00007fff8c726cb8 R08: 0000000000000000 R09: 0000000000000034
->  R10: 00007fff8c726c7c R11: 0000000000000246 R12: 0000000000000001
->  R13: 0000000000000000 R14: 00007fff8c726cd0 R15: 00007fff8c726cd0
->   </TASK>
->  irq event stamp: 0
->  hardirqs last  enabled at (0): [<0000000000000000>] 0x0
->  hardirqs last disabled at (0): [<ffffffff813f9e58>] copy_process+0xd08/0x2830
->  softirqs last  enabled at (0): [<ffffffff813f9e58>] copy_process+0xd08/0x2830
->  softirqs last disabled at (0): [<0000000000000000>] 0x0
->  ---[ end trace 0000000000000000 ]---
+[...]
 > 
 > Thus, when calculating ifinfo message size, take VF GUIDs sizes into
 > account when supported.
@@ -199,46 +189,11 @@ On Mon, Mar 17, 2025 at 12:24:19PM +0200, Mark Bloch wrote:
 > Signed-off-by: Mark Zhang <markzhang@nvidia.com>
 > Reviewed-by: Maher Sanalla <msanalla@nvidia.com>
 > Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-> ---
->  net/core/rtnetlink.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-> index d1e559fce918..bfc590e933d9 100644
-> --- a/net/core/rtnetlink.c
-> +++ b/net/core/rtnetlink.c
-> @@ -1150,7 +1150,9 @@ static inline int rtnl_vfinfo_size(const struct net_device *dev,
->  			 nla_total_size(sizeof(struct ifla_vf_rate)) +
->  			 nla_total_size(sizeof(struct ifla_vf_link_state)) +
->  			 nla_total_size(sizeof(struct ifla_vf_rss_query_en)) +
-> -			 nla_total_size(sizeof(struct ifla_vf_trust)));
-> +			 nla_total_size(sizeof(struct ifla_vf_trust)) +
-> +			 (dev->netdev_ops->ndo_get_vf_guid ?
-> +			  nla_total_size(sizeof(struct ifla_vf_guid)) * 2 : 0));
->  		if (~ext_filter_mask & RTEXT_FILTER_SKIP_STATS) {
->  			size += num_vfs *
->  				(nla_total_size(0) + /* nest IFLA_VF_STATS */
 
-Perhaps I'm over thinking things here,
-perhaps the following is easier on the eyes?
+Either way, the patch looks good to me.
 
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index d1e559fce918..60fac848e092 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -1151,6 +1151,9 @@ static inline int rtnl_vfinfo_size(const struct net_device *dev,
- 			 nla_total_size(sizeof(struct ifla_vf_link_state)) +
- 			 nla_total_size(sizeof(struct ifla_vf_rss_query_en)) +
- 			 nla_total_size(sizeof(struct ifla_vf_trust)));
-+		if (dev->netdev_ops->ndo_get_vf_guid)
-+			size += num_vfs * 2 *
-+				nla_total_size(sizeof(struct ifla_vf_guid));
- 		if (~ext_filter_mask & RTEXT_FILTER_SKIP_STATS) {
- 			size += num_vfs *
- 				(nla_total_size(0) + /* nest IFLA_VF_STATS */
+Reviewed-by: Sabrina Dubroca <sd@queasysnail.net>
 
-In either case, the fix looks good to me.
-
-Reviewed-by: Simon Horman <horms@kernel.org>
-
+-- 
+Sabrina
 
