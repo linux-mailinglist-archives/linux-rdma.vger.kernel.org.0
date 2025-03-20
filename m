@@ -1,108 +1,101 @@
-Return-Path: <linux-rdma+bounces-8861-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8862-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79ACCA6A4B5
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Mar 2025 12:18:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C8D78A6A627
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Mar 2025 13:22:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C045F172666
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Mar 2025 11:18:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD88417B806
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Mar 2025 12:22:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191A421D018;
-	Thu, 20 Mar 2025 11:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEB31221DB5;
+	Thu, 20 Mar 2025 12:22:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="XrEHnCM9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6337121CA04;
-	Thu, 20 Mar 2025 11:17:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1470E221D92;
+	Thu, 20 Mar 2025 12:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742469472; cv=none; b=Lr611drTrL+Vj0S7z/mp8YCnXvSQidKTzsW1ehXM4mURNSuyf9J7ZsCgXvv1sbLZt2OYbnCzo8j3XpWOAQ5Uv19fwII5P3E/j3aUqeFg8O1v6ofRFVty14LhKIhVa1gyvSnBZAAy7nlkCdroEuTgdIUljXvCaHNwi8vsFyH30oI=
+	t=1742473345; cv=none; b=dEAlgwIWfkc6wziANQTGV+UCj6fPsHo2x104krE43v1p698CfWrt6IPvcT2MY/kDSr5LnwgEHk8ddgeBZiReTLw21FrPP6DUbWjBusS9/vu80hFVujcBrDAmmZo6o6gQu3hzlOATmZYpeDE2o52GoSp1zc6bOkctbIOW9KoPFoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742469472; c=relaxed/simple;
-	bh=kxjhNiy9u63coIBPEMlihOBsfAmnOpzMK4kohTUw/gI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=YZJaBmjhrE+qrS2k+0OSdtE0oFTigNP4omdQvIFh3dbpR/vJ8GBJXD1/d3lQnRjCGpSq2Gk5SP+hDhP0X8ravHgkOpVpJjeCwmk5v9yH6fLVVgCIlL6wT3OjHhN/wSwFSFhwon2fZSGSXOZA/IfhD0jdFK35+0n3SQzrghQSE28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ZJNJT6YtXz2Cd0j;
-	Thu, 20 Mar 2025 19:14:33 +0800 (CST)
-Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4B464180216;
-	Thu, 20 Mar 2025 19:17:48 +0800 (CST)
-Received: from [10.67.120.129] (10.67.120.129) by
- dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 20 Mar 2025 19:17:47 +0800
-Message-ID: <7a604ae4-063f-48ff-a92f-014d1cf86adc@huawei.com>
-Date: Thu, 20 Mar 2025 19:17:47 +0800
+	s=arc-20240116; t=1742473345; c=relaxed/simple;
+	bh=b9v858p0OIaRBMwtd4olUrdpUpSNpUSwYD8pwZH55AM=;
+	h=From:To:Subject:Date:Message-Id; b=W7dHtG06962qZUx5wMFfZw5ohTJsfFBpW7J9lut64x8Ns7NFsilJY6GzCg5tqFhOOjI7PzNgZ25jXGhtsXu4OZ7uTUJij1pEof9BDjK86b/8sQDpqC/99t0LtaBScP1zkE9Bz8n3ly+2QMQrc+kNck58AO1+Iy/BtOVHs9OqNas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=XrEHnCM9; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id 4F18D2116B34; Thu, 20 Mar 2025 05:22:23 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4F18D2116B34
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1742473343;
+	bh=nmXuhRxA4O5/iLeq1TWM0swpJEXmF9yq9iS58rojMrw=;
+	h=From:To:Subject:Date:From;
+	b=XrEHnCM9bQSDvYdYumIFkdIg+C64BIaGVOO5dml1XMl70uD9tno+jiWtmdHBOfonQ
+	 nNcB5P7Bp6rKip1IYN5w1X2o+yD7cJ5IxTE9dOEuPElJYjx1/IYibAdNuorlZVLofk
+	 eGpwfzkh1OdHRkDQAM6ComdjKVs3NZYwO8ggFZSY=
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	longli@microsoft.com,
+	kotaranov@microsoft.com,
+	horms@kernel.org,
+	brett.creeley@amd.com,
+	ernis@linux.microsoft.com,
+	surenb@google.com,
+	schakrabarti@linux.microsoft.com,
+	kent.overstreet@linux.dev,
+	shradhagupta@linux.microsoft.com,
+	erick.archer@outlook.com,
+	rosenp@gmail.com,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH 0/3] Add support for speed in MANA ethtool
+Date: Thu, 20 Mar 2025 05:22:18 -0700
+Message-Id: <1742473341-15262-1-git-send-email-ernis@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 3/3] page_pool: Track DMA-mapped pages and unmap
- them when destroying the pool
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, Yunsheng
- Lin <yunshenglin0825@gmail.com>, "David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq
- Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet
-	<edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ilias Apalodimas
-	<ilias.apalodimas@linaro.org>, Simon Horman <horms@kernel.org>, Andrew Morton
-	<akpm@linux-foundation.org>, Mina Almasry <almasrymina@google.com>, Yonglong
- Liu <liuyonglong@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>, Robin Murphy <robin.murphy@arm.com>,
-	IOMMU <iommu@lists.linux.dev>, <segoon@openwall.com>, <solar@openwall.com>,
-	<oss-security@lists.openwall.com>, <kernel-hardening@lists.openwall.com>
-CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>, Qiuling Ren
-	<qren@redhat.com>, Yuying Ma <yuma@redhat.com>
-References: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com>
- <20250314-page-pool-track-dma-v1-3-c212e57a74c2@redhat.com>
- <db813035-fb38-4fc3-b91e-d1416959db13@gmail.com> <87jz8nhelh.fsf@toke.dk>
- <7a76908d-5be2-43f1-a8e2-03b104165a29@huawei.com> <87wmcmhxdz.fsf@toke.dk>
- <ce6ca18b-0eda-4d62-b1d3-e101fe6dcd4e@huawei.com> <87r02ti57p.fsf@toke.dk>
-Content-Language: en-US
-From: Yunsheng Lin <linyunsheng@huawei.com>
-In-Reply-To: <87r02ti57p.fsf@toke.dk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemf200006.china.huawei.com (7.185.36.61)
 
-On 2025/3/19 20:18, Toke Høiland-Jørgensen wrote:
->>
->> All I asked is about moving PP_MAGIC_MASK macro into poison.h if you
->> still want to proceed with reusing the page->pp_magic as the masking and
->> the signature to be masked seems reasonable to be in the same file.
-> 
-> Hmm, my thinking was that this would be a lot of irrelevant stuff to put
-> into poison.h, but I suppose we could do so if the mm folks don't object :)
+Display speed information of the port via get_link_ksettings
+ethtool operation using a HWC command MANA_QUERY_LINK_CONFIG
+to fetch the speed information from the hardware.
 
-The masking and the signature to be masked is correlated, I am not sure
-what you meant by 'irrelevant stuff' here.
+Add support for mana_set_link_ksettings in MANA ethtool operation.
+A HWC command (MANA_SET_BW_CLAMP) is sent to hardware to set
+the bandwidth at specified speed.
 
-As you seemed to have understood most of my concern about reusing
-page->pp_magic, I am not going to argue with you about the uncertainty
-of security and complexity of different address layout for different
-arches again.
+This feature is not supported by all hardware. For any unsupported
+clusters, the speed will be displayed as Unknown.
 
-But I am still think it is not the way forward with the reusing of
-page->pp_magic through doing some homework about the 'POISON_POINTER'.
-If you still think my idea is complex and still want to proceed with
-reusing the space of page->pp_magic, go ahead and let the maintainers
-decide if it is worth the security risk and performance degradation.
+Erni Sri Satya Vennela (3):
+  net: mana: Add speed support in mana_get_link_ksettings
+  net: mana: Implement set_link_ksettings in ethtool for speed
+  net: mana: Handle unsupported HWC commands
 
-> 
-> -Toke
-> 
-> 
+ .../net/ethernet/microsoft/mana/hw_channel.c  |  4 +
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 92 +++++++++++++++++++
+ .../ethernet/microsoft/mana/mana_ethtool.c    | 19 ++++
+ include/net/mana/mana.h                       | 33 +++++++
+ 4 files changed, 148 insertions(+)
+
+-- 
+2.34.1
+
 
