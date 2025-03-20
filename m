@@ -1,187 +1,162 @@
-Return-Path: <linux-rdma+bounces-8868-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8869-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54747A6A899
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Mar 2025 15:33:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94FFDA6A8CE
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Mar 2025 15:41:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A836C16F7BF
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Mar 2025 14:33:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09F411885CE8
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Mar 2025 14:34:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3512B1CDFC1;
-	Thu, 20 Mar 2025 14:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06F71D79B4;
+	Thu, 20 Mar 2025 14:34:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="FZcVI1MT"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O9RZUt1O"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2089.outbound.protection.outlook.com [40.107.243.89])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F7B51B81DC;
-	Thu, 20 Mar 2025 14:32:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.89
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742481181; cv=fail; b=eGgrak4hx9LfByQrSyl6naDeiG3qlvys+LOOATLYmSzbwxaOS/c7d5irmVV7FlbvLBZTOeKpro60yBA0rZCXvTKJmvWD9bqIUPmtWG5dkW0bGcdqIMdjOh+grgKGjhQz65Or98rcIJArq9ubVzh+ypA2lLaU/zTHJtutbb7D7OI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742481181; c=relaxed/simple;
-	bh=COQQUeFnVcXI+Rbf8CH0dJYGUaCK/pA8GcoXG/Pd/Hg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=RdvHI+AsDKCO99aishw4Io1j9e+NzdbpTmUnr7oIn2Et1WpJmIEjE8dXaTpA0njIpCK+O43vT3XLLDc7GUUHoux07tPJ4pWb1KpN3K2SmkXIyLGngaKbqPDSuuoGjdxWP6Q3s1XQyD6DDm4ZQKFSNhtdzacuYUdKf4XjsodzLwE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=FZcVI1MT; arc=fail smtp.client-ip=40.107.243.89
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=kv5DrdIhj7Z6/7udeYCbhPLx0n4pjK5cih7guXT4CD5LtNi8b9/wsdWLmFPfkS1zX1gEje4LvFVKiUIeEVg47FWsNfoAgQSdPeqpWlczRxSMjDZ70v63wKlKPd1C/PbLYiTzZiQ7aqemNl+zpUmqpfXIbVAgeqqGmZzmYbb5LH9E56BVzMM3dGbJSN6f9DZKW43Qr7XNhSBsWIwVaKZyTrI2UO1tjMbV8E+wSuBgqJ86LOBT5AUZpOD5S02D4HvwJ259WQjb82dbUHH0da+pFpKDmmfj4Du5wNEcf9+Md6+VPgvLC6GJJcxbxyPUw3X1oS49GQK9yz74illUkI2IAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=COQQUeFnVcXI+Rbf8CH0dJYGUaCK/pA8GcoXG/Pd/Hg=;
- b=pJ5TmSniLho9bynn4gY791FvB9kOulQfF66z00W6bLXynvGCyYwStvbNItVQrN+H+z7ewhdA5uoS12mIEsvSlIHfl+MXwxGuCWISz2i0XHfWgONopjgvElZZEG3pu7E15ABCj2Oi5lkbFh19/PjVWneimFHNTZbVgaO0FPAIvOD4ihennyXx4O5KI8l3fLubzayO8r1tlxnTL3OZtt23lHYwFGGwqvsBdpKOhzmP2t5zhxmEHorfWyGO0HJUGpXQgC9mX1xIvZ/qkARqaUy1CsX1qd9eTHgS/+v2oGDmIdsh9wejHviqUJHBd9q5iQMKkxmuarvtYsDVpAIy+mI6bw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=COQQUeFnVcXI+Rbf8CH0dJYGUaCK/pA8GcoXG/Pd/Hg=;
- b=FZcVI1MTS5ZQBm8tZpoIRF64wUUHToqOaeDgb8n38czSxGAFvNqO22VDNn8OoTLE1vAsxDgK4Wc6CGfBgOv6WQGDwKtNMxLJ9cFc6SvRdMfr4WTvRXRiK3Un6K7u3O1+ZTFnB0V4PTKTU44/JG5tc6P2hWOpQpV2YwaLFj1tjhrFAQeVpQPoMEHW3EDwnUn/pMwPr5BZPaGGBqrOWM/EqnPkJrbR//83nfNw/fsy0IUzgIM6UTXPZKd1Y8whH3lMbk85xwC/s3cSZHYY13RwbDxRl+GscRjLNZJlQDLC0MzFAgB3my52T9uNEpR2fh6m0nTXP7uzlM2EsWw1LhnouQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
- by PH8PR12MB7301.namprd12.prod.outlook.com (2603:10b6:510:222::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.34; Thu, 20 Mar
- 2025 14:32:55 +0000
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8534.034; Thu, 20 Mar 2025
- 14:32:54 +0000
-Date: Thu, 20 Mar 2025 11:32:53 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: Nikolay Aleksandrov <nikolay@enfabrica.net>, netdev@vger.kernel.org,
-	shrijeet@enfabrica.net, alex.badea@keysight.com,
-	eric.davis@broadcom.com, rip.sohan@amd.com, dsahern@kernel.org,
-	bmt@zurich.ibm.com, roland@enfabrica.net, winston.liu@keysight.com,
-	dan.mihailescu@keysight.com, kheib@redhat.com,
-	parth.v.parikh@keysight.com, davem@redhat.com, ian.ziemba@hpe.com,
-	andrew.tauferner@cornelisnetworks.com, welch@hpe.com,
-	rakhahari.bhunia@keysight.com, kingshuk.mandal@keysight.com,
-	linux-rdma@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com,
-	huchunzhi <huchunzhi@huawei.com>, jerry.lilijun@huawei.com,
-	zhangkun09@huawei.com, wang.chihyung@huawei.com
-Subject: Re: [RFC PATCH 00/13] Ultra Ethernet driver introduction
-Message-ID: <20250320143253.GV9311@nvidia.com>
-References: <20250306230203.1550314-1-nikolay@enfabrica.net>
- <20250319164802.GA116657@nvidia.com>
- <e798b650-dd61-4176-a7d6-b04c2e9ddd80@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e798b650-dd61-4176-a7d6-b04c2e9ddd80@huawei.com>
-X-ClientProxiedBy: BLAPR03CA0130.namprd03.prod.outlook.com
- (2603:10b6:208:32e::15) To CH3PR12MB8659.namprd12.prod.outlook.com
- (2603:10b6:610:17c::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15636A33F
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Mar 2025 14:34:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1742481255; cv=none; b=GBxoYduh0hVMaVHiP3gXRC3IXJfLe2hfSGzECaIstoCsimiaTQ6pYvSlZTo0bqTsN0V39oBKSFfJX+dj22HOXGdkjfYgbHkAkdHN2D/o3Q6JUrWof9t2TcGk5RCPfhlRqJNOjrRKYNuiEz5FXBkALdCz9K/abDS4uK5yguzV/jw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1742481255; c=relaxed/simple;
+	bh=aLsT93dSweyrf+qk2uXM1EK4iaVizTPbN4c8paMt31M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bz12At3sJsTfypQVGEkp4RR8YMucj6hTZcU8F6L6L640NbAjKIrDS9Bd3hXEMlQ7JktqQHQQ072HU+i8LhWh922AKmi7WwQITDH7/I+O8AAfyE+x5RZrcor4MBdbBZvWPv2hoFYO796U2eR6HoQeyTqVnzZJ84phhBg4h8z+4mU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O9RZUt1O; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1742481252;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aLsT93dSweyrf+qk2uXM1EK4iaVizTPbN4c8paMt31M=;
+	b=O9RZUt1ORTdQNvzZg6v1n+SlSFxmoLqrcrWZAj/395HhPClsxVOca8UoeDvm9hjcYbeT0H
+	B8kUyF0aXnKO2lNGNj6uiEyQx7lJfxQTHODf60e40ot7JBRuojjmYlWuB+YXi87zoNNwyR
+	wdZZ2mzqtXgcKtQtJh53YCTh8C+3eck=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-25-_JUxUju6O8uQ_ANr1KgTGA-1; Thu, 20 Mar 2025 10:34:11 -0400
+X-MC-Unique: _JUxUju6O8uQ_ANr1KgTGA-1
+X-Mimecast-MFC-AGG-ID: _JUxUju6O8uQ_ANr1KgTGA_1742481250
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-549971b3247so411627e87.2
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Mar 2025 07:34:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742481250; x=1743086050;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aLsT93dSweyrf+qk2uXM1EK4iaVizTPbN4c8paMt31M=;
+        b=e1D1FdjkLHp9D6nt6LhfTOI5QeaiikuPjCopP4RiREpVdvy0BFbfNb8eNaryrA/lmY
+         BjSUJeORL/ZQIfXtJHQ1OwoYNWfkn5lyoQFpotNL+ObvJbD4oZ9AfP56QKfBR9BX73mZ
+         WCZ1pt82JxraqJs1CDj0gpVci/42kRgOY+wkWD5xWpdohRwpz3VzA/emfuCHTIId0JQ8
+         qWaNGWcdu5ulDB05Rvh6aZ5oCVyp+civ3N1atPgPsb636Dots2VcBiDUlyPTHVjdRnVG
+         61m0MqW69+EWR7TEFi63GPrdDEI6VChaIVjEBSs/mmosRWgxeBW1BiyV/l6vUgpSeKaa
+         G+NQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW2/V/F2Y/Lt4eSBMc6av9TEvAhA61l87ZlXmb4WTMNzLu8UQDKBshZKV8N8DviZUogpJj4SDGA3Ft/@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfTQMdILw+FoPa5OctkACK7ooHnF5/dkWxeDEB7Tpxx+PMxSF2
+	CuHaRJy1mDPokoomB+9YnQfD4SJKD+5txKVvrbqb+AKpyDNM8MDJ+FBA+Y77tR2XN3AzS5oYroL
+	SYmYAQu58VDr1J0EDmU2kTkE9s/Rmq21H0xFm6VTxD7KuPa6GxATbBlEu3GI=
+X-Gm-Gg: ASbGncvmBrCF/Fs0WAm9fB43fCz+wweWbRN/Oj3gplH6fm0+VR57BLaJMzywaUmUFST
+	bSU7nu/hIRA7S/R94FQ0mpCEVrk4DsaB3gdz5AoeupPeCqYYDECUVbDRvgP9khdGlT//3m8i8tY
+	nSnHroxFxr0uFRWw306fXnL4pBEIuGelU05Xn2g3qMutfwG/1H2T+l/dyT7yUByHxMAmmGOdep+
+	wI2C7m+7WTo90hkx+HemTDa8u9X8Clxvj+SR70rpdBg7hj50dM2qJKikdwt7tzSLfGt4YFo+Jrx
+	ErN1cflm7/eN
+X-Received: by 2002:a05:6512:2392:b0:549:8e54:da9c with SMTP id 2adb3069b0e04-54ad0619d9cmr1163972e87.4.1742481249715;
+        Thu, 20 Mar 2025 07:34:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFP5MKiRxkFgKG3EdSlhgqaV6W6DjuZ/y68FT+nnGB1qw2EVv6jr9Oog18ux0YhIZ7JDKVH0g==
+X-Received: by 2002:a05:6512:2392:b0:549:8e54:da9c with SMTP id 2adb3069b0e04-54ad0619d9cmr1163951e87.4.1742481249052;
+        Thu, 20 Mar 2025 07:34:09 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-549ba8a9219sm2230109e87.249.2025.03.20.07.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Mar 2025 07:34:07 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 202DA18FC2E6; Thu, 20 Mar 2025 15:34:06 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Yunsheng Lin <linyunsheng@huawei.com>, Yunsheng Lin
+ <yunshenglin0825@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
+ <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
+ Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
+ Almasry <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>,
+ Pavel Begunkov <asml.silence@gmail.com>, Matthew Wilcox
+ <willy@infradead.org>, Robin Murphy <robin.murphy@arm.com>, IOMMU
+ <iommu@lists.linux.dev>, segoon@openwall.com, solar@openwall.com,
+ kernel-hardening@lists.openwall.com
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>, Yuying Ma
+ <yuma@redhat.com>
+Subject: Re: [PATCH net-next 3/3] page_pool: Track DMA-mapped pages and
+ unmap them when destroying the pool
+In-Reply-To: <7a604ae4-063f-48ff-a92f-014d1cf86adc@huawei.com>
+References: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com>
+ <20250314-page-pool-track-dma-v1-3-c212e57a74c2@redhat.com>
+ <db813035-fb38-4fc3-b91e-d1416959db13@gmail.com> <87jz8nhelh.fsf@toke.dk>
+ <7a76908d-5be2-43f1-a8e2-03b104165a29@huawei.com> <87wmcmhxdz.fsf@toke.dk>
+ <ce6ca18b-0eda-4d62-b1d3-e101fe6dcd4e@huawei.com> <87r02ti57p.fsf@toke.dk>
+ <7a604ae4-063f-48ff-a92f-014d1cf86adc@huawei.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 20 Mar 2025 15:34:06 +0100
+Message-ID: <87o6xvixep.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|PH8PR12MB7301:EE_
-X-MS-Office365-Filtering-Correlation-Id: cf59962d-441c-4dc7-f3c9-08dd67bc1a01
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?FzSkl5mwM7HvXuu/BWdUcxb6c07wYN4Sakk/hm3EnYQzVC5sQ6Pf0HTKOayf?=
- =?us-ascii?Q?6Oc0wSJfn2eHUbarPuGzayQHOFfKzex4oXDJYtR/ulvhVzwU0x09IjCPbLGp?=
- =?us-ascii?Q?bI5Yak10HeU1ZmOAKjvA1qFtikIlXRH3GljAmqV1wt7bFVUWN7oGJHP8Nykg?=
- =?us-ascii?Q?MtGcz7f25vnOhtlz4sGmNU7o3AJ8a/2hPymme+AGlVJVlqpWhui998FCfMHB?=
- =?us-ascii?Q?KfqA9x8Rki1DnIWEc+2WQ7PBehTresf+sCBaZ7zi8U7fi4Twn9jpVs7gjLBL?=
- =?us-ascii?Q?vsle1ACVm+LZtuFr/NTjlon+YcfGN0fWSOiuL7pHhCWF6xUufWJnCjPYH9WS?=
- =?us-ascii?Q?FPVs7+34Mc6f92abKN/AzzJPXgCgZQlH/0NX6yK0lPaYDdVOrMGey637ABip?=
- =?us-ascii?Q?IhN5pue+6Qje0hw3LWXe9lSrh7unjHDErEcPixYNCg6Jg9m54rAp2xoJ/2Do?=
- =?us-ascii?Q?GZ2ObRMPxRSM+h43+mppRs0rH17id4/2AlpFe1VBUDHZD6OXENf0VGFcoVk1?=
- =?us-ascii?Q?JviygcSJo/5yq4FO652EbJMAMRA8Mw93tZPyVyibTSMSDclnQn01QaOcnXrG?=
- =?us-ascii?Q?J16I6TaqsDMur2exvq8O95Bfue0oPNJeX8htXXFugEXSOpVlMPA+2dWe7Dpp?=
- =?us-ascii?Q?9K840H1dC6IqZfS4JlT7JPYKQ/AFLFxiiqdtoau4VZwBP73f6yNyXv42TE1L?=
- =?us-ascii?Q?nXvYHBYhBswwcpKKoiktQ8tmmPVdK6FK0GBHksyU8wQLXWJrX2BrgU5Z6twM?=
- =?us-ascii?Q?tAehC+PSpjsZihpY3FieO06nrC79TAzaOlT29ANGuASIRrmJzCHlc14BYKkF?=
- =?us-ascii?Q?r7rRvbFMU5Vh5d4rsWLKYC88oUGbmbql3K+D+qeoGk8oRUaIlsGMuaWIwpa2?=
- =?us-ascii?Q?tNRP47kqIshFDiVpHU96aUG4udYB/6m/yOs4BRQAs1PmvbxLEUbyI47sy2Rr?=
- =?us-ascii?Q?oUbsT/7DF9B/OSCzhkjVTmCE/6HnH/iYPWbteGSR20eFAQACawlzaipGllgK?=
- =?us-ascii?Q?dy0l3xq9IDL4cDnBFBK61DMakM2vgJzk/lVUP/+60zrwVLkjEKQHLJv86KLx?=
- =?us-ascii?Q?K4Zf7eZ4gvTuuUCQK1n90z+xEjGge8bR0Xx5tqPDSOgG7508V/nnnj56zlca?=
- =?us-ascii?Q?ub19TDMqrYCfDvwFJjdIs8k0ibQx1Naqq20iP3WXfeOC3UNZyIkpjPk2KdPv?=
- =?us-ascii?Q?LfhtShL/9sKJDNFQQayDhGQtn/vgsL09+tFCDzRDSQQZxccN34vQCJoIWobw?=
- =?us-ascii?Q?4ah5F4mTj5UGCerYL0jMzfI2Jrp3JhcPS+oCQcchyZB4hDBYXOi7JH4d0t8v?=
- =?us-ascii?Q?vxYY+jPgcOMpiDuhMKoBhkTpjLVizRsj/tb45xlDFuRZ/w3ynLfiWC4aGbJF?=
- =?us-ascii?Q?f9wfl9vOkpDtQR/Kwi9boEo+/x5g?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?UR7Tpkb1pRK0eI0+0h3MtzfmNugYJ2Stu7HOAgNSl4L2scK3sRVqS0pad9vS?=
- =?us-ascii?Q?Bj55x9+PAGwKwerO5XWqDMzIRwMc9QUgo7DH6E06qTJ9M01c1CRC6sDMMftM?=
- =?us-ascii?Q?BTlR+4Jlo81Z8T5xC93hRQzw4r7sfCp+L2J7R9Aeg3DjpyYtHFtnTa5pwTct?=
- =?us-ascii?Q?h/dtK3rcq7+LIsVG4oMtewjqrVYf5m416au80aA0IR7JkCu7AJt9YcSioHbb?=
- =?us-ascii?Q?y2Wpy2zThp6BfOMvtHGaKzYjIx57bXW+H2XgQtVH4zKD9+9Nmd8sXFykqQwH?=
- =?us-ascii?Q?6cVjnIhl66YsCK2KfNWcYMozzu3WwiYAzm8xLJUqa5tsNMi//zLZVVGKDTyc?=
- =?us-ascii?Q?bT1MdcWDYUZHOa57xuASCiZxnmStn2bfRlquNNLDIfQSm8oYW6POOOFqRzdd?=
- =?us-ascii?Q?N4VfKh7vmwBozkxmmwEzKQWvnEWbfpRk16FzNtMomHb7QY3RWFgcNJl0yADJ?=
- =?us-ascii?Q?f/dEEA05gOX4BsMVfl6xg2ZpyB8xx0Uazr41dT9TQjLlQyFXZBa40yfNU/2E?=
- =?us-ascii?Q?YXeoYWxfVQn2e5xqRi5mHZKmBiFDkdI7kHA0qpQBOrVTfogzOtx6003Ln45W?=
- =?us-ascii?Q?VCrB1MFiNdRGYDdw0ql4f2RMwzuhUvTZclCRUVUr42x3Se8lw6Y0FEo+oYyv?=
- =?us-ascii?Q?lt5MpeokeN6lW8NJRsNOLXbJtxefCl3khzYDxtR57eidtJFvKKsDSdHV4ExK?=
- =?us-ascii?Q?VXVjR727wDrcDnRvxljlgufHk9bCSP30ck3toDPRmkp8vgRRSUH67PJ7bg5X?=
- =?us-ascii?Q?wNoaNE20E3wrj9v1r6itLRqN0AiiNTFmyf0UmjpKOUKA2W8ebIphRY/uxfk8?=
- =?us-ascii?Q?NDpIPXn8GUeVXirtGnicklgN9VvuEj//bw5c85BaRBiQUFhBbjqlwJtr/G7X?=
- =?us-ascii?Q?kIkUJUJyA/GScwuIsTDqrbWkoHVwPkeGVqzb48+Ul1jBw8WlVK8bUaQRUgAj?=
- =?us-ascii?Q?9Cz/VIjxpPhXx12HEuL/EaH9D1fcOpHnx72Qy3KSVncpGMdGa3v7xJ4iOBNI?=
- =?us-ascii?Q?4Uumlp4rBLhzeQacfGGf0lNe3+YMrJM7hxaA+PMg/Dt4BsMlbfsjTwK9zNZq?=
- =?us-ascii?Q?pFla9WpXWSoqJUx6CvpA03r4S1a3HSVX164DDIqg3Tf7s4KRxQxHBIPt5XGU?=
- =?us-ascii?Q?tOFLysLnOPdiYsAmPcA//G8W6MEwZWOCQvGeIwMTPas0TrCRxuAlqOGPq69o?=
- =?us-ascii?Q?4cA+iiFhytNgoDmloHLGMzFGF3ovTVHXzAi4k4WdGobV/BVGfydWtGHJ1Oyl?=
- =?us-ascii?Q?G96c4esvpp4tRrxWYazJ+JGRDaNebhWpVaiDqlCxSXttu47m6NUDh9Fwb6E4?=
- =?us-ascii?Q?akM32EO93LawGbsdN3D7CrfPfQKqCI4Koqui0lsXpybJqy9xbzR/+3PfjMdJ?=
- =?us-ascii?Q?lY6SzhE1xOT3ZqmCUofzr0FuXUko75AwM6G36ajDkNUhJFIOxwayy9OEAFpr?=
- =?us-ascii?Q?WmPhb3GUrSg1tJZwF7wIji/g9VO+o25HGbu0Vm+YtxLgKkFjmd3U9/Qzk6xf?=
- =?us-ascii?Q?Jcjui1rMaSt2Wp1A2dGTOdxGtEBVsSVlzo7YRtngifRv/1v6A6aOmTKyWbfx?=
- =?us-ascii?Q?tK+arv1atxQ5u2QaRLM=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf59962d-441c-4dc7-f3c9-08dd67bc1a01
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2025 14:32:54.6504
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: E0+HQJLWHjIMcFSA0bozA5gJA3WRZLx485yg3UY4ZDiZmjeN6PE3X1h8SMkxllcM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7301
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 20, 2025 at 07:13:01PM +0800, Yunsheng Lin wrote:
+Yunsheng Lin <linyunsheng@huawei.com> writes:
 
-> As the existing rdma subsystem doesn't seems to support the above
-> use case yet
+> On 2025/3/19 20:18, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>>>
+>>> All I asked is about moving PP_MAGIC_MASK macro into poison.h if you
+>>> still want to proceed with reusing the page->pp_magic as the masking and
+>>> the signature to be masked seems reasonable to be in the same file.
+>>=20
+>> Hmm, my thinking was that this would be a lot of irrelevant stuff to put
+>> into poison.h, but I suppose we could do so if the mm folks don't object=
+ :)
+>
+> The masking and the signature to be masked is correlated, I am not sure
+> what you meant by 'irrelevant stuff' here.
 
-Why would you say that? If EFA needs SRD and RDM objects in RDMA they
-can create them, it is not a big issue. To my knowledge they haven't
-asked for them.
+Well, looking at it again, mostly the XA_LIMIT define, I guess. But I
+can just leave that in the PP header.
 
-mlx5 has all kinds of wacky objects these days, it is not an issue to
-allow HW to innovate however it likes within RDMA, and we are not
-limited to purely IBTA defined verbs like objects any longer.
+> As you seemed to have understood most of my concern about reusing
+> page->pp_magic, I am not going to argue with you about the uncertainty
+> of security and complexity of different address layout for different
+> arches again.
+>
+> But I am still think it is not the way forward with the reusing of
+> page->pp_magic through doing some homework about the 'POISON_POINTER'.
+> If you still think my idea is complex and still want to proceed with
+> reusing the space of page->pp_magic, go ahead and let the maintainers
+> decide if it is worth the security risk and performance degradation.
 
-mlx5 already has RDM like objects <shrug>
+Yeah, thanks for taking the time to go through the implications. On
+balance, I still believe reusing the bits is a better solution, but it
+will of course ultimately be up to the maintainers to decide.
 
-> As the existing rdma subsystem doesn't seems to support the above
-> use case yet and as we are discussing a possible new subsystem or
+I will post a v2 of this series with the adjustments we've discussed,
+and try to outline the tradeoffs and risks involved in the description,
+and then leave it to the maintainers to decide which approach they want
+to move forward with.
 
-If you want something concrete then ask for it and we can discuss how
-to fit it in.
+-Toke
 
-Jason
 
