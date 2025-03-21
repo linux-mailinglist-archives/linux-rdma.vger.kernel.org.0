@@ -1,113 +1,102 @@
-Return-Path: <linux-rdma+bounces-8897-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8898-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FFC8A6C113
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Mar 2025 18:17:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B1F9A6C427
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Mar 2025 21:30:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C60D3B41AB
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Mar 2025 17:16:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16B837A696F
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Mar 2025 20:29:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E45622DF84;
-	Fri, 21 Mar 2025 17:16:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51511230270;
+	Fri, 21 Mar 2025 20:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1ExufT+n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MCN0azzy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8322622AE59
-	for <linux-rdma@vger.kernel.org>; Fri, 21 Mar 2025 17:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0255D4A00;
+	Fri, 21 Mar 2025 20:29:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742577417; cv=none; b=qaLk7bNd0ReoaU4+bWu8a5tyFKLXkF5mBCL6FX6AQFInD26cSFeiUjT0kkHD8DHMxrf5k11CDF+8vvRrkHxniuyO6nsLlXQWc6itH13PPVtG7/trDU6dJt9XYHEZIzM7PbCIPXeuszno5j2v8YjACsz4WU9xMuHehltZm6DNitk=
+	t=1742588999; cv=none; b=umQdNM4NeWZMz9w6ddYTtbTuJrNz7XIycnPArKVrnRf0tIq2wHsXKRkIXqIX/ei7uCPR1unB/d6PuiNxmxFUEUpU4HslAy95C6ZYpD56EMggESX6r9/pzjOGiSgD9F6FIUcRrGTvKoifNYkAexgcn6hHThteleqc0LWHU3e3x+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742577417; c=relaxed/simple;
-	bh=GF76z/gw6/XYCeidT43ebdiAMeBN3LvsPNBDBQrg7YM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aoqTejMHhvtOG9vGAn8sPP8AzuMHuD55zzEl8SKPeETMDExcG4iufYMBn//tzHlmlo2ZoUtUc7bZEay07hESLv6ZbikiryYRe7iDE91WuYjGqO7vEOWFe/mR5uZ947HHiNkSCIjAfKEJe1CNIG7OVqs3DhD3Em6mZpp/FnqpHws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1ExufT+n; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5dbfc122b82so691a12.0
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Mar 2025 10:16:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1742577414; x=1743182214; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GF76z/gw6/XYCeidT43ebdiAMeBN3LvsPNBDBQrg7YM=;
-        b=1ExufT+nazhlKz2oe2+tlrbwfCoaRGvifx5rhrQ/FXUblFaAOrpuoHIvsLs5h1pgCo
-         X5AhsXJtW8P8zGkhpLFBHQZBWAQT3N/eN+VZo8ltE8ZeyAdyvk26JkXjWqP8ZDGjrVLu
-         0MFZ/xLmpHiJL5S0G2vCDJzoT3WBMR95zGBIDGJUJW4Ntrv3mFweMVOdGN7akgYzwgFU
-         d3IndcfRiMH+RPKj0DUmq8A6QxO7fjMtjpQmD73c+5T4SENiEWviOPfBnndz/so0vHTU
-         U07Y7XjRuKJcxDJq+HT0fuKpoQhOdN0oDZkrUMms4M7b7nYwJ6gPeNSXdYA/cnNoat0N
-         XMpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742577414; x=1743182214;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GF76z/gw6/XYCeidT43ebdiAMeBN3LvsPNBDBQrg7YM=;
-        b=m2nD7QRDPQv247MLHwQtmVavO4UpSHhuEUYlg1sG7jP9swkDDb5vJp7tlAi29NZXzI
-         SNzDgZv790KTh2WKxoceQKRmHvpTOp4Kovt44IuXlZnkWExauWPH01BEfX1OdrheY45n
-         U9oOlff7M9x42AJ5SiIRJ63pVpYqluv+MemzLeKu5ENsGby9imayO+zJtW9/b87pceSU
-         A5I9KnpPIZSBcDFY7rqkwrdSSRm3zMshhAYjy0PvpLbbE6WiizDvYarjjueWXv8+rVLI
-         o1cWTWhwekvec1Uo7ACRzZeZ+p4w6paEZqXSnpK8b6V/4N4BHkXmIrF/tC4bGMnBLbbm
-         j1yA==
-X-Forwarded-Encrypted: i=1; AJvYcCVT9KSZ0elyowv3WLbYE7hYq2VY9ExFhRp2wMmr5frn80o1ns/fbkXxh5hhHWlG8v2M6dDeplNdCUco@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw22NUYRsPwioo0JEp1nbBeAVKUJkYu8EXQTSMqz1NnQlTU1yYS
-	LlN8MNygKLTsa6+Xedu/AxPmfh+bKtt/aK/YSeGzG4zB6aogmPRWQZKSGaJYW0knTNrSjxVtCZE
-	BQbR08rPM74woyIW2ddX/jKxQUQAz41Ng4j1I
-X-Gm-Gg: ASbGncvxm0Ge/Oh0zpUF4tejVvuNXfKci9Z2XoSxQdfABBWsyZ6B0VUkmhDSwtFdkbu
-	P+NMDcnQ5gRIAdR2shK+E4k9f5eEyUGEsk7z6zExq4mpeoDuTz8MHhXut5safXrGHAauxc7Zq4S
-	YX1iws68cDXeMHGeKERQXrzNUttKwQQa7xpqRYQPm6QfxgcZMtyVsjTnrE
-X-Google-Smtp-Source: AGHT+IH98cBXDDveN9rfl6GGcJmdCE4sTWw1fPkcgg6ndYVyXdIooR0jo6P0/9JLlSPXdrq0KQvrTrtTuAfJEOPcfyY=
-X-Received: by 2002:aa7:cf04:0:b0:5e5:ba42:80a9 with SMTP id
- 4fb4d7f45d1cf-5ebcfec9cd4mr99789a12.1.1742577413456; Fri, 21 Mar 2025
- 10:16:53 -0700 (PDT)
+	s=arc-20240116; t=1742588999; c=relaxed/simple;
+	bh=ZZLmMZ289rqQhcr8NBJny5fTTa8Eof8bLWxFOCYlhbk=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ItfqXLo65RWV5M7d+3zRxPm60IJh6S0HcHU7fC6zpVrQBF0P86K2+yKLfY4F5eKiSvRut+l53MqG5RRvbrPPW+U4WJn+dYh5+fK4F80JnCqEOqgpjKcflbu7OIp097q0bnBR0TQH1Ga1DbVGczAq/klQeq8d3x6pqdNklADY4ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MCN0azzy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74D0FC4CEE3;
+	Fri, 21 Mar 2025 20:29:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742588997;
+	bh=ZZLmMZ289rqQhcr8NBJny5fTTa8Eof8bLWxFOCYlhbk=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=MCN0azzyrqFhyjlSjdnAvdsMtpD4lNBu9VbwIFxtdXCBamCC4AFQj0VCPr/4EJFVm
+	 mnUnlZgemakyQq3+pvW5F/01Bfl2Qg3u49OT0Eb/zwThTy2j/LmrlXBA8eclFoS5nP
+	 wHiydX3EyeqcmKOKN5Gt3zZc0WahQq0Vo1BEtxuMoYd7Ae2R5sPJDFyj+/TlJsBm/X
+	 ZKQqZXTVu5V21d0ChRTgzOOLgZBNVHzoW/MNVi934TsnSHmgRoo63Q7TTeoKlXXARO
+	 1NgCCZrmpn41L5yQCBUo6z55GrCAq9/AV+TYzfcgd5Xmb5uZ9GFdwGzfZrwtXBnp5J
+	 g4+AjfQXr3e/A==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AEAF03806659;
+	Fri, 21 Mar 2025 20:30:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250314-page-pool-track-dma-v1-0-c212e57a74c2@redhat.com> <20250314-page-pool-track-dma-v1-1-c212e57a74c2@redhat.com>
-In-Reply-To: <20250314-page-pool-track-dma-v1-1-c212e57a74c2@redhat.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Fri, 21 Mar 2025 10:16:38 -0700
-X-Gm-Features: AQ5f1JpuhBehogw3WxvH8_uBEh2ngmkK2xaGkRPh_1xg8XM9z4JphAcaolSD8Kk
-Message-ID: <CAHS8izOMXpYn=XdVt6ysd4SJ+qpPeUShnG9grCZEO7pcJqEVrw@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/3] page_pool: Move pp_magic check into helper functions
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon Horman <horms@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Yonglong Liu <liuyonglong@huawei.com>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>, 
-	Matthew Wilcox <willy@infradead.org>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next V2 0/4] mlx5e: Support recovery counter in reset
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174258903353.2613064.2638906472683771245.git-patchwork-notify@kernel.org>
+Date: Fri, 21 Mar 2025 20:30:33 +0000
+References: <1742112876-2890-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1742112876-2890-1-git-send-email-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, andrew+netdev@lunn.ch, gal@nvidia.com,
+ leonro@nvidia.com, ychemla@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
+ corbet@lwn.net, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kalesh-anakkur.purayil@broadcom.com, jacob.e.keller@intel.com,
+ stfomichev@gmail.com
 
-On Fri, Mar 14, 2025 at 3:12=E2=80=AFAM Toke H=C3=B8iland-J=C3=B8rgensen <t=
-oke@redhat.com> wrote:
->
-> Since we are about to stash some more information into the pp_magic
-> field, let's move the magic signature checks into a pair of helper
-> functions so it can be changed in one place.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Hello:
 
-Straightforward conversion.
+This series was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Reviewed-by: Mina Almasry <almasrymina@google.com>
+On Sun, 16 Mar 2025 10:14:32 +0200 you wrote:
+> Hi,
+> 
+> This series by Yael adds a recovery counter in ethtool, for any recovery
+> type during port reset cycle.
+> Series starts with some cleanup and refactoring patches.
+> New counter is added and exposed to ethtool stats in patch #4.
+> 
+> [...]
 
---=20
-Thanks,
-Mina
+Here is the summary with links:
+  - [net-next,V2,1/4] net/mlx5e: Ensure each counter group uses its PCAM bit
+    https://git.kernel.org/netdev/net-next/c/8e6f6e92d3fe
+  - [net-next,V2,2/4] net/mlx5e: Access PHY layer counter group as other counter groups
+    https://git.kernel.org/netdev/net-next/c/da4fa5d8817d
+  - [net-next,V2,3/4] net/mlx5e: Get counter group size by FW capability
+    https://git.kernel.org/netdev/net-next/c/4c737ceb690c
+  - [net-next,V2,4/4] net/mlx5e: Expose port reset cycle recovery counter via ethtool
+    https://git.kernel.org/netdev/net-next/c/c3b999cad7ec
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
