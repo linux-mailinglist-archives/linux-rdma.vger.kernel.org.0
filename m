@@ -1,152 +1,252 @@
-Return-Path: <linux-rdma+bounces-8892-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8893-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69798A6BD0F
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Mar 2025 15:36:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CE83A6BF0F
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Mar 2025 17:06:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92A5A175EF7
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Mar 2025 14:34:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E0C646356F
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Mar 2025 16:05:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0AD01C5D5E;
-	Fri, 21 Mar 2025 14:34:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lnBN/dqm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2817722A4EA;
+	Fri, 21 Mar 2025 16:05:33 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D557E80C02
-	for <linux-rdma@vger.kernel.org>; Fri, 21 Mar 2025 14:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4191DB366;
+	Fri, 21 Mar 2025 16:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742567642; cv=none; b=YsFO5Cug/QME3Qt2KYEmd20nQ0oLWnwGIb1HM3Cb1gqowYzH9b7eUJetB1YpPU1EhYHyz6PlUjOb2dqGFKTQ9amTZIdufg3odNA5sLjZnWkmnuDCWfgCpYLR9IY0kmvSc2JSEiiB3RklXwMl0aF2qvvXumZZxVw014keElQYvvM=
+	t=1742573132; cv=none; b=M9RLeV+Jq4QBICEkVo4CKlwiciww5sbx4M5UhYZPod3p6sRKTriVoV05aX6u6SeIig60A94fQ9otILF4gYcECo2dsXUdXf+W7hY0uK53nik+PyyjuMC9mhv69w8cEJSc3+BDBbOtRs1DqwL7Zf7Z9aBTQRgSb2ih6Ig+kBYDJfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742567642; c=relaxed/simple;
-	bh=W/Choe4F+HesM2Ag6P961vQ3ByStwVx0DvebiOSt3yU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nFYYXzmi9X+8L445gLwUWnPHPloLBNXveRV2gfmkBA7+1gFoWb5IaDwyngc0CRZxZja0YWfmTB44N4BWHhRGhq+j0zL49oe8+9IzD4ZN9ctsoGHvJdwhXaH05HvhMWrWgxt8BKhDhsnqIXqKHwJZo5vNI6j0CdU0BZRVbJNoQd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lnBN/dqm; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-43d0618746bso14384715e9.2
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Mar 2025 07:34:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1742567639; x=1743172439; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NDFTE8hJf664+Rg33pEXoWr+oi9/NElSsovpV+SufLc=;
-        b=lnBN/dqmCG9KLRNN7TjFxXnJ4osjn0+J8HisZMucyrceDREhNgD9JUFntlly8LcoVe
-         m2p1FXFtK6rVb18gv+UY37j1orj/lYrA1f8N0iRveW7B0QljT9FndvGlkSyoYcx5Hnae
-         ISAIxwV+/1SN/ybvYkqY6K/oTfXa8tgCvGzVUXgWe9PjM09yBURISsmRLCAc1IiugdJy
-         uhItJKrwcR1G6bpT2qkCHCjjOL05LNcCYrL43zxTI2ikrlLyt/+VNp6SHpV/AsRBKgtu
-         orU7GxSUZy28C1wJipaOmXwpxcMWOTFq4oKRVlYj+MSxka+NUYT5wMEE0l54Rlj9Ak36
-         oyRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742567639; x=1743172439;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NDFTE8hJf664+Rg33pEXoWr+oi9/NElSsovpV+SufLc=;
-        b=jXGXfHyGmsLSWWwXcC3HB0SfOdVmjuacZXhCeY7CEosIjC+82unk5X3RKKb0jfc8h4
-         XUHcSyYGc2xtyXpTcHDL7Pmg7qX2yx6cNSAIUA/W2IhS+nsd4+4DPYIBNfBtIX4E+TpK
-         zTt5RcwyAkz5q08dHBWV42BSsy07YJpyl0ZC8hMj9OWGZjUefOuxt083euDY23EkweCG
-         ct/tLkwaHmAa3BdDkgmZxNLibRORJysQiy+CAOvHaLF+5pCfmcHmrzgMWc/8HdzPdJw8
-         IdJHbRp2vKwwYf7Pxs+SRpMxRh1/h3JYi5/kTpSBmACWSl8WZgYId0vmqNEWVFeN9Igm
-         rXkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXoxckopa38bAQADYbBxBZGmUfPax29Kvino6Ynzwxd9+flOLqOKeiqROfNqpbNM3S5LwqcNHDVVeFv@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6Qbt97g/KYT6MsrnjXSiV7e+yUNPqOgR6NuFrv5ibLhYek1B7
-	O4Z5JssDxue7nIKr7lQpLtFP/Oi2kPnuK9stVmG0R6TqGkPjhegG3Dz1H0RVwBQ=
-X-Gm-Gg: ASbGncu9HbScdfpXuPmEh17if6uRr1aD5434rDnkWrtZGzzr/839paxhcCO1Sd+8isM
-	kKIOXiZTC0RZIGrbyiJLM32+IeOzKHlUF7e7Ngnius71LZIORIfPtW6MjLdWYyMFMzh7ILzX4Y5
-	0CM4vbFK2fs8F/tBFIBRakEfYEO7L7KD5YtlCpbFXUOYqg5PnLHKU2LCEQbUVlwRo5qhErAMaje
-	cRYf9Wdc08VCGQoeDWbglFtkO+P+7gj4yshfIHQ6+me+qOefMjMYgPOXARMG1xA0gvvi0V1Osig
-	DTxvTtYpB4EmSuoFlVgrNdARq9gynpUB/tlCGpgSjhrauk8dXQ==
-X-Google-Smtp-Source: AGHT+IFdpuTjxTrv9Kov/yypsxqXIzm2gi8coNYKu88l+fHfLHxSWJRuscLkjzJoa+yqv+J8xaYecw==
-X-Received: by 2002:a7b:c049:0:b0:43c:eeee:b70a with SMTP id 5b1f17b1804b1-43d5100a2camr26453555e9.22.1742567639045;
-        Fri, 21 Mar 2025 07:33:59 -0700 (PDT)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-43d4fd18365sm28619185e9.13.2025.03.21.07.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Mar 2025 07:33:58 -0700 (PDT)
-Date: Fri, 21 Mar 2025 17:33:56 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Shannon Nelson <shannon.nelson@amd.com>
-Cc: jgg@nvidia.com, andrew.gospodarek@broadcom.com,
-	aron.silverton@oracle.com, dan.j.williams@intel.com,
-	daniel.vetter@ffwll.ch, dave.jiang@intel.com, dsahern@kernel.org,
-	gregkh@linuxfoundation.org, hch@infradead.org, itayavr@nvidia.com,
-	jiri@nvidia.com, Jonathan.Cameron@huawei.com, kuba@kernel.org,
-	lbloch@nvidia.com, leonro@nvidia.com, linux-cxl@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	saeedm@nvidia.com, brett.creeley@amd.com
-Subject: Re: [PATCH v4 5/6] pds_fwctl: add rpc and query support
-Message-ID: <ac2b001d-68eb-46c4-ac38-5207161ff104@stanley.mountain>
-References: <20250319213237.63463-1-shannon.nelson@amd.com>
- <20250319213237.63463-6-shannon.nelson@amd.com>
+	s=arc-20240116; t=1742573132; c=relaxed/simple;
+	bh=qIz7FnCtIzm+M/hfQ0kA5l5WgdPkfOv0pSUhcKOdNFU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=I1a9qKUOZqTEFl/hE2OCMEltRS5YqjeI3pjD0GIN+4k4H1BsOuyEE9MPrV05qA2gmqvxYEnUryai2djgoyTwKsAvTxUotA1ehZcWOMpJIqQRxKEfbErhjmHlheDw5H5p6ym0ZY9+WTNWDA2rrsBF7oJrcQfMizrHmobBLIeq1l0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EAACF106F;
+	Fri, 21 Mar 2025 09:05:34 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D56D53F63F;
+	Fri, 21 Mar 2025 09:05:23 -0700 (PDT)
+Message-ID: <e024fe3d-bddf-4006-8535-656fd0a3fada@arm.com>
+Date: Fri, 21 Mar 2025 16:05:22 +0000
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250319213237.63463-6-shannon.nelson@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 00/17] Provide a new two step DMA mapping API
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Jens Axboe <axboe@kernel.dk>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+ Keith Busch <kbusch@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Logan Gunthorpe <logang@deltatee.com>, Yishai Hadas <yishaih@nvidia.com>,
+ Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+ Kevin Tian <kevin.tian@intel.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Jonathan Corbet <corbet@lwn.net>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+ iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+ linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+ Randy Dunlap <rdunlap@infradead.org>
+References: <cover.1738765879.git.leonro@nvidia.com>
+ <20250220124827.GR53094@unreal>
+ <1166a5f5-23cc-4cce-ba40-5e10ad2606de@arm.com>
+ <20250302085717.GO53094@unreal>
+From: Robin Murphy <robin.murphy@arm.com>
+Content-Language: en-GB
+In-Reply-To: <20250302085717.GO53094@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 19, 2025 at 02:32:36PM -0700, Shannon Nelson wrote:
-> +static struct pds_fwctl_query_data *pdsfc_get_endpoints(struct pdsfc_dev *pdsfc,
-> +							dma_addr_t *pa)
-> +{
-> +	struct device *dev = &pdsfc->fwctl.dev;
-> +	union pds_core_adminq_comp comp = {0};
-> +	struct pds_fwctl_query_data *data;
-> +	union pds_core_adminq_cmd cmd;
-> +	dma_addr_t data_pa;
-> +	int err;
-> +
-> +	data = dma_alloc_coherent(dev->parent, PAGE_SIZE, &data_pa, GFP_KERNEL);
-> +	err = dma_mapping_error(dev, data_pa);
-> +	if (err) {
-> +		dev_err(dev, "Failed to map endpoint list\n");
-> +		return ERR_PTR(err);
-> +	}
+On 02/03/2025 8:57 am, Leon Romanovsky wrote:
+> On Fri, Feb 28, 2025 at 07:54:11PM +0000, Robin Murphy wrote:
+>> On 20/02/2025 12:48 pm, Leon Romanovsky wrote:
+>>> On Wed, Feb 05, 2025 at 04:40:20PM +0200, Leon Romanovsky wrote:
+>>>> From: Leon Romanovsky <leonro@nvidia.com>
+>>>>
+>>>> Changelog:
+>>>> v7:
+>>>>    * Rebased to v6.14-rc1
+>>>
+>>> <...>
+>>>
+>>>> Christoph Hellwig (6):
+>>>>     PCI/P2PDMA: Refactor the p2pdma mapping helpers
+>>>>     dma-mapping: move the PCI P2PDMA mapping helpers to pci-p2pdma.h
+>>>>     iommu: generalize the batched sync after map interface
+>>>>     iommu/dma: Factor out a iommu_dma_map_swiotlb helper
+>>>>     dma-mapping: add a dma_need_unmap helper
+>>>>     docs: core-api: document the IOVA-based API
+>>>>
+>>>> Leon Romanovsky (11):
+>>>>     iommu: add kernel-doc for iommu_unmap and iommu_unmap_fast
+>>>>     dma-mapping: Provide an interface to allow allocate IOVA
+>>>>     dma-mapping: Implement link/unlink ranges API
+>>>>     mm/hmm: let users to tag specific PFN with DMA mapped bit
+>>>>     mm/hmm: provide generic DMA managing logic
+>>>>     RDMA/umem: Store ODP access mask information in PFN
+>>>>     RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page
+>>>>       linkage
+>>>>     RDMA/umem: Separate implicit ODP initialization from explicit ODP
+>>>>     vfio/mlx5: Explicitly use number of pages instead of allocated length
+>>>>     vfio/mlx5: Rewrite create mkey flow to allow better code reuse
+>>>>     vfio/mlx5: Enable the DMA link API
+>>>>
+>>>>    Documentation/core-api/dma-api.rst   |  70 ++++
+>>>    drivers/infiniband/core/umem_odp.c   | 250 +++++---------
+>>>>    drivers/infiniband/hw/mlx5/mlx5_ib.h |  12 +-
+>>>>    drivers/infiniband/hw/mlx5/odp.c     |  65 ++--
+>>>>    drivers/infiniband/hw/mlx5/umr.c     |  12 +-
+>>>>    drivers/iommu/dma-iommu.c            | 468 +++++++++++++++++++++++----
+>>>>    drivers/iommu/iommu.c                |  84 ++---
+>>>>    drivers/pci/p2pdma.c                 |  38 +--
+>>>>    drivers/vfio/pci/mlx5/cmd.c          | 375 +++++++++++----------
+>>>>    drivers/vfio/pci/mlx5/cmd.h          |  35 +-
+>>>>    drivers/vfio/pci/mlx5/main.c         |  87 +++--
+>>>>    include/linux/dma-map-ops.h          |  54 ----
+>>>>    include/linux/dma-mapping.h          |  85 +++++
+>>>>    include/linux/hmm-dma.h              |  33 ++
+>>>>    include/linux/hmm.h                  |  21 ++
+>>>>    include/linux/iommu.h                |   4 +
+>>>>    include/linux/pci-p2pdma.h           |  84 +++++
+>>>>    include/rdma/ib_umem_odp.h           |  25 +-
+>>>>    kernel/dma/direct.c                  |  44 +--
+>>>>    kernel/dma/mapping.c                 |  18 ++
+>>>>    mm/hmm.c                             | 264 +++++++++++++--
+>>>>    21 files changed, 1435 insertions(+), 693 deletions(-)
+>>>>    create mode 100644 include/linux/hmm-dma.h
+>>>
+>>> Kind reminder.
+>>
+>> ...that you've simply reposted the same thing again? Without doing anything
+>> to address the bugs, inconsistencies, fundamental design flaws in claiming
+>> to be something it cannot possibly be, the egregious abuse of
+>> DMA_ATTR_SKIP_CPU_SYNC proudly highlighting how unfit-for-purpose the most
+>> basic part of the whole idea is, nor *still* the complete lack of any
+>> demonstrable justification of how callers who supposedly can't use the IOMMU
+>> API actually benefit from adding all the complexity of using the IOMMU API
+>> in a hat but also still the streaming DMA API as well?
+> 
+> Can you please provide concrete list of "the bugs, inconsistencies, fundamental
+> design flaws", so we can address/fix them?
+> 
+> We are in v7 now and out of all postings you replied to v1 and v5 only with
+> followups from three of us (Christoph, Jason and me).
 
-This doesn't work.  The dma_alloc_coherent() function doesn't necessarily
-initialize data_pa.  I don't know very much about DMA but can't we just
-check:
+Let's start with just the first 3 specific points from one patch in v1:
 
-	data = dma_alloc_coherent(dev->parent, PAGE_SIZE, &data_pa, GFP_KERNEL);
-	if (!data)
-		return ERR_PTR(-ENOMEM);
+"If you really imagine this can support non-coherent operation and
+DMA_ATTR_SKIP_CPU_SYNC, where are the corresponding explicit sync
+operations? dma_sync_single_*() sure as heck aren't going to work..."
 
-regards,
-dan carpenter
+Still completely unaddressed in v7.
 
-> +
-> +	cmd = (union pds_core_adminq_cmd) {
-> +		.fwctl_query = {
-> +			.opcode = PDS_FWCTL_CMD_QUERY,
-> +			.entity = PDS_FWCTL_RPC_ROOT,
-> +			.version = 0,
-> +			.query_data_buf_len = cpu_to_le32(PAGE_SIZE),
-> +			.query_data_buf_pa = cpu_to_le64(data_pa),
-> +		}
-> +	};
-> +
-> +	err = pds_client_adminq_cmd(pdsfc->padev, &cmd, sizeof(cmd), &comp, 0);
-> +	if (err) {
-> +		dev_err(dev, "Failed to send adminq cmd opcode: %u entity: %u err: %d\n",
-> +			cmd.fwctl_query.opcode, cmd.fwctl_query.entity, err);
-> +		dma_free_coherent(dev->parent, PAGE_SIZE, data, data_pa);
-> +		return ERR_PTR(err);
-> +	}
-> +
-> +	*pa = data_pa;
-> +
-> +	return data;
-> +}
+"In fact, same goes for SWIOTLB bouncing even in the coherent case."
 
+Still completely unaddressed in v7.
+
+"Plus if the aim is to pass P2P and whatever arbitrary physical 
+addresses through here as well, how can we be sure this isn't going to 
+explode?"
+
+Still completely unaddressed in v7 for SWIOTLB; sort-of-addressed for 
+cache coherency in v3 by egregious abuse of DMA_ATTR_SKIP_CPU_SYNC in 
+callers, which when you pinged v5 I pointed out still cannot work in 
+general for the way the API claims to be able to operate (even with a 
+less-abusive dedicated attribute).
+
+And I'm going to stop there because that's already more than enough to 
+demonstrate that the whole thing is nowhere near what it claims to be.
+
+>> Yeah, consider me reminded.
+> 
+> Silence means agreement.
+
+No, silence means I already pointed out significant issues, and so until 
+I see patches actually doing anything to attempt to address those issues 
+I've got better things to do than repeat myself.
+
+>> In case I need to make it any more explicit, NAK to this not-generic
+>> not-DMA-mapping API, until you can come up with either something which *can*
+>> actually work in any kind of vaguely generic manner as claimed, or instead
+>> settle on a reasonable special-case solution for justifiable special cases.
+>> Bikeshedding and rebasing through half a dozen versions, while ignoring
+>> fundamental issues I've been pointing out from the very beginning, has not
+>> somehow magically made this series mature and acceptable to merge.
+> 
+> You never responded to Christoph's answers, so please try your best and
+> be professional, write down the list of things you want to see handled
+> in next version and it will be done. It is impossible to guess what you
+> want if you are not saying it clearly.
+
+Do I really need to spell out that if these broken scenarios are not 
+actually supposed to be supported, then there should not be dead code 
+purporting to support them, and there should be input checks 
+guaranteeing they can't happen.
+
+However I have to say I'm not entirely convinced that mixing kernel 
+memory and P2P won't happen, given the effort Logan went to to make sure 
+it was supported in the scatterlist case...
+
+> The main issue which we are trying to solve "abuse of SG lists for
+> things without struct page", is not going to disappear by itself.
+
+What everyone seems to have missed is that while it is technically true 
+that the streaming DMA API doesn't need a literal struct page, it still 
+very much depends on something which having a struct page makes it 
+sufficiently safe to assume: that what it's being given is valid kernel 
+memory that it can do things like phys_to_virt() or kmap_atomic() on. A 
+completely generic DMA mapping API which could do the right thing for 
+any old PFN on any system would be a very hard thing to achieve, and I 
+suspect even harder to do efficiently. And pushing the complexity into 
+every caller to encourage and normalise drivers calling virt_to_phys() 
+all over (_so_ many bugs there...) and pass magic flags to influence 
+internal behaviour of the API implementation clearly isn't scalable. 
+Don't think I haven't seen the other thread where Christian had the same 
+concern that this "sounds like an absolutely horrible design."
+
+Yes, it's a hard problem. No, I can't give you the right answer. But 
+that doesn't mean I have to accept a wrong answer either.
+
+>>
+>> Honestly, given certain other scenarios we may also end up having to deal
+>> with, if by the time everything broken is taken away, it were to end up
+>> stripped all the way back to something well-reasoned like:
+>>
+>> "Some drivers want more control of their DMA buffer layout than the
+>> general-purpose IOVA allocator is able to provide though the DMA mapping
+>> APIs, but also would rather not have to deal with managing an entire IOMMU
+>> domain and address space, making MSIs work, etc. Expose
+>> iommu_dma_alloc_iova() and some trivial IOMMU API wrappers to allow drivers
+>> of coherent devices to claim regions of the default domain wherein they can
+>> manage their own mappings directly."
+>>
+>> ...I wouldn't necessarily disagree.
+> 
+> Something like that was done in first RFC version, but the overall
+> feeling was that it is layer violation with unclear path to support
+> swiotlb for NVMe.
+
+So what is it now, a layering violation in a hat with still no clear 
+path to support SWIOTLB? What, are we going to suggest that non-IOMMU 
+systems should reserve gigabytes of SWIOTLB space so that every DMA 
+mapping can preallocate a DMA address (in PA space) and then be forcibly 
+bounced? You do realise that the people who *really* care about DMA 
+mapping performance above all else are putting the IOMMU in passthrough 
+where iommu-dma is out of the picture, right?
+
+Thanks,
+Robin.
 
