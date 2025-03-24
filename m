@@ -1,166 +1,98 @@
-Return-Path: <linux-rdma+bounces-8924-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8925-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65FB9A6E43B
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 21:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DA51A6E4AC
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 21:50:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DBDB1893CC2
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 20:23:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00A07188C6AB
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 20:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C54F1DB548;
-	Mon, 24 Mar 2025 20:22:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C8641DDC33;
+	Mon, 24 Mar 2025 20:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=enfabrica.net header.i=@enfabrica.net header.b="gdMjH774"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jr7zAuPA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CBC51DB13E
-	for <linux-rdma@vger.kernel.org>; Mon, 24 Mar 2025 20:22:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251261C7015;
+	Mon, 24 Mar 2025 20:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742847747; cv=none; b=Y9kCARejpTxEEjA7LqM67nW5nIuVuXgldHaDbAOLuOY07estHTMts5mAviPfUHNBkZxesFbIyAvTsF+ZBBLj/hJo5LUteWAbHvPU5ipBOjrtmZzmVi73QcBjympVTdLRZhyPbwlMEuB9TRTdR6pavbsPsBpCNiayTLMMydCyof0=
+	t=1742849404; cv=none; b=WQeN0DmJiDiKFtBzJW+TIB+oUSkjYJFo2iffr6kCygZgC2QWjk3RtyPJLTNeEcTMTlYIIiUtUxFHb81b0ewACMVkx9oG2Ixh48f+2bhNX1/CWCjWMteHDMn3ioe98L///O5sEQTPAX+6CVmd8b/Gru3vkGd42YG/g13dV+VwNR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742847747; c=relaxed/simple;
-	bh=3RR1O3uUwyHLDS/Xwp5C4DZHeykQuZTNOZ+9Xqxk888=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E7dCIMzXu1wOx2qVx0EBgex6EXGMz2s0f6it4JSISfYr0dT/vhg7R2nQ0JI6v11OhfwDgipOx/JQ3o/oDHOxJNMTRjCpf4uzGNqdbdwbE1At/jdsGpPM17YK2GRPmd5H1S4IEf6tWkEfzydZ8rrLlHy7sM/tUkZORb5D36E6agk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enfabrica.net; spf=pass smtp.mailfrom=enfabrica.net; dkim=pass (2048-bit key) header.d=enfabrica.net header.i=@enfabrica.net header.b=gdMjH774; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enfabrica.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enfabrica.net
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2260c91576aso82042455ad.3
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Mar 2025 13:22:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=enfabrica.net; s=google; t=1742847745; x=1743452545; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nFsxp/63iCUPOqWDu6A9el5he2EWYciacAN2mVUJ8jM=;
-        b=gdMjH774clX5npPNlthSwRcNPQi2vVgbiCeqFa4VN1ib96/7gKn0lgZon9bf6SSZ/0
-         EqKcL3GGGlmDnm9/Ivn5cnexyhxXAtIyTmmMWib5VpeEAEdVopWPlPAMxPl+uX2nsV/E
-         CvSPbbh1CiPmB8PuClyT2Q+g7oBOSmeCII4vu+Veq0jD+EDcGv/OPJB1SKDZMo7NHjA+
-         DXxC7MRcmgB7p3aGjZUxEizct0WkZh7o6p8mgEm9nE3LPDJeSDk01Qtb8BEzEJzZj3os
-         N0peMyV/OHekXSvwooZKU3Zwi+cr0VzyI2pBhZXoYuekdjL07WjeLVzDTciJqmJtA6xh
-         lTwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742847745; x=1743452545;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nFsxp/63iCUPOqWDu6A9el5he2EWYciacAN2mVUJ8jM=;
-        b=YkZCti39z+heNM0VVAGOUbkEKBPx15z0gHRo6WGoNZDex5pO8FyEtBKPPqLZhDB/wL
-         ESi+y4ebFDBDL9lMu90NqWx7NHo/q3lhalxuvQxKuTQHWoeVtZkcoqJrRgh2MTFH7JsZ
-         R8lRxjPWEpvbbKhVXzXsSjoAj+8mjrufOnrlXHCchedznB8clpccED8QPY2lX/F//Reb
-         5MEl2fiYtM+5v2gLf6E2oTNXmuqlXsUhm7XjB5I5WFylpEKuQ83XWJyAmaid42GeKLXl
-         ZADIgmnlUfHNtn54ud9T8lt3ogzHsxggq6ZlgZZMvlxG5368ovpuv0YEIWOygEcSBBYR
-         kwRA==
-X-Forwarded-Encrypted: i=1; AJvYcCWUbIkPl3lNYM1H46m1+4Auc4wxh1PMkM7QhAncJt2ZoYn948aFfQTGbDwFG8gFfmGT/Ny7accOckzG@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyq+cnbNUHw2BvulLj+vXu+MN1Zc1M3mfhA0Hhx1vrfhHBd5dfs
-	sDk93ir84wRIQOmCYAVYzyHkh/L0cWXl34EJ0tztUfEllmpPgkrioAiW4+9UM6mEnRYC0G/4QnI
-	fce9an9Xpt7KCtF8tvykbSSh1f9HtKqodFjyPWQ==
-X-Gm-Gg: ASbGncvuUUD93V6ski4AhiOkAttLnD6zdTAjp79fElKaBoS8bLpmDDWb/56Zdqj1oJY
-	ZMiklWvYa9jwcNXbNIDe59dXG6j4gOn/mXI+yF0YnQN2Fr1LyiLx78AC6bqGaEAwClKHDGoudsk
-	inNH85dvXnKoxw/76T+TaRk4SGNA==
-X-Google-Smtp-Source: AGHT+IF1JOwCv1HaIFDtvO06w4XVZYmHFe3lxzlkwOzdDc0rbg7YI/broUnzEJIMCBzMgYr+4vmuMeylvcUVfz9Iqs4=
-X-Received: by 2002:a17:903:22c4:b0:223:f9a4:3fa8 with SMTP id
- d9443c01a7336-22780c7d8b4mr216170885ad.19.1742847745223; Mon, 24 Mar 2025
- 13:22:25 -0700 (PDT)
+	s=arc-20240116; t=1742849404; c=relaxed/simple;
+	bh=+E1a6f1BfRt3NaOdySFh4oT5oXF9cFDxHWIgqvGj654=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=C1B25Q0Mt+S5gNwyXZWVFmJOiz7ly2W6Q6+P9OPxCq0HKCd1WdXJl1QlIYwkIX+/uAZzAn2ZbfH17CWaxlGPLptZDVzP79Na9aG9sXlLhsHrat7XzFIKkp7y61P/ILwQb4JdFbmZWZRURBwmXTbhEQ6HRg3/I6uI/IWSJUUEB3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jr7zAuPA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8477AC4CEE4;
+	Mon, 24 Mar 2025 20:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742849403;
+	bh=+E1a6f1BfRt3NaOdySFh4oT5oXF9cFDxHWIgqvGj654=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Jr7zAuPABm3xoichu2mNDjLuSrufijSM1rJg315XTKy7nMzfSeEFHbuNIhddxTCLv
+	 jDa4EJuqQ6f+gRH1cNi2OOQ1NiJwrF+OMnUqVu4xdrgonqcNkyAkUxO2X/AVVlYWpG
+	 PJmVDRAdWBpf20/gM1SqUU9R5X5bUMRTO88clS2rRhvkTRyAnTMzVLPzw1xEsXo4q3
+	 W7NKsQvBpg3dsArq09m0BFd0hYCxJMB+vVCi/WyNClQv5G6oRQaNJlIfn7UntfZ78D
+	 Qn1PzjtOufoLhxA2tdLF2ZUDvibqEtwuPG1f0ys3tNlfWGgulwlFzZJgQ8zDZBy+SF
+	 LpDuKZGeZLyPQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ED15B380664D;
+	Mon, 24 Mar 2025 20:50:40 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250306230203.1550314-1-nikolay@enfabrica.net> <20250319164802.GA116657@nvidia.com>
-In-Reply-To: <20250319164802.GA116657@nvidia.com>
-From: Roland Dreier <roland@enfabrica.net>
-Date: Mon, 24 Mar 2025 13:22:13 -0700
-X-Gm-Features: AQ5f1JoBu9VUTrd7Dl1ppOeRVs6Mkzrwf4SdIwj1dYyeU4Ssu5JmPf4LNMUsUs0
-Message-ID: <CALgUMKhB7nZkU0RtJJRtcHFm2YVmahUPCQv2XpTwZw=PaaiNHg@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/13] Ultra Ethernet driver introduction
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Nikolay Aleksandrov <nikolay@enfabrica.net>, netdev@vger.kernel.org, shrijeet@enfabrica.net, 
-	alex.badea@keysight.com, eric.davis@broadcom.com, rip.sohan@amd.com, 
-	dsahern@kernel.org, bmt@zurich.ibm.com, winston.liu@keysight.com, 
-	dan.mihailescu@keysight.com, kheib@redhat.com, parth.v.parikh@keysight.com, 
-	davem@redhat.com, ian.ziemba@hpe.com, andrew.tauferner@cornelisnetworks.com, 
-	welch@hpe.com, rakhahari.bhunia@keysight.com, kingshuk.mandal@keysight.com, 
-	linux-rdma@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/3] mlx5 cleanups 2025-03-19
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174284943974.4167801.17963287974570911086.git-patchwork-notify@kernel.org>
+Date: Mon, 24 Mar 2025 20:50:39 +0000
+References: <1742412199-159596-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1742412199-159596-1-git-send-email-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, andrew+netdev@lunn.ch, gal@nvidia.com,
+ leonro@nvidia.com, saeedm@nvidia.com, leon@kernel.org,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, moshe@nvidia.com, mbloch@nvidia.com
 
-Hi Jason,
+Hello:
 
-I think we were not clear on the overall discussion and so we are much
-closer to agreement than you might think, see below.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
- > I was away while this discussion happened so I've gone through and
- > read the threads, looked at the patches and I don't think I've changed
- > my view since I talked to Enfabrica privately on this topic almost a
- > year ago.
+On Wed, 19 Mar 2025 21:23:16 +0200 you wrote:
+> Hi,
+> 
+> This series contains small cleanups to the mlx5 core and Eth drivers.
+> 
+> Regards,
+> Tariq
+> 
+> [...]
 
-First, want to clarify that this patchset is collaborative development
-within the overall Ultra Ethernet Consortium. That's not to take away
-from the large effort that Nik from Enfabrica put into this but simply
-to give a little more context.
+Here is the summary with links:
+  - [net-next,1/3] net/mlx5: Remove NULL check before dev_{put, hold}
+    https://git.kernel.org/netdev/net-next/c/42cd8dee3a1b
+  - [net-next,2/3] net/mlx5e: Use right API to free bitmap memory
+    https://git.kernel.org/netdev/net-next/c/cac48eb6d383
+  - [net-next,3/3] net/mlx5e: Always select CONFIG_PAGE_POOL_STATS
+    https://git.kernel.org/netdev/net-next/c/cba38d1235ff
 
- > I do not agree with creating a new subsystem (or whatever you are
- > calling drivers/ultraeth) for a single RDMA protocol and see nothing
- > new here to change my mind. I would likely NAK the direction I see in
- > this RFC, as I have other past attempts to build RDMA HW interfaces
- > outside of the RDMA subystem.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-UEC is definitely not trying to create anything new beyond adding
-support for Ultra Ethernet. By far the bulk of this patchset is adding
-a software model of the specific Ultra Ethernet transport's protocol /
-packet handling, and that code is currently in drivers/ultraeth. I
-don't feel that pathnames are particularly important, and we could
-move the code to something like drivers/infiniband/ultraeth, but that
-seems a bit silly. But certainly we are open to suggestions.
 
- >    So, this RFC is woefully incomplete. I think you greatly underestimate
- >    how much work you are looking at to duplicate and re-invent the
- >    existing RDMA infrastructure. Frankly I'm not even sure why you
- >    sent this RFC when it doesn't show enough to even evaluate..
-
-Total agreement that this RFC is incomplete! We are trying to get
-something out early, exactly to get the discussion started and agree
-on the best way to add kernel support for UE.
-
-To be clear - we are not trying to reinvent or bypass uverbs, and
-there is complete agreement within UEC that we should reuse the uverbs
-infrastructure so that we get the advantages of solid, mature
-mechanisms for memory pinning, resource tracking / cleanup ordering,
-etc.
-
-With that said, Ultra Ethernet devices likely will not have interfaces
-that map well onto QPs, MRs, etc. so we will be sending patches to
-drivers/infiniband/uverbs* that generalize things to allow "struct
-ib_device" objects that do not implement "required verbs."
-
- >    Ie you said:
- >
- >     > I should've been more specific - it is not an issue for UEC and the way
- >     > our driver's netlink API is designed. We fully understand the pros and
- >     > cons of our approach.
- >
- >    Which is exactly the kind of narrow thinking that creates long term
- >    trouble in uAPI design. Do your choices actually work for *ALL*
- >    future HW designs and others drivers not just "our drivers
- >    netlink"? I think not.
- >
- >    Given UE spec doesn't even have something pretending to be a
- >    kernel/user interface standard I think we will see an extreme
- >    variety of HW implementations here.
-
-I think the netlink API and job handling overall is the area where the
-most discussion is probably required. UE is somewhat novel in
-elevating the concept of a "job" to a standard object with specific
-properties that determine the values in packet headers. But I'm open
-to making "job" a top-level RDMA object... I guess the idea would be
-to define an interface for creating a new type of "job FD" with a
-standard ABI for setting properties?
-
- - Roland
 
