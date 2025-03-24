@@ -1,109 +1,95 @@
-Return-Path: <linux-rdma+bounces-8908-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8909-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF904A6CFED
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Mar 2025 17:03:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E62C4A6D32B
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 03:50:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32CD83ACFC6
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Mar 2025 16:02:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 097363ADB7A
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 02:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 164D37E792;
-	Sun, 23 Mar 2025 16:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD11215A86B;
+	Mon, 24 Mar 2025 02:49:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JZ0yj1vC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5oP1tWd"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C007F13AC1;
-	Sun, 23 Mar 2025 16:02:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A382E3392;
+	Mon, 24 Mar 2025 02:49:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742745777; cv=none; b=aNngXnqraNp1xcgYP9xJKqp+/mkWfLFxS2EcAdsjOr9Fqy3N9EgztyqwZtSguj4o4PXfdrETAxQ5MF1hCwckcCUbn2gjf5tilfjCUCjtoMfSQmqoC87A4ee/6o7w8SAd7cQDJycxcpNbNFp7S8Gg9yyHdaHcYaqIdo3KtkQtgCQ=
+	t=1742784598; cv=none; b=Jb5nVb2A1RYatEW3/AmaNmA1JvTQoJ3thRTaF2DP5fUUotV7htI+WHxsP98w+o6mXeMRmhQeAytLtu/oxBgVF0sb77lxAEiAViQx6SBOU4xE3yx/EnrANNGeecfC1rIU7H+3KSplndCtKrZIplH1yWp1N6lIQGe1Eh/LHgv1CLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742745777; c=relaxed/simple;
-	bh=H7w/BjMPnYgmMenGfqzBfq/qcAtJzqu15o6ToUZvRwI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QQtkQwcTZQET8Grdyg/ugKICggdqkDH9mzHZlVux5X2lmJfYzDHQZemQhtlkKJliUb7J4QRUdSrElp9+BhChdjps4dnpMaOsqEqHHkIuByNECLcp6Nor2N5Wsij5ELkpixt9jpOV5yOjRuab2WKH1ZTlHl3QRhkqV8ozmh70Rdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JZ0yj1vC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E268C4CEE2;
-	Sun, 23 Mar 2025 16:02:53 +0000 (UTC)
+	s=arc-20240116; t=1742784598; c=relaxed/simple;
+	bh=XyOiq3hanwj9nMEp9GtsG2uBm/cuEPJnvsDsrn23lbA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=IJZtI9hf7xboykICtv10go2Ka/1Ij3pExbZVLnNCAk4fDLRbm9vWeADXhcvibaasssGhf9azL++mqFURB0+yDJ3++S7oHr5yHHQvG2D5KigNvmqBJULvTwxhWS1Bhv/ACyudyJp38tzBt30BDNa3+Ssb6du+Z2w2M+LLIit7fe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b5oP1tWd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F6D9C4CEE2;
+	Mon, 24 Mar 2025 02:49:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742745777;
-	bh=H7w/BjMPnYgmMenGfqzBfq/qcAtJzqu15o6ToUZvRwI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JZ0yj1vC8haewJgaec1HBq77BTW0SfsoME8Nmw+oPpG0g/E9dN9E6quj2rSlYPq34
-	 g1PyXkA8HvH+OyoK9oEzDptSNP+WO1rE2ttaq4h+P9iofLaAY9VGx9z+vtWmQJfjml
-	 r0tzSzqEAgNE7f8e0SwdzUCdi2w2bOd2cdoxyhwyxLDRQTgKEbHaItQCJcjHqISJep
-	 0BSzd0purxOWnl/2teRAlqIqtJiUsFZf2cQRRrs9VFH0IVng4Shv/WC+1JWWOBgD8Q
-	 yi6EGq9W39IO8yZNz63pv4B2K5w4318tgt99lZyZggTouUgN5sQbnW0huCaKm8nK2e
-	 hF2ISgb/DeOSQ==
-Date: Sun, 23 Mar 2025 16:02:50 +0000
-From: Simon Horman <horms@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>, Gal Pressman <gal@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	Dragos Tatulea <dtatulea@nvidia.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
-Subject: Re: [PATCH net-next] net/mlx5e: TX, Utilize WQ fragments edge for
- multi-packet WQEs
-Message-ID: <20250323160250.GQ892515@horms.kernel.org>
-References: <1742391746-118647-1-git-send-email-tariqt@nvidia.com>
+	s=k20201202; t=1742784597;
+	bh=XyOiq3hanwj9nMEp9GtsG2uBm/cuEPJnvsDsrn23lbA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=b5oP1tWdpUQDy17vIfG7d8xtX8RVwrjRsZjknHu0yYcjIi56/4AC75NoY8vZIOyX1
+	 iSUskfbtzByBcMLBtbImCUrlPUjxtTFYFgFL2QdeubxKJ6dovIxU9e/hXNSPvEO4mU
+	 Nf1EE816amgqT0eNL7mQsMtopB+JH1jldWtxLdLHDxdLBuFe18rVfo/Et/PfIe6z//
+	 PdQN7zLF4Hr/+Al0kFCVlmjE4L6ZyR2JFaO/4kbZRnyF7o1NG+gMiVUPfHUCiYDT4K
+	 n/cJII5GZE2UmoT6SsH3TaA07e4WW1Zq/oyvRLdWy8sOnwsymTPTGlmqKDGF2LywdP
+	 QCnr8GpOAIIZw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 714DA380AA70;
+	Mon, 24 Mar 2025 02:50:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1742391746-118647-1-git-send-email-tariqt@nvidia.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH iproute2-next 0/2] Add optional-counters binding support
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174278463329.3212931.9680954634489028299.git-patchwork-notify@kernel.org>
+Date: Mon, 24 Mar 2025 02:50:33 +0000
+References: <20250319082529.287168-1-phaddad@nvidia.com>
+In-Reply-To: <20250319082529.287168-1-phaddad@nvidia.com>
+To: Patrisious Haddad <phaddad@nvidia.com>
+Cc: leon@kernel.org, dsahern@gmail.com, stephen@networkplumber.org,
+ netdev@vger.kernel.org, jgg@nvidia.com, linux-rdma@vger.kernel.org
 
-On Wed, Mar 19, 2025 at 03:42:26PM +0200, Tariq Toukan wrote:
-> For simplicity reasons, the driver avoids crossing work queue fragment
-> boundaries within the same TX WQE (Work-Queue Element). Until today, as
-> the number of packets in a TX MPWQE (Multi-Packet WQE) descriptor is not
-> known in advance, the driver pre-prepared contiguous memory for the
-> largest possible WQE. For this, when getting too close to the fragment
-> edge, having no room for the largest WQE possible, the driver was
-> filling the fragment remainder with NOP descriptors, aligning the next
-> descriptor to the beginning of the next fragment.
-> 
-> Generating and handling these NOPs wastes resources, like: CPU cycles,
-> work-queue entries fetched to the device, and PCI bandwidth.
-> 
-> In this patch, we replace this NOPs filling mechanism in the TX MPWQE
-> flow. Instead, we utilize the remaining entries of the fragment with a
-> TX MPWQE. If this room turns out to be too small, we simply open an
-> additional descriptor starting at the beginning of the next fragment.
-> 
-> Performance benchmark:
-> uperf test, single server against 3 clients.
-> TCP multi-stream, bidir, traffic profile "2x350B read, 1400B write".
-> Bottleneck is in inbound PCI bandwidth (device POV).
-> 
-> +---------------+------------+------------+--------+
-> |               | Before     | After      |        |
-> +---------------+------------+------------+--------+
-> | BW            | 117.4 Gbps | 121.1 Gbps | +3.1%  |
-> +---------------+------------+------------+--------+
-> | tx_packets    | 15 M/sec   | 15.5 M/sec | +3.3%  |
-> +---------------+------------+------------+--------+
-> | tx_nops       | 3  M/sec   | 0          | -100%  |
-> +---------------+------------+------------+--------+
-> 
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+Hello:
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+This series was applied to iproute2/iproute2-next.git (main)
+by David Ahern <dsahern@kernel.org>:
+
+On Wed, 19 Mar 2025 10:25:24 +0200 you wrote:
+> Add optional-counters binding support together with new packets/bytes
+> counters. Previously optional-counters were on a per link basis, this
+> series allows users to bind optional-counters to a specific counter,
+> which allows tracking optional-counter over a specific QP group.
+> 
+> The support is added for both binding modes, automatic and manual,
+> in both cases the bound optional counters are those that are currently
+> configured over the link when trying to bind the QP.
+> 
+> [...]
+
+Here is the summary with links:
+  - [iproute2-next,1/2] rdma: update uapi headers
+    https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git/commit/?id=85860c7dce2c
+  - [iproute2-next,2/2] rdma: Add optional-counter option to rdma stat bind commands
+    https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git/commit/?id=a03f40534f6c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
