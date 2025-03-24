@@ -1,90 +1,118 @@
-Return-Path: <linux-rdma+bounces-8919-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8920-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED1DBA6E071
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 18:01:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08FD7A6E193
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 18:52:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0E80188BEE7
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 17:01:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18D807A7A14
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 17:51:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16503263F28;
-	Mon, 24 Mar 2025 17:01:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0DF5264F89;
+	Mon, 24 Mar 2025 17:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E8U/56rW"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="RQwIXqJB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A9A25F983;
-	Mon, 24 Mar 2025 17:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E19F2641E9;
+	Mon, 24 Mar 2025 17:43:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742835672; cv=none; b=KlrtNljXM7wP5aI5/Rc5nWq2rrQp2gyV1gLAHx16JcEBEBjYfBitII3dSNuOSGVj/+XjqZWWPGhP/D01gH1mYqCLpftlS87DesUBAAGr2T9VJG0cCPZPY+4FdK01z66AwHDJCmJXYu1hD2HVLChVgx33Ol0JUjWz5XfsNGsxN+4=
+	t=1742838221; cv=none; b=BhrFzI2OdffKdpjyrV0uF6E/vmn7Ua/bAlla9P8j/buSpA8UFIVnEAom5pbTnT89RVOlh2/OqxxVmLBXbyPz0nFac55xLnE/UPo5yALjnTEWNN7nbBgeWoRHm2408DSqySiUb7jUXm046oCoGWwDpqL6rmZbdc4d1r2UXjQTaIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742835672; c=relaxed/simple;
-	bh=rl4bGchbGnhGJm3HPX/K4Jg2ZZTwUiWgytXyO1M/v1w=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HwyQrsc4oaATMLtW5nzrYsDQSlnxikzJpyZYyZTAwUya24KWOEWsxc5F/2ET7+6s/oUqcvfK+FX3Or2KywTqOInJtWuORBwzEyNzr1T/V2DYxZLVgv50GieAbl95B4WGESDyjv+3tssaOqUN0JMfLHliyjx/hgtlTdDc6savXfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E8U/56rW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDE01C4CEDD;
-	Mon, 24 Mar 2025 17:01:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742835672;
-	bh=rl4bGchbGnhGJm3HPX/K4Jg2ZZTwUiWgytXyO1M/v1w=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=E8U/56rWRPlEqYJ+vyaqxXzfJzeYAh2FaoQJvApSyZ7F8zx6H+kneVjL1c+PcBZb2
-	 rs63VWjd82RBiwRfnYSZ/GH++kB6pGqljBWMUFZGvMWIBfhHziKpEFMPH6aLAMyW/U
-	 Ha41y2+nm4NSqEY+hyssRChl4p8bMGpSdPYdwFrDbnPwfAvhwADJ+DngFlKvCrxSwc
-	 COqnfyf2fN9XnQkL322NdrI3c3dqbN6kNeyA+0mfB1az/wtE9ZP+xkn94N1bYPkm3p
-	 Qp62DZJ4+CvVXI2bCGBGG+f0BO2WTdn0sVpcsISEwsg89NKCRRXfFjL+iFUBe+IDB7
-	 IrvbbIvlMnRUg==
-Date: Mon, 24 Mar 2025 10:01:03 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Simon Horman <horms@kernel.org>
-Cc: Mark Bloch <mbloch@nvidia.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Sabrina Dubroca <sd@queasysnail.net>, Kuniyuki Iwashima
- <kuniyu@amazon.com>, Leon Romanovsky <leon@kernel.org>, David Ahern
- <dsahern@kernel.org>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- Mark Zhang <markzhang@nvidia.com>, Maher Sanalla <msanalla@nvidia.com>
-Subject: Re: [PATCH net] rtnetlink: Allocate vfinfo size for VF GUIDs when
- supported
-Message-ID: <20250324100103.73324cc0@kernel.org>
-In-Reply-To: <20250320151150.GC889584@horms.kernel.org>
-References: <20250317102419.573846-1-mbloch@nvidia.com>
-	<20250320151150.GC889584@horms.kernel.org>
+	s=arc-20240116; t=1742838221; c=relaxed/simple;
+	bh=IEbZX5LHrjNjLHzpwBGHTfQ+kmLMtFidxbWZveAryjg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jBVyJErLEUqXaI+bKlXlqSat45cJz3QgOHNM68SilBskzQYVetg9ayi8NqpTrWW4GRnpb9BgPmwWDcKGgFDm15NqcqjqOU+0LqUZejJ0gX/N8lF2ZZ5dey4gcWBmNTzQeRhHuNYe8KVXS1dgnfTIiP10VstXcQ4qzySAWWp8aKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=RQwIXqJB; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id A2BA1211AA01; Mon, 24 Mar 2025 10:43:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A2BA1211AA01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1742838219;
+	bh=R0yptjoilxJTorB2L0W8GLNAJvxs/9K84UNE0zqBuPs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RQwIXqJBSTQ+Fzolz8VNvpueVTY2MJrPe63NQ3B5cOjnV/K+0x7jZ5i8TJsft8Ewa
+	 88X/IiZGs4Qs1d0bosnLp5bpEhlmPCUHGoNS1fRF5UcMsDbfRfhmUHMO/NItBNrIhu
+	 gCUPmQ8KgiPX8gtMIjSGiLteYPuRztvQE9bSI9SE=
+Date: Mon, 24 Mar 2025 10:43:39 -0700
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+	brett.creeley@amd.com, surenb@google.com,
+	schakrabarti@linux.microsoft.com, kent.overstreet@linux.dev,
+	shradhagupta@linux.microsoft.com, erick.archer@outlook.com,
+	rosenp@gmail.com, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 1/3] net: mana: Add speed support in
+ mana_get_link_ksettings
+Message-ID: <20250324174339.GA29274@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1742473341-15262-1-git-send-email-ernis@linux.microsoft.com>
+ <1742473341-15262-2-git-send-email-ernis@linux.microsoft.com>
+ <f4e84b99-53b5-455d-bad2-ef638cafdeae@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4e84b99-53b5-455d-bad2-ef638cafdeae@lunn.ch>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Thu, 20 Mar 2025 15:11:50 +0000 Simon Horman wrote:
-> Perhaps I'm over thinking things here,
-> perhaps the following is easier on the eyes?
+On Thu, Mar 20, 2025 at 02:37:47PM +0100, Andrew Lunn wrote:
+> > +int mana_query_link_cfg(struct mana_port_context *apc)
+> > +{
+> > +	struct net_device *ndev = apc->ndev;
+> > +	struct mana_query_link_config_req req = {};
+> > +	struct mana_query_link_config_resp resp = {};
+> > +	int err;
+> > +
+> > +	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_LINK_CONFIG,
+> > +			     sizeof(req), sizeof(resp));
+> > +
+> > +	req.vport = apc->port_handle;
+> > +
+> > +	err = mana_send_request(apc->ac, &req, sizeof(req), &resp,
+> > +				sizeof(resp));
+> > +
+> > +	if (err) {
+> > +		netdev_err(ndev, "Failed to query link config: %d\n", err);
+> > +		goto out;
+> > +	}
+> > +
+> > +	err = mana_verify_resp_hdr(&resp.hdr, MANA_QUERY_LINK_CONFIG,
+> > +				   sizeof(resp));
+> > +
+> > +	if (err || resp.hdr.status) {
+> > +		netdev_err(ndev, "Failed to query link config: %d, 0x%x\n", err,
+> > +			   resp.hdr.status);
+> > +		if (!err)
+> > +			err = -EPROTO;
+> > +		goto out;
+> > +	}
+> > +
+> > +	if (resp.qos_unconfigured) {
+> > +		err = -EINVAL;
+> > +		goto out;
+> > +	}
+> > +	apc->speed = resp.link_speed;
 > 
-> diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-> index d1e559fce918..60fac848e092 100644
-> --- a/net/core/rtnetlink.c
-> +++ b/net/core/rtnetlink.c
-> @@ -1151,6 +1151,9 @@ static inline int rtnl_vfinfo_size(const struct net_device *dev,
->  			 nla_total_size(sizeof(struct ifla_vf_link_state)) +
->  			 nla_total_size(sizeof(struct ifla_vf_rss_query_en)) +
->  			 nla_total_size(sizeof(struct ifla_vf_trust)));
-> +		if (dev->netdev_ops->ndo_get_vf_guid)
-> +			size += num_vfs * 2 *
-> +				nla_total_size(sizeof(struct ifla_vf_guid));
->  		if (~ext_filter_mask & RTEXT_FILTER_SKIP_STATS) {
->  			size += num_vfs *
->  				(nla_total_size(0) + /* nest IFLA_VF_STATS */
-
-Yes, please
--- 
-pw-bot: cr
+> Might be worth adding a comment that the firmware is returning speed
+> in Mbps.
+> 
+> Or name the struct member link_speed_mbps.
+> 
+Thank you for your suggestion. I'll make this change for the next
+version of this patchset.
+> 	Andrew
 
