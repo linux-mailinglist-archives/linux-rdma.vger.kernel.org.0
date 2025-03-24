@@ -1,135 +1,126 @@
-Return-Path: <linux-rdma+bounces-8921-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8922-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89A10A6E2A0
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 19:46:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60444A6E3C2
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 20:42:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64DA01713B5
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 18:45:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CD593AD1FA
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Mar 2025 19:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7427264F89;
-	Mon, 24 Mar 2025 18:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0806319E994;
+	Mon, 24 Mar 2025 19:42:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="46pIIM0o"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A6Jd7D40"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1F53C17;
-	Mon, 24 Mar 2025 18:44:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381F77E110;
+	Mon, 24 Mar 2025 19:42:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742841899; cv=none; b=PGNA2oZA87a/0eftsgfDIIcj1pfYO1hE3rNybSTLTnAX1kBUJsEW3l8rgeycWz7qTssvG8wI05DCebU6tv/0vrpYlojK+JaN56iJ3dsEbhWCPF1hEPjG0RD9Cq6JoZ42OXDg+8nsxUJwIP6ukpad5ENhNZcqExcFi6sbCssDiVU=
+	t=1742845334; cv=none; b=SMua+zPGRcEZ8Zd05kt25i8tlG+QISfU+z8K4StQeTnYKsodJfI/rV5ha6ateIeXbHvOaXQVIZq0sfSf0v/CkbREI3giYGs3XCdLuxf/uLVcSMqAM6NCVmkWuObrs/e7201BPdiHR83kKtAAxvDlZN1aL5YRVuYCW3oQf/XeuJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742841899; c=relaxed/simple;
-	bh=K3laK/m5RtpxHsNbwje5ZG8P4i6IVDET2aF6Q5FXpEg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y4BNAWXbK41P0Ax8vaf+XFlYbEOSH5zJp7yq6MlcHGttBfwHwjCqMQe3YbGZ12KFG+NN2/E5ILIXeTRgrZQRwq4cS8FPmh8jEHyNwnk0qkE+Av0cXuH0tR2Nm5qWScCvsiiCBkSgy98bCzgNWKNdfCXfX8Sp/V1mEKMJYicFYIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=46pIIM0o; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=n7jWwqiuO3K1ioFA/FuzqDBCH2NO8F0ORU/xJjFa8QI=; b=46pIIM0oB91fzxEQ7VIVH19kOq
-	wiKFCzriYDxg1lMpvLVGyzW+vQlAvJt/BehpI1Nl8IDUUXZgvHyVjiYbjIV9G+rrI8dXY0rAGH01h
-	hC6ZEq4bDaiBnySSvqfceQELYDTQ5wvBsa6GiRW1PImqxVG4Di7g2uy6y1TmwujfY+/I=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1twmmt-006y43-RD; Mon, 24 Mar 2025 19:44:39 +0100
-Date: Mon, 24 Mar 2025 19:44:39 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
-	brett.creeley@amd.com, surenb@google.com,
-	schakrabarti@linux.microsoft.com, kent.overstreet@linux.dev,
-	shradhagupta@linux.microsoft.com, erick.archer@outlook.com,
-	rosenp@gmail.com, linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 1/3] net: mana: Add speed support in
- mana_get_link_ksettings
-Message-ID: <909eae34-02ac-4acd-8f0e-1194f0049a21@lunn.ch>
-References: <1742473341-15262-1-git-send-email-ernis@linux.microsoft.com>
- <1742473341-15262-2-git-send-email-ernis@linux.microsoft.com>
- <f4e84b99-53b5-455d-bad2-ef638cafdeae@lunn.ch>
- <20250324174339.GA29274@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1742845334; c=relaxed/simple;
+	bh=wjvf7dpV0ebRUz1x1lkf8kGSLRI6M0ozndN0RBxrfqE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aQto7IEmzeHO4KchtaSl700sZOCs4yKVzP/gW9We7b2JQC6IZ31p97318Hzo+1K7yCrTI0jXglD2sAqMvOAxcTKxP248m9TwlIsKJGtT58z+TkFI3G4JTzEBHSN5z+ToA3AabZnMDkCpQku/NKRcSgyRd7vnykfKRFo5d2BCLY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A6Jd7D40; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-43d0618746bso32631025e9.2;
+        Mon, 24 Mar 2025 12:42:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742845331; x=1743450131; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=suij/OW43K54OojlDmuIhXYtdE6GSs8v7t7ioZFap+o=;
+        b=A6Jd7D40ft/DTFaj3CFwgKpPJUBy3lSvDHeDnzFrl5WcbM/5iaTOy20iH363xXPApt
+         owW1tlBspvQw/YPlLW44WpMWWi5n7ZNy3CQVQXaJQDsSKyBUqj69akpJ4mmwBQNsLvvK
+         wXHV0h0F5o3tGuGw9ynszQqJQLzWvergKJLXZTeUL2/H94tJ0JrTWH4MCqWA/7UOj39c
+         yzFjRskpU+tURvELeeGTaFQissF23AK++wGuznDKENp2Q89pRDASDoTXytQHXTR4Z8nl
+         TEI4cA1AYk1xUzxR4C+zd8ECJuTqiYrGuXYM6jnYDGBhtf33Ll+IiRdu1G00FTgbx3S1
+         XL1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742845331; x=1743450131;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=suij/OW43K54OojlDmuIhXYtdE6GSs8v7t7ioZFap+o=;
+        b=huWyF7/XfupKXVHUWLXkqkBHoOERefiLyUyotZJpF3aKehGH+TtTGNu1k1QGjj0fe4
+         7Y5rYUuq4w4E+PQ1U84AkmxQh/VNQGLA8Z6giNZnuGEt3oKreSZf4EbOFxaeq0S/dNbZ
+         lFQTGvyqQ1hqUxqIxiNmJeRZpEmITObKam7/sgaNZ2SATqZU2rzmqB8UUKunEyFlps8h
+         7DWR3Y67EVIqENaI16eLAcrtlMb8RbwdpW5MMZlsk8SysiR9IZm7DvSAP+py0z1Od6PG
+         Av4XeJwqyiwOjmXJzk9imjgZ0zphsSvfvF0lTAl1epELAXTfK0yNn9bp1OiMGFCm3QmA
+         vyTg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOAl7VVyPgtsh4DpO4ZDtI8YG7EV1mhpRqkWiAFHWpOXKdqG7U0s0g3ZFmTYA1UlkAxjermzL3DJwoHA==@vger.kernel.org, AJvYcCUnWgNvBAp/TnXu/goDAetLWXb4MQFw1LPBV58iIfdgQigBIZPiqUx/QlghhuNWapppM3nTWTYuRNbHK6w=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwEgqmaPcPjwvNvyEdGwERkqu8VFWDNhpuNwesmpMoNk2E5TQzh
+	sCNansNqFwrsSvb37jsm+DzqwKceCQk9g807VyPUaQ0bIBjGc01v
+X-Gm-Gg: ASbGnct7hl7rCjXOfgb1t2N/jFsjO/Qn/2so0Xi/WDsiwm5MEi9/y3e4sd8jmo9WoXu
+	liWBt7Vvl2bpngAzIrM2HNXHX1SkuiLNX1iGeYMZBJ06/h9Rz7Kogy8b/z0L9eHfGS5EfBhFrlc
+	ASvhKVleGUxUnFMb8KrxBcY0cc7px6Mz3r2Be7e1K4BYBi9ovUN8lVtZGt3ytW9yujWHsGe6hoK
+	IaAHe9Ck+Z9Bge+WQFQCouMK2PSA0863R98EuC5maAbEGya9LcrhGRJWGFfodqOqnj+CwfjqFY3
+	43+WeUbpPRMQg9mbA1BVKOBEpwA530xWz4/haBYavBcQHQ==
+X-Google-Smtp-Source: AGHT+IGwh4Xj+BnReKWNtaT8HPJvDc560oL7zLXsu6bA2+6nz0kEmOB+OTqSGwkolim1qSAmJPkItg==
+X-Received: by 2002:a05:600c:1e18:b0:43c:eea9:f45d with SMTP id 5b1f17b1804b1-43d509f64b8mr151515275e9.18.1742845331105;
+        Mon, 24 Mar 2025 12:42:11 -0700 (PDT)
+Received: from qasdev.Home ([2a02:c7c:6696:8300:7409:fa18:11fe:ba2a])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d4fdbcfaasm128315005e9.35.2025.03.24.12.42.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Mar 2025 12:42:10 -0700 (PDT)
+From: Qasim Ijaz <qasdev00@gmail.com>
+To: saeedm@nvidia.com,
+	leon@kernel.org,
+	tariqt@nvidia.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	kliteyn@nvidia.com
+Cc: netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] net/mlx5: DR, remove redundant object_range assignment
+Date: Mon, 24 Mar 2025 19:41:59 +0000
+Message-Id: <20250324194159.24282-1-qasdev00@gmail.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250324174339.GA29274@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 24, 2025 at 10:43:39AM -0700, Erni Sri Satya Vennela wrote:
-> On Thu, Mar 20, 2025 at 02:37:47PM +0100, Andrew Lunn wrote:
-> > > +int mana_query_link_cfg(struct mana_port_context *apc)
-> > > +{
-> > > +	struct net_device *ndev = apc->ndev;
-> > > +	struct mana_query_link_config_req req = {};
-> > > +	struct mana_query_link_config_resp resp = {};
-> > > +	int err;
-> > > +
-> > > +	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_LINK_CONFIG,
-> > > +			     sizeof(req), sizeof(resp));
-> > > +
-> > > +	req.vport = apc->port_handle;
-> > > +
-> > > +	err = mana_send_request(apc->ac, &req, sizeof(req), &resp,
-> > > +				sizeof(resp));
-> > > +
-> > > +	if (err) {
-> > > +		netdev_err(ndev, "Failed to query link config: %d\n", err);
-> > > +		goto out;
-> > > +	}
-> > > +
-> > > +	err = mana_verify_resp_hdr(&resp.hdr, MANA_QUERY_LINK_CONFIG,
-> > > +				   sizeof(resp));
-> > > +
-> > > +	if (err || resp.hdr.status) {
-> > > +		netdev_err(ndev, "Failed to query link config: %d, 0x%x\n", err,
-> > > +			   resp.hdr.status);
-> > > +		if (!err)
-> > > +			err = -EPROTO;
-> > > +		goto out;
-> > > +	}
-> > > +
-> > > +	if (resp.qos_unconfigured) {
-> > > +		err = -EINVAL;
-> > > +		goto out;
-> > > +	}
-> > > +	apc->speed = resp.link_speed;
-> > 
-> > Might be worth adding a comment that the firmware is returning speed
-> > in Mbps.
-> > 
-> > Or name the struct member link_speed_mbps.
-> > 
-> Thank you for your suggestion. I'll make this change for the next
-> version of this patchset.
+The initial assignment of object_range from
+pool->dmn->info.caps.log_header_modify_argument_granularity is
+redundant because it is immediately overwritten by the max_t() call. 
 
-Please answer my other questions before posting the next version of
-the patch. I'm really questioning if this is the correct uAPI to be
-using. You have a very poor description of what you are trying to
-do. Maybe TC is the better fit? Does this speed apply to ingress and
-egress? If so, there are two leaky buckets, so why only one
-configuration value? Or can you only configure ingress?
+Remove the unnecessary assignment.
 
-Also, if i understand correctly MANA is a virtual device and this is
-the VM side of it. If this is used for bandwidth limitation, why is
-the VM controlling this, not the hypervisor? What is the security
-model?
+Signed-off-by: Qasim Ijaz <qasdev00@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_arg.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-	Andrew
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_arg.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_arg.c
+index 01ed6442095d..c2218dc556c7 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_arg.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_arg.c
+@@ -39,9 +39,6 @@ static int dr_arg_pool_alloc_objs(struct dr_arg_pool *pool)
+ 
+ 	INIT_LIST_HEAD(&cur_list);
+ 
+-	object_range =
+-		pool->dmn->info.caps.log_header_modify_argument_granularity;
+-
+ 	object_range =
+ 		max_t(u32, pool->dmn->info.caps.log_header_modify_argument_granularity,
+ 		      DR_ICM_MODIFY_HDR_GRANULARITY_4K);
+-- 
+2.39.5
+
 
