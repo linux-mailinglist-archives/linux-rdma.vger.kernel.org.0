@@ -1,91 +1,63 @@
-Return-Path: <linux-rdma+bounces-8931-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8932-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78930A7031C
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Mar 2025 15:04:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB2C0A7033B
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Mar 2025 15:10:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33A101690F6
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Mar 2025 13:55:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32FF6188B764
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Mar 2025 14:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6962580E1;
-	Tue, 25 Mar 2025 13:55:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B70D2594B7;
+	Tue, 25 Mar 2025 14:04:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="ap4WG8wP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hnDM9VFY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62C171EEA4E
-	for <linux-rdma@vger.kernel.org>; Tue, 25 Mar 2025 13:55:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4450D2580C6;
+	Tue, 25 Mar 2025 14:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742910936; cv=none; b=QvvbtSJTpEkok8DECRyNawWhV2stTAp6VOdECpRwSQZAo3OrahMCOLMCJ11dg7ruv5uS6umjMmnc3gbOAa70SZTDkSGLA2/DP1++v5Phak8iMKFpzu3ZxV1wFCwEz41z8iGxYBt6sLRG+OYWxhXtoY6IIRi6M8f0349w2d9TZ2I=
+	t=1742911477; cv=none; b=mb+R9cwP9nz1Orx5StKaRWwM5mOmZ9Z9wgJYzBZFjiFIw/h8g86+8tuUz1h8qEZbsBYBt1SDpfiJWm1L12WzVCeThI7hesq/CxfGcxzE4n14+LgsRsAvmwN4ITgBXAW0tIlLWDQfnapKjh0PvpampAv9kKBbPBd0dzA2o/lWzw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742910936; c=relaxed/simple;
-	bh=OSX0TORPiNrDXa8v+Fpy4Nylpvg63xS3qyc2FnH4q+g=;
+	s=arc-20240116; t=1742911477; c=relaxed/simple;
+	bh=eCpGgKH/0DbjMToSuoCrDG9Ex54recEd4ZozNnXJgME=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JNCO1ceYkIGy6/ge7Va7fN36IeQ1nPqj096UtbzQ/sf6gidINukbPdi18tndNNTA+bsyluj5e2B5r3qmL0vu3ZLZcytsnPses+vTKyW5pHY6A5dWT/qgpzwVS/wpxt3DuFMnPpUB3fYf62NMPzhAo+wyiGM1gSejdsCy5cBq3dw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=ap4WG8wP; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-477296dce76so31285401cf.3
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Mar 2025 06:55:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1742910932; x=1743515732; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EVfx3UQRZQeGiEfg09GHBIEEGmSfPB7wa4J0uKs3RME=;
-        b=ap4WG8wPmBSb8/XdIF83BORCSmQzjffScOehv78NDPDGzmMYIKI+wdfemY6XVPmUYa
-         4rt2IIYPrKGiSLROMekcY8725sxV1KSPZjzEegh+VeN3uFiRx+PWfBXPM2zGnARSDR0e
-         AFwyvOn/9TH8HlBmI7XJUH81Vd/NyCzbwYvYhE0NIRXJezZcgLxdKnjn9T8lI5Vc4C4i
-         joEIvrDjVeT83p6pIYxYZctUSNOuj1GgGqytQvNEYGlZIuCYE/73zhyQzUhWwkZSQHAD
-         ajmtPcaojEsW1Gn/Fu2EYzIgatIS9YwGRExVVy6Gni9RpY/go6oQx4NVBENAdmYYPaED
-         qmnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742910932; x=1743515732;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EVfx3UQRZQeGiEfg09GHBIEEGmSfPB7wa4J0uKs3RME=;
-        b=G9lGrj4mz/vmjhPRKf52L1RFqjxtDHJCghLMxoiWnSDs6QUAP93fDRUQQh986DzT7p
-         04JyqlCVpYNXEKjkjnLRKKZs64G+lMP/5W4/9wKEGqeV5XI9KIlr+SJz91v+hBDioPK6
-         oLgLzYxNlt1oEO/HAiECZow2/b/Ui2+fAe6VU1xRf6t6p4Z0geAWXR3g6z7WL2sZKsRa
-         DLJ+KGBNeGuBTRZj9vwXwxxQSkpVUm97eW5rTqeCXHt3FYb0j0ePiQajEvvX48PbaXnc
-         a8qUpxd+i7NcTsEEmXD6PHLPdRYO1EDkxi+AS9lg+AaYbCsG7HFf0dSxl0Pi2XBqRkbJ
-         4jUg==
-X-Forwarded-Encrypted: i=1; AJvYcCWrX3M3y7w3fGo0mv3S3NipF7A3s7u4J2FxLoa5ENUG7vTo8r+zqZ+VIY3/IovQmWNYET1bq4XgCEwX@vger.kernel.org
-X-Gm-Message-State: AOJu0YyehgkFRMnb2csuRMa6qKxqjZfovz8Xt2fencC/vLhzjwm4a2m5
-	r32I38htCkVMHkDY1MWNhafeMyjPqco4NwnQa20ZmpIqkuBEIgPX3OfpxEP4QHA=
-X-Gm-Gg: ASbGnctmIa4jUlNUKlN9j6GoaCwh4y8+1o7/fR0mzHEO95LX2aaMLxvlW+DjzU6e8SF
-	w8gyy4OGK3kIjwEXLRYz9Crx5M19KXI4vNqniJCa31u9FPhV9CnwieAAWLgClw8Plt8AEhngOq2
-	eJm9K9SRo5Z3K7REPaISF9UT+U590Se0mdynE9uZNVkli1ev2D6zC8wAp0sSfrshbb5UMcRecp9
-	qSDwKOZ+aCfRpcfjsXQYM8Mw0y4AVi0ekpSDYQwFVT0qlizLLdA8Lv1WPmB5bzNJR6kN70wj6p2
-	H8ME68XmAvSHZyOZWWxqw4+1XsN/
-X-Google-Smtp-Source: AGHT+IEw+cUq8N3YnTJQvX1WmFYfTqQVR7hTqQXnoJ+ZcLi1ljTgfQoIUXe99s2hH3estqLJNitCKQ==
-X-Received: by 2002:a05:622a:58c6:b0:476:909b:8287 with SMTP id d75a77b69052e-4771dd801c5mr305002311cf.20.1742910932009;
-        Tue, 25 Mar 2025 06:55:32 -0700 (PDT)
-Received: from ziepe.ca ([99.209.85.25])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4771d18f7f5sm60098791cf.35.2025.03.25.06.55.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Mar 2025 06:55:31 -0700 (PDT)
-Received: from jgg by jggl with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1tx4kd-0009Ay-2x;
-	Tue, 25 Mar 2025 10:55:31 -0300
-Date: Tue, 25 Mar 2025 10:55:31 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Yue Haibing <yuehaibing@huawei.com>
-Cc: benve@cisco.com, neescoba@cisco.com, leon@kernel.org,
-	liyuyu6@huawei.com, roland@purestorage.com, umalhi@cisco.com,
+	 Content-Type:Content-Disposition:In-Reply-To; b=JzKPKl1tetGK//VOUfYMxMkCA94kqbK6cKUyiEUsrtyozrwwUoYPZlzOFj0TUwW9PBaS4sa2SVowrM501WUh+rgSz5Vdq1Sf+6XrecHyATA0A3E2cSjoxLlYm+EPbcEKxnwmP0ngAJx+0z8/+W2bKpIJLaOrEBwzLg1ydBf6mOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hnDM9VFY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C287DC4CEE4;
+	Tue, 25 Mar 2025 14:04:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742911476;
+	bh=eCpGgKH/0DbjMToSuoCrDG9Ex54recEd4ZozNnXJgME=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hnDM9VFY3BM2X5/OB0pfHu6tS/xTWJ/UGTjmPuWI26voXM+eVxvwYHzeKZCnGwZfB
+	 8EXIXrA1OjVINWM2ZswXBkeg/M0N8cwBvYCRxU9Mchkdl8ufsjxJiSzQQrUg/GshHc
+	 GfjCpT2YkUuVwL9FmTGbSalzLQfsYPJH3x/TP2+KJXXj0MKLYqg7tGfnDID2bmwiD/
+	 vV/rIYRJ7jAV6zLjeyf+qL7bfpP41SeAHkNSauQ8HauheSh/zN2ZNgnXm8FVV4ThjX
+	 K8rOVMd+we4Uv4ux2VjM/4k92e8fh1SHwPZZnbgEmvreh2LGeR1Vo6DfwkWW3oCYzY
+	 Z8uCBsql9PGqg==
+Date: Tue, 25 Mar 2025 14:04:31 +0000
+From: Simon Horman <horms@kernel.org>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>, Gal Pressman <gal@nvidia.com>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	yanjun.zhu@linux.dev
-Subject: Re: [PATCH v2 -next] RDMA/usnic: Fix passing zero to PTR_ERR in
- usnic_ib_pci_probe()
-Message-ID: <Z+K103IYCOwa/pwg@ziepe.ca>
-References: <20250324123132.2392077-1-yuehaibing@huawei.com>
+	Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Lama Kayal <lkayal@nvidia.com>
+Subject: Re: [PATCH net] net/mlx5e: SHAMPO, Make reserved size independent of
+ page size
+Message-ID: <20250325140431.GQ892515@horms.kernel.org>
+References: <1742732906-166564-1-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -94,25 +66,107 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250324123132.2392077-1-yuehaibing@huawei.com>
+In-Reply-To: <1742732906-166564-1-git-send-email-tariqt@nvidia.com>
 
-On Mon, Mar 24, 2025 at 08:31:32PM +0800, Yue Haibing wrote:
-> drivers/infiniband/hw/usnic/usnic_ib_main.c:590
->  usnic_ib_pci_probe() warn: passing zero to 'PTR_ERR'
+On Sun, Mar 23, 2025 at 02:28:26PM +0200, Tariq Toukan wrote:
+> From: Lama Kayal <lkayal@nvidia.com>
 > 
-> Make usnic_ib_device_add() return NULL on fail path, also remove
-> useless NULL check for usnic_ib_discover_pf()
+> When hw-gro is enabled, the maximum number of header entries that are
+> needed per wqe (hd_per_wqe) is calculated based on the size of the
+> reservations among other parameters.
 > 
-> Fixes: e3cf00d0a87f ("IB/usnic: Add Cisco VIC low-level hardware driver")
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
-> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> ---
-> v2: remove useless null check for usnic_ib_discover_pf
-> ---
->  drivers/infiniband/hw/usnic/usnic_ib_main.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+> Miscalculation of the size of reservations leads to incorrect
+> calculation of hd_per_wqe as 0, particularly in the case of large page
+> size like in aarch64, this prevents the SHAMPO header from being
+> correctly initialized in the device, ultimately causing the following
+> cqe err that indicates a violation of PD.
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Hi Lama, Tariq, all,
 
-Jason
+If I understand things correctly, hd_per_wqe is calculated
+in mlx5e_shampo_hd_per_wqe() like this:
+
+u32 mlx5e_shampo_hd_per_wqe(struct mlx5_core_dev *mdev,
+                            struct mlx5e_params *params,                                                    struct mlx5e_rq_param *rq_param)
+{
+        int resv_size = BIT(mlx5e_shampo_get_log_rsrv_size(mdev, params)) * PAGE_SIZE;
+        u16 num_strides = BIT(mlx5e_mpwqe_get_log_num_strides(mdev, params, NULL));
+        int pkt_per_resv = BIT(mlx5e_shampo_get_log_pkt_per_rsrv(mdev, params));
+        u8 log_stride_sz = mlx5e_mpwqe_get_log_stride_size(mdev, params, NULL);
+        int wqe_size = BIT(log_stride_sz) * num_strides;                                u32 hd_per_wqe;
+
+        /* Assumption: hd_per_wqe % 8 == 0. */
+        hd_per_wqe = (wqe_size / resv_size) * pkt_per_resv;                             mlx5_core_dbg(mdev, "%s hd_per_wqe = %d rsrv_size = %d wqe_size = %d pkt_per_resv = %d\n",                                                                                    __func__, hd_per_wqe, resv_size, wqe_size, pkt_per_resv);
+        return hd_per_wqe;
+}
+
+I can see that if PAGE_SIZE was some multiple of 4k, and thus
+larger than wqe_size, then this could lead to hd_per_wqe being zero.
+
+But I note that mlx5e_mpwqe_get_log_stride_size() may return PAGE_SHIFT.
+And I wonder if that leads to wqe_size being larger than expected by this
+patch in cases where the PAGE_SIZE is greater than 4k.
+
+Likewise in mlx5e_shampo_get_log_cq_size(), which seems to have a large overlap
+codewise with mlx5e_shampo_hd_per_wqe().
+
+> 
+>  mlx5_core 0000:00:08.0 eth2: ERR CQE on RQ: 0x1180
+>  mlx5_core 0000:00:08.0 eth2: Error cqe on cqn 0x510, ci 0x0, qn 0x1180, opcode 0xe, syndrome  0x4, vendor syndrome 0x32
+>  00000000: 00 00 00 00 04 4a 00 00 00 00 00 00 20 00 93 32
+>  00000010: 55 00 00 00 fb cc 00 00 00 00 00 00 07 18 00 00
+>  00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 4a
+>  00000030: 00 00 00 9a 93 00 32 04 00 00 00 00 00 00 da e1
+> 
+> Use the correct formula for calculating the size of reservations,
+> precisely it shouldn't be dependent on page size, instead use the
+> correct multiply of MLX5E_SHAMPO_WQ_BASE_RESRV_SIZE.
+> 
+> Fixes: e5ca8fb08ab2 ("net/mlx5e: Add control path for SHAMPO feature")
+> Signed-off-by: Lama Kayal <lkayal@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en/params.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
+> index 64b62ed17b07..31eb99f09c63 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
+> @@ -423,7 +423,7 @@ u8 mlx5e_shampo_get_log_pkt_per_rsrv(struct mlx5_core_dev *mdev,
+>  				     struct mlx5e_params *params)
+>  {
+>  	u32 resrv_size = BIT(mlx5e_shampo_get_log_rsrv_size(mdev, params)) *
+> -			 PAGE_SIZE;
+> +			 MLX5E_SHAMPO_WQ_BASE_RESRV_SIZE;
+>  
+>  	return order_base_2(DIV_ROUND_UP(resrv_size, params->sw_mtu));
+>  }
+> @@ -827,7 +827,8 @@ static u32 mlx5e_shampo_get_log_cq_size(struct mlx5_core_dev *mdev,
+>  					struct mlx5e_params *params,
+>  					struct mlx5e_xsk_param *xsk)
+>  {
+> -	int rsrv_size = BIT(mlx5e_shampo_get_log_rsrv_size(mdev, params)) * PAGE_SIZE;
+> +	int rsrv_size = BIT(mlx5e_shampo_get_log_rsrv_size(mdev, params)) *
+> +		MLX5E_SHAMPO_WQ_BASE_RESRV_SIZE;
+>  	u16 num_strides = BIT(mlx5e_mpwqe_get_log_num_strides(mdev, params, xsk));
+>  	int pkt_per_rsrv = BIT(mlx5e_shampo_get_log_pkt_per_rsrv(mdev, params));
+>  	u8 log_stride_sz = mlx5e_mpwqe_get_log_stride_size(mdev, params, xsk);
+> @@ -1036,7 +1037,8 @@ u32 mlx5e_shampo_hd_per_wqe(struct mlx5_core_dev *mdev,
+>  			    struct mlx5e_params *params,
+>  			    struct mlx5e_rq_param *rq_param)
+>  {
+> -	int resv_size = BIT(mlx5e_shampo_get_log_rsrv_size(mdev, params)) * PAGE_SIZE;
+> +	int resv_size = BIT(mlx5e_shampo_get_log_rsrv_size(mdev, params)) *
+> +		MLX5E_SHAMPO_WQ_BASE_RESRV_SIZE;
+>  	u16 num_strides = BIT(mlx5e_mpwqe_get_log_num_strides(mdev, params, NULL));
+>  	int pkt_per_resv = BIT(mlx5e_shampo_get_log_pkt_per_rsrv(mdev, params));
+>  	u8 log_stride_sz = mlx5e_mpwqe_get_log_stride_size(mdev, params, NULL);
+> 
+> base-commit: ed3ba9b6e280e14cc3148c1b226ba453f02fa76c
+> -- 
+> 2.31.1
+> 
+> 
 
