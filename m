@@ -1,318 +1,338 @@
-Return-Path: <linux-rdma+bounces-8980-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8981-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8737EA71A6B
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 16:34:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75EEEA71B0E
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 16:50:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2C243BAEAB
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 15:30:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 827A016F00F
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 15:50:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696F91F4160;
-	Wed, 26 Mar 2025 15:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926AB1F416B;
+	Wed, 26 Mar 2025 15:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EHQ+4T+p"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OZ24Edpl"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2080.outbound.protection.outlook.com [40.107.102.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1E21F0E5D
-	for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 15:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743003029; cv=none; b=Nj11GC4mhOkJxh/vGcXJihA5BSKnbuFD1A9yaCkkV3VB2IiHy761yKArWHS7QVflRBftPZ9cBF0UWcmjkxwIxAu8mgmOWe1lb9hrBKcbqiFVokoa7Z9FZ3PJOjvGLmlzlxvos0xpGu44ERGlPpxP1BCCNyF9HRnlvkmIuK7E884=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743003029; c=relaxed/simple;
-	bh=Cv64vhmr3AnQcFMcFJ9GFOHmofZWm79nyfDAYd/Jy4w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VuE/UKIEm8c/pLZVAyhZtK51SL9jS5Ow8TE0CYejCIVsUc8cAMLFQZuvMPuv7znVHZyzSodDCm3lHNRoYhBW7dGTQUrDOI/O4uyCpfR+ZLofKZByt0XM5Kcr5zq/rQN/ArZm07n9E0SFOi1Tp48uXmPCZ6y2aG2yRO6H03kQlak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EHQ+4T+p; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-e60cab0f287so16496276.0
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 08:30:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1743003026; x=1743607826; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1tp8PX3VrlT3xj5/bJFgA5hrm+xCmQXv7oRpmonMlOI=;
-        b=EHQ+4T+pU7CXfIaF0yYJRiv4W6THMOFnnMGgkiys1Gg9GoRPuZErUP1KFZcCp1sRIg
-         u7wbwEqi93oKvRV/YG2g1JA+HXH8od4GvYZynGk2R/hc1eD6BNvZxEqI0QfIuYR1vjZZ
-         sgEXhZbSo8MH1tcaP0BPg4M8n3cOK9Yeb6yhwjX3SLV1gA9WxlZNt/cZZMPr9kehiCD7
-         BgjnBjlzFnLtFm59IUPEXv/mG6rHAX8oPN/jujizS2N2UBAhjsnpGGewl7qqM2F0n/Ph
-         4lNfkc6hFsFOQ+Pvb1ULMvIsaVXUPsFOHhs822aVRDmlTi8tWly2DyStV0SJV/7yqpXO
-         1fWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743003026; x=1743607826;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1tp8PX3VrlT3xj5/bJFgA5hrm+xCmQXv7oRpmonMlOI=;
-        b=NKaWPbMt2jJkwqyvUflhklAAxApEQVv3+nUaSiMkFuGhRSZ4sbCRXjcpAUgic5lpdk
-         B4WQQOBFmw0dBQrjJ7MtIXq4sA5iTQ15XgSLaNIZ91YZiRnIEJrHOuDKoo3qZLghsOBD
-         dTit1wRH+tZJBldDU/OEgER7PhxNyKmA8L4syjf/WC7FcohhVoShR3yflvEPwiUDKcDk
-         bU5te2FEe54X3mKS/dyfVepsLYaIkz+KEk6szzN+gSK6T5KBN48XAhIDEcx8WUna17sA
-         GKHuzSHe+bNbVKqEwl2AcP/jpmEacaMX17+t2aXatWxxXGTyIYHQB6EIexc3GB7o1hTE
-         4gnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXss7rr6EuEpuWPe2qXHOmo2eQuJPPA8pMqh6JGhGmf+WeEfkEQZH6QWwwor5VY2BdjqBmnc1hbWIx2@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTsIb5TbBCORM/44j6kVvbXswvxiQP54+tlly/g5AiO/VfyaK1
-	Qq1RD1mtrowhdGLx5a6VCbBlarurFAYY7uOJCVO5kMBykyDqPiYcBBhiy8YP23Jtuu5f8WWKM8w
-	OUkkPnuR7DjrFbDPA7rfHCnRPpqIfAmNqlsd4iA==
-X-Gm-Gg: ASbGncsxAvcWTSnLyZcX0ZlIvavzLaLl4B3SUBBzwMFQK08C4ZMtEypzpVobbydGYO0
-	PNAM10cNtWtFmn+IPoihMlCNZXGUBwmFiyCsCtKgd8Y8c9nLM2x3/wf7UgNY3LM10EE7H1LYAnL
-	kgJs8OtYGf+g/JrO8nOFXXCZ247LI=
-X-Google-Smtp-Source: AGHT+IHH8roGtvYn4zIkkHyeZONRNkqexqeYCf0x2L8a8OYlH8Bn8/yS0J4dIX1ClKxWSBASDFTCClZLBfb0+pTFgfY=
-X-Received: by 2002:a05:6902:228f:b0:e63:ebc9:656 with SMTP id
- 3f1490d57ef6-e66a4fa21e2mr25381574276.35.1743003025980; Wed, 26 Mar 2025
- 08:30:25 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882701527B1;
+	Wed, 26 Mar 2025 15:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.80
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743004208; cv=fail; b=ibg25AbA+vMpkU8mL6Zk70C2dQuJfIDs+yP/XxwZIQBu3OB6xqJ85dm52MO0ANSNiNTHV2OYDIs4xg7seZO0IL5uZFjUNa7tjM4bhYFBw5340kdvFRackHYzpu+q9LSx7tto6/ZjniEq23xkyiH+Zdfsdw8vxTlL//GsET/Hj78=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743004208; c=relaxed/simple;
+	bh=yhRM1CtjNrcs91HDco6FhTe8F9JqTdPWuDk3YeDaois=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=jElySvF8JaG6sTv53e8MtwnAy7zahszlbvZti3fvxqY93ngnULEcKmT1U4wf8Dg09YuCMUG0x5lDEyr2HAUdiycx2JpowixMbufrv+gnhSGmCmxFay/Gwk6psnFcw7677DZC6ORGevgYxpYj5PO0/M5vZLOsi9U+CnZLKTe3gzM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OZ24Edpl; arc=fail smtp.client-ip=40.107.102.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=FTkGI6HUdW3MZE2ZzD/6mW2KkrIvaUKJNlvJltx0ylBMww/jsmgy754mi2y3EelLZmam8FdsBBTBwT9CxId33b/zp2SUaLoA1HlfrVcRJ5vh9/DkyoO99YO3xtozMjUS8ro8f15n8yRCeeHGqwZKfMUXuDHonrx+Nrir45cg5WJqmZMFXl0N66VUuX7ly5eqonIEunJQB5oN7IwYLJ/zgi0OQkyDM7kr0XQyEqNyIXekyvNKmn6P3JnrX+ta6GDCH0UNOg9a6cstZIg2bD7odl7r7FhswFcDSuwMNE7KaWx4wwHs8va6ar8WfuENKFM1I6aTH9f+bdfc8WvyuOKtpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mkNLFTMikD+Pho9Iz7T191/n2Jsg/uuJsrqJ6VSUFJM=;
+ b=yFeE1aF+T5K/A/AFrMEGFvKc1Kpada46+B1wHnU9xsrelPkvWAMWIGX0hjFxsTOZrkLXzCIzh1GYdFkD0vAfN3P/ic56JoxQWQrgCHXN2L9qv44qWZm1jorNW/FCPY3x9Lx08gl3xXB6Z9w62ErFNbEd+ICvfhIDKAoMztdsaz2EBJ8Ntd0bN+OTvBofXriolAp0d8xywDN1thr10Rb0A3PCWSzU4/8YFiC5NgmjLM2SU+DShM4DIddDgVLy0MDxnWFOfZiLXzxS0dXDw1QejRzu8tvdRyPVnK96NmHpGkRi+T2H6nBCdtXAzqbmVK9aX2iQg8XOsmtbZeI2DpYlhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mkNLFTMikD+Pho9Iz7T191/n2Jsg/uuJsrqJ6VSUFJM=;
+ b=OZ24EdplcQU4nOEBHUJbOqRoxGJd6mzC3O6CLchsDVaNI3u8A9uKoP43wM9Atf2zSxaqsjFMdb45oyQ+s20mOrgxSSmZOwgBxmk57ev6KlPc7glay+cY1+dJ9ATaZnELfVOqTLPzB9OOU2bsA76BYC0fo9HQJ7OHEeeO70ZKT8FtG4fOhGcwjCU8XBMyovebR0nj+NL1jRwRI+u4J1wWE7/w/V8hgqMS5SKtunL8M3bsvH6vIpWjr9YrUVMI+PRM952b4vADc8Y0BTaCylec8YxQQFLe+QYPMTUj1R6G5hCDFwfxLxcNaUhn1vdawRqVTb/FY2flct/zck4SAzxofw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by MW4PR12MB6898.namprd12.prod.outlook.com (2603:10b6:303:207::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.44; Wed, 26 Mar
+ 2025 15:50:03 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8534.042; Wed, 26 Mar 2025
+ 15:50:03 +0000
+Date: Wed, 26 Mar 2025 12:50:01 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: Leon Romanovsky <leon@kernel.org>,
+	Nikolay Aleksandrov <nikolay@enfabrica.net>,
+	Linux Kernel Network Developers <netdev@vger.kernel.org>,
+	Shrijeet Mukherjee <shrijeet@enfabrica.net>,
+	alex.badea@keysight.com, eric.davis@broadcom.com, rip.sohan@amd.com,
+	David Ahern <dsahern@kernel.org>, bmt@zurich.ibm.com,
+	roland@enfabrica.net, Winston Liu <winston.liu@keysight.com>,
+	dan.mihailescu@keysight.com, kheib@redhat.com,
+	parth.v.parikh@keysight.com, davem@redhat.com, ian.ziemba@hpe.com,
+	andrew.tauferner@cornelisnetworks.com, welch@hpe.com,
+	rakhahari.bhunia@keysight.com, kingshuk.mandal@keysight.com,
+	linux-rdma@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Subject: Re: Netlink vs ioctl WAS(Re: [RFC PATCH 00/13] Ultra Ethernet driver
+ introduction
+Message-ID: <Z+QiKan/j3UIhwL1@nvidia.com>
+References: <20250308184650.GV1955273@unreal>
+ <2f06a40d-2f14-439a-9c95-0231dce5772d@enfabrica.net>
+ <20250312112921.GA1322339@unreal>
+ <86af1a4b-e988-4402-aed2-60609c319dc1@enfabrica.net>
+ <20250312151037.GE1322339@unreal>
+ <CAM0EoMnJW7zJ2_DBm2geTpTnc5ZenNgvcXkLn1eXk4Tu0H0R+A@mail.gmail.com>
+ <20250318224912.GB9311@nvidia.com>
+ <CAM0EoMkVz8HfEUg33hptE91nddSrao7=6BzkUS-3YDyHQeOhVw@mail.gmail.com>
+ <20250319191946.GP9311@nvidia.com>
+ <CAM0EoM=7ac-A=ErU_PojZuuB4eHnoe-CdPxBi3x9d+=PxikfgA@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM0EoM=7ac-A=ErU_PojZuuB4eHnoe-CdPxBi3x9d+=PxikfgA@mail.gmail.com>
+X-ClientProxiedBy: BN0PR04CA0142.namprd04.prod.outlook.com
+ (2603:10b6:408:ed::27) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250326-page-pool-track-dma-v3-0-8e464016e0ac@redhat.com> <20250326-page-pool-track-dma-v3-1-8e464016e0ac@redhat.com>
-In-Reply-To: <20250326-page-pool-track-dma-v3-1-8e464016e0ac@redhat.com>
-From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date: Wed, 26 Mar 2025 17:29:49 +0200
-X-Gm-Features: AQ5f1JrJyBnSFqybq6WlsgbDPnbPbzUh4cR4XN8mgb-NDuFNFyPbV6xmXGZAU5M
-Message-ID: <CAC_iWjJKPkNGEVOoOCAn1ghmP7UvynG4Fjrxbj8+RFwKMG977w@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 1/3] page_pool: Move pp_magic check into
- helper functions
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Mina Almasry <almasrymina@google.com>, 
-	Yonglong Liu <liuyonglong@huawei.com>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Pavel Begunkov <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>, netdev@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|MW4PR12MB6898:EE_
+X-MS-Office365-Filtering-Correlation-Id: 568bff53-4d0c-462f-fb93-08dd6c7ddf1e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?/9CRW8+KO5hmZ57c1m8OfzfTLwmFkJgAXPdPSbEkMT+LQP6LREl4lZ1Aera6?=
+ =?us-ascii?Q?dn45DTVLz7FOXt+wcjpacznmJxRBoyAYOnHFSOgzNQTy8EtOsU5eFf1vmTBj?=
+ =?us-ascii?Q?nmcy+Rm8RbJDv+HQdMbctqJSgF3rptOBQf8/szHKePim+IkPiLVthKIfUQoJ?=
+ =?us-ascii?Q?i0qn96+pH8x7wWNL0O/jMSih0LKYCNmd1LIJKuPjP0QHdCsvooP0OY/rfVa3?=
+ =?us-ascii?Q?UdmRbGw26RTJ+ypHsd4Tt4/u7nCX89siH2nKERWqjVU5hAFyr5CkCh2QJ66L?=
+ =?us-ascii?Q?9fGqMaeXZBfqkPOfbiUrKtjOEm+NChUih7gxhi5hU7qqpbTIIbuZwUAL+uGx?=
+ =?us-ascii?Q?+7JX0IrGTmq2PaVyhaW+YzMY/P3emCvU6P7uQQfH7qAOh+0oa0Xz1+l//v9u?=
+ =?us-ascii?Q?YOQU04KF0sfbhZfAYYKwXL9KFelUNZ1gZJNRR3xbQL5BsEnzTJx0NR/5hOSM?=
+ =?us-ascii?Q?xYkO0jmGDocPRRFUZ2X8Amc6XgbuOHo3M1uQSIT6cW2xPvYsQvtm04vwmvB1?=
+ =?us-ascii?Q?UIUASkByHM0sT4/H7FhEVBvByWQUqc/EXo2KGns4e+9oUYqf92Li4E1TzpBP?=
+ =?us-ascii?Q?0VgUtGn5NATUI2jrB7FZRh+7dcp2WeGcf9n7w5sxDbY1u+ngfTV5H8yCgb+T?=
+ =?us-ascii?Q?lWX8I7qYSBfUt9aco1cdBg8DQ37vdL5KOMlCgQDh4TtS4tqgZPfzc9r9coel?=
+ =?us-ascii?Q?tbwdE7wQXw1ORABBNCt9TO1p4TqocYcyqcdOomjX90yGRYRZeYZYsyet1rNh?=
+ =?us-ascii?Q?Hs3wu93wdbniGLQv5OMXcQ8235sF5QBGSreigre2pq8CyALsrn0hwRf2JLOz?=
+ =?us-ascii?Q?49UrpBKmTEDb8nzWyupTSDKtveTBoAbGcTauHLBKj5pCn69qO/cqwsTk3L+I?=
+ =?us-ascii?Q?CsKpCFL+gmAEDecEiIHb7hliB3peYLloYjTDXdmSjI4WB4UxURjwXw1ebIez?=
+ =?us-ascii?Q?R9/BK1wUsFCJzL8ENaL1GWv/4wkyGx9yVBEX0bMPF/ou2FeAuY/O1oHxb8B1?=
+ =?us-ascii?Q?PfF2uzZEqnwBE2TyeAy0bOutQrsa+NpIuNvJnv4UYsqQud6Rvqu3cU1Lp9wx?=
+ =?us-ascii?Q?yp1fMmLE6FPQaJlW4xEY3/JVS7cfO+WZ8KgTqL0HOrnsmu/c2Yw92ccFwerB?=
+ =?us-ascii?Q?DtVKVtfit77RboKTWe8/yeYiIhutChAZlTbb0lRPzK0bd+6bD3VRmT42shpV?=
+ =?us-ascii?Q?UxVVaP1rQXAwEwzM31WwsAZxp3b8tNzJh9i+abDN6xRYXZVrWoNusWsuqLJm?=
+ =?us-ascii?Q?HlJvjyrwyWLTqRwIl9jocVXb5u06inONwPYSFiUvYkUprZbPc3MgsL1sWAkt?=
+ =?us-ascii?Q?SxrxK7AnvA3GqEp2HsQVPGjQAeFPDfLmN3zwWR+YFpRbuHTw9eQhwMi7m455?=
+ =?us-ascii?Q?TbZdTJlLIfIu4kXzi7nt4Cd+JoNI?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?B5Jrj0RSCRvCT7C02TjGwMd1VpdhKAFtZzvLjpNCAabg/97miM7U7+4MIsaX?=
+ =?us-ascii?Q?+tmA2Dovje3ciI4E5JU9/Ygfasd7dhf226Kx/QKXib1YurT83IgVVLKZD5bS?=
+ =?us-ascii?Q?jaVKWQre13IQfI13k4pmHg5/l/mxynjWIJGmTVO28xZXZnz0fSoq9MUG7Pbq?=
+ =?us-ascii?Q?Ji/gy33YliUEOIF4hkZ845yUiCMO+jlfSIMTVCOh6xfVM+MtALxg4TRG6iAX?=
+ =?us-ascii?Q?Np1mxGvX6/mJizMFBIBWTRLLuwHnPMrX58+A99mBssQSeBwhAkAeFbeG+iH9?=
+ =?us-ascii?Q?UHg5tynHolLXC9LFGmPw2JPS6AU4mkhOQFsmxx4IzTcfB18VWDCY5i9iUOXZ?=
+ =?us-ascii?Q?FRALRix10AUiEuKa7YWPl3qYlHLa6MyxCSz80eIyjs7oxGVi9p0u7hMDPIg8?=
+ =?us-ascii?Q?6WkWl+rR5NK0OP4vyQjWcJycWmGAa87lVTFUfksHJ0Bnc2YSntj4etqv6djd?=
+ =?us-ascii?Q?qus9CTVJckgCW6aknaA2Xt7p8tMSpExKfuMuJ1I8Y7sE7Xg4PKUjh2YA1OeF?=
+ =?us-ascii?Q?xN8CdXfg2Osfs+6FIH5Wfw6L7Vc7yqQafpc7ge9uwZmhNrAjBQKfuYLx41rv?=
+ =?us-ascii?Q?zdzCwpLRaU9sUAp/2lQUuKIR9zxIiU989MPNdiIb7abXoenxyMGDwsnKaIHa?=
+ =?us-ascii?Q?Xwu1Ah7h41cxVRGD8X5s+0w2bCNTPqFqS2j6qTuV+cDWwsSaVXNWgucNjIVG?=
+ =?us-ascii?Q?Y+Rs3eMntHrCt6ZSa9Eyys3vGt8UgdgV8rujOUHsLMgLO+HKBy6+K/6ABVV9?=
+ =?us-ascii?Q?vFTO0ZwocZhBjt28f8QgI4xsfJruGNTGo2pEDE8+IfAqpu6rTdW+15gsjHQV?=
+ =?us-ascii?Q?VqfXMjQHQJBDb1aSY7gufF1/874lC2nYJjGvAbO/5TmT77DYtyfjERH4iIiZ?=
+ =?us-ascii?Q?jVqTGhhAzX/Ok5S3c8Nham2q49z30Q3cY8Y2UfW3zWlabZPOhZZZ76RTtjkO?=
+ =?us-ascii?Q?blhfQBsw8vF7P/KSqohWirQiM7GXKz7nt65PECXLF9qU9w3buLnfKDPxbrAU?=
+ =?us-ascii?Q?WSs2rDDXDpXBHTy3qV/FXG33jqe64rpJijawiUq7uxwE1m8uIQYcbscx99K0?=
+ =?us-ascii?Q?Dm88D9lM64dx70Rd0/4Hz4dpkuKUXvM/+yqMZIheVwOy4naDaCy0GV0KNaI9?=
+ =?us-ascii?Q?1T4bGpkTXNQxxOlSrtibuHpkWj9kyQBNlEInbqEhxQv440Jt/uQGO4hjQiYU?=
+ =?us-ascii?Q?QEeALepLJaJizLzJu5catvbYRmmwxMCSWn/Zmt6LflyK4kYAigoN77Itz4v9?=
+ =?us-ascii?Q?41XhjkSWv0D2kP9UW7suw4zQksNWJ345BlxbEjQQoEtqfj/B3nr98fMmM+eX?=
+ =?us-ascii?Q?dNlL7No5IglPWe0LLRB3FDE8ZZLA9xYEM6a7RWlX6yiR4sw+q5/WjySniv2x?=
+ =?us-ascii?Q?qgBOpWzn5yvyGUT97X7jqOl7zutgWI5SyM0iUD24GYrTN2KqgyhDeLf7ljoV?=
+ =?us-ascii?Q?95uFWiCOeRFnnlnqL4KfnXh2jPsCOlR2YxS9ZD0aKysIS5S8DYjYTOtOuaYN?=
+ =?us-ascii?Q?WWh2Q7NpsEP9Xvs4r1OLhLGvvmc2Dt1B9UMtu5vmiuH09rp3lSdgvkH6pale?=
+ =?us-ascii?Q?ID9lXaNARRBEZnweCzY=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 568bff53-4d0c-462f-fb93-08dd6c7ddf1e
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2025 15:50:03.0710
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hXKmjZfOP9fgdOMuLHoHxrMy3zuDG9FEulaehAE6kRAX40vvgiN1Z0Rsaowksx2n
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6898
 
-Thanks Toke,
+On Tue, Mar 25, 2025 at 10:12:49AM -0400, Jamal Hadi Salim wrote:
 
-On Wed, 26 Mar 2025 at 10:19, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
-.com> wrote:
->
-> Since we are about to stash some more information into the pp_magic
-> field, let's move the magic signature checks into a pair of helper
-> functions so it can be changed in one place.
->
-> Reviewed-by: Mina Almasry <almasrymina@google.com>
-> Tested-by: Yonglong Liu <liuyonglong@huawei.com>
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> You need to at least construct the message parameterization in user
+> space which would require some memory, no? And then copy_from_user
+> would still need memory to copy to?
+> I am probably missing something basic.
 
-Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+It usually all stack memory on the userspace side, and no kernel
+memory allocation. Like there is no mandatory SKB in uverbs.
 
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |  4 ++--
->  include/net/page_pool/types.h                    | 18 ++++++++++++++++++
->  mm/page_alloc.c                                  |  9 +++------
->  net/core/netmem_priv.h                           |  5 +++++
->  net/core/skbuff.c                                | 16 ++--------------
->  net/core/xdp.c                                   |  4 ++--
->  6 files changed, 32 insertions(+), 24 deletions(-)
->
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/n=
-et/ethernet/mellanox/mlx5/core/en/xdp.c
-> index 6f3094a479e1ec61854bb48a6a0c812167487173..70c6f0b2abb921778c98fbd42=
-8594ebd7986a302 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-> @@ -706,8 +706,8 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq =
-*sq,
->                                 xdpi =3D mlx5e_xdpi_fifo_pop(xdpi_fifo);
->                                 page =3D xdpi.page.page;
->
-> -                               /* No need to check ((page->pp_magic & ~0=
-x3UL) =3D=3D PP_SIGNATURE)
-> -                                * as we know this is a page_pool page.
-> +                               /* No need to check page_pool_page_is_pp(=
-) as we
-> +                                * know this is a page_pool page.
->                                  */
->                                 page_pool_recycle_direct(page->pp, page);
->                         } while (++n < num);
-> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.=
-h
-> index 36eb57d73abc6cfc601e700ca08be20fb8281055..df0d3c1608929605224feb261=
-73135ff37951ef8 100644
-> --- a/include/net/page_pool/types.h
-> +++ b/include/net/page_pool/types.h
-> @@ -54,6 +54,14 @@ struct pp_alloc_cache {
->         netmem_ref cache[PP_ALLOC_CACHE_SIZE];
->  };
->
-> +/* Mask used for checking in page_pool_page_is_pp() below. page->pp_magi=
-c is
-> + * OR'ed with PP_SIGNATURE after the allocation in order to preserve bit=
- 0 for
-> + * the head page of compound page and bit 1 for pfmemalloc page.
-> + * page_is_pfmemalloc() is checked in __page_pool_put_page() to avoid re=
-cycling
-> + * the pfmemalloc page.
-> + */
-> +#define PP_MAGIC_MASK ~0x3UL
-> +
->  /**
->   * struct page_pool_params - page pool parameters
->   * @fast:      params accessed frequently on hotpath
-> @@ -264,6 +272,11 @@ void page_pool_destroy(struct page_pool *pool);
->  void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(vo=
-id *),
->                            const struct xdp_mem_info *mem);
->  void page_pool_put_netmem_bulk(netmem_ref *data, u32 count);
-> +
-> +static inline bool page_pool_page_is_pp(struct page *page)
-> +{
-> +       return (page->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
-> +}
->  #else
->  static inline void page_pool_destroy(struct page_pool *pool)
->  {
-> @@ -278,6 +291,11 @@ static inline void page_pool_use_xdp_mem(struct page=
-_pool *pool,
->  static inline void page_pool_put_netmem_bulk(netmem_ref *data, u32 count=
-)
->  {
->  }
-> +
-> +static inline bool page_pool_page_is_pp(struct page *page)
-> +{
-> +       return false;
-> +}
->  #endif
->
->  void page_pool_put_unrefed_netmem(struct page_pool *pool, netmem_ref net=
-mem,
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 542d25f77be80304b731411ffd29b276ee13be0c..3535ee76afe946cbb042ecbce=
-603bdbedc9233b9 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -55,6 +55,7 @@
->  #include <linux/delayacct.h>
->  #include <linux/cacheinfo.h>
->  #include <linux/pgalloc_tag.h>
-> +#include <net/page_pool/types.h>
->  #include <asm/div64.h>
->  #include "internal.h"
->  #include "shuffle.h"
-> @@ -872,9 +873,7 @@ static inline bool page_expected_state(struct page *p=
-age,
->  #ifdef CONFIG_MEMCG
->                         page->memcg_data |
->  #endif
-> -#ifdef CONFIG_PAGE_POOL
-> -                       ((page->pp_magic & ~0x3UL) =3D=3D PP_SIGNATURE) |
-> -#endif
-> +                       page_pool_page_is_pp(page) |
->                         (page->flags & check_flags)))
->                 return false;
->
-> @@ -901,10 +900,8 @@ static const char *page_bad_reason(struct page *page=
-, unsigned long flags)
->         if (unlikely(page->memcg_data))
->                 bad_reason =3D "page still charged to cgroup";
->  #endif
-> -#ifdef CONFIG_PAGE_POOL
-> -       if (unlikely((page->pp_magic & ~0x3UL) =3D=3D PP_SIGNATURE))
-> +       if (unlikely(page_pool_page_is_pp(page)))
->                 bad_reason =3D "page_pool leak";
-> -#endif
->         return bad_reason;
->  }
->
-> diff --git a/net/core/netmem_priv.h b/net/core/netmem_priv.h
-> index 7eadb8393e002fd1cc2cef8a313d2ea7df76f301..f33162fd281c23e109273ba09=
-950c5d0a2829bc9 100644
-> --- a/net/core/netmem_priv.h
-> +++ b/net/core/netmem_priv.h
-> @@ -18,6 +18,11 @@ static inline void netmem_clear_pp_magic(netmem_ref ne=
-tmem)
->         __netmem_clear_lsb(netmem)->pp_magic =3D 0;
->  }
->
-> +static inline bool netmem_is_pp(netmem_ref netmem)
-> +{
-> +       return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) =3D=3D PP_SI=
-GNATURE;
-> +}
-> +
->  static inline void netmem_set_pp(netmem_ref netmem, struct page_pool *po=
-ol)
->  {
->         __netmem_clear_lsb(netmem)->pp =3D pool;
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index ab8acb737b93299f503e5c298b87e18edd59d555..a64d777488e403d5fdef83ae4=
-2ae9e4924c1a0dc 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -893,11 +893,6 @@ static void skb_clone_fraglist(struct sk_buff *skb)
->                 skb_get(list);
->  }
->
-> -static bool is_pp_netmem(netmem_ref netmem)
-> -{
-> -       return (netmem_get_pp_magic(netmem) & ~0x3UL) =3D=3D PP_SIGNATURE=
-;
-> -}
-> -
->  int skb_pp_cow_data(struct page_pool *pool, struct sk_buff **pskb,
->                     unsigned int headroom)
->  {
-> @@ -995,14 +990,7 @@ bool napi_pp_put_page(netmem_ref netmem)
->  {
->         netmem =3D netmem_compound_head(netmem);
->
-> -       /* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
-> -        * in order to preserve any existing bits, such as bit 0 for the
-> -        * head page of compound page and bit 1 for pfmemalloc page, so
-> -        * mask those bits for freeing side when doing below checking,
-> -        * and page_is_pfmemalloc() is checked in __page_pool_put_page()
-> -        * to avoid recycling the pfmemalloc page.
-> -        */
-> -       if (unlikely(!is_pp_netmem(netmem)))
-> +       if (unlikely(!netmem_is_pp(netmem)))
->                 return false;
->
->         page_pool_put_full_netmem(netmem_get_pp(netmem), netmem, false);
-> @@ -1042,7 +1030,7 @@ static int skb_pp_frag_ref(struct sk_buff *skb)
->
->         for (i =3D 0; i < shinfo->nr_frags; i++) {
->                 head_netmem =3D netmem_compound_head(shinfo->frags[i].net=
-mem);
-> -               if (likely(is_pp_netmem(head_netmem)))
-> +               if (likely(netmem_is_pp(head_netmem)))
->                         page_pool_ref_netmem(head_netmem);
->                 else
->                         page_ref_inc(netmem_to_page(head_netmem));
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index f86eedad586a77eb63a96a85aa6d068d3e94f077..0ba73943c6eed873b3d1c681b=
-3b9a802b590f2d9 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -437,8 +437,8 @@ void __xdp_return(netmem_ref netmem, enum xdp_mem_typ=
-e mem_type,
->                 netmem =3D netmem_compound_head(netmem);
->                 if (napi_direct && xdp_return_frame_no_direct())
->                         napi_direct =3D false;
-> -               /* No need to check ((page->pp_magic & ~0x3UL) =3D=3D PP_=
-SIGNATURE)
-> -                * as mem->type knows this a page_pool page
-> +               /* No need to check netmem_is_pp() as mem->type knows thi=
-s a
-> +                * page_pool page
->                  */
->                 page_pool_put_full_netmem(netmem_get_pp(netmem), netmem,
->                                           napi_direct);
->
-> --
-> 2.48.1
->
+> For a read() to fail at say copy_to_user() feels like your app or
+> system must be in really bad shape.
+
+Yes, but still the semantic we want is that if a creation ioctl
+returns 0 (success) then the object exists and if it returns any error
+code then the creation was a NOP.
+
+> A contingency plan could be to replay the message from the app/control
+> plane and hope you get an "object doesnt exist" kind of message for a
+> failed destroy msg.
+
+Nope, it's racey, it must be multi-threaded safe. Another thread could
+have created and re-used the object ID.
+
+> IOW, while unwinding is more honorable, unless it comes for cheap it
+> may not be worth it.
+
+It was cheap
+
+> Regardless: How would RDMA unwind in such a case?
+
+The object infrastructure takes care of this with a three step object
+creation protocol and some helpers.
+
+> Not sure if this applies to you: Netlink good practise is to ensure
+> any structs exchanged are 32b aligned and in cases they are not mostly
+> adding explicit pads.
+
+The alignment is less important as a ABI requirement since
+copy_to_user will fix the alignment when it copies arrays to kernel
+memory that will be properly aligned as required. netlink has this
+issue because it bulk copies everything into a skb and uses pointers
+to that copy. The approach here only copies small stuff in advance and
+larger stuff is not copied until memory is allocated to hold it.
+
+> When you say "driver" you mean "control/provisioning plane" activity
+> between a userspace control app and kernel objects which likely
+> extend
+
+No, I literally mean driver.
+
+The user of this HW will not do something like socket() as standard
+system call abstracted by the kernel. Instead it makes a library call
+ib_create_qp() which goes into a library with the userspace driver
+components. The abstraction is now done in userspace. The library
+figures out what HW the kernel has and loads a userspace driver
+component with a driver_create_qp() op that does more processing and
+eventually calls the kernel.
+
+It is "control path" in the sense that it is slow path creating
+objects for data transfer, but the purpose of most of the actions is
+actually setting up for data plane operations.
+
+> That you have a set of common, agreed-to attributes and then each
+> vendor would add their own (separate namespace) attributes?
+
+Yes
+
+> The control app issuing a request would first invoke some common
+> interface which would populate the applicable common TLVs for that
+> request then call into a vendor interface to populate vendor specific
+> attributes.
+
+Yes
+
+> And in the kernel, some common code would process the common
+> attributes then pass on the vendor specific data to a vendor driver.
+
+Yes
+ 
+> If my reading is right, some comments:
+> 1) You can achieve this fine with netlink. My view of the model is you
+> would have a T (call it VendorData, which is is defined within the
+> common namespace) that puts the vendor specific TLVs within a
+> hierarchy.
+
+Yes, that was a direction that was suggested here too. But when we got
+to micro optimizing the ioctl ABI format it became clear there was
+significant advantage to keeping things one level and not trying to do
+some kind of nesting. This also gives a nice simple in-kernel API for
+working with method arguments, it is always the same. We don't have
+different APIs depending on driver/common callers.
+
+> 2) Hopefully the vendor extensions are in the minority. Otherwise the
+> complexity of someone writing an app to control multiple vendors would
+> be challenging over time as different vendors add more attributes.
+
+Nope, it is about 50/50, and there is not a challenge because the
+methodology is everyone uses the *same* userspace driver code. It is
+too complicated for people to reasonable try to rewrite.
+
+> I cant imagine a commonly used utility like iproute2/tc being
+> invoked with "when using broadcom then use foo=x bar=y" apply but
+> when using intel use "goo=x-1 and gah=y-2".
+
+Right, it doesn't make sense for a tool like iproute, but we aren't
+building anything remotely like iproute.
+
+> 3) A Pro/con to #2 depending on which lens you use:  it could be
+> "innnovation" or "vendor lockin" - depends on the community i.e on the
+> one hand a vendor could add features faster and is not bottlenecked by
+> endless mailing list discussions but otoh, said vendor may not be in
+> any hurry to move such features to the common path (because it gives
+> them an advantage).
+
+There is no community advantage to the common kernel path.
+
+The users all use the library, the only thing that matters is how
+accessible the vendor has made their unique ideas to the library
+users.
+
+For instance, if the user is running a MPI application and the vendor
+makes standard open source MPI 5% faster with some unique HW
+innovation should anyone actually care about the "common path" deep,
+deep below MPI?
+
+> 1) I am not a fan of the RPC approach because it has a higher
+> developer effort when adding new features. Based on my experience, I
+> am a fan of CRUD(Create Read Update Delete) 
+
+It suites some things better than others. I don't think semantically
+update is the right language for most of what is happening
+here. "read" is almost never done. Like socket() Fd's and it's API
+surface isn't a good fit for CRUD.
+
+> - and with netlink i also
+> get for free the subscribe/publish parts; to be specific _all you
+
+publish/subscribe doesn't make sense in this context. We don't do it.
+
+> 2) Using C as the modelling sounds like a good first start to someone
+> who knows C well but tbh, those macros hurt my eyes for a bit (and i
+> am someone who loves macro witchcraft). The big advantage IMO of using
+> yaml or json is mostly the available tooling, example being polyglot.
+> I am not sure if that is a requirement in RDMA.
+
+I agree with this.. When it was first made I suggested a code
+generator instead but at that time code generators in the kernel did
+not seem to be a well accepted idea. I'm glad to see that improving.
+
+> Again, I could be missing something but the semantics seem to be the
+> same as netlink.
+
+AFAIK netlink doesn't have the same notion of objects or having the
+validation obtain references and locking on referenced objects at all.
+
+> BTW, do you do fuzzy testing with this?
+
+syzkaller runs on rdma, but I don't recall how much coverage syzkaller
+gets on these forms. We fixed a huge number of syzkaller bugs at
+least.
+
+Jason
 
