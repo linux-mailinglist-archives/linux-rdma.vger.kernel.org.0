@@ -1,134 +1,139 @@
-Return-Path: <linux-rdma+bounces-8959-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8960-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87070A71071
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 07:13:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D57FA71248
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 09:13:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8290B3B4B67
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 06:12:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F31A1898F68
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 08:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04D4188A0E;
-	Wed, 26 Mar 2025 06:13:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B141A316C;
+	Wed, 26 Mar 2025 08:12:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j8lt7XRO"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y9j1T96q"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0141F5383;
-	Wed, 26 Mar 2025 06:13:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93AE419D884
+	for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 08:12:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742969586; cv=none; b=fra7zlxkkHa3L8jhzfDQzQVAayAns3QrrdR+XT980e7Gz0XqneIVFjvrAutbBP4hUMZ4zj4aVf/yLS0ne77bKh+lavlg7FMxdTiqkbgu7hEBCfyZqUMWVJewwB8d9blXMgCaOCjSiHYfG81uQIxgrSgTfaAibzZaW/R7A1tu/Qw=
+	t=1742976769; cv=none; b=HoMfhSfoanGrmxz6BPRDySAWiFnffiUVAclLAsVETL3ORah+3y1c5MJhoLAnhOrz2MwpoBxcxhSiR/rsiS0Pq2PESqA4DcjQ0uHwBU/qdHooBOl6y+1BoO6sClIxKox+0ULekjYhkoHTZgkrL8UQDp24EwdiEkvQsaqt87mQ6VY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742969586; c=relaxed/simple;
-	bh=txTzL2mhqhikibCqrU7LgF55lTKwKgl5EG6fOmSyzzE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M/YmFb8PF0uSbsIus24snmosKxjtV2T/O5j5OpsuqMg8mvIjxXM1q4lOIXOpp5LIrEei2FGGsJyC+GlwCPM7SB4CxSsMA/ErRKMsC8uEBlN6D/ierHYAPOasdDoKRB7na0jD7/Y9Qb79hqQ31ofmGPA5ArikDLXpngZDy2Q7wl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j8lt7XRO; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-39133f709f5so3394306f8f.0;
-        Tue, 25 Mar 2025 23:13:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742969583; x=1743574383; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qh5szxCrEAebk5GiCm8Dt2jH6xOERyFSJuhaK1L/FGQ=;
-        b=j8lt7XROtANGNcqA5zW/rOJ2l7e3uQofcx0Kz4ZMStV0dFKSpI33wWLTF0J1bWaIdo
-         iG+O3HvFpegCF8NNVlO6VBycX7GNFeIdVE2VQJYktYrwQr1WAMwiCTRmHouSTWsJTL8S
-         QbtOSPrF82aw/rpprhXzXYYvUIqK324akbsj6eU5a10IzI9pGaDWlq0lJsBSc22u2T7+
-         e9tC6jEtBnNIySdreQ2UwWmAVvHAVdAi+VswXIVUnA995JhmnWr7O2I++f8liXDXcBTt
-         lY5tmRcCxBLomh2Oif2e1Nm5LsqpEhukIgs/olhA5SpqRkGEBmpbyrDLjwDacI6jeGA2
-         aC5w==
+	s=arc-20240116; t=1742976769; c=relaxed/simple;
+	bh=/i5+/BRMZy/oWIkpPBk5bPU1qjbR62bTRHV5eQdywzI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=JTZCwIQHCkl9hsyO6bqD9Je8WCOe0e6v4iYYn3yEYpqz3BLhq96ieUabKXVcVpcnSdEE89gT6escSyVltxnKvkI9suz1R3eXTXvZRD7mum3u3rr39y6tRSMJrLDbpq/N+U58mDKbR8v3bw1U41aie1bqhWwwrZ6YmD2PqxCrEY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y9j1T96q; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1742976766;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/i5+/BRMZy/oWIkpPBk5bPU1qjbR62bTRHV5eQdywzI=;
+	b=Y9j1T96qquxNoEuYG5dfrWq9hPaRC12yzI7R0+VSpPwR2x5tih8q9IGP2VjczxP4wqzb0l
+	tcpGt51cIBBFs3snUFwYnjC8zmDvBohtx2jMAVBOl4ou9P3ADRcVty6NwEEh/TiunR453t
+	WAhOmRwpSkYTZ5lbWlNOOwGVuD09Reg=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-478-QjonPbcjOseq9WX1fH-3ng-1; Wed, 26 Mar 2025 04:12:42 -0400
+X-MC-Unique: QjonPbcjOseq9WX1fH-3ng-1
+X-Mimecast-MFC-AGG-ID: QjonPbcjOseq9WX1fH-3ng_1742976762
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-ac297c7a0c2so489018966b.3
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 01:12:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742969583; x=1743574383;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qh5szxCrEAebk5GiCm8Dt2jH6xOERyFSJuhaK1L/FGQ=;
-        b=Mpyvjf/W/bAUgE2pXxIwmauhPxBIWC8xj7Xz5KZMwcVCUu0NUpGnhMgpbxiRj6U8Mj
-         6sYPiWNI5w+/bN4viEYeRcHCCdpEy3GD5g+SlvMVhv5anH+UOvoTwCfcP4NQO71L6jv0
-         jazeFeYtjh2XmEjbxQ/Sg3qEoIOPTxpzOv5vHis1TOtldzx8OOsb6uy3+H6Xk2hvnkqP
-         4L3+0K8dHfJkh3Gk1PIupn8/lV1jKua/p8Tnmqezu45C54MhguMc5x3azYfmX3SaNcH/
-         wvn76NaxxBrLk5COgMOBMFQ1pXNi/QkWuUjegEd22xKtww1GC45PzH8IByE9vUADYRwp
-         LGkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWTTQVOahk++I9Dimy6Ib5mq6bBpOAyrBDgpChecWTVGdUovUl3ue5oKG4VPD8IT9ZSwsAkInYTmtZxaA==@vger.kernel.org, AJvYcCXvakRQHW+qnQ4lk9MuHXOpPa2KWNyP7sSn/jrXwdIcA/K+8FbJK/ywHwaTgSYUHOPyH1DgR04jG4Hx4Qg=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwaWebH2Zs4qNyg51P3Q/HQGdDo07z0TRGqaEj20c0Ie9f4wd9u
-	s3dM0yPTYUi2jR0Lqhs1SIpZbLFKGyxI9kFl/l/it+BXJX8zsthi
-X-Gm-Gg: ASbGnctGh5OS6Zkp2r+WhBy8K7sdSVYq55lL2ZMEoa71Ha2f1y7qMw1W9ZxNn0KjnFS
-	ZFu4jXBD7uaeEL2RXKEZiVCQ6fQ8Oozi/zqKvjp6zXzwF58sZL78oguEdJwc4VHvBv9Etc3HDHr
-	teLWBmxxGi01ZBWcfnUZmIzpau4iwP1dIoKMR+PAJyPDsd57IpH6OGtEM4d05DsJpdraGdis34F
-	2K99fWFtZL5DuioXpqSUeijjxdgYWV3Hx71wnVnzY61b6EdyKe2yA31NoKNQeKq2Zy2DsfjCjQN
-	OmJ8PR9p/hKOiavlN3+QAtAFpUHcxsfEFyLc3B/3vFeFgx7pC0dUhH0LNx4DDA==
-X-Google-Smtp-Source: AGHT+IGbpx7mTUHQIYPmGKwz6J0qSyb+Q2qehyaUkSxFmr7Z272S/gKD9iq5r+TYNGyoJa7ZTVs91Q==
-X-Received: by 2002:a05:6000:2d84:b0:391:40bd:6222 with SMTP id ffacd0b85a97d-3997f8fd7camr10604910f8f.22.1742969582886;
-        Tue, 25 Mar 2025 23:13:02 -0700 (PDT)
-Received: from [10.80.1.87] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3997f9b55cdsm15905675f8f.52.2025.03.25.23.13.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Mar 2025 23:13:02 -0700 (PDT)
-Message-ID: <91285e69-91d6-4845-8381-46b55cb98d22@gmail.com>
-Date: Wed, 26 Mar 2025 08:13:00 +0200
+        d=1e100.net; s=20230601; t=1742976761; x=1743581561;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/i5+/BRMZy/oWIkpPBk5bPU1qjbR62bTRHV5eQdywzI=;
+        b=NbF1LkpOBfR53qACktUbSXLRzjAGVI3NCReKwd1oMnHeLA7CJJ9mYpBI1T9P98+REQ
+         Lna14UK7nbPgXqWnyBMh4FgPr5LWgPNNttPtD7F6PwbEqx45SR+rB1LFqS9vcaIHLRLt
+         WqGFAbu+8Te9U2TK/hqVXp2/bWa+EO8RslkIvNRidwRSkDyp7YjmE+iMTk7sgwfUwv9J
+         3/S36avB1w9vDtAp8Y0OFovd19tqRkqmTiKYvfEUDf1rwX207QSNLm3dHME27RjaMiju
+         DCEd6/6feuB2Jg9aNZld1+/ztYjrn9P2MAeFPZ5mRbDxmHx8FIzpjLN5i5mH3PgdBGVj
+         ItpA==
+X-Forwarded-Encrypted: i=1; AJvYcCU4sUCShYml4U7JD4WbGLJ5GZoDL636V7X+KCLXjtF5/HMY0qnVAcuWANwlA1teSGu93L8kcU/ooDXF@vger.kernel.org
+X-Gm-Message-State: AOJu0YzjuKAvdiRhsQY+2LwWG0v3diGF5yUoe9NRU5OmLMhHMJtePR4F
+	zTH4yu7gXvb7dqn4jrUOzGNLnmFE4E9bU4hercbG11t7NRrtkfhUqAGiK2l4Wdv6wC5sMsLuk/A
+	qiDMJTeL0SSZg/R0atADxY8WKHQ3VMKcsWjf1LEZsCta7rEbX98hTJ6YkaIU=
+X-Gm-Gg: ASbGncvYWoTsSaXZyfZgSLeoXbMVNX2WPagB5+q8BNik9hVdbDPexoV+JnHS2znlzE1
+	fobnxY4WnC2LvY6DbYjpZ26/swyjPptXjQq41O0Eb0jziDs9G4M2Dm4suQcGatyMp3S2eF9gD+r
+	JNYr5V5wYE13I/jAiOkkVucTtsjLn4Jh0h9pqEikzh0FcFtXWwL23xsmY3IHLRu7PxDeIt5JotL
+	YWkrkm2ToltbWt1O/tKJQmdnkbky4Vpi07U7m37Tfx1VTodsUZOSstcN6082JTnqB4UtRgueKhZ
+	zRi+JcwsZfn4ZDZL7pDEkd2P4lUpWye7x1CRFCvP
+X-Received: by 2002:a17:907:e84c:b0:ac4:751:5f16 with SMTP id a640c23a62f3a-ac407515fefmr1710096066b.30.1742976761516;
+        Wed, 26 Mar 2025 01:12:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG7tYXUyRnYRid7WXsc4ocXyKGAEp70GrWLAvLlsK1V4El27+8QO6/yVgb6O5atgR4hk9tmqw==
+X-Received: by 2002:a17:907:e84c:b0:ac4:751:5f16 with SMTP id a640c23a62f3a-ac407515fefmr1710092166b.30.1742976761087;
+        Wed, 26 Mar 2025 01:12:41 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac3efda474bsm988606066b.183.2025.03.26.01.12.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Mar 2025 01:12:40 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 305D018FC9C4; Wed, 26 Mar 2025 09:12:34 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
+ <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
+ Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
+ Almasry <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>,
+ Yunsheng Lin <linyunsheng@huawei.com>, Pavel Begunkov
+ <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-mm@kvack.org
+Subject: Re: [PATCH net-next v2 2/3] page_pool: Turn dma_sync and
+ dma_sync_cpu fields into a bitmap
+In-Reply-To: <20250325151743.7ae425c3@kernel.org>
+References: <20250325-page-pool-track-dma-v2-0-113ebc1946f3@redhat.com>
+ <20250325-page-pool-track-dma-v2-2-113ebc1946f3@redhat.com>
+ <20250325151743.7ae425c3@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 26 Mar 2025 09:12:34 +0100
+Message-ID: <87cye4qkgd.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net/mlx5: DR, remove redundant object_range assignment
-To: Qasim Ijaz <qasdev00@gmail.com>, saeedm@nvidia.com, leon@kernel.org,
- tariqt@nvidia.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, kliteyn@nvidia.com
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250324194159.24282-1-qasdev00@gmail.com>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20250324194159.24282-1-qasdev00@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+Jakub Kicinski <kuba@kernel.org> writes:
 
+> On Tue, 25 Mar 2025 16:45:43 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Change the single-bit booleans for dma_sync into an unsigned long with
+>> BIT() definitions so that a subsequent patch can write them both with a
+>> singe WRITE_ONCE() on teardown. Also move the check for the sync_cpu
+>> side into __page_pool_dma_sync_for_cpu() so it can be disabled for
+>> non-netmem providers as well.
+>
+> Can we make them just bools without the bit width?
+> Less churn and actually fewer bytes.
 
-On 24/03/2025 21:41, Qasim Ijaz wrote:
-> The initial assignment of object_range from
-> pool->dmn->info.caps.log_header_modify_argument_granularity is
-> redundant because it is immediately overwritten by the max_t() call.
-> 
-> Remove the unnecessary assignment.
-> 
-> Signed-off-by: Qasim Ijaz <qasdev00@gmail.com>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_arg.c | 3 ---
->   1 file changed, 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_arg.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_arg.c
-> index 01ed6442095d..c2218dc556c7 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_arg.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_arg.c
-> @@ -39,9 +39,6 @@ static int dr_arg_pool_alloc_objs(struct dr_arg_pool *pool)
->   
->   	INIT_LIST_HEAD(&cur_list);
->   
-> -	object_range =
-> -		pool->dmn->info.caps.log_header_modify_argument_granularity;
-> -
->   	object_range =
->   		max_t(u32, pool->dmn->info.caps.log_header_modify_argument_granularity,
->   		      DR_ICM_MODIFY_HDR_GRANULARITY_4K);
+Ah! Didn't realise that was possible, excellent solution :)
 
-Acked-by: Tariq Toukan <tariqt@nvidia.com>
+> I don't see why we'd need to wipe them atomically.
+> In fact I don't see why we're touching dma_sync_cpu, at all,
+> it's driver-facing and the driver is gone in the problematic
+> scenario.
 
-Thanks for your patch.
-This is net-next material. Please specify target branch in future 
-submissions.
+No you're right, but it felt weird to change just one of them, so
+figured I'd go with both. But keeping them both as bool, and just making
+dma_sync a full-width bool works, so I'll respin with that and leave
+dma_sync_cpu as-is.
 
-Regards,
-Tariq
 
