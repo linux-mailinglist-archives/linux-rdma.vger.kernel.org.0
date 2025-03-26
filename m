@@ -1,162 +1,136 @@
-Return-Path: <linux-rdma+bounces-8988-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8989-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85428A71F16
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 20:25:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C3B5A71FD5
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 21:03:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65D6F3B26BE
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 19:25:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1552F1773E3
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 20:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74BE6250BF3;
-	Wed, 26 Mar 2025 19:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2519D253B79;
+	Wed, 26 Mar 2025 20:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="DuFkXIpD"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Gd7x8KLV"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azolkn19010005.outbound.protection.outlook.com [52.103.10.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC5523C8CD
-	for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 19:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.10.5
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743017152; cv=fail; b=tBT3JrlNJVcvGVTch8UAtUxQRsZoNTeb5fNaTfyzhDDPOUSOlQiSZytrlGX6VSVsZCfVqVX1pmC+hCVH/gHQDX5qL7fDyPr9xxpoQzRIt8RsdCg1C7ZsoKCTun4RyhhHMraPx4CS2mTCP+rYaodqAF3HBp4Cqq4u/DUky89v5jo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743017152; c=relaxed/simple;
-	bh=52xeuAsUCAgRiFFQFr9UcDbz4Ow0vl+wI6u2MO/iRkY=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=XuniSgTTcpy9DaK/sFLOZy8xiw7sUZq8Podrdo3P6h2DJQ47ckmpHtWQG/GNdhhx2Wa9POVJY1V9ZAsd1tJO6DppbRsZVCN0rEnvOS/WrnTBg1S6Kp5D6lCabml11irRtkjrqcCTsY6jxDZ/VdH5IIppiAPj7HgcyKWQf10DEX8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=DuFkXIpD; arc=fail smtp.client-ip=52.103.10.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=iMLCMlYdpHAF017tJNj3RW+n0vircFYBpdxWxk8QS2UlTb9QiFMWFcW2CqoQPZrBSJMfP8LV8AMhSR9rRNAwRzZv2X/S4mUkkDs10eks5J6HQvpfP9/4RNnhLn/kTsOsLx9VFxAdZJCCIyz1abh4TrjFv6FWETrQcUsBCI9HrKj0z4rvysjqlxaWhxSkWCFpp1saBVOOwRVGdSu7DHG2hzJq/hToYs8xPGJdoZUtCAbPwHh88XrTnOgWmd7AEJb25qivYbCNMGbk6ahQWeVVHNiq/MKfAt3+p6r9z2vB/QVSI0oztTGWVj8E5Pj7t7nlUYiTIobu1BKffUIUspTu3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=52xeuAsUCAgRiFFQFr9UcDbz4Ow0vl+wI6u2MO/iRkY=;
- b=k0M0g+zP041vqZazJ3SZi0P1tb2PUuo7odVhTSwHC1dgsg6lZRzCdiKnCkPTK/7eHkc0Tr2H+KrNamkij2nnXM194si3TKA41PU5Eqqq+l2+/hdc46nM0nMkVDQ50SGfy+dU468zzmpm+0URGmbdvbtFkvudqBc+c3TBASNmVZfrL4MbJOtdkc4bLEda4YuzRllEbKCqhp0GTHblEpdDcSeW4uyTTpnQP6xU3PcFQQexDe+Eb+2ZLRLMnPd41Jfy+/BrDFB3rQwCm52nhC/Qn8wU1MU9sCE4NG+R1lOn8W7WfuPWvmxFesu+Ld8+/XaNuohYMmk8HpJe2vscVhNl+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=52xeuAsUCAgRiFFQFr9UcDbz4Ow0vl+wI6u2MO/iRkY=;
- b=DuFkXIpDGThzm18R2N2GFcn2ElgKvNi38wci5PojT3jNULNFMQsGZZWpNpqli6tsIF4I9hqRC2DRbbIr0dpdszAcBHTkNuYBAJTcrSCMuX9H9px2/bY9jgk262HshqeVj5HnumbJrIpMudncS5kwnwRIM9Uk5k5GaEeGwJvOdmX6KAbq7wdaKCwYVp+AQzzTtW6t0r801WzZksLGw9K2B8F5rS+xw9pLpMJNrgy+1z+xQwYVG/eJEzQ5fcd0coKV7Lmb9uqushsx/u/JxXv7ti4a8JfGbyrsgEpP1oY/9hx4RMLUTD84UwRwr1TastZBxYUcQ2aooFJVN+tscABhBQ==
-Received: from SA1PR10MB7635.namprd10.prod.outlook.com (2603:10b6:806:379::17)
- by PH7PR10MB5699.namprd10.prod.outlook.com (2603:10b6:510:127::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.42; Wed, 26 Mar
- 2025 19:25:47 +0000
-Received: from SA1PR10MB7635.namprd10.prod.outlook.com
- ([fe80::2971:86e2:851b:f009]) by SA1PR10MB7635.namprd10.prod.outlook.com
- ([fe80::2971:86e2:851b:f009%6]) with mapi id 15.20.8534.040; Wed, 26 Mar 2025
- 19:25:46 +0000
-From: Anna Lewis <anna.industryinsighthub@outlook.com>
-To: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: ISC West 2025 Attendee Database for Generating New Business Leads
-Thread-Topic: ISC West 2025 Attendee Database for Generating New Business
- Leads
-Thread-Index: AdueWAtrtVGeVL3tSMalsMwuqcxBDw==
-Disposition-Notification-To: Anna Lewis <anna.industryinsighthub@outlook.com>
-Date: Wed, 26 Mar 2025 19:25:46 +0000
-Message-ID:
- <SA1PR10MB76359A2B88A6027EF4781521F1A62@SA1PR10MB7635.namprd10.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR10MB7635:EE_|PH7PR10MB5699:EE_
-x-ms-office365-filtering-correlation-id: baa8100f-1a68-41c6-2a67-08dd6c9c0255
-x-microsoft-antispam:
- BCL:0;ARA:14566002|19110799003|8060799006|8062599003|15080799006|461199028|440099028|3412199025|41001999003|102099032;
-x-microsoft-antispam-message-info:
- =?iso-8859-1?Q?PSV/tOBIrv7TpAnKJaLnheKLjJPG2iXOVe92Vc3sXgKJCuSP7bQtlML0P8?=
- =?iso-8859-1?Q?lb9pZtEmCLi04lZH+JypRJgXwm194wx9HeIRpNDW992TfN2YPhQVCFBXes?=
- =?iso-8859-1?Q?1iJF9qustQk/SUDDlrvHmnAgpsw+dTLWyk8H743qWPCyrVvk0qTcYO1UoW?=
- =?iso-8859-1?Q?NSnnKG/fpG575gJUnQ715jQ8NI1/ZZOTAxemc1NitQHlbyhmAVFsoi/g1m?=
- =?iso-8859-1?Q?yc/GkVZh1jRPswgjcOM3OSHuKcji7FrT8rGuFq5L/C7zLFbCBW/+r3GpuY?=
- =?iso-8859-1?Q?9GZo+qJwYmlgxj1jkZGcKrfVqtb05vhFCbY7dlPYKw2HhweMyIFD+53/m8?=
- =?iso-8859-1?Q?ZJ8LfOdzAyCSWz683uwVNRt73X14Urdz5X7uw+cDV8bQS05ZZss/xPi8eU?=
- =?iso-8859-1?Q?jXsCyRxJty9aAv+V+PU8yB+agGkMucXR/sjy1O/3TNzy0HutjOV34hTFL7?=
- =?iso-8859-1?Q?I1HGXV4Lju49KKLB2xORNc0CLAByALAJAzT6s86KlDkigkKgvG9GII9Fhe?=
- =?iso-8859-1?Q?d13yQdOekdf4TuEvJh7JX7xvt3XjG+u08De1B3WLEU+19xM0ini8JpboBX?=
- =?iso-8859-1?Q?d0lzQ5OYO44tiIuMXzkibKTuVoifhQZYWoRAq32Z6N3Jx5d2Rhq/h6dKtx?=
- =?iso-8859-1?Q?njwlSM8NhR4D9PRLpBRoLXKtXjmaf96BF8rWOjE3eBIezqSf4pElpEtI0i?=
- =?iso-8859-1?Q?q3gNOLpZ7HO0XhgScQze3DjamQJo2UligIClfnYTGo6ZaxraM1nnzGRy//?=
- =?iso-8859-1?Q?bQ4DOVppiz7UkhkKzThhoS4eakjMLQTy1QM0+3bifcU/fRWezsPN6qKrVM?=
- =?iso-8859-1?Q?hferSxWI8Qmd4iKGdtLhZu8Ngcztq1uxxVqTHLoW0sU6KYvToKyYrwJrtL?=
- =?iso-8859-1?Q?RI2BK3q0TKPykiVUXoFMmT/362e+WqNZ2bdRkHW8sjDbaMP4rtODDsStxv?=
- =?iso-8859-1?Q?zvmCIo9kUt7liSnl7JKrJh5BfsFSeQQatTwe3IzNB5++8JEZWnIJbFRX1R?=
- =?iso-8859-1?Q?pMBQAlldk1aeDV2NqgUTHE6f8It3itESF1YzvNNoDXAgejbA/v8hJ85E0m?=
- =?iso-8859-1?Q?wYb7IaHNB/fpT1g0DBYXKgMvr7qbfbQQy+uNZb2QHw7XBU1VUxzfeHARjt?=
- =?iso-8859-1?Q?47QPdLYlf0Dyum1QTFs3u8N6BGIFE=3D?=
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?CtuXml8920W5o37oO7YRxkd8CcElpFgsOLatW9UvovTkKgfcB+iOgbWHCR?=
- =?iso-8859-1?Q?r/q+WPL/gfepkwq4BXSEGlMPAZNxOgyerhsXmNVR0+ecl4p22Py7uHbryg?=
- =?iso-8859-1?Q?A5ZU/hiunM2wReaUYUvADhaaivy8RGw7IJNk517DyUqJpTOG0FD6tThcAj?=
- =?iso-8859-1?Q?TkGPtXrE2fui0cyQ5LFa/F3M6KOrnRCg+hYZ4QQn3uiWwcvzoAB2jia2h2?=
- =?iso-8859-1?Q?RMTdpmm+ZkC0nrH1b/mnellSLLma1YI2/EN/LTbYw7s8DlrpQYxIGfM3Dq?=
- =?iso-8859-1?Q?Q0peK+CwBhhmj0GE5x2IJqeBHjbEkIRKL1KhddZ0Ff5J31seRcP3XBht1i?=
- =?iso-8859-1?Q?5N6SyjzzGBzons40kQX4CxI9z1mJ7YnyFp7CcU1xnoremCRuMiNWd6EHtp?=
- =?iso-8859-1?Q?rtyRAjAQi6WYcOBgRw+9h/TdMngauoAgFci7sbVKzPf7Li8rgXfoSE6Vn/?=
- =?iso-8859-1?Q?YZ9xFPcdVHcRjYF2Z6VAXb7shvrX1XiOgICmBK68ysR9XiEm68bGKO4wcB?=
- =?iso-8859-1?Q?gBp3cRBUrMQvO+N73EZ+zZqjE3Wy0LrQBkuSi1OrNeNBzvBFDP4d8ve/BK?=
- =?iso-8859-1?Q?sb0BgTtEYnoXCJX+T6LHCcAwP4cY0x0/ZhdAd/IO3m93MrI/sFecy9/j5j?=
- =?iso-8859-1?Q?4eIfexDXlP7sfB+jEPSE9mGe/ay3cI/C2ID1ew0+fNrwz2gpUq7+7IX4aR?=
- =?iso-8859-1?Q?Q7z+8/6B16b+a0YTRoA4eb/w2heIvwgw4/t9C2OrMM+p+A3TsjfapDuSnx?=
- =?iso-8859-1?Q?Q6nRwnFdK3P3Nziy/MxagphQI2QKngB6Cztg+pd1fS1w8m0VUz56VMpJ6q?=
- =?iso-8859-1?Q?4Ix/twYbIXehR1qAo1soMvV/Q6HzMN9UHbp7yRzNSEyNAKleZ98qCXS2ld?=
- =?iso-8859-1?Q?9lRzxEMIvhh216D7b0OO4SUYKENq/V2ys8s1h94eVzE6IPYaBJFSQPgjGO?=
- =?iso-8859-1?Q?9JoomChQXmuruLnlSSdfSQXGRsOV2r7r9k5sWBiviWWkC9RGTzn7LNitej?=
- =?iso-8859-1?Q?y9Ft+yEMrRlIJWyKJw5xwofUqNnJhZUo7oJnr80XRbKOEFA9nmR+WkCpKw?=
- =?iso-8859-1?Q?ChFwv6P5JM4fPU4pw8z2naXpOY8ITH0FTpX+bdu8fryJTseIYol4qQ5ywc?=
- =?iso-8859-1?Q?6tsVgNUzyrvM2690+p1DhD2lFoBgmW2jxI84mfpvqdEqIeYNEiSgFTsJz3?=
- =?iso-8859-1?Q?H+HZQL2c8AFd/XePQIe/OVtNhP2dde0mKKsGgzeWc18ouKyNraRK2til1d?=
- =?iso-8859-1?Q?zpfBsE8heXfNkQyuS82GQtrCYTRR9VEmUWa3Ur5MYfCf0XAB71fZpICgRE?=
- =?iso-8859-1?Q?HAgPG/KQCId1dZ3WlgLfPcn4UkGOLt1R3dhhEB/UcKUsmPNLZT1iDZpIP8?=
- =?iso-8859-1?Q?gcRDOtCrv1EdNMigDgaLa0dydA8QM0Hg=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 885A5137930
+	for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 20:03:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743019383; cv=none; b=C/LMLCMfxFPzPAxyW6faQvalb+OQxQWQwmk06dWYfkw/RclwaYG3fZu09MPuZJoKvIyZNuNxTSMZxhHrqzd6zrvNjejuUcuRyrT4GTlTZcGUKleWjNzpqYOPBxMZaZ7EFmkWCoJzFrJ8VW3Ar6QvJwTVTSqKfN7NA9jtCaUZE38=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743019383; c=relaxed/simple;
+	bh=+Jn/IScUMjS4Ljw3DR8smqRGBCJ5wuOgYhY7MDcFlHM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jvUhDmaEQbkRck0R+9Azt9+1jejNLeVWmkqoKjgQONJ6sG6nivsNN3eWTev31Fu6q3Fx39kmROOaYeExBiVlyJGcL2+drRYMc87uW/4tA+66+mm9mWar5ubFamwdc46E4mcqUpTDfdcaQZb6kdnlYGNfm+USbTH9FnEx3r732CA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Gd7x8KLV; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2263428c8baso10805ad.1
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 13:03:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1743019382; x=1743624182; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Jn/IScUMjS4Ljw3DR8smqRGBCJ5wuOgYhY7MDcFlHM=;
+        b=Gd7x8KLVZtGWEll9DZ7sZP2owhGlc5HMJ+kqOS90WxLY77EvDSVNo7g3RmTnCmHXgs
+         WecDcB2IIYrvjc/fPvVYPq7nuIbVIclN/MFacvrS0RmwZVe7TTlkhwtPGu3zcAtRmoa1
+         gTW6g4/uZFdyr965AH7iUTlSSZXBQcNI0Ug8A00s7xtrYhdqZ6pJsLwQbGo6FXfkOR3R
+         qVdwQYN5SswvDI/cBA0mKwAhNVsrqrxbzAoF+ifgD/M5LdoOqZiwNm3TmXImVGzZWn+5
+         kQ2/xRNYI3DmoFn5yCg+TbeOoLxbc+VlI6TlWfYlT/zSr0M03ouvEw2YPgDGNiE/mTDy
+         mlGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743019382; x=1743624182;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+Jn/IScUMjS4Ljw3DR8smqRGBCJ5wuOgYhY7MDcFlHM=;
+        b=BWLgT3UoQBXuvGikhcTeibLnGqzlWagDuiC1IADonQODWRODYUH7vmvg3QvOdspNRg
+         KITJSLs18hZwwBOT9N63UQI8AaelojhQkLTBZ6qgMkpI0sbY/PzbRWgkdYHWzLOe9KTe
+         eEB9n0d+waa5l0QG03FV5NAb6gDhHbGTDCWjCKvlnKiF+ZUUt8LgQW/pLvOoAceZ1r9u
+         RgPqSfGxPmsNNVYB7qcVILnIXHQS65iqutRwILDunz0M8Wx3ggzon0h8xlWAdmnuDY8J
+         L2/wZ3xNjsX9h+z8RSm3z2IXeZo7DiL40IZEYcAqfaN6FrI5bpYO1uYGPBnYC/xCu6+5
+         nAhg==
+X-Forwarded-Encrypted: i=1; AJvYcCVRyYcwl3O4vRQ9QdLPdR17kLRAEuNyJoMaPHQQBUuH/UMBSaETdq/F/ietX8/Dx3znC4fYz0f8g0Hg@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQGMOu+zT6qNTDabDA4nL/6bQXDaXkkkuDz43+ejeEQdKlC1/o
+	p3YDIjr2xeJOrD7xzAuS64oVPZzPiV6ws5TDxuCmqNFuMksgkt0JDVBJfAzHDfx9QFInVF6CgNL
+	8wYk+TgvAaxVlwwAh1kUFVYFh8+OBdkYb49LB
+X-Gm-Gg: ASbGnctp15r7FclkTREsDY+rbgvmWI3wf/P8xXH3hcCJXp6ULR8oCwVLPng3sJvdoRF
+	Lh12uqvoe4r01ZI7R7pA/s4KsszWqCnLGewvL5HbquAqFV9mEzDoAuCG5xyckzQs/+Isl8Zo5Bw
+	4pXvma7V6BokOQTJ8YcNFl20Z1hT4h6uojqZL4G5kJ6kbn5rFtzIKY4xNY
+X-Google-Smtp-Source: AGHT+IHyPZSjmwsfq6GL9V2mdi4AJh86d77SZIS1dGb/WuVS1w50xrfuefF5cJ781EQYYgtygSKDYkcpT6oW3EQsMpk=
+X-Received: by 2002:a17:902:b20b:b0:223:5696:44f5 with SMTP id
+ d9443c01a7336-22806bc2039mr138385ad.12.1743019381382; Wed, 26 Mar 2025
+ 13:03:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR10MB7635.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: baa8100f-1a68-41c6-2a67-08dd6c9c0255
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Mar 2025 19:25:46.5771
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB5699
+References: <20250325-page-pool-track-dma-v2-0-113ebc1946f3@redhat.com>
+ <20250325-page-pool-track-dma-v2-3-113ebc1946f3@redhat.com> <Z-RF4_yotcfvX0Xz@x130>
+In-Reply-To: <Z-RF4_yotcfvX0Xz@x130>
+From: Mina Almasry <almasrymina@google.com>
+Date: Wed, 26 Mar 2025 13:02:48 -0700
+X-Gm-Features: AQ5f1Jp4SZZ5mE4AjxOxiWClioRQd_IS8oLYCgWXk_1st2N-aMHQasCWsZn1xYo
+Message-ID: <CAHS8izMj2aBeu=TreUM-O3XNqqF75vb4rvMvf7pr8mGh+N_+kw@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 3/3] page_pool: Track DMA-mapped pages and
+ unmap them when destroying the pool
+To: Saeed Mahameed <saeedm@nvidia.com>
+Cc: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+	Simon Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Yonglong Liu <liuyonglong@huawei.com>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org, linux-mm@kvack.org, 
+	Qiuling Ren <qren@redhat.com>, Yuying Ma <yuma@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi ,
-=A0
-Are you interested in obtaining the ICS West 2025 attendees list?
-=A0
-Expo Name: =A0International Security Conference & Exposition West 2025
-Total Number of records: 23,000 records=20
-List includes: Company Name, Contact Name, Job Title, Mailing Address, Phon=
-e, Emails, etc.
-=A0
-Do you want to proceed with buying these leads? I can send you the pricing =
-details.
-=A0
-Can't wait for your reply
-=A0
-Regards
-Anna
-Marketing Manager
-Industry Insight Hub.,
-=A0
-Please reply with REMOVE if you don't wish to receive further emails
+On Wed, Mar 26, 2025 at 11:22=E2=80=AFAM Saeed Mahameed <saeedm@nvidia.com>=
+ wrote:
+>
+> On 25 Mar 16:45, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >When enabling DMA mapping in page_pool, pages are kept DMA mapped until
+> >they are released from the pool, to avoid the overhead of re-mapping the
+> >pages every time they are used. This causes resource leaks and/or
+> >crashes when there are pages still outstanding while the device is torn
+> >down, because page_pool will attempt an unmap through a non-existent DMA
+> >device on the subsequent page return.
+> >
+>
+> Why dynamically track when it is guaranteed the page_pool consumer (drive=
+r)
+> will return all outstanding pages before disabling the DMA device.
+> When a page pool is destroyed by the driver, just mark it as "DMA-inactiv=
+e",
+> and on page_pool_return_page() if DMA-inactive don't recycle those pages
+> and immediately DMA unmap and release them.
+
+That doesn't work, AFAIU. DMA unmaping after page_pool_destroy has
+been called in what's causing the very bug this series is trying to
+fix. What happens is:
+
+1. Driver calls page_pool_destroy,
+2. Driver removes the net_device (and I guess the associated iommu
+structs go away with it).
+3. Page-pool tries to unmap after page_pool_destroy is called, trying
+to fetch iommu resources that have been freed due to the netdevice
+gone away =3D bad stuff.
+
+(but maybe I misunderstood your suggestion)
+
+--=20
+Thanks,
+Mina
 
