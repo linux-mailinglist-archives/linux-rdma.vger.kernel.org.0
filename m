@@ -1,135 +1,97 @@
-Return-Path: <linux-rdma+bounces-8970-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8971-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C684A7169B
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 13:23:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AD10A716F4
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 13:55:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A0B819A032D
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 12:21:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C48C7A337D
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 12:54:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8E81E32C5;
-	Wed, 26 Mar 2025 12:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97DB11E1E10;
+	Wed, 26 Mar 2025 12:55:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZWnw3c3x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="THU3o0rI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE3011E1E18
-	for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 12:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE861B3950;
+	Wed, 26 Mar 2025 12:55:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742991644; cv=none; b=ZtAuXO0dn8NNm8dC9PWXHeZ3XA/4obunLtlHhbRYfwMGkYBXRD8bIYjCi1WibzpFMogSzCF167YKYU0wTlB6KbsGX0DuJRKA26N57gCfQz8i3rB7abY2xrsYpEDR1Na/ECtmOwxYZnoZLJ694Zzm2tc2J7maK4P+iucyiPDvVJM=
+	t=1742993727; cv=none; b=HTinBjZPjyAWpgzplcV8XlhLopbjLjMG/i7Dc5ClYlKglxuqUKXp45TReUXmVjtfb5tCn7TAzg9XcS0q/htV3UNylS4WNbC20MCWOpN61vaUDY9rqb/sbiAXQHvEgQaGeriyc2ykXaIoQTzbUl/VLgwBt+XqYItE98D5aOstBds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742991644; c=relaxed/simple;
-	bh=fDGZt+SqyiAW6zCfVM1bGeXtRYL5+861efZwXKZVyjc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NQajiM/6CdAGiRCjnGpgTAFPkBh9O9BBY2clGRB0fEDoJrQOW3Z2yw3kI4cGj85OE/LNffu9YhmBfr+KsIzBmcLYg56/i6Ws8gh7mxuTGzf24WzvomUKB04F2/Ccy6YIWWP39gcCw8TqJq9GWdz0zItJu5EfFgI9rR1CpZxJaz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZWnw3c3x; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1742991641;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fDGZt+SqyiAW6zCfVM1bGeXtRYL5+861efZwXKZVyjc=;
-	b=ZWnw3c3x2f4EyLXMQC0Qkc4NC5YUhVLm65WPQvoiGOM6rc0VyJ1ThCs5vhrjHTnYRm16IM
-	tKjeQbsNkU4/SNXcwbL451aeHMALfU8DLeQSP9MPRERhANBJ4eSJrqWxAnqI5Ma3bRnzM2
-	Bbas4JehS05adalCVXo8GcYSN7f0yno=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-287-e1BWm7jCNPqldA8V2fF00w-1; Wed, 26 Mar 2025 08:20:40 -0400
-X-MC-Unique: e1BWm7jCNPqldA8V2fF00w-1
-X-Mimecast-MFC-AGG-ID: e1BWm7jCNPqldA8V2fF00w_1742991639
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-ac3e0c13278so548520266b.1
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 05:20:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742991639; x=1743596439;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fDGZt+SqyiAW6zCfVM1bGeXtRYL5+861efZwXKZVyjc=;
-        b=i6jvxVtJULEi25swBHPnw7d3g84P9j3N2dvA57v7v7N7GsoaING5FysuXMHquVL06S
-         oCLe4x+xp+31VICh7yQObXZiXiLB49N8txSsLOQQ7fAIjlYXFnFcUlH3FLwQ0zSnuqc4
-         TzYnhvZG01QGLknbFMmtB+gxl715hmRoNUV20AxAwcrJhr6sspXUnj9/NLUwbYGIatHY
-         sD0UK/8vvO3BaRZDmO8Nl+J1PMZc3oQromKvRnP/eRTN0WuezPCDD4wBl9NtmYGdj3Ix
-         8Lfv6gYQr3bL//Qlsw8g50tiZbZJTwmNGVVl3h1qbyrE/J3rxl0jRVE/OqiuozwJMAsx
-         TQGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVX8xrgkrqnRDYT4Tc1aFU0wUjFmcRoqmGvhtVAWDaHKpVtclxvdIzISKxrw0ozjueUfQzMtlTTRoln@vger.kernel.org
-X-Gm-Message-State: AOJu0YyWoe2ejHeLuD4rES3TAOwBpDtj/YofIQFQu4IZUAYs/k3esbeu
-	QQOpSnmdswVEoR0MArKbYAhoYsIvR04jn7DsTj+xZNkCd67JX/JIvfs3lGxvR1uIx9lyOfYorRp
-	WK/VwJCVnq/ZlokZmDxizVbypuIIaPmJoKxKZDkEhRqf4aS7fKV1p2C54HzE=
-X-Gm-Gg: ASbGncv65Tdzoz2pgyTnKV9sOM3/fdK8Xq2ERjWHY8zCGPqAwqZQy72BNrPwPlojnyu
-	k8MrbqaRZ6ICEuXcu4gBfjhBOiXmaJOYIBlJoDT0Ww+bmvmsrcivNdXQzz6yn8gaxLIjtrEMTHN
-	2mfMOag475618BBzNRUaDvlftcorTtkkvbBO2MRs3shmp4Pd9tFhtNrh2rpJgA4mkp3Y8ZN6tkG
-	pwFQVg1Ef2L13ySOsE08zSVVv5cEb1Gy7es4/v8IAqRC8yrciI8sUCWqtkz8iTqnds782ydshg9
-	1wQTxJ2kIavZaj9JpPyw5rKI6iW75KSsMJ0Tr2PQ
-X-Received: by 2002:a17:906:c105:b0:ac1:fab4:a83 with SMTP id a640c23a62f3a-ac3f22aec3fmr1934592166b.25.1742991639131;
-        Wed, 26 Mar 2025 05:20:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGXpD8SKp1cf90maKHi6um2LlX8ejsXAgc5A98IWT9wYQriYmqy8j/0VlxO8lFqKGic1FYQjQ==
-X-Received: by 2002:a17:906:c105:b0:ac1:fab4:a83 with SMTP id a640c23a62f3a-ac3f22aec3fmr1934588766b.25.1742991638698;
-        Wed, 26 Mar 2025 05:20:38 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac3efb65701sm1003437266b.122.2025.03.26.05.20.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Mar 2025 05:20:38 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 4474318FCA84; Wed, 26 Mar 2025 13:20:37 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
- <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
- Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
- Almasry <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>,
- Yunsheng Lin <linyunsheng@huawei.com>, Pavel Begunkov
- <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>, Yuying Ma
- <yuma@redhat.com>
-Subject: Re: [PATCH net-next v3 0/3] Fix late DMA unmap crash for page pool
-In-Reply-To: <20250326044855.433a0ed1@kernel.org>
-References: <20250326-page-pool-track-dma-v3-0-8e464016e0ac@redhat.com>
- <20250326044855.433a0ed1@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 26 Mar 2025 13:20:37 +0100
-Message-ID: <874izgq8yy.fsf@toke.dk>
+	s=arc-20240116; t=1742993727; c=relaxed/simple;
+	bh=A0tYgISPZr3nBdVXsqT8eCy/AZW3HgsAo/r/eYIdF7k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tNgerwSkLrHqeEL/eQH5sz7Rn4qb6SPO1MtPKUC7JP66efacFfWpm/cycs8DQTCFaefFIDkyYgb9hod+vZ0YX0UefDuDe1UMWGQHlY+FV8XRu+LAjlYhxk7l33GsEjuCmIaZq979AGleDJ9Bi5uGVUiITt/SOtLW/t/MZyTla2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=THU3o0rI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 738A1C4CEE2;
+	Wed, 26 Mar 2025 12:55:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1742993726;
+	bh=A0tYgISPZr3nBdVXsqT8eCy/AZW3HgsAo/r/eYIdF7k=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=THU3o0rIbjwHT9PJTSFjAw+msHz6bBCCCWbSbkZbzCpyNHz3DNnBQD3RJaYmZy4At
+	 diYGAQbunY5Z6PzvcefCNBo/l6d+Ji0PT5bdZLTGQLPCfjLHCOQoLCsnXJjwuuVho6
+	 gJEfgcLRetMnMGFe7ylOaz7C//gvUljt2JlrwxJg0W+VXESsrm8bGvVEV3O93lNZws
+	 XMDmwzOrXpuwM/uc0QRQ6RshQzXOIcxhWzXpRE0ynrjWXkysxrPtZQWeGFtR77RDfO
+	 SQjWlEUg4s+/XITtoFn8JgwxAPNsNdTFxgpQMvqkULaySHr5d/TLSyTKe75/lY4ry8
+	 WDvFHwE177O0w==
+Message-ID: <c91a9571-7893-4f9c-923b-f9d85fa4796f@kernel.org>
+Date: Wed, 26 Mar 2025 13:55:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 1/3] page_pool: Move pp_magic check into
+ helper functions
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Simon Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Mina Almasry <almasrymina@google.com>, Yonglong Liu
+ <liuyonglong@huawei.com>, Yunsheng Lin <linyunsheng@huawei.com>,
+ Pavel Begunkov <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-mm@kvack.org
+References: <20250326-page-pool-track-dma-v3-0-8e464016e0ac@redhat.com>
+ <20250326-page-pool-track-dma-v3-1-8e464016e0ac@redhat.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20250326-page-pool-track-dma-v3-1-8e464016e0ac@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Jakub Kicinski <kuba@kernel.org> writes:
 
-> On Wed, 26 Mar 2025 09:18:37 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> This series fixes the late dma_unmap crash for page pool first reported
->> by Yonglong Liu in [0]. It is an alternative approach to the one
->> submitted by Yunsheng Lin, most recently in [1]. The first two commits
->> are small refactors of the page pool code, in preparation of the main
->> change in patch 3. See the commit message of patch 3 for the details.
->
-> Doesn't apply, FWIW,
 
-Ugh, sorry about that; rebased yesterday before reposting, but forgot to
-do so this morning :/
+On 26/03/2025 09.18, Toke Høiland-Jørgensen wrote:
+> Since we are about to stash some more information into the pp_magic
+> field, let's move the magic signature checks into a pair of helper
+> functions so it can be changed in one place.
+> 
+> Reviewed-by: Mina Almasry<almasrymina@google.com>
+> Tested-by: Yonglong Liu<liuyonglong@huawei.com>
+> Signed-off-by: Toke Høiland-Jørgensen<toke@redhat.com>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |  4 ++--
+>   include/net/page_pool/types.h                    | 18 ++++++++++++++++++
+>   mm/page_alloc.c                                  |  9 +++------
+>   net/core/netmem_priv.h                           |  5 +++++
+>   net/core/skbuff.c                                | 16 ++--------------
+>   net/core/xdp.c                                   |  4 ++--
+>   6 files changed, 32 insertions(+), 24 deletions(-)
 
-> maybe rebase/repost after Linus pull net-next, in case something
-> conflicts on the MM side
+LGTM
 
-As in, you want to wait until after the merge window? Sure, can do.
-
--Toke
-
+Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
