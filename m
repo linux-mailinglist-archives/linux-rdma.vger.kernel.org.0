@@ -1,520 +1,315 @@
-Return-Path: <linux-rdma+bounces-8964-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-8965-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B491A7127B
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 09:20:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DC4CA71426
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 10:52:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36708175166
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 08:19:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D4683A4107
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Mar 2025 09:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B6C1A7AF7;
-	Wed, 26 Mar 2025 08:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A8C1A7262;
+	Wed, 26 Mar 2025 09:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BwOTlHOT"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="JirwgTZI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED991A5BBB
-	for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 08:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62A0189919
+	for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 09:52:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742977152; cv=none; b=WSmluxq/x/XAuRU35UYOCLkYQAQ+aJkHCtMyXMsevyQVEkO9gduYYkHEG7LUfaxAXax6ZwMrnXJbAO9yejYZw+hizsG7AlU4r+9JONCAPP7Pg+5RnF7CfDbmzV+qBGaJyr2htwrvGvtGmeFUdlk/BvsTDccsQFSUdlfFZrWe43c=
+	t=1742982751; cv=none; b=VBk4gyjkopDpeGGtQ+AX+UwcHXCryvGTstz7DPkLl9caArE79fo0otQpR7DCbA2SGT27rqKcKmSvbp8njI/bdg9JRXy7JUidLfrWSC3uzvO+MlS89zqL0WCRipbg2udWGeJkjidCo/AzdXcenBDEE1pIWSLFuXcBuByqBVDRrsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742977152; c=relaxed/simple;
-	bh=up5gMaS9V877R6Epg37O2+rGYGQsnTu4+UNiG9MgPwg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=X6TARM4iOl3H8emg3kOUN7sAcinZrdr0y7zOTkoZJ8zu+lSvEOVoQ3ky9AarsUWAur25R9YoSpXu+QdNTdtl6tD7z5XqPQMk1lzlhANGrbhBoMt1Cm37TSrcVLBQgGUURn7ta1q5DnS5gbfN3I436vup40ZMWjQpvG54t7XGlRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BwOTlHOT; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1742977149;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L3o8kOx0A3a9gpCq5fYDk6BqU9uXGkmyjhzH6v4re0o=;
-	b=BwOTlHOT+G3QyjcYwvQmdsL0grjCyYZAbpatBx10ZR7jVrqRZld5G5dxunnb4IAhAXArnl
-	BgG9ylGtvIf2twWHaCUYEDLQw0RMA8U6oW9JW4I/G3Q63A+J5kxideAAXP+b++4GE4BW7G
-	2QzCzjCJ039Hbtc+xAqK5myH8FO2+F0=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-171-ebgozkTrNr-EgcLQzvW8hA-1; Wed, 26 Mar 2025 04:19:04 -0400
-X-MC-Unique: ebgozkTrNr-EgcLQzvW8hA-1
-X-Mimecast-MFC-AGG-ID: ebgozkTrNr-EgcLQzvW8hA_1742977143
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-ab68fbe53a4so767714266b.2
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 01:19:04 -0700 (PDT)
+	s=arc-20240116; t=1742982751; c=relaxed/simple;
+	bh=SC/vrtkqzSyMjB8AlFFgkPi6AWrx818ItMyZtkrEEb8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kQSE9js6dKnvCXMjX5eUFvDwL4Fp0IbYioJkz4Ps7pqwehO5dqO8Ka7rgI3M6/byEFub3ltud3v7JuKygR/tSvWpMRnerAsWbJA4ZR063CK37tmZg2Lp9b3tUZj21i5C05frs8ESupcnahR8zXRvy7iSHH6+IgVT9njLVUzns4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=JirwgTZI; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3978ef9a778so328697f8f.0
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 02:52:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1742982746; x=1743587546; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fYv/+j/ZIsFHETZr3Kpyp7xertxIvS+ljCMnTlxQff4=;
+        b=JirwgTZIoxh2Y4INusB6Mo1fu05p289LAltZQdVCXp/r0Dw3FVJMy9TV9x5OPW9cTa
+         bxfqoaYvJwWg9/tdIWmftmYL80KG09LivoldEJ/8iC+2wcdhWoYUho4JqURIl2RDqlpx
+         JpEjsd7N2jqdLj4dn1WH9zeUyGw6TunQJGXw5jF+bamYC8Frb5y/8j9anNYM0/pHMrbn
+         bXvTdHQxlyM3tI4ZOhk97qOoHpGUHzC/dCrBVym3IrjMovL+3v8tAHawYzOzj5u39nWW
+         3xfIbYc6Yn98LpembmCP97r4wMLIlE/7qTAqoPtK071LLsIOTwJcBplb1juSC4byFs8Q
+         0piA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742977143; x=1743581943;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L3o8kOx0A3a9gpCq5fYDk6BqU9uXGkmyjhzH6v4re0o=;
-        b=A1MdJLqFceOa+pFjpY9ioKQo2btIVmIgFcYInDQXjKGLOXeSqVKtwNSelKH2+DBc2j
-         Zw7UG6lmFQEM76y2uDACUuPdzkscmV6Q4wZ6h7ptz2uVGSU/iHwJutsersyecrrpiQkO
-         BppOEOBxT/MuJeqjFCvtzAejJwS15YEyajGdtzkYPTQXUdA0zANdlRflMq+NbmdqFpo2
-         c/uTzGY+0HDKPNieVeIRW/PzSFTCi6Tl/KFoPT518PocUb1WKCxIIfy4LkMGssYt8EQB
-         7NukYPSUVpwb2+OOV/8aJZ07j6ocaWYB+0Dr//DiiUh3eOfm38FGgXJFZH8E3lDkcb58
-         dcYA==
-X-Forwarded-Encrypted: i=1; AJvYcCUBumHHbkdq9rwwD4X1Azs/KYrFfSxUjVLLRYlceqhoM/wiKAQCsUdj/JW4/GRJq3WmeQuPYKLRHDt4@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzll/k6Y5ofx3Or/1deN5bzIBSMYhtXjvaLtcM7y4cBE+zc13bT
-	WisY+S86KGkpBbrWKteHikWj68c9FZrH6Zb0Lc146GZ3HHqMJFV9a7dAb7Nt3W5BEamzNSwkbW4
-	0Oq7d3lvvp0w7pNw6EB8OKT6uFnn5xSrA1Oh+FXhiEk6yyP86wPkrn3/+uzU=
-X-Gm-Gg: ASbGncvf+50A8E/L3lai0W3W8MDV99EC48fI9hrcAJpTg2+NB70WduCIFfwJGY6ed71
-	xX0w26OSuHXHQxL1Id29Cg0yA0uLO42NMh8UNxEmFoAdSMI6ongyiOIt0lCcFQlsFNeCN0mILNn
-	F4zxqHmE/XJucQRNiWtIpCHNdBTpYjqvglg9mDoxv2cCD9Jexec4pD3VH/w+XyBIQxjEB8sYb5G
-	BtgpRWXJpeUr7r5QO92WXSQAt3Z+X8aiyCoxDf0lqxcdxDzJpWSduS34/ZUnwbnGjy88oVnW75D
-	j//QwXmGIXYe9P9o4QA4goaEL1SpoxW5t7lyF0zz
-X-Received: by 2002:a17:906:d7cb:b0:ac4:5fd:6e29 with SMTP id a640c23a62f3a-ac405fd6eaamr1484667466b.26.1742977142661;
-        Wed, 26 Mar 2025 01:19:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFKE+mfhhLv2lQjs/xlsgXqislY1jyDT4Dp3H+d9g7vxrFzqat7h23i/Fa4g4X1nbBbVSrbqA==
-X-Received: by 2002:a17:906:d7cb:b0:ac4:5fd:6e29 with SMTP id a640c23a62f3a-ac405fd6eaamr1484664166b.26.1742977142073;
-        Wed, 26 Mar 2025 01:19:02 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac3efbd3d3esm983376066b.130.2025.03.26.01.19.00
+        d=1e100.net; s=20230601; t=1742982746; x=1743587546;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fYv/+j/ZIsFHETZr3Kpyp7xertxIvS+ljCMnTlxQff4=;
+        b=Cyp8IooYiJSOxwG2GFWk8rJIF1Xf4csAS1AyF7UVEKLNvFmdIlRzkuVu60fgg+i4+4
+         kooPwPte1SX26uNh5OmWq0h2hXSkwHzo5u8Z8pbH0tlTpnNFkR/5+abHuwHW43KyMyDG
+         OjvlkucA6fNc7lXqA8cYkk5/thYFTDOIQF3MEeZYyTiexdhGH5tmDV1D1i5x5BTzJPXn
+         AqOYJDL6F5Kjyk/yO2kMYTv8KlIt/UqRVOk9rG7IhP8GwqN7795lpE4+ByL4mKNIiCOa
+         1HpgZmnRNvfZSWbG7IhkLy769PU7QZSZ2hPX3em82sjnlIkvidjDtCWKYsl2xeJs8lUS
+         RdZg==
+X-Forwarded-Encrypted: i=1; AJvYcCXxjgpsDaZ0qna9LOtGH27UYyWUzmMZIlvX8SEYKZkBy2oQUJkEvOtcYRerJCvouDt/si2DaWEFUwDz@vger.kernel.org
+X-Gm-Message-State: AOJu0YwHM+u+mOs7z9v4ygAjvHV2UE5m+eI6dqkFhusLM2PJTyyqjwvS
+	RM+aWYgR5slob7fbD24svxO+ad7zoRRPTqz0dgLOIOqZ2EjIOGyhuJPgw8Jo4RI=
+X-Gm-Gg: ASbGnctZv57/EFUCQ4Ri9xOvyzM3L6WD/xqakzQMkaYoam4aPB+Tf4yn6+nmEytIcV2
+	HCslLlYsL4rGxIMqElArhb1a5VQkn8h2wTrikRVK5VP+7X/x93JMa77akOM4qnWyPhZN8Ystgm6
+	8INRndly4kH60/F/KsWl3+uC0XDgHsQG8Y748aLnVGXc8+4fPukVuAPXCeuvJ3wmJk0AvHAPitG
+	/zzfuLZnevzlxzf1NVHecRvUdx+uAxyS8fcHxtfXuX1Jfg47z8WIr3lf28leou2NmULg7toBDKB
+	hcmAbqIEtmfrK7dozmaVkkfHuBVllvxbK86gYjMIS69vAuF3zbhNnz5xxOoPCWsgxvU=
+X-Google-Smtp-Source: AGHT+IEuAjg/Mj2CyfTUYpQWtNBNkvgahfQSjNDPUoeXO5J7ktV2jMV4YG52AkzJvkT+dyPIn9JSoQ==
+X-Received: by 2002:a5d:64c6:0:b0:390:dba1:9589 with SMTP id ffacd0b85a97d-3997f936773mr7288811f8f.8.1742982745943;
+        Wed, 26 Mar 2025 02:52:25 -0700 (PDT)
+Received: from lb02065.fkb.profitbricks.net ([212.227.34.98])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3997f9b409fsm16576812f8f.50.2025.03.26.02.52.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Mar 2025 01:19:01 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 54C1F18FC9D0; Wed, 26 Mar 2025 09:18:54 +0100 (CET)
-From: =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Date: Wed, 26 Mar 2025 09:18:40 +0100
-Subject: [PATCH net-next v3 3/3] page_pool: Track DMA-mapped pages and
- unmap them when destroying the pool
+        Wed, 26 Mar 2025 02:52:25 -0700 (PDT)
+From: Jack Wang <jinpu.wang@ionos.com>
+To: qemu-devel@nongnu.org,
+	farosas@suse.de,
+	peterx@redhat.com
+Cc: Li Zhijian <lizhijian@fujitsu.com>,
+	Yu Zhang <yu.zhang@ionos.com>,
+	linux-rdma@vger.kernel.org,
+	michael@flatgalaxy.com
+Subject: [RFC PATCH] migration/rdma: Remove qemu_rdma_broken_ipv6_kernel
+Date: Wed, 26 Mar 2025 10:52:24 +0100
+Message-ID: <20250326095224.9918-1-jinpu.wang@ionos.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20250326-page-pool-track-dma-v3-3-8e464016e0ac@redhat.com>
-References: <20250326-page-pool-track-dma-v3-0-8e464016e0ac@redhat.com>
-In-Reply-To: <20250326-page-pool-track-dma-v3-0-8e464016e0ac@redhat.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
- Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
- Simon Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
- Mina Almasry <almasrymina@google.com>, 
- Yonglong Liu <liuyonglong@huawei.com>, 
- Yunsheng Lin <linyunsheng@huawei.com>, 
- Pavel Begunkov <asml.silence@gmail.com>, 
- Matthew Wilcox <willy@infradead.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org, 
- linux-mm@kvack.org, 
- =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, 
- Qiuling Ren <qren@redhat.com>, Yuying Ma <yuma@redhat.com>
-X-Mailer: b4 0.14.2
 
-When enabling DMA mapping in page_pool, pages are kept DMA mapped until
-they are released from the pool, to avoid the overhead of re-mapping the
-pages every time they are used. This causes resource leaks and/or
-crashes when there are pages still outstanding while the device is torn
-down, because page_pool will attempt an unmap through a non-existent DMA
-device on the subsequent page return.
+I hit following error which testing migration in pure RoCE env:
+"-incoming rdma:[::]:8089: RDMA ERROR: You only have RoCE / iWARP devices in your
+systems and your management software has specified '[::]', but IPv6 over RoCE /
+iWARP is not supported in Linux.#012'."
 
-To fix this, implement a simple tracking of outstanding DMA-mapped pages
-in page pool using an xarray. This was first suggested by Mina[0], and
-turns out to be fairly straight forward: We simply store pointers to
-pages directly in the xarray with xa_alloc() when they are first DMA
-mapped, and remove them from the array on unmap. Then, when a page pool
-is torn down, it can simply walk the xarray and unmap all pages still
-present there before returning, which also allows us to get rid of the
-get/put_device() calls in page_pool. Using xa_cmpxchg(), no additional
-synchronisation is needed, as a page will only ever be unmapped once.
+In our setup, we use rdma bind on ipv6 on target host, while connect from source
+with ipv4, remove the qemu_rdma_broken_ipv6_kernel, migration just work
+fine.
 
-To avoid having to walk the entire xarray on unmap to find the page
-reference, we stash the ID assigned by xa_alloc() into the page
-structure itself, using the upper bits of the pp_magic field. This
-requires a couple of defines to avoid conflicting with the
-POINTER_POISON_DELTA define, but this is all evaluated at compile-time,
-so does not affect run-time performance. The bitmap calculations in this
-patch gives the following number of bits for different architectures:
+Checking the git history, the function was added since introducing of
+rdma migration, which is more than 10 years ago. linux-rdma has
+improved support on RoCE/iWARP for ipv6 over past years. There are a few fixes
+back in 2016 seems related to the issue, eg:
+aeb76df46d11 ("IB/core: Set routable RoCE gid type for ipv4/ipv6 networks")
 
-- 23 bits on 32-bit architectures
-- 21 bits on PPC64 (because of the definition of ILLEGAL_POINTER_VALUE)
-- 32 bits on other 64-bit architectures
+other fixes back in 2018, eg:
+052eac6eeb56 RDMA/cma: Update RoCE multicast routines to use net namespace
+8d20a1f0ecd5 RDMA/cma: Fix rdma_cm raw IB path setting for RoCE
+9327c7afdce3 RDMA/cma: Provide a function to set RoCE path record L2 parameters
+5c181bda77f4 RDMA/cma: Set default GID type as RoCE when resolving RoCE route
+3c7f67d1880d IB/cma: Fix default RoCE type setting
+be1d325a3358 IB/core: Set RoCEv2 MGID according to spec
+63a5f483af0e IB/cma: Set default gid type to RoCEv2
 
-Stashing a value into the unused bits of pp_magic does have the effect
-that it can make the value stored there lie outside the unmappable
-range (as governed by the mmap_min_addr sysctl), for architectures that
-don't define ILLEGAL_POINTER_VALUE. This means that if one of the
-pointers that is aliased to the pp_magic field (such as page->lru.next)
-is dereferenced while the page is owned by page_pool, that could lead to
-a dereference into userspace, which is a security concern. The risk of
-this is mitigated by the fact that (a) we always clear pp_magic before
-releasing a page from page_pool, and (b) this would need a
-use-after-free bug for struct page, which can have many other risks
-since page->lru.next is used as a generic list pointer in multiple
-places in the kernel. As such, with this patch we take the position that
-this risk is negligible in practice. For more discussion, see[1].
+So remove the outdated function and it's usage.
 
-Since all the tracking added in this patch is performed on DMA
-map/unmap, no additional code is needed in the fast path, meaning the
-performance overhead of this tracking is negligible there. A
-micro-benchmark shows that the total overhead of the tracking itself is
-about 400 ns (39 cycles(tsc) 395.218 ns; sum for both map and unmap[2]).
-Since this cost is only paid on DMA map and unmap, it seems like an
-acceptable cost to fix the late unmap issue. Further optimisation can
-narrow the cases where this cost is paid (for instance by eliding the
-tracking when DMA map/unmap is a no-op).
-
-The extra memory needed to track the pages is neatly encapsulated inside
-xarray, which uses the 'struct xa_node' structure to track items. This
-structure is 576 bytes long, with slots for 64 items, meaning that a
-full node occurs only 9 bytes of overhead per slot it tracks (in
-practice, it probably won't be this efficient, but in any case it should
-be an acceptable overhead).
-
-[0] https://lore.kernel.org/all/CAHS8izPg7B5DwKfSuzz-iOop_YRbk3Sd6Y4rX7KBG9DcVJcyWg@mail.gmail.com/
-[1] https://lore.kernel.org/r/20250320023202.GA25514@openwall.com
-[2] https://lore.kernel.org/r/ae07144c-9295-4c9d-a400-153bb689fe9e@huawei.com
-
-Reported-by: Yonglong Liu <liuyonglong@huawei.com>
-Closes: https://lore.kernel.org/r/8743264a-9700-4227-a556-5f931c720211@huawei.com
-Fixes: ff7d6b27f894 ("page_pool: refurbish version of page_pool code")
-Suggested-by: Mina Almasry <almasrymina@google.com>
-Reviewed-by: Mina Almasry <almasrymina@google.com>
-Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
-Tested-by: Jesper Dangaard Brouer <hawk@kernel.org>
-Tested-by: Qiuling Ren <qren@redhat.com>
-Tested-by: Yuying Ma <yuma@redhat.com>
-Tested-by: Yonglong Liu <liuyonglong@huawei.com>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Li Zhijian <lizhijian@fujitsu.com>
+Cc: Yu Zhang <yu.zhang@ionos.com>
+Cc: qemu-devel@nongnu.org
+Cc: linux-rdma@vger.kernel.org
+Cc: michael@flatgalaxy.com
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 ---
- include/linux/poison.h        |  4 +++
- include/net/page_pool/types.h | 49 +++++++++++++++++++++++---
- net/core/netmem_priv.h        | 28 ++++++++++++++-
- net/core/page_pool.c          | 81 ++++++++++++++++++++++++++++++++++++-------
- 4 files changed, 145 insertions(+), 17 deletions(-)
+ migration/rdma.c | 157 -----------------------------------------------
+ 1 file changed, 157 deletions(-)
 
-diff --git a/include/linux/poison.h b/include/linux/poison.h
-index 331a9a996fa8746626afa63ea462b85ca3e5938b..5351efd710d5e21cc341f7bb533b1aeea4a0808a 100644
---- a/include/linux/poison.h
-+++ b/include/linux/poison.h
-@@ -70,6 +70,10 @@
- #define KEY_DESTROY		0xbd
- 
- /********** net/core/page_pool.c **********/
-+/*
-+ * page_pool uses additional free bits within this value to store data, see the
-+ * definition of PP_DMA_INDEX_MASK in include/net/page_pool/types.h
-+ */
- #define PP_SIGNATURE		(0x40 + POISON_POINTER_DELTA)
- 
- /********** net/core/skbuff.c **********/
-diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-index d6c93150384fbc4579bb0d0afb357ebb26c564a3..cdc06fb67642c104b071998920bd88125fbefd43 100644
---- a/include/net/page_pool/types.h
-+++ b/include/net/page_pool/types.h
-@@ -6,6 +6,7 @@
- #include <linux/dma-direction.h>
- #include <linux/ptr_ring.h>
- #include <linux/types.h>
-+#include <linux/xarray.h>
- #include <net/netmem.h>
- 
- #define PP_FLAG_DMA_MAP		BIT(0) /* Should page_pool do the DMA
-@@ -54,13 +55,51 @@ struct pp_alloc_cache {
- 	netmem_ref cache[PP_ALLOC_CACHE_SIZE];
- };
- 
-+/*
-+ * DMA mapping IDs
-+ *
-+ * When DMA-mapping a page, we allocate an ID (from an xarray) and stash this in
-+ * the upper bits of page->pp_magic. We always want to be able to unambiguously
-+ * identify page pool pages (using page_pool_page_is_pp()). Non-PP pages can
-+ * have arbitrary kernel pointers stored in the same field as pp_magic (since it
-+ * overlaps with page->lru.next), so we must ensure that we cannot mistake a
-+ * valid kernel pointer with any of the values we write into this field.
-+ *
-+ * On architectures that set POISON_POINTER_DELTA, this is already ensured,
-+ * since this value becomes part of PP_SIGNATURE; meaning we can just use the
-+ * space between the PP_SIGNATURE value (without POISON_POINTER_DELTA), and the
-+ * lowest bits of POISON_POINTER_DELTA. On arches where POISON_POINTER_DELTA is
-+ * 0, we make sure that we leave the two topmost bits empty, as that guarantees
-+ * we won't mistake a valid kernel pointer for a value we set, regardless of the
-+ * VMSPLIT setting.
-+ *
-+ * Altogether, this means that the number of bits available is constrained by
-+ * the size of an unsigned long (at the upper end, subtracting two bits per the
-+ * above), and the definition of PP_SIGNATURE (with or without
-+ * POISON_POINTER_DELTA).
-+ */
-+#define PP_DMA_INDEX_SHIFT (1 + __fls(PP_SIGNATURE - POISON_POINTER_DELTA))
-+#if POISON_POINTER_DELTA > 0
-+/* PP_SIGNATURE includes POISON_POINTER_DELTA, so limit the size of the DMA
-+ * index to not overlap with that if set
-+ */
-+#define PP_DMA_INDEX_BITS MIN(32, __ffs(POISON_POINTER_DELTA) - PP_DMA_INDEX_SHIFT)
-+#else
-+/* Always leave out the topmost two; see above. */
-+#define PP_DMA_INDEX_BITS MIN(32, BITS_PER_LONG - PP_DMA_INDEX_SHIFT - 2)
-+#endif
-+
-+#define PP_DMA_INDEX_MASK GENMASK(PP_DMA_INDEX_BITS + PP_DMA_INDEX_SHIFT - 1, \
-+				  PP_DMA_INDEX_SHIFT)
-+#define PP_DMA_INDEX_LIMIT XA_LIMIT(1, BIT(PP_DMA_INDEX_BITS) - 1)
-+
- /* Mask used for checking in page_pool_page_is_pp() below. page->pp_magic is
-  * OR'ed with PP_SIGNATURE after the allocation in order to preserve bit 0 for
-- * the head page of compound page and bit 1 for pfmemalloc page.
-- * page_is_pfmemalloc() is checked in __page_pool_put_page() to avoid recycling
-- * the pfmemalloc page.
-+ * the head page of compound page and bit 1 for pfmemalloc page, as well as the
-+ * bits used for the DMA index. page_is_pfmemalloc() is checked in
-+ * __page_pool_put_page() to avoid recycling the pfmemalloc page.
-  */
--#define PP_MAGIC_MASK ~0x3UL
-+#define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
- 
- /**
-  * struct page_pool_params - page pool parameters
-@@ -229,6 +268,8 @@ struct page_pool {
- 	void *mp_priv;
- 	const struct memory_provider_ops *mp_ops;
- 
-+	struct xarray dma_mapped;
-+
- #ifdef CONFIG_PAGE_POOL_STATS
- 	/* recycle stats are per-cpu to avoid locking */
- 	struct page_pool_recycle_stats __percpu *recycle_stats;
-diff --git a/net/core/netmem_priv.h b/net/core/netmem_priv.h
-index f33162fd281c23e109273ba09950c5d0a2829bc9..cd95394399b40c3604934ba7898eeeeacb8aee99 100644
---- a/net/core/netmem_priv.h
-+++ b/net/core/netmem_priv.h
-@@ -5,7 +5,7 @@
- 
- static inline unsigned long netmem_get_pp_magic(netmem_ref netmem)
- {
--	return __netmem_clear_lsb(netmem)->pp_magic;
-+	return __netmem_clear_lsb(netmem)->pp_magic & ~PP_DMA_INDEX_MASK;
+diff --git a/migration/rdma.c b/migration/rdma.c
+index 76fb0349238a..5ce628ddeef0 100644
+--- a/migration/rdma.c
++++ b/migration/rdma.c
+@@ -767,149 +767,6 @@ static void qemu_rdma_dump_gid(const char *who, struct rdma_cm_id *id)
+     trace_qemu_rdma_dump_gid(who, sgid, dgid);
  }
  
- static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long pp_magic)
-@@ -15,6 +15,8 @@ static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long pp_magic)
- 
- static inline void netmem_clear_pp_magic(netmem_ref netmem)
- {
-+	WARN_ON_ONCE(__netmem_clear_lsb(netmem)->pp_magic & PP_DMA_INDEX_MASK);
-+
- 	__netmem_clear_lsb(netmem)->pp_magic = 0;
- }
- 
-@@ -33,4 +35,28 @@ static inline void netmem_set_dma_addr(netmem_ref netmem,
- {
- 	__netmem_clear_lsb(netmem)->dma_addr = dma_addr;
- }
-+
-+static inline unsigned long netmem_get_dma_index(netmem_ref netmem)
-+{
-+	unsigned long magic;
-+
-+	if (WARN_ON_ONCE(netmem_is_net_iov(netmem)))
-+		return 0;
-+
-+	magic = __netmem_clear_lsb(netmem)->pp_magic;
-+
-+	return (magic & PP_DMA_INDEX_MASK) >> PP_DMA_INDEX_SHIFT;
-+}
-+
-+static inline void netmem_set_dma_index(netmem_ref netmem,
-+					unsigned long id)
-+{
-+	unsigned long magic;
-+
-+	if (WARN_ON_ONCE(netmem_is_net_iov(netmem)))
-+		return;
-+
-+	magic = netmem_get_pp_magic(netmem) | (id << PP_DMA_INDEX_SHIFT);
-+	__netmem_clear_lsb(netmem)->pp_magic = magic;
-+}
- #endif
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index fb32768a97765aacc7f1103bfee38000c988b0de..5eb132f7f2193bda76121cc10a24dac4993b2c21 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -226,6 +226,8 @@ static int page_pool_init(struct page_pool *pool,
- 			return -EINVAL;
- 
- 		pool->dma_map = true;
-+
-+		xa_init_flags(&pool->dma_mapped, XA_FLAGS_ALLOC1);
- 	}
- 
- 	if (pool->slow.flags & PP_FLAG_DMA_SYNC_DEV) {
-@@ -275,9 +277,6 @@ static int page_pool_init(struct page_pool *pool,
- 	/* Driver calling page_pool_create() also call page_pool_destroy() */
- 	refcount_set(&pool->user_cnt, 1);
- 
--	if (pool->dma_map)
--		get_device(pool->p.dev);
+-/*
+- * As of now, IPv6 over RoCE / iWARP is not supported by linux.
+- * We will try the next addrinfo struct, and fail if there are
+- * no other valid addresses to bind against.
+- *
+- * If user is listening on '[::]', then we will not have a opened a device
+- * yet and have no way of verifying if the device is RoCE or not.
+- *
+- * In this case, the source VM will throw an error for ALL types of
+- * connections (both IPv4 and IPv6) if the destination machine does not have
+- * a regular infiniband network available for use.
+- *
+- * The only way to guarantee that an error is thrown for broken kernels is
+- * for the management software to choose a *specific* interface at bind time
+- * and validate what time of hardware it is.
+- *
+- * Unfortunately, this puts the user in a fix:
+- *
+- *  If the source VM connects with an IPv4 address without knowing that the
+- *  destination has bound to '[::]' the migration will unconditionally fail
+- *  unless the management software is explicitly listening on the IPv4
+- *  address while using a RoCE-based device.
+- *
+- *  If the source VM connects with an IPv6 address, then we're OK because we can
+- *  throw an error on the source (and similarly on the destination).
+- *
+- *  But in mixed environments, this will be broken for a while until it is fixed
+- *  inside linux.
+- *
+- * We do provide a *tiny* bit of help in this function: We can list all of the
+- * devices in the system and check to see if all the devices are RoCE or
+- * Infiniband.
+- *
+- * If we detect that we have a *pure* RoCE environment, then we can safely
+- * thrown an error even if the management software has specified '[::]' as the
+- * bind address.
+- *
+- * However, if there is are multiple hetergeneous devices, then we cannot make
+- * this assumption and the user just has to be sure they know what they are
+- * doing.
+- *
+- * Patches are being reviewed on linux-rdma.
+- */
+-static int qemu_rdma_broken_ipv6_kernel(struct ibv_context *verbs, Error **errp)
+-{
+-    /* This bug only exists in linux, to our knowledge. */
+-#ifdef CONFIG_LINUX
+-    struct ibv_port_attr port_attr;
 -
- 	if (pool->slow.flags & PP_FLAG_ALLOW_UNREADABLE_NETMEM) {
- 		/* We rely on rtnl_lock()ing to make sure netdev_rx_queue
- 		 * configuration doesn't change while we're initializing
-@@ -325,7 +324,7 @@ static void page_pool_uninit(struct page_pool *pool)
- 	ptr_ring_cleanup(&pool->ring, NULL);
- 
- 	if (pool->dma_map)
--		put_device(pool->p.dev);
-+		xa_destroy(&pool->dma_mapped);
- 
- #ifdef CONFIG_PAGE_POOL_STATS
- 	if (!pool->system)
-@@ -466,13 +465,20 @@ page_pool_dma_sync_for_device(const struct page_pool *pool,
- 			      netmem_ref netmem,
- 			      u32 dma_sync_size)
- {
--	if (READ_ONCE(pool->dma_sync) && dma_dev_need_sync(pool->p.dev))
--		__page_pool_dma_sync_for_device(pool, netmem, dma_sync_size);
-+	if (dma_dev_need_sync(pool->p.dev)) {
-+		rcu_read_lock();
-+		if (READ_ONCE(pool->dma_sync))
-+			__page_pool_dma_sync_for_device(pool, netmem,
-+							dma_sync_size);
-+		rcu_read_unlock();
-+	}
- }
- 
--static bool page_pool_dma_map(struct page_pool *pool, netmem_ref netmem)
-+static bool page_pool_dma_map(struct page_pool *pool, netmem_ref netmem, gfp_t gfp)
- {
- 	dma_addr_t dma;
-+	int err;
-+	u32 id;
- 
- 	/* Setup DMA mapping: use 'struct page' area for storing DMA-addr
- 	 * since dma_addr_t can be either 32 or 64 bits and does not always fit
-@@ -486,15 +492,28 @@ static bool page_pool_dma_map(struct page_pool *pool, netmem_ref netmem)
- 	if (dma_mapping_error(pool->p.dev, dma))
- 		return false;
- 
--	if (page_pool_set_dma_addr_netmem(netmem, dma))
-+	if (in_softirq())
-+		err = xa_alloc(&pool->dma_mapped, &id, netmem_to_page(netmem),
-+			       PP_DMA_INDEX_LIMIT, gfp);
-+	else
-+		err = xa_alloc_bh(&pool->dma_mapped, &id, netmem_to_page(netmem),
-+				  PP_DMA_INDEX_LIMIT, gfp);
-+	if (err) {
-+		WARN_ONCE(1, "couldn't track DMA mapping, please report to netdev@");
- 		goto unmap_failed;
-+	}
- 
-+	if (page_pool_set_dma_addr_netmem(netmem, dma)) {
-+		WARN_ONCE(1, "unexpected DMA address, please report to netdev@");
-+		goto unmap_failed;
-+	}
-+
-+	netmem_set_dma_index(netmem, id);
- 	page_pool_dma_sync_for_device(pool, netmem, pool->p.max_len);
- 
- 	return true;
- 
- unmap_failed:
--	WARN_ONCE(1, "unexpected DMA address, please report to netdev@");
- 	dma_unmap_page_attrs(pool->p.dev, dma,
- 			     PAGE_SIZE << pool->p.order, pool->p.dma_dir,
- 			     DMA_ATTR_SKIP_CPU_SYNC | DMA_ATTR_WEAK_ORDERING);
-@@ -511,7 +530,7 @@ static struct page *__page_pool_alloc_page_order(struct page_pool *pool,
- 	if (unlikely(!page))
- 		return NULL;
- 
--	if (pool->dma_map && unlikely(!page_pool_dma_map(pool, page_to_netmem(page)))) {
-+	if (pool->dma_map && unlikely(!page_pool_dma_map(pool, page_to_netmem(page), gfp))) {
- 		put_page(page);
- 		return NULL;
- 	}
-@@ -557,7 +576,7 @@ static noinline netmem_ref __page_pool_alloc_pages_slow(struct page_pool *pool,
- 	 */
- 	for (i = 0; i < nr_pages; i++) {
- 		netmem = pool->alloc.cache[i];
--		if (dma_map && unlikely(!page_pool_dma_map(pool, netmem))) {
-+		if (dma_map && unlikely(!page_pool_dma_map(pool, netmem, gfp))) {
- 			put_page(netmem_to_page(netmem));
- 			continue;
- 		}
-@@ -659,6 +678,8 @@ void page_pool_clear_pp_info(netmem_ref netmem)
- static __always_inline void __page_pool_release_page_dma(struct page_pool *pool,
- 							 netmem_ref netmem)
- {
-+	struct page *old, *page = netmem_to_page(netmem);
-+	unsigned long id;
- 	dma_addr_t dma;
- 
- 	if (!pool->dma_map)
-@@ -667,6 +688,17 @@ static __always_inline void __page_pool_release_page_dma(struct page_pool *pool,
- 		 */
- 		return;
- 
-+	id = netmem_get_dma_index(netmem);
-+	if (!id)
-+		return;
-+
-+	if (in_softirq())
-+		old = xa_cmpxchg(&pool->dma_mapped, id, page, NULL, 0);
-+	else
-+		old = xa_cmpxchg_bh(&pool->dma_mapped, id, page, NULL, 0);
-+	if (old != page)
-+		return;
-+
- 	dma = page_pool_get_dma_addr_netmem(netmem);
- 
- 	/* When page is unmapped, it cannot be returned to our pool */
-@@ -674,6 +706,7 @@ static __always_inline void __page_pool_release_page_dma(struct page_pool *pool,
- 			     PAGE_SIZE << pool->p.order, pool->p.dma_dir,
- 			     DMA_ATTR_SKIP_CPU_SYNC | DMA_ATTR_WEAK_ORDERING);
- 	page_pool_set_dma_addr_netmem(netmem, 0);
-+	netmem_set_dma_index(netmem, 0);
- }
- 
- /* Disconnects a page (from a page_pool).  API users can have a need
-@@ -1083,8 +1116,32 @@ static void page_pool_empty_alloc_cache_once(struct page_pool *pool)
- 
- static void page_pool_scrub(struct page_pool *pool)
- {
-+	unsigned long id;
-+	void *ptr;
-+
- 	page_pool_empty_alloc_cache_once(pool);
--	pool->destroy_cnt++;
-+	if (!pool->destroy_cnt++ && pool->dma_map) {
-+		if (pool->dma_sync) {
-+			/* paired with READ_ONCE in
-+			 * page_pool_dma_sync_for_device() and
-+			 * __page_pool_dma_sync_for_cpu()
-+			 */
-+			WRITE_ONCE(pool->dma_sync, false);
-+
-+			/* Make sure all concurrent returns that may see the old
-+			 * value of dma_sync (and thus perform a sync) have
-+			 * finished before doing the unmapping below. Skip the
-+			 * wait if the device doesn't actually need syncing, or
-+			 * if there are no outstanding mapped pages.
-+			 */
-+			if (dma_dev_need_sync(pool->p.dev) &&
-+			    !xa_empty(&pool->dma_mapped))
-+				synchronize_net();
-+		}
-+
-+		xa_for_each(&pool->dma_mapped, id, ptr)
-+			__page_pool_release_page_dma(pool, page_to_netmem(ptr));
-+	}
- 
- 	/* No more consumers should exist, but producers could still
- 	 * be in-flight.
-
+-    /*
+-     * Verbs are only NULL if management has bound to '[::]'.
+-     *
+-     * Let's iterate through all the devices and see if there any pure IB
+-     * devices (non-ethernet).
+-     *
+-     * If not, then we can safely proceed with the migration.
+-     * Otherwise, there are no guarantees until the bug is fixed in linux.
+-     */
+-    if (!verbs) {
+-        int num_devices;
+-        struct ibv_device **dev_list = ibv_get_device_list(&num_devices);
+-        bool roce_found = false;
+-        bool ib_found = false;
+-
+-        for (int x = 0; x < num_devices; x++) {
+-            verbs = ibv_open_device(dev_list[x]);
+-            /*
+-             * ibv_open_device() is not documented to set errno.  If
+-             * it does, it's somebody else's doc bug.  If it doesn't,
+-             * the use of errno below is wrong.
+-             * TODO Find out whether ibv_open_device() sets errno.
+-             */
+-            if (!verbs) {
+-                if (errno == EPERM) {
+-                    continue;
+-                } else {
+-                    error_setg_errno(errp, errno,
+-                                     "could not open RDMA device context");
+-                    return -1;
+-                }
+-            }
+-
+-            if (ibv_query_port(verbs, 1, &port_attr)) {
+-                ibv_close_device(verbs);
+-                error_setg(errp,
+-                           "RDMA ERROR: Could not query initial IB port");
+-                return -1;
+-            }
+-
+-            if (port_attr.link_layer == IBV_LINK_LAYER_INFINIBAND) {
+-                ib_found = true;
+-            } else if (port_attr.link_layer == IBV_LINK_LAYER_ETHERNET) {
+-                roce_found = true;
+-            }
+-
+-            ibv_close_device(verbs);
+-
+-        }
+-
+-        if (roce_found) {
+-            if (ib_found) {
+-                warn_report("migrations may fail:"
+-                            " IPv6 over RoCE / iWARP in linux"
+-                            " is broken. But since you appear to have a"
+-                            " mixed RoCE / IB environment, be sure to only"
+-                            " migrate over the IB fabric until the kernel "
+-                            " fixes the bug.");
+-            } else {
+-                error_setg(errp, "RDMA ERROR: "
+-                           "You only have RoCE / iWARP devices in your systems"
+-                           " and your management software has specified '[::]'"
+-                           ", but IPv6 over RoCE / iWARP is not supported in Linux.");
+-                return -1;
+-            }
+-        }
+-
+-        return 0;
+-    }
+-
+-    /*
+-     * If we have a verbs context, that means that some other than '[::]' was
+-     * used by the management software for binding. In which case we can
+-     * actually warn the user about a potentially broken kernel.
+-     */
+-
+-    /* IB ports start with 1, not 0 */
+-    if (ibv_query_port(verbs, 1, &port_attr)) {
+-        error_setg(errp, "RDMA ERROR: Could not query initial IB port");
+-        return -1;
+-    }
+-
+-    if (port_attr.link_layer == IBV_LINK_LAYER_ETHERNET) {
+-        error_setg(errp, "RDMA ERROR: "
+-                   "Linux kernel's RoCE / iWARP does not support IPv6 "
+-                   "(but patches on linux-rdma in progress)");
+-        return -1;
+-    }
+-
+-#endif
+-
+-    return 0;
+-}
+-
+ /*
+  * Figure out which RDMA device corresponds to the requested IP hostname
+  * Also create the initial connection manager identifiers for opening
+@@ -964,13 +821,6 @@ static int qemu_rdma_resolve_host(RDMAContext *rdma, Error **errp)
+         ret = rdma_resolve_addr(rdma->cm_id, NULL, e->ai_dst_addr,
+                 RDMA_RESOLVE_TIMEOUT_MS);
+         if (ret >= 0) {
+-            if (e->ai_family == AF_INET6) {
+-                ret = qemu_rdma_broken_ipv6_kernel(rdma->cm_id->verbs,
+-                                                   local_errp);
+-                if (ret < 0) {
+-                    continue;
+-                }
+-            }
+             error_free(err);
+             goto route;
+         }
+@@ -2672,13 +2522,6 @@ static int qemu_rdma_dest_init(RDMAContext *rdma, Error **errp)
+         if (ret < 0) {
+             continue;
+         }
+-        if (e->ai_family == AF_INET6) {
+-            ret = qemu_rdma_broken_ipv6_kernel(listen_id->verbs,
+-                                               local_errp);
+-            if (ret < 0) {
+-                continue;
+-            }
+-        }
+         error_free(err);
+         break;
+     }
 -- 
-2.48.1
+2.43.0
 
 
