@@ -1,336 +1,119 @@
-Return-Path: <linux-rdma+bounces-8999-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9000-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00E83A72A19
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Mar 2025 07:11:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E342A72A7C
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Mar 2025 08:21:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83A7E176DFC
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Mar 2025 06:11:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F09A93B8B35
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Mar 2025 07:21:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02BA386331;
-	Thu, 27 Mar 2025 06:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="JPP/KbVt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59541CAA64;
+	Thu, 27 Mar 2025 07:21:30 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C055262BE
-	for <linux-rdma@vger.kernel.org>; Thu, 27 Mar 2025 06:11:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12BCB225D7;
+	Thu, 27 Mar 2025 07:21:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743055890; cv=none; b=YiGKCV4HKRGSx1a1ssWMD4QQx2pdne9jWxDcs6lGzy5uKsgvhiY9cfUH31/RB53Z8FG9/JqjF/2C+0+eyM2KZD6ozJKjAyITZligux2qjWV76dGf3w40XYvqLpN2WDe9b4Ag6X3MxlFdJSAIYQhe00GbFNHa1kAQT8sbTvongGY=
+	t=1743060090; cv=none; b=tjkXA4/PIeeMFXW4Dh6IMoiinJ3WH5DEWvvUdPeiQYXHbY3nS0ixsz1LyPHujIR0Fe/ts23H2PsILRGl+pbWf93AsP2uslwdjrULotV1qhTTdUCSju11uCmsiBXmo3Y5lE+jcHysDD3AjqV2rmitFTHN48nSMs6hqGTjtpSBe0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743055890; c=relaxed/simple;
-	bh=7oj0BjdX0O89EValJGCKa9iXR2sUVgaO9cAUb1dv864=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mLioUKCwedpb0uB1598UYrf+eDUNAZdI38xQaKef16YMmhVARqGHyKWRly3vspSgGYiIp68JlbXf+uGxBQpkQGdSHGpG7e/XoSSRdCSK0r43F2MWQOxm1znyZUMv++1sd5B9CgLUSrYbtMD4BMbykf+a2/QGNcnibuCcAUeGInI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=JPP/KbVt; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ac3db77fda4so7488066b.1
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Mar 2025 23:11:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1743055885; x=1743660685; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1MZf+ZSYR6fIPp4jsPiKvTkvw2gubQAjPggbDk/bBS4=;
-        b=JPP/KbVt3VAveyaQYd2VHFrVMySnOgO6zn7PT2ZQT/Qat1ZufJru8CmAG0H8CLD0Rt
-         dcssoMvNHd6aKp0J//vfuJKBrVZg/8k1glbuNTpef0H8lV73v1q8AxNgH0wTsuGFlfXB
-         flqYfPFfYunjBEKomsUSoxXDIv2fuS4l1nusZqlXZ2c7vZ7k6IT/BYfxAcjivkaaed/d
-         DH1QEpkUybz6i02/y3nOIxUI6mNTWe2DCPBWz0RYL6EZxT79YOaSJzxNpQfVbz42wXMr
-         5oNVWjCntCPxQWJ06r0M26+P5nFZ9eMcz5JFnAewbP+UYFF0yHgfw35o+CXxlICvkSUV
-         ZukQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743055885; x=1743660685;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1MZf+ZSYR6fIPp4jsPiKvTkvw2gubQAjPggbDk/bBS4=;
-        b=nVQ4lA/FAmc/amHHmB/vS8ByX3Anp7TcWmLNOhbYf2QvbmBy+1lxmxcyr5qhrUHXFz
-         7xR2ksWH1vSw1sJdv1b7md9zhTaJRNDHQZ2dPz+6IGWoEf+RtxRgJ8TXobKFfoseyF4E
-         l2xA3uYhNpR3yo7OkIFCJbuF6ODAXYt6hSjjDiS/3DgsRgntulYM8MpYvRdrKX7/7s75
-         KKxszZ1bCtOE56Gtfr8BlfD9fRRvkq1+W6ZG+98VFcpO2Kk2KMBcMxIruEs60keQ09uQ
-         2arlox+H1T62HRfVY/TB85Rn4wc07uOxpnRXnZC8DHwl7zFdUnnZw93WbDHlP7Lr7eYA
-         SG4g==
-X-Forwarded-Encrypted: i=1; AJvYcCV9qmxTBiYqAEt/IXjjBMpc8gdZXedxi4XRocnI0IXNZ7wPSkTh6xXInGxWQrPHN2dO++avnZ9JRw+F@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLTfAofeGZf0rmLAp/WqlQTQ4z7wUCXSqzXzghusqWSr+h/Bya
-	um2JPeui3mpewIyOfM5rcmFIWBbR9fheH5zggfVE4n+bKPIyrIvIrIdKZydkSX0=
-X-Gm-Gg: ASbGnctwLpZhNA/+kc3MrQ0UQw1K2zQMaAvGxqmPn+lsHETCc8ogGXZY3oUj4D7tBna
-	dqpytLpfYXxttNRiEsHP6qsWqwbzpAAR89iIVKOOFTFAtio+TRweYAVcW0DVa9WbaefEh41ylOv
-	sejteLWdILSt4kpTt0bL0N40lKwCjLFbX2O5+t3zttaABIpEsAfjakmmFN3IPh/uytlJh44Q+WO
-	YufrAZmlO5QJMLFUpM01BHbmYytP2qtlwcqCou1ClmVVshTJADu1XhkqWLxnPsk7aq/MXbZYbAl
-	aC7QZqPYADo4s/QyvYyUfbuT2r1ChXJQmQbPGrp5m70k/36kaYB2YkI=
-X-Google-Smtp-Source: AGHT+IHbWsSIAIW0UA1kZVQwwgRV3ZNaGr9o7plLVVIZ4ygGwbk/67YFocWuSYvzNriggXVQi0wNNg==
-X-Received: by 2002:a17:906:c147:b0:abf:663b:22c5 with SMTP id a640c23a62f3a-ac701c34213mr53152666b.13.1743055884525;
-        Wed, 26 Mar 2025 23:11:24 -0700 (PDT)
-Received: from lb02065.fritz.box ([2001:9e8:1460:e800:83eb:8e1c:ef0f:4d81])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac3efb64895sm1155894166b.113.2025.03.26.23.11.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Mar 2025 23:11:24 -0700 (PDT)
-From: Jack Wang <jinpu.wang@ionos.com>
-To: qemu-devel@nongnu.org,
-	farosas@suse.de,
-	peterx@redhat.com
-Cc: Li Zhijian <lizhijian@fujitsu.com>,
-	Yu Zhang <yu.zhang@ionos.com>,
-	linux-rdma@vger.kernel.org,
-	michael@flatgalaxy.com,
-	Michael Galaxy <mrgalaxy@nvidia.com>
-Subject: [PATCH] migration/rdma: Remove qemu_rdma_broken_ipv6_kernel
-Date: Thu, 27 Mar 2025 07:11:23 +0100
-Message-ID: <20250327061123.14453-1-jinpu.wang@ionos.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1743060090; c=relaxed/simple;
+	bh=Hkk+TXBm+ainUsNZp9ZeIR4pFjXXsCXjRuCrIqTpmYg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=sQUOqSb0VAc475yCdXYmUJE7Sts1EG11est+p8N7vzCBwjbbXJCotWeLqCV91HNboge+9CPAICWkhGm9OCjHRf8WTWTf4UvzqcAJPTiv21mNfEFLSDklnlzjMmeQE75t8MZ3AskrZV6uEVnNfNr+qCNdQHgr/IWiXVz4Hsc52Yo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4ZNZkQ1vLdz2CdVr;
+	Thu, 27 Mar 2025 15:18:06 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9FA111800B3;
+	Thu, 27 Mar 2025 15:21:23 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 27 Mar 2025 15:21:23 +0800
+Message-ID: <77cd9e2d-da66-4e8f-831d-87915465f98a@huawei.com>
+Date: Thu, 27 Mar 2025 15:21:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 3/3] page_pool: Track DMA-mapped pages and
+ unmap them when destroying the pool
+To: Mina Almasry <almasrymina@google.com>
+CC: Saeed Mahameed <saeedm@nvidia.com>,
+	=?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>, "David S.
+ Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, Leon Romanovsky <leon@kernel.org>, Tariq
+ Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet
+	<edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ilias Apalodimas
+	<ilias.apalodimas@linaro.org>, Simon Horman <horms@kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>, Yonglong Liu <liuyonglong@huawei.com>, Pavel
+ Begunkov <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>,
+	<netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>, Qiuling Ren
+	<qren@redhat.com>, Yuying Ma <yuma@redhat.com>
+References: <20250325-page-pool-track-dma-v2-0-113ebc1946f3@redhat.com>
+ <20250325-page-pool-track-dma-v2-3-113ebc1946f3@redhat.com>
+ <Z-RF4_yotcfvX0Xz@x130> <f1a33452-31a4-4651-8d4a-3650fd27174b@huawei.com>
+ <CAHS8izPA+hmOkP=jZd3mm1Zux2uaqpOf0poEci-Jn1g7msfkbA@mail.gmail.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <CAHS8izPA+hmOkP=jZd3mm1Zux2uaqpOf0poEci-Jn1g7msfkbA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-I hit following error which testing migration in pure RoCE env:
-"-incoming rdma:[::]:8089: RDMA ERROR: You only have RoCE / iWARP devices in your
-systems and your management software has specified '[::]', but IPv6 over RoCE /
-iWARP is not supported in Linux.#012'."
+On 2025/3/27 12:59, Mina Almasry wrote:
+> On Wed, Mar 26, 2025 at 8:54 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>
+>>>> Since all the tracking added in this patch is performed on DMA
+>>>> map/unmap, no additional code is needed in the fast path, meaning the
+>>>> performance overhead of this tracking is negligible there. A
+>>>> micro-benchmark shows that the total overhead of the tracking itself is
+>>>> about 400 ns (39 cycles(tsc) 395.218 ns; sum for both map and unmap[2]).
+>>>> Since this cost is only paid on DMA map and unmap, it seems like an
+>>>> acceptable cost to fix the late unmap issue. Further optimisation can
+>>>> narrow the cases where this cost is paid (for instance by eliding the
+>>>> tracking when DMA map/unmap is a no-op).
 
-In our setup, we use rdma bind on ipv6 on target host, while connect from source
-with ipv4, remove the qemu_rdma_broken_ipv6_kernel, migration just work
-fine.
+See the above statement, and note the above optimisation was also discussed
+before and it seemed unfeasible too.
 
-Checking the git history, the function was added since introducing of
-rdma migration, which is more than 10 years ago. linux-rdma has
-improved support on RoCE/iWARP for ipv6 over past years. There are a few fixes
-back in 2016 seems related to the issue, eg:
-aeb76df46d11 ("IB/core: Set routable RoCE gid type for ipv4/ipv6 networks")
+> 
+> what time_bench_page_pool03_slow actually does each iteration:
+> - Allocates a page *from the fast path*
+> - Frees a page to through the slow path (recycling disabled).
+> 
+> Notably it doesn't do anything in the slow path that I imagine is
+> actually expensive: alloc_page, dma_map_page, & dma_unmap_page.
 
-other fixes back in 2018, eg:
-052eac6eeb56 RDMA/cma: Update RoCE multicast routines to use net namespace
-8d20a1f0ecd5 RDMA/cma: Fix rdma_cm raw IB path setting for RoCE
-9327c7afdce3 RDMA/cma: Provide a function to set RoCE path record L2 parameters
-5c181bda77f4 RDMA/cma: Set default GID type as RoCE when resolving RoCE route
-3c7f67d1880d IB/cma: Fix default RoCE type setting
-be1d325a3358 IB/core: Set RoCEv2 MGID according to spec
-63a5f483af0e IB/cma: Set default gid type to RoCEv2
+As above, for most arches, the DMA map/unmap seems to be almost no-op when
+page_pool is created with PP_FLAG_DMA_MAP flag without IOMMU/swiotlb behind
+the DMA MAPPING.
 
-So remove the outdated function and it's usage.
+> 
+> We do not have an existing benchmark case that actually tests the full
+> cost of the slow path (i.e full cost of page_pool_alloc from slow path
+> with dma-mapping and page_pool_put_page to the slow path with
+> dma-unmapping). That test case would have given us the full picture in
+> terms of % regression.
+> 
+> This is partly why I want to upstream the benchmark. Such cases can be
+> added after it is upstreamed.
 
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Li Zhijian <lizhijian@fujitsu.com>
-Cc: Yu Zhang <yu.zhang@ionos.com>
-Cc: qemu-devel@nongnu.org
-Cc: linux-rdma@vger.kernel.org
-Cc: michael@flatgalaxy.com
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Tested-by: Li zhijian <lizhijian@fujitsu.com>
-Reviewed-by: Michael Galaxy <mrgalaxy@nvidia.com>
----
-v1: drop RFC, fix build error (zhijian), collect Reviewed-by and Tested-by
-
- migration/rdma.c | 159 -----------------------------------------------
- 1 file changed, 159 deletions(-)
-
-diff --git a/migration/rdma.c b/migration/rdma.c
-index 76fb0349238a..e228520b8e01 100644
---- a/migration/rdma.c
-+++ b/migration/rdma.c
-@@ -767,149 +767,6 @@ static void qemu_rdma_dump_gid(const char *who, struct rdma_cm_id *id)
-     trace_qemu_rdma_dump_gid(who, sgid, dgid);
- }
- 
--/*
-- * As of now, IPv6 over RoCE / iWARP is not supported by linux.
-- * We will try the next addrinfo struct, and fail if there are
-- * no other valid addresses to bind against.
-- *
-- * If user is listening on '[::]', then we will not have a opened a device
-- * yet and have no way of verifying if the device is RoCE or not.
-- *
-- * In this case, the source VM will throw an error for ALL types of
-- * connections (both IPv4 and IPv6) if the destination machine does not have
-- * a regular infiniband network available for use.
-- *
-- * The only way to guarantee that an error is thrown for broken kernels is
-- * for the management software to choose a *specific* interface at bind time
-- * and validate what time of hardware it is.
-- *
-- * Unfortunately, this puts the user in a fix:
-- *
-- *  If the source VM connects with an IPv4 address without knowing that the
-- *  destination has bound to '[::]' the migration will unconditionally fail
-- *  unless the management software is explicitly listening on the IPv4
-- *  address while using a RoCE-based device.
-- *
-- *  If the source VM connects with an IPv6 address, then we're OK because we can
-- *  throw an error on the source (and similarly on the destination).
-- *
-- *  But in mixed environments, this will be broken for a while until it is fixed
-- *  inside linux.
-- *
-- * We do provide a *tiny* bit of help in this function: We can list all of the
-- * devices in the system and check to see if all the devices are RoCE or
-- * Infiniband.
-- *
-- * If we detect that we have a *pure* RoCE environment, then we can safely
-- * thrown an error even if the management software has specified '[::]' as the
-- * bind address.
-- *
-- * However, if there is are multiple hetergeneous devices, then we cannot make
-- * this assumption and the user just has to be sure they know what they are
-- * doing.
-- *
-- * Patches are being reviewed on linux-rdma.
-- */
--static int qemu_rdma_broken_ipv6_kernel(struct ibv_context *verbs, Error **errp)
--{
--    /* This bug only exists in linux, to our knowledge. */
--#ifdef CONFIG_LINUX
--    struct ibv_port_attr port_attr;
--
--    /*
--     * Verbs are only NULL if management has bound to '[::]'.
--     *
--     * Let's iterate through all the devices and see if there any pure IB
--     * devices (non-ethernet).
--     *
--     * If not, then we can safely proceed with the migration.
--     * Otherwise, there are no guarantees until the bug is fixed in linux.
--     */
--    if (!verbs) {
--        int num_devices;
--        struct ibv_device **dev_list = ibv_get_device_list(&num_devices);
--        bool roce_found = false;
--        bool ib_found = false;
--
--        for (int x = 0; x < num_devices; x++) {
--            verbs = ibv_open_device(dev_list[x]);
--            /*
--             * ibv_open_device() is not documented to set errno.  If
--             * it does, it's somebody else's doc bug.  If it doesn't,
--             * the use of errno below is wrong.
--             * TODO Find out whether ibv_open_device() sets errno.
--             */
--            if (!verbs) {
--                if (errno == EPERM) {
--                    continue;
--                } else {
--                    error_setg_errno(errp, errno,
--                                     "could not open RDMA device context");
--                    return -1;
--                }
--            }
--
--            if (ibv_query_port(verbs, 1, &port_attr)) {
--                ibv_close_device(verbs);
--                error_setg(errp,
--                           "RDMA ERROR: Could not query initial IB port");
--                return -1;
--            }
--
--            if (port_attr.link_layer == IBV_LINK_LAYER_INFINIBAND) {
--                ib_found = true;
--            } else if (port_attr.link_layer == IBV_LINK_LAYER_ETHERNET) {
--                roce_found = true;
--            }
--
--            ibv_close_device(verbs);
--
--        }
--
--        if (roce_found) {
--            if (ib_found) {
--                warn_report("migrations may fail:"
--                            " IPv6 over RoCE / iWARP in linux"
--                            " is broken. But since you appear to have a"
--                            " mixed RoCE / IB environment, be sure to only"
--                            " migrate over the IB fabric until the kernel "
--                            " fixes the bug.");
--            } else {
--                error_setg(errp, "RDMA ERROR: "
--                           "You only have RoCE / iWARP devices in your systems"
--                           " and your management software has specified '[::]'"
--                           ", but IPv6 over RoCE / iWARP is not supported in Linux.");
--                return -1;
--            }
--        }
--
--        return 0;
--    }
--
--    /*
--     * If we have a verbs context, that means that some other than '[::]' was
--     * used by the management software for binding. In which case we can
--     * actually warn the user about a potentially broken kernel.
--     */
--
--    /* IB ports start with 1, not 0 */
--    if (ibv_query_port(verbs, 1, &port_attr)) {
--        error_setg(errp, "RDMA ERROR: Could not query initial IB port");
--        return -1;
--    }
--
--    if (port_attr.link_layer == IBV_LINK_LAYER_ETHERNET) {
--        error_setg(errp, "RDMA ERROR: "
--                   "Linux kernel's RoCE / iWARP does not support IPv6 "
--                   "(but patches on linux-rdma in progress)");
--        return -1;
--    }
--
--#endif
--
--    return 0;
--}
--
- /*
-  * Figure out which RDMA device corresponds to the requested IP hostname
-  * Also create the initial connection manager identifiers for opening
-@@ -955,7 +812,6 @@ static int qemu_rdma_resolve_host(RDMAContext *rdma, Error **errp)
- 
-     /* Try all addresses, saving the first error in @err */
-     for (struct rdma_addrinfo *e = res; e != NULL; e = e->ai_next) {
--        Error **local_errp = err ? NULL : &err;
- 
-         inet_ntop(e->ai_family,
-             &((struct sockaddr_in *) e->ai_dst_addr)->sin_addr, ip, sizeof ip);
-@@ -964,13 +820,6 @@ static int qemu_rdma_resolve_host(RDMAContext *rdma, Error **errp)
-         ret = rdma_resolve_addr(rdma->cm_id, NULL, e->ai_dst_addr,
-                 RDMA_RESOLVE_TIMEOUT_MS);
-         if (ret >= 0) {
--            if (e->ai_family == AF_INET6) {
--                ret = qemu_rdma_broken_ipv6_kernel(rdma->cm_id->verbs,
--                                                   local_errp);
--                if (ret < 0) {
--                    continue;
--                }
--            }
-             error_free(err);
-             goto route;
-         }
-@@ -2663,7 +2512,6 @@ static int qemu_rdma_dest_init(RDMAContext *rdma, Error **errp)
- 
-     /* Try all addresses, saving the first error in @err */
-     for (e = res; e != NULL; e = e->ai_next) {
--        Error **local_errp = err ? NULL : &err;
- 
-         inet_ntop(e->ai_family,
-             &((struct sockaddr_in *) e->ai_dst_addr)->sin_addr, ip, sizeof ip);
-@@ -2672,13 +2520,6 @@ static int qemu_rdma_dest_init(RDMAContext *rdma, Error **errp)
-         if (ret < 0) {
-             continue;
-         }
--        if (e->ai_family == AF_INET6) {
--            ret = qemu_rdma_broken_ipv6_kernel(listen_id->verbs,
--                                               local_errp);
--            if (ret < 0) {
--                continue;
--            }
--        }
-         error_free(err);
-         break;
-     }
--- 
-2.43.0
-
+Why not add it now when you seemed to be arguing that exercising the code
+path of dma_map_page() and dma_unmap_page() may change the full picture
+here.
 
