@@ -1,341 +1,131 @@
-Return-Path: <linux-rdma+bounces-9050-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9051-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D0C2A76F1C
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Mar 2025 22:23:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED5CA76F2D
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Mar 2025 22:27:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B87C53AAD46
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Mar 2025 20:23:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C27FF16AA61
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Mar 2025 20:27:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F3E121B18C;
-	Mon, 31 Mar 2025 20:23:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F93C21ABD7;
+	Mon, 31 Mar 2025 20:27:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="1xyxNhXA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0320421ABB6
-	for <linux-rdma@vger.kernel.org>; Mon, 31 Mar 2025 20:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1731CAA90;
+	Mon, 31 Mar 2025 20:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743452603; cv=none; b=VnE3q23mvjcXjZmG9y9wmhMIcHMBLOLKj+8y2MhYqq7shvZxW4JaMzNElrWd99Ae880oKC9zYB/jM/4dFYGDB028EVPWSs2j8tcJMvDR1s4XgKFHIGTrlm9B9XZGpYY+MsIkfhWNLHnhIzahBje552V/zM7Qbw/Ia8iNV3dK47s=
+	t=1743452850; cv=none; b=Lhg80K6y8Dzrx91Bb2sFMP+edgB7vyicOTFxAuss6umDBAokQ8mNwM7Rj1fFLAq8+CSgbfugbicd8Q/0RuCOCiyUWe1Uu2wfZWdXzZCN07BkadYATqW7T4s4+BXipxLyMugG6kh3Na8kIRQG54Z6tBbOQiLDkpXGrIoVsCVuRqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743452603; c=relaxed/simple;
-	bh=3PY05xnMoMY5l0MLOVsaY4dzTB65DW9ZAGjtkWZLVh0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=cDoRxjYTrqZtT3vSue4GsGlQ8a4IhCp3+QVHZXYGt0vFvaAEK2dBqXFTHfYCoitnoxGe4QLNxxnnhrOaFO6WiJBuUj250qsT7/9joLK7m6jleGXZleHw23+eUK6FMf4d76Wo9BAdcPMx5DKyQk4ZSMkOzEaS+LBYaYhWNtY9kb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3d44ba1c2b5so51391005ab.2
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Mar 2025 13:23:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743452600; x=1744057400;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3IdS2CIIBxydV1hM12Yq4u+yxRM3vbbwLHZJ/Jv2v1U=;
-        b=ndKHGIfSeelCt8rsGl/Vq74wQ0aP8NkkKe1UlZmgauOtcnm2El70vS5ydL9Xqegb67
-         5ueHWrQ56qMvwG+u3rvUcOdUwbEUT7m/Q0xuocIpkIyxbTTD/r1BqwHmH1EP6g5Xm5Zl
-         mUJ0FUG7bpBE2ovx8E9KKL33Ue8U7vvCQIam0KsYHTqE+oGi83QnsamMNDMivyWfkDaX
-         WvT1+aDnHYakLpRfBEmWP1eaV5OMcqCsqKCQmt/exIE5+VEWrwPkiPGwqwXMH6vyZ0Bf
-         NCoMHs5BSy7B9QPj8UO+Au/TYTFWnWd8jfyGK3kmtukpur+RnR0nIPgvRtahwAAZhf56
-         vVTg==
-X-Forwarded-Encrypted: i=1; AJvYcCXLl4l7l/q1SMakbvWvdRrbUyR/sQngwkUDghvK5mlwquqKMQvd8zmyM0AfWD5s36iM/cSb5aNlM03n@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzyuz8AR6xkbgwtwbxHqPjqx5AmZG4T/euRk5sGdke4yxAIyQhf
-	ldzfaM9TlNTEM3lZLfnQmyCoQxljRkj1ypECJ0pOkF0oGWdzqkZNqyDn+vDM2C6GACVzwMNk+9P
-	3EH68wkgZHoKylnM6IvIlNsUlH0Cl3z4DwyTY+hrMCghBEPaeDowkkfs=
-X-Google-Smtp-Source: AGHT+IHLSJS1wU9leOVUk3T6cwy7hiPNlkyZgl8AGQuBu7QPD/fBMTwXXwdHHtraXgZq65fv4E9K737nJXsbQyEFMVQY9/Ey77Hg
+	s=arc-20240116; t=1743452850; c=relaxed/simple;
+	bh=vYhCw4nnQmvtyifVwDW6bFGacU6nCINp4M+2BQ1vpis=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TV9/ltKq0hSU4b99KrjQw53lKSGHTMpeiJAoGPsq/FLoPDvE/yACVUTteLELLmwvA5MBKTWocw6dlfwwWK5Dvqhy/h57zEhoF/cf9jX1npvvM50x0JZt6+AmxiVAZ3diYqleCL2wdI0vmhOZonOO2AeCw9nMEnQU9165Fs9Uezw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=1xyxNhXA; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=From:Cc:To:Date:Message-ID;
+	bh=vYhCw4nnQmvtyifVwDW6bFGacU6nCINp4M+2BQ1vpis=; b=1xyxNhXAAZkumfn+rj9gjbDgJq
+	Cac07i2SbLbMyd3WejpqlYAZVYYUr44gazhhYrd4YT8aNL7InIJUa8HDHDKrH39rL+yAODAtOH/7W
+	O4j8vi/2JqQUU3hGyXW+acp0G6EuYTesgDP9t4I9fOHGiXRet9y7HD+n8rGRvNAOznCzq5roEUY1m
+	7BoGjfNMB6lVKOw406lFzYc91MyD8ADG8uM9jOeXlxWWzT+NqbO0Sr5tRTkGP8ry5YaR6uzAZQ3rt
+	ykbUgPvgPMRkNTbX7AqOM/i8CQiNgBDue667YAS2zuEXYboBuiyDbB0DNmEUv/4KIaGtzEw0IHpur
+	YBO6gx7cElsGJEN1IsJxDEiAO4N3dhfj+icUDr4RWA6qGmhE/J1uSHf0gocR9WXKmoZDAvdVBjjMC
+	T5H55JVmt3id6TXT5t3Q0YgS8tKzB4WMMNOB4EQYHjzySVUlsBn/xb34lZ6+LVMKIgkQ6MV+AO7RS
+	d1XvbBcwupfsWYYJr0+8JKjv;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1tzLj6-007YEh-3D;
+	Mon, 31 Mar 2025 20:27:21 +0000
+Message-ID: <62ef4f1e-a726-423a-a765-ee584ee681c0@samba.org>
+Date: Mon, 31 Mar 2025 22:27:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:238a:b0:3d3:fa0a:7242 with SMTP id
- e9e14a558f8ab-3d5e0912eb8mr90641135ab.9.1743452600121; Mon, 31 Mar 2025
- 13:23:20 -0700 (PDT)
-Date: Mon, 31 Mar 2025 13:23:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67eaf9b8.050a0220.3c3d88.004a.GAE@google.com>
-Subject: [syzbot] [rdma?] [s390?] [net?] KASAN: null-ptr-deref Read in smc_tcp_syn_recv_sock
-From: syzbot <syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com>
-To: agordeev@linux.ibm.com, alibuda@linux.alibaba.com, davem@davemloft.net, 
-	edumazet@google.com, guwen@linux.alibaba.com, horms@kernel.org, 
-	jaka@linux.ibm.com, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
-	tonylu@linux.alibaba.com, wenjia@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 2/4] net: pass 'optlen_t' to proto[ops].getsockopt()
+ hooks
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>
+Cc: Pavel Begunkov <asml.silence@gmail.com>, Breno Leitao
+ <leitao@debian.org>, Jakub Kicinski <kuba@kernel.org>,
+ Christoph Hellwig <hch@lst.de>, Karsten Keil <isdn@linux-pingi.de>,
+ Ayush Sawal <ayush.sawal@chelsio.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Kuniyuki Iwashima <kuniyu@amazon.com>, Willem de Bruijn
+ <willemb@google.com>, David Ahern <dsahern@kernel.org>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+ Xin Long <lucien.xin@gmail.com>, Neal Cardwell <ncardwell@google.com>,
+ Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>,
+ Marc Kleine-Budde <mkl@pengutronix.de>,
+ Robin van der Gracht <robin@protonic.nl>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+ Alexander Aring <alex.aring@gmail.com>,
+ Stefan Schmidt <stefan@datenfreihafen.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Alexandra Winter <wintera@linux.ibm.com>,
+ Thorsten Winkler <twinkler@linux.ibm.com>,
+ James Chapman <jchapman@katalix.com>, Jeremy Kerr <jk@codeconstruct.com.au>,
+ Matt Johnston <matt@codeconstruct.com.au>,
+ Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>,
+ Geliang Tang <geliang@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Remi Denis-Courmont <courmisch@gmail.com>,
+ Allison Henderson <allison.henderson@oracle.com>,
+ David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
+ Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
+ "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
+ Wen Gu <guwen@linux.alibaba.com>, Jon Maloy <jmaloy@redhat.com>,
+ Boris Pismenny <borisp@nvidia.com>, John Fastabend
+ <john.fastabend@gmail.com>, Stefano Garzarella <sgarzare@redhat.com>,
+ Martin Schiller <ms@dev.tdt.de>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
+ linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org,
+ linux-s390@vger.kernel.org, mptcp@lists.linux.dev,
+ linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+ linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net,
+ virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
+ bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
+ io-uring@vger.kernel.org
+References: <cover.1743449872.git.metze@samba.org>
+ <76db80040bdeeb4a0221b5b6583fda4988afa64e.1743449872.git.metze@samba.org>
+Content-Language: en-US, de-DE
+From: Stefan Metzmacher <metze@samba.org>
+In-Reply-To: <76db80040bdeeb4a0221b5b6583fda4988afa64e.1743449872.git.metze@samba.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    850925a8133c Merge tag '9p-for-6.12-rc5' of https://github..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1227aa87980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=17c0d505695d6b0
-dashboard link: https://syzkaller.appspot.com/bug?extid=827ae2bfb3a3529333e9
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15489230580000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6d8177e17058/disk-850925a8.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5d88252f39ff/vmlinux-850925a8.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7a675a61b90d/bzImage-850925a8.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com
-
-TCP: request_sock_TCP: Possible SYN flooding on port [::]:20002. Sending cookies.
-TCP: request_sock_TCP: Possible SYN flooding on port [::]:20002. Sending cookies.
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:68 [inline]
-BUG: KASAN: null-ptr-deref in atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
-BUG: KASAN: null-ptr-deref in smc_tcp_syn_recv_sock+0xa7/0x4b0 net/smc/af_smc.c:131
-Read of size 4 at addr 00000000000009d4 by task syz.4.10809/28966
-
-CPU: 1 UID: 0 PID: 28966 Comm: syz.4.10809 Not tainted 6.12.0-rc4-syzkaller-00261-g850925a8133c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:120
- kasan_report+0xd9/0x110 mm/kasan/report.c:601
- check_region_inline mm/kasan/generic.c:183 [inline]
- kasan_check_range+0xef/0x1a0 mm/kasan/generic.c:189
- instrument_atomic_read include/linux/instrumented.h:68 [inline]
- atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
- smc_tcp_syn_recv_sock+0xa7/0x4b0 net/smc/af_smc.c:131
- tcp_get_cookie_sock+0xd5/0x790 net/ipv4/syncookies.c:204
- cookie_v4_check+0xcf8/0x1d40 net/ipv4/syncookies.c:485
- tcp_v4_cookie_check net/ipv4/tcp_ipv4.c:1864 [inline]
- tcp_v4_do_rcv+0x98e/0xa90 net/ipv4/tcp_ipv4.c:1923
- tcp_v4_rcv+0x3cd2/0x4390 net/ipv4/tcp_ipv4.c:2340
- ip_protocol_deliver_rcu+0xba/0x4c0 net/ipv4/ip_input.c:205
- ip_local_deliver_finish+0x316/0x570 net/ipv4/ip_input.c:233
- NF_HOOK include/linux/netfilter.h:314 [inline]
- NF_HOOK include/linux/netfilter.h:308 [inline]
- ip_local_deliver+0x18e/0x1f0 net/ipv4/ip_input.c:254
- dst_input include/net/dst.h:460 [inline]
- ip_rcv_finish net/ipv4/ip_input.c:449 [inline]
- NF_HOOK include/linux/netfilter.h:314 [inline]
- NF_HOOK include/linux/netfilter.h:308 [inline]
- ip_rcv+0x2c3/0x5d0 net/ipv4/ip_input.c:569
- __netif_receive_skb_one_core+0x199/0x1e0 net/core/dev.c:5666
- __netif_receive_skb+0x1d/0x160 net/core/dev.c:5779
- process_backlog+0x443/0x15f0 net/core/dev.c:6111
- __napi_poll.constprop.0+0xba/0x550 net/core/dev.c:6775
- napi_poll net/core/dev.c:6844 [inline]
- net_rx_action+0xa92/0x1010 net/core/dev.c:6966
- handle_softirqs+0x216/0x8f0 kernel/softirq.c:554
- do_softirq kernel/softirq.c:455 [inline]
- do_softirq+0xb2/0xf0 kernel/softirq.c:442
- </IRQ>
- <TASK>
- __local_bh_enable_ip+0x100/0x120 kernel/softirq.c:382
- local_bh_enable include/linux/bottom_half.h:33 [inline]
- rcu_read_unlock_bh include/linux/rcupdate.h:919 [inline]
- __dev_queue_xmit+0x887/0x4350 net/core/dev.c:4455
- dev_queue_xmit include/linux/netdevice.h:3094 [inline]
- neigh_hh_output include/net/neighbour.h:526 [inline]
- neigh_output include/net/neighbour.h:540 [inline]
- ip_finish_output2+0x16d7/0x2530 net/ipv4/ip_output.c:236
- __ip_finish_output net/ipv4/ip_output.c:314 [inline]
- __ip_finish_output+0x49e/0x950 net/ipv4/ip_output.c:296
- ip_finish_output+0x31/0x310 net/ipv4/ip_output.c:324
- NF_HOOK_COND include/linux/netfilter.h:303 [inline]
- ip_output+0x13b/0x2a0 net/ipv4/ip_output.c:434
- dst_output include/net/dst.h:450 [inline]
- ip_local_out+0x33e/0x4a0 net/ipv4/ip_output.c:130
- __ip_queue_xmit+0x747/0x1940 net/ipv4/ip_output.c:536
- __tcp_transmit_skb+0x2a4c/0x3dc0 net/ipv4/tcp_output.c:1466
- __tcp_send_ack.part.0+0x390/0x720 net/ipv4/tcp_output.c:4268
- __tcp_send_ack net/ipv4/tcp_output.c:4274 [inline]
- tcp_send_ack+0x82/0xa0 net/ipv4/tcp_output.c:4274
- tcp_rcv_synsent_state_process net/ipv4/tcp_input.c:6576 [inline]
- tcp_rcv_state_process+0x4332/0x4f30 net/ipv4/tcp_input.c:6770
- tcp_v4_do_rcv+0x1ad/0xa90 net/ipv4/tcp_ipv4.c:1938
- sk_backlog_rcv include/net/sock.h:1115 [inline]
- __release_sock+0x31b/0x400 net/core/sock.c:3072
- release_sock+0x5a/0x220 net/core/sock.c:3626
- mptcp_connect+0xc14/0xee0 net/mptcp/protocol.c:3800
- __inet_stream_connect+0x3ca/0x1020 net/ipv4/af_inet.c:679
- inet_stream_connect+0x57/0xa0 net/ipv4/af_inet.c:750
- __sys_connect_file+0x150/0x190 net/socket.c:2071
- __sys_connect+0x147/0x180 net/socket.c:2088
- __do_sys_connect net/socket.c:2098 [inline]
- __se_sys_connect net/socket.c:2095 [inline]
- __x64_sys_connect+0x72/0xb0 net/socket.c:2095
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f68acb7e719
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f68ada08038 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
-RAX: ffffffffffffffda RBX: 00007f68acd35f80 RCX: 00007f68acb7e719
-RDX: 0000000000000010 RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 00007f68acbf132e R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007f68acd35f80 R15: 00007ffdea14cb48
- </TASK>
-==================================================================
-Oops: general protection fault, probably for non-canonical address 0xdffffc000000013a: 0000 [#1] PREEMPT SMP KASAN NOPTI
-KASAN: null-ptr-deref in range [0x00000000000009d0-0x00000000000009d7]
-CPU: 1 UID: 0 PID: 28966 Comm: syz.4.10809 Tainted: G    B              6.12.0-rc4-syzkaller-00261-g850925a8133c #0
-Tainted: [B]=BAD_PAGE
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-RIP: 0010:arch_atomic_read arch/x86/include/asm/atomic.h:23 [inline]
-RIP: 0010:raw_atomic_read include/linux/atomic/atomic-arch-fallback.h:457 [inline]
-RIP: 0010:atomic_read include/linux/atomic/atomic-instrumented.h:33 [inline]
-RIP: 0010:smc_tcp_syn_recv_sock+0xb8/0x4b0 net/smc/af_smc.c:131
-Code: ad d4 09 00 00 be 04 00 00 00 44 8b bb 1c 04 00 00 4c 89 ef e8 69 94 2e f7 4c 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 14 02 4c 89 e8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 34
-RSP: 0018:ffffc90000a18668 EFLAGS: 00010217
-RAX: dffffc0000000000 RBX: ffff88805b9cb600 RCX: ffffffff814e856f
-RDX: 000000000000013a RSI: ffffffff81ee031e RDI: 0000000000000007
-RBP: 0000000000000000 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000000 R11: 6e696c6261736944 R12: ffff88807df5bd00
-R13: 00000000000009d4 R14: ffffc90000a186e8 R15: 0000000000000000
-FS:  00007f68ada086c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f68ad9e7d58 CR3: 000000005e3fa000 CR4: 0000000000350ef0
-Call Trace:
- <IRQ>
- tcp_get_cookie_sock+0xd5/0x790 net/ipv4/syncookies.c:204
- cookie_v4_check+0xcf8/0x1d40 net/ipv4/syncookies.c:485
- tcp_v4_cookie_check net/ipv4/tcp_ipv4.c:1864 [inline]
- tcp_v4_do_rcv+0x98e/0xa90 net/ipv4/tcp_ipv4.c:1923
- tcp_v4_rcv+0x3cd2/0x4390 net/ipv4/tcp_ipv4.c:2340
- ip_protocol_deliver_rcu+0xba/0x4c0 net/ipv4/ip_input.c:205
- ip_local_deliver_finish+0x316/0x570 net/ipv4/ip_input.c:233
- NF_HOOK include/linux/netfilter.h:314 [inline]
- NF_HOOK include/linux/netfilter.h:308 [inline]
- ip_local_deliver+0x18e/0x1f0 net/ipv4/ip_input.c:254
- dst_input include/net/dst.h:460 [inline]
- ip_rcv_finish net/ipv4/ip_input.c:449 [inline]
- NF_HOOK include/linux/netfilter.h:314 [inline]
- NF_HOOK include/linux/netfilter.h:308 [inline]
- ip_rcv+0x2c3/0x5d0 net/ipv4/ip_input.c:569
- __netif_receive_skb_one_core+0x199/0x1e0 net/core/dev.c:5666
- __netif_receive_skb+0x1d/0x160 net/core/dev.c:5779
- process_backlog+0x443/0x15f0 net/core/dev.c:6111
- __napi_poll.constprop.0+0xba/0x550 net/core/dev.c:6775
- napi_poll net/core/dev.c:6844 [inline]
- net_rx_action+0xa92/0x1010 net/core/dev.c:6966
- handle_softirqs+0x216/0x8f0 kernel/softirq.c:554
- do_softirq kernel/softirq.c:455 [inline]
- do_softirq+0xb2/0xf0 kernel/softirq.c:442
- </IRQ>
- <TASK>
- __local_bh_enable_ip+0x100/0x120 kernel/softirq.c:382
- local_bh_enable include/linux/bottom_half.h:33 [inline]
- rcu_read_unlock_bh include/linux/rcupdate.h:919 [inline]
- __dev_queue_xmit+0x887/0x4350 net/core/dev.c:4455
- dev_queue_xmit include/linux/netdevice.h:3094 [inline]
- neigh_hh_output include/net/neighbour.h:526 [inline]
- neigh_output include/net/neighbour.h:540 [inline]
- ip_finish_output2+0x16d7/0x2530 net/ipv4/ip_output.c:236
- __ip_finish_output net/ipv4/ip_output.c:314 [inline]
- __ip_finish_output+0x49e/0x950 net/ipv4/ip_output.c:296
- ip_finish_output+0x31/0x310 net/ipv4/ip_output.c:324
- NF_HOOK_COND include/linux/netfilter.h:303 [inline]
- ip_output+0x13b/0x2a0 net/ipv4/ip_output.c:434
- dst_output include/net/dst.h:450 [inline]
- ip_local_out+0x33e/0x4a0 net/ipv4/ip_output.c:130
- __ip_queue_xmit+0x747/0x1940 net/ipv4/ip_output.c:536
- __tcp_transmit_skb+0x2a4c/0x3dc0 net/ipv4/tcp_output.c:1466
- __tcp_send_ack.part.0+0x390/0x720 net/ipv4/tcp_output.c:4268
- __tcp_send_ack net/ipv4/tcp_output.c:4274 [inline]
- tcp_send_ack+0x82/0xa0 net/ipv4/tcp_output.c:4274
- tcp_rcv_synsent_state_process net/ipv4/tcp_input.c:6576 [inline]
- tcp_rcv_state_process+0x4332/0x4f30 net/ipv4/tcp_input.c:6770
- tcp_v4_do_rcv+0x1ad/0xa90 net/ipv4/tcp_ipv4.c:1938
- sk_backlog_rcv include/net/sock.h:1115 [inline]
- __release_sock+0x31b/0x400 net/core/sock.c:3072
- release_sock+0x5a/0x220 net/core/sock.c:3626
- mptcp_connect+0xc14/0xee0 net/mptcp/protocol.c:3800
- __inet_stream_connect+0x3ca/0x1020 net/ipv4/af_inet.c:679
- inet_stream_connect+0x57/0xa0 net/ipv4/af_inet.c:750
- __sys_connect_file+0x150/0x190 net/socket.c:2071
- __sys_connect+0x147/0x180 net/socket.c:2088
- __do_sys_connect net/socket.c:2098 [inline]
- __se_sys_connect net/socket.c:2095 [inline]
- __x64_sys_connect+0x72/0xb0 net/socket.c:2095
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f68acb7e719
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f68ada08038 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
-RAX: ffffffffffffffda RBX: 00007f68acd35f80 RCX: 00007f68acb7e719
-RDX: 0000000000000010 RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 00007f68acbf132e R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007f68acd35f80 R15: 00007ffdea14cb48
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:arch_atomic_read arch/x86/include/asm/atomic.h:23 [inline]
-RIP: 0010:raw_atomic_read include/linux/atomic/atomic-arch-fallback.h:457 [inline]
-RIP: 0010:atomic_read include/linux/atomic/atomic-instrumented.h:33 [inline]
-RIP: 0010:smc_tcp_syn_recv_sock+0xb8/0x4b0 net/smc/af_smc.c:131
-Code: ad d4 09 00 00 be 04 00 00 00 44 8b bb 1c 04 00 00 4c 89 ef e8 69 94 2e f7 4c 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 14 02 4c 89 e8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 34
-RSP: 0018:ffffc90000a18668 EFLAGS: 00010217
-RAX: dffffc0000000000 RBX: ffff88805b9cb600 RCX: ffffffff814e856f
-RDX: 000000000000013a RSI: ffffffff81ee031e RDI: 0000000000000007
-RBP: 0000000000000000 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000000 R11: 6e696c6261736944 R12: ffff88807df5bd00
-R13: 00000000000009d4 R14: ffffc90000a186e8 R15: 0000000000000000
-FS:  00007f68ada086c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f68ad9e7d58 CR3: 000000005e3fa000 CR4: 0000000000350ef0
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	09 00                	or     %eax,(%rax)
-   2:	00 be 04 00 00 00    	add    %bh,0x4(%rsi)
-   8:	44 8b bb 1c 04 00 00 	mov    0x41c(%rbx),%r15d
-   f:	4c 89 ef             	mov    %r13,%rdi
-  12:	e8 69 94 2e f7       	call   0xf72e9480
-  17:	4c 89 ea             	mov    %r13,%rdx
-  1a:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  21:	fc ff df
-  24:	48 c1 ea 03          	shr    $0x3,%rdx
-* 28:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx <-- trapping instruction
-  2c:	4c 89 e8             	mov    %r13,%rax
-  2f:	83 e0 07             	and    $0x7,%eax
-  32:	83 c0 03             	add    $0x3,%eax
-  35:	38 d0                	cmp    %dl,%al
-  37:	7c 08                	jl     0x41
-  39:	84 d2                	test   %dl,%dl
-  3b:	0f                   	.byte 0xf
-  3c:	85                   	.byte 0x85
-  3d:	34                   	.byte 0x34
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+PiBkaWZmIC0tZ2l0IGEvbmV0L3NvY2tldC5jIGIvbmV0L3NvY2tldC5jDQo+IGluZGV4IDlh
+MGU3MjBmMDg1OS4uZmEyZGUxMmMxMGU2IDEwMDY0NA0KPiAtLS0gYS9uZXQvc29ja2V0LmMN
+Cj4gKysrIGIvbmV0L3NvY2tldC5jDQo+IEBAIC0yMzUwLDEyICsyMzUwLDE1IEBAIGludCBk
+b19zb2NrX2dldHNvY2tvcHQoc3RydWN0IHNvY2tldCAqc29jaywgYm9vbCBjb21wYXQsIGlu
+dCBsZXZlbCwNCj4gICAJfSBlbHNlIGlmICh1bmxpa2VseSghb3BzLT5nZXRzb2Nrb3B0KSkg
+ew0KPiAgIAkJZXJyID0gLUVPUE5PVFNVUFA7DQo+ICAgCX0gZWxzZSB7DQo+IC0JCWlmIChX
+QVJOX09OQ0Uob3B0dmFsLmlzX2tlcm5lbCB8fCBvcHRsZW4uaXNfa2VybmVsLA0KPiArCQlv
+cHRsZW5fdCBfb3B0bGVuID0geyAudXAgPSBOVUxMLCB9Ow0KPiArDQo+ICsJCWlmIChXQVJO
+X09OQ0Uob3B0dmFsLmlzX2tlcm5lbCwNCg0KU29ycnksIHRoZSByZW1vdmFsIG9mICd8fCBv
+cHRsZW4uaXNfa2VybmVsJyBzaG91bGQgYmUgaW4gdGhlIG5leHQgY29tbWl0Li4uDQoNCj4g
+ICAJCQkgICAgICAiSW52YWxpZCBhcmd1bWVudCB0eXBlIikpDQo+ICAgCQkJcmV0dXJuIC1F
+T1BOT1RTVVBQOw0KDQoNCg==
 
