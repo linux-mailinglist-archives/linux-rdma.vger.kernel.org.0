@@ -1,387 +1,223 @@
-Return-Path: <linux-rdma+bounces-9095-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9096-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3B1EA782CB
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 21:33:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EA5DA782D7
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 21:39:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71A4E16D7EB
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 19:33:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2873E7A4EA2
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 19:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EED1C1E7C01;
-	Tue,  1 Apr 2025 19:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73C7520C003;
+	Tue,  1 Apr 2025 19:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Um+/7vst";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="5Hd9TpZa";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Um+/7vst";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="5Hd9TpZa"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="FWbN9GL/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2068.outbound.protection.outlook.com [40.107.220.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994E11D5151
-	for <linux-rdma@vger.kernel.org>; Tue,  1 Apr 2025 19:33:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743535982; cv=none; b=WwelRcGSVT+PJNnCu/zYvipm0jGyfGTJ8yhOtLCZi8OjlSqCWKBqX/PAUs7mxsr/rI0l3iaYw2sTVDT+KHCWHZ5otQ4LWbY2knrvLbxT8VNTy6ANyR/7/+zUpg7idLRNSdHlSLaOnVuGSyoyvJrn9/sJLNrFee7fkkvrNKd1Pl8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743535982; c=relaxed/simple;
-	bh=W5HY2Uv6Mc50VbeAFeC9jsHF/DYzRrLTPvtRZw5gB38=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=k7BtazNnxvSCrPUYb7dq/baZe4wIaPsXY1eKX+aMUbAh3VhPrN4mMvLwnbvqqmRfkCad8c8+pGfpY0aEDcT8Vtcd8jMFsZgoHU/DCNgMoPVQ5jk8AYvXOn3xD0pLhcnPlFfEqgpyVfQ4D4tuiMv8tX+AeTt9xhwR9m/KlcuP2kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Um+/7vst; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=5Hd9TpZa; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Um+/7vst; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=5Hd9TpZa; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 98DE51F38E;
-	Tue,  1 Apr 2025 19:32:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1743535978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0AqD+qdpv6islwITlr4suJBsdNlkf1+/1uY8htIMnyE=;
-	b=Um+/7vstzCfwO/FEh5gdH6LV5MKEpVBgNSotP1JxVvhn99LtDUswIyyU+tjQVqzzqGjwvh
-	37dP7gqrhEn+mK1RQYEWl3T910Ik2w4j0YzkfP8r0QjDJIl/xrNb8mNmKfILKZ35b5fVMe
-	+GTSEgyivw2JvHqUadorRucpsmHBtSI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1743535978;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0AqD+qdpv6islwITlr4suJBsdNlkf1+/1uY8htIMnyE=;
-	b=5Hd9TpZaHa/HD9qg0AstxQaN6ybTNvMEW9DUIyUy374ZuPrcxLS6xFJLxf7tVF8gkHaxbl
-	ki88YypH+O8Xn1Cw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="Um+/7vst";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=5Hd9TpZa
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1743535978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0AqD+qdpv6islwITlr4suJBsdNlkf1+/1uY8htIMnyE=;
-	b=Um+/7vstzCfwO/FEh5gdH6LV5MKEpVBgNSotP1JxVvhn99LtDUswIyyU+tjQVqzzqGjwvh
-	37dP7gqrhEn+mK1RQYEWl3T910Ik2w4j0YzkfP8r0QjDJIl/xrNb8mNmKfILKZ35b5fVMe
-	+GTSEgyivw2JvHqUadorRucpsmHBtSI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1743535978;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0AqD+qdpv6islwITlr4suJBsdNlkf1+/1uY8htIMnyE=;
-	b=5Hd9TpZaHa/HD9qg0AstxQaN6ybTNvMEW9DUIyUy374ZuPrcxLS6xFJLxf7tVF8gkHaxbl
-	ki88YypH+O8Xn1Cw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0F58613691;
-	Tue,  1 Apr 2025 19:32:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2yoeL2k/7GfbQgAAD6G6ig
-	(envelope-from <farosas@suse.de>); Tue, 01 Apr 2025 19:32:57 +0000
-From: Fabiano Rosas <farosas@suse.de>
-To: Jack Wang <jinpu.wang@ionos.com>, qemu-devel@nongnu.org, peterx@redhat.com
-Cc: Li Zhijian <lizhijian@fujitsu.com>, Yu Zhang <yu.zhang@ionos.com>,
- linux-rdma@vger.kernel.org, michael@flatgalaxy.com, Michael Galaxy
- <mrgalaxy@nvidia.com>
-Subject: Re: [PATCH] migration/rdma: Remove qemu_rdma_broken_ipv6_kernel
-In-Reply-To: <20250327061123.14453-1-jinpu.wang@ionos.com>
-References: <20250327061123.14453-1-jinpu.wang@ionos.com>
-Date: Tue, 01 Apr 2025 16:32:55 -0300
-Message-ID: <87cydvllso.fsf@suse.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99EE1E2312;
+	Tue,  1 Apr 2025 19:39:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743536366; cv=fail; b=ii+mOALk/+mMrNaogYwOXc/t96ORHoEGpRoHqd1qjmQtkZ/+Rw2Hn0vNIyZtbiuarwlJtiXofuWFox4+YzCP0KCT+UAE45581o2NILqxnerVYg3HmmORr1Bo/AfTTpFPeW634L2bXvfHf96GbNtZudtVdxxBtTtv20g9ZmMJyR8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743536366; c=relaxed/simple;
+	bh=dDvRTfLqeAFQg4fLi6W+MV2wzhPZsGBenupkk+IK6mc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Rh8P8//hTZr+4t76rKlOVrPVFjm802t3nI4hCZf+07DSDJjzmDy1pe5MBqYn4Rk/GEUjvXQUCA2TTSZPkp0eTfj3FvP3pk2B1FUSqhjEh5MRkKUMg0yfH3VxRYETo2Oq/HX/S0LMdois++qzgvov5kim+Gmlq5F3DC8wyraVmJk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=FWbN9GL/; arc=fail smtp.client-ip=40.107.220.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Y3dA62giu3yfdXLyu/EQrn45Ha+s3sVsy7QuVjEun6l1zo7A3vB/SpIMGGMUdeBRKxHMgSlJQ6+6So08k7SuLeA5Wjpb4bDttjX22WgPLwfAEXLiYQ6jFwk3V0sP482OT+h+H/U2b35v9+9BgoKsGMwUPbdBUObUL7xYHKYxJzBVfr/qfwMLYoSCp/4Wg3XdqvaSRJGE7S2oWwp/O82p0GOwaAf3yZeJrhAHgWfEV6t3yw8pGZoXeQ0Eee2ya+h5Ndzpdt7i5XD6MV4z7LYa7yJkFUwvxZvgnMH9Ljkb1+3EH3uxzOcNjKDEWNkWezwhvmchE2YbWSnAjqNvMP4gFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fb7HAxpyNLYLW3mnKobuWty9EvvUwriZFH4aUSF6nFs=;
+ b=L8zqcWuisPWBLqUmj7MLjPvti0MBIj1FNYdITArgs//d2Qn/RNtysK43bOD9IiAY4jHbxqJyhMkntaQfqGSw24jDKigpKJtZpEXyzWurYd81nXMFo0E+sbXJj+0ZWvQCLIFzO5SjWAXE9PqVJ/zWMZVMZAANE2d6CBORNVTPlVm7jFw9edLcDVz/SwfW3nBb876z1OkPf5LgCUnEs16MlWfavF7rByjYKk5+iqUIiiOx0/KAI/lSfWcIN3YX7/+dl79xUp5kTJB5r1acj2x72ikp/BSlJzjNl3wNH9ZU4I3Er3+s0QCO0TuTpsg1lzb4ww0NDUVsg2huY04n566rqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fb7HAxpyNLYLW3mnKobuWty9EvvUwriZFH4aUSF6nFs=;
+ b=FWbN9GL/HTfymOFjpCh+nT4Eh005i6+CkWyf/bqMo3JrGH5t0gUpZV3MWKB+VZ08Nm+YKWWlkY7wGdejpcyIPZY86HnzrpXmwikujO8uLQ/9W48+oqUL5w0sji05XqU7y4gM22QmUB7WPpIXSPImNWkYnkIux+hj/D8s2QfRmU1l0UB5ukk/BbGKGLcadTnHfR0H+l70KAYvE51PCU41fdB0G6Rx1HlXfOwf04/nQXZq9m1xm/reQFbU7IoXcC2ZEh9kNeTqkMRM3ezki2YtiQ02gTl5wjrhKoUD0GM5+yoowZZaONHZHLvkrueLtUnwtlMvOuvFgTrkaKBQvpnfhQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by IA0PR12MB8325.namprd12.prod.outlook.com (2603:10b6:208:407::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.44; Tue, 1 Apr
+ 2025 19:39:22 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8534.043; Tue, 1 Apr 2025
+ 19:39:22 +0000
+Date: Tue, 1 Apr 2025 16:39:20 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Sean Hefty <shefty@nvidia.com>
+Cc: Bernard Metzler <BMT@zurich.ibm.com>,
+	Roland Dreier <roland@enfabrica.net>,
+	Nikolay Aleksandrov <nikolay@enfabrica.net>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"shrijeet@enfabrica.net" <shrijeet@enfabrica.net>,
+	"alex.badea@keysight.com" <alex.badea@keysight.com>,
+	"eric.davis@broadcom.com" <eric.davis@broadcom.com>,
+	"rip.sohan@amd.com" <rip.sohan@amd.com>,
+	"dsahern@kernel.org" <dsahern@kernel.org>,
+	"winston.liu@keysight.com" <winston.liu@keysight.com>,
+	"dan.mihailescu@keysight.com" <dan.mihailescu@keysight.com>,
+	Kamal Heib <kheib@redhat.com>,
+	"parth.v.parikh@keysight.com" <parth.v.parikh@keysight.com>,
+	Dave Miller <davem@redhat.com>,
+	"ian.ziemba@hpe.com" <ian.ziemba@hpe.com>,
+	"andrew.tauferner@cornelisnetworks.com" <andrew.tauferner@cornelisnetworks.com>,
+	"welch@hpe.com" <welch@hpe.com>,
+	"rakhahari.bhunia@keysight.com" <rakhahari.bhunia@keysight.com>,
+	"kingshuk.mandal@keysight.com" <kingshuk.mandal@keysight.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [RFC PATCH 00/13] Ultra Ethernet driver introduction
+Message-ID: <20250401193920.GD325917@nvidia.com>
+References: <BN8PR15MB25131FB51A63577B5795614399A72@BN8PR15MB2513.namprd15.prod.outlook.com>
+ <DM6PR12MB431329322A0C0CCB7D5F85E6BDA72@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <Z+QTD7ihtQSYI0bl@nvidia.com>
+ <DM6PR12MB43137AE666F19784D2832030BDA62@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <Z+Qi+XxYizfhr06P@nvidia.com>
+ <DM6PR12MB431345D07D958CF0B784AE0EBDA62@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <Z+VSFRFG1gIbGsLQ@nvidia.com>
+ <DM6PR12MB431332A6407547B225849F88BDAD2@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <20250401130413.GB291154@nvidia.com>
+ <DM6PR12MB43130D3131B760AF2A0C569ABDAC2@DM6PR12MB4313.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR12MB43130D3131B760AF2A0C569ABDAC2@DM6PR12MB4313.namprd12.prod.outlook.com>
+X-ClientProxiedBy: MN2PR16CA0063.namprd16.prod.outlook.com
+ (2603:10b6:208:234::32) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Rspamd-Queue-Id: 98DE51F38E
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.51
-X-Spam-Flag: NO
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|IA0PR12MB8325:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6450813f-9497-4c99-3582-08dd7154e6a6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|1800799024|376014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?tf0Z7SFj0I8YvHZ/XPh2Ajx1pQumyOyKz6AtoWFI9S588PhRRpOwcZNtsksT?=
+ =?us-ascii?Q?Ll5ByP7AXL/v++7Ihi10UTqQJQrL8D4S16Wbzbc/g1qBLPbsVRIUnRIkhZmt?=
+ =?us-ascii?Q?61l7UUa9OgdODyMKnkMp0Rq0rOeXZsJvUTVBkA8u8/+7w/riQXYxxmUSTMcF?=
+ =?us-ascii?Q?vfxOrX/gzcUZm/qECXvpqV5EAOKDpaqzek3Q+rUAiheb7OpATLsgiIBFMEAY?=
+ =?us-ascii?Q?0yFx3UbCZFKqeRW8ctx1wNxVJYACL/pUlhTcQTYx1NL56SKxYQmmfDE2RnmE?=
+ =?us-ascii?Q?kkkJJFwvrbopBHrxpHi42NcYEOOjNezBEAYJPSo5kczB+qhSa6ebzja/VBvo?=
+ =?us-ascii?Q?6MuVpMRtKTtMP07BNrwPIUBSZ8p/95yMUOy4mWCxEqyr9lr77WMmmFlbfdmn?=
+ =?us-ascii?Q?sgBW+sb9lJafXk03P07W0CpmKUqAZ7atpSMO2bQgwTgq9XT6R7BAtmAPkPoE?=
+ =?us-ascii?Q?F8cu/KpOtwnMpKYCHHekjBqZ2P1hCWU+It645GC8O1kZ3W9J7Mv4rLWyLf0D?=
+ =?us-ascii?Q?nAL0/dSoUR6PgwhfESu5yRpi41+KRNSGc7eThaobhY+17aylpV9Cg73VvLmh?=
+ =?us-ascii?Q?H/GUrj2MjaQmcWzID7epyw/ZlQr+s6mBKWmq9HXYy55lL7ICVNa5aQQ+1kjc?=
+ =?us-ascii?Q?Iw1Dyhj1J5SICY9I7tjf6Y1esjJmQMiZxBco7esy19vGSN37BjcZNT32xZtF?=
+ =?us-ascii?Q?nhXxL783NlXkldjrIXASDGM10BfauVOUWm7Fzpwrnl+5QDWiby86VDQu946Y?=
+ =?us-ascii?Q?FQ8XbCMVQ1Zm4NxVYOpqoNjqIvlLWDsVrs5rNwX/TnXs7ZMhl6KUtBfiWp4j?=
+ =?us-ascii?Q?WA1xZmkR8yYBwQ0q2sd1pa5lreB4XMQxje1z4wInbpdKsJX4DSuK1HW9TjES?=
+ =?us-ascii?Q?ec9atShq0ofJ6ZunYIcMHLh8BsuWb24s2DeL9LikyKbKN74NJ6SS39BRVOjV?=
+ =?us-ascii?Q?tLbk2VP4vO88FuU8qv86XNOvVd0FzA8fAT8aeRrbpiyn1DdQtydgwIrWJnaw?=
+ =?us-ascii?Q?VtWc4GTaM8F7OXQtIaBtIiz1hdY0+xeGhr3ozFkRRLZWn+YPyghT8d8GEvk2?=
+ =?us-ascii?Q?28489Sw1lniNYPO5//UEOvxO5yPOpxKz4xgmO3dpEIQO+DlfG//HsVapxMKn?=
+ =?us-ascii?Q?SLu+wYkPp+dY5fuLHmnNoB/kFTqnsIIrwyiWUahBrR/cvkLmVGuh7PmgYFLf?=
+ =?us-ascii?Q?AUNdMevdgAHyW7LqHP1FiC/DgpKfu4CtrgD+HgtXdvseuI9rdhaNVfPTuGlc?=
+ =?us-ascii?Q?7Bcbw7Mcyakp4bFQ0Crt0E5Eb2NCswulQqVRziWKo2QINTMVfbpuYENjZVgd?=
+ =?us-ascii?Q?wQyuMeC2rt8ByCu/v006dvka3/1yOP8YPgey0/qA9mbs1ojGKN7fQjOaS0+t?=
+ =?us-ascii?Q?dbri7K+xNJN8vxEWhURuWC8AXoyo?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?NsCk2BbY4tt+FR5yVVCpMoiNU2pkflQAwPE59V74sm8hBH2LbrZ7/3eFLusb?=
+ =?us-ascii?Q?zOtnjiMQU56O6ELrQCvONC/Vyoqb1w9GNERrgVIoK2KepREWGBSuqeF3Zz3/?=
+ =?us-ascii?Q?afBNEVfZWytAR2QbF9lhAZsAUEFLdTvLZJjYzZbZldnCiBRFYb+AE1IjfuKv?=
+ =?us-ascii?Q?pBMRb3IL1I5ioLCyTQ39xgnSwte88wqD8Pk7VDgl/SzW0OvyaubyHS7tsv4S?=
+ =?us-ascii?Q?bpzs3oddHMXeu67X2qSsqfOFVNeCM1AlvS1ARv4DGbbD9rvsHb33aRK6egf1?=
+ =?us-ascii?Q?3+j66XR9S7tXE0HZJadQCRWiNHuKAq8X0mft1CpHstODTvVDUoziPHUmEqBi?=
+ =?us-ascii?Q?n89tD5/1IfWobAtR8gryYQpOd06T8SbZH331oHD7ykbs7iKH9Sbh9cxowqwa?=
+ =?us-ascii?Q?G6zV5mlMVCGcH5QOuXY+u6gMsFT9aexM08EjzIcR6ca8OB7xaF0NLgmnAgIR?=
+ =?us-ascii?Q?n1A1atQNlXWQGin4axOSkqz9Sj8f893Ibk2CSULTYStdTgr/WQEYveW6t6i5?=
+ =?us-ascii?Q?na8rQHx1k1ZWqiBmxxJZTqVQMyEWfPobkLnqmdWpTVgGH6pyePRCWPHw1Iw6?=
+ =?us-ascii?Q?lU+PRifxeOmpzExhiWZVc0on4vvLSLJqdhkYPYJfdSdpctBYYpaF6UhF1dE7?=
+ =?us-ascii?Q?qLZnz1oTeuw5JspjT6bVST/80yDrGVHfFY6SvLZcLPveN1ntx2Szc9e2I45X?=
+ =?us-ascii?Q?kx2E3omwJ5jYTeLUZe8zbAMfcYu8cPL7PhXur5EcDfXFipDlKI63Dxdt/FAE?=
+ =?us-ascii?Q?RyPYsnO5wL5cwO51E4/CT0StulF0cKxuraQax82PBayklif69Ju+DrMT3+4k?=
+ =?us-ascii?Q?PxOL0o7YECyiBIwkxX5+wxD4jmTbByRF02H+8WftJMapVz3GgF8T2ldPohyB?=
+ =?us-ascii?Q?8VJ7JVzGb5st2RdmjiHr/fc90oAfXlaRrPquBt2BR2met26Y+CISroojSLd6?=
+ =?us-ascii?Q?tx7ibfqk3zX30U+RTHXlVi9LTa6MjihUMTXezpZaj3fl+wRdfhttAwc8Gr2e?=
+ =?us-ascii?Q?rjdyyJdp2ZDey5yu2sd62IxUMKYAmPYokTZgLPbFqtJa4YTb699yrg6A8Mg/?=
+ =?us-ascii?Q?xyj149Lv14ygdP/kWIj2QwoZNew2aS7+m+2Z4vuzekUt1buEhf8O4joygz3M?=
+ =?us-ascii?Q?129scsT6zQfdLZGOAPjsMLCYeCgWUnvGiRaOJlksx+aXjOTEsDWKU1C9ZC2F?=
+ =?us-ascii?Q?YHiAMrAt0OuK8mlknq1LL5RXtZ13gq5ub7opzRKChy8LbXGplUgTLeKLKp4z?=
+ =?us-ascii?Q?vdt8Nmfwn+x6Nxejx5MVr1iw+63NQR1AYjn0oTfWwijZrxcFT8OkDKrzkO6J?=
+ =?us-ascii?Q?m3wqWplGNo1umxFVyoacNdbN0TguNjhETTUdeCWylDty4rssZs6OGVtOZ56o?=
+ =?us-ascii?Q?feoaQj6CEpDQz+yekZI6l9X0AVv4wOU67ewbP9RzXB6FKL9CVFGyGs/oLMfF?=
+ =?us-ascii?Q?eLQmi59R2L730DzFGlDIli0uQ3vY+O2QKOAngHbt9Od2CxXpfFmoxSPWpcnG?=
+ =?us-ascii?Q?ABLazpAXAYR0CTra0viQdFufUm8yzT1qFEWkc5KdsXuudM64If6PxcuvPMmz?=
+ =?us-ascii?Q?qZSZIhlK/dsZi2l0Gp6JDZVM2aNAG2w9p+VphiC1?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6450813f-9497-4c99-3582-08dd7154e6a6
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2025 19:39:21.9370
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YYHQ4lRIt9Hz4CPqvXFhCYjVqFG6TKj3IImsJlU+G40yig9HgUBNWXJTcBe6S8kC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8325
 
-Jack Wang <jinpu.wang@ionos.com> writes:
+On Tue, Apr 01, 2025 at 04:57:52PM +0000, Sean Hefty wrote:
+> > > Specifically, I want to *allow* separating the different functions
+> > > that a single PD provides into separate PDs.  The functions being page
+> > > mapping (registration), local (lkey) access, and remote (rkey) access.
+> > 
+> > That seems like quite a stretch for the PD.. Especially from a verbs perspective
+> > we do expect single PD and that is the entire security context.
+> 
+> From the viewpoint of a transport, the target QPN and incoming rkey
+> must align on some backing security object (let's call that the PD).
+> As a model, I view this as there needs to exist some {QPN, rkey, PD
+> ID} tuple with appropriate memory access permissions.
 
-> I hit following error which testing migration in pure RoCE env:
-> "-incoming rdma:[::]:8089: RDMA ERROR: You only have RoCE / iWARP devices in your
-> systems and your management software has specified '[::]', but IPv6 over RoCE /
-> iWARP is not supported in Linux.#012'."
->
-> In our setup, we use rdma bind on ipv6 on target host, while connect from source
-> with ipv4, remove the qemu_rdma_broken_ipv6_kernel, migration just work
-> fine.
->
-> Checking the git history, the function was added since introducing of
-> rdma migration, which is more than 10 years ago. linux-rdma has
-> improved support on RoCE/iWARP for ipv6 over past years. There are a few fixes
-> back in 2016 seems related to the issue, eg:
-> aeb76df46d11 ("IB/core: Set routable RoCE gid type for ipv4/ipv6 networks")
->
-> other fixes back in 2018, eg:
-> 052eac6eeb56 RDMA/cma: Update RoCE multicast routines to use net namespace
-> 8d20a1f0ecd5 RDMA/cma: Fix rdma_cm raw IB path setting for RoCE
-> 9327c7afdce3 RDMA/cma: Provide a function to set RoCE path record L2 parameters
-> 5c181bda77f4 RDMA/cma: Set default GID type as RoCE when resolving RoCE route
-> 3c7f67d1880d IB/cma: Fix default RoCE type setting
-> be1d325a3358 IB/core: Set RoCEv2 MGID according to spec
-> 63a5f483af0e IB/cma: Set default gid type to RoCEv2
->
-> So remove the outdated function and it's usage.
->
-> Cc: Peter Xu <peterx@redhat.com>
-> Cc: Li Zhijian <lizhijian@fujitsu.com>
-> Cc: Yu Zhang <yu.zhang@ionos.com>
-> Cc: qemu-devel@nongnu.org
-> Cc: linux-rdma@vger.kernel.org
-> Cc: michael@flatgalaxy.com
-> Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-> Tested-by: Li zhijian <lizhijian@fujitsu.com>
-> Reviewed-by: Michael Galaxy <mrgalaxy@nvidia.com>
-> ---
-> v1: drop RFC, fix build error (zhijian), collect Reviewed-by and Tested-by
->
->  migration/rdma.c | 159 -----------------------------------------------
->  1 file changed, 159 deletions(-)
->
-> diff --git a/migration/rdma.c b/migration/rdma.c
-> index 76fb0349238a..e228520b8e01 100644
-> --- a/migration/rdma.c
-> +++ b/migration/rdma.c
-> @@ -767,149 +767,6 @@ static void qemu_rdma_dump_gid(const char *who, struct rdma_cm_id *id)
->      trace_qemu_rdma_dump_gid(who, sgid, dgid);
->  }
->  
-> -/*
-> - * As of now, IPv6 over RoCE / iWARP is not supported by linux.
-> - * We will try the next addrinfo struct, and fail if there are
-> - * no other valid addresses to bind against.
-> - *
-> - * If user is listening on '[::]', then we will not have a opened a device
-> - * yet and have no way of verifying if the device is RoCE or not.
-> - *
-> - * In this case, the source VM will throw an error for ALL types of
-> - * connections (both IPv4 and IPv6) if the destination machine does not have
-> - * a regular infiniband network available for use.
-> - *
-> - * The only way to guarantee that an error is thrown for broken kernels is
-> - * for the management software to choose a *specific* interface at bind time
-> - * and validate what time of hardware it is.
-> - *
-> - * Unfortunately, this puts the user in a fix:
-> - *
-> - *  If the source VM connects with an IPv4 address without knowing that the
-> - *  destination has bound to '[::]' the migration will unconditionally fail
-> - *  unless the management software is explicitly listening on the IPv4
-> - *  address while using a RoCE-based device.
-> - *
-> - *  If the source VM connects with an IPv6 address, then we're OK because we can
-> - *  throw an error on the source (and similarly on the destination).
-> - *
-> - *  But in mixed environments, this will be broken for a while until it is fixed
-> - *  inside linux.
-> - *
-> - * We do provide a *tiny* bit of help in this function: We can list all of the
-> - * devices in the system and check to see if all the devices are RoCE or
-> - * Infiniband.
-> - *
-> - * If we detect that we have a *pure* RoCE environment, then we can safely
-> - * thrown an error even if the management software has specified '[::]' as the
-> - * bind address.
-> - *
-> - * However, if there is are multiple hetergeneous devices, then we cannot make
-> - * this assumption and the user just has to be sure they know what they are
-> - * doing.
-> - *
-> - * Patches are being reviewed on linux-rdma.
-> - */
-> -static int qemu_rdma_broken_ipv6_kernel(struct ibv_context *verbs, Error **errp)
-> -{
-> -    /* This bug only exists in linux, to our knowledge. */
-> -#ifdef CONFIG_LINUX
-> -    struct ibv_port_attr port_attr;
-> -
-> -    /*
-> -     * Verbs are only NULL if management has bound to '[::]'.
-> -     *
-> -     * Let's iterate through all the devices and see if there any pure IB
-> -     * devices (non-ethernet).
-> -     *
-> -     * If not, then we can safely proceed with the migration.
-> -     * Otherwise, there are no guarantees until the bug is fixed in linux.
-> -     */
-> -    if (!verbs) {
-> -        int num_devices;
-> -        struct ibv_device **dev_list = ibv_get_device_list(&num_devices);
-> -        bool roce_found = false;
-> -        bool ib_found = false;
-> -
-> -        for (int x = 0; x < num_devices; x++) {
-> -            verbs = ibv_open_device(dev_list[x]);
-> -            /*
-> -             * ibv_open_device() is not documented to set errno.  If
-> -             * it does, it's somebody else's doc bug.  If it doesn't,
-> -             * the use of errno below is wrong.
-> -             * TODO Find out whether ibv_open_device() sets errno.
-> -             */
-> -            if (!verbs) {
-> -                if (errno == EPERM) {
-> -                    continue;
-> -                } else {
-> -                    error_setg_errno(errp, errno,
-> -                                     "could not open RDMA device context");
-> -                    return -1;
-> -                }
-> -            }
-> -
-> -            if (ibv_query_port(verbs, 1, &port_attr)) {
-> -                ibv_close_device(verbs);
-> -                error_setg(errp,
-> -                           "RDMA ERROR: Could not query initial IB port");
-> -                return -1;
-> -            }
-> -
-> -            if (port_attr.link_layer == IBV_LINK_LAYER_INFINIBAND) {
-> -                ib_found = true;
-> -            } else if (port_attr.link_layer == IBV_LINK_LAYER_ETHERNET) {
-> -                roce_found = true;
-> -            }
-> -
-> -            ibv_close_device(verbs);
-> -
-> -        }
-> -
-> -        if (roce_found) {
-> -            if (ib_found) {
-> -                warn_report("migrations may fail:"
-> -                            " IPv6 over RoCE / iWARP in linux"
-> -                            " is broken. But since you appear to have a"
-> -                            " mixed RoCE / IB environment, be sure to only"
-> -                            " migrate over the IB fabric until the kernel "
-> -                            " fixes the bug.");
-> -            } else {
-> -                error_setg(errp, "RDMA ERROR: "
-> -                           "You only have RoCE / iWARP devices in your systems"
-> -                           " and your management software has specified '[::]'"
-> -                           ", but IPv6 over RoCE / iWARP is not supported in Linux.");
-> -                return -1;
-> -            }
-> -        }
-> -
-> -        return 0;
-> -    }
-> -
-> -    /*
-> -     * If we have a verbs context, that means that some other than '[::]' was
-> -     * used by the management software for binding. In which case we can
-> -     * actually warn the user about a potentially broken kernel.
-> -     */
-> -
-> -    /* IB ports start with 1, not 0 */
-> -    if (ibv_query_port(verbs, 1, &port_attr)) {
-> -        error_setg(errp, "RDMA ERROR: Could not query initial IB port");
-> -        return -1;
-> -    }
-> -
-> -    if (port_attr.link_layer == IBV_LINK_LAYER_ETHERNET) {
-> -        error_setg(errp, "RDMA ERROR: "
-> -                   "Linux kernel's RoCE / iWARP does not support IPv6 "
-> -                   "(but patches on linux-rdma in progress)");
-> -        return -1;
-> -    }
-> -
-> -#endif
-> -
-> -    return 0;
-> -}
-> -
->  /*
->   * Figure out which RDMA device corresponds to the requested IP hostname
->   * Also create the initial connection manager identifiers for opening
-> @@ -955,7 +812,6 @@ static int qemu_rdma_resolve_host(RDMAContext *rdma, Error **errp)
->  
->      /* Try all addresses, saving the first error in @err */
->      for (struct rdma_addrinfo *e = res; e != NULL; e = e->ai_next) {
-> -        Error **local_errp = err ? NULL : &err;
->  
->          inet_ntop(e->ai_family,
->              &((struct sockaddr_in *) e->ai_dst_addr)->sin_addr, ip, sizeof ip);
-> @@ -964,13 +820,6 @@ static int qemu_rdma_resolve_host(RDMAContext *rdma, Error **errp)
->          ret = rdma_resolve_addr(rdma->cm_id, NULL, e->ai_dst_addr,
->                  RDMA_RESOLVE_TIMEOUT_MS);
->          if (ret >= 0) {
-> -            if (e->ai_family == AF_INET6) {
-> -                ret = qemu_rdma_broken_ipv6_kernel(rdma->cm_id->verbs,
-> -                                                   local_errp);
-> -                if (ret < 0) {
-> -                    continue;
-> -                }
-> -            }
->              error_free(err);
+Yes, but I'd say the IBTA modeling has the network headers select a PD
+and then the PD limits what objects that packet can reach.
 
-err is now unused and should be removed entirely. The comment before the
-loop needs touching up as well.
+I still think that is a good starting point, and if there is more fine
+grained limitations then I'd say each object has an additional ACL
+list about what subset of the network headers (already within the PD)
+that it can accept.
 
->              goto route;
->          }
-> @@ -2663,7 +2512,6 @@ static int qemu_rdma_dest_init(RDMAContext *rdma, Error **errp)
->  
->      /* Try all addresses, saving the first error in @err */
->      for (e = res; e != NULL; e = e->ai_next) {
-> -        Error **local_errp = err ? NULL : &err;
->  
->          inet_ntop(e->ai_family,
->              &((struct sockaddr_in *) e->ai_dst_addr)->sin_addr, ip, sizeof ip);
-> @@ -2672,13 +2520,6 @@ static int qemu_rdma_dest_init(RDMAContext *rdma, Error **errp)
->          if (ret < 0) {
->              continue;
->          }
-> -        if (e->ai_family == AF_INET6) {
-> -            ret = qemu_rdma_broken_ipv6_kernel(listen_id->verbs,
-> -                                               local_errp);
-> -            if (ret < 0) {
-> -                continue;
-> -            }
-> -        }
->          error_free(err);
+> The change here is to expand that tuple to include a job id: {QPN, rkey, job ID, PD ID}.
 
-Same here.
+IB does QPN -> PD, if you do Job -> PD I think that would make
+sense. If the QP is providing additional restriction that would be a
+job for ACLs..
 
->          break;
->      }
+> I don't know that I can talk about the UEC spec, 
+
+Right, it is too early to talk about UEC and Linux until people can
+freely talk about what it actually needs.
+
+> I can envision a job manager creating, sharing, and possibly
+> controlling the PD-related resources.
+
+Really? Beyond Job, what would make sense? Addressing Handles?
+
+I wondering if addressing handles are really part of the job..
+
+Jason
 
