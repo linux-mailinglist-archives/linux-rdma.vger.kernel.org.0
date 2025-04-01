@@ -1,119 +1,121 @@
-Return-Path: <linux-rdma+bounces-9054-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9055-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FB65A77237
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 03:09:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 489CDA7745E
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 08:16:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9F7716B6B1
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 01:09:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FCB13A87A1
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 06:16:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601E113EFF3;
-	Tue,  1 Apr 2025 01:09:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EE3D1DB366;
+	Tue,  1 Apr 2025 06:16:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ce0nhRfs"
+	dkim=pass (2048-bit key) header.d=crpt.ru header.i=@crpt.ru header.b="kBJe710r"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.crpt.ru (mail1.crpt.ru [91.236.205.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F23FD3595D;
-	Tue,  1 Apr 2025 01:09:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50D44690;
+	Tue,  1 Apr 2025 06:16:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.236.205.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743469771; cv=none; b=uK4+O16uJDGrjLCVE4zwPpu1nSVSSs8vP+vAI/wDg7G0lnSzXJXHo+6wxBMhcIU7E+fn7aFmbRitH6Tl0b6rpO56GG8t9LoQE1RD3aTsw7b5i6xdnNYfonZVkbJjoQD5EK/tNsBYnAdYEucrG8pYG3HMHl2j+5J740VswEIE0s0=
+	t=1743488199; cv=none; b=pnAXOzD7wP2n1tb8y4Eyc31xzImojNiPxwa/9vxECZCo2IiEZWIMIb5IGOW2nYrruzrtmLG31JIvCaVuKpw/ueRZMTi2AI/PvpcBiROCJ1bqY7eqIZf1MDllN7eOrxXaf+7m2daSic0tZjqYWVPuKbCLW79Ei66pqEzLK8lPrEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743469771; c=relaxed/simple;
-	bh=xnDKz4hdm/kkZqcWSzvYO96l5CqeHbCretys4W9iu2o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JGihU/Z7m0/tO7rJ8ZFFvjo3RML6cRJoR/drLSBkZ6Jj2bq1t8exDUHY17iPyUswYt/u8kgmRo/Ikz76bOzsa7uarfjfNTDHyFGUnom8Li/N3u3FBEi4HQ2jg15tLIyy2wyCskXJxQiU2axPpwOBctliM38vveLhxG5RieF/WNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ce0nhRfs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 978F4C4CEE3;
-	Tue,  1 Apr 2025 01:09:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1743469769;
-	bh=xnDKz4hdm/kkZqcWSzvYO96l5CqeHbCretys4W9iu2o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ce0nhRfsh4foP8kliSiSC0eCyy1P530wNZv1yXlz0fhnntdzc2pHj8ehJ73sKloVM
-	 C0cw7cUj+BIc9kmwIU3OVnx2X/5KZolUkXS2nrcBmOD80XEOnwWEu+qaNld4IC1Lbz
-	 ktTwM4BKKx5FIv7O9NfsPq2v7mz23KDqI6mFjPh6003pPohStRGfOcfyHzqdAMOVmD
-	 1gOusmiwUbvZzBP/fZDRftY7IT+SckUkPyIVGM5JFjlw/2fk+9/Ns880REt1nFz5Or
-	 pRuSFvVxXKUnth/AX3auD+qu9VK2N7OyoDzrtCOl5aOlD0WNxZyXTU1dmfK4K2DInq
-	 5BLO5MT41pJgw==
-Date: Mon, 31 Mar 2025 18:09:27 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Leon Romanovsky <leon@kernel.org>, Daniel Gomez <da.gomez@samsung.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Robin Murphy <robin.murphy@arm.com>,
-	Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v7 00/17] Provide a new two step DMA mapping API
-Message-ID: <Z-s8x_YyGEYTz8BJ@bombadil.infradead.org>
-References: <cover.1738765879.git.leonro@nvidia.com>
- <20250220124827.GR53094@unreal>
- <1166a5f5-23cc-4cce-ba40-5e10ad2606de@arm.com>
- <20250302085717.GO53094@unreal>
- <e024fe3d-bddf-4006-8535-656fd0a3fada@arm.com>
- <Z+KjVVpPttE3Ci62@ziepe.ca>
- <20250325144158.GA4558@unreal>
+	s=arc-20240116; t=1743488199; c=relaxed/simple;
+	bh=Z8NqerlcGoOG+aaVto1jZC3JJTU9M/lUypli3aT8rjg=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=GRRnCQSpwRuPCnEgxNhZc+PquolynGTiDn6VfA8i/cU/Jgnzh/1crcGoSpuRCcXuToQAvOK3EORciMjqR7nFNWZ1Joonhb/EA50/KPPihzynE1zeah0TNS9jCKi4UdXJmhIH6EvzL2Qm9ta2vv0aYWWM1BvCilJdGaeQCLgXpn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=crpt.ru; spf=pass smtp.mailfrom=crpt.ru; dkim=pass (2048-bit key) header.d=crpt.ru header.i=@crpt.ru header.b=kBJe710r; arc=none smtp.client-ip=91.236.205.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=crpt.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crpt.ru
+Received: from mail.crpt.ru ([192.168.60.3])
+	by mail.crpt.ru  with ESMTP id 5316FqG3023749-5316FqG5023749
+	(version=TLSv1.2 cipher=AES256-SHA256 bits=256 verify=OK);
+	Tue, 1 Apr 2025 09:15:52 +0300
+Received: from EX2.crpt.local (192.168.60.4) by ex1.crpt.local (192.168.60.3)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.44; Tue, 1 Apr
+ 2025 09:15:53 +0300
+Received: from EX2.crpt.local ([192.168.60.4]) by EX2.crpt.local
+ ([192.168.60.4]) with mapi id 15.01.2507.044; Tue, 1 Apr 2025 09:15:53 +0300
+From: =?koi8-r?B?98HUz9LP0MnOIOHOxNLFyg==?= <a.vatoropin@crpt.ru>
+To: Tariq Toukan <tariqt@nvidia.com>
+CC: =?koi8-r?B?98HUz9LP0MnOIOHOxNLFyg==?= <a.vatoropin@crpt.ru>, Andrew Lunn
+	<andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: [PATCH] net/mlx4_en: Remove the redundant NULL check for the 'my_ets'
+ object
+Thread-Topic: [PATCH] net/mlx4_en: Remove the redundant NULL check for the
+ 'my_ets' object
+Thread-Index: AQHbos2F9RohqMpRK0mdORQAbVJ5/g==
+Date: Tue, 1 Apr 2025 06:15:52 +0000
+Message-ID: <20250401061439.9978-1-a.vatoropin@crpt.ru>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-kse-serverinfo: EX1.crpt.local, 9
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: Clean, bases: 2/17/2025 9:52:00 AM
+x-kse-attachment-filter-triggered-rules: Clean
+x-kse-attachment-filter-triggered-filters: Clean
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250325144158.GA4558@unreal>
+X-FEAS-Client-IP: 192.168.60.3
+X-FE-Policy-ID: 2:4:0:SYSTEM
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=crpt.ru; s=crpt.ru; c=relaxed/relaxed;
+ h=from:to:cc:subject:date:message-id:content-type:mime-version;
+ bh=X+FeLn4yQ3EuUGa91ttWBxCVvRzj24Ap0XyairhLOG8=;
+ b=kBJe710rNp6XE77GRLslW/h5oCWwYT963XzfEx3vzgnEw0c/ycheVu3EiX6DEredBQEOw9xgJ231
+	H8GOsKetqxvVxXGh2lmh9S6zUorJUiLzQ8nbT8rVSuSoUwKuRJIiV8+NC8Rb9vt6QbSs7iT2mpMI
+	ONI0tht/5K77fDn0AprIdI6Bjp5VWYxVSvbBLYR4q9VfFSB5qZPxp+Clp4aucl3O/jVQfV1uuILu
+	ZBr/UwxQ03jA+0K1zzAEEfPFb1lsqV72HAsKeXE8SVSC/soRAWvNQ2tAPJnNTR274d18ABlmOlkB
+	jkJWqY3grNBhAXZy8GhG1ZDSq3EnOFzhQ58AtA==
 
-On Tue, Mar 25, 2025 at 04:41:58PM +0200, Leon Romanovsky wrote:
-> On Tue, Mar 25, 2025 at 09:36:37AM -0300, Jason Gunthorpe wrote:
-> > On Fri, Mar 21, 2025 at 04:05:22PM +0000, Robin Murphy wrote:
-> 
-> <...>
-> 
-> > > So what is it now, a layering violation in a hat with still no clear path to
-> > > support SWIOTLB?
-> > 
-> > I was under the impression Leon had been testing SWIOTLB?
-> 
-> Yes, SWIOTLB works
+From: Andrey Vatoropin <a.vatoropin@crpt.ru>
 
-We will double check too.
+Static analysis shows that pointer "my_ets" cannot be NULL because it=20
+points to the object "struct ieee_ets".
 
-> and Christoph said it more than once that he tested
-> NVMe conversion patches and they worked.
+Remove the extra NULL check. It is meaningless and harms the readability
+of the code.
 
-We've taken this entire series and the NVMe patches and have built on
-top of them. The nvme-pci driver does not have scatter list chaining
-support, and we don't want to support that because it is backwards.
-Instead, the two step DMA API lets us actually remove all that scatter
-list cruft and provide a single solution for direct IO and io-uring
-command passthrough to support large IOs [0] [1] and logical block sizes
-up to 2 MiB.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-We continue to plan to work on this and are happy to test this further.
+Signed-off-by: Andrey Vatoropin <a.vatoropin@crpt.ru>
+---
+ drivers/net/ethernet/mellanox/mlx4/en_dcb_nl.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Clearly, we don't want any regressions on NVMe.
-
-[0] https://lore.kernel.org/all/20250320111328.2841690-1-mcgrof@kernel.org/
-[1] https://lore.kernel.org/all/Z9v-1xjl7dD7Tr-H@bombadil.infradead.org/
-
-  Luis
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_dcb_nl.c b/drivers/net/e=
+thernet/mellanox/mlx4/en_dcb_nl.c
+index 752a72499b4f..be80da03a594 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_dcb_nl.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_dcb_nl.c
+@@ -290,9 +290,6 @@ static int mlx4_en_dcbnl_ieee_getets(struct net_device =
+*dev,
+ 	struct mlx4_en_priv *priv =3D netdev_priv(dev);
+ 	struct ieee_ets *my_ets =3D &priv->ets;
+=20
+-	if (!my_ets)
+-		return -EINVAL;
+-
+ 	ets->ets_cap =3D IEEE_8021QAZ_MAX_TCS;
+ 	ets->cbs =3D my_ets->cbs;
+ 	memcpy(ets->tc_tx_bw, my_ets->tc_tx_bw, sizeof(ets->tc_tx_bw));
+--=20
+2.43.0
 
