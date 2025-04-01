@@ -1,53 +1,86 @@
-Return-Path: <linux-rdma+bounces-9058-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9059-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF014A7765A
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 10:25:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2038CA776EC
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 10:52:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CD58188B832
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 08:25:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2C7F16A107
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 08:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F0E1EA7D6;
-	Tue,  1 Apr 2025 08:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5DE81EB9EF;
+	Tue,  1 Apr 2025 08:52:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="3Fq/qU1j"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NLPc3rfr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18A31E98F9;
-	Tue,  1 Apr 2025 08:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172F21EB5EA
+	for <linux-rdma@vger.kernel.org>; Tue,  1 Apr 2025 08:52:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743495881; cv=none; b=IHe9Dr7txe2I3jlDUxiqV7V3Hgcq4kFBU1yYmZyuCXat6tWUfJqH36xPZKTL7x6xrWwFnY2cZnM4tnVmQTsV7zV12EJV7UrvC/+iQjKog4pXq7v96wRxlCNTbUAi1XTRcna2qBThkToMFKBO4lfL8++r2qypVNcQL7hGZa21VM4=
+	t=1743497544; cv=none; b=YTSvmjOFlvAAwGrzXkjeCvFnC7SrZtpKP0Qj6F5tjI50ZqzRJXg4u1p0KDIdm6ceSC+S2TMutZa1QeByg0cXTBIXj3v8VfuF9rWOicB6ZEpAZiJaNHWxEUSSf9eTe+MujprMDdOqeqJ0M14Eit9FG5eNv5eQ1kHkiT+rBBJfSWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743495881; c=relaxed/simple;
-	bh=SB2q6xQ56/3mpPcfMH9fyJWiPwvHFAbAR+tuJWgebls=;
+	s=arc-20240116; t=1743497544; c=relaxed/simple;
+	bh=fNkQvYlNaa3cqbrVMNrNNj9EdtzcFO71fUGvPTgiinQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZzXnRECO0kaPl5WMWl8MyClGZwxJ9hvz74Ax0BRdYMgMmRXZZ4NwEbKPsBvMMSgiPAmx3FzmxRC/+BpjV0bi5aiy15jM+l3MhkRkaFwBowzFKsxYQfYEBSFyoVOO8dBEKmUGwGesD8hswGbbYC85b2W/vQraxD2VuIx6fhA5mHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=3Fq/qU1j; arc=none smtp.client-ip=144.76.82.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-	s=42; h=From:Cc:To:Date:Message-ID;
-	bh=P2vCMgKs60kE2AEX7EBwSn8Ro/J/oeai91FyuRtK384=; b=3Fq/qU1j2+zydWavWoxfAcA+HK
-	TKI4UvNHnhwFprYvUSDhd/3g172hIDos3qtk3cBwAqJau7Jhvq4tL41vm2l+ADVCkiocupdWJOVV9
-	3ql30+yvvyae6VsUM3J7Ho+XZD0hOHcAcb3P3IaIR9Fau7GUsyxSJRscTfjSw1IIJ/+i8wF6Y7WJW
-	vpnL7/YUDkat74R3AevuO9U2FwYyU0h5hqTzt9D7JnIfzoT6hCTiiqAHln7Nfpr5hkPfZwYhz9lRN
-	fLYDUS+e8G5ZMVcKG8sSMA005efyjFsifeGCyB0zCn9XI47K+K3yIgCUMzDP2hA8J6QinWnPoiBrH
-	AToIIUnvWg47OEFx9eir/cQlNMMu9gkPCUuvmtc0NA+8ULSsYhiEONjvU/M7aKAobjU56cv1KLDYy
-	rD56flFnuBVlPW0d8J7D3M+Ja1yDDNunOFIiCoQAP8LG52u2txNMmM8CdZicF/Y+R05Hcl8XrdDW2
-	XC695dYaZdJI//kShfqpRZux;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-	(Exim)
-	id 1tzWvB-007dPk-1c;
-	Tue, 01 Apr 2025 08:24:33 +0000
-Message-ID: <51bb66d4-eaf3-4247-ba11-d793b6f0d56c@samba.org>
-Date: Tue, 1 Apr 2025 10:24:32 +0200
+	 In-Reply-To:Content-Type; b=SFgAplBsHJsQOqZi/B3yy5CG1Oz9ZSgmoNrO4dd28QvIP6zSeSGGSQJdd5suqFo0+yGPLWeB3ye2IHSEGOLJlJ9BPiCLdLBgbpJVFOgyuRBbrQC0oeu4ceP//i5CI4ZJl+eOrlyyG0x1wL24mAk6ZP2x3nenHWS26h4kLv3ysYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NLPc3rfr; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1743497541;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iTrzmKHOhipGTrVn6hOCwktriFPfHqZi1ySNcTDYp58=;
+	b=NLPc3rfre9vYg5w5F37cOvnPKPmGANzxPFjV2R5Sc7NMc1MsIgCf54CAajnxRDko6jUvSE
+	EdTvsx3RZl+sHXG9GEtkMME1jL3pB7kN0RETLd9vlvZgaqNIee3V4hZ88+q17lVhUWsF7w
+	lUDMksQZIJiXMKXeNy57iIaw9wQruak=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-353-d2ttIykAM96xsee-ztQ6jw-1; Tue, 01 Apr 2025 04:52:20 -0400
+X-MC-Unique: d2ttIykAM96xsee-ztQ6jw-1
+X-Mimecast-MFC-AGG-ID: d2ttIykAM96xsee-ztQ6jw_1743497540
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3912e4e2033so2256756f8f.0
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Apr 2025 01:52:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743497540; x=1744102340;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iTrzmKHOhipGTrVn6hOCwktriFPfHqZi1ySNcTDYp58=;
+        b=quGJLQzLzkzg6XMQ7kW42SVzTHWw1qFu4EXpkpPcuZr71ZEPyMtxUMR0WUyHCql8Zk
+         K0xXsR1jaIdH6AMlnlnQEz2TqAgTDuHVg9dOMoSX6WSFz5mEb8jFgbJ4M+5651AISIka
+         myJimW1cAhKm8YdGD6q7rX7QIpl6tJ6J3VYZFNdnW7kC3+Hg5Z259p00X80xnlIvEK80
+         LqXbxafNPlNIoW8RY4etaNGmqLjMVjwaexpf7UgGjeKxBbrtXpQPpUWQFTArRSkXQHxv
+         QnjcA68o3tozT/sE/8NTL1P8FD/7krtOxKGOozeSXchub79/wOk37W3DkMXXXLXTmlLe
+         4RDw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+QawWFOkeHstqigIBIJzJ9RV5x/JiOHhBc3lBhis+4mZoKX275KNmE7vtPFYxhJ1kqvfWvIklcbyh@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8BnDUpwb2chgJ6ZoqTNuXydQ/xnXmmCXxEPL3mJlaJ76puDEu
+	Ab0obayYVTI7/K91HW5oQjTb1++sZm0ZAZLTbWQCtPZlafbDedUVfN9IgTaZbVu0PY6C9Zr22/T
+	nDv6865qmqk91NP02bk4eC1aazZkmGmEFIl5aTbDGle5tn6IctvFB/X/jP00=
+X-Gm-Gg: ASbGncudOl4sdCYcqHrozZTRgIY5avTolaPXai1cudfeNaltpGHAXo5Leh+4zkEQee1
+	Kc8x5O2+2v8F4SblsOE7Cao/k3LjtPPG5ATyh45Sqw/+9tYqFCuevno27l8kA2otvCc0y1+YE9u
+	U0V/kFuU59ENDPaSC4qXFEznbydWdBBzN4oodAM9EdTlPx796cTjY0F7rKwwEinV0OpBsSgiwkC
+	ed0GCnTju4NQeGPiKkW7WKks0TpAatHG1XtWIQtG0LMxyLuYjYen58/llm4nPPu0adbP9UViH8t
+	MRcIw0oWut5Cs80/BZ3qkU+Uvdob81Ac/q9rYoASIC9lMA==
+X-Received: by 2002:a5d:6daf:0:b0:391:1222:b444 with SMTP id ffacd0b85a97d-39c120db3f4mr8036370f8f.20.1743497539704;
+        Tue, 01 Apr 2025 01:52:19 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEFIwIsFXgnFgUnvUf7GiB0Qo92O2pFQl8WkobeyI6QhVmQ5/bHplaSDVAbQLHpuaV2qU/iLQ==
+X-Received: by 2002:a5d:6daf:0:b0:391:1222:b444 with SMTP id ffacd0b85a97d-39c120db3f4mr8036337f8f.20.1743497539288;
+        Tue, 01 Apr 2025 01:52:19 -0700 (PDT)
+Received: from [192.168.88.253] (146-241-68-231.dyn.eolo.it. [146.241.68.231])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c0b7a4351sm13751264f8f.98.2025.04.01.01.52.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Apr 2025 01:52:18 -0700 (PDT)
+Message-ID: <38b9af46-0d03-424d-8ecc-461b7daf216c@redhat.com>
+Date: Tue, 1 Apr 2025 10:52:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -55,140 +88,45 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 3/4] net: pass a kernel pointer via 'optlen_t' to
- proto[ops].getsockopt() hooks
-To: David Laight <david.laight.linux@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Jens Axboe <axboe@kernel.dk>, Pavel Begunkov <asml.silence@gmail.com>,
- Breno Leitao <leitao@debian.org>, Jakub Kicinski <kuba@kernel.org>,
- Christoph Hellwig <hch@lst.de>, Karsten Keil <isdn@linux-pingi.de>,
- Ayush Sawal <ayush.sawal@chelsio.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Kuniyuki Iwashima <kuniyu@amazon.com>, Willem de Bruijn
- <willemb@google.com>, David Ahern <dsahern@kernel.org>,
- Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
- Xin Long <lucien.xin@gmail.com>, Neal Cardwell <ncardwell@google.com>,
- Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann <marcel@holtmann.org>,
- Johan Hedberg <johan.hedberg@gmail.com>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- Marc Kleine-Budde <mkl@pengutronix.de>,
- Robin van der Gracht <robin@protonic.nl>,
- Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
- Alexander Aring <alex.aring@gmail.com>,
- Stefan Schmidt <stefan@datenfreihafen.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Alexandra Winter <wintera@linux.ibm.com>,
- Thorsten Winkler <twinkler@linux.ibm.com>,
- James Chapman <jchapman@katalix.com>, Jeremy Kerr <jk@codeconstruct.com.au>,
- Matt Johnston <matt@codeconstruct.com.au>,
- Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>,
- Geliang Tang <geliang@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
- Remi Denis-Courmont <courmisch@gmail.com>,
- Allison Henderson <allison.henderson@oracle.com>,
- David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
- Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
- "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
- Wen Gu <guwen@linux.alibaba.com>, Jon Maloy <jmaloy@redhat.com>,
- Boris Pismenny <borisp@nvidia.com>, John Fastabend
- <john.fastabend@gmail.com>, Stefano Garzarella <sgarzare@redhat.com>,
- Martin Schiller <ms@dev.tdt.de>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
- linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org,
- linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org,
- linux-s390@vger.kernel.org, mptcp@lists.linux.dev,
- linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
- linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net,
- virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
- bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
- io-uring@vger.kernel.org
-References: <cover.1743449872.git.metze@samba.org>
- <d482e207223f434f0d306d3158b2142dceac4631.1743449872.git.metze@samba.org>
- <20250331224946.13899fcf@pumpkin>
-Content-Language: en-US, de-DE
-From: Stefan Metzmacher <metze@samba.org>
-In-Reply-To: <20250331224946.13899fcf@pumpkin>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH net-next v5 2/2] page_pool: Track DMA-mapped pages and
+ unmap them when destroying the pool
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, Saeed Mahameed
+ <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Eric Dumazet <edumazet@google.com>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Simon Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Mina Almasry <almasrymina@google.com>, Yonglong Liu
+ <liuyonglong@huawei.com>, Yunsheng Lin <linyunsheng@huawei.com>,
+ Pavel Begunkov <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>,
+ Yuying Ma <yuma@redhat.com>
+References: <20250328-page-pool-track-dma-v5-0-55002af683ad@redhat.com>
+ <20250328-page-pool-track-dma-v5-2-55002af683ad@redhat.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20250328-page-pool-track-dma-v5-2-55002af683ad@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Am 31.03.25 um 23:49 schrieb David Laight:
-> On Mon, 31 Mar 2025 22:10:55 +0200
-> Stefan Metzmacher <metze@samba.org> wrote:
-> 
->> The motivation for this is to remove the SOL_SOCKET limitation
->> from io_uring_cmd_getsockopt().
->>
->> The reason for this limitation is that io_uring_cmd_getsockopt()
->> passes a kernel pointer.
->>
->> The first idea would be to change the optval and optlen arguments
->> to the protocol specific hooks also to sockptr_t, as that
->> is already used for setsockopt() and also by do_sock_getsockopt()
->> sk_getsockopt() and BPF_CGROUP_RUN_PROG_GETSOCKOPT().
->>
->> But as Linus don't like 'sockptr_t' I used a different approach.
->>
->> Instead of passing the optlen as user or kernel pointer,
->> we only ever pass a kernel pointer and do the
->> translation from/to userspace in do_sock_getsockopt().
->>
->> The simple solution would be to just remove the
->> '__user' from the int *optlen argument, but it
->> seems the compiler doesn't complain about
->> '__user' vs. without it, so instead I used
->> a helper struct in order to make sure everything
->> compiles with a typesafe change.
->>
->> That together with get_optlen() and put_optlen() helper
->> macros make it relatively easy to review and check the
->> behaviour is most likely unchanged.
-> 
-> I've looked into this before (and fallen down the patch rabbit hole).
+On 3/28/25 1:19 PM, Toke Høiland-Jørgensen wrote:
+> @@ -463,13 +462,21 @@ page_pool_dma_sync_for_device(const struct page_pool *pool,
+>  			      netmem_ref netmem,
+>  			      u32 dma_sync_size)
+>  {
+> -	if (pool->dma_sync && dma_dev_need_sync(pool->p.dev))
+> -		__page_pool_dma_sync_for_device(pool, netmem, dma_sync_size);
+> +	if (pool->dma_sync && dma_dev_need_sync(pool->p.dev)) {
 
-Yes, if you want to change the logic at the same time as
-changing the kind of argument variable, then it get messy
-quite fast.
+Lacking a READ_ONCE() here, I think it's within compiler's right do some
+unexpected optimization between this read and the next one. Also it will
+make the double read more explicit.
 
-> I think the best (final) solution is to pass a validated non-negative
-> 'optlen' into all getsockopt() functions and to have them usually return
-> either -errno or the modified length.
-> This simplifies 99% of the functions.
+Thanks,
 
-Yes, maybe not 99%, but a lot.
-
-> The problem case is functions that want to update the length and return
-> an error.
-> By best solution is to support return values of -errno << 20 | length
-> (as well as -errno and length).
-> 
-> There end up being some slight behaviour changes.
-> - Some code tries to 'undo' actions if the length can't be updated.
->    I'm sure this is unnecessary and the recovery path is untested and
->    could be buggy. Provided the kernel data is consistent there is
->    no point trying to get code to recover from EFAULT.
->    The 'length' has been read - so would also need to be readonly
->    or unmapped by a second thread!
-> - A lot of getsockopt functions actually treat a negative length as 4.
->    I think this 'bug' needs to preserved to avoid breaking applications.
-> 
-> The changes are mechanical but very widespread.
-> 
-> They also give the option of not writing back the length if unchanged.
-
-See my other mail regarding proto[_ops].getsockopt_iter(),
-where implementation could be converted step by step.
-
-But we may still need to keep the current  proto[ops].getsockopt()
-as proto[ops].getsockopt_legacy() in order to keep the
-insane uapi semantics alive.
-
-metze
-
+Paolo
 
 
