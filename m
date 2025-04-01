@@ -1,123 +1,213 @@
-Return-Path: <linux-rdma+bounces-9083-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9084-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92242A77C63
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 15:41:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36769A77CB4
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 15:51:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE1F13A91D8
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 13:41:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 041C33AFD4C
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 13:49:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3A7204696;
-	Tue,  1 Apr 2025 13:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 285352046A8;
+	Tue,  1 Apr 2025 13:49:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="PI0SWEBJ"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="XluRdcNt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F614D8D1
-	for <linux-rdma@vger.kernel.org>; Tue,  1 Apr 2025 13:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B49E01EF37C;
+	Tue,  1 Apr 2025 13:49:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743514897; cv=none; b=EVBi26XGeQPJmRuZdPzoVOeYISJG+tERQS2BOmJDh0EsLX9WBoy2MHC7XFSiisqbMQb/O/ZrnXQ1wBT4H2z48vWHd7iKV+zHG9vLi65DHCmfVPyr5jUukdekD28RtQZrn+FbvCvsnXOx/uwB+KD9Dwcf6xIBX3PS7AMujFpFwZI=
+	t=1743515347; cv=none; b=l8v9y+Q8gs7+YIbgKYcaxe8P9Hyvx6L6YnT3iqPXAiVJjb6iDZ76U+ukwbVvurSJtePI5uRIAyXVrMEd45Jflx3MP8HKWmdRC8DnusrHSoSd+50LEeaqmxpQI7LtSubyoa27JA64oalSC/mOBQZuSCPK0CH6iBFVCIvM2/e6mac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743514897; c=relaxed/simple;
-	bh=b7DokJ7XVk/j8R8Vd23w/Heij2kXjXxZI4RCHC3HCzM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IsOSoNuRJYf7EwGZldkxXpE2kG01ibdu4sf5kwvYPWslDijUR2XwxmvDARgAZWV1NVIGmg8p+rVZo8negnj5/su6klsZ77Jnph76erOA3EaDyhrijkKe49/et6i7FYnBP/pwVKOu+fqfEbzVs85yNeJTQTco9xlEEzbH/mG0tJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=PI0SWEBJ; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6e17d3e92d9so43310726d6.1
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Apr 2025 06:41:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1743514894; x=1744119694; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b7DokJ7XVk/j8R8Vd23w/Heij2kXjXxZI4RCHC3HCzM=;
-        b=PI0SWEBJo/qEdpye4751KiR879Pek5Yp3ruLLRrHne5rsNDzaZzSaKomACuVpY8vDD
-         BHWinpRi0c/JO7F+F7LzmWObUGliOAxLfD989tWYG4gPuNb5w8wSkunV9iMy4rHTSe/O
-         v4U9MNBOysPF8NoiiwiWk/BWAnz9Qyd5tJPYSXsBvmkEZEklLjdZkHBf9yUaAs7m7PQ8
-         en8OhU7RvmTFrYYXvwEORjGps85uaEu98fTDHDeWkuVHnefkOW55RiTbvC/p3Ag6TM4U
-         X1snSxZ/j+sLaL38WYDxirzGi1PsyZ0rS7Rp1e6+n7evp394etsnMUU/Ta3eHxbI93QY
-         EesA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743514894; x=1744119694;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b7DokJ7XVk/j8R8Vd23w/Heij2kXjXxZI4RCHC3HCzM=;
-        b=jWoKPlLAqF11p6dedQH8dYAaT7jT2W+zo67ssFpOIdceI3F4q+ng2D6oPLBmmYe8i4
-         3c9dFp0phd9mjJ0/ViUo2pcUtXjAnkufkUBv0jjUsXUa0VOZm97G3wLwAgsMMRR0WOT6
-         gsDBMWfkf7dXw7dW46liSyEfp3Ij+zZdgLwvu8Pp7pEgKTqSFWIf+nZ060tTHHCMRtjX
-         ETIsO3IpiksB8reaioXKT0M6pUDkPl4lMdx7sFkEN6DRyU6euTCrtTP0GPd2obSoNzLT
-         3TevflAO434qYrYwWIPjiITf1lSF7KRYsIEMEq2rjyZOYw43ZiQN2bPvujwtvsxgn8WX
-         WzYw==
-X-Forwarded-Encrypted: i=1; AJvYcCXDYSKbSamzLrXxpzNKKKLtcQbbcPN8gaQVYXivOOsz7T+z5uYEV4pKazkLOxUWnQXwQBU3iHIQdDlV@vger.kernel.org
-X-Gm-Message-State: AOJu0YztabpKON3KCRAlCj8rKiNJef6FG47H870UQ9wD3E3o56OZveYg
-	UJA3SsvVILszWdr8dxvEzvwcozFUp+WNk6rCiyogTW5t76meJP7Vok0N+cxYVg8=
-X-Gm-Gg: ASbGnctx4An0Enrl5rIhTbOChi6kCJp7r6WqDZm4dmbSHq9bF2ERdwDFzA524Az0S1X
-	L2qhLaHgsigtxnvRO8hohRNoGBCeJDDb+LmGw8xUFE112GuXJw1ctQZS4Qo6jJK/hkX2PLCjMpX
-	XogPQ91CuEy75WBMO3OWAyco39U1I34BNZTt4lAyfTkaZiTUd+XNVCeRqWAX22zVZWeXF7+La1m
-	JoAulpzmc+J82lU+oA1Ry4BZ9HPFS+c7ZNbzKnqOgqIlqapZXUHbg2m+4uM9qcpoaai2J0g1SlH
-	dq3PL28p4Z49oux4hZf/aEQxyKlpeNaYMSGDRN8gfhG4m2bEcQOfkviJCg9YKwkf25BSUzJgBg4
-	O4QVuAlLt+gHZmQTl0IrVoIM=
-X-Google-Smtp-Source: AGHT+IEacbMHkOm9xYeGO73jBnk31ISf7JNXKfhy+DIhsFExOdd5H34dWs6gX0/0UMQut8otUAx5Mg==
-X-Received: by 2002:ad4:5c62:0:b0:6d8:b3a7:75a5 with SMTP id 6a1803df08f44-6eef5f14834mr46223706d6.42.1743514894053;
-        Tue, 01 Apr 2025 06:41:34 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-167-219-86.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.219.86])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6eec9627d88sm62019026d6.8.2025.04.01.06.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Apr 2025 06:41:33 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1tzbrx-00000001KsT-0FLY;
-	Tue, 01 Apr 2025 10:41:33 -0300
-Date: Tue, 1 Apr 2025 10:41:33 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com, kalesh-anakkur.purayil@broadcom.com,
-	netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, abeni@redhat.com, horms@kernel.org,
-	michael.chan@broadcom.com
-Subject: Re: [PATCH rdma-next 0/9] RDMA/bnxt_re: Driver Debug Enhancements
-Message-ID: <20250401134133.GD186258@ziepe.ca>
-References: <1740076496-14227-1-git-send-email-selvin.xavier@broadcom.com>
- <20250223133456.GA53094@unreal>
- <CA+sbYW3VdewdCrU+PtvAksXXyi=zgGm6Yk=BHNNfbp1DDjRKcQ@mail.gmail.com>
+	s=arc-20240116; t=1743515347; c=relaxed/simple;
+	bh=hV0F6tq5yOMctrxhbw9eHTl9U3HW56lx2la3BwPfE6U=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=UAxjnx/JhmB6s2ZLIMmmu5Ya9NBef00tnQfiUUwi+ICTHUMPz5oEKkoPfdof7TBcHWBmJUsEkSeYT95mcVyZ8P+BXcRFtEEPv3aYEeowWHGnBehzHmMqPemgUZXlV/mXMFPm7xV4JYVfW6rPh1qm/+jANn41WvbT4rAcQLF+Qjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=XluRdcNt; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=Cc:To:From:Date:Message-ID;
+	bh=muR3/xoxds4Q0VhmaHrJCJC6DwicqL2rRGouQWPbdZU=; b=XluRdcNt9u6w7WqRbOB++O5yG5
+	jh7rpJ3GkeNr38tsq6kbqXuit5fxmiNWW7odG50gQPWg5pFsmUP0gL+IBdpsHAwVUSPQlUmRQh8ej
+	83wRT7OZUfS7qfyKOTUyLFo/Hp3lKxxeeZXri9uc01LKMXk8lqCsjyJKq3KtiWrTCehGUiR2rlW9Q
+	eghnDlkNhoYf5MKEgP4WLBGP0wSKv7rtzdx4myDYtPfSzidMXPwM0CAgrA+CRxgyYCvAUgiJG71ro
+	LEh8AecIiaiqG9zE/jdEUCqVLAEoCzTkqOMb/R52iQkMARU2G+plYznSGtTkME/lLGbmyHRfxaPwO
+	UTUUGGLCNzIUNCzNMlD8UpIalLbd2c1+4sFExAFen/iyuzxo3eVyloGK4KlG0ze1LClf8XnWo3aSc
+	cRJPhOGx2xx5b1TsoLd6IEXsAKvvdGf6D/RTyoPwdzZIUwdeNfPopsaLPrUd8ujuWtugcq2TW4JOO
+	pGKWf8qw2tyk+JOJ0lfYpEZW;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1tzbz9-007g1p-1H;
+	Tue, 01 Apr 2025 13:48:59 +0000
+Message-ID: <ed2038b1-0331-43d6-ac15-fd7e004ab27e@samba.org>
+Date: Tue, 1 Apr 2025 15:48:58 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+sbYW3VdewdCrU+PtvAksXXyi=zgGm6Yk=BHNNfbp1DDjRKcQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/4] net/io_uring: pass a kernel pointer via optlen_t
+ to proto[_ops].getsockopt()
+From: Stefan Metzmacher <metze@samba.org>
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>, Pavel Begunkov <asml.silence@gmail.com>,
+ Breno Leitao <leitao@debian.org>, Jakub Kicinski <kuba@kernel.org>,
+ Christoph Hellwig <hch@lst.de>, Karsten Keil <isdn@linux-pingi.de>,
+ Ayush Sawal <ayush.sawal@chelsio.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Kuniyuki Iwashima <kuniyu@amazon.com>, Willem de Bruijn
+ <willemb@google.com>, David Ahern <dsahern@kernel.org>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+ Xin Long <lucien.xin@gmail.com>, Neal Cardwell <ncardwell@google.com>,
+ Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>,
+ Marc Kleine-Budde <mkl@pengutronix.de>,
+ Robin van der Gracht <robin@protonic.nl>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+ Alexander Aring <alex.aring@gmail.com>,
+ Stefan Schmidt <stefan@datenfreihafen.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Alexandra Winter <wintera@linux.ibm.com>,
+ Thorsten Winkler <twinkler@linux.ibm.com>,
+ James Chapman <jchapman@katalix.com>, Jeremy Kerr <jk@codeconstruct.com.au>,
+ Matt Johnston <matt@codeconstruct.com.au>,
+ Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>,
+ Geliang Tang <geliang@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Remi Denis-Courmont <courmisch@gmail.com>,
+ Allison Henderson <allison.henderson@oracle.com>,
+ David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
+ Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
+ "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
+ Wen Gu <guwen@linux.alibaba.com>, Jon Maloy <jmaloy@redhat.com>,
+ Boris Pismenny <borisp@nvidia.com>, John Fastabend
+ <john.fastabend@gmail.com>, Stefano Garzarella <sgarzare@redhat.com>,
+ Martin Schiller <ms@dev.tdt.de>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
+ linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org,
+ linux-s390@vger.kernel.org, mptcp@lists.linux.dev,
+ linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+ linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net,
+ virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
+ bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
+ io-uring@vger.kernel.org
+References: <cover.1743449872.git.metze@samba.org>
+ <Z-sDc-0qyfPZz9lv@mini-arch> <39515c76-310d-41af-a8b4-a814841449e3@samba.org>
+ <407c1a05-24a7-430b-958c-0ca78c467c07@samba.org>
+Content-Language: en-US, de-DE
+In-Reply-To: <407c1a05-24a7-430b-958c-0ca78c467c07@samba.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 24, 2025 at 02:30:04PM +0530, Selvin Xavier wrote:
-> > I'm aware that you are not keeping objects itself, but their shadow
-> > copy. So if you want, your FW can store these failed objects and you
-> > will retrieve them through existing netdev side (ethtool -w ...).
+Am 01.04.25 um 15:37 schrieb Stefan Metzmacher:
+> Am 01.04.25 um 10:19 schrieb Stefan Metzmacher:
+>> Am 31.03.25 um 23:04 schrieb Stanislav Fomichev:
+>>> On 03/31, Stefan Metzmacher wrote:
+>>>> The motivation for this is to remove the SOL_SOCKET limitation
+>>>> from io_uring_cmd_getsockopt().
+>>>>
+>>>> The reason for this limitation is that io_uring_cmd_getsockopt()
+>>>> passes a kernel pointer as optlen to do_sock_getsockopt()
+>>>> and can't reach the ops->getsockopt() path.
+>>>>
+>>>> The first idea would be to change the optval and optlen arguments
+>>>> to the protocol specific hooks also to sockptr_t, as that
+>>>> is already used for setsockopt() and also by do_sock_getsockopt()
+>>>> sk_getsockopt() and BPF_CGROUP_RUN_PROG_GETSOCKOPT().
+>>>>
+>>>> But as Linus don't like 'sockptr_t' I used a different approach.
+>>>>
+>>>> @Linus, would that optlen_t approach fit better for you?
+>>>
+>>> [..]
+>>>
+>>>> Instead of passing the optlen as user or kernel pointer,
+>>>> we only ever pass a kernel pointer and do the
+>>>> translation from/to userspace in do_sock_getsockopt().
+>>>
+>>> At this point why not just fully embrace iov_iter? You have the size
+>>> now + the user (or kernel) pointer. Might as well do
+>>> s/sockptr_t/iov_iter/ conversion?
+>>
+>> I think that would only be possible if we introduce
+>> proto[_ops].getsockopt_iter() and then convert the implementations
+>> step by step. Doing it all in one go has a lot of potential to break
+>> the uapi. I could try to convert things like socket, ip and tcp myself, but
+>> the rest needs to be converted by the maintainer of the specific protocol,
+>> as it needs to be tested. As there are crazy things happening in the existing
+>> implementations, e.g. some getsockopt() implementations use optval as in and out
+>> buffer.
+>>
+>> I first tried to convert both optval and optlen of getsockopt to sockptr_t,
+>> and that showed that touching the optval part starts to get complex very soon,
+>> see https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=141912166473bf8843ec6ace76dc9c6945adafd1
+>> (note it didn't converted everything, I gave up after hitting
+>> sctp_getsockopt_peer_addrs and sctp_getsockopt_local_addrs.
+>> sctp_getsockopt_context, sctp_getsockopt_maxseg, sctp_getsockopt_associnfo and maybe
+>> more are the ones also doing both copy_from_user and copy_to_user on optval)
+>>
+>> I come also across one implementation that returned -ERANGE because *optlen was
+>> too short and put the required length into *optlen, which means the returned
+>> *optlen is larger than the optval buffer given from userspace.
+>>
+>> Because of all these strange things I tried to do a minimal change
+>> in order to get rid of the io_uring limitation and only converted
+>> optlen and leave optval as is.
+>>
+>> In order to have a patchset that has a low risk to cause regressions.
+>>
+>> But as alternative introducing a prototype like this:
+>>
+>>          int (*getsockopt_iter)(struct socket *sock, int level, int optname,
+>>                                 struct iov_iter *optval_iter);
+>>
+>> That returns a non-negative value which can be placed into *optlen
+>> or negative value as error and *optlen will not be changed on error.
+>> optval_iter will get direction ITER_DEST, so it can only be written to.
+>>
+>> Implementations could then opt in for the new interface and
+>> allow do_sock_getsockopt() work also for the io_uring case,
+>> while all others would still get -EOPNOTSUPP.
+>>
+>> So what should be the way to go?
+> 
+> Ok, I've added the infrastructure for getsockopt_iter, see below,
+> but the first part I wanted to convert was
+> tcp_ao_copy_mkts_to_user() and that also reads from userspace before
+> writing.
+> 
+> So we could go with the optlen_t approach, or we need
+> logic for ITER_BOTH or pass two iov_iters one with ITER_SRC and one
+> with ITER_DEST...
+> 
+> So who wants to decide?
 
-> FW doesn't have enough memory to backup this info. It needs to
-> be backed up in the host memory and FW has to write it to host memory
-> when an error happens. This is possible in some newer FW versions.
-> But itt is not just the HW context that we are caching here. We need to backup
-> some host side driver/lib info also to correlate with the HW context.
-> We have been debugging issues like this using our Out of box driver
-> and we find it useful to get the context
-> of failure. Some of the internal tools can decode this information and
-> we want to
-> have the same behavior between inbox and Out of Box driver.
+I just noticed that it's even possible in same cases
+to pass in a short buffer to optval, but have a longer value in optlen,
+hci_sock_getsockopt() with SOL_BLUETOOTH completely ignores optlen.
 
-Can you run some kind of daemon in userspace to collect this
-information in real time, maybe using fwctl or something instead of
-having the driver capture it?
+This makes it really hard to believe that trying to use iov_iter for this
+is a good idea :-(
 
-Jason
+Any ideas beside just going with optlen_t?
+
+metze
 
