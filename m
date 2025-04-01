@@ -1,136 +1,108 @@
-Return-Path: <linux-rdma+bounces-9062-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9061-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6997A77797
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 11:21:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEAB1A7779B
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 11:21:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8F4E1887BA6
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 09:21:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23BBE3ADF25
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 09:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6DA1EF080;
-	Tue,  1 Apr 2025 09:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="A1QF+/mA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E671EE7D3;
+	Tue,  1 Apr 2025 09:20:18 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E4A1EF087
-	for <linux-rdma@vger.kernel.org>; Tue,  1 Apr 2025 09:20:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 038A01EDA09;
+	Tue,  1 Apr 2025 09:20:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743499221; cv=none; b=YvW3bJS9I1G0JMtdz1390GK4sUmv178+EAhhgh4bnT2YN9XRxjfDGOsrGxiqoRQD9GlyqJ+EMJb25Ra5wlZNJTTiWKkZZWyaWKK7rBROOXwxy94FoVKI8EPQd8YMJMleUA3wJHuR3hnsZZaUd08VNV08se+pVLPbE9jARAs/7XY=
+	t=1743499218; cv=none; b=A29sm4+cu/hyUsdlZyBh8iMhcBhcyzFB3AtSVo7h3fN1o7JWJwIhYcUlrOb4kBkDQBesUSrUVODpxKh8L+oV7ARlt3e30duPWvBFStFLDd8L7crasixcjaTtroOgTnDlu9icmDjBi55iTXbo22WYZ38DewPqWA/AjfW8dEZ7/hA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743499221; c=relaxed/simple;
-	bh=gX/0To/6YtBCqwy2SgsC4Ii7GnI2MAJKI9nklFY1vT0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=tg56sS2Sy4wpAjol/yT5fKt54JgPgDhZGB3Ic1c+EgI8t3FjRS306g8zlcvn7CMK8ms4B8xpMoIuezZNwnAfxI4x4/68rsWebhajdcHcvfyDU7ZQEkGqf2VKwYH790w8zc+BVpT1zsenyJuHK4a0lzSmYLZNtwMY8ZIjLZSrH6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=A1QF+/mA; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1743499219;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=heGA+8Yin7XsohFnbU8J4lLXr8jl9xDIj/NCrhpNVe4=;
-	b=A1QF+/mAvXMSRDXxgt9lWuCEg87Qdv+cyWKC83a/smkAsHb+DTxuq4jxUUQ1OF2iPghsPL
-	gEtJiaijirqwOps85PT0UFX2h62Q3HxylHvdm6Ly72UtnLjr0euh4p0MRQWcWq+0bBh5Ea
-	/9QXniezb3vPSE2fqNjFbaVwdFQiQsY=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-231-J923sKKQPv27fiXcT7uyXQ-1; Tue, 01 Apr 2025 05:20:17 -0400
-X-MC-Unique: J923sKKQPv27fiXcT7uyXQ-1
-X-Mimecast-MFC-AGG-ID: J923sKKQPv27fiXcT7uyXQ_1743499216
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5499a93f894so3334186e87.1
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Apr 2025 02:20:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743499216; x=1744104016;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=heGA+8Yin7XsohFnbU8J4lLXr8jl9xDIj/NCrhpNVe4=;
-        b=hC+UknyAr6kVhTzC/YroG1QIbt/1vfUOmqLw440wWAhZMjD2Q1mnTdcNYxIP+yZxcG
-         lQoELuSwCtUob7kA39vnzPnwf2CKfvHY/9nKpfvN4RN1liK41SITkAew9pncxoJAq7BM
-         dD+obx0SEk1zn8VG11D8jcAoY4XofFjCz9n4msDJ/oJy1xyo64ayn6RuV39WFP0mgmLN
-         rQ7800QdN1IMOLJHXg1T98BmA5KcyPvjgV8OI61CDEq1cnTjQOmul1v4tCXN3om6U+JR
-         lMtBAs/0bL3zjPRXwlzkToaod8zb/4lMynytnvownxIcKZg7utUQjHN41MSEcCBQxPyX
-         nkNg==
-X-Forwarded-Encrypted: i=1; AJvYcCWUN0gCo6FUt1qtG5ikoNQaiDm2RuHWoObZXBz9QL9f0E6t743KKyV8FKUMUDcis8LhC+rN7Ia34qnu@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9Du4mFJqn4QYCBXah0NomGcHOLNhnwouHtV4cG4ne+QrbQa6z
-	gbUwDpBxH6ROcwdHqij2+MfxdSryXaiPo8UbklqTnxkFFcLb2aA2gn6O1ny2WYbd6hsH1fwkqKZ
-	bLAt+Vrh6IpiibvkLh46PkNBgvQoHVzIDixmrXQWie2Qlyd7zevVmnELwDec=
-X-Gm-Gg: ASbGncs57mBaQgd/sRbtAwCPnnuYyHOSpsDV/uodRaddTsPY7/NivsCLzpUL6ihtkyM
-	IBAOGenmpKi80vOGiBuDtHUeWRtmj9omQFkgxxU7sA6+almBcP9j9+8B4A8ZKvBOVPZQsJoDmu1
-	Z0BoWlE5WJDGJJdSyVpKLdN0rgE26XlTvpgwL8aIEzFDz7Ht9vUvPzCECfrHyGGomRBKleNGe9X
-	LusWQ75xRxpHj/y4CaYSAd3haT5C8qoMZXFmGSw0TXo8RBJsHTsTEARXlp/qVw8qg+4WdQzLZYs
-	l8orVhNFiDwukiRDzCGPS5/fIWU1Sdo/yXRMjIYC
-X-Received: by 2002:a05:6512:3f04:b0:54b:117f:686e with SMTP id 2adb3069b0e04-54b117f6902mr3637417e87.27.1743499216256;
-        Tue, 01 Apr 2025 02:20:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGmmFffSwB8Z29FU4ImF8MFszvFBnxPrac+wWziJPyVeOFUs+I7ScJdTpfzV4RapF89FKPnIA==
-X-Received: by 2002:a05:6512:3f04:b0:54b:117f:686e with SMTP id 2adb3069b0e04-54b117f6902mr3637402e87.27.1743499215879;
-        Tue, 01 Apr 2025 02:20:15 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54b094c1db9sm1297217e87.78.2025.04.01.02.20.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Apr 2025 02:20:15 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 0BCA518FD259; Tue, 01 Apr 2025 11:12:36 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Paolo Abeni <pabeni@redhat.com>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard
- Brouer <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon
- Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew
- Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Ilias
- Apalodimas <ilias.apalodimas@linaro.org>, Simon Horman <horms@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Mina Almasry
- <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>, Yunsheng
- Lin <linyunsheng@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>,
- Matthew Wilcox <willy@infradead.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>, Yuying Ma
- <yuma@redhat.com>
-Subject: Re: [PATCH net-next v5 2/2] page_pool: Track DMA-mapped pages and
- unmap them when destroying the pool
-In-Reply-To: <38b9af46-0d03-424d-8ecc-461b7daf216c@redhat.com>
-References: <20250328-page-pool-track-dma-v5-0-55002af683ad@redhat.com>
- <20250328-page-pool-track-dma-v5-2-55002af683ad@redhat.com>
- <38b9af46-0d03-424d-8ecc-461b7daf216c@redhat.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Tue, 01 Apr 2025 11:12:35 +0200
-Message-ID: <87y0wkmeik.fsf@toke.dk>
+	s=arc-20240116; t=1743499218; c=relaxed/simple;
+	bh=3JEv0jTr5FAuLNgIjAX2LYO/gsXptGNYLpoxF+E09mY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=NZQSCxM8ogeJL3FgOzW/cSJs3UmTLJJABDJdt2shsVCrGGfs42U+FOmv5so10pIHhiO04tgyOb4pQaghqpoGvyiHwvb+x3ickc09X3CW+/m6iR2E5+PJAPnZ+QkLf7+a98CTrilYo5l6t7YQWybGvpyhDZNox1JFPi79OBXvnJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4ZRj9F4H20ztRVW;
+	Tue,  1 Apr 2025 17:18:41 +0800 (CST)
+Received: from dggpemf200006.china.huawei.com (unknown [7.185.36.61])
+	by mail.maildlp.com (Postfix) with ESMTPS id F16AD1800E5;
+	Tue,  1 Apr 2025 17:20:06 +0800 (CST)
+Received: from [10.67.120.129] (10.67.120.129) by
+ dggpemf200006.china.huawei.com (7.185.36.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 1 Apr 2025 17:20:04 +0800
+Message-ID: <962c1dff-b944-499d-8883-2fe760219352@huawei.com>
+Date: Tue, 1 Apr 2025 17:19:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 00/13] Ultra Ethernet driver introduction
+To: Sean Hefty <shefty@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>
+CC: Bernard Metzler <BMT@zurich.ibm.com>, Roland Dreier
+	<roland@enfabrica.net>, Nikolay Aleksandrov <nikolay@enfabrica.net>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "shrijeet@enfabrica.net"
+	<shrijeet@enfabrica.net>, "alex.badea@keysight.com"
+	<alex.badea@keysight.com>, "eric.davis@broadcom.com"
+	<eric.davis@broadcom.com>, "rip.sohan@amd.com" <rip.sohan@amd.com>,
+	"dsahern@kernel.org" <dsahern@kernel.org>, "winston.liu@keysight.com"
+	<winston.liu@keysight.com>, "dan.mihailescu@keysight.com"
+	<dan.mihailescu@keysight.com>, Kamal Heib <kheib@redhat.com>,
+	"parth.v.parikh@keysight.com" <parth.v.parikh@keysight.com>, Dave Miller
+	<davem@redhat.com>, "ian.ziemba@hpe.com" <ian.ziemba@hpe.com>,
+	"andrew.tauferner@cornelisnetworks.com"
+	<andrew.tauferner@cornelisnetworks.com>, "welch@hpe.com" <welch@hpe.com>,
+	"rakhahari.bhunia@keysight.com" <rakhahari.bhunia@keysight.com>,
+	"kingshuk.mandal@keysight.com" <kingshuk.mandal@keysight.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "kuba@kernel.org"
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+References: <20250306230203.1550314-1-nikolay@enfabrica.net>
+ <20250319164802.GA116657@nvidia.com>
+ <CALgUMKhB7nZkU0RtJJRtcHFm2YVmahUPCQv2XpTwZw=PaaiNHg@mail.gmail.com>
+ <DM6PR12MB4313D576318921D47B3C61B5BDA42@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <BN8PR15MB25131FB51A63577B5795614399A72@BN8PR15MB2513.namprd15.prod.outlook.com>
+ <DM6PR12MB431329322A0C0CCB7D5F85E6BDA72@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <Z+QTD7ihtQSYI0bl@nvidia.com>
+ <DM6PR12MB43137AE666F19784D2832030BDA62@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <Z+Qi+XxYizfhr06P@nvidia.com>
+ <DM6PR12MB431345D07D958CF0B784AE0EBDA62@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <Z+VSFRFG1gIbGsLQ@nvidia.com>
+ <a7f22729-d76d-4e90-8457-6844f18929eb@huawei.com>
+ <DM6PR12MB43137DCF20A1428F7E67F82BBDAD2@DM6PR12MB4313.namprd12.prod.outlook.com>
+Content-Language: en-US
+From: Yunsheng Lin <linyunsheng@huawei.com>
+In-Reply-To: <DM6PR12MB43137DCF20A1428F7E67F82BBDAD2@DM6PR12MB4313.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemf200006.china.huawei.com (7.185.36.61)
 
-Paolo Abeni <pabeni@redhat.com> writes:
+On 2025/4/1 3:49, Sean Hefty wrote:
+>> Through reading this patchset, it seems the semantics of 'job' for UEC is about
+>> how to identify a PDC(Packet Delivery Context) instance, which is specified by
+>> src fep_address/pdc_id and dst fep_address/pdc_id as there seems to be more
+>> than one PDC instance between two nodes, so the 'job' is really about
+>> grouping processes from the same 'job' to use the same PDC instance and
+>> preventing processes from different 'job' from using the same PDC instance?
+> 
+> UEC targets HPC and AI workloads, so the concept of a job in this discussion represents a parallel application.  I.e. a group of processes across multiple nodes communicating.
 
-> On 3/28/25 1:19 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> @@ -463,13 +462,21 @@ page_pool_dma_sync_for_device(const struct page_po=
-ol *pool,
->>  			      netmem_ref netmem,
->>  			      u32 dma_sync_size)
->>  {
->> -	if (pool->dma_sync && dma_dev_need_sync(pool->p.dev))
->> -		__page_pool_dma_sync_for_device(pool, netmem, dma_sync_size);
->> +	if (pool->dma_sync && dma_dev_need_sync(pool->p.dev)) {
->
-> Lacking a READ_ONCE() here, I think it's within compiler's right do some
-> unexpected optimization between this read and the next one. Also it will
-> make the double read more explicit.
+Ok, I guess this patchset only implement a portion of semantics for the 'job'
+in UEC, the page mapping, local access, and remote access functions grouping
+and separating you mentioned in other thread does not seem to be implemented
+yet.
 
-Right, good point; will respin!
-
--Toke
-
+> 
+> - Sean
 
