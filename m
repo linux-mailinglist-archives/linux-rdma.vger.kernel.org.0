@@ -1,267 +1,199 @@
-Return-Path: <linux-rdma+bounces-9088-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9089-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC046A77F51
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 17:46:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D21D9A78065
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 18:29:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 241A718913E5
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 15:46:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 875153B5497
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 16:24:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF0B20C47F;
-	Tue,  1 Apr 2025 15:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5472206BE;
+	Tue,  1 Apr 2025 16:18:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IlUb/NJm"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="uDllGOEk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2067.outbound.protection.outlook.com [40.107.220.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B20B1EB19A;
-	Tue,  1 Apr 2025 15:45:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743522344; cv=none; b=agOlZXuuuF5BAM7Xr59n9/ArHO8FhU4ybiT66R+ZwiXtl/Hwf/DVuQIpoFKoCWL5VPEBJFJUcgoUdHVPwA/RCrYe27ZKydamqQqmblvpAaU/zZEgEcdGmw0jClmlTAtHClIeQ/EaYtDfWSP93Wk+yS44XdojRIrTvzL0Km8yvwE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743522344; c=relaxed/simple;
-	bh=WBy7/6zN4feM/TeCGcXiAJPz1NiTYo51RtnynhTaOM8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AF4xALAKLO67GBmk/VUPSJ8wmnooPp56jgV5GpUW3dS344/HFTuHr12e/PYFe3pO//uyV8fmUVA07RDnrn963/tQ4N6I6qWl/QcsaAmpov01DE/R6m1m6guNhxE19Q+jWEzBMJyoK61b9cjoW0PKgDnu3cfJV/ZxNXq0bZZldag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IlUb/NJm; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-224019ad9edso30283745ad.1;
-        Tue, 01 Apr 2025 08:45:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743522341; x=1744127141; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Kzegyg8cpGoKhVLZCKUfoTEzY8SEhsuSorY4Wg6W7wk=;
-        b=IlUb/NJmDd+jXbBkm2j3X4/qbX9tLdvY+lq4ly40ihU+XoIeqKyNy5FT7Ar+XvapOO
-         6OPTtzLlQgvpe/K5ib36AyKGwcBvn4ES/MvXedwXV0QtauVG3VuM0BBPDcJK9PWEtAO/
-         SDqd2U0r6IiE0v7XGDRYgxDgIcWb/UsmOAuTVLOwIIFm+a+6rfSAUprJzsdEkCxrEzaa
-         MSuZKbMvXOd/+BfPoCgPR+OZGDRSc0sahpNtYQ6pHpA3GSDYpaKO7njh0ngxqpC34Gg9
-         GtYtPOph5KxOOUmuuutxPmSuadD8TedBQ+LYFKu6OH5B3bm1V8tt7VT5MWpPp46Dvp29
-         idaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743522341; x=1744127141;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kzegyg8cpGoKhVLZCKUfoTEzY8SEhsuSorY4Wg6W7wk=;
-        b=fm389fWXx6fq47oTkuwZ3x4Cd1AZut3umgi+lnd0ohRTP96EzHn9b7CkCIjOjNDkTs
-         J3ZUA5YDVdM4vxgFBIpkbY6hDuvgWhWxWmjk/gHvIG5X/wO6fc3jIBRuS3GsKYFBTGhT
-         G8vVEwDhNDFTNW1mxdDnF8W9Dv3DZeCzVaKYcBv4RSG1jFkq2CxEEszLrq6+u7nFLP10
-         UQO5J4yB9QoxYvMH03IazKJduhfBYcHSVQ2VrmEGgHtc6Rlw0tCbvoeNUZnnTYDEEaa1
-         lCeKlhAXECROO+LH2HfPaccxIVKcyiA6s4Vb1n4d6jw4LD/tXI3OaefTjXx4GQdVfZH8
-         IRxw==
-X-Forwarded-Encrypted: i=1; AJvYcCUHxxLXar0fdfOq7kfvdRxu5/WDCxmzBK2cU4q36+knYQ37zUZb31NsuxgdihTfYpmvL/7NM1eD8WLKhQ==@vger.kernel.org, AJvYcCUNAFIiShfdkX5RNBx5jms5d2OGrlbDIa2kxzYtrXeOtX+dTVFBKrYFQsxIF73v5gKxFxZKiqXfBLY=@vger.kernel.org, AJvYcCVBw87wYoRh0pU0r+94MoHEDNakbAee9Vw/hcc8B69LyysrqO0aXr+z9JqW3jDkuk47NbaHUCceiItzMQ==@vger.kernel.org, AJvYcCVEZnxbGHAv7eJzKR5qjMiwpotL0QXSkrF5QvmWLAZHYC7rg2L1MWpACZdiqspiv7u/vS/nqFZG6U3zlE6B@vger.kernel.org, AJvYcCVfS6Me2xxZhQvG4YaX5RIQj4ZrVamV9Xmt39+T9pWqpGimgN1ZXPJLKvlu4scO3LRjr/+7N0DR98RApX9/M/F6@vger.kernel.org, AJvYcCVxEbj6Xc84sDJ0a0q/RgDRepIn1jGKU3U/8TgiMtH8q9IwDPo2zLleG+PRBQkAsLYhwqIqPA==@vger.kernel.org, AJvYcCW2x0rVVJvFQHvAhLU0EbDscZfdFCPBPFcQoHlq3zp94pdLwyp8tQ7RsBe7nUl4DV42IzpeWem9@vger.kernel.org, AJvYcCW4yGUSiJtK8l8ZBrhCs03i8YqPKeqBoa5ozceBgvEV0+0ZOHOOYfp0pq//lW3+3tf6T7x/nxTIvTKZ@vger.kernel.org, AJvYcCWO1I1Utbzi621O2fQpMvjIyUlq28VQMdVJtgqrSxJU05XYXYXfbe3zMcn4QlR7M02S1XLuVMma46hTeg==@vger.kernel.org, AJvYcCWPbD5wwExMgpb4qp7HXecHWMH0T95O
- asKsq/pAMtWfUdR7XUQdO2buLldp9307FCLPlRdYC0N/7t/r@vger.kernel.org, AJvYcCXAUsNjYPvPeK2OibZgEs2WwpoUOtKFxXqq6mfmn4d4+Q/CT+2fNM7+/pvCUpMy8DIjia939rLszKUhjw==@vger.kernel.org, AJvYcCXPWJXyiroHz9lWdO2PNVtFpg+X1wt6XZzphxfjrJDZ6hxqtawQr17XYcvPtrfUEzkQnoXa8eZd8Hkq0Q==@vger.kernel.org, AJvYcCXhhHZ6A24d1D6OWPNWCRRQQmSchp+spjLTbKnBr6/UuVmR8rTrHIzQQKHXXtSVDhSzf80=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyhn0ue1Dwx2e3VhQmyP+uOHrFegqU83ikyUkQ+lkHxWxIuNF4R
-	3ce0I2OaovU9nBlJ2oibrM3zl++ZKC6GpqDM0RIuGPre4++Ix7c=
-X-Gm-Gg: ASbGncvpnnU/aX06vLcU81GFHixJ1zw8rTdmurVxj4eXrdjCxEdMoNuhndOlFgOQ4g+
-	oXxOd9j6ErWH5TFtVXnf02hJWCdPRrcy+gTcwL4QVKLUqSjllFNvlNamE+kfttvUTum7XMz9Pg5
-	780um28/GA/FwPC0U87sgpy2ySHa01NruKeQSNCz3jb0LnaHQ5LMHrQS++ZlQ6yd1Dj79CGzr1u
-	bkoAbqsZ+xi9A0mA/7/o2H7wDiczI3tlL0jbJJI1Y187ON9Ch4CFP+JWv2RTqylVk7kry6omv+l
-	iXjbAQ9M0fn9cDDeisURntmWAqXW91ZwCBNxa/MlldIM
-X-Google-Smtp-Source: AGHT+IF8/7u5sPPUnxUKs7/1U46BgrbqaNr+VNf0UHTBb569zkxnb+rV1+QWTbUu5Xora+LmVv4FIA==
-X-Received: by 2002:a17:902:d54f:b0:224:1074:63a0 with SMTP id d9443c01a7336-2292f9e62bfmr264543585ad.34.1743522341280;
-        Tue, 01 Apr 2025 08:45:41 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-2291eec6f91sm90062555ad.17.2025.04.01.08.45.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Apr 2025 08:45:40 -0700 (PDT)
-Date: Tue, 1 Apr 2025 08:45:39 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Breno Leitao <leitao@debian.org>
-Cc: Stefan Metzmacher <metze@samba.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>, Christoph Hellwig <hch@lst.de>,
-	Karsten Keil <isdn@linux-pingi.de>,
-	Ayush Sawal <ayush.sawal@chelsio.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Willem de Bruijn <willemb@google.com>,
-	David Ahern <dsahern@kernel.org>,
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-	Xin Long <lucien.xin@gmail.com>,
-	Neal Cardwell <ncardwell@google.com>,
-	Joerg Reuter <jreuter@yaina.de>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Robin van der Gracht <robin@protonic.nl>,
-	Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-	Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Alexandra Winter <wintera@linux.ibm.com>,
-	Thorsten Winkler <twinkler@linux.ibm.com>,
-	James Chapman <jchapman@katalix.com>,
-	Jeremy Kerr <jk@codeconstruct.com.au>,
-	Matt Johnston <matt@codeconstruct.com.au>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Remi Denis-Courmont <courmisch@gmail.com>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Jan Karcher <jaka@linux.ibm.com>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>, Jon Maloy <jmaloy@redhat.com>,
-	Boris Pismenny <borisp@nvidia.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	Martin Schiller <ms@dev.tdt.de>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
-	linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-can@vger.kernel.org, dccp@vger.kernel.org,
-	linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
-	mptcp@lists.linux.dev, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-	tipc-discussion@lists.sourceforge.net,
-	virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
-	bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
-	io-uring@vger.kernel.org
-Subject: Re: [RFC PATCH 0/4] net/io_uring: pass a kernel pointer via optlen_t
- to proto[_ops].getsockopt()
-Message-ID: <Z-wKI1rQGSgrsjbl@mini-arch>
-References: <cover.1743449872.git.metze@samba.org>
- <Z-sDc-0qyfPZz9lv@mini-arch>
- <39515c76-310d-41af-a8b4-a814841449e3@samba.org>
- <407c1a05-24a7-430b-958c-0ca78c467c07@samba.org>
- <ed2038b1-0331-43d6-ac15-fd7e004ab27e@samba.org>
- <Z+wH1oYOr1dlKeyN@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E893820E70E
+	for <linux-rdma@vger.kernel.org>; Tue,  1 Apr 2025 16:18:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.67
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743524295; cv=fail; b=N2GLlCwqzBFMzktdCxTS700GgruWpM9m+uUY1BndtJzs9amI5wp3TPz4e4jV94L+RiqpsYyF8UkhnzzvjoTkPfVRzMsN/w1sR06GS2kl6EEmVLaw2aK2wcyfxnCBeaFspjgbuXphxHShxv5slaDZeLPFuLvZYoYixVM8iO8SOD0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743524295; c=relaxed/simple;
+	bh=jI+ziQu2riwZ1UwJBTa0Cxt6PcJAHIE9b6PdhgbTMQU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=p9/RxG6I5MHBbL1G9ZY8AZMcckELdCvjBIhYRPDNBL4ItCxrVxxJUhKQ+l1XqzOXTSvDufSIU22PbDTVq//odNmf+BH1slc59BLp4aZL0pBtHYcA72pFz27Ns+/qqrUIDCWqhg6FIKUZROWMC1aNt8GUCrcHv2as3ewXs5nTXrs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=uDllGOEk; arc=fail smtp.client-ip=40.107.220.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=J5KNpG+LCCG33uigJYeTEpEA9Nd1r99QzMFcHWJubzkLzLwFeWGjcq6ErEImggWnWghZJidvHF6eofKLAm3ikfp2s6Xsu7DXj3a84Q86Gdsu1/37kZ6s+tof7Kw4UsWUOfzcO3r2BV4DKUOvJz+2NI/p8jPItpR7Yq//mgU2GoIvjMB5UNSSemI8HJEqRGbcrdZtBNPQOsj8J+gYfBF5DObHn6AS9k/YoJcax0I1wgoFv+wFkLaWcQKtzTuCSGa8SwnY1PH0nGAE+IMdf9JKrlfpZG99RIXmhPx1QZzQczK2IeqgZ1A516/63XUeoN58nEzs4bBaHyVcNjV7by/+uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Nztx4Aq3Bz46uqMM4pwQ8pAJQK/7IreI90tNEpGBoDU=;
+ b=cLD0oAORFI5GgplyD4ESmCR/K1N4oY7KEmTZoz7sYLCFdFVYOwm58ZgQKEXtTYUSPjUiSr+FTItTePz87SzLroWRlrTHWbxEr/N9X7mRlRqCqacoVrwkGzdB0Ked2rDJ1kpJP7zvI/vDkVUseueBdcYQZzQ1Ux4/qMFTF0eiW7aCT4Veizm8sUMXh+yxWAvv3vzfHeXo9UO+qPGMJ4KAIoTmKzBjno4nJWZtXbRKkpIMeeZi+JwDr+J2l6+kqCZtE07QzwmEQqQnsOtsIFS37s/SQyqPLzV8805WzpS0aX/JpIiA1srZGAV1atPr0DveN2Lfc9jrdj/3TjqquyuZ0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Nztx4Aq3Bz46uqMM4pwQ8pAJQK/7IreI90tNEpGBoDU=;
+ b=uDllGOEkb76p6yLP37uiEWa42U+/Mtxmuj29IJJqOXKYbuoQL5LdKR019jMM9+gpY1VJwXZza/UXeFk51DadxuzNlquaLoAAKd+6u8Pzk6xKES6qvZoTBXKv1Qk4GeWnw+2IcCSvMd7VqnryytabNzhStzUiv9EFpCdRZ9zn4i0tTEg/LCPxX/60xu5Il6RUmhg9QPK3lv8qdNcF9beFV39MSdJYYztXnyqpG8AfGjFkW7vM952beney9USqckfd4qe2QLoV5/jMqOgE3cfhbcStMGk6KVEyufkKwGAsVUnnoEd93ZG4oFK3nqCFLXinyN+J2/sp/djEElt8qNN81A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by SJ2PR12MB8831.namprd12.prod.outlook.com (2603:10b6:a03:4d0::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.48; Tue, 1 Apr
+ 2025 16:18:10 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8534.043; Tue, 1 Apr 2025
+ 16:18:10 +0000
+Date: Tue, 1 Apr 2025 13:18:06 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Jacob Moroni <jmoroni@google.com>
+Cc: leon@kernel.org, markzhang@nvidia.com, linux-rdma@vger.kernel.org,
+	edumazet@google.com
+Subject: Re: [PATCH] IB/cm: use rwlock for MAD agent lock
+Message-ID: <20250401161806.GA324422@nvidia.com>
+References: <20250220175612.2763122-1-jmoroni@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250220175612.2763122-1-jmoroni@google.com>
+X-ClientProxiedBy: BN9PR03CA0514.namprd03.prod.outlook.com
+ (2603:10b6:408:131::9) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Z+wH1oYOr1dlKeyN@gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|SJ2PR12MB8831:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3feec086-6c56-40a3-d5c4-08dd7138cb59
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?r84+h4atSZvVInVWDpDlOqPyzSd49f5TmDZXUx6Bk94nleydJXXtyoNJ0zZe?=
+ =?us-ascii?Q?LKKdcz4Kpv+8NsM/MA8H8mbmmkIw4VJ/c/mrut2KRj/dQRVw0Jk8MyzLute7?=
+ =?us-ascii?Q?hDHQp4oxNrkeZgGJnWZ4+wrbn0VyWtZqrX9uP3EXWncYZUqN+/gyw1b7yxKC?=
+ =?us-ascii?Q?kLXdyCyvQc6VddaI65R7N706xeI67kZX2n8kpfBko+hCDleBGEEwtScrT3ay?=
+ =?us-ascii?Q?1T4nknY6rxhJF35JLpC7Hd05JhR9naRd35l5ys6cB0DU05n8Uuj16g2bSLnc?=
+ =?us-ascii?Q?bC6Xkje7PadVxz5ENrvZDBMP93zblY3SCbavPJMdJkOQjtwNZKe3Jrrx/QC8?=
+ =?us-ascii?Q?QfHKyoZClPjYUnTkHfKigTsidbCILFKjN8FyKiNr8hdACpjdujRjYscYUfN+?=
+ =?us-ascii?Q?xtNbmS4WAiAlqae3RykZ/n6m5z0EImpjdgOj6GNGQZTPq+y9XQSxmWoVu4Vj?=
+ =?us-ascii?Q?Tsn7Lv2q3Un4HzhggKgyY/ZZiB/Q0/pE2MdHW0mDNj8RrSlV1wfxCvbvrFZj?=
+ =?us-ascii?Q?8kCTDcaUrqubeJNL+w/DF+VqiBxIjWo6k/+cpyfKWJYnCDC1hP6o994/AvMC?=
+ =?us-ascii?Q?RuwX3mNeRJqYPF5XXiN5+SChZ7sC/hh9d/nn6ACINCiIZP4w3/qnLGo1d+TO?=
+ =?us-ascii?Q?OvEMS0vYwaLwLe7dz05wHyimmpCrmIspuZujtcxKiYsNvVf7C/CWh0mWl/yY?=
+ =?us-ascii?Q?Gd/NGZC6FjU0h1d0ndRD7+2GjNfl48Airuh2f5jexnFTQRihem0Ru4mE73/6?=
+ =?us-ascii?Q?1bEa7q9gW2AmauQQzzfwyhSxjTKIvlzmQ/ikjS8zqbV5XuNiIJmDHzuI5Gbo?=
+ =?us-ascii?Q?xXGE3KVbqcnRSTUhOeMmdFRnheSvD8SGSz7+2gLUTBUUMVBetaKg8Tcf0Rjb?=
+ =?us-ascii?Q?LwIO13jC2M+sF39uWlg8VBXPYWkYDMFBbxOwcxAXzwKEKxzWWrHN9aUuwpqo?=
+ =?us-ascii?Q?TykaWZioXYjMk8SKRWIu35Yxg6oWbXCyXs4r5I9j7VxEBQoMCqOZAEByVO6s?=
+ =?us-ascii?Q?n2c5vH8+BSEb5hVsFc0M/U3KmC/D90y42TlPsglEuCdc44cmTIdM31piV/3F?=
+ =?us-ascii?Q?+AEd8jZGOBP/KHxIb9uSMtheN3PPgr+EEVLWJVCXOws/ji2Q0RCFKwpF7UWC?=
+ =?us-ascii?Q?A4PgKv1e3JtUrSoWGshfkVbcN+SDkY2f1gVjDEEdc4DmHKR9wh4ZYr0vhxxd?=
+ =?us-ascii?Q?/qhAUSKlQkQLM9VSF2Q6V+ExshT/F/tWkUGDaRXnbsA/BMnn7fZoUKUOK4hA?=
+ =?us-ascii?Q?xKREPQ2mJvCDJ2OEW1dr3vGKMq+ecDkq4RpTsFjOtcpDsXudWNHuv8kIajN+?=
+ =?us-ascii?Q?wXHaHrptd9weJDB5X2suEQR77Ni+bQY/OuuOBQnJpk4eBDZPpKZVcBUvDXGh?=
+ =?us-ascii?Q?SupzbN6hxz43FedNlEB49+gTCm2C4wKMtHo10aNmlBUf1UeELgIqQKegJsz4?=
+ =?us-ascii?Q?XwxKE8v0Eyg=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?d1fDyJOFR2Qkw3p5WVDyQrZ/EWKt1LrGe0qscYB76ifZuyEFEgvLOkTC1ZyT?=
+ =?us-ascii?Q?a82UO6i/JE5BCyCTACkuAi4w70hQWqIaT63cGP79xNOLJmj1T927XudsZwyE?=
+ =?us-ascii?Q?Rivt69LpdvuEdX3XtuEfj6djAFCehSoDS4hEiccxOzUXYUTBJBcriXwfkOZ8?=
+ =?us-ascii?Q?Lhqf6JRVIdWsVEGa1Q2vdC+oAezUENrKct4otrpgTDqWw27gAxvnyYMLmvII?=
+ =?us-ascii?Q?la2tF3RV9LZE1rwghYRsJFFwxYEfRvW7XPomy6j1vTQOpf5Jljl/rvN9AmpJ?=
+ =?us-ascii?Q?NzjszMKNDmsnOCI1HQoUjyDorWRFkqEcjIxi7dK8s48uaDwhgIn6NlFhTNEz?=
+ =?us-ascii?Q?3mBIJz7wvNI98dF12Ff3OtVulY/MoR0C9e8dkffW5M2H+PNLwuMN5f7BJkHM?=
+ =?us-ascii?Q?hnTczxbBOJe8rJUmZSmKFV9TeKyxCT2l1ZU/nreVkRm5+4Jm9KmkyFxzMiEq?=
+ =?us-ascii?Q?OSaruYyuVHBSijsmNglz1AN7IsVafFXUiYjrqYRNFiuNnubLqxawbmopayUK?=
+ =?us-ascii?Q?iwa2laRnZRR7DSegXrgBMi5N4cJ5Z2hf4sja9U9lIaTy3LEYKW7F7V445XS0?=
+ =?us-ascii?Q?01TWzUeTzlqJ8MQ4zLXEqP3qJrOZQL4z7Y0kg3pxEJDYbJUWrOuZh1o4vjny?=
+ =?us-ascii?Q?0swPFAt3qDS2aupNvlwxMQXUEASfTFwnq6LK8zQuFPrqmBzOIkyRlKw2AdwR?=
+ =?us-ascii?Q?Av70h7/yyoVw9TYmwxY3DaS+VulXrK4Kab9iwlzh1/wAd/cuRRtuSkPJvt90?=
+ =?us-ascii?Q?bE8v3txs5fil35haTpC9pP/4BKOqwfLK6D89kbESkMA12HwCxzpnh5CCkOcr?=
+ =?us-ascii?Q?GgFAwK5C/xoHa7saJEpHC9WsALLzCrCkWCthvhR9/NWAsUQrvUCbpsRpdHlE?=
+ =?us-ascii?Q?CkwAbVKYmn7okCOkm+g3Pw+NLfRpbNfwOH4ld4qsCOQlnz3iIrw7aHi9m//J?=
+ =?us-ascii?Q?S/gK18l1iC+KAzoeIzBOemw9shbE8DKKXyg00zFfzmvFmE4OoAR0mL+gGDyV?=
+ =?us-ascii?Q?KgTTaF1RQdtLHmCmYC1qZNCeuZ1+5biPAmmX6zwDnq35wXx/1X6dGfqmqACS?=
+ =?us-ascii?Q?B16q2wsawdq1E4zXXdyHHTSNBju+PVOX2PXx5Pd9VDfh96k/StL8kzmFCdWF?=
+ =?us-ascii?Q?dGUgi34wyQybrPQEyIgvbn4b3vZkOHuJVsAGm6TLBXNzHnpfkGauTI4mtYmE?=
+ =?us-ascii?Q?ssPmykKct3fargQVBIwNi0SzzYwFTERSmU8dskfEXX6+r/I10P3kH0i860cE?=
+ =?us-ascii?Q?hT+pVZ3jPK0h64qAmpEBD9zGIxYAT/O7Q5uVxdZoyFw0sPne4I6cJnl3AH+5?=
+ =?us-ascii?Q?19fW7erVsTleYnO5iqRnRwBsXdcvJaZo/QktUQ3p+XF7BUo32t1P8CdA645X?=
+ =?us-ascii?Q?X53Vbpj72FCu6qDV/fAa5Xrw5Sd6Z88qMfbWXhbi/jwe/XXvuD6weRNzrEyJ?=
+ =?us-ascii?Q?53pyS9nGxVSGfqWcNG+3SU9MWWPW0eMSvvn4o3vindY/1/BmOr9LZZvp5NDq?=
+ =?us-ascii?Q?La0Jix2ty+/NigUrTv9ew5oDFtpX8tQdROCiPBv0XnvG+ODB50g3ZDbjP6CB?=
+ =?us-ascii?Q?7w5GhJD08TbovlugejAGSqFtQW+jvzwuqR9iWdxd?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3feec086-6c56-40a3-d5c4-08dd7138cb59
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2025 16:18:10.4452
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cSMa652o70VTtJD19lYfNvpI2X6Vb1B/2IxQ052EO3B6tsjSPup0SXYkMh3vsJBv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8831
 
-On 04/01, Breno Leitao wrote:
-> On Tue, Apr 01, 2025 at 03:48:58PM +0200, Stefan Metzmacher wrote:
-> > Am 01.04.25 um 15:37 schrieb Stefan Metzmacher:
-> > > Am 01.04.25 um 10:19 schrieb Stefan Metzmacher:
-> > > > Am 31.03.25 um 23:04 schrieb Stanislav Fomichev:
-> > > > > On 03/31, Stefan Metzmacher wrote:
-> > > > > > The motivation for this is to remove the SOL_SOCKET limitation
-> > > > > > from io_uring_cmd_getsockopt().
-> > > > > > 
-> > > > > > The reason for this limitation is that io_uring_cmd_getsockopt()
-> > > > > > passes a kernel pointer as optlen to do_sock_getsockopt()
-> > > > > > and can't reach the ops->getsockopt() path.
-> > > > > > 
-> > > > > > The first idea would be to change the optval and optlen arguments
-> > > > > > to the protocol specific hooks also to sockptr_t, as that
-> > > > > > is already used for setsockopt() and also by do_sock_getsockopt()
-> > > > > > sk_getsockopt() and BPF_CGROUP_RUN_PROG_GETSOCKOPT().
-> > > > > > 
-> > > > > > But as Linus don't like 'sockptr_t' I used a different approach.
-> > > > > > 
-> > > > > > @Linus, would that optlen_t approach fit better for you?
-> > > > > 
-> > > > > [..]
-> > > > > 
-> > > > > > Instead of passing the optlen as user or kernel pointer,
-> > > > > > we only ever pass a kernel pointer and do the
-> > > > > > translation from/to userspace in do_sock_getsockopt().
-> > > > > 
-> > > > > At this point why not just fully embrace iov_iter? You have the size
-> > > > > now + the user (or kernel) pointer. Might as well do
-> > > > > s/sockptr_t/iov_iter/ conversion?
-> > > > 
-> > > > I think that would only be possible if we introduce
-> > > > proto[_ops].getsockopt_iter() and then convert the implementations
-> > > > step by step. Doing it all in one go has a lot of potential to break
-> > > > the uapi. I could try to convert things like socket, ip and tcp myself, but
-> > > > the rest needs to be converted by the maintainer of the specific protocol,
-> > > > as it needs to be tested. As there are crazy things happening in the existing
-> > > > implementations, e.g. some getsockopt() implementations use optval as in and out
-> > > > buffer.
-> > > > 
-> > > > I first tried to convert both optval and optlen of getsockopt to sockptr_t,
-> > > > and that showed that touching the optval part starts to get complex very soon,
-> > > > see https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=141912166473bf8843ec6ace76dc9c6945adafd1
-> > > > (note it didn't converted everything, I gave up after hitting
-> > > > sctp_getsockopt_peer_addrs and sctp_getsockopt_local_addrs.
-> > > > sctp_getsockopt_context, sctp_getsockopt_maxseg, sctp_getsockopt_associnfo and maybe
-> > > > more are the ones also doing both copy_from_user and copy_to_user on optval)
-> > > > 
-> > > > I come also across one implementation that returned -ERANGE because *optlen was
-> > > > too short and put the required length into *optlen, which means the returned
-> > > > *optlen is larger than the optval buffer given from userspace.
-> > > > 
-> > > > Because of all these strange things I tried to do a minimal change
-> > > > in order to get rid of the io_uring limitation and only converted
-> > > > optlen and leave optval as is.
-> > > > 
-> > > > In order to have a patchset that has a low risk to cause regressions.
-> > > > 
-> > > > But as alternative introducing a prototype like this:
-> > > > 
-> > > >          int (*getsockopt_iter)(struct socket *sock, int level, int optname,
-> > > >                                 struct iov_iter *optval_iter);
-> > > > 
-> > > > That returns a non-negative value which can be placed into *optlen
-> > > > or negative value as error and *optlen will not be changed on error.
-> > > > optval_iter will get direction ITER_DEST, so it can only be written to.
-> > > > 
-> > > > Implementations could then opt in for the new interface and
-> > > > allow do_sock_getsockopt() work also for the io_uring case,
-> > > > while all others would still get -EOPNOTSUPP.
-> > > > 
-> > > > So what should be the way to go?
-> > > 
-> > > Ok, I've added the infrastructure for getsockopt_iter, see below,
-> > > but the first part I wanted to convert was
-> > > tcp_ao_copy_mkts_to_user() and that also reads from userspace before
-> > > writing.
-> > > 
-> > > So we could go with the optlen_t approach, or we need
-> > > logic for ITER_BOTH or pass two iov_iters one with ITER_SRC and one
-> > > with ITER_DEST...
-> > > 
-> > > So who wants to decide?
-> > 
-> > I just noticed that it's even possible in same cases
-> > to pass in a short buffer to optval, but have a longer value in optlen,
-> > hci_sock_getsockopt() with SOL_BLUETOOTH completely ignores optlen.
-> > 
-> > This makes it really hard to believe that trying to use iov_iter for this
-> > is a good idea :-(
+On Thu, Feb 20, 2025 at 05:56:12PM +0000, Jacob Moroni wrote:
+> In workloads where there are many processes establishing
+> connections using RDMA CM in parallel (large scale MPI),
+> there can be heavy contention for mad_agent_lock in
+> cm_alloc_msg.
 > 
-> That was my finding as well a while ago, when I was planning to get the
-> __user pointers converted to iov_iter. There are some weird ways of
-> using optlen and optval, which makes them non-trivial to covert to
-> iov_iter.
+> This contention can occur while inside of a spin_lock_irq
+> region, leading to interrupts being disabled for extended
+> durations on many cores. Furthermore, it leads to the
+> serialization of rdma_create_ah calls, which has negative
+> performance impacts for NICs which are capable of processing
+> multiple address handle creations in parallel.
+> 
+> The end result is the machine becoming unresponsive, hung
+> task warnings, netdev TX timeouts, etc.
+> 
+> Since the lock appears to be only for protection from
+> cm_remove_one, it can be changed to a rwlock to resolve
+> these issues.
+> 
+> Reproducer:
+> 
+> Server:
+>   for i in $(seq 1 512); do
+>     ucmatose -c 32 -p $((i + 5000)) &
+>   done
+> 
+> Client:
+>   for i in $(seq 1 512); do
+>     ucmatose -c 32 -p $((i + 5000)) -s 10.2.0.52 &
+>   done
+> 
+> Fixes: 76039ac9095f5ee5 ("IB/cm: Protect cm_dev, cm_ports and mad_agent with kref and lock")
+> Signed-off-by: Jacob Moroni <jmoroni@google.com>
+> ---
+>  drivers/infiniband/core/cm.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 
-Can we ignore all non-ip/tcp/udp cases for now? This should cover +90%
-of useful socket opts. See if there are any obvious problems with them
-and if not, try converting. The rest we can cover separately when/if
-needed.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+
+Though I strongly encourage someone to change the spinlocks in this
+area to mutex :)
+
+Jason
 
