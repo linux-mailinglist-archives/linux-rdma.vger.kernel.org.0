@@ -1,86 +1,53 @@
-Return-Path: <linux-rdma+bounces-9056-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9057-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56660A7758D
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 09:46:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92E47A77637
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 10:19:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16DFF1888D60
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 07:46:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFAA4188C1A4
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 08:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63EFF1E9B34;
-	Tue,  1 Apr 2025 07:45:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49DAC1E9B39;
+	Tue,  1 Apr 2025 08:19:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MwMKzKWa"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="RV7b9Dch"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B9781E9B1B
-	for <linux-rdma@vger.kernel.org>; Tue,  1 Apr 2025 07:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF2781E261F;
+	Tue,  1 Apr 2025 08:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743493517; cv=none; b=ehQev9SlpZHNffijqh20lzf2YYbHPl80AOSzFIizxBQsWKLbfphzmEgv5EmDg5W/3GyhECJaBSVJ2Uw15zHkbfj9sYwnxbiRIj+fS+cL5gITtUbVPksmmWVlaqaN9U/qUzT8x6z2ULfiuHvJU8j6K+4+M1ZGNN5GcH2pV4bJzhA=
+	t=1743495560; cv=none; b=n+nNNrhEm/i30t4yqDoBPP8TVg4t84feV/cgPmcOdnJCaxYwgPnDF5aVbaFyPcD+ik26JA/vDNmnSieQhQ629qTfwvgvSnKX8V6HBnXWFple3x2SPkywFWjObvg4s5j8GVgA8rJoc70lNk5qPU6pSguAON/Auddyw2k44cfRpEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743493517; c=relaxed/simple;
-	bh=NJg9loH5DPwUT9RIGGEOKSUIUmJpxXqcl7s9uyAryf0=;
+	s=arc-20240116; t=1743495560; c=relaxed/simple;
+	bh=qlsGP9nYpg9ECwWOf+7L3C+s5nRg0js3AhgwMO+0GnI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HE2yHRfUQSTvvUQYRqUJNWc3TscXC2Lac9VcjCFFF/1K+Qrzi390CEbZbK/SeXwUMPWyoSvmjVgvLzWhGEvSHqCW4NCZp7MtBObtbSA+2gx1Kmuu7aT5KGuFR8JRanabgtiHU/MmA3/jKcHRUAxWbh4fqoV4kljUiLTstaKunyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MwMKzKWa; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1743493514;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uPVEmBMiCehllT7+kdVA6tb5Y19MZOZXc3+AWueTqfA=;
-	b=MwMKzKWaTwMWMDOSrDwMytvj4aEHcCL4aHPIGyOp2iTmsN/x1tBaUymo4MVyqhU53gRT5N
-	4xjIj9GLwcho2XWv6Atp+lbrEoG17Ya9zEws8w22yHTirilWrVVK+p7BVnFPjjanXqeAJf
-	TI1Y+CURshlWrP/WIrMJNQwWix4sr7c=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-121-szj8RghtPdmNMzzNRJvDLw-1; Tue, 01 Apr 2025 03:45:13 -0400
-X-MC-Unique: szj8RghtPdmNMzzNRJvDLw-1
-X-Mimecast-MFC-AGG-ID: szj8RghtPdmNMzzNRJvDLw_1743493512
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3913f97d115so2500898f8f.0
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Apr 2025 00:45:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743493512; x=1744098312;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uPVEmBMiCehllT7+kdVA6tb5Y19MZOZXc3+AWueTqfA=;
-        b=hl5Su4cICEl+M91lAQACGKKR7XVQrIEBXpqpxaqzSevg/7M/o+lFd9hS1/1D7JKtFD
-         2T/NEf3anehauU5GbV33gVtzc11nrv3rp064j6w8l4LLag9SGz7ClRB8mfQ6xC81xnjY
-         mgjW98yPauyc0JEQ5tn+Ts/er8h2JURwMN7YwNGE18ublq3rzS/jLU64bEXFnai7wzPo
-         FjOyR2btJVfwU/75i563mtp+MdJMlspklKdxujBl7R0Pgy07c7pZ6nNF17wHGJIQjhCV
-         mw6BGVacRGneTU/RjuxijJz12KH4mdCXM2biPjcGl14niOW2lgtme8yrpUkRbvrhdsur
-         ib0g==
-X-Forwarded-Encrypted: i=1; AJvYcCXe6PVeajmIgAxn28Bahf2pCQBm8cKiwgQTh8oNR78tNcqGdqDEe5vh6O5sHHJyTd+vNnxWPaHKOybD@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzk7RsUreNDxGqCzlJ0vYBSRlKka4iZBy/H61pQZzAnSfj8az7/
-	Y5RrOrjHxF60sMhvYMtLXFet2if297kavtaIHPdf++PBoCBRBBEpor5QruVRpYWuAbFKvdgiVaK
-	iTRidgC9PjYcIeYtmOsqo9ve2p0wcaEmokayltBZ/7cHdR1Ii2uning9o88w=
-X-Gm-Gg: ASbGncvrmRO6yZg8BXMZ/YAn1hLkG7UNZBaQf5miD9nlMD2AcdoSidvj3A4pleMUy3q
-	objEsxV9Uvn2WSwOXGoe6V+6B7JnHDZ+4DbXnpGUDT86L6AejFibBeY7/dwEiwsQex31mM5AFxo
-	U8nVUjd2RKI2tA4hyaqvaswbncR5lLEwz3PzT0TZJrwYlZFkMLlifC7vTG7Oq9d9T7aK5Ic0Yh3
-	a9TtMt/4gGB/dP0tK1ccMBjK2/mPjpd5JNaBjo3YpT5ec7A2YzkDqny76QHkuXibiWV/O4OGyIN
-	FIbwWm601OslurYZR6l74AtJWlarHiQOsBz6Yjz9fwk8+A==
-X-Received: by 2002:a05:6000:1448:b0:399:6d6a:90d9 with SMTP id ffacd0b85a97d-39c0c136bd4mr13298964f8f.18.1743493511674;
-        Tue, 01 Apr 2025 00:45:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFpGjDvgRuv3rPh+sZzuIo7a1UqtEX2dbLL0x3yl3Qc1zwqWs0cDqxIOuutwoJPuKYJIFAmdw==
-X-Received: by 2002:a05:6000:1448:b0:399:6d6a:90d9 with SMTP id ffacd0b85a97d-39c0c136bd4mr13298938f8f.18.1743493511262;
-        Tue, 01 Apr 2025 00:45:11 -0700 (PDT)
-Received: from [192.168.88.253] (146-241-68-231.dyn.eolo.it. [146.241.68.231])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c0b6630a3sm13423505f8f.30.2025.04.01.00.45.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Apr 2025 00:45:10 -0700 (PDT)
-Message-ID: <d9a7af40-84f9-446e-a708-d989b322a675@redhat.com>
-Date: Tue, 1 Apr 2025 09:45:08 +0200
+	 In-Reply-To:Content-Type; b=WYKJJuzxEtWepFLwZN/Q37B3sKEBndoZLi2DNj37vrhJ3R7/q8L7Z8+b97YfGewB2ro8JpzZTvWIPnriDMjMPFlA99w1L4AKoSXmPXvHFN+Xu7DtRANP0Lo4Sf5HqbCz9xkcqvH+nuyZBU/P7nbbAunoEwCbp96hgBugHTud0ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=RV7b9Dch; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=From:Cc:To:Date:Message-ID;
+	bh=vJej1gym8PffvPJkpcAVY4oHxH7PtcR6PiojZNvFt9M=; b=RV7b9DchSX6L/1eGwqFQrmPoMe
+	hf0+MvUSe77ZEvXnOMKdaDfI72KNjrnBHp4+fOyw74E/OKn4qz/xPPhyS7jysMN32ED0nZFh+bSWt
+	qNTdeC9sUxWNSlUy3fPjumM8AyZcbA0ZmlEpLcU9V+2QwUoXZ7eQfcl2nXK+BF86z5eiOUe5W+1UA
+	0QlMB9Ew/iDDfZQz1e7CZjakP0NXtY+bs+HEsN/fv3tTiQvAZhGTsamRKtNDHQAO89fEIE3KeBJf8
+	xcd8vRDXXIUCf417uDpOhlMncOdHNgBrwgFPS3pKv66oe2Gxh7inZx1qK9sSIbFAyQV3hRiMvLECg
+	thVcgrdmcYk8AM8eIrag2xACAnicTWSHEjTexxvojrRysCeGDc29D6smjQ2phM7X9otv3Fm5Phnsk
+	JXkUjKNwFhUfQWuhXXq7lO+xH6aXarbwoeT3Oz7x9XbnXQJv7YBaLBY2zEYjoaVXXS037eARPx8fj
+	gfrHfFqPkn/4/n7sGmBOfAQs;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1tzWpu-007dNX-35;
+	Tue, 01 Apr 2025 08:19:07 +0000
+Message-ID: <39515c76-310d-41af-a8b4-a814841449e3@samba.org>
+Date: Tue, 1 Apr 2025 10:19:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -88,71 +55,136 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Concurrent slab-use-after-free in netdev_next_lower_dev
-To: Dylan Wolff <wolffd@comp.nus.edu.sg>, Wenjia Zhang
- <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
+Subject: Re: [RFC PATCH 0/4] net/io_uring: pass a kernel pointer via optlen_t
+ to proto[_ops].getsockopt()
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ Jens Axboe <axboe@kernel.dk>, Pavel Begunkov <asml.silence@gmail.com>,
+ Breno Leitao <leitao@debian.org>, Jakub Kicinski <kuba@kernel.org>,
+ Christoph Hellwig <hch@lst.de>, Karsten Keil <isdn@linux-pingi.de>,
+ Ayush Sawal <ayush.sawal@chelsio.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Kuniyuki Iwashima <kuniyu@amazon.com>, Willem de Bruijn
+ <willemb@google.com>, David Ahern <dsahern@kernel.org>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+ Xin Long <lucien.xin@gmail.com>, Neal Cardwell <ncardwell@google.com>,
+ Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>,
+ Marc Kleine-Budde <mkl@pengutronix.de>,
+ Robin van der Gracht <robin@protonic.nl>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+ Alexander Aring <alex.aring@gmail.com>,
+ Stefan Schmidt <stefan@datenfreihafen.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Alexandra Winter <wintera@linux.ibm.com>,
+ Thorsten Winkler <twinkler@linux.ibm.com>,
+ James Chapman <jchapman@katalix.com>, Jeremy Kerr <jk@codeconstruct.com.au>,
+ Matt Johnston <matt@codeconstruct.com.au>,
+ Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>,
+ Geliang Tang <geliang@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Remi Denis-Courmont <courmisch@gmail.com>,
+ Allison Henderson <allison.henderson@oracle.com>,
+ David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
+ Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
  "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
- Wen Gu <guwen@linux.alibaba.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Simon Horman <horms@kernel.org>, linux-rdma@vger.kernel.org,
- linux-s390@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Jiacheng Xu <3170103308@zju.edu.cn>
-References: <CAJeEPuJHMKo9T3GcAQH2+X3Rke3b4YH3_S6FmnBp4tQqLciYxA@mail.gmail.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <CAJeEPuJHMKo9T3GcAQH2+X3Rke3b4YH3_S6FmnBp4tQqLciYxA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+ Wen Gu <guwen@linux.alibaba.com>, Jon Maloy <jmaloy@redhat.com>,
+ Boris Pismenny <borisp@nvidia.com>, John Fastabend
+ <john.fastabend@gmail.com>, Stefano Garzarella <sgarzare@redhat.com>,
+ Martin Schiller <ms@dev.tdt.de>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
+ linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org,
+ linux-s390@vger.kernel.org, mptcp@lists.linux.dev,
+ linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+ linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net,
+ virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
+ bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
+ io-uring@vger.kernel.org
+References: <cover.1743449872.git.metze@samba.org>
+ <Z-sDc-0qyfPZz9lv@mini-arch>
+Content-Language: en-US, de-DE
+From: Stefan Metzmacher <metze@samba.org>
+In-Reply-To: <Z-sDc-0qyfPZz9lv@mini-arch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 3/31/25 3:00 PM, Dylan Wolff wrote:
-> From the report, it looks like the net_device is freed at the end of an
-> rtnl critical section in netdev_run_todo. At the time of the crash, the
-> *use* thread has acquired rtnl_lock() in smc_vlan_by_tcpsk. The crash
-> occurred at the line preceded by `>>>` below in 6.13 rc4 while iterating
-> over devices with netdev_walk_all_lower_dev:
+Am 31.03.25 um 23:04 schrieb Stanislav Fomichev:
+> On 03/31, Stefan Metzmacher wrote:
+>> The motivation for this is to remove the SOL_SOCKET limitation
+>> from io_uring_cmd_getsockopt().
+>>
+>> The reason for this limitation is that io_uring_cmd_getsockopt()
+>> passes a kernel pointer as optlen to do_sock_getsockopt()
+>> and can't reach the ops->getsockopt() path.
+>>
+>> The first idea would be to change the optval and optlen arguments
+>> to the protocol specific hooks also to sockptr_t, as that
+>> is already used for setsockopt() and also by do_sock_getsockopt()
+>> sk_getsockopt() and BPF_CGROUP_RUN_PROG_GETSOCKOPT().
+>>
+>> But as Linus don't like 'sockptr_t' I used a different approach.
+>>
+>> @Linus, would that optlen_t approach fit better for you?
 > 
-> ```
-> static struct net_device *netdev_next_lower_dev(struct net_device *dev,
-> struct list_head **iter)
-> {
-> struct netdev_adjacent *lower;
+> [..]
 > 
->>>> lower = list_entry((*iter)->next, struct netdev_adjacent, list);
+>> Instead of passing the optlen as user or kernel pointer,
+>> we only ever pass a kernel pointer and do the
+>> translation from/to userspace in do_sock_getsockopt().
 > 
-> if (&lower->list == &dev->adj_list.lower)
-> return NULL;
-> 
-> *iter = &lower->list;
-> 
-> return lower->dev;
-> }
-> ```
+> At this point why not just fully embrace iov_iter? You have the size
+> now + the user (or kernel) pointer. Might as well do
+> s/sockptr_t/iov_iter/ conversion?
 
-Please share the decoded syzkaller/kasan splat in plaintext instead of
-describing it in natural language, and please avoid attachments unless
-explicitly asked for.
+I think that would only be possible if we introduce
+proto[_ops].getsockopt_iter() and then convert the implementations
+step by step. Doing it all in one go has a lot of potential to break
+the uapi. I could try to convert things like socket, ip and tcp myself, but
+the rest needs to be converted by the maintainer of the specific protocol,
+as it needs to be tested. As there are crazy things happening in the existing
+implementations, e.g. some getsockopt() implementations use optval as in and out
+buffer.
 
-Also, can you reproduce the issue on top of the current net tree?
+I first tried to convert both optval and optlen of getsockopt to sockptr_t,
+and that showed that touching the optval part starts to get complex very soon,
+see https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=141912166473bf8843ec6ace76dc9c6945adafd1
+(note it didn't converted everything, I gave up after hitting
+sctp_getsockopt_peer_addrs and sctp_getsockopt_local_addrs.
+sctp_getsockopt_context, sctp_getsockopt_maxseg, sctp_getsockopt_associnfo and maybe
+more are the ones also doing both copy_from_user and copy_to_user on optval)
 
-> This looks to me like it is an issue with reference counting; I see that
-> netdev_refcnt_read is checked in netdev_run_todo before the device is
-> freed, but I don't see anything in netdev_walk_all_lower_dev /
-> netdev_next_lower_dev that is incrementing netdev_refcnt_read when it is
-> iterating over the devices. I'm guessing the fix is to either add reference
-> counting to netdev_walk_all_lower_dev or to use a different,
-> concurrency-safe iterator over the devices in the caller (smc_vlan_by_tcpsk
-> ).
-> 
-> Could someone confirm if I am on the right track here? If so I am happy to
-> try to come up with the patch.
+I come also across one implementation that returned -ERANGE because *optlen was
+too short and put the required length into *optlen, which means the returned
+*optlen is larger than the optval buffer given from userspace.
 
-netdev_walk_all_lower_dev() should not need additional refcounting, as
-it is traversing the list under rtnl lock, and device should be removed
-from the adjacency list  before the actual device free under such lock, too.
+Because of all these strange things I tried to do a minimal change
+in order to get rid of the io_uring limitation and only converted
+optlen and leave optval as is.
 
-Thanks,
+In order to have a patchset that has a low risk to cause regressions.
 
-Paolo
+But as alternative introducing a prototype like this:
 
+         int (*getsockopt_iter)(struct socket *sock, int level, int optname,
+                                struct iov_iter *optval_iter);
+
+That returns a non-negative value which can be placed into *optlen
+or negative value as error and *optlen will not be changed on error.
+optval_iter will get direction ITER_DEST, so it can only be written to.
+
+Implementations could then opt in for the new interface and
+allow do_sock_getsockopt() work also for the io_uring case,
+while all others would still get -EOPNOTSUPP.
+
+So what should be the way to go?
+
+metze
 
