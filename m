@@ -1,284 +1,246 @@
-Return-Path: <linux-rdma+bounces-9085-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9086-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73B84A77EC3
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 17:20:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A01E4A77F0C
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 17:36:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF9843AC34F
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 15:20:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 966FA16CB5D
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 15:36:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A7F20AF66;
-	Tue,  1 Apr 2025 15:20:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ReDGU0NG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE1A20B1F9;
+	Tue,  1 Apr 2025 15:36:01 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2088.outbound.protection.outlook.com [40.107.244.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 440EF20487D;
-	Tue,  1 Apr 2025 15:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.88
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743520825; cv=fail; b=imscAnWl21j3sCvSI9Dwoq/zy1nP6bvsOq4qOsr2OgqkxcbrBr/tN5uG7jvcYOHM5u/u3hgL1gVe7ZVV8vAIyCE4I1TKoKqLaa4WEtFtDCpiN/LuSczq05QVC8wkFuk3XSk80BchoHHU74FTNl2a1+ea3pCJrV/uVC/ysuwchcs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743520825; c=relaxed/simple;
-	bh=2EqdwAmGiE9IP6zvrAAOIBLTDRu/lcFaaUIhQ3bpq84=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=BV5iLxpvcF0/Gxa5oQavpuBMK2cydFS67Fs6v78cTuLA/grEaxzcrWxg6OLYGGrUo78kt+w3cHMaGIo0BDmQZQMEaXKjF4oDm/hk/TexlKMb+j6WRrhvXb6yEeoa42Larvlb1ESyfzoJNZis/ix4ShnP7uM3NXsHCpP/QR+6X/k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ReDGU0NG; arc=fail smtp.client-ip=40.107.244.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=enw3VNB7BZ2j5O5/kwW5EEU5bfr1RBj6D3to7iTN+MT+uv5ivRGMpSDvlVy8XS7xWAEvmQy604cqSWIwThi5KdvL91CGxzrL8nUjPEBQ6P517arbUk9YSOX8wAwJGIwe7nYb6W8T8Hj6Tn6uux/tEQ3r3rt5IqaqD4+u58ZpHO/3hhYiznB/myDiw8xqYM5/Gt0bUavpoZEKsqr0mlWGxz06ou5IjOeggkFnpost7Q+WoN76kBmu2h+c9nkCt9CWOuhp79+m+rtkV//JA8SeEHf8lb++mJd1pUObK5AUGy0SBo2mfGFXKtYsID7iaUWkNDJIZOT9mPmvMASGLz1xjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OYUYQCIc/m8bE2TvPmozVHva91UuijpFhZzGxXkYPAI=;
- b=L2wutfm0T8tnHQZZ1jscMh9LzyWPF2v/Cxq58NkHR3xfLeEfSPJ2FylkPTPf24pqgIY6TOzdbFh7SacD1iO7JTfjTWdDZmMN9okPZSLVWxfZeuehAXW73OL4hhtmJhylXhBcl2J0KDklHrfc4zIAQlwz6F74KqS3eibCnjTMH/EPqZQKRqFTUyFQsunG7c6rzYRoqRXE8K0vJgi3pS1P5ofmK4aipqCwA902Y1nsbCO71hrLTZdqoFUzKX5wkZ0jmd+V7E3SB+pKf1/iiDkDpz+GRAzsrbcm8tADkuW3zmaV++8W/EEK2Snq7L8V8R4CcxaDCiyRaMQbiDFZsX8oVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OYUYQCIc/m8bE2TvPmozVHva91UuijpFhZzGxXkYPAI=;
- b=ReDGU0NGvg7NTlm7/teXQ/EBIdSM7/dJKkKOjUFrYwvicz/Tem7t54YkFIgTqFnuF3kCZAbNAvRqocWZowskyQQze2ECXiVk7MFJH1Lr5entsezehDCVKoFNCERyGQR3EztPzCd6k1vep7Pl6ENeMaRJ+HArHT2L5FPjm3TfsVc8h8sDTWXlDndhWTtJMK6IUU5TGHXD7c9+kkTT1Cg2hA6XughKDova4USU1czVTDkrRu09woTZ4WOjt0pp0blJubIb/+k6VN8lCHBI7u0WLGB8R8+M4sSI60FsPIvuyjxC+rl3PYf4GX3yzqo5rM7kftgwhl59oEKraETqKum7Xg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB8583.namprd12.prod.outlook.com (2603:10b6:610:15f::12)
- by CH2PR12MB4232.namprd12.prod.outlook.com (2603:10b6:610:a4::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.54; Tue, 1 Apr
- 2025 15:20:19 +0000
-Received: from CH3PR12MB8583.namprd12.prod.outlook.com
- ([fe80::32a8:1b05:3bcf:4e4]) by CH3PR12MB8583.namprd12.prod.outlook.com
- ([fe80::32a8:1b05:3bcf:4e4%5]) with mapi id 15.20.8534.045; Tue, 1 Apr 2025
- 15:20:19 +0000
-Message-ID: <84bf60b7-2d7e-4549-8e81-bc35efeef069@nvidia.com>
-Date: Tue, 1 Apr 2025 18:20:09 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] RDMA/mlx5: hide unused code
-To: Mark Bloch <mbloch@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Arnd Bergmann <arnd@kernel.org>
-Cc: Leon Romanovsky <leon@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Tariq Toukan <tariqt@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
- Moshe Shemesh <moshe@nvidia.com>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250328131022.452068-1-arnd@kernel.org>
- <20250328131513.GB20836@ziepe.ca>
- <a754f37e-d9ea-4fba-820e-cc56204d954f@nvidia.com>
-Content-Language: en-US
-From: Patrisious Haddad <phaddad@nvidia.com>
-In-Reply-To: <a754f37e-d9ea-4fba-820e-cc56204d954f@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0237.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:e9::12) To CH3PR12MB8583.namprd12.prod.outlook.com
- (2603:10b6:610:15f::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 857491E6DC5;
+	Tue,  1 Apr 2025 15:35:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743521761; cv=none; b=rMdOdmQipi6+zVEdvCYCP8L3frHUY/dhbYqfUzPwxrJ66pzbVCEaPDAgU4wSk+k16dRNBICSL7xCrxsewzUzhdfd8fVt0oS94Da1vXC1n18uvR5TBY9shXQsmw234mQU+qMWIarJN124oUnpPQADsms8rITW6wQCVMUf/TbYDB0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743521761; c=relaxed/simple;
+	bh=pJCOvKSCNP3r+h21HV73SeQ/4Pz+Jso9BZLFQjDEpRM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KNCBCnOpPc14O6vLlWsOgbb0w7kz99bd98PQNMRiaxwUd+GQrdu0d1itKcJiUobZumU4AvlEgk6RCnfk/vOm1clpsUZxlYtiWfwqW3zk7G92c00GAQnq89yO2g44mCxhaLnfJu7DKi4OhNkH1adz+7ZY1NO9lrnbc6tC7lWXmno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5e5e8274a74so9181228a12.1;
+        Tue, 01 Apr 2025 08:35:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743521756; x=1744126556;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4q7PyMxC5xqAGPRw+fer430fLSzbIyCkfxfyp4wlUFw=;
+        b=P31o/Djw3E53g+SVwSwvnbYcIxjYDVl9V7xtT1U02+n4pJ4rAAKQw7A499goelXsVj
+         q9JUBgVmObhjnWHiwseH2e8grhCLV2L7ULPu4I2sCfElizuAR0GYX11F0MwQm2dNQ0TA
+         Fv6qF0W13Npe9AYn04y33CBMc6FaCB3diWCfxveZU5ftFCrepS2JO+Ae/J4nfHO/4p8V
+         CC/5JMpqjolbhCLezAjpqwyMVSNWNQ4x5H9RozRpEg2kLgCzItTXVhRwOCGDOrXUa9uJ
+         FmPDwNls+A5pFLCzDWnwB0NalZyoU2d+r5mHTuE3CiXrBjfT/2VE5VaJgNooMJYw+P7n
+         tPAg==
+X-Forwarded-Encrypted: i=1; AJvYcCU59vcXWby0a82uLH/0ps9BN4d24YnOakZtWlQnbn7n8UylXpcLzgIZ0QiVUPvVai6u+zxbTg==@vger.kernel.org, AJvYcCUiOuQYCrE8/9yBx/XI2SKIOovvRUS+RNfr7J6wGYU/w7AFE5eCk1IqPKfs4+pL/3oebT4on2QtOUSLUg==@vger.kernel.org, AJvYcCUtvBkCAuNU3kBi3X32MLPCULhHA1e8TYbFUtDLwJN60IhKeo7fXqaqcG1eb3CXKyslC7DPQoNPOrC3mA==@vger.kernel.org, AJvYcCVCyF98k3WW7EPtirSCRHss5Tlkm4gChkAwumr0D6HAEnwN/X87vZhCP95qKj9TDEqDnMcFTEz2@vger.kernel.org, AJvYcCVMAspCe+OHfEBC6xLQW+PBV4/km5uzHaaWipQy65N1An9FlpfPsYTrS1Lq6T5T4ZlmdwS2b5lhId0VlA==@vger.kernel.org, AJvYcCVN3+C/DHyzAfJqLuzY1NFVelRFB51CrupnQmNNE0CTHzw1gh8ud3QLyocMZ2BLIiHUrklyess1ss0PLRYo@vger.kernel.org, AJvYcCVSbkPWsKrQnEve8ZoIfkBYmNejNFnLYG1zPwqkOtNdb9uFEcAUgls+gukHPGbzKb1Ke3Y=@vger.kernel.org, AJvYcCVhPjfzzyblyeHNBdv+Mf3VlUGZfnVv7WLqx82Q50J6EZTAo4Vmi0ya2sAVwFqyMox2+dJfD/9m97sopQ==@vger.kernel.org, AJvYcCWD8rGHYD6WmoT2QWw/qichqbXfsXst8iJFr/z2Yy8KTAATHwVxlVjSsROA8C0KVR+kK877A+HQJm2I1w==@vger.kernel.org, AJvYcCWM/bD/6R50DHS8hEibxFlLhzmL5UK2GJWrc0xP
+ g2TdoZXpIT0WEDliEj03aOQ9mIfGwVTG6jOIGss=@vger.kernel.org, AJvYcCWMAdMgIVxDkO09K5htFnTufprtvaXnXrnEzEGjBql33GslZcTUQHASYYaEuNonBcb2IXcKY8MbXtdM@vger.kernel.org, AJvYcCWzjDxYxB/rPYkj46A2OxdccTktCgDvqDDioimR6QR4dC8JRC33rGYHVPXqOyAlwk/oRTetpUbhLAQy@vger.kernel.org, AJvYcCXLhqkrcN14mDZK39CKJ3VYHxRC4f1LJGPl1UwgDXEBhQG8WzJ6REi0dDa27RpVTcowIfhzDNy22csmd92qUD2R@vger.kernel.org
+X-Gm-Message-State: AOJu0YyhaGUO2XTpXf0NlCYl0w1h2OLzDFbFLYpcSKgIG9T8qjS4pked
+	qYEGz2tmh5l2gA7rnwxSmFAn6k23yC83RdNyZ7PQjP+8kdxk+SdH
+X-Gm-Gg: ASbGncvKk06p4+xZCY1uQ/UFn1tPqFIOLfOghcRMab9aqKAtZWBWvw9VUCuqmy7FgNM
+	2dmCd6Zpj42mIJQaGCGVNuoW3y0+N5PZV+v2HXa4gkGxLxWBWPpeA/a0M7FYwGj2e4J6hf0l9zF
+	ITorZN8NOqiK+CU919fj6V2bbq5o3BzXebcqC52G+EYgeh4rBjyKOtNYFu5oof0iMaXWzqv5eT6
+	kzdHehDXHlYBUgiQZMECHzJDlFp69ZFjbjyT77li/ghyz3qGVyiie9Ow1iQ6FxM4uunmFgjPNE3
+	C+UHdC84mmLCq00LDDKo2aJousufipPqPD8=
+X-Google-Smtp-Source: AGHT+IHFJFeJCDIRO8qg0nwWQsfiPbwY1MfkzK1Af/7Jr+VrKkdamoUYCv4u5bbzZ6LGAdCd+o5mpQ==
+X-Received: by 2002:a05:6402:348e:b0:5e7:b015:ad42 with SMTP id 4fb4d7f45d1cf-5edfdd21affmr11635868a12.28.1743521755451;
+        Tue, 01 Apr 2025 08:35:55 -0700 (PDT)
+Received: from gmail.com ([2a03:2880:30ff:4::])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5edc16d4f4bsm7213679a12.30.2025.04.01.08.35.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Apr 2025 08:35:54 -0700 (PDT)
+Date: Tue, 1 Apr 2025 08:35:50 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Stefan Metzmacher <metze@samba.org>
+Cc: Stanislav Fomichev <stfomichev@gmail.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>, Christoph Hellwig <hch@lst.de>,
+	Karsten Keil <isdn@linux-pingi.de>,
+	Ayush Sawal <ayush.sawal@chelsio.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>,
+	Willem de Bruijn <willemb@google.com>,
+	David Ahern <dsahern@kernel.org>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	Xin Long <lucien.xin@gmail.com>,
+	Neal Cardwell <ncardwell@google.com>,
+	Joerg Reuter <jreuter@yaina.de>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Robin van der Gracht <robin@protonic.nl>,
+	Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+	Alexander Aring <alex.aring@gmail.com>,
+	Stefan Schmidt <stefan@datenfreihafen.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Alexandra Winter <wintera@linux.ibm.com>,
+	Thorsten Winkler <twinkler@linux.ibm.com>,
+	James Chapman <jchapman@katalix.com>,
+	Jeremy Kerr <jk@codeconstruct.com.au>,
+	Matt Johnston <matt@codeconstruct.com.au>,
+	Matthieu Baerts <matttbe@kernel.org>,
+	Mat Martineau <martineau@kernel.org>,
+	Geliang Tang <geliang@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Remi Denis-Courmont <courmisch@gmail.com>,
+	Allison Henderson <allison.henderson@oracle.com>,
+	David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Jan Karcher <jaka@linux.ibm.com>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>, Jon Maloy <jmaloy@redhat.com>,
+	Boris Pismenny <borisp@nvidia.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	Martin Schiller <ms@dev.tdt.de>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
+	linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+	linux-can@vger.kernel.org, dccp@vger.kernel.org,
+	linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
+	mptcp@lists.linux.dev, linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+	tipc-discussion@lists.sourceforge.net,
+	virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
+	bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
+	io-uring@vger.kernel.org
+Subject: Re: [RFC PATCH 0/4] net/io_uring: pass a kernel pointer via optlen_t
+ to proto[_ops].getsockopt()
+Message-ID: <Z+wH1oYOr1dlKeyN@gmail.com>
+References: <cover.1743449872.git.metze@samba.org>
+ <Z-sDc-0qyfPZz9lv@mini-arch>
+ <39515c76-310d-41af-a8b4-a814841449e3@samba.org>
+ <407c1a05-24a7-430b-958c-0ca78c467c07@samba.org>
+ <ed2038b1-0331-43d6-ac15-fd7e004ab27e@samba.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8583:EE_|CH2PR12MB4232:EE_
-X-MS-Office365-Filtering-Correlation-Id: cdb77f9d-d122-44d1-7df4-08dd7130b665
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?NEoyeHljMUc3MTJrT0pqZU1sNmlnR3ZDalZOa1crNThNMm1jK2VzbmFJbElm?=
- =?utf-8?B?VUNuOS8yRkdqa1VKaHBPMnlIeUZ1LzRpQms1R1d1MVhDTnYvVWtiTnZqS1NX?=
- =?utf-8?B?UjVBdFNzdkJzL2xSVC8vY1NBeXNKQUxaTGNweEU4WmxPeU9ORnNQUXdpRDAy?=
- =?utf-8?B?Z0FjZVQ1TjNtZnhscDFmcmJQL3VJWmJ6UjJnalZHRGlZb0hpWCtIRHFoUVVY?=
- =?utf-8?B?NHBEY2tHbmxldkMyTHd5YW1hVW9vZ2NLVFlWazhaKytjd00vUUNUdysxTWM0?=
- =?utf-8?B?dzAyWnlLckJpTE03bm5oWi9nbSt2QWhocFN1VzBVcER0bCs4Uk9FUml3WUlp?=
- =?utf-8?B?RkQyT0VRY2lFRkRkQTE4R0tLT2hMOVV3OUVhUzVCb2w4MzJTOVZCRzR5Qkto?=
- =?utf-8?B?RFJRVVBWRno1ckg5eTFsUnNNOGRrN0FUcTdqRlpLSEhDNDNWUzRaaHVOWW0x?=
- =?utf-8?B?MU5WNjNJd0g2azhjdCszMjMzUDZzOHF0SDdaVGJ4aVhRbWFpTXRFellCWlJ4?=
- =?utf-8?B?blVDd1Q5WVlpVkJSckVSYmlSYlJHYndCRlNYZWJjc1V1UXhrK1ZTYnFndVho?=
- =?utf-8?B?SkRBdnovVlJvTGtwOVcrc1daUEFKdUFuSHkrcTNJSlMxZVlEdncyR2VEWXox?=
- =?utf-8?B?ZDhRVDVrNnVOYit0UEdhNk1WZWY1TDVIU3QzRDVKQzZHNFNONTZjZkpLbE9I?=
- =?utf-8?B?N3BsaDdwSWg1TmUxL2dpNlQvTkgvY0llck5hYkZ4WTZWeTJFS0M1c3BJS0ZB?=
- =?utf-8?B?cGFmZGw3QU5GRGZDUm9KbzVpQmNuSy9QK0xOb2Q0NDJlcmZ1VnVQTWtsUjFM?=
- =?utf-8?B?T0pHc3VPZGlyQVJpS0JNMENqR0xxTWtXUzNvQnZGZDZtLzZsOEpUeFREMjNn?=
- =?utf-8?B?QS9KbjFNOU1GZDA2QmcxbG5KTW42S1JxK04xV21iOFV5SnIzNzN5Q0puT2t6?=
- =?utf-8?B?V0FzZEY1NFE1bHM5d3JvVHFSSjc2RDRSQ2Fyc0JJQTlGaVNWZmZxSTFZUEVj?=
- =?utf-8?B?TnR3eVdmSGZXV1lEU1o1dnZlR2NxNFR1MFdsTlVWUlI3b1NNWmwvUTY0MkY3?=
- =?utf-8?B?TG0xTlRvT0hES3lHYTkzbG1YK3JaQXBZUFJCSnhKbmkycnFDZEREaUhTenZE?=
- =?utf-8?B?Z1RtdERQK3NPZ21XRVgwcGdCVG1kMHp5RUtMaWhxOC9qWjFobk9BY1R5K2w3?=
- =?utf-8?B?enBtOUZKNk1udXhIT0trZnptODZBbEtHc0FXa3gvbk9jM3JpSnlGNFVpUVIv?=
- =?utf-8?B?eUM0dnl1QlpDdjBCTm9pckdYS3haVkVTaEhmQi93L3pWMWljZktuY0NCVmpj?=
- =?utf-8?B?eHNYL0xBVjl0VlVqSEgvMGlKL3hEYm4xS3pYeDZlUnlNUTMyODkrZG42VFBE?=
- =?utf-8?B?OTdIMkN2bzJ1Um5RdFNTU25TMnVXVnRNUng5YzI5WVdNSk5kSmFpL3hwYU11?=
- =?utf-8?B?dXBWUEZTcHF2L1lrU2FNeTBsQmZaSUhRSEJNdmtQQmJvdWlwQmdOYTNybCtj?=
- =?utf-8?B?b1dLLy9NNGhxbXhSU2VweElZUHc2NmVZTlZoc3B2UHZtMmN2RXpoQWh0TXA0?=
- =?utf-8?B?dzl2YmppeEZiclYwK2FpN1RRTXZWSkxDSFI0QXV4MEcrTlJiY1VmNGVjbnlj?=
- =?utf-8?B?V2p0YTF6ckZSaTh1TnhIbjFXc2hkOW15Z1RkRFYxa3Y0ZU9jclNrdUdMbFRm?=
- =?utf-8?B?dzBzMlQxU2Q3R1RQdmcxdDBsN3VCOUhYdlgzMmFieUIyellyTUNicFhKd1lJ?=
- =?utf-8?B?WW1KUGdlSVhNb3NnM1hXSnNIQW9QQzdwUkFNSXlmam1JMFQ4amVMakNXcnJn?=
- =?utf-8?B?cFFUMjJiT2xDc3VvS3QrU1MrS3QvVVJXMThpVmZuTmN4UmdMaUFCYVFIUWMv?=
- =?utf-8?B?QmpnNUp1Y3ZWS0VBVmhGUVFzOEFEZ3IzZ09QVVpmYnNPV2hNeDRCZTJMU3Z5?=
- =?utf-8?Q?c9iA3NfpPaY=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WUoranNGNXJoTmw4aFdvUUJ0aUZuaUxBcFlTdkpZZEJScnBwaDBQZmtHK3I5?=
- =?utf-8?B?MTR3Wk4veHJnQVRsanl5Vk1DdkpkWEg2QzNvVnMzMnAzd0Q1YmMvcmphSFla?=
- =?utf-8?B?UW9tdnpkSDUxbTVLMEZWODV1RnNRdXJsQUhVQjZpa1pHVVdHQWp0TUdSckZl?=
- =?utf-8?B?L2FNdUxDNEFsL3pZM2xMK1hSeVdJVW1YNTB2bWtmM1IzN1ZIVFljVjZZN2xE?=
- =?utf-8?B?ZjRXL3NmOTdJU21GUStGWUhZelo3UzYwY1dTdk0rKzZlMGxLbmZGWC9WZUMy?=
- =?utf-8?B?eWtjZWZCVzBnNVcrRlpVZGNlZUEwbFMwc3g2Vk5BVmVKam1CYjcvZEhXZU5J?=
- =?utf-8?B?WjhqK2V6anJlZERGVUs3Uy9vNzF6ZTNsdlVtV29hNXFVS1ZJWC91UU1RNDhO?=
- =?utf-8?B?YnBoRHRNcm1IWFpVQkRSUnhmc0o4ZmVaQktqTTRLRDlQakc4Mmd4d1J2SWpR?=
- =?utf-8?B?Z0JBdlhiZ1BhbjhDVDlTT0h1RUduSzMrZlBoV2phQ0g0UC9YRThVUmNPSk1s?=
- =?utf-8?B?N2VKYWlWY1JFenhkcDlIRG5LRFNBaUZLUDRJUGNneDlBWHF2Tkw4RS9Kemg1?=
- =?utf-8?B?TWExdmhxdENBQVlhK0hBelIzcEh1clc5VzRPT3QrSmEyRk1Ib1RLVFdsTEpw?=
- =?utf-8?B?Nm50ZmRDS2M3RnZuQ2VwaWtuVkRzb0UzVVJtQkkydU51UU4xeFVHMll2RW1q?=
- =?utf-8?B?TGM1Z282R3hZck1ZRlg1TUxpa3YzRTZITEtiemRuK21EbnU0bkp2WkxjZnlC?=
- =?utf-8?B?UHl4WXZ0bWp3MkNSVVVSUFhpc0NTQjZxMFFsSWJocVU4ODdLVmpBL0dOdTAr?=
- =?utf-8?B?VnJPWElaWkloam5SdzZ2eXpXQnBjRDRSN1pyV3IzMis5K2NGUHpNYWd3WU5y?=
- =?utf-8?B?UHQvbm9nKzg1eEVuam5HVjBMeStUdkp0UE1VVDlyMkFpNGVQQTA3dERFUlk1?=
- =?utf-8?B?RDBzd0tSOG9tQmFJcmlNMVRmNnFFeXdjanNuMEdHdTNOM3E2cmF4MGhrRytz?=
- =?utf-8?B?QVZOVmNrU1RFckJQQ2E3clZ1THFwcVVUUkxmbnBBc0JZN3NoT21ob0xzL014?=
- =?utf-8?B?UWtRN09rdzdYS0ZwODduSkMwd0x2cXI3T3NiQzVIaEtIdWdIdHgwSUNOeDFq?=
- =?utf-8?B?UXVXRnFhNlU5VU8xZU12ZjVoTEVrZTVNdWVXNGN4UGx2Q1Q4Znp4eFJjSXhP?=
- =?utf-8?B?NlArRTRwMFFRSitWOG9oSjZXT1pSZC9uSTZwdi9tM2R3MkJuODgvdUE4ZVpN?=
- =?utf-8?B?N3cvKytLYlFMeVQ5K2Z5M1VaVGo2Q0lodEZBTkJEamJCZlhDZk9CTndrZ3pX?=
- =?utf-8?B?Zm9Ec0FYaWtOOFMxdXR4TW0vb2xjODZyZXJxeEVkUUpHc2htSzQyTk1sOUg4?=
- =?utf-8?B?VVlCU1ZtMmhNdERyc3lhbmRXeTllQTZjZWJrTWpPaW45SmNmbm1tT2Q3bCtO?=
- =?utf-8?B?SDArbmk3TTJPWkdFUGFWRlZjM0x1K2VxM1BWZXpIUXhqT0xQZUxRV0ZxQkF3?=
- =?utf-8?B?aVZHNXR3SitnWXZUVEhqU09kd25LS1Fzdlcwd1NyZFBDOG5wMk1saisvL3lR?=
- =?utf-8?B?QWtHWHViRXk1VVdIWWI4S0VObnpLajdiNm5Mc01JSlBldGNURThqeU9yZGh0?=
- =?utf-8?B?WUpEaHRBeHZPQnBtdG1pb3BmclM3c2E1YnUzWlM5OFlBNXJtWTZLKy9URGhi?=
- =?utf-8?B?dnZuV003aXV4UGtlRkx3SnNYQzAyYithNHVnbEdsQy96UDdsclFKOVZ6SGs0?=
- =?utf-8?B?Um5FL2Q5QUJOakVmemZjUWx2cmJHVzhuYk1raFFZZklPOEFiR3JEbFlXeUpo?=
- =?utf-8?B?Nk1IZHZMMk1PR3N5eUlnTjIra3hsTVlmSnRWaVAzVHA3ZEJTOGZWa0xYcUVy?=
- =?utf-8?B?M1QzeThFa1NNck9wMG9DTUFXc0ZmUHUwOW1zS0tjZDRpckpVREI2T0xPLy9m?=
- =?utf-8?B?RzY3RmppTEpQWngzanNwRnBJeGJpbk5xaDN2UVlEdTlHMXJmdDlHYXVDc25n?=
- =?utf-8?B?VTBzc2w3NjVnM1ppNUlKWlE0aHhJSWF5V2xRK0FIOGFEVmdjcHNXSmVIbmlm?=
- =?utf-8?B?K09xTU9GZUQvMWxldmd6NFAyNytXT3JKY3IyQVV1dm1mV1BmUGZYZnptM2Ry?=
- =?utf-8?Q?kxyh3Gok/kxaySty2ROsvymop?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cdb77f9d-d122-44d1-7df4-08dd7130b665
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8583.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2025 15:20:19.2647
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2x5h91gXZsvfR9sKh5plyX4ezLo/EmICS4fNiGzDM5wajp73clZoI652Dm7ECWPWyzAHl4uPqeeQ4qk//i1Yuw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4232
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ed2038b1-0331-43d6-ac15-fd7e004ab27e@samba.org>
 
+On Tue, Apr 01, 2025 at 03:48:58PM +0200, Stefan Metzmacher wrote:
+> Am 01.04.25 um 15:37 schrieb Stefan Metzmacher:
+> > Am 01.04.25 um 10:19 schrieb Stefan Metzmacher:
+> > > Am 31.03.25 um 23:04 schrieb Stanislav Fomichev:
+> > > > On 03/31, Stefan Metzmacher wrote:
+> > > > > The motivation for this is to remove the SOL_SOCKET limitation
+> > > > > from io_uring_cmd_getsockopt().
+> > > > > 
+> > > > > The reason for this limitation is that io_uring_cmd_getsockopt()
+> > > > > passes a kernel pointer as optlen to do_sock_getsockopt()
+> > > > > and can't reach the ops->getsockopt() path.
+> > > > > 
+> > > > > The first idea would be to change the optval and optlen arguments
+> > > > > to the protocol specific hooks also to sockptr_t, as that
+> > > > > is already used for setsockopt() and also by do_sock_getsockopt()
+> > > > > sk_getsockopt() and BPF_CGROUP_RUN_PROG_GETSOCKOPT().
+> > > > > 
+> > > > > But as Linus don't like 'sockptr_t' I used a different approach.
+> > > > > 
+> > > > > @Linus, would that optlen_t approach fit better for you?
+> > > > 
+> > > > [..]
+> > > > 
+> > > > > Instead of passing the optlen as user or kernel pointer,
+> > > > > we only ever pass a kernel pointer and do the
+> > > > > translation from/to userspace in do_sock_getsockopt().
+> > > > 
+> > > > At this point why not just fully embrace iov_iter? You have the size
+> > > > now + the user (or kernel) pointer. Might as well do
+> > > > s/sockptr_t/iov_iter/ conversion?
+> > > 
+> > > I think that would only be possible if we introduce
+> > > proto[_ops].getsockopt_iter() and then convert the implementations
+> > > step by step. Doing it all in one go has a lot of potential to break
+> > > the uapi. I could try to convert things like socket, ip and tcp myself, but
+> > > the rest needs to be converted by the maintainer of the specific protocol,
+> > > as it needs to be tested. As there are crazy things happening in the existing
+> > > implementations, e.g. some getsockopt() implementations use optval as in and out
+> > > buffer.
+> > > 
+> > > I first tried to convert both optval and optlen of getsockopt to sockptr_t,
+> > > and that showed that touching the optval part starts to get complex very soon,
+> > > see https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=141912166473bf8843ec6ace76dc9c6945adafd1
+> > > (note it didn't converted everything, I gave up after hitting
+> > > sctp_getsockopt_peer_addrs and sctp_getsockopt_local_addrs.
+> > > sctp_getsockopt_context, sctp_getsockopt_maxseg, sctp_getsockopt_associnfo and maybe
+> > > more are the ones also doing both copy_from_user and copy_to_user on optval)
+> > > 
+> > > I come also across one implementation that returned -ERANGE because *optlen was
+> > > too short and put the required length into *optlen, which means the returned
+> > > *optlen is larger than the optval buffer given from userspace.
+> > > 
+> > > Because of all these strange things I tried to do a minimal change
+> > > in order to get rid of the io_uring limitation and only converted
+> > > optlen and leave optval as is.
+> > > 
+> > > In order to have a patchset that has a low risk to cause regressions.
+> > > 
+> > > But as alternative introducing a prototype like this:
+> > > 
+> > >          int (*getsockopt_iter)(struct socket *sock, int level, int optname,
+> > >                                 struct iov_iter *optval_iter);
+> > > 
+> > > That returns a non-negative value which can be placed into *optlen
+> > > or negative value as error and *optlen will not be changed on error.
+> > > optval_iter will get direction ITER_DEST, so it can only be written to.
+> > > 
+> > > Implementations could then opt in for the new interface and
+> > > allow do_sock_getsockopt() work also for the io_uring case,
+> > > while all others would still get -EOPNOTSUPP.
+> > > 
+> > > So what should be the way to go?
+> > 
+> > Ok, I've added the infrastructure for getsockopt_iter, see below,
+> > but the first part I wanted to convert was
+> > tcp_ao_copy_mkts_to_user() and that also reads from userspace before
+> > writing.
+> > 
+> > So we could go with the optlen_t approach, or we need
+> > logic for ITER_BOTH or pass two iov_iters one with ITER_SRC and one
+> > with ITER_DEST...
+> > 
+> > So who wants to decide?
+> 
+> I just noticed that it's even possible in same cases
+> to pass in a short buffer to optval, but have a longer value in optlen,
+> hci_sock_getsockopt() with SOL_BLUETOOTH completely ignores optlen.
+> 
+> This makes it really hard to believe that trying to use iov_iter for this
+> is a good idea :-(
 
-On 3/31/2025 12:30 PM, Mark Bloch wrote:
->
-> On 28/03/2025 16:15, Jason Gunthorpe wrote:
->> On Fri, Mar 28, 2025 at 02:10:17PM +0100, Arnd Bergmann wrote:
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>
->>> After a recent rework, a few 'static const' objects have become unused:
->>>
->>> In file included from drivers/infiniband/hw/mlx5/fs.c:27:
->>> drivers/infiniband/hw/mlx5/fs.c:26:28: error: 'mlx5_ib_object_MLX5_IB_OBJECT_STEERING_ANCHOR' defined but not used [-Werror=unused-const-variable=]
->>> include/rdma/uverbs_named_ioctl.h:52:47: note: in expansion of macro 'UVERBS_OBJECT'
->>>     52 |         static const struct uverbs_object_def UVERBS_OBJECT(_object_id) = {    \
->>>        |                                               ^~~~~~~~~~~~~
->>> drivers/infiniband/hw/mlx5/fs.c:3457:1: note: in expansion of macro 'DECLARE_UVERBS_NAMED_OBJECT'
->>>   3457 | DECLARE_UVERBS_NAMED_OBJECT(
->>>        | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>
->>> drivers/infiniband/hw/mlx5/fs.c:26:28: error: 'mlx5_ib_object_MLX5_IB_OBJECT_FLOW_MATCHER' defined but not used [-Werror=unused-const-variable=]
->>> include/rdma/uverbs_named_ioctl.h:52:47: note: in expansion of macro 'UVERBS_OBJECT'
->>>     52 |         static const struct uverbs_object_def UVERBS_OBJECT(_object_id) = {    \
->>>        |                                               ^~~~~~~~~~~~~
->>> drivers/infiniband/hw/mlx5/fs.c:3429:1: note: in expansion of macro 'DECLARE_UVERBS_NAMED_OBJECT'
->>>   3429 | DECLARE_UVERBS_NAMED_OBJECT(MLX5_IB_OBJECT_FLOW_MATCHER,
->>>        | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>
->>> These come from a complex set of macros, and it would be possible to
->>> shut up the warnings here by adding __maybe_unused annotations inside
->>> of the macros, it seems cleaner in this case to have a large #ifdef block
->>> around all the unused parts of the file, in order to still be able to
->>> catch unused ones elsewhere.
->> IDK, I'm tempted to revert 36e0d433672f ("RDMA/mlx5: Compile fs.c
->> regardless of INFINIBAND_USER_ACCESS config")
-> I believe the issue arises because uverbs_destroy_def_handler() is
-> declared in ib_verbs.h, but if uverbs isn't built, there is no
-> corresponding implementation of this function.
->
-> One possible solution is to provide an empty implementation when USER_ACCESS
-> is not set, similar to how rdma_user_mmap_disassociate() is handled.
->
-> Alternatively, since uverbs_destroy_def_handler() currently does nothing
-> (always returning 0), we could simply define it as a static inline
-> function inside ib_verbs.h and resolve the issue that way.
->
-> An example of the first approach would be:
->
-> diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
-> index 251246c73b33..0ff9f18a71e8 100644
-> --- a/drivers/infiniband/hw/mlx5/fs.c
-> +++ b/drivers/infiniband/hw/mlx5/fs.c
-> @@ -3461,7 +3461,6 @@ DECLARE_UVERBS_NAMED_OBJECT(
->          &UVERBS_METHOD(MLX5_IB_METHOD_STEERING_ANCHOR_DESTROY));
->
->   const struct uapi_definition mlx5_ib_flow_defs[] = {
-> -#if IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
->          UAPI_DEF_CHAIN_OBJ_TREE_NAMED(
->                  MLX5_IB_OBJECT_FLOW_MATCHER),
->          UAPI_DEF_CHAIN_OBJ_TREE(
-> @@ -3472,7 +3471,6 @@ const struct uapi_definition mlx5_ib_flow_defs[] = {
->          UAPI_DEF_CHAIN_OBJ_TREE_NAMED(
->                  MLX5_IB_OBJECT_STEERING_ANCHOR,
->                  UAPI_DEF_IS_OBJ_SUPPORTED(mlx5_ib_shared_ft_allowed)),
-> -#endif
->          {},
->   };
->
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index d42eae69d9a8..901353796fbb 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -4790,7 +4790,14 @@ void roce_del_all_netdev_gids(struct ib_device *ib_dev,
->
->   struct ib_ucontext *ib_uverbs_get_ucontext_file(struct ib_uverbs_file *ufile);
->
-> +#if IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
->   int uverbs_destroy_def_handler(struct uverbs_attr_bundle *attrs);
-> +#else
-> +static inline int uverbs_destroy_def_handler(struct uverbs_attr_bundle *attrs)
-> +{
-> +       return 0;
-> +}
-> +#endif
->
->   struct net_device *rdma_alloc_netdev(struct ib_device *device, u32 port_num,
->                                       enum rdma_netdev_t type, const char *name,
->
->> I don't think that was so well thought out. The entire file was
->> designed to be USER_ACCESS only because it uses all this mechanism.
-
-But not really the entire file , as you said below half of it is 
-actually UVERBS , but it has the other half is unrelated to uverbs and 
-its compilation shouldnt be dependent on it (that half is used by 
-iproute2 mainly), which is the reason for this change.
-
-(Also separation into two files, IMO isn't really the best way to 
-resolve it, since in the end they are both still flow steering code 
-which leaves us with mark solution unless there is objections to it I 
-was planning to send it next week).
-
->>
->> #ifdefing away half the file seems ugly.
-agreed, which is why I think mark bloch suggestion makes more sense, do 
-you think it is okay ? or you think there is issues with it ?
->>
->> Jason
+That was my finding as well a while ago, when I was planning to get the
+__user pointers converted to iov_iter. There are some weird ways of
+using optlen and optval, which makes them non-trivial to covert to
+iov_iter.
 
