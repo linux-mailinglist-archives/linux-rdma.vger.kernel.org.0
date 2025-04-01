@@ -1,79 +1,86 @@
-Return-Path: <linux-rdma+bounces-9068-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9069-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F404AA77871
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 12:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E3BFA77900
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 12:40:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2336F188C6B6
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 10:08:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C68C188EFBF
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 10:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B05E1F03C8;
-	Tue,  1 Apr 2025 10:08:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E002E1F0E3A;
+	Tue,  1 Apr 2025 10:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kg1FpGOo"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S1xtA2gp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15EE386353;
-	Tue,  1 Apr 2025 10:08:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A3D1F09A7
+	for <linux-rdma@vger.kernel.org>; Tue,  1 Apr 2025 10:39:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743502085; cv=none; b=i1tzD8+LTAdrgHXT/N+WYgWmiBs6zuWHqBB5LUZLIB5iZ6AQNs6qnjaOQiOqU7492/C3dxyj3qgVUxZGgQ9j+UyNZNmL/DD7fGsd3usNr7VWDvRSnGoc8A2p/X+di3Bw4womE7AZlnChswaCo0Jivo0Ecfrdhc2Fs1aqaSvxfjo=
+	t=1743503977; cv=none; b=m+7W9OEPN4dqppyv9j6HeyT+A4MV7KBodfJuAe6GutWqBG/tbc6TBi/tp061VX4wloaju0shSG5BChPjXUyu4U0cjcGOYoURKz75co+f99Z5KMacihoqDHlUHXFYJc3Nsx9u/AClYxcq2wy0iGxEKMLS1dqAeM/Tjt7tcGhqzB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743502085; c=relaxed/simple;
-	bh=CELKhvkFEiUrmJynhhVfj+XrYDMu8ssFMEF7wYKF7AM=;
+	s=arc-20240116; t=1743503977; c=relaxed/simple;
+	bh=M/mq4JnSQpKTggcsMpPy/Ed800gvVrVsqjg65DhPwtU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=egTl9+/4r8rXyUmD2R3U7bWtfnDPz7mAbCFzP0MYPzOpWXqhFuOHAqhWE7Z/NhxvyPxHKlu6LJ7spGSPIDkPHa3r4/ktWTbgdLKYN4I7RtrUdTfBc0Jz9T/KPb0VTuKXu4U8DxOyWBr4V1sgRb6DqDmSRTBEQjwWjGng9HWOtd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kg1FpGOo; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-abbd96bef64so875075866b.3;
-        Tue, 01 Apr 2025 03:08:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743502082; x=1744106882; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fYH+2FNA8rvv9alcK9f9QT7dB4gXsn+f8xBysj3Cjuc=;
-        b=kg1FpGOok1CHMTJ6w5ZSH2xIkV02IxGcU+By8iRJ4EFIXd0+f5IQmPxHbhdvWnm86Q
-         hU/Eov99FEZntwhgiW4yB9psL13jPr6p2j2PHH9rYGo8NUMRXLoBhGjAXYdqaiezhfwd
-         c8SrAClbMSrMgyA9LmrTDhL/8snAtzf7aAvqOSWG9GhnYt8pZJkudVMVokQsE5iQPBQd
-         NRt6+IB/e8S4RTuUBovuwgVZqKPK11S1lulLibP0p+HB6pL43DsNTEvTm/5X/1I3aTXL
-         NtLGDnpVsK/srKz+Z1OGqm4geqHJCd+8ZSY1o9Z1j8feQFdDWE0i/E7dlGW9P5dURoCH
-         jg1g==
+	 In-Reply-To:Content-Type; b=SJJHArzmCCqX8t8jV29/n2pbB3bOFvFl+JKRe4Gwhxaf3naPgp/7fKeSKJWrqWMQHp+Hd7MXmu+FIAY2Tl4KW21CaLGDXqEOTtMUoGjmNJq8AARjE37c+c6I2g6PEx1Gr2T1dUJBE/EdUNu6n7bS6Co4cINUlwreU7Gs+fmf0Yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S1xtA2gp; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1743503975;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JQNG48GY5mypw3mSkzgUDbnnJJHt0dyLOJoNC+0wZEc=;
+	b=S1xtA2gp/3UEvc2JCeP6ea/BjG272K11fFc8l3+td7IXeVK6WsiX9e+blwpxpOmTGzX6NS
+	Pm6/W3OreKFTU0M5EzuCI0XTJ3pgsnTD/1l6raxfgnP4K2SUrvm3xTBvOvQfYfuCdSQ/jA
+	VoLyymfMQ1Dy2TFlc8AMwost38rlqdo=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-687-65z7DwEVOt-_2h2r581S7Q-1; Tue, 01 Apr 2025 06:39:34 -0400
+X-MC-Unique: 65z7DwEVOt-_2h2r581S7Q-1
+X-Mimecast-MFC-AGG-ID: 65z7DwEVOt-_2h2r581S7Q_1743503973
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-43cfda30a3cso34314165e9.3
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Apr 2025 03:39:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743502082; x=1744106882;
+        d=1e100.net; s=20230601; t=1743503973; x=1744108773;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fYH+2FNA8rvv9alcK9f9QT7dB4gXsn+f8xBysj3Cjuc=;
-        b=QH7h2uQx7fbSN/p8KZorV1tRr8/RsLUSW8wfonYVGICYShwrR63lNrNEm0rHwwjcMn
-         +ooW+OI0YVtv04zYP+k9qEgwTNMjGfyacz25pexQTUkdqjgmZ7tp5zdYDAF/rHot+VJu
-         oKoBmttrQh6nkC/pK5GgNOyakETk76hKmtFvSZOCPJn0UUh4lLqZoNZ4ZSuRfpjCOy8a
-         PZ15F/K/imc1fZQsdUyb9nZidBSQ94mhM6cZ31BR2b8tnNmWrb/fX8j4Ykw0RGXrqxCy
-         TuClyS/UDb8/WsgUFbKsW1l8ATT1TbEChZuAFdEMSzdSqMWl4p2x9TPId0ukasRhhJpo
-         7BUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVLXgU0kgGoRipw+BBU3BYuoAsXx1LKjpGbJTkIcP7hOlYbvfHlNcgIEjYHKGCqDGc1XnGxkoFY7GbDAQ==@vger.kernel.org, AJvYcCVqgVlYsStvg1iCYC2xpKd2d2iwLX/qzuhj/H7dR7gxJ7ldfYByazbCgZNtYQ/CF3SfCzE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxvatSc9wGMg/bkO9qgBThlRNA2dctxBxr44st7Y4F6YJmhWwWC
-	S1eI07WpYTwphOw1nJzG4qLm62MMILa7hnHlhSMvDq1pajj7jk8d
-X-Gm-Gg: ASbGncvC/QJ1DpItn9+ADZC0ATpe3DGlUBTTfju8R9Uptbs9eHSUDVw/0Ud6JFnHPGY
-	uWTTusuEJheJAa18wla0Cgqb0clJs4XJU/jHjGB5ZPqpfKHAuvTXYn5EHzuDUkgzQ2oSDt6aiQz
-	UiNzNCmuAwqBd3uufyva4Nqm9Tfp78C8k23i/qb6/2EHOg/JkH8VFva2+KcncIWxhAX4g/CTBNb
-	Ch+3S6vPz/3aU9J4ECPaNc67S1cNsGOujQNeM5B7dldf4iGka4N9coGC3ale6TCMuUJWC/cZiyH
-	gnK+V9WfihkZdEm8UpfFkVtK7ijIs9+h7RMDQj9hz5XMtkK6C+69a+g3v6JijxxLa1Q=
-X-Google-Smtp-Source: AGHT+IHeaB4+CbuAMNTM2JJK6YjWQ8XZ2QNM7iV6Hl/13rCtW5kfhBjuwqGhAcx528XHoq9o7CWlDQ==
-X-Received: by 2002:a17:906:d553:b0:abf:6264:a624 with SMTP id a640c23a62f3a-ac738a8ea3amr1048949466b.32.1743502081894;
-        Tue, 01 Apr 2025 03:08:01 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c096:325::83? ([2620:10d:c092:600::1:2418])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac7196e954csm750929066b.171.2025.04.01.03.08.00
+        bh=JQNG48GY5mypw3mSkzgUDbnnJJHt0dyLOJoNC+0wZEc=;
+        b=JRZgG3MgMPLP3kEZfh9E3SbvbRbOG2xhMSAoB1tMhZe5gmh4JRYjSDIY29Ti+ziYrB
+         UaYJunBXufCH0xfikvPA1ofaS+LD2jp61l9n95MqR+6oP8JoJ3PYGCW/n9mSmWfubZX0
+         aG3KGhP4N9v9lHlvwX2pGkHqHCI4PESgXJ2lECcSJI9c10eNed9LAOWr22liHxDQMQNz
+         Ne1LYJnf0ycTA1XQD3+I3TrByWMCI7Jqne2aQ03f5x53GnGMSEHFn52CvAtHBWKBTaz0
+         EG9JTrArhudlhzpNTq/2nyhKJ4wuuoXMFyoVeMjGM4SaXspxJgvTFy6oO0SFI1Zae1hD
+         6LCw==
+X-Forwarded-Encrypted: i=1; AJvYcCXqtIdiIhC5pQ6Clq1pHcvo/volTBpABwQO2zi8GKm6ZlsvMMamwyKLCNHe6Sj8V3MIMboMzuwPcRuo@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrWokJ5cg1bRZ1I0EnSHE4m2mjocW6ZYpbEcTUdwtPg0F0xLSG
+	zJOsj524WEqgvSSlY9VJMmzUlt4TqgLlIflvDPQ76p/QhuNhm/k5urqMcS0f4R90V5T/M8U6nu5
+	ltyRuWDiTAJ3qM7odLH5qUECC8xX3ugGd2KLcYKMr4B3u9fXqRclQ6hc9qbjE2MiA9XI=
+X-Gm-Gg: ASbGncvNnltxiwwf45bVEsNDvpW0/VeUWuC/EZdTl2o73iPqUb/v9eSyF09Yiowm28O
+	WC4LYhUkS/J721+IfdmoxFBjmoPKT/c9yvE07/laPZGlwUmS1G/tolIYlTU9+Pt6Tc2eBK4vr0C
+	j/QXQl42VQ9qh9Ezf0yp8DX7lHIyrfA5gGs/TVJtGe39RDhB3vxDkkGbm3nY53gPtw3Dhjbhm7d
+	4ItXwdIxisrApKJbKL1F4CivxNSnIgFwGdtS7EKF4QH0OMTWEzPPWGXhzmHic7RKncQJKqqn/A4
+	tBj3macaxQo7ZmgiIZJ2PfxN7VKvYml8T6P5vW9g0DTkag==
+X-Received: by 2002:a05:600c:3c8a:b0:43d:45a:8fca with SMTP id 5b1f17b1804b1-43db62bf4e4mr111608435e9.30.1743503972746;
+        Tue, 01 Apr 2025 03:39:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEMT1F7Au7S2zYRnLT7IwgveOyfD8e/jDXFa8aYnAAV9srHq09g2hSMlUYYnzNdWTUVtEhQsg==
+X-Received: by 2002:a05:600c:3c8a:b0:43d:45a:8fca with SMTP id 5b1f17b1804b1-43db62bf4e4mr111608175e9.30.1743503972421;
+        Tue, 01 Apr 2025 03:39:32 -0700 (PDT)
+Received: from [192.168.88.253] (146-241-68-231.dyn.eolo.it. [146.241.68.231])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43d8fba4c29sm157427945e9.5.2025.04.01.03.39.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Apr 2025 03:08:01 -0700 (PDT)
-Message-ID: <3e0eb1fa-b501-4573-be9f-3d8e52593f75@gmail.com>
-Date: Tue, 1 Apr 2025 11:09:20 +0100
+        Tue, 01 Apr 2025 03:39:32 -0700 (PDT)
+Message-ID: <3b13fcc0-31d3-4565-b5e6-b75c6b167311@redhat.com>
+Date: Tue, 1 Apr 2025 12:39:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -81,147 +88,50 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 2/2] page_pool: Track DMA-mapped pages and
- unmap them when destroying the pool
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Jesper Dangaard Brouer <hawk@kernel.org>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Simon Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Mina Almasry <almasrymina@google.com>, Yonglong Liu
- <liuyonglong@huawei.com>, Yunsheng Lin <linyunsheng@huawei.com>,
- Matthew Wilcox <willy@infradead.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>,
- Yuying Ma <yuma@redhat.com>
-References: <20250401-page-pool-track-dma-v6-0-8b83474870d4@redhat.com>
- <20250401-page-pool-track-dma-v6-2-8b83474870d4@redhat.com>
+Subject: Re: [PATCH] net/mlx4_en: Remove the redundant NULL check for the
+ 'my_ets' object
+To: =?UTF-8?B?0JLQsNGC0L7RgNC+0L/QuNC9INCQ0L3QtNGA0LXQuQ==?=
+ <a.vatoropin@crpt.ru>, Tariq Toukan <tariqt@nvidia.com>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+References: <20250401061439.9978-1-a.vatoropin@crpt.ru>
 Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20250401-page-pool-track-dma-v6-2-8b83474870d4@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20250401061439.9978-1-a.vatoropin@crpt.ru>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 4/1/25 10:27, Toke Høiland-Jørgensen wrote:
-...
-> Reported-by: Yonglong Liu <liuyonglong@huawei.com>
-> Closes: https://lore.kernel.org/r/8743264a-9700-4227-a556-5f931c720211@huawei.com
-> Fixes: ff7d6b27f894 ("page_pool: refurbish version of page_pool code")
-> Suggested-by: Mina Almasry <almasrymina@google.com>
-> Reviewed-by: Mina Almasry <almasrymina@google.com>
-> Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> Tested-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> Tested-by: Qiuling Ren <qren@redhat.com>
-> Tested-by: Yuying Ma <yuma@redhat.com>
-> Tested-by: Yonglong Liu <liuyonglong@huawei.com>
-> Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+On 4/1/25 8:15 AM, Ваторопин Андрей wrote:
+> From: Andrey Vatoropin <a.vatoropin@crpt.ru>
+> 
+> Static analysis shows that pointer "my_ets" cannot be NULL because it 
+> points to the object "struct ieee_ets".
+> 
+> Remove the extra NULL check. It is meaningless and harms the readability
+> of the code.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Signed-off-by: Andrey Vatoropin <a.vatoropin@crpt.ru>
 
-I haven't looked into the bit carving, but the rest looks
-good to me. A few nits below,
+## Form letter - net-next-closed
 
-...
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 7745ad924ae2d801580a6760eba9393e1cf67b01..52b5ddab7ecb405066fd55b8d61abfd4186b9dcf 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -227,6 +227,8 @@ static int page_pool_init(struct page_pool *pool,
->   			return -EINVAL;
->   
->   		pool->dma_map = true;
-> +
-> +		xa_init_flags(&pool->dma_mapped, XA_FLAGS_ALLOC1);
+Linus already pulled net-next material v6.15 and therefore net-next is
+closed
+for new drivers, features, code refactoring and optimizations. We are
+currently
+accepting bug fixes only.
 
-nit: might be better to init/destroy unconditionally, it doesn't
-allocate any memory.
+Please repost when net-next reopens after Apr 7th.
 
->   	}
->   
->   	if (pool->slow.flags & PP_FLAG_DMA_SYNC_DEV) {
-> @@ -276,9 +278,6 @@ static int page_pool_init(struct page_pool *pool,
->   	/* Driver calling page_pool_create() also call page_pool_destroy() */
->   	refcount_set(&pool->user_cnt, 1);
->   
-> -	if (pool->dma_map)
-> -		get_device(pool->p.dev);
-> -
->   	if (pool->slow.flags & PP_FLAG_ALLOW_UNREADABLE_NETMEM) {
->   		netdev_assert_locked(pool->slow.netdev);
->   		rxq = __netif_get_rx_queue(pool->slow.netdev,
-> @@ -322,7 +321,7 @@ static void page_pool_uninit(struct page_pool *pool)
->   	ptr_ring_cleanup(&pool->ring, NULL);
->   
->   	if (pool->dma_map)
-> -		put_device(pool->p.dev);
-> +		xa_destroy(&pool->dma_mapped);
->   
->   #ifdef CONFIG_PAGE_POOL_STATS
->   	if (!pool->system)
-> @@ -463,13 +462,21 @@ page_pool_dma_sync_for_device(const struct page_pool *pool,
->   			      netmem_ref netmem,
->   			      u32 dma_sync_size)
->   {
-> -	if (pool->dma_sync && dma_dev_need_sync(pool->p.dev))
-> -		__page_pool_dma_sync_for_device(pool, netmem, dma_sync_size);
-> +	if (READ_ONCE(pool->dma_sync) && dma_dev_need_sync(pool->p.dev)) {
-> +		rcu_read_lock();
-> +		/* re-check under rcu_read_lock() to sync with page_pool_scrub() */
-> +		if (READ_ONCE(pool->dma_sync))
-> +			__page_pool_dma_sync_for_device(pool, netmem,
-> +							dma_sync_size);
-> +		rcu_read_unlock();
-> +	}
->   }
->   
-> -static bool page_pool_dma_map(struct page_pool *pool, netmem_ref netmem)
-> +static bool page_pool_dma_map(struct page_pool *pool, netmem_ref netmem, gfp_t gfp)
->   {
->   	dma_addr_t dma;
-> +	int err;
-> +	u32 id;
->   
->   	/* Setup DMA mapping: use 'struct page' area for storing DMA-addr
->   	 * since dma_addr_t can be either 32 or 64 bits and does not always fit
-> @@ -483,15 +490,28 @@ static bool page_pool_dma_map(struct page_pool *pool, netmem_ref netmem)
->   	if (dma_mapping_error(pool->p.dev, dma))
->   		return false;
->   
-> -	if (page_pool_set_dma_addr_netmem(netmem, dma))
-> +	if (in_softirq())
-> +		err = xa_alloc(&pool->dma_mapped, &id, netmem_to_page(netmem),
-> +			       PP_DMA_INDEX_LIMIT, gfp);
-> +	else
-> +		err = xa_alloc_bh(&pool->dma_mapped, &id, netmem_to_page(netmem),
-> +				  PP_DMA_INDEX_LIMIT, gfp);
+RFC patches sent for review only are obviously welcome at any time.
 
-Is it an optimisation? bh disable should be reentrable and could
-just be xa_alloc_bh(). KERN_{NOTICE,INFO} Maybe?
-
-
-> +	if (err) {
-> +		WARN_ONCE(1, "couldn't track DMA mapping, please report to netdev@");
-
-That can happen with enough memory pressure, I don't think
-it should be a warning. Maybe some pr_info?
-
->   		goto unmap_failed;
-> +	}
->   
-> +	if (page_pool_set_dma_addr_netmem(netmem, dma)) {
-> +		WARN_ONCE(1, "unexpected DMA address, please report to netdev@");
-> +		goto unmap_failed;
-> +	}
-> +
-> +	netmem_set_dma_index(netmem, id);
->   	page_pool_dma_sync_for_device(pool, netmem, pool->p.max_len);
->   
->   	return true;
-
-
--- 
-Pavel Begunkov
+See:
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
 
 
