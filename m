@@ -1,200 +1,119 @@
-Return-Path: <linux-rdma+bounces-9053-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9054-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09355A77065
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Mar 2025 23:50:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FB65A77237
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 03:09:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A131E188A2AE
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Mar 2025 21:50:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9F7716B6B1
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 01:09:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B4FF21CA12;
-	Mon, 31 Mar 2025 21:49:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601E113EFF3;
+	Tue,  1 Apr 2025 01:09:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="morUWOEi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ce0nhRfs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B41F214A8F;
-	Mon, 31 Mar 2025 21:49:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F23FD3595D;
+	Tue,  1 Apr 2025 01:09:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743457793; cv=none; b=FmKcYp2rN9vrht9v6oiuFDaavfd2I/eMzM8TjLMYvxws4jCn2dY+NOcMRtmqgR8Pi7B7Tvrk7zU5N8d5V/50mHVCd/QYhKrIpa8CS5ztgZVpPxRPqdkmS1R+dDb0xact/ih5tT5MpKM8aRouPlpC5kFy3W6e/BEx9PwkazJhV+U=
+	t=1743469771; cv=none; b=uK4+O16uJDGrjLCVE4zwPpu1nSVSSs8vP+vAI/wDg7G0lnSzXJXHo+6wxBMhcIU7E+fn7aFmbRitH6Tl0b6rpO56GG8t9LoQE1RD3aTsw7b5i6xdnNYfonZVkbJjoQD5EK/tNsBYnAdYEucrG8pYG3HMHl2j+5J740VswEIE0s0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743457793; c=relaxed/simple;
-	bh=AWpak+pu550+V4KBVwcURhmwvApWhG8AaMXUc5d76HI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qGtx4Z7Z1sXkWDKLN6A6yHfzshyp7z0hpydEKH0Is4CY8pLTotMlPfNBMKjb4O8SdAxnrDFjpGAfvXAAzOjrqjll84u93efWd4+dJkLTrA+K419sEoY5LWxibW5pxkCLsW/j45T0tsSPSfk2oBRObu9Nl+sJr0szUfjJvTwaAu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=morUWOEi; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-39149bccb69so4353554f8f.2;
-        Mon, 31 Mar 2025 14:49:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743457790; x=1744062590; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vdstssp5d3ULMv78iW5ykH4+Ki4j9LIskO4UfhbPQIo=;
-        b=morUWOEiSIHhr65OgWkLtpYzIKD+He8Q+R6m3H1i42TPB2PX4NB5OkXfVOaG+FQMeG
-         LvFwMfVv+5Pqh6EMHDe+tn6jv36XziePWgVd9jYjlmlKwUwYM0ohFZvzwM29f/tlGbJQ
-         PxqKNaV0doSFloJO+LMqlWil/OINdG1VdV7GVDhLoofTCJy18Ac3nqLtLQtnGJ7VOAe+
-         S7ygjO8CdFMUWaTTiLNaIZajPzc2Jmbzgqeewo4feO9KrkYQq2LRRdoXMm3O+9O+xS4A
-         C4j0GyrDKZYBCQXuZloE1gpsIOSO6AeHkckV/98z1HF4x+3EchLbtUlvlNmtGd8sDNJV
-         qF3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743457790; x=1744062590;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vdstssp5d3ULMv78iW5ykH4+Ki4j9LIskO4UfhbPQIo=;
-        b=UGFftaY4B2Yd7ZtTyQpGxsTJ0BmdOMfQZ3SSwepEit3uBbBu8W0V5mt6RusvtJ8llY
-         T03tnGNwMSTBsGq2KaR/I4ENrfCzZpgk99Bvfy6XJlvGC79vK7NfeQFUFfu23X7uNCgN
-         BEUTvHvtexDSBEnn47tY3XD73lpWni5fpEliT1Q1yP9hfohhzzspxAUBDwbPfQytUsK8
-         ri7QwtovOy0N1YZB0/MW49yaqGXeXyCJ106Uy+VBBKFAaz0APQAjp6aoiyeZXwndtWdw
-         geO11UUwc1GWh1BAAwzit3gteD7UQ0hUqb7oFtV+1JR83fm0VqZ2fn8BgMeBS4bQgIF1
-         XfHA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQcrsm/Rm2ALVJDXwvFnMYrUCVo8Kv8Zhi1pZewpPOdr9979FqwqxsO8alwKtOPfMhYaxte5IHCukBxQ==@vger.kernel.org, AJvYcCUTlmbbTJUKmPlVs5zE0CTClYIKLv+YiSfPoWKHeVaPlKrSC99nGvgwJYkaUzm17WN9a8iJQXroKQPeuw==@vger.kernel.org, AJvYcCV+u0obV1qKfTzFWtDi/a9tFaczicDRR+MTBD9HyFghP+H6ea1mOqghzsRWSjiAyeY+bpI15iP3@vger.kernel.org, AJvYcCV3VTUdRtFhEepJaQVUiIxPDZJjBt+cPeM9E3KtkTUvZFi+wNEsQjAFu2A1PX+dyQgJyaG8pQ==@vger.kernel.org, AJvYcCVxsJ2f9xRExcW8qvMmoWKETcR48SM0BNtitGZR10bh15Sgg3kY31mmLW84diHbUbDSBH7hL5fJXCXR4w==@vger.kernel.org, AJvYcCVy7zgsn1xdsDRfdvNl6L9/G1QstXruhM1kOy96OmdYHP1zip4/g4pt206qE2PLQzILF4NeXvoKhraB4Q==@vger.kernel.org, AJvYcCWQW6S9sB5r8o5a3ES2+XHqYiWCZ/QaviVp1OWgJIG3AlDJ9JXBIR5yrvmohVaFaPwC6he/QbDNsA6U@vger.kernel.org, AJvYcCWd0CnBHpm9oGSaoSutr1uSk8t9RDqmQZvey058F4AwtAqXgBa9cUo3vSEZYoqwVIMgCxFs6iuPtfo=@vger.kernel.org, AJvYcCWf/hW4v5Lm8Om1qxlWiVNgQi8UeZY4HUu4fVnufalFezM8eQ+37KFobRV3NovVAZZhI6VwlVYc0fYieJVpLebU@vger.kernel.org, AJvYcCWoHEu1hy8W4gBFQROawwsCuc9FnrLs
- zPYhxmLnrJqgnAg/XNwqy2qA9H+8fNzSSXz9inm4fFa0nezb@vger.kernel.org, AJvYcCWvpIFKoiyBYjMFKz/rG+hYi1VK3Z4glznhFXMdRRv4NBxKD17654yiZU4kOzi+P9zTwaM=@vger.kernel.org, AJvYcCX67/XFksifD4TezFPSCv1F9kzngqU6HXfgVMJiB/XmwylBSzKrT6DVzIHSTWipi1lr0eF1eZzrpWTwvDM/@vger.kernel.org, AJvYcCXTFBzPfTo1XAFstd6IUk2LWuJKbmfPUhZuaEqknpXCf4mofKjdsMDl2vBp2+F2c/J18vQwJ/Fg3ZVoaA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy+Q9DPMWIWojZj8OA7uU+F+8KfYF0+xe0ak+WFqrAhfobvbQPa
-	FMQcXUxvr5vobBjBCVqoZJeX1GDe0s1rykPpKDWQmJ2Z+yLxFZMV
-X-Gm-Gg: ASbGnctNz9M+RQvskGSXU6sbRAaBhPoFm+GWB4B+ImTOwwqKt+fShMdbRY0vz1g02MB
-	Tykm3FdizCtQJoDDAUCj7Bp4XxkaVTROUXE5yLjJZu+vEc2qixt7J9OjoCouyvl2ok/bWSoU2Yt
-	ODcGvv5D/WLL1Jy2A0nFMVQir4R6hvHD/Z1eEtHj01/eEvXJRxDsTW8ayyqs6aOTzuiPx5rO7XH
-	Qn1ylFedeccUwdZOs9h6JY3z59/CMz/eKyHJKHJAmZ13Ja4tK+5D3wzqKAZrED6tHH8gXF7ND1y
-	xTTasyB9S/g1pHt9iytQExV5jrUxhJSfwIN4DE3sck6R/TG+FLNRqxz3PhO/5SDY4IxelzpEm6G
-	eL/IH630=
-X-Google-Smtp-Source: AGHT+IHDaz6qc5K6SYy9jlhEIozUCY4N2JwSt3T6Lks7AZ/C8EYmlUGrPLhFAhoyTSOCg3hYOLXzSQ==
-X-Received: by 2002:a05:6000:18a8:b0:399:6d53:68d9 with SMTP id ffacd0b85a97d-39c12118aedmr9281669f8f.38.1743457789764;
-        Mon, 31 Mar 2025 14:49:49 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c0b7a4200sm12490080f8f.96.2025.03.31.14.49.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Mar 2025 14:49:48 -0700 (PDT)
-Date: Mon, 31 Mar 2025 22:49:46 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Stefan Metzmacher <metze@samba.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Jens Axboe
- <axboe@kernel.dk>, Pavel Begunkov <asml.silence@gmail.com>, Breno Leitao
- <leitao@debian.org>, Jakub Kicinski <kuba@kernel.org>, Christoph Hellwig
- <hch@lst.de>, Karsten Keil <isdn@linux-pingi.de>, Ayush Sawal
- <ayush.sawal@chelsio.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
- Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Kuniyuki
- Iwashima <kuniyu@amazon.com>, Willem de Bruijn <willemb@google.com>, David
- Ahern <dsahern@kernel.org>, Marcelo Ricardo Leitner
- <marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, Neal Cardwell
- <ncardwell@google.com>, Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann
- <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, Luiz
- Augusto von Dentz <luiz.dentz@gmail.com>, Oliver Hartkopp
- <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, Robin van
- der Gracht <robin@protonic.nl>, Oleksij Rempel <o.rempel@pengutronix.de>,
- kernel@pengutronix.de, Alexander Aring <alex.aring@gmail.com>, Stefan
- Schmidt <stefan@datenfreihafen.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Alexandra Winter <wintera@linux.ibm.com>,
- Thorsten Winkler <twinkler@linux.ibm.com>, James Chapman
- <jchapman@katalix.com>, Jeremy Kerr <jk@codeconstruct.com.au>, Matt
- Johnston <matt@codeconstruct.com.au>, Matthieu Baerts <matttbe@kernel.org>,
- Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>,
- Krzysztof Kozlowski <krzk@kernel.org>, Remi Denis-Courmont
- <courmisch@gmail.com>, Allison Henderson <allison.henderson@oracle.com>,
- David Howells <dhowells@redhat.com>, Marc Dionne
- <marc.dionne@auristor.com>, Wenjia Zhang <wenjia@linux.ibm.com>, Jan
- Karcher <jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, Tony
- Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, Jon Maloy
- <jmaloy@redhat.com>, Boris Pismenny <borisp@nvidia.com>, John Fastabend
- <john.fastabend@gmail.com>, Stefano Garzarella <sgarzare@redhat.com>,
- Martin Schiller <ms@dev.tdt.de>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>, Maciej
- Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon
- <jonathan.lemon@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
- linux-bluetooth@vger.kernel.org, linux-can@vger.kernel.org,
- dccp@vger.kernel.org, linux-wpan@vger.kernel.org,
- linux-s390@vger.kernel.org, mptcp@lists.linux.dev,
- linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
- linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net,
- virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
- bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
- io-uring@vger.kernel.org
-Subject: Re: [RFC PATCH 3/4] net: pass a kernel pointer via 'optlen_t' to
- proto[ops].getsockopt() hooks
-Message-ID: <20250331224946.13899fcf@pumpkin>
-In-Reply-To: <d482e207223f434f0d306d3158b2142dceac4631.1743449872.git.metze@samba.org>
-References: <cover.1743449872.git.metze@samba.org>
-	<d482e207223f434f0d306d3158b2142dceac4631.1743449872.git.metze@samba.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1743469771; c=relaxed/simple;
+	bh=xnDKz4hdm/kkZqcWSzvYO96l5CqeHbCretys4W9iu2o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JGihU/Z7m0/tO7rJ8ZFFvjo3RML6cRJoR/drLSBkZ6Jj2bq1t8exDUHY17iPyUswYt/u8kgmRo/Ikz76bOzsa7uarfjfNTDHyFGUnom8Li/N3u3FBEi4HQ2jg15tLIyy2wyCskXJxQiU2axPpwOBctliM38vveLhxG5RieF/WNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ce0nhRfs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 978F4C4CEE3;
+	Tue,  1 Apr 2025 01:09:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1743469769;
+	bh=xnDKz4hdm/kkZqcWSzvYO96l5CqeHbCretys4W9iu2o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ce0nhRfsh4foP8kliSiSC0eCyy1P530wNZv1yXlz0fhnntdzc2pHj8ehJ73sKloVM
+	 C0cw7cUj+BIc9kmwIU3OVnx2X/5KZolUkXS2nrcBmOD80XEOnwWEu+qaNld4IC1Lbz
+	 ktTwM4BKKx5FIv7O9NfsPq2v7mz23KDqI6mFjPh6003pPohStRGfOcfyHzqdAMOVmD
+	 1gOusmiwUbvZzBP/fZDRftY7IT+SckUkPyIVGM5JFjlw/2fk+9/Ns880REt1nFz5Or
+	 pRuSFvVxXKUnth/AX3auD+qu9VK2N7OyoDzrtCOl5aOlD0WNxZyXTU1dmfK4K2DInq
+	 5BLO5MT41pJgw==
+Date: Mon, 31 Mar 2025 18:09:27 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>, Daniel Gomez <da.gomez@samsung.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Robin Murphy <robin.murphy@arm.com>,
+	Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v7 00/17] Provide a new two step DMA mapping API
+Message-ID: <Z-s8x_YyGEYTz8BJ@bombadil.infradead.org>
+References: <cover.1738765879.git.leonro@nvidia.com>
+ <20250220124827.GR53094@unreal>
+ <1166a5f5-23cc-4cce-ba40-5e10ad2606de@arm.com>
+ <20250302085717.GO53094@unreal>
+ <e024fe3d-bddf-4006-8535-656fd0a3fada@arm.com>
+ <Z+KjVVpPttE3Ci62@ziepe.ca>
+ <20250325144158.GA4558@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250325144158.GA4558@unreal>
 
-On Mon, 31 Mar 2025 22:10:55 +0200
-Stefan Metzmacher <metze@samba.org> wrote:
-
-> The motivation for this is to remove the SOL_SOCKET limitation
-> from io_uring_cmd_getsockopt().
+On Tue, Mar 25, 2025 at 04:41:58PM +0200, Leon Romanovsky wrote:
+> On Tue, Mar 25, 2025 at 09:36:37AM -0300, Jason Gunthorpe wrote:
+> > On Fri, Mar 21, 2025 at 04:05:22PM +0000, Robin Murphy wrote:
 > 
-> The reason for this limitation is that io_uring_cmd_getsockopt()
-> passes a kernel pointer.
+> <...>
 > 
-> The first idea would be to change the optval and optlen arguments
-> to the protocol specific hooks also to sockptr_t, as that
-> is already used for setsockopt() and also by do_sock_getsockopt()
-> sk_getsockopt() and BPF_CGROUP_RUN_PROG_GETSOCKOPT().
+> > > So what is it now, a layering violation in a hat with still no clear path to
+> > > support SWIOTLB?
+> > 
+> > I was under the impression Leon had been testing SWIOTLB?
 > 
-> But as Linus don't like 'sockptr_t' I used a different approach.
-> 
-> Instead of passing the optlen as user or kernel pointer,
-> we only ever pass a kernel pointer and do the
-> translation from/to userspace in do_sock_getsockopt().
-> 
-> The simple solution would be to just remove the
-> '__user' from the int *optlen argument, but it
-> seems the compiler doesn't complain about
-> '__user' vs. without it, so instead I used
-> a helper struct in order to make sure everything
-> compiles with a typesafe change.
-> 
-> That together with get_optlen() and put_optlen() helper
-> macros make it relatively easy to review and check the
-> behaviour is most likely unchanged.
+> Yes, SWIOTLB works
 
-I've looked into this before (and fallen down the patch rabbit hole).
+We will double check too.
 
-I think the best (final) solution is to pass a validated non-negative
-'optlen' into all getsockopt() functions and to have them usually return
-either -errno or the modified length.
-This simplifies 99% of the functions.
+> and Christoph said it more than once that he tested
+> NVMe conversion patches and they worked.
 
-The problem case is functions that want to update the length and return
-an error.
-By best solution is to support return values of -errno << 20 | length
-(as well as -errno and length).
+We've taken this entire series and the NVMe patches and have built on
+top of them. The nvme-pci driver does not have scatter list chaining
+support, and we don't want to support that because it is backwards.
+Instead, the two step DMA API lets us actually remove all that scatter
+list cruft and provide a single solution for direct IO and io-uring
+command passthrough to support large IOs [0] [1] and logical block sizes
+up to 2 MiB.
 
-There end up being some slight behaviour changes.
-- Some code tries to 'undo' actions if the length can't be updated.
-  I'm sure this is unnecessary and the recovery path is untested and
-  could be buggy. Provided the kernel data is consistent there is
-  no point trying to get code to recover from EFAULT.
-  The 'length' has been read - so would also need to be readonly
-  or unmapped by a second thread!
-- A lot of getsockopt functions actually treat a negative length as 4.
-  I think this 'bug' needs to preserved to avoid breaking applications.
+We continue to plan to work on this and are happy to test this further.
 
-The changes are mechanical but very widespread.
+Clearly, we don't want any regressions on NVMe.
 
-They also give the option of not writing back the length if unchanged.
+[0] https://lore.kernel.org/all/20250320111328.2841690-1-mcgrof@kernel.org/
+[1] https://lore.kernel.org/all/Z9v-1xjl7dD7Tr-H@bombadil.infradead.org/
 
-	David
- 
+  Luis
 
