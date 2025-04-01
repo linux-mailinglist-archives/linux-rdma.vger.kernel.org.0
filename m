@@ -1,156 +1,214 @@
-Return-Path: <linux-rdma+bounces-9074-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9075-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10BAAA77ACB
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 14:23:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0578A77B9B
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 15:04:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E11E3A6FAE
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 12:23:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBE81166372
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Apr 2025 13:04:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 656682036E4;
-	Tue,  1 Apr 2025 12:23:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77D4E1FBEAA;
+	Tue,  1 Apr 2025 13:04:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="NNx7X1Kg"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ogyTu+JT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2069.outbound.protection.outlook.com [40.107.100.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 237C51EC01F;
-	Tue,  1 Apr 2025 12:23:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743510186; cv=none; b=kFtQzMQ4KIb/2CD3NkC8rES50yDZ7LNE4ldukAh9cnzVlrf5IRpJH3EiIiF+90B1htTg2kOlbCI1bR4E66YYI3jsotM88fvC7GaKwbxS/MoNpjzmcgtHF/RAOqCruWExcp1JnQ3UTq6sPP85fGVJQg74e29oMbMiXfrZyYQ9Xsg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743510186; c=relaxed/simple;
-	bh=nuFVkx1gSbh4qc7RrSJfuZzmwSyBRBVnMv6MbRTUtVo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M+3CGc25SHpXV1eiiC/ujzSosyAZRhsFgPnqfapoSDb5nubHKQemvyLGzGmNIvRYsm/FFxC6LDLgYNQqFCBf9Hs22CYP54pjb0AofitVcdsCQm20kvF3J0o7PosJ1Y5FkpVWO0t0jNLDcEX11RapvoDkqbifa7JdU+F5dI6Jtc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=NNx7X1Kg; arc=none smtp.client-ip=144.76.82.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-	s=42; h=From:Cc:To:Date:Message-ID;
-	bh=fXdP5m0ZfPSz1DCg8m7bHCvssJrloz5WEMURjzb5wGU=; b=NNx7X1KgxaoNizApKT4nEGh0VL
-	TGXirsgcIpnzdque+dVehm+1Tms3SXSsd7iM+6q4mUCrukCWCzPb/kRCv/sWx7yfj1mHD9NU7X6oo
-	epSzGFjQ4i5pCNGDZ8QPQgJ2B6Re9BC6Ic1yBAfMTuxRJRIzF8JRwzrmeFYIpXjJOlTA4ZYCL5do8
-	ZXZfYvn8pBVK6gXe68FC77o8qpqw3oTmlW5HTc62MArhedoCnqSIkZItfNurjAp5ZL7aQ3vcj1isa
-	cpWbEDYpECNC8BStyIHEbTHmr+MyjMxWa/mLIsm5UpwuJKQZ9Oy6QjDb2MPF0QJFHSQyp46vgkHts
-	vSV/eLKzGqGbmWRDHFg2h9Gp/NLJlQ1p55u0hN8SVsl/TkKI6+b3vm5ZUkb0CeiPnAYUdAw0kygT+
-	g70lflOMXItrRQip5T+0JvwyCbtEkovTQg7l4G1+ZAUuzdVHJgcZf0MkUOq6EkXxnsRniPEgSIL2e
-	pp2AWQE9Cjwn43SOh2NEtikk;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-	(Exim)
-	id 1tzadp-007fH3-2j;
-	Tue, 01 Apr 2025 12:22:53 +0000
-Message-ID: <90334e83-618b-41e0-a35c-9ce8b0d1d990@samba.org>
-Date: Tue, 1 Apr 2025 14:22:50 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8910A29A1;
+	Tue,  1 Apr 2025 13:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.69
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743512660; cv=fail; b=W7JwKgasr31W9O/omdiHqHFCRsCQBJuOWp/WTx3OzyaamseWMnOXaWR5S41VEK/zvKDO80NoqI8SFNikdRzilsKZakZjOCF5/5TCBJVozcUQB8zUfvZnirOA5oTiaxR0R33BV1zk9sLhPapBSBLf0cKltWIxhIS9H7nsCVIUCVs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743512660; c=relaxed/simple;
+	bh=PIKgh9ZoRmHD7iBuVMHLTnKwIlfQmKSRc+py9JfGcNg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=MNPNzufYhq9T33AnsoCG55mTHU5Mf058p/VJgGcLPWyx9k/4kHqQRuprp9SK9kKLRImtA+TCc9tLQ6+Vg8fr1tx7iB8hSeOaLS4MAHni4W828Mz0PTkxSsR9jRA1ayNsw2yIXNaNSt/MFtafN+SbpMEzb/G1d7gd8RPWXQ2YW7U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ogyTu+JT; arc=fail smtp.client-ip=40.107.100.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=fnol2gCWIYKfK3EgpusDeuLn1KXmEunDwkQF5/PA4fe6pdkARVzIpIXfw+pN0GusXcthPQ6vgJi1pEBxEiCKOymFEX0Q7M1IEj10T7K6y1QMDz1PqGP08dbx2LAv1HSh4znVmZWy16gGfVvhFSyxPBjB0hgrpKuLGh6V9nzjwgSbT5eW9Q9YdvyIMhI3NEpPY1+7XDXhAS7Ijlr5NnGOZGZKfYPweureDMkcoBEUyzL93fNWsu8v/ICecGt/gA/caEGE+7Xn9SZYQnLGdif/5Tw2aJZemwSjFmKnQTGX4zv0i7dnLpgkfhnvIqIRUqLvGTjyoIAeO6gCpgue+7Pf7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yY3/6g0u6cBNxXQ3+Mqy0twFahN4yc2JdvSXNVS/mg0=;
+ b=I1qtVjrKZJSt2cy6fsEvAYxOvYbXjI+f5+nCohAUabQ4u4nSUXp9YxgILS1mIyOTIcfeq393yjANtg3riiavT2XjHbg9KRrAgt8mKbh2nko3eLeisoTQpCHBbQBXcLDFJb+8Ah6cYDYNHTG/wzRx9Vh3kDI1HeNmaFgVy5e1BBqZXIwtuMhBY7SAnSl0ww1SA2N4Zp2AbvHunr3/qMPbzix60P0pW3t35hnu68XGhpm9+ic02+BS/Y/VYGn043u4kSudwP5tAMlJxLxcq3d2kAULWT4D3vBfeeScPNm2L50pLYYpMEv42i0pXgW+5dGP6Niz9TQnTTSMJ+t0m+9tXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yY3/6g0u6cBNxXQ3+Mqy0twFahN4yc2JdvSXNVS/mg0=;
+ b=ogyTu+JTeUzhXaZ+1B18cPO6q8okmZRgxujgX7aIEOnxhFzFDPa6kH0HQxEpVpuAo5hpGAiiy1pQVsp9Jc0G1R9nfio86iHvVsBXj3x02TYWiHHNRYRj3zP7Vt5FK1TO8OOMNBOPpfwpOeFO+anQQWT6JkiDwIpgmadSDSM2DfFzS9k4C97EOzv80dZ4ae3puUYgRup4A5QIcZk+8YujzeCGecHxjYhHLE8ZiSoOmQWWbPS8DYZMzAm++uVy1eJDPIh7Fq/sRyGL218NM0JH8qQEVDj6ymJ9++f8f8FjnRd+Vuew1TGuTLw2eLJLgLfxnMzYIKR4CKMbnUeOTTTmlg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by SA0PR12MB7463.namprd12.prod.outlook.com (2603:10b6:806:24b::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.44; Tue, 1 Apr
+ 2025 13:04:15 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8534.043; Tue, 1 Apr 2025
+ 13:04:14 +0000
+Date: Tue, 1 Apr 2025 10:04:13 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Sean Hefty <shefty@nvidia.com>
+Cc: Bernard Metzler <BMT@zurich.ibm.com>,
+	Roland Dreier <roland@enfabrica.net>,
+	Nikolay Aleksandrov <nikolay@enfabrica.net>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"shrijeet@enfabrica.net" <shrijeet@enfabrica.net>,
+	"alex.badea@keysight.com" <alex.badea@keysight.com>,
+	"eric.davis@broadcom.com" <eric.davis@broadcom.com>,
+	"rip.sohan@amd.com" <rip.sohan@amd.com>,
+	"dsahern@kernel.org" <dsahern@kernel.org>,
+	"winston.liu@keysight.com" <winston.liu@keysight.com>,
+	"dan.mihailescu@keysight.com" <dan.mihailescu@keysight.com>,
+	Kamal Heib <kheib@redhat.com>,
+	"parth.v.parikh@keysight.com" <parth.v.parikh@keysight.com>,
+	Dave Miller <davem@redhat.com>,
+	"ian.ziemba@hpe.com" <ian.ziemba@hpe.com>,
+	"andrew.tauferner@cornelisnetworks.com" <andrew.tauferner@cornelisnetworks.com>,
+	"welch@hpe.com" <welch@hpe.com>,
+	"rakhahari.bhunia@keysight.com" <rakhahari.bhunia@keysight.com>,
+	"kingshuk.mandal@keysight.com" <kingshuk.mandal@keysight.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [RFC PATCH 00/13] Ultra Ethernet driver introduction
+Message-ID: <20250401130413.GB291154@nvidia.com>
+References: <CALgUMKhB7nZkU0RtJJRtcHFm2YVmahUPCQv2XpTwZw=PaaiNHg@mail.gmail.com>
+ <DM6PR12MB4313D576318921D47B3C61B5BDA42@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <BN8PR15MB25131FB51A63577B5795614399A72@BN8PR15MB2513.namprd15.prod.outlook.com>
+ <DM6PR12MB431329322A0C0CCB7D5F85E6BDA72@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <Z+QTD7ihtQSYI0bl@nvidia.com>
+ <DM6PR12MB43137AE666F19784D2832030BDA62@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <Z+Qi+XxYizfhr06P@nvidia.com>
+ <DM6PR12MB431345D07D958CF0B784AE0EBDA62@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <Z+VSFRFG1gIbGsLQ@nvidia.com>
+ <DM6PR12MB431332A6407547B225849F88BDAD2@DM6PR12MB4313.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR12MB431332A6407547B225849F88BDAD2@DM6PR12MB4313.namprd12.prod.outlook.com>
+X-ClientProxiedBy: BL1PR13CA0120.namprd13.prod.outlook.com
+ (2603:10b6:208:2b9::35) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/4] net: introduce get_optlen() and put_optlen()
- helpers
-To: Breno Leitao <leitao@debian.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Jens Axboe <axboe@kernel.dk>, Pavel Begunkov <asml.silence@gmail.com>,
- Jakub Kicinski <kuba@kernel.org>, Christoph Hellwig <hch@lst.de>,
- Karsten Keil <isdn@linux-pingi.de>, Ayush Sawal <ayush.sawal@chelsio.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Kuniyuki Iwashima <kuniyu@amazon.com>, Willem de Bruijn
- <willemb@google.com>, David Ahern <dsahern@kernel.org>,
- Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
- Xin Long <lucien.xin@gmail.com>, Neal Cardwell <ncardwell@google.com>,
- Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann <marcel@holtmann.org>,
- Johan Hedberg <johan.hedberg@gmail.com>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- Marc Kleine-Budde <mkl@pengutronix.de>,
- Robin van der Gracht <robin@protonic.nl>,
- Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
- Alexander Aring <alex.aring@gmail.com>,
- Stefan Schmidt <stefan@datenfreihafen.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Alexandra Winter <wintera@linux.ibm.com>,
- Thorsten Winkler <twinkler@linux.ibm.com>,
- James Chapman <jchapman@katalix.com>, Jeremy Kerr <jk@codeconstruct.com.au>,
- Matt Johnston <matt@codeconstruct.com.au>,
- Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>,
- Geliang Tang <geliang@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
- Remi Denis-Courmont <courmisch@gmail.com>,
- Allison Henderson <allison.henderson@oracle.com>,
- David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>,
- Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
- "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
- Wen Gu <guwen@linux.alibaba.com>, Jon Maloy <jmaloy@redhat.com>,
- Boris Pismenny <borisp@nvidia.com>, John Fastabend
- <john.fastabend@gmail.com>, Stefano Garzarella <sgarzare@redhat.com>,
- Martin Schiller <ms@dev.tdt.de>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
- linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org,
- linux-can@vger.kernel.org, dccp@vger.kernel.org, linux-wpan@vger.kernel.org,
- linux-s390@vger.kernel.org, mptcp@lists.linux.dev,
- linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
- linux-afs@lists.infradead.org, tipc-discussion@lists.sourceforge.net,
- virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
- bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
- io-uring@vger.kernel.org
-References: <cover.1743449872.git.metze@samba.org>
- <156e83128747b2cf7c755bffa68f2519bd255f78.1743449872.git.metze@samba.org>
- <Z+vZRcbvh6r1fnZL@gmail.com>
-Content-Language: en-US, de-DE
-From: Stefan Metzmacher <metze@samba.org>
-In-Reply-To: <Z+vZRcbvh6r1fnZL@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|SA0PR12MB7463:EE_
+X-MS-Office365-Filtering-Correlation-Id: c24393b6-ab86-4759-10eb-08dd711db3c2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?XD7fmAL4OFt7txBYsxC8NJas1kK2Ysh4EIyQtFedtpFVnJx7eFJSoVOYNloU?=
+ =?us-ascii?Q?R1FHcV77KDh6yeOfJiiQ/hTBaASqb4qpRj/jo/hn+OB2iPzTLwPxdvh86Bjy?=
+ =?us-ascii?Q?845Uop8cl8i8WHKwmL2/EBiiaNvoMpmrtH0hDwlWjY6OeUWCuxuRMZv1LJjd?=
+ =?us-ascii?Q?NS5xicn6fpR+b+vySHHohXXyyHLEGNrSb2gEOcZWRIEMGrsZgTQLq3VCUqme?=
+ =?us-ascii?Q?xGeQmTFtlNMUg87EcFIoh5Uf2YJmq6QMm6NUNzCZMMOlQzeX65E4fGObgdXv?=
+ =?us-ascii?Q?3n1RX3JHZaDuHddQsVEO14y1zXl74uci3fjkf7Y+usOJoRsynTeyoT4racNY?=
+ =?us-ascii?Q?ZtIkKAPs3sRdjhOXDgnkwGOACeOBjnCyAVeGW4lrrUS0dKVFYMIbXNvIbvoR?=
+ =?us-ascii?Q?s2h9lDqET4e/xSuvEKK/IJLXBQaAIZdHvu7JIKPfv0QPye8Cat++39lbx2dN?=
+ =?us-ascii?Q?hcUOOM77N9s+S0gDLq4HYmZAsnX9BeLQ/KHTd53aOvMVnsMTtwSTgKrFEfJp?=
+ =?us-ascii?Q?8pbsZ4KsRgeDhdQsKIIFwoqMm0DkSZL7jGjCui3VL41SxXYm7lfeYGyMMwBa?=
+ =?us-ascii?Q?NbCF2DIlV3vn4YXzXVaG75UwtENXYigiw31DLpzwt5iZnQuy6SeyTD6AIc35?=
+ =?us-ascii?Q?F/9M73E2c0GteOYRkZX46TMYO+dSLFW01nKW3Div3ZjxDgC9Q4bOTXHv/KDT?=
+ =?us-ascii?Q?0u3Atvo3Je4/3JzIyVpRj/JisGpPTFS5k6jvNgrnulsAmMh9O7wO8Z7mxb33?=
+ =?us-ascii?Q?haURQqOoJJSictw0aIctQQJ6LTQFsW8o4rlu33C3Xe5Yj88YNC+tJeUtGFBT?=
+ =?us-ascii?Q?CDa9s20mPP0OZaBIJ4IHhIGcswvPewZtPw3H7rlxMDivJMkPE0CLzwJT7z0k?=
+ =?us-ascii?Q?sZCoiBMA8E9cN+rOYBr2Ty9UKC/auyEV1uKApWRYVakwBGCTUG91rcz3KPvc?=
+ =?us-ascii?Q?wJty0ld/sL0N0MTlx2dAmMpoBkGi0OIBYOBaG8LCS0RRREZHltF4yHoPU7gz?=
+ =?us-ascii?Q?c2VOBJOcUiLai10YiV7/WiiqU+K86PBVgxvUS5pA7cKWNGdPv1ZYa/etfGNz?=
+ =?us-ascii?Q?HswI5Nm0KQL1lx8FNO7m0Jcpypwens73oI0WCy9J8QEgG2pOFBtGPvkIcpfK?=
+ =?us-ascii?Q?QWu7LKza+hV5bX2XlgvxOZk22dUYgdXxRfgKzlSSCiQG5cU/yvXdHc/Ly6TV?=
+ =?us-ascii?Q?2qoMljZWUAsWNAR/FhY5dT+sVmiwhfPu1QYqfxnHqyJGugQbBnlQtAp8/HlF?=
+ =?us-ascii?Q?cg48lLK7509C+G4YEmMPk+SB52MnQY4PfKAb8Gy3WAxfFKvMnuxyI0M7gcG5?=
+ =?us-ascii?Q?i6G5I7n2fT66xNUMxBgEyldY4Ye182yW68yP8eCKGPg3UYOM8ufKtW6zKvKn?=
+ =?us-ascii?Q?D4o6S/AmxpFkzyDXQvc8QOnc+lXf?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?VKidv/EpUzWwjsMos6KRcdUCKRGigu7QeLj98NtUkOPRnCm2bFlHRqnYpjr9?=
+ =?us-ascii?Q?z4Lg4rO6xn4UCOwWcDSMzsAu1pwlkVOwLIOghSFHdl/q7P3KM24sJQ/nEIKy?=
+ =?us-ascii?Q?BOmmPHME/viu1pc3F++ki3Bhxt4bNeziNWQR/Vcp2PDkMGctWR3o3ZKPqd9i?=
+ =?us-ascii?Q?121EFMav9QJAqKX9C1DnmzvNnRQ8RPR2WeGpUBjl6iVmWJ8CkE3LQWmxtqzt?=
+ =?us-ascii?Q?q27Kpg1YLfhYRwCaspiV4bHUR+VIPmz2cT6XeeqjnfgMcj2aSTxcFepL55RP?=
+ =?us-ascii?Q?bMRuLU2/cDw55dzGNp4qb9bKAbUTw41Lwmcg1qAwHTOi0TH1WRvLjhbKReat?=
+ =?us-ascii?Q?m9PW/NNfk/z4Hr+VytdqDt9ZWWbbPtOqvMHVWhYNqQyTFIdq3rJAsEYeY0cp?=
+ =?us-ascii?Q?vsxM5L9HXlH+Ge3D0UVSKg9PbgE4sQ33qNInpimksD2yFLrWMwkKCTwjoLC1?=
+ =?us-ascii?Q?Db+J+Cn0vehu4U07QdIerSd7AIsrW5YUIeLviV3bfoWdqwgNmMqCPzNLNlne?=
+ =?us-ascii?Q?CuHuS3o5mBfYfjWOL6hH/f/muZ6Yv1PJkCGZMT68SXCGqAQ6oz1fdMkVktzg?=
+ =?us-ascii?Q?4+1v1M080Jp1bFn6H9B/KUtkzNe1mN6QzBmT8YiyNO545GT/C44n1TQtXbj5?=
+ =?us-ascii?Q?aFgo3Y+tbizcGy32ZtENVb6Eq0/hFUzN4oNUnlCgtsqu8mVKzBvnGkM3k4WF?=
+ =?us-ascii?Q?5gLtZoP50EFDReef1q7I/16mMcbqQlNtkiEuHd6ijPll9L2QKjZNsqf0t5dC?=
+ =?us-ascii?Q?iQgEIqgmLd/EwdjvDe9A6XE0dTBuzzf/zgVagwpC5BU1/zhQqqh8tTkuYLBk?=
+ =?us-ascii?Q?8uNOGcL2ZYKe0bTR/t4a/Nt34AGmLg6SRof7rSzG3BnSF6g7vE4ImVuGJ8/f?=
+ =?us-ascii?Q?eRjgJXgyJnhHDzAlygQdOkXVeogQdYZMSk3FuWsvbnQzpsIFVYVozXQsBThN?=
+ =?us-ascii?Q?ET5CH1mDOZgy/HMjBp0to1G0nrgQ5e2+Smj85BXjqz9GqJniRw8aKIlGLD5D?=
+ =?us-ascii?Q?JFPvPcUYEZoK5ChG+JutTmngyekWEqF+kmVpHlSDlIC6qVhbaHe7/32+NWCB?=
+ =?us-ascii?Q?Wr4jmgrrbMF9/OZLLIW3Vo4+ZoPhfA0XRrUHb292UXcUQEaxVV3o1Q1Knk7q?=
+ =?us-ascii?Q?v8vXHMcJm+JdHae7PEHDMKVFfNpfVphqj5LCnEziOw4rBssGYqHV6oKilDeM?=
+ =?us-ascii?Q?wdWu4qBqfVj1DpgjLs6t69H7QiTvjDef5CRdjfzU1yeMnD7n3IzPAz4x14VX?=
+ =?us-ascii?Q?w8inC4Y8tivPs+vfpwjaiSzQeTkpBNUHhu2l0JzakSC3fIK1s13c9DoFgMNb?=
+ =?us-ascii?Q?n5L3pJIs6x2/fWCOa2TlBwH7pnY5/cDcwtEFgTAJ9HYrD6ikf0EqFXR58xY8?=
+ =?us-ascii?Q?CrnBVMLJ6ohUsrpKAFCEx3ETdaK4twUjmzcvHQV9Uy11EfVErXJ23dwXPzfb?=
+ =?us-ascii?Q?Xo5Srtr7UmVsNQ4IYKOFUdfIkWsW7nO6mBYiU3wo5Pzqyv7QxYNyWCNsfhRQ?=
+ =?us-ascii?Q?lT/G2ekRtRDV+QknbyXygiztZUIcW5phT7+/5OBndKXxpn4XZyAfG8NtVWkd?=
+ =?us-ascii?Q?dkhOqEPX+Xpbv7rm57kXEjAnoNAYav1z6EZ5cj2e?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c24393b6-ab86-4759-10eb-08dd711db3c2
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2025 13:04:14.2819
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UaQUiFunJpOm+IR5vQAaPJRW+r3WepaJqd2cHV5aACuyZoheEZgvfy/7sdEpOspy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB7463
 
-Hello Breno,
+On Mon, Mar 31, 2025 at 07:29:32PM +0000, Sean Hefty wrote:
 
-> On Mon, Mar 31, 2025 at 10:10:53PM +0200, Stefan Metzmacher wrote:
->> --- a/include/linux/sockptr.h
->> +++ b/include/linux/sockptr.h
->> @@ -169,4 +169,26 @@ static inline int check_zeroed_sockptr(sockptr_t src, size_t offset,
->>   	return memchr_inv(src.kernel + offset, 0, size) == NULL;
->>   }
->>   
->> +#define __check_optlen_t(__optlen)				\
->> +({								\
->> +	int __user *__ptr __maybe_unused = __optlen; 		\
->> +	BUILD_BUG_ON(sizeof(*(__ptr)) != sizeof(int));		\
->> +})
-> 
-> I am a bit confused about this macro. I understand that this macro's
-> goal is to check that __optlen is a pointer to an integer, otherwise
-> failed to build.
-> 
-> It is unclear to me if that is what it does. Let's suppose that __optlen
-> is not an integer pointer. Then:
-> 
->> int __user *__ptr __maybe_unused = __optlen;
-> 
-> This will generate a compile failure/warning due invalid casting,
-> depending on -Wincompatible-pointer-types.
-> 
->> BUILD_BUG_ON(sizeof(*(__ptr)) != sizeof(int));
-> 
-> Then this comparison will always false, since __ptr is a pointer to int,
-> and you are comparing the size of its content with the sizeof(int).
+> Specifically, I want to *allow* separating the different functions
+> that a single PD provides into separate PDs.  The functions being
+> page mapping (registration), local (lkey) access, and remote (rkey)
+> access.  
 
-Yes, it redundant in the first patch, it gets little more useful in
-the 2nd and 3rd patch.
+That seems like quite a stretch for the PD.. Especially from a verbs
+perspective we do expect single PD and that is the entire security
+context.
 
-metze
+I think you face a philosophical choice of either a bigger PD that
+encompasses multiple jobs, or a PD that isn't a security context and
+then things like job handle lists in other APIs..
+
+> As an optimization, registration can be a separate function, so that
+> the same page mapping can be re-used across different jobs as they
+> start and end.  This requires some ability to import a MR from one
+> PD into another.  This is probably just an optimization and not
+> required for a job model.
+
+Donno, it depends what the spec says about the labels. Is there an
+expectation that the rkey equivalent is identical across all jobs, or
+is there an expectation that every job has a unique rkey for the same
+memory?
+
+I still wouldn't do something like import (which implies sharing the
+underlying page list), having a single MR object with multiple rkeys
+will make an easier implementation.
+
+Jason
 
