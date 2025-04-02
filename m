@@ -1,53 +1,53 @@
-Return-Path: <linux-rdma+bounces-9113-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9114-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D143AA78B1E
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Apr 2025 11:32:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 020B6A78B76
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Apr 2025 11:44:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D60E18934C6
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Apr 2025 09:32:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D30E3AD1B6
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Apr 2025 09:43:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A145E2356A6;
-	Wed,  2 Apr 2025 09:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB48C2356DC;
+	Wed,  2 Apr 2025 09:44:00 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from ssh248.corpemail.net (ssh248.corpemail.net [210.51.61.248])
+Received: from ssh247.corpemail.net (ssh247.corpemail.net [210.51.61.247])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B47720DD4B;
-	Wed,  2 Apr 2025 09:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.51.61.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8031E8837;
+	Wed,  2 Apr 2025 09:43:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.51.61.247
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743586363; cv=none; b=A3uPQbhZG7tNyVZIjhACS2CpEdFmdJCm8BoUNgzVFprQq4wFWkZYFfJHWSbj4Mn09jgAvLXLC+0igyfGRcHsROT1RCvecN6dZCizAMeQO/lq4v3Otk8G5vzFw2olsuSw7jyb5Y1TK4bSMV4JlIXxRRwFaUzr13FStONa8zWlfZg=
+	t=1743587040; cv=none; b=BOyTrmTdSmy8UwAY7xFU0CGswg9/TUThM4fFeqClTmKRtv7WEhehRHCvIwavdZ+M0PVjbCO4+ePvJCh2bXXAW+OCTsz40H1+MPdyhHMXMeVuaNSCDK8NXJPNuBIbumlwEtDjk2nnQ4u074o0aaFVDX3FLZ8OtmW4RiD1aEMNnpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743586363; c=relaxed/simple;
-	bh=2PAdBlm2iE+helgRQkij09k015rNc1HojNJjuskui2U=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XW3TZZdS97OGJK8j5KJo6yvQMoKd9tFit/c67wBAMnK3M3HcAoFEdaenafjXyEKIvZ0eyumPkCFu7IoA3ZdgyNZxDpXr02KcbWDfiwX9DMikKSevae+6P5Ie/Gx3P2ZK1CxoOjiVmQJMnqDkhEbdGJXuiM8vKfi3fI8RttryIdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inspur.com; spf=pass smtp.mailfrom=inspur.com; arc=none smtp.client-ip=210.51.61.248
+	s=arc-20240116; t=1743587040; c=relaxed/simple;
+	bh=tLnHDvXP/BIczRM9DMQPzPHkFUZUWfwXeFQNa1rWq1M=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=k579yajYhsWKU+pkdEBbe3NDMA03jm2EqtOvexUdeqF0OlAhr2I6L+b/ht8KmUUnR0nlwIXY4I/SN6EL7PkfLRXUw6GnKHWBz40upRlsiMkLcJySaikD+iK7FnBEOAdslvq7FITkXvRJjYxmZIWyrrRroPZg0cPmiub4t9b6Yow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inspur.com; spf=pass smtp.mailfrom=inspur.com; arc=none smtp.client-ip=210.51.61.247
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inspur.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inspur.com
-Received: from Jtjnmail201616.home.langchao.com
-        by ssh248.corpemail.net ((D)) with ASMTP (SSL) id 202504021732240994;
-        Wed, 02 Apr 2025 17:32:24 +0800
+Received: from jtjnmail201609.home.langchao.com
+        by ssh247.corpemail.net ((D)) with ASMTP (SSL) id 202504021743468888;
+        Wed, 02 Apr 2025 17:43:46 +0800
 Received: from jtjnmail201607.home.langchao.com (10.100.2.7) by
- Jtjnmail201616.home.langchao.com (10.100.2.16) with Microsoft SMTP Server
+ jtjnmail201609.home.langchao.com (10.100.2.9) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Wed, 2 Apr 2025 17:32:24 +0800
+ 15.1.2507.39; Wed, 2 Apr 2025 17:43:45 +0800
 Received: from locahost.localdomain.com (10.94.17.92) by
  jtjnmail201607.home.langchao.com (10.100.2.7) with Microsoft SMTP Server id
- 15.1.2507.39; Wed, 2 Apr 2025 17:32:23 +0800
+ 15.1.2507.39; Wed, 2 Apr 2025 17:43:44 +0800
 From: Charles Han <hanchunchao@inspur.com>
-To: <saeedm@nvidia.com>, <tariqt@nvidia.com>, <leon@kernel.org>,
+To: <saeedm@nvidia.com>, <leon@kernel.org>, <tariqt@nvidia.com>,
 	<andrew+netdev@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <maord@nvidia.com>,
-	<lariel@nvidia.com>, <paulb@nvidia.com>
+	<kuba@kernel.org>, <pabeni@redhat.com>, <markzhang@nvidia.com>,
+	<mbloch@nvidia.com>
 CC: <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Charles Han <hanchunchao@inspur.com>
-Subject: [PATCH] net/mlx5e: fix potential null dereference in mlx5e_tc_nic_create_miss_table
-Date: Wed, 2 Apr 2025 17:32:20 +0800
-Message-ID: <20250402093221.3253-1-hanchunchao@inspur.com>
+Subject: [PATCH] net/mlx5: fix potential null dereference when enable shared FDB
+Date: Wed, 2 Apr 2025 17:43:42 +0800
+Message-ID: <20250402094342.3559-1-hanchunchao@inspur.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -57,7 +57,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-tUid: 2025402173224611767681e19845ec8a9450d9d607af6
+tUid: 2025402174346bccee3f803b545c68e0e4ab65b987d72
 X-Abuse-Reports-To: service@corp-email.com
 Abuse-Reports-To: service@corp-email.com
 X-Complaints-To: service@corp-email.com
@@ -67,27 +67,57 @@ mlx5_get_flow_namespace() may return a NULL pointer, dereferencing it
 without NULL check may lead to NULL dereference.
 Add a NULL check for ns.
 
-Fixes: 66cb64e292d2 ("net/mlx5e: TC NIC mode, fix tc chains miss table")
+Fixes: db202995f503 ("net/mlx5: E-Switch, add logic to enable shared FDB")
 Signed-off-by: Charles Han <hanchunchao@inspur.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 10 ++++++++++
+ drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c       |  5 +++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index 9ba99609999f..9c524d8c0e5a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -5216,6 +5216,10 @@ static int mlx5e_tc_nic_create_miss_table(struct mlx5e_priv *priv)
- 	ft_attr.level = MLX5E_TC_MISS_LEVEL;
- 	ft_attr.prio = 0;
- 	ns = mlx5_get_flow_namespace(priv->mdev, MLX5_FLOW_NAMESPACE_KERNEL);
-+	if (!ns) {
-+		mlx5_core_warn(priv->mdev, "Failed to get flow namespace\n");
-+		return -EOPNOTSUPP;
-+	}
- 
- 	*ft = mlx5_create_auto_grouped_flow_table(ns, &ft_attr);
- 	if (IS_ERR(*ft)) {
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+index a6a8eea5980c..dc58e4c2d786 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+@@ -2667,6 +2667,11 @@ static int esw_set_slave_root_fdb(struct mlx5_core_dev *master,
+ 	if (master) {
+ 		ns = mlx5_get_flow_namespace(master,
+ 					     MLX5_FLOW_NAMESPACE_FDB);
++		if (!ns) {
++			mlx5_core_warn(master, "Failed to get flow namespace\n");
++			return -EOPNOTSUPP;
++		}
++
+ 		root = find_root(&ns->node);
+ 		mutex_lock(&root->chain_lock);
+ 		MLX5_SET(set_flow_table_root_in, in,
+@@ -2679,6 +2684,11 @@ static int esw_set_slave_root_fdb(struct mlx5_core_dev *master,
+ 	} else {
+ 		ns = mlx5_get_flow_namespace(slave,
+ 					     MLX5_FLOW_NAMESPACE_FDB);
++		if (!ns) {
++			mlx5_core_warn(slave, "Failed to get flow namespace\n");
++			return -EOPNOTSUPP;
++		}
++
+ 		root = find_root(&ns->node);
+ 		mutex_lock(&root->chain_lock);
+ 		MLX5_SET(set_flow_table_root_in, in, table_id,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
+index a47c29571f64..18e59f6a0f2d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
+@@ -186,6 +186,11 @@ static int mlx5_cmd_set_slave_root_fdb(struct mlx5_core_dev *master,
+ 	} else {
+ 		ns = mlx5_get_flow_namespace(slave,
+ 					     MLX5_FLOW_NAMESPACE_FDB);
++		if (!ns) {
++			mlx5_core_warn(slave, "Failed to get flow namespace\n");
++			return -EOPNOTSUPP;
++		}
++
+ 		root = find_root(&ns->node);
+ 		MLX5_SET(set_flow_table_root_in, in, table_id,
+ 			 root->root_ft->id);
 -- 
 2.43.0
 
