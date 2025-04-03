@@ -1,79 +1,79 @@
-Return-Path: <linux-rdma+bounces-9143-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9144-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACCFEA7A95C
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Apr 2025 20:29:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 298CAA7A978
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Apr 2025 20:33:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E5797A65D0
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Apr 2025 18:28:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C7F2189976B
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Apr 2025 18:32:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEBC8252901;
-	Thu,  3 Apr 2025 18:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23657151992;
+	Thu,  3 Apr 2025 18:32:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mZwuFLae"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZRXVjO2b"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2435C8E0;
-	Thu,  3 Apr 2025 18:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 310FE24CEE8;
+	Thu,  3 Apr 2025 18:32:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743704945; cv=none; b=OkYjhuAzm+hPC1fbKgYilk8TpNbQISpO7laqJt3+KlOGomJyjqSQf99k9Xuifu77CySmX18T1+NLOMr8U3PpC/qwHI9V7lHG39zmo+CfcIhk0Fdu8b1A5RW+TXv2Mq6FdyGYrav5+Qd3QrWdpvh5MxE6pJQwcYlcuRpIV4G1rA8=
+	t=1743705141; cv=none; b=iwQZCuQR/ndOqh6MAB7xyAz0LPj9yJysCaN7p188jz1Zh98CFACaYTlRIVUH3JM2fdPbCfzNuqhkPTIgS145WPBOTjZ+nL319KrJzLXHo5rYkT+i9tjzWHsuyI04YVb3ktjuDL5SoSLRpzFoJlWBi21vEBgQ6cqCrFus5raiYng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743704945; c=relaxed/simple;
-	bh=BJ6MF4X3xZZJF9aGkDdtTPJx0QtX8gqmfIDuSD47caI=;
+	s=arc-20240116; t=1743705141; c=relaxed/simple;
+	bh=oYSOgbE2T0F5zKIQaRgihuLpcmjBkxqOSl5cApaGi38=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aS45SHz7fUwTFeeZkB2HaHVNan3NwMqbfO9euXKoxv9EUpF9MTjzFMdaHqYdHEHghu5f7mcNXayo+69yXAT/p3Q52yEzk/SW8Xa+y4EFcmFyevmpFFzMUa7Z+vdKPiQVAaDw1RDYfHA9X3PlTKlgabTJr4VjY9ybYAmE+YOtihE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mZwuFLae; arc=none smtp.client-ip=209.85.128.44
+	 In-Reply-To:Content-Type; b=AzT3dmlSQ37MDl3vKi+8ekt+HV0N80Q/JYhR2+I8Ma6/5/NXuLj5K3BrTLJieTGTKzM28NxjhlGFcaj4ezQm6wHCW0tx8NLv+Q3JCxAIdM+cVyeqqDcr0PaannFGkzMTK0pgut0rH1hL9snykntziKs1oKAekVNX0HEMG2GHyG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZRXVjO2b; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-43ce71582e9so8564445e9.1;
-        Thu, 03 Apr 2025 11:29:03 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-43cf680d351so13490135e9.0;
+        Thu, 03 Apr 2025 11:32:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743704942; x=1744309742; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1743705138; x=1744309938; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=l0xXXnmcQUMSAV1rDZydtKV9m1RhcaPoKdR17ygBDjk=;
-        b=mZwuFLaeOj4GM/hourMDy7pI6zSktu+gkXmQoiNqfIfx5LWsUZeQvcf3hXGrXrj9J+
-         oH7jktlNOnZ6SVzNX+8kQE+5ndql7PiY9ymIpyKX3qB0l7wzOKSDywTjS70gwvCBAczi
-         2Kt0PhY+zwTNXEyaScRvSwkcJdCfI61jHEkVIZaVG/TFFI2Wp9/vyJ4mUiSezqS9rwJm
-         pmCDGKMeEi30yzJ5Iox4FITjB4rG1Nz0/91VdPbl/dB5o/rEv6UECmhGDWnQFBp+ZzUe
-         JR1p0/KRff3xAVNJWWktDDYumldQxWW4lnyylr7sRVEagFXijmfweBB8VcgHB+37/Ptd
-         Fm9A==
+        bh=W+2VbAG4hh+12ycsguwdRu57K4kt6OAXOvTs23LZ8oU=;
+        b=ZRXVjO2b5CahGR05P/I+tUp1UeNjnx8JqL9NAgQw3IJ/IYgp8xiz89MQHd/c0+PeH4
+         XlhadJygUNjzyqhf1fPtfnR9Izd4vVAiFrhxm+wJ0Wucyzlxz5MFrJwN1usfGZIdFCUi
+         22iWDfuu9aiyOoZh2EYWugMULaf1m9KafnRViPbs6DtWmwkREbDLCjCRkDd9fz7L5mHO
+         5LEfVImCC2zUCWubwITo7sOou3YMv6cKkVR6mXuCH7C4MHvjPOX6raXjqVk7O3PR41ts
+         qMhTtEAjI7WFT228HjL0LqejdldfO8SduyNFwLsB0x12UWQuLOfhdGaimqX63APPRVoZ
+         xM2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743704942; x=1744309742;
+        d=1e100.net; s=20230601; t=1743705138; x=1744309938;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l0xXXnmcQUMSAV1rDZydtKV9m1RhcaPoKdR17ygBDjk=;
-        b=VtWixn7J6nNvCHs7IaZwPywR5fWrkIMUtlPHeDo8kvS0ENJ6F0cmvMpXF6RTEkf+8E
-         FB7S2SF98IaP+yA2WDBW7yIyFHnML16E1GzLfMvghvmMYMP5gQj4pLy6JJpe5zbqG2Nl
-         +KoA/8xZtvYDJUSgHyArH+TptkZOKKub/i0V06rZ/J4KMo/PHHE7+4N26s+FgfbVRD4p
-         i9o9PanI3HuEerHt3UEux7TiqhawFuBEO4/LUKLGWzFFm2pskoED78XqoRI/yY2pXLNZ
-         zU/EughUHpHnkxmMCF4nY+FAYg5UDJluj44g+P1m6Qg2bZUX53CRoMVKr/3NawESHsUx
-         MaJA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQad/ERMSetDgZqJXlLbNVtNWzPSv9x1V3VrpOiCUVRyw3TbCrzBPlC1nEKS+7KLSpKLETQREt+/PH3A==@vger.kernel.org, AJvYcCXuUEZ8Bdoqiudv2f9zT4ibhJdib7ZH57pm3iH+j5JfJF7WB7Q1d4tl10eLR/yBW2iwjzrfhRZ+SfwRRWg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywd+K4zerJAb0/lhlzd3gqzpIYDW+3yHmvzHaz0DoiMJFveaU34
-	jg6AuTO6kOgb3gVhXyOJsVCEqSO4JwZbS5ybyEWaY9j+IX/qnjSb
-X-Gm-Gg: ASbGnct/36rqeHY8P6PVVXCnvQR1B87XR1avffVlVz/ommIYnvxC9Ju/1mNl5/5mw6e
-	G+Pel9aJ+pCWHD1dJjfsJsj/sPgwjlWTJN5I995X12hVNdH6THoOrJQP0JC8bVBWtBQ9ab/SQgJ
-	Mc5F1c7b9ofaNBlxT89Sy0YO+9ERAo9HSC70tSKiAbSQwF+GtJ9BB3j3MW9xk0R7/gLuRFm788D
-	KEwX00xdRyZDwQ8EoIAiXSKbcXnrUlXQL+OJCWF4gEfC+ygtytQAEb65UfRiezczdVSMqDsrnAE
-	4tWGDDPdvj8zHUNxofgkuDMeuQ42fUwu/vzukJ6XGys0TxfUMMPQZ5JcsqOgW0r5Qg==
-X-Google-Smtp-Source: AGHT+IH7ukEB039raJgrsIcDoJubZVtxahaG0Ai1QHumd2mPTT/OvQNVxuZUvzclFKZ2rMvZDmDwnw==
-X-Received: by 2002:a05:600c:46ca:b0:43d:54a:221c with SMTP id 5b1f17b1804b1-43ecfa45a81mr1044925e9.18.1743704941876;
-        Thu, 03 Apr 2025 11:29:01 -0700 (PDT)
+        bh=W+2VbAG4hh+12ycsguwdRu57K4kt6OAXOvTs23LZ8oU=;
+        b=FsgBmx34xAaZEL0jVHG9V3mh40r9ysa8t5W9zzyQ3ImC/pohgZozjN0/xMv6XzpHfK
+         MSTfzVpOkXgyW9altj0qBhwmSmk9nNl9R+qbnTNSRcnqQdfoFEgH2imxCaQ/tbLZptQu
+         uad+TeyBPE7PM8trncJBMrcbP4ahZdpVsSOMHQpX0xkA9kiOU+xMoeEsjRPjjYcK5B1p
+         /VEId4t69iNYYsEhzCYCcQimA+8HK5LjU0UrYJjMVH1ROr52bbMeeV/mdO0lotiEGhC+
+         PwaRZeVcnWBOi8Iw/hxaWttgeWN05mKKZOpeb/3jCto7HwR7CEg2dXIUTfgd3yZmYjHH
+         mqYA==
+X-Forwarded-Encrypted: i=1; AJvYcCVgd7/cLzDr5jr/cYvAurkc4tDwiuX+zgEqGJ9kq0pX8QkIB1S0y0PHQfS5AnJy7gyp7/mk2ypTwDxWEYQ=@vger.kernel.org, AJvYcCWBI+p2Wl9ZWvFjx1wDeZye8CFMEhdIQi8twdSF/+KmsNnFRZDvPhunDb46Y7t/LMN3T0QKYkFBG0IHlg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGagDPq3f7cO39fKFpUIxkf3RSQro1Fs1DEEhNP4d03JdZ45HX
+	yI/hCCyKotgU3Ef4mDY1cxfO/SKay8TFpZLhPk9cviXiwcGvn5iC
+X-Gm-Gg: ASbGnctZ4Xw1O94L6Gs0JVXv4DyTduc491aExQXfyn8ZxiGTGSRIH4i/dsdg8bdcEFb
+	ISec7/LKaD+ei7Xf2RejUAF2OaGO3m1WsBCWrcodWLjtLxRQ3HvF90iZbZRpf+zFWEWcsl0wp4w
+	ZKUe42hFxGTKdMOvCaeHSJbScvNfKqFyJOj0YB07yHUbqxxTgbkGfgK3b+7UpEZPiKN8lPJq79Q
+	H0FckV3hPsbINZvc/s+BXBra5uIPCZdwcBmTnNYdZZBpbgCG4nXz2ZelfAwXUBY0kJY4REjOW9z
+	FVpd7RfvziYKlbZL4NOXPmwh7+UrPKN1QtbN2IyAGz/WuZ4zTRHH5oh0wMVK8wF9pQ==
+X-Google-Smtp-Source: AGHT+IGgiRqgZDKhOZADM7Mh+G25jDg+2rg96YfC4/Oqm9d/ZkZEjtND1wzeIXtq4qMNKHz/8JM21A==
+X-Received: by 2002:a5d:64e7:0:b0:38d:e0a9:7e5e with SMTP id ffacd0b85a97d-39c2e5f4fe8mr4307153f8f.6.1743705138211;
+        Thu, 03 Apr 2025 11:32:18 -0700 (PDT)
 Received: from [172.27.62.155] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c3020d943sm2459508f8f.74.2025.04.03.11.28.59
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43ec366b571sm25367675e9.40.2025.04.03.11.32.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Apr 2025 11:29:01 -0700 (PDT)
-Message-ID: <0e08292e-9280-4ef6-baf7-e9f642d33177@gmail.com>
-Date: Thu, 3 Apr 2025 21:28:57 +0300
+        Thu, 03 Apr 2025 11:32:17 -0700 (PDT)
+Message-ID: <d78fa6dc-5820-46b6-9b7d-0986f9a70da2@gmail.com>
+Date: Thu, 3 Apr 2025 21:32:14 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -81,51 +81,92 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net/mlx5e: fix potential null dereference in
- mlx5e_tc_nic_create_miss_table
-To: Charles Han <hanchunchao@inspur.com>, saeedm@nvidia.com, leon@kernel.org,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, maord@nvidia.com, lariel@nvidia.com,
- paulb@nvidia.com
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, Tariq Toukan <tariqt@nvidia.com>
-References: <20250402093221.3253-1-hanchunchao@inspur.com>
+Subject: Re: [PATCH] net/mlx5: fix potential null dereference when enable
+ shared FDB
+To: =?UTF-8?B?Q2hhcmxlcyBIYW4o6Z+p5pil6LaFKQ==?= <hanchunchao@inspur.com>,
+ "przemyslaw.kitszel@intel.com" <przemyslaw.kitszel@intel.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "saeedm@nvidia.com" <saeedm@nvidia.com>, "leon@kernel.org"
+ <leon@kernel.org>, "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ "edumazet@google.com" <edumazet@google.com>,
+ "kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com"
+ <pabeni@redhat.com>, "markzhang@nvidia.com" <markzhang@nvidia.com>,
+ "mbloch@nvidia.com" <mbloch@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
+References: <526e6240c8964fefa80b4bc759c44c04@inspur.com>
+ <a23ccc3b-bb4d-4352-bd7e-ab0f3ef82585@gmail.com>
 Content-Language: en-US
 From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20250402093221.3253-1-hanchunchao@inspur.com>
+In-Reply-To: <a23ccc3b-bb4d-4352-bd7e-ab0f3ef82585@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
 
 
-On 02/04/2025 12:32, Charles Han wrote:
-> mlx5_get_flow_namespace() may return a NULL pointer, dereferencing it
-> without NULL check may lead to NULL dereference.
-> Add a NULL check for ns.
+On 03/04/2025 17:03, Tariq Toukan wrote:
 > 
-> Fixes: 66cb64e292d2 ("net/mlx5e: TC NIC mode, fix tc chains miss table")
-> Signed-off-by: Charles Han <hanchunchao@inspur.com>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 4 ++++
->   1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> index 9ba99609999f..9c524d8c0e5a 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> @@ -5216,6 +5216,10 @@ static int mlx5e_tc_nic_create_miss_table(struct mlx5e_priv *priv)
->   	ft_attr.level = MLX5E_TC_MISS_LEVEL;
->   	ft_attr.prio = 0;
->   	ns = mlx5_get_flow_namespace(priv->mdev, MLX5_FLOW_NAMESPACE_KERNEL);
-> +	if (!ns) {
-> +		mlx5_core_warn(priv->mdev, "Failed to get flow namespace\n");
+> On 03/04/2025 12:52, Charles Han(韩春超) wrote:
+>> -ENXIO indicates "No such device or address". I've found that in mlx5/ 
+>> core, if mlx5_get_flow_namespace() returns null, it basically returns 
+>> -EOPNOTSUPP.
+>>
+> 
+> Please do not top-post.
+> 
+> +1.
+> If namespace is not found it's due to lack of support.
+> 
+> 
+>> -----邮件原件-----
+>> 发件人: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+>> 发送时间: 2025年4月2日 19:02
+>> 收件人: Charles Han(韩春超) <hanchunchao@inspur.com>
+>> 抄送: netdev@vger.kernel.org; linux-rdma@vger.kernel.org; linux- 
+>> kernel@vger.kernel.org; saeedm@nvidia.com; leon@kernel.org; 
+>> tariqt@nvidia.com; andrew+netdev@lunn.ch; davem@davemloft.net; 
+>> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com; 
+>> markzhang@nvidia.com; mbloch@nvidia.com
+>> 主题: Re: [PATCH] net/mlx5: fix potential null dereference when enable 
+>> shared FDB
+>>
+>> On 4/2/25 11:43, Charles Han wrote:
+>>> mlx5_get_flow_namespace() may return a NULL pointer, dereferencing it
+>>> without NULL check may lead to NULL dereference.
+>>> Add a NULL check for ns.
+>>>
+>>> Fixes: db202995f503 ("net/mlx5: E-Switch, add logic to enable shared
+>>> FDB")
+>>> Signed-off-by: Charles Han <hanchunchao@inspur.com>
+> 
+> Acked-by: Tariq Toukan <tariqt@nvidia.com>
+> 
 
-In this function netdev_err API is being used for error prints.
+Re-visiting this...
+See comment below.
 
-> +		return -EOPNOTSUPP;
-> +	}
->   
->   	*ft = mlx5_create_auto_grouped_flow_table(ns, &ft_attr);
->   	if (IS_ERR(*ft)) {
+>>> ---
+>>>    .../net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 10 ++++++ 
+>>> ++++
+>>>    drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c       |  5 +++++
+>>>    2 files changed, 15 insertions(+)
+>>>
+>>> diff --git
+>>> a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+>>> b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+>>> index a6a8eea5980c..dc58e4c2d786 100644
+>>> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+>>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+>>> @@ -2667,6 +2667,11 @@ static int esw_set_slave_root_fdb(struct 
+>>> mlx5_core_dev *master,
+>>>        if (master) {
+>>>            ns = mlx5_get_flow_namespace(master,
+>>>                             MLX5_FLOW_NAMESPACE_FDB);
+>>> +        if (!ns) {
+>>> +            mlx5_core_warn(master, "Failed to get flow namespace\n");
+
+Use esw_warn(), for all new instances.
 
 
