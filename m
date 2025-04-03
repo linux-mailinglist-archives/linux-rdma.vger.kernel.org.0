@@ -1,410 +1,276 @@
-Return-Path: <linux-rdma+bounces-9129-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9130-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7978AA79902
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Apr 2025 01:39:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39797A799B5
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Apr 2025 03:32:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B40041890E2E
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Apr 2025 23:39:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3ED23ADC2E
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Apr 2025 01:30:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E88821F873D;
-	Wed,  2 Apr 2025 23:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B5C83596D;
+	Thu,  3 Apr 2025 01:30:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LvYSwfY+"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="r+HZ2W5F"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2088.outbound.protection.outlook.com [40.107.102.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD0CF1F5822;
-	Wed,  2 Apr 2025 23:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743637161; cv=none; b=LOXPQN79h5tR0+AlL8PmJeRn4e7EYOYYJUkaM967baTIcWBgw5nCcTipOLygXwAPRO0OLrgEIJKM41V3W58Ekbrs3FUbqqf4nPUpgs5A10wR6Wq2sXrkdpS4ufLvXydLGbS9bgu0dFiCLaQM6Z/TMv77+kLYQEDEPoA3tTK7c7g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743637161; c=relaxed/simple;
-	bh=ujCIppBBlXsu7jSBx6FdFc2PcSlazzqsZZLrsbMuQZY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SYgW9cjXcKPa+6647YMdOZRaxY/tl6JZd2PgVpjlP1QPnBivGzYJatIMprRvoLz2p6cMbiK04mGXxCv9+NfgvdL1VM6jCnQOqY+mLutpB5yJhv48MI52AvAov64Nxh9mRWyuXeLiupWxj5+/t4DbH98FmEU1ylQQCk6A+wlKiZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LvYSwfY+; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-22438c356c8so3671525ad.1;
-        Wed, 02 Apr 2025 16:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743637159; x=1744241959; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wuxalq7LD9or9m6/ZAmPE3itU8gj0v3bHb/TuqhHJM4=;
-        b=LvYSwfY+zHa5Xb2K05sYfmjJr3tm9jCeRB+LF8FMuyZsAM0DxDSxzjORZZtIfYMwmx
-         9hyiIBqSxCc/cqQeBmY6Nfm+VH+js15AI+hK+OjLTNF1kH76tZnsSUURQ0HHptB/m9Qh
-         RjBIkQRUUdvtHGm4VMXnt+nKP1SA4mk+hb3gb4L97hPJsDzM4464NhJ7HPn9SnQqluY1
-         LWFx2sikZtOwb+Rxao3CvvCrWQ6t0dwV+pkXLv/MqDL1Mju10YbMnzYrn3vn+dK5ZwXS
-         2DTnrk1l9k1Op4Mmqg/7kmSgYXkpu1WLZH9M/11YDpoTGDfILnAYUMM5dDAsHjpOuLMb
-         zoFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743637159; x=1744241959;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wuxalq7LD9or9m6/ZAmPE3itU8gj0v3bHb/TuqhHJM4=;
-        b=JifYTtNcVWikk18AsFJcOK1nS0oIiTMFCyqA6TLP8qICxhn7SAhungyP8jcI5MED1y
-         12tvYREqh3dQXy2kDHUz46pgs58G4/lAoMRDXAZhN2Jf6EZmoA5mt5c9wMOa9lJvD6Jj
-         2tb/ku6LufValBlkgdCxcgpBVtvuCm/L4DiQsaD28GJTkMF/RSJ+2JJmapNj5puKxWcB
-         AZzoVdbdYpoQQThy49fyt3rr9B9PYWVkpph6VdfXhWTJYt203tp+N444faf1sH/qbHG3
-         qtB9GN+G2hgxmNEMvVJXTDchDKOkON9ldtEampczQ0aXpzw0IW4vNJXau2X7c0K439+D
-         Bqeg==
-X-Forwarded-Encrypted: i=1; AJvYcCU+zGrKOei80HDkabl+iN2cxk61liTUTbUyRtrwsjc5s4Xwlo2RwT2R0mI6aKAFQux/xgsImmGe95Uw@vger.kernel.org, AJvYcCUD4Fqf8DLi8PiHgb6tUKOX7nXPqTgxEmNZwzs1caQAan1CHk+HY0zzOPjkwsnMwhJ6XJQ=@vger.kernel.org, AJvYcCUEZ5kow9nh5fO7sS6H0j+bSPmJDqPJfxfdvXoJKYQ+Equqvs+ZgYcGhKbKrxrilaYOtoa7S86Yde7q2g==@vger.kernel.org, AJvYcCUblG42GB0wovSzSt2zuk3bfe1CqU5mxwWXSHKlA4u9+xdSIVg+7iDGLd69eKE0nvvbuNgeEZMoEsMBFA==@vger.kernel.org, AJvYcCVP0+KsXRPz4Nk9Tfh3JhGvrBFMBHnowb+xqLS1IkA0aa5cV6F77JaseaZhuEIFoyBoPp/1AWaV8I55zQ==@vger.kernel.org, AJvYcCVmsnpVmMWHv+I+SBNeXRhmRz6ihidWzfun7bdy130Sn63YIb6k3V4RQnvP5e/HLba2hul1dQ==@vger.kernel.org, AJvYcCW7dDNrDuD1Lu6Ya1JAFAhKc1NKmiIgen0fqWePvJeMKUulbX9xg3F3xCLqM5HxockIq0XrOK+fzrsHJg==@vger.kernel.org, AJvYcCWAadeiTCPL0lVBebwF/a4dj32qt95VKpC1qYOnAT0LF0UUT/yqtjEl+5fgOqr8+Nx33OB0Dg4z+mRQhFsjpEiy@vger.kernel.org, AJvYcCWLCXOM27Jp6gRXsXdt6kWfcbEyF2NcsX4+E4eqhOsLHMl90j8iazltGrY50X9fpXFvpI68ajFVECgG@vger.kernel.org, AJvYcCX6K0KalmOQBBUS/O9FhjYJPMbIApCAJjRj
- kqvT0NFBMKvpQ84m7tX6HEIX+pUcUVLJenhD/WeQIlY=@vger.kernel.org, AJvYcCXO3Cp+s/AKskEYha0dLqf38T23/AGBl+59JFIw0qgUzEkmA0s+/dBv1uqCArWZC7R5SGoBsPyRFehQDw==@vger.kernel.org, AJvYcCXSQXFxJIF+fcb3/yCE+UwQewjlwe1evQPI4yHXj07WlBbqRYxH9S7xGq0r8npPcdZgb0varPvaomtmDatT@vger.kernel.org, AJvYcCXqlH5udPImDruSOvUkaIrI/G1x2uCcStb3r1gzw696r6iI42sMBuDUUp/MIhKJ+My6/j53ryU/@vger.kernel.org
-X-Gm-Message-State: AOJu0YyXJWOJhEbGCfgt81MBJVwLHMVdYtc3B96PjPcFo7z4UTiCgDmc
-	CfkAWYyvzeqHPe1TNRan00WIP6h+nmPE50hK633/jgTbtiLC1fQ=
-X-Gm-Gg: ASbGnct1cVFLlgC+6inyyj82MJEPpVD6lw2MEHg5lG70JDPXqUEcDGQaEKFNUEEG518
-	d41iDUziA9Krnrcixsac2/GOtHfzOleTttKn9AwsQdLhSLkceqcY27xXrReYWrMzXm+ng1WOWnk
-	9L8Z1XtJYYFOHz1eXZI302yKUqBb9xcWw0Il25+7FnqpVHy6Q4+GC2+ddEL2kqZbuwf7jbQEyeJ
-	yTLlpVQsA/kOOsjKR1J2uwfiff294gCeV+OHWhrQ9ajZiPVHARX53LnSJlOAsrQ948nxBKR8rQE
-	dIzhdSh1kVzMfkaICpBkXkXTlS1REyyNTt25PGRXBfWOmSYhog5BUVc=
-X-Google-Smtp-Source: AGHT+IGG/TFPoWNV9I3kMq0+usNFgbE2FuVu+B/nK4F1+FP+s/9qCE6mMl4/SZTNOtLxIZ6YGlagIg==
-X-Received: by 2002:a17:903:8c6:b0:224:a74:28d2 with SMTP id d9443c01a7336-2292f9754b7mr292367295ad.26.1743637158577;
-        Wed, 02 Apr 2025 16:39:18 -0700 (PDT)
-Received: from localhost ([2601:646:9e00:f56e:123b:cea3:439a:b3e3])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-739d9ea14f3sm99380b3a.98.2025.04.02.16.39.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Apr 2025 16:39:17 -0700 (PDT)
-Date: Wed, 2 Apr 2025 16:39:17 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: David Laight <david.laight.linux@gmail.com>
-Cc: Stefan Metzmacher <metze@samba.org>, Breno Leitao <leitao@debian.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>, Christoph Hellwig <hch@lst.de>,
-	Karsten Keil <isdn@linux-pingi.de>,
-	Ayush Sawal <ayush.sawal@chelsio.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Willem de Bruijn <willemb@google.com>,
-	David Ahern <dsahern@kernel.org>,
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-	Xin Long <lucien.xin@gmail.com>,
-	Neal Cardwell <ncardwell@google.com>,
-	Joerg Reuter <jreuter@yaina.de>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Robin van der Gracht <robin@protonic.nl>,
-	Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-	Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Alexandra Winter <wintera@linux.ibm.com>,
-	Thorsten Winkler <twinkler@linux.ibm.com>,
-	James Chapman <jchapman@katalix.com>,
-	Jeremy Kerr <jk@codeconstruct.com.au>,
-	Matt Johnston <matt@codeconstruct.com.au>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Remi Denis-Courmont <courmisch@gmail.com>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Jan Karcher <jaka@linux.ibm.com>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>, Jon Maloy <jmaloy@redhat.com>,
-	Boris Pismenny <borisp@nvidia.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	Martin Schiller <ms@dev.tdt.de>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
-	linux-hams@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-can@vger.kernel.org, dccp@vger.kernel.org,
-	linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
-	mptcp@lists.linux.dev, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-	tipc-discussion@lists.sourceforge.net,
-	virtualization@lists.linux.dev, linux-x25@vger.kernel.org,
-	bpf@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
-	io-uring@vger.kernel.org
-Subject: Re: [RFC PATCH 0/4] net/io_uring: pass a kernel pointer via optlen_t
- to proto[_ops].getsockopt()
-Message-ID: <Z-3KpXR_nJQ4X76F@mini-arch>
-References: <Z+wH1oYOr1dlKeyN@gmail.com>
- <Z-wKI1rQGSgrsjbl@mini-arch>
- <0f0f9cfd-77be-4988-8043-0d1bd0d157e7@samba.org>
- <Z-xi7TH83upf-E3q@mini-arch>
- <4b7ac4e9-6856-4e54-a2ba-15465e9622ac@samba.org>
- <20250402132906.0ceb8985@pumpkin>
- <Z-1Hgv4ImjWOW8X2@mini-arch>
- <20250402214638.0b5eed55@pumpkin>
- <Z-2qX_N2-jpMYSIy@mini-arch>
- <20250402233805.464ed70e@pumpkin>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C7587603F;
+	Thu,  3 Apr 2025 01:30:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.88
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1743643849; cv=fail; b=PKZ/6RKt14XkQabYDVaqye/yajTycS1jH9QJ4Dxuu2eVh17+bN9v2tYocSJ2gHJm1I1BxqnWBvn3PLk00FNUVqrxMOrVcAmY1Nog35LmYFxvfNNU3HbWOXZv/ZdDAda4MWES+wMhjUPbeaDCW16Wlzkw4J1n+UdSDKtnWX8gKsk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1743643849; c=relaxed/simple;
+	bh=9c9t3HM3Ydwzy5CyDE/hWYD8N1d1/gVBrtCNWjkeb/M=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=H+fUlcsFO1GLssHqmhA0QL/ALdpbC2XW+Vvkt0HWhr5qm00KHstqV0TwWJHTdogXG92RGt8dlBDSSiFGC/vDqjlTMf1A31dRgy8AOlMuNCmYZMPgwC9dQKjOusjsbuMvqEx+XzEpOXgzcvjedR2Nq5lbxWYu4/R5dx4/5M7gTFo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=r+HZ2W5F; arc=fail smtp.client-ip=40.107.102.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=m/eBofeLlj5+KxqVlsE+IqhSsU1hjgMRzbja+HAazH/WJ0LYOi7lyOYXNtjySlpdmU0k+/P2Wnxpoe5DSNgj3EpVdq/qVu0F3moKD7dAaSbvbC4FRY9hZIxXNjjWpSsefO3xwI3It0cLwvR+n2a3rsaZSlzdzOEoxfN1PSM3z2KOXUsXMiWu1uv1+h/1P5A4f1MwfQ8m0BiPLA4croJTYfzh/WMIt0N452ljQ/mLRjUgH7jWX3XXBpz6iKRJAekYZULN5OiWle0Wcvz8yn9ldNna01ZNESLcNHRKQXrC91jp+RvOfJUx4Xzyze3ujgecGv8tGJ/6amjVbYhgL9tStA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=55dj4Q+iCKdeaTaofD79EpqXBwwnffUdHiy+b9jpwss=;
+ b=O2161hi68X/ms5f2ztDq2YlDK/LA6oNSbH41DBVnoB0BFn7bfBkiMv6EnUPa1czVLAp6cIOvPFsWMnE5q+8556fjHTRsqbHsg9FDSqEeRXQSsKuUzCr5+LFMzGW2RH6b8GwKSBeB58hhUXLtYmwYCnj5wsnFasRb+vag2ZgJJVM6rBcxtCd/RcHCFTgar464TYl2Cfl25M2jeMQbr7UTXxr3pwZhL37WfTKDOJrCClRNsOxPDs4fUts1WTKWmfaPXfqp/I3e17acMEQTa/r5NbGOObHFFctKo/kf1zOc+A5Ye2yIn5qLGpXFOW46+1nBasxARNpHYK3oruOw6MJeHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=55dj4Q+iCKdeaTaofD79EpqXBwwnffUdHiy+b9jpwss=;
+ b=r+HZ2W5FJn21eVVz1LQOavPcmfaN5TK5hGXdW+6/ibqX+0ATgsDLNWMJLGaGPGbhFq5j/tWT00WC2h7ElLO+9BsIo5QnvFzMnoSIrqUO/cl2JOUeYfPQg5kj7c98F5gOctvpiM6JYq8gbJiE1Z5PPjPqfa2avhPqsL1VFPYs+OukPVgfMWbKZx8JZcxgfxRimyW7IgevswDrrVv5/02F1jcD2iSg/hHmjbo+0ui3sX8Ib7RPugTH32Iiea3ikXRMeujLr5kn0XYIf1Ct+184UQEF8VZUpqURvpWSG/0t4qXuGmyUql9hzw2KJ4iYJBXVMtDs2x2YFihvGNNsYb8cmg==
+Received: from DM6PR12MB4313.namprd12.prod.outlook.com (2603:10b6:5:21e::17)
+ by PH7PR12MB5653.namprd12.prod.outlook.com (2603:10b6:510:132::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8534.54; Thu, 3 Apr
+ 2025 01:30:41 +0000
+Received: from DM6PR12MB4313.namprd12.prod.outlook.com
+ ([fe80::4d58:4bbc:90a5:1f13]) by DM6PR12MB4313.namprd12.prod.outlook.com
+ ([fe80::4d58:4bbc:90a5:1f13%3]) with mapi id 15.20.8534.045; Thu, 3 Apr 2025
+ 01:30:40 +0000
+From: Sean Hefty <shefty@nvidia.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+CC: Bernard Metzler <BMT@zurich.ibm.com>, Roland Dreier
+	<roland@enfabrica.net>, Nikolay Aleksandrov <nikolay@enfabrica.net>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "shrijeet@enfabrica.net"
+	<shrijeet@enfabrica.net>, "alex.badea@keysight.com"
+	<alex.badea@keysight.com>, "eric.davis@broadcom.com"
+	<eric.davis@broadcom.com>, "rip.sohan@amd.com" <rip.sohan@amd.com>,
+	"dsahern@kernel.org" <dsahern@kernel.org>, "winston.liu@keysight.com"
+	<winston.liu@keysight.com>, "dan.mihailescu@keysight.com"
+	<dan.mihailescu@keysight.com>, Kamal Heib <kheib@redhat.com>,
+	"parth.v.parikh@keysight.com" <parth.v.parikh@keysight.com>, Dave Miller
+	<davem@redhat.com>, "ian.ziemba@hpe.com" <ian.ziemba@hpe.com>,
+	"andrew.tauferner@cornelisnetworks.com"
+	<andrew.tauferner@cornelisnetworks.com>, "welch@hpe.com" <welch@hpe.com>,
+	"rakhahari.bhunia@keysight.com" <rakhahari.bhunia@keysight.com>,
+	"kingshuk.mandal@keysight.com" <kingshuk.mandal@keysight.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "kuba@kernel.org"
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Subject: RE: [RFC PATCH 00/13] Ultra Ethernet driver introduction
+Thread-Topic: [RFC PATCH 00/13] Ultra Ethernet driver introduction
+Thread-Index:
+ AQHbjuwVUw9AWIkXnUa8bbJSM0sPK7N6v4MAgAgXf4CAAAnsgIABEwYAgAAgrcCAAYj9gIAAAVBQgAARqYCAAABpoIABaOyAgAaJkiCAAUvLgIAAK6TwgABCwQCAAAaTYA==
+Date: Thu, 3 Apr 2025 01:30:40 +0000
+Message-ID:
+ <DM6PR12MB43131BED0E6CD4B490903133BDAE2@DM6PR12MB4313.namprd12.prod.outlook.com>
+References:
+ <BN8PR15MB25131FB51A63577B5795614399A72@BN8PR15MB2513.namprd15.prod.outlook.com>
+ <DM6PR12MB431329322A0C0CCB7D5F85E6BDA72@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <Z+QTD7ihtQSYI0bl@nvidia.com>
+ <DM6PR12MB43137AE666F19784D2832030BDA62@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <Z+Qi+XxYizfhr06P@nvidia.com>
+ <DM6PR12MB431345D07D958CF0B784AE0EBDA62@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <Z+VSFRFG1gIbGsLQ@nvidia.com>
+ <DM6PR12MB431332A6407547B225849F88BDAD2@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <20250401130413.GB291154@nvidia.com>
+ <DM6PR12MB43130D3131B760AF2A0C569ABDAC2@DM6PR12MB4313.namprd12.prod.outlook.com>
+ <20250401193920.GD325917@nvidia.com>
+In-Reply-To: <20250401193920.GD325917@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR12MB4313:EE_|PH7PR12MB5653:EE_
+x-ms-office365-filtering-correlation-id: a5bdaada-6606-4c30-87e0-08dd724f2520
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|7416014|376014|366016|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?Rf7e+jdkzmdL6klyNb8a098pGTIoph63Ri8NSw0IYRaSakmCDe+eO0znDSzM?=
+ =?us-ascii?Q?bzU44MdjkTQRuwDhOoxs8Ua46QMj638dAdnuijvRuYsw86UjJrQcuejYeSEM?=
+ =?us-ascii?Q?iFd4kLBgxJ4SMaM7ZAoYK8biqHzmvKhce2q8Jt0yK4TQH6MauNTEO1cmt542?=
+ =?us-ascii?Q?WyguNOjdcE1UxqVYuexjdXqGd959+jSo7AcFljP84Y7NY5BS8FcjK4bgfQxM?=
+ =?us-ascii?Q?HtcKooMDJOh11dwi8S04SlfOOtAIGyAcA5KWww4xwPIwqcdUUhY+ARa1QsjF?=
+ =?us-ascii?Q?KWt6Tf2qTPfy+YHVRQILL07Y2bd2Q2AySUybJKZkGdQYhOgM/t/cF5ufv6Lw?=
+ =?us-ascii?Q?k5/EqzFff/vPlPsEbwCLVYp1Lu44oRcgKuSHeiz8ueOpWcZzQr2uixjIr4AC?=
+ =?us-ascii?Q?LxD4xuImNv7HwnMLki8XXG6oD6lG+EwrYGFBgZm66bqMV1Q4xtRU0OQzAbEN?=
+ =?us-ascii?Q?AHZrRDE+e51GzlaBPsQcMnjeVvUH882rt4nL6aIe1kFErF3ipMFLC0e/srQQ?=
+ =?us-ascii?Q?sWwTJHlmNvsTfB8AXbvwEv3FszC9zAjwzGkrMN9/RWLFpd/AinfOHhS+xGmh?=
+ =?us-ascii?Q?mT0V0upK5LE9m/omz+z3OzqAIIeCv81qOspSl1aS7gOhBy0j8J3vPZ2Hl4Is?=
+ =?us-ascii?Q?lPd+aVU/j3i4YtkOQHWnBjHRpux0v4xeMmoAAxB57DdrMKSDTYuQstHz8yR3?=
+ =?us-ascii?Q?7PjZASXlB5nDERCf/Ro5C36vgWe1pOQzfzx7qpjBc+meccSb+z0Eg0CVSvDm?=
+ =?us-ascii?Q?hqhkMOmtXadBg1+c8hjQyWr5mGS514H4/nQ+725fFECWLnErpTazv8cbwgOR?=
+ =?us-ascii?Q?N+EOHfP3mGPbapP0JcPQFyeYiVDah1N16rgVyB5h2z5kJeGdak458/SDFSmS?=
+ =?us-ascii?Q?GMcXakKO+jwzPd98jhSeQX+SlrqcLO7+dr+I6i1d4JyYyblbqcRijzpUZBzW?=
+ =?us-ascii?Q?HeUwxBOAj0xhh8L2jgv6nxItvnVu1Or5ASUzdQIBhg19uXPWW66aQb4rl3fU?=
+ =?us-ascii?Q?Tj0k3REqc9vIQaHAhwTwu1X0VNp+toZYyWCpsqln5wHax1wy1a3K6laR4cXG?=
+ =?us-ascii?Q?IFW8trxCB3yO96w6DkRDoREahas5eDtC05J6HwfSuyPtlh+YSg1xEPUelAFl?=
+ =?us-ascii?Q?uYw7pypT37ojK2U1CTI8ooCsv5pe5PbHMM6nlnQ5w/RLaHzxkidQ6IdUP9Kj?=
+ =?us-ascii?Q?vVfi3R6KKRu9umFlNeE3/ZU5vlDdwpdDbudKIpLzCM1s8xpsYQnC675G+y4m?=
+ =?us-ascii?Q?6FnvqV9NaAeKCndLGXUWrRjAAa6013l/8qAdi/xeQ1cBvieYZHEu5UMZvMWp?=
+ =?us-ascii?Q?TT5rvwxNLgrdKNKFmkEwRK6QxSqOpIoKyHZRFfPgbAHH+enTxocqvyP6fmZ0?=
+ =?us-ascii?Q?JZ9varqVKuiHB9t5+pc5e/4El0hFWrETp4jcFoQsvhzxf7nQbVFg5CmEL4d5?=
+ =?us-ascii?Q?SluS+VZb6QrEy+rdWdvnyKUQY7ltqpve?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4313.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?qonQzEs341rofNQtyT7yv8p4zGTU1pUdA9qi5MFh8mV/Y1044YOp5QrOzU6t?=
+ =?us-ascii?Q?l+u8su03XEMBSqXxlnQydjblMJTDOL8qLUi1zWpqQKmAfWGPF6mbbrzJCLk0?=
+ =?us-ascii?Q?BB67gG52UmQTX5gItumRBSpuuCRoUFMGjLA7fSG4AVl/7Z84wZEnYun41UTr?=
+ =?us-ascii?Q?ewLHjDEbdV90oJwKeIKQKMEbmsH1Mu+jP9eDnyyDcNvfIFk1BEGsfE6/vnSu?=
+ =?us-ascii?Q?8IhgxSqiSgpyS/yUkjM/A4CyTCsIMmfc9nV6vbaQs4SF01ybp4ADkOWdENLu?=
+ =?us-ascii?Q?AHB3NZQ955zaZjV+t22rfoAmgQ8KnbXUf6TaIVnwQA9IEQKJ67vGi00W4nDZ?=
+ =?us-ascii?Q?ZsCp8DNNGXSU4ZRmHNnUE0Eo0bZuCUgt12gh/WuPrb1YF+boQ19vdGxm3PPl?=
+ =?us-ascii?Q?qZ0vf2sPGHZaU21hKJG46zKOXF5fgWioEcn4yCWj53Vuw8pYiT3FgH9OF5qH?=
+ =?us-ascii?Q?wkuF11rowgbhx59E12kd3cn4kor0dJExAxgtTgpZn9EX6aMstSNcJp5qRonE?=
+ =?us-ascii?Q?A2xX7rBdRmDfiyK5DP9bEsu0XN00thKgJUxtYNz1hVNFajf+THKSW24r/rER?=
+ =?us-ascii?Q?oIxdX/lVyuctorhs79Y03gzpZhgTzT94rM3FDgt+Xvmg2RCG9y9VxEz25XWX?=
+ =?us-ascii?Q?5Wk6WPR3FPoMqym0DzJVwhu1ZxyFZzSUh8uZ3nHrhKyA2JOdOleX46uz0vQH?=
+ =?us-ascii?Q?Zj1m6Nh+kf92LED0bmGYcRoSVfECNVvY7hwDRLvQwSXkqoUq6Vfr3FTTsxWK?=
+ =?us-ascii?Q?VpcB6aIlyAu3guGt7pDK4olsZFTQDglb5Hm0SV2YmUE1Q7FrFD2+AS8XLLxS?=
+ =?us-ascii?Q?8ZDcMIFVf+7MXB33RCtwM/EJl8dKiFRZN8lFA7UVl02vb7MTIrdlOcVyJwfg?=
+ =?us-ascii?Q?OKprrUFZm/CmUjVNCn6Xcw/edmOZiL81GShEkgkDSRCtf8RshQmfAIJJbYGK?=
+ =?us-ascii?Q?7e33uA7UyRmFxUZgqhC2VR7MFpKcRQI+xgvTErKZxcbE4iRrJFODGEWi8SC5?=
+ =?us-ascii?Q?timaYZMBEuMav4BLeAg5T3nr546dbioz4rjmhaQcsdXtbwnYbqWWpU/Z7PR5?=
+ =?us-ascii?Q?fs4Q6lPYxSAvBHbL7dOVS5aD5bvA7ES5mGhEpf3bpw2ll1ajq1VwdY0x0e7C?=
+ =?us-ascii?Q?Y14/0auWL1AYEe1cgcw6ktdRXKCIoKFeq+73vs6qtK8nSTTgH2yiZUJVs0Ob?=
+ =?us-ascii?Q?XRUeprnIN6UKwnhL1HoHBNcDvxWKfxstXumgMqyFztra6QLgbXFErWWEawT/?=
+ =?us-ascii?Q?gbWZXEOpXDJu1lYeeEihJZBWWbZQmsD9Q9ho5Z9eFgw0k6iWTU1UamFBX8rV?=
+ =?us-ascii?Q?UlwpXggkiqawG0KbB4MJLNVkA+eznKg2jsYhOTI96Ji0xhTT4H+ZuBsYaoaI?=
+ =?us-ascii?Q?UTiIFx5y2AGN0uVoja/u1Rhy6skrkbsV4RJYl99bAdyma7ocaQyrqqu5ZrdZ?=
+ =?us-ascii?Q?cOuaLcA/7TFttljFHohEXksYjQRwG875WKmcBLtd+RWU69GBlrPYoIJ3QuX5?=
+ =?us-ascii?Q?n7B/bPUGYK4fy917R9FxAb/CjdqQFT/60dutAayRkdYDowQ8/5NKIxeHrGrJ?=
+ =?us-ascii?Q?SS40ioP1+U2lM3jqmV0=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250402233805.464ed70e@pumpkin>
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4313.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5bdaada-6606-4c30-87e0-08dd724f2520
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Apr 2025 01:30:40.7067
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BxlJlsDZmG7Yw+CIVXFa8jh5R1pws19vI2zDqx6ZZ/Ym/Z4hS3w2AdI3M2v2xYgml+9yoe62c+cF1Be/V6jN9w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5653
 
-On 04/02, David Laight wrote:
-> On Wed, 2 Apr 2025 14:21:35 -0700
-> Stanislav Fomichev <stfomichev@gmail.com> wrote:
-> 
-> > On 04/02, David Laight wrote:
-> > > On Wed, 2 Apr 2025 07:19:46 -0700
-> > > Stanislav Fomichev <stfomichev@gmail.com> wrote:
-> > >   
-> > > > On 04/02, David Laight wrote:  
-> > > > > On Wed, 2 Apr 2025 00:53:58 +0200
-> > > > > Stefan Metzmacher <metze@samba.org> wrote:
-> > > > >     
-> > > > > > Am 02.04.25 um 00:04 schrieb Stanislav Fomichev:    
-> > > > > > > On 04/01, Stefan Metzmacher wrote:      
-> > > > > > >> Am 01.04.25 um 17:45 schrieb Stanislav Fomichev:      
-> > > > > > >>> On 04/01, Breno Leitao wrote:      
-> > > > > > >>>> On Tue, Apr 01, 2025 at 03:48:58PM +0200, Stefan Metzmacher wrote:      
-> > > > > > >>>>> Am 01.04.25 um 15:37 schrieb Stefan Metzmacher:      
-> > > > > > >>>>>> Am 01.04.25 um 10:19 schrieb Stefan Metzmacher:      
-> > > > > > >>>>>>> Am 31.03.25 um 23:04 schrieb Stanislav Fomichev:      
-> > > > > > >>>>>>>> On 03/31, Stefan Metzmacher wrote:      
-> > > > > > >>>>>>>>> The motivation for this is to remove the SOL_SOCKET limitation
-> > > > > > >>>>>>>>> from io_uring_cmd_getsockopt().
-> > > > > > >>>>>>>>>
-> > > > > > >>>>>>>>> The reason for this limitation is that io_uring_cmd_getsockopt()
-> > > > > > >>>>>>>>> passes a kernel pointer as optlen to do_sock_getsockopt()
-> > > > > > >>>>>>>>> and can't reach the ops->getsockopt() path.
-> > > > > > >>>>>>>>>
-> > > > > > >>>>>>>>> The first idea would be to change the optval and optlen arguments
-> > > > > > >>>>>>>>> to the protocol specific hooks also to sockptr_t, as that
-> > > > > > >>>>>>>>> is already used for setsockopt() and also by do_sock_getsockopt()
-> > > > > > >>>>>>>>> sk_getsockopt() and BPF_CGROUP_RUN_PROG_GETSOCKOPT().
-> > > > > > >>>>>>>>>
-> > > > > > >>>>>>>>> But as Linus don't like 'sockptr_t' I used a different approach.
-> > > > > > >>>>>>>>>
-> > > > > > >>>>>>>>> @Linus, would that optlen_t approach fit better for you?      
-> > > > > > >>>>>>>>
-> > > > > > >>>>>>>> [..]
-> > > > > > >>>>>>>>      
-> > > > > > >>>>>>>>> Instead of passing the optlen as user or kernel pointer,
-> > > > > > >>>>>>>>> we only ever pass a kernel pointer and do the
-> > > > > > >>>>>>>>> translation from/to userspace in do_sock_getsockopt().      
-> > > > > > >>>>>>>>
-> > > > > > >>>>>>>> At this point why not just fully embrace iov_iter? You have the size
-> > > > > > >>>>>>>> now + the user (or kernel) pointer. Might as well do
-> > > > > > >>>>>>>> s/sockptr_t/iov_iter/ conversion?      
-> > > > > > >>>>>>>
-> > > > > > >>>>>>> I think that would only be possible if we introduce
-> > > > > > >>>>>>> proto[_ops].getsockopt_iter() and then convert the implementations
-> > > > > > >>>>>>> step by step. Doing it all in one go has a lot of potential to break
-> > > > > > >>>>>>> the uapi. I could try to convert things like socket, ip and tcp myself, but
-> > > > > > >>>>>>> the rest needs to be converted by the maintainer of the specific protocol,
-> > > > > > >>>>>>> as it needs to be tested. As there are crazy things happening in the existing
-> > > > > > >>>>>>> implementations, e.g. some getsockopt() implementations use optval as in and out
-> > > > > > >>>>>>> buffer.
-> > > > > > >>>>>>>
-> > > > > > >>>>>>> I first tried to convert both optval and optlen of getsockopt to sockptr_t,
-> > > > > > >>>>>>> and that showed that touching the optval part starts to get complex very soon,
-> > > > > > >>>>>>> see https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=141912166473bf8843ec6ace76dc9c6945adafd1
-> > > > > > >>>>>>> (note it didn't converted everything, I gave up after hitting
-> > > > > > >>>>>>> sctp_getsockopt_peer_addrs and sctp_getsockopt_local_addrs.
-> > > > > > >>>>>>> sctp_getsockopt_context, sctp_getsockopt_maxseg, sctp_getsockopt_associnfo and maybe
-> > > > > > >>>>>>> more are the ones also doing both copy_from_user and copy_to_user on optval)
-> > > > > > >>>>>>>
-> > > > > > >>>>>>> I come also across one implementation that returned -ERANGE because *optlen was
-> > > > > > >>>>>>> too short and put the required length into *optlen, which means the returned
-> > > > > > >>>>>>> *optlen is larger than the optval buffer given from userspace.
-> > > > > > >>>>>>>
-> > > > > > >>>>>>> Because of all these strange things I tried to do a minimal change
-> > > > > > >>>>>>> in order to get rid of the io_uring limitation and only converted
-> > > > > > >>>>>>> optlen and leave optval as is.
-> > > > > > >>>>>>>
-> > > > > > >>>>>>> In order to have a patchset that has a low risk to cause regressions.
-> > > > > > >>>>>>>
-> > > > > > >>>>>>> But as alternative introducing a prototype like this:
-> > > > > > >>>>>>>
-> > > > > > >>>>>>>            int (*getsockopt_iter)(struct socket *sock, int level, int optname,
-> > > > > > >>>>>>>                                   struct iov_iter *optval_iter);
-> > > > > > >>>>>>>
-> > > > > > >>>>>>> That returns a non-negative value which can be placed into *optlen
-> > > > > > >>>>>>> or negative value as error and *optlen will not be changed on error.
-> > > > > > >>>>>>> optval_iter will get direction ITER_DEST, so it can only be written to.
-> > > > > > >>>>>>>
-> > > > > > >>>>>>> Implementations could then opt in for the new interface and
-> > > > > > >>>>>>> allow do_sock_getsockopt() work also for the io_uring case,
-> > > > > > >>>>>>> while all others would still get -EOPNOTSUPP.
-> > > > > > >>>>>>>
-> > > > > > >>>>>>> So what should be the way to go?      
-> > > > > > >>>>>>
-> > > > > > >>>>>> Ok, I've added the infrastructure for getsockopt_iter, see below,
-> > > > > > >>>>>> but the first part I wanted to convert was
-> > > > > > >>>>>> tcp_ao_copy_mkts_to_user() and that also reads from userspace before
-> > > > > > >>>>>> writing.
-> > > > > > >>>>>>
-> > > > > > >>>>>> So we could go with the optlen_t approach, or we need
-> > > > > > >>>>>> logic for ITER_BOTH or pass two iov_iters one with ITER_SRC and one
-> > > > > > >>>>>> with ITER_DEST...
-> > > > > > >>>>>>
-> > > > > > >>>>>> So who wants to decide?      
-> > > > > > >>>>>
-> > > > > > >>>>> I just noticed that it's even possible in same cases
-> > > > > > >>>>> to pass in a short buffer to optval, but have a longer value in optlen,
-> > > > > > >>>>> hci_sock_getsockopt() with SOL_BLUETOOTH completely ignores optlen.
-> > > > > > >>>>>
-> > > > > > >>>>> This makes it really hard to believe that trying to use iov_iter for this
-> > > > > > >>>>> is a good idea :-(      
-> > > > > > >>>>
-> > > > > > >>>> That was my finding as well a while ago, when I was planning to get the
-> > > > > > >>>> __user pointers converted to iov_iter. There are some weird ways of
-> > > > > > >>>> using optlen and optval, which makes them non-trivial to covert to
-> > > > > > >>>> iov_iter.      
-> > > > > > >>>
-> > > > > > >>> Can we ignore all non-ip/tcp/udp cases for now? This should cover +90%
-> > > > > > >>> of useful socket opts. See if there are any obvious problems with them
-> > > > > > >>> and if not, try converting. The rest we can cover separately when/if
-> > > > > > >>> needed.      
-> > > > > > >>
-> > > > > > >> That's what I tried, but it fails with
-> > > > > > >> tcp_getsockopt ->
-> > > > > > >>     do_tcp_getsockopt ->
-> > > > > > >>       tcp_ao_get_mkts ->
-> > > > > > >>          tcp_ao_copy_mkts_to_user ->
-> > > > > > >>             copy_struct_from_sockptr
-> > > > > > >>       tcp_ao_get_sock_info ->
-> > > > > > >>          copy_struct_from_sockptr
-> > > > > > >>
-> > > > > > >> That's not possible with a ITER_DEST iov_iter.
-> > > > > > >>
-> > > > > > >> metze      
-> > > > > > > 
-> > > > > > > Can we create two iterators over the same memory? One for ITER_SOURCE and
-> > > > > > > another for ITER_DEST. And then make getsockopt_iter accept optval_in and
-> > > > > > > optval_out. We can also use optval_out position (iov_offset) as optlen output
-> > > > > > > value. Don't see why it won't work, but I agree that's gonna be a messy
-> > > > > > > conversion so let's see if someone else has better suggestions.      
-> > > > > > 
-> > > > > > Yes, that might work, but it would be good to get some feedback
-> > > > > > if this would be the way to go:
-> > > > > > 
-> > > > > >            int (*getsockopt_iter)(struct socket *sock,
-> > > > > > 				 int level, int optname,
-> > > > > > 				 struct iov_iter *optval_in,
-> > > > > > 				 struct iov_iter *optval_out);
-> > > > > > 
-> > > > > > And *optlen = optval_out->iov_offset;
-> > > > > > 
-> > > > > > Any objection or better ideas? Linus would that be what you had in mind?    
-> > > > > 
-> > > > > I'd worry about performance - yes I know 'iter' are used elsewhere but...
-> > > > > Also look at the SCTP code.    
-> > > > 
-> > > > Performance usually does not matter for set/getsockopts, there
-> > > > are a few exceptions that I know (TCP_ZEROCOPY_RECEIVE)  
-> > > 
-> > > That might be the one that is really horrid and completely abuses
-> > > the 'length' parameter.  
-> > 
-> > It is reading and writing, yes, but it's not a huge problem. And it
-> > does enforce the optlen (to copy back the same amount of bytes). It's
-> > not that bad, it's just an example of where we need to be extra
-> > careful.
-> > 
-> > > > and maybe recent
-> > > > devmem sockopts; we can special-case these if needed, or keep sockptr_t,
-> > > > idk. I'm skeptical we can convert everything though, that's why the
-> > > > suggestion to start with sk/ip/tcp/udp.
-> > > >   
-> > > > > How do you handle code that wants to return an updated length (often longer
-> > > > > than the one provided) and an error code (eg ERRSIZE or similar).
-> > > > >
-> > > > > There is also a very strange use (I think it is a sockopt rather than an ioctl)
-> > > > > where the buffer length the application provides is only that of the header.
-> > > > > The actual buffer length is contained in the header.
-> > > > > The return length is the amount written into the full buffer.    
-> > > > 
-> > > > Let's discuss these special cases as they come up? Worst case these
-> > > > places can always re-init iov_iter with a comment on why it is ok.
-> > > > But I do agree in general that there are a few places that do wild
-> > > > stuff.  
-> > > 
-> > > The problem is that the generic code has to deal with all the 'wild stuff'.  
-> > 
-> > getsockopt_iter will have optval_in for the minority of socket options
-> > (like TCP_ZEROCOPY_RECEIVE) that want to read user's value as well
-> > as optval_out. The latter is what the majority of socket options
-> > will use to write their value. That doesn't seem too complicated to
-> > handle?
-> > 
-> > > It is also common to do non-sequential accesses - so iov_iter doesn't match
-> > > at all.  
-> > 
-> > I disagree that it's 'common'. Searching for copy_from_sockptr_offset
-> > returns a few cases and they are mostly using read-with-offset because
-> > there is no sequential read (iterator) semantics with sockptr_t.
-> > 
-> > > There also isn't a requirement for scatter-gather.
-> > > 
-> > > For 'normal' getsockopt (and setsockopt) with short lengths it actually makes
-> > > sense for the syscall wrapper to do the user copies.
-> > > But it would need to pass the user ptr+len as well as the kernel ptr+len
-> > > to give the required flexibilty.
-> > > Then you have to work out whether the final copy to user is needed or not.
-> > > (not that hard, but it all adds complication).  
-> > 
-> > Not sure I understand what's the problem. The user vs kernel part will
-> > be abstracted by iov_iter. The callers will have to write the optlen
-> > back. And there are two call sites we care about: io_uring and regular
-> > system call. What's your suggestion? Maybe I'm missing something. Do you
-> > prefer get_optlen/put_optlen?
-> 
-> I think the final aim should be to pass the user supplied length to the
-> per-protocol code and have it return the length/error to be passed back to the
-> user.
+> On Tue, Apr 01, 2025 at 04:57:52PM +0000, Sean Hefty wrote:
+> > > > Specifically, I want to *allow* separating the different functions
+> > > > that a single PD provides into separate PDs.  The functions being
+> > > > page mapping (registration), local (lkey) access, and remote (rkey)=
+ access.
+> > >
+> > > That seems like quite a stretch for the PD.. Especially from a verbs
+> > > perspective we do expect single PD and that is the entire security co=
+ntext.
+> >
+> > From the viewpoint of a transport, the target QPN and incoming rkey
+> > must align on some backing security object (let's call that the PD).
+> > As a model, I view this as there needs to exist some {QPN, rkey, PD
+> > ID} tuple with appropriate memory access permissions.
+>=20
+> Yes, but I'd say the IBTA modeling has the network headers select a PD an=
+d
+> then the PD limits what objects that packet can reach.
 
-Like what Stefan's patch 3 is doing? Or you're suggesting to change
-getsockopt handlers to handle length more explicitly? If we were
-to proceed with sockptr to iov_iter conversion we'll have to do it anyway
-(or pass the length as the size of iov_iter).
+My claim is PD selection is made using the QPN and rkey.
 
-> But in a lot of cases the syscall wrapper can do the buffer copies (as well
-> as the length copies).
-> That would be restricted to short length (on stack).
-> So code that needed a long buffer (like some of the sctp options)
-> would need to directly access the user buffer (or a long buffer provided
-> by an in-kernel user).
+For the model, QPN -> PD and rkey -> PD are deterministic, and both must se=
+lect the same PD.  The SW model reflects this.  I think UEC can fit this mo=
+del.
 
-This sounds similar to what we did with bpf hooks - copy (head of) the
-buffer and run bpf program on top of it. I remember iptables setsockopt
-begin problematic because of its huge size.. It is an option, yes (to
-convert protocol handler to kernel memory mostly).
+> I still think that is a good starting point, and if there is more fine gr=
+ained
+> limitations then I'd say each object has an additional ACL list about wha=
+t
+> subset of the network headers (already within the PD) that it can accept.
 
-> But you'll find code that reads/writes well beyond the apparent size of
-> the user buffer.
-> (And not just code that accesses 4 bytes without checking the length).
+I'm unclear on the contents of the ACL, but I'm also unsure it's needed.
 
-With can start with getsockopt_iter + sk_getsockopt to see if there are any
-issues with that approach. If not, adding ip/tcp/udp to the mix should be doable.
-We can explain and comment on special cases if needed. When other protocols
-are needed from io_uring, we can convert more. But at least the new code
-will use the correct abstractions.
+> > The change here is to expand that tuple to include a job id: {QPN, rkey=
+, job
+> ID, PD ID}.
+>=20
+> IB does QPN -> PD, if you do Job -> PD I think that would make sense. If =
+the
+> QP is providing additional restriction that would be a job for ACLs..
+
+I believe job id -> PD works.  To enable job-secure MRs, I believe rkey -> =
+job ID is needed and not properly captured by an ACL or QP setting.  Rkey -=
+> job ID is optional, but deterministic.
+
+To keep the model simple, all QPs under the same PD would belong to the sam=
+e set of jobs.  If this makes sense to you, I can discuss in the UEC to see=
+ if all the above work.
+
+To summarize, the SW object model looks like:
+
+create_pd(&pd)
+create_qp(pd, &qp)
+create_job(pd, &job)
+reg_mr(pd, [job], access, &mr)
+share_mr(mr, [job], access, &new_mr) -- get a new rkey
+
+I include share_mr() for completeness, but I don't think it needs to be an =
+explicit part of a common uABI.
+
+A gap in this model relative to libfabric is supporting NICs which associat=
+e MRs directly with QPs.  Similar to share_mr(), I believe it can be handle=
+d directly by the NIC vendor and should not impact a common uABI.
+
+> > I don't know that I can talk about the UEC spec,
+>=20
+> Right, it is too early to talk about UEC and Linux until people can freel=
+y talk
+> about what it actually needs.
+>=20
+> > I can envision a job manager creating, sharing, and possibly
+> > controlling the PD-related resources.
+>=20
+> Really? Beyond Job, what would make sense? Addressing Handles?
+>
+> I wondering if addressing handles are really part of the job..
+
+My thoughts were allocating and configuring the QPs.  Given the above model=
+, this could include the job setup.  (I can also envision a process not hav=
+ing the ability to create or modify QPs or jobs).
+
+Addressing is probably a separate discussion, which I'm happy to defer defi=
+ning for later.  IMO, it makes sense to share addressing among processes to=
+ reduce the memory footprint.  This is best handled by the job manager popu=
+lating some address table.  UEC has also publicly mentioned 'group keying' =
+for security, which suggests attributes applied to a collection of addresse=
+s related by job.  So, I think there will be uABI concerns here.
+
+- Sean=20
 
