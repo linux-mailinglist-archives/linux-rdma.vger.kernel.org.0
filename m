@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-9155-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9154-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77E5BA7BFD3
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Apr 2025 16:46:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBE04A7BFD0
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Apr 2025 16:46:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04A5A17BEC2
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Apr 2025 14:46:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D49A717CBD0
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Apr 2025 14:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6B41F4C8E;
-	Fri,  4 Apr 2025 14:46:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A5C1F461C;
+	Fri,  4 Apr 2025 14:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="GQ6LMU49"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="dk0KpHrR"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE381F419D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD791F37D4;
 	Fri,  4 Apr 2025 14:46:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743777965; cv=none; b=mW0y5Me1vPh8nipuFGubaRkKaPb8arz4dDQyGKp2K32Luyd9p31nhALy0fUCtD8lNlfbmTTS/lvXwZ5fNhkr9fFBylsL6aiyszbR2VFKtV+x03xZOaK3sjo+AF0lrLjlaxOs3Am9x4riONElHi13rddJXhSBDbrxBpwRhA1ABP0=
+	t=1743777964; cv=none; b=sPUH3WIKnH7QoGFx50amWDlUhR4La/sLvtotrmgV903RQZd5AprLjcxGGM2TzyV6L3lx9C6mO9RudZNeNmSzR59j91H7nbqkddfe8XxFXNyRQt9cqs0fn/gGPxFB8QrnYXB/ctGTVL5ek5BrQh7pqi20Q3EqDkjgFF+CsdkFet4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743777965; c=relaxed/simple;
-	bh=vtUO3I0GfR3soW4psczNy/v5iTEKL5+K9N1+eicoi9M=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=NCPFTp6z0KEjPUiYSE+w43F3mVA6w5dlakb/ln6xurZqRjkgTDZO12Gl++ld9miCnA8IeqgYK6Z3ECv43Gv5BufCfcQXcvss3NGvDAt8oat5ZHlE4nb6Z93laJlcU//wDFXxTjjHMK506t3o4I+vxvkDEsVHvvwhGBK9t/llHsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=GQ6LMU49; arc=none smtp.client-ip=13.77.154.182
+	s=arc-20240116; t=1743777964; c=relaxed/simple;
+	bh=//qEM11VkDcC4uZBan6dMlPoLKZnDJ2babKh5NvqDQw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=m3QONc+35GYXkHbP7Ri7suUJPJzZgY37KCgVvM3LvTnA6vX9i2p949P8gF8FiuqgQlmzzfu3a8oFvTyVObW3marVBJneo4GekBxke/JlQLMm/narFmVXlkFzSKhuoOuwo8J6JjpAQLFYqgwhAzTO+wRyVFyt6Al699EuN83s7RE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=dk0KpHrR; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: by linux.microsoft.com (Postfix, from userid 1186)
-	id EEA822027E10; Fri,  4 Apr 2025 07:45:55 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EEA822027E10
+	id 0760E2027E11; Fri,  4 Apr 2025 07:45:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0760E2027E11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1743777955;
-	bh=FKKQQzJvIk0F8xIfgA7X5Zz753fbLzvsg6P9j7X+2sM=;
+	s=default; t=1743777956;
+	bh=uVbwph+7O+ouZrW3G3mHhw6G2CAiHZ16DZIxMmSqEbY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GQ6LMU49zajhWDVDAUM2smqu4cnxFVKPt+1KlMC8/dQZMGh8y41gawsf1PkdYlHey
-	 +W0xc6nzsYR9lfrj/wCPXcRvylnw8og3H0ZMaWlAbburm0DXltAPjwS5l88rMrekzd
-	 pU9t6SRGL1R2E0MDUY9Slc1MCcyEsa8Dym0rgJbU=
+	b=dk0KpHrRle2wTQhrCauoQK/X4mC8Qpx+ZFOQQGL1V0ftBGlWcuoBngrlVnmSe9q0K
+	 lv89bQu95HCgh7dQXZqA4dKcRw+lDiYjApA+5X7PL6wvnazQnlu23izDGDyoFCT4ZU
+	 woCgd4ql/oOVRy7MHA+X04JVSYsM01FKTGNUmFSY=
 From: Konstantin Taranov <kotaranov@linux.microsoft.com>
 To: kotaranov@microsoft.com,
 	pabeni@redhat.com,
@@ -54,9 +54,9 @@ To: kotaranov@microsoft.com,
 Cc: linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH rdma-next 2/3] RDMA/mana_ib: support of the zero based MRs
-Date: Fri,  4 Apr 2025 07:45:54 -0700
-Message-Id: <1743777955-2316-3-git-send-email-kotaranov@linux.microsoft.com>
+Subject: [PATCH rdma-next 3/3] RDMA/mana_ib: Add support of 4M, 1G, and 2G pages
+Date: Fri,  4 Apr 2025 07:45:55 -0700
+Message-Id: <1743777955-2316-4-git-send-email-kotaranov@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1743777955-2316-1-git-send-email-kotaranov@linux.microsoft.com>
 References: <1743777955-2316-1-git-send-email-kotaranov@linux.microsoft.com>
@@ -68,101 +68,148 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
 From: Konstantin Taranov <kotaranov@microsoft.com>
 
-Add IB_ZERO_BASED to the valid flags and use
-the corresponding MR creation request for the zero
-based memory.
+Check PF capability flag whether the 4M, 1G, and 2G pages are
+supported. Add these pages sizes to mana_ib, if supported.
+
+Define possible page sizes in enum gdma_page_type and
+remove unused enum atb_page_size.
 
 Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
 ---
- drivers/infiniband/hw/mana/mr.c | 24 +++++++++++++++++-------
- include/net/mana/gdma.h         | 11 ++++++++++-
- 2 files changed, 27 insertions(+), 8 deletions(-)
+ drivers/infiniband/hw/mana/main.c             | 10 +++++--
+ drivers/infiniband/hw/mana/mana_ib.h          |  1 +
+ .../net/ethernet/microsoft/mana/gdma_main.c   |  1 +
+ include/net/mana/gdma.h                       | 30 ++++++++++---------
+ 4 files changed, 25 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-index e4a9f53..6d974d0 100644
---- a/drivers/infiniband/hw/mana/mr.c
-+++ b/drivers/infiniband/hw/mana/mr.c
-@@ -6,7 +6,7 @@
- #include "mana_ib.h"
+diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
+index 730f958..a28b712 100644
+--- a/drivers/infiniband/hw/mana/main.c
++++ b/drivers/infiniband/hw/mana/main.c
+@@ -479,7 +479,7 @@ int mana_ib_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+ {
+ 	unsigned long page_sz;
  
- #define VALID_MR_FLAGS (IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_READ |\
--			IB_ACCESS_REMOTE_ATOMIC)
-+			IB_ACCESS_REMOTE_ATOMIC | IB_ZERO_BASED)
+-	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, virt);
++	page_sz = ib_umem_find_best_pgsz(umem, dev->adapter_caps.page_size_cap, virt);
+ 	if (!page_sz) {
+ 		ibdev_dbg(&dev->ib_dev, "Failed to find page size.\n");
+ 		return -EINVAL;
+@@ -494,7 +494,7 @@ int mana_ib_create_zero_offset_dma_region(struct mana_ib_dev *dev, struct ib_ume
+ 	unsigned long page_sz;
  
- #define VALID_DMA_MR_FLAGS (IB_ACCESS_LOCAL_WRITE)
+ 	/* Hardware requires dma region to align to chosen page size */
+-	page_sz = ib_umem_find_best_pgoff(umem, PAGE_SZ_BM, 0);
++	page_sz = ib_umem_find_best_pgoff(umem, dev->adapter_caps.page_size_cap, 0);
+ 	if (!page_sz) {
+ 		ibdev_dbg(&dev->ib_dev, "Failed to find page size.\n");
+ 		return -EINVAL;
+@@ -577,7 +577,7 @@ int mana_ib_query_device(struct ib_device *ibdev, struct ib_device_attr *props,
  
-@@ -51,7 +51,10 @@ static int mana_ib_gd_create_mr(struct mana_ib_dev *dev, struct mana_ib_mr *mr,
- 		req.gva.virtual_address = mr_params->gva.virtual_address;
- 		req.gva.access_flags = mr_params->gva.access_flags;
- 		break;
--
-+	case GDMA_MR_TYPE_ZBVA:
-+		req.zbva.dma_region_handle = mr_params->zbva.dma_region_handle;
-+		req.zbva.access_flags = mr_params->zbva.access_flags;
-+		break;
- 	default:
- 		ibdev_dbg(&dev->ib_dev,
- 			  "invalid param (GDMA_MR_TYPE) passed, type %d\n",
-@@ -147,11 +150,18 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
- 		  dma_region_handle);
+ 	memset(props, 0, sizeof(*props));
+ 	props->max_mr_size = MANA_IB_MAX_MR_SIZE;
+-	props->page_size_cap = PAGE_SZ_BM;
++	props->page_size_cap = dev->adapter_caps.page_size_cap;
+ 	props->max_qp = dev->adapter_caps.max_qp_count;
+ 	props->max_qp_wr = dev->adapter_caps.max_qp_wr;
+ 	props->device_cap_flags = IB_DEVICE_RC_RNR_NAK_GEN;
+@@ -696,6 +696,10 @@ int mana_ib_gd_query_adapter_caps(struct mana_ib_dev *dev)
+ 	caps->max_recv_sge_count = resp.max_recv_sge_count;
+ 	caps->feature_flags = resp.feature_flags;
  
- 	mr_params.pd_handle = pd->pd_handle;
--	mr_params.mr_type = GDMA_MR_TYPE_GVA;
--	mr_params.gva.dma_region_handle = dma_region_handle;
--	mr_params.gva.virtual_address = iova;
--	mr_params.gva.access_flags =
--		mana_ib_verbs_to_gdma_access_flags(access_flags);
-+	if (access_flags & IB_ZERO_BASED) {
-+		mr_params.mr_type = GDMA_MR_TYPE_ZBVA;
-+		mr_params.zbva.dma_region_handle = dma_region_handle;
-+		mr_params.zbva.access_flags =
-+			mana_ib_verbs_to_gdma_access_flags(access_flags);
-+	} else {
-+		mr_params.mr_type = GDMA_MR_TYPE_GVA;
-+		mr_params.gva.dma_region_handle = dma_region_handle;
-+		mr_params.gva.virtual_address = iova;
-+		mr_params.gva.access_flags =
-+			mana_ib_verbs_to_gdma_access_flags(access_flags);
-+	}
++	caps->page_size_cap = PAGE_SZ_BM;
++	if (mdev_to_gc(dev)->pf_cap_flags1 & GDMA_DRV_CAP_FLAG_1_GDMA_PAGES_4MB_1GB_2GB)
++		caps->page_size_cap |= (SZ_4M | SZ_1G | SZ_2G);
++
+ 	return 0;
+ }
  
- 	err = mana_ib_gd_create_mr(dev, mr, &mr_params);
- 	if (err)
+diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
+index 6903946..f0dbd90 100644
+--- a/drivers/infiniband/hw/mana/mana_ib.h
++++ b/drivers/infiniband/hw/mana/mana_ib.h
+@@ -60,6 +60,7 @@ struct mana_ib_adapter_caps {
+ 	u32 max_recv_sge_count;
+ 	u32 max_inline_data_size;
+ 	u64 feature_flags;
++	u64 page_size_cap;
+ };
+ 
+ struct mana_ib_queue {
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 4a2b17f..b5156d4 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -937,6 +937,7 @@ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+ 			err, resp.hdr.status);
+ 		return err ? err : -EPROTO;
+ 	}
++	gc->pf_cap_flags1 = resp.pf_cap_flags1;
+ 	if (resp.pf_cap_flags1 & GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG) {
+ 		err = mana_gd_query_hwc_timeout(pdev, &hwc->hwc_timeout);
+ 		if (err) {
 diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 50ffbc4..3db506d 100644
+index 3db506d..fd37507 100644
 --- a/include/net/mana/gdma.h
 +++ b/include/net/mana/gdma.h
-@@ -812,6 +812,8 @@ enum gdma_mr_type {
- 	 * address that is set up in the MST
- 	 */
- 	GDMA_MR_TYPE_GVA = 2,
-+	/* Guest zero-based address MRs */
-+	GDMA_MR_TYPE_ZBVA = 4,
+@@ -194,6 +194,19 @@ struct gdma_wqe_request {
+ 
+ enum gdma_page_type {
+ 	GDMA_PAGE_TYPE_4K,
++	GDMA_PAGE_SIZE_8K,
++	GDMA_PAGE_SIZE_16K,
++	GDMA_PAGE_SIZE_32K,
++	GDMA_PAGE_SIZE_64K,
++	GDMA_PAGE_SIZE_128K,
++	GDMA_PAGE_SIZE_256K,
++	GDMA_PAGE_SIZE_512K,
++	GDMA_PAGE_SIZE_1M,
++	GDMA_PAGE_SIZE_2M,
++	/* Only when GDMA_DRV_CAP_FLAG_1_GDMA_PAGES_4MB_1GB_2GB is set */
++	GDMA_PAGE_SIZE_4M,
++	GDMA_PAGE_SIZE_1G = 18,
++	GDMA_PAGE_SIZE_2G
  };
  
- struct gdma_create_mr_params {
-@@ -823,6 +825,10 @@ struct gdma_create_mr_params {
- 			u64 virtual_address;
- 			enum gdma_mr_access_flags access_flags;
- 		} gva;
-+		struct {
-+			u64 dma_region_handle;
-+			enum gdma_mr_access_flags access_flags;
-+		} zbva;
- 	};
+ #define GDMA_INVALID_DMA_REGION 0
+@@ -407,6 +420,8 @@ struct gdma_context {
+ 
+ 	/* Azure RDMA adapter */
+ 	struct gdma_dev		mana_ib;
++
++	u64 pf_cap_flags1;
  };
  
-@@ -838,7 +844,10 @@ struct gdma_create_mr_request {
- 			u64 virtual_address;
- 			enum gdma_mr_access_flags access_flags;
- 		} gva;
+ #define MAX_NUM_GDMA_DEVICES	4
+@@ -556,6 +571,7 @@ enum {
+ #define GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX BIT(2)
+ #define GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG BIT(3)
+ #define GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT BIT(5)
++#define GDMA_DRV_CAP_FLAG_1_GDMA_PAGES_4MB_1GB_2GB BIT(4)
+ 
+ #define GDMA_DRV_CAP_FLAGS1 \
+ 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+@@ -704,20 +720,6 @@ struct gdma_query_hwc_timeout_resp {
+ 	u32 reserved;
+ };
+ 
+-enum atb_page_size {
+-	ATB_PAGE_SIZE_4K,
+-	ATB_PAGE_SIZE_8K,
+-	ATB_PAGE_SIZE_16K,
+-	ATB_PAGE_SIZE_32K,
+-	ATB_PAGE_SIZE_64K,
+-	ATB_PAGE_SIZE_128K,
+-	ATB_PAGE_SIZE_256K,
+-	ATB_PAGE_SIZE_512K,
+-	ATB_PAGE_SIZE_1M,
+-	ATB_PAGE_SIZE_2M,
+-	ATB_PAGE_SIZE_MAX,
+-};
 -
-+		struct {
-+			u64 dma_region_handle;
-+			enum gdma_mr_access_flags access_flags;
-+		} zbva;
- 	};
- 	u32 reserved_2;
- };/* HW DATA */
+ enum gdma_mr_access_flags {
+ 	GDMA_ACCESS_FLAG_LOCAL_READ = BIT_ULL(0),
+ 	GDMA_ACCESS_FLAG_LOCAL_WRITE = BIT_ULL(1),
 -- 
 2.43.0
 
