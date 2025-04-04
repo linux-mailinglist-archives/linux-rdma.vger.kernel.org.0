@@ -1,133 +1,126 @@
-Return-Path: <linux-rdma+bounces-9152-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9159-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 543C8A7BE16
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Apr 2025 15:41:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9623A7C0C2
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Apr 2025 17:40:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1705B3B488E
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Apr 2025 13:40:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B29A189EF9A
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Apr 2025 15:40:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD31B1F1518;
-	Fri,  4 Apr 2025 13:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84BCC1F7545;
+	Fri,  4 Apr 2025 15:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uugS4K5E"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hoffmanne.cfd header.i=@hoffmanne.cfd header.b="OYbxuLb6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from hoffmanne.cfd (unknown [147.189.135.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64FEA1F12F9
-	for <linux-rdma@vger.kernel.org>; Fri,  4 Apr 2025 13:40:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDDE61F6699
+	for <linux-rdma@vger.kernel.org>; Fri,  4 Apr 2025 15:39:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.189.135.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743774047; cv=none; b=BUZLFtAxErFMqEMh4Tr3f4QUHqwjpeEjskDzIfdSo1O5/DLoNwJsozDDLcbbEfQsKez1VoZKUzLnKwdfje9za2wej/rKw1Bq//Dg0xWm/D1yHb6bd8++jBJb+Ch5mvGcXunJyk83nYfvyhFMa/jWc1Q2H2UB1V22qmEvitm/ZTk=
+	t=1743781174; cv=none; b=nd0XLjn19qp4FzM1kh45sj8VHX1F0rJst2eLeUd4fEkS+kXqwodNydQfu93NM0SACKJIDOBTKo0Tg/tjqOjMgozP+EqvRVMNk6h1d7sOZZvpKcObYcra18GR++ryoqTiVf6vP2bE798lducsPPwkxRlsIpxvD/ylfeGCt8T8KcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743774047; c=relaxed/simple;
-	bh=xANPefLqpcEQYBRE/NCV46oK1I/FrELUp3mVZEO+8co=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qe1hF1I90LdDzqCsIKmo2PJjxlkR0BXeobA+/FBYz1qiqoNpk7eLrQE57ELsgsuj5QTMSeOsXEY4Cc+jSEP/Dm4zdR/3RuntmLkY9jEgIvnIejq0a/c7CBtZ6OS4wpfdH0vepJmfuAOwYisrCscxv5xJ7ejhQdr33AnXOmj21EY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uugS4K5E; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <3291d0f9-40af-4e8d-aa08-b84132caf03d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1743774041;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0WVYyYy47dRxRDE2y37KU6fRW5bT0lNVCJKYGaAjgBU=;
-	b=uugS4K5EShcKvWJc+VGSsPwIPg4rMNQLThsiZLoVA7gjw0RdwfgRWXqG6XuvXjkc9V/UUy
-	RPUEIM2kTvgk4rN/casblXmUQq6t/61LXHyHRG6aBGqKIqLOJ9uq3bqDk3NR7Z5JG9p2Kc
-	bJVJUBEhVk3rq/XVylmp7GbTJX/Qz9k=
-Date: Fri, 4 Apr 2025 15:40:39 +0200
+	s=arc-20240116; t=1743781174; c=relaxed/simple;
+	bh=mHeYRDwC4NhciizZuecHzxK9iWdyRDejpuC320chxBI=;
+	h=To:Subject:Date:From:Message-ID:MIME-Version:Content-Type; b=LM4qEmpcYdUOQSiNkJZz+k3kQWyXXbAGWVWr753z3a0HdiohVAQ3yMSizKAkPIUvnfmp/UMvEqEKAu1RXQFh32H/h0SCrqsXBTqmpMLsCF+KqSBcYPr6HyBEzhEW6cDBendxJ67mxUtxa+/Y/bc0BmIuDZnuO5HI9VcuJrnU8yM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hoffmanne.cfd; spf=pass smtp.mailfrom=hoffmanne.cfd; dkim=pass (1024-bit key) header.d=hoffmanne.cfd header.i=@hoffmanne.cfd header.b=OYbxuLb6; arc=none smtp.client-ip=147.189.135.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hoffmanne.cfd
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hoffmanne.cfd
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=hoffmanne.cfd; s=mail; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-ID:Reply-To:From:Date:Subject:To:Sender:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=z+jxu593huLKFZv29O/DLCCNgNWQ/coI90ZKUuN2XRk=; b=OYbxuLb6ez/823+Y7jwD6rtqXx
+	3xizCJ14+dm9ooKb25jgJZpuO6ID3Kt791h1CvsZZLZSb8GB0Elueo4Y5sYHkiRuu9nAFKzHsQLfg
+	E3GPODARL1Tuk34nkwNnlgNKdWylKiYJGVvDfKRjbgjjgmpCViGq0NlHJ27mZN1GNK3Y=;
+Received: from admin by hoffmanne.cfd with local (Exim 4.90_1)
+	(envelope-from <support@hoffmanne.cfd>)
+	id 1u0h8N-0005sd-MC
+	for linux-rdma@vger.kernel.org; Fri, 04 Apr 2025 13:30:59 +0000
+To: linux-rdma@vger.kernel.org
+Subject: WTS Available laptops and Memory
+Date: Fri, 4 Apr 2025 13:30:59 +0000
+From: Charles Lawson <support@hoffmanne.cfd>
+Reply-To: sales@exceptionalonepc.com
+Message-ID: <6039d86d0659d6af2af09c0f06d28ba6@hoffmanne.cfd>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 5.4.y] RDMA/srpt: Support specifying the srpt_service_guid
- parameter
-To: Alok Tiwari <alok.a.tiwari@oracle.com>, bvanassche@acm.org,
- dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
- target-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- darren.kenny@oracle.com
-References: <20250403125955.2553106-1-alok.a.tiwari@oracle.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250403125955.2553106-1-alok.a.tiwari@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 03.04.25 14:59, Alok Tiwari wrote:
-> From: Bart Van Assche <bvanassche@acm.org>
-> 
-> [ Upstream commit fdfa083549de5d50ebf7f6811f33757781e838c0 ]
-> 
-> Make loading ib_srpt with this parameter set work. The current behavior is
-> that setting that parameter while loading the ib_srpt kernel module
-> triggers the following kernel crash:
-> 
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> Call Trace:
->   <TASK>
->   parse_one+0x18c/0x1d0
->   parse_args+0xe1/0x230
->   load_module+0x8de/0xa60
->   init_module_from_file+0x8b/0xd0
->   idempotent_init_module+0x181/0x240
->   __x64_sys_finit_module+0x5a/0xb0
->   do_syscall_64+0x5f/0xe0
->   entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> 
-> Cc: LiHonggang <honggangli@163.com>
-> Reported-by: LiHonggang <honggangli@163.com>
-> Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
-> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-> Link: https://lore.kernel.org/r/20240205004207.17031-1-bvanassche@acm.org
-> Signed-off-by: Leon Romanovsky <leon@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> [Alok: Backport to 5.4.y since the commit has already been backported to
-> 5.15y, 5.10.y, and 4.19.y]
-> Signed-off-by: Alok Tiwari <alok.a.tiwari@oracle.com>
+Hello ,
 
-Not sure if this "Cc: stable@vger.kernel.org" is needed to notify the 
-engineer of stable branch or not.
+These are available for sale. If you’re interested in purchasing these, please email me
 
-Zhu Yanjun
 
-> ---
->   drivers/infiniband/ulp/srpt/ib_srpt.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> index d03a4f2e006f..f5fd8c1058ce 100644
-> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> @@ -79,12 +79,16 @@ module_param(srpt_srq_size, int, 0444);
->   MODULE_PARM_DESC(srpt_srq_size,
->   		 "Shared receive queue (SRQ) size.");
->   
-> +static int srpt_set_u64_x(const char *buffer, const struct kernel_param *kp)
-> +{
-> +	return kstrtou64(buffer, 16, (u64 *)kp->arg);
-> +}
->   static int srpt_get_u64_x(char *buffer, const struct kernel_param *kp)
->   {
->   	return sprintf(buffer, "0x%016llx", *(u64 *)kp->arg);
->   }
-> -module_param_call(srpt_service_guid, NULL, srpt_get_u64_x, &srpt_service_guid,
-> -		  0444);
-> +module_param_call(srpt_service_guid, srpt_set_u64_x, srpt_get_u64_x,
-> +		  &srpt_service_guid, 0444);
->   MODULE_PARM_DESC(srpt_service_guid,
->   		 "Using this value for ioc_guid, id_ext, and cm_listen_id instead of using the node_guid of the first HCA.");
->   
+
+NVIDIA GeForce RTX 5090 FE Founders Edition GDDR7 Graphics Card
+QTY 10
+$2000 EACH
+
+
+
+Refurbished Grade A Dell Latitude 14 Rugged Extreme (7424) 
+Windows 11 Pro - Core I5, 16GB RAM, 512GB
+QTY58
+$200 EACH
+
+ Refurbished Grade A
+Dell Latitude 5430 Intel i7 1255U 1.70GHz 
+16GB RAM 256GB SSD 14" Win 11 Pro
+QTY63 $139 EA
+
+
+Refurbished Grade A
+HP EliteBook 840 G7 i7-10610U 16GB RAM 512GB
+SSD Windows 11 Pro TOUCH Screen
+QTY 237 USD 80 each
+
+
+
+
+brand new and original
+Brand New ST8000NM017B  $70 EA
+Brand New ST20000NM007D   $100 EACH
+Brand New ST4000NM000A   $30 EA
+Brand New WD80EFPX   $60 EA
+ Brand New WD101PURZ    $70 EA
+
+
+CPU  4416    200pcs/$500
+
+CPU  5418Y    222pcs/$700
+
+8TB 7.2K RPM SATA 6Gbps 512   2500pcs/$80
+
+960GB SSD SATA   600pcs/$30 
+serial number MTFDDAK960TDS-1AW1ZABDB
+
+
+ 8TB 7.2K RPM SATA 6Gbps 512 
+  2500pcs/$70 each
+
+ 
+SK Hynix 48GB 2RX8 PC5 56008 REO_1010-XT
+PH HMCGY8MG8RB227N AA
+QTY 239 $50 EACH
+
+
+Charles Lawson
+Exceptional One PC
+3645 Central Ave, Riverside
+CA 92506, United States
+sales@exceptionalonepc.com
+Office: (951)-556-3104
 
 
