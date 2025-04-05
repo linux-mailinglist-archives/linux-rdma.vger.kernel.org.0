@@ -1,75 +1,75 @@
-Return-Path: <linux-rdma+bounces-9164-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9165-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E71EFA7C8A3
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Apr 2025 12:00:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0AEDA7C8AB
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Apr 2025 12:09:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F56F1899C55
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Apr 2025 10:00:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E28E0189C07F
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Apr 2025 10:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DFE31C8FD6;
-	Sat,  5 Apr 2025 10:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70AFB1DBB19;
+	Sat,  5 Apr 2025 10:08:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YaDQNKQ1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jy4X3zTq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com [209.85.215.193])
+Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9241CD1F;
-	Sat,  5 Apr 2025 10:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98AF1BD9C5;
+	Sat,  5 Apr 2025 10:08:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743847232; cv=none; b=rXtmUmvY3p41N/W6SwzBKboHZfYWmU3Hf9/OjdqReaNOdc50DMzQpvRxoQMeegOxTUX/tuIjJgQKIUCSaEJj5dDMn1hdy/HzaYK9rJFbRJxmFFXT2hPTfCAhGXy0slW5uHNlqKNb18ETijTMoyzkqbuQUqXq9qDNWN6TxYscX6w=
+	t=1743847711; cv=none; b=KizWVutNbtK4tC/JLXZwccLXxxC8MZPF9zkCgRrz1OJLOEpcvNlIoc9qM0HBgNINxSxL2izYbSWDpP8fdDlo7Sq8XxhIOFGOn62sVW/LbZDzzmdCpxUC79S8/L+jqzbVV+PWc5V3Ya9CG2V2dqDTVXuxfJJzpHkKDreceD/X/Fs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743847232; c=relaxed/simple;
-	bh=LfbT/pV1MEvKouNwSFfzncvEKPvDUF4+mjpJJYotvwg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L/2IxmPrZNORW46MupFHlGf/Ajw+9BvvXZ1az8CraqIUkJd455y/lXkY7D8WahTvGN2xuB4PNtsLUJqTMJHJIVhaQO0dD+8QgRTI3GFQXxYwC+eJwO4pkBl94D/y7qj9yOwjWqgJGVyOi/zkUzjjZOEHsGlqM8kdkD/bgPqyBS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YaDQNKQ1; arc=none smtp.client-ip=209.85.215.193
+	s=arc-20240116; t=1743847711; c=relaxed/simple;
+	bh=Eu6JLLo7fZThPh+e07FREeurc0JeghnvpKsksm9dsrI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Mn27wf0Ihq9QLNVisNLowsPKjD60DhVAB2KT9BTx/v/IHgxv5WdI8HOOD8srHSIABYjd/e6DUmVIhhnj7biOPg/oMjn11XucuBjbdbLcat6HQxhpXjRgRe80mNoqw4pskCHl0FAlLaIyFnVgmYnv9mNC7AdB5xqfmdMT++r5IZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jy4X3zTq; arc=none smtp.client-ip=209.85.214.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f193.google.com with SMTP id 41be03b00d2f7-7fd35b301bdso2868040a12.2;
-        Sat, 05 Apr 2025 03:00:30 -0700 (PDT)
+Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-227d6b530d8so25153905ad.3;
+        Sat, 05 Apr 2025 03:08:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743847230; x=1744452030; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1743847709; x=1744452509; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Z0x7UfGjyU+L6BdoZHIxdtNwtWq7UYxGCsAvxv24QY=;
-        b=YaDQNKQ1LkBRQL5dKKBnaE8U7pqcbB2MUZrnefRsPK+uYbUs+OKROtVOg1MCLT3RvM
-         2ruDVspxrm8KW/biGVKIzHLZO9rkJKXWUA8wXzEfEsIhZpHyJckg0kMf9IQ/znWeJb5m
-         txNtMsZaO6xyINzxcY+0+3L8E799xecDwsRjMa/wMR8IBMSZ1KvvWdfrNkD6As3LHg21
-         Fvm3lFkqSWj6ESm6vgp7v9LTMNRVWos7JzsVKFpuFcMPYQPyJ8IfDlWtQHMF3gZKQ9oi
-         wOZNTlj/xyLza09RS6U3Mm31IFNAOMSicnM31Y8ttnlgcRr9heMHzin4XW0iQuWWbHCS
-         hi1g==
+        bh=seryWn3MRL4L/qrzgnmXNNx8ZWac/WqGKvqZqj83jjc=;
+        b=jy4X3zTqQ4tTAaDAuhd+aanIwxCYzEvGMOgHsCs6z4Nhu87cV8h55QFiMZlaRmFEzX
+         gujKzK+S3UNDwr7DUpILsMIx7iZQSCJPk9YP3GOHlim8Sj7LwWj24IJ1Grq9mYyjuZyO
+         7ZiG27F+hVBG4d1QAsL5Ps3X5aSAxGXpy4FI3Q/SQ/yOHOYnXxnYhRkjn9A1nymRLH88
+         PS/UqsBDm8xly/Ihc831wytkLuZAfb5Cubi9TbWDrhN0Q1FxiS3oTRpjxWjkTdi9obAK
+         KCXJk+3O+fYn+UwSF/h8efbShzE8PckOpQyeus5qm5McVMA3LToO2U8mbL8cu9Qgbd5q
+         e3NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743847230; x=1744452030;
+        d=1e100.net; s=20230601; t=1743847709; x=1744452509;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4Z0x7UfGjyU+L6BdoZHIxdtNwtWq7UYxGCsAvxv24QY=;
-        b=tgld4LeT0h8mCRKkconLvIrOu0dOCg7J55VVn1Endp4O7gekJHb7MOI2umPcCyJwCn
-         7Rkj0uqFe5waxia9I1vI+DpGYPe04yeNijB8bZUVnbPMUQzKHU2+11GESkzMjTxiO9aL
-         obD3LzdI5vY1TM9SdNXRKCK6Uq3xrurEv2Jm41VOja2jNRUgugWiAhNiifKXXOdXuAQo
-         LU16ClABGGGmfoIs20zC530Djg7WXzun+dzwzXPUjN/ZzcUvjMI0bO+AZp1I8VRgLW1w
-         ZXR5i7NQbPM+UzS/EvGEKOkNGK4MtTjo9RrSkvSJ8D8EALvzR9k0isbv3O7c3PVXbD7L
-         VRTg==
-X-Forwarded-Encrypted: i=1; AJvYcCU1BKkJazBiwZ+e4LZjkHFV8YbkY/UrdPUqAXGdaXK0+X84bqnZt4zxHtZIZ7VtT4IdfFr7TQokSeYvJA==@vger.kernel.org, AJvYcCVCP381L+ahyBdzePX0d75FC99gIMw37W3pBobTu8QX2cCU445i1osr6qwbrI3jmSEReUPhr3mQnqMNXW4=@vger.kernel.org, AJvYcCVVrgjvEhp4JtU+QbGnYkPHAk2+dp/DHI5GxdALDx06d82uD7rYg1mdAmSSK3nYogRH2KP700Uv@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/3n8YqBj9emFq0vOBEVoeH2esQaBJRYxLwdjZqFdZfUpCEis9
-	zcVFulL8NnWvDEWnTyNreCt3W3TODAmfXxmVdWKkzucs1LAD9HhY
-X-Gm-Gg: ASbGncvCYSSPDzMnJj9NQ5HH98gmzViMmfsoBDGnr/+W2QXn2HYan6oI1jeEp5oxgmh
-	i0J7Y9b2VItxmZ4abeZ1tVNE6iCLZnm8cnLf5OMaepIy5zSIVlZ/D3bk35gCO0csuWxnRZwBkmF
-	uSh/5mb7/mlS+ymeBJK0I8KJPKDHx5hlkK+6/MxDWExNdjzstZ4fHV0ZG1ZQ8wV5RGup+mD0bQO
-	jpvihfKR0gCSTARS/m5XSau85bbrimLEwVCRCFKDgk8d1q2GGz65vZFpqbk5xXA43zN0o1ZQxdu
-	AQ2K9GmKof69n/QMqLx6BNCofaCT/mjKHWyVLLbVXK8cy/nwWJVyudMUaO+fH7+HBamL
-X-Google-Smtp-Source: AGHT+IGk/pMlQoTwUAGoTx0kGi+pMe676B141VJcZm0iGympXQhR/bfzbuVXJSXxkGIXukIVTzulVw==
-X-Received: by 2002:a17:90b:224d:b0:2ff:4f04:4261 with SMTP id 98e67ed59e1d1-306a48b308cmr6494817a91.34.1743847230052;
-        Sat, 05 Apr 2025 03:00:30 -0700 (PDT)
-Received: from henry.localdomain ([223.72.104.24])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-305983d7f57sm5580161a91.41.2025.04.05.03.00.23
+        bh=seryWn3MRL4L/qrzgnmXNNx8ZWac/WqGKvqZqj83jjc=;
+        b=mh05XcWWNj7YJXFKbTx1LezBax4xqRLOsjZFDstD0QUbb2w4aroDfO4Y+w+6fEJlmG
+         rW4KeVVGjny7wHoZfT5/Z6n4UreoW51X33YexQaTgjVx2dcL8Migyjs+nX+a3G9625uf
+         6IgWGLixfm4ZWy4ZDZNVjVzyAPJrC8B5yYWmAWNkgm10lxrnT3ZLefDoYyHsmoaCHB0i
+         gaZyRgvDcsy6qs5EORbr9KJknm0JlbiYzMKTLLRW6990reJmObqcs5bFfo9yPZd86/3C
+         hB+hCOrbv1vRCbBPQb461SGowxSvOT741BtlvK7NVbLjx3byka9VO7TqgGwSiHhj/iXr
+         v13A==
+X-Forwarded-Encrypted: i=1; AJvYcCUFUvARaf949vpGtQ2veEZsWF2drbiXsFdX+okqlhMDYlzqD07xt0Yv/C2SDAJV8ESFTpqlh5IPqayBzR8=@vger.kernel.org, AJvYcCUldr4E8A3DHO14afa8ZEU+qP3kPtYqJCwvw4p9FtSMrWMAIDUH2GqGRWrl/yknY1MoGm5rdlwpHdnwWw==@vger.kernel.org, AJvYcCWvMkFfM3Yod7u+u3IxH8rpaTOREs35FzbSsP2X3ZVLEKzTzzVlZXfVgHz7p7f8+GA5wJ8w4NS9@vger.kernel.org
+X-Gm-Message-State: AOJu0YzymsOmvJOtwjlbzL3d06o7pJlxbW4iLee4NNEV8uyqBzjleyfp
+	C+0Z1FDwkoBNDcHCRst7jaTuZj3+IjvaVRsxV1OidVkhOq4hfqmw
+X-Gm-Gg: ASbGnculHaJ6OXrNMbb6FFis+wJo3TWyla9lJtlRzUDDQdr3owqMDL6DrQH6z/rbXNF
+	NsjpMdoBCk0/4yUQ07hE2InsIexYXuUWuIvIJitGuDsxRnM4gKFl3Jqov+I8q1ckMNOaVe2HRWt
+	RXtMi85YhIZAQsPM6jnICHSLtqCr8CuRugSw3ytz63Usl4LWvnkCsz8YROqIEJQaFx7aukgokAG
+	WI7RhEFOB7vKorMqhqBCIbhncgSp6d5t/H0w+1PG2YSveiCjhK85EjUAb6jOxeyt0KL8O0U7W3K
+	5iJPcbnA92ep4hI1FYshpjwr8EJvXNDKnp7pVaF+oUXzSjtH6w7X2ZXjzOho8PyAwfjVdA==
+X-Google-Smtp-Source: AGHT+IHCykgqaZSp+hCclpmgtlJ/bVAjJSfibwGtGHCPsHnBqyywwRaxAKFFZ5UqLI9+rnIG/dAYCg==
+X-Received: by 2002:a17:902:ccd2:b0:224:1af1:87f4 with SMTP id d9443c01a7336-22a8a06b3d0mr91975895ad.22.1743847708960;
+        Sat, 05 Apr 2025 03:08:28 -0700 (PDT)
+Received: from henry.localdomain ([223.72.104.254])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-229785ad9c3sm46525505ad.30.2025.04.05.03.08.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Apr 2025 03:00:29 -0700 (PDT)
+        Sat, 05 Apr 2025 03:08:28 -0700 (PDT)
 From: Henry Martin <bsdhenrymartin@gmail.com>
 To: saeedm@nvidia.com,
 	leon@kernel.org,
@@ -85,9 +85,9 @@ Cc: andrew+netdev@lunn.ch,
 	netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v1] net/mlx5:  Fix null-ptr-deref in mlx5_create_inner_ttc_table()
-Date: Sat,  5 Apr 2025 18:00:17 +0800
-Message-Id: <20250405100017.77498-1-bsdhenrymartin@gmail.com>
+Subject: [PATCH v1] net/mlx5:  Fix null-ptr-deref in  mlx5_create_ttc_table()
+Date: Sat,  5 Apr 2025 18:08:14 +0800
+Message-Id: <20250405100814.77886-1-bsdhenrymartin@gmail.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -98,7 +98,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Add NULL check for mlx5_get_flow_namespace() returns in
-mlx5_create_inner_ttc_table() to prevent NULL pointer dereference.
+mlx5_create_ttc_table() to prevent NULL pointer dereference.
 
 Fixes: 137f3d50ad2a ("net/mlx5: Support matching on l4_type for ttc_table")
 Signed-off-by: Henry Martin <bsdhenrymartin@gmail.com>
@@ -107,17 +107,17 @@ Signed-off-by: Henry Martin <bsdhenrymartin@gmail.com>
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
-index eb3bd9c7f66e..4e964ca5367e 100644
+index eb3bd9c7f66e..4b31b4c953fb 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
-@@ -655,6 +655,8 @@ struct mlx5_ttc_table *mlx5_create_inner_ttc_table(struct mlx5_core_dev *dev,
+@@ -728,6 +728,8 @@ struct mlx5_ttc_table *mlx5_create_ttc_table(struct mlx5_core_dev *dev,
  	}
  
  	ns = mlx5_get_flow_namespace(dev, params->ns_type);
 +	if (!ns)
 +		return ERR_PTR(-EOPNOTSUPP);
- 	groups = use_l4_type ? &inner_ttc_groups[TTC_GROUPS_USE_L4_TYPE] :
- 			       &inner_ttc_groups[TTC_GROUPS_DEFAULT];
+ 	groups = use_l4_type ? &ttc_groups[TTC_GROUPS_USE_L4_TYPE] :
+ 			       &ttc_groups[TTC_GROUPS_DEFAULT];
  
 -- 
 2.34.1
