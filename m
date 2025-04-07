@@ -1,131 +1,126 @@
-Return-Path: <linux-rdma+bounces-9176-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9177-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A82ABA7D9B3
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Apr 2025 11:32:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5F2BA7D9BD
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Apr 2025 11:34:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38BB53AD31E
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Apr 2025 09:29:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 761B6188C715
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Apr 2025 09:34:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1541E22B8B0;
-	Mon,  7 Apr 2025 09:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2101622371F;
+	Mon,  7 Apr 2025 09:34:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VIQERI21"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="IV0MYrDi"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2907B42A97;
-	Mon,  7 Apr 2025 09:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1AE41A3172;
+	Mon,  7 Apr 2025 09:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744018170; cv=none; b=lmnnBS7TKYFE41bOzG6ISnMOWPAqwYpgU7NMOHl764m40WKN3EBpiWmNAQrP3cF+bZ0MreoWuEb7pDXgSd+FTsGP+ycM+1WzrjzPFVTYjpvnOH1Nqvn8g64qu2ZGByJnDvEUNHwRcho2Jasex1rOI0eWpU/zwZWE8C2byx3y0MU=
+	t=1744018446; cv=none; b=orABzdSSbrm30u6AVgQbqkOSof1mpi5Pi8LoQAqDaL+mrqysHsNIjzJWtIZzmK9+l4fo8qYEgfwrIFY7sq9KXWXPBg1/81fUK8Xf2T4rcg+fdamMN/DFed6dNqmdSDHdc6zMoQ1PzLX4yMDWJMPKRjsbwFklUwRJnD0tw147Dn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744018170; c=relaxed/simple;
-	bh=rHD1uqSjci+TtcrTXRPq07cH2uvgYPBnxO+ciNXB6R4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cpQvhOlmqdsvg6r+gCxkDteuQbX5kMlh+63THXsuEiRiV0azEI4S9MvdpNRGbCBEwEn9RfvWkEWHPJotZprkrQLwFCTPWK4YhfknGrNtjuRNk9Gl9VOyTMZZq1Kha1UKKjrl7elimgfHYwh5+deCGmlMk5z3ukKc2lhXZxLJwTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VIQERI21; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5499659e669so4310416e87.3;
-        Mon, 07 Apr 2025 02:29:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744018167; x=1744622967; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5pT9qPTRONy87iUjfoBKw47SxzMUIpI9ld9jYPqDiOs=;
-        b=VIQERI21v1dlcZps7EuzduGEQc2yxuLgEm3HDOKFbOtkl4dRVjYFhmC26N5PJfdeLD
-         AU8nyRAb52dbUm16f4nFrYHrXiL/Z269nVg+KAB8xkRY8vJZckpcK7felJvD4wi9euYn
-         4N5+b6s/pJxbC0JWfhP5HuRruU79gHDzEOjz5pULjVRDNNZTQEr0sPe+SWSO0QfFvf6z
-         qGACB1GOUQ6Sl3euKbJ/NUj9qkRPJBtbCNnOCtz4k23XtIVR6CN81RWF8kSf1N00/lTc
-         E4eIA2PBu3563rr3s+Eyq752QIG8xMCk42atC1NzWWDyJRj9RVixvMMKSKAIqLWcHY05
-         nIqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744018167; x=1744622967;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5pT9qPTRONy87iUjfoBKw47SxzMUIpI9ld9jYPqDiOs=;
-        b=KCTfNOWtuBJGMotd5/huBYnIzGjfIvSYOSXv2D9uuNKE/mayeqAx5u+bZXbIdhru5O
-         nfJ4IjTEqZKIBNRAcf6cLKeG9GFd3yipvOiOJxdCcmmRC1owThXhK22uJggUmMajcFWO
-         O6rvUQJJw0gEZBn50Qhv5+KP2lbld/Nl833W0M7avFtoJB/iO4ACNDRDKpSX8xMNNoCC
-         V6ZtutZYcaee8cqIOioTfay+TpOsUhcTOCqeUYz9kNS0IL3QQFqJEblotopkUeHs4JBl
-         aZwdVi5gmF96qvyX74Pg1TDk3DMRecZle+8Cad4dnZQen8Zw12uHIIHlKkediFsstFlA
-         0Ffg==
-X-Forwarded-Encrypted: i=1; AJvYcCU16Re0Cu7WOJHA0TJ34vEnmYHUfgCR2x4p7j5rL8Jdw9TxkIXkX8bbdI4I5e88f18KfXEY0G4+HSovF3M=@vger.kernel.org, AJvYcCUKUIwJlMbSijonhxOwV4AkjimiymNx3jeHdt+kXXv2vfU9hRZqQyRIMvk39b/8XZymhCWVnt4J8iU8VQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7h9eOHSqip63T58IFgNQkzWB/GIOfW5PXGrV2Sr0C7BBEta36
-	ZQjJxLsE9oSEvcIfkBLqMRYVoAxlU4TFiVTi8E/QDWFLEc+j0gQF
-X-Gm-Gg: ASbGncuJiQn78gftr8YiHxEHtS7KzdfUruaWThRBpBLFgURw6nEClVrW3iQ0m49gDjR
-	Fz07apGQ3Fn1jsuEqoz9gwrwXb+GjmH8WGmuZBBC9DBoNcK2u3sAwd1k6mf5LRWvkIUB4GjfuTv
-	NePpwYYjDhQ8XbGI8A4JCHmZl2oCz1WCQcaSP0K3dm3lGzdHwhnO7s6AI7rijRhtRhGnestUCce
-	rbC7C0FoEsWcuB6P+Rjj1rzhZ2nDRvHTyqRfYjeirCMBfKBHafII1DT9ZhLA4JckMvcelY4dvEP
-	L2bxKVU23BzS3f3PrHPBT5I+qMAnWMvtImSjQLvCeCnXQY+uQGl6ZlOtP6vKA4v6
-X-Google-Smtp-Source: AGHT+IGevxOSETj/50TdherB8at+IXx/g8mMt/wv+Q4C4RedgnKKQM3QuJtVg24cql3ZX4dZtV+nrQ==
-X-Received: by 2002:a05:6512:a90:b0:549:7d6e:fe84 with SMTP id 2adb3069b0e04-54c2280c8c8mr3043734e87.53.1744018166800;
-        Mon, 07 Apr 2025 02:29:26 -0700 (PDT)
-Received: from [172.27.62.62] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54c1e635be1sm1231014e87.147.2025.04.07.02.29.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Apr 2025 02:29:26 -0700 (PDT)
-Message-ID: <2bfd9684-7ef0-40b0-b35d-abb0a3453935@gmail.com>
-Date: Mon, 7 Apr 2025 12:29:22 +0300
+	s=arc-20240116; t=1744018446; c=relaxed/simple;
+	bh=t/kHhND7Hj3MydX61T30q5XoLh8P02HpnY/cq7JYAQk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rhfwLEkpWvK0eF6Yfsx+7MDjX4xjX0NV/DVs+2QDKt9HGSyU5zWJifG4bbMKDdzlS4wdOpvXkybxYkPRRJ0it4SlNQHu3eGqTrSksSP0O0sOZYC9ahayIsRgRou46tcVS6digJ62K5Y/evE4Sm1/ejkIP60/r+WEAWPPHQ9mmdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=IV0MYrDi; arc=none smtp.client-ip=117.135.210.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=mtFJZ
+	/SO0yLzoEdc4NR8yzNwh2VjDSHh+FsutDVGtrs=; b=IV0MYrDiMPExxWoGZ1u1N
+	OGJkRSLW1D+ZZP6GOVEeK+WAk2ovu1ph7wqHgoQEkD+eF2P0rKciyZRM3b3BHScw
+	dk6ZZC+p+zieEYbpBmy/uSCtSLophI/hp1gKLRR1aGAupsmd4Jn9WnyIwoCM4ozO
+	QM3fsG1UZCmnoboBzIb8OU=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id _____wDnH+X1m_NnEBpKEw--.12333S2;
+	Mon, 07 Apr 2025 17:33:43 +0800 (CST)
+From: luoqing <l1138897701@163.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: luoqing@kylinos.cn,
+	Leon Romanovsky <leon@kernel.org>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] rdma: infiniband: Added __alloc_cq request value Return value non-zero value determination
+Date: Mon,  7 Apr 2025 17:33:41 +0800
+Message-Id: <20250407093341.3245344-1-l1138897701@163.com>
+X-Mailer: git-send-email 2.27.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] net/mlx5e: fix potential null dereference in
- mlx5e_tc_nic_create_miss_table
-To: Charles Han <hanchunchao@inspur.com>, saeedm@nvidia.com,
- tariqt@nvidia.com, leon@kernel.org, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, lariel@nvidia.com, paulb@nvidia.com, maord@nvidia.com
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <0e08292e-9280-4ef6-baf7-e9f642d33177@gmail.com>
- <20250407072032.5232-1-hanchunchao@inspur.com>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20250407072032.5232-1-hanchunchao@inspur.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDnH+X1m_NnEBpKEw--.12333S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAryrAr15WrW8Kw45tFyUGFg_yoW5Ww4Upr
+	4UJFyxGFWkKr18Gr1UAr1DXrW5Jw47Aay5CF47C3W5uF13Wa4UJr1kGryavFy7Jr45XFy7
+	tr1DAw4kKr17GaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UQBMiUUUUU=
+X-CM-SenderInfo: jorrjmiyzxliqr6rljoofrz/1tbiKAclRGfvrkGMBAABsg
 
+From: luoqing <luoqing@kylinos.cn>
 
+When the kernel allocates memory for completion queue object ib_cq on the specified
+InfiniBand device dev and ensures that the allocated memory is cleared to zero,
+if the ib_cq object is not initialized to 0, a non-null value is still returned,
+and the kernel should exit and give a warning.
+Avoid kernel crash when this memory is initialized.
 
-On 07/04/2025 10:20, Charles Han wrote:
-> mlx5_get_flow_namespace() may return a NULL pointer, dereferencing it
-> without NULL check may lead to NULL dereference.
-> Add a NULL check for ns.
-> 
-> Fixes: 66cb64e292d2 ("net/mlx5e: TC NIC mode, fix tc chains miss table")
-> Signed-off-by: Charles Han <hanchunchao@inspur.com>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> index 9ba99609999f..c2f23ac95c3d 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> @@ -5216,6 +5216,10 @@ static int mlx5e_tc_nic_create_miss_table(struct mlx5e_priv *priv)
->   	ft_attr.level = MLX5E_TC_MISS_LEVEL;
->   	ft_attr.prio = 0;
->   	ns = mlx5_get_flow_namespace(priv->mdev, MLX5_FLOW_NAMESPACE_KERNEL);
-> +	if (!ns) {
-> +		netdev_err(priv->mdev, "Failed to get flow namespace\n");
-> +		return -EOPNOTSUPP;
-> +	}
->   
->   	*ft = mlx5_create_auto_grouped_flow_table(ns, &ft_attr);
->   	if (IS_ERR(*ft)) {
+ib_mad_init_device
+	-->ib_mad_port_open
+		-->__ib_alloc_cq
+			-->rdma_zalloc_drv_obj(dev, ib_cq);
 
-Same question here, did it fail for you, or just saw it while reading 
-the code?
+ #8 [ffff80211b3c7430] do_mem_abort at ffff4bedae5912c4
+ #9 [ffff80211b3c7610] el1_ia at ffff4bedae592f8c
+     PC: ffff4bed866f5aac  [__ib_alloc_cq+100]
+     LR: ffff4bed866f5a98  [__ib_alloc_cq+80]
+     SP: ffff80211b3c7620  PSTATE: 60400009
+    X29: ffff80211b3c7620  X28: ffff4bedae5c7a70  X27: 0000000000000000
+    X26: ffff4bed86737680  X25: ffff8020b62f4000  X24: 0000000000000002
+    X23: 0000000000000280  X22: ffff4bedaf8a4d28  X21: ffff8020ca8d0000
+    X20: 0000000000000000  X19: 0000000000000010  X18: ffff80211b3c7410
+    X17: 00000000172acefd  X16: ffff4bedae8603e8  X15: 00000000b19d2ea3
+    X14: 000000000950e09b  X13: 000000009bd4e304  X12: 00000000f81e149c
+    X11: 0000000096b29e56  X10: 0000000000000f70   X9: ffff80211b3c7360
+     X8: ffff80211b4e9350   X7: 0000000000000000   X6: ffff4bedaf2d08f0
+     X5: ffff4bed86737680   X4: 0000000000000002   X3: 0000000000000000
+     X2: 0000000000000280   X1: 00000000006080c0   X0: 0000000000000010
+     X2: 0000000000000280   X1: 00000000006080c0   X0: 0000000000000010
+ #10 [ffff80211b3c7620] __ib_alloc_cq at ffff4bed866f5aa8 [ib_core]
+ #11 [ffff80211b3c7690] ib_mad_port_open at ffff4bed86711338 [ib_core]
+ #12 [ffff80211b3c7710] ib_mad_init_device at ffff4bed867118d0 [ib_core]
+ #13 [ffff80211b3c7760] add_client_context at ffff4bed866fca40 [ib_core]
+ #14 [ffff80211b3c77a0] enable_device_and_get at ffff4bed866fcb90 [ib_core]
+ #15 [ffff80211b3c77f0] ib_register_device at ffff4bed866fd750 [ib_core]
+ #16 [ffff80211b3c78b0] irdma_ib_register_device at ffff4bed81ea3d20 [irdma]
+ #17 [ffff80211b3c7920] irdma_probe at ffff4bed81e7130c [irdma]
+
+When ib_cq is zero, the return value of cq is ZERO_SIZE_PTR ((void *)16) and is not non-null
+cq = rdma_zalloc_drv_obj(dev, ib_cq);
+
+Signed-off-by: luoqing <luoqing@kylinos.cn>
+---
+ drivers/infiniband/core/cq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
+index a70876a0a231..90ea9fc99fb7 100644
+--- a/drivers/infiniband/core/cq.c
++++ b/drivers/infiniband/core/cq.c
+@@ -221,7 +221,7 @@ struct ib_cq *__ib_alloc_cq(struct ib_device *dev, void *private, int nr_cqe,
+ 	int ret = -ENOMEM;
+ 
+ 	cq = rdma_zalloc_drv_obj(dev, ib_cq);
+-	if (!cq)
++	if (unlikely(ZERO_OR_NULL_PTR(cq)))
+ 		return ERR_PTR(ret);
+ 
+ 	cq->device = dev;
+-- 
+2.27.0
+
 
