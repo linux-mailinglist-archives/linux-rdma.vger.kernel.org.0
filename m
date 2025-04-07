@@ -1,59 +1,90 @@
-Return-Path: <linux-rdma+bounces-9194-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9195-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FA6AA7E66B
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Apr 2025 18:29:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 304A6A7E6CA
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Apr 2025 18:36:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9F46189DE70
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Apr 2025 16:22:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35AF016EE36
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Apr 2025 16:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9BDB209F3C;
-	Mon,  7 Apr 2025 16:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12BC6206F15;
+	Mon,  7 Apr 2025 16:26:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kVRIsCwT"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="BEzljU0P"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A216F206F3D;
-	Mon,  7 Apr 2025 16:18:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CCB207DE7
+	for <linux-rdma@vger.kernel.org>; Mon,  7 Apr 2025 16:26:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744042700; cv=none; b=UQWL74iF5LIrp0YhyynvoR4dOSxFS4z0AnheIaPa5phN15lUmrz7hhFQD2Q5QXlG+USSFOQVvMWPKOqbfI99wv/HqDuDl+p7c4V/DqX42kMM6gc1tx+2qrgScStgVAEurvrLbKRsy3MrUa25kvifnXy9pjpNaXTATC+47HvQYoY=
+	t=1744043163; cv=none; b=mGDxvbd24ELfkkdwlSgg4s4LaEgYJEOR/MccxKllmyNepp+k1A9X7su5emCdjav47VgDGHzRSaO9atGYMux+syygoNwAmfyUekiPg9LPaTXBSsbAO93p+HyZzHJc1adbhusZgaIWofu+nAzpBXD5dUGSlv9U4U7F5I6Xoi13gGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744042700; c=relaxed/simple;
-	bh=Npy/xy0YV1ziwkRI72xXbsBU6c5ZpgqGLAv3/5M2HgA=;
+	s=arc-20240116; t=1744043163; c=relaxed/simple;
+	bh=GMvaB3Mzb4QuxEqJ77ptGlToNSrLtUC7nn+mY9oNs94=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jQ3ucAfkIPp5CRtwWGIVzp7pqNPzJglGilVK66NVFVVwdKqPD40plv0oepGPSyDQgVwbkc6H9wuo5V04x7CRRU8GzRt8VyX3jnU0zeivGW3C+no8q/8JrfFZNAG8sWnHvtd0EVAXLvfQe50QtsGY8AJbW1kj0V3SjSe+LOnaPe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kVRIsCwT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52057C4CEDD;
-	Mon,  7 Apr 2025 16:18:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744042700;
-	bh=Npy/xy0YV1ziwkRI72xXbsBU6c5ZpgqGLAv3/5M2HgA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kVRIsCwT+c6EbalzQ8v601BWz4AtFEcupFLn/1nR//IQRZbJUmUMlOWsp12GLXMzV
-	 R9zN/8xEoglBghyQ1+7ICgEIXdK9WWHoe4gKi067Ltvp4z6C2PKnYUATPq3HBHFS7t
-	 6HP9Yrr+q/3ZhfXa9C5q9qtfGRJyIl4YXh7Hop7JG82R5cVrRHFGeXIXR/zFo/iNrF
-	 UTAomdSPbn88DYS/QwzOuViJhQ8tRVVv1ZXMRFuKhrhMS4rAMQNIUsjWq/VKmFml+p
-	 rfxB9Ii7fedu+nrGnoTwNYfwJ3Kjg/4ZHDx5GfaEeu2BdVbn6sdxhmDDtCUWpCDy8G
-	 r6gUrtGZxLTnw==
-Date: Mon, 7 Apr 2025 17:18:15 +0100
-From: Simon Horman <horms@kernel.org>
-To: Charles Han <hanchunchao@inspur.com>
-Cc: saeedm@nvidia.com, tariqt@nvidia.com, leon@kernel.org,
-	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, lariel@nvidia.com,
-	paulb@nvidia.com, maord@nvidia.com, netdev@vger.kernel.org,
+	 Content-Type:Content-Disposition:In-Reply-To; b=GcjfVqaLQMp1GP/hctXtoGbArMOcys29tpZi1PVUCQrfR9ehxWvuAHF7Ldao3hbLqRG8R+yzVBgx4Tb/lrpmLGNronO6qGQPDSUw52dyGLa75cofzPnBNe5zM7WpzfNnQbdLfw9RA9d3JTmFQB6f4IwSs4ekbaJhBbn6Zkp26f0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=BEzljU0P; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6ecfa716ec1so46660246d6.2
+        for <linux-rdma@vger.kernel.org>; Mon, 07 Apr 2025 09:26:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1744043160; x=1744647960; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+iCbhKN/vcDN+xhzXNKoawXibM8X0AG5KtFkzYcV9TI=;
+        b=BEzljU0P+1J2qYRt5ZjzzhsUAzbCPxZj9HMuMV0Y+AGVW3zYemgEkl7LFdssaBQgP9
+         IBgjTcfbxLsjwYaLL98VrqeDgFM4753fTj4yewr8IrJV9KDZKS/LbXuAsJwNTKHQw8d4
+         KyWQLCv5fU7iIo6bGYMuXdBgGthxlrsoX4dRyoBzg+MgVI8vRBG6fCfiZu29lPw7HJ5+
+         /LBlTko+INhtqOKllKeog96oEkFnjTidqonNlsRWweqQFBUZiAhA4HKDEJMZQo5gw+1H
+         dLXt27ThzXgy5wfeOwmmvf9PmXOpedrbnt6gLBzOxLxRF8wNHyfhy1DxUAeV47HOqR2g
+         NFVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744043160; x=1744647960;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+iCbhKN/vcDN+xhzXNKoawXibM8X0AG5KtFkzYcV9TI=;
+        b=PIBrs48kPhfZ9zZ00GsWxfkCPAgMfMuFy3wjl+/DLgOXH6x13ORDISEnRraKK4lURG
+         R68PVOPxBB4ZlA0T/fp+1OTSqacOB+WhP3y2JojgCIIsarQ70WUSd+6/nJoMtJHD9ccz
+         wDyV276LVqX+XlCol2BTbH9pSwVnL6ohDdXK/KvXoWx2a2v1BCgGCnqviuDYtZu0dx2y
+         2e6M4tgoKaAdOFqVXCnA17Y1jAmH43sTC0OdG4kkhqNDqp3+cctyKg24YUU6MPHL8DyA
+         RWtmAT3dRAoP4qO6/tmxtLcM7SrruVce/j7PXmYll+JjEFb+ZWe3QfwqHRyz3w9S9Yxz
+         Rywg==
+X-Forwarded-Encrypted: i=1; AJvYcCVXcWVVty85doG2C02F1j8nhtajdahGsXl+1XD8YURMH3ViQdngeJrSbhhz+4rltJCsAo+eqYsBWQNs@vger.kernel.org
+X-Gm-Message-State: AOJu0YxfqKQQ9NYH09SDxvisJHGwp/xdQk3F6bXjkIKz7xX1XuMpn2bM
+	i0mLpflI3dbZljn3KWpnrISbSzXu0h7AhSjJkjuXnroFN2EmczuX0F+NReWhk6s=
+X-Gm-Gg: ASbGnctmIIrNVP7VtprGi9+QAlNQYSKSHkB5rBJwXA/cLGHEZuj0AVgKJ0rzjKkhllW
+	4vK1509+hxbg1rSycbyYi5WcbHYmyts64CQPPL3K0NOfsYnEUHj3d83JJk+n3vH3KqoQDuIaAts
+	g/5VkWdVZbxa9t76eYhUx1QV7sdqjlrwLV9vDrlL8geycP8hPlFOBkWy+8yFxKWXQt2FlSNlpRZ
+	6jSmNAvI400OTxu0n5N0k39CnBxV2SSPA0SXTr0lq5r+dkgnIi0gRhRZJok4gdrQhO3Hkkac3PQ
+	E7mfWr9Jm9GE4eV1Y0QsEagcjcUNPkSaQCCXk46LgxljGnJPVDeRsvD4QnpyfDF1eBK+UO+OEAh
+	++9ubHh13MDxzw9313kq/JwI=
+X-Google-Smtp-Source: AGHT+IEg3Lx6+oE5FhUSj9L70cdQ4V88WkIK1cwdCX/+smOJLjX9bN7bqLLW99Cz3jwxXg7No7sDEQ==
+X-Received: by 2002:a05:6214:2aa1:b0:6e4:3eb1:2bde with SMTP id 6a1803df08f44-6f00dfd7017mr269610496d6.19.1744043159997;
+        Mon, 07 Apr 2025 09:25:59 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-167-219-86.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.219.86])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6ef0f138c5bsm60200316d6.72.2025.04.07.09.25.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Apr 2025 09:25:59 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1u1pIN-00000007DAh-0BNd;
+	Mon, 07 Apr 2025 13:25:59 -0300
+Date: Mon, 7 Apr 2025 13:25:59 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: luoqing <l1138897701@163.com>
+Cc: luoqing@kylinos.cn, Leon Romanovsky <leon@kernel.org>,
 	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] net/mlx5e: fix potential null dereference in
- mlx5e_tc_nic_create_miss_table
-Message-ID: <20250407161815.GR395307@horms.kernel.org>
-References: <0e08292e-9280-4ef6-baf7-e9f642d33177@gmail.com>
- <20250407072032.5232-1-hanchunchao@inspur.com>
+Subject: Re: [PATCH] rdma: infiniband: Added __alloc_cq request value Return
+ value non-zero value determination
+Message-ID: <20250407162559.GA1562048@ziepe.ca>
+References: <20250407093341.3245344-1-l1138897701@163.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,50 +93,38 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250407072032.5232-1-hanchunchao@inspur.com>
+In-Reply-To: <20250407093341.3245344-1-l1138897701@163.com>
 
-On Mon, Apr 07, 2025 at 03:20:31PM +0800, Charles Han wrote:
-> mlx5_get_flow_namespace() may return a NULL pointer, dereferencing it
-> without NULL check may lead to NULL dereference.
-> Add a NULL check for ns.
+On Mon, Apr 07, 2025 at 05:33:41PM +0800, luoqing wrote:
+> From: luoqing <luoqing@kylinos.cn>
 > 
-> Fixes: 66cb64e292d2 ("net/mlx5e: TC NIC mode, fix tc chains miss table")
-> Signed-off-by: Charles Han <hanchunchao@inspur.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> index 9ba99609999f..c2f23ac95c3d 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> @@ -5216,6 +5216,10 @@ static int mlx5e_tc_nic_create_miss_table(struct mlx5e_priv *priv)
->  	ft_attr.level = MLX5E_TC_MISS_LEVEL;
->  	ft_attr.prio = 0;
->  	ns = mlx5_get_flow_namespace(priv->mdev, MLX5_FLOW_NAMESPACE_KERNEL);
-> +	if (!ns) {
-> +		netdev_err(priv->mdev, "Failed to get flow namespace\n");
+> When the kernel allocates memory for completion queue object ib_cq on the specified
+> InfiniBand device dev and ensures that the allocated memory is cleared to zero,
+> if the ib_cq object is not initialized to 0, a non-null value is still returned,
+> and the kernel should exit and give a warning.
+> Avoid kernel crash when this memory is initialized.
 
-Hi Charles,
+?? This doesn't make any sense.
 
-This does not seem to be correct. gcc-14.2.0 says:
+> ib_mad_init_device
+> 	-->ib_mad_port_open
+> 		-->__ib_alloc_cq
+> 			-->rdma_zalloc_drv_obj(dev, ib_cq);
 
-drivers/net/ethernet/mellanox/mlx5/core/en_tc.c: In function 'mlx5e_tc_nic_create_miss_table':
-drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:5220:32: error: passing argument 1 of 'netdev_err' from incompatible pointer type [-Wincompatible-pointer-types]
- 5220 |                 netdev_err(priv->mdev, "Failed to get flow namespace\n");
-      |                            ~~~~^~~~~~
-      |                                |
-      |                                struct mlx5_core_dev *
-In file included from ./include/linux/skbuff.h:39,
-                 from ./include/linux/netlink.h:7,
-                 from ./include/net/flow_offload.h:6,
-                 from drivers/net/ethernet/mellanox/mlx5/core/en_tc.c:34:
-./include/net/net_debug.h:20:42: note: expected 'const struct net_device *' but argument is of type 'struct mlx5_core_dev *'
-   20 | void netdev_err(const struct net_device *dev, const char *format, ...);
-      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+rdma_zalloc_drv_obj() must return memory that is validly castable to
+the struct ib_cq.
 
-...
+> When ib_cq is zero, the return value of cq is ZERO_SIZE_PTR ((void *)16) and is not non-null
+> cq = rdma_zalloc_drv_obj(dev, ib_cq);
 
--- 
-pw-bot: changes-requested
+It looks to me like the driver returned the wrong size for the ib_cq
+in the ops->size_ib_cq. It is not allowed to be 0 if the driver is
+supporting cq.
+
+Arguably we should check that the size_* pointers have the requirement
+minimum size when registering the driver.
+
+Allocation time is too late.
+
+Jason
 
