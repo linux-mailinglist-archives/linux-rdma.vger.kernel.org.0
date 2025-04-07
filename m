@@ -1,301 +1,182 @@
-Return-Path: <linux-rdma+bounces-9199-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9200-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93530A7E7D6
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Apr 2025 19:10:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85E7EA7E925
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Apr 2025 19:56:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6978E17623C
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Apr 2025 17:04:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D44B33B8ED9
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Apr 2025 17:54:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C18282153C2;
-	Mon,  7 Apr 2025 17:04:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC16E21578D;
+	Mon,  7 Apr 2025 17:54:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="sq3s+rk6"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="cyJbCYNA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2087.outbound.protection.outlook.com [40.107.236.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C7B207A03;
-	Mon,  7 Apr 2025 17:03:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.184.29
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744045440; cv=none; b=WaOgDiVGdh5H1flrkhSs80UL5AhacwVqo4oIzGjIEvubVnEKIP4SlLfLLJaBHv5cFtKYI+Kz17Y/PDCeui/Tr5l9Ztbg4MHRrR2e1C48WJzncgU4ZjzI+IsVlXlghPTTUoC33stegGuBaoBsf3wAxYhPG4YxIUeszr/zZlKNMwo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744045440; c=relaxed/simple;
-	bh=Mp1yJ4tQaA49XECOmMwKj1j4Tx3V9HD7po6FSE/blEY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=P/Eh0OIbKF6luN3TCXZe0bj3XmmBziGVShDXEkdOUMzSDWVCI9F4rF46lTBPLvvQkg21zgHQq57GnAgIB8qLD+HChTtfBkt54ueZm+qz1bIn5km/uYL5dOuDOt4p87Y7+pSuyuibpJm/KI+KjEcQ5fQDf2Y5EjigFjciBuXbmR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=sq3s+rk6; arc=none smtp.client-ip=207.171.184.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1744045439; x=1775581439;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=F8ybB3i7BUzxcSm+BToxCqOS5oDKkiPUMrL+zrXl/ac=;
-  b=sq3s+rk6cLlDFJAOXPWohGBF3SX5oo/S0WIc9hImKgQztv05fKVRjQtg
-   hCR6X8Vb8gZg2maZkz0L7fMX6vxU7As7+f8E72JcUHc9l7uwm/0p1kd2B
-   lZaYh7Cn7fKRWD78i55veTVni6jJTJ5bkl3vC+WCsM2jgiBRvAgQJgXwq
-   A=;
-X-IronPort-AV: E=Sophos;i="6.15,194,1739836800"; 
-   d="scan'208";a="509513703"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2025 17:03:49 +0000
-Received: from EX19MTAUWA001.ant.amazon.com [10.0.7.35:44334]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.62.147:2525] with esmtp (Farcaster)
- id 35a3157d-b401-4f0c-902d-6a64e6513bac; Mon, 7 Apr 2025 17:03:47 +0000 (UTC)
-X-Farcaster-Flow-ID: 35a3157d-b401-4f0c-902d-6a64e6513bac
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Mon, 7 Apr 2025 17:03:46 +0000
-Received: from 6c7e67bfbae3.amazon.com (10.106.101.45) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Mon, 7 Apr 2025 17:03:42 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>, "D.
- Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>, "Wen
- Gu" <guwen@linux.alibaba.com>, Dust Li <dust.li@linux.alibaba.com>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
- Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-CC: Simon Horman <horms@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>,
-	Kuniyuki Iwashima <kuni1840@gmail.com>, <netdev@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-	<syzbot+be6f4b383534d88989f7@syzkaller.appspotmail.com>
-Subject: [PATCH v1 net] smc: Fix lockdep false-positive for IPPROTO_SMC.
-Date: Mon, 7 Apr 2025 10:03:17 -0700
-Message-ID: <20250407170332.26959-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.48.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FA3C1FCFF1
+	for <linux-rdma@vger.kernel.org>; Mon,  7 Apr 2025 17:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744048474; cv=fail; b=fDxuPQZPyZhhEEX7IGG7b8FVMc1ycC1r5Qqf/ehsN7hkUKi0Zld0to8PLsnKJdGw5vzPwQYDQ8Z6pQ/dpOWF8Q2FHQ13cbqHRFFJ1utSvewpYq2o9qax9Ev8w0Vh0IWcNglQwZxlgINFcKIQ8Z/ktdB6d3OckUnhV3mUg3Q2jC0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744048474; c=relaxed/simple;
+	bh=ETfwNJs0fyXuFT1UEvl3zDJU5kp/rq/PlgrQktVIOGQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=X8rZNbN2LfZC8mYmEcoz/aCuO9LRDh+0V1HjD+BBI30VDmyvYSD+otGTt+E3VEJhfWEw1fdhsMI0IxwV3bflQ8mNWxH3EgRWzsdn5LE+RpEVJH+WkstSzWk38d10A0MJZwMRB9oANBBqqu3jSwCh0tNGm1e20UhakHaoGFwsZtI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=cyJbCYNA; arc=fail smtp.client-ip=40.107.236.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=qA01MeP9f2LbQUdgP0iPP6EOvkhLjQmFHgrBuzrc1CJBIWRNuAtLdiK/xm70o9Dm2oM9it/FHaaFuRYwtIcaXATuQY0wyxazOm295tZ/RuTiAbhUVJ0jF57y47okkwRIAXHo21wrtJ/YYrO1aOiGeeeKqFoQUQwUBgCweezI1Vs6A5rniVowmGmJrOWMJHX2U3e68r9sLUpEKknUvmUKwmBpsUWXNnCDIZvMTJIHqtB1iz9h0zj8LNgiNKxeD9fdlmqE2n49hYE41CwFramxffvVak25CeNAQM9vEsWHBq5Rjyp3NnUPcBC4nZT1x5GLjULmyAXBABwdCrA817NkZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b8S/NRc+gnLE+dnL4cb1OGSHZC+Ar7Xsox4EkK5eIA0=;
+ b=mIgOZazI/dUv5Vs8OrYEn12L+QLfkw7oqdpLMxZFbVnrmAG0gP2UskIQQDOD5xWMrJFM1+krFtnGK5EB1zlDFsR0313iEXex9GDRNgZqGioYB/E61BuX1cBgeC1S+r6qYcCQs9i7lsGo/bkWjfIEHq20mZnHFYZS7PkUbFwRaaHpxAbOrgbCQpiSXQjq+GH9/KJsUv66aAtohPNYtCL/6EIlXq9qnAR6/NRFlq1t2UGQhKbagEkyZezzStkNua0QZy6f6ulTEYHwHpsME8UDtH7twoP182fBO0z5LS11CCyo7mB13i8nXhiFoZtq7kIid0x+FjN+1hRcNqqNyO9/fQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b8S/NRc+gnLE+dnL4cb1OGSHZC+Ar7Xsox4EkK5eIA0=;
+ b=cyJbCYNAVBElAshTn4QHq5wJedd/2tOO5Hp+6ld6IgdmxrxHGSxtKOVCnlb255UpgN1c8wo5PHwSWftyYZxzQOI12aaJo+4BkolcoDAiwBDTwBmHpPrQodUDUN+IMvHDH5xB7w9rH50d4huJiXbp6GjcXgDD9fbZ8XMTCkfKG3WUFF3ttJ0n1hxzM5D/gMmH00NgF/R8Ze4KunMr5Xhxfyd0sShyfpJpnmTEAj3SQWcPSJY//E0BFTLCtwqczv3UiDUEKEUsuWvq3slGes/iaQ0oKVeSZMqDFYip7VYIk4lL7X7tnIY8PN2cfYX4089xYblmQ7qF7kpmqHz1yB801g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by IA1PR12MB8261.namprd12.prod.outlook.com (2603:10b6:208:3f7::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8606.34; Mon, 7 Apr
+ 2025 17:54:28 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8606.028; Mon, 7 Apr 2025
+ 17:54:28 +0000
+Date: Mon, 7 Apr 2025 14:54:26 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	Kashyap Desai <kashyap.desai@broadcom.com>
+Subject: Re: [PATCH rdma-rc] RDMA/bnxt_re: Fix budget handling of
+ notification queue
+Message-ID: <20250407175426.GA1729789@nvidia.com>
+References: <20250324040935.90182-1-kalesh-anakkur.purayil@broadcom.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250324040935.90182-1-kalesh-anakkur.purayil@broadcom.com>
+X-ClientProxiedBy: BN9PR03CA0738.namprd03.prod.outlook.com
+ (2603:10b6:408:110::23) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D035UWB002.ant.amazon.com (10.13.138.97) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|IA1PR12MB8261:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5c2ceabc-e87e-46bf-7aab-08dd75fd3d9b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?8MwLNSw42DYWRZ8L+LgeCAwHLen7PhbkYlJHqmWimzdumtMhGYhyM2I5g9W1?=
+ =?us-ascii?Q?ufmXKSOCr8qYeHINq6pW/yXwHadnARQHskjixjJsJj1tWRbCyUvuE4iJfvhp?=
+ =?us-ascii?Q?a4hcKRJNLEzMWsbFsGGh2F6mecz7zCmDbi23zjoJg1Od546EXTP5/j00KbKD?=
+ =?us-ascii?Q?MiQbNOQxlDPg1e65FMQTMrIXD81IBfdYH3qSyPacp7BPe3hnZ7fsQtiYeMTI?=
+ =?us-ascii?Q?e+MAHWKbo62oUCc3DKgU7PTdXZ4Pk8RejaZkx73s5At6LqCRxEIsMg5GzUg8?=
+ =?us-ascii?Q?g6L6THqukM7IWoushOKKNDhlg+TOZp8xSJM+d2RNP2HJnwgpZL/D9uM2r9jL?=
+ =?us-ascii?Q?C/tAQEy03O7yQKPN+bn4NVJaViOjKvwFzgPp5E54iWI0w9BFdnZunHXATCl/?=
+ =?us-ascii?Q?hgERLOp4hG6CdnZiL/H/WWEy7m0nNzMZ1xP0cJoTHpJKC/gZSalNI8pjkHhW?=
+ =?us-ascii?Q?NaORT9ftXMI+sk8OcOqiFLZpAnUm4S1hHOO3TIHSr9zKPj7rd/b0uQ7Feg7Y?=
+ =?us-ascii?Q?p4r4iaUP413Ur/BdgcBwcmYLv5yyxqHG/p3vLAFljLpL7EBFK79LPWLFCQJz?=
+ =?us-ascii?Q?KjLwaEcxa7kE1YQ184/BuYNF0uiWbn8xiLLOkfQAApVuTvcPTzH0wddI3fLA?=
+ =?us-ascii?Q?2mV8NH4mbEFJDI3T7XNgZR1dZN0JTMvE+pMYzSO6YLEsSapKH1gR71H0RTyW?=
+ =?us-ascii?Q?IFynR2Iu9bT8fKf3dYBg2/LS3uDP96zjmbia9RQwPF942FbP3wvWUuYNwgjv?=
+ =?us-ascii?Q?tjqmGLr9uu80oH7YghKTXMYGimyPvack14uLVi8f9nggefoIMIU/V/63CoT/?=
+ =?us-ascii?Q?sVUTh4gu3ppCN9Rd+c5WPRvhQRB55OKeP+ydOikVemwJRAJoP+4aUAlSm15n?=
+ =?us-ascii?Q?gIrUwyoxncZFMcQPZP7+f96i7teESCcZodimlTNeKBwfrC1tPNaoU6AVFsoj?=
+ =?us-ascii?Q?ouHCWndSWxFDUuqytnOALgDhrcuZkqFQQOmKfUnjivfesaoelq0d2V6ebc0v?=
+ =?us-ascii?Q?KWPYuzzGn72KAEJsdvlSXjmy8wmJlNdQu04OYbcnST/FbwhGXSgV2LSHK4w0?=
+ =?us-ascii?Q?oKsoLNMGIeDWSgbfVEhjXfLKIMdNmEv2B15UcFPF286PLTO6Y8y0jBlAE1ei?=
+ =?us-ascii?Q?Eh2w5kp9bFtXxz4+MtutEwezI1RpwRczcMSUPmEFASiuJdgOsHA3CWAuDtV/?=
+ =?us-ascii?Q?OMLrIv1LHpOz1uat4BAj/k+V7PnaOciI1PogeUZykJouYK/Rl5pcfNACR6Ll?=
+ =?us-ascii?Q?fNWBGeVnK0AzUEL2l9+lTWD4URFUAaXuYRkTzs9p43AqIXnl1Cotn82JaByf?=
+ =?us-ascii?Q?ltnUiauWkkSf/ClvXvMzn9mwhW/jCKoYtowbtEf4EJJcYLUKmYWfSM4Z1uuG?=
+ =?us-ascii?Q?T0/lnMdA9OpTvP7ltJlNDDrvKGzX?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?koa4TnxamTuZk2QliiRU6hnr+IBv2dCY5klUZ3kgBwPaRYQEoRTGQ4FBHM+J?=
+ =?us-ascii?Q?fKyozSUcU2yMGBJ3WJzfOmG8Np1zy3Cu0YHnsiXk7MVanXT6ZnKIkwspjftR?=
+ =?us-ascii?Q?YjW+j3OwiXBPcfDVX+tcAiYGeRKSYhWf5WK7/OM7Ufiul1KL0MEjYM7Y84EC?=
+ =?us-ascii?Q?MVYME6+CzRNH+yuajK4Uyh9NEiKyLMX0dAn91XQ+VqqJTW8BpJBmIZPj72EZ?=
+ =?us-ascii?Q?3Z5AnFz8xY34rlcgr7PYiz71+4vGk6HpJEswYH3jtp0eelWpK/RVE2aDZlE+?=
+ =?us-ascii?Q?fI/KsfSCZtkByyW3P6Zb64YdTpAawrMTK/XE4DHubo2bcRhMrONIIhV47/IX?=
+ =?us-ascii?Q?0/k1+kUWmS1feXkGkvAM5+XS93VPkSdwsVb7maaCBV1ypoclqI5L+zwm6YRi?=
+ =?us-ascii?Q?Ke3fkbmKdoXxH9e3ztzb4W+EiZhFiQqa9A5En1uwMvgmQ/J4TbkpnH7ISoY7?=
+ =?us-ascii?Q?fZENIGmHowT3f9iXRgO3c6pO09DAqkw/KVlTkKIvS3Xgdg/6FBWSj4kf15WZ?=
+ =?us-ascii?Q?HPLzYWK2t/rp3hjKfLNDqmN26Wh0tbt+sEh3fFbZZbkWO2Mg2xWk7x2rxRMl?=
+ =?us-ascii?Q?gtrZldOGvY7yyedXKGzgLxGu1HzX8VSr2Y58HSkZn8T9R/gZFEH73cI59QnK?=
+ =?us-ascii?Q?Qdh/fko4t1w3vQKYpCyeqfdxkjPu9gd2Z7WPK0E4FB4SRTvZklABZC33H1u3?=
+ =?us-ascii?Q?SBAEAmBDagz3wP0795tJEBU2nibFm417QR6g2KK69ifPHlomoFcjkbp3b3A3?=
+ =?us-ascii?Q?4mKLJUdaRsrKRwsOrpbntQz19ZLC2Ko8x5SFcDr4RWArICzuBIP9gu2KjPZo?=
+ =?us-ascii?Q?/y3WiuLKDm8JXVM7KIMNf9LDofFabW1wiK6LprIERXg1koN6HlUbnQp+QlWo?=
+ =?us-ascii?Q?Ho0smHr37iabw44jANnwYmydIDAxV0dEHw+HGVGYvUpaHpijiVYFd7NQ+AC5?=
+ =?us-ascii?Q?ubYhtUt3GTS+tXTraQ5yS9rqW1FGdKfXmcXNLYYxt3SE6JdfEKoqAMp8Z7MJ?=
+ =?us-ascii?Q?OzHO2Ei3Om+Crevdfz5FHPb9jwABTmSyiPms+mtTenHriYIcN0U7S/N5Xg0c?=
+ =?us-ascii?Q?AjP17+qFPcz+OJnFlaKqPkMvUptvFeOp/WaIBSmGAf7rlcM9BTo/iiPLPao9?=
+ =?us-ascii?Q?iVd+1cKvD+2gDe5Y8vmRdpBvnSTo3q9OpDfdp2+mO2YUM7Sdp07VDL96hB0X?=
+ =?us-ascii?Q?ki7o0jtb1haPiHlOkZZrpXc4SGsMByzf/gJtqWQOPbwOq5D9Nk6WE+R0Eld6?=
+ =?us-ascii?Q?5BDNibOpelPbG9UUmYICE9of80MJrzLMEb9EhBHu6CS7mGqF8LPLKoIpXmaQ?=
+ =?us-ascii?Q?Ci2oxUM1QueXeLyMviCRfhur/kYIliAAHG8WYw4qoJmsfb/SdlAdIjXMpoTX?=
+ =?us-ascii?Q?MaOAmuXdfY2hV1lAjrUelMN+ka2ZO32W+hnmzmdoSRq6riwwoMN8yEHdQOjt?=
+ =?us-ascii?Q?dsb6ivV+g4sbWrLTAXDWh7AvRFbp+5viNO3uSf0GZi25j9DO7uNtDIKFdUgf?=
+ =?us-ascii?Q?0z6WWamtT7Ay+JIAwoQWoJbV6KuBsSsac+E24YlNpM4D9vbnxHLU0AEw7YLU?=
+ =?us-ascii?Q?3y3yJSOqbnVoAEVfYnL+2vh2B1aGzt5/oI8/pAut?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c2ceabc-e87e-46bf-7aab-08dd75fd3d9b
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2025 17:54:28.0319
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: V0yKzOpCWc9KGDFLh0JX8tyIZY1kgCLZQMIwlW79rBZlOjFoEYTLIGoI/HT54RWS
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8261
 
-SMC consists of two sockets: smc_sock and kernel TCP socket.
+On Mon, Mar 24, 2025 at 09:39:35AM +0530, Kalesh AP wrote:
+> From: Kashyap Desai <kashyap.desai@broadcom.com>
+> 
+> The cited commit in Fixes tag introduced a bug which can cause hang
+> of completion queue processing because of notification queue budget
+> goes to zero.
+> 
+> Found while doing nfs over rdma mount and umount.
+> Below message is noticed because of the existing bug.
+> 
+> kernel: cm_destroy_id_wait_timeout: cm_id=00000000ff6c6cc6 timed out. state 11 -> 0, refcnt=1
+> 
+> Fix to handle this issue -
+> Driver will not change nq->budget upon create and destroy of cq and srq
+> rdma resources.
+> 
+> Fixes: cb97b377a135 ("RDMA/bnxt_re: Refurbish CQ to NQ hash calculation")
+> Signed-off-by: Kashyap Desai <kashyap.desai@broadcom.com>
+> Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 5 -----
+>  1 file changed, 5 deletions(-)
 
-Currently, there are two ways of creating the sockets, and syzbot reported
-a lockdep splat [0] for the newer way introduced by commit d25a92ccae6b
-("net/smc: Introduce IPPROTO_SMC").
+Applied to for-rc, thanks
 
-  socket(AF_SMC             , SOCK_STREAM, SMCPROTO_SMC or SMCPROTO_SMC6)
-  socket(AF_INET or AF_INET6, SOCK_STREAM, IPPROTO_SMC)
-
-When a socket is allocated, sock_lock_init() sets a lockdep lock class to
-sk->sk_lock.slock based on its protocol family.  In the IPPROTO_SMC case,
-AF_INET or AF_INET6 lock class is assigned to smc_sock.
-
-The repro sets IPV6_JOIN_ANYCAST for IPv6 UDP and SMC socket and exercises
-smc_switch_to_fallback() for IPPROTO_SMC.
-
-  1. smc_switch_to_fallback() is called under lock_sock() and holds
-     smc->clcsock_release_lock.
-
-      sk_lock-AF_INET6 -> &smc->clcsock_release_lock
-      (sk_lock-AF_SMC)
-
-  2. Setting IPV6_JOIN_ANYCAST to SMC holds smc->clcsock_release_lock
-     and calls setsockopt() for the kernel TCP socket, which holds RTNL
-     and the kernel socket's lock_sock().
-
-      &smc->clcsock_release_lock -> rtnl_mutex (-> k-sk_lock-AF_INET6)
-
-  3. Setting IPV6_JOIN_ANYCAST to UDP holds RTNL and lock_sock().
-
-      rtnl_mutex -> sk_lock-AF_INET6
-
-Then, lockdep detects a false-positive circular locking,
-
-  .-> sk_lock-AF_INET6 -> &smc->clcsock_release_lock -> rtnl_mutex -.
-  `-----------------------------------------------------------------'
-
-but IPPROTO_SMC should have the same locking rule as AF_SMC.
-
-      sk_lock-AF_SMC   -> &smc->clcsock_release_lock -> rtnl_mutex -> k-sk_lock-AF_INET6
-
-Let's set the same lock class for smc_sock.
-
-Given AF_SMC uses the same lock class for SMCPROTO_SMC and SMCPROTO_SMC6,
-we do not need to separate the class for AF_INET and AF_INET6.
-
-[0]:
-WARNING: possible circular locking dependency detected
-6.14.0-rc3-syzkaller-00267-gff202c5028a1 #0 Not tainted
-
-syz.4.1528/11571 is trying to acquire lock:
-ffffffff8fef8de8 (rtnl_mutex){+.+.}-{4:4}, at: ipv6_sock_ac_close+0xd9/0x110 net/ipv6/anycast.c:220
-
-but task is already holding lock:
-ffff888027f596a8 (&smc->clcsock_release_lock){+.+.}-{4:4}, at: smc_clcsock_release+0x75/0xe0 net/smc/smc_close.c:30
-
-which lock already depends on the new lock.
-
-the existing dependency chain (in reverse order) is:
-
- -> #2 (&smc->clcsock_release_lock){+.+.}-{4:4}:
-       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
-       __mutex_lock+0x19b/0xb10 kernel/locking/mutex.c:730
-       smc_switch_to_fallback+0x2d/0xa00 net/smc/af_smc.c:903
-       smc_sendmsg+0x13d/0x520 net/smc/af_smc.c:2781
-       sock_sendmsg_nosec net/socket.c:718 [inline]
-       __sock_sendmsg net/socket.c:733 [inline]
-       ____sys_sendmsg+0xaaf/0xc90 net/socket.c:2573
-       ___sys_sendmsg+0x135/0x1e0 net/socket.c:2627
-       __sys_sendmsg+0x16e/0x220 net/socket.c:2659
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
- -> #1 (sk_lock-AF_INET6){+.+.}-{0:0}:
-       lock_sock_nested+0x3a/0xf0 net/core/sock.c:3645
-       lock_sock include/net/sock.h:1624 [inline]
-       sockopt_lock_sock net/core/sock.c:1133 [inline]
-       sockopt_lock_sock+0x54/0x70 net/core/sock.c:1124
-       do_ipv6_setsockopt+0x2160/0x4520 net/ipv6/ipv6_sockglue.c:567
-       ipv6_setsockopt+0xcb/0x170 net/ipv6/ipv6_sockglue.c:993
-       udpv6_setsockopt+0x7d/0xd0 net/ipv6/udp.c:1850
-       do_sock_setsockopt+0x222/0x480 net/socket.c:2303
-       __sys_setsockopt+0x1a0/0x230 net/socket.c:2328
-       __do_sys_setsockopt net/socket.c:2334 [inline]
-       __se_sys_setsockopt net/socket.c:2331 [inline]
-       __x64_sys_setsockopt+0xbd/0x160 net/socket.c:2331
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
- -> #0 (rtnl_mutex){+.+.}-{4:4}:
-       check_prev_add kernel/locking/lockdep.c:3163 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3282 [inline]
-       validate_chain kernel/locking/lockdep.c:3906 [inline]
-       __lock_acquire+0x249e/0x3c40 kernel/locking/lockdep.c:5228
-       lock_acquire.part.0+0x11b/0x380 kernel/locking/lockdep.c:5851
-       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
-       __mutex_lock+0x19b/0xb10 kernel/locking/mutex.c:730
-       ipv6_sock_ac_close+0xd9/0x110 net/ipv6/anycast.c:220
-       inet6_release+0x47/0x70 net/ipv6/af_inet6.c:485
-       __sock_release net/socket.c:647 [inline]
-       sock_release+0x8e/0x1d0 net/socket.c:675
-       smc_clcsock_release+0xb7/0xe0 net/smc/smc_close.c:34
-       __smc_release+0x5c2/0x880 net/smc/af_smc.c:301
-       smc_release+0x1fc/0x5f0 net/smc/af_smc.c:344
-       __sock_release+0xb0/0x270 net/socket.c:647
-       sock_close+0x1c/0x30 net/socket.c:1398
-       __fput+0x3ff/0xb70 fs/file_table.c:464
-       task_work_run+0x14e/0x250 kernel/task_work.c:227
-       resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
-       exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
-       exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
-       __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
-       syscall_exit_to_user_mode+0x27b/0x2a0 kernel/entry/common.c:218
-       do_syscall_64+0xda/0x250 arch/x86/entry/common.c:89
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-other info that might help us debug this:
-
-Chain exists of:
-  rtnl_mutex --> sk_lock-AF_INET6 --> &smc->clcsock_release_lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&smc->clcsock_release_lock);
-                               lock(sk_lock-AF_INET6);
-                               lock(&smc->clcsock_release_lock);
-  lock(rtnl_mutex);
-
- *** DEADLOCK ***
-
-2 locks held by syz.4.1528/11571:
- #0: ffff888077e88208 (&sb->s_type->i_mutex_key#10){+.+.}-{4:4}, at: inode_lock include/linux/fs.h:877 [inline]
- #0: ffff888077e88208 (&sb->s_type->i_mutex_key#10){+.+.}-{4:4}, at: __sock_release+0x86/0x270 net/socket.c:646
- #1: ffff888027f596a8 (&smc->clcsock_release_lock){+.+.}-{4:4}, at: smc_clcsock_release+0x75/0xe0 net/smc/smc_close.c:30
-
-stack backtrace:
-CPU: 0 UID: 0 PID: 11571 Comm: syz.4.1528 Not tainted 6.14.0-rc3-syzkaller-00267-gff202c5028a1 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:120
- print_circular_bug+0x490/0x760 kernel/locking/lockdep.c:2076
- check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2208
- check_prev_add kernel/locking/lockdep.c:3163 [inline]
- check_prevs_add kernel/locking/lockdep.c:3282 [inline]
- validate_chain kernel/locking/lockdep.c:3906 [inline]
- __lock_acquire+0x249e/0x3c40 kernel/locking/lockdep.c:5228
- lock_acquire.part.0+0x11b/0x380 kernel/locking/lockdep.c:5851
- __mutex_lock_common kernel/locking/mutex.c:585 [inline]
- __mutex_lock+0x19b/0xb10 kernel/locking/mutex.c:730
- ipv6_sock_ac_close+0xd9/0x110 net/ipv6/anycast.c:220
- inet6_release+0x47/0x70 net/ipv6/af_inet6.c:485
- __sock_release net/socket.c:647 [inline]
- sock_release+0x8e/0x1d0 net/socket.c:675
- smc_clcsock_release+0xb7/0xe0 net/smc/smc_close.c:34
- __smc_release+0x5c2/0x880 net/smc/af_smc.c:301
- smc_release+0x1fc/0x5f0 net/smc/af_smc.c:344
- __sock_release+0xb0/0x270 net/socket.c:647
- sock_close+0x1c/0x30 net/socket.c:1398
- __fput+0x3ff/0xb70 fs/file_table.c:464
- task_work_run+0x14e/0x250 kernel/task_work.c:227
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x27b/0x2a0 kernel/entry/common.c:218
- do_syscall_64+0xda/0x250 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f8b4b38d169
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe4efd22d8 EFLAGS: 00000246 ORIG_RAX: 00000000000001b4
-RAX: 0000000000000000 RBX: 00000000000b14a3 RCX: 00007f8b4b38d169
-RDX: 0000000000000000 RSI: 000000000000001e RDI: 0000000000000003
-RBP: 00007f8b4b5a7ba0 R08: 0000000000000001 R09: 000000114efd25cf
-R10: 00007f8b4b200000 R11: 0000000000000246 R12: 00007f8b4b5a5fac
-R13: 00007f8b4b5a5fa0 R14: ffffffffffffffff R15: 00007ffe4efd23f0
- </TASK>
-
-Fixes: d25a92ccae6b ("net/smc: Introduce IPPROTO_SMC")
-Reported-by: syzbot+be6f4b383534d88989f7@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=be6f4b383534d88989f7
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
----
- net/smc/af_smc.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 3e6cb35baf25..3760131f1484 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -362,6 +362,9 @@ static void smc_destruct(struct sock *sk)
- 		return;
- }
- 
-+static struct lock_class_key smc_key;
-+static struct lock_class_key smc_slock_key;
-+
- void smc_sk_init(struct net *net, struct sock *sk, int protocol)
- {
- 	struct smc_sock *smc = smc_sk(sk);
-@@ -375,6 +378,8 @@ void smc_sk_init(struct net *net, struct sock *sk, int protocol)
- 	INIT_WORK(&smc->connect_work, smc_connect_work);
- 	INIT_DELAYED_WORK(&smc->conn.tx_work, smc_tx_work);
- 	INIT_LIST_HEAD(&smc->accept_q);
-+	sock_lock_init_class_and_name(sk, "slock-AF_SMC", &smc_slock_key,
-+				      "sk_lock-AF_SMC", &smc_key);
- 	spin_lock_init(&smc->accept_q_lock);
- 	spin_lock_init(&smc->conn.send_lock);
- 	sk->sk_prot->hash(sk);
--- 
-2.48.1
-
+Jason
 
