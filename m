@@ -1,120 +1,112 @@
-Return-Path: <linux-rdma+bounces-9271-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9272-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB9EBA81594
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 21:13:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A70AA8159C
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 21:14:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DBD318964CD
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 19:12:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 667051896734
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 19:14:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53878236433;
-	Tue,  8 Apr 2025 19:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 655B724394F;
+	Tue,  8 Apr 2025 19:13:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gDhLcGrX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PAcmoqeY"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103231DE894;
-	Tue,  8 Apr 2025 19:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6721DA60F;
+	Tue,  8 Apr 2025 19:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744139507; cv=none; b=joPQPlnTFsF1wBGqk5JnobEAtP0gcMF1KN6orsHeb1bdiuAmBAZkgqvXJMcRfqfbMFArPIBSXdDtq/NrFFnQ5O8Vvs63Av/We0ysGk49KEKjEdWqr0vwqiBOMiWzE141uHvCCEpCpceZUNq0GU+ojj3tnWpgNlYFb21U5XR9jJo=
+	t=1744139635; cv=none; b=o0r2xjlmrSCLkS8ScPf/VgBO7YKpTP4Ben4WAUG1lxcKjRU61IvsPUR1pv6C7a3JbS6VSI2Yma5wq1dx24ozv5XvnvtU6V8PRog5MYb977jQH7hVrR5KfVewxMTA+4/LHTTBrSPUr1UVCAogk34cFcbd8ggUPrluDflODzTnq7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744139507; c=relaxed/simple;
-	bh=rvyNXRGr97O6fKSIuIw20r6W2J4nM2TGAOvyPpoll7I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KgqzT/niaowH5eXegV7DcSmW19TPhzh/yBQR0trpqfztkiALu/MXnbfjFs153D9KPcNDZZGw0QMwdZlKmeK2PguAmqV0SFjpJ5K3BV5eXbdP3+L6/eTDJMUyyXOZ3ih+4mwYC+M/lFFhp2ypd+N5BfmvAKXS0BdT2Pv/tIgZAzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gDhLcGrX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49255C4CEE5;
-	Tue,  8 Apr 2025 19:11:43 +0000 (UTC)
+	s=arc-20240116; t=1744139635; c=relaxed/simple;
+	bh=5DRa4EjABnqaxCONQi4w4JP1EalHC6671KkxCCi0Fzs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pFC5OHKg02VVC3pCarHx/UeNU1RxPQC1/7pmfuIskoQjw6+C1KTIJSGMqYARRX8SW+bwm/DnU8trEaykmGPWk2O4JWv/eWVJhcwxzRH1uiDxKZxq7V6+cLcyf/VxqzD4NLP9TGbWXUcHu2nyBTIcCorYKqV7EWkqJJe0kZMWtDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PAcmoqeY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3B24C4CEE5;
+	Tue,  8 Apr 2025 19:13:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744139504;
-	bh=rvyNXRGr97O6fKSIuIw20r6W2J4nM2TGAOvyPpoll7I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gDhLcGrXILPU77ehqJ+R362YMFadQGANx7aquJNjrMNTNBIx04AwIqYLB8J2xHq6D
-	 9ULK+7EmQStDFIylO5k1o8mI4zqFKq+xKd/bjsbB0md1WcrmeSTCMmkI4SCe0+1zrw
-	 /rOAQRujwewDTU9/kTSMMalQocoBboOY/Zx1ghVUvAKbc7YUoOghuF7cEA4viI9vtb
-	 lf/kRqkk2Crbr9mtOgqfQpKo55iOsiO56ovKjBpAWwhoZrnrhXegSrQRVKEwJi9NWj
-	 qb5C6kuRd79LS6/a5/5fEqhkeBQBy7/2Hg8ubfscWoCkO85d6oKpyzdLG1AQWdjBQ1
-	 l6rlC1rIjw3MQ==
-Date: Tue, 8 Apr 2025 22:11:38 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Allison Henderson <allison.henderson@oracle.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	rds-devel@oss.oracle.com
-Subject: Re: [PATCH net-next] rds: rely on IB/core to determine if device is
- ODP capable
-Message-ID: <20250408191138.GF199604@unreal>
-References: <bfc8ffb7ea207ed90c777a4f61a8afe1badef212.1744109826.git.leonro@nvidia.com>
- <20250408122338.GA1778492@nvidia.com>
- <20250408123413.GA199604@unreal>
- <20250408123814.GC1778492@nvidia.com>
+	s=k20201202; t=1744139634;
+	bh=5DRa4EjABnqaxCONQi4w4JP1EalHC6671KkxCCi0Fzs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=PAcmoqeY8NOC6IKQgd+rhVff/TQUVbjUrNGWcC0ybL9oWMD2ofAddjwCzbWSV4DZR
+	 yczqJ1wJG4E5G2ccTTI0C42i8suKrfvnMuUaiVR+BYcq/6WRJU2H1SFVnLQ5UMzIEa
+	 0AoB/aYmwVXADDsbQPkY+vAn5vdA1ptyYcLTBHEVU3RGZy9habdt/P92X0IOZAgr8y
+	 ntONC5aNaghc2ld53zdmgU83hXdJPis9y91HR5rRlC9Y9XCgohvqNbO1hvYZiegR11
+	 0huf6QJRE53jzWR3ZSer6Hjg0NSCn8vaUTQ3uf5GMcSPrT1s7nbSBNs5LaFTynaX3M
+	 vy6UAGYwlVZCw==
+Date: Tue, 8 Apr 2025 12:13:52 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
+ <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
+ Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
+ Almasry <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>,
+ Yunsheng Lin <linyunsheng@huawei.com>, Pavel Begunkov
+ <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-mm@kvack.org
+Subject: Re: [PATCH net-next v8 1/2] page_pool: Move pp_magic check into
+ helper functions
+Message-ID: <20250408121352.6a2349a9@kernel.org>
+In-Reply-To: <20250407-page-pool-track-dma-v8-1-da9500d4ba21@redhat.com>
+References: <20250407-page-pool-track-dma-v8-0-da9500d4ba21@redhat.com>
+	<20250407-page-pool-track-dma-v8-1-da9500d4ba21@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250408123814.GC1778492@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 08, 2025 at 09:38:14AM -0300, Jason Gunthorpe wrote:
-> On Tue, Apr 08, 2025 at 03:34:13PM +0300, Leon Romanovsky wrote:
-> > On Tue, Apr 08, 2025 at 09:23:38AM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Apr 08, 2025 at 02:04:55PM +0300, Leon Romanovsky wrote:
-> > > > diff --git a/net/rds/ib.c b/net/rds/ib.c
-> > > > index 9826fe7f9d00..c62aa2ff4963 100644
-> > > > --- a/net/rds/ib.c
-> > > > +++ b/net/rds/ib.c
-> > > > @@ -153,14 +153,6 @@ static int rds_ib_add_one(struct ib_device *device)
-> > > >  	rds_ibdev->max_wrs = device->attrs.max_qp_wr;
-> > > >  	rds_ibdev->max_sge = min(device->attrs.max_send_sge, RDS_IB_MAX_SGE);
-> > > >  
-> > > > -	rds_ibdev->odp_capable =
-> > > > -		!!(device->attrs.kernel_cap_flags &
-> > > > -		   IBK_ON_DEMAND_PAGING) &&
-> > > > -		!!(device->attrs.odp_caps.per_transport_caps.rc_odp_caps &
-> > > > -		   IB_ODP_SUPPORT_WRITE) &&
-> > > > -		!!(device->attrs.odp_caps.per_transport_caps.rc_odp_caps &
-> > > > -		   IB_ODP_SUPPORT_READ);
-> > > 
-> > > This patch seems to drop the check for WRITE and READ support on the
-> > > ODP.
-> > 
-> > Right, and they are part of IBK_ON_DEMAND_PAGING support. All ODP
-> > providers support both IB_ODP_SUPPORT_WRITE and IB_ODP_SUPPORT_READ.
-> 
-> Where? mlx5 reads this from FW and I don't see anything blocking
-> IBK_ON_DEMAND_PAGING if the FW is weird.
+On Mon, 07 Apr 2025 18:53:28 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index b7f13f087954bdccfe1e263d39a59bfd1d738ab6..6f9ef1634f75701ae0be146ad=
+d1ea2c11beb6e48 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -4248,4 +4248,25 @@ int arch_lock_shadow_stack_status(struct task_stru=
+ct *t, unsigned long=20
 
-As the one who added it, I can assure you that we added these checks not
-because of weird FW, but because these caps existed.
+> +static inline bool page_pool_page_is_pp(struct page *page)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+> +
 
-RDS calls to ib_reg_user_mr() with the following access_flags.
+extra empty line here
 
-  564                 int access_flags =
-  565                         (IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_READ |
-  566                          IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_ATOMIC |
-  567                          IB_ACCESS_ON_DEMAND);
-  <...>
-  575
-  576                 ib_mr = ib_reg_user_mr(rds_ibdev->pd, start, length, virt_addr,
-  577                                        access_flags);
+>  #endif /* _LINUX_MM_H */
+> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
+> index 36eb57d73abc6cfc601e700ca08be20fb8281055..31e6c5c6724b1cffbf5ad2535=
+b3eaee5dec54d9d 100644
+> --- a/include/net/page_pool/types.h
+> +++ b/include/net/page_pool/types.h
+> @@ -264,6 +264,7 @@ void page_pool_destroy(struct page_pool *pool);
+>  void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(vo=
+id *),
+>  			   const struct xdp_mem_info *mem);
+>  void page_pool_put_netmem_bulk(netmem_ref *data, u32 count);
+> +
 
-If for some reason ODP doesn't support WRITE and/or READ, ib_reg_user_mr() will return an error from FW,
+and here
 
-Thanks
-
-
-> 
-> Jason
+>  #else
+>  static inline void page_pool_destroy(struct page_pool *pool)
+>  {
+--=20
+pw-bot: cr
 
