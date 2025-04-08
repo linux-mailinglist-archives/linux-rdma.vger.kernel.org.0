@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-9233-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9235-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C296A8002D
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 13:28:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DB30A8037D
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 13:58:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C931F3B952C
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 11:21:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 436D519E757A
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 11:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0014D2686AA;
-	Tue,  8 Apr 2025 11:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DDB426A095;
+	Tue,  8 Apr 2025 11:53:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="PZIW4Eff"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Y/r4LR2l"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96E8207E14;
-	Tue,  8 Apr 2025 11:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4530F267F68;
+	Tue,  8 Apr 2025 11:53:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744111328; cv=none; b=stcleN9boyYPCt+M6wXx3yJuNg1rcaNmwf/wcVm3hvxEXwMwAQ3QttU7raUBin8SGV+B48+v8O9qsB/6jo7JQrxj7P3UbXjPCFwytYmMaIJBQRh3FJCPxfwuvrdiAeX5gbEc9bDBb5OngXNrQqcZC6erEvmb/bg3DKwQ6uea90w=
+	t=1744113223; cv=none; b=aLtKe/ctrA/uCdynxVq84aeLnSCHMRX0wWGxmFpGwLRLsaJV1qbt/iUhX/ZmqboH3i2pcn8+HVA9r9Cq0l0SpEGkdvku98AcMSz242PLZ9CtNl2+d20b/eXv/Za0faa1OFVOrsZ3Zgvkpu8Jd9Glyi61P90YyP9OekUg2M8fxhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744111328; c=relaxed/simple;
-	bh=9rixISlH0h3gLJrlq8Oxi2XQJTBimT3/MGOf2hGDi4A=;
+	s=arc-20240116; t=1744113223; c=relaxed/simple;
+	bh=yEZ3iY0IJGUA0pMyK15jl0dVzY+YMjwJliFMFMiyufA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kjGlT8EseW9xutQbs8XMf+bldFSwtaKJpzkP6jVtLP62e/eWL4AtG81azoxhG+D+Pf1i3JY507CAadOQLoozLjQafnL/OeoYu2EWlsyZQuiW+FLEJ6LxZ3bLy4T8iAzz+Oq0iRmPXA4rWX8ZbVPaolqw+cVF3njm2s33CoDaNU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=PZIW4Eff; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37AA0C4CEE5;
-	Tue,  8 Apr 2025 11:22:08 +0000 (UTC)
+	 MIME-Version; b=THMpV3M1shf9J/QV5s1d02uVerMorkIDNBPWyxBarEQGFSJy/aLiSfQSmJw3LReY0E+/1P2P/scVXmaup1CZhz5pp1X06o0loOYK+BGietSEBK8+o7DgFjccxLGFROBSvPZle5bDFWJ8rp9FXlWqWGNgpl43PPNvflKfd7hRSJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Y/r4LR2l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9508C4CEE7;
+	Tue,  8 Apr 2025 11:53:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1744111328;
-	bh=9rixISlH0h3gLJrlq8Oxi2XQJTBimT3/MGOf2hGDi4A=;
+	s=korg; t=1744113223;
+	bh=yEZ3iY0IJGUA0pMyK15jl0dVzY+YMjwJliFMFMiyufA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PZIW4EffBrz3O1V7dFu+frqWqgAGa7/HVjlDakrI/hRGikIlfJmB8ZP99kr/4yhiS
-	 bWQnNnnKRLbgCVcnfupBaU68SO+tIi4wBE0V7KqHGBjUtom+9Z/i20RMJ4uUcjeBfh
-	 bGAM1dYp9mTbzh6AbQYcs6l/k/V6tgldlSQpy0mI=
+	b=Y/r4LR2lNDUbcYPeVIlRIJHszUZHnYVJdMwpKpvFnnCtRvHzNkhhuRzIRBq6IBdQQ
+	 UDtbA2UWUBCUldyeu1N68gmQ03pWua3+abxpQ9weorQ3yNaH+RjEmGqtXCD86Wal0i
+	 HWjH8z7/H+mHmWz4r+ndRrh8yKvUeqf4lX3LACDg=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -50,12 +50,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-kernel@vger.kernel.org,
 	Parav Pandit <parav@nvidia.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.14 393/731] RDMA/core: Dont expose hw_counters outside of init net namespace
-Date: Tue,  8 Apr 2025 12:44:50 +0200
-Message-ID: <20250408104923.416610570@linuxfoundation.org>
+Subject: [PATCH 6.6 080/268] RDMA/core: Dont expose hw_counters outside of init net namespace
+Date: Tue,  8 Apr 2025 12:48:11 +0200
+Message-ID: <20250408104830.653450393@linuxfoundation.org>
 X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250408104914.247897328@linuxfoundation.org>
-References: <20250408104914.247897328@linuxfoundation.org>
+In-Reply-To: <20250408104828.499967190@linuxfoundation.org>
+References: <20250408104828.499967190@linuxfoundation.org>
 User-Agent: quilt/0.68
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -67,7 +67,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-6.14-stable review patch.  If anyone has any objections, please let me know.
+6.6-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -163,10 +163,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 11 insertions(+)
 
 diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 0ded91f056f39..8feb22089cbbd 100644
+index 56dd030045a20..6769c42e46d4f 100644
 --- a/drivers/infiniband/core/device.c
 +++ b/drivers/infiniband/core/device.c
-@@ -528,6 +528,8 @@ static struct class ib_class = {
+@@ -543,6 +543,8 @@ static struct class ib_class = {
  static void rdma_init_coredev(struct ib_core_device *coredev,
  			      struct ib_device *dev, struct net *net)
  {
@@ -175,7 +175,7 @@ index 0ded91f056f39..8feb22089cbbd 100644
  	/* This BUILD_BUG_ON is intended to catch layout change
  	 * of union of ib_core_device and device.
  	 * dev must be the first element as ib_core and providers
-@@ -539,6 +541,13 @@ static void rdma_init_coredev(struct ib_core_device *coredev,
+@@ -554,6 +556,13 @@ static void rdma_init_coredev(struct ib_core_device *coredev,
  
  	coredev->dev.class = &ib_class;
  	coredev->dev.groups = dev->groups;
@@ -202,10 +202,10 @@ index 9f97bef021497..210092b9bf17d 100644
  		}
  	WARN(true, "struct ib_device->groups is too small");
 diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 0ad104dae2539..43954bb0475a7 100644
+index bc459d0616297..c7e9ec9e9a802 100644
 --- a/include/rdma/ib_verbs.h
 +++ b/include/rdma/ib_verbs.h
-@@ -2750,6 +2750,7 @@ struct ib_device {
+@@ -2738,6 +2738,7 @@ struct ib_device {
  	 * It is a NULL terminated array.
  	 */
  	const struct attribute_group	*groups[4];
