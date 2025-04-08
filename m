@@ -1,117 +1,135 @@
-Return-Path: <linux-rdma+bounces-9273-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9274-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B5BEA815F5
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 21:40:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F4D3A815F9
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 21:42:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64A631BA4335
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 19:40:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 583544E2913
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 19:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8792459CE;
-	Tue,  8 Apr 2025 19:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57DE22451C3;
+	Tue,  8 Apr 2025 19:42:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="sy9Hjebu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MY9emM/Q"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2866245017;
-	Tue,  8 Apr 2025 19:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF51023F277;
+	Tue,  8 Apr 2025 19:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744141243; cv=none; b=OpVUi5A2s8qYQVeL23JzM0l5M0kukSdn+3YzXhRPedfNAdQ/q/ZanlG8nLpLH9zK65ftWJH7mSelkQWki3m+8v0JxWyTfi3eXqQdUYhr4CorWwRLIwRexzjP7y/UJ2n8XzJTsZpYUJtzKtT1E5tQG9gCwMu0OBx9fdcWMdBF9qc=
+	t=1744141327; cv=none; b=Ok+jOnyIYqhcsmImgKN25i9wFU7lgdqdNRnVypPT1j1VUnZkzG3SxVDKjQ+xtADu//63f1HHWzH9XKiztTtYfViSD0+7VCOLB0E+ec0h0qzmlIEISEQe7x/rYxLt/gaEyWWCTpDnAy2XAM8VSjA+GtwMDa/tEuB3y/jZ6oOxA/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744141243; c=relaxed/simple;
-	bh=bGZk48l7Fum8Jf5aCucmbCvAzx9GCibM0c2fKAF+XQ4=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=FerF8jlgiUlusnQKBozAW2/yaacL2iRXJrqSEtY2DEgfxVzhLbKwBeBzpd4BxfxPtLe32T3SLfdkGDEJmkbkK244YLuK2wbkJxoXwcl/0JyOi0EaNEGfhGwUlUrc234SJPEyOUGBL4DQT9g/CfhBCY6wkib2S9H9a4UmbJvAsek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=sy9Hjebu; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1744141224; x=1744746024; i=markus.elfring@web.de;
-	bh=fzurtuNXWGHUwPRwx8cIR9L0eo858r1VtrVlYB34TH4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=sy9HjebuvTvHQAUTrklAGIIMarPy0Rn+3jYwBWD5zoxCYmEmoQIi7ht4j07+8JXO
-	 BZgHQsMjKYoBSVb8Ew+qkquVbtn9Nm0DHOQJFMGTWJ5vKbA0baeY9a+X77dP2deAS
-	 3Ndiv4F2GmywYwcMFTKiLPONZXdJUB5YKRPEHC6NHocL1EQrCO3/U32WCFzAwKnda
-	 fr/1W7Uv816kKxOl7SkVwKhUr/tYKFKgNgx3R0tnpLNxZnuosqx5VRGe3474hyAAF
-	 vVhxey/Cdf3N6Ot+9gYRoUhTHPpJRVojDSUYtppKqnNBZfhSiNTqaNw87+hGyQWJe
-	 m45P3w5+YbHXaHwohw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.70.41]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MhFlo-1tPJ9p3kaw-00nMpX; Tue, 08
- Apr 2025 21:40:23 +0200
-Message-ID: <c9a2b94a-9330-4329-b808-4e59065d7cfa@web.de>
-Date: Tue, 8 Apr 2025 21:40:22 +0200
+	s=arc-20240116; t=1744141327; c=relaxed/simple;
+	bh=ML5jTR/jlM3ju4JbP3B3GFhZX+5zbRJpfOEkQaeoad4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=F6Ww82NLNCRlE6iCNufl7unfkn0xJ8m5EbXnent2MITFuZs9OHZnpBVnP6ZGHowP3CE4P21BqIe41mlD9iMQmNA0ymXBV1MVZDvys3x3gGNIYDgrp1wPP3n0HOY2D00IxfaFcEr8P05aYTaRkyqC0lXW52ZjfrUb5vOT4QA6lyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MY9emM/Q; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-227cf12df27so296185ad.0;
+        Tue, 08 Apr 2025 12:42:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1744141325; x=1744746125; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CoerfLnXPhCno+Wn+g+z/uR+iR+JqTaweh5qhXG3rP0=;
+        b=MY9emM/QVteQYvIXOtqiI1hRSiNpEUa2sG89FcmbAtMDFP9BA677MhHfvd9YpbhSrA
+         YxK4lbtf4ETk9ImDv2hPOy6el3iz6ZU/9Xdk/VeiyWzpHeqKTkkans16L2iSm7hYuYZ/
+         sx3CJLABJtUcjmP+0nC7qefmjIXEc6GuC7ja6rOpL2A+vEUiVPMUNF1DOJ0YyDw1nqBD
+         i4h+XpBeMBr8eb12apoUsiY4Qwl3AbHYGAhCt1BA5+S1eMHBfaMByTNVhW8SeH0DmAvR
+         V+nWpSzolKydbkdWTLCDDUKVMG5Jz2xdBxiLtt6TUCGRTR9oLeAuJdlCkxP3+W159c3r
+         4ZRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744141325; x=1744746125;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CoerfLnXPhCno+Wn+g+z/uR+iR+JqTaweh5qhXG3rP0=;
+        b=tAFKFvUICrcj8DwXc63jPR05xOWlIxjQes3NnxHWg5Mh5W1JEJLfxTvOogYtplwepA
+         +S3eVz8w9ElfFb2Vro0UEHut/f4ZPeepJL4+Woa8Y+M6pbbAePyEp9BsBnLV7r5ZggFt
+         tL9tawhKl9J/Ft0jNwU+mfjVMfKXlcBZhjgr2Sz0ldmKgsJkfkztYiQopFsv9lZOZJHB
+         ONoh6JXFy9H5oaSjuDL6RLlOOXaYAkHmDepWTixsKZQTwnepheHgiw13xbYVN2UIkc5b
+         SgIbfgWfBExXL7KQ6Uk034JBpqg0ORsw2Rw7vvyiJ1sWwsTUcbdpvqFeyhbBgdnpxvi6
+         73zw==
+X-Forwarded-Encrypted: i=1; AJvYcCX9VPpgrzud0DAa4SrqYiPCqfVf3v/PtgQdSaZWS/sII/t5JJLUMFY56hsYHuIv2OhDpYyWXaUvglrRaoo=@vger.kernel.org, AJvYcCXGDdd2KuYPGMPUFb8839Lo9/IIH9ilMkwFTNV5z9IvCFhH7Txr6XpHkZ0iALG8jcZAbK2le22z@vger.kernel.org, AJvYcCXQitCEQyg9ClPei+VkeT30v6bVsV3x5B64R1ALAXx3xibsS4Y7IP5F/SE5HAbWzpVj5D1jGgWd6sXwmg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwewpKb1nfaSn5plm7dII+PpJdwMDoinM0ZKxj9dGo6e9+R9uIo
+	KkFAObbuCs40XAqQC2zl/x+9dxTPVAjhCXe7bH4K9jYicTRByhLe
+X-Gm-Gg: ASbGncs92EesN3izJfFcE8L0suHSXSUf8rvOvTC42vHMtPAaL0YRU+WeWD7pvV+325g
+	EeTFvQ9sePFHWmYPx6W+95ciyZLFfMekzAOJ8lrbVhSxLZgKgGT/excHOqsRAd9luo5420/O31o
+	0aE7+5txpaPAk/oWylm1pgH9bV5wFvq5jBcFDgt37Z8y5F6J+CMI/LneLrBSEqyc4TjEJo5Ce1O
+	h3aMFmUkOvmrtn3SGMPZQFbiBlMdYJT1x+oH3N1RUG8kp89NRMfPeDbgw7P13v2PXcxWW0wpBPd
+	ELNHYb7nSO0wsROd69cd4HlHDTK0PRxvvf1ZrY2sOtxbIemRK21exKqqhR+RizCFCXs=
+X-Google-Smtp-Source: AGHT+IGD4qjnb5n6rpbIvJUo7pSYRQIkDOxI0kExKtXGHcmuxeefdh6D5u4OcO5X1n4R15pQkmZSCg==
+X-Received: by 2002:a17:902:e809:b0:21f:98fc:8414 with SMTP id d9443c01a7336-22ab5ebee9amr54755945ad.26.1744141324758;
+        Tue, 08 Apr 2025 12:42:04 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:5c08:585d:6eb6:f5fb:b572:c7c7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2297865e093sm104796895ad.132.2025.04.08.12.41.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Apr 2025 12:42:04 -0700 (PDT)
+From: Pranav Tyagi <pranav.tyagi03@gmail.com>
+To: davem@davemloft.net,
+	dsahern@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	skhan@linuxfoundation.org,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com,
+	linux-kernel@vger.kernel.org,
+	linux-kernel-mentees@lists.linux.dev
+Cc: Pranav Tyagi <pranav.tyagi03@gmail.com>
+Subject: [PATCH] net: rds: replace strncpy with memcpy
+Date: Wed,  9 Apr 2025 01:11:53 +0530
+Message-ID: <20250408194153.6570-1-pranav.tyagi03@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Henry Martin <bsdhenrymartin@gmail.com>, linux-rdma@vger.kernel.org,
- netdev@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, Amir Tzin <amirtz@nvidia.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, Aya Levin <ayal@nvidia.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>,
- Simon Horman <horms@kernel.org>, Tariq Toukan <tariqt@nvidia.com>
-References: <20250408154058.106668-1-bsdhenrymartin@gmail.com>
-Subject: Re: [PATCH v2 1/2] net/mlx5: Fix null-ptr-deref in
- mlx5_create_inner_ttc_table()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20250408154058.106668-1-bsdhenrymartin@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:Rbzve1EASf9H+KgUZ1by8DnH80A2vn9325JgM4dUkO8qM+GD/4C
- j9XEujIe9vpX/0OY+p+avNS9ZqMNkW4DIKpeJGDUjcx0Pk5i2/EYoAEWk+BfjXwBo1hU3a0
- dVvl3MGwd0AcvVGTcHpWQtbejLMlk2hQxt+DeqWGZR9YIbFcmUk24kb39LcnyQTTNnvKNQ9
- m7DvTgb9WkPu0PMmL6VPA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:D9kHfzn3EYc=;CUY2qSZgf4PONHEQTKgzkRKugBR
- PjmGVGzOOZqLlZE/YCRAde0M4OfnecpFlPlEHBbcUn9OQNKSQxhTMCitgFTJQkcKY/Vy3faLF
- 9cfAHHgZ//+dF9j+iPUkVatIoRl0G2F68wlTRzEt7yp6CNG0abx8loA/jyjf7ZfX5vJTK+TWC
- YKDhgqUc8DMFN9jw9/2mTBXexOFGaCs8zyaBDozALSNR8ItNqNFxuWUq/QIotH/6h6XzYfw4i
- K4pJlcnQdQ8PC5W3J1rzx5eT0cZvWQbksF9SpomfThfRu/hskY6R7GFZ/jlunX0VRozBkbhMe
- f/tkXSYLOt0WVfHqbQlfwe7fJLoW+5UNchmb6VaMlnJhx4AnUf4wDyYFDcy533y72zzyVKKiX
- XuF4B4LZmBrQPu/Z0BhAOz4x55CqsOPiAS8JwyI1NkapM9FS0q2rJ/qdC2VvV/Rw1jcxjXPbv
- 90zm9quHJ6bhzdfY1S2TbbThQW1++2VxS438UKpK9u2ee/Jvu8fA6TPbAAx+ona80nn4vHvfw
- KfA6lVXrxILw05hVyVZBFxf98CqCxxZOSdrd2e0/smnaQRqOs6NhdQLelrhAZ60+3Zo3oU09f
- wPWxuXhTBc5pDCOXduuxVkB5R1zy53F8VjtmhDaGXo3yAsBcqcfpNv2PUmOZbBWuVSIfrbqcS
- m/jbqYAcG8488Rz2CFSfyf/SiNCizL9Y4uJZ0K8IK9DLAFUMQ1SdyRIGWhBkrpA3dtRhPRp58
- YII8uPLBEXqvrdFh6ZTWuHUMus89QFIadbp9OnkX6Ac8GELaVmvqtec8x6JccFSUpb65yez30
- jS91TdUqSvmeNvKj2gqWcVgMw+lOwSkashg/xR0FjD139Wm675DL6akOXTadUWOhsjFK/RuX2
- 73kPTNAeysQqQZYXMvJ+ENpa1XU3WoH6uOD0iBjrAdMQFYAyZR4sXlEY68zSZC+CFYMCvyQg0
- Rxge/I1fiN3dYJOS62eLbGvb0hA466etsRXcq8LjqAXoa4Rxewis5DoPkkEW1FZrnssIFdKML
- FkQv/ha/WLMQENGaM7IsbsRCnJV+5qzDWPypYNOMR0upL0tAbejE7aKWUmSdSXiW6+HBVGVz+
- mxAgq60T6LXAWVVevYVtnBnyPvN74fi4sCp9u3uPAanHFVCu1dnDy8jPVWGpKpPp+8o1VgHSi
- 7uGxNJvpNSSRXIi9jxMaP7NwLdw1U3+Yaf2yUFS0Y3psHLcWz6sWBBvU1Q3s5f+RkeevoDQ4H
- up1Yd+uj0R08Di6eu2ihrKktNd1k8OGHOX2t6GndRqeL1MN/u12uanelkHfX3INNbA57vKeMh
- KWVxECvmIjWu1g45wCac9WbFaPUFLTsva7+x3ojA89C7kX0/30PsrSbyAVcuieDAE6fxfLMT1
- y6xTgiq/VuWZ1KJRpERdN6cmimqon8E0eiKgc7GSFc9kKO2dSxUWxWyLyYsruW1WU0tnWj9yN
- TQ1KC8FnGJMT4bnXWAEcOZqoBaQ4hkDV8vhOXhnceIHWjA+eE
+Content-Transfer-Encoding: 8bit
 
-> Add NULL check for mlx5_get_flow_namespace() returns in
-> mlx5_create_inner_ttc_table() to prevent NULL pointer dereference.
+Replace deprecated strncpy() function with memcpy()
+as the destination buffer is length bounded 
+and not required to be NUL-terminated 
 
-* Did you propose to adjust the error handling for three function
-  implementations from a common subdirectory initially?
+Signed-off-by: Pranav Tyagi <pranav.tyagi03@gmail.com>
+---
+ net/rds/connection.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-* Can any other summary phrase variants become more desirable accordingly?
+diff --git a/net/rds/connection.c b/net/rds/connection.c
+index c749c5525b40..3718c3edb32e 100644
+--- a/net/rds/connection.c
++++ b/net/rds/connection.c
+@@ -749,8 +749,7 @@ static int rds_conn_info_visitor(struct rds_conn_path *cp, void *buffer)
+ 	cinfo->laddr = conn->c_laddr.s6_addr32[3];
+ 	cinfo->faddr = conn->c_faddr.s6_addr32[3];
+ 	cinfo->tos = conn->c_tos;
+-	strncpy(cinfo->transport, conn->c_trans->t_name,
+-		sizeof(cinfo->transport));
++	memcpy(cinfo->transport, conn->c_trans->t_name, min(sizeof(cinfo->transport), strnlen(conn->c_trans->t_name, sizeof(cinfo->transport))));
+ 	cinfo->flags = 0;
+ 
+ 	rds_conn_info_set(cinfo->flags, test_bit(RDS_IN_XMIT, &cp->cp_flags),
+@@ -775,8 +774,7 @@ static int rds6_conn_info_visitor(struct rds_conn_path *cp, void *buffer)
+ 	cinfo6->next_rx_seq = cp->cp_next_rx_seq;
+ 	cinfo6->laddr = conn->c_laddr;
+ 	cinfo6->faddr = conn->c_faddr;
+-	strncpy(cinfo6->transport, conn->c_trans->t_name,
+-		sizeof(cinfo6->transport));
++	memcpy(cinfo6->transport, conn->c_trans->t_name, min(sizeof(cinfo6->transport), strnlen(conn->c_trans->t_name, sizeof(cinfo6->transport))));
+ 	cinfo6->flags = 0;
+ 
+ 	rds_conn_info_set(cinfo6->flags, test_bit(RDS_IN_XMIT, &cp->cp_flags),
+-- 
+2.49.0
 
-* Would a cover letter usually be helpful for patch series?
-
-
-Regards,
-Markus
 
