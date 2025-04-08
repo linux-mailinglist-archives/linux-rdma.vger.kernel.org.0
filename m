@@ -1,86 +1,221 @@
-Return-Path: <linux-rdma+bounces-9232-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9237-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F0C8A7FF90
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 13:22:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C705A80628
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 14:24:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D0803BD3E9
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 11:12:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 753B81899D8D
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Apr 2025 12:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766DB268C70;
-	Tue,  8 Apr 2025 11:12:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD22926B2D6;
+	Tue,  8 Apr 2025 12:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cDoAGh2x"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="RqUDKLb3"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EF32135CD
-	for <linux-rdma@vger.kernel.org>; Tue,  8 Apr 2025 11:12:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95D5226B2CC;
+	Tue,  8 Apr 2025 12:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744110723; cv=none; b=TVR6UsPac4KSx7ufIqQiToAolBDKsF0cqQC2TeO+Nd0XorRAZJpSTXs2nlF3KyCuTi89R57/WybdyoXPC2egq/x/4wKOfh8u3DtIYy2sKG9GUhAlDJq4RF+ENQXXShMFq14+qUyS+euZW/VwfHmNmJE3C9kR8f82f1kxaYjTVac=
+	t=1744114591; cv=none; b=KliXLnf/f0sadeCqOy6FyHoqnbSbaXOBMXKB+wLv03DrD3w9DgbEq9xGwV6cHclntWSV4WcDMAk1+cRpSCcxa+dHqVe5kZytQL8yNYtJBjZ0PJ49f1BCf9VvFyI2kUWCPY/jKTQwbB14Y+FBkCCZogwGksQcYUGnBhW5XipAM3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744110723; c=relaxed/simple;
-	bh=F4DiSuRBHSeHi0aP8QeNfnBKlV+bJ5/ZP/GLTA8rnqw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=pfRTNUUtBwu3I5SoY/kkztBGwyxQ4Ce9CLmm/IMqYZHd+UwDQJfWQ9ebuPFjK1VFMmCyxFP30Ij8d2HV3Zd+3942KCccaNKlSVXpJziNJtjLNszIVYnVOGyp7kve5ME8oxjFAyjUVV+JnUeJCSv7h1qHOT1ZKF22gpfwNnxE41I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cDoAGh2x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A5E5C4CEEA;
-	Tue,  8 Apr 2025 11:12:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744110722;
-	bh=F4DiSuRBHSeHi0aP8QeNfnBKlV+bJ5/ZP/GLTA8rnqw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=cDoAGh2xJzM7ur1D008EBrbwt/WYaDZJ/Vicxnf1ii/I5zvKVovU3fusikQHB1/98
-	 uZ8aKPPtZcttQoiHTEA1kZcqMe17sKmSYwV9eohpFHS6G4XBo8mnRTyS8S3fKLR16F
-	 sQruzge35aWvpkkuoM7Uwm19B4TEzh0jeQF24nrg9i+cXr4A8Nij+/9W6xHhsXL3a2
-	 664bRiAIU9eudIobili7MPq5gbCtb4LO1HkkAoXi9H0hz9Pgp77szrfXR5JELyK7QV
-	 pAsa5kIhTDz/KX1OLZiTxGkG31NImcPU0/LVAFQjiNaLjFLWXDr/k8FiI0bNCRfEMX
-	 c487oA0qzwN8g==
-From: Leon Romanovsky <leon@kernel.org>
-To: linux-rdma@vger.kernel.org, jgg@ziepe.ca, zyjzyj2000@gmail.com, 
- Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Cc: lizhijian@fujitsu.com
-In-Reply-To: <20250324075649.3313968-1-matsuda-daisuke@fujitsu.com>
-References: <20250324075649.3313968-1-matsuda-daisuke@fujitsu.com>
-Subject: Re: [PATCH for-next v3 0/2] RDMA/rxe: RDMA FLUSH and ATOMIC WRITE
- with ODP
-Message-Id: <174411071857.217309.12836295631004196048.b4-ty@kernel.org>
-Date: Tue, 08 Apr 2025 07:11:58 -0400
+	s=arc-20240116; t=1744114591; c=relaxed/simple;
+	bh=hMVnT69LMfYi0D6gVTl7Y28N5dL2PhddlkJGA4S5q9I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=SfXZ5wH2utskFTGJeozpR2CwoRai2RM+6V0W8ygIi7sclin4yjLGN/SKFlefTfytlpdgh6ECS2XRbO+eqyY9FhlcqMzm9716x6am+puSHKYhIjCfKkk8shD0ERa4IHGpFa+xfbGHGdN4qey8gWyocFxB+3Ig3g25Fxbnmo2vafw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=RqUDKLb3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F51CC4CEE7;
+	Tue,  8 Apr 2025 12:16:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1744114591;
+	bh=hMVnT69LMfYi0D6gVTl7Y28N5dL2PhddlkJGA4S5q9I=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=RqUDKLb3rU6gVbj+/PP0R0A/HaoSOxpl6vXc0+pP0n4a+lOR1y/MpkSdfvERiM1x+
+	 N9mE6QxJqH5VtRCHmZlH8SkSwL8yYyQ8SLzhu4t2vgtmt87tcW+J6AVIRY+AvpIl4c
+	 3SwMetCuTDTt1iX8EDVJsdDEY0ahtl2JXxe/Teno=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Maher Sanalla <msanalla@nvidia.com>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Parav Pandit <parav@nvidia.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.13 162/499] RDMA/core: Dont expose hw_counters outside of init net namespace
+Date: Tue,  8 Apr 2025 12:46:14 +0200
+Message-ID: <20250408104855.221228068@linuxfoundation.org>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250408104851.256868745@linuxfoundation.org>
+References: <20250408104851.256868745@linuxfoundation.org>
+User-Agent: quilt/0.68
+X-stable: review
+X-Patchwork-Hint: ignore
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Transfer-Encoding: 8bit
 
+6.13-stable review patch.  If anyone has any objections, please let me know.
 
-On Mon, 24 Mar 2025 16:56:47 +0900, Daisuke Matsuda wrote:
-> RDMA FLUSH[1] and ATOMIC WRITE[2] were added to rxe, but they cannot run
-> in the ODP mode as of now. This series is for the kernel-side enablement.
-> 
-> There are also minor changes in libibverbs and pyverbs. The rdma-core tests
-> are also added so that people can test the features.
-> PR: https://github.com/linux-rdma/rdma-core/pull/1580
-> 
-> [...]
+------------------
 
-Applied, thanks!
+From: Roman Gushchin <roman.gushchin@linux.dev>
 
-[1/2] RDMA/rxe: Enable ODP in RDMA FLUSH operation
-      https://git.kernel.org/rdma/rdma/c/32cad6aab9a699
-[2/2] RDMA/rxe: Enable ODP in ATOMIC WRITE operation
-      https://git.kernel.org/rdma/rdma/c/3e2746e0863f48
+[ Upstream commit a1ecb30f90856b0be4168ad51b8875148e285c1f ]
 
-Best regards,
+Commit 467f432a521a ("RDMA/core: Split port and device counter sysfs
+attributes") accidentally almost exposed hw counters to non-init net
+namespaces. It didn't expose them fully, as an attempt to read any of
+those counters leads to a crash like this one:
+
+[42021.807566] BUG: kernel NULL pointer dereference, address: 0000000000000028
+[42021.814463] #PF: supervisor read access in kernel mode
+[42021.819549] #PF: error_code(0x0000) - not-present page
+[42021.824636] PGD 0 P4D 0
+[42021.827145] Oops: 0000 [#1] SMP PTI
+[42021.830598] CPU: 82 PID: 2843922 Comm: switchto-defaul Kdump: loaded Tainted: G S      W I        XXX
+[42021.841697] Hardware name: XXX
+[42021.849619] RIP: 0010:hw_stat_device_show+0x1e/0x40 [ib_core]
+[42021.855362] Code: 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 1f 44 00 00 49 89 d0 4c 8b 5e 20 48 8b 8f b8 04 00 00 48 81 c7 f0 fa ff ff <48> 8b 41 28 48 29 ce 48 83 c6 d0 48 c1 ee 04 69 d6 ab aa aa aa 48
+[42021.873931] RSP: 0018:ffff97fe90f03da0 EFLAGS: 00010287
+[42021.879108] RAX: ffff9406988a8c60 RBX: ffff940e1072d438 RCX: 0000000000000000
+[42021.886169] RDX: ffff94085f1aa000 RSI: ffff93c6cbbdbcb0 RDI: ffff940c7517aef0
+[42021.893230] RBP: ffff97fe90f03e70 R08: ffff94085f1aa000 R09: 0000000000000000
+[42021.900294] R10: ffff94085f1aa000 R11: ffffffffc0775680 R12: ffffffff87ca2530
+[42021.907355] R13: ffff940651602840 R14: ffff93c6cbbdbcb0 R15: ffff94085f1aa000
+[42021.914418] FS:  00007fda1a3b9700(0000) GS:ffff94453fb80000(0000) knlGS:0000000000000000
+[42021.922423] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[42021.928130] CR2: 0000000000000028 CR3: 00000042dcfb8003 CR4: 00000000003726f0
+[42021.935194] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[42021.942257] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[42021.949324] Call Trace:
+[42021.951756]  <TASK>
+[42021.953842]  [<ffffffff86c58674>] ? show_regs+0x64/0x70
+[42021.959030]  [<ffffffff86c58468>] ? __die+0x78/0xc0
+[42021.963874]  [<ffffffff86c9ef75>] ? page_fault_oops+0x2b5/0x3b0
+[42021.969749]  [<ffffffff87674b92>] ? exc_page_fault+0x1a2/0x3c0
+[42021.975549]  [<ffffffff87801326>] ? asm_exc_page_fault+0x26/0x30
+[42021.981517]  [<ffffffffc0775680>] ? __pfx_show_hw_stats+0x10/0x10 [ib_core]
+[42021.988482]  [<ffffffffc077564e>] ? hw_stat_device_show+0x1e/0x40 [ib_core]
+[42021.995438]  [<ffffffff86ac7f8e>] dev_attr_show+0x1e/0x50
+[42022.000803]  [<ffffffff86a3eeb1>] sysfs_kf_seq_show+0x81/0xe0
+[42022.006508]  [<ffffffff86a11134>] seq_read_iter+0xf4/0x410
+[42022.011954]  [<ffffffff869f4b2e>] vfs_read+0x16e/0x2f0
+[42022.017058]  [<ffffffff869f50ee>] ksys_read+0x6e/0xe0
+[42022.022073]  [<ffffffff8766f1ca>] do_syscall_64+0x6a/0xa0
+[42022.027441]  [<ffffffff8780013b>] entry_SYSCALL_64_after_hwframe+0x78/0xe2
+
+The problem can be reproduced using the following steps:
+  ip netns add foo
+  ip netns exec foo bash
+  cat /sys/class/infiniband/mlx4_0/hw_counters/*
+
+The panic occurs because of casting the device pointer into an
+ib_device pointer using container_of() in hw_stat_device_show() is
+wrong and leads to a memory corruption.
+
+However the real problem is that hw counters should never been exposed
+outside of the non-init net namespace.
+
+Fix this by saving the index of the corresponding attribute group
+(it might be 1 or 2 depending on the presence of driver-specific
+attributes) and zeroing the pointer to hw_counters group for compat
+devices during the initialization.
+
+With this fix applied hw_counters are not available in a non-init
+net namespace:
+  find /sys/class/infiniband/mlx4_0/ -name hw_counters
+    /sys/class/infiniband/mlx4_0/ports/1/hw_counters
+    /sys/class/infiniband/mlx4_0/ports/2/hw_counters
+    /sys/class/infiniband/mlx4_0/hw_counters
+
+  ip netns add foo
+  ip netns exec foo bash
+  find /sys/class/infiniband/mlx4_0/ -name hw_counters
+
+Fixes: 467f432a521a ("RDMA/core: Split port and device counter sysfs attributes")
+Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: Maher Sanalla <msanalla@nvidia.com>
+Cc: linux-rdma@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Link: https://patch.msgid.link/20250227165420.3430301-1-roman.gushchin@linux.dev
+Reviewed-by: Parav Pandit <parav@nvidia.com>
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/core/device.c | 9 +++++++++
+ drivers/infiniband/core/sysfs.c  | 1 +
+ include/rdma/ib_verbs.h          | 1 +
+ 3 files changed, 11 insertions(+)
+
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index ca9b956c034d3..a5e145bfa6b30 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -545,6 +545,8 @@ static struct class ib_class = {
+ static void rdma_init_coredev(struct ib_core_device *coredev,
+ 			      struct ib_device *dev, struct net *net)
+ {
++	bool is_full_dev = &dev->coredev == coredev;
++
+ 	/* This BUILD_BUG_ON is intended to catch layout change
+ 	 * of union of ib_core_device and device.
+ 	 * dev must be the first element as ib_core and providers
+@@ -556,6 +558,13 @@ static void rdma_init_coredev(struct ib_core_device *coredev,
+ 
+ 	coredev->dev.class = &ib_class;
+ 	coredev->dev.groups = dev->groups;
++
++	/*
++	 * Don't expose hw counters outside of the init namespace.
++	 */
++	if (!is_full_dev && dev->hw_stats_attr_index)
++		coredev->dev.groups[dev->hw_stats_attr_index] = NULL;
++
+ 	device_initialize(&coredev->dev);
+ 	coredev->owner = dev;
+ 	INIT_LIST_HEAD(&coredev->port_list);
+diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+index 9f97bef021497..210092b9bf17d 100644
+--- a/drivers/infiniband/core/sysfs.c
++++ b/drivers/infiniband/core/sysfs.c
+@@ -988,6 +988,7 @@ int ib_setup_device_attrs(struct ib_device *ibdev)
+ 	for (i = 0; i != ARRAY_SIZE(ibdev->groups); i++)
+ 		if (!ibdev->groups[i]) {
+ 			ibdev->groups[i] = &data->group;
++			ibdev->hw_stats_attr_index = i;
+ 			return 0;
+ 		}
+ 	WARN(true, "struct ib_device->groups is too small");
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 3417636da9602..2d2f1aec38eb1 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -2743,6 +2743,7 @@ struct ib_device {
+ 	 * It is a NULL terminated array.
+ 	 */
+ 	const struct attribute_group	*groups[4];
++	u8				hw_stats_attr_index;
+ 
+ 	u64			     uverbs_cmd_mask;
+ 
 -- 
-Leon Romanovsky <leon@kernel.org>
+2.39.5
+
+
 
 
