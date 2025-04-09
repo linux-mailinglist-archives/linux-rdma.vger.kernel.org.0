@@ -1,110 +1,174 @@
-Return-Path: <linux-rdma+bounces-9293-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9294-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27292A824E7
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Apr 2025 14:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A370A8251B
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Apr 2025 14:41:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95ED93BE87E
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Apr 2025 12:30:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4D913A5B54
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Apr 2025 12:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A18026562A;
-	Wed,  9 Apr 2025 12:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEB0226156D;
+	Wed,  9 Apr 2025 12:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oiAt4ZzI"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e9go79Qc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E44265618;
-	Wed,  9 Apr 2025 12:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5CEF261565
+	for <linux-rdma@vger.kernel.org>; Wed,  9 Apr 2025 12:39:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744201740; cv=none; b=K1fdB/n+6BaFHGUt6BrvdNCgWAZy6GGY2My3nCqdfY5Sq1+hcb7ATJAx1LoelD74BUPVkfjzznaQBWSvxzAYVlLQl1oImzjPDiwhgKXTIk5bBJ5WNpq9yWAWieSWZfc+nxC/PBCIc5wlnCQOrBKA8kG+zvMPzxeu4oANs47+GAA=
+	t=1744202398; cv=none; b=fLD7guqRfpKaSRwaga4HuqaHljBCCFkeNK8Pt4slAmH7PW6ap4xaHbZHbMvTMqPLtXaGQ93b7JzUoyKCdRNVUBE4LJW1AXG99jHg4MiR/vhvZ/n27XvDAfCkSzQ/fS794/eSEyTa9zQv3tGF/httSPd+HhR6aUqeglqnQDCwQaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744201740; c=relaxed/simple;
-	bh=wtupdBKCKrsUK/6yLonOTlHqsvrp3OSZjPjDOieysM8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B1SXQfo+w/HlduaoR5Io9oFtTGG6wr5taoBMHAjRBdIJpTF24qSBPCrFYiiU9AMJbG33AluAMYyPVvc/RVqXP2LGyO3IFM04160S1e13rggg3+vwG3MqnwCOE6TLysEpMOPlIYs2J6M4GVxZiO8C9fv02TAxg5S00D6yCXwvOKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oiAt4ZzI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AEAFC4CEE3;
-	Wed,  9 Apr 2025 12:28:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744201739;
-	bh=wtupdBKCKrsUK/6yLonOTlHqsvrp3OSZjPjDOieysM8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oiAt4ZzI0ge1UviUR5vYKMvOh1APL+QvIBXs4FuOaWv68jJtua/7H93an4tjTEBKZ
-	 TJ8f9t1aGLIRAq3vN5XBl2YPrTWM02HaIpvm1uH7oosvpGNLrc+nrfMMKsYPoh7ePK
-	 jonWBx+/1z/R2Eqz8yIOIv/C2xPROQdYfb4q5zlRc2EeJbqAaYPkA1R7tOkIoL0fwe
-	 j1ZfcTZu4ytHiLPocPdRnRMt658lOJ5dS6L6R2WSBhi+0aN8X2UmkPYIwUF+aUA1BU
-	 bmUvd2/GI3jMc6zqksr6xd0Y7q/pFRwvSHGoHsta/W8yCM8TrA08JVdax74h8IT354
-	 5lz4nMrsb8EtQ==
-Date: Wed, 9 Apr 2025 15:28:52 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>
-Cc: kotaranov@microsoft.com, pabeni@redhat.com, haiyangz@microsoft.com,
-	kys@microsoft.com, edumazet@google.com, kuba@kernel.org,
-	davem@davemloft.net, decui@microsoft.com, wei.liu@kernel.org,
-	longli@microsoft.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH rdma-next 1/3] RDMA/mana_ib: Access remote atomic for MRs
-Message-ID: <20250409122852.GL199604@unreal>
-References: <1743777955-2316-1-git-send-email-kotaranov@linux.microsoft.com>
- <1743777955-2316-2-git-send-email-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1744202398; c=relaxed/simple;
+	bh=UjpkCm5lINZ6B3FAF8cWBxrJXhywGirP/jVA3F6DHVQ=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=GXTOpEUMF+cJ7C/nPkfZ+KDFlfl+0B90jfG5pNVyZKU52Z29l0V5TIMenA8fRH2peLENU/D1deilvYqoBuZoRS+YHrt4PuK414QxXtYMvUCB077fcEMTBXsBfavqTdwHx9s2TkBIwFP475M0vEsyg5v1Qi5avCI/g0CZpBRvLjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e9go79Qc; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1744202397; x=1775738397;
+  h=date:from:to:cc:subject:message-id;
+  bh=UjpkCm5lINZ6B3FAF8cWBxrJXhywGirP/jVA3F6DHVQ=;
+  b=e9go79QczkvV/jRAS33WFWud2JRewlr2SodxLz8pLBE705pg/xGHW5PD
+   joihuo3ZhAxEnJBrh/Y8oKUJVy6viQgYaZR7bTsUxZXb90oI32zbweW9Z
+   BE9pDMrShwh3oRF/w6B+MfmxIUc/SHQ0hEhr4i18PNAcryDchVh8ns5Gj
+   UumcdViVyB58hodUI2jJZBgTjB2ggBJq+p/MnV+mlkEytwqoS1eoTmzWx
+   9J/VbxJwKkBScJ3lLZPqD8r2MHPP6dDqOZxsVBT2Oejd8rDUFK/+kFn+E
+   fZkQ8pZxm596VvE9qYqSyFWlaYK2GWRKj6Uc0HwmD+iVUzUM5KeHI9ui/
+   Q==;
+X-CSE-ConnectionGUID: Tk7csLzZTzuojYDEHdHOPw==
+X-CSE-MsgGUID: 5q8qSwSNTM6rMgUQP3uOGw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11397"; a="49334905"
+X-IronPort-AV: E=Sophos;i="6.15,200,1739865600"; 
+   d="scan'208";a="49334905"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2025 05:39:56 -0700
+X-CSE-ConnectionGUID: 8Obdi9+uRmq3SHPdoeFxIw==
+X-CSE-MsgGUID: ZMLIGgFOSbm8xyvPShtiwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,200,1739865600"; 
+   d="scan'208";a="128562956"
+Received: from lkp-server01.sh.intel.com (HELO b207828170a5) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 09 Apr 2025 05:39:54 -0700
+Received: from kbuild by b207828170a5 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1u2Uie-0008qR-0b;
+	Wed, 09 Apr 2025 12:39:52 +0000
+Date: Wed, 09 Apr 2025 20:39:29 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 87dd32878950d46a9c2ba3d1bb457b3476486f6c
+Message-ID: <202504092015.8IuvFFlj-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1743777955-2316-2-git-send-email-kotaranov@linux.microsoft.com>
 
-On Fri, Apr 04, 2025 at 07:45:53AM -0700, Konstantin Taranov wrote:
-> From: Konstantin Taranov <kotaranov@microsoft.com>
-> 
-> Add IB_ACCESS_REMOTE_ATOMIC to the valid flags for MRs and use
-> the corresponding flag bit during MR creation in the HW.
-> 
-> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-> ---
->  drivers/infiniband/hw/mana/mr.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-> index f99557e..e4a9f53 100644
-> --- a/drivers/infiniband/hw/mana/mr.c
-> +++ b/drivers/infiniband/hw/mana/mr.c
-> @@ -5,8 +5,8 @@
->  
->  #include "mana_ib.h"
->  
-> -#define VALID_MR_FLAGS                                                         \
-> -	(IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_READ)
-> +#define VALID_MR_FLAGS (IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_READ |\
-> +			IB_ACCESS_REMOTE_ATOMIC)
->  
->  #define VALID_DMA_MR_FLAGS (IB_ACCESS_LOCAL_WRITE)
->  
-> @@ -24,6 +24,9 @@ mana_ib_verbs_to_gdma_access_flags(int access_flags)
->  	if (access_flags & IB_ACCESS_REMOTE_READ)
->  		flags |= GDMA_ACCESS_FLAG_REMOTE_READ;
->  
-> +	if (access_flags & IB_ACCESS_REMOTE_ATOMIC)
-> +		flags |= GDMA_ACCESS_FLAG_REMOTE_ATOMIC;
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 87dd32878950d46a9c2ba3d1bb457b3476486f6c  RDMA/rxe: Enable ODP in ATOMIC WRITE operation
 
-Can you enable this flag unconditionally without relation to running RW?
+elapsed time: 1459m
 
-Thanks
+configs tested: 80
+configs skipped: 1
 
-> +
->  	return flags;
->  }
->  
-> -- 
-> 2.43.0
-> 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig    gcc-14.2.0
+arc                   randconfig-001-20250408    gcc-14.2.0
+arc                   randconfig-001-20250409    gcc-12.4.0
+arc                   randconfig-002-20250408    gcc-14.2.0
+arc                   randconfig-002-20250409    gcc-10.5.0
+arm                   randconfig-001-20250408    clang-21
+arm                   randconfig-001-20250409    gcc-7.5.0
+arm                   randconfig-002-20250408    gcc-10.5.0
+arm                   randconfig-003-20250408    clang-17
+arm                   randconfig-004-20250408    gcc-6.5.0
+arm64                 randconfig-001-20250408    clang-21
+arm64                 randconfig-002-20250408    gcc-9.5.0
+arm64                 randconfig-003-20250408    gcc-9.5.0
+arm64                 randconfig-004-20250408    clang-20
+csky                  randconfig-001-20250408    gcc-14.2.0
+csky                  randconfig-002-20250408    gcc-9.3.0
+hexagon                          allyesconfig    clang-21
+hexagon               randconfig-001-20250408    clang-21
+hexagon               randconfig-002-20250408    clang-21
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250408    clang-20
+i386        buildonly-randconfig-002-20250408    clang-20
+i386        buildonly-randconfig-003-20250408    gcc-12
+i386        buildonly-randconfig-004-20250408    gcc-12
+i386        buildonly-randconfig-005-20250408    gcc-12
+i386        buildonly-randconfig-006-20250408    gcc-12
+i386                                defconfig    clang-20
+loongarch                        allmodconfig    gcc-14.2.0
+loongarch             randconfig-001-20250408    gcc-14.2.0
+loongarch             randconfig-002-20250408    gcc-13.3.0
+m68k                             allmodconfig    gcc-14.2.0
+m68k                             allyesconfig    gcc-14.2.0
+microblaze                       allmodconfig    gcc-14.2.0
+microblaze                       allyesconfig    gcc-14.2.0
+nios2                 randconfig-001-20250408    gcc-13.3.0
+nios2                 randconfig-002-20250408    gcc-7.5.0
+openrisc                          allnoconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                randconfig-001-20250408    gcc-6.5.0
+parisc                randconfig-002-20250408    gcc-8.5.0
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc               randconfig-001-20250408    gcc-5.5.0
+powerpc               randconfig-002-20250408    gcc-9.3.0
+powerpc               randconfig-003-20250408    gcc-5.5.0
+powerpc64             randconfig-001-20250408    clang-21
+powerpc64             randconfig-002-20250408    gcc-5.5.0
+powerpc64             randconfig-003-20250408    gcc-7.5.0
+riscv                             allnoconfig    gcc-14.2.0
+riscv                 randconfig-001-20250408    gcc-9.3.0
+riscv                 randconfig-002-20250408    clang-21
+s390                             allmodconfig    clang-18
+s390                              allnoconfig    clang-15
+s390                             allyesconfig    gcc-14.2.0
+s390                  randconfig-001-20250408    gcc-8.5.0
+s390                  randconfig-002-20250408    clang-15
+sh                               allmodconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                    randconfig-001-20250408    gcc-13.3.0
+sh                    randconfig-002-20250408    gcc-13.3.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                 randconfig-001-20250408    gcc-10.3.0
+sparc                 randconfig-002-20250408    gcc-6.5.0
+sparc64               randconfig-001-20250408    gcc-6.5.0
+sparc64               randconfig-002-20250408    gcc-14.2.0
+um                                allnoconfig    clang-21
+um                    randconfig-001-20250408    clang-21
+um                    randconfig-002-20250408    gcc-12
+x86_64                            allnoconfig    clang-20
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20250408    clang-20
+x86_64      buildonly-randconfig-002-20250408    clang-20
+x86_64      buildonly-randconfig-003-20250408    clang-20
+x86_64      buildonly-randconfig-004-20250408    gcc-12
+x86_64      buildonly-randconfig-005-20250408    clang-20
+x86_64      buildonly-randconfig-006-20250408    clang-20
+x86_64                              defconfig    gcc-11
+xtensa                randconfig-001-20250408    gcc-6.5.0
+xtensa                randconfig-002-20250408    gcc-6.5.0
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
