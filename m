@@ -1,58 +1,55 @@
-Return-Path: <linux-rdma+bounces-9310-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9311-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDBDBA82D09
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Apr 2025 19:01:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 739C7A82ECB
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Apr 2025 20:33:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D96521B66BD6
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Apr 2025 17:00:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2049618957A9
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Apr 2025 18:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2673F277003;
-	Wed,  9 Apr 2025 16:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B31C2777E8;
+	Wed,  9 Apr 2025 18:32:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L7G8/6fR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HeIVwdJa"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2A48270ED1;
-	Wed,  9 Apr 2025 16:59:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C35D1C84A1
+	for <linux-rdma@vger.kernel.org>; Wed,  9 Apr 2025 18:32:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744217975; cv=none; b=MKaeWc2jKrTL3gMdnIgJn+PQSng9YAXiitErDK8ydGNAA1NQB7mhUzvpaVC0zp4c75T8m1bRhOQJW3Md250P+dmWmFBawXkFNBBituv1jO0d60V45u39Z1LjS76dXdBTPdUnMQ7+jrXkYmz496XsDXwtalYkwLBoJ/W2jjDFZdk=
+	t=1744223574; cv=none; b=Xch1N0UGh0JklQdb58Rdrr5bOYNtsHuem+Nc2YPrc9KTYbqMAnf0reloRQ1OjFm8c2O6e/dJAKemzAdr9NUfdH6jLUW83NF1XR1e5cfkKYiW8RahSg3xu4T0vEjJ9jEaVdAx6eR3cx/wd2SUac9WynYTx9bqyBYwIeD3K70cDww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744217975; c=relaxed/simple;
-	bh=9QXExmAjFUtXSiQTPtE5Ni91+YdXOohUOM2bbIVyKDc=;
+	s=arc-20240116; t=1744223574; c=relaxed/simple;
+	bh=WUafLLG7+3ywyIYiQgaCIJXRfJ4iGf1pHWmhh3FcmAc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=iLMN98goQBppRAiQQJ/plPtsuhut2tuX23Q237obYdPz8r/4LRtpA0rz3Pgh8p13GXS+dWSX1eO7lfB3rqzF7m5lPLZDTrgCEiG5f411QLIZkeCggtm0HR6qWLtISptOCHxXvoMKogDfW/usgmX5Md3ZjTCLegysq/1fivBreSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L7G8/6fR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D61EFC4CEE2;
-	Wed,  9 Apr 2025 16:59:34 +0000 (UTC)
+	 MIME-Version:Content-Type; b=DEGNjJB9kaumikrzOHq8AFvkYv8B76Ac38uco0xwc8u+f7wmv5wjw54IubjUq99eovEHaNnU9wWC0SNrKI9bnpWn5v1Edj+Psgp61iUb5ZTeOS4MZ7z767jbmosizEm49xfZpj8FNQu4YF9bhRrkmfwmwLd4sLYL+HqBc61rRe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HeIVwdJa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E416C4CEE8;
+	Wed,  9 Apr 2025 18:32:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744217975;
-	bh=9QXExmAjFUtXSiQTPtE5Ni91+YdXOohUOM2bbIVyKDc=;
+	s=k20201202; t=1744223573;
+	bh=WUafLLG7+3ywyIYiQgaCIJXRfJ4iGf1pHWmhh3FcmAc=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=L7G8/6fRTWuUjPhMKf93Ls1/fdUetWQEDQG1LD/apVvkM0F0HyXBpGlhikN3ojpkx
-	 NHOJYkxCU1zL+vSWSJApXARgT1DYukIVlXdlkUdHLMN93a+gSBEyZOUrLGS9z8X3Zw
-	 GaW1g3QdGrKLq7b329cvMBbiDfAPwJOSHQaQR2zBvUcaGtmCwfl5TfrBVf4EzThVG+
-	 PiILqrue4TmxuDUqu2+CME/a9Q1vjpjxEwidhe46IksCgviS0U5De9Z5Swd8M4BN1M
-	 GQOgQKhki/Bos9vUnUz2wUaEpbnMwHps+iWQvm/PWoRJtRHX+AR4SbSzX4RHD7BpNM
-	 sAdU4c0E79IXQ==
+	b=HeIVwdJa4XuWnrReiISPX5DbAeprGiD57o8+wq559x9dgyInK6jwy8FnstM477CYS
+	 NiTImq1dl6Piv9gLCCVl3FJ2wL6aE4RrFDfmMCavMEXH3ErLUTBWBu9oYOV3KSV97o
+	 MKHc2Xv81ajIg1qvMZudca7CIb4Fw59bp91g7A5gv1pElCQQnRu0JylI7fWPmxQYNT
+	 gGJvQopsnuVYaqDAAvDc4ka+WhA7rE3EwUVE9etGaskDb//wur+kwRh8zWnJsMtEMg
+	 MkLEKxTqYCOB0c1ln3shIkmBZ+K9jZnpqK7tcIqCDHuHd8kSfj8GhM89xGuhUtYZgG
+	 UjgUc+axqDkDQ==
 From: Leon Romanovsky <leon@kernel.org>
-To: Mustafa Ismail <mustafa.ismail@intel.com>, 
- Tatyana Nikolova <tatyana.e.nikolova@intel.com>, 
- Jason Gunthorpe <jgg@ziepe.ca>, Christian Benvenuti <benve@cisco.com>, 
- Nelson Escobar <neescoba@cisco.com>, Bernard Metzler <bmt@zurich.ibm.com>, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20250407-restricted-pointers-infiniband-v1-1-22b20504b84d@linutronix.de>
-References: <20250407-restricted-pointers-infiniband-v1-1-22b20504b84d@linutronix.de>
-Subject: Re: [PATCH] RDMA: Don't use %pK through printk
-Message-Id: <174421797237.375783.9150188033078370474.b4-ty@kernel.org>
-Date: Wed, 09 Apr 2025 12:59:32 -0400
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc: Shay Drory <shayd@nvidia.com>, linux-rdma@vger.kernel.org
+In-Reply-To: <c6cb92379de668be94894f49c2cfa40e73f94d56.1742388096.git.leonro@nvidia.com>
+References: <c6cb92379de668be94894f49c2cfa40e73f94d56.1742388096.git.leonro@nvidia.com>
+Subject: Re: [PATCH rdma-next] RDMA/core: Silence oversized kvmalloc()
+ warning
+Message-Id: <174422357006.407748.731847457328791611.b4-ty@kernel.org>
+Date: Wed, 09 Apr 2025 14:32:50 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -60,25 +57,48 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
 
 
-On Mon, 07 Apr 2025 10:25:09 +0200, Thomas Weißschuh wrote:
-> In the past %pK was preferable to %p as it would not leak raw pointer
-> values into the kernel log.
-> Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
-> the regular %p has been improved to avoid this issue.
-> Furthermore, restricted pointers ("%pK") were never meant to be used
-> through printk(). They can still unintentionally leak raw pointers or
-> acquire sleeping looks in atomic contexts.
+On Wed, 19 Mar 2025 14:42:21 +0200, Leon Romanovsky wrote:
+> syzkaller triggered an oversized kvmalloc() warning.
+> Silence it by adding __GFP_NOWARN.
+> 
+> syzkaller log:
+>  WARNING: CPU: 7 PID: 518 at mm/util.c:665 __kvmalloc_node_noprof+0x175/0x180
+>  CPU: 7 UID: 0 PID: 518 Comm: c_repro Not tainted 6.11.0-rc6+ #6
+>  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+>  RIP: 0010:__kvmalloc_node_noprof+0x175/0x180
+>  RSP: 0018:ffffc90001e67c10 EFLAGS: 00010246
+>  RAX: 0000000000000100 RBX: 0000000000000400 RCX: ffffffff8149d46b
+>  RDX: 0000000000000000 RSI: ffff8881030fae80 RDI: 0000000000000002
+>  RBP: 000000712c800000 R08: 0000000000000100 R09: 0000000000000000
+>  R10: ffffc90001e67c10 R11: 0030ae0601000000 R12: 0000000000000000
+>  R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000000
+>  FS:  00007fde79159740(0000) GS:ffff88813bdc0000(0000) knlGS:0000000000000000
+>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  CR2: 0000000020000180 CR3: 0000000105eb4005 CR4: 00000000003706b0
+>  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>  Call Trace:
+>   <TASK>
+>   ib_umem_odp_get+0x1f6/0x390
+>   mlx5_ib_reg_user_mr+0x1e8/0x450
+>   ib_uverbs_reg_mr+0x28b/0x440
+>   ib_uverbs_write+0x7d3/0xa30
+>   vfs_write+0x1ac/0x6c0
+>   ksys_write+0x134/0x170
+>   ? __sanitizer_cov_trace_pc+0x1c/0x50
+>   do_syscall_64+0x50/0x110
+>   entry_SYSCALL_64_after_hwframe+0x76/0x7e
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] RDMA: Don't use %pK through printk
-      https://git.kernel.org/rdma/rdma/c/9452c85b58d315
+[1/1] RDMA/core: Silence oversized kvmalloc() warning
+      https://git.kernel.org/rdma/rdma/c/9a0e6f15029e1a
 
 Best regards,
 -- 
