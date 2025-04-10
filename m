@@ -1,305 +1,224 @@
-Return-Path: <linux-rdma+bounces-9322-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9323-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6478A83E63
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Apr 2025 11:22:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A689A83F0D
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Apr 2025 11:40:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 750501B860BC
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Apr 2025 09:16:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E43C6179915
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Apr 2025 09:39:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF7D92147E6;
-	Thu, 10 Apr 2025 09:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9BFE25E81E;
+	Thu, 10 Apr 2025 09:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KFt5vlzJ"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="XC0xl2oq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2065.outbound.protection.outlook.com [40.107.243.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81D0E214213
-	for <linux-rdma@vger.kernel.org>; Thu, 10 Apr 2025 09:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744276504; cv=none; b=tLpo5LKapCEuXjfzKw/Zcmed81zt5Z9XkcHNrqJPx+sHu9bnrX7XXOBnfh7FpC7e58Rr+ibAuGNRKvW3FIO6MX1lJrR/5WdtOagQVnbfb68Bhx2BGSg7L6vqkalsRITLHMonMMP8Ha0BhxzazebCRI/CNIaqdKSJNE5atgM5leM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744276504; c=relaxed/simple;
-	bh=9Mc038kgrjnC4AGLtLjiWvMwLfAxrZ94U/ZvLdU8GiA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KCK0HEuCs1rLqLDidWWNYGOXgPxM+dOe3rzd66aERhJfVoSgPwuxR9ZuUnx8Qo2Z+v6pqQAYf2KMKzzHEM3zmtddQz/eUA250ZEK4FXVhqAl1eWR5BeSmRGztZCCgUrVXPfibM9+/+B3toYDoGGryfczUzbMejoIC+CPI6W4B98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KFt5vlzJ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1744276501;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ha8G/R6Z1nWekWpyrgNmSOP2tcQD41MQSkiD5umDxHo=;
-	b=KFt5vlzJgdl45GOym3D29eQiAqBSA9yPk46VeEmnStYaNHKFQGqsCjwiSni4hgV0JLlVQM
-	mV2LZDcBF2eGpD9bx95BRpyYTe3KHEzG4twyb5GKFEI3Ib5iEWNchnMo2UHlu8NFQuuk3d
-	KyEOdu7S6mwISdMY/DUwp6QNCM3gRYA=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-630-NX4EdsgbNgGSafhvrq2v7w-1; Thu, 10 Apr 2025 05:15:00 -0400
-X-MC-Unique: NX4EdsgbNgGSafhvrq2v7w-1
-X-Mimecast-MFC-AGG-ID: NX4EdsgbNgGSafhvrq2v7w_1744276499
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-43d22c304adso7497055e9.0
-        for <linux-rdma@vger.kernel.org>; Thu, 10 Apr 2025 02:15:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744276499; x=1744881299;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ha8G/R6Z1nWekWpyrgNmSOP2tcQD41MQSkiD5umDxHo=;
-        b=VVZ2xx6Hwg2VpmS/5X/QbOMxTGDu6+VdFcrbOXQ15iHyJPyo20rDKJeI+dm+DI+X2k
-         /NUcvdgdGegk94/nokoRevB0MqhWCRhTPtrp3+x83v+63JrH4nlEayyI9SQOvm72C3IE
-         VORkJ1yhx4dNYb2rF7TfG24k9TBM/aEOGsQIKAzndiZs0gWqcZIIhFT8K7q/wgwY2hZh
-         nkSiXNqUKVqKFP/qMuGxqCrDOdAMDbbXMZ42dRbgob3UYs06CH+l7SfB2FS1CmebtBtb
-         83tVZh25se3Ek+GQWkqIjEfDolEa+ss3wGYTTDexR4lTyyYxosym0lybi7dNT1DzUumm
-         pzQw==
-X-Forwarded-Encrypted: i=1; AJvYcCVW5vZGXSTZexb09MTlwuxRcJ+UgsOGPoqIAzJ0wbk/pmaD46bFcONIJn33QGyPyHdv6SiIyojTHag8@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywagl6SRBVtJd9iIcU0ruZeSsL7/CBDMpSOVshKHdwev/ERJEZ/
-	LMrgop299yIqjNBztZxpxixU97o9o1BOR/b3EERZW9GMLWt+Jtt05DGOzPZ5s+twZHIPAsJ9J5k
-	WzgDzrRAexLHI+jaA0j/mAvrQglGUeADlhLD0EwUAVAjLlod9kteR1vhWEUQ=
-X-Gm-Gg: ASbGncuWqE+9AV7ix1sWuHwxdyhiCpM/PNAGh7JgG90PDfnlGCQcYdgHrCvbYYbWNY9
-	MICrQtoceuw5tNExcLayzRwY+7ilqFdeEt71SSLSgHfR4gALZGX4DIX/z7x+PjU6PwzMmynq97N
-	jaO7qOL1Pu67H5AH1TTW9U277NLxZichTkDFO3kqDyqjXlZUTLkutU8W93TAfxEVnLomvzmdkOw
-	rQjl5gt5taMRYNsnRMFAS7zMRhYcTdWYfdYWvZerPPVMMNNfgDdBm2NTsE7aaGn1bQ7J9pZu7TU
-	R855nGhuW2vkBCQQPfGWDWMO26BFvZ99eQr0Ekk=
-X-Received: by 2002:a05:6000:430c:b0:38d:ba8e:7327 with SMTP id ffacd0b85a97d-39d8f5ea8a8mr1690768f8f.8.1744276498887;
-        Thu, 10 Apr 2025 02:14:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHVWWc7PS2YU/zohgZw5YNyHZwovcip8Ni6SgZ4G0iu/U6c+1LKCYwd5UcKQ77SyrufZNS7Lw==
-X-Received: by 2002:a05:6000:430c:b0:38d:ba8e:7327 with SMTP id ffacd0b85a97d-39d8f5ea8a8mr1690733f8f.8.1744276498463;
-        Thu, 10 Apr 2025 02:14:58 -0700 (PDT)
-Received: from [192.168.88.253] (146-241-84-24.dyn.eolo.it. [146.241.84.24])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39d89361191sm4249911f8f.10.2025.04.10.02.14.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Apr 2025 02:14:58 -0700 (PDT)
-Message-ID: <9f7449e9-764b-4544-ac72-c5061dc518b6@redhat.com>
-Date: Thu, 10 Apr 2025 11:14:56 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5DE61CCB4B;
+	Thu, 10 Apr 2025 09:39:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744277970; cv=fail; b=tgW62FVsphDeuTSHMx2VNnjqNw6GzYhl21MIZ2IMS+8DKyQIUHS16HCV6SnNeeqwS9Pntyg+RP2PWLTty5cY7hA/YEm0yr1DnBQWazjbnj9w/hJ6DrYZfwOL8/jUWLhZFNSIJw2KKqDylA1WFjFJWp21CicJPxwUor2FueB5yTE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744277970; c=relaxed/simple;
+	bh=JY4gyH+kT9Qobd/g3CtjiIaEMOm42so/0K4joIpV9Go=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=uTTj4/COEU4p+Z7p6ELr0cQbL+9C9LscAT1EV1Pq/4EHFdozbShyUyS1CfJWpExk8ZV3vzDbpRh8PYX3cIMiEESMtpphic4xcYsL79XBuz4YupcM5scOflk27xrs6P0riGEYz/DLqDwjcSeaedo5zdukhC4JQ+SKo9EK1VcBaO4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=XC0xl2oq; arc=fail smtp.client-ip=40.107.243.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ROIlBBoyFd+eWYZJo0XsQt98SHFP/mW6zcIJQXljNJnwQ+2A3HnN0z6pYWGQr5NyNj0H3Pj07qVTq3pZPGADJKUk2U7xHIPiISOLyUj7gGZXCYEdgcVQXE5Mcki3dciXmm4XUCCsbjPLO9unxFF+mJpmj/y1aG9rCeDaMc/udSLLv2d1YnJ1FdBg1lhMyM6h/JhrcNzYyx/qzXk5W0VzqNeQsUvFeyXHI9Hwp9sI/XPaATKRynUuLIONgFHxRWN9UOplHAjkhwhNTUsDgLfmv/Wb4ND02SulLih/Lq10r0mB//6j/dQqt8ik3RfB4/fLD+98NujUB9Rt2ISFMbz42A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Lgq8AncbMG4pw6OMiu8GmnnnGD+KOzLM8PW4rG0nrM4=;
+ b=anXBUYbVrd2aRuwzmLvyBZ3k1g3iSCZEOFSN1S/Jjrvoy0HfwkwaP5qhA0U+5RtozH8TrmvY/bL836Y/lVwC9rKNbY7spqNwjcunRRz1DQEfE5kB56aMxrP3gxjNKYEggy1f6v6Ty8Sp5kt9JTewhPb+G5kgrH8mIqgAIP+XeTdUqUXPQ12ggUCU/cPHdZVmfrx7769QZKf5z6jpMV7vAICi2ZFwuVvv7aeOli+CXkNVDabVS+372F4pq7CyaLtEsielLmvRa7L71XwybvXMuNrKeNCd3lhl0qloZgX34P+5Ofq4ddK+LybzDkbE1gXJo2X5UpMVUGh8uH/CvTXBaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Lgq8AncbMG4pw6OMiu8GmnnnGD+KOzLM8PW4rG0nrM4=;
+ b=XC0xl2oqM4D0Lnz9OFSCNA6krsFQJjUVX0sAv1q32Lux1SUFOuIuDn+AMfO0n3yoqEyG1pg7FqCXljpqbxEkFqcaedPBIoPT/67yuGTWsHb5yAIqRK3Ml8ZxsmI0BoHG6Gae4waoOx6lbWIO3Xs4fDi65Vvc1pIqXhy5dY1GLSTHu2DPweoEgMB82U0Yk/4axTgy0bJO238uepsq36LpZ4bcIPkZUiqrbunVSOj6bi36b7dYpkw7uxycERm2nVFCbWgoZu053ji3Q2dCVEeB92pauL9DP0b+/TgJJLu6PvsuNvNH97zdvsNNnfqCupfR+/Ae0fqpr7oZuLeYIa4T6A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB3953.namprd12.prod.outlook.com (2603:10b6:a03:194::22)
+ by SN7PR12MB7884.namprd12.prod.outlook.com (2603:10b6:806:343::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8632.23; Thu, 10 Apr
+ 2025 09:39:26 +0000
+Received: from BY5PR12MB3953.namprd12.prod.outlook.com
+ ([fe80::308:2250:764d:ed8f]) by BY5PR12MB3953.namprd12.prod.outlook.com
+ ([fe80::308:2250:764d:ed8f%7]) with mapi id 15.20.8632.021; Thu, 10 Apr 2025
+ 09:39:25 +0000
+Date: Thu, 10 Apr 2025 11:39:17 +0200
+From: Vlad Dogaru <vdogaru@nvidia.com>
+To: Michal Kubiak <michal.kubiak@intel.com>
+Cc: Tariq Toukan <tariqt@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>, Gal Pressman <gal@nvidia.com>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Yevgeny Kliteynik <kliteyn@nvidia.com>
+Subject: Re: [PATCH net-next 05/12] net/mlx5: HWS, Cleanup after pool
+ refactoring
+Message-ID: <Z_eRxfatxaGZ53YQ@nvidia.com>
+References: <1744120856-341328-1-git-send-email-tariqt@nvidia.com>
+ <1744120856-341328-6-git-send-email-tariqt@nvidia.com>
+ <Z/blOLHROwFdhv20@localhost.localdomain>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z/blOLHROwFdhv20@localhost.localdomain>
+X-ClientProxiedBy: FR2P281CA0023.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::10) To BY5PR12MB3953.namprd12.prod.outlook.com
+ (2603:10b6:a03:194::22)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 net] smc: Fix lockdep false-positive for IPPROTO_SMC.
-To: Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
- "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu <tonylu@linux.alibaba.com>,
- Wen Gu <guwen@linux.alibaba.com>, Dust Li <dust.li@linux.alibaba.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>
-Cc: Simon Horman <horms@kernel.org>, Kuniyuki Iwashima <kuni1840@gmail.com>,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-s390@vger.kernel.org,
- syzbot+be6f4b383534d88989f7@syzkaller.appspotmail.com,
- Kuniyuki Iwashima <kuniyu@amazon.com>
-References: <20250407170332.26959-1-kuniyu@amazon.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250407170332.26959-1-kuniyu@amazon.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR12MB3953:EE_|SN7PR12MB7884:EE_
+X-MS-Office365-Filtering-Correlation-Id: f610ab41-64bc-4b86-e619-08dd781394b9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|10070799003|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?QYTy99VuBEvmiXrbu6CgmdoiGtkFIL0YFKX3BJP4szPfq43MXPHQTiaO8lbh?=
+ =?us-ascii?Q?7Ie9NBTI9gUEp2tO23ZgB+GZ7gaMqDrMEZwOJDnS2/apJZ0Q/TAymc2FFsAN?=
+ =?us-ascii?Q?RB3WBQmL6wXt48d2TzyHxOOo3Nb9MdKBlry4EnAZNGHRyhrjmyntHEK7KmSV?=
+ =?us-ascii?Q?hh5gOt0K/VOQ5vO161w4xsDOcCDR2XRHBniIdXvRsDzlkZP4qEBxmh/rRQ09?=
+ =?us-ascii?Q?K1R8mTZwr+2xqHtUrWs8+Ay/2nQtCz+ccTcWxtIYb2ZnJWAJyM+ZfcypHdwZ?=
+ =?us-ascii?Q?emE3/AOHsS7+y8XOnEIquVefHQM6sz2RUsY7lExTfaNh59k7d5dajlceG1d2?=
+ =?us-ascii?Q?fyJq0sXBbV5XlkNrcdtMBR61bAUrgZEjhFGlIqRoEpOMfheK/7PD+yTATuol?=
+ =?us-ascii?Q?zbz8vQczZGIlHaVMhl6Ru+rEgis2n1xXaogkrCoau+PcanDvUsYUzzhPmiTI?=
+ =?us-ascii?Q?XJQBbIOo/uti/dJuUlCroW1lA3TOAJnGJHwrxk0q+7+AylB+HEXfWETWf9fD?=
+ =?us-ascii?Q?3saDkh711geKTqfcz8/ZRCvlTVkegxSliNuuDMAZvAKW1IB48iXWBvWnXkvD?=
+ =?us-ascii?Q?YImTq3PR4epxJOktz7xUxrP6fdLV5azC/9OLlMjE9h7nRS4kggRqKDy6JDPh?=
+ =?us-ascii?Q?zXSdfZ2KefehcTqFE0Zahu/1KcYBxt1NjwSjChvxg7TSrpNL1mOxyna52yF4?=
+ =?us-ascii?Q?66f5kRmOxFyeG/eCgBBKMlPR9Nyouan5FVkr+N4hUFChh9AZcRdeqssRvQAy?=
+ =?us-ascii?Q?buG1EoIlPKeIctXAEKfKoO1rQZAd/coyBRDomzBD7/ptYZL/LL9+RtwqaVwZ?=
+ =?us-ascii?Q?f00VXdLQQTWzDd+FzN8wBwXziEF2rzrGwtoEE0dTp9LcRklnXIy6MO5RZVQ/?=
+ =?us-ascii?Q?fGhSwMHyMr4nnC87sUHYG/mIXxgdfHwC7nv3S2gqG9uGF031vPWqkJ5pDvUm?=
+ =?us-ascii?Q?MojVNo/X87/yS1dzlle+UcKZzT2idrblYgBl24ptcQAeCiZuvBJDdZp6pS3r?=
+ =?us-ascii?Q?THLdEGYkmUiNbbkQfovzfYi+P4QhKSS1jKlrcfyedkWj9d7yVVLOYQIhqFDk?=
+ =?us-ascii?Q?liAAAuXrq5Amx14/lteHXS3LDaNit4FaSY5kZmmnSmhQtLGCWDi3FON3p8fw?=
+ =?us-ascii?Q?qZmcDvHXCOOVU8JD8gshH+wljXxU604Zyy/nZa6oGos3oRK1+KTZsS1jRDxq?=
+ =?us-ascii?Q?KP0M7u8s7TYFLffv3sAXEFGB8gub5B1+KEiw2TfFK3gBcY6u+5notV+6tOfv?=
+ =?us-ascii?Q?2iH7Bbf2rderDTfvmGgddRN4UvlThb2nyo7QvALbikCs24xq8roOaySwcw3R?=
+ =?us-ascii?Q?xdh7glUkmUVRKpSQOmWbrPKYZG1oJs3oCDE4/cLhwg8NcdeBJrzI0fJJ0afL?=
+ =?us-ascii?Q?i4inBUlgUrP8jtqXpJp+bRlDr8tw?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3953.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(10070799003)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?I4+TQTC4LeX2M5E1tbjtmJ4JmhOL079uzqCLdywEOiJJMaFEzG+JKUkd7xKN?=
+ =?us-ascii?Q?CT3yVbe+a2nHkHIPEr79GWbyPuniAgY4aDBnEqelR2dpduO2xw/AR4ywxRtQ?=
+ =?us-ascii?Q?5jLRvxfRiY0oBO/51RGqtBTY+QfNJyeWmQwhiNNvLPCbdF4IIfScunPxAMAX?=
+ =?us-ascii?Q?ApoEtHmYQY2EWWjruEpMhv6JB9sx0qI+G4qtc3/US2W6ifVfVgpj5cC4xXH/?=
+ =?us-ascii?Q?A7ucStZH2/ZszpCtRe8j+dBcT98dgvPsLMz4+q6aIRC7RiUw57bH9+cPa9M2?=
+ =?us-ascii?Q?FQnObMMwWHRnWP1mCpKC/BXu3wLwXAES3QwDawUOHSJ5ounKfKTFkbttsW+3?=
+ =?us-ascii?Q?Qlq+VDz6yZP9kKyAJpA1WMGZfXHo3lsAOnZ/AVuvEaH4kJMfzQQlJoIVI8lE?=
+ =?us-ascii?Q?P626gNDGOUR+5bTvZrlEAvkXenhHgb2vW5tWz1+ZSNw/r/l8/kg0PQrdC12u?=
+ =?us-ascii?Q?ka6dWR1DTATizzrpiqGNewG1tOWOFECW2FTvfcvzvyI2VcbubgAnOyI4SZLO?=
+ =?us-ascii?Q?NSXJFFr1fSMdd8bpK150cLg3J6QUWGnNttZwGfnaa58Nw5kmEG+g3MskVqEq?=
+ =?us-ascii?Q?5Y4vJzId4MOrSu/qnV8lVPwlyR7K/rM6H3kGk0XARsix32Ty2MnnIFDnbyUa?=
+ =?us-ascii?Q?OtIqO3C6EJLUoiAFBXW3uccA448kdFOqSx1zrrBcJlfsgQRu84GbPdCyTsWp?=
+ =?us-ascii?Q?zNRtQe2yH8fJZAf40ga8yOfCa4jO1cuSOLSoXneS1vTNuToZQpvdvMk0YZex?=
+ =?us-ascii?Q?ddeinDncTW40Yo9zBLhu/f4qO0dcToH1SXryrLbMzm1a1CPG9SYQtKyrLyE3?=
+ =?us-ascii?Q?Nd+q3IIO2h6OKVNTCidijNZUusw1i8Gepidd/MogKWSzc5sYJ01QDNwfEYwq?=
+ =?us-ascii?Q?lAd+6/ogNMydYLd4ocnI3KBTAvRF65F+bTvaZinDQs8ZWs5Ee83sHJ/+JD+U?=
+ =?us-ascii?Q?V3ARpGSqhPoX6yyqS5HZ2O8BdNU/3vcE6IRkL4x7YIt3mjrYb2v/+0QEnMYR?=
+ =?us-ascii?Q?c+NGDJ22X7033hAxAllKweZkEq0NV5+5lrYnO01JOR759Wd24AGaja3zim5c?=
+ =?us-ascii?Q?RQh9SkI+kGLHE8wOzpPU8O6VuK0M4vlYssDnAb4CzncTwJDY4Ob454kMbxk/?=
+ =?us-ascii?Q?Pj4p1efIugGecmJR1cYju1uNTLgT5y9S9Egwy7u4pFdn3EfGjj6Uvd5TvBIH?=
+ =?us-ascii?Q?bgAA4x7V0A4+bmd7gAQfdg3H5OVvMlVBsXwud80NMTFI/kcL7AvBja8IZ3Uz?=
+ =?us-ascii?Q?G8Hv28NDWLmlratSfv9UVqWGn+j4Vju7sakmN8KwBcmUjjNiqn0/B+IgP9ZX?=
+ =?us-ascii?Q?7Hdx+GPzJQjXEue6149JGPUgdBP/nMPzdX38RtbJF6Hdkaz89+ixja99Z00X?=
+ =?us-ascii?Q?LYHfP3hsMSn0Tms2NotCFFagFRdNqOaF4HK2CNIDtwiSEWM2YMZLS3qeF8hF?=
+ =?us-ascii?Q?ymOh9Hh43K9yenZZXADGZgNTxm9klmUIRC77y+/aqNh454UbVRR+2xHMOSKu?=
+ =?us-ascii?Q?4fJp4G0S8KEHXpm7U8M46d2J1WmHI2hgpl+fDvewpe2Cvr2z4rbGhpTR+/Tj?=
+ =?us-ascii?Q?AdF2/bfIrgusnV6MfMeftyNeOxFmWeHAT6tkBCZp1A4R37jUBL0DC3/fRMEZ?=
+ =?us-ascii?Q?U8jBS8UtUTRLiDjglBvMyVdkwvl9x0rCAUkwF12K2NBX?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f610ab41-64bc-4b86-e619-08dd781394b9
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3953.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2025 09:39:25.3059
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6OnLPXW/jCXw4ZsQN8gWxFG9laaa3V+nxLH1hfjxeUxJI3s+dUEx9sbeM866c/FrIFkcZo0NJbmWPZkKZwmzkQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7884
 
-On 4/7/25 7:03 PM, Kuniyuki Iwashima wrote:
-> SMC consists of two sockets: smc_sock and kernel TCP socket.
+On Wed, Apr 09, 2025 at 11:23:04PM +0200, Michal Kubiak wrote:
+> On Tue, Apr 08, 2025 at 05:00:49PM +0300, Tariq Toukan wrote:
+> > From: Vlad Dogaru <vdogaru@nvidia.com>
+> > 
+> > Remove members which are now no longer used. In fact, many of the
+> > `struct mlx5hws_pool_chunk` were not even written to beyond being
+> > initialized, but they were used in various internals.
+> > 
+> > Also cleanup some local variables which made more sense when the API was
+> > thicker.
+> > 
+> > Signed-off-by: Vlad Dogaru <vdogaru@nvidia.com>
+> > Reviewed-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
+> > Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+> > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> > ---
+> >  .../mellanox/mlx5/core/steering/hws/action.c  |  6 +--
+> >  .../mellanox/mlx5/core/steering/hws/matcher.c | 48 ++++++-------------
+> >  .../mellanox/mlx5/core/steering/hws/matcher.h |  2 -
+> >  3 files changed, 16 insertions(+), 40 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/action.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/action.c
+> > index 39904b337b81..44b4640b47db 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/action.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/action.c
+> > @@ -1583,7 +1583,6 @@ hws_action_create_dest_match_range_table(struct mlx5hws_context *ctx,
+> >  	struct mlx5hws_matcher_action_ste *table_ste;
+> >  	struct mlx5hws_pool_attr pool_attr = {0};
+> >  	struct mlx5hws_pool *ste_pool, *stc_pool;
+> > -	struct mlx5hws_pool_chunk *ste;
+> >  	u32 *rtc_0_id, *rtc_1_id;
+> >  	u32 obj_id;
+> >  	int ret;
+> > @@ -1613,8 +1612,6 @@ hws_action_create_dest_match_range_table(struct mlx5hws_context *ctx,
+> >  	rtc_0_id = &table_ste->rtc_0_id;
+> >  	rtc_1_id = &table_ste->rtc_1_id;
+> >  	ste_pool = table_ste->pool;
+> > -	ste = &table_ste->ste;
+> > -	ste->order = 1;
+> >  
+> >  	rtc_attr.log_size = 0;
+> >  	rtc_attr.log_depth = 0;
+> > @@ -1630,7 +1627,7 @@ hws_action_create_dest_match_range_table(struct mlx5hws_context *ctx,
+> >  
+> >  	rtc_attr.pd = ctx->pd_num;
+> >  	rtc_attr.ste_base = obj_id;
+> > -	rtc_attr.ste_offset = ste->offset;
+> > +	rtc_attr.ste_offset = 0;
 > 
-> Currently, there are two ways of creating the sockets, and syzbot reported
-> a lockdep splat [0] for the newer way introduced by commit d25a92ccae6b
-> ("net/smc: Introduce IPPROTO_SMC").
-> 
->   socket(AF_SMC             , SOCK_STREAM, SMCPROTO_SMC or SMCPROTO_SMC6)
->   socket(AF_INET or AF_INET6, SOCK_STREAM, IPPROTO_SMC)
-> 
-> When a socket is allocated, sock_lock_init() sets a lockdep lock class to
-> sk->sk_lock.slock based on its protocol family.  In the IPPROTO_SMC case,
-> AF_INET or AF_INET6 lock class is assigned to smc_sock.
-> 
-> The repro sets IPV6_JOIN_ANYCAST for IPv6 UDP and SMC socket and exercises
-> smc_switch_to_fallback() for IPPROTO_SMC.
-> 
->   1. smc_switch_to_fallback() is called under lock_sock() and holds
->      smc->clcsock_release_lock.
-> 
->       sk_lock-AF_INET6 -> &smc->clcsock_release_lock
->       (sk_lock-AF_SMC)
-> 
->   2. Setting IPV6_JOIN_ANYCAST to SMC holds smc->clcsock_release_lock
->      and calls setsockopt() for the kernel TCP socket, which holds RTNL
->      and the kernel socket's lock_sock().
-> 
->       &smc->clcsock_release_lock -> rtnl_mutex (-> k-sk_lock-AF_INET6)
-> 
->   3. Setting IPV6_JOIN_ANYCAST to UDP holds RTNL and lock_sock().
-> 
->       rtnl_mutex -> sk_lock-AF_INET6
-> 
-> Then, lockdep detects a false-positive circular locking,
-> 
->   .-> sk_lock-AF_INET6 -> &smc->clcsock_release_lock -> rtnl_mutex -.
->   `-----------------------------------------------------------------'
-> 
-> but IPPROTO_SMC should have the same locking rule as AF_SMC.
-> 
->       sk_lock-AF_SMC   -> &smc->clcsock_release_lock -> rtnl_mutex -> k-sk_lock-AF_INET6
-> 
-> Let's set the same lock class for smc_sock.
-> 
-> Given AF_SMC uses the same lock class for SMCPROTO_SMC and SMCPROTO_SMC6,
-> we do not need to separate the class for AF_INET and AF_INET6.
-> 
-> [0]:
-> WARNING: possible circular locking dependency detected
-> 6.14.0-rc3-syzkaller-00267-gff202c5028a1 #0 Not tainted
-> 
-> syz.4.1528/11571 is trying to acquire lock:
-> ffffffff8fef8de8 (rtnl_mutex){+.+.}-{4:4}, at: ipv6_sock_ac_close+0xd9/0x110 net/ipv6/anycast.c:220
-> 
-> but task is already holding lock:
-> ffff888027f596a8 (&smc->clcsock_release_lock){+.+.}-{4:4}, at: smc_clcsock_release+0x75/0xe0 net/smc/smc_close.c:30
-> 
-> which lock already depends on the new lock.
-> 
-> the existing dependency chain (in reverse order) is:
-> 
->  -> #2 (&smc->clcsock_release_lock){+.+.}-{4:4}:
->        __mutex_lock_common kernel/locking/mutex.c:585 [inline]
->        __mutex_lock+0x19b/0xb10 kernel/locking/mutex.c:730
->        smc_switch_to_fallback+0x2d/0xa00 net/smc/af_smc.c:903
->        smc_sendmsg+0x13d/0x520 net/smc/af_smc.c:2781
->        sock_sendmsg_nosec net/socket.c:718 [inline]
->        __sock_sendmsg net/socket.c:733 [inline]
->        ____sys_sendmsg+0xaaf/0xc90 net/socket.c:2573
->        ___sys_sendmsg+0x135/0x1e0 net/socket.c:2627
->        __sys_sendmsg+0x16e/0x220 net/socket.c:2659
->        do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->        do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
->        entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
->  -> #1 (sk_lock-AF_INET6){+.+.}-{0:0}:
->        lock_sock_nested+0x3a/0xf0 net/core/sock.c:3645
->        lock_sock include/net/sock.h:1624 [inline]
->        sockopt_lock_sock net/core/sock.c:1133 [inline]
->        sockopt_lock_sock+0x54/0x70 net/core/sock.c:1124
->        do_ipv6_setsockopt+0x2160/0x4520 net/ipv6/ipv6_sockglue.c:567
->        ipv6_setsockopt+0xcb/0x170 net/ipv6/ipv6_sockglue.c:993
->        udpv6_setsockopt+0x7d/0xd0 net/ipv6/udp.c:1850
->        do_sock_setsockopt+0x222/0x480 net/socket.c:2303
->        __sys_setsockopt+0x1a0/0x230 net/socket.c:2328
->        __do_sys_setsockopt net/socket.c:2334 [inline]
->        __se_sys_setsockopt net/socket.c:2331 [inline]
->        __x64_sys_setsockopt+0xbd/0x160 net/socket.c:2331
->        do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->        do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
->        entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
->  -> #0 (rtnl_mutex){+.+.}-{4:4}:
->        check_prev_add kernel/locking/lockdep.c:3163 [inline]
->        check_prevs_add kernel/locking/lockdep.c:3282 [inline]
->        validate_chain kernel/locking/lockdep.c:3906 [inline]
->        __lock_acquire+0x249e/0x3c40 kernel/locking/lockdep.c:5228
->        lock_acquire.part.0+0x11b/0x380 kernel/locking/lockdep.c:5851
->        __mutex_lock_common kernel/locking/mutex.c:585 [inline]
->        __mutex_lock+0x19b/0xb10 kernel/locking/mutex.c:730
->        ipv6_sock_ac_close+0xd9/0x110 net/ipv6/anycast.c:220
->        inet6_release+0x47/0x70 net/ipv6/af_inet6.c:485
->        __sock_release net/socket.c:647 [inline]
->        sock_release+0x8e/0x1d0 net/socket.c:675
->        smc_clcsock_release+0xb7/0xe0 net/smc/smc_close.c:34
->        __smc_release+0x5c2/0x880 net/smc/af_smc.c:301
->        smc_release+0x1fc/0x5f0 net/smc/af_smc.c:344
->        __sock_release+0xb0/0x270 net/socket.c:647
->        sock_close+0x1c/0x30 net/socket.c:1398
->        __fput+0x3ff/0xb70 fs/file_table.c:464
->        task_work_run+0x14e/0x250 kernel/task_work.c:227
->        resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
->        exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
->        exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
->        __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
->        syscall_exit_to_user_mode+0x27b/0x2a0 kernel/entry/common.c:218
->        do_syscall_64+0xda/0x250 arch/x86/entry/common.c:89
->        entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
-> other info that might help us debug this:
-> 
-> Chain exists of:
->   rtnl_mutex --> sk_lock-AF_INET6 --> &smc->clcsock_release_lock
-> 
->  Possible unsafe locking scenario:
-> 
->        CPU0                    CPU1
->        ----                    ----
->   lock(&smc->clcsock_release_lock);
->                                lock(sk_lock-AF_INET6);
->                                lock(&smc->clcsock_release_lock);
->   lock(rtnl_mutex);
-> 
->  *** DEADLOCK ***
-> 
-> 2 locks held by syz.4.1528/11571:
->  #0: ffff888077e88208 (&sb->s_type->i_mutex_key#10){+.+.}-{4:4}, at: inode_lock include/linux/fs.h:877 [inline]
->  #0: ffff888077e88208 (&sb->s_type->i_mutex_key#10){+.+.}-{4:4}, at: __sock_release+0x86/0x270 net/socket.c:646
->  #1: ffff888027f596a8 (&smc->clcsock_release_lock){+.+.}-{4:4}, at: smc_clcsock_release+0x75/0xe0 net/smc/smc_close.c:30
-> 
-> stack backtrace:
-> CPU: 0 UID: 0 PID: 11571 Comm: syz.4.1528 Not tainted 6.14.0-rc3-syzkaller-00267-gff202c5028a1 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2025
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:94 [inline]
->  dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:120
->  print_circular_bug+0x490/0x760 kernel/locking/lockdep.c:2076
->  check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2208
->  check_prev_add kernel/locking/lockdep.c:3163 [inline]
->  check_prevs_add kernel/locking/lockdep.c:3282 [inline]
->  validate_chain kernel/locking/lockdep.c:3906 [inline]
->  __lock_acquire+0x249e/0x3c40 kernel/locking/lockdep.c:5228
->  lock_acquire.part.0+0x11b/0x380 kernel/locking/lockdep.c:5851
->  __mutex_lock_common kernel/locking/mutex.c:585 [inline]
->  __mutex_lock+0x19b/0xb10 kernel/locking/mutex.c:730
->  ipv6_sock_ac_close+0xd9/0x110 net/ipv6/anycast.c:220
->  inet6_release+0x47/0x70 net/ipv6/af_inet6.c:485
->  __sock_release net/socket.c:647 [inline]
->  sock_release+0x8e/0x1d0 net/socket.c:675
->  smc_clcsock_release+0xb7/0xe0 net/smc/smc_close.c:34
->  __smc_release+0x5c2/0x880 net/smc/af_smc.c:301
->  smc_release+0x1fc/0x5f0 net/smc/af_smc.c:344
->  __sock_release+0xb0/0x270 net/socket.c:647
->  sock_close+0x1c/0x30 net/socket.c:1398
->  __fput+0x3ff/0xb70 fs/file_table.c:464
->  task_work_run+0x14e/0x250 kernel/task_work.c:227
->  resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
->  exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
->  syscall_exit_to_user_mode+0x27b/0x2a0 kernel/entry/common.c:218
->  do_syscall_64+0xda/0x250 arch/x86/entry/common.c:89
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7f8b4b38d169
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffe4efd22d8 EFLAGS: 00000246 ORIG_RAX: 00000000000001b4
-> RAX: 0000000000000000 RBX: 00000000000b14a3 RCX: 00007f8b4b38d169
-> RDX: 0000000000000000 RSI: 000000000000001e RDI: 0000000000000003
-> RBP: 00007f8b4b5a7ba0 R08: 0000000000000001 R09: 000000114efd25cf
-> R10: 00007f8b4b200000 R11: 0000000000000246 R12: 00007f8b4b5a5fac
-> R13: 00007f8b4b5a5fa0 R14: ffffffffffffffff R15: 00007ffe4efd23f0
->  </TASK>
-> 
-> Fixes: d25a92ccae6b ("net/smc: Introduce IPPROTO_SMC")
-> Reported-by: syzbot+be6f4b383534d88989f7@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=be6f4b383534d88989f7
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> Is the `rtc_attr.ste_offset` member still needed? Can it be removed from
+> the "cmd.h" header? It's always zero right now, isn't it?
 
-Makes sense to me, waiting a little more to allow feedback from @Wenjia
-and the SMC crew.
+That's right, nice catch. Will fix up in v2.
 
 Thanks,
-
-Paolo
-
+Vlad
 
