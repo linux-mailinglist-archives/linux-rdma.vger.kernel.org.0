@@ -1,129 +1,144 @@
-Return-Path: <linux-rdma+bounces-9324-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9325-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E731AA8401F
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Apr 2025 12:10:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66B5FA8409D
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Apr 2025 12:28:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A61BC7A938C
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Apr 2025 10:08:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10C319E0203
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Apr 2025 10:21:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E4322A7FA;
-	Thu, 10 Apr 2025 10:07:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3762C280CE5;
+	Thu, 10 Apr 2025 10:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IoRHfRzw"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="X2HEP5S7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E3421D58F
-	for <linux-rdma@vger.kernel.org>; Thu, 10 Apr 2025 10:07:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89ADA3596F
+	for <linux-rdma@vger.kernel.org>; Thu, 10 Apr 2025 10:21:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744279656; cv=none; b=su8EDC4Bx3YWDm4GfvwxKZeQXE0JDehFddZ00AFPKvCDHhzpnobN9VwZHYwOLfTGajs/FwDijzpXJZ2jhL/QAqKgiMMNuHFqbivps+KZ28GGFhtube6zCrE+VhnLW2nz519fz5XqPvENJgfR6ZeuhzrJzguA1Unu2D0G4KyOin4=
+	t=1744280469; cv=none; b=NgE6shGo++OpRNdRtO7DIjuPYInAQIX/VbKTQtPZJ08jrApNHbdgayceH6bRLR3g1S5PgqEkGV2xSPptRAwgp7k4oUJKex91UszCJLG8vF5r5xxr+LaX9Rurm7sJ3ZHZVNdyo6YT+Bethb2vMLDMPpZoSzM2A4g08rjj8DxlZ50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744279656; c=relaxed/simple;
-	bh=mJ9mgnz35xplAMqQgZX2OUtTggk0i/lvDwINJmbhB30=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=o7XrmuUrs3/dN6MSgoPk9FBMYLZNXxqrhI5AMVJFjUqZwoqk4x276sSoIYgPXHp5A4hAkC9hFO0qxLynVkcfZKeioFeESEBI2FkJfYsuL/uWqqZL2C+nZY+p+m/lI1H6Kf0ZBLNIYEEJRQTGjGfz3I4ezTfiFWMwPs4zRZES5dQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IoRHfRzw; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <454072e0-9fd8-4deb-a97e-b454d5e3fd5f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744279641;
+	s=arc-20240116; t=1744280469; c=relaxed/simple;
+	bh=92JUKxqvz4DOLXtgZ9JCA4V7OtLOo0pA+kZxODRygU8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AG2wYxnvb/0B6jlSJbsmrNrmG9bpxKLjE82If1L7QX4JOrKYhJiox7GfTvdbUSD7O/GTe9skDxsoTG6f5lzar6hFBwNFWng760C1KekkDJaqPR0cx9nWymHGquXEMDhEnv9qnWCBLE5hIe3LNTaF+pB8Btej0v7f1xhmONGdD3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=X2HEP5S7; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1744280465;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Kq87Xuc97EJxv+6e/++Vx+LXIntDeg9NNkpI4Ptxm3I=;
-	b=IoRHfRzweTtYP3S55dHcfGkJ1Ca23meplZC7fbQQJI2FZDOtE5CRJDTBj7nPx8URg38nLE
-	RiqBB3YGRw5J9gKBzHxRjqSlVdUbRstAFHpy27g3ejSijmOO35flXDgaos5ODl0/aWTaeX
-	UBX+b6BZq2EwY6h1vXAJ8ryXo5070dY=
-Date: Thu, 10 Apr 2025 11:07:16 +0100
+	bh=gj0ddO5JcHA3x6pElFgDxfTHr6tMQmqLYvn6SHOTRag=;
+	b=X2HEP5S79mRFkizkDG1skujBBxafhGjqJB/7fFaDShefDDRv84NoScd0ynDHT5t3v9dXze
+	DvyZBPesdKZBl9EL8NwNQZcZtPMtiqdJrEeeZ2YoXE0VsooKmxSk52/4bVMLXxcdZIKR7H
+	bsg3wUW5HKSUZqhP/Xt/DtW6CpCl98A=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-278-c0baTEROPkyPEvtyTOoLIQ-1; Thu, 10 Apr 2025 06:21:04 -0400
+X-MC-Unique: c0baTEROPkyPEvtyTOoLIQ-1
+X-Mimecast-MFC-AGG-ID: c0baTEROPkyPEvtyTOoLIQ_1744280463
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-30bf4297559so5243051fa.2
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Apr 2025 03:21:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744280463; x=1744885263;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gj0ddO5JcHA3x6pElFgDxfTHr6tMQmqLYvn6SHOTRag=;
+        b=V7FwuSsLmlyU4F//bT8rwJ3yax1VjE32SZlY7sdvqPWjm+kmq8Hf0ukR7C4aGBcIJA
+         +k0l59kM+4gX+tDZkoOS1bYcI8c00+qjlhL/bKE5zHpJSeN6uXuauAJyNIZgozXlrXmo
+         r3TCtxwAvdU+LrRWysH6C33Ln/yqfgipRiJLwNlQ6EqRK0/Lwe/vMErs1SH23vNyQR74
+         2uexNSMCLxBqgUgGbRHhnNXnbizTblUFYhsKUf/XGpPzdbTX4ds+clKKvMxEUCf+zT6X
+         eYdAxXYS5OTJ0dKLXC+6a5fRju5t8hTt2vO2XTnfiIqqA6KCmla1Khrfq53SCetAPrK7
+         YvNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWMHo9xwXHtMD4IWy/wkibybl8e5ekGcgp+1vDJH/4RzUUj/pNCOJHK5+TkcI1i096VXIKvUAWhdMXn@vger.kernel.org
+X-Gm-Message-State: AOJu0YwjlUpjQhRedIuukuqmQ3v1GZBlAbGR/CczwQVE0HthucBBJHTb
+	EmgnmRYbV/W0FTW4xVX7Ed7o3rDaXQ6vEFpTaVgbrnRseQH/lrmHpuQZoGVWk21w0wGA3lIWNI+
+	nITnCwPzho5e0g0T4hGtoqISEH1sKGVDz7TJ4VZNL8rjHKaXFQ59BUDr8Za0=
+X-Gm-Gg: ASbGncuLk2G3iKdAdJfoOtHI2TO1Oak2XRp6cDZ6FabD0Qv7a+xvUMXmgcVP45qxQ+o
+	mNE1m5+0y9nZvW6rxLx7pvp0zjXdUDSOTys0A/ZDyzbEMf/uDLu6A0+j8BpirkPpjFVXSQScaeS
+	F6qWh6P8z6hIT75yIbnPneW1ZBxzbq7+EdMWecjK7QA0t3+xg4rEnbGueETeeUo5bVAGzDncCrj
+	nFoHy2YxDPBhXIlLHZmjnwDa3bCiFMPXTycjzsTa6srJ5iy0elgQaJ75CIYqD4YTs4vOt+U5mbI
+	pe7OtMOu/6w8U0MTDbYhtg4qdBGMaTMS/mc1
+X-Received: by 2002:a05:651c:1515:b0:30b:9813:b004 with SMTP id 38308e7fff4ca-3103ed4f35dmr5955771fa.34.1744280462778;
+        Thu, 10 Apr 2025 03:21:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE17WxZoyH3rbLK0N6NfIbsSGtSK/hr9dYY0iDg1GJ6hNCoga/XB9dPSda2f4ZShTnw6cWIwg==
+X-Received: by 2002:a05:651c:1515:b0:30b:9813:b004 with SMTP id 38308e7fff4ca-3103ed4f35dmr5955491fa.34.1744280462404;
+        Thu, 10 Apr 2025 03:21:02 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-30f46623c2bsm4318581fa.111.2025.04.10.03.21.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Apr 2025 03:21:01 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 7F5E21992272; Thu, 10 Apr 2025 12:21:00 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Zi Yan <ziy@nvidia.com>, "David S. Miller" <davem@davemloft.net>, Jakub
+ Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ilias
+ Apalodimas <ilias.apalodimas@linaro.org>, Simon Horman <horms@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Mina Almasry
+ <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>, Yunsheng
+ Lin <linyunsheng@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>,
+ Matthew Wilcox <willy@infradead.org>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-mm@kvack.org
+Subject: Re: [PATCH net-next v9 1/2] page_pool: Move pp_magic check into
+ helper functions
+In-Reply-To: <D92K7SAU1A06.1APBVXB2AK2HW@nvidia.com>
+References: <20250409-page-pool-track-dma-v9-0-6a9ef2e0cba8@redhat.com>
+ <20250409-page-pool-track-dma-v9-1-6a9ef2e0cba8@redhat.com>
+ <D92K7SAU1A06.1APBVXB2AK2HW@nvidia.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 10 Apr 2025 12:21:00 +0200
+Message-ID: <877c3suxkj.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Subject: Re: [PATCH net-next 0/2] net: ptp: driver opt-in for supported PTP
- ioctl flags
-To: Jacob Keller <jacob.e.keller@intel.com>, Andrew Lunn <andrew@lunn.ch>,
- Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>,
- Bryan Whitehead <bryan.whitehead@microchip.com>,
- UNGLinuxDriver@microchip.com, Horatiu Vultur <horatiu.vultur@microchip.com>,
- Paul Barker <paul.barker.ct@bp.renesas.com>,
- =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
- Richard Cochran <richardcochran@gmail.com>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, Andrei Botila <andrei.botila@oss.nxp.com>,
- Claudiu Manoil <claudiu.manoil@nxp.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org
-References: <20250408-jk-supported-perout-flags-v1-0-d2f8e3df64f3@intel.com>
-Content-Language: en-US
-In-Reply-To: <20250408-jk-supported-perout-flags-v1-0-d2f8e3df64f3@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 08/04/2025 21:55, Jacob Keller wrote:
-> Both the PTP_EXTTS_REQUEST(2) and PTP_PEROUT_REQUEST(2) ioctls take flags
-> from userspace to modify their behavior. Drivers are supposed to check
-> these flags, rejecting requests for flags they do not support.
-> 
-> Many drivers today do not check these flags, despite many attempts to
-> squash individual drivers as these mistakes are discovered. Additionally,
-> any new flags added can require updating every driver if their validation
-> checks are poorly implemented.
-> 
-> It is clear that driver authors will not reliably check for unsupported
-> flags. The root of the issue is that drivers must essentially opt out of
-> every flag, rather than opt in to the ones they support.
-> 
-> Instead, lets introduce .supported_perout_flags and .supported_extts_flags
-> to the ptp_clock_info structure. This is a pattern taken from several
-> ethtool ioctls which enabled validation to move out of the drivers and into
-> the shared ioctl handlers. This pattern has worked quite well and makes it
-> much more difficult for drivers to accidentally accept flags they do not
-> support.
-> 
-> With this approach, drivers which do not set the supported fields will have
-> the core automatically reject any request which has flags. Drivers must opt
-> in to each flag they support by adding it to the list, with the sole
-> exception being the PTP_ENABLE_FEATURE flag of the PTP_EXTTS_REQUEST ioctl
-> since it is entirely handled by the ptp_chardev.c file.
-> 
-> This change will ensure that all current and future drivers are safe for
-> extension when we need to extend these ioctls.
-> 
-> I opted to keep all the driver changes into one patch per ioctl type. The
-> changes are relatively small and straight forward. Splitting it per-driver
-> would make the series large, and also break flags between the introduction
-> of the supported field and setting it in each driver.
-> 
-> The non-Intel drivers are compile-tested only, and I would appreciate
-> confirmation and testing from their respective maintainers. (It is also
-> likely that I missed some of the driver authors especially for drivers
-> which didn't make any checks at all and do not set either of the supported
-> flags yet)
-> 
-> Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
+"Zi Yan" <ziy@nvidia.com> writes:
 
-For the series:
-Reviewed-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+> On Wed Apr 9, 2025 at 6:41 AM EDT, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Since we are about to stash some more information into the pp_magic
+>> field, let's move the magic signature checks into a pair of helper
+>> functions so it can be changed in one place.
+>>
+>> Reviewed-by: Mina Almasry <almasrymina@google.com>
+>> Tested-by: Yonglong Liu <liuyonglong@huawei.com>
+>> Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+>> Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> ---
+>>  drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c |  4 ++--
+>>  include/linux/mm.h                               | 20 +++++++++++++++++=
++++
+>>  mm/page_alloc.c                                  |  8 ++------
+>>  net/core/netmem_priv.h                           |  5 +++++
+>>  net/core/skbuff.c                                | 16 ++--------------
+>>  net/core/xdp.c                                   |  4 ++--
+>>  6 files changed, 33 insertions(+), 24 deletions(-)
+>>
+>
+> LGTM. Reviewed-by: Zi Yan <ziy@nvidia.com>
+
+Great, thanks!
+
+-Toke
 
 
