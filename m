@@ -1,123 +1,132 @@
-Return-Path: <linux-rdma+bounces-9364-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9365-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37519A852BE
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Apr 2025 06:45:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 362ECA8531A
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Apr 2025 07:35:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E6611B67D28
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Apr 2025 04:45:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 648184A75B6
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Apr 2025 05:35:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B75D27CB05;
-	Fri, 11 Apr 2025 04:45:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3F6726FA47;
+	Fri, 11 Apr 2025 05:34:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b="W+XewHD5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XSGpiGpL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-m49197.qiye.163.com (mail-m49197.qiye.163.com [45.254.49.197])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC5AC27CB2F;
-	Fri, 11 Apr 2025 04:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA3CD1EFF91;
+	Fri, 11 Apr 2025 05:34:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744346709; cv=none; b=qW5kGFWhuAEXvrgelpMYNoCToswA2T1A/kLStu+gZE7As2KX8V77u0gseinU/JZMIus8FKQtzzyfwjEvXS+mow6qq9GEEi+39VSNHbj9uozWohdIKESlRW/SH0//olBe0zzQxTT2vOMWVET+sCJ5jpfB055j+QH7PUUF2/rO5LA=
+	t=1744349688; cv=none; b=pMGRMRkg4UVUHMGhGkpUpQoPI+2bRYi12kV9uUaspOpD6Qu3XkF7HuET/m2tNzRlcoz5qDrKpT4CVhh5wZE0TrjI/+DDrHFstlLkaQ9HAiKJvaBgudWuGtbIkIl1znzP2gBpoFhf46X4w01cj664sniO2rUeAk19cpnr+XRKL0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744346709; c=relaxed/simple;
-	bh=DNTUCAbzivbGtmjnFnIu06G0T3ku4zWDyqLTUN10mns=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=d6Dvw/SJwTQ9Je7BGtXDvq4i0JSgBZUqPVjpKxOrdTQBGAbul3a/kDz+qveKcVoWHMjhudSj528JV28JWuZ0/+D8GrZt/Xwlrwu1DS9f9JRKo/C3B4/EKmmY+jt+afgllD8wsM0fLpOvv+44dCI0H1bslgvTtTCm7qStTf2cmfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn; spf=pass smtp.mailfrom=seu.edu.cn; dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b=W+XewHD5; arc=none smtp.client-ip=45.254.49.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seu.edu.cn
-Received: from localhost.localdomain (unknown [202.119.23.198])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 117c6ece2;
-	Fri, 11 Apr 2025 12:44:59 +0800 (GMT+08:00)
-From: Zilin Guan <zilin@seu.edu.cn>
-To: wenjia@linux.ibm.com
-Cc: jaka@linux.ibm.com,
-	alibuda@linux.alibaba.com,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	jianhao.xu@seu.edu.cn,
-	Zilin Guan <zilin@seu.edu.cn>
-Subject: [RFC PATCH] net/smc: Consider using kfree_sensitive() to free cpu_addr
-Date: Fri, 11 Apr 2025 04:44:56 +0000
-Message-Id: <20250411044456.1661380-1-zilin@seu.edu.cn>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1744349688; c=relaxed/simple;
+	bh=H2Qqw27rWurJ/QM/BRFlhS3OhPfOdj1QefRWTHpFEf0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BOdxwWriEjRV13lJPOBiDGJ5A9eG18nIGYrb/kGZw9Ww3gNUGgK9AkJd7PtZMZyxWrDfMEo1E02n5UPxQLR5EK9uEs2rJhYzOtumzyqGy0jp28i6btqM/slEiNfL9lOf2vXoR7xknFqrk1wX5Hhys4y7nf2dqfBfs7FfZBABy44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XSGpiGpL; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1744349687; x=1775885687;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=H2Qqw27rWurJ/QM/BRFlhS3OhPfOdj1QefRWTHpFEf0=;
+  b=XSGpiGpLbqJ9HQn5QJZahS9A5NeE+RzsrvQm2iQIV9kN/rCXDJ+6Ps8q
+   0srjKRm4NMPfFsNVkb3Vfgd0Dk59alpliuxAmIiFBGEKi/lwQ7xOgSeNx
+   +fNvrEebf/oLeyTRy/UtYRhVGt+oMwXn1w9gziM0dzVUatX1g1gylzlzI
+   MJsL5xpizpUx6UdTqtNCbemICDrGCEND6skOdl36jtiX2QBbUPlCSyPbP
+   uF9UKt+Oer1DFVFTyePsck2L1lMhBoXsdPrxNplL6FAC8ysTpzVRizIX5
+   uYna87QWeXfq2SUXiZHBVqOW5QHF5aAhpK4dPhKs+UoBocTrEdKFxPL8b
+   Q==;
+X-CSE-ConnectionGUID: wqtrFZMPR467xaiWGgrBaA==
+X-CSE-MsgGUID: EckEgiJuTI+3B4T948wLnA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11400"; a="49545162"
+X-IronPort-AV: E=Sophos;i="6.15,203,1739865600"; 
+   d="scan'208";a="49545162"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2025 22:34:46 -0700
+X-CSE-ConnectionGUID: /AJKS0U2ScCcxWfmtWg1wQ==
+X-CSE-MsgGUID: CCkP4B5KTQur8nrJAkgQxw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,203,1739865600"; 
+   d="scan'208";a="166293792"
+Received: from mev-dev.igk.intel.com ([10.237.112.144])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2025 22:34:43 -0700
+Date: Fri, 11 Apr 2025 07:34:27 +0200
+From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To: Henry Martin <bsdhenrymartin@gmail.com>
+Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
+	netdev@vger.kernel.org, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	amirtz@nvidia.com, ayal@nvidia.com, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] net/mlx5: Fix null-ptr-deref in
+ mlx5_create_{inner_,}ttc_table()
+Message-ID: <Z/ip4y2qSYcn93U/@mev-dev.igk.intel.com>
+References: <20250411022916.44698-1-bsdhenrymartin@gmail.com>
+ <20250411022916.44698-2-bsdhenrymartin@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCTEhCVkJIGh0aQkkZSUIeTlYeHw5VEwETFhoSFy
-	QUDg9ZV1kYEgtZQVlJS0lVSkpCVUlIVUpCQ1lXWRYaDxIVHRRZQVlPS0hVSktISk9ITFVKS0tVSk
-	JLS1kG
-X-HM-Tid: 0a96232a562603a1kunm117c6ece2
-X-HM-MType: 10
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pxg6Izo*NDJKLDUcMSkcEhoz
-	FUIKCitVSlVKTE9PSE9NTEtLTUhOVTMWGhIXVQESFxIVOwgeDlUeHw5VGBVFWVdZEgtZQVlJS0lV
-	SkpCVUlIVUpCQ1lXWQgBWUFJSE5DNwY+
-DKIM-Signature:a=rsa-sha256;
-	b=W+XewHD5T/DrVlYlf70G4CwonfJrv16/xwTI5F6FKPD1zcqZYxYBc2SH6Xf5Hsig9SYBXgEZa5tzTSoqb3EqTtzLXfZ+ATofbKKL1zlwHkZfxh4dqygk2yG+3xBRcDdD1zNxg1Up+ajZQO8HuWC7Yq6lmw3Ut42V0pCpKglAFVU=; s=default; c=relaxed/relaxed; d=seu.edu.cn; v=1;
-	bh=PL2S5ZNY/lfRwbYp6izyK3pe6SK3sLEiQc6v851Wktc=;
-	h=date:mime-version:subject:message-id:from;
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250411022916.44698-2-bsdhenrymartin@gmail.com>
 
-Hello,
+On Fri, Apr 11, 2025 at 10:29:16AM +0800, Henry Martin wrote:
+> Add NULL check for mlx5_get_flow_namespace() returns in
+> mlx5_create_inner_ttc_table() and mlx5_create_ttc_table() to prevent
+> NULL pointer dereference.
+> 
+> Fixes: 137f3d50ad2a ("net/mlx5: Support matching on l4_type for ttc_table")
+> Signed-off-by: Henry Martin <bsdhenrymartin@gmail.com>
+> ---
+> V2 -> V3: No functional changes, just gathering the patches in a series.
+> V1 -> V2: Add a empty line after the return statement.
+> 
+>  drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
+> index eb3bd9c7f66e..18cc6960a5c1 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
+> @@ -655,6 +655,9 @@ struct mlx5_ttc_table *mlx5_create_inner_ttc_table(struct mlx5_core_dev *dev,
+>  	}
+>  
+>  	ns = mlx5_get_flow_namespace(dev, params->ns_type);
+> +	if (!ns)
+> +		return ERR_PTR(-EOPNOTSUPP);
 
-In smcr_buf_unuse() and smc_buf_unuse(), memzero_explicit() is used to
-clear cpu_addr when it is no longer in use, suggesting that cpu_addr
-may contain sensitive information.
+There is ttc = kvzalloc() before. I think you should call kvfree(ttc)
+before returning. It looks like the same leak is already when
+params->ns_type is unknown.
 
-To ensure proper handling of this sensitive memory, I propose using
-kfree_sensitive()/kvfree_sensitive instead of kfree()/vfree() to free
-cpu_addr in both smcd_buf_free() and smc_buf_free(). This change aims
-to prevent potential sensitive data leaks.
+> +
+>  	groups = use_l4_type ? &inner_ttc_groups[TTC_GROUPS_USE_L4_TYPE] :
+>  			       &inner_ttc_groups[TTC_GROUPS_DEFAULT];
+>  
+> @@ -728,6 +731,9 @@ struct mlx5_ttc_table *mlx5_create_ttc_table(struct mlx5_core_dev *dev,
+>  	}
+>  
+>  	ns = mlx5_get_flow_namespace(dev, params->ns_type);
+> +	if (!ns)
+> +		return ERR_PTR(-EOPNOTSUPP);
 
-I am submitting this as an RFC to seek feedback on whether this change
-is appropriate and aligns with the subsystem's expectations. If confirmed
-to be useful, I will send a formal patch.
+The same here.
 
-Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
----
- net/smc/smc_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index ac07b963aede..1b5eb0149b89 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -1388,7 +1388,7 @@ static void smcr_buf_free(struct smc_link_group *lgr, bool is_rmb,
- 	if (!buf_desc->is_vm && buf_desc->pages)
- 		__free_pages(buf_desc->pages, buf_desc->order);
- 	else if (buf_desc->is_vm && buf_desc->cpu_addr)
--		vfree(buf_desc->cpu_addr);
-+		kvfree_sensitive(buf_desc->cpu_addr, buf_desc->len);
- 	kfree(buf_desc);
- }
- 
-@@ -1400,7 +1400,7 @@ static void smcd_buf_free(struct smc_link_group *lgr, bool is_dmb,
- 		buf_desc->len += sizeof(struct smcd_cdc_msg);
- 		smc_ism_unregister_dmb(lgr->smcd, buf_desc);
- 	} else {
--		kfree(buf_desc->cpu_addr);
-+		kfree_sensitive(buf_desc->cpu_addr);
- 	}
- 	kfree(buf_desc);
- }
--- 
-2.34.1
-
+> +
+>  	groups = use_l4_type ? &ttc_groups[TTC_GROUPS_USE_L4_TYPE] :
+>  			       &ttc_groups[TTC_GROUPS_DEFAULT];
+>  
+> -- 
+> 2.34.1
 
