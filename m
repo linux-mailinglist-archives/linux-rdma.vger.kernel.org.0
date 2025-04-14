@@ -1,321 +1,124 @@
-Return-Path: <linux-rdma+bounces-9424-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9427-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF116A88B0E
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Apr 2025 20:29:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76A55A88BA6
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Apr 2025 20:45:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36F553B3CD5
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Apr 2025 18:29:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA6AE189AA04
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Apr 2025 18:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478BF28DF0F;
-	Mon, 14 Apr 2025 18:28:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8BA628E5E6;
+	Mon, 14 Apr 2025 18:44:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="qowdkBkC"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="E12PzeVZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F58728BABD;
-	Mon, 14 Apr 2025 18:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFD3228BA9B
+	for <linux-rdma@vger.kernel.org>; Mon, 14 Apr 2025 18:44:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744655332; cv=none; b=f1rZWtAMK0Hj8KOvs7tFLuaSwJmAGoEXhosG6/7mqzR1As5rsummqqePiGbVGIPituG46/UtG8yRKIgYWQF8czqex90C4ggHwYk5HBH9OJg7iof5q+WXHsxtFYaGd6bc7WrhWHTdY+qBU+pr95dMJ5QXN33vRqE214mAsnHirx0=
+	t=1744656271; cv=none; b=FDZgZBoLbAqlZh9W/cvOww4ZwyQCL8a5rUQxOox0FHm/ngWIOJ4guPHTg/FmGu6xM2cOOKzjr9oZZSAbJ1cC3Ig5wW9eJMWHwigc74FXecnI1JKX3AmPjhSQ7gDRYK8988mVLghmvfsOPwxrCVPqBMDsF2yq40SXxvKX8FEPWEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744655332; c=relaxed/simple;
-	bh=wAR3zRcC32JyRZSscQWjjEDRobAr+4tnxdrwNhQ8q6w=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=rdA8vZjXhWLd2hgJCHxIyqG53c7YwS70JhZyilDDWFrurhWePOz7x1VCFXN4KHRh47kNDBtMztRSy/IZWhv31DpMQRjWgXBY8dlVA0/PVsNEHwzJ702VTQB4cgoEku6jasOnHNkUETvpeUoxl6OdYv8itw1m21BWZa+ROC6bNvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=qowdkBkC; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1186)
-	id CE6782052511; Mon, 14 Apr 2025 11:28:49 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CE6782052511
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1744655329;
-	bh=T+t2Pr+b5X9fRwcM37Y8+xt2plb2c5xj4H5UNxKpUJo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qowdkBkCp2uzCmgxfXYX3q5BQzX6goFFqdFKjVOnAvCaNla71eQn7JG338Xewc+3b
-	 wyZUdsyHTQxRKcVN4ucW3pa2AjlI8CgnNpEjNvPYAPAn46+fLOjmQH4v5uOei45+IR
-	 ZR5rlW4AYCf+EhGFTi+9RVKWp++UblNq+48DfTNw=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	pabeni@redhat.com,
-	haiyangz@microsoft.com,
-	kys@microsoft.com,
-	edumazet@google.com,
-	kuba@kernel.org,
-	davem@davemloft.net,
-	decui@microsoft.com,
-	wei.liu@kernel.org,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH rdma-next 4/4] net: mana: Add support for auxiliary device servicing events
-Date: Mon, 14 Apr 2025 11:28:49 -0700
-Message-Id: <1744655329-13601-5-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1744655329-13601-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1744655329-13601-1-git-send-email-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1744656271; c=relaxed/simple;
+	bh=YpSfHpLk4g82/Efaxxr4vcOeA7lwSVP0ZoulsVdeGLY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Raed8jaeW6dLObWDGGQEuhWq8AGRTa/fJuFlSToScBnNW7V67HnjrEg0ahvlG+zE9ClXHPlRHGSqr8EjLJNSAhY9Wa4sAnwuvLiO78IHtGuXUcPwOz5Hpe9AGbrf+YQNjs/4iT9DgRLh35KKGpSInkWFEOBrTvvH/qaRnbszwOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=E12PzeVZ; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-b07d607dc83so1349964a12.1
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Apr 2025 11:44:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1744656269; x=1745261069; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YpSfHpLk4g82/Efaxxr4vcOeA7lwSVP0ZoulsVdeGLY=;
+        b=E12PzeVZu5Exwy8LyxFk9HWgo0LQ+XxMijoqt+C1B+Mp3AYP3HgimWmrf9iOztUsrf
+         4UHJRw1rgGT5K2jugGhaZYNqMS6qBc4LSCCwbOjuZ1TPhvHD/SZzcqq2/oTv/wxv6qsY
+         hKoy7XFhw7AZeIAB4v0NuPvLvGIFSngF5FTv0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744656269; x=1745261069;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YpSfHpLk4g82/Efaxxr4vcOeA7lwSVP0ZoulsVdeGLY=;
+        b=ajTIKih7j8Kwa8Ici4kkPMzuDz31VwyTqAurhxNwgU5WZORcTWvW1WPqbgcv24URS3
+         cll650LNba6+S0hK9QLP1e0oY5aRWNCHHv+h/IQIBP7p091syzltHeQYUETXMkVTqaaQ
+         kzA1DQaTqr67SMVXrUVWYCjFq7JNC5otHj6k3I9gWxYFaFefSnBwrTR/Y1mhoHnOQBwL
+         ZSEkzIZDg/7ff2pOX7ZtOK7UMt0fcgrkUczf1lxVq7PiNSjQEZunpSUQ+aVk/HxdDWAQ
+         SMv568v5vsloU7u0j4ej3XDE5cqbvCy2ub+R0y7ryaxxqHzJYmC7salQdGiFoZXHaARI
+         bZ8g==
+X-Forwarded-Encrypted: i=1; AJvYcCUXwgEkbya18+CIrLWHgL2WC3ZoXKJ82zCYb5zFjtyYqDoKBfYxeUcL6ZafQWzUtUQsyY1J4pFGz0td@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/gPqAaYiZauUgNONVaVCIQFt44B0FxOovaLQkJ6SI5wWqGcQK
+	YxK/wfTCzxXF1cgC7q01uwJk1B61jyoK1v3xUzSJLAMXNQzeo52/shRFWyfJvw==
+X-Gm-Gg: ASbGncviQm3cFVQe8Ncgr1nXytnvnb1pg/DtaxittzBGTmvC2YdbAMXKnvfPEFVXgsP
+	8Hs6ZAoV3nPHZpwHMn3NGPrFFVDXXA6bfdE5ysiERrbf0fza8LXZphcP4qqTWe1RJK5ynqd4Imv
+	OqxDJF51lYBBdSibXGjsf2P1bPEI6b0SH7SbrLpfR8xj+FeRpvQQGxinzCCTaYBgyrC80pFeaHR
+	65T3RtUMVas4qrD3eWwkj3dfoT/aVNRXwDwTabgUzd+kzy49a00KGGNY6Y9d/K+J8TM4XB4dk1J
+	ay9QKUrpQEejcTcKSOPcOLQ426iAypnuVsJevFcqyLyq88ibTMQ6fHPUXDSKcsiyurhA3k++iib
+	5mA==
+X-Google-Smtp-Source: AGHT+IHRnGevNVFCEzzLtuARDY+GV3b1ySMboNdXjtt9nCxP859MMeYdEqvd7RpkkuyGR22MEOT6ZQ==
+X-Received: by 2002:a17:90b:2752:b0:301:1bce:c255 with SMTP id 98e67ed59e1d1-308237ba788mr18304386a91.27.1744656268888;
+        Mon, 14 Apr 2025 11:44:28 -0700 (PDT)
+Received: from localhost ([2a00:79e0:2e14:7:cfd0:cb73:1c0:728a])
+        by smtp.gmail.com with UTF8SMTPSA id 98e67ed59e1d1-306df082327sm11386410a91.15.2025.04.14.11.44.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Apr 2025 11:44:27 -0700 (PDT)
+Date: Mon, 14 Apr 2025 11:44:24 -0700
+From: Brian Norris <briannorris@chromium.org>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>
+Cc: Jeff Johnson <jjohnson@kernel.org>,
+	Loic Poulain <loic.poulain@linaro.org>,
+	Francesco Dolcini <francesco@dolcini.it>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
+	ath11k@lists.infradead.org, ath12k@lists.infradead.org,
+	wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next 0/7] net: Don't use %pK through printk
+Message-ID: <Z_1XiNY2ujreEo69@google.com>
+References: <20250414-restricted-pointers-net-v1-0-12af0ce46cdd@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250414-restricted-pointers-net-v1-0-12af0ce46cdd@linutronix.de>
 
-From: Shiraz Saleem <shirazsaleem@microsoft.com>
+On Mon, Apr 14, 2025 at 10:26:01AM +0200, Thomas Weißschuh wrote:
+> Furthermore, restricted pointers ("%pK") were never meant to be used
+> through printk().
 
-Handle soc servcing events which require the rdma auxiliary device resources to
-be cleaned up during a suspend, and re-initialized during a resume.
+Is this really true? Documentation/admin-guide/sysctl/kernel.rst still
+has a section on kptr_restrict which talks about dmesg, CAP_SYSLOG, and
+%pK, which sounds like it's intended. But I'm not highly familiar with
+this space, so maybe I'm misreading something.
 
-Signed-off-by: Shiraz Saleem <shirazsaleem@microsoft.com>
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 11 +++-
- .../net/ethernet/microsoft/mana/hw_channel.c  | 19 ++++++
- drivers/net/ethernet/microsoft/mana/mana_en.c | 60 +++++++++++++++++++
- include/net/mana/gdma.h                       | 18 ++++++
- include/net/mana/hw_channel.h                 |  9 +++
- 5 files changed, 116 insertions(+), 1 deletion(-)
+(I do see that commit a48849e2358e ("printk: clarify the documentation
+for plain pointer printing") updated
+Documentation/core-api/printk-formats.rst.)
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 1caf73c..1d98dd6 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -385,6 +385,7 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
- 	case GDMA_EQE_HWC_INIT_EQ_ID_DB:
- 	case GDMA_EQE_HWC_INIT_DATA:
- 	case GDMA_EQE_HWC_INIT_DONE:
-+	case GDMA_EQE_HWC_SOC_SERVICE:
- 	case GDMA_EQE_RNIC_QP_FATAL:
- 		if (!eq->eq.callback)
- 			break;
-@@ -1438,9 +1439,13 @@ static int mana_gd_setup(struct pci_dev *pdev)
- 	mana_gd_init_registers(pdev);
- 	mana_smc_init(&gc->shm_channel, gc->dev, gc->shm_base);
- 
-+	gc->service_wq = alloc_ordered_workqueue("gdma_service_wq", 0);
-+	if (!gc->service_wq)
-+		return -ENOMEM;
-+
- 	err = mana_gd_setup_irqs(pdev);
- 	if (err)
--		return err;
-+		goto free_workqueue;
- 
- 	err = mana_hwc_create_channel(gc);
- 	if (err)
-@@ -1464,6 +1469,8 @@ destroy_hwc:
- 	mana_hwc_destroy_channel(gc);
- remove_irq:
- 	mana_gd_remove_irqs(pdev);
-+free_workqueue:
-+	destroy_workqueue(gc->service_wq);
- 	return err;
- }
- 
-@@ -1474,6 +1481,8 @@ static void mana_gd_cleanup(struct pci_dev *pdev)
- 	mana_hwc_destroy_channel(gc);
- 
- 	mana_gd_remove_irqs(pdev);
-+
-+	destroy_workqueue(gc->service_wq);
- }
- 
- static bool mana_is_pf(unsigned short dev_id)
-diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-index a00f915..407b46e 100644
---- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-+++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-@@ -112,11 +112,13 @@ out:
- static void mana_hwc_init_event_handler(void *ctx, struct gdma_queue *q_self,
- 					struct gdma_event *event)
- {
-+	union hwc_init_soc_service_type service_data;
- 	struct hw_channel_context *hwc = ctx;
- 	struct gdma_dev *gd = hwc->gdma_dev;
- 	union hwc_init_type_data type_data;
- 	union hwc_init_eq_id_db eq_db;
- 	u32 type, val;
-+	int ret;
- 
- 	switch (event->type) {
- 	case GDMA_EQE_HWC_INIT_EQ_ID_DB:
-@@ -199,7 +201,24 @@ static void mana_hwc_init_event_handler(void *ctx, struct gdma_queue *q_self,
- 		}
- 
- 		break;
-+	case GDMA_EQE_HWC_SOC_SERVICE:
-+		service_data.as_uint32 = event->details[0];
-+		type = service_data.type;
-+		val = service_data.value;
- 
-+		switch (type) {
-+		case GDMA_SERVICE_TYPE_RDMA_SUSPEND:
-+		case GDMA_SERVICE_TYPE_RDMA_RESUME:
-+			ret = mana_rdma_service_event(gd->gdma_context, type);
-+			if (ret)
-+				dev_err(hwc->dev, "Failed to schedule adev service event: %d\n", ret);
-+			break;
-+		default:
-+			dev_warn(hwc->dev, "Received unknown SOC service type %u\n", type);
-+			break;
-+		}
-+
-+		break;
- 	default:
- 		dev_warn(hwc->dev, "Received unknown gdma event %u\n", event->type);
- 		/* Ignore unknown events, which should never happen. */
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 70c4955..d832700 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -2982,6 +2982,66 @@ idx_fail:
- 	return ret;
- }
- 
-+static void mana_handle_rdma_servicing(struct work_struct *work)
-+{
-+	struct mana_service_work *serv_work =
-+		container_of(work, struct mana_service_work, work);
-+	struct gdma_dev *gd = serv_work->gdma_dev;
-+	struct device *dev = gd->gdma_context->dev;
-+	int ret;
-+
-+	switch (serv_work->event) {
-+	case GDMA_SERVICE_TYPE_RDMA_SUSPEND:
-+		if (!gd->adev || gd->is_suspended)
-+			break;
-+
-+		remove_adev(gd);
-+		gd->is_suspended = true;
-+		break;
-+
-+	case GDMA_SERVICE_TYPE_RDMA_RESUME:
-+		if (!gd->is_suspended)
-+			break;
-+
-+		ret = add_adev(gd, "rdma");
-+		if (ret)
-+			dev_err(dev, "Failed to add adev on resume: %d\n", ret);
-+		else
-+			gd->is_suspended = false;
-+		break;
-+
-+	default:
-+		dev_warn(dev, "unknown adev service event %u\n",
-+			 serv_work->event);
-+		break;
-+	}
-+
-+	kfree(serv_work);
-+}
-+
-+int mana_rdma_service_event(struct gdma_context *gc, enum gdma_service_type event)
-+{
-+	struct gdma_dev *gd = &gc->mana_ib;
-+	struct mana_service_work *serv_work;
-+
-+	if (gd->dev_id.type != GDMA_DEVICE_MANA_IB) {
-+		/* RDMA device is not detected on pci */
-+		return 0;
-+	}
-+
-+	serv_work = kzalloc(sizeof(*serv_work), GFP_ATOMIC);
-+	if (!serv_work)
-+		return -ENOMEM;
-+
-+	serv_work->event = event;
-+	serv_work->gdma_dev = gd;
-+
-+	INIT_WORK(&serv_work->work, mana_handle_rdma_servicing);
-+	queue_work(gc->service_wq, &serv_work->work);
-+
-+	return 0;
-+}
-+
- int mana_probe(struct gdma_dev *gd, bool resuming)
- {
- 	struct gdma_context *gc = gd->gdma_context;
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 89abf98..335d061 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -60,6 +60,7 @@ enum gdma_eqe_type {
- 	GDMA_EQE_HWC_INIT_DONE		= 131,
- 	GDMA_EQE_HWC_SOC_RECONFIG	= 132,
- 	GDMA_EQE_HWC_SOC_RECONFIG_DATA	= 133,
-+	GDMA_EQE_HWC_SOC_SERVICE	= 134,
- 	GDMA_EQE_RNIC_QP_FATAL		= 176,
- };
- 
-@@ -70,6 +71,18 @@ enum {
- 	GDMA_DEVICE_MANA_IB	= 3,
- };
- 
-+enum gdma_service_type {
-+	GDMA_SERVICE_TYPE_NONE		= 0,
-+	GDMA_SERVICE_TYPE_RDMA_SUSPEND	= 1,
-+	GDMA_SERVICE_TYPE_RDMA_RESUME	= 2,
-+};
-+
-+struct mana_service_work {
-+	struct work_struct work;
-+	struct gdma_dev *gdma_dev;
-+	enum gdma_service_type event;
-+};
-+
- struct gdma_resource {
- 	/* Protect the bitmap */
- 	spinlock_t lock;
-@@ -224,6 +237,7 @@ struct gdma_dev {
- 	void *driver_data;
- 
- 	struct auxiliary_device *adev;
-+	bool is_suspended;
- };
- 
- /* MANA_PAGE_SIZE is the DMA unit */
-@@ -409,6 +423,8 @@ struct gdma_context {
- 	struct gdma_dev		mana_ib;
- 
- 	u64 pf_cap_flags1;
-+
-+	struct workqueue_struct *service_wq;
- };
- 
- #define MAX_NUM_GDMA_DEVICES	4
-@@ -888,4 +904,6 @@ int mana_gd_destroy_dma_region(struct gdma_context *gc, u64 dma_region_handle);
- void mana_register_debugfs(void);
- void mana_unregister_debugfs(void);
- 
-+int mana_rdma_service_event(struct gdma_context *gc, enum gdma_service_type event);
-+
- #endif /* _GDMA_H */
-diff --git a/include/net/mana/hw_channel.h b/include/net/mana/hw_channel.h
-index 158b125..83cf933 100644
---- a/include/net/mana/hw_channel.h
-+++ b/include/net/mana/hw_channel.h
-@@ -49,6 +49,15 @@ union hwc_init_type_data {
- 	};
- }; /* HW DATA */
- 
-+union hwc_init_soc_service_type {
-+	u32 as_uint32;
-+
-+	struct {
-+		u32 value	: 28;
-+		u32 type	:  4;
-+	};
-+}; /* HW DATA */
-+
- struct hwc_rx_oob {
- 	u32 type	: 6;
- 	u32 eom		: 1;
--- 
-2.43.0
+In any case, even if the advice has changed, it seems (again, to an
+outsider) a bit much to say it was "never" meant to be used through
+printk().
 
+Brian
 
