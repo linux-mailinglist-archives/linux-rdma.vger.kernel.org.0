@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-9399-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9400-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A404AA87B38
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Apr 2025 11:00:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A61B0A87B3C
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Apr 2025 11:01:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1FA377A4D1C
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Apr 2025 08:59:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD6293AEA66
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Apr 2025 09:00:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F182E25E47F;
-	Mon, 14 Apr 2025 09:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C87525E82A;
+	Mon, 14 Apr 2025 09:00:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="TCx0a/Rn"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="o4OMuZBE"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE7B1F37D4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FDAA3C38;
 	Mon, 14 Apr 2025 09:00:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744621242; cv=none; b=BhvhyaAqNVap6ritkl9N4i6WLk9L5lFh+XyCvo0HWttqgVjF2YlTaLv0MW/SEIDcwlSBxbhTzTDx1rd4KTrS/xyORrtarg2aosy9nsQHOPC0INl2JGOWtLjS8t36xXDlplzsjB3RCOpeLOZFaT/7rKD5na0aLtF8I4Gt8KI3FSM=
+	t=1744621242; cv=none; b=AWbFGXvnlaXNrw8FnHmQDUlyQI/7OM8E4V34ml0ylrFCh2in+/GdxdEWS3Jkn3iilcYHQNaBBroXCKg5wgCbUshy1xOEvnoyMaHghz9E5WzGpRHdtni0mpUKzQieXrYe4H8L1cT75jHaPjWAvsFGnxEsPPyBfWYvMmmSp3Jtx6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1744621242; c=relaxed/simple;
-	bh=GfzipUVy5RaTdAOqBjCv6TrYY3q+oixO4mtRqKujpGU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=TPZp3lInwsfBBBpfXgj3lqTnBTx12mV5sJc7AcRgvrQJJszzOlb2Q+c5qMkHI5GVWABT0C1EICYcT9O1DkuTzg9U3nvzP2C+PC3P15pNTq1P341+bMbdDzlq8A4oB51Z9/bBAn9oJJOw4ABll/GKOHI/FXO2EtvbwsByutX8Oa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=TCx0a/Rn; arc=none smtp.client-ip=13.77.154.182
+	bh=vtUO3I0GfR3soW4psczNy/v5iTEKL5+K9N1+eicoi9M=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=AyAI4sxKhyhXpSC9rIOQz7M0fdGu+x0BcEm2mY7Ko760qLxylgyge1mpht37t8Na4IR9Jv61TbrvFnoWzmLpLw82UzxYISOZixptUHfJfpuiUkUcsDLICCQhygb5IRLLhlF2UWNx84Sothy1bCNF8hq3bZ529GxHcNKTkLZpeKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=o4OMuZBE; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: by linux.microsoft.com (Postfix, from userid 1186)
-	id B6DEC21180D1; Mon, 14 Apr 2025 02:00:34 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B6DEC21180D1
+	id C431021180D2; Mon, 14 Apr 2025 02:00:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C431021180D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1744621234;
-	bh=Hu0kugxBiz8/p6dDvzQx99KKmNT1Fzl3KzmqCbUqqmI=;
+	bh=FKKQQzJvIk0F8xIfgA7X5Zz753fbLzvsg6P9j7X+2sM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TCx0a/RnokTAPpO24utJAae6F6af6YSsuZmNVLx45JX6cuD76HZWvSh5c5MSROkrx
-	 qwZeeTuVdbSYnoeBo1u7CT0LG6XDVx6VTga2fIqbh7nqbPzmLSccEucoRvjoA0fUQ5
-	 xxtsgxltnQHTa2SISQyczwVu3d3ixMrW84PmLFTQ=
+	b=o4OMuZBEAn9ummbKs75iGaC1lQYCEU598W/uzVwS5vxmgRRUMoZg5y6jOe1GHmUub
+	 Olu0bCbHObhhRvhVvhduwA0HM0tcAVn0TRKwjX9HNKCG3vhvrfgpW0up1/oryiMoTF
+	 gKSmWOHB0O4P4NQkVpS4J34Vq1tKCp3AdKZQ2c9w=
 From: Konstantin Taranov <kotaranov@linux.microsoft.com>
 To: kotaranov@microsoft.com,
 	pabeni@redhat.com,
@@ -54,9 +54,9 @@ To: kotaranov@microsoft.com,
 Cc: linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH rdma-next v2 1/3] RDMA/mana_ib: Access remote atomic for MRs
-Date: Mon, 14 Apr 2025 02:00:32 -0700
-Message-Id: <1744621234-26114-2-git-send-email-kotaranov@linux.microsoft.com>
+Subject: [PATCH rdma-next v2 2/3] RDMA/mana_ib: support of the zero based MRs
+Date: Mon, 14 Apr 2025 02:00:33 -0700
+Message-Id: <1744621234-26114-3-git-send-email-kotaranov@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1744621234-26114-1-git-send-email-kotaranov@linux.microsoft.com>
 References: <1744621234-26114-1-git-send-email-kotaranov@linux.microsoft.com>
@@ -68,39 +68,101 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
 From: Konstantin Taranov <kotaranov@microsoft.com>
 
-Add IB_ACCESS_REMOTE_ATOMIC to the valid flags for MRs and use
-the corresponding flag bit during MR creation in the HW.
+Add IB_ZERO_BASED to the valid flags and use
+the corresponding MR creation request for the zero
+based memory.
 
 Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
 ---
- drivers/infiniband/hw/mana/mr.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/mana/mr.c | 24 +++++++++++++++++-------
+ include/net/mana/gdma.h         | 11 ++++++++++-
+ 2 files changed, 27 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-index f99557e..e4a9f53 100644
+index e4a9f53..6d974d0 100644
 --- a/drivers/infiniband/hw/mana/mr.c
 +++ b/drivers/infiniband/hw/mana/mr.c
-@@ -5,8 +5,8 @@
- 
+@@ -6,7 +6,7 @@
  #include "mana_ib.h"
  
--#define VALID_MR_FLAGS                                                         \
--	(IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_READ)
-+#define VALID_MR_FLAGS (IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_READ |\
-+			IB_ACCESS_REMOTE_ATOMIC)
+ #define VALID_MR_FLAGS (IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_READ |\
+-			IB_ACCESS_REMOTE_ATOMIC)
++			IB_ACCESS_REMOTE_ATOMIC | IB_ZERO_BASED)
  
  #define VALID_DMA_MR_FLAGS (IB_ACCESS_LOCAL_WRITE)
  
-@@ -24,6 +24,9 @@ mana_ib_verbs_to_gdma_access_flags(int access_flags)
- 	if (access_flags & IB_ACCESS_REMOTE_READ)
- 		flags |= GDMA_ACCESS_FLAG_REMOTE_READ;
+@@ -51,7 +51,10 @@ static int mana_ib_gd_create_mr(struct mana_ib_dev *dev, struct mana_ib_mr *mr,
+ 		req.gva.virtual_address = mr_params->gva.virtual_address;
+ 		req.gva.access_flags = mr_params->gva.access_flags;
+ 		break;
+-
++	case GDMA_MR_TYPE_ZBVA:
++		req.zbva.dma_region_handle = mr_params->zbva.dma_region_handle;
++		req.zbva.access_flags = mr_params->zbva.access_flags;
++		break;
+ 	default:
+ 		ibdev_dbg(&dev->ib_dev,
+ 			  "invalid param (GDMA_MR_TYPE) passed, type %d\n",
+@@ -147,11 +150,18 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
+ 		  dma_region_handle);
  
-+	if (access_flags & IB_ACCESS_REMOTE_ATOMIC)
-+		flags |= GDMA_ACCESS_FLAG_REMOTE_ATOMIC;
-+
- 	return flags;
- }
+ 	mr_params.pd_handle = pd->pd_handle;
+-	mr_params.mr_type = GDMA_MR_TYPE_GVA;
+-	mr_params.gva.dma_region_handle = dma_region_handle;
+-	mr_params.gva.virtual_address = iova;
+-	mr_params.gva.access_flags =
+-		mana_ib_verbs_to_gdma_access_flags(access_flags);
++	if (access_flags & IB_ZERO_BASED) {
++		mr_params.mr_type = GDMA_MR_TYPE_ZBVA;
++		mr_params.zbva.dma_region_handle = dma_region_handle;
++		mr_params.zbva.access_flags =
++			mana_ib_verbs_to_gdma_access_flags(access_flags);
++	} else {
++		mr_params.mr_type = GDMA_MR_TYPE_GVA;
++		mr_params.gva.dma_region_handle = dma_region_handle;
++		mr_params.gva.virtual_address = iova;
++		mr_params.gva.access_flags =
++			mana_ib_verbs_to_gdma_access_flags(access_flags);
++	}
  
+ 	err = mana_ib_gd_create_mr(dev, mr, &mr_params);
+ 	if (err)
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 50ffbc4..3db506d 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -812,6 +812,8 @@ enum gdma_mr_type {
+ 	 * address that is set up in the MST
+ 	 */
+ 	GDMA_MR_TYPE_GVA = 2,
++	/* Guest zero-based address MRs */
++	GDMA_MR_TYPE_ZBVA = 4,
+ };
+ 
+ struct gdma_create_mr_params {
+@@ -823,6 +825,10 @@ struct gdma_create_mr_params {
+ 			u64 virtual_address;
+ 			enum gdma_mr_access_flags access_flags;
+ 		} gva;
++		struct {
++			u64 dma_region_handle;
++			enum gdma_mr_access_flags access_flags;
++		} zbva;
+ 	};
+ };
+ 
+@@ -838,7 +844,10 @@ struct gdma_create_mr_request {
+ 			u64 virtual_address;
+ 			enum gdma_mr_access_flags access_flags;
+ 		} gva;
+-
++		struct {
++			u64 dma_region_handle;
++			enum gdma_mr_access_flags access_flags;
++		} zbva;
+ 	};
+ 	u32 reserved_2;
+ };/* HW DATA */
 -- 
 2.43.0
 
