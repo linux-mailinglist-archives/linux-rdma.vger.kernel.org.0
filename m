@@ -1,140 +1,253 @@
-Return-Path: <linux-rdma+bounces-9408-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9409-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF96AA880E9
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Apr 2025 14:58:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B35CA8812B
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Apr 2025 15:07:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C79C2177CD2
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Apr 2025 12:58:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60F633B8C4E
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Apr 2025 13:06:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C5D290BC6;
-	Mon, 14 Apr 2025 12:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81182C374C;
+	Mon, 14 Apr 2025 13:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="H0qaDA1U"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="UwS+RxP7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2074.outbound.protection.outlook.com [40.107.220.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B317539A
-	for <linux-rdma@vger.kernel.org>; Mon, 14 Apr 2025 12:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744635510; cv=none; b=Tp8NB1HSEBQqTSh3vsLBNpxeLBKJC9OoNFeLd3O38SmOmtKHYje/Llygk0eC7SKjSK/VRyPDW1iFe0hPOBY3XH+jQO9P3Ws+cbitih4aHWQVPeWrKLHTVl/aFboivRoCf29CbaNO92Z66HWJuprtpFCR+pSHv/ZdOjw1IE3ihSM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744635510; c=relaxed/simple;
-	bh=bTELpSp22Rcp0H/efcoNrVwwvJ+D98qfOSHNFe7pktM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eN9kdmN4GXELQ1YUviuBUBem3UH6icAwRorPhRqKI/I0mcsCN76ubvemnBVb1L2IepGT13xWbNDPTyJe0XIFE4bRURYV0Aq7ttIZkMhBncpRIBqGDK8lKxnL1fkdyIzFZi961JYWF5ir0pygHV0AV71bsX8prlcuOOORPzRv2PA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=H0qaDA1U; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <bf58fb2a-2b0d-4ca7-85cc-5239a6c526d7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1744635506;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nw0b+RkWk5OPe+c/+NEntlUgc9Puhcso3yi32XOKdhE=;
-	b=H0qaDA1UhdmZkSuxE+snYxUXmLJMmuUTKzbU/RRZsdMXA+eCFmtiEzWueC9E9foyeGo5qN
-	eviznKow85fHqwKbTrunFVeLn58E82Wvfno76AV6bfDpCZ4tUIzu8laQijW/V4GAEoSCS+
-	SOb9cMr5INsRqLFZEbdXAPMvT+i5wY8=
-Date: Mon, 14 Apr 2025 14:58:22 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06E002BEC3A;
+	Mon, 14 Apr 2025 13:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744635987; cv=fail; b=VzVIg+bQEiHTgqxl6YpSHc/40kTA0qg99dx4Q5k/7OhGqnbbNydrGgnR9aOuS3412ry+DvoColP6YJ8s0TeOxUWo6aHYU4cQX/HoU2Qbfwc8hCd1gMn1w1Wh20LO9/3vAK4QekV1h5WgP8KtsrzruEKjQtHBCvJdHsSYMsR/Gas=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744635987; c=relaxed/simple;
+	bh=u29CIal9zxvtZUwYQgFD4LWtEALUGe8ZlMJTeK42U3w=;
+	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=IT62MoVtnl4UH/uDVx3nHoNSUhFVFS813Db9stxSjVxqlH3YgUqXFwroDUrO3uh35AARn72xKt7WLOwG5GZegiVXfSu/2pLo01oIJc9HKPO0GfA56AycBdWlJkfbhYdZiFR2rE+eE27xRyQtdKAdz/pz/SKyMCG/EinTp/lR36A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=UwS+RxP7; arc=fail smtp.client-ip=40.107.220.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=jMzDQ8M3dhRSB7xdWGu95B4b4crQqgia8NcSUUI93EE8Xf9R4155J8+L2IheH/eJ40oV6WBCqXzyCsLGginSACfyH5PrqlexZc2q3qK9PWZ4izzjVMfG3yP5uwkEHkAMzNed8JXXY7PFwM4mqt7EyOHvCTXtyQyQE6nLT+kYjrZdLRu2t1uF3S51nyc/MDxaJ038K0x1FjYVF1Qgcn2EpLrbS2zA39O7WQDK7uHgWThH9pFq4fIkcJrajM/zZrqnHtLwLDufPnwNsIJ8rbPm+ZMiI+ZtpWZvzPj169URVzE3wdZlgoJFkGQSk8G9gH8WArTF8ZHLKD5gUIA9CVXnig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NDdLC2r9LEhRDlVx29ejfXwciLDvhW4QSUcD4DS34x0=;
+ b=br4tkKjARI3TlwXfhRRzD2ZSzykmud+xfDlfTFxtOKl/arp3MuiiSSZjekirjURDHlcXMjQUEJo/PaaB/uSJtjiZqCoCRHxxbYFe7zVKoDZDWR25Rxx4czzupKofB1sxjzkdmZxVBn2mtsZTKMl5TQ2Ss9+uZjGW6TBFXyy5brsafOynMj6jumNDTWPZ5jICwrex/weziKEtrxlspwrW7/dfUj6cXbb1xVdMHDsxu9gjTWSDrr73KEQ2otBmgaBTuGNlPk/2Z0PJYc58u76j2KtAyGWizWLSgJ03skn09lSXO2q0D/LzVstDUuLqzV5EIDjh2v5LUc4oLWCngh4qOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NDdLC2r9LEhRDlVx29ejfXwciLDvhW4QSUcD4DS34x0=;
+ b=UwS+RxP7Uv1Oei3z1fVJ+v+1cFI/nRjhmDJg4JxggvoF+yo8Ijck+3RWb9M9YDhffYB95s/NRhVAb9e1IX+6d7YJeKtR/oPRHSYjxFFrRMEbg4oNL+p6mU3PZbxdNKjuu3kE6vxKY8fkdGq0QdBevINL1zRvsEP/H0xfxHsETVdGLlCw+l0ufEpXmq9wmAtavn+h6XyAP+GSUhoO4lRz4KSauktYdkp3wVMS1WVg5lAUk8hzCOA2K5QRXaRZY+p9q2ZIef7k/d6TMnBl5CoSKBD8cXS6wduH2Yv0yBTbkCkT0T/YB9nIPm2EdxPQmygxPfevFM7uypazp0/wvOA44w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
+ by SN7PR12MB8059.namprd12.prod.outlook.com (2603:10b6:806:32b::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8632.29; Mon, 14 Apr
+ 2025 13:06:23 +0000
+Received: from CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
+ ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.8632.030; Mon, 14 Apr 2025
+ 13:06:23 +0000
+Date: Mon, 14 Apr 2025 10:06:22 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Leon Romanovsky <leonro@nvidia.com>
+Subject: [GIT PULL] Please pull RDMA subsystem changes
+Message-ID: <20250414130622.GA399879@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="WqPtcm6UamhslFgw"
+Content-Disposition: inline
+X-ClientProxiedBy: BN9PR03CA0470.namprd03.prod.outlook.com
+ (2603:10b6:408:139::25) To CH3PR12MB8659.namprd12.prod.outlook.com
+ (2603:10b6:610:17c::13)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] RDMA/rxe: Fix slab-use-after-free Read in
- rxe_queue_cleanup bug
-To: "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
- "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>, "jgg@ziepe.ca"
- <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Cc: liuyi <liuy22@mails.tsinghua.edu.cn>
-References: <20250412075714.3257358-1-yanjun.zhu@linux.dev>
- <OS3PR01MB98651EBCADD5C93F1BF9ADFAE5B32@OS3PR01MB9865.jpnprd01.prod.outlook.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <OS3PR01MB98651EBCADD5C93F1BF9ADFAE5B32@OS3PR01MB9865.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|SN7PR12MB8059:EE_
+X-MS-Office365-Filtering-Correlation-Id: 128a0951-4ec9-4964-0b3b-08dd7b55280d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?TkyNQEOA2tn+IpdHko15vyQzc4G2r+KtNcvT1idHge9bIVyZ6xX2HnY1O93J?=
+ =?us-ascii?Q?UYTVTKqcxf3fot6RJBAar7Th3HD4rzsXxRvCOZm0f7E7s/pI1UsAp+BZ0MZ4?=
+ =?us-ascii?Q?j/LB2iOEeLMfwh3ZYHC7BnnmVZGYQ35moCSqLvIOIZR+c9Wpu3x4q6Rp04CM?=
+ =?us-ascii?Q?H+3LrO1xpsdLLGIdt7rve0U5JIkZC77ddRbIFtOMFBciG3uv76dXcgcXaEoz?=
+ =?us-ascii?Q?+rxv/e06JggnHA73Bn9oz25e+bdXTkRzr5zu4BJLCaxJESgGKd9Sic/UDM5r?=
+ =?us-ascii?Q?IYYTro+kft+rjCvEizxA/JeV2g96Ke0mwP9DQjTxa2xCsI/zTZkYQSVv5GgC?=
+ =?us-ascii?Q?UupMM/aWWKK3kxwxrX5aFU+zhoAXObk11z0sz0o1hpMjIaM6vbfLQ2BbRis1?=
+ =?us-ascii?Q?u3LsRBohfdedRXivHWkUC+xLLuWpi5gfTO5YTd5uICDiyTJBkjZ2YILtaETo?=
+ =?us-ascii?Q?pE0oeJz8Ozzc0BlcRJLbVpqkCDm55zV5EB3z5CBbroc+lS2lBLg7zC1cZyIJ?=
+ =?us-ascii?Q?BPjtjLQBBNtx2WyqcIn8oLDJmf7wJOLx/Z+5H0eonZzwZuPz275obUOQJORr?=
+ =?us-ascii?Q?ZDmp92p/svL8ix4g3oSWZ54mqnSiaQkTCIwfwDkz2DBs9nX9s3fC39Hxqeht?=
+ =?us-ascii?Q?5ftFolTHtBsRSk6OUobxER/uw4FrsG6nCohlFR/PPgqkrbwd0IVe4otwsEjU?=
+ =?us-ascii?Q?08xp87YU1/ShBHwk0tEjs3Z8HFapNvr/zDCPxSMnbfSK+CBCqXWMvqGtO2Ly?=
+ =?us-ascii?Q?8uYD35c6dlmVZdc2UKhXjKQ/sGUAXM8hNYK5n9JZmTJqBbBsVTud4HAQDqEW?=
+ =?us-ascii?Q?Eu+JJ8/Nam/Ycq3sseiiUQ8WdUbGOFqPiBJuI1Dy81cYx0Vfh3I8LXdNhKPa?=
+ =?us-ascii?Q?LsBBwlsUFTD+8yjShDC8eEiMWfYajS11AtRfAkoSHL2hr5qy7afZS3nQAZZm?=
+ =?us-ascii?Q?HoH26Doar3AraM6II18v9y0n53q4ot2SIzWdOLU1QP7wKRlXu/1JJsWVu9zy?=
+ =?us-ascii?Q?cMP3nkn20oh7RKDXw2GA3+7pevzR24m8hqT/pMS6d54jIkvah9UXy4jRN4MA?=
+ =?us-ascii?Q?QpfJR6vucIOxodMZSOOcd+gtXDdeT7cpcByHnn0WMHb0lH+Jhpbobgl4MlBO?=
+ =?us-ascii?Q?evTyH0iJqI0MJ+ZByOwaUvdHfKq+sCyxBH4mdCLxK2T2zjr3NgiIKJuuJhwo?=
+ =?us-ascii?Q?ImLcr/P2uSitSAnbMEYgagFxIrNuspecjDXDHD/APkEswN2xM0kcrXr6REAT?=
+ =?us-ascii?Q?8au4m5AYH/OhQSKOgO+smmPF4zdgFJp/mhztVkYXepgS26A1Hkyx3qva/Ehs?=
+ =?us-ascii?Q?9QKW3/y92AMwhs2yLa/uDtxRfjMbNB1NgaNu1wwj7VFDO5Uz5mLcaw9RzDCA?=
+ =?us-ascii?Q?jKr5Bkzjk4WiMgNzdElK/46hxKkgf0X5sFUL6cIggZhxZz0CO7/s2SAhhClE?=
+ =?us-ascii?Q?W+Qos51mKyA=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?V7ZhBG1TyOvtIDzLtvpQX1sVnJDMA+hImns5vvigMMr/KSDTyA80hDxc2lih?=
+ =?us-ascii?Q?Oi8kQOkYbvmOhGPHcq4FSCCgzwzLtfoXU5OAyS2DFdeWnlD6TqumHmqwRKUD?=
+ =?us-ascii?Q?WeAqzQsrhQWkGEYzAkVgmbI0HuxUy267Jh2lAZjgJwCpmjl7yDlJYteo/RsS?=
+ =?us-ascii?Q?a0Zs+koH9X/VUI5xXw74Ds95Gu7a8CY4xnYFK8gbY4ZArAe99WPh7nCSf6gl?=
+ =?us-ascii?Q?ilEd1I1d1hWBHallXi6YuJpbd6NVEn8GE0KrX322gH49k7+hgAAB6UUP+f1G?=
+ =?us-ascii?Q?WXAAOzFbc1kqdYjKSQo+Ah9Srog5sLSa9zboxGGhWMhEpb0tQYstmU03P8bX?=
+ =?us-ascii?Q?hCSQNdwgADBSdwua0MDB4L6ZmA3D9scF6oC8LDxotIe5mf+4s47GEm24U7dc?=
+ =?us-ascii?Q?DEr1W5+cohDWyXUmmDFK7o582lizdlD9hxwUcUWmVxbdDIntsooeqpP2O0HI?=
+ =?us-ascii?Q?YMsDwh1a/vWJCkAtfJGHgMXTnbvOaA5l9ODI9UrjW5DPPb5otBDCFECJK9C+?=
+ =?us-ascii?Q?fQ3NP62X3PH+tFMevHEhDJCm+xpLls14Bvfo8ujSXI/L4HX+jwzRq+umhXyb?=
+ =?us-ascii?Q?cWxZ5fYKpwqVLcvZf3ApfBxKKEYFAQDdQvCA3iq1VUzXAfwBADT5Od31XlSv?=
+ =?us-ascii?Q?TXF+YYBGA7EWBBUlYQjw4VKTzIioEmdTYs+pJ4KbMhwg3ykQfEdB+JlsTcKv?=
+ =?us-ascii?Q?lhuRsyh1u0j5f260REhyF8LQQQezQZXY8hG3jfSlJlOllu7XBB/Tutk09hXJ?=
+ =?us-ascii?Q?L8KlQRWePuffMuxn8WNZK22v0LEz3UpDqt7SLlZk6vEAU7jgOeb96OMsEaA4?=
+ =?us-ascii?Q?QMtdIM9aw4TjYJVAHZS0/1wI53apdgLG4bML2NVf5Rd9N+EJ8cFyXonNg9sk?=
+ =?us-ascii?Q?AgB9mUeQqfX/ou7rkMzfrwJzxiYdF+xZWhoLr4E58KSf40HNSa5Hpj4rZ+Oy?=
+ =?us-ascii?Q?Hw+grnDeRtF+2aZh0oeBAIdwnRu2AEu7J4lN9fW3A7X/2XSHu04SYxYgljq9?=
+ =?us-ascii?Q?rVwi39QjQA47ACMcKCIGkQjiY5vJOUWQ5wZNsmgb2qPgTIPTbZB1+qYk5m43?=
+ =?us-ascii?Q?1tw1d5chE4h+FeXbDWHohxFjqyczdibdcVlpCjLkiE93rY6A90Y640uOpe/x?=
+ =?us-ascii?Q?+20h/fODXBUarjsjO3kGueGncqrtPPXIXKwo0+XaYhK/P7/FM8xnzTUHwl1j?=
+ =?us-ascii?Q?Pk64E5THoodxRq7ApYeN0FYJvhANfNE2zB/TYtZSc7f3VcUZwqcWSUOQKbM7?=
+ =?us-ascii?Q?YVw/MLdcmJPHrjTu0DvlZE4PZvMG82CkNIiAruSIKrjx1o39RMjHW0EVHd6Z?=
+ =?us-ascii?Q?nQP8GMyF7ABuWIkIPCjvEd7CgDNTl8zDofY81TGj/C0F/s6J1+WK3yOewMhJ?=
+ =?us-ascii?Q?SGhBcHdBoONt7+fKjH1AnhoGeumgFNrJ1dHKcAKCXvCreIYJIPk75FeFt1ta?=
+ =?us-ascii?Q?5ixPq54mzpuOcOzVnOCj+JKyaTJYbK+DnC6msc62o0k/Ub6ExBxSVbTcHCDA?=
+ =?us-ascii?Q?ztqWQ7qvkGZj+minRPEnIMmm7jAGrD1p1Wg1cyz+G50IP3XO2UW1ncyQ2kAI?=
+ =?us-ascii?Q?d2lLeR13KrtSoVgUCMYpJGp2eWvA4MC2DMqDp+t9?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 128a0951-4ec9-4964-0b3b-08dd7b55280d
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2025 13:06:23.3300
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kfQv0zj9Dsjuh5/Xcxxtx5pyVrq4N1kNBujcOErgIhtl0Re39JnQdFh9MkgmE139
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8059
 
-On 14.04.25 12:49, Daisuke Matsuda (Fujitsu) wrote:
-> On Sat, April 12, 2025 4:57 PM Zhu Yanjun wrote:
->>
->> Call Trace:
->>   <TASK>
->>   __dump_stack lib/dump_stack.c:94 [inline]
->>   dump_stack_lvl+0x7d/0xa0 lib/dump_stack.c:120
->>   print_address_description mm/kasan/report.c:378 [inline]
->>   print_report+0xcf/0x610 mm/kasan/report.c:489
->>   kasan_report+0xb5/0xe0 mm/kasan/report.c:602
->>   rxe_queue_cleanup+0xd0/0xe0 drivers/infiniband/sw/rxe/rxe_queue.c:195
->>   rxe_cq_cleanup+0x3f/0x50 drivers/infiniband/sw/rxe/rxe_cq.c:132
->>   __rxe_cleanup+0x168/0x300 drivers/infiniband/sw/rxe/rxe_pool.c:232
->>   rxe_create_cq+0x22e/0x3a0 drivers/infiniband/sw/rxe/rxe_verbs.c:1109
->>   create_cq+0x658/0xb90 drivers/infiniband/core/uverbs_cmd.c:1052
->>   ib_uverbs_create_cq+0xc7/0x120 drivers/infiniband/core/uverbs_cmd.c:1095
->>   ib_uverbs_write+0x969/0xc90 drivers/infiniband/core/uverbs_main.c:679
->>   vfs_write fs/read_write.c:677 [inline]
->>   vfs_write+0x26a/0xcc0 fs/read_write.c:659
->>   ksys_write+0x1b8/0x200 fs/read_write.c:731
->>   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->>   do_syscall_64+0xaa/0x1b0 arch/x86/entry/common.c:83
->>   entry_SYSCALL_64_after_hwframe+0x77/0x7f
->>
->> In the function rxe_create_cq, when rxe_cq_from_init fails, the function
->> rxe_cleanup will be called to handle the allocated resources. In fact,
->> some memory resources have already been freed in the function
->> rxe_cq_from_init. Thus, this problem will occur.
->>
->> The solution is to let rxe_cleanup do all the work.
->>
->> Fixes: 8700e3e7c485 ("Soft RoCE driver")
->> Link: https://paste.ubuntu.com/p/tJgC42wDf6/
->> Tested-by: liuyi <liuy22@mails.tsinghua.edu.cn>
->> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> 
-> Reviewed-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-> 
-> The fix looks correct.
+--WqPtcm6UamhslFgw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks a lot.
+Hi Linus,
 
-Zhu Yanjun
+Grab bag of fixes for rc
 
-> Thank you.
-> 
->> ---
->>   drivers/infiniband/sw/rxe/rxe_cq.c | 5 +----
->>   1 file changed, 1 insertion(+), 4 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
->> index fec87c9030ab..fffd144d509e 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_cq.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_cq.c
->> @@ -56,11 +56,8 @@ int rxe_cq_from_init(struct rxe_dev *rxe, struct rxe_cq *cq, int cqe,
->>
->>   	err = do_mmap_info(rxe, uresp ? &uresp->mi : NULL, udata,
->>   			   cq->queue->buf, cq->queue->buf_size, &cq->queue->ip);
->> -	if (err) {
->> -		vfree(cq->queue->buf);
->> -		kfree(cq->queue);
->> +	if (err)
->>   		return err;
->> -	}
->>
->>   	cq->is_user = uresp;
->>
->> --
->> 2.34.1
->>
+Thanks,
+Jason
 
+The following changes since commit 0af2f6be1b4281385b618cb86ad946eded089ac8:
+
+  Linux 6.15-rc1 (2025-04-06 13:11:33 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+
+for you to fetch changes up to ffc59e32c67e599cc473d6427a4aa584399d5b3c:
+
+  RDMA/bnxt_re: Remove unusable nq variable (2025-04-10 14:47:55 -0300)
+
+----------------------------------------------------------------
+RDMA v6.15 first rc pull request
+
+- Hang in bnxt_re due to miscomputing the budget
+
+- Avoid a -Wformat-security message in dev_set_name()
+
+- Avoid an unused definition warning in fs.c with some kconfigs
+
+- Fix error handling in usnic and remove IS_ERR_OR_NULL() usage
+
+- Regression in RXE support foudn by blktests due to missing ODP
+  exclusions
+
+- Set the dma_segment_size on HNS so it doesn't corrupt DMA when using very
+  large IOs
+
+- Move a INIT_WORK to near when the work is allocated in cm.c to fix a
+  racey crash where work in progress was being init'd
+
+- Use __GFP_NOWARN to not dump in kvcalloc() if userspace requests a very
+  big MR
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      RDMA/ucaps: Avoid format-security warning
+
+Chengchang Tang (1):
+      RDMA/hns: Fix wrong maximum DMA segment size
+
+Kashyap Desai (1):
+      RDMA/bnxt_re: Fix budget handling of notification queue
+
+Leon Romanovsky (1):
+      RDMA/bnxt_re: Remove unusable nq variable
+
+Li Zhijian (1):
+      RDMA/rxe: Fix null pointer dereference in ODP MR check
+
+Mark Bloch (1):
+      RDMA/mlx5: Fix compilation warning when USER_ACCESS isn't set
+
+Sharath Srinivasan (1):
+      RDMA/cma: Fix workqueue crash in cma_netevent_work_handler
+
+Shay Drory (1):
+      RDMA/core: Silence oversized kvmalloc() warning
+
+Yue Haibing (1):
+      RDMA/usnic: Fix passing zero to PTR_ERR in usnic_ib_pci_probe()
+
+ drivers/infiniband/core/cma.c               |  4 +++-
+ drivers/infiniband/core/ucaps.c             |  2 +-
+ drivers/infiniband/core/umem_odp.c          |  6 ++++--
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c    | 10 ----------
+ drivers/infiniband/hw/hns/hns_roce_main.c   |  2 +-
+ drivers/infiniband/hw/mlx5/fs.c             |  2 --
+ drivers/infiniband/hw/usnic/usnic_ib_main.c | 14 +++++++-------
+ drivers/infiniband/sw/rxe/rxe_loc.h         |  6 ++++++
+ drivers/infiniband/sw/rxe/rxe_mr.c          |  4 ++--
+ drivers/infiniband/sw/rxe/rxe_resp.c        |  4 ++--
+ include/rdma/ib_verbs.h                     |  7 +++++++
+ 11 files changed, 33 insertions(+), 28 deletions(-)
+
+--WqPtcm6UamhslFgw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRRRCHOFoQz/8F5bUaFwuHvBreFYQUCZ/0ISgAKCRCFwuHvBreF
+YXsdAQCMEB2oSJ0YmNQC1Sq2zndWtZRxVho/DmivQOMVL4a3oQD/f460bcAAu164
+cv/lvTjvCtLeWCP+wNZwZPOQpmU1JgI=
+=RQEX
+-----END PGP SIGNATURE-----
+
+--WqPtcm6UamhslFgw--
 
