@@ -1,217 +1,127 @@
-Return-Path: <linux-rdma+bounces-9449-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9450-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58228A89FE0
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Apr 2025 15:47:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB408A8A253
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Apr 2025 17:02:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 647577A2675
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Apr 2025 13:45:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 092C7442CA6
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Apr 2025 15:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E532314D2BB;
-	Tue, 15 Apr 2025 13:46:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5A194A1A;
+	Tue, 15 Apr 2025 15:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="CblIPFpG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JfOw9fE3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2066.outbound.protection.outlook.com [40.107.101.66])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF1313AA53;
-	Tue, 15 Apr 2025 13:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744724815; cv=fail; b=mYa25frI+0PtfffMpca/uUZ0CYLFibCKmzDYySlvFHF10JZKTiNJPwAgnEDwSDHwcNwAnCKdNfK3OEnnOgO+d3Uh6M3Wm1YlhMXXIz8eQc+oAqVlR1qJGy4rwWJKZinouPmhY3tQHzz7POINY1plbY88j084lYt7tjBDZiaU9Tg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744724815; c=relaxed/simple;
-	bh=6E+OhTBKUgMZDmVsTdz7h5SEph9MetdOLZuCclt0mNs=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=sQF/ZU/9bF5l6O18+vbXE6pv0BCLLQ7Bhq+S9GvxWkBHIldq2bzWCh5acjR2H/jgoqGnFpHFsWPf+ED3I8baygJo7b0Gky1IKQy35H+NXcRlVQ/5MeooXVrangoUZ4gJXf3kBE4h+N7rlWcTHiPVYrTLENWm98TPX1RJ2DPzrhY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=CblIPFpG; arc=fail smtp.client-ip=40.107.101.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=oMXk5CGIeKl9vCd4SynkO7GiRIVUnMuyvTWBYy7s+XoXnO66f4fk3sY89zOsD8y2IqMx4iTqEDcxPbMqO5YzcEqGuOIwZ29GTwMUDY8cp4IQpKyuo4JsmSn1naLzN60WPQNxN/tVIxESgiea+s6SyhHKvk/pXCGOM6XrClj6Mg4OqPE1m9YD36mYKsfs3g6X8YAevMWIzfTLbHoz9rbu+m4340KTTJgcjzh10kJ5Pw1FszvCR/E/oWqvStFjeZSjmfDtYnT0vht6WCvGix7/kEd89ZPV8LOo4gOK0XPEZQRPsCEWau/kEDXrufveo1D2fqIyOFvAQGF4HMdqJRDC0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+FBENBDQh5J5yKZL+0a+aLbCVe1gbwE4me27edZy4iI=;
- b=KNBsWA3Y7WxMJxVaqQoZsmoSmbZGfygjMcNrS6NasQgYQzlGLg9UWVc5f/+uU0/OaZ24g4KqjPNAjwSD/0KFCaex2I5t6G+o+VmsHmJMb8YKdLQPlN28DtYnACjIqJqrnZa15j9QmH7r7V/LYM7cGb3icFV/UXQYSYoaciO238s5UoWllxR6Xoj5jqcmkFHAiX6BEcTY2s4+s8afVCyRdpH0qAgnViGDw4f7ruaZlvWsxekTfdwzWkFSNhLcneNydX2sX+FIdsDZ1rNEtOILaeU7KWsW0tdG0qJDF9eHWFkG1gL4Db5NX7pd4nd3qhhPQ0RFmKKzU1BzAgBxwc0JAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+FBENBDQh5J5yKZL+0a+aLbCVe1gbwE4me27edZy4iI=;
- b=CblIPFpGmNz1MCvfwfN5OBxDZ07dFMCuJiUaO8SlTK8Loz12PjloCl4eQdnnJTh6EcwQJzmJDZvI6D7NG00qGjduLj0N/cMM4ic6irfiQaMucoY1F1QOEw/pMtmdsKgs2o4jro9XYbdSPtmvWJcC+NDw2RzPnJKfItIusqMLyG6/5qjSj/FqbUmajuvBWwpUy0TKFmMO4+lEwbuspVC2sdcchuL/wFV+xxmxwbjCW6Cv+/yeOTCyC62AiYCJrD8TMC3fadeVPDl9Iy11bKUdIRq0GzD9aaCfO0J7EAInckgbKs/6qnHmt1HGUZj6R36bGSHP1v1fMN+h0977BWUawA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB7548.namprd12.prod.outlook.com (2603:10b6:610:144::12)
- by BL3PR12MB6596.namprd12.prod.outlook.com (2603:10b6:208:38f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8632.38; Tue, 15 Apr
- 2025 13:46:51 +0000
-Received: from CH3PR12MB7548.namprd12.prod.outlook.com
- ([fe80::e8c:e992:7287:cb06]) by CH3PR12MB7548.namprd12.prod.outlook.com
- ([fe80::e8c:e992:7287:cb06%4]) with mapi id 15.20.8632.030; Tue, 15 Apr 2025
- 13:46:51 +0000
-Message-ID: <c0125e86-79f7-4217-832e-44249cae16dd@nvidia.com>
-Date: Tue, 15 Apr 2025 16:46:46 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/2] net/mlx5: Fix memory leak in error path of ttc
- creation
-To: Henry Martin <bsdhenrymartin@gmail.com>, saeedm@nvidia.com,
- leon@kernel.org, tariqt@nvidia.com, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, amirtz@nvidia.com, ayal@nvidia.com
-References: <20250415124128.59198-1-bsdhenrymartin@gmail.com>
- <20250415124128.59198-3-bsdhenrymartin@gmail.com>
-Content-Language: en-US
-From: Mark Bloch <mbloch@nvidia.com>
-In-Reply-To: <20250415124128.59198-3-bsdhenrymartin@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO6P123CA0009.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:338::12) To CH3PR12MB7548.namprd12.prod.outlook.com
- (2603:10b6:610:144::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55D82DFA48
+	for <linux-rdma@vger.kernel.org>; Tue, 15 Apr 2025 15:00:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744729231; cv=none; b=fefWxborZ7bSDkFXzWkH8Aue1jHk4Kw9LJ+nXGglUs13zf/BrJOjTR5RS/0wx8KoL/FUklWpb+NFFpcUnSxtU0b8KrijeIrukxRXwp107neKuDH/I3x3WtQ60RhqxL8PjnChlylDBTzq3EkWV7grHrHDpd1K6xTzu/pYFGBBEdI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744729231; c=relaxed/simple;
+	bh=P+J7zMOgKZ8JniDo/IpMgNzxJgHPcwdOkRCw4RxjAXE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QoY8/IHUfTLYYXipH63BHY4lSOrqYyVuesZBVwgQ91tGJKlbFXf/m9VcDrXoTWrg6bbZgXm60hIXiAvsaYuvy/BPsU8IhXtVmZN3HGxCl8DINEaV7aVceBbicExCV74MK/KTMbL8fbnQS1Ze0Crbz9cmvs3CMbkN/UODvD7jFYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JfOw9fE3; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <3cf845ac-fd87-4808-bb53-c4495b03e68e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1744729222;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ThqIT2AP0ALdm3s55dR+LeeXUEMOdOL616ZKy1RI59M=;
+	b=JfOw9fE3XB20w4yNNTribRYtTimDQReFh7xmzCU5IRTsrYinXOz2Tpu126UMgv2DdFSmfF
+	l9moYHqc2nW+tDq9a7NQpfU3vMcb0Ne6VA7h7f5zXZ05L1Crkw+rdqmsz+CxLdsgbeEZpG
+	/MLeubNBGS+ONK3ru+xr5gY8wxM+Ouk=
+Date: Tue, 15 Apr 2025 17:00:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB7548:EE_|BL3PR12MB6596:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7c4b0e6c-7050-438f-b578-08dd7c23f999
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|7416014|376014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?dk9YVjNlY0Q3dGdFZUFCNFVyelBid0x5RnZrYVMyMjNCcnR5a0hSSGU3S05D?=
- =?utf-8?B?aG1CUE5ZS2NHQjgrWjRQNFhoNXdnZU8yUGhudzVSa2FEbXp0cUk4RzBteDdN?=
- =?utf-8?B?bitIUFJOSFZEVmFVNjRKRzBCVklNQms3YXV6K0ZqbURpSXBITDl2UUJEcS9l?=
- =?utf-8?B?MFlpQ2Vwa0srZXFJTElUZk14SHc0NjBNWnhLd3MyTU10T1JJazNMdHRUTGhN?=
- =?utf-8?B?dXFRQjBhdW55S0IrSnJWUEdleGUxbjVhWWxFN2NkQ2Rkd1JWVTZVeks5YjRX?=
- =?utf-8?B?Ri8vZzVCZncrQWk4MDZ1L1Rva05Sd0pYMGFnTmlPV1BneTBOMDI0WE5NVjNl?=
- =?utf-8?B?RjN6YjhWZE9mRGZ2SHdQZFUrZWYrNVduQStJZTZsQ1BmQUNWQk5QQ092ZFQ4?=
- =?utf-8?B?elUzdGlkbE5hNDRoL0Uvc28rQUpuTXFQdUYyMFh0aCtIRW5VUGhJODJRNGZ1?=
- =?utf-8?B?blFRaXV1eHA5TXFPVWdYclZOYmZYUHpuS01TYmtialdnZ0xrRnU2QUpsbWty?=
- =?utf-8?B?Y0Y3bFR1RS9WRXl0QjFvbS9wYnZSMFo2OEREUkVja216NFZWN0lUNXFOUkRT?=
- =?utf-8?B?MWxCQXZXdGloS2t6ZlMyM2o1WFhpRjNnd01MVWp4d3huaE1CM3ZzT3dVanZZ?=
- =?utf-8?B?QW9Qa1NKL2lleVdaYTc4dkI3UXIrYmFBeGtVV1Z4eitReXNidGdrdlU0dDlk?=
- =?utf-8?B?ODRJZzVVTzE4Q2ZwQnUxb3dsMVoxbjg0b0tqNFo3WkkyVVVzTmorajdxZWFJ?=
- =?utf-8?B?NXJLSVBpVTVOZHMzRW94SWhIN1hjcDNZRTZVdENxQ3NvNkZzb25KUVpSZ3hr?=
- =?utf-8?B?bStWQXlMRmM4WngybEcreEZ6ckxScnU3ZHlTeW9TRjRMaFJPbWVkaW5lQ2dv?=
- =?utf-8?B?dGJkUWM3UEhDV2h1NWtSVE16anpUZllKZWhjN25KMjNPN3h2WUZJZWg4TFV3?=
- =?utf-8?B?SFphUzZUTzNVWGFVMHlWcU9ldmJBNUU5L2hsZnRkSjFIelI5WU80T1JNSk1W?=
- =?utf-8?B?UFlzZjNJbzN2cGI4czYrSUVvZSttdjdtK0F5R0dWeU9mK0N0NWt3QWFZZExH?=
- =?utf-8?B?U1JkenFSTGdHb09RdktqOHlNRG5ac0ZBYlY2d3B0SnEzKzV5cmNraFJySFUv?=
- =?utf-8?B?UW94bExablQzZmJBb1U1T2s4MExVb2ZHMjBtY2cyMG1ldGdVak1wYzh6cjl3?=
- =?utf-8?B?VHl1K3dxUTFhNFo1a1hoUWw5MlFFc2tBcXNIS3MyVHQ0cmFpVDQ0VnkxSnkz?=
- =?utf-8?B?eU5XOGFFUklQcXZoZzdiTUNqU2huTkZVZGtVbXB3U3VaSUYvdXMzb0QwaVNy?=
- =?utf-8?B?NUNORCtrcjlSM29Lbmh3OTF4SVFtRFF1MEh2RjBlRE01c2t5YmRLWTZJM2xo?=
- =?utf-8?B?MXpGVVBkTGdLdWxRY2RrRXBsUjRGTjJSR0NGR3FjVHM4bDFXdG1XNUNGbGto?=
- =?utf-8?B?SWZPeTlXUXJrTXNsQVVFcFJwNVZTYkltRjFvaVhEQUM5QUd1bzR5RGlaSElG?=
- =?utf-8?B?M0ZzRkpuSWZUemllTXNLQXBDT04yeHFHdWxQY3UrcTVySUJKZGF5NzVNc0ZW?=
- =?utf-8?B?YlA5aUt0MWc4YjJ1NVZXTjhRVVQ4Y3RheVZvOFZ4Z1g1TDNMVEpyQW12dHFa?=
- =?utf-8?B?SUFBdUY0K2VTWEVLcUhRQlhFK1ZXTmFxZXhBazVucHgyZEN4V0ZaSXoxYm9G?=
- =?utf-8?B?ZG1PWG03WVVkQlNNU25tamRSRWhrV1hFTjZHbzJ1dUtuOTl0aVo0NEY5Z083?=
- =?utf-8?B?TVk5NVR4c1lPTE5tNjVzWHR1T0hseVlJTldwM1hKbGlMR2xieFg0aVhhOVNk?=
- =?utf-8?B?MmY4VlMrTkdlaHRydThqRVpSMWUvL3Fwc2xtamFRbDZtdml5OHRMZk5EdTBK?=
- =?utf-8?B?aFhoL3JLT0U3ZkZXaWVzcXJTTks5M2Y3TWdWczZJZTQ1LzNHZGY1ODNPTGRh?=
- =?utf-8?Q?vTs3Xts5V5M=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB7548.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VXI1SzJxR3VnWE01U2Q0NDVaZkFYZHoxU3JlVExyaUFGRzc2OU5IU0ExMzZI?=
- =?utf-8?B?S0NKVjFxTFJhK1NReW5RankzWDNZeHhSSXVITVRTbGNybGZZcFUwaFFRWUo1?=
- =?utf-8?B?VHdORGc2bHE5aUlEUUpoUGNjT2dRNllNVHpWcnh0RFZuYk03Sy8zOC9XMmo0?=
- =?utf-8?B?Nk1UdzJTUXdhMjJiNEpoYlJsRVJEeGNuUjhiRmp3REhNQkZYZGxnQkZiTXBR?=
- =?utf-8?B?NjdyMm9kMDJYQmJLMFYrQ2NqVE1lNHY5SEEvRFVmM3NoMklmSENGM0ppdjBT?=
- =?utf-8?B?OUhCdDR3Mmdibnh4a09XMmFxeDFsRlAraXdvdVlHQ1I0OTRSSElnUmZBZDl0?=
- =?utf-8?B?cTc0Zk9jaFNoZFYwbi9JM3VaRTVRbDdMTDJDQjdjR2VnVlUrVTQ5REorcTl0?=
- =?utf-8?B?aitkWDdRbXEzcHFQVUcxUFUvc0JFbGZqeVhadzJ4L090WUJCTVl4TXo2d0s5?=
- =?utf-8?B?S0M3dXNTQW9INUgzWmgzdWNVTVVqc3J5dVBydkp0dVppRDlPaDQ4aTJUTnAx?=
- =?utf-8?B?V1lCTkg4cjRvc21iRDE2ZlN4SWFaUHNPVVlwejR1U3lUSXdPQUFyclZEUTRx?=
- =?utf-8?B?M3I4K2docldwOGVpWlhxTkVzblJMclBBSnVNeUNjbG1kRkV2U0hLdkN0bUZE?=
- =?utf-8?B?ckkrdWFLRndRYmN3ZHpsUytLZEFEQjVTemIvT0Z3VUxjNjZvVlFDbklMK0t3?=
- =?utf-8?B?ZXprUVNRU3RyM0FRd1FSWG5CQjBpZmdDWDFiU0xGaVU0aVNqK3BHSXZYTjUr?=
- =?utf-8?B?bStudnliN1NXR2pUOSt4S3FmZHMzTzQ0QjczbkJxQUJqRFUzSkx0WmlUV3ho?=
- =?utf-8?B?NnhReFpEeFhBWkxUMEh2Nk1ydE5weTlDMVRuWEsrR05vNjdWTk45NUU2Z3Fj?=
- =?utf-8?B?TlNsSEw0L3JSNHpycno4c3ovRW12ZGw1aDBiaFdUMjRTQURRQmdWSktsWndG?=
- =?utf-8?B?SkxhK2FCcGR1UWJDZ0p4T3N4amZEb3E4VW5ibkNmMzcrbVdDYkNEZjhxRStM?=
- =?utf-8?B?TEx2M1kvd0phaFhVOGFzZEtKSzBoQlZmeVBaTVk4eTE4WW1idjNPdG1uNkpO?=
- =?utf-8?B?UmRUTWdjWEdCcFRZdzUvRjU0RXlnWXM3MU16U01SYzRaamwxMEtxdm1GejIy?=
- =?utf-8?B?YTRSWVFTV3Rqb0FtNWUxOUxqbzlSQnpwZjBzTlV4dkhaRnZLQmNuQVJoaEd4?=
- =?utf-8?B?S1lnbURsY0NncVVWK0NVd0t5dmdhUkIzakkzOTF4WCtxZW4vMVUyWEJCRjBR?=
- =?utf-8?B?VGlZbXlLNXRta3QwaWlkSUpFc2s4ZFVwdThkeXZENjBmMERjR24rMFFlQ1dm?=
- =?utf-8?B?bTI0VkNUdEZVZ283TDNQZVRDc1JsM2dZSVE2cndTbURjcGlFdkhaSkF1RlBM?=
- =?utf-8?B?M3ZoblRpN0R3MUVPMG5HaUs5MWJMRDJBN3JFdTBxZ1U3OVQwVW0rblRRQUVC?=
- =?utf-8?B?TC96Wmtzd3hSUS9IZTYxRjZMZTMxQlYxV1RPQlM5OW8yY3NiQ1hGMWlGaHA4?=
- =?utf-8?B?c1ZNSnVlaldXYUtnODltRjdpd2FkRGhCcmZFd1k2RnRqM2pVMXZNdGtEem5R?=
- =?utf-8?B?MzZiM3FHa1NXNXJCTU03N1ZSV1V0VVAremtKL0swcVV5ZnpDSU9WUDNGY0E2?=
- =?utf-8?B?d0FHS3lHaU1sbjd6ZDVuQkZqZ2IyWHlpUjcyUHhKVFlJdWd4Z2tzV09UeWtm?=
- =?utf-8?B?R0k3bW12SExXMkpVZDNIalJSaTFpOHpnaWtGajZkbVgvZ2VqeURXR04vS3VG?=
- =?utf-8?B?VDdSR2EybWR5Y3lscHZHNStwalpLZ25xd2UxZ21PLzdDNzZ0V3piazAwTTM0?=
- =?utf-8?B?SkxVd3cwUzRwODlpUXBIZkdBcStnQm40SkoxRHJKb3ZzYVlkMzRtcWN2UWRa?=
- =?utf-8?B?NlprK2FKYVJKN3RwYkhGWEloczlzR1pHZW1sSGlYV1ZoUWlobGVXQlBwWUUy?=
- =?utf-8?B?YjdpeVF1dnQ5cjBmOU0vU01rYUVBWm1rOFFYR3NQK1lJckFETWkzaE15Q3Iw?=
- =?utf-8?B?ZzJrdUdHc2cxWGdCM0hDMHdvajlyT2MwZWtpbnVOSTJUZG5iSktRcWJKMzAw?=
- =?utf-8?B?MlZQTTZieTJCSzdpbmZMc2RSd0xQYmpQdDVxTUNYcjhWYldaK25Kbk40bEov?=
- =?utf-8?Q?g1a3KlRZk0y4Rwye6IpodeRGT?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7c4b0e6c-7050-438f-b578-08dd7c23f999
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB7548.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2025 13:46:51.2614
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ae9xsFzY1hy83//zs2SGpXNW/snK7Hcqh/4vQuEz8sWl0rnnxYFf0LACG9UhxBGChcLzxcq9kz29vj0hfsThhg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6596
+Subject: Re: [bug report] blktests nvme/061 hang with rdma transport and siw
+ driver
+To: Bernard Metzler <BMT@zurich.ibm.com>,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Cc: Daniel Wagner <wagi@kernel.org>
+References: <r5676e754sv35aq7cdsqrlnvyhiq5zktteaurl7vmfih35efko@z6lay7uypy3c>
+ <BN8PR15MB2513CD2A5725F5A035AE905699B22@BN8PR15MB2513.namprd15.prod.outlook.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <BN8PR15MB2513CD2A5725F5A035AE905699B22@BN8PR15MB2513.namprd15.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
+On 15.04.25 15:09, Bernard Metzler wrote:
 
+> [  106.826346] rdma_rxe: loaded
+> [  106.832164] loop: module loaded
+> [  107.066868] run blktests nvme/061 at 2025-04-15 15:03:04
+> [  107.081270] infiniband eno1_rxe: set active
+> [  107.081274] infiniband eno1_rxe: added eno1
+> [  107.089683] infiniband enp4s0f4d1_rxe: set active
+> [  107.089687] infiniband enp4s0f4d1_rxe: added enp4s0f4d1
+> [  107.264770] loop0: detected capacity change from 0 to 2097152
+> [  107.267376] nvmet: adding nsid 1 to subsystem blktests-subsystem-1
+> [  107.271276] nvmet_rdma: enabling port 0 (10.0.0.2:4420)
+> [  107.312957] BUG: kernel NULL pointer dereference, address: 0000000000000028
+> [  107.312973] #PF: supervisor read access in kernel mode
+> [  107.312979] #PF: error_code(0x0000) - not-present page
+> [  107.312986] PGD 0 P4D 0
+> [  107.312992] Oops: Oops: 0000 [#1] SMP PTI
+> [  107.312999] CPU: 1 UID: 0 PID: 123 Comm: kworker/u32:4 Not tainted 6.15.0-rc2 #1 PREEMPT(undef)
+> [  107.313008] Hardware name: LENOVO 10A6S05601/SHARKBAY, BIOS FBKTD8AUS 09/17/2019
+> [  107.313016] Workqueue: rxe_wq do_work [rdma_rxe]
+> [  107.313030] RIP: 0010:rxe_mr_copy+0x58/0x230 [rdma_rxe]
 
-On 15/04/2025 15:41, Henry Martin wrote:
-> Free ttc table memory when unsupported ttc_type is passed, to avoid
-> memory leak on the default error path in mlx5_create_inner_ttc_table()
-> and mlx5_create_ttc_table().
-> 
-> Fixes: 137f3d50ad2a ("net/mlx5: Support matching on l4_type for ttc_table")
-> Signed-off-by: Henry Martin <bsdhenrymartin@gmail.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
-> index e48afd620d7e..077fe908bf86 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
-> @@ -651,6 +651,7 @@ struct mlx5_ttc_table *mlx5_create_inner_ttc_table(struct mlx5_core_dev *dev,
->  			MLX5_CAP_NIC_RX_FT_FIELD_SUPPORT_2(dev, inner_l4_type);
->  		break;
->  	default:
-> +		kvfree(ttc);
->  		return ERR_PTR(-EINVAL);
->  	}
->  
-> @@ -729,6 +730,7 @@ struct mlx5_ttc_table *mlx5_create_ttc_table(struct mlx5_core_dev *dev,
->  			MLX5_CAP_NIC_RX_FT_FIELD_SUPPORT_2(dev, outer_l4_type);
->  		break;
->  	default:
-> +		kvfree(ttc);
->  		return ERR_PTR(-EINVAL);
->  	}
->  
+Hi, Bernard
 
-What about just moving the ttc allocation after the switch case?
+An interesting test. Can you find the line number of 
+(rxe_mr_copy+0x58/0x230) with crash tool?
 
-Mark
+Thus we can find what variable is becoming NULL pointer.
+
+Thanks a lot.
+Zhu Yanjun
+
+> [  107.313041] Code: 83 7f 7c 04 49 89 f6 48 89 d3 41 89 cd 0f 84 f9 00 00 00 89 ca e8 68 f7 ff ff 85 c0 0f 85 95 01 00 00 49 8b 84 24 f0 00 00 00 <f6> 40 28 02 74 28 44 8b 45 d4 44 89 e9 48 89 da 4c 89 f6 4c 89 e7
+> [  107.313055] RSP: 0018:ffffb00b40467cc8 EFLAGS: 00010246
+> [  107.313062] RAX: 0000000000000000 RBX: ffff8f64434f804a RCX: 0000000000000400
+> [  107.313070] RDX: 0000000000000400 RSI: ffff8f64b8c9cc00 RDI: ffff8f64bef78a00
+> [  107.313077] RBP: ffffb00b40467d00 R08: 0000000000000000 R09: ffff8f6440b68e00
+> [  107.313084] R10: ffffb00b40467d50 R11: ffff8f6440b68e00 R12: ffff8f64bef78a00
+> [  107.313091] R13: 0000000000000400 R14: ffff8f64b8c9c800 R15: ffff8f64470d1000
+> [  107.313098] FS:  0000000000000000(0000) GS:ffff8f6b8dc9e000(0000) knlGS:0000000000000000
+> [  107.313106] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  107.313129] CR2: 0000000000000028 CR3: 000000069d81a004 CR4: 00000000001706f0
+> [  107.313148] Call Trace:
+> [  107.313164]  <TASK>
+> [  107.313170]  rxe_receiver+0x1310/0x26d0 [rdma_rxe]
+> [  107.313180]  do_task+0x6b/0x1f0 [rdma_rxe]
+> [  107.313189]  do_work+0xe/0x20 [rdma_rxe]
+> [  107.313198]  process_one_work+0x1b3/0x400
+> [  107.313206]  worker_thread+0x25b/0x370
+> [  107.313212]  kthread+0x116/0x240
+> [  107.313218]  ? __pfx_worker_thread+0x10/0x10
+> [  107.313225]  ? _raw_spin_unlock_irq+0x17/0x40
+> [  107.313233]  ? __pfx_kthread+0x10/0x10
+> [  107.313239]  ret_from_fork+0x3c/0x60
+> [  107.313246]  ? __pfx_kthread+0x10/0x10
+> [  107.313253]  ret_from_fork_asm+0x1a/0x30
+> [  107.313260]  </TASK>
 
 
