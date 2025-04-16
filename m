@@ -1,166 +1,164 @@
-Return-Path: <linux-rdma+bounces-9473-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9474-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B522BA8B303
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 10:12:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA552A8B42D
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 10:43:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3841F3AD6FD
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 08:12:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCF9B1895CA0
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 08:43:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73FD422FE06;
-	Wed, 16 Apr 2025 08:12:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 548E0230D0D;
+	Wed, 16 Apr 2025 08:43:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="a4k/I7Nx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lUunA5Yb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA6E22F16C
-	for <linux-rdma@vger.kernel.org>; Wed, 16 Apr 2025 08:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB9D2309BE;
+	Wed, 16 Apr 2025 08:43:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744791156; cv=none; b=Ro4oRBLPXumrR7Ym34da0YV3/xn3Ay/IxdTS6fxavQTw0A9dvAi+1/Ht4fdO2XJgnaa4XPYfoLnz6A7sYXJvakaarBPEICn62lIGPkE9x+zupVpATD7jJl3+jwL05sY0qRzGOKOVURXVmZ///uawIywGvBDKE2msbTOH/Rj4xcg=
+	t=1744793011; cv=none; b=BUq4lBZp0YwAWv+cUm/OKI9tOWMZKdwFj2ZnFwFZJlQ+uNuHn7Wh/JTMdXGUMfu3cnDGscwHaVcH6t+vVbkpYpwpWE+kAyyfnsm6VEKsobJckw1kqVpQBfnVEguuBNRYQOXjtjS2NweVKNKDIHX8SY2UC/koZi5BM7eJ3EKDwNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744791156; c=relaxed/simple;
-	bh=UqpYDKEGBNrCP4IDpHxnNSRgmJd86ZMFLlHPoSsuwB0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZRO+4Hk3N5j92z2mR9sENmkm5BGAW1erw99vVXT9HrUjEa7Zftkw7XrI89jvfKHgPn0sn91Bf3MWCda1njNs7PPqjoUVQk2nrxsrYwXfLxkzB5ieexxMjEcNS2ba8XNUDb/aU020WLULHWBCJpQcxBJpiqLX6o6KcWK41//zPUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=a4k/I7Nx; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-39141ffa9fcso8373779f8f.0
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Apr 2025 01:12:33 -0700 (PDT)
+	s=arc-20240116; t=1744793011; c=relaxed/simple;
+	bh=nyUJtYiUjBjYYSAqTLhcIC3VjH6cvjN+MabNE2Z+0KA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=P2fSM+/i5DHmh0RCpqqAeHvsWaZ9eXyUaoUG68vAx/zGrR3xLIT4PTH2rlcd1Z7HBkRr8sybLOE4CprK1QfeToOJrwB2esqBq9g+Ob52OWDsH9yUp65Lh3nRyBrgelFUTn2X7Is/f3fJVbVud0GeCnU+StFOk9Jr+209ubrQFE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lUunA5Yb; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4394a0c65fcso64154955e9.1;
+        Wed, 16 Apr 2025 01:43:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1744791152; x=1745395952; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H/4bHaraL4n/P0iTE+QqqFajLDyDWyG2jsQgWhbDjMQ=;
-        b=a4k/I7NxfE+MLqX6uttNSUyfNND1IYa04gaTanD+jFTxoEmHv1Pny+Kk8nnpZwJuFw
-         wfYL0AIECiNy0eiv4FiYtI/a36+rwPoIV/n1iQco6OH8YbpXkdcB/7Kgiv6lePpvb7Qv
-         IkhEEMDfgT8+3/MquUa/UR8RgyrBLKhoV6XOil5C7lWa9MqOAthzBKNZONwtY+RW12wz
-         47P8ZGGy+BSY1Pl1LSkvdGkRe0ssXeFm4keYjgCQfGf6QDsJJSWS4tY6oLhwSGUdu9NZ
-         XPAnpqsFsy1pd2uxdamq9FkT/XfDqtUIOiAgbkjEgdUxG+AQBlyE1ww+Azfi21Rx9oD1
-         xQSQ==
+        d=gmail.com; s=20230601; t=1744793007; x=1745397807; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1Sjiyx/fN+GWyu9km6Rmgf6dDU0MGkyvJNdC+0C4yHI=;
+        b=lUunA5Yb/8AR7yEf8CX1exs4MoGrD+1uWbQzVe6VbEg5W7pZjm7pcl/7gEUg9Jdq1X
+         /O079IkWh0Q1zR7puqwzAi6WUv5PmocE/yPJVjKob8ipwbRrEH4ZThyMJzxCV6BpS7rb
+         /t3+v7pzhBrNt6qlrOu5AUtQC3AfVDNS0NbwrFJPfMS/zQfkx+tE7nprRJhvTX6mXRms
+         9lgS+MMpOGI7uxPeAFCXTzyk62oVruLIwJ/1NcWnx6jCt4BtGBym2MxwefFuGzFvu3oY
+         GUfZoWFcKbGYm8tl86pcdTumxL6ZY97qkgX/Iy25mz6pReCQRrE1rL9fyJQQjXwGJd5C
+         UC/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744791152; x=1745395952;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H/4bHaraL4n/P0iTE+QqqFajLDyDWyG2jsQgWhbDjMQ=;
-        b=GSURIK5YgKr/sOGzsL/IfkbYKKWjKeGRT5adPxswlLABZKXpdu2M03YLwYoTkc5KR9
-         TocNl3Bz3J8DFU/2jmndI+7gCz5SUjdtIQRlU1HAhSDw/6PwCzJ/IwTiBT5/AKqDN39w
-         3GfUTdeqTomJFXlynCvw5E7FR9kpjm3hntBA5iU2WCf/CbFyZh729jELMFRPEmxvO4eI
-         27ohejYBA6ScJCxnBtKKYC13SCin5k9keuinLvLpChW2WBkJCeCukRsAd8l+kD/ib4qB
-         AszSvLiJ9klLwTDHmf55rzcsEczor0s/rEHK25DHx2FFtRBKTv3GY7OZA3bD+Y2r99wy
-         Nkcw==
-X-Forwarded-Encrypted: i=1; AJvYcCXsVi91hnBB0Lv/2tg+l3ra7du7z5OZ7mfCD4mXp7cUDfHCaeLShGnA4ctzsPLL3mztJbN39H1OdI0N@vger.kernel.org
-X-Gm-Message-State: AOJu0YxCNB1cd3cMTHlbM57wQeRiKkrzMPKwITH2su22FIuxIamSimqD
-	SFH2/szJUpBLMK0jq0vQ2Aq9pyUjSQWLWCqcSv3STI8tcQwW8n2VKvi7R+g2vWM=
-X-Gm-Gg: ASbGncuiQdr/b+X/mq2bWx7rZJGjLiNCg4TiD57EykrUrWxg167MhwKqTWWCcsuhH5B
-	CY3BP3SW/ycU21pm5qZR+oHLt+QYl5rgwMgMpxmo5mDKhLmtRncorPHmh1NgBlWiYJMkm6a0ADA
-	VHspTRTeQ7TXLxdOlpRsdqcloYEcKSH75ZP4QuY+owB9zaMa3OtHqPJZ4iLjbPKPkeQGwEEi7O7
-	89GxHMTBbXBu28tUZ2SkCvHOR7xLdyEfKuSO0MOHehT3aYESla3zK56ztbU7cONi9ZJtFOqIcE6
-	2llnCxuC+buM5r3ZTqrtvk3cXv3cIQ6wIv1ThN9ueSNiKWzhKu4Llw==
-X-Google-Smtp-Source: AGHT+IGxaQcIkGTI0aBQCrdg5Mdz1bajPY1DljdFhlFnwzhWRIuUx+MIrx6GZMLHMpwt9t1FLRkhxA==
-X-Received: by 2002:a05:6000:18a7:b0:39c:2c38:4599 with SMTP id ffacd0b85a97d-39ee5b9ee51mr819435f8f.48.1744791151941;
-        Wed, 16 Apr 2025 01:12:31 -0700 (PDT)
-Received: from jiri-mlt ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39ee6010449sm515446f8f.9.2025.04.16.01.12.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Apr 2025 01:12:31 -0700 (PDT)
-Date: Wed, 16 Apr 2025 10:12:21 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Cc: donald.hunter@gmail.com, kuba@kernel.org, davem@davemloft.net, 
-	edumazet@google.com, pabeni@redhat.com, horms@kernel.org, vadim.fedorenko@linux.dev, 
-	anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com, andrew+netdev@lunn.ch, 
-	aleksandr.loktionov@intel.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v1 0/3] dpll: add ref-sync pins feature
-Message-ID: <6ss5qghishcbbbmj6ifitafl6fnbfhnw6crrkitgunays4qtqv@ixvlqemyij6x>
-References: <20250415175115.1066641-1-arkadiusz.kubalewski@intel.com>
+        d=1e100.net; s=20230601; t=1744793007; x=1745397807;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Sjiyx/fN+GWyu9km6Rmgf6dDU0MGkyvJNdC+0C4yHI=;
+        b=er75Cmq+XcMkThqkId0f/AktKYVLVR41n4MTDZqLWes5QUOPwFSlPZQSaxFGuj3Sc7
+         t64uPqFoAvx0vezUsCSk+2b+2pZTOcbjX4idLQbghWBeaG1hELZ6nDFtL9IjwoqscvFR
+         EnaKmxZesHYPQsww7RfnMdwknt9pXOW0d7+idsYZYZAtQjpxNfyNue1pkMfwGTiCo6jU
+         z1h9gZWs5qSyuTYoi/hROrjrYNYz4UOasFxKZOoP8qZBZ3vZEkB4y5U4geTZqnUKa3xS
+         hsytFaftkMUN6VfMgHrxRbEOOlrB1tmTaLuOZbRaWZisNC+ph+gZ9zpXv0fIczOgDcib
+         ISjA==
+X-Forwarded-Encrypted: i=1; AJvYcCX/bIlfP60lb4fCKh384R3blEK5vMd/kG2UODrDJHSS3V3qPAqSRn6v4C2PO0RiT4LdTMK6d1JoFXQPcw==@vger.kernel.org, AJvYcCXhJ5ss4HMh4rF75rUzBYQAjIqtgJXR0fsotF9PMexoeqY5R8bSdg3Wc8EGQWRMeDCD9kOIri1Ph5h9kUU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzy+QLC40Ns7zX8u2GBL/W0M1a8dgr+WVEtU+c6hvL/zadGa4hR
+	YToX27RwyfjoQEKO3YBsa2rIeytIkebcVThcEe/UzuaN8O9rtCzg
+X-Gm-Gg: ASbGncuNoCS8+NT8mH58VMnqMX0p/OJ7SuhcKaEVcyRKy8engs80sBpj/2SDzm3VmZ8
+	w+OOBsRBCNJXJ8fiioErYqo9YbSEVopaCZ0k9kHGV4+xtpWJAi8K1tpUcA6DYZ3ER+omO/pajnM
+	zelBHvAcWNUj2FHm+PTmcIpRlaPrDALGvVWgOFGShvw0mVdNw9IKTdRxwPb5UcFhwymqfGnbaSW
+	pd3N+Kik4oMJ2zDqZLcFbqqdSzwRW9D0pHYagpQoQomp6AXT3eZkZohTfpbzPX+3xujvJbxgvNC
+	y1YNvoLhRYy9OF+VNK5fNwDbDdDbuHMGZ7EBF2usXG4aXAZsfgJguvmaPP0=
+X-Google-Smtp-Source: AGHT+IHpy+sYxBz/Oe4uCHlDqUk4DjWqp50J3JpjBoi6v0tNOLkb64P60xE638/sIU0sdirYCxgssw==
+X-Received: by 2002:a05:600c:45ce:b0:43d:23fe:e8a6 with SMTP id 5b1f17b1804b1-4405d5fccb7mr8045235e9.5.1744793007111;
+        Wed, 16 Apr 2025 01:43:27 -0700 (PDT)
+Received: from [10.80.20.47] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39eaf44577dsm16573027f8f.94.2025.04.16.01.43.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Apr 2025 01:43:26 -0700 (PDT)
+Message-ID: <1f99c69d-42c2-4093-9c13-c0b137994e30@gmail.com>
+Date: Wed, 16 Apr 2025 11:43:23 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250415175115.1066641-1-arkadiusz.kubalewski@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/2] net/mlx5: Fix null-ptr-deref in
+ mlx5_create_{inner_,}ttc_table()
+To: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, amirtz@nvidia.com, ayal@nvidia.com,
+ Gal Pressman <gal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+ Leon Romanovsky <leon@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+ Henry Martin <bsdhenrymartin@gmail.com>, Mark Bloch <mbloch@nvidia.com>
+References: <20250415124128.59198-1-bsdhenrymartin@gmail.com>
+ <20250415124128.59198-2-bsdhenrymartin@gmail.com>
+ <e0db67c9-8e38-490a-98a2-13c61ef11aa5@nvidia.com>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <e0db67c9-8e38-490a-98a2-13c61ef11aa5@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Tue, Apr 15, 2025 at 07:51:12PM +0200, arkadiusz.kubalewski@intel.com wrote:
->Allow to bind two pins and become a single source of clock signal, where
->first of the pins is carring the base frequency and second provides SYNC
->pulses.
-
-This is not enough. Could you please provide more details about this.
-Motivation is needed. Also, from the examples below looks like you allow
-to bind 2 pins, in async way. Would make sense to bind more than 2 pins
-together?
-
-Honestly, I don't understand what this is about.
 
 
->
->Verify pins bind state/capabilities:
->$ ./tools/net/ynl/pyynl/cli.py \
-> --spec Documentation/netlink/specs/dpll.yaml \
-> --do pin-get \
-> --json '{"id":0}'
->{'board-label': 'CVL-SDP22',
-> 'id': 0,
-> [...]
-> 'reference-sync': [{'id': 1, 'state': 'disconnected'}],
-> [...]}
->
->Bind the pins by setting connected state between them:
->$ ./tools/net/ynl/pyynl/cli.py \
-> --spec Documentation/netlink/specs/dpll.yaml \
-> --do pin-set \
-> --json '{"id":0, "reference-sync":{"id":1, "state":"connected"}}'
->
->Verify pins bind state:
->$ ./tools/net/ynl/pyynl/cli.py \
-> --spec Documentation/netlink/specs/dpll.yaml \
-> --do pin-get \
-> --json '{"id":0}'
->{'board-label': 'CVL-SDP22',
-> 'id': 0,
-> [...]
-> 'reference-sync': [{'id': 1, 'state': 'connected'}],
-> [...]}
->
->Unbind the pins by setting disconnected state between them:
->$ ./tools/net/ynl/pyynl/cli.py \
-> --spec Documentation/netlink/specs/dpll.yaml \
-> --do pin-set \
-> --json '{"id":0, "reference-sync":{"id":1, "state":"disconnected"}}'
->
->
->Arkadiusz Kubalewski (3):
->  dpll: add reference-sync netlink attribute
->  dpll: add reference sync get/set
->  ice: add ref-sync dpll pins
->
-> Documentation/netlink/specs/dpll.yaml         |  19 ++
-> drivers/dpll/dpll_core.c                      |  27 +++
-> drivers/dpll/dpll_core.h                      |   1 +
-> drivers/dpll/dpll_netlink.c                   | 188 ++++++++++++++++--
-> drivers/dpll/dpll_nl.c                        |  10 +-
-> drivers/dpll/dpll_nl.h                        |   1 +
-> .../net/ethernet/intel/ice/ice_adminq_cmd.h   |   2 +
-> drivers/net/ethernet/intel/ice/ice_dpll.c     | 186 +++++++++++++++++
-> include/linux/dpll.h                          |  10 +
-> include/uapi/linux/dpll.h                     |   1 +
-> 10 files changed, 425 insertions(+), 20 deletions(-)
->
->
->base-commit: 420aabef3ab5fa743afb4d3d391f03ef0e777ca8
->-- 
->2.38.1
->
+On 15/04/2025 16:45, Mark Bloch wrote:
+> 
+> 
+> On 15/04/2025 15:41, Henry Martin wrote:
+>> Add NULL check for mlx5_get_flow_namespace() returns in
+>> mlx5_create_inner_ttc_table() and mlx5_create_ttc_table() to prevent
+>> NULL pointer dereference.
+>>
+>> Fixes: 137f3d50ad2a ("net/mlx5: Support matching on l4_type for ttc_table")
+>> Signed-off-by: Henry Martin <bsdhenrymartin@gmail.com>
+>> ---
+>>   drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c | 10 ++++++++++
+>>   1 file changed, 10 insertions(+)
+>>
+>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
+>> index eb3bd9c7f66e..e48afd620d7e 100644
+>> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
+>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
+>> @@ -655,6 +655,11 @@ struct mlx5_ttc_table *mlx5_create_inner_ttc_table(struct mlx5_core_dev *dev,
+>>   	}
+>>   
+>>   	ns = mlx5_get_flow_namespace(dev, params->ns_type);
+>> +	if (!ns) {
+>> +		kvfree(ttc);
+>> +		return ERR_PTR(-EOPNOTSUPP);
+>> +	}
+>> +
+>>   	groups = use_l4_type ? &inner_ttc_groups[TTC_GROUPS_USE_L4_TYPE] :
+>>   			       &inner_ttc_groups[TTC_GROUPS_DEFAULT];
+>>   
+>> @@ -728,6 +733,11 @@ struct mlx5_ttc_table *mlx5_create_ttc_table(struct mlx5_core_dev *dev,
+>>   	}
+>>   
+>>   	ns = mlx5_get_flow_namespace(dev, params->ns_type);
+>> +	if (!ns) {
+>> +		kvfree(ttc);
+>> +		return ERR_PTR(-EOPNOTSUPP);
+>> +	}
+>> +
+>>   	groups = use_l4_type ? &ttc_groups[TTC_GROUPS_USE_L4_TYPE] :
+>>   			       &ttc_groups[TTC_GROUPS_DEFAULT];
+>>   
+> 
+> Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+> 
+> Mark
+> 
+
+netdev maintainers,
+
+Note that Mark is covering me while I'm on vacation (for the coming ~10 
+days). Please accordingly honor his submissions and replies for mlx5 
+content.
+
+In case this mail notification is not sufficient, please let us know 
+what extra action is required.
+
+Happy Holidays,
+Tariq
+
 
