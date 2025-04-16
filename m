@@ -1,1310 +1,232 @@
-Return-Path: <linux-rdma+bounces-9467-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9468-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48531A8AE0D
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 04:16:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75373A8AE4B
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 04:50:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3571B443AAB
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 02:16:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D974A3B949A
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 02:50:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E392288FB;
-	Wed, 16 Apr 2025 02:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC75A1FCFE2;
+	Wed, 16 Apr 2025 02:50:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HzxuAEr5"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="lnylGnI/";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="rI1lZz/q"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AA552139B1;
-	Wed, 16 Apr 2025 02:16:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744769779; cv=none; b=EL2YorRsBPiTi47J088LXrL7Q79zd4odsBRQ1cO/m7smV9//e6TmDXCOCalQEVN+9C2EiPBosb+S66QcoFWqX7Sig8Ri+eFB7JFTupVqrzuTep4MPU42RKHe52G4G40vah6ZrI2/RoxV2NazlL1Vfla3hd6Yj91E+ST8piLfvDg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744769779; c=relaxed/simple;
-	bh=ojePAG2NBOeJeYoY3cwhFnI6jaJkQIU5XZbhWBiCg/I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gfmlzdWh3zIO1YqGAlb0sJcNLJ/JfQl/SQ+GaAPtGpv4Oy66LXDe7839kMKN0syp6/Pz/phG45cgBjShjR7eKWIaJH05R19AEpjKLw5ZXUSxig9MShRyv4U/NjIwdbu3xIZn5Mo6/aL/aaOp1I2ffobL/KZhVOhNoFBKZC6sVFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HzxuAEr5; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1744769776; x=1776305776;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ojePAG2NBOeJeYoY3cwhFnI6jaJkQIU5XZbhWBiCg/I=;
-  b=HzxuAEr55z5lAPr6WNnw763C2iAOJsdMq2swkPZKU83uUPISD7Z/6hmp
-   c+TWYBPaG9k4TbgAd/pFvZlBT/+CxnWZOmZKLcug/iUt2ahYYgxJ854tO
-   CDl32p2si6mwPh14m3Y6bk035fMW6DaKAhSB9QAk2s2pNUnmFAou57Kux
-   pC9REjJr9rWdpmmOIHsCwRuQswAXsreeGfuv5HzG+gMW/pzzQmIEt9Tc1
-   GnyloC++/vW4R8dJi/HsXmxFL6AS8t3oWinlhL+D7vmR4HYL9smJdPbeE
-   w7pTvZEoomv14ZROueoz1UdqvKyDb4eNLSBvaTWFhCVDyryob1GnpBHED
-   Q==;
-X-CSE-ConnectionGUID: J0MFesHtRkWsmB/5B42g2w==
-X-CSE-MsgGUID: N9ShgaAISz6hYqgU8UDmRA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11404"; a="50125572"
-X-IronPort-AV: E=Sophos;i="6.15,214,1739865600"; 
-   d="scan'208";a="50125572"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2025 19:16:14 -0700
-X-CSE-ConnectionGUID: vusmn2VIRQKc45d/xRN39A==
-X-CSE-MsgGUID: X5/p0FXsTGGAx1NWxQlLiw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,214,1739865600"; 
-   d="scan'208";a="130605802"
-Received: from bnkannan-mobl1.amr.corp.intel.com (HELO soc-PF51RAGT.clients.intel.com) ([10.246.114.218])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2025 19:16:13 -0700
-From: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-To: jgg@nvidia.com,
-	leon@kernel.org,
-	intel-wired-lan@lists.osuosl.org
-Cc: linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [iwl-next v5 5/5] iidc/ice/irdma: Update IDC to support multiple consumers
-Date: Tue, 15 Apr 2025 21:15:49 -0500
-Message-ID: <20250416021549.606-6-tatyana.e.nikolova@intel.com>
-X-Mailer: git-send-email 2.45.1
-In-Reply-To: <20250416021549.606-1-tatyana.e.nikolova@intel.com>
-References: <20250416021549.606-1-tatyana.e.nikolova@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D2F2557C
+	for <linux-rdma@vger.kernel.org>; Wed, 16 Apr 2025 02:50:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.141
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744771833; cv=fail; b=M5GGt1Uvgmq1tNX53o7EKS7J0F1xREJeRTe8ARTAgm7NzlHVYMzB+xVR3gndYpd5wigSbGZVGcJg2tEPVQaJPh+zjzcMlEyWcyLsgS88QPFZ1yk+P+8sECgEFBxTEa4kGrwyFWbPEfgEjudghXzFOsfKds/u0pXle1SxdU+OyKQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744771833; c=relaxed/simple;
+	bh=uHDJ56ihQxqzNduy7UQ7IhREGhJSFdDbRz7bXWR9lo0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=jJzXgfA865xlh35EyD8tpmJj2hf1SkptaoG3TccQvL3AUQERQL4h8tdHoFO2MDoDL5FMJP0bwpeX27AyEmmjYJnPoPNUxMBuJVS2NHpZ/vvfhBfqsWrQMoGaJ4z7v/o963m0XAlFEDFKEB4AzhXQg9ZJf3LNg4Y2ZZzMNJUXbeU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=lnylGnI/; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=rI1lZz/q; arc=fail smtp.client-ip=216.71.153.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1744771832; x=1776307832;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=uHDJ56ihQxqzNduy7UQ7IhREGhJSFdDbRz7bXWR9lo0=;
+  b=lnylGnI/zf2NGcWBosvZ+SGg32jYhHXsf8XGNLwjd8R/rMdEJs7gx/xh
+   SY/z6uao/CEszh1BmzB39Cdp8bd1QuV35PMwyXIu7zaEpX3hqZtCnyVOg
+   T31ZOFEIGRjrTupeNfh1DINFDI/L+FrAKh3mlOFNHGQb0aITqJufO7rgv
+   mYTpsv4xabryxjmZakPauekb4pLqj3Pty/kpo7kRTp2s7zSQAjQhYR3xK
+   o5SQjADYsYvlsvLkFBmuaB/CyAHVX2AAptoeFSRkSKoohSdum5dPkJG7t
+   H2LQ0wIV09TbYi74YLYQhpoUdRD1iYu9zRoBVOFiX5U1UlgktTyvzHJtC
+   A==;
+X-CSE-ConnectionGUID: m+ZZ1zd4SKWuriGJBXuDvQ==
+X-CSE-MsgGUID: 5FcwXkpMSLOG3ssxQKIJEA==
+X-IronPort-AV: E=Sophos;i="6.15,215,1739808000"; 
+   d="scan'208";a="76892075"
+Received: from mail-eastus2azlp17010018.outbound.protection.outlook.com (HELO BN1PR04CU002.outbound.protection.outlook.com) ([40.93.12.18])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Apr 2025 10:50:31 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=CoqzaFU3wtHgJhGt8TMfAQlStlClMLbTtqG9/p2G2nAHaC++B/OxI8KFyu7X0v6ugdwfFnWeqbBWUEscoezB4qEpkQzZuNWnym2D3kMLja4ahBtgwfFbiN9jUARBcP44G00f/YeFOWH9awGAxoLFqHRPqMObt+mOADpZPMDls1efZJK2rq8vgPxqHggl1o+S78eK5qHpnVrqGLyaneXvrB+zjibeeX1VbbC8qdHDxtX/6LGiLoyONZQ7J47SThPgITXoc+/o3Vepj+ew0X47sKwzKt4kt9XL/Z9/pL91whv7oE3HaxL/cKPOQ9rV/4Pm1epmY9ecpWluufI5ostrDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l67HlN2JhdWf+05hFcH8HPVmV3pzqTIRbgRO6NmOv0I=;
+ b=dpOqdbOELRaPD6a7F/3lwayTJXOrfwlAtbeZMPPo3RM2a1tDvuhonXGNQmg7qmqdG4OpM96ynWUJ+FW7TtpZkty+LhqYIrL5AB8sq4wbNHnUsfPOqMlwi/vFzm1KWrenQjnLTQOgqTCu7rj3il+Cl1fxmwZ2CHF5MTDe/DAMr0Lxni/avhVBhGaDE47Nt10zYoX5NbH2KxkuWNIf9dtFyY65GV5ABEsLqTyrlvCmRCnIP+s8gN8NaOf7ZLiBfZVvbniLFn0gRDr7LEh9uuNE3AXfNJYvn+Fqmjb4RyCm/QYwa/fcPTBrRaiC8w2q5dkSJs4tk9lSwZDd8Hs81r8QjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l67HlN2JhdWf+05hFcH8HPVmV3pzqTIRbgRO6NmOv0I=;
+ b=rI1lZz/qhXJnfGEPnKMGh6VlbBr6AbwbAxY1/KyNXi05XFfSGmTgX8ZapJFhU7567Sz6qZekoJPUjoFKz/lAUTmvMZsLWNLpC9QdFhGj1cuGJj8wdqQMOoU98r2kwOdTXXJpQ6p8MYZzZil1a7h7n3OuhQG0p+Y53+4zfSjRR20=
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
+ SA2PR04MB7708.namprd04.prod.outlook.com (2603:10b6:806:142::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8655.21; Wed, 16 Apr
+ 2025 02:50:29 +0000
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::b27f:cdfa:851:e89a]) by DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::b27f:cdfa:851:e89a%7]) with mapi id 15.20.8632.030; Wed, 16 Apr 2025
+ 02:50:29 +0000
+From: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+CC: Bernard Metzler <BMT@zurich.ibm.com>, "linux-nvme@lists.infradead.org"
+	<linux-nvme@lists.infradead.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>, Daniel Wagner <wagi@kernel.org>
+Subject: Re: [bug report] blktests nvme/061 hang with rdma transport and siw
+ driver
+Thread-Topic: [bug report] blktests nvme/061 hang with rdma transport and siw
+ driver
+Thread-Index: AQHbrfdhJhGSraouF0ezotWmIGdrJbOksFwwgAAh6wCAAMZmAA==
+Date: Wed, 16 Apr 2025 02:50:28 +0000
+Message-ID: <mrdhqtchtzw5f7ypno6d5g4fwh7heoyx5nyjvfak46cneprdrm@o4q2olnuq4gg>
+References: <r5676e754sv35aq7cdsqrlnvyhiq5zktteaurl7vmfih35efko@z6lay7uypy3c>
+ <BN8PR15MB2513CD2A5725F5A035AE905699B22@BN8PR15MB2513.namprd15.prod.outlook.com>
+ <3cf845ac-fd87-4808-bb53-c4495b03e68e@linux.dev>
+In-Reply-To: <3cf845ac-fd87-4808-bb53-c4495b03e68e@linux.dev>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|SA2PR04MB7708:EE_
+x-ms-office365-filtering-correlation-id: 0fb4ce3f-2355-4131-058f-08dd7c91728a
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|1800799024|366016|38070700018;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?j+brmZKJOq72uJwZbYkMSpnNVdwC5fOJB164e3N3PP0KLfeRJpreWLAtl8hV?=
+ =?us-ascii?Q?GAetEfE0MEv2tq11lVUvxgWl6+GQto1HqNNmk8mRGBkUocjg8BP5P6cgZWHq?=
+ =?us-ascii?Q?I6l+x/QliaKKm7MJ5xRn822jP98W9CJE8D06PQb4clgCHbGWSdfba+FHir3c?=
+ =?us-ascii?Q?eP0tqsKwjEWSscgtI+X4y8Pe6EFs6JPFxZkAqWtIOJx6jMurtHIR3fWl1DE0?=
+ =?us-ascii?Q?rmsF3Fofn3L32KWMC5G4g7Qo+gFzlbEO10X7oUpNcE8Uw0SvPTfcYO0+MZhL?=
+ =?us-ascii?Q?YIuh3F5bwKZK1ypZVSOzLszIGR1F0l1g/VOwWrWsJlKySKf4sm/nR3hzJV9D?=
+ =?us-ascii?Q?1zuMmx5Vpf/Zv648ol1LqS0oKPDkdytOxZ9+FrAds5lrJ5lPgnccwabiqezy?=
+ =?us-ascii?Q?knQttK1H5IF2jrcEytRrj09lhZ8bjvwLPagtw6Ep+SWABZqi2r9XVX687wQa?=
+ =?us-ascii?Q?cWWrgD7hvAQi6Ory3tUYY7y68SNAIdDvHqOJkd7dtnl3v5aHtU9ENC4dxb53?=
+ =?us-ascii?Q?QZBhysr6yLcDNAOOx/9utr30VJwOXh4Lb9ADEdksx5+ggZ4dy2K1+idMDGaj?=
+ =?us-ascii?Q?dEs+lDt09QAKamL4wvYa2im2VsSbjpOOh/x3SC/D8BTfmg0OAh9v6r1YEZsY?=
+ =?us-ascii?Q?5vF9byddqM6GuoMs7aHrQBqT1ADQv357/okG7DmROchhgxUQcA+qz6AGHYo3?=
+ =?us-ascii?Q?fzYCkvvDXFmnMLSpeUGrmvP8XLlxIG2gL6e566N3qNW4gni4BXz6JlZsg7TC?=
+ =?us-ascii?Q?vhyBts6L0+u1nikd8PpNUqJC1aETCpumwNsJ6Xlogg6sjk0RLpu93ZdPMVQ3?=
+ =?us-ascii?Q?Ytz0v1njvb1T1UzWrHbvqKrsrxGxGsCWpFIOZDHK8/B37SmfGLzBAIIt1N3d?=
+ =?us-ascii?Q?WIeVd2n6IroAHxAiPFmrDlWoOYHy/rH+QcpkELffs+/Ju12gU8bC/nwR4sMq?=
+ =?us-ascii?Q?M2XoUmackT1dc2A0cAjknNL2rWK7mzfV2Oob02V0VmKpDEj3tBe7AkeUKYj9?=
+ =?us-ascii?Q?ejsSx0zt0Vzi+pfyt9+K4L9GnSHiYsvELvb5SPk4wfiNvEmqp2j7Ly4cqyXZ?=
+ =?us-ascii?Q?hhR8keENyEdv+aVSgwHHfZvmjNb3G3+WD5jgDZNIbYlyMXPMbGq5+JTmNloW?=
+ =?us-ascii?Q?U+yTBhEgMnQHPmVBOyxwjUbDMrk6R8PusNdxrKAeHQsE4b9pT4F3D4xnIGcE?=
+ =?us-ascii?Q?VLYhSmNwTF+NGy6hZofhKD/hw/dbxKRDb5OZ6nIG/t0hPKsJS55DDaCH/Fcg?=
+ =?us-ascii?Q?hPwy4ow7YwbJ1/S6LG16pCY4yHDCZLf3YBMouJWAKh7zzaTo3YNWXhWuyn99?=
+ =?us-ascii?Q?BE82qA3OOYNafbARS3XX7VFOOFPn9GX6k0N2pEmGGqR4dh+/Tmte3dbubFuF?=
+ =?us-ascii?Q?HYnvMt84UJmd+gSpoQVMZULTVlQe2k76s6vLJbLz2p5Q9cDviGEqu/bxW8EU?=
+ =?us-ascii?Q?my5kwVKoVaob6ykOH1qhwvzyWpOYElRsn+E6p/1VO1eXsOMDBXFO/PrxSl8D?=
+ =?us-ascii?Q?elWpuw5VSQwBLZc=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?cotmweTLD9qwpjan50myF/4/qPZ0ZhytbPWP5cAA3aQ4RVwftdJzjgJADlsC?=
+ =?us-ascii?Q?lqJXbuikXNhm6uwAGTTQmyHLauh3kmoTGDJq+mGi5ChYVcxmJXiXCnbkB6vB?=
+ =?us-ascii?Q?+OKFym2DvAFMwcbAyvkcAEopwEukYt8zUKmecubhk1kAkU32OJFykitoyQow?=
+ =?us-ascii?Q?yao8ym1BDeC2k323XiAxeGd5iAJfQQwm5RP2ZnEz5OcUnnC8MogNMVUi8AJQ?=
+ =?us-ascii?Q?XN+za6NhqTGE8PMSaGK164rIby62cF+HZj/RbH9ot6bA7cgLTDmjO6Zft67b?=
+ =?us-ascii?Q?m5xEVMXM9S25U9VFrOLdJcGr1bSfnAvkb7FW3QYnWmgjiEtYw/VQHS0V3PCd?=
+ =?us-ascii?Q?FMWlm0MdGQBh2PYqDzhbHRirH0jj0GCZ0p8g1h4UEm8GX9RsZw3N7NDlBw4s?=
+ =?us-ascii?Q?g9wm+Ly6oKN2vVTjiOr+8JowbAMD6NaWO0qhIEmzvL/b6xwsVjv00mHlskUr?=
+ =?us-ascii?Q?A/TLU4RDsGUmK/kWJNE7spqOSat0zz1SLki1OHahBhGBbKQYzKVPO3XzokmT?=
+ =?us-ascii?Q?sKlqIX/XUi5RSnZ7FSTNj+CKFNZVtcNtmAxWRMxVmnChkDipR8HGGCTS1GyA?=
+ =?us-ascii?Q?7UQij4QpPNJ3UHOJBEsqXnSoEr2uvZ0ngNc7hyMm19vRRsKuaJMS8JZEqpW1?=
+ =?us-ascii?Q?NJKT/0Wcmtcyk3Bj+V5Pvcji4zoGyGg52J9YvkNlk28goV+/SsKEyjAHjD+c?=
+ =?us-ascii?Q?d7jcMBYoVkpz5B2ZTqoGto4abEsjuI5cquQCwUZbl3iz77Or6Begv5oLUAVZ?=
+ =?us-ascii?Q?FdoAmQdTdzBTBQoGO/04L/1lPfDJC96pmtKVZD40UVBJpm0ObK8V97txIOtT?=
+ =?us-ascii?Q?/9MVwXdfiiYWzB88VCAuVUar9WRrLnZZAk8GqHtjmeWO2hSRrzRrzcQyGiWG?=
+ =?us-ascii?Q?rFTKBmu4563Zdmim+P00Lc+mL08t5oDTCvuLB5nhSE2/qMpR/HhqyS9aBsaM?=
+ =?us-ascii?Q?74sC+2t4z1hbNG5+HiHBMliQ+PKI3N452lE1Tx3Qg4cOF696N0B3Au7XVICX?=
+ =?us-ascii?Q?dtIfHsSxdm3QSSG1vJKdnHavyLa6CIa8gUNztVDOUyiS+Q65+MlusE66milI?=
+ =?us-ascii?Q?F/kIjwxmfeyOQluhL4edALtBIerfWP7qmSqPFKQ/IXIqAeeGng8uGnL62m9P?=
+ =?us-ascii?Q?sD9ctijhFqXAAZP86OTnIreQhZdq4okIWAY5vW1n8yfAjtPuyIIAdBPgfD8a?=
+ =?us-ascii?Q?v6UQ9PFLjJmPsxsj+MdCQgB0hraMuVWBvRptl7liCkqIAFSfhokTzPJjdwEy?=
+ =?us-ascii?Q?DnZhM6VZ7y8tD91FfKYqIlLIBtFmGbSOU+N2YEAAyrhnkqvANbou/ieKBBX5?=
+ =?us-ascii?Q?MFlqy1OMVESsMSjNGAMv3Il8K/LwiZhHnUK3nd0xS28826oACdhhEz3MeT7S?=
+ =?us-ascii?Q?msHr2cjtHQwcK1srvRfGNuC/6RDQFUE2mFSbsfiWGDIG28y7zYh3z3ytCYcw?=
+ =?us-ascii?Q?FP6voigqaIR2/zjr1DMeqM6FfiVmcX/g+sQEW7oUXoMjWs1c6zEpL9dKG1nK?=
+ =?us-ascii?Q?2RNkFA5fcOUTKsvMtOPjduzW3w/4pwaFoxmZJwq7leb/a+5EiSaABeeUO8Wc?=
+ =?us-ascii?Q?3/CF1RS4u/XI1u3lNPt3WmG6WytnubgnHW8WVTtrgMg7J6Vo/awgMmaA4d7b?=
+ =?us-ascii?Q?Dw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <65481BCD35B7F641A65E763F75D5CC2A@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	08AVYbhjebghToQok0qcxmQl3fpB6ST3Pnx3CYV4LBWO5HztxLX+Wy1dzi4e6OzqCupnQ6/EbpVTiVrDmAqETTtBT5S0GuPeff9MpzfyJsuoTC/jPH0vPg2GTI19F0m30EdNJaKUrFXbW1NRccVSbGxW4duEg8L2wg/fpFD4xwARMSRo3gFt2SPz/nSR4AERBYIdo91eAFBOZ/AHqqazcHQWe3YGRfMPAbMI24Jo/UpTcPMAVtdahwXmWYDV6LJc9LyjZcNRAUYuIumZdkcLHp6lMATmwS2t5uZfO2YfpTLVagsBnClPeii1fXmyyjyRYzWIZ7gHaCcN2qE5DbyQBy6GBCSWNlL9QcL7ouoaWwy9P+CuwncRQTOaKadUlYE2n1lcjUcdZsPB7mJdsLpZOAekdzrKYQGAeyp9Yr/zod0PvUWILDBKy8D1/Bp5rT1Zc0/AtBw351KIHwB6OwpcUDBhoID0RR9ecb5pkw+f7JpLdZkcITjY+L2pueqzmxf5EU0YEzToTKUQtEf6CVZUwq5eYV8S8TtqUfkL2JNJRKS2pzgihXibhJ6WTQRyYS10dm/UZQ/y84M4eIvGiYv/4dYes1CDismcvf2+P2TEcpJSv82xft5muQQ084eqsQXO
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0fb4ce3f-2355-4131-058f-08dd7c91728a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2025 02:50:28.9674
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QZwpyEfNfW98uajAmoNWOVsgGj10EAzzV86Q3m35PKOSZrNj0FDhFF+tcQDePY9nq2bSsG+5Dr1LQnyNV5uV5WTL0Cf8JolZRMSBV+VaP3k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR04MB7708
 
-From: Dave Ertman <david.m.ertman@intel.com>
+On Apr 15, 2025 / 17:00, Zhu Yanjun wrote:
+> On 15.04.25 15:09, Bernard Metzler wrote:
+>=20
+> > [  106.826346] rdma_rxe: loaded
+> > [  106.832164] loop: module loaded
+> > [  107.066868] run blktests nvme/061 at 2025-04-15 15:03:04
+> > [  107.081270] infiniband eno1_rxe: set active
+> > [  107.081274] infiniband eno1_rxe: added eno1
+> > [  107.089683] infiniband enp4s0f4d1_rxe: set active
+> > [  107.089687] infiniband enp4s0f4d1_rxe: added enp4s0f4d1
+> > [  107.264770] loop0: detected capacity change from 0 to 2097152
+> > [  107.267376] nvmet: adding nsid 1 to subsystem blktests-subsystem-1
+> > [  107.271276] nvmet_rdma: enabling port 0 (10.0.0.2:4420)
+> > [  107.312957] BUG: kernel NULL pointer dereference, address: 000000000=
+0000028
+> > [  107.312973] #PF: supervisor read access in kernel mode
+> > [  107.312979] #PF: error_code(0x0000) - not-present page
+> > [  107.312986] PGD 0 P4D 0
+> > [  107.312992] Oops: Oops: 0000 [#1] SMP PTI
+> > [  107.312999] CPU: 1 UID: 0 PID: 123 Comm: kworker/u32:4 Not tainted 6=
+.15.0-rc2 #1 PREEMPT(undef)
+> > [  107.313008] Hardware name: LENOVO 10A6S05601/SHARKBAY, BIOS FBKTD8AU=
+S 09/17/2019
+> > [  107.313016] Workqueue: rxe_wq do_work [rdma_rxe]
+> > [  107.313030] RIP: 0010:rxe_mr_copy+0x58/0x230 [rdma_rxe]
+>=20
+> Hi, Bernard
+>=20
+> An interesting test. Can you find the line number of
+> (rxe_mr_copy+0x58/0x230) with crash tool?
+>=20
+> Thus we can find what variable is becoming NULL pointer.
 
-In preparation of supporting more than a single core PCI driver
-for RDMA, move ice specific structs like qset_params, qos_info
-and qos_params from iidc_rdma.h to iidc_rdma_ice.h.
+I observe the failure too, but I also observe the recent patch [1] avoids i=
+t.
+With the patch applied to the kernel v6.15-rc2, I no longer observe the fai=
+lure
+repeating the test case 100 times using rxe driver.
 
-Previously, the ice driver was just exporting its entire PF struct
-to the auxiliary driver, but since each core driver will have its own
-different PF struct, implement a universal struct that all core drivers
-can provide to the auxiliary driver through the probe call.
-
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-Co-developed-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Co-developed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-Co-developed-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
----
- drivers/infiniband/hw/irdma/main.c            | 102 +++++-----
- drivers/infiniband/hw/irdma/main.h            |   1 +
- .../net/ethernet/intel/ice/devlink/devlink.c  |  45 ++++-
- drivers/net/ethernet/intel/ice/ice.h          |   6 +-
- drivers/net/ethernet/intel/ice/ice_dcb_lib.c  |  39 +++-
- drivers/net/ethernet/intel/ice/ice_dcb_lib.h  |   9 +
- drivers/net/ethernet/intel/ice/ice_ethtool.c  |   8 +-
- drivers/net/ethernet/intel/ice/ice_idc.c      | 190 +++++++++++-------
- drivers/net/ethernet/intel/ice/ice_main.c     |  10 +-
- include/linux/net/intel/iidc_rdma.h           |  69 ++-----
- include/linux/net/intel/iidc_rdma_ice.h       |  69 ++++++-
- 11 files changed, 347 insertions(+), 201 deletions(-)
-
-diff --git a/drivers/infiniband/hw/irdma/main.c b/drivers/infiniband/hw/irdma/main.c
-index 46489c0ab511..abb532bc8ce4 100644
---- a/drivers/infiniband/hw/irdma/main.c
-+++ b/drivers/infiniband/hw/irdma/main.c
-@@ -1,10 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
- /* Copyright (c) 2015 - 2021 Intel Corporation */
- #include "main.h"
--#include "../../../net/ethernet/intel/ice/ice.h"
- 
- MODULE_ALIAS("i40iw");
--MODULE_AUTHOR("Intel Corporation, <e1000-rdma@lists.sourceforge.net>");
- MODULE_DESCRIPTION("Intel(R) Ethernet Protocol Driver for RDMA");
- MODULE_LICENSE("Dual BSD/GPL");
- 
-@@ -85,9 +83,10 @@ static void irdma_fill_qos_info(struct irdma_l2params *l2params,
- 	}
- }
- 
--static void irdma_iidc_event_handler(struct ice_pf *pf, struct iidc_rdma_event *event)
-+static void irdma_iidc_event_handler(struct iidc_rdma_core_dev_info *cdev_info,
-+				     struct iidc_rdma_event *event)
- {
--	struct irdma_device *iwdev = dev_get_drvdata(&pf->adev->dev);
-+	struct irdma_device *iwdev = dev_get_drvdata(&cdev_info->adev->dev);
- 	struct irdma_l2params l2params = {};
- 
- 	if (*event->type & BIT(IIDC_RDMA_EVENT_AFTER_MTU_CHANGE)) {
-@@ -104,17 +103,18 @@ static void irdma_iidc_event_handler(struct ice_pf *pf, struct iidc_rdma_event *
- 
- 		irdma_prep_tc_change(iwdev);
- 	} else if (*event->type & BIT(IIDC_RDMA_EVENT_AFTER_TC_CHANGE)) {
--		struct iidc_rdma_qos_params qos_info = {};
-+		struct iidc_rdma_priv_dev_info *iidc_priv = cdev_info->iidc_priv;
- 
- 		if (!iwdev->vsi.tc_change_pending)
- 			return;
- 
- 		l2params.tc_changed = true;
- 		ibdev_dbg(&iwdev->ibdev, "CLNT: TC Change\n");
--		ice_get_qos_params(pf, &qos_info);
--		irdma_fill_qos_info(&l2params, &qos_info);
-+
-+		irdma_fill_qos_info(&l2params, &iidc_priv->qos_info);
- 		if (iwdev->rf->protocol_used != IRDMA_IWARP_PROTOCOL_ONLY)
--			iwdev->dcb_vlan_mode = qos_info.num_tc > 1 && !l2params.dscp_mode;
-+			iwdev->dcb_vlan_mode =
-+				l2params.num_tc > 1 && !l2params.dscp_mode;
- 		irdma_change_l2params(&iwdev->vsi, &l2params);
- 	} else if (*event->type & BIT(IIDC_RDMA_EVENT_CRIT_ERR)) {
- 		ibdev_warn(&iwdev->ibdev, "ICE OICR event notification: oicr = 0x%08x\n",
-@@ -151,10 +151,8 @@ static void irdma_iidc_event_handler(struct ice_pf *pf, struct iidc_rdma_event *
-  */
- static void irdma_request_reset(struct irdma_pci_f *rf)
- {
--	struct ice_pf *pf = rf->cdev;
--
- 	ibdev_warn(&rf->iwdev->ibdev, "Requesting a reset\n");
--	ice_rdma_request_reset(pf, IIDC_PFR);
-+	ice_rdma_request_reset(rf->cdev, IIDC_FUNC_RESET);
- }
- 
- /**
-@@ -166,14 +164,15 @@ static int irdma_lan_register_qset(struct irdma_sc_vsi *vsi,
- 				   struct irdma_ws_node *tc_node)
- {
- 	struct irdma_device *iwdev = vsi->back_vsi;
--	struct ice_pf *pf = iwdev->rf->cdev;
-+	struct iidc_rdma_core_dev_info *cdev_info;
- 	struct iidc_rdma_qset_params qset = {};
- 	int ret;
- 
-+	cdev_info = iwdev->rf->cdev;
- 	qset.qs_handle = tc_node->qs_handle;
- 	qset.tc = tc_node->traffic_class;
- 	qset.vport_id = vsi->vsi_idx;
--	ret = ice_add_rdma_qset(pf, &qset);
-+	ret = ice_add_rdma_qset(cdev_info, &qset);
- 	if (ret) {
- 		ibdev_dbg(&iwdev->ibdev, "WS: LAN alloc_res for rdma qset failed.\n");
- 		return ret;
-@@ -194,19 +193,20 @@ static void irdma_lan_unregister_qset(struct irdma_sc_vsi *vsi,
- 				      struct irdma_ws_node *tc_node)
- {
- 	struct irdma_device *iwdev = vsi->back_vsi;
--	struct ice_pf *pf = iwdev->rf->cdev;
-+	struct iidc_rdma_core_dev_info *cdev_info;
- 	struct iidc_rdma_qset_params qset = {};
- 
-+	cdev_info = iwdev->rf->cdev;
- 	qset.qs_handle = tc_node->qs_handle;
- 	qset.tc = tc_node->traffic_class;
- 	qset.vport_id = vsi->vsi_idx;
- 	qset.teid = tc_node->l2_sched_node_id;
- 
--	if (ice_del_rdma_qset(pf, &qset))
-+	if (ice_del_rdma_qset(cdev_info, &qset))
- 		ibdev_dbg(&iwdev->ibdev, "WS: LAN free_res for rdma qset failed.\n");
- }
- 
--static int irdma_init_interrupts(struct irdma_pci_f *rf, struct ice_pf *pf)
-+static int irdma_init_interrupts(struct irdma_pci_f *rf, struct iidc_rdma_core_dev_info *cdev)
- {
- 	int i;
- 
-@@ -217,12 +217,12 @@ static int irdma_init_interrupts(struct irdma_pci_f *rf, struct ice_pf *pf)
- 		return -ENOMEM;
- 
- 	for (i = 0; i < rf->msix_count; i++)
--		if (ice_alloc_rdma_qvector(pf, &rf->msix_entries[i]))
-+		if (ice_alloc_rdma_qvector(cdev, &rf->msix_entries[i]))
- 			break;
- 
- 	if (i < IRDMA_MIN_MSIX) {
- 		for (; i > 0; i--)
--			ice_free_rdma_qvector(pf, &rf->msix_entries[i]);
-+			ice_free_rdma_qvector(cdev, &rf->msix_entries[i]);
- 
- 		kfree(rf->msix_entries);
- 		return -ENOMEM;
-@@ -233,12 +233,12 @@ static int irdma_init_interrupts(struct irdma_pci_f *rf, struct ice_pf *pf)
- 	return 0;
- }
- 
--static void irdma_deinit_interrupts(struct irdma_pci_f *rf, struct ice_pf *pf)
-+static void irdma_deinit_interrupts(struct irdma_pci_f *rf, struct iidc_rdma_core_dev_info *cdev)
- {
- 	int i;
- 
- 	for (i = 0; i < rf->msix_count; i++)
--		ice_free_rdma_qvector(pf, &rf->msix_entries[i]);
-+		ice_free_rdma_qvector(cdev, &rf->msix_entries[i]);
- 
- 	kfree(rf->msix_entries);
- }
-@@ -247,41 +247,49 @@ static void irdma_remove(struct auxiliary_device *aux_dev)
- {
- 	struct irdma_device *iwdev = auxiliary_get_drvdata(aux_dev);
- 	struct iidc_rdma_core_auxiliary_dev *iidc_adev;
--	struct ice_pf *pf;
-+	struct iidc_rdma_core_dev_info *cdev_info;
- 
- 	iidc_adev = container_of(aux_dev, struct iidc_rdma_core_auxiliary_dev, adev);
--	pf = iidc_adev->pf;
-+	cdev_info = iidc_adev->cdev_info;
- 
-+	ice_rdma_update_vsi_filter(cdev_info, iwdev->vsi_num, false);
- 	irdma_ib_unregister_device(iwdev);
--	ice_rdma_update_vsi_filter(pf, iwdev->vsi_num, false);
--	irdma_deinit_interrupts(iwdev->rf, pf);
-+	irdma_deinit_interrupts(iwdev->rf, cdev_info);
- 
--	pr_debug("INIT: Gen2 PF[%d] device remove success\n", PCI_FUNC(pf->pdev->devfn));
-+	pr_debug("INIT: Gen2 PF[%d] device remove success\n", PCI_FUNC(cdev_info->pdev->devfn));
- }
- 
--static void irdma_fill_device_info(struct irdma_device *iwdev, struct ice_pf *pf,
--				   struct ice_vsi *vsi)
-+static void irdma_fill_device_info(struct irdma_device *iwdev,
-+				   struct iidc_rdma_core_dev_info *cdev_info)
- {
-+	struct iidc_rdma_priv_dev_info *iidc_priv = cdev_info->iidc_priv;
- 	struct irdma_pci_f *rf = iwdev->rf;
- 
--	rf->cdev = pf;
-+	rf->sc_dev.hw = &rf->hw;
-+	rf->iwdev = iwdev;
-+	rf->cdev = cdev_info;
-+	rf->hw.hw_addr = iidc_priv->hw_addr;
-+	rf->pcidev = cdev_info->pdev;
-+	rf->hw.device = &rf->pcidev->dev;
-+	rf->pf_id = iidc_priv->pf_id;
- 	rf->gen_ops.register_qset = irdma_lan_register_qset;
- 	rf->gen_ops.unregister_qset = irdma_lan_unregister_qset;
--	rf->hw.hw_addr = pf->hw.hw_addr;
--	rf->pcidev = pf->pdev;
--	rf->pf_id = pf->hw.pf_id;
--	rf->default_vsi.vsi_idx = vsi->vsi_num;
--	rf->protocol_used = pf->rdma_mode & IIDC_RDMA_PROTOCOL_ROCEV2 ?
--			    IRDMA_ROCE_PROTOCOL_ONLY : IRDMA_IWARP_PROTOCOL_ONLY;
-+
-+	rf->default_vsi.vsi_idx = iidc_priv->vport_id;
-+	rf->protocol_used =
-+		cdev_info->rdma_protocol == IIDC_RDMA_PROTOCOL_ROCEV2 ?
-+		IRDMA_ROCE_PROTOCOL_ONLY : IRDMA_IWARP_PROTOCOL_ONLY;
- 	rf->rdma_ver = IRDMA_GEN_2;
- 	rf->rsrc_profile = IRDMA_HMC_PROFILE_DEFAULT;
- 	rf->rst_to = IRDMA_RST_TIMEOUT_HZ;
- 	rf->gen_ops.request_reset = irdma_request_reset;
- 	rf->limits_sel = 7;
- 	rf->iwdev = iwdev;
-+
- 	mutex_init(&iwdev->ah_tbl_lock);
--	iwdev->netdev = vsi->netdev;
--	iwdev->vsi_num = vsi->vsi_num;
-+
-+	iwdev->netdev = iidc_priv->netdev;
-+	iwdev->vsi_num = iidc_priv->vport_id;
- 	iwdev->init_state = INITIAL_STATE;
- 	iwdev->roce_cwnd = IRDMA_ROCE_CWND_DEFAULT;
- 	iwdev->roce_ackcreds = IRDMA_ROCE_ACKCREDS_DEFAULT;
-@@ -294,20 +302,17 @@ static void irdma_fill_device_info(struct irdma_device *iwdev, struct ice_pf *pf
- static int irdma_probe(struct auxiliary_device *aux_dev, const struct auxiliary_device_id *id)
- {
- 	struct iidc_rdma_core_auxiliary_dev *iidc_adev;
--	struct iidc_rdma_qos_params qos_info = {};
-+	struct iidc_rdma_core_dev_info *cdev_info;
-+	struct iidc_rdma_priv_dev_info *iidc_priv;
- 	struct irdma_l2params l2params = {};
- 	struct irdma_device *iwdev;
- 	struct irdma_pci_f *rf;
--	struct ice_vsi *vsi;
--	struct ice_pf *pf;
- 	int err;
- 
- 	iidc_adev = container_of(aux_dev, struct iidc_rdma_core_auxiliary_dev, adev);
--	pf = iidc_adev->pf;
--	vsi = ice_get_main_vsi(pf);
-+	cdev_info = iidc_adev->cdev_info;
-+	iidc_priv = cdev_info->iidc_priv;
- 
--	if (!vsi)
--		return -EIO;
- 	iwdev = ib_alloc_device(irdma_device, ibdev);
- 	if (!iwdev)
- 		return -ENOMEM;
-@@ -317,10 +322,10 @@ static int irdma_probe(struct auxiliary_device *aux_dev, const struct auxiliary_
- 		return -ENOMEM;
- 	}
- 
--	irdma_fill_device_info(iwdev, pf, vsi);
-+	irdma_fill_device_info(iwdev, cdev_info);
- 	rf = iwdev->rf;
- 
--	err = irdma_init_interrupts(rf, pf);
-+	err = irdma_init_interrupts(rf, cdev_info);
- 	if (err)
- 		goto err_init_interrupts;
- 
-@@ -329,8 +334,7 @@ static int irdma_probe(struct auxiliary_device *aux_dev, const struct auxiliary_
- 		goto err_ctrl_init;
- 
- 	l2params.mtu = iwdev->netdev->mtu;
--	ice_get_qos_params(pf, &qos_info);
--	irdma_fill_qos_info(&l2params, &qos_info);
-+	irdma_fill_qos_info(&l2params, &iidc_priv->qos_info);
- 	if (iwdev->rf->protocol_used != IRDMA_IWARP_PROTOCOL_ONLY)
- 		iwdev->dcb_vlan_mode = l2params.num_tc > 1 && !l2params.dscp_mode;
- 
-@@ -342,7 +346,7 @@ static int irdma_probe(struct auxiliary_device *aux_dev, const struct auxiliary_
- 	if (err)
- 		goto err_ibreg;
- 
--	ice_rdma_update_vsi_filter(pf, iwdev->vsi_num, true);
-+	ice_rdma_update_vsi_filter(cdev_info, iwdev->vsi_num, true);
- 
- 	ibdev_dbg(&iwdev->ibdev, "INIT: Gen2 PF[%d] device probe success\n", PCI_FUNC(rf->pcidev->devfn));
- 	auxiliary_set_drvdata(aux_dev, iwdev);
-@@ -354,7 +358,7 @@ static int irdma_probe(struct auxiliary_device *aux_dev, const struct auxiliary_
- err_rt_init:
- 	irdma_ctrl_deinit_hw(rf);
- err_ctrl_init:
--	irdma_deinit_interrupts(rf, pf);
-+	irdma_deinit_interrupts(rf, cdev_info);
- err_init_interrupts:
- 	kfree(iwdev->rf);
- 	ib_dealloc_device(&iwdev->ibdev);
-diff --git a/drivers/infiniband/hw/irdma/main.h b/drivers/infiniband/hw/irdma/main.h
-index e8083b0c8cb2..674acc952168 100644
---- a/drivers/infiniband/hw/irdma/main.h
-+++ b/drivers/infiniband/hw/irdma/main.h
-@@ -30,6 +30,7 @@
- #endif
- #include <linux/auxiliary_bus.h>
- #include <linux/net/intel/iidc_rdma.h>
-+#include <linux/net/intel/iidc_rdma_ice.h>
- #include <rdma/ib_smi.h>
- #include <rdma/ib_verbs.h>
- #include <rdma/ib_pack.h>
-diff --git a/drivers/net/ethernet/intel/ice/devlink/devlink.c b/drivers/net/ethernet/intel/ice/devlink/devlink.c
-index fcb199efbea5..4af60e2f37df 100644
---- a/drivers/net/ethernet/intel/ice/devlink/devlink.c
-+++ b/drivers/net/ethernet/intel/ice/devlink/devlink.c
-@@ -1339,8 +1339,13 @@ ice_devlink_enable_roce_get(struct devlink *devlink, u32 id,
- 			    struct devlink_param_gset_ctx *ctx)
- {
- 	struct ice_pf *pf = devlink_priv(devlink);
-+	struct iidc_rdma_core_dev_info *cdev;
- 
--	ctx->val.vbool = pf->rdma_mode & IIDC_RDMA_PROTOCOL_ROCEV2 ? true : false;
-+	cdev = pf->cdev_info;
-+	if (!cdev)
-+		return -ENODEV;
-+
-+	ctx->val.vbool = !!(cdev->rdma_protocol & IIDC_RDMA_PROTOCOL_ROCEV2);
- 
- 	return 0;
- }
-@@ -1350,19 +1355,24 @@ static int ice_devlink_enable_roce_set(struct devlink *devlink, u32 id,
- 				       struct netlink_ext_ack *extack)
- {
- 	struct ice_pf *pf = devlink_priv(devlink);
-+	struct iidc_rdma_core_dev_info *cdev;
- 	bool roce_ena = ctx->val.vbool;
- 	int ret;
- 
-+	cdev = pf->cdev_info;
-+	if (!cdev)
-+		return -ENODEV;
-+
- 	if (!roce_ena) {
- 		ice_unplug_aux_dev(pf);
--		pf->rdma_mode &= ~IIDC_RDMA_PROTOCOL_ROCEV2;
-+		cdev->rdma_protocol &= ~IIDC_RDMA_PROTOCOL_ROCEV2;
- 		return 0;
- 	}
- 
--	pf->rdma_mode |= IIDC_RDMA_PROTOCOL_ROCEV2;
-+	cdev->rdma_protocol |= IIDC_RDMA_PROTOCOL_ROCEV2;
- 	ret = ice_plug_aux_dev(pf);
- 	if (ret)
--		pf->rdma_mode &= ~IIDC_RDMA_PROTOCOL_ROCEV2;
-+		cdev->rdma_protocol &= ~IIDC_RDMA_PROTOCOL_ROCEV2;
- 
- 	return ret;
- }
-@@ -1373,11 +1383,16 @@ ice_devlink_enable_roce_validate(struct devlink *devlink, u32 id,
- 				 struct netlink_ext_ack *extack)
- {
- 	struct ice_pf *pf = devlink_priv(devlink);
-+	struct iidc_rdma_core_dev_info *cdev;
-+
-+	cdev = pf->cdev_info;
-+	if (!cdev)
-+		return -ENODEV;
- 
- 	if (!test_bit(ICE_FLAG_RDMA_ENA, pf->flags))
- 		return -EOPNOTSUPP;
- 
--	if (pf->rdma_mode & IIDC_RDMA_PROTOCOL_IWARP) {
-+	if (cdev->rdma_protocol & IIDC_RDMA_PROTOCOL_IWARP) {
- 		NL_SET_ERR_MSG_MOD(extack, "iWARP is currently enabled. This device cannot enable iWARP and RoCEv2 simultaneously");
- 		return -EOPNOTSUPP;
- 	}
-@@ -1390,8 +1405,13 @@ ice_devlink_enable_iw_get(struct devlink *devlink, u32 id,
- 			  struct devlink_param_gset_ctx *ctx)
- {
- 	struct ice_pf *pf = devlink_priv(devlink);
-+	struct iidc_rdma_core_dev_info *cdev;
- 
--	ctx->val.vbool = pf->rdma_mode & IIDC_RDMA_PROTOCOL_IWARP;
-+	cdev = pf->cdev_info;
-+	if (!cdev)
-+		return -ENODEV;
-+
-+	ctx->val.vbool = !!(cdev->rdma_protocol & IIDC_RDMA_PROTOCOL_IWARP);
- 
- 	return 0;
- }
-@@ -1401,19 +1421,24 @@ static int ice_devlink_enable_iw_set(struct devlink *devlink, u32 id,
- 				     struct netlink_ext_ack *extack)
- {
- 	struct ice_pf *pf = devlink_priv(devlink);
-+	struct iidc_rdma_core_dev_info *cdev;
- 	bool iw_ena = ctx->val.vbool;
- 	int ret;
- 
-+	cdev = pf->cdev_info;
-+	if (!cdev)
-+		return -ENODEV;
-+
- 	if (!iw_ena) {
- 		ice_unplug_aux_dev(pf);
--		pf->rdma_mode &= ~IIDC_RDMA_PROTOCOL_IWARP;
-+		cdev->rdma_protocol &= ~IIDC_RDMA_PROTOCOL_IWARP;
- 		return 0;
- 	}
- 
--	pf->rdma_mode |= IIDC_RDMA_PROTOCOL_IWARP;
-+	cdev->rdma_protocol |= IIDC_RDMA_PROTOCOL_IWARP;
- 	ret = ice_plug_aux_dev(pf);
- 	if (ret)
--		pf->rdma_mode &= ~IIDC_RDMA_PROTOCOL_IWARP;
-+		cdev->rdma_protocol &= ~IIDC_RDMA_PROTOCOL_IWARP;
- 
- 	return ret;
- }
-@@ -1428,7 +1453,7 @@ ice_devlink_enable_iw_validate(struct devlink *devlink, u32 id,
- 	if (!test_bit(ICE_FLAG_RDMA_ENA, pf->flags))
- 		return -EOPNOTSUPP;
- 
--	if (pf->rdma_mode & IIDC_RDMA_PROTOCOL_ROCEV2) {
-+	if (pf->cdev_info->rdma_protocol & IIDC_RDMA_PROTOCOL_ROCEV2) {
- 		NL_SET_ERR_MSG_MOD(extack, "RoCEv2 is currently enabled. This device cannot enable iWARP and RoCEv2 simultaneously");
- 		return -EOPNOTSUPP;
- 	}
-diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index fd083647c14a..e27d9044bcb3 100644
---- a/drivers/net/ethernet/intel/ice/ice.h
-+++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -401,7 +401,6 @@ struct ice_vsi {
- 	u16 req_rxq;			 /* User requested Rx queues */
- 	u16 num_rx_desc;
- 	u16 num_tx_desc;
--	u16 qset_handle[ICE_MAX_TRAFFIC_CLASS];
- 	struct ice_tc_cfg tc_cfg;
- 	struct bpf_prog *xdp_prog;
- 	struct ice_tx_ring **xdp_rings;	 /* XDP ring array */
-@@ -557,7 +556,6 @@ struct ice_pf {
- 	struct devlink_port devlink_port;
- 
- 	/* OS reserved IRQ details */
--	struct msix_entry *msix_entries;
- 	struct ice_irq_tracker irq_tracker;
- 	struct ice_virt_irq_tracker virt_irq_tracker;
- 
-@@ -592,7 +590,6 @@ struct ice_pf {
- 	struct gnss_serial *gnss_serial;
- 	struct gnss_device *gnss_dev;
- 	u16 num_rdma_msix;		/* Total MSIX vectors for RDMA driver */
--	u16 rdma_base_vector;
- 
- 	/* spinlock to protect the AdminQ wait list */
- 	spinlock_t aq_wait_lock;
-@@ -625,14 +622,12 @@ struct ice_pf {
- 	struct ice_hw_port_stats stats_prev;
- 	struct ice_hw hw;
- 	u8 stat_prev_loaded:1; /* has previous stats been loaded */
--	u8 rdma_mode;
- 	u16 dcbx_cap;
- 	u32 tx_timeout_count;
- 	unsigned long tx_timeout_last_recovery;
- 	u32 tx_timeout_recovery_level;
- 	char int_name[ICE_INT_NAME_STR_LEN];
- 	char int_name_ll_ts[ICE_INT_NAME_STR_LEN];
--	struct auxiliary_device *adev;
- 	int aux_idx;
- 	u32 sw_int_count;
- 	/* count of tc_flower filters specific to channel (aka where filter
-@@ -664,6 +659,7 @@ struct ice_pf {
- 	struct ice_dplls dplls;
- 	struct device *hwmon_dev;
- 	struct ice_health health_reporters;
-+	struct iidc_rdma_core_dev_info *cdev_info;
- 
- 	u8 num_quanta_prof_used;
- };
-diff --git a/drivers/net/ethernet/intel/ice/ice_dcb_lib.c b/drivers/net/ethernet/intel/ice/ice_dcb_lib.c
-index fe16c59796db..c5ef33c100d6 100644
---- a/drivers/net/ethernet/intel/ice/ice_dcb_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_dcb_lib.c
-@@ -740,6 +740,8 @@ static int ice_dcb_noncontig_cfg(struct ice_pf *pf)
- void ice_pf_dcb_recfg(struct ice_pf *pf, bool locked)
- {
- 	struct ice_dcbx_cfg *dcbcfg = &pf->hw.port_info->qos_cfg.local_dcbx_cfg;
-+	struct iidc_rdma_priv_dev_info *privd;
-+	struct iidc_rdma_core_dev_info *cdev;
- 	struct iidc_rdma_event *event;
- 	u8 tc_map = 0;
- 	int v, ret;
-@@ -783,7 +785,11 @@ void ice_pf_dcb_recfg(struct ice_pf *pf, bool locked)
- 		if (vsi->type == ICE_VSI_PF)
- 			ice_dcbnl_set_all(vsi);
- 	}
--	if (!locked) {
-+
-+	cdev = pf->cdev_info;
-+	if (cdev && !locked) {
-+		privd = cdev->iidc_priv;
-+		ice_setup_dcb_qos_info(pf, &privd->qos_info);
- 		/* Notify the AUX drivers that TC change is finished */
- 		event = kzalloc(sizeof(*event), GFP_KERNEL);
- 		if (!event)
-@@ -944,6 +950,37 @@ ice_tx_prepare_vlan_flags_dcb(struct ice_tx_ring *tx_ring,
- 	}
- }
- 
-+/**
-+ * ice_setup_dcb_qos_info - Setup DCB QoS information
-+ * @pf: ptr to ice_pf
-+ * @qos_info: QoS param instance
-+ */
-+void ice_setup_dcb_qos_info(struct ice_pf *pf, struct iidc_rdma_qos_params *qos_info)
-+{
-+	struct ice_dcbx_cfg *dcbx_cfg;
-+	unsigned int i;
-+	u32 up2tc;
-+
-+	if (!pf || !qos_info)
-+		return;
-+
-+	dcbx_cfg = &pf->hw.port_info->qos_cfg.local_dcbx_cfg;
-+	up2tc = rd32(&pf->hw, PRTDCB_TUP2TC);
-+
-+	qos_info->num_tc = ice_dcb_get_num_tc(dcbx_cfg);
-+
-+	for (i = 0; i < IIDC_MAX_USER_PRIORITY; i++)
-+		qos_info->up2tc[i] = (up2tc >> (i * 3)) & 0x7;
-+
-+	for (i = 0; i < IEEE_8021QAZ_MAX_TCS; i++)
-+		qos_info->tc_info[i].rel_bw = dcbx_cfg->etscfg.tcbwtable[i];
-+
-+	qos_info->pfc_mode = dcbx_cfg->pfc_mode;
-+	if (qos_info->pfc_mode == IIDC_DSCP_PFC_MODE)
-+		for (i = 0; i < DSCP_MAX; i++)
-+			qos_info->dscp_map[i] = dcbx_cfg->dscp_map[i];
-+}
-+
- /**
-  * ice_dcb_is_mib_change_pending - Check if MIB change is pending
-  * @state: MIB change state
-diff --git a/drivers/net/ethernet/intel/ice/ice_dcb_lib.h b/drivers/net/ethernet/intel/ice/ice_dcb_lib.h
-index 800879a88c5e..da9ba814b4e8 100644
---- a/drivers/net/ethernet/intel/ice/ice_dcb_lib.h
-+++ b/drivers/net/ethernet/intel/ice/ice_dcb_lib.h
-@@ -31,6 +31,9 @@ void
- ice_tx_prepare_vlan_flags_dcb(struct ice_tx_ring *tx_ring,
- 			      struct ice_tx_buf *first);
- void
-+ice_setup_dcb_qos_info(struct ice_pf *pf,
-+		       struct iidc_rdma_qos_params *qos_info);
-+void
- ice_dcb_process_lldp_set_mib_change(struct ice_pf *pf,
- 				    struct ice_rq_event_info *event);
- /**
-@@ -134,5 +137,11 @@ static inline void ice_update_dcb_stats(struct ice_pf *pf) { }
- static inline void
- ice_dcb_process_lldp_set_mib_change(struct ice_pf *pf, struct ice_rq_event_info *event) { }
- static inline void ice_set_cgd_num(struct ice_tlan_ctx *tlan_ctx, u8 dcb_tc) { }
-+static inline void
-+ice_setup_dcb_qos_info(struct ice_pf *pf, struct iidc_rdma_qos_params *qos_info)
-+{
-+	qos_info->num_tc = 1;
-+	qos_info->tc_info[0].rel_bw = 100;
-+}
- #endif /* CONFIG_DCB */
- #endif /* _ICE_DCB_LIB_H_ */
-diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-index 7c2dc347e4e5..46fbcd391a80 100644
---- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
-+++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-@@ -3964,11 +3964,11 @@ static int ice_set_channels(struct net_device *dev, struct ethtool_channels *ch)
- 		return -EINVAL;
- 	}
- 
--	if (pf->adev) {
-+	if (pf->cdev_info && pf->cdev_info->adev) {
- 		mutex_lock(&pf->adev_mutex);
--		device_lock(&pf->adev->dev);
-+		device_lock(&pf->cdev_info->adev->dev);
- 		locked = true;
--		if (pf->adev->dev.driver) {
-+		if (pf->cdev_info->adev->dev.driver) {
- 			netdev_err(dev, "Cannot change channels when RDMA is active\n");
- 			ret = -EBUSY;
- 			goto adev_unlock;
-@@ -3987,7 +3987,7 @@ static int ice_set_channels(struct net_device *dev, struct ethtool_channels *ch)
- 
- adev_unlock:
- 	if (locked) {
--		device_unlock(&pf->adev->dev);
-+		device_unlock(&pf->cdev_info->adev->dev);
- 		mutex_unlock(&pf->adev_mutex);
- 	}
- 	return ret;
-diff --git a/drivers/net/ethernet/intel/ice/ice_idc.c b/drivers/net/ethernet/intel/ice/ice_idc.c
-index 0a19200000ad..bd7382f68e39 100644
---- a/drivers/net/ethernet/intel/ice/ice_idc.c
-+++ b/drivers/net/ethernet/intel/ice/ice_idc.c
-@@ -9,18 +9,20 @@
- static DEFINE_XARRAY_ALLOC1(ice_aux_id);
- 
- /**
-- * ice_get_auxiliary_drv - retrieve iidc_auxiliary_drv struct
-- * @pf: pointer to PF struct
-+ * ice_get_auxiliary_drv - retrieve iidc_rdma_core_auxiliary_drv struct
-+ * @cdev: pointer to iidc_rdma_core_dev_info struct
-  *
-  * This function has to be called with a device_lock on the
-- * pf->adev.dev to avoid race conditions.
-+ * cdev->adev.dev to avoid race conditions.
-+ *
-+ * Return: pointer to the matched auxiliary driver struct
-  */
--static
--struct iidc_rdma_core_auxiliary_drv *ice_get_auxiliary_drv(struct ice_pf *pf)
-+static struct iidc_rdma_core_auxiliary_drv
-+*ice_get_auxiliary_drv(struct iidc_rdma_core_dev_info *cdev)
- {
- 	struct auxiliary_device *adev;
- 
--	adev = pf->adev;
-+	adev = cdev->adev;
- 	if (!adev || !adev->dev.driver)
- 		return NULL;
- 
-@@ -36,41 +38,51 @@ struct iidc_rdma_core_auxiliary_drv *ice_get_auxiliary_drv(struct ice_pf *pf)
- void ice_send_event_to_aux(struct ice_pf *pf, struct iidc_rdma_event *event)
- {
- 	struct iidc_rdma_core_auxiliary_drv *iadrv;
-+	struct iidc_rdma_core_dev_info *cdev;
- 
- 	if (WARN_ON_ONCE(!in_task()))
- 		return;
- 
-+	cdev = pf->cdev_info;
-+	if (!cdev)
-+		return;
-+
- 	mutex_lock(&pf->adev_mutex);
--	if (!pf->adev)
-+	if (!cdev->adev)
- 		goto finish;
- 
--	device_lock(&pf->adev->dev);
--	iadrv = ice_get_auxiliary_drv(pf);
-+	device_lock(&cdev->adev->dev);
-+	iadrv = ice_get_auxiliary_drv(cdev);
- 	if (iadrv && iadrv->event_handler)
--		iadrv->event_handler(pf, event);
--	device_unlock(&pf->adev->dev);
-+		iadrv->event_handler(cdev, event);
-+	device_unlock(&cdev->adev->dev);
- finish:
- 	mutex_unlock(&pf->adev_mutex);
- }
- 
- /**
-  * ice_add_rdma_qset - Add Leaf Node for RDMA Qset
-- * @pf: PF struct
-+ * @cdev: pointer to iidc_rdma_core_dev_info struct
-  * @qset: Resource to be allocated
-+ *
-+ * Return: Zero on success or error code encountered
-  */
--int ice_add_rdma_qset(struct ice_pf *pf, struct iidc_rdma_qset_params *qset)
-+int ice_add_rdma_qset(struct iidc_rdma_core_dev_info *cdev,
-+		      struct iidc_rdma_qset_params *qset)
- {
- 	u16 max_rdmaqs[ICE_MAX_TRAFFIC_CLASS];
- 	struct ice_vsi *vsi;
- 	struct device *dev;
-+	struct ice_pf *pf;
- 	u32 qset_teid;
- 	u16 qs_handle;
- 	int status;
- 	int i;
- 
--	if (WARN_ON(!pf || !qset))
-+	if (WARN_ON(!cdev || !qset))
- 		return -EINVAL;
- 
-+	pf = pci_get_drvdata(cdev->pdev);
- 	dev = ice_pf_to_dev(pf);
- 
- 	if (!ice_is_rdma_ena(pf))
-@@ -101,7 +113,6 @@ int ice_add_rdma_qset(struct ice_pf *pf, struct iidc_rdma_qset_params *qset)
- 		dev_err(dev, "Failed VSI RDMA Qset enable\n");
- 		return status;
- 	}
--	vsi->qset_handle[qset->tc] = qset->qs_handle;
- 	qset->teid = qset_teid;
- 
- 	return 0;
-@@ -110,18 +121,23 @@ EXPORT_SYMBOL_GPL(ice_add_rdma_qset);
- 
- /**
-  * ice_del_rdma_qset - Delete leaf node for RDMA Qset
-- * @pf: PF struct
-+ * @cdev: pointer to iidc_rdma_core_dev_info struct
-  * @qset: Resource to be freed
-+ *
-+ * Return: Zero on success, error code on failure
-  */
--int ice_del_rdma_qset(struct ice_pf *pf, struct iidc_rdma_qset_params *qset)
-+int ice_del_rdma_qset(struct iidc_rdma_core_dev_info *cdev,
-+		      struct iidc_rdma_qset_params *qset)
- {
- 	struct ice_vsi *vsi;
-+	struct ice_pf *pf;
- 	u32 teid;
- 	u16 q_id;
- 
--	if (WARN_ON(!pf || !qset))
-+	if (WARN_ON(!cdev || !qset))
- 		return -EINVAL;
- 
-+	pf = pci_get_drvdata(cdev->pdev);
- 	vsi = ice_find_vsi(pf, qset->vport_id);
- 	if (!vsi) {
- 		dev_err(ice_pf_to_dev(pf), "RDMA Invalid VSI\n");
-@@ -131,36 +147,36 @@ int ice_del_rdma_qset(struct ice_pf *pf, struct iidc_rdma_qset_params *qset)
- 	q_id = qset->qs_handle;
- 	teid = qset->teid;
- 
--	vsi->qset_handle[qset->tc] = 0;
--
- 	return ice_dis_vsi_rdma_qset(vsi->port_info, 1, &teid, &q_id);
- }
- EXPORT_SYMBOL_GPL(ice_del_rdma_qset);
- 
- /**
-  * ice_rdma_request_reset - accept request from RDMA to perform a reset
-- * @pf: struct for PF
-+ * @cdev: pointer to iidc_rdma_core_dev_info struct
-  * @reset_type: type of reset
-+ *
-+ * Return: Zero on success, error code on failure
-  */
--int ice_rdma_request_reset(struct ice_pf *pf, enum iidc_rdma_reset_type reset_type)
-+int ice_rdma_request_reset(struct iidc_rdma_core_dev_info *cdev,
-+			   enum iidc_rdma_reset_type reset_type)
- {
- 	enum ice_reset_req reset;
-+	struct ice_pf *pf;
- 
--	if (WARN_ON(!pf))
-+	if (WARN_ON(!cdev))
- 		return -EINVAL;
- 
-+	pf = pci_get_drvdata(cdev->pdev);
-+
- 	switch (reset_type) {
--	case IIDC_PFR:
-+	case IIDC_FUNC_RESET:
- 		reset = ICE_RESET_PFR;
- 		break;
--	case IIDC_CORER:
-+	case IIDC_DEV_RESET:
- 		reset = ICE_RESET_CORER;
- 		break;
--	case IIDC_GLOBR:
--		reset = ICE_RESET_GLOBR;
--		break;
- 	default:
--		dev_err(ice_pf_to_dev(pf), "incorrect reset request\n");
- 		return -EINVAL;
- 	}
- 
-@@ -170,18 +186,23 @@ EXPORT_SYMBOL_GPL(ice_rdma_request_reset);
- 
- /**
-  * ice_rdma_update_vsi_filter - update main VSI filters for RDMA
-- * @pf: pointer to struct for PF
-+ * @cdev: pointer to iidc_rdma_core_dev_info struct
-  * @vsi_id: VSI HW idx to update filter on
-  * @enable: bool whether to enable or disable filters
-+ *
-+ * Return: Zero on success, error code on failure
-  */
--int ice_rdma_update_vsi_filter(struct ice_pf *pf, u16 vsi_id, bool enable)
-+int ice_rdma_update_vsi_filter(struct iidc_rdma_core_dev_info *cdev,
-+			       u16 vsi_id, bool enable)
- {
- 	struct ice_vsi *vsi;
-+	struct ice_pf *pf;
- 	int status;
- 
--	if (WARN_ON(!pf))
-+	if (WARN_ON(!cdev))
- 		return -EINVAL;
- 
-+	pf = pci_get_drvdata(cdev->pdev);
- 	vsi = ice_find_vsi(pf, vsi_id);
- 	if (!vsi)
- 		return -EINVAL;
-@@ -202,37 +223,23 @@ int ice_rdma_update_vsi_filter(struct ice_pf *pf, u16 vsi_id, bool enable)
- EXPORT_SYMBOL_GPL(ice_rdma_update_vsi_filter);
- 
- /**
-- * ice_get_qos_params - parse QoS params for RDMA consumption
-- * @pf: pointer to PF struct
-- * @qos: set of QoS values
-+ * ice_alloc_rdma_qvector - alloc vector resources reserved for RDMA driver
-+ * @cdev: pointer to iidc_rdma_core_dev_info struct
-+ * @entry: MSI-X entry to be removed
-+ *
-+ * Return: Zero on success, error code on failure
-  */
--void ice_get_qos_params(struct ice_pf *pf, struct iidc_rdma_qos_params *qos)
-+int ice_alloc_rdma_qvector(struct iidc_rdma_core_dev_info *cdev,
-+			   struct msix_entry *entry)
- {
--	struct ice_dcbx_cfg *dcbx_cfg;
--	unsigned int i;
--	u32 up2tc;
--
--	dcbx_cfg = &pf->hw.port_info->qos_cfg.local_dcbx_cfg;
--	up2tc = rd32(&pf->hw, PRTDCB_TUP2TC);
--
--	qos->num_tc = ice_dcb_get_num_tc(dcbx_cfg);
--	for (i = 0; i < IIDC_MAX_USER_PRIORITY; i++)
--		qos->up2tc[i] = (up2tc >> (i * 3)) & 0x7;
--
--	for (i = 0; i < IEEE_8021QAZ_MAX_TCS; i++)
--		qos->tc_info[i].rel_bw = dcbx_cfg->etscfg.tcbwtable[i];
--
--	qos->pfc_mode = dcbx_cfg->pfc_mode;
--	if (qos->pfc_mode == IIDC_DSCP_PFC_MODE)
--		for (i = 0; i < DSCP_MAX; i++)
--			qos->dscp_map[i] = dcbx_cfg->dscp_map[i];
--}
--EXPORT_SYMBOL_GPL(ice_get_qos_params);
-+	struct msi_map map;
-+	struct ice_pf *pf;
- 
--int ice_alloc_rdma_qvector(struct ice_pf *pf, struct msix_entry *entry)
--{
--	struct msi_map map = ice_alloc_irq(pf, true);
-+	if (WARN_ON(!cdev))
-+		return -EINVAL;
- 
-+	pf = pci_get_drvdata(cdev->pdev);
-+	map = ice_alloc_irq(pf, true);
- 	if (map.index < 0)
- 		return -ENOMEM;
- 
-@@ -245,12 +252,19 @@ EXPORT_SYMBOL_GPL(ice_alloc_rdma_qvector);
- 
- /**
-  * ice_free_rdma_qvector - free vector resources reserved for RDMA driver
-- * @pf: board private structure to initialize
-+ * @cdev: pointer to iidc_rdma_core_dev_info struct
-  * @entry: MSI-X entry to be removed
-  */
--void ice_free_rdma_qvector(struct ice_pf *pf, struct msix_entry *entry)
-+void ice_free_rdma_qvector(struct iidc_rdma_core_dev_info *cdev,
-+			   struct msix_entry *entry)
- {
- 	struct msi_map map;
-+	struct ice_pf *pf;
-+
-+	if (WARN_ON(!cdev || !entry))
-+		return;
-+
-+	pf = pci_get_drvdata(cdev->pdev);
- 
- 	map.index = entry->entry;
- 	map.virq = entry->vector;
-@@ -274,10 +288,13 @@ static void ice_adev_release(struct device *dev)
- /**
-  * ice_plug_aux_dev - allocate and register AUX device
-  * @pf: pointer to pf struct
-+ *
-+ * Return: Zero on success, error code on failure
-  */
- int ice_plug_aux_dev(struct ice_pf *pf)
- {
- 	struct iidc_rdma_core_auxiliary_dev *iadev;
-+	struct iidc_rdma_core_dev_info *cdev;
- 	struct auxiliary_device *adev;
- 	int ret;
- 
-@@ -287,17 +304,22 @@ int ice_plug_aux_dev(struct ice_pf *pf)
- 	if (!ice_is_rdma_ena(pf))
- 		return 0;
- 
-+	cdev = pf->cdev_info;
-+	if (!cdev)
-+		return -ENODEV;
-+
- 	iadev = kzalloc(sizeof(*iadev), GFP_KERNEL);
- 	if (!iadev)
- 		return -ENOMEM;
- 
- 	adev = &iadev->adev;
--	iadev->pf = pf;
-+	iadev->cdev_info = cdev;
- 
- 	adev->id = pf->aux_idx;
- 	adev->dev.release = ice_adev_release;
- 	adev->dev.parent = &pf->pdev->dev;
--	adev->name = pf->rdma_mode & IIDC_RDMA_PROTOCOL_ROCEV2 ? "roce" : "iwarp";
-+	adev->name = cdev->rdma_protocol & IIDC_RDMA_PROTOCOL_ROCEV2 ?
-+		"roce" : "iwarp";
- 
- 	ret = auxiliary_device_init(adev);
- 	if (ret) {
-@@ -312,7 +334,7 @@ int ice_plug_aux_dev(struct ice_pf *pf)
- 	}
- 
- 	mutex_lock(&pf->adev_mutex);
--	pf->adev = adev;
-+	cdev->adev = adev;
- 	mutex_unlock(&pf->adev_mutex);
- 
- 	return 0;
-@@ -326,8 +348,8 @@ void ice_unplug_aux_dev(struct ice_pf *pf)
- 	struct auxiliary_device *adev;
- 
- 	mutex_lock(&pf->adev_mutex);
--	adev = pf->adev;
--	pf->adev = NULL;
-+	adev = pf->cdev_info->adev;
-+	pf->cdev_info->adev = NULL;
- 	mutex_unlock(&pf->adev_mutex);
- 
- 	if (adev) {
-@@ -342,7 +364,9 @@ void ice_unplug_aux_dev(struct ice_pf *pf)
-  */
- int ice_init_rdma(struct ice_pf *pf)
- {
-+	struct iidc_rdma_priv_dev_info *privd;
- 	struct device *dev = &pf->pdev->dev;
-+	struct iidc_rdma_core_dev_info *cdev;
- 	int ret;
- 
- 	if (!ice_is_rdma_ena(pf)) {
-@@ -350,22 +374,50 @@ int ice_init_rdma(struct ice_pf *pf)
- 		return 0;
- 	}
- 
-+	cdev = kzalloc(sizeof(*cdev), GFP_KERNEL);
-+	if (!cdev)
-+		return -ENOMEM;
-+
-+	pf->cdev_info = cdev;
-+
-+	privd = kzalloc(sizeof(*privd), GFP_KERNEL);
-+	if (!privd) {
-+		ret = -ENOMEM;
-+		goto err_privd_alloc;
-+	}
-+
-+	privd->pf_id = pf->hw.pf_id;
- 	ret = xa_alloc(&ice_aux_id, &pf->aux_idx, NULL, XA_LIMIT(1, INT_MAX),
- 		       GFP_KERNEL);
- 	if (ret) {
- 		dev_err(dev, "Failed to allocate device ID for AUX driver\n");
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto err_alloc_xa;
- 	}
- 
--	pf->rdma_mode |= IIDC_RDMA_PROTOCOL_ROCEV2;
-+	cdev->iidc_priv = privd;
-+	privd->netdev = pf->vsi[0]->netdev;
-+
-+	privd->hw_addr = (u8 __iomem *)pf->hw.hw_addr;
-+	cdev->pdev = pf->pdev;
-+	privd->vport_id = pf->vsi[0]->vsi_num;
-+
-+	pf->cdev_info->rdma_protocol |= IIDC_RDMA_PROTOCOL_ROCEV2;
-+	ice_setup_dcb_qos_info(pf, &privd->qos_info);
- 	ret = ice_plug_aux_dev(pf);
- 	if (ret)
- 		goto err_plug_aux_dev;
- 	return 0;
- 
- err_plug_aux_dev:
--	pf->adev = NULL;
-+	pf->cdev_info->adev = NULL;
- 	xa_erase(&ice_aux_id, pf->aux_idx);
-+err_alloc_xa:
-+	kfree(privd);
-+err_privd_alloc:
-+	kfree(cdev);
-+	pf->cdev_info = NULL;
-+
- 	return ret;
- }
- 
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index 6a20f9f2e608..eace0e3f15e8 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -9310,6 +9310,7 @@ ice_setup_tc(struct net_device *netdev, enum tc_setup_type type,
- 	     void *type_data)
- {
- 	struct ice_netdev_priv *np = netdev_priv(netdev);
-+	struct iidc_rdma_core_dev_info *cdev;
- 	struct ice_pf *pf = np->vsi->back;
- 	bool locked = false;
- 	int err;
-@@ -9326,11 +9327,12 @@ ice_setup_tc(struct net_device *netdev, enum tc_setup_type type,
- 			return -EOPNOTSUPP;
- 		}
- 
--		if (pf->adev) {
-+		cdev = pf->cdev_info;
-+		if (cdev && cdev->adev) {
- 			mutex_lock(&pf->adev_mutex);
--			device_lock(&pf->adev->dev);
-+			device_lock(&cdev->adev->dev);
- 			locked = true;
--			if (pf->adev->dev.driver) {
-+			if (cdev->adev->dev.driver) {
- 				netdev_err(netdev, "Cannot change qdisc when RDMA is active\n");
- 				err = -EBUSY;
- 				goto adev_unlock;
-@@ -9344,7 +9346,7 @@ ice_setup_tc(struct net_device *netdev, enum tc_setup_type type,
- 
- adev_unlock:
- 		if (locked) {
--			device_unlock(&pf->adev->dev);
-+			device_unlock(&cdev->adev->dev);
- 			mutex_unlock(&pf->adev_mutex);
- 		}
- 		return err;
-diff --git a/include/linux/net/intel/iidc_rdma.h b/include/linux/net/intel/iidc_rdma.h
-index 7f1910289534..1e132a67cb66 100644
---- a/include/linux/net/intel/iidc_rdma.h
-+++ b/include/linux/net/intel/iidc_rdma.h
-@@ -5,7 +5,6 @@
- #define _IIDC_RDMA_H_
- 
- #include <linux/auxiliary_bus.h>
--#include <linux/dcbnl.h>
- #include <linux/device.h>
- #include <linux/if_ether.h>
- #include <linux/kernel.h>
-@@ -17,14 +16,19 @@ enum iidc_rdma_event_type {
- 	IIDC_RDMA_EVENT_AFTER_MTU_CHANGE,
- 	IIDC_RDMA_EVENT_BEFORE_TC_CHANGE,
- 	IIDC_RDMA_EVENT_AFTER_TC_CHANGE,
-+	IIDC_RDMA_EVENT_WARN_RESET,
- 	IIDC_RDMA_EVENT_CRIT_ERR,
- 	IIDC_RDMA_EVENT_NBITS		/* must be last */
- };
- 
-+struct iidc_rdma_event {
-+	DECLARE_BITMAP(type, IIDC_RDMA_EVENT_NBITS);
-+	u32 reg;
-+};
-+
- enum iidc_rdma_reset_type {
--	IIDC_PFR,
--	IIDC_CORER,
--	IIDC_GLOBR,
-+	IIDC_FUNC_RESET,
-+	IIDC_DEV_RESET,
- };
- 
- enum iidc_rdma_protocol {
-@@ -32,53 +36,22 @@ enum iidc_rdma_protocol {
- 	IIDC_RDMA_PROTOCOL_ROCEV2 = BIT(1),
- };
- 
--#define IIDC_MAX_USER_PRIORITY		8
--#define IIDC_DSCP_PFC_MODE		0x1
--
--/* Struct to hold per RDMA Qset info */
--struct iidc_rdma_qset_params {
--	/* Qset TEID returned to the RDMA driver in
--	 * ice_add_rdma_qset and used by RDMA driver
--	 * for calls to ice_del_rdma_qset
--	 */
--	u32 teid;	/* Qset TEID */
--	u16 qs_handle; /* RDMA driver provides this */
--	u16 vport_id; /* VSI index */
--	u8 tc; /* TC branch the Qset should belong to */
--};
--
--struct iidc_rdma_qos_info {
--	u64 tc_ctx;
--	u8 rel_bw;
--	u8 prio_type;
--	u8 egress_virt_up;
--	u8 ingress_virt_up;
--};
--
--/* Struct to pass QoS info */
--struct iidc_rdma_qos_params {
--	struct iidc_rdma_qos_info tc_info[IEEE_8021QAZ_MAX_TCS];
--	u8 up2tc[IIDC_MAX_USER_PRIORITY];
--	u8 vport_relative_bw;
--	u8 vport_priority_type;
--	u8 num_tc;
--	u8 pfc_mode;
--	u8 dscp_map[DSCP_MAX];
--};
--
--struct iidc_rdma_event {
--	DECLARE_BITMAP(type, IIDC_RDMA_EVENT_NBITS);
--	u32 reg;
--};
-+/* Structure to be populated by core LAN PCI driver */
-+struct iidc_rdma_core_dev_info {
-+	struct pci_dev *pdev; /* PCI device of corresponding to main function */
-+	struct auxiliary_device *adev;
-+	/* Current active RDMA protocol */
-+	enum iidc_rdma_protocol rdma_protocol;
-+	void *iidc_priv; /* elements unique to each driver */
-+ };
- 
- /* Structure representing auxiliary driver tailored information about the core
-  * PCI dev, each auxiliary driver using the IIDC interface will have an
-  * instance of this struct dedicated to it.
-  */
--
- struct iidc_rdma_core_auxiliary_dev {
- 	struct auxiliary_device adev;
--	struct ice_pf *pf;
-+	struct iidc_rdma_core_dev_info *cdev_info;
- };
- 
- /* structure representing the auxiliary driver. This struct is to be
-@@ -88,12 +61,8 @@ struct iidc_rdma_core_auxiliary_dev {
-  */
- struct iidc_rdma_core_auxiliary_drv {
- 	struct auxiliary_driver adrv;
--	/* This event_handler is meant to be a blocking call.  For instance,
--	 * when a BEFORE_MTU_CHANGE event comes in, the event_handler will not
--	 * return until the auxiliary driver is ready for the MTU change to
--	 * happen.
--	 */
--	void (*event_handler)(struct ice_pf *pf, struct iidc_rdma_event *event);
-+	void (*event_handler)(struct iidc_rdma_core_dev_info *cdev,
-+			      struct iidc_rdma_event *event);
- };
- 
- #endif /* _IIDC_RDMA_H_*/
-diff --git a/include/linux/net/intel/iidc_rdma_ice.h b/include/linux/net/intel/iidc_rdma_ice.h
-index 78d10003d776..b40eed0e13fe 100644
---- a/include/linux/net/intel/iidc_rdma_ice.h
-+++ b/include/linux/net/intel/iidc_rdma_ice.h
-@@ -4,16 +4,67 @@
- #ifndef _IIDC_RDMA_ICE_H_
- #define _IIDC_RDMA_ICE_H_
- 
--struct ice_pf;
-+#include <linux/dcbnl.h>
- 
--int ice_add_rdma_qset(struct ice_pf *pf, struct iidc_rdma_qset_params *qset);
--int ice_del_rdma_qset(struct ice_pf *pf, struct iidc_rdma_qset_params *qset);
--int ice_rdma_request_reset(struct ice_pf *pf,
-+#define IIDC_MAX_USER_PRIORITY         8
-+#define IIDC_DSCP_PFC_MODE             0x1
-+
-+/**
-+ * struct iidc_rdma_qset_params - Struct to hold per RDMA Qset info
-+ * @teid: TEID of the Qset node
-+ * @qs_handle: SW index of the Qset, RDMA provides this
-+ * @vport_id: VSI index
-+ * @tc: Traffic Class branch the QSet should belong to
-+ */
-+struct iidc_rdma_qset_params {
-+	/* Qset TEID returned to the RDMA driver in
-+	 * ice_add_rdma_qset and used by RDMA driver
-+	 * for calls to ice_del_rdma_qset
-+	 */
-+	u32 teid;
-+	u16 qs_handle;
-+	u16 vport_id;
-+	u8 tc;
-+};
-+
-+struct iidc_rdma_qos_info {
-+	u64 tc_ctx;
-+	u8 rel_bw;
-+	u8 prio_type;
-+	u8 egress_virt_up;
-+	u8 ingress_virt_up;
-+};
-+
-+/* Struct to pass QoS info */
-+struct iidc_rdma_qos_params {
-+	struct iidc_rdma_qos_info tc_info[IEEE_8021QAZ_MAX_TCS];
-+	u8 up2tc[IIDC_MAX_USER_PRIORITY];
-+	u8 vport_relative_bw;
-+	u8 vport_priority_type;
-+	u8 num_tc;
-+	u8 pfc_mode;
-+	u8 dscp_map[DSCP_MAX];
-+};
-+
-+struct iidc_rdma_priv_dev_info {
-+	u8 pf_id;
-+	u16 vport_id;
-+	struct net_device *netdev;
-+	struct iidc_rdma_qos_params qos_info;
-+	u8 __iomem *hw_addr;
-+};
-+
-+int ice_add_rdma_qset(struct iidc_rdma_core_dev_info *cdev,
-+		      struct iidc_rdma_qset_params *qset);
-+int ice_del_rdma_qset(struct iidc_rdma_core_dev_info *cdev,
-+		      struct iidc_rdma_qset_params *qset);
-+int ice_rdma_request_reset(struct iidc_rdma_core_dev_info *cdev,
- 			   enum iidc_rdma_reset_type reset_type);
--int ice_rdma_update_vsi_filter(struct ice_pf *pf, u16 vsi_id, bool enable);
--void ice_get_qos_params(struct ice_pf *pf,
--			struct iidc_rdma_qos_params *qos);
--int ice_alloc_rdma_qvector(struct ice_pf *pf, struct msix_entry *entry);
--void ice_free_rdma_qvector(struct ice_pf *pf, struct msix_entry *entry);
-+int ice_rdma_update_vsi_filter(struct iidc_rdma_core_dev_info *cdev, u16 vsi_id,
-+			       bool enable);
-+int ice_alloc_rdma_qvector(struct iidc_rdma_core_dev_info *cdev,
-+			   struct msix_entry *entry);
-+void ice_free_rdma_qvector(struct iidc_rdma_core_dev_info *cdev,
-+			   struct msix_entry *entry);
- 
- #endif /* _IIDC_RDMA_ICE_H_*/
--- 
-2.37.3
-
+[1] https://lore.kernel.org/linux-rdma/20250402032657.1762800-1-lizhijian@f=
+ujitsu.com/=
 
