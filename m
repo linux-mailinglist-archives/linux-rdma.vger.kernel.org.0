@@ -1,77 +1,77 @@
-Return-Path: <linux-rdma+bounces-9476-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9477-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0312FA8B535
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 11:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89960A8B538
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 11:24:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EA7F1799B5
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 09:23:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBDD716757D
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 09:23:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DAD2356A2;
-	Wed, 16 Apr 2025 09:23:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DFE9237709;
+	Wed, 16 Apr 2025 09:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TSOTY+eq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZGlpTbVD"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com [209.85.214.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E9B23534D;
-	Wed, 16 Apr 2025 09:23:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4C9F237703;
+	Wed, 16 Apr 2025 09:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744795384; cv=none; b=nopJY+ORWEu2z3AlfgZfWRiZaqpSpeUc4hLJy/XtlJlPlTV0+pwBoP6y7gcvPRCC7kC8kVocT8XExE6s9ebdXRc54fBK5fFLILsK75meD38WE6NpRo2OujT+yabgUk3A/mp+4BHYfQ2CCQrl5xZyaHprKrS+L1X92WYnJVOb4a0=
+	t=1744795390; cv=none; b=ug8vDa3XmH0KRErW+8lfAkE5iuWamQyDrUFUkjlKxmix+4sFiRA1OPQ2uqHCLWvXlRRUy8rvPyMqnoaMQfq54DLbY/ouJYIQKK2lbGS8wCUgYVTUVSFiHSgDPavNMdMqXcwISBK/GT+SbZ0R4+oFGPH3H2AIZ8xn2PwU7ZTX4gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744795384; c=relaxed/simple;
-	bh=5HMXIOXHcQTiE/rlzYdmsLi7nBGgfPnASDa1mbPxBqA=;
+	s=arc-20240116; t=1744795390; c=relaxed/simple;
+	bh=8Sbm2WJBnMka8gIHDWz1DAmTW8vaT8RoqZXaXVRevZE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=azlDGjsDfDxWOoKNJTE4kje9DKKL6kWsT9aTBfpEw9X3PEcAiorvqJg5XLMO3M2ebhN11DsVfjyfOw40bn2xtbEc1FNZyTwR3xkjkDuXojSvBFKNv5yvkntuO3e/K5Ywo2f8H6pzkgpzkPxagsvDlhdpaanFGpyT00caid2i8Xk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TSOTY+eq; arc=none smtp.client-ip=209.85.214.194
+	 MIME-Version; b=hMqixANoahgmJSj4Ng3c0AtEFP22rJh3X5IQItP7mY4ipR6OARdlWFwEsXDDvRwVICBUyH2CNrv8dPOy9vJxuT/tJPlTD0KnbJGznMUVwxLBJ588LHfzk44xfcif5mwLMZ3xhmsQzx1acLMku78fr2Vq/hFToTxrkDKgGvyZjbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZGlpTbVD; arc=none smtp.client-ip=209.85.214.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f194.google.com with SMTP id d9443c01a7336-226185948ffso69375665ad.0;
-        Wed, 16 Apr 2025 02:23:02 -0700 (PDT)
+Received: by mail-pl1-f194.google.com with SMTP id d9443c01a7336-223fb0f619dso71026215ad.1;
+        Wed, 16 Apr 2025 02:23:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744795382; x=1745400182; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1744795388; x=1745400188; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ap8ev65dR3E/o3s7og89H/vaAMfdZJXq1GxWrkyepJ4=;
-        b=TSOTY+eq2Wkrz6HQDDQ6JRNz6cyvcAnqj2ubpPLuZiIomQtXuNcaF5vbEs8hwckC/a
-         P2+u4XC01rIb+62uNF0dHBAcJ387PEpo0LGVsXj3iU5qRpSpPdwxcSqIMDdzyRlQdYjl
-         5j0GzVQu+tJhgZGpxrQrX0ZM1uBwmJl8BNGq3rFlX+G3bYhJijC7g8y/uzFiGDlv1szR
-         01hjeZlIffTvosHnlBVDKpUAepmjvwbkTw9dgLV6i3pRDZsSTMfmeg0vNEmBth5KP2Mb
-         Snm/x6ipM3FCSkUfDprf/jNWdWBrl/LYHTbjsBFlRuUbfx9c2NMK/QuL9Nb6qiD24Wnp
-         Ix1g==
+        bh=nAMj5NXFmJsdPX9HKV8xXwacekMtszHIC96A7raNIsg=;
+        b=ZGlpTbVDZkENc0Lzsl5pyLEoh9n7USJBoWX3neZQcAUi62a6yX/dRkvXAwXH2UygTb
+         QUkp0hWiVJ/2/FvLJeHq+OSIwz5Q1zaGt0qKIxD/SM4PVEBIFq4VXJldlpmhOWnsFM78
+         llpWN30reUYlhW0XZ/27MkxURJOqSgGK1oScVI+YDeH8QG+63NDbs1071oEBy8SDvvIA
+         M/a/xeV+paqjKD703staFDpBBpSi108lUUWS2DgdQwJQXeikyLZbfc0wm1GJ5rQ9ARf4
+         alpoNzAVl0J1a/20QTXUxlt1UpEzTRU/90wWvqDp462cFnYOEZiQyplPEYi/toKsZ1nV
+         vYVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744795382; x=1745400182;
+        d=1e100.net; s=20230601; t=1744795388; x=1745400188;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ap8ev65dR3E/o3s7og89H/vaAMfdZJXq1GxWrkyepJ4=;
-        b=Q3UJK/iBYyfIXBSC4cCSbxzEXQp01doanjuOvoS8porZBacAjrOi+wyNZQaoLMTTS1
-         HLF6pZSrj4q2PcX0rYfB1eHUR7HkaM1KX2QBZsnYJULMamPUXb0z9GkO7LfqYfphDeFA
-         k8jxviNRv0g7NxUk6ftTwdybHNfVOE9X0M40ZgGHCO9Zn6bYFuDxxd2Vhj4wNSlAmdfv
-         F3RVQyO14dz5bDQMSGTM/7i6yg0i/vegdTKKfYIku+4aC8Ecy9N+U4JaPDEfybcqeIJI
-         z18frl6fa+h8Y8LFcTm4E++q8asm6zChe6/rjkaJVJ0N1x3NBYzHcAgmLz1O3eGy5XVV
-         10+g==
-X-Forwarded-Encrypted: i=1; AJvYcCUtW6OpYVasKgJqzZ5VSuwlCE276k8AFN6z7vt55+k4fa0rdfmy0vrCx2misI52Img65PebqWIf3Tz20A==@vger.kernel.org, AJvYcCXgVlGTRZfqKagW1zmX5a1czOcOUo3m0WrpcFf9LpexaABUxZ0FZDqP2bzz8bYeqkJ3dLJqYKlRxwZhp6s=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqDp16vtZCJcJjJ2wwd+OsWCsPfftlbSefoa97wNBO9tZ+4+pZ
-	1to0vccIuL1JnXFe2cXD4mtgL5U9gYgQd+LcSCAjKg60CAdm/iBu
-X-Gm-Gg: ASbGncvxlNfUImQtsIkpkY7YTEG5YeRtxR+OaKpwAi5ZTdl7RpHHYoJIV1RHUBlqlfr
-	AyYEnOKAc5I5mR+H8dRueefuhqs7RUWc/5RD/Y34EOsURmcMBI3ykn73SXpy4jGEskBpBUZM085
-	bXun/FnboWJmrRORJ2EK1W88SEQEnFt2tqcLitirvdrwUqMDfEO2B69KpFLjOCBHflZ31O1H/0s
-	XIGmq3jmyu3/6fRktkW/TBkYwWB++C7aqQOUC9OqelHmAYQ4LFAecR3MH/A5I/0SBxpcgCePDjM
-	6OlI10A7sL1MCXJbzdDeePXLOkA3zDQ1ENsoRAHkQ5rvWlRUU60pVfyLTdf4yFvBeQ==
-X-Google-Smtp-Source: AGHT+IGbyvuHG1apuglz007WJKTIh8HY03yZtZzDnC3X3Y8KUAZ/4tiUSf9vb9CKlql4KIVk04lUtA==
-X-Received: by 2002:a17:903:32c5:b0:22c:35c5:e30e with SMTP id d9443c01a7336-22c35c60d7amr15433955ad.13.1744795381514;
-        Wed, 16 Apr 2025 02:23:01 -0700 (PDT)
+        bh=nAMj5NXFmJsdPX9HKV8xXwacekMtszHIC96A7raNIsg=;
+        b=CQ2NJOZy2naUz3CU92fwQZrP1mi0yvBDSOaHTB/jgidK/jmzAntdi8jZtbkUgctfiK
+         82afQRegmUqFWaDQ07hoWWmeHi6Mb7TdaO8XXM78fOC3DbQnJf52WixkXJletfpP8RZ7
+         lJvPBP8wLQEot62SR/6ZWYFEeLXjbZ+8ZEtToqYSuBtE77LJMbosPygSovc9t/8CIy79
+         kiHLAp7LYmox7U2aM97QKY/XG3g0mYgzqW05Qvhh15o5lb2NZt/wjH9FOWsWhXmp3jnO
+         x00VBw2gNBQENabiIaVIL2GyeVf5M+8aWGH4aJvP8SJPfmfCigpjR+L3sYKKnZ5TASs5
+         Uc5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUmHXpvX7eB3bMtxupnCYImvCup/dPjXBgeTDRGij9XDcvzE7cLyLHyl9hBKypQiYq8c322Br76jzJW/UE=@vger.kernel.org, AJvYcCXu6J9RXSjGztDnWaBGBDVeZxZloKyPotl1RI0qf0VXkpikixqsP17uj2CQ/5KoQQHGflDYS6rVeTT8qg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyhKzO+Wio+vtMAJU4GlH6RxtzDjyViiO147YuObQUHXD6UAVYn
+	UCBusWn4IW+GAIA6EZcinRiAtaQTnWi0ZKfq6dzg7yyNF5v7tFTJ
+X-Gm-Gg: ASbGncsg6cbOIA6WE4ilr/Ti8eMkc4LfPtFFI/p6TU6YJKz55KaCE+CaNg+zrZOA1Oo
+	OQIUgZiotUzSUWaJE25PcoQm2RU4tRfpf2TBT3dJdWcUkgHBFrCRGYMcVpdmPM+ShlzRGLbdXLU
+	mKm658sqplLKvJM08RnDxmSEcWh1kFXeNb6W/jVkhK4ySs2WcMQx0nG6QgdDpEHQxk8N+eMSGF4
+	v9bIOJGNm30r1Uizn80eR75hQzZXVdemkQGDwgKwF5YvY/K0rGz61uFgEFX94oqQu+pMjY2oldJ
+	rSjLiEqyBQhy5P6f5HMPH+VcKwdBfTjUROaSypZsiLyRN4j8oTCECilslnQylqXoHA==
+X-Google-Smtp-Source: AGHT+IGxm2qrXgWH8qfKA8Dn9KndUuiY7iZe3I8T2BcnyrCWWj85sZCX9whovlmLV384kSrC5kgocw==
+X-Received: by 2002:a17:902:e806:b0:223:5e6a:57ab with SMTP id d9443c01a7336-22c3597ee39mr16568995ad.39.1744795387838;
+        Wed, 16 Apr 2025 02:23:07 -0700 (PDT)
 Received: from henry.localdomain ([111.202.148.49])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22c33f1d070sm9369515ad.79.2025.04.16.02.22.57
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22c33f1d070sm9369515ad.79.2025.04.16.02.23.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Apr 2025 02:23:01 -0700 (PDT)
+        Wed, 16 Apr 2025 02:23:07 -0700 (PDT)
 From: Henry Martin <bsdhenrymartin@gmail.com>
 To: saeedm@nvidia.com,
 	leon@kernel.org,
@@ -88,9 +88,9 @@ To: saeedm@nvidia.com,
 Cc: netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 1/2] net/mlx5: Fix null-ptr-deref in mlx5_create_{inner_,}ttc_table()
-Date: Wed, 16 Apr 2025 17:22:42 +0800
-Message-Id: <20250416092243.65573-2-bsdhenrymartin@gmail.com>
+Subject: [PATCH v6 2/2] net/mlx5: Move ttc allocation after switch case to prevent leaks
+Date: Wed, 16 Apr 2025 17:22:43 +0800
+Message-Id: <20250416092243.65573-3-bsdhenrymartin@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250416092243.65573-1-bsdhenrymartin@gmail.com>
 References: <20250416092243.65573-1-bsdhenrymartin@gmail.com>
@@ -102,46 +102,65 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add NULL check for mlx5_get_flow_namespace() returns in
-mlx5_create_inner_ttc_table() and mlx5_create_ttc_table() to prevent
-NULL pointer dereference.
+Relocate the memory allocation for ttc table after the switch statement
+that validates params->ns_type in both mlx5_create_inner_ttc_table() and
+mlx5_create_ttc_table(). This ensures memory is only allocated after
+confirming valid input, eliminating potential memory leaks when invalid
+ns_type cases occur.
 
-Fixes: 137f3d50ad2a ("net/mlx5: Support matching on l4_type for ttc_table")
 Signed-off-by: Henry Martin <bsdhenrymartin@gmail.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
-Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ .../net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
-index eb3bd9c7f66e..066121fed718 100644
+index 066121fed718..513dafd5ebf2 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
-@@ -655,6 +655,11 @@ struct mlx5_ttc_table *mlx5_create_inner_ttc_table(struct mlx5_core_dev *dev,
+@@ -637,10 +637,6 @@ struct mlx5_ttc_table *mlx5_create_inner_ttc_table(struct mlx5_core_dev *dev,
+ 	bool use_l4_type;
+ 	int err;
+ 
+-	ttc = kvzalloc(sizeof(*ttc), GFP_KERNEL);
+-	if (!ttc)
+-		return ERR_PTR(-ENOMEM);
+-
+ 	switch (params->ns_type) {
+ 	case MLX5_FLOW_NAMESPACE_PORT_SEL:
+ 		use_l4_type = MLX5_CAP_GEN_2(dev, pcc_ifa2) &&
+@@ -654,6 +650,10 @@ struct mlx5_ttc_table *mlx5_create_inner_ttc_table(struct mlx5_core_dev *dev,
+ 		return ERR_PTR(-EINVAL);
  	}
  
- 	ns = mlx5_get_flow_namespace(dev, params->ns_type);
-+	if (!ns) {
-+		kvfree(ttc);
-+		return ERR_PTR(-EOPNOTSUPP);
-+	}
++	ttc = kvzalloc(sizeof(*ttc), GFP_KERNEL);
++	if (!ttc)
++		return ERR_PTR(-ENOMEM);
 +
- 	groups = use_l4_type ? &inner_ttc_groups[TTC_GROUPS_USE_L4_TYPE] :
- 			       &inner_ttc_groups[TTC_GROUPS_DEFAULT];
+ 	ns = mlx5_get_flow_namespace(dev, params->ns_type);
+ 	if (!ns) {
+ 		kvfree(ttc);
+@@ -715,10 +715,6 @@ struct mlx5_ttc_table *mlx5_create_ttc_table(struct mlx5_core_dev *dev,
+ 	bool use_l4_type;
+ 	int err;
  
-@@ -728,6 +733,11 @@ struct mlx5_ttc_table *mlx5_create_ttc_table(struct mlx5_core_dev *dev,
+-	ttc = kvzalloc(sizeof(*ttc), GFP_KERNEL);
+-	if (!ttc)
+-		return ERR_PTR(-ENOMEM);
+-
+ 	switch (params->ns_type) {
+ 	case MLX5_FLOW_NAMESPACE_PORT_SEL:
+ 		use_l4_type = MLX5_CAP_GEN_2(dev, pcc_ifa2) &&
+@@ -732,6 +728,10 @@ struct mlx5_ttc_table *mlx5_create_ttc_table(struct mlx5_core_dev *dev,
+ 		return ERR_PTR(-EINVAL);
  	}
  
- 	ns = mlx5_get_flow_namespace(dev, params->ns_type);
-+	if (!ns) {
-+		kvfree(ttc);
-+		return ERR_PTR(-EOPNOTSUPP);
-+	}
++	ttc = kvzalloc(sizeof(*ttc), GFP_KERNEL);
++	if (!ttc)
++		return ERR_PTR(-ENOMEM);
 +
- 	groups = use_l4_type ? &ttc_groups[TTC_GROUPS_USE_L4_TYPE] :
- 			       &ttc_groups[TTC_GROUPS_DEFAULT];
- 
+ 	ns = mlx5_get_flow_namespace(dev, params->ns_type);
+ 	if (!ns) {
+ 		kvfree(ttc);
 -- 
 2.34.1
 
