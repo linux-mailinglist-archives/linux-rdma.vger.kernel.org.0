@@ -1,84 +1,118 @@
-Return-Path: <linux-rdma+bounces-9484-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9485-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63EE6A9047E
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 15:39:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3F22A907D2
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 17:36:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E125F189B66C
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 13:39:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03751447867
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 15:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F521A5BBC;
-	Wed, 16 Apr 2025 13:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07789207662;
+	Wed, 16 Apr 2025 15:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EI7+v9/T"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="jtGNqh76"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F6E7A32;
-	Wed, 16 Apr 2025 13:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60376189902;
+	Wed, 16 Apr 2025 15:35:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744810738; cv=none; b=a7KbNw+GO9OuUOfoxquT/qDeQ2PpXT/Sg2gLSzrPuGrjjTY+9R5pbSTSa+xQPrEhMFAFPCpemCXTTtB9VZpltxdQoFVOXJGI/gSz1OlrB3b394rDBPWQVuC9iAy5aFAlynaXVHhx7JCqZ1kAkYLmtUWOx19N2bdaasOecEDn9Zs=
+	t=1744817757; cv=none; b=Th99U2ezDpkov50QUjRBo/TapyCC/oi+nk+iuoa4B4BjKhhnHQSgMMEvAm0il4EAGnf+fiGed/Ds7WuOyzhr0CTU2a0EUyIJRj8P5cLIiTzuXTgs1pnzBXoxWKg7+dKe29AVjGHGege1/qSmO8+ZFWWepHRlnobXvSO8F/8otVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744810738; c=relaxed/simple;
-	bh=nrrD3/sSaPsl3a1EqfKuMRRLXEiXUHmBEshVkFhljRY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FUR3kt+otwWlGmUWFxiIJ7viZnweaYa4sh2zhzsRnoC9l+P5w7FlsxsNfajR7SH6Q28N9N3kbqcWPy8OAuuwd6YPfQnAl0spVveBqWuzhZoPE2lwSxCGDz4dVUZStHEqCQiBXtPFVL2kXnHqpZ0eRDeo63GhA8OikIDgAlaXc9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EI7+v9/T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02A17C4CEEA;
-	Wed, 16 Apr 2025 13:38:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744810737;
-	bh=nrrD3/sSaPsl3a1EqfKuMRRLXEiXUHmBEshVkFhljRY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EI7+v9/TV3vL8wNZFHf5NwXTl/I+OIoNCxeCgleOMSMSQ2et4YlX2E/CtICiF2aRX
-	 oW/4Id4sKByywPbfG/aMVtG/Yz6mzSPnvXl2qgsmgXLSFguGJM7kQXBF+k8BF1GIN4
-	 ThZ3NCRohH1sv1xyMoYbOtaw0ZOb6F3NrppLlR07Zo+WDcVKWUg5pMJEKTrkuBgExU
-	 gZz5KUkCuI4y1NsrxDznV0Gbp9y/3WlyHjn121kUA2n1+qTCsnrR97CYFi3SpyQJeO
-	 +/nIc8jEkEOxLOCWZx+MQxt08+oXFr7HQg9OEzZXHNTxnFCn+qtGuDHzV8KoVlsfLf
-	 +2x4BlPNPwstA==
-Date: Wed, 16 Apr 2025 06:38:56 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jacob Keller <jacob.e.keller@intel.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Vladimir Oltean <olteanv@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Tony Nguyen
- <anthony.l.nguyen@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon
- Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Bryan
- Whitehead <bryan.whitehead@microchip.com>, UNGLinuxDriver@microchip.com,
- Horatiu Vultur <horatiu.vultur@microchip.com>, Paul Barker
- <paul.barker.ct@bp.renesas.com>, Niklas =?UTF-8?B?U8O2ZGVybHVuZA==?=
- <niklas.soderlund@ragnatech.se>, Richard Cochran
- <richardcochran@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>, Russell
- King <linux@armlinux.org.uk>, Andrei Botila <andrei.botila@oss.nxp.com>,
- Claudiu Manoil <claudiu.manoil@nxp.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Vadim Fedorenko
- <vadim.fedorenko@linux.dev>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
- linux-rdma@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH net-next v2 0/2] net: ptp: driver opt-in for supported
- PTP ioctl flags
-Message-ID: <20250416063856.3b653d81@kernel.org>
-In-Reply-To: <20250414-jk-supported-perout-flags-v2-0-f6b17d15475c@intel.com>
-References: <20250414-jk-supported-perout-flags-v2-0-f6b17d15475c@intel.com>
+	s=arc-20240116; t=1744817757; c=relaxed/simple;
+	bh=JuEVssO1nsnSG71fT+jjxB8w61QctSPWv+X+S7oa01A=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=VHifu5FZpZyGqNfc+QRDMXBpFiBA/rYEVfE3WJsvOpO72hWaDYWYBCM1zfF2+ybu7IXiK5Xpp2ZUwQi9pjAUvQBC14Xw7yh8tMZyQArNkKdzZrXjBA6awvWJeIrTFJq20u9hS7Lv0GEx7FtYQbYsXRYRkVcTCsS9sOmtDBkohg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=jtGNqh76; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 7C07E2052505; Wed, 16 Apr 2025 08:35:50 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7C07E2052505
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1744817750;
+	bh=lPCxQ8v6UmwaVy+HeTlmUTdMwGvPgruYycjzZSiroFo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jtGNqh76jbdSDUmZ8slcNzOY2TbqEd6MhszwTr0tAOYaj+3Sq6sPO39UGkKUTEQ9h
+	 uAT+pPIRxFbBttcytPj5ZHNxE1tmmtaKDAMtdGTvYXlYNfzgjSRPpqveWV750U+RPE
+	 /PutSWbwwQQ5ZJvGqs/ONqYnXZKO+8ecih6ZLZ2g=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Nipun Gupta <nipun.gupta@amd.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Shivamurthy Shastri <shivamurthy.shastri@linutronix.de>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Long Li <longli@microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Maxim Levitsky <mlevitsk@redhat.com>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	Paul Rosswurm <paulros@microsoft.com>
+Cc: Shradha Gupta <shradhagupta@microsoft.com>
+Subject: [PATCH 0/2] Allow dyn pci vector allocation of MANA
+Date: Wed, 16 Apr 2025 08:35:47 -0700
+Message-Id: <1744817747-2920-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Mon, 14 Apr 2025 14:26:29 -0700 Jacob Keller wrote:
-> Both the PTP_EXTTS_REQUEST(2) and PTP_PEROUT_REQUEST(2) ioctls take flags
-> from userspace to modify their behavior. Drivers are supposed to check
-> these flags, rejecting requests for flags they do not support.
+In this patchset we want to enable the MANA driver to be able to
+allocate MSI vectors in PCI dynamically
 
-Applied, thanks!
+The first patch targets the changes required for enabling the support
+of dyn vector allocation in pci-hyperv PCI controller. It also consists
+of changes in the PCI tree to allow clean support for dynamic allocation
+of IRQ vectors for PCI controllers.
+
+The second patch has the changes in MANA driver to be able to allocate
+pci vectors dynamically if it is supported by the infra. If the support
+does not exist it defaults to older behavior.
+
+For this submission, I wasn't sure if we should specify net-next or pci
+tree. Please let me know what the recommendation is.
+
+Shradha Gupta (2):
+  PCI: hv: enable pci_hyperv to allow dynamic vector allocation
+  net: mana: Allow MANA driver to allocate PCI vector dynamically
+
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 306 ++++++++++++++----
+ drivers/pci/controller/pci-hyperv.c           |   7 +-
+ drivers/pci/msi/irqdomain.c                   |   5 +-
+ include/linux/msi.h                           |   2 +
+ include/net/mana/gdma.h                       |   5 +-
+ 5 files changed, 260 insertions(+), 65 deletions(-)
+
+-- 
+2.34.1
+
 
