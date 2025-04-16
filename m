@@ -1,167 +1,120 @@
-Return-Path: <linux-rdma+bounces-9477-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9478-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89960A8B538
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 11:24:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9609A8B670
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 12:10:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBDD716757D
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 09:23:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EE2C189FA74
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 10:10:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DFE9237709;
-	Wed, 16 Apr 2025 09:23:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D972459D7;
+	Wed, 16 Apr 2025 10:09:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZGlpTbVD"
+	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="WZm3GADV"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com [209.85.214.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpbgbr2.qq.com (smtpbgbr2.qq.com [54.207.22.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4C9F237703;
-	Wed, 16 Apr 2025 09:23:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023FE2356C3;
+	Wed, 16 Apr 2025 10:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.22.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744795390; cv=none; b=ug8vDa3XmH0KRErW+8lfAkE5iuWamQyDrUFUkjlKxmix+4sFiRA1OPQ2uqHCLWvXlRRUy8rvPyMqnoaMQfq54DLbY/ouJYIQKK2lbGS8wCUgYVTUVSFiHSgDPavNMdMqXcwISBK/GT+SbZ0R4+oFGPH3H2AIZ8xn2PwU7ZTX4gg=
+	t=1744798194; cv=none; b=mBZBKxZ90Htgly/BWlOJyNbkxd22ZAzNX3WsD7nZF5ZHHKz0aN6Qc6DXoFAp8WtjkrRLNwLlje1Lk2KYuNSQ9Hd7qdAVp/fCe9UaRAhUjqAZkHkYmSQ4sm/uN2W00JRQoftR3iF4UR33lqlenEbZ9Mx/xxDxRp32qmXXxp+qqZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744795390; c=relaxed/simple;
-	bh=8Sbm2WJBnMka8gIHDWz1DAmTW8vaT8RoqZXaXVRevZE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hMqixANoahgmJSj4Ng3c0AtEFP22rJh3X5IQItP7mY4ipR6OARdlWFwEsXDDvRwVICBUyH2CNrv8dPOy9vJxuT/tJPlTD0KnbJGznMUVwxLBJ588LHfzk44xfcif5mwLMZ3xhmsQzx1acLMku78fr2Vq/hFToTxrkDKgGvyZjbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZGlpTbVD; arc=none smtp.client-ip=209.85.214.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f194.google.com with SMTP id d9443c01a7336-223fb0f619dso71026215ad.1;
-        Wed, 16 Apr 2025 02:23:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744795388; x=1745400188; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nAMj5NXFmJsdPX9HKV8xXwacekMtszHIC96A7raNIsg=;
-        b=ZGlpTbVDZkENc0Lzsl5pyLEoh9n7USJBoWX3neZQcAUi62a6yX/dRkvXAwXH2UygTb
-         QUkp0hWiVJ/2/FvLJeHq+OSIwz5Q1zaGt0qKIxD/SM4PVEBIFq4VXJldlpmhOWnsFM78
-         llpWN30reUYlhW0XZ/27MkxURJOqSgGK1oScVI+YDeH8QG+63NDbs1071oEBy8SDvvIA
-         M/a/xeV+paqjKD703staFDpBBpSi108lUUWS2DgdQwJQXeikyLZbfc0wm1GJ5rQ9ARf4
-         alpoNzAVl0J1a/20QTXUxlt1UpEzTRU/90wWvqDp462cFnYOEZiQyplPEYi/toKsZ1nV
-         vYVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744795388; x=1745400188;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nAMj5NXFmJsdPX9HKV8xXwacekMtszHIC96A7raNIsg=;
-        b=CQ2NJOZy2naUz3CU92fwQZrP1mi0yvBDSOaHTB/jgidK/jmzAntdi8jZtbkUgctfiK
-         82afQRegmUqFWaDQ07hoWWmeHi6Mb7TdaO8XXM78fOC3DbQnJf52WixkXJletfpP8RZ7
-         lJvPBP8wLQEot62SR/6ZWYFEeLXjbZ+8ZEtToqYSuBtE77LJMbosPygSovc9t/8CIy79
-         kiHLAp7LYmox7U2aM97QKY/XG3g0mYgzqW05Qvhh15o5lb2NZt/wjH9FOWsWhXmp3jnO
-         x00VBw2gNBQENabiIaVIL2GyeVf5M+8aWGH4aJvP8SJPfmfCigpjR+L3sYKKnZ5TASs5
-         Uc5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUmHXpvX7eB3bMtxupnCYImvCup/dPjXBgeTDRGij9XDcvzE7cLyLHyl9hBKypQiYq8c322Br76jzJW/UE=@vger.kernel.org, AJvYcCXu6J9RXSjGztDnWaBGBDVeZxZloKyPotl1RI0qf0VXkpikixqsP17uj2CQ/5KoQQHGflDYS6rVeTT8qg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyhKzO+Wio+vtMAJU4GlH6RxtzDjyViiO147YuObQUHXD6UAVYn
-	UCBusWn4IW+GAIA6EZcinRiAtaQTnWi0ZKfq6dzg7yyNF5v7tFTJ
-X-Gm-Gg: ASbGncsg6cbOIA6WE4ilr/Ti8eMkc4LfPtFFI/p6TU6YJKz55KaCE+CaNg+zrZOA1Oo
-	OQIUgZiotUzSUWaJE25PcoQm2RU4tRfpf2TBT3dJdWcUkgHBFrCRGYMcVpdmPM+ShlzRGLbdXLU
-	mKm658sqplLKvJM08RnDxmSEcWh1kFXeNb6W/jVkhK4ySs2WcMQx0nG6QgdDpEHQxk8N+eMSGF4
-	v9bIOJGNm30r1Uizn80eR75hQzZXVdemkQGDwgKwF5YvY/K0rGz61uFgEFX94oqQu+pMjY2oldJ
-	rSjLiEqyBQhy5P6f5HMPH+VcKwdBfTjUROaSypZsiLyRN4j8oTCECilslnQylqXoHA==
-X-Google-Smtp-Source: AGHT+IGxm2qrXgWH8qfKA8Dn9KndUuiY7iZe3I8T2BcnyrCWWj85sZCX9whovlmLV384kSrC5kgocw==
-X-Received: by 2002:a17:902:e806:b0:223:5e6a:57ab with SMTP id d9443c01a7336-22c3597ee39mr16568995ad.39.1744795387838;
-        Wed, 16 Apr 2025 02:23:07 -0700 (PDT)
-Received: from henry.localdomain ([111.202.148.49])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22c33f1d070sm9369515ad.79.2025.04.16.02.23.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Apr 2025 02:23:07 -0700 (PDT)
-From: Henry Martin <bsdhenrymartin@gmail.com>
-To: saeedm@nvidia.com,
-	leon@kernel.org,
-	tariqt@nvidia.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	bsdhenrymartin@gmail.com,
-	mbloch@nvidia.com,
-	michal.swiatkowski@linux.intel.com,
-	amirtz@nvidia.com
-Cc: netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 2/2] net/mlx5: Move ttc allocation after switch case to prevent leaks
-Date: Wed, 16 Apr 2025 17:22:43 +0800
-Message-Id: <20250416092243.65573-3-bsdhenrymartin@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250416092243.65573-1-bsdhenrymartin@gmail.com>
-References: <20250416092243.65573-1-bsdhenrymartin@gmail.com>
+	s=arc-20240116; t=1744798194; c=relaxed/simple;
+	bh=K5EIWptPNf+bD6TCzDb13Bmy9OoJJigove2+9RXxBVM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pc9MTVycW1JqBQKQqdcw//aLpNM6wY6Gl+O5ReRCSFcJoFh0PeFEsSIRXzsA8BsHGw5Wux2NYdnmriK6KkOjlNkit169QJ8TT2AmLWpzxts/OV0+Mfs+ama19es8WY40XZqqDRM0KXR8Oo02si5wEaXx+u+1001pSGweI48usDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=WZm3GADV; arc=none smtp.client-ip=54.207.22.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+	s=onoh2408; t=1744798183;
+	bh=K5EIWptPNf+bD6TCzDb13Bmy9OoJJigove2+9RXxBVM=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To;
+	b=WZm3GADVESCnAroIeYZi/nahlkQFax41qiE4mcZ6xMLfvyr4jmGCEpWkn78ok6u/j
+	 rhZC/DKRCmqUfZMC4Pxuuyeg/WJnpzzkJHPwyLtkPNzhTRit7JXcH/hW+vGCd0tHbI
+	 sC2fHwcLZa0B1SeoTmN41ZOwlqUiJhW0G7fmvV8U=
+X-QQ-mid: izesmtp89t1744798177tddffd40c
+X-QQ-Originating-IP: IAw1cIU82zcANWNqP9cwnXdyjXOMwHhFQGwmSZFWUH4=
+Received: from mail-yb1-f178.google.com ( [209.85.219.178])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 16 Apr 2025 18:09:35 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 11619989835513742780
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-e455bf1f4d3so5004404276.2;
+        Wed, 16 Apr 2025 03:09:36 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUDssVnHXTmTKE76dF+ycPeT2C1n0lWYyuKMsJ6Zopu6JMmx3lEZu4qgY/Gvr1BxP1MtIO2iEF1/b7eUg==@vger.kernel.org, AJvYcCUVYiDE+f7EJohP0Cr50H2psJzqaa9zecSa1UCOmqsOOcBJn5rl4jrtvve67YVTbUyxHftXQ4BZI4/WSNGG0RRw@vger.kernel.org, AJvYcCUzTGDRBIeJgEfn4EWlehaJ9uaorx9uEj+qe+hTsxMrhP/O7nEctjFR3JoLHMk/1qsf4rA=@vger.kernel.org, AJvYcCVX3wYdV/83TDnW3npDxdAlvKd9cNTo88QrUWLqnk7fvkBWVK2pf4VAna+2zy78+BMzANTdxjt6KX23G3IR@vger.kernel.org, AJvYcCW6vuKnAIf4hcUPxARsn5Wfdhoj41HNYr65MOKTgKEuGeq5WM3WjuxiLMczTrqk6Woh21Jdp0fH4XEMhWoR@vger.kernel.org
+X-Gm-Message-State: AOJu0YzcvIREjmhYSjoUfAdhYHLxezMnlg1QXV8BTY7NUBtV3Wl9Je+c
+	+r+bFR8azXex1PkElhhJYQH8j70n2wITtFk6b1bloX7XTFHs6BdUpOU+C0Rr1AfN92Vzhjv1wT7
+	asVrgHTDHyvL9cx0QMXbjscx0tSg=
+X-Google-Smtp-Source: AGHT+IFxOQerwyXR4s01cKj1FQCmW5mZBGS8EUkxg2eBy2yn8PQm4fMpJOhxMxu+WrXOTx3w5ulHOeUcX04b8xnFFTA=
+X-Received: by 2002:a05:6902:2b8a:b0:e6d:eb74:272 with SMTP id
+ 3f1490d57ef6-e7275967af8mr1257382276.22.1744798174393; Wed, 16 Apr 2025
+ 03:09:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <E9B8B40E39453E89+20250411105306.89756-1-chenlinxuan@uniontech.com>
+ <20250416044827.GA24153@lst.de>
+In-Reply-To: <20250416044827.GA24153@lst.de>
+From: Chen Linxuan <chenlinxuan@uniontech.com>
+Date: Wed, 16 Apr 2025 18:09:22 +0800
+X-Gmail-Original-Message-ID: <45D187D71349584D+CAC1kPDPYiUKqRmqW=hzOyGudvUXcwxo0kgDU_j40+t7rYHsU-g@mail.gmail.com>
+X-Gm-Features: ATxdqUHphIIrq227AoMvNzUOdxFn7upg3kfvytoiynDmEPipLLJsDaFiQeVe_To
+Message-ID: <CAC1kPDPYiUKqRmqW=hzOyGudvUXcwxo0kgDU_j40+t7rYHsU-g@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] kernel-hacking: introduce CONFIG_NO_AUTO_INLINE
+To: Christoph Hellwig <hch@lst.de>
+Cc: Chen Linxuan <chenlinxuan@uniontech.com>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas.schier@linux.dev>, 
+	Peter Huewe <peterhuewe@gmx.de>, Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, 
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
+	Tvrtko Ursulin <tursulin@ursulin.net>, David Airlie <airlied@gmail.com>, 
+	Simona Vetter <simona@ffwll.ch>, Chengchang Tang <tangchengchang@huawei.com>, 
+	Junxian Huang <huangjunxian6@hisilicon.com>, Leon Romanovsky <leon@kernel.org>, 
+	Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Sagi Grimberg <sagi@grimberg.me>, 
+	Yishai Hadas <yishaih@nvidia.com>, 
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>, Kevin Tian <kevin.tian@intel.com>, 
+	Alex Williamson <alex.williamson@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	linux-rdma@vger.kernel.org, linux-nvme@lists.infradead.org, 
+	kvm@vger.kernel.org, virtualization@lists.linux.dev, linux-mm@kvack.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-QQ-SENDSIZE: 520
+Feedback-ID: izesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-QQ-XMAILINFO: MMkVjSP788VvLbybX6NpprCLcQm8mjDJIS8k878BicYIRvKMIDe/VTDc
+	iEpiPOOa9xcLEBj1SJPG4bYpWVQZTHk7cjwvvv6SVEjicZmBxG/GBdPXd4u3SoTRip0JWp/
+	KU3tZwSmB4IwQDD8AZYBnOnzDQO8vljy62RTQqhgK2Btl/Nh7BambwRS7VrjWgnGrAIXFrw
+	cM9pRcUXaChbxDJO6XBkHeZ4xM84nGdVfLN6GB/DhryioTZZHqg67s0n/TvZsAZaljDcUbL
+	ZmNj6MUqS33rBTuIATwMGt0+lJQEko4QRqwWbcf5YzMj5o+wR1vDK2vY3WauKzsEI58GhR/
+	b2mIYcBhyVZouv0rcCJuslQ5IpPZLNCYwPZdsfkfCRPjyfCTNdUbseu6WFnJXXI2dxcn+UC
+	hsQZTPPKX0hIynPouR+pm9or537nHmII9ROVtnAxOYSG4tNVn4UtFJVdXxVcFhHuHJ/JITM
+	SmPA4yrg4oroBQK9ZmX8FlV+Jo85y2BVJbTVnqRQkzRK+OOb7/oYcF3yy1AR2NYFVPaP2Ta
+	FRcrzcnXWockyTCPUjT1dqDZPK/UIFGwq04BH8G2lT3G5066Ma0577TCfn2qKX/2hGJPAIZ
+	HmaXejIa1N1hQ+LVlbCT6DssUCiMtl3SHe5v4h7zB44OiS/+Wk7j/EPF9QULWBGcAB87/Sq
+	QsyrREB1zNhZH65anAy+3H3Q6x1NGUVl3q9kHN8/cdv/BbQ51CfpNc5c75Pyx+2LYthN5hg
+	mlxog3tIeBXrERIwi1t2AaZTtmFVUQDGDRkzbu8zUmJWNU5gSO/THHhjzicEL+i0bYMk2uO
+	EHQ5K4lFW5iSLVr1M9ilwwYu7tSDLX7myE5gL56l4HY7BM5Y9sOfJDuJjCTofHhdm6kKDAl
+	xdwUuC3XD/PG1/iOn5ok+BqdN/BMS3aYCQ4PS2rUSVHD93ft22OYVeQkcELHT6UqBW4ZNn7
+	VIIPt9LNuhNxBlHqGWTcrHDWHsyGtWBZXCX3vfsVG6Y7a1MIiEqm0LrXUfEtByfeLLJYak0
+	RrPnoTzPYnablhrE+87u7mquNIvo3f0lT8pW8yoLNPgVhDkYxnHYtHo67zob0tTnEOijS4n
+	LgWvsHPuaj1
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+X-QQ-RECHKSPAM: 0
 
-Relocate the memory allocation for ttc table after the switch statement
-that validates params->ns_type in both mlx5_create_inner_ttc_table() and
-mlx5_create_ttc_table(). This ensures memory is only allocated after
-confirming valid input, eliminating potential memory leaks when invalid
-ns_type cases occur.
+Sorry for the mistake, v2 has been send:
 
-Signed-off-by: Henry Martin <bsdhenrymartin@gmail.com>
----
- .../net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
-index 066121fed718..513dafd5ebf2 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_ttc.c
-@@ -637,10 +637,6 @@ struct mlx5_ttc_table *mlx5_create_inner_ttc_table(struct mlx5_core_dev *dev,
- 	bool use_l4_type;
- 	int err;
- 
--	ttc = kvzalloc(sizeof(*ttc), GFP_KERNEL);
--	if (!ttc)
--		return ERR_PTR(-ENOMEM);
--
- 	switch (params->ns_type) {
- 	case MLX5_FLOW_NAMESPACE_PORT_SEL:
- 		use_l4_type = MLX5_CAP_GEN_2(dev, pcc_ifa2) &&
-@@ -654,6 +650,10 @@ struct mlx5_ttc_table *mlx5_create_inner_ttc_table(struct mlx5_core_dev *dev,
- 		return ERR_PTR(-EINVAL);
- 	}
- 
-+	ttc = kvzalloc(sizeof(*ttc), GFP_KERNEL);
-+	if (!ttc)
-+		return ERR_PTR(-ENOMEM);
-+
- 	ns = mlx5_get_flow_namespace(dev, params->ns_type);
- 	if (!ns) {
- 		kvfree(ttc);
-@@ -715,10 +715,6 @@ struct mlx5_ttc_table *mlx5_create_ttc_table(struct mlx5_core_dev *dev,
- 	bool use_l4_type;
- 	int err;
- 
--	ttc = kvzalloc(sizeof(*ttc), GFP_KERNEL);
--	if (!ttc)
--		return ERR_PTR(-ENOMEM);
--
- 	switch (params->ns_type) {
- 	case MLX5_FLOW_NAMESPACE_PORT_SEL:
- 		use_l4_type = MLX5_CAP_GEN_2(dev, pcc_ifa2) &&
-@@ -732,6 +728,10 @@ struct mlx5_ttc_table *mlx5_create_ttc_table(struct mlx5_core_dev *dev,
- 		return ERR_PTR(-EINVAL);
- 	}
- 
-+	ttc = kvzalloc(sizeof(*ttc), GFP_KERNEL);
-+	if (!ttc)
-+		return ERR_PTR(-ENOMEM);
-+
- 	ns = mlx5_get_flow_namespace(dev, params->ns_type);
- 	if (!ns) {
- 		kvfree(ttc);
--- 
-2.34.1
-
+https://lore.kernel.org/all/20250416-noautoinline-v2-0-e69a2717530f@uniontech.com/
 
