@@ -1,285 +1,192 @@
-Return-Path: <linux-rdma+bounces-9491-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9492-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B9B6A90AE8
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 20:09:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D82CA90B51
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 20:30:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4DC518925F7
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 18:09:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 034247A6800
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 18:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2899D21ABA5;
-	Wed, 16 Apr 2025 18:09:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64512236E8;
+	Wed, 16 Apr 2025 18:30:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="RreElHEs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dkc+DPri"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11021101.outbound.protection.outlook.com [40.93.194.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A402153E0;
-	Wed, 16 Apr 2025 18:09:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.194.101
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744826967; cv=fail; b=JFiym7nS4s4kEejiIJCPA8/XCWy3X09Ynqomw3YABaXlrWQWWY0SZmT4LXYv105mPJS4ZFFLF9ppMah7sOIrIYYVB2NWqQ3zMMKWqM6ei4aY6y46gtiIUMRE0sFP8uBLNgnH/7M+rn5g91tgEgDfSFx3OaFFU44qEtXrW0Iq2Dc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744826967; c=relaxed/simple;
-	bh=JvprXk0BXzwuGOjNKsPs+uRrI5kt5XdO3qoFN1cpCPw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ScXItcGJAMccyWLccRfnmYyFJ0ZQnMMnGph/u33G6p7qqrV+O06WJU8qcOaGv0sYKGkhVCMTtWKJhANHM6Th/lLXjDsY9vQpxjEWiEHtKEZFrnEoGcrRbhJb0nhWufMnbaeswB9nrR2bpVpP5wmMH9v33ZgwZzVCqtzzalBpThY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=RreElHEs; arc=fail smtp.client-ip=40.93.194.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=HcIzGbQx2WKt+WUQ28Hz1B1kF+OGeTgEuTn331OjyhzL02e3w5CaadwW4RiwYPpCKHXuFZsa8SYbnG5U/FozvnuVkxbLKfiOz0e2AbUEYA2cAn/9UH73IZsrhCLi+FbckvGslQ+lKUoJfStZ6HCPkTuWU6zrp3tumVCj36C+YEN26qJ04I9JMM3d24bouCtu9JaCG3mPIJrmW/Ody0GKXomlRnzT/t1t2hkT2NJY5W48Kio+bYkhOL1X88SY8hEXDM4GQ98r18LX28YFVsxqUuORv4Y701pA70ZUipZ2urUqSem5Z8JwySjjmpVrT+tRkoEkNf5d0lvJuck4IHm/Qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OoMgX6Ds5PgLmnyxrld6Pp4mepkO3DrlV34Wz22LUow=;
- b=xf96NKrf+gZ4clxqiqjN57bz4eVFGwJhXEH5CYYjAFe/hmZY+Nfjfd0pFcWomhl/8dFkTV7sJbmSje1sDauHeEhQgVSRuRFPYGZCt3z+no4eAg9PBYW4YZAEFAAqGVdyKxtxW6770hHEo5d0Ll8GC3LmjOEuYsU7/x6vJ/qxhxYOJuHC12u9XJ/zIouqq5NMYDwI58ANw3fek4rcvv5ozb9XmSuJ//Nc+mrJo2aJHy246XqauC3uneHYftw6NZYvmXc+Xvh8gIuVAc3CgBXdSO8tn5btUHVUMJHEY6ikSI0n8RwgQrSQHfVJV3Dscb8NibRP2ljQRh05oRbZGinKQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OoMgX6Ds5PgLmnyxrld6Pp4mepkO3DrlV34Wz22LUow=;
- b=RreElHEsMqR1TkCwSH64VWlnnrSSfg+1vgHgTxYXFIjXQf00PlScjxLdcq7hhZaqt+E4Kcbc+M+x1N4OHatSDpgL275ubKUHtk4zrtfSF2Lxkcj5YbYnhV9jwd2iH87Crj/QOZcD+CZ4O+v+9VdHHCFRT6NNFTMUJWcZJRZVO64=
-Received: from SA6PR21MB4231.namprd21.prod.outlook.com (2603:10b6:806:412::20)
- by SN3PEPF00013D7C.namprd21.prod.outlook.com (2603:10b6:82c:400:0:4:0:a) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.7; Wed, 16 Apr
- 2025 18:09:23 +0000
-Received: from SA6PR21MB4231.namprd21.prod.outlook.com
- ([fe80::5c62:d7c6:4531:3aff]) by SA6PR21MB4231.namprd21.prod.outlook.com
- ([fe80::5c62:d7c6:4531:3aff%6]) with mapi id 15.20.8655.012; Wed, 16 Apr 2025
- 18:09:23 +0000
-From: Long Li <longli@microsoft.com>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>, Konstantin Taranov
-	<kotaranov@microsoft.com>, "pabeni@redhat.com" <pabeni@redhat.com>, Haiyang
- Zhang <haiyangz@microsoft.com>, KY Srinivasan <kys@microsoft.com>,
-	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
-	<kuba@kernel.org>, "davem@davemloft.net" <davem@davemloft.net>, Dexuan Cui
-	<decui@microsoft.com>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
-	"jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>
-CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH rdma-next v2 2/3] RDMA/mana_ib: support of the zero based
- MRs
-Thread-Topic: [PATCH rdma-next v2 2/3] RDMA/mana_ib: support of the zero based
- MRs
-Thread-Index: AQHbrRuyNQ7ShGqnLk6Y3C5tFZyz9rOmmvdQ
-Date: Wed, 16 Apr 2025 18:09:23 +0000
-Message-ID:
- <SA6PR21MB423135C01F96E70C7357DDA7CEBD2@SA6PR21MB4231.namprd21.prod.outlook.com>
-References: <1744621234-26114-1-git-send-email-kotaranov@linux.microsoft.com>
- <1744621234-26114-3-git-send-email-kotaranov@linux.microsoft.com>
-In-Reply-To: <1744621234-26114-3-git-send-email-kotaranov@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=bfc05aae-39bd-4d3b-88c6-4a231418ff6a;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-04-16T18:08:44Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
- 3, 0, 1;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA6PR21MB4231:EE_|SN3PEPF00013D7C:EE_
-x-ms-office365-filtering-correlation-id: eca4df69-9b08-403c-e00d-08dd7d11d14e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|376014|1800799024|7416014|366016|921020|38070700018;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?mhVtNYHs6Cl8Lv3OW7ViSvVrUJEOGB0CGs8MaGMypuEzCDBiy9NkKf2zZtTK?=
- =?us-ascii?Q?apCAzmhbgBXI61uh7LL57LmoDnahuCJegxEWJNsQhm6rIHZqE26xioqw+LyE?=
- =?us-ascii?Q?abK5cTQTja+eF2pXtYkIlI4jSPCT2/XuIvI6Arni++rHIRe2qMzEFDPhmVXU?=
- =?us-ascii?Q?pUWkSs3I+RWniW9jugOXXl+tlM1n6MVl2ziLjrNOd4o5OQ9K6xFpj5gav4tO?=
- =?us-ascii?Q?PmqGtDsqIjxoPQwoIWVbZLvzs1XhH/kRY1UzsEwMvN5O+5eQWt3kTRG9xC25?=
- =?us-ascii?Q?YYUBRxIUqfJTW+HVL7ZWc83/AAmhN/yYccqih5pyYJazxMcF/NW9SV1yFKlL?=
- =?us-ascii?Q?gJN13nQg7SZYqJLEKdwmM4xLHuDnEk0ysIgy4Wdo9x+9IZja9cd65yP0g0af?=
- =?us-ascii?Q?YX9qpDIjHxo1lY3AQkPKweHFLnfe1Q4tix5x1fia81w2tJM8NzApBbxupk39?=
- =?us-ascii?Q?jOuWMA7+/dZGOdpFhGz8rblCn5gaQHx+zKUsKsCVC1NC2NDGK2MLON3rr4ss?=
- =?us-ascii?Q?c4ToLaFAvOFrzkIpKXQhLTGQPJfMsGde2gAzxG7zxLrw6U5L7NxJ0K1g8uj2?=
- =?us-ascii?Q?0nv2LtSYrfZuHfvE2RqLMNFNg8Gydz7m5U7q6l2O8B9G1yYbLCvmLjATDk2f?=
- =?us-ascii?Q?I7xqRerwFeP42hsJI5FSMo6kzu5rzfAw8X4SRJ3jPMLL3uLsWihrsYxsqz24?=
- =?us-ascii?Q?jgbxOaO2Ko+iqtTgfF4Uw9EAVDD9nWM61y45FTYBfCJIILkzpwi5gBzMiPUC?=
- =?us-ascii?Q?1JoYFbIkBb4MQ3IcUZoxat8THDAvbRq0cZI4NWmiSXKc58iRzYGMvwR1AHAE?=
- =?us-ascii?Q?WGEZH/ie/R+9nqeBu2zxrIiS4Axx22mKQSH5tTK0yWgF3wT35bfdmcB7EEVv?=
- =?us-ascii?Q?j9u3cPJ9VB1DunB0xlbCl4d0HYhRyhMASboPqtzpYTl4stAFtriBUlXGXXoK?=
- =?us-ascii?Q?FQylpvFhObKVPLvtKVknHUWC+blpWFCiuYka08JSMMVZ1zeEGtoNhI6OJn8U?=
- =?us-ascii?Q?tiAD1lz2wRc/Db6k/XEpCqXUQjX2lifyPDQO2tBWmvNgH65sTRlIlZIWN/UE?=
- =?us-ascii?Q?i0AW9ZP2zyxy3prBXEB6lhLtbiANEEYbxYUvZRGMHGllNEbqyZXpT7RebtnG?=
- =?us-ascii?Q?zGfoMbeaDEnKGliV7rhvneeGbXh8h5YW+mU1TYMT4IMgrAAm0K4U/4PEGJJk?=
- =?us-ascii?Q?GGumr4FwXzjytbCf1oE+/NCAZdOcAk3mpp4t3xCz/TXyIHwocleTzQYd1bBX?=
- =?us-ascii?Q?+UOkbpkbI/Fb74PLYr1F/+KeYiD5ksbrsUNl9l3KeAhqdEs4L5a4CBN3/aya?=
- =?us-ascii?Q?uTQrS9q4SqvNKrOskX0Tl91Dd+fX/iBp6u2FXs2x5URvf81IDljE6ZDIt34V?=
- =?us-ascii?Q?OMHVvmaqxDU7zKwZXhaXZrC4fC+IxsqEE3/T8CZ6xlXedZsEN5kOwyw6mIYY?=
- =?us-ascii?Q?AaYm4JDGXij5einMp29j8tMmMEWB2pbg0HQyJxM37D4P54aOrsLEgsZyECEv?=
- =?us-ascii?Q?T8DBe0Ok1UXVj5o=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA6PR21MB4231.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(7416014)(366016)(921020)(38070700018);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?O7wajTN1kee/7m04zv0IRecW0SeT8YI6QLYn/UiNoqdZT6LudWtH4SX1Suq3?=
- =?us-ascii?Q?B85OvG86HO883IAabdU3MzIn+26ybWBg/WKnGsLnKKG3TfLH2NsSw5LdAq0j?=
- =?us-ascii?Q?AopkaHkKiDVxYsYB145IiZ9HshMyh3FvXSPLSxFCA5mgEVpNk6EH9Ft86iPG?=
- =?us-ascii?Q?cNTuJwSQ7+ixJ3zfnTz1D3ln+s9tz4XqvIg5RieFkMQq43Hloc7gu0g5BNXY?=
- =?us-ascii?Q?fqrSf/KO/4rze75iwEQtbi2jCxPHvf8WobbA4twGS6GFTzja2/MkSadG+w83?=
- =?us-ascii?Q?pJ7I33vEvnSZwktgtBYQ+MX2ATP1raUltxOLQ1hEMEr6wMVR/lUdctuEMd0q?=
- =?us-ascii?Q?EBzrjdJ206ZLsqpt3H0On3F7b26ApPWGd/b/XM++jP04aLFqQalq4fbmQd23?=
- =?us-ascii?Q?mtbw9ipQORiRENHgwlvRwe/886bvLNuPzOBLuQu4Xe2jLyht90LiK1/5zZcu?=
- =?us-ascii?Q?LA1Mn7Nwutn7crcBVoVNiB6K5xc6y33v4mCYfvhBm+EKq6nnWbp5ZdU5FjW+?=
- =?us-ascii?Q?vyHYXHSgRxK+ko9IwTb+wsxrLBJF7oih0LtoTQekbm7RvY1EMo29WNgB8hK1?=
- =?us-ascii?Q?JsWzUpwE89CpycpufNEZIyxeexWDmN8ZBL6h6Ovsi1xL+WrlNlaHhNy16aPl?=
- =?us-ascii?Q?tYzDZbmfnMQeFpHZDJaYu2MetWXgDwWfKscNkCCuIp9uo6oOaDnxRa8nR5hM?=
- =?us-ascii?Q?Dzr7qcAvzriFg7LGsdbGuSsbThZpjg6IOpdsglRVMymVa4/Cjmsrl7pOfYeE?=
- =?us-ascii?Q?yHNngnzd1lFnZokOe9A96RrJ79mtYQzh5LC9UwxRcTBDLfxcdyKZy/yANgPq?=
- =?us-ascii?Q?zPIoB1cPA3nBZKrlgOqwpU5RhKDCLsdM1qEJE4k2SBhAIQ+/jId2+gwN+ppF?=
- =?us-ascii?Q?OVmKjnnUUL05NevtqHpq/12njbkDr80S5hjLIUnyYHYGG31f9beZtpxW5Kc2?=
- =?us-ascii?Q?SR896CLOQTKPwT7L0ITecCwxBi7IlRB0qwQMUzx/2kxgw2T4jRagslKbn1vE?=
- =?us-ascii?Q?Ci/C0rg/8rzwzLPplToipkm2rdZKSXUGrm16J7UXnORlp/XNJtGB70okjm3R?=
- =?us-ascii?Q?tLWkds7ExUeDObQjylUhgIYuLcgzW6JHYu+RbcR8O2v9dI3TkpWsx9/Ndwj/?=
- =?us-ascii?Q?YBazVT3gH1Sl5qQGp3FFNGzUXB8b6MV1u4lP7WWYS3N6+mgkXix1mjbnNGp8?=
- =?us-ascii?Q?tucB3cUtiYI2ahKtrrN7qzErMoQS6PmjLiA/6dtWq6uL21U5ppm8a9hjX8yS?=
- =?us-ascii?Q?/Cq1VGvD7dCfpy9VWLuZpISiaBz/CQlHzPTWMbsmB+cUrRDTWzxE45sZEuXs?=
- =?us-ascii?Q?bFvgkvzERxJ2hMxTKtSIFBvPqc9u9ZmZtGkzVbiMowKc9n/kHRO8OIBlP06p?=
- =?us-ascii?Q?TAE+3pCoZ7UmlPSJ/gvJpWnolRkoqUaeVD0VBlwF9QLR0DJuGgMkzQA7sISR?=
- =?us-ascii?Q?EjgHn1hPHleGj+jmrguFWB3DxybBzXBXq1PahY839V2ww6wPZGQjEwm72u26?=
- =?us-ascii?Q?B7P7h9U3iXsnDKTPdLxDzyqP9enm0ULjNlOsh+8HBfeEglAb0aZKDGvmX7xv?=
- =?us-ascii?Q?gK2s28Z5zbreSAmFj4aOXioePJaYo5UauXKbgJXm?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB051FECA1;
+	Wed, 16 Apr 2025 18:30:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1744828244; cv=none; b=WK5CUfRc/o0C0TjCzBlsVDSLMC4cAorGeDb71BMXLk7eO4zqQzQ1sfDym1oJj1TAb27wQpahtKD+ylBQKu9Z/7D/0XShKV/SuGgsAgvRd6XKFg4Wn1d/YNDGgsbvgxWp8N9Bq/fmp/6teLOGwRpwji6HJqtZd9X0Mh9ZkE2cqSE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1744828244; c=relaxed/simple;
+	bh=FtZSOzbuxkOduJR1lakYFkXwUTsnS2uQuQ6BlIYoafM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=NanVpM53Qz+h/favyzowllalVOU0aAfGpbazkeEPll+3f/stCBYcfDBkvnbhhVMC9/x5e50ktkVT5aGhiM293su0bLAOPh2ks5D9SxnBMuCEVm5m5GW+c6gw1pQHPt74it6B3M5ggqvzbgjHhfHgUrQ8jEJ7RZ1/bTmd3m0RiZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dkc+DPri; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C38A1C4CEE2;
+	Wed, 16 Apr 2025 18:30:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744828244;
+	bh=FtZSOzbuxkOduJR1lakYFkXwUTsnS2uQuQ6BlIYoafM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=Dkc+DPribskYpXulLARA2qfxHuOKnPJK522qjkDfC/CvWJYDCSqq2JIQVX6SGeAx5
+	 Od5OH8ivxowsjOo8w7qwHhHndrJk1olCkfwgOlyEgygqOKc5JjlHhhTXiFOKoLFY00
+	 PqjWbZqJl5SktRxWcreUspNGLmdvffIteF3Xc83EbP2DoK09twzCLyF26YckI6HbIH
+	 1EvofkN5gdneQ1L6yvndjw3jOjEab8ReFwlNXKZGZdJXOj9RZ1tlH0UG0qrPntj2LZ
+	 gHCAf1l2lhuo0zxLHC7oYStPBuB8z/xb4wC0ZkkUe1GajfHarPCLBiDkrx7FS57EIV
+	 Qwr4SimLxB3RQ==
+Date: Wed, 16 Apr 2025 13:30:42 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Nipun Gupta <nipun.gupta@amd.com>,
+	Yury Norov <yury.norov@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Shivamurthy Shastri <shivamurthy.shastri@linutronix.de>,
+	Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
+	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Simon Horman <horms@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+	Maxim Levitsky <mlevitsk@redhat.com>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Peter Zijlstra <peterz@infradead.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Paul Rosswurm <paulros@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH 1/2] PCI: hv: enable pci_hyperv to allow dynamic vector
+ allocation
+Message-ID: <20250416183042.GA75515@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA6PR21MB4231.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eca4df69-9b08-403c-e00d-08dd7d11d14e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2025 18:09:23.5513
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tzKaYMFNAmjiudwfNcZF+SGFyOo73mtdkFEJj1DbPorUEgDA1pwRk+t0z82Oa+fDORStVqzbzVedlehVIW/jcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN3PEPF00013D7C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1744817766-3134-1-git-send-email-shradhagupta@linux.microsoft.com>
 
-> Subject: [PATCH rdma-next v2 2/3] RDMA/mana_ib: support of the zero based
-> MRs
->=20
-> From: Konstantin Taranov <kotaranov@microsoft.com>
->=20
-> Add IB_ZERO_BASED to the valid flags and use the corresponding MR creatio=
-n
-> request for the zero based memory.
->=20
-> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+[+to Thomas]
 
-Reviewed-by: Long Li <longli@microsoft.com>
+On Wed, Apr 16, 2025 at 08:36:06AM -0700, Shradha Gupta wrote:
+> For supporting dynamic MSI vector allocation by pci controllers, enabling
+> the flag MSI_FLAG_PCI_MSIX_ALLOC_DYN is not enough, msix_prepare_msi_desc()
+> to prepare the desc is needed. Export pci_msix_prepare_desc() to allow pci
+> controllers like pci-hyperv to support dynamic MSI vector allocation.
+> Also, add the flag MSI_FLAG_PCI_MSIX_ALLOC_DYN and use
+> pci_msix_prepare_desc() in pci_hyperv controller
 
+Follow capitalization convention for subject line.  Probably remove
+"pci_hyperv" since it already contains "PCI: hv" and add something
+about MSI-X.
+
+s/pci/PCI/
+
+s/MSI vector/MSI-X vector/ since the context says you're concerned
+with MSI-X.
+
+This requires an ack from Thomas; moved him to "To:" line.
+
+> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+> Reviewed-by: Long Li <longli@microsoft.com>
 > ---
->  drivers/infiniband/hw/mana/mr.c | 24 +++++++++++++++++-------
->  include/net/mana/gdma.h         | 11 ++++++++++-
->  2 files changed, 27 insertions(+), 8 deletions(-)
->=20
-> diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana=
-/mr.c
-> index e4a9f53..6d974d0 100644
-> --- a/drivers/infiniband/hw/mana/mr.c
-> +++ b/drivers/infiniband/hw/mana/mr.c
-> @@ -6,7 +6,7 @@
->  #include "mana_ib.h"
->=20
->  #define VALID_MR_FLAGS (IB_ACCESS_LOCAL_WRITE |
-> IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_READ |\
-> -			IB_ACCESS_REMOTE_ATOMIC)
-> +			IB_ACCESS_REMOTE_ATOMIC | IB_ZERO_BASED)
->=20
->  #define VALID_DMA_MR_FLAGS (IB_ACCESS_LOCAL_WRITE)
->=20
-> @@ -51,7 +51,10 @@ static int mana_ib_gd_create_mr(struct mana_ib_dev
-> *dev, struct mana_ib_mr *mr,
->  		req.gva.virtual_address =3D mr_params->gva.virtual_address;
->  		req.gva.access_flags =3D mr_params->gva.access_flags;
->  		break;
-> -
-> +	case GDMA_MR_TYPE_ZBVA:
-> +		req.zbva.dma_region_handle =3D mr_params-
-> >zbva.dma_region_handle;
-> +		req.zbva.access_flags =3D mr_params->zbva.access_flags;
-> +		break;
->  	default:
->  		ibdev_dbg(&dev->ib_dev,
->  			  "invalid param (GDMA_MR_TYPE) passed, type %d\n",
-> @@ -147,11 +150,18 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd
-> *ibpd, u64 start, u64 length,
->  		  dma_region_handle);
->=20
->  	mr_params.pd_handle =3D pd->pd_handle;
-> -	mr_params.mr_type =3D GDMA_MR_TYPE_GVA;
-> -	mr_params.gva.dma_region_handle =3D dma_region_handle;
-> -	mr_params.gva.virtual_address =3D iova;
-> -	mr_params.gva.access_flags =3D
-> -		mana_ib_verbs_to_gdma_access_flags(access_flags);
-> +	if (access_flags & IB_ZERO_BASED) {
-> +		mr_params.mr_type =3D GDMA_MR_TYPE_ZBVA;
-> +		mr_params.zbva.dma_region_handle =3D dma_region_handle;
-> +		mr_params.zbva.access_flags =3D
-> +			mana_ib_verbs_to_gdma_access_flags(access_flags);
-> +	} else {
-> +		mr_params.mr_type =3D GDMA_MR_TYPE_GVA;
-> +		mr_params.gva.dma_region_handle =3D dma_region_handle;
-> +		mr_params.gva.virtual_address =3D iova;
-> +		mr_params.gva.access_flags =3D
-> +			mana_ib_verbs_to_gdma_access_flags(access_flags);
-> +	}
->=20
->  	err =3D mana_ib_gd_create_mr(dev, mr, &mr_params);
->  	if (err)
-> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h index
-> 50ffbc4..3db506d 100644
-> --- a/include/net/mana/gdma.h
-> +++ b/include/net/mana/gdma.h
-> @@ -812,6 +812,8 @@ enum gdma_mr_type {
->  	 * address that is set up in the MST
->  	 */
->  	GDMA_MR_TYPE_GVA =3D 2,
-> +	/* Guest zero-based address MRs */
-> +	GDMA_MR_TYPE_ZBVA =3D 4,
+>  drivers/pci/controller/pci-hyperv.c | 7 +++++--
+>  drivers/pci/msi/irqdomain.c         | 5 +++--
+>  include/linux/msi.h                 | 2 ++
+>  3 files changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+> index ac27bda5ba26..f2fa6bdb6bb8 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -598,7 +598,8 @@ static unsigned int hv_msi_get_int_vector(struct irq_data *data)
+>  	return cfg->vector;
+>  }
+>  
+> -#define hv_msi_prepare		pci_msi_prepare
+> +#define hv_msi_prepare			pci_msi_prepare
+> +#define hv_msix_prepare_desc		pci_msix_prepare_desc
+>  
+>  /**
+>   * hv_arch_irq_unmask() - "Unmask" the IRQ by setting its current
+> @@ -727,6 +728,7 @@ static void hv_arch_irq_unmask(struct irq_data *data)
+>  #define FLOW_HANDLER		NULL
+>  #define FLOW_NAME		NULL
+>  #define hv_msi_prepare		NULL
+> +#define hv_msix_prepare_desc	NULL
+>  
+>  struct hv_pci_chip_data {
+>  	DECLARE_BITMAP(spi_map, HV_PCI_MSI_SPI_NR);
+> @@ -2063,6 +2065,7 @@ static struct irq_chip hv_msi_irq_chip = {
+>  static struct msi_domain_ops hv_msi_ops = {
+>  	.msi_prepare	= hv_msi_prepare,
+>  	.msi_free	= hv_msi_free,
+> +	.prepare_desc	= hv_msix_prepare_desc,
 >  };
->=20
->  struct gdma_create_mr_params {
-> @@ -823,6 +825,10 @@ struct gdma_create_mr_params {
->  			u64 virtual_address;
->  			enum gdma_mr_access_flags access_flags;
->  		} gva;
-> +		struct {
-> +			u64 dma_region_handle;
-> +			enum gdma_mr_access_flags access_flags;
-> +		} zbva;
->  	};
->  };
->=20
-> @@ -838,7 +844,10 @@ struct gdma_create_mr_request {
->  			u64 virtual_address;
->  			enum gdma_mr_access_flags access_flags;
->  		} gva;
-> -
-> +		struct {
-> +			u64 dma_region_handle;
-> +			enum gdma_mr_access_flags access_flags;
-> +		} zbva;
->  	};
->  	u32 reserved_2;
->  };/* HW DATA */
-> --
-> 2.43.0
-
+>  
+>  /**
+> @@ -2084,7 +2087,7 @@ static int hv_pcie_init_irq_domain(struct hv_pcibus_device *hbus)
+>  	hbus->msi_info.ops = &hv_msi_ops;
+>  	hbus->msi_info.flags = (MSI_FLAG_USE_DEF_DOM_OPS |
+>  		MSI_FLAG_USE_DEF_CHIP_OPS | MSI_FLAG_MULTI_PCI_MSI |
+> -		MSI_FLAG_PCI_MSIX);
+> +		MSI_FLAG_PCI_MSIX | MSI_FLAG_PCI_MSIX_ALLOC_DYN);
+>  	hbus->msi_info.handler = FLOW_HANDLER;
+>  	hbus->msi_info.handler_name = FLOW_NAME;
+>  	hbus->msi_info.data = hbus;
+> diff --git a/drivers/pci/msi/irqdomain.c b/drivers/pci/msi/irqdomain.c
+> index d7ba8795d60f..43129aa6d6c7 100644
+> --- a/drivers/pci/msi/irqdomain.c
+> +++ b/drivers/pci/msi/irqdomain.c
+> @@ -222,13 +222,14 @@ static void pci_irq_unmask_msix(struct irq_data *data)
+>  	pci_msix_unmask(irq_data_get_msi_desc(data));
+>  }
+>  
+> -static void pci_msix_prepare_desc(struct irq_domain *domain, msi_alloc_info_t *arg,
+> -				  struct msi_desc *desc)
+> +void pci_msix_prepare_desc(struct irq_domain *domain, msi_alloc_info_t *arg,
+> +			   struct msi_desc *desc)
+>  {
+>  	/* Don't fiddle with preallocated MSI descriptors */
+>  	if (!desc->pci.mask_base)
+>  		msix_prepare_msi_desc(to_pci_dev(desc->dev), desc);
+>  }
+> +EXPORT_SYMBOL_GPL(pci_msix_prepare_desc);
+>  
+>  static const struct msi_domain_template pci_msix_template = {
+>  	.chip = {
+> diff --git a/include/linux/msi.h b/include/linux/msi.h
+> index 86e42742fd0f..d5864d5e75c2 100644
+> --- a/include/linux/msi.h
+> +++ b/include/linux/msi.h
+> @@ -691,6 +691,8 @@ struct irq_domain *pci_msi_create_irq_domain(struct fwnode_handle *fwnode,
+>  					     struct irq_domain *parent);
+>  u32 pci_msi_domain_get_msi_rid(struct irq_domain *domain, struct pci_dev *pdev);
+>  struct irq_domain *pci_msi_get_device_domain(struct pci_dev *pdev);
+> +void pci_msix_prepare_desc(struct irq_domain *domain, msi_alloc_info_t *arg,
+> +			   struct msi_desc *desc);
+>  #else /* CONFIG_PCI_MSI */
+>  static inline struct irq_domain *pci_msi_get_device_domain(struct pci_dev *pdev)
+>  {
+> -- 
+> 2.34.1
+> 
 
