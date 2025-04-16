@@ -1,616 +1,214 @@
-Return-Path: <linux-rdma+bounces-9487-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9488-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 278CFA907DA
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 17:36:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADBD8A90984
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 19:00:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9132D5A132C
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 15:36:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 190555A1D5B
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Apr 2025 16:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE70C208962;
-	Wed, 16 Apr 2025 15:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17C67215174;
+	Wed, 16 Apr 2025 16:58:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="frjf8iVx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oGDYkCYG"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E70921DF985;
-	Wed, 16 Apr 2025 15:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC27D1B415F
+	for <linux-rdma@vger.kernel.org>; Wed, 16 Apr 2025 16:58:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744817784; cv=none; b=aRWwyMJQOLN5/yY9zQzDJH+2FYaSrlploEBiMtJzG15VFobkwu/ajm7rJfDTXXMgNs/tdwlCyGipfLqPw39mZ9ZHfOZtdcvsg5hggE7qqmnBxd9XB44+xhWKCt1znAeOI1jWEWx9qeYBlvRHxlmdJ9tk8UFKY4fiiLSfAfJXv0k=
+	t=1744822718; cv=none; b=IWWzhnTsd9JgOA3YJ0foe0k0dgUzhVn9u9tpJTap3HFzYtu1qkhozOFDPI5Y04khl1nKXleZ1qKZxijxhfjJahmCOS9o9ItvYjz4YTTxA32Y6VZu3GAvE57Bu9MUepmB9aD7sWdawuiGM9uWNrJwALrvZ9CiV9PSX5JseJ3px5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744817784; c=relaxed/simple;
-	bh=y7sXYpKL1Co4lRYmyp+JRnPDfgpsOxTKTmWmtuQB2lE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=YY46rbgd/ejpH3vCqgYHMIPafYwkDKahTLez/ZWmHrR9p5bqUoDVGCZwsCae1DLtYYlMaHSHdN033EsNfgxTU+h8WMcLUG03ws6ZwlrVDvUzp7d+yeg7EtkB2dEKeGsKmE26fIHoYgP53E6O7wmi2qWg6yxFlceHwl80TKFufws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=frjf8iVx; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 953F82052508; Wed, 16 Apr 2025 08:36:22 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 953F82052508
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1744817782;
-	bh=c0R5u/K7Fmc1YtwZknchgHFaUeff+gQDtJr1w06pe5c=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=frjf8iVxOM8E+69n85qVsMrHAMxEj9ic2UjzvxG55Vr/S+2BDTpz+/T9A18Ti+1tU
-	 PE+QqLbxm4v4ViuDYwIs91L4wUu2uRB6h0wq8EXysXn30tM9a1ZYkd9zzdXZXbIfu1
-	 X6ums9SRokVHlY7AYClAdw4ODlsmOXt4rbYGMv+w=
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: linux-hyperv@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Nipun Gupta <nipun.gupta@amd.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	Shivamurthy Shastri <shivamurthy.shastri@linutronix.de>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Long Li <longli@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Rob Herring <robh@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Simon Horman <horms@kernel.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Maxim Levitsky <mlevitsk@redhat.com>,
-	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	Paul Rosswurm <paulros@microsoft.com>
-Cc: Shradha Gupta <shradhagupta@microsoft.com>
-Subject: [PATCH 2/2] net: mana: Allow MANA driver to allocate PCI vector dynamically
-Date: Wed, 16 Apr 2025 08:36:21 -0700
-Message-Id: <1744817781-3243-1-git-send-email-shradhagupta@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1744817747-2920-1-git-send-email-shradhagupta@linux.microsoft.com>
-References: <1744817747-2920-1-git-send-email-shradhagupta@linux.microsoft.com>
+	s=arc-20240116; t=1744822718; c=relaxed/simple;
+	bh=ziMd1Oz0Gabm0P6Ump01XQxYlm2mfWyou9sOvxAaPVc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=plFBL63js2rD0p0DLjTivd+cCjtU4R07R9S0Imd6505eAmug3AbnypD24Kb00ItUlaTswM4eag3WzxUoI2E8Af5dNylppTrNh0bao0hOsqGsILKGYzYbP/EuKhYvyDyGECBg1M3SbSNqUemlCFgVEUu3/1As5QIhYoNpDd4d14U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oGDYkCYG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3439AC4CEE4;
+	Wed, 16 Apr 2025 16:58:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744822718;
+	bh=ziMd1Oz0Gabm0P6Ump01XQxYlm2mfWyou9sOvxAaPVc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oGDYkCYGDSg6444Jx+yV4S6Usm1L3/qP7K1vMjyE7lt5S19v6zmus7y9GjQh1D1c0
+	 XTYWEyUi9lTsJe2WSwdMDBhrXniBt7JHNWrDbUoqXWUBzL4YBXhkXHKI2O5EVQq7g9
+	 3lwRGcE2UL5bHiA8HUtLiBqJ2AvkIVV9tOFJFIfzWP4UTRHAzZKt/vRBXg1iXtT3D6
+	 46oee6vOYFty8KIMfiN03vm/5C7vrshMm1v+pUNvzyjbZmApKXeDp+LK+y68dx5U6J
+	 pYtNzum2IFBLCKZYiGw5KVx4PYktqU7C4syRHd+ap4zB4AzLZUxNRg3MrdJGTZUoc1
+	 UzIkU0C6SQVeg==
+Date: Wed, 16 Apr 2025 19:58:34 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH for-next v3 0/2] RDMA/rxe: RDMA FLUSH and ATOMIC WRITE
+ with ODP
+Message-ID: <20250416165834.GZ199604@unreal>
+References: <20250324075649.3313968-1-matsuda-daisuke@fujitsu.com>
+ <174411071857.217309.12836295631004196048.b4-ty@kernel.org>
+ <OS3PR01MB986530139AE70B2D0BB6C111E5B62@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+ <20250411175528.GX199604@unreal>
+ <OS3PR01MB9865CBFAA8DAA73AA42C6D95E5B32@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+ <8304bc38-7c3b-4e24-ad15-7dcf0eb40fa2@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8304bc38-7c3b-4e24-ad15-7dcf0eb40fa2@linux.dev>
 
-Currently, the MANA driver allocates pci vector statically based on
-MANA_MAX_NUM_QUEUES and num_online_cpus() values and in some cases ends
-up allocating more vectors than it needs.
-This is because, by this time we do not have a HW channel and do not know
-how many IRQs should be allocated.
-To avoid this, we allocate 1 IRQ vector during the creation of HWC and
-after getting the value supported by hardware, dynamically add the
-remaining vectors.
+On Mon, Apr 14, 2025 at 02:56:51PM +0200, Zhu Yanjun wrote:
+> On 14.04.25 12:16, Daisuke Matsuda (Fujitsu) wrote:
+> > On Sat, April 12, 2025 2:55 AM Leon Romanovsky wrote:
+> > > > Hi Leon,
+> > > > 
+> > > > I have noticed the 2nd patch caused "kernel test robot" error, and you
+> > > > kindly amended the patch. However, another error has been detected by "the bot"
+> > > > because of the remaining fundamental problem that ATOMIC WRITE cannot
+> > > > be executed on non-64-bit architectures (at least on rxe).
+> > > > 
+> > > > I think applying the change below to the original patch(*1) will resolve the issue.
+> > > > (*1) https://lore.kernel.org/linux-rdma/20250324075649.3313968-3-matsuda-daisuke@fujitsu.com/
+> > > > ```
+> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
+> > > > index 02de05d759c6..ac3b3039db22 100644
+> > > > --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+> > > > +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+> > > > @@ -380,6 +380,7 @@ int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
+> > > >   }
+> > > > 
+> > > >   /* CONFIG_64BIT=y */
+> > > > +#ifdef CONFIG_64BIT
+> > > >   enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
+> > > >   {
+> > > >          struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
+> > > > @@ -424,3 +425,4 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
+> > > > 
+> > > >          return RESPST_NONE;
+> > > >   }
+> > > > +#endif
+> > > > ```
+> > > > The definition of rxe_odp_do_atomic_write() should have been guarded in #ifdef CONFIG_64BIT.
+> > > > I believe this fix can address both:
+> > > >    - the first error "error: redefinition of 'rxe_odp_do_atomic_write' " that could be caused when
+> > > >      CONFIG_INFINIBAND_ON_DEMAND_PAGING=y && CONFIG_64BIT=n.
+> > > >    - the second error caused by trying to compile 64-bit codes on 32-bit architectures.
+> > > > 
+> > > > I am very sorry to bother you, but is it possible to make the modification?
+> > > > If I should provide a replacement patch, I will do so.
+> > > 
+> > > I think that better will be simply make sure that RXE is dependent on 64bits.
+> > > 
+> > > diff --git a/drivers/infiniband/sw/rxe/Kconfig b/drivers/infiniband/sw/rxe/Kconfig
+> > > index c180e7ebcfc5..1ed5b63f8afc 100644
+> > > --- a/drivers/infiniband/sw/rxe/Kconfig
+> > > +++ b/drivers/infiniband/sw/rxe/Kconfig
+> > > @@ -1,7 +1,7 @@
+> > >   # SPDX-License-Identifier: GPL-2.0-only
+> > >   config RDMA_RXE
+> > >          tristate "Software RDMA over Ethernet (RoCE) driver"
+> > > -       depends on INET && PCI && INFINIBAND
+> > > +       depends on INET && PCI && INFINIBAND && 64BIT
+> > >          depends on INFINIBAND_VIRT_DMA
+> > >          select NET_UDP_TUNNEL
+> > >          select CRC32
+> > > 
+> > > WDYT?
+> > 
+> > It seems the driver is designed to be runnable on 32-bit nodes, so it may be
+> > overkill to disable 32-bit mode only for "ATOMIC WRITE" functionality.
+> > However, I do not have strong objection to making this change if you
+> > think it is better in terms of maintainability.
+> > 
+> > Before making the change, I'd like to get an ACK or NACK from Zhu Yanjun.
+> > As far as I am aware, no one is actively maintaining or testing RXE on 32-bit,
+> > so it may be acceptable to drop 32-bit support, but it's best to confirm before proceeding.
+> 
+> Hi, Daisuke Matsuda
+> 
+> Thanks a lot for your efforts.
+> 
+> There are some problems with 32-bit architectures, such as Year 2038 problem
+> ( many 32-bit systems will stop working in the year 2038 when the 32-bit
+> time_t overflows).
+> 
+> And many binary distributions, like Fedora, Ubuntu, and openSUSE Leap, have
+> dropped support for all 32-bit architectures other than Armv7 and are likely
+> to drop that as well before they would consider rebuilding against a new
+> glibc.
+> 
+> In the kernel 6.15, support for larger 32-bit x86 systems (those with more
+> than eight CPUs or more than 4GB of RAM) has been removed. Those hardware
+> configurations have been unavailable for a long time, and any workloads
+> needing such resources should have long since moved to 64-bit systems.
+> 
+> Thus, it seems that it is a trend to not support 32-bit architecture in
+> Linux kernel. In rxe, we will also follow this trend.
+> 
+> If some user-space applications still use 32-bit architecture currently, we
+> can apply your commit. But from Linux kernel community, sooner or later, the
+> support of 32-bit architecture will be dropped.
+> 
+> Finally if some user-space applications still need 32-bit architecture in
+> rxe, we can keep it. Or else, we will follow Leon's advice.
+> 
+> 
+> It is just my 2-cent advice.^_^
+> 
+> Please Jason Gunthorpe or Leon Romanovsky comments on this.
 
-Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 306 ++++++++++++++----
- include/net/mana/gdma.h                       |   5 +-
- 2 files changed, 250 insertions(+), 61 deletions(-)
+At the end RXE is for development, testing and early prototyping. I can't
+believe that we have developers who are using 32bits machines for such type
+of work in RDMA domain.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 4ffaf7588885..3e3b5854b736 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -6,6 +6,9 @@
- #include <linux/pci.h>
- #include <linux/utsname.h>
- #include <linux/version.h>
-+#include <linux/msi.h>
-+#include <linux/irqdomain.h>
-+#include <linux/list.h>
- 
- #include <net/mana/mana.h>
- 
-@@ -80,8 +83,15 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
- 		return err ? err : -EPROTO;
- 	}
- 
--	if (gc->num_msix_usable > resp.max_msix)
--		gc->num_msix_usable = resp.max_msix;
-+	if (!pci_msix_can_alloc_dyn(pdev)) {
-+		if (gc->num_msix_usable > resp.max_msix)
-+			gc->num_msix_usable = resp.max_msix;
-+	} else {
-+		/* If dynamic allocation is enabled we have already allocated
-+		 * hwc msi
-+		 */
-+		gc->num_msix_usable = min(resp.max_msix, num_online_cpus() + 1);
-+	}
- 
- 	if (gc->num_msix_usable <= 1)
- 		return -ENOSPC;
-@@ -465,9 +475,10 @@ static int mana_gd_register_irq(struct gdma_queue *queue,
- 	struct gdma_irq_context *gic;
- 	struct gdma_context *gc;
- 	unsigned int msi_index;
--	unsigned long flags;
-+	struct list_head *pos;
-+	unsigned long flags, flag_irq;
- 	struct device *dev;
--	int err = 0;
-+	int err = 0, count;
- 
- 	gc = gd->gdma_context;
- 	dev = gc->dev;
-@@ -482,7 +493,22 @@ static int mana_gd_register_irq(struct gdma_queue *queue,
- 	}
- 
- 	queue->eq.msix_index = msi_index;
--	gic = &gc->irq_contexts[msi_index];
-+
-+	/* get the msi_index value from the list*/
-+	count = 0;
-+	spin_lock_irqsave(&gc->irq_ctxs_lock, flag_irq);
-+	list_for_each(pos, &gc->irq_contexts) {
-+		if (count == msi_index) {
-+			gic = list_entry(pos, struct gdma_irq_context, gic_list);
-+			break;
-+		}
-+
-+		count++;
-+	}
-+	spin_unlock_irqrestore(&gc->irq_ctxs_lock, flag_irq);
-+
-+	if (!gic)
-+		return -1;
- 
- 	spin_lock_irqsave(&gic->lock, flags);
- 	list_add_rcu(&queue->entry, &gic->eq_list);
-@@ -497,8 +523,10 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
- 	struct gdma_irq_context *gic;
- 	struct gdma_context *gc;
- 	unsigned int msix_index;
--	unsigned long flags;
-+	struct list_head *pos;
-+	unsigned long flags, flag_irq;
- 	struct gdma_queue *eq;
-+	int count;
- 
- 	gc = gd->gdma_context;
- 
-@@ -507,7 +535,22 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
- 	if (WARN_ON(msix_index >= gc->num_msix_usable))
- 		return;
- 
--	gic = &gc->irq_contexts[msix_index];
-+	/* get the msi_index value from the list*/
-+	count = 0;
-+	spin_lock_irqsave(&gc->irq_ctxs_lock, flag_irq);
-+	list_for_each(pos, &gc->irq_contexts) {
-+		if (count == msix_index) {
-+			gic = list_entry(pos, struct gdma_irq_context, gic_list);
-+			break;
-+		}
-+
-+		count++;
-+	}
-+	spin_unlock_irqrestore(&gc->irq_ctxs_lock, flag_irq);
-+
-+	if (!gic)
-+		return;
-+
- 	spin_lock_irqsave(&gic->lock, flags);
- 	list_for_each_entry_rcu(eq, &gic->eq_list, entry) {
- 		if (queue == eq) {
-@@ -1288,11 +1331,11 @@ void mana_gd_free_res_map(struct gdma_resource *r)
- 	r->size = 0;
- }
- 
--static int irq_setup(unsigned int *irqs, unsigned int len, int node)
-+static int irq_setup(unsigned int *irqs, unsigned int len, int node, int skip_cpu)
- {
- 	const struct cpumask *next, *prev = cpu_none_mask;
- 	cpumask_var_t cpus __free(free_cpumask_var);
--	int cpu, weight;
-+	int cpu, weight, i = 0;
- 
- 	if (!alloc_cpumask_var(&cpus, GFP_KERNEL))
- 		return -ENOMEM;
-@@ -1303,9 +1346,21 @@ static int irq_setup(unsigned int *irqs, unsigned int len, int node)
- 		while (weight > 0) {
- 			cpumask_andnot(cpus, next, prev);
- 			for_each_cpu(cpu, cpus) {
-+				/* If the call is made for irqs which are dynamically
-+				 * added and the num of vcpus is more or equal to
-+				 * allocated msix, we need to skip the first
-+				 * set of cpus, since they are already affinitized
-+				 * to HWC IRQ
-+				 */
-+				if (skip_cpu && !i) {
-+					i = 1;
-+					goto next_cpumask;
-+				}
- 				if (len-- == 0)
- 					goto done;
-+
- 				irq_set_affinity_and_hint(*irqs++, topology_sibling_cpumask(cpu));
-+next_cpumask:
- 				cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
- 				--weight;
- 			}
-@@ -1317,29 +1372,92 @@ static int irq_setup(unsigned int *irqs, unsigned int len, int node)
- 	return 0;
- }
- 
--static int mana_gd_setup_irqs(struct pci_dev *pdev)
-+static int mana_gd_setup_dyn_irqs(struct pci_dev *pdev, int nvec)
- {
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
--	unsigned int max_queues_per_port;
- 	struct gdma_irq_context *gic;
--	unsigned int max_irqs, cpu;
--	int start_irq_index = 1;
--	int nvec, *irqs, irq;
-+	int *irqs, irq, skip_first_cpu = 0;
-+	unsigned long flags;
- 	int err, i = 0, j;
- 
- 	cpus_read_lock();
--	max_queues_per_port = num_online_cpus();
--	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
--		max_queues_per_port = MANA_MAX_NUM_QUEUES;
-+	spin_lock_irqsave(&gc->irq_ctxs_lock, flags);
-+	irqs = kmalloc_array(nvec, sizeof(int), GFP_KERNEL);
-+	if (!irqs) {
-+		err = -ENOMEM;
-+		goto free_irq_vector;
-+	}
- 
--	/* Need 1 interrupt for the Hardware communication Channel (HWC) */
--	max_irqs = max_queues_per_port + 1;
-+	for (i = 0; i < nvec; i++) {
-+		gic = kcalloc(1, sizeof(struct gdma_irq_context), GFP_KERNEL);
-+		if (!gic) {
-+			err = -ENOMEM;
-+			goto free_irq;
-+		}
-+		gic->handler = mana_gd_process_eq_events;
-+		INIT_LIST_HEAD(&gic->eq_list);
-+		spin_lock_init(&gic->lock);
- 
--	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
--	if (nvec < 0) {
--		cpus_read_unlock();
--		return nvec;
-+		snprintf(gic->name, MANA_IRQ_NAME_SZ, "mana_q%d@pci:%s",
-+			 i, pci_name(pdev));
-+
-+		/* one pci vector is already allocated for HWC */
-+		irqs[i] = pci_irq_vector(pdev, i + 1);
-+		if (irqs[i] < 0) {
-+			err = irqs[i];
-+			goto free_current_gic;
-+		}
-+
-+		err = request_irq(irqs[i], mana_gd_intr, 0, gic->name, gic);
-+		if (err)
-+			goto free_current_gic;
-+
-+		list_add_tail(&gic->gic_list, &gc->irq_contexts);
-+	}
-+
-+	if (gc->num_msix_usable <= num_online_cpus())
-+		skip_first_cpu = 1;
-+
-+	err = irq_setup(irqs, nvec, gc->numa_node, skip_first_cpu);
-+	if (err)
-+		goto free_irq;
-+
-+	spin_unlock_irqrestore(&gc->irq_ctxs_lock, flags);
-+	cpus_read_unlock();
-+	kfree(irqs);
-+	return 0;
-+
-+free_current_gic:
-+	kfree(gic);
-+free_irq:
-+	for (j = i - 1; j >= 0; j--) {
-+		irq = pci_irq_vector(pdev, j + 1);
-+		gic = list_last_entry(&gc->irq_contexts, struct gdma_irq_context, gic_list);
-+		irq_update_affinity_hint(irq, NULL);
-+		free_irq(irq, gic);
-+		list_del(&gic->gic_list);
-+		kfree(gic);
- 	}
-+	kfree(irqs);
-+free_irq_vector:
-+	spin_unlock_irqrestore(&gc->irq_ctxs_lock, flags);
-+	cpus_read_unlock();
-+	return err;
-+}
-+
-+static int mana_gd_setup_irqs(struct pci_dev *pdev, int nvec)
-+{
-+	struct gdma_context *gc = pci_get_drvdata(pdev);
-+	struct gdma_irq_context *gic;
-+	int start_irq_index = 1;
-+	unsigned long flags;
-+	unsigned int cpu;
-+	int *irqs, irq;
-+	int err, i = 0, j;
-+
-+	cpus_read_lock();
-+	spin_lock_irqsave(&gc->irq_ctxs_lock, flags);
-+
- 	if (nvec <= num_online_cpus())
- 		start_irq_index = 0;
- 
-@@ -1349,15 +1467,12 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 		goto free_irq_vector;
- 	}
- 
--	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
--				   GFP_KERNEL);
--	if (!gc->irq_contexts) {
--		err = -ENOMEM;
--		goto free_irq_array;
--	}
--
- 	for (i = 0; i < nvec; i++) {
--		gic = &gc->irq_contexts[i];
-+		gic = kcalloc(1, sizeof(struct gdma_irq_context), GFP_KERNEL);
-+		if (!gic) {
-+			err = -ENOMEM;
-+			goto free_irq;
-+		}
- 		gic->handler = mana_gd_process_eq_events;
- 		INIT_LIST_HEAD(&gic->eq_list);
- 		spin_lock_init(&gic->lock);
-@@ -1372,22 +1487,14 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 		irq = pci_irq_vector(pdev, i);
- 		if (irq < 0) {
- 			err = irq;
--			goto free_irq;
-+			goto free_current_gic;
- 		}
- 
- 		if (!i) {
- 			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
- 			if (err)
--				goto free_irq;
--
--			/* If number of IRQ is one extra than number of online CPUs,
--			 * then we need to assign IRQ0 (hwc irq) and IRQ1 to
--			 * same CPU.
--			 * Else we will use different CPUs for IRQ0 and IRQ1.
--			 * Also we are using cpumask_local_spread instead of
--			 * cpumask_first for the node, because the node can be
--			 * mem only.
--			 */
-+				goto free_current_gic;
-+
- 			if (start_irq_index) {
- 				cpu = cpumask_local_spread(i, gc->numa_node);
- 				irq_set_affinity_and_hint(irq, cpumask_of(cpu));
-@@ -1399,36 +1506,104 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 			err = request_irq(irqs[i - start_irq_index], mana_gd_intr, 0,
- 					  gic->name, gic);
- 			if (err)
--				goto free_irq;
-+				goto free_current_gic;
- 		}
-+
-+		list_add_tail(&gic->gic_list, &gc->irq_contexts);
- 	}
- 
--	err = irq_setup(irqs, (nvec - start_irq_index), gc->numa_node);
-+	err = irq_setup(irqs, nvec - start_irq_index, gc->numa_node, 0);
- 	if (err)
- 		goto free_irq;
- 
--	gc->max_num_msix = nvec;
--	gc->num_msix_usable = nvec;
-+	spin_unlock_irqrestore(&gc->irq_ctxs_lock, flags);
- 	cpus_read_unlock();
- 	kfree(irqs);
- 	return 0;
- 
-+free_current_gic:
-+	kfree(gic);
- free_irq:
- 	for (j = i - 1; j >= 0; j--) {
- 		irq = pci_irq_vector(pdev, j);
--		gic = &gc->irq_contexts[j];
--
-+		gic = list_last_entry(&gc->irq_contexts, struct gdma_irq_context, gic_list);
- 		irq_update_affinity_hint(irq, NULL);
- 		free_irq(irq, gic);
-+		list_del(&gic->gic_list);
-+		kfree(gic);
- 	}
--
--	kfree(gc->irq_contexts);
--	gc->irq_contexts = NULL;
--free_irq_array:
- 	kfree(irqs);
- free_irq_vector:
-+	spin_unlock_irqrestore(&gc->irq_ctxs_lock, flags);
- 	cpus_read_unlock();
--	pci_free_irq_vectors(pdev);
-+	return err;
-+}
-+
-+static int mana_gd_setup_hwc_irqs(struct pci_dev *pdev)
-+{
-+	struct gdma_context *gc = pci_get_drvdata(pdev);
-+	unsigned int max_irqs, min_irqs;
-+	int max_queues_per_port;
-+	int nvec, err;
-+
-+	if (pci_msix_can_alloc_dyn(pdev)) {
-+		max_irqs = 1;
-+		min_irqs = 1;
-+	} else {
-+		max_queues_per_port = num_online_cpus();
-+		if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
-+			max_queues_per_port = MANA_MAX_NUM_QUEUES;
-+		/* Need 1 interrupt for the Hardware communication Channel (HWC) */
-+		max_irqs = max_queues_per_port + 1;
-+		min_irqs = 2;
-+	}
-+
-+	nvec = pci_alloc_irq_vectors(pdev, min_irqs, max_irqs, PCI_IRQ_MSIX);
-+	if (nvec < 0)
-+		return nvec;
-+
-+	err = mana_gd_setup_irqs(pdev, nvec);
-+	if (err) {
-+		pci_free_irq_vectors(pdev);
-+		return err;
-+	}
-+
-+	gc->num_msix_usable = nvec;
-+	gc->max_num_msix = nvec;
-+
-+	return err;
-+}
-+
-+static int mana_gd_setup_remaining_irqs(struct pci_dev *pdev)
-+{
-+	struct gdma_context *gc = pci_get_drvdata(pdev);
-+	int max_irqs, i, err = 0;
-+	struct msi_map irq_map;
-+
-+	if (!pci_msix_can_alloc_dyn(pdev))
-+		/* remain irqs are already allocated with HWC IRQ */
-+		return 0;
-+
-+	/* allocate only remaining IRQs*/
-+	max_irqs = gc->num_msix_usable - 1;
-+
-+	for (i = 1; i <= max_irqs; i++) {
-+		irq_map = pci_msix_alloc_irq_at(pdev, i, NULL);
-+		if (!irq_map.virq) {
-+			err = irq_map.index;
-+			/* caller will handle cleaning up all allocated
-+			 * irqs, after HWC is destroyed
-+			 */
-+			return err;
-+		}
-+	}
-+
-+	err = mana_gd_setup_dyn_irqs(pdev, max_irqs);
-+	if (err)
-+		return err;
-+
-+	gc->max_num_msix = gc->max_num_msix + max_irqs;
-+
- 	return err;
- }
- 
-@@ -1436,29 +1611,34 @@ static void mana_gd_remove_irqs(struct pci_dev *pdev)
- {
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
- 	struct gdma_irq_context *gic;
--	int irq, i;
-+	struct list_head *pos, *n;
-+	unsigned long flags;
-+	int irq, i = 0;
- 
- 	if (gc->max_num_msix < 1)
- 		return;
- 
--	for (i = 0; i < gc->max_num_msix; i++) {
-+	spin_lock_irqsave(&gc->irq_ctxs_lock, flags);
-+	list_for_each_safe(pos, n, &gc->irq_contexts) {
- 		irq = pci_irq_vector(pdev, i);
- 		if (irq < 0)
- 			continue;
- 
--		gic = &gc->irq_contexts[i];
-+		gic = list_entry(pos, struct gdma_irq_context, gic_list);
- 
- 		/* Need to clear the hint before free_irq */
- 		irq_update_affinity_hint(irq, NULL);
- 		free_irq(irq, gic);
-+		list_del(pos);
-+		kfree(gic);
-+		i++;
- 	}
-+	spin_unlock_irqrestore(&gc->irq_ctxs_lock, flags);
- 
- 	pci_free_irq_vectors(pdev);
- 
- 	gc->max_num_msix = 0;
- 	gc->num_msix_usable = 0;
--	kfree(gc->irq_contexts);
--	gc->irq_contexts = NULL;
- }
- 
- static int mana_gd_setup(struct pci_dev *pdev)
-@@ -1469,9 +1649,9 @@ static int mana_gd_setup(struct pci_dev *pdev)
- 	mana_gd_init_registers(pdev);
- 	mana_smc_init(&gc->shm_channel, gc->dev, gc->shm_base);
- 
--	err = mana_gd_setup_irqs(pdev);
-+	err = mana_gd_setup_hwc_irqs(pdev);
- 	if (err) {
--		dev_err(gc->dev, "Failed to setup IRQs: %d\n", err);
-+		dev_err(gc->dev, "Failed to setup IRQs for HWC creation: %d\n", err);
- 		return err;
- 	}
- 
-@@ -1487,6 +1667,10 @@ static int mana_gd_setup(struct pci_dev *pdev)
- 	if (err)
- 		goto destroy_hwc;
- 
-+	err = mana_gd_setup_remaining_irqs(pdev);
-+	if (err)
-+		goto destroy_hwc;
-+
- 	err = mana_gd_detect_devices(pdev);
- 	if (err)
- 		goto destroy_hwc;
-@@ -1563,6 +1747,8 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	gc->is_pf = mana_is_pf(pdev->device);
- 	gc->bar0_va = bar0_va;
- 	gc->dev = &pdev->dev;
-+	INIT_LIST_HEAD(&gc->irq_contexts);
-+	spin_lock_init(&gc->irq_ctxs_lock);
- 
- 	if (gc->is_pf)
- 		gc->mana_pci_debugfs = debugfs_create_dir("0", mana_debugfs_root);
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 228603bf03f2..eae38d7302fe 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -363,6 +363,7 @@ struct gdma_irq_context {
- 	spinlock_t lock;
- 	struct list_head eq_list;
- 	char name[MANA_IRQ_NAME_SZ];
-+	struct list_head gic_list;
- };
- 
- struct gdma_context {
-@@ -373,7 +374,9 @@ struct gdma_context {
- 	unsigned int		max_num_queues;
- 	unsigned int		max_num_msix;
- 	unsigned int		num_msix_usable;
--	struct gdma_irq_context	*irq_contexts;
-+	struct list_head	irq_contexts;
-+	/* Protect the irq_contexts list */
-+	spinlock_t		irq_ctxs_lock;
- 
- 	/* L2 MTU */
- 	u16 adapter_mtu;
--- 
-2.34.1
+Thanks
 
+> 
+> Best Regards,
+> Zhu Yanjun
+> 
+> 
+> > 
+> > Thanks,
+> > Daisuke
+> > 
+> > > 
+> > > Thanks
+> > > 
+> > > > 
+> > > > Thanks,
+> > > > Daisuke
+> > > > 
+> > > > On Tue, April 8, 2025 8:12 PM Leon Romanovsky wrote:
+> > > > > On Mon, 24 Mar 2025 16:56:47 +0900, Daisuke Matsuda wrote:
+> > > > > > RDMA FLUSH[1] and ATOMIC WRITE[2] were added to rxe, but they cannot run
+> > > > > > in the ODP mode as of now. This series is for the kernel-side enablement.
+> > > > > > 
+> > > > > > There are also minor changes in libibverbs and pyverbs. The rdma-core tests
+> > > > > > are also added so that people can test the features.
+> > > > > > PR: https://github.com/linux-rdma/rdma-core/pull/1580
+> > > > > > 
+> > > > > > [...]
+> > > > > 
+> > > > > Applied, thanks!
+> > > > > 
+> > > > > [1/2] RDMA/rxe: Enable ODP in RDMA FLUSH operation
+> > > > >        https://git.kernel.org/rdma/rdma/c/32cad6aab9a699
+> > > > > [2/2] RDMA/rxe: Enable ODP in ATOMIC WRITE operation
+> > > > >        https://git.kernel.org/rdma/rdma/c/3e2746e0863f48
+> > > > > 
+> > > > > Best regards,
+> > > > > --
+> > > > > Leon Romanovsky <leon@kernel.org>
+> > > > 
+> 
+> 
 
