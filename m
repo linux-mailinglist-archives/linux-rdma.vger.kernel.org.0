@@ -1,62 +1,95 @@
-Return-Path: <linux-rdma+bounces-9525-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9526-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55DD2A920C2
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Apr 2025 17:04:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C160A920F5
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Apr 2025 17:11:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B339E8A0C36
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Apr 2025 15:04:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBD2F7B27BE
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Apr 2025 15:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4385B2528EA;
-	Thu, 17 Apr 2025 15:04:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61CE025334B;
+	Thu, 17 Apr 2025 15:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r9p3v7ya"
+	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="H3yATVk1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97E0229B15;
-	Thu, 17 Apr 2025 15:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9121B252295
+	for <linux-rdma@vger.kernel.org>; Thu, 17 Apr 2025 15:10:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744902266; cv=none; b=UFtLyqGvddzjf/nKMoMGNSiaGxZXMlbmuHfdYCi1M071TIjJygZPzvDKX8kEG4suGEyFm+Acvr/2JyyRxNBmPh+pkjXLTXm5uOs35cGbgsIq2lNoSMOf6sQe5Od7ZEXdrFN4CVKJOycAk/q5DGRvD13gS/XKMKhMnZB+LUEVGCY=
+	t=1744902658; cv=none; b=dFgPyt9r3vFgssSmi27zwhsd+9PqyW2k0NPOzNtHQzbYqF5TmC7cZg0rW0mZKAuWR8HTzRz/pfq7iNBEwTM2CYbfVzM2rIKGl68Cnw5riqhP63zYCAU93qfJ2HQfuI8lWPiyop67pYdXUredRmVuJiudXbVWBfE6DKu/7qmpc74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744902266; c=relaxed/simple;
-	bh=jhVXuc6kGTl7bQ9u+r90HyPUtrpxat6y+lZDEzh7kqg=;
+	s=arc-20240116; t=1744902658; c=relaxed/simple;
+	bh=LiZgga9x8uNn0x7WdTDXbakOF44Ru5INCev66F2o+Dc=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lelhoMZ8om5M93Ta9sQ39Jt8+iYjxkpscgZI0S3Z2R4hwmcgyvXcOD178aU71gy+ngBanf4zXo4WGHuO4P+xqykJTqMDUuVPk63+esdJgScrw4EFUGR7067z0KojA0xsmwIanV68p4zNKsTKOwqCWLO58sGTamtUJbOQZZFaWBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r9p3v7ya; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4495C4CEE4;
-	Thu, 17 Apr 2025 15:04:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744902264;
-	bh=jhVXuc6kGTl7bQ9u+r90HyPUtrpxat6y+lZDEzh7kqg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=r9p3v7yakwtBoXrdQVoWAjiJv+XoyD2QZsrhctuL3ovZBQ8PxOB0FXXpHFKLhjFB/
-	 mnhp+IeQFQB2Vws6LQsNypbHsZhB5lSjD9JWIcppthXTehZlmCLvN57T8utdYQcqNP
-	 34h5f4i3OnQaEDX6m7GMMuJkzK2KsKttga7HgtrFKdk2B5o0cgRoUUDAwCNK8Gn3NF
-	 TrFdXacO4wF15A9dVmIE9FoL0Dn0lWimMlhXMopixevgHA3QFPlq4ZGVtiRpoPKFOq
-	 rJdK3V/XYNbhcdHq+kJ5u9iic7uUGIKUnQljjvpgg/n+HPeOSTMjURwCPhq1ntWPnq
-	 ahXHILaUwO8zg==
-Date: Thu, 17 Apr 2025 08:04:22 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: Henry Martin <bsdhenrymartin@gmail.com>, saeedm@nvidia.com,
- leon@kernel.org, tariqt@nvidia.com, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- michal.swiatkowski@linux.intel.com, amirtz@nvidia.com,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/2] net/mlx5: Move ttc allocation after switch case
- to prevent leaks
-Message-ID: <20250417080422.6a22ff04@kernel.org>
-In-Reply-To: <817d5a9f-63c0-40b2-8e97-4a29185c0455@nvidia.com>
-References: <20250416092243.65573-1-bsdhenrymartin@gmail.com>
-	<20250416092243.65573-3-bsdhenrymartin@gmail.com>
-	<817d5a9f-63c0-40b2-8e97-4a29185c0455@nvidia.com>
+	 MIME-Version:Content-Type; b=JAsaq5LqmKVBDSY4L296UVe9Upfo5vlF2hb3YynJdvaeZC5HQDGJV0j6sMbUnQafvUAnZol9cvMDpczboQ5XyYN+QcbQrBoKow37ZpLjq2Fkp6gyWUpXQi4qnioaXC/o8JrSuFkQGDLTbJ/fwqqPAeTEgQ+PUI1l9oBBEDRRxWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org; spf=pass smtp.mailfrom=networkplumber.org; dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b=H3yATVk1; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-22401f4d35aso12205705ad.2
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Apr 2025 08:10:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1744902655; x=1745507455; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LiZgga9x8uNn0x7WdTDXbakOF44Ru5INCev66F2o+Dc=;
+        b=H3yATVk10aZqoRI+w4nNhDNAcSrm+D72kf09ipil/lhZBQVG98+L9kHkPcmnSnwazQ
+         2l2q7/rcLpNyHl7W14wjQCbWN87G0IAsm+Yej1cduBZyRY+bLzSw3rdEYxijZFieiE5K
+         4p9sZvZQrU1T5YW0n/Phw1rSXkT4kX9Je/Pl622+TtYHoFzbnncoMrFYet2UFNdX7dEZ
+         Kp5GDmv6d0PucyJocp1zYdAefTVH68d510dC+sFSGKo4O3dpzsf/SX5osPX6hm1NRhbn
+         mn8Q/7MwclR7BEHoMAaKF+jTuamIjIVUOtP2h2aefp90oQRbxnCBj4UUds3GxtLFjNgk
+         ZaBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1744902655; x=1745507455;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LiZgga9x8uNn0x7WdTDXbakOF44Ru5INCev66F2o+Dc=;
+        b=ctHIuG4CcWklytz5XMod+h/mrj41IAbTsslklx+KvcgHVXzY0w5H0p2JrlaUftPUPt
+         kopcSDNM5W0lAk8wK6hIsVtSqQKv0UQ/6nn182KpE03illk6XmnhbT4rBL4wPCjMjd76
+         rkpWhS6N1409dpvtZ+dlX38jMln2Vu0++gaTikuRHXuUZQDXbMTInfsAUUUB4NhfSH/9
+         fd6oGnQgG7pBjYRkNUrn35ihcgu67fJdoKAe9cmM1UlsmYaF88mJyfURpvYTfV3VmPOX
+         GTRN3uScDzRMBownAPIMpAQcz5Eb3h+6Og+2A/2VqtBU3YTm0/Qjf7bgU6Bj1AOpor/R
+         sEOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUDXiGBL6SRW0rpOtts+wve/SisZC7T/S+kaqhoK5d53VQLXkU+eTF5h24r58cD2kHk2RgzDAVQv/+U@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz86aUJlTqcHInkoDvxvrMeQbL379Q6iMc3HSBa3uas1FSxUeaa
+	UCR7lEiHiXRTIZXuefXAG6G8RRJT2uEmx6KIYAVa1v8Wzcwp+Ejz9QETrnNNKyU=
+X-Gm-Gg: ASbGncs6QQPUYLrW2pZS6huxdzwd6ZxEmwDpG3ThTKdvMzCqffcAJVBj1yOYcHNYbM/
+	FcN4gqAIdl+yKouADb12/fhl6XONesNK498WyQF7e+Do12O25ftwSzZGa++mq5X6IeOVIiSVsLM
+	SjOz0n19FPpXv4jglX7oy0Pum0+/vqAjkq/HHnRW19XWwBuG9JRutYJ68pYqXXNalzhAmfMbtQI
+	bjJxBdGgkTMoDuDBjDWgvf/Bo/DUyfVGePRz40M8V9AhVTs2DgqsalZlCgaRuZ6NZDialX2MZ+u
+	kulAYxF/0dug60AfYT7ULLbGA7QU07JhCpI0ssimdCBhE5K1A94oiQAyck2Dl9ppAH0+1oZn0XK
+	zUPyJELFuOGLrcPBn
+X-Google-Smtp-Source: AGHT+IHIP5FBpE6QRyj07ov+jrBL6Cb9idEsBOVjWQ1/IColpF0qdvEnnkroDFpHC82/JIDmUgRLTQ==
+X-Received: by 2002:a17:902:f642:b0:220:c813:dfd1 with SMTP id d9443c01a7336-22c359734c3mr102186955ad.36.1744902655602;
+        Thu, 17 Apr 2025 08:10:55 -0700 (PDT)
+Received: from hermes.local (204-195-96-226.wavecable.com. [204.195.96.226])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73bd21c210esm12348763b3a.41.2025.04.17.08.10.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Apr 2025 08:10:55 -0700 (PDT)
+Date: Thu, 17 Apr 2025 08:10:53 -0700
+From: Stephen Hemminger <stephen@networkplumber.org>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+ kent.overstreet@linux.dev, brett.creeley@amd.com,
+ schakrabarti@linux.microsoft.com, shradhagupta@linux.microsoft.com,
+ ssengar@linux.microsoft.com, rosenp@gmail.com, paulros@microsoft.com,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 2/3] net: mana: Add sched HTB offload support
+Message-ID: <20250417081053.5b563a92@hermes.local>
+In-Reply-To: <1744876630-26918-3-git-send-email-ernis@linux.microsoft.com>
+References: <1744876630-26918-1-git-send-email-ernis@linux.microsoft.com>
+	<1744876630-26918-3-git-send-email-ernis@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -66,20 +99,15 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 16 Apr 2025 15:02:13 +0300 Mark Bloch wrote:
-> On 16/04/2025 12:22, Henry Martin wrote:
-> > Relocate the memory allocation for ttc table after the switch statement
-> > that validates params->ns_type in both mlx5_create_inner_ttc_table() and
-> > mlx5_create_ttc_table(). This ensures memory is only allocated after
-> > confirming valid input, eliminating potential memory leaks when invalid
-> > ns_type cases occur.
-> 
-> Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+On Thu, 17 Apr 2025 00:57:09 -0700
+Erni Sri Satya Vennela <ernis@linux.microsoft.com> wrote:
 
-A bit hard to see from the context but I'm guessing this fixes 
-a memory leak? We need a Fixes tag..
+> Introduce support for HTB qdisc offload in the mana ethernet
+> controller. This controller can offload only one HTB leaf.
+> The HTB leaf supports clamping the bandwidth for egress traffic.
+> It uses the function mana_set_bw_clamp(), which internally calls
+> a HWC command to the hardware to set the speed.
 
-reminder: please trim your replies
--- 
-pw-bot: cr
+A single leaf is just Token Bucket Filter (TBF).
+Are you just trying to support some vendor config?
 
