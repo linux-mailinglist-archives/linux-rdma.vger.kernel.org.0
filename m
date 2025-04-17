@@ -1,79 +1,143 @@
-Return-Path: <linux-rdma+bounces-9527-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9528-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF00DA92B31
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Apr 2025 20:58:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 937D5A92BEA
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Apr 2025 21:45:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C10D2188F3CB
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Apr 2025 18:57:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B22294A12DA
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Apr 2025 19:45:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB35257430;
-	Thu, 17 Apr 2025 18:56:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA940204F8D;
+	Thu, 17 Apr 2025 19:45:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LBZcVT+6"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Th1gFQW4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B27471CAA99;
-	Thu, 17 Apr 2025 18:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8F4204879;
+	Thu, 17 Apr 2025 19:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744916188; cv=none; b=gfQrF8UqzTjhJuPC+dnOSMEDO5RKhm4vqc10fH+PExaz4Zbe/S7AaNc1IfcdXw8oKQ/VFwXAM7lbNmnaoV9Iv2PiLmcIWq/wKfbZHnF59iQP2MnMzoLJrP6+9c2H0E09T/DJtzTmBAZCZMvOtjo0etVKX93ugDbrB+KeZlmeWUo=
+	t=1744919103; cv=none; b=WYgMTVY+MWvl29rAoKtA5atIU57W2QCs5aVnBgR17A5iNd5yMY+Mn/CMQo7yuUkJopB+rkZQ0JOEcZdvQb/vFzB9/WxcIIZMKnaW7OE0zcy9AWlcG6hiFhIxOaBzoBy/XuQhmbrzG5epnC+buGyUKWIB0M4l0sIN3jShOvZglhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744916188; c=relaxed/simple;
-	bh=WihgnsYkRics16oBTaeftRWOzimPo5NgaFpCm+Ogawc=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=qT6xqo/fBXtyRGrmZPbFOc9+7ASwnPn1IRcXtcgXF1OEhBLAcbhp07PvnIxf/a28qbqQBvOKVdv7AomYZpMf0dTNulRAozDGqKmgPwQOErLVjTJ41lm9jtpDgnQmMidHSH2MB60HCrqqDVcIhGn1vhtxZIINA3CHQEGJlzUx6Qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LBZcVT+6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93407C4CEE7;
-	Thu, 17 Apr 2025 18:56:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1744916188;
-	bh=WihgnsYkRics16oBTaeftRWOzimPo5NgaFpCm+Ogawc=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=LBZcVT+60FpVk9ucTRqlz088ZBy30wYF6YTWOKezVH1cY3/vZJf6ex2ZZIMVKyO2c
-	 /7o9zAVGd0HlStl5meO9JuzIw+uDSpb8S+WHhgAp0/oht83OuqsmJuXO470BJRiin4
-	 us0LvEnIhW3PxxhSfeCZjyJIsPGyP3/qUvXlZnOEn3IwRF5373JHpNeQHz0fpK9R22
-	 VCDJhxEFqB8JGLMvVPO4M8TqHEFZkPnSq5V8gORwRcqgfdvP1vX64wcyrIEFEI5Zu4
-	 kyjkw4kOlE9HLBagk8EaKxBUgL4Pr4rCNEi49jTNjDu/Ow5FpmRM0io1For8yFf7Gq
-	 51gf2+Kz04QGg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EBC85380AAEB;
-	Thu, 17 Apr 2025 18:57:07 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull FWCTL subsystem changes
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20250417123610.GA1213102@nvidia.com>
-References: <20250417123610.GA1213102@nvidia.com>
-X-PR-Tracked-List-Id: <linux-cxl.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20250417123610.GA1213102@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus-fwctl
-X-PR-Tracked-Commit-Id: c92ae5d4f53ebf9c32ace69c1f89a47e8714d18b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e2516abf1c88212d98af889070123469c28ca2fe
-Message-Id: <174491622658.4184086.1128830653739484820.pr-tracker-bot@kernel.org>
-Date: Thu, 17 Apr 2025 18:57:06 +0000
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-rdma@vger.kernel.org, linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>, Saeed Mahameed <saeedm@nvidia.com>
+	s=arc-20240116; t=1744919103; c=relaxed/simple;
+	bh=FxUZyivBdVS2oSK3H4VoSVL5wuRT3fWrY3NbttPNQQg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GVcF0fN6m1kHbsAMwIQAHkayintiRanHRakSmqUoB72iF8dtEFjynYGuCr1UrDaZ5HKwU9RYxEuY2Ouu+/0xBTBDYE5XAFX8rM550ZJZ8Vh2YepYyT1u/QXxre/pB5CDiOKGgtijvFtQveHA2Oc6CsUY9WwXMMo0v2eQQu3EVLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Th1gFQW4; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id 2E34D20BCAD1; Thu, 17 Apr 2025 12:44:56 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2E34D20BCAD1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1744919096;
+	bh=vLe6OeCxggQNm3o2MQZoR4n2oTMye2yNJP2beKF7Zvk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Th1gFQW47n6EuMZzL/mopyZIZytQ1LGMVazI12IqEoU1jrqOc59ydvb9FjDOSChwb
+	 qgniW4eOzYaTvkA8wMu/4na8Ga1IBTxybx5nA8QzhFamt7EWA1H04k2uRL6vfJuO9w
+	 DNgLeLNxnHiZ3pM8myUWXLx7GfkWd2HgJ22DH2ZA=
+Date: Thu, 17 Apr 2025 12:44:56 -0700
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+	kent.overstreet@linux.dev, brett.creeley@amd.com,
+	schakrabarti@linux.microsoft.com, shradhagupta@linux.microsoft.com,
+	ssengar@linux.microsoft.com, rosenp@gmail.com,
+	paulros@microsoft.com, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 1/3] net: mana: Add speed support in
+ mana_get_link_ksettings
+Message-ID: <20250417194456.GA10777@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1744876630-26918-1-git-send-email-ernis@linux.microsoft.com>
+ <1744876630-26918-2-git-send-email-ernis@linux.microsoft.com>
+ <b1e513f8-2e0d-4b09-aa10-02b7b593d3c9@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b1e513f8-2e0d-4b09-aa10-02b7b593d3c9@linux.dev>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-The pull request you sent on Thu, 17 Apr 2025 09:36:10 -0300:
-
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus-fwctl
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e2516abf1c88212d98af889070123469c28ca2fe
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+On Thu, Apr 17, 2025 at 03:38:26PM +0200, Zhu Yanjun wrote:
+> On 17.04.25 09:57, Erni Sri Satya Vennela wrote:
+> >Add support for speed in mana ethtool get_link_ksettings
+> >operation. This feature is not supported by all hardware.
+> >
+> >Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+> >Reviewed-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> >Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+> >---
+> >  drivers/net/ethernet/microsoft/mana/mana_en.c | 42 +++++++++++++++++++
+> >  .../ethernet/microsoft/mana/mana_ethtool.c    |  6 +++
+> >  include/net/mana/mana.h                       | 17 ++++++++
+> >  3 files changed, 65 insertions(+)
+> >
+> >diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> >index 2bac6be8f6a0..ba550fc7ece0 100644
+> >--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> >+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> >@@ -1156,6 +1156,48 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+> >  	return err;
+> >  }
+> >+int mana_query_link_cfg(struct mana_port_context *apc)
+> >+{
+> >+	struct net_device *ndev = apc->ndev;
+> >+	struct mana_query_link_config_resp resp = {};
+> >+	struct mana_query_link_config_req req = {};
+> >+	int err;
+> >+
+> >+	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_LINK_CONFIG,
+> >+			     sizeof(req), sizeof(resp));
+> >+
+> >+	req.vport = apc->port_handle;
+> >+
+> >+	err = mana_send_request(apc->ac, &req, sizeof(req), &resp,
+> >+				sizeof(resp));
+> >+
+> >+	if (err) {
+> >+		netdev_err(ndev, "Failed to query link config: %d\n", err);
+> >+		goto out;
+> >+	}
+> >+
+> >+	err = mana_verify_resp_hdr(&resp.hdr, MANA_QUERY_LINK_CONFIG,
+> >+				   sizeof(resp));
+> >+
+> >+	if (err || resp.hdr.status) {
+> >+		netdev_err(ndev, "Failed to query link config: %d, 0x%x\n", err,
+> >+			   resp.hdr.status);
+> >+		if (!err)
+> >+			err = -EPROTO;
+> 
+> EPROTO means Protocol error. Thus, ENOTSUPP or EPROTONOSUPPORT is better?
+> 
+> Zhu Yanjun
+Thank you for the suggestion, Zhu Yanjun. I will also make this change
+in mana_set_bw_clamp(). This update will be included in the next version
+of the patch.
+> 
+> >+		goto out;
+> >+	}
+> >+
+> >+	if (resp.qos_unconfigured) {
+> >+		err = -EINVAL;
+> >+		goto out;
+> >+	}
+> >+	apc->speed = resp.link_speed_mbps;
+> >+	return 0;
+> >+
+> >+out:
+> >+	return err;
+> >+}
+> >+
 
