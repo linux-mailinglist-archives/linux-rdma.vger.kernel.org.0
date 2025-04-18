@@ -1,122 +1,141 @@
-Return-Path: <linux-rdma+bounces-9588-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9589-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AE34A93721
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 14:32:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD363A93822
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 15:57:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52F8C8A6A13
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 12:32:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 760D819E6F03
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 13:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33161275113;
-	Fri, 18 Apr 2025 12:32:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2155D86347;
+	Fri, 18 Apr 2025 13:57:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AG4qW+0i"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WNP8cqt9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B6126B2D0;
-	Fri, 18 Apr 2025 12:32:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3864626AF6;
+	Fri, 18 Apr 2025 13:57:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744979555; cv=none; b=AoC0fHXvX00gmKPTOyrt8LJEbOOtl74nDgr1v2MYCyfi5HLkaLEsP/cQHbJYpzh5THJeE4SN6QwYHuvlTiSpCxrQTl1sG8kAlmiW7o03X3EzTiKIKjL8U3KUrXTsYXxYnfFmzAHWQmHaB5M7i1rWmZCcewXbs/IyI4l5XuuDP0w=
+	t=1744984632; cv=none; b=JV+flHJFkwN43qUeAbA4wmI8GNTUqB5ArfBFeLDAw/+DNB9pozaKoepuZCbBtAf+qthb2qGBlx+j6LbNGpsYVyqONwSErYIor3h4F69vm/1K0R8TG0r4b/TVGau07KcW74vKaSCs3sUgr3UZUBP6fp85aZboyqwpDURpXsn0uG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744979555; c=relaxed/simple;
-	bh=fi1DbYhlrqF0U7IzqDP/M+/r8vdH95UNS8kWonbjyGg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KIoZhD7Ffg+M/xPJWapzig5LnZlDBmnFwb1A28LzfMaVvQ6WzJsT4ZgDCzZKJCmHEW608XXt0z+40IDuqLLiJIxTdy2AtkTdrYWrK/z1Va8WIBp5RTOaeTugf9+H5DebNpKS6ecAxkEaWqygH7IElXDPE+WemuVbi0I6XqGBb04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AG4qW+0i; arc=none smtp.client-ip=209.85.210.173
+	s=arc-20240116; t=1744984632; c=relaxed/simple;
+	bh=M1J+HEG/+RbHresZiOLUaBEB9usWhr+brK6Uv6YmGuI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pT5OLP9y+tHc3j9AGrPEJf/aEHr8dmOih5ri4CxngCDQWoKXJnWtPnfoH+vdSVLK0RLGZJV+gmQEVACPsjIsvhXAFZW2VPNlKoJblEre4+Ru2+WsDiHIA7damZZY184UnV5kF+Nz6istHxL60dyxgSWQp1fs2FXzaqu4fAKlu/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WNP8cqt9; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-736a72220edso1749800b3a.3;
-        Fri, 18 Apr 2025 05:32:34 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-39ee651e419so1073659f8f.3;
+        Fri, 18 Apr 2025 06:57:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1744979554; x=1745584354; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4uxNqOBD/ogCW1O0rrQ2A0HcfFujRPCySOpF/YO01oA=;
-        b=AG4qW+0iMjdDMp9h8+u/8MODMx2ZhRnrNeqNWksxxmnvYLNp1sN4cPNqgxJBWkQHHw
-         6ja9kaz4Q5fz4VjSFoqmUKZeGQbCa5MpqyumvCPwfXpggT9WqPVXrihSm6janzBMx1CX
-         QahHls910enJIkb/u6kPH7kZ9EqesycJDcnqFE0q+OOiA3HMPiOVjVeakoi/lbPr4Cjd
-         OH3ErFFt9pia9G3CJL80MeQHQRPI40Y0lC78IBPn165jnjxBbcTiPNLFYjPB6FrNnIQQ
-         OZEpshOMLzwQFEUo4i4UG9KzJMrFW9AIXX/IL3hoMw5zYNyxzSTxDyk9XU+zwlcGeNY3
-         2rNg==
+        d=gmail.com; s=20230601; t=1744984629; x=1745589429; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pjwQaxw7qvIWiHL1ddPDt7WaKRitJMZ/zA3QII0Kk40=;
+        b=WNP8cqt9NDbQcgsL4dy9JEVSvW64qFz/j9LdwWqftHqisCrVzxsI168EBhUPJdv8ou
+         GwoyaBtFjQ2s7aUgqMSUolZ5sljq7L74RfwiNOnHADUc0vPnRt/9Md7b4pXylQ8lsVc1
+         mNtRFRG3TJAZvoKSnxfo72n8Z7VHCcRTilbSQZI7kFcn9J/Syd6zEB2LKigFJE4pJsNI
+         Ak+/LNkPJlMISjkgbEtqTX56AOBnnQXI+re/b+4JSwqqPQ7KHtCzECSg3zegiBfoCULi
+         WPWyDwaotQhN/+weu6CFvTg4dvJK7gSWvbIfs0Bx/ICimgm4MhruXFpQ5KVWsBaddH1w
+         1o0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744979554; x=1745584354;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1744984629; x=1745589429;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4uxNqOBD/ogCW1O0rrQ2A0HcfFujRPCySOpF/YO01oA=;
-        b=vRmpnqsDdwES8Ved1XXA5WUyZ10QGRrfzKC7wL3blLScA8gKL5v/MChN//vVrA58JX
-         PjzAE4lZkddCOZn7MnP3IOQ2LYM/gYYp7Ht06SJCdFHCqweGYynyQ5LcPVk3+LqNBEGI
-         nfVOhDuuv635V/J2tVPFk2JgChEeufkmiafBUro3mG948rWOeWmzVipinSCsOmOaQXU5
-         v8oZ/7P6l3zq4qLXCYRGN06eJp/5AV19PIs4V5ksGZOohlP1xEVY934cbAlRz/oKDS5t
-         fGR7AbxWu9NwDyxLeqga8HbNv3RZ3K9OYBGaksOWM47Mxgf6MD/RvHko6vsJ8cYLNaEy
-         6CzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU20zLeXPB6GHQ2HsaK94sCZjgarLZMO/rUlfvYKDUbvUXJhMceLe2uGCrH1Rrb5m1146TokGcTkJ8vxtQ=@vger.kernel.org, AJvYcCWTnfrUz8cv0ZcTGkQumsnERYk9lbIbL4WUP/5Dr6x49QCDiwTyAEFZ2i+aQBTsGnKTcB/RTnkd+Ht5DA==@vger.kernel.org, AJvYcCWdV06fK+ZAcwDMQvkyDhOH3GBiXD9UptK+gwwd9kbw3U+jFwcnfhckNRfVvzmH4Fj94KY=@vger.kernel.org, AJvYcCWu25HxhOwetbOX2cRRICTSRLul3OhmhQfq8b+6qSBpGOzodaY4rCV6B62MQHS8a9oK3jkn0ZoW1Oqd@vger.kernel.org, AJvYcCXUgGTrkNaeV1NRXsKeQuskAw/PFFcRNiB7ojigcp9xA8oHm9qxjNedjcZBfg1EGI9WeyoFxcVe2af8swZL@vger.kernel.org, AJvYcCXZYDcsUiaWnvJKYozdMCulF7X59X7RJV2i4AUqdK4JEV4vGK2c+4o5AzgJHt4cuqSs6vqZ0XaJ9xEQ@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywwe1rsioiPYtQHWizUlzgI4WF5R0IfOLDoO16JpxiBcx/gR2gE
-	+0tqo2v6GT1CgKTiv1QV8DkQ+fAE5beAuCg8uMfoO5sxpdUuM35UQ4MMXjaWZk0B1PFyeXG8SvN
-	tgEost9lgnBY6YGHrFMONnhDQJ4w=
-X-Gm-Gg: ASbGnctUBpR+gUSetI7U5hzaGXrS3uz79DnUr/DNOUwx3Bf5/joR9nuD2B4BvIjq1Rs
-	O5BCvJUlt9JUUp0K3EF9UlJJFcV7bWGvhPZqT7c0ocqvWAzcfl+KiD4ryHSx318uij79oWZjx+7
-	0c2dFb/ojfP3WnyGglLH6TOtwjh+nMA/px9LL7b6Ro/glkvc6LB+zYPzaC
-X-Google-Smtp-Source: AGHT+IE6KPLtDnTScFEtJJlvCdwmMFGgLV6Sh+PZ7MHmYiMb3jtvP1cSpc1ynbu9LO+7GJYkCunnvOZCbjH4BPDTV0s=
-X-Received: by 2002:a17:90b:2e03:b0:2fc:c262:ef4b with SMTP id
- 98e67ed59e1d1-3087bb6f117mr4849982a91.18.1744979553652; Fri, 18 Apr 2025
- 05:32:33 -0700 (PDT)
+        bh=pjwQaxw7qvIWiHL1ddPDt7WaKRitJMZ/zA3QII0Kk40=;
+        b=Ck5HmCNYPJEqSINk63l6LofJdlp3z4A7nX9GoANqNN1+0zW0HKsbFCRpcK4JFY/QCy
+         Ype7vUZ5h1/9yxp1JWfP5uWS99lSv2lyzAml0RYLLg5C6pvUPl5HJQAf1AZYvdiL2jlq
+         XL8ECzQOI+EQEUdlvVxcMgTWt2zBSXImdMaPpgilV4EZXwspMKDTb5PP6RnkIQCJVEc6
+         VvQ0DGa4Jvz2JvDbJVCD+LizGmW8ybp2K8NeweQH4ZJlTVFXXJM3b5118PGf1ADwdyHy
+         YdBrmbjoWqkpxPFA/cONsGLQZETaGPUsS520qpodr6yPYN8ebnjvHSKzyVcbAULUjtJI
+         56BQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUBX7y66sK8E/rCp/Zp5pit22AmL9bh/iJz5BM3bM4zbvNaCChaVa9h6vJzrQ3ybE7b7+siUsbnIkcNGcw=@vger.kernel.org, AJvYcCWnFoZoVSu5rU19rUGDoTp0w64gUeKNAAcqeGi8fuzf6JrMo1REmKyyiG3bnLjoI+lAOEEvFaLre/sCiA==@vger.kernel.org, AJvYcCX+Y63UV40az2JYtcUo+gFcS0YzsZK3qoqZmSKnIHFOFZ8oeFBVrYyXhU5cQOfWBCJL7EYSwMyd@vger.kernel.org
+X-Gm-Message-State: AOJu0YwTuRqpmcdwhRRJkrv6WoyQ1r31K3Hnf44iOdSBlcQAFnnrGCiH
+	ETi8SLtjYiYZIKAJPJoq3PLt5ZN4CwdSsACtaNQHCBKpKX8ItlO1
+X-Gm-Gg: ASbGncsu/hYhYRxwS5HRDXKyq+9wEQn/+854Vn8i9wJAdMXQzKnyKEJMHt1XLdDfj+V
+	Cp0KmoeW343AwkvRO1Z+zWE8iZ72RgHJkXctsf1O3uFEKInBGZzSqOmRvth6XEK5uguKD59SfWz
+	wDYr7EiiKOUupU6QxDtOxICUsYTsYb9pF4auLWdaCAk5gLbeu5e0hIkazV4+W1pYIg5K9BQf8Zh
+	g/oercY3OdF3/Afzl8R6odurCUeDqpCCMSrJRbhODzrRLcB7nFMbPKWao0dO4okcHXGYZXShJ5L
+	+7v8OQNfNrdoa6slJjoBBI4S8JkmX73EluSRzjZajA==
+X-Google-Smtp-Source: AGHT+IGOCmx88KzajYEEKdGxHIUJKniSfSXDMIJYHXoKksSP+94n5CJtBnYpPk64rQWba/lPtP/2yQ==
+X-Received: by 2002:a5d:588b:0:b0:39c:dfa:e1bb with SMTP id ffacd0b85a97d-39efbae03damr2112686f8f.42.1744984629232;
+        Fri, 18 Apr 2025 06:57:09 -0700 (PDT)
+Received: from localhost ([194.120.133.58])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-39efa4207c5sm2812269f8f.6.2025.04.18.06.57.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Apr 2025 06:57:08 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net/mlx5: Fix spelling mistakes in mlx5_core_dbg message and comments
+Date: Fri, 18 Apr 2025 14:57:03 +0100
+Message-ID: <20250418135703.542722-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1744825142.git.leon@kernel.org> <670389227a033bd5b7c5aa55191aac9943244028.1744825142.git.leon@kernel.org>
- <1284adf3-7e93-4530-9921-408c5eaeb337@kernel.org>
-In-Reply-To: <1284adf3-7e93-4530-9921-408c5eaeb337@kernel.org>
-From: Kanchan Joshi <joshiiitr@gmail.com>
-Date: Fri, 18 Apr 2025 18:02:08 +0530
-X-Gm-Features: ATxdqUGyYBEsfK-IN2nZn9q0XDVh1xSRZINsNgbIk6fSYXOiPXAs6WAhmbL1EUw
-Message-ID: <CA+1E3r+9kEs-fqND-VD+y6FWfiGqr1vN8M0GufD3oHdwLdFcrQ@mail.gmail.com>
-Subject: Re: [PATCH v8 24/24] nvme-pci: optimize single-segment handling
-To: Damien Le Moal <dlemoal@kernel.org>
-Cc: Leon Romanovsky <leon@kernel.org>, Marek Szyprowski <m.szyprowski@samsung.com>, 
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>, 
-	Kanchan Joshi <joshi.k@samsung.com>, Jake Edge <jake@lwn.net>, Jonathan Corbet <corbet@lwn.net>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <zyjzyj2000@gmail.com>, Robin Murphy <robin.murphy@arm.com>, 
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Logan Gunthorpe <logang@deltatee.com>, 
-	Yishai Hadas <yishaih@nvidia.com>, 
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>, Kevin Tian <kevin.tian@intel.com>, 
-	Alex Williamson <alex.williamson@redhat.com>, =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org, 
-	kvm@vger.kernel.org, linux-mm@kvack.org, 
-	Niklas Schnelle <schnelle@linux.ibm.com>, Chuck Lever <chuck.lever@oracle.com>, 
-	Luis Chamberlain <mcgrof@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
-	Dan Williams <dan.j.williams@intel.com>, Chaitanya Kulkarni <kch@nvidia.com>, 
-	Nitesh Shetty <nj.shetty@samsung.com>, Leon Romanovsky <leonro@nvidia.com>, vishak.g@samsung.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-> > +     if (nr_segments == 1 && (iod->flags & IOD_SINGLE_SEGMENT)) {
->
-> nvme_pci_setup_prps() calls nvme_try_setup_prp_simple() which sets
-> IOD_SINGLE_SEGMENT if and only if the req has a single phys segment. So why do
-> you need to count the segments again here ? Looking at the flag only should be
-> enough, no ?
+There is a spelling mistake in a mlx5_core_dbg and two spelling mistakes
+in comment blocks. Fix them.
 
-Yes, the flag will be enough.
-I started with nr_segments first, but felt the need of a flag when I
-reached to handle the unmap part.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-This can be changed if the series requires an iteration.
-Or I can do this as part of the cleanup which I anyway need to do to
-replace the "iod->aborted" field with a flag.
-
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
+index 2c5f850c31f6..40024cfa3099 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
+@@ -148,7 +148,7 @@ int mlx5_set_msix_vec_count(struct mlx5_core_dev *dev, int function_id,
+  * Free the IRQ and other resources such as rmap from the system.
+  * BUT doesn't free or remove reference from mlx5.
+  * This function is very important for the shutdown flow, where we need to
+- * cleanup system resoruces but keep mlx5 objects alive,
++ * cleanup system resources but keep mlx5 objects alive,
+  * see mlx5_irq_table_free_irqs().
+  */
+ static void mlx5_system_free_irq(struct mlx5_irq *irq)
+@@ -588,7 +588,7 @@ static void irq_pool_free(struct mlx5_irq_pool *pool)
+ 	struct mlx5_irq *irq;
+ 	unsigned long index;
+ 
+-	/* There are cases in which we are destrying the irq_table before
++	/* There are cases in which we are destroying the irq_table before
+ 	 * freeing all the IRQs, fast teardown for example. Hence, free the irqs
+ 	 * which might not have been freed.
+ 	 */
+@@ -617,7 +617,7 @@ static int irq_pools_init(struct mlx5_core_dev *dev, int sf_vec, int pcif_vec,
+ 	if (!mlx5_sf_max_functions(dev))
+ 		return 0;
+ 	if (sf_vec < MLX5_IRQ_VEC_COMP_BASE_SF) {
+-		mlx5_core_dbg(dev, "Not enught IRQs for SFs. SF may run at lower performance\n");
++		mlx5_core_dbg(dev, "Not enough IRQs for SFs. SF may run at lower performance\n");
+ 		return 0;
+ 	}
+ 
 -- 
-Kanchan
+2.49.0
+
 
