@@ -1,100 +1,115 @@
-Return-Path: <linux-rdma+bounces-9591-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9592-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50FCDA93B66
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 18:54:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF2C3A93B82
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 18:59:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B3C01609D6
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 16:53:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D3C51B63211
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 16:59:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15519217654;
-	Fri, 18 Apr 2025 16:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A23217654;
+	Fri, 18 Apr 2025 16:59:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ga/b4ojU"
+	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="TQuw6YfR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66A15213E9E;
-	Fri, 18 Apr 2025 16:53:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827661DED51;
+	Fri, 18 Apr 2025 16:58:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744995206; cv=none; b=Zmayoz5ch/IQkbSwdwiwx+Ab0/6/Jc+bKajP/eBrPVgAVx9yQea3CqydptyqyYzs/wAKuClkxcfAemWHeUlJ5SUtJcOrhrxqlA2FjxUAncLHQ6wqRo/mAnSY0UIxELreCEfQp0+G3cJwZQmn4NkGEECH7Gp9wkLat1ugy8sv+FY=
+	t=1744995540; cv=none; b=KyQnKL3vDyiF5qv3fmkuccOxpKbq/GXg2Hnv1roNWEJIMh1D/VW+i21nH/yd9ZyMbf8PQtSaO9oUuqzyVxtadU8CjjFeAkJ6L2xoK0hlYD9+pPH535GpQ3IBZcqH8nVEunKQG2LGDdr8OJfU5AdWepdWfEfeo1I25g5ckxYiL5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744995206; c=relaxed/simple;
-	bh=exTIgXjJdCABXxTkzYn/2Ovpwzs3X3ewU7W/+ycUNHc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=demjfjy8b5Rv0LTHJ+U+mFthzhTDyA/rmiD+vCdkHV/wMXvx4s1rUNKUp4EuPJJB2w8viC2H0ceo6kGGqMR+lwZbaheteVKw7RTLY+FpwgSjNDw3/3IiD0HW7DTAfGh0OOvlfLxhRihY5g0SVQ4klK/oGVFLDRxDPsuRUUqKXz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ga/b4ojU; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id DC7A120BCAD3; Fri, 18 Apr 2025 09:53:24 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DC7A120BCAD3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1744995204;
-	bh=yUVkC+qkj2B+tc0UOA8AEbtaoBN1fnZq0f+cJiGEOqY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ga/b4ojUwKlgLisp7ry7fLE4qbXrfFnFq1WdsA1Jq6KefCewpc345ZxQFrdKiNrB5
-	 npKlAqo5OZvlE/62hdE2U1E9j6hQikRB/MSLUURl1xK2rwQzEcHCyskWvzkkpNYI0N
-	 zxzPmcwgMI1fO1QTcDRVQ6NmdV6PTc2S52rmSe6U=
-Date: Fri, 18 Apr 2025 09:53:24 -0700
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Stephen Hemminger <stephen@networkplumber.org>, kys@microsoft.com,
-	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
-	pabeni@redhat.com, longli@microsoft.com, kotaranov@microsoft.com,
-	horms@kernel.org, kent.overstreet@linux.dev, brett.creeley@amd.com,
-	schakrabarti@linux.microsoft.com, shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com, rosenp@gmail.com,
-	paulros@microsoft.com, linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 2/3] net: mana: Add sched HTB offload support
-Message-ID: <20250418165324.GA29127@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1744876630-26918-1-git-send-email-ernis@linux.microsoft.com>
- <1744876630-26918-3-git-send-email-ernis@linux.microsoft.com>
- <20250417081053.5b563a92@hermes.local>
- <20250417194727.GB10777@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20250417170052.76e52039@kernel.org>
+	s=arc-20240116; t=1744995540; c=relaxed/simple;
+	bh=YuieveFQEJfb2rcfvgxQOFP+2Ifx7N0h6QGFaucg3y0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G/eAtoeMywB1m2dFspw8Myxl8t0OWOAYp62R0C4aIyGb3TyUhtEeRSDAZTmHxfJpZN8Eyi+mSFJ58Nc1lYBIvzPYeW57IJ4O1yIGqjpzZaF6meh4gB9ZEUCP/C226BPVZXLfLIxP4wRCf60mdusyJ1MjGW63juKLUzTDnt5iaJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=TQuw6YfR; arc=none smtp.client-ip=46.235.229.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+	; s=bytemarkmx; h=MIME-Version:Message-ID:Date:Subject:From:Content-Type:From
+	:Subject; bh=/OgtTc412tjBo6QhgpjDnYCLoiKFP5p333DRr7idVO8=; b=TQuw6YfRDeyhwnlP
+	sTYM8Y34XBM+UbZGH5QCxUvG/Ahhls1WvC7iOb2PdzwPTNDe5G3xKj5LuWSdFspRfpkhzzaTaAKxw
+	3GadZFz2xQEA24M/+zknCmpvQoq0/FjpU0nTTFHAQEy1l5Ntm8iB5gJF8wXrHIpIjxumHiSqwGAg/
+	JMeCTEx8T/pFt5VNMhMMhrWUGfsJNgPd9u+kB30q0Tyovc2hY6nkiBQF/Un1MigDJywnPPyGL2mhX
+	074CX/637VcoUwCKR91AzhDobixDKHdcPggqIA61MPPYDs2vTkShpO0sJOzZLR1FiDn1y0SfqKYzn
+	Oq+pcyZFRI0aLDrQTQ==;
+Received: from localhost ([127.0.0.1] helo=dalek.home.treblig.org)
+	by mx.treblig.org with esmtp (Exim 4.96)
+	(envelope-from <linux@treblig.org>)
+	id 1u5p3A-00CYD3-23;
+	Fri, 18 Apr 2025 16:58:48 +0000
+From: linux@treblig.org
+To: jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Dr. David Alan Gilbert" <linux@treblig.org>
+Subject: [PATCH] RDMA/cma: Remove unused rdma_res_to_id
+Date: Fri, 18 Apr 2025 17:58:48 +0100
+Message-ID: <20250418165848.241305-1-linux@treblig.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250417170052.76e52039@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 17, 2025 at 05:00:52PM -0700, Jakub Kicinski wrote:
-> On Thu, 17 Apr 2025 12:47:27 -0700 Erni Sri Satya Vennela wrote:
-> > > A single leaf is just Token Bucket Filter (TBF).
-> > > Are you just trying to support some vendor config?  
-> > TBF does not support hardware offloading.
-> 
-> Did you take a look at net_shapers? Will it not let you set a global
-> config the way you intend?
-Yes, Jakub. I have reviewed net-shapers and noted that it is not
-integrated into the kernel like tc. I mean there isn't a standard,
-general-purpose command for net-shaper in Linux. It is used by other
-tools or potentially device-specific drivers that want to leverage the
-NIC's hardware shaping capabilities.
+From: "Dr. David Alan Gilbert" <linux@treblig.org>
 
-To configure shaping with net-shapers, users would need to execute a
-command similar to:
+The last use of rdma_res_to_id() was removed in 2020 by
+commi t211cd9459fda ("RDMA: Add dedicated CM_ID resource tracker function")
 
-./tools/net/ynl/cli.py --spec Documentation/netlink/specs/shaper.yaml
---do set --json '{"ifindex":'$IFINDEX', 
-		  "shaper": {"handle": 
-			    {"scope": "node", "id":'$NODEID' },
-		  "bw-max": 2000000}}'
+Remove it.
 
-Ref: https://lore.kernel.org/all/cover.1722357745.git.pabeni@redhat.com/
+Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+---
+ drivers/infiniband/core/cma.c | 13 -------------
+ include/rdma/rdma_cm.h        |  1 -
+ 2 files changed, 14 deletions(-)
 
-Given the simplicity of code implementation and ease of use for users in
-writing commands, I opted for tc-htb.
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index ab31eefa916b..e6cc289fd859 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -146,19 +146,6 @@ struct iw_cm_id *rdma_iw_cm_id(struct rdma_cm_id *id)
+ }
+ EXPORT_SYMBOL(rdma_iw_cm_id);
+ 
+-/**
+- * rdma_res_to_id() - return the rdma_cm_id pointer for this restrack.
+- * @res: rdma resource tracking entry pointer
+- */
+-struct rdma_cm_id *rdma_res_to_id(struct rdma_restrack_entry *res)
+-{
+-	struct rdma_id_private *id_priv =
+-		container_of(res, struct rdma_id_private, res);
+-
+-	return &id_priv->id;
+-}
+-EXPORT_SYMBOL(rdma_res_to_id);
+-
+ static int cma_add_one(struct ib_device *device);
+ static void cma_remove_one(struct ib_device *device, void *client_data);
+ 
+diff --git a/include/rdma/rdma_cm.h b/include/rdma/rdma_cm.h
+index 8a8ab2f793ab..d1593ad47e28 100644
+--- a/include/rdma/rdma_cm.h
++++ b/include/rdma/rdma_cm.h
+@@ -388,6 +388,5 @@ void rdma_read_gids(struct rdma_cm_id *cm_id, union ib_gid *sgid,
+ 		    union ib_gid *dgid);
+ 
+ struct iw_cm_id *rdma_iw_cm_id(struct rdma_cm_id *cm_id);
+-struct rdma_cm_id *rdma_res_to_id(struct rdma_restrack_entry *res);
+ 
+ #endif /* RDMA_CM_H */
+-- 
+2.49.0
+
 
