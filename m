@@ -1,77 +1,86 @@
-Return-Path: <linux-rdma+bounces-9539-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9540-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 949FAA93162
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 07:16:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 641D7A9323D
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 08:48:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1753D7B2D81
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 05:15:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F41B019E6DE1
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 06:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD942686AD;
-	Fri, 18 Apr 2025 05:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB7B269817;
+	Fri, 18 Apr 2025 06:48:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="ftubNnim"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GJSIxSDv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com [68.232.139.117])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A558F254871;
-	Fri, 18 Apr 2025 05:16:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.139.117
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D46268C5D;
+	Fri, 18 Apr 2025 06:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744953399; cv=none; b=IRcwis4hYFjM7RqMlX2oc+zP/70nqenK64E9y15C1mUxgbd4rtNZxOvu3l+qAH0EZtUBWvVqClsZd+lWPS+241l01uQNOOfVeM1qhnKGrx/XDGtywBq5dx1T0J3kSjFRd0xWBs4FK1CB+69LMsDfXsE0sY4KmlB0H4ca8iF1xJw=
+	t=1744958885; cv=none; b=EWviBafNFjT2O2Pou2Si2Ef6JGwfxxUUMB0+kg6Ne+NwAqtVJaqbxlzizHnQGPwQw8ECkeFoY5EDkrfG9qdAD8Odcr0KiDE5ELgL5xLw9L4rolte9lMS+t9ABe7Klryj1BmtSjzkTi/LO3ns0Jk4aha2e4vbx1x93jfryGXTsfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744953399; c=relaxed/simple;
-	bh=JPaQbiGkfB0H2Re4l0sZ4huyVLiMzmYBWls8aB0/Swk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EmyK8gvNjMluGxKjC7CILzNxenNIbVi0ltjLdBHslpKCWq9BzWYhKrbK0sfURdVSGEQuaorJvOe4Dwm7FbWVSA+liKVPWxZv6RvMa2vzfRyHL8ib56uLZR9yEWfwPHggv2TnZNb1T4pUM99JyVVl2cM4uR2SuDaXe9P06mOc1FQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=ftubNnim; arc=none smtp.client-ip=68.232.139.117
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1744953398; x=1776489398;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=JPaQbiGkfB0H2Re4l0sZ4huyVLiMzmYBWls8aB0/Swk=;
-  b=ftubNnim2GRrZInjZD5kvVnArIgzBWYzSDv/dvsjSX3mKcoAWs6NdwqS
-   3beXOIBoKvxq/S6C6dA2Zvf2E0sJT8TyNkOQlMmJO9wqRfEGcD6YolBt9
-   W7UgOfJscdiIU3cQCeafb8rrF+sQFoMyf8N84aooT2cTOIRgOoE3EdYiX
-   A4HslQsJmGsw4nZo/FY0peE1zgxtqdWtkLlexZvaM+AsMoXPVoMi9V0Q0
-   xNRuxEpC2MJPTGckVQrKSoRj5dvsoZrbusHEZwNe5+kk9LFg5wLASJJcI
-   jVHi2IdeoG6ZSV62b+ai7aVZXCJ9paMU5qXiZ5OrDAosvoJzbAQ1tR7WF
-   g==;
-X-CSE-ConnectionGUID: GGDRpp7OQn2FQ6yqwgzq+Q==
-X-CSE-MsgGUID: spam444rS9OuqcPcTBvFcg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11406"; a="197221582"
-X-IronPort-AV: E=Sophos;i="6.15,221,1739804400"; 
-   d="scan'208";a="197221582"
-Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
-  by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2025 14:15:33 +0900
-Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com [192.168.87.59])
-	by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 031A7C2260;
-	Fri, 18 Apr 2025 14:15:31 +0900 (JST)
-Received: from m3004.s.css.fujitsu.com (m3004.s.css.fujitsu.com [10.128.233.124])
-	by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id C43CBBDA46;
-	Fri, 18 Apr 2025 14:15:30 +0900 (JST)
-Received: from sm-x86-stp01.ssoft.mng.com (unknown [10.124.178.20])
-	by m3004.s.css.fujitsu.com (Postfix) with ESMTP id 5E0712005376;
-	Fri, 18 Apr 2025 14:15:30 +0900 (JST)
-From: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-To: linux-rdma@vger.kernel.org,
-	leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-kernel@vger.kernel.org,
-	Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Subject: [PATCH for-next 1/1] RDMA/core: Move ODP capability definitions to uapi
-Date: Fri, 18 Apr 2025 14:13:45 +0900
-Message-Id: <20250418051345.1022339-2-matsuda-daisuke@fujitsu.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20250418051345.1022339-1-matsuda-daisuke@fujitsu.com>
-References: <20250418051345.1022339-1-matsuda-daisuke@fujitsu.com>
+	s=arc-20240116; t=1744958885; c=relaxed/simple;
+	bh=DGkoMyJIcMPpKlYnzpDqa/4uwSNSFDah9Owf2oNqmpE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UjwAByqncfwHee1vMzVB/X4FzbBvUchbNzFGvRsD6LgLw2lAiX2mCIFYuIMJ+WxYCDXRCoJA0LOuHDrHlu40+dYUzdU27ocb7Ptz6HC1qLQU8okq0KhbRaKAs4bisEovPieao6polhRrDLh2NV4/Aroy2N2Lz8pz6loA1RSCEM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GJSIxSDv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B1D3C4CEE2;
+	Fri, 18 Apr 2025 06:48:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744958885;
+	bh=DGkoMyJIcMPpKlYnzpDqa/4uwSNSFDah9Owf2oNqmpE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=GJSIxSDvgq+9ZvGeymuFRkaOROIjc8gRFeJ0Dv7dI5t0nMr4jn7jT5nH6tY56L8IA
+	 NvLSoBW/EtpdnLCLhJVl+ZeySj2cFIV4f84QAqy1BBeLo2LKc4dOisR0X+7y6e2xzg
+	 zhB7b4iHj+utPVdSxtBSS/LhZaudqrQLjihVu8J4nhDnKu7wbUWF6w763IBsPAhDQC
+	 NhoPt93GVKDwRGWc35FzocEUINzdXcR6SMCKfocfeIAMC7b3etpi4+gEaTcqv5pKLn
+	 Y6kfdTVK8xV8hrxEMZF3KyQkv9UmaMCHucu52Ayhg91e+7Hr7sLD1b0D3Txz3OOh0D
+	 AW3l0zhh4RDXw==
+From: Leon Romanovsky <leon@kernel.org>
+To: Marek Szyprowski <m.szyprowski@samsung.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>,
+	Keith Busch <kbusch@kernel.org>
+Cc: Jake Edge <jake@lwn.net>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org,
+	linux-pci@vger.kernel.org,
+	kvm@vger.kernel.org,
+	linux-mm@kvack.org,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Kanchan Joshi <joshi.k@samsung.com>,
+	Chaitanya Kulkarni <kch@nvidia.com>
+Subject: [PATCH v8 00/24] Provide a new two step DMA mapping API
+Date: Fri, 18 Apr 2025 09:47:30 +0300
+Message-ID: <cover.1744825142.git.leon@kernel.org>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -80,77 +89,202 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The bits are used from both kernel space and userland, so they should be
-placed in UAPI.
+Following recent on site LSF/MM 2025 [1] discussion, the overall
+response was extremely positive with many people expressed their
+desire to see this series merged, so they can base their work on it.
 
-Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
----
- include/rdma/ib_verbs.h           | 20 ++++++++++----------
- include/uapi/rdma/ib_user_verbs.h | 16 ++++++++++++++++
- 2 files changed, 26 insertions(+), 10 deletions(-)
+It includes, but not limited:
+ * Luis's "nvme-pci: breaking the 512 KiB max IO boundary":
+   https://lore.kernel.org/all/20250320111328.2841690-1-mcgrof@kernel.org/
+ * Chuck's NFS conversion to use one structure (bio_vec) for all types
+   of RPC transports:
+   https://lore.kernel.org/all/913df4b4-fc4a-409d-9007-088a3e2c8291@oracle.com
+ * Matthew's vision for the world without struct page:
+   https://lore.kernel.org/all/20250320111328.2841690-1-mcgrof@kernel.org/
+ * Confidential computing roadmap from Dan:
+   https://lore.kernel.org/all/6801a8e3968da_71fe29411@dwillia2-xfh.jf.intel.com.notmuch
 
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 0a7ccd08b365..b06a0ed81bdd 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -314,19 +314,19 @@ enum ib_atomic_cap {
- };
- 
- enum ib_odp_general_cap_bits {
--	IB_ODP_SUPPORT		= 1 << 0,
--	IB_ODP_SUPPORT_IMPLICIT = 1 << 1,
-+	IB_ODP_SUPPORT		= IB_UVERBS_ODP_SUPPORT,
-+	IB_ODP_SUPPORT_IMPLICIT = IB_UVERBS_ODP_SUPPORT_IMPLICIT,
- };
- 
- enum ib_odp_transport_cap_bits {
--	IB_ODP_SUPPORT_SEND	= 1 << 0,
--	IB_ODP_SUPPORT_RECV	= 1 << 1,
--	IB_ODP_SUPPORT_WRITE	= 1 << 2,
--	IB_ODP_SUPPORT_READ	= 1 << 3,
--	IB_ODP_SUPPORT_ATOMIC	= 1 << 4,
--	IB_ODP_SUPPORT_SRQ_RECV	= 1 << 5,
--	IB_ODP_SUPPORT_FLUSH	= 1 << 6,
--	IB_ODP_SUPPORT_ATOMIC_WRITE	= 1 << 7,
-+	IB_ODP_SUPPORT_SEND	= IB_UVERBS_ODP_SUPPORT_SEND,
-+	IB_ODP_SUPPORT_RECV	= IB_UVERBS_ODP_SUPPORT_RECV,
-+	IB_ODP_SUPPORT_WRITE	= IB_UVERBS_ODP_SUPPORT_WRITE,
-+	IB_ODP_SUPPORT_READ	= IB_UVERBS_ODP_SUPPORT_READ,
-+	IB_ODP_SUPPORT_ATOMIC	= IB_UVERBS_ODP_SUPPORT_ATOMIC,
-+	IB_ODP_SUPPORT_SRQ_RECV	= IB_UVERBS_ODP_SUPPORT_SRQ_RECV,
-+	IB_ODP_SUPPORT_FLUSH	= IB_UVERBS_ODP_SUPPORT_FLUSH,
-+	IB_ODP_SUPPORT_ATOMIC_WRITE	= IB_UVERBS_ODP_SUPPORT_ATOMIC_WRITE,
- };
- 
- struct ib_odp_caps {
-diff --git a/include/uapi/rdma/ib_user_verbs.h b/include/uapi/rdma/ib_user_verbs.h
-index e16650f0c85d..3b7bd99813e9 100644
---- a/include/uapi/rdma/ib_user_verbs.h
-+++ b/include/uapi/rdma/ib_user_verbs.h
-@@ -233,6 +233,22 @@ struct ib_uverbs_ex_query_device {
- 	__u32 reserved;
- };
- 
-+enum ib_uverbs_odp_general_cap_bits {
-+	IB_UVERBS_ODP_SUPPORT          = 1 << 0,
-+	IB_UVERBS_ODP_SUPPORT_IMPLICIT = 1 << 1,
-+};
-+
-+enum ib_uverbs_odp_transport_cap_bits {
-+	IB_UVERBS_ODP_SUPPORT_SEND     = 1 << 0,
-+	IB_UVERBS_ODP_SUPPORT_RECV     = 1 << 1,
-+	IB_UVERBS_ODP_SUPPORT_WRITE    = 1 << 2,
-+	IB_UVERBS_ODP_SUPPORT_READ     = 1 << 3,
-+	IB_UVERBS_ODP_SUPPORT_ATOMIC   = 1 << 4,
-+	IB_UVERBS_ODP_SUPPORT_SRQ_RECV = 1 << 5,
-+	IB_UVERBS_ODP_SUPPORT_FLUSH    = 1 << 6,
-+	IB_UVERBS_ODP_SUPPORT_ATOMIC_WRITE     = 1 << 7,
-+};
-+
- struct ib_uverbs_odp_caps {
- 	__aligned_u64 general_caps;
- 	struct {
+This series is combination of effort of many people who contributed ideas,
+code and testing and I'm gratefully thankful for them.
+
+[1] https://lore.kernel.org/linux-rdma/20250122071600.GC10702@unreal/
+-----------------------------------------------------------------------
+Changelog:
+v8:
+ * Rebased to v6.15-rc1
+ * Added NVMe patches which are now patches and not RFC. They were in
+   RFC stage because block iterator caused to performance regression
+   for very extreme case scenario (~100M IOPS), but after Kanchan fixed
+   it, the code started to be ready for merging.
+ * @Niklas, i didn't change naming in this series as it follows iommu
+   naming format.
+v7:
+ * Rebased to v6.14-rc1
+v6: https://lore.kernel.org/all/cover.1737106761.git.leon@kernel.org
+ * Changed internal __size variable to u64 to properly set private flag
+   in most significant bit.
+ * Added comment about why we check DMA_IOVA_USE_SWIOTLB
+ * Break unlink loop if phys is NULL, condition which we shouldn't get.
+v5: https://lore.kernel.org/all/cover.1734436840.git.leon@kernel.org
+ * Trimmed long lines in all patches.
+ * Squashed "dma-mapping: Add check if IOVA can be used" into
+   "dma: Provide an interface to allow allocate IOVA" patch.
+ * Added tags from Christoph and Will.
+ * Fixed spelling/grammar errors.
+ * Change title from "dma: Provide an  ..." to be "dma-mapping: Provide
+   an ...".
+ * Slightly changed hmm patch to set sticky flags in one place.
+v4: https://lore.kernel.org/all/cover.1733398913.git.leon@kernel.org
+ * Added extra patch to add kernel-doc for iommu_unmap and iommu_unmap_fast
+ * Rebased to v6.13-rc1
+ * Added Will's tags
+v3: https://lore.kernel.org/all/cover.1731244445.git.leon@kernel.org
+ * Added DMA_ATTR_SKIP_CPU_SYNC to p2p pages in HMM.
+ * Fixed error unwind if dma_iova_sync fails in HMM.
+ * Clear all PFN flags which were set in map to make code.
+   more clean, the callers anyway cleaned them.
+ * Generalize sticky PFN flags logic in HMM.
+ * Removed not-needed #ifdef-#endif section.
+v2: https://lore.kernel.org/all/cover.1730892663.git.leon@kernel.org
+ * Fixed docs file as Randy suggested
+ * Fixed releases of memory in HMM path. It was allocated with kv..
+   variants but released with kfree instead of kvfree.
+ * Slightly changed commit message in VFIO patch.
+v1: https://lore.kernel.org/all/cover.1730298502.git.leon@kernel.org
+ * Squashed two VFIO patches into one
+ * Added Acked-by/Reviewed-by tags
+ * Fix docs spelling errors
+ * Simplified dma_iova_sync() API
+ * Added extra check in dma_iova_destroy() if mapped size to make code more clear
+ * Fixed checkpatch warnings in p2p patch
+ * Changed implementation of VFIO mlx5 mlx5vf_add_migration_pages() to
+   be more general
+ * Reduced the number of changes in VFIO patch
+v0: https://lore.kernel.org/all/cover.1730037276.git.leon@kernel.org
+
+----------------------------------------------------------------------------
+ LWN coverage:
+Dancing the DMA two-step - https://lwn.net/Articles/997563/
+----------------------------------------------------------------------------
+
+Currently the only efficient way to map a complex memory description through
+the DMA API is by using the scatterlist APIs. The SG APIs are unique in that
+they efficiently combine the two fundamental operations of sizing and allocating
+a large IOVA window from the IOMMU and processing all the per-address
+swiotlb/flushing/p2p/map details.
+
+This uniqueness has been a long standing pain point as the scatterlist API
+is mandatory, but expensive to use. It prevents any kind of optimization or
+feature improvement (such as avoiding struct page for P2P) due to the
+impossibility of improving the scatterlist.
+
+Several approaches have been explored to expand the DMA API with additional
+scatterlist-like structures (BIO, rlist), instead split up the DMA API
+to allow callers to bring their own data structure.
+
+The API is split up into parts:
+ - Allocate IOVA space:
+    To do any pre-allocation required. This is done based on the caller
+    supplying some details about how much IOMMU address space it would need
+    in worst case.
+ - Map and unmap relevant structures to pre-allocated IOVA space:
+    Perform the actual mapping into the pre-allocated IOVA. This is very
+    similar to dma_map_page().
+
+In this series, examples of three different users are converted to the new API
+to show the benefits and its versatility. Each user has a unique
+flow:
+ 1. RDMA ODP is an example of "SVA mirroring" using HMM that needs to
+    dynamically map/unmap large numbers of single pages. This becomes
+    significantly faster in the IOMMU case as the map/unmap is now just
+    a page table walk, the IOVA allocation is pre-computed once. Significant
+    amounts of memory are saved as there is no longer a need to store the
+    dma_addr_t of each page.
+ 2. VFIO PCI live migration code is building a very large "page list"
+    for the device. Instead of allocating a scatter list entry per allocated
+    page it can just allocate an array of 'struct page *', saving a large
+    amount of memory.
+ 3. NVMe PCI demonstrates how a BIO can be converted to a HW scatter
+    list without having to allocate then populate an intermediate SG table.
+
+To make the use of the new API easier, HMM and block subsystems are extended
+to hide the optimization details from the caller. Among these optimizations:
+ * Memory reduction as in most real use cases there is no need to store mapped
+   DMA addresses and unmap them.
+ * Reducing the function call overhead by removing the need to call function
+   pointers and use direct calls instead.
+
+This step is first along a path to provide alternatives to scatterlist and
+solve some of the abuses and design mistakes.
+
+The whole series together with two extra patches (to fix broken -rc1) is
+here https://git.kernel.org/pub/scm/linux/kernel/git/leon/linux-rdma.git dma-split-Apr-8
+
+Thanks
+
+Christoph Hellwig (12):
+  PCI/P2PDMA: Refactor the p2pdma mapping helpers
+  dma-mapping: move the PCI P2PDMA mapping helpers to pci-p2pdma.h
+  iommu: generalize the batched sync after map interface
+  iommu/dma: Factor out a iommu_dma_map_swiotlb helper
+  dma-mapping: add a dma_need_unmap helper
+  docs: core-api: document the IOVA-based API
+  block: share more code for bio addition helper
+  block: don't merge different kinds of P2P transfers in a single bio
+  blk-mq: add scatterlist-less DMA mapping helpers
+  nvme-pci: remove struct nvme_descriptor
+  nvme-pci: use a better encoding for small prp pool allocations
+  nvme-pci: convert to blk_rq_dma_map
+
+Kanchan Joshi (1):
+  nvme-pci: optimize single-segment handling
+
+Leon Romanovsky (11):
+  iommu: add kernel-doc for iommu_unmap and iommu_unmap_fast
+  dma-mapping: Provide an interface to allow allocate IOVA
+  dma-mapping: Implement link/unlink ranges API
+  mm/hmm: let users to tag specific PFN with DMA mapped bit
+  mm/hmm: provide generic DMA managing logic
+  RDMA/umem: Store ODP access mask information in PFN
+  RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page
+    linkage
+  RDMA/umem: Separate implicit ODP initialization from explicit ODP
+  vfio/mlx5: Explicitly use number of pages instead of allocated length
+  vfio/mlx5: Rewrite create mkey flow to allow better code reuse
+  vfio/mlx5: Enable the DMA link API
+
+ Documentation/core-api/dma-api.rst   |  71 +++
+ block/bio.c                          |  83 ++--
+ block/blk-merge.c                    | 183 +++++++-
+ drivers/infiniband/core/umem_odp.c   | 250 ++++------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  12 +-
+ drivers/infiniband/hw/mlx5/odp.c     |  65 +--
+ drivers/infiniband/hw/mlx5/umr.c     |  12 +-
+ drivers/infiniband/sw/rxe/rxe_odp.c  |  18 +-
+ drivers/iommu/dma-iommu.c            | 468 ++++++++++++++++---
+ drivers/iommu/iommu.c                |  84 ++--
+ drivers/nvme/host/pci.c              | 655 ++++++++++++++-------------
+ drivers/pci/p2pdma.c                 |  38 +-
+ drivers/vfio/pci/mlx5/cmd.c          | 375 ++++++++-------
+ drivers/vfio/pci/mlx5/cmd.h          |  35 +-
+ drivers/vfio/pci/mlx5/main.c         |  87 ++--
+ include/linux/blk-mq-dma.h           |  62 +++
+ include/linux/blk_types.h            |   2 +
+ include/linux/dma-map-ops.h          |  54 ---
+ include/linux/dma-mapping.h          |  85 ++++
+ include/linux/hmm-dma.h              |  33 ++
+ include/linux/hmm.h                  |  21 +
+ include/linux/iommu.h                |   4 +
+ include/linux/pci-p2pdma.h           |  84 ++++
+ include/rdma/ib_umem_odp.h           |  25 +-
+ kernel/dma/direct.c                  |  44 +-
+ kernel/dma/mapping.c                 |  18 +
+ mm/hmm.c                             | 264 ++++++++++-
+ 27 files changed, 2060 insertions(+), 1072 deletions(-)
+ create mode 100644 include/linux/blk-mq-dma.h
+ create mode 100644 include/linux/hmm-dma.h
+
 -- 
-2.43.0
+2.49.0
 
 
