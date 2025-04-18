@@ -1,167 +1,186 @@
-Return-Path: <linux-rdma+bounces-9581-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9583-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3DE4A934F8
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 10:57:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8883EA93656
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 13:15:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 616B97B20D2
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 08:56:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07DE31B6374D
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Apr 2025 11:15:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 471CA26FDA2;
-	Fri, 18 Apr 2025 08:56:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0028270EAA;
+	Fri, 18 Apr 2025 11:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P93zCPaH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7FF126FA42
-	for <linux-rdma@vger.kernel.org>; Fri, 18 Apr 2025 08:56:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574D71FF1D1
+	for <linux-rdma@vger.kernel.org>; Fri, 18 Apr 2025 11:15:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744966616; cv=none; b=f4MOvNjyWmBhcdh2GaG1MozT1Pn1rsS9ZAMSFu9WE+C1yGSvuk1XXjbgmpk9HMlSRz6xlZLi8sY+Wde7B7WNeSy8aEpAi7npeYoo5WTKZWPVlP0wxw4CSPb700hDb3ad/8oSB9NfOrP7lLuXPJh5I49df8z10B4IQJ6y9flXbrU=
+	t=1744974939; cv=none; b=rn171l107/nVUypHBdM7qEg+Hy5LYTps2z+M+uzFihUuErPwtOsFKPzbe8modNdOqhPS4ZZDHhKgswZwA1Gb13HFXEZj+gJJKFCnY6nfsQ3vrkHq1AwYYXolirOGtlGyAuwywI6ud+QWiT/Qwc7sEDdD3ciMkD6GR1DV6Gl8NF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744966616; c=relaxed/simple;
-	bh=Pucp2291KbU0bVfQOllrLMwriXWi6Ruy4xwCQzDob1Y=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=C3gegWrN915fZ6QMomAQi8wbkkFcArBrJWyqXHrRv8Hrxzva4VGD4rHJ2SD2O90ZivZ0UF1BFQ411BJ5bcvleDXCR97yinkU1n/tVG7lWd7NWmkGVKxIibha8KKysFoJm9qZ/8EkocYJPrJt2Vq57InQ+EcXHaOfFfjcP4wV1+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Zf7t05pdTz2TRxy;
-	Fri, 18 Apr 2025 16:56:40 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id DB5F4140296;
-	Fri, 18 Apr 2025 16:56:50 +0800 (CST)
-Received: from localhost.localdomain (10.50.165.33) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 18 Apr 2025 16:56:50 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<huangjunxian6@hisilicon.com>, <tangchengchang@huawei.com>
-Subject: [PATCH for-next 6/6] RDMA/hns: Add trace for CMDQ dumping
-Date: Fri, 18 Apr 2025 16:56:47 +0800
-Message-ID: <20250418085647.4067840-7-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20250418085647.4067840-1-huangjunxian6@hisilicon.com>
-References: <20250418085647.4067840-1-huangjunxian6@hisilicon.com>
+	s=arc-20240116; t=1744974939; c=relaxed/simple;
+	bh=20XmkWmT+udXa1q0BYsLFmyMzXv5/rdc3ze4pTfdOj8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t6nh1Gh4qqlScIA1SXD3i4a18ed1esaEQ7C2suJqOmXAdx6f4FgDQdXtxTOAkcN3qxEyexI76CXOStw7wcmvkxWB8Y09BUTSSCw4ejiXnMYqyHoGpnIbrEPmAJg8KFL6ddaiPeNd6LhzOWwy4wJfBBSHq9lZ4uAKE8o2DOVhD2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P93zCPaH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F18DC4CEE2;
+	Fri, 18 Apr 2025 11:15:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1744974938;
+	bh=20XmkWmT+udXa1q0BYsLFmyMzXv5/rdc3ze4pTfdOj8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=P93zCPaHWNAZunq1qqtW98MKbXMVmokTx0IC6doM2oECw+U9u+aYmG+8hhLeJnOiD
+	 Q+KaZvrQUOik6hS25ykJIuSKYXFAJJZ0ziQSHYNZBWtWq7qHF+CRMlxOmFC5S7IVbq
+	 RtbK4MXSqlL6UGW73O0819BJGTsMI8z0/L7ENppvXugsAl2/4R7Gi1x5HBT458ptlP
+	 4JmNGi0JeJGxcnDMP1l/Kgs0tNnLxPB4gzOkbq4y++a8tznfzarHG2mEWDqdrrF5w3
+	 5JGFDPrrJg1iU8PsUWZ74t7BpDP+bkAST+7RtmPqTlZkTlEsHkhvNAL3XJAYUchl6d
+	 uEkLSK6RQf4gA==
+Date: Fri, 18 Apr 2025 14:15:33 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>
+Cc: Zhu Yanjun <yanjun.zhu@linux.dev>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH for-next v3 0/2] RDMA/rxe: RDMA FLUSH and ATOMIC WRITE
+ with ODP
+Message-ID: <20250418111533.GA199604@unreal>
+References: <20250324075649.3313968-1-matsuda-daisuke@fujitsu.com>
+ <174411071857.217309.12836295631004196048.b4-ty@kernel.org>
+ <OS3PR01MB986530139AE70B2D0BB6C111E5B62@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+ <20250411175528.GX199604@unreal>
+ <OS3PR01MB9865CBFAA8DAA73AA42C6D95E5B32@OS3PR01MB9865.jpnprd01.prod.outlook.com>
+ <8304bc38-7c3b-4e24-ad15-7dcf0eb40fa2@linux.dev>
+ <20250416165834.GZ199604@unreal>
+ <OS3PR01MB9865FB15CEDD78D9FE339DBBE5BF2@OS3PR01MB9865.jpnprd01.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemf100018.china.huawei.com (7.202.181.17)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OS3PR01MB9865FB15CEDD78D9FE339DBBE5BF2@OS3PR01MB9865.jpnprd01.prod.outlook.com>
 
-Add trace for CMDQ dumping.
+On Fri, Apr 18, 2025 at 02:07:49AM +0000, Daisuke Matsuda (Fujitsu) wrote:
+> On Thu, April 17, 2025 1:59 AM Leon Romanovsky wrote:
+> > On Mon, Apr 14, 2025 at 02:56:51PM +0200, Zhu Yanjun wrote:
+> > > On 14.04.25 12:16, Daisuke Matsuda (Fujitsu) wrote:
+> > > > On Sat, April 12, 2025 2:55 AM Leon Romanovsky wrote:
+> > > > > > Hi Leon,
+> > > > > >
+> > > > > > I have noticed the 2nd patch caused "kernel test robot" error, and you
+> > > > > > kindly amended the patch. However, another error has been detected by "the bot"
+> > > > > > because of the remaining fundamental problem that ATOMIC WRITE cannot
+> > > > > > be executed on non-64-bit architectures (at least on rxe).
+> > > > > >
+> > > > > > I think applying the change below to the original patch(*1) will resolve the issue.
+> > > > > > (*1) https://lore.kernel.org/linux-rdma/20250324075649.3313968-3-matsuda-daisuke@fujitsu.com/
+> > > > > > ```
+> > > > > > diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
+> > > > > > index 02de05d759c6..ac3b3039db22 100644
+> > > > > > --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+> > > > > > +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+> > > > > > @@ -380,6 +380,7 @@ int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
+> > > > > >   }
+> > > > > >
+> > > > > >   /* CONFIG_64BIT=y */
+> > > > > > +#ifdef CONFIG_64BIT
+> > > > > >   enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
+> > > > > >   {
+> > > > > >          struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
+> > > > > > @@ -424,3 +425,4 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
+> > > > > >
+> > > > > >          return RESPST_NONE;
+> > > > > >   }
+> > > > > > +#endif
+> > > > > > ```
+> > > > > > The definition of rxe_odp_do_atomic_write() should have been guarded in #ifdef CONFIG_64BIT.
+> > > > > > I believe this fix can address both:
+> > > > > >    - the first error "error: redefinition of 'rxe_odp_do_atomic_write' " that could be caused when
+> > > > > >      CONFIG_INFINIBAND_ON_DEMAND_PAGING=y && CONFIG_64BIT=n.
+> > > > > >    - the second error caused by trying to compile 64-bit codes on 32-bit architectures.
+> > > > > >
+> > > > > > I am very sorry to bother you, but is it possible to make the modification?
+> > > > > > If I should provide a replacement patch, I will do so.
+> > > > >
+> > > > > I think that better will be simply make sure that RXE is dependent on 64bits.
+> > > > >
+> > > > > diff --git a/drivers/infiniband/sw/rxe/Kconfig b/drivers/infiniband/sw/rxe/Kconfig
+> > > > > index c180e7ebcfc5..1ed5b63f8afc 100644
+> > > > > --- a/drivers/infiniband/sw/rxe/Kconfig
+> > > > > +++ b/drivers/infiniband/sw/rxe/Kconfig
+> > > > > @@ -1,7 +1,7 @@
+> > > > >   # SPDX-License-Identifier: GPL-2.0-only
+> > > > >   config RDMA_RXE
+> > > > >          tristate "Software RDMA over Ethernet (RoCE) driver"
+> > > > > -       depends on INET && PCI && INFINIBAND
+> > > > > +       depends on INET && PCI && INFINIBAND && 64BIT
+> > > > >          depends on INFINIBAND_VIRT_DMA
+> > > > >          select NET_UDP_TUNNEL
+> > > > >          select CRC32
+> > > > >
+> > > > > WDYT?
+> > > >
+> > > > It seems the driver is designed to be runnable on 32-bit nodes, so it may be
+> > > > overkill to disable 32-bit mode only for "ATOMIC WRITE" functionality.
+> > > > However, I do not have strong objection to making this change if you
+> > > > think it is better in terms of maintainability.
+> > > >
+> > > > Before making the change, I'd like to get an ACK or NACK from Zhu Yanjun.
+> > > > As far as I am aware, no one is actively maintaining or testing RXE on 32-bit,
+> > > > so it may be acceptable to drop 32-bit support, but it's best to confirm before proceeding.
+> > >
+> > > Hi, Daisuke Matsuda
+> > >
+> > > Thanks a lot for your efforts.
+> > >
+> > > There are some problems with 32-bit architectures, such as Year 2038 problem
+> > > ( many 32-bit systems will stop working in the year 2038 when the 32-bit
+> > > time_t overflows).
+> > >
+> > > And many binary distributions, like Fedora, Ubuntu, and openSUSE Leap, have
+> > > dropped support for all 32-bit architectures other than Armv7 and are likely
+> > > to drop that as well before they would consider rebuilding against a new
+> > > glibc.
+> > >
+> > > In the kernel 6.15, support for larger 32-bit x86 systems (those with more
+> > > than eight CPUs or more than 4GB of RAM) has been removed. Those hardware
+> > > configurations have been unavailable for a long time, and any workloads
+> > > needing such resources should have long since moved to 64-bit systems.
+> > >
+> > > Thus, it seems that it is a trend to not support 32-bit architecture in
+> > > Linux kernel. In rxe, we will also follow this trend.
+> > >
+> > > If some user-space applications still use 32-bit architecture currently, we
+> > > can apply your commit. But from Linux kernel community, sooner or later, the
+> > > support of 32-bit architecture will be dropped.
+> > >
+> > > Finally if some user-space applications still need 32-bit architecture in
+> > > rxe, we can keep it. Or else, we will follow Leon's advice.
+> > >
+> > >
+> > > It is just my 2-cent advice.^_^
+> > >
+> > > Please Jason Gunthorpe or Leon Romanovsky comments on this.
+> > 
+> > At the end RXE is for development, testing and early prototyping. I can't
+> > believe that we have developers who are using 32bits machines for such type
+> > of work in RDMA domain.
+> 
+> Agreed.
+> Could you modify "RDMA/rxe: Enable ODP in ATOMIC WRITE operation"
+> in the tree and change Kconfig as you suggested?
 
-Output example:
-$ cat /sys/kernel/debug/tracing/trace
-  tracer: nop
+Just send separate patch, please.
 
-  entries-in-buffer/entries-written: 2/2   #P:128
-
-                                 _-----=> irqs-off/BH-disabled
-                               / _----=> need-resched
-                               | / _---=> hardirq/softirq
-                               || / _--=> preempt-depth
-                               ||| / _-=> migrate-disable
-                               |||| /     delay
-            TASK-PID     CPU#  |||||  TIMESTAMP  FUNCTION
-               | |         |   |||||     |         |
-  kworker/u512:1-14003   [089] b..1. 50737.238304: cmdq_req: 0000:bd:00.0 cmdq opcode:0x8500, flag:0x1, retval:0x0, data:{0x2,0x0,0x0,0xffff0000,0x32323232,0x0}
-
-  kworker/u512:1-14003   [089] b..1. 50737.238316: cmdq_resp: 0000:bd:00.0 cmdq opcode:0x8500, flag:0x2, retval:0x0, data:{0x2,0x0,0x0,0xffff0000,0x32323232,0x0}
-
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c |  4 +++
- drivers/infiniband/hw/hns/hns_roce_trace.h | 35 ++++++++++++++++++++++
- 2 files changed, 39 insertions(+)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 78d39afb2aa0..db33b4d329d1 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1321,6 +1321,8 @@ static int __hns_roce_cmq_send_one(struct hns_roce_dev *hr_dev,
- 	tail = csq->head;
- 
- 	for (i = 0; i < num; i++) {
-+		trace_cmdq_req(hr_dev, &desc[i]);
-+
- 		csq->desc[csq->head++] = desc[i];
- 		if (csq->head == csq->desc_num)
- 			csq->head = 0;
-@@ -1335,6 +1337,8 @@ static int __hns_roce_cmq_send_one(struct hns_roce_dev *hr_dev,
- 	if (hns_roce_cmq_csq_done(hr_dev)) {
- 		ret = 0;
- 		for (i = 0; i < num; i++) {
-+			trace_cmdq_resp(hr_dev, &csq->desc[tail]);
-+
- 			/* check the result of hardware write back */
- 			desc_ret = le16_to_cpu(csq->desc[tail++].retval);
- 			if (tail == csq->desc_num)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_trace.h b/drivers/infiniband/hw/hns/hns_roce_trace.h
-index 2e60ab5943af..adc3d66ce06c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_trace.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_trace.h
-@@ -12,6 +12,7 @@
- #include <linux/tracepoint.h>
- #include <linux/string_choices.h>
- #include "hns_roce_device.h"
-+#include "hns_roce_hw_v2.h"
- 
- DECLARE_EVENT_CLASS(flush_head_template,
- 		    TP_PROTO(unsigned long qpn, u32 pi,
-@@ -169,6 +170,40 @@ TRACE_EVENT(buf_attr,
- 		      __entry->region2_size, __entry->region2_hopnum)
- );
- 
-+DECLARE_EVENT_CLASS(cmdq,
-+		    TP_PROTO(struct hns_roce_dev *hr_dev,
-+			     struct hns_roce_cmq_desc *desc),
-+		    TP_ARGS(hr_dev, desc),
-+
-+		    TP_STRUCT__entry(__string(dev_name, dev_name(hr_dev->dev))
-+				     __field(u16, opcode)
-+				     __field(u16, flag)
-+				     __field(u16, retval)
-+				     __array(__le32, data, 6)
-+		    ),
-+
-+		    TP_fast_assign(__assign_str(dev_name);
-+				   __entry->opcode = le16_to_cpu(desc->opcode);
-+				   __entry->flag = le16_to_cpu(desc->flag);
-+				   __entry->retval = le16_to_cpu(desc->retval);
-+				   memcpy(__entry->data, desc->data, 6 * sizeof(__le32));
-+		    ),
-+
-+		    TP_printk("%s cmdq opcode:0x%x, flag:0x%x, retval:0x%x, data:%s\n",
-+			      __get_str(dev_name), __entry->opcode,
-+			      __entry->flag, __entry->retval,
-+			      __print_array(__entry->data, 6, sizeof(__le32)))
-+);
-+
-+DEFINE_EVENT(cmdq, cmdq_req,
-+	     TP_PROTO(struct hns_roce_dev *hr_dev,
-+		      struct hns_roce_cmq_desc *desc),
-+	     TP_ARGS(hr_dev, desc));
-+DEFINE_EVENT(cmdq, cmdq_resp,
-+	     TP_PROTO(struct hns_roce_dev *hr_dev,
-+		      struct hns_roce_cmq_desc *desc),
-+	     TP_ARGS(hr_dev, desc));
-+
- #endif /* __HNS_ROCE_TRACE_H */
- 
- #undef TRACE_INCLUDE_FILE
--- 
-2.33.0
-
+> 
+> Thanks,
+> Daisuke
+> 
 
