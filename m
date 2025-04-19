@@ -1,121 +1,139 @@
-Return-Path: <linux-rdma+bounces-9601-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9602-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E6D8A941F9
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Apr 2025 08:45:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26EA1A94239
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Apr 2025 10:08:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3427E18984CB
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Apr 2025 06:45:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EF733BA251
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Apr 2025 08:08:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17C3C18E76B;
-	Sat, 19 Apr 2025 06:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C5619D8A7;
+	Sat, 19 Apr 2025 08:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jpWO06uP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iQqWerl5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77DB72C190
-	for <linux-rdma@vger.kernel.org>; Sat, 19 Apr 2025 06:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081A15464E
+	for <linux-rdma@vger.kernel.org>; Sat, 19 Apr 2025 08:08:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745045093; cv=none; b=bHPfwGenWvvHXX89w06j/7h1jGPlgObz/JeurWCw9GYKSOOHlyegtjNuNQHzu1MTSJqqz0OMy0BDoSn3iVFrRmMSUVpgLbudMlqKg86dSofEFXNM64CcarOSptRp4FWc/Yjk98FLQGFgOcodbtaeIQbUtpOxb06AcPxbA6OW7VA=
+	t=1745050092; cv=none; b=FFHnK0EteagS7ujIz3EOIxKcy0uZx5+K7nWqmSfimdlLKuZfGT8pLSVAZHwLt7CpqYLYqZXNe/zX3Xx4Cj0odEpl+ZksS1b7i+dh/JuXhHIYig/xNrUbrHwvujuSVHVkhrtuwJL3NSqIMTqO24LzFk/aBa56msEy2WWd1DxIJ30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745045093; c=relaxed/simple;
-	bh=f/wUfOx93l3R/ve9eoN8A0lUZqgqMMvyIXEZA4V9Kik=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BPT8tWeEDVZ65htaKYZrSY9ucArXpW46T+uALmq13KhdmlJ/8iT9owtvFarwtfc9ZLmN707KKX4Ue/SEa+h+GMrHZ7s+V8/pU26OE3AmuAI/0v9xM8n/Ux+TkEtXirRJUbhwMtTXSLYblBccWc7BuuXwEYhOXKw6/2JoXlQk+HQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jpWO06uP; arc=none smtp.client-ip=91.218.175.174
+	s=arc-20240116; t=1745050092; c=relaxed/simple;
+	bh=K6YFzXUwQeQldYem8LdfD3W5awEz0Rfcm3VD6XUTgAI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OlQ9+RorwW63JBIwl8+v79bj5H+Z+i8ea5SdvkA2L/pk5Qh2Zw6RYa4JLvFnaSRkBkYMHOfdQcjAWxQfZBP+1eLIKnGvP5r4z0osjbGZkGCy1EHIXEKXG6tvh5cMcNsxqiT6nBXlFjIuqKRzwGYjKsPUkzHzFtiZq4kc0SzDYwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iQqWerl5; arc=none smtp.client-ip=95.215.58.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <7ca8fd94-da46-40ad-8ced-31fe033ee100@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1745045079;
+	t=1745050084;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A8BRY2zacbXxHIh4qRZFRRrjEw4oANmnG8Oe151M0EY=;
-	b=jpWO06uPRYMJSoqh7zR7KHARG/+pqiE75E6TeMgLuT+dU8oQ2t6PF39qgYzf2/wLIwbdpF
-	ACIVnC06GgiZKtenEsjHo+J0HkOud4Zz+ArxP5uKXc1Xct3L0ZjGn+HXFSMMNW/QXPJ7z4
-	ViLjTX6uevrQ3Qck1cb5mHaA0tphYaU=
-Date: Sat, 19 Apr 2025 08:44:23 +0200
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=OndOSlMEDY3GASiwHAdQVrOSMzEpaClg8mQS5ZZl1zQ=;
+	b=iQqWerl5co/+umskUq4w9nPXg92psIOS4LFPO2xnGXhIwBEiwZSQFxiDH64vV+lxxYu5FY
+	j65hMH5cLGXAsgK3/pG9KybOKbedWMExkx0waF0ouFpJQ0Hosnk2hxvT0cXZdtPEyEcPsi
+	6+CGU8eJu0rM+Hlo2eMSmPLMHBF/tRk=
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+To: zyjzyj2000@gmail.com,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Zhu Yanjun <yanjun.zhu@linux.dev>,
+	syzbot+4edb496c3cad6e953a31@syzkaller.appspotmail.com
+Subject: [PATCH 1/1] RDMA/rxe: Fix "trying to register non-static key in rxe_qp_do_cleanup" bug
+Date: Sat, 19 Apr 2025 10:07:41 +0200
+Message-Id: <20250419080741.1515231-1-yanjun.zhu@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/rxe: Remove unused rxe_run_task
-To: "Dr. David Alan Gilbert" <linux@treblig.org>
-Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250418165948.241433-1-linux@treblig.org>
- <bf07ce66-32e8-4069-894a-7eff120a07ff@linux.dev> <aALsrZxAqhwxDD7d@gallifrey>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <aALsrZxAqhwxDD7d@gallifrey>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-在 2025/4/19 2:22, Dr. David Alan Gilbert 写道:
-> 
-> Hi,
-> 
->> Thanks a lot. Please add the Fixes tags.
->> Fixes: 23bc06af547f ("RDMA/rxe: Don't call direct between tasks")
-> 
-> Thanks for the review;  I've tended to avoid the fixes tag because
-> people use 'Fixes' to automatically pull in patches to stable or
-> downstream kernels, and there is no need for them to do that for
-> a cleanup patch.
-> 
->> And in the following comments, the function rxe_run_task is still mentioned.
->> "
->>   86 /* do_task is a wrapper for the three tasks (requester,
->>   87  * completer, responder) and calls them in a loop until
->>   88  * they return a non-zero value. It is called either
->>   89  * directly by rxe_run_task or indirectly if rxe_sched_task
->>   90  * schedules the task. They must call __reserve_if_idle to
->>   91  * move the task to busy before calling or scheduling.
->>   92  * The task can also be moved to drained or invalid
->>   93  * by calls to rxe_cleanup_task or rxe_disable_task.
->>   94  * In that case tasks which get here are not executed but
->>   95  * just flushed. The tasks are designed to look to see if
->>   96  * there is work to do and then do part of it before returning
->>   97  * here with a return value of zero until all the work
->>   98  * has been consumed then it returns a non-zero value.
->>   99  * The number of times the task can be run is limited by
->> 100  * max iterations so one task cannot hold the cpu forever.
->> 101  * If the limit is hit and work remains the task is rescheduled.
->> 102  */
->> "
->> Not sure if you like to modify the above comments to remove rxe_run_task or
->> not.
-> 
-> Would it be correct to just reword:
->>   88  *                               It is called either
->>   89  * directly by rxe_run_task or indirectly if rxe_sched_task
->>   90  * schedules the task.
-> 
-> to:
->     It is called indirectly when rxe_sched_task schedules the task.
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:120
+ assign_lock_key kernel/locking/lockdep.c:986 [inline]
+ register_lock_class+0x4a3/0x4c0 kernel/locking/lockdep.c:1300
+ __lock_acquire+0x99/0x1ba0 kernel/locking/lockdep.c:5110
+ lock_acquire kernel/locking/lockdep.c:5866 [inline]
+ lock_acquire+0x179/0x350 kernel/locking/lockdep.c:5823
+ __timer_delete_sync+0x152/0x1b0 kernel/time/timer.c:1644
+ rxe_qp_do_cleanup+0x5c3/0x7e0 drivers/infiniband/sw/rxe/rxe_qp.c:815
+ execute_in_process_context+0x3a/0x160 kernel/workqueue.c:4596
+ __rxe_cleanup+0x267/0x3c0 drivers/infiniband/sw/rxe/rxe_pool.c:232
+ rxe_create_qp+0x3f7/0x5f0 drivers/infiniband/sw/rxe/rxe_verbs.c:604
+ create_qp+0x62d/0xa80 drivers/infiniband/core/verbs.c:1250
+ ib_create_qp_kernel+0x9f/0x310 drivers/infiniband/core/verbs.c:1361
+ ib_create_qp include/rdma/ib_verbs.h:3803 [inline]
+ rdma_create_qp+0x10c/0x340 drivers/infiniband/core/cma.c:1144
+ rds_ib_setup_qp+0xc86/0x19a0 net/rds/ib_cm.c:600
+ rds_ib_cm_initiate_connect+0x1e8/0x3d0 net/rds/ib_cm.c:944
+ rds_rdma_cm_event_handler_cmn+0x61f/0x8c0 net/rds/rdma_transport.c:109
+ cma_cm_event_handler+0x94/0x300 drivers/infiniband/core/cma.c:2184
+ cma_work_handler+0x15b/0x230 drivers/infiniband/core/cma.c:3042
+ process_one_work+0x9cc/0x1b70 kernel/workqueue.c:3238
+ process_scheduled_works kernel/workqueue.c:3319 [inline]
+ worker_thread+0x6c8/0xf10 kernel/workqueue.c:3400
+ kthread+0x3c2/0x780 kernel/kthread.c:464
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:153
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
 
-I am fine with it. Thanks a lot.
+The root cause is as below:
 
-Zhu Yanjun
+In the function rxe_create_qp, the function rxe_qp_from_init is called
+to create qp, if this function rxe_qp_from_init fails, rxe_cleanup will
+be called to handle all the allocated resources, including the timers:
+retrans_timer and rnr_nak_timer.
 
-> 
->> Except the above, I am fine with this commit.
-> 
-> Thanks!
-> 
->> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> 
-> Dave
-> 
+The function rxe_qp_from_init calls the function rxe_qp_init_req to
+initialize the timers: retrans_timer and rnr_nak_timer.
+
+But these timers are initialized in the end of rxe_qp_init_req.
+If some errors occur before the initialization of these timers, this
+problem will occur.
+
+The solution is to check whether these timers are initialized or not.
+If these timers are not initialized, ignore these timers.
+
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Reported-by: syzbot+4edb496c3cad6e953a31@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=4edb496c3cad6e953a31
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+ drivers/infiniband/sw/rxe/rxe_qp.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 7975fb0e2782..f2af3e0aef35 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -811,7 +811,12 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
+ 	spin_unlock_irqrestore(&qp->state_lock, flags);
+ 	qp->qp_timeout_jiffies = 0;
+ 
+-	if (qp_type(qp) == IB_QPT_RC) {
++	/* In the function timer_setup, .function is initialized. If .function
++	 * is NULL, it indicates the function timer_setup is not called, the
++	 * timer is not initialized. Or else, the timer is initialized.
++	 */
++	if (qp_type(qp) == IB_QPT_RC && qp->retrans_timer.function &&
++		qp->rnr_nak_timer.function) {
+ 		timer_delete_sync(&qp->retrans_timer);
+ 		timer_delete_sync(&qp->rnr_nak_timer);
+ 	}
+-- 
+2.34.1
+
 
