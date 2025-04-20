@@ -1,81 +1,99 @@
-Return-Path: <linux-rdma+bounces-9633-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9634-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FD76A95078
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 13:53:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65527A950A7
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 14:15:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07A3E1887562
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 11:53:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61F467A83C9
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 12:14:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F56263C9B;
-	Mon, 21 Apr 2025 11:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1983D264F8F;
+	Mon, 21 Apr 2025 12:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I6+QA/7B"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CTSbNmH0"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D554C212FAD;
-	Mon, 21 Apr 2025 11:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE964264F89
+	for <linux-rdma@vger.kernel.org>; Mon, 21 Apr 2025 12:15:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745236394; cv=none; b=SjTVwJGBAQcSEXXG43kv+aaRRux4pdnGL95ivWykOWvdqBP0M+WxxSa+Ml9hnerZVhb7g28340qke/MhYsGkLT+76wQpPzJf1WmLk4502VtId51HKl2RuCKnMCkFasD0X8kvHNUjhCHP2ltvOguFjXKSCqJTb6eAN/pzEa1cayw=
+	t=1745237715; cv=none; b=KzYD2+1dVekfSwTko7cYP5ROlWJUmcS3w5q4s+ogOmTEwqAxBILqXnFDVhPvkmXm9rhh8FbI4qG7A7ySuaaoV+TfH6vQa9rvvFHcXczcOo/w4RGEtPiRIVO1z2FeZdsN4iNR91miC6PBK7KNbRm2GCKWWkO0abLJnhASE1IMgwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745236394; c=relaxed/simple;
-	bh=TylbfHQw9P8PyoJO5WNWZaHGlrwRpzkWbdxjNY7Acfk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=IqtIDnHJ76/5FpwkHVs3ocbWGiVNzvF9yf7y0oM1mtVz77ZS3g9ePRQOE9b4OzbLs0d6+it6rgRJVQ5yZOQ4WK/QNTfxCiQIAZ4kbIZdVEm0bId5yLc/uV6owR5wHAv/i6iGdJlW4SjODovWDcB6rrVLNqAb2xxrUAMLzCR8HAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I6+QA/7B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC3AFC4CEE4;
-	Mon, 21 Apr 2025 11:53:13 +0000 (UTC)
+	s=arc-20240116; t=1745237715; c=relaxed/simple;
+	bh=xxdN4s1/s+GYpDDtpmQSxWH5qcjVCA0LWvl5GmhB4pA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R1mhEfcwL8bRoABM2/ujiZ5cWcyM7XDNFP+M6VV3pwn/WiBasKM5PEDBcGr4ucybcjeMwdSuohtQPzT/r5md2QBPa2yYMQ24IGg3ukAyNSD6kAZl5jerq36Gc6Sg1UM1ApHdGoce/Kd8lUv3NIYW4DeB0ZfhXAgh2cFn6pjuBSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CTSbNmH0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D222BC4CEE4;
+	Mon, 21 Apr 2025 12:15:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745236394;
-	bh=TylbfHQw9P8PyoJO5WNWZaHGlrwRpzkWbdxjNY7Acfk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=I6+QA/7BlQzGTIqfZe4thO5ajqGx74CGGQvGTQt6DjvOPwKZh/taEw6ftEi5bnDo/
-	 2hqY/UnV9QLiwiXMKopdKQSG7E2OB1im4iRURN4zjCAbzlfYygj6Oixbl98RGDVGFI
-	 00zOgkfS9IObhd3kqt9v7U3ySxY15sRtQWwCbRx2UZKoOZoaYR3DUMNcu19N1MwXzA
-	 LuAf6A6hRVZmZfL6SEkZZHmH98t0sKKPEfteCjBwYjEdvR/KBVIzhvqiQiXsImVWSl
-	 /eN5apxreS051IxQQ3O03GTiQlJBJw/E9i5vL01Dvy6n4vDVB8HSLOkSRGMqZMupZK
-	 6LCs655cTO4cw==
+	s=k20201202; t=1745237715;
+	bh=xxdN4s1/s+GYpDDtpmQSxWH5qcjVCA0LWvl5GmhB4pA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CTSbNmH0OvNADZ+nW7gT/5outIMW8eZ3hcunl2hdpXXt11HJJ7Az96Z+7gBXEcTPB
+	 GQllII7IHV6Sbq8x0EC/jDIagmJQYft9CgBPqN7lpDU7yko2iNudKBUgYaGAVf5UWq
+	 XmgnY+Cfz4vPxH3CL7I2VKrnDeXWXgvCGOwW39pxt3hNoE2RDlPgU1FEAI3ddCS9yB
+	 NnwmlaEk3o7cXlbnJMzgLqsfqTMGuDDAgZ8Wu81yhyjTPU2WvBJyM4/RSqmeJrvJlZ
+	 bkW5pKkMSFfg87ZFzT1Lj5eMJ9iwZcjV9e0UlmBezhNGly9Bzzgumv9+lQCiVW/r20
+	 YJyOVrx00r1Vw==
+Date: Sun, 20 Apr 2025 18:11:18 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: linux-rdma@vger.kernel.org, jgg@ziepe.ca, 
- Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Cc: linux-kernel@vger.kernel.org
-In-Reply-To: <20250418051345.1022339-2-matsuda-daisuke@fujitsu.com>
-References: <20250418051345.1022339-1-matsuda-daisuke@fujitsu.com>
- <20250418051345.1022339-2-matsuda-daisuke@fujitsu.com>
-Subject: Re: [PATCH for-next 1/1] RDMA/core: Move ODP capability
- definitions to uapi
-Message-Id: <174523638985.74512.12582679682707303482.b4-ty@kernel.org>
-Date: Mon, 21 Apr 2025 07:53:09 -0400
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+	tangchengchang@huawei.com
+Subject: Re: [PATCH for-next 0/6] RDMA/hns: Add trace support
+Message-ID: <20250420151118.GD10635@unreal>
+References: <20250418085647.4067840-1-huangjunxian6@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250418085647.4067840-1-huangjunxian6@hisilicon.com>
 
+On Fri, Apr 18, 2025 at 04:56:41PM +0800, Junxian Huang wrote:
+> Add trace support for hns. Set tracepoints for flushe CQE, WQE,
+> AEQE, MT/MTR and CMDQ.
+> 
+> Patch #5 fixes the dependency issue of hns_roce_hw_v2.h on hnae3.h,
+> otherwise there will be a compilation error when hns_roce_hw_v2.h
+> is included in hns_roce_trace.h in patch #6.
+> 
+> Junxian Huang (6):
+>   RDMA/hns: Add trace for flush CQE
+>   RDMA/hns: Add trace for WQE dumping
+>   RDMA/hns: Add trace for AEQE dumping
+>   RDMA/hns: Add trace for MR/MTR attribute dumping
+>   RDMA/hns: Include hnae3.h in hns_roce_hw_v2.h
+>   RDMA/hns: Add trace for CMDQ dumping
+> 
+>  drivers/infiniband/hw/hns/hns_roce_ah.c       |   1 -
+>  drivers/infiniband/hw/hns/hns_roce_device.h   |  20 ++
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c    |  19 +-
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h    |   1 +
+>  drivers/infiniband/hw/hns/hns_roce_main.c     |   1 -
+>  drivers/infiniband/hw/hns/hns_roce_mr.c       |   3 +
+>  drivers/infiniband/hw/hns/hns_roce_restrack.c |   1 -
+>  drivers/infiniband/hw/hns/hns_roce_trace.h    | 213 ++++++++++++++++++
+>  8 files changed, 255 insertions(+), 4 deletions(-)
+>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_trace.h
 
-On Fri, 18 Apr 2025 14:13:45 +0900, Daisuke Matsuda wrote:
-> The bits are used from both kernel space and userland, so they should be
-> placed in UAPI.
+Please change trace_drv_* calls to have a name of your driver, e.g.
+trace_drv_mr() -> trace_hns_mr().
+
+Thanks
+
+> 
+> --
+> 2.33.0
 > 
 > 
-
-Applied, thanks!
-
-[1/1] RDMA/core: Move ODP capability definitions to uapi
-      https://git.kernel.org/rdma/rdma/c/685f9537a72877
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
 
