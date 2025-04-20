@@ -1,119 +1,98 @@
-Return-Path: <linux-rdma+bounces-9606-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9607-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9833A94701
-	for <lists+linux-rdma@lfdr.de>; Sun, 20 Apr 2025 09:14:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24700A9476A
+	for <lists+linux-rdma@lfdr.de>; Sun, 20 Apr 2025 12:11:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8F5D174F53
-	for <lists+linux-rdma@lfdr.de>; Sun, 20 Apr 2025 07:14:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D88031892E17
+	for <lists+linux-rdma@lfdr.de>; Sun, 20 Apr 2025 10:11:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987CD1EF0B2;
-	Sun, 20 Apr 2025 07:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E0971E4110;
+	Sun, 20 Apr 2025 10:11:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N9hnRRtm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="krHzJKYf"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C171EEA49;
-	Sun, 20 Apr 2025 07:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD412647
+	for <linux-rdma@vger.kernel.org>; Sun, 20 Apr 2025 10:11:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745133291; cv=none; b=L84JWn20ARDG4FCOXb3XYErDVUTXF3IqaSIVNFgccv2BTUaB8i3w0053HnPrRVz90N7+xYnv7McnrhcRwde3BRpXqH7QXdx5kaBmk0uS/tPsH6tNNLf3JwjRtZY6JTK4tSXbMG4tGSWdqF2G6nBAeAHbG9aRqIiAarqxGEFLaK8=
+	t=1745143880; cv=none; b=s+f0uLiurT8iP+E5jtcCRs5Mi+9BvXRX4py5hksvJ+ikqFDtAtA93zQc9XQ9nOMrQztymCMaKPSgctCzsMsEklYWGsNXNCwXZ7YB3JkC7HSlVOt6+kxCcZOosFdw6FtP4ehzSUe7DoUxBHj7MwEa3kWWeVcPytsedqA33oOkqbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745133291; c=relaxed/simple;
-	bh=SpNXshGC4uEadiZ9mic8rX/qeMHOKG3enirsdDCvXf0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LzNpRyd/M8rladr6YKym5WHYbrmN9JfulukOBBRk6uD7GxPPTj8yiPkM+Azk2gM1J7AvXyRneHaC0Nwluj3dPaFwx0+2VQTLHJ1TvvbS+/0VHp4enSEqzHxJltbFDYXecLBaO2nGxMvL3EJYy5TeeA8T6Kwf9bdFWkXqeGqgoW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N9hnRRtm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2E37C4CEE2;
-	Sun, 20 Apr 2025 07:14:49 +0000 (UTC)
+	s=arc-20240116; t=1745143880; c=relaxed/simple;
+	bh=rB0tTNzyP8EiD8+782moP4S5TiFHnAGMSz1ldKBL7B8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=XzaVjA0rS7OuckfFXCoKwmL+6qa1igwmkvj0Ya4QRZsJzzWytowl7Up5P5JLxSNXr3PPMkQBZe4qfyxjxzI21bV6yh3rmceBe8fT52hzeMThT8GATFGFn6tyIAO5WcB5/DTX5rnM4tCt9vUJ9qlH1ptVUOO/as9hKa6QZyE1/30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=krHzJKYf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3191C4CEE2;
+	Sun, 20 Apr 2025 10:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745133290;
-	bh=SpNXshGC4uEadiZ9mic8rX/qeMHOKG3enirsdDCvXf0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=N9hnRRtmNHfnuM6gp/E+KrJvokqSb71oYMhBqMYRZgnnOGfewaBmv+VxsqSvw2mx7
-	 2fUdjbY/H46G3VKGRBnVwSy+Gjl4Z6RSMWeY14FJU6YmfQyL7kYGD5MBt7GIedAPYf
-	 WshWPr5dJTN9Wmr96QKS9Qodv+qsrhzEMuJXAU6Bd5tnDEQoGrprjYI9sbQ8XZCPzs
-	 8+caVRnyAL4BM9TX5W2rx5tKmtonDo4tGbYQ3BgJlrPC3GoZ4wZDsnfOB4NIgP2BY7
-	 tY3+8mvVofskwTyS6lS/IiWKwTGTcxkr24eh0/y5LbaD9SKuEGZVJwz5YEwht/9f63
-	 yZpV0FW9cb2BA==
-Date: Sun, 20 Apr 2025 10:14:46 +0300
+	s=k20201202; t=1745143879;
+	bh=rB0tTNzyP8EiD8+782moP4S5TiFHnAGMSz1ldKBL7B8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=krHzJKYfE+ATwVkM/swnvqJLXOCaHwvuLojF4N7F3DfH2rQIE6YE3NhAfDxqrryzc
+	 nX1+dtdNO9zsKk0KQBqrNQA583ChjyhGvyysrRr0OzMVlXaOGqW6xbK/2d8AmagBF8
+	 EdcWs6jAxcQoybZ40FVDGGsi0FxHku/T/p2KhF2XjucGqXIk4yb6GDqC1R5m0wNhje
+	 72DHzHwpdJrOgKQwd4dYbhpUaHKX8r63YtoUu8KtGQ8zFeNp9CiT4N1jXDpoVydZy6
+	 IkbDCkZEJexNF6jTxNnoEdEx0QAeZT/G4OwjyzVUhduoIV7Mqdt4h/WcOvm4WPyuF+
+	 2Yr6oGpMribqQ==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
-	Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
-	Jake Edge <jake@lwn.net>, Jonathan Corbet <corbet@lwn.net>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <zyjzyj2000@gmail.com>,
-	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Kanchan Joshi <joshi.k@samsung.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>
-Subject: Re: [PATCH v8 00/24] Provide a new two step DMA mapping API
-Message-ID: <20250420071446.GB10635@unreal>
-References: <cover.1744825142.git.leon@kernel.org>
- <93ef8629-4040-4773-beac-03c62f848727@kernel.dk>
+To: zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org, 
+ Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: liuyi <liuy22@mails.tsinghua.edu.cn>
+In-Reply-To: <20250412075714.3257358-1-yanjun.zhu@linux.dev>
+References: <20250412075714.3257358-1-yanjun.zhu@linux.dev>
+Subject: Re: [PATCH 1/1] RDMA/rxe: Fix slab-use-after-free Read in
+ rxe_queue_cleanup bug
+Message-Id: <174514387559.677485.4728370832966108117.b4-ty@kernel.org>
+Date: Sun, 20 Apr 2025 06:11:15 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <93ef8629-4040-4773-beac-03c62f848727@kernel.dk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-On Fri, Apr 18, 2025 at 06:18:00AM -0600, Jens Axboe wrote:
-> On 4/18/25 12:47 AM, Leon Romanovsky wrote:
-> > Following recent on site LSF/MM 2025 [1] discussion, the overall
-> > response was extremely positive with many people expressed their
-> > desire to see this series merged, so they can base their work on it.
-> > 
-> > It includes, but not limited:
-> >  * Luis's "nvme-pci: breaking the 512 KiB max IO boundary":
-> >    https://lore.kernel.org/all/20250320111328.2841690-1-mcgrof@kernel.org/
-> >  * Chuck's NFS conversion to use one structure (bio_vec) for all types
-> >    of RPC transports:
-> >    https://lore.kernel.org/all/913df4b4-fc4a-409d-9007-088a3e2c8291@oracle.com
-> >  * Matthew's vision for the world without struct page:
-> >    https://lore.kernel.org/all/20250320111328.2841690-1-mcgrof@kernel.org/
-> >  * Confidential computing roadmap from Dan:
-> >    https://lore.kernel.org/all/6801a8e3968da_71fe29411@dwillia2-xfh.jf.intel.com.notmuch
-> > 
-> > This series is combination of effort of many people who contributed ideas,
-> > code and testing and I'm gratefully thankful for them.
-> 
-> Since I previously complained about performance regressions from this
-> series, I re-tested the current code. I no longer see a performance
-> regression on a AMD EPYC 9754 256 core box, nor on AMD EPYC 7763 128
-> core box.
-> 
-> Tested-by: Jens Axboe <axboe@kernel.dk>
 
-Thanks a lot.
+On Sat, 12 Apr 2025 09:57:14 +0200, Zhu Yanjun wrote:
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:94 [inline]
+>  dump_stack_lvl+0x7d/0xa0 lib/dump_stack.c:120
+>  print_address_description mm/kasan/report.c:378 [inline]
+>  print_report+0xcf/0x610 mm/kasan/report.c:489
+>  kasan_report+0xb5/0xe0 mm/kasan/report.c:602
+>  rxe_queue_cleanup+0xd0/0xe0 drivers/infiniband/sw/rxe/rxe_queue.c:195
+>  rxe_cq_cleanup+0x3f/0x50 drivers/infiniband/sw/rxe/rxe_cq.c:132
+>  __rxe_cleanup+0x168/0x300 drivers/infiniband/sw/rxe/rxe_pool.c:232
+>  rxe_create_cq+0x22e/0x3a0 drivers/infiniband/sw/rxe/rxe_verbs.c:1109
+>  create_cq+0x658/0xb90 drivers/infiniband/core/uverbs_cmd.c:1052
+>  ib_uverbs_create_cq+0xc7/0x120 drivers/infiniband/core/uverbs_cmd.c:1095
+>  ib_uverbs_write+0x969/0xc90 drivers/infiniband/core/uverbs_main.c:679
+>  vfs_write fs/read_write.c:677 [inline]
+>  vfs_write+0x26a/0xcc0 fs/read_write.c:659
+>  ksys_write+0x1b8/0x200 fs/read_write.c:731
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xaa/0x1b0 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> 
+> [...]
 
-> 
-> -- 
-> Jens Axboe
-> 
+Applied, thanks!
+
+[1/1] RDMA/rxe: Fix slab-use-after-free Read in rxe_queue_cleanup bug
+      https://git.kernel.org/rdma/rdma/c/c95366ddbe99ba
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
