@@ -1,191 +1,162 @@
-Return-Path: <linux-rdma+bounces-9622-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9623-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FAD6A94B31
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 04:52:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16CFEA94B92
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 05:13:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A7D43B17DB
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 02:52:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F67B7A29AF
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 03:12:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 278BD18A92D;
-	Mon, 21 Apr 2025 02:52:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="KhwhsAf0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753882571A6;
+	Mon, 21 Apr 2025 03:13:26 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from esa8.hc1455-7.c3s2.iphmx.com (esa8.hc1455-7.c3s2.iphmx.com [139.138.61.253])
+Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97766184;
-	Mon, 21 Apr 2025 02:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.138.61.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66A3D2AF11;
+	Mon, 21 Apr 2025 03:13:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.63.66.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745203945; cv=none; b=lf2Qpbj7N6gM9tUfwR2iJ/EQSso9mZrwnAnv6n44qYp3t6vzCKff1CmbaaLUe8VhLo8w3CwGXnSHH9ZG9npPdfbSKMvH34WKkkmqj4dCoM2XT7p8YxKLiC8c5PoSat9f2d95c68Jzxk8arqNbXK5P8koY/Z+wJ5PPtIgJbD6shE=
+	t=1745205206; cv=none; b=eNMsvrPIooyzaU+ezylc62K+6BUDXHPOtYgNNT3buBoRPEPby66Ht6UQkr1gkV9e6TQaEYK8gyJZ+An+5T1ZERiHudbucw0+uMd7q/Ufl+PDtPJyT4LwQk8t4AuxObrWZSSWOOdwbQma0S8mpREmQKUIlX7U1uZWvvG0ZwPgaLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745203945; c=relaxed/simple;
-	bh=YBgTtw3/lIlfbTQBHcf3qYAkL4cxTN7AoK8utuCRMdQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cfuKMiniqF1q4cIrI1PxzaYBqI50T5Z9gXSoprfYnU5U3UjUYTIOKIZX3FfXAmjcRohRniQ9ujcFmYd38gaTtiRhl4xFWZIVpCBFMr/00W2+ojas7IAK3XWyI7Cwv+oVXg4FYfPzFmiDoWC8QtvB3hYnc107ZQjlZb7CcCvub/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=KhwhsAf0; arc=none smtp.client-ip=139.138.61.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1745203943; x=1776739943;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=YBgTtw3/lIlfbTQBHcf3qYAkL4cxTN7AoK8utuCRMdQ=;
-  b=KhwhsAf0Iicx9iA6BeQ+eb3kyA3MV3TyeKiH8MBQvjMoscPcIcNOjgov
-   IcPpWggc/YwmwZl1Y/lPL8u9BPBzLLwZ2AYWaeoH3ziuEm2MYLPw2u/Y0
-   mO+5/wkioelUM31mcZJ+PFSBQvZ6oMkRkixtNZMGx1ND2+IPQuHNKQ4ke
-   uibExKt120oSTdHBlzj+At+TgmWVmG6f4f/XikNLayMFtRd2o4FuS/P1F
-   0vRK1xjqRbs6ob9WUcTfTjiYiN14M/LiZ4QKHlmFq+Yfw+A+yYlfMp0jz
-   ba8Sg5ac6rPQRqu5sVUBGP09SxtKf4gOGVbFUJ6Tj1BoxGwtE9r3+37OH
-   Q==;
-X-CSE-ConnectionGUID: wzGIF3pLRiS5YbKV61wv5w==
-X-CSE-MsgGUID: XFr7jYBLSoWvcvm9BbBuxw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11409"; a="185091490"
-X-IronPort-AV: E=Sophos;i="6.15,227,1739804400"; 
-   d="scan'208";a="185091490"
-Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
-  by esa8.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2025 11:51:11 +0900
-Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com [192.168.87.60])
-	by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 51D46D4C4A;
-	Mon, 21 Apr 2025 11:51:09 +0900 (JST)
-Received: from m3002.s.css.fujitsu.com (msm3.b.css.fujitsu.com [10.128.233.104])
-	by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 160FDD7480;
-	Mon, 21 Apr 2025 11:51:09 +0900 (JST)
-Received: from sm-x86-stp01.ssoft.mng.com (unknown [10.124.178.20])
-	by m3002.s.css.fujitsu.com (Postfix) with ESMTP id ADA172025C18;
-	Mon, 21 Apr 2025 11:51:08 +0900 (JST)
-From: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-To: linux-rdma@vger.kernel.org,
-	leon@kernel.org,
-	jgg@ziepe.ca,
-	zyjzyj2000@gmail.com
-Cc: linux-kernel@vger.kernel.org,
-	Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
-Subject: [PATCH for-next] RDMA/rxe: Remove 32-bit architecture support
-Date: Mon, 21 Apr 2025 11:51:01 +0900
-Message-Id: <20250421025101.3588139-1-matsuda-daisuke@fujitsu.com>
-X-Mailer: git-send-email 2.39.1
+	s=arc-20240116; t=1745205206; c=relaxed/simple;
+	bh=DGKXx6NAQgM6C+8Fsi2EeXAdX5/lAXsTwPqKFGe0M4M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aJF7kd/QKuuMvV/E3smXdpfL4+XnP1ItdkAaQ0CYybCBH6J991QFoRqYTi52yJ/N2t/NrJrUUgfhg4FA4ViBeaX/z1gFvz1T7jxpF0GtkKx6an4FouNvsHWHxhOOenNT7CZa4msuIdj87b9ynq9+hADvnzUjQGNflI8yVySaZr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hallyn.com; spf=pass smtp.mailfrom=mail.hallyn.com; arc=none smtp.client-ip=178.63.66.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hallyn.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.hallyn.com
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+	id 4C8F8E37; Sun, 20 Apr 2025 22:13:20 -0500 (CDT)
+Date: Sun, 20 Apr 2025 22:13:20 -0500
+From: "Serge E. Hallyn" <serge@hallyn.com>
+To: Parav Pandit <parav@nvidia.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>,
+	"serge@hallyn.com" <serge@hallyn.com>,
+	Leon Romanovsky <leonro@nvidia.com>
+Subject: Re: [PATCH] RDMA/uverbs: Consider capability of the process that
+ opens the file
+Message-ID: <20250421031320.GA579226@mail.hallyn.com>
+References: <20250313050832.113030-1-parav@nvidia.com>
+ <20250317193148.GU9311@nvidia.com>
+ <CY8PR12MB7195C6D8CCE062CFD9D0174CDCDE2@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <20250318112049.GC9311@nvidia.com>
+ <87ldt2yur4.fsf@email.froward.int.ebiederm.org>
+ <20250318225709.GC9311@nvidia.com>
+ <CY8PR12MB7195B7FAA54E7E0264D28BAEDCA92@CY8PR12MB7195.namprd12.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CY8PR12MB7195B7FAA54E7E0264D28BAEDCA92@CY8PR12MB7195.namprd12.prod.outlook.com>
 
-Major linux distibutions have phased out support for 32-bit machines. Since
-rxe is primarily used for development and testing, the benefit of
-maintaining 32-bit support is minimal. This change simplifies ATOMIC WRITE
-implementations and improves maintainability of the driver.
+On Fri, Apr 04, 2025 at 02:53:30PM +0000, Parav Pandit wrote:
+> Hi Eric, Jason,
 
-Signed-off-by: Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
----
- drivers/infiniband/sw/rxe/Kconfig     | 2 +-
- drivers/infiniband/sw/rxe/rxe_loc.h   | 6 +-----
- drivers/infiniband/sw/rxe/rxe_mr.c    | 8 --------
- drivers/infiniband/sw/rxe/rxe_odp.c   | 1 -
- drivers/infiniband/sw/rxe/rxe_param.h | 5 +----
- 5 files changed, 3 insertions(+), 19 deletions(-)
+Hi,
 
-diff --git a/drivers/infiniband/sw/rxe/Kconfig b/drivers/infiniband/sw/rxe/Kconfig
-index c180e7ebcfc5..1ed5b63f8afc 100644
---- a/drivers/infiniband/sw/rxe/Kconfig
-+++ b/drivers/infiniband/sw/rxe/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config RDMA_RXE
- 	tristate "Software RDMA over Ethernet (RoCE) driver"
--	depends on INET && PCI && INFINIBAND
-+	depends on INET && PCI && INFINIBAND && 64BIT
- 	depends on INFINIBAND_VIRT_DMA
- 	select NET_UDP_TUNNEL
- 	select CRC32
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 30fa83c9c846..f7dbb9cddd12 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -196,6 +196,7 @@ enum resp_states rxe_odp_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- 				   u64 compare, u64 swap_add, u64 *orig_val);
- int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
- 			    unsigned int length);
-+enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value);
- #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
- static inline int
- rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
-@@ -219,11 +220,6 @@ static inline int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
- {
- 	return -EOPNOTSUPP;
- }
--#endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
--
--#ifdef CONFIG_INFINIBAND_ON_DEMAND_PAGING
--enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value);
--#else
- static inline enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr,
- 						       u64 iova, u64 value)
- {
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 1a74013a14ab..c4936d63e26a 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -539,8 +539,6 @@ enum resp_states rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
- 	return RESPST_NONE;
- }
- 
--#if defined CONFIG_64BIT
--/* only implemented or called for 64 bit architectures */
- enum resp_states rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
- {
- 	unsigned int page_offset;
-@@ -580,12 +578,6 @@ enum resp_states rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
- 
- 	return RESPST_NONE;
- }
--#else
--enum resp_states rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
--{
--	return RESPST_ERR_UNSUPPORTED_OPCODE;
--}
--#endif
- 
- int advance_dma_data(struct rxe_dma_info *dma, unsigned int length)
- {
-diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-index fa5e8f5017cc..6149d9ffe7f7 100644
---- a/drivers/infiniband/sw/rxe/rxe_odp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-@@ -380,7 +380,6 @@ int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
- 	return 0;
- }
- 
--/* CONFIG_64BIT=y */
- enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
- {
- 	struct ib_umem_odp *umem_odp = to_ib_umem_odp(mr->umem);
-diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
-index 003f681e5dc0..767870568372 100644
---- a/drivers/infiniband/sw/rxe/rxe_param.h
-+++ b/drivers/infiniband/sw/rxe/rxe_param.h
-@@ -53,12 +53,9 @@ enum rxe_device_param {
- 					| IB_DEVICE_MEM_WINDOW
- 					| IB_DEVICE_FLUSH_GLOBAL
- 					| IB_DEVICE_FLUSH_PERSISTENT
--#ifdef CONFIG_64BIT
- 					| IB_DEVICE_MEM_WINDOW_TYPE_2B
- 					| IB_DEVICE_ATOMIC_WRITE,
--#else
--					| IB_DEVICE_MEM_WINDOW_TYPE_2B,
--#endif /* CONFIG_64BIT */
-+
- 	RXE_MAX_SGE			= 32,
- 	RXE_MAX_WQE_SIZE		= sizeof(struct rxe_send_wqe) +
- 					  sizeof(struct ib_sge) * RXE_MAX_SGE,
--- 
-2.43.0
+I'm jumping back up the thread as I think this email best details the
+things I'm confused about :)  Three questions below in two different
+stanzas.
 
+> To summarize,
+> 
+> 1. A process can open an RDMA resource (such as a raw QP, raw flow entry, or similar 'raw' resource)
+> through the fd using ioctl(), if it has the appropriate capability, which in this case is CAP_NET_RAW.
+
+Why does it need CAP_NET_RAW to create the resource, if the resource won't
+be usable by a process without CAP_NET_RAW later anyway?  Is that legacy
+for the read/write (vs ioctl) case?  Or is it to limit the number of
+opened resources?  Or some other reason?
+
+Is the resource which is created tied to the net namespce of the process
+which created it?
+
+> This is similar to a process that opens a raw socket.
+> 
+> 2. Given that RDMA uses ioctl() for resource creation, there isn't a security concern surrounding
+> the read()/write() system calls.
+> 
+> 3. If process A, which does not have CAP_NET_RAW, passes the opened fd to another privileged
+> process B, which has CAP_NET_RAW, process B can open the raw RDMA resource.
+> This is still within the kernel-defined security boundary, similar to a raw socket.
+> 
+> 4. If process A, which has the CAP_NET_RAW capability, passes the file descriptor to Process B, which does not have CAP_NET_RAW, Process B will not be able to open the raw RDMA resource.
+> 
+> Do we agree on this Eric?
+> 
+> Assuming yes, to extend this, further,
+> 
+> 5. the process's capability check should be done in the right user namespace.
+> (instead of current in default user ns).
+> The right user namespace is the one which created the net namespace.
+
+"the one which created THE net namespace" - which net namespace?   The
+one in which the process which created the resource belonged, or the
+one in which the current process (calling ioctl) belongs?
+
+> This is because rdma networking resources are governed by the net namespace.
+> 
+> Above #5 aligns with the example from existing kernel doc snippet below [1] and few kernel examples of [2].
+> 
+> For example, suppose that a process attempts to change
+>        the hostname (sethostname(2)), a resource governed by the UTS
+>        namespace.  In this case, the kernel will determine which user
+>        namespace owns the process's UTS namespace, and check whether the
+>        process has the required capability (CAP_SYS_ADMIN) in that user
+>        namespace.
+> 
+> [1] https://man7.org/linux/man-pages/man7/user_namespaces.7.html
+> 
+> [2] examples snippet that follows above guidance of #5.
+> 
+> File: drivers/infiniband/core/device.c  
+> Function: ib_device_set_netns_put()
+> For net namespace:
+> 
+>          if (!netlink_ns_capable(skb, net->user_ns, CAP_NET_ADMIN)) {
+>                  ret = -EPERM;
+>                  goto ns_err;
+>          }
+>  
+> File: fs/namespace.c 
+> For mount namespace:
+>         if (!ns_capable(from->mnt_ns->user_ns, CAP_SYS_ADMIN))
+>                 goto out;
+>         if (!ns_capable(to->mnt_ns->user_ns, CAP_SYS_ADMIN))
+>                 goto out;
+>  
+> For uts ns:
+>  static int utsns_install(struct nsset *nsset, struct ns_common *new)
+>  {
+>          struct nsproxy *nsproxy = nsset->nsproxy;
+>          struct uts_namespace *ns = to_uts_ns(new);
+> 
+>          if (!ns_capable(ns->user_ns, CAP_SYS_ADMIN) ||
+>              !ns_capable(nsset->cred->user_ns, CAP_SYS_ADMIN))
+>                  return -EPERM;
+>  
+> For net ns:
+> File: net/core/dev_ioctl.c
+>          case SIOCSHWTSTAMP:
+>                  if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
+>                          return -EPERM;
+>                  fallthrough;
+>  
+> static int do_arpt_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
+> {
+>          int ret;
+> 
+>          if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
+>                  return -EPERM;
 
