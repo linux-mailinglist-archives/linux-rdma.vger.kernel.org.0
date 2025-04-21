@@ -1,55 +1,66 @@
-Return-Path: <linux-rdma+bounces-9635-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9636-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0106A950C3
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 14:20:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADA6EA95112
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 14:37:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8C8C1893FD2
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 12:20:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E42AA17269D
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 12:37:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9CB26462A;
-	Mon, 21 Apr 2025 12:20:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DDCE264F89;
+	Mon, 21 Apr 2025 12:37:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cU28blmn"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="iq/IEZjF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D44926139A
-	for <linux-rdma@vger.kernel.org>; Mon, 21 Apr 2025 12:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9F0B666;
+	Mon, 21 Apr 2025 12:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745238019; cv=none; b=nH0yRNnRNoSsRYidYqYJGdpShThKW+m8g+LkyLX+BzJ3+dQHUw+KtbzT3RUjCQ81hDnxmdXNylvtCs5ANgMNZdXvSsQnIpUX2/zWZUF5XGvJ6PtuLdZOiMU1CfVm63LYGxxKHri65dLKrLXIju3vNFWp3QduTCxGB/oBX+Q9Z+c=
+	t=1745239026; cv=none; b=XDB8D15oi6ud8Ja67VsRiiPd2wF3c7wEwyZytJE2U8FrXsA9nAO7A6yiUx1lkSZjnQhIDhMTmmmLKP9JSTI23tGIarGOcqLFw61pRN3HSZA+QVHx40AIyLfYWaQSmUBwMr2zzeolBTx7D+daQvBBnYDxI3UWEGrPwj3gQhAr9OU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745238019; c=relaxed/simple;
-	bh=DVJVNO/WyP8D/lekr0j0AnDUt/0+wie7RXk9PT+WkpM=;
+	s=arc-20240116; t=1745239026; c=relaxed/simple;
+	bh=xUoy18CdiDXwRbZeN4HdFmHR7gr0IcLOiQofTpsxvoQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aw6+XCVNpe550ucnBu6oYIeqNIlIkIAr+TxolmTQohgE3ymuE+EoCSJj95m5BjYgl5gh7d5BReKZJJL4N5z35+R4iRYwPsnatCxboZs9kodXii3ehIcc2uRuGPXjp2WXOCEldEkAWypGAF6VJaIARHAhAS9B23DhqPaA8Q3njqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cU28blmn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97E33C4CEE4;
-	Mon, 21 Apr 2025 12:20:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745238018;
-	bh=DVJVNO/WyP8D/lekr0j0AnDUt/0+wie7RXk9PT+WkpM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cU28blmnoZq7u4Q9z/iuU5X7z5610AOXZCbDnPqTpGYhM37H1gWqffiQzWE0UrPVi
-	 88NVbWwUKj1EsiVweGEY4FEgfRdgiTJoFwqSgSCVD7Bi+WiP02Tv4jbc1yM9dWxMr+
-	 3RJlY2wV4UonMGYdaZNW1rkurQnm2bYa47JBz3LQ5WJlrZnqOYEdpP7V+v62YcZssB
-	 bdlp/sNA04MbzO1r7kF0N9X1xK1YRtlk6Qi+lv7b+QdDKPak94LwMTUIjuI8srMODz
-	 4bzrS5F3PPeDwrlnE9+8zrc27kWEEKEqseGmMF5DkUCfLy8N5wMOldJtCnh9WsCpju
-	 w/8Rdt0ZGB+EA==
-Date: Mon, 21 Apr 2025 15:20:13 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-	tangchengchang@huawei.com
-Subject: Re: [PATCH for-next 0/6] RDMA/hns: Add trace support
-Message-ID: <20250421122013.GB10551@unreal>
-References: <20250418085647.4067840-1-huangjunxian6@hisilicon.com>
- <174515167383.720316.10548192191975881376.b4-ty@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oLaoqZOeq2b73iTvRNykExZ98Lqk5aEKABcRM5n5tVKp4bUTqC8S0Zs1LSXOl2wgOgOiN1PWO5wGFwQV1H9iB/WT1efAndRraK+cdPT7ieRjQToIUbxsnmxwICM3UwI3W05YD4J7wdFNeDsPS3ShWseXrSoiTyoQogEFG/6jc4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=iq/IEZjF; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=NKiLvGqiMQUIQKr+UjuD8tWiHt3uwJSWt0OKD4dCah4=; b=iq/IEZjFmxmua3Fr6ALoKkqg27
+	mw1tKDU6vLbPzbGtqnd2ujDZXTUoobt427h0Td38hyU0s87xDMA/GcoDI7m6y7dVBMDvHnw8NKNK1
+	ABcpXENB80Fsda3wgaQwf1o377EE509n8trVH0NlM5MxudSFFeYirJXCwfClE/Lnwi7Q=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1u6qOB-00A5Ye-QJ; Mon, 21 Apr 2025 14:36:43 +0200
+Date: Mon, 21 Apr 2025 14:36:43 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+	mhklinux@outlook.com, pasha.tatashin@soleen.com,
+	kent.overstreet@linux.dev, brett.creeley@amd.com,
+	schakrabarti@linux.microsoft.com, shradhagupta@linux.microsoft.com,
+	ssengar@linux.microsoft.com, leon@kernel.org, rosenp@gmail.com,
+	paulros@microsoft.com, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] net: mana: Add speed support in
+ mana_get_link_ksettings
+Message-ID: <c481c8a8-4e0f-4498-89f9-988673a584f6@lunn.ch>
+References: <1745217220-11468-1-git-send-email-ernis@linux.microsoft.com>
+ <1745217220-11468-2-git-send-email-ernis@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -58,23 +69,29 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <174515167383.720316.10548192191975881376.b4-ty@kernel.org>
+In-Reply-To: <1745217220-11468-2-git-send-email-ernis@linux.microsoft.com>
 
-On Sun, Apr 20, 2025 at 08:21:13AM -0400, Leon Romanovsky wrote:
-> 
-> On Fri, 18 Apr 2025 16:56:41 +0800, Junxian Huang wrote:
-> > Add trace support for hns. Set tracepoints for flushe CQE, WQE,
-> > AEQE, MT/MTR and CMDQ.
-> > 
-> > Patch #5 fixes the dependency issue of hns_roce_hw_v2.h on hnae3.h,
-> > otherwise there will be a compilation error when hns_roce_hw_v2.h
-> > is included in hns_roce_trace.h in patch #6.
-> > 
-> > [...]
-> 
-> Applied, thanks!
+On Sun, Apr 20, 2025 at 11:33:38PM -0700, Erni Sri Satya Vennela wrote:
+> Add support for speed in mana ethtool get_link_ksettings
+> operation. This feature is not supported by all hardware.
 
-I dropped this.
+This needs a lot more justification. tc(1) will show you the current
+HTB Qdisc setting. No other MAC driver i know of will show you Qdisc
+info in ksettings. So why is mana special?
 
-Thanks
+Something your said in an earlier thread might be relevant here. There
+are two shaper settings involved. The Hypervisor can configure a
+limit, which the VM has no control over. And then you have this second
+limit the VM can set, which only has any effect if it is lower than
+the hypervisor limit.
+
+The hypervisor limit is much more like the value ksettings represents,
+the media speed, which is impossible to go above, and the machine has
+no control over. Reporting that limit in ksettings would seem
+reasonable. But it does not appear your firmware offers that?
+
+    Andrew
+
+---
+pw-bot: cr
 
