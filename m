@@ -1,162 +1,118 @@
-Return-Path: <linux-rdma+bounces-9623-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9624-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16CFEA94B92
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 05:13:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A1F8A94C92
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 08:33:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F67B7A29AF
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 03:12:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 025F518914DC
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 06:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753882571A6;
-	Mon, 21 Apr 2025 03:13:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0ADC257448;
+	Mon, 21 Apr 2025 06:33:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="L2V2YCr8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66A3D2AF11;
-	Mon, 21 Apr 2025 03:13:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.63.66.53
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3932110;
+	Mon, 21 Apr 2025 06:33:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745205206; cv=none; b=eNMsvrPIooyzaU+ezylc62K+6BUDXHPOtYgNNT3buBoRPEPby66Ht6UQkr1gkV9e6TQaEYK8gyJZ+An+5T1ZERiHudbucw0+uMd7q/Ufl+PDtPJyT4LwQk8t4AuxObrWZSSWOOdwbQma0S8mpREmQKUIlX7U1uZWvvG0ZwPgaLE=
+	t=1745217225; cv=none; b=j28XLFQqan2MiH5y5yaesNb065l9/THjiehXJIAnFqoJTlQ6JDBte3K1Xe/Tfq+K5lpES3bgp3VKNvKsrJHfFzh6JJojNPlHKfHu8wdhVxSxjIJ/eFJ14HygByqsOkcUXUV16Ais/yfAeq2NWZqv8TZhnnjLz4M7I0oo86oDi2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745205206; c=relaxed/simple;
-	bh=DGKXx6NAQgM6C+8Fsi2EeXAdX5/lAXsTwPqKFGe0M4M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aJF7kd/QKuuMvV/E3smXdpfL4+XnP1ItdkAaQ0CYybCBH6J991QFoRqYTi52yJ/N2t/NrJrUUgfhg4FA4ViBeaX/z1gFvz1T7jxpF0GtkKx6an4FouNvsHWHxhOOenNT7CZa4msuIdj87b9ynq9+hADvnzUjQGNflI8yVySaZr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hallyn.com; spf=pass smtp.mailfrom=mail.hallyn.com; arc=none smtp.client-ip=178.63.66.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hallyn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.hallyn.com
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-	id 4C8F8E37; Sun, 20 Apr 2025 22:13:20 -0500 (CDT)
-Date: Sun, 20 Apr 2025 22:13:20 -0500
-From: "Serge E. Hallyn" <serge@hallyn.com>
-To: Parav Pandit <parav@nvidia.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>,
-	"serge@hallyn.com" <serge@hallyn.com>,
-	Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH] RDMA/uverbs: Consider capability of the process that
- opens the file
-Message-ID: <20250421031320.GA579226@mail.hallyn.com>
-References: <20250313050832.113030-1-parav@nvidia.com>
- <20250317193148.GU9311@nvidia.com>
- <CY8PR12MB7195C6D8CCE062CFD9D0174CDCDE2@CY8PR12MB7195.namprd12.prod.outlook.com>
- <20250318112049.GC9311@nvidia.com>
- <87ldt2yur4.fsf@email.froward.int.ebiederm.org>
- <20250318225709.GC9311@nvidia.com>
- <CY8PR12MB7195B7FAA54E7E0264D28BAEDCA92@CY8PR12MB7195.namprd12.prod.outlook.com>
+	s=arc-20240116; t=1745217225; c=relaxed/simple;
+	bh=j/Vw2G+VjM1+h4gptLRgRv/M5MBFTvylxUyExbCn99s=;
+	h=From:To:Subject:Date:Message-Id; b=P/ui+Hjgho4+jqNfLaczvQFQzuxeIuVYe7xSaudsKNcsqFCtr/DKYjsEhjRTib1NdJKsmwzDHuFiIH9ckENdIPRcfJyavDlWPPIlcr5R5nmyt3Noprtg0bhAkDkpO3LdeBoD9EN4hdQdkWlac806M3kfziFlUpFMVweEzLB9CRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=L2V2YCr8; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id C01F0203B848; Sun, 20 Apr 2025 23:33:42 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C01F0203B848
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1745217222;
+	bh=SuSunARB7xTcRbogkHTN30O8aKzzfUDRXpW52WZtbTs=;
+	h=From:To:Subject:Date:From;
+	b=L2V2YCr8LMiSiS21+xgeRnvYrhTnk9jGE0gnVaN10ZXy1nAWSyBnK+7G8yyUmO5fz
+	 9ZB8+MbsQeYYemnBCAp3N4IiDtgFfqMylUqX4KGp8aqIGjUBIpmywqW4suupnIbeiP
+	 Zx67wy+MprsmIPfPQRltmOFaQMaunlOYSC7RAuMc=
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	longli@microsoft.com,
+	kotaranov@microsoft.com,
+	horms@kernel.org,
+	mhklinux@outlook.com,
+	pasha.tatashin@soleen.com,
+	ernis@linux.microsoft.com,
+	kent.overstreet@linux.dev,
+	brett.creeley@amd.com,
+	schakrabarti@linux.microsoft.com,
+	shradhagupta@linux.microsoft.com,
+	ssengar@linux.microsoft.com,
+	leon@kernel.org,
+	rosenp@gmail.com,
+	paulros@microsoft.com,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH v2 0/3] net: mana: Add HTB Qdisc offload support
+Date: Sun, 20 Apr 2025 23:33:37 -0700
+Message-Id: <1745217220-11468-1-git-send-email-ernis@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY8PR12MB7195B7FAA54E7E0264D28BAEDCA92@CY8PR12MB7195.namprd12.prod.outlook.com>
 
-On Fri, Apr 04, 2025 at 02:53:30PM +0000, Parav Pandit wrote:
-> Hi Eric, Jason,
+Introduce support for HTB Qdisc offload on the mana ethernet 
+controller to enable bandwidth clamping for egress traffic.
 
-Hi,
+The controller offloads only one HTB leaf to support bandwidth
+clamping on the hardware. This involves calling the function 
+mana_set_bw_clamp() which internally calls a HWC command 
+to the hardware to set the speed.
 
-I'm jumping back up the thread as I think this email best details the
-things I'm confused about :)  Three questions below in two different
-stanzas.
+The minimum supported bandwidth is 100 Mbps, and only multiples
+of 100 Mbps are supported by the hardware. The speed will be reset to
+maximum bandwidth supported by the SKU, when the HTB leaf is deleted.
 
-> To summarize,
-> 
-> 1. A process can open an RDMA resource (such as a raw QP, raw flow entry, or similar 'raw' resource)
-> through the fd using ioctl(), if it has the appropriate capability, which in this case is CAP_NET_RAW.
+Also add speed support in mana_get_link_ksettings to display speed in the
+standard port information using ethtool. This involves calling
+mana_query_link_config(), which internally sends a HWC command to
+the hardware to query speed information.
 
-Why does it need CAP_NET_RAW to create the resource, if the resource won't
-be usable by a process without CAP_NET_RAW later anyway?  Is that legacy
-for the read/write (vs ioctl) case?  Or is it to limit the number of
-opened resources?  Or some other reason?
+Note that this feature is not supported by all hardware.
 
-Is the resource which is created tied to the net namespce of the process
-which created it?
+---
+Changes in v2:
+* Use -EOPNOTSUPP instead of -EPROTO in mana_query_link_cfg() 
+  and mana_set_bw_clamp()
+* Change link_speed to link_speed_mbps in struct mana_set_bw_clamp_req.
+---
+Erni Sri Satya Vennela (3):
+  net: mana: Add speed support in mana_get_link_ksettings
+  net: mana: Add sched HTB offload support
+  net: mana: Handle unsupported HWC commands
 
-> This is similar to a process that opens a raw socket.
-> 
-> 2. Given that RDMA uses ioctl() for resource creation, there isn't a security concern surrounding
-> the read()/write() system calls.
-> 
-> 3. If process A, which does not have CAP_NET_RAW, passes the opened fd to another privileged
-> process B, which has CAP_NET_RAW, process B can open the raw RDMA resource.
-> This is still within the kernel-defined security boundary, similar to a raw socket.
-> 
-> 4. If process A, which has the CAP_NET_RAW capability, passes the file descriptor to Process B, which does not have CAP_NET_RAW, Process B will not be able to open the raw RDMA resource.
-> 
-> Do we agree on this Eric?
-> 
-> Assuming yes, to extend this, further,
-> 
-> 5. the process's capability check should be done in the right user namespace.
-> (instead of current in default user ns).
-> The right user namespace is the one which created the net namespace.
+ .../net/ethernet/microsoft/mana/hw_channel.c  |   4 +
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 191 ++++++++++++++++++
+ .../ethernet/microsoft/mana/mana_ethtool.c    |   6 +
+ include/net/mana/mana.h                       |  36 ++++
+ 4 files changed, 237 insertions(+)
 
-"the one which created THE net namespace" - which net namespace?   The
-one in which the process which created the resource belonged, or the
-one in which the current process (calling ioctl) belongs?
+-- 
+2.34.1
 
-> This is because rdma networking resources are governed by the net namespace.
-> 
-> Above #5 aligns with the example from existing kernel doc snippet below [1] and few kernel examples of [2].
-> 
-> For example, suppose that a process attempts to change
->        the hostname (sethostname(2)), a resource governed by the UTS
->        namespace.  In this case, the kernel will determine which user
->        namespace owns the process's UTS namespace, and check whether the
->        process has the required capability (CAP_SYS_ADMIN) in that user
->        namespace.
-> 
-> [1] https://man7.org/linux/man-pages/man7/user_namespaces.7.html
-> 
-> [2] examples snippet that follows above guidance of #5.
-> 
-> File: drivers/infiniband/core/device.c  
-> Function: ib_device_set_netns_put()
-> For net namespace:
-> 
->          if (!netlink_ns_capable(skb, net->user_ns, CAP_NET_ADMIN)) {
->                  ret = -EPERM;
->                  goto ns_err;
->          }
->  
-> File: fs/namespace.c 
-> For mount namespace:
->         if (!ns_capable(from->mnt_ns->user_ns, CAP_SYS_ADMIN))
->                 goto out;
->         if (!ns_capable(to->mnt_ns->user_ns, CAP_SYS_ADMIN))
->                 goto out;
->  
-> For uts ns:
->  static int utsns_install(struct nsset *nsset, struct ns_common *new)
->  {
->          struct nsproxy *nsproxy = nsset->nsproxy;
->          struct uts_namespace *ns = to_uts_ns(new);
-> 
->          if (!ns_capable(ns->user_ns, CAP_SYS_ADMIN) ||
->              !ns_capable(nsset->cred->user_ns, CAP_SYS_ADMIN))
->                  return -EPERM;
->  
-> For net ns:
-> File: net/core/dev_ioctl.c
->          case SIOCSHWTSTAMP:
->                  if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
->                          return -EPERM;
->                  fallthrough;
->  
-> static int do_arpt_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
-> {
->          int ret;
-> 
->          if (!ns_capable(sock_net(sk)->user_ns, CAP_NET_ADMIN))
->                  return -EPERM;
 
