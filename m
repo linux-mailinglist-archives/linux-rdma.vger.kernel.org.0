@@ -1,101 +1,93 @@
-Return-Path: <linux-rdma+bounces-9650-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9651-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CC67A955CF
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 20:15:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADB08A955D7
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 20:21:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D9CA7A824E
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 18:14:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F1CC188F5B3
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 18:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52AD41E9B1B;
-	Mon, 21 Apr 2025 18:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B461E5B83;
+	Mon, 21 Apr 2025 18:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="U3WelcRf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BqAvUn3q"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A804D1E9B18;
-	Mon, 21 Apr 2025 18:14:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978E01E5729
+	for <linux-rdma@vger.kernel.org>; Mon, 21 Apr 2025 18:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745259260; cv=none; b=rEnxmzjOKYkZm94gh3xaiWRujTaM5nprH2/Sv/ZyZeokhlhfOA57Ewy0jMhq/QRfsssQctrYzl8gL+8WoDzekIAmgFHRf+PKrkQ+hSv4xIy1x3Zei/hbSiNltMlGgI3vJ29mJuE/hs23klwQxPdukDQDZZBOX0jw2DIxF7ufOlA=
+	t=1745259677; cv=none; b=n4cMLBO6mxXW3TvoWtwsCw/Y+8ex8RC0Izu7gnKTJWQly6duh24Jt/KiwvzAiqUHcAIVlvgijahrH2y0A9hMIWpFuD9cMpZIDpysBe7ExU6Yco63ylGNs6dK914dUbrJiATf8Kq3dLEa70TsmoQCgDUlxor4DfBXalLPFVXpJ20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745259260; c=relaxed/simple;
-	bh=WU7+PH7Aon92/3Ezl8juCWIV0+5fdafHUQuh8yPApZk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U6QYIkp+Zgy3X1cgO9laLUR4WWw2FOjeQ/NnDvDwsXaV6NsiRFa5kELN/EDa1SoqM/E48/u9OioWbrSW772MNJC81L56Z7ZBc6GAPYXXMSi4Doj08CdO/a6xgFRhq4JgBgFTdHsbGK45MJVcnPKnf6QpHfKQTC1gMUxsMjdhFWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=U3WelcRf; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id 13DA1203B867; Mon, 21 Apr 2025 11:14:12 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 13DA1203B867
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1745259252;
-	bh=GPITtWCUzrpM+RzwsOn+M9sSZbmXk+2qVYGwk2dgTOA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=U3WelcRfP+3HM6y55yij5DGCLK+oXqsouZjg849PRjBIINHAE/30U8qeV4J8UstMa
-	 +m4cuHqfTgCfWy2gkCXCXpMjuPoZWuW4daoTLI1xwt3ZVnsmp/b222mRvSXxdLhacY
-	 kulOIeKgnusVMKYOIzrlt3ci3wp9C644FFmngqic=
-Date: Mon, 21 Apr 2025 11:14:12 -0700
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
-	mhklinux@outlook.com, pasha.tatashin@soleen.com,
-	kent.overstreet@linux.dev, brett.creeley@amd.com,
-	schakrabarti@linux.microsoft.com, shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com, leon@kernel.org, rosenp@gmail.com,
-	paulros@microsoft.com, linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] net: mana: Add speed support in
- mana_get_link_ksettings
-Message-ID: <20250421181412.GA5652@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1745217220-11468-1-git-send-email-ernis@linux.microsoft.com>
- <1745217220-11468-2-git-send-email-ernis@linux.microsoft.com>
- <c481c8a8-4e0f-4498-89f9-988673a584f6@lunn.ch>
+	s=arc-20240116; t=1745259677; c=relaxed/simple;
+	bh=1f8uYyOoTcQj4gbrty0YoZr8it2hQ2ARZmae+NGXQ48=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=tG4ySuPO6SnyMnjXH9iRIo9tpwcqHjs+B83gW8YgD7MwjhLY9KFMS2I0Um1qMBqldLu5hxqVWVhLVUPCkINlkVSkpuOiKxRfLKObYabQoAYKmVIYnAE1thfRYGpiCX8xwagIaFP92WKoC3ivNXsPtJRh+s1SYZEJBVd3wOWIxo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BqAvUn3q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C8D8C4CEE4;
+	Mon, 21 Apr 2025 18:21:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745259676;
+	bh=1f8uYyOoTcQj4gbrty0YoZr8it2hQ2ARZmae+NGXQ48=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=BqAvUn3qrJpWPBLMoQ7TVqRTRHP7lAu4mDE9z6pBDUFG/tKtcLpJ0zB7LdwCu6J86
+	 LLv0+6hTTE11SZg6+iswNbbnrbJ66/rTeSdgO8OYdb9LC/fv76pG+/jZiJGsX/m6hK
+	 ei83Os/E0T3mzcJEYAOS2fXaRNlBOwIpHVFQPPF8IBc8UUjgWYBNH8Wjbh+c6Upnve
+	 LNjiz3GeOvz4wnx+HlYMGIfHu0sUCA3g539zCD+KGBnJaCtNluBhsmiTYLYI3l4xNF
+	 dOIBd6CgPBGNE4Sny34ml0iHEmDWLPuaK3RUoSC0MOwCIFMleVPZKypW4zbnRr7X5w
+	 juU2/Dw6mImIg==
+From: Leon Romanovsky <leon@kernel.org>
+To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
+ tangchengchang@huawei.com
+In-Reply-To: <20250421132750.1363348-1-huangjunxian6@hisilicon.com>
+References: <20250421132750.1363348-1-huangjunxian6@hisilicon.com>
+Subject: Re: [PATCH v2 for-next 0/6] RDMA/hns: Add trace support
+Message-Id: <174525967272.140063.10385292481504861063.b4-ty@kernel.org>
+Date: Mon, 21 Apr 2025 14:21:12 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c481c8a8-4e0f-4498-89f9-988673a584f6@lunn.ch>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-On Mon, Apr 21, 2025 at 02:36:43PM +0200, Andrew Lunn wrote:
-> On Sun, Apr 20, 2025 at 11:33:38PM -0700, Erni Sri Satya Vennela wrote:
-> > Add support for speed in mana ethtool get_link_ksettings
-> > operation. This feature is not supported by all hardware.
+
+On Mon, 21 Apr 2025 21:27:44 +0800, Junxian Huang wrote:
+> Add trace support for hns. Set tracepoints for flushe CQE, WQE,
+> AEQE, MT/MTR and CMDQ.
 > 
-> This needs a lot more justification. tc(1) will show you the current
-> HTB Qdisc setting. No other MAC driver i know of will show you Qdisc
-> info in ksettings. So why is mana special?
+> Patch #5 fixes the dependency issue of hns_roce_hw_v2.h on hnae3.h,
+> otherwise there will be a compilation error when hns_roce_hw_v2.h
+> is included in hns_roce_trace.h in patch #6.
 > 
-> Something your said in an earlier thread might be relevant here. There
-> are two shaper settings involved. The Hypervisor can configure a
-> limit, which the VM has no control over. And then you have this second
-> limit the VM can set, which only has any effect if it is lower than
-> the hypervisor limit.
-> 
-> The hypervisor limit is much more like the value ksettings represents,
-> the media speed, which is impossible to go above, and the machine has
-> no control over. Reporting that limit in ksettings would seem
-> reasonable. But it does not appear your firmware offers that?
-> 
->     Andrew
-> 
-Yes, that is correct. I will keep the ethtool mana_get_link_ksettings
-unchanged, since the link speed can be reported using tc too. I will
-make this change in the next version of the patch.
-Thankyou for the pointer, Andrew.
-> ---
-> pw-bot: cr
+> [...]
+
+Applied, thanks!
+
+[1/6] RDMA/hns: Add trace for flush CQE
+      https://git.kernel.org/rdma/rdma/c/02007e3ddc0790
+[2/6] RDMA/hns: Add trace for WQE dumping
+      https://git.kernel.org/rdma/rdma/c/6c98c86708063a
+[3/6] RDMA/hns: Add trace for AEQE dumping
+      https://git.kernel.org/rdma/rdma/c/1e63e2f96613bc
+[4/6] RDMA/hns: Add trace for MR/MTR attribute dumping
+      https://git.kernel.org/rdma/rdma/c/48ffc152576d63
+[5/6] RDMA/hns: Include hnae3.h in hns_roce_hw_v2.h
+      https://git.kernel.org/rdma/rdma/c/2b11d33de23262
+[6/6] RDMA/hns: Add trace for CMDQ dumping
+      https://git.kernel.org/rdma/rdma/c/6bd18dabf1c946
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
