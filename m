@@ -1,112 +1,109 @@
-Return-Path: <linux-rdma+bounces-9637-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9638-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08493A95149
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 15:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA69BA95152
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 15:02:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E560B18936C9
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 13:00:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2B701881F17
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 13:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AABCE264A9E;
-	Mon, 21 Apr 2025 13:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A321263F3F;
+	Mon, 21 Apr 2025 13:01:56 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF7027450;
-	Mon, 21 Apr 2025 13:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.63.66.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2ACF20C037
+	for <linux-rdma@vger.kernel.org>; Mon, 21 Apr 2025 13:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745240430; cv=none; b=fJhm33Gad1bndEFtFvGcpcfbcRXDf2QdicQFhXWcksf2rB8qXZ6Qvnvc2dOUDn7whyZxVzEF5r5A0mt5NSfGSE4PcFXv38RI1doe3BXmLf8DyhO7eK4GGp4ctLpb8CXvlPAWpXoiLIQ8whLQnlpKMsCAoOV+CGtVQNsvxEMNA6c=
+	t=1745240516; cv=none; b=K/yrJ52Eci0XQjmTCcuhqwYWrEXO/KbZ/NTwnYkc6kvP91vmQQ+RsihfK1hwHh2wUtVE8MQbiDJYdZ1VmAxMFOLANSPse0lyRqK/CMHJ1tRFDfK0CEswzLGBEiszHFJ8+rtgiJvQJhcdBtq4+H6KJ0bxnGqyjkIzRnVAiNwvjJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745240430; c=relaxed/simple;
-	bh=aXdgcgmaKhXuwAZt6FT8109q9UqhM6nSsCnSOGiWAIg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s1WQo91QjnsTTDDjiESL4rAasldtQKt1w5O4rIbTu51jXfjPRJL6DikxblGKt04ve2+pIiHUlqnX37TBt7gxvcL8FBeWtLxz1uUIggQfDAIFG6fJMy5lstkstbLyZWtq1Z9iFqH8EKpuOKD9L50Gyw7NTqm9tXOhy6W32DXhqNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hallyn.com; spf=pass smtp.mailfrom=mail.hallyn.com; arc=none smtp.client-ip=178.63.66.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hallyn.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.hallyn.com
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-	id 52545A9F; Mon, 21 Apr 2025 08:00:24 -0500 (CDT)
-Date: Mon, 21 Apr 2025 08:00:24 -0500
-From: "Serge E. Hallyn" <serge@hallyn.com>
-To: Parav Pandit <parav@nvidia.com>
-Cc: "Serge E. Hallyn" <serge@hallyn.com>, Jason Gunthorpe <jgg@nvidia.com>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>,
-	Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH] RDMA/uverbs: Consider capability of the process that
- opens the file
-Message-ID: <20250421130024.GA582222@mail.hallyn.com>
-References: <20250313050832.113030-1-parav@nvidia.com>
- <20250317193148.GU9311@nvidia.com>
- <CY8PR12MB7195C6D8CCE062CFD9D0174CDCDE2@CY8PR12MB7195.namprd12.prod.outlook.com>
- <20250318112049.GC9311@nvidia.com>
- <87ldt2yur4.fsf@email.froward.int.ebiederm.org>
- <20250318225709.GC9311@nvidia.com>
- <CY8PR12MB7195B7FAA54E7E0264D28BAEDCA92@CY8PR12MB7195.namprd12.prod.outlook.com>
- <20250421031320.GA579226@mail.hallyn.com>
- <CY8PR12MB7195E4A0C6E019F10222B543DCB82@CY8PR12MB7195.namprd12.prod.outlook.com>
+	s=arc-20240116; t=1745240516; c=relaxed/simple;
+	bh=PSfJDVxKiEcou6GYNcjarRQPGNhYriHtu6K02ncg7lc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=q4BTnnNqiYIkPHvVP3g96NqRYHE6RBASF+TT2hpLNG2kjwipgtg9dodyR88VGoOjXgQvEwlxddz3J3QfRr70hMs7ka5CARXiC3mmUjBFATeSeXhvFnPea8mIB34sLY25QNy0p9C8K4fjWeer0AKvXhJMxw2D+qK29sCrnJtN29M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Zh54j3vm9zvWq8;
+	Mon, 21 Apr 2025 20:57:41 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id DA7D3140121;
+	Mon, 21 Apr 2025 21:01:49 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 21 Apr 2025 21:01:49 +0800
+Message-ID: <108d44f3-c336-52da-c86b-5c4bfe2ac18d@hisilicon.com>
+Date: Mon, 21 Apr 2025 21:01:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY8PR12MB7195E4A0C6E019F10222B543DCB82@CY8PR12MB7195.namprd12.prod.outlook.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH for-next 0/6] RDMA/hns: Add trace support
+To: Leon Romanovsky <leon@kernel.org>
+CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<tangchengchang@huawei.com>
+References: <20250418085647.4067840-1-huangjunxian6@hisilicon.com>
+ <20250420151118.GD10635@unreal>
+Content-Language: en-US
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20250420151118.GD10635@unreal>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-On Mon, Apr 21, 2025 at 11:04:57AM +0000, Parav Pandit wrote:
+
+
+On 2025/4/20 23:11, Leon Romanovsky wrote:
+> On Fri, Apr 18, 2025 at 04:56:41PM +0800, Junxian Huang wrote:
+>> Add trace support for hns. Set tracepoints for flushe CQE, WQE,
+>> AEQE, MT/MTR and CMDQ.
+>>
+>> Patch #5 fixes the dependency issue of hns_roce_hw_v2.h on hnae3.h,
+>> otherwise there will be a compilation error when hns_roce_hw_v2.h
+>> is included in hns_roce_trace.h in patch #6.
+>>
+>> Junxian Huang (6):
+>>   RDMA/hns: Add trace for flush CQE
+>>   RDMA/hns: Add trace for WQE dumping
+>>   RDMA/hns: Add trace for AEQE dumping
+>>   RDMA/hns: Add trace for MR/MTR attribute dumping
+>>   RDMA/hns: Include hnae3.h in hns_roce_hw_v2.h
+>>   RDMA/hns: Add trace for CMDQ dumping
+>>
+>>  drivers/infiniband/hw/hns/hns_roce_ah.c       |   1 -
+>>  drivers/infiniband/hw/hns/hns_roce_device.h   |  20 ++
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c    |  19 +-
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h    |   1 +
+>>  drivers/infiniband/hw/hns/hns_roce_main.c     |   1 -
+>>  drivers/infiniband/hw/hns/hns_roce_mr.c       |   3 +
+>>  drivers/infiniband/hw/hns/hns_roce_restrack.c |   1 -
+>>  drivers/infiniband/hw/hns/hns_roce_trace.h    | 213 ++++++++++++++++++
+>>  8 files changed, 255 insertions(+), 4 deletions(-)
+>>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_trace.h
 > 
-> > From: Serge E. Hallyn <serge@hallyn.com>
-> > Sent: Monday, April 21, 2025 8:43 AM
-> > 
-> > On Fri, Apr 04, 2025 at 02:53:30PM +0000, Parav Pandit wrote:
-> > > Hi Eric, Jason,
-> > 
-> > Hi,
-> > 
-> > I'm jumping back up the thread as I think this email best details the things I'm
-> > confused about :)  Three questions below in two different stanzas.
-> > 
-> > > To summarize,
-> > >
-> > > 1. A process can open an RDMA resource (such as a raw QP, raw flow
-> > > entry, or similar 'raw' resource) through the fd using ioctl(), if it has the
-> > appropriate capability, which in this case is CAP_NET_RAW.
-> > 
-> > Why does it need CAP_NET_RAW to create the resource, if the resource won't
-> > be usable by a process without CAP_NET_RAW later anyway?  
-> Once the resource is created, and the fd is shared (like a raw socket fd), it will be usable by a process without CAP_NET_RAW.
-> Is that a concern? If yes, how is it solved for raw socket fd? It appears to me that it is not.
+> Please change trace_drv_* calls to have a name of your driver, e.g.
+> trace_drv_mr() -> trace_hns_mr().
 > 
-> > Is that legacy
-> > for the read/write (vs ioctl) case?  
-> No.
+
+Sure
+
+> Thanks
 > 
-> > Or is it to limit the number of opened
-> > resources?  Or some other reason?
-> > 
-> The resource enables to do raw operation, hence the capability check of the process for having NET_RAW cap.
-
-Ok, so it seems to me that
-
-1. the create should check ns_capable(current->nsproxy->net->user_ns, CAP_NET_RAW)
-2. the read/write are a known escape, eventually to be removed?
-3. the ioctl should check file_ns_capable(attrs->ufile->filp->f_cred->user_ns, CAP_NET_RAW)
-
-Two notes about (3).  First, note that it's different from what you had.
-It explicitly checks that the caller has CAP_NET_RAW against the net
-namespace that was used to open the file.  Second, I'm suggesting this
-because Jason does keep saying that ioctl is supposed to solve the
-missing permission check.  If it really is felt that no permission
-check should be needed, that's a different discussion.  I've just been
-trying to figure out where the state should be tracked.
-
--serge
+>>
+>> --
+>> 2.33.0
+>>
+>>
 
