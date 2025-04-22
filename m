@@ -1,93 +1,89 @@
-Return-Path: <linux-rdma+bounces-9651-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9652-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADB08A955D7
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 20:21:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 764F3A95CE3
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 06:23:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F1CC188F5B3
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Apr 2025 18:21:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B132A174EDF
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 04:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B461E5B83;
-	Mon, 21 Apr 2025 18:21:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BqAvUn3q"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212111A2C11;
+	Tue, 22 Apr 2025 04:23:40 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978E01E5729
-	for <linux-rdma@vger.kernel.org>; Mon, 21 Apr 2025 18:21:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7AD18A6AB;
+	Tue, 22 Apr 2025 04:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745259677; cv=none; b=n4cMLBO6mxXW3TvoWtwsCw/Y+8ex8RC0Izu7gnKTJWQly6duh24Jt/KiwvzAiqUHcAIVlvgijahrH2y0A9hMIWpFuD9cMpZIDpysBe7ExU6Yco63ylGNs6dK914dUbrJiATf8Kq3dLEa70TsmoQCgDUlxor4DfBXalLPFVXpJ20=
+	t=1745295819; cv=none; b=W8U4DKMbYI7kJPrTrF1DGgg98pnfL4m05E9q3QVfrWeEg9nfOTvFrJ7hXqO39sDZfr/3o9dDIFPbA/4+Cgo7Sjqek6wvv3f5v0mEB5yRpPdP2YG5Syp/XcV0VMprozE9Nu4yF1ou8oDgkB54qa99LAYngFkL9pQWxhIPFM55PRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745259677; c=relaxed/simple;
-	bh=1f8uYyOoTcQj4gbrty0YoZr8it2hQ2ARZmae+NGXQ48=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=tG4ySuPO6SnyMnjXH9iRIo9tpwcqHjs+B83gW8YgD7MwjhLY9KFMS2I0Um1qMBqldLu5hxqVWVhLVUPCkINlkVSkpuOiKxRfLKObYabQoAYKmVIYnAE1thfRYGpiCX8xwagIaFP92WKoC3ivNXsPtJRh+s1SYZEJBVd3wOWIxo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BqAvUn3q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C8D8C4CEE4;
-	Mon, 21 Apr 2025 18:21:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745259676;
-	bh=1f8uYyOoTcQj4gbrty0YoZr8it2hQ2ARZmae+NGXQ48=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=BqAvUn3qrJpWPBLMoQ7TVqRTRHP7lAu4mDE9z6pBDUFG/tKtcLpJ0zB7LdwCu6J86
-	 LLv0+6hTTE11SZg6+iswNbbnrbJ66/rTeSdgO8OYdb9LC/fv76pG+/jZiJGsX/m6hK
-	 ei83Os/E0T3mzcJEYAOS2fXaRNlBOwIpHVFQPPF8IBc8UUjgWYBNH8Wjbh+c6Upnve
-	 LNjiz3GeOvz4wnx+HlYMGIfHu0sUCA3g539zCD+KGBnJaCtNluBhsmiTYLYI3l4xNF
-	 dOIBd6CgPBGNE4Sny34ml0iHEmDWLPuaK3RUoSC0MOwCIFMleVPZKypW4zbnRr7X5w
-	 juU2/Dw6mImIg==
-From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
- tangchengchang@huawei.com
-In-Reply-To: <20250421132750.1363348-1-huangjunxian6@hisilicon.com>
-References: <20250421132750.1363348-1-huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH v2 for-next 0/6] RDMA/hns: Add trace support
-Message-Id: <174525967272.140063.10385292481504861063.b4-ty@kernel.org>
-Date: Mon, 21 Apr 2025 14:21:12 -0400
+	s=arc-20240116; t=1745295819; c=relaxed/simple;
+	bh=ZsL/pPv9Fie+gQQJKm5n3DFw8zPfnFLMFMmjcCsXAtk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dl540kjUs74H43ype5hpehida0zKhqqhXqzFxW8fsStsQZvnJ9Vdxt2LIub3dRyZRU4ajnlq+eqeZTPf2GK1wGpz6aO+I72QKsoVVkX0tVEeGz0E5enCaXcoIWcbRKClUK0ubrh6WILn3uha+eSMNyZNSCFQN+6LCdQND4YHC9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id A64FD68BFE; Tue, 22 Apr 2025 06:23:30 +0200 (CEST)
+Date: Tue, 22 Apr 2025 06:23:30 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
+	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+	Keith Busch <kbusch@kernel.org>,
+	Leon Romanovsky <leonro@nvidia.com>, Jake Edge <jake@lwn.net>,
+	Jonathan Corbet <corbet@lwn.net>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Kanchan Joshi <joshi.k@samsung.com>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH v8 04/24] iommu: add kernel-doc for iommu_unmap and
+ iommu_unmap_fast
+Message-ID: <20250422042330.GA27723@lst.de>
+References: <cover.1744825142.git.leon@kernel.org> <d3ad1e84d896aea97ebbd01c414fb1f07dc791d3.1744825142.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d3ad1e84d896aea97ebbd01c414fb1f07dc791d3.1744825142.git.leon@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-
-On Mon, 21 Apr 2025 21:27:44 +0800, Junxian Huang wrote:
-> Add trace support for hns. Set tracepoints for flushe CQE, WQE,
-> AEQE, MT/MTR and CMDQ.
+On Fri, Apr 18, 2025 at 09:47:34AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> Patch #5 fixes the dependency issue of hns_roce_hw_v2.h on hnae3.h,
-> otherwise there will be a compilation error when hns_roce_hw_v2.h
-> is included in hns_roce_trace.h in patch #6.
-> 
-> [...]
+> Add kernel-doc section for iommu_unmap and iommu_unmap_fast to document
+> existing limitation of underlying functions which can't split individual
+> ranges.
 
-Applied, thanks!
-
-[1/6] RDMA/hns: Add trace for flush CQE
-      https://git.kernel.org/rdma/rdma/c/02007e3ddc0790
-[2/6] RDMA/hns: Add trace for WQE dumping
-      https://git.kernel.org/rdma/rdma/c/6c98c86708063a
-[3/6] RDMA/hns: Add trace for AEQE dumping
-      https://git.kernel.org/rdma/rdma/c/1e63e2f96613bc
-[4/6] RDMA/hns: Add trace for MR/MTR attribute dumping
-      https://git.kernel.org/rdma/rdma/c/48ffc152576d63
-[5/6] RDMA/hns: Include hnae3.h in hns_roce_hw_v2.h
-      https://git.kernel.org/rdma/rdma/c/2b11d33de23262
-[6/6] RDMA/hns: Add trace for CMDQ dumping
-      https://git.kernel.org/rdma/rdma/c/6bd18dabf1c946
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+This actually only adds kerneldoc to iommu_unmap_fast.
 
 
