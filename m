@@ -1,44 +1,53 @@
-Return-Path: <linux-rdma+bounces-9656-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9657-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3664A95D2A
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 07:01:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3552DA95E28
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 08:28:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 981F61898791
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 05:01:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B438D3A4B73
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 06:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33FC1A314A;
-	Tue, 22 Apr 2025 05:01:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9AC214A71;
+	Tue, 22 Apr 2025 06:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QW0rpbca"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6A2EED6;
-	Tue, 22 Apr 2025 05:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B5FB4778E;
+	Tue, 22 Apr 2025 06:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745298061; cv=none; b=lYVP/2254zc5oA3I+idXj8TwVTBKuiVMQv9tl/7YkGbNMOP2bIcn9gPXk/74PW8RKjo+udyX0Yyyl8Hmj14kuCnGUryT2txgPLoN60NIFua728xtq3yx/X/7JLlpqaTznnN/RMO9yJO+pMzMOdiH+otfSgoen1SvTTrfUHW5qhM=
+	t=1745303278; cv=none; b=u52VX5lk+4WANkpkwZt2Tkek08rT/8uYSvCCDx9lfFVJp8k/NSxiINOzzXC0trNTcNt/iJ2L7Dgd2Eazl+lq6eutQ68ciwhwgRnRPLCalVCnmQvzlKBiTqkXqFDj2xx+nHAJVeDHMfuqq+0k+ITaJL2cTg8vK7A0/3pvLXygfTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745298061; c=relaxed/simple;
-	bh=/ELFZKv4e0D7TteJyW9Rpn8e4XtrEsidyb7gbxlwYqY=;
+	s=arc-20240116; t=1745303278; c=relaxed/simple;
+	bh=K/UAYNGW+EGbI1H04eX8UxOvRa4n5wUxixuO/0uoGJw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aFHEzZDzPNVr2hmgdvvdnOqGOORVR1np0nRqkQmPpUOpPK2xkiH4P9M7Q64VrqPNJoo45rzC22XmMAJvtdeU2zI9H9Gvq0Ezy/7MEewzougAP63tKLhxQI621BRNOVCUnLO1mtgCtK/HMqSVtOvJl1kN+WAxOLcUzMOeLDHKVwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 1414268BFE; Tue, 22 Apr 2025 07:00:51 +0200 (CEST)
-Date: Tue, 22 Apr 2025 07:00:50 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Leon Romanovsky <leon@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qUFvRXDdecCKxXPNQcciMM1owhRX9FxhSiBmf/RRvHtxkheVxtcsSGl+KFW22KR5lT81b9g6FSlrvHNcqhVdfEZaH5wvg0JsiAtp2iD3zQoUhxAtodUZ2CdyZf+PMtO8pGs682G6t2cCncQC490zaR7b4k9JADyRwi24KVPGUEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QW0rpbca; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9B52C4CEED;
+	Tue, 22 Apr 2025 06:27:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745303277;
+	bh=K/UAYNGW+EGbI1H04eX8UxOvRa4n5wUxixuO/0uoGJw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QW0rpbcaMDKlHGvmZFs7EWfVYZTF2SFlCR50sPjI+BZbZ+rHRKg33QAuRqAlmeKwl
+	 hw7/8EB+Yc0MAW3Qcc2No4o//tS1EIta9xnfM9gwive45sVzdc1MfufZEM0Je7cU3m
+	 aXN/RYcmHmsTtDrU6rhjAoII86M7gR1jEbLMKaR9rTZKG93G7wFS8Bjt72MK3PgKrb
+	 X182oDyajkgEYMC5steH0iQSzN8PjLNC22mBrm580ovmf0wwFTcBd93ktJ5YL0a7IO
+	 bXn39Vspt4zw+2SnWqR9Y2E16qv8ASf3RlJw/1bovKeC3C1ijPotmMOhEnBsDMenV+
+	 mMzYy0qavmPEA==
+Date: Tue, 22 Apr 2025 09:27:52 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
 Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-	Keith Busch <kbusch@kernel.org>, Jake Edge <jake@lwn.net>,
-	Jonathan Corbet <corbet@lwn.net>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Jens Axboe <axboe@kernel.dk>, Keith Busch <kbusch@kernel.org>,
+	Jake Edge <jake@lwn.net>, Jonathan Corbet <corbet@lwn.net>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <zyjzyj2000@gmail.com>,
 	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
 	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
 	Bjorn Helgaas <bhelgaas@google.com>,
@@ -60,10 +69,13 @@ Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Kanchan Joshi <joshi.k@samsung.com>,
 	Chaitanya Kulkarni <kch@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH v8 23/24] nvme-pci: convert to blk_rq_dma_map
-Message-ID: <20250422050050.GB28077@lst.de>
-References: <cover.1744825142.git.leon@kernel.org> <f06a04098cb14e1051bddec8a7bdebe1c384d983.1744825142.git.leon@kernel.org>
+	Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH v8 04/24] iommu: add kernel-doc for iommu_unmap and
+ iommu_unmap_fast
+Message-ID: <20250422062752.GA48485@unreal>
+References: <cover.1744825142.git.leon@kernel.org>
+ <d3ad1e84d896aea97ebbd01c414fb1f07dc791d3.1744825142.git.leon@kernel.org>
+ <20250422042330.GA27723@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -72,49 +84,20 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f06a04098cb14e1051bddec8a7bdebe1c384d983.1744825142.git.leon@kernel.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20250422042330.GA27723@lst.de>
 
-> +	dma_len = min_t(u32, length, NVME_CTRL_PAGE_SIZE - (dma_addr & (NVME_CTRL_PAGE_SIZE - 1)));
+On Tue, Apr 22, 2025 at 06:23:30AM +0200, Christoph Hellwig wrote:
+> On Fri, Apr 18, 2025 at 09:47:34AM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > Add kernel-doc section for iommu_unmap and iommu_unmap_fast to document
+> > existing limitation of underlying functions which can't split individual
+> > ranges.
+> 
+> This actually only adds kerneldoc to iommu_unmap_fast.
 
-And overly long line slipped in here during one of the rebases.
+Thanks, Jason documented iommu_unmap in this patch.
+https://lore.kernel.org/r/3-v3-b3a5b5937f56+7bb-arm_no_split_jgg@nvidia.com
 
-> +		/*
-> +		 * We are in this mode as IOVA path wasn't taken and DMA length
-> +		 * is morethan two sectors. In such case, mapping was perfoormed
-> +		 * per-NVME_CTRL_PAGE_SIZE, so unmap accordingly.
-> +		 */
-
-Where does this comment come from?  Lots of spelling errors, and I
-also don't understand what it is talking about as setors are entirely
-irrelevant here.
-
-> +	if (!blk_rq_dma_unmap(req, dev->dev, &iod->dma_state, iod->total_len)) {
-> +		if (iod->cmd.common.flags & NVME_CMD_SGL_METABUF)
-> +			nvme_free_sgls(dev, req);
-
-With the addition of metadata SGL support this also needs to check
-NVME_CMD_SGL_METASEG.
-
-The commit message should also really mentioned that someone
-significantly altered the patch for merging with latest upstream,
-as I as the nominal author can't recognize some of that code.
-
-> +	unsigned int entries = req->nr_integrity_segments;
->  	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
->  
-> +	if (!blk_rq_dma_unmap(req, dev->dev, &iod->dma_meta_state,
-> +			      iod->total_meta_len)) {
-> +		if (entries == 1) {
-> +			dma_unmap_page(dev->dev, iod->meta_dma,
-> +				       rq_integrity_vec(req).bv_len,
-> +				       rq_dma_dir(req));
-> +			return;
->  		}
->  	}
->  
-> +	dma_pool_free(dev->prp_small_pool, iod->meta_list, iod->meta_dma);
-
-This now doesn't unmap for entries > 1 in the non-IOVA case.
-
+I'll update the commit message.
 
