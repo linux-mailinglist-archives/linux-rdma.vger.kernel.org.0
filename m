@@ -1,126 +1,99 @@
-Return-Path: <linux-rdma+bounces-9661-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9662-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F0A9A95FBF
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 09:44:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8046CA963BA
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 11:12:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 214173A6F53
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 07:44:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EE54188BA3B
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 09:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977B31EBA16;
-	Tue, 22 Apr 2025 07:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71FDA256C85;
+	Tue, 22 Apr 2025 09:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UWT8zpQs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VqB6HV0a"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39AFD1AA7BF;
-	Tue, 22 Apr 2025 07:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 225F5253947;
+	Tue, 22 Apr 2025 09:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745307865; cv=none; b=cO17jTsCO7oSyOR3r1LNStvi1N5Jk7hq6pOjo5R30LiL787IV+AmwzaADxGIhXBECqNdb4On6GCDRAQRaxAkWOh/AOCmO3yFzMxjEzzYAEeT7mJEPFr747hNBAzQyKPt4XTJvuNKO814Hf6FshZ93AaxNjwtUAeVV1OVbIGzWDU=
+	t=1745312970; cv=none; b=Za88ygVONqf3KFCucxAkT7GsHNaj7If95p43mnXgkM/7FcaQ+26oy22VVypk9dDuBAwrV8Vhk4gUnBNI1qVyilh0fDg6PrS060x9Sn83bRsievj7AmBbU3e/fp6PuWly1RAkiw6BcmmD6lv/S617ldlBEpnFlezpGXo2nH5Nje8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745307865; c=relaxed/simple;
-	bh=IkpCJe6iK3e0zmgzu4HOe7msfQx4RRcdkVXQ/zE59nM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ghuAmtZq9agKJWtBtrJ4QVSApCurcl/OHo3VzjYE3LoRXfQG064ckH44pn10T8cDP8YjSj/cvjZHRe295IHPKvm1pg8zus3fP2TIEdC+WrLT/eoPByVru5ZdFOTa9VLdEtVC5sYMQZ4bVrMISbblcpHSwltQwnANaZKMvGgpeUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UWT8zpQs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1566FC4CEE9;
-	Tue, 22 Apr 2025 07:44:24 +0000 (UTC)
+	s=arc-20240116; t=1745312970; c=relaxed/simple;
+	bh=LWLwIWIREcnGHVr9V4bXSa6VdoUXdDgUQPuZFLtN2mE=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ToUW/S2DdlIKc8E6/BvSNsBMpdelbxTViDf2cDcAmkZnB4u7KtWOZHrKV0RpXcy6q6ur1fBL+CtFlwXQOEYgnEh/0D607qxz+Z3lj9qbRZiWs5ox8NKqC8HwI532UiOQhm8ZD/ywh2TFD94S0vYEy4By0BuOlKCr9hsPl2rivk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VqB6HV0a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F855C4CEE9;
+	Tue, 22 Apr 2025 09:09:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745307865;
-	bh=IkpCJe6iK3e0zmgzu4HOe7msfQx4RRcdkVXQ/zE59nM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UWT8zpQsdCGRmAI20Z+3AYlApwN36Cmhj6cwB5IbEbE/IARvNVu0tWdo4mIoQ7tla
-	 jNP/ANqauZjnvPJUDWeJ8zADeaD5f36aQ2RWsAs+HUooXKhuTuo6yu/E07zazBROX6
-	 xznqv+BPsU6Ncghg2SNTxJe37syfeyaxQcr9WAF/Foen5407hErRIFOLLYGI7pgvGN
-	 CyJIqFICxTnqDUBmc1sGRXnHfviqEbMmgDyblOZ2xNZJFl02u19GY6Nbpt7EgtHA8c
-	 CrDGpNwLguDhhfqO7ogHBVTsHjC7XaO9VuKIwQLJaY5iHytN6aNXhIGafF6/jV6lt1
-	 HqZxDZY2NWy3Q==
-Date: Tue, 22 Apr 2025 10:44:19 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
-	Jens Axboe <axboe@kernel.dk>, Keith Busch <kbusch@kernel.org>,
-	Kanchan Joshi <joshi.k@samsung.com>, Jake Edge <jake@lwn.net>,
-	Jonathan Corbet <corbet@lwn.net>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>,
-	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Nitesh Shetty <nj.shetty@samsung.com>
-Subject: Re: [PATCH v8 24/24] nvme-pci: optimize single-segment handling
-Message-ID: <20250422074419.GD48485@unreal>
-References: <cover.1744825142.git.leon@kernel.org>
- <670389227a033bd5b7c5aa55191aac9943244028.1744825142.git.leon@kernel.org>
- <20250422043955.GA28077@lst.de>
+	s=k20201202; t=1745312969;
+	bh=LWLwIWIREcnGHVr9V4bXSa6VdoUXdDgUQPuZFLtN2mE=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=VqB6HV0aqc+RSvcoU9WUo8DWCxt0Ccdy0uBbJENx3iH5+9Ohg6YQZYiDLIMDsvl6e
+	 0n9oykz0PgHCuJlFYF2tO4l81reaL/2HXwylK01UIRrIKu+XzvVQcQRJk7qiiCjKbS
+	 uq7tpZTFlDL6xK18yWTvNTCHIPLXrhmYhytfVVqbIxpbMOIZ/VI4Cg7sUzLEB9Fs0k
+	 S7oumbvI+udWTuOvEAYiGSES0Z+QwpKadFnYnSByZMWFtuHTKd1fR2MI4w0vMhP7MN
+	 spwfxsr7GBoYOAjPHYrmpbvJNwoRhiNeG/c65fZvbjA//uAwubZtLgdlFjOvbrS6ZM
+	 3f99er/Ufla1g==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 342AA39D6546;
+	Tue, 22 Apr 2025 09:10:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250422043955.GA28077@lst.de>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v7 0/2] net/mlx5: Fix NULL dereference and memory leak in
+ ttc_table creation
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174531300776.1477965.14714402895095610167.git-patchwork-notify@kernel.org>
+Date: Tue, 22 Apr 2025 09:10:07 +0000
+References: <20250418023814.71789-1-bsdhenrymartin@gmail.com>
+In-Reply-To: <20250418023814.71789-1-bsdhenrymartin@gmail.com>
+To: henry martin <bsdhenrymartin@gmail.com>
+Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, mbloch@nvidia.com, amirtz@nvidia.com,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On Tue, Apr 22, 2025 at 06:39:56AM +0200, Christoph Hellwig wrote:
-> On Fri, Apr 18, 2025 at 09:47:54AM +0300, Leon Romanovsky wrote:
-> > From: Kanchan Joshi <joshi.k@samsung.com>
-> > 
-> > blk_rq_dma_map API is costly for single-segment requests.
-> > Avoid using it and map the bio_vec directly.
-> 
-> This needs to be folded into the earlier patches or split prep patches
-> instead of undoing work done earlier, preferably combined with a bit
-> of code movement so that the new nvme_try_setup_prp_simple stays in
-> the same place as before and the diff shows it reusing code.
-> 
-> E.g. change
-> 
-> "nvme-pci: use a better encoding for small prp pool allocations" to
-> already use the flags instead of my boolean, and maybe include 
-> abort in the flags instead of using a separate bool so that we
-> don't increase hte iod size.
-> 
-> Slot in a new patch after that that dropping the single SGL segment
-> fastpath if we think we don't need that, although if we need the PRP
-> one I suspect that one would still be very helpful as well.
-> 
-> Add a patch if we want the try_ version of, although when keeping
-> the optimization for SGLs as well that are will look a bit different.
-> 
-> I'm happy to give away my patch authorship credits if that helps with
-> the folding.
+Hello:
 
-I used this patch separation for two reasons:
-1. Your conversion patch is absolutely correct and this patch is an
-optimization.
-2. Wanted to make sure that I'll post to the ML the code exactly as it
-was tested.
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-I'll try to split/fold this patch now.
+On Fri, 18 Apr 2025 10:38:12 +0800 you wrote:
+> This patch series addresses two issues in the
+> mlx5_create_inner_ttc_table() and mlx5_create_ttc_table() functions:
+> 
+> 1. A potential NULL pointer dereference if mlx5_get_flow_namespace()
+> returns NULL.
+> 
+> 2. A memory leak in the error path when ttc_type is invalid (default:
+> switch case).
+> 
+> [...]
 
-Thanks
+Here is the summary with links:
+  - [v7,1/2] net/mlx5: Fix null-ptr-deref in mlx5_create_{inner_,}ttc_table()
+    https://git.kernel.org/netdev/net/c/91037037ee3d
+  - [v7,2/2] net/mlx5: Move ttc allocation after switch case to prevent leaks
+    https://git.kernel.org/netdev/net/c/fa8fd315127c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
